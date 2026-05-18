@@ -20,6 +20,16 @@
   letter-spacing: 0;
 }
 
+.hero .sl-link-button.primary,
+.hero .sl-link-button.primary svg {
+  color: #ffffff;
+}
+
+.hero .sl-link-button.primary:hover,
+.hero .sl-link-button.primary:hover svg {
+  color: #ffffff;
+}
+
 .bt4k-showcase {
   display: grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
@@ -45,7 +55,8 @@
 }
 
 .bt4k-feature-grid,
-.bt4k-repo-grid {
+.bt4k-repo-grid,
+.bt4k-example-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
@@ -57,7 +68,8 @@
 }
 
 .bt4k-feature,
-.bt4k-repo {
+.bt4k-repo,
+.bt4k-example {
   display: flex;
   min-height: 9rem;
   flex-direction: column;
@@ -71,17 +83,20 @@
 }
 
 .bt4k-feature:hover,
-.bt4k-repo:hover {
+.bt4k-repo:hover,
+.bt4k-example:hover {
   border-color: var(--sl-color-accent);
 }
 
 .bt4k-feature strong,
-.bt4k-repo strong {
+.bt4k-repo strong,
+.bt4k-example strong {
   font-size: 1rem;
 }
 
 .bt4k-feature span,
-.bt4k-repo span {
+.bt4k-repo span,
+.bt4k-example span {
   color: var(--sl-color-gray-2);
   line-height: 1.55;
 }
@@ -108,6 +123,7 @@
   .bt4k-showcase,
   .bt4k-feature-grid,
   .bt4k-repo-grid,
+  .bt4k-example-grid,
   .bt4k-image-strip {
     grid-template-columns: 1fr;
   }

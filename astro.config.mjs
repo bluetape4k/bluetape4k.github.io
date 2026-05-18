@@ -8,9 +8,9 @@ export default defineConfig({
       title: 'bluetape4k',
       description: 'Kotlin backend libraries, examples, and dependency governance for JVM services.',
       logo: {
-        src: './src/assets/logo.svg',
+        src: './src/assets/logo.png',
       },
-      favicon: '/favicon.svg',
+      favicon: '/avatar.png',
       customCss: ['./src/styles/custom.css'],
       social: [
         {
