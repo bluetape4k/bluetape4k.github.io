@@ -86,3 +86,9 @@ before publishing the English translation, and link English blog indexes to the
 translation-pending placeholder until the translated post is ready. Keep paired
 locale slugs present so Starlight language alternates do not point to missing
 pages.
+
+When writing about AI collaboration, explain custom workflow skills as operating
+systems for work, not as generic prompt collections. For `bluetape4k-workflow`,
+highlight task classification, skip/deepen decisions, superpowers spec/plan
+artifacts, multi-perspective review, Claude/Codex cross-review, and explicit
+completion evidence.
