@@ -25,18 +25,37 @@ hero:
 
 <div class="bt4k-feature-grid">
   <a class="bt4k-feature" href="/ecosystem/repositories/">
-    <strong>Backend libraries</strong>
-    <span>Core Kotlin/JVM utilities, coroutine-first APIs, Spring Boot support, Exposed repositories, AWS wrappers, graph integrations, leader election, text, and image modules.</span>
+    <strong>Application edge</strong>
+    <span>Spring Boot and Ktor service foundations for HTTP APIs, coroutine-first execution, WebFlux/MVC examples, and production-style request flows.</span>
+  </a>
+  <a class="bt4k-feature" href="/ecosystem/repositories/">
+    <strong>Persistence</strong>
+    <span>Exposed JDBC/R2DBC repositories, cache-backed data access, serialization, and database examples that keep persistence code consistent.</span>
+  </a>
+  <a class="bt4k-feature" href="/ecosystem/repositories/">
+    <strong>Integration</strong>
+    <span>AWS SDK wrappers, Redis/Kafka patterns, graph database integrations, and infrastructure helpers for services that cross system boundaries.</span>
+  </a>
+  <a class="bt4k-feature" href="/ecosystem/repositories/">
+    <strong>Operations</strong>
+    <span>Leader election, scheduling gates, observability examples, virtual-thread experiments, and runtime coordination patterns.</span>
+  </a>
+  <a class="bt4k-feature" href="/ecosystem/repositories/">
+    <strong>Domain utilities</strong>
+    <span>Text processing, image pipelines, validation, logging, testing, coroutine helpers, and reusable Kotlin/JVM building blocks.</span>
   </a>
   <a class="bt4k-feature" href="/ecosystem/examples/">
     <strong>Working examples</strong>
     <span>Workshops and sample applications for Spring Boot, Ktor, R2DBC, Exposed, Timefold, scheduling, observability, and production-style backend flows.</span>
   </a>
-  <a class="bt4k-feature" href="/ecosystem/version-governance/">
-    <strong>Version governance</strong>
-    <span>A central BOM and shared version catalog keep Kotlin, Spring Boot, Exposed, Jackson, AWS, Ktor, and test dependencies aligned across repositories.</span>
-  </a>
 </div>
+
+## Architecture Position Map
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-architecture-map.svg" alt="Architecture position map for bluetape4k backend libraries" loading="eager" />
+  <figcaption>bluetape4k sits between Kotlin/JVM application frameworks and production concerns: persistence, cloud integration, graph data, operations, reusable utilities, and example applications.</figcaption>
+</figure>
 
 ## Start With The BOM
 

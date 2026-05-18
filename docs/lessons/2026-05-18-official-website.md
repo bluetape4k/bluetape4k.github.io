@@ -25,3 +25,10 @@ Run `npm run build` before publishing or updating the site.
 
 Keep the website focused on onboarding and navigation. Do not duplicate long
 README or KDoc content unless it is intentionally curated for first-time users.
+
+## 2026-05-18 Content Expansion
+
+Overview content should show the backend library surface by usage area instead
+of presenting a single broad "Backend libraries" bucket. Keep version
+governance available as a dedicated page, but do not make it a primary Overview
+card unless it is the user's immediate onboarding task.

@@ -158,6 +158,25 @@ header.header .site-title:hover span {
   margin: 1rem 0 2rem;
 }
 
+.bt4k-architecture {
+  margin: 1rem 0 3rem;
+}
+
+.bt4k-architecture img {
+  width: 100%;
+  border: 1px solid var(--bt4k-image-border);
+  border-radius: 8px;
+  background: var(--bt4k-image-bg);
+  box-shadow: 0 16px 48px var(--bt4k-shadow);
+}
+
+.bt4k-architecture figcaption {
+  margin-top: 0.75rem;
+  color: var(--sl-color-gray-3);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
 @media (max-width: 760px) {
   .bt4k-showcase,
   .bt4k-feature-grid,
