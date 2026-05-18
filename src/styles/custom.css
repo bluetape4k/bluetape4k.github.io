@@ -105,6 +105,14 @@ header.header .site-title:hover span {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.bt4k-example-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.bt4k-repo-grid-compact {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .bt4k-feature,
 .bt4k-repo,
 .bt4k-example {
@@ -118,6 +126,24 @@ header.header .site-title:hover span {
   color: var(--bt4k-card-title);
   text-decoration: none;
   background: var(--bt4k-card-bg);
+}
+
+.bt4k-repo small,
+.bt4k-example small {
+  width: fit-content;
+  padding: 0.22rem 0.48rem;
+  border-radius: 999px;
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1;
+  background: #2563eb;
+}
+
+:root[data-theme='dark'] .bt4k-repo small,
+:root[data-theme='dark'] .bt4k-example small {
+  color: #0f172a;
+  background: #93c5fd;
 }
 
 .bt4k-feature:hover,

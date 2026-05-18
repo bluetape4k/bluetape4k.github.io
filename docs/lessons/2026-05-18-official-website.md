@@ -36,3 +36,9 @@ card unless it is the user's immediate onboarding task.
 Architecture diagrams on the Overview page should be label-first and sparse.
 Move explanatory prose into adjacent cards or body copy instead of placing long
 sentences inside the diagram, especially for mobile and embedded SVG rendering.
+
+Repository pages should represent official library and project-entry
+repositories. Put workshop, sample, and reference-application repositories on
+the Examples page so readers can distinguish runtime libraries from learning
+materials. Exclude demo/profile repositories unless they become explicit
+user-facing artifacts.
