@@ -42,3 +42,9 @@ repositories. Put workshop, sample, and reference-application repositories on
 the Examples page so readers can distinguish runtime libraries from learning
 materials. Exclude demo/profile repositories unless they become explicit
 user-facing artifacts.
+
+SEO baseline for the official website should include crawler discovery
+(`robots.txt` with the sitemap URL), a 1200x630 PNG Open Graph image, global
+Open Graph/Twitter metadata, and JSON-LD for Organization, WebSite, and
+SoftwareSourceCode. Verify these in `dist/` after `npm run build` before
+publishing.
