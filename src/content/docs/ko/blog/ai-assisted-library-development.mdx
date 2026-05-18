@@ -1,0 +1,69 @@
+---
+title: AI와 3개월 동안 만든 대규모 Kotlin 라이브러리 생태계
+description: Claude Code와 Codex를 활용해 bluetape4k 라이브러리 생태계를 확장하며 얻은 도움, 시행착오, 협업 안정화 방식.
+---
+
+<p class="bt4k-post-meta">2026-05-18 · bluetape4k engineering note</p>
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/ai-assisted-library-development.png" alt="AI coding agents, automation pipelines, documentation, tests, and repository maps supporting a Kotlin library ecosystem" loading="eager" />
+  <figcaption>대규모 라이브러리 작업에서 AI는 단순 코드 생성기보다 연구, 자동화, 리뷰, 문서화, 반복 작업을 묶어 주는 협업 도구에 가까웠습니다.</figcaption>
+</figure>
+
+지난 3개월 동안 bluetape4k 생태계를 크게 확장하면서 Claude Code와 Codex를 적극적으로 사용했다. 작업 범위는 단일 애플리케이션이 아니라 여러 라이브러리 repository, BOM, Spring Boot 3/4 통합, Ktor 예제, Exposed JDBC/R2DBC, AWS, graph, image, leader election, text processing, workshop 문서까지 이어졌다.
+
+처음 기대했던 것은 “AI가 코드를 빨리 만들어 줄 것”이었다. 하지만 실제로 가장 큰 효과는 코드 한두 파일을 빨리 작성하는 데서 나오지 않았다. 효과는 반복 작업을 자동화하고, 작업 과정을 문서화하고, 테스트를 보강하고, 여러 repository에서 같은 기준을 유지하는 데서 나왔다. 반대로 AI와 제대로 협업하기 위한 작업 프로세스가 없으면 생산성은 쉽게 흔들렸다.
+
+## AI가 실제로 도와준 일
+
+가장 먼저 체감한 도움은 자동화였다. GitHub Actions workflow 정비, 여러 repository에 같은 설정을 적용하는 작업, Dependabot과 dependency governance 점검, release와 build 검증 같은 일은 사람이 직접 반복하면 지치기 쉽다. AI는 이런 작업을 빠르게 나누고, repo별 차이를 확인하고, 실패한 부분을 다시 좁혀 가는 데 유용했다.
+
+문서 작업도 큰 도움을 받았다. KDoc 보강, README 작성, README 영/한 번역, 예제 설명, migration note, GitHub issue와 PR 설명을 일정한 톤으로 작성하는 작업은 라이브러리 품질을 끌어올리는 데 중요하지만 시간이 많이 든다. AI를 붙이면서 문서의 초안을 빠르게 만들고, 사람이 마지막 의미와 방향을 조정하는 방식으로 바뀌었다.
+
+테스트 coverage 향상에도 효과가 있었다. 기존 모듈의 빈 테스트 영역을 찾고, public API 계약을 테스트로 잠그고, edge case를 제안하고, 실패한 테스트를 분석하는 데 AI를 사용했다. 특히 여러 모듈에 흩어진 유사 패턴을 비교해 “여기에도 같은 종류의 테스트가 필요하다”는 식으로 확장하는 데 도움이 됐다.
+
+신규 기능을 검토할 때는 research와 pilot 작업이 유용했다. 예를 들어 image 처리에서 libvips를 검토하거나, Spring Boot 4와 Ktor 3 기반 예제를 구성하거나, Exposed R2DBC 사용 패턴을 정리할 때 AI는 공식 문서, 기존 코드, 대안의 장단점을 빠르게 모아 의사결정 속도를 높였다.
+
+예제 시나리오를 만드는 데도 AI가 강했다. 사용자가 실제로 어떤 흐름을 따라 배우면 좋은지, Spring Boot 예제와 Ktor 예제를 어떻게 나눌지, workshop chapter를 어떤 순서로 확장할지 같은 아이디어를 제안받고 바로 issue와 구현 계획으로 바꿀 수 있었다.
+
+## 처음 2개월은 협업 자체가 어려웠다
+
+처음 두 달은 AI를 쓰는 시간이 곧바로 생산성으로 이어지지 않았다. 반복 지시가 많았고, 이전에 말한 규칙이 누락되거나, 지시를 무시하거나, 매 작업마다 사람이 다시 점검해야 하는 일이 많았다.
+
+가장 큰 문제는 작업 스타일이 매 세션마다 달라지는 것이었다. 어떤 세션에서는 테스트를 충분히 작성하지만, 다른 세션에서는 테스트가 약했다. 어떤 세션에서는 bluetape4k workspace에 이미 있는 기능을 잘 찾아 쓰지만, 다른 세션에서는 같은 기능을 새로 만들려고 했다. 기존 모듈에서 이미 해결한 문제를 다른 작업에서는 다시 삽질하는 일도 있었다.
+
+코드 스타일도 흔들렸다. bluetape4k가 이미 제공하는 helper, assertion, testcontainer launcher, coroutine pattern을 쓰기보다 외부 라이브러리나 일반적인 예제 스타일을 가져오려는 경우가 있었다. 대규모 라이브러리 생태계에서는 “동작하는 코드”보다 “기존 생태계와 같은 방식으로 동작하는 코드”가 더 중요하다. AI에게 이 차이를 계속 알려 주는 장치가 필요했다.
+
+또 하나의 비용은 토큰 소모였다. 매번 같은 배경, 같은 규칙, 같은 repo 구조, 같은 검증 절차를 다시 설명하는 것은 비효율적이었다. AI가 기억을 유지하지 못한다면, 기억을 외부화하고 다시 불러올 수 있는 구조가 필요했다.
+
+## 3개월째부터 협업 방식이 안정화됐다
+
+전환점은 memory, wiki, lessons, skill을 쌓기 시작하면서 왔다. 작업이 끝날 때마다 단순히 “완료”로 끝내지 않고, 무엇이 문제였고, 어떤 결정을 했고, 다음 작업자는 무엇을 피해야 하는지 lessons에 남겼다. 반복되는 결정은 skill로 승격했다.
+
+대표적으로 `bluetape4k-workflow`, `bluetape4k-design`, `bluetape4k-patterns` 같은 개인 skill을 만들었다. 이 skill들은 단순 체크리스트가 아니라 bluetape4k 작업의 기본 운영 방식을 담는다. 어떤 작업은 설계부터 해야 하는지, 어떤 작업은 fast track으로 충분한지, Kotlin 코드에서 어떤 validation과 test style을 써야 하는지, GitHub issue와 PR은 어떤 기준으로 작성해야 하는지를 AI가 매번 다시 추측하지 않게 했다.
+
+작업 전후 리뷰도 중요했다. Claude Code CLI와 Codex CLI를 서로 리뷰에 사용하면서 한쪽 AI가 만든 계획이나 구현을 다른 쪽이 비판하게 했다. 특히 큰 변경에서는 구현 전에 설계 문제를 찾고, 구현 후에는 누락된 테스트, 깨진 계약, 어색한 문서, repo별 차이를 점검하는 방식이 효과적이었다.
+
+이후부터 AI는 덜 흔들렸다. 여전히 사람이 방향을 정하고 마지막 판단을 해야 하지만, AI가 매번 처음부터 출발하는 느낌은 줄었다. 경험이 lessons와 skill에 쌓이면서 다음 작업의 품질이 이전 작업의 결과를 반영하기 시작했다.
+
+## 효과
+
+기존 라이브러리의 완성도가 올라갔다. 안정성과 성능을 점검하고, 오래된 버그를 수정하고, 테스트 coverage를 보강하고, KDoc과 README를 최신 상태로 맞추는 작업을 더 자주 할 수 있었다. 이런 작업은 눈에 띄는 신규 기능보다 덜 화려하지만, 라이브러리 사용자에게는 훨씬 직접적인 품질 차이를 만든다.
+
+신규 기능 개발 속도도 빨라졌다. research와 pilot을 먼저 돌려 대안을 좁히고, 설계와 테스트 방향을 잡은 뒤 구현에 들어가니 시행착오가 줄었다. AI는 메인 코드와 테스트 구현뿐 아니라 코드 리뷰와 문서화까지 연결해서 도와줬다.
+
+예제도 더 다양해졌다. 단순히 API 사용법만 보여주는 예제가 아니라 사용자의 관심사에 따라 어떤 repository를 보면 좋은지, Spring Boot와 Ktor 예제를 어떻게 비교하면 좋은지, Exposed JDBC와 R2DBC를 어떤 순서로 익히면 좋은지 같은 learning path를 만들 수 있었다.
+
+무엇보다 여러 repository에 대해 일관된 작업을 할 수 있게 됐다. 대규모 생태계에서 일관성은 기능 수만큼 중요하다. BOM, dependency management, README 구조, 테스트 스타일, CI workflow, issue와 PR 작성 기준이 흔들리면 유지보수 비용이 커진다. AI는 이 일관성을 강제하는 도구로 쓸 때 가장 큰 효과가 있었다.
+
+## 제언
+
+AI를 잘 쓰면 생산성은 분명히 높아진다. 하지만 핵심은 AI에게 모든 것을 맡기는 것이 아니라, 사람이 해결해야 할 문제, 즉 WHAT을 명확히 정의하는 것이다. 어떤 해결 방식, 즉 HOW는 AI에게 맡길 수 있다. 단, 그 HOW가 프로젝트의 철학과 기존 구조를 벗어나지 않도록 guardrail이 필요하다.
+
+Research, 설계, 계획이 가장 중요하다. 바로 구현을 시키면 빨라 보이지만, 큰 작업에서는 잘못된 방향으로 빠르게 가는 비용이 더 크다. AI에게 먼저 조사하게 하고, 대안을 비교하게 하고, 테스트 전략을 정하게 한 뒤 구현으로 들어가는 쪽이 더 안정적이었다.
+
+AI는 매번 기억이 리셋된다. 그래서 경험을 누적할 인프라가 필요하다. lessons, qmd, wiki, repo-local docs, skill 같은 외부 기억 장치를 만들고, 실제 작업에서 계속 사용해야 한다. 한 번 배운 것을 다음 작업에 반영하지 못하면 AI 협업은 매번 초보 상태로 돌아간다.
+
+마지막으로, 경험은 skill에 보강해야 한다. lessons는 사건의 기록이고, skill은 다음 작업의 실행 규칙이다. issue, PR, review, 실패한 build, 누락된 테스트에서 얻은 반복 가능한 교훈을 skill에 반영하면 AI는 점점 더 프로젝트에 맞는 동료가 된다.
+
+bluetape4k에서의 3개월은 “AI가 개발자를 대체한다”는 이야기와는 거리가 멀었다. 오히려 반대에 가까웠다. AI가 잘 일하게 만들려면 개발자가 문제를 더 명확히 정의하고, 작업 시스템을 더 정교하게 만들고, 결과를 더 엄격하게 검증해야 했다. 그 과정을 감수할 때 AI는 대규모 라이브러리 생태계를 꾸준히 밀고 나가는 강력한 증폭기가 된다.

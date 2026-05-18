@@ -181,6 +181,13 @@ export default defineConfig({
             },
           ],
         },
+        {
+          label: 'Blog',
+          translations: { ko: '블로그' },
+          items: [
+            { label: 'Posts', translations: { ko: '글' }, slug: 'blog' },
+          ],
+        },
       ],
     }),
   ],

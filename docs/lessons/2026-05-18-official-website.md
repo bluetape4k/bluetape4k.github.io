@@ -78,3 +78,11 @@ path, keep sidebar translations in `astro.config.mjs`, and verify sitemap
 The default Starlight language selector is too subtle for the homepage hero.
 Keep explicit homepage language links near the first content block so first-time
 visitors can discover English and Korean without scanning the header controls.
+
+Start the official blog inside the website repository rather than a separate
+repository. The blog benefits from the same domain, sitemap, Starlight styling,
+and deployment workflow. Use Korean drafts first when the author wants review
+before publishing the English translation, and link English blog indexes to the
+translation-pending placeholder until the translated post is ready. Keep paired
+locale slugs present so Starlight language alternates do not point to missing
+pages.
