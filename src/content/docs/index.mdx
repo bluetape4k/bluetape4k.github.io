@@ -1,0 +1,53 @@
+---
+title: bluetape4k
+description: Kotlin backend libraries, examples, and dependency governance for JVM services.
+template: splash
+hero:
+  title: bluetape4k
+  tagline: Kotlin-first backend building blocks for Spring Boot, Ktor, Exposed, R2DBC, AWS, graph data, and production examples.
+  actions:
+    - text: Get started
+      link: /getting-started/
+      icon: right-arrow
+    - text: View on GitHub
+      link: https://github.com/bluetape4k
+      icon: external
+      variant: secondary
+---
+
+<section class="bt4k-showcase" aria-label="bluetape4k ecosystem preview">
+  <img src="/assets/dependencies-workbench.png" alt="bluetape4k dependency governance workbench" loading="eager" />
+  <img src="/assets/exposed-workbench.png" alt="bluetape4k Exposed workbench" loading="eager" />
+  <img src="/assets/workshop-workbench.png" alt="bluetape4k workshop workbench" loading="eager" />
+</section>
+
+## What bluetape4k Provides
+
+<div class="bt4k-feature-grid">
+  <a class="bt4k-feature" href="/ecosystem/repositories/">
+    <strong>Backend libraries</strong>
+    <span>Core Kotlin/JVM utilities, coroutine-first APIs, Spring Boot support, Exposed repositories, AWS wrappers, graph integrations, leader election, text, and image modules.</span>
+  </a>
+  <a class="bt4k-feature" href="/ecosystem/examples/">
+    <strong>Working examples</strong>
+    <span>Workshops and sample applications for Spring Boot, Ktor, R2DBC, Exposed, Timefold, scheduling, observability, and production-style backend flows.</span>
+  </a>
+  <a class="bt4k-feature" href="/ecosystem/version-governance/">
+    <strong>Version governance</strong>
+    <span>A central BOM and shared version catalog keep Kotlin, Spring Boot, Exposed, Jackson, AWS, Ktor, and test dependencies aligned across repositories.</span>
+  </a>
+</div>
+
+## Start With The BOM
+
+```kotlin
+dependencyManagement {
+    imports {
+        mavenBom("io.github.bluetape4k:bluetape4k-dependencies:1.0.0")
+    }
+}
+```
+
+Use the central dependency BOM first, then add the module-specific BOMs and libraries your service needs.
+
+<a class="bt4k-command-link" href="/getting-started/">Open the quick start</a>

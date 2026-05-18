@@ -1,0 +1,118 @@
+:root {
+  --sl-color-accent-low: #dbeafe;
+  --sl-color-accent: #2563eb;
+  --sl-color-accent-high: #1e3a8a;
+  --sl-color-white: #f8fafc;
+  --sl-color-gray-1: #e5e7eb;
+  --sl-color-gray-2: #cbd5e1;
+  --sl-color-gray-3: #94a3b8;
+  --sl-color-gray-4: #64748b;
+  --sl-color-gray-5: #334155;
+  --sl-color-gray-6: #1f2937;
+  --sl-color-black: #0b1220;
+}
+
+.hero {
+  padding-block: clamp(2.5rem, 8vw, 6rem);
+}
+
+.hero h1 {
+  letter-spacing: 0;
+}
+
+.bt4k-showcase {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 1rem;
+  margin: 2rem 0 3rem;
+}
+
+.bt4k-showcase img,
+.bt4k-image-strip img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 8px;
+  object-fit: cover;
+  background: var(--sl-color-black);
+  box-shadow: 0 16px 48px rgb(2 6 23 / 22%);
+}
+
+.bt4k-showcase img:first-child {
+  grid-row: span 2;
+  height: 100%;
+  min-height: 20rem;
+}
+
+.bt4k-feature-grid,
+.bt4k-repo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1rem 0 2rem;
+}
+
+.bt4k-repo-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.bt4k-feature,
+.bt4k-repo {
+  display: flex;
+  min-height: 9rem;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 1rem;
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 8px;
+  color: var(--sl-color-white);
+  text-decoration: none;
+  background: color-mix(in srgb, var(--sl-color-black), var(--sl-color-gray-6) 58%);
+}
+
+.bt4k-feature:hover,
+.bt4k-repo:hover {
+  border-color: var(--sl-color-accent);
+}
+
+.bt4k-feature strong,
+.bt4k-repo strong {
+  font-size: 1rem;
+}
+
+.bt4k-feature span,
+.bt4k-repo span {
+  color: var(--sl-color-gray-2);
+  line-height: 1.55;
+}
+
+.bt4k-command-link {
+  display: inline-flex;
+  margin-top: 1rem;
+  padding: 0.72rem 1rem;
+  border-radius: 6px;
+  color: white;
+  font-weight: 700;
+  text-decoration: none;
+  background: var(--sl-color-accent);
+}
+
+.bt4k-image-strip {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1rem 0 2rem;
+}
+
+@media (max-width: 760px) {
+  .bt4k-showcase,
+  .bt4k-feature-grid,
+  .bt4k-repo-grid,
+  .bt4k-image-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .bt4k-showcase img:first-child {
+    min-height: auto;
+  }
+}

@@ -1,0 +1,53 @@
+---
+title: Getting Started
+description: Add bluetape4k dependency governance and choose the first module for a Kotlin backend project.
+---
+
+## Requirements
+
+- Kotlin 2.3+
+- Java 21 or Java 25, depending on the target repository
+- Gradle Kotlin DSL
+- Spring Boot 3/4 or Ktor 3 when using framework integrations
+
+## Add The Central BOM
+
+Use `bluetape4k-dependencies` as the first dependency-management layer.
+
+```kotlin
+dependencyManagement {
+    imports {
+        mavenBom("io.github.bluetape4k:bluetape4k-dependencies:1.0.0")
+    }
+}
+```
+
+For Exposed integrations, add the Exposed BOM after the central BOM.
+
+```kotlin
+dependencyManagement {
+    imports {
+        mavenBom("io.github.bluetape4k:bluetape4k-dependencies:1.0.0")
+        mavenBom("io.github.bluetape4k:bluetape4k-exposed-bom:0.1.0")
+    }
+}
+```
+
+## Pick A Starting Point
+
+| Goal | Start here |
+| --- | --- |
+| Spring Boot backend utilities | [`bluetape4k-projects`](https://github.com/bluetape4k/bluetape4k-projects) |
+| Exposed JDBC/R2DBC repositories | [`bluetape4k-exposed`](https://github.com/bluetape4k/bluetape4k-exposed) |
+| AWS SDK v2 and Kotlin SDK wrappers | [`bluetape4k-aws`](https://github.com/bluetape4k/bluetape4k-aws) |
+| Graph database integrations | [`bluetape4k-graph`](https://github.com/bluetape4k/bluetape4k-graph) |
+| End-to-end examples | [`bluetape4k-workshop`](https://github.com/bluetape4k/bluetape4k-workshop) |
+
+## Verify A Project
+
+```bash
+./gradlew compileTestKotlin --no-daemon
+```
+
+Run compile checks before widening the dependency surface. For modules backed by containers, run the focused integration tests after compile succeeds.
+

@@ -1,0 +1,38 @@
+---
+title: Version Governance
+description: How bluetape4k keeps dependency versions aligned across repositories.
+---
+
+## Central Rule
+
+`bluetape4k-dependencies` is the source of truth for shared dependency versions across the organization.
+
+Downstream repositories should consume the central BOM and generated shared-version catalog updates instead of allowing independent Dependabot bumps for centrally governed libraries.
+
+## Governed Families
+
+- Kotlin, kotlinx, Dokka, and Kover
+- Spring Boot 3/4, Spring dependency management, Jackson 2/3
+- JetBrains Exposed, Ktor, Reactor, R2DBC drivers
+- AWS SDKs, Redis clients, Kafka, Testcontainers
+- Common build and runtime libraries used across multiple bluetape4k repositories
+
+## Upgrade Policy
+
+Routine patch upgrades belong in the central version source first.
+
+Breaking or compile-risk upgrades get their own issue and migration PR. Current examples:
+
+- MyBatis Dynamic SQL 2.x migration
+- Timefold Solver 2.x migration
+
+## Local Verification
+
+```bash
+scripts/sync-shared-versions.py --workspace .. --check --summary
+scripts/sync-dependabot-ignores.py --workspace .. --check --summary
+./gradlew compileTestKotlin --no-daemon
+```
+
+Use central sync checks before merging downstream dependency governance PRs.
+

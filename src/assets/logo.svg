@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="bluetape4k logo">
+  <rect width="128" height="128" rx="28" fill="#0b1220"/>
+  <path d="M28 38h72c8.8 0 16 7.2 16 16v20c0 8.8-7.2 16-16 16H28c-8.8 0-16-7.2-16-16V54c0-8.8 7.2-16 16-16Z" fill="#2f80ed"/>
+  <path d="M36 51h56c4.4 0 8 3.6 8 8v10c0 4.4-3.6 8-8 8H36c-4.4 0-8-3.6-8-8V59c0-4.4 3.6-8 8-8Z" fill="#e8f1ff"/>
+  <path d="M48 42v44M80 42v44" stroke="#0b1220" stroke-width="8" stroke-linecap="round"/>
+  <path d="M46 64h36" stroke="#2f80ed" stroke-width="8" stroke-linecap="round"/>
+</svg>
