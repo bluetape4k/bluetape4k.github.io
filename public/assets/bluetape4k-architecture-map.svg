@@ -1,110 +1,80 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 820" role="img" aria-labelledby="title desc">
   <title id="title">bluetape4k architecture position map</title>
-  <desc id="desc">A layered architecture map showing where bluetape4k libraries fit in Kotlin backend services.</desc>
+  <desc id="desc">A simplified architecture map showing bluetape4k library positions across Kotlin backend service layers.</desc>
   <defs>
     <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
       <stop offset="0" stop-color="#f8fbff"/>
       <stop offset="1" stop-color="#eaf2ff"/>
     </linearGradient>
-    <linearGradient id="blue" x1="0" x2="1" y1="0" y2="1">
-      <stop offset="0" stop-color="#2f80ed"/>
+    <linearGradient id="core" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#2563eb"/>
       <stop offset="1" stop-color="#1d4ed8"/>
     </linearGradient>
-    <linearGradient id="green" x1="0" x2="1" y1="0" y2="1">
-      <stop offset="0" stop-color="#22c55e"/>
-      <stop offset="1" stop-color="#15803d"/>
-    </linearGradient>
-    <linearGradient id="violet" x1="0" x2="1" y1="0" y2="1">
-      <stop offset="0" stop-color="#8b5cf6"/>
-      <stop offset="1" stop-color="#6d28d9"/>
-    </linearGradient>
-    <linearGradient id="amber" x1="0" x2="1" y1="0" y2="1">
-      <stop offset="0" stop-color="#f59e0b"/>
-      <stop offset="1" stop-color="#c2410c"/>
-    </linearGradient>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#0f172a" flood-opacity="0.18"/>
+      <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#0f172a" flood-opacity="0.16"/>
     </filter>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/>
+      <path d="M0 0 L10 5 L0 10z" fill="#64748b"/>
     </marker>
   </defs>
 
-  <rect width="1440" height="900" fill="url(#bg)"/>
+  <rect width="1440" height="820" fill="url(#bg)"/>
 
-  <text x="92" y="88" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="800" fill="#0f172a">bluetape4k backend architecture map</text>
-  <text x="92" y="128" font-family="Inter, Arial, sans-serif" font-size="20" fill="#475569">Kotlin-first libraries positioned around application delivery, persistence, infrastructure, operations, and examples.</text>
-
-  <g filter="url(#shadow)">
-    <rect x="92" y="184" width="1256" height="92" rx="18" fill="#0f172a"/>
-    <text x="720" y="224" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="800" fill="#f8fafc">Kotlin / JVM Backend Services</text>
-    <text x="720" y="254" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="17" fill="#cbd5e1">Spring Boot 3/4, Ktor 3, coroutines, virtual threads, observability, testing</text>
-  </g>
-
-  <path d="M720 276v58" stroke="#64748b" stroke-width="3" marker-end="url(#arrow)"/>
+  <text x="80" y="82" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="800" fill="#0f172a">bluetape4k position map</text>
+  <text x="80" y="122" font-family="Inter, Arial, sans-serif" font-size="20" fill="#475569">Where the library families sit in a Kotlin backend service stack.</text>
 
   <g filter="url(#shadow)">
-    <rect x="92" y="334" width="276" height="184" rx="18" fill="#ffffff" stroke="#cbd5e1"/>
-    <rect x="116" y="358" width="52" height="52" rx="14" fill="url(#blue)"/>
-    <text x="184" y="382" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="800" fill="#0f172a">Application Edge</text>
-    <text x="184" y="410" font-family="Inter, Arial, sans-serif" font-size="16" fill="#475569">HTTP APIs and services</text>
-    <text x="118" y="456" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="700" fill="#1d4ed8">Spring Boot</text>
-    <text x="118" y="484" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="700" fill="#1d4ed8">Ktor</text>
-    <text x="118" y="512" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="700" fill="#1d4ed8">WebFlux / MVC</text>
+    <rect x="435" y="176" width="570" height="112" rx="22" fill="#0f172a"/>
+    <text x="720" y="222" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="800" fill="#f8fafc">Application Runtime</text>
+    <text x="720" y="258" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700" fill="#93c5fd">Spring Boot · Ktor · Coroutines</text>
   </g>
 
   <g filter="url(#shadow)">
-    <rect x="426" y="334" width="276" height="184" rx="18" fill="#ffffff" stroke="#cbd5e1"/>
-    <rect x="450" y="358" width="52" height="52" rx="14" fill="url(#green)"/>
-    <text x="518" y="382" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="800" fill="#0f172a">Persistence</text>
-    <text x="518" y="410" font-family="Inter, Arial, sans-serif" font-size="16" fill="#475569">Data access and repositories</text>
-    <text x="452" y="456" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="700" fill="#15803d">Exposed JDBC</text>
-    <text x="452" y="484" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="700" fill="#15803d">Exposed R2DBC</text>
-    <text x="452" y="512" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="700" fill="#15803d">Cache and serialization</text>
+    <rect x="80" y="360" width="255" height="128" rx="22" fill="#eff6ff" stroke="#bfdbfe" stroke-width="2"/>
+    <text x="208" y="413" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="800" fill="#1d4ed8">Application Edge</text>
+    <text x="208" y="452" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#334155">HTTP APIs</text>
   </g>
 
   <g filter="url(#shadow)">
-    <rect x="760" y="334" width="276" height="184" rx="18" fill="#ffffff" stroke="#cbd5e1"/>
-    <rect x="784" y="358" width="52" height="52" rx="14" fill="url(#violet)"/>
-    <text x="852" y="382" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="800" fill="#0f172a">Integration</text>
-    <text x="852" y="410" font-family="Inter, Arial, sans-serif" font-size="16" fill="#475569">Cloud, messaging, graph data</text>
-    <text x="786" y="456" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="700" fill="#6d28d9">AWS SDK wrappers</text>
-    <text x="786" y="484" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="700" fill="#6d28d9">Neo4j / Memgraph / AGE</text>
-    <text x="786" y="512" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="700" fill="#6d28d9">Kafka / Redis patterns</text>
+    <rect x="398" y="360" width="255" height="128" rx="22" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="2"/>
+    <text x="526" y="413" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="800" fill="#15803d">Persistence</text>
+    <text x="526" y="452" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#334155">Exposed JDBC/R2DBC</text>
   </g>
 
   <g filter="url(#shadow)">
-    <rect x="1094" y="334" width="254" height="184" rx="18" fill="#ffffff" stroke="#cbd5e1"/>
-    <rect x="1118" y="358" width="52" height="52" rx="14" fill="url(#amber)"/>
-    <text x="1186" y="382" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="800" fill="#0f172a">Operations</text>
-    <text x="1186" y="410" font-family="Inter, Arial, sans-serif" font-size="16" fill="#475569">Runtime coordination</text>
-    <text x="1120" y="456" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="700" fill="#c2410c">Leader election</text>
-    <text x="1120" y="484" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="700" fill="#c2410c">Scheduling gates</text>
-    <text x="1120" y="512" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="700" fill="#c2410c">Observability examples</text>
-  </g>
-
-  <path d="M368 426h58" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow)"/>
-  <path d="M702 426h58" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow)"/>
-  <path d="M1036 426h58" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow)"/>
-
-  <g filter="url(#shadow)">
-    <rect x="92" y="594" width="388" height="176" rx="18" fill="#eff6ff" stroke="#bfdbfe"/>
-    <text x="120" y="636" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="800" fill="#0f172a">Foundation modules</text>
-    <text x="120" y="672" font-family="Inter, Arial, sans-serif" font-size="17" fill="#334155">Core utilities, coroutine helpers, validation, logging, test support, serialization, image and text processing.</text>
-    <text x="120" y="724" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="800" fill="#1d4ed8">bluetape4k-projects / text / image</text>
+    <rect x="717" y="360" width="255" height="128" rx="22" fill="#f5f3ff" stroke="#ddd6fe" stroke-width="2"/>
+    <text x="845" y="413" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="800" fill="#6d28d9">Integration</text>
+    <text x="845" y="452" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#334155">AWS · Graph · Redis</text>
   </g>
 
   <g filter="url(#shadow)">
-    <rect x="526" y="594" width="388" height="176" rx="18" fill="#f0fdf4" stroke="#bbf7d0"/>
-    <text x="554" y="636" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="800" fill="#0f172a">Production examples</text>
-    <text x="554" y="672" font-family="Inter, Arial, sans-serif" font-size="17" fill="#334155">Workshops show how these modules combine into real Spring Boot, Ktor, R2DBC, Exposed, Timefold, and workflow applications.</text>
-    <text x="554" y="724" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="800" fill="#15803d">workshop / exposed-workshop / clinic</text>
+    <rect x="1035" y="360" width="325" height="128" rx="22" fill="#fff7ed" stroke="#fed7aa" stroke-width="2"/>
+    <text x="1198" y="413" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="800" fill="#c2410c">Operations</text>
+    <text x="1198" y="452" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#334155">Leader · Scheduling · Observability</text>
+  </g>
+
+  <path d="M557 288 L258 360" stroke="#64748b" stroke-width="3" marker-end="url(#arrow)"/>
+  <path d="M647 288 L550 360" stroke="#64748b" stroke-width="3" marker-end="url(#arrow)"/>
+  <path d="M793 288 L820 360" stroke="#64748b" stroke-width="3" marker-end="url(#arrow)"/>
+  <path d="M892 288 L1155 360" stroke="#64748b" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <g filter="url(#shadow)">
+    <rect x="170" y="590" width="500" height="118" rx="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="420" y="636" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="800" fill="#0f172a">Foundation Modules</text>
+    <text x="420" y="674" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#334155">Core · Coroutines · Text · Image · Testing</text>
   </g>
 
   <g filter="url(#shadow)">
-    <rect x="960" y="594" width="388" height="176" rx="18" fill="#fff7ed" stroke="#fed7aa"/>
-    <text x="988" y="636" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="800" fill="#0f172a">Governed dependency base</text>
-    <text x="988" y="672" font-family="Inter, Arial, sans-serif" font-size="17" fill="#334155">The central BOM aligns Kotlin, Spring Boot, Exposed, Jackson, AWS, Ktor, and test dependency versions across repositories.</text>
-    <text x="988" y="724" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="800" fill="#c2410c">bluetape4k-dependencies</text>
+    <rect x="770" y="590" width="500" height="118" rx="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="1020" y="636" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="800" fill="#0f172a">Example Applications</text>
+    <text x="1020" y="674" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#334155">Workshops · Clinic · Timefold · R2DBC</text>
+  </g>
+
+  <path d="M420 590 V520 H720 V288" stroke="#94a3b8" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+  <path d="M1020 590 V522 H720" stroke="#94a3b8" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+
+  <g filter="url(#shadow)">
+    <rect x="350" y="746" width="740" height="44" rx="22" fill="url(#core)"/>
+    <text x="720" y="775" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="19" font-weight="800" fill="#ffffff">Version governance supports every layer through the central BOM</text>
   </g>
 </svg>

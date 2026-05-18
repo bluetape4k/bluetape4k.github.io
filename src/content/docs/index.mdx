@@ -54,8 +54,35 @@ hero:
 
 <figure class="bt4k-architecture">
   <img src="/assets/bluetape4k-architecture-map.svg" alt="Architecture position map for bluetape4k backend libraries" loading="eager" />
-  <figcaption>bluetape4k sits between Kotlin/JVM application frameworks and production concerns: persistence, cloud integration, graph data, operations, reusable utilities, and example applications.</figcaption>
+  <figcaption>bluetape4k groups backend concerns by position: runtime edge, persistence, integrations, operations, foundations, and examples.</figcaption>
 </figure>
+
+<div class="bt4k-position-grid">
+  <div>
+    <strong>Application edge</strong>
+    <span>Spring Boot and Ktor entry points for HTTP services.</span>
+  </div>
+  <div>
+    <strong>Persistence</strong>
+    <span>Exposed JDBC/R2DBC repositories, caching, and serialization.</span>
+  </div>
+  <div>
+    <strong>Integration</strong>
+    <span>AWS SDK wrappers, graph databases, Redis, Kafka, and infrastructure adapters.</span>
+  </div>
+  <div>
+    <strong>Operations</strong>
+    <span>Leader election, scheduling gates, observability, and runtime coordination.</span>
+  </div>
+  <div>
+    <strong>Foundation modules</strong>
+    <span>Core Kotlin utilities, coroutines, validation, text, image, and test support.</span>
+  </div>
+  <div>
+    <strong>Example applications</strong>
+    <span>Workshops and full examples showing how the modules compose.</span>
+  </div>
+</div>
 
 ## Start With The BOM
 

@@ -32,3 +32,7 @@ Overview content should show the backend library surface by usage area instead
 of presenting a single broad "Backend libraries" bucket. Keep version
 governance available as a dedicated page, but do not make it a primary Overview
 card unless it is the user's immediate onboarding task.
+
+Architecture diagrams on the Overview page should be label-first and sparse.
+Move explanatory prose into adjacent cards or body copy instead of placing long
+sentences inside the diagram, especially for mobile and embedded SVG rendering.
