@@ -48,3 +48,8 @@ SEO baseline for the official website should include crawler discovery
 Open Graph/Twitter metadata, and JSON-LD for Organization, WebSite, and
 SoftwareSourceCode. Verify these in `dist/` after `npm run build` before
 publishing.
+
+IndexNow submission for Bing-compatible search engines requires a root-level
+UTF-8 key file and a post-deploy API call. Google Search Console sitemap
+submission remains OAuth- and property-ownership-gated, so it cannot be done
+from an unauthenticated agent session.
