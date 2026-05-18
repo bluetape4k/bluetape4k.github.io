@@ -186,6 +186,16 @@ export default defineConfig({
           translations: { ko: '블로그' },
           items: [
             { label: 'Posts', translations: { ko: '글' }, slug: 'blog' },
+            {
+              label: 'Turning AI Collaboration Into Infrastructure',
+              translations: { ko: 'AI와 일하는 환경을 인프라로 만들기' },
+              slug: 'blog/ai-collaboration-environment',
+            },
+            {
+              label: 'Building a Large Kotlin Library Ecosystem with AI in Three Months',
+              translations: { ko: 'AI와 3개월 동안 만든 대규모 Kotlin 라이브러리 생태계' },
+              slug: 'blog/ai-assisted-library-development',
+            },
           ],
         },
       ],
