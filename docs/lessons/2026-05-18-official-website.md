@@ -97,3 +97,7 @@ When explaining `bluetape4k-workflow`, emphasize its step-by-step gatekeeper
 role. Use contrasting workflow examples, such as Maintenance vs Full Design, to
 show how it skips unnecessary ceremony for small work while enforcing spec,
 plan, review, test, CI, benchmark, and lessons gates for high-risk changes.
+
+After the Korean draft is approved, replace the English translation placeholder
+with a full English article and update the English blog index copy. Keep the
+same slug pair so locale alternates remain stable.
