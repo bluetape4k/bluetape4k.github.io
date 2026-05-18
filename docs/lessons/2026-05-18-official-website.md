@@ -14,8 +14,7 @@ in each source repository.
 ## Outcome
 
 The site includes a landing page, getting started guide, repository overview,
-example index, and dependency governance page. Existing repository workbench
-images are reused as visual assets.
+example index, and dependency governance page.
 
 ## Verification
 
@@ -63,3 +62,10 @@ Getting Started should not show only the most common libraries. Keep its
 starting-point table aligned with the full Repositories and Examples pages so
 users can discover leader election, text, image, Javers, experiments, and
 workshop repositories without having to browse every page first.
+
+Do not keep generated workbench images when they do not explain a real product,
+repository state, or code path. Prefer repository cards, concise descriptions,
+interest-based learning paths, and the architecture position map over
+decorative screenshots. Learning-path tables should use normal text links, not
+inline-code links, because long repository names wrap poorly on documentation
+pages.
