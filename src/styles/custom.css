@@ -20,6 +20,17 @@
   letter-spacing: 0;
 }
 
+header.header .site-title,
+header.header .site-title span {
+  color: #1d4ed8;
+  font-weight: 800;
+}
+
+header.header .site-title:hover,
+header.header .site-title:hover span {
+  color: #0f172a;
+}
+
 .hero .sl-link-button.primary,
 .hero .sl-link-button.primary svg {
   color: #ffffff;
