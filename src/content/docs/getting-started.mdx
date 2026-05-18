@@ -28,7 +28,7 @@ For Exposed integrations, add the Exposed BOM after the central BOM.
 dependencyManagement {
     imports {
         mavenBom("io.github.bluetape4k:bluetape4k-dependencies:1.0.0")
-        mavenBom("io.github.bluetape4k:bluetape4k-exposed-bom:0.1.0")
+        mavenBom("io.github.bluetape4k:bluetape4k-exposed-bom:1.8.0")
     }
 }
 ```
@@ -37,11 +37,21 @@ dependencyManagement {
 
 | Goal | Start here |
 | --- | --- |
-| Spring Boot backend utilities | [`bluetape4k-projects`](https://github.com/bluetape4k/bluetape4k-projects) |
+| Shared version governance | [`bluetape4k-dependencies`](https://github.com/bluetape4k/bluetape4k-dependencies) |
+| Core Kotlin and Spring Boot backend utilities | [`bluetape4k-projects`](https://github.com/bluetape4k/bluetape4k-projects) |
 | Exposed JDBC/R2DBC repositories | [`bluetape4k-exposed`](https://github.com/bluetape4k/bluetape4k-exposed) |
 | AWS SDK v2 and Kotlin SDK wrappers | [`bluetape4k-aws`](https://github.com/bluetape4k/bluetape4k-aws) |
 | Graph database integrations | [`bluetape4k-graph`](https://github.com/bluetape4k/bluetape4k-graph) |
-| End-to-end examples | [`bluetape4k-workshop`](https://github.com/bluetape4k/bluetape4k-workshop) |
+| Distributed leader election and runtime coordination | [`bluetape4k-leader`](https://github.com/bluetape4k/bluetape4k-leader) |
+| Korean/Japanese tokenizers and text processing | [`bluetape4k-text`](https://github.com/bluetape4k/bluetape4k-text) |
+| Backend image processing | [`bluetape4k-image`](https://github.com/bluetape4k/bluetape4k-image) |
+| Audit history and entity diff workflows | [`bluetape4k-javers`](https://github.com/bluetape4k/bluetape4k-javers) |
+| Platform migration and incubation work | [`bluetape4k-experimental`](https://github.com/bluetape4k/bluetape4k-experimental) |
+| General end-to-end examples | [`bluetape4k-workshop`](https://github.com/bluetape4k/bluetape4k-workshop) |
+| Exposed JDBC examples | [`exposed-workshop`](https://github.com/bluetape4k/exposed-workshop) |
+| Exposed R2DBC examples | [`exposed-r2dbc-workshop`](https://github.com/bluetape4k/exposed-r2dbc-workshop) |
+| Optimization examples | [`timefold-workshop`](https://github.com/bluetape4k/timefold-workshop) |
+| Reference application | [`clinic-appointment`](https://github.com/bluetape4k/clinic-appointment) |
 
 ## Verify A Project
 
@@ -50,4 +60,3 @@ dependencyManagement {
 ```
 
 Run compile checks before widening the dependency surface. For modules backed by containers, run the focused integration tests after compile succeeds.
-

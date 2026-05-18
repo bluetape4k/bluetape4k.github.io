@@ -53,3 +53,13 @@ IndexNow submission for Bing-compatible search engines requires a root-level
 UTF-8 key file and a post-deploy API call. Google Search Console sitemap
 submission remains OAuth- and property-ownership-gated, so it cannot be done
 from an unauthenticated agent session.
+
+Documentation examples should use released Maven coordinates, not package
+versions from the website project. In particular, `bluetape4k-exposed-bom`
+tracks the `bluetape4k-exposed` release line, while
+`bluetape4k-dependencies` tracks its own central BOM release line.
+
+Getting Started should not show only the most common libraries. Keep its
+starting-point table aligned with the full Repositories and Examples pages so
+users can discover leader election, text, image, Javers, experiments, and
+workshop repositories without having to browse every page first.
