@@ -265,6 +265,44 @@ header.header .site-title:hover span {
   line-height: 1.55;
 }
 
+.bt4k-workflow-comparison {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1.25rem 0 1.75rem;
+}
+
+.bt4k-workflow-comparison section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid var(--bt4k-card-border);
+  border-radius: 8px;
+  background: var(--bt4k-card-bg);
+}
+
+.bt4k-workflow-comparison strong {
+  color: var(--bt4k-card-title);
+  font-size: 1rem;
+}
+
+.bt4k-workflow-comparison ol {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.bt4k-workflow-comparison li {
+  color: var(--bt4k-card-text);
+  line-height: 1.5;
+}
+
+.bt4k-workflow-comparison p {
+  margin: 0;
+  color: var(--bt4k-card-text);
+  line-height: 1.55;
+}
+
 .bt4k-architecture {
   margin: 1rem 0 3rem;
 }
@@ -318,6 +356,10 @@ header.header .site-title:hover span {
   }
 
   .bt4k-blog-card {
+    grid-template-columns: 1fr;
+  }
+
+  .bt4k-workflow-comparison {
     grid-template-columns: 1fr;
   }
 

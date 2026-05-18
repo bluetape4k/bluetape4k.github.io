@@ -92,3 +92,8 @@ systems for work, not as generic prompt collections. For `bluetape4k-workflow`,
 highlight task classification, skip/deepen decisions, superpowers spec/plan
 artifacts, multi-perspective review, Claude/Codex cross-review, and explicit
 completion evidence.
+
+When explaining `bluetape4k-workflow`, emphasize its step-by-step gatekeeper
+role. Use contrasting workflow examples, such as Maintenance vs Full Design, to
+show how it skips unnecessary ceremony for small work while enforcing spec,
+plan, review, test, CI, benchmark, and lessons gates for high-risk changes.
