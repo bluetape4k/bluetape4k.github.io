@@ -66,6 +66,49 @@ header.header .site-title:hover span {
   color: #ffffff;
 }
 
+.bt4k-locale-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: -1.5rem 0 2.25rem;
+  padding: 0.35rem;
+  border: 1px solid var(--bt4k-card-border);
+  border-radius: 999px;
+  background: var(--bt4k-card-bg);
+}
+
+.bt4k-locale-switch a,
+.bt4k-locale-current {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.bt4k-locale-switch a {
+  color: var(--bt4k-card-text);
+}
+
+.bt4k-locale-switch a:hover {
+  color: var(--bt4k-card-title);
+  background: rgb(37 99 235 / 10%);
+}
+
+.bt4k-locale-current {
+  color: #ffffff;
+  background: #2563eb;
+}
+
+:root[data-theme='dark'] .bt4k-locale-current {
+  color: #0f172a;
+  background: #93c5fd;
+}
+
 .bt4k-feature-grid,
 .bt4k-repo-grid,
 .bt4k-example-grid {
@@ -199,6 +242,10 @@ header.header .site-title:hover span {
 }
 
 @media (max-width: 760px) {
+  .bt4k-locale-switch {
+    margin-top: -1rem;
+  }
+
   .bt4k-feature-grid,
   .bt4k-repo-grid,
   .bt4k-example-grid,

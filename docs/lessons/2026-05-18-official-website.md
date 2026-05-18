@@ -74,3 +74,7 @@ Starlight i18n should keep English at the root path and put Korean pages under
 `/ko/`. Add a Korean page for every public English page in the same relative
 path, keep sidebar translations in `astro.config.mjs`, and verify sitemap
 `hreflang` alternates plus the language selector after each locale change.
+
+The default Starlight language selector is too subtle for the homepage hero.
+Keep explicit homepage language links near the first content block so first-time
+visitors can discover English and Korean without scanning the header controls.
