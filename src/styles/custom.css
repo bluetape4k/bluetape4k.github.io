@@ -1,15 +1,22 @@
-:root {
-  --sl-color-accent-low: #dbeafe;
-  --sl-color-accent: #2563eb;
-  --sl-color-accent-high: #1e3a8a;
-  --sl-color-white: #f8fafc;
-  --sl-color-gray-1: #e5e7eb;
-  --sl-color-gray-2: #cbd5e1;
-  --sl-color-gray-3: #94a3b8;
-  --sl-color-gray-4: #64748b;
-  --sl-color-gray-5: #334155;
-  --sl-color-gray-6: #1f2937;
-  --sl-color-black: #0b1220;
+:root,
+:root[data-theme='light'] {
+  --bt4k-card-bg: #f8fafc;
+  --bt4k-card-border: #cbd5e1;
+  --bt4k-card-title: #0f172a;
+  --bt4k-card-text: #334155;
+  --bt4k-image-bg: #f8fafc;
+  --bt4k-image-border: #cbd5e1;
+  --bt4k-shadow: rgb(15 23 42 / 12%);
+}
+
+:root[data-theme='dark'] {
+  --bt4k-card-bg: #111827;
+  --bt4k-card-border: #334155;
+  --bt4k-card-title: #f8fafc;
+  --bt4k-card-text: #cbd5e1;
+  --bt4k-image-bg: #0b1220;
+  --bt4k-image-border: #334155;
+  --bt4k-shadow: rgb(2 6 23 / 22%);
 }
 
 .hero {
@@ -31,9 +38,29 @@ header.header .site-title:hover span {
   color: #0f172a;
 }
 
+:root[data-theme='dark'] header.header .site-title,
+:root[data-theme='dark'] header.header .site-title span {
+  color: #60a5fa;
+}
+
+:root[data-theme='dark'] header.header .site-title:hover,
+:root[data-theme='dark'] header.header .site-title:hover span {
+  color: #bfdbfe;
+}
+
+.hero .sl-link-button.primary {
+  border-color: #2563eb;
+  background: #2563eb;
+}
+
 .hero .sl-link-button.primary,
 .hero .sl-link-button.primary svg {
   color: #ffffff;
+}
+
+.hero .sl-link-button.primary:hover {
+  border-color: #1d4ed8;
+  background: #1d4ed8;
 }
 
 .hero .sl-link-button.primary:hover,
@@ -52,11 +79,11 @@ header.header .site-title:hover span {
 .bt4k-image-strip img {
   width: 100%;
   aspect-ratio: 16 / 9;
-  border: 1px solid var(--sl-color-gray-5);
+  border: 1px solid var(--bt4k-image-border);
   border-radius: 8px;
   object-fit: cover;
-  background: var(--sl-color-black);
-  box-shadow: 0 16px 48px rgb(2 6 23 / 22%);
+  background: var(--bt4k-image-bg);
+  box-shadow: 0 16px 48px var(--bt4k-shadow);
 }
 
 .bt4k-showcase img:first-child {
@@ -86,11 +113,11 @@ header.header .site-title:hover span {
   flex-direction: column;
   gap: 0.7rem;
   padding: 1rem;
-  border: 1px solid var(--sl-color-gray-5);
+  border: 1px solid var(--bt4k-card-border);
   border-radius: 8px;
-  color: var(--sl-color-white);
+  color: var(--bt4k-card-title);
   text-decoration: none;
-  background: color-mix(in srgb, var(--sl-color-black), var(--sl-color-gray-6) 58%);
+  background: var(--bt4k-card-bg);
 }
 
 .bt4k-feature:hover,
@@ -103,12 +130,13 @@ header.header .site-title:hover span {
 .bt4k-repo strong,
 .bt4k-example strong {
   font-size: 1rem;
+  color: var(--bt4k-card-title);
 }
 
 .bt4k-feature span,
 .bt4k-repo span,
 .bt4k-example span {
-  color: var(--sl-color-gray-2);
+  color: var(--bt4k-card-text);
   line-height: 1.55;
 }
 
