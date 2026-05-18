@@ -1,0 +1,62 @@
+---
+title: 시작하기
+description: Kotlin 백엔드 프로젝트에 bluetape4k 의존성 거버넌스를 추가하고 첫 모듈을 선택합니다.
+---
+
+## 요구 사항
+
+- Kotlin 2.3+
+- 대상 repository에 따라 Java 21 또는 Java 25
+- Gradle Kotlin DSL
+- Framework integration을 사용하는 경우 Spring Boot 3/4 또는 Ktor 3
+
+## 중앙 BOM 추가
+
+`bluetape4k-dependencies`를 첫 dependency-management layer로 사용합니다.
+
+```kotlin
+dependencyManagement {
+    imports {
+        mavenBom("io.github.bluetape4k:bluetape4k-dependencies:1.0.0")
+    }
+}
+```
+
+Exposed integration을 사용할 때는 중앙 BOM 뒤에 Exposed BOM을 추가합니다.
+
+```kotlin
+dependencyManagement {
+    imports {
+        mavenBom("io.github.bluetape4k:bluetape4k-dependencies:1.0.0")
+        mavenBom("io.github.bluetape4k:bluetape4k-exposed-bom:1.8.0")
+    }
+}
+```
+
+## 시작 지점 선택
+
+| 목표 | 시작할 곳 |
+| --- | --- |
+| 공유 버전 거버넌스 | [`bluetape4k-dependencies`](https://github.com/bluetape4k/bluetape4k-dependencies) |
+| Core Kotlin과 Spring Boot backend utility | [`bluetape4k-projects`](https://github.com/bluetape4k/bluetape4k-projects) |
+| Exposed JDBC/R2DBC repository | [`bluetape4k-exposed`](https://github.com/bluetape4k/bluetape4k-exposed) |
+| AWS SDK v2와 AWS Kotlin SDK wrapper | [`bluetape4k-aws`](https://github.com/bluetape4k/bluetape4k-aws) |
+| Graph database integration | [`bluetape4k-graph`](https://github.com/bluetape4k/bluetape4k-graph) |
+| Distributed leader election과 runtime coordination | [`bluetape4k-leader`](https://github.com/bluetape4k/bluetape4k-leader) |
+| 한국어/일본어 tokenizer와 text processing | [`bluetape4k-text`](https://github.com/bluetape4k/bluetape4k-text) |
+| Backend image processing | [`bluetape4k-image`](https://github.com/bluetape4k/bluetape4k-image) |
+| Audit history와 entity diff workflow | [`bluetape4k-javers`](https://github.com/bluetape4k/bluetape4k-javers) |
+| Platform migration과 incubation work | [`bluetape4k-experimental`](https://github.com/bluetape4k/bluetape4k-experimental) |
+| 일반 end-to-end 예제 | [`bluetape4k-workshop`](https://github.com/bluetape4k/bluetape4k-workshop) |
+| Exposed JDBC 예제 | [`exposed-workshop`](https://github.com/bluetape4k/exposed-workshop) |
+| Exposed R2DBC 예제 | [`exposed-r2dbc-workshop`](https://github.com/bluetape4k/exposed-r2dbc-workshop) |
+| Optimization 예제 | [`timefold-workshop`](https://github.com/bluetape4k/timefold-workshop) |
+| Reference application | [`clinic-appointment`](https://github.com/bluetape4k/clinic-appointment) |
+
+## 프로젝트 검증
+
+```bash
+./gradlew compileTestKotlin --no-daemon
+```
+
+Dependency surface를 넓히기 전에 compile check를 먼저 실행합니다. Container 기반 module은 compile이 성공한 뒤 focused integration test를 실행합니다.

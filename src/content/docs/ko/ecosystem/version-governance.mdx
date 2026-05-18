@@ -1,0 +1,31 @@
+---
+title: 버전 거버넌스
+description: bluetape4k가 여러 리포지토리의 의존성 버전을 정렬하는 방식.
+---
+
+## 중앙 규칙
+
+`bluetape4k-dependencies`는 조직 전체의 공유 dependency version을 정의하는 source of truth입니다.
+
+하위 repository는 중앙 BOM과 generated shared-version catalog update를 사용해야 합니다. 중앙에서 관리되는 library를 각 repository의 Dependabot bump에 맡기지 않습니다.
+
+## 관리되는 계열
+
+- Kotlin, kotlinx, Dokka, Kover
+- Spring Boot 3/4, Spring dependency management, Jackson 2/3
+- JetBrains Exposed, Ktor, Reactor, R2DBC driver
+- AWS SDK, Redis client, Kafka, Testcontainers
+- 여러 bluetape4k repository에서 공통으로 사용하는 build/runtime library
+
+## Repository workflow
+
+1. 중앙 BOM에서 공유 version을 변경합니다.
+2. 각 repository가 중앙 BOM을 먼저 import합니다.
+3. Repository-specific BOM은 그 뒤에 import합니다.
+4. `compileTestKotlin`과 focused test로 영향 범위를 검증합니다.
+
+## 왜 필요한가
+
+bluetape4k repository들은 서로 같은 Kotlin, Spring Boot, Exposed, Jackson, Ktor version을 기대합니다. Version drift가 생기면 example, workshop, downstream service가 서로 다른 dependency graph로 검증됩니다.
+
+중앙 거버넌스는 dependency upgrade를 느리게 만들기 위한 장치가 아니라, upgrade를 한 번에 이해하고 검증하기 위한 장치입니다.

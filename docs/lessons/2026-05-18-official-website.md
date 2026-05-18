@@ -69,3 +69,8 @@ interest-based learning paths, and the architecture position map over
 decorative screenshots. Learning-path tables should use normal text links, not
 inline-code links, because long repository names wrap poorly on documentation
 pages.
+
+Starlight i18n should keep English at the root path and put Korean pages under
+`/ko/`. Add a Korean page for every public English page in the same relative
+path, keep sidebar translations in `astro.config.mjs`, and verify sitemap
+`hreflang` alternates plus the language selector after each locale change.

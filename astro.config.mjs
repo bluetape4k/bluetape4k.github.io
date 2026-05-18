@@ -5,8 +5,22 @@ export default defineConfig({
   site: 'https://bluetape4k.github.io',
   integrations: [
     starlight({
-      title: 'bluetape4k',
+      title: {
+        en: 'bluetape4k',
+        ko: 'bluetape4k',
+      },
       description: 'Kotlin backend libraries, examples, and dependency governance for JVM services.',
+      locales: {
+        root: {
+          label: 'English',
+          lang: 'en',
+        },
+        ko: {
+          label: '한국어',
+          lang: 'ko',
+        },
+      },
+      defaultLocale: 'root',
       logo: {
         src: './src/assets/logo.png',
       },
@@ -148,17 +162,23 @@ export default defineConfig({
       sidebar: [
         {
           label: 'Start',
+          translations: { ko: '시작' },
           items: [
-            { label: 'Overview', slug: '' },
-            { label: 'Getting Started', slug: 'getting-started' },
+            { label: 'Overview', translations: { ko: '개요' }, slug: '' },
+            { label: 'Getting Started', translations: { ko: '시작하기' }, slug: 'getting-started' },
           ],
         },
         {
           label: 'Ecosystem',
+          translations: { ko: '생태계' },
           items: [
-            { label: 'Repositories', slug: 'ecosystem/repositories' },
-            { label: 'Examples', slug: 'ecosystem/examples' },
-            { label: 'Version Governance', slug: 'ecosystem/version-governance' },
+            { label: 'Repositories', translations: { ko: '리포지토리' }, slug: 'ecosystem/repositories' },
+            { label: 'Examples', translations: { ko: '예제' }, slug: 'ecosystem/examples' },
+            {
+              label: 'Version Governance',
+              translations: { ko: '버전 거버넌스' },
+              slug: 'ecosystem/version-governance',
+            },
           ],
         },
       ],
