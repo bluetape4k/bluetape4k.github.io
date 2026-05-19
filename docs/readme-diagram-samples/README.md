@@ -70,6 +70,9 @@ These samples are the review baseline for the cross-repository README work.
 - No decorative orbs, gradients, bokeh, fake 3D, or stock imagery.
 - Relationship labels may use small white pill backgrounds to avoid line
   collisions.
+- Connector paths must have a visible stem. A marker-only arrow head or a
+  near-zero-length line segment is a failed rendering even when the SVG is
+  syntactically valid.
 - Remove low-signal generated labels such as `Object`, `Interface`, `Creates`,
   `Kotlin Object`, temporary IDs, and meaningless path prefixes. Prefer the
   real domain or module name, for example `lettuce`, `redisson`, or `kafka`
@@ -97,6 +100,9 @@ Rules:
   every section to the same height just to fill a grid.
 - Keep enough vertical distance between a root/hub card and grouped sections so
   connector lines clearly descend instead of becoming nearly horizontal.
+- Adjacent card connectors must span the visible gap between card boundaries.
+  Do not place the path only in the center of the gap; that renders as a bare
+  `>` marker at normal README scale.
 - When a diagram has many groups, omit hub-to-group connector lines if they
   create a hairball. Use section grouping and local relationships instead.
 - Root README module structure may be rendered like a software stack:
@@ -151,6 +157,8 @@ AI instruction:
 Rules:
 
 - Participants remain as lifelines.
+- Participant header labels must be vertically centered in their header boxes
+  using the same baseline logic as architecture cards.
 - Messages become rounded horizontal bands with numbers and short intent text.
 - Use pastel color by interaction kind: request, suspend/work, response.
 - Avoid dense arrow clutter; one compact return band is usually enough.
@@ -158,6 +166,9 @@ Rules:
   the participating components as the fallback label, for example
   `S3Client to LocalStack`. Do not render meaningless labels such as
   `message`.
+- Self-calls must render as a small loop arrow. A sequence message from a
+  participant to itself must not collapse into a zero-length path where only
+  the arrow head remains.
 - Do not impose a fixed height limit. Grow the canvas until the full sequence
   and any notes are visible.
 - Keep call labels close to their arrows. Avoid large vertical gaps between a
@@ -221,6 +232,8 @@ Before asking for review or opening a PR:
   unreadable text, huge blank areas, dense edge hairballs, clipped right edges,
   truncated titles, overlapping labels, inheritance markers without visible
   stems, and notes covering sequence bodies.
+- Run geometry checks for architecture short connectors, sequence participant
+  header baseline, and sequence zero-length self-call arrows.
 - Spot-check known risk patterns before user review:
   `testing-junit5-diagram-01`, `testing-testcontainers-diagram-02`, a wide
   class inheritance diagram, a large grouped architecture diagram, and at least
