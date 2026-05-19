@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1050" viewBox="0 0 1600 1050" role="img" aria-label="Blog schema ERD infographic style sample">
+<defs>
+  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%">
+    <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#1f2937" flood-opacity="0.10"/>
+  </filter>
+  <marker id="fkArrow" markerWidth="12" markerHeight="10" refX="10" refY="5" orient="auto" markerUnits="strokeWidth">
+    <path d="M 1 1 L 10 5 L 1 9" fill="none" stroke="#8a97a8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+  <style>
+    .canvas { fill: #f7f9fc; }
+    .frame { fill: #ffffff; stroke: #d8e0ea; stroke-width: 1.5; }
+    .title { font-family: "Architects Daughter", "Comic Mono", cursive; font-size: 54px; font-weight: 400; fill: #102033; }
+    .subtitle { font-family: "Comic Mono", "SFMono-Regular", Menlo, Consolas, monospace; font-size: 18px; fill: #536273; }
+    .tableName { font-family: "Architects Daughter", "Comic Mono", cursive; font-size: 30px; font-weight: 400; fill: #102033; }
+    .stereo { font-family: "Comic Mono", "SFMono-Regular", Menlo, Consolas, monospace; font-size: 14px; fill: #536273; }
+    .column { font-family: "Comic Mono", "SFMono-Regular", Menlo, Consolas, monospace; font-size: 15px; fill: #102033; }
+    .small { font-family: "Comic Mono", "SFMono-Regular", Menlo, Consolas, monospace; font-size: 13px; fill: #536273; }
+    .cardinality { font-family: "Comic Mono", "SFMono-Regular", Menlo, Consolas, monospace; font-size: 15px; font-weight: 700; fill: #102033; }
+    .noteTitle { font-family: "Architects Daughter", "Comic Mono", cursive; font-size: 30px; fill: #102033; }
+    .table { stroke-width: 2.2; filter: url(#shadow); }
+    .compartment { stroke-width: 1.6; fill: none; }
+    .fkLine { stroke: #8a97a8; stroke-width: 2.1; stroke-dasharray: 7 6; fill: none; marker-end: url(#fkArrow); }
+    .relLine { stroke: #8a97a8; stroke-width: 2.1; fill: none; }
+    .chip { stroke-width: 1.5; rx: 16; }
+    .chipText { font-family: "Comic Mono", "SFMono-Regular", Menlo, Consolas, monospace; font-size: 13px; font-weight: 700; fill: #102033; }
+  </style>
+</defs>
+
+<rect class="canvas" width="1600" height="1050"/>
+<rect class="frame" x="46" y="34" width="1508" height="982" rx="32"/>
+<text class="title" x="86" y="98">BlogSchema ERD Style</text>
+<text class="subtitle" x="90" y="132">Exposed tables with FK direction, cardinality labels, and pastel UML-like compartments</text>
+
+<g transform="translate(1038,64)">
+  <rect class="chip" x="0" y="0" width="132" height="36" fill="#e8f3ff" stroke="#5b8def"/>
+  <text class="chipText" x="66" y="24" text-anchor="middle">entity table</text>
+  <rect class="chip" x="148" y="0" width="132" height="36" fill="#fff3d9" stroke="#d6a441"/>
+  <text class="chipText" x="214" y="24" text-anchor="middle">detail table</text>
+  <rect class="chip" x="296" y="0" width="132" height="36" fill="#eaf7ef" stroke="#58a978"/>
+  <text class="chipText" x="362" y="24" text-anchor="middle">bridge table</text>
+</g>
+
+<!-- posts -->
+<g transform="translate(594,196)">
+  <rect class="table" x="0" y="0" width="412" height="188" rx="4" fill="#e8f3ff" stroke="#5b8def"/>
+  <line class="compartment" x1="0" y1="78" x2="412" y2="78" stroke="#5b8def"/>
+  <line class="compartment" x1="0" y1="126" x2="412" y2="126" stroke="#5b8def"/>
+  <text class="stereo" x="206" y="28" text-anchor="middle">«LongIdTable»</text>
+  <text class="tableName" x="206" y="62" text-anchor="middle">posts</text>
+  <text class="column" x="24" y="108">PK id: BIGSERIAL</text>
+  <text class="column" x="24" y="154">title: VARCHAR(255) NOT NULL</text>
+</g>
+
+<!-- post_details -->
+<g transform="translate(1096,214)">
+  <rect class="table" x="0" y="0" width="364" height="226" rx="4" fill="#fff3d9" stroke="#d6a441"/>
+  <line class="compartment" x1="0" y1="78" x2="364" y2="78" stroke="#d6a441"/>
+  <line class="compartment" x1="0" y1="156" x2="364" y2="156" stroke="#d6a441"/>
+  <text class="stereo" x="182" y="28" text-anchor="middle">«IdTable»</text>
+  <text class="tableName" x="182" y="62" text-anchor="middle">post_details</text>
+  <text class="column" x="24" y="108">PK/FK id -> posts.id</text>
+  <text class="column" x="24" y="138">created_on: DATE NOT NULL</text>
+  <text class="column" x="24" y="184">created_by: VARCHAR(255)</text>
+  <text class="small" x="24" y="210">shared primary key detail row</text>
+</g>
+
+<!-- post_comments -->
+<g transform="translate(112,508)">
+  <rect class="table" x="0" y="0" width="392" height="226" rx="4" fill="#fdecef" stroke="#dc6b82"/>
+  <line class="compartment" x1="0" y1="78" x2="392" y2="78" stroke="#dc6b82"/>
+  <line class="compartment" x1="0" y1="156" x2="392" y2="156" stroke="#dc6b82"/>
+  <text class="stereo" x="196" y="28" text-anchor="middle">«LongIdTable»</text>
+  <text class="tableName" x="196" y="62" text-anchor="middle">post_comments</text>
+  <text class="column" x="24" y="108">PK id: BIGSERIAL</text>
+  <text class="column" x="24" y="138">FK post_id -> posts.id</text>
+  <text class="column" x="24" y="184">review: VARCHAR(255)</text>
+  <text class="small" x="24" y="210">indexed by post_id</text>
+</g>
+
+<!-- post_tags -->
+<g transform="translate(604,572)">
+  <rect class="table" x="0" y="0" width="392" height="244" rx="4" fill="#eaf7ef" stroke="#58a978"/>
+  <line class="compartment" x1="0" y1="78" x2="392" y2="78" stroke="#58a978"/>
+  <line class="compartment" x1="0" y1="174" x2="392" y2="174" stroke="#58a978"/>
+  <text class="stereo" x="196" y="28" text-anchor="middle">«bridge table»</text>
+  <text class="tableName" x="196" y="62" text-anchor="middle">post_tags</text>
+  <text class="column" x="24" y="108">PK id: BIGSERIAL</text>
+  <text class="column" x="24" y="138">FK post_id -> posts.id</text>
+  <text class="column" x="24" y="168">FK tag_id -> tags.id</text>
+  <text class="column" x="24" y="202">UNIQUE(post_id, tag_id)</text>
+  <text class="small" x="24" y="226">ON DELETE CASCADE on both FKs</text>
+</g>
+
+<!-- tags -->
+<g transform="translate(1102,560)">
+  <rect class="table" x="0" y="0" width="364" height="188" rx="4" fill="#e9f7f6" stroke="#45a7a1"/>
+  <line class="compartment" x1="0" y1="78" x2="364" y2="78" stroke="#45a7a1"/>
+  <line class="compartment" x1="0" y1="126" x2="364" y2="126" stroke="#45a7a1"/>
+  <text class="stereo" x="182" y="28" text-anchor="middle">«LongIdTable»</text>
+  <text class="tableName" x="182" y="62" text-anchor="middle">tags</text>
+  <text class="column" x="24" y="108">PK id: BIGSERIAL</text>
+  <text class="column" x="24" y="154">name: VARCHAR(255) NOT NULL</text>
+</g>
+
+<!-- cardinality connectors -->
+<path class="relLine" d="M1006 290 C1052 290 1064 292 1096 304"/>
+<text class="cardinality" x="1018" y="282">1</text>
+<text class="cardinality" x="1070" y="294">1</text>
+<path class="fkLine" d="M1096 332 C1054 326 1034 318 1006 312"/>
+<rect x="1018" y="330" width="94" height="30" rx="15" fill="#ffffff" opacity="0.94"/>
+<text class="small" x="1032" y="350">shared PK</text>
+
+<path class="relLine" d="M594 334 C508 382 446 438 404 508"/>
+<text class="cardinality" x="572" y="352">1</text>
+<text class="cardinality" x="420" y="494">0..*</text>
+<path class="fkLine" d="M504 596 C552 526 588 458 666 384"/>
+<rect x="506" y="492" width="92" height="30" rx="15" fill="#ffffff" opacity="0.94"/>
+<text class="small" x="520" y="512">post_id</text>
+
+<path class="relLine" d="M800 384 L800 572"/>
+<text class="cardinality" x="814" y="410">1</text>
+<text class="cardinality" x="814" y="560">0..*</text>
+<path class="fkLine" d="M760 572 L760 384"/>
+<rect x="704" y="468" width="92" height="30" rx="15" fill="#ffffff" opacity="0.94"/>
+<text class="small" x="718" y="488">post_id</text>
+
+<path class="relLine" d="M996 676 C1040 676 1064 664 1102 650"/>
+<text class="cardinality" x="1008" y="668">0..*</text>
+<text class="cardinality" x="1072" y="642">1</text>
+<path class="fkLine" d="M996 704 C1044 704 1068 692 1102 680"/>
+<rect x="1018" y="704" width="84" height="30" rx="15" fill="#ffffff" opacity="0.94"/>
+<text class="small" x="1032" y="724">tag_id</text>
+
+<!-- reading rule -->
+<g transform="translate(112,802)">
+  <rect class="table" x="0" y="0" width="520" height="128" rx="18" fill="#eef4ff" stroke="#5b8def"/>
+  <text class="noteTitle" x="28" y="48">Reading rule</text>
+  <text class="column" x="30" y="86">Dashed FK arrow points from child/bridge table to parent PK.</text>
+  <text class="column" x="30" y="116">Solid line labels show cardinality near each endpoint.</text>
+</g>
+
+<g transform="translate(694,852)">
+  <text class="small" x="0" y="0">Source: exposed-workshop / bluetape4k-exposed BlogSchema</text>
+</g>
+</svg>
