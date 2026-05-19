@@ -121,6 +121,9 @@ Rules:
   sides.
 - Wrap wide same-depth inheritance rows, usually at four boxes per row, so class
   names and members remain readable.
+- Keep enough vertical distance between parent and child class rows so
+  inheritance and realization arrows show a visible line segment. A triangle
+  marker without a readable stem is a failed rendering.
 - Do not invent classes that were not present in the Mermaid source or recovered
   history. If the original source has too little information, render a smaller
   faithful diagram rather than padding the layout.
@@ -195,7 +198,8 @@ Before asking for review or opening a PR:
   assets.
 - Run a visual sanity check for suspicious output: extreme aspect ratios, tiny
   unreadable text, huge blank areas, dense edge hairballs, clipped right edges,
-  overlapping labels, and notes covering sequence bodies.
+  overlapping labels, inheritance markers without visible stems, and notes
+  covering sequence bodies.
 - Spot-check known risk patterns before user review:
   `testing-junit5-diagram-01`, `testing-testcontainers-diagram-02`, a wide
   class inheritance diagram, a large grouped architecture diagram, and at least
