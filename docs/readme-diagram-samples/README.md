@@ -40,6 +40,25 @@ semantics.
   width, height, or aspect ratio. Export PNG at a readable width while preserving
   the natural SVG aspect ratio.
 
+## README Placement
+
+- Do not append every diagram to a final `Diagrams` section by default. Diagram
+  placement must follow the surrounding documentation flow.
+- Put the main Architecture or Module Structure diagram near the top, normally
+  after the overview/key-features section and before detailed usage examples.
+- Put class diagrams next to the API, repository, domain model, or type hierarchy
+  section they explain.
+- Put sequence diagrams next to the workflow, cache pattern, request lifecycle,
+  transaction flow, or operation they explain.
+- Put ERDs next to schema/domain-model sections, before query examples that
+  rely on those relationships.
+- Keep a final `Diagrams` section only when the README is explicitly a diagram
+  gallery or when the diagrams summarize the whole document after the detailed
+  sections. Otherwise, move diagrams into the relevant section.
+- If a recovered Mermaid diagram no longer matches a meaningful README section,
+  rebuild the README section first or drop the diagram instead of keeping it as
+  a disconnected appendix image.
+
 ## Approved Samples
 
 These samples are the review baseline for the cross-repository README work.
@@ -241,6 +260,9 @@ Before asking for review or opening a PR:
 - Confirm README files do not embed `docs/images/readme-diagrams/*.svg`.
 - Confirm the renderer reports zero missing Mermaid sources or skipped required
   assets.
+- Confirm Architecture or Module Structure diagrams appear near the top of the
+  README, and class/sequence/ERD diagrams appear next to their relevant API,
+  workflow, or schema sections rather than being appended mechanically.
 - Run a visual sanity check for suspicious output: extreme aspect ratios, tiny
   unreadable text, huge blank areas, dense edge hairballs, clipped right edges,
   truncated titles, overlapping labels, inheritance markers without visible
