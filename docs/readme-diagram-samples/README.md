@@ -55,6 +55,9 @@ These samples are the review baseline for the cross-repository README work.
   notes or sequence bands.
 - Text must fit inside its container; prefer shorter English labels over dense
   prose.
+- Title text must fit the canvas. If a title is too long because it includes a
+  parenthetical module description, keep the concise title and move or omit the
+  parenthetical detail.
 - Component text must be vertically centered inside cards. Do not top-align
   short component labels and leave a large bottom gap.
 - No decorative orbs, gradients, bokeh, fake 3D, or stock imagery.
@@ -200,8 +203,8 @@ Before asking for review or opening a PR:
   assets.
 - Run a visual sanity check for suspicious output: extreme aspect ratios, tiny
   unreadable text, huge blank areas, dense edge hairballs, clipped right edges,
-  overlapping labels, inheritance markers without visible stems, and notes
-  covering sequence bodies.
+  truncated titles, overlapping labels, inheritance markers without visible
+  stems, and notes covering sequence bodies.
 - Spot-check known risk patterns before user review:
   `testing-junit5-diagram-01`, `testing-testcontainers-diagram-02`, a wide
   class inheritance diagram, a large grouped architecture diagram, and at least
