@@ -73,6 +73,16 @@ These samples are the review baseline for the cross-repository README work.
 - Connector paths must have a visible stem. A marker-only arrow head or a
   near-zero-length line segment is a failed rendering even when the SVG is
   syntactically valid.
+- Treat current source code as the authority when Mermaid history and source
+  disagree. README diagrams must not promote classes, interfaces, methods, or
+  fields that are deprecated, removed, renamed, or no longer part of the public
+  usage path.
+- If a deprecated compatibility API appears in recovered Mermaid, either omit it
+  from the representative diagram or show it only as a small compatibility note.
+  Never make it the central class, root node, or largest visual element.
+- Before rendering a class/API diagram, grep the current source for every
+  displayed class, field, method, and relationship. Use source names such as
+  `table` instead of stale names such as `entityTable` when APIs have changed.
 - Remove low-signal generated labels such as `Object`, `Interface`, `Creates`,
   `Kotlin Object`, temporary IDs, and meaningless path prefixes. Prefer the
   real domain or module name, for example `lettuce`, `redisson`, or `kafka`
@@ -143,6 +153,9 @@ Rules:
 - Do not invent classes that were not present in the Mermaid source or recovered
   history. If the original source has too little information, render a smaller
   faithful diagram rather than padding the layout.
+- Do not preserve a recovered Mermaid relationship when current source has made
+  it stale. Rebuild the class set and relationships from the current public API
+  before generating the final SVG/PNG.
 
 ## Sequence Diagrams
 
@@ -234,6 +247,8 @@ Before asking for review or opening a PR:
   stems, and notes covering sequence bodies.
 - Run geometry checks for architecture short connectors, sequence participant
   header baseline, and sequence zero-length self-call arrows.
+- Run source drift checks for deprecated API names, removed class names, stale
+  field names, and relationship directions before accepting generated images.
 - Spot-check known risk patterns before user review:
   `testing-junit5-diagram-01`, `testing-testcontainers-diagram-02`, a wide
   class inheritance diagram, a large grouped architecture diagram, and at least
