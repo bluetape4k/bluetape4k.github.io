@@ -23,6 +23,13 @@ semantics.
 - Use English text inside all diagram images, including localized README files.
 - Do not include Korean, Japanese, or Chinese labels in generated diagram
   images.
+- Render from current README Mermaid blocks when they still exist. When a README
+  already embeds diagram images, recover the original Mermaid from git history
+  and regenerate the PNG/SVG pair from that source.
+- Treat generic section titles such as `Diagram`, `Architecture`, `Class
+  Diagram`, `Sequence Diagram`, and `ERD` as fallback-only titles. Replace them
+  with module-specific English titles such as `leader Sequence Flow` or
+  `text Class Structure`.
 - Use `Architects Daughter` for large visual labels: page title, table name,
   class name, actor name, section name, and note headline.
 - Use a readable Comic-style proportional fallback for details when narrow text
@@ -147,6 +154,10 @@ Rules:
 - Messages become rounded horizontal bands with numbers and short intent text.
 - Use pastel color by interaction kind: request, suspend/work, response.
 - Avoid dense arrow clutter; one compact return band is usually enough.
+- If a non-English message label becomes empty after English normalization, use
+  the participating components as the fallback label, for example
+  `S3Client to LocalStack`. Do not render meaningless labels such as
+  `message`.
 - Do not impose a fixed height limit. Grow the canvas until the full sequence
   and any notes are visible.
 - Keep call labels close to their arrows. Avoid large vertical gaps between a
@@ -169,6 +180,9 @@ Rules:
   constraints/notes.
 - Ignore Mermaid config/init blocks such as `%%{init: ...}%%`. They are renderer
   configuration, not database tables.
+- Some Mermaid ERDs list only relationships and omit table definition blocks.
+  In that case, derive table boxes from the relationship endpoints instead of
+  skipping the diagram.
 - FK arrow direction:
   - child table -> parent table
   - bridge table -> each parent table
@@ -198,6 +212,8 @@ Before asking for review or opening a PR:
 - Regenerate every README diagram in the target repo from the current README or
   recovered Mermaid history.
 - Confirm every README `docs/images/readme-diagrams/*.png` link exists.
+- Confirm all local README image links touched by the work resolve, including
+  legacy relative image links outside `readme-diagrams`.
 - Confirm README files do not embed `docs/images/readme-diagrams/*.svg`.
 - Confirm the renderer reports zero missing Mermaid sources or skipped required
   assets.
