@@ -164,6 +164,8 @@ Rules:
 
 - Render tables as UML-like compartments: name, key columns, remaining columns,
   constraints/notes.
+- Ignore Mermaid config/init blocks such as `%%{init: ...}%%`. They are renderer
+  configuration, not database tables.
 - FK arrow direction:
   - child table -> parent table
   - bridge table -> each parent table
