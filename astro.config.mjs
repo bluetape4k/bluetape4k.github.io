@@ -187,6 +187,11 @@ export default defineConfig({
           items: [
             { label: 'Posts', translations: { ko: '글' }, slug: 'blog' },
             {
+              label: 'Introduction to the Bluetape4k Ecosystem',
+              translations: { ko: 'Bluetape4k Ecosystem 소개' },
+              slug: 'blog/introduction-bluetape4k-part1-ecosystem',
+            },
+            {
               label: 'Turning AI Collaboration Into Infrastructure',
               translations: { ko: 'AI와 일하는 환경을 인프라로 만들기' },
               slug: 'blog/ai-collaboration-environment',
