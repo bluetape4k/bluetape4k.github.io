@@ -1,7 +1,7 @@
 # README Diagram Image Style Guide
 
-Date: 2026-05-19
-Scope: bluetape4k workspace README Mermaid diagram replacement
+Date: 2026-05-20
+Scope: bluetape4k workspace README Mermaid diagram and benchmark chart imagery
 
 ## Goal
 
@@ -39,6 +39,8 @@ semantics.
 - Use content-driven SVG dimensions. Do not force every diagram into the same
   width, height, or aspect ratio. Export PNG at a readable width while preserving
   the natural SVG aspect ratio.
+- Benchmark result visuals are charts, not diagrams. Store them under
+  `docs/images/readme-charts/`, keep SVG and PNG pairs, and embed the PNG.
 
 ## README Placement
 
@@ -233,6 +235,47 @@ Rules:
 - Dashed FK arrows show dependency direction and column name.
 - For many-to-many relationships, show the bridge table as a first-class table.
 
+## Benchmark Charts
+
+AI instruction:
+
+> Create a pastel benchmark result chart from the measured table. Do not render
+> numeric benchmark results as architecture cards or UML boxes. Use bar or line
+> charts according to the metric shape, keep all labels in English, and preserve
+> the table as the source of truth in Markdown.
+
+Rules:
+
+- Use charts for benchmark results. Use diagrams only for structure, workflow,
+  class relationships, sequence behavior, or schemas.
+- Store chart assets under `docs/images/readme-charts/` and embed PNG links.
+  Keep SVG next to the PNG for reuse.
+- Put charts next to the benchmark result table they summarize. For README
+  pages that link to separate benchmark result documents, add charts in the
+  linked result document as well as the README summary when useful.
+- Search for benchmark result documents by filename and path, including
+  `*benchmark*.md`, `*/benchmark*/**/*.md`, and README links to result reports.
+- Keep measured tables and raw JMH/Gatling output blocks. The chart is a reading
+  aid, not the canonical data source.
+- Choose chart shape from the data:
+  - ranking or top-N throughput: horizontal bar chart
+  - latency comparison by operation: grouped horizontal bars
+  - environment or payload-size comparison: grouped bars by environment or
+    payload
+  - time-series benchmark history: line chart
+- Show unit and direction in the chart or nearby caption: `higher is better` for
+  throughput and `lower is better` for latency.
+- Use log scale when values differ by orders of magnitude, for example L1 cache
+  hits versus Redis-backed operations or small R2DBC values beside JDBC values.
+  Label the chart as log scale.
+- Do not pad a chart with fake categories to fill a fixed layout. Small result
+  sets should produce compact charts; large result sets may become taller.
+- Avoid overlapping labels by growing the canvas height. A chart that clips the
+  last row or puts notes over bars is a failed rendering.
+- For literature-review benchmark documents, chart only tables with explicit
+  numeric values. Do not turn qualitative claims or relative prose into invented
+  numbers.
+
 ## Lessons From Review
 
 - Font choice is part of the design: large visual labels must use
@@ -244,6 +287,9 @@ Rules:
   SVG is easier to edit and regenerate.
 - Converting Mermaid directly to pastel SVG is not enough; diagram type must
   influence the layout and semantics.
+- Benchmark tables should become chart images only when they contain actual
+  result data. Explanatory benchmark module README files without measured
+  values do not need charts.
 - Link checks alone are not enough. A diagram can be linked correctly while
   still having clipped text, empty layout, overlapping labels, or invented
   filler nodes.
@@ -255,6 +301,8 @@ Before asking for review or opening a PR:
 - Regenerate every README diagram in the target repo from the current README or
   recovered Mermaid history.
 - Confirm every README `docs/images/readme-diagrams/*.png` link exists.
+- Confirm every benchmark chart `docs/images/readme-charts/*.png` link exists
+  when benchmark charts are part of the work.
 - Confirm all local README image links touched by the work resolve, including
   legacy relative image links outside `readme-diagrams`.
 - Confirm README files do not embed `docs/images/readme-diagrams/*.svg`.
@@ -271,6 +319,10 @@ Before asking for review or opening a PR:
   header baseline, and sequence zero-length self-call arrows.
 - Run source drift checks for deprecated API names, removed class names, stale
   field names, and relationship directions before accepting generated images.
+- For benchmark chart work, scan `*benchmark*.md`, `*/benchmark*/**/*.md`, and
+  README-linked benchmark reports for result tables. Skip benchmark module
+  overview README files when they describe what will be measured but contain no
+  measured values.
 - Spot-check known risk patterns before user review:
   `testing-junit5-diagram-01`, `testing-testcontainers-diagram-02`, a wide
   class inheritance diagram, a large grouped architecture diagram, and at least
