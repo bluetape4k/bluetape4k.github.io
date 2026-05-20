@@ -50,7 +50,7 @@ Bluetape4k는 크게 다섯 layer로 볼 수 있다. 표는 overview 용도이�
   </tbody>
 </table>
 
-![Bluetape4k layer components](../images/readme-diagrams/bluetape4k-layer-components-01.png)
+![Bluetape4k layer components](/assets/bluetape4k-layer-components-01.png)
 
 이 구조에서 application layer는 Spring Boot 4 또는 Ktor 3가 담당한다. Bluetape4k는 그 아래에 있는 domain, data, infra, foundation layer를 채우는 모듈들을 제공한다.
 
@@ -374,7 +374,7 @@ Bluetape4k는 크게 다섯 layer로 볼 수 있다. 표는 overview 용도이�
 
 실제 서비스에서는 Spring Boot 4 또는 Ktor 3가 application boundary가 되고, 그 아래에 Foundation, Data, Infrastructure, Domain Capability layer를 필요한 만큼 조합한다.
 
-![Bluetape4k layer flow](../images/readme-diagrams/bluetape4k-layer-flow-01.png)
+![Bluetape4k layer flow](/assets/bluetape4k-layer-flow-01.png)
 
 조합 순서는 단방향 dependency라기보다 adoption path에 가깝다. 먼저 Foundation layer에서 core, coroutine, testing, BOM을 가져오고, 이후 Data layer와 Infrastructure layer를 붙인다. 마지막으로 leader election, audit trail, image processing, text processing 같은 Domain Capability를 서비스 요구에 맞게 선택한다.
 

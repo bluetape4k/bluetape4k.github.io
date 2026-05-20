@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="900" viewBox="0 0 1320 900" role="img" aria-labelledby="title desc">
+  <title id="title">Bluetape4k Layer Components</title>
+  <desc id="desc">Component map grouping Bluetape4k modules by application, domain capability, data, infrastructure, and foundation layers.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font-family: "Architects Daughter", "Comic Sans MS", "Trebuchet MS", sans-serif; font-size: 42px; font-weight: 700; fill: #263238; }
+      .subtitle { font-family: "Trebuchet MS", "Comic Sans MS", sans-serif; font-size: 18px; fill: #52616b; }
+      .layer { font-family: "Architects Daughter", "Comic Sans MS", "Trebuchet MS", sans-serif; font-size: 27px; font-weight: 700; fill: #22313f; }
+      .role { font-family: "Trebuchet MS", "Comic Sans MS", sans-serif; font-size: 16px; fill: #52616b; }
+      .chip { font-family: "Trebuchet MS", "Comic Sans MS", sans-serif; font-size: 16px; font-weight: 700; fill: #263238; }
+      .note { font-family: "Trebuchet MS", "Comic Sans MS", sans-serif; font-size: 14px; fill: #64748b; }
+      .row { stroke-width: 2; rx: 22; ry: 22; }
+      .chip-box { stroke-width: 1.5; rx: 15; ry: 15; }
+      .soft-shadow { filter: drop-shadow(0 9px 14px rgba(30, 41, 59, 0.09)); }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1320" height="900" />
+  <rect x="36" y="32" width="1248" height="836" rx="30" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" />
+
+  <text x="660" y="92" text-anchor="middle" class="title">Bluetape4k Layer Components</text>
+  <text x="660" y="126" text-anchor="middle" class="subtitle">A compact map of where each major module group belongs in the ecosystem.</text>
+
+  <g class="soft-shadow">
+    <rect class="row" x="92" y="168" width="1136" height="114" fill="#e0f2fe" stroke="#7dd3fc" />
+    <text x="142" y="214" class="layer">Application</text>
+    <text x="142" y="242" class="role">Runtime entrypoints and framework integration</text>
+    <rect class="chip-box" x="494" y="194" width="158" height="38" fill="#f0f9ff" stroke="#7dd3fc" />
+    <text x="573" y="219" text-anchor="middle" class="chip">Spring Boot 4</text>
+    <rect class="chip-box" x="674" y="194" width="118" height="38" fill="#f0f9ff" stroke="#7dd3fc" />
+    <text x="733" y="219" text-anchor="middle" class="chip">Ktor 3</text>
+  </g>
+
+  <g class="soft-shadow">
+    <rect class="row" x="92" y="308" width="1136" height="126" fill="#fef3c7" stroke="#fbbf24" />
+    <text x="142" y="354" class="layer">Domain Capability</text>
+    <text x="142" y="382" class="role">Reusable business capabilities</text>
+    <rect class="chip-box" x="494" y="330" width="100" height="38" fill="#fffbeb" stroke="#fbbf24" />
+    <text x="544" y="355" text-anchor="middle" class="chip">Leader</text>
+    <rect class="chip-box" x="614" y="330" width="104" height="38" fill="#fffbeb" stroke="#fbbf24" />
+    <text x="666" y="355" text-anchor="middle" class="chip">JaVers</text>
+    <rect class="chip-box" x="738" y="330" width="96" height="38" fill="#fffbeb" stroke="#fbbf24" />
+    <text x="786" y="355" text-anchor="middle" class="chip">Image</text>
+    <rect class="chip-box" x="854" y="330" width="82" height="38" fill="#fffbeb" stroke="#fbbf24" />
+    <text x="895" y="355" text-anchor="middle" class="chip">Text</text>
+    <text x="494" y="400" class="note">Batch control, audit trail, media processing, language tools</text>
+  </g>
+
+  <g class="soft-shadow">
+    <rect class="row" x="92" y="460" width="1136" height="132" fill="#dcfce7" stroke="#86efac" />
+    <text x="142" y="506" class="layer">Data</text>
+    <text x="142" y="534" class="role">Persistence, query, cache, graph access</text>
+    <rect class="chip-box" x="494" y="482" width="112" height="38" fill="#f0fdf4" stroke="#86efac" />
+    <text x="550" y="507" text-anchor="middle" class="chip">Exposed</text>
+    <rect class="chip-box" x="624" y="482" width="94" height="38" fill="#f0fdf4" stroke="#86efac" />
+    <text x="671" y="507" text-anchor="middle" class="chip">R2DBC</text>
+    <rect class="chip-box" x="736" y="482" width="78" height="38" fill="#f0fdf4" stroke="#86efac" />
+    <text x="775" y="507" text-anchor="middle" class="chip">JDBC</text>
+    <rect class="chip-box" x="832" y="482" width="116" height="38" fill="#f0fdf4" stroke="#86efac" />
+    <text x="890" y="507" text-anchor="middle" class="chip">Hibernate</text>
+    <rect class="chip-box" x="966" y="482" width="118" height="38" fill="#f0fdf4" stroke="#86efac" />
+    <text x="1025" y="507" text-anchor="middle" class="chip">MongoDB</text>
+    <rect class="chip-box" x="494" y="534" width="122" height="38" fill="#f0fdf4" stroke="#86efac" />
+    <text x="555" y="559" text-anchor="middle" class="chip">Cassandra</text>
+    <rect class="chip-box" x="636" y="534" width="110" height="38" fill="#f0fdf4" stroke="#86efac" />
+    <text x="691" y="559" text-anchor="middle" class="chip">GraphDB</text>
+  </g>
+
+  <g class="soft-shadow">
+    <rect class="row" x="92" y="618" width="1136" height="132" fill="#fae8ff" stroke="#d8b4fe" />
+    <text x="142" y="664" class="layer">Infrastructure</text>
+    <text x="142" y="692" class="role">Cloud, events, operations, resilience</text>
+    <rect class="chip-box" x="494" y="640" width="76" height="38" fill="#fdf4ff" stroke="#d8b4fe" />
+    <text x="532" y="665" text-anchor="middle" class="chip">AWS</text>
+    <rect class="chip-box" x="590" y="640" width="84" height="38" fill="#fdf4ff" stroke="#d8b4fe" />
+    <text x="632" y="665" text-anchor="middle" class="chip">Redis</text>
+    <rect class="chip-box" x="694" y="640" width="84" height="38" fill="#fdf4ff" stroke="#d8b4fe" />
+    <text x="736" y="665" text-anchor="middle" class="chip">Kafka</text>
+    <rect class="chip-box" x="798" y="640" width="78" height="38" fill="#fdf4ff" stroke="#d8b4fe" />
+    <text x="837" y="665" text-anchor="middle" class="chip">NATS</text>
+    <rect class="chip-box" x="896" y="640" width="128" height="38" fill="#fdf4ff" stroke="#d8b4fe" />
+    <text x="960" y="665" text-anchor="middle" class="chip">Messaging</text>
+    <rect class="chip-box" x="494" y="692" width="150" height="38" fill="#fdf4ff" stroke="#d8b4fe" />
+    <text x="569" y="717" text-anchor="middle" class="chip">Observability</text>
+    <rect class="chip-box" x="664" y="692" width="128" height="38" fill="#fdf4ff" stroke="#d8b4fe" />
+    <text x="728" y="717" text-anchor="middle" class="chip">Resilience</text>
+  </g>
+
+  <g class="soft-shadow">
+    <rect class="row" x="92" y="776" width="1136" height="76" fill="#ede9fe" stroke="#a78bfa" />
+    <text x="142" y="822" class="layer">Foundation</text>
+    <text x="352" y="822" class="role">Shared Kotlin/JVM base</text>
+    <rect class="chip-box" x="554" y="795" width="76" height="38" fill="#f5f3ff" stroke="#a78bfa" />
+    <text x="592" y="820" text-anchor="middle" class="chip">Core</text>
+    <rect class="chip-box" x="650" y="795" width="128" height="38" fill="#f5f3ff" stroke="#a78bfa" />
+    <text x="714" y="820" text-anchor="middle" class="chip">Coroutines</text>
+    <rect class="chip-box" x="798" y="795" width="158" height="38" fill="#f5f3ff" stroke="#a78bfa" />
+    <text x="877" y="820" text-anchor="middle" class="chip">Virtual Threads</text>
+    <rect class="chip-box" x="976" y="795" width="94" height="38" fill="#f5f3ff" stroke="#a78bfa" />
+    <text x="1023" y="820" text-anchor="middle" class="chip">Testing</text>
+    <rect class="chip-box" x="1090" y="795" width="74" height="38" fill="#f5f3ff" stroke="#a78bfa" />
+    <text x="1127" y="820" text-anchor="middle" class="chip">BOM</text>
+  </g>
+</svg>
