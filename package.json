@@ -4,9 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro check && astro build",
-    "preview": "astro preview"
+    "dev": "node scripts/draft-mode.mjs clean && astro dev",
+    "dev:draft": "node scripts/draft-mode.mjs sync && astro dev",
+    "build": "node scripts/draft-mode.mjs clean && astro check && astro build",
+    "build:draft": "node scripts/draft-mode.mjs sync && astro check && astro build",
+    "build:publish": "node scripts/draft-mode.mjs clean && astro check && astro build",
+    "preview": "astro preview",
+    "preview:draft": "npm run build:draft && astro preview"
   },
   "dependencies": {
     "@astrojs/check": "0.9.9",
