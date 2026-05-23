@@ -166,11 +166,29 @@ Rules:
     diagram explicitly models composition.
 - Prefer vertical inheritance trees. Only place unrelated collaborators at the
   sides.
+- Prefer free placement and orthogonal connector lanes over a rigid grid when a
+  class diagram has many collaborators. The layout goal is low edge overlap, not
+  geometric symmetry.
+- For complex class diagrams, order high-degree classes toward each row center,
+  widen row/column spacing, and allow a taller hierarchy when it reduces edge
+  bundles and interior crossings.
+- Route shared relationships through local buses or section lanes when multiple
+  classes depend on the same type. Do not draw every dependency as a long
+  center-crossing curve if the result becomes a hairball.
 - Wrap wide same-depth inheritance rows, usually at four boxes per row, so class
   names and members remain readable.
 - Keep enough vertical distance between parent and child class rows so
   inheritance and realization arrows show a visible line segment. A triangle
   marker without a readable stem is a failed rendering.
+- Connector paths must terminate at class box boundaries and must not pass
+  through a class box interior.
+- Class connectors should leave and enter boxes through top/bottom ports with a
+  vertical first and final segment. Avoid side-port departures that make arrows
+  appear to start or end at 0/180 degrees.
+- Horizontal connector lanes should sit near the midpoint between component
+  rows, not directly above or below a component edge.
+- Generated class diagrams should score candidate routes against every class
+  box and choose an orthogonal lane with zero interior crossings when possible.
 - Do not invent classes that were not present in the Mermaid source or recovered
   history. If the original source has too little information, render a smaller
   faithful diagram rather than padding the layout.
@@ -231,9 +249,27 @@ Rules:
 - FK arrow direction:
   - child table -> parent table
   - bridge table -> each parent table
+- Prefer free placement and orthogonal FK routing over a uniform table grid.
+  Place parent, child, and bridge tables near their actual relationship cluster
+  even when that makes the diagram asymmetric.
+- For complex ERDs, place high in-degree parent tables earlier and use wider
+  multi-column spacing so bridge/child tables do not create dense FK bundles.
+- FK connectors should leave and enter tables through top/bottom ports with a
+  vertical first and final segment. Avoid side-port departures that make arrows
+  appear to start or end at 0/180 degrees.
+- Horizontal FK lanes should sit near the midpoint between table rows, not
+  directly above or below a table edge.
+- Use named FK lanes for repeated parent references such as `clinicId`,
+  `tenantId`, or `appointmentId`. A shared lane is preferred over many
+  long-running parallel arrows when it preserves direction and readability.
+- Generated ERDs should score FK route candidates against every table box and
+  choose an orthogonal lane with zero table-interior crossings when possible.
 - Solid relation lines may show cardinality near endpoints.
 - Dashed FK arrows show dependency direction and column name.
 - For many-to-many relationships, show the bridge table as a first-class table.
+- Connector paths must terminate at table boundaries and must not pass through a
+  table compartment interior. If a relationship cannot be routed cleanly, move
+  the table or group related tables before accepting the image.
 
 ## Benchmark Charts
 
@@ -315,6 +351,9 @@ Before asking for review or opening a PR:
   unreadable text, huge blank areas, dense edge hairballs, clipped right edges,
   truncated titles, overlapping labels, inheritance markers without visible
   stems, and notes covering sequence bodies.
+- For Class Diagram and ERD images, inspect at normal README scale and contact
+  sheet scale. Reject layouts where arrows cross through card/table interiors or
+  where more than a small local bundle of arrows overlaps.
 - Run geometry checks for architecture short connectors, sequence participant
   header baseline, and sequence zero-length self-call arrows.
 - Run source drift checks for deprecated API names, removed class names, stale
