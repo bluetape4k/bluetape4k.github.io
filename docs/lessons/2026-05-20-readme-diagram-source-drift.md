@@ -14,3 +14,14 @@ Reviewed the updated guide text and aligned it with the exposed `HasIdentifier` 
 
 ## Next time
 Reject visually polished diagrams when their source model no longer matches the current public API.
+
+## 2026-05-20 Class and ERD routing rule
+
+Class diagrams and ERDs need layout freedom beyond a uniform grid. The style
+guide now requires free placement, orthogonal relationship lanes, and rejection
+of connector paths that cross through class or table interiors.
+
+Use shared lanes for repeated dependencies such as `clinicId` or a common
+interface implementation target. This keeps diagrams reusable for README,
+slides, and blog posts because the viewer can read relationship clusters without
+decoding a dense arrow bundle.
