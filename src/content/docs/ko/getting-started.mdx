@@ -10,28 +10,38 @@ description: Kotlin 백엔드 프로젝트에 bluetape4k 의존성 거버넌스�
 - Gradle Kotlin DSL
 - Framework integration을 사용하는 경우 Spring Boot 3/4 또는 Ktor 3
 
-## 중앙 BOM 추가
+## 현재 BOM 추가
 
-`bluetape4k-dependencies`를 첫 dependency-management layer로 사용합니다.
-
-```kotlin
-dependencyManagement {
-    imports {
-        mavenBom("io.github.bluetape4k:bluetape4k-dependencies:1.0.0")
-    }
-}
-```
-
-Exposed integration을 사용할 때는 중앙 BOM 뒤에 Exposed BOM을 추가합니다.
+`bluetape4k-dependencies`를 첫 dependency-management layer로 사용하고,
+그 다음에 published library family를 위한 bluetape4k core BOM을 추가합니다.
 
 ```kotlin
 dependencyManagement {
     imports {
-        mavenBom("io.github.bluetape4k:bluetape4k-dependencies:1.0.0")
-        mavenBom("io.github.bluetape4k:bluetape4k-exposed-bom:1.8.0")
+        mavenBom("io.github.bluetape4k:bluetape4k-dependencies:1.1.1")
+        mavenBom("io.github.bluetape4k:bluetape4k-bom:1.9.0")
     }
 }
 ```
+
+중앙 BOM은 공유 third-party version을 관리합니다. Core BOM은
+published `bluetape4k-projects` module을 관리합니다.
+
+Repository-specific module을 사용할 때는 해당 repository가 BOM을 publish한
+경우 중앙 BOM과 core BOM 뒤에 추가합니다.
+
+```kotlin
+dependencyManagement {
+    imports {
+        mavenBom("io.github.bluetape4k:bluetape4k-dependencies:1.1.1")
+        mavenBom("io.github.bluetape4k:bluetape4k-bom:1.9.0")
+        mavenBom("io.github.bluetape4k.exposed:bluetape4k-exposed-bom:1.9.0")
+    }
+}
+```
+
+현재 repository-specific BOM version은 [버전 거버넌스](/ko/ecosystem/version-governance/)에서
+확인할 수 있습니다.
 
 ## 시작 지점 선택
 

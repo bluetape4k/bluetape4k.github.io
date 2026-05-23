@@ -9,6 +9,23 @@ description: How bluetape4k keeps dependency versions aligned across repositorie
 
 Downstream repositories should consume the central BOM and generated shared-version catalog updates instead of allowing independent Dependabot bumps for centrally governed libraries.
 
+## Current Published Baseline
+
+| Scope | Maven coordinate | Version |
+| --- | --- | --- |
+| Shared third-party dependency governance | `io.github.bluetape4k:bluetape4k-dependencies` | `1.1.1` |
+| Core bluetape4k library modules | `io.github.bluetape4k:bluetape4k-bom` | `1.9.0` |
+| Exposed JDBC/R2DBC extensions | `io.github.bluetape4k.exposed:bluetape4k-exposed-bom` | `1.9.0` |
+| AWS SDK wrappers | `io.github.bluetape4k.aws:bluetape4k-aws-bom` | `0.2.0` |
+| Graph database integrations | `io.github.bluetape4k.graph:bluetape4k-graph-bom` | `0.4.0` |
+| Leader election modules | `io.github.bluetape4k.leader:bluetape4k-leader-bom` | `0.2.0` |
+| Image processing modules | `io.github.bluetape4k.image:bluetape4k-image-bom` | `0.1.1` |
+| JaVers audit/diff modules | `io.github.bluetape4k.javers:bluetape4k-javers-bom` | `0.1.1` |
+| Text processing modules | `io.github.bluetape4k.text:bluetape4k-text-bom` | `0.1.1` |
+
+Import `bluetape4k-dependencies` first, then `bluetape4k-bom`, then any
+repository-specific BOMs required by the selected modules.
+
 ## Governed Families
 
 - Kotlin, kotlinx, Dokka, and Kover
@@ -35,4 +52,3 @@ scripts/sync-dependabot-ignores.py --workspace .. --check --summary
 ```
 
 Use central sync checks before merging downstream dependency governance PRs.
-
