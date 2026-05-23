@@ -10,28 +10,38 @@ description: Add bluetape4k dependency governance and choose the first module fo
 - Gradle Kotlin DSL
 - Spring Boot 3/4 or Ktor 3 when using framework integrations
 
-## Add The Central BOM
+## Add The Current BOMs
 
-Use `bluetape4k-dependencies` as the first dependency-management layer.
-
-```kotlin
-dependencyManagement {
-    imports {
-        mavenBom("io.github.bluetape4k:bluetape4k-dependencies:1.0.0")
-    }
-}
-```
-
-For Exposed integrations, add the Exposed BOM after the central BOM.
+Use `bluetape4k-dependencies` as the first dependency-management layer, then add
+the bluetape4k core BOM for the published library family.
 
 ```kotlin
 dependencyManagement {
     imports {
-        mavenBom("io.github.bluetape4k:bluetape4k-dependencies:1.0.0")
-        mavenBom("io.github.bluetape4k:bluetape4k-exposed-bom:1.8.0")
+        mavenBom("io.github.bluetape4k:bluetape4k-dependencies:1.1.1")
+        mavenBom("io.github.bluetape4k:bluetape4k-bom:1.9.0")
     }
 }
 ```
+
+The central BOM governs shared third-party versions. The core BOM governs
+published `bluetape4k-projects` modules.
+
+For repository-specific modules, import their repository BOM after the central
+and core BOMs when that repository publishes one.
+
+```kotlin
+dependencyManagement {
+    imports {
+        mavenBom("io.github.bluetape4k:bluetape4k-dependencies:1.1.1")
+        mavenBom("io.github.bluetape4k:bluetape4k-bom:1.9.0")
+        mavenBom("io.github.bluetape4k.exposed:bluetape4k-exposed-bom:1.9.0")
+    }
+}
+```
+
+See [Version Governance](/ecosystem/version-governance/) for the current
+repository-specific BOM versions.
 
 ## Pick A Starting Point
 

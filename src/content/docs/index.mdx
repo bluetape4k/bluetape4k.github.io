@@ -88,11 +88,12 @@ hero:
 ```kotlin
 dependencyManagement {
     imports {
-        mavenBom("io.github.bluetape4k:bluetape4k-dependencies:1.0.0")
+        mavenBom("io.github.bluetape4k:bluetape4k-dependencies:1.1.1")
+        mavenBom("io.github.bluetape4k:bluetape4k-bom:1.9.0")
     }
 }
 ```
 
-Use the central dependency BOM first, then add the module-specific BOMs and libraries your service needs.
+Use the central dependency BOM first, then add the bluetape4k core BOM and the libraries your service needs.
 
 <a class="bt4k-command-link" href="/getting-started/">Open the quick start</a>
