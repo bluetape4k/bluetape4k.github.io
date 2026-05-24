@@ -100,9 +100,11 @@ dependency.
 - Prefer existing repo-local diagram/chart generators when they exist.
 - For hand-authored SVG, keep the SVG readable enough for review and
   regeneration.
-- Graphviz or D2 may be used occasionally to sketch topology: identify
-  candidate nodes, semantic edges, clusters, and routing pressure before
-  drawing.
+- Prefer Graphviz over D2 when using a layout helper for topology sketches; its
+  ranks, clusters, and edge routing are more predictable for architecture/UML/ERD
+  planning.
+- D2 may still be used as a secondary sketch helper when its syntax makes a
+  small topology faster to draft.
 - Do not use Graphviz or D2 output as the final README asset. Keep the final SVG
   hand-authored so typography, shapes, routing, UML/ERD semantics, and review
   feedback remain intentional.
