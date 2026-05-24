@@ -105,6 +105,8 @@ dependency.
   planning.
 - D2 may still be used as a secondary sketch helper when its syntax makes a
   small topology faster to draft.
+- Use Graphviz sketches to identify ranks, clusters, routing pressure, and
+  viable orthogonal edge lanes before hand-authoring dense diagrams.
 - Do not use Graphviz or D2 output as the final README asset. Keep the final SVG
   hand-authored so typography, shapes, routing, UML/ERD semantics, and review
   feedback remain intentional.
@@ -146,6 +148,8 @@ dependency.
 - Component text must be vertically centered inside cards.
 - Relationship labels may use small white pill backgrounds to avoid line
   collisions.
+- Use semantic stroke colors when connector families overlap or share a lane;
+  keep the legend implicit through consistent use, not decorative color noise.
 - Connector paths must have a visible stem. A marker-only arrowhead is failed
   rendering even when the SVG is syntactically valid.
 - Do not use decorative orbs, bokeh, fake 3D, stock imagery, or gradient-only
@@ -166,6 +170,13 @@ layer bands, or panel composition rather than generic Mermaid boxes.
   component cards, local arrows inside panels, and a compact shared band below.
 - For component architecture, keep cards close enough to read the flow but leave
   visible connector stems between card boundaries.
+- Use semantic shapes for architecture nodes: databases as cylinders with enough
+  cap/body height for labels, OpenAPI/external APIs as visually distinct
+  endpoint/client cards or icon-badged components, and runtime/application pieces
+  as normal components.
+- Architecture diagrams must explain source-derived relationships, not merely
+  list boxes in a table. Read controllers, repositories, configuration, tables,
+  and runtime adapters before choosing nodes and arrows.
 - Use filled triangular arrowheads by default:
   `markerWidth=9`, `markerHeight=9`, `refX=8`, `refY=4.5`, path
   `M1,1 L8,4.5 L1,8 Z`.
@@ -194,11 +205,17 @@ Prompt shape:
   of the gap.
 - Move components to avoid line overlap before adding complex routing. Layout is
   part of the diagram model, not a cosmetic afterthought.
-- If a connector makes the diagram harder to understand and the relationship is
-  already clear from grouping, labels, or source naming, omit the connector.
-- When multiple semantic connector families may share space, use distinct lanes
-  and, when useful, distinct stroke colors so the viewer can track each
-  relationship.
+- Do not delete source-meaningful connectors merely because the route is
+  complex. First change placement, then use Graphviz-like orthogonal lanes, local
+  buses, section lanes, and semantic stroke colors.
+- Omit a connector only when it adds no source or semantic value because
+  grouping, labels, or source naming already prove the relationship.
+- When multiple semantic connector families share space, use distinct lanes and
+  distinct stroke colors so the viewer can track each relationship.
+- Typical color families: inheritance/generalization = dark gray, FK/table
+  relations = teal, DTO/domain mapping = green, repository/use calls = blue,
+  runtime/session = purple, external/database/client = orange, converter/mapper
+  = pink.
 
 ## Class Diagrams
 
@@ -220,6 +237,8 @@ Render class diagrams as UML diagrams, not architecture diagrams.
   they materially clarify the diagram; omit them when they add clutter.
 - Use free placement and orthogonal lanes when it reduces edge overlap.
 - Route shared relationships through local buses or section lanes.
+- For long class/member names or many member rows, widen the box or limit
+  displayed rows before allowing text to overflow its compartment.
 - Connector paths must terminate at class box boundaries and must not pass
   through class interiors.
 - Verify every displayed class, field, method, and relationship against current
@@ -286,6 +305,8 @@ Use table compartments similar to class diagrams.
   triangle.
 - Show bridge tables as first-class tables for many-to-many relationships.
 - Prefer free placement and orthogonal FK routing over uniform table grids.
+- Route FK lines to table boundaries at readable angles and keep FK endpoints
+  visually distinct from UML inheritance triangle endpoints in hybrid diagrams.
 - Use named FK lanes for repeated parent references such as `tenantId`,
   `clinicId`, or `appointmentId`.
 - Connector paths must terminate at table boundaries and must not pass through
@@ -367,6 +388,12 @@ Before review or PR:
   orthogonal connector paths unless an explicit exception improves readability.
 - Architecture diagrams default to a layered architecture layout when the
   subject supports it.
+- Architecture diagrams use semantic shapes for databases, external APIs, and
+  runtime/application components; database labels do not collide with cylinder
+  caps.
+- Source-meaningful connectors were not deleted only to reduce visual
+  complexity; overlaps are handled by placement, routing, lanes, or semantic
+  color separation.
 - Sequence diagrams pass:
   - generous outer margin check
   - compact label-to-arrow spacing check
@@ -377,6 +404,8 @@ Before review or PR:
   - explicit `alt` / `else` / `opt` branch rendering when conditional behavior
     exists
 - Class and ERD diagrams have no connector path through box/table interiors.
+- Class and ERD text fits inside compartments; long member lists are widened,
+  wrapped, or intentionally summarized.
 - UML generalization/realization stems meet hollow triangle bases at 90 degrees,
   with superclass/interface targets above concrete children.
 - Hybrid ERD/UML diagrams keep FK, inheritance, dependency, and DTO mapping
