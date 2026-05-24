@@ -7,6 +7,20 @@ This is the canonical generation guide for README visual assets across the
 bluetape4k workspace. Keep generation rules here instead of scattering them
 through PR notes, lessons, or per-repo scripts.
 
+## Skill Usage And Sync
+
+- Use `$bluetape4k-diagram` for any bluetape4k README diagram work, including
+  architecture, sequence, class/UML, ERD, flow, topology, Mermaid/ASCII
+  conversion, and benchmark chart imagery.
+- When this guide changes, update the `bluetape4k-diagram` skill in the same
+  change for both Codex and Claude:
+  - `~/.codex/skills/bluetape4k-diagram/SKILL.md`
+  - `~/.claude/skills/bluetape4k-diagram/SKILL.md`
+  - managed chezmoi sources under `private_dot_codex/private_skills/` and
+    `private_dot_claude/private_skills/`
+- When `$bluetape4k-diagram` changes for workspace-wide behavior, update this
+  guide as the canonical source.
+
 ## Goal
 
 Replace Mermaid and ASCII diagrams in README files with deterministic,
