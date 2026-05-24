@@ -123,6 +123,11 @@ AI instruction:
 Rules:
 
 - Use compact grouped cards or layer bands rather than generic UML boxes.
+- For component architecture diagrams, prefer the chapter-12-style panel
+  composition: two or more large stack/runtime panels with small internal
+  component cards, local arrows inside each panel, and a compact shared
+  contract/infrastructure band below. This reads better than a long left-to-right
+  pipeline when the diagram compares frameworks, adapters, or example variants.
 - Preserve directional flow where it matters, but reduce visual noise.
 - Prefer 4-8 prominent groups when the source diagram is large.
 - Size groups by their actual item count. Small diagrams should stay compact;
@@ -134,10 +139,17 @@ Rules:
 - Adjacent card connectors must span the visible gap between card boundaries.
   Do not place the path only in the center of the gap; that renders as a bare
   `>` marker at normal README scale.
+- Architecture and flow arrows should use a filled triangular arrowhead by
+  default. Keep the arrowhead smaller than the older chapter-12 sample: use
+  roughly `markerWidth=9`, `markerHeight=9`, `refX=8`, `refY=4.5`, with a
+  compact filled triangle path such as `M1,1 L8,4.5 L1,8 Z`.
 - When a diagram has many groups, omit hub-to-group connector lines if they
   create a hairball. Use section grouping and local relationships instead.
 - Root README module structure may be rendered like a software stack:
   foundation, core libraries, integrations, applications/examples.
+- For typography, prefer `Architects Daughter` for titles, panel labels, and
+  component names. Use the readable Comic-style proportional fallback only for
+  detail lines, captions, and compact annotations.
 
 ## Class Diagrams
 
