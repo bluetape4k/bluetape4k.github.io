@@ -41,6 +41,8 @@ must drive the layout, geometry, labels, and connector semantics.
 - Store benchmark chart assets under `docs/images/readme-charts/`.
 - Use English text inside all generated images, including images embedded in
   localized README files.
+- Do not generate localized diagram variants by default. Share the same
+  English-label PNG/SVG assets across localized README files.
 - Use content-driven SVG dimensions. Do not force every diagram into one fixed
   aspect ratio.
 - Treat current source code as the authority for class/API diagrams. Recovered
@@ -55,6 +57,31 @@ must drive the layout, geometry, labels, and connector semantics.
 
 If a recovered diagram mentions removed, renamed, deprecated, or internal-only
 APIs, rebuild the model from current source or drop the stale element.
+
+## Asset Naming And Embeds
+
+- Use lowercase kebab-case filenames that describe the subject and diagram type,
+  for example `advanced-workflow-architecture.svg` and
+  `tenant-isolation-sequence.png`.
+- Treat SVG as the source of truth and PNG as the rendered README artifact.
+- Keep each PNG beside its matching SVG.
+- Embed diagrams with normal Markdown image syntax, for example
+  `![Architecture](docs/images/readme-diagrams/advanced-workflow-architecture.png)`.
+- Do not add separate localized images unless the diagram itself must show
+  locale-specific domain terms. Prefer one shared English-label asset across all
+  localized README files.
+
+## Generation Tools
+
+- Prefer existing repo-local diagram/chart generators when they exist.
+- For hand-authored SVG, keep the SVG readable enough for review and
+  regeneration.
+- Render PNG with the first available project-appropriate tool:
+  `rsvg-convert`, `sharp`, `magick`, or Playwright screenshot. Use the repo's
+  established tool if it has one.
+- Do not use screenshots of Mermaid output as final artifacts.
+- Validate generated dimensions and visual framing after rendering, not only
+  SVG syntax.
 
 ## README Placement
 
@@ -79,8 +106,8 @@ APIs, rebuild the model from current source or drop the stale element.
 - Typography:
   - Use `Architects Daughter` for title, actor, class/table name, panel label,
     and prominent component text.
-  - Use a readable Comic-style proportional fallback for details, captions,
-    member lists, columns, constraints, and compact annotations.
+  - Use `Comic Mono` for details, captions, member lists, columns, constraints,
+    and compact annotations.
 - Keep all text inside containers. Shorten English labels before shrinking text.
 - Title text must fit the canvas. Move parenthetical detail into the subtitle or
   omit it.
@@ -94,9 +121,12 @@ APIs, rebuild the model from current source or drop the stale element.
 
 ## Architecture And Flow Diagrams
 
-Use compact grouped cards, layer bands, or panel composition rather than generic
-Mermaid boxes.
+Use layered architecture as the default structure. Prefer compact grouped cards,
+layer bands, or panel composition rather than generic Mermaid boxes.
 
+- Default to layered architecture when the system can be explained by
+  presentation/API, application/service, domain, infrastructure, data, and
+  external-system layers.
 - Prefer 4-8 prominent groups for large diagrams.
 - Size groups by item count. Do not stretch every section to equal height.
 - Prefer chapter-12-style panel composition when comparing frameworks, adapters,
@@ -107,6 +137,8 @@ Mermaid boxes.
 - Use filled triangular arrowheads by default:
   `markerWidth=9`, `markerHeight=9`, `refX=8`, `refY=4.5`, path
   `M1,1 L8,4.5 L1,8 Z`.
+- Use right-angled orthogonal connector paths by default. Avoid arbitrary
+  diagonal/cubic curves unless they clearly improve readability.
 - Omit hub-to-group connector lines when they create a hairball. Grouping can
   carry structure when explicit lines reduce readability.
 - Root README module structure may use a software stack layout: foundation,
@@ -115,9 +147,9 @@ Mermaid boxes.
 Prompt shape:
 
 > Create a pastel technical infographic from this architecture diagram. Do not
-> imitate Mermaid. Use compact grouped cards, readable layer bands, restrained
-> connector lines, English labels, Architects Daughter for large labels, and a
-> readable Comic-style fallback for details.
+> imitate Mermaid. Use readable layer bands, compact grouped cards, filled
+> triangular arrowheads, right-angled orthogonal connectors, English labels,
+> Architects Daughter for large labels, and Comic Mono for details.
 
 ## Component Placement
 
@@ -149,9 +181,9 @@ Render class diagrams as UML diagrams, not architecture diagrams.
 Prompt shape:
 
 > Create a pastel UML class diagram. Use UML compartment rectangles. Put class
-> and interface names in Architects Daughter and members in a readable
-> Comic-style detail font. Arrange inheritance vertically. Hollow triangle
-> arrows point to the parent class or implemented interface.
+> and interface names in Architects Daughter and members in Comic Mono. Arrange
+> inheritance vertically. Hollow triangle arrows point to the parent class or
+> implemented interface.
 
 ## Sequence Diagrams
 
@@ -168,6 +200,10 @@ Keep lifelines, but make the visual readable as a sequence infographic.
 - Use pastel color by interaction kind: request, suspend/work, response.
 - Keep dashed return paths sparse. Show returns only when response behavior
   matters.
+- Render `alt`, `else`, `opt`, and similar conditional branches explicitly,
+  with readable branch labels and enough detail to understand each path.
+- For `alt` branches, show the guard/condition, the distinct messages inside
+  each branch, and branch-specific responses or errors.
 - Self-calls must render as small loop arrows. A self-call must never collapse
   into a zero-length path where only the arrowhead remains.
 - Do not impose a fixed height limit. Grow the canvas until the sequence and
@@ -206,9 +242,9 @@ Use table compartments similar to class diagrams.
 Prompt shape:
 
 > Create a pastel ERD using table compartments. Use table names in Architects
-> Daughter and columns/constraints in a readable Comic-style detail font. Show
-> primary keys, foreign keys, unique constraints, and cardinality labels. FK
-> arrows point from child or bridge table to parent tables.
+> Daughter and columns/constraints in Comic Mono. Show primary keys, foreign
+> keys, unique constraints, and cardinality labels. FK arrows point from child
+> or bridge table to parent tables.
 
 ## ASCII Diagram Conversion
 
@@ -239,6 +275,17 @@ Benchmark result visuals are charts, not diagrams.
   for latency.
 - Use log scale when values differ by orders of magnitude, and label it.
 
+## Validation Commands
+
+Use repo-local scripts first. If none exist, use small targeted checks:
+
+```bash
+find docs/images/readme-diagrams -name '*.svg' -print0 | xargs -0 -n1 xmllint --noout
+find docs/images/readme-diagrams -name '*.svg' -exec sh -c 'test -f "${1%.svg}.png"' sh {} \;
+rg 'docs/images/readme-diagrams/.*\.svg' README*.md && exit 1 || true
+git diff --check
+```
+
 ## Approved Samples
 
 | Kind | PNG | SVG |
@@ -260,11 +307,17 @@ Before review or PR:
 - Diagram-like ASCII fences are gone unless they are intentional project
   structure listings.
 - Architecture diagrams have visible connector stems and no marker-only arrows.
+- Architecture diagrams use filled triangular arrowheads and right-angled
+  orthogonal connector paths unless an explicit exception improves readability.
+- Architecture diagrams default to a layered architecture layout when the
+  subject supports it.
 - Sequence diagrams pass:
   - generous outer margin check
   - compact label-to-arrow spacing check
   - participant header baseline check
   - zero-length self-call check
+  - explicit `alt` / `else` / `opt` branch rendering when conditional behavior
+    exists
 - Class and ERD diagrams have no connector path through box/table interiors.
 - Source drift checks pass for deprecated APIs, removed classes, stale field
   names, and relationship directions.
