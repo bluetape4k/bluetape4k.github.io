@@ -100,6 +100,12 @@ dependency.
 - Prefer existing repo-local diagram/chart generators when they exist.
 - For hand-authored SVG, keep the SVG readable enough for review and
   regeneration.
+- Graphviz or D2 may be used occasionally to sketch topology: identify
+  candidate nodes, semantic edges, clusters, and routing pressure before
+  drawing.
+- Do not use Graphviz or D2 output as the final README asset. Keep the final SVG
+  hand-authored so typography, shapes, routing, UML/ERD semantics, and review
+  feedback remain intentional.
 - Render PNG with the first available project-appropriate tool:
   `rsvg-convert`, `sharp`, `magick`, or Playwright screenshot. Use the repo's
   established tool if it has one.
