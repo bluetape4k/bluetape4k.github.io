@@ -48,6 +48,24 @@ must drive the layout, geometry, labels, and connector semantics.
 - Treat current source code as the authority for class/API diagrams. Recovered
   Mermaid history is a source, not proof.
 
+## Workflow
+
+1. Confirm diagram type and README placement.
+2. Gather source truth from the latest checked-out source code, README text,
+   existing diagram assets, and qmd-retrieved lessons or specs when relevant.
+3. Before drawing, read the concrete source files that own the displayed
+   classes, tables, repositories, controllers, configuration, or workflows. Do
+   not infer relationships from file names, stale Mermaid, prior generated
+   images, or memory.
+4. Convert Mermaid/ASCII into a visual model, not into a recolored Mermaid
+   render.
+5. Create or update SVG source.
+6. Render a matching PNG.
+7. Update README files to embed PNG only.
+8. Re-check source drift against the latest source before previewing or asking
+   for review.
+9. Validate links, SVG parsing, PNG rendering, source drift, and visual sanity.
+
 ## Source Priority
 
 1. Current source code and public APIs.
@@ -57,6 +75,12 @@ must drive the layout, geometry, labels, and connector semantics.
 
 If a recovered diagram mentions removed, renamed, deprecated, or internal-only
 APIs, rebuild the model from current source or drop the stale element.
+
+For repository/module diagrams, inspect the current implementation files that
+own each displayed relationship. For example, a repository box may depend on
+several tables, DAO entities, transaction APIs, or mapper records; do not show
+only the most obvious table unless the source proves that is the only
+dependency.
 
 ## Asset Naming And Embeds
 
@@ -160,6 +184,13 @@ Prompt shape:
   dependency as a long center-crossing curve.
 - Card connectors must span the visible gap between cards, not only the midpoint
   of the gap.
+- Move components to avoid line overlap before adding complex routing. Layout is
+  part of the diagram model, not a cosmetic afterthought.
+- If a connector makes the diagram harder to understand and the relationship is
+  already clear from grouping, labels, or source naming, omit the connector.
+- When multiple semantic connector families may share space, use distinct lanes
+  and, when useful, distinct stroke colors so the viewer can track each
+  relationship.
 
 ## Class Diagrams
 
@@ -169,8 +200,16 @@ Render class diagrams as UML diagrams, not architecture diagrams.
 - Use small-radius rectangular boxes (`rx=4`) for class/interface/object boxes.
 - Generalization and realization arrows point from child/implementation to
   parent/interface with a hollow triangle at the parent endpoint.
+- Generalization and realization connector stems must meet the hollow triangle
+  base at 90 degrees. If an SVG marker makes the line appear to enter the
+  triangle at 0 degrees or attach to its side, draw the hollow triangle
+  explicitly and route the stem to the base center.
 - Dependency/use arrows point from the using type to the used type.
 - Prefer vertical inheritance trees. Place unrelated collaborators at the sides.
+- Place superclasses, interfaces, and abstract bases above concrete
+  implementations. Do not place a superclass below its children.
+- Do not show factory/metaclass helpers such as companion factory classes unless
+  they materially clarify the diagram; omit them when they add clutter.
 - Use free placement and orthogonal lanes when it reduces edge overlap.
 - Route shared relationships through local buses or section lanes.
 - Connector paths must terminate at class box boundaries and must not pass
@@ -195,11 +234,13 @@ Keep lifelines, but make the visual readable as a sequence infographic.
   arrows; avoid large gaps between a call arrow and its label.
 - Participant header labels must be vertically centered with the same baseline
   logic as architecture cards.
+- Lifelines are dashed vertical stems without arrowheads. Do not reuse a
+  return-message arrow style for lifelines.
 - Messages become numbered rounded horizontal interaction bands with short
   English intent text.
 - Use pastel color by interaction kind: request, suspend/work, response.
-- Keep dashed return paths sparse. Show returns only when response behavior
-  matters.
+- Keep dashed return paths sparse. Return messages are dashed arrows, not solid
+  calls; show returns only when response behavior matters.
 - Render `alt`, `else`, `opt`, and similar conditional branches explicitly,
   with readable branch labels and enough detail to understand each path.
 - For `alt` branches, show the guard/condition, the distinct messages inside
@@ -232,12 +273,19 @@ Use table compartments similar to class diagrams.
 - FK arrow direction:
   - child table -> parent table
   - bridge table -> each parent table
+- FK relationships use filled arrowheads toward the parent table. They must
+  remain visually distinct from UML generalization, which uses a hollow
+  triangle.
 - Show bridge tables as first-class tables for many-to-many relationships.
 - Prefer free placement and orthogonal FK routing over uniform table grids.
 - Use named FK lanes for repeated parent references such as `tenantId`,
   `clinicId`, or `appointmentId`.
 - Connector paths must terminate at table boundaries and must not pass through
   table compartments.
+- In hybrid ERD/UML/domain diagrams, keep FK lines inside the table cluster and
+  keep UML inheritance inside the class cluster. Do not draw table-to-entity
+  mapping lines unless they add necessary meaning; table and entity names often
+  make the mapping clear enough.
 
 Prompt shape:
 
@@ -315,10 +363,16 @@ Before review or PR:
   - generous outer margin check
   - compact label-to-arrow spacing check
   - participant header baseline check
+  - lifelines have no arrowheads
+  - return messages use dashed arrows, not solid calls
   - zero-length self-call check
   - explicit `alt` / `else` / `opt` branch rendering when conditional behavior
     exists
 - Class and ERD diagrams have no connector path through box/table interiors.
+- UML generalization/realization stems meet hollow triangle bases at 90 degrees,
+  with superclass/interface targets above concrete children.
+- Hybrid ERD/UML diagrams keep FK, inheritance, dependency, and DTO mapping
+  lines visually distinct by endpoint shape, line style, lane, or color.
 - Source drift checks pass for deprecated APIs, removed classes, stale field
   names, and relationship directions.
 - Visual sanity check passes at README scale and contact-sheet scale:
