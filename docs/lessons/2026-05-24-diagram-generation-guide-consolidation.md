@@ -8,9 +8,10 @@ conversion rules that needed a single durable home.
 
 ## Decision
 
-Make `docs/readme-diagram-samples/DIAGRAM_GENERATION_GUIDE.md` the canonical
-workspace guide. Keep `docs/readme-diagram-samples/README.md` as a sample index
-that links to the guide instead of carrying the full rule set.
+Originally make `docs/readme-diagram-samples/DIAGRAM_GENERATION_GUIDE.md` the
+canonical workspace guide. This was later superseded because organization-wide
+guidance belongs in `.github/docs/workspace/DIAGRAM_GENERATION_GUIDE.md`, while
+`docs/readme-diagram-samples/README.md` remains a sample index.
 
 ## Outcome
 
@@ -26,5 +27,6 @@ diagram conversion, benchmark chart handling, approved samples, and validation.
 
 ## Future Rule
 
-Add new diagram-generation decisions to the canonical guide first. Use lessons
-only to record why the rule changed.
+Add new diagram-generation decisions to
+`.github/docs/workspace/DIAGRAM_GENERATION_GUIDE.md` first. Use website sample
+docs for visual examples, not organization-wide policy.

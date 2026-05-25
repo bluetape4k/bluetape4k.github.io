@@ -1,7 +1,8 @@
 # README Diagram Samples
 
-The canonical workspace diagram generation rules live in
-[`DIAGRAM_GENERATION_GUIDE.md`](./DIAGRAM_GENERATION_GUIDE.md).
+The canonical workspace diagram generation rules live in the organization
+guidance repository:
+[`../.github/docs/workspace/DIAGRAM_GENERATION_GUIDE.md`](https://github.com/bluetape4k/.github/blob/main/docs/workspace/DIAGRAM_GENERATION_GUIDE.md).
 
 This directory keeps reviewed visual samples for README diagram and benchmark
 chart work. Use the guide as the rule source and the samples below as the visual
