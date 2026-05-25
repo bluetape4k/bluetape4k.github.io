@@ -1,6 +1,6 @@
 # README Diagram Generation Guide
 
-Date: 2026-05-24
+Date: 2026-05-25
 Scope: bluetape4k workspace README diagrams and benchmark chart imagery
 
 This is the canonical generation guide for README visual assets across the
@@ -57,14 +57,17 @@ must drive the layout, geometry, labels, and connector semantics.
    classes, tables, repositories, controllers, configuration, or workflows. Do
    not infer relationships from file names, stale Mermaid, prior generated
    images, or memory.
-4. Convert Mermaid/ASCII into a visual model, not into a recolored Mermaid
+4. For exposed-workshop, broad rewrites, or 4-5 item review batches, load the
+   `bluetape4k-diagram` reference
+   `references/exposed-workshop-batch-review-lessons.md` before drawing.
+5. Convert Mermaid/ASCII into a visual model, not into a recolored Mermaid
    render.
-5. Create or update SVG source.
-6. Render a matching PNG.
-7. Update README files to embed PNG only.
-8. Re-check source drift against the latest source before previewing or asking
+6. Create or update SVG source.
+7. Render a matching PNG.
+8. Update README files to embed PNG only.
+9. Re-check source drift against the latest source before previewing or asking
    for review.
-9. Validate links, SVG parsing, PNG rendering, source drift, and visual sanity.
+10. Validate links, SVG parsing, PNG rendering, source drift, and visual sanity.
 
 ## Source Priority
 
@@ -107,6 +110,9 @@ dependency.
   small topology faster to draft.
 - Use Graphviz sketches to identify ranks, clusters, routing pressure, and
   viable orthogonal edge lanes before hand-authoring dense diagrams.
+- For dense or repeatedly corrected diagrams, save Graphviz `.dot`, `.plain`,
+  or `.svg` sketches as artifacts and use them to choose ranks, ports, and
+  lanes before drawing the final SVG.
 - Do not use Graphviz or D2 output as the final README asset. Keep the final SVG
   hand-authored so typography, shapes, routing, UML/ERD semantics, and review
   feedback remain intentional.
@@ -203,6 +209,12 @@ Prompt shape:
   dependency as a long center-crossing curve.
 - Card connectors must span the visible gap between cards, not only the midpoint
   of the gap.
+- Connector endpoints must sit on component boundaries. Lines must not start
+  inside a card, table, class, cylinder, or panel unless the source element is
+  intentionally a nested port.
+- Orthogonal routes should use the nearest readable side-to-side path before
+  introducing long detours. Prefer moving components over accepting a tangled
+  route.
 - Move components to avoid line overlap before adding complex routing. Layout is
   part of the diagram model, not a cosmetic afterthought.
 - Do not delete source-meaningful connectors merely because the route is
@@ -235,6 +247,8 @@ Render class diagrams as UML diagrams, not architecture diagrams.
   implementations. Do not place a superclass below its children.
 - Do not show factory/metaclass helpers such as companion factory classes unless
   they materially clarify the diagram; omit them when they add clutter.
+- Keep vertical spacing wide enough for inheritance stems, superclass members,
+  and table columns to remain legible at README zoom.
 - Use free placement and orthogonal lanes when it reduces edge overlap.
 - Route shared relationships through local buses or section lanes.
 - For long class/member names or many member rows, widen the box or limit
@@ -391,6 +405,8 @@ Before review or PR:
 - Architecture diagrams use semantic shapes for databases, external APIs, and
   runtime/application components; database labels do not collide with cylinder
   caps.
+- Graphviz/D2 layout sketches were used for dense topology, inheritance, ERD, or
+  repeated-routing diagrams, and the final SVG was still hand-authored.
 - Source-meaningful connectors were not deleted only to reduce visual
   complexity; overlaps are handled by placement, routing, lanes, or semantic
   color separation.
@@ -412,6 +428,8 @@ Before review or PR:
   lines visually distinct by endpoint shape, line style, lane, or color.
 - Source drift checks pass for deprecated APIs, removed classes, stale field
   names, and relationship directions.
+- For 4-5 item review batches, inspect each rendered PNG one by one before
+  asking for review; do not rely only on contact sheets or SVG syntax.
 - Visual sanity check passes at README scale and contact-sheet scale:
   - no clipped text
   - no overlapping labels
