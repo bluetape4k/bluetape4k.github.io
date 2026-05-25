@@ -1,0 +1,17 @@
+version: 2
+# Gradle/Maven library version updates are centralized in bluetape4k-dependencies.
+# Leaf repositories keep Dependabot only for GitHub Actions updates.
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    target-branch: "develop"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:30"
+      timezone: "Asia/Seoul"
+    open-pull-requests-limit: 5
+    groups:
+      github-actions:
+        patterns:
+          - "*"
