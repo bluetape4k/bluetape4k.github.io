@@ -31,6 +31,19 @@ reuse, and regeneration.
 Generated diagrams must not look like recolored Mermaid output. Diagram type
 must drive the layout, geometry, labels, and connector semantics.
 
+## Review Escalation Rule
+
+- Treat repeated human review findings as mandatory rules, not suggestions.
+- If the same defect category is pointed out more than once in a diagram batch
+  or project, promote it immediately into generator validation, batch checklist,
+  and skill/reference guidance.
+- Do not keep relying on manual visual review for repeated defects. Add
+  deterministic checks where practical, for example Graphviz route evidence,
+  connector-interior intersection checks, text overflow checks, inheritance
+  endpoint checks, and README image-link checks.
+- Future batches must apply escalated rules before preview. A batch is not ready
+  for review while a known repeated defect class is unchecked.
+
 ## Output Contract
 
 - Generate both `.svg` and `.png` for every README diagram.
@@ -103,16 +116,20 @@ dependency.
 - Prefer existing repo-local diagram/chart generators when they exist.
 - For hand-authored SVG, keep the SVG readable enough for review and
   regeneration.
-- Prefer Graphviz over D2 when using a layout helper for topology sketches; its
-  ranks, clusters, and edge routing are more predictable for architecture/UML/ERD
-  planning.
-- D2 may still be used as a secondary sketch helper when its syntax makes a
-  small topology faster to draft.
-- Use Graphviz sketches to identify ranks, clusters, routing pressure, and
-  viable orthogonal edge lanes before hand-authoring dense diagrams.
-- For dense or repeatedly corrected diagrams, save Graphviz `.dot`, `.plain`,
-  or `.svg` sketches as artifacts and use them to choose ranks, ports, and
-  lanes before drawing the final SVG.
+- Graphviz layout and routing evidence is mandatory for README diagrams with
+  nodes and connectors.
+- Generate Graphviz `.dot`, `.plain`, and sketch `.svg` artifacts before drawing
+  final hand-authored SVG routes.
+- Parse or inspect Graphviz `.plain` edge paths and use them to choose ranks,
+  ports, side entry/exit, and orthogonal lanes.
+- Final generators must fail when a major architecture/UML/ERD/flow connector
+  lacks a corresponding Graphviz edge route, unless the exception is documented
+  in the generator.
+- D2 may still be used as a secondary sketch helper, but it does not replace
+  required Graphviz layout and routing evidence.
+- Final SVG may deviate from Graphviz only to improve typography, UML/ERD
+  semantics, or boundary attachment. Do not replace a short Graphviz
+  side-to-side route with a long U-shaped detour or extra bends.
 - Do not use Graphviz or D2 output as the final README asset. Keep the final SVG
   hand-authored so typography, shapes, routing, UML/ERD semantics, and review
   feedback remain intentional.
@@ -215,6 +232,9 @@ Prompt shape:
 - Orthogonal routes should use the nearest readable side-to-side path before
   introducing long detours. Prefer moving components over accepting a tangled
   route.
+- If Graphviz produces a direct side-to-side or bottom-to-top route for the same
+  relationship, treat longer manual detours as defects unless they avoid a real
+  component crossing.
 - Move components to avoid line overlap before adding complex routing. Layout is
   part of the diagram model, not a cosmetic afterthought.
 - Do not delete source-meaningful connectors merely because the route is
