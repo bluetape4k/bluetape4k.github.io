@@ -171,7 +171,7 @@ Benchmark 숫자만으로는 실제 적용 지점이 잘 보이지 않는다. �
 production-style 예제를 따로 두었다.
 
 Example:
-[image-processing-advanced-workflow](https://github.com/bluetape4k/bluetape4k-workshop/tree/f23df2b9b65d1f646bb513641fcf49441bdd4f5c/image-processing/advanced-workflow)
+[image-processing-advanced-workflow](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/image-processing/advanced-workflow)
 
 이 예제는 Spring Boot 4 기반 upload workflow다.
 
@@ -247,7 +247,7 @@ Reports and raw evidence:
 
 Workshop example:
 
-- [image-processing-advanced-workflow](https://github.com/bluetape4k/bluetape4k-workshop/tree/f23df2b9b65d1f646bb513641fcf49441bdd4f5c/image-processing/advanced-workflow) shows the full upload-to-derivative service shape.
+- [image-processing-advanced-workflow](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/image-processing/advanced-workflow) shows the full upload-to-derivative service shape.
 - [ImageDerivativeWorkflowService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/image-processing/advanced-workflow/src/main/kotlin/io/bluetape4k/workshop/imageprocessing/advanced/service/ImageDerivativeWorkflowService.kt) coordinates validation, storage, derivative generation, and response metadata.
 - [DerivativeProcessor.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/image-processing/advanced-workflow/src/main/kotlin/io/bluetape4k/workshop/imageprocessing/advanced/service/DerivativeProcessor.kt) is the direct bridge from the benchmarked libvips operations to a production-style variant pipeline.
 - [UploadImageValidator.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/image-processing/advanced-workflow/src/main/kotlin/io/bluetape4k/workshop/imageprocessing/advanced/service/UploadImageValidator.kt) shows the guardrail layer before native image processing starts.

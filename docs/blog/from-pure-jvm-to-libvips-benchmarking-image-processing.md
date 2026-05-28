@@ -159,7 +159,7 @@ Benchmark 숫자만으로는 실제 적용 지점이 잘 보이지 않는다. �
 production-style 예제를 따로 두었다.
 
 Example:
-[image-processing-advanced-workflow](https://github.com/bluetape4k/bluetape4k-workshop/tree/f23df2b9b65d1f646bb513641fcf49441bdd4f5c/image-processing/advanced-workflow)
+[image-processing-advanced-workflow](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/image-processing/advanced-workflow)
 
 이 예제는 Spring Boot 4 기반 upload workflow다.
 
@@ -235,7 +235,7 @@ host의 `libvips`, `libheif`, AV1/HEVC codec build에 달려 있다.
 
 Workshop 예제:
 
-- [image-processing-advanced-workflow](https://github.com/bluetape4k/bluetape4k-workshop/tree/f23df2b9b65d1f646bb513641fcf49441bdd4f5c/image-processing/advanced-workflow)는 upload부터 derivative 생성까지 이어지는 전체 service shape를 보여준다.
+- [image-processing-advanced-workflow](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/image-processing/advanced-workflow)는 upload부터 derivative 생성까지 이어지는 전체 service shape를 보여준다.
 - [ImageDerivativeWorkflowService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/image-processing/advanced-workflow/src/main/kotlin/io/bluetape4k/workshop/imageprocessing/advanced/service/ImageDerivativeWorkflowService.kt)는 validation, storage, derivative generation, response metadata를 조율하는 application service다.
 - [DerivativeProcessor.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/image-processing/advanced-workflow/src/main/kotlin/io/bluetape4k/workshop/imageprocessing/advanced/service/DerivativeProcessor.kt)는 benchmark에서 본 libvips resize/encode 호출이 실제 variant pipeline으로 연결되는 지점이다.
 - [UploadImageValidator.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/image-processing/advanced-workflow/src/main/kotlin/io/bluetape4k/workshop/imageprocessing/advanced/service/UploadImageValidator.kt)는 native image processing 전에 size, content type, magic byte를 검증하는 guardrail이다.
