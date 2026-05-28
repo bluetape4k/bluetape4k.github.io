@@ -49,6 +49,138 @@ user -> group -> group... -> role -> resource
 
 PostgreSQL을 recursive CTE와 iterative traversal로 나눈 것이 중요했다. “GraphDB vs SQL” 비교는 SQL 쪽 query shape가 약하면 쉽게 불공정해진다. 도입 판단에서는 PostgreSQL도 현실적인 baseline으로 봐야 한다.
 
+## GraphDB 코드는 어떤 모습인가
+
+bluetape4k에서는 application code를 domain에 가깝게 유지하면서 backend 구현이 TinkerGraph, Neo4j, Memgraph 같은 graph engine으로 operation을 mapping한다. social-network workshop은 `GraphOperations`로 vertex를 만들고, typed edge로 연결하고, bounded traversal operation을 실행한다.
+
+```kotlin
+class SocialNetworkService(
+    private val graphName: String,
+    private val ops: GraphOperations,
+) {
+    fun initialize() {
+        if (!ops.graphExists(graphName)) {
+            ops.createGraph(graphName)
+        }
+    }
+
+    fun addPerson(personId: String, name: String): GraphVertex =
+        ops.findVerticesByLabel("Person", mapOf("personId" to personId)).firstOrNull()
+            ?: ops.createVertex("Person", mapOf("personId" to personId, "name" to name))
+
+    fun recommendConnections(personVertexId: GraphElementId): List<GraphVertex> {
+        val direct = ops.neighbors(
+            personVertexId,
+            NeighborOptions(edgeLabel = "KNOWS", direction = Direction.OUTGOING, maxDepth = 1),
+        ).map { it.id }.toSet()
+
+        return ops.neighbors(
+            personVertexId,
+            NeighborOptions(edgeLabel = "KNOWS", direction = Direction.OUTGOING, maxDepth = 2),
+        )
+            .filter { it.id != personVertexId && it.id !in direct }
+            .distinctBy { it.id }
+    }
+
+    fun findConnectionPath(from: GraphElementId, to: GraphElementId): GraphPath? =
+        ops.shortestPath(
+            from,
+            to,
+            PathOptions(edgeLabel = "KNOWS", direction = Direction.OUTGOING),
+        )
+}
+```
+
+모든 query를 이런 방식으로 작성해야 한다는 뜻은 아니다. Graph API가 유용해지는 지점은 domain 질문 자체가 path-shaped일 때다. “2-hop 밖에 있는 사용자는 누구인가?”, “두 사용자를 연결하는 path가 있는가?”, “mutual connection이 많은 후보는 누구인가?”, “같은 device/IP/account signal을 통해 연결된 계정은 무엇인가?” 같은 질문이 여기에 해당한다.
+
+bluetape4k workshop에는 실행 가능한 GraphDB 예제가 있다.
+
+- [Social network](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/graph/social-network): TinkerGraph, Neo4j, Memgraph 위에서 friend-of-a-friend recommendation, shortest path, all paths, colleagues, mutual connection을 다룬다.
+- [Abuser detection](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/graph/abuser-detection): shared device/IP/account signal과 bounded suspicious relationship traversal을 다룬다.
+- [Recommendation](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/graph/recommendation): collaborative filtering과 relationship 기반 추천을 다룬다.
+- [Knowledge graph](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/graph/knowledge-graph): query 가능한 knowledge structure를 위한 entity/relation modeling을 다룬다.
+
+## 같은 Traversal을 표현하는 세 가지 방식
+
+이번 benchmark 판단은 GraphDB syntax만 보고 한 것이 아니다. 같은 authorization inheritance 질문을 native graph traversal, JDBC recursive CTE, JDBC iterative traversal 세 가지 방식으로 표현했다.
+
+GraphDB/Cypher는 path shape를 명시적으로 드러낸다.
+
+```cypher
+MATCH p = (u:User {id: $userId})-[:MEMBER_OF|INHERITS*1..10]->(r:Role)
+MATCH (r)-[g:GRANTS]->(res:Resource)
+WHERE all(rel IN relationships(p) WHERE rel.active = true)
+  AND g.active = true
+  AND res.public = true
+WITH res, collect(g.effect) AS effects
+WHERE NOT 'DENY' IN effects
+RETURN DISTINCT res.id
+```
+
+JDBC recursive CTE는 PostgreSQL을 source of truth로 유지하면서 SQL이 membership path를 확장하게 한다.
+
+```kotlin
+val sql = """
+    WITH RECURSIVE reachable(subject_id, depth, path) AS (
+        SELECT ?, 0, ARRAY[?]
+        UNION ALL
+        SELECT e.to_id, reachable.depth + 1, path || e.to_id
+          FROM authz_edges e
+          JOIN reachable ON e.from_id = reachable.subject_id
+         WHERE e.active = true
+           AND reachable.depth < ?
+           AND NOT e.to_id = ANY(path)
+    )
+    SELECT DISTINCT g.resource_id
+      FROM reachable r
+      JOIN grants g ON g.role_id = r.subject_id
+     WHERE g.active = true
+       AND g.effect = 'ALLOW'
+       AND NOT EXISTS (
+           SELECT 1 FROM grants deny
+            WHERE deny.resource_id = g.resource_id
+              AND deny.role_id IN (SELECT subject_id FROM reachable)
+              AND deny.effect = 'DENY'
+       )
+""".trimIndent()
+
+connection.prepareStatement(sql).use { statement ->
+    statement.setString(1, userId)
+    statement.setString(2, userId)
+    statement.setInt(3, maxDepth)
+    statement.executeQuery().use { rs ->
+        generateSequence { if (rs.next()) rs.getString("resource_id") else null }.toSet()
+    }
+}
+```
+
+JDBC iterative traversal은 recursive SQL을 쓰지 않고 frontier를 한 단계씩 확장한다. 각 step이 selective하고 index를 잘 타면 의외로 빠를 수 있다.
+
+```kotlin
+var frontier = setOf(userId)
+val visited = mutableSetOf(userId)
+val roles = mutableSetOf<String>()
+
+repeat(maxDepth) {
+    if (frontier.isEmpty()) return@repeat
+
+    val next = selectActiveTargets(frontier)
+        .filterTo(mutableSetOf()) { it !in visited }
+
+    roles += next.filter { isRole(it) }
+    visited += next
+    frontier = next
+}
+
+val grants = selectGrantsForRoles(roles)
+val denied = grants.filter { it.effect == "DENY" }.mapTo(mutableSetOf()) { it.resourceId }
+val allowed = grants.filter { it.effect == "ALLOW" }.mapTo(mutableSetOf()) { it.resourceId }
+
+return allowed - denied
+```
+
+그래서 benchmark에서는 CTE와 iterative traversal을 분리했다. Recursive SQL은 compact하고 set-based다. Iterative traversal은 더 단순한 indexed query와 application-side pruning을 쓸 수 있다. Native GraphDB는 path workload가 충분히 길고 선택적일 때만 운영 비용을 상쇄한다.
+
 ## Small/Medium 데이터는 GraphDB 도입을 정당화하지 못했다
 
 small/medium authorization inheritance matrix에서 AGE는 latency row를 하나도 이기지 못했다. PostgreSQL recursive CTE와 iterative traversal이 더 강했다.

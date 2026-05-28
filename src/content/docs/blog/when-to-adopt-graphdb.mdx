@@ -49,6 +49,138 @@ The benchmark compared:
 
 Splitting PostgreSQL into recursive CTE and iterative traversal mattered. Many “GraphDB vs SQL” comparisons are unfair because SQL is represented by a weak query shape. For adoption decisions, PostgreSQL deserves realistic baselines.
 
+## What GraphDB Code Looks Like
+
+In bluetape4k, application code can stay close to the domain while the backend implementation maps the operation to TinkerGraph, Neo4j, Memgraph, or another graph engine. The social-network workshop uses `GraphOperations` to create vertices, connect them with typed edges, and then run bounded traversal operations.
+
+```kotlin
+class SocialNetworkService(
+    private val graphName: String,
+    private val ops: GraphOperations,
+) {
+    fun initialize() {
+        if (!ops.graphExists(graphName)) {
+            ops.createGraph(graphName)
+        }
+    }
+
+    fun addPerson(personId: String, name: String): GraphVertex =
+        ops.findVerticesByLabel("Person", mapOf("personId" to personId)).firstOrNull()
+            ?: ops.createVertex("Person", mapOf("personId" to personId, "name" to name))
+
+    fun recommendConnections(personVertexId: GraphElementId): List<GraphVertex> {
+        val direct = ops.neighbors(
+            personVertexId,
+            NeighborOptions(edgeLabel = "KNOWS", direction = Direction.OUTGOING, maxDepth = 1),
+        ).map { it.id }.toSet()
+
+        return ops.neighbors(
+            personVertexId,
+            NeighborOptions(edgeLabel = "KNOWS", direction = Direction.OUTGOING, maxDepth = 2),
+        )
+            .filter { it.id != personVertexId && it.id !in direct }
+            .distinctBy { it.id }
+    }
+
+    fun findConnectionPath(from: GraphElementId, to: GraphElementId): GraphPath? =
+        ops.shortestPath(
+            from,
+            to,
+            PathOptions(edgeLabel = "KNOWS", direction = Direction.OUTGOING),
+        )
+}
+```
+
+The point is not that every query should be written this way. The point is that graph APIs become useful when the domain question is naturally path-shaped: “who is two hops away?”, “which path connects these users?”, “which candidate has mutual connections?”, or “which account is connected through shared identifiers?”
+
+The bluetape4k workshop has runnable GraphDB examples:
+
+- [Social network](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/graph/social-network): friend-of-a-friend recommendations, shortest path, all paths, colleagues, and mutual connections over TinkerGraph, Neo4j, and Memgraph.
+- [Abuser detection](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/graph/abuser-detection): shared device/IP/account signals and bounded suspicious relationship traversal.
+- [Recommendation](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/graph/recommendation): collaborative filtering and relationship-based recommendations.
+- [Knowledge graph](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/graph/knowledge-graph): entity and relation modeling for queryable knowledge structures.
+
+## Three Ways To Express The Same Traversal
+
+The benchmark decision was not based on GraphDB syntax alone. The same authorization inheritance question was expressed in three shapes: native graph traversal, JDBC recursive CTE, and JDBC iterative traversal.
+
+GraphDB/Cypher keeps the path shape explicit:
+
+```cypher
+MATCH p = (u:User {id: $userId})-[:MEMBER_OF|INHERITS*1..10]->(r:Role)
+MATCH (r)-[g:GRANTS]->(res:Resource)
+WHERE all(rel IN relationships(p) WHERE rel.active = true)
+  AND g.active = true
+  AND res.public = true
+WITH res, collect(g.effect) AS effects
+WHERE NOT 'DENY' IN effects
+RETURN DISTINCT res.id
+```
+
+JDBC recursive CTE keeps the source of truth in PostgreSQL and asks SQL to expand the membership path:
+
+```kotlin
+val sql = """
+    WITH RECURSIVE reachable(subject_id, depth, path) AS (
+        SELECT ?, 0, ARRAY[?]
+        UNION ALL
+        SELECT e.to_id, reachable.depth + 1, path || e.to_id
+          FROM authz_edges e
+          JOIN reachable ON e.from_id = reachable.subject_id
+         WHERE e.active = true
+           AND reachable.depth < ?
+           AND NOT e.to_id = ANY(path)
+    )
+    SELECT DISTINCT g.resource_id
+      FROM reachable r
+      JOIN grants g ON g.role_id = r.subject_id
+     WHERE g.active = true
+       AND g.effect = 'ALLOW'
+       AND NOT EXISTS (
+           SELECT 1 FROM grants deny
+            WHERE deny.resource_id = g.resource_id
+              AND deny.role_id IN (SELECT subject_id FROM reachable)
+              AND deny.effect = 'DENY'
+       )
+""".trimIndent()
+
+connection.prepareStatement(sql).use { statement ->
+    statement.setString(1, userId)
+    statement.setString(2, userId)
+    statement.setInt(3, maxDepth)
+    statement.executeQuery().use { rs ->
+        generateSequence { if (rs.next()) rs.getString("resource_id") else null }.toSet()
+    }
+}
+```
+
+JDBC iterative traversal avoids recursive SQL and expands one frontier at a time. It can be surprisingly fast when each step is selective and indexed:
+
+```kotlin
+var frontier = setOf(userId)
+val visited = mutableSetOf(userId)
+val roles = mutableSetOf<String>()
+
+repeat(maxDepth) {
+    if (frontier.isEmpty()) return@repeat
+
+    val next = selectActiveTargets(frontier)
+        .filterTo(mutableSetOf()) { it !in visited }
+
+    roles += next.filter { isRole(it) }
+    visited += next
+    frontier = next
+}
+
+val grants = selectGrantsForRoles(roles)
+val denied = grants.filter { it.effect == "DENY" }.mapTo(mutableSetOf()) { it.resourceId }
+val allowed = grants.filter { it.effect == "ALLOW" }.mapTo(mutableSetOf()) { it.resourceId }
+
+return allowed - denied
+```
+
+This is why the benchmark kept CTE and iterative traversal separate. Recursive SQL is compact and set-based. Iterative traversal can use simpler indexed queries and application-side pruning. Native GraphDB wins only when the path workload is long and selective enough to offset its operational cost.
+
 ## Small And Medium Data Did Not Justify GraphDB
 
 On the small and medium authorization inheritance matrix, AGE did not win any latency row. PostgreSQL recursive CTE and iterative traversal were consistently stronger.
