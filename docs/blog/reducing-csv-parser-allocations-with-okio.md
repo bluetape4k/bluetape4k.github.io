@@ -8,7 +8,7 @@ Issue [#651](https://github.com/bluetape4k/bluetape4k-projects/issues/651)의 �
 allocation을 줄이고, 특히 큰 CSV workload에서 throughput을 끌어올리는 것이었다. 결론부터 말하면
 Okio segment와 read-only `UnsafeCursor`를 사용한 UTF-8 fast path가 가장 효과적이었다.
 
-![CSV Okio benchmark speedup](/assets/csv-okio-benchmark-speedup-01.png)
+![CSV parser throughput comparison showing existing and Okio ops per second](/assets/csv-okio-throughput-comparison-01.png)
 
 ## Starting Point
 

@@ -5,8 +5,8 @@ sidebar:
   order: -202605290032
 blog:
   date: 2026-05-29T00:32:00+09:00
-  image: /assets/csv-okio-benchmark-speedup-01.png
-  imageAlt: CSV Okio parser throughput speedup chart
+  image: /assets/csv-okio-throughput-comparison-01.png
+  imageAlt: CSV parser throughput comparison chart showing existing and Okio ops per second
   cardDescription: A benchmark-backed walkthrough of the #651 CSV parser optimization, from Reader parsing to Okio UnsafeCursor segment scanning.
 ---
 
@@ -22,7 +22,7 @@ path. The final PR keeps the public API unchanged, adds an internal Okio-backed 
 supported UTF-8 CSV settings, and falls back to the existing reader lexer when the settings
 are outside the fast path.
 
-![CSV Okio benchmark speedup](/assets/csv-okio-benchmark-speedup-01.png)
+![CSV parser throughput comparison showing existing and Okio ops per second](/assets/csv-okio-throughput-comparison-01.png)
 
 ## What Changed
 
