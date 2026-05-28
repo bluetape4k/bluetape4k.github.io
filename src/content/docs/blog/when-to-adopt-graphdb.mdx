@@ -1,0 +1,140 @@
+---
+title: When Should a Backend Service Adopt a Graph Database?
+description: A bluetape4k benchmark note on GraphDB adoption, PostgreSQL recursive traversal, AGE, Neo4j, Memgraph, and the use cases where graph storage is worth the operational cost.
+---
+
+<p class="bt4k-post-meta">2026-05-28 · bluetape4k engineering note</p>
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/graphdb-adoption-latency-chart.png" alt="Authorization inheritance benchmark chart comparing Neo4j, AGE, PostgreSQL recursive CTE, and PostgreSQL iterative traversal" loading="eager" />
+  <figcaption>GraphDB adoption only showed a positive signal for long, selective, path-shaped traversal. PostgreSQL remained very strong for several bounded relational traversal shapes.</figcaption>
+</figure>
+
+Graph databases are attractive because they make relationship-heavy queries easy to express. `MATCH (a)-[*1..N]->(b)` is much easier to read than a stack of self-joins or a recursive SQL query. But adoption should not be based on query syntax alone. A graph database adds a new operational surface, a new query planner, new data loading behavior, new indexes, new monitoring concerns, and often a second storage model beside the relational source of truth.
+
+The practical question is not “is graph syntax convenient?” It is:
+
+> Does the workload need variable-depth path traversal often enough, and at enough scale, to justify graph-specific storage and operations?
+
+The recent bluetape4k graph benchmark work tried to answer that question with measured evidence instead of assumption.
+
+## What We Compared
+
+The benchmark started from an abuser and fraud detection idea: compare AGE + Exposed, Exposed, and JPA for detection latency and success rate. That is a useful domain, but fraud detection can become a misleading benchmark if it asks a database to enumerate every possible path. A graph database does not make unbounded path explosion disappear.
+
+The stronger scenario became authorization inheritance:
+
+```text
+user -> group -> group... -> role -> resource
+```
+
+This workload has the properties that usually make graph storage interesting:
+
+- Relationship depth varies by user and organization structure.
+- The path itself matters because deny edges override allow edges.
+- Cycles must be handled safely.
+- Traversal is bounded, selective, and semantically meaningful.
+- The same fixture can be implemented by a native graph engine and by PostgreSQL relational baselines.
+
+The benchmark compared:
+
+| Candidate | Role |
+|---|---|
+| Neo4j Cypher | Native persistent GraphDB candidate |
+| Memgraph Cypher | Native persistent GraphDB candidate, tracked separately when the large fixture load failed locally |
+| PostgreSQL AGE/Cypher | PostgreSQL extension with graph syntax |
+| PostgreSQL recursive CTE | Relational variable-depth traversal baseline |
+| PostgreSQL iterative traversal | Relational batched traversal baseline |
+| TinkerGraph | Excluded from this adoption decision because it is in-memory; still useful for API and contract benchmarks |
+
+Splitting PostgreSQL into recursive CTE and iterative traversal mattered. Many “GraphDB vs SQL” comparisons are unfair because SQL is represented by a weak query shape. For adoption decisions, PostgreSQL deserves realistic baselines.
+
+## Small And Medium Data Did Not Justify GraphDB
+
+On the small and medium authorization inheritance matrix, AGE did not win any latency row. PostgreSQL recursive CTE and iterative traversal were consistently stronger.
+
+Representative `resolveResources` latency, `ms/op`, lower is better:
+
+| Scenario | Size | AGE/Cypher | PostgreSQL CTE | PostgreSQL iterative | Winner |
+|---|---:|---:|---:|---:|---|
+| `shallow` | `small` | 6.337 | **0.572** | 0.576 | PostgreSQL CTE |
+| `shallow` | `medium` | 57.382 | 12.085 | **1.056** | PostgreSQL iterative |
+| `deep-inheritance` | `small` | 93.848 | **0.726** | 1.449 | PostgreSQL CTE |
+| `deep-inheritance` | `medium` | 604.833 | 9.385 | **2.102** | PostgreSQL iterative |
+| `wide-groups` | `medium` | 250.083 | **1.521** | 3.658 | PostgreSQL CTE |
+
+That result is important because it blocks the easy story. A graph-shaped domain does not automatically require a graph database. If the data is small, the path depth is short, or the query can be reduced to bounded joins and indexed relational traversal, PostgreSQL may be simpler and faster.
+
+AGE was especially instructive. It gives Cypher syntax inside PostgreSQL, but in this benchmark it did not provide the execution behavior needed for a speed-based adoption claim. Convenience is not the same as performance.
+
+## Longer Paths Finally Produced A GraphDB Signal
+
+The next step increased the data size and traversal length. The adoption probe used a `large` fixture with:
+
+- `long-chain`: forced 10-hop target chain.
+- `deep-wide`: 12-hop traversal with wider fan-out and cycles.
+
+`resolveResources`, `large` fixture, `ms/op`, lower is better:
+
+| Scenario | Neo4j Cypher | Memgraph Cypher | AGE/Cypher | PostgreSQL CTE | PostgreSQL iterative | Winner |
+|---|---:|---:|---:|---:|---:|---|
+| `long-chain` | **12.731** | load failure | timeout &gt;75s | 55.364 | 47.568 | Neo4j Cypher |
+| `deep-wide` | 56.467 | load failure | timeout &gt;75s | **11.596** | 27.836 | PostgreSQL CTE |
+
+This is the useful signal. Neo4j won the `long-chain` row by 3.74x over PostgreSQL iterative traversal and 4.35x over PostgreSQL recursive CTE. That is the kind of result that can justify deeper GraphDB evaluation.
+
+But the same benchmark also warns against overgeneralizing. `deep-wide` still favored PostgreSQL CTE. AGE timed out in both large adoption scenarios. Memgraph passed smoke parity but failed during local large fixture loading, so it is not a reportable latency row yet.
+
+The conclusion is narrow and useful:
+
+> GraphDB adoption is credible for long, selective, path-shaped traversal. It is not justified for generic authorization, fraud detection, CRUD, fixed joins, or shallow relationship queries.
+
+## Where GraphDB Fits Best
+
+GraphDB is worth evaluating when several conditions are true at the same time:
+
+- Traversal depth is variable and often beyond fixed two- or three-table joins.
+- The path itself is part of the answer or part of the filter.
+- The traversal is bounded and selective.
+- Edge type, edge property, time window, risk flag, or deny/allow semantics affect the path.
+- The workload cannot be reduced cleanly to aggregate tables, materialized projections, or indexed relational joins.
+- Operating a graph database is acceptable for the team.
+
+Good candidates include permission inheritance, organization hierarchy exceptions, dependency and impact analysis, network reachability, path-shaped recommendations, and fraud ring exploration over shared identifiers.
+
+Poor candidates include simple ID lookup, one-hop joins, fixed two- or three-table joins, CRUD-heavy OLTP, star-schema aggregation, and unbounded “find all paths” queries.
+
+For fraud detection specifically, graph storage is most useful when the query asks for bounded, time-windowed, risk-filtered patterns such as shared device clusters or short money-flow convergence. It is a poor fit for unrestricted path enumeration.
+
+## How To Decide In A Real Service
+
+The safest adoption process is staged:
+
+1. Start with PostgreSQL CTE and iterative traversal baselines.
+2. Keep correctness metrics separate from latency ranking.
+3. Add a native persistent GraphDB candidate such as Neo4j.
+4. Exclude in-memory engines from production adoption decisions, even if they are useful for API tests.
+5. Use large enough data and long enough path depth to expose the real tradeoff.
+6. Measure failure modes, not only successful latency rows.
+
+That last point matters. The adoption table should show AGE timeouts and Memgraph load failures. Hiding failed candidates makes the decision look cleaner than it is. Production adoption needs to account for data loading, query completion, operational stability, and performance.
+
+## TODO: Hybrid Performance Work
+
+The next question is not only “GraphDB or relational database?” Real systems often need a hybrid design.
+
+Future benchmark work should test:
+
+- Cache-assisted traversal: cache hot account, hot group, permission closure, and frequent path-existence results.
+- Materialized views: maintain suspicious aggregates, reachable-resource sets, or impact-radius summaries in PostgreSQL.
+- Incremental graph projections: update graph-specific projections at ingest time instead of rebuilding at query time.
+- Candidate pruning: use relational indexes first, then run graph traversal only on a narrowed candidate set.
+- Online/offline split: use shallow bounded traversal online and deeper graph analysis in batch jobs.
+- Hybrid correctness: prove cached or materialized answers match the canonical relational or graph oracle.
+- Operational cost: include load time, index build time, memory footprint, query timeout behavior, and recovery behavior.
+
+This is where graph databases may become more compelling. The strongest design is rarely “replace PostgreSQL with GraphDB.” It is more often:
+
+> Keep relational storage for transactional truth, use cache and projections for hot decisions, and use a native graph engine only where long path traversal is the core workload.
+
+That is the benchmark direction worth continuing.
