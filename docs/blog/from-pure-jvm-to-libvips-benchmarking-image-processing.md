@@ -29,8 +29,8 @@ demand-driven pipeline이 훨씬 유리하다.
 
 이번 글에서 사용하는 macOS Java 25 결과는 다음 report에 기록되어 있다.
 
-- [Image Processing JMH Benchmark Results - 2026-05-28 Natural Photos](https://github.com/bluetape4k/bluetape4k-image/blob/0caf6449ed3389969992a81ba30e660d8ecc3266/images-benchmark/docs/benchmark-results-2026-05-28-natural-photos.md)
-- [Vips Backend Comparison Benchmark](https://github.com/bluetape4k/bluetape4k-image/blob/0caf6449ed3389969992a81ba30e660d8ecc3266/images-benchmark/docs/vips-backend-comparison.md)
+- [Image Processing JMH Benchmark Results - 2026-05-28 Natural Photos](https://github.com/bluetape4k/bluetape4k-image/blob/develop/images-benchmark/docs/benchmark-results-2026-05-28-natural-photos.md)
+- [Vips Backend Comparison Benchmark](https://github.com/bluetape4k/bluetape4k-image/blob/develop/images-benchmark/docs/vips-backend-comparison.md)
 
 ## 입력 이미지가 결과를 바꾼다
 
@@ -77,7 +77,7 @@ fun vips_resize(state: VipsBenchmarkState, bh: Blackhole) {
 ```
 
 Full source:
-[ImageResizeBenchmark.kt](https://github.com/bluetape4k/bluetape4k-image/blob/0caf6449ed3389969992a81ba30e660d8ecc3266/images-benchmark/src/benchmark/kotlin/io/bluetape4k/images/benchmark/ImageResizeBenchmark.kt)
+[ImageResizeBenchmark.kt](https://github.com/bluetape4k/bluetape4k-image/blob/develop/images-benchmark/src/benchmark/kotlin/io/bluetape4k/images/benchmark/ImageResizeBenchmark.kt)
 
 결과는 resize에서 가장 극적이다.
 
@@ -123,7 +123,7 @@ fun vips_encodeJpeg(state: VipsBenchmarkState, bh: Blackhole) {
 ```
 
 Full source:
-[ImageEncodeBenchmark.kt](https://github.com/bluetape4k/bluetape4k-image/blob/0caf6449ed3389969992a81ba30e660d8ecc3266/images-benchmark/src/benchmark/kotlin/io/bluetape4k/images/benchmark/ImageEncodeBenchmark.kt)
+[ImageEncodeBenchmark.kt](https://github.com/bluetape4k/bluetape4k-image/blob/develop/images-benchmark/src/benchmark/kotlin/io/bluetape4k/images/benchmark/ImageEncodeBenchmark.kt)
 
 Encode는 resize만큼 큰 차이가 나지는 않는다. JPEG는 약 2.4-3.1배, PNG는 약 1.5-1.8배다. 그래도
 thumbnail fan-out이나 upload processing처럼 요청 하나가 여러 derivative를 만드는 workflow에서는
@@ -151,7 +151,7 @@ measurement를 만들 수 없었다.
 Backend 선택은 `VipsBenchmarkState`가 runtime classpath를 보고 reflection으로 처리한다.
 
 Full source:
-[VipsBenchmarkState.kt](https://github.com/bluetape4k/bluetape4k-image/blob/0caf6449ed3389969992a81ba30e660d8ecc3266/images-benchmark/src/benchmark/kotlin/io/bluetape4k/images/benchmark/VipsBenchmarkState.kt)
+[VipsBenchmarkState.kt](https://github.com/bluetape4k/bluetape4k-image/blob/develop/images-benchmark/src/benchmark/kotlin/io/bluetape4k/images/benchmark/VipsBenchmarkState.kt)
 
 ## From Benchmark to a Service Workflow
 
@@ -188,7 +188,7 @@ return suspendFfmVipsImageOf(bytes).use { image ->
 ```
 
 Full source:
-[DerivativeProcessor.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/f23df2b9b65d1f646bb513641fcf49441bdd4f5c/image-processing/advanced-workflow/src/main/kotlin/io/bluetape4k/workshop/imageprocessing/advanced/service/DerivativeProcessor.kt#L57-L75)
+[DerivativeProcessor.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/image-processing/advanced-workflow/src/main/kotlin/io/bluetape4k/workshop/imageprocessing/advanced/service/DerivativeProcessor.kt#L57-L75)
 
 이 코드가 benchmark와 이어지는 지점이다. 서비스는 upload 하나에서 여러 variant를 만들 수 있고,
 각 variant는 resize와 encode를 모두 수행한다. 그 경로에서 `scrimage`와 `libvips`의 차이는
@@ -220,26 +220,26 @@ host의 `libvips`, `libheif`, AV1/HEVC codec build에 달려 있다.
 
 벤치마크 코드:
 
-- [ImageResizeBenchmark.kt](https://github.com/bluetape4k/bluetape4k-image/blob/0caf6449ed3389969992a81ba30e660d8ecc3266/images-benchmark/src/benchmark/kotlin/io/bluetape4k/images/benchmark/ImageResizeBenchmark.kt)는 `cafe`와 `landscape` 4K-to-1080p resize workload를 scrimage와 libvips 양쪽으로 실행해 비교한다.
-- [ImageEncodeBenchmark.kt](https://github.com/bluetape4k/bluetape4k-image/blob/0caf6449ed3389969992a81ba30e660d8ecc3266/images-benchmark/src/benchmark/kotlin/io/bluetape4k/images/benchmark/ImageEncodeBenchmark.kt)는 같은 자연 사진 fixture로 JPEG/PNG encode 경로를 맞춰 비교한다.
-- [VipsBackendBenchmark.kt](https://github.com/bluetape4k/bluetape4k-image/blob/0caf6449ed3389969992a81ba30e660d8ecc3266/images-benchmark/src/benchmark/kotlin/io/bluetape4k/images/benchmark/VipsBackendBenchmark.kt)는 JNI와 FFM backend의 libvips 호출 경로를 backend 수준에서 분리해 확인한다.
-- [VipsBackendEncodeBenchmark.kt](https://github.com/bluetape4k/bluetape4k-image/blob/0caf6449ed3389969992a81ba30e660d8ecc3266/images-benchmark/src/benchmark/kotlin/io/bluetape4k/images/benchmark/VipsBackendEncodeBenchmark.kt)는 codec과 host library 지원 여부가 중요한 native encode 경로를 따로 본다.
-- [VipsBenchmarkState.kt](https://github.com/bluetape4k/bluetape4k-image/blob/0caf6449ed3389969992a81ba30e660d8ecc3266/images-benchmark/src/benchmark/kotlin/io/bluetape4k/images/benchmark/VipsBenchmarkState.kt)는 runtime classpath에서 활성 backend를 선택하고, 사용할 수 없는 backend는 숫자를 꾸며내지 않고 unavailable로 남긴다.
-- [BenchmarkImageSets.kt](https://github.com/bluetape4k/bluetape4k-image/blob/0caf6449ed3389969992a81ba30e660d8ecc3266/images-benchmark/src/main/kotlin/io/bluetape4k/images/benchmark/BenchmarkImageSets.kt)는 `cafe`와 `landscape` 자연 사진 fixture를 로드하고, 아직 커밋하지 않은 optional document/thumbnail resource에는 synthetic fallback을 유지한다.
+- [ImageResizeBenchmark.kt](https://github.com/bluetape4k/bluetape4k-image/blob/develop/images-benchmark/src/benchmark/kotlin/io/bluetape4k/images/benchmark/ImageResizeBenchmark.kt)는 `cafe`와 `landscape` 4K-to-1080p resize workload를 scrimage와 libvips 양쪽으로 실행해 비교한다.
+- [ImageEncodeBenchmark.kt](https://github.com/bluetape4k/bluetape4k-image/blob/develop/images-benchmark/src/benchmark/kotlin/io/bluetape4k/images/benchmark/ImageEncodeBenchmark.kt)는 같은 자연 사진 fixture로 JPEG/PNG encode 경로를 맞춰 비교한다.
+- [VipsBackendBenchmark.kt](https://github.com/bluetape4k/bluetape4k-image/blob/develop/images-benchmark/src/benchmark/kotlin/io/bluetape4k/images/benchmark/VipsBackendBenchmark.kt)는 JNI와 FFM backend의 libvips 호출 경로를 backend 수준에서 분리해 확인한다.
+- [VipsBackendEncodeBenchmark.kt](https://github.com/bluetape4k/bluetape4k-image/blob/develop/images-benchmark/src/benchmark/kotlin/io/bluetape4k/images/benchmark/VipsBackendEncodeBenchmark.kt)는 codec과 host library 지원 여부가 중요한 native encode 경로를 따로 본다.
+- [VipsBenchmarkState.kt](https://github.com/bluetape4k/bluetape4k-image/blob/develop/images-benchmark/src/benchmark/kotlin/io/bluetape4k/images/benchmark/VipsBenchmarkState.kt)는 runtime classpath에서 활성 backend를 선택하고, 사용할 수 없는 backend는 숫자를 꾸며내지 않고 unavailable로 남긴다.
+- [BenchmarkImageSets.kt](https://github.com/bluetape4k/bluetape4k-image/blob/develop/images-benchmark/src/main/kotlin/io/bluetape4k/images/benchmark/BenchmarkImageSets.kt)는 `cafe`와 `landscape` 자연 사진 fixture를 로드하고, 아직 커밋하지 않은 optional document/thumbnail resource에는 synthetic fallback을 유지한다.
 
 리포트와 원본 근거:
 
-- [benchmark-results-2026-05-28-natural-photos.md](https://github.com/bluetape4k/bluetape4k-image/blob/0caf6449ed3389969992a81ba30e660d8ecc3266/images-benchmark/docs/benchmark-results-2026-05-28-natural-photos.md)는 이 글의 표와 차트에 사용한 사람이 읽기 좋은 benchmark report다.
-- [vips-backend-comparison.md](https://github.com/bluetape4k/bluetape4k-image/blob/0caf6449ed3389969992a81ba30e660d8ecc3266/images-benchmark/docs/vips-backend-comparison.md)는 Java 21 JNI와 Java 25 FFM 비교 정책, 그리고 macOS arm64 `N/A` lane을 설명한다.
-- [raw macOS Java 25 benchmark JSON](https://github.com/bluetape4k/bluetape4k-image/blob/0caf6449ed3389969992a81ba30e660d8ecc3266/images-benchmark/docs/raw/benchmark-results-2026-05-28-macos-java25-natural-photos.json)은 report 뒤에 있는 `kotlinx-benchmark` 원본 출력이다.
+- [benchmark-results-2026-05-28-natural-photos.md](https://github.com/bluetape4k/bluetape4k-image/blob/develop/images-benchmark/docs/benchmark-results-2026-05-28-natural-photos.md)는 이 글의 표와 차트에 사용한 사람이 읽기 좋은 benchmark report다.
+- [vips-backend-comparison.md](https://github.com/bluetape4k/bluetape4k-image/blob/develop/images-benchmark/docs/vips-backend-comparison.md)는 Java 21 JNI와 Java 25 FFM 비교 정책, 그리고 macOS arm64 `N/A` lane을 설명한다.
+- [raw macOS Java 25 benchmark JSON](https://github.com/bluetape4k/bluetape4k-image/blob/develop/images-benchmark/docs/raw/benchmark-results-2026-05-28-macos-java25-natural-photos.json)은 report 뒤에 있는 `kotlinx-benchmark` 원본 출력이다.
 
 Workshop 예제:
 
 - [image-processing-advanced-workflow](https://github.com/bluetape4k/bluetape4k-workshop/tree/f23df2b9b65d1f646bb513641fcf49441bdd4f5c/image-processing/advanced-workflow)는 upload부터 derivative 생성까지 이어지는 전체 service shape를 보여준다.
-- [ImageDerivativeWorkflowService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/f23df2b9b65d1f646bb513641fcf49441bdd4f5c/image-processing/advanced-workflow/src/main/kotlin/io/bluetape4k/workshop/imageprocessing/advanced/service/ImageDerivativeWorkflowService.kt)는 validation, storage, derivative generation, response metadata를 조율하는 application service다.
-- [DerivativeProcessor.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/f23df2b9b65d1f646bb513641fcf49441bdd4f5c/image-processing/advanced-workflow/src/main/kotlin/io/bluetape4k/workshop/imageprocessing/advanced/service/DerivativeProcessor.kt)는 benchmark에서 본 libvips resize/encode 호출이 실제 variant pipeline으로 연결되는 지점이다.
-- [UploadImageValidator.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/f23df2b9b65d1f646bb513641fcf49441bdd4f5c/image-processing/advanced-workflow/src/main/kotlin/io/bluetape4k/workshop/imageprocessing/advanced/service/UploadImageValidator.kt)는 native image processing 전에 size, content type, magic byte를 검증하는 guardrail이다.
-- [ImageDerivativesController.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/f23df2b9b65d1f646bb513641fcf49441bdd4f5c/image-processing/advanced-workflow/src/main/kotlin/io/bluetape4k/workshop/imageprocessing/advanced/web/ImageDerivativesController.kt)는 workflow를 HTTP upload endpoint로 노출하는 web entrypoint다.
+- [ImageDerivativeWorkflowService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/image-processing/advanced-workflow/src/main/kotlin/io/bluetape4k/workshop/imageprocessing/advanced/service/ImageDerivativeWorkflowService.kt)는 validation, storage, derivative generation, response metadata를 조율하는 application service다.
+- [DerivativeProcessor.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/image-processing/advanced-workflow/src/main/kotlin/io/bluetape4k/workshop/imageprocessing/advanced/service/DerivativeProcessor.kt)는 benchmark에서 본 libvips resize/encode 호출이 실제 variant pipeline으로 연결되는 지점이다.
+- [UploadImageValidator.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/image-processing/advanced-workflow/src/main/kotlin/io/bluetape4k/workshop/imageprocessing/advanced/service/UploadImageValidator.kt)는 native image processing 전에 size, content type, magic byte를 검증하는 guardrail이다.
+- [ImageDerivativesController.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/image-processing/advanced-workflow/src/main/kotlin/io/bluetape4k/workshop/imageprocessing/advanced/web/ImageDerivativesController.kt)는 workflow를 HTTP upload endpoint로 노출하는 web entrypoint다.
 
 ## Closing
 
