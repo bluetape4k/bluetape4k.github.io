@@ -220,9 +220,9 @@ suspend fun writeCsvFileWithOkio(
 - Issue: [#651 perf(csv): reduce large CSV parsing allocations](https://github.com/bluetape4k/bluetape4k-projects/issues/651)
 - PR: [#673 perf(csv): scan UTF-8 fields with Okio segments](https://github.com/bluetape4k/bluetape4k-projects/pull/673)
 - Follow-up: [#674 perf(csv): add Okio BufferedSink fast path for writer pipelines](https://github.com/bluetape4k/bluetape4k-projects/issues/674)
-- Main implementation: `OkioCsvLexer`
-- Benchmarks: `CsvParserBenchmark`
-- Behavior tests: `OkioCsvLexerTest`
+- Main implementation: [`OkioCsvLexer`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/main/kotlin/io/bluetape4k/csv/internal/OkioCsvLexer.kt)
+- Benchmarks: [`CsvParserBenchmark`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/test/kotlin/io/bluetape4k/csv/benchmark/CsvParserBenchmark.kt)
+- Behavior tests: [`OkioCsvLexerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/test/kotlin/io/bluetape4k/csv/internal/OkioCsvLexerTest.kt)
 
 ## Closing
 
