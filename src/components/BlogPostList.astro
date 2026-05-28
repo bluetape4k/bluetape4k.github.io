@@ -1,0 +1,60 @@
+---
+interface Props {
+  locale?: 'en' | 'ko';
+}
+
+interface BlogPostFrontmatter {
+  title: string;
+  description?: string;
+  blog?: {
+    date: string | Date;
+    image: string;
+    imageAlt: string;
+    cardDescription?: string;
+  };
+}
+
+interface BlogPostModule {
+  frontmatter: BlogPostFrontmatter;
+}
+
+const { locale = 'en' } = Astro.props;
+
+const modules =
+  locale === 'ko'
+    ? import.meta.glob<BlogPostModule>('../content/docs/ko/blog/*.mdx', { eager: true })
+    : import.meta.glob<BlogPostModule>('../content/docs/blog/*.mdx', { eager: true });
+
+const posts = Object.entries(modules)
+  .filter(([path, module]) => !path.endsWith('/index.mdx') && module.frontmatter.blog)
+  .map(([path, module]) => {
+    const slug = path.split('/').pop()?.replace(/\.mdx$/, '') ?? '';
+    const href = locale === 'ko' ? `/ko/blog/${slug}/` : `/blog/${slug}/`;
+    const blog = module.frontmatter.blog!;
+
+    return {
+      href,
+      title: module.frontmatter.title,
+      description: blog.cardDescription ?? module.frontmatter.description ?? '',
+      image: blog.image,
+      imageAlt: blog.imageAlt,
+      date: new Date(blog.date).getTime(),
+      slug,
+    };
+  })
+  .sort((left, right) => right.date - left.date || left.slug.localeCompare(right.slug));
+---
+
+<div class="bt4k-blog-list">
+  {
+    posts.map((post) => (
+      <a class="bt4k-blog-card" href={post.href}>
+        <img src={post.image} alt={post.imageAlt} loading="eager" />
+        <div>
+          <strong>{post.title}</strong>
+          <span>{post.description}</span>
+        </div>
+      </a>
+    ))
+  }
+</div>
