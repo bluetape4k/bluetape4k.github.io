@@ -5,8 +5,8 @@ sidebar:
   order: -202605290032
 blog:
   date: 2026-05-29T00:32:00+09:00
-  image: /assets/csv-okio-benchmark-speedup-01.png
-  imageAlt: CSV Okio parser throughput speedup chart
+  image: /assets/csv-okio-throughput-comparison-01.png
+  imageAlt: CSV parser throughput comparison chart showing existing and Okio ops per second
   cardDescription: "#651 CSV parser 최적화 작업을 Reader 기반 파싱에서 Okio UnsafeCursor segment scanning까지 benchmark와 함께 정리합니다."
 ---
 
@@ -20,7 +20,7 @@ Issue [#651](https://github.com/bluetape4k/bluetape4k-projects/issues/651)의 �
 allocation을 줄이고, 특히 큰 CSV workload에서 throughput을 끌어올리는 것이었다. 결론부터 말하면
 Okio segment와 read-only `UnsafeCursor`를 사용한 UTF-8 fast path가 가장 효과적이었다.
 
-![CSV Okio benchmark speedup](/assets/csv-okio-benchmark-speedup-01.png)
+![CSV parser throughput comparison showing existing and Okio ops per second](/assets/csv-okio-throughput-comparison-01.png)
 
 ## Starting Point
 
