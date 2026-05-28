@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">CSV Okio parser speedup benchmark</title>
+  <desc id="desc">Bar chart showing public CsvRecordReader throughput speedups after the Okio UnsafeCursor fast path: 2.25x for small, 2.30x for medium, and 2.32x for large workloads.</desc>
+  <rect width="1200" height="680" fill="#f8fafc"/>
+  <rect x="52" y="44" width="1096" height="592" rx="24" fill="#ffffff" stroke="#d8e0ea"/>
+
+  <text x="86" y="100" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="34" font-weight="760" fill="#162033">
+    CSV parser throughput after Okio segment scanning
+  </text>
+  <text x="86" y="136" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" fill="#536174">
+    Public CsvRecordReader, UTF-8 CSV, kotlinx-benchmark throughput (ops/s). Higher is better.
+  </text>
+
+  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+    <line x1="142" y1="520" x2="1070" y2="520" stroke="#9aa7b8" stroke-width="2"/>
+    <line x1="142" y1="184" x2="142" y2="520" stroke="#9aa7b8" stroke-width="2"/>
+
+    <g stroke="#e3e8ef" stroke-width="1">
+      <line x1="142" y1="520" x2="1070" y2="520"/>
+      <line x1="142" y1="453" x2="1070" y2="453"/>
+      <line x1="142" y1="386" x2="1070" y2="386"/>
+      <line x1="142" y1="318" x2="1070" y2="318"/>
+      <line x1="142" y1="251" x2="1070" y2="251"/>
+      <line x1="142" y1="184" x2="1070" y2="184"/>
+    </g>
+
+    <g font-size="15" fill="#6b7788" text-anchor="end">
+      <text x="126" y="525">0.0x</text>
+      <text x="126" y="458">0.5x</text>
+      <text x="126" y="391">1.0x</text>
+      <text x="126" y="323">1.5x</text>
+      <text x="126" y="256">2.0x</text>
+      <text x="126" y="189">2.5x</text>
+    </g>
+
+    <g>
+      <rect x="244" y="218" width="120" height="302" rx="10" fill="#1f7a8c"/>
+      <rect x="540" y="211" width="120" height="309" rx="10" fill="#1f7a8c"/>
+      <rect x="836" y="208" width="120" height="312" rx="10" fill="#1f7a8c"/>
+    </g>
+
+    <g font-size="24" font-weight="760" fill="#162033" text-anchor="middle">
+      <text x="304" y="196">2.25x</text>
+      <text x="600" y="189">2.30x</text>
+      <text x="896" y="186">2.32x</text>
+    </g>
+
+    <g font-size="18" font-weight="700" fill="#27364a" text-anchor="middle">
+      <text x="304" y="558">Small</text>
+      <text x="600" y="558">Medium</text>
+      <text x="896" y="558">Large</text>
+    </g>
+
+    <g font-size="15" fill="#5f6f84" text-anchor="middle">
+      <text x="304" y="584">20.2k -> 45.4k ops/s</text>
+      <text x="600" y="584">296.9 -> 683.4 ops/s</text>
+      <text x="896" y="584">17.3 -> 40.1 ops/s</text>
+    </g>
+
+    <g>
+      <rect x="812" y="116" width="22" height="14" rx="3" fill="#1f7a8c"/>
+      <text x="844" y="130" font-size="16" fill="#536174">Okio fast path speedup vs reader baseline</text>
+    </g>
+
+    <text x="86" y="616" font-size="14" fill="#7a8798">
+      Source: bluetape4k-projects #651 / PR #673, ./gradlew :bluetape4k-csv:testBenchmark.
+    </text>
+  </g>
+</svg>

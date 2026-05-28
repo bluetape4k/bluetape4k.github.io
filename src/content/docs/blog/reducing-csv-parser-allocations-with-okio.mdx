@@ -1,0 +1,211 @@
+---
+title: "Reducing CSV Parser Allocations with Okio Segments"
+description: How bluetape4k-csv moved supported UTF-8 parsing to an Okio segment-backed fast path and improved CsvRecordReader throughput by about 2.3x.
+sidebar:
+  order: -202605290032
+blog:
+  date: 2026-05-29T00:32:00+09:00
+  image: /assets/csv-okio-benchmark-speedup-01.png
+  imageAlt: CSV Okio parser throughput speedup chart
+  cardDescription: A benchmark-backed walkthrough of the #651 CSV parser optimization, from Reader parsing to Okio UnsafeCursor segment scanning.
+---
+
+<p class="bt4k-post-meta">2026-05-29 · bluetape4k csv performance note</p>
+
+`bluetape4k-csv` originally parsed CSV through a `Reader`. That path was simple and
+correct, but it decoded every character before appending field data to a `StringBuilder`.
+For large UTF-8 CSV streams, the hot path was doing more allocation and decode work than
+necessary.
+
+Issue [#651](https://github.com/bluetape4k/bluetape4k-projects/issues/651) targeted that
+path. The final PR keeps the public API unchanged, adds an internal Okio-backed lexer for
+supported UTF-8 CSV settings, and falls back to the existing reader lexer when the settings
+are outside the fast path.
+
+![CSV Okio benchmark speedup](/assets/csv-okio-benchmark-speedup-01.png)
+
+## What Changed
+
+The public entrypoint remains the same:
+
+```kotlin
+CsvRecordReader()
+    .read(input, UTF_8, skipHeaders = true)
+    .count()
+```
+
+Internally, supported UTF-8 reads now go through `OkioCsvLexer`:
+
+```kotlin
+if (encoding == UTF_8 && OkioCsvLexer.isSupported(settings)) {
+    OkioCsvLexer(input.source().buffer(), settings, skipHeaders).use { lexer ->
+        while (lexer.hasNext()) {
+            yield(transform(lexer.next()))
+        }
+    }
+    return@sequence
+}
+```
+
+The fast path is deliberately narrow:
+
+| Condition | Fast path behavior |
+|---|---|
+| UTF-8 input | Use `OkioCsvLexer` |
+| ASCII delimiter and quote | Scan structural bytes directly |
+| doubled-quote escaping | Preserve current CSV semantics |
+| unsupported charset or settings | Fall back to `CsvLexer` |
+
+## Why UnsafeCursor
+
+Wrapping the stream in Okio was not enough. A simple byte loop was correct, but the large
+lexer benchmark only moved from about 17.5 to 21.3 ops/s. The useful gain came from scanning
+Okio segments directly with a read-only `Buffer.UnsafeCursor`.
+
+```kotlin
+private fun findTerminatorOffset(terminators: ByteString): Long {
+    source.buffer.readUnsafe().use { cursor ->
+        while (cursor.next() != -1) {
+            val data = cursor.data ?: continue
+            var index = cursor.start
+            while (index < cursor.end) {
+                if (isTerminator(data[index], terminators)) {
+                    return cursor.offset + index - cursor.start
+                }
+                index++
+            }
+        }
+    }
+    return -1L
+}
+```
+
+The cursor is read-only. It only finds delimiter, quote, CR, and LF bytes. Payload bytes are
+moved into an Okio `Buffer`, then decoded once when the field is complete.
+
+As a reusable pattern, a read-only helper for finding the first of several target bytes in an
+Okio `Buffer` looks like this:
+
+```kotlin
+private fun Buffer.indexOfAnyByteUnsafe(targets: ByteArray): Long {
+    readUnsafe().use { cursor ->
+        while (cursor.next() != -1) {
+            val data = cursor.data ?: continue
+            var index = cursor.start
+            while (index < cursor.end) {
+                if (data[index] in targets) {
+                    return cursor.offset + index - cursor.start
+                }
+                index++
+            }
+        }
+    }
+    return -1L
+}
+```
+
+The important constraints are to close the cursor with `use`, read only
+`cursor.start until cursor.end`, and never mutate `cursor.data` in this scan.
+
+## Guardrails
+
+`UnsafeCursor` needs behavior locks. The PR compares the Okio lexer against the existing
+reader lexer on RFC 4180 examples and on the real `extra_words.csv` fixture.
+
+```kotlin
+parseWithOkio(csv) shouldBeEqualTo parseWithReader(csv)
+```
+
+It also keeps `maxCharsPerColumn` checks. The implementation drains scanned source segments
+into the field buffer and checks the byte bound before final UTF-8 decoding, then checks the
+decoded character length as well.
+
+## Public Reader Result
+
+`./gradlew :bluetape4k-csv:testBenchmark`
+
+| Benchmark | Reader baseline | Okio fast path | Speedup |
+|---|---:|---:|---:|
+| `nativeCsvRead_small` | 20,173.731 ops/s | 45,417.110 ops/s | 2.25x |
+| `nativeCsvRead_medium` | 296.944 ops/s | 683.434 ops/s | 2.30x |
+| `nativeCsvRead_large` | 17.312 ops/s | 40.115 ops/s | 2.32x |
+
+## Lexer-Level Comparison
+
+| Benchmark | Existing `CsvLexer` | `OkioCsvLexer` | Speedup |
+|---|---:|---:|---:|
+| `nativeLexer_small` | 21,043.679 ops/s | 45,062.565 ops/s | 2.14x |
+| `nativeLexer_medium` | 288.105 ops/s | 668.457 ops/s | 2.32x |
+| `nativeLexer_large` | 17.996 ops/s | 41.484 ops/s | 2.31x |
+
+The public reader and direct lexer measurements point in the same direction. The improvement
+comes from the lexer input path, not from wrapper noise.
+
+## What Did Not Ship
+
+`BufferedSource.indexOfElement()` was attractive because it is compact and safe, but the
+experiment did not give the control needed for this parser path. A simple Okio byte loop was
+correct but too small a win. The read-only `UnsafeCursor` scan gave the expected segment-level
+benefit while preserving the existing parser behavior.
+
+## Next Candidate: Okio CSV Writer
+
+The next natural candidate is the pipeline that saves large data streams as CSV.
+`bluetape4k-csv` already has a streaming-shaped API:
+`FlowCsvWriter.writeFile(rows: Flow<Iterable<*>>)`. The current implementation still writes
+through `OutputStreamWriter` and `Writer.write(...)`.
+
+For UTF-8 file output, a `BufferedSink` fast path could write delimiter, quote, and line
+separator bytes directly, then write field payloads to the sink only when needed.
+
+```kotlin
+suspend fun writeCsvFileWithOkio(
+    path: Path,
+    rows: Flow<Iterable<*>>,
+    delimiter: Byte = ','.code.toByte(),
+    quote: Byte = '"'.code.toByte(),
+): Long = withContext(Dispatchers.IO) {
+    var count = 0L
+    path.sink().buffer().use { sink ->
+        rows.collect { row ->
+            var first = true
+            for (field in row) {
+                if (!first) sink.writeByte(delimiter.toInt())
+                first = false
+
+                val value = field?.toString()
+                if (value != null) {
+                    sink.writeByte(quote.toInt())
+                    for (ch in value) {
+                        if (ch == '"') sink.writeUtf8("\"\"") else sink.writeUtf8CodePoint(ch.code)
+                    }
+                    sink.writeByte(quote.toInt())
+                }
+            }
+            sink.writeUtf8("\n")
+            count++
+        }
+    }
+    count
+}
+```
+
+This is a blog sketch, not the exact production patch. A real implementation must preserve the
+existing `DelimitedWriter` contracts: null and empty-string roundtrip, `quoteAll`, TSV delimiter
+behavior, charset fallback, and close/flush semantics. The direction is still clear. The read
+path reduced allocations with `BufferedSource` and `UnsafeCursor`; the write path can likely use
+`BufferedSink` to reduce intermediate row strings and many small `Writer.write` calls.
+
+## Source Links
+
+- Issue: [#651 perf(csv): reduce large CSV parsing allocations](https://github.com/bluetape4k/bluetape4k-projects/issues/651)
+- PR: [#673 perf(csv): scan UTF-8 fields with Okio segments](https://github.com/bluetape4k/bluetape4k-projects/pull/673)
+- Follow-up: [#674 perf(csv): add Okio BufferedSink fast path for writer pipelines](https://github.com/bluetape4k/bluetape4k-projects/issues/674)
+- Tests: `./gradlew :bluetape4k-csv:test` -> 268 passing
+- Benchmark: `./gradlew :bluetape4k-csv:testBenchmark`
+
+## Closing
+
+The useful lesson is not just “use Okio.” The useful lesson is to use the right layer of Okio.
+`BufferedSource` gave a clean stream boundary, `Buffer` avoided early string materialization,
+and read-only `UnsafeCursor` made segment scanning fast enough to matter.
