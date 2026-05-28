@@ -206,6 +206,11 @@ export default defineConfig({
               translations: { ko: 'AI와 3개월 동안 만든 대규모 Kotlin 라이브러리 생태계' },
               slug: 'blog/ai-assisted-library-development',
             },
+            {
+              label: 'From Pure JVM to libvips',
+              translations: { ko: 'Pure JVM에서 libvips로: 이미지 처리 벤치마크' },
+              slug: 'blog/from-pure-jvm-to-libvips-benchmarking-image-processing',
+            },
           ],
         },
       ],
