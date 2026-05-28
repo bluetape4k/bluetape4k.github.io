@@ -1,10 +1,22 @@
 import { defineCollection } from 'astro:content';
 import { docsLoader } from '@astrojs/starlight/loaders';
 import { docsSchema } from '@astrojs/starlight/schema';
+import { z } from 'astro/zod';
 
 export const collections = {
   docs: defineCollection({
     loader: docsLoader(),
-    schema: docsSchema(),
+    schema: docsSchema({
+      extend: z.object({
+        blog: z
+          .object({
+            date: z.coerce.date(),
+            image: z.string(),
+            imageAlt: z.string(),
+            cardDescription: z.string().optional(),
+          })
+          .optional(),
+      }),
+    }),
   }),
 };

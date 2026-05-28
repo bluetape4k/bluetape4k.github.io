@@ -1,49 +1,12 @@
 ---
 title: 블로그
 description: bluetape4k Kotlin 백엔드 생태계를 만들고 운영하며 남기는 기록.
+sidebar:
+  hidden: true
 ---
+
+import BlogPostList from '../../../../components/BlogPostList.astro';
 
 ## 글
 
-<div class="bt4k-blog-list">
-  <a class="bt4k-blog-card" href="/ko/blog/from-pure-jvm-to-libvips-benchmarking-image-processing/">
-    <img src="/assets/image-processing-benchmark-summary-01.png" alt="scrimage pure JVM과 libvips Java 25 FFM image processing benchmark 비교" loading="eager" />
-    <div>
-      <strong>Pure JVM에서 libvips로: bluetape4k 이미지 처리 벤치마크</strong>
-      <span>scrimage와 libvips 벤치마크, Java 21 JNI host 제약, Java 25 FFM 실측값, workshop derivative pipeline 예제를 정리합니다.</span>
-    </div>
-  </a>
-
-  <a class="bt4k-blog-card" href="/ko/blog/when-to-adopt-graphdb/">
-    <img src="/assets/graphdb-adoption-latency-chart.png" alt="GraphDB adoption benchmark latency chart" loading="eager" />
-    <div>
-      <strong>Backend 서비스는 언제 GraphDB를 도입해야 할까?</strong>
-      <span>GraphDB 도입 판단, PostgreSQL traversal baseline, AGE, Neo4j, Memgraph, 그리고 graph storage가 적합한 use case를 benchmark 결과로 정리합니다.</span>
-    </div>
-  </a>
-
-  <a class="bt4k-blog-card" href="/ko/blog/introduction-bluetape4k-part1-ecosystem/">
-    <img src="/assets/bluetape4k-layer-flow-01.png" alt="Bluetape4k ecosystem layer flow" loading="eager" />
-    <div>
-      <strong>Bluetape4k Ecosystem 소개</strong>
-      <span>Bluetape4k 소개 시리즈 Part 1. Application, Domain Capability, Data, Infrastructure, Foundation layer로 전체 구조를 설명합니다.</span>
-    </div>
-  </a>
-
-  <a class="bt4k-blog-card" href="/ko/blog/ai-collaboration-environment/">
-    <img src="/assets/ai-collaboration-infrastructure.png" alt="관리자 AI와 일꾼 AI들이 skills, qmd, memory, 검증 게이트를 함께 관리하는 모습" loading="eager" />
-    <div>
-      <strong>AI와 일하는 환경을 인프라로 만들기</strong>
-      <span>AGENTS.md, bluetape4k skills, qmd, memory, hooks를 통해 Codex와 Claude가 같은 기준으로 일하게 만든 방식입니다.</span>
-    </div>
-  </a>
-
-  <a class="bt4k-blog-card" href="/ko/blog/ai-assisted-library-development/">
-    <img src="/assets/ai-assisted-library-development.png" alt="AI와 함께 Kotlin 라이브러리 생태계를 개발하는 모습" loading="eager" />
-    <div>
-      <strong>AI와 3개월 동안 만든 대규모 Kotlin 라이브러리 생태계</strong>
-      <span>Claude Code와 Codex를 활용해 자동화, 문서화, 테스트, 연구, 예제, 대규모 repo 작업을 안정화한 과정과 배운 점입니다.</span>
-    </div>
-  </a>
-
-</div>
+<BlogPostList locale="ko" />

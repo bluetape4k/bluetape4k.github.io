@@ -186,31 +186,7 @@ export default defineConfig({
           translations: { ko: '블로그' },
           items: [
             { label: 'Posts', translations: { ko: '글' }, slug: 'blog' },
-            {
-              label: 'From Pure JVM to libvips',
-              translations: { ko: 'Pure JVM에서 libvips로: 이미지 처리 벤치마크' },
-              slug: 'blog/from-pure-jvm-to-libvips-benchmarking-image-processing',
-            },
-            {
-              label: 'When Should a Backend Service Adopt a Graph Database?',
-              translations: { ko: 'Backend 서비스는 언제 GraphDB를 도입해야 할까?' },
-              slug: 'blog/when-to-adopt-graphdb',
-            },
-            {
-              label: 'Introduction to the Bluetape4k Ecosystem',
-              translations: { ko: 'Bluetape4k Ecosystem 소개' },
-              slug: 'blog/introduction-bluetape4k-part1-ecosystem',
-            },
-            {
-              label: 'Turning AI Collaboration Into Infrastructure',
-              translations: { ko: 'AI와 일하는 환경을 인프라로 만들기' },
-              slug: 'blog/ai-collaboration-environment',
-            },
-            {
-              label: 'Building a Large Kotlin Library Ecosystem with AI in Three Months',
-              translations: { ko: 'AI와 3개월 동안 만든 대규모 Kotlin 라이브러리 생태계' },
-              slug: 'blog/ai-assisted-library-development',
-            },
+            { autogenerate: { directory: 'blog' } },
           ],
         },
       ],
