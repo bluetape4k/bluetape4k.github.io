@@ -187,6 +187,11 @@ export default defineConfig({
           items: [
             { label: 'Posts', translations: { ko: '글' }, slug: 'blog' },
             {
+              label: 'When Should a Backend Service Adopt a Graph Database?',
+              translations: { ko: 'Backend 서비스는 언제 GraphDB를 도입해야 할까?' },
+              slug: 'blog/when-to-adopt-graphdb',
+            },
+            {
               label: 'Introduction to the Bluetape4k Ecosystem',
               translations: { ko: 'Bluetape4k Ecosystem 소개' },
               slug: 'blog/introduction-bluetape4k-part1-ecosystem',
