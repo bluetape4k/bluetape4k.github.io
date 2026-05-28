@@ -1,0 +1,195 @@
+---
+title: "When the CSV Writer Took Off Its Ankle Weights"
+description: How bluetape4k-csv turned its Flow-based UTF-8 file writer into an Okio BufferedSink path and made large CSV exports about 3.25x faster.
+sidebar:
+  order: -202605290827
+blog:
+  date: 2026-05-29T08:27:00+09:00
+  image: /assets/csv-okio-writer-throughput-01.png
+  imageAlt: CSV writer throughput comparison chart showing existing Writer and Okio BufferedSink ops per second
+  cardDescription: The #674 follow-up to the Okio CSV reader work: Flow rows, UTF-8 sinks, behavior locks, and a 3.25x large export win.
+---
+
+<p class="bt4k-post-meta">2026-05-29 · bluetape4k csv performance note</p>
+
+The previous CSV post was about reading. `bluetape4k-csv` stopped dragging every UTF-8
+field through a character-first lexer and let Okio scan source segments instead.
+
+That left an obvious follow-up question: if reading got faster by respecting bytes and
+segments, why was writing still politely handing every file export to `OutputStreamWriter`?
+
+Issue [#674](https://github.com/bluetape4k/bluetape4k-projects/issues/674) was the cleanup.
+The public API already had the right shape:
+
+```kotlin
+suspend fun writeFile(
+    path: Path,
+    encoding: Charset = Charsets.UTF_8,
+    append: Boolean = false,
+    skipHeaders: Boolean = false,
+    headers: List<String> = emptyList(),
+    rows: Flow<Iterable<*>>,
+): Long
+```
+
+Yes, `FlowCsvWriter` is coroutine-based. That matters. The writer does not need to collect a
+whole export into memory. It can collect one row from a `Flow`, write that row, check
+cancellation, and move on.
+
+![CSV writer throughput comparison showing existing Writer and Okio BufferedSink ops per second](/assets/csv-okio-writer-throughput-01.png)
+
+## The Suspicious Part Was Not Flow
+
+The streaming shape was already there. The expensive-looking part was below it:
+
+```kotlin
+OutputStreamWriter(FileOutputStream(path.toFile(), append), encoding).use { fw ->
+    val fileWriter = DelimitedWriter(fw, delimiter, quote, settings.quoteEscape, lineSeparator)
+    rows.collect { row ->
+        currentCoroutineContext().ensureActive()
+        writeRowToDelimited(fileWriter, fw, row)
+        count++
+    }
+}
+```
+
+This code is not bad. It is correct, portable, and keeps charset support simple. But for the
+common UTF-8 file export, it routes delimiter, quote, line separator, and payload text through
+a character writer even though the destination is ultimately bytes.
+
+The new rule is simple:
+
+| Output encoding | Writer path |
+|---|---|
+| UTF-8 | Okio `BufferedSink` fast path |
+| Non-UTF-8 | Existing `Writer` fallback |
+
+The API stays the same. The UTF-8 lane just takes the shorter road.
+
+## The Fast Path
+
+The coroutine boundary still owns the file export. The difference is the sink inside it:
+
+```kotlin
+private suspend fun writeUtf8FileWithOkio(
+    path: Path,
+    append: Boolean,
+    skipHeaders: Boolean,
+    headers: List<String>,
+    rows: Flow<Iterable<*>>,
+): Long {
+    var count = 0L
+    FileOutputStream(path.toFile(), append).sink().buffer().use { sink ->
+        val fileWriter = OkioDelimitedWriter(sink, delimiter, quote, settings.quoteEscape, lineSeparator)
+        if (!skipHeaders && headers.isNotEmpty()) {
+            writeRowToOkio(fileWriter, headers)
+        }
+        rows.collect { row ->
+            currentCoroutineContext().ensureActive()
+            writeRowToOkio(fileWriter, row)
+            count++
+        }
+    }
+    return count
+}
+```
+
+The important line is not the Okio import. It is the shape around it: `rows.collect`, then
+`ensureActive()`, then one row into a buffered sink. This keeps the export pipeline responsive
+to cancellation while avoiding a detour through `Writer.write(...)` for UTF-8 files.
+
+## CSV Still Has Teeth
+
+CSV writing sounds boring until the first empty string, leading space, embedded quote, CRLF
+field, or TSV variant walks in. The fast path could not be a "join with commas" shortcut.
+
+The internal writer keeps the existing `DelimitedWriter` semantics:
+
+```kotlin
+private fun writeQuoted(s: String) {
+    sink.writeUtf8Char(quote)
+    var start = 0
+    for (index in s.indices) {
+        if (s[index] == quote) {
+            if (start < index) {
+                sink.writeUtf8(s, start, index)
+            }
+            sink.writeUtf8Char(quoteEscape)
+            sink.writeUtf8Char(quote)
+            start = index + 1
+        }
+    }
+    if (start < s.length) {
+        sink.writeUtf8(s, start, s.length)
+    }
+    sink.writeUtf8Char(quote)
+}
+```
+
+That chunked write is the small trick. Most field text goes to the sink in slices. Only quote
+characters become doubled quote bytes. The writer does not walk every normal character through
+a tiny call.
+
+The behavior locks cover the cases that usually make CSV fast paths regret their confidence:
+
+| Case | Expected behavior |
+|---|---|
+| `null` | unquoted empty field |
+| `""` | quoted empty string |
+| leading or trailing space | quoted |
+| delimiter inside field | quoted |
+| embedded quote | doubled quote |
+| CR/LF inside field | quoted |
+| `quoteAll` | every non-null field quoted |
+| TSV mode | tab delimiter preserved |
+
+## Benchmark Result
+
+Benchmark command:
+
+```bash
+./gradlew :bluetape4k-csv:testBenchmark
+```
+
+Measured writer workloads:
+
+| Dataset | Existing Writer | Okio writer | Speedup |
+|---|---:|---:|---:|
+| `writerBaseline_small` vs `okioWriter_small` | 11,741.418 ops/s | 16,355.656 ops/s | 1.39x |
+| `writerBaseline_medium` vs `okioWriter_medium` | 676.110 ops/s | 2,068.696 ops/s | 3.06x |
+| `writerBaseline_large` vs `okioWriter_large` | 83.802 ops/s | 272.157 ops/s | 3.25x |
+
+The small workload improves, but it is still close enough for setup and coroutine collection
+overhead to show through. The medium and large workloads tell the real story. Once rows keep
+arriving, fewer character-layer writes and fewer tiny calls become visible.
+
+## The Reader Lesson Reused
+
+The reader optimization used `BufferedSource` and `UnsafeCursor`. The writer does not need
+`UnsafeCursor`, because it is not searching through existing segments. It is producing bytes.
+
+So the reusable lesson was not "always use the sharpest Okio API." It was narrower:
+
+| Direction | Useful Okio layer |
+|---|---|
+| Read | `BufferedSource`, `Buffer`, read-only `UnsafeCursor` for structural byte scanning |
+| Write | `BufferedSink` for direct UTF-8 row output |
+
+The same design rule applies in both directions: keep the public API stable, keep fallback
+paths for unsupported cases, and lock behavior with examples that include awkward CSV data.
+
+## Source Links
+
+- Issue: [#674 perf(csv): add Okio BufferedSink fast path for writer pipelines](https://github.com/bluetape4k/bluetape4k-projects/issues/674)
+- PR: [#675 perf(csv): write UTF-8 files through Okio sink](https://github.com/bluetape4k/bluetape4k-projects/pull/675)
+- Writer implementation: [`OkioDelimitedWriter`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/main/kotlin/io/bluetape4k/csv/internal/OkioDelimitedWriter.kt)
+- Flow writer integration: [`FlowCsvWriterImpl`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/main/kotlin/io/bluetape4k/csv/v2/FlowCsvWriterImpl.kt)
+- Benchmarks: [`CsvParserBenchmark`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/test/kotlin/io/bluetape4k/csv/benchmark/CsvParserBenchmark.kt)
+- Tests: [`FlowCsvWriterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/test/kotlin/io/bluetape4k/csv/v2/FlowCsvWriterTest.kt)
+- Previous article: [Reducing CSV Parser Allocations with Okio Segments](/blog/reducing-csv-parser-allocations-with-okio/)
+
+## Closing
+
+This was a good kind of optimization: not a new public concept, not a new way to write CSV,
+and not a special API users have to remember. `FlowCsvWriter` already promised a streaming
+pipeline. The patch just removed one layer of ankle weights from the UTF-8 file path.
