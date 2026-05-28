@@ -30,3 +30,15 @@ and operational-cost measurement.
 
 For benchmark-backed public posts, include failed candidates in the main table.
 Timeouts and load failures are part of adoption evidence, not footnotes.
+
+## Follow-up
+
+The first published version was evidence-heavy but too abstract. Add at least
+one code-shaped example and link runnable workshop examples when explaining a
+library feature. Benchmark interpretation is stronger when readers can jump
+from the conclusion to executable usage.
+
+Also include side-by-side pseudocode for the compared approaches. For GraphDB
+benchmark articles, show native Cypher, JDBC recursive CTE, and JDBC iterative
+traversal so readers can see that the comparison is about execution shape, not
+only product names.
