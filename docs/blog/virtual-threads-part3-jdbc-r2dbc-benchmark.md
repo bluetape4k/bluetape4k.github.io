@@ -35,15 +35,6 @@ tuned around pool size and indexes, and batch benchmarks often favored JDBC + Vi
 over R2DBC + Coroutines for the same workload.
 
 
-This chart isolates a large end-to-end batch job with `dataSize=100000` and `parallelism=8`.
-Blue bars are JDBC + Virtual Threads, orange bars are R2DBC + Coroutines. Under the same pool
-size, MySQL showed about 8.4-8.8x difference and PostgreSQL about 4.9-5.2x.
-
-<figure class="bt4k-architecture">
-  <img src="/assets/virtual-threads-part3-benchmark-01.png" alt="Benchmark summary comparing JDBC with virtual threads and R2DBC with coroutines" loading="lazy" />
-  <figcaption>R2DBC looked like the obvious winner, but the benchmark results disagreed. A practical look at JDBC + Virtual Threads.</figcaption>
-</figure>
-
 ## First, the General Exposed JDBC Benchmark
 
 Looking only at batch results would make the conclusion too narrow. `bluetape4k-exposed` also
@@ -69,6 +60,11 @@ thread count, then added indexes for the JOIN target table.
 | HikariCP max=24, minIdle=8, `@Threads(14)` | 43,487 ops/sec |
 | Add orders-table index | 44,161 ops/sec |
 | Highest point after stronger measurement settings | 45,431 ops/sec |
+
+<figure class="bt4k-architecture">
+  <img src="/assets/virtual-threads-part3-exposed-jdbc-01.png" alt="General Exposed JDBC benchmark throughput chart from baseline to tuned settings" loading="lazy" />
+  <figcaption>The ordinary Exposed JDBC path improved from 25.4k to 45.4k ops/sec after pool/thread tuning and JOIN indexes.</figcaption>
+</figure>
 
 This is not a direct JDBC-vs-R2DBC comparison. It is evidence that the ordinary Exposed JDBC
 path is sensitive to pool size, thread concurrency, and index design. In other words: measure
@@ -139,6 +135,11 @@ The MySQL seed benchmark was especially wide. At `dataSize=100000`, JDBC reached
 `1.455 ops/sec`; R2DBC was about `0.050 ops/sec`, roughly a 29x difference.
 
 For the large end-to-end job, the result is easier to read.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/virtual-threads-part3-benchmark-01.png" alt="JDBC vs R2DBC batch benchmark chart for large end-to-end jobs" loading="lazy" />
+  <figcaption>Large end-to-end batch jobs favored JDBC + Virtual Threads by about 8.4-8.8x on MySQL and 4.9-5.2x on PostgreSQL.</figcaption>
+</figure>
 
 | DB | poolSize | JDBC ops/sec | R2DBC ops/sec | JDBC/R2DBC |
 |---|---:|---:|---:|---:|

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">General Exposed JDBC benchmark throughput chart</title>
+  <desc id="desc">Bar chart showing total throughput improvement from baseline to tuned Exposed JDBC benchmark settings.</desc>
+  <rect width="1200" height="630" fill="#fbfaf7"/>
+  <rect x="64" y="62" width="1072" height="506" rx="24" fill="#ffffff" stroke="#d2d8d5" stroke-width="2"/>
+  <text x="96" y="122" font-family="Architects Daughter" font-size="42" fill="#222f3a">General Exposed JDBC Benchmark</text>
+  <text x="98" y="162" font-family="Architects Daughter" font-size="22" fill="#52616c">PostgreSQL Testcontainers, total ops/sec across CRUD/JOIN methods</text>
+  <g font-family="Architects Daughter" font-size="15" fill="#52616c">
+    <line x1="122" y1="468" x2="1068" y2="468" stroke="#9eaaa5" stroke-width="2"/>
+    <line x1="122" y1="218" x2="122" y2="468" stroke="#9eaaa5" stroke-width="2"/>
+    <line x1="122" y1="343" x2="1068" y2="343" stroke="#e5ebe8" stroke-width="1.5"/>
+    <line x1="122" y1="218" x2="1068" y2="218" stroke="#e5ebe8" stroke-width="1.5"/>
+    <text x="104" y="473" text-anchor="end">0</text>
+    <text x="104" y="348" text-anchor="end">25k</text>
+    <text x="104" y="223" text-anchor="end">50k</text>
+  </g>
+  <g font-family="Architects Daughter" font-size="16" fill="#273846">
+    <rect x="170" y="341" width="92" height="127" rx="12" fill="#ffc98f" stroke="#d8a05e"/>
+    <text x="216" y="329" text-anchor="middle">25,400</text>
+    <text x="216" y="500" text-anchor="middle">Baseline</text>
+    <rect x="392" y="251" width="92" height="217" rx="12" fill="#9fc3ee" stroke="#6a9bd1"/>
+    <text x="438" y="239" text-anchor="middle">43,487</text>
+    <text x="438" y="500" text-anchor="middle">Pool</text>
+    <text x="438" y="520" text-anchor="middle">+ threads</text>
+    <rect x="614" y="247" width="92" height="221" rx="12" fill="#a7d8b6" stroke="#74ad86"/>
+    <text x="660" y="235" text-anchor="middle">44,161</text>
+    <text x="660" y="500" text-anchor="middle">Add</text>
+    <text x="660" y="520" text-anchor="middle">index</text>
+    <rect x="836" y="241" width="92" height="227" rx="12" fill="#8bb7f0" stroke="#5f94cf"/>
+    <text x="882" y="229" text-anchor="middle">45,431</text>
+    <text x="882" y="500" text-anchor="middle">Stronger</text>
+    <text x="882" y="520" text-anchor="middle">settings</text>
+  </g>
+  <text x="96" y="548" font-family="Architects Daughter" font-size="20" fill="#2c3e48">Tuning pool/thread balance and JOIN indexes moved the ordinary JDBC path from 25.4k to 45.4k ops/sec.</text>
+</svg>
