@@ -8,7 +8,7 @@
   </defs>
   <rect width="1200" height="630" fill="#f8fbf9"/>
   <rect x="64" y="62" width="1072" height="506" rx="24" fill="#ffffff" stroke="#c8d7cf" stroke-width="2"/>
-  <text x="96" y="122" font-family="Architects Daughter, Comic Mono, sans-serif" font-size="42" fill="#17342b">Virtual Threads, Part 2</text>
+  <text x="96" y="122" font-family="Architects Daughter, Comic Mono, sans-serif" font-size="42" fill="#17342b">Virtual Threads Rules</text>
   <text x="98" y="162" font-family="Comic Mono, monospace" font-size="22" fill="#526056">rules from bluetape4k-workshop/virtualthreads/rules</text>
 
   <g font-family="Comic Mono, monospace" font-size="17" fill="#17342b">

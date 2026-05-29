@@ -8,7 +8,7 @@
   </defs>
   <rect width="1200" height="630" fill="#f8fbfd"/>
   <rect x="64" y="62" width="1072" height="506" rx="24" fill="#ffffff" stroke="#c7d6df" stroke-width="2"/>
-  <text x="96" y="122" font-family="Architects Daughter, Comic Mono, sans-serif" font-size="42" fill="#18303f">Virtual Threads, Part 4</text>
+  <text x="96" y="122" font-family="Architects Daughter, Comic Mono, sans-serif" font-size="42" fill="#18303f">Virtual Threads SPI/API</text>
   <text x="98" y="162" font-family="Comic Mono, monospace" font-size="23" fill="#526875">one API, JDK-specific runtime modules</text>
 
   <g font-family="Comic Mono, monospace" font-size="18" fill="#18303f">
