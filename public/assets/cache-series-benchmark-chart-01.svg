@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="804" viewBox="0 0 1320 804" role="img" aria-labelledby="title desc">
+<title id="title">Lettuce Near Cache Benchmark Summary</title>
+<desc id="desc">Throughput is ops/ms. Higher is better. L1 reads are intentionally shown on a separate scale.</desc>
+<defs>
+  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="7" stdDeviation="8" flood-color="#203040" flood-opacity="0.10"/></filter>
+  <marker id="arrowBlue" markerWidth="10" markerHeight="9" refX="8.5" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M1,1 L8.5,4.5 L1,8 Z" fill="#4E7FC2"/></marker>
+  <marker id="arrowGreen" markerWidth="10" markerHeight="9" refX="8.5" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M1,1 L8.5,4.5 L1,8 Z" fill="#3C9B72"/></marker>
+  <marker id="arrowAmber" markerWidth="10" markerHeight="9" refX="8.5" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M1,1 L8.5,4.5 L1,8 Z" fill="#C98A22"/></marker>
+  <marker id="arrowRose" markerWidth="10" markerHeight="9" refX="8.5" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M1,1 L8.5,4.5 L1,8 Z" fill="#C85A73"/></marker>
+  <style>
+    .canvas{fill:#F7F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
+    .title{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:42px;fill:#22344A;font-weight:700}
+    .subtitle{font-family:"Comic Mono","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:16px;fill:#536476;font-weight:400}
+    .label{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:24px;fill:#22344A;font-weight:700}
+    .smallLabel{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:20px;fill:#22344A;font-weight:700}
+    .body{font-family:"Comic Mono","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:14px;fill:#34465B;font-weight:400}
+    .small{font-family:"Comic Mono","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:12px;fill:#627184;font-weight:400}
+    .num{font-family:"Comic Mono","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:16px;fill:#22344A;font-weight:700}
+    .card{filter:url(#shadow);stroke-width:2}.soft{stroke-width:1.6}
+    .lineBlue{fill:none;stroke:#4E7FC2;stroke-width:2.4;marker-end:url(#arrowBlue)}
+    .lineGreen{fill:none;stroke:#3C9B72;stroke-width:2.4;marker-end:url(#arrowGreen)}
+    .lineAmber{fill:none;stroke:#C98A22;stroke-width:2.4;marker-end:url(#arrowAmber)}
+    .lineRose{fill:none;stroke:#C85A73;stroke-width:2.4;marker-end:url(#arrowRose)}
+    .dashBlue{fill:none;stroke:#4E7FC2;stroke-width:2.2;stroke-dasharray:8 7;marker-end:url(#arrowBlue)}
+    .dashGreen{fill:none;stroke:#3C9B72;stroke-width:2.2;stroke-dasharray:8 7;marker-end:url(#arrowGreen)}
+    .pill{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:1.2}
+  </style>
+</defs>
+<rect class="canvas" width="1320" height="804"/>
+<rect class="frame" x="34" y="28" width="1252" height="748" rx="26"/>
+<text class="title" x="70" y="82">Lettuce Near Cache Benchmark Summary</text>
+<text class="subtitle" x="72" y="115">Throughput is ops/ms. Higher is better. L1 reads are intentionally shown on a separate scale.</text><g transform="translate(0 44)">
+<g>
+  <rect class="card" x="84" y="164" width="234" height="96" rx="16" fill="#EAF7EF" stroke="#58A978"/>
+  <text class="smallLabel" x="201" y="198" text-anchor="middle" dominant-baseline="middle">L1 hit</text>
+<text class="body" x="201" y="226" text-anchor="middle" dominant-baseline="middle">~64,000 ops/ms</text>
+</g>
+<g>
+  <rect class="card" x="84" y="296" width="234" height="96" rx="16" fill="#E8F3FF" stroke="#5B8DEF"/>
+  <text class="smallLabel" x="201" y="330" text-anchor="middle" dominant-baseline="middle">L2 hit / miss</text>
+<text class="body" x="201" y="358" text-anchor="middle" dominant-baseline="middle">~4 ops/ms</text>
+</g>
+<g>
+  <rect class="card" x="84" y="428" width="234" height="96" rx="16" fill="#FFF3D9" stroke="#D6A441"/>
+  <text class="smallLabel" x="201" y="462" text-anchor="middle" dominant-baseline="middle">putSingle</text>
+<text class="body" x="201" y="490" text-anchor="middle" dominant-baseline="middle">~2 ops/ms</text>
+</g>
+<g>
+  <rect class="card" x="84" y="560" width="234" height="96" rx="16" fill="#FDECEF" stroke="#DC6B82"/>
+  <text class="smallLabel" x="201" y="594" text-anchor="middle" dominant-baseline="middle">putAll 16KB</text>
+<text class="body" x="201" y="622" text-anchor="middle" dominant-baseline="middle">~0.4 ops/ms</text>
+</g>
+<g><rect x="402" y="183" width="760" height="56" rx="14" fill="#EAF7EF" stroke="#58A978" stroke-width="2"/><rect x="402" y="183" width="730" height="56" rx="14" fill="#58A978" opacity="0.24"/></g>
+<g><rect x="402" y="315" width="180" height="56" rx="14" fill="#E8F3FF" stroke="#5B8DEF" stroke-width="2"/><rect x="402" y="315" width="92" height="56" rx="14" fill="#5B8DEF" opacity="0.25"/></g>
+<g><rect x="402" y="447" width="180" height="56" rx="14" fill="#FFF3D9" stroke="#D6A441" stroke-width="2"/><rect x="402" y="447" width="56" height="56" rx="14" fill="#D6A441" opacity="0.28"/></g>
+<g><rect x="402" y="579" width="180" height="56" rx="14" fill="#FDECEF" stroke="#DC6B82" stroke-width="2"/><rect x="402" y="579" width="22" height="56" rx="11" fill="#DC6B82" opacity="0.32"/></g>
+<g>
+  <rect class="card" x="832" y="386" width="318" height="128" rx="16" fill="#F1ECFF" stroke="#8A72D6"/>
+  <text class="smallLabel" x="991" y="418" text-anchor="middle" dominant-baseline="middle">Practical Reading</text>
+<text class="body" x="991" y="446" text-anchor="middle" dominant-baseline="middle">maximize L1 hit ratio</text>
+<text class="body" x="991" y="464" text-anchor="middle" dominant-baseline="middle">watch write cost</text>
+<text class="body" x="991" y="482" text-anchor="middle" dominant-baseline="middle">split large payload batches</text>
+</g>
+<path class="lineGreen" d="M1150 450 H1228 V212 H1162"/><rect class="pill" x="1160" y="200" width="116" height="24" rx="12"/><text class="small" x="1218" y="216" text-anchor="middle">L1 memory path</text>
+<path class="lineBlue" d="M832 450 H760 V343 H582"/><rect class="pill" x="595" y="311" width="154" height="24" rx="12"/><text class="small" x="672" y="327" text-anchor="middle">Redis RTT dominated</text>
+<path class="lineAmber" d="M832 476 H728 V475 H582"/><rect class="pill" x="603" y="443" width="150" height="24" rx="12"/><text class="small" x="678" y="459" text-anchor="middle">SET + tracking GET</text>
+<path class="lineRose" d="M832 502 H728 V607 H582"/><rect class="pill" x="611" y="575" width="142" height="24" rx="12"/><text class="small" x="682" y="591" text-anchor="middle">payload bandwidth</text>
+</g><text class="small" x="660" y="770" text-anchor="middle">Source data: cache-lettuce/Benchmark.ko.md. Graphviz evidence: cache-series-benchmark-chart-01.dot / .plain / -sketch.svg</text></svg>

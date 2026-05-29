@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1480" height="864" viewBox="0 0 1480 864" role="img" aria-labelledby="title desc">
+<title id="title">Workshop Cache Profiles</title>
+<desc id="desc">The same ProductCacheService contract can compare no cache, local cache, remote cache, and near cache behavior.</desc>
+<defs>
+  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="7" stdDeviation="8" flood-color="#203040" flood-opacity="0.10"/></filter>
+  <marker id="arrowBlue" markerWidth="10" markerHeight="9" refX="8.5" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M1,1 L8.5,4.5 L1,8 Z" fill="#4E7FC2"/></marker>
+  <marker id="arrowGreen" markerWidth="10" markerHeight="9" refX="8.5" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M1,1 L8.5,4.5 L1,8 Z" fill="#3C9B72"/></marker>
+  <marker id="arrowAmber" markerWidth="10" markerHeight="9" refX="8.5" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M1,1 L8.5,4.5 L1,8 Z" fill="#C98A22"/></marker>
+  <marker id="arrowRose" markerWidth="10" markerHeight="9" refX="8.5" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M1,1 L8.5,4.5 L1,8 Z" fill="#C85A73"/></marker>
+  <style>
+    .canvas{fill:#F7F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
+    .title{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:42px;fill:#22344A;font-weight:700}
+    .subtitle{font-family:"Comic Mono","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:16px;fill:#536476;font-weight:400}
+    .label{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:24px;fill:#22344A;font-weight:700}
+    .smallLabel{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:20px;fill:#22344A;font-weight:700}
+    .body{font-family:"Comic Mono","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:14px;fill:#34465B;font-weight:400}
+    .small{font-family:"Comic Mono","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:12px;fill:#627184;font-weight:400}
+    .num{font-family:"Comic Mono","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:16px;fill:#22344A;font-weight:700}
+    .card{filter:url(#shadow);stroke-width:2}.soft{stroke-width:1.6}
+    .lineBlue{fill:none;stroke:#4E7FC2;stroke-width:2.4;marker-end:url(#arrowBlue)}
+    .lineGreen{fill:none;stroke:#3C9B72;stroke-width:2.4;marker-end:url(#arrowGreen)}
+    .lineAmber{fill:none;stroke:#C98A22;stroke-width:2.4;marker-end:url(#arrowAmber)}
+    .lineRose{fill:none;stroke:#C85A73;stroke-width:2.4;marker-end:url(#arrowRose)}
+    .dashBlue{fill:none;stroke:#4E7FC2;stroke-width:2.2;stroke-dasharray:8 7;marker-end:url(#arrowBlue)}
+    .dashGreen{fill:none;stroke:#3C9B72;stroke-width:2.2;stroke-dasharray:8 7;marker-end:url(#arrowGreen)}
+    .pill{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:1.2}
+  </style>
+</defs>
+<rect class="canvas" width="1480" height="864"/>
+<rect class="frame" x="34" y="28" width="1412" height="808" rx="26"/>
+<text class="title" x="70" y="82">Workshop Cache Profiles</text>
+<text class="subtitle" x="72" y="115">The same ProductCacheService contract can compare no cache, local cache, remote cache, and near cache behavior.</text><g transform="translate(0 44)">
+<g>
+  <rect class="card" x="86" y="334" width="254" height="116" rx="16" fill="#E8F3FF" stroke="#5B8DEF"/>
+  <text class="smallLabel" x="213" y="378" text-anchor="middle" dominant-baseline="middle">Spring Service</text>
+<text class="body" x="213" y="406" text-anchor="middle" dominant-baseline="middle">ProductCacheService</text>
+</g>
+<g>
+  <rect class="card" x="486" y="162" width="232" height="100" rx="16" fill="#F5F7FB" stroke="#93A4B7"/>
+  <text class="smallLabel" x="602" y="198" text-anchor="middle" dominant-baseline="middle">No Cache</text>
+<text class="body" x="602" y="226" text-anchor="middle" dominant-baseline="middle">DB baseline</text>
+</g>
+<g>
+  <rect class="card" x="486" y="306" width="232" height="100" rx="16" fill="#EAF7EF" stroke="#58A978"/>
+  <text class="smallLabel" x="602" y="342" text-anchor="middle" dominant-baseline="middle">Caffeine</text>
+<text class="body" x="602" y="370" text-anchor="middle" dominant-baseline="middle">local JVM cache</text>
+</g>
+<g>
+  <rect class="card" x="486" y="450" width="232" height="100" rx="16" fill="#FDECEF" stroke="#DC6B82"/>
+  <text class="smallLabel" x="602" y="486" text-anchor="middle" dominant-baseline="middle">Redis</text>
+<text class="body" x="602" y="514" text-anchor="middle" dominant-baseline="middle">remote shared cache</text>
+</g>
+<g>
+  <rect class="card" x="486" y="594" width="232" height="100" rx="16" fill="#E9F7F6" stroke="#45A7A1"/>
+  <text class="smallLabel" x="602" y="630" text-anchor="middle" dominant-baseline="middle">Near Cache</text>
+<text class="body" x="602" y="658" text-anchor="middle" dominant-baseline="middle">local + remote</text>
+</g>
+<g>
+  <path class="card" d="M902,352 C902,328 1152,328 1152,352 L1152,444 C1152,468 902,468 902,444 Z" fill="#F1ECFF" stroke="#8A72D6"/>
+  <ellipse class="soft" cx="1027" cy="352" rx="125" ry="18" fill="#FFFFFF" opacity="0.50" stroke="#8A72D6"/>
+  <text class="smallLabel" x="1027" y="392" text-anchor="middle" dominant-baseline="middle">Product DB</text>
+<text class="body" x="1027" y="420" text-anchor="middle" dominant-baseline="middle">repository storage</text>
+</g>
+<g>
+  <rect class="card" x="1210" y="334" width="200" height="116" rx="16" fill="#FFF3D9" stroke="#D6A441"/>
+  <text class="smallLabel" x="1310" y="378" text-anchor="middle" dominant-baseline="middle">Benchmark</text>
+<text class="body" x="1310" y="406" text-anchor="middle" dominant-baseline="middle">compare profiles</text>
+</g>
+<g>
+  <rect class="card" x="876" y="594" width="298" height="100" rx="16" fill="#FDECEF" stroke="#DC6B82"/>
+  <text class="smallLabel" x="1025" y="621" text-anchor="middle" dominant-baseline="middle">Resilience Example</text>
+<text class="body" x="1025" y="649" text-anchor="middle" dominant-baseline="middle">Redis primary</text>
+<text class="body" x="1025" y="667" text-anchor="middle" dominant-baseline="middle">Caffeine fallback</text>
+</g>
+<path class="lineBlue" d="M340 392 C396 392 408 212 486 212"/>
+<path class="lineGreen" d="M340 392 H486"/>
+<path class="lineRose" d="M340 392 C396 392 408 500 486 500"/>
+<path class="lineBlue" d="M340 392 C394 392 410 644 486 644"/>
+<path class="lineBlue" d="M718 212 H902 V334"/>
+<path class="lineGreen" d="M718 356 H902"/>
+<path class="lineRose" d="M718 500 H902 V462"/>
+<path class="lineBlue" d="M718 644 H876"/><rect class="pill" x="745" y="612" width="106" height="24" rx="12"/><text class="small" x="798" y="628" text-anchor="middle">fallback path</text>
+<path class="lineRose" d="M718 644 C784 644 810 500 902 500 V462"/><rect class="pill" x="770" y="502" width="100" height="24" rx="12"/><text class="small" x="820" y="518" text-anchor="middle">remote read</text>
+<path class="lineAmber" d="M1152 398 H1210"/><rect class="pill" x="1145" y="366" width="70" height="24" rx="12"/><text class="small" x="1180" y="382" text-anchor="middle">measure</text>
+<path class="lineRose" d="M1025 594 V462"/><rect class="pill" x="1032" y="522" width="112" height="24" rx="12"/><text class="small" x="1088" y="538" text-anchor="middle">fallback state</text>
+</g><text class="small" x="740" y="830" text-anchor="middle">Graphviz structure evidence: cache-series-workshop-profile-01.dot / .plain / -sketch.svg</text></svg>

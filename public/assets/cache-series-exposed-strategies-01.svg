@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="904" viewBox="0 0 1500 904" role="img" aria-labelledby="title desc">
+<title id="title">JdbcCacheRepository Strategy Map</title>
+<desc id="desc">Redisson map loader handles read-through; map writer handles write-through or write-behind.</desc>
+<defs>
+  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="7" stdDeviation="8" flood-color="#203040" flood-opacity="0.10"/></filter>
+  <marker id="arrowBlue" markerWidth="10" markerHeight="9" refX="8.5" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M1,1 L8.5,4.5 L1,8 Z" fill="#4E7FC2"/></marker>
+  <marker id="arrowGreen" markerWidth="10" markerHeight="9" refX="8.5" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M1,1 L8.5,4.5 L1,8 Z" fill="#3C9B72"/></marker>
+  <marker id="arrowAmber" markerWidth="10" markerHeight="9" refX="8.5" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M1,1 L8.5,4.5 L1,8 Z" fill="#C98A22"/></marker>
+  <marker id="arrowRose" markerWidth="10" markerHeight="9" refX="8.5" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M1,1 L8.5,4.5 L1,8 Z" fill="#C85A73"/></marker>
+  <style>
+    .canvas{fill:#F7F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
+    .title{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:42px;fill:#22344A;font-weight:700}
+    .subtitle{font-family:"Comic Mono","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:16px;fill:#536476;font-weight:400}
+    .label{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:24px;fill:#22344A;font-weight:700}
+    .smallLabel{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:20px;fill:#22344A;font-weight:700}
+    .body{font-family:"Comic Mono","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:14px;fill:#34465B;font-weight:400}
+    .small{font-family:"Comic Mono","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:12px;fill:#627184;font-weight:400}
+    .num{font-family:"Comic Mono","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:16px;fill:#22344A;font-weight:700}
+    .card{filter:url(#shadow);stroke-width:2}.soft{stroke-width:1.6}
+    .lineBlue{fill:none;stroke:#4E7FC2;stroke-width:2.4;marker-end:url(#arrowBlue)}
+    .lineGreen{fill:none;stroke:#3C9B72;stroke-width:2.4;marker-end:url(#arrowGreen)}
+    .lineAmber{fill:none;stroke:#C98A22;stroke-width:2.4;marker-end:url(#arrowAmber)}
+    .lineRose{fill:none;stroke:#C85A73;stroke-width:2.4;marker-end:url(#arrowRose)}
+    .dashBlue{fill:none;stroke:#4E7FC2;stroke-width:2.2;stroke-dasharray:8 7;marker-end:url(#arrowBlue)}
+    .dashGreen{fill:none;stroke:#3C9B72;stroke-width:2.2;stroke-dasharray:8 7;marker-end:url(#arrowGreen)}
+    .pill{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:1.2}
+  </style>
+</defs>
+<rect class="canvas" width="1500" height="904"/>
+<rect class="frame" x="34" y="28" width="1432" height="848" rx="26"/>
+<text class="title" x="70" y="82">JdbcCacheRepository Strategy Map</text>
+<text class="subtitle" x="72" y="115">Redisson map loader handles read-through; map writer handles write-through or write-behind.</text><g transform="translate(0 44)">
+<g>
+  <rect class="card" x="72" y="332" width="304" height="126" rx="16" fill="#E8F3FF" stroke="#5B8DEF"/>
+  <text class="smallLabel" x="224" y="363" text-anchor="middle" dominant-baseline="middle">JdbcCacheRepository</text>
+<text class="body" x="224" y="391" text-anchor="middle" dominant-baseline="middle">get · getAll</text>
+<text class="body" x="224" y="409" text-anchor="middle" dominant-baseline="middle">put · putAll</text>
+<text class="body" x="224" y="427" text-anchor="middle" dominant-baseline="middle">invalidate · clear</text>
+</g>
+<g>
+  <rect class="card" x="514" y="300" width="330" height="164" rx="16" fill="#EAF7EF" stroke="#58A978"/>
+  <text class="smallLabel" x="679" y="347" text-anchor="middle" dominant-baseline="middle">RMap</text>
+<text class="smallLabel" x="679" y="371" text-anchor="middle" dominant-baseline="middle">RLocalCachedMap</text>
+<text class="body" x="679" y="399" text-anchor="middle" dominant-baseline="middle">loader + optional writer</text>
+<text class="body" x="679" y="417" text-anchor="middle" dominant-baseline="middle">Near Cache when enabled</text>
+</g>
+<g>
+  <rect class="card" x="944" y="178" width="292" height="116" rx="16" fill="#E9F7F6" stroke="#45A7A1"/>
+  <text class="smallLabel" x="1090" y="213" text-anchor="middle" dominant-baseline="middle">EntityMapLoader</text>
+<text class="body" x="1090" y="241" text-anchor="middle" dominant-baseline="middle">ExposedEntityMapLoader</text>
+<text class="body" x="1090" y="259" text-anchor="middle" dominant-baseline="middle">cache miss -&gt; DB read</text>
+</g>
+<g>
+  <rect class="card" x="944" y="508" width="292" height="120" rx="16" fill="#FFF3D9" stroke="#D6A441"/>
+  <text class="smallLabel" x="1090" y="545" text-anchor="middle" dominant-baseline="middle">EntityMapWriter</text>
+<text class="body" x="1090" y="573" text-anchor="middle" dominant-baseline="middle">ExposedEntityMapWriter</text>
+<text class="body" x="1090" y="591" text-anchor="middle" dominant-baseline="middle">put / putAll -&gt; DB write</text>
+</g>
+<g>
+  <path class="card" d="M1120,348 C1120,324 1382,324 1382,348 L1382,454 C1382,478 1120,478 1120,454 Z" fill="#F1ECFF" stroke="#8A72D6"/>
+  <ellipse class="soft" cx="1251" cy="348" rx="131" ry="18" fill="#FFFFFF" opacity="0.50" stroke="#8A72D6"/>
+  <text class="smallLabel" x="1251" y="386" text-anchor="middle" dominant-baseline="middle">Exposed DB</text>
+<text class="body" x="1251" y="414" text-anchor="middle" dominant-baseline="middle">IdTable</text>
+<text class="body" x="1251" y="432" text-anchor="middle" dominant-baseline="middle">transaction boundary</text>
+</g>
+<g>
+  <rect class="card" x="126" y="610" width="300" height="90" rx="16" fill="#F5F7FB" stroke="#93A4B7"/>
+  <text class="smallLabel" x="276" y="632" text-anchor="middle" dominant-baseline="middle">READ_ONLY</text>
+<text class="body" x="276" y="660" text-anchor="middle" dominant-baseline="middle">UserCredentials</text>
+<text class="body" x="276" y="678" text-anchor="middle" dominant-baseline="middle">WITH_NEAR_CACHE · loader only</text>
+</g>
+<g>
+  <rect class="card" x="486" y="610" width="348" height="90" rx="16" fill="#E8F3FF" stroke="#5B8DEF"/>
+  <text class="smallLabel" x="660" y="632" text-anchor="middle" dominant-baseline="middle">READ_WRITE_THROUGH</text>
+<text class="body" x="660" y="660" text-anchor="middle" dominant-baseline="middle">User</text>
+<text class="body" x="660" y="678" text-anchor="middle" dominant-baseline="middle">WITH_NEAR_CACHE · loader + writer</text>
+</g>
+<g>
+  <rect class="card" x="894" y="690" width="344" height="90" rx="16" fill="#FDECEF" stroke="#DC6B82"/>
+  <text class="smallLabel" x="1066" y="712" text-anchor="middle" dominant-baseline="middle">WRITE_BEHIND</text>
+<text class="body" x="1066" y="740" text-anchor="middle" dominant-baseline="middle">UserEvent</text>
+<text class="body" x="1066" y="758" text-anchor="middle" dominant-baseline="middle">WITH_NEAR_CACHE · async flush</text>
+</g>
+<path class="lineBlue" d="M376 382 H514"/><rect class="pill" x="407" y="350" width="78" height="24" rx="12"/><text class="small" x="446" y="366" text-anchor="middle">get / put</text>
+<path class="lineGreen" d="M514 418 H376"/><rect class="pill" x="408" y="426" width="76" height="24" rx="12"/><text class="small" x="446" y="442" text-anchor="middle">cache hit</text>
+<path class="lineBlue" d="M844 350 H900 V236 H944"/><rect class="pill" x="840" y="204" width="92" height="24" rx="12"/><text class="small" x="886" y="220" text-anchor="middle">cache miss</text>
+<path class="lineBlue" d="M1236 236 H1312 V330"/><rect class="pill" x="1266" y="270" width="104" height="24" rx="12"/><text class="small" x="1318" y="286" text-anchor="middle">read from DB</text>
+<path class="lineAmber" d="M844 428 H902 V568 H944"/><rect class="pill" x="851" y="476" width="98" height="24" rx="12"/><text class="small" x="900" y="492" text-anchor="middle">put / putAll</text>
+<path class="lineAmber" d="M1236 568 H1312 V472"/><rect class="pill" x="1255" y="508" width="130" height="24" rx="12"/><text class="small" x="1320" y="524" text-anchor="middle">write now / async</text>
+<path class="dashGreen" d="M276 610 V464 H514"/><rect class="pill" x="354" y="576" width="88" height="24" rx="12"/><text class="small" x="398" y="592" text-anchor="middle">loader only</text>
+<path class="dashBlue" d="M660 610 V464"/><rect class="pill" x="671" y="576" width="118" height="24" rx="12"/><text class="small" x="730" y="592" text-anchor="middle">loader + writer</text>
+<path class="dashBlue" d="M1066 690 V628"/><rect class="pill" x="1075" y="656" width="146" height="24" rx="12"/><text class="small" x="1148" y="672" text-anchor="middle">write-behind queue</text>
+</g><text class="small" x="750" y="870" text-anchor="middle">Graphviz structure evidence: cache-series-exposed-strategies-01.dot / .plain / -sketch.svg</text></svg>
