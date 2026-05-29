@@ -1,0 +1,124 @@
+---
+title: Building a Large Kotlin Library Ecosystem with AI in Three Months
+description: What Claude Code and Codex helped with while expanding the bluetape4k library ecosystem, and how workflow, memory, reviews, and lessons made that collaboration stable.
+sidebar:
+  order: -202605180100
+blog:
+  date: 2026-05-18T01:00:00+09:00
+  image: /assets/ai-assisted-library-development.png
+  imageAlt: AI-assisted Kotlin library ecosystem development
+  cardDescription: How Claude Code and Codex helped with automation, documentation, tests, research, examples, cross-repository consistency, and workflow discipline.
+---
+
+<p class="bt4k-post-meta">2026-05-18 · bluetape4k engineering note</p>
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/ai-assisted-library-development.png" alt="AI coding agents, automation pipelines, documentation, tests, and repository maps supporting a Kotlin library ecosystem" loading="eager" />
+  <figcaption>For large library work, AI was most valuable as a collaboration system for research, automation, review, documentation, and repeated cross-repository work.</figcaption>
+</figure>
+
+Over the last three months, I used Claude Code and Codex heavily while expanding the bluetape4k ecosystem. The work was not a single application. It spanned multiple library repositories, BOMs, Spring Boot 3/4 integrations, Ktor examples, Exposed JDBC/R2DBC, AWS, graph, image processing, leader election, text processing, and workshop documentation.
+
+At first, I expected AI to help mostly by writing code faster. In practice, the biggest gains did not come from generating one or two files quickly. The real gains came from automating repeated work, documenting the process, improving tests, and keeping many repositories aligned to the same standards. Without a disciplined collaboration process, AI productivity was easy to lose.
+
+## What AI Helped With
+
+The first visible benefit was automation. GitHub Actions maintenance, applying the same setting across many repositories, checking Dependabot and dependency governance, release preparation, and build verification are repetitive and easy to miss when done manually. AI helped split that work, inspect repository-specific differences, and narrow failures quickly.
+
+Documentation also improved. KDoc, README updates, English/Korean README translation, example descriptions, migration notes, and GitHub issue/PR text all matter for library quality, but they take time. With AI, I could produce strong drafts quickly and then adjust the final meaning, tone, and direction myself.
+
+Test coverage improved as well. I used AI to find empty test surfaces, lock public API contracts with tests, suggest edge cases, and analyze failing test output. It was especially useful for extending patterns across modules: if one module needed a certain kind of test, similar modules often needed the same treatment.
+
+For new features, AI was useful in research and pilot work. When evaluating libvips for image processing, shaping Spring Boot 4 and Ktor 3 examples, or organizing Exposed R2DBC usage patterns, AI helped collect official documentation, local code context, and tradeoffs quickly enough to make better decisions sooner.
+
+AI was also strong at proposing example scenarios. It helped frame what users might want to learn first, how Spring Boot and Ktor examples should be separated, and how workshop chapters could grow over time. Those ideas could then become issues and implementation plans.
+
+## The First Two Months Were Rough
+
+The first two months did not translate directly into productivity. There were too many repeated instructions. Previously stated rules were missed. Sometimes instructions were ignored. Every task needed careful human checking.
+
+The largest problem was inconsistent work style from session to session. In one session, tests were thorough. In another, they were weak. In one session, AI found and reused existing bluetape4k utilities. In another, it tried to rebuild something the workspace already had. Problems solved in one module were rediscovered from scratch in a later task.
+
+Code style also drifted. Instead of using bluetape4k helpers, assertions, Testcontainers launchers, and coroutine patterns, AI sometimes imported generic examples or external-library style into the codebase. In a large library ecosystem, "working code" is not enough. The code also has to work in the same style as the ecosystem. AI needed guardrails for that.
+
+Token usage was another cost. Repeating the same background, repository structure, rules, and validation steps in every session was inefficient. If AI cannot keep memory reliably across sessions, the memory has to live outside the session and be easy to reload.
+
+## Collaboration Stabilized In The Third Month
+
+The turning point was accumulating memory, wiki notes, lessons, and custom skills. Work no longer ended with just "done." Each task recorded what went wrong, what decision was made, and what the next agent should avoid. Repeated decisions were promoted into skills.
+
+The most important skills were `bluetape4k-workflow`, `bluetape4k-design`, and `bluetape4k-patterns`. These are not just checklists. They encode how bluetape4k work should proceed: when design is required, when fast track is enough, which Kotlin validation and test styles to use, and how GitHub issues and PRs should be written. AI no longer had to guess the process from scratch each time.
+
+`bluetape4k-workflow` became the first router for each task. It classifies work into Full Design, Fast Track, Bug Fix, Code Review, or Maintenance, then decides which steps are required and which steps can be skipped. Small documentation edits should not pay the cost of a full design process. New modules and public APIs, on the other hand, must go through brainstorming, spec, plan, review, tests, and lessons. That classification alone reduced token usage and repeated instructions.
+
+## `bluetape4k-workflow` Is A Stage Gatekeeper
+
+The most important feature of `bluetape4k-workflow` is that it acts as a stage-by-stage gatekeeper. It is not only a procedure list that says what to do next. Each stage checks whether the work is allowed to move forward. If a stage has not passed, the workflow stops the task from jumping ahead and forces missing design, tests, documentation, or review work to be completed first.
+
+That mattered because different work sizes need different procedures.
+
+<div class="bt4k-workflow-comparison">
+  <section>
+    <strong>Small documentation or configuration change</strong>
+    <ol>
+      <li>Classify as Maintenance</li>
+      <li>Confirm change scope</li>
+      <li>Verify docs/API names</li>
+      <li>Run Astro build or actionlint</li>
+      <li>Commit and deploy</li>
+    </ol>
+    <p>The gatekeeper prevents wasting tokens on unnecessary specs, plans, and advisor reviews. It still keeps the checks that matter: links, paths, and build validation.</p>
+  </section>
+  <section>
+    <strong>New module, public API, or cross-repo change</strong>
+    <ol>
+      <li>Classify as Full Design</li>
+      <li>Create brainstorming, spec, and plan</li>
+      <li>Run multi-perspective spec/plan review</li>
+      <li>Run Claude Code/Codex cross-review</li>
+      <li>Implement, test, and benchmark</li>
+      <li>Run 6-Tier review, CI gate, and lessons capture</li>
+    </ol>
+    <p>The gatekeeper blocks implementation without design, drift from existing bluetape4k patterns, and late discovery of missing tests, docs, CI, or lessons.</p>
+  </section>
+</div>
+
+For example, a small blog text change is classified as Maintenance. The workflow asks whether a spec is needed and skips unnecessary ceremony. It still checks that the site builds, the live page reflects the change, and any repeatable lesson is captured. Small work stays fast, but leaves evidence.
+
+By contrast, a new Ktor module or Spring Boot auto-configuration change must pass the Full Design gate. Brainstorming explores options, the spec fixes the scope, and the plan breaks down implementation order and tests. Then Claude Code and Codex review the spec and plan from different angles. After implementation, the change must pass 6-Tier code review and CI. This looks slower, but it reduces the cost of moving quickly in the wrong direction.
+
+For large work, I used the `superpowers` style of brainstorming, spec, and plan before implementation. Brainstorming widened the alternatives and risks before coding. The spec locked down what would and would not be built. The plan split implementation order, test strategy, documentation updates, and CI impact into concrete work items. Instead of asking AI to "just build it," I made it produce artifacts a human could review.
+
+Specs and plans were not written once and accepted blindly. They were reread from architecture, testing, performance, security, public API, and documentation perspectives. Claude Code and Codex reviewed each other's output. Claude Code CLI found gaps in specs and plans, while Codex applied those findings to the actual repository shape and testability. This cross-review reduced designs that looked plausible but did not fit the project.
+
+The same structure helped code review. Instead of reading a diff once, I split the review by concern: API contracts, coroutine cancellation, Exposed and Spring Boot auto-configuration rules, README accuracy, and missing failure-path tests. Claude Code and Codex cross-review often caught naming drift, missing guards, stale documentation, and cross-repository consistency issues that one model missed.
+
+Another benefit of `bluetape4k-workflow` was that it made the end of work explicit. A task was not done just because code was written. It had to state which tests passed, which reviews ran, which lessons were captured, and which checks could not be performed. That made the next AI session easier to continue from existing specs, plans, lessons, and PR records instead of guessing context again.
+
+Before and after implementation, cross-review mattered. I used Claude Code CLI and Codex CLI to review each other's plans and patches. For larger changes, that helped catch design problems before implementation and missing tests, broken contracts, awkward documentation, and repository-specific drift after implementation.
+
+After that, AI became more stable. The human still had to decide direction and make final calls, but the work no longer felt like it restarted from zero every session. Lessons and skills started making the next task better than the previous one.
+
+## Effects
+
+Existing libraries became more complete. I could improve stability and performance, fix older bugs, increase test coverage, and bring KDoc and README files up to date more often. This work is less flashy than a new feature, but it directly improves the user experience of a library.
+
+New feature development became faster. Research and pilots narrowed the alternatives before implementation. Design and test direction were clearer. AI helped not only with production code and tests, but also with code review and documentation.
+
+Benchmarks became easier to create and use. I could implement the same problem in multiple ways and compare throughput, latency, allocation, coroutine versus virtual-thread behavior, cache strategies, and serialization approaches. AI helped build benchmark fixtures, repeated measurement code, and interpretation angles. The result was not just "this is faster." It became user-facing guidance on which approach to choose under which conditions.
+
+Examples became more varied. Instead of only showing API calls, the examples could show learning paths: which repository to start with, how to compare Spring Boot and Ktor examples, and how to learn Exposed JDBC and R2DBC in a useful order.
+
+Most importantly, work became consistent across many repositories. In a large ecosystem, consistency matters as much as feature count. If BOMs, dependency management, README structure, test style, CI workflows, and issue/PR conventions drift, maintenance cost rises quickly. AI was most useful when it helped enforce that consistency.
+
+## Recommendations
+
+AI can absolutely improve productivity when used well. The key is not to hand everything to AI. The human should focus on the problem, the WHAT. The implementation approach, the HOW, can often be delegated to AI, as long as guardrails keep it inside the project's philosophy and existing structure.
+
+Research, design, and planning matter most. Jumping straight to implementation looks fast, but large work can move quickly in the wrong direction. It was more reliable to have AI research first, compare options, define test strategy, and then implement.
+
+AI memory resets often. That means the team needs external memory infrastructure. Lessons, qmd, wiki pages, repo-local docs, and skills need to exist and be used. If a lesson cannot affect the next task, AI collaboration returns to beginner mode every time.
+
+Finally, experience should be promoted into skills. Lessons record what happened. Skills turn repeatable lessons into execution rules. When issue, PR, review, failed build, and missing-test patterns are added back into skills, AI gradually becomes more project-aware.
+
+The three months of bluetape4k work were not a story about AI replacing a developer. It was closer to the opposite. To make AI work well, the developer had to define problems more clearly, build a better work system, and verify results more rigorously. When that system is in place, AI becomes a strong amplifier for moving a large library ecosystem forward.

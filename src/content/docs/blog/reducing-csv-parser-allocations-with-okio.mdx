@@ -22,7 +22,10 @@ path. The final PR keeps the public API unchanged, adds an internal Okio-backed 
 supported UTF-8 CSV settings, and falls back to the existing reader lexer when the settings
 are outside the fast path.
 
-![CSV parser throughput comparison showing existing and Okio ops per second](/assets/csv-okio-throughput-comparison-01.png)
+<figure class="bt4k-blog-hero">
+  <img src="/assets/csv-okio-throughput-comparison-01.png" alt="CSV parser throughput comparison chart showing existing and Okio ops per second" loading="eager" />
+  <figcaption>A benchmark-backed walkthrough of the #651 CSV parser optimization, from Reader parsing to Okio UnsafeCursor segment scanning.</figcaption>
+</figure>
 
 ## What Changed
 

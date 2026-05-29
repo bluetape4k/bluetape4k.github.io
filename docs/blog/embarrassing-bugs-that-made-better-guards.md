@@ -1,47 +1,65 @@
-# 부끄러운 실수가 더 나은 안전장치를 만들 때
+---
+title: "Embarrassing Bugs That Made Better Guards"
+description: Five bluetape4k-projects bug-fix stories about bad assumptions, how they were found, how they were fixed, and the guards added afterward.
+sidebar:
+  order: -202605290925
+blog:
+  date: 2026-05-29T09:25:00+09:00
+  image: /assets/embarrassing-bug-fix-loop-01.png
+  imageAlt: Pastel flow chart showing mistake, signal, fix, and guard for embarrassing bug fixes
+  cardDescription: "A candid write-up of five bluetape4k-projects fixes: null becoming zero, stale tests, cleanup timeouts, swallowed cancellation, and lost interrupt status."
+---
 
-`bluetape4k-projects`를 고치다 보면 가끔 아주 고급스러운 버그보다 더 아픈 버그가 나온다.
-코드가 어려워서 생긴 문제가 아니라, 보고 나면 "아, 나는 왜 이걸 이렇게 믿었지?" 싶은 문제들이다.
+<p class="bt4k-post-meta">2026-05-29 · bluetape4k projects bug-fix note</p>
 
-이 글은 그런 사례만 모았다. 멋진 최적화나 큰 설계 이야기가 아니라, 작은 착각이 issue가 되고,
-Nightly가 깨지고, 결국 테스트와 release gate로 바뀐 이야기다.
+While working on `bluetape4k-projects`, the bugs that hurt most are not always the clever ones.
+Sometimes they are the small assumptions that make you think: "why did I believe that?"
 
-![Embarrassing bug fix loop](/assets/embarrassing-bug-fix-loop-01.png)
+This post collects those cases. Not grand architecture, not heroic optimization. Just small
+mistakes that became issues, broke Nightly, and eventually turned into tests and release gates.
 
-## 읽는 방법
+<figure class="bt4k-blog-hero">
+  <img src="/assets/embarrassing-bug-fix-loop-01.png" alt="Pastel flow chart showing mistake, signal, fix, and guard for embarrassing bug fixes" loading="eager" />
+  <figcaption>A candid write-up of five bluetape4k-projects fixes: null becoming zero, stale tests, cleanup timeouts, swallowed cancellation, and lost interrupt status.</figcaption>
+</figure>
 
-각 사례는 같은 순서로 본다.
+## How to Read This
 
-| 질문 | 의미 |
+Each case follows the same shape.
+
+| Question | Meaning |
 |---|---|
-| 나는 왜 실수했나 | 당시의 잘못된 가정 |
-| 어떻게 찾았나 | 증상, 실패 로그, round-trip, Nightly signal |
-| 어떻게 고쳤나 | 실제 수정 방향 |
-| 평가는 | 검증 결과와 남은 해석 |
-| 다음 장치는 | 다시 같은 실수를 하지 않기 위한 guard |
+| Why did I make the mistake? | The bad assumption at the time |
+| How did we find it? | Symptom, failing log, round trip, Nightly signal |
+| How did we fix it? | The actual change |
+| How do we judge it? | Verification and remaining interpretation |
+| What guard comes next? | How we avoid repeating the same mistake |
 
-## 1. 빈 properties 값이 `null`이 아니라 `0`이 됐다
+## 1. An Empty Properties Value Became `0` Instead of `null`
 
-관련 issue: [#491](https://github.com/bluetape4k/bluetape4k-projects/issues/491)
+Related issue: [#491](https://github.com/bluetape4k/bluetape4k-projects/issues/491)
 
-이건 정말 작고 민망한 버그다. Java Properties에서 `maxWaitMillis=` 같은 값은 사람이 보면 "값이
-비어 있다"다. 그런데 `JavaPropsMapper`는 Properties 값을 untyped string으로 읽고, nullable numeric
-Kotlin constructor parameter에 넣는 과정에서 빈 문자열을 `0`으로 만들었다.
+This was a tiny, embarrassing bug. In Java Properties, a value like `maxWaitMillis=` reads to a
+human as "the value is empty." But `JavaPropsMapper` read Properties values as untyped strings,
+then converted an empty string into `0` while binding to a nullable numeric Kotlin constructor
+parameter.
 
-### 나는 왜 실수했나
+### Why I Made the Mistake
 
-빈 문자열 처리와 numeric coercion을 너무 일반적인 Jackson 문제로 봤다. "문자열을 숫자로 바꾸는
-과정에서 잘 처리되겠지"라는 믿음이 있었다. 하지만 Java Properties는 format 특성이 강하다. 값이 없는
-property와 값이 `0`인 property는 configuration 의미가 완전히 다르다.
+I treated empty strings and numeric coercion as a generic Jackson problem. I assumed the
+"string to number" path would handle it well enough. But Java Properties has format-specific
+semantics. A property with no value and a property with value `0` mean very different things in
+configuration.
 
-### 어떻게 찾았나
+### How We Found It
 
-round-trip이 깨졌다. 원래 model에서는 nullable numeric 값이 `null`인데, properties로 썼다가 다시
-읽으면 `0`이 됐다. 특히 datasource 설정처럼 timeout, idle, max wait 계열에서 `null`은 "default를
-따르라"는 뜻이고, `0`은 "0으로 설정하라"는 뜻이 될 수 있다.
+A round trip broke. The original model had a nullable numeric value as `null`, but after writing
+to Properties and reading back, it became `0`. In datasource settings, values such as timeout,
+idle timeout, and max wait often use `null` to mean "use the default"; `0` can mean "set this to
+zero."
 
-핵심 검증은 거창하지 않았다. 빈 properties 값을 포함한 round-trip을 걸고, 원래 model과 다시 읽은
-model이 같은지 확인했다.
+The core verification was not fancy. We added a round trip containing empty Properties values
+and checked whether the parsed model matched the original model.
 
 ```kotlin
 private val properties = """
@@ -55,99 +73,101 @@ parsedRoot.bluetape4k.datasources["default"] shouldBeEqualTo default
 parsedRoot.bluetape4k.datasources["read"] shouldBeEqualTo read
 ```
 
-### 어떻게 고쳤나
+### How We Fixed It
 
-수정 범위를 `JacksonText.Props.defaultMapper`에만 묶었다. Jackson 2와 Jackson 3 양쪽에 numeric
-logical type coercion metadata를 적용하고, Properties 전용 numeric module에서 empty string을 boxed
-numeric type의 `null`로 매핑했다. 비어 있지 않은 값은 기존처럼 정상 parse한다.
+The fix stayed inside `JacksonText.Props.defaultMapper`. Both Jackson 2 and Jackson 3 received
+numeric logical type coercion metadata, and the Properties-specific numeric module maps empty
+strings to `null` for boxed numeric types. Non-empty values still parse normally.
 
-### 평가는
+### How We Judged It
 
-검증은 format-specific으로 했다. Jackson 2와 Jackson 3의 named datasource properties round-trip
-test가 각 4개씩 통과했고, 전체 Jackson 2/3 test도 통과했다.
+Verification stayed format-specific. Four named datasource Properties round-trip tests passed
+for Jackson 2, four passed for Jackson 3, and the full Jackson 2/3 tests passed as well.
 
-여기서 중요한 점은 "CSV, TOML, YAML도 비슷하게 고치자"가 아니었다. 그건 또 다른 실수다.
-Properties에서 발견한 bug를 모든 text format에 전파하면, 다음에는 format-specific semantics를
-망가뜨릴 수 있다.
+The important decision was not "fix CSV, TOML, and YAML the same way." That would be another
+mistake. A bug found in Properties should not be blindly pushed into every text format, because
+each format has its own semantics.
 
-### 다음 장치
+### Next Guard
 
-재발 방지 장치는 간단하다. format-specific bug는 format-specific mapper에만 고친다. 그리고
-configuration round-trip test를 둔다. `null`, empty string, `0`은 설정 파일에서는 서로 다른 값이다.
+The guard is simple: fix format-specific bugs in the format-specific mapper, and keep
+configuration round-trip tests around. In configuration files, `null`, an empty string, and `0`
+are different values.
 
-## 2. Nightly가 가르쳐준 것: "테스트가 낡았다"도 버그다
+## 2. What Nightly Taught Us: A Stale Test Is Also a Bug
 
-관련 issue: [#595](https://github.com/bluetape4k/bluetape4k-projects/issues/595)
+Related issue: [#595](https://github.com/bluetape4k/bluetape4k-projects/issues/595)
 
-관련 PR: [#598](https://github.com/bluetape4k/bluetape4k-projects/pull/598)
+Related PR: [#598](https://github.com/bluetape4k/bluetape4k-projects/pull/598)
 
-Nightly run `26243476594`는 IO HTTP, infra search-messaging, Testcontainers graphdb-memgraph
-세 조각에서 실패했다. 이런 실패는 처음 보면 "외부 서비스가 흔들렸나?"로 보인다. 그런데 실제로는
-일부 테스트가 현재 코드의 현실을 제대로 따라오지 못했다.
+Nightly run `26243476594` failed in three slices: IO HTTP, infra search-messaging, and
+Testcontainers graphdb-memgraph. At first glance, that kind of failure looks like external
+service instability. In reality, some tests had simply fallen behind the current code.
 
-### 나는 왜 실수했나
+### Why I Made the Mistake
 
-테스트를 "이미 있는 검증"으로 믿었다. 그런데 테스트도 코드다. DSL이 바뀌면 테스트도 낡고,
-Testcontainers reuse가 켜져 있으면 CI의 credential state도 낡을 수 있다.
+I treated existing tests as existing verification. But tests are code too. If the DSL changes,
+tests can go stale. If Testcontainers reuse is enabled, CI credential state can go stale too.
 
-PR #598의 한 조각은 MyBatis dynamic-sql join validation test를 현재 `on` 기반 Kotlin DSL과
-현재 exception type에 맞춘 것이다. 또 다른 조각은 secured Elasticsearch singleton reuse를 꺼서
-stale CI credentials 문제를 피한 것이다.
+One part of PR #598 updated MyBatis dynamic-sql join validation tests for the current `on`-based
+Kotlin DSL and current exception type. Another part disabled secured Elasticsearch singleton
+reuse to avoid stale CI credentials.
 
-### 어떻게 찾았나
+### How We Found It
 
-Nightly가 알려줬다. local targeted test만 보면 놓치기 쉬운 external-service slice가 full Nightly에서
-실패했다. 중요한 것은 실패한 위치를 보고 곧장 production code를 고치지 않았다는 점이다. 먼저
-"이 테스트가 지금의 API와 환경을 제대로 재현하나?"를 봤다.
+Nightly told us. A local targeted test can miss external-service slices that Full Nightly still
+exercises. The key point was not to immediately patch production code. The first question was:
+"does this test still represent the current API and environment?"
 
-### 어떻게 고쳤나
+### How We Fixed It
 
-낡은 test expectation을 현재 DSL과 exception contract에 맞췄고, shared secured Elasticsearch
-test singleton에서는 reuse를 끄는 쪽으로 정리했다. 테스트는 빠르면 좋지만, 이전 실행의 credential
-state를 재활용해서 거짓 실패를 만들면 release signal로는 나쁘다.
+Stale test expectations were aligned with the current DSL and exception contract, and shared
+secured Elasticsearch test singleton reuse was disabled. Fast tests are good, but reusing
+credential state from a previous run is a bad release signal if it creates false failures.
 
-### 평가는
+### How We Judged It
 
-이건 성능 개선도, 멋진 refactor도 아니다. 하지만 release train에서는 이런 수정이 더 중요할 때가
-있다. Nightly가 실패했을 때 "아마 flaky"로 넘기지 않고, 테스트가 현재 reality를 검증하는지 확인한
-것이 핵심이다.
+This was not a performance win or an elegant refactor. But in a release train, this kind of fix
+can matter more. The lesson was to treat a Nightly failure as evidence, not as "probably flaky."
 
-### 다음 장치
+### Next Guard
 
-외부 서비스 테스트가 깨질 때는 세 가지를 먼저 본다.
+When an external-service test fails, check three things first.
 
-- 테스트가 현재 public API와 exception contract를 따라가는가?
-- Testcontainers reuse가 CI state를 오염시키는가?
-- 실패가 service readiness인지, client cleanup인지, credential reuse인지 분리되어 있는가?
+- Does the test still follow the current public API and exception contract?
+- Is Testcontainers reuse polluting CI state?
+- Is the failure service readiness, client cleanup, credential reuse, or something else?
 
-## 3. Memgraph는 query가 아니라 `close()`에서 멈췄다
+## 3. Memgraph Did Not Hang in the Query. It Hung in `close()`
 
-관련 issue: [#602](https://github.com/bluetape4k/bluetape4k-projects/issues/602)
+Related issue: [#602](https://github.com/bluetape4k/bluetape4k-projects/issues/602)
 
-관련 PR: [#604](https://github.com/bluetape4k/bluetape4k-projects/pull/604)
+Related PR: [#604](https://github.com/bluetape4k/bluetape4k-projects/pull/604)
 
-Full Nightly에서 `MemgraphServerTest`가 timeout을 냈다. 처음에는 자연스럽게 container startup,
-readiness, image version을 의심하게 된다. 그런데 황당하게도 Bolt query path는 이미 성공했다.
-멈춘 곳은 Neo4j Java Driver의 `Driver.close()`였다.
+Full Nightly timed out in `MemgraphServerTest`. The natural first suspects were container
+startup, readiness, or the image version. But the surprising part was that the Bolt query path
+had already succeeded. The hang was inside Neo4j Java Driver's `Driver.close()`.
 
-### 나는 왜 실수했나
+### Why I Made the Mistake
 
-"Testcontainers test timeout이면 container 문제겠지"라고 생각하기 쉽다. 하지만 여기서는 container가
-아니라 client cleanup이 문제였다. 성공한 query 뒤에 cleanup이 runner를 붙잡고 있었다.
+It is easy to think, "a Testcontainers timeout must be a container problem." Here, the container
+was not the problem. Client cleanup was holding the runner after a successful query.
 
-### 어떻게 찾았나
+### How We Found It
 
-stack을 봤다. 실패 지점이 container startup이나 Bolt query가 아니라 driver close path 안에 있었다.
-이 단서가 없었으면 image tag를 바꾸거나 readiness를 늘리는 식으로 시간을 낭비했을 가능성이 높다.
+The stack told the story. The failing point was not container startup and not the Bolt query. It
+was inside the driver close path. Without that clue, we could have wasted time changing image
+tags or extending readiness waits.
 
-### 어떻게 고쳤나
+### How We Fixed It
 
-Memgraph image와 Neo4j driver version은 그대로 뒀다. 이미 당시 current line이었다. 대신 test driver를
-single connection pool/event-loop로 제한하고, telemetry와 auto-commit retry를 껐다. 그리고 blocking
-`Driver.close()` 대신 `closeAsync()`에 bounded timeout을 적용했다.
+The Memgraph image and Neo4j driver version stayed as they were. They were already on the
+current line at the time. Instead, the test driver was restricted to a single connection
+pool/event-loop, telemetry and auto-commit retry were disabled, and blocking `Driver.close()`
+was replaced by `closeAsync()` with a bounded timeout.
 
-cleanup guard는 이 정도로 명시적이어야 했다. query가 성공했으면 검증은 끝난 것이고, driver cleanup이
-Nightly runner를 무기한 붙잡으면 안 된다.
+The cleanup guard had to be explicit. If the query passed, the release-gate assertion had done
+its job. Driver cleanup must not hold the Nightly runner forever.
 
 ```kotlin
 private fun Driver.closeWithin(timeout: Long, unit: TimeUnit) {
@@ -164,47 +184,48 @@ private fun Driver.closeWithin(timeout: Long, unit: TimeUnit) {
 }
 ```
 
-테스트의 release-gate assertion은 여전히 "Bolt query가 성공하는가"다. cleanup은 runner를 무기한
-붙잡으면 안 된다.
+The release-gate assertion remained: does the Bolt query succeed? Cleanup should be bounded.
 
-### 평가는
+### How We Judged It
 
-`MemgraphServerTest` 단일 test는 6개 passing, graphdb test slice는 27개 passing으로 확인했다.
-이 문제는 "더 오래 기다리자"가 아니라 "cleanup이 release gate를 인질로 잡지 않게 하자"였다.
+The single `MemgraphServerTest` had 6 passing tests, and the graphdb slice had 27 passing tests.
+The fix was not "wait longer"; it was "do not let cleanup hold the release gate hostage."
 
-### 다음 장치
+### Next Guard
 
-Testcontainers-backed driver test에서 query는 성공했는데 cleanup에서 멈추면, readiness와 image부터
-바꾸지 않는다. close stack을 먼저 본다. 그리고 cleanup에는 bounded path를 둔다.
+When a Testcontainers-backed driver test succeeds in query verification but hangs in cleanup, do
+not start by changing readiness or image versions. Look at the close stack first, and keep a
+bounded cleanup path.
 
-## 4. `catch (Throwable)`이 coroutine cancellation을 HTTP failure로 만들었다
+## 4. `catch (Throwable)` Turned Coroutine Cancellation into HTTP Failure
 
-관련 issue: [#654](https://github.com/bluetape4k/bluetape4k-projects/issues/654)
+Related issue: [#654](https://github.com/bluetape4k/bluetape4k-projects/issues/654)
 
-관련 PR: [#670](https://github.com/bluetape4k/bluetape4k-projects/pull/670)
+Related PR: [#670](https://github.com/bluetape4k/bluetape4k-projects/pull/670)
 
-Vert.x route coroutine helper는 suspend handler에서 발생한 실패를 `RoutingContext.fail(...)`로 넘겼다.
-평범한 exception에는 맞는 처리다. 문제는 broad `Throwable` catch가 `CancellationException`까지 잡았다는
-점이다.
+The Vert.x route coroutine helper forwarded failures from a suspend handler to
+`RoutingContext.fail(...)`. That is fine for ordinary exceptions. The problem was that a broad
+`Throwable` catch also caught `CancellationException`.
 
-### 나는 왜 실수했나
+### Why I Made the Mistake
 
-HTTP route에서는 "handler에서 난 건 fail로 보내자"가 그럴듯하다. 그런데 coroutine cancellation은
-일반 실패가 아니다. structured concurrency에서는 cancellation이 control signal이다. 이걸 HTTP failure로
-바꾸면 caller가 취소한 작업이 마치 application error처럼 보인다.
+In an HTTP route, "send handler failures to fail" sounds reasonable. But coroutine cancellation
+is not an ordinary failure. In structured concurrency, cancellation is a control signal. If it is
+converted into an HTTP failure, a caller-cancelled operation starts looking like an application
+error.
 
-### 어떻게 찾았나
+### How We Found It
 
-route helper의 catch 경계를 보면서 찾았다. `Throwable` fallback이 너무 넓었다. 정상 exception path와
-cancellation path를 같은 바구니에 넣고 있었다.
+The catch boundary was too broad. The helper put ordinary exceptions and cancellation into the
+same bucket.
 
-### 어떻게 고쳤나
+### How We Fixed It
 
-`suspendHandler`와 `suspendFailureHandler`에서 `CancellationException`을 먼저 잡아 rethrow했다.
-그 다음에만 ordinary exception을 `ctx.fail(e)`로 보냈다. regression test는 cancellation path와 normal
-exception path를 둘 다 잠갔다.
+Both `suspendHandler` and `suspendFailureHandler` now catch `CancellationException` first and
+rethrow it. Only ordinary exceptions are sent to `ctx.fail(e)`. Regression tests lock both paths:
+cancellation and normal exception.
 
-수정 자체는 한 줄짜리 철학에 가깝다. cancellation은 실패 처리기로 넘기지 않는다.
+The philosophy is one line: do not send cancellation to the failure handler.
 
 ```kotlin
 try {
@@ -216,60 +237,64 @@ try {
 }
 ```
 
-그리고 테스트는 두 경로를 분리해서 잠갔다.
+The tests keep the paths separate.
 
 ```kotlin
 verify(exactly = 0) { ctx.fail(any<Throwable>()) } // cancellation
 verify(exactly = 1) { ctx.fail(failure) }          // normal exception
 ```
 
-### 평가는
+### How We Judged It
 
-기능은 그대로다. 일반 handler exception은 여전히 Vert.x failure path로 간다. 달라진 것은 cancellation을
-실패로 위장하지 않는다는 점이다.
+Behavior for ordinary handler exceptions stayed the same. They still flow through Vert.x failure
+handling. The only change is that cancellation is no longer disguised as failure.
 
-### 다음 장치
+### Next Guard
 
-suspend boundary에서 broad catch를 쓰면 항상 먼저 질문한다.
+Whenever a suspend boundary uses a broad catch, ask:
 
-> 여기서 `CancellationException`이 잡히면 어떻게 되는가?
+> What happens if `CancellationException` is caught here?
 
-답이 애매하면 이미 위험하다. `CancellationException`을 먼저 rethrow하거나, `runCatchingNonCancellation`
-같은 helper를 써야 한다.
+If the answer is vague, the code is already risky. Rethrow `CancellationException` first or use a
+helper such as `runCatchingNonCancellation`.
 
-## 5. `runCatching`이 interrupt를 timeout처럼 보이게 했다
+## 5. `runCatching` Made Interrupts Look Like Timeouts
 
-관련 issues: [#656](https://github.com/bluetape4k/bluetape4k-projects/issues/656),
+Related issues: [#656](https://github.com/bluetape4k/bluetape4k-projects/issues/656),
 [#657](https://github.com/bluetape4k/bluetape4k-projects/issues/657)
 
-관련 PR: [#669](https://github.com/bluetape4k/bluetape4k-projects/pull/669)
+Related PR: [#669](https://github.com/bluetape4k/bluetape4k-projects/pull/669)
 
-gRPC server shutdown code는 `runCatching { awaitTermination(...) }.getOrDefault(false)`를 사용했다.
-겉보기에는 깔끔하다. graceful termination이 실패하거나 timeout이면 `false`로 보고 `shutdownNow()`로
-넘어가면 된다.
+The gRPC server shutdown code used
+`runCatching { awaitTermination(...) }.getOrDefault(false)`. It looked neat. If graceful
+termination failed or timed out, return `false` and proceed to `shutdownNow()`.
 
-그런데 `awaitTermination(...)`은 `InterruptedException`을 던질 수 있다. `runCatching`은 이 interrupt도
-그냥 "false로 바꿀 수 있는 실패"처럼 눌러버렸다. 결과적으로 caller thread의 interrupt status가 사라졌다.
+But `awaitTermination(...)` can throw `InterruptedException`. `runCatching` swallowed that
+interrupt as just another failure that could become `false`. The caller thread's interrupt
+status disappeared.
 
-### 나는 왜 실수했나
+### Why I Made the Mistake
 
-`runCatching`이 너무 편했다. lifecycle code에서 "실패하면 false"라는 모양을 만들기 쉽다. 하지만 blocking
-API의 interruption은 일반 실패가 아니다. thread에게 남겨야 하는 신호다.
+`runCatching` is convenient. It makes lifecycle code look like "if it fails, return false." But
+interruption from a blocking API is not an ordinary failure. It is a signal that must be
+preserved on the thread.
 
-### 어떻게 찾았나
+### How We Found It
 
-shutdown lifecycle issue를 보면서 interrupt path를 따로 생각했다. timeout과 interruption은 둘 다
-graceful termination 실패처럼 보일 수 있지만, 후자는 caller에게 돌려줘야 할 상태가 있다.
+While reviewing shutdown lifecycle issues, we separated timeout from interruption. Both can look
+like graceful termination failure, but interruption carries state that must be returned to the
+caller.
 
-### 어떻게 고쳤나
+### How We Fixed It
 
-port-based server와 in-process server 양쪽에서 explicit `try/catch`로 바꿨다. `InterruptedException`을
-잡으면 `Thread.currentThread().interrupt()`로 interrupt flag를 복원하고 `false`를 반환한다. 그러면 기존처럼
-`shutdownNow()`는 실행되지만, caller interrupt status는 사라지지 않는다.
+Both the port-based server and the in-process server were changed to explicit `try/catch`. When
+`InterruptedException` is caught, the code restores the interrupt flag with
+`Thread.currentThread().interrupt()` and returns `false`. That still triggers `shutdownNow()`,
+but the caller's interrupt status survives.
 
-forced shutdown 뒤에도 bounded termination wait를 두어 fire-and-forget cleanup이 되지 않게 했다.
+After forced shutdown, bounded termination waits were added so cleanup is not fire-and-forget.
 
-여기서도 코드가 예뻐지는 것보다 신호를 보존하는 것이 더 중요했다.
+Here, preserving the signal mattered more than making the code look tidy.
 
 ```kotlin
 private fun awaitTerminationOrRestoreInterrupt(): Boolean =
@@ -281,7 +306,7 @@ private fun awaitTerminationOrRestoreInterrupt(): Boolean =
     }
 ```
 
-회귀 테스트는 timeout과 interrupt를 같은 실패로 보지 않도록 했다.
+Regression tests make sure timeout and interruption are not treated as the same thing.
 
 ```kotlin
 server.stop()
@@ -292,48 +317,51 @@ recordingServer.shutdownNowCalls shouldBeEqualTo 1
 Thread.currentThread().isInterrupted.shouldBeTrue()
 ```
 
-### 평가는
+### How We Judged It
 
-기존 timeout behavior는 유지됐다. 달라진 것은 interruption semantics다. regression test는 port-based와
-in-process server variants 모두에서 interrupt status 보존을 확인했다.
+Existing timeout behavior stayed the same. The changed part is interruption semantics.
+Regression tests cover interrupt-status preservation for both port-based and in-process server
+variants.
 
-### 다음 장치
+### Next Guard
 
-blocking lifecycle API 주변에서 broad `runCatching`을 쓰지 않는다. 특히 `InterruptedException`을 던지는
-API라면 explicit catch로 interrupt status를 보존해야 한다.
+Do not use broad `runCatching` around blocking lifecycle APIs. If an API throws
+`InterruptedException`, use explicit catch and preserve interrupt status.
 
-## 이 실수들의 공통점
+## What These Mistakes Have in Common
 
-다섯 사례는 서로 달라 보이지만, 사실 같은 패턴이다.
+The five cases look different, but they share the same pattern.
 
-| 실수 | 잘못 믿은 것 | 실제 guard |
+| Mistake | Bad assumption | Actual guard |
 |---|---|---|
-| Empty numeric property | 빈 값과 `0`은 적당히 구분되겠지 | format-specific round-trip test |
-| Nightly external-service failures | 기존 테스트는 현재 현실을 반영하겠지 | Nightly failure를 test drift로도 분석 |
-| Memgraph timeout | Testcontainers timeout은 container 문제겠지 | query와 cleanup stack 분리 |
-| Vert.x cancellation | route failure catch가 다 처리해주겠지 | cancellation rethrow regression |
-| gRPC interruption | `runCatching`으로 lifecycle 실패를 단순화해도 되겠지 | explicit interrupt preservation |
+| Empty numeric property | Empty value and `0` will be distinguished somehow | Format-specific round-trip test |
+| Nightly external-service failures | Existing tests reflect current reality | Analyze Nightly failure as possible test drift |
+| Memgraph timeout | A Testcontainers timeout must be a container problem | Separate query stack from cleanup stack |
+| Vert.x cancellation | Route failure catch handles everything | Cancellation rethrow regression |
+| gRPC interruption | `runCatching` can simplify lifecycle failure | Explicit interrupt preservation |
 
-부끄러운 버그의 장점은, 고치고 나면 guard가 아주 선명해진다는 점이다. 어려운 설계 논쟁이 아니라
-"다음에는 이 줄에서 바로 걸리게 하자"가 된다.
+The upside of an embarrassing bug is that the guard is usually very clear afterward. It stops
+being an abstract design debate and becomes: "make this line fail earlier next time."
 
-## 다음에는 어떻게 덜 멍청해질까
+## How to Be a Little Less Wrong Next Time
 
-내가 여기서 얻은 규칙은 세 가지다.
+I took three rules from these fixes.
 
-첫째, 값의 의미를 코드 타입만 보고 판단하지 않는다. `""`, `null`, `0`은 모두 다르다. 특히 설정 파일에서는
-더 다르다.
+First, do not infer value semantics from code types alone. `""`, `null`, and `0` are all
+different, especially in configuration files.
 
-둘째, 실패 위치를 추정하지 않는다. Testcontainers가 보인다고 container부터 고치지 않는다. stack이
-`close()`를 가리키면 cleanup을 본다.
+Second, do not guess the failure location. If Testcontainers appears in the failure, do not
+immediately fix the container. If the stack points to `close()`, look at cleanup.
 
-셋째, broad catch와 `runCatching`은 lifecycle/coroutine boundary에서 편한 만큼 위험하다. cancellation과
-interruption은 예외라기보다 신호다. 신호를 삼키면 나중에 훨씬 이상한 곳에서 문제가 터진다.
+Third, broad catch and `runCatching` are convenient but dangerous around lifecycle and coroutine
+boundaries. Cancellation and interruption are signals, not just exceptions. If those signals are
+swallowed, the actual problem will show up somewhere much stranger later.
 
-마지막으로 issue [#497](https://github.com/bluetape4k/bluetape4k-projects/issues/497)과
-PR [#567](https://github.com/bluetape4k/bluetape4k-projects/pull/567)에서 만든 `checkDisabledTests` 같은
-release gate가 중요하다. 부끄러운 실수를 개인 기억에만 맡기면 반복된다. 보고서, test, gate, lesson으로
-바꿔야 다음 사람이 같은 구덩이에 덜 빠진다.
+The `checkDisabledTests` release gate from issue
+[#497](https://github.com/bluetape4k/bluetape4k-projects/issues/497) and
+PR [#567](https://github.com/bluetape4k/bluetape4k-projects/pull/567) matters for the same
+reason. If an embarrassing mistake only lives in someone's memory, it will repeat. It has to
+become a report, a test, a gate, or a lesson.
 
 ```kotlin
 val checkDisabledTests by tasks.registering(DisabledTestReportTask::class) {
@@ -349,6 +377,6 @@ tasks.named("check") {
 }
 ```
 
-실수는 사라지지 않는다. 대신 release 전에 이런 식으로 한 번 더 걸리게 만들 수 있다.
+Mistakes do not disappear. But they can be made easier to catch before release.
 
-좋은 bug fix는 "고쳤다"에서 끝나지 않는다. "다음에는 더 빨리 들키게 만들었다"까지 가야 한다.
+A good bug fix does not end at "fixed." It should also mean "next time, this fails sooner."
