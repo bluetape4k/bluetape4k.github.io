@@ -25,6 +25,9 @@ export default defineConfig({
         src: './src/assets/logo.png',
       },
       favicon: '/avatar.png',
+      components: {
+        Footer: './src/components/StarlightFooter.astro',
+      },
       customCss: ['./src/styles/custom.css'],
       head: [
         {

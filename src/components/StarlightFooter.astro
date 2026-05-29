@@ -1,0 +1,14 @@
+---
+import DefaultFooter from '@astrojs/starlight/components/Footer.astro';
+import GiscusComments from './GiscusComments.astro';
+
+const { starlightRoute } = Astro.locals;
+const entryId = starlightRoute.entry.id;
+const isBlogPost =
+  (entryId.startsWith('blog/') || entryId.startsWith('ko/blog/')) &&
+  entryId !== 'blog/index' &&
+  entryId !== 'ko/blog/index';
+---
+
+{isBlogPost && <GiscusComments />}
+<DefaultFooter />
