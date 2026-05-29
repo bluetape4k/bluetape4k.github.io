@@ -12,7 +12,7 @@ blog:
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/virtual-threads-part3-hero.png" alt="Editorial illustration of JDBC work running on virtual threads beside reactive database work" loading="eager" />
-  <figcaption>The opening image sets up the database concurrency story; the charts stay with the benchmark evidence.</figcaption>
+  <figcaption>Database performance is often decided at the connection, transaction, and backpressure boundaries.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-29 · Virtual Threads series · Part 3</p>

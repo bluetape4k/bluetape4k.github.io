@@ -12,7 +12,7 @@ blog:
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/image-processing-hero.png" alt="Editorial illustration of an image processing pipeline moving from JVM pixels to native acceleration" loading="eager" />
-  <figcaption>This article is about the pipeline decision first; the benchmark summary appears later as evidence.</figcaption>
+  <figcaption>An image backend decision changes CPU time, memory pressure, deployment shape, and operational risk together.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-28 · bluetape4k image benchmark note</p>

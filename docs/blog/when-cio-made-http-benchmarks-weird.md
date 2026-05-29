@@ -12,7 +12,7 @@ blog:
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/io-http-cio-hero.png" alt="Editorial illustration of HTTP clients running through the same benchmark harness" loading="eager" />
-  <figcaption>The hero image is the mood. The benchmark chart waits until the story earns it.</figcaption>
+  <figcaption>The same HTTP abstraction can hide very different bottlenecks under each client implementation.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-29 · bluetape4k io/http benchmark note</p>

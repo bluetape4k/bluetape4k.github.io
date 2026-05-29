@@ -12,7 +12,7 @@ blog:
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/csv-writer-hero.png" alt="Editorial illustration of a CSV writer pipeline sending rows into a buffered byte sink" loading="eager" />
-  <figcaption>The hero image is the story setting; the throughput chart now stays in the benchmark section where it belongs.</figcaption>
+  <figcaption>CSV rows move faster when the writer stops taking the long way through character buffers.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-29 · bluetape4k csv performance note</p>

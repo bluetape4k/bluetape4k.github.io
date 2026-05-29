@@ -12,7 +12,7 @@ blog:
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/csv-parser-okio-hero.png" alt="Editorial illustration of a CSV parser reading byte segments without unnecessary copies" loading="eager" />
-  <figcaption>The opening image introduces the byte-first parser story; the throughput chart remains in the measurement section.</figcaption>
+  <figcaption>A byte-first parser can remove a surprising amount of waste before any clever algorithm appears.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-29 · bluetape4k csv performance note</p>
