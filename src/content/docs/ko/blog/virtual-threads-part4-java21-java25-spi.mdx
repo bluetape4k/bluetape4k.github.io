@@ -5,14 +5,14 @@ sidebar:
   order: -202605291103
 blog:
   date: 2026-05-29T11:03:00+09:00
-  image: /assets/virtual-threads-part4-spi-01.png
-  imageAlt: ServiceLoader module layout for Java 21 and Java 25 virtual thread runtimes
+  image: /assets/virtual-threads-part4-hero.png
+  imageAlt: 하나의 SPI가 Java 21과 Java 25 runtime implementation을 연결하는 소개용 일러스트
   cardDescription: "Java 21과 25 차이는 내부로 숨기고, application code에는 하나의 Virtual Threads API만 보여주는 방법."
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/virtual-threads-part4-spi-01.png" alt="ServiceLoader module layout for Java 21 and Java 25 virtual thread runtimes" loading="eager" />
-  <figcaption>Java 21과 25 차이는 내부로 숨기고, application code에는 하나의 Virtual Threads API만 보여주는 방법.</figcaption>
+  <img src="/assets/virtual-threads-part4-hero.png" alt="하나의 SPI가 Java 21과 Java 25 runtime implementation을 연결하는 소개용 일러스트" loading="eager" />
+  <figcaption>SPI 경계가 적당히 심심하면, 하나의 public API 뒤에 두 runtime 선택지를 숨길 수 있다.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-29 · Virtual Threads series · Part 4</p>
@@ -39,6 +39,11 @@ application code가 "지금 Java 21인가, 25인가?"를 매번 따져야 한다
 그림의 핵심은 application이 `jdk21`/`jdk25` 구현체를 직접 알지 않는다는 점이다. application은 공통
 API만 호출하고, `ServiceLoader`가 runtime provider를 고른다. 그러면 JDK별 차이는 배포 artifact와
 provider 내부로 들어간다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/virtual-threads-part4-spi-01.png" alt="ServiceLoader module layout for Java 21 and Java 25 virtual thread runtimes" loading="lazy" />
+  <figcaption>Java 21과 25 차이는 내부로 숨기고, application code에는 하나의 Virtual Threads API만 보여주는 방법.</figcaption>
+</figure>
 
 ## Java 21과 Java 25의 차이
 

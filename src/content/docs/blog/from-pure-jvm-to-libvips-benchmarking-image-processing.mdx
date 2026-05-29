@@ -5,14 +5,14 @@ sidebar:
   order: -202605282307
 blog:
   date: 2026-05-28T23:07:00+09:00
-  image: /assets/image-processing-benchmark-summary-01.png
-  imageAlt: Benchmark summary comparing scrimage pure JVM and libvips Java 25 FFM image processing
+  image: /assets/image-processing-hero.png
+  imageAlt: Editorial illustration of an image processing pipeline moving from JVM pixels to native acceleration
   cardDescription: Benchmark results for scrimage vs libvips, Java 21 JNI host limits, Java 25 FFM measurements, and a workshop derivative pipeline example.
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/image-processing-benchmark-summary-01.png" alt="Benchmark summary comparing scrimage pure JVM and libvips Java 25 FFM image processing" loading="eager" />
-  <figcaption>Benchmark results for scrimage vs libvips, Java 21 JNI host limits, Java 25 FFM measurements, and a workshop derivative pipeline example.</figcaption>
+  <img src="/assets/image-processing-hero.png" alt="Editorial illustration of an image processing pipeline moving from JVM pixels to native acceleration" loading="eager" />
+  <figcaption>This article is about the pipeline decision first; the benchmark summary appears later as evidence.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-28 · bluetape4k image benchmark note</p>
@@ -30,6 +30,10 @@ This post uses the `images-benchmark` results to answer three questions.
 - How should we interpret Java 21 JNI and Java 25 FFM backends?
 - Where does this difference matter in an actual service workflow?
 
+<figure class="bt4k-architecture">
+  <img src="/assets/image-processing-benchmark-summary-01.png" alt="Benchmark summary comparing scrimage pure JVM and libvips Java 25 FFM image processing" loading="lazy" />
+  <figcaption>Benchmark results for scrimage vs libvips, Java 21 JNI host limits, Java 25 FFM measurements, and a workshop derivative pipeline example.</figcaption>
+</figure>
 
 ## Benchmark Setup
 

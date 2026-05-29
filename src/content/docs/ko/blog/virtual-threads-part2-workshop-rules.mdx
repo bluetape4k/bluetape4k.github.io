@@ -5,14 +5,14 @@ sidebar:
   order: -202605291101
 blog:
   date: 2026-05-29T11:01:00+09:00
-  image: /assets/virtual-threads-part2-rules-01.png
-  imageAlt: Practical virtual thread rules from bluetape4k-workshop
+  image: /assets/virtual-threads-part2-hero.png
+  imageAlt: 실전 virtual thread rule이 checklist로 정리되는 소개용 일러스트
   cardDescription: "Virtual Threads를 켰다고 끝이 아니다. pool, semaphore, context, lock에서 바로 티가 나는 실전 규칙들."
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/virtual-threads-part2-rules-01.png" alt="Practical virtual thread rules from bluetape4k-workshop" loading="eager" />
-  <figcaption>Virtual Threads를 켰다고 끝이 아니다. pool, semaphore, context, lock에서 바로 티가 나는 실전 규칙들.</figcaption>
+  <img src="/assets/virtual-threads-part2-hero.png" alt="실전 virtual thread rule이 checklist로 정리되는 소개용 일러스트" loading="eager" />
+  <figcaption>쓸모 있는 rule은 JDBC pool, lock, shutdown path와 부딪혀도 살아남는 rule이다.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-29 · Virtual Threads series · Part 2</p>
@@ -26,6 +26,10 @@ Part 1은 큰 그림이었다. 이번 글은 조금 더 손에 잡히는 규칙�
 `bluetape4k-workshop/virtualthreads/rules`의 예제들이다. 이 예제들은 "Virtual Threads를 쓰면 된다"에서
 끝나지 않는다. "이렇게 쓰면 기대한 만큼 안 나온다"까지 같이 보여준다.
 
+<figure class="bt4k-architecture">
+  <img src="/assets/virtual-threads-part2-rules-01.png" alt="Practical virtual thread rules from bluetape4k-workshop" loading="lazy" />
+  <figcaption>Virtual Threads를 켰다고 끝이 아니다. pool, semaphore, context, lock에서 바로 티가 나는 실전 규칙들.</figcaption>
+</figure>
 
 ## 규칙 1. I/O 대기라면 blocking synchronous code를 그대로 살릴 수 있다
 

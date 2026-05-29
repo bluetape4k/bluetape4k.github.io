@@ -5,14 +5,14 @@ sidebar:
   order: -202605291102
 blog:
   date: 2026-05-29T11:02:00+09:00
-  image: /assets/virtual-threads-part3-benchmark-01.png
-  imageAlt: Benchmark summary comparing JDBC with virtual threads and R2DBC with coroutines
+  image: /assets/virtual-threads-part3-hero.png
+  imageAlt: JDBC 작업이 virtual thread 위에서 reactive database 작업과 나란히 실행되는 소개용 일러스트
   cardDescription: "R2DBC가 당연히 이길 줄 알았는데, benchmark 결과는 꽤 달랐다. JDBC + Virtual Threads의 반격."
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/virtual-threads-part3-benchmark-01.png" alt="Benchmark summary comparing JDBC with virtual threads and R2DBC with coroutines" loading="eager" />
-  <figcaption>R2DBC가 당연히 이길 줄 알았는데, benchmark 결과는 꽤 달랐다. JDBC + Virtual Threads의 반격.</figcaption>
+  <img src="/assets/virtual-threads-part3-hero.png" alt="JDBC 작업이 virtual thread 위에서 reactive database 작업과 나란히 실행되는 소개용 일러스트" loading="eager" />
+  <figcaption>첫 이미지는 database concurrency 이야기를 열고, chart는 benchmark evidence 쪽에 둔다.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-29 · Virtual Threads series · Part 3</p>
@@ -38,6 +38,11 @@ Coroutines보다 더 빠른 경우가 많았다.
 이 차트는 `dataSize=100000`, `parallelism=8`인 대형 end-to-end batch job만 잘라서 본 것이다. 파란 막대는
 JDBC + Virtual Threads, 주황 막대는 R2DBC + Coroutines다. 같은 pool size에서 같은 작업을 돌렸을 때
 MySQL은 약 8.4-8.8배, PostgreSQL은 약 4.9-5.2배 차이가 났다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/virtual-threads-part3-benchmark-01.png" alt="Benchmark summary comparing JDBC with virtual threads and R2DBC with coroutines" loading="lazy" />
+  <figcaption>R2DBC가 당연히 이길 줄 알았는데, benchmark 결과는 꽤 달랐다. JDBC + Virtual Threads의 반격.</figcaption>
+</figure>
 
 ## 먼저, 일반 Exposed JDBC benchmark
 

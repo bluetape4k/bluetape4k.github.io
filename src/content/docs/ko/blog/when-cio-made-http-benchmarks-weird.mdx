@@ -5,14 +5,14 @@ sidebar:
   order: -202605290852
 blog:
   date: 2026-05-29T08:52:00+09:00
-  image: /assets/io-http-high-latency-throughput-chart-01.png
-  imageAlt: HTTP client high-latency throughput benchmark chart comparing OkHttp, HC5, Java HttpClient, Vert.x, and Ktor CIO
+  image: /assets/io-http-cio-hero.png
+  imageAlt: HTTP client들이 같은 benchmark harness를 통과하는 소개용 일러스트
   cardDescription: Ktor CIO의 실망스러운 첫 성능에서 출발해 공정한 benchmark, Vert.x pool 병목 수정, workload별 HTTP client 선택 기준까지 정리한 이야기.
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/io-http-high-latency-throughput-chart-01.png" alt="HTTP client high-latency throughput benchmark chart comparing OkHttp, HC5, Java HttpClient, Vert.x, and Ktor CIO" loading="eager" />
-  <figcaption>Ktor CIO의 실망스러운 첫 성능에서 출발해 공정한 benchmark, Vert.x pool 병목 수정, workload별 HTTP client 선택 기준까지 정리한 이야기.</figcaption>
+  <img src="/assets/io-http-cio-hero.png" alt="HTTP client들이 같은 benchmark harness를 통과하는 소개용 일러스트" loading="eager" />
+  <figcaption>첫 이미지는 분위기를 잡는 용도다. benchmark chart는 이야기가 충분히 쌓인 뒤에 나온다.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-29 · bluetape4k io/http benchmark note</p>
@@ -29,6 +29,11 @@ blog:
 그리고 첫 측정에서 Ktor CIO가 꽤 황당한 숫자를 냈다.
 
 ![HTTP client base throughput chart](/assets/io-http-base-throughput-chart-01.png)
+
+<figure class="bt4k-architecture">
+  <img src="/assets/io-http-high-latency-throughput-chart-01.png" alt="HTTP client high-latency throughput benchmark chart comparing OkHttp, HC5, Java HttpClient, Vert.x, and Ktor CIO" loading="lazy" />
+  <figcaption>Ktor CIO의 실망스러운 첫 성능에서 출발해 공정한 benchmark, Vert.x pool 병목 수정, workload별 HTTP client 선택 기준까지 정리한 이야기.</figcaption>
+</figure>
 
 ## 처음에는 CIO가 너무 느렸다
 

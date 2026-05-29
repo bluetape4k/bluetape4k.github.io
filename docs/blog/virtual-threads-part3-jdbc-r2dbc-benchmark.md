@@ -5,14 +5,14 @@ sidebar:
   order: -202605291102
 blog:
   date: 2026-05-29T11:02:00+09:00
-  image: /assets/virtual-threads-part3-benchmark-01.png
-  imageAlt: Benchmark summary comparing JDBC with virtual threads and R2DBC with coroutines
+  image: /assets/virtual-threads-part3-hero.png
+  imageAlt: Editorial illustration of JDBC work running on virtual threads beside reactive database work
   cardDescription: "R2DBC looked like the obvious winner, but the benchmark results disagreed. A practical look at JDBC + Virtual Threads."
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/virtual-threads-part3-benchmark-01.png" alt="Benchmark summary comparing JDBC with virtual threads and R2DBC with coroutines" loading="eager" />
-  <figcaption>R2DBC looked like the obvious winner, but the benchmark results disagreed. A practical look at JDBC + Virtual Threads.</figcaption>
+  <img src="/assets/virtual-threads-part3-hero.png" alt="Editorial illustration of JDBC work running on virtual threads beside reactive database work" loading="eager" />
+  <figcaption>The opening image sets up the database concurrency story; the charts stay with the benchmark evidence.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-29 · Virtual Threads series · Part 3</p>
@@ -38,6 +38,11 @@ over R2DBC + Coroutines for the same workload.
 This chart isolates a large end-to-end batch job with `dataSize=100000` and `parallelism=8`.
 Blue bars are JDBC + Virtual Threads, orange bars are R2DBC + Coroutines. Under the same pool
 size, MySQL showed about 8.4-8.8x difference and PostgreSQL about 4.9-5.2x.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/virtual-threads-part3-benchmark-01.png" alt="Benchmark summary comparing JDBC with virtual threads and R2DBC with coroutines" loading="lazy" />
+  <figcaption>R2DBC looked like the obvious winner, but the benchmark results disagreed. A practical look at JDBC + Virtual Threads.</figcaption>
+</figure>
 
 ## First, the General Exposed JDBC Benchmark
 

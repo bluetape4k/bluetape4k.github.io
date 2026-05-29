@@ -5,14 +5,14 @@ sidebar:
   order: -202605281930
 blog:
   date: 2026-05-28T19:30:00+09:00
-  image: /assets/graphdb-adoption-latency-chart.png
-  imageAlt: GraphDB adoption benchmark latency chart
+  image: /assets/graphdb-adoption-hero.png
+  imageAlt: Editorial illustration of backend services navigating relationship-heavy data
   cardDescription: Benchmark-backed notes on GraphDB adoption, PostgreSQL traversal baselines, AGE, Neo4j, Memgraph, and the use cases where graph storage is worth the cost.
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/graphdb-adoption-latency-chart.png" alt="Authorization inheritance benchmark chart comparing Neo4j, AGE, PostgreSQL recursive CTE, and PostgreSQL iterative traversal" loading="eager" />
-  <figcaption>GraphDB adoption only showed a positive signal for long, selective, path-shaped traversal. PostgreSQL remained very strong for several bounded relational traversal shapes.</figcaption>
+  <img src="/assets/graphdb-adoption-hero.png" alt="Editorial illustration of backend services navigating relationship-heavy data" loading="eager" />
+  <figcaption>Graph databases are interesting only when the relationships become the workload.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-28 · bluetape4k engineering note</p>
@@ -25,6 +25,11 @@ The practical question is not “is graph syntax convenient?” It is:
 > Does the workload need variable-depth path traversal often enough, and at enough scale, to justify graph-specific storage and operations?
 
 The recent bluetape4k graph benchmark work tried to answer that question with measured evidence instead of assumption.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/graphdb-adoption-latency-chart.png" alt="Authorization inheritance benchmark chart comparing Neo4j, AGE, PostgreSQL recursive CTE, and PostgreSQL iterative traversal" loading="lazy" />
+  <figcaption>GraphDB adoption only showed a positive signal for long, selective, path-shaped traversal. PostgreSQL remained very strong for several bounded relational traversal shapes.</figcaption>
+</figure>
 
 ## What We Compared
 

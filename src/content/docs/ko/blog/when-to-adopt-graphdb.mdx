@@ -5,14 +5,14 @@ sidebar:
   order: -202605281930
 blog:
   date: 2026-05-28T19:30:00+09:00
-  image: /assets/graphdb-adoption-latency-chart.png
-  imageAlt: GraphDB adoption benchmark latency chart
+  image: /assets/graphdb-adoption-hero.png
+  imageAlt: backend service가 relationship-heavy data를 탐색하는 소개용 일러스트
   cardDescription: GraphDB 도입 판단, PostgreSQL traversal baseline, AGE, Neo4j, Memgraph, 그리고 graph storage가 적합한 use case를 benchmark 결과로 정리합니다.
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/graphdb-adoption-latency-chart.png" alt="Neo4j, AGE, PostgreSQL recursive CTE, PostgreSQL iterative traversal을 비교한 authorization inheritance benchmark chart" loading="eager" />
-  <figcaption>GraphDB 도입 신호는 길고 선택적인 path-shaped traversal에서만 나왔습니다. PostgreSQL은 여러 bounded relational traversal에서 여전히 강했습니다.</figcaption>
+  <img src="/assets/graphdb-adoption-hero.png" alt="backend service가 relationship-heavy data를 탐색하는 소개용 일러스트" loading="eager" />
+  <figcaption>Graph database는 relationship 자체가 workload가 될 때부터 진지하게 볼 만하다.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-28 · bluetape4k engineering note</p>
@@ -25,6 +25,11 @@ GraphDB는 관계가 많은 query를 자연스럽게 표현하게 해 준다. `M
 > variable-depth path traversal이 충분히 자주, 충분히 큰 규모로 필요해서 graph 전용 storage와 operation 비용을 감수할 만한가?
 
 최근 bluetape4k graph benchmark 작업은 이 질문을 가정이 아니라 측정 결과로 확인하려는 시도였다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/graphdb-adoption-latency-chart.png" alt="Neo4j, AGE, PostgreSQL recursive CTE, PostgreSQL iterative traversal을 비교한 authorization inheritance benchmark chart" loading="lazy" />
+  <figcaption>GraphDB 도입 신호는 길고 선택적인 path-shaped traversal에서만 나왔습니다. PostgreSQL은 여러 bounded relational traversal에서 여전히 강했습니다.</figcaption>
+</figure>
 
 ## 무엇을 비교했나
 

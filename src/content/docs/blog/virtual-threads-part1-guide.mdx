@@ -5,14 +5,14 @@ sidebar:
   order: -202605291100
 blog:
   date: 2026-05-29T11:00:00+09:00
-  image: /assets/virtual-threads-part1-guide-01.png
-  imageAlt: Practical map for using virtual threads with blocking IO, backpressure, diagnostics, and cleanup
+  image: /assets/virtual-threads-part1-hero.png
+  imageAlt: Editorial illustration of many lightweight execution paths managed under explicit limits
   cardDescription: "Blocking code gets a second life, but only when timeout, cleanup, and resource limits come along with it."
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/virtual-threads-part1-guide-01.png" alt="Practical map for using virtual threads with blocking IO, backpressure, diagnostics, and cleanup" loading="eager" />
-  <figcaption>Blocking code gets a second life, but only when timeout, cleanup, and resource limits come along with it.</figcaption>
+  <img src="/assets/virtual-threads-part1-hero.png" alt="Editorial illustration of many lightweight execution paths managed under explicit limits" loading="eager" />
+  <figcaption>Virtual threads are cheap threads, not a coupon for unlimited blocking.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-29 · Virtual Threads series · Part 1</p>
@@ -28,6 +28,10 @@ writing blocking code" is the kind of sentence that usually comes with condition
 too. Virtual Threads are not magic. They make thread-per-request style programming practical
 again at a much lower cost.
 
+<figure class="bt4k-architecture">
+  <img src="/assets/virtual-threads-part1-guide-01.png" alt="Practical map for using virtual threads with blocking IO, backpressure, diagnostics, and cleanup" loading="lazy" />
+  <figcaption>Blocking code gets a second life, but only when timeout, cleanup, and resource limits come along with it.</figcaption>
+</figure>
 
 ## The Problem Virtual Threads Solve
 

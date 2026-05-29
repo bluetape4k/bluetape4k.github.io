@@ -5,14 +5,14 @@ sidebar:
   order: -202605290032
 blog:
   date: 2026-05-29T00:32:00+09:00
-  image: /assets/csv-okio-throughput-comparison-01.png
-  imageAlt: CSV parser throughput comparison chart showing existing and Okio ops per second
+  image: /assets/csv-parser-okio-hero.png
+  imageAlt: Editorial illustration of a CSV parser reading byte segments without unnecessary copies
   cardDescription: A benchmark-backed walkthrough of the #651 CSV parser optimization, from Reader parsing to Okio UnsafeCursor segment scanning.
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/csv-okio-throughput-comparison-01.png" alt="CSV parser throughput comparison chart showing existing and Okio ops per second" loading="eager" />
-  <figcaption>A benchmark-backed walkthrough of the #651 CSV parser optimization, from Reader parsing to Okio UnsafeCursor segment scanning.</figcaption>
+  <img src="/assets/csv-parser-okio-hero.png" alt="Editorial illustration of a CSV parser reading byte segments without unnecessary copies" loading="eager" />
+  <figcaption>The opening image introduces the byte-first parser story; the throughput chart remains in the measurement section.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-29 · bluetape4k csv performance note</p>
@@ -27,6 +27,10 @@ path. The final PR keeps the public API unchanged, adds an internal Okio-backed 
 supported UTF-8 CSV settings, and falls back to the existing reader lexer when the settings
 are outside the fast path.
 
+<figure class="bt4k-architecture">
+  <img src="/assets/csv-okio-throughput-comparison-01.png" alt="CSV parser throughput comparison chart showing existing and Okio ops per second" loading="lazy" />
+  <figcaption>A benchmark-backed walkthrough of the #651 CSV parser optimization, from Reader parsing to Okio UnsafeCursor segment scanning.</figcaption>
+</figure>
 
 ## What Changed
 

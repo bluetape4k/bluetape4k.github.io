@@ -5,14 +5,14 @@ sidebar:
   order: -202605290852
 blog:
   date: 2026-05-29T08:52:00+09:00
-  image: /assets/io-http-high-latency-throughput-chart-01.png
-  imageAlt: HTTP client high-latency throughput benchmark chart comparing OkHttp, HC5, Java HttpClient, Vert.x, and Ktor CIO
+  image: /assets/io-http-cio-hero.png
+  imageAlt: Editorial illustration of HTTP clients running through the same benchmark harness
   cardDescription: How disappointing Ktor CIO numbers led to a fairer benchmark, a Vert.x pool fix, and workload-based HTTP client guidance.
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/io-http-high-latency-throughput-chart-01.png" alt="HTTP client high-latency throughput benchmark chart comparing OkHttp, HC5, Java HttpClient, Vert.x, and Ktor CIO" loading="eager" />
-  <figcaption>How disappointing Ktor CIO numbers led to a fairer benchmark, a Vert.x pool fix, and workload-based HTTP client guidance.</figcaption>
+  <img src="/assets/io-http-cio-hero.png" alt="Editorial illustration of HTTP clients running through the same benchmark harness" loading="eager" />
+  <figcaption>The hero image is the mood. The benchmark chart waits until the story earns it.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-29 · bluetape4k io/http benchmark note</p>
@@ -30,6 +30,11 @@ and more a small campaign: decide with numbers.
 And in the first run, Ktor CIO produced numbers that looked almost absurd.
 
 ![HTTP client base throughput chart](/assets/io-http-base-throughput-chart-01.png)
+
+<figure class="bt4k-architecture">
+  <img src="/assets/io-http-high-latency-throughput-chart-01.png" alt="HTTP client high-latency throughput benchmark chart comparing OkHttp, HC5, Java HttpClient, Vert.x, and Ktor CIO" loading="lazy" />
+  <figcaption>How disappointing Ktor CIO numbers led to a fairer benchmark, a Vert.x pool fix, and workload-based HTTP client guidance.</figcaption>
+</figure>
 
 ## At First, CIO Was Painfully Slow
 

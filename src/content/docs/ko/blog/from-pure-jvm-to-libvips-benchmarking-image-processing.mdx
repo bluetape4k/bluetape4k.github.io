@@ -5,14 +5,14 @@ sidebar:
   order: -202605282307
 blog:
   date: 2026-05-28T23:07:00+09:00
-  image: /assets/image-processing-benchmark-summary-01.png
-  imageAlt: scrimage pure JVM과 libvips Java 25 FFM image processing benchmark 비교
+  image: /assets/image-processing-hero.png
+  imageAlt: JVM pixel 처리에서 native acceleration으로 이어지는 image pipeline 소개용 일러스트
   cardDescription: scrimage와 libvips 벤치마크, Java 21 JNI host 제약, Java 25 FFM 실측값, workshop derivative pipeline 예제를 정리합니다.
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/image-processing-benchmark-summary-01.png" alt="scrimage pure JVM과 libvips Java 25 FFM image processing benchmark 비교" loading="eager" />
-  <figcaption>scrimage와 libvips 벤치마크, Java 21 JNI host 제약, Java 25 FFM 실측값, workshop derivative pipeline 예제를 정리합니다.</figcaption>
+  <img src="/assets/image-processing-hero.png" alt="JVM pixel 처리에서 native acceleration으로 이어지는 image pipeline 소개용 일러스트" loading="eager" />
+  <figcaption>이 글의 첫 장면은 pipeline 선택이고, benchmark summary는 뒤에서 증거로 등장한다.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-28 · bluetape4k image benchmark note</p>
@@ -30,6 +30,10 @@ demand-driven pipeline이 훨씬 유리하다.
 - Java 21 JNI와 Java 25 FFM backend는 어떻게 봐야 하는가?
 - 실제 서비스 workflow에서는 이 차이를 어디에 적용하는가?
 
+<figure class="bt4k-architecture">
+  <img src="/assets/image-processing-benchmark-summary-01.png" alt="scrimage pure JVM과 libvips Java 25 FFM image processing benchmark 비교" loading="lazy" />
+  <figcaption>scrimage와 libvips 벤치마크, Java 21 JNI host 제약, Java 25 FFM 실측값, workshop derivative pipeline 예제를 정리합니다.</figcaption>
+</figure>
 
 ## 벤치마크 구성
 

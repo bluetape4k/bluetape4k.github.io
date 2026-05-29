@@ -5,14 +5,14 @@ sidebar:
   order: -202605290925
 blog:
   date: 2026-05-29T09:25:00+09:00
-  image: /assets/embarrassing-bug-fix-loop-01.png
-  imageAlt: Pastel flow chart showing mistake, signal, fix, and guard for embarrassing bug fixes
+  image: /assets/embarrassing-bugs-hero.png
+  imageAlt: Editorial illustration of bug reports turning into checks and guardrails
   cardDescription: "A candid write-up of five bluetape4k-projects fixes: null becoming zero, stale tests, cleanup timeouts, swallowed cancellation, and lost interrupt status."
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/embarrassing-bug-fix-loop-01.png" alt="Pastel flow chart showing mistake, signal, fix, and guard for embarrassing bug fixes" loading="eager" />
-  <figcaption>A candid write-up of five bluetape4k-projects fixes: null becoming zero, stale tests, cleanup timeouts, swallowed cancellation, and lost interrupt status.</figcaption>
+  <img src="/assets/embarrassing-bugs-hero.png" alt="Editorial illustration of bug reports turning into checks and guardrails" loading="eager" />
+  <figcaption>Some fixes start with an awkward mistake and end as a guard that keeps the next mistake quieter.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-29 · bluetape4k projects bug-fix note</p>
@@ -23,6 +23,10 @@ Sometimes they are the small assumptions that make you think: "why did I believe
 This post collects those cases. Not grand architecture, not heroic optimization. Just small
 mistakes that became issues, broke Nightly, and eventually turned into tests and release gates.
 
+<figure class="bt4k-architecture">
+  <img src="/assets/embarrassing-bug-fix-loop-01.png" alt="Pastel flow chart showing mistake, signal, fix, and guard for embarrassing bug fixes" loading="lazy" />
+  <figcaption>A candid write-up of five bluetape4k-projects fixes: null becoming zero, stale tests, cleanup timeouts, swallowed cancellation, and lost interrupt status.</figcaption>
+</figure>
 
 ## How to Read This
 

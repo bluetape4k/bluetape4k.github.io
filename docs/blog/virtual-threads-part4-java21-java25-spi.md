@@ -5,14 +5,14 @@ sidebar:
   order: -202605291103
 blog:
   date: 2026-05-29T11:03:00+09:00
-  image: /assets/virtual-threads-part4-spi-01.png
-  imageAlt: ServiceLoader module layout for Java 21 and Java 25 virtual thread runtimes
+  image: /assets/virtual-threads-part4-hero.png
+  imageAlt: Editorial illustration of one SPI connecting Java 21 and Java 25 runtime implementations
   cardDescription: "Hide Java 21/25 differences inside runtime providers and keep application code on one Virtual Threads API."
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/virtual-threads-part4-spi-01.png" alt="ServiceLoader module layout for Java 21 and Java 25 virtual thread runtimes" loading="eager" />
-  <figcaption>Hide Java 21/25 differences inside runtime providers and keep application code on one Virtual Threads API.</figcaption>
+  <img src="/assets/virtual-threads-part4-hero.png" alt="Editorial illustration of one SPI connecting Java 21 and Java 25 runtime implementations" loading="eager" />
+  <figcaption>One public API can hide two runtime choices when the SPI boundary is boring in the right way.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-29 · Virtual Threads series · Part 4</p>
@@ -40,6 +40,11 @@ everywhere, too much implementation detail has leaked out.
 The key is that the application does not know the `jdk21` or `jdk25` implementation classes. It
 calls the common API. `ServiceLoader` selects the runtime provider. The Java-version-specific
 part stays inside the artifact and provider implementation.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/virtual-threads-part4-spi-01.png" alt="ServiceLoader module layout for Java 21 and Java 25 virtual thread runtimes" loading="lazy" />
+  <figcaption>Hide Java 21/25 differences inside runtime providers and keep application code on one Virtual Threads API.</figcaption>
+</figure>
 
 ## Java 21 and Java 25
 

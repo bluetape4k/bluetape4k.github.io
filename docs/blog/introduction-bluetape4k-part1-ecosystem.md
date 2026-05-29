@@ -5,14 +5,14 @@ sidebar:
   order: -202605200000
 blog:
   date: 2026-05-20T00:00:00+09:00
-  image: /assets/bluetape4k-layer-flow-01.png
-  imageAlt: Bluetape4k ecosystem layer flow
+  image: /assets/bluetape4k-ecosystem-hero.png
+  imageAlt: Editorial illustration of the bluetape4k backend ecosystem as connected building blocks
   cardDescription: "Part 1 of the Bluetape4k introduction series: application, domain capability, data, infrastructure, and foundation layers."
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/bluetape4k-layer-flow-01.png" alt="Bluetape4k ecosystem layer flow" loading="eager" />
-  <figcaption>Part 1 of the Bluetape4k introduction series: application, domain capability, data, infrastructure, and foundation layers.</figcaption>
+  <img src="/assets/bluetape4k-ecosystem-hero.png" alt="Editorial illustration of the bluetape4k backend ecosystem as connected building blocks" loading="eager" />
+  <figcaption>The ecosystem starts as a map of connected responsibilities before it becomes module-by-module detail.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">Part 1 · Ecosystem overview</p>
@@ -20,6 +20,11 @@ blog:
 Bluetape4k is a Kotlin/JVM library ecosystem for backend services. It is not a single framework that tries to own the whole application. It is closer to a set of layer-specific modules that Spring Boot 4 and Ktor 3 services can adopt as needed.
 
 This first article is a map. Detailed repository architecture, API examples, and migration paths belong in later parts of the series.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-layer-flow-01.png" alt="Bluetape4k ecosystem layer flow" loading="lazy" />
+  <figcaption>Part 1 of the Bluetape4k introduction series: application, domain capability, data, infrastructure, and foundation layers.</figcaption>
+</figure>
 
 ## Ecosystem Overview
 
