@@ -1,0 +1,187 @@
+---
+title: "Bluetape4k Cache Part 1: Why the Cache Module Looks This Way"
+description: A practical tour of bluetape4k-cache-core, JCache helpers, SuspendCache, memoizers, and the shared NearCache API.
+sidebar:
+  order: -202605291701
+blog:
+  date: 2026-05-29T17:01:00+09:00
+  image: /assets/cache-series-part1-hero.png
+  imageAlt: Bluetape4k cache module workbench with robot workers assembling cache blocks
+  cardDescription: "Why local caches, JCache, suspend APIs, memoizers, and NearCache live in the same toolbox."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/cache-series-part1-hero.png" alt="Bluetape4k cache module workbench with robot workers assembling cache blocks" loading="eager" />
+  <figcaption>A cache is a fast drawer. The tricky part is that real systems have more than one drawer.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-05-29 · Bluetape4k Cache series · Part 1</p>
+
+This is Part 1 of the Bluetape4k Cache series. The full series continues with
+[Part 1: cache module overview](/blog/bluetape4k-cache-part1-cache-module/),
+[Part 2: Near Cache](/blog/bluetape4k-cache-part2-near-cache/),
+[Part 3: Near Cache + Exposed strategies](/blog/bluetape4k-cache-part3-exposed-strategies/), and
+[Part 4: workshop examples](/blog/bluetape4k-cache-part4-workshop-examples/).
+
+`bluetape4k-cache` covers the area that often starts with "can we just wrap a `Map`?" and then
+quietly sits down after meeting production.
+
+Local caches are fast. Redis is shared. JCache gives us a standard API. Kotlin coroutine code
+needs a `suspend` path. Failures need retry and fallback. If every application wires all of
+that by hand, cache code eventually takes more space than domain code. That is rarely a good
+sign.
+
+So the Bluetape4k Cache module is not just a collection of cache implementations. It starts by
+defining a shared language for cache behavior.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/cache-series-module-map-01.png" alt="Bluetape4k cache module map from cache-core to local providers, memoizers, resilience, and distributed providers" loading="lazy" />
+  <figcaption>`cache-core` defines the common contract, and provider modules share the same usage model.</figcaption>
+</figure>
+
+## The Big Picture
+
+The center is `cache-core`.
+
+| Area | Role |
+|---|---|
+| JCache helpers | JSR-107 style cache configuration and provider initialization |
+| `SuspendCache` | A suspend-friendly cache contract for coroutine code |
+| Memoizer | Caches function results across sync, async, and suspend paths |
+| NearCache interfaces | Describes an L1 local + L2 back cache structure |
+| Resilient decorator | Adds retry, fallback, and statistics outside the cache implementation |
+
+Provider modules sit behind it.
+
+| Module | Role |
+|---|---|
+| `cache-core` | Caffeine, Cache2k, Ehcache, JCache, and common NearCache APIs |
+| `cache-lettuce` | Redis/Lettuce JCache and RESP3 NearCache |
+| `cache-redisson` | Redisson JCache and `RLocalCachedMap` NearCache |
+| `cache-hazelcast` | Hazelcast JCache and `IMap` NearCache |
+
+Full source:
+[bluetape4k-projects/cache](https://github.com/bluetape4k/bluetape4k-projects/tree/develop/cache)
+
+## Local Cache: Fast, but Alone
+
+A local cache lives inside the JVM. There is no network round trip, so it is fast and easy to
+configure.
+
+```kotlin
+import io.bluetape4k.cache.caffeine.caffeine
+import java.time.Duration
+
+val cache = caffeine {
+    maximumSize(10_000)
+    expireAfterWrite(Duration.ofMinutes(10))
+}.build<String, Any>()
+```
+
+Full source:
+[cache-core README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/cache/cache-core/README.md)
+
+The limitation is just as simple. A local cache only knows its own JVM. If there are two
+application instances, there are two drawers. Assuming one drawer knows what the other one
+contains is how incident reports become a literary genre.
+
+## SuspendCache: A Contract That Fits Coroutine Code
+
+In Kotlin services, a cache miss often calls a database or a remote API. If that path is
+`suspend`, the cache API should be `suspend` too.
+
+```kotlin
+import io.bluetape4k.cache.jcache.CaffeineSuspendJCache
+
+val cache = CaffeineSuspendJCache<String, String>("sessions")
+
+cache.put("token:1", "user-1")
+val userId = cache.get("token:1")
+```
+
+Related source:
+[CaffeineSuspendJCache.kt](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/CaffeineSuspendJCache.kt)
+
+## Memoizer: Turning Function Results into Cache Entries
+
+A memoizer says, in API form, "this function often returns the same result for the same input."
+
+```kotlin
+import io.bluetape4k.cache.memoizer.suspendMemoizer
+
+val userSummary = suspendMemoizer<Long, String> { userId ->
+    loadUserSummaryFromDatabase(userId)
+}
+
+val summary = userSummary(42L)
+```
+
+Related source:
+[Memoizer.kt](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/memoizer/Memoizer.kt),
+[LettuceMemoizer.kt](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/cache/cache-lettuce/src/main/kotlin/io/bluetape4k/cache/memoizer/LettuceMemoizer.kt)
+
+## NearCache: A Fast Drawer and a Shared Warehouse
+
+NearCache combines an L1 local cache with an L2 backing cache.
+
+```kotlin
+import io.bluetape4k.cache.LettuceCaches
+
+val cache = LettuceCaches.nearCache<String>(redisClient) {
+    cacheName = "users"
+    maxLocalSize = 10_000
+    recordStats = true
+}
+
+cache.put("42", "Debop")
+val name = cache.get("42")
+```
+
+`NearCacheOperations` provides common operations such as `get`, `put`, `remove`, `clearLocal`,
+`clearAll`, and `stats`. Whether the provider is Lettuce, Redisson, or Hazelcast, application
+code can keep the same shape.
+
+Related source:
+[NearCacheOperations.kt](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/nearcache/NearCacheOperations.kt),
+[LettuceCaches.kt](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/cache/cache-lettuce/src/main/kotlin/io/bluetape4k/cache/LettuceCaches.kt)
+
+## Resilience Is Not Decoration
+
+A cache looks like a performance feature, but the moment a remote cache is involved, it becomes
+a failure propagation path. If every request is affected when Redis is briefly unstable, the
+cache did not just make things slower. It became a failure amplifier.
+
+Bluetape4k provides a resilience decorator for that reason.
+
+```kotlin
+val resilient = cache.withResilience {
+    retryMaxAttempts = 5
+    retryWaitDuration = Duration.ofMillis(200)
+    getFailureStrategy = GetFailureStrategy.RETURN_FRONT_OR_NULL
+}
+```
+
+Related source:
+[ResilientNearCacheDecorator.kt](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/nearcache/ResilientNearCacheDecorator.kt),
+[NearCacheResilienceConfig.kt](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/nearcache/NearCacheResilienceConfig.kt)
+
+## Wrap-up
+
+The Cache module's direction is simple.
+
+- Use local caches for speed.
+- Use remote caches for shared state.
+- Match suspend APIs to coroutine code.
+- Use NearCache to connect the two worlds.
+- Use resilience so a brief "hold on" does not become a full outage.
+
+Next, we will pull NearCache out on its own: why remote cache alone is often not enough, how
+Redisson Pub/Sub differs from Lettuce RESP3 CLIENT TRACKING, and what the benchmark numbers
+say. Numbers can be blunt. That is part of their charm.
+
+## Series Links
+
+- [Part 1: Bluetape4k Cache module overview](/blog/bluetape4k-cache-part1-cache-module/)
+- [Part 2: Near Cache need, structure, and effect](/blog/bluetape4k-cache-part2-near-cache/)
+- [Part 3: Near Cache + Exposed caching strategies](/blog/bluetape4k-cache-part3-exposed-strategies/)
+- [Part 4: Practical examples and workshop usage](/blog/bluetape4k-cache-part4-workshop-examples/)

@@ -1,0 +1,304 @@
+---
+title: "Bluetape4k Cache Part 3: Building Caching Strategies with Near Cache and Exposed"
+description: Read-through, write-through, and write-behind strategies from bluetape4k-exposed and exposed-workshop chapter 11, viewed through Near Cache.
+sidebar:
+  order: -202605291703
+blog:
+  date: 2026-05-29T17:03:00+09:00
+  image: /assets/cache-series-part3-hero.png
+  imageAlt: Exposed repository cache strategy workbench with robot workers and cache pipelines
+  cardDescription: "Read-through, write-through, and write-behind sound similar. Their tradeoffs are not."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/cache-series-part3-hero.png" alt="Exposed repository cache strategy workbench with robot workers and cache pipelines" loading="eager" />
+  <figcaption>Once a cache sits in front of a database, performance and consistency start holding hands.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-05-29 · Bluetape4k Cache series · Part 3</p>
+
+This is Part 3 of the Bluetape4k Cache series. The full series continues with
+[Part 1: cache module overview](/blog/bluetape4k-cache-part1-cache-module/),
+[Part 2: Near Cache](/blog/bluetape4k-cache-part2-near-cache/),
+[Part 3: Near Cache + Exposed strategies](/blog/bluetape4k-cache-part3-exposed-strategies/), and
+[Part 4: workshop examples](/blog/bluetape4k-cache-part4-workshop-examples/).
+
+Adding cache to an Exposed repository looks easy at first.
+
+1. Check the cache.
+2. If the value is missing, read the database.
+3. When saving, update the cache too.
+
+Everyone is calm up to this point. Then the questions arrive: what if the write fails, what about
+deletes, what about other instances' local caches, what about batch updates, and what if the read
+model and write model are not the same? Suddenly the meeting room needs another whiteboard.
+
+`bluetape4k-exposed` splits that problem into repository contracts and cache strategies.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/cache-series-exposed-strategies-01.png" alt="JdbcCacheRepository strategy map with Redisson map loader, map writer, and Exposed DB" loading="lazy" />
+  <figcaption>The key idea in `JdbcCacheRepository` is attaching a loader and writer to a Redisson map so read/write contracts change at the map boundary.</figcaption>
+</figure>
+
+## The Shared Repository Contract
+
+The base contracts are `JdbcCacheRepository` and `R2dbcCacheRepository`.
+
+```kotlin
+interface JdbcCacheRepository<ID: Any, E: Serializable>: Closeable {
+    val table: IdTable<ID>
+    val cacheName: String
+    val cacheMode: CacheMode
+    val cacheWriteMode: CacheWriteMode
+
+    fun ResultRow.toEntity(): E
+    fun extractId(entity: E): ID
+
+    fun findByIdFromDb(id: ID): E?
+    fun get(id: ID): E?
+    fun getAll(ids: Collection<ID>): Map<ID, E>
+
+    fun put(id: ID, entity: E)
+    fun putAll(entities: Map<ID, E>, batchSize: Int = DEFAULT_BATCH_SIZE)
+
+    fun invalidate(id: ID)
+    fun invalidateAll(ids: Collection<ID>)
+    fun clear()
+}
+```
+
+Related source:
+[JdbcCacheRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/JdbcCacheRepository.kt),
+[R2dbcCacheRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/R2dbcCacheRepository.kt)
+
+The important detail is that `get` and `put` are not plain map operations. They follow repository
+policy. That policy changes performance, consistency, and failure behavior.
+
+## The Implementation Center: MapLoader and MapWriter
+
+`AbstractJdbcRedissonRepository` attaches Redisson loader/writer components when it creates an
+`RMap` or `RLocalCachedMap`.
+
+```kotlin
+protected open val mapLoader: EntityMapLoader<ID, E> by lazy {
+    ExposedEntityMapLoader(table) { toEntity() }
+}
+
+protected val mapWriter: EntityMapWriter<ID, E>? by lazy {
+    when (config.cacheMode) {
+        RedissonCacheConfig.CacheMode.READ_ONLY -> null
+        RedissonCacheConfig.CacheMode.READ_WRITE ->
+            ExposedEntityMapWriter(
+                entityTable = table,
+                updateBody = { stmt, entity ->
+                    with(this@AbstractJdbcRedissonRepository) { stmt.updateEntity(entity) }
+                },
+                batchInsertBody = { entity ->
+                    val stmt = this
+                    with(this@AbstractJdbcRedissonRepository) { stmt.insertEntity(entity) }
+                },
+                writeMode = config.writeMode,
+            )
+    }
+}
+```
+
+Full source:
+[JdbcCacheRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/JdbcCacheRepository.kt),
+[AbstractJdbcRedissonRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-jdbc-redisson/src/main/kotlin/io/bluetape4k/exposed/redisson/repository/AbstractJdbcRedissonRepository.kt)
+
+That is why `get` can look like a map lookup while a cache miss loads from the database through
+the loader. Likewise, `put` can look like a cache write while `WRITE_THROUGH` persists through
+the writer immediately, and `WRITE_BEHIND` queues persistence asynchronously. This is different
+from cache-aside code where the application manually sequences "save DB, then cache.put."
+
+## Read-through
+
+Read-through fills the cache through `EntityMapLoader` when a cache miss occurs. `exposed-workshop`
+chapter 11 shows this path with `UserCredentialsCacheRepository`.
+
+```kotlin
+@Repository
+class UserCredentialsCacheRepository(
+    redissonClient: RedissonClient,
+) : AbstractJdbcRedissonRepository<String, UserCredentialsRecord>(
+    redissonClient = redissonClient,
+    config = RedissonCacheConfig.READ_ONLY_WITH_NEAR_CACHE.copy(
+        name = "exposed:user-credentials",
+    ),
+) {
+    override val table = UserCredentialsTable
+    override fun ResultRow.toEntity() = toUserCredentialsRecord()
+    override fun extractId(entity: UserCredentialsRecord): String = entity.id
+}
+```
+
+Full source:
+[UserCredentialsCacheRepository.kt](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/main/kotlin/exposed/examples/cache/domain/repository/UserCredentialsCacheRepository.kt),
+[UserCredentialsCacheRepositoryTest.kt](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/test/kotlin/exposed/examples/cache/domain/repository/UserCredentialsCacheRepositoryTest.kt)
+
+It fits read-heavy data. The first request reads from the database; later requests hit the cache.
+The write path still needs correct invalidation. Otherwise yesterday's cache and today's database
+start telling different stories.
+
+## Write-through
+
+Write-through sends `put` and `putAll` through a writer-backed Redisson map, and
+`ExposedEntityMapWriter` applies the same operation to the database. `UserCacheRepository` in
+`exposed-workshop` chapter 11 combines read-through and write-through.
+
+```kotlin
+@Repository
+class UserCacheRepository(
+    redissonClient: RedissonClient,
+) : AbstractJdbcRedissonRepository<Long, UserRecord>(
+    redissonClient = redissonClient,
+    config = RedissonCacheConfig.READ_WRITE_THROUGH_WITH_NEAR_CACHE.copy(
+        name = "exposed:users",
+    ),
+) {
+    override val table: UserTable = UserTable
+    override fun ResultRow.toEntity(): UserRecord = toUserRecord()
+    override fun extractId(entity: UserRecord): Long = entity.id
+
+    override fun BatchInsertStatement.insertEntity(entity: UserRecord) {
+        this[UserTable.username] = entity.username
+        this[UserTable.firstName] = entity.firstName
+        this[UserTable.lastName] = entity.lastName
+    }
+
+    override fun UpdateStatement.updateEntity(entity: UserRecord) {
+        this[UserTable.username] = entity.username
+        this[UserTable.firstName] = entity.firstName
+        this[UserTable.lastName] = entity.lastName
+    }
+}
+```
+
+Related example:
+[UserCacheRepository.kt](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/main/kotlin/exposed/examples/cache/domain/repository/UserCacheRepository.kt),
+[UserCacheRepositoryTest.kt](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/test/kotlin/exposed/examples/cache/domain/repository/UserCacheRepositoryTest.kt)
+
+The benefit is freshness after writes. The cost is that cache write work enters write latency.
+Writes are not free; the invoice arrives as latency.
+
+## Write-behind
+
+Write-behind uses the same writer, but Redisson's write mode is `WRITE_BEHIND`. `put` updates
+the cache first, and database writes are flushed asynchronously through a queue.
+
+```kotlin
+@Repository
+class UserEventCacheRepository(
+    redissonClient: RedissonClient,
+) : AbstractJdbcRedissonRepository<Long, UserEventRecord>(
+    redissonClient = redissonClient,
+    config = RedissonCacheConfig.WRITE_BEHIND_WITH_NEAR_CACHE.copy(
+        name = "exposed:user-events",
+    ),
+) {
+    override val table: UserEventTable = UserEventTable
+    override fun ResultRow.toEntity(): UserEventRecord = toUserEventRecord()
+    override fun extractId(entity: UserEventRecord): Long = entity.id
+
+    override fun BatchInsertStatement.insertEntity(entity: UserEventRecord) {
+        this[UserEventTable.username] = entity.username
+        this[UserEventTable.eventType] = entity.eventType
+        this[UserEventTable.eventTime] = entity.eventTime
+    }
+}
+```
+
+Full source:
+[UserEventCacheRepository.kt](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/main/kotlin/exposed/examples/cache/domain/repository/UserEventCacheRepository.kt),
+[UserEventCacheRepositoryTest.kt](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/test/kotlin/exposed/examples/cache/domain/repository/UserEventCacheRepositoryTest.kt)
+
+Write-behind can reduce write latency, but it adds design work.
+
+- What happens on queue overflow?
+- Should pending writes be flushed on close?
+- How are repeated updates to the same key merged?
+- How do we prevent stale reads after remove?
+- Can retry duplicates conflict with DB upsert behavior?
+
+At this point, cache is no longer a fast `Map`. It is a small distributed system. Small
+distributed systems should fail small. If they fail big, only the name was small.
+
+## CacheMode and CacheWriteMode
+
+`bluetape4k-exposed` separates cache location from write strategy.
+
+Related source:
+[CacheMode.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/CacheMode.kt),
+[CacheWriteMode.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/CacheWriteMode.kt),
+[LocalCacheConfig.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/LocalCacheConfig.kt)
+
+That separation matters. "Where do we cache?" and "When do we write?" are different questions.
+
+| Question | Examples |
+|---|---|
+| cache location | local Caffeine, remote Redis, near cache |
+| cache read path | read-through loader |
+| write mode | `READ_ONLY`, `WRITE_THROUGH`, `WRITE_BEHIND` |
+| API shape | JDBC, suspended JDBC, R2DBC |
+| consistency target | strong-ish, eventual, best-effort fallback |
+
+## Benchmark Results
+
+`04-benchmark` in `exposed-workshop` chapter 11 compares cache strategies with real numbers. It
+uses `AverageTime`; lower is better.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/cache-series-exposed-benchmark-01.png" alt="Exposed cache benchmark chart comparing no cache, read-through, and write-through latency" loading="lazy" />
+  <figcaption>Read-heavy workloads show large cache-strategy differences. In write-heavy workloads, the DB write becomes the main character again.</figcaption>
+</figure>
+
+Related source:
+[CacheStrategyComparisonBenchmark.kt](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/04-benchmark/src/main/kotlin/exposed/examples/benchmark/cache/CacheStrategyComparisonBenchmark.kt),
+[ReadThroughCacheBenchmark.kt](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/04-benchmark/src/main/kotlin/exposed/examples/benchmark/cache/ReadThroughCacheBenchmark.kt),
+[BENCHMARK-REPORT.md](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/04-benchmark/BENCHMARK-REPORT.md)
+
+| Strategy | Workload | Payload | Average |
+|---|---|---:|---:|
+| `NO_CACHE` | `READ_HEAVY` | 256B | 517.520 us/op |
+| `READ_THROUGH` | `READ_HEAVY` | 256B | 94.320 us/op |
+| `WRITE_THROUGH` | `READ_HEAVY` | 256B | 52.103 us/op |
+| `NO_CACHE` | `WRITE_HEAVY` | 256B | 507.766 us/op |
+| `READ_THROUGH` | `WRITE_HEAVY` | 256B | 468.735 us/op |
+| `WRITE_THROUGH` | `WRITE_HEAVY` | 256B | 445.363 us/op |
+
+In read-heavy workloads, `READ_THROUGH` is about 5.5x faster than the baseline, and
+`WRITE_THROUGH` is about 9.9x faster. In write-heavy workloads, the difference shrinks to around
+1.1x. Cache earns money on the read path and receives invoices on the write path.
+
+The single-read read-through benchmark is also worth reading.
+
+| Benchmark | Payload | Average |
+|---|---:|---:|
+| `dbOnlyRead` | 256B | 0.001 us/op |
+| `readThroughCacheHit` | 256B | 0.003 us/op |
+| `readThroughCacheMiss` | 256B | 0.119 us/op |
+
+Hits are cheap. Misses are much more expensive because they invalidate and reload. Near Cache
+still lives or dies by hit ratio. A cache that hits is a hero; a cache that misses often is a
+very busy decoration.
+
+## Strategy Selection
+
+| Strategy | Fits Well When | Watch Out For |
+|---|---|---|
+| Read-through | Reads dominate and writes are rare | Missing invalidation after writes |
+| Write-through | Fresh reads right after writes matter | Higher write latency |
+| Write-behind | Write bursts need absorption | Queue, retry, flush, stale reads |
+| NearCache + read-through | Hot reads are clear | L1 hit ratio and invalidation |
+| NearCache + write-behind | Local responsiveness matters strongly | Failure semantics must be documented |
+
+Next, we will put theory down for a moment and move to practical examples in `bluetape4k-workshop`.
+Code is usually kind. We are often just in a hurry when reading it.
+
+## Series Links
+
+- [Part 1: Bluetape4k Cache module overview](/blog/bluetape4k-cache-part1-cache-module/)
+- [Part 2: Near Cache need, structure, and effect](/blog/bluetape4k-cache-part2-near-cache/)
+- [Part 3: Near Cache + Exposed caching strategies](/blog/bluetape4k-cache-part3-exposed-strategies/)
+- [Part 4: Practical examples and workshop usage](/blog/bluetape4k-cache-part4-workshop-examples/)
