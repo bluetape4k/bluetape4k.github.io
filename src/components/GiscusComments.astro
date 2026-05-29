@@ -1,0 +1,86 @@
+---
+const { starlightRoute } = Astro.locals;
+const lang = starlightRoute.lang === 'ko' ? 'ko' : 'en';
+const heading = lang === 'ko' ? '댓글' : 'Comments';
+const description =
+  lang === 'ko'
+    ? 'GitHub 계정으로 의견을 남기거나 reaction을 남길 수 있습니다.'
+    : 'Leave a note or reaction with your GitHub account.';
+---
+
+<section class="giscus-comments" aria-labelledby="giscus-comments-title">
+  <div class="giscus-comments__header">
+    <h2 id="giscus-comments-title">{heading}</h2>
+    <p>{description}</p>
+  </div>
+  <script
+    is:inline
+    src="https://giscus.app/client.js"
+    data-repo="bluetape4k/bluetape4k.github.io"
+    data-repo-id="R_kgDOSgaGWw"
+    data-category="General"
+    data-category-id="DIC_kwDOSgaGW84C-E71"
+    data-mapping="pathname"
+    data-strict="1"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="preferred_color_scheme"
+    data-lang={lang}
+    data-loading="lazy"
+    crossorigin="anonymous"
+    async></script>
+  <noscript>{lang === 'ko' ? '댓글을 보려면 JavaScript가 필요합니다.' : 'JavaScript is required to view comments.'}</noscript>
+</section>
+
+<script is:inline>
+  const syncGiscusTheme = () => {
+    const iframe = document.querySelector('iframe.giscus-frame');
+    if (!iframe?.contentWindow) return;
+
+    const theme = document.documentElement.dataset.theme === 'light' ? 'light' : 'dark_dimmed';
+    iframe.contentWindow.postMessage(
+      {
+        giscus: {
+          setConfig: {
+            theme,
+          },
+        },
+      },
+      'https://giscus.app'
+    );
+  };
+
+  new MutationObserver(syncGiscusTheme).observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['data-theme'],
+  });
+  window.addEventListener('message', (event) => {
+    if (event.origin === 'https://giscus.app') syncGiscusTheme();
+  });
+</script>
+
+<style>
+  .giscus-comments {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--sl-color-hairline);
+  }
+
+  .giscus-comments__header {
+    margin-bottom: 1.25rem;
+  }
+
+  .giscus-comments h2 {
+    margin: 0;
+    color: var(--sl-color-white);
+    font-size: var(--sl-text-2xl);
+    line-height: var(--sl-line-height-headings);
+  }
+
+  .giscus-comments p {
+    margin: 0.5rem 0 0;
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-sm);
+  }
+</style>
