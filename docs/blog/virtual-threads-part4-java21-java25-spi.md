@@ -10,6 +10,11 @@ blog:
   cardDescription: "Hide Java 21/25 differences inside runtime providers and keep application code on one Virtual Threads API."
 ---
 
+<figure class="bt4k-blog-hero">
+  <img src="/assets/virtual-threads-part4-spi-01.png" alt="ServiceLoader module layout for Java 21 and Java 25 virtual thread runtimes" loading="eager" />
+  <figcaption>Hide Java 21/25 differences inside runtime providers and keep application code on one Virtual Threads API.</figcaption>
+</figure>
+
 <p class="bt4k-post-meta">2026-05-29 · Virtual Threads series · Part 4</p>
 
 This is Part 4 of the Virtual Threads series. The full series continues with
@@ -31,10 +36,6 @@ The `virtualthread` module in `bluetape4k-projects` splits the problem into a co
 JDK-specific runtime providers. If application code has to ask "am I on Java 21 or Java 25?"
 everywhere, too much implementation detail has leaked out.
 
-<figure class="bt4k-blog-hero">
-  <img src="/assets/virtual-threads-part4-spi-01.png" alt="ServiceLoader module layout for Java 21 and Java 25 virtual thread runtimes" loading="eager" />
-  <figcaption>Hide Java 21/25 differences inside runtime providers and keep application code on one Virtual Threads API.</figcaption>
-</figure>
 
 The key is that the application does not know the `jdk21` or `jdk25` implementation classes. It
 calls the common API. `ServiceLoader` selects the runtime provider. The Java-version-specific

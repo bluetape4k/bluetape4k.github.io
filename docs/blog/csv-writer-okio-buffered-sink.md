@@ -10,6 +10,11 @@ blog:
   cardDescription: The #674 follow-up to the Okio CSV reader work: Flow rows, UTF-8 sinks, behavior locks, and a 3.25x large export win.
 ---
 
+<figure class="bt4k-blog-hero">
+  <img src="/assets/csv-okio-writer-throughput-01.png" alt="CSV writer throughput comparison chart showing existing Writer and Okio BufferedSink ops per second" loading="eager" />
+  <figcaption>The #674 follow-up to the Okio CSV reader work: Flow rows, UTF-8 sinks, behavior locks, and a 3.25x large export win.</figcaption>
+</figure>
+
 <p class="bt4k-post-meta">2026-05-29 · bluetape4k csv performance note</p>
 
 The previous CSV post was about reading. `bluetape4k-csv` stopped dragging every UTF-8
@@ -36,10 +41,6 @@ Yes, `FlowCsvWriter` is coroutine-based. That matters. The writer does not need 
 whole export into memory. It can collect one row from a `Flow`, write that row, check
 cancellation, and move on.
 
-<figure class="bt4k-blog-hero">
-  <img src="/assets/csv-okio-writer-throughput-01.png" alt="CSV writer throughput comparison chart showing existing Writer and Okio BufferedSink ops per second" loading="eager" />
-  <figcaption>The #674 follow-up to the Okio CSV reader work: Flow rows, UTF-8 sinks, behavior locks, and a 3.25x large export win.</figcaption>
-</figure>
 
 ## The Suspicious Part Was Not Flow
 

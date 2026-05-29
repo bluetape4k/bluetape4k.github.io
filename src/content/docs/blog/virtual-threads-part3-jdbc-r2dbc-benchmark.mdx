@@ -10,6 +10,11 @@ blog:
   cardDescription: "R2DBC looked like the obvious winner, but the benchmark results disagreed. A practical look at JDBC + Virtual Threads."
 ---
 
+<figure class="bt4k-blog-hero">
+  <img src="/assets/virtual-threads-part3-benchmark-01.png" alt="Benchmark summary comparing JDBC with virtual threads and R2DBC with coroutines" loading="eager" />
+  <figcaption>R2DBC looked like the obvious winner, but the benchmark results disagreed. A practical look at JDBC + Virtual Threads.</figcaption>
+</figure>
+
 <p class="bt4k-post-meta">2026-05-29 · Virtual Threads series · Part 3</p>
 
 This is Part 3 of the Virtual Threads series. The full series continues with
@@ -29,10 +34,6 @@ less sentimental. General CRUD/JOIN benchmarks improved substantially when the J
 tuned around pool size and indexes, and batch benchmarks often favored JDBC + Virtual Threads
 over R2DBC + Coroutines for the same workload.
 
-<figure class="bt4k-blog-hero">
-  <img src="/assets/virtual-threads-part3-benchmark-01.png" alt="Benchmark summary comparing JDBC with virtual threads and R2DBC with coroutines" loading="eager" />
-  <figcaption>R2DBC looked like the obvious winner, but the benchmark results disagreed. A practical look at JDBC + Virtual Threads.</figcaption>
-</figure>
 
 This chart isolates a large end-to-end batch job with `dataSize=100000` and `parallelism=8`.
 Blue bars are JDBC + Virtual Threads, orange bars are R2DBC + Coroutines. Under the same pool

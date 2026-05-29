@@ -10,6 +10,11 @@ blog:
   cardDescription: "Blocking code를 다시 꺼내도 된다는 반가운 소식. 단, timeout과 resource limit까지 같이 챙길 때만."
 ---
 
+<figure class="bt4k-blog-hero">
+  <img src="/assets/virtual-threads-part1-guide-01.png" alt="Practical map for using virtual threads with blocking IO, backpressure, diagnostics, and cleanup" loading="eager" />
+  <figcaption>Blocking code를 다시 꺼내도 된다는 반가운 소식. 단, timeout과 resource limit까지 같이 챙길 때만.</figcaption>
+</figure>
+
 <p class="bt4k-post-meta">2026-05-29 · Virtual Threads series · Part 1</p>
 
 이 글은 Virtual Threads 시리즈의 1편이다. 전체 시리즈는 [Part 1: 소개와 주의점](/blog/virtual-threads-part1-guide/),
@@ -21,10 +26,6 @@ Virtual Threads를 처음 들으면 살짝 의심부터 든다. "이제 blocking
 이렇게 좋은 말에는 보통 조건이 붙는다. 여기에도 조건이 있다. Virtual Threads는 마법이 아니라, Java가
 thread-per-request 스타일을 훨씬 낮은 비용으로 다시 쓸 수 있게 만든 기술이다.
 
-<figure class="bt4k-blog-hero">
-  <img src="/assets/virtual-threads-part1-guide-01.png" alt="Practical map for using virtual threads with blocking IO, backpressure, diagnostics, and cleanup" loading="eager" />
-  <figcaption>Blocking code를 다시 꺼내도 된다는 반가운 소식. 단, timeout과 resource limit까지 같이 챙길 때만.</figcaption>
-</figure>
 
 ## Virtual Threads가 해결하는 문제
 

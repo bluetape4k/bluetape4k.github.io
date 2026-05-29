@@ -10,12 +10,13 @@ blog:
   cardDescription: How Claude Code and Codex helped with automation, documentation, tests, research, examples, cross-repository consistency, and workflow discipline.
 ---
 
-<p class="bt4k-post-meta">2026-05-18 · bluetape4k engineering note</p>
-
 <figure class="bt4k-blog-hero">
   <img src="/assets/ai-assisted-library-development.png" alt="AI coding agents, automation pipelines, documentation, tests, and repository maps supporting a Kotlin library ecosystem" loading="eager" />
   <figcaption>For large library work, AI was most valuable as a collaboration system for research, automation, review, documentation, and repeated cross-repository work.</figcaption>
 </figure>
+
+<p class="bt4k-post-meta">2026-05-18 · bluetape4k engineering note</p>
+
 
 Over the last three months, I used Claude Code and Codex heavily while expanding the bluetape4k ecosystem. The work was not a single application. It spanned multiple library repositories, BOMs, Spring Boot 3/4 integrations, Ktor examples, Exposed JDBC/R2DBC, AWS, graph, image processing, leader election, text processing, and workshop documentation.
 

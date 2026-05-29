@@ -10,6 +10,11 @@ blog:
   cardDescription: "#674 후속 작업. Flow row pipeline, UTF-8 sink, CSV semantics 보호, 그리고 large export 3.25배 개선을 정리합니다."
 ---
 
+<figure class="bt4k-blog-hero">
+  <img src="/assets/csv-okio-writer-throughput-01.png" alt="CSV writer throughput comparison chart showing existing Writer and Okio BufferedSink ops per second" loading="eager" />
+  <figcaption>#674 후속 작업. Flow row pipeline, UTF-8 sink, CSV semantics 보호, 그리고 large export 3.25배 개선을 정리합니다.</figcaption>
+</figure>
+
 <p class="bt4k-post-meta">2026-05-29 · bluetape4k csv performance note</p>
 
 지난 CSV 글은 읽기 이야기였다. `bluetape4k-csv`는 UTF-8 필드를 character-first lexer로 끌고 다니는
@@ -35,10 +40,6 @@ suspend fun writeFile(
 맞다. `FlowCsvWriter`는 coroutine 기반 API다. 이게 중요하다. writer는 export 전체를 메모리에 모을
 필요가 없다. `Flow`에서 row 하나를 받고, 그 row를 쓰고, cancellation을 확인하고, 다음 row로 가면 된다.
 
-<figure class="bt4k-blog-hero">
-  <img src="/assets/csv-okio-writer-throughput-01.png" alt="CSV writer throughput comparison chart showing existing Writer and Okio BufferedSink ops per second" loading="eager" />
-  <figcaption>#674 후속 작업. Flow row pipeline, UTF-8 sink, CSV semantics 보호, 그리고 large export 3.25배 개선을 정리합니다.</figcaption>
-</figure>
 
 ## 수상한 부분은 Flow가 아니었다
 

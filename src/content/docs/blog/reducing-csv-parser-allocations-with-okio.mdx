@@ -10,6 +10,11 @@ blog:
   cardDescription: A benchmark-backed walkthrough of the #651 CSV parser optimization, from Reader parsing to Okio UnsafeCursor segment scanning.
 ---
 
+<figure class="bt4k-blog-hero">
+  <img src="/assets/csv-okio-throughput-comparison-01.png" alt="CSV parser throughput comparison chart showing existing and Okio ops per second" loading="eager" />
+  <figcaption>A benchmark-backed walkthrough of the #651 CSV parser optimization, from Reader parsing to Okio UnsafeCursor segment scanning.</figcaption>
+</figure>
+
 <p class="bt4k-post-meta">2026-05-29 · bluetape4k csv performance note</p>
 
 `bluetape4k-csv` originally parsed CSV through a `Reader`. That path was simple and
@@ -22,10 +27,6 @@ path. The final PR keeps the public API unchanged, adds an internal Okio-backed 
 supported UTF-8 CSV settings, and falls back to the existing reader lexer when the settings
 are outside the fast path.
 
-<figure class="bt4k-blog-hero">
-  <img src="/assets/csv-okio-throughput-comparison-01.png" alt="CSV parser throughput comparison chart showing existing and Okio ops per second" loading="eager" />
-  <figcaption>A benchmark-backed walkthrough of the #651 CSV parser optimization, from Reader parsing to Okio UnsafeCursor segment scanning.</figcaption>
-</figure>
 
 ## What Changed
 

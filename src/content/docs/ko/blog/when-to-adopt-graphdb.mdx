@@ -10,12 +10,13 @@ blog:
   cardDescription: GraphDB 도입 판단, PostgreSQL traversal baseline, AGE, Neo4j, Memgraph, 그리고 graph storage가 적합한 use case를 benchmark 결과로 정리합니다.
 ---
 
-<p class="bt4k-post-meta">2026-05-28 · bluetape4k engineering note</p>
-
 <figure class="bt4k-blog-hero">
   <img src="/assets/graphdb-adoption-latency-chart.png" alt="Neo4j, AGE, PostgreSQL recursive CTE, PostgreSQL iterative traversal을 비교한 authorization inheritance benchmark chart" loading="eager" />
   <figcaption>GraphDB 도입 신호는 길고 선택적인 path-shaped traversal에서만 나왔습니다. PostgreSQL은 여러 bounded relational traversal에서 여전히 강했습니다.</figcaption>
 </figure>
+
+<p class="bt4k-post-meta">2026-05-28 · bluetape4k engineering note</p>
+
 
 GraphDB는 관계가 많은 query를 자연스럽게 표현하게 해 준다. `MATCH (a)-[*1..N]->(b)`는 self join이나 recursive SQL보다 읽기 쉽다. 하지만 도입 판단을 query 문법만 보고 하면 위험하다. GraphDB는 새 운영 표면, 새 query planner, 새 데이터 적재 방식, 새 index, 새 monitoring 기준, 그리고 종종 relational source of truth 옆의 두 번째 저장 모델을 의미한다.
 

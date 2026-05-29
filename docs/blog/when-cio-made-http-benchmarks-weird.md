@@ -10,6 +10,11 @@ blog:
   cardDescription: How disappointing Ktor CIO numbers led to a fairer benchmark, a Vert.x pool fix, and workload-based HTTP client guidance.
 ---
 
+<figure class="bt4k-blog-hero">
+  <img src="/assets/io-http-high-latency-throughput-chart-01.png" alt="HTTP client high-latency throughput benchmark chart comparing OkHttp, HC5, Java HttpClient, Vert.x, and Ktor CIO" loading="eager" />
+  <figcaption>How disappointing Ktor CIO numbers led to a fairer benchmark, a Vert.x pool fix, and workload-based HTTP client guidance.</figcaption>
+</figure>
+
 <p class="bt4k-post-meta">2026-05-29 · bluetape4k io/http benchmark note</p>
 
 The `io/http` module in `bluetape4k-projects` lets several HTTP clients sit behind one
@@ -92,10 +97,6 @@ read as a same-fixture snapshot, not as a production ranking.
 The high-latency endpoint is more interesting. With a 50 ms delay, the benchmark starts to look
 more like service wait time than a simple CPU loop.
 
-<figure class="bt4k-blog-hero">
-  <img src="/assets/io-http-high-latency-throughput-chart-01.png" alt="HTTP client high-latency throughput benchmark chart comparing OkHttp, HC5, Java HttpClient, Vert.x, and Ktor CIO" loading="eager" />
-  <figcaption>How disappointing Ktor CIO numbers led to a fairer benchmark, a Vert.x pool fix, and workload-based HTTP client guidance.</figcaption>
-</figure>
 
 | Client row | 50 ms delay ops/s |
 |---|---:|

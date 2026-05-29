@@ -10,12 +10,13 @@ blog:
   cardDescription: Benchmark-backed notes on GraphDB adoption, PostgreSQL traversal baselines, AGE, Neo4j, Memgraph, and the use cases where graph storage is worth the cost.
 ---
 
-<p class="bt4k-post-meta">2026-05-28 · bluetape4k engineering note</p>
-
 <figure class="bt4k-blog-hero">
   <img src="/assets/graphdb-adoption-latency-chart.png" alt="Authorization inheritance benchmark chart comparing Neo4j, AGE, PostgreSQL recursive CTE, and PostgreSQL iterative traversal" loading="eager" />
   <figcaption>GraphDB adoption only showed a positive signal for long, selective, path-shaped traversal. PostgreSQL remained very strong for several bounded relational traversal shapes.</figcaption>
 </figure>
+
+<p class="bt4k-post-meta">2026-05-28 · bluetape4k engineering note</p>
+
 
 Graph databases are attractive because they make relationship-heavy queries easy to express. `MATCH (a)-[*1..N]->(b)` is much easier to read than a stack of self-joins or a recursive SQL query. But adoption should not be based on query syntax alone. A graph database adds a new operational surface, a new query planner, new data loading behavior, new indexes, new monitoring concerns, and often a second storage model beside the relational source of truth.
 

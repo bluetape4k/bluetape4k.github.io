@@ -10,6 +10,11 @@ blog:
   cardDescription: "Java 21과 25 차이는 내부로 숨기고, application code에는 하나의 Virtual Threads API만 보여주는 방법."
 ---
 
+<figure class="bt4k-blog-hero">
+  <img src="/assets/virtual-threads-part4-spi-01.png" alt="ServiceLoader module layout for Java 21 and Java 25 virtual thread runtimes" loading="eager" />
+  <figcaption>Java 21과 25 차이는 내부로 숨기고, application code에는 하나의 Virtual Threads API만 보여주는 방법.</figcaption>
+</figure>
+
 <p class="bt4k-post-meta">2026-05-29 · Virtual Threads series · Part 4</p>
 
 이 글은 Virtual Threads 시리즈의 4편이다. 전체 시리즈는 [Part 1: 소개와 주의점](/blog/virtual-threads-part1-guide/),
@@ -30,10 +35,6 @@ application code에서 어떻게 숨길지에 관한 이야기다. 사용자에�
 application code가 "지금 Java 21인가, 25인가?"를 매번 따져야 한다면 API가 너무 많은 사정을 밖으로
 드러내는 것이다.
 
-<figure class="bt4k-blog-hero">
-  <img src="/assets/virtual-threads-part4-spi-01.png" alt="ServiceLoader module layout for Java 21 and Java 25 virtual thread runtimes" loading="eager" />
-  <figcaption>Java 21과 25 차이는 내부로 숨기고, application code에는 하나의 Virtual Threads API만 보여주는 방법.</figcaption>
-</figure>
 
 그림의 핵심은 application이 `jdk21`/`jdk25` 구현체를 직접 알지 않는다는 점이다. application은 공통
 API만 호출하고, `ServiceLoader`가 runtime provider를 고른다. 그러면 JDK별 차이는 배포 artifact와

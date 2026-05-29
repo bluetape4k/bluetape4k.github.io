@@ -10,6 +10,11 @@ blog:
   cardDescription: Ktor CIO의 실망스러운 첫 성능에서 출발해 공정한 benchmark, Vert.x pool 병목 수정, workload별 HTTP client 선택 기준까지 정리한 이야기.
 ---
 
+<figure class="bt4k-blog-hero">
+  <img src="/assets/io-http-high-latency-throughput-chart-01.png" alt="HTTP client high-latency throughput benchmark chart comparing OkHttp, HC5, Java HttpClient, Vert.x, and Ktor CIO" loading="eager" />
+  <figcaption>Ktor CIO의 실망스러운 첫 성능에서 출발해 공정한 benchmark, Vert.x pool 병목 수정, workload별 HTTP client 선택 기준까지 정리한 이야기.</figcaption>
+</figure>
+
 <p class="bt4k-post-meta">2026-05-29 · bluetape4k io/http benchmark note</p>
 
 `bluetape4k-projects`의 `io/http` 모듈은 여러 HTTP client를 한 abstraction 아래에서
@@ -84,10 +89,6 @@ Base `/ping` benchmark는 connection reuse와 local variance에 민감하다. pr
 High-latency endpoint는 더 흥미롭다. 50 ms delay가 들어가면 blocking, coroutine, virtual thread의
 차이가 단순 CPU loop보다 실제 service wait time에 가까워진다.
 
-<figure class="bt4k-blog-hero">
-  <img src="/assets/io-http-high-latency-throughput-chart-01.png" alt="HTTP client high-latency throughput benchmark chart comparing OkHttp, HC5, Java HttpClient, Vert.x, and Ktor CIO" loading="eager" />
-  <figcaption>Ktor CIO의 실망스러운 첫 성능에서 출발해 공정한 benchmark, Vert.x pool 병목 수정, workload별 HTTP client 선택 기준까지 정리한 이야기.</figcaption>
-</figure>
 
 | Client row | 50 ms delay ops/s |
 |---|---:|

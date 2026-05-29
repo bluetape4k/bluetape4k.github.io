@@ -10,6 +10,11 @@ blog:
   cardDescription: "A candid write-up of five bluetape4k-projects fixes: null becoming zero, stale tests, cleanup timeouts, swallowed cancellation, and lost interrupt status."
 ---
 
+<figure class="bt4k-blog-hero">
+  <img src="/assets/embarrassing-bug-fix-loop-01.png" alt="Pastel flow chart showing mistake, signal, fix, and guard for embarrassing bug fixes" loading="eager" />
+  <figcaption>A candid write-up of five bluetape4k-projects fixes: null becoming zero, stale tests, cleanup timeouts, swallowed cancellation, and lost interrupt status.</figcaption>
+</figure>
+
 <p class="bt4k-post-meta">2026-05-29 · bluetape4k projects bug-fix note</p>
 
 While working on `bluetape4k-projects`, the bugs that hurt most are not always the clever ones.
@@ -18,10 +23,6 @@ Sometimes they are the small assumptions that make you think: "why did I believe
 This post collects those cases. Not grand architecture, not heroic optimization. Just small
 mistakes that became issues, broke Nightly, and eventually turned into tests and release gates.
 
-<figure class="bt4k-blog-hero">
-  <img src="/assets/embarrassing-bug-fix-loop-01.png" alt="Pastel flow chart showing mistake, signal, fix, and guard for embarrassing bug fixes" loading="eager" />
-  <figcaption>A candid write-up of five bluetape4k-projects fixes: null becoming zero, stale tests, cleanup timeouts, swallowed cancellation, and lost interrupt status.</figcaption>
-</figure>
 
 ## How to Read This
 

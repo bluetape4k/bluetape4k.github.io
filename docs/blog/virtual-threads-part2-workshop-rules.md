@@ -10,6 +10,11 @@ blog:
   cardDescription: "Turning on Virtual Threads is not the finish line. Pooling, semaphores, context, and locks decide whether they work well."
 ---
 
+<figure class="bt4k-blog-hero">
+  <img src="/assets/virtual-threads-part2-rules-01.png" alt="Practical virtual thread rules from bluetape4k-workshop" loading="eager" />
+  <figcaption>Turning on Virtual Threads is not the finish line. Pooling, semaphores, context, and locks decide whether they work well.</figcaption>
+</figure>
+
 <p class="bt4k-post-meta">2026-05-29 · Virtual Threads series · Part 2</p>
 
 This is Part 2 of the Virtual Threads series. The full series continues with
@@ -22,10 +27,6 @@ Part 1 covered the big picture. This post is about rules you can actually feel i
 examples come from `bluetape4k-workshop/virtualthreads/rules`. They do not stop at "use Virtual
 Threads." They also show how Virtual Threads can fail to deliver if used with the wrong habits.
 
-<figure class="bt4k-blog-hero">
-  <img src="/assets/virtual-threads-part2-rules-01.png" alt="Practical virtual thread rules from bluetape4k-workshop" loading="eager" />
-  <figcaption>Turning on Virtual Threads is not the finish line. Pooling, semaphores, context, and locks decide whether they work well.</figcaption>
-</figure>
 
 ## Rule 1. Keep Blocking Synchronous Code When the Work Is I/O Waiting
 
