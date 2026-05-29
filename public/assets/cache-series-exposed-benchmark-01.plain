@@ -1,0 +1,13 @@
+graph 1 8.1806 2.6406
+node baseline 0.67882 0.89062 1.3576 0.64236 "NO_CACHE\nREAD_HEAVY\n517.5 us/op" rounded,filled box #8aa4bd #f5f7fb
+node readThrough 3.5538 1.4601 1.6493 0.64236 "READ_THROUGH\nREAD_HEAVY\n94.3 us/op" rounded,filled box #8aa4bd #e9f7ec
+node writeThrough 3.5538 0.32118 1.7118 0.64236 "WRITE_THROUGH\nREAD_HEAVY\n52.1 us/op" rounded,filled box #8aa4bd #e8f2ff
+node writeHeavy 7.3663 0.32118 1.4201 0.5 "WRITE_HEAVY\n445-508 us/op" rounded,filled box #8aa4bd #fff6df
+node readHit 7.3663 2.3906 1.4618 0.5 "Read-through hit\n0.003 us/op" rounded,filled box #8aa4bd #e9f7ec
+node readMiss 7.3663 1.3906 1.6285 0.5 "Read-through miss\n0.085-0.119 us/op" rounded,filled box #8aa4bd #fdecef
+edge baseline readThrough 7 0.68056 1.2184 0.68056 1.3612 0.68056 1.4965 0.68056 1.4965 0.68056 1.4965 2.6045 1.4965 2.6045 1.4965 "5.5x faster" 2.0278 1.4271 solid #4d7fb8
+edge baseline writeThrough 7 0.68056 0.56285 0.68056 0.42008 0.68056 0.28472 0.68056 0.28472 0.68056 0.28472 2.5735 0.28472 2.5735 0.28472 "9.9x faster" 2.0278 0.60764 solid #4d7fb8
+edge readThrough readHit 7 4.3846 1.7109 5.5049 1.7109 7.3611 1.7109 7.3611 1.7109 7.3611 1.7109 7.3611 2.0193 7.3611 2.0193 "hot read" 5.4809 2.4688 solid #4d7fb8
+edge readThrough readMiss 4 4.3811 1.3906 4.3811 1.3906 6.429 1.3906 6.429 1.3906 "miss reload" 5.4809 1.4688 solid #4d7fb8
+edge writeThrough writeHeavy 4 4.4142 0.32118 4.4142 0.32118 6.5315 0.32118 6.5315 0.32118 "write-heavy effect small" 5.4809 0.39931 solid #4d7fb8
+stop

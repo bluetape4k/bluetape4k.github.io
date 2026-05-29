@@ -1,0 +1,166 @@
+---
+title: "Bluetape4k Cache Part 1: 캐시 모듈은 왜 이렇게 생겼나"
+description: bluetape4k-cache-core, JCache, SuspendCache, Memoizer, NearCache 공통 API를 한 번에 훑어보는 시리즈 첫 글.
+sidebar:
+  order: -202605291701
+blog:
+  date: 2026-05-29T17:01:00+09:00
+  image: /assets/cache-series-part1-hero.png
+  imageAlt: Bluetape4k cache module workbench with robot workers assembling cache blocks
+  cardDescription: "로컬 캐시, JCache, suspend API, memoizer, NearCache가 한 상자에 들어간 이유."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/cache-series-part1-hero.png" alt="Bluetape4k cache module workbench with robot workers assembling cache blocks" loading="eager" />
+  <figcaption>캐시는 빠른 서랍입니다. 문제는 서랍이 하나가 아니라는 점입니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-05-29 · Bluetape4k Cache series · Part 1</p>
+
+`bluetape4k-cache`는 "Map 하나 감싸면 되지 않나?"로 시작했다가, 운영 환경을 만나고 조용히 의자에 앉게 되는 영역을 다룹니다.
+
+로컬 캐시는 빠릅니다. Redis는 공유됩니다. JCache는 표준 API가 있습니다. Kotlin coroutine은 `suspend` 경로가 필요합니다. 장애가 나면 재시도와 fallback도 필요합니다. 이 모든 것을 애플리케이션 코드마다 손으로 붙이면, 어느 날 캐시 코드가 도메인 코드보다 더 많은 코드를 차지합니다. 좋은 징조는 아닙니다.
+
+그래서 bluetape4k의 Cache 모듈은 "캐시 구현체 모음"이 아니라, 캐시를 다루는 공통 언어를 먼저 제공합니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/cache-series-module-map-01.png" alt="Bluetape4k cache module map from cache-core to local providers, memoizers, resilience, and distributed providers" loading="lazy" />
+  <figcaption>`cache-core`가 공통 계약을 잡고, provider 모듈들이 같은 사용 경험을 공유합니다.</figcaption>
+</figure>
+
+## 큰 그림
+
+핵심은 `cache-core`입니다.
+
+| 영역 | 역할 |
+|---|---|
+| JCache helpers | JSR-107 스타일 캐시 설정과 provider 초기화 |
+| `SuspendCache` | coroutine 코드에서 자연스럽게 쓰는 suspend 캐시 계약 |
+| Memoizer | 함수 결과를 sync, async, suspend 방식으로 캐싱 |
+| NearCache interfaces | L1 local + L2 back cache 구조를 공통 API로 표현 |
+| Resilient decorator | retry, fallback, 통계를 캐시 구현 바깥에서 붙임 |
+
+그리고 provider 모듈이 뒤를 받칩니다.
+
+| 모듈 | 대표 역할 |
+|---|---|
+| `cache-core` | Caffeine, Cache2k, Ehcache, JCache, NearCache 공통 API |
+| `cache-lettuce` | Redis/Lettuce 기반 JCache, RESP3 NearCache |
+| `cache-redisson` | Redisson 기반 JCache, RLocalCachedMap NearCache |
+| `cache-hazelcast` | Hazelcast 기반 JCache, IMap NearCache |
+
+전체 소스:
+[bluetape4k-projects/cache](https://github.com/bluetape4k/bluetape4k-projects/tree/develop/cache)
+
+## 로컬 캐시: 빠른데 혼자 삽니다
+
+로컬 캐시는 JVM 안에 있습니다. 네트워크 왕복이 없어서 빠르고, 설정도 단순합니다.
+
+```kotlin
+import io.bluetape4k.cache.caffeine.caffeine
+import java.time.Duration
+
+val cache = caffeine {
+    maximumSize(10_000)
+    expireAfterWrite(Duration.ofMinutes(10))
+}.build<String, Any>()
+```
+
+전체 소스:
+[cache-core README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/cache/cache-core/README.md)
+
+다만 로컬 캐시는 "내 JVM"만 압니다. 서버가 둘이면 서랍도 둘입니다. 한쪽 서랍에 넣은 물건을 다른 쪽 서랍이 안다고 믿으면, 그때부터 장애 회고가 문학 장르가 됩니다.
+
+## SuspendCache: coroutine 코드에 맞춘 계약
+
+Kotlin 서비스를 쓰다 보면 cache miss 때 DB나 remote call을 해야 합니다. 그 경로가 suspend라면 캐시 API도 suspend여야 합니다.
+
+```kotlin
+import io.bluetape4k.cache.jcache.CaffeineSuspendJCache
+
+val cache = CaffeineSuspendJCache<String, String>("sessions")
+
+cache.put("token:1", "user-1")
+val userId = cache.get("token:1")
+```
+
+관련 소스:
+[CaffeineSuspendJCache.kt](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/CaffeineSuspendJCache.kt)
+
+## Memoizer: 함수 결과를 캐시로 승격하기
+
+Memoizer는 "이 함수는 같은 입력에 대해 같은 결과를 자주 낸다"는 사실을 API로 표현합니다.
+
+```kotlin
+import io.bluetape4k.cache.memoizer.suspendMemoizer
+
+val userSummary = suspendMemoizer<Long, String> { userId ->
+    loadUserSummaryFromDatabase(userId)
+}
+
+val summary = userSummary(42L)
+```
+
+관련 소스:
+[Memoizer.kt](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/memoizer/Memoizer.kt),
+[LettuceMemoizer.kt](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/cache/cache-lettuce/src/main/kotlin/io/bluetape4k/cache/memoizer/LettuceMemoizer.kt)
+
+## NearCache: 빠른 서랍과 공유 창고를 같이 쓰기
+
+NearCache는 L1 local cache와 L2 back cache를 함께 씁니다.
+
+```kotlin
+import io.bluetape4k.cache.LettuceCaches
+
+val cache = LettuceCaches.nearCache<String>(redisClient) {
+    cacheName = "users"
+    maxLocalSize = 10_000
+    recordStats = true
+}
+
+cache.put("42", "Debop")
+val name = cache.get("42")
+```
+
+`NearCacheOperations`는 `get`, `put`, `remove`, `clearLocal`, `clearAll`, `stats` 같은 공통 동작을 제공합니다. provider가 Lettuce든 Redisson이든 Hazelcast든, 애플리케이션은 같은 모양으로 접근할 수 있습니다.
+
+관련 소스:
+[NearCacheOperations.kt](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/nearcache/NearCacheOperations.kt),
+[LettuceCaches.kt](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/cache/cache-lettuce/src/main/kotlin/io/bluetape4k/cache/LettuceCaches.kt)
+
+## Resilience는 장식이 아닙니다
+
+캐시는 성능 기능처럼 보이지만, remote cache를 붙이는 순간 장애 전파 경로가 됩니다. Redis가 잠깐 불안정되었을 때 모든 요청이 같이 영향을 받으면 "캐시를 붙였더니 더 느려졌다"가 아니라 "캐시가 장애 증폭기가 됐다"입니다.
+
+그래서 bluetape4k는 resilience decorator를 제공합니다.
+
+```kotlin
+val resilient = cache.withResilience {
+    retryMaxAttempts = 5
+    retryWaitDuration = Duration.ofMillis(200)
+    getFailureStrategy = GetFailureStrategy.RETURN_FRONT_OR_NULL
+}
+```
+
+관련 소스:
+[ResilientNearCacheDecorator.kt](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/nearcache/ResilientNearCacheDecorator.kt),
+[NearCacheResilienceConfig.kt](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/nearcache/NearCacheResilienceConfig.kt)
+
+## 정리
+
+Cache 모듈의 방향은 단순합니다.
+
+- 로컬 캐시는 빠르게 씁니다.
+- remote cache는 공유 상태를 맡깁니다.
+- suspend API는 coroutine 코드와 맞춥니다.
+- NearCache는 두 세계를 연결합니다.
+- resilience는 운영 중 "잠깐만요"를 "전체 장애"로 키우지 않게 합니다.
+
+다음 글에서는 NearCache를 따로 꺼내 봅니다. Remote cache만으로 부족한 이유, Redisson의 Pub/Sub 방식과 Lettuce의 RESP3 CLIENT TRACKING 방식, 그리고 benchmark 숫자를 같이 보겠습니다. 숫자는 가끔 냉정합니다. 그래서 좋습니다.
+
+## 시리즈 링크
+
+- [Part 1: Bluetape4k Cache 모듈 소개](/ko/blog/bluetape4k-cache-part1-cache-module/)
+- [Part 2: Near Cache 필요성, 구조, 효능](/ko/blog/bluetape4k-cache-part2-near-cache/)
+- [Part 3: Near Cache + Exposed 캐싱 전략](/ko/blog/bluetape4k-cache-part3-exposed-strategies/)
+- [Part 4: 실전 예제와 workshop 적용](/ko/blog/bluetape4k-cache-part4-workshop-examples/)

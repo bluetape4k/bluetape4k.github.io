@@ -1,0 +1,243 @@
+---
+title: "Bluetape4k Cache Part 4: Workshop 예제로 캐시 전략 감 잡기"
+description: bluetape4k-workshop의 Caffeine, Redis, Near Cache, resilience 예제를 통해 캐시 전략을 실제 서비스 코드로 연결합니다.
+sidebar:
+  order: -202605291704
+blog:
+  date: 2026-05-29T17:04:00+09:00
+  image: /assets/cache-series-part4-hero.png
+  imageAlt: Spring Boot cache workshop workbench with robot workers, service blocks, Redis, local cache, and benchmark gauges
+  cardDescription: "Caffeine, Redis, Near Cache, resilience를 예제로 비교하고 서비스 코드에 붙이는 방법."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/cache-series-part4-hero.png" alt="Spring Boot cache workshop workbench with robot workers, service blocks, Redis, local cache, and benchmark gauges" loading="eager" />
+  <figcaption>캐시 전략은 문서에서 이해하고, 예제에서 의심하고, 운영에서 겸손해집니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-05-29 · Bluetape4k Cache series · Part 4</p>
+
+이번 글은 손에 잡히는 예제입니다. `bluetape4k-workshop`에는 Spring Boot 기반 캐시 예제가 여러 개 있습니다. 목표는 "캐시가 좋다"가 아니라, 어떤 전략이 어떤 코드 모양을 만들고 어떤 비용을 숨기는지 보는 것입니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/cache-series-workshop-profile-01.png" alt="Workshop cache profiles comparing no cache, Caffeine, Redis, Near Cache, and benchmark path" loading="lazy" />
+  <figcaption>같은 Product service라도 cache profile에 따라 성능과 일관성 계약이 달라집니다.</figcaption>
+</figure>
+
+## 예제 위치
+
+관련 예제는 이쪽입니다.
+
+| 예제 | 역할 |
+|---|---|
+| [cache-caffeine](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/spring-boot/cache-caffeine) | Spring Cache + Caffeine local cache |
+| [cache-redis](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/spring-boot/cache-redis) | Spring Data Redis + Lettuce |
+| [cache-benchmark](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/spring-boot/cache-benchmark) | No cache, Caffeine, Redis, Near Cache profile 비교 |
+| [cache-resilience](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/spring-boot/cache-resilience) | Redis 장애 시 Caffeine fallback |
+
+## Caffeine: 가장 가까운 캐시
+
+`cache-caffeine` 예제는 Spring Cache abstraction에 Caffeine을 연결합니다.
+
+```kotlin
+@Configuration
+class CaffeineConfig {
+    @Bean
+    fun cacheManager(caffeine: Caffeine<Any, Any>): CacheManager {
+        return CaffeineCacheManager("cache:countries", "cache:cities").apply {
+            setCaffeine(caffeine)
+        }
+    }
+
+    @Bean
+    fun caffeineBean(): Caffeine<Any, Any> = caffeine {
+        maximumSize(10_000)
+        expireAfterWrite(30.minutes)
+    }
+}
+```
+
+전체 소스:
+[CaffeineConfig.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-caffeine/src/main/kotlin/io/bluetape4k/workshop/cache/caffeine/config/CaffeineConfig.kt)
+
+이 예제는 단일 인스턴스 read-heavy 캐시에 좋습니다. 빠르고 단순합니다. 단점도 단순합니다. 인스턴스가 둘이면 캐시도 둘입니다. 둘이 서로 대화하지 않습니다. 의외로 많은 문제가 "서로 대화하지 않음"에서 시작합니다.
+
+## Redis: 공유되는 캐시
+
+`cache-redis` 예제는 Redis를 Spring Cache와 `RedisTemplate`에 연결합니다.
+
+```kotlin
+@Bean
+fun redisCacheManager(connectionFactory: RedisConnectionFactory): CacheManager =
+    RedisCacheManager.builder(connectionFactory)
+        .cacheDefaults(
+            RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofDays(1))
+        )
+        .build()
+```
+
+전체 소스:
+[LettuceRedisCacheConfiguration.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-redis/src/main/kotlin/io/bluetape4k/workshop/cache/redis/config/LettuceRedisCacheConfiguration.kt)
+
+Redis는 여러 인스턴스가 같은 값을 볼 수 있게 해줍니다. 대신 read path마다 remote hop이 있습니다. 그래서 Part 2에서 본 것처럼 hot read가 많으면 Near Cache가 후보가 됩니다.
+
+## cache-benchmark: 같은 인터페이스, 다른 전략
+
+`cache-benchmark`는 `ProductCacheService`라는 같은 인터페이스 아래 여러 전략을 둡니다.
+
+```kotlin
+interface ProductCacheService {
+    fun findById(id: Long): Product?
+    fun save(product: Product): Product
+    fun evict(id: Long)
+    fun clearAll()
+}
+```
+
+전체 소스:
+[ProductCacheService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/ProductCacheService.kt)
+
+구현체는 전략을 분리합니다.
+
+| 구현체 | 의미 |
+|---|---|
+| `NoCacheService` | DB baseline |
+| `CaffeineService` | local in-JVM cache |
+| `RedisCacheService` | remote distributed cache |
+| `NearCacheService` | local + Redis near cache |
+| `WriteThroughService` | 현재는 DB write 후 cache update 형태라 cache-aside PUT 관리에 가까움 |
+| `ReadThroughService` | cache miss 시 DB load |
+
+관련 소스:
+[NoCacheService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/NoCacheService.kt),
+[CaffeineService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/CaffeineService.kt),
+[RedisCacheService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/RedisCacheService.kt),
+[NearCacheService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/NearCacheService.kt)
+
+이 구조가 좋은 이유는 benchmark와 production code가 같은 질문을 공유한다는 점입니다.
+
+- 캐시가 없으면 baseline은 얼마인가?
+- local cache만으로 충분한가?
+- Redis 공유가 필요한가?
+- Near Cache가 read path를 충분히 줄이는가?
+- write-through 비용은 받아들일 수 있는가?
+
+단, `cache-benchmark`의 `WriteThroughService`는 `exposed-workshop` 11장의 writer-backed write-through와 의미가 다릅니다. 현재 구현은 애플리케이션 코드가 DB 저장 후 cache update를 직접 관리하는 cache-aside 성격이 강합니다. 이 차이를 정리하기 위해 [bluetape4k-workshop #246](https://github.com/bluetape4k/bluetape4k-workshop/issues/246)을 추가했습니다.
+
+## Benchmark 결과
+
+`cache-benchmark`는 7개 profile을 같은 `ProductCacheService` 계약으로 비교합니다. 읽기/쓰기 모두 `ops/s` 기준이고 높을수록 좋습니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/cache-series-workshop-benchmark-01.png" alt="Workshop cache benchmark profiles comparing read and write throughput" loading="lazy" />
+  <figcaption>읽기에서는 Caffeine과 Near Cache가 압도적이고, 쓰기에서는 Write-Behind가 가장 빠릅니다. 대신 의미론은 더 신중해야 합니다.</figcaption>
+</figure>
+
+관련 소스:
+[cache-benchmark README.ko.md](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/README.ko.md),
+[CaffeineBenchmark.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/benchmark/kotlin/io/bluetape4k/workshop/cache/benchmark/benchmarks/CaffeineBenchmark.kt),
+[NearCacheBenchmark.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/benchmark/kotlin/io/bluetape4k/workshop/cache/benchmark/benchmarks/NearCacheBenchmark.kt),
+[WriteBehindBenchmark.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/benchmark/kotlin/io/bluetape4k/workshop/cache/benchmark/benchmarks/WriteBehindBenchmark.kt)
+
+### 읽기 처리량
+
+| 프로파일 | 읽기 ops/s | No Cache 대비 |
+|---|---:|---:|
+| No Cache | ~8,200 | 1x |
+| Caffeine | ~490,000 | 60x |
+| Redis Cache | ~43,000 | 5x |
+| Near Cache | ~465,000 | 57x |
+| Read-Through | ~42,000 | 5x |
+| Write-Through | ~41,000 | 5x |
+| Write-Behind | ~42,000 | 5x |
+
+### 쓰기 처리량
+
+| 프로파일 | 쓰기 ops/s | 비고 |
+|---|---:|---|
+| No Cache | ~8,200 | DB만 |
+| Caffeine | ~8,100 | DB write + local cache |
+| Redis Cache | ~7,300 | DB write + Redis SET |
+| Near Cache | ~7,200 | DB write + `RLocalCachedMap` PUT |
+| Write-Through | ~5,600 | 동기 DB + Redis |
+| Write-Behind | ~24,000 | cache 우선, DB는 비동기 flush |
+
+이 표만 보면 Write-Behind가 왕처럼 보입니다. 하지만 왕관에는 약관이 붙습니다. 최종 일관성을 허용할 수 있고, flush 실패/재시도/종료 시 drain 정책을 정할 수 있을 때만 좋은 선택입니다.
+
+## NearCacheService: local과 remote 사이
+
+Near Cache 예제는 Redisson의 local cached map을 사용합니다.
+
+```kotlin
+class NearCacheService(
+    private val productRepository: ProductRepository,
+    redissonClient: RedissonClient,
+) : ProductCacheService {
+    companion object : KLoggingChannel() {
+        const val CACHE_NAME = "products-near-cache"
+    }
+}
+```
+
+전체 소스:
+[NearCacheService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/NearCacheService.kt)
+
+코드는 짧아 보이지만 의미는 큽니다. hot read는 local에서 끝내고, remote cache는 공유와 invalidation을 담당합니다. 여기서 중요한 것은 "Near Cache를 썼다"가 아니라 "L1 hit이 충분히 나온다"입니다. hit이 안 나오면 작업대 위 서랍을 샀는데 계속 창고에 뛰어가는 상황입니다.
+
+## resilience: 캐시 장애를 서비스 장애로 키우지 않기
+
+`cache-resilience`는 Redis를 primary cache로 쓰고 Caffeine을 fallback으로 둡니다.
+
+```kotlin
+suspend fun getProduct(id: String): String? {
+    val redisKey = "$REDIS_KEY_PREFIX$id"
+
+    return SuspendDecorators.ofSupplier {
+        redisTemplate.opsForValue().get(redisKey)
+    }
+        .withCircuitBreaker(circuitBreaker)
+        .withFallback { localCache.getIfPresent(id) }
+        .invoke()
+}
+```
+
+전체 소스:
+[ResilientProductService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-resilience/src/main/kotlin/io/bluetape4k/workshop/cache/resilience/service/ResilientProductService.kt)
+
+이 예제는 운영적으로 중요합니다. 캐시는 성능을 위해 붙였는데, Redis가 잠깐 불안정되었다고 서비스 전체가 같이 영향을 받으면 이상합니다. 캐시는 조연입니다. 조연이 무대 중앙에서 쓰러지면 공연이 이상해집니다.
+
+## 실전 체크리스트
+
+서비스에 캐시를 넣기 전에 최소한 이 질문을 답해야 합니다.
+
+| 질문 | 답해야 하는 이유 |
+|---|---|
+| baseline latency는? | 캐시가 실제로 개선하는지 알아야 함 |
+| hit ratio 목표는? | hit이 낮으면 비용만 늘 수 있음 |
+| stale 허용 시간은? | Near Cache와 write-behind의 핵심 계약 |
+| write 실패 정책은? | throw, retry, queue, best effort 중 선택 |
+| invalidate 범위는? | 단일 key, bulk, prefix, 전체 clear 구분 |
+| 장애 시 fallback은? | Redis 장애가 서비스 장애가 되지 않게 함 |
+| 관측 지표는? | hit/miss, latency, queue depth, circuit state |
+
+## 마무리
+
+이 시리즈의 결론은 "무조건 Near Cache"가 아닙니다.
+
+더 정확한 결론은 이렇습니다.
+
+- 단일 JVM hot read면 Caffeine이 가장 단순합니다.
+- 여러 인스턴스가 공유해야 하면 Redis 같은 remote cache가 필요합니다.
+- remote read가 병목이면 Near Cache를 검토합니다.
+- Exposed repository에 붙일 때는 read/write 전략을 분리합니다.
+- 장애 동작을 정하지 않은 캐시는 아직 설계가 끝난 게 아닙니다.
+
+캐시는 성능 최적화이기도 하지만, 운영 계약이기도 합니다. 그리고 운영 계약은 대충 쓰면 나중에 아주 또렷하게 돌아옵니다. 보통 새벽에요.
+
+## 시리즈 링크
+
+- [Part 1: Bluetape4k Cache 모듈 소개](/ko/blog/bluetape4k-cache-part1-cache-module/)
+- [Part 2: Near Cache 필요성, 구조, 효능](/ko/blog/bluetape4k-cache-part2-near-cache/)
+- [Part 3: Near Cache + Exposed 캐싱 전략](/ko/blog/bluetape4k-cache-part3-exposed-strategies/)
+- [Part 4: 실전 예제와 workshop 적용](/ko/blog/bluetape4k-cache-part4-workshop-examples/)
