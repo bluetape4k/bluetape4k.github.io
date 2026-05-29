@@ -1,0 +1,13 @@
+graph 1 13.953 1.8303
+node request 0.7425 0.91514 1.485 0.5 "Request task" rounded,filled box black #e3f2ec
+node executor 3.1563 0.91514 1.9537 0.63583 "Virtual-thread\nper task executor" rounded,filled box black #eaf4ff
+node blocking 5.8514 0.91514 2.0475 0.63583 "Blocking I/O\nJDBC / HTTP / file" rounded,filled box black #fff1df
+node limits 8.9683 0.91514 2.7975 0.63583 "Resource limits\npool / semaphore / timeout" rounded,filled box black #f4f0ff
+node observe 12.507 1.5124 2.8912 0.63583 "Diagnostics\nJFR / thread dump / metrics" rounded,filled box black #e6f4ff
+node cleanup 12.507 0.31792 2.1412 0.63583 "Lifecycle\ninterrupt / cleanup" rounded,filled box black #fff6dc
+edge request executor 4 1.4864 0.91514 1.4864 0.91514 2.0217 0.91514 2.0217 0.91514 solid #5c7d70
+edge executor blocking 4 4.1369 0.91514 4.1369 0.91514 4.6685 0.91514 4.6685 0.91514 solid #5c7d70
+edge blocking limits 4 6.8806 0.91514 6.8806 0.91514 7.4143 0.91514 7.4143 0.91514 solid #5c7d70
+edge limits observe 7 10.371 1.0082 10.839 1.0082 11.244 1.0082 11.244 1.0082 11.244 1.0082 11.244 1.0371 11.244 1.0371 solid #5c7d70
+edge limits cleanup 7 10.373 0.82204 11.361 0.82204 12.508 0.82204 12.508 0.82204 12.508 0.82204 12.508 0.79319 12.508 0.79319 solid #5c7d70
+stop

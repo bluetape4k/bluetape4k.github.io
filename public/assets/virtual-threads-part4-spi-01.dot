@@ -1,0 +1,17 @@
+digraph VirtualThreadsPart3 {
+  graph [rankdir=LR, splines=ortho, nodesep=0.65, ranksep=0.75, bgcolor="transparent"];
+  node [shape=box, style="rounded,filled", fontname="Comic Mono", fontsize=12, margin="0.18,0.12"];
+  edge [color="#577789", penwidth=2, arrowsize=0.8, fontname="Comic Mono", fontsize=10];
+
+  app [label="Application\nAPI dependency only", fillcolor="#ffffff"];
+  api [label="VirtualThreads API\nServiceLoader selector", fillcolor="#eaf4ff"];
+  jdk25 [label="JDK 25 provider\npriority 25", fillcolor="#e9f6ef"];
+  jdk21 [label="JDK 21 provider\npriority 21", fillcolor="#fff0df"];
+  fallback [label="Platform fallback\ncached platform threads", fillcolor="#f4f0ff"];
+
+  { rank=same; jdk25; jdk21; fallback; }
+  app -> api;
+  api -> jdk25 [label="prefer"];
+  api -> jdk21 [label="else"];
+  api -> fallback [label="none"];
+}

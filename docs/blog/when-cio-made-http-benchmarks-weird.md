@@ -1,4 +1,4 @@
-# When CIO Made HTTP Benchmarks Weird
+# Ktor CIO가 HTTP 벤치마크를 이상하게 만들었을 때
 
 `bluetape4k-projects`의 `io/http` 모듈은 여러 HTTP client를 한 abstraction 아래에서
 사용할 수 있게 한다. Apache HC5, OkHttp3, Java `HttpClient`, Vert.x WebClient, Ktor CIO를

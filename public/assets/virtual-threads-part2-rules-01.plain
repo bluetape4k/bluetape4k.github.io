@@ -1,0 +1,11 @@
+graph 1 14.703 0.63583
+node sync 1.0238 0.31792 2.0475 0.63583 "Blocking sync code\nis OK for I/O" rounded,filled box black #e3f2ec
+node perTask 4.1407 0.31792 2.7975 0.63583 "Thread per task\nnot pooled virtual threads" rounded,filled box black #eaf4ff
+node limit 7.3983 0.31792 2.3287 0.63583 "Limit resource access\nwith Semaphore" rounded,filled box black #fff1df
+node context 10.281 0.31792 2.0475 0.63583 "Prefer ScopedValue\nfor context" rounded,filled box black #f4f0ff
+node lock 13.351 0.31792 2.7037 0.63583 "Keep lock scope small\nReentrantLock when needed" rounded,filled box black #e6f4ff
+edge sync perTask 4 2.053 0.31792 2.053 0.31792 2.5867 0.31792 2.5867 0.31792 solid #5c7d70
+edge perTask limit 4 5.5458 0.31792 5.5458 0.31792 6.0742 0.31792 6.0742 0.31792 solid #5c7d70
+edge limit context 4 8.5666 0.31792 8.5666 0.31792 9.1014 0.31792 9.1014 0.31792 solid #5c7d70
+edge context lock 4 11.307 0.31792 11.307 0.31792 11.839 0.31792 11.839 0.31792 solid #5c7d70
+stop

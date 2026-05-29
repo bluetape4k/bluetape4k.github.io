@@ -1,4 +1,4 @@
-# Embarrassing Bugs That Made Better Guards
+# 부끄러운 실수가 더 나은 안전장치를 만들 때
 
 `bluetape4k-projects`를 고치다 보면 가끔 아주 고급스러운 버그보다 더 아픈 버그가 나온다.
 코드가 어려워서 생긴 문제가 아니라, 보고 나면 "아, 나는 왜 이걸 이렇게 믿었지?" 싶은 문제들이다.

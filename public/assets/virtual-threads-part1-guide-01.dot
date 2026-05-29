@@ -1,0 +1,18 @@
+digraph VirtualThreadsPart1 {
+  graph [rankdir=LR, splines=ortho, nodesep=0.55, ranksep=0.7, bgcolor="transparent"];
+  node [shape=box, style="rounded,filled", fontname="Comic Mono", fontsize=12, margin="0.18,0.12"];
+  edge [color="#5c7d70", penwidth=2, arrowsize=0.8, fontname="Comic Mono", fontsize=10];
+
+  request [label="Request task", fillcolor="#e3f2ec"];
+  executor [label="Virtual-thread\nper task executor", fillcolor="#eaf4ff"];
+  blocking [label="Blocking I/O\nJDBC / HTTP / file", fillcolor="#fff1df"];
+  limits [label="Resource limits\npool / semaphore / timeout", fillcolor="#f4f0ff"];
+  observe [label="Diagnostics\nJFR / thread dump / metrics", fillcolor="#e6f4ff"];
+  cleanup [label="Lifecycle\ninterrupt / cleanup", fillcolor="#fff6dc"];
+
+  request -> executor;
+  executor -> blocking;
+  blocking -> limits;
+  limits -> observe;
+  limits -> cleanup;
+}
