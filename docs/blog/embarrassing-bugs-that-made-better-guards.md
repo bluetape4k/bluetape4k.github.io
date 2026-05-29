@@ -1,0 +1,354 @@
+# Embarrassing Bugs That Made Better Guards
+
+`bluetape4k-projects`를 고치다 보면 가끔 아주 고급스러운 버그보다 더 아픈 버그가 나온다.
+코드가 어려워서 생긴 문제가 아니라, 보고 나면 "아, 나는 왜 이걸 이렇게 믿었지?" 싶은 문제들이다.
+
+이 글은 그런 사례만 모았다. 멋진 최적화나 큰 설계 이야기가 아니라, 작은 착각이 issue가 되고,
+Nightly가 깨지고, 결국 테스트와 release gate로 바뀐 이야기다.
+
+![Embarrassing bug fix loop](/assets/embarrassing-bug-fix-loop-01.png)
+
+## 읽는 방법
+
+각 사례는 같은 순서로 본다.
+
+| 질문 | 의미 |
+|---|---|
+| 나는 왜 실수했나 | 당시의 잘못된 가정 |
+| 어떻게 찾았나 | 증상, 실패 로그, round-trip, Nightly signal |
+| 어떻게 고쳤나 | 실제 수정 방향 |
+| 평가는 | 검증 결과와 남은 해석 |
+| 다음 장치는 | 다시 같은 실수를 하지 않기 위한 guard |
+
+## 1. 빈 properties 값이 `null`이 아니라 `0`이 됐다
+
+관련 issue: [#491](https://github.com/bluetape4k/bluetape4k-projects/issues/491)
+
+이건 정말 작고 민망한 버그다. Java Properties에서 `maxWaitMillis=` 같은 값은 사람이 보면 "값이
+비어 있다"다. 그런데 `JavaPropsMapper`는 Properties 값을 untyped string으로 읽고, nullable numeric
+Kotlin constructor parameter에 넣는 과정에서 빈 문자열을 `0`으로 만들었다.
+
+### 나는 왜 실수했나
+
+빈 문자열 처리와 numeric coercion을 너무 일반적인 Jackson 문제로 봤다. "문자열을 숫자로 바꾸는
+과정에서 잘 처리되겠지"라는 믿음이 있었다. 하지만 Java Properties는 format 특성이 강하다. 값이 없는
+property와 값이 `0`인 property는 configuration 의미가 완전히 다르다.
+
+### 어떻게 찾았나
+
+round-trip이 깨졌다. 원래 model에서는 nullable numeric 값이 `null`인데, properties로 썼다가 다시
+읽으면 `0`이 됐다. 특히 datasource 설정처럼 timeout, idle, max wait 계열에서 `null`은 "default를
+따르라"는 뜻이고, `0`은 "0으로 설정하라"는 뜻이 될 수 있다.
+
+핵심 검증은 거창하지 않았다. 빈 properties 값을 포함한 round-trip을 걸고, 원래 model과 다시 읽은
+model이 같은지 확인했다.
+
+```kotlin
+private val properties = """
+|bluetape4k.datasources.default.maxWaitMillis=
+|bluetape4k.datasources.read.idleTimeout=
+""".trimMargin()
+
+val parsedRoot = propsMapper.readValue<RootProperty>(properties)
+
+parsedRoot.bluetape4k.datasources["default"] shouldBeEqualTo default
+parsedRoot.bluetape4k.datasources["read"] shouldBeEqualTo read
+```
+
+### 어떻게 고쳤나
+
+수정 범위를 `JacksonText.Props.defaultMapper`에만 묶었다. Jackson 2와 Jackson 3 양쪽에 numeric
+logical type coercion metadata를 적용하고, Properties 전용 numeric module에서 empty string을 boxed
+numeric type의 `null`로 매핑했다. 비어 있지 않은 값은 기존처럼 정상 parse한다.
+
+### 평가는
+
+검증은 format-specific으로 했다. Jackson 2와 Jackson 3의 named datasource properties round-trip
+test가 각 4개씩 통과했고, 전체 Jackson 2/3 test도 통과했다.
+
+여기서 중요한 점은 "CSV, TOML, YAML도 비슷하게 고치자"가 아니었다. 그건 또 다른 실수다.
+Properties에서 발견한 bug를 모든 text format에 전파하면, 다음에는 format-specific semantics를
+망가뜨릴 수 있다.
+
+### 다음 장치
+
+재발 방지 장치는 간단하다. format-specific bug는 format-specific mapper에만 고친다. 그리고
+configuration round-trip test를 둔다. `null`, empty string, `0`은 설정 파일에서는 서로 다른 값이다.
+
+## 2. Nightly가 가르쳐준 것: "테스트가 낡았다"도 버그다
+
+관련 issue: [#595](https://github.com/bluetape4k/bluetape4k-projects/issues/595)
+
+관련 PR: [#598](https://github.com/bluetape4k/bluetape4k-projects/pull/598)
+
+Nightly run `26243476594`는 IO HTTP, infra search-messaging, Testcontainers graphdb-memgraph
+세 조각에서 실패했다. 이런 실패는 처음 보면 "외부 서비스가 흔들렸나?"로 보인다. 그런데 실제로는
+일부 테스트가 현재 코드의 현실을 제대로 따라오지 못했다.
+
+### 나는 왜 실수했나
+
+테스트를 "이미 있는 검증"으로 믿었다. 그런데 테스트도 코드다. DSL이 바뀌면 테스트도 낡고,
+Testcontainers reuse가 켜져 있으면 CI의 credential state도 낡을 수 있다.
+
+PR #598의 한 조각은 MyBatis dynamic-sql join validation test를 현재 `on` 기반 Kotlin DSL과
+현재 exception type에 맞춘 것이다. 또 다른 조각은 secured Elasticsearch singleton reuse를 꺼서
+stale CI credentials 문제를 피한 것이다.
+
+### 어떻게 찾았나
+
+Nightly가 알려줬다. local targeted test만 보면 놓치기 쉬운 external-service slice가 full Nightly에서
+실패했다. 중요한 것은 실패한 위치를 보고 곧장 production code를 고치지 않았다는 점이다. 먼저
+"이 테스트가 지금의 API와 환경을 제대로 재현하나?"를 봤다.
+
+### 어떻게 고쳤나
+
+낡은 test expectation을 현재 DSL과 exception contract에 맞췄고, shared secured Elasticsearch
+test singleton에서는 reuse를 끄는 쪽으로 정리했다. 테스트는 빠르면 좋지만, 이전 실행의 credential
+state를 재활용해서 거짓 실패를 만들면 release signal로는 나쁘다.
+
+### 평가는
+
+이건 성능 개선도, 멋진 refactor도 아니다. 하지만 release train에서는 이런 수정이 더 중요할 때가
+있다. Nightly가 실패했을 때 "아마 flaky"로 넘기지 않고, 테스트가 현재 reality를 검증하는지 확인한
+것이 핵심이다.
+
+### 다음 장치
+
+외부 서비스 테스트가 깨질 때는 세 가지를 먼저 본다.
+
+- 테스트가 현재 public API와 exception contract를 따라가는가?
+- Testcontainers reuse가 CI state를 오염시키는가?
+- 실패가 service readiness인지, client cleanup인지, credential reuse인지 분리되어 있는가?
+
+## 3. Memgraph는 query가 아니라 `close()`에서 멈췄다
+
+관련 issue: [#602](https://github.com/bluetape4k/bluetape4k-projects/issues/602)
+
+관련 PR: [#604](https://github.com/bluetape4k/bluetape4k-projects/pull/604)
+
+Full Nightly에서 `MemgraphServerTest`가 timeout을 냈다. 처음에는 자연스럽게 container startup,
+readiness, image version을 의심하게 된다. 그런데 황당하게도 Bolt query path는 이미 성공했다.
+멈춘 곳은 Neo4j Java Driver의 `Driver.close()`였다.
+
+### 나는 왜 실수했나
+
+"Testcontainers test timeout이면 container 문제겠지"라고 생각하기 쉽다. 하지만 여기서는 container가
+아니라 client cleanup이 문제였다. 성공한 query 뒤에 cleanup이 runner를 붙잡고 있었다.
+
+### 어떻게 찾았나
+
+stack을 봤다. 실패 지점이 container startup이나 Bolt query가 아니라 driver close path 안에 있었다.
+이 단서가 없었으면 image tag를 바꾸거나 readiness를 늘리는 식으로 시간을 낭비했을 가능성이 높다.
+
+### 어떻게 고쳤나
+
+Memgraph image와 Neo4j driver version은 그대로 뒀다. 이미 당시 current line이었다. 대신 test driver를
+single connection pool/event-loop로 제한하고, telemetry와 auto-commit retry를 껐다. 그리고 blocking
+`Driver.close()` 대신 `closeAsync()`에 bounded timeout을 적용했다.
+
+cleanup guard는 이 정도로 명시적이어야 했다. query가 성공했으면 검증은 끝난 것이고, driver cleanup이
+Nightly runner를 무기한 붙잡으면 안 된다.
+
+```kotlin
+private fun Driver.closeWithin(timeout: Long, unit: TimeUnit) {
+    val closeFuture = closeAsync().toCompletableFuture()
+    try {
+        closeFuture.get(timeout, unit)
+    } catch (e: TimeoutException) {
+        closeFuture.cancel(true)
+        log.warn(e) { "Neo4j Driver close timed out after Memgraph query verification." }
+    } catch (e: InterruptedException) {
+        Thread.currentThread().interrupt()
+        throw e
+    }
+}
+```
+
+테스트의 release-gate assertion은 여전히 "Bolt query가 성공하는가"다. cleanup은 runner를 무기한
+붙잡으면 안 된다.
+
+### 평가는
+
+`MemgraphServerTest` 단일 test는 6개 passing, graphdb test slice는 27개 passing으로 확인했다.
+이 문제는 "더 오래 기다리자"가 아니라 "cleanup이 release gate를 인질로 잡지 않게 하자"였다.
+
+### 다음 장치
+
+Testcontainers-backed driver test에서 query는 성공했는데 cleanup에서 멈추면, readiness와 image부터
+바꾸지 않는다. close stack을 먼저 본다. 그리고 cleanup에는 bounded path를 둔다.
+
+## 4. `catch (Throwable)`이 coroutine cancellation을 HTTP failure로 만들었다
+
+관련 issue: [#654](https://github.com/bluetape4k/bluetape4k-projects/issues/654)
+
+관련 PR: [#670](https://github.com/bluetape4k/bluetape4k-projects/pull/670)
+
+Vert.x route coroutine helper는 suspend handler에서 발생한 실패를 `RoutingContext.fail(...)`로 넘겼다.
+평범한 exception에는 맞는 처리다. 문제는 broad `Throwable` catch가 `CancellationException`까지 잡았다는
+점이다.
+
+### 나는 왜 실수했나
+
+HTTP route에서는 "handler에서 난 건 fail로 보내자"가 그럴듯하다. 그런데 coroutine cancellation은
+일반 실패가 아니다. structured concurrency에서는 cancellation이 control signal이다. 이걸 HTTP failure로
+바꾸면 caller가 취소한 작업이 마치 application error처럼 보인다.
+
+### 어떻게 찾았나
+
+route helper의 catch 경계를 보면서 찾았다. `Throwable` fallback이 너무 넓었다. 정상 exception path와
+cancellation path를 같은 바구니에 넣고 있었다.
+
+### 어떻게 고쳤나
+
+`suspendHandler`와 `suspendFailureHandler`에서 `CancellationException`을 먼저 잡아 rethrow했다.
+그 다음에만 ordinary exception을 `ctx.fail(e)`로 보냈다. regression test는 cancellation path와 normal
+exception path를 둘 다 잠갔다.
+
+수정 자체는 한 줄짜리 철학에 가깝다. cancellation은 실패 처리기로 넘기지 않는다.
+
+```kotlin
+try {
+    requestHandler(ctx)
+} catch (e: CancellationException) {
+    throw e
+} catch (e: Throwable) {
+    ctx.fail(e)
+}
+```
+
+그리고 테스트는 두 경로를 분리해서 잠갔다.
+
+```kotlin
+verify(exactly = 0) { ctx.fail(any<Throwable>()) } // cancellation
+verify(exactly = 1) { ctx.fail(failure) }          // normal exception
+```
+
+### 평가는
+
+기능은 그대로다. 일반 handler exception은 여전히 Vert.x failure path로 간다. 달라진 것은 cancellation을
+실패로 위장하지 않는다는 점이다.
+
+### 다음 장치
+
+suspend boundary에서 broad catch를 쓰면 항상 먼저 질문한다.
+
+> 여기서 `CancellationException`이 잡히면 어떻게 되는가?
+
+답이 애매하면 이미 위험하다. `CancellationException`을 먼저 rethrow하거나, `runCatchingNonCancellation`
+같은 helper를 써야 한다.
+
+## 5. `runCatching`이 interrupt를 timeout처럼 보이게 했다
+
+관련 issues: [#656](https://github.com/bluetape4k/bluetape4k-projects/issues/656),
+[#657](https://github.com/bluetape4k/bluetape4k-projects/issues/657)
+
+관련 PR: [#669](https://github.com/bluetape4k/bluetape4k-projects/pull/669)
+
+gRPC server shutdown code는 `runCatching { awaitTermination(...) }.getOrDefault(false)`를 사용했다.
+겉보기에는 깔끔하다. graceful termination이 실패하거나 timeout이면 `false`로 보고 `shutdownNow()`로
+넘어가면 된다.
+
+그런데 `awaitTermination(...)`은 `InterruptedException`을 던질 수 있다. `runCatching`은 이 interrupt도
+그냥 "false로 바꿀 수 있는 실패"처럼 눌러버렸다. 결과적으로 caller thread의 interrupt status가 사라졌다.
+
+### 나는 왜 실수했나
+
+`runCatching`이 너무 편했다. lifecycle code에서 "실패하면 false"라는 모양을 만들기 쉽다. 하지만 blocking
+API의 interruption은 일반 실패가 아니다. thread에게 남겨야 하는 신호다.
+
+### 어떻게 찾았나
+
+shutdown lifecycle issue를 보면서 interrupt path를 따로 생각했다. timeout과 interruption은 둘 다
+graceful termination 실패처럼 보일 수 있지만, 후자는 caller에게 돌려줘야 할 상태가 있다.
+
+### 어떻게 고쳤나
+
+port-based server와 in-process server 양쪽에서 explicit `try/catch`로 바꿨다. `InterruptedException`을
+잡으면 `Thread.currentThread().interrupt()`로 interrupt flag를 복원하고 `false`를 반환한다. 그러면 기존처럼
+`shutdownNow()`는 실행되지만, caller interrupt status는 사라지지 않는다.
+
+forced shutdown 뒤에도 bounded termination wait를 두어 fire-and-forget cleanup이 되지 않게 했다.
+
+여기서도 코드가 예뻐지는 것보다 신호를 보존하는 것이 더 중요했다.
+
+```kotlin
+private fun awaitTerminationOrRestoreInterrupt(): Boolean =
+    try {
+        server.awaitTermination(SHUTDOWN_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+    } catch (e: InterruptedException) {
+        Thread.currentThread().interrupt()
+        false
+    }
+```
+
+회귀 테스트는 timeout과 interrupt를 같은 실패로 보지 않도록 했다.
+
+```kotlin
+server.stop()
+
+recordingServer.shutdownCalls shouldBeEqualTo 1
+recordingServer.awaitTimedCalls shouldBeEqualTo 1
+recordingServer.shutdownNowCalls shouldBeEqualTo 1
+Thread.currentThread().isInterrupted.shouldBeTrue()
+```
+
+### 평가는
+
+기존 timeout behavior는 유지됐다. 달라진 것은 interruption semantics다. regression test는 port-based와
+in-process server variants 모두에서 interrupt status 보존을 확인했다.
+
+### 다음 장치
+
+blocking lifecycle API 주변에서 broad `runCatching`을 쓰지 않는다. 특히 `InterruptedException`을 던지는
+API라면 explicit catch로 interrupt status를 보존해야 한다.
+
+## 이 실수들의 공통점
+
+다섯 사례는 서로 달라 보이지만, 사실 같은 패턴이다.
+
+| 실수 | 잘못 믿은 것 | 실제 guard |
+|---|---|---|
+| Empty numeric property | 빈 값과 `0`은 적당히 구분되겠지 | format-specific round-trip test |
+| Nightly external-service failures | 기존 테스트는 현재 현실을 반영하겠지 | Nightly failure를 test drift로도 분석 |
+| Memgraph timeout | Testcontainers timeout은 container 문제겠지 | query와 cleanup stack 분리 |
+| Vert.x cancellation | route failure catch가 다 처리해주겠지 | cancellation rethrow regression |
+| gRPC interruption | `runCatching`으로 lifecycle 실패를 단순화해도 되겠지 | explicit interrupt preservation |
+
+부끄러운 버그의 장점은, 고치고 나면 guard가 아주 선명해진다는 점이다. 어려운 설계 논쟁이 아니라
+"다음에는 이 줄에서 바로 걸리게 하자"가 된다.
+
+## 다음에는 어떻게 덜 멍청해질까
+
+내가 여기서 얻은 규칙은 세 가지다.
+
+첫째, 값의 의미를 코드 타입만 보고 판단하지 않는다. `""`, `null`, `0`은 모두 다르다. 특히 설정 파일에서는
+더 다르다.
+
+둘째, 실패 위치를 추정하지 않는다. Testcontainers가 보인다고 container부터 고치지 않는다. stack이
+`close()`를 가리키면 cleanup을 본다.
+
+셋째, broad catch와 `runCatching`은 lifecycle/coroutine boundary에서 편한 만큼 위험하다. cancellation과
+interruption은 예외라기보다 신호다. 신호를 삼키면 나중에 훨씬 이상한 곳에서 문제가 터진다.
+
+마지막으로 issue [#497](https://github.com/bluetape4k/bluetape4k-projects/issues/497)과
+PR [#567](https://github.com/bluetape4k/bluetape4k-projects/pull/567)에서 만든 `checkDisabledTests` 같은
+release gate가 중요하다. 부끄러운 실수를 개인 기억에만 맡기면 반복된다. 보고서, test, gate, lesson으로
+바꿔야 다음 사람이 같은 구덩이에 덜 빠진다.
+
+```kotlin
+val checkDisabledTests by tasks.registering(DisabledTestReportTask::class) {
+    description = "Scans JUnit disabled tests and fails known-bug skips without GitHub issue references."
+    sourceRoot.set(layout.projectDirectory)
+    sourceFiles.from(fileTree(layout.projectDirectory) {
+        include("**/src/test/**/*.kt", "**/src/test/**/*.java")
+    })
+}
+
+tasks.named("check") {
+    dependsOn(checkDisabledTests)
+}
+```
+
+실수는 사라지지 않는다. 대신 release 전에 이런 식으로 한 번 더 걸리게 만들 수 있다.
+
+좋은 bug fix는 "고쳤다"에서 끝나지 않는다. "다음에는 더 빨리 들키게 만들었다"까지 가야 한다.
