@@ -70,7 +70,7 @@ Executors.newCachedThreadPool(Thread.ofVirtual().factory()).use { executor ->
 }
 ```
 
-That uses virtual threads by name, but the mindset is still pooling. The better default is a
+That uses virtual threads by name, but the mindset is still pooling. The default should be a
 thread-per-task executor.
 
 ```kotlin

@@ -24,8 +24,10 @@ This is Part 4 of the Bluetape4k Cache series. The full series includes
 [Part 4: workshop examples](/blog/bluetape4k-cache-part4-workshop-examples/).
 
 This post is about examples you can hold in your hands. `bluetape4k-workshop` has several
-Spring Boot cache examples. The goal is not to chant "cache is good." The goal is to see what
-shape each strategy gives the code and what cost it hides.
+Spring Boot cache examples.
+
+The goal is not to repeat "cache is good." The goal is to see what shape each strategy gives
+the code, what cost it hides, and what operational contract it asks you to accept.
 
 <figure class="bt4k-architecture">
   <img src="/assets/cache-series-workshop-profile-01.png" alt="Workshop cache profiles comparing no cache, Caffeine, Redis, Near Cache, and benchmark path" loading="lazy" />
@@ -34,7 +36,7 @@ shape each strategy gives the code and what cost it hides.
 
 ## Example Locations
 
-The relevant examples are here.
+The relevant examples are below.
 
 | Example | Role |
 |---|---|
@@ -127,6 +129,8 @@ Related source:
 [NearCacheService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/NearCacheService.kt)
 
 This structure is useful because benchmark code and production code share the same questions.
+Changing the strategy behind one interface lets you compare throughput and code complexity side
+by side.
 
 - What is the baseline without cache?
 - Is local cache enough?

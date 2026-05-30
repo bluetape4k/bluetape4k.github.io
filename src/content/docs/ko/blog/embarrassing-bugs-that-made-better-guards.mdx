@@ -17,10 +17,10 @@ blog:
 
 <p class="bt4k-post-meta">2026-05-29 · bluetape4k projects bug-fix note</p>
 
-`bluetape4k-projects`를 고치다 보면 가끔 아주 고급스러운 버그보다 더 아픈 버그가 나온다.
-코드가 어려워서 생긴 문제가 아니라, 보고 나면 "아, 나는 왜 이걸 이렇게 믿었지?" 싶은 문제들이다.
+`bluetape4k-projects`를 고치다 보면 아주 고급스러운 버그보다 더 아픈 버그가 나온다.
+코드가 어려워서 생긴 문제가 아니라, 보고 나면 "아, 나는 왜 이걸 믿었지?" 싶은 문제들이다.
 
-이 글은 그런 사례만 모았다. 멋진 최적화나 큰 설계 이야기가 아니라, 작은 착각이 issue가 되고,
+이 글은 그런 사례만 모았다. 멋진 최적화나 큰 설계 이야기가 아니다. 작은 착각이 issue가 되고,
 Nightly가 깨지고, 결국 테스트와 release gate로 바뀐 이야기다.
 
 <figure class="bt4k-architecture">
@@ -44,9 +44,9 @@ Nightly가 깨지고, 결국 테스트와 release gate로 바뀐 이야기다.
 
 관련 issue: [#491](https://github.com/bluetape4k/bluetape4k-projects/issues/491)
 
-이건 정말 작고 민망한 버그다. Java Properties에서 `maxWaitMillis=` 같은 값은 사람이 보면 "값이
-비어 있다"다. 그런데 `JavaPropsMapper`는 Properties 값을 untyped string으로 읽고, nullable numeric
-Kotlin constructor parameter에 넣는 과정에서 빈 문자열을 `0`으로 만들었다.
+이건 작고 민망한 버그다. Java Properties에서 `maxWaitMillis=` 같은 값은 사람이 보면 "값이 비어 있다"다.
+그런데 `JavaPropsMapper`는 Properties 값을 untyped string으로 읽고, nullable numeric Kotlin constructor
+parameter에 넣는 과정에서 빈 문자열을 `0`으로 만들었다.
 
 ### 나는 왜 실수했나
 
@@ -103,7 +103,7 @@ configuration round-trip test를 둔다. `null`, empty string, `0`은 설정 파
 
 Nightly run `26243476594`는 IO HTTP, infra search-messaging, Testcontainers graphdb-memgraph
 세 조각에서 실패했다. 이런 실패는 처음 보면 "외부 서비스가 흔들렸나?"로 보인다. 그런데 실제로는
-일부 테스트가 현재 코드의 현실을 제대로 따라오지 못했다.
+일부 테스트가 현재 코드의 현실을 따라오지 못했다.
 
 ### 나는 왜 실수했나
 
@@ -117,8 +117,8 @@ stale CI credentials 문제를 피한 것이다.
 ### 어떻게 찾았나
 
 Nightly가 알려줬다. local targeted test만 보면 놓치기 쉬운 external-service slice가 full Nightly에서
-실패했다. 중요한 것은 실패한 위치를 보고 곧장 production code를 고치지 않았다는 점이다. 먼저
-"이 테스트가 지금의 API와 환경을 제대로 재현하나?"를 봤다.
+실패했다. 여기서 바로 production code를 고치지 않은 것이 중요했다. 먼저 "이 테스트가 지금의 API와
+환경을 제대로 재현하나?"를 봤다.
 
 ### 어떻게 고쳤나
 
@@ -147,8 +147,8 @@ state를 재활용해서 거짓 실패를 만들면 release signal로는 나쁘�
 관련 PR: [#604](https://github.com/bluetape4k/bluetape4k-projects/pull/604)
 
 Full Nightly에서 `MemgraphServerTest`가 timeout을 냈다. 처음에는 자연스럽게 container startup,
-readiness, image version을 의심하게 된다. 그런데 황당하게도 Bolt query path는 이미 성공했다.
-멈춘 곳은 Neo4j Java Driver의 `Driver.close()`였다.
+readiness, image version을 의심하게 된다. 그런데 Bolt query path는 이미 성공했다. 멈춘 곳은
+Neo4j Java Driver의 `Driver.close()`였다.
 
 ### 나는 왜 실수했나
 
@@ -211,7 +211,7 @@ Vert.x route coroutine helper는 suspend handler에서 발생한 실패를 `Rout
 
 HTTP route에서는 "handler에서 난 건 fail로 보내자"가 그럴듯하다. 그런데 coroutine cancellation은
 일반 실패가 아니다. structured concurrency에서는 cancellation이 control signal이다. 이걸 HTTP failure로
-바꾸면 caller가 취소한 작업이 마치 application error처럼 보인다.
+바꾸면 caller가 취소한 작업이 application error처럼 보인다.
 
 ### 어떻게 찾았나
 
@@ -224,7 +224,7 @@ cancellation path를 같은 바구니에 넣고 있었다.
 그 다음에만 ordinary exception을 `ctx.fail(e)`로 보냈다. regression test는 cancellation path와 normal
 exception path를 둘 다 잠갔다.
 
-수정 자체는 한 줄짜리 철학에 가깝다. cancellation은 실패 처리기로 넘기지 않는다.
+수정 자체는 한 줄짜리 원칙에 가깝다. cancellation은 실패 처리기로 넘기지 않는다.
 
 ```kotlin
 try {
@@ -269,7 +269,7 @@ gRPC server shutdown code는 `runCatching { awaitTermination(...) }.getOrDefault
 넘어가면 된다.
 
 그런데 `awaitTermination(...)`은 `InterruptedException`을 던질 수 있다. `runCatching`은 이 interrupt도
-그냥 "false로 바꿀 수 있는 실패"처럼 눌러버렸다. 결과적으로 caller thread의 interrupt status가 사라졌다.
+"false로 바꿀 수 있는 실패"처럼 눌러버렸다. 결과적으로 caller thread의 interrupt status가 사라졌다.
 
 ### 나는 왜 실수했나
 
@@ -334,7 +334,7 @@ API라면 explicit catch로 interrupt status를 보존해야 한다.
 | Vert.x cancellation | route failure catch가 다 처리해주겠지 | cancellation rethrow regression |
 | gRPC interruption | `runCatching`으로 lifecycle 실패를 단순화해도 되겠지 | explicit interrupt preservation |
 
-부끄러운 버그의 장점은, 고치고 나면 guard가 아주 선명해진다는 점이다. 어려운 설계 논쟁이 아니라
+부끄러운 버그의 장점은, 고치고 나면 guard가 선명해진다는 점이다. 어려운 설계 논쟁이 아니라
 "다음에는 이 줄에서 바로 걸리게 하자"가 된다.
 
 ## 다음에는 어떻게 덜 멍청해질까
@@ -369,6 +369,6 @@ tasks.named("check") {
 }
 ```
 
-실수는 사라지지 않는다. 대신 release 전에 이런 식으로 한 번 더 걸리게 만들 수 있다.
+실수는 사라지지 않는다. 그래도 release 전에 이런 식으로 한 번 더 걸리게 만들 수 있다.
 
 좋은 bug fix는 "고쳤다"에서 끝나지 않는다. "다음에는 더 빨리 들키게 만들었다"까지 가야 한다.

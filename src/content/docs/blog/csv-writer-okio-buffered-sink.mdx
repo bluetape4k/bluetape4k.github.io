@@ -17,8 +17,8 @@ blog:
 
 <p class="bt4k-post-meta">2026-05-29 · bluetape4k csv performance note</p>
 
-The previous CSV post was about reading. `bluetape4k-csv` stopped dragging every UTF-8
-field through a character-first lexer and let Okio scan source segments instead.
+The previous CSV post was about reading. `bluetape4k-csv` stopped dragging every UTF-8 field
+through a character-first lexer and let Okio scan source segments directly.
 
 That left an obvious follow-up question: if reading got faster by respecting bytes and
 segments, why was writing still politely handing every file export to `OutputStreamWriter`?
@@ -62,8 +62,8 @@ OutputStreamWriter(FileOutputStream(path.toFile(), append), encoding).use { fw -
 ```
 
 This code is not bad. It is correct, portable, and keeps charset support simple. But for the
-common UTF-8 file export, it routes delimiter, quote, line separator, and payload text through
-a character writer even though the destination is ultimately bytes.
+common UTF-8 file export, it routes delimiter, quote, line separator, and payload text through a
+character writer even though the destination is ultimately bytes.
 
 The new rule is simple:
 
@@ -135,8 +135,8 @@ private fun writeQuoted(s: String) {
 ```
 
 That chunked write is the small trick. Most field text goes to the sink in slices. Only quote
-characters become doubled quote bytes. The writer does not walk every normal character through
-a tiny call.
+characters become doubled quote bytes. The writer does not walk every normal character through a
+tiny call.
 
 The behavior locks cover the cases that usually make CSV fast paths regret their confidence:
 
@@ -167,9 +167,9 @@ Measured writer workloads:
 | `writerBaseline_medium` vs `okioWriter_medium` | 676.110 ops/s | 2,068.696 ops/s | 3.06x |
 | `writerBaseline_large` vs `okioWriter_large` | 83.802 ops/s | 272.157 ops/s | 3.25x |
 
-The small workload improves, but it is still close enough for setup and coroutine collection
-overhead to show through. The medium and large workloads tell the real story. Once rows keep
-arriving, fewer character-layer writes and fewer tiny calls become visible.
+The small workload improves, but setup and coroutine collection overhead still show through.
+The medium and large workloads tell the real story. Once rows keep arriving, fewer
+character-layer writes and fewer tiny calls become visible.
 
 ## The Reader Lesson Reused
 
@@ -198,6 +198,6 @@ paths for unsupported cases, and lock behavior with examples that include awkwar
 
 ## Closing
 
-This was a good kind of optimization: not a new public concept, not a new way to write CSV,
-and not a special API users have to remember. `FlowCsvWriter` already promised a streaming
-pipeline. The patch just removed one layer of ankle weights from the UTF-8 file path.
+This was the good kind of optimization: no new public concept, no new way to write CSV, and no
+special API for users to remember. `FlowCsvWriter` already promised a streaming pipeline. The
+patch just removed one layer of ankle weights from the UTF-8 file path.

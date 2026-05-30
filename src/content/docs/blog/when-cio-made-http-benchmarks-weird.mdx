@@ -1,13 +1,13 @@
 ---
 title: "When Ktor CIO Made HTTP Benchmarks Weird"
-description: A benchmark-backed story about io/http client tuning, the Vert.x pool bottleneck, and why Ktor CIO's disappointing first numbers were still useful.
+description: A benchmark story about how slow Ktor CIO numbers exposed a Vert.x pool bottleneck, fixture problems, and workload-based HTTP client selection rules.
 sidebar:
   order: -202605290852
 blog:
   date: 2026-05-29T08:52:00+09:00
   image: /assets/io-http-cio-hero.png
   imageAlt: Editorial illustration of HTTP clients running through the same benchmark harness
-  cardDescription: How disappointing Ktor CIO numbers led to a fairer benchmark, a Vert.x pool fix, and workload-based HTTP client guidance.
+  cardDescription: How slow Ktor CIO numbers led to a fairer benchmark, a Vert.x pool fix, and workload-based HTTP client guidance.
 ---
 
 <figure class="bt4k-blog-hero">
@@ -17,39 +17,40 @@ blog:
 
 <p class="bt4k-post-meta">2026-05-29 · bluetape4k io/http benchmark note</p>
 
-The `io/http` module in `bluetape4k-projects` lets several HTTP clients sit behind one
-abstraction. Apache HC5, OkHttp3, Java `HttpClient`, Vert.x WebClient, and Ktor CIO can be
-used through the same API.
+The `io/http` module in `bluetape4k-projects` puts Apache HC5, OkHttp3, Java `HttpClient`,
+Vert.x WebClient, and Ktor CIO behind the same API. From the caller's side, they look like one
+HTTP abstraction. Under the hood, each client handles connection reuse, coroutine bridges,
+virtual threads, server fixtures, and pool settings differently.
 
-For a library like this, the most dangerous sentence is "just pick the one you like." In
-practice, connection reuse, coroutine bridges, virtual threads, server fixtures, and pool
-settings all behave differently by workload. That is why issue
-[#589](https://github.com/bluetape4k/bluetape4k-projects/issues/589) was less a tuning ticket
-and more a small campaign: decide with numbers.
+That makes "just pick the one you like" the most dangerous advice this module could give. If we
+do not know which client holds up under which workload, the abstraction becomes a random-choice
+button. Issue [#589](https://github.com/bluetape4k/bluetape4k-projects/issues/589) was not just a
+tuning ticket. It was a small campaign to measure first, explain the numbers, and leave behind
+selection rules.
 
-And in the first run, Ktor CIO produced numbers that looked almost absurd.
+The first run did not start cleanly. Ktor CIO produced numbers that looked wrong.
 
 ![HTTP client base throughput chart](/assets/io-http-base-throughput-chart-01.png)
 
 <figure class="bt4k-architecture">
   <img src="/assets/io-http-high-latency-throughput-chart-01.png" alt="HTTP client high-latency throughput benchmark chart comparing OkHttp, HC5, Java HttpClient, Vert.x, and Ktor CIO" loading="lazy" />
-  <figcaption>How disappointing Ktor CIO numbers led to a fairer benchmark, a Vert.x pool fix, and workload-based HTTP client guidance.</figcaption>
+  <figcaption>How slow Ktor CIO numbers led to a fairer benchmark, a Vert.x pool fix, and workload-based HTTP client guidance.</figcaption>
 </figure>
 
 ## At First, CIO Was Painfully Slow
 
-The first time I added the Ktor CIO row, it did not feel good. It showed 659.071 ops/s on
-`/ping` and 16.501 ops/s on the 50 ms delay endpoint. Other clients in the same benchmark were
-far ahead, so the table almost read like: "why did we even include this?"
+The first Ktor CIO row made me want to close the table. It showed 659.071 ops/s on `/ping` and
+16.501 ops/s on the 50 ms delay endpoint. Other clients were far ahead. Read literally, the row
+said, "why did we include this?"
 
-But that was not a fair conclusion. When CIO was run with the full JMH concurrency, the local
-Docker fixture exhausted ephemeral ports first. The CIO row had therefore been limited to one
-thread while other rows used the class-level thread count. It was in the same table, but it was
-not playing by the same rules.
+But that row was not a fair conclusion. With the full JMH concurrency, CIO exhausted local
+ephemeral ports in the Docker fixture before the benchmark could measure the client properly.
+The CIO row had been limited to one thread while other rows used the class-level thread count.
+It was in the same table, but it was not running under the same rules.
 
-So the point of issue [#587](https://github.com/bluetape4k/bluetape4k-projects/issues/587) was
-not "make CIO look fast." It was "measure CIO under the same conditions." Instead of deleting
-the disappointing result, we recorded why it was disappointing and fixed the fixture.
+So issue [#587](https://github.com/bluetape4k/bluetape4k-projects/issues/587) was not about
+making CIO look fast. It was about measuring CIO under the same conditions. We kept the bad
+number, wrote down why it was bad, and fixed the fixture.
 
 ## The First Win Was Vert.x
 
@@ -58,15 +59,15 @@ The most dramatic change in issue
 PR [#593](https://github.com/bluetape4k/bluetape4k-projects/pull/593) was not Ktor. It was
 Vert.x.
 
-The Vert.x WebClient benchmark was being capped by the default HTTP/1 pool. The benchmark was
-not measuring what the client could do; it was measuring a bottleneck created by the fixture and
-default pool settings. Once `PoolOptions` was made explicit, high-latency throughput moved from
-87.844 ops/s to 1,818.508 ops/s. That is about 20.7x.
+The Vert.x WebClient benchmark was capped by the default HTTP/1 pool. It was not measuring what
+the client could do. It was measuring a bottleneck created by the fixture and the default pool
+settings. Once `PoolOptions` was explicit, high-latency throughput moved from 87.844 ops/s to
+1,818.508 ops/s. That is about 20.7x.
 
-That sounds like an optimization story, but the real lesson is simpler.
+That can be read as an optimization story. The more useful lesson is simpler.
 
-> A slow benchmark is not always slow because production code is slow. The measurement rig has
-> to be suspected first.
+> Do not change production code just because a benchmark is slow. Suspect the measurement rig
+> first.
 
 ## Same Server, Same Concurrency
 
@@ -80,16 +81,15 @@ conditions.
   warmup and one second of measurement.
 
 I like this decision because it did not manufacture a "CIO won" conclusion. It exposed CIO's
-limits directly. Ktor CIO 3.5 opens HTTP/1 connections aggressively when pipelining is disabled,
-and forcing `pipelining=true` in the local mock fixture caused
-`ClosedReadChannelException: unexpected EOF` or hangs. So this post does not overstate the
-result either. We kept the default CIO behavior and compared it briefly under the same
-concurrency.
+limits more clearly. Ktor CIO 3.5 opens HTTP/1 connections aggressively when pipelining is
+disabled, and forcing `pipelining=true` in the local mock fixture caused
+`ClosedReadChannelException: unexpected EOF` or hangs. So this post keeps the conclusion small.
+It uses the default CIO behavior and compares a short same-concurrency snapshot.
 
 ## Final Snapshot
 
-The base `/ping` benchmark is sensitive to connection reuse and local variance. It should be
-read as a same-fixture snapshot, not as a production ranking.
+The base `/ping` benchmark is sensitive to connection reuse and local variance. It should not be
+read as a production ranking. It is a same-fixture snapshot.
 
 | Client row | `/ping` ops/s |
 |---|---:|
@@ -100,7 +100,7 @@ read as a same-fixture snapshot, not as a production ranking.
 | Ktor CIO coroutines | 2,052.281 |
 
 The high-latency endpoint is more interesting. With a 50 ms delay, the benchmark starts to look
-more like service wait time than a simple CPU loop.
+less like a CPU loop and more like service wait time.
 
 
 | Client row | 50 ms delay ops/s |
@@ -114,14 +114,14 @@ more like service wait time than a simple CPU loop.
 | Ktor CIO coroutines | 1,515.026 |
 | HC5 classic coroutines | 1,216.306 |
 
-CIO is still not at the top. But it is a different story from the original 16.501 ops/s "this
-must be broken" result. Under fairer conditions it reached 1,515.026 ops/s, while still leaving
+CIO is still not near the top. But it is no longer the original 16.501 ops/s "this must be
+broken" result. Under the same conditions it reached 1,515.026 ops/s. At the same time, it left
 open questions around connection behavior and fixture compatibility.
 
 ## The Selection Rules We Got
 
 After this benchmark, choosing an `io/http` client became harder to hand-wave. At minimum, we
-have these starting points.
+now have these starting points.
 
 | Situation | Start with |
 |---|---|
@@ -131,12 +131,12 @@ have these starting points.
 | Ktor-stack integration matters more | Ktor CIO, but remeasure long-run capacity with a dedicated fixture |
 
 The point is not "one fastest client." What `io/http` should provide is a set of measured paths
-that can be selected by workload. This work made that API surface much more useful.
+that can be selected by workload. This work made those choices concrete.
 
 ## What Was Better Than the Numbers
 
-Personally, the best result was not the 20x Vert.x improvement, and it was not a CIO redemption
-story. It was the choice to question the benchmark fixture before changing implementation code.
+Personally, the best result was not the 20x Vert.x improvement or a CIO comeback story. It was
+the choice to question the benchmark fixture before changing implementation code.
 
 When I first saw the CIO numbers, I was disappointed. My first reaction was close to: "we added
 Ktor 3 and this is what we get?" That embarrassment forced us to look at the measuring
@@ -149,6 +149,6 @@ conditions, and the final record became much better because of it.
 - [PR #594](https://github.com/bluetape4k/bluetape4k-projects/pull/594): WebFlux fixture and equal-thread CIO comparison
 - [Benchmark report](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/docs/benchmarks/2026-05-21-io-http-client-benchmark.md)
 
-A benchmark is not only a tool for proving "my code is fast." Sometimes it tells you, "do not
+A benchmark is not just a tool for proving "my code is fast." Sometimes it tells you, "do not
 trust the number you just saw." This `io/http` work was closer to the second kind, and that made
 it more useful.

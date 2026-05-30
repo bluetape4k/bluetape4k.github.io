@@ -17,12 +17,12 @@ blog:
 
 <p class="bt4k-post-meta">2026-05-28 · bluetape4k image benchmark note</p>
 
-`bluetape4k-image`는 이미지 처리를 두 경로로 제공한다. 하나는 pure JVM 기반의
-`scrimage` 경로이고, 다른 하나는 native `libvips`를 사용하는 고성능 경로다.
+`bluetape4k-image`는 이미지 처리를 두 경로로 제공한다. 하나는 pure JVM 기반의 `scrimage` 경로이고,
+다른 하나는 native `libvips`를 사용하는 고성능 경로다.
 
-둘 중 하나가 항상 정답은 아니다. `scrimage`는 배포가 단순하고 native dependency가 없다.
-반면 대량 thumbnail, resize, encode처럼 throughput이 중요한 경로에서는 `libvips`의
-demand-driven pipeline이 훨씬 유리하다.
+둘 중 하나가 항상 정답은 아니다. `scrimage`는 배포가 단순하고 native dependency가 없다. 반면 대량
+thumbnail, resize, encode처럼 throughput이 중요한 경로에서는 `libvips`의 demand-driven pipeline이
+훨씬 유리하다.
 
 이번 글은 `images-benchmark` 결과를 바탕으로 다음 질문에 답한다.
 
@@ -54,9 +54,8 @@ demand-driven pipeline이 훨씬 유리하다.
 
 ## 입력 이미지가 결과를 바꾼다
 
-이번 benchmark에서 가장 먼저 봐야 할 것은 숫자보다 입력 이미지다. 이전 headline 수치는
-단색 synthetic fallback으로 측정했기 때문에 codec 작업의 실제 texture, noise, chroma variation을
-대표하기 어려웠다.
+이번 benchmark에서 먼저 봐야 할 것은 숫자보다 입력 이미지다. 이전 headline 수치는 단색 synthetic
+fallback으로 측정했기 때문에 codec 작업의 실제 texture, noise, chroma variation을 대표하기 어려웠다.
 
 이번 run은 `bluetape4k-image/images/src/test/resources/images/`에 있던 자연 사진 fixture를
 `images-benchmark/src/main/resources/bench/`로 복사해 classpath resource로 커밋하고, 같은
@@ -69,7 +68,7 @@ benchmark를 다시 실행했다.
 
 이 수치도 모든 이미지의 일반 법칙은 아니다. 자연 사진 JPEG 두 장에 대한 결과다. 문서 스캔,
 flat graphic, animated image, 작은 UI asset은 decode/resize/encode 비용 구조가 달라질 수 있다.
-그래도 단색 fallback보다 실제 photo pipeline의 의사결정에는 훨씬 가까운 기준점이다.
+그래도 단색 fallback보다는 실제 photo pipeline의 의사결정에 훨씬 가까운 기준점이다.
 
 ## 같은 작업, 두 가지 처리 경로
 
@@ -110,12 +109,11 @@ Full source:
 | PNG encode | cafe | 884.10 ms/op | 585.29 ms/op | 1.5x faster |
 | PNG encode | landscape | 989.37 ms/op | 546.39 ms/op | 1.8x faster |
 
-`scrimage`는 JVM 안에서 `BufferedImage` 중심으로 전체 이미지를 다룬다. 이 방식은
-portable하고 이해하기 쉽지만 큰 이미지에서는 memory allocation과 pixel processing 비용이
-그대로 드러난다.
+`scrimage`는 JVM 안에서 `BufferedImage` 중심으로 전체 이미지를 다룬다. 이 방식은 portable하고
+이해하기 쉽지만, 큰 이미지에서는 memory allocation과 pixel processing 비용이 그대로 드러난다.
 
-`libvips`는 lazy, demand-driven pipeline을 사용한다. resize처럼 출력 픽셀에 필요한 영역만
-계산해도 되는 작업에서는 이 구조적 차이가 크게 나타난다.
+`libvips`는 lazy, demand-driven pipeline을 사용한다. resize처럼 출력 픽셀에 필요한 영역만 계산해도
+되는 작업에서는 이 구조적 차이가 크게 나타난다.
 
 ## 인코딩 차이는 작지만 여전히 의미 있다
 
@@ -158,11 +156,11 @@ thumbnail fan-out이나 upload processing처럼 요청 하나가 여러 derivati
 | `images-vips-java21` | JVips / JNI | Java 21 환경을 위한 native backend |
 | `images-vips-java25` | FFM / Panama | Java 25 환경의 권장 고성능 backend |
 
-이번 macOS arm64 run에서는 Java 21 JNI 값을 `N/A`로 표시했다. 이유는 Java 21이 느려서가
-아니다. 현재 host에서 bundled JVips dylib가 x86_64이고 JVM은 arm64라서 같은 host에서 native
-measurement를 만들 수 없었다.
+이번 macOS arm64 run에서는 Java 21 JNI 값을 `N/A`로 표시했다. 이유는 Java 21이 느려서가 아니다.
+현재 host에서 bundled JVips dylib가 x86_64이고 JVM은 arm64라서 같은 host에서 native measurement를
+만들 수 없었다.
 
-그래서 글의 결론은 “Java 21 JNI가 느리다”가 아니다. 더 정확한 결론은 다음이다.
+그래서 글의 결론은 "Java 21 JNI가 느리다"가 아니다. 더 정확한 결론은 다음이다.
 
 - Java 25 FFM은 이번 host에서 실제 측정된 고성능 path다.
 - Java 21 JNI는 Linux CI나 architecture-compatible host에서 따로 측정해야 한다.
@@ -211,13 +209,13 @@ Full source:
 [DerivativeProcessor.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/image-processing/advanced-workflow/src/main/kotlin/io/bluetape4k/workshop/imageprocessing/advanced/service/DerivativeProcessor.kt#L57-L75)
 
 이 코드가 benchmark와 이어지는 지점이다. 서비스는 upload 하나에서 여러 variant를 만들 수 있고,
-각 variant는 resize와 encode를 모두 수행한다. 그 경로에서 `scrimage`와 `libvips`의 차이는
-단일 숫자보다 더 크게 체감된다.
+각 variant는 resize와 encode를 모두 수행한다. 그 경로에서 `scrimage`와 `libvips`의 차이는 단일
+숫자보다 더 크게 체감된다.
 
 ## 실무 적용 기준
 
-간단한 이미지 처리나 native dependency를 피해야 하는 환경이라면 `images`의 scrimage path가
-좋은 출발점이다. 배포가 쉽고 JVM만 있으면 동작한다.
+간단한 이미지 처리나 native dependency를 피해야 하는 환경이라면 `images`의 scrimage path가 좋은
+출발점이다. 배포가 쉽고 JVM만 있으면 동작한다.
 
 하지만 다음 조건이라면 `images-vips-java25`를 먼저 검토할 만하다.
 
@@ -226,10 +224,9 @@ Full source:
 - resize latency가 request time이나 worker throughput을 제한한다.
 - Java 25 runtime을 사용할 수 있고 `libvips` native dependency를 운영할 수 있다.
 
-Java 21 환경이라면 `images-vips-java21`도 선택지다. 다만 JNI native artifact와 host
-architecture를 검증해야 한다. macOS arm64처럼 bundled native artifact가 맞지 않는 환경에서는
-benchmark와 integration test를 `N/A`로 처리하고, Linux 또는 architecture-compatible host에서
-별도 측정하는 편이 안전하다.
+Java 21 환경이라면 `images-vips-java21`도 선택지다. 다만 JNI native artifact와 host architecture를
+검증해야 한다. macOS arm64처럼 bundled native artifact가 맞지 않는 환경에서는 benchmark와 integration
+test를 `N/A`로 처리하고, Linux 또는 architecture-compatible host에서 별도 측정하는 편이 안전하다.
 
 AVIF/HEIC도 같은 원칙이다. API에 format constant가 있어도 실제 decode/encode 가능 여부는
 host의 `libvips`, `libheif`, AV1/HEVC codec build에 달려 있다.
@@ -264,9 +261,9 @@ Workshop 예제:
 ## 마무리
 
 `scrimage`와 `libvips`는 경쟁 관계라기보다 선택 가능한 두 운영 모드에 가깝다. pure JVM path는
-단순하고 portable하다. native path는 운영 준비가 필요하지만, 대량 image pipeline에서는
-성능 차이가 명확하다.
+단순하고 portable하다. native path는 운영 준비가 필요하지만, 대량 image pipeline에서는 성능 차이가
+명확하다.
 
 `bluetape4k-image`의 목표는 둘 중 하나를 강요하는 것이 아니다. 서비스가 처음에는 pure JVM으로
-시작하고, throughput이 필요해지는 순간 `libvips` backend로 이동할 수 있게 같은 ecosystem 안에
-두 경로를 제공하는 것이다.
+시작하고, throughput이 필요해지는 순간 `libvips` backend로 이동할 수 있게 같은 ecosystem 안에 두
+경로를 제공하는 것이다.

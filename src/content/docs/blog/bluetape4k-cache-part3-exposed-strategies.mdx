@@ -23,7 +23,7 @@ This is Part 3 of the Bluetape4k Cache series. The full series continues with
 [Part 3: Near Cache + Exposed strategies](/blog/bluetape4k-cache-part3-exposed-strategies/), and
 [Part 4: workshop examples](/blog/bluetape4k-cache-part4-workshop-examples/).
 
-Adding cache to an Exposed repository looks easy at first.
+Putting a cache in front of an Exposed repository looks easy at first.
 
 1. Check the cache.
 2. If the value is missing, read the database.
@@ -31,9 +31,11 @@ Adding cache to an Exposed repository looks easy at first.
 
 Everyone is calm up to this point. Then the questions arrive: what if the write fails, what about
 deletes, what about other instances' local caches, what about batch updates, and what if the read
-model and write model are not the same? Suddenly the meeting room needs another whiteboard.
+model and write model are not the same? The meeting room suddenly needs another whiteboard.
 
-`bluetape4k-exposed` splits that problem into repository contracts and cache strategies.
+`bluetape4k-exposed` splits that problem into repository contracts and cache strategies. It
+keeps separate choices for where the cache lives, how it is tied to database writes, and what a
+failure should mean.
 
 <figure class="bt4k-architecture">
   <img src="/assets/cache-series-exposed-strategies-01.png" alt="JdbcCacheRepository strategy map with Redisson map loader, map writer, and Exposed DB" loading="lazy" />
@@ -42,7 +44,9 @@ model and write model are not the same? Suddenly the meeting room needs another 
 
 ## The Shared Repository Contract
 
-The base contracts are `JdbcCacheRepository` and `R2dbcCacheRepository`.
+The base contracts are `JdbcCacheRepository` and `R2dbcCacheRepository`. Application code calls
+`get`, `put`, and `invalidate`, but the actual behavior follows the selected cache mode and
+write mode.
 
 ```kotlin
 interface JdbcCacheRepository<ID: Any, E: Serializable>: Closeable {
@@ -72,7 +76,7 @@ Related source:
 [R2dbcCacheRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/R2dbcCacheRepository.kt)
 
 The important detail is that `get` and `put` are not plain map operations. They follow repository
-policy. That policy changes performance, consistency, and failure behavior.
+policy, and that policy changes performance, consistency, and failure behavior.
 
 ## The Implementation Center: MapLoader and MapWriter
 
@@ -109,8 +113,8 @@ Full source:
 
 That is why `get` can look like a map lookup while a cache miss loads from the database through
 the loader. Likewise, `put` can look like a cache write while `WRITE_THROUGH` persists through
-the writer immediately, and `WRITE_BEHIND` queues persistence asynchronously. This is different
-from cache-aside code where the application manually sequences "save DB, then cache.put."
+the writer immediately, and `WRITE_BEHIND` queues persistence asynchronously. This differs from
+cache-aside code where the application manually sequences "save DB, then cache.put."
 
 ## Read-through
 
@@ -179,8 +183,8 @@ Related example:
 [UserCacheRepository.kt](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/main/kotlin/exposed/examples/cache/domain/repository/UserCacheRepository.kt),
 [UserCacheRepositoryTest.kt](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/test/kotlin/exposed/examples/cache/domain/repository/UserCacheRepositoryTest.kt)
 
-The benefit is freshness after writes. The cost is that cache write work enters write latency.
-Writes are not free; the invoice arrives as latency.
+The benefit is fresh reads right after writes. The cost is that cache write work enters write
+latency. Writes are not free; the invoice arrives as latency.
 
 ## Write-behind
 
@@ -234,6 +238,8 @@ Related source:
 [LocalCacheConfig.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/LocalCacheConfig.kt)
 
 That separation matters. "Where do we cache?" and "When do we write?" are different questions.
+The same Redis backend can mean very different operational behavior under read-through,
+write-through, or write-behind.
 
 | Question | Examples |
 |---|---|

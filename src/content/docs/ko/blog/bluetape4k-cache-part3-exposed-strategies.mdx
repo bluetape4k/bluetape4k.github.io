@@ -17,15 +17,15 @@ blog:
 
 <p class="bt4k-post-meta">2026-05-29 · Bluetape4k Cache series · Part 3</p>
 
-Exposed repository에 캐시를 붙이는 일은 간단해 보입니다.
+Exposed repository 앞에 캐시를 붙이는 일은 처음엔 간단해 보입니다.
 
 1. 먼저 캐시를 본다.
 2. 없으면 DB를 본다.
 3. 저장할 때 캐시도 갱신한다.
 
-여기까지는 모두가 평화롭습니다. 그런데 "쓰기 실패는?", "삭제는?", "다른 인스턴스 local cache는?", "batch update는?", "읽기 모델과 쓰기 모델이 다르면?" 같은 질문이 오면, 평화롭던 회의실에 갑자기 화이트보드가 추가됩니다.
+여기까지는 모두가 평화롭습니다. 그런데 "쓰기 실패는?", "삭제는?", "다른 인스턴스 local cache는?", "batch update는?", "읽기 모델과 쓰기 모델이 다르면?" 같은 질문이 나오면 분위기가 바뀝니다. 평화롭던 회의실에 갑자기 화이트보드가 하나 더 필요해집니다.
 
-`bluetape4k-exposed`는 이 부분을 repository 계약과 cache strategy로 나눠 다룹니다.
+`bluetape4k-exposed`는 이 문제를 repository 계약과 cache strategy로 나눠 다룹니다. 캐시를 어디에 둘지, DB write와 어떤 순서로 묶을지, 실패를 어떻게 볼지 분리해서 선택하게 합니다.
 
 <figure class="bt4k-architecture">
   <img src="/assets/cache-series-exposed-strategies-01.png" alt="JdbcCacheRepository strategy map with Redisson map loader, map writer, and Exposed DB" loading="lazy" />
@@ -34,7 +34,7 @@ Exposed repository에 캐시를 붙이는 일은 간단해 보입니다.
 
 ## 공통 Repository 계약
 
-기본 계약은 `JdbcCacheRepository`와 `R2dbcCacheRepository`에 있습니다.
+기본 계약은 `JdbcCacheRepository`와 `R2dbcCacheRepository`에 있습니다. 애플리케이션 입장에서는 `get`, `put`, `invalidate`를 호출하지만, 실제 동작은 선택한 cache mode와 write mode를 따릅니다.
 
 ```kotlin
 interface JdbcCacheRepository<ID: Any, E: Serializable>: Closeable {
@@ -63,7 +63,7 @@ interface JdbcCacheRepository<ID: Any, E: Serializable>: Closeable {
 [JdbcCacheRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/JdbcCacheRepository.kt),
 [R2dbcCacheRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/R2dbcCacheRepository.kt)
 
-여기서 중요한 점은 `get`과 `put`이 단순한 map operation이 아니라 repository 정책을 따르는 operation이라는 것입니다. 이 정책을 어떻게 잡느냐에 따라 성능, 일관성, 장애 동작이 달라집니다.
+여기서 중요한 점은 `get`과 `put`이 단순한 map operation이 아니라는 것입니다. 둘 다 repository 정책을 따릅니다. 이 정책을 어떻게 잡느냐에 따라 성능, 일관성, 장애 동작이 달라집니다.
 
 ## 구현의 중심: MapLoader와 MapWriter
 
@@ -97,7 +97,7 @@ protected val mapWriter: EntityMapWriter<ID, E>? by lazy {
 [JdbcCacheRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/JdbcCacheRepository.kt),
 [AbstractJdbcRedissonRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-jdbc-redisson/src/main/kotlin/io/bluetape4k/exposed/redisson/repository/AbstractJdbcRedissonRepository.kt)
 
-그래서 `get`은 그냥 map lookup처럼 보이지만, cache miss에서는 loader가 DB에서 읽어 cache를 채웁니다. `put`도 그냥 cache put처럼 보이지만, write mode가 `WRITE_THROUGH`이면 writer가 DB에 즉시 반영하고, `WRITE_BEHIND`이면 writer queue를 통해 비동기 반영합니다. 이게 cache-aside와 다른 지점입니다. 애플리케이션 코드가 `DB 저장 후 cache.put` 순서를 직접 조립하지 않습니다.
+그래서 `get`은 map lookup처럼 보이지만, cache miss에서는 loader가 DB에서 읽어 cache를 채웁니다. `put`도 cache put처럼 보이지만, write mode가 `WRITE_THROUGH`이면 writer가 DB에 즉시 반영하고, `WRITE_BEHIND`이면 writer queue가 비동기로 반영합니다. 이게 cache-aside와 다른 지점입니다. 애플리케이션 코드가 `DB 저장 후 cache.put` 순서를 직접 조립하지 않습니다.
 
 ## Read-through
 
@@ -123,7 +123,7 @@ class UserCredentialsCacheRepository(
 [UserCredentialsCacheRepository.kt](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/main/kotlin/exposed/examples/cache/domain/repository/UserCredentialsCacheRepository.kt),
 [UserCredentialsCacheRepositoryTest.kt](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/test/kotlin/exposed/examples/cache/domain/repository/UserCredentialsCacheRepositoryTest.kt)
 
-읽기가 많은 데이터에 잘 맞습니다. 첫 요청은 DB에서 읽고, 다음 요청은 캐시를 봅니다. 단, write path에서 invalidate를 잘 해야 합니다. 안 그러면 과거의 나와 현재의 DB가 서로 다른 말을 합니다.
+읽기가 많은 데이터에 잘 맞습니다. 첫 요청은 DB에서 읽고, 다음 요청은 캐시를 봅니다. 단, write path에서 invalidate를 제대로 해야 합니다. 안 그러면 과거의 캐시와 현재의 DB가 서로 다른 말을 합니다.
 
 ## Write-through
 
@@ -161,11 +161,11 @@ class UserCacheRepository(
 [UserCacheRepository.kt](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/main/kotlin/exposed/examples/cache/domain/repository/UserCacheRepository.kt),
 [UserCacheRepositoryTest.kt](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/test/kotlin/exposed/examples/cache/domain/repository/UserCacheRepositoryTest.kt)
 
-장점은 읽기 일관성이 좋다는 점입니다. 쓰기가 끝나면 캐시도 최신입니다. 단점은 쓰기 latency에 cache write 비용이 들어온다는 점입니다. 성능 그래프에서 `putSingle`이 read보다 느린 이유가 여기서도 보입니다. 쓰기는 공짜가 아닙니다. 청구서는 latency로 옵니다.
+장점은 쓰기 직후 읽기의 최신성이 좋다는 점입니다. 쓰기가 끝나면 캐시도 최신입니다. 단점은 쓰기 latency에 cache write 비용이 들어온다는 점입니다. 성능 그래프에서 `putSingle`이 read보다 느린 이유가 여기서도 보입니다. 쓰기는 공짜가 아닙니다. 청구서는 latency로 옵니다.
 
 ## Write-behind
 
-Write-behind는 같은 writer를 쓰되 Redisson write mode가 `WRITE_BEHIND`입니다. `put`은 cache 쪽에 먼저 반영되고, DB write는 큐를 통해 비동기로 flush됩니다.
+Write-behind는 같은 writer를 쓰되 Redisson write mode가 `WRITE_BEHIND`입니다. `put`은 cache 쪽에 먼저 반영되고, DB write는 큐에서 비동기로 flush됩니다.
 
 ```kotlin
 @Repository
@@ -193,7 +193,7 @@ class UserEventCacheRepository(
 [UserEventCacheRepository.kt](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/main/kotlin/exposed/examples/cache/domain/repository/UserEventCacheRepository.kt),
 [UserEventCacheRepositoryTest.kt](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/test/kotlin/exposed/examples/cache/domain/repository/UserEventCacheRepositoryTest.kt)
 
-Write-behind는 쓰기 latency를 낮출 수 있습니다. 대신 설계할 것이 늘어납니다.
+Write-behind는 쓰기 latency를 낮출 수 있습니다. 대신 설계해야 할 것이 늘어납니다.
 
 - queue overflow 시 어떻게 할지
 - close 시 pending write를 flush할지
@@ -212,7 +212,7 @@ Write-behind는 쓰기 latency를 낮출 수 있습니다. 대신 설계할 것�
 [CacheWriteMode.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/CacheWriteMode.kt),
 [LocalCacheConfig.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/LocalCacheConfig.kt)
 
-이 분리가 중요합니다. "어디에 캐시할 것인가"와 "언제 쓸 것인가"는 다른 질문입니다.
+이 분리가 중요합니다. "어디에 캐시할 것인가"와 "언제 쓸 것인가"는 다른 질문입니다. 같은 Redis를 쓰더라도 read-through, write-through, write-behind는 운영 의미가 다릅니다.
 
 | 질문 | 예 |
 |---|---|
@@ -255,7 +255,7 @@ Read-through 단건 benchmark도 같이 봐야 합니다.
 | `readThroughCacheHit` | 256B | 0.003 us/op |
 | `readThroughCacheMiss` | 256B | 0.119 us/op |
 
-hit은 매우 싸고, miss는 invalidate와 reload 때문에 훨씬 비쌉니다. 그래서 Near Cache의 핵심 지표는 여전히 hit ratio입니다. 캐시가 맞히면 영웅이고, 자주 틀리면 아주 부지런한 장식품입니다.
+hit은 싸고, miss는 invalidate와 reload 때문에 훨씬 비쌉니다. 그래서 Near Cache의 핵심 지표는 여전히 hit ratio입니다. 캐시가 맞히면 영웅이고, 자주 틀리면 아주 부지런한 장식품입니다.
 
 ## 전략 선택표
 

@@ -17,12 +17,12 @@ blog:
 
 <p class="bt4k-post-meta">2026-05-28 · bluetape4k image benchmark note</p>
 
-`bluetape4k-image` provides two image-processing paths. One is the pure-JVM `scrimage` path.
-The other is the high-performance native path backed by `libvips`.
+`bluetape4k-image` provides two image-processing paths: the pure-JVM `scrimage` path and the
+native high-throughput path backed by `libvips`.
 
 Neither path is always the right answer. `scrimage` is simple to deploy and has no native
-dependency. But for high-throughput workloads such as thumbnailing, resizing, and encoding,
-`libvips`' demand-driven pipeline can be dramatically more efficient.
+dependency. For high-throughput workloads such as thumbnailing, resizing, and encoding,
+`libvips`' demand-driven pipeline can be much more efficient.
 
 This post uses the `images-benchmark` results to answer three questions.
 
@@ -55,8 +55,8 @@ The macOS Java 25 results used in this post are recorded in these reports.
 ## Benchmark Input Matters
 
 The first thing to look at is not the number, but the input image. Older headline numbers were
-measured with a single-color synthetic fallback. That is useful for smoke checks, but it does
-not represent real codec work such as texture, noise, and chroma variation.
+measured with a single-color synthetic fallback. That is useful for smoke checks, but it does not
+represent real codec work such as texture, noise, and chroma variation.
 
 This run copied natural photo fixtures from `bluetape4k-image/images/src/test/resources/images/`
 into `images-benchmark/src/main/resources/bench/`, committed them as classpath resources, and
@@ -113,7 +113,7 @@ Resize is where the difference is most dramatic.
 | PNG encode | landscape | 989.37 ms/op | 546.39 ms/op | 1.8x faster |
 
 `scrimage` works inside the JVM around `BufferedImage`. That is portable and easy to understand,
-but for large images the memory allocation and pixel-processing costs are visible.
+but large images expose memory allocation and pixel-processing costs quickly.
 
 `libvips` uses a lazy, demand-driven pipeline. For operations such as resize, where only the
 output pixels and their source regions matter, that structural difference is huge.
@@ -147,7 +147,7 @@ Full source:
 [ImageEncodeBenchmark.kt](https://github.com/bluetape4k/bluetape4k-image/blob/develop/images-benchmark/src/benchmark/kotlin/io/bluetape4k/images/benchmark/ImageEncodeBenchmark.kt)
 
 Encode is not as dramatic as resize. JPEG is about 2.4-3.1x faster and PNG is about 1.5-1.8x
-faster. That still matters in workflows where a single upload creates several derivatives.
+faster. That still matters when one upload creates several derivatives.
 
 ## Java 21 JNI vs Java 25 FFM
 
@@ -218,8 +218,9 @@ between `scrimage` and `libvips` becomes more visible than a single number sugge
 
 ## Practical Guidance
 
-For simple image processing or environments where native dependencies should be avoided, the
-scrimage path in `images` is a good starting point. It is easy to deploy and only needs the JVM.
+For simple image processing, or for environments where native dependencies should be avoided,
+the scrimage path in `images` is a good starting point. It is easy to deploy and only needs the
+JVM.
 
 But `images-vips-java25` is worth considering first when:
 
@@ -269,3 +270,7 @@ Workshop example:
 `scrimage` and `libvips` are less competitors than two operating modes. The pure-JVM path is
 simple and portable. The native path requires more operational preparation, but the performance
 gap is clear in high-volume image pipelines.
+
+The goal of `bluetape4k-image` is not to force one answer. A service can start with the pure-JVM
+path and move to a `libvips` backend when throughput starts to matter, without leaving the same
+ecosystem.

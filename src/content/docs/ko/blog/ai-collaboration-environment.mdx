@@ -1,13 +1,13 @@
 ---
 title: AI와 일하는 환경을 인프라로 만들기
-description: Eugene Yan의 AI 협업 글을 계기로, bluetape4k에서 Codex와 Claude를 AGENTS.md, skills, qmd, memory, hooks로 운영하는 방식.
+description: Eugene Yan의 AI 협업 글을 계기로, bluetape4k에서 Codex와 Claude가 같은 기준으로 일하도록 AGENTS.md, skills, qmd, memory, hooks를 운영하는 방식.
 sidebar:
   order: -202605180200
 blog:
   date: 2026-05-18T02:00:00+09:00
   image: /assets/ai-collaboration-infrastructure.png
   imageAlt: 관리자 AI와 일꾼 AI들이 skills, qmd, memory, 검증 게이트를 함께 관리하는 모습
-  cardDescription: AGENTS.md, bluetape4k skills, qmd, memory, hooks를 통해 Codex와 Claude가 같은 기준으로 일하게 만든 방식입니다.
+  cardDescription: AGENTS.md, bluetape4k skills, qmd, memory, hooks로 Codex와 Claude가 같은 기준을 읽고 검증하게 만든 방식입니다.
 ---
 
 <figure class="bt4k-blog-hero">
@@ -15,11 +15,24 @@ blog:
   <figcaption>후속편의 핵심은 AI가 무엇을 만들어 주었는지가 아니라, AI가 계속 같은 기준으로 일하게 만드는 환경입니다.</figcaption>
 </figure>
 
-[Eugene Yan의 "How to Work and Compound with AI"](https://eugeneyan.com/writing/working-with-ai/)를 읽고 나서, 지난 글의 후속편으로 bluetape4k에서 실제로 쓰는 AI 작업 환경을 정리해 두고 싶어졌다. 지난 글이 "Claude Code와 Codex로 무엇을 했는가"에 가까웠다면, 이번 글은 "그 일을 반복 가능하게 만든 환경은 무엇인가"에 가깝다.
+[Eugene Yan의 "How to Work and Compound with AI"](https://eugeneyan.com/writing/working-with-ai/)를 읽고,
+지난 글의 후속편으로 bluetape4k에서 실제로 쓰는 AI 작업 환경을 정리하고 싶어졌다. 지난 글이
+"Claude Code와 Codex로 무엇을 했는가"였다면, 이번 글은 "그 일을 반복 가능하게 만든 환경은 무엇인가"에
+가깝다.
 
-AI와 협업할 때 가장 자주 망가지는 지점은 모델 성능보다 주변 환경이다. 어디를 읽어야 하는지 모르면 잘못된 파일을 오래 본다. 프로젝트의 취향이 설정으로 남아 있지 않으면 매번 같은 지적을 반복해야 한다. 검증 명령이 정리되어 있지 않으면 그럴듯한 설명으로 끝난다. 그래서 bluetape4k에서는 AI 환경을 코드베이스의 일부처럼 다룬다.
+AI와 협업할 때 자주 망가지는 지점은 모델 성능보다 주변 환경이다. 어디를 읽어야 하는지 모르면 잘못된
+파일을 오래 본다. 프로젝트의 취향이 설정으로 남아 있지 않으면 매번 같은 지적을 반복해야 한다. 검증
+명령이 정리되어 있지 않으면 그럴듯한 설명으로 끝난다. 그래서 bluetape4k에서는 AI 환경을 코드베이스의
+일부처럼 다룬다.
 
-현재 로컬 환경은 Codex와 Claude가 서로 다른 표면을 갖지만 같은 운영 원칙을 공유하도록 맞춰져 있다. Codex 쪽에는 `~/.codex/config.toml`, `AGENTS.md`, `RTK.md`, `hooks.json`, prompts, skills, agents, plugins, wiki가 있고, 이 세션 기준으로 prompts 33개, skills 108개, agents 20개가 설치되어 있다. Claude 쪽에는 `~/.claude/CLAUDE.md`, `settings.json`, commands 24개, skills 84개, hooks 37개, project 기록 디렉터리들이 있다. 숫자 자체가 중요한 것은 아니다. 중요한 점은 "다음 세션의 AI가 어디서 규칙을 읽고, 어떤 절차를 불러오고, 어떤 기억을 재사용할지"가 파일 시스템에 남아 있다는 것이다.
+현재 로컬 환경은 Codex와 Claude가 서로 다른 표면을 갖지만 같은 운영 원칙을 공유하도록 맞춰져 있다.
+Codex 쪽에는 `~/.codex/config.toml`, `AGENTS.md`, `RTK.md`, `hooks.json`, prompts, skills, agents,
+plugins, wiki가 있고, 이 세션 기준으로 prompts 33개, skills 108개, agents 20개가 설치되어 있다. Claude
+쪽에는 `~/.claude/CLAUDE.md`, `settings.json`, commands 24개, skills 84개, hooks 37개, project 기록
+디렉터리들이 있다.
+
+숫자 자체가 핵심은 아니다. 다음 세션의 AI가 어디서 규칙을 읽고, 어떤 절차를 불러오고, 어떤 기억을
+재사용할지 파일 시스템에 남아 있다는 점이 핵심이다.
 
 ## 전체 프로세스
 
@@ -30,27 +43,41 @@ AI와 협업할 때 가장 자주 망가지는 지점은 모델 성능보다 주
 
 ## `AGENTS.md`와 `CLAUDE.md`는 온보딩 문서다
 
-사람에게 새 프로젝트를 맡길 때 README 하나만 던져 주지 않는다. 코드 구조, 브랜치 정책, 테스트 방식, 문서 언어, 하지 말아야 할 선택, 과거 의사결정까지 알려 준다. AI에게도 같은 정보가 필요하다.
+사람에게 새 프로젝트를 맡길 때 README 하나만 던져 주지 않는다. 코드 구조, 브랜치 정책, 테스트 방식,
+문서 언어, 하지 말아야 할 선택, 과거 의사결정까지 알려 준다. AI에게도 같은 정보가 필요하다.
 
 bluetape4k workspace의 `AGENTS.md`는 Codex의 기본 온보딩 문서 역할을 한다. 여기에는 대화 언어는 한국어로 유지하되 public KDoc, PR, commit message는 영어로 작성한다는 규칙이 있다. `develop`이 기본 통합 브랜치이고, `main`은 release-only라는 Git 정책도 있다. Kotlin 코드를 고치기 전에는 영향 범위와 참조를 확인하고, `.kt` 파일을 수정한 뒤에는 IDE diagnostics, import 정리, deprecation 해결, compile/test 순서로 검증한다는 작업 절차도 들어 있다.
 
-Claude는 `~/.claude/CLAUDE.md`, commands, skills, hooks를 통해 비슷한 역할을 한다. 두 도구의 파일 이름과 hook 방식은 다르지만, 의도는 같다. 새 세션을 새 동료처럼 온보딩하고, 반복해서 설명하기 싫은 취향을 설정으로 승격한다.
+Claude는 `~/.claude/CLAUDE.md`, commands, skills, hooks로 비슷한 역할을 한다. 두 도구의 파일 이름과
+hook 방식은 다르지만, 의도는 같다. 새 세션을 새 동료처럼 온보딩하고, 반복해서 설명하기 싫은 취향을
+설정으로 승격한다.
 
-여기서 중요한 원칙은 범위다. 전역 규칙은 홈 디렉터리 아래에 둔다. bluetape4k 전체에 적용되는 규칙은 workspace root에 둔다. 특정 repository나 module에만 해당하는 규칙은 더 깊은 위치에 둔다. 더 가까운 규칙이 더 구체적인 규칙이 된다. 이 구조가 있어야 AI가 "모든 Kotlin 프로젝트"와 "이 repository의 Kotlin 프로젝트"를 구분한다.
+여기서 중요한 원칙은 범위다. 전역 규칙은 홈 디렉터리 아래에 둔다. bluetape4k 전체에 적용되는 규칙은
+workspace root에 둔다. 특정 repository나 module에만 해당하는 규칙은 더 깊은 위치에 둔다. 더 가까운
+규칙이 더 구체적인 규칙이 된다. 이 구조가 있어야 AI가 "모든 Kotlin 프로젝트"와 "이 repository의 Kotlin
+프로젝트"를 구분한다.
 
 ## skills는 반복 작업의 실행 절차다
 
-프롬프트는 지시문이고, skill은 절차다. 자주 반복하는 작업이 있으면 skill로 만든다. bluetape4k에서는 `bluetape4k-workflow`가 첫 라우터 역할을 한다. 작업을 Full Design, Fast Track, Bug Fix, Code Review, Maintenance 같은 lane으로 나누고, 필요한 검증 수준을 고른다.
+프롬프트는 지시문이고, skill은 절차다. 자주 반복하는 작업이 있으면 skill로 만든다.
+bluetape4k에서는 `bluetape4k-workflow`가 첫 라우터 역할을 한다. 작업을 Full Design, Fast Track, Bug Fix,
+Code Review, Maintenance 같은 lane으로 나누고, 필요한 검증 수준을 고른다.
 
 그 아래에는 더 좁은 skill들이 있다. `bluetape4k-design`은 새 module, 큰 API 변경, multi-layer 변경처럼 설계가 필요한 작업을 맡는다. `bluetape4k-patterns`는 Kotlin 구현과 final checklist를 다룬다. `ecc-kotlin-exposed`, `ecc-springboot-kotlin`, `ecc-kotlin-testing`, `kotlin-coroutines-skill`은 Exposed, Spring Boot, testing, coroutine 같은 도메인별 판단을 분리한다. `review-delta`, `review-pr`, `code-review`, `bugfix-workflow`는 변경 검토와 후속 수정을 위한 절차다.
 
-이렇게 나누면 "테스트도 해 줘", "README도 맞춰 줘", "Exposed deprecated import 조심해 줘" 같은 말을 매번 반복하지 않아도 된다. 작업의 성격이 정해지면 해당 skill이 필요한 checklist를 불러온다. AI가 더 똑똑해서가 아니라, 작업 절차가 더 명시적이기 때문에 결과가 안정된다.
+이렇게 나누면 "테스트도 해 줘", "README도 맞춰 줘", "Exposed deprecated import 조심해 줘" 같은 말을
+매번 반복하지 않아도 된다. 작업의 성격이 정해지면 해당 skill이 필요한 checklist를 불러온다. AI가 더
+똑똑해서가 아니라, 작업 절차가 더 명시적이기 때문에 결과가 안정된다.
 
 ## qmd는 오래된 결정을 다시 찾는 검색 계층이다
 
-AI 세션은 쉽게 기억을 잃는다. 반대로 repository에는 문서, lesson, issue, PR, 계획서, 실험 기록이 계속 쌓인다. 둘 사이를 이어 주는 계층으로 qmd를 쓴다.
+AI 세션은 쉽게 기억을 잃는다. 반대로 repository에는 문서, lesson, issue, PR, 계획서, 실험 기록이 계속
+쌓인다. 둘 사이를 이어 주는 검색 계층으로 qmd를 쓴다.
 
-bluetape4k에서는 prior decisions, lessons, specs, plans, historical context를 찾을 때 qmd를 먼저 쓴다. workspace 문서는 `bluetape4k-docs` collection에서 찾고, 개인 또는 cross-project 지식은 `wiki` collection에서 찾는다. exact code symbol이나 파일명은 여전히 `rg`가 빠르지만, "예전에 왜 이 결정을 했지?", "비슷한 module을 어디서 만들었지?", "이런 실패를 겪은 적이 있나?" 같은 질문에는 qmd가 맞다.
+bluetape4k에서는 prior decisions, lessons, specs, plans, historical context를 찾을 때 qmd를 먼저 쓴다.
+workspace 문서는 `bluetape4k-docs` collection에서 찾고, 개인 또는 cross-project 지식은 `wiki`
+collection에서 찾는다. exact code symbol이나 파일명은 여전히 `rg`가 빠르지만, "예전에 왜 이 결정을
+했지?", "비슷한 module을 어디서 만들었지?", "이런 실패를 겪은 적이 있나?" 같은 질문에는 qmd가 맞다.
 
 이 차이가 크다. AI에게 전체 repository를 다시 읽히는 방식은 비싸고 느리다. 반대로 qmd를 통하면 먼저 관련 문서를 좁히고, 그 다음 코드로 내려갈 수 있다. 좋은 검색 계층은 context window를 아끼는 동시에, 이전 작업의 판단을 현재 세션으로 다시 끌고 온다.
 
@@ -60,17 +87,23 @@ bluetape4k에서는 prior decisions, lessons, specs, plans, historical context�
 
 오래 남길 결정은 repository 안으로 승격한다. bluetape4k에서는 specs를 `docs/superpowers/specs`, plans를 `docs/superpowers/plans`, lessons를 `docs/lessons`에 둔다. 작업이 끝나면 context, decision, outcome, verification evidence, next-agent guidance를 짧게 남긴다. 이 문서는 사람에게도 좋지만, 다음 AI 세션에게 더 중요하다. 다음 세션은 "그때 왜 이렇게 했는지"를 다시 추측하지 않아도 된다.
 
-memory의 목적은 과거를 많이 저장하는 것이 아니다. 다음 작업에서 다시 비용을 내지 않도록 의사결정을 재사용 가능한 형태로 남기는 것이다.
+memory의 목적은 과거를 많이 저장하는 것이 아니다. 다음 작업에서 같은 비용을 다시 내지 않도록 의사결정을
+재사용 가능한 형태로 남기는 것이다.
 
 ## hooks는 실수를 빨리 막는 안전장치다
 
 규칙을 문서에만 두면 AI가 놓칠 수 있다. 그래서 반복적으로 중요한 규칙은 hook으로 옮긴다. Claude 환경에는 sensitive file 차단, destructive git guard, Kotlin 관련 checker, Gradle test guard, README sync reminder, keyword detector 같은 hook들이 있다. Codex 환경도 hooks와 native subagent, skill routing을 통해 비슷한 역할을 한다.
 
-hook은 모델을 신뢰하지 않는 장치가 아니다. 사람에게도 CI, pre-commit, lint가 필요한 것처럼 AI에게도 자동 안전장치가 필요하다. 특히 여러 repository를 오가며 작업할 때는 destructive command, branch naming, sensitive files, workflow 변경 같은 실수를 초기에 막는 장치가 생산성을 올린다.
+hook은 모델을 신뢰하지 않는다는 뜻이 아니다. 사람에게도 CI, pre-commit, lint가 필요한 것처럼 AI에게도
+자동 안전장치가 필요하다. 특히 여러 repository를 오가며 작업할 때는 destructive command, branch naming,
+sensitive files, workflow 변경 같은 실수를 초기에 막는 장치가 생산성을 올린다.
 
 ## 검증 가능한 일만 크게 맡긴다
 
-AI에게 더 큰 일을 맡기려면 먼저 검증 기준을 만들어야 한다. bluetape4k에서는 "완료"를 설명으로 판단하지 않는다. 작은 변경이면 targeted test나 build check면 충분하다. Kotlin 코드를 고쳤다면 IDE diagnostics, import 정리, deprecation 확인, affected module test가 기본이다. public API가 바뀌면 KDoc과 README도 같이 본다. GitHub workflow가 바뀌면 nightly workflow 영향도 확인한다.
+AI에게 더 큰 일을 맡기려면 먼저 검증 기준을 만들어야 한다. bluetape4k에서는 "완료"를 설명으로 판단하지
+않는다. 작은 변경이면 targeted test나 build check면 충분하다. Kotlin 코드를 고쳤다면 IDE diagnostics,
+import 정리, deprecation 확인, affected module test가 기본이다. public API가 바뀌면 KDoc과 README도
+같이 본다. GitHub workflow가 바뀌면 nightly workflow 영향도 확인한다.
 
 이 규칙이 있어야 delegation이 가능하다. Codex native subagents나 OMX team mode로 병렬 작업을 시킬 수 있지만, 병렬성이 품질을 보장하지는 않는다. 병렬 작업의 병목은 구현 속도가 아니라 spec 작성과 review 속도다. 그래서 작업을 나눌 때는 "이 agent가 어떤 파일과 책임을 소유하는가", "어떤 테스트로 완료를 증명하는가", "공유 파일 충돌을 어떻게 보고하는가"를 먼저 정한다.
 
@@ -78,7 +111,9 @@ AI에게 더 큰 일을 맡기려면 먼저 검증 기준을 만들어야 한다
 
 실제로는 Codex와 Claude를 경쟁 도구처럼 쓰지 않는다. 둘 다 같은 repository, 같은 conventions, 같은 lessons를 읽게 만드는 것이 더 중요하다.
 
-Codex는 `AGENTS.md`, skills, MCP/context-mode, qmd, native subagents를 통해 repository 작업을 강하게 통제한다. Claude는 `CLAUDE.md`, commands, skills, hooks, project histories를 통해 비슷한 방식으로 장기 환경을 유지한다. 한쪽에서 얻은 lesson은 가능하면 repository 문서나 skill로 승격해 다른 쪽도 읽게 만든다.
+Codex는 `AGENTS.md`, skills, MCP/context-mode, qmd, native subagents로 repository 작업을 강하게 통제한다.
+Claude는 `CLAUDE.md`, commands, skills, hooks, project histories로 비슷한 방식으로 장기 환경을 유지한다.
+한쪽에서 얻은 lesson은 가능하면 repository 문서나 skill로 승격해 다른 쪽도 읽게 만든다.
 
 이 구조를 만들고 나면 AI 사용 방식이 바뀐다. "이 파일을 고쳐 줘"보다 "이 repository의 workflow를 따라 issue를 분석하고, 영향 범위를 좁히고, 테스트로 증명하고, lesson까지 남겨 줘"에 가까워진다. 모델에게 일을 맡기는 것이 아니라, 모델이 일할 수 있는 운영 체계를 만드는 것이다.
 
@@ -90,6 +125,8 @@ Codex는 `AGENTS.md`, skills, MCP/context-mode, qmd, native subagents를 통해 
 
 ## 결론
 
-AI와 오래 일하면서 얻은 가장 큰 교훈은 모델보다 환경이 compounding한다는 점이다. 모델은 계속 바뀐다. 하지만 잘 정리된 repository, 명확한 `AGENTS.md`와 `CLAUDE.md`, 반복 작업을 담은 skills, qmd로 검색 가능한 지식, 검증을 강제하는 hooks, 짧게 남긴 lessons는 다음 세션에도 남는다.
+AI와 오래 일하면서 얻은 교훈은 모델보다 환경이 더 오래 누적된다는 점이다. 모델은 계속 바뀐다. 하지만
+잘 정리된 repository, 명확한 `AGENTS.md`와 `CLAUDE.md`, 반복 작업을 담은 skills, qmd로 검색 가능한 지식,
+검증을 강제하는 hooks, 짧게 남긴 lessons는 다음 세션에도 남는다.
 
 그래서 bluetape4k에서 AI 협업의 핵심은 "더 좋은 프롬프트"보다 "더 좋은 작업 환경"에 가깝다. AI를 한 번 쓰는 도구로 보면 결과는 세션마다 흔들린다. AI를 새 동료처럼 온보딩하고, 작업 절차를 코드처럼 관리하고, 검증과 기억을 인프라로 만들면 결과가 조금씩 누적된다.

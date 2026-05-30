@@ -17,9 +17,9 @@ blog:
 
 <p class="bt4k-post-meta">2026-05-29 · bluetape4k csv performance note</p>
 
-`bluetape4k-projects`의 `bluetape4k-csv` 모듈은 원래 `Reader` 기반 CSV lexer를 사용했다.
-구조는 단순하고 정확했지만, 큰 CSV를 읽을 때 모든 문자를 `Reader`에서 decode한 뒤
-`StringBuilder`에 누적하고 다시 field 문자열로 만드는 흐름이었다.
+`bluetape4k-projects`의 `bluetape4k-csv` 모듈은 원래 `Reader` 기반 CSV lexer를 사용했다. 구조는
+단순하고 정확했지만, 큰 CSV를 읽을 때 모든 문자를 `Reader`에서 decode한 뒤 `StringBuilder`에
+누적하고 다시 field 문자열로 만드는 흐름이었다.
 
 Issue [#651](https://github.com/bluetape4k/bluetape4k-projects/issues/651)의 목표는 이 경로의
 allocation을 줄이고, 특히 큰 CSV workload에서 throughput을 끌어올리는 것이었다. 결론부터 말하면
@@ -41,7 +41,7 @@ CsvRecordReader()
 ```
 
 내부 구현은 `CsvLexer`가 `Reader`를 받고, CSV 상태 기계가 한 문자씩 읽으면서 field를 만든다.
-이 방식은 charset 처리와 fallback에는 좋지만 UTF-8 CSV가 대부분인 대량 처리 경로에서는 불리하다.
+이 방식은 charset 처리와 fallback에는 좋지만, UTF-8 CSV가 대부분인 대량 처리 경로에서는 불리하다.
 
 이번 작업의 boundary는 명확했다.
 
@@ -59,7 +59,7 @@ CsvRecordReader()
 OkioCsvLexer(input.source().buffer(), settings, skipHeaders)
 ```
 
-이것만으로도 “문자 단위 decode 후 append” 경로는 피할 수 있다. 하지만 단순 byte loop는 정확성은
+이것만으로도 "문자 단위 decode 후 append" 경로는 피할 수 있다. 하지만 단순 byte loop는 정확성은
 좋았지만 성능 개선폭이 작았다. large lexer 기준으로는 약 22% 개선에 그쳤다.
 
 두 번째 실험은 Okio의 segment 구조를 더 직접 활용하는 것이었다. `Buffer.UnsafeCursor`는 내부 segment
@@ -109,8 +109,8 @@ private fun Buffer.indexOfAnyByteUnsafe(targets: ByteArray): Long {
 ```
 
 중요한 점은 cursor를 write 용도로 쓰지 않았다는 것이다. source buffer의 segment를 읽기만 하고,
-terminator 앞 payload는 `fieldBuffer.write(source.buffer, offset)`로 옮긴다. 그래서 scan은
-segment 위에서 빠르게 하고, field decode는 field가 끝난 뒤 한 번만 수행한다.
+terminator 앞 payload는 `fieldBuffer.write(source.buffer, offset)`로 옮긴다. 그래서 scan은 segment
+위에서 빠르게 하고, field decode는 field가 끝난 뒤 한 번만 수행한다.
 
 ## Behavior Guardrails
 
@@ -121,9 +121,9 @@ segment 위에서 빠르게 하고, field decode는 field가 끝난 뒤 한 번�
 parseWithOkio(csv) shouldBeEqualTo parseWithReader(csv)
 ```
 
-특히 `extra_words.csv`처럼 실제 fixture에 가까운 큰 CSV 파일을 통째로 비교했다. 이 fixture는
-세그먼트 경계 근처의 quote, null field, 긴 한국어 payload를 함께 검증한다. 단순 happy-path CSV만
-통과하는 최적화는 여기서 걸러진다.
+특히 `extra_words.csv`처럼 실제 fixture에 가까운 큰 CSV 파일을 통째로 비교했다. 이 fixture는 세그먼트
+경계 근처의 quote, null field, 긴 한국어 payload를 함께 검증한다. 단순 happy-path CSV만 통과하는
+최적화는 여기서 걸러진다.
 
 추가로 `maxCharsPerColumn`도 확인했다. fast scan이 terminator를 찾으려고 무한정 읽어버리면
 large field guard가 약해지므로, scanned segment를 field buffer로 옮길 때 byte bound를 검사하고
@@ -183,7 +183,7 @@ public reader 결과가 우연인지 확인하려면 내부 lexer끼리도 비�
 경로가 있었다. 이 PR에서는 채택하지 않았다.
 
 단순 Okio byte loop도 제외했다. 정확성은 좋았지만 large lexer가 17.481 -> 21.290 ops/s 정도였고,
-사용자가 기대한 “Okio segment의 장점”을 충분히 쓰지 못했다.
+사용자가 기대한 "Okio segment의 장점"을 충분히 쓰지 못했다.
 
 최종 선택은 read-only `UnsafeCursor`였다. 위험한 API를 쓰되, 사용 범위를 structural-byte scan으로
 좁히고 큰 fixture equivalence test로 잠그는 쪽이 가장 낫다고 판단했다.
@@ -231,8 +231,8 @@ suspend fun writeCsvFileWithOkio(
 ```
 
 이 코드는 블로그용 sketch다. 실제 구현은 기존 `DelimitedWriter`의 null/empty-string roundtrip,
-`quoteAll`, TSV delimiter, charset fallback, close/flush semantics를 그대로 지켜야 한다. 그래도
-방향은 명확하다. 읽기에서는 `BufferedSource`와 `UnsafeCursor`가 allocation을 줄였고, 쓰기에서는
+`quoteAll`, TSV delimiter, charset fallback, close/flush semantics를 그대로 지켜야 한다. 그래도 방향은
+명확하다. 읽기에서는 `BufferedSource`와 `UnsafeCursor`가 allocation을 줄였고, 쓰기에서는
 `BufferedSink`가 row pipeline의 중간 `String`과 작은 `Writer.write` 호출을 줄일 가능성이 있다.
 
 ## Source Links
@@ -249,7 +249,7 @@ suspend fun writeCsvFileWithOkio(
 
 ## Closing
 
-이번 작업의 핵심은 “Okio를 쓴다”가 아니라 “Okio의 segment 모델을 어디까지 안전하게 끌어올 수
-있는가”였다. 단순 wrapper만으로는 부족했고, unbounded scan은 조심해야 했다. read-only
+이번 작업의 핵심은 "Okio를 쓴다"가 아니라 "Okio의 segment 모델을 어디까지 안전하게 끌어올 수
+있는가"였다. 단순 wrapper만으로는 부족했고, unbounded scan은 조심해야 했다. read-only
 `UnsafeCursor`는 부담이 있는 선택이지만, fixture equivalence와 size guard를 같이 두면 CSV 구조
 스캔에는 충분히 실용적인 도구가 된다.

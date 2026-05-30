@@ -23,15 +23,15 @@ This is Part 2 of the Bluetape4k Cache series. The full series continues with
 [Part 3: Near Cache + Exposed strategies](/blog/bluetape4k-cache-part3-exposed-strategies/), and
 [Part 4: workshop examples](/blog/bluetape4k-cache-part4-workshop-examples/).
 
-A remote cache is useful. Multiple JVMs can see the same value. Entries can have TTLs. Mature
-systems such as Redis come with a deep operational toolbox.
+A remote cache is a good starting point. Multiple JVMs can see the same value. Entries can have
+TTLs. Mature systems such as Redis come with solid operational tooling.
 
-But a remote cache has one very honest cost: it is remote. There is a network hop, serialization,
-connection contention, and tail latency. Redis can be fast and still not live under the same
-physics as an in-process memory read. Physics does not negotiate, even if invited to a meeting.
+The catch is in the word remote. There is a network hop, serialization, connection contention,
+and tail latency. Redis can be fast and still not live under the same physics as an in-process
+memory read. Physics does not negotiate, even if invited to a meeting.
 
-Near Cache uses that difference. Frequently read values stay in an in-JVM L1 cache, while shared
-state remains in an L2 cache such as Redis.
+Near Cache accepts that difference. Frequently read values stay in an in-JVM L1 cache, while
+shared state and invalidation stay with an L2 cache and its protocol.
 
 <figure class="bt4k-architecture">
   <img src="/assets/cache-series-near-cache-flow-01.png" alt="Near cache read, write, and invalidation flow with local L1 cache and Redis L2 cache" loading="lazy" />
@@ -40,13 +40,13 @@ state remains in an L2 cache such as Redis.
 
 ## Limits of Remote Cache Alone
 
-Remote cache usually gives you these advantages.
+Remote cache gives you clear advantages.
 
 - Multiple application instances share the same values.
 - Cache state does not disappear just because one JVM restarts.
 - TTL, eviction, and memory policies can be managed centrally.
 
-Hot read paths accumulate different costs.
+Hot read paths accumulate a different set of costs.
 
 | Cost | Description |
 |---|---|
@@ -60,14 +60,14 @@ cache plus protocol handle shared state and invalidation."
 
 ## Redisson Pub/Sub
 
-Redisson's `RLocalCachedMap` provides a local cached map. The basic model is to keep a local map
-and propagate changes through Pub/Sub so other JVMs invalidate their local entries.
+Redisson's `RLocalCachedMap` provides a local cached map. Each JVM keeps a local map, and
+changes propagate through Pub/Sub so other JVMs invalidate their local entries.
 
 The benefits are clear.
 
 - Users do not have to design the protocol themselves.
 - Local cache and invalidation live inside the Redisson API.
-- It is effective for read-heavy services.
+- It is more useful for read-heavy services than write-heavy ones.
 
 Related source:
 [RedissonNearCache.kt](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/cache/cache-redisson/src/main/kotlin/io/bluetape4k/cache/nearcache/RedissonNearCache.kt),
@@ -75,6 +75,7 @@ Related source:
 
 There is a tradeoff. Pub/Sub is topic-based event propagation. Redis does not automatically know
 which client read which key. The client and library maintain the invalidation system together.
+So the simple-looking setup still means "receive the change event and remove the local entry."
 
 ## Lettuce RESP3 CLIENT TRACKING
 
@@ -130,9 +131,9 @@ error ranges, L1 is dramatically faster, while Redis-backed operations cluster a
 | `putAll` | 1.038 ± 0.247 | 0.930 ± 0.118 | 0.407 ± 0.281 |
 | `removeSingle` | 4.213 ± 0.177 | 4.243 ± 0.352 | 4.164 ± 0.271 |
 
-The important read-path comparison is `l1Hit` versus `l2Hit`. L1 hits are around 64K ops/ms.
-L2 hits and misses are around 4 ops/ms. If those numbers still make you want to send every hot
-read to Redis, the first cache to clear might be the one in your head.
+For the read path, compare `l1Hit` and `l2Hit`. L1 hits are around 64K ops/ms. L2 hits and
+misses are around 4 ops/ms. If those numbers still make you want to send every hot read to
+Redis, the first cache to clear might be the one in your head.
 
 The environment matters: Apple M4 Pro, GraalVM 21, Redis 7 Testcontainers, JMH 1.37, single
 thread. Absolute values will move on another machine. The conclusion that JVM L1 memory and a
@@ -148,7 +149,7 @@ Practical interpretation:
 - Read-heavy hot keys are good NearCache candidates.
 - Write-heavy data needs invalidation cost and staleness tolerance reviewed first.
 - Large payloads expose network bandwidth and serialization cost, especially in `putAll`.
-- If the L1 hit ratio is low, NearCache becomes decoration. Decoration rarely reduces CPU.
+- If the L1 hit ratio is low, NearCache becomes decoration. Decoration does not reduce CPU.
 - Without a failure policy, cache becomes a failure propagator.
 
 ## Selection Guide

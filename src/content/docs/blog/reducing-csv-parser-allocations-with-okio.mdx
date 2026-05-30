@@ -17,15 +17,14 @@ blog:
 
 <p class="bt4k-post-meta">2026-05-29 · bluetape4k csv performance note</p>
 
-`bluetape4k-csv` originally parsed CSV through a `Reader`. That path was simple and
-correct, but it decoded every character before appending field data to a `StringBuilder`.
-For large UTF-8 CSV streams, the hot path was doing more allocation and decode work than
-necessary.
+`bluetape4k-csv` originally parsed CSV through a `Reader`. That path was simple and correct,
+but it decoded every character before appending field data to a `StringBuilder`. For large
+UTF-8 CSV streams, the hot path was doing more allocation and decode work than necessary.
 
-Issue [#651](https://github.com/bluetape4k/bluetape4k-projects/issues/651) targeted that
-path. The final PR keeps the public API unchanged, adds an internal Okio-backed lexer for
-supported UTF-8 CSV settings, and falls back to the existing reader lexer when the settings
-are outside the fast path.
+Issue [#651](https://github.com/bluetape4k/bluetape4k-projects/issues/651) targeted that path.
+The final PR keeps the public API unchanged, adds an internal Okio-backed lexer for supported
+UTF-8 CSV settings, and falls back to the existing reader lexer when the settings are outside
+the fast path.
 
 <figure class="bt4k-architecture">
   <img src="/assets/csv-okio-throughput-comparison-01.png" alt="CSV parser throughput comparison chart showing existing and Okio ops per second" loading="lazy" />
@@ -66,9 +65,9 @@ The fast path is deliberately narrow:
 
 ## Why UnsafeCursor
 
-Wrapping the stream in Okio was not enough. A simple byte loop was correct, but the large
-lexer benchmark only moved from about 17.5 to 21.3 ops/s. The useful gain came from scanning
-Okio segments directly with a read-only `Buffer.UnsafeCursor`.
+Wrapping the stream in Okio was not enough. A simple byte loop was correct, but the large lexer
+benchmark only moved from about 17.5 to 21.3 ops/s. The useful gain came from scanning Okio
+segments directly with a read-only `Buffer.UnsafeCursor`.
 
 ```kotlin
 private fun findTerminatorOffset(terminators: ByteString): Long {
@@ -218,6 +217,6 @@ path reduced allocations with `BufferedSource` and `UnsafeCursor`; the write pat
 
 ## Closing
 
-The useful lesson is not just “use Okio.” The useful lesson is to use the right layer of Okio.
+The useful lesson is not just "use Okio." The useful lesson is to use the right layer of Okio.
 `BufferedSource` gave a clean stream boundary, `Buffer` avoided early string materialization,
 and read-only `UnsafeCursor` made segment scanning fast enough to matter.

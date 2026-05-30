@@ -44,7 +44,7 @@ Each case follows the same shape.
 
 Related issue: [#491](https://github.com/bluetape4k/bluetape4k-projects/issues/491)
 
-This was a tiny, embarrassing bug. In Java Properties, a value like `maxWaitMillis=` reads to a
+This was a small, embarrassing bug. In Java Properties, a value like `maxWaitMillis=` reads to a
 human as "the value is empty." But `JavaPropsMapper` read Properties values as untyped strings,
 then converted an empty string into `0` while binding to a nullable numeric Kotlin constructor
 parameter.
@@ -121,7 +121,7 @@ reuse to avoid stale CI credentials.
 ### How We Found It
 
 Nightly told us. A local targeted test can miss external-service slices that Full Nightly still
-exercises. The key point was not to immediately patch production code. The first question was:
+exercises. The key point was not to patch production code immediately. The first question was:
 "does this test still represent the current API and environment?"
 
 ### How We Fixed It
@@ -150,8 +150,8 @@ Related issue: [#602](https://github.com/bluetape4k/bluetape4k-projects/issues/6
 Related PR: [#604](https://github.com/bluetape4k/bluetape4k-projects/pull/604)
 
 Full Nightly timed out in `MemgraphServerTest`. The natural first suspects were container
-startup, readiness, or the image version. But the surprising part was that the Bolt query path
-had already succeeded. The hang was inside Neo4j Java Driver's `Driver.close()`.
+startup, readiness, or the image version. But the Bolt query path had already succeeded. The
+hang was inside Neo4j Java Driver's `Driver.close()`.
 
 ### Why I Made the Mistake
 
@@ -230,7 +230,7 @@ Both `suspendHandler` and `suspendFailureHandler` now catch `CancellationExcepti
 rethrow it. Only ordinary exceptions are sent to `ctx.fail(e)`. Regression tests lock both paths:
 cancellation and normal exception.
 
-The philosophy is one line: do not send cancellation to the failure handler.
+The rule is one line: do not send cancellation to the failure handler.
 
 ```kotlin
 try {
@@ -345,7 +345,7 @@ The five cases look different, but they share the same pattern.
 | Vert.x cancellation | Route failure catch handles everything | Cancellation rethrow regression |
 | gRPC interruption | `runCatching` can simplify lifecycle failure | Explicit interrupt preservation |
 
-The upside of an embarrassing bug is that the guard is usually very clear afterward. It stops
+The upside of an embarrassing bug is that the guard is usually clear afterward. It stops
 being an abstract design debate and becomes: "make this line fail earlier next time."
 
 ## How to Be a Little Less Wrong Next Time

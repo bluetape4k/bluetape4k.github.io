@@ -17,11 +17,13 @@ blog:
 
 <p class="bt4k-post-meta">2026-05-29 · Bluetape4k Cache series · Part 1</p>
 
-`bluetape4k-cache`는 "Map 하나 감싸면 되지 않나?"로 시작했다가, 운영 환경을 만나고 조용히 의자에 앉게 되는 영역을 다룹니다.
+`bluetape4k-cache`는 "Map 하나 감싸면 되지 않나?"라는 질문에서 출발합니다. 그리고 운영 환경을 만나는 순간, 그 질문이 생각보다 작지 않다는 사실을 다룹니다.
 
-로컬 캐시는 빠릅니다. Redis는 공유됩니다. JCache는 표준 API가 있습니다. Kotlin coroutine은 `suspend` 경로가 필요합니다. 장애가 나면 재시도와 fallback도 필요합니다. 이 모든 것을 애플리케이션 코드마다 손으로 붙이면, 어느 날 캐시 코드가 도메인 코드보다 더 많은 코드를 차지합니다. 좋은 징조는 아닙니다.
+로컬 캐시는 빠릅니다. Redis는 상태를 공유합니다. JCache에는 표준 API가 있습니다. Kotlin coroutine 코드에는 `suspend` 경로가 필요합니다. remote cache가 잠깐 불안정해지면 재시도와 fallback도 있어야 합니다.
 
-그래서 bluetape4k의 Cache 모듈은 "캐시 구현체 모음"이 아니라, 캐시를 다루는 공통 언어를 먼저 제공합니다.
+이 조각들을 애플리케이션마다 손으로 붙이면, 어느 날 캐시 코드가 도메인 코드보다 더 많은 자리를 차지합니다. 그때부터 캐시는 성능 최적화가 아니라 운영 복잡도가 됩니다.
+
+그래서 bluetape4k의 Cache 모듈은 "캐시 구현체 모음"으로 시작하지 않습니다. 먼저 캐시를 다루는 공통 언어를 잡고, 그 위에 provider별 구현을 붙입니다.
 
 <figure class="bt4k-architecture">
   <img src="/assets/cache-series-module-map-01.png" alt="Bluetape4k cache module map from cache-core to local providers, memoizers, resilience, and distributed providers" loading="lazy" />
@@ -30,7 +32,7 @@ blog:
 
 ## 큰 그림
 
-핵심은 `cache-core`입니다.
+출발점은 `cache-core`입니다. provider가 무엇이든 애플리케이션 코드가 비슷한 모양으로 캐시를 읽고, 저장하고, 무효화하고, 실패를 다루게 만드는 층입니다.
 
 | 영역 | 역할 |
 |---|---|
@@ -40,7 +42,7 @@ blog:
 | NearCache interfaces | L1 local + L2 back cache 구조를 공통 API로 표현 |
 | Resilient decorator | retry, fallback, 통계를 캐시 구현 바깥에서 붙임 |
 
-그리고 provider 모듈이 뒤를 받칩니다.
+provider 모듈은 그 계약 뒤에서 실제 저장소와 통신합니다.
 
 | 모듈 | 대표 역할 |
 |---|---|
@@ -54,7 +56,7 @@ blog:
 
 ## 로컬 캐시: 빠른데 혼자 삽니다
 
-로컬 캐시는 JVM 안에 있습니다. 네트워크 왕복이 없어서 빠르고, 설정도 단순합니다.
+로컬 캐시는 JVM 안에 있습니다. 네트워크 왕복이 없으니 빠르고, 설정도 단순합니다.
 
 ```kotlin
 import io.bluetape4k.cache.caffeine.caffeine
@@ -69,11 +71,11 @@ val cache = caffeine {
 전체 소스:
 [cache-core README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/cache/cache-core/README.md)
 
-다만 로컬 캐시는 "내 JVM"만 압니다. 서버가 둘이면 서랍도 둘입니다. 한쪽 서랍에 넣은 물건을 다른 쪽 서랍이 안다고 믿으면, 그때부터 장애 회고가 문학 장르가 됩니다.
+한계도 분명합니다. 로컬 캐시는 "내 JVM"만 압니다. 서버가 둘이면 서랍도 둘입니다. 한쪽 서랍에 넣은 값을 다른 쪽 서랍이 안다고 믿으면, 그때부터 장애 회고가 문학 장르가 됩니다.
 
 ## SuspendCache: coroutine 코드에 맞춘 계약
 
-Kotlin 서비스를 쓰다 보면 cache miss 때 DB나 remote call을 해야 합니다. 그 경로가 suspend라면 캐시 API도 suspend여야 합니다.
+Kotlin 서비스에서 cache miss가 나면 DB를 읽거나 remote API를 호출하는 경우가 많습니다. 그 경로가 `suspend`라면 캐시 API도 `suspend`여야 합니다.
 
 ```kotlin
 import io.bluetape4k.cache.jcache.CaffeineSuspendJCache
@@ -89,7 +91,7 @@ val userId = cache.get("token:1")
 
 ## Memoizer: 함수 결과를 캐시로 승격하기
 
-Memoizer는 "이 함수는 같은 입력에 대해 같은 결과를 자주 낸다"는 사실을 API로 표현합니다.
+Memoizer는 "이 함수는 같은 입력에 같은 결과를 자주 낸다"는 성질을 API로 끌어올립니다. 호출하는 쪽은 함수를 그대로 쓰고, 반복 계산이나 반복 조회는 캐시가 맡습니다.
 
 ```kotlin
 import io.bluetape4k.cache.memoizer.suspendMemoizer
@@ -107,7 +109,7 @@ val summary = userSummary(42L)
 
 ## NearCache: 빠른 서랍과 공유 창고를 같이 쓰기
 
-NearCache는 L1 local cache와 L2 back cache를 함께 씁니다.
+NearCache는 L1 local cache와 L2 back cache를 함께 씁니다. 자주 읽는 값은 가까운 JVM에서 처리하고, 공유 상태는 remote cache에 둡니다.
 
 ```kotlin
 import io.bluetape4k.cache.LettuceCaches
@@ -122,7 +124,7 @@ cache.put("42", "Debop")
 val name = cache.get("42")
 ```
 
-`NearCacheOperations`는 `get`, `put`, `remove`, `clearLocal`, `clearAll`, `stats` 같은 공통 동작을 제공합니다. provider가 Lettuce든 Redisson이든 Hazelcast든, 애플리케이션은 같은 모양으로 접근할 수 있습니다.
+`NearCacheOperations`는 `get`, `put`, `remove`, `clearLocal`, `clearAll`, `stats` 같은 공통 동작을 제공합니다. provider가 Lettuce든 Redisson이든 Hazelcast든, 애플리케이션은 같은 모양으로 접근합니다.
 
 관련 소스:
 [NearCacheOperations.kt](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/nearcache/NearCacheOperations.kt),
@@ -130,7 +132,7 @@ val name = cache.get("42")
 
 ## Resilience는 장식이 아닙니다
 
-캐시는 성능 기능처럼 보이지만, remote cache를 붙이는 순간 장애 전파 경로가 됩니다. Redis가 잠깐 불안정되었을 때 모든 요청이 같이 영향을 받으면 "캐시를 붙였더니 더 느려졌다"가 아니라 "캐시가 장애 증폭기가 됐다"입니다.
+캐시는 성능 기능처럼 보입니다. 하지만 remote cache를 붙이는 순간 장애 전파 경로도 됩니다. Redis가 잠깐 불안정해졌을 때 모든 요청이 같이 영향을 받으면 "캐시를 붙였더니 더 느려졌다"가 아닙니다. "캐시가 장애 증폭기가 됐다"에 가깝습니다.
 
 그래서 bluetape4k는 resilience decorator를 제공합니다.
 
@@ -148,7 +150,7 @@ val resilient = cache.withResilience {
 
 ## 정리
 
-Cache 모듈의 방향은 단순합니다.
+Cache 모듈이 정리하려는 문제는 단순합니다.
 
 - 로컬 캐시는 빠르게 씁니다.
 - remote cache는 공유 상태를 맡깁니다.
@@ -156,7 +158,7 @@ Cache 모듈의 방향은 단순합니다.
 - NearCache는 두 세계를 연결합니다.
 - resilience는 운영 중 "잠깐만요"를 "전체 장애"로 키우지 않게 합니다.
 
-다음 글에서는 NearCache를 따로 꺼내 봅니다. Remote cache만으로 부족한 이유, Redisson의 Pub/Sub 방식과 Lettuce의 RESP3 CLIENT TRACKING 방식, 그리고 benchmark 숫자를 같이 보겠습니다. 숫자는 가끔 냉정합니다. 그래서 좋습니다.
+다음 글에서는 NearCache만 따로 꺼내 봅니다. remote cache만으로 부족한 이유, Redisson의 Pub/Sub 방식과 Lettuce의 RESP3 CLIENT TRACKING 방식, 그리고 benchmark 숫자를 같이 보겠습니다. 숫자는 가끔 냉정합니다. 그래서 좋습니다.
 
 ## 시리즈 링크
 

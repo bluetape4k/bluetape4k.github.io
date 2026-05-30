@@ -17,9 +17,12 @@ blog:
 
 <p class="bt4k-post-meta">Part 1 · Ecosystem overview</p>
 
-Bluetape4k는 Kotlin/JVM 기반 서비스를 만들 때 반복해서 필요한 기능을 모듈화한 라이브러리 생태계다. 하나의 프레임워크로 모든 것을 감싸기보다, Spring Boot 4와 Ktor 3 애플리케이션이 필요한 계층별 기능을 선택해서 가져가는 구조에 가깝다.
+Bluetape4k는 Kotlin/JVM 기반 서비스를 만들 때 반복해서 필요한 기능을 모듈화한 라이브러리 생태계다.
+하나의 프레임워크로 애플리케이션 전체를 감싸기보다, Spring Boot 4와 Ktor 3 서비스가 필요한 계층별
+기능을 골라 가져가는 구조에 가깝다.
 
-Part 1의 범위는 전체 지도다. 각 repository의 상세 architecture, API 예제, 적용 방식은 Part 2 이후에서 다룬다.
+Part 1의 범위는 전체 지도다. 각 repository의 상세 architecture, API 예제, 적용 방식은 Part 2 이후에서
+다룬다.
 
 <figure class="bt4k-architecture">
   <img src="/assets/bluetape4k-layer-flow-01.png" alt="Bluetape4k ecosystem layer flow" loading="lazy" />
@@ -28,7 +31,8 @@ Part 1의 범위는 전체 지도다. 각 repository의 상세 architecture, API
 
 ## Ecosystem Overview
 
-Bluetape4k는 크게 다섯 layer로 볼 수 있다. 표는 overview 용도이므로 짧게 유지하고, 각 layer의 구체적인 모듈과 역할은 아래 섹션에서 따로 설명한다.
+Bluetape4k는 크게 다섯 layer로 볼 수 있다. 표는 overview 용도이므로 짧게 유지하고, 각 layer의 구체적인
+모듈과 역할은 아래 섹션에서 따로 설명한다.
 
 <table style="width: 100%; table-layout: fixed;">
   <colgroup>
@@ -77,13 +81,15 @@ Bluetape4k는 크게 다섯 layer로 볼 수 있다. 표는 overview 용도이�
   <figcaption>각 layer는 repository 경계보다 해결하려는 문제 영역을 기준으로 묶었다.</figcaption>
 </figure>
 
-이 구조에서 application layer는 Spring Boot 4 또는 Ktor 3가 담당한다. Bluetape4k는 그 아래에 있는 domain, data, infra, foundation layer를 채우는 모듈들을 제공한다.
+이 구조에서 application layer는 Spring Boot 4 또는 Ktor 3가 담당한다. Bluetape4k는 그 아래에 있는
+domain, data, infra, foundation layer를 채우는 모듈들을 제공한다.
 
 ## Application Layer
 
 ### Spring Boot 4
 
-개발 목적: Spring Boot 기반 서비스에서 Bluetape4k의 data, cache, infra, testing 모듈을 자연스럽게 조립할 수 있게 한다.
+개발 목적: Spring Boot 기반 서비스에서 Bluetape4k의 data, cache, infra, testing 모듈을 자연스럽게
+조립할 수 있게 한다.
 
 제공하는 모듈 및 역할:
 
@@ -101,7 +107,8 @@ Bluetape4k는 크게 다섯 layer로 볼 수 있다. 표는 overview 용도이�
 
 ### Ktor 3
 
-개발 목적: coroutine-first service framework인 Ktor에서 cloud, coordination, graph 기능을 바로 사용할 수 있게 한다.
+개발 목적: coroutine-first service framework인 Ktor에서 cloud, coordination, graph 기능을 바로 사용할
+수 있게 한다.
 
 제공하는 모듈 및 역할:
 
@@ -121,7 +128,8 @@ Bluetape4k는 크게 다섯 layer로 볼 수 있다. 표는 overview 용도이�
 
 ### Leader
 
-개발 목적: 분산 환경에서 batch, scheduler, polling worker, migration gate 같은 작업이 중복 실행되지 않게 제어한다.
+개발 목적: 분산 환경에서 batch, scheduler, polling worker, migration gate 같은 작업이 중복 실행되지
+않게 제어한다.
 
 제공하는 모듈 및 역할:
 
@@ -156,7 +164,8 @@ Bluetape4k는 크게 다섯 layer로 볼 수 있다. 표는 overview 용도이�
 
 ### Image
 
-개발 목적: 일반적인 JVM 이미지 처리와 고성능 대량 이미지 처리를 같은 ecosystem 안에서 선택할 수 있게 한다.
+개발 목적: 일반적인 JVM 이미지 처리와 고성능 대량 이미지 처리를 같은 ecosystem 안에서 선택할 수 있게
+한다.
 
 제공하는 모듈 및 역할:
 
@@ -174,7 +183,8 @@ Bluetape4k는 크게 다섯 layer로 볼 수 있다. 표는 overview 용도이�
 
 ### Text
 
-개발 목적: 한국어/일본어 중심의 tokenizer, language detection, keyword search 기능을 Kotlin 서비스에서 재사용한다.
+개발 목적: 한국어/일본어 중심의 tokenizer, language detection, keyword search 기능을 Kotlin 서비스에서
+재사용한다.
 
 제공하는 모듈 및 역할:
 
@@ -194,7 +204,8 @@ Bluetape4k는 크게 다섯 layer로 볼 수 있다. 표는 overview 용도이�
 
 ### Exposed
 
-개발 목적: JPA보다 Kotlin DSL에 가까운 persistence model을 제공하고, JDBC와 R2DBC를 같은 repository pattern 안에서 다룬다.
+개발 목적: JPA보다 Kotlin DSL에 가까운 persistence model을 제공하고, JDBC와 R2DBC를 같은 repository
+pattern 안에서 다룬다.
 
 제공하는 모듈 및 역할:
 
@@ -309,7 +320,8 @@ Bluetape4k는 크게 다섯 layer로 볼 수 있다. 표는 overview 용도이�
 
 ### Observability And Resilience
 
-개발 목적: 운영 환경에서 필요한 metrics, tracing, resilience, rate limiting 기능을 ecosystem 안에서 연결한다.
+개발 목적: 운영 환경에서 필요한 metrics, tracing, resilience, rate limiting 기능을 ecosystem 안에서
+연결한다.
 
 제공하는 모듈 및 역할:
 
@@ -381,7 +393,8 @@ Bluetape4k는 크게 다섯 layer로 볼 수 있다. 표는 overview 용도이�
 
 ### BOM And Version Governance
 
-개발 목적: 여러 repository가 독립적으로 발전해도 사용자가 호환 가능한 dependency set을 가져갈 수 있게 한다.
+개발 목적: 여러 repository가 독립적으로 발전해도 사용자가 호환 가능한 dependency set을 가져갈 수 있게
+한다.
 
 제공하는 모듈 및 역할:
 
@@ -397,15 +410,19 @@ Bluetape4k는 크게 다섯 layer로 볼 수 있다. 표는 overview 용도이�
 
 ## How The Layers Work Together
 
-실제 서비스에서는 Spring Boot 4 또는 Ktor 3가 application boundary가 되고, 그 아래에 Foundation, Data, Infrastructure, Domain Capability layer를 필요한 만큼 조합한다.
+실제 서비스에서는 Spring Boot 4 또는 Ktor 3가 application boundary가 되고, 그 아래에 Foundation, Data,
+Infrastructure, Domain Capability layer를 필요한 만큼 조합한다.
 
 <figure class="bt4k-architecture">
   <img src="/assets/bluetape4k-layer-flow-01.png" alt="Bluetape4k layer flow showing application entrypoints composing foundation, domain, data, and infrastructure modules" loading="lazy" />
   <figcaption>이 흐름은 엄격한 단방향 dependency graph라기보다 점진적인 adoption path에 가깝다.</figcaption>
 </figure>
 
-보통은 Foundation layer에서 core, coroutine, testing, BOM을 먼저 가져오고, 이후 Data layer와 Infrastructure layer를 붙인다. 마지막으로 leader election, audit trail, image processing, text processing 같은 Domain Capability를 서비스 요구에 맞게 선택한다.
+보통은 Foundation layer에서 core, coroutine, testing, BOM을 먼저 가져오고, 이후 Data layer와
+Infrastructure layer를 붙인다. 마지막으로 leader election, audit trail, image processing, text
+processing 같은 Domain Capability를 서비스 요구에 맞게 선택한다.
 
-Part 1에서 중요한 점은 Bluetape4k가 "하나의 거대한 framework"가 아니라는 것이다. 필요한 layer와 module을 작은 단위로 선택하고, 이미 쓰고 있는 Spring Boot 4/Ktor 3 서비스에 점진적으로 얹는 ecosystem이다.
+Part 1에서 중요한 점은 Bluetape4k가 "하나의 거대한 framework"가 아니라는 것이다. 필요한 layer와
+module을 작은 단위로 선택하고, 이미 쓰고 있는 Spring Boot 4/Ktor 3 서비스에 점진적으로 얹는 ecosystem이다.
 
 다음 글부터는 각 layer를 더 작게 나누어, 대표 repository의 architecture와 실제 사용 예제를 살펴본다.

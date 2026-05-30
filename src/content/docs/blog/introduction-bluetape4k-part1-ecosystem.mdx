@@ -17,7 +17,9 @@ blog:
 
 <p class="bt4k-post-meta">Part 1 · Ecosystem overview</p>
 
-Bluetape4k is a Kotlin/JVM library ecosystem for backend services. It is not a single framework that tries to own the whole application. It is closer to a set of layer-specific modules that Spring Boot 4 and Ktor 3 services can adopt as needed.
+Bluetape4k is a Kotlin/JVM library ecosystem for backend services. It is not a single framework
+that tries to own the whole application. It is closer to a set of layer-specific modules that
+Spring Boot 4 and Ktor 3 services can adopt as needed.
 
 This first article is a map. Detailed repository architecture, API examples, and migration paths belong in later parts of the series.
 
@@ -28,7 +30,8 @@ This first article is a map. Detailed repository architecture, API examples, and
 
 ## Ecosystem Overview
 
-Bluetape4k can be read as five layers. The table is intentionally compact; the sections below describe the main component groups in more detail.
+Bluetape4k can be read as five layers. The table is intentionally compact; the sections below
+describe the main component groups in more detail.
 
 <table style="width: 100%; table-layout: fixed;">
   <colgroup>
@@ -77,7 +80,8 @@ Bluetape4k can be read as five layers. The table is intentionally compact; the s
   <figcaption>Each layer groups modules by the problem they solve, not by repository boundary.</figcaption>
 </figure>
 
-The application layer is the service boundary: Spring Boot 4 or Ktor 3. Bluetape4k fills the domain, data, infrastructure, and foundation layers underneath that boundary.
+The application layer is the service boundary: Spring Boot 4 or Ktor 3. Bluetape4k fills the
+domain, data, infrastructure, and foundation layers underneath that boundary.
 
 ## Application Layer
 
@@ -346,7 +350,8 @@ Representative features:
 
 ### Coroutines And Virtual Threads
 
-Purpose: let services choose between Kotlin coroutines and Java Virtual Threads depending on runtime needs.
+Purpose: let services choose between Kotlin coroutines and Java Virtual Threads depending on
+runtime needs.
 
 Modules and roles:
 
@@ -397,15 +402,20 @@ Representative features:
 
 ## How The Layers Work Together
 
-In a real service, Spring Boot 4 or Ktor 3 forms the application boundary. Under that boundary, teams add Foundation, Data, Infrastructure, and Domain Capability modules as needed.
+In a real service, Spring Boot 4 or Ktor 3 forms the application boundary. Under that boundary,
+teams add Foundation, Data, Infrastructure, and Domain Capability modules as needed.
 
 <figure class="bt4k-architecture">
   <img src="/assets/bluetape4k-layer-flow-01.png" alt="Bluetape4k layer flow showing application entrypoints composing foundation, domain, data, and infrastructure modules" loading="lazy" />
   <figcaption>The flow is an adoption path, not a strict one-way dependency graph.</figcaption>
 </figure>
 
-The usual path starts with the Foundation layer: core utilities, coroutine helpers, testing support, and BOM alignment. Then the service adds Data and Infrastructure modules. Domain capabilities such as leader election, audit trails, image processing, and text processing are added when the product needs them.
+The usual path starts with the Foundation layer: core utilities, coroutine helpers, testing
+support, and BOM alignment. Then the service adds Data and Infrastructure modules. Domain
+capabilities such as leader election, audit trails, image processing, and text processing are
+added when the product needs them.
 
-The key idea is that Bluetape4k is not one large framework. It is an ecosystem of small modules that can be adopted gradually in existing Spring Boot 4 or Ktor 3 services.
+The key idea is that Bluetape4k is not one large framework. It is an ecosystem of small modules
+that can be adopted gradually in existing Spring Boot 4 or Ktor 3 services.
 
 The next articles will zoom into individual layers and repositories with architecture diagrams and concrete examples.

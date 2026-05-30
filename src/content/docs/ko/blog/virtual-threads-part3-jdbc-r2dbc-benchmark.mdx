@@ -69,8 +69,8 @@ batch만 보면 결론이 너무 좁아진다. 마음에 드는 숫자만 골라
 이 결과는 JDBC와 R2DBC의 직접 비교는 아니다. 대신 "일반적인 Exposed JDBC 경로도 pool size, thread
 concurrency, index 설계에 민감하고, Virtual Threads를 쓰기 전에 먼저 이 기본 경로를 측정해야 한다"는
 근거다. 실제로 `synchronous_commit=off` 같은 무리한 튜닝은 INSERT 일부를 올리는 대신 SELECT를 크게
-떨어뜨려 거부됐다. 좋은 benchmark는 평균 점수만 올리는 것이 아니라 workload 전체를 망가뜨리지 않아야 한다.
-한쪽 숫자만 예쁘게 만드는 튜닝은 운영에서 오래 버티기 어렵다.
+떨어뜨려 거부됐다. 좋은 benchmark는 평균 점수만 올리는 것이 아니라 workload 전체를 망가뜨리지 않아야
+한다. 한쪽 숫자만 예쁘게 만드는 튜닝은 운영에서 오래 버티기 어렵다.
 
 핵심 benchmark method는 이런 형태다.
 
@@ -153,9 +153,9 @@ MySQL은 JDBC가 약 8.4-8.8배, PostgreSQL은 약 4.9-5.2배 높았다.
 PostgreSQL도 같은 방향이었다. 전체 36개 조합 중 33개에서 JDBC가 이겼고, 대형 end-to-end job의
 `parallelism=8` 조건에서는 JDBC가 R2DBC보다 약 5배 높았다.
 
-H2 결과는 더 극단적이지만, 이건 in-memory DB 특성이 강해서 network DB 결론으로 그대로 옮기면 안 된다.
-H2는 "JDBC path의 overhead가 작을 때 Virtual Threads가 얼마나 단순한 구조로 처리량을 낼 수 있는지"를 보는
-보조 지표에 가깝다.
+H2 결과는 더 극단적이지만, in-memory DB 특성이 강해서 network DB 결론으로 그대로 옮기면 안 된다.
+H2는 "JDBC path의 overhead가 작을 때 Virtual Threads가 얼마나 단순한 구조로 처리량을 낼 수 있는지"를
+보는 보조 지표에 가깝다.
 
 ## 왜 이런 결과가 나왔나
 
@@ -172,8 +172,9 @@ non-blocking I/O로 더 많은 작업을 multiplexing한다. 맞는 이야기다
 | backpressure granularity | batch job에서는 row 단위 backpressure가 오히려 과할 수 있다 |
 | connection pool behavior | DB가 받아들이는 동시성은 결국 connection과 server capacity가 정한다 |
 
-Virtual Threads의 장점은 여기서 분명해진다. JDBC call은 blocking이지만, blocking하는 주체가 비싼 platform
-thread가 아니다. 그러면 기존 JDBC driver의 빠른 batch path를 유지하면서 concurrency를 올릴 수 있다.
+Virtual Threads의 장점은 여기서 분명해진다. JDBC call은 blocking이지만, blocking하는 주체가 비싼
+platform thread가 아니다. 그러면 기존 JDBC driver의 빠른 batch path를 유지하면서 concurrency를 올릴 수
+있다.
 
 ```kotlin
 Executors.newVirtualThreadPerTaskExecutor().use { executor ->

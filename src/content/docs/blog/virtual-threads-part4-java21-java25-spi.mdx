@@ -75,129 +75,160 @@ The core interface should stay small.
 
 ```kotlin
 interface VirtualThreadRuntime {
-    val name: String
+    val runtimeName: String
     val priority: Int
 
-    fun newThreadPerTaskExecutor(): ExecutorService
-    fun threadFactory(namePrefix: String? = null): ThreadFactory
+    fun isSupported(): Boolean
+    fun threadFactory(prefix: String = "vt-"): ThreadFactory
+    fun executorService(): ExecutorService
 }
 ```
 
-Application code does not need to know how Java 21 and Java 25 differ. It only needs an
-executor, a factory, and stable behavior.
+Three details matter.
+
+| Item | Why |
+|---|---|
+| `runtimeName` | Diagnostics and logs show which provider was selected |
+| `priority` | The Java 25 provider can win when it is available |
+| `isSupported()` | A provider can be on the classpath but still unsafe on the current JVM |
+
+Application code does not import provider implementations directly.
+
+```kotlin
+import io.bluetape4k.concurrent.virtualthread.VirtualThreads
+
+VirtualThreads.executorService().use { executor ->
+    val answer = executor.submit<Int> { 21 * 2 }.get()
+    println("${VirtualThreads.runtimeName()} -> $answer")
+}
+```
 
 ## Provider Selection with ServiceLoader
 
-The runtime loader can discover providers through `ServiceLoader` and pick the highest-priority
-available implementation.
+The `VirtualThreads` facade discovers providers through `ServiceLoader`, filters unsupported
+providers, and picks the highest-priority available implementation.
 
 ```kotlin
-object VirtualThreadRuntimes {
-    private val runtime: VirtualThreadRuntime by lazy {
+object VirtualThreads {
+    private val providers: List<VirtualThreadRuntime> by lazy {
         ServiceLoader.load(VirtualThreadRuntime::class.java)
+            .filter { provider -> provider.isSupported() }
             .sortedByDescending { it.priority }
-            .firstOrNull()
-            ?: Jdk21VirtualThreadRuntime()
+            .toList()
     }
 
-    fun current(): VirtualThreadRuntime = runtime
+    fun runtime(): VirtualThreadRuntime =
+        providers.firstOrNull() ?: PlatformThreadRuntime
+
+    fun runtimeName(): String = runtime().runtimeName
+
+    fun threadFactory(prefix: String = "vt-"): ThreadFactory =
+        runtime().threadFactory(prefix)
+
+    fun executorService(): ExecutorService =
+        runtime().executorService()
 }
 ```
 
-The fallback is important. A project should still work with the baseline Java 21 provider even
-when no optional provider artifact is present.
+The real code also guards provider discovery so one broken provider cannot break application
+startup. If a Java 25 provider cannot load on the current JVM, the system should fall back to a
+Java 21 provider or platform-thread fallback instead of failing the whole virtual-thread facade.
 
-## Java 21 Provider
+## Provider Registration
 
-The Java 21 provider uses the stable Virtual Threads API.
+Each runtime module registers itself with one service file.
 
-```kotlin
-class Jdk21VirtualThreadRuntime : VirtualThreadRuntime {
-    override val name: String = "jdk21"
-    override val priority: Int = 100
-
-    override fun newThreadPerTaskExecutor(): ExecutorService =
-        Executors.newVirtualThreadPerTaskExecutor()
-
-    override fun threadFactory(namePrefix: String?): ThreadFactory {
-        val builder = Thread.ofVirtual()
-        return if (namePrefix == null) {
-            builder.factory()
-        } else {
-            builder.name(namePrefix, 0).factory()
-        }
-    }
-}
+```text
+META-INF/services/io.bluetape4k.concurrent.virtualthread.VirtualThreadRuntime
 ```
 
-This provider is the baseline. It depends only on Java 21 final APIs and is safe for the core
-line.
+The Java 21 module lists its Java 21 implementation.
 
-## Java 25 Provider
+```text
+io.bluetape4k.concurrent.virtualthread.jdk21.Jdk21VirtualThreadRuntime
+```
 
-The Java 25 provider can use newer runtime behavior and expose different internals without
-changing the application API. For example, it can prefer Scoped Values for context helpers or
-use Java 25-specific implementation strategies behind the same interface.
+The Java 25 module lists a higher-priority Java 25 provider.
 
 ```kotlin
 class Jdk25VirtualThreadRuntime : VirtualThreadRuntime {
-    override val name: String = "jdk25"
-    override val priority: Int = 200
+    override val runtimeName: String = "jdk25"
+    override val priority: Int = 25
 
-    override fun newThreadPerTaskExecutor(): ExecutorService =
+    override fun isSupported(): Boolean =
+        Runtime.version().feature() >= 25
+
+    override fun threadFactory(prefix: String): ThreadFactory =
+        Thread.ofVirtual().name(prefix, 0).factory()
+
+    override fun executorService(): ExecutorService =
         Executors.newVirtualThreadPerTaskExecutor()
-
-    override fun threadFactory(namePrefix: String?): ThreadFactory =
-        Thread.ofVirtual()
-            .let { builder ->
-                if (namePrefix == null) builder else builder.name(namePrefix, 0)
-            }
-            .factory()
 }
 ```
 
-The application still calls the same API. The runtime module decides what can be used.
+The Java 21 provider has a lower priority.
 
-## Module Shape
+```kotlin
+class Jdk21VirtualThreadRuntime : VirtualThreadRuntime {
+    override val runtimeName: String = "jdk21"
+    override val priority: Int = 21
 
-The module layout is intentionally split.
+    override fun isSupported(): Boolean =
+        Runtime.version().feature() >= 21
 
-| Module | Role |
-|---|---|
-| `virtualthread/api` | Common interfaces and facade |
-| `virtualthread/jdk21` | Java 21 implementation and fallback provider |
-| `virtualthread/jdk25` | Java 25 implementation |
-| application | Depends on API plus the runtime artifact matching the deployment JDK |
+    override fun threadFactory(prefix: String): ThreadFactory =
+        Thread.ofVirtual().name(prefix, 0).factory()
 
-Each runtime artifact registers its provider under:
-
-```text
-META-INF/services/io.bluetape4k.virtualthread.VirtualThreadRuntime
+    override fun executorService(): ExecutorService =
+        Executors.newVirtualThreadPerTaskExecutor()
+}
 ```
 
-That keeps Java-version-specific classes out of the application-facing API.
+The common API is the same, but the Java 25 module can use Java 25-only APIs internally when
+needed. Application code does not see that difference.
 
-## Gradle Usage
+## Gradle Shape
 
-An application can choose the provider line explicitly.
+Keep only the common API on the compile classpath.
 
 ```kotlin
 dependencies {
-    implementation("io.bluetape4k:bluetape4k-virtualthread-api")
-    runtimeOnly("io.bluetape4k:bluetape4k-virtualthread-jdk25")
+    implementation("io.github.bluetape4k:bluetape4k-virtualthread-api")
 }
 ```
 
-For Java 21 deployments:
+Put the provider matching the deployment JDK on the runtime classpath.
 
 ```kotlin
 dependencies {
-    implementation("io.bluetape4k:bluetape4k-virtualthread-api")
-    runtimeOnly("io.bluetape4k:bluetape4k-virtualthread-jdk21")
+    runtimeOnly("io.github.bluetape4k:bluetape4k-virtualthread-jdk21")
+    // or
+    runtimeOnly("io.github.bluetape4k:bluetape4k-virtualthread-jdk25")
 }
 ```
 
-The compile-time dependency remains stable. The runtime artifact changes by deployment target.
+The important rule is not to put Java 25 class files on a Java 21 runtime. Even with
+`isSupported()`, class loading can fail before the provider can opt out. Deployment pipelines
+should split JDK-specific artifacts or include only the provider that matches the runtime image.
+
+## Why Fallback Exists
+
+The common API also provides a platform-thread fallback. On JDK 17 or in an environment with no
+provider, it can fall back to a cached platform-thread executor.
+
+```kotlin
+private object PlatformThreadRuntime : VirtualThreadRuntime {
+    override val runtimeName: String = "platform-fallback"
+    override val priority: Int = Int.MIN_VALUE
+    override fun isSupported(): Boolean = true
+    override fun executorService(): ExecutorService =
+        Executors.newCachedThreadPool(threadFactory("pt-"))
+}
+```
+
+Fallback does not promise virtual-thread performance. It keeps the library graceful across more
+environments. In production, record `VirtualThreads.runtimeName()` in startup logs or metrics so
+you know which provider actually won.
 
 ## Example: Application Code Does Not Change
 

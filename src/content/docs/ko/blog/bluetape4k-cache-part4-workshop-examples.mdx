@@ -1,6 +1,6 @@
 ---
 title: "Bluetape4k Cache Part 4: Workshop 예제로 캐시 전략 감 잡기"
-description: bluetape4k-workshop의 Caffeine, Redis, Near Cache, resilience 예제를 통해 캐시 전략을 실제 서비스 코드로 연결합니다.
+description: bluetape4k-workshop의 Caffeine, Redis, Near Cache, resilience 예제로 캐시 전략을 실제 서비스 코드에 연결합니다.
 sidebar:
   order: -202605291704
 blog:
@@ -17,7 +17,9 @@ blog:
 
 <p class="bt4k-post-meta">2026-05-29 · Bluetape4k Cache series · Part 4</p>
 
-이번 글은 손에 잡히는 예제입니다. `bluetape4k-workshop`에는 Spring Boot 기반 캐시 예제가 여러 개 있습니다. 목표는 "캐시가 좋다"가 아니라, 어떤 전략이 어떤 코드 모양을 만들고 어떤 비용을 숨기는지 보는 것입니다.
+이번 글은 손에 잡히는 예제입니다. `bluetape4k-workshop`에는 Spring Boot 기반 캐시 예제가 여러 개 있습니다.
+
+목표는 "캐시가 좋다"를 반복하는 것이 아닙니다. 어떤 전략이 어떤 코드 모양을 만들고, 어떤 비용을 숨기고, 어떤 운영 계약을 요구하는지 보는 것입니다.
 
 <figure class="bt4k-architecture">
   <img src="/assets/cache-series-workshop-profile-01.png" alt="Workshop cache profiles comparing no cache, Caffeine, Redis, Near Cache, and benchmark path" loading="lazy" />
@@ -26,7 +28,7 @@ blog:
 
 ## 예제 위치
 
-관련 예제는 이쪽입니다.
+관련 예제는 아래에 있습니다.
 
 | 예제 | 역할 |
 |---|---|
@@ -60,7 +62,7 @@ class CaffeineConfig {
 전체 소스:
 [CaffeineConfig.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-caffeine/src/main/kotlin/io/bluetape4k/workshop/cache/caffeine/config/CaffeineConfig.kt)
 
-이 예제는 단일 인스턴스 read-heavy 캐시에 좋습니다. 빠르고 단순합니다. 단점도 단순합니다. 인스턴스가 둘이면 캐시도 둘입니다. 둘이 서로 대화하지 않습니다. 의외로 많은 문제가 "서로 대화하지 않음"에서 시작합니다.
+이 예제는 단일 인스턴스 read-heavy 캐시에 좋습니다. 빠르고 단순합니다. 단점도 단순합니다. 인스턴스가 둘이면 캐시도 둘입니다. 둘은 서로 대화하지 않습니다. 의외로 많은 문제가 "서로 대화하지 않음"에서 시작합니다.
 
 ## Redis: 공유되는 캐시
 
@@ -80,7 +82,7 @@ fun redisCacheManager(connectionFactory: RedisConnectionFactory): CacheManager =
 전체 소스:
 [LettuceRedisCacheConfiguration.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-redis/src/main/kotlin/io/bluetape4k/workshop/cache/redis/config/LettuceRedisCacheConfiguration.kt)
 
-Redis는 여러 인스턴스가 같은 값을 볼 수 있게 해줍니다. 대신 read path마다 remote hop이 있습니다. 그래서 Part 2에서 본 것처럼 hot read가 많으면 Near Cache가 후보가 됩니다.
+Redis는 여러 인스턴스가 같은 값을 보게 해줍니다. 대신 read path마다 remote hop이 있습니다. 그래서 Part 2에서 본 것처럼 hot read가 많으면 Near Cache가 후보가 됩니다.
 
 ## cache-benchmark: 같은 인터페이스, 다른 전략
 
@@ -115,7 +117,7 @@ interface ProductCacheService {
 [RedisCacheService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/RedisCacheService.kt),
 [NearCacheService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/NearCacheService.kt)
 
-이 구조가 좋은 이유는 benchmark와 production code가 같은 질문을 공유한다는 점입니다.
+이 구조가 좋은 이유는 benchmark와 production code가 같은 질문을 공유한다는 점입니다. 같은 인터페이스 뒤에 전략을 바꿔 끼우면, 성능 숫자와 코드 복잡도를 나란히 볼 수 있습니다.
 
 - 캐시가 없으면 baseline은 얼마인가?
 - local cache만으로 충분한가?
@@ -123,7 +125,7 @@ interface ProductCacheService {
 - Near Cache가 read path를 충분히 줄이는가?
 - write-through 비용은 받아들일 수 있는가?
 
-단, `cache-benchmark`의 `WriteThroughService`는 `exposed-workshop` 11장의 writer-backed write-through와 의미가 다릅니다. 현재 구현은 애플리케이션 코드가 DB 저장 후 cache update를 직접 관리하는 cache-aside 성격이 강합니다. 이 차이를 정리하기 위해 [bluetape4k-workshop #246](https://github.com/bluetape4k/bluetape4k-workshop/issues/246)을 추가했습니다.
+단, `cache-benchmark`의 `WriteThroughService`는 `exposed-workshop` 11장의 writer-backed write-through와 의미가 다릅니다. 현재 구현은 애플리케이션 코드가 DB 저장 후 cache update를 직접 관리하는 cache-aside 성격이 강합니다. 이 차이를 정리하려고 [bluetape4k-workshop #246](https://github.com/bluetape4k/bluetape4k-workshop/issues/246)을 추가했습니다.
 
 ## Benchmark 결과
 
@@ -205,11 +207,11 @@ suspend fun getProduct(id: String): String? {
 전체 소스:
 [ResilientProductService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-resilience/src/main/kotlin/io/bluetape4k/workshop/cache/resilience/service/ResilientProductService.kt)
 
-이 예제는 운영적으로 중요합니다. 캐시는 성능을 위해 붙였는데, Redis가 잠깐 불안정되었다고 서비스 전체가 같이 영향을 받으면 이상합니다. 캐시는 조연입니다. 조연이 무대 중앙에서 쓰러지면 공연이 이상해집니다.
+이 예제는 운영적으로 중요합니다. 캐시는 성능을 위해 붙였는데, Redis가 잠깐 불안정해졌다고 서비스 전체가 같이 영향을 받으면 이상합니다. 캐시는 조연입니다. 조연이 무대 중앙에서 쓰러지면 공연이 이상해집니다.
 
 ## 실전 체크리스트
 
-서비스에 캐시를 넣기 전에 최소한 이 질문을 답해야 합니다.
+서비스에 캐시를 넣기 전에 최소한 아래 질문에는 답해야 합니다.
 
 | 질문 | 답해야 하는 이유 |
 |---|---|
@@ -233,7 +235,7 @@ suspend fun getProduct(id: String): String? {
 - Exposed repository에 붙일 때는 read/write 전략을 분리합니다.
 - 장애 동작을 정하지 않은 캐시는 아직 설계가 끝난 게 아닙니다.
 
-캐시는 성능 최적화이기도 하지만, 운영 계약이기도 합니다. 그리고 운영 계약은 대충 쓰면 나중에 아주 또렷하게 돌아옵니다. 보통 새벽에요.
+캐시는 성능 최적화이기도 하지만, 운영 계약이기도 합니다. 운영 계약을 대충 쓰면 나중에 아주 또렷하게 돌아옵니다. 보통 새벽에요.
 
 ## 시리즈 링크
 

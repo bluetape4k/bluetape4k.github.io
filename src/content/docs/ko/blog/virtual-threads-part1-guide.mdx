@@ -33,8 +33,8 @@ thread-per-request 스타일을 훨씬 낮은 비용으로 다시 쓸 수 있게
 
 ## Virtual Threads가 해결하는 문제
 
-전통적인 servlet/JDBC 코드는 참 읽기 쉽다. 위에서 아래로 내려가고, 중간에 갑자기 callback 미로가
-열리지도 않는다.
+전통적인 servlet/JDBC 코드는 읽기 쉽다. 위에서 아래로 내려가고, 중간에 갑자기 callback 미로가 열리지도
+않는다.
 
 ```kotlin
 fun handle(request: Request): Response {
