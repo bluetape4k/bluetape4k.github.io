@@ -28,7 +28,8 @@ blog:
 
 이 일을 각 서비스가 알아서 만들기 시작하면 금방 어수선해집니다. 검증 함수 이름은 조금씩 다르고,
 로그 문맥은 어느 coroutine에서 사라지고, 테스트 fixture는 클래스마다 다른 방식으로 컨테이너를 띄웁니다.
-그때부터는 기능 개발보다 "우리 Redis 테스트는 왜 또 포트를 잡고 있지?" 같은 질문에 시간을 씁니다.
+처음에는 사소해 보이지만, 어느 순간 각 서비스가 자기만의 작은 framework를 갖기 시작합니다. 이름만
+framework가 아닐 뿐, 유지보수 비용은 꽤 정직하게 청구됩니다.
 
 <figure class="bt4k-architecture">
   <img src="/assets/bluetape4k-projects-part2-flow.png" alt="Service code flows through core validation, logging, coroutine helpers, and test fixtures" loading="lazy" />
@@ -61,7 +62,7 @@ fun createUser(email: String?) {
 이런 코드는 한 번만 보면 "그냥 직접 쓰면 되지 않나?" 싶습니다. 맞습니다. 한 번이면 직접 써도 됩니다.
 문제는 한 번이 아니라는 겁니다. API 입력, 설정값, fixture 이름, `image tag`, `cache key`를 검증할 때마다
 조금씩 다른 `if`와 `throw`가 늘어납니다. `core`는 그 작은 차이를 줄입니다. 작은 차이가 줄어야 나중에
-큰 차이를 찾을 수 있습니다.
+진짜 큰 차이를 찾을 수 있습니다.
 
 ## coroutines: async는 쉽고, 정리는 어렵다
 
@@ -88,8 +89,10 @@ val doubled = source.map { it * 2 }
 ```
 
 이 helper들이 필요한 이유는 "코루틴을 더 멋지게 쓰자"가 아닙니다. 실패와 취소를 서비스마다 다르게
-해석하지 않으려는 쪽에 가깝습니다. workshop의 `kotlin/coroutines`와 `spring-boot/webflux-coroutines`
-예제는 학습용 코드에서 시작해 실제 HTTP 요청 경로로 이어지는 모양을 보여줍니다.
+해석하지 않으려는 쪽에 가깝습니다. `await`를 어디서 하고, 실패한 작업을 언제 정리하고, `Flow` 순서를
+어디까지 보장할지 같은 결정이 흩어지면 비동기 코드는 금방 추리물이 됩니다. workshop의
+`kotlin/coroutines`와 `spring-boot/webflux-coroutines` 예제는 학습용 코드에서 시작해 실제 HTTP 요청
+경로로 이어지는 모양을 보여줍니다.
 
 ## logging: 로그는 장애 때 읽는 글이다
 
@@ -117,7 +120,8 @@ class OrderService {
 ```
 
 이 정도 helper는 작아 보이지만, 로그가 남는 방식은 서비스 전체의 운영 습관이 됩니다. 습관이
-흩어지면 장애 때만 티가 납니다. 그리고 장애 때 티 나는 문제는 보통 제일 비쌉니다.
+흩어지면 장애 때만 티가 납니다. 그리고 장애 때 티 나는 문제는 보통 제일 비쌉니다. 로그는 평소에
+읽는 글이 아니라, 일이 터졌을 때 제발 읽혀야 하는 글입니다.
 
 ## tests: 테스트 fixture도 금방 중복된다
 
@@ -131,7 +135,8 @@ MongoDB, Neo4j, WireMock, LocalStack 계열 서버를 wrapper와 singleton launc
 
 여기서 봐야 할 것은 "컨테이너를 띄울 수 있다"가 아닙니다. 테스트마다 다른 방식으로 컨테이너를 띄우지
 않게 막는 쪽입니다. singleton launcher와 system property export가 있으면 Spring Boot test, HTTP mock,
-data integration test가 같은 연결 규칙을 공유합니다.
+data integration test가 같은 연결 규칙을 공유합니다. 테스트 fixture가 조용해져야 테스트가 실제 실패
+이유를 말하기 시작합니다.
 
 ```kotlin
 import io.bluetape4k.junit5.coroutines.runSuspendTest
@@ -165,7 +170,8 @@ class CacheTest {
 
 가져오는 순서는 대단한 설계 문제가 아닙니다. 같은 코드가 두세 번 보이면 `core`를 봅니다. 비동기 결과
 조합과 취소가 중복되면 `coroutines`를 봅니다. 로그 문맥이 중요한 서비스면 `logging`을 붙입니다. 그리고
-그 경로를 테스트로 증명해야 하는 순간 `junit5`와 `testcontainers`가 들어옵니다.
+그 경로를 테스트로 증명해야 하는 순간 `junit5`와 `testcontainers`가 들어옵니다. 필요한 순간에 필요한
+조각만 집는 것이 이 저장소를 쓰는 가장 편한 방법입니다.
 
 ## 참고 링크
 
@@ -187,7 +193,8 @@ Part 2의 모듈들은 바로 쓸 수 있는 제품 기능으로 보이지 않�
 
 작은 기반이 정리되어 있으면 application layer는 자기 일에 집중합니다. 정리되어 있지 않으면 controller,
 service, test가 각자 작은 framework를 중복 개발합니다. 이름만 framework가 아닐 뿐, 개발 난이도는
-충분히 까다롭고 리소스도 많이 듭니다.
+충분히 까다롭고 리소스도 많이 듭니다. 그래서 이런 기반 모듈은 눈에 잘 띄지는 않아도, 없을 때 훨씬
+시끄럽습니다.
 
 다음 글에서는 I/O, serialization, HTTP, encryption을 다룹니다. byte와 wire format이 등장하면, 작은
 실수도 갑자기 네트워크를 타고 멀리 갑니다.

@@ -22,14 +22,15 @@ This is Part 1 of the `bluetape4k-projects` series. The full series continues wi
 core, coroutines, logging, tests, Part 3: I/O, serialization, HTTP, encryption, Part 4: data and
 infrastructure, Part 5: utilities and adoption path, and Part 6: Spring Boot 4 and Ktor.
 
-`bluetape4k-projects` is the broadest foundation in the bluetape4k ecosystem. It collects the
+`bluetape4k-projects` is the broadest foundation in the bluetape4k ecosystem. It keeps the
 Kotlin/JVM utilities, coroutine helpers, I/O wrappers, data and infrastructure adapters, testing
-support, and BOM that backend services repeatedly need.
+support, and BOM that backend services keep reaching for.
 
 It is not a place where every feature stays forever. AWS, Exposed, Image, Text, Leader, and
 JaVers have moved into standalone repositories because they carry their own domain depth and
 release rhythm. `projects` keeps the shared foundation and runtime building blocks that many
-repositories and services depend on first.
+repositories and services depend on first. It is more backstage infrastructure than main actor:
+quiet when it works, suddenly interesting when it stops.
 
 <figure class="bt4k-architecture">
   <img src="/assets/bluetape4k-projects-overview-01.png" alt="Bluetape4k Projects overview diagram with BOM, foundation, runtime adapters, applications, and split repositories" loading="lazy" />
@@ -46,8 +47,9 @@ libraries meet Kotlin service code.
 - Tests repeatedly need Redis, Kafka, databases, clocks, concurrency, and integration fixtures.
 - Services re-create similar codec, serializer, timeout, retry, and logging conventions.
 
-`bluetape4k-projects` reduces that repetition. It is less a new all-encompassing framework and
-more a thin Kotlin-friendly layer over the libraries already used in production systems.
+`bluetape4k-projects` reduces that repetition. The point is not to invent a new all-encompassing
+framework. It is a thin Kotlin-friendly layer over production libraries, smoothing the edges that
+services keep hitting.
 
 ```kotlin
 implementation(platform("io.github.bluetape4k:bluetape4k-bom:<version>"))
@@ -58,7 +60,7 @@ implementation("io.github.bluetape4k:bluetape4k-junit5")
 
 The root README describes the same direction: idiomatic Kotlin helpers, Java library wrappers,
 coroutine integration, testing infrastructure, Redis/cache/infra support, and split repositories
-for larger domain areas.
+for domain areas large enough to need their own release rhythm.
 
 ## Module Map
 
@@ -79,12 +81,13 @@ The current root README shows the boundary clearly.
 | Testing | `assertions`, `junit5`, `testcontainers` | Reusable integration-test fixtures |
 
 The important point is not "pull in the whole ecosystem." The model is selective adoption. The
-BOM aligns versions, and each module can be chosen for the boundary the service actually touches.
+BOM aligns versions, and each module can be picked up only when the service actually touches that
+boundary.
 
 ## What Moves Out
 
-As a feature area grows, keeping it inside `projects` can slow it down. bluetape4k splits those
-areas into standalone repositories.
+As a feature area grows, keeping it inside `projects` can slow it down. One toolbox can hold a lot,
+but at some point it becomes moving day. bluetape4k splits those areas into standalone repositories.
 
 | Standalone repository | Why it moved out |
 |---|---|
@@ -96,12 +99,14 @@ areas into standalone repositories.
 | `bluetape4k-javers` | Audit/diff persistence spans Redis, Kafka, and Exposed on a separate release axis |
 
 The rough rule is simple: thin shared Kotlin/JVM foundation stays in `projects`; a domain with its
-own learning curve, release rhythm, and verification surface moves out.
+own learning curve, release rhythm, and verification surface moves out. That keeps the foundation
+light and lets larger domains evolve at their own pace.
 
 ## What the BOM Does
 
 The BOM looks small, but it matters in a shared foundation repository. Kotlin, Spring Boot,
-Exposed, Jackson, Redis clients, and testing libraries all move at different speeds.
+Exposed, Jackson, Redis clients, and testing libraries all move at different speeds. Once versions
+start dancing independently, CI is usually the first one to get tired.
 
 `bluetape4k-bom` aligns the module versions published from `projects`. Applications import the
 BOM first, then declare only the modules they need.
@@ -116,11 +121,13 @@ dependencies {
 ```
 
 For Gradle Kotlin DSL, the root README recommends `implementation(platform(...))` over
-`dependencyManagement { imports }` to avoid conflicts with KGP 2.3.x.
+`dependencyManagement { imports }` to avoid conflicts with KGP 2.3.x. The BOM is not a signal to
+use every module. It is a signal to keep the versions aligned for the modules you do use.
 
 ## Where to Start
 
-For a first pass through the repository, this order is usually the least noisy.
+For a first pass through the repository, this order is usually the least noisy. Start with the map,
+then follow the problem your service is actually hitting.
 
 1. Read the root `README.md` for the module map.
 2. Skim `core`, `coroutines`, `logging`, `junit5`, and `testcontainers`.

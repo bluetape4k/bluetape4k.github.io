@@ -26,8 +26,9 @@ open, or a feature that feels done as soon as the dependency is added. But after
 validate input, combine coroutine results, keep `requestId` values in logs, and prove the same path in tests.
 
 When each service solves that work on its own, the codebase gets noisy. Validation helpers drift, log context
-disappears in one coroutine path, and every test class starts containers in a slightly different way. Feature work then
-turns into questions like "why is the Redis test holding that port again?"
+disappears in one coroutine path, and every test class starts containers in a slightly different way. At first this
+looks harmless. Eventually each service grows its own tiny framework. It may not call itself a framework, but it still
+sends the maintenance bill.
 
 <figure class="bt4k-architecture">
   <img src="/assets/bluetape4k-projects-part2-flow.png" alt="Service code flows through core validation, logging, coroutine helpers, and test fixtures" loading="lazy" />
@@ -59,7 +60,7 @@ fun createUser(email: String?) {
 
 This kind of code looks easy to write once. The problem is that it is never once. API input, configuration values,
 fixture names, image tags, and cache keys all need similar checks. `core` removes those small differences. Fewer small
-differences make the larger differences easier to find.
+differences make the real larger differences easier to find.
 
 ## coroutines: async Is Easy; Cleanup Is Not
 
@@ -85,8 +86,9 @@ val doubled = source.map { it * 2 }
 ```
 
 These helpers are not about making coroutine code look fancy. They are about avoiding a different interpretation of
-failure and cancellation in every service. The `kotlin/coroutines` and `spring-boot/webflux-coroutines` workshops show
-the path from learning examples to real HTTP request wiring.
+failure and cancellation in every service. If every service decides where to `await`, when to cancel failed work, and
+how much `Flow` ordering to preserve, async code turns into a small detective story. The `kotlin/coroutines` and
+`spring-boot/webflux-coroutines` workshops show the path from learning examples to real HTTP request wiring.
 
 ## logging: Logs Are What People Read During Incidents
 
@@ -113,7 +115,8 @@ class OrderService {
 ```
 
 The helper looks small, but logging style becomes an operational habit. Habits that drift usually become visible only
-during incidents, which is the most expensive time to notice them.
+during incidents, which is the most expensive time to notice them. Logs are not prose for quiet days. They are text that
+must still make sense when something is already on fire.
 
 ## tests: Fixtures Get Duplicated Quickly
 
@@ -127,7 +130,7 @@ WireMock, LocalStack-family servers, and more behind wrappers and singleton laun
 
 The key value is not merely "we can start a container." The value is preventing every test class from starting it in a
 slightly different way. Singleton launchers and system property export let Spring Boot tests, HTTP mock tests, and data
-integration tests share the same connection rules.
+integration tests share the same connection rules. Once fixtures get quiet, tests can start explaining the real failure.
 
 ```kotlin
 import io.bluetape4k.junit5.coroutines.runSuspendTest
@@ -161,7 +164,8 @@ production code can be more honest.
 
 The adoption order is straightforward. Start with `core` for inputs and small utilities. Add `coroutines` when async
 composition appears. Add `logging` when request context must survive. Bring in `junit5` and `testcontainers` when that
-path needs repeatable proof.
+path needs repeatable proof. The easiest way to use this repository is to pick only the piece that removes the repeated
+code in front of you.
 
 ## Source Links
 
@@ -182,7 +186,8 @@ input, crosses a coroutine path, preserves log context, and proves the same path
 
 When the small foundation is stable, the application layer can focus on application behavior. When it is not, controllers,
 services, and tests duplicate their own tiny frameworks. They may not call themselves frameworks, but they are
-hard enough to build and expensive enough to maintain.
+hard enough to build and expensive enough to maintain. These modules are not loud when they exist. They get loud when
+they are missing.
 
 Next, we move to I/O, serialization, HTTP, and encryption. Once bytes and wire formats appear, small mistakes can travel
 surprisingly far.
