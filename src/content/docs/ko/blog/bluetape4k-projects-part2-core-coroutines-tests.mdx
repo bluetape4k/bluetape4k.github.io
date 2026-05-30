@@ -155,7 +155,20 @@ class CacheTest {
 
 동시성 테스트도 마찬가지입니다. raw thread를 매번 직접 만들기보다 `MultithreadingTester`,
 `StructuredTaskScopeTester`, `SuspendedJobTester` 같은 helper를 쓰면 반복 횟수, worker 수, 정리 방식을
-한곳에서 맞출 수 있습니다. 테스트 코드가 덜 창의적이어야 운영 코드가 더 정직해집니다.
+한곳에서 맞출 수 있습니다.
+
+| helper | 검증하고 싶은 실행 모델 | 주로 잡아내는 냄새 |
+|---|---|---|
+| [`MultithreadingTester`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/concurrency/MultithreadingTester.kt) | 고정 platform thread pool | 공유 mutable state, cache/memoizer, lock, atomic 연산이 일반 thread 경쟁에서도 안전한가 |
+| [`StructuredTaskScopeTester`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/concurrency/StructuredTaskScopeTester.kt) | Java 21/25 virtual thread와 `StructuredTaskScope` | virtual thread 경로에서 실패 전파, timeout, scope close, `ScopedValue` 전파가 흐트러지지 않는가 |
+| [`SuspendedJobTester`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/coroutines/SuspendedJobTester.kt) | coroutine `Job`과 suspend block | suspend 함수가 dispatcher 위에서 동시에 실행될 때 cancellation, 예외 수집, 공유 상태가 버티는가 |
+
+셋을 다 쓰자는 뜻은 아닙니다. 동기 API라면 `MultithreadingTester`로 충분한 경우가 많고, virtual thread
+전용 경로라면 `StructuredTaskScopeTester`가 더 정확합니다. suspend API는 `SuspendedJobTester`로 봐야
+합니다. coroutine 코드를 platform thread stress test에 억지로 끼워 넣으면 테스트가 통과해도 별로
+안심이 되지 않습니다. 잘못된 도구로 때린 테스트는 실패할 때만 시끄럽고, 통과할 때는 묘하게 조용합니다.
+
+테스트 코드가 덜 창의적이어야 운영 코드가 더 정직해집니다.
 
 ## 그래서 언제 가져오나
 
