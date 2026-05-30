@@ -1,0 +1,197 @@
+---
+title: "Bluetape4k Projects Part 2: Core, Coroutines, Logging, Tests"
+description: How core validation helpers, coroutine utilities, lazy logging, and JUnit 5/Testcontainers support reduce duplicated service and test code.
+sidebar:
+  order: -202605301631
+blog:
+  date: 2026-05-30T16:31:00+09:00
+  image: /assets/bluetape4k-projects-part2-hero.png
+  imageAlt: Small robotic builders assembling Core, Coroutines, Logging, and Tests blocks on a Kotlin JVM foundation
+  cardDescription: "The core, coroutine, logging, and testing foundation shared by service requests and test fixtures."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-projects-part2-hero.png" alt="Small robotic builders assembling Core, Coroutines, Logging, and Tests blocks on a Kotlin JVM foundation" loading="eager" />
+  <figcaption>Foundation modules are quiet. Remove them, and every small helper starts holding its own meeting.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-05-30 · bluetape4k-projects series · Part 2</p>
+
+This is Part 2 of the `bluetape4k-projects` series. [Part 1](/blog/bluetape4k-projects-part1-shared-foundation/)
+covered why this repository acts as the shared foundation for the bluetape4k ecosystem. This post opens the inner
+layer: `core`, `coroutines`, `logging`, `junit5`, and `testcontainers`.
+
+At first glance, these modules look a little boring. They are not an API server users can call, a dashboard people can
+open, or a feature that feels done as soon as the dependency is added. But after a few services, they keep coming back:
+validate input, combine coroutine results, keep `requestId` values in logs, and prove the same path in tests.
+
+When each service solves that work on its own, the codebase gets noisy. Validation helpers drift, log context
+disappears in one coroutine path, and every test class starts containers in a slightly different way. Feature work then
+turns into questions like "why is the Redis test holding that port again?"
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-projects-part2-flow.png" alt="Service code flows through core validation, logging, coroutine helpers, and test fixtures" loading="lazy" />
+  <figcaption>The Part 2 flow is about sharing the same small foundation between request code and proof code.</figcaption>
+</figure>
+
+## core: Small Rules Get Annoying When They Drift
+
+`bluetape4k-core` is not a grand module. That is why it shows up so often. It collects the pieces you would otherwise
+write by hand: `require*` validation helpers, codecs, UTF-8 safe string handling, ranges, collections, wildcard
+matching, hashing, and `java.time` extensions.
+
+The most common entry point is validation. Contract-backed helpers such as `requireNotBlank`, `requireGe`, and
+`requireContains` normalize caller input failures as `IllegalArgumentException`. When this rule is scattered, each
+service has to rediscover whether blank values are allowed. The meeting is rarely documented.
+
+```kotlin
+import io.bluetape4k.support.requireContains
+import io.bluetape4k.support.requireNotBlank
+
+fun createUser(email: String?) {
+    val validEmail = email
+        .requireNotBlank("email")
+        .requireContains("@", "email")
+
+    // validEmail is now a non-null String.
+}
+```
+
+This kind of code looks easy to write once. The problem is that it is never once. API input, configuration values,
+fixture names, image tags, and cache keys all need similar checks. `core` removes those small differences. Fewer small
+differences make the larger differences easier to find.
+
+## coroutines: async Is Easy; Cleanup Is Not
+
+Writing `async { ... }` is not the hard part. The hard part comes next: which `Deferred` result wins, whether failed
+work cancels the rest, whether `Flow` processing keeps order, and how far coroutine context should travel.
+
+`DeferredValue` covers asynchronous work that starts immediately but must be read through both `await()` and blocking
+`value`. Helpers such as `awaitAnyAndCancelOthers()` cover winner-takes-result paths where the remaining work must be
+cleaned up. Rebuilding this in every service creates implementations that look similar until an incident proves they
+are not.
+
+```kotlin
+import io.bluetape4k.coroutines.deferredValueOf
+import io.bluetape4k.coroutines.map
+import kotlinx.coroutines.delay
+
+val source = deferredValueOf {
+    delay(100)
+    21
+}
+
+val doubled = source.map { it * 2 }
+```
+
+These helpers are not about making coroutine code look fancy. They are about avoiding a different interpretation of
+failure and cancellation in every service. The `kotlin/coroutines` and `spring-boot/webflux-coroutines` workshops show
+the path from learning examples to real HTTP request wiring.
+
+## logging: Logs Are What People Read During Incidents
+
+Most days, logs are background noise. During an incident, they become the text everyone reads. If `requestId` or
+`orderId` is missing, the reader is no longer operating a service; they are doing detective work.
+
+`bluetape4k-logging` makes SLF4J less rough in Kotlin code. It includes `KLogging`, `KotlinLogging`, lambda-based lazy
+logging, MDC helpers, coroutine MDC propagation, and channel-based asynchronous logging. The rule is simple: do not build
+strings for disabled log levels, and keep `traceId`, `spanId`, and `orderId` across coroutine boundaries.
+
+```kotlin
+import io.bluetape4k.logging.KLogging
+import io.bluetape4k.logging.coroutines.withCoroutineLoggingContext
+import io.bluetape4k.logging.debug
+
+class OrderService {
+    companion object: KLogging()
+
+    suspend fun process(orderId: String) =
+        withCoroutineLoggingContext("orderId" to orderId) {
+            log.debug { "Processing order: $orderId" }
+        }
+}
+```
+
+The helper looks small, but logging style becomes an operational habit. Habits that drift usually become visible only
+during incidents, which is the most expensive time to notice them.
+
+## tests: Fixtures Get Duplicated Quickly
+
+Test code is less visible than production code, but duplication often grows faster there. It creates temp folders, changes system
+properties and restores them, captures stdout, waits for coroutine conditions, and starts Redis or PostgreSQL containers.
+Do that thirty times and the test suite has a small operations team of its own.
+
+`bluetape4k-junit5` groups Stopwatch, TempFolder, Output Capture, Random/Faker, system property restoration, coroutine
+waiting, and stress testing helpers. `bluetape4k-testcontainers` groups Redis, Kafka, PostgreSQL, MongoDB, Neo4j,
+WireMock, LocalStack-family servers, and more behind wrappers and singleton launchers.
+
+The key value is not merely "we can start a container." The value is preventing every test class from starting it in a
+slightly different way. Singleton launchers and system property export let Spring Boot tests, HTTP mock tests, and data
+integration tests share the same connection rules.
+
+```kotlin
+import io.bluetape4k.junit5.coroutines.runSuspendTest
+import io.bluetape4k.testcontainers.storage.RedisServer
+
+class CacheTest {
+    private val redis = RedisServer.Launcher.redis
+
+    @Test
+    fun `cache entry expires`() = runSuspendTest {
+        val redisUrl = redis.url
+        // exercise coroutine path against shared fixture
+    }
+}
+```
+
+Concurrency tests follow the same idea. Helpers such as `MultithreadingTester`, `StructuredTaskScopeTester`, and
+`SuspendedJobTester` centralize rounds, worker counts, and cleanup behavior. Test code should be less creative so
+production code can be more honest.
+
+## When to Reach for Each Module
+
+| Module | Smell | Useful example |
+|---|---|---|
+| `bluetape4k-core` | `if (x.isBlank()) throw ...` appears in several places | [`core` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/core/README.md) |
+| `bluetape4k-coroutines` | `Deferred`, `Flow`, or cancellation handling is rebuilt in each service | [`kotlin/coroutines` workshop](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/kotlin/coroutines) |
+| `bluetape4k-logging` | Request ids sometimes disappear across coroutine boundaries | [`logging` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/logging/README.md) |
+| `bluetape4k-junit5` | Temp files, output capture, or coroutine waits are copied between tests | [`junit5` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/README.md) |
+| `bluetape4k-testcontainers` | Redis, Kafka, or DB fixtures start differently in each class | [`testcontainers` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/testcontainers/README.md) |
+| WebFlux coroutine examples | You want to see coroutine controllers and handlers in real request paths | [`webflux-coroutines` workshop](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/spring-boot/webflux-coroutines) |
+
+The adoption order is straightforward. Start with `core` for inputs and small utilities. Add `coroutines` when async
+composition appears. Add `logging` when request context must survive. Bring in `junit5` and `testcontainers` when that
+path needs repeatable proof.
+
+## Source Links
+
+- Issue: [#81 Blog: bluetape4k-projects Part 2 - core, coroutines, logging, and tests](https://github.com/bluetape4k/bluetape4k.github.io/issues/81)
+- Series epic: [#79 Blog series: bluetape4k-projects shared Kotlin/JVM foundation guide](https://github.com/bluetape4k/bluetape4k.github.io/issues/79)
+- Core README: [bluetape4k/core/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/core/README.md)
+- Coroutines README: [bluetape4k/coroutines/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/coroutines/README.md)
+- Logging README: [bluetape4k/logging/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/logging/README.md)
+- JUnit 5 README: [testing/junit5/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/README.md)
+- Testcontainers README: [testing/testcontainers/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/testcontainers/README.md)
+- Workshop: [kotlin/coroutines](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/kotlin/coroutines)
+- Workshop: [spring-boot/webflux-coroutines](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/spring-boot/webflux-coroutines)
+
+## Closing
+
+The modules in Part 2 will not look like ready-to-use product features. They still show up whenever a service validates
+input, crosses a coroutine path, preserves log context, and proves the same path in tests.
+
+When the small foundation is stable, the application layer can focus on application behavior. When it is not, controllers,
+services, and tests duplicate their own tiny frameworks. They may not call themselves frameworks, but they are
+hard enough to build and expensive enough to maintain.
+
+Next, we move to I/O, serialization, HTTP, and encryption. Once bytes and wire formats appear, small mistakes can travel
+surprisingly far.
+
+## Series Links
+
+- [Part 1: shared Kotlin/JVM foundation](/blog/bluetape4k-projects-part1-shared-foundation/)
+- [Part 2: core, coroutines, logging, tests](/blog/bluetape4k-projects-part2-core-coroutines-tests/)
+- Part 3: I/O, serialization, HTTP, encryption (planned)
+- Part 4: data and infrastructure (planned)
+- Part 5: utilities and adoption path (planned)
+- Part 6: Spring Boot 4 and Ktor (planned)
