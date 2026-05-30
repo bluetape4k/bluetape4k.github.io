@@ -1,0 +1,7 @@
+asset: bluetape4k-projects-part5-adoption-map
+graphviz_nodes: 8
+final_nodes: 8
+missing_final_nodes: 0
+extra_final_nodes: 0
+rank_order: left-to-right flow mirrored in final SVG
+manual_exceptions: none

@@ -1,0 +1,1 @@
+digraph { rankdir=LR; identity -> module; domain_math -> module; decisions -> module; module -> examples; module -> workshops; module -> benchmarks; examples -> service; workshops -> service; benchmarks -> service; }

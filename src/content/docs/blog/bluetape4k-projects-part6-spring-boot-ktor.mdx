@@ -1,0 +1,155 @@
+---
+title: "Bluetape4k Projects Part 6: Spring Boot 4 and Ktor"
+description: How Spring Boot 4 and Ktor 3 modules lift the shared foundation, I/O, data, infrastructure, and utilities into application boundaries.
+sidebar:
+  order: -202605301635
+blog:
+  date: 2026-05-30T16:35:00+09:00
+  image: /assets/bluetape4k-projects-part6-hero.png
+  imageAlt: Small robotic builders assemble Spring Boot 4 and Ktor 3 application boundaries on top of the shared foundation
+  cardDescription: "How Spring Boot 4 and Ktor 3 shape coroutine, data, Redis, observability, and testing boundaries."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-projects-part6-hero.png" alt="Small robotic builders assemble Spring Boot 4 and Ktor 3 application boundaries on top of the shared foundation" loading="eager" />
+  <figcaption>Application boundaries are doors for features. More doors make the hinges matter.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-05-30 · bluetape4k-projects series · Part 6</p>
+
+This is the final post in the `bluetape4k-projects` series. The earlier posts moved from foundation, coroutine/testing,
+I/O, data/infra, and utilities toward the application boundary. Now we look at Spring Boot 4 and Ktor 3 modules.
+
+The application modules in `projects` do not replace the frameworks. Spring Boot remains Spring Boot; Ktor remains
+Ktor. The modules organize repeated wiring near service entry points: common JSON, coroutine helpers, Redis serializers,
+R2DBC/MongoDB coroutine extensions, observability, resilience, and testing helpers. The goal is not hidden magic. The
+goal is less repeated wiring and clearer boundaries.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-projects-part6-application-layer.png" alt="Shared foundation feeds Spring Boot 4 and Ktor 3 modules, configuration, tests, and a running service" loading="lazy" />
+  <figcaption>Spring Boot and Ktor modules lift the shared foundation into configuration, tests, and runtime boundaries.</figcaption>
+</figure>
+
+## Spring Boot 4: The Versionless Standard Path
+
+Current `spring-boot/*` modules target Spring Boot 4.x. The README states that versionless `spring-boot/*` artifacts are
+published as Spring Boot 4 implementations. It also documents an important build rule: import Spring Boot BOMs with
+Gradle `implementation(platform(...))`, not `dependencyManagement { imports }`, to avoid Kotlin Gradle Plugin 2.3.x
+conflicts.
+
+```kotlin
+dependencies {
+    implementation(platform("org.springframework.boot:spring-boot-dependencies:4.x.x"))
+    implementation(platform("io.github.bluetape4k:bluetape4k-bom:<version>"))
+    implementation("io.github.bluetape4k:bluetape4k-spring-boot-core")
+}
+```
+
+`bluetape4k-spring-boot-core` covers WebFlux + coroutines, `RestClient` suspend DSL, `WebClient` extensions, Jackson 2
+customizers, Retrofit2 integration, and `WebTestClient` testing helpers. Spring Boot 4 still uses Jackson 2 internally,
+so this module keeps that boundary explicit.
+
+```kotlin
+val restClient = RestClient.create("https://api.example.com")
+
+val user: User = restClient.suspendGet("/users/1")
+val created: User = restClient.suspendPost("/users", newUser, MediaType.APPLICATION_JSON)
+```
+
+Spring Data support is split into narrower modules. `spring-boot/redis` provides `RedisBinarySerializer`,
+`RedisCompressSerializer`, and `redisSerializationContext {}` DSLs for `RedisTemplate` and `ReactiveRedisTemplate`.
+`spring-boot/r2dbc` adds coroutine CRUD helpers for `R2dbcEntityOperations`. MongoDB and Cassandra modules organize
+Spring Data reactive/coroutine boundaries. Hibernate Lettuce brings Hibernate second-level cache and Lettuce Near Cache
+auto-configuration into the application layer.
+
+## Ktor 3: Explicit Plugin Assembly
+
+Ktor modules use explicit installation as the default posture. `ktor/core` provides common JSON defaults,
+`installBluetape4kKtorCore()`, JSON error responses, `/healthz`, `/readyz`, and query/path parameter helpers. If the
+application needs to own plugin setup directly, config flags can disable individual pieces.
+
+```kotlin
+fun Application.module() {
+    installBluetape4kKtorCore()
+
+    routing {
+        get("/items/{type}") {
+            val type = call.requiredPathParameter("type")
+            val size = call.intQueryParameter("size", defaultValue = 10, range = 1..100)
+            call.respond(mapOf("type" to type, "size" to size))
+        }
+    }
+}
+```
+
+`ktor/observability` adds sanitized correlation IDs, call logging MDC integration, Micrometer metrics, and optional
+Prometheus scrape route helpers. It does not install OpenTelemetry tracing by default because exporter policy should
+belong to the application.
+
+`ktor/resilience4j` is route-scoped. Callers pass their own retry, circuit breaker, rate limiter, and time limiter
+through `KtorResiliencePolicies`, then protect suspend blocks with `resilientGet`, `resilientPost`, or
+`withKtorResilience`. `CancellationException` is rethrown and not counted as a circuit breaker failure.
+
+## Spring Boot or Ktor?
+
+Neither framework is always better. The application boundary decides.
+
+| Need | Spring Boot 4 side | Ktor 3 side |
+|---|---|---|
+| Spring Data, auto-configuration, enterprise integration | Natural default | More manual wiring |
+| WebFlux coroutine controllers and `WebTestClient` | Fits `spring-boot/core` directly | Use Ktor when the runtime can stay smaller |
+| Redis serializers, R2DBC/MongoDB coroutine extensions | Spring Data modules fit well | Compose infra modules directly |
+| Small HTTP API, explicit plugins, thin runtime | May be heavier than needed | Fits `ktor/core` well |
+| Route-scoped resilience/observability | Usually tied to Spring ecosystem config | Explicit through `ktor/observability` and `ktor/resilience4j` |
+| Test style | Spring context and integration tests | Fast `testApplication` route tests |
+
+Spring Boot is strong when ecosystem integration matters. Ktor is strong when a small HTTP API, explicit plugins, and
+thin runtime boundaries matter. The useful comparison is not taste; it is configuration ownership, test speed, data
+access shape, and observability policy.
+
+## Wiring Checklist
+
+For a new backend service, keep the adoption order small:
+
+1. Import `bluetape4k-bom` and framework BOMs with `platform(...)`.
+2. Choose the application boundary first: Spring Boot or Ktor.
+3. Lock JSON, error, health, and readiness policy at the HTTP boundary.
+4. Add data, Redis, or messaging modules one external system at a time.
+5. Define correlation ID, metric, and trace ownership clearly.
+6. Apply resilience to one path at a time so timeouts, retries, and circuit breakers tell the same story.
+7. Use the closest example or workshop to verify application shape and test fixtures.
+
+This keeps application modules thin. Skip the order and controllers can end up knowing about serializers, retries, pool
+sizing, and metrics all at once.
+
+## Source Links
+
+- Issue: [#93 Blog: bluetape4k-projects Part 6 - Spring Boot 4 and Ktor application layer](https://github.com/bluetape4k/bluetape4k.github.io/issues/93)
+- Series epic: [#79 Blog series: bluetape4k-projects shared Kotlin/JVM foundation guide](https://github.com/bluetape4k/bluetape4k.github.io/issues/79)
+- Spring Boot root: [`spring-boot/`](https://github.com/bluetape4k/bluetape4k-projects/tree/develop/spring-boot)
+- Ktor root: [`ktor/`](https://github.com/bluetape4k/bluetape4k-projects/tree/develop/ktor)
+- Examples root: [`examples/`](https://github.com/bluetape4k/bluetape4k-projects/tree/develop/examples)
+- Workshop root: [bluetape4k-workshop](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop)
+- Spring Boot core README: [`spring-boot/core/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/spring-boot/core/README.md)
+- Ktor core README: [`ktor/core/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/ktor/core/README.md)
+- Ktor observability README: [`ktor/observability/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/ktor/observability/README.md)
+
+## Closing
+
+The `bluetape4k-projects` series started at the shared foundation and climbed to the application boundary. This
+repository is not a framework that tries to solve everything. It is a shared Kotlin/JVM foundation for treating repeated
+backend boundaries the same way.
+
+Spring Boot 4 and Ktor 3 modules are the final layer that brings the foundation into service entry points. One favors
+ecosystem integration; the other favors explicit, thin runtime assembly. Either way, the same rules hold: choose only
+the modules you need, keep boundaries visible, check the example shape, and lock behavior in tests. Then `projects`
+stays focused on repeated backend boundaries, and application code can stay focused on domain behavior.
+
+## Series Links
+
+- [Part 1: shared Kotlin/JVM foundation](/blog/bluetape4k-projects-part1-shared-foundation/)
+- [Part 2: core, coroutines, logging, tests](/blog/bluetape4k-projects-part2-core-coroutines-tests/)
+- [Part 3: I/O, serialization, HTTP, encryption](/blog/bluetape4k-projects-part3-io-serialization-http-encryption/)
+- [Part 4: data and infrastructure](/blog/bluetape4k-projects-part4-data-infrastructure/)
+- [Part 5: utilities and adoption path](/blog/bluetape4k-projects-part5-utilities-adoption-path/)
+- [Part 6: Spring Boot 4 and Ktor](/blog/bluetape4k-projects-part6-spring-boot-ktor/)
