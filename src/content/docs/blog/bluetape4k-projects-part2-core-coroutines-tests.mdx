@@ -148,8 +148,20 @@ class CacheTest {
 ```
 
 Concurrency tests follow the same idea. Helpers such as `MultithreadingTester`, `StructuredTaskScopeTester`, and
-`SuspendedJobTester` centralize rounds, worker counts, and cleanup behavior. Test code should be less creative so
-production code can be more honest.
+`SuspendedJobTester` centralize rounds, worker counts, and cleanup behavior.
+
+| Helper | Execution model to verify | Smell it catches |
+|---|---|---|
+| [`MultithreadingTester`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/concurrency/MultithreadingTester.kt) | Fixed platform-thread pool | Whether shared mutable state, caches, memoizers, locks, and atomic operations survive ordinary thread contention |
+| [`StructuredTaskScopeTester`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/concurrency/StructuredTaskScopeTester.kt) | Java 21/25 virtual threads and `StructuredTaskScope` | Whether failure propagation, timeout, scope close, and `ScopedValue` propagation still behave on virtual-thread paths |
+| [`SuspendedJobTester`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/coroutines/SuspendedJobTester.kt) | Coroutine `Job`s and suspend blocks | Whether suspend functions survive concurrent execution on a dispatcher, including cancellation, collected failures, and shared state |
+
+The point is not to use all three everywhere. Synchronous APIs often need only `MultithreadingTester`. Virtual-thread
+specific paths are better covered by `StructuredTaskScopeTester`. Suspend APIs should be tested with
+`SuspendedJobTester`. Forcing coroutine code into a platform-thread stress test may still pass, but it proves the wrong
+thing. A test with the wrong tool is noisy when it fails and suspiciously quiet when it passes.
+
+Test code should be less creative so production code can be more honest.
 
 ## When to Reach for Each Module
 
