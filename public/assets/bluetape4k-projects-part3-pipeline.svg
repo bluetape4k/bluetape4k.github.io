@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="700" viewBox="0 0 1600 700" role="img" aria-labelledby="title desc">
+  <title id="title">Bluetape4k Projects Part 3 byte pipeline</title>
+  <desc id="desc">Bytes move through I/O utilities, Okio streams, serializers, transports, storage boundaries, and Tink encryption.</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fffaf0"/>
+      <stop offset="100%" stop-color="#eff8ff"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-16%" width="120%" height="136%">
+      <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#475569" flood-opacity="0.16"/>
+    </filter>
+    <marker id="arrow" markerWidth="13" markerHeight="13" refX="10" refY="6.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 1 1 L 11 6.5 L 1 12 Z" fill="#5b6f92"/>
+    </marker>
+    <style>
+      .title { font-family: "Architects Daughter"; font-size: 42px; fill: #243044; }
+      .subtitle { font-family: "Comic Mono"; font-size: 18px; fill: #64748b; }
+      .card-title { font-family: "Architects Daughter"; font-size: 28px; fill: #243044; text-anchor: middle; }
+      .card-body { font-family: "Comic Mono"; font-size: 15px; fill: #475569; text-anchor: middle; }
+      .label { font-family: "Comic Mono"; font-size: 14px; fill: #5b6f92; text-anchor: middle; }
+      .caption { font-family: "Comic Mono"; font-size: 16px; fill: #475569; text-anchor: middle; }
+      .arrow { fill: none; stroke: #5b6f92; stroke-width: 4; marker-end: url(#arrow); stroke-linecap: round; stroke-linejoin: round; }
+      .soft { fill: none; stroke: #8b7fc6; stroke-width: 3.2; stroke-dasharray: 8 8; marker-end: url(#arrow); stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+  </defs>
+
+  <rect x="24" y="24" width="1552" height="652" rx="34" fill="url(#paper)" stroke="#d5e0ee" stroke-width="2"/>
+  <text x="800" y="76" class="title" text-anchor="middle">Bytes, Codecs, Transport, Encryption</text>
+  <text x="800" y="110" class="subtitle" text-anchor="middle">a small pipeline for turning Java libraries into Kotlin-friendly service boundaries</text>
+
+  <g filter="url(#shadow)">
+    <rect x="70" y="206" width="200" height="170" rx="24" fill="#dbeafe" stroke="#5b8def" stroke-width="3"/>
+    <rect x="315" y="206" width="210" height="170" rx="24" fill="#dcfce7" stroke="#66b876" stroke-width="3"/>
+    <rect x="570" y="206" width="210" height="170" rx="24" fill="#fef3c7" stroke="#e5a832" stroke-width="3"/>
+    <rect x="825" y="206" width="230" height="170" rx="24" fill="#ffe4e6" stroke="#e87987" stroke-width="3"/>
+    <rect x="1100" y="206" width="230" height="170" rx="24" fill="#ede9fe" stroke="#8b6fe8" stroke-width="3"/>
+    <rect x="1380" y="206" width="150" height="170" rx="24" fill="#e0f2fe" stroke="#4aa3c7" stroke-width="3"/>
+    <rect x="720" y="462" width="260" height="112" rx="24" fill="#f3e8ff" stroke="#a06be8" stroke-width="3"/>
+  </g>
+
+  <text x="170" y="258" class="card-title">Bytes</text>
+  <text x="170" y="296" class="card-body">files, streams</text>
+  <text x="170" y="322" class="card-body">records, payloads</text>
+
+  <text x="420" y="252" class="card-title">I/O</text>
+  <text x="420" y="290" class="card-body">compressors</text>
+  <text x="420" y="316" class="card-body">ZIP and paths</text>
+  <text x="420" y="342" class="card-body">Kryo / Fory</text>
+
+  <text x="675" y="252" class="card-title">Okio</text>
+  <text x="675" y="290" class="card-body">Source / Sink</text>
+  <text x="675" y="316" class="card-body">streaming adapters</text>
+  <text x="675" y="342" class="card-body">suspended I/O</text>
+
+  <text x="940" y="252" class="card-title">Serializers</text>
+  <text x="940" y="290" class="card-body">Jackson 2 / 3</text>
+  <text x="940" y="316" class="card-body">Fastjson2, Avro</text>
+  <text x="940" y="342" class="card-body">Protobuf helpers</text>
+
+  <text x="1215" y="252" class="card-title">Transport</text>
+  <text x="1215" y="290" class="card-body">HTTP clients</text>
+  <text x="1215" y="316" class="card-body">Feign, Retrofit2</text>
+  <text x="1215" y="342" class="card-body">gRPC, Netty, Vert.x</text>
+
+  <text x="1455" y="252" class="card-title">Boundary</text>
+  <text x="1455" y="290" class="card-body">storage</text>
+  <text x="1455" y="316" class="card-body">cache</text>
+  <text x="1455" y="342" class="card-body">service calls</text>
+
+  <text x="850" y="504" class="card-title">Tink</text>
+  <text x="850" y="536" class="card-body">authenticated encryption</text>
+  <text x="850" y="558" class="card-body">associated data and key rotation</text>
+
+  <path d="M 270 291 L 315 291" class="arrow"/>
+  <path d="M 525 291 L 570 291" class="arrow"/>
+  <path d="M 780 291 L 825 291" class="arrow"/>
+  <path d="M 1055 291 L 1100 291" class="arrow"/>
+  <path d="M 1330 291 L 1380 291" class="arrow"/>
+
+  <path d="M 675 376 L 675 430 L 770 430 L 770 462" class="soft"/>
+  <path d="M 940 376 L 940 430 L 900 430 L 900 462" class="soft"/>
+  <path d="M 980 518 L 1455 518 L 1455 376" class="soft"/>
+
+  <text x="292" y="406" class="label">normalize</text>
+  <text x="548" y="406" class="label">stream</text>
+  <text x="802" y="406" class="label">shape</text>
+  <text x="1078" y="406" class="label">send</text>
+  <text x="1355" y="406" class="label">land</text>
+  <text x="662" y="456" class="label">envelope</text>
+  <text x="952" y="456" class="label">field</text>
+  <text x="1218" y="546" class="label">bind context</text>
+
+  <g>
+    <rect x="198" y="604" width="1204" height="52" rx="20" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="800" y="637" class="caption">Adoption rule: pick the module at the boundary where bytes stop being boring.</text>
+  </g>
+</svg>

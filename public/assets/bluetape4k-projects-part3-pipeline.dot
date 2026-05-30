@@ -1,0 +1,41 @@
+digraph G {
+  graph [
+    rankdir=LR,
+    bgcolor="transparent",
+    splines=ortho,
+    nodesep=0.55,
+    ranksep=0.75
+  ];
+  node [
+    shape=box,
+    style="rounded,filled",
+    fontname="Architects Daughter",
+    fontsize=18,
+    color="#8aa0bd",
+    fillcolor="#ffffff"
+  ];
+  edge [
+    color="#5b6f92",
+    penwidth=2.6,
+    arrowsize=0.8,
+    fontname="Comic Mono",
+    fontsize=12
+  ];
+
+  bytes [label="Bytes\nfiles, buffers, records", fillcolor="#dbeafe"];
+  io [label="I/O\ncompress, zip, serialize", fillcolor="#dcfce7"];
+  okio [label="Okio\nsource, sink, stream", fillcolor="#fef3c7"];
+  codec [label="Codecs\nJSON, Avro, Protobuf", fillcolor="#ffe4e6"];
+  transport [label="Transport\nHTTP, Feign, gRPC", fillcolor="#ede9fe"];
+  boundary [label="Boundary\nstorage, cache, service", fillcolor="#e0f2fe"];
+  tink [label="Tink\nauthenticated encryption", fillcolor="#f3e8ff"];
+
+  bytes -> io [label="normalize"];
+  io -> okio [label="stream"];
+  okio -> codec [label="shape"];
+  codec -> transport [label="send"];
+  transport -> boundary [label="persist or call"];
+  codec -> tink [label="protect fields"];
+  okio -> tink [label="protect envelopes"];
+  tink -> boundary [label="bind context"];
+}
