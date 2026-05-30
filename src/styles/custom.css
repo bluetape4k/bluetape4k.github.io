@@ -333,6 +333,7 @@ header.header .site-title:hover span {
   display: flex;
   flex-direction: column;
   gap: 0.45rem;
+  margin: 0;
   padding: 0.9rem;
   border: 1px solid var(--bt4k-card-border);
   border-radius: 8px;
