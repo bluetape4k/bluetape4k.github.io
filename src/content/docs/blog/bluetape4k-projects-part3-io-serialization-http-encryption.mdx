@@ -1,0 +1,215 @@
+---
+title: "Bluetape4k Projects Part 3: the path bytes take"
+description: How the I/O, Okio, JSON/Avro/Protobuf, HTTP/RPC, and Tink modules handle bytes and wire formats at service boundaries.
+sidebar:
+  order: -202605301632
+blog:
+  date: 2026-05-30T16:32:00+09:00
+  image: /assets/bluetape4k-projects-part3-hero.png
+  imageAlt: Small robotic builders connect byte streams between I/O, Okio, JSON, Protobuf, HTTP, gRPC, and Tink blocks
+  cardDescription: "I/O boundaries where files, buffers, serializers, HTTP/RPC clients, and encryption meet."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-projects-part3-hero.png" alt="Small robotic builders connect byte streams between I/O, Okio, JSON, Protobuf, HTTP, gRPC, and Tink blocks" loading="eager" />
+  <figcaption>Bytes usually pass quietly. When they do not, users may notice before logs do.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-05-30 · bluetape4k-projects series · Part 3</p>
+
+This is Part 3 of the `bluetape4k-projects` series. [Part 1](/blog/bluetape4k-projects-part1-shared-foundation/)
+introduced the shared foundation, and [Part 2](/blog/bluetape4k-projects-part2-core-coroutines-tests/) covered
+`core`, `coroutines`, `logging`, and testing. This post moves to service boundaries: reading files, compressing
+bytes, turning objects into JSON or Protobuf, sending HTTP or gRPC calls, and encrypting the payloads that need it.
+
+This area rarely looks dramatic when everything lines up. A string, a header, and a serializer option pass through
+without a story. When one of them is wrong, the failure shapes multiply quickly: broken text, streams that never end,
+incompatible serialized payloads, missing timeouts, or columns that cannot be decrypted. Small code review details can
+become very large production details.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-projects-part3-pipeline.png" alt="Bytes move through I/O utilities, Okio streams, serializers, transports, storage boundaries, and Tink encryption" loading="lazy" />
+  <figcaption>Part 3 modules split the conversion, transport, and protection rules needed when bytes cross service boundaries.</figcaption>
+</figure>
+
+## I/O: the Basic Byte Toolbox
+
+`bluetape4k-io` groups compression, ZIP, file helpers, and binary serializers. LZ4, Snappy, Zstd, GZip, Deflate,
+BZip2, and Zip are exposed through a common `Compressor` layer. JDK, Kryo, and Apache Fory serializers are exposed
+through the `BinarySerializer` contract.
+
+The important point is not merely that many algorithms exist. The value is keeping every service from inventing its
+own `try/catch`, empty-byte handling, corrupted input policy, and serializer failure behavior. For example, `compress()`
+returns `emptyByteArray` for null or empty input, while `compressOrNull()` variants let callers model damaged input as
+`null` instead of an exception.
+
+```kotlin
+import io.bluetape4k.io.compressor.Compressors
+import io.bluetape4k.io.serializer.BinarySerializers
+
+data class OrderSnapshot(val id: String): java.io.Serializable {
+    companion object {
+        private const val serialVersionUID: Long = 1L
+    }
+}
+
+val payload = "invoice-payload".toByteArray()
+val compressed = Compressors.Zstd.compress(payload)
+val restored = Compressors.Zstd.decompress(compressed)
+
+val bytes = BinarySerializers.Fory.serialize(OrderSnapshot("A-100"))
+val snapshot: OrderSnapshot? = BinarySerializers.Fory.deserialize(bytes)
+```
+
+There are fast paths such as `ForyBinarySerializer.fast()` and `KryoBinarySerializer.fast()`, but they are not magic
+buttons. Fixed schemas, nullable behavior, and wire-format compatibility all matter. As the README warns, FastFory uses
+a wire format that is not compatible with the default Fory codec, so it belongs at clear volatile boundaries such as
+caches.
+
+## Okio: Streams as Composable Pipelines
+
+`bluetape4k-okio` builds on Square Okio and adds compression, encryption, Base64, NIO channel integration, and
+coroutine-friendly I/O. Okio's model is intentionally small: read from `Source`, write to `Sink`, and work with
+`Buffer`, `BufferedSource`, `BufferedSink`, and `ByteString` in between.
+
+That small model lets files, sockets, HTTP bodies, and test fixtures look similar. You can add compression, then
+decompression, then encryption, then a channel adapter without bouncing through several `InputStream`, `Reader`, and
+byte-array shapes.
+
+```kotlin
+import io.bluetape4k.io.compressor.Compressors
+import io.bluetape4k.okio.compress.asCompressSink
+import okio.Buffer
+
+val target = Buffer()
+
+target.asCompressSink(Compressors.Streaming.Zstd).use { sink ->
+    val source = Buffer().writeUtf8("large payload")
+    sink.write(source, source.size)
+}
+```
+
+The README rules are practical: close owned sources and sinks with `use {}`, prefer streaming adapters for large
+payloads, and use suspended sources/sinks in coroutine code instead of casually wrapping blocking streams. Compression
+and encryption sinks often finalize footers or ciphertext on `close()`, so forgetting to close them can produce files
+that are almost written and still unreadable.
+
+## JSON and Binary Formats: One Contract, Several Engines
+
+The JSON family is easiest to read through the `JsonSerializer` contract in `bluetape4k-json`. Implementations are
+provided by Jackson 2, Jackson 3, and Fastjson2. The Jackson modules add Kotlin-ready mapper defaults, `JsonNode`
+helpers, async JSON parsing, UUID Base62 support, field masking, and Tink-backed field encryption. Fastjson2 adds both
+text JSON and JSONB.
+
+Avro and Protobuf serve different boundaries. Avro focuses on generic/specific/reflect serializers, schema evolution,
+and compression codec choices. Protobuf is a lightweight Protobuf helper module that does not depend on gRPC. It covers
+`Instant`, `Duration`, `LocalDateTime`, and JavaMoney conversions, `Any` pack/unpack helpers, and an allowlist-based
+`ProtobufSerializer`.
+
+| Family | Backed by | bluetape4k value-add |
+|---|---|---|
+| Binary I/O | JDK, Kryo, Apache Fory, LZ4/Snappy/Zstd | Shared serializer contract, compression combinations, trust boundaries, safer defaults |
+| Streaming I/O | Okio, Java NIO | `Source`/`Sink` adapters, streaming compression, cipher support, suspended I/O |
+| JSON | Jackson 2/3, Fastjson2 | Kotlin-ready mappers, `JsonSerializer`, async parsing, JSONB, field masking/encryption |
+| Schema format | Avro, Protobuf | Schema evolution helpers, well-known type conversions, allowlist serializers |
+| HTTP/RPC | Apache HC5, OkHttp3, Feign, Retrofit2, gRPC | Coroutine integration, DSL builders, transport choices, in-process test boundaries |
+| Security | Google Tink | AEAD/DAEAD wrappers, associated data, key rotation, links to JSON/Okio/data boundaries |
+
+The first question should be less "which one is fastest?" and more "what does this boundary promise?" Human-readable
+public responses may favor JSON. Internal caches may prefer JSONB or binary serializers. Service contracts may fit
+Protobuf/gRPC. Long-lived records may care more about Avro schema evolution.
+
+## HTTP and RPC: Clients Need Foundations Too
+
+HTTP client code starts simple: build a URL, add headers, call it. Then production options arrive: connection pools,
+keep-alive, timeouts, retries, caching, async execution, coroutine bridges, virtual threads, and transport choices.
+
+`bluetape4k-http` covers Apache HttpComponents 5, OkHttp3, Vert.x HttpClient, and Ktor Client options. Its README
+documents HC5 classic/async clients, caching clients, virtual-thread dispatchers, and coroutine async clients.
+`bluetape4k-feign` adds Feign builder DSLs, suspend-function calls, transport choices, and Resilience4j integration.
+`bluetape4k-retrofit2` adds Retrofit builder DSLs, `Result` handling, coroutine support, and CallFactory choices.
+
+gRPC, Netty, and Vert.x sit closer to the runtime boundary. `bluetape4k-grpc` provides server/client abstractions and
+in-process test boundaries. `bluetape4k-netty` adds `ByteBuf` extensions, smart number encoding, and reference-counted
+helpers. `bluetape4k-vertx` groups Vert.x core, coroutines, SQL client support, and Resilience4j integration.
+
+The goal is not to force every service onto one client framework. It is to make the chosen client less abrasive in
+Kotlin, coroutine, and test code.
+
+## Tink: Do Not Invent Cryptography
+
+Cryptography is the wrong place to say "we can build that ourselves." `bluetape4k-tink` keeps this layer thin by
+wrapping Google Tink for Kotlin usage. It provides AEAD, Deterministic AEAD, MAC, digest, the unified `TinkEncryptor`,
+Base64 string and byte APIs, key rotation, and Redis-backed keyset storage.
+
+The common decision is AEAD versus Deterministic AEAD. General data protection should use AEAD, where the same plaintext
+encrypts to different ciphertexts. Searchable database columns may require deterministic encryption such as AES-SIV,
+but that leaks equality patterns and should stay limited to controlled fields.
+
+Associated data matters just as much. Binding tenant, user, table, or column context to ciphertext prevents ciphertext
+from being moved into a different context that happens to share the same key. That connects naturally to Exposed/data
+storage boundaries, Okio payload envelopes, and Jackson field encryption.
+
+```kotlin
+import io.bluetape4k.tink.aead.TinkAeads
+
+val ad = "tenant-a:orders".toByteArray()
+val encrypted = TinkAeads.AES256_GCM.encrypt("secret payload", ad)
+val decrypted = TinkAeads.AES256_GCM.decrypt(encrypted, ad)
+```
+
+## Where to Start
+
+Part 3 modules are not an all-or-nothing bundle. Start at the boundary your service actually touches.
+
+| Problem you see | Start with | Why |
+|---|---|---|
+| Payloads need compression or binary cache storage | `bluetape4k-io` | Align compressor and binary serializer failure policies |
+| Files, sockets, or large payloads need streaming | `bluetape4k-okio` | Compose compression, encryption, and coroutine I/O around `Source`/`Sink` |
+| JSON mapper settings drift between services | `bluetape4k-json`, `bluetape4k-jackson2/3` | Share Kotlin-ready mappers and serializer contracts |
+| Internal storage or queue payloads need schema | `bluetape4k-avro`, `bluetape4k-protobuf` | Use schema evolution, well-known type conversions, and allowlist serializers |
+| HTTP client configuration is scattered | `bluetape4k-http`, `bluetape4k-feign`, `bluetape4k-retrofit2` | Keep timeouts, pools, coroutines, and transports in one place |
+| gRPC or low-level byte buffers appear | `bluetape4k-grpc`, `bluetape4k-netty`, `bluetape4k-vertx` | Use RPC/test/in-process helpers and event-loop aware utilities |
+| Stored data or JSON fields need protection | `bluetape4k-tink` | Use AEAD/DAEAD, associated data, and key rotation without hand-written crypto |
+
+The rule is simple: first decide whether bytes become files, network traffic, cache entries, human-readable responses,
+or searchable fields. Then choose the module at that boundary.
+
+## Source Links
+
+- Issue: [#82 Blog: bluetape4k-projects Part 3 - I/O, serialization, HTTP, and encryption](https://github.com/bluetape4k/bluetape4k.github.io/issues/82)
+- Series epic: [#79 Blog series: bluetape4k-projects shared Kotlin/JVM foundation guide](https://github.com/bluetape4k/bluetape4k.github.io/issues/79)
+- Repository README: [README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/README.md)
+- I/O module root: [`io/`](https://github.com/bluetape4k/bluetape4k-projects/tree/develop/io)
+- I/O README: [`io/io/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/io/README.md)
+- Okio README: [`io/okio/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/okio/README.md)
+- JSON README: [`io/json/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/json/README.md)
+- HTTP README: [`io/http/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/http/README.md)
+- Tink README: [`io/tink/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/tink/README.md)
+- Okio CSV parser post: [Reducing CSV Parser Allocations with Okio](/blog/reducing-csv-parser-allocations-with-okio/)
+- Okio CSV writer post: [Reducing CSV Writer Allocations with Okio BufferedSink](/blog/csv-writer-okio-buffered-sink/)
+
+## Closing
+
+Part 3 modules organize the path bytes take through service boundaries: compression, streaming, JSON, Protobuf, HTTP,
+RPC, and encryption.
+
+When each service invents that path again, small differences accumulate. One service uses different timeouts. Another
+swallows serializer failure as `null`. Another forgets encryption context. These differences can look like local
+preference during development and become unregistered risk in production.
+
+The shared I/O foundation does not make every problem disappear. It makes similar boundaries fail in similar ways.
+That matters. Similar failures are easier to find, fix, and teach to the next service. For engineering, that is a
+useful kind of magic: same boundary, same rule.
+
+Next, we will look at data and infrastructure modules. Once bytes arrive safely, databases, Redis, and Kafka still have
+strong opinions of their own.
+
+## Series Links
+
+- [Part 1: shared Kotlin/JVM foundation](/blog/bluetape4k-projects-part1-shared-foundation/)
+- [Part 2: core, coroutines, logging, tests](/blog/bluetape4k-projects-part2-core-coroutines-tests/)
+- [Part 3: I/O, serialization, HTTP, encryption](/blog/bluetape4k-projects-part3-io-serialization-http-encryption/)
+- Part 4: data and infrastructure (planned)
+- Part 5: utilities and adoption path (planned)
+- Part 6: Spring Boot 4 and Ktor (planned)
