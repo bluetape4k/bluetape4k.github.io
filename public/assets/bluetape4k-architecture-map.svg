@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 820" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
   <title id="title">bluetape4k architecture position map</title>
   <desc id="desc">A simplified architecture map showing bluetape4k library positions across Kotlin backend service layers.</desc>
   <defs>
@@ -18,63 +18,63 @@
     </marker>
   </defs>
 
-  <rect width="1440" height="820" fill="url(#bg)"/>
+  <rect width="1440" height="900" fill="url(#bg)"/>
 
   <text x="80" y="82" font-family="Architects Daughter, Comic Sans MS, cursive" font-size="42" font-weight="400" fill="#0f172a">bluetape4k position map</text>
   <text x="80" y="122" font-family="Comic Mono, SFMono-Regular, Menlo, monospace" font-size="20" fill="#475569">Where the library families sit in a Kotlin backend service stack.</text>
 
   <g filter="url(#shadow)">
-    <rect x="435" y="176" width="570" height="112" rx="22" fill="#0f172a"/>
-    <text x="720" y="222" text-anchor="middle" font-family="Architects Daughter, Comic Sans MS, cursive" font-size="30" font-weight="400" fill="#f8fafc">Application Runtime</text>
-    <text x="720" y="258" text-anchor="middle" font-family="Comic Mono, SFMono-Regular, Menlo, monospace" font-size="22" font-weight="400" fill="#93c5fd">Spring Boot · Ktor · Coroutines</text>
+    <rect x="435" y="350" width="570" height="118" rx="22" fill="#0f172a"/>
+    <text x="720" y="398" text-anchor="middle" font-family="Architects Daughter, Comic Sans MS, cursive" font-size="30" font-weight="400" fill="#f8fafc">Application Runtime</text>
+    <text x="720" y="435" text-anchor="middle" font-family="Comic Mono, SFMono-Regular, Menlo, monospace" font-size="22" font-weight="400" fill="#93c5fd">Spring Boot · Ktor · Coroutines</text>
   </g>
 
   <g filter="url(#shadow)">
-    <rect x="80" y="360" width="255" height="128" rx="22" fill="#eff6ff" stroke="#bfdbfe" stroke-width="2"/>
-    <text x="208" y="413" text-anchor="middle" font-family="Architects Daughter, Comic Sans MS, cursive" font-size="25" font-weight="400" fill="#1d4ed8">Application Edge</text>
-    <text x="208" y="452" text-anchor="middle" font-family="Comic Mono, SFMono-Regular, Menlo, monospace" font-size="18" fill="#334155">HTTP APIs</text>
+    <rect x="80" y="250" width="255" height="128" rx="22" fill="#eff6ff" stroke="#bfdbfe" stroke-width="2"/>
+    <text x="208" y="303" text-anchor="middle" font-family="Architects Daughter, Comic Sans MS, cursive" font-size="25" font-weight="400" fill="#1d4ed8">Application Edge</text>
+    <text x="208" y="342" text-anchor="middle" font-family="Comic Mono, SFMono-Regular, Menlo, monospace" font-size="18" fill="#334155">HTTP APIs</text>
   </g>
 
   <g filter="url(#shadow)">
-    <rect x="398" y="360" width="255" height="128" rx="22" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="2"/>
-    <text x="526" y="413" text-anchor="middle" font-family="Architects Daughter, Comic Sans MS, cursive" font-size="25" font-weight="400" fill="#15803d">Persistence</text>
-    <text x="526" y="452" text-anchor="middle" font-family="Comic Mono, SFMono-Regular, Menlo, monospace" font-size="18" fill="#334155">Exposed JDBC/R2DBC</text>
+    <rect x="80" y="492" width="255" height="128" rx="22" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="2"/>
+    <text x="208" y="545" text-anchor="middle" font-family="Architects Daughter, Comic Sans MS, cursive" font-size="25" font-weight="400" fill="#15803d">Persistence</text>
+    <text x="208" y="584" text-anchor="middle" font-family="Comic Mono, SFMono-Regular, Menlo, monospace" font-size="18" fill="#334155">Exposed JDBC/R2DBC</text>
   </g>
 
   <g filter="url(#shadow)">
-    <rect x="717" y="360" width="255" height="128" rx="22" fill="#f5f3ff" stroke="#ddd6fe" stroke-width="2"/>
-    <text x="845" y="413" text-anchor="middle" font-family="Architects Daughter, Comic Sans MS, cursive" font-size="25" font-weight="400" fill="#6d28d9">Integration</text>
-    <text x="845" y="452" text-anchor="middle" font-family="Comic Mono, SFMono-Regular, Menlo, monospace" font-size="18" fill="#334155">AWS · Graph · Redis</text>
+    <rect x="1105" y="250" width="255" height="128" rx="22" fill="#f5f3ff" stroke="#ddd6fe" stroke-width="2"/>
+    <text x="1233" y="303" text-anchor="middle" font-family="Architects Daughter, Comic Sans MS, cursive" font-size="25" font-weight="400" fill="#6d28d9">Integration</text>
+    <text x="1233" y="342" text-anchor="middle" font-family="Comic Mono, SFMono-Regular, Menlo, monospace" font-size="18" fill="#334155">AWS · Graph · Redis</text>
   </g>
 
   <g filter="url(#shadow)">
-    <rect x="1010" y="360" width="350" height="128" rx="22" fill="#fff7ed" stroke="#fed7aa" stroke-width="2"/>
-    <text x="1185" y="413" text-anchor="middle" font-family="Architects Daughter, Comic Sans MS, cursive" font-size="25" font-weight="400" fill="#c2410c">Operations</text>
-    <text x="1185" y="452" text-anchor="middle" font-family="Comic Mono, SFMono-Regular, Menlo, monospace" font-size="17" fill="#334155">Leader · Jobs · Observability</text>
+    <rect x="1010" y="492" width="350" height="128" rx="22" fill="#fff7ed" stroke="#fed7aa" stroke-width="2"/>
+    <text x="1185" y="545" text-anchor="middle" font-family="Architects Daughter, Comic Sans MS, cursive" font-size="25" font-weight="400" fill="#c2410c">Operations</text>
+    <text x="1185" y="584" text-anchor="middle" font-family="Comic Mono, SFMono-Regular, Menlo, monospace" font-size="17" fill="#334155">Leader · Jobs · Observability</text>
   </g>
 
-  <path d="M560 288 V318 H208 V360" stroke="#64748b" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
-  <path d="M650 288 V328 H526 V360" stroke="#64748b" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
-  <path d="M790 288 V328 H845 V360" stroke="#64748b" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
-  <path d="M890 288 V318 H1185 V360" stroke="#64748b" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+  <path d="M435 386 H365 V314 H335" stroke="#64748b" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+  <path d="M435 432 H365 V556 H335" stroke="#64748b" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+  <path d="M1005 386 H1070 V314 H1105" stroke="#64748b" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+  <path d="M1005 432 H1070 V556 H1010" stroke="#64748b" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
 
   <g filter="url(#shadow)">
-    <rect x="170" y="590" width="500" height="118" rx="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
-    <text x="420" y="636" text-anchor="middle" font-family="Architects Daughter, Comic Sans MS, cursive" font-size="25" font-weight="400" fill="#0f172a">Foundation Modules</text>
-    <text x="420" y="674" text-anchor="middle" font-family="Comic Mono, SFMono-Regular, Menlo, monospace" font-size="18" fill="#334155">Core · Coroutines · Text · Image · Testing</text>
+    <rect x="170" y="670" width="500" height="118" rx="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="420" y="716" text-anchor="middle" font-family="Architects Daughter, Comic Sans MS, cursive" font-size="25" font-weight="400" fill="#0f172a">Foundation Modules</text>
+    <text x="420" y="754" text-anchor="middle" font-family="Comic Mono, SFMono-Regular, Menlo, monospace" font-size="18" fill="#334155">Core · Coroutines · Text · Image · Testing</text>
   </g>
 
   <g filter="url(#shadow)">
-    <rect x="770" y="590" width="500" height="118" rx="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
-    <text x="1020" y="636" text-anchor="middle" font-family="Architects Daughter, Comic Sans MS, cursive" font-size="25" font-weight="400" fill="#0f172a">Example Applications</text>
-    <text x="1020" y="674" text-anchor="middle" font-family="Comic Mono, SFMono-Regular, Menlo, monospace" font-size="18" fill="#334155">Workshops · Clinic · Timefold · R2DBC</text>
+    <rect x="770" y="670" width="500" height="118" rx="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="1020" y="716" text-anchor="middle" font-family="Architects Daughter, Comic Sans MS, cursive" font-size="25" font-weight="400" fill="#0f172a">Example Applications</text>
+    <text x="1020" y="754" text-anchor="middle" font-family="Comic Mono, SFMono-Regular, Menlo, monospace" font-size="18" fill="#334155">Workshops · Clinic · Timefold · R2DBC</text>
   </g>
 
-  <path d="M420 590 V520 H690 V288" stroke="#94a3b8" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
-  <path d="M1020 590 V522 H750 V288" stroke="#94a3b8" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+  <path d="M420 670 V640 H650 V468" stroke="#94a3b8" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+  <path d="M1020 670 V640 H790 V468" stroke="#94a3b8" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
 
   <g filter="url(#shadow)">
-    <rect x="350" y="746" width="740" height="44" rx="22" fill="url(#core)"/>
-    <text x="720" y="775" text-anchor="middle" font-family="Architects Daughter, Comic Sans MS, cursive" font-size="19" font-weight="400" fill="#ffffff">Version governance supports every layer through the central BOM</text>
+    <rect x="350" y="826" width="740" height="44" rx="22" fill="url(#core)"/>
+    <text x="720" y="855" text-anchor="middle" font-family="Architects Daughter, Comic Sans MS, cursive" font-size="19" font-weight="400" fill="#ffffff">Version governance supports every layer through the central BOM</text>
   </g>
 </svg>
