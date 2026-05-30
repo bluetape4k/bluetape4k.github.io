@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="760" viewBox="0 0 1500 760" role="img">
+<title>Data and Infrastructure Map</title>
+<desc>Choose the adapter by execution model, operational system, and failure boundary.</desc>
+<defs>
+  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#1D3148" flood-opacity="0.12"/></filter>
+  <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M 1 1 L 7 4 L 1 7 Z" fill="#4D6F9F"/></marker>
+  <style>
+    .bg{fill:#F7F9FC}.frame{fill:#fff;stroke:#D6E2ED;stroke-width:2}
+    .title{font-family:"Architects Daughter","Comic Sans MS";font-size:42px;fill:#21334A;font-weight:700}
+    .subtitle,.body,.small{font-family:"Comic Mono","Courier New";fill:#34465B}
+    .subtitle{font-size:16px}.body{font-size:14px}.small{font-size:12px;fill:#657386}
+    .label{font-family:"Architects Daughter","Comic Sans MS";font-size:22px;fill:#21334A;font-weight:700}
+    .card{filter:url(#shadow);stroke-width:2}.line{fill:none;stroke:#4D6F9F;stroke-width:2.8;marker-end:url(#arrow)}
+  </style>
+</defs>
+<rect class="bg" width="1500" height="760"/>
+<rect class="frame" x="34" y="28" width="1432" height="704" rx="26"/>
+<text class="title" x="70" y="82">Data and Infrastructure Map</text>
+<text class="subtitle" x="72" y="114">Choose the adapter by execution model, operational system, and failure boundary.</text>
+<g transform="translate(80 170)">
+  <g>
+  <rect class="card" x="0" y="232" width="230" height="116" rx="16" fill="#E7F1FF" stroke="#5A85D6"/>
+  <text class="label" x="115" y="274" text-anchor="middle" dominant-baseline="middle">Service Code</text>
+  <text class="body" x="115" y="304" text-anchor="middle">sync · suspend · Flow</text>
+</g>
+  <g>
+  <rect class="card" x="330" y="52" width="250" height="112" rx="16" fill="#EAF7ED" stroke="#58A978"/>
+  <text class="label" x="455" y="92" text-anchor="middle" dominant-baseline="middle">Data</text>
+  <text class="body" x="455" y="122" text-anchor="middle">JDBC · R2DBC · Hibernate</text>
+<text class="body" x="455" y="142" text-anchor="middle">MongoDB · Cassandra</text>
+</g>
+  <g>
+  <rect class="card" x="330" y="232" width="250" height="112" rx="16" fill="#FCECEF" stroke="#DC6B82"/>
+  <text class="label" x="455" y="272" text-anchor="middle" dominant-baseline="middle">Redis / Cache</text>
+  <text class="body" x="455" y="302" text-anchor="middle">Lettuce · Redisson</text>
+<text class="body" x="455" y="322" text-anchor="middle">local · near · distributed</text>
+</g>
+  <g>
+  <rect class="card" x="330" y="412" width="250" height="112" rx="16" fill="#FFF3D8" stroke="#D6A441"/>
+  <text class="label" x="455" y="452" text-anchor="middle" dominant-baseline="middle">Messaging / Infra</text>
+  <text class="body" x="455" y="482" text-anchor="middle">Kafka · NATS · Pulsar</text>
+<text class="body" x="455" y="502" text-anchor="middle">ES · Bucket4j</text>
+</g>
+  <g>
+  <rect class="card" x="720" y="52" width="250" height="112" rx="16" fill="#E7F7F5" stroke="#3CA7A0"/>
+  <text class="label" x="845" y="92" text-anchor="middle" dominant-baseline="middle">Coroutine Path</text>
+  <text class="body" x="845" y="122" text-anchor="middle">await · Flow · adapters</text>
+</g>
+  <g>
+  <rect class="card" x="720" y="232" width="250" height="112" rx="16" fill="#F1ECFF" stroke="#8A72D6"/>
+  <text class="label" x="845" y="272" text-anchor="middle" dominant-baseline="middle">Resilience</text>
+  <text class="body" x="845" y="302" text-anchor="middle">retry · circuit breaker</text>
+<text class="body" x="845" y="322" text-anchor="middle">timeout · rate limit</text>
+</g>
+  <g>
+  <rect class="card" x="720" y="412" width="250" height="112" rx="16" fill="#F5F7FA" stroke="#8FA1B3"/>
+  <text class="label" x="845" y="452" text-anchor="middle" dominant-baseline="middle">Observability</text>
+  <text class="body" x="845" y="482" text-anchor="middle">Micrometer · OpenTelemetry</text>
+<text class="body" x="845" y="502" text-anchor="middle">logs · traces</text>
+</g>
+  <g>
+  <rect class="card" x="1110" y="232" width="230" height="116" rx="16" fill="#EAF7ED" stroke="#58A978"/>
+  <text class="label" x="1225" y="274" text-anchor="middle" dominant-baseline="middle">External Systems</text>
+  <text class="body" x="1225" y="304" text-anchor="middle">DB · Redis · broker</text>
+<text class="body" x="1225" y="324" text-anchor="middle">search · metrics</text>
+</g>
+  <path class="line" d="M230 290 H330"/><path class="line" d="M230 290 C275 290 285 108 330 108"/>
+  <path class="line" d="M230 290 C275 290 285 468 330 468"/>
+  <path class="line" d="M580 108 H720"/><path class="line" d="M580 288 H720"/><path class="line" d="M580 468 H720"/>
+  <path class="line" d="M970 108 C1035 108 1040 288 1110 288"/><path class="line" d="M970 288 H1110"/><path class="line" d="M970 468 C1035 468 1040 316 1110 316"/>
+</g></svg>

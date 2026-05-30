@@ -1,0 +1,157 @@
+---
+title: "Bluetape4k Projects Part 5: utilities and adoption path"
+description: How to adopt ID generators, geo/science, money, measured units, probabilistic structures, rule engine, state/workflow, JWT, and time utilities.
+sidebar:
+  order: -202605301634
+blog:
+  date: 2026-05-30T16:34:00+09:00
+  image: /assets/bluetape4k-projects-part5-hero.png
+  imageAlt: Small robotic builders connect utility modules, examples, workshops, and benchmark notes into a service adoption path
+  cardDescription: "Choose small utility modules only when needed, then validate the path with examples and benchmark notes."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-projects-part5-hero.png" alt="Small robotic builders connect utility modules, examples, workshops, and benchmark notes into a service adoption path" loading="eager" />
+  <figcaption>Small tools are useful because they stay small. The trick is not turning every problem into a toolbox.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-05-30 · bluetape4k-projects series · Part 5</p>
+
+This is Part 5 of the `bluetape4k-projects` series. [Part 4](/blog/bluetape4k-projects-part4-data-infrastructure/)
+covered operational boundaries such as databases, Redis, messaging, observability, and resilience. This post moves to
+smaller modules: IDs, time, units, money, geo data, rule/state/workflow helpers, and probabilistic structures.
+
+Utilities differ from domain repositories. Repositories such as `bluetape4k-exposed`, `bluetape4k-leader`, and
+`bluetape4k-text` have their own ecosystems and release rhythm. Utilities in `projects` capture smaller decisions that
+repeat across service code. Small decisions become standards quickly. If they spread before becoming standards, future
+cleanup becomes archaeology.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-projects-part5-adoption-map.png" alt="Identity, domain math, decision tools, minimal module selection, examples, workshops, benchmark notes, and service adoption map" loading="lazy" />
+  <figcaption>Start from the service need, pick the smallest module, then validate the shape through examples and benchmark notes.</figcaption>
+</figure>
+
+## IDs Are Policy First
+
+`bluetape4k-idgenerators` organizes UUID v1-v7, ULID, KSUID, Snowflake, Flake, and Hashids behind generator APIs. The
+main value is not the count of supported algorithms. The value is exposing selection rules in one place.
+
+| Requirement | Start with |
+|---|---|
+| Database primary key with sortability | UUID v7 |
+| String ID with time ordering | ULID or KSUID |
+| Long ID in distributed systems | Snowflake |
+| Short URL or obfuscation | Hashids |
+| Full randomness | UUID v4 |
+
+```kotlin
+val orderId = Uuid.V7.nextId()
+val publicId = Uuid.V7.nextBase62()
+val eventId = Ksuid.Millis.generate()
+val shardKey = Snowflakers.Default.nextId()
+```
+
+IDs are hard to change later. They leak into indexes, URLs, events, logs, and external contracts. A random UUID may be a
+fine answer, but it still has consequences for ordering, storage, public exposure, and shard strategy.
+
+## Domain Values: Money, Units, Location, Time
+
+`money`, `measured`, `geo`, `science`, and `javatimes` keep domain values from becoming anonymous strings and numbers.
+
+`bluetape4k-measured` models units through `Units` and `Measure<T : Units>`. It covers length, time, mass, volume,
+temperature, angle, area, storage, frequency, energy/power, velocity, and acceleration.
+
+```kotlin
+val speed = 10 * Length.meters / Time.seconds
+val duration = 5 * Time.seconds
+val distance = speed * duration
+
+println(distance `as` Length.meters)
+```
+
+Money and units start comfortably as primitives: `BigDecimal amount`, `String currency`, `Double distance`. Then exchange
+rates, rounding, unit conversion, and display formats arrive. At that point it is better to let types speak.
+
+`geo` and `science` cover geocode/geohash/geoip2, coordinate transforms, shapefile reading, JTS geometry operations, and
+PostGIS loading pipelines. These modules should be adopted only by services that actually own that domain.
+
+## Rules, State, Workflow
+
+`rule-engine`, `states`, `workflow`, and `probabilistic` describe decisions and flow.
+
+`rule-engine` supports Kotlin DSL rules, annotation-based rules, coroutine rules, YAML/JSON/HOCON readers, and script
+engines such as MVEL2, SpEL, Kotlin Script, Janino, and Groovy. The core model is simple: inspect `Facts`, evaluate a
+condition, and run an action when the condition matches.
+
+```kotlin
+val discountRule = rule {
+    name = "discount"
+    priority = 1
+    condition { facts -> (facts.get<Int>("amount") ?: 0) > 1000 }
+    action { facts -> facts["discount"] = true }
+}
+
+ruleEngine { skipOnFirstAppliedRule = true }
+    .fire(ruleSetOf(discountRule), Facts.of("amount" to 1500))
+```
+
+`states` is a Kotlin DSL finite-state machine with guards, coroutine FSM support, and `StateFlow` observation.
+`workflow` composes sequential, parallel, conditional, repeat, and retry flows with synchronous virtual-thread execution
+or coroutine/Flow execution.
+
+Selection is straightforward. Use rule-engine when policy calculation depends on facts. Use states when an object moves
+through a small set of named states. Use workflow when multiple steps need retry, cancellation, or partial success.
+
+## Validate Adoption Through Examples
+
+Do not stop at the utility README. Read the closest example too. `projects/examples` includes coroutine, JPA/Blaze
+Persistence, Querydsl, Redisson, virtual-thread, and idgenerator Spring Boot/Ktor demos. `bluetape4k-workshop` shows
+application-oriented paths for cache, Redis, coroutines, virtual threads, observability, messaging, and Spring Data.
+
+| Service need | First utility/example | Why |
+|---|---|---|
+| Public IDs and batch ID endpoints | `idgenerators`, idgenerator Spring Boot/Ktor demo | Check generator choice and HTTP exposure together |
+| Redis locks or cache patterns | `redisson-demo`, cache series | Separate primitive usage from cache strategy |
+| Teaching coroutine flow | `coroutines-demo`, coroutine workshop | Verify cancellation, Flow, and context behavior |
+| Evaluating virtual threads | `virtualthreads-demo`, virtual-thread blog series | Check no pooling, semaphore use, and synchronized risks |
+| Spring Data coroutine helpers | Spring Boot R2DBC/MongoDB README, workshop | See repository boundary and test fixture shape |
+
+The adoption path should stay conservative:
+
+1. Import the BOM first.
+2. Add one utility module for one repeated problem.
+3. Read the README and the nearest example together.
+4. For benchmarked modules, read the measurement direction and context before claiming speed.
+5. Lock the ID/time/serialization/failure policy in service tests.
+
+This keeps `projects` as a toolbox instead of a framework.
+
+## Source Links
+
+- Issue: [#84 Blog: bluetape4k-projects Part 5 - utilities and adoption path](https://github.com/bluetape4k/bluetape4k.github.io/issues/84)
+- Series epic: [#79 Blog series: bluetape4k-projects shared Kotlin/JVM foundation guide](https://github.com/bluetape4k/bluetape4k.github.io/issues/79)
+- Utilities root: [`utils/`](https://github.com/bluetape4k/bluetape4k-projects/tree/develop/utils)
+- Examples root: [`examples/`](https://github.com/bluetape4k/bluetape4k-projects/tree/develop/examples)
+- Workshop root: [bluetape4k-workshop](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop)
+- ID generators README: [`utils/idgenerators/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/utils/idgenerators/README.md)
+- Measured README: [`utils/measured/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/utils/measured/README.md)
+- Rule engine README: [`utils/rule-engine/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/utils/rule-engine/README.md)
+
+## Closing
+
+Utilities are easy to add because they are small, and that is exactly why they deserve care. IDs, time, money, units,
+rules, and workflows settle deep inside a service. A helper can become a data contract after a few months.
+
+The useful path is simple: align versions with the BOM, add one module for one problem, inspect the example shape, and
+lock the policy in tests. That is conservative enough and still fast.
+
+Next, we move to the Spring Boot 4 and Ktor 3 application layer.
+
+## Series Links
+
+- [Part 1: shared Kotlin/JVM foundation](/blog/bluetape4k-projects-part1-shared-foundation/)
+- [Part 2: core, coroutines, logging, tests](/blog/bluetape4k-projects-part2-core-coroutines-tests/)
+- [Part 3: I/O, serialization, HTTP, encryption](/blog/bluetape4k-projects-part3-io-serialization-http-encryption/)
+- [Part 4: data and infrastructure](/blog/bluetape4k-projects-part4-data-infrastructure/)
+- [Part 5: utilities and adoption path](/blog/bluetape4k-projects-part5-utilities-adoption-path/)
+- [Part 6: Spring Boot 4 and Ktor](/blog/bluetape4k-projects-part6-spring-boot-ktor/)

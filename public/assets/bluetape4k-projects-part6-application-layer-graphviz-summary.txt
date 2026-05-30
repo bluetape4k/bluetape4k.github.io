@@ -1,0 +1,7 @@
+asset: bluetape4k-projects-part6-application-layer
+graphviz_nodes: 6
+final_nodes: 6
+missing_final_nodes: 0
+extra_final_nodes: 0
+rank_order: left-to-right flow mirrored in final SVG
+manual_exceptions: none

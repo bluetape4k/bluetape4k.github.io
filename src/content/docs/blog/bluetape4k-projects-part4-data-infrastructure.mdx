@@ -1,0 +1,156 @@
+---
+title: "Bluetape4k Projects Part 4: data and infrastructure"
+description: How JDBC, R2DBC, Hibernate, MongoDB, Redis, Kafka, NATS, Pulsar, observability, and resilience modules organize service-to-operations boundaries.
+sidebar:
+  order: -202605301633
+blog:
+  date: 2026-05-30T16:33:00+09:00
+  image: /assets/bluetape4k-projects-part4-hero.png
+  imageAlt: Small robotic builders connect service code with database, Redis, messaging, and observability modules
+  cardDescription: "A practical map for DB, Redis, messaging, observability, and resilience boundaries in Kotlin services."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-projects-part4-hero.png" alt="Small robotic builders connect service code with database, Redis, messaging, and observability modules" loading="eager" />
+  <figcaption>Operational systems usually live outside the service. Their failures are very good at coming inside.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-05-30 · bluetape4k-projects series · Part 4</p>
+
+This is Part 4 of the `bluetape4k-projects` series. [Part 3](/blog/bluetape4k-projects-part3-io-serialization-http-encryption/)
+covered bytes, serializers, HTTP/RPC, and encryption boundaries. This post starts after bytes reach their destination:
+reading from databases, using Redis, sending broker messages, recording metrics and traces, and controlling failure
+with resilience policies.
+
+The shared trait is contact with external systems. In code this may look like `await`, `Flow`, `transaction`,
+`cache.get`, or `send`, but the real path also includes connection pools, timeouts, retries, codecs, backpressure,
+broker partitions, and observability backends. Module selection is therefore less about "which library do we like?"
+and more about "which execution model and failure boundary should service code expose?"
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-projects-part4-data-infra-map.png" alt="Service code connects to data, Redis/cache, messaging/infra, coroutine path, resilience, observability, and external systems" loading="lazy" />
+  <figcaption>Part 4 modules align execution model, codec choices, failure policy, and observability between service code and external systems.</figcaption>
+</figure>
+
+## Data: From JDBC to R2DBC
+
+The `data/` modules are not a new persistence abstraction. They are thin helpers for using JDBC, R2DBC, Hibernate,
+Hibernate Reactive, MongoDB, and Cassandra with less repeated Kotlin code.
+
+`bluetape4k-jdbc` covers `DataSource` and `Connection` usage, nullable `ResultSet` getters, row mapping, and batch/update
+helpers. It fits paths where synchronous DB access is explicit and blocking is acceptable.
+
+```kotlin
+val users = dataSource.runQuery("SELECT id, name FROM users WHERE active = ?", true) { rs ->
+    rs.toList { row ->
+        User(row.getLong("id"), row.getString("name"))
+    }
+}
+```
+
+`bluetape4k-r2dbc` makes reactive database access easier in coroutine and Flow code. `DatabaseClient` extensions,
+binding helpers, `awaitSingle`, and `flow` helpers are the core pieces. `R2dbcPoolConfig` also documents high-throughput
+presets, bounded pending acquire queues, and acquire timeouts with benchmark context. Pool sizing is not "make it large";
+it depends on DB connection limits and connection hold time.
+
+```kotlin
+val posts = databaseClient
+    .sql("SELECT * FROM posts WHERE author_id = :authorId")
+    .bind("authorId", authorId)
+    .fetch()
+    .flow { row, _ -> Post(row.get("id") as Long, row.get("title") as String) }
+```
+
+The Hibernate module reduces ORM boilerplate in Kotlin: `EntityManager.save`, `findAs`, `countAll`, entity base classes,
+converters, and Querydsl helpers. For Spring Boot 4 migration it also includes testing boundaries such as a
+`TestEntityManager` shim. ORM improves productivity, but it can blur transaction and lazy-loading boundaries. This
+module reduces repetition without hiding those boundaries.
+
+MongoDB and Cassandra modules follow the same pattern for reactive/coroutine access. The MongoDB module includes
+coroutine driver extensions, `mongoClient {}` DSL, `findFirst`, `exists`, `upsert`, `findAsFlow`, `documentOf {}`, and
+aggregation DSL support.
+
+## Redis and Cache: Codecs, Coroutines, Near Cache
+
+Redis starts at the `infra/redis` umbrella, but the real choices are Lettuce and Redisson. Most services should choose
+the client model they need instead of pulling both by habit.
+
+Lettuce is strong when async commands and coroutine adapters matter. Representative helpers are
+`RedisFuture.awaitSuspending()`, `withPipeline {}` for batch flushes, and `Collection<RedisFuture>.awaitAll()`. Codecs are
+also part of the design. `LettuceBinaryCodecs` combines JDK/Kryo/Fory serializers with GZip/LZ4/Snappy/Zstd compression.
+Use JSON codecs for human-readable values and Fory/LZ4-style profiles for private cache values.
+
+Redisson is stronger for distributed objects and coordination primitives: `RMap`, `RLocalCachedMap`, locks, semaphores,
+batch/transaction DSLs, memoizers, and Near Cache. FastFory codecs carry a wire-format warning and belong at clear
+volatile boundaries such as caches, not long-lived storage.
+
+Cache modules have their own deep-dive series, so this post only places them on the map. `cache-core` defines JCache,
+`SuspendCache`, `NearCache`, and memoizer contracts; Hazelcast, Redisson, and Lettuce providers plug in underneath.
+For the deeper cache abstraction, local/distributed cache, and Near Cache flow, start with
+[Bluetape4k Cache Part 1: cache module](/blog/bluetape4k-cache-part1-cache-module/). Hibernate second-level cache
+support lives in `hibernate-cache-lettuce` with a Caffeine L1 plus Redis L2 structure.
+
+## Messaging, Search, Observability
+
+Infrastructure modules are mostly external-system adapters.
+
+| Area | Module | Role |
+|---|---|---|
+| Messaging | `kafka`, `kafka4`, `nats`, `pulsar` | Client DSLs, coroutine/schema helpers, and a separate Spring Kafka 4.x line |
+| Search | `elasticsearch` | Elasticsearch Java API client DSL and coroutine support |
+| Rate limit | `bucket4j` | Token-bucket rate limiting |
+| Metrics | `micrometer` | Metric instrumentation helpers |
+| Tracing | `opentelemetry` | Distributed tracing helpers |
+| Resilience | `resilience4j` | Coroutine retry, circuit breaker, rate limiter, timeout, and coroutine cache |
+
+The point is not to attach every operational module everywhere. Attach one per failure path. If HTTP client timeouts,
+Resilience4j timeouts, and database timeouts all tell different stories, the system is not safer; it is harder to
+explain.
+
+## Choose the Execution Model First
+
+When selecting Part 4 modules, start with execution model before backend type.
+
+| Service boundary | Start with | Selection rule |
+|---|---|---|
+| Synchronous SQL with an existing JDBC driver | `bluetape4k-jdbc` | Blocking path with explicit synchronous transactions |
+| Reactive DB and coroutine service code | `bluetape4k-r2dbc` | `Flow`, suspend queries, and bounded pool pressure matter |
+| JPA/ORM domain model | `bluetape4k-hibernate` | Entity lifecycle, converters, query helpers, and Spring Boot 4 test shims matter |
+| Redis command path | `bluetape4k-lettuce` | Async commands, coroutine adapters, pipelines, and codec choices matter |
+| Redis distributed objects/locks/cache | `bluetape4k-redisson` | Locks, semaphores, local cached maps, and memoizers matter |
+| Local/distributed cache abstraction | `cache-*` | Provider replacement, Near Cache, and suspend cache contracts matter |
+| Messaging/search/observability | `infra/*` | Broker, search, metric, or tracing adapter path |
+
+First decide whether service code exposes synchronous APIs, suspend APIs, or `Flow`. Then choose the external system.
+Finally add retry, timeout, metrics, and tracing. Reverse the order and infrastructure will start dragging service design
+around.
+
+## Source Links
+
+- Issue: [#83 Blog: bluetape4k-projects Part 4 - data and infrastructure modules](https://github.com/bluetape4k/bluetape4k.github.io/issues/83)
+- Series epic: [#79 Blog series: bluetape4k-projects shared Kotlin/JVM foundation guide](https://github.com/bluetape4k/bluetape4k.github.io/issues/79)
+- Repository README: [README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/README.md)
+- Data root: [`data/`](https://github.com/bluetape4k/bluetape4k-projects/tree/develop/data)
+- Infrastructure root: [`infra/`](https://github.com/bluetape4k/bluetape4k-projects/tree/develop/infra)
+- Cache root: [`cache/`](https://github.com/bluetape4k/bluetape4k-projects/tree/develop/cache)
+- R2DBC README: [`data/r2dbc/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/data/r2dbc/README.md)
+- Lettuce README: [`infra/lettuce/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/infra/lettuce/README.md)
+- Cache deep dive: [Bluetape4k Cache Part 1](/blog/bluetape4k-cache-part1-cache-module/)
+
+## Closing
+
+Data and infrastructure modules organize the point where service code meets external systems. Databases, Redis, brokers,
+metrics, traces, and retries are all useful tools, and they all fail in their own ways. These modules do not remove
+failure. They make failure boundaries similar enough to test, observe, and explain.
+
+Next, we move to utilities and adoption path. Small tools often solve the first real problem before a larger adapter is
+needed.
+
+## Series Links
+
+- [Part 1: shared Kotlin/JVM foundation](/blog/bluetape4k-projects-part1-shared-foundation/)
+- [Part 2: core, coroutines, logging, tests](/blog/bluetape4k-projects-part2-core-coroutines-tests/)
+- [Part 3: I/O, serialization, HTTP, encryption](/blog/bluetape4k-projects-part3-io-serialization-http-encryption/)
+- [Part 4: data and infrastructure](/blog/bluetape4k-projects-part4-data-infrastructure/)
+- [Part 5: utilities and adoption path](/blog/bluetape4k-projects-part5-utilities-adoption-path/)
+- [Part 6: Spring Boot 4 and Ktor](/blog/bluetape4k-projects-part6-spring-boot-ktor/)

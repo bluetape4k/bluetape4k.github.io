@@ -1,0 +1,19 @@
+graph 1 6.0968 2
+node service 0.51418 1 1.0284 0.5 service solid ellipse black lightgrey
+node data 1.9288 1.75 0.75 0.5 data solid ellipse black lightgrey
+node redis 1.9288 1 0.80088 0.5 redis solid ellipse black lightgrey
+node infra 1.9288 0.25 0.78667 0.5 infra solid ellipse black lightgrey
+node coroutine 3.6491 1.75 1.27 0.5 coroutine solid ellipse black lightgrey
+node resilience 3.6491 1 1.2843 0.5 resilience solid ellipse black lightgrey
+node observability 3.6491 0.25 1.6397 0.5 observability solid ellipse black lightgrey
+node external 5.5329 1 1.1279 0.5 external solid ellipse black lightgrey
+edge service data 4 0.87088 1.1854 1.0581 1.2866 1.2915 1.4129 1.4901 1.5203 solid black
+edge service redis 4 1.0327 1 1.1396 1 1.2531 1 1.3618 1 solid black
+edge service infra 4 0.87088 0.81461 1.0555 0.71478 1.2851 0.59062 1.4819 0.48417 solid black
+edge data coroutine 4 2.3099 1.75 2.4694 1.75 2.6628 1.75 2.8519 1.75 solid black
+edge redis resilience 4 2.3352 1 2.4893 1 2.6719 1 2.8507 1 solid black
+edge infra observability 4 2.3267 0.25 2.4298 0.25 2.5461 0.25 2.6657 0.25 solid black
+edge coroutine external 4 4.1075 1.5704 4.3627 1.4672 4.6855 1.3368 4.958 1.2267 solid black
+edge resilience external 4 4.2965 1 4.4604 1 4.6381 1 4.8058 1 solid black
+edge observability external 4 4.1603 0.45099 4.4069 0.55063 4.7056 0.67133 4.9601 0.77416 solid black
+stop

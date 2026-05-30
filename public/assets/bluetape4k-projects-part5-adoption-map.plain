@@ -1,0 +1,19 @@
+graph 1 6.9072 2
+node identity 0.8696 1.75 1.0852 0.5 identity solid ellipse black lightgrey
+node module 2.7818 1 1.0852 0.5 module solid ellipse black lightgrey
+node domain_math 0.8696 1 1.7392 0.5 domain_math solid ellipse black lightgrey
+node decisions 0.8696 0.25 1.2558 0.5 decisions solid ellipse black lightgrey
+node examples 4.6016 1.75 1.2843 0.5 examples solid ellipse black lightgrey
+node workshops 4.6016 1 1.4122 0.5 workshops solid ellipse black lightgrey
+node benchmarks 4.6016 0.25 1.5544 0.5 benchmarks solid ellipse black lightgrey
+node service 6.393 1 1.0284 0.5 service solid ellipse black lightgrey
+edge identity module 4 1.2924 1.5873 1.5615 1.4801 1.9173 1.3385 2.212 1.2212 solid black
+edge module examples 4 3.1934 1.1664 3.4324 1.2665 3.7408 1.3955 4.0068 1.5069 solid black
+edge module workshops 4 3.3285 1 3.4574 1 3.5985 1 3.738 1 solid black
+edge module benchmarks 4 3.1934 0.83355 3.421 0.73831 3.7114 0.61676 3.9682 0.50927 solid black
+edge domain_math module 4 1.743 1 1.8539 1 1.9663 1 2.074 1 solid black
+edge decisions module 4 1.3253 0.42584 1.5909 0.53154 1.9312 0.66697 2.2145 0.77976 solid black
+edge examples service 4 5.0469 1.5665 5.289 1.4636 5.593 1.3343 5.8495 1.2252 solid black
+edge workshops service 4 5.3125 1 5.4453 1 5.584 1 5.7157 1 solid black
+edge benchmarks service 4 5.0881 0.45099 5.323 0.55088 5.6077 0.67194 5.8499 0.77494 solid black
+stop
