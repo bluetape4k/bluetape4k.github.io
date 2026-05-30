@@ -1,0 +1,202 @@
+---
+title: "Bluetape4k Projects Part 2: 공통 기반의 안쪽"
+description: core 검증 함수, coroutine helper, lazy logging, JUnit 5/Testcontainers가 서비스 코드와 테스트 코드의 중복 개발을 어떻게 줄이는지 정리합니다.
+sidebar:
+  order: -202605301631
+blog:
+  date: 2026-05-30T16:31:00+09:00
+  image: /assets/bluetape4k-projects-part2-hero.png
+  imageAlt: 작은 로봇 작업자들이 Core, Coroutines, Logging, Tests 블록을 Kotlin JVM 기반 위에 조립하는 일러스트
+  cardDescription: "서비스 요청과 테스트 fixture가 함께 기대는 core, coroutines, logging, tests 기반."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-projects-part2-hero.png" alt="작은 로봇 작업자들이 Core, Coroutines, Logging, Tests 블록을 Kotlin JVM 기반 위에 조립하는 일러스트" loading="eager" />
+  <figcaption>기반 모듈은 대개 조용합니다. 없으면 코드 곳곳에서 작은 회의가 열립니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-05-30 · bluetape4k-projects series · Part 2</p>
+
+이 글은 `bluetape4k-projects` 시리즈의 2편입니다. [Part 1](/ko/blog/bluetape4k-projects-part1-shared-foundation/)에서는
+이 저장소가 bluetape4k 생태계의 공통 기반이라는 점을 봤습니다. 이번에는 그중에서도 가장 먼저 손이
+가는 모듈을 꺼내봅니다. `core`, `coroutines`, `logging`, `junit5`, `testcontainers`입니다.
+
+솔직히 처음 보면 심심합니다. 사용자에게 바로 보여줄 API 서버도 아니고, 대시보드도 아니고, "이걸
+넣으면 기능 하나 완성" 같은 느낌도 아닙니다. 하지만 서비스를 몇 개 만들다 보면 계속 등장합니다.
+입력값을 확인하고, coroutine 결과를 합치고, 로그에 `requestId`를 남기고, 같은 경로를 테스트에서 다시
+검증하는 일 말입니다.
+
+이 일을 각 서비스가 알아서 만들기 시작하면 금방 어수선해집니다. 검증 함수 이름은 조금씩 다르고,
+로그 문맥은 어느 coroutine에서 사라지고, 테스트 fixture는 클래스마다 다른 방식으로 컨테이너를 띄웁니다.
+그때부터는 기능 개발보다 "우리 Redis 테스트는 왜 또 포트를 잡고 있지?" 같은 질문에 시간을 씁니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-projects-part2-flow.png" alt="Service code flows through core validation, logging, coroutine helpers, and test fixtures" loading="lazy" />
+  <figcaption>Part 2의 핵심 흐름은 요청 코드와 테스트 코드가 같은 기반 모듈을 공유한다는 점입니다.</figcaption>
+</figure>
+
+## core: 사소한 규칙일수록 흩어지면 귀찮다
+
+`bluetape4k-core`는 거창한 모듈이 아닙니다. 그래서 더 자주 쓰입니다. `require*` 검증 함수, codec,
+UTF-8 안전 문자열 처리, range, collection, wildcard, hash, `java.time` 확장처럼 "없으면 직접 만들게
+되는" 조각을 모아둡니다.
+
+가장 먼저 체감되는 것은 검증 함수입니다. 호출자가 넘긴 값을 확인할 때 `requireNotBlank`, `requireGe`,
+`requireContains` 같은 함수가 있으면 예외 타입과 메시지 스타일이 맞춰집니다. Kotlin contract 덕분에
+검증 뒤 타입도 자연스럽게 좁혀집니다.
+
+```kotlin
+import io.bluetape4k.support.requireContains
+import io.bluetape4k.support.requireNotBlank
+
+fun createUser(email: String?) {
+    val validEmail = email
+        .requireNotBlank("email")
+        .requireContains("@", "email")
+
+    // validEmail은 non-null String으로 다룰 수 있습니다.
+}
+```
+
+이런 코드는 한 번만 보면 "그냥 직접 쓰면 되지 않나?" 싶습니다. 맞습니다. 한 번이면 직접 써도 됩니다.
+문제는 한 번이 아니라는 겁니다. API 입력, 설정값, fixture 이름, `image tag`, `cache key`를 검증할 때마다
+조금씩 다른 `if`와 `throw`가 늘어납니다. `core`는 그 작은 차이를 줄입니다. 작은 차이가 줄어야 나중에
+큰 차이를 찾을 수 있습니다.
+
+## coroutines: async는 쉽고, 정리는 어렵다
+
+`async { ... }`를 쓰는 것은 어렵지 않습니다. 어려운 부분은 그다음입니다. 여러 `Deferred` 중 먼저 끝난
+값을 쓸지, 실패한 작업이 있으면 나머지를 취소할지, `Flow` 처리 순서를 유지할지, coroutine context를
+어디까지 넘길지 결정해야 합니다.
+
+`bluetape4k-coroutines`는 이 애매한 지점을 다룹니다. `DeferredValue`는 생성하자마자 시작되는 비동기
+값을 `await()`와 blocking `value` 양쪽에서 읽어야 할 때 씁니다. `awaitAnyAndCancelOthers()`는 먼저
+끝난 작업을 채택하고 나머지를 정리해야 할 때 유용합니다. `Flow` 쪽에는 `chunked`, `windowed`,
+`mapParallel`, `takeUntil`, `race`, `replay` 같은 연산자가 있습니다.
+
+```kotlin
+import io.bluetape4k.coroutines.deferredValueOf
+import io.bluetape4k.coroutines.map
+import kotlinx.coroutines.delay
+
+val source = deferredValueOf {
+    delay(100)
+    21
+}
+
+val doubled = source.map { it * 2 }
+```
+
+이 helper들이 필요한 이유는 "코루틴을 더 멋지게 쓰자"가 아닙니다. 실패와 취소를 서비스마다 다르게
+해석하지 않으려는 쪽에 가깝습니다. workshop의 `kotlin/coroutines`와 `spring-boot/webflux-coroutines`
+예제는 학습용 코드에서 시작해 실제 HTTP 요청 경로로 이어지는 모양을 보여줍니다.
+
+## logging: 로그는 장애 때 읽는 글이다
+
+로그는 평소에는 배경음악처럼 지나갑니다. 장애가 나면 갑자기 본문이 됩니다. 그때 `requestId`나 `orderId`가
+빠져 있으면 독자는 운영자가 아니라 탐정이 됩니다. 재미는 있을 수 있지만 대개 야근입니다.
+
+`bluetape4k-logging`은 SLF4J를 Kotlin 코드에서 덜 거칠게 쓰게 해줍니다. `KLogging`, `KotlinLogging`,
+lambda 기반 lazy logging, MDC helper, coroutine MDC 전파, channel 기반 비동기 logging을 묶습니다.
+핵심은 단순합니다. 꺼져 있는 log level을 위해 문자열을 미리 만들지 않고, coroutine 경계를 지나도 `traceId`,
+`spanId`, `orderId` 같은 문맥을 붙잡아 둡니다.
+
+```kotlin
+import io.bluetape4k.logging.KLogging
+import io.bluetape4k.logging.coroutines.withCoroutineLoggingContext
+import io.bluetape4k.logging.debug
+
+class OrderService {
+    companion object: KLogging()
+
+    suspend fun process(orderId: String) =
+        withCoroutineLoggingContext("orderId" to orderId) {
+            log.debug { "Processing order: $orderId" }
+        }
+}
+```
+
+이 정도 helper는 작아 보이지만, 로그가 남는 방식은 서비스 전체의 운영 습관이 됩니다. 습관이
+흩어지면 장애 때만 티가 납니다. 그리고 장애 때 티 나는 문제는 보통 제일 비쌉니다.
+
+## tests: 테스트 fixture도 금방 중복된다
+
+테스트 코드는 운영 코드보다 덜 보일 뿐, 중복은 더 심할 때가 많습니다. 임시 디렉터리를 만들고, system
+property를 바꿨다가 복원하고, stdout을 잡고, coroutine 조건을 기다리고, Redis나 PostgreSQL 컨테이너를
+띄웁니다. 한두 번은 괜찮습니다. 서른 번쯤 되면 테스트 코드가 자기만의 작은 운영팀을 꾸립니다.
+
+`bluetape4k-junit5`는 Stopwatch, TempFolder, Output Capture, Random/Faker, System Property 복원,
+coroutine 대기, stress tester를 묶습니다. `bluetape4k-testcontainers`는 Redis, Kafka, PostgreSQL,
+MongoDB, Neo4j, WireMock, LocalStack 계열 서버를 wrapper와 singleton launcher로 묶어둡니다.
+
+여기서 봐야 할 것은 "컨테이너를 띄울 수 있다"가 아닙니다. 테스트마다 다른 방식으로 컨테이너를 띄우지
+않게 막는 쪽입니다. singleton launcher와 system property export가 있으면 Spring Boot test, HTTP mock,
+data integration test가 같은 연결 규칙을 공유합니다.
+
+```kotlin
+import io.bluetape4k.junit5.coroutines.runSuspendTest
+import io.bluetape4k.testcontainers.storage.RedisServer
+
+class CacheTest {
+    private val redis = RedisServer.Launcher.redis
+
+    @Test
+    fun `cache entry expires`() = runSuspendTest {
+        val redisUrl = redis.url
+        // exercise coroutine path against shared fixture
+    }
+}
+```
+
+동시성 테스트도 마찬가지입니다. raw thread를 매번 직접 만들기보다 `MultithreadingTester`,
+`StructuredTaskScopeTester`, `SuspendedJobTester` 같은 helper를 쓰면 반복 횟수, worker 수, 정리 방식을
+한곳에서 맞출 수 있습니다. 테스트 코드가 덜 창의적이어야 운영 코드가 더 정직해집니다.
+
+## 그래서 언제 가져오나
+
+| 모듈 | 이런 냄새가 날 때 | 같이 보면 좋은 예제 |
+|---|---|---|
+| `bluetape4k-core` | `if (x.isBlank()) throw ...`가 여기저기 생김 | [`core` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/core/README.md) |
+| `bluetape4k-coroutines` | `Deferred`, `Flow`, cancellation 처리를 서비스마다 다시 씀 | [`kotlin/coroutines` workshop](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/kotlin/coroutines) |
+| `bluetape4k-logging` | `requestId`가 coroutine 경계에서 가끔 사라짐 | [`logging` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/logging/README.md) |
+| `bluetape4k-junit5` | 임시 파일, 출력 캡처, coroutine 대기 코드가 테스트마다 복붙됨 | [`junit5` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/README.md) |
+| `bluetape4k-testcontainers` | Redis, Kafka, DB fixture를 클래스마다 다른 방식으로 띄움 | [`testcontainers` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/testcontainers/README.md) |
+| WebFlux coroutine 예제 | HTTP request path에서 coroutine controller/handler 모양을 보고 싶음 | [`webflux-coroutines` workshop](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/spring-boot/webflux-coroutines) |
+
+가져오는 순서는 대단한 설계 문제가 아닙니다. 같은 코드가 두세 번 보이면 `core`를 봅니다. 비동기 결과
+조합과 취소가 중복되면 `coroutines`를 봅니다. 로그 문맥이 중요한 서비스면 `logging`을 붙입니다. 그리고
+그 경로를 테스트로 증명해야 하는 순간 `junit5`와 `testcontainers`가 들어옵니다.
+
+## 참고 링크
+
+- Issue: [#81 Blog: bluetape4k-projects Part 2 - core, coroutines, logging, and tests](https://github.com/bluetape4k/bluetape4k.github.io/issues/81)
+- Series epic: [#79 Blog series: bluetape4k-projects shared Kotlin/JVM foundation guide](https://github.com/bluetape4k/bluetape4k.github.io/issues/79)
+- Core README: [bluetape4k/core/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/core/README.md)
+- Coroutines README: [bluetape4k/coroutines/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/coroutines/README.md)
+- Logging README: [bluetape4k/logging/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/logging/README.md)
+- JUnit 5 README: [testing/junit5/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/README.md)
+- Testcontainers README: [testing/testcontainers/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/testcontainers/README.md)
+- Workshop: [kotlin/coroutines](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/kotlin/coroutines)
+- Workshop: [spring-boot/webflux-coroutines](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/spring-boot/webflux-coroutines)
+
+## 마무리
+
+Part 2의 모듈들은 바로 쓸 수 있는 제품 기능으로 보이지 않을 겁니다. 하지만 서비스 요청이 들어와
+입력을 검증하고, coroutine 경로를 지나고, 로그 문맥을 남기고, 같은 경로를 테스트로 증명할 때 계속
+등장합니다.
+
+작은 기반이 정리되어 있으면 application layer는 자기 일에 집중합니다. 정리되어 있지 않으면 controller,
+service, test가 각자 작은 framework를 중복 개발합니다. 이름만 framework가 아닐 뿐, 개발 난이도는
+충분히 까다롭고 리소스도 많이 듭니다.
+
+다음 글에서는 I/O, serialization, HTTP, encryption을 다룹니다. byte와 wire format이 등장하면, 작은
+실수도 갑자기 네트워크를 타고 멀리 갑니다.
+
+## 시리즈 링크
+
+- [Part 1: 공유 Kotlin/JVM 기반](/ko/blog/bluetape4k-projects-part1-shared-foundation/)
+- [Part 2: core, coroutines, logging, tests](/ko/blog/bluetape4k-projects-part2-core-coroutines-tests/)
+- Part 3: I/O, serialization, HTTP, encryption (예정)
+- Part 4: data와 infrastructure (예정)
+- Part 5: utility와 adoption path (예정)
+- Part 6: Spring Boot 4와 Ktor (예정)

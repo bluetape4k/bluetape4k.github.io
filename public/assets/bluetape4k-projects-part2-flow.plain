@@ -1,0 +1,13 @@
+graph 1 27.209 0.94833
+node app 0.95604 0.47417 1.9121 0.59417 "Service code" rounded,filled box #6b7280 #fffdf7
+node core 5.5226 0.47417 3.7767 0.94833 "Core\nrequire / codec / collections" rounded,filled box #6b7280 #fffdf7
+node logging 10.089 0.47417 2.0996 0.94833 "Logging\nlazy log + MDC" rounded,filled box #6b7280 #fffdf7
+node coroutines 14.895 0.47417 2.3808 0.94833 "Coroutines\nDeferred + Flow" rounded,filled box #6b7280 #fffdf7
+node fixtures 20.42 0.47417 3.1621 0.94833 "Test fixtures\nJUnit5 + Testcontainers" rounded,filled box #6b7280 #fffdf7
+node proof 25.841 0.47417 2.735 0.94833 "Deterministic proof\nassertions + cleanup" rounded,filled box #6b7280 #fffdf7
+edge app core 4 1.9245 0.47417 1.9245 0.47417 3.4711 0.47417 3.4711 0.47417 validate 2.7732 0.57312 solid #64748b
+edge core logging 4 7.4196 0.47417 7.4196 0.47417 8.8733 0.47417 8.8733 0.47417 explain 8.2252 0.57312 solid #64748b
+edge logging coroutines 4 11.15 0.47417 11.15 0.47417 13.541 0.47417 13.541 0.47417 "propagate context" 12.422 0.57312 solid #64748b
+edge coroutines fixtures 4 16.094 0.47417 16.094 0.47417 18.677 0.47417 18.677 0.47417 "exercise async path" 17.463 0.57312 solid #64748b
+edge fixtures proof 4 22.014 0.47417 22.014 0.47417 24.307 0.47417 24.307 0.47417 "verify and reset" 23.238 0.57312 solid #64748b
+stop
