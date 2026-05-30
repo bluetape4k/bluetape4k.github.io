@@ -1,6 +1,6 @@
 ---
 title: "Bluetape4k Projects Part 2: Core, Coroutines, Logging, Tests"
-description: How core validation helpers, coroutine utilities, lazy logging, and JUnit 5/Testcontainers support reduce duplicated service and test code.
+description: How core validation helpers, coroutine utilities, lazy logging, assertions, and JUnit 5/Testcontainers support reduce duplicated service and test code.
 sidebar:
   order: -202605301631
 blog:
@@ -19,7 +19,7 @@ blog:
 
 This is Part 2 of the `bluetape4k-projects` series. [Part 1](/blog/bluetape4k-projects-part1-shared-foundation/)
 covered why this repository acts as the shared foundation for the bluetape4k ecosystem. This post opens the inner
-layer: `core`, `coroutines`, `logging`, `junit5`, and `testcontainers`.
+layer: `core`, `coroutines`, `logging`, `assertions`, `junit5`, and `testcontainers`.
 
 At first glance, these modules look a little boring. They are not an API server users can call, a dashboard people can
 open, or a feature that feels done as soon as the dependency is added. But after a few services, they keep coming back:
@@ -124,6 +124,22 @@ Test code is less visible than production code, but duplication often grows fast
 properties and restores them, captures stdout, waits for coroutine conditions, and starts Redis or PostgreSQL containers.
 Do that thirty times and the test suite has a small operations team of its own.
 
+`bluetape4k-assertions` handles the sentence shape that shows up in almost every test. It borrows the Kluent-style idea
+of making assertions read like plain English in Kotlin: `actual shouldBeEqualTo expected`,
+`items shouldContainAll expected`, and `name.shouldNotBeNull()`. The point is not clever syntax for its own sake. The
+point is keeping tests from mixing `assertEquals`, `assertTrue`, null checks, and collection checks in a different dialect
+in every class.
+
+```kotlin
+import io.bluetape4k.assertions.shouldBeEqualTo
+import io.bluetape4k.assertions.shouldContainAll
+import io.bluetape4k.assertions.shouldNotBeNull
+
+found.shouldNotBeNull()
+found.name shouldBeEqualTo "TestItem"
+names shouldContainAll listOf("alpha", "beta")
+```
+
 `bluetape4k-junit5` groups Stopwatch, TempFolder, Output Capture, Random/Faker, system property restoration, coroutine
 waiting, and stress testing helpers. `bluetape4k-testcontainers` groups Redis, Kafka, PostgreSQL, MongoDB, Neo4j,
 WireMock, LocalStack-family servers, and more behind wrappers and singleton launchers.
@@ -170,13 +186,15 @@ Test code should be less creative so production code can be more honest.
 | `bluetape4k-core` | `if (x.isBlank()) throw ...` appears in several places | [`core` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/core/README.md) |
 | `bluetape4k-coroutines` | `Deferred`, `Flow`, or cancellation handling is rebuilt in each service | [`kotlin/coroutines` workshop](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/kotlin/coroutines) |
 | `bluetape4k-logging` | Request ids sometimes disappear across coroutine boundaries | [`logging` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/logging/README.md) |
+| `bluetape4k-assertions` | `assertEquals`, `assertTrue`, null checks, and collection checks mix different styles across tests | [`assertions` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/assertions/README.md) |
 | `bluetape4k-junit5` | Temp files, output capture, or coroutine waits are copied between tests | [`junit5` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/README.md) |
 | `bluetape4k-testcontainers` | Redis, Kafka, or DB fixtures start differently in each class | [`testcontainers` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/testcontainers/README.md) |
 | WebFlux coroutine examples | You want to see coroutine controllers and handlers in real request paths | [`webflux-coroutines` workshop](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/spring-boot/webflux-coroutines) |
 
 The adoption order is straightforward. Start with `core` for inputs and small utilities. Add `coroutines` when async
-composition appears. Add `logging` when request context must survive. Bring in `junit5` and `testcontainers` when that
-path needs repeatable proof. The easiest way to use this repository is to pick only the piece that removes the repeated
+composition appears. Add `logging` when request context must survive. Add `assertions` when test sentences start using
+several assertion dialects. Bring in `junit5` and `testcontainers` when that path needs repeatable fixture and dependency
+proof. The easiest way to use this repository is to pick only the piece that removes the repeated
 code in front of you.
 
 ## Source Links
@@ -186,6 +204,7 @@ code in front of you.
 - Core README: [bluetape4k/core/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/core/README.md)
 - Coroutines README: [bluetape4k/coroutines/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/coroutines/README.md)
 - Logging README: [bluetape4k/logging/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/logging/README.md)
+- Assertions README: [testing/assertions/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/assertions/README.md)
 - JUnit 5 README: [testing/junit5/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/README.md)
 - Testcontainers README: [testing/testcontainers/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/testcontainers/README.md)
 - Workshop: [kotlin/coroutines](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/kotlin/coroutines)
