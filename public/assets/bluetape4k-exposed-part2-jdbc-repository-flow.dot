@@ -1,0 +1,10 @@
+
+digraph {
+  rankdir=LR;
+  service -> dsl;
+  service -> repository;
+  dsl -> mapper;
+  repository -> virtual_thread_tx;
+  mapper -> database;
+  virtual_thread_tx -> database;
+}

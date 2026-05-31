@@ -1,0 +1,13 @@
+
+digraph {
+  rankdir=LR;
+  traffic -> webflux_jdbc;
+  traffic -> nosql;
+  webflux_jdbc -> r2dbc_vertx;
+  webflux_jdbc -> virtual_threads;
+  nosql -> exposed_dsl;
+  r2dbc_vertx -> bt4k_exposed;
+  virtual_threads -> bt4k_exposed;
+  exposed_dsl -> bt4k_exposed;
+  bt4k_exposed -> production;
+}

@@ -1,0 +1,269 @@
+---
+title: "Bluetape4k Exposed Part 4: JSON, 암호화, 다이얼렉트"
+description: 왜 JSON 컬럼, Tink 암호화 컬럼, 측정 단위 컬럼, PostgreSQL/MySQL8/분석용 DB 다이얼렉트를 따로 만들었는지 운영 경계 중심으로 설명합니다.
+sidebar:
+  order: -202605311104
+blog:
+  date: 2026-05-31T11:04:00+09:00
+  image: /assets/bluetape4k-exposed-part4-hero.png
+  imageAlt: 실험실 같은 작업대에서 작은 로봇 작업자들이 데이터 모듈, 계측 패널, 분석 장치를 다루는 3D diorama
+  cardDescription: "DB별 세부사항을 domain 코드에 흩뿌리지 않고 typed column과 dialect module로 격리한다."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-exposed-part4-hero.png" alt="실험실 같은 작업대에서 작은 로봇 작업자들이 데이터 모듈, 계측 패널, 분석 장치를 다루는 3D diorama" loading="eager" />
+  <figcaption>컬럼 하나가 작아 보여도, 직렬화와 암호화와 dialect가 붙으면 금방 작은 프레임워크가 됩니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-05-31 · bluetape4k-exposed series · Part 4</p>
+
+Part 4는 repository보다 더 낮은 층입니다. 실제 서비스를 만들다 보면 테이블 정의 옆에서 해결해야 하는 작은 문제가
+계속 나옵니다. JSON 컬럼을 문자열로 들고 다닐 것인가, 암호화된 값은 검색할 수 있어야 하는가, 좌표와 vector 같은
+DB별 타입을 service 코드에서 직접 다룰 것인가 같은 문제입니다.
+
+제가 JSON 컬럼, 암호화 컬럼, 측정 단위 컬럼, DB별 spatial/vector function을 따로 둔 이유는 이 문제들을 service 코드에
+흩뿌리지 않기 위해서입니다. 이 조각들은 테이블 정의 옆에 있어야 읽히지만, 매번 손으로 쓰면 위험합니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-exposed-part4-codec-dialect-map.png" alt="Domain model에서 JSON codecs, encrypted columns, measured columns, PostgreSQL, MySQL8, 분석용 dialects를 거쳐 SQL DSL로 이어지는 columns and dialects map" loading="lazy" />
+  <figcaption>반복되는 직렬화/암호화/dialect 세부사항은 column type과 extension function으로 모읍니다.</figcaption>
+</figure>
+
+## JSON 컬럼: 문자열이 아니라 타입으로
+
+JSON 컬럼을 넣은 이유는 JSON을 더 많이 쓰자는 뜻이 아닙니다. 이미 JSON/JSONB를 써야 하는 경우에 문자열을
+service 코드로 끌고 다니지 않기 위해서입니다. `exposed-jackson2`, `exposed-jackson3`, `exposed-fastjson2`는
+JSON/JSONB column을 Kotlin 타입으로 다루게 합니다.
+
+```kotlin
+data class UserSettings(
+    val theme: String = "light",
+    val notifications: Boolean = true,
+    val language: String = "ko",
+)
+
+object Users : IdTable<Long>("users") {
+    val name = varchar("name", 100)
+    val settings = jackson<UserSettings>("settings")
+}
+```
+
+JSON을 `String`으로 들고 다니면 편해 보입니다. 하지만 그 순간부터 validation, migration, path query,
+serialization 설정이 service마다 흩어집니다. column type으로 올려두면 테이블 정의에서 의도를 볼 수 있습니다.
+
+```kotlin
+val theme = Users.settings.jsonPath<String>("$.theme")
+
+val query = Users
+    .selectAll()
+    .where { Users.settings.jsonContains("theme", "dark") }
+```
+
+이런 helper가 전부를 해결하지는 않습니다. JSON schema evolution은 여전히 설계 문제입니다. 다만 "어디서
+직렬화하고, 어디서 path query를 만들고, 어디서 읽을 때 타입으로 복원하는가"를 한곳에 묶을 수 있습니다.
+
+## Tink 암호화 컬럼
+
+민감 정보는 "나중에 encrypt 붙이면 되겠지"로 미루기 쉽습니다. 보통 그 "나중"은 운영 데이터가 이미 쌓인 뒤에
+옵니다. 그때부터는 migration이 아니라 데이터 이사입니다. 즐겁지 않습니다.
+
+그래서 `exposed-tink`에는 Google Tink 기반 AEAD/Deterministic AEAD column을 넣었습니다.
+
+```kotlin
+object Users : IntIdTable("users") {
+    val name = varchar("name", 100)
+
+    // 검색 불필요: 매번 다른 암호문
+    val memo = tinkAeadVarChar("memo", 512).nullable()
+
+    // 검색 필요: 결정적 암호문, index 가능
+    val email = tinkDaeadVarChar("email", 512).index()
+}
+```
+
+여기서 먼저 정해야 하는 것은 AEAD와 DAEAD 중 무엇을 쓸 것인가입니다.
+
+| 모드 | 장점 | 제한 |
+|---|---|---|
+| AEAD | 동일 평문도 매번 다른 암호문, 패턴 노출 감소 | `WHERE col = value` 검색 불가 |
+| DAEAD | 동일 평문은 동일 암호문, equality 검색/index 가능 | 결정적이므로 패턴 분석 위험이 남음 |
+
+검색이 필요 없는 memo, note, token payload는 AEAD가 맞습니다. email, 주민번호처럼 equality lookup이 필요한 값은
+DAEAD를 검토합니다. 보안은 "암호화됨" 체크박스가 아니라 어떤 질의가 필요한지까지 포함합니다.
+
+코드에서는 차이가 더 분명합니다. DAEAD 컬럼은 결정적 암호화이므로 같은 평문이 같은 암호문이 되고, equality
+검색과 index를 사용할 수 있습니다.
+
+```kotlin
+transaction {
+    Users.insert {
+        it[name] = "홍길동"
+        it[memo] = "VIP 고객"          // AEAD: 검색하지 않는 민감 정보
+        it[email] = "hong@example.com" // DAEAD: 검색해야 하는 식별자
+    }
+
+    val byEmail = Users
+        .selectAll()
+        .where { Users.email eq "hong@example.com" }
+        .singleOrNull()
+}
+```
+
+반대로 AEAD 컬럼은 동일 평문도 매번 다른 암호문이 됩니다. 그래서 아래 방식은 의도한 검색 조건이 아닙니다.
+
+```kotlin
+transaction {
+    // memo는 tinkAeadVarChar로 선언된 비결정적 암호화 컬럼입니다.
+    // 새 nonce로 다시 암호화되므로 equality 검색 대상으로 쓰면 안 됩니다.
+    val notReliable = Users
+        .selectAll()
+        .where { Users.memo eq "VIP 고객" }
+        .toList()
+}
+```
+
+## 측정 단위 컬럼
+
+측정 단위 컬럼도 같은 이유로 만들었습니다. 금액, 길이, 무게, 시간 같은 값은 숫자만 보면 의미가 부족합니다.
+`10`이 10원인지 10달러인지, 10m인지 10cm인지 code review에서 매번 추리하면 피곤합니다.
+
+measured column은 값과 단위를 함께 다루는 쪽으로 사고를 옮깁니다. DB column은 결국 숫자와 문자열일 수 있지만,
+domain 코드에서는 typed value로 읽히는 편이 안전합니다.
+
+## PostgreSQL: PostGIS, pgvector, range
+
+PostgreSQL은 좋은 기능이 많지만, 그만큼 service 코드로 새기 쉬운 세부사항도 많습니다. PostGIS, pgvector, range를
+쓸 때마다 SQL literal과 JDBC type 처리를 직접 쓰기 시작하면 query 의도보다 glue code가 더 많이 보입니다.
+그래서 `exposed-postgresql`은 PostgreSQL 전용 기능을 작게 감쌉니다.
+
+| 기능 | 예 |
+|---|---|
+| PostGIS | `geoPoint`, `geoPolygon`, `stDistance`, `stWithin`, `stContains` |
+| pgvector | `vector("embedding", 384)`, cosine distance 검색 |
+| range | 시간 범위 column과 query helper |
+
+```kotlin
+object DocumentTable : Table("documents") {
+    val id = integer("id").primaryKey()
+    val title = varchar("title", 200)
+    val embedding = vector("embedding", 384)
+}
+```
+
+PostGIS도 테이블 정의 옆에서 바로 읽히게 둘 수 있습니다.
+
+```kotlin
+object LocationTable : Table("locations") {
+    val id = integer("id").primaryKey()
+    val name = varchar("name", 100)
+    val point = geoPoint("point")
+    val area = geoPolygon("area")
+}
+
+transaction {
+    val nearby = LocationTable
+        .select(LocationTable.name)
+        .where { LocationTable.point.stDWithin(searchPoint, 0.5) }
+        .toList()
+
+    val inside = LocationTable
+        .select(LocationTable.name)
+        .where { LocationTable.point.stWithin(polygonArea) }
+        .toList()
+}
+```
+
+PostgreSQL 기능 자체가 문제가 아닙니다. SQL literal과 JDBC type 등록 같은 세부사항이 service 코드에 들어오면 금방
+지저분해집니다. 제가 dialect module을 둔 이유는 이 지저분한 부분을 query 의도 아래로 숨기기 위해서입니다.
+
+## MySQL 8 spatial
+
+MySQL 8도 spatial을 제대로 쓰려면 규칙을 한곳에 모아야 합니다. `exposed-mysql8`에서는 MySQL 8.0+ spatial column과
+predicate를 JTS geometry 타입으로 다룹니다. 기본 좌표계는 WGS84(SRID 4326)입니다.
+
+```kotlin
+object Locations : LongIdTable("locations") {
+    val name = varchar("name", 255)
+    val point = geoPoint("point")
+    val area = geoPolygon("area")
+}
+
+Locations
+    .selectAll()
+    .where { Locations.area.stContains(Locations.point) }
+    .toList()
+```
+
+좌표 순서 같은 작은 규칙은 버그를 만들기 좋습니다. `longitude`와 `latitude` 순서를 helper로 고정해두는 이유가
+그겁니다. 지도 쪽 버그는 숫자가 맞아 보여서 더 얄밉습니다.
+
+## 분석용 DB를 위한 Dialects
+
+BigQuery, ClickHouse, Trino, DuckDB 같은 분석용 DB는 OLTP DB와 다른 특성을 가집니다. connector, type,
+literal, pagination, function 차이가 service 코드로 들어오면 application logic과 분석 SQL glue가 섞입니다.
+
+제가 `bluetape4k-exposed`의 dialect 쪽에서 택한 방향은 그런 차이를 "사용하는 곳 가까이" 두되, 반복 코드는 확장 안으로
+넣는 것입니다.
+
+| 확장 | 코드에서 볼 것 |
+|---|---|
+| [`exposed-bigquery`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-bigquery/README.ko.md) | BigQuery REST API 실행, pageToken 기반 Flow 조회 |
+| [`exposed-clickhouse`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-clickhouse/README.ko.md) | ClickHouse connector/type 특성 |
+| [`exposed-trino`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-trino/README.ko.md) | federation query 경계 |
+| [`exposed-duckdb`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-duckdb/README.ko.md) | embedded analytics와 local test |
+| [`exposed-timefold-solver-persistence`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-timefold-solver-persistence/README.ko.md) | solver persistence 통합 |
+
+BigQuery는 JDBC transaction 의미론을 제공하는 확장이 아닙니다. Exposed DSL을 SQL 생성기로 재사용하고, 실제
+실행은 BigQuery REST API가 맡습니다.
+
+```kotlin
+val context = BigQueryContext.create(
+    bigquery = bigqueryClient,
+    projectId = "my-project",
+    datasetId = "my-dataset",
+)
+
+with(context) {
+    val rows = Events
+        .selectAll()
+        .where { Events.region eq "kr" }
+        .withBigQuery()
+        .toList()
+
+    Events.selectAll()
+        .withBigQuery()
+        .toFlow()
+        .collect { row ->
+            println(row[Events.region])
+        }
+}
+```
+
+## 맺음말
+
+Part 4의 결론은 "DB 고급 기능을 쓰지 말자"가 아닙니다. 반대입니다. 쓸 거면 service 코드에 흩뿌리지 말고,
+테이블 정의와 query helper 근처에 모으자는 이야기입니다.
+
+- JSON은 문자열이 아니라 domain 타입으로 읽히게 둡니다.
+- encryption은 검색 가능 여부에 따라 AEAD/DAEAD를 분리합니다.
+- measured value는 단위 없는 숫자로 흩어뜨리지 않습니다.
+- PostgreSQL/MySQL/분석용 DB별 기능은 dialect module로 격리합니다.
+
+다음 글에서는 이 조각들을 Spring Boot, cache, multi-tenancy, 운영 예제와 묶겠습니다. 제가 예제를 따로 만든 이유도
+여기에 있습니다. 타입 안정성만으로는 부족하고, tenant leakage test와 성능 차트가 같이 필요합니다.
+
+## 참고 링크
+
+- Part 4 issue: [#89 Blog: bluetape4k-exposed Part 4 - JSON, encryption, measured columns, and dialects](https://github.com/bluetape4k/bluetape4k.github.io/issues/89)
+- Jackson2 README: [exposed-jackson2/README.ko.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-jackson2/README.ko.md)
+- Tink README: [exposed-tink/README.ko.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-tink/README.ko.md)
+- PostgreSQL README: [exposed-postgresql/README.ko.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-postgresql/README.ko.md)
+- MySQL8 README: [exposed-mysql8/README.ko.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-mysql8/README.ko.md)
+
+## 시리즈 링크
+
+- [Part 1: 왜 Exposed인가](/ko/blog/bluetape4k-exposed-part1-why-exposed/)
+- [Part 2: JDBC repository와 SQL DSL](/ko/blog/bluetape4k-exposed-part2-jdbc-repositories-sql-dsl/)
+- [Part 3: R2DBC, 코루틴, 가상 스레드](/ko/blog/bluetape4k-exposed-part3-r2dbc-coroutines-virtual-threads/)
+- [Part 4: JSON, 암호화, 다이얼렉트](/ko/blog/bluetape4k-exposed-part4-json-encryption-dialects/)
+- [Part 5: 실전 예제 - 다양한 캐시 전략, 멀티테넌시](/ko/blog/bluetape4k-exposed-part5-spring-cache-multitenancy-production/)

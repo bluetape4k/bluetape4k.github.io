@@ -1,0 +1,19 @@
+graph 1 9.4946 2
+node request 0.52129 1 1.0426 0.5 request solid ellipse black lightgrey
+node spring_boot_wiring 2.7036 1.75 2.3221 0.5 spring_boot_wiring solid ellipse black lightgrey
+node cache_strategy 2.7036 1 1.8245 0.5 cache_strategy solid ellipse black lightgrey
+node tenant_context 2.7036 0.25 1.8103 0.5 tenant_context solid ellipse black lightgrey
+node outbox_idempotency 5.6039 1.75 2.4785 0.5 outbox_idempotency solid ellipse black lightgrey
+node repository_layer 5.6039 1 1.9809 0.5 repository_layer solid ellipse black lightgrey
+node observability 5.6039 0.25 1.6397 0.5 observability solid ellipse black lightgrey
+node measured_service 8.4189 1 2.1515 0.5 measured_service solid ellipse black lightgrey
+edge request spring_boot_wiring 7 0.94066 1.1552 1.1239 1.2242 1.3435 1.3054 1.5426 1.375 1.6526 1.4134 1.769 1.4529 1.8837 1.4911 solid black
+edge request cache_strategy 4 1.0458 1 1.2223 1 1.4272 1 1.6312 1 solid black
+edge request tenant_context 7 0.94066 0.84481 1.1239 0.77578 1.3435 0.69456 1.5426 0.625 1.6719 0.57981 1.81 0.53323 1.944 0.48893 solid black
+edge spring_boot_wiring outbox_idempotency 4 3.8693 1.75 3.9786 1.75 4.0901 1.75 4.2013 1.75 solid black
+edge cache_strategy repository_layer 4 3.6224 1 3.885 1 4.1752 1 4.4502 1 solid black
+edge tenant_context observability 4 3.6146 0.25 3.9343 0.25 4.2957 0.25 4.6212 0.25 solid black
+edge outbox_idempotency measured_service 4 6.3684 1.548 6.7312 1.4504 7.1684 1.3328 7.5446 1.2315 solid black
+edge repository_layer measured_service 4 6.6005 1 6.7884 1 6.9874 1 7.1818 1 solid black
+edge observability measured_service 4 6.2295 0.41459 6.6148 0.51828 7.1181 0.6537 7.5435 0.76818 solid black
+stop

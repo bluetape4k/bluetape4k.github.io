@@ -1,0 +1,13 @@
+
+digraph {
+  rankdir=LR;
+  domain -> json_codecs;
+  domain -> encrypted_columns;
+  domain -> measured_columns;
+  json_codecs -> postgresql;
+  encrypted_columns -> mysql8;
+  measured_columns -> analytics;
+  postgresql -> sql_dsl;
+  mysql8 -> sql_dsl;
+  analytics -> sql_dsl;
+}

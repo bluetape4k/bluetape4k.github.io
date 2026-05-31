@@ -1,0 +1,19 @@
+graph 1 9.6155 2
+node traffic 0.46442 0.625 0.92884 0.5 traffic solid ellipse black lightgrey
+node webflux_jdbc 2.2842 1 1.7108 0.5 webflux_jdbc solid ellipse black lightgrey
+node nosql 2.2842 0.25 0.85775 0.5 nosql solid ellipse black lightgrey
+node r2dbc_vertx 4.559 1.75 1.5402 0.5 r2dbc_vertx solid ellipse black lightgrey
+node virtual_threads 4.559 1 1.8387 0.5 virtual_threads solid ellipse black lightgrey
+node exposed_dsl 4.559 0.25 1.5686 0.5 exposed_dsl solid ellipse black lightgrey
+node bt4k_exposed 6.8408 1 1.725 0.5 bt4k_exposed solid ellipse black lightgrey
+node production 8.9094 1 1.4122 0.5 production solid ellipse black lightgrey
+edge traffic webflux_jdbc 4 0.90299 0.71387 1.0583 0.74637 1.24 0.78439 1.4193 0.82191 solid black
+edge traffic nosql 4 0.90299 0.53613 1.1464 0.48519 1.4547 0.42068 1.7169 0.3658 solid black
+edge webflux_jdbc r2dbc_vertx 4 2.8651 1.1893 3.1657 1.2896 3.5373 1.4136 3.8545 1.5195 solid black
+edge webflux_jdbc virtual_threads 4 3.1412 1 3.2504 1 3.3633 1 3.4756 1 solid black
+edge nosql exposed_dsl 4 2.7155 0.25 2.9685 0.25 3.3017 0.25 3.6145 0.25 solid black
+edge r2dbc_vertx bt4k_exposed 4 5.1128 1.5704 5.4107 1.4712 5.7846 1.3468 6.1071 1.2395 solid black
+edge virtual_threads bt4k_exposed 4 5.4832 1 5.5915 1 5.7027 1 5.8124 1 solid black
+edge exposed_dsl bt4k_exposed 4 5.1185 0.43155 5.4166 0.53073 5.7894 0.65477 6.1106 0.76165 solid black
+edge bt4k_exposed production 4 7.7084 1 7.8184 1 7.9312 1 8.0413 1 solid black
+stop

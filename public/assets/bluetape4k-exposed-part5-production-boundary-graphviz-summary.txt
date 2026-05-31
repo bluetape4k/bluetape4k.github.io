@@ -1,0 +1,7 @@
+asset: bluetape4k-exposed-part5-production-boundary
+graphviz_nodes: 8
+final_nodes: 8
+missing_final_nodes: 0
+extra_final_nodes: 0
+rank_order: mirrored in final SVG
+route_exceptions: none

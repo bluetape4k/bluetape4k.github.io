@@ -1,0 +1,253 @@
+---
+title: "Bluetape4k Exposed Part 1: 왜 Exposed인가"
+description: async/non-blocking 데이터 접근 라이브러리를 고르던 과정에서 왜 Exposed가 필요했고, 그 위에 bluetape4k-exposed를 만들었는지 설명합니다.
+sidebar:
+  order: -202605311101
+blog:
+  date: 2026-05-31T11:01:00+09:00
+  image: /assets/bluetape4k-exposed-part1-hero.png
+  imageAlt: Exposed JDBC와 R2DBC 블록을 작은 로봇 작업자들이 파란 설계도 작업대에서 조립하는 3D diorama
+  cardDescription: "R2DBC, Vert.x, Virtual Threads, Exposed DSL을 지나 production Exposed 확장으로 가는 선택 기준."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-exposed-part1-hero.png" alt="Exposed JDBC와 R2DBC 블록을 작은 로봇 작업자들이 파란 설계도 작업대에서 조립하는 3D diorama" loading="eager" />
+  <figcaption>데이터 접근 계층은 화려하지 않습니다. 대신 잘못 고르면 모든 요청이 거기서 줄을 섭니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-05-31 · bluetape4k-exposed series · Part 1</p>
+
+이 글은 `bluetape4k-exposed` 시리즈의 1편입니다. 처음부터 Exposed를 정답으로 정해둔 것은 아닙니다.
+JPA, MyBatis, R2DBC, Vert.x SQL Client, Virtual Threads까지 실제로 검토하고 예제를 만들어 보면서
+"운영 코드에서 오래 가져갈 수 있는 방식"을 찾았습니다.
+
+그 과정에서 제가 선택한 중심이 Exposed였고, 그 위에 운영에서 반복해서 필요했던 repository, R2DBC, JSON/암호화,
+cache, multi-tenancy 경계를 얇게 붙인 것이 `bluetape4k-exposed`입니다.
+
+Part 1의 질문은 단순합니다.
+
+> JPA도 있고, MyBatis도 있고, R2DBC도 있고, Vert.x SQL Client도 있는데 왜 Exposed인가?
+
+이 질문은 "DSL이 예쁘다" 정도로 답하면 부족합니다. 실제 출발점은 제가 async/non-blocking 데이터 접근
+라이브러리를 고르던 과정이었습니다. WebFlux를 붙였는데 내부 DB 접근이 blocking이면 event loop가 기다립니다.
+R2DBC를 붙이면 non-blocking I/O는 얻지만 SQL DSL과 Kotlin 사용성이 다시 아쉬워집니다. Virtual Threads를
+쓰면 blocking JDBC를 유지하면서 대기 비용을 낮출 수 있지만, SQL을 안전하게 만들 도구가 필요합니다.
+
+그 중간 지점에 Exposed가 있었습니다. SQL을 감추지 않으면서 Kotlin DSL로 안전하게 쓰고, 필요하면 JDBC와 R2DBC
+양쪽을 workload에 맞게 선택할 수 있었기 때문입니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-exposed-part1-choice-journey.png" alt="Async pressure에서 WebFlux JDBC, R2DBC Vert.x, Virtual Threads, Exposed DSL을 거쳐 bluetape4k-exposed 운영 경로로 이어지는 선택 흐름" loading="lazy" />
+  <figcaption>선택의 핵심은 "무조건 reactive"가 아니라 SQL 안정성, Kotlin 적합성, 운영 경계까지 같이 보는 것입니다.</figcaption>
+</figure>
+
+## 출발점: JDBC는 blocking 방식이다
+
+JDBC는 동기 방식입니다. 요청이 DB 응답을 기다리는 동안 스레드는 그 작업에 묶입니다. 트래픽이 늘고 DB
+응답 시간이 늘어나면 애플리케이션 서버를 증설하는 방식으로 버티는 경우가 많았습니다.
+
+한동안 NoSQL로 우회하는 선택도 많았습니다. MongoDB, Cassandra, Elasticsearch 같은 저장소는 자기 영역에서
+강합니다. 하지만 모든 주 저장소를 NoSQL로 바꾸면 schema 변경, 예외 업무, 운영 노하우, 백오피스성 수작업에서
+다른 비용을 냅니다. 결국 많은 서비스는 다시 relational database를 메인 저장소로 둡니다. DB가 약해서가 아니라,
+오히려 DB가 충분히 강하고 운영하기 편하기 때문입니다.
+
+문제는 그 다음입니다. Spring WebFlux 같은 async/non-blocking 웹 프레임워크를 쓰면서 내부 DB 접근은 JDBC/JPA로
+blocking하면, API 입구만 비동기고 안쪽은 줄 서는 구조가 됩니다. event loop가 DB 대기에 시간을 쓰기 시작하면
+응답성 개선을 기대했던 구조가 오히려 위험해집니다. 흔히 말하는 Reactor meltdown 쪽으로 갑니다. 이름부터
+운영자가 좋아할 수 없는 단어입니다.
+
+그래서 저는 선택지를 제가 시도해봤던 순서와 운영에서 걸렸던 지점으로 나눠 봤습니다.
+
+| 선택지 | 장점 | 걸리는 지점 |
+|---|---|---|
+| Hibernate Reactive | ORM 경험을 reactive 쪽으로 가져갑니다 | Vert.x 기반, 학습 비용과 ecosystem 제약이 있습니다 |
+| Vert.x SQL Client | IO-bound non-blocking DB 접근이 깔끔합니다 | SQL 문자열과 mapping 코드를 직접 다루는 부담이 큽니다 |
+| Spring Data R2DBC | Spring reactive stack에 자연스럽습니다 | JPQL/QueryDSL/Exposed 같은 SQL DSL이 약하고 Reactor 타입이 앞에 나옵니다 |
+| JPA + Virtual Threads | 기존 blocking API를 크게 바꾸지 않습니다 | JPA의 무거운 mapping과 SQL 제어 문제는 그대로 남습니다 |
+| Exposed + Virtual Threads | JDBC driver 성숙도와 Kotlin SQL DSL을 같이 씁니다 | blocking JDBC 경계는 여전히 이해하고 측정해야 합니다 |
+| Exposed R2DBC + Coroutines | suspend/Flow 기반으로 Exposed SQL DSL을 씁니다 | driver와 workload별 성능 차이를 반드시 봐야 합니다 |
+
+여기서 결론은 "R2DBC가 틀렸다"가 아닙니다. 반대로 "Virtual Threads가 모든 걸 이긴다"도 아닙니다.
+회사 비즈니스의 형태나 요구사항에 따라 선택이 달라집니다. streaming과 backpressure가 핵심이면 R2DBC가 낫고,
+기존 JDBC driver의 batch 처리, 익숙한 transaction 경계, 단순한 call stack이 더 중요하면 JDBC + Virtual Threads가
+더 편할 수 있습니다.
+
+## Exposed에서 기대한 것
+
+저는 JPA처럼 큰 ORM 세계가 필요했던 것이 아닙니다. 복잡한 domain graph와 lazy loading을 모두 맡기는 방식보다,
+SQL 문을 알고 있는 개발자가 Kotlin 코드로 안전하게 query를 작성하는 쪽이 더 맞았습니다. 그 지점에서 Exposed의
+SQL DSL이 잘 맞았습니다.
+
+```kotlin
+val rows = Users
+    .selectAll()
+    .where { Users.email eq email }
+    .orderBy(Users.id)
+    .limit(1)
+    .toList()
+```
+
+문자열 SQL을 줄이는 것은 단순 취향 문제가 아닙니다. 컬럼 이름, 타입, join 조건, where 조건이 코드 안에서
+검사되면 운영에서 만나는 사소한 오타가 줄어듭니다. SQL을 전혀 모르게 해주는 추상화가 아니라, SQL을 더
+안전하게 쓰게 해주는 Kotlin DSL에 가깝습니다.
+
+DAO도 쓸 수 있습니다. 단건 조회나 단순 관계는 `EntityClass`로 간결하게 표현할 수 있습니다. 다만 운영 코드에서는
+복잡한 query, transaction 경계, cache, routing, observability가 같이 움직입니다. 그래서 이 시리즈에서는 DAO 자체보다
+SQL DSL과 repository 경계를 더 앞에 둡니다.
+
+## bluetape4k-exposed에 붙인 층
+
+`bluetape4k-exposed`는 Exposed를 대체하려고 만든 것이 아닙니다. 중심에는 여전히 JetBrains Exposed가 있습니다.
+제가 붙인 것은 운영 서비스에서 계속 다시 만들던 조각입니다. 아래 overview diagram은 그 경계를
+한눈에 보이도록 그린 것입니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-exposed-readme-overview.png" alt="bluetape4k-exposed 루트 README의 주요 기능 overview diagram" loading="lazy" />
+  <figcaption>Exposed는 SQL DSL과 transaction을 맡고, bluetape4k-exposed는 repository, cache, JSON, encryption, dialect, Spring Boot wiring 경계를 나눕니다.</figcaption>
+</figure>
+
+| 영역 | 대표 확장 | 맡는 일 |
+|---|---|---|
+| Repository | `exposed-jdbc`, `exposed-r2dbc` | JDBC/R2DBC repository 추상화, audit/soft-delete 계열 |
+| Cache | `exposed-cache`, `exposed-jdbc-caffeine`, `exposed-r2dbc-lettuce` | local/Redis cache를 붙인 읽기 경로 |
+| Column codecs | `exposed-jackson2`, `exposed-jackson3`, `exposed-fastjson2`, `exposed-tink` | JSON column, encrypted column, measured column |
+| Dialects | `exposed-postgresql`, `exposed-mysql8`, `exposed-bigquery`, `exposed-clickhouse`, `exposed-trino`, `exposed-duckdb` | DB별 SQL/connector helper |
+| Spring Boot | `exposed-spring-boot-jdbc`, `exposed-spring-boot-r2dbc`, `exposed-spring-boot-batch` | Boot 4 자동 설정과 application wiring |
+
+사용할 때도 필요한 것만 가져오는 방식을 권합니다.
+
+```kotlin
+dependencies {
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-jdbc:1.9.2")
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-r2dbc:1.9.2")
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-jdbc-lettuce:1.9.2")
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-jackson2:1.9.2")
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-spring-boot-jdbc:1.9.2")
+}
+```
+
+제가 의도한 사용법은 "다 가져오라"가 아닙니다. JDBC repository만 필요하면 JDBC만 가져옵니다. cache-backed
+읽기 경로가 필요하면 cache adapter를 붙입니다. Spring Boot 자동 설정이 필요할 때만 Boot 모듈을 붙입니다.
+이 정도 거리는 유지해야 라이브러리가 프레임워크인 척하지 않습니다.
+
+## 숫자를 보고 선택하자
+
+데이터 접근 라이브러리 선택에서 가장 위험한 문장은 "이론적으로 더 빠르다"입니다. 이론은 방향만 줍니다.
+운영 선택은 측정값으로 다시 봐야 합니다.
+
+그래서 저는 예제와 벤치마크를 같이 둡니다. `exposed-workshop`의 Virtual Threads/JDBC 벤치마크 노트에서는
+대표 수치를 이렇게 잡았습니다. 여기서는 절대값보다 배율을 먼저 보겠습니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-exposed-part1-virtual-thread-chart.png" alt="Virtual Threads가 indexed SELECT 2.54배, 복잡 쿼리 1.79배, 10ms I/O 지연 2.27배, CPU bound 1.03배 개선한 벤치마크 차트" loading="lazy" />
+  <figcaption>Virtual Threads는 CPU-bound 작업보다 I/O 대기가 있는 JDBC workload에서 의미가 커집니다.</figcaption>
+</figure>
+
+| 워크로드 | Virtual Threads 향상 배율 |
+|---|---:|
+| 단순 indexed SELECT | 2.2-2.6x |
+| 복잡 쿼리, UPDATE + 집계 | 1.8x |
+| 10ms I/O 지연 시뮬레이션 | 2.3x |
+| CPU-bound 작업 | 1.02-1.03x |
+
+이 수치는 "Virtual Threads를 켜면 모든 코드가 빨라진다"가 아닙니다. I/O 대기 중 carrier thread를 반납할 수
+있을 때 효과가 큽니다. 반대로 CPU-bound 작업은 거의 좋아지지 않습니다. 그러니 JDBC + Virtual Threads 선택은
+blocking API를 유지하면서 대기 비용을 낮추는 선택이지, CPU 성능을 공짜로 올리는 버튼이 아닙니다.
+
+`bluetape4k-exposed` 자체에도 `kotlinx-benchmark` 기반 `ExposedJdbcBenchmark`를 넣었습니다. PostgreSQL
+Testcontainers, HikariCP max 24, JMH throughput 조건에서 단건 CRUD와 JOIN, batch insert를 측정합니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-exposed-part1-jdbc-benchmark-chart.png" alt="Exposed JDBC benchmark throughput chart showing singleFindById 15000 ops/s, singleInsert 14400 ops/s, singleUpdate 14300 ops/s, joinQuery 1510 ops/s, batchInsert 217 ops/s" loading="lazy" />
+  <figcaption>Exposed JDBC 방식도 query 종류에 따라 처리량이 크게 다릅니다. 단건 CRUD와 JOIN/batch를 같은 기준으로 보면 안 됩니다.</figcaption>
+</figure>
+
+| Benchmark | 처리량 |
+|---|---:|
+| `singleFindById` | 15,000 ops/s |
+| `singleInsert` | 14,400 ops/s |
+| `singleUpdate` | 14,300 ops/s |
+| `joinQuery` | 1,510 ops/s |
+| `batchInsert` | 217 ops/s |
+
+이 표는 JDBC와 R2DBC의 최종 승부표가 아닙니다. 그 이야기는 Part 3에서 batch benchmark와 함께 따로 보겠습니다.
+Part 1에서 필요한 결론은 이것입니다. Exposed를 고를 때도 추상 레이어 이름만 보지 말고, query 모양과
+driver 처리 방식, connection pool, transaction 경계를 같이 측정해야 합니다.
+
+JPA와의 비교군도 넣었습니다. `exposed-workshop/11-high-performance/04-benchmark`에서는 PostgreSQL
+Testcontainers, JMH 평균 지연 시간 조건으로 Person 단건 CRUD와 관계 CRUD를 비교했습니다. 아래 차트는 단건 CRUD
+일부입니다. 지연 시간은 낮을수록 좋습니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-exposed-part1-jpa-comparison-chart.png" alt="Exposed와 JPA 단건 CRUD 평균 지연 시간을 create, read, update, delete, batchCreate로 비교한 차트" loading="lazy" />
+  <figcaption>같은 PostgreSQL 조건에서 단건 CRUD는 Exposed가 JPA보다 3.9-8.3배 낮은 지연 시간을 보였습니다.</figcaption>
+</figure>
+
+| 연산 | Exposed | JPA | 해석 |
+|---|---:|---:|---|
+| create | 1,196 us | 4,623 us | Exposed 3.9x 빠름 |
+| read | 1,972 us | 11,602 us | Exposed 5.9x 빠름 |
+| update | 1,980 us | 15,278 us | Exposed 7.7x 빠름 |
+| delete | 1,945 us | 12,059 us | Exposed 6.2x 빠름 |
+| batchCreate(100건) | 51,203 us | 423,816 us | Exposed 8.3x 빠름 |
+
+이 결과가 "JPA를 쓰지 말자"는 뜻은 아닙니다. JPA는 복잡한 domain graph, 2차 cache, Spring Data 생태계가
+중요할 때 여전히 강합니다. 다만 SQL 제어와 낮은 ORM overhead가 중요하면 Exposed가 충분히 설득력 있는
+비교군이라는 뜻입니다.
+
+## 워크숍을 같이 둔 이유
+
+블로그 글만 보고 데이터 접근 계층을 바꾸면 위험합니다. 예제가 작으면 실제 문제를 숨깁니다.
+그래서 저는 이 시리즈에서 `exposed-workshop`, `exposed-r2dbc-workshop`, 운영 예제를 계속 같이 연결합니다.
+
+| Repo / chapter | 코드에서 볼 것 |
+|---|---|
+| `exposed-workshop/02-alternatives-to-jpa` | R2DBC, Vert.x, Exposed를 왜 비교했는지 코드로 봅니다 |
+| `exposed-workshop/03-exposed-basic` | Exposed DSL/DAO의 기본 사용법을 직접 따라갑니다 |
+| `exposed-workshop/08-coroutines` | coroutine, virtual thread 경계를 비교합니다 |
+| `exposed-workshop/10-multi-tenant` | tenant isolation, routing datasource, cache isolation을 봅니다 |
+| `exposed-workshop/11-high-performance` | cache strategy와 benchmark 중심 예제를 봅니다 |
+| `exposed-workshop/12-production-integration` | outbox, idempotency, observability, readiness 경계를 봅니다 |
+| `exposed-r2dbc-workshop` | 같은 설계를 R2DBC/coroutine 방식에서 다시 봅니다 |
+
+특히 운영 예제에서는 cache strategy와 multi-tenancy를 중심에 두었습니다. 설계 그림에서 끝내지
+않고, 실행 결과와 성능 차트까지 같이 두려는 의도입니다. 캐시는 "빠르겠지"로 붙이면 안 됩니다. tenant id가
+cache key에 빠지는 순간 성능 최적화가 아니라 데이터 유출 후보가 됩니다. 이건 느린 것보다 더 나쁩니다.
+
+## 맺음말
+
+제가 `bluetape4k-exposed`를 만든 이유는 Exposed가 모든 문제를 대신 풀어주기 때문이 아닙니다. 오히려 반대입니다.
+Exposed는 SQL을 SQL답게 남겨두면서 Kotlin 타입 시스템과 DSL로 안전하게 다루게 해줍니다. 그 위에
+`bluetape4k-exposed`로 repository, cache, JSON/encryption column, dialect, Spring Boot wiring을 붙였습니다.
+
+그래서 저는 선택 기준을 이렇게 잡습니다.
+
+- SQL을 문자열보다 Kotlin DSL로 안전하게 쓰고 싶다.
+- JDBC + Virtual Threads와 R2DBC + Coroutines를 workload별로 고르고 싶다.
+- cache, JSON, encryption, dialect, Spring Boot wiring을 매번 새로 만들고 싶지 않다.
+- benchmark와 workshop 예제로 실제 성능과 운영 경계를 확인하고 싶다.
+
+다음 글에서는 JDBC repository와 SQL DSL 패턴을 보겠습니다. 제가 repository를 만든 이유는 SQL DSL을 숨기기 위해서가
+아니라, 반복되는 mapping과 paging, soft-delete 경계를 매번 새로 만들지 않기 위해서였습니다. 그 경계를 어디서 나눴는지
+코드로 보겠습니다.
+
+## 참고 링크
+
+- Epic: [#85 Blog series: bluetape4k-exposed production Exposed guide](https://github.com/bluetape4k/bluetape4k.github.io/issues/85)
+- Part 1 issue: [#86 Blog: bluetape4k-exposed Part 1 - production Exposed overview](https://github.com/bluetape4k/bluetape4k.github.io/issues/86)
+- Repository: [bluetape4k-exposed](https://github.com/bluetape4k/bluetape4k-exposed)
+- README: [README.ko.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/README.ko.md)
+- JDBC benchmark source: [ExposedJdbcBenchmark.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-jdbc/src/test/kotlin/io/bluetape4k/exposed/jdbc/benchmark/ExposedJdbcBenchmark.kt)
+- Exposed vs JPA benchmark: [exposed-jpa-benchmark.md](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/04-benchmark/exposed-jpa-benchmark.md)
+- Batch benchmark hub: [utils/batch/benchmark/README.ko.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/utils/batch/benchmark/README.ko.md)
+- Virtual Threads/JDBC benchmark note: [VirtualThread-Jdbc-Benchmark.md](https://github.com/bluetape4k/exposed-workshop/blob/develop/doc/VirtualThread-Jdbc-Benchmark.md)
+- Workshop alternatives: [exposed-workshop/02-alternatives-to-jpa](https://github.com/bluetape4k/exposed-workshop/tree/develop/02-alternatives-to-jpa)
+- R2DBC workshop: [exposed-r2dbc-workshop](https://github.com/bluetape4k/exposed-r2dbc-workshop)
+
+## 시리즈 링크
+
+- [Part 1: 왜 Exposed인가](/ko/blog/bluetape4k-exposed-part1-why-exposed/)
+- [Part 2: JDBC repository와 SQL DSL](/ko/blog/bluetape4k-exposed-part2-jdbc-repositories-sql-dsl/)
+- [Part 3: R2DBC, 코루틴, 가상 스레드](/ko/blog/bluetape4k-exposed-part3-r2dbc-coroutines-virtual-threads/)
+- [Part 4: JSON, 암호화, 다이얼렉트](/ko/blog/bluetape4k-exposed-part4-json-encryption-dialects/)
+- [Part 5: 실전 예제 - 다양한 캐시 전략, 멀티테넌시](/ko/blog/bluetape4k-exposed-part5-spring-cache-multitenancy-production/)
