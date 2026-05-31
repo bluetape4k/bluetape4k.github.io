@@ -1,0 +1,209 @@
+---
+title: "Bluetape4k Leader Part 1: Repository Overview and Mental Model"
+description: Why bluetape4k-leader exists as a standalone repository, which execution models and backends it provides, and how it differs from ShedLock.
+sidebar:
+  order: -202605312130
+blog:
+  date: 2026-05-31T21:30:00+09:00
+  image: /assets/bluetape4k-leader-part1-hero.png
+  imageAlt: Robotic operators coordinating one elected leader across several service nodes on a workbench
+  cardDescription: "How scheduled jobs, migrations, pollers, and cache warmers avoid running on every replica."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-leader-part1-hero.png" alt="Robotic operators coordinating one elected leader across several service nodes on a workbench" loading="eager" />
+  <figcaption>Replicas can be many. Some work still needs to run once.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-05-31 · bluetape4k-leader series · Part 1</p>
+
+This is Part 1 of the `bluetape4k-leader` series. The series starts with the repository overview,
+then continues into core APIs, multi-leader and strategic election, Spring Boot and Ktor integration,
+and finally storage backends plus operational features.
+
+Distributed leader election sounds larger than the day-to-day problem. The practical version is
+simple: you run three service replicas, and suddenly the nightly settlement job runs three times,
+the schema migration tries three times, and three webhook pollers compete for the same event.
+Horizontal scaling does not automatically mean "only one instance runs this work." A service needs
+a way to decide who is allowed to proceed.
+
+`bluetape4k-leader` is a standalone Kotlin/JVM library for that decision. It supports Redis,
+Exposed JDBC/R2DBC, MongoDB, DynamoDB, etcd, Kubernetes Lease, Hazelcast, and ZooKeeper backends,
+while exposing blocking, `CompletableFuture`, coroutine, and virtual-thread APIs.
+
+## The Problem: Many Replicas, One Job
+
+The most common example is a scheduled job. `@Scheduled` works in each JVM. In a three-pod
+deployment, it works three times.
+
+```kotlin
+val result = leaderElector.runIfLeader("nightly-settlement") {
+    settlementService.processYesterday()
+}
+
+if (result == null) {
+    log.info { "another instance is running; skip" }
+}
+```
+
+The important part is `null`. When the node is not elected, the call skips without throwing. This is
+the familiar ShedLock-style skip semantics: contention is not an application error. If every missed
+lock becomes an error log, the next real incident has to wave from inside a pile of noise.
+
+The base `runIfLeader` contract is intentionally small.
+
+- Only the call that acquires the lock executes the action.
+- A non-leader path returns `null`.
+- Exceptions from the action propagate to the caller.
+- Leadership is released or expires according to the backend lease policy.
+
+When the action itself can return `null`, use `LeaderRunResult` to distinguish "elected and returned
+null" from "not elected."
+
+```kotlin
+when (val result = leaderElector.runIfLeaderResult("daily-job") { runJob() }) {
+    is LeaderRunResult.Elected -> log.info { "executed=${result.value}" }
+    LeaderRunResult.Skipped -> log.info { "another node is leader" }
+    is LeaderRunResult.ActionFailed -> log.warn(result.cause) { "leader action failed" }
+}
+```
+
+Source:
+[LeaderElector.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LeaderElector.kt),
+[LeaderRunResult.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LeaderRunResult.kt)
+
+## Repository Map
+
+`bluetape4k-leader` moved out of `bluetape4k-projects` because the surface area is not small.
+The core API is compact, but production use pulls in backend parity, lease semantics, Spring/Ktor
+integration, metrics, examples, and benchmarks.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-leader-overview-01.png" alt="Bluetape4k Leader module map with BOM, core APIs, backend modules, integrations, examples, and preview backends" loading="lazy" />
+  <figcaption>The core API stays small while backends and framework integrations live in separate modules.</figcaption>
+</figure>
+
+| Area | Representative modules | When to read it |
+|---|---|---|
+| Core API | `leader-core` | Understanding `LeaderElector`, `SuspendLeaderElector`, group election, and result types |
+| Redis | `leader-redis-lettuce`, `leader-redis-redisson` | Fastest path when Redis is already available |
+| SQL/Coroutine | `leader-exposed-jdbc`, `leader-exposed-r2dbc` | Row-backed leases when RDB infrastructure is the natural home |
+| Infra-native | `leader-etcd`, `leader-k8s`, `leader-consul` | Platform lease/session models for control-plane style workloads |
+| Framework | `leader-spring-boot`, `leader-ktor`, `leader-micrometer` | Annotation, scheduler, actuator, and metrics integration |
+| Examples/Benchmark | `examples/*`, `benchmark` | Scenario-driven adoption and backend cost comparison |
+
+The current README marks Redis Lettuce/Redisson, Exposed JDBC/R2DBC, MongoDB, Hazelcast, and
+ZooKeeper as stable backends. DynamoDB, etcd, Consul, and Kubernetes Lease are preview backends.
+
+## Execution Models Matter
+
+If all you need is annotation-based scheduled-job protection, several tools can help. The extra
+concern in `bluetape4k-leader` is not forcing service code into one execution model.
+
+Different Kotlin/JVM services reach leader election from different places.
+
+| Execution model | API | Fits |
+|---|---|---|
+| Blocking | `LeaderElector` | Existing MVC, batch, and plain JVM jobs |
+| Async | `AsyncLeaderElector` | `CompletableFuture` adapters |
+| Coroutine | `SuspendLeaderElector` | Suspend services, R2DBC, and Ktor handlers |
+| Virtual thread | `VirtualThreadLeaderElector` | Java 21 virtual-thread boundaries |
+
+The coroutine API takes a `suspend` action. If cancellation arrives, `CancellationException` must be
+re-thrown rather than hidden. That sounds like a small implementation detail until a long-running
+worker is shutting down. A cancelled leader that keeps holding work is not a graceful shutdown.
+
+```kotlin
+val result = suspendLeaderElector.runIfLeader("tenant-aggregator") {
+    metricsService.aggregateTenant(tenantId)
+}
+```
+
+Source:
+[SuspendLeaderElector.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/coroutines/SuspendLeaderElector.kt),
+[LeaderElectionOptions.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LeaderElectionOptions.kt)
+
+## Compared With ShedLock
+
+ShedLock is a practical tool for preventing duplicate scheduled-job execution. `bluetape4k-leader`
+keeps that familiar skip-on-contention behavior, but the target surface is wider than protecting a
+Spring scheduled method.
+
+| Topic | ShedLock behavior | bluetape4k-leader behavior |
+|---|---|---|
+| Contention | Skip when lock is not acquired | `runIfLeader` returns `null`; result API returns `Skipped` |
+| Spring annotation | Primary path | Supported, but separated from the core API |
+| Coroutine | Needs adaptation | `SuspendLeaderElector` |
+| Async | Adapter-oriented | `AsyncLeaderElector` |
+| Virtual thread | Usually regular blocking code | Dedicated virtual-thread elector layer |
+| Multi-leader | Not the main goal | `LeaderGroupElector` for N concurrent leaders |
+| Strategy election | Not the main goal | FIFO, random, scored, and weighted strategies |
+| Backend range | Multiple lock providers | Redis, SQL/R2DBC, MongoDB, DynamoDB, etcd, Kubernetes, Hazelcast, ZooKeeper |
+
+So if the only problem is one Spring scheduled method, the mental model overlaps with ShedLock.
+If the same service also has coroutine workers, tenant-specific pollers, N-slot work distribution,
+Kubernetes Lease-backed operators, and Ktor scheduling, `bluetape4k-leader` gives those paths a
+shared vocabulary.
+
+## Examples Show the Real Use Cases
+
+The examples table in the README is the fastest way to understand the repository. It shows the
+operational failure each module is trying to prevent.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-leader-examples-erd-01.png" alt="Bluetape4k Leader examples relationship diagram connecting backend capabilities, integrations, and runnable examples" loading="lazy" />
+  <figcaption>The examples are not backend trophies. They are duplicate-work failure modes made runnable.</figcaption>
+</figure>
+
+| Example | Backend | What it prevents |
+|---|---|---|
+| `examples/batch-scheduler` | Lettuce Redis | A periodic batch running once per replica |
+| `examples/migration-gate` | Exposed JDBC | Multiple instances attempting boot-time schema migration |
+| `examples/webhook-poller` | MongoDB | Several pollers claiming the same webhook event |
+| `examples/cache-warmer` | Hazelcast | Duplicate per-partition cache warming and all-stop failures |
+| `examples/tenant-aggregator` | Exposed R2DBC | Tenant polling loops running on multiple nodes at once |
+| `examples/k8s-operator` | Kubernetes Lease | Several operator replicas running the same reconcile loop |
+
+Source:
+[examples/batch-scheduler](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples/batch-scheduler),
+[examples/tenant-aggregator](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples/tenant-aggregator),
+[examples/k8s-operator](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples/k8s-operator)
+
+## A First Selection Rule
+
+Part 5 will go deeper on backend choice, but the first-pass rule is enough for orientation.
+
+- If Redis is already part of the service platform, start with Lettuce or Redisson.
+- If the service only has an RDB, Exposed JDBC/R2DBC keeps the operational footprint smaller.
+- If the workload is a Kubernetes operator or platform-native controller, Kubernetes Lease is natural.
+- If etcd, Consul, or ZooKeeper already sits in the control plane, evaluate that session/lease model.
+- If up to N nodes may run the same work, look at `LeaderGroupElector` instead of single leader election.
+- If the winner should be chosen by rule, such as idle time or weight, look at strategic election.
+
+## References
+
+- Issue: [#39 Blog Part 1: bluetape4k-leader repository overview and mental model](https://github.com/bluetape4k/bluetape4k.github.io/issues/39)
+- Epic: [#38 Epic: bluetape4k-leader blog series](https://github.com/bluetape4k/bluetape4k.github.io/issues/38)
+- Repository: [bluetape4k-leader](https://github.com/bluetape4k/bluetape4k-leader)
+- README: [README.md](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/README.md)
+- Korean README: [README.ko.md](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/README.ko.md)
+- BOM README: [bluetape4k-leader-bom/README.md](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/bluetape4k-leader-bom/README.md)
+
+## Closing
+
+Leader election is less about the grand phrase "distributed systems" and more about one practical
+question: should this replica run this one piece of work right now?
+
+Scheduled jobs, migrations, pollers, cache warmers, and operator reconcile loops all ask that
+question. `bluetape4k-leader` answers it with a common execution model rather than a pile of
+backend-specific APIs. Part 2 will zoom into the core API: `LeaderElector`, `SuspendLeaderElector`,
+`LeaderElectionOptions`, and `LeaderRunResult`. That is where the important distinction appears:
+not only who wears the crown, but what the non-leaders should do quietly.
+
+## Series Links
+
+- [Part 1: Repository overview and mental model](/blog/bluetape4k-leader-part1-overview/)
+- Part 2: Core APIs and execution models (planned)
+- Part 3: Multi-leader and strategic election (planned)
+- Part 4: Spring Boot, Ktor, and management routes (planned)
+- Part 5: Backends, operations, and benchmarks (planned)
