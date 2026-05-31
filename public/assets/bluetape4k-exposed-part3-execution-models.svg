@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="760" viewBox="0 0 1500 760" role="img">
+<title>Execution Models for Exposed</title>
+<desc>Choose JDBC + Virtual Threads or R2DBC + Coroutines by workload, driver path, and streaming needs.</desc>
+<defs>
+  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#1D3148" flood-opacity="0.12"/></filter>
+  <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M 1 1 L 7 4 L 1 7 Z" fill="#4D6F9F"/></marker>
+  <style>
+    .bg{fill:#F7F9FC}.frame{fill:#FFFFFF;stroke:#D6E2ED;stroke-width:2}
+    .title{font-family:"Architects Daughter";font-size:42px;fill:#21334A;font-weight:700}
+    .subtitle,.body,.small,.tiny,.axisLabel{font-family:"Comic Mono";fill:#34465B}
+    .subtitle{font-size:16px}.body{font-size:14px}.small{font-size:12px;fill:#657386}.tiny{font-size:11px;fill:#657386}
+    .label{font-family:"Architects Daughter";font-size:23px;fill:#21334A;font-weight:700}
+    .card{filter:url(#shadow);stroke-width:2}.line{fill:none;stroke:#4D6F9F;stroke-width:2.8;marker-end:url(#arrow);stroke-linecap:round;stroke-linejoin:round}
+    .axis{stroke:#B9C7D8;stroke-width:1.4}.grid{stroke:#CAD6E4;stroke-width:1;stroke-dasharray:4 6}
+  </style>
+</defs>
+<rect class="bg" width="1500" height="760"/>
+<rect class="frame" x="34" y="28" width="1432" height="704" rx="26"/>
+<text class="title" x="70" y="82">Execution Models for Exposed</text>
+<text class="subtitle" x="72" y="114">Choose JDBC + Virtual Threads or R2DBC + Coroutines by workload, driver path, and streaming needs.</text>
+<g transform="translate(80 172)">
+  <g>
+  <rect class="card" x="0" y="228" width="236" height="116" rx="16" fill="#F5F7FA" stroke="#8FA1B3"/>
+  <text class="label" x="118" y="268" text-anchor="middle" dominant-baseline="middle">Request</text>
+  <text class="body" x="118" y="298" text-anchor="middle">MVC · WebFlux · Ktor</text>
+</g>
+  <g>
+  <rect class="card" x="330" y="68" width="278" height="128" rx="16" fill="#EAF7ED" stroke="#58A978"/>
+  <text class="label" x="469" y="114" text-anchor="middle" dominant-baseline="middle">JDBC + Virtual Threads</text>
+  <text class="body" x="469" y="144" text-anchor="middle">mature driver path</text>
+<text class="body" x="469" y="164" text-anchor="middle">simple stack traces</text>
+</g>
+  <g>
+  <rect class="card" x="330" y="388" width="278" height="128" rx="16" fill="#F1ECFF" stroke="#8A72D6"/>
+  <text class="label" x="469" y="434" text-anchor="middle" dominant-baseline="middle">R2DBC + Coroutines</text>
+  <text class="body" x="469" y="464" text-anchor="middle">suspend · Flow</text>
+<text class="body" x="469" y="484" text-anchor="middle">backpressure path</text>
+</g>
+  <g>
+  <rect class="card" x="740" y="68" width="270" height="128" rx="16" fill="#FFF3D8" stroke="#D6A441"/>
+  <text class="label" x="875" y="114" text-anchor="middle" dominant-baseline="middle">Batch / CRUD</text>
+  <text class="body" x="875" y="144" text-anchor="middle">measure round-trips</text>
+<text class="body" x="875" y="164" text-anchor="middle">pool and indexes matter</text>
+</g>
+  <g>
+  <rect class="card" x="740" y="388" width="270" height="128" rx="16" fill="#E6F7F5" stroke="#38A69E"/>
+  <text class="label" x="875" y="434" text-anchor="middle" dominant-baseline="middle">Streaming / Reactive</text>
+  <text class="body" x="875" y="464" text-anchor="middle">row flow</text>
+<text class="body" x="875" y="484" text-anchor="middle">event-loop friendly</text>
+</g>
+  <g>
+  <rect class="card" x="1120" y="228" width="236" height="116" rx="16" fill="#E7F1FF" stroke="#5A85D6"/>
+  <text class="label" x="1238" y="268" text-anchor="middle" dominant-baseline="middle">Decision</text>
+  <text class="body" x="1238" y="298" text-anchor="middle">workload first</text>
+<text class="body" x="1238" y="318" text-anchor="middle">benchmark second</text>
+</g>
+  <path class="line" d="M236 286 C286 286 278 132 330 132"/>
+  <path class="line" d="M236 286 C286 286 278 452 330 452"/>
+  <path class="line" d="M608 132 H740"/>
+  <path class="line" d="M608 452 H740"/>
+  <path class="line" d="M1010 132 C1076 132 1054 286 1120 286"/>
+  <path class="line" d="M1010 452 C1076 452 1054 314 1120 314"/>
+</g></svg>

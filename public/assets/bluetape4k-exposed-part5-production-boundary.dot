@@ -1,0 +1,13 @@
+
+digraph {
+  rankdir=LR;
+  request -> spring_boot_wiring;
+  request -> cache_strategy;
+  request -> tenant_context;
+  spring_boot_wiring -> outbox_idempotency;
+  cache_strategy -> repository_layer;
+  tenant_context -> observability;
+  outbox_idempotency -> measured_service;
+  repository_layer -> measured_service;
+  observability -> measured_service;
+}

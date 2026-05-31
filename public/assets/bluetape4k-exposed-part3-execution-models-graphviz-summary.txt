@@ -1,0 +1,7 @@
+asset: bluetape4k-exposed-part3-execution-models
+graphviz_nodes: 6
+final_nodes: 6
+missing_final_nodes: 0
+extra_final_nodes: 0
+rank_order: mirrored in final SVG
+route_exceptions: none

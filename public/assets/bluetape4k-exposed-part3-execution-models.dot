@@ -1,0 +1,10 @@
+
+digraph {
+  rankdir=LR;
+  request -> jdbc_vt;
+  request -> r2dbc_coroutines;
+  jdbc_vt -> batch_crud;
+  r2dbc_coroutines -> streaming;
+  batch_crud -> decision;
+  streaming -> decision;
+}
