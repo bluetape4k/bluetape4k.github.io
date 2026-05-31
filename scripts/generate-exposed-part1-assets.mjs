@@ -222,7 +222,7 @@ barChart('bluetape4k-exposed-part1-virtual-thread-chart', 'Virtual Threads for J
   { label: 'complex UPDATE + GROUP BY', value: 1.79, display: '1.79x', color: '#69B888' },
   { label: '+10ms I/O latency', value: 2.27, display: '2.27x', color: '#D9AA4D' },
   { label: 'CPU bound work', value: 1.03, display: '1.03x', color: '#DB7890' },
-], 3, 'improvement');
+], 3, 'improvement', 1280, 560);
 
 barChart('bluetape4k-exposed-part1-jdbc-benchmark-chart', 'Exposed JDBC Benchmark Throughput', 'PostgreSQL Testcontainers, HikariCP max 24, JMH throughput.', [
   { label: 'singleFindById', value: 15000, display: '15,000', color: '#75A9E8' },
@@ -336,7 +336,7 @@ groupedBarChart('bluetape4k-exposed-part3-batch-comparison-chart', 'Large Batch 
   { label: 'PostgreSQL pool=10', values: [0.972, 0.192], displays: ['0.972 ops/s', '0.192 ops/s'] },
   { label: 'PostgreSQL pool=30', values: [0.990, 0.192], displays: ['0.990 ops/s', '0.192 ops/s'] },
   { label: 'PostgreSQL pool=60', values: [0.951, 0.193], displays: ['0.951 ops/s', '0.193 ops/s'] },
-], 1.7, 'ops/s', 1440, 880, ['JDBC + VT', 'R2DBC']);
+], 1.7, 'ops/s', 1260, 700, ['JDBC + VT', 'R2DBC']);
 
 barChart('bluetape4k-exposed-part5-cache-read-chart', 'Cache Read Throughput', 'Spring Boot cache benchmark, warmed findById, representative ops/sec.', [
   { label: 'No Cache', value: 8200, display: '~8,200', color: '#8FA1B3' },
