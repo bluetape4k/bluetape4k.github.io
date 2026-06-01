@@ -23,7 +23,7 @@ through a character-first lexer and let Okio scan source segments directly.
 That left an obvious follow-up question: if reading got faster by respecting bytes and
 segments, why was writing still politely handing every file export to `OutputStreamWriter`?
 
-Issue [#674](https://github.com/bluetape4k/bluetape4k-projects/issues/674) was the cleanup.
+Issue [#674](https://github.com/bluetape4k/bluetape4k-projects/issues/674) cleaned up that path.
 The public API already had the right shape:
 
 ```kotlin
@@ -102,7 +102,7 @@ private suspend fun writeUtf8FileWithOkio(
 }
 ```
 
-The important line is not the Okio import. It is the shape around it: `rows.collect`, then
+The important line is not the Okio import. It is the structure around it: `rows.collect`, then
 `ensureActive()`, then one row into a buffered sink. This keeps the export pipeline responsive
 to cancellation while avoiding a detour through `Writer.write(...)` for UTF-8 files.
 

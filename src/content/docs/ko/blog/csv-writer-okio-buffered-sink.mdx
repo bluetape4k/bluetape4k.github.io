@@ -1,6 +1,6 @@
 ---
 title: "CSV Writer가 모래주머니를 벗었을 때"
-description: bluetape4k-csv의 Flow 기반 UTF-8 파일 writer를 Okio BufferedSink 경로로 바꿔 큰 CSV export를 약 3.25배 빠르게 만든 이야기입니다.
+description: bluetape4k-csv의 Flow 기반 UTF-8 파일 writer를 Okio BufferedSink 경로로 바꿔 큰 CSV export를 약 3.25배 빠르게 만든 과정입니다.
 sidebar:
   order: -202605290827
 blog:
@@ -37,7 +37,7 @@ suspend fun writeFile(
 ): Long
 ```
 
-맞다. `FlowCsvWriter`는 coroutine 기반 API다. 이게 중요하다. writer는 export 전체를 메모리에 모을
+맞다. `FlowCsvWriter`는 coroutine 기반 API다. 이게 중요하다. writer가 export 전체를 메모리에 모을
 필요가 없다. `Flow`에서 row 하나를 받고, 그 row를 쓰고, cancellation을 확인한 뒤 다음 row로 가면 된다.
 
 <figure class="bt4k-architecture">
@@ -101,14 +101,14 @@ private suspend fun writeUtf8FileWithOkio(
 }
 ```
 
-중요한 줄은 Okio import 자체가 아니다. 주변 모양이 중요하다. `rows.collect`, `ensureActive()`,
+중요한 줄은 Okio import 자체가 아니다. 주변 구조가 중요하다. `rows.collect`, `ensureActive()`,
 그리고 row 하나를 buffered sink로 밀어 넣는 구조다. 이렇게 하면 export pipeline은 cancellation에
 반응하면서도 UTF-8 파일 경로에서는 `Writer.write(...)` 우회를 피한다.
 
 ## CSV는 그렇게 순하지 않다
 
 CSV 쓰기는 지루해 보이지만, empty string, 앞뒤 공백, embedded quote, CRLF field, TSV variant가
-들어오는 순간 바로 재미있어진다. fast path가 "comma로 join하면 되겠지"가 될 수 없는 이유다.
+들어오는 순간 바로 까다로워진다. fast path가 "comma로 join하면 되겠지"가 될 수 없는 이유다.
 
 내부 writer는 기존 `DelimitedWriter` 의미를 그대로 지킨다.
 
@@ -136,7 +136,7 @@ private fun writeQuoted(s: String) {
 작은 요령은 chunked write다. 대부분의 field text는 slice 단위로 sink에 들어간다. quote 문자만
 doubled quote byte로 바뀐다. 정상 문자를 하나씩 작은 호출로 보내지 않는다.
 
-행동은 테스트로 잠갔다.
+동작은 테스트로 잠갔다.
 
 | Case | Expected behavior |
 |---|---|
