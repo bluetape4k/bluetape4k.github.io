@@ -23,7 +23,7 @@ covered `LeaderElector`, `SuspendLeaderElector`, `LeaderElectionOptions`, and `L
 
 This post asks a slightly different question: must there always be exactly one leader? Not always. Some work, such
 as schema migration, should truly run once. Other work, such as aggregating hundreds of tenants, is too slow with one
-worker and too risky if every replica joins at once. `LeaderGroupElector` handles that middle ground by allowing
+worker and too risky when every replica joins at once. `LeaderGroupElector` handles that middle ground by allowing
 at most N concurrent leaders.
 
 There is another question too: what if the best node is not the one that acquired a lock first? You may want
@@ -40,7 +40,7 @@ throughput. These jobs often want "some, but not too many" workers:
 - poll external APIs while respecting a rate limit;
 - run long maintenance work with at most N cluster participants.
 
-`LeaderGroupElector` assigns a fixed number of slots to one `lockName`. A node that acquires a slot runs the action. A node
+`LeaderGroupElector` assigns a fixed number of slots for one `lockName`. A node that acquires a slot runs the action. A node
 that cannot acquire a slot waits or skips. The name still says leader, but the mechanism is closer to a distributed
 semaphore.
 
@@ -198,14 +198,14 @@ The three models answer different questions.
 |---|---|---|
 | Schema migration, daily settlement, or webhook polling must run once | `LeaderElector` / `SuspendLeaderElector` | A single lock gives the simplest skip-on-contention model |
 | Several workers may run, but cluster-wide concurrency needs a hard cap | `LeaderGroupElector` / `SuspendLeaderGroupElector` | `maxLeaders` slots bound concurrent execution |
-| The execution node should depend on recent success, idle time, health, or capacity | `StrategicLeaderElector` / `StrategicSuspendLeaderElector` | Candidate registry plus strategy selects one node instead of lock first-arrival |
+| The execution node should depend on recent success, idle time, health, or capacity | `StrategicLeaderElector` / `StrategicSuspendLeaderElector` | Candidate registry plus strategy selects one node instead of first-arrival lock contention |
 | Tenants need independent leaders | Tenant-scoped elector plus single or group API | Namespacing turns `tenantId:lockName` into separate elections |
 | Metrics or post-processing need to distinguish skipped from action-null | `LeaderRunResult` API | `Elected(null)` and `Skipped` stay separate |
 
 In practice, start with single-leader election. Move to group election when throughput becomes the pressure. Move to
 strategic election when "any node" is no longer good enough and the selected node must reflect health, capacity, or history.
-Strategic election can look attractive early, but it also means operating candidate heartbeats, TTL, consistency, and
-score interpretation from day one.
+Strategic election can look attractive early, but it also means operating candidate heartbeats, TTL, read consistency,
+and score interpretation from day one.
 
 ## References
 

@@ -48,7 +48,7 @@ if (result == null) {
 
 The important part is `null`. When the node is not elected, the call skips without throwing. This is
 the familiar ShedLock-style skip semantics: contention is not an application error. If every missed
-lock becomes an error log, the next real incident has to wave from inside a pile of noise.
+lock becomes an error log, the signal from the next real incident gets buried in noise.
 
 The base `runIfLeader` contract is intentionally small.
 
@@ -74,8 +74,8 @@ Source:
 
 ## Repository Map
 
-`bluetape4k-leader` moved out of `bluetape4k-projects` because the surface area is not small.
-The core API is compact, but production use pulls in backend parity, lease semantics, Spring/Ktor
+`bluetape4k-leader` moved out of `bluetape4k-projects` because its scope is broad.
+The core API is compact, but production use brings backend parity, lease semantics, Spring/Ktor
 integration, metrics, examples, and benchmarks.
 
 <figure class="bt4k-architecture">
@@ -97,8 +97,8 @@ ZooKeeper as stable backends. DynamoDB, etcd, Consul, and Kubernetes Lease are p
 
 ## Execution Models Matter
 
-If all you need is annotation-based scheduled-job protection, several tools can help. The extra
-concern in `bluetape4k-leader` is not forcing service code into one execution model.
+If all you need is annotation-based scheduled-job protection, several tools can help. The point of
+`bluetape4k-leader` is that service code should not be forced into one execution model.
 
 Different Kotlin/JVM services reach leader election from different places.
 
@@ -126,7 +126,7 @@ Source:
 ## Compared With ShedLock
 
 ShedLock is a practical tool for preventing duplicate scheduled-job execution. `bluetape4k-leader`
-keeps that familiar skip-on-contention behavior, but the target surface is wider than protecting a
+keeps that familiar skip-on-contention behavior, but its scope is wider than protecting a
 Spring scheduled method.
 
 | Topic | ShedLock behavior | bluetape4k-leader behavior |
@@ -142,12 +142,12 @@ Spring scheduled method.
 
 So if the only problem is one Spring scheduled method, the mental model overlaps with ShedLock.
 If the same service also has coroutine workers, tenant-specific pollers, N-slot work distribution,
-Kubernetes Lease-backed operators, and Ktor scheduling, `bluetape4k-leader` gives those paths a
+Kubernetes Lease-backed operators, or Ktor scheduling, `bluetape4k-leader` gives those paths a
 shared vocabulary.
 
 ## Examples Show the Real Use Cases
 
-Each of the six examples targets one operational failure mode. They are the fastest way to understand
+Each of the six examples targets one operational failure mode. They are a direct way to understand
 what the library actually protects against.
 
 **Batch Scheduler** — A nightly settlement job running once per replica instead of once per cluster.
@@ -219,7 +219,7 @@ Part 5 will go deeper on backend choice, but the first-pass rule is enough for o
 
 ## Closing
 
-Leader election is less about the grand phrase "distributed systems" and more about one practical
+Leader election is less about the grand phrase "distributed systems" and more about a practical
 question: should this replica run this one piece of work right now?
 
 Scheduled jobs, migrations, pollers, cache warmers, and operator reconcile loops all ask that

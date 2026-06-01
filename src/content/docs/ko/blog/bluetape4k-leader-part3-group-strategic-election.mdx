@@ -1,6 +1,6 @@
 ---
 title: "Bluetape4k Leader Part 3: Multi-leader와 전략 선출"
-description: LeaderGroupElector가 slot-token TTL 세마포어로 N개 동시 리더를 허용하는 방식, StrategicLeaderElector가 후보 레지스트리와 전략으로 실행할 노드를 고르는 방식, 그리고 단일/그룹/전략 선출 선택 기준.
+description: LeaderGroupElector가 slot-token TTL 세마포어로 N개 동시 리더를 허용하는 방식, StrategicLeaderElector가 후보 레지스트리와 전략으로 실행할 노드를 고르는 방식, 그리고 단일/그룹/전략 선출의 선택 기준.
 sidebar:
   order: -202606012000
 blog:
@@ -12,7 +12,7 @@ blog:
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/bluetape4k-leader-part3-hero.png" alt="로봇 서비스 노드들이 세마포어 슬롯과 전략 선출 장치 사이에서 복수 리더와 후보 점수 선출을 비교하는 3D 작업대 일러스트" loading="eager" />
-  <figcaption>어떤 일은 한 명으로는 느리고, 모두에게 맡기면 위험합니다. 그 중간 지점이 group election입니다.</figcaption>
+  <figcaption>어떤 일은 한 명으로는 느리고, 모두에게 맡기면 위험합니다. 그 중간 지점에 group election이 있습니다.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-06-01 · bluetape4k-leader series · Part 3</p>
@@ -41,16 +41,16 @@ migration처럼 진짜 한 번만 실행해야 하는 작업도 있지만, 200�
 - 오래 걸리는 maintenance task를 cluster 안에서 N개까지 허용하기
 
 여기서 `LeaderGroupElector`는 `maxLeaders`개 slot을 둡니다. slot을 얻은 노드만 action을 실행하고, slot이
-가득 차면 caller는 기다리거나 skip합니다. 이름은 leader지만, 동작 방식은 분산 세마포어에 가깝습니다.
+가득 차면 호출자는 기다리거나 skip합니다. 이름은 leader지만, 동작 방식은 분산 세마포어에 가깝습니다.
 
 <figure class="bt4k-architecture">
   <img src="/assets/bluetape4k-leader-group-semaphore-01.png" alt="LeaderGroupElector slot-token semaphore with maxLeaders, active slots, wait or skip path, release and expiry path" loading="lazy" />
-  <figcaption>`LeaderGroupElector`는 `lockName` 하나에 최대 `maxLeaders`개의 slot token을 붙입니다. token을 얻은 caller만 action을 실행합니다.</figcaption>
+  <figcaption>`LeaderGroupElector`는 `lockName` 하나에 최대 `maxLeaders`개의 slot token을 붙입니다. token을 얻은 호출자만 action을 실행합니다.</figcaption>
 </figure>
 
 ## Group election: slot-token TTL 세마포어
 
-핵심 옵션은 많지 않습니다.
+핵심 옵션은 단순합니다.
 
 ```kotlin
 LeaderGroupElectionOptions(
@@ -61,8 +61,8 @@ LeaderGroupElectionOptions(
 ```
 
 `maxLeaders`는 동시에 실행할 수 있는 action 수입니다. `waitTime`은 slot 획득을 얼마나 기다릴지 정하고,
-`leaseTime`은 slot token이 얼마 동안 유지될지 정합니다. action이 정상 종료되면 token은 release되고,
-노드가 죽거나 release하지 못하면 TTL 만료가 안전망이 됩니다.
+`leaseTime`은 slot token이 얼마 동안 유지될지 정합니다. action이 정상 종료되면 token은 해제되고,
+노드가 죽거나 해제하지 못하면 TTL 만료가 안전망이 됩니다.
 
 blocking API는 Part 2의 `LeaderElector`와 비슷합니다.
 
@@ -103,7 +103,7 @@ slot마다 owner, TTL, release/expiry 의미가 따라붙기 때문입니다. RE
 streaming 계열 `Flux<T>`/`Flow<T>`도 group lease extension 의미가 정의되지 않아 0.3.1 범위 밖입니다.
 
 그래서 group election에서는 `leaseTime`을 action 시간보다 충분히 길게 잡고, action 시간이 길거나 들쭉날쭉하다면
-작업을 더 작은 chunk로 나누는 편이 안전합니다. TTL은 "정상 작업 시간을 표현하는 값"이지 "아무렇게나 오래
+작업을 더 작은 단위로 나누는 편이 안전합니다. TTL은 "정상 작업 시간을 표현하는 값"이지 "아무렇게나 오래
 잡아도 되는 보험"이 아닙니다.
 
 관련 소스:
@@ -142,7 +142,7 @@ CandidateInfo(
 )
 ```
 
-전략은 교체 가능한 plug-in입니다.
+전략은 교체 가능한 플러그인입니다.
 
 | 전략 | 기준 |
 |---|---|
@@ -159,7 +159,7 @@ score 기반 전략에는 기본 scorer가 있습니다.
 | `RecentSuccessScorer` | 최근 성공 이력이 좋은 노드 |
 | `WeightedScorer` | 여러 scorer의 가중 합이 높은 노드 |
 
-예제의 `strategic-election` module은 readiness, 성공률, idle time을 합쳐 maintenance node를 선택합니다.
+예제의 `strategic-election` 모듈은 readiness, 성공률, idle time을 합쳐 maintenance node를 선택합니다.
 
 ```kotlin
 val strategy = ScoredElectionStrategy(
@@ -202,7 +202,7 @@ val result = election.runIfLeader("service-maintenance", strategy) {
 | 결과 관측, metric, 후처리에서 skip과 action-null을 구분해야 함 | `LeaderRunResult` API | `Elected(null)`과 `Skipped`를 분리함 |
 
 실무에서는 보통 단일 leader에서 시작합니다. 처리량이 부족하면 group으로 넓히고, "아무나"가 아니라 "조건이 좋은
-노드"가 필요해질 때 strategic으로 넘어갑니다. 처음부터 전략 선출로 시작하면 그럴듯해 보일 수는 있습니다. 대신
+노드"가 필요해질 때 strategic으로 넘어갑니다. 처음부터 전략 선출로 시작하면 그럴듯해 보일 수 있습니다. 대신
 후보 heartbeat, TTL, 일관성, scorer 해석까지 함께 운영해야 합니다. 멋져 보인다고 운영 비용이 사라지지는 않습니다.
 
 ## 참고자료
@@ -226,7 +226,7 @@ val result = election.runIfLeader("service-maintenance", strategy) {
 
 ## 마무리
 
-Part 2의 핵심은 caller 실행 모델에 맞는 elector를 고르는 것이었습니다. Part 3의 핵심은 실행 권한의 형태를
+Part 2의 핵심은 호출자의 실행 모델에 맞는 elector를 고르는 것이었습니다. Part 3의 핵심은 실행 권한의 형태를
 고르는 것입니다. 하나만 실행할지, N개까지 허용할지, 아니면 후보를 점수화해서 실행할 노드를 고를지 선택해야 합니다.
 
 다음 Part 4에서는 이 API를 직접 호출하지 않고 Spring Boot와 Ktor 통합으로 끌어올립니다. `@LeaderElection`,
