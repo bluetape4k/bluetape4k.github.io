@@ -1,6 +1,6 @@
 ---
-title: Introduction to the Bluetape4k Ecosystem
-description: Part 1 of the Bluetape4k introduction series, mapping the ecosystem by application, domain capability, data, infrastructure, and foundation layers.
+title: Bluetape4k Ecosystem at a Glance
+description: Part 1 of the Bluetape4k introduction series, mapping the ecosystem through application, domain capability, data, infrastructure, and foundation layers.
 sidebar:
   order: -202605200000
 blog:
@@ -17,11 +17,12 @@ blog:
 
 <p class="bt4k-post-meta">Part 1 · Ecosystem overview</p>
 
-Bluetape4k is a Kotlin/JVM library ecosystem for backend services. It is not a single framework
-that tries to own the whole application. It is closer to a set of layer-specific modules that
-Spring Boot 4 and Ktor 3 services can adopt as needed.
+Bluetape4k is a Kotlin/JVM library ecosystem for backend services. It does not try to wrap the
+whole application as one large framework. Instead, it gives Spring Boot 4 and Ktor 3 services a set
+of layer-specific modules they can add where they need them.
 
-This first article is a map. Detailed repository architecture, API examples, and migration paths belong in later parts of the series.
+This first article draws the map. Later parts will go into repository architecture, API examples,
+and adoption paths.
 
 <figure class="bt4k-architecture">
   <img src="/assets/bluetape4k-layer-flow-01.png" alt="Bluetape4k ecosystem layer flow" loading="lazy" />
@@ -30,8 +31,8 @@ This first article is a map. Detailed repository architecture, API examples, and
 
 ## Ecosystem Overview
 
-Bluetape4k can be read as five layers. The table is intentionally compact; the sections below
-describe the main component groups in more detail.
+A practical way to understand Bluetape4k is to split it into five layers. The table below gives the
+overview; the following sections explain what each layer contributes.
 
 <table style="width: 100%; table-layout: fixed;">
   <colgroup>
@@ -80,14 +81,15 @@ describe the main component groups in more detail.
   <figcaption>Each layer groups modules by the problem they solve, not by repository boundary.</figcaption>
 </figure>
 
-The application layer is the service boundary: Spring Boot 4 or Ktor 3. Bluetape4k fills the
-domain, data, infrastructure, and foundation layers underneath that boundary.
+Spring Boot 4 or Ktor 3 owns the application boundary. Bluetape4k fills the domain, data,
+infrastructure, and foundation layers underneath it.
 
 ## Application Layer
 
 ### Spring Boot 4
 
-Purpose: make Bluetape4k data, cache, infrastructure, and testing modules easy to assemble in Spring Boot services.
+Purpose: let Spring Boot services assemble Bluetape4k data, cache, infrastructure, and testing
+modules without hand-wiring the same setup repeatedly.
 
 Modules and roles:
 
@@ -105,7 +107,8 @@ Representative features:
 
 ### Ktor 3
 
-Purpose: provide lightweight coroutine-first service integration for cloud, coordination, and graph capabilities.
+Purpose: let Ktor services use cloud, coordination, and graph capabilities around suspend APIs and
+coroutine clients.
 
 Modules and roles:
 
@@ -125,7 +128,8 @@ Representative features:
 
 ### Leader
 
-Purpose: prevent duplicate execution of batch jobs, schedulers, polling workers, cache warmers, and migration gates in distributed services.
+Purpose: prevent duplicate execution of batch jobs, schedulers, polling workers, cache warmers, and
+migration gates in distributed services.
 
 Modules and roles:
 
@@ -160,7 +164,8 @@ Representative features:
 
 ### Image
 
-Purpose: provide both general JVM image processing and high-throughput libvips processing inside the same ecosystem.
+Purpose: let services choose between ordinary JVM image processing and high-throughput libvips
+processing inside the same ecosystem.
 
 Modules and roles:
 
@@ -178,7 +183,8 @@ Representative features:
 
 ### Text
 
-Purpose: reuse Korean and Japanese tokenization, language detection, and keyword search in Kotlin services.
+Purpose: make Korean and Japanese tokenization, language detection, and keyword search reusable in
+Kotlin services.
 
 Modules and roles:
 
@@ -198,7 +204,8 @@ Representative features:
 
 ### Exposed
 
-Purpose: provide a Kotlin DSL-oriented persistence model and cover JDBC and R2DBC with a consistent repository pattern.
+Purpose: provide a Kotlin DSL-oriented persistence model and put JDBC and R2DBC behind a consistent
+repository pattern.
 
 Modules and roles:
 
@@ -219,7 +226,8 @@ Representative features:
 
 ### GraphDB
 
-Purpose: reduce vendor API differences across graph databases and provide a common abstraction for graph-heavy domains.
+Purpose: reduce vendor API differences across graph databases and give graph-heavy domains a common
+abstraction.
 
 Modules and roles:
 
@@ -239,7 +247,8 @@ Representative features:
 
 ### General Data Modules
 
-Purpose: provide supporting data-access utilities outside the Exposed and GraphDB repositories.
+Purpose: provide data-access utilities that do not belong specifically to the Exposed or GraphDB
+repositories.
 
 Modules and roles:
 
@@ -259,7 +268,7 @@ Representative features:
 
 ### AWS
 
-Purpose: make AWS Java SDK v2 and AWS Kotlin SDK fit Kotlin service patterns.
+Purpose: make AWS Java SDK v2 and AWS Kotlin SDK fit the execution model of Kotlin services.
 
 Modules and roles:
 
@@ -277,7 +286,7 @@ Representative features:
 
 ### Messaging
 
-Purpose: support event-driven services and asynchronous integration.
+Purpose: provide the messaging base for event-driven services and asynchronous integration.
 
 Modules and roles:
 
@@ -295,7 +304,8 @@ Representative features:
 
 ### Cache And Redis
 
-Purpose: provide local cache, distributed cache, and Redis client integration with consistent patterns.
+Purpose: let services handle local cache, distributed cache, and Redis client integration with the
+same set of patterns.
 
 Modules and roles:
 
@@ -313,7 +323,7 @@ Representative features:
 
 ### Observability And Resilience
 
-Purpose: connect metrics, tracing, resilience, and rate limiting to the rest of the ecosystem.
+Purpose: connect metrics, tracing, resilience, and rate limiting with the rest of the ecosystem.
 
 Modules and roles:
 
@@ -350,8 +360,8 @@ Representative features:
 
 ### Coroutines And Virtual Threads
 
-Purpose: let services choose between Kotlin coroutines and Java Virtual Threads depending on
-runtime needs.
+Purpose: let services choose Kotlin coroutines or Java Virtual Threads based on the runtime shape
+they need.
 
 Modules and roles:
 
@@ -368,7 +378,7 @@ Representative features:
 
 ### Testing
 
-Purpose: reduce repeated test setup and make integration testing cheaper.
+Purpose: reduce repeated test setup and make integration tests easier to assemble.
 
 Modules and roles:
 
@@ -386,7 +396,8 @@ Representative features:
 
 ### BOM And Version Governance
 
-Purpose: keep compatible dependency sets available even as repositories evolve independently.
+Purpose: keep compatible dependency sets available even when repositories evolve on separate
+release cadences.
 
 Modules and roles:
 
@@ -402,8 +413,8 @@ Representative features:
 
 ## How The Layers Work Together
 
-In a real service, Spring Boot 4 or Ktor 3 forms the application boundary. Under that boundary,
-teams add Foundation, Data, Infrastructure, and Domain Capability modules as needed.
+In a real service, Spring Boot 4 or Ktor 3 forms the application boundary. Teams then add
+Foundation, Data, Infrastructure, and Domain Capability modules underneath that boundary as needed.
 
 <figure class="bt4k-architecture">
   <img src="/assets/bluetape4k-layer-flow-01.png" alt="Bluetape4k layer flow showing application entrypoints composing foundation, domain, data, and infrastructure modules" loading="lazy" />
@@ -411,11 +422,12 @@ teams add Foundation, Data, Infrastructure, and Domain Capability modules as nee
 </figure>
 
 The usual path starts with the Foundation layer: core utilities, coroutine helpers, testing
-support, and BOM alignment. Then the service adds Data and Infrastructure modules. Domain
-capabilities such as leader election, audit trails, image processing, and text processing are
-added when the product needs them.
+support, and BOM alignment. From there, the service adds Data and Infrastructure modules. Domain
+capabilities such as leader election, audit trails, image processing, and text processing come in
+when the product needs them.
 
-The key idea is that Bluetape4k is not one large framework. It is an ecosystem of small modules
-that can be adopted gradually in existing Spring Boot 4 or Ktor 3 services.
+The key point is that Bluetape4k is not one large framework. It is an ecosystem of small modules
+that existing Spring Boot 4 or Ktor 3 services can adopt gradually.
 
-The next articles will zoom into individual layers and repositories with architecture diagrams and concrete examples.
+The next articles will break down each layer further and look at representative repositories with
+architecture diagrams and concrete examples.
