@@ -1,13 +1,13 @@
 ---
 title: Backend 서비스는 언제 GraphDB를 도입해야 할까?
-description: bluetape4k benchmark 결과를 바탕으로 GraphDB 도입 판단, PostgreSQL recursive traversal, AGE, Neo4j, Memgraph, 그리고 GraphDB가 적합한 use case를 정리합니다.
+description: bluetape4k benchmark 결과를 바탕으로 GraphDB 도입 기준, PostgreSQL recursive traversal, AGE, Neo4j, Memgraph, GraphDB가 잘 맞는 use case를 정리합니다.
 sidebar:
   order: -202605281930
 blog:
   date: 2026-05-28T19:30:00+09:00
   image: /assets/graphdb-adoption-hero.png
   imageAlt: backend service가 relationship-heavy data를 탐색하는 소개용 일러스트
-  cardDescription: GraphDB 도입 판단, PostgreSQL traversal baseline, AGE, Neo4j, Memgraph, 그리고 graph storage가 적합한 use case를 benchmark 결과로 정리합니다.
+  cardDescription: GraphDB 도입 기준, PostgreSQL traversal baseline, AGE, Neo4j, Memgraph, graph storage가 잘 맞는 use case를 benchmark 결과로 정리합니다.
 ---
 
 <figure class="bt4k-blog-hero">
@@ -19,26 +19,26 @@ blog:
 
 
 GraphDB는 관계가 많은 query를 자연스럽게 표현하게 해 준다. `MATCH (a)-[*1..N]->(b)`는 self join이나
-recursive SQL보다 읽기 쉽다. 하지만 도입 판단을 query 문법만 보고 하면 위험하다. GraphDB는 새 운영
-표면, 새 query planner, 새 데이터 적재 방식, 새 index, 새 monitoring 기준, 그리고 종종 relational source
-of truth 옆의 두 번째 저장 모델을 의미한다.
+recursive SQL보다 읽기 쉽다. 하지만 문법이 편하다는 이유만으로 도입하면 위험하다. GraphDB를 넣는다는
+것은 새로 운영할 저장소, query planner, 데이터 적재 방식, index, monitoring 기준을 받아들이는 일이다.
+종종 relational source of truth 옆에 두 번째 저장 모델도 생긴다.
 
 실제 질문은 "graph syntax가 편한가?"가 아니다.
 
 > variable-depth path traversal이 충분히 자주, 충분히 큰 규모로 필요해서 graph 전용 storage와 operation 비용을 감수할 만한가?
 
-최근 bluetape4k graph benchmark 작업은 이 질문을 가정이 아니라 측정 결과로 확인하려는 시도였다.
+최근 bluetape4k graph benchmark는 이 질문을 감으로 답하지 않고 측정 결과로 확인하려는 작업이었다.
 
 <figure class="bt4k-architecture">
   <img src="/assets/graphdb-adoption-latency-chart.png" alt="Neo4j, AGE, PostgreSQL recursive CTE, PostgreSQL iterative traversal을 비교한 authorization inheritance benchmark chart" loading="lazy" />
-  <figcaption>GraphDB 도입 신호는 길고 선택적인 path-shaped traversal에서만 나왔습니다. PostgreSQL은 여러 bounded relational traversal에서 여전히 강했습니다.</figcaption>
+  <figcaption>GraphDB 도입 신호는 길고 선택적인 path-shaped traversal에서만 나왔다. PostgreSQL은 여러 bounded relational traversal에서 여전히 강했다.</figcaption>
 </figure>
 
 ## 무엇을 비교했나
 
 처음 아이디어는 abuser/fraud detection이었다. AGE + Exposed, Exposed, JPA를 비교하고 detection latency와
-성공률을 보자는 방향이었다. 이 domain은 유용하지만, fraud detection은 benchmark를 잘못 설계하면 오해를
-만들기 쉽다. 모든 가능한 path를 찾는 방식으로 만들면 GraphDB도 path explosion을 없애 주지 못한다.
+성공률을 보자는 방향이었다. 이 domain은 쓸모가 있지만, fraud detection benchmark는 설계를 조금만 잘못해도
+오해를 만든다. 모든 가능한 path를 찾게 만들면 GraphDB도 path explosion을 없애 주지 못한다.
 
 그래서 더 강한 시나리오로 authorization inheritance를 선택했다.
 
@@ -46,7 +46,7 @@ of truth 옆의 두 번째 저장 모델을 의미한다.
 user -> group -> group... -> role -> resource
 ```
 
-이 workload는 GraphDB가 관심 가질 만한 성질을 가진다.
+이 workload에는 GraphDB를 검토할 만한 성질이 있다.
 
 - 관계 깊이가 user와 organization 구조에 따라 달라진다.
 - deny edge가 allow edge를 override하므로 path 자체가 의미를 가진다.
@@ -66,11 +66,13 @@ user -> group -> group... -> role -> resource
 | TinkerGraph | In-memory이므로 이번 adoption decision에서는 제외. API/contract benchmark에는 여전히 유용 |
 
 PostgreSQL을 recursive CTE와 iterative traversal로 나눈 것이 중요했다. "GraphDB vs SQL" 비교는 SQL 쪽
-query shape가 약하면 쉽게 불공정해진다. 도입 판단에서는 PostgreSQL도 현실적인 baseline으로 봐야 한다.
+query shape가 약하면 쉽게 불공정해진다. 도입 판단에서는 PostgreSQL도 제대로 된 baseline으로 세워야 한다.
 
 ## GraphDB 코드는 어떤 모습인가
 
-bluetape4k에서는 application code를 domain에 가깝게 유지하면서 backend 구현이 TinkerGraph, Neo4j, Memgraph 같은 graph engine으로 operation을 mapping한다. social-network workshop은 `GraphOperations`로 vertex를 만들고, typed edge로 연결하고, bounded traversal operation을 실행한다.
+bluetape4k에서는 application code를 domain에 가깝게 유지하고, backend 구현이 operation을 TinkerGraph,
+Neo4j, Memgraph 같은 graph engine에 맞게 mapping한다. social-network workshop은 `GraphOperations`로
+vertex를 만들고, typed edge로 연결한 뒤 bounded traversal operation을 실행한다.
 
 ```kotlin
 class SocialNetworkService(
@@ -124,7 +126,7 @@ bluetape4k workshop에는 실행 가능한 GraphDB 예제가 있다.
 
 ## 같은 Traversal을 표현하는 세 가지 방식
 
-이번 benchmark 판단은 GraphDB syntax만 보고 한 것이 아니다. 같은 authorization inheritance 질문을 native
+이번 benchmark 판단은 GraphDB syntax만 보고 내린 것이 아니다. 같은 authorization inheritance 질문을 native
 graph traversal, JDBC recursive CTE, JDBC iterative traversal 세 가지 방식으로 표현했다.
 
 GraphDB/Cypher는 path shape를 명시적으로 드러낸다.
@@ -140,7 +142,7 @@ WHERE NOT 'DENY' IN effects
 RETURN DISTINCT res.id
 ```
 
-JDBC recursive CTE는 PostgreSQL을 source of truth로 유지하면서 SQL이 membership path를 확장하게 한다.
+JDBC recursive CTE는 PostgreSQL을 source of truth로 유지한 채 SQL이 membership path를 확장하게 한다.
 
 ```kotlin
 val sql = """
@@ -177,7 +179,8 @@ connection.prepareStatement(sql).use { statement ->
 }
 ```
 
-JDBC iterative traversal은 recursive SQL을 쓰지 않고 frontier를 한 단계씩 확장한다. 각 step이 selective하고 index를 잘 타면 의외로 빠를 수 있다.
+JDBC iterative traversal은 recursive SQL을 쓰지 않고 frontier를 한 단계씩 확장한다. 각 step이 selective하고
+index를 잘 타면 의외로 빠를 수 있다.
 
 ```kotlin
 var frontier = setOf(userId)
@@ -204,7 +207,7 @@ return allowed - denied
 
 그래서 benchmark에서는 CTE와 iterative traversal을 분리했다. Recursive SQL은 compact하고 set-based다.
 Iterative traversal은 더 단순한 indexed query와 application-side pruning을 쓸 수 있다. Native GraphDB는
-path workload가 충분히 길고 선택적일 때만 운영 비용을 상쇄한다.
+path workload가 충분히 길고 선택적일 때만 운영 비용을 상쇄할 가능성이 생긴다.
 
 ## Small/Medium 데이터는 GraphDB 도입을 정당화하지 못했다
 
@@ -221,16 +224,17 @@ recursive CTE와 iterative traversal이 더 강했다.
 | `deep-inheritance` | `medium` | 604.833 | 9.385 | **2.102** | PostgreSQL iterative |
 | `wide-groups` | `medium` | 250.083 | **1.521** | 3.658 | PostgreSQL CTE |
 
-이 결과는 중요하다. 단순한 이야기를 막기 때문이다. Domain이 graph 모양이라고 해서 곧바로 GraphDB가
-필요한 것은 아니다. 데이터가 작거나, path depth가 짧거나, indexed relational traversal로 충분히 줄일 수
+이 결과가 중요한 이유는 단순한 결론을 막아 주기 때문이다. Domain이 graph 모양이라고 해서 곧바로 GraphDB가
+필요해지는 것은 아니다. 데이터가 작거나, path depth가 짧거나, indexed relational traversal로 충분히 줄일 수
 있는 query라면 PostgreSQL이 더 단순하고 더 빠를 수 있다.
 
-AGE는 특히 좋은 반례였다. AGE는 PostgreSQL 안에서 Cypher syntax를 제공하지만, 이 benchmark에서는 속도
-기반 도입 근거를 만들지 못했다. 편한 표현력과 좋은 실행 성능은 다르다.
+AGE는 좋은 반례였다. PostgreSQL 안에서 Cypher syntax를 제공하지만, 이 benchmark에서는 속도만으로 도입을
+정당화할 근거를 만들지 못했다. 편한 표현력과 좋은 실행 성능은 다르다.
 
 ## Path를 길게 잡으니 GraphDB 신호가 나왔다
 
-다음 단계에서는 데이터 크기와 traversal 길이를 키웠다. adoption probe는 `large` fixture에서 다음 시나리오를 사용했다.
+다음 단계에서는 데이터 크기와 traversal 길이를 키웠다. adoption probe는 `large` fixture에서 다음 시나리오를
+사용했다.
 
 - `long-chain`: 강제로 10-hop target chain을 만든다.
 - `deep-wide`: 더 넓은 fan-out과 cycle을 포함한 12-hop traversal이다.
@@ -242,8 +246,9 @@ AGE는 특히 좋은 반례였다. AGE는 PostgreSQL 안에서 Cypher syntax를 
 | `long-chain` | **12.731** | load failure | timeout &gt;75s | 55.364 | 47.568 | Neo4j Cypher |
 | `deep-wide` | 56.467 | load failure | timeout &gt;75s | **11.596** | 27.836 | PostgreSQL CTE |
 
-여기서 유의미한 신호가 처음 나왔다. `long-chain`에서 Neo4j는 PostgreSQL iterative traversal보다 3.74배,
-PostgreSQL recursive CTE보다 4.35배 빨랐다. 이런 결과라면 GraphDB 추가 평가를 계속할 근거가 된다.
+여기서 처음으로 유의미한 신호가 나왔다. `long-chain`에서 Neo4j는 PostgreSQL iterative traversal보다
+3.74배, PostgreSQL recursive CTE보다 4.35배 빨랐다. 이 정도 결과라면 GraphDB 추가 평가를 계속할 근거가
+된다.
 
 하지만 같은 benchmark는 과도한 일반화를 경고한다. `deep-wide`는 여전히 PostgreSQL CTE가 이겼다. AGE는
 large adoption scenario 두 개 모두 timeout이었다. Memgraph는 smoke parity는 통과했지만 local large fixture
@@ -267,7 +272,8 @@ GraphDB는 아래 조건이 여러 개 동시에 맞을 때 평가할 가치가 
 좋은 후보는 permission inheritance, organization hierarchy exception, dependency/impact analysis, network
 reachability, path-shaped recommendation, shared identifier 기반 fraud ring exploration이다.
 
-나쁜 후보는 단순 ID 조회, 1-hop join, 고정 2-3단계 join, CRUD-heavy OLTP, star schema aggregation, unbounded all-path search다.
+나쁜 후보는 단순 ID 조회, 1-hop join, 고정 2-3단계 join, CRUD-heavy OLTP, star schema aggregation,
+unbounded all-path search다.
 
 Fraud detection도 마찬가지다. GraphDB가 유용한 경우는 shared device cluster나 short money-flow
 convergence처럼 bounded, time-windowed, risk-filtered pattern을 찾을 때다. 모든 path를 제한 없이 찾는
@@ -275,7 +281,7 @@ query에는 맞지 않는다.
 
 ## 실제 서비스에서 어떻게 판단할까
 
-가장 안전한 도입 절차는 단계적이어야 한다.
+가장 안전한 도입 절차는 단계적으로 가는 것이다.
 
 1. PostgreSQL CTE와 iterative traversal baseline부터 만든다.
 2. correctness metric과 latency ranking을 분리한다.
@@ -284,11 +290,11 @@ query에는 맞지 않는다.
 5. 실제 차이가 드러날 만큼 데이터 크기와 path depth를 키운다.
 6. 성공한 latency row뿐 아니라 timeout, load failure도 기록한다.
 
-마지막 항목이 중요하다. Adoption table은 AGE timeout과 Memgraph load failure를 보여 줘야 한다. 실패한
+마지막 항목이 중요하다. Adoption table에는 AGE timeout과 Memgraph load failure도 보여 줘야 한다. 실패한
 candidate를 표 밖으로 숨기면 판단이 실제보다 깔끔해 보인다. 운영 도입은 data loading, query completion,
 operational stability, performance를 함께 봐야 한다.
 
-## TODO: Hybrid 성능 개선 작업
+## 다음 과제: Hybrid 성능 개선 작업
 
 다음 질문은 "GraphDB냐 relational database냐"만이 아니다. 실제 시스템은 보통 hybrid design이 필요하다.
 
@@ -307,4 +313,4 @@ operational stability, performance를 함께 봐야 한다.
 
 > Transactional truth는 relational storage에 두고, hot decision은 cache와 projection으로 빠르게 처리하며, long path traversal이 핵심인 곳에만 native graph engine을 사용한다.
 
-이 방향이 다음 benchmark로 이어갈 가치가 있다.
+이 방향은 다음 benchmark로 이어갈 가치가 있다.
