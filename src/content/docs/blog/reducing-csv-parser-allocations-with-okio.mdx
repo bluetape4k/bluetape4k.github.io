@@ -22,7 +22,7 @@ but it decoded every character before appending field data to a `StringBuilder`.
 UTF-8 CSV streams, the hot path was doing more allocation and decode work than necessary.
 
 Issue [#651](https://github.com/bluetape4k/bluetape4k-projects/issues/651) targeted that path.
-The final PR keeps the public API unchanged, adds an internal Okio-backed lexer for supported
+The final PR kept the public API unchanged, added an internal Okio-backed lexer for supported
 UTF-8 CSV settings, and falls back to the existing reader lexer when the settings are outside
 the fast path.
 
@@ -145,8 +145,8 @@ decoded character length as well.
 | `nativeLexer_medium` | 288.105 ops/s | 668.457 ops/s | 2.32x |
 | `nativeLexer_large` | 17.996 ops/s | 41.484 ops/s | 2.31x |
 
-The public reader and direct lexer measurements point in the same direction. The improvement
-comes from the lexer input path, not from wrapper noise.
+The public reader and direct lexer measurements point in the same direction. The improvement comes
+from the lexer input path, not from wrapper noise.
 
 ## What Did Not Ship
 

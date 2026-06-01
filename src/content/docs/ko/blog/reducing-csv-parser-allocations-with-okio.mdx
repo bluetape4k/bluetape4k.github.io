@@ -1,6 +1,6 @@
 ---
 title: "Okio 세그먼트로 CSV 파서 할당 줄이기"
-description: bluetape4k-csv가 지원 가능한 UTF-8 CSV 파싱을 Okio segment 기반 fast path로 옮겨 CsvRecordReader 처리량을 약 2.3배 개선한 과정입니다.
+description: bluetape4k-csv가 지원되는 UTF-8 CSV 파싱을 Okio segment 기반 fast path로 옮겨 CsvRecordReader 처리량을 약 2.3배 개선한 과정입니다.
 sidebar:
   order: -202605290032
 blog:
@@ -18,8 +18,8 @@ blog:
 <p class="bt4k-post-meta">2026-05-29 · bluetape4k csv performance note</p>
 
 `bluetape4k-projects`의 `bluetape4k-csv` 모듈은 원래 `Reader` 기반 CSV lexer를 사용했다. 구조는
-단순하고 정확했지만, 큰 CSV를 읽을 때 모든 문자를 `Reader`에서 decode한 뒤 `StringBuilder`에
-누적하고 다시 field 문자열로 만드는 흐름이었다.
+단순하고 정확했지만, 큰 CSV를 읽을 때는 모든 문자를 `Reader`에서 decode한 뒤 `StringBuilder`에
+누적하고 다시 field 문자열로 만드는 흐름이 반복됐다.
 
 Issue [#651](https://github.com/bluetape4k/bluetape4k-projects/issues/651)의 목표는 이 경로의
 allocation을 줄이고, 특히 큰 CSV workload에서 throughput을 끌어올리는 것이었다. 결론부터 말하면
@@ -60,7 +60,7 @@ OkioCsvLexer(input.source().buffer(), settings, skipHeaders)
 ```
 
 이것만으로도 "문자 단위 decode 후 append" 경로는 피할 수 있다. 하지만 단순 byte loop는 정확성은
-좋았지만 성능 개선폭이 작았다. large lexer 기준으로는 약 22% 개선에 그쳤다.
+좋았어도 성능 개선폭이 작았다. large lexer 기준으로는 약 22% 개선에 그쳤다.
 
 두 번째 실험은 Okio의 segment 구조를 더 직접 활용하는 것이었다. `Buffer.UnsafeCursor`는 내부 segment
 byte array를 read-only로 순회할 수 있다. 이름 그대로 조심해서 써야 하지만, 이번 케이스에서는
@@ -108,9 +108,9 @@ private fun Buffer.indexOfAnyByteUnsafe(targets: ByteArray): Long {
 }
 ```
 
-중요한 점은 cursor를 write 용도로 쓰지 않았다는 것이다. source buffer의 segment를 읽기만 하고,
+중요한 점은 cursor를 write 용도로 쓰지 않았다는 것이다. source buffer의 segment는 읽기만 하고,
 terminator 앞 payload는 `fieldBuffer.write(source.buffer, offset)`로 옮긴다. 그래서 scan은 segment
-위에서 빠르게 하고, field decode는 field가 끝난 뒤 한 번만 수행한다.
+위에서 빠르게 끝내고, field decode는 field가 끝난 뒤 한 번만 수행한다.
 
 ## 동작을 지키는 안전장치
 
@@ -194,7 +194,7 @@ public reader 결과가 우연인지 확인하려면 내부 lexer끼리도 비�
 `bluetape4k-csv`에는 이미 `FlowCsvWriter.writeFile(rows: Flow<Iterable<*>>)` 형태가 있어서 API는
 streaming에 가깝다. 다만 내부는 `OutputStreamWriter`와 `Writer.write(...)` 중심이다.
 
-UTF-8 파일 저장 경로라면 `BufferedSink` 기반 fast path를 둘 수 있다. 행 단위로 `String`을 크게
+UTF-8 파일 저장 경로라면 `BufferedSink` 기반 fast path를 둘 수 있다. 행 단위로 큰 `String`을
 만들지 않고, delimiter/quote/line separator를 byte로 쓰고, 필드 payload만 필요한 시점에 UTF-8로
 sink에 밀어 넣는 방식이다.
 
