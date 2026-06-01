@@ -1,0 +1,242 @@
+---
+title: "Bluetape4k Leader Part 3: Multi-leader와 전략 선출"
+description: LeaderGroupElector가 slot-token TTL 세마포어로 N개 동시 리더를 허용하는 방식, StrategicLeaderElector가 후보 레지스트리와 전략으로 실행할 노드를 고르는 방식, 그리고 단일/그룹/전략 선출 선택 기준.
+sidebar:
+  order: -202606012000
+blog:
+  date: 2026-06-01T20:00:00+09:00
+  image: /assets/bluetape4k-leader-part3-hero.png
+  imageAlt: 로봇 서비스 노드들이 세마포어 슬롯과 전략 선출 장치 사이에서 복수 리더와 후보 점수 선출을 비교하는 3D 작업대 일러스트
+  cardDescription: "리더 한 명으로 부족할 때: group slot과 candidate strategy로 실행 권한을 나누는 방법."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-leader-part3-hero.png" alt="로봇 서비스 노드들이 세마포어 슬롯과 전략 선출 장치 사이에서 복수 리더와 후보 점수 선출을 비교하는 3D 작업대 일러스트" loading="eager" />
+  <figcaption>어떤 일은 한 명으로는 느리고, 모두에게 맡기면 위험합니다. 그 중간 지점이 group election입니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-01 · bluetape4k-leader series · Part 3</p>
+
+이 글은 `bluetape4k-leader` 시리즈의 3편입니다. [Part 1](/ko/blog/bluetape4k-leader-part1-overview/)에서는
+리더 선출의 기본 모델을 봤고, [Part 2](/ko/blog/bluetape4k-leader-part2-core-apis/)에서는
+`LeaderElector`, `SuspendLeaderElector`, `LeaderElectionOptions`, `LeaderRunResult` 같은 core API를 봤습니다.
+
+이번에는 "리더는 반드시 한 명이어야 하는가?"라는 질문으로 들어갑니다. 답은 상황마다 다릅니다. schema
+migration처럼 진짜 한 번만 실행해야 하는 작업도 있지만, 200개 tenant의 집계를 처리하는 worker라면 한 명만으로는
+너무 느립니다. 반대로 모든 replica가 동시에 달려들면 backend에 먼저 과부하가 걸릴 수 있습니다. 그래서 `LeaderGroupElector`는
+"최대 N개까지만" 실행하는 분산 세마포어 모델을 제공합니다.
+
+그리고 "누가 먼저 락을 잡았는가"보다 "누가 지금 더 적합한가"가 중요한 작업도 있습니다. 최근 실패가 적은
+노드, 여유 capacity가 큰 노드, 오래 쉬었던 노드를 우선하고 싶을 때입니다. 이때는 strategic election을 씁니다.
+락 경쟁 대신 후보 레지스트리와 전략 함수로 실행할 노드를 고릅니다.
+
+## 하나로 부족한 경우
+
+단일 leader election은 단순하고 강합니다. `runIfLeader("job")`는 한 노드에서만 action을 실행합니다.
+문제는 처리량입니다. 예를 들어 다음 작업은 "한 번만"보다 "너무 많지는 않게, 그래도 여러 개"가 더 자연스럽습니다.
+
+- tenant별 집계 job을 동시에 몇 개만 돌리기
+- cache warming을 partition 단위로 나누되 전체 동시 실행 수 제한하기
+- 외부 API polling을 여러 worker가 나눠 하되 rate limit 넘기지 않기
+- 오래 걸리는 maintenance task를 cluster 안에서 N개까지 허용하기
+
+여기서 `LeaderGroupElector`는 `maxLeaders`개 slot을 둡니다. slot을 얻은 노드만 action을 실행하고, slot이
+가득 차면 caller는 기다리거나 skip합니다. 이름은 leader지만, 동작 방식은 분산 세마포어에 가깝습니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-leader-group-semaphore-01.png" alt="LeaderGroupElector slot-token semaphore with maxLeaders, active slots, wait or skip path, release and expiry path" loading="lazy" />
+  <figcaption>`LeaderGroupElector`는 `lockName` 하나에 최대 `maxLeaders`개의 slot token을 붙입니다. token을 얻은 caller만 action을 실행합니다.</figcaption>
+</figure>
+
+## Group election: slot-token TTL 세마포어
+
+핵심 옵션은 많지 않습니다.
+
+```kotlin
+LeaderGroupElectionOptions(
+    maxLeaders = 3,
+    waitTime = 5.seconds,
+    leaseTime = 60.seconds,
+)
+```
+
+`maxLeaders`는 동시에 실행할 수 있는 action 수입니다. `waitTime`은 slot 획득을 얼마나 기다릴지 정하고,
+`leaseTime`은 slot token이 얼마 동안 유지될지 정합니다. action이 정상 종료되면 token은 release되고,
+노드가 죽거나 release하지 못하면 TTL 만료가 안전망이 됩니다.
+
+blocking API는 Part 2의 `LeaderElector`와 비슷합니다.
+
+```kotlin
+val options = LeaderGroupElectionOptions(maxLeaders = 3)
+val groupElection = ExposedJdbcLeaderGroupElector(dataSource, options)
+
+val result: AggregationReport? = groupElection.runIfLeader("tenant-aggregation") {
+    aggregateNextTenantBatch()
+}
+```
+
+coroutine 서비스라면 suspend variant를 씁니다.
+
+```kotlin
+val options = LeaderGroupElectionOptions(maxLeaders = 3)
+val groupElection = ExposedR2DbcSuspendLeaderGroupElector(database, options)
+
+val result = groupElection.runIfLeader("tenant-aggregation") {
+    aggregateNextTenantBatchSuspend()
+}
+```
+
+`runIfLeader`의 `null` 의미는 단일 leader와 같습니다. action이 실행되지 않았거나, action 자체가 `null`을
+반환했을 수 있습니다. 구분이 필요하면 group elector도 `LeaderRunResult` API를 제공합니다.
+
+```kotlin
+when (val result = groupElection.runIfLeaderResult("tenant-aggregation") { drainQueue() }) {
+    is LeaderRunResult.Elected      -> meter.mark("slot.acquired")
+    LeaderRunResult.Skipped         -> meter.mark("slot.skipped")
+    is LeaderRunResult.ActionFailed -> meter.mark("slot.failed")
+}
+```
+
+여기서 중요한 운영 규칙이 하나 있습니다. group slot은 "리더 하나의 lease를 연장한다"보다 더 까다롭습니다.
+slot마다 owner, TTL, release/expiry 의미가 따라붙기 때문입니다. README도 이 경계를 분명히 합니다. 단일 leader
+선출의 `autoExtend`는 opt-in으로 동작하지만, `@LeaderGroupElection`은 아직 auto-extension을 지원하지 않습니다.
+streaming 계열 `Flux<T>`/`Flow<T>`도 group lease extension 의미가 정의되지 않아 0.3.1 범위 밖입니다.
+
+그래서 group election에서는 `leaseTime`을 action 시간보다 충분히 길게 잡고, action 시간이 길거나 들쭉날쭉하다면
+작업을 더 작은 chunk로 나누는 편이 안전합니다. TTL은 "정상 작업 시간을 표현하는 값"이지 "아무렇게나 오래
+잡아도 되는 보험"이 아닙니다.
+
+관련 소스:
+[LeaderGroupElector.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LeaderGroupElector.kt),
+[SuspendLeaderGroupElector.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/coroutines/SuspendLeaderGroupElector.kt),
+[LeaderGroupElectionOptions.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LeaderGroupElectionOptions.kt),
+[LeaderGroupElectionState.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LeaderGroupElectionState.kt)
+
+## 전략 선출: lock race 대신 후보 레지스트리
+
+Group election은 "몇 명까지 실행할 수 있는가"를 해결합니다. Strategic election은 다른 질문입니다.
+"누가 실행하는 것이 가장 좋은가?"
+
+`StrategicLeaderElector`는 락을 먼저 잡은 노드를 실행 대상으로 보지 않습니다. 각 노드가 `CandidateInfo`를
+등록하고, `runIfLeader` 호출 시 후보 목록을 읽은 뒤 `ElectionStrategy`가 단일 selected node를 고릅니다.
+selected node만 action을 실행하고, 나머지 노드는 `null`을 바로 반환합니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-leader-strategic-election-flow-01.png" alt="Strategic election flow from CandidateInfo registration through candidate registry, strategy selection, selected-node execution, skipped nodes, and result update" loading="lazy" />
+  <figcaption>Strategic election은 후보를 먼저 등록하고, 같은 후보 목록에 같은 전략을 적용해 단일 selected node를 계산합니다.</figcaption>
+</figure>
+
+`CandidateInfo`는 선출 판단에 필요한 작은 이력을 담습니다.
+
+```kotlin
+CandidateInfo(
+    nodeId = "node-b",
+    registeredAt = Instant.now(),
+    lastCompletionTime = previousCompletion,
+    successCount = 14,
+    failureCount = 1,
+    metadata = mapOf(
+        "healthPercent" to "86",
+        "availableCapacityPercent" to "88",
+    ),
+)
+```
+
+전략은 교체 가능한 plug-in입니다.
+
+| 전략 | 기준 |
+|---|---|
+| `FifoElectionStrategy` | 가장 먼저 등록된 후보. 동률은 `nodeId` 사전순 |
+| `RandomElectionStrategy(seed)` | 후보 목록을 정렬한 뒤 seed 기반 또는 system random 선택 |
+| `ScoredElectionStrategy(scorer)` | `CandidateScorer`가 계산한 점수가 가장 높은 후보 |
+
+score 기반 전략에는 기본 scorer가 있습니다.
+
+| Scorer | 선호하는 후보 |
+|---|---|
+| `SuccessRateScorer` | 성공률이 높은 노드 |
+| `IdleTimeScorer` | 오래 쉬었던 노드 |
+| `RecentSuccessScorer` | 최근 성공 이력이 좋은 노드 |
+| `WeightedScorer` | 여러 scorer의 가중 합이 높은 노드 |
+
+예제의 `strategic-election` module은 readiness, 성공률, idle time을 합쳐 maintenance node를 선택합니다.
+
+```kotlin
+val strategy = ScoredElectionStrategy(
+    WeightedScorer(
+        ServiceReadinessScorer to 0.50,
+        SuccessRateScorer to 0.35,
+        IdleTimeScorer to 0.15,
+    )
+)
+
+val result = election.runIfLeader("service-maintenance", strategy) {
+    runMaintenance()
+}
+```
+
+전략 선출에서 조심할 점은 일관성입니다. 모든 노드가 같은 후보 목록에 같은 deterministic strategy를 적용하면
+같은 selected node를 계산합니다. 반대로 후보 등록이나 조회 타이밍이 달라지면 selected node가 서로 달라질 수 있습니다.
+분산 환경에서는 candidate TTL, heartbeat 주기, registry 조회 일관성을 설계의 일부로 봐야 합니다.
+`RandomElectionStrategy`도 분산 환경에서는 shared seed 없이는 노드마다 제각각 랜덤 선택을 하게 됩니다.
+
+관련 소스:
+[StrategicLeaderElector.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/StrategicLeaderElector.kt),
+[StrategicSuspendLeaderElector.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/coroutines/StrategicSuspendLeaderElector.kt),
+[CandidateInfo.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/strategy/CandidateInfo.kt),
+[ElectionStrategy.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/strategy/ElectionStrategy.kt),
+[ScoredElectionStrategy.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/strategy/strategies/ScoredElectionStrategy.kt),
+[WeightedScorer.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/strategy/scorers/WeightedScorer.kt),
+[examples/strategic-election](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples/strategic-election)
+
+## 무엇을 선택할까
+
+세 모델은 경쟁 관계라기보다 질문이 다릅니다.
+
+| 상황 | 선택 | 이유 |
+|---|---|---|
+| schema migration, daily settlement, webhook poller처럼 한 번만 실행해야 함 | `LeaderElector` / `SuspendLeaderElector` | 단일 lock으로 skip-on-contention 모델이 가장 단순함 |
+| 여러 worker가 나눠 처리하되 동시 실행 수를 제한해야 함 | `LeaderGroupElector` / `SuspendLeaderGroupElector` | `maxLeaders` slot으로 cluster-wide 상한을 둠 |
+| 최근 성공률, idle time, health, capacity 같은 기준으로 실행 노드를 골라야 함 | `StrategicLeaderElector` / `StrategicSuspendLeaderElector` | lock 선착순 대신 candidate registry와 strategy로 단일 selected node를 선택함 |
+| tenant별로 독립적인 리더가 필요함 | tenant-scoped elector + 단일 또는 group API | `tenantId:lockName`처럼 namespace를 분리함 |
+| 결과 관측, metric, 후처리에서 skip과 action-null을 구분해야 함 | `LeaderRunResult` API | `Elected(null)`과 `Skipped`를 분리함 |
+
+실무에서는 보통 단일 leader에서 시작합니다. 처리량이 부족하면 group으로 넓히고, "아무나"가 아니라 "조건이 좋은
+노드"가 필요해질 때 strategic으로 넘어갑니다. 처음부터 전략 선출로 시작하면 그럴듯해 보일 수는 있습니다. 대신
+후보 heartbeat, TTL, 일관성, scorer 해석까지 함께 운영해야 합니다. 멋져 보인다고 운영 비용이 사라지지는 않습니다.
+
+## 참고자료
+
+- Issue: [#41 Blog Part 3: LeaderGroupElector and strategic election](https://github.com/bluetape4k/bluetape4k.github.io/issues/41)
+- Epic: [#38 Epic: bluetape4k-leader blog series](https://github.com/bluetape4k/bluetape4k.github.io/issues/38)
+- Repository: [bluetape4k-leader](https://github.com/bluetape4k/bluetape4k-leader)
+- README: [README.md](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/README.md)
+- Korean README: [README.ko.md](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/README.ko.md)
+- Group implementations:
+  [Redis Lettuce](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-redis-lettuce/src/main/kotlin/io/bluetape4k/leader/lettuce/LettuceLeaderGroupElector.kt),
+  [Redis Redisson](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-redis-redisson/src/main/kotlin/io/bluetape4k/leader/redisson/RedissonLeaderGroupElector.kt),
+  [Exposed JDBC](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-exposed-jdbc/src/main/kotlin/io/bluetape4k/leader/exposed/jdbc/ExposedJdbcLeaderGroupElector.kt),
+  [Exposed R2DBC](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-exposed-r2dbc/src/main/kotlin/io/bluetape4k/leader/exposed/r2dbc/ExposedR2DbcSuspendLeaderGroupElector.kt),
+  [MongoDB](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-mongodb/src/main/kotlin/io/bluetape4k/leader/mongodb/MongoLeaderGroupElector.kt),
+  [Hazelcast](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-hazelcast/src/main/kotlin/io/bluetape4k/leader/hazelcast/HazelcastLeaderGroupElector.kt)
+- Strategic implementations:
+  [LocalStrategicLeaderElector.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/local/LocalStrategicLeaderElector.kt),
+  [LettuceStrategicLeaderElector.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-redis-lettuce/src/main/kotlin/io/bluetape4k/leader/lettuce/LettuceStrategicLeaderElector.kt),
+  [RedissonStrategicLeaderElector.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-redis-redisson/src/main/kotlin/io/bluetape4k/leader/redisson/RedissonStrategicLeaderElector.kt)
+
+## 마무리
+
+Part 2의 핵심은 caller 실행 모델에 맞는 elector를 고르는 것이었습니다. Part 3의 핵심은 실행 권한의 형태를
+고르는 것입니다. 하나만 실행할지, N개까지 허용할지, 아니면 후보를 점수화해서 실행할 노드를 고를지 선택해야 합니다.
+
+다음 Part 4에서는 이 API를 직접 호출하지 않고 Spring Boot와 Ktor 통합으로 끌어올립니다. `@LeaderElection`,
+`@LeaderGroupElection`, Ktor route/scheduler helper가 어디까지 자동화하고, 어디서부터는 명시적으로 다뤄야
+하는지 봅니다.
+
+## 시리즈 링크
+
+- [Part 1: 리더 선출의 기본 모델](/ko/blog/bluetape4k-leader-part1-overview/)
+- [Part 2: Core API와 실행 모델](/ko/blog/bluetape4k-leader-part2-core-apis/)
+- [Part 3: Multi-leader와 전략 선출](/ko/blog/bluetape4k-leader-part3-group-strategic-election/) — 현재 글
+- Part 4: Spring Boot, Ktor, 관리 라우트 (예정)
+- Part 5: Backend, 운영, 벤치마크 (예정)

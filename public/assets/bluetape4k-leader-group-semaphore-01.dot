@@ -1,0 +1,36 @@
+digraph LeaderGroupSemaphore {
+  graph [rankdir=LR, bgcolor="transparent", nodesep=0.55, ranksep=0.75, splines=ortho]
+  node [shape=box, style="rounded,filled", fontname="Comic Mono", fontsize=11, color="#9fb3c8", fillcolor="#ffffff"]
+  edge [fontname="Comic Mono", fontsize=10, color="#5a7895", arrowsize=0.8]
+
+  caller_a [label="node-a caller"]
+  caller_b [label="node-b caller"]
+  caller_c [label="node-c caller"]
+  caller_d [label="node-d caller"]
+  elector [label="LeaderGroupElector\nmaxLeaders=3", fillcolor="#eef6ff"]
+  semaphore [label="slot-token semaphore", fillcolor="#ecfdf5"]
+  slot1 [label="slot 1\nTTL lease", fillcolor="#dcfce7"]
+  slot2 [label="slot 2\nTTL lease", fillcolor="#dcfce7"]
+  slot3 [label="slot 3\nTTL lease", fillcolor="#dcfce7"]
+  wait [label="skip or wait\nwhen full", fillcolor="#fff7ed"]
+  release [label="release or expiry\nreturns token", fillcolor="#f7fee7"]
+  state [label="state()\nactive / available", fillcolor="#f8fafc"]
+
+  {rank=same; caller_a; caller_b; caller_c; caller_d}
+  {rank=same; slot1; slot2; slot3; wait}
+
+  caller_a -> elector [label="runIfLeader"]
+  caller_b -> elector [label="runIfLeader"]
+  caller_c -> elector [label="runIfLeader"]
+  caller_d -> elector [label="runIfLeader"]
+  elector -> semaphore [label="acquire slot"]
+  semaphore -> slot1 [label="token"]
+  semaphore -> slot2 [label="token"]
+  semaphore -> slot3 [label="token"]
+  semaphore -> wait [label="no token"]
+  slot1 -> release [label="action ends"]
+  slot2 -> release [label="action ends"]
+  slot3 -> release [label="lease expires"]
+  release -> semaphore [label="token returns"]
+  semaphore -> state [label="query"]
+}
