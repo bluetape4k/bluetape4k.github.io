@@ -1,0 +1,310 @@
+---
+title: "Bluetape4k Leader Part 2: Core APIs and Execution Models"
+description: How LeaderElector, SuspendLeaderElector, VirtualThreadLeaderElector, and AsyncLeaderElector differ, what LeaderElectionOptions controls, and when to use LeaderRunResult instead of the nullable runIfLeader return.
+sidebar:
+  order: -202606011900
+blog:
+  date: 2026-06-01T19:00:00+09:00
+  image: /assets/bluetape4k-leader-part2-hero.png
+  imageAlt: Robotic election judges comparing candidate execution models on a Kotlin JVM workbench
+  cardDescription: "Four execution models for one job: blocking, CompletableFuture, coroutine, and virtual thread."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-leader-part2-hero.png" alt="Robotic election judges comparing candidate execution models on a Kotlin JVM workbench" loading="eager" />
+  <figcaption>The execution model should match the caller, not force the caller to change.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-01 · bluetape4k-leader series · Part 2</p>
+
+[Part 1](/blog/bluetape4k-leader-part1-overview/) established the mental model: one lock name, one winner,
+every other node skips. This post goes into the code you actually write. It covers the four elector
+interfaces, `LeaderElectionOptions`, `LeaderRunResult`, tenant namespaces, and state snapshots — the
+complete surface area of `leader-core`.
+
+## The `runIfLeader` Contract
+
+Every elector in `leader-core` exposes at least one method: `runIfLeader`. The contract is simple:
+
+- Only the elected node runs the action.
+- Non-elected nodes return `null` without executing the action.
+- Exceptions thrown by the action propagate to the caller unchanged.
+- The backend lock is released when the action returns, or expires according to the configured lease time.
+
+The blocking interface looks like this:
+
+```kotlin
+interface LeaderElector {
+    fun <T> runIfLeader(
+        lockName: String,
+        action: () -> T,
+    ): T?
+}
+```
+
+The return type is `T?`. When the caller gets `null`, it means the lock was contended and the action was
+not run. This mirrors the ShedLock skip-on-fail semantics: contention is not an error, it is the expected
+concurrent behaviour.
+
+Source:
+[LeaderElector.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LeaderElector.kt)
+
+## When `null` is Ambiguous: `LeaderRunResult`
+
+The nullable return works until the action itself can legitimately return `null`. At that point, the caller
+cannot distinguish "not elected" from "elected, action returned null".
+
+`LeaderRunResult` solves this with a sealed interface:
+
+```kotlin
+sealed interface LeaderRunResult<out T> {
+    data class Elected<out T>(
+        val value: T?,
+        val leaderId: String? = null,
+    ) : LeaderRunResult<T>
+
+    data object Skipped : LeaderRunResult<Nothing>
+
+    data class ActionFailed(val cause: Throwable) : LeaderRunResult<Nothing>
+}
+```
+
+Use `runIfLeaderResult` when you need the distinction:
+
+```kotlin
+when (val result = leaderElector.runIfLeaderResult("batch-job") { processBatch() }) {
+    is LeaderRunResult.Elected      -> log.info { "Ran as leader, value=${result.value}" }
+    LeaderRunResult.Skipped         -> log.debug { "Another node holds the lock, skipping" }
+    is LeaderRunResult.ActionFailed -> log.error(result.cause) { "Action threw" }
+}
+```
+
+`CancellationException` is never wrapped in `ActionFailed`. It propagates directly so coroutine
+structured concurrency is not broken.
+
+Source:
+[LeaderRunResult.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LeaderRunResult.kt)
+
+## Execution Model Matrix
+
+Different parts of a JVM service run in different concurrency models. Leader election should not force a
+model change on the caller.
+
+| Model | Interface | Action type | Return type | Fits |
+|---|---|---|---|---|
+| Blocking | `LeaderElector` | `() -> T` | `T?` | MVC, batch, plain JVM |
+| CompletableFuture | `AsyncLeaderElector` | `() -> CompletableFuture<T>` | `CompletableFuture<T?>` | Java async adapters |
+| Coroutine | `SuspendLeaderElector` | `suspend () -> T` | `T?` | Ktor, R2DBC, WebFlux |
+| Virtual thread | `VirtualThreadLeaderElector` | `() -> T` | `VirtualFuture<T?>` | Java 21 virtual-thread boundaries |
+
+### Blocking
+
+```kotlin
+val result: String? = leaderElector.runIfLeader("report-job") {
+    generateReport()
+}
+```
+
+Use this anywhere the calling thread can block. Spring MVC controllers, Quartz jobs, and plain
+`@Scheduled` methods all fit here.
+
+### CompletableFuture
+
+```kotlin
+val future: CompletableFuture<String?> = asyncLeaderElector.runAsyncIfLeader("report-job") {
+    CompletableFuture.supplyAsync { generateReport() }
+}
+future.thenAccept { result -> log.info { "result=$result" } }
+```
+
+`AsyncLeaderElector` ties the `CompletableFuture` completion to the lock lifecycle. The lock is not
+released until the returned future completes, preventing the action from outliving the lease.
+
+### Coroutine
+
+```kotlin
+val result: String? = suspendLeaderElector.runIfLeader("report-job") {
+    generateReportSuspend()
+}
+```
+
+`SuspendLeaderElector` accepts a `suspend` lambda directly. No wrappers, no `runBlocking`. If the
+coroutine is cancelled while holding the lock, `CancellationException` propagates immediately and the
+lock is released. A cancelled leader holding work is not a graceful shutdown — it is an interrupted one.
+The action must not swallow cancellation.
+
+### Virtual thread
+
+```kotlin
+val future: VirtualFuture<String?> = virtualThreadLeaderElector.runAsyncIfLeader("report-job") {
+    generateReport()
+}
+
+// block the current virtual thread
+val result = future.await()
+
+// or interoperate with Java APIs
+val cf: CompletableFuture<String?> = future.toCompletableFuture()
+```
+
+`VirtualFuture.await()` parks the calling virtual thread without blocking a platform thread. Use
+`toCompletableFuture()` when the result needs to integrate with an existing Java async pipeline.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-leader-runifleader-sequence-01.png" alt="runIfLeader success and skip sequence diagram" loading="lazy" />
+  <figcaption>Leader acquired: action runs and result is returned. Lock contention: null is returned without an error.</figcaption>
+</figure>
+
+Source:
+[AsyncLeaderElector.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/AsyncLeaderElector.kt),
+[SuspendLeaderElector.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/coroutines/SuspendLeaderElector.kt),
+[VirtualThreadLeaderElector.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/VirtualThreadLeaderElector.kt)
+
+## `LeaderElectionOptions` in Depth
+
+All four interfaces accept a `LeaderElectionOptions` parameter. The same options type works across all
+execution models.
+
+| Property | Default | Meaning |
+|---|---|---|
+| `waitTime` | 5s | How long to wait attempting to acquire the lock before giving up |
+| `leaseTime` | 60s | How long the lock is held after the action completes |
+| `nodeId` | JVM process id | Stable identifier for the node holding the lock |
+| `minLeaseTime` | 0s | Minimum time the lock is held even if action completes early |
+| `autoExtend` | `false` | Automatically extend the lease while a long-running action is executing |
+| `useDbTime` | `false` | Use the database server clock instead of the application node clock |
+
+```kotlin
+val options = LeaderElectionOptions(
+    waitTime = 10.seconds,
+    leaseTime = 120.seconds,
+    nodeId = "api-server-1",
+    minLeaseTime = 5.seconds,
+    autoExtend = true,
+)
+```
+
+**`waitTime` vs `leaseTime`** — `waitTime` controls acquisition. If the lock is held by another node and
+`waitTime` expires, `runIfLeader` returns `null`. `leaseTime` controls how long the lock persists in the
+backend store after the action finishes. It prevents a dead node from blocking others indefinitely if it
+never released the lock.
+
+**`minLeaseTime`** — guarantees the lock is held for at least N seconds even when the action completes
+in milliseconds. The backend enforces this via TTL. The calling thread is not parked for that duration;
+the lock simply remains visible to competing nodes in the store.
+
+**`autoExtend`** — relevant for actions that run longer than `leaseTime`. When `true`, a background
+mechanism renews the lease at intervals while the action is running. Use this for long batch jobs where
+a fixed `leaseTime` may expire before the job finishes.
+
+**`useDbTime`** — meaningful for database-backed implementations. Clock skew across nodes can cause a
+recently released lock to appear held depending on which node's clock is consulted. When `useDbTime` is
+`true`, lock timestamps are compared against the database server clock, eliminating per-node skew.
+
+Source:
+[LeaderElectionOptions.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LeaderElectionOptions.kt)
+
+## Tenant Namespaces
+
+`forTenant()` wraps any elector so that every `lockName` is automatically prefixed with a tenant scope.
+The returned elector has the same interface as the original.
+
+The namespace format is `tenant:{tenantId}:{lockName}`:
+
+```
+tenant:acme:report-job
+tenant:beta-corp:report-job
+```
+
+Usage:
+
+```kotlin
+val acmeElector = leaderElector.forTenant("acme")
+val result = acmeElector.runIfLeader("report-job") {
+    generateReportForTenant("acme")
+}
+```
+
+The lock names stored in the backend carry the full prefixed form. Two tenants running the same job name
+do not contend with each other.
+
+Constraints on the tenant id and lock name:
+- The colon character (`:`) is the separator and must not appear in the tenant id or lock name.
+- The combined prefixed name must not exceed 255 characters to stay within typical backend key limits.
+
+The primary use case is SaaS services where each tenant runs the same scheduled job independently.
+Without tenant namespacing, a single `report-job` lock would allow only one tenant to run at a time
+across the entire cluster.
+
+Source:
+[TenantScopedLeaderElectors.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/TenantScopedLeaderElectors.kt)
+
+## State Snapshots
+
+`LeaderElectionState.state(lockName)` returns a `LeaderState` value for observability:
+
+```kotlin
+val s = leaderElector.state("batch-lock")
+if (s.isOccupied) {
+    println("current leader: ${s.leader?.leaderId}")
+}
+```
+
+`LeaderState` carries `lockName`, `status` (`Empty` or `Occupied`), and an optional `leader` lease
+identifying the current lock holder.
+
+The critical contract: **state is a best-effort snapshot**. Do not use it to decide whether to run an
+action. The snapshot can be stale by the time the caller acts on it. Use the atomic `runIfLeader` path
+for all execution decisions.
+
+State snapshots are useful for monitoring dashboards, admin APIs, and diagnostic endpoints where the goal
+is displaying who currently holds leadership — not making a concurrency decision.
+
+Source:
+[LeaderElectionState.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LeaderElectionState.kt),
+[LeaderState.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LeaderState.kt)
+
+## ShedLock Comparison for Kotlin Callers
+
+Part 1 covered the high-level differences. Here is a Kotlin-specific view:
+
+| Concern | ShedLock | bluetape4k-leader |
+|---|---|---|
+| Suspend function action | Needs a wrapper or adapter | `SuspendLeaderElector` takes `suspend` action natively |
+| `CompletableFuture` action | Manual care needed to keep lock alive until future completes | `AsyncLeaderElector` ties future completion to lock lifecycle |
+| Virtual thread action | Usually regular blocking code at the callsite | `VirtualThreadLeaderElector` returns `VirtualFuture` |
+| Cancellation / `CancellationException` | External coroutine scope handles it | Lock is released on cancellation; `CancellationException` re-propagates |
+| Nullable action return value | `true`/`false` result or custom wrapper needed | `LeaderRunResult.Elected` vs `Skipped` carries the distinction |
+| Skip semantics | `@SchedulerLock` skip-on-lock-fail | `runIfLeader` returns `null`; result API returns `Skipped` |
+
+If the only requirement is one `@Scheduled` method in a Spring MVC application, ShedLock is a valid and
+simpler choice. When the service has coroutine workers, per-tenant pollers, `CompletableFuture` chains,
+or virtual-thread jobs running simultaneously, bluetape4k-leader gives them a shared options type, a
+shared result type, and consistent lease semantics across all four execution models.
+
+## References
+
+- Issue: [#40 Blog Part 2: LeaderElector core APIs and execution models](https://github.com/bluetape4k/bluetape4k.github.io/issues/40)
+- Epic: [#38 Epic: bluetape4k-leader blog series](https://github.com/bluetape4k/bluetape4k.github.io/issues/38)
+- Repository: [bluetape4k-leader](https://github.com/bluetape4k/bluetape4k-leader)
+- [`LeaderElector.kt`](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LeaderElector.kt)
+- [`AsyncLeaderElector.kt`](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/AsyncLeaderElector.kt)
+- [`SuspendLeaderElector.kt`](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/coroutines/SuspendLeaderElector.kt)
+- [`VirtualThreadLeaderElector.kt`](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/VirtualThreadLeaderElector.kt)
+- [`LeaderElectionOptions.kt`](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LeaderElectionOptions.kt)
+- [`LeaderRunResult.kt`](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LeaderRunResult.kt)
+
+## Closing
+
+The execution-model choice is usually obvious from where the calling code lives. Blocking services use
+`LeaderElector`. Coroutine services use `SuspendLeaderElector`. The options and result type are the same
+across all four. Part 3 will cover `LeaderGroupElector` — N-slot multi-leader election — and strategic
+election, where the elected node is chosen by rank rather than pure lock contention.
+
+## Series Links
+
+- [Part 1: Repository overview and mental model](/blog/bluetape4k-leader-part1-overview/)
+- [Part 2: Core APIs and execution models](/blog/bluetape4k-leader-part2-core-apis/) — current
+- Part 3: Multi-leader and strategic election (planned)
+- Part 4: Spring Boot, Ktor, and management routes (planned)
+- Part 5: Backends, operations, and benchmarks (planned)
