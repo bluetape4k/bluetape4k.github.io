@@ -1,13 +1,13 @@
 ---
 title: "Ktor CIO가 HTTP 벤치마크를 이상하게 만들었을 때"
-description: io/http HTTP client benchmark에서 Ktor CIO의 느린 숫자가 어떻게 Vert.x pool 병목, fixture 문제, workload별 선택 기준을 드러냈는지 정리한 이야기.
+description: io/http HTTP client benchmark에서 Ktor CIO의 느린 숫자가 어떻게 Vert.x pool 병목, fixture 문제, workload별 선택 기준을 드러냈는지 정리한 글.
 sidebar:
   order: -202605290852
 blog:
   date: 2026-05-29T08:52:00+09:00
   image: /assets/io-http-cio-hero.png
   imageAlt: HTTP client들이 같은 benchmark harness를 통과하는 소개용 일러스트
-  cardDescription: Ktor CIO의 느린 첫 숫자에서 출발해 공정한 benchmark, Vert.x pool 병목 수정, workload별 HTTP client 선택 기준까지 정리한 이야기.
+  cardDescription: Ktor CIO의 느린 초기 숫자에서 출발해 공정한 benchmark, Vert.x pool 병목 수정, workload별 HTTP client 선택 기준까지 정리한 글.
 ---
 
 <figure class="bt4k-blog-hero">
@@ -33,7 +33,7 @@ client가 버티는지 모르면, 추상화는 편의가 아니라 랜덤 선택
 
 <figure class="bt4k-architecture">
   <img src="/assets/io-http-high-latency-throughput-chart-01.png" alt="HTTP client high-latency throughput benchmark chart comparing OkHttp, HC5, Java HttpClient, Vert.x, and Ktor CIO" loading="lazy" />
-  <figcaption>Ktor CIO의 느린 첫 숫자에서 출발해 공정한 benchmark, Vert.x pool 병목 수정, workload별 HTTP client 선택 기준까지 정리한 이야기.</figcaption>
+  <figcaption>Ktor CIO의 느린 초기 숫자에서 출발해 공정한 benchmark, Vert.x pool 병목 수정, workload별 HTTP client 선택 기준까지 정리한 글.</figcaption>
 </figure>
 
 ## 처음에는 CIO가 너무 느렸다
@@ -141,5 +141,5 @@ compatibility라는 숙제도 같이 남았다.
 - [PR #594](https://github.com/bluetape4k/bluetape4k-projects/pull/594): WebFlux fixture and equal-thread CIO comparison
 - [Benchmark report](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/docs/benchmarks/2026-05-21-io-http-client-benchmark.md)
 
-Benchmark는 "내 코드 빠르다"를 증명하는 도구만은 아니다. 가끔은 "방금 본 숫자를 그대로 믿으면
+Benchmark는 "내 코드가 빠르다"를 증명하는 도구만은 아니다. 가끔은 "방금 본 숫자를 그대로 믿으면
 안 된다"를 알려준다. 이번 `io/http` 작업은 그쪽에 가까웠고, 그래서 더 쓸모 있었다.

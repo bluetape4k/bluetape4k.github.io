@@ -1,6 +1,6 @@
 ---
 title: "When Ktor CIO Made HTTP Benchmarks Weird"
-description: A benchmark story about how slow Ktor CIO numbers exposed a Vert.x pool bottleneck, fixture problems, and workload-based HTTP client selection rules.
+description: How slow Ktor CIO numbers exposed a Vert.x pool bottleneck, fixture problems, and workload-based HTTP client selection rules in the io/http benchmark.
 sidebar:
   order: -202605290852
 blog:
@@ -89,7 +89,7 @@ It uses the default CIO behavior and compares a short same-concurrency snapshot.
 ## Final Snapshot
 
 The base `/ping` benchmark is sensitive to connection reuse and local variance. It should not be
-read as a production ranking. It is a same-fixture snapshot.
+read as a production ranking. Treat it as a same-fixture snapshot.
 
 | Client row | `/ping` ops/s |
 |---|---:|
