@@ -19,7 +19,7 @@ blog:
 
 
 지난 3개월 동안 bluetape4k 생태계를 크게 확장하면서 Claude Code와 Codex를 거의 매일 사용했다.
-작업 범위는 단일 애플리케이션이 아니었다. 여러 라이브러리 repository, BOM, Spring Boot 3/4 통합,
+작업 범위는 단일 애플리케이션이 아니었다. 여러 라이브러리 저장소, BOM, Spring Boot 3/4 통합,
 Ktor 예제, Exposed JDBC/R2DBC, AWS, graph, image, leader election, text processing, workshop 문서까지
 이어졌다.
 
@@ -30,9 +30,9 @@ Ktor 예제, Exposed JDBC/R2DBC, AWS, graph, image, leader election, text proces
 
 ## AI가 실제로 도와준 일
 
-먼저 체감한 도움은 자동화였다. GitHub Actions workflow 정비, 여러 repository에 같은 설정을 적용하는
+먼저 체감한 도움은 자동화였다. GitHub Actions workflow 정비, 여러 저장소에 같은 설정을 적용하는
 작업, Dependabot과 dependency governance 점검, release와 build 검증은 사람이 직접 반복하면 금방
-지친다. AI는 이런 작업을 작은 단위로 나누고, repo별 차이를 확인하고, 실패 지점을 다시 좁혀 가는 데
+지친다. AI는 이런 작업을 작은 단위로 나누고, 저장소별 차이를 확인하고, 실패 지점을 다시 좁혀 가는 데
 유용했다.
 
 문서 작업도 달라졌다. KDoc 보강, README 작성, README 영/한 번역, 예제 설명, migration note, GitHub
@@ -48,7 +48,9 @@ Spring Boot 4와 Ktor 3 기반 예제를 구성하거나, Exposed R2DBC 사용 �
 기존 코드, 대안의 장단점을 빠르게 모았다. 덕분에 사람은 선택지의 품질과 프로젝트 적합성에 더 집중할
 수 있었다.
 
-예제 시나리오를 만드는 데도 AI가 강했다. 사용자가 실제로 어떤 흐름을 따라 배우면 좋은지, Spring Boot 예제와 Ktor 예제를 어떻게 나눌지, workshop chapter를 어떤 순서로 확장할지 같은 아이디어를 제안받고 바로 issue와 구현 계획으로 바꿀 수 있었다.
+예제 시나리오를 만드는 데도 AI가 강했다. 사용자가 어떤 흐름을 따라 배우면 좋은지, Spring Boot 예제와
+Ktor 예제를 어떻게 나눌지, workshop chapter를 어떤 순서로 확장할지 아이디어를 제안받았다. 그 아이디어를
+바로 issue와 구현 계획으로 바꿀 수 있었다.
 
 ## 처음 2개월은 협업 자체가 어려웠다
 
@@ -65,7 +67,9 @@ coroutine pattern을 쓰기보다 외부 라이브러리나 일반적인 예제 
 대규모 라이브러리 생태계에서는 "동작하는 코드"만으로 부족하다. "기존 생태계와 같은 방식으로 동작하는
 코드"여야 한다. AI에게 이 차이를 계속 알려 주는 장치가 필요했다.
 
-또 하나의 비용은 토큰 소모였다. 매번 같은 배경, 같은 규칙, 같은 repo 구조, 같은 검증 절차를 다시 설명하는 것은 비효율적이었다. AI가 기억을 유지하지 못한다면, 기억을 외부화하고 다시 불러올 수 있는 구조가 필요했다.
+또 하나의 비용은 토큰 소모였다. 매번 같은 배경, 같은 규칙, 같은 저장소 구조, 같은 검증 절차를 다시
+설명하는 것은 비효율적이었다. AI가 기억을 유지하지 못한다면, 기억을 외부화하고 다시 불러올 수 있는
+구조가 필요했다.
 
 ## 3개월째부터 협업 방식이 안정화됐다
 
@@ -130,7 +134,10 @@ workflow는 먼저 작업 종류를 분류하고, 필요한 산출물과 검증 
 6-Tier code review와 CI gate를 통과해야 한다. 느려 보이지만, 큰 작업에서 잘못된 방향으로 빠르게 가는
 비용을 줄여 줬다.
 
-큰 작업에서는 `superpowers` 방식의 brainstorming, spec, plan을 먼저 만들었다. brainstorming은 문제를 바로 구현으로 밀어 넣기 전에 대안과 위험을 넓게 보게 했고, spec은 무엇을 만들지와 만들지 않을지를 고정했다. plan은 구현 순서, 테스트 전략, 문서 업데이트, CI 영향 범위를 작업 단위로 쪼갰다. AI에게 "잘 만들어 줘"라고 맡기는 대신, 사람이 검토할 수 있는 설계 문서와 실행 계획을 먼저 만드는 방식이었다.
+큰 작업에서는 `superpowers` 방식의 brainstorming, spec, plan을 먼저 만들었다. brainstorming은 문제를
+바로 구현으로 밀어 넣기 전에 대안과 위험을 넓게 보게 했고, spec은 무엇을 만들지와 만들지 않을지를
+고정했다. plan은 구현 순서, 테스트 전략, 문서 업데이트, CI 영향 범위를 작업 단위로 쪼갰다. AI에게
+"잘 만들어 줘"라고 맡기는 대신, 사람이 검토할 수 있는 설계 문서와 실행 계획을 먼저 만드는 방식이었다.
 
 spec과 plan은 한 번 작성하고 끝내지 않았다. 아키텍처, 테스트, 성능, 보안, public API, 문서 관점에서 다시 읽게 했고, Claude Code와 Codex가 서로의 결과를 비판하게 했다. Claude Code CLI가 spec/plan의 빈틈을 찾고, Codex가 그 지적을 현재 repository 구조와 테스트 가능성에 맞게 반영하는 식이었다. 이 상호 리뷰는 특히 대규모 변경에서 "그럴듯하지만 프로젝트에 맞지 않는 설계"를 줄이는 데 도움이 됐다.
 
@@ -150,9 +157,14 @@ spec과 plan은 한 번 작성하고 끝내지 않았다. 아키텍처, 테스�
 
 신규 기능 개발 속도도 빨라졌다. research와 pilot을 먼저 돌려 대안을 좁히고, 설계와 테스트 방향을 잡은 뒤 구현에 들어가니 시행착오가 줄었다. AI는 메인 코드와 테스트 구현뿐 아니라 코드 리뷰와 문서화까지 연결해서 도와줬다.
 
-Benchmark를 더 자주 만들 수 있었던 것도 효과였다. 같은 문제를 여러 방식으로 구현해 보고 처리량, latency, allocation, coroutine/virtual thread 차이, cache 전략, 직렬화 방식 같은 기준으로 비교했다. AI는 benchmark fixture와 반복 측정 코드를 빠르게 구성하고 결과를 해석할 관점을 제안했다. 덕분에 "어떤 방식이 더 빠르다"에서 끝나지 않고, 어떤 조건에서는 어떤 방식을 선택해야 하는지 사용자에게 선택 가이드로 제공할 수 있었다.
+Benchmark를 더 자주 만들 수 있었던 것도 효과였다. 같은 문제를 여러 방식으로 구현해 보고 처리량, latency,
+allocation, coroutine/virtual thread 차이, cache 전략, 직렬화 방식 같은 기준으로 비교했다. AI는 benchmark
+fixture와 반복 측정 코드를 빠르게 구성하고 결과를 해석할 관점을 제안했다. 덕분에 "어떤 방식이 더 빠르다"에서
+끝나지 않고, 어떤 조건에서는 어떤 방식을 선택해야 하는지 사용자에게 가이드로 제공할 수 있었다.
 
-예제도 더 다양해졌다. 단순히 API 사용법만 보여주는 예제가 아니라 사용자의 관심사에 따라 어떤 repository를 보면 좋은지, Spring Boot와 Ktor 예제를 어떻게 비교하면 좋은지, Exposed JDBC와 R2DBC를 어떤 순서로 익히면 좋은지 같은 learning path를 만들 수 있었다.
+예제도 더 다양해졌다. 단순히 API 사용법만 보여주는 예제가 아니라 사용자의 관심사에 따라 어떤 저장소를
+보면 좋은지, Spring Boot와 Ktor 예제를 어떻게 비교하면 좋은지, Exposed JDBC와 R2DBC를 어떤 순서로
+익히면 좋은지 같은 learning path를 만들 수 있었다.
 
 무엇보다 여러 repository에서 일관되게 작업할 수 있게 됐다. 대규모 생태계에서 일관성은 기능 수만큼
 중요하다. BOM, dependency management, README 구조, 테스트 스타일, CI workflow, issue와 PR 작성 기준이
@@ -168,7 +180,9 @@ Research, 설계, 계획이 먼저다. 바로 구현을 시키면 빨라 보이�
 가는 비용이 더 크다. AI에게 먼저 조사하게 하고, 대안을 비교하게 하고, 테스트 전략을 정하게 한 뒤
 구현으로 들어가는 쪽이 더 안정적이었다.
 
-AI는 매번 기억이 리셋된다. 그래서 경험을 누적할 인프라가 필요하다. lessons, qmd, wiki, repo-local docs, skill 같은 외부 기억 장치를 만들고, 실제 작업에서 계속 사용해야 한다. 한 번 배운 것을 다음 작업에 반영하지 못하면 AI 협업은 매번 초보 상태로 돌아간다.
+AI는 매번 기억이 리셋된다. 그래서 경험을 누적할 인프라가 필요하다. lessons, qmd, wiki, repo-local docs,
+skill 같은 외부 기억 장치를 만들고, 실제 작업에서 계속 사용해야 한다. 한 번 배운 것을 다음 작업에 반영하지
+못하면 AI 협업은 매번 초보 상태로 돌아간다.
 
 마지막으로, 경험은 skill에 보강해야 한다. lessons는 사건의 기록이고, skill은 다음 작업의 실행 규칙이다. issue, PR, review, 실패한 build, 누락된 테스트에서 얻은 반복 가능한 교훈을 skill에 반영하면 AI는 점점 더 프로젝트에 맞는 동료가 된다.
 

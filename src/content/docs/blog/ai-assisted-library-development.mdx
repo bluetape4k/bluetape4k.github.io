@@ -18,7 +18,7 @@ blog:
 <p class="bt4k-post-meta">2026-05-18 · bluetape4k engineering note</p>
 
 
-Over the last three months, I used Claude Code and Codex almost every day while expanding the
+Over three months, I used Claude Code and Codex almost every day while expanding the
 bluetape4k ecosystem. This was not a single application. The work spanned multiple library
 repositories, BOMs, Spring Boot 3/4 integrations, Ktor examples, Exposed JDBC/R2DBC, AWS, graph,
 image processing, leader election, text processing, and workshop documentation.
@@ -51,7 +51,9 @@ AI helped collect official documentation, local code context, and tradeoffs quic
 spend more time judging the quality of the options and less time gathering the first pile of
 evidence.
 
-AI was also strong at proposing example scenarios. It helped frame what users might want to learn first, how Spring Boot and Ktor examples should be separated, and how workshop chapters could grow over time. Those ideas could then become issues and implementation plans.
+AI was also strong at proposing example scenarios. It helped frame what users might want to learn
+first, how Spring Boot and Ktor examples should be separated, and how workshop chapters could grow
+over time. Those ideas could then become issues and implementation plans.
 
 ## The First Two Months Were Rough
 
@@ -69,7 +71,9 @@ launchers, and coroutine patterns, AI sometimes imported generic examples or ext
 style into the codebase. In a large library ecosystem, "working code" is not enough. The code has
 to fit the ecosystem. AI needed guardrails for that.
 
-Token usage was another cost. Repeating the same background, repository structure, rules, and validation steps in every session was inefficient. If AI cannot keep memory reliably across sessions, the memory has to live outside the session and be easy to reload.
+Token usage was another cost. Repeating the same background, repository structure, rules, and
+validation steps in every session was inefficient. If AI cannot keep memory reliably across sessions,
+the memory has to live outside the session and be easy to reload.
 
 ## Collaboration Stabilized In The Third Month
 
@@ -124,9 +128,15 @@ That mattered because different work sizes need different procedures.
   </section>
 </div>
 
-For example, a small blog text change is classified as Maintenance. The workflow asks whether a spec is needed and skips unnecessary ceremony. It still checks that the site builds, the live page reflects the change, and any repeatable lesson is captured. Small work stays fast, but leaves evidence.
+For example, a small blog text change is classified as Maintenance. The workflow asks whether a spec
+is needed and skips unnecessary ceremony. It still checks that the site builds, the live page reflects
+the change, and any repeatable lesson is captured. Small work stays fast, but leaves evidence.
 
-By contrast, a new Ktor module or Spring Boot auto-configuration change must pass the Full Design gate. Brainstorming explores options, the spec fixes the scope, and the plan breaks down implementation order and tests. Then Claude Code and Codex review the spec and plan from different angles. After implementation, the change must pass 6-Tier code review and CI. This looks slower, but it reduces the cost of moving quickly in the wrong direction.
+By contrast, a new Ktor module or Spring Boot auto-configuration change must pass the Full Design
+gate. Brainstorming explores options, the spec fixes the scope, and the plan breaks down
+implementation order and tests. Then Claude Code and Codex review the spec and plan from different
+angles. After implementation, the change must pass 6-Tier code review and CI. This looks slower, but
+it reduces the cost of moving quickly in the wrong direction.
 
 For large work, I used the `superpowers` style of brainstorming, spec, and plan before implementation. Brainstorming widened the alternatives and risks before coding. The spec locked down what would and would not be built. The plan split implementation order, test strategy, documentation updates, and CI impact into concrete work items. Instead of asking AI to "just build it," I made it produce artifacts a human could review.
 
@@ -148,7 +158,11 @@ New feature development became faster. Research and pilots narrowed the alternat
 implementation. Design and test direction were clearer. AI helped with production code, tests,
 code review, and documentation.
 
-Benchmarks became easier to create and use. I could implement the same problem in multiple ways and compare throughput, latency, allocation, coroutine versus virtual-thread behavior, cache strategies, and serialization approaches. AI helped build benchmark fixtures, repeated measurement code, and interpretation angles. The result was not just "this is faster." It became user-facing guidance on which approach to choose under which conditions.
+Benchmarks became easier to create and use. I could implement the same problem in multiple ways and
+compare throughput, latency, allocation, coroutine versus virtual-thread behavior, cache strategies,
+and serialization approaches. AI helped build benchmark fixtures, repeated measurement code, and
+ways to interpret the results. The result was not just "this is faster." It became user-facing guidance on
+which approach to choose under which conditions.
 
 Examples became more varied. Instead of only showing API calls, the examples could show learning paths: which repository to start with, how to compare Spring Boot and Ktor examples, and how to learn Exposed JDBC and R2DBC in a useful order.
 
