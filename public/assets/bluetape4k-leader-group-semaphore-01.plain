@@ -1,0 +1,28 @@
+graph 1 14.486 5.4444
+node caller_a 0.65278 4 1.3056 0.5 "node-a caller" rounded,filled box #9fb3c8 #ffffff
+node caller_b 0.65278 2.9444 1.3056 0.5 "node-b caller" rounded,filled box #9fb3c8 #ffffff
+node caller_c 0.65278 1.8889 1.3056 0.5 "node-c caller" rounded,filled box #9fb3c8 #ffffff
+node caller_d 0.65278 0.83333 1.3056 0.5 "node-d caller" rounded,filled box #9fb3c8 #ffffff
+node elector 3.7188 2.4167 1.7222 0.5 "LeaderGroupElector\nmaxLeaders=3" rounded,filled box #9fb3c8 #eef6ff
+node semaphore 7.1493 2.4167 1.8889 0.5 "slot-token semaphore" rounded,filled box #9fb3c8 #ecfdf5
+node slot1 10.288 5.1944 0.97222 0.5 "slot 1\nTTL lease" rounded,filled box #9fb3c8 #dcfce7
+node slot2 10.288 4.1389 0.97222 0.5 "slot 2\nTTL lease" rounded,filled box #9fb3c8 #dcfce7
+node slot3 10.288 3.0833 0.97222 0.5 "slot 3\nTTL lease" rounded,filled box #9fb3c8 #dcfce7
+node wait 10.288 2.0278 1.2222 0.5 "skip or wait\nwhen full" rounded,filled box #9fb3c8 #fff7ed
+node release 13.667 3.5972 1.6389 0.5 "release or expiry\nreturns token" rounded,filled box #9fb3c8 #f7fee7
+node state 10.288 0.97222 1.7222 0.5 "state()\nactive / available" rounded,filled box #9fb3c8 #f8fafc
+edge caller_a elector 7 1.3113 3.7824 2.2132 3.7824 3.7222 3.7824 3.7222 3.7824 3.7222 3.7824 3.7222 2.8057 3.7222 2.8057 runIfLeader 2.0816 4.0833 solid #5a7895
+edge caller_b elector 7 0.43056 2.6911 0.43056 2.5913 0.43056 2.5 0.43056 2.5 0.43056 2.5 2.7227 2.5 2.7227 2.5 runIfLeader 2.0816 3.0278 solid #5a7895
+edge caller_c elector 7 0.875 2.1423 0.875 2.2421 0.875 2.3333 0.875 2.3333 0.875 2.3333 2.7218 2.3333 2.7218 2.3333 runIfLeader 2.0816 1.9722 solid #5a7895
+edge caller_d elector 7 1.3113 0.90278 2.2132 0.90278 3.7222 0.90278 3.7222 0.90278 3.7222 0.90278 3.7222 2.0277 3.7222 2.0277 runIfLeader 2.0816 0.91667 solid #5a7895
+edge elector semaphore 4 4.5844 2.4167 4.5844 2.4167 6.0673 2.4167 6.0673 2.4167 "acquire slot" 5.3924 2.5 solid #5a7895
+edge semaphore slot1 7 6.8333 2.673 6.8333 3.3607 6.8333 5.1944 6.8333 5.1944 6.8333 5.1944 9.6647 5.1944 9.6647 5.1944 token 8.7604 5.0417 solid #5a7895
+edge semaphore slot2 7 7.4583 2.6713 7.4583 3.1349 7.4583 4.0694 7.4583 4.0694 7.4583 4.0694 9.6631 4.0694 9.6631 4.0694 token 8.7604 4.0139 solid #5a7895
+edge semaphore slot3 7 8.1006 2.537 9.0255 2.537 10.292 2.537 10.292 2.537 10.292 2.537 10.292 2.6972 10.292 2.6972 token 8.7604 3.0278 solid #5a7895
+edge semaphore wait 4 8.0996 2.2407 8.0996 2.2407 9.5407 2.2407 9.5407 2.2407 "no token" 8.7604 2.1111 solid #5a7895
+edge semaphore state 7 8.1003 2.2037 8.7729 2.2037 9.5556 2.2037 9.5556 2.2037 9.5556 2.2037 9.5556 1.3595 9.5556 1.3595 query 8.7604 1.0556 solid #5a7895
+edge slot1 release 7 10.779 5.1944 11.716 5.1944 13.667 5.1944 13.667 5.1944 13.667 5.1944 13.667 3.986 13.667 3.986 "action ends" 11.998 5.1111 solid #5a7895
+edge slot2 release 7 10.125 3.8835 10.125 3.8434 10.125 3.8148 10.125 3.8148 10.125 3.8148 12.709 3.8148 12.709 3.8148 "action ends" 11.998 4.1528 solid #5a7895
+edge slot3 release 7 10.444 3.3378 10.444 3.4464 10.444 3.5486 10.444 3.5486 10.444 3.5486 12.709 3.5486 12.709 3.5486 "lease expires" 11.998 3.2917 solid #5a7895
+edge release semaphore 7 13.667 3.3449 13.667 2.9956 13.667 2.4074 13.667 2.4074 13.667 2.4074 8.2326 2.4074 8.2326 2.4074 "token returns" 10.288 0.083333 solid #5a7895
+stop

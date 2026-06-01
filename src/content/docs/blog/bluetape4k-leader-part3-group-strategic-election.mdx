@@ -1,0 +1,243 @@
+---
+title: "Bluetape4k Leader Part 3: Multi-leader and Strategic Election"
+description: How LeaderGroupElector uses slot-token TTL semaphores for N concurrent leaders, how StrategicLeaderElector selects the node to run through a candidate registry and strategy, and when to choose single, group, or strategic election.
+sidebar:
+  order: -202606012000
+blog:
+  date: 2026-06-01T20:00:00+09:00
+  image: /assets/bluetape4k-leader-part3-hero.png
+  imageAlt: Robotic service nodes comparing multi-leader semaphore slots and strategic candidate scoring on a 3D workbench
+  cardDescription: "When one leader is too few: group slots and candidate strategies for controlled execution."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-leader-part3-hero.png" alt="Robotic service nodes comparing multi-leader semaphore slots and strategic candidate scoring on a 3D workbench" loading="eager" />
+  <figcaption>Some work is too slow with one node and too risky when every node joins. Group election sits in the middle.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-01 · bluetape4k-leader series · Part 3</p>
+
+This is Part 3 of the `bluetape4k-leader` series. [Part 1](/blog/bluetape4k-leader-part1-overview/)
+covered the repository overview and mental model, while [Part 2](/blog/bluetape4k-leader-part2-core-apis/)
+covered `LeaderElector`, `SuspendLeaderElector`, `LeaderElectionOptions`, and `LeaderRunResult`.
+
+This post asks a slightly different question: must there always be exactly one leader? Not always. Some work, such
+as schema migration, should truly run once. Other work, such as aggregating hundreds of tenants, is too slow with one
+worker and too risky if every replica joins at once. `LeaderGroupElector` handles that middle ground by allowing
+at most N concurrent leaders.
+
+There is another question too: what if the best node is not the one that acquired a lock first? You may want
+to prefer a node with fewer recent failures, more available capacity, or a longer idle time. Strategic election handles
+that case with a candidate registry and a pluggable strategy.
+
+## When One Leader Is Too Few
+
+Single-leader election is simple and strong. `runIfLeader("job")` runs the action on one node only. The tradeoff is
+throughput. These jobs often want "some, but not too many" workers:
+
+- aggregate tenant workloads with a cluster-wide concurrency limit;
+- warm cache partitions without starting every replica at once;
+- poll external APIs while respecting a rate limit;
+- run long maintenance work with at most N cluster participants.
+
+`LeaderGroupElector` assigns a fixed number of slots to one `lockName`. A node that acquires a slot runs the action. A node
+that cannot acquire a slot waits or skips. The name still says leader, but the mechanism is closer to a distributed
+semaphore.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-leader-group-semaphore-01.png" alt="LeaderGroupElector slot-token semaphore with maxLeaders, active slots, wait or skip path, release and expiry path" loading="lazy" />
+  <figcaption>`LeaderGroupElector` attaches up to `maxLeaders` slot tokens to one `lockName`; only callers with a token run the action.</figcaption>
+</figure>
+
+## Group Election as a Slot-token TTL Semaphore
+
+The core option set is small.
+
+```kotlin
+LeaderGroupElectionOptions(
+    maxLeaders = 3,
+    waitTime = 5.seconds,
+    leaseTime = 60.seconds,
+)
+```
+
+`maxLeaders` is the number of actions that may run at the same time. `waitTime` controls how long a caller waits for a
+slot. `leaseTime` controls how long the slot token lives. If the action finishes normally, the token is released. If
+the node dies or fails to release it, TTL expiry is the safety net.
+
+The blocking API mirrors the single-leader shape from Part 2.
+
+```kotlin
+val options = LeaderGroupElectionOptions(maxLeaders = 3)
+val groupElection = ExposedJdbcLeaderGroupElector(dataSource, options)
+
+val result: AggregationReport? = groupElection.runIfLeader("tenant-aggregation") {
+    aggregateNextTenantBatch()
+}
+```
+
+Coroutine services use the suspend variant.
+
+```kotlin
+val options = LeaderGroupElectionOptions(maxLeaders = 3)
+val groupElection = ExposedR2DbcSuspendLeaderGroupElector(database, options)
+
+val result = groupElection.runIfLeader("tenant-aggregation") {
+    aggregateNextTenantBatchSuspend()
+}
+```
+
+The `null` return has the same ambiguity as single-leader `runIfLeader`: either the action did not run, or the action
+itself returned `null`. Group electors also provide the `LeaderRunResult` API when the caller needs to distinguish
+those cases explicitly.
+
+```kotlin
+when (val result = groupElection.runIfLeaderResult("tenant-aggregation") { drainQueue() }) {
+    is LeaderRunResult.Elected      -> meter.mark("slot.acquired")
+    LeaderRunResult.Skipped         -> meter.mark("slot.skipped")
+    is LeaderRunResult.ActionFailed -> meter.mark("slot.failed")
+}
+```
+
+There is one important operational boundary. Extending a single leader's lease is different from extending a group slot.
+Each slot carries its own owner, TTL, release, and expiry semantics. The README draws this boundary explicitly: single-leader
+`autoExtend` is opt-in, but `@LeaderGroupElection` does not support auto-extension yet. Streaming `Flux<T>` / `Flow<T>`
+returns are also outside the 0.3.1 scope because group lease extension has no per-slot stream contract yet.
+
+For group election, choose a `leaseTime` that comfortably covers the action and split long or irregular work into smaller
+chunks where possible. TTL is a model of expected work time, not a free pass to hold slots forever.
+
+Sources:
+[LeaderGroupElector.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LeaderGroupElector.kt),
+[SuspendLeaderGroupElector.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/coroutines/SuspendLeaderGroupElector.kt),
+[LeaderGroupElectionOptions.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LeaderGroupElectionOptions.kt),
+[LeaderGroupElectionState.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LeaderGroupElectionState.kt)
+
+## Strategic Election: Candidate Registry Instead of Lock Race
+
+Group election answers "how many nodes may run?" Strategic election asks a different question: "which node should run
+now?"
+
+`StrategicLeaderElector` does not treat the first lock acquirer as the node that should run. Each node registers a
+`CandidateInfo`. On `runIfLeader`, the elector loads the candidate list and applies an `ElectionStrategy`. The single
+selected node runs the action; all other nodes immediately receive `null`.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-leader-strategic-election-flow-01.png" alt="Strategic election flow from CandidateInfo registration through candidate registry, strategy selection, selected-node execution, skipped nodes, and result update" loading="lazy" />
+  <figcaption>Strategic election registers candidates first, then applies the same strategy to the same candidate list to compute the single selected node.</figcaption>
+</figure>
+
+`CandidateInfo` is the small history object the strategy uses for that decision.
+
+```kotlin
+CandidateInfo(
+    nodeId = "node-b",
+    registeredAt = Instant.now(),
+    lastCompletionTime = previousCompletion,
+    successCount = 14,
+    failureCount = 1,
+    metadata = mapOf(
+        "healthPercent" to "86",
+        "availableCapacityPercent" to "88",
+    ),
+)
+```
+
+Strategies are pluggable.
+
+| Strategy | Criterion |
+|---|---|
+| `FifoElectionStrategy` | Earliest registered candidate; ties by `nodeId` |
+| `RandomElectionStrategy(seed)` | Candidate list sorted by `nodeId`, then seeded or system-random pick |
+| `ScoredElectionStrategy(scorer)` | Candidate with the highest `CandidateScorer` score |
+
+Scored election includes built-in scorers.
+
+| Scorer | Preferred candidate |
+|---|---|
+| `SuccessRateScorer` | Node with the better success rate |
+| `IdleTimeScorer` | Node that has been idle longer |
+| `RecentSuccessScorer` | Node with stronger recent success history |
+| `WeightedScorer` | Node with the best weighted sum across scorers |
+
+The `strategic-election` example combines readiness, success rate, and idle time to select a maintenance node.
+
+```kotlin
+val strategy = ScoredElectionStrategy(
+    WeightedScorer(
+        ServiceReadinessScorer to 0.50,
+        SuccessRateScorer to 0.35,
+        IdleTimeScorer to 0.15,
+    )
+)
+
+val result = election.runIfLeader("service-maintenance", strategy) {
+    runMaintenance()
+}
+```
+
+The main caveat is consistency. When all nodes apply a deterministic strategy to the same candidate list, they compute
+the same selected node. If candidate registration or lookup timing differs, selected nodes may diverge. In distributed
+deployments, candidate TTL, heartbeat cadence, and registry read consistency must be treated as part of the design.
+`RandomElectionStrategy` also needs a shared seed in distributed use; otherwise each node makes its own random choice.
+
+Sources:
+[StrategicLeaderElector.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/StrategicLeaderElector.kt),
+[StrategicSuspendLeaderElector.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/coroutines/StrategicSuspendLeaderElector.kt),
+[CandidateInfo.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/strategy/CandidateInfo.kt),
+[ElectionStrategy.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/strategy/ElectionStrategy.kt),
+[ScoredElectionStrategy.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/strategy/strategies/ScoredElectionStrategy.kt),
+[WeightedScorer.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/strategy/scorers/WeightedScorer.kt),
+[examples/strategic-election](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples/strategic-election)
+
+## Which One Should You Use?
+
+The three models answer different questions.
+
+| Situation | Choose | Why |
+|---|---|---|
+| Schema migration, daily settlement, or webhook polling must run once | `LeaderElector` / `SuspendLeaderElector` | A single lock gives the simplest skip-on-contention model |
+| Several workers may run, but cluster-wide concurrency needs a hard cap | `LeaderGroupElector` / `SuspendLeaderGroupElector` | `maxLeaders` slots bound concurrent execution |
+| The execution node should depend on recent success, idle time, health, or capacity | `StrategicLeaderElector` / `StrategicSuspendLeaderElector` | Candidate registry plus strategy selects one node instead of lock first-arrival |
+| Tenants need independent leaders | Tenant-scoped elector plus single or group API | Namespacing turns `tenantId:lockName` into separate elections |
+| Metrics or post-processing need to distinguish skipped from action-null | `LeaderRunResult` API | `Elected(null)` and `Skipped` stay separate |
+
+In practice, start with single-leader election. Move to group election when throughput becomes the pressure. Move to
+strategic election when "any node" is no longer good enough and the selected node must reflect health, capacity, or history.
+Strategic election can look attractive early, but it also means operating candidate heartbeats, TTL, consistency, and
+score interpretation from day one.
+
+## References
+
+- Issue: [#41 Blog Part 3: LeaderGroupElector and strategic election](https://github.com/bluetape4k/bluetape4k.github.io/issues/41)
+- Epic: [#38 Epic: bluetape4k-leader blog series](https://github.com/bluetape4k/bluetape4k.github.io/issues/38)
+- Repository: [bluetape4k-leader](https://github.com/bluetape4k/bluetape4k-leader)
+- README: [README.md](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/README.md)
+- Korean README: [README.ko.md](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/README.ko.md)
+- Group implementations:
+  [Redis Lettuce](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-redis-lettuce/src/main/kotlin/io/bluetape4k/leader/lettuce/LettuceLeaderGroupElector.kt),
+  [Redis Redisson](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-redis-redisson/src/main/kotlin/io/bluetape4k/leader/redisson/RedissonLeaderGroupElector.kt),
+  [Exposed JDBC](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-exposed-jdbc/src/main/kotlin/io/bluetape4k/leader/exposed/jdbc/ExposedJdbcLeaderGroupElector.kt),
+  [Exposed R2DBC](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-exposed-r2dbc/src/main/kotlin/io/bluetape4k/leader/exposed/r2dbc/ExposedR2DbcSuspendLeaderGroupElector.kt),
+  [MongoDB](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-mongodb/src/main/kotlin/io/bluetape4k/leader/mongodb/MongoLeaderGroupElector.kt),
+  [Hazelcast](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-hazelcast/src/main/kotlin/io/bluetape4k/leader/hazelcast/HazelcastLeaderGroupElector.kt)
+- Strategic implementations:
+  [LocalStrategicLeaderElector.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/local/LocalStrategicLeaderElector.kt),
+  [LettuceStrategicLeaderElector.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-redis-lettuce/src/main/kotlin/io/bluetape4k/leader/lettuce/LettuceStrategicLeaderElector.kt),
+  [RedissonStrategicLeaderElector.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-redis-redisson/src/main/kotlin/io/bluetape4k/leader/redisson/RedissonStrategicLeaderElector.kt)
+
+## Closing
+
+Part 2 was about matching the caller's execution model. Part 3 is about choosing the form of execution authority:
+one node, up to N nodes, or the node selected by a strategy.
+
+Part 4 moves this API into Spring Boot and Ktor integration. It covers `@LeaderElection`, `@LeaderGroupElection`, and
+Ktor route/scheduler helpers: what they automate, and what still deserves explicit control.
+
+## Series Links
+
+- [Part 1: Repository overview and mental model](/blog/bluetape4k-leader-part1-overview/)
+- [Part 2: Core APIs and execution models](/blog/bluetape4k-leader-part2-core-apis/)
+- [Part 3: Multi-leader and strategic election](/blog/bluetape4k-leader-part3-group-strategic-election/) — current
+- Part 4: Spring Boot, Ktor, management routes (planned)
+- Part 5: Backends, operations, benchmarks (planned)
