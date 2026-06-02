@@ -1,6 +1,6 @@
 ---
 title: "Bluetape4k Exposed Part 5: 실전 예제 - 다양한 캐시 전략, 멀티테넌시"
-description: Exposed 위에서 캐시, 멀티테넌시, outbox/idempotency를 얇게 얹어 성능과 운영 기능을 끌어올리는 방법을 설명합니다.
+description: Exposed 위에서 캐시, 멀티테넌시, outbox/idempotency를 얇게 얹어 성능과 운영 기능을 끌어올리는 방법을 설명한다.
 sidebar:
   order: -202605311105
 blog:
@@ -19,10 +19,10 @@ blog:
 
 시리즈 마지막 글에서는 실전 예제를 보겠습니다. 제가 `bluetape4k-exposed`에서 가장 신경 쓴 부분은 Exposed의
 장점인 SQL DSL과 명시적인 transaction 제어를 유지하면서, 서비스 코드에서 반복되는 운영 기능을 쉽게 붙이는
-것이었습니다. 캐시 전략, 멀티테넌시, outbox/idempotency는 모두 직접 만들 수는 있습니다. 문제는 직접 만들기
+것이었습니다. 캐시 전략, 멀티테넌시, outbox/idempotency는 모두 직접 만들 수도 있습니다. 문제는 직접 만들기
 시작하면 repository, service, interceptor, scheduler, metric 코드가 금방 흩어진다는 점입니다.
 
-그래서 저는 이 기능들을 "Exposed를 쓰는 애플리케이션에서 자연스럽게 붙일 수 있는 확장"으로 정리했습니다.
+그래서 저는 이 기능들을 "Exposed를 쓰는 애플리케이션에 자연스럽게 붙일 수 있는 확장"으로 정리했습니다.
 Spring Boot에서는 설정을 줄이고, cache module에서는 read/write 전략을 repository API로 바꾸며, 멀티테넌시
 예제에서는 tenant별 schema/database 전환을 transaction 진입점에 모았습니다. outbox/idempotency도 같은 맥락입니다.
 복잡한 운영 기능을 프레임워크처럼 크게 만들기보다, Exposed transaction 위에 얇게 얹어서 바로 테스트하고
@@ -222,7 +222,7 @@ Spring/Ktor 예제에서는 이 흐름을 Exposed transaction 중심으로 정�
 
 ## 운영 예제에서 봐야 할 것
 
-이제 코드를 볼 때는 "기능이 몇 개 들어 있는가"보다 "Exposed 위에 어느 정도까지 쉽게 얹을 수 있는가"를 보면 됩니다.
+이제 코드를 볼 때는 "기능이 몇 개 들어 있는가"보다 "Exposed 위에 운영 기능을 어느 정도까지 쉽게 얹을 수 있는가"를 보면 됩니다.
 `exposed-workshop/11-high-performance`와 `12-production-integration`은 단순 CRUD 예제에서 한 단계 더 나가도록
 구성했습니다.
 
