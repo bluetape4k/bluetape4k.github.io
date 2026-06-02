@@ -7,163 +7,165 @@ blog:
   date: 2026-05-18T02:00:00+09:00
   image: /assets/ai-collaboration-infrastructure.png
   imageAlt: Manager AI and worker AI agents maintaining skills, qmd, memory, and verification gates together
-  cardDescription: How AGENTS.md, bluetape4k skills, qmd, memory, and hooks help Codex and Claude work with the same standards.
+  cardDescription: How AGENTS.md, bluetape4k skills, qmd, memory, and hooks help Codex and Claude read and verify work against the same standards.
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/ai-collaboration-infrastructure.png" alt="A manager AI and worker AI agents maintaining repository maps, skills, memory, test dashboards, and verification gates together" loading="eager" />
-  <figcaption>The follow-up is less about what AI generated and more about the environment that lets AI keep working with the same standards.</figcaption>
+  <img src="/assets/ai-collaboration-infrastructure.png" alt="Manager AI and worker AI agents maintaining skills, qmd, memory, and verification gates together" loading="eager" />
+  <figcaption>AI collaboration infrastructure is not one prompt. It is a loop of intent, context search, skill routing, execution, verification, and memory promotion.</figcaption>
 </figure>
 
-After reading Eugene Yan's [How to Work and Compound with AI](https://eugeneyan.com/writing/working-with-ai/),
-I wanted to write a follow-up to the previous bluetape4k AI post. The earlier post was about what
-Claude Code and Codex helped build. This one is about the environment that made the work
-repeatable.
+After reading Eugene Yan's
+["How to Work and Compound with AI"](https://eugeneyan.com/writing/working-with-ai/), I wanted to
+write down how bluetape4k actually runs its AI working environment. The previous post was about what
+Claude Code and Codex helped build. This post is about what had to exist around them so that every
+session did not start from zero again.
 
-The fragile part of AI collaboration is often not model quality. It is the surrounding system. If
-the model does not know where to look, it reads the wrong files. If project taste is not encoded
-as configuration, the same corrections come back every session. If verification commands are
-unclear, a plausible explanation can be mistaken for completion. In bluetape4k, I now treat the
-AI environment as part of the codebase.
+At first, I thought a good prompt would be enough. It was not. Once the repositories grew and the
+rules around Kotlin, Spring, Exposed, Ktor, GitHub issues, PRs, lessons, CI, and releases started to
+interlock, prompts alone became too fragile. AI needed the same kind of onboarding docs, working
+procedures, searchable history, and verification gates that a human teammate would need.
 
-The local setup gives Codex and Claude different interfaces but the same operating
-principles. Codex has `~/.codex/config.toml`, `AGENTS.md`, `RTK.md`, `hooks.json`, prompts, skills,
-agents, plugins, and wiki content. In this session, that means 33 prompts, 108 skills, 20 agents,
-and one plugin. Claude has `~/.claude/CLAUDE.md`, `settings.json`, 24 commands, 84 skills, 37
-hooks, and per-project histories.
+In bluetape4k, that responsibility is shared by `AGENTS.md`, `CLAUDE.md`, skills, qmd, memory, and
+hooks. Models keep changing. This working environment survives into the next session.
 
-The counts are not the point. The point is that the next AI session knows where to read rules,
-which procedures to load, and which memory to reuse.
+## `AGENTS.md` and `CLAUDE.md` Are Onboarding Docs
 
-## The Process
+When a human joins a project, you do not just throw a README at them. You explain the code layout,
+branch policy, test style, documentation language, choices to avoid, and old decisions that still
+shape the project. AI needs the same information.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/ai-collaboration-process.svg" alt="Intent, context retrieval, skill routing, execution, verification, and memory feedback loop for AI collaboration" loading="lazy" />
-  <figcaption>The working environment is not a single prompt. It is a loop of intent, context retrieval, skill routing, execution, verification, and durable memory.</figcaption>
-</figure>
+In the bluetape4k workspace, `AGENTS.md` is the primary onboarding document for Codex. It says that
+conversation with the user stays in Korean, while public KDoc, PRs, and commit messages are written
+in English. It records the Git policy: `develop` is the integration branch, and `main` is
+release-only. It also records the Kotlin workflow: inspect references and impact before editing
+Kotlin code; after touching `.kt` files, run IDE diagnostics, optimize imports, resolve deprecations,
+then compile and test the affected modules.
 
-## `AGENTS.md` And `CLAUDE.md` Are Onboarding Docs
+Claude gets the same kind of guidance through `~/.claude/CLAUDE.md`, commands, skills, and hooks.
+Codex gets it through `~/.codex/config.toml`, skills, MCP, native subagents, and repo-local
+`AGENTS.md` files. The tooling is different, but the purpose is the same: onboard each new session
+like a new teammate and promote repeated preferences into durable configuration.
 
-When a new engineer joins a project, we do not hand over only a README. We explain the code
-layout, branch policy, test strategy, document language, forbidden shortcuts, and past decisions.
-AI needs the same onboarding.
+These documents are layered. Global rules live under the home directory. Workspace-wide bluetape4k
+rules live at the workspace root. Each repository can add narrower rules. A Kotlin library repository
+and a blog repository cannot share every detail, so the closest document provides the most specific
+guidance.
 
-The bluetape4k workspace `AGENTS.md` is the primary onboarding document for Codex. It says that
-conversations with me stay in Korean, while public KDoc, PRs, and commit messages are written in
-English. It records the Git policy: `develop` is the integration branch, and `main` is
-release-only. It also defines the Kotlin workflow: before editing Kotlin code, inspect references
-and impact; after touching `.kt` files, run IDE diagnostics, optimize imports, resolve
-deprecations, then compile and test the affected modules.
+## Skills Are Procedures for Repeated Work
 
-Claude gets a similar contract through `~/.claude/CLAUDE.md`, commands, skills, and hooks. The file
-names and hook surfaces differ, but the intent is the same: onboard each new session like a new
-teammate and promote repeated preferences into durable configuration.
+If a prompt says "think this way," a skill says "work through this procedure." Repeated work becomes
+fragile when it is left to a few prompt lines. A skill can say which context to read first, which
+gate to pass, and which verification evidence is required.
 
-Scope matters. Global rules live under the home directory. bluetape4k-wide rules live at the
-workspace root. Repository- or module-specific rules live closer to the files they govern. The
-closer rule is the more specific rule. That structure helps an AI distinguish "all Kotlin
-projects" from "this repository's Kotlin project."
+In bluetape4k, `bluetape4k-workflow` is the first router. It classifies work into lanes such as Full
+Design, Fast Track, Bug Fix, Code Review, and Maintenance, then selects the verification level that
+fits the work.
 
-## Skills Are Procedures For Repeated Work
-
-A prompt is an instruction. A skill is a procedure. If a task repeats often, it becomes a skill.
-
-In bluetape4k, `bluetape4k-workflow` is the first router. It classifies work into lanes such as
-Full Design, Fast Track, Bug Fix, Code Review, and Maintenance, then selects the lightest
-verification level that is still safe.
-
-Below that router are narrower skills. `bluetape4k-design` covers new modules, broad API changes,
-and multi-layer work. `bluetape4k-patterns` covers Kotlin implementation and final checklists.
+More focused skills sit below it. `bluetape4k-design` handles new modules, broad API changes, and
+multi-layer work. `bluetape4k-patterns` handles Kotlin implementation and final checklists.
 `ecc-kotlin-exposed`, `ecc-springboot-kotlin`, `ecc-kotlin-testing`, and `kotlin-coroutines-skill`
-handle Exposed, Spring Boot, testing, and coroutine-specific judgment. `review-delta`, `review-pr`,
-`code-review`, and `bugfix-workflow` handle review and follow-up fixes.
+separate Exposed, Spring Boot, testing, and coroutine-specific judgment. `review-delta`,
+`review-pr`, `code-review`, and `bugfix-workflow` handle review and follow-up fixes.
 
-This keeps me from repeating "also update the README", "watch for deprecated Exposed imports", or
-"prove it with the affected module tests" in every session. Once the task shape is known, the
-relevant skill brings the checklist with it. The result is more stable because the process is
-explicit.
+Instructions like "also update the README," "watch for deprecated Exposed imports," or "prove this
+with affected module tests" are easy to forget when they have to be repeated every time. Loading the
+right skill brings the checklist into the task and makes the verification standard explicit.
 
-## qmd Is The Search Layer For Old Decisions
+## qmd Is the Search Layer for Old Decisions
 
 AI sessions forget easily. Repositories accumulate docs, lessons, issues, PRs, plans, and
-experiments. qmd connects the two.
+experiments. qmd connects those two facts.
 
 In bluetape4k, prior decisions, lessons, specs, plans, and historical context are searched through
-qmd first. Workspace docs live in the `bluetape4k-docs` collection. Personal and cross-project
-knowledge lives in the `wiki` collection. Exact code symbols and filenames still belong to `rg`, but
-questions like "why did we choose this?", "where did we build something similar?", or "did this fail
-before?" are better handled through qmd.
+qmd first. Workspace docs live in the `bluetape4k-docs` collection. Personal or cross-project
+knowledge lives in the `wiki` collection.
 
-That distinction matters. Asking an AI to reread an entire repository is slow and expensive. qmd
-narrows the context first, then the session can descend into code. A good search layer saves the
-context window and carries old judgment into the current task.
+Exact code symbols and filenames are still better handled with `rg`. But questions like "why did we
+choose this?", "where did we build something similar?", or "did this fail before?" are better suited
+to qmd. It narrows the relevant documents first, then the session can descend into code and PR
+history.
 
-## Memory Must Escape The Session
+That difference matters. Asking AI to read the whole repository is expensive and unstable. A search
+layer lets the session find the relevant context first and only read the range needed for the task.
 
-Memory has several layers. Codex and Claude project histories preserve recent session traces.
-Runtime state such as `.omx/state`, `.omx/notepad.md`, and `.omx/plans` helps resume active work.
-But these are transient surfaces.
+## Memory Must Escape the Session
 
-Durable decisions move into the repository. In bluetape4k, specs go under `docs/superpowers/specs`,
-plans under `docs/superpowers/plans`, and lessons under `docs/lessons`. After a work item, a short
-lesson records context, decision, outcome, verification evidence, and guidance for future agents.
-That document helps people, but it helps the next AI session even more: the next session does not
-have to re-infer why a decision was made.
+Claude and Codex both become unstable if session memory is the only source of truth. bluetape4k keeps
+memory in several layers.
 
-The goal is not to store everything. The goal is to avoid paying the same decision cost again.
+Short-lived work state lives in runtime artifacts such as `.omx/state`, `.omx/notepad.md`, and
+`.omx/plans`. Longer-lived design decisions live in `docs/superpowers/specs` and
+`docs/superpowers/plans`. Lessons learned from completed work live in `docs/lessons`.
 
-## Hooks Catch Repeated Mistakes Early
+A lesson does not need to be long. It should record the context, decision, outcome, verification
+evidence, and what the next agent should do differently. That is enough to keep the next AI session
+from re-inferring the same decision.
 
-Rules in markdown are useful, but important rules should eventually become automation. Claude has hooks for sensitive-file blocking, destructive-git guarding, Kotlin checks, Gradle test guards, README sync reminders, keyword detection, and session reminders. Codex uses hooks, skill routing, MCP surfaces, and native subagents for similar control.
+The important part is not storage. The important part is whether the next task reads it. If a lesson
+does not feed a skill, cannot be found through search, and is never read during the next task, it is
+just an old note. Repeated lessons should become skills, `AGENTS.md` rules, hooks, or tests.
 
-Hooks are not a sign that the model is untrusted. Humans also need CI, pre-commit checks, and
-linting. AI needs the same guardrails, especially when moving across many repositories. Blocking
-destructive commands, branch-name mistakes, sensitive files, and workflow drift early improves
-throughput.
+## Hooks Catch Frequent Mistakes Early
 
-## Delegate Only What You Can Verify
+Telling AI to "be careful" is not enough. Humans need CI, pre-commit checks, and linting. AI needs
+guardrails too. Rules that matter repeatedly should become hooks.
 
-Delegating larger work to AI requires clear verification first. In bluetape4k, completion is not
-judged by explanation. For a small change, a targeted test or build check may be enough. If Kotlin
-code changed, IDE diagnostics, import cleanup, deprecation checks, and affected module tests are
-expected. If a public API changed, KDoc and README coverage matter. If GitHub workflow files changed,
-nightly workflow impact is checked too.
+Claude has hooks for sensitive-file blocking, destructive-git guarding, Kotlin checks, Gradle test
+guards, README sync reminders, and keyword detection. Codex uses hooks, native subagents, skill
+routing, and MCP surfaces for similar purposes.
 
-That is what makes delegation practical. Codex native subagents and OMX team mode can run work in
-parallel, but parallelism does not guarantee quality. The bottleneck shifts from implementation
-speed to spec writing and review. Before splitting work, I want to know which files and
-responsibilities each agent owns, which tests prove completion, and how shared-file conflicts are
-reported.
+Hooks are not a sign that the model is untrusted. They are a way to catch common mistakes early.
+Destructive commands, branch-name mistakes, sensitive-file access, workflow drift, and missing tests
+are cheaper to stop during the task than after CI or review finds them.
 
-## Codex And Claude Read The Same Operating System Differently
+## Delegation Needs Verification
 
-I do not treat Codex and Claude as competing tools. I try to make both read the same repository,
-conventions, and lessons.
+Codex native subagents and OMX team mode can run work in parallel. Parallelism does not guarantee
+quality. It changes the bottleneck from implementation speed to ownership and verification: which
+agent owns which files, how the result is checked, and where conflicts are reported.
 
-Codex is governed through `AGENTS.md`, skills, MCP/context-mode, qmd, and native subagents. Claude
-is governed through `CLAUDE.md`, commands, skills, hooks, and project histories. When one side
-discovers a durable lesson, it should move into repository docs or a shared skill so the other side
-can benefit too.
+That is why bluetape4k does not treat an explanation as proof of completion. For a small change, a
+targeted test or build check may be enough. If Kotlin code changed, IDE diagnostics, import cleanup,
+deprecation checks, and affected module tests are expected. If a public API changed, KDoc and README
+coverage matter. If GitHub workflow files changed, nightly workflow impact is checked too.
 
-This changes the way I ask for work. Instead of "edit this file", the request becomes closer to
-"follow this repository workflow, inspect the impact, prove the change with tests, and leave a
-short lesson for the next agent." The goal is not just to use a model. The goal is to build the
-operating system around the model.
+Those rules make delegation usable. Multiple agents can move at once only when the final judgment can
+still rely on verification evidence and a clear change boundary.
 
-## The Remaining Problem
+## Codex and Claude Read the Same Environment Differently
 
-As the environment grows, it can develop duplication and conflict. Skills overlap. Hooks need debugging. Long `AGENTS.md` and `CLAUDE.md` files can bury the rule that actually matters. The AI environment itself needs refactoring.
+In practice, Codex and Claude do not work exactly the same way. Codex is governed through
+`AGENTS.md`, skills, MCP/context-mode, qmd, and native subagents. Claude is governed through
+`CLAUDE.md`, commands, skills, hooks, and project histories.
 
-The maintenance rule is simple. If I make the same correction twice, it should become a rule or skill. If I see the same failure three times, it should become a hook or test. If a procedure is no longer used, delete it. Do not preserve one-off notes forever; promote repeatable decisions into durable artifacts.
+That means durable guidance cannot stay on only one side. If Codex discovers a repeated rule that
+Claude also needs, it should move into repository docs or a shared skill. If Claude repeatedly catches
+a problem, the fix should become something Codex can read too.
+
+The core instruction is simple:
+
+> Follow this repository workflow, inspect the impact, prove the change with tests, and leave a
+> short lesson for the next agent.
+
+## The Environment Also Needs Refactoring
+
+An AI working environment ages like a codebase. Skills can overlap. Hooks can warn about the wrong
+thing. Long `AGENTS.md` and `CLAUDE.md` files can bury the rule that actually matters. The
+environment itself needs maintenance.
+
+My rule is simple. If I make the same correction twice, it should become a rule or skill. If I see
+the same failure three times, it should become a hook or test. If a procedure is no longer used,
+delete it. Do not preserve one-off notes forever; promote repeatable decisions into durable
+artifacts.
 
 ## Conclusion
 
-The biggest lesson from working with AI for a long stretch is that the environment compounds more
-than the model. Models change. A well-organized repository, clear `AGENTS.md` and `CLAUDE.md`,
-reusable skills, qmd-searchable knowledge, verification hooks, and short lessons remain useful
-across sessions.
+The main lesson from working with AI over time is that the environment compounds more than the model.
+Models change. A well-organized repository, clear `AGENTS.md` and `CLAUDE.md`, reusable skills,
+qmd-searchable knowledge, verification hooks, and short lessons remain useful across sessions.
 
-For bluetape4k, productive AI collaboration is less about a better prompt and more about a better
-working environment. If AI is used as a one-off generator, each session drifts. If AI is onboarded
-like a teammate, procedures are managed like code, and verification plus memory become
-infrastructure, the work becomes more stable across sessions.
+AI collaboration is less about a better prompt and more about a better working environment. If AI is
+used as a one-off generator, each session drifts. If AI is onboarded like a teammate, procedures are
+managed like code, and verification plus memory become infrastructure, the work becomes more stable
+across sessions.
