@@ -1,6 +1,6 @@
 ---
 title: "Bluetape4k Cache Part 3: Near Cache와 Exposed로 캐싱 전략 만들기"
-description: bluetape4k-exposed와 exposed-workshop 11장의 read-through, write-through, write-behind 전략을 Near Cache 관점에서 정리합니다.
+description: bluetape4k-exposed와 exposed-workshop 11장의 read-through, write-through, write-behind 전략을 Near Cache 관점에서 정리한다.
 sidebar:
   order: -202605291703
 blog:
@@ -12,7 +12,7 @@ blog:
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/cache-series-part3-hero.png" alt="Exposed repository cache strategy workbench with robot workers and cache pipelines" loading="eager" />
-  <figcaption>DB 앞에 캐시를 놓는 순간, 성능 문제가 일관성 문제와 손을 잡습니다.</figcaption>
+  <figcaption>DB 앞에 캐시를 놓는 순간, 성능 문제와 일관성 문제는 같은 설계 안으로 들어옵니다.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-29 · Bluetape4k Cache series · Part 3</p>
@@ -63,7 +63,7 @@ interface JdbcCacheRepository<ID: Any, E: Serializable>: Closeable {
 [JdbcCacheRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/JdbcCacheRepository.kt),
 [R2dbcCacheRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/R2dbcCacheRepository.kt)
 
-여기서 중요한 점은 `get`과 `put`이 단순한 map operation이 아니라는 것입니다. 둘 다 repository 정책을 따릅니다. 이 정책을 어떻게 잡느냐에 따라 성능, 일관성, 장애 동작이 달라집니다.
+여기서 중요한 점은 `get`과 `put`이 단순한 map operation이 아니라는 것입니다. 둘 다 repository 정책을 따릅니다. 이 정책을 어떻게 잡느냐에 따라 성능, 일관성, 장애 시 동작이 달라집니다.
 
 ## 구현의 중심: MapLoader와 MapWriter
 
@@ -220,7 +220,7 @@ Write-behind는 쓰기 latency를 낮출 수 있습니다. 대신 설계해야 �
 | cache read path | read-through loader |
 | write mode | `READ_ONLY`, `WRITE_THROUGH`, `WRITE_BEHIND` |
 | API shape | JDBC, suspended JDBC, R2DBC |
-| consistency target | strong-ish, eventual, best effort fallback |
+| consistency target | 상대적으로 강한 일관성, eventual consistency, best effort fallback |
 
 ## Benchmark 결과
 
