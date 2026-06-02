@@ -36,10 +36,9 @@ The `virtualthread` module in `bluetape4k-projects` splits the problem into a co
 JDK-specific runtime providers. If application code has to ask "am I on Java 21 or Java 25?"
 everywhere, too much implementation detail has leaked out.
 
-
 The key is that the application does not know the `jdk21` or `jdk25` implementation classes. It
 calls the common API. `ServiceLoader` selects the runtime provider. The Java-version-specific
-part stays inside the artifact and provider implementation.
+logic stays inside the artifact and provider implementation.
 
 <figure class="bt4k-architecture">
   <img src="/assets/virtual-threads-part4-spi-01.png" alt="ServiceLoader module layout for Java 21 and Java 25 virtual thread runtimes" loading="lazy" />
@@ -66,8 +65,8 @@ and Scoped Values in its feature list. Scoped Values are especially useful with 
 because they offer a more predictable context model than ThreadLocal for scoped, read-only
 values.
 
-But a library should not expose Java 25 APIs as compile-time API if it must still run on Java
-21. Application code should see the common API, while runtime modules vary by JDK.
+But a library that still needs to run on Java 21 should not expose Java 25 APIs on its compile
+classpath. Application code should see the common API, while runtime modules vary by JDK.
 
 ## Common API: `VirtualThreadRuntime`
 

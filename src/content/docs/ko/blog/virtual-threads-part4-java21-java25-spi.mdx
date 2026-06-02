@@ -1,26 +1,26 @@
 ---
 title: "Virtual Threads 4편: Java 21과 Java 25를 하나의 API로 감추기"
-description: How bluetape4k exposes a common virtual-thread API while separating Java 21 and Java 25 implementations through ServiceLoader SPI.
+description: bluetape4k가 공통 Virtual Threads API를 제공하면서 Java 21과 Java 25 구현을 ServiceLoader SPI로 분리하는 방식을 설명한다.
 sidebar:
   order: -202605291103
 blog:
   date: 2026-05-29T11:03:00+09:00
   image: /assets/virtual-threads-part4-hero.png
-  imageAlt: 하나의 SPI가 Java 21과 Java 25 runtime implementation을 연결하는 소개용 일러스트
+  imageAlt: 하나의 SPI가 Java 21과 Java 25 runtime 구현을 연결하는 소개용 일러스트
   cardDescription: "Java 21과 25 차이는 내부로 숨기고, application code에는 하나의 Virtual Threads API만 보여주는 방법."
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/virtual-threads-part4-hero.png" alt="하나의 SPI가 Java 21과 Java 25 runtime implementation을 연결하는 소개용 일러스트" loading="eager" />
-  <figcaption>SPI 경계가 적당히 심심하면, 하나의 public API 뒤에 두 runtime 선택지를 숨길 수 있다.</figcaption>
+  <img src="/assets/virtual-threads-part4-hero.png" alt="하나의 SPI가 Java 21과 Java 25 runtime 구현을 연결하는 소개용 일러스트" loading="eager" />
+  <figcaption>SPI 경계가 충분히 단순하면, 하나의 public API 뒤에 두 runtime 선택지를 숨길 수 있다.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-29 · Virtual Threads series · Part 4</p>
 
-이 글은 Virtual Threads 시리즈의 4편이다. 전체 시리즈는 [Part 1: 소개와 주의점](/blog/virtual-threads-part1-guide/),
-[Part 2: workshop rules](/blog/virtual-threads-part2-workshop-rules/),
-[Part 3: JDBC + Virtual Threads benchmark](/blog/virtual-threads-part3-jdbc-r2dbc-benchmark/),
-[Part 4: Java 21/25 SPI 설계](/blog/virtual-threads-part4-java21-java25-spi/)로 이어진다.
+이 글은 Virtual Threads 시리즈의 4편이다. 전체 시리즈는 [Part 1: 소개와 주의점](/ko/blog/virtual-threads-part1-guide/),
+[Part 2: workshop rules](/ko/blog/virtual-threads-part2-workshop-rules/),
+[Part 3: JDBC + Virtual Threads benchmark](/ko/blog/virtual-threads-part3-jdbc-r2dbc-benchmark/),
+[Part 4: Java 21/25 SPI 설계](/ko/blog/virtual-threads-part4-java21-java25-spi/)로 이어진다.
 
 Part 1에서는 Virtual Threads를 어떻게 바라볼지 정리했고, Part 2에서는 workshop rules를 봤고,
 Part 3에서는 `bluetape4k-exposed` benchmark에서 JDBC + Virtual Threads가 R2DBC + Coroutines보다 나은
@@ -34,7 +34,6 @@ application code에서 어떻게 숨길지에 관한 이야기다. 사용자에�
 `bluetape4k-projects`의 `virtualthread` module은 이 문제를 공통 API + JDK별 runtime provider로 나눴다.
 application code가 "지금 Java 21인가, 25인가?"를 매번 따져야 한다면 API가 너무 많은 사정을 밖으로
 드러내는 것이다.
-
 
 그림의 핵심은 application이 `jdk21`/`jdk25` 구현체를 직접 알지 않는다는 점이다. application은 공통
 API만 호출하고, `ServiceLoader`가 runtime provider를 고른다. 그러면 JDK별 차이는 배포 artifact와
@@ -52,7 +51,7 @@ Java 21은 Virtual Threads의 기준선이다. [JEP 444](https://openjdk.org/jep
 관찰성 같은 기본 도구가 여기서 출발한다.
 
 Java 25는 Virtual Threads 자체를 새로 만든 release가 아니다. 대신 Java 21 이후의 Loom 계열 개선을
-같이 가져오는 LTS 지점이다. 완전히 다른 기술이라기보다, 같은 방향으로 다듬어진 다음 장기 지원 지점에
+함께 가져오는 LTS 지점이다. 완전히 다른 기술이라기보다, 같은 방향으로 다듬어진 다음 장기 지원 지점에
 도착한 release에 가깝다.
 
 | Release | Virtual Threads 관점의 의미 |
@@ -130,7 +129,7 @@ object VirtualThreads {
 ```
 
 실제 code는 provider 탐색 중 exception이 나도 전체 선택이 실패하지 않도록 방어한다. runtime discovery는
-application startup을 망가뜨리면 안 된다. "JDK 25 provider가 현재 JVM에서 못 뜬다"는 이유로 Virtual
+application startup을 망가뜨리면 안 된다. "JDK 25 provider가 현재 JVM에서 뜨지 못한다"는 이유로 Virtual
 Threads 전체가 죽기보다, JDK 21 provider나 platform fallback으로 내려가는 편이 낫다.
 
 ## Provider 등록
@@ -225,7 +224,7 @@ private object PlatformThreadRuntime : VirtualThreadRuntime {
 }
 ```
 
-fallback은 "성능을 보장한다"가 아니다. library를 더 넓은 환경에서 graceful하게 동작하게 하는 장치다.
+fallback은 "성능을 보장한다"가 아니다. library가 더 넓은 환경에서 부드럽게 동작하게 하는 장치다.
 운영에서는 `VirtualThreads.runtimeName()`을 metric이나 startup log에 남겨 실제로 어떤 provider가
 선택됐는지 확인해야 한다.
 
