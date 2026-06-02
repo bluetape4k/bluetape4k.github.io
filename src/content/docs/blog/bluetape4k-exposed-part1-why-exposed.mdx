@@ -1,0 +1,241 @@
+---
+title: "Bluetape4k Exposed Part 1: Why Exposed?"
+description: Why Exposed became the center of the data-access choice, and why bluetape4k-exposed was built on top of it.
+sidebar:
+  order: -202605311101
+blog:
+  date: 2026-05-31T11:01:00+09:00
+  image: /assets/bluetape4k-exposed-part1-hero.png
+  imageAlt: Small robotic builders assembling Exposed JDBC and R2DBC blocks on a blue blueprint workbench
+  cardDescription: "Choosing a production Exposed extension path after R2DBC, Vert.x, Virtual Threads, and Exposed DSL."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-exposed-part1-hero.png" alt="Small robotic builders assembling Exposed JDBC and R2DBC blocks on a blue blueprint workbench" loading="eager" />
+  <figcaption>The data-access layer is not flashy. Pick it badly, and every request waits there.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-05-31 · bluetape4k-exposed series · Part 1</p>
+
+This is Part 1 of the `bluetape4k-exposed` series. Exposed was not the answer I started with. I looked at JPA, MyBatis,
+R2DBC, Vert.x SQL Client, and Virtual Threads, then built examples to see which path could stay useful in production code.
+
+The choice I kept coming back to was Exposed. `bluetape4k-exposed` adds the operational pieces I kept needing around it:
+repositories, R2DBC, JSON and encryption columns, cache, and multi-tenancy boundaries.
+
+The Part 1 question is simple:
+
+> JPA, MyBatis, R2DBC, and Vert.x SQL Client already exist. Why Exposed?
+
+"The DSL looks nice" is not enough of an answer. The real starting point was the search for async and non-blocking data
+access. WebFlux does not help much if the database path blocks inside the request. R2DBC gives non-blocking I/O, but SQL
+DSL ergonomics and Kotlin usage become their own problem. Virtual Threads let us keep blocking JDBC with lower waiting
+cost, but they still need a safer way to write SQL.
+
+Exposed sits in that middle ground. It keeps SQL visible, makes it safer through a Kotlin DSL, and lets the workload
+decide between JDBC and R2DBC.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-exposed-part1-choice-journey.png" alt="Choice flow from async pressure through WebFlux JDBC, R2DBC Vert.x, Virtual Threads, Exposed DSL, and bluetape4k-exposed production boundaries" loading="lazy" />
+  <figcaption>The choice is not "reactive everywhere." It is SQL safety, Kotlin fit, and production boundaries together.</figcaption>
+</figure>
+
+## The Starting Point: JDBC Blocks
+
+JDBC is synchronous. While a request waits for a database response, its thread is tied to that work. As traffic grows and
+database latency increases, many services survive by adding more application servers.
+
+NoSQL was another common escape path for a while. MongoDB, Cassandra, and Elasticsearch are strong in their own domains.
+But moving every primary store to NoSQL brings different costs around schema changes, exception handling, operations,
+and back-office work. Many services eventually keep relational databases as the main store because they are strong and
+operationally familiar.
+
+The harder question comes next. If a service uses an async/non-blocking web framework such as Spring WebFlux but keeps
+JDBC or JPA inside, only the entrance is asynchronous. The database path still queues. When the event loop spends time
+waiting for the database, the design that was supposed to improve responsiveness becomes risky.
+
+I grouped the choices by what I had tried and where they became awkward in production.
+
+| Choice | Strength | Friction |
+|---|---|---|
+| Hibernate Reactive | Brings ORM experience into a reactive stack | Vert.x based, with learning cost and ecosystem constraints |
+| Vert.x SQL Client | Clean non-blocking access for I/O-bound database work | SQL strings and mapping code stay manual |
+| Spring Data R2DBC | Natural in the Spring reactive stack | SQL DSL support is thinner, and Reactor types come first |
+| JPA + Virtual Threads | Keeps existing blocking APIs mostly intact | JPA mapping weight and SQL-control issues remain |
+| Exposed + Virtual Threads | Mature JDBC drivers plus Kotlin SQL DSL | The blocking JDBC boundary still has to be understood and measured |
+| Exposed R2DBC + Coroutines | Exposed SQL DSL with `suspend` and `Flow` | Driver and workload behavior must be measured case by case |
+
+The conclusion is not "R2DBC is wrong." It is also not "Virtual Threads win everything." Streaming and backpressure may
+make R2DBC the better fit. Mature JDBC drivers, batch behavior, familiar transaction boundaries, and simple call stacks
+may make JDBC plus Virtual Threads easier to operate.
+
+## What I Wanted from Exposed
+
+I was not looking for a large ORM world like JPA. For this codebase, it fit better to let developers who understand SQL
+write queries safely in Kotlin instead of hiding SQL behind a large domain graph and lazy-loading model.
+
+```kotlin
+val rows = Users
+    .selectAll()
+    .where { Users.email eq email }
+    .orderBy(Users.id)
+    .limit(1)
+    .toList()
+```
+
+Reducing string SQL is not only a style preference. When column names, types, joins, and `where` conditions live in code,
+small production mistakes become less likely. Exposed is not an abstraction that makes SQL disappear. It is closer to a
+Kotlin DSL that lets us write SQL more safely.
+
+DAO is still available. Simple reads and relationships can be expressed neatly with `EntityClass`. In production code,
+though, complex queries, transactions, cache, routing, and observability move together. That is why this series puts SQL
+DSL and repository boundaries ahead of DAO.
+
+## What bluetape4k-exposed Adds
+
+`bluetape4k-exposed` does not replace Exposed. JetBrains Exposed stays at the center. The extra layers are the pieces I
+kept rebuilding in production services.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-exposed-readme-overview.png" alt="Overview diagram from the bluetape4k-exposed root README" loading="lazy" />
+  <figcaption>Exposed owns SQL DSL and transactions. bluetape4k-exposed separates repositories, cache, JSON, encryption, dialects, and Spring Boot wiring.</figcaption>
+</figure>
+
+| Area | Representative extensions | Responsibility |
+|---|---|---|
+| Repository | `exposed-jdbc`, `exposed-r2dbc` | JDBC/R2DBC repository abstraction, audit and soft-delete patterns |
+| Cache | `exposed-cache`, `exposed-jdbc-caffeine`, `exposed-r2dbc-lettuce` | Read paths with local or Redis cache |
+| Column codecs | `exposed-jackson2`, `exposed-jackson3`, `exposed-fastjson2`, `exposed-tink` | JSON columns, encrypted columns, measured columns |
+| Dialects | `exposed-postgresql`, `exposed-mysql8`, `exposed-bigquery`, `exposed-clickhouse`, `exposed-trino`, `exposed-duckdb` | Database-specific SQL and connector helpers |
+| Spring Boot | `exposed-spring-boot-jdbc`, `exposed-spring-boot-r2dbc`, `exposed-spring-boot-batch` | Boot 4 auto-configuration and application wiring |
+
+Adoption should stay selective.
+
+```kotlin
+dependencies {
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-jdbc:1.9.2")
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-r2dbc:1.9.2")
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-jdbc-lettuce:1.9.2")
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-jackson2:1.9.2")
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-spring-boot-jdbc:1.9.2")
+}
+```
+
+The intended use is not "pull in everything." If you need only JDBC repositories, add only JDBC. If a cache-backed read
+path is needed, add the cache adapter. Add the Spring Boot module only when auto-configuration is useful. Keeping that
+distance matters; otherwise a library starts pretending to be a framework.
+
+## Choose with Numbers
+
+The most dangerous sentence in data-access selection is "it should be faster in theory." Theory gives direction.
+Production choices need measurements.
+
+That is why the examples and benchmarks live close to the docs. The Virtual Threads/JDBC benchmark notes in
+`exposed-workshop` show the representative ratios below. The ratio matters more than the absolute number here.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-exposed-part1-virtual-thread-chart.png" alt="Virtual Threads benchmark chart showing 2.54x indexed SELECT, 1.79x complex query, 2.27x 10ms I/O delay, and 1.03x CPU-bound improvement" loading="lazy" />
+  <figcaption>Virtual Threads matter more for JDBC workloads with I/O wait than for CPU-bound work.</figcaption>
+</figure>
+
+| Workload | Virtual Threads improvement |
+|---|---:|
+| Simple indexed SELECT | 2.2-2.6x |
+| Complex query, UPDATE + aggregation | 1.8x |
+| 10ms I/O delay simulation | 2.3x |
+| CPU-bound work | 1.02-1.03x |
+
+These numbers do not mean "Virtual Threads make every code path faster." The benefit is largest when a waiting JDBC path
+can release the carrier thread. CPU-bound work barely changes. JDBC plus Virtual Threads is a way to keep blocking APIs
+while lowering waiting cost, not a free CPU-performance button.
+
+`bluetape4k-exposed` also includes `ExposedJdbcBenchmark` based on `kotlinx-benchmark`. It measures single-row CRUD,
+JOINs, and batch inserts with PostgreSQL Testcontainers, HikariCP max 24, and JMH throughput mode.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-exposed-part1-jdbc-benchmark-chart.png" alt="Exposed JDBC benchmark throughput chart showing singleFindById 15000 ops/s, singleInsert 14400 ops/s, singleUpdate 14300 ops/s, joinQuery 1510 ops/s, batchInsert 217 ops/s" loading="lazy" />
+  <figcaption>Exposed JDBC throughput changes a lot by query shape. Single-row CRUD, JOINs, and batch inserts should not be read as one profile.</figcaption>
+</figure>
+
+| Benchmark | Throughput |
+|---|---:|
+| `singleFindById` | 15,000 ops/s |
+| `singleInsert` | 14,400 ops/s |
+| `singleUpdate` | 14,300 ops/s |
+| `joinQuery` | 1,510 ops/s |
+| `batchInsert` | 217 ops/s |
+
+This is not the final scoreboard for JDBC versus R2DBC. Part 3 covers that with batch benchmarks. The Part 1 lesson is
+smaller: when choosing Exposed, measure query shape, driver behavior, connection pool, and transaction boundaries
+together. Do not choose by abstraction name alone.
+
+I also kept a JPA comparison. In `exposed-workshop/11-high-performance/04-benchmark`, the benchmark compares Person CRUD
+operations with PostgreSQL Testcontainers and JMH average latency. Lower latency is better.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-exposed-part1-jpa-comparison-chart.png" alt="Chart comparing Exposed and JPA average latency for create, read, update, delete, and batchCreate operations" loading="lazy" />
+  <figcaption>Under the same PostgreSQL setup, Exposed showed 3.9-8.3x lower latency than JPA for the sampled single-row CRUD operations.</figcaption>
+</figure>
+
+| Operation | Exposed | JPA | Interpretation |
+|---|---:|---:|---|
+| create | 1,196 us | 4,623 us | Exposed 3.9x faster |
+| read | 1,972 us | 11,602 us | Exposed 5.9x faster |
+| update | 1,980 us | 15,278 us | Exposed 7.7x faster |
+| delete | 1,945 us | 12,059 us | Exposed 6.2x faster |
+| batchCreate(100 rows) | 51,203 us | 423,816 us | Exposed 8.3x faster |
+
+This does not mean "never use JPA." JPA is still strong when complex domain graphs, second-level cache, and the Spring
+Data ecosystem matter. It does mean Exposed is a serious candidate when SQL control and lower ORM overhead matter.
+
+## Why the Workshops Stay Close
+
+Changing a data-access layer based only on a blog post is risky. Small examples can hide the real problems. That is why
+this series keeps linking `exposed-workshop`, `exposed-r2dbc-workshop`, and production examples.
+
+| Repo / chapter | What to inspect in code |
+|---|---|
+| `exposed-workshop/02-alternatives-to-jpa` | Why R2DBC, Vert.x, and Exposed were compared |
+| `exposed-workshop/03-exposed-basic` | Basic Exposed DSL and DAO usage |
+| `exposed-workshop/08-coroutines` | Coroutine and virtual-thread boundaries |
+| `exposed-workshop/10-multi-tenant` | Tenant isolation, routing datasource, cache isolation |
+| `exposed-workshop/11-high-performance` | Cache strategies and benchmark-centered examples |
+| `exposed-workshop/12-production-integration` | Outbox, idempotency, observability, readiness boundaries |
+| `exposed-r2dbc-workshop` | The same design revisited through R2DBC and coroutines |
+
+The production examples focus especially on cache strategy and multi-tenancy. The point is not to stop at a design
+diagram, but to include running results and performance charts. Cache cannot be added because it "should be fast." If
+tenant ID is missing from a cache key, the optimization becomes a data-leak candidate. That is worse than being slow.
+
+## Closing
+
+I built `bluetape4k-exposed` not because Exposed solves every problem, but because it does not try to. Exposed keeps SQL
+visible and lets Kotlin's type system and DSL make it safer. `bluetape4k-exposed` adds repositories, cache, JSON and
+encryption columns, dialects, and Spring Boot wiring around that center.
+
+The selection rule is:
+
+- Use SQL through a Kotlin DSL instead of string SQL.
+- Choose JDBC + Virtual Threads or R2DBC + Coroutines by workload.
+- Avoid rebuilding cache, JSON, encryption, dialect, and Spring Boot wiring for every service.
+- Check performance and production boundaries through benchmarks and workshop examples.
+
+Next, Part 2 looks at JDBC repositories and SQL DSL patterns. The repository layer exists not to hide SQL DSL, but to
+avoid rebuilding mapping, paging, and soft-delete boundaries for every table.
+
+## Source Links
+
+- Epic: [#85 Blog series: bluetape4k-exposed production Exposed guide](https://github.com/bluetape4k/bluetape4k.github.io/issues/85)
+- Part 1 issue: [#86 Blog: bluetape4k-exposed Part 1 - production Exposed overview](https://github.com/bluetape4k/bluetape4k.github.io/issues/86)
+- Repository: [bluetape4k-exposed](https://github.com/bluetape4k/bluetape4k-exposed)
+- README: [README.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/README.md)
+- JDBC benchmark source: [ExposedJdbcBenchmark.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-jdbc/src/test/kotlin/io/bluetape4k/exposed/jdbc/benchmark/ExposedJdbcBenchmark.kt)
+- Exposed vs JPA benchmark: [exposed-jpa-benchmark.md](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/04-benchmark/exposed-jpa-benchmark.md)
+- Batch benchmark hub: [utils/batch/benchmark/README.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/utils/batch/benchmark/README.md)
+- Virtual Threads/JDBC benchmark note: [VirtualThread-Jdbc-Benchmark.md](https://github.com/bluetape4k/exposed-workshop/blob/develop/doc/VirtualThread-Jdbc-Benchmark.md)
+- Workshop alternatives: [exposed-workshop/02-alternatives-to-jpa](https://github.com/bluetape4k/exposed-workshop/tree/develop/02-alternatives-to-jpa)
+- R2DBC workshop: [exposed-r2dbc-workshop](https://github.com/bluetape4k/exposed-r2dbc-workshop)
+
+## Series Links
+
+- [Part 1: Why Exposed?](/blog/bluetape4k-exposed-part1-why-exposed/)
