@@ -26,7 +26,7 @@ This is Part 2 of the Bluetape4k Cache series. The full series continues with
 A remote cache is a good starting point. Multiple JVMs can see the same value. Entries can have
 TTLs. Mature systems such as Redis come with solid operational tooling.
 
-The catch is in the word remote. There is a network hop, serialization, connection contention,
+The catch is in the word remote. Every access carries a network hop, serialization, connection contention,
 and tail latency. Redis can be fast and still not live under the same physics as an in-process
 memory read. Physics does not negotiate, even if invited to a meeting.
 
@@ -56,7 +56,7 @@ Hot read paths accumulate a different set of costs.
 | tail latency | Average latency may look fine while P99 becomes user-visible |
 
 Near Cache is not "put everything local." It is "finish hot reads locally, and let the remote
-cache plus protocol handle shared state and invalidation."
+cache and its protocol handle shared state and invalidation."
 
 ## Redisson Pub/Sub
 
@@ -75,7 +75,7 @@ Related source:
 
 There is a tradeoff. Pub/Sub is topic-based event propagation. Redis does not automatically know
 which client read which key. The client and library maintain the invalidation system together.
-So the simple-looking setup still means "receive the change event and remove the local entry."
+So the simple-looking setup still means "receive the change event and remove the right local entry."
 
 ## Lettuce RESP3 CLIENT TRACKING
 
@@ -137,7 +137,7 @@ Redis, the first cache to clear might be the one in your head.
 
 The environment matters: Apple M4 Pro, GraalVM 21, Redis 7 Testcontainers, JMH 1.37, single
 thread. Absolute values will move on another machine. The conclusion that JVM L1 memory and a
-Redis-backed path are different classes of work usually does not.
+Redis-backed path are different classes of work is much harder to move.
 
 ## Interpretation
 

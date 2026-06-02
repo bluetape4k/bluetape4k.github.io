@@ -1,6 +1,6 @@
 ---
 title: "Bluetape4k Cache Part 2: Near Cache, Redis 왕복을 줄이는 현실적인 방법"
-description: Remote Cache의 한계, Redisson Pub/Sub invalidation, Lettuce RESP3 CLIENT TRACKING, LettuceNearCache benchmark 결과를 설명합니다.
+description: Remote Cache의 한계, Redisson Pub/Sub invalidation, Lettuce RESP3 CLIENT TRACKING, LettuceNearCache benchmark 결과를 설명한다.
 sidebar:
   order: -202605291702
 blog:
@@ -19,7 +19,7 @@ blog:
 
 Remote cache는 좋은 출발점입니다. 여러 JVM이 같은 값을 보고, TTL을 줄 수 있고, Redis 같은 성숙한 시스템을 쓰면 운영 도구도 많습니다.
 
-문제는 remote라는 단어가 공짜가 아니라는 점입니다. 네트워크를 타고, 값을 직렬화하고, connection과 event loop를 공유합니다. Redis가 아무리 빨라도 "프로세스 안 메모리 읽기"와 같은 물리 법칙에 살지는 않습니다. 물리 법칙은 설득이 안 됩니다. 회의에 불러도 안 옵니다.
+문제는 remote라는 말에 비용이 붙는다는 점입니다. 네트워크를 타고, 값을 직렬화하고, connection과 event loop를 공유합니다. Redis가 아무리 빨라도 "프로세스 안 메모리 읽기"와 같은 비용 구조로 움직이지는 않습니다. 물리 법칙은 설득이 안 됩니다. 회의에 불러도 안 옵니다.
 
 Near Cache는 이 차이를 인정하는 설계입니다. 자주 읽는 값은 JVM 안 L1에 두고, 공유 상태와 무효화는 Redis 같은 L2와 protocol에 맡깁니다.
 
@@ -45,7 +45,7 @@ Remote cache의 장점은 분명합니다.
 | connection contention | 요청이 몰리면 Redis connection과 event loop도 바쁩니다 |
 | tail latency | 평균은 괜찮아도 P99에서 튀는 값이 사용자 눈에 보입니다 |
 
-Near Cache는 "전부 local에 넣자"가 아닙니다. "뜨거운 읽기는 local에서 끝내고, 공유 상태와 무효화는 remote와 protocol에 맡기자"에 가깝습니다.
+Near Cache는 "전부 local에 넣자"가 아닙니다. "뜨거운 읽기는 local에서 끝내고, 공유 상태와 무효화는 remote cache와 protocol에 맡기자"에 가깝습니다.
 
 ## Redisson Pub/Sub 방식
 
@@ -61,7 +61,7 @@ Redisson의 `RLocalCachedMap`은 local cached map을 제공합니다. 각 JVM에
 [RedissonNearCache.kt](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/cache/cache-redisson/src/main/kotlin/io/bluetape4k/cache/nearcache/RedissonNearCache.kt),
 [LocalCachedMapOptionsExtensions.kt](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/infra/redisson/src/main/kotlin/io/bluetape4k/redis/redisson/options/LocalCachedMapOptionsExtensions.kt)
 
-주의점도 있습니다. Pub/Sub는 topic 기반 이벤트 전파입니다. 어떤 key를 누가 읽고 있는지 Redis 서버가 자동으로 아는 모델은 아닙니다. client와 library가 invalidation 체계를 함께 유지합니다. 그래서 설정은 간단해 보여도, 실제 의미는 "변경 이벤트를 잘 받아서 local entry를 지운다"입니다.
+주의점도 있습니다. Pub/Sub는 topic 기반 이벤트 전파입니다. 어떤 key를 누가 읽고 있는지 Redis 서버가 자동으로 아는 모델은 아닙니다. client와 library가 invalidation 체계를 함께 유지합니다. 그래서 설정은 간단해 보여도, 실제 의미는 "변경 이벤트를 받아 local entry를 제대로 지운다"입니다.
 
 ## Lettuce RESP3 CLIENT TRACKING 방식
 
@@ -116,7 +116,7 @@ RESP3 방식의 매력은 서버가 key tracking에 참여한다는 점입니다
 
 읽기 경로에서 볼 숫자는 `l1Hit`와 `l2Hit`입니다. L1 hit은 약 64K ops/ms입니다. L2 hit/miss는 약 4 ops/ms입니다. 이 숫자를 보고도 hot read를 매번 Redis로 보내고 싶다면, Redis가 아니라 마음의 캐시를 먼저 비워야 합니다.
 
-측정 환경도 같이 봐야 합니다. 결과는 Apple M4 Pro, GraalVM 21, Redis 7 Testcontainers, JMH 1.37, 단일 스레드 기준입니다. 다른 장비에서는 절대값이 바뀌지만, "JVM L1 memory path와 Redis-backed path는 체급이 다르다"는 결론은 잘 안 바뀝니다.
+측정 환경도 같이 봐야 합니다. 결과는 Apple M4 Pro, GraalVM 21, Redis 7 Testcontainers, JMH 1.37, 단일 스레드 기준입니다. 다른 장비에서는 절대값이 바뀌지만, "JVM L1 memory path와 Redis-backed path는 체급이 다르다"는 결론은 쉽게 바뀌지 않습니다.
 
 ## 해석
 
