@@ -12,7 +12,7 @@ blog:
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/cache-series-part3-hero.png" alt="Exposed repository cache strategy workbench with robot workers and cache pipelines" loading="eager" />
-  <figcaption>Once a cache sits in front of a database, performance and consistency start holding hands.</figcaption>
+  <figcaption>Once a cache sits in front of a database, performance and consistency enter the same design conversation.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-29 · Bluetape4k Cache series · Part 3</p>
@@ -76,7 +76,7 @@ Related source:
 [R2dbcCacheRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/R2dbcCacheRepository.kt)
 
 The important detail is that `get` and `put` are not plain map operations. They follow repository
-policy, and that policy changes performance, consistency, and failure behavior.
+policy, and that policy changes performance, consistency, and behavior during failures.
 
 ## The Implementation Center: MapLoader and MapWriter
 
@@ -247,7 +247,7 @@ write-through, or write-behind.
 | cache read path | read-through loader |
 | write mode | `READ_ONLY`, `WRITE_THROUGH`, `WRITE_BEHIND` |
 | API shape | JDBC, suspended JDBC, R2DBC |
-| consistency target | strong-ish, eventual, best-effort fallback |
+| consistency target | strong-ish consistency, eventual consistency, best-effort fallback |
 
 ## Benchmark Results
 
