@@ -1,6 +1,6 @@
 ---
 title: "Bluetape4k Exposed Part 3: R2DBC, 코루틴, 가상 스레드"
-description: 왜 R2DBC와 JDBC + Virtual Threads를 둘 다 남겨두었는지 workload, driver 성숙도, streaming/backpressure 기준으로 설명합니다.
+description: 왜 R2DBC와 JDBC + Virtual Threads를 둘 다 남겨두었는지 workload, driver 성숙도, streaming/backpressure 기준으로 설명한다.
 sidebar:
   order: -202605311103
 blog:
@@ -34,8 +34,8 @@ workload에 따라 선택하도록 했습니다.
 
 ## R2DBC 방식
 
-R2DBC를 넣은 이유는 분명합니다. event-loop 기반 runtime에서 DB I/O까지 blocking으로 남겨두면 구조가 반쪽짜리가
-됩니다. Spring WebFlux를 도입했는데 내부에서 JDBC가 event loop를 오래 붙잡는다면, 응답성 개선을 기대했던 구조가
+R2DBC를 넣은 이유는 분명합니다. event-loop 기반 runtime에서 DB I/O까지 blocking으로 남겨두면 구조가 반쪽짜리로
+남습니다. Spring WebFlux를 도입했는데 내부에서 JDBC가 event loop를 오래 붙잡는다면, 응답성 개선을 기대했던 구조가
 오히려 위험해집니다. R2DBC는 이 지점을 해결하기 위한 Reactive Streams 기반 non-blocking database access이고,
 `exposed-r2dbc`는 이를 Kotlin coroutine API로 감쌉니다.
 
@@ -124,8 +124,8 @@ Virtual Threads와 R2DBC + Coroutines 방식을 같은 batch workload로 비교�
 | PostgreSQL | 30 | 0.990 | 0.192 | 5.2x |
 | PostgreSQL | 60 | 0.951 | 0.193 | 4.9x |
 
-제가 이 결과에서 끌어낸 결론은 "JDBC가 항상 이긴다"가 아닙니다. 이 benchmark는 batch insert와 end-to-end batch job에 대한
-결과입니다. streaming response나 backpressure가 핵심인 API라면 R2DBC의 가치가 달라집니다.
+제가 이 결과에서 읽은 결론은 "JDBC가 항상 이긴다"가 아닙니다. 이 benchmark는 batch insert와 end-to-end batch job을
+측정한 결과입니다. streaming response나 backpressure가 핵심인 API라면 R2DBC의 가치가 달라집니다.
 
 하지만 batch workload에서는 JDBC driver의 성숙한 처리 방식, 단순한 transaction 경계, Virtual Threads의
 대기 비용 절감이 강하게 작동했습니다. 이름은 blocking이어도 결과는 꽤 현실적입니다.
@@ -146,7 +146,7 @@ R2DBC를 고르더라도 pool은 따로 봐야 합니다. non-blocking이라고 
 
 ## 선택 규칙
 
-| 상황 | 먼저 볼 선택 |
+| 상황 | 먼저 볼 방향 |
 |---|---|
 | 일반 CRUD, batch job, 기존 JDBC driver 성숙도가 중요 | JDBC + Virtual Threads |
 | streaming response, backpressure, event-loop runtime 일관성이 중요 | R2DBC + Coroutines |

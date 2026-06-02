@@ -1,0 +1,187 @@
+---
+title: "Bluetape4k Exposed Part 3: R2DBC, Coroutines, and Virtual Threads"
+description: Why bluetape4k keeps both R2DBC and JDBC with Virtual Threads, based on workload shape, driver maturity, streaming, and backpressure.
+sidebar:
+  order: -202605311103
+blog:
+  date: 2026-05-31T11:03:00+09:00
+  image: /assets/bluetape4k-exposed-part3-hero.png
+  imageAlt: Small robotic builders connecting R2DBC pipes and PostgreSQL blocks on an Exposed R2DBC workshop bench
+  cardDescription: "R2DBC fits streaming. JDBC with Virtual Threads keeps the familiar driver path. Choose with numbers."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-exposed-part3-hero.png" alt="Small robotic builders connecting R2DBC pipes and PostgreSQL blocks on an Exposed R2DBC workshop bench" loading="eager" />
+  <figcaption>Async does not automatically mean faster. The workload usually gets the final vote.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-05-31 · bluetape4k-exposed series · Part 3</p>
+
+[Part 2](/blog/bluetape4k-exposed-part2-jdbc-repositories-sql-dsl/) covered JDBC repositories. That leads to the next
+question: if a service already runs on an async runtime such as WebFlux or Ktor, is JDBC with Virtual Threads enough, or
+should the data-access layer move to R2DBC?
+
+I did not treat either side as the single answer. bluetape4k keeps both R2DBC with Coroutines and JDBC with Virtual
+Threads, then makes the workload choose.
+
+`exposed-r2dbc` is the R2DBC extension for using Exposed's R2DBC driver with a coroutine-first API. On the other side,
+`exposed-jdbc` has Virtual Thread transaction helpers. Both address the same pressure: a request should not hold an
+expensive resource while it waits. The difference is where each model solves that pressure.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-exposed-part3-execution-models.png" alt="Request flow split between JDBC plus Virtual Threads and R2DBC plus Coroutines, then evaluated by batch CRUD and streaming reactive criteria" loading="lazy" />
+  <figcaption>Choose the execution model by streaming needs, driver maturity, and batch or CRUD workload, not by the label on the API.</figcaption>
+</figure>
+
+## The R2DBC Path
+
+R2DBC exists here for a clear reason. If an event-loop runtime still performs database I/O through blocking calls, the
+architecture is only half async. A service can adopt Spring WebFlux and still lose responsiveness if JDBC work holds the
+event loop for too long. R2DBC is Reactive Streams based non-blocking database access, and `exposed-r2dbc` wraps that
+path with Kotlin coroutine APIs.
+
+```kotlin
+suspend fun findById(id: Long): ResultRow? = suspendTransaction(database) {
+    UserTable
+        .selectAll()
+        .where { UserTable.id eq id }
+        .singleOrNull()
+}
+```
+
+Repositories use `suspend` operations for single results and `Flow` for streaming reads.
+
+```kotlin
+interface UserRepository : ExposedR2dbcRepository<User, Long> {
+    suspend fun findByName(name: String): List<User>
+    suspend fun countByAge(age: Int): Long
+}
+
+suspend fun processAllUsers() {
+    userRepository.findAll()
+        .collect { user ->
+            // streaming work
+        }
+}
+```
+
+R2DBC is usually the better first choice when:
+
+- The service already runs on an event-loop runtime such as WebFlux, Netty, or Ktor.
+- Row streaming and backpressure are real domain requirements.
+- Large results should be processed gradually instead of loaded into memory at once.
+- The team is comfortable with Reactor or Coroutine context propagation and observability.
+
+## The JDBC with Virtual Threads Path
+
+That does not mean every service should be moved to R2DBC. JDBC is a blocking API, but Virtual Threads reduce the cost of
+waiting on that blocking call.
+
+```kotlin
+val count = newVirtualThreadJdbcTransaction {
+    UserTable.selectAll().count()
+}
+```
+
+I kept JDBC with Virtual Threads for practical reasons.
+
+| Advantage | Why it matters |
+|---|---|
+| Driver maturity | JDBC drivers have long operational history around batching and pooling |
+| Call stack | Stack traces and profilers keep a familiar shape |
+| Migration cost | Existing JDBC and transaction code can stay mostly intact |
+| SQL DSL | Exposed DSL remains the query surface |
+
+There are tradeoffs. This is not non-blocking I/O, so database connections and server capacity are still hard limits.
+Virtual Threads lower thread waiting cost; they do not remove database round trips. If that distinction is missed, the
+threads become cheap while the database remains slow.
+
+## What the Batch Benchmarks Said
+
+That is why I measured both paths separately. `bluetape4k-exposed/utils/batch/benchmark` compares JDBC with Virtual
+Threads and R2DBC with Coroutines across H2, MySQL, and PostgreSQL using the same batch workload.
+
+| Axis | Value |
+|---|---|
+| Databases | H2, PostgreSQL, MySQL |
+| JDBC path | JDBC + Virtual Threads |
+| R2DBC path | R2DBC + Coroutines |
+| Scenarios | `seedBenchmark`, `endToEndBatchJobBenchmark` |
+| Parameters | `dataSize=1000/10000/100000`, `poolSize=10/30/60`, `parallelism=1/4/8` |
+
+For the large end-to-end batch job with `dataSize=100000` and `parallelism=8`, the result looked like this.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-exposed-part3-batch-comparison-chart.png" alt="Large batch E2E benchmark comparing JDBC plus Virtual Threads and R2DBC ops per second by database and pool size" loading="lazy" />
+  <figcaption>For this large batch E2E workload, comparing throughput side by side makes the tradeoff visible. MySQL and PostgreSQL both favored JDBC with Virtual Threads under this condition.</figcaption>
+</figure>
+
+| DB | poolSize | JDBC ops/sec | R2DBC ops/sec | JDBC/R2DBC |
+|---|---:|---:|---:|---:|
+| MySQL | 10 | 1.596 | 0.181 | 8.8x |
+| MySQL | 30 | 1.561 | 0.182 | 8.6x |
+| MySQL | 60 | 1.525 | 0.182 | 8.4x |
+| PostgreSQL | 10 | 0.972 | 0.192 | 5.1x |
+| PostgreSQL | 30 | 0.990 | 0.192 | 5.2x |
+| PostgreSQL | 60 | 0.951 | 0.193 | 4.9x |
+
+The conclusion is not "JDBC always wins." This benchmark measures batch insert and end-to-end batch jobs. If streaming
+responses or backpressure are central to the API, R2DBC can be the more useful model.
+
+For this batch workload, though, JDBC driver maturity, a simple transaction boundary, and lower waiting cost from
+Virtual Threads worked well together. The API is blocking, but the result is practical.
+
+## The R2DBC Pool Still Matters
+
+Choosing R2DBC does not remove pool design. Non-blocking I/O does not create unlimited database connections. The examples
+therefore use `bluetape4k-r2dbc`'s `R2dbcPoolConfig.highThroughput()` as a baseline and inspect these points:
+
+- Pure acquire/close throughput differs by driver.
+- If each request holds a connection for `1-5 ms`, throughput is dominated by that hold time.
+- In the 64-thread contention benchmark, where concurrent requests exceed pool size, `maxSize` has a visible effect.
+- If overload protection matters, start with bounded pending acquire, warmup, and finite timeout.
+
+R2DBC is not "non-blocking, therefore no pool worries." Database connections remain limited resources. Forgetting that
+turns the reactive pipeline into a neat-looking queue.
+
+## Selection Rules
+
+| Situation | Start with |
+|---|---|
+| Ordinary CRUD, batch jobs, and mature JDBC driver behavior matter | JDBC + Virtual Threads |
+| Streaming responses, backpressure, and event-loop consistency matter | R2DBC + Coroutines |
+| Spring MVC service with many blocking libraries | JDBC + Virtual Threads |
+| WebFlux or Ktor coroutine-first service | R2DBC, or carefully isolated suspend JDBC |
+| Driver-specific batch performance is uncertain | Benchmark both paths |
+
+I also include the team's observability habits in the decision. If incidents are usually debugged with thread dumps, JFR,
+and JDBC pool metrics, JDBC with Virtual Threads may be easier to operate. If the team already understands Reactor or
+Coroutine context and backpressure metrics, R2DBC may be the more natural fit.
+
+## Closing
+
+R2DBC and Virtual Threads are not complete replacements for each other. They solve related waiting problems at different
+layers.
+
+- R2DBC makes driver I/O itself non-blocking.
+- Coroutines make that async path readable in Kotlin.
+- Virtual Threads reduce the waiting cost of blocking JDBC calls.
+- Exposed DSL keeps SQL in safe Kotlin code in both paths.
+
+Part 4 moves down to JSON, encryption, measured columns, and dialect modules. Those modules exist less for speed and more
+for isolating messy database-specific details where they can be seen and controlled.
+
+## Source Links
+
+- Part 3 issue: [#88 Blog: bluetape4k-exposed Part 3 - R2DBC, coroutines, and virtual threads](https://github.com/bluetape4k/bluetape4k.github.io/issues/88)
+- R2DBC README: [exposed/exposed-r2dbc/README.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-r2dbc/README.md)
+- Batch benchmark hub: [utils/batch/benchmark/README.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/utils/batch/benchmark/README.md)
+- MySQL benchmark details: [mysql.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/utils/batch/benchmark/mysql.md)
+- PostgreSQL benchmark details: [postgresql.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/utils/batch/benchmark/postgresql.md)
+- R2DBC workshop: [exposed-r2dbc-workshop](https://github.com/bluetape4k/exposed-r2dbc-workshop)
+
+## Series Links
+
+- [Part 1: Why Exposed?](/blog/bluetape4k-exposed-part1-why-exposed/)
+- [Part 2: JDBC repositories and SQL DSL](/blog/bluetape4k-exposed-part2-jdbc-repositories-sql-dsl/)
+- [Part 3: R2DBC, Coroutines, and Virtual Threads](/blog/bluetape4k-exposed-part3-r2dbc-coroutines-virtual-threads/)
