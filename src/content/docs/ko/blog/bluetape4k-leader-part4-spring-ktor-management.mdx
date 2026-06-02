@@ -1,0 +1,299 @@
+---
+title: "Bluetape4k Leader Part 4: Spring Boot와 Ktor 통합"
+description: "@LeaderElection, @LeaderGroupElection, failureMode, SpEL lock name, Micrometer metrics, Ktor LeaderElectionPlugin, leaderScheduled, management route를 실제 서비스 경계에서 어떻게 쓰는지 정리합니다."
+sidebar:
+  order: -202606021830
+blog:
+  date: 2026-06-02T18:30:00+09:00
+  image: /assets/bluetape4k-leader-part4-hero.png
+  imageAlt: Spring Boot annotation card와 Ktor server console을 설정하는 작은 로봇 빌더들이 리더 선출 관리 패널을 바라보는 3D 작업대 일러스트
+  cardDescription: "직접 runIfLeader를 부르던 코드를 Spring AOP와 Ktor scheduler/management 경계로 끌어올리는 방법."
+---
+
+Part 2에서는 `LeaderElector`, `SuspendLeaderElector`, `AsyncLeaderElector`, `VirtualThreadLeaderElector`의 호출 모델을 봤습니다.
+Part 3에서는 단일 leader를 넘어 group slot과 strategic election을 다뤘습니다.
+
+Part 4의 질문은 조금 다릅니다. "매번 `runIfLeader`를 직접 감싸야 하나?" 입니다.
+Spring Boot 서비스라면 scheduled method나 service method에 annotation을 붙이고 싶고, Ktor 서비스라면 application lifecycle 안에서 leader-only background job을 등록하고 싶습니다.
+`bluetape4k-leader`는 이 두 경계를 별도 모듈로 제공합니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-leader-part4-hero.png" alt="Spring Boot annotation card와 Ktor server console을 설정하는 작은 로봇 빌더들이 리더 선출 관리 패널을 바라보는 3D 작업대 일러스트" loading="lazy" />
+  <figcaption>Part 4의 범위는 core API가 아니라 framework boundary입니다. Spring은 annotation/AOP, Ktor는 plugin과 application job으로 같은 skip-on-contention 의미를 끌어올립니다.</figcaption>
+</figure>
+
+## Spring Boot: annotation으로 실행 경계 고정
+
+`leader-spring-boot`는 `@LeaderElection`과 `@LeaderGroupElection`을 제공합니다.
+핵심은 method body 전체를 election action으로 취급한다는 점입니다.
+lock을 얻은 node만 body를 실행하고, lock을 얻지 못한 node는 return shape에 맞춰 skip합니다.
+
+```kotlin
+@Service
+class ReportJob {
+    @Scheduled(cron = "0 0 * * * *")
+    @LeaderElection(name = "hourly-report", leaseTime = "PT10M")
+    fun generateHourlyReport(): Report? {
+        return reportService.generate()
+    }
+}
+```
+
+직접 API로 쓰면 다음 모양입니다.
+
+```kotlin
+val result = leaderElector.runIfLeader("hourly-report") {
+    reportService.generate()
+}
+```
+
+annotation은 이 boilerplate를 framework 경계로 옮깁니다.
+그 대신 annotation이 감싸는 method의 return shape, proxy/AOP 경계, lock name 생성 규칙은 운영 계약이 됩니다.
+편해진 만큼 "어디서 실행 권한을 잡는가"가 더 중요해집니다.
+
+관련 소스:
+
+- - [LeaderElection.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/annotation/LeaderElection.kt)
+- - [LeaderElectionAspect.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-spring-boot/src/main/kotlin/io/bluetape4k/leader/spring/aop/LeaderElectionAspect.kt)
+- - [LeaderElectionAutoConfiguration.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-spring-boot/src/main/kotlin/io/bluetape4k/leader/spring/LeaderElectionAutoConfiguration.kt)
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-leader-spring-aop-sequence-01.png" alt="Spring LeaderElectionAspect가 SpEL, factory cache, backend elector, body execution, metrics, failure mode를 거쳐 결과를 반환하는 sequence diagram" loading="lazy" />
+  <figcaption>`@LeaderElection`은 작지만 runtime path는 작지 않습니다. advice는 lock name을 평가하고, option/factory 조합으로 elector를 고른 뒤, backend 결과와 body 예외를 분리해 metrics와 failure mode branch로 보냅니다.</figcaption>
+</figure>
+
+이 흐름을 보면 annotation을 "간단한 장식"으로 보면 안 됩니다.
+실제 운영 경계는 aspect 내부에 있고, 경합 skip, backend error, body exception이 서로 다른 길로 흘러갑니다.
+Part 2에서 강조한 `LeaderRunResult`의 의미가 AOP에서도 그대로 중요해지는 이유입니다.
+
+## `@LeaderGroupElection`: annotation으로 N개 slot 허용
+
+Part 3의 group election도 annotation으로 올릴 수 있습니다.
+단일 leader가 아니라 `maxLeaders`개 slot을 허용하는 method라면 `@LeaderGroupElection`을 씁니다.
+
+```kotlin
+@LeaderGroupElection(
+    name = "tenant-rollup",
+    maxLeaders = 3,
+    leaseTime = "PT5M",
+)
+fun rollupNextTenant(): RollupResult? {
+    return tenantRollupService.rollupNext()
+}
+```
+
+`maxLeaders <= 1`은 group election의 의미가 없으므로 startup validation에서 막힙니다.
+`Flux<T>`와 `Flow<T>` stream return은 group annotation에서 아직 지원하지 않습니다.
+slot마다 lease extension과 completion 경계가 따로 필요하기 때문입니다.
+긴 stream을 "그냥 group slot 안에서 돌리자"는 접근은 운영에서 꽤 비싼 질문을 뒤로 미루는 셈입니다.
+
+관련 소스:
+
+- [LeaderGroupElection.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/annotation/LeaderGroupElection.kt)
+
+- [LeaderGroupElectionAspect.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-spring-boot/src/main/kotlin/io/bluetape4k/leader/spring/aop/LeaderGroupElectionAspect.kt)
+
+- [LeaderAnnotationValidatorBeanPostProcessor.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-spring-boot/src/main/kotlin/io/bluetape4k/leader/spring/aop/validator/LeaderAnnotationValidatorBeanPostProcessor.kt)
+
+## lock name은 SpEL이지만 문자열 규칙은 엄격하게
+
+static lock name은 쉽습니다.
+
+```kotlin
+@LeaderElection(name = "daily-settlement")
+fun settle()
+```
+
+동적 lock name이 필요하면 plain SpEL을 씁니다.
+
+```kotlin
+@LeaderElection(name = "'process-' + #region")
+fun process(region: String)
+```
+
+주의할 점은 `process-#region`이 아니라 `"'process-' + #region"`이라는 점입니다.
+따옴표 없는 `process-`는 문자열 prefix가 아니라 SpEL 식별자로 해석됩니다.
+Spring property placeholder도 사용할 수 있습니다.
+
+```kotlin
+@LeaderElection(name = "\${spring.application.name}-warmup")
+fun warmup()
+```
+
+AOP 속성의 기본 prefix는 `bluetape4k.leader.aop.*`입니다.
+기본 wait/lease time, strict validation, failure mode, lock-name prefix, SpEL method invocation 허용 여부를 여기서 조정합니다.
+기본 lock-name prefix는 `${spring.application.name:}:`입니다.
+서비스 이름이 lock key에 자연스럽게 섞이게 해서 여러 앱이 같은 backend를 공유할 때 충돌을 줄입니다.
+
+```yaml
+bluetape4k:
+  leader:
+    aop:
+      enabled: true
+      strict: false
+      failure-mode: RETHROW
+      default-wait-time: PT5S
+      default-lease-time: PT1M
+      lock-name-prefix: "${spring.application.name:}:"
+      spel:
+        allow-method-invocation: false
+```
+
+관련 소스:
+
+- [LeaderAopProperties.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-spring-boot/src/main/kotlin/io/bluetape4k/leader/spring/aop/properties/LeaderAopProperties.kt)
+
+- [SpelExpressionEvaluator.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-spring-boot/src/main/kotlin/io/bluetape4k/leader/spring/aop/spel/SpelExpressionEvaluator.kt)
+
+- [LockNameValidator.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-spring-boot/src/main/kotlin/io/bluetape4k/leader/spring/aop/util/LockNameValidator.kt)
+
+## `failureMode`: backend 장애와 lock 경합을 구분하기
+
+lock 경합은 정상 skip입니다.
+backend 장애는 다릅니다.
+Redis, SQL, MongoDB, Kubernetes API 같은 backend가 실패했을 때 service method를 어떻게 다룰지 `failureMode`가 정합니다.
+
+| Mode | 의미 |
+|---|---|
+| `RETHROW` | backend 예외를 leader election 예외로 감싸 호출자에게 전파 |
+| `SKIP` | backend 장애도 skip처럼 처리 |
+| `FAIL_OPEN_RUN` | lock을 못 잡아도 method body를 실행 |
+
+`FAIL_OPEN_RUN`은 조심해서 써야 합니다.
+leader election은 중복 실행을 막기 위한 장치인데, fail-open은 장애 상황에서 그 장치를 내려놓는 선택입니다.
+통계 cache warmup처럼 중복 실행이 허용되는 작업에는 실용적일 수 있습니다.
+정산, 결제, schema migration 같은 작업에는 보통 맞지 않습니다.
+
+```kotlin
+@LeaderElection(
+    name = "dashboard-job",
+    failureMode = LeaderAspectFailureMode.FAIL_OPEN_RUN,
+)
+fun refreshDashboardSnapshot()
+```
+
+관련 소스:
+
+- [LeaderAspectFailureMode.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/annotation/LeaderAspectFailureMode.kt)
+
+- [PrometheusDashboardApp.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/examples/prometheus-dashboard/src/main/kotlin/io/bluetape4k/leader/examples/prometheus/PrometheusDashboardApp.kt)
+
+## metrics: annotation boundary를 관측 가능하게 만들기
+
+Spring Boot에서 annotation을 쓰면 "method가 실행됐는가"보다 더 작은 사건을 보고 싶어집니다.
+lock 시도, 획득, 경합 skip, backend error skip, method 실행 시간, 실패, active 상태가 그 사건입니다.
+
+`leader-micrometer`의 `MicrometerLeaderAopMetricsRecorder`는 `MeterRegistry`가 있으면 AOP callback을 meter로 바꿉니다.
+Prometheus scrape에서는 `leader_aop_*` 이름으로 노출됩니다.
+
+| Meter | 의미 |
+|---|---|
+| `leader.aop.attempts` | lock 획득 시도 |
+| `leader.aop.acquired` | election 획득 |
+| `leader.aop.lock.not.acquired` | skip. `reason` tag로 `CONTENTION`, `BACKEND_ERROR` 등 구분 |
+| `leader.aop.execution.duration` | method body 실행 시간 |
+| `leader.aop.task.failed` | method body 실패 |
+| `leader.aop.active` | 현재 실행 중인 leader action |
+
+예제의 `prometheus-dashboard`는 `dashboard-job` 이름의 `@LeaderElection` 작업을 등록하고 `/actuator/prometheus`에서 `leader_aop_*` metric을 확인합니다.
+운영에서는 lock name cardinality를 조심해야 합니다.
+tenant id나 request id를 그대로 lock name tag로 쓰면 dashboard보다 time-series backend가 먼저 힘들어집니다.
+
+관련 소스:
+
+- [MicrometerLeaderAopMetricsRecorder.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-micrometer/src/main/kotlin/io/bluetape4k/leader/micrometer/MicrometerLeaderAopMetricsRecorder.kt)
+
+- [MicrometerNames.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-micrometer/src/main/kotlin/io/bluetape4k/leader/micrometer/MicrometerNames.kt)
+
+- [examples/prometheus-dashboard](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples/prometheus-dashboard)
+
+## Ktor: plugin과 application lifecycle
+
+Ktor 쪽은 Spring AOP 대신 explicit application boundary를 택합니다.
+`LeaderElectionPlugin`에 `SuspendLeaderElector`를 주입하고, `leaderScheduled`로 주기 작업을 등록합니다.
+
+```kotlin
+fun Application.module() {
+    val elector = createLettuceSuspendLeaderElector()
+
+    install(LeaderElectionPlugin) {
+        leaderElection = elector
+        enableManagementRoute = true
+    }
+
+    leaderScheduled("hourly-stats-aggregation", period = 1.hours) {
+        statsAggregator.aggregate()
+    }
+}
+```
+
+`leaderScheduled`는 application coroutine에서 loop를 실행합니다.
+매 cycle마다 `SuspendLeaderElector.runIfLeader(lockName) { ... }`를 호출하고, `ApplicationStopped` 때 job을 취소합니다.
+`CancellationException`은 다시 던지고, 일반 예외는 log 후 다음 cycle을 계속합니다.
+batch scheduler에서는 이 동작이 딱 좋습니다.
+한 번 실패했다고 application lifecycle 전체가 내려가지는 않지만, shutdown cancellation은 삼키지 않습니다.
+
+관련 소스:
+
+- [LeaderElectionPlugin.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-ktor/src/main/kotlin/io/bluetape4k/leader/ktor/LeaderElectionPlugin.kt)
+
+- [LeaderElectionPluginConfig.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-ktor/src/main/kotlin/io/bluetape4k/leader/ktor/LeaderElectionPluginConfig.kt)
+
+- [ApplicationExt.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-ktor/src/main/kotlin/io/bluetape4k/leader/ktor/ApplicationExt.kt)
+
+- [examples/ktor-app](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples/ktor-app)
+
+## Ktor management route는 상태 확인용이다
+
+`leader-ktor`는 management route도 제공합니다.
+기본 path는 `/management/leaderElection`입니다.
+관리 route는 등록된 lock name 목록을 순회하며 `state(lockName)` snapshot을 JSON으로 반환합니다.
+
+```kotlin
+install(LeaderElectionPlugin) {
+    leaderElection = elector
+    enableManagementRoute = true
+    managementPath = "/management/leaderElection"
+}
+```
+
+여기서 중요한 단어는 snapshot입니다.
+management route는 "지금 누가 lock을 들고 있는지"를 보는 관측 도구입니다.
+실행 결정을 내리는 API가 아닙니다.
+실행 여부는 항상 atomic `runIfLeader` 경로에서 결정해야 합니다.
+상태 조회 후 body를 실행하는 코드는 TOCTOU race를 직접 작성하는 셈입니다.
+분산 시스템에서 그런 코드는 처음엔 테스트를 잘 통과합니다. 그래서 더 얄밉습니다.
+
+관련 소스:
+
+- [LeaderElectionManagementRoute.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-ktor/src/main/kotlin/io/bluetape4k/leader/ktor/LeaderElectionManagementRoute.kt)
+
+## 선택 기준
+
+| 상황 | Spring Boot | Ktor |
+|---|---|---|
+| 기존 `@Scheduled` method를 보호 | `@LeaderElection` | 직접 scheduler 대신 `leaderScheduled`로 옮김 |
+| cluster-wide N개 작업 허용 | `@LeaderGroupElection(maxLeaders = N)` | core group elector를 직접 구성 |
+| coroutine application job | suspend method annotation 또는 직접 `SuspendLeaderElector` | `LeaderElectionPlugin` + `leaderScheduled` |
+| Prometheus metric | `leader-micrometer` + AOP recorder | core/micrometer wrapper 또는 별도 route metric |
+| 상태 확인 route | Spring Actuator/health/metric 중심 | `/management/leaderElection` |
+
+Spring annotation은 service method 경계가 이미 명확할 때 좋습니다.
+Ktor helper는 application lifecycle 안에서 background job을 명시적으로 띄울 때 좋습니다.
+둘 다 공통 원칙은 같습니다.
+경합은 정상 skip이고, state 조회는 관측이며, 실행 결정은 lock 획득과 body 실행이 붙어 있는 API에서 해야 합니다.
+
+## 마무리
+
+Part 4의 핵심은 "leader election을 framework에 숨긴다"가 아닙니다.
+실행 권한을 잡는 경계를 framework lifecycle에 맞춰 더 잘 보이는 곳으로 옮기는 것입니다.
+Spring Boot에서는 annotation/AOP가 그 경계이고, Ktor에서는 plugin과 application job이 그 경계입니다.
+
+Part 5에서는 backend와 운영 쪽으로 내려갑니다.
+Redis, SQL/R2DBC, MongoDB, Hazelcast, Kubernetes/etcd/Consul 같은 backend가 lease, TTL, 장애, metric에서 어디가 다른지 정리합니다.
+
+- [Part 1: 리더 선출의 기본 모델](/ko/blog/bluetape4k-leader-part1-overview/)
+- [Part 2: Core API와 실행 모델](/ko/blog/bluetape4k-leader-part2-core-apis/)
+- [Part 3: Multi-leader와 전략 선출](/ko/blog/bluetape4k-leader-part3-group-strategic-election/)
+- [Part 4: Spring Boot와 Ktor 통합](/ko/blog/bluetape4k-leader-part4-spring-ktor-management/)
+- Part 5: Backend, 운영, 벤치마크 (예정)
