@@ -1,6 +1,6 @@
 ---
 title: "Bluetape4k Projects Part 5: utility와 adoption path"
-description: ID 생성기, geo/science, money, measured, probabilistic, rule engine, state/workflow, JWT, time utility를 어떤 순서로 서비스에 들여올지 정리합니다.
+description: ID 생성기, geo/science, money, measured, probabilistic, rule engine, state/workflow, JWT, time utility를 어떤 순서로 서비스에 들여올지 정리한다.
 sidebar:
   order: -202605301634
 blog:
@@ -12,7 +12,7 @@ blog:
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/bluetape4k-projects-part5-hero.png" alt="작은 로봇 작업자들이 utility 모듈과 예제, workshop, benchmark 노트를 서비스 채택 경로로 연결하는 일러스트" loading="eager" />
-  <figcaption>작은 공구는 작아서 좋습니다. 모든 문제를 공구함으로 만들지만 않으면요.</figcaption>
+  <figcaption>작은 공구는 작아서 좋습니다. 문제마다 공구함 전체를 끌고 오지만 않으면요.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-30 · bluetape4k-projects series · Part 5</p>
@@ -26,7 +26,7 @@ Utility 모듈은 domain repository와 성격이 다릅니다. `bluetape4k-expos
 `bluetape4k-text`처럼 독립 저장소로 커진 기능은 자체 생태계와 릴리스 리듬이 있습니다. 반면 `projects`의
 utility는 서비스 코드 여기저기에서 반복되는 작은 결정을 한곳에 모은 것입니다. 작지만 자주 쓰입니다.
 그리고 자주 쓰이는 작은 코드는 생각보다 빨리 표준이 됩니다. 표준이 되기 전에 제멋대로 퍼지면, 나중에는
-표준화가 아니라 고고학이 됩니다.
+표준화보다 정리가 더 어려워집니다.
 
 <figure class="bt4k-architecture">
   <img src="/assets/bluetape4k-projects-part5-adoption-map.png" alt="Identity, domain math, decision tools, minimal module selection, examples, workshops, benchmark notes, and service adoption map" loading="lazy" />
@@ -77,12 +77,11 @@ println(distance `as` Length.meters)
 
 돈과 단위는 primitive로 두면 처음에는 편합니다. `BigDecimal amount`, `String currency`, `Double distance`
 정도로 시작합니다. 그런데 환율, 반올림, 단위 변환, display format이 붙으면 primitive가 갑자기 말을
-너무 많이 합니다. 그때부터는 type이 말하게 하는 편이 낫습니다.
+너무 많이 해야 합니다. 그때부터는 type이 의미를 담게 하는 편이 낫습니다.
 
 `geo`와 `science`는 위치와 공간 데이터를 다룹니다. geocode/geohash/geoip2, 좌표계 변환, shapefile 읽기,
 JTS 기반 공간 연산, PostGIS 적재 pipeline이 포함됩니다. 이 영역은 domain이 맞는 서비스에서만 가져와야
-합니다. 필요 없는 서비스에 붙이면 도움이 아니라 취미가 됩니다. 취미는 좋지만 production dependency로
-등록되면 성격이 달라집니다.
+합니다. 필요 없는 서비스에 붙이면 도메인과 관계없는 의존성만 늘어납니다.
 
 ## rule, state, workflow
 
@@ -110,8 +109,8 @@ ruleEngine { skipOnFirstAppliedRule = true }
 
 선택 기준은 간단합니다. 정책 계산이 많고 입력 fact에 따라 결과가 달라지면 rule-engine입니다. 객체가 몇
 개의 명확한 상태를 이동하면 states입니다. 여러 step을 실행하고 retry/partial success/cancel을 표현해야
-하면 workflow입니다. 이 셋을 한꺼번에 붙이면 작은 주문 처리도 항공 관제처럼 보일 수 있습니다. 실제로
-항공 관제가 아니라면, 한 번 더 줄여 봐야 합니다.
+하면 workflow입니다. 이 셋을 한꺼번에 붙이면 작은 주문 처리도 필요보다 큰 프로세스처럼 보일 수 있습니다.
+그럴 때는 한 번 더 줄여 봐야 합니다.
 
 ## 예제와 workshop으로 채택 경로를 확인한다
 
@@ -137,7 +136,7 @@ Spring Data 쪽 채택 경로를 더 application에 가깝게 보여줍니다.
 5. service test에서 실패 경계와 serialization/ID/time 정책을 고정합니다.
 
 이 순서를 지키면 `projects`는 큰 framework가 아니라 작은 공구함으로 남습니다. 공구함은 작을수록 좋습니다.
-공구를 꺼낼 때마다 설명서까지 같이 떨어지면, 그건 이미 가구입니다.
+모듈을 추가할 때마다 사용법과 정책을 새로 설명해야 한다면, 이미 너무 많이 들여온 겁니다.
 
 ## 참고 링크
 
