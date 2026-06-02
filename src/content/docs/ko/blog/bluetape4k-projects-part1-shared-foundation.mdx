@@ -1,6 +1,6 @@
 ---
 title: "Bluetape4k Projects Part 1: 공유 Kotlin/JVM 기반"
-description: bluetape4k-projects가 왜 생태계의 공통 기반인지, 어떤 모듈을 품고 어떤 기능을 독립 저장소로 나누는지 정리합니다.
+description: bluetape4k-projects가 왜 생태계의 공통 기반인지, 어떤 모듈을 품고 어떤 기능을 독립 저장소로 나누는지 정리한다.
 sidebar:
   order: -202605301630
 blog:
@@ -12,7 +12,7 @@ blog:
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/bluetape4k-projects-part1-hero.png" alt="작은 로봇 작업자들이 Kotlin JVM 백엔드 모듈 블록을 공통 기반 위에 조립하는 일러스트" loading="eager" />
-  <figcaption>공통 기반은 눈에 잘 띄지 않습니다. 대신 무너지면 제일 먼저 티가 납니다.</figcaption>
+  <figcaption>공통 기반은 잘 드러나지 않습니다. 대신 흔들리면 가장 먼저 티가 납니다.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-30 · bluetape4k-projects series · Part 1</p>
@@ -29,8 +29,8 @@ data/infra adapter, testing 기반, BOM을 한곳에 모아 둔 저장소입니�
 
 그렇다고 모든 기능을 이 저장소에 계속 쌓는 구조는 아닙니다. AWS, Exposed, Image, Text, Leader,
 JaVers 같은 큰 도메인은 독립 저장소로 분리했습니다. `projects`는 서비스 코드가 가장 먼저 기대는
-공통 기반과 여러 저장소가 같이 쓰는 runtime 조각을 맡습니다. 주인공이라기보다는 무대 뒤 설비에
-가깝습니다. 잘 돌아가면 조용하고, 멈추면 모두가 동시에 쳐다봅니다.
+공통 기반과 여러 저장소가 같이 쓰는 runtime 구성 요소를 맡습니다. 앞에서 보이는 기능이라기보다
+공유 인프라에 가깝습니다. 잘 돌아가면 조용하고, 멈추면 모두가 동시에 쳐다봅니다.
 
 <figure class="bt4k-architecture">
   <img src="/assets/bluetape4k-projects-overview-01.png" alt="Bluetape4k Projects overview diagram with BOM, foundation, runtime adapters, applications, and split repositories" loading="lazy" />
