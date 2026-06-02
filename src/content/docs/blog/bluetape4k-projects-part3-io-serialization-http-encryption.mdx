@@ -74,7 +74,7 @@ coroutine-friendly I/O. Okio's model is intentionally small: read from `Source`,
 
 That small model lets files, sockets, HTTP bodies, and test fixtures look similar. You can add compression, then
 decompression, then encryption, then a channel adapter without bouncing through several `InputStream`, `Reader`, and
-byte-array shapes.
+byte-array shapes. Fewer shape changes also means fewer places for ownership and close rules to drift.
 
 ```kotlin
 import io.bluetape4k.io.compressor.Compressors
@@ -144,7 +144,7 @@ Base64 string and byte APIs, key rotation, and Redis-backed keyset storage.
 
 The common decision is AEAD versus Deterministic AEAD. General data protection should use AEAD, where the same plaintext
 encrypts to different ciphertexts. Searchable database columns may require deterministic encryption such as AES-SIV,
-but that leaks equality patterns and should stay limited to controlled fields.
+but that reveals equality patterns and should stay limited to controlled fields.
 
 Associated data matters just as much. Binding tenant, user, table, or column context to ciphertext prevents ciphertext
 from being moved into a different context that happens to share the same key. That connects naturally to Exposed/data
@@ -200,7 +200,7 @@ preference during development and become unregistered risk in production.
 
 The shared I/O foundation does not make every problem disappear. It makes similar boundaries fail in similar ways.
 That matters. Similar failures are easier to find, fix, and teach to the next service. For engineering, that is a
-useful kind of magic: same boundary, same rule.
+practical win: same boundary, same rule.
 
 Next, we will look at data and infrastructure modules. Once bytes arrive safely, databases, Redis, and Kafka still have
 strong opinions of their own.
