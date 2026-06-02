@@ -30,10 +30,9 @@ as "faster threads." Now we can ask a more practical question.
 
 In the `bluetape4k-exposed` benchmarks, the answer leaned in one direction. I expected R2DBC to
 look stronger: it is non-blocking, and Coroutines make the API pleasant. The measurements were
-less sentimental. General CRUD/JOIN benchmarks improved substantially when the JDBC path was
+less kind to that assumption. General CRUD/JOIN benchmarks improved substantially when the JDBC path was
 tuned around pool size and indexes, and batch benchmarks often favored JDBC + Virtual Threads
 over R2DBC + Coroutines for the same workload.
-
 
 ## First, the General Exposed JDBC Benchmark
 
@@ -67,7 +66,7 @@ thread count, then added indexes for the JOIN target table.
 </figure>
 
 This is not a direct JDBC-vs-R2DBC comparison. It is evidence that the ordinary Exposed JDBC
-path is sensitive to pool size, thread concurrency, and index design. In other words: measure
+path is sensitive to pool size, thread concurrency, and index design. In other words, measure
 the basic path before assuming Virtual Threads will rescue anything. A more aggressive
 `synchronous_commit=off` style tuning was rejected because it improved some inserts while
 hurting SELECTs badly. A good benchmark cannot make one number pretty while damaging the whole
@@ -119,7 +118,7 @@ The meaning is not "JDBC is always better." It is narrower and more useful.
 - It is not a coroutine microbenchmark.
 - Driver maturity and DB-specific protocol paths are part of the result.
 
-That makes it an application-facing end-to-end comparison.
+That makes it an end-to-end comparison from the application's point of view.
 
 ## Result Summary
 
