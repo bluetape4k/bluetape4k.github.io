@@ -10,6 +10,8 @@ blog:
   cardDescription: "직접 runIfLeader를 부르던 코드를 Spring AOP와 Ktor scheduler/management 경계로 끌어올리는 방법."
 ---
 
+<p class="bt4k-post-meta">2026-06-02 · bluetape4k-leader series · Part 4</p>
+
 Part 2에서는 `LeaderElector`, `SuspendLeaderElector`, `AsyncLeaderElector`, `VirtualThreadLeaderElector`의 호출 모델을 봤습니다.
 Part 3에서는 단일 leader를 넘어 group slot과 strategic election을 다뤘습니다.
 
@@ -19,13 +21,13 @@ Spring Boot 서비스라면 scheduled method나 service method에 annotation을 
 
 <figure class="bt4k-architecture">
   <img src="/assets/bluetape4k-leader-part4-hero.png" alt="Spring Boot annotation card와 Ktor server console을 설정하는 작은 로봇 빌더들이 리더 선출 관리 패널을 바라보는 3D 작업대 일러스트" loading="lazy" />
-  <figcaption>Part 4의 범위는 core API가 아니라 framework boundary입니다. Spring은 annotation/AOP, Ktor는 plugin과 application job으로 같은 skip-on-contention 의미를 끌어올립니다.</figcaption>
+  <figcaption>Part 4의 범위는 core API가 아니라 프레임워크와 만나는 지점입니다. Spring은 annotation/AOP, Ktor는 plugin과 application job으로 "락을 얻지 못하면 건너뛰는" 의미를 끌어올립니다.</figcaption>
 </figure>
 
-## Spring Boot: annotation으로 실행 경계 고정
+## Spring Boot: annotation으로 실행 경계를 고정한다
 
 `leader-spring-boot`는 `@LeaderElection`과 `@LeaderGroupElection`을 제공합니다.
-핵심은 method body 전체를 election action으로 취급한다는 점입니다.
+핵심은 메소드 실행 전체를 election action으로 취급한다는 점입니다.
 lock을 얻은 node만 body를 실행하고, lock을 얻지 못한 node는 return shape에 맞춰 skip합니다.
 
 ```kotlin
@@ -59,11 +61,11 @@ annotation은 이 boilerplate를 framework 경계로 옮깁니다.
 
 <figure class="bt4k-architecture">
   <img src="/assets/bluetape4k-leader-spring-aop-sequence-01.png" alt="Spring LeaderElectionAspect가 SpEL, factory cache, backend elector, body execution, metrics, failure mode를 거쳐 결과를 반환하는 sequence diagram" loading="lazy" />
-  <figcaption>`@LeaderElection`은 작지만 runtime path는 작지 않습니다. advice는 lock name을 평가하고, option/factory 조합으로 elector를 고른 뒤, backend 결과와 body 예외를 분리해 metrics와 failure mode branch로 보냅니다.</figcaption>
+  <figcaption>`@LeaderElection`은 작지만 실행 흐름은 작지 않습니다. advice는 lock name을 평가하고, option/factory 조합으로 elector를 고른 뒤, backend 결과와 메소드 실행 중 예외를 분리해 metrics와 failure mode branch로 보냅니다.</figcaption>
 </figure>
 
 이 흐름을 보면 annotation을 "간단한 장식"으로 보면 안 됩니다.
-실제 운영 경계는 aspect 내부에 있고, 경합 skip, backend error, body exception이 서로 다른 길로 흘러갑니다.
+실제 운영 경계는 aspect 내부에 있고, 경합으로 건너뛰는 경우, 백엔드 오류, 메소드 실행 중 예외가 서로 다른 흐름으로 처리됩니다.
 Part 2에서 강조한 `LeaderRunResult`의 의미가 AOP에서도 그대로 중요해지는 이유입니다.
 
 ## `@LeaderGroupElection`: annotation으로 N개 slot 허용
@@ -147,7 +149,7 @@ bluetape4k:
 
 - [LockNameValidator.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-spring-boot/src/main/kotlin/io/bluetape4k/leader/spring/aop/util/LockNameValidator.kt)
 
-## `failureMode`: backend 장애와 lock 경합을 구분하기
+## `failureMode`: 백엔드 장애와 lock 경합을 구분한다
 
 lock 경합은 정상 skip입니다.
 backend 장애는 다릅니다.
@@ -157,7 +159,7 @@ Redis, SQL, MongoDB, Kubernetes API 같은 backend가 실패했을 때 service m
 |---|---|
 | `RETHROW` | backend 예외를 leader election 예외로 감싸 호출자에게 전파 |
 | `SKIP` | backend 장애도 skip처럼 처리 |
-| `FAIL_OPEN_RUN` | lock을 못 잡아도 method body를 실행 |
+| `FAIL_OPEN_RUN` | lock을 못 잡아도 메소드를 실행 |
 
 `FAIL_OPEN_RUN`은 조심해서 써야 합니다.
 leader election은 중복 실행을 막기 위한 장치인데, fail-open은 장애 상황에서 그 장치를 내려놓는 선택입니다.
@@ -181,7 +183,7 @@ fun refreshDashboardSnapshot()
 ## metrics: annotation boundary를 관측 가능하게 만들기
 
 Spring Boot에서 annotation을 쓰면 "method가 실행됐는가"보다 더 작은 사건을 보고 싶어집니다.
-lock 시도, 획득, 경합 skip, backend error skip, method 실행 시간, 실패, active 상태가 그 사건입니다.
+lock 시도, 획득, 경합으로 건너뛰는 경우, 백엔드 오류로 건너뛰는 경우, method 실행 시간, 실패, active 상태가 그 사건입니다.
 
 `leader-micrometer`의 `MicrometerLeaderAopMetricsRecorder`는 `MeterRegistry`가 있으면 AOP callback을 meter로 바꿉니다.
 Prometheus scrape에서는 `leader_aop_*` 이름으로 노출됩니다.
@@ -191,8 +193,8 @@ Prometheus scrape에서는 `leader_aop_*` 이름으로 노출됩니다.
 | `leader.aop.attempts` | lock 획득 시도 |
 | `leader.aop.acquired` | election 획득 |
 | `leader.aop.lock.not.acquired` | skip. `reason` tag로 `CONTENTION`, `BACKEND_ERROR` 등 구분 |
-| `leader.aop.execution.duration` | method body 실행 시간 |
-| `leader.aop.task.failed` | method body 실패 |
+| `leader.aop.execution.duration` | 메소드 실행 시간 |
+| `leader.aop.task.failed` | 메소드 실행 실패 |
 | `leader.aop.active` | 현재 실행 중인 leader action |
 
 예제의 `prometheus-dashboard`는 `dashboard-job` 이름의 `@LeaderElection` 작업을 등록하고 `/actuator/prometheus`에서 `leader_aop_*` metric을 확인합니다.
@@ -296,4 +298,4 @@ Redis, SQL/R2DBC, MongoDB, Hazelcast, Kubernetes/etcd/Consul 같은 backend가 l
 - [Part 2: Core API와 실행 모델](/ko/blog/bluetape4k-leader-part2-core-apis/)
 - [Part 3: Multi-leader와 전략 선출](/ko/blog/bluetape4k-leader-part3-group-strategic-election/)
 - [Part 4: Spring Boot와 Ktor 통합](/ko/blog/bluetape4k-leader-part4-spring-ktor-management/)
-- Part 5: Backend, 운영, 벤치마크 (예정)
+- [Part 5: Backend, 운영 기능, Benchmark](/ko/blog/bluetape4k-leader-part5-backends-operations-benchmarks/)

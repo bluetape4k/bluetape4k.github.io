@@ -46,8 +46,8 @@ if (result == null) {
 }
 ```
 
-The important part is `null`. When the node is not elected, the call skips without throwing. This is
-the familiar ShedLock-style skip semantics: contention is not an application error. If every missed
+The important part is `null`. When the node is not elected, the call skips without throwing. This keeps
+the familiar ShedLock-style behavior: contention is not an application error. If every missed
 lock becomes an error log, the signal from the next real incident gets buried in noise.
 
 The base `runIfLeader` contract is intentionally small.
@@ -126,8 +126,8 @@ Source:
 ## Compared With ShedLock
 
 ShedLock is a practical tool for preventing duplicate scheduled-job execution. `bluetape4k-leader`
-keeps that familiar skip-on-contention behavior, but its scope is wider than protecting a
-Spring scheduled method.
+keeps the same "skip when another node already holds the lock" behavior, but its scope is wider than
+protecting a Spring scheduled method.
 
 | Topic | ShedLock behavior | bluetape4k-leader behavior |
 |---|---|---|
@@ -219,14 +219,14 @@ Part 5 will go deeper on backend choice, but the first-pass rule is enough for o
 
 ## Closing
 
-Leader election is less about the grand phrase "distributed systems" and more about a practical
-question: should this replica run this one piece of work right now?
+Leader election is less about "distributed systems" and more about a practical
+question: should this replica run this piece of work right now?
 
 Scheduled jobs, migrations, pollers, cache warmers, and operator reconcile loops all ask that
 question. `bluetape4k-leader` answers it with a common execution model rather than a pile of
-backend-specific APIs. Part 2 will zoom into the core API: `LeaderElector`, `SuspendLeaderElector`,
+backend-specific APIs. Part 2 zooms into the core API: `LeaderElector`, `SuspendLeaderElector`,
 `LeaderElectionOptions`, and `LeaderRunResult`. That is where the important distinction appears:
-not only who wears the crown, but what the non-leaders should do quietly.
+which node ran, and what every other node did instead.
 
 ## Series Links
 
@@ -234,4 +234,4 @@ not only who wears the crown, but what the non-leaders should do quietly.
 - [Part 2: Core APIs and execution models](/blog/bluetape4k-leader-part2-core-apis/)
 - [Part 3: Multi-leader and strategic election](/blog/bluetape4k-leader-part3-group-strategic-election/)
 - [Part 4: Spring Boot and Ktor integration](/blog/bluetape4k-leader-part4-spring-ktor-management/)
-- Part 5: Backends, operations, and benchmarks (planned)
+- [Part 5: Backends, operations, and benchmarks](/blog/bluetape4k-leader-part5-backends-operations-benchmarks/)

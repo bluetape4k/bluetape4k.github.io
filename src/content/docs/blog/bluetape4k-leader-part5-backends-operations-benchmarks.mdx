@@ -1,0 +1,181 @@
+---
+title: "Bluetape4k Leader Part 5: Backends, Operations, and Benchmarks"
+description: "A backend-picker guide for Redis Lettuce/Redisson, etcd, Exposed JDBC/R2DBC, MongoDB, DynamoDB, Consul, Kubernetes Lease, Hazelcast, ZooKeeper, plus LockExtender, LockAssert, history/audit, Micrometer, and benchmark interpretation."
+sidebar:
+  order: -202606022130
+blog:
+  date: 2026-06-02T21:30:00+09:00
+  image: /assets/bluetape4k-leader-part5-hero.png
+  imageAlt: Robotic builders arranging Redis, etcd, SQL, Kubernetes, and observability props on a leader election storage workbench
+  cardDescription: "Choose the leader election backend by the systems you already operate, lease storage, and observability, not only by API preference."
+---
+
+<figure class="bt4k-post-hero">
+  <img src="/assets/bluetape4k-leader-part5-hero.png" alt="Robotic builders arranging Redis, etcd, SQL, Kubernetes, and observability props on a leader election storage workbench" loading="lazy" />
+  <figcaption>Changing the backend changes the operational model first: leases, TTLs, renewal, and observability all move with storage choice.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-02 · bluetape4k-leader series · Part 5</p>
+
+[Part 4](/blog/bluetape4k-leader-part4-spring-ktor-management/) covered Spring Boot annotation/AOP and Ktor application lifecycle boundaries.
+Part 5 moves one level down. The same `runIfLeader` call behaves differently operationally depending on whether the lease lives in Redis, etcd, a SQL row, or a Kubernetes Lease object.
+
+That makes backend choice less about API style and more about operations. Leader election should stay quiet during normal contention, but it must be explainable when something fails: who ran, who skipped, who extended the lease, and which backend failed.
+
+## Start with what you already run
+
+<figure>
+  <img src="/assets/bluetape4k-leader-part5-backend-picker.png" alt="Decision map for choosing leader election storage backends by operation shape" loading="lazy" />
+  <figcaption>The backend-picker is not a performance leaderboard. It starts from the systems your team already knows how to operate.</figcaption>
+</figure>
+
+The first pass is usually this table.
+
+| Existing substrate | Start with | Why |
+|---|---|---|
+| Redis is the shared cache/lock substrate | Lettuce or Redisson | Redis TTL plus token ownership makes single-leader locks straightforward. Lettuce is a lean client path; Redisson is familiar when lock-oriented Redis operations already exist. |
+| etcd is control-plane truth | etcd v3 | Lease and conditional write semantics fit reconciler/control-plane work. |
+| Database operations own the recovery path | Exposed JDBC/R2DBC | Lock rows, tokens, and expiry timestamps are easy to inspect, migrate, and audit. |
+| The workload runs inside Kubernetes | Kubernetes Lease | `coordination.k8s.io/v1` Lease objects match pod/operator lifecycle and API-server observability. |
+| MongoDB, DynamoDB, Consul, Hazelcast, or ZooKeeper is already present | The matching backend | Avoiding a new infrastructure dependency can matter more than micro-benchmark rank. |
+
+The reason is simple: backend choice brings lease storage rules with it. Who may extend the lease, how the owner token is checked, how expired ownership is cleaned up, and where operators inspect state all change with the backend.
+
+## Redis: start with Lettuce or Redisson
+
+Redis is the most natural default. If Redis already carries cache, rate-limit, or short-lived coordination traffic, leader locks can stay in the same operational model.
+
+`bluetape4k-leader` exposes two Redis families.
+
+| Backend | Best fit | Watch |
+|---|---|---|
+| `leader-redis-lettuce` | Teams already operating Lettuce and wanting a lean blocking/suspend path | Lease TTL, token validation, and auto-extension are application-level contracts. |
+| `leader-redis-redisson` | Teams already using Redisson and its lock-oriented operational model | Electors pass an explicit `leaseTime`, so the benchmarked `autoExtend` path is the shared bluetape4k extender, not Redisson native watchdog renewal. |
+
+Long jobs can opt into lease renewal with `autoExtend = true`. Group election auto-extension is not supported yet because each slot has its own lease and completion boundary.
+
+```kotlin
+val options = LeaderElectionOptions(
+    leaseTime = 30.seconds,
+    autoExtend = true,
+)
+
+val election = RedissonLeaderElector(client, options)
+
+election.runIfLeader("nightly-maintenance") {
+    LockAssert.assertLocked("nightly-maintenance")
+    LockExtender.extendActiveLock("nightly-maintenance", 60.seconds)
+    runLongJob()
+}
+```
+
+`LockAssert` checks that the current code is actually running under a real lock. It does not pass outside a lock or inside a fail-open sentinel. `LockExtender` extends the active lock. Internally, detailed extension outcomes distinguish not-held, wrong-thread, and backend-failure cases so operators are not left with only a collapsed Boolean.
+
+## etcd: control-plane work
+
+etcd fits teams that already treat it as control-plane truth. If a reconciler must apply desired state from exactly one node, etcd leases are a natural model.
+
+The selection question is different from Redis. It is not "does the service already connect to Redis?" but "is the authoritative state for this work already in etcd?" When the answer is yes, choosing etcd can make the operational story clearer than adding a separate Redis dependency.
+
+The `examples/etcd-reconciler` project follows this shape: one node applies desired state while the rest observe or skip.
+
+## Other backend families are situational
+
+Part 5 is not a ranking contest. It is a map.
+
+| Family | Storage meaning | How to read it |
+|---|---|---|
+| Exposed JDBC/R2DBC | Lock row, token, expiry timestamp, optional history row | Good for migration gates, tenant aggregation, and audit-heavy batch work where SQL visibility matters. |
+| MongoDB | `findOneAndUpdate` plus TTL-index style ownership | Useful when MongoDB is already the operational store for short-lived ownership documents. |
+| DynamoDB | Conditional item write and TTL-shaped ownership | A candidate when AWS-native operations matter. The benchmark row is noisy enough to require repeat measurement before tuning. |
+| Consul | Session + KV | Fits maintenance/drain workflows that already use the Consul service model. |
+| Kubernetes Lease | `coordination.k8s.io/v1` Lease object | Use when pod/operator lifecycle and Kubernetes API observability are the natural boundary. |
+| Hazelcast | IMap-based backend | Meaningful when a Hazelcast cluster is already runtime substrate. README explicitly says this is IMap-based, not CP Subsystem based. |
+| ZooKeeper | Curator lock/semaphore | A candidate when ZooKeeper/Curator remains the existing coordination substrate. |
+
+## Operations layer: extend, assert, record, measure
+
+After the backend is chosen, the operational questions remain.
+
+| Question | Tool |
+|---|---|
+| Can the task outlive the initial lease? | `autoExtend`, `LeaderLeaseAutoExtender`, `LockExtender` |
+| Is this code really inside a lock scope? | `LockAssert.assertLocked()` / `assertLockedSuspend()` |
+| Who led, completed, or failed? | Leader history recorder and backend-specific history sinks |
+| How many AOP calls attempted, acquired, skipped, or failed? | `leader-micrometer` and `MicrometerLeaderAopMetricsRecorder` |
+
+The history recorder is best-effort around sink failures: recording should not destroy the protected task. Cancellation is still rethrown. The same distinction showed up in Part 4's lifecycle discussion: cancellation is cancellation; ordinary failure can be logged and recorded.
+
+Micrometer records attempts, acquisition, not-acquired reasons, execution duration, task failures, and active gauges around the AOP boundary. The operational rule is to keep normal contention separate from backend failure. Contention is an expected skip. Backend failure is a reliability event.
+
+## Benchmarks: direction plus caveat
+
+The benchmark README starts with a boundary: these are comparable `kotlinx-benchmark` suites for same-machine before/after comparison, not release-grade performance claims. The 2026-05-21 baseline used one fork, one thread, two warmup iterations, and three one-second measurement iterations. PostgreSQL/MySQL rows were added on 2026-05-29, and focused Redis lease-extension rows were added on 2026-06-01.
+
+<figure>
+  <img src="/assets/bluetape4k-leader-part5-distributed-throughput-chart-01.png" alt="Distributed backend throughput chart for bluetape4k-leader" loading="lazy" />
+  <figcaption>Distributed backend throughput. Higher is better. Local and H2 shape rows are intentionally excluded from this chart.</figcaption>
+</figure>
+
+<figure>
+  <img src="/assets/bluetape4k-leader-part5-distributed-latency-chart-01.png" alt="Distributed backend latency chart for bluetape4k-leader" loading="lazy" />
+  <figcaption>Distributed backend average time. Lower is better. PostgreSQL/MySQL exposed rows are much slower in this same-machine benchmark shape.</figcaption>
+</figure>
+
+Representative rows:
+
+| Row | Throughput ops/s | Average time us/op | Reading |
+|---|---:|---:|---|
+| Lettuce Redis blocking | 1,454.7 | 699.4 | Redis backends sit in the upper distributed-backend band. |
+| Redisson Redis blocking | 1,415.8 | 699.7 | Similar band; operational client preference matters. |
+| Hazelcast blocking | 1,460.9 | 766.3 | Same upper band in this benchmark. |
+| MongoDB blocking | 843.7 | 1,131.0 | Competitive document-store row. |
+| ZooKeeper blocking | 804.3 | 1,372.2 | Curator-backed coordination candidate. |
+| Consul blocking | 593.6 | 1,900.6 | Read it in Consul session/KV operational context. |
+| etcd suspend | 467.5 | 2,239.4 | Control-plane fit can matter more than raw rank. |
+| PostgreSQL/MySQL exposed rows | 50-80 range | 13,000-17,000 range | Distributed SQL rows are slower here. Do not compare them with local/H2 structure checks. |
+
+Kubernetes Lease runs in a separate benchmark source set with K3s Testcontainers. README representative rows are 171.5 ops/s for blocking and 164.7 ops/s for suspend. That separate target matters because the Fabric8 client runtime differs from the default etcd/Vert.x runtime.
+
+The Redis lease-extension benchmark answers a narrower question. Normal `runIfLeader` and `autoExtend` rows are within the JMH error range. `runIfLeaderWithRenewalWindow` uses a 90 ms lease and 45 ms action dwell to force the extension path. If a row reads `50,000 us/op`, treat it as `50 ms/op`, not 50 microseconds, and do not read that row as the everyday cost of leader election.
+
+## Example map
+
+If you want to jump to code, start with examples.
+
+| Example | Backend | What to inspect |
+|---|---|---|
+| `examples/batch-scheduler` | Redis/Spring | Cluster-wide scheduled batch |
+| `examples/migration-gate` | Exposed JDBC | Run schema/data migration on one node |
+| `examples/webhook-poller` | Redis | Avoid duplicate polling |
+| `examples/cache-warmer` | Redis | Coordinate cache warming |
+| `examples/tenant-aggregator` | Exposed R2DBC | Independent leader per tenant |
+| `examples/ktor-app` | Ktor + Lettuce | `LeaderElectionPlugin` and `leaderScheduled` |
+| `examples/prometheus-dashboard` | Spring + Lettuce | AOP metrics, Prometheus, Grafana |
+| `examples/etcd-reconciler` | etcd | Desired-state reconciler |
+| `examples/consul-maintenance` | Consul | Maintenance/drain workflow |
+| `examples/k8s-lease` | Kubernetes Lease | Low-level Lease acquire/release/reacquire |
+| `examples/k8s-operator` | Kubernetes Lease + Spring | Three-replica operator pattern |
+| `examples/rate-limiter` | Lettuce + Bucket4j | Leader-dispatched external API probes |
+| `examples/redisson-watchdog` | Redisson | Long-running job and shared lease extender |
+
+## Sources
+
+- [bluetape4k-leader README](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/README.md)
+- [bluetape4k-leader benchmark README](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/benchmark/README.md)
+- [2026-05-21 cross-backend baseline](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/docs/benchmarks/2026-05-21-leader-cross-backend-baseline.md)
+- [2026-05-29 RDB backend throughput JSON](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/docs/benchmarks/2026-05-29-issue-405-rdb-backend-throughput.json)
+- [LockExtender.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LockExtender.kt)
+- [LockAssert.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LockAssert.kt)
+- [LeaderLeaseAutoExtender.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LeaderLeaseAutoExtender.kt)
+- [SafeLeaderHistoryRecorder.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/history/SafeLeaderHistoryRecorder.kt)
+- [MicrometerLeaderAopMetricsRecorder.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-micrometer/src/main/kotlin/io/bluetape4k/leader/micrometer/MicrometerLeaderAopMetricsRecorder.kt)
+- [leader examples](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples)
+
+## Series Links
+
+- [Part 1: Repository overview and mental model](/blog/bluetape4k-leader-part1-overview/)
+- [Part 2: Core APIs and execution models](/blog/bluetape4k-leader-part2-core-apis/)
+- [Part 3: Multi-leader and strategic election](/blog/bluetape4k-leader-part3-group-strategic-election/)
+- [Part 4: Spring Boot and Ktor integration](/blog/bluetape4k-leader-part4-spring-ktor-management/)
+- [Part 5: Backends, operations, and benchmarks](/blog/bluetape4k-leader-part5-backends-operations-benchmarks/) — current

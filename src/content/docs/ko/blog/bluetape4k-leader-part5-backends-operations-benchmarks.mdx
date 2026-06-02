@@ -1,0 +1,181 @@
+---
+title: "Bluetape4k Leader Part 5: Backend, 운영 기능, Benchmark"
+description: "Redis Lettuce/Redisson, etcd, Exposed JDBC/R2DBC, MongoDB, DynamoDB, Consul, Kubernetes Lease, Hazelcast, ZooKeeper를 운영 선택지로 비교하고, LockExtender, LockAssert, history/audit, Micrometer, benchmark 해석 기준을 정리합니다."
+sidebar:
+  order: -202606022130
+blog:
+  date: 2026-06-02T21:30:00+09:00
+  image: /assets/bluetape4k-leader-part5-hero.png
+  imageAlt: Robotic builders arranging Redis, etcd, SQL, Kubernetes, and observability props on a leader election storage workbench
+  cardDescription: "leader election backend는 API 취향보다 이미 운영 중인 기반, lease 저장 방식, 관측 가능성으로 고르는 편이 안전합니다."
+---
+
+<figure class="bt4k-post-hero">
+  <img src="/assets/bluetape4k-leader-part5-hero.png" alt="Robotic builders arranging Redis, etcd, SQL, Kubernetes, and observability props on a leader election storage workbench" loading="lazy" />
+  <figcaption>백엔드를 바꾸면 API보다 운영 환경이 먼저 달라집니다. lease, TTL, 연장, 관측은 모두 저장소 선택의 일부입니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-02 · bluetape4k-leader series · Part 5</p>
+
+[Part 4](/ko/blog/bluetape4k-leader-part4-spring-ktor-management/)에서는 Spring Boot annotation/AOP와 Ktor application lifecycle 쪽 경계를 봤습니다.
+Part 5에서는 한 층 더 내려갑니다. 같은 `runIfLeader`라도 Redis에 저장할지, etcd lease로 잡을지, SQL row로 남길지, Kubernetes Lease로 운영할지에 따라 장애 대응과 관측 방법이 달라집니다.
+
+이 선택은 "어느 client API가 더 예쁜가"보다 운영 판단에 가깝습니다. leader election은 평소에는 조용해야 하고, 장애가 났을 때는 누가 왜 실행했는지 설명할 수 있어야 합니다.
+
+## 먼저 운영 중인 인프라의 재사용성을 검토한다
+
+<figure>
+  <img src="/assets/bluetape4k-leader-part5-backend-picker.png" alt="Decision map for choosing leader election storage backends by operation shape" loading="lazy" />
+  <figcaption>backend-picker는 성능 순위표가 아니라 이미 운영 중인 기반에서 출발하는 선택 가이드입니다.</figcaption>
+</figure>
+
+처음 선택은 대부분 이 질문으로 충분합니다.
+
+| 지금 운영 중인 substrate | 먼저 볼 backend | 이유 |
+|---|---|---|
+| Redis가 공통 cache/lock substrate다 | Lettuce 또는 Redisson | Redis TTL과 token ownership으로 단일 leader를 만들기 쉽습니다. Lettuce는 가벼운 client path, Redisson은 lock 친화적인 운영 경험이 장점입니다. |
+| etcd가 control-plane truth다 | etcd v3 | lease와 conditional write가 reconciler/control-plane 작업과 잘 맞습니다. |
+| DB 운영팀이 장애 대응 범위를 관리한다 | Exposed JDBC/R2DBC | row, token, 만료 시각을 SQL로 관찰하고 migration/audit과 붙이기 쉽습니다. |
+| workload가 Kubernetes 안에서 돈다 | Kubernetes Lease | `coordination.k8s.io/v1` Lease와 pod/operator lifecycle을 그대로 씁니다. |
+| 이미 MongoDB, DynamoDB, Consul, Hazelcast, ZooKeeper가 있다 | 해당 backend | 새 인프라를 늘리지 않고 기존 운영 지식으로 leader lock을 관리할 수 있습니다. |
+
+backend-picker를 이렇게 잡는 이유는 간단합니다. leader election backend는 성능 숫자만으로 고르기 어렵습니다. 장애 시 누가 lease를 연장할 수 있는지, 누가 token을 검증하는지, 만료된 owner를 어떻게 정리하는지, 운영자가 어디서 상태를 확인하는지가 함께 따라옵니다.
+
+## Redis: Lettuce와 Redisson을 우선 검토한다
+
+Redis는 가장 자연스러운 기본값입니다. 이미 Redis를 cache, rate limit, short-lived coordination에 쓰고 있다면 leader lock도 같은 운영 환경에서 볼 수 있습니다.
+
+`bluetape4k-leader`는 Redis 계열을 두 가지로 제공합니다.
+
+| Backend | 잘 맞는 상황 | 주의점 |
+|---|---|---|
+| `leader-redis-lettuce` | Lettuce client를 직접 운영하고, Kotlin coroutine/suspend path까지 가볍게 가져가고 싶을 때 | lease TTL, token 검증, auto-extension을 애플리케이션 계약으로 이해해야 합니다. |
+| `leader-redis-redisson` | Redisson을 이미 쓰고 있고 lock API/운영 경험이 익숙할 때 | electors는 명시적 `leaseTime`을 넘기므로 benchmark의 `autoExtend`는 Redisson native watchdog이 아니라 bluetape4k 공통 extender path입니다. |
+
+긴 작업에서는 `autoExtend = true`로 lease를 갱신할 수 있습니다. 다만 group election의 auto-extension은 아직 지원하지 않습니다. group slot은 각 slot이 별도 lease와 completion boundary를 가지기 때문입니다.
+
+```kotlin
+val options = LeaderElectionOptions(
+    leaseTime = 30.seconds,
+    autoExtend = true,
+)
+
+val election = RedissonLeaderElector(client, options)
+
+election.runIfLeader("nightly-maintenance") {
+    LockAssert.assertLocked("nightly-maintenance")
+    LockExtender.extendActiveLock("nightly-maintenance", 60.seconds)
+    runLongJob()
+}
+```
+
+`LockAssert`는 현재 코드가 실제 lock 범위 안에서 실행 중인지 확인하는 guard입니다. fail-open sentinel 범위나 lock 밖에서는 통과하지 않습니다. `LockExtender`는 현재 lock의 만료 시간을 늘리는 운영 도구입니다. 실패 원인은 legacy Boolean만 보면 뭉개질 수 있으므로 내부적으로는 `ExtendOutcome`처럼 not-held, wrong-thread, backend failure를 구분합니다.
+
+## etcd: control-plane 작업에 잘 맞는다
+
+etcd는 "이미 control-plane state를 etcd에 둔다"는 팀에 잘 맞습니다. Kubernetes 밖에서 reconciler를 돌리거나, desired state를 한 node만 적용해야 하는 작업이라면 etcd lease는 자연스럽습니다.
+
+Redis가 application substrate라면, etcd는 control-plane substrate에 가깝습니다. backend 선택 기준도 다릅니다. "우리 서비스가 Redis를 항상 먼저 붙인다"가 아니라 "이 작업의 authoritative state가 etcd에 있다"면 etcd를 보는 편이 낫습니다.
+
+예제도 그쪽에 맞춰져 있습니다. `examples/etcd-reconciler`는 한 node만 desired state를 적용하는 control-plane reconciler 흐름을 보여줍니다.
+
+## 나머지 lock storage는 상황에 맞게 선택한다
+
+Redis와 etcd만 있는 것은 아닙니다. Part 5의 목적은 backend를 순위표처럼 줄 세우는 것이 아니라, 운영 substrate에 맞춰 빠르게 찾는 것입니다.
+
+| Family | 저장 의미 | 읽는 법 |
+|---|---|---|
+| Exposed JDBC/R2DBC | lock row, token, 만료 시각, optional history row | SQL로 상태를 직접 설명해야 하는 migration gate, tenant aggregation, audit-heavy batch에 좋습니다. |
+| MongoDB | `findOneAndUpdate`와 TTL index 계열 | MongoDB가 이미 operational store이고 short-lived ownership을 document로 보고 싶을 때 맞습니다. |
+| DynamoDB | conditional item write와 TTL 성격 | AWS-native 운영 환경이 중요할 때 후보가 됩니다. benchmark row는 noise가 커서 반복 측정 후 판단해야 합니다. |
+| Consul | Session + KV | service maintenance/drain처럼 Consul 운영 모델과 맞는 작업에 좋습니다. |
+| Kubernetes Lease | `coordination.k8s.io/v1` Lease object | pod/operator lifecycle과 관측을 Kubernetes API로 통일하고 싶을 때 선택합니다. |
+| Hazelcast | IMap 기반 backend | Hazelcast cluster가 이미 runtime substrate일 때 의미가 있습니다. README는 CP Subsystem 기반이 아니라 IMap 기반이라고 명시합니다. |
+| ZooKeeper | Curator lock/semaphore | ZooKeeper/Curator 운영 지식이 있고 legacy coordination substrate를 유지해야 할 때 후보입니다. |
+
+## 운영 기능: 연장, 검증, 기록, metric
+
+backend를 고른 뒤에도 운영 질문은 남습니다.
+
+| 질문 | 도구 |
+|---|---|
+| 작업이 lease보다 길어질 수 있는가 | `autoExtend`, `LeaderLeaseAutoExtender`, `LockExtender` |
+| 지금 코드가 정말 lock scope 안에서 실행 중인가 | `LockAssert.assertLocked()` / `assertLockedSuspend()` |
+| 누가 leader였고, 실패했는가 | leader history recorder와 backend별 history sink |
+| AOP 경계에서 몇 번 시도하고 몇 번 skip되었는가 | `leader-micrometer`의 `MicrometerLeaderAopMetricsRecorder` |
+
+history recorder는 success/completed/failed를 남기되, sink 장애가 본 작업을 망치지 않도록 best-effort로 감쌉니다. cancellation은 삼키지 않습니다. 이 원칙은 Part 4에서 본 Ktor lifecycle과도 같습니다. 취소는 취소고, 일반 실패는 기록 가능한 실패입니다.
+
+Micrometer 쪽은 AOP 경계에서 시도, 획득, not-acquired, execution duration, task failure, active gauge를 기록합니다. 운영 dashboard에서는 lock contention과 backend failure를 같은 skip으로 뭉개지 않는 것이 중요합니다. lock contention은 정상적인 건너뛰기이고, backend failure는 신뢰성 문제입니다.
+
+## Benchmark: 숫자는 방향을 보여 주고, 해석 조건은 계약이다
+
+benchmark README는 먼저 선을 긋습니다. 이 모듈은 같은 머신에서 before/after를 비교하기 위한 `kotlinx-benchmark` suite이고, release-grade performance claim이 아닙니다. 2026-05-21 baseline은 one fork, one thread, warmup 2회, 1초 measurement 3회 조건입니다. 2026-05-29에는 PostgreSQL/MySQL row가 추가됐고, 2026-06-01에는 Redis lease-extension row가 추가됐습니다.
+
+<figure>
+  <img src="/assets/bluetape4k-leader-part5-distributed-throughput-chart-01.png" alt="Distributed backend throughput chart for bluetape4k-leader" loading="lazy" />
+  <figcaption>Distributed backend throughput. Higher is better. Local and H2 shape rows are intentionally excluded from this chart.</figcaption>
+</figure>
+
+<figure>
+  <img src="/assets/bluetape4k-leader-part5-distributed-latency-chart-01.png" alt="Distributed backend latency chart for bluetape4k-leader" loading="lazy" />
+  <figcaption>Distributed backend average time. Lower is better. PostgreSQL/MySQL exposed rows are much slower in this single-machine benchmark shape.</figcaption>
+</figure>
+
+대표 숫자는 이렇게 읽으면 됩니다.
+
+| Row | Throughput ops/s | Average time us/op | 해석 |
+|---|---:|---:|---|
+| Lettuce Redis blocking | 1,454.7 | 699.4 | Redis 계열은 분산 backend chart에서 상위권입니다. |
+| Redisson Redis blocking | 1,415.8 | 699.7 | Lettuce와 비슷한 대역입니다. 운영 client 선호가 선택에 영향을 줍니다. |
+| Hazelcast blocking | 1,460.9 | 766.3 | 이 benchmark에서는 Redis와 같은 상위권입니다. |
+| MongoDB blocking | 843.7 | 1,131.0 | document store 기반으로 충분히 경쟁력 있는 row입니다. |
+| ZooKeeper blocking | 804.3 | 1,372.2 | Curator 기반 coordination substrate 후보입니다. |
+| Consul blocking | 593.6 | 1,900.6 | Consul session/KV 모델에 맞는 운영 작업에서 봐야 합니다. |
+| etcd suspend | 467.5 | 2,239.4 | control-plane 적합성이 성능 숫자보다 더 큰 선택 이유일 수 있습니다. |
+| PostgreSQL/MySQL exposed rows | 50-80대 | 13,000-17,000대 | 같은 머신의 분산 DB row는 느립니다. local/H2와 직접 비교하지 않습니다. |
+
+Kubernetes Lease는 별도 benchmark source set에서 K3s Testcontainers로 측정합니다. README의 대표 row는 blocking 171.5 ops/s, suspend 164.7 ops/s입니다. Fabric8 client runtime이 기본 target의 etcd/Vert.x runtime과 달라서, 이 차이도 중요한 해석 조건입니다.
+
+Redis lease-extension benchmark는 더 좁은 질문을 봅니다. normal `runIfLeader`와 `autoExtend` row의 차이는 JMH 오차 범위 안에 있습니다. `runIfLeaderWithRenewalWindow` row는 90 ms lease, 45 ms action dwell 조건으로 auto-extension path를 강제로 지나가게 만든 측정입니다. `50,000 us/op`는 `50 ms/op`로 읽어야 하며, 이 숫자를 "운영에서 항상 50 ms/op가 든다"로 읽으면 안 됩니다.
+
+## Example map
+
+Part 5를 읽고 바로 코드를 보고 싶다면 예제부터 보면 됩니다.
+
+| Example | Backend | 보는 포인트 |
+|---|---|---|
+| `examples/batch-scheduler` | Redis/Spring | cluster-wide scheduled batch |
+| `examples/migration-gate` | Exposed JDBC | schema/data migration을 한 node만 실행 |
+| `examples/webhook-poller` | Redis | poller 중복 실행 방지 |
+| `examples/cache-warmer` | Redis | cache warming job coordination |
+| `examples/tenant-aggregator` | Exposed R2DBC | tenant별 독립 leader |
+| `examples/ktor-app` | Ktor + Lettuce | `LeaderElectionPlugin`과 `leaderScheduled` |
+| `examples/prometheus-dashboard` | Spring + Lettuce | AOP metric, Prometheus/Grafana |
+| `examples/etcd-reconciler` | etcd | desired state reconciler |
+| `examples/consul-maintenance` | Consul | maintenance/drain workflow |
+| `examples/k8s-lease` | Kubernetes Lease | low-level Lease acquire/release/reacquire |
+| `examples/k8s-operator` | Kubernetes Lease + Spring | 3-replica operator pattern |
+| `examples/rate-limiter` | Lettuce + Bucket4j | leader-dispatched external API probes |
+| `examples/redisson-watchdog` | Redisson | long-running job and shared lease extender |
+
+## Sources
+
+- [bluetape4k-leader README](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/README.md)
+- [bluetape4k-leader benchmark README](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/benchmark/README.md)
+- [2026-05-21 cross-backend baseline](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/docs/benchmarks/2026-05-21-leader-cross-backend-baseline.md)
+- [2026-05-29 RDB backend throughput JSON](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/docs/benchmarks/2026-05-29-issue-405-rdb-backend-throughput.json)
+- [LockExtender.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LockExtender.kt)
+- [LockAssert.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LockAssert.kt)
+- [LeaderLeaseAutoExtender.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LeaderLeaseAutoExtender.kt)
+- [SafeLeaderHistoryRecorder.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/history/SafeLeaderHistoryRecorder.kt)
+- [MicrometerLeaderAopMetricsRecorder.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-micrometer/src/main/kotlin/io/bluetape4k/leader/micrometer/MicrometerLeaderAopMetricsRecorder.kt)
+- [leader examples](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples)
+
+## Series Links
+
+- [Part 1: 리더 선출의 기본 모델](/ko/blog/bluetape4k-leader-part1-overview/)
+- [Part 2: Core API와 실행 모델](/ko/blog/bluetape4k-leader-part2-core-apis/)
+- [Part 3: Multi-leader와 전략 선출](/ko/blog/bluetape4k-leader-part3-group-strategic-election/)
+- [Part 4: Spring Boot와 Ktor 통합](/ko/blog/bluetape4k-leader-part4-spring-ktor-management/)
+- [Part 5: Backend, 운영 기능, Benchmark](/ko/blog/bluetape4k-leader-part5-backends-operations-benchmarks/) — current
