@@ -1,6 +1,6 @@
 ---
 title: "부끄러운 실수가 더 나은 안전장치를 만들 때"
-description: 잘못된 가정에서 시작한 bluetape4k-projects 버그 수정 다섯 가지와, 어떻게 찾고 고치고 다시 막았는지에 대한 회고.
+description: 잘못된 가정에서 시작한 bluetape4k-projects 버그 수정 다섯 가지와, 어떻게 찾고 고치고 다시 막았는지 돌아본 글.
 sidebar:
   order: -202605290925
 blog:
@@ -12,7 +12,7 @@ blog:
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/embarrassing-bugs-hero.png" alt="버그 리포트가 검증 코드와 guardrail로 바뀌는 소개용 일러스트" loading="eager" />
-  <figcaption>어색한 실수로 시작한 수정도, 다음 실수를 조용히 막는 guard로 남으면 꽤 쓸모 있다.</figcaption>
+  <figcaption>민망한 실수로 시작한 수정도, 다음 실수를 조용히 막는 guard로 남으면 꽤 쓸모 있다.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-29 · bluetape4k projects bug-fix note</p>
@@ -92,7 +92,7 @@ Properties에서 발견한 bug를 모든 text format에 전파하면, 다음에�
 
 ### 다음 장치
 
-재발 방지 장치는 간단하다. format-specific bug는 format-specific mapper에만 고친다. 그리고
+재발 방지 장치는 간단하다. format-specific bug는 format-specific mapper에서만 고친다. 그리고
 configuration round-trip test를 둔다. `null`, empty string, `0`은 설정 파일에서는 서로 다른 값이다.
 
 ## 2. Nightly가 가르쳐준 것: "테스트가 낡았다"도 버그다
@@ -278,7 +278,7 @@ API의 interruption은 일반 실패가 아니다. thread에게 남겨야 하는
 
 ### 어떻게 찾았나
 
-shutdown lifecycle issue를 보면서 interrupt path를 따로 생각했다. timeout과 interruption은 둘 다
+shutdown lifecycle issue를 보면서 interrupt path를 따로 봤다. timeout과 interruption은 둘 다
 graceful termination 실패처럼 보일 수 있지만, 후자는 caller에게 돌려줘야 할 상태가 있다.
 
 ### 어떻게 고쳤나
@@ -339,7 +339,7 @@ API라면 explicit catch로 interrupt status를 보존해야 한다.
 
 ## 다음에는 어떻게 덜 멍청해질까
 
-내가 여기서 얻은 규칙은 세 가지다.
+여기서 얻은 규칙은 세 가지다.
 
 첫째, 값의 의미를 코드 타입만 보고 판단하지 않는다. `""`, `null`, `0`은 모두 다르다. 특히 설정 파일에서는
 더 다르다.
