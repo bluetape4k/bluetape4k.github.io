@@ -1,0 +1,238 @@
+---
+title: "Bluetape4k Exposed Part 2: JDBC Repositories and SQL DSL"
+description: Why the JDBC repository boundary exists in Exposed, and which SQL DSL shapes should stay visible.
+sidebar:
+  order: -202605311102
+blog:
+  date: 2026-05-31T11:02:00+09:00
+  image: /assets/bluetape4k-exposed-part2-hero.png
+  imageAlt: Small robotic builders handling PostgreSQL, SQL DSL, and repository blocks on an Exposed workshop bench
+  cardDescription: "Do not hide SQL DSL; remove only the repeated repository boundary code."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-exposed-part2-hero.png" alt="Small robotic builders handling PostgreSQL, SQL DSL, and repository blocks on an Exposed workshop bench" loading="eager" />
+  <figcaption>Do not try to erase SQL. Reduce the mistakes that string SQL used to create.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-05-31 · bluetape4k-exposed series · Part 2</p>
+
+[Part 1](/blog/bluetape4k-exposed-part1-why-exposed/) covered why Exposed became the center of this data-access stack.
+Now we move to the JDBC side. Exposed DSL is already enough to write queries, but real services repeat the same smaller
+patterns around it: single-row lookup, paging, soft delete, audit updates, and mapping.
+
+`exposed-jdbc` exists not to hide SQL DSL. Exposed is useful precisely because it lets SQL stay visible in Kotlin code.
+`JdbcRepository` keeps that advantage and removes the code I kept rewriting around it: `findById`, `findPage`,
+soft-delete filters, mappers, and virtual-thread transaction helpers.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-exposed-part2-jdbc-repository-flow.png" alt="JDBC repository flow from service method through Exposed DSL, JdbcRepository, ResultRow mapper, virtual-thread transaction, and database" loading="lazy" />
+  <figcaption>The service owns transaction boundaries and domain intent. The repository removes repeated query shapes and mapping code.</figcaption>
+</figure>
+
+## Keep SQL DSL Visible
+
+The most important part of Exposed JDBC is that the SQL shape remains in code. String SQL often reveals typos and
+parameter-order mistakes only at runtime. Exposed DSL builds the same SQL inside Kotlin's type system.
+
+```kotlin
+val rows = Users
+    .innerJoin(Orders)
+    .select(Users.id, Users.name, Orders.amount)
+    .where {
+        (Users.id eq userId) and (Orders.status eq "PAID")
+    }
+    .orderBy(Orders.id)
+    .toList()
+```
+
+This code does not pretend SQL is gone. `join`, `select`, `where`, and `orderBy` are still there. The difference is that
+columns and types stay in code, which reduces the typo, column drift, and parameter-order mistakes common in XML or raw
+string SQL.
+
+That is why I do not hide every query behind repository methods. Complex queries are often clearer when their SQL shape
+is visible. Repositories should handle repeated small queries and consistent paging or soft-delete rules. Once that line
+is crossed, the repository becomes another query language.
+
+## What JdbcRepository Removes
+
+The repository layer is not meant to be a large domain abstraction. The basic shape is small: implement
+`LongJdbcRepository<UserTable, UserRecord>`, provide the table, and map `ResultRow` to an entity. That is enough to reuse
+single-row and paging helpers.
+
+```kotlin
+data class UserRecord(
+    val id: Long = 0L,
+    val name: String,
+    val email: String,
+)
+
+object UserTable : LongIdTable("users") {
+    val name = varchar("name", 100)
+    val email = varchar("email", 200)
+}
+
+class UserRepository : LongJdbcRepository<UserTable, UserRecord> {
+    override val table = UserTable
+
+    override fun ResultRow.toEntity() = UserRecord(
+        id = this[UserTable.id].value,
+        name = this[UserTable.name],
+        email = this[UserTable.email],
+    )
+}
+```
+
+That is thin enough. It does not block SQL DSL from view; it avoids rewriting the same mapping and paging code on every
+table.
+
+| Feature | Why it belongs in a repository |
+|---|---|
+| `findById` | Primary-key lookup repeats on almost every table |
+| `findPage` | Page number, page size, and total count calculation repeat |
+| Soft delete | Missing an `isDeleted=false` predicate can become an operational incident |
+| Audit update | Columns such as `updatedAt` and `updatedBy` are safer as rules |
+| Batch insert/upsert | Database-specific differences should not be scattered across queries |
+
+## Do Not Hide Transaction Boundaries
+
+With JDBC, the transaction boundary is the part I treat most carefully. Repositories are usually created at application
+startup or injected by the DI container. They do not need to be recreated inside every transaction. Exposed executes the
+query inside `transaction { ... }`.
+
+```kotlin
+val repo = UserRepository()
+
+transaction {
+    val page = repo.findPage(pageNumber = 0, pageSize = 20) {
+        UserTable.name like "홍%"
+    }
+    page.content
+}
+```
+
+In a Spring `@Transactional` service, the Spring transaction boundary and Exposed `Database` binding must be clear. If it
+is not obvious where the transaction starts, which connection it owns, and when schema or routing is decided,
+multi-tenancy and read/write routing will be fragile.
+
+## Virtual-Thread Transactions
+
+If we keep using blocking JDBC, we still need to pay attention to waiting cost. `exposed-jdbc` includes JDK 21+
+Virtual Thread transaction helpers for that reason.
+
+```kotlin
+val count = newVirtualThreadJdbcTransaction {
+    UserTable.selectAll().count()
+}
+
+val futures = List(10) { index ->
+    virtualThreadJdbcTransactionAsync {
+        UserTable.insert { it[name] = "user-$index" }
+        index
+    }
+}
+val results = futures.awaitAll()
+```
+
+This keeps the JDBC driver path. Blocking calls remain, but waiting work does not hold an expensive platform thread for
+as long. As Part 1 showed, this helps most on JDBC workloads with I/O wait.
+
+Virtual Threads do not replace transaction design. Connection pool size, database capacity, indexes, and lock contention
+still matter. In practice, the bottleneck often appears there. Cheaper threads do not automatically increase database
+throughput.
+
+## A Closer Repository Example
+
+In production services, I needed single-row lookup, paging, batch save, soft-delete, and audit helpers more often than I
+needed CTE helpers. The repository is prepared outside the transaction and used inside it.
+
+```kotlin
+val repo = UserRepository()
+
+transaction {
+    val user = repo.save(UserRecord(name = "홍길동", email = "hong@example.com"))
+    val found = repo.findByIdOrNull(user.id)
+
+    val page = repo.findPage(
+        pageNumber = 0,
+        pageSize = 20,
+        sortOrder = SortOrder.ASC,
+    ) { UserTable.name like "홍%" }
+
+    val inserted = repo.batchInsert(users) { item ->
+        this[UserTable.name] = item.name
+        this[UserTable.email] = item.email
+    }
+}
+```
+
+Soft-delete repositories turn deletion into a state transition instead of a physical `DELETE`.
+
+```kotlin
+val repo = PostRepository()
+
+transaction {
+    repo.softDeleteById(postId)
+
+    val activePosts = repo.findActive()
+    val deletedPosts = repo.findDeleted()
+
+    repo.restoreById(postId)
+}
+```
+
+Audit repositories avoid repeating editor and update-time columns in every query.
+
+```kotlin
+val repo = ArticleRepository()
+
+transaction {
+    UserContext.withUser("editor@example.com") {
+        repo.auditedUpdateById(articleId) {
+            it[ArticleTable.title] = "Updated Title"
+        }
+    }
+}
+```
+
+`exposed-jdbc` also includes `withCte()` for PostgreSQL/MySQL `WITH` and `WITH RECURSIVE`. Still, in ordinary service
+code, I prefer showing the SQL DSL instead of hiding a CTE behind a long repository method name. When the query method
+name starts reading like a sentence, the repository is reinventing SQL.
+
+## What to Look for in the Workshops
+
+A JDBC repository looks too simple in a tiny example. The workshops show where the boundary holds up when repositories
+meet Spring transactions, Virtual Threads, cache, and routing.
+
+| Example | What to inspect |
+|---|---|
+| `exposed-workshop/03-exposed-basic` | Basic DSL, DAO, and transaction shape |
+| `exposed-workshop/08-coroutines/02-virtualthreads-basic` | JDBC + Virtual Threads execution model |
+| `exposed-workshop/09-spring` | Spring transactions and repository wiring |
+| `exposed-workshop/10-multi-tenant` | Schema switching and transaction connection boundaries |
+| `exposed-workshop/11-high-performance/03-routing-datasource` | Read/write and tenant routing-key calculation |
+
+## Closing
+
+This is how I evaluate the JDBC path:
+
+- I want to see the query shape explicitly.
+- I want Kotlin DSL type-safety instead of string SQL.
+- Transaction and query control matter more than a large ORM model.
+- I want to keep blocking JDBC but reduce waiting cost with Virtual Threads.
+- I want to remove repeated repository code without hiding SQL DSL.
+
+Next, Part 3 looks at R2DBC, Coroutines, and Virtual Threads together. I split these paths not because one name sounds
+more modern, but because the better choice changes by workload.
+
+## Source Links
+
+- Part 2 issue: [#87 Blog: bluetape4k-exposed Part 2 - JDBC repositories and SQL DSL patterns](https://github.com/bluetape4k/bluetape4k.github.io/issues/87)
+- JDBC README: [exposed/exposed-jdbc/README.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-jdbc/README.md)
+- JDBC benchmark source: [ExposedJdbcBenchmark.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-jdbc/src/test/kotlin/io/bluetape4k/exposed/jdbc/benchmark/ExposedJdbcBenchmark.kt)
+- Exposed workshop: [exposed-workshop](https://github.com/bluetape4k/exposed-workshop)
+
+## Series Links
+
+- [Part 1: Why Exposed?](/blog/bluetape4k-exposed-part1-why-exposed/)
+- [Part 2: JDBC repositories and SQL DSL](/blog/bluetape4k-exposed-part2-jdbc-repositories-sql-dsl/)

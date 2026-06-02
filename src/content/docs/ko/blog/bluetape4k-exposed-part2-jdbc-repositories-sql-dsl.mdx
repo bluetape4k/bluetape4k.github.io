@@ -1,6 +1,6 @@
 ---
 title: "Bluetape4k Exposed Part 2: JDBC repository와 SQL DSL"
-description: Exposed JDBC를 쓰면서 왜 repository 경계를 만들었고, SQL DSL은 어디까지 그대로 보이게 두었는지 설명합니다.
+description: Exposed JDBC를 쓰면서 왜 repository 경계를 만들었고, SQL DSL은 어디까지 그대로 보이게 두었는지 설명한다.
 sidebar:
   order: -202605311102
 blog:
@@ -17,7 +17,7 @@ blog:
 
 <p class="bt4k-post-meta">2026-05-31 · bluetape4k-exposed series · Part 2</p>
 
-Part 1에서는 왜 Exposed를 선택했는지 봤습니다. 이제 JDBC 쪽 이야기를 해보겠습니다. Exposed DSL만으로도 query는
+Part 1에서는 왜 Exposed를 선택했는지 봤습니다. 이제 JDBC 쪽 이야기를 보겠습니다. Exposed DSL만으로도 query는
 충분히 작성할 수 있습니다. 그런데 실제 서비스에서는 단건 조회, paging, soft-delete, audit update 같은 코드가
 테이블마다 반복됩니다.
 
@@ -138,8 +138,8 @@ val results = futures.awaitAll()
 오래 붙잡지 않게 합니다. Part 1에서 본 벤치마크처럼, I/O 대기가 많은 JDBC workload에서 효과가 큽니다.
 
 단, Virtual Threads가 transaction 설계를 대신해 주지는 않습니다. connection pool 크기, DB server capacity,
-index, lock 경합은 그대로 봐야 합니다. 실제 병목은 오히려 이쪽에서 더 자주 나옵니다. 스레드가 싸졌다고 DB가 갑자기
-커피를 마시고 빨라지는 것은 아닙니다.
+index, lock 경합은 그대로 봐야 합니다. 실제 병목은 오히려 이쪽에서 더 자주 나옵니다. 스레드가 싸졌다고 DB 처리량이
+자동으로 늘어나는 것은 아닙니다.
 
 ## JdbcRepository 예제를 조금 더 보면
 
@@ -197,7 +197,7 @@ transaction {
 
 물론 `exposed-jdbc`에는 PostgreSQL/MySQL `WITH`, `WITH RECURSIVE`를 위한 `withCte()`도 넣었습니다. 다만
 일반 서비스 코드에서는 CTE를 repository method명으로 숨기기보다 SQL DSL을 그대로 보여주는 편이 낫습니다.
-복잡한 query 이름이 설명문처럼 길어지는 순간, 코드는 이미 SQL을 다시 발명하고 있는 중입니다.
+복잡한 query 이름이 설명문처럼 길어지는 순간, repository는 SQL을 다시 발명하고 있는 중입니다.
 
 ## 워크숍 코드를 볼 때
 
