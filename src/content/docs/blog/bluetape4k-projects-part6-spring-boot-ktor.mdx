@@ -1,6 +1,6 @@
 ---
 title: "Bluetape4k Projects Part 6: Spring Boot 4 and Ktor"
-description: How Spring Boot 4 and Ktor 3 modules lift the shared foundation, I/O, data, infrastructure, and utilities into application boundaries.
+description: How Spring Boot 4 and Ktor 3 modules bring the shared foundation, I/O, data, infrastructure, and utilities into application boundaries.
 sidebar:
   order: -202605301635
 blog:
@@ -12,7 +12,7 @@ blog:
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/bluetape4k-projects-part6-hero.png" alt="Small robotic builders assemble Spring Boot 4 and Ktor 3 application boundaries on top of the shared foundation" loading="eager" />
-  <figcaption>Application boundaries are doors for features. More doors make the hinges matter.</figcaption>
+  <figcaption>Application boundaries decide how shared foundation code enters a service.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-30 · bluetape4k-projects series · Part 6</p>
@@ -27,7 +27,7 @@ goal is less repeated wiring and clearer boundaries.
 
 <figure class="bt4k-architecture">
   <img src="/assets/bluetape4k-projects-part6-application-layer.png" alt="Shared foundation feeds Spring Boot 4 and Ktor 3 modules, configuration, tests, and a running service" loading="lazy" />
-  <figcaption>Spring Boot and Ktor modules lift the shared foundation into configuration, tests, and runtime boundaries.</figcaption>
+  <figcaption>Spring Boot and Ktor modules bring the shared foundation into configuration, tests, and runtime boundaries.</figcaption>
 </figure>
 
 ## Spring Boot 4: The Versionless Standard Path
@@ -47,7 +47,7 @@ dependencies {
 
 `bluetape4k-spring-boot-core` covers WebFlux + coroutines, `RestClient` suspend DSL, `WebClient` extensions, Jackson 2
 customizers, Retrofit2 integration, and `WebTestClient` testing helpers. Spring Boot 4 still uses Jackson 2 internally,
-so this module keeps that boundary explicit.
+so this module keeps the application boundary aligned with that framework boundary.
 
 ```kotlin
 val restClient = RestClient.create("https://api.example.com")
@@ -88,7 +88,8 @@ belong to the application.
 
 `ktor/resilience4j` is route-scoped. Callers pass their own retry, circuit breaker, rate limiter, and time limiter
 through `KtorResiliencePolicies`, then protect suspend blocks with `resilientGet`, `resilientPost`, or
-`withKtorResilience`. `CancellationException` is rethrown and not counted as a circuit breaker failure.
+`withKtorResilience`. `CancellationException` is rethrown and not counted as a circuit breaker failure, so cancellation
+does not distort resilience metrics.
 
 ## Spring Boot or Ktor?
 
