@@ -42,7 +42,7 @@ interface LeaderElector {
 ```
 
 반환 타입은 `T?`입니다. `null`이면 lock 경합으로 action이 실행되지 않은 것입니다.
-ShedLock의 skip-on-contention과 같은 의미입니다 — 경합은 에러가 아니라 예상된 결과입니다.
+ShedLock처럼 "락을 얻지 못하면 건너뛰는" 의미입니다. 경합은 에러가 아니라 예상된 결과입니다.
 
 관련 소스:
 [LeaderElector.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LeaderElector.kt)
@@ -83,7 +83,7 @@ concurrency가 정상적으로 동작합니다.
 관련 소스:
 [LeaderRunResult.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LeaderRunResult.kt)
 
-## 실행 모델 매트릭스
+## 실행 모델별 선택 기준
 
 같은 서비스 안에서도 호출 지점은 다릅니다. 리더 선출 때문에 실행 모델을 바꾸고 싶지는 않습니다.
 
@@ -282,4 +282,4 @@ Part 3에서는 `LeaderGroupElector`를 다룹니다. 리더 하나가 아니라
 - [Part 2: Core API와 실행 모델](/ko/blog/bluetape4k-leader-part2-core-apis/) — 현재 글
 - [Part 3: Multi-leader와 전략 선출](/ko/blog/bluetape4k-leader-part3-group-strategic-election/)
 - [Part 4: Spring Boot와 Ktor 통합](/ko/blog/bluetape4k-leader-part4-spring-ktor-management/)
-- Part 5: Backend, 운영, 벤치마크 (예정)
+- [Part 5: Backend, 운영 기능, Benchmark](/ko/blog/bluetape4k-leader-part5-backends-operations-benchmarks/)

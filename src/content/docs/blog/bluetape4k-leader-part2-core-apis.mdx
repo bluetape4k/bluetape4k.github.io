@@ -42,8 +42,8 @@ interface LeaderElector {
 }
 ```
 
-The return type is `T?`. When the caller gets `null`, it means the lock was contended and the action was
-not run. This mirrors the ShedLock skip-on-contention semantics: contention is not an error, it is the
+The return type is `T?`. When the caller gets `null`, it means another node already held the lock and the action was
+not run. This mirrors ShedLock's contention behavior: contention is not an error, it is the
 expected concurrent behavior.
 
 Source:
@@ -254,7 +254,7 @@ if (s.isOccupied) {
 `LeaderState` carries `lockName`, `status` (`Empty` or `Occupied`), and an optional `leader` lease
 identifying the current lock holder.
 
-The critical contract: **state is a best-effort snapshot**. Do not use it to decide whether to run an
+The key rule: **state is a best-effort snapshot**. Do not use it to decide whether to run an
 action. The snapshot can be stale by the time the caller acts on it. Use the atomic `runIfLeader` path
 for all execution decisions.
 
@@ -308,4 +308,4 @@ election, where the elected node is chosen by rank rather than pure lock content
 - [Part 2: Core APIs and execution models](/blog/bluetape4k-leader-part2-core-apis/) — current
 - [Part 3: Multi-leader and strategic election](/blog/bluetape4k-leader-part3-group-strategic-election/)
 - [Part 4: Spring Boot and Ktor integration](/blog/bluetape4k-leader-part4-spring-ktor-management/)
-- Part 5: Backends, operations, and benchmarks (planned)
+- [Part 5: Backends, operations, and benchmarks](/blog/bluetape4k-leader-part5-backends-operations-benchmarks/)
