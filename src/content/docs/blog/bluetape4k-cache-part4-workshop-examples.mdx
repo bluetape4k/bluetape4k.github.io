@@ -12,7 +12,7 @@ blog:
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/cache-series-part4-hero.png" alt="Spring Boot cache workshop workbench with robot workers, service blocks, Redis, local cache, and benchmark gauges" loading="eager" />
-  <figcaption>Cache strategies are understood in docs, questioned in examples, and humbled in production.</figcaption>
+  <figcaption>Docs explain cache strategies, examples test them, and production keeps them honest.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-29 · Bluetape4k Cache series · Part 4</p>
@@ -23,7 +23,7 @@ This is Part 4 of the Bluetape4k Cache series. The full series includes
 [Part 3: Near Cache + Exposed strategies](/blog/bluetape4k-cache-part3-exposed-strategies/), and
 [Part 4: workshop examples](/blog/bluetape4k-cache-part4-workshop-examples/).
 
-This post is about examples you can hold in your hands. `bluetape4k-workshop` has several
+This post is about runnable examples. `bluetape4k-workshop` has several
 Spring Boot cache examples.
 
 The goal is not to repeat "cache is good." The goal is to see what shape each strategy gives
@@ -231,8 +231,8 @@ Full source:
 [ResilientProductService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-resilience/src/main/kotlin/io/bluetape4k/workshop/cache/resilience/service/ResilientProductService.kt)
 
 This example matters operationally. Cache was added for performance. If Redis is briefly
-unstable and the whole service is affected, something is off. Cache is a supporting actor. When a
-supporting actor collapses at center stage, the show gets strange.
+unstable and the whole service is affected, something is off. Cache is support infrastructure.
+When support infrastructure becomes the main outage path, the design needs another look.
 
 ## Practical Checklist
 

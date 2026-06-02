@@ -1,6 +1,6 @@
 ---
 title: "Bluetape4k Cache Part 4: Workshop 예제로 캐시 전략 감 잡기"
-description: bluetape4k-workshop의 Caffeine, Redis, Near Cache, resilience 예제로 캐시 전략을 실제 서비스 코드에 연결합니다.
+description: bluetape4k-workshop의 Caffeine, Redis, Near Cache, resilience 예제로 캐시 전략을 실제 서비스 코드에 연결한다.
 sidebar:
   order: -202605291704
 blog:
@@ -12,18 +12,18 @@ blog:
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/cache-series-part4-hero.png" alt="Spring Boot cache workshop workbench with robot workers, service blocks, Redis, local cache, and benchmark gauges" loading="eager" />
-  <figcaption>캐시 전략은 문서에서 이해하고, 예제에서 의심하고, 운영에서 겸손해집니다.</figcaption>
+  <figcaption>캐시 전략은 문서에서 이해하고, 예제에서 확인하고, 운영에서 다시 검증합니다.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-29 · Bluetape4k Cache series · Part 4</p>
 
-이번 글은 손에 잡히는 예제입니다. `bluetape4k-workshop`에는 Spring Boot 기반 캐시 예제가 여러 개 있습니다.
+이번 글은 실제로 실행해 볼 수 있는 예제 이야기입니다. `bluetape4k-workshop`에는 Spring Boot 기반 캐시 예제가 여러 개 있습니다.
 
 목표는 "캐시가 좋다"를 반복하는 것이 아닙니다. 어떤 전략이 어떤 코드 모양을 만들고, 어떤 비용을 숨기고, 어떤 운영 계약을 요구하는지 보는 것입니다.
 
 <figure class="bt4k-architecture">
   <img src="/assets/cache-series-workshop-profile-01.png" alt="Workshop cache profiles comparing no cache, Caffeine, Redis, Near Cache, and benchmark path" loading="lazy" />
-  <figcaption>같은 Product service라도 cache profile에 따라 성능과 일관성 계약이 달라집니다.</figcaption>
+  <figcaption>같은 Product service도 cache profile에 따라 성능과 일관성 계약이 달라집니다.</figcaption>
 </figure>
 
 ## 예제 위치
@@ -207,7 +207,7 @@ suspend fun getProduct(id: String): String? {
 전체 소스:
 [ResilientProductService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-resilience/src/main/kotlin/io/bluetape4k/workshop/cache/resilience/service/ResilientProductService.kt)
 
-이 예제는 운영적으로 중요합니다. 캐시는 성능을 위해 붙였는데, Redis가 잠깐 불안정해졌다고 서비스 전체가 같이 영향을 받으면 이상합니다. 캐시는 조연입니다. 조연이 무대 중앙에서 쓰러지면 공연이 이상해집니다.
+이 예제는 운영적으로 중요합니다. 캐시는 성능을 위해 붙였는데, Redis가 잠깐 불안정해졌다고 서비스 전체가 같이 영향을 받으면 이상합니다. 캐시는 보조 인프라입니다. 보조 인프라가 서비스의 중심 장애가 되면 설계를 다시 봐야 합니다.
 
 ## 실전 체크리스트
 
