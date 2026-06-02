@@ -1,6 +1,6 @@
 ---
 title: "Bluetape4k Projects Part 3: bytes가 지나가는 길"
-description: I/O, Okio, JSON/Avro/Protobuf, HTTP/RPC, Tink 모듈이 서비스 경계의 byte와 wire format을 어떻게 다루는지 정리합니다.
+description: I/O, Okio, JSON/Avro/Protobuf, HTTP/RPC, Tink 모듈이 서비스 경계의 byte와 wire format을 어떻게 다루는지 정리한다.
 sidebar:
   order: -202605301632
 blog:
@@ -25,7 +25,7 @@ byte를 압축하고, JSON이나 Protobuf로 바꾸고, HTTP나 gRPC로 보내�
 이 영역은 평소에는 티가 잘 안 납니다. 문자열 하나, header 하나, serializer 옵션 하나가 맞아떨어지면
 그냥 지나갑니다. 그런데 어긋나면 문제의 모양이 갑자기 다양해집니다. 깨진 한글, 끝나지 않는 stream,
 호환되지 않는 직렬화 payload, 누락된 timeout, 복호화되지 않는 column. 코드 리뷰 때는 작아 보였는데
-장애가 되면 입체감이 생깁니다. 별로 보고 싶은 3D는 아닙니다.
+장애가 되면 원인 후보가 한꺼번에 늘어납니다.
 
 <figure class="bt4k-architecture">
   <img src="/assets/bluetape4k-projects-part3-pipeline.png" alt="Bytes move through I/O utilities, Okio streams, serializers, transports, storage boundaries, and Tink encryption" loading="lazy" />
@@ -41,7 +41,7 @@ Zstd, GZip, Deflate, BZip2, Zip 같은 압축기를 공통 `Compressor` 계층�
 여기서 중요한 것은 "압축 알고리즘이 많다"가 아닙니다. 서비스마다 `try/catch`, 빈 byte 처리, 손상 입력
 처리, serializer 실패 정책을 제각각 만들지 않게 하는 것입니다. 예를 들어 `compress()`는 null 또는 empty
 입력에 `emptyByteArray`를 반환하고, 손상 입력을 예외 대신 `null`로 받고 싶다면 `compressOrNull()` 계열을
-씁니다. 작은 규칙이지만, 이 규칙이 서비스마다 달라지면 나중에 로그가 추리 퀴즈가 됩니다.
+씁니다. 작은 규칙이지만, 이 규칙이 서비스마다 달라지면 나중에 원인 파악이 어려워집니다.
 
 ```kotlin
 import io.bluetape4k.io.compressor.Compressors
@@ -74,8 +74,8 @@ Okio의 좋은 점은 모델이 작다는 겁니다. 데이터는 `Source`에서
 
 이 작은 모델 덕분에 파일, socket, HTTP body, 테스트 fixture를 비슷한 방식으로 다룰 수 있습니다. 압축을
 붙이고, 복원을 붙이고, 암호화를 붙이고, channel adapter를 붙이는 식입니다. 손으로 `InputStream`을
-감싸고 다시 `Reader`를 만들고 다시 `byte[]`로 돌아오는 춤을 줄여줍니다. 그 춤은 동작은 하는데, 오래
-추면 무릎이 나갑니다.
+감싸고 다시 `Reader`를 만들고 다시 `byte[]`로 돌아오는 불필요한 변환을 줄여줍니다. 그 변환은 동작해도
+오류 지점을 늘립니다.
 
 ```kotlin
 import io.bluetape4k.io.compressor.Compressors
@@ -93,8 +93,8 @@ target.asCompressSink(Compressors.Streaming.Zstd).use { sink ->
 README에서 반복해서 강조하는 규칙도 실전적입니다. 리소스를 소유한 source/sink는 `use {}`로 닫고, 큰
 payload에는 one-shot보다 streaming adapter를 우선합니다. coroutine 코드에서는 blocking stream을 대충
 감싸기보다 suspended source/sink를 씁니다. 특히 압축/암호화 sink는 `close()`에서 footer나 ciphertext를
-확정하는 경우가 있으니, 닫지 않으면 "거의 다 썼는데 못 읽는 파일"이 됩니다. 억울하지만 컴퓨터는 억울함을
-잘 모릅니다.
+확정하는 경우가 있으니, 닫지 않으면 "거의 다 썼는데 못 읽는 파일"이 됩니다. 닫는 규칙까지가 쓰기
+규칙입니다.
 
 ## JSON과 binary format: 한 계약, 여러 구현체
 
@@ -152,7 +152,7 @@ Base64 string/byte API, key rotation, Redis 기반 keyset store를 제공합니�
 실무에서 자주 갈리는 기준은 AEAD와 Deterministic AEAD입니다. 일반 데이터 보호에는 매번 다른 ciphertext가
 나오는 AEAD가 기본입니다. DB column 검색처럼 equality가 필요할 때만 AES-SIV 계열의 deterministic
 encryption을 씁니다. 같은 평문이 같은 암호문이 되기 때문에 패턴 노출을 감수해야 합니다. 검색이 편해지는
-대신, 비밀이 살짝 말이 많아집니다.
+대신, 같은 값이라는 사실을 암호문이 드러냅니다.
 
 또 하나는 associated data입니다. tenant, user, table, column 같은 context를 ciphertext와 묶으면 같은 key를
 쓰더라도 다른 context로 옮겨 복호화하는 일을 막을 수 있습니다. 이건 Exposed/data 모듈의 저장 경계,
@@ -204,11 +204,11 @@ Protobuf로 묶을지, HTTP로 보낼지, 암호화할지 결정하는 영역입
 
 이 결정을 서비스마다 새로 만들면 작은 차이가 계속 쌓입니다. 어떤 서비스는 timeout이 다르고, 어떤
 서비스는 serializer 실패를 `null`로 삼키고, 어떤 서비스는 암호화 context를 빼먹습니다. 처음에는 개성처럼
-보이지만, 운영에서는 대개 미등록 위험 자산입니다.
+보이지만, 운영에서는 대개 리스크가 됩니다.
 
 공통 I/O 기반을 쓰면 모든 문제가 사라지지는 않습니다. 대신 문제를 비슷한 모양으로 만들 수 있습니다.
-비슷한 모양의 문제는 찾기 쉽고, 고치기 쉽고, 다음 서비스로 전파하기 쉽습니다. 엔지니어링에서 이 정도면
-꽤 괜찮은 마법입니다. 주문도 짧습니다. "같은 경계는 같은 방식으로."
+비슷한 모양의 문제는 찾기 쉽고, 고치기 쉽고, 다음 서비스로 전파하기 쉽습니다. 엔지니어링에서는 이
+정도만으로도 꽤 큰 이득입니다. 규칙도 짧습니다. "같은 경계는 같은 방식으로."
 
 다음 글에서는 data와 infrastructure 모듈을 봅니다. byte가 무사히 도착한 뒤에도, database와 Redis와 Kafka는
 각자 성격이 꽤 뚜렷합니다.
