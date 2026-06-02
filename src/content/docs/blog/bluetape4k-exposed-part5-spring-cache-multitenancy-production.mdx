@@ -1,0 +1,297 @@
+---
+title: "Bluetape4k Exposed Part 5: Production Examples with Cache and Multi-Tenancy"
+description: How bluetape4k layers cache, multi-tenancy, outbox, and idempotency on top of Exposed without hiding SQL DSL or transaction boundaries.
+sidebar:
+  order: -202605311105
+blog:
+  date: 2026-05-31T11:05:00+09:00
+  image: /assets/bluetape4k-exposed-part5-hero.png
+  imageAlt: Small robotic builders connecting service, cache, metrics, and data pipes on a production example workbench
+  cardDescription: "Add performance and production behavior on top of Exposed repositories and transaction boundaries."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-exposed-part5-hero.png" alt="Small robotic builders connecting service, cache, metrics, and data pipes on a production example workbench" loading="eager" />
+  <figcaption>The production examples keep Exposed SQL control while making cache, tenant routing, and outbox patterns usable as application features.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-05-31 · bluetape4k-exposed series · Part 5</p>
+
+The final post in this series looks at production examples. The part I cared about most in `bluetape4k-exposed` was
+keeping Exposed's SQL DSL and explicit transaction control while making repeated operational features easier to attach
+from service code. Cache strategies, multi-tenancy, outbox, and idempotency can all be built by hand. The problem is
+that once they are built by hand, repository, service, interceptor, scheduler, and metric code spread quickly.
+
+I organized these features as extensions that fit naturally into applications already using Exposed. Spring Boot reduces
+configuration, the cache modules turn read/write strategies into repository API choices, and the multi-tenant examples
+collect schema or database switching at transaction entry points. Outbox and idempotency follow the same direction. The
+goal is not to build a large framework around operational behavior, but to layer it thinly on Exposed transactions so it
+can be tested and benchmarked immediately.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-exposed-part5-production-boundary.png" alt="Production boundary diagram from HTTP request through Spring Boot wiring, cache strategy, tenant context, outbox idempotency, repository layer, and observability to measured service" loading="lazy" />
+  <figcaption>Spring wiring, cache, tenant context, outbox, and observability are assembled around Exposed repository and transaction boundaries.</figcaption>
+</figure>
+
+## Spring Boot Auto-Configuration
+
+The first piece is Spring Boot auto-configuration. In a real application, Exposed `Database`, transaction manager,
+repository scanning, and entity wiring are easy to hand-wire once. After the service count grows, that setup code starts
+being copied. I added Spring Boot auto-configuration to reduce that repetition.
+
+| Extension | Role |
+|---|---|
+| `exposed-spring-boot-jdbc` | Spring Data JDBC-style repositories based on Exposed DAO entities |
+| `exposed-spring-boot-r2dbc` | Coroutine repositories based on Exposed R2DBC DSL |
+| `batch-exposed` | Spring Batch integration with Exposed |
+| `exposed-spring-modulith` | Spring Modulith JDBC event publication based on Exposed |
+
+The JDBC side supports Spring Data-style repositories and PartTree queries.
+
+```kotlin
+interface UserRepository : ExposedJdbcRepository<User, Long> {
+    fun findByName(name: String): List<User>
+    fun findByAgeGreaterThan(age: Int): List<User>
+    fun findByEmailContaining(keyword: String): List<User>
+}
+```
+
+The R2DBC side puts coroutine repositories and `Flow` streaming at the front.
+
+```kotlin
+interface UserRepository : ExposedR2dbcRepository<User, Long> {
+    suspend fun findByName(name: String): List<User>
+    suspend fun countByAge(age: Int): Long
+}
+```
+
+The point is to provide familiar Spring Data-like ergonomics without losing Exposed DSL and transaction control. The
+repository interface stays thin, while query shape and transaction choice still belong to Exposed. Service code can stay
+simple like a Spring Boot application, and performance-sensitive paths can still drop directly to SQL DSL.
+
+## Cache Strategy: Separate Cache Aside from CacheWriteMode
+
+Cache behavior becomes especially visible when it is placed on top of an Exposed repository. Service code calls the same
+repository API, while the layer underneath can switch among local cache, Redis, near cache, read-through, write-through,
+and write-behind strategies. `exposed-cache` gives Caffeine, Lettuce, and Redisson cache repositories common interfaces
+and configuration.
+
+The benefit is simple. A service does not need to copy cache-aside code everywhere just to improve performance.
+Read-heavy services can use near cache to reduce DB and Redis round trips. Services with write bursts can use
+write-behind to shorten request time, as long as the workload can accept eventual persistence.
+
+| CacheMode | Meaning |
+|---|---|
+| `LOCAL` | In-process cache such as Caffeine. Fast, but not shared across JVMs |
+| `REMOTE` | Remote cache such as Redis. Shared across instances |
+| `NEAR_CACHE` | L1 local + L2 Redis. Reduces network round trips for hot reads |
+
+The easy part to mix up is Cache Aside versus `CacheWriteMode`. Cache Aside usually means service code handles both DB
+and cache directly: after saving to DB it invalidates or puts the cache, or on cache miss it reads from DB and fills the
+cache. The `CacheWriteMode` in `JdbcCacheRepository` and `R2dbcCacheRepository` is different. The repository API owns the
+DB write as well. Callers may call `put()` or `save()` on the cache repository, but the selected mode decides how the
+backing DB operation is handled.
+
+Read the write modes this way.
+
+| CacheWriteMode | Read | Write |
+|---|---|---|
+| `READ_ONLY` | Reads from DB on miss and caches the result | Updates cache only. Do not expect DB persistence |
+| `WRITE_THROUGH` | Read-through | Writes to cache and DB synchronously |
+| `WRITE_BEHIND` | Read-through | Accepts the write into a queue, updates cache, and flushes DB asynchronously |
+
+The implementation follows that model. Simplified, `WRITE_THROUGH` handles cache and DB in the same call, while
+`WRITE_BEHIND` queues the DB write and updates cache immediately.
+
+```kotlin
+when (config.writeMode) {
+    CacheWriteMode.WRITE_THROUGH -> {
+        cache.put(key, entity)
+        writeToDb(id, entity)
+    }
+    CacheWriteMode.WRITE_BEHIND -> {
+        writeBehindQueue.trySend(id to entity).getOrThrow()
+        cache.put(key, entity)
+    }
+    else -> cache.put(key, entity) // READ_ONLY
+}
+```
+
+So `WRITE_THROUGH` does not mean "the cache knows, but the DB does not." The cache repository is the API shape, but the
+repository also owns persistence. Mixing this up with Cache Aside easily creates the wrong question: "Do I still need to
+save to DB separately from the service?"
+
+The benchmark follows the same distinction. `bluetape4k-workshop/spring-boot/cache-benchmark` compares seven cache
+profiles with H2 and Redis Testcontainers.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-exposed-part5-cache-read-chart.png" alt="Cache read throughput chart showing Caffeine around 490000 ops per second and Near Cache around 465000 ops per second versus No Cache around 8200" loading="lazy" />
+  <figcaption>With warmed cache reads, Caffeine and Near Cache were roughly 57-60x higher than No Cache.</figcaption>
+</figure>
+
+| Profile | Read ops/s | vs baseline |
+|---|---:|---:|
+| No Cache | ~8,200 | 1x |
+| Caffeine | ~490,000 | 60x |
+| Redis Cache | ~43,000 | 5x |
+| Near Cache | ~465,000 | 57x |
+| Read-Through | ~42,000 | 5x |
+| Write-Through | ~41,000 | 5x |
+| Write-Behind | ~42,000 | 5x |
+
+Writes need a separate view. The strategy that wins on reads is not automatically the right write strategy.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-exposed-part5-cache-write-chart.png" alt="Cache write throughput chart showing Write Behind around 24000 ops per second versus No Cache around 8200 and Write Through around 5600" loading="lazy" />
+  <figcaption>For writes, Write-Behind reached roughly 24,000 ops/s, but it only fits flows that can accept eventual consistency.</figcaption>
+</figure>
+
+| Profile | Write ops/s | Interpretation |
+|---|---:|---|
+| No Cache | ~8,200 | DB only |
+| Caffeine | ~8,100 | DB write + local cache |
+| Redis Cache | ~7,300 | DB write + Redis SET |
+| Near Cache | ~7,200 | DB write + near cache update |
+| Write-Through | ~5,600 | DB + Redis synchronous write |
+| Write-Behind | ~24,000 | Writes to cache immediately, then flushes DB asynchronously |
+
+Write-Behind is fast because it separates DB write time from the request path. The selection rule still has to be clear.
+It is a better fit for cache warm-up or delayed persistence flows than for order confirmation or other paths that require
+immediate durable persistence. With a flush queue, shutdown drain, and idempotency, it becomes a workload-specific write
+optimization instead of a fast but shaky cache shortcut.
+
+## Multi-Tenancy: From Header to Schema
+
+Multi-tenancy can be implemented with other ORMs or plain JDBC as well. In practice, tenant identification, context
+propagation, schema or database selection, cache keys, and tests tend to spread across different layers. I prefer pulling
+that boundary as close as possible to the Exposed transaction entry point. `exposed-workshop/10-multi-tenant` shows
+schema-based tenants, database-per-tenant, Spring MVC, Virtual Threads, WebFlux, and Ktor side by side.
+
+The basic flow is the same. The implementation can vary, but the goal is to keep this flow with as little scattered code
+as possible.
+
+1. Identify the tenant from the `X-TENANT-ID` header.
+2. Propagate the tenant into request context.
+3. Select the schema or datasource when entering a transaction.
+4. Test that a tenant A request cannot read tenant B data.
+
+Context propagation differs by runtime.
+
+| Runtime | Context | Schema switch |
+|---|---|---|
+| Spring MVC | `ThreadLocal` | AOP `@Before` |
+| Virtual Threads | `ScopedValue` | AOP `@Before` |
+| WebFlux + Coroutines | Reactor `Context` + `CoroutineContext.Element` | `newSuspendedTransactionWithTenant` |
+| Ktor | Coroutine context/plugin | Request plugin + transaction helper |
+
+Once cache is added, there is one more rule:
+
+> cache keys must include tenant information.
+
+`user:42` can be acceptable in a single-tenant service. In a multi-tenant service, the key needs to include the tenant,
+for example `tenant:korean:user:42`. If this rule is kept inside repository or cache helpers, service code does not need
+to manually assemble tenant-specific cache keys every time. Exposed transaction helpers own schema or database selection,
+while cache helpers own tenant-key rules. Separating the responsibilities this way keeps multi-tenancy from spreading
+through the whole application.
+
+## Production Integration: Outbox and Idempotency
+
+`12-production-integration` contains examples closer to application behavior than cache strategy. The main ones are HTTP
+client outbox and idempotency. Payment, notification, and external API integrations often need to handle "change DB
+state" and "call an external system" together. If those two actions are scattered through service code, retries,
+duplicate requests, and state transitions become complicated quickly.
+
+The Spring and Ktor examples organize that flow around Exposed transactions. First, a pending outbox record is stored and
+a unique constraint is placed on `idempotencyKey`. If a duplicate request arrives, the application returns the existing
+record instead of creating a new task. Then it calls the gateway and transitions the record to `SUCCEEDED`,
+`RETRYABLE_FAILED`, or `PERMANENT_FAILED`.
+
+| Step | What to inspect in code |
+|---|---|
+| Request validation | `orderId`, `amountCents`, `idempotencyKey` normalization and validation |
+| Intent storage | Insert `PENDING` row into `spring_payment_outbox` |
+| Duplicate prevention | `idempotency_key` unique index, returning existing row on duplicate |
+| External call | Fake gateway paths for success, retryable failure, and permanent failure |
+| State transition | `SUCCEEDED` for success, `RETRYABLE_FAILED` for retryable failure |
+
+The important point is not just that an outbox table exists. The useful part is that intent storage, duplicate
+prevention, and state transition can be modeled as one application pattern inside an Exposed transaction. It can be added
+from the point that needs it, without starting with JPA event listeners or a separate messaging framework.
+
+The realtime outbox examples use the same idea. A notification request stores the domain row and outbox row in the same
+Exposed transaction. A separate publish step delivers pending events to the SSE or WebSocket hub. Success becomes
+`PUBLISHED`; failure becomes `FAILED`. It looks small in the example, but production code can add retry workers, claim
+leases, and attempt limits at that boundary. It does not need to begin as a large event platform.
+
+## What to Inspect in the Production Examples
+
+When reading the code, look less at "how many features are included" and more at "how easily can production behavior be
+layered on top of Exposed." `exposed-workshop/11-high-performance` and `12-production-integration` move one step beyond
+simple CRUD examples.
+
+| Example | Question to ask while reading |
+|---|---|
+| `01-cache-strategies` | Can read/write strategy change at the repository API boundary? |
+| `02-cache-strategies-coroutines` | Does the same cache strategy survive in suspend flows? |
+| `04-benchmark` | Are cache hit/miss and write-mode throughput compared by workload? |
+| `05/06-cache-strategies-ktor` | Can Ktor use cache strategies without bloated controller/service code? |
+| `12-production-integration/03-04` | Are HTTP outbox and idempotency tied to an Exposed transaction? |
+| `12-production-integration/07-08` | Are realtime outbox rows stored with domain rows, then handed to a publish step? |
+| `12-production-integration/09-10` | Are observability, readiness, and structured errors shown inside application examples? |
+
+The smoke results in `11-high-performance/04-benchmark` show why workload matters. On READ_HEAVY workloads,
+`WRITE_THROUGH` is about 9.9x faster than NoCache and `READ_THROUGH` is about 5.5x faster. On WRITE_HEAVY workloads, the
+gain falls to about 1.1x. That is why I describe cache strategy by read/write ratio before strategy name.
+
+## Adoption Checklist
+
+- For read-heavy workloads, compare Caffeine, Near Cache, and Read-Through using the real request ratio.
+- For write bursts, decide first whether Write-Behind's consistency model is acceptable.
+- Make sure tenant id enters schema/database selection, cache keys, logs, and metric tags with the same rule.
+- Choose the runtime model first: Spring MVC, Virtual Threads, WebFlux/Coroutines, or Ktor.
+- Before growing outbox/idempotency into a separate framework, check whether an Exposed transaction is enough.
+- Track cache miss, hit, invalidation, and DB fallback metrics in both benchmark results and production metrics.
+- Copy only the combinations that match the service's read/write ratio and tenant-isolation shape.
+
+## Closing
+
+The production path for `bluetape4k-exposed` does not stop at "attach Exposed to Spring Boot." I split these examples for
+that reason.
+
+- Spring Boot auto-configuration gives familiar repository ergonomics while preserving Exposed DSL control.
+- The cache module lets read/write strategies change inside the repository API and improve performance by workload.
+- Multi-tenant examples collect tenant-specific schema or database switching at transaction entry points.
+- Production integration examples add outbox, idempotency, and readiness as small application patterns.
+- Benchmarks force strategy selection to follow workload, not strategy names.
+
+The conclusion of the series is simple. Exposed is a good starting point for handling SQL in a Kotlin-friendly way.
+`bluetape4k-exposed` adds thin extensions for performance tuning and production behavior on top of that starting point.
+
+"Thin" does not mean "few features." It means service code should not repeat cache-aside logic, attach tenant routing in
+every controller, or rebuild outbox workers from scratch every time. Keep the necessary behavior around repository and
+transaction boundaries, then confirm the selection with benchmarks and examples.
+
+That fits Exposed well. Exposed does not hide SQL, and it treats transactions explicitly. If cache, multi-tenancy,
+outbox, and idempotency are attached without losing those strengths, application code becomes simpler and the tuning
+points become clearer. The core message of Part 5 is that production behavior can start small.
+
+## Source Links
+
+- Part 5 issue: [#90 Blog: bluetape4k-exposed Part 5 - Spring Boot, cache, routing, and production examples](https://github.com/bluetape4k/bluetape4k.github.io/issues/90)
+- Spring Boot JDBC README: [spring-boot/exposed-jdbc/README.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/spring-boot/exposed-jdbc/README.md)
+- Spring Boot R2DBC README: [spring-boot/exposed-r2dbc/README.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/spring-boot/exposed-r2dbc/README.md)
+- Exposed cache README: [exposed-cache/README.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/README.md)
+- Cache benchmark: [spring-boot/cache-benchmark/README.md](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/README.md)
+- Multi-tenant workshop: [exposed-workshop/10-multi-tenant](https://github.com/bluetape4k/exposed-workshop/tree/develop/10-multi-tenant)
+- High performance workshop: [exposed-workshop/11-high-performance](https://github.com/bluetape4k/exposed-workshop/tree/develop/11-high-performance)
+- Production integration: [exposed-workshop/12-production-integration/README.md](https://github.com/bluetape4k/exposed-workshop/blob/develop/12-production-integration/README.md)
+- Spring HTTP outbox/idempotency: [12-production-integration/03-spring-http-outbox-idempotency/README.md](https://github.com/bluetape4k/exposed-workshop/blob/develop/12-production-integration/03-spring-http-outbox-idempotency/README.md)
+- Ktor HTTP outbox/idempotency: [12-production-integration/04-ktor-http-outbox-idempotency/README.md](https://github.com/bluetape4k/exposed-workshop/blob/develop/12-production-integration/04-ktor-http-outbox-idempotency/README.md)
+
+## Series Links
+
+- [Part 1: Why Exposed?](/blog/bluetape4k-exposed-part1-why-exposed/)
+- [Part 2: JDBC repositories and SQL DSL](/blog/bluetape4k-exposed-part2-jdbc-repositories-sql-dsl/)
+- [Part 3: R2DBC, Coroutines, and Virtual Threads](/blog/bluetape4k-exposed-part3-r2dbc-coroutines-virtual-threads/)
+- [Part 4: JSON, Encryption, and Dialects](/blog/bluetape4k-exposed-part4-json-encryption-dialects/)
+- [Part 5: Production Examples with Cache and Multi-Tenancy](/blog/bluetape4k-exposed-part5-spring-cache-multitenancy-production/)
