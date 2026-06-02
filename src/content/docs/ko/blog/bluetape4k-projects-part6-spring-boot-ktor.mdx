@@ -1,6 +1,6 @@
 ---
 title: "Bluetape4k Projects Part 6: Spring Boot 4와 Ktor"
-description: Spring Boot 4와 Ktor 3 모듈이 공유 기반, I/O, data, infra, utility를 application boundary로 올리는 방식을 정리합니다.
+description: Spring Boot 4와 Ktor 3 모듈이 공유 기반, I/O, data, infra, utility를 application boundary로 올리는 방식을 정리한다.
 sidebar:
   order: -202605301635
 blog:
@@ -50,7 +50,7 @@ dependencies {
 Jackson 2 customizer, Retrofit2 integration, `WebTestClient` test helper를 제공합니다. Spring Boot 4가
 내부적으로 Jackson 2를 쓰므로 이 모듈도 Jackson 2 경계가 기본입니다. Jackson 3은 Part 3의 I/O 계열에서
 별도로 다룰 수 있지만, Spring Boot 4 application boundary에서는 Jackson 2라는 현실을 받아들이는 편이
-낫습니다. 현실은 가끔 재미없지만, build failure보다는 재미있습니다.
+낫습니다. 그래야 application boundary와 framework 내부 경계가 같은 방향을 봅니다.
 
 ```kotlin
 val restClient = RestClient.create("https://api.example.com")
@@ -88,12 +88,12 @@ fun Application.module() {
 `ktor/observability`는 sanitized correlation ID, call logging MDC, Micrometer metrics, Prometheus scrape route
 helper를 제공합니다. OpenTelemetry tracing은 기본 설치하지 않습니다. exporter 정책은 애플리케이션이
 소유해야 하기 때문입니다. 이 선은 중요합니다. library가 observability backend까지 몰래 정하면 운영자는
-나중에 "누가 이 exporter를 켰나"라는 매우 현실적인 추리물을 읽게 됩니다.
+나중에 exporter 소유권을 다시 추적해야 합니다.
 
 `ktor/resilience4j`는 route-scoped helper입니다. caller가 소유한 retry, circuit breaker, rate limiter,
 time limiter를 `KtorResiliencePolicies`로 전달하고, `resilientGet`, `resilientPost`, `withKtorResilience`
 로 suspend block을 보호합니다. `CancellationException`은 circuit breaker 실패로 삼키지 않고 다시 던집니다.
-coroutine cancellation을 resilience 실패로 기록하면 metric이 거짓말을 시작합니다.
+coroutine cancellation을 resilience 실패로 기록하면 metric이 실제 실패를 왜곡합니다.
 
 ## 언제 Spring Boot, 언제 Ktor인가
 
@@ -127,7 +127,7 @@ library가 많은 서비스라면 억지로 Ktor로 줄일 필요가 없습니�
 7. 예제와 workshop에서 가장 가까운 application 모양을 찾아 test fixture까지 확인합니다.
 
 이 순서를 지키면 application module은 얇게 남습니다. 순서를 건너뛰면 controller가 serializer와 retry와
-pool과 metric까지 다 아는 사람이 됩니다. 그런 사람은 조직에서는 귀하지만, 코드에서는 대체로 위험합니다.
+pool과 metric까지 모두 떠안습니다. 그런 코드는 변경에 약합니다.
 
 ## 참고 링크
 
