@@ -12,7 +12,7 @@ blog:
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/bluetape4k-projects-part1-hero.png" alt="Small robotic builders assembling Kotlin JVM backend module blocks around a shared foundation platform" loading="eager" />
-  <figcaption>A shared foundation is not glamorous. It just keeps every service from rebuilding the same floor.</figcaption>
+  <figcaption>A shared foundation is quiet until it starts to shake.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-30 · bluetape4k-projects series · Part 1</p>
@@ -29,8 +29,8 @@ support, and BOM that backend services keep reaching for.
 It is not a place where every feature stays forever. AWS, Exposed, Image, Text, Leader, and
 JaVers have moved into standalone repositories because they carry their own domain depth and
 release rhythm. `projects` keeps the shared foundation and runtime building blocks that many
-repositories and services depend on first. It is more backstage infrastructure than main actor:
-quiet when it works, suddenly interesting when it stops.
+repositories and services depend on first. It is shared infrastructure: quiet when it works,
+suddenly interesting when it stops.
 
 <figure class="bt4k-architecture">
   <img src="/assets/bluetape4k-projects-overview-01.png" alt="Bluetape4k Projects overview diagram with BOM, foundation, runtime adapters, applications, and split repositories" loading="lazy" />
@@ -152,8 +152,8 @@ then follow the problem your service is actually hitting.
 
 ## Closing
 
-In one sentence, `bluetape4k-projects` is the shared foundation Kotlin/JVM backend services should not have
-to rebuild each time. Large domain capabilities move into focused repositories, while this repo
+In one sentence, `bluetape4k-projects` is the shared foundation Kotlin/JVM backend services
+should not have to rebuild each time. Large domain capabilities move into focused repositories, while this repo
 keeps core utilities, coroutines, I/O, data, infrastructure, application support, testing, and
 the BOM aligned.
 
