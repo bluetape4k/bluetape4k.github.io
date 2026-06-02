@@ -1,0 +1,302 @@
+---
+title: "Bluetape4k Leader Part 4: Spring Boot and Ktor Integration"
+description: "How @LeaderElection, @LeaderGroupElection, failureMode, SpEL lock names, Micrometer metrics, Ktor LeaderElectionPlugin, leaderScheduled, and management routes move leader election into framework boundaries."
+sidebar:
+  order: -202606021830
+blog:
+  date: 2026-06-02T18:30:00+09:00
+  image: /assets/bluetape4k-leader-part4-hero.png
+  imageAlt: Small robotic builders configuring Spring Boot annotation cards and a Ktor server console while watching a leader election management panel on a 3D workbench
+  cardDescription: "Moving direct runIfLeader calls into Spring AOP and Ktor scheduler/management boundaries."
+---
+
+Part 2 covered the call models: `LeaderElector`, `SuspendLeaderElector`, `AsyncLeaderElector`, and `VirtualThreadLeaderElector`.
+Part 3 moved beyond one leader into group slots and strategic election.
+
+Part 4 asks a different question: do callers need to wrap every job with `runIfLeader` manually?
+In Spring Boot services, scheduled or service methods often want annotations.
+In Ktor services, background jobs belong inside the application lifecycle.
+`bluetape4k-leader` provides both integration surfaces.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-leader-part4-hero.png" alt="Small robotic builders configuring Spring Boot annotation cards and a Ktor server console while watching a leader election management panel on a 3D workbench" loading="lazy" />
+  <figcaption>Part 4 moves from core API calls to framework boundaries. Spring uses annotations and AOP; Ktor uses a plugin and application-level jobs.</figcaption>
+</figure>
+
+## Spring Boot: fixing the execution boundary with annotations
+
+`leader-spring-boot` provides `@LeaderElection` and `@LeaderGroupElection`.
+The method body becomes the election action.
+Only the elected node runs the body; a contending node skips according to the return shape.
+
+```kotlin
+@Service
+class ReportJob {
+    @Scheduled(cron = "0 0 * * * *")
+    @LeaderElection(name = "hourly-report", leaseTime = "PT10M")
+    fun generateHourlyReport(): Report? {
+        return reportService.generate()
+    }
+}
+```
+
+The direct API version looks like this:
+
+```kotlin
+val result = leaderElector.runIfLeader("hourly-report") {
+    reportService.generate()
+}
+```
+
+The annotation moves that boilerplate into the framework boundary.
+That also means the method return shape, proxy/AOP boundary, and lock-name expression become operational contracts.
+The code is shorter, but the execution boundary matters more.
+
+Sources:
+
+- - [LeaderElection.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/annotation/LeaderElection.kt)
+- - [LeaderElectionAspect.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-spring-boot/src/main/kotlin/io/bluetape4k/leader/spring/aop/LeaderElectionAspect.kt)
+- - [LeaderElectionAutoConfiguration.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-spring-boot/src/main/kotlin/io/bluetape4k/leader/spring/LeaderElectionAutoConfiguration.kt)
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-leader-spring-aop-sequence-01.png" alt="Sequence diagram showing Spring LeaderElectionAspect resolving SpEL, selecting a factory cache entry, calling the backend elector, executing the method body, recording metrics, and applying failure mode handling" loading="lazy" />
+  <figcaption>`@LeaderElection` is small, but its runtime path is not. The advice resolves the lock name, selects an elector by factory/options, separates backend results from body exceptions, and sends outcomes through metrics and failure-mode branches.</figcaption>
+</figure>
+
+That flow is why the annotation should not be treated as decoration.
+The operational boundary lives inside the aspect, where contention skips, backend errors, and body exceptions follow different paths.
+The `LeaderRunResult` distinction from Part 2 remains important at the AOP layer.
+
+## `@LeaderGroupElection`: N slots through an annotation
+
+Group election from Part 3 is available at the annotation boundary as well.
+Use `@LeaderGroupElection` when one method may run on up to `maxLeaders` nodes at the same time.
+
+```kotlin
+@LeaderGroupElection(
+    name = "tenant-rollup",
+    maxLeaders = 3,
+    leaseTime = "PT5M",
+)
+fun rollupNextTenant(): RollupResult? {
+    return tenantRollupService.rollupNext()
+}
+```
+
+`maxLeaders <= 1` is rejected by startup validation because it is not meaningful group election.
+`Flux<T>` and `Flow<T>` stream returns are not supported for group annotations yet.
+Each slot needs its own lease extension and completion boundary.
+Running a long stream inside a group slot postpones an expensive operational question.
+
+Sources:
+
+- [LeaderGroupElection.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/annotation/LeaderGroupElection.kt)
+
+- [LeaderGroupElectionAspect.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-spring-boot/src/main/kotlin/io/bluetape4k/leader/spring/aop/LeaderGroupElectionAspect.kt)
+
+- [LeaderAnnotationValidatorBeanPostProcessor.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-spring-boot/src/main/kotlin/io/bluetape4k/leader/spring/aop/validator/LeaderAnnotationValidatorBeanPostProcessor.kt)
+
+## Lock names use SpEL, but syntax is strict
+
+Static names are straightforward.
+
+```kotlin
+@LeaderElection(name = "daily-settlement")
+fun settle()
+```
+
+Dynamic names use plain SpEL.
+
+```kotlin
+@LeaderElection(name = "'process-' + #region")
+fun process(region: String)
+```
+
+The important detail is `"'process-' + #region"`, not `"process-#region"`.
+Without quotes, `process-` is parsed as an identifier, not a string prefix.
+Spring property placeholders are also supported.
+
+```kotlin
+@LeaderElection(name = "\${spring.application.name}-warmup")
+fun warmup()
+```
+
+AOP properties live under `bluetape4k.leader.aop.*`.
+They control default wait and lease time, strict validation, failure mode, lock-name prefix, and whether SpEL method invocation is allowed.
+The default lock-name prefix is `${spring.application.name:}:`, which reduces collisions when multiple applications share the same backend.
+
+```yaml
+bluetape4k:
+  leader:
+    aop:
+      enabled: true
+      strict: false
+      failure-mode: RETHROW
+      default-wait-time: PT5S
+      default-lease-time: PT1M
+      lock-name-prefix: "${spring.application.name:}:"
+      spel:
+        allow-method-invocation: false
+```
+
+Sources:
+
+- [LeaderAopProperties.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-spring-boot/src/main/kotlin/io/bluetape4k/leader/spring/aop/properties/LeaderAopProperties.kt)
+
+- [SpelExpressionEvaluator.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-spring-boot/src/main/kotlin/io/bluetape4k/leader/spring/aop/spel/SpelExpressionEvaluator.kt)
+
+- [LockNameValidator.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-spring-boot/src/main/kotlin/io/bluetape4k/leader/spring/aop/util/LockNameValidator.kt)
+
+## `failureMode`: lock contention is not backend failure
+
+Lock contention is a normal skip.
+Backend failure is different.
+`failureMode` controls what happens when Redis, SQL, MongoDB, Kubernetes API, or another backend fails.
+
+| Mode | Meaning |
+|---|---|
+| `RETHROW` | Wrap and propagate the backend error as a leader-election exception |
+| `SKIP` | Treat backend failure like a skipped execution |
+| `FAIL_OPEN_RUN` | Run the method body even though the lock path failed |
+
+`FAIL_OPEN_RUN` deserves caution.
+Leader election exists to prevent duplicate execution, and fail-open deliberately lowers that protection during backend failure.
+It can be practical for cache warmup or dashboard snapshots.
+It is usually wrong for settlement, payment, or schema migration jobs.
+
+```kotlin
+@LeaderElection(
+    name = "dashboard-job",
+    failureMode = LeaderAspectFailureMode.FAIL_OPEN_RUN,
+)
+fun refreshDashboardSnapshot()
+```
+
+Sources:
+
+- [LeaderAspectFailureMode.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/annotation/LeaderAspectFailureMode.kt)
+
+- [PrometheusDashboardApp.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/examples/prometheus-dashboard/src/main/kotlin/io/bluetape4k/leader/examples/prometheus/PrometheusDashboardApp.kt)
+
+## Metrics make the annotation boundary observable
+
+When annotations hide the direct `runIfLeader` call, operations need smaller events than "method ran".
+Useful events include attempts, acquisitions, contention skips, backend-error skips, execution duration, failures, and active executions.
+
+`leader-micrometer` provides `MicrometerLeaderAopMetricsRecorder`.
+When a `MeterRegistry` is available, AOP callbacks become meters.
+Prometheus exposes them as `leader_aop_*`.
+
+| Meter | Meaning |
+|---|---|
+| `leader.aop.attempts` | Lock acquisition attempts |
+| `leader.aop.acquired` | Successful elections |
+| `leader.aop.lock.not.acquired` | Skips, with a `reason` tag such as `CONTENTION` or `BACKEND_ERROR` |
+| `leader.aop.execution.duration` | Method-body execution duration |
+| `leader.aop.task.failed` | Method-body failures |
+| `leader.aop.active` | Currently active leader actions |
+
+The `prometheus-dashboard` example registers an `@LeaderElection` job named `dashboard-job` and verifies `leader_aop_*` metrics through `/actuator/prometheus`.
+In production, watch lock-name cardinality.
+Putting tenant ids or request ids directly into lock-name tags can make the time-series backend hurt before the dashboard helps.
+
+Sources:
+
+- [MicrometerLeaderAopMetricsRecorder.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-micrometer/src/main/kotlin/io/bluetape4k/leader/micrometer/MicrometerLeaderAopMetricsRecorder.kt)
+
+- [MicrometerNames.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-micrometer/src/main/kotlin/io/bluetape4k/leader/micrometer/MicrometerNames.kt)
+
+- [examples/prometheus-dashboard](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples/prometheus-dashboard)
+
+## Ktor: plugin plus application lifecycle
+
+Ktor integration uses an explicit application boundary instead of Spring AOP.
+Install `LeaderElectionPlugin` with a `SuspendLeaderElector`, then register periodic work with `leaderScheduled`.
+
+```kotlin
+fun Application.module() {
+    val elector = createLettuceSuspendLeaderElector()
+
+    install(LeaderElectionPlugin) {
+        leaderElection = elector
+        enableManagementRoute = true
+    }
+
+    leaderScheduled("hourly-stats-aggregation", period = 1.hours) {
+        statsAggregator.aggregate()
+    }
+}
+```
+
+`leaderScheduled` runs a loop in an application coroutine.
+Each cycle calls `SuspendLeaderElector.runIfLeader(lockName) { ... }`.
+The job is cancelled when `ApplicationStopped` fires.
+`CancellationException` is rethrown; ordinary exceptions are logged and the next cycle continues.
+That behavior is a good fit for batch-style background jobs.
+A failed cycle does not tear down the whole application, but shutdown cancellation is not swallowed.
+
+Sources:
+
+- [LeaderElectionPlugin.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-ktor/src/main/kotlin/io/bluetape4k/leader/ktor/LeaderElectionPlugin.kt)
+
+- [LeaderElectionPluginConfig.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-ktor/src/main/kotlin/io/bluetape4k/leader/ktor/LeaderElectionPluginConfig.kt)
+
+- [ApplicationExt.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-ktor/src/main/kotlin/io/bluetape4k/leader/ktor/ApplicationExt.kt)
+
+- [examples/ktor-app](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples/ktor-app)
+
+## Ktor management routes are for observation
+
+`leader-ktor` also provides a management route.
+The default path is `/management/leaderElection`.
+The route walks registered lock names, calls `state(lockName)`, and returns a JSON snapshot.
+
+```kotlin
+install(LeaderElectionPlugin) {
+    leaderElection = elector
+    enableManagementRoute = true
+    managementPath = "/management/leaderElection"
+}
+```
+
+The key word is snapshot.
+The management route shows who appears to hold a lock now.
+It is not an execution-decision API.
+Execution decisions must stay on the atomic `runIfLeader` path.
+Checking state and then running the body manually writes a TOCTOU race by hand.
+Those races are especially annoying because they often pass the first local test.
+
+Source:
+
+- [LeaderElectionManagementRoute.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-ktor/src/main/kotlin/io/bluetape4k/leader/ktor/LeaderElectionManagementRoute.kt)
+
+## Selection guide
+
+| Situation | Spring Boot | Ktor |
+|---|---|---|
+| Protect an existing `@Scheduled` method | `@LeaderElection` | Move the job to `leaderScheduled` |
+| Allow N cluster-wide workers | `@LeaderGroupElection(maxLeaders = N)` | Configure the core group elector directly |
+| Coroutine application job | Suspend method annotation or direct `SuspendLeaderElector` | `LeaderElectionPlugin` + `leaderScheduled` |
+| Prometheus metrics | `leader-micrometer` + AOP recorder | Core/micrometer wrapper or route-level metrics |
+| State inspection route | Mostly Actuator/health/metrics | `/management/leaderElection` |
+
+Spring annotations fit services where method boundaries are already clear.
+Ktor helpers fit background jobs launched inside the application lifecycle.
+The shared rule is the same:
+contention is a normal skip, state lookup is observation, and execution decisions must happen through an API that combines lock acquisition with body execution.
+
+## Closing
+
+Part 4 is not about hiding leader election inside a framework.
+It is about moving the execution-authority boundary to the framework lifecycle where it is easier to review and operate.
+In Spring Boot, that boundary is annotation/AOP.
+In Ktor, it is the plugin plus application job.
+
+Part 5 moves down into backends and operations:
+how Redis, SQL/R2DBC, MongoDB, Hazelcast, Kubernetes, etcd, and Consul differ in lease behavior, TTL, failure handling, and metrics.
+
+- [Part 1: Repository overview and mental model](/blog/bluetape4k-leader-part1-overview/)
+- [Part 2: Core APIs and execution models](/blog/bluetape4k-leader-part2-core-apis/)
+- [Part 3: Multi-leader and strategic election](/blog/bluetape4k-leader-part3-group-strategic-election/)
+- [Part 4: Spring Boot and Ktor integration](/blog/bluetape4k-leader-part4-spring-ktor-management/)
+- Part 5: Backends, operations, benchmarks (planned)
