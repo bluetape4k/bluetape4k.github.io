@@ -23,10 +23,10 @@ This is Part 1 of the Virtual Threads series. The full series continues with
 [Part 3: JDBC + Virtual Threads benchmark](/blog/virtual-threads-part3-jdbc-r2dbc-benchmark/), and
 [Part 4: Java 21/25 SPI design](/blog/virtual-threads-part4-java21-java25-spi/).
 
-Virtual Threads sound suspiciously generous the first time you hear about them. "You can keep
+Virtual Threads sound almost too generous the first time you hear about them. "You can keep
 writing blocking code" is the kind of sentence that usually comes with conditions. This one does
 too. Virtual Threads are not magic. They make thread-per-request style programming practical
-again at a much lower cost.
+again, but at a much lower cost.
 
 <figure class="bt4k-architecture">
   <img src="/assets/virtual-threads-part1-guide-01.png" alt="Practical map for using virtual threads with blocking IO, backpressure, diagnostics, and cleanup" loading="lazy" />
@@ -67,8 +67,8 @@ Executors.newVirtualThreadPerTaskExecutor().use { executor ->
 }
 ```
 
-The model is simple: split tasks onto virtual threads, but place limits around the downstream
-resources, not around the thread objects themselves.
+The model is simple: run tasks on virtual threads, but place limits around downstream resources,
+not around the thread objects themselves.
 
 One important note: a Virtual Thread is not a faster thread. It does not make CPU-bound work
 compute faster. It helps when many tasks spend most of their lifetime waiting.
@@ -100,7 +100,7 @@ fun <T> withRemoteLimit(block: () -> T): T {
 ```
 
 Creating many Virtual Threads is fine. Creating unlimited DB connections is not. If you miss
-that distinction, Virtual Threads simply move the bottleneck downstream.
+that distinction, Virtual Threads do not remove the bottleneck; they move it downstream.
 
 ## Where Blocking Code Gets Better
 
@@ -155,9 +155,9 @@ Java 25 finalizes Scoped Values through [JEP 506](https://openjdk.org/jeps/506).
 as request context that should flow read-only from a parent scope and disappear when the scope
 ends, Scoped Values are often a better fit than ThreadLocal.
 
-## The Kotlin Feel
+## How It Feels in Kotlin
 
-Kotlin Coroutines and Virtual Threads are less rivals than different choices.
+Kotlin Coroutines and Virtual Threads are not really rivals. They fit different starting points.
 
 | Coroutines | Virtual Threads |
 |---|---|
