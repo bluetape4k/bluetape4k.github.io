@@ -1,6 +1,6 @@
 ---
 title: "Bluetape4k Projects Part 4: data와 infrastructure"
-description: JDBC, R2DBC, Hibernate, MongoDB, Redis, Kafka, NATS, Pulsar, observability, resilience 모듈이 서비스와 운영 시스템 사이를 어떻게 정리하는지 봅니다.
+description: JDBC, R2DBC, Hibernate, MongoDB, Redis, Kafka, NATS, Pulsar, observability, resilience 모듈이 서비스와 운영 시스템 사이를 어떻게 정리하는지 살펴본다.
 sidebar:
   order: -202605301633
 blog:
@@ -19,12 +19,12 @@ blog:
 
 이 글은 `bluetape4k-projects` 시리즈의 4편입니다. [Part 3](/ko/blog/bluetape4k-projects-part3-io-serialization-http-encryption/)에서는
 byte, serializer, HTTP/RPC, encryption 경계를 봤습니다. 이번에는 byte가 목적지에 도착한 뒤의 이야기를
-다룹니다. DB에서 읽고, Redis에 올리고, broker로 보내고, metric과 trace로 남기고, 실패를 resilience
+다룹니다. DB에서 읽고, Redis에 저장하고, broker로 보내고, metric과 trace로 남기고, 실패를 resilience
 정책으로 제어하는 구간입니다.
 
 이 영역의 공통점은 외부 시스템과 직접 붙는다는 점입니다. 코드 안에서는 `await`, `Flow`, `transaction`,
 `cache.get`, `send`처럼 보이지만 실제로는 connection pool, timeout, retry, codec, backpressure, broker
-partition, observability backend가 같이 움직입니다. 그래서 모듈 선택은 "어떤 라이브러리가 마음에 드나"보다
+partition, observability backend가 같이 움직입니다. 그래서 모듈 선택은 "어떤 라이브러리를 선호하나"보다
 "어떤 실행 모델과 실패 경계를 서비스 코드에 노출할 것인가"에 가깝습니다.
 
 <figure class="bt4k-architecture">
@@ -85,7 +85,7 @@ Lettuce는 async command와 coroutine adapter가 강점입니다. `RedisFuture.a
 Redisson은 분산 객체와 coordination primitive가 강점입니다. `RMap`, `RLocalCachedMap`, lock, semaphore,
 batch/transaction DSL, memorizer, Near Cache가 필요할 때 자연스럽습니다. 다만 FastFory 계열 codec은
 wire format 호환 경고가 있습니다. 휘발성 cache처럼 경계가 분명한 곳에 써야지, 장기 저장소처럼 다루면
-미래의 자신에게 꽤 정교한 함정을 설치하는 셈입니다.
+나중에 디버깅하기 어려운 함정을 남기게 됩니다.
 
 Cache 모듈은 별도 cache 시리즈에서 깊게 다뤘으니 여기서는 위치만 잡겠습니다. `cache-core`가 JCache,
 `SuspendCache`, `NearCache`, memoizer 계약을 정의하고, Hazelcast/Redisson/Lettuce provider가 붙습니다.
@@ -107,8 +107,8 @@ Hibernate second-level cache는 `hibernate-cache-lettuce`가 Caffeine L1 + Redis
 | Resilience | `resilience4j` | coroutine retry, circuit breaker, rate limiter, timeout, coroutine cache |
 
 여기서 중요한 것은 "모듈을 많이 붙이면 안정적이다"가 아닙니다. 오히려 반대입니다. 실패가 전파되는
-경로마다 하나씩만 붙여야 합니다. HTTP client timeout과 Resilience4j timeout과 database timeout이 서로
-다른 시간표로 움직이면 장애가 완화되는 것이 아니라 해설이 어려워집니다. 운영에서 가장 난감한 장애는
+경로마다 필요한 것만 붙여야 합니다. HTTP client timeout과 Resilience4j timeout과 database timeout이 서로
+다른 시간표로 움직이면 장애가 완화되는 것이 아니라 설명하기 어려워집니다. 운영에서 가장 난감한 장애는
 실패 자체보다 실패를 설명하는 로그가 서로 다른 이야기를 할 때입니다.
 
 ## 실행 모델을 먼저 고른다
@@ -127,8 +127,8 @@ Part 4 모듈을 고를 때는 backend 종류보다 실행 모델을 먼저 봐�
 
 선택 기준은 단순합니다. 서비스 코드가 동기 API를 노출하는지, suspend API를 노출하는지, `Flow`를 흘리는지
 먼저 정합니다. 그다음 외부 시스템을 고르고, 마지막으로 retry, timeout, metric, trace를 붙입니다. 순서를
-반대로 하면 infrastructure가 service design을 끌고 다닙니다. 그때부터 서비스 코드는 도메인 코드가 아니라
-설정 파일의 증언대가 됩니다.
+반대로 하면 infrastructure가 service design을 끌고 다닙니다. 그때부터 서비스 코드는 도메인 코드보다
+설정 코드에 가까워집니다.
 
 ## 참고 링크
 
@@ -148,8 +148,8 @@ Data와 infrastructure 모듈은 service code가 외부 시스템과 만나는 �
 metric, trace, retry는 모두 좋은 도구지만, 동시에 모두 자기 방식으로 실패합니다. 이 모듈들의 목적은
 실패를 없애는 것이 아니라 실패 경계를 비슷한 모양으로 만드는 것입니다.
 
-비슷한 모양의 실패는 테스트하기 쉽고, dashboard로 보기 쉽고, 다음 서비스에 설명하기 쉽습니다. 그 정도면
-운영에서는 꽤 큰 선물입니다. 선물 포장이 조금 투박해도, 새벽 3시에 열어 보면 고맙습니다.
+비슷한 모양의 실패는 테스트하기 쉽고, dashboard로 보기 쉽고, 다음 서비스에 설명하기 쉽습니다. 운영에서는
+그 차이가 큽니다. 특히 새벽에 장애를 볼 때는 더 그렇습니다.
 
 다음 글에서는 utility 모듈과 adoption path를 봅니다. 거대한 adapter보다 작은 공구가 먼저 문제를 해결할
 때가 많습니다.
