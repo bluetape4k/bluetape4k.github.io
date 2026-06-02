@@ -1,6 +1,6 @@
 ---
 title: "Bluetape4k Projects Part 4: data and infrastructure"
-description: How JDBC, R2DBC, Hibernate, MongoDB, Redis, Kafka, NATS, Pulsar, observability, and resilience modules organize service-to-operations boundaries.
+description: How JDBC, R2DBC, Hibernate, MongoDB, Redis, Kafka, NATS, Pulsar, observability, and resilience modules organize service-to-external-system boundaries.
 sidebar:
   order: -202605301633
 blog:
@@ -12,7 +12,7 @@ blog:
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/bluetape4k-projects-part4-hero.png" alt="Small robotic builders connect service code with database, Redis, messaging, and observability modules" loading="eager" />
-  <figcaption>Operational systems usually live outside the service. Their failures are very good at coming inside.</figcaption>
+  <figcaption>Operational systems usually live outside the service. Their failures do not always stay there.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-30 · bluetape4k-projects series · Part 4</p>
@@ -122,8 +122,8 @@ When selecting Part 4 modules, start with execution model before backend type.
 | Messaging/search/observability | `infra/*` | Broker, search, metric, or tracing adapter path |
 
 First decide whether service code exposes synchronous APIs, suspend APIs, or `Flow`. Then choose the external system.
-Finally add retry, timeout, metrics, and tracing. Reverse the order and infrastructure will start dragging service design
-around.
+Finally add retry, timeout, metrics, and tracing. If that order is reversed, infrastructure starts shaping service design
+before the service boundary is clear.
 
 ## Source Links
 
