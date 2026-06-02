@@ -7,422 +7,335 @@ blog:
   date: 2026-05-20T00:00:00+09:00
   image: /assets/bluetape4k-ecosystem-hero.png
   imageAlt: bluetape4k backend 생태계를 연결된 building block으로 보여주는 소개용 일러스트
-  cardDescription: Bluetape4k 소개 시리즈 Part 1. Application, Domain Capability, Data, Infrastructure, Foundation layer로 전체 구조를 짚어봅니다.
+  cardDescription: Spring Boot 4, Ktor 3, domain capability, data, infrastructure, foundation layer로 Bluetape4k 전체 구조를 정리합니다.
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/bluetape4k-ecosystem-hero.png" alt="bluetape4k backend 생태계를 연결된 building block으로 보여주는 소개용 일러스트" loading="eager" />
-  <figcaption>생태계를 이해하려면 먼저 각 책임이 어떻게 연결되는지부터 봐야 한다.</figcaption>
+  <img src="/assets/bluetape4k-ecosystem-hero.png" alt="Bluetape4k backend ecosystem shown as connected Kotlin/JVM building blocks" loading="eager" />
+  <figcaption>Bluetape4k는 하나의 거대한 framework가 아니라, Spring Boot 4와 Ktor 3 서비스가 필요한 경계부터 골라 붙일 수 있는 Kotlin/JVM backend module 생태계입니다.</figcaption>
 </figure>
 
-<p class="bt4k-post-meta">Part 1 · Ecosystem overview</p>
+Bluetape4k를 처음 보면 저장소가 많다. `projects`, `exposed`, `aws`, `image`, `text`, `leader`,
+`javers`, `graph`, `dependencies`가 따로 있고, 각 저장소 안에도 여러 module이 있다. 그래서 첫 글은
+"무엇을 어디서부터 읽어야 하는가"를 위한 지도에 가깝게 쓰는 편이 낫다.
 
-Bluetape4k는 Kotlin/JVM 기반 서비스를 만들 때 반복해서 필요한 기능을 모듈화한 라이브러리 생태계다.
-애플리케이션 전체를 하나의 프레임워크로 감싸기보다, Spring Boot 4와 Ktor 3 서비스가 필요한 layer의
-기능을 골라 붙일 수 있게 만든 쪽에 가깝다.
+핵심 구조는 단순하다. Spring Boot 4나 Ktor 3가 application boundary를 맡고, Bluetape4k는 그 아래의
+domain capability, data, infrastructure, foundation layer를 채운다. 서비스가 모든 module을 가져오는
+방식이 아니라, 필요한 경계에 맞춰 작게 고르는 방식이다.
 
-이 글은 전체 지도를 그리는 글이다. 각 저장소의 상세 architecture, API 예제, 적용 방식은 Part 2 이후에서
-다룬다.
+## 전체 Layer Map
 
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-layer-flow-01.png" alt="Bluetape4k ecosystem layer flow" loading="lazy" />
-  <figcaption>Bluetape4k 소개 시리즈 Part 1. Application, Domain Capability, Data, Infrastructure, Foundation layer로 전체 구조를 설명합니다.</figcaption>
-</figure>
-
-## Ecosystem Overview
-
-Bluetape4k를 처음 볼 때는 다섯 layer로 나누어 보면 이해하기 쉽다. 아래 표는 전체 그림을 잡기 위한
-요약이고, 각 layer의 구체적인 모듈과 역할은 이어지는 섹션에서 따로 설명한다.
-
-<table style="width: 100%; table-layout: fixed;">
-  <colgroup>
-    <col style="width: 12%;" />
-    <col style="width: 38%;" />
-    <col style="width: 50%;" />
-  </colgroup>
+<table>
   <thead>
     <tr>
       <th>Layer</th>
-      <th>Primary role</th>
-      <th>Representative modules</th>
+      <th>역할</th>
+      <th>대표 저장소와 module</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>Application</td>
-      <td>서비스 entrypoint와 framework integration</td>
-      <td>Spring Boot 4, Ktor 3</td>
+      <td>Spring Boot 4, Ktor 3 application boundary</td>
+      <td>`spring-boot/*`, `*-ktor`, examples</td>
     </tr>
     <tr>
       <td>Domain Capability</td>
-      <td>서비스 도메인에서 자주 필요한 기능</td>
-      <td>Leader, JaVers, Image, Text</td>
+      <td>서비스 도메인에 가까운 기능 묶음</td>
+      <td>Leader, JaVers, Image, Text, Graph</td>
     </tr>
     <tr>
       <td>Data</td>
-      <td>persistence, query, cache, graph data access</td>
-      <td>Exposed, R2DBC, JDBC, Hibernate, MongoDB, Cassandra, GraphDB</td>
+      <td>JDBC, R2DBC, Exposed, document/wide-column database helper</td>
+      <td>Exposed, `data/*`, GraphDB adapter</td>
     </tr>
     <tr>
       <td>Infrastructure</td>
-      <td>cloud, messaging, observability, resilience</td>
+      <td>cloud, messaging, cache, observability, resilience</td>
       <td>AWS, Kafka, NATS, Redis, Micrometer, OpenTelemetry, Resilience4j</td>
     </tr>
     <tr>
       <td>Foundation</td>
-      <td>Kotlin 공통 기반, 실행 모델, 테스트, version alignment</td>
-      <td>Core, Coroutines, Virtual Threads, Testing, BOM</td>
+      <td>Kotlin/JVM 공통 기반</td>
+      <td>core, coroutines, logging, testing, BOM</td>
     </tr>
   </tbody>
 </table>
 
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-layer-components-01.png" alt="Bluetape4k ecosystem components grouped by application, domain capability, data, infrastructure, and foundation layers" loading="lazy" />
-  <figcaption>각 layer는 저장소 이름보다 해결하려는 문제 영역을 기준으로 묶었다.</figcaption>
-</figure>
-
-Application layer는 Spring Boot 4 또는 Ktor 3가 맡는다. Bluetape4k는 그 아래에서 domain, data,
-infrastructure, foundation layer를 채우는 모듈을 제공한다.
+이 표는 dependency graph라기보다 읽는 순서다. 처음에는 foundation을 보고, 서비스가 실제로 만나는
+boundary에 따라 data, infrastructure, domain capability를 고르면 된다.
 
 ## Application Layer
 
+Application layer는 Spring Boot 4나 Ktor 3가 담당한다. Bluetape4k는 application framework를 대체하려고
+하지 않는다. 대신 framework 안에서 반복되는 auto-configuration, coroutine data access, Redis/cache,
+cloud integration, 예제 구성을 제공한다.
+
 ### Spring Boot 4
 
-개발 목적: Spring Boot 기반 서비스에서 Bluetape4k의 data, cache, infra, testing 모듈을 자연스럽게
-조립할 수 있게 한다.
+개발 목적은 Spring Boot 4 application에서 Bluetape4k data, cache, infrastructure, testing module을
+자연스럽게 연결하는 것이다.
 
-제공하는 모듈 및 역할:
+주요 module은 다음과 같다.
 
-- `spring-boot/core`: 공통 Spring Boot auto-configuration과 base integration 제공
-- `spring-boot/r2dbc`: R2DBC 기반 coroutine data access 구성 지원
-- `spring-boot/redis`: Redis/Lettuce 기반 application cache와 connection 구성 지원
-- `spring-boot/mongodb`, `spring-boot/cassandra`: document/wide-column database integration 지원
-- `spring-boot/hibernate-lettuce`: Hibernate second-level cache와 Lettuce cache integration 지원
+- `spring-boot/core`: Spring Boot auto-configuration과 공통 property binding
+- `spring-boot/r2dbc`: R2DBC 기반 coroutine data access integration
+- `spring-boot/redis`: Redis/Lettuce 기반 application cache와 Redis integration
+- `spring-boot/mongodb`, `spring-boot/cassandra`: document/wide-column database integration
+- `spring-boot/hibernate-lettuce`: Hibernate second-level cache와 Lettuce cache integration
 
-대표 기능:
-
-- Spring Boot 4 application에서 Bluetape4k 모듈을 auto-configuration으로 연결
-- coroutine, R2DBC, Redis, MongoDB, Cassandra 같은 runtime concern을 일관된 방식으로 구성
-- library 사용자가 직접 작성해야 하는 boilerplate configuration 감소
+대표 기능은 coroutine, R2DBC, Redis, MongoDB, Cassandra 같은 service boundary를 Spring Boot 안에서
+일관되게 연결하는 것이다. application이 framework wiring을 반복해서 직접 쓰지 않도록 돕는다.
 
 ### Ktor 3
 
-개발 목적: Ktor 서비스에서도 cloud, coordination, graph 기능을 suspend API 중심으로 가져다 쓸 수
-있게 한다.
+Ktor 쪽은 suspend API와 coroutine client를 중심으로 한 application boundary를 맡는다. Spring Boot보다
+가벼운 runtime을 원하는 서비스가 AWS, leader election, graph database 같은 기능을 붙일 때 쓴다.
 
-제공하는 모듈 및 역할:
+주요 module은 다음과 같다.
 
-- `aws-ktor`: Ktor service에서 AWS SDK와 coroutine client 사용 지원
-- `leader-ktor`: Ktor application에서 leader election 기능 연결
-- `graph-ktor`: graph database 기능을 Ktor endpoint/service와 연결
-- `examples/aws-ktor-*`: S3, DynamoDB, SQS 등 AWS 사용 예제 제공
-- `examples/ktor-graph-examples`: graph service composition 예제 제공
+- `aws-ktor`: Ktor service에서 AWS SDK helper를 쓰기 위한 integration
+- `leader-ktor`: Ktor application에서 leader election을 연결하는 integration
+- `graph-ktor`: graph database 기능을 Ktor boundary에 연결하는 integration
+- `examples/aws-ktor-*`: AWS, leader election, graph database 기능을 함께 보여주는 예제
 
-대표 기능:
-
-- Ktor 3 기반 service에서 suspend API와 coroutine client를 중심으로 통합
-- AWS, leader election, graph database 기능을 application boundary에 연결
-- Spring Boot보다 가벼운 runtime을 원하는 서비스의 adoption path 제공
+Ktor 3 module은 "framework를 새로 만든다"기보다, Ktor service 안에서 Bluetape4k module을 쓰는 adoption
+path를 제공한다.
 
 ## Domain Capability Layer
 
+Domain capability layer는 서비스 도메인에 가까운 기능을 맡는다. leader election, audit trail, image
+processing, text processing, graph database처럼 foundation utility만으로 설명하기 어려운 영역이다.
+
 ### Leader
 
-개발 목적: 분산 환경에서 batch, scheduler, polling worker, migration gate 같은 작업이 중복 실행되지
-않게 제어한다.
+Leader module의 목적은 분산 환경에서 batch, scheduler, polling worker, migration gate 같은 작업을
+안전하게 한 노드 또는 일부 노드에 맡기는 것이다.
 
-제공하는 모듈 및 역할:
+주요 module은 다음과 같다.
 
-- `leader-core`: leader election API와 공통 실행 모델 제공
-- `leader-redis-lettuce`, `leader-redis-redisson`: Redis 기반 leader election backend 제공
-- `leader-hazelcast`, `leader-mongodb`, `leader-zookeeper`: 다양한 coordination backend 제공
-- `leader-exposed-jdbc`, `leader-exposed-r2dbc`: database-backed election 저장소 제공
-- `leader-spring-boot`, `leader-ktor`: application framework integration 제공
+- `leader-core`: leader election API와 execution model
+- `leader-redis-lettuce`, `leader-redis-redisson`: Redis 기반 backend
+- `leader-hazelcast`, `leader-mongodb`, `leader-zookeeper`: 다양한 distributed backend
+- `leader-exposed-jdbc`, `leader-exposed-r2dbc`: database-backed backend
+- `leader-spring-boot`, `leader-ktor`: application framework integration
 
-대표 기능:
-
-- `runIfLeader()` 기반 skip semantics로 leader가 아닐 때 작업을 조용히 건너뜀
-- blocking, `CompletableFuture`, coroutine, Virtual Threads 실행 모델 지원
-- `LeaderGroupElector`로 N개의 동시 leader를 선출하는 multi-leader scenario 지원
+대표 기능은 `runIfLeader()` API, blocking/`CompletableFuture`/coroutine/Virtual Threads 실행 모델,
+`LeaderGroupElector` 기반 multi-leader 처리다. 단일 leader만 필요한 작업부터 여러 worker를 제한적으로
+선발해야 하는 작업까지 다룬다.
 
 ### JaVers
 
-개발 목적: row-level CDC에만 기대지 않고, domain object 기준으로 변경 이력을 추적한다.
+JaVers module은 aggregate와 domain object의 변경 이력을 저장하고 조회하는 audit trail 영역을 맡는다.
 
-제공하는 모듈 및 역할:
+주요 module은 다음과 같다.
 
-- `javers-core`: JaVers helper, codec, cache-backed repository 기반 제공
-- `javers-persistence-redis`: Redis Lettuce/Redisson 기반 snapshot storage 제공
-- `javers-persistence-kafka`: Kafka event-stream 기반 persistence 제공
-- `bom`: JaVers 관련 dependency version alignment 제공
+- `javers-core`: JaVers helper, codec, cache-backed repository support
+- `javers-persistence-redis`: Redis Lettuce/Redisson 기반 snapshot storage
+- `javers-persistence-kafka`: Kafka event-stream 기반 persistence
+- `bom`: JaVers 관련 dependency version alignment
 
-대표 기능:
-
-- aggregate/domain object 단위 변경 이력 기록
-- Redis 또는 Kafka를 이용한 audit trail 저장소 구성
-- DDD 모델에서 변경 이력, diff, snapshot 조회 기능 제공
+대표 기능은 aggregate/domain object 단위 변경 이력, Redis 또는 Kafka 기반 audit trail 저장소, DDD 모델에서
+diff/snapshot/history를 조회하는 기능이다.
 
 ### Image
 
-개발 목적: 일반적인 JVM 이미지 처리와 libvips 기반 대량 처리를 같은 생태계 안에서 선택할 수 있게
-한다.
+Image module은 일반적인 JVM image processing과 libvips 기반 대량 처리를 같은 생태계 안에서 선택할 수
+있게 한다.
 
-제공하는 모듈 및 역할:
+주요 module은 다음과 같다.
 
-- `images`: Scrimage 기반 pure JVM image processing 제공
-- `images-vips-api`: libvips abstraction과 공통 API 제공
-- `images-vips-java21`: Java 21 JVips/JNI backend 제공
-- `images-vips-java25`: Java 25 FFM/Panama backend 제공
-- `images-spring-boot`, `images-benchmark`: Spring Boot integration과 benchmark lane 제공
+- `images`: Scrimage 기반 pure JVM image processing
+- `images-vips-api`: libvips abstraction과 공통 API
+- `images-vips-java21`: Java 21 JVips/JNI backend
+- `images-vips-java25`: Java 25 FFM/Panama backend
+- `images-spring-boot`, `images-benchmark`: Spring Boot integration과 benchmark
 
-대표 기능:
-
-- resize, crop, filter, encode, batch processing 지원
-- libvips 기반 고성능 thumbnail/resize pipeline 구성
-- coroutine-friendly image I/O로 reader, writer, byte encoder 작업 지원
+대표 기능은 resize, crop, filter, encode, batch processing이다. 일반적인 image 작업은 pure JVM으로 시작하고,
+대량 thumbnail/resize pipeline은 libvips backend로 옮길 수 있다.
 
 ### Text
 
-개발 목적: 한국어/일본어 중심의 tokenizer, language detection, keyword search 기능을 Kotlin 서비스에서
+Text module은 한국어/일본어 중심 tokenizer, language detection, keyword search를 Kotlin service에서
 재사용할 수 있게 한다.
 
-제공하는 모듈 및 역할:
+주요 module은 다음과 같다.
 
-- `tokenizer-core`: tokenizer 공통 request/response model과 dictionary utility 제공
-- `tokenizer-korean`: 한국어 normalization, POS tokenization, phrase extraction 지원
-- `tokenizer-japanese`: Kuromoji IPAdic 기반 일본어 tokenization 지원
-- `lingua`: Lingua 기반 language detection 제공
-- `text-search`: Aho-Corasick search, replacement, word filtering 제공
+- `tokenizer-core`: tokenizer 공통 request/response model과 dictionary utility
+- `tokenizer-korean`: 한국어 normalization, POS tokenization, phrase extraction
+- `tokenizer-japanese`: Kuromoji IPAdic 기반 일본어 tokenization
+- `lingua`: Lingua 기반 language detection
+- `text-search`: Aho-Corasick search, replacement, word filtering
 
-대표 기능:
-
-- 한국어/일본어 텍스트 분석과 tokenization 지원
-- 다국어 language detection과 mixed-language 처리 지원
-- 금칙어, 키워드 검색, replacement pipeline 구성 지원
+대표 기능은 한국어/일본어 텍스트 분석, 다국어 language detection, 금칙어/키워드 검색, replacement pipeline
+구성이다.
 
 ## Data Layer
 
+Data layer는 persistence와 database integration을 맡는다. Exposed DSL, JDBC/R2DBC repository, document
+database helper, graph database adapter가 여기에 들어간다.
+
 ### Exposed
 
-개발 목적: JPA 스타일보다 Kotlin DSL에 가까운 persistence model을 제공하고, JDBC와 R2DBC를 같은
-repository pattern 안에서 다룬다.
+Exposed module은 JPA 스타일보다 Kotlin DSL에 가까운 persistence model을 제공하고, JDBC와 R2DBC를 같은
+repository pattern으로 다루기 위한 module이다.
 
-제공하는 모듈 및 역할:
+주요 module은 다음과 같다.
 
-- `exposed-core`: Exposed extension의 공통 기반 제공
-- `exposed-jdbc`, `exposed-r2dbc`: JDBC/R2DBC repository와 transaction helper 제공
-- `exposed-dao`: Exposed DAO pattern 확장 지원
-- `exposed-cache`: Exposed repository와 cache integration 기반 제공
-- `exposed-jdbc-caffeine`, `exposed-jdbc-lettuce`, `exposed-jdbc-redisson`: JDBC cache backend 제공
-- `exposed-r2dbc-caffeine`, `exposed-r2dbc-lettuce`, `exposed-r2dbc-redisson`: R2DBC cache backend 제공
+- `exposed-core`: 공통 repository, query helper, DSL support
+- `exposed-jdbc`, `exposed-r2dbc`: JDBC/R2DBC adapter
+- cache, JSON, encryption, dialect extension 관련 module
+- Spring Boot JDBC/R2DBC integration
 
-대표 기능:
-
-- Exposed DSL 기반 type-safe SQL 작성
-- JDBC repository와 R2DBC coroutine repository 제공
-- CTE, recursive CTE, batch, measured query 같은 query helper 제공
-- JSON column, encrypted column, database-specific extension 지원
-- Spring Boot JDBC/R2DBC integration 제공
+대표 기능은 type-safe SQL 작성, JDBC repository와 R2DBC coroutine repository, CTE/recursive CTE/batch/
+measured query helper, JSON column, encrypted column, database-specific extension이다.
 
 ### GraphDB
 
-개발 목적: graph database별 API 차이를 줄이고, 그래프 비중이 큰 도메인을 공통 abstraction으로 다룬다.
+GraphDB module은 graph database별 API 차이를 줄이고, graph 비중이 큰 서비스를 공통 API로 다루기 위한
+영역이다.
 
-제공하는 모듈 및 역할:
+주요 module은 다음과 같다.
 
-- `graph-core`: graph model, repository abstraction, blocking/coroutine API 제공
-- `graph-neo4j`, `graph-memgraph`, `graph-age`, `graph-tinkerpop`, `graph-falkordb`: graph database adapter 제공
-- `graph-io/core`, `graph-io/csv`, `graph-io/graphml`, `graph-io/jackson2`, `graph-io/jackson3`, `graph-io/okio`: graph import/export와 serialization 지원
-- `graph-spring-boot`, `graph-ktor`: application framework integration 제공
-- `examples/*-graph-examples`: code graph, knowledge graph, fraud detection, recommendation 예제 제공
+- `graph-core`: graph model, repository abstraction, blocking/coroutine API
+- `graph-neo4j`, `graph-memgraph`, `graph-age`, `graph-tinkerpop`, `graph-falkordb`: database adapter
+- `graph-io/core`, `graph-io/csv`, `graph-io/graphml`, `graph-io/jackson2`, `graph-io/jackson3`, `graph-io/okio`: import/export와 serialization
+- `graph-spring-boot`, `graph-ktor`: application framework integration
+- `examples/*-graph-examples`: code graph, knowledge graph, fraud detection, recommendation 예제
 
-대표 기능:
-
-- Neo4j, Memgraph, AGE, TinkerGraph, FalkorDB를 공통 API로 접근
-- node/edge batch insert, merge/upsert, schema/index management 지원
-- transaction block, weighted path, graph algorithm 작업 지원
-- CSV, NDJSON, GraphML, OkIO stream 기반 bulk I/O 지원
-- blocking API와 coroutine API를 함께 제공
+대표 기능은 Neo4j, Memgraph, AGE, TinkerGraph, FalkorDB를 공통 API로 접근하고, node/edge batch insert,
+merge/upsert, schema/index management, transaction block, weighted path, graph algorithm 작업을 지원하는
+것이다. CSV, NDJSON, GraphML, OkIO stream 기반 bulk I/O도 제공한다.
 
 ### General Data Modules
 
-개발 목적: Exposed나 GraphDB 외에도 서비스에서 자주 쓰는 data access 기반 기능을 제공한다.
+Exposed나 GraphDB 외에도 서비스에서 자주 쓰는 data access helper가 있다.
 
-제공하는 모듈 및 역할:
+- `data/hibernate`: Hibernate 기반 persistence utility
+- `data/r2dbc`: R2DBC 공통 helper
+- `data/jdbc`: JDBC 기반 data access utility
+- `data/mongodb`: MongoDB integration helper
+- `data/cassandra`: Cassandra integration helper
 
-- `data/hibernate`: Hibernate 기반 persistence utility 제공
-- `data/r2dbc`: R2DBC 공통 helper 제공
-- `data/jdbc`: JDBC 기반 data access utility 제공
-- `data/mongodb`: MongoDB integration helper 제공
-- `data/cassandra`: Cassandra integration helper 제공
-
-대표 기능:
-
-- relational, document, wide-column database 사용 시 반복되는 helper 제공
-- Spring Boot data integration과 함께 사용할 수 있는 기반 기능 제공
-- cache, transaction, serialization 관련 Bluetape4k 공통 패턴과 연결
+이 module들은 relational, document, wide-column database를 사용할 때 반복되는 repository, transaction,
+serialization, Spring Boot data integration 패턴을 줄여 준다.
 
 ## Infrastructure Layer
 
+Infrastructure layer는 cloud, messaging, cache, observability, resilience처럼 application 운영 경계와
+가까운 기능을 맡는다.
+
 ### AWS
 
-개발 목적: AWS Java SDK v2와 AWS Kotlin SDK를 Kotlin 서비스 코드의 실행 모델에 맞게 사용할 수 있게 한다.
+AWS module은 AWS Java SDK v2와 AWS Kotlin SDK를 서비스 코드에서 쓰기 쉽게 감싼다.
 
-제공하는 모듈 및 역할:
+주요 module은 다음과 같다.
 
-- `aws`: AWS Java SDK v2 기반 공통 client/helper 제공
-- `aws-kotlin`: AWS Kotlin SDK 기반 coroutine-first client/helper 제공
-- `aws-spring-boot`: Spring Boot 4에서 AWS service를 연결하는 integration 제공
-- `aws-ktor`: Ktor 3에서 AWS service를 연결하는 integration 제공
-- `examples/aws-*`: S3, DynamoDB, SQS 등 service별 예제 제공
+- `aws`: AWS Java SDK v2 helper
+- `aws-kotlin`: AWS Kotlin SDK coroutine-first helper
+- `aws-spring-boot`: Spring Boot 4 integration
+- `aws-ktor`: Ktor 3 integration
+- `examples/aws-*`: S3, DynamoDB, SQS, LocalStack/FLOCI 예제
 
-대표 기능:
-
-- S3, DynamoDB, SES, SNS, SQS, KMS, CloudWatch 등 주요 AWS service 연동
-- Spring Boot 운영 환경과 Ktor coroutine 환경을 모두 지원
-- LocalStack/FLOCI 기반 local integration testing 구성 지원
+대표 기능은 S3, DynamoDB, SQS 같은 AWS service를 coroutine 친화적으로 쓰고, local integration test를
+LocalStack/FLOCI 기반으로 구성하는 것이다.
 
 ### Messaging
 
-개발 목적: 이벤트 기반 서비스와 비동기 연동에 필요한 messaging 기반을 제공한다.
+Messaging module은 event pipeline과 async integration에서 반복되는 설정을 줄인다.
 
-제공하는 모듈 및 역할:
+- `infra/kafka`, `infra/kafka4`: Kafka client integration
+- `infra/kafka-logback`: application logging을 Kafka event pipeline으로 연결
+- `infra/nats`: NATS messaging integration
+- `infra/pulsar`: Pulsar messaging integration
 
-- `infra/kafka`: Kafka 공통 integration 제공
-- `infra/kafka4`: Kafka 4 계열 integration 제공
-- `infra/kafka-logback`: logging event를 Kafka로 전달하는 logback integration 제공
-- `infra/nats`: NATS messaging integration 제공
-- `infra/pulsar`: Pulsar messaging integration 제공
+대표 기능은 Kafka/NATS/Pulsar 기반 messaging client 구성과 application logging/event pipeline integration이다.
 
-대표 기능:
+### Cache and Redis
 
-- Kafka/NATS/Pulsar 기반 messaging client 구성 지원
-- application logging과 event pipeline 연결 지원
-- async integration에서 반복되는 configuration과 utility 감소
+Cache와 Redis module은 local cache, distributed cache, Redis client integration을 맡는다.
 
-### Cache And Redis
+- `infra/redis`, `infra/lettuce`, `infra/redisson`: Redis client와 distributed primitive
+- `cache/cache-core`: 공통 cache abstraction
+- `cache/cache-lettuce`, `cache/cache-redisson`: Redis 기반 cache backend
+- `cache/cache-hazelcast`: Hazelcast distributed cache backend
+- `cache/hibernate-cache-lettuce`: Hibernate second-level cache integration
 
-개발 목적: local cache, distributed cache, Redis client integration을 서비스 계층에서 같은 패턴으로
-다룰 수 있게 한다.
+대표 기능은 Caffeine/local cache와 Redis/Hazelcast distributed cache를 함께 쓰는 구조, repository cache,
+Hibernate cache, application cache, near-cache와 2-tier cache 구성이다.
 
-제공하는 모듈 및 역할:
+### Observability and Resilience
 
-- `infra/redis`, `infra/lettuce`, `infra/redisson`: Redis client와 distributed primitive 기반 제공
-- `cache/cache-core`: cache abstraction의 공통 기반 제공
-- `cache/cache-lettuce`, `cache/cache-redisson`: Redis 기반 cache backend 제공
-- `cache/cache-hazelcast`: Hazelcast 기반 distributed cache backend 제공
-- `cache/hibernate-cache-lettuce`: Hibernate second-level cache integration 제공
+운영 환경에서는 metrics, tracing, resilience, rate limiting이 필요하다.
 
-대표 기능:
+- `infra/micrometer`: Micrometer metrics integration
+- `infra/opentelemetry`: OpenTelemetry tracing
+- `infra/resilience4j`: retry, circuit breaker, rate limiter integration
+- `infra/bucket4j`: rate limiting support
+- `utils/measured`: 측정과 logging helper
 
-- Caffeine/local cache와 Redis/Hazelcast distributed cache 조합 지원
-- repository, Hibernate, application cache layer와 연동
-- near-cache, 2-tier cache 같은 성능 최적화 패턴 지원
-
-### Observability And Resilience
-
-개발 목적: 운영 환경에 필요한 metrics, tracing, resilience, rate limiting 기능을 나머지 모듈과 함께
-연결한다.
-
-제공하는 모듈 및 역할:
-
-- `infra/micrometer`: Micrometer metrics integration 제공
-- `infra/opentelemetry`: OpenTelemetry tracing/telemetry integration 제공
-- `infra/resilience4j`: retry, circuit breaker, bulkhead 등 resilience pattern 제공
-- `infra/bucket4j`: rate limiting 기능 제공
-- `utils/measured`: measured execution과 timing helper 제공
-
-대표 기능:
-
-- Prometheus/Grafana 같은 monitoring stack에 연결하기 쉬운 metrics 제공
-- tracing backend와 연결 가능한 telemetry 기반 제공
-- retry, circuit breaker, rate limiting으로 외부 dependency 장애 전파 완화
+이 module들은 application 코드 곳곳에 metric/tracing/retry boilerplate를 흩뿌리지 않고, 공통 패턴으로
+운영 관측성과 회복성을 붙일 수 있게 한다.
 
 ## Foundation Layer
 
-### Core
+Foundation layer는 거의 모든 module이 기대는 Kotlin/JVM 공통 기반이다.
 
-개발 목적: 모든 Bluetape4k 모듈이 공유하는 Kotlin/JVM 공통 기반을 제공한다.
+### Core and Utilities
 
-제공하는 모듈 및 역할:
+- `bluetape4k/core`: guard, validation, extension, common type
+- `bluetape4k/annotations`: API maturity opt-in annotation
+- `bluetape4k/logging`: Kotlin-friendly logging
+- `utils/*`: 자주 쓰는 utility module
 
-- `bluetape4k/core`: guard, validation, extension function, 공통 utility 제공
-- `bluetape4k/annotations`: API maturity와 opt-in marker annotation 제공
-- `bluetape4k/logging`: Kotlin-friendly logging helper 제공
-- `utils/*`: time, state, workflow, id generator, math, geo, money 등 범용 utility 제공
+상위 module이 공유하는 공통 type과 utility를 제공한다. service code가 같은 validation, logging, extension
+패턴을 반복해서 새로 만들지 않게 하는 역할이다.
 
-대표 기능:
+### Coroutines and Virtual Threads
 
-- 서비스 코드에서 반복되는 작은 helper와 guard pattern 제공
-- Kotlin idiom에 맞는 extension 중심 API 제공
-- 상위 모듈이 공유하는 공통 type과 utility 기반 제공
+Coroutine과 Virtual Threads module은 Kotlin coroutine과 Java Virtual Threads 사이의 실행 모델을 다룬다.
 
-### Coroutines And Virtual Threads
+- `bluetape4k/coroutines`: coroutine helper와 suspend-friendly utility
+- `virtualthread/api`: Virtual Threads abstraction의 공통 API
+- `virtualthread/jdk21`: Java 21 Virtual Threads support
+- `virtualthread/jdk25`: Java 25 Virtual Threads support
 
-개발 목적: Kotlin coroutine과 Java Virtual Threads를 서비스 특성에 맞게 고를 수 있게 한다.
-
-제공하는 모듈 및 역할:
-
-- `bluetape4k/coroutines`: coroutine helper와 suspend-friendly utility 제공
-- `virtualthread/api`: Virtual Threads abstraction의 공통 interface 제공
-- `virtualthread/jdk21`: Java 21 Virtual Threads 지원
-- `virtualthread/jdk25`: Java 25 Virtual Threads 지원
-
-대표 기능:
-
-- suspend API와 coroutine execution model 지원
-- blocking SDK/JDBC를 Virtual Threads 위에서 운용하는 선택지 제공
-- coroutine-first 코드와 blocking ecosystem 사이의 migration path 제공
+대표 기능은 suspend API, coroutine execution model, blocking SDK/JDBC를 Virtual Threads 위에서 운용하는
+migration path다. coroutine-first 코드와 blocking ecosystem 사이를 잇는 역할을 한다.
 
 ### Testing
 
-개발 목적: 반복되는 test setup을 줄이고, integration test를 빠르게 구성할 수 있게 한다.
+Testing module은 assertion, JUnit 5, Testcontainers, mock server를 한곳에서 제공한다.
 
-제공하는 모듈 및 역할:
+- `testing/assertions`: bluetape4k assertion helper
+- `testing/junit5`: JUnit 5 test utility
+- `testing/testcontainers`: Testcontainers singleton launcher
+- `testing/mock-web-server`: HTTP client test support
+- `testing/mock-webflux-server`: WebFlux/WebClient test support
 
-- `testing/assertions`: bluetape4k assertion helper 제공
-- `testing/junit5`: JUnit 5 test utility 제공
-- `testing/testcontainers`: Testcontainers singleton launcher 제공
-- `testing/mock-web-server`: HTTP client test용 mock server 제공
-- `testing/mock-webflux-server`: WebFlux/WebClient 계열 test helper 제공
+대표 기능은 assertion과 coroutine test helper, Redis/database/messaging Testcontainers launcher, HTTP/WebFlux
+mock server다.
 
-대표 기능:
+### BOM and Version Governance
 
-- assertion과 coroutine test boilerplate 감소
-- Redis, database, messaging 같은 infrastructure test setup 단순화
-- module별 integration test를 일관된 패턴으로 작성할 수 있게 지원
+생태계가 여러 repository로 나뉘면 dependency version drift가 쉽게 생긴다. BOM과 dependency catalog는 이
+문제를 줄이기 위한 layer다.
 
-### BOM And Version Governance
+- `bluetape4k-dependencies`: ecosystem-wide dependency alignment
+- `bluetape4k/bom`: core repository alignment
+- repository-local BOMs: AWS, Exposed, Image, JaVers, Leader, Text, Graph alignment
 
-개발 목적: 여러 저장소가 따로 발전해도 사용자가 호환 가능한 dependency set을 가져갈 수 있게 한다.
+대표 기능은 Kotlin, Spring Boot, Exposed, AWS SDK, Testcontainers 같은 dependency 조합을 맞추고, 각
+repository가 서로 다른 release cadence로 발전해도 application이 안정적인 version set을 가져가게 하는
+것이다.
 
-제공하는 모듈 및 역할:
+## 어떻게 읽으면 좋은가
 
-- `bluetape4k-dependencies`: ecosystem 전체 dependency alignment 제공
-- `bluetape4k/bom`: core repository module alignment 제공
-- 각 repository의 `bom`: AWS, Exposed, Image, JaVers, Leader, Text, Graph module alignment 제공
+처음 보는 팀이라면 Spring Boot 4나 Ktor 3 application boundary에서 시작하는 것이 편하다. 그 다음 Foundation
+layer에서 core, coroutine, testing, BOM을 보고, 실제 서비스가 만나는 문제에 따라 Data layer와 Infrastructure
+layer를 붙인다. leader election, audit trail, image processing, text processing, graph database처럼 특정
+도메인 문제가 있다면 Domain Capability layer로 내려가면 된다.
 
-대표 기능:
-
-- Kotlin, Spring Boot, Exposed, AWS SDK, Testcontainers 등 주요 dependency version drift 감소
-- consumer project에서 dependency version 선언을 단순화
-- 저장소 간 release cadence가 달라도 안정적인 조합을 제공
-
-## How The Layers Work Together
-
-실제 서비스에서는 Spring Boot 4 또는 Ktor 3가 application boundary가 된다. 그 아래에 Foundation, Data,
-Infrastructure, Domain Capability layer를 필요한 만큼 조합한다.
-
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-layer-flow-01.png" alt="Bluetape4k layer flow showing application entrypoints composing foundation, domain, data, and infrastructure modules" loading="lazy" />
-  <figcaption>이 흐름은 엄격한 단방향 dependency graph라기보다 점진적인 adoption path에 가깝다.</figcaption>
-</figure>
-
-보통은 먼저 Foundation layer에서 core, coroutine, testing, BOM을 가져오고, 이후 Data layer와
-Infrastructure layer를 붙인다. 마지막으로 leader election, audit trail, image processing, text
-processing 같은 Domain Capability를 서비스 요구에 맞게 선택한다.
-
-Part 1에서 중요한 점은 Bluetape4k가 "하나의 거대한 framework"가 아니라는 것이다. 필요한 layer와
-module을 작은 단위로 선택해, 이미 쓰고 있는 Spring Boot 4/Ktor 3 서비스에 점진적으로 얹는 생태계다.
-
-다음 글부터는 각 layer를 더 작게 나누어, 대표 저장소의 architecture와 실제 사용 예제를 살펴본다.
+Bluetape4k는 하나의 거대한 framework가 아니다. 이미 쓰고 있는 Spring Boot 4/Ktor 3 서비스에 필요한 module을
+점진적으로 얹는 생태계다. 다음 글부터는 각 layer를 더 작게 나누어, 대표 저장소의 architecture와 실제 사용
+예제를 살펴본다.

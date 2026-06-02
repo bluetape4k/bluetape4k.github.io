@@ -6,308 +6,256 @@ sidebar:
 blog:
   date: 2026-05-20T00:00:00+09:00
   image: /assets/bluetape4k-ecosystem-hero.png
-  imageAlt: Editorial illustration of the bluetape4k backend ecosystem as connected building blocks
-  cardDescription: "Part 1 of the Bluetape4k introduction series: application, domain capability, data, infrastructure, and foundation layers."
+  imageAlt: Bluetape4k backend ecosystem shown as connected Kotlin/JVM building blocks
+  cardDescription: A layer-by-layer map of Bluetape4k across Spring Boot 4, Ktor 3, domain capabilities, data, infrastructure, and foundation modules.
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/bluetape4k-ecosystem-hero.png" alt="Editorial illustration of the bluetape4k backend ecosystem as connected building blocks" loading="eager" />
-  <figcaption>The ecosystem starts as a map of connected responsibilities before it becomes module-by-module detail.</figcaption>
+  <img src="/assets/bluetape4k-ecosystem-hero.png" alt="Bluetape4k backend ecosystem shown as connected Kotlin/JVM building blocks" loading="eager" />
+  <figcaption>Bluetape4k is not one large framework. It is a Kotlin/JVM backend ecosystem that Spring Boot 4 and Ktor 3 services can adopt one boundary at a time.</figcaption>
 </figure>
 
-<p class="bt4k-post-meta">Part 1 · Ecosystem overview</p>
+Bluetape4k can look large at first. There are separate repositories for `projects`, `exposed`, `aws`,
+`image`, `text`, `leader`, `javers`, `graph`, and `dependencies`, and each repository contains
+multiple modules. This first introduction post is a map: where to start, which layer owns which
+responsibility, and how the repositories fit together.
 
-Bluetape4k is a Kotlin/JVM library ecosystem for backend services. It does not try to wrap the
-whole application as one large framework. Instead, it gives Spring Boot 4 and Ktor 3 services a set
-of layer-specific modules they can add where they need them.
+The core structure is simple. Spring Boot 4 or Ktor 3 owns the application boundary. Bluetape4k fills
+the domain capability, data, infrastructure, and foundation layers underneath. A service does not
+pull in everything. It picks the modules that match the boundary it actually touches.
 
-This first article draws the map. Later parts will go into repository architecture, API examples,
-and adoption paths.
+## Overall Layer Map
 
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-layer-flow-01.png" alt="Bluetape4k ecosystem layer flow" loading="lazy" />
-  <figcaption>Part 1 of the Bluetape4k introduction series: application, domain capability, data, infrastructure, and foundation layers.</figcaption>
-</figure>
-
-## Ecosystem Overview
-
-A practical way to understand Bluetape4k is to split it into five layers. The table below gives the
-overview; the following sections explain what each layer contributes.
-
-<table style="width: 100%; table-layout: fixed;">
-  <colgroup>
-    <col style="width: 12%;" />
-    <col style="width: 38%;" />
-    <col style="width: 50%;" />
-  </colgroup>
+<table>
   <thead>
     <tr>
       <th>Layer</th>
-      <th>Primary role</th>
-      <th>Representative modules</th>
+      <th>Role</th>
+      <th>Representative repositories and modules</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>Application</td>
-      <td>Service entrypoints and framework integration</td>
-      <td>Spring Boot 4, Ktor 3</td>
+      <td>Spring Boot 4 and Ktor 3 application boundary</td>
+      <td>`spring-boot/*`, `*-ktor`, examples</td>
     </tr>
     <tr>
       <td>Domain Capability</td>
-      <td>Reusable business capabilities</td>
-      <td>Leader, JaVers, Image, Text</td>
+      <td>Feature groups close to service domains</td>
+      <td>Leader, JaVers, Image, Text, Graph</td>
     </tr>
     <tr>
       <td>Data</td>
-      <td>Persistence, query, cache, graph data access</td>
-      <td>Exposed, R2DBC, JDBC, Hibernate, MongoDB, Cassandra, GraphDB</td>
+      <td>JDBC, R2DBC, Exposed, and document/wide-column database helpers</td>
+      <td>Exposed, `data/*`, GraphDB adapters</td>
     </tr>
     <tr>
       <td>Infrastructure</td>
-      <td>Cloud, messaging, observability, resilience</td>
+      <td>Cloud, messaging, cache, observability, and resilience</td>
       <td>AWS, Kafka, NATS, Redis, Micrometer, OpenTelemetry, Resilience4j</td>
     </tr>
     <tr>
       <td>Foundation</td>
-      <td>Shared Kotlin base, execution models, tests, version alignment</td>
-      <td>Core, Coroutines, Virtual Threads, Testing, BOM</td>
+      <td>Shared Kotlin/JVM foundation</td>
+      <td>core, coroutines, logging, testing, BOM</td>
     </tr>
   </tbody>
 </table>
 
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-layer-components-01.png" alt="Bluetape4k ecosystem components grouped by application, domain capability, data, infrastructure, and foundation layers" loading="lazy" />
-  <figcaption>Each layer groups modules by the problem they solve, not by repository boundary.</figcaption>
-</figure>
-
-Spring Boot 4 or Ktor 3 owns the application boundary. Bluetape4k fills the domain, data,
-infrastructure, and foundation layers underneath it.
+This table is more of a reading order than a dependency graph. Start with the foundation, then choose
+data, infrastructure, and domain-capability modules based on the boundary your service actually
+touches.
 
 ## Application Layer
 
+The application layer belongs to Spring Boot 4 or Ktor 3. Bluetape4k does not try to replace those
+frameworks. It provides the repeated auto-configuration, coroutine data access, Redis/cache, cloud
+integration, and examples that sit inside them.
+
 ### Spring Boot 4
 
-Purpose: let Spring Boot services assemble Bluetape4k data, cache, infrastructure, and testing
-modules without hand-wiring the same setup repeatedly.
+The Spring Boot 4 modules connect Bluetape4k data, cache, infrastructure, and testing modules into a
+Spring application.
 
-Modules and roles:
+Key modules:
 
-- `spring-boot/core`: common Spring Boot auto-configuration and base integration
-- `spring-boot/r2dbc`: R2DBC and coroutine data access setup
-- `spring-boot/redis`: Redis/Lettuce application cache and connection setup
+- `spring-boot/core`: Spring Boot auto-configuration and common property binding
+- `spring-boot/r2dbc`: R2DBC coroutine data access integration
+- `spring-boot/redis`: Redis/Lettuce application cache and Redis integration
 - `spring-boot/mongodb`, `spring-boot/cassandra`: document and wide-column database integration
-- `spring-boot/hibernate-lettuce`: Hibernate second-level cache integration with Lettuce
+- `spring-boot/hibernate-lettuce`: Hibernate second-level cache and Lettuce cache integration
 
-Representative features:
-
-- Connect Bluetape4k modules through Spring Boot 4 auto-configuration
-- Configure runtime concerns such as coroutines, R2DBC, Redis, MongoDB, and Cassandra consistently
-- Reduce boilerplate configuration for library consumers
+These modules keep coroutine, R2DBC, Redis, MongoDB, and Cassandra boundaries wired consistently
+inside Spring Boot applications.
 
 ### Ktor 3
 
-Purpose: let Ktor services use cloud, coordination, and graph capabilities around suspend APIs and
-coroutine clients.
+Ktor modules focus on suspend APIs and coroutine clients. They are useful when a service wants a
+lighter runtime than Spring Boot but still needs AWS, leader election, or graph database integration.
 
-Modules and roles:
+Key modules:
 
 - `aws-ktor`: AWS SDK integration for Ktor services
 - `leader-ktor`: leader election integration for Ktor applications
-- `graph-ktor`: graph database integration for Ktor services
-- `examples/aws-ktor-*`: S3, DynamoDB, and SQS examples
-- `examples/ktor-graph-examples`: graph service composition examples
+- `graph-ktor`: graph database integration for Ktor boundaries
+- `examples/aws-ktor-*`: examples combining AWS, leader election, and graph database modules
 
-Representative features:
-
-- Compose Ktor 3 services around suspend APIs and coroutine clients
-- Attach AWS, leader election, and graph database modules at the application boundary
-- Offer an adoption path for services that want a lighter runtime than Spring Boot
+Ktor 3 modules do not create a new framework. They provide an adoption path for using Bluetape4k
+modules inside Ktor services.
 
 ## Domain Capability Layer
 
+The domain capability layer contains feature groups that are close to service-domain problems:
+leader election, audit trails, image processing, text processing, and graph databases.
+
 ### Leader
 
-Purpose: prevent duplicate execution of batch jobs, schedulers, polling workers, cache warmers, and
-migration gates in distributed services.
+Leader modules let distributed services assign batch jobs, schedulers, polling workers, and migration
+gates to one node or a limited group of nodes.
 
-Modules and roles:
+Key modules:
 
-- `leader-core`: leader election API and common execution model
-- `leader-redis-lettuce`, `leader-redis-redisson`: Redis-backed election backends
-- `leader-hazelcast`, `leader-mongodb`, `leader-zookeeper`: additional coordination backends
-- `leader-exposed-jdbc`, `leader-exposed-r2dbc`: database-backed election storage
-- `leader-spring-boot`, `leader-ktor`: framework integration
+- `leader-core`: leader election APIs and execution model
+- `leader-redis-lettuce`, `leader-redis-redisson`: Redis-backed implementations
+- `leader-hazelcast`, `leader-mongodb`, `leader-zookeeper`: distributed backend variants
+- `leader-exposed-jdbc`, `leader-exposed-r2dbc`: database-backed implementations
+- `leader-spring-boot`, `leader-ktor`: application framework integration
 
-Representative features:
-
-- Skip semantics through `runIfLeader()` when the current node is not elected
-- Blocking, `CompletableFuture`, coroutine, and Virtual Threads execution models
-- Multi-leader scenarios through `LeaderGroupElector`
+The main features are `runIfLeader()`, blocking/`CompletableFuture`/coroutine/Virtual Threads
+execution models, and `LeaderGroupElector` for multi-leader work.
 
 ### JaVers
 
-Purpose: track domain-object changes in a model-friendly way, instead of relying only on row-level CDC.
+JaVers modules handle audit trails for aggregate and domain-object changes.
 
-Modules and roles:
+Key modules:
 
 - `javers-core`: JaVers helpers, codecs, and cache-backed repository support
 - `javers-persistence-redis`: Redis Lettuce/Redisson snapshot storage
 - `javers-persistence-kafka`: Kafka event-stream persistence
-- `bom`: dependency alignment for JaVers modules
+- `bom`: JaVers dependency version alignment
 
-Representative features:
-
-- Aggregate and domain object change history
-- Redis or Kafka backed audit trail storage
-- Diff, snapshot, and history lookup for DDD-style models
+The main features are aggregate/domain object history, Redis or Kafka-backed audit storage, and
+DDD-style diff, snapshot, and history lookup.
 
 ### Image
 
-Purpose: let services choose between ordinary JVM image processing and high-throughput libvips
-processing inside the same ecosystem.
+Image modules let a service choose between ordinary JVM image processing and libvips-backed high
+throughput processing.
 
-Modules and roles:
+Key modules:
 
-- `images`: Scrimage-based pure JVM processing
+- `images`: Scrimage-based pure JVM image processing
 - `images-vips-api`: libvips abstraction and common API
 - `images-vips-java21`: Java 21 JVips/JNI backend
 - `images-vips-java25`: Java 25 FFM/Panama backend
 - `images-spring-boot`, `images-benchmark`: Spring Boot integration and benchmarks
 
-Representative features:
-
-- Resize, crop, filter, encode, and batch processing
-- High-performance thumbnail and resize pipelines with libvips
-- Coroutine-friendly image I/O for readers, writers, and byte encoders
+The main features are resize, crop, filter, encode, and batch processing. A service can start with
+pure JVM image work and move high-volume thumbnail or resize pipelines to libvips.
 
 ### Text
 
-Purpose: make Korean and Japanese tokenization, language detection, and keyword search reusable in
-Kotlin services.
+Text modules provide Korean/Japanese tokenization, language detection, and keyword search for Kotlin
+services.
 
-Modules and roles:
+Key modules:
 
-- `tokenizer-core`: common tokenizer request/response models and dictionary utilities
+- `tokenizer-core`: common request/response models and dictionary utilities
 - `tokenizer-korean`: Korean normalization, POS tokenization, and phrase extraction
-- `tokenizer-japanese`: Kuromoji IPAdic-based Japanese tokenization
-- `lingua`: language detection
+- `tokenizer-japanese`: Japanese tokenization with Kuromoji IPAdic
+- `lingua`: language detection through Lingua
 - `text-search`: Aho-Corasick search, replacement, and word filtering
 
-Representative features:
-
-- Korean and Japanese text analysis
-- Mixed-language detection
-- Forbidden-word, keyword-search, and replacement pipelines
+The main features are Korean/Japanese text analysis, mixed-language detection, forbidden-word or
+keyword search, and replacement pipelines.
 
 ## Data Layer
 
+The data layer covers persistence and database integration: Exposed DSL, JDBC/R2DBC repositories,
+document database helpers, and graph database adapters.
+
 ### Exposed
 
-Purpose: provide a Kotlin DSL-oriented persistence model and put JDBC and R2DBC behind a consistent
-repository pattern.
+Exposed modules provide a Kotlin DSL-oriented persistence model and let JDBC and R2DBC follow a
+similar repository pattern.
 
-Modules and roles:
+Key modules:
 
-- `exposed-core`: common base for Exposed extensions
-- `exposed-jdbc`, `exposed-r2dbc`: JDBC/R2DBC repositories and transaction helpers
-- `exposed-dao`: Exposed DAO extensions
-- `exposed-cache`: cache integration base
-- `exposed-jdbc-caffeine`, `exposed-jdbc-lettuce`, `exposed-jdbc-redisson`: JDBC cache backends
-- `exposed-r2dbc-caffeine`, `exposed-r2dbc-lettuce`, `exposed-r2dbc-redisson`: R2DBC cache backends
-
-Representative features:
-
-- Type-safe SQL with Exposed DSL
-- JDBC repositories and R2DBC coroutine repositories
-- CTE, recursive CTE, batch, and measured query helpers
-- JSON columns, encrypted columns, and database-specific extensions
+- `exposed-core`: common repositories, query helpers, and DSL support
+- `exposed-jdbc`, `exposed-r2dbc`: JDBC and R2DBC adapters
+- cache, JSON, encryption, and dialect-extension modules
 - Spring Boot JDBC/R2DBC integration
+
+The main features are type-safe SQL, JDBC repositories, R2DBC coroutine repositories, CTE/recursive
+CTE/batch/measured-query helpers, JSON columns, encrypted columns, and database-specific extensions.
 
 ### GraphDB
 
-Purpose: reduce vendor API differences across graph databases and give graph-heavy domains a common
-abstraction.
+GraphDB modules reduce API differences across graph databases and provide a common API for services
+where graph data is a major part of the model.
 
-Modules and roles:
+Key modules:
 
-- `graph-core`: graph model, repository abstraction, blocking API, and coroutine API
+- `graph-core`: graph models, repository abstraction, blocking API, and coroutine API
 - `graph-neo4j`, `graph-memgraph`, `graph-age`, `graph-tinkerpop`, `graph-falkordb`: database adapters
 - `graph-io/core`, `graph-io/csv`, `graph-io/graphml`, `graph-io/jackson2`, `graph-io/jackson3`, `graph-io/okio`: import/export and serialization
 - `graph-spring-boot`, `graph-ktor`: framework integration
 - `examples/*-graph-examples`: code graph, knowledge graph, fraud detection, and recommendation examples
 
-Representative features:
-
-- Common API for Neo4j, Memgraph, AGE, TinkerGraph, and FalkorDB
-- Node/edge batch insert, merge/upsert, schema, and index management
-- Transaction blocks, weighted paths, and graph algorithm operations
-- Bulk I/O with CSV, NDJSON, GraphML, and OkIO streams
-- Blocking and coroutine APIs
+The main features are common access to Neo4j, Memgraph, AGE, TinkerGraph, and FalkorDB; node/edge
+batch insert; merge/upsert; schema and index management; transaction blocks; weighted paths; graph
+algorithm operations; and bulk I/O with CSV, NDJSON, GraphML, and OkIO streams.
 
 ### General Data Modules
 
-Purpose: provide data-access utilities that do not belong specifically to the Exposed or GraphDB
-repositories.
-
-Modules and roles:
+Some data helpers are not tied to Exposed or GraphDB.
 
 - `data/hibernate`: Hibernate persistence utilities
-- `data/r2dbc`: R2DBC helper APIs
+- `data/r2dbc`: common R2DBC helpers
 - `data/jdbc`: JDBC data-access utilities
 - `data/mongodb`: MongoDB integration helpers
 - `data/cassandra`: Cassandra integration helpers
 
-Representative features:
-
-- Reusable helpers for relational, document, and wide-column databases
-- Integration base for Spring Boot data modules
-- Shared patterns for cache, transaction, and serialization concerns
+These modules reduce repeated repository, transaction, serialization, and Spring Boot data
+integration patterns for relational, document, and wide-column databases.
 
 ## Infrastructure Layer
 
+The infrastructure layer is close to production operations: cloud, messaging, cache, observability,
+and resilience.
+
 ### AWS
 
-Purpose: make AWS Java SDK v2 and AWS Kotlin SDK fit the execution model of Kotlin services.
+AWS modules wrap AWS Java SDK v2 and AWS Kotlin SDK patterns for service code.
 
-Modules and roles:
+Key modules:
 
 - `aws`: AWS Java SDK v2 helpers
 - `aws-kotlin`: AWS Kotlin SDK coroutine-first helpers
 - `aws-spring-boot`: Spring Boot 4 integration
 - `aws-ktor`: Ktor 3 integration
-- `examples/aws-*`: service-specific examples for S3, DynamoDB, SQS, and more
+- `examples/aws-*`: S3, DynamoDB, SQS, and LocalStack/FLOCI examples
 
-Representative features:
-
-- Integration for S3, DynamoDB, SES, SNS, SQS, KMS, and CloudWatch
-- Support for both Spring Boot operations and Ktor coroutine services
-- Local integration testing with LocalStack/FLOCI-style environments
+The main features are coroutine-friendly access to S3, DynamoDB, and SQS, plus local integration
+testing through LocalStack/FLOCI.
 
 ### Messaging
 
-Purpose: provide the messaging base for event-driven services and asynchronous integration.
+Messaging modules reduce repeated setup for event pipelines and async integration.
 
-Modules and roles:
+- `infra/kafka`, `infra/kafka4`: Kafka client integration
+- `infra/kafka-logback`: application logging through Kafka event pipelines
+- `infra/nats`: NATS messaging integration
+- `infra/pulsar`: Pulsar messaging integration
 
-- `infra/kafka`: Kafka integration
-- `infra/kafka4`: Kafka 4 integration
-- `infra/kafka-logback`: Logback to Kafka integration
-- `infra/nats`: NATS integration
-- `infra/pulsar`: Pulsar integration
+The main features are Kafka/NATS/Pulsar client configuration and application logging or event
+pipeline integration.
 
-Representative features:
+### Cache and Redis
 
-- Kafka, NATS, and Pulsar client setup
-- Application logging and event pipeline integration
-- Reduced configuration and utility boilerplate for async integration
-
-### Cache And Redis
-
-Purpose: let services handle local cache, distributed cache, and Redis client integration with the
-same set of patterns.
-
-Modules and roles:
+Cache and Redis modules cover local cache, distributed cache, and Redis client integration.
 
 - `infra/redis`, `infra/lettuce`, `infra/redisson`: Redis clients and distributed primitives
 - `cache/cache-core`: common cache abstraction
@@ -315,119 +263,82 @@ Modules and roles:
 - `cache/cache-hazelcast`: Hazelcast distributed cache backend
 - `cache/hibernate-cache-lettuce`: Hibernate second-level cache integration
 
-Representative features:
+The main features are local cache with Caffeine, distributed cache with Redis or Hazelcast,
+repository cache, Hibernate cache, application cache, near-cache, and 2-tier cache patterns.
 
-- Local/distributed cache composition
-- Repository, Hibernate, and application cache integration
-- Near-cache and 2-tier cache patterns
+### Observability and Resilience
 
-### Observability And Resilience
-
-Purpose: connect metrics, tracing, resilience, and rate limiting with the rest of the ecosystem.
-
-Modules and roles:
+Production services need metrics, tracing, resilience, and rate limiting.
 
 - `infra/micrometer`: Micrometer metrics integration
-- `infra/opentelemetry`: OpenTelemetry tracing and telemetry integration
-- `infra/resilience4j`: retry, circuit breaker, and bulkhead patterns
-- `infra/bucket4j`: rate limiting
-- `utils/measured`: measured execution and timing helpers
+- `infra/opentelemetry`: OpenTelemetry tracing
+- `infra/resilience4j`: retry, circuit breaker, and rate-limiter integration
+- `infra/bucket4j`: rate-limiting support
+- `utils/measured`: measurement and logging helpers
 
-Representative features:
-
-- Metrics for Prometheus/Grafana-style monitoring
-- Telemetry hooks for tracing backends
-- Retry, circuit breaker, and rate limiting around external dependencies
+These modules keep metric, tracing, and retry boilerplate out of application code and turn them into
+shared operational patterns.
 
 ## Foundation Layer
 
-### Core
+The foundation layer is the shared Kotlin/JVM base used across most Bluetape4k modules.
 
-Purpose: provide the shared Kotlin/JVM base used across the ecosystem.
+### Core and Utilities
 
-Modules and roles:
+- `bluetape4k/core`: guards, validation, extensions, and common types
+- `bluetape4k/annotations`: API maturity opt-in annotations
+- `bluetape4k/logging`: Kotlin-friendly logging
+- `utils/*`: frequently used utility modules
 
-- `bluetape4k/core`: guards, validation, extensions, and common utilities
-- `bluetape4k/annotations`: API maturity and opt-in annotations
-- `bluetape4k/logging`: Kotlin-friendly logging helpers
-- `utils/*`: time, state, workflow, id generation, math, geo, and money utilities
+These modules provide shared types and utilities so service code does not rebuild the same validation,
+logging, and extension patterns.
 
-Representative features:
+### Coroutines and Virtual Threads
 
-- Common guard and helper patterns
-- Kotlin-idiomatic extension APIs
-- Shared types and utilities for higher-level modules
-
-### Coroutines And Virtual Threads
-
-Purpose: let services choose Kotlin coroutines or Java Virtual Threads based on the runtime shape
-they need.
-
-Modules and roles:
+Coroutine and Virtual Threads modules handle the execution model between Kotlin coroutines and Java
+Virtual Threads.
 
 - `bluetape4k/coroutines`: coroutine helpers and suspend-friendly utilities
-- `virtualthread/api`: common Virtual Threads abstraction
-- `virtualthread/jdk21`: Java 21 support
-- `virtualthread/jdk25`: Java 25 support
+- `virtualthread/api`: common API for Virtual Threads abstraction
+- `virtualthread/jdk21`: Java 21 Virtual Threads support
+- `virtualthread/jdk25`: Java 25 Virtual Threads support
 
-Representative features:
-
-- Suspend API and coroutine execution support
-- Virtual Threads for blocking SDKs and JDBC workloads
-- Migration path between coroutine-first code and blocking ecosystems
+The main features are suspend APIs, coroutine execution helpers, and a migration path for running
+blocking SDKs or JDBC work on Virtual Threads.
 
 ### Testing
 
-Purpose: reduce repeated test setup and make integration tests easier to assemble.
+Testing modules provide assertions, JUnit 5 helpers, Testcontainers launchers, and mock servers.
 
-Modules and roles:
-
-- `testing/assertions`: assertion helpers
-- `testing/junit5`: JUnit 5 utilities
+- `testing/assertions`: bluetape4k assertion helpers
+- `testing/junit5`: JUnit 5 test utilities
 - `testing/testcontainers`: Testcontainers singleton launchers
-- `testing/mock-web-server`: HTTP client test server
-- `testing/mock-webflux-server`: WebFlux/WebClient test helper
+- `testing/mock-web-server`: HTTP client test support
+- `testing/mock-webflux-server`: WebFlux/WebClient test support
 
-Representative features:
+The main features are assertion helpers, coroutine test support, Redis/database/messaging
+Testcontainers launchers, and HTTP/WebFlux mock servers.
 
-- Less assertion and coroutine test boilerplate
-- Simpler infrastructure test setup
-- Consistent integration test patterns across modules
+### BOM and Version Governance
 
-### BOM And Version Governance
-
-Purpose: keep compatible dependency sets available even when repositories evolve on separate
-release cadences.
-
-Modules and roles:
+When the ecosystem is split across many repositories, dependency version drift becomes a real cost.
+BOMs and the dependency catalog reduce that drift.
 
 - `bluetape4k-dependencies`: ecosystem-wide dependency alignment
 - `bluetape4k/bom`: core repository alignment
-- Repository-local BOMs: AWS, Exposed, Image, JaVers, Leader, Text, and Graph alignment
+- repository-local BOMs: AWS, Exposed, Image, JaVers, Leader, Text, and Graph alignment
 
-Representative features:
+The main features are aligned dependency sets for Kotlin, Spring Boot, Exposed, AWS SDK,
+Testcontainers, and related libraries across different repository release cadences.
 
-- Reduced version drift for Kotlin, Spring Boot, Exposed, AWS SDK, and Testcontainers
-- Simpler dependency declarations for consumers
-- Stable combinations across repository release cadences
+## How to Read the Ecosystem
 
-## How The Layers Work Together
+For a new team, the easiest starting point is the application boundary: Spring Boot 4 or Ktor 3.
+Then read the foundation layer for core utilities, coroutines, testing, and BOM alignment. After
+that, add data and infrastructure modules based on the boundary your service actually touches. If the
+problem is leader election, audit trails, image processing, text processing, or graph data, move into
+the domain capability layer.
 
-In a real service, Spring Boot 4 or Ktor 3 forms the application boundary. Teams then add
-Foundation, Data, Infrastructure, and Domain Capability modules underneath that boundary as needed.
-
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-layer-flow-01.png" alt="Bluetape4k layer flow showing application entrypoints composing foundation, domain, data, and infrastructure modules" loading="lazy" />
-  <figcaption>The flow is an adoption path, not a strict one-way dependency graph.</figcaption>
-</figure>
-
-The usual path starts with the Foundation layer: core utilities, coroutine helpers, testing
-support, and BOM alignment. From there, the service adds Data and Infrastructure modules. Domain
-capabilities such as leader election, audit trails, image processing, and text processing come in
-when the product needs them.
-
-The key point is that Bluetape4k is not one large framework. It is an ecosystem of small modules
-that existing Spring Boot 4 or Ktor 3 services can adopt gradually.
-
-The next articles will break down each layer further and look at representative repositories with
-architecture diagrams and concrete examples.
+Bluetape4k is not one large framework. It is an ecosystem of small modules that can be added
+gradually to existing Spring Boot 4 or Ktor 3 services. The next posts will break the layers down
+further and look at representative repositories, architecture, and usage examples.
