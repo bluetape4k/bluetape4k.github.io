@@ -1,0 +1,275 @@
+---
+title: "Bluetape4k Exposed Part 4: JSON, Encryption, and Dialects"
+description: Why bluetape4k separates JSON columns, Tink encrypted columns, measured columns, and PostgreSQL/MySQL8/analytics dialect modules around operational boundaries.
+sidebar:
+  order: -202605311104
+blog:
+  date: 2026-05-31T11:04:00+09:00
+  image: /assets/bluetape4k-exposed-part4-hero.png
+  imageAlt: Small robotic builders handling data modules, instrumentation panels, and analytics devices on a lab-style workbench
+  cardDescription: "Keep database-specific details out of domain code by isolating them in typed columns and dialect modules."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-exposed-part4-hero.png" alt="Small robotic builders handling data modules, instrumentation panels, and analytics devices on a lab-style workbench" loading="eager" />
+  <figcaption>A column looks small until serialization, encryption, and dialect behavior turn it into a tiny framework.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-05-31 · bluetape4k-exposed series · Part 4</p>
+
+Part 4 moves below the repository layer. Real services keep running into small problems near the table definition: should
+JSON be carried as a string, should an encrypted value remain searchable, and should database-specific types such as
+coordinates or vectors be handled directly in service code?
+
+I added JSON columns, encrypted columns, measured columns, and database-specific spatial/vector functions so those
+details do not leak across service code. These pieces should stay close to the table definition, where the intent is
+visible. Writing them by hand every time is where the risk starts.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-exposed-part4-codec-dialect-map.png" alt="Columns and dialects map from domain model through JSON codecs, encrypted columns, measured columns, PostgreSQL, MySQL8, and analytics dialects to SQL DSL" loading="lazy" />
+  <figcaption>Repeated serialization, encryption, and dialect details belong in column types and extension functions.</figcaption>
+</figure>
+
+## JSON Columns: Types, Not Strings
+
+JSON column support is not an argument for using JSON everywhere. It exists for the cases where JSON/JSONB is already the
+right storage shape and the service should not pass raw strings around. `exposed-jackson2`, `exposed-jackson3`, and
+`exposed-fastjson2` let JSON/JSONB columns be read and written as Kotlin types.
+
+```kotlin
+data class UserSettings(
+    val theme: String = "light",
+    val notifications: Boolean = true,
+    val language: String = "ko",
+)
+
+object Users : IdTable<Long>("users") {
+    val name = varchar("name", 100)
+    val settings = jackson<UserSettings>("settings")
+}
+```
+
+Keeping JSON as `String` looks convenient at first. After that, validation, migration, path queries, and serialization
+settings start spreading across services. A column type keeps the intent visible in the table definition.
+
+```kotlin
+val theme = Users.settings.jsonPath<String>("$.theme")
+
+val query = Users
+    .selectAll()
+    .where { Users.settings.jsonContains("theme", "dark") }
+```
+
+These helpers do not solve JSON schema evolution. That remains a design problem. They do, however, keep one important
+boundary together: where serialization happens, where path queries are built, and where a row is restored as a typed
+value.
+
+## Tink Encrypted Columns
+
+Sensitive data is easy to postpone with "we can add encryption later." Usually that later moment arrives after production
+data already exists. Then it is not a migration anymore; it is a data move, and it is not pleasant.
+
+That is why `exposed-tink` includes Google Tink based AEAD and Deterministic AEAD columns.
+
+```kotlin
+object Users : IntIdTable("users") {
+    val name = varchar("name", 100)
+
+    // No lookup needed: different ciphertext each time
+    val memo = tinkAeadVarChar("memo", 512).nullable()
+
+    // Lookup needed: deterministic ciphertext, indexable
+    val email = tinkDaeadVarChar("email", 512).index()
+}
+```
+
+The first decision is whether the value needs AEAD or DAEAD.
+
+| Mode | Strength | Limit |
+|---|---|---|
+| AEAD | Same plaintext produces different ciphertext, reducing pattern exposure | Cannot use `WHERE col = value` lookup |
+| DAEAD | Same plaintext produces same ciphertext, so equality lookup and indexes are possible | Deterministic output still leaves pattern-analysis risk |
+
+For memo, note, or token payload fields that do not need lookup, AEAD is the right default. For values such as email or a
+national identifier that need equality lookup, DAEAD may be necessary. Security is not just an "encrypted" checkbox; it
+also includes the queries the application must support.
+
+The difference is clearer in code. A DAEAD column uses deterministic encryption, so the same plaintext maps to the same
+ciphertext and equality lookup can use an index.
+
+```kotlin
+transaction {
+    Users.insert {
+        it[name] = "홍길동"
+        it[memo] = "VIP customer"      // AEAD: sensitive data without lookup
+        it[email] = "hong@example.com" // DAEAD: searchable identifier
+    }
+
+    val byEmail = Users
+        .selectAll()
+        .where { Users.email eq "hong@example.com" }
+        .singleOrNull()
+}
+```
+
+By contrast, an AEAD column produces different ciphertext even for the same plaintext. The query below is not a reliable
+search condition.
+
+```kotlin
+transaction {
+    // memo is a non-deterministic encrypted column declared with tinkAeadVarChar.
+    // It is encrypted again with a fresh nonce, so it must not be used for equality lookup.
+    val notReliable = Users
+        .selectAll()
+        .where { Users.memo eq "VIP customer" }
+        .toList()
+}
+```
+
+## Measured Columns
+
+Measured columns exist for the same reason. Values such as money, length, weight, and duration do not carry enough
+meaning as bare numbers. If reviewers must repeatedly guess whether `10` means 10 won, 10 dollars, 10 meters, or 10
+centimeters, the code is already doing too little.
+
+A measured column moves the model toward value plus unit. The database column may still be represented as numbers and
+strings, but the domain code can read it as a typed value.
+
+## PostgreSQL: PostGIS, pgvector, and Range
+
+PostgreSQL has many useful features, and those features come with details that easily leak into service code. If every
+PostGIS, pgvector, or range query starts hand-writing SQL literals and JDBC type handling, the glue code becomes more
+visible than the query intent. `exposed-postgresql` wraps those PostgreSQL-specific features in small pieces.
+
+| Feature | Example |
+|---|---|
+| PostGIS | `geoPoint`, `geoPolygon`, `stDistance`, `stWithin`, `stContains` |
+| pgvector | `vector("embedding", 384)`, cosine-distance lookup |
+| Range | Time-range columns and query helpers |
+
+```kotlin
+object DocumentTable : Table("documents") {
+    val id = integer("id").primaryKey()
+    val title = varchar("title", 200)
+    val embedding = vector("embedding", 384)
+}
+```
+
+PostGIS can stay readable beside the table definition as well.
+
+```kotlin
+object LocationTable : Table("locations") {
+    val id = integer("id").primaryKey()
+    val name = varchar("name", 100)
+    val point = geoPoint("point")
+    val area = geoPolygon("area")
+}
+
+transaction {
+    val nearby = LocationTable
+        .select(LocationTable.name)
+        .where { LocationTable.point.stDWithin(searchPoint, 0.5) }
+        .toList()
+
+    val inside = LocationTable
+        .select(LocationTable.name)
+        .where { LocationTable.point.stWithin(polygonArea) }
+        .toList()
+}
+```
+
+PostgreSQL features are not the problem. The problem appears when SQL literals and JDBC type registration leak into
+service code. I keep dialect modules so those details stay below the query intent.
+
+## MySQL 8 Spatial
+
+MySQL 8 also needs a single place for spatial rules. `exposed-mysql8` handles MySQL 8.0+ spatial columns and predicates
+with JTS geometry types. The default coordinate system is WGS84, SRID 4326.
+
+```kotlin
+object Locations : LongIdTable("locations") {
+    val name = varchar("name", 255)
+    val point = geoPoint("point")
+    val area = geoPolygon("area")
+}
+
+Locations
+    .selectAll()
+    .where { Locations.area.stContains(Locations.point) }
+    .toList()
+```
+
+Small rules such as coordinate order are good bug factories. That is why helpers fix the `longitude` and `latitude`
+order. Map bugs are irritating because the numbers often look reasonable.
+
+## Dialects for Analytics Databases
+
+Analytics databases such as BigQuery, ClickHouse, Trino, and DuckDB behave differently from OLTP databases. If connector,
+type, literal, pagination, and function differences enter service code, application logic gets mixed with analytics SQL
+glue.
+
+The direction I chose in `bluetape4k-exposed` is to keep those differences close to where they are used, while moving the
+repeated code into extensions.
+
+| Extension | What to inspect |
+|---|---|
+| [`exposed-bigquery`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-bigquery/README.md) | BigQuery REST API execution and pageToken-based Flow reads |
+| [`exposed-clickhouse`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-clickhouse/README.md) | ClickHouse connector and type behavior |
+| [`exposed-trino`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-trino/README.md) | Federation-query boundaries |
+| [`exposed-duckdb`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-duckdb/README.md) | Embedded analytics and local tests |
+| [`exposed-timefold-solver-persistence`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-timefold-solver-persistence/README.md) | Solver persistence integration |
+
+BigQuery is not an extension that provides JDBC transaction semantics. It reuses Exposed DSL as a SQL generator, while
+execution is handled by the BigQuery REST API.
+
+```kotlin
+val context = BigQueryContext.create(
+    bigquery = bigqueryClient,
+    projectId = "my-project",
+    datasetId = "my-dataset",
+)
+
+with(context) {
+    val rows = Events
+        .selectAll()
+        .where { Events.region eq "kr" }
+        .withBigQuery()
+        .toList()
+
+    Events.selectAll()
+        .withBigQuery()
+        .toFlow()
+        .collect { row ->
+            println(row[Events.region])
+        }
+}
+```
+
+## Closing
+
+Part 4 is not saying "avoid advanced database features." It says the opposite: if you use them, do not scatter their
+details across service code. Keep them near table definitions and query helpers.
+
+- JSON should read as a domain type, not a raw string.
+- Encryption should separate AEAD and DAEAD by lookup requirements.
+- Measured values should not be scattered as unitless numbers.
+- PostgreSQL, MySQL, and analytics database features should be isolated in dialect modules.
+
+Part 5 connects these pieces with Spring Boot, cache, multi-tenancy, and production examples. That is also why the
+examples exist: type safety is not enough by itself. Tenant leakage tests and performance charts need to sit next to the
+code.
+
+## Source Links
+
+- Part 4 issue: [#89 Blog: bluetape4k-exposed Part 4 - JSON, encryption, measured columns, and dialects](https://github.com/bluetape4k/bluetape4k.github.io/issues/89)
+- Jackson2 README: [exposed-jackson2/README.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-jackson2/README.md)
+- Tink README: [exposed-tink/README.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-tink/README.md)
+- PostgreSQL README: [exposed-postgresql/README.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-postgresql/README.md)
+- MySQL8 README: [exposed-mysql8/README.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-mysql8/README.md)
+
+## Series Links
+
+- [Part 1: Why Exposed?](/blog/bluetape4k-exposed-part1-why-exposed/)
+- [Part 2: JDBC repositories and SQL DSL](/blog/bluetape4k-exposed-part2-jdbc-repositories-sql-dsl/)
+- [Part 3: R2DBC, Coroutines, and Virtual Threads](/blog/bluetape4k-exposed-part3-r2dbc-coroutines-virtual-threads/)
+- [Part 4: JSON, Encryption, and Dialects](/blog/bluetape4k-exposed-part4-json-encryption-dialects/)
