@@ -12,7 +12,7 @@ blog:
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/bluetape4k-projects-part5-hero.png" alt="Small robotic builders connect utility modules, examples, workshops, and benchmark notes into a service adoption path" loading="eager" />
-  <figcaption>Small tools are useful because they stay small. The trick is not turning every problem into a toolbox.</figcaption>
+  <figcaption>Small tools stay useful when the toolbox stays small.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-30 · bluetape4k-projects series · Part 5</p>
@@ -24,7 +24,7 @@ smaller modules: IDs, time, units, money, geo data, rule/state/workflow helpers,
 Utilities differ from domain repositories. Repositories such as `bluetape4k-exposed`, `bluetape4k-leader`, and
 `bluetape4k-text` have their own ecosystems and release rhythm. Utilities in `projects` capture smaller decisions that
 repeat across service code. Small decisions become standards quickly. If they spread before becoming standards, future
-cleanup becomes archaeology.
+cleanup gets much harder than standardization.
 
 <figure class="bt4k-architecture">
   <img src="/assets/bluetape4k-projects-part5-adoption-map.png" alt="Identity, domain math, decision tools, minimal module selection, examples, workshops, benchmark notes, and service adoption map" loading="lazy" />
@@ -70,7 +70,7 @@ println(distance `as` Length.meters)
 ```
 
 Money and units start comfortably as primitives: `BigDecimal amount`, `String currency`, `Double distance`. Then exchange
-rates, rounding, unit conversion, and display formats arrive. At that point it is better to let types speak.
+rates, rounding, unit conversion, and display formats arrive. At that point it is better to let types carry the meaning.
 
 `geo` and `science` cover geocode/geohash/geoip2, coordinate transforms, shapefile reading, JTS geometry operations, and
 PostGIS loading pipelines. These modules should be adopted only by services that actually own that domain.
