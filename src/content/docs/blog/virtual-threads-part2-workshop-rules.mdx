@@ -23,7 +23,7 @@ This is Part 2 of the Virtual Threads series. The full series continues with
 [Part 3: JDBC + Virtual Threads benchmark](/blog/virtual-threads-part3-jdbc-r2dbc-benchmark/), and
 [Part 4: Java 21/25 SPI design](/blog/virtual-threads-part4-java21-java25-spi/).
 
-Part 1 covered the big picture. This post is about rules you can actually feel in code. The
+Part 1 covered the big picture. This post is about rules that show up immediately in code. The
 examples come from `bluetape4k-workshop/virtualthreads/rules`. They do not stop at "use Virtual
 Threads." They also show how Virtual Threads can fail to deliver if used with the wrong habits.
 
@@ -36,7 +36,7 @@ Threads." They also show how Virtual Threads can fail to deliver if used with th
 
 `Rule2WriteBlockingSynchronousCode` shows the same flow in three forms: `CompletableFuture`,
 Virtual Threads, and Coroutines. The nice part of the Virtual Thread version is that the control
-flow still reads almost directly.
+flow still reads in a straight line.
 
 ```kotlin
 Executors.newVirtualThreadPerTaskExecutor().use { executor ->
@@ -115,7 +115,8 @@ Executors.newVirtualThreadPerTaskExecutor().use { executor ->
 ```
 
 The reason is simple. You can create many Virtual Threads, but you cannot create unlimited DB
-connections or external API quota. A semaphore makes the protected resource explicit.
+connections, and external API quotas are not infinite. A semaphore makes the protected resource
+explicit.
 
 ## Rule 4. Prefer ScopedValue Before ThreadLocal for Scoped Context
 
@@ -152,7 +153,7 @@ structuredTaskScopeAll { scope ->
 ```
 
 There is still a boundary to understand. `ScopedValue` is not a magic context propagation system
-for any thread creation style. Check whether the propagation boundary is structured.
+for every thread creation style. Check whether the propagation boundary is structured.
 
 ## Rule 5. Keep Locks Small, and Remember Java 21 Pinning
 
