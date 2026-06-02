@@ -12,21 +12,21 @@ blog:
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/bluetape4k-projects-part2-hero.png" alt="Small robotic builders assembling Core, Coroutines, Logging, and Tests blocks on a Kotlin JVM foundation" loading="eager" />
-  <figcaption>Foundation modules are quiet. Remove them, and every small helper starts holding its own meeting.</figcaption>
+  <figcaption>Foundation modules are quiet. Remove them, and the same decisions get repeated across the codebase.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-30 · bluetape4k-projects series · Part 2</p>
 
 This is Part 2 of the `bluetape4k-projects` series. [Part 1](/blog/bluetape4k-projects-part1-shared-foundation/)
-covered why this repository acts as the shared foundation for the bluetape4k ecosystem. This post opens the inner
-layer: `core`, `coroutines`, `logging`, `assertions`, `junit5`, and `testcontainers`.
+covered why this repository acts as the shared foundation for the bluetape4k ecosystem. This post looks at the modules
+developers tend to reach for first: `core`, `coroutines`, `logging`, `assertions`, `junit5`, and `testcontainers`.
 
 At first glance, these modules look a little boring. They are not an API server users can call, a dashboard people can
 open, or a feature that feels done as soon as the dependency is added. But after a few services, they keep coming back:
 validate input, combine coroutine results, keep `requestId` values in logs, and prove the same path in tests.
 
 When each service solves that work on its own, the codebase gets noisy. Validation helpers drift, log context
-disappears in one coroutine path, and every test class starts containers in a slightly different way. At first this
+disappears across some coroutine boundary, and every test class starts containers in a slightly different way. At first this
 looks harmless. Eventually each service grows its own tiny framework. It may not call itself a framework, but it still
 sends the maintenance bill.
 
@@ -43,7 +43,8 @@ matching, hashing, and `java.time` extensions.
 
 The most common entry point is validation. Contract-backed helpers such as `requireNotBlank`, `requireGe`, and
 `requireContains` normalize caller input failures as `IllegalArgumentException`. When this rule is scattered, each
-service has to rediscover whether blank values are allowed. The meeting is rarely documented.
+service has to rediscover whether blank values are allowed, what error type to throw, and how much detail the message
+should carry.
 
 ```kotlin
 import io.bluetape4k.support.requireContains
@@ -87,13 +88,13 @@ val doubled = source.map { it * 2 }
 
 These helpers are not about making coroutine code look fancy. They are about avoiding a different interpretation of
 failure and cancellation in every service. If every service decides where to `await`, when to cancel failed work, and
-how much `Flow` ordering to preserve, async code turns into a small detective story. The `kotlin/coroutines` and
+how much `Flow` ordering to preserve, async code becomes harder to reason about than it needs to be. The `kotlin/coroutines` and
 `spring-boot/webflux-coroutines` workshops show the path from learning examples to real HTTP request wiring.
 
 ## logging: Logs Are What People Read During Incidents
 
-Most days, logs are background noise. During an incident, they become the text everyone reads. If `requestId` or
-`orderId` is missing, the reader is no longer operating a service; they are doing detective work.
+Most days, logs sit in the background. During an incident, they become the text everyone reads. If `requestId` or
+`orderId` is missing, the reader spends time reconstructing context instead of operating the service.
 
 `bluetape4k-logging` makes SLF4J less rough in Kotlin code. It includes `KLogging`, `KotlinLogging`, lambda-based lazy
 logging, MDC helpers, coroutine MDC propagation, and channel-based asynchronous logging. The rule is simple: do not build
@@ -116,13 +117,13 @@ class OrderService {
 
 The helper looks small, but logging style becomes an operational habit. Habits that drift usually become visible only
 during incidents, which is the most expensive time to notice them. Logs are not prose for quiet days. They are text that
-must still make sense when something is already on fire.
+must still make sense under pressure.
 
 ## tests: Fixtures Get Duplicated Quickly
 
 Test code is less visible than production code, but duplication often grows faster there. It creates temp folders, changes system
 properties and restores them, captures stdout, waits for coroutine conditions, and starts Redis or PostgreSQL containers.
-Do that thirty times and the test suite has a small operations team of its own.
+Do that thirty times and the test code needs as much care as the production code it verifies.
 
 `bluetape4k-assertions` handles the sentence shape that shows up in almost every test. It borrows the Kluent-style idea
 of making assertions read like plain English in Kotlin: `actual shouldBeEqualTo expected`,
@@ -175,7 +176,7 @@ Concurrency tests follow the same idea. Helpers such as `MultithreadingTester`, 
 The point is not to use all three everywhere. Synchronous APIs often need only `MultithreadingTester`. Virtual-thread
 specific paths are better covered by `StructuredTaskScopeTester`. Suspend APIs should be tested with
 `SuspendedJobTester`. Forcing coroutine code into a platform-thread stress test may still pass, but it proves the wrong
-thing. A test with the wrong tool is noisy when it fails and suspiciously quiet when it passes.
+thing. The wrong test tool is loud when it fails and not very useful when it passes.
 
 Test code should be less creative so production code can be more honest.
 
@@ -216,9 +217,8 @@ The modules in Part 2 will not look like ready-to-use product features. They sti
 input, crosses a coroutine path, preserves log context, and proves the same path in tests.
 
 When the small foundation is stable, the application layer can focus on application behavior. When it is not, controllers,
-services, and tests duplicate their own tiny frameworks. They may not call themselves frameworks, but they are
-hard enough to build and expensive enough to maintain. These modules are not loud when they exist. They get loud when
-they are missing.
+services, and tests duplicate their own tiny frameworks. They may not call themselves frameworks, but they are still
+hard to build and expensive to maintain. These modules are not loud when they exist. They get loud when they are missing.
 
 Next, we move to I/O, serialization, HTTP, and encryption. Once bytes and wire formats appear, small mistakes can travel
 surprisingly far.
