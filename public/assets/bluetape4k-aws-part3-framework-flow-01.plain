@@ -1,0 +1,16 @@
+graph 1 5.6567 6.1022
+node app 2.9533 5.7826 2.5004 0.63917 "Application code\ncontrollers, routes, workers" rounded,filled box #06b6d4 #ecfeff
+node spring 1.5367 4.4768 2.6671 0.63917 "Spring Boot 4 adapter\nauto-config, templates, listeners" rounded,filled box #38bdf8 #e0f2fe
+node ktor 4.3839 4.4768 2.0108 0.63917 "Ktor 3 adapter\nplugins, lifecycle, SigV4" rounded,filled box #22c55e #dcfce7
+node core 2.9533 3.1709 2.7921 0.63917 "Shared AWS contracts\naws-java, aws-kotlin, aws-exposed" rounded,filled box #f59e0b #fef3c7
+node sdk 2.9533 1.8651 1.9587 0.63917 "AWS SDK clients\nJava v2 and Kotlin SDK" rounded,filled box #fb923c #fff7ed
+node local 1.4117 0.43943 2.8233 0.63917 "Local verification\nFloci, LocalStack, Testcontainers" rounded,filled box #a855f7 #f3e8ff
+node aws 4.495 0.43943 2.3233 0.87885 "AWS services\nS3, SQS, DynamoDB, config" rounded,filled cylinder #64748b #f8fafc
+edge app spring 4 2.2867 5.4598 2.2867 5.4598 2.2867 4.927 2.2867 4.927 solid #64748b
+edge app ktor 4 3.791 5.4598 3.791 5.4598 3.791 4.927 3.791 4.927 solid #64748b
+edge spring core 4 2.2137 4.154 2.2137 4.154 2.2137 3.6212 2.2137 3.6212 solid #64748b
+edge ktor core 4 3.8639 4.154 3.8639 4.154 3.8639 3.6212 3.8639 3.6212 solid #64748b
+edge core sdk 4 2.9533 2.8481 2.9533 2.8481 2.9533 2.3154 2.9533 2.3154 solid #64748b
+edge sdk local 4 2.3986 1.5416 2.3986 1.5416 2.3986 0.88831 2.3986 0.88831 solid #64748b
+edge sdk aws 4 3.633 1.5416 3.633 1.5416 3.633 0.99646 3.633 0.99646 solid #64748b
+stop

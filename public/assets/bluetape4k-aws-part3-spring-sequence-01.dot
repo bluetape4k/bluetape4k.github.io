@@ -1,0 +1,14 @@
+digraph AwsPart3SpringSequence {
+  graph [rankdir=LR, bgcolor="#ffffff", pad=0.35, nodesep=0.55, ranksep=0.70, splines=ortho]
+  node [shape=box, style="rounded,filled", fontname="Architects Daughter", fontsize=12, margin="0.12,0.08", color="#94a3b8", fillcolor="#f8fafc"]
+  edge [fontname="Comic Mono", fontsize=10, color="#64748b", penwidth=1.4, arrowsize=0.7]
+
+  boot [label="Spring Boot startup\nproperties and classpath", fillcolor="#e0f2fe", color="#38bdf8"]
+  autoconfig [label="Auto-configuration\nclients, templates, listeners", fillcolor="#dcfce7", color="#22c55e"]
+  app [label="Application bean\ncontroller or @SqsListener", fillcolor="#fef3c7", color="#f59e0b"]
+  core [label="bluetape4k AWS helper\nS3Operations, SqsOperations", fillcolor="#fff7ed", color="#fb923c"]
+  sdk [label="AWS SDK v2 client\nasync + coroutine bridge", fillcolor="#f3e8ff", color="#a855f7"]
+  aws [label="LocalStack or AWS\nS3, SQS, DynamoDB", shape=cylinder, fillcolor="#f8fafc", color="#64748b"]
+
+  boot -> autoconfig -> app -> core -> sdk -> aws
+}

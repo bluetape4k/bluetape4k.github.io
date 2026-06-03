@@ -1,0 +1,365 @@
+---
+title: "Bluetape4k AWS Part 3: Spring Boot와 Ktor 통합"
+description: bluetape4k-aws-spring-boot와 bluetape4k-aws-ktor가 공통 helper 위에서 auto-configuration, Ktor plugin, SQS listener, S3 client, DynamoDB repository, Exposed database wiring을 어떻게 제공하는지 정리한다.
+sidebar:
+  order: -202606040100
+blog:
+  date: 2026-06-04T01:00:00+09:00
+  image: /assets/bluetape4k-aws-part3-hero.png
+  imageAlt: 작은 로봇 작업자들이 Kotlin 작업대에서 Spring Boot 4 adapter, Ktor 3 adapter, shared AWS contract, LocalStack 장치를 조립하는 일러스트
+  cardDescription: "Spring Boot 4 auto-configuration과 Ktor 3 plugin이 같은 AWS 공통 helper 위에 올라가는 방식을 본다."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-aws-part3-hero.png" alt="작은 로봇 작업자들이 Kotlin 작업대에서 Spring Boot 4 adapter, Ktor 3 adapter, shared AWS contract, LocalStack 장치를 조립하는 일러스트" loading="eager" />
+  <figcaption>framework adapter는 SDK client를 숨기는 마법이 아니라, 반복되는 wiring을 애플리케이션 밖으로 밀어내는 장치입니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-04 · bluetape4k-aws series · Part 3</p>
+
+이 글은 `bluetape4k-aws` 시리즈의 3편입니다. Part 1에서는
+[프로젝트 개요와 mental model](/ko/blog/bluetape4k-aws-part1-overview/)을 봤고, Part 2에서는
+[core module과 AWS 서비스 지원 현황](/ko/blog/bluetape4k-aws-part2-core-modules-service-coverage/)을
+정리했습니다. 이번 글에서는 그 공통 helper 위에 Spring Boot 4와 Ktor 3가 어떻게 올라가는지 봅니다.
+
+핵심은 두 framework가 같은 API 모양을 가져야 한다는 뜻이 아닙니다. Spring Boot는 `@ConfigurationProperties`,
+auto-configuration, `EnvironmentPostProcessor`, annotation listener 같은 Spring 방식으로 통합됩니다.
+Ktor는 `ApplicationPlugin`, lifecycle event, route helper, coroutine runtime으로 통합됩니다. 같은 AWS
+문제를 다루지만, 애플리케이션이 기대하는 사용 방식은 다릅니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-aws-part3-framework-flow-01.png" alt="Framework adapters over shared AWS contracts for Spring Boot 4 and Ktor 3" loading="lazy" />
+  <figcaption>Spring Boot와 Ktor adapter는 같은 공통 helper를 각 framework의 실행 모델에 맞춰 연결합니다.</figcaption>
+</figure>
+
+## 경량 adapter가 하는 일
+
+Part 2의 core module은 SDK와 coroutine 사이의 반복 작업을 줄였습니다. 하지만 실제 애플리케이션에서는
+client를 만드는 것만으로 충분하지 않습니다.
+
+- 설정 값을 어디서 읽을지 정해야 합니다.
+- client lifecycle을 누가 닫을지 정해야 합니다.
+- queue listener의 concurrency, visibility timeout, retry를 정해야 합니다.
+- S3나 DynamoDB helper를 controller, route, repository 코드에 어떻게 주입할지 정해야 합니다.
+- local emulator와 실제 AWS endpoint를 설정만 바꿔 오갈 수 있어야 합니다.
+
+`bluetape4k-aws-spring-boot`와 `bluetape4k-aws-ktor`는 이 부분을 맡습니다. SDK 호출 자체를 새로 만들기보다,
+애플리케이션이 매번 작성하던 framework wiring을 줄이는 쪽에 가깝습니다. Spring Boot module은 Spring Cloud
+AWS가 제공해 온 Spring 친화적인 경험에서 출발했지만, Spring Boot 4와 Kotlin coroutine 코드에 맞춰 다시
+정리했습니다. Ktor module은 같은 AWS 공통 helper를 Ktor 3 plugin과 lifecycle 방식으로 연결합니다.
+
+## Spring Boot 4 방식
+
+Spring Boot 쪽의 출발점은 auto-configuration입니다. `bluetape4k.aws.enabled=true`와 서비스별 설정을 두면,
+필요한 bean이 조건부로 등록됩니다. 공통 설정인 `bluetape4k.aws.region`,
+`bluetape4k.aws.endpoint-override`, credentials web identity 설정은 여러 서비스가 공유하고, 서비스별
+설정이 있으면 그 값이 우선합니다.
+
+대표 기능은 세 갈래로 볼 수 있습니다.
+
+| 영역 | 제공 기능 | 애플리케이션 코드에서 줄어드는 일 |
+|---|---|---|
+| Client/template | S3, SNS, SES, SQS, DynamoDB, KMS client와 coroutine template | SDK builder, async bridge, 기본 옵션 조립 |
+| Listener/runtime | `@SqsListener`, listener container, retry/visibility/ack 설정 | receive loop, delete-on-success, failure visibility 처리 |
+| Configuration | S3 config, Secrets Manager, Parameter Store, Exposed database registry | remote property loading, secret binding, database pool wiring |
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-aws-part3-spring-sequence-01.png" alt="Spring Boot 4 AWS integration sequence from properties and auto-configuration to application beans, AWS helpers, and AWS runtime" loading="lazy" />
+  <figcaption>Spring Boot 방식에서는 시작 시 auto-configuration이 먼저 framework bean을 만들고, application code는 주입된 operations만 호출합니다.</figcaption>
+</figure>
+
+Spring Boot module의 S3 예제는 이 방향을 잘 보여 줍니다. Controller는 `S3Operations`를 주입받고, upload,
+download, list, presigned URL 같은 작업을 `suspend` 함수나 `Flow`로 사용합니다.
+
+```kotlin
+@RestController
+@RequestMapping("/s3/documents")
+class S3DocumentController(
+    private val s3: S3Operations,
+) {
+    @PutMapping(consumes = [MediaType.APPLICATION_OCTET_STREAM_VALUE])
+    suspend fun upload(
+        @RequestParam bucket: String,
+        @RequestParam key: String,
+        @RequestBody bytes: ByteArray,
+    ): S3DocumentUploadResponse {
+        val response = s3.upload(bucket = bucket, key = key, bytes = bytes)
+        return S3DocumentUploadResponse(bucket, key, response.eTag())
+    }
+
+    @GetMapping("/objects")
+    fun listObjects(@RequestParam bucket: String): Flow<S3DocumentObjectResponse> =
+        s3.listFlow(bucket = bucket)
+            .map { S3DocumentObjectResponse(key = it.key(), size = it.size()) }
+}
+```
+
+이 코드에서 중요한 점은 controller가 S3 client builder를 알 필요가 없다는 것입니다. endpoint override,
+path-style access, presigned URL duration, client-side encryption, TransferManager 사용 여부는 설정과
+auto-configuration이 맡습니다. controller는 도메인 API만 남깁니다.
+
+SQS는 더 차이가 큽니다. SQS를 직접 쓰면 receive loop, visibility timeout, delete 시점, retry, shutdown
+drain을 계속 신경 써야 합니다. Spring Boot adapter는 `@SqsListener`와 coroutine listener container로 이
+부분을 framework 경계에 둡니다.
+
+```kotlin
+@Component
+class OrderMessageListener(
+    private val store: ReceivedOrderStore,
+) {
+    @SqsListener(queue = "\${example.aws.sqs.listener-queue:orders}", maxMessages = 1, waitTimeSeconds = 1)
+    fun handle(message: String) {
+        store.record(message)
+    }
+
+    @SqsListener(id = "typed-order-listener", queue = "\${example.aws.sqs.typed-listener-queue:typed-orders}")
+    suspend fun handleTyped(order: OrderPayload, acknowledgement: SqsAcknowledgement) {
+        store.record(order)
+        acknowledgement.acknowledge()
+    }
+}
+```
+
+listener method는 `String`, AWS SDK `Message`, `SqsReceivedMessage`, typed payload를 받을 수 있습니다.
+`SqsAcknowledgement`를 파라미터로 받으면 수동 ack 방식이 됩니다. handler가 정상 종료되면 message를
+삭제하고, 예외가 나면 삭제하지 않습니다. `error-visibility-timeout-seconds`와 retry 설정을 통해 실패 후
+재전달 시점도 명시할 수 있습니다.
+
+DynamoDB는 `DynamoDbEnhancedAsyncClient` 위에 coroutine repository를 얹습니다. 예제 repository는 table
+name과 key mapping만 정의하고, `save`, `findById`, `scan`, `query` 같은 반복 작업은
+`AbstractCoroutinesDynamoDbRepository`가 맡습니다.
+
+```kotlin
+@Repository
+class OrderRepository(
+    enhancedClient: DynamoDbEnhancedAsyncClient,
+    tableNameResolver: DynamoDbTableNameResolver,
+) : AbstractCoroutinesDynamoDbRepository<Order, String>(
+    enhancedClient = enhancedClient,
+    tableNameResolver = tableNameResolver,
+    entityClass = Order::class.java,
+) {
+    override val tableName: String = "orders"
+
+    override fun keyFromId(id: String): Key =
+        Key.builder().partitionValue(id).build()
+}
+```
+
+여기서도 module이 table 생성을 자동으로 떠맡지는 않습니다. table provisioning은 migration, deployment automation,
+test setup이 맡아야 합니다. 라이브러리는 repository 반복 코드를 줄이고, table prefix 같은 이름 결정만
+도와줍니다.
+
+remote configuration도 Spring Boot 쪽의 중요한 차이입니다. S3 object, Secrets Manager secret, Parameter
+Store parameter를 시작 시 `Environment` source로 읽고, 필요하면 lazy refresh를 붙일 수 있습니다.
+`@SecretsValue`, `@ParameterStoreValue`는 Spring `@Value` 위에 얹은 작은 annotation입니다. database password
+같은 값은 이 과정을 거쳐 `bluetape4k-aws-exposed`의 registry 설정으로 들어갈 수 있습니다.
+
+## Ktor 3 방식
+
+Ktor module은 Spring Boot처럼 auto-configuration을 흉내 내지 않습니다. 대신 Ktor가 자연스럽게 쓰는
+`install(...)`, route helper, application lifecycle event를 사용합니다. `AwsKtorCore`는 region, endpoint,
+credential provider, signing clock 같은 공통 기본값을 한 번 잡아 두고, `S3KtorClient`, `SqsConsumer`,
+`DynamoDbKtorPlugin`이 필요하면 그 값을 상속합니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-aws-part3-ktor-sequence-01.png" alt="Ktor 3 AWS integration sequence from plugin installation and lifecycle events to route helpers, AWS helpers, and AWS runtime" loading="lazy" />
+  <figcaption>Ktor 방식에서는 plugin install과 lifecycle event가 runtime을 열고 닫으며, route code는 필요한 helper를 명시적으로 호출합니다.</figcaption>
+</figure>
+
+S3 쪽은 `AwsSigV4Plugin` 위에 `S3KtorClient`를 올립니다. Ktor `HttpClient`로 S3 REST API를 호출하고,
+path-style endpoint, presigned URL, streaming download, config object, server-side encryption header,
+client-side envelope encryption helper까지 제공합니다.
+
+```kotlin
+fun Route.s3DocumentRoutes(
+    s3: S3KtorClient,
+    bucket: String,
+) {
+    put("/s3/objects/{key...}") {
+        val key = call.parameters.getAll("key").orEmpty().joinToString("/")
+        val bytes = call.receive<ByteArray>()
+        val response = s3.putObject(
+            bucket = bucket,
+            key = key,
+            bytes = bytes,
+            contentType = call.request.headers["Content-Type"],
+        )
+        call.respondText("""{"bucket":"$bucket","key":"$key","eTag":"${response.eTag}"}""")
+    }
+
+    get("/s3/presigned-get/{key...}") {
+        val key = call.parameters.getAll("key").orEmpty().joinToString("/")
+        val presigned = s3.presignGetObject(bucket, key, Duration.ofMinutes(15))
+        call.respondText("""{"method":"${presigned.method}","url":"${presigned.url}"}""")
+    }
+}
+```
+
+Ktor SQS는 Spring의 annotation listener 대신 `ApplicationPlugin`입니다. `SqsConsumer`는 application start 때
+polling runtime을 시작하고, stopping 때 receive loop와 in-flight handler를 정리합니다. handler 안에서는
+`ack()`와 `nack(timeoutSeconds)`를 직접 호출할 수 있고, interceptor와 observer로 receive, invoke, ack,
+nack 이벤트를 관찰할 수 있습니다.
+
+```kotlin
+fun Application.sqsExampleModule(
+    sqsClient: SqsAsyncClient,
+    queueUrl: String,
+) {
+    install(SqsConsumer) {
+        sqsAsyncClient = sqsClient
+        this.queueUrl = queueUrl
+        coroutines = 2
+        maxMessages = 10
+        deleteOnSuccess = false
+
+        onMessage<String> { body ->
+            if (body.startsWith("retry-once:")) {
+                nack(timeoutSeconds = 0)
+                return@onMessage
+            }
+
+            handleOrder(body)
+            ack()
+        }
+    }
+}
+```
+
+DynamoDB는 AWS Kotlin SDK client를 Ktor lifecycle에 붙입니다. `DynamoDbKtorPlugin`은 plugin-created client를
+shutdown 때 닫고, application-owned client는 닫지 않습니다. local 개발에서는 `autoCreateTables=true`와
+`table { }` 설정으로 missing table을 만들 수 있지만, 운영 schema verification이나 migration을 대체하지는
+않습니다.
+
+```kotlin
+fun Application.dynamoDbExampleModule(
+    endpointUrl: Url,
+    region: String,
+    credentialsProvider: CredentialsProvider,
+) {
+    install(DynamoDbKtorPlugin) {
+        this.endpointUrl = endpointUrl
+        this.region = region
+        this.credentialsProvider = credentialsProvider
+        autoCreateTables = true
+        table(
+            tableName = "orders",
+            keySchema = listOf(partitionKeyOf("id")),
+            attributeDefinitions = listOf(stringAttrDefinitionOf("id")),
+        )
+    }
+}
+```
+
+Exposed도 같은 원칙입니다. `AwsExposedPlugin`은 `bluetape4k-aws-exposed`의 registry를 Ktor lifecycle에
+묶고, route에서는 `call.awsExposedTransaction { ... }`으로 Exposed JDBC 작업을 실행합니다. Spring Boot
+adapter처럼 Secrets Manager나 Parameter Store loader를 직접 복제하지 않고, `AwsDatabaseSettingsResolver`
+hook을 열어 둡니다. Ktor 쪽에서는 원격 설정을 언제, 어떻게 읽을지 애플리케이션이 선택하도록 둔 셈입니다.
+
+```kotlin
+fun Application.exposedExampleModule(database: ExampleDatabaseConfig) {
+    install(AwsExposedPlugin) {
+        defaultDatabase {
+            url = database.url
+            driverClassName = database.driverClassName
+            username = database.username
+            password = database.password
+        }
+    }
+
+    routing {
+        get("/exposed/orders") {
+            val orders = call.awsExposedTransaction {
+                OrderRepository.findAll()
+            }
+            call.respond(orders)
+        }
+    }
+}
+```
+
+## 예제는 무엇을 보여 주나
+
+Part 3에서 예제는 깊이 파고드는 것이 아니라 전체적인 개요를 소개합니다. 실제 적용 흐름은 Part 5에서
+`examples/`와 `bluetape4k-workshop/aws`를 더 상세하게 소개할 예정입니다. 여기서는 어떤 framework에서 어떤
+서비스가 실행 가능한 예제로 검증되는지 보는 데 집중합니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-aws-part3-example-matrix-01.png" alt="Runnable examples by framework and AWS service for Spring Boot and Ktor" loading="lazy" />
+  <figcaption>예제는 framework별 wiring을 보여 주고, 자세한 적용 흐름은 Part 5에서 다룹니다.</figcaption>
+</figure>
+
+| 예제 | Framework | 보여 주는 것 |
+|---|---|---|
+| `aws-spring-boot-s3-examples` | Spring Boot | `S3Operations`, presigned URL, object list, optional client-side encryption |
+| `aws-spring-boot-sqs-examples` | Spring Boot | `SqsOperations`, SNS fanout, `@SqsListener`, typed payload, retry listener |
+| `aws-spring-boot-dynamodb-examples` | Spring Boot | `AbstractCoroutinesDynamoDbRepository`, Enhanced Async table, controller API |
+| `aws-spring-boot-exposed-examples` | Spring Boot | AWS-backed Exposed registry, DataSource/Database wiring |
+| `aws-ktor-s3-examples` | Ktor | `S3KtorClient`, streaming/config object, presigned URL |
+| `aws-ktor-sqs-examples` | Ktor | `SqsConsumer`, manual ack/nack, interceptor, observer |
+| `aws-ktor-dynamodb-examples` | Ktor | `DynamoDbKtorPlugin`, auto-create table, repository helper |
+| `aws-ktor-exposed-examples` | Ktor | `AwsExposedPlugin`, suspend transaction helper |
+
+이 표에서 중요한 것은 “예제가 많다”가 아닙니다. 같은 서비스라도 Spring Boot와 Ktor에서 코드가 기대하는
+모양이 다르다는 점입니다. Spring Boot에서는 bean과 annotation이 자연스럽고, Ktor에서는 plugin install과
+route-local helper가 자연스럽습니다. `bluetape4k-aws`는 그 차이를 없애려 하지 않고, 각 framework의
+문법에 맞춰 반복 wiring을 줄입니다.
+
+## 운영에서 조심할 지점
+
+framework adapter가 반복 코드를 줄여도 AWS 운영 문제가 사라지는 것은 아닙니다. 오히려 숨기면 안 되는
+결정이 몇 가지 있습니다.
+
+- Secrets Manager와 Parameter Store 값은 애플리케이션 시작 순서에 영향을 줍니다. remote source가 느리거나
+  실패할 때 어떤 fallback을 허용할지 정해야 합니다.
+- SQS listener는 delete-on-success와 manual ack의 의미가 다릅니다. handler가 예외를 던졌을 때 message가
+  언제 다시 보이는지 visibility 설정으로 명시해야 합니다.
+- SNS HTTP endpoint message는 parser만으로 충분하지 않습니다. signature, certificate chain, expected
+  `TopicArn` 검증은 애플리케이션의 보안 경계입니다.
+- DynamoDB table auto-create는 local/test 편의 기능입니다. 운영 schema 관리는 migration이나 배포 자동화가
+  맡아야 합니다.
+- Ktor에서 application-owned client와 plugin-owned client의 lifecycle을 구분해야 합니다. 주입한 client는
+  plugin이 닫지 않습니다.
+- LocalStack, Floci, Testcontainers는 개발 루프를 빠르게 하지만 AWS IAM, network policy, quota, encryption
+  policy까지 대신 검증하지는 않습니다.
+
+이 지점들은 “라이브러리가 모자라다”는 뜻이 아닙니다. framework adapter가 맡을 일과 애플리케이션 운영 정책이
+맡을 일을 나누는 기준입니다. 이 기준이 흐려지면 편의 기능이 곧 운영 추측이 됩니다.
+
+## 소스 링크
+
+- Issue: [#47 Blog Part 3: bluetape4k-aws Spring Boot, Ktor, and examples](https://github.com/bluetape4k/bluetape4k.github.io/issues/47)
+- Series epic: [#44 Epic: bluetape4k-aws blog series](https://github.com/bluetape4k/bluetape4k.github.io/issues/44)
+- Repository: [bluetape4k-aws](https://github.com/bluetape4k/bluetape4k-aws)
+- Spring Boot README: [aws-spring-boot/README.md](https://github.com/bluetape4k/bluetape4k-aws/blob/develop/aws-spring-boot/README.md)
+- Ktor README: [aws-ktor/README.md](https://github.com/bluetape4k/bluetape4k-aws/blob/develop/aws-ktor/README.md)
+- Exposed README: [aws-exposed/README.md](https://github.com/bluetape4k/bluetape4k-aws/blob/develop/aws-exposed/README.md)
+- Spring Boot S3 example: [S3DocumentController.kt](https://github.com/bluetape4k/bluetape4k-aws/blob/develop/examples/aws-spring-boot-s3-examples/src/main/kotlin/io/bluetape4k/aws/examples/spring/s3/S3DocumentController.kt)
+- Spring Boot SQS listener example: [ReceivedOrderStore.kt](https://github.com/bluetape4k/bluetape4k-aws/blob/develop/examples/aws-spring-boot-sqs-examples/src/main/kotlin/io/bluetape4k/aws/examples/spring/sqs/ReceivedOrderStore.kt)
+- Spring Boot DynamoDB repository example: [OrderRepository.kt](https://github.com/bluetape4k/bluetape4k-aws/blob/develop/examples/aws-spring-boot-dynamodb-examples/src/main/kotlin/io/bluetape4k/aws/examples/spring/dynamodb/OrderRepository.kt)
+- Ktor S3 example: [S3KtorServerExamples.kt](https://github.com/bluetape4k/bluetape4k-aws/blob/develop/examples/aws-ktor-s3-examples/src/main/kotlin/io/bluetape4k/aws/examples/ktor/s3/S3KtorServerExamples.kt)
+- Ktor SQS example: [SqsExampleRoutes.kt](https://github.com/bluetape4k/bluetape4k-aws/blob/develop/examples/aws-ktor-sqs-examples/src/main/kotlin/io/bluetape4k/aws/examples/ktor/sqs/SqsExampleRoutes.kt)
+- Ktor DynamoDB example: [DynamoDbExampleRoutes.kt](https://github.com/bluetape4k/bluetape4k-aws/blob/develop/examples/aws-ktor-dynamodb-examples/src/main/kotlin/io/bluetape4k/aws/examples/ktor/dynamodb/DynamoDbExampleRoutes.kt)
+- Ktor Exposed design note: [2026-05-21-issue-76-ktor-exposed-plugin-design.md](https://github.com/bluetape4k/bluetape4k-aws/blob/develop/docs/superpowers/specs/2026-05-21-issue-76-ktor-exposed-plugin-design.md)
+
+## 마무리
+
+Spring Boot와 Ktor 통합은 같은 AWS helper를 억지로 같은 API로 맞추는 작업이 아닙니다. Spring Boot에서는
+auto-configuration, property binding, `EnvironmentPostProcessor`, annotation listener가 반복을 줄입니다.
+Ktor에서는 `ApplicationPlugin`, lifecycle-bound runtime, SigV4 client, route helper가 반복을 줄입니다.
+
+결국 Part 3의 기준은 단순합니다. Spring Boot 서비스라면 Spring이 이미 가진 wiring 문법으로 AWS helper를
+붙이고, Ktor 서비스라면 Ktor의 plugin/lifecycle 모델로 붙입니다. core module은 그 아래에서 SDK와 coroutine
+경계를 정리하고, examples는 그 조합이 local emulator 위에서 실제로 돌아가는지 확인합니다.
+
+다음 글에서는 Java 진영에서 널리 쓰이는 Spring Cloud AWS와 `bluetape4k-aws`를 상세히 비교하고,
+장단점을 분석해보겠습니다. 목표는 “누가 더 많은 기능을 가졌나”가 아니라, 왜 Spring 중심 통합과
+Kotlin/Ktor까지 포함한 통합이 다른 선택을 하게 되는지 설명하는 것입니다.
+
+## 시리즈 링크
+
+- [Part 1: 프로젝트 개요와 mental model](/ko/blog/bluetape4k-aws-part1-overview/)
+- [Part 2: core module과 AWS 서비스 지원 현황](/ko/blog/bluetape4k-aws-part2-core-modules-service-coverage/)
+- [Part 3: Spring Boot와 Ktor 통합](/ko/blog/bluetape4k-aws-part3-spring-boot-ktor-examples/)
+- [Part 4: bluetape4k-aws vs Spring Cloud AWS](/ko/blog/bluetape4k-aws-part4-vs-spring-cloud-aws/)
+- [Part 5: 실전 예제로 적용하기](/ko/blog/bluetape4k-aws-part5-real-examples/)

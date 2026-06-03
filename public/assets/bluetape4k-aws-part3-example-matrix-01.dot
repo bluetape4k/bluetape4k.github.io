@@ -1,0 +1,26 @@
+digraph AwsPart3ExampleMatrix {
+  graph [rankdir=LR, bgcolor="#ffffff", pad=0.35, nodesep=0.55, ranksep=0.70, splines=ortho]
+  node [shape=box, style="rounded,filled", fontname="Architects Daughter", fontsize=12, margin="0.12,0.08", color="#94a3b8", fillcolor="#f8fafc"]
+  edge [fontname="Comic Mono", fontsize=10, color="#64748b", penwidth=1.4, arrowsize=0.7]
+
+  spring [label="Spring Boot examples\nS3, SQS/SNS, DynamoDB, Exposed", fillcolor="#e0f2fe", color="#38bdf8"]
+  ktor [label="Ktor examples\nS3, SQS, DynamoDB, Exposed", fillcolor="#dcfce7", color="#22c55e"]
+  s3 [label="S3\nobjects, presigned URLs, config", fillcolor="#fef3c7", color="#f59e0b"]
+  sqs [label="SQS\nlistener, consumer, ack/nack", fillcolor="#fff7ed", color="#fb923c"]
+  dynamo [label="DynamoDB\nrepository and table setup", fillcolor="#f3e8ff", color="#a855f7"]
+  exposed [label="Exposed\nregistry, transaction helper", fillcolor="#ecfeff", color="#06b6d4"]
+  emulator [label="Local emulator tests\nFloci and LocalStack", fillcolor="#f8fafc", color="#64748b"]
+
+  spring -> s3
+  spring -> sqs
+  spring -> dynamo
+  spring -> exposed
+  ktor -> s3
+  ktor -> sqs
+  ktor -> dynamo
+  ktor -> exposed
+  s3 -> emulator
+  sqs -> emulator
+  dynamo -> emulator
+  exposed -> emulator
+}

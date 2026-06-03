@@ -1,0 +1,15 @@
+digraph AwsPart3KtorSequence {
+  graph [rankdir=LR, bgcolor="#ffffff", pad=0.35, nodesep=0.55, ranksep=0.70, splines=ortho]
+  node [shape=box, style="rounded,filled", fontname="Architects Daughter", fontsize=12, margin="0.12,0.08", color="#94a3b8", fillcolor="#f8fafc"]
+  edge [fontname="Comic Mono", fontsize=10, color="#64748b", penwidth=1.4, arrowsize=0.7]
+
+  app [label="Ktor application\ninstall plugins", fillcolor="#dcfce7", color="#22c55e"]
+  plugin [label="AWS plugin runtime\nAwsKtorCore, SqsConsumer", fillcolor="#e0f2fe", color="#38bdf8"]
+  route [label="Route or handler\nS3KtorClient, repository", fillcolor="#fef3c7", color="#f59e0b"]
+  core [label="bluetape4k AWS helper\nSigV4, DynamoDB, Exposed", fillcolor="#fff7ed", color="#fb923c"]
+  sdk [label="AWS client\nSDK or signed HTTP", fillcolor="#f3e8ff", color="#a855f7"]
+  aws [label="LocalStack or AWS\nservices", shape=cylinder, fillcolor="#f8fafc", color="#64748b"]
+
+  app -> plugin -> route -> core -> sdk -> aws
+  plugin -> app [label="stop lifecycle"]
+}
