@@ -19,8 +19,9 @@ blog:
 
 이 글은 `bluetape4k-aws` 시리즈의 1편입니다. 전체 시리즈는
 [Part 1: 프로젝트 개요와 mental model](/ko/blog/bluetape4k-aws-part1-overview/)에서 시작합니다.
-Part 2에서는 core module과 service coverage를 보고, Part 3에서는 Spring Boot 4, Ktor 3, examples를
-따라갑니다. Part 4에서는 Spring Cloud AWS와의 차이를 정리합니다.
+Part 2에서는 core module과 AWS 서비스 지원 현황을 보고, Part 3에서는 Spring Boot 4와 Ktor 3 통합을
+따라갑니다. Part 4에서는 Spring Cloud AWS와의 차이를 정리하고, Part 5에서는 `examples/`와
+`bluetape4k-workshop/aws`의 실전 예제를 더 상세하게 소개합니다.
 
 AWS에는 이미 [AWS SDK for Java v2](https://github.com/aws/aws-sdk-java-v2)와
 [AWS SDK for Kotlin](https://github.com/awslabs/aws-sdk-kotlin)이 있습니다. 둘 다 강력하고,
@@ -32,7 +33,7 @@ configuration, 테스트 emulator, BOM 정렬을 같이 원합니다.
 Kotlin SDK를 그대로 기반으로 삼고, Kotlin/JVM 서비스에서 반복적으로 구현해야 하는 부분을 편리한 함수로 제공합니다.
 plain Kotlin 서비스는 framework 없이 쓸 수 있어야 하고, Spring Boot 4나 Ktor 3 서비스는 각 framework의
 방식으로 자연스럽게 연결되어야 합니다. 이 라이브러리의 핵심 질문은 그래서 "새 SDK를 만들 것인가"가 아니라
-"SDK를 서비스 경계에서 어떻게 덜 거칠게 쓸 것인가"입니다.
+"SDK를 서비스 경계에서 어떻게 더 자연스럽게 쓸 것인가"입니다.
 
 <figure class="bt4k-architecture">
   <img src="/assets/bluetape4k-aws-module-map-01.png" alt="Bluetape4k AWS module map with application entry points, BOM, runtime modules, framework integrations, examples, local verification, and AWS services" loading="lazy" />
@@ -116,13 +117,14 @@ framework adapter, local emulator verification, BOM alignment를 얹는 라이�
 서비스는 SDK wrapper만 보고, Spring Boot 4와 Ktor 3 서비스는 각 framework의 wiring을 얻고, 테스트는
 LocalStack/Floci/Testcontainers로 계정 의존성을 줄일 수 있습니다.
 
-다음 글에서는 `aws-java`, `aws-kotlin`, `aws-exposed`와 service coverage를 더 구체적으로 보겠습니다.
+다음 글에서는 `aws-java`, `aws-kotlin`, `aws-exposed`와 AWS 서비스 지원 현황을 더 구체적으로 보겠습니다.
 어떤 서비스가 어느 module에서 다뤄지는지 알아야, "일단 SDK client를 직접 만들자"는 습관을 줄일 수
 있습니다.
 
 ## 시리즈 링크
 
 - [Part 1: 프로젝트 개요와 mental model](/ko/blog/bluetape4k-aws-part1-overview/)
-- [Part 2: core modules and service coverage](/ko/blog/bluetape4k-aws-part2-core-modules-service-coverage/)
-- [Part 3: Spring Boot, Ktor, and examples](/ko/blog/bluetape4k-aws-part3-spring-boot-ktor-examples/)
+- [Part 2: core module과 AWS 서비스 지원 현황](/ko/blog/bluetape4k-aws-part2-core-modules-service-coverage/)
+- [Part 3: Spring Boot와 Ktor 통합](/ko/blog/bluetape4k-aws-part3-spring-boot-ktor-examples/)
 - [Part 4: bluetape4k-aws vs Spring Cloud AWS](/ko/blog/bluetape4k-aws-part4-vs-spring-cloud-aws/)
+- [Part 5: 실전 예제로 적용하기](/ko/blog/bluetape4k-aws-part5-real-examples/)

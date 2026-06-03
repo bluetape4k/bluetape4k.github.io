@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="740" viewBox="0 0 1160 740" role="img" aria-label="Spring Boot 4 AWS integration sequence">
+  <defs>
+    <style>
+      .title{font-family:'Architects Daughter',cursive;font-size:34px;fill:#102033}
+      .subtitle,.body,.small{font-family:'Comic Mono',monospace;fill:#334155}
+      .subtitle{font-size:15px}.head{font-family:'Architects Daughter',cursive;font-size:19px;fill:#102033}
+      .body{font-size:13px}.small{font-size:12px}.label{font-family:'Comic Mono',monospace;font-size:12px;fill:#334155}
+      .panel{fill:#fff;stroke:#d7e2ef;stroke-width:1.4;rx:18}.participant{stroke-width:1.5;rx:10}
+      .lifeline{stroke:#94a3b8;stroke-width:1.4;stroke-dasharray:7 7}.call{fill:none;stroke:#475569;stroke-width:2;marker-end:url(#arrow)}
+      .return{fill:none;stroke:#64748b;stroke-width:1.6;stroke-dasharray:7 6;marker-end:url(#arrowMuted)}
+      .labelBox{fill:#ffffff;stroke:#d7e2ef;stroke-width:1.1;rx:8}
+    </style>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M 1 1 L 7 4 L 1 7 Z" fill="#475569"/>
+    </marker>
+    <marker id="arrowMuted" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M 1 1 L 7 4 L 1 7 Z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <rect width="1160" height="740" fill="#ffffff"/>
+  <text class="title" x="54" y="70">Spring Boot 4 sequence</text>
+  <text class="subtitle" x="56" y="104">Auto-configuration creates framework beans first; application code then calls small coroutine-friendly operations.</text>
+  <rect class="panel" x="54" y="136" width="1052" height="548"/>
+
+  <rect class="participant" x="86" y="170" width="150" height="64" fill="#ecfeff" stroke="#06b6d4"/>
+  <text class="head" x="161" y="198" text-anchor="middle">Boot startup</text>
+  <text class="small" x="161" y="218" text-anchor="middle">properties</text>
+  <rect class="participant" x="292" y="170" width="150" height="64" fill="#e0f2fe" stroke="#38bdf8"/>
+  <text class="head" x="367" y="198" text-anchor="middle">Auto-config</text>
+  <text class="small" x="367" y="218" text-anchor="middle">clients, beans</text>
+  <rect class="participant" x="498" y="170" width="150" height="64" fill="#fef3c7" stroke="#f59e0b"/>
+  <text class="head" x="573" y="198" text-anchor="middle">App bean</text>
+  <text class="small" x="573" y="218" text-anchor="middle">controller/listener</text>
+  <rect class="participant" x="704" y="170" width="150" height="64" fill="#fff7ed" stroke="#fb923c"/>
+  <text class="head" x="779" y="198" text-anchor="middle">AWS helper</text>
+  <text class="small" x="779" y="218" text-anchor="middle">Operations</text>
+  <rect class="participant" x="910" y="170" width="150" height="64" fill="#f3e8ff" stroke="#a855f7"/>
+  <text class="head" x="985" y="198" text-anchor="middle">AWS runtime</text>
+  <text class="small" x="985" y="218" text-anchor="middle">SDK + service</text>
+
+  <path class="lifeline" d="M161 234 V638"/><path class="lifeline" d="M367 234 V638"/><path class="lifeline" d="M573 234 V638"/><path class="lifeline" d="M779 234 V638"/><path class="lifeline" d="M985 234 V638"/>
+
+  
+  <rect class="labelBox" x="126" y="244" width="276" height="24"/>
+  <text class="label" x="264" y="260" text-anchor="middle">1. bind bluetape4k.aws.* properties</text>
+  <path class="call" d="M173 278 H355"/>
+  
+  <rect class="labelBox" x="363" y="316" width="420" height="24"/>
+  <text class="label" x="573" y="332" text-anchor="middle">2. create S3/SQS/DynamoDB/KMS beans</text>
+  <path class="call" d="M379 350 H767"/>
+  
+  <rect class="labelBox" x="538" y="388" width="276" height="24"/>
+  <text class="label" x="676" y="404" text-anchor="middle">3. call S3Operations or @SqsListener</text>
+  <path class="call" d="M585 422 H767"/>
+  
+  <rect class="labelBox" x="744" y="460" width="276" height="24"/>
+  <text class="label" x="882" y="476" text-anchor="middle">4. delegate to AWS SDK v2 client</text>
+  <path class="call" d="M791 494 H973"/>
+  
+  <rect class="labelBox" x="538" y="532" width="482" height="24"/>
+  <text class="label" x="779" y="548" text-anchor="middle">5. suspend result, Flow, ack/nack outcome</text>
+  <path class="return" d="M973 566 H585"/>
+
+  <rect x="86" y="646" width="974" height="36" rx="18" fill="#f8fafc" stroke="#94a3b8"/>
+  <text class="small" x="573" y="669" text-anchor="middle">Spring owns bean creation and listener containers; application code keeps controller and handler logic small.</text>
+</svg>

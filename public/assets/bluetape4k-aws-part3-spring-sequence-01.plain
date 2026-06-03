@@ -1,0 +1,13 @@
+graph 1 16.725 0.87885
+node boot 1.0731 0.43943 2.1463 0.63917 "Spring Boot startup\nproperties and classpath" rounded,filled box #38bdf8 #e0f2fe
+node autoconfig 3.9815 0.43943 2.2817 0.63917 "Auto-configuration\nclients, templates, listeners" rounded,filled box #22c55e #dcfce7
+node app 7.0306 0.43943 2.4275 0.63917 "Application bean\ncontroller or @SqsListener" rounded,filled box #f59e0b #fef3c7
+node core 10.158 0.43943 2.4379 0.63917 "bluetape4k AWS helper\nS3Operations, SqsOperations" rounded,filled box #fb923c #fff7ed
+node sdk 13.149 0.43943 2.1567 0.63917 "AWS SDK v2 client\nasync + coroutine bridge" rounded,filled box #a855f7 #f3e8ff
+node aws 15.823 0.43943 1.8025 0.87885 "LocalStack or AWS\nS3, SQS, DynamoDB" rounded,filled cylinder #64748b #f8fafc
+edge boot autoconfig 4 2.152 0.43943 2.152 0.43943 2.7095 0.43943 2.7095 0.43943 solid #64748b
+edge autoconfig app 4 5.1255 0.43943 5.1255 0.43943 5.6872 0.43943 5.6872 0.43943 solid #64748b
+edge app core 4 8.2485 0.43943 8.2485 0.43943 8.8061 0.43943 8.8061 0.43943 solid #64748b
+edge core sdk 4 11.383 0.43943 11.383 0.43943 11.938 0.43943 11.938 0.43943 solid #64748b
+edge sdk aws 4 14.233 0.43943 14.233 0.43943 14.791 0.43943 14.791 0.43943 solid #64748b
+stop

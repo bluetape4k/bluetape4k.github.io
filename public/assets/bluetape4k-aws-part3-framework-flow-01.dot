@@ -1,0 +1,21 @@
+digraph AwsPart3FrameworkFlow {
+  graph [rankdir=TB, bgcolor="#ffffff", pad=0.35, nodesep=0.52, ranksep=0.66, splines=ortho]
+  node [shape=box, style="rounded,filled", fontname="Architects Daughter", fontsize=12, margin="0.12,0.08", color="#94a3b8", fillcolor="#f8fafc"]
+  edge [fontname="Comic Mono", fontsize=10, color="#64748b", penwidth=1.4, arrowsize=0.7]
+
+  app [label="Application code\ncontrollers, routes, workers", fillcolor="#ecfeff", color="#06b6d4"]
+  spring [label="Spring Boot 4 adapter\nauto-config, templates, listeners", fillcolor="#e0f2fe", color="#38bdf8"]
+  ktor [label="Ktor 3 adapter\nplugins, lifecycle, SigV4", fillcolor="#dcfce7", color="#22c55e"]
+  core [label="Shared AWS contracts\naws-java, aws-kotlin, aws-exposed", fillcolor="#fef3c7", color="#f59e0b"]
+  sdk [label="AWS SDK clients\nJava v2 and Kotlin SDK", fillcolor="#fff7ed", color="#fb923c"]
+  local [label="Local verification\nFloci, LocalStack, Testcontainers", fillcolor="#f3e8ff", color="#a855f7"]
+  aws [label="AWS services\nS3, SQS, DynamoDB, config", shape=cylinder, fillcolor="#f8fafc", color="#64748b"]
+
+  app -> spring
+  app -> ktor
+  spring -> core
+  ktor -> core
+  core -> sdk
+  sdk -> local
+  sdk -> aws
+}
