@@ -1,0 +1,16 @@
+graph 1 17.061 1.8336
+node app 1.1513 0.90292 2.3025 0.63917 "Kotlin service\nSpring Boot, Ktor, worker" rounded,filled box #06b6d4 #ecfeff
+node java 5.2784 1.514 2.3754 0.63917 "bluetape4k-aws-java\nsync, async, suspend bridge" rounded,filled box #38bdf8 #e0f2fe
+node kotlin 5.2784 0.31958 1.9692 0.63917 "bluetape4k-aws-kotlin\nnative suspend helpers" rounded,filled box #22c55e #dcfce7
+node sdkj 8.6399 1.514 2.2296 0.63917 "AWS Java SDK v2\nCompletableFuture clients" rounded,filled box #fb923c #fff7ed
+node sdkk 8.6399 0.31958 1.4379 0.63917 "AWS Kotlin SDK\nsuspend clients" rounded,filled box #f59e0b #fef3c7
+node crt 12.392 0.90292 2.1358 0.63917 "CRT and OkHttp choices\nS3 CRT transfer path" rounded,filled box #a855f7 #f3e8ff
+node aws 15.899 0.90292 2.3233 0.87885 "AWS services\nS3, SQS, DynamoDB, Kinesis" rounded,filled cylinder #64748b #f8fafc
+edge app java 7 2.3073 0.86128 3.1649 0.86128 4.1861 0.86128 4.1861 0.86128 4.1861 0.86128 4.1861 1.061 4.1861 1.061 "Java SDK path" 3.1966 1.4862 solid #64748b
+edge app kotlin 7 2.3078 0.75022 3.5302 0.75022 5.2833 0.75022 5.2833 0.75022 5.2833 0.75022 5.2833 0.7398 5.2833 0.7398 "Kotlin SDK path" 3.1966 0.59736 solid #64748b
+edge java sdkj 4 6.473 1.514 6.473 1.514 7.3956 1.514 7.3956 1.514 wraps 6.9956 1.5974 solid #64748b
+edge kotlin sdkk 4 6.2688 0.31958 6.2688 0.31958 7.7912 0.31958 7.7912 0.31958 uses 6.9956 0.40292 solid #64748b
+edge sdkj crt 7 9.5611 1.1876 9.5611 1.1276 9.5611 1.0834 9.5611 1.0834 9.5611 1.0834 11.191 1.0834 11.191 1.0834 "HTTP clients" 10.539 1.4862 solid #64748b
+edge sdkk crt 7 8.6444 0.64596 8.6444 0.80915 8.6444 0.97233 8.6444 0.97233 8.6444 0.97233 11.192 0.97233 11.192 0.97233 "HTTP engines" 10.539 0.59736 solid #64748b
+edge crt aws 4 13.463 0.90292 13.463 0.90292 14.604 0.90292 14.604 0.90292 requests 14.099 0.98625 solid #64748b
+stop

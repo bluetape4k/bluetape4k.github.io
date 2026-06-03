@@ -1,0 +1,14 @@
+graph 1 10.227 5.3319
+node services 1.3023 3.2119 2.6046 1.8671 "Service families\nS3, SQS, SNS, DynamoDB,\nKMS, SES/SESv2, Secrets,\nParameter Store, CloudWatch,\nKinesis, STS" rounded,filled cylinder #f97316 #fff7ed
+node java 5.3201 4.8925 2.5838 0.87875 "aws-java\nbroad Java SDK v2 wrappers\nsync, async, suspend adapters" rounded,filled box #38bdf8 #e0f2fe
+node kotlin 5.3201 3.5731 2.0942 0.87875 "aws-kotlin\nnative suspend helpers\nDSL builders and models" rounded,filled box #22c55e #dcfce7
+node spring 5.3201 2.1286 2.7504 1.1183 "aws-spring-boot\noperations and auto-config\nS3, SQS, SNS, DynamoDB,\nKMS, SES, env sources, Exposed" rounded,filled box #f59e0b #fef3c7
+node ktor 5.3201 0.55917 2.6983 1.1183 "aws-ktor\nruntime integrations\nSigV4, S3 REST, SQS consumer,\nDynamoDB plugin, Exposed plugin" rounded,filled box #ef4444 #fee2e2
+node examples 8.7736 1.3369 2.9067 0.87875 "examples\nKtor and Spring Boot smoke paths\nS3, SQS/SNS, DynamoDB, Exposed" rounded,filled box #a855f7 #f3e8ff
+edge services java 7 2.5837 4.079 3.3428 4.079 4.1575 4.079 4.1575 4.079 4.1575 4.079 4.1575 4.321 4.1575 4.321 "SDK v2" 3.2747 4.9758 solid #64748b
+edge services kotlin 4 2.6067 3.5731 2.6067 3.5731 4.143 3.5731 4.143 3.5731 "Kotlin SDK" 3.2747 3.6564 solid #64748b
+edge services spring 4 2.6067 2.4831 2.6067 2.4831 3.8125 2.4831 3.8125 2.4831 "Boot 4" 3.2747 2.5731 solid #64748b
+edge services ktor 7 1.2964 2.2729 1.2964 1.5098 1.2964 0.55917 1.2964 0.55917 1.2964 0.55917 3.8424 0.55917 3.8424 0.55917 "Ktor 3" 3.2747 1.4481 solid #64748b
+edge spring examples 4 6.6999 1.6729 6.6999 1.6729 7.1901 1.6729 7.1901 1.6729 solid #64748b
+edge ktor examples 4 6.6751 1.008 6.6751 1.008 7.1876 1.008 7.1876 1.008 solid #64748b
+stop

@@ -1,0 +1,21 @@
+digraph AwsPart2ApiLayers {
+  graph [rankdir=LR, bgcolor="#ffffff", pad=0.35, nodesep=0.55, ranksep=0.70, splines=ortho]
+  node [shape=box, style="rounded,filled", fontname="Architects Daughter", fontsize=12, margin="0.12,0.08", color="#94a3b8", fillcolor="#f8fafc"]
+  edge [fontname="Comic Mono", fontsize=10, color="#64748b", penwidth=1.4, arrowsize=0.7]
+
+  app [label="Kotlin service\nSpring Boot, Ktor, worker", fillcolor="#ecfeff", color="#06b6d4"]
+  java [label="bluetape4k-aws-java\nsync, async, suspend bridge", fillcolor="#e0f2fe", color="#38bdf8"]
+  kotlin [label="bluetape4k-aws-kotlin\nnative suspend helpers", fillcolor="#dcfce7", color="#22c55e"]
+  sdkj [label="AWS Java SDK v2\nCompletableFuture clients", fillcolor="#fff7ed", color="#fb923c"]
+  sdkk [label="AWS Kotlin SDK\nsuspend clients", fillcolor="#fef3c7", color="#f59e0b"]
+  crt [label="CRT and OkHttp choices\nS3 CRT transfer path", fillcolor="#f3e8ff", color="#a855f7"]
+  aws [label="AWS services\nS3, SQS, DynamoDB, Kinesis", shape=cylinder, fillcolor="#f8fafc", color="#64748b"]
+
+  app -> java [label="Java SDK path"]
+  app -> kotlin [label="Kotlin SDK path"]
+  java -> sdkj [label="wraps"]
+  kotlin -> sdkk [label="uses"]
+  sdkj -> crt [label="HTTP clients"]
+  sdkk -> crt [label="HTTP engines"]
+  crt -> aws [label="requests"]
+}
