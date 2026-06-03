@@ -1,0 +1,13 @@
+graph 1 18.062 2.42
+node app 1.2017 1.203 2.4033 0.67917 "Kotlin service\nplain, Spring Boot 4, Ktor 3" rounded,filled box #38bdf8 #e0f2fe
+node adapter 4.5442 1.203 2.6429 0.67917 "Framework adapter\nconfiguration, clients, listeners" rounded,filled box #f59e0b #fef3c7
+node wrapper 8.1993 1.203 3.0283 0.67917 "bluetape4k AWS wrapper\nsuspend helpers + coroutine bridge" rounded,filled box #22c55e #dcfce7
+node sdk 11.964 1.203 2.8617 0.67917 "AWS SDK client\nJava SDK v2 async or Kotlin SDK" rounded,filled box #64748b #f1f5f9
+node emulator 16.532 1.953 2.8408 0.93385 "LocalStack / Floci\nTestcontainers development loop" rounded,filled cylinder #eab308 #fefce8
+node aws 16.532 0.46693 3.0596 0.93385 "AWS services\nS3, SQS, SNS, DynamoDB, KMS, SES" rounded,filled cylinder #f97316 #fff7ed
+edge app adapter 4 2.4084 1.203 2.4084 1.203 3.0736 1.203 3.0736 1.203 solid #64748b
+edge adapter wrapper 4 5.869 1.203 5.869 1.203 6.5338 1.203 6.5338 1.203 solid #64748b
+edge wrapper sdk 4 9.7196 1.203 9.7196 1.203 10.382 1.203 10.382 1.203 solid #64748b
+edge sdk emulator 7 13.397 1.302 14.738 1.302 16.534 1.302 16.534 1.302 16.534 1.302 16.534 1.3331 16.534 1.3331 "local tests" 14.198 2.0364 solid #64748b
+edge sdk aws 7 13.399 1.1179 14.21 1.1179 15.062 1.1179 15.062 1.1179 15.062 1.1179 15.062 1.0516 15.062 1.0516 runtime 14.198 0.55026 solid #64748b
+stop

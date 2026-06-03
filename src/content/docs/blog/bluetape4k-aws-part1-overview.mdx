@@ -1,0 +1,134 @@
+---
+title: "Bluetape4k AWS Part 1: Repository Overview and Mental Model"
+description: A practical map of how bluetape4k-aws layers Kotlin-first wrappers, Spring Boot 4, Ktor 3, and local AWS emulators on top of the AWS SDKs.
+sidebar:
+  order: -202606032200
+blog:
+  date: 2026-06-03T22:00:00+09:00
+  image: /assets/bluetape4k-aws-part1-hero.png
+  imageAlt: Small robotic operators wiring AWS service blocks and local test equipment on a Kotlin workbench
+  cardDescription: "The mental model for AWS SDK wrappers, coroutine helpers, Spring Boot 4, Ktor 3, and LocalStack/Floci tests."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-aws-part1-hero.png" alt="Small robotic operators wiring AWS service blocks and local test equipment on a Kotlin workbench" loading="eager" />
+  <figcaption>AWS integration is an operational boundary, not just a few SDK calls.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-03 · bluetape4k-aws series · Part 1</p>
+
+This is Part 1 of the `bluetape4k-aws` series. The series starts with
+[Part 1: repository overview and mental model](/blog/bluetape4k-aws-part1-overview/). Part 2
+covers core modules and service coverage, Part 3 follows Spring Boot 4, Ktor 3, and runnable
+examples, and Part 4 compares the approach with Spring Cloud AWS.
+
+AWS already has the [AWS SDK for Java v2](https://github.com/aws/aws-sdk-java-v2) and the
+[AWS SDK for Kotlin](https://github.com/awslabs/aws-sdk-kotlin). Both are powerful, official
+starting points for AWS APIs. Application code usually wants a narrower surface though:
+`suspend` functions, coroutine-friendly async bridges, framework-specific configuration, local
+emulators, and version alignment through a BOM.
+
+`bluetape4k-aws` sits in that space. It does not replace the AWS SDKs. It builds on Java SDK v2 and
+the Kotlin SDK, then provides reusable helpers for integration code Kotlin/JVM services otherwise
+repeat across applications. Plain Kotlin services
+should be able to stay framework-neutral. Spring Boot 4 and Ktor 3 services should get framework
+wiring that feels native to those stacks. The central question is not "should bluetape4k make a new
+SDK?" It is "how should service code use the SDKs without carrying every integration detail itself?"
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-aws-module-map-01.png" alt="Bluetape4k AWS module map with application surfaces, BOM, runtime modules, framework integrations, examples, local verification, and AWS services" loading="lazy" />
+  <figcaption>`bluetape4k-aws` keeps the BOM, SDK wrappers, framework adapters, examples, and local verification model aligned.</figcaption>
+</figure>
+
+## Mental Model
+
+The repository is easiest to read as three layers.
+
+First, there are core SDK wrappers. `bluetape4k-aws-java` works with AWS Java SDK v2 sync and async
+clients, plus coroutine extensions. Java SDK v2 has broad service coverage and a stable production
+surface, but its async model needs a Kotlin-friendly bridge in coroutine services. For high-throughput
+S3 transfer paths, the design also allows AWS CRT runtime dependencies and CRT-backed `S3AsyncClient`
+beans so Spring auto-configuration can build the transfer manager on the optimized client.
+`bluetape4k-aws-kotlin` is closer to the AWS Kotlin SDK side: native suspend helpers and DSL
+builders for code that wants to stay on the Kotlin SDK path.
+
+Second, the core stays framework-neutral. S3, SQS, SNS, DynamoDB, KMS, SES, CloudWatch, Kinesis,
+and STS helpers should not force a web framework into plain service code. That lets the same helper
+surface work from CLI tools, workers, Spring Boot services, and Ktor services.
+
+Third, the edges become framework-aware. `bluetape4k-aws-spring-boot` owns Spring Boot 4
+auto-configuration, templates, repositories, listeners, and property binding. `bluetape4k-aws-ktor`
+owns Ktor 3 SigV4 signing, coroutine S3 REST clients, SQS consumer runtime, and DynamoDB server
+repository helpers. The core remains portable; the edge speaks the framework's language.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-aws-request-flow-01.png" alt="AWS request flow from Kotlin service through framework adapter, bluetape4k AWS wrapper, AWS SDK client, then LocalStack or AWS services" loading="lazy" />
+  <figcaption>Service code sees a Kotlin-first API; the runtime can route to emulator-backed tests or real AWS.</figcaption>
+</figure>
+
+## Module Map
+
+The project provides these module families.
+The Spring module started from the kind of Spring-friendly AWS integration experience Spring Cloud
+AWS popularized, but targets Spring Boot 4 with coroutine-oriented bluetape4k helpers. The same core
+helpers then extend into Ktor 3, so the Spring Boot and Ktor modules are not competing stacks; they
+are framework adapters over the same AWS wrapper model.
+
+| Area | Representative module | Responsibility |
+|---|---|---|
+| BOM | `bluetape4k-aws-bom` | Align versions for `io.github.bluetape4k.aws:*` modules |
+| Java SDK bridge | `bluetape4k-aws-java` | AWS Java SDK v2 wrappers, async/coroutine extensions, CRT-backed S3 transfers, broad service coverage |
+| Kotlin SDK helpers | `bluetape4k-aws-kotlin` | AWS Kotlin SDK suspend helpers and DSL builders |
+| Shared persistence | `bluetape4k-aws-exposed` | Exposed JDBC foundation for AWS-backed configuration |
+| Spring Boot edge | `bluetape4k-aws-spring-boot` | Spring Cloud AWS-inspired Spring Boot 4 auto-config, S3 transfer, SES sender, SNS parser, SQS listener, DynamoDB/KMS/Secrets Manager/Parameter Store |
+| Ktor edge | `bluetape4k-aws-ktor` | Ktor 3 extension of the same core helpers: SigV4, coroutine S3 client, SQS runtime, DynamoDB server repository |
+| Examples | `examples/*` | Runnable Ktor and Spring Boot integrations for DynamoDB, S3, SQS, and Exposed |
+
+The model is selective adoption. Pulling in a Spring Boot module should not drag a Ktor runtime
+with it. The BOM aligns versions, core modules handle SDK and coroutine boundaries, and framework
+adapters remove application wiring where they are useful.
+
+## Local Development Model
+
+AWS integration code gets expensive when the only faithful test environment is a real account.
+`bluetape4k-aws` therefore treats the local verification model as part of the repository, not as an
+afterthought.
+
+The README describes integration tests backed by Testcontainers-based AWS emulators. Production
+runtime points at AWS, while development and CI can attach an emulator behind the same SDK clients.
+Tests can choose the emulator with options such as `-Dbluetape4k.aws.emulator=...`. The recent
+direction is Floci-first with LocalStack as a fallback; MiniStack is treated as a comparison
+candidate rather than the default target.
+
+The value is straightforward. Service code calls the same wrapper, and the runtime endpoint changes
+under test. DynamoDB tables, S3 buckets, and SQS queues do not have to be provisioned in a real AWS
+account just to verify Spring Boot or Ktor wiring and coroutine behavior.
+
+## Source Links
+
+- Issue: [#45 Blog Part 1: bluetape4k-aws repository overview and mental model](https://github.com/bluetape4k/bluetape4k.github.io/issues/45)
+- Series epic: [#44 Epic: bluetape4k-aws blog series](https://github.com/bluetape4k/bluetape4k.github.io/issues/44)
+- Repository: [bluetape4k-aws](https://github.com/bluetape4k/bluetape4k-aws)
+- README: [README.md](https://github.com/bluetape4k/bluetape4k-aws/blob/develop/README.md)
+- Korean README: [README.ko.md](https://github.com/bluetape4k/bluetape4k-aws/blob/develop/README.ko.md)
+- BOM README: [bom/README.md](https://github.com/bluetape4k/bluetape4k-aws/blob/develop/bom/README.md)
+- README diagrams: [docs/assets/readme-diagrams](https://github.com/bluetape4k/bluetape4k-aws/tree/develop/docs/assets/readme-diagrams)
+
+## Closing
+
+`bluetape4k-aws` is not an AWS SDK reimplementation. It is a Kotlin/JVM integration layer over the official
+AWS SDKs, combining coroutine helpers, framework adapters, local emulator verification, and BOM
+alignment. Plain Kotlin services can use the wrapper layer directly, Spring Boot 4 and Ktor 3
+services get native wiring, and tests can reduce account dependency through LocalStack, Floci, and
+Testcontainers.
+
+Next, we will look more closely at `aws-java`, `aws-kotlin`, `aws-exposed`, and service coverage.
+Knowing where each AWS service belongs is the first step toward not building a custom SDK client
+factory in every service.
+
+## Series Links
+
+- [Part 1: repository overview and mental model](/blog/bluetape4k-aws-part1-overview/)
+- [Part 2: core modules and service coverage](/blog/bluetape4k-aws-part2-core-modules-service-coverage/)
+- [Part 3: Spring Boot, Ktor, and examples](/blog/bluetape4k-aws-part3-spring-boot-ktor-examples/)
+- [Part 4: bluetape4k-aws vs Spring Cloud AWS](/blog/bluetape4k-aws-part4-vs-spring-cloud-aws/)

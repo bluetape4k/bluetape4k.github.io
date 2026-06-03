@@ -1,0 +1,128 @@
+---
+title: "Bluetape4k AWS Part 1: Kotlin 서비스의 AWS 작업대"
+description: AWS Java SDK v2와 AWS Kotlin SDK 위에서 bluetape4k-aws가 어떤 Kotlin-first 통합 레이어를 제공하는지 라이브러리 구조와 mental model로 정리한다.
+sidebar:
+  order: -202606032200
+blog:
+  date: 2026-06-03T22:00:00+09:00
+  image: /assets/bluetape4k-aws-part1-hero.png
+  imageAlt: 작은 로봇 작업자들이 Kotlin 작업대에서 AWS 서비스 블록과 로컬 테스트 장비를 연결하는 일러스트
+  cardDescription: "AWS SDK, coroutine wrapper, Spring Boot 4, Ktor 3, LocalStack/Floci 테스트 모델을 한 장으로 정리한다."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-aws-part1-hero.png" alt="작은 로봇 작업자들이 Kotlin 작업대에서 AWS 서비스 블록과 로컬 테스트 장비를 연결하는 일러스트" loading="eager" />
+  <figcaption>AWS 통합은 SDK 호출 몇 줄보다 오래 남는 운영 경계입니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-03 · bluetape4k-aws series · Part 1</p>
+
+이 글은 `bluetape4k-aws` 시리즈의 1편입니다. 전체 시리즈는
+[Part 1: 프로젝트 개요와 mental model](/ko/blog/bluetape4k-aws-part1-overview/)에서 시작합니다.
+Part 2에서는 core module과 service coverage를 보고, Part 3에서는 Spring Boot 4, Ktor 3, examples를
+따라갑니다. Part 4에서는 Spring Cloud AWS와의 차이를 정리합니다.
+
+AWS에는 이미 [AWS SDK for Java v2](https://github.com/aws/aws-sdk-java-v2)와
+[AWS SDK for Kotlin](https://github.com/awslabs/aws-sdk-kotlin)이 있습니다. 둘 다 강력하고,
+새 AWS API를 따라가는 정식 출발점입니다. 그런데 애플리케이션 코드는 SDK의 모든 기능을 직접 품고
+싶어 하지 않습니다. Kotlin 서비스는 `suspend` 함수, coroutine-friendly async bridge, framework별
+configuration, 테스트 emulator, BOM 정렬을 같이 원합니다.
+
+`bluetape4k-aws`는 이 사이에 놓이는 통합용 얇은 레이어입니다. AWS SDK를 대체하지 않습니다. Java SDK v2와
+Kotlin SDK를 그대로 기반으로 삼고, Kotlin/JVM 서비스에서 반복적으로 구현해야 하는 부분을 편리한 함수로 제공합니다.
+plain Kotlin 서비스는 framework 없이 쓸 수 있어야 하고, Spring Boot 4나 Ktor 3 서비스는 각 framework의
+방식으로 자연스럽게 연결되어야 합니다. 이 라이브러리의 핵심 질문은 그래서 "새 SDK를 만들 것인가"가 아니라
+"SDK를 서비스 경계에서 어떻게 덜 거칠게 쓸 것인가"입니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-aws-module-map-01.png" alt="Bluetape4k AWS module map with application surfaces, BOM, runtime modules, framework integrations, examples, local verification, and AWS services" loading="lazy" />
+  <figcaption>`bluetape4k-aws`는 BOM, SDK wrapper, framework adapter, examples, local verification을 한 저장소 안에서 맞춥니다.</figcaption>
+</figure>
+
+## Mental Model
+
+이 라이브러리를 볼 때는 세 층으로 나누면 이해하기 쉽습니다.
+
+첫째, core SDK wrapper입니다. `bluetape4k-aws-java`는 AWS Java SDK v2의 sync/async client와 coroutine
+extension을 다룹니다. Java SDK v2는 서비스 범위가 넓고 안정적이지만, async 기능은 Kotlin coroutine
+서비스에서 한 번 더 감싸야 편합니다. 특히 S3 대용량 전송처럼 throughput이 중요한 경로에서는 AWS CRT
+runtime dependency와 CRT-backed `S3AsyncClient`를 붙여 성능을 끌어올릴 수 있도록 설계했습니다.
+`bluetape4k-aws-kotlin`은 AWS Kotlin SDK의 native suspend API와 DSL builder를 더 Kotlin스럽게 쓰는 쪽에 가깝습니다.
+
+둘째, framework-neutral core입니다. S3, SQS, SNS, DynamoDB, KMS, SES, CloudWatch, Kinesis, STS 같은
+서비스를 다루더라도 core module이 특정 web framework를 강제하지 않아야 합니다. 이 원칙이 있어야
+같은 AWS helper를 CLI, worker, Spring Boot 서비스, Ktor 서비스에서 같이 쓸 수 있습니다.
+
+셋째, framework-aware edge입니다. `bluetape4k-aws-spring-boot`는 Spring Boot 4 auto-configuration,
+template, repository, listener, property binding을 맡습니다. `bluetape4k-aws-ktor`는 Ktor 3 SigV4
+plugin, coroutine S3 REST client, SQS consumer runtime, DynamoDB server repository 같은 Ktor 접점을
+맡습니다. core는 framework-neutral하게 두고, edge에서 framework 관례를 받아들이는 구조입니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-aws-request-flow-01.png" alt="AWS request flow from Kotlin service through framework adapter, bluetape4k AWS wrapper, AWS SDK client, then LocalStack or AWS services" loading="lazy" />
+  <figcaption>서비스 코드는 Kotlin-first API를 보고, 실행 경로는 emulator 테스트와 실제 AWS runtime으로 나뉩니다.</figcaption>
+</figure>
+
+## Module Map
+
+현재 프로젝트 기준으로 제공되는 모듈들은 아래와 같습니다.
+출발점은 Spring Cloud AWS가 보여 준 Spring 친화적인 AWS 통합 경험이었습니다. 다만 `bluetape4k-aws`는
+Spring Boot 4 기준으로 더 coroutine-friendly한 module을 제공하고, 같은 core helper를 Ktor 3에서도
+쓸 수 있도록 확장했습니다. 그래서 Spring Boot module과 Ktor module은 경쟁 관계가 아니라, 같은 AWS
+wrapper를 각 framework의 사용 방식으로 연결하는 adapter에 가깝습니다.
+
+| 영역 | 대표 모듈 | 맡는 일 |
+|---|---|---|
+| BOM | `bluetape4k-aws-bom` | `io.github.bluetape4k.aws:*` 모듈 버전 정렬 |
+| Java SDK bridge | `bluetape4k-aws-java` | AWS Java SDK v2 wrapper, async/coroutine extension, CRT-backed S3 전송, 넓은 서비스 지원 |
+| Kotlin SDK helper | `bluetape4k-aws-kotlin` | AWS Kotlin SDK 기반 suspend helper와 DSL builder |
+| Shared persistence | `bluetape4k-aws-exposed` | AWS-backed configuration에 필요한 Exposed JDBC 기반 |
+| Spring Boot edge | `bluetape4k-aws-spring-boot` | Spring Cloud AWS의 사용성을 참고한 Spring Boot 4 auto-config, S3 transfer, SES sender, SNS parser, SQS listener, DynamoDB/KMS/Secrets Manager/Parameter Store |
+| Ktor edge | `bluetape4k-aws-ktor` | 같은 core helper를 Ktor 3로 확장하는 SigV4, coroutine S3 client, SQS runtime, DynamoDB server repository |
+| Examples | `examples/*` | Ktor/Spring Boot에서 DynamoDB, S3, SQS, Exposed 통합을 실행 가능하게 보여 줌 |
+
+여기서 중요한 점은 "Spring Boot module을 쓰면 Ktor가 따라온다" 같은 구조가 아니라는 점입니다.
+서비스가 필요한 기능만 가져가면 됩니다. BOM은 버전 줄을 맞추고, core module은 SDK와 coroutine 경계를
+정리하고, framework adapter는 애플리케이션 wiring을 줄입니다.
+
+## Local Development Model
+
+AWS 통합 코드는 테스트가 조금만 느슨해져도 금방 "계정이 있어야만 재현되는 문제"가 됩니다. 그래서
+`bluetape4k-aws`는 LocalStack, Floci, Testcontainers 기반의 로컬 검증 모델을 중요하게 둡니다.
+
+프로젝트의 integration test는 Testcontainers-backed AWS emulator를 사용합니다. 운영 runtime은 실제
+AWS를 향하지만, 개발 루프에서는 emulator가 SDK client 뒤쪽에 붙습니다. 테스트는
+`-Dbluetape4k.aws.emulator=...` 같은 선택지로 emulator를 바꿀 수 있고, 최근 방향은 Floci-first와
+LocalStack fallback입니다. MiniStack은 비교 후보로만 다룹니다.
+
+이 모델의 장점은 단순합니다. service code는 같은 wrapper를 호출하고, test runtime만 emulator로
+바뀝니다. DynamoDB table, S3 bucket, SQS queue 같은 외부 자원을 매번 실제 계정에서 준비하지 않아도
+Spring Boot/Ktor wiring과 coroutine 흐름을 확인할 수 있습니다.
+
+## Source Links
+
+- Issue: [#45 Blog Part 1: bluetape4k-aws repository overview and mental model](https://github.com/bluetape4k/bluetape4k.github.io/issues/45)
+- Series epic: [#44 Epic: bluetape4k-aws blog series](https://github.com/bluetape4k/bluetape4k.github.io/issues/44)
+- Repository: [bluetape4k-aws](https://github.com/bluetape4k/bluetape4k-aws)
+- README: [README.md](https://github.com/bluetape4k/bluetape4k-aws/blob/develop/README.md)
+- Korean README: [README.ko.md](https://github.com/bluetape4k/bluetape4k-aws/blob/develop/README.ko.md)
+- BOM README: [bom/README.md](https://github.com/bluetape4k/bluetape4k-aws/blob/develop/bom/README.md)
+- README diagrams: [docs/assets/readme-diagrams](https://github.com/bluetape4k/bluetape4k-aws/tree/develop/docs/assets/readme-diagrams)
+
+## 마무리
+
+`bluetape4k-aws`는 AWS SDK를 다시 구현하는 라이브러리가 아닙니다. 이미 검증된 AWS SDK 위에 Kotlin coroutine,
+framework adapter, local emulator verification, BOM alignment를 얹는 라이브러리입니다. 그래서 plain Kotlin
+서비스는 SDK wrapper만 보고, Spring Boot 4와 Ktor 3 서비스는 각 framework의 wiring을 얻고, 테스트는
+LocalStack/Floci/Testcontainers로 계정 의존성을 줄일 수 있습니다.
+
+다음 글에서는 `aws-java`, `aws-kotlin`, `aws-exposed`와 service coverage를 더 구체적으로 보겠습니다.
+어떤 서비스가 어느 module에서 다뤄지는지 알아야, "일단 SDK client를 직접 만들자"는 습관을 줄일 수
+있습니다.
+
+## 시리즈 링크
+
+- [Part 1: 프로젝트 개요와 mental model](/ko/blog/bluetape4k-aws-part1-overview/)
+- [Part 2: core modules and service coverage](/ko/blog/bluetape4k-aws-part2-core-modules-service-coverage/)
+- [Part 3: Spring Boot, Ktor, and examples](/ko/blog/bluetape4k-aws-part3-spring-boot-ktor-examples/)
+- [Part 4: bluetape4k-aws vs Spring Cloud AWS](/ko/blog/bluetape4k-aws-part4-vs-spring-cloud-aws/)

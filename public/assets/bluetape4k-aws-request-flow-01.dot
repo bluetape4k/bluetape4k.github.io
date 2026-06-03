@@ -1,0 +1,16 @@
+digraph AwsRequestFlow {
+  graph [rankdir=LR, bgcolor="#ffffff", pad=0.35, nodesep=0.55, ranksep=0.80, splines=ortho]
+  node [shape=box, style="rounded,filled", fontname="Architects Daughter", fontsize=12, margin="0.16,0.10", color="#94a3b8", fillcolor="#f8fafc"]
+  edge [fontname="Comic Mono", fontsize=10, color="#64748b", penwidth=1.7, arrowsize=0.8]
+
+  app [label="Kotlin service\nplain, Spring Boot 4, Ktor 3", fillcolor="#e0f2fe", color="#38bdf8"]
+  adapter [label="Framework adapter\nconfiguration, clients, listeners", fillcolor="#fef3c7", color="#f59e0b"]
+  wrapper [label="bluetape4k AWS wrapper\nsuspend helpers + coroutine bridge", fillcolor="#dcfce7", color="#22c55e"]
+  sdk [label="AWS SDK client\nJava SDK v2 async or Kotlin SDK", fillcolor="#f1f5f9", color="#64748b"]
+  emulator [label="LocalStack / Floci\nTestcontainers development loop", shape=cylinder, fillcolor="#fefce8", color="#eab308"]
+  aws [label="AWS services\nS3, SQS, SNS, DynamoDB, KMS, SES", shape=cylinder, fillcolor="#fff7ed", color="#f97316"]
+
+  app -> adapter -> wrapper -> sdk
+  sdk -> emulator [label="local tests"]
+  sdk -> aws [label="runtime"]
+}
