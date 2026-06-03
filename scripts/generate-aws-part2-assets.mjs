@@ -39,8 +39,8 @@ const assets = [
   crt [label="CRT and OkHttp choices\\nS3 CRT transfer path", fillcolor="#f3e8ff", color="#a855f7"]
   aws [label="AWS services\\nS3, SQS, DynamoDB, Kinesis", shape=cylinder, fillcolor="#f8fafc", color="#64748b"]
 
-  app -> java [label="Java SDK path"]
-  app -> kotlin [label="Kotlin SDK path"]
+  app -> java [label="Java SDK"]
+  app -> kotlin [label="Kotlin SDK"]
   java -> sdkj [label="wraps"]
   kotlin -> sdkk [label="uses"]
   sdkj -> crt [label="HTTP clients"]
@@ -99,7 +99,7 @@ function apiLayersSvg() {
     </marker>
   </defs>
   <rect width="1160" height="680" fill="#ffffff"/>
-  <text class="title" x="54" y="70">Two SDK paths, one service shape</text>
+  <text class="title" x="54" y="70">Two SDK approaches, one service shape</text>
   <text class="subtitle" x="56" y="104">Java SDK v2 keeps broad coverage; Kotlin SDK keeps native suspend calls. bluetape4k smooths the service boundary.</text>
 
   <rect class="panel" x="54" y="138" width="1052" height="410"/>
@@ -132,8 +132,8 @@ function apiLayersSvg() {
   <path class="arrow" d="M255 334 H292 V422 H330"/>
   <path class="arrow" d="M548 234 H630"/>
   <path class="arrow" d="M548 422 H630"/>
-  <path class="arrow" d="M848 234 H910 V322"/>
-  <path class="arrow" d="M848 422 H910 V362"/>
+  <path class="arrow" d="M848 234 H880 V322 H910"/>
+  <path class="arrow" d="M848 422 H880 V362 H910"/>
 
   <rect x="910" y="278" width="162" height="128" rx="14" fill="#f8fafc" stroke="#64748b" stroke-width="1.6"/>
   <text class="label" x="991" y="318" text-anchor="middle">AWS services</text>
