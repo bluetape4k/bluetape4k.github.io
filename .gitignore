@@ -5,3 +5,4 @@ dist
 npm-debug.log*
 src/content/docs/drafts/
 public/draft-assets/
+.omc/
