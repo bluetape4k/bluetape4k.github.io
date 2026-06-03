@@ -1,0 +1,16 @@
+digraph AwsPart2DependencySelection {
+  graph [rankdir=LR, bgcolor="#ffffff", pad=0.35, nodesep=0.55, ranksep=0.70, splines=ortho]
+  node [shape=box, style="rounded,filled", fontname="Architects Daughter", fontsize=12, margin="0.12,0.08", color="#94a3b8", fillcolor="#f8fafc"]
+  edge [fontname="Comic Mono", fontsize=10, color="#64748b", penwidth=1.4, arrowsize=0.7]
+
+  bom [label="BOM\nalign bluetape4k-aws versions", fillcolor="#e0f2fe", color="#38bdf8"]
+  core [label="core wrapper module\ncompileOnly service SDKs", fillcolor="#dcfce7", color="#22c55e"]
+  app [label="application module\nchooses actual AWS services", fillcolor="#fef3c7", color="#f59e0b"]
+  runtime [label="runtime classpath\nS3 + SQS + DynamoDB only", fillcolor="#fff7ed", color="#fb923c"]
+  lean [label="smaller dependency graph\nno all-services pull", fillcolor="#f3e8ff", color="#a855f7"]
+
+  bom -> core
+  core -> app [label="helpers"]
+  app -> runtime [label="implementation"]
+  runtime -> lean [label="selective"]
+}

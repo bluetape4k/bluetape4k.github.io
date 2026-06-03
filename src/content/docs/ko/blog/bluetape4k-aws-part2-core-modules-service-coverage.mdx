@@ -1,0 +1,239 @@
+---
+title: "Bluetape4k AWS Part 2: core module과 service coverage"
+description: bluetape4k-aws-java와 bluetape4k-aws-kotlin이 AWS Java SDK v2, AWS Kotlin SDK 위에서 어떤 HTTP client, coroutine, S3 TransferManager, 서비스별 helper를 제공하는지 정리한다.
+sidebar:
+  order: -202606032320
+blog:
+  date: 2026-06-03T23:20:00+09:00
+  image: /assets/bluetape4k-aws-part1-hero.png
+  imageAlt: 작은 로봇 작업자들이 Kotlin 작업대에서 AWS 서비스 블록과 로컬 테스트 장비를 연결하는 일러스트
+  cardDescription: "Java SDK v2 path, Kotlin SDK path, CRT 기반 S3 TransferManager, compileOnly 의존성 모델을 함께 본다."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-aws-part1-hero.png" alt="작은 로봇 작업자들이 Kotlin 작업대에서 AWS 서비스 블록과 로컬 테스트 장비를 연결하는 일러스트" loading="eager" />
+  <figcaption>SDK client를 만드는 일보다, 그 client를 서비스 경계에 오래 붙여 두는 일이 더 어렵습니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-03 · bluetape4k-aws series · Part 2</p>
+
+이 글은 `bluetape4k-aws` 시리즈의 2편입니다. Part 1에서는
+[프로젝트 개요와 mental model](/ko/blog/bluetape4k-aws-part1-overview/)을 다뤘습니다. 이번 글에서는
+core module인 `bluetape4k-aws-java`, `bluetape4k-aws-kotlin`이 실제로 어떤 부담을 줄이는지 봅니다.
+
+핵심은 AWS SDK를 다시 구현하는 것이 아닙니다. AWS Java SDK v2와 AWS Kotlin SDK는 그대로 쓰되,
+Kotlin/JVM 서비스가 반복해서 만지는 부분을 정리합니다. Java SDK v2 쪽에서는 `CompletableFuture`
+async client를 `suspend` 함수로 잇고, S3 대용량 전송에는 CRT 기반 async client와
+`S3TransferManager`를 더 편하게 붙입니다. Kotlin SDK 쪽에서는 native `suspend` client를 그대로
+살리면서 CRT HTTP engine 기본값, `withXxxClient` lifecycle helper, 서비스별 DSL builder를 제공합니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-aws-part2-api-layers-01.png" alt="Two AWS SDK paths through bluetape4k aws-java and aws-kotlin toward AWS services" loading="lazy" />
+  <figcaption>두 SDK 경로는 다르지만, 애플리케이션 코드가 원하는 것은 작고 일관된 service-shaped API입니다.</figcaption>
+</figure>
+
+## Java SDK v2 Path
+
+AWS Java SDK v2를 직접 쓰면 먼저 결정해야 할 것이 꽤 많습니다. sync client와 async client를 나눠야 하고,
+async client에서는 HTTP client 선택과 `CompletableFuture` 조합이 따라옵니다. S3처럼 파일 크기와
+throughput이 중요한 경로에서는 일반 client 호출만으로는 부족해서 CRT 기반 S3 async client와
+TransferManager까지 같이 봐야 합니다.
+
+`bluetape4k-aws-java`는 이 결정을 숨기지 않습니다. 대신 반복되는 결합 지점을 준비합니다.
+일반 async client factory의 기본 HTTP client는 현재 Netty입니다. 동시에 `SdkAsyncHttpClientProvider.AwsCrt`
+와 `awsCrtAsyncHttpClientOf`로 CRT async HTTP client를 명시적으로 제공합니다. 그리고 S3 대용량 전송
+경로는 한 단계 더 강하게 잡았습니다. `S3ClientFactory.CrtAsync.create`는 `S3AsyncClient.crtBuilder()`를
+사용하고, `S3ClientFactory.TransferManager.create`는 이 CRT 기반 async client를 만들어
+`S3TransferManager`에 연결합니다.
+
+또 하나 중요한 기본값은 executor입니다. Java 버전의 `TransferManager.create`는
+`Executors.newVirtualThreadPerTaskExecutor()`를 기본 executor로 사용합니다. 즉, 파일 전송처럼 blocking
+작업과 async completion이 섞이는 경로에서 Virtual Threads를 쉽게 적용할 수 있습니다.
+
+```kotlin
+import io.bluetape4k.aws.s3.S3ClientFactory
+import io.bluetape4k.aws.s3.transfer.downloadFile
+import io.bluetape4k.aws.s3.transfer.uploadFile
+import software.amazon.awssdk.regions.Region
+import java.nio.file.Path
+
+suspend fun mirrorObject(bucket: String, key: String, source: Path, target: Path) {
+    val transferManager = S3ClientFactory.TransferManager.create(
+        region = Region.AP_NORTHEAST_2,
+    )
+
+    transferManager.uploadFile(bucket, key, source)
+    transferManager.downloadFile(bucket, key, target)
+}
+```
+
+위 코드는 TransferManager 자체를 새로 설명하지 않습니다. 이미 AWS SDK가 제공하는 기능입니다.
+`bluetape4k-aws-java`가 맡는 부분은 CRT 기반 S3 async client, Virtual Thread executor, async/coroutine
+extension을 서비스 코드가 매번 다시 조립하지 않게 하는 것입니다.
+
+작은 객체나 문자열 중심의 S3 작업은 더 가볍게 쓸 수 있습니다. Java SDK v2 async client는 원래
+`CompletableFuture`를 반환하지만, coroutine extension은 `.await()`를 감싸서 `suspend` 함수처럼 보이게
+합니다.
+
+```kotlin
+import io.bluetape4k.aws.s3.S3ClientFactory
+import io.bluetape4k.aws.s3.getAsString
+import io.bluetape4k.aws.s3.putAsString
+
+suspend fun writeAndRead(bucket: String, key: String): String {
+    val client = S3ClientFactory.Async.create()
+
+    client.putAsString(bucket, key, "hello from bluetape4k-aws")
+    return client.getAsString(bucket, key)
+}
+```
+
+이 패턴은 S3만의 이야기가 아닙니다. DynamoDB Enhanced Async Table의 scan/query를 `Flow`로 받거나,
+SQS send/receive/delete, SNS publish, SES send, KMS encrypt/decrypt, CloudWatch metric/log, Kinesis
+record, STS identity/assume-role 같은 작업도 같은 방향으로 정리합니다. Java SDK v2의 넓은 서비스
+지원 범위를 유지하면서 Kotlin coroutine 서비스에서 덜 거칠게 쓰는 것이 목적입니다.
+
+## Kotlin SDK Path
+
+`bluetape4k-aws-kotlin`은 출발점이 다릅니다. AWS Kotlin SDK는 이미 operation 자체가 `suspend` 함수입니다.
+따라서 Java SDK v2처럼 `CompletableFuture`를 coroutine으로 바꾸는 일이 중심이 아닙니다. 여기서는 client
+생성, HTTP engine 선택, request model builder, resource lifecycle을 다듬는 일이 더 중요합니다.
+
+Kotlin module의 HTTP engine 기본값은 CRT입니다. `HttpClientEngineProvider.defaultHttpEngine`은
+`Crt.httpEngine`을 반환하고, OkHttp가 필요한 경우에는 `HttpClientEngineProvider.OkHttp.httpEngine`을
+명시적으로 선택할 수 있습니다. 즉, AWS Kotlin SDK에서도 CRT를 기본 경로로 두고, 필요하면 OkHttp로
+내려갈 수 있는 구조입니다.
+
+```kotlin
+import aws.smithy.kotlin.runtime.net.url.Url
+import io.bluetape4k.aws.kotlin.s3.putFromPath
+import io.bluetape4k.aws.kotlin.s3.withS3Client
+import java.nio.file.Path
+
+suspend fun uploadReport(path: Path) {
+    withS3Client(
+        endpointUrl = Url.parse("http://localhost:4566"),
+        region = "ap-northeast-2",
+    ) { client ->
+        client.putFromPath("reports", "daily/report.csv", path)
+    }
+}
+```
+
+`withS3Client`, `withSqsClient`, `withDynamoDbClient` 같은 helper는 client를 만들고 block 실행 후 닫습니다.
+오래 사는 client가 필요하면 `s3ClientOf`, `sqsClientOf`처럼 factory를 직접 쓰면 됩니다. 한 번 쓰고
+닫는 경로와 애플리케이션 전역에서 재사용하는 경로를 분리해 둔 셈입니다.
+
+Kotlin 쪽 서비스 helper도 단순 wrapper 이상입니다. S3는 `putFromString`, `putFromPath`,
+`getAsByteArray`, `getAsOutputStream` 같은 파일/바이트/문자열 helper를 제공합니다. SQS는
+`sendMessage`, `sendMessageBatch`, `receiveMessage`를 queue URL 중심으로 다루고, DynamoDB는 item map,
+batch executor, request builder를 제공합니다. Kinesis에는 shard 하나를 지속적으로 polling해서
+`Flow<Record>`로 내보내는 `recordFlow`도 있습니다. iterator 만료와 throttle retry는 caller가 매번
+다시 쓰기 쉬운 코드가 아니라서 helper로 분리할 가치가 큽니다.
+
+```kotlin
+import io.bluetape4k.aws.kotlin.kinesis.KinesisStartingPosition
+import io.bluetape4k.aws.kotlin.kinesis.recordFlow
+
+suspend fun consumeShard(client: aws.sdk.kotlin.services.kinesis.KinesisClient) {
+    client.recordFlow(
+        streamName = "orders",
+        shardId = "shardId-000000000000",
+        position = KinesisStartingPosition.TrimHorizon,
+    ).collect { record ->
+        println(record.data.decodeToString())
+    }
+}
+```
+
+## Service Coverage
+
+core module의 존재 이유는 서비스별 helper를 한두 개 만드는 데서 끝나지 않습니다. S3, SQS, SNS,
+DynamoDB, KMS, SES/SESv2, CloudWatch, CloudWatch Logs, Kinesis, STS까지 공통적인 호출 패턴을 다룹니다.
+Spring Boot와 Ktor module은 이 core helper 위에 framework entry point를 얹습니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-aws-service-coverage-01.png" alt="AWS service coverage chart for aws-java, aws-kotlin, aws-spring-boot, aws-ktor, and examples" loading="lazy" />
+  <figcaption>core wrapper는 넓은 SDK coverage를 맡고, framework module은 자주 쓰는 entry point를 좁고 깊게 제공합니다.</figcaption>
+</figure>
+
+| 서비스 | Java SDK v2 path | Kotlin SDK path | 대표 편의 기능 |
+|---|---|---|---|
+| S3 | sync/async/coroutine, CRT async, TransferManager | suspend client, file/string/byte helpers | 대용량 전송, 파일 업로드/다운로드, object listing |
+| DynamoDB | Enhanced Client, async table, coroutine/Flow | table/item/batch helper, DSL model | item 변환, batch write, scan/query |
+| SQS | async/coroutine queue operations | suspend send/receive/batch helper | queue URL 중심 send/receive/delete |
+| SNS | topic publish, SMS, push | suspend publish/subscription helper | topic 생성, publish, subscription |
+| SES/SESv2 | email send helper | send/raw/templated/bulk helper | 메일 request builder와 send API |
+| KMS | sync/async client builder, request DSL | encrypt/decrypt/data key helper | key operation DSL |
+| CloudWatch/Logs | metric/log event coroutine extension | metricDatum/inputLogEvent DSL | metric publish, log event publish |
+| Kinesis | put/get record coroutine extension | `recordFlow`, putRecord helper | shard polling, retry/backoff |
+| STS | assumeRole, caller identity, session token | suspend STS helper | identity 확인, 임시 credential |
+
+이 표에서 중요한 것은 "모든 서비스를 모든 애플리케이션에 넣는다"가 아닙니다. 라이브러리는 helper를 제공하지만,
+애플리케이션은 실제로 쓰는 AWS service artifact만 선택해야 합니다.
+
+## Dependency Model
+
+`aws-java`와 `aws-kotlin` build file을 보면 서비스별 AWS SDK dependency가 대부분 `compileOnly`입니다.
+예를 들어 `aws-java`는 S3, S3 Transfer Manager, DynamoDB Enhanced, SES/SESv2, SNS, SQS, KMS,
+CloudWatch, CloudWatch Logs, Kinesis, STS를 `compileOnly`로 둡니다. `aws-kotlin`도 DynamoDB, S3,
+SES/SESv2, SNS, SQS, KMS, CloudWatch, CloudWatch Logs, Kinesis, STS를 같은 방식으로 둡니다.
+
+이 구조 덕분에 core module은 소스 수준에서 넓은 서비스를 지원할 수 있고, 실제 runtime classpath는
+애플리케이션이 정합니다. S3와 SQS만 쓰는 서비스가 Kinesis와 SES까지 같이 들고 갈 이유는 없습니다.
+BOM은 버전을 맞추고, 애플리케이션은 자기 서비스 경계에 필요한 AWS SDK artifact를 `implementation`으로
+선택합니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-aws-part2-dependency-selection-01.png" alt="Dependency selection diagram showing BOM, compileOnly wrapper modules, application-selected runtime dependencies" loading="lazy" />
+  <figcaption>`compileOnly`는 wrapper가 compile될 수 있게 하고, runtime 선택은 애플리케이션이 유지합니다.</figcaption>
+</figure>
+
+## 언제 어느 모듈을 쓸까
+
+기준은 단순합니다. 이미 Java SDK v2 service coverage가 필요하거나 S3 대용량 전송을 TransferManager,
+CRT async client, Virtual Threads와 함께 쓰고 싶다면 `bluetape4k-aws-java`가 자연스럽습니다. 특히 S3
+전송은 직접 SDK를 붙일 때 HTTP client, async client, executor, coroutine bridge를 한 번에 고려해야
+하므로 core helper의 이점이 큽니다.
+
+새 코드가 AWS Kotlin SDK를 중심으로 가고 operation을 native `suspend` 함수로 유지하고 싶다면
+`bluetape4k-aws-kotlin`이 더 자연스럽습니다. CRT HTTP engine 기본값, OkHttp 선택지, `withXxxClient`
+lifecycle helper, 서비스별 DSL builder가 주된 이점입니다.
+
+Spring Boot 4나 Ktor 3에서 property binding, auto-configuration, listener/runtime 같은 framework
+wiring이 필요하면 Part 3의 영역으로 넘어갑니다. Part 2의 core module은 그 앞단입니다. SDK와 framework
+사이에서 애플리케이션 코드가 반복적으로 구현하던 부분을 줄이고, 필요한 서비스만 runtime에 싣도록 선택권을
+남겨 둡니다.
+
+## Source Links
+
+- Issue: [#46 Blog Part 2: bluetape4k-aws core modules and service coverage](https://github.com/bluetape4k/bluetape4k.github.io/issues/46)
+- Series epic: [#44 Epic: bluetape4k-aws blog series](https://github.com/bluetape4k/bluetape4k.github.io/issues/44)
+- Repository: [bluetape4k-aws](https://github.com/bluetape4k/bluetape4k-aws)
+- README: [README.md](https://github.com/bluetape4k/bluetape4k-aws/blob/develop/README.md)
+- Java module README: [aws-java/README.md](https://github.com/bluetape4k/bluetape4k-aws/blob/develop/aws-java/README.md)
+- Kotlin module README: [aws-kotlin/README.md](https://github.com/bluetape4k/bluetape4k-aws/blob/develop/aws-kotlin/README.md)
+- Java S3 factory: [S3ClientFactory.kt](https://github.com/bluetape4k/bluetape4k-aws/blob/develop/aws-java/src/main/kotlin/io/bluetape4k/aws/s3/S3ClientFactory.kt)
+- Java async HTTP provider: [SdkAsyncHttpClientProvider.kt](https://github.com/bluetape4k/bluetape4k-aws/blob/develop/aws-java/src/main/kotlin/io/bluetape4k/aws/http/SdkAsyncHttpClientProvider.kt)
+- Java S3 TransferManager coroutine extensions: [S3TransferManagerCoroutinesExtensions.kt](https://github.com/bluetape4k/bluetape4k-aws/blob/develop/aws-java/src/main/kotlin/io/bluetape4k/aws/s3/transfer/S3TransferManagerCoroutinesExtensions.kt)
+- Kotlin HTTP engine provider: [HttpClientEngineProvider.kt](https://github.com/bluetape4k/bluetape4k-aws/blob/develop/aws-kotlin/src/main/kotlin/io/bluetape4k/aws/kotlin/http/HttpClientEngineProvider.kt)
+- Kotlin Kinesis Flow helper: [KinesisRecordFlow.kt](https://github.com/bluetape4k/bluetape4k-aws/blob/develop/aws-kotlin/src/main/kotlin/io/bluetape4k/aws/kotlin/kinesis/KinesisRecordFlow.kt)
+- Dependency declarations: [aws-java/build.gradle.kts](https://github.com/bluetape4k/bluetape4k-aws/blob/develop/aws-java/build.gradle.kts), [aws-kotlin/build.gradle.kts](https://github.com/bluetape4k/bluetape4k-aws/blob/develop/aws-kotlin/build.gradle.kts)
+
+## 마무리
+
+`bluetape4k-aws-java`와 `bluetape4k-aws-kotlin`은 같은 문제를 다른 SDK 경로에서 풉니다. Java path는
+AWS Java SDK v2의 넓은 coverage, CRT 기반 S3 전송, coroutine bridge, Virtual Threads executor를
+서비스 코드에 붙이기 쉽게 만듭니다. Kotlin path는 AWS Kotlin SDK의 native `suspend` 모델을 유지하면서
+CRT 기본 engine, OkHttp 선택지, lifecycle helper, request DSL을 더합니다.
+
+다음 글에서는 이 core module 위에 Spring Boot 4와 Ktor 3가 어떻게 올라가는지 봅니다. 그때는
+auto-configuration, SQS listener, Ktor SigV4 plugin, example application까지 실제 framework wiring을
+따라가겠습니다.
+
+## 시리즈 링크
+
+- [Part 1: 프로젝트 개요와 mental model](/ko/blog/bluetape4k-aws-part1-overview/)
+- [Part 2: core modules and service coverage](/ko/blog/bluetape4k-aws-part2-core-modules-service-coverage/)
+- [Part 3: Spring Boot, Ktor, and examples](/ko/blog/bluetape4k-aws-part3-spring-boot-ktor-examples/)
+- [Part 4: bluetape4k-aws vs Spring Cloud AWS](/ko/blog/bluetape4k-aws-part4-vs-spring-cloud-aws/)

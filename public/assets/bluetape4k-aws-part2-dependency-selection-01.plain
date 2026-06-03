@@ -1,0 +1,11 @@
+graph 1 16.825 0.63917
+node bom 1.2554 0.31958 2.5108 0.63917 "BOM\nalign bluetape4k-aws versions" rounded,filled box #38bdf8 #e0f2fe
+node core 4.3288 0.31958 2.2192 0.63917 "core wrapper module\ncompileOnly service SDKs" rounded,filled box #22c55e #dcfce7
+node app 7.909 0.31958 2.5317 0.63917 "application module\nchooses actual AWS services" rounded,filled box #f59e0b #fef3c7
+node runtime 12.057 0.31958 2.3338 0.63917 "runtime classpath\nS3 + SQS + DynamoDB only" rounded,filled box #fb923c #fff7ed
+node lean 15.7 0.31958 2.2504 0.63917 "smaller dependency graph\nno all-services pull" rounded,filled box #a855f7 #f3e8ff
+edge bom core 4 2.5143 0.31958 2.5143 0.31958 3.088 0.31958 3.088 0.31958 solid #64748b
+edge core app 4 5.4419 0.31958 5.4419 0.31958 6.5135 0.31958 6.5135 0.31958 helpers 6.0408 0.40292 solid #64748b
+edge app runtime 4 9.1817 0.31958 9.1817 0.31958 10.759 0.31958 10.759 0.31958 implementation 10.033 0.40292 solid #64748b
+edge runtime lean 4 13.23 0.31958 13.23 0.31958 14.446 0.31958 14.446 0.31958 selective 13.899 0.40292 solid #64748b
+stop
