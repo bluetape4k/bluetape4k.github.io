@@ -11,8 +11,8 @@ digraph AwsPart2ApiLayers {
   crt [label="CRT and OkHttp choices\nS3 CRT transfer path", fillcolor="#f3e8ff", color="#a855f7"]
   aws [label="AWS services\nS3, SQS, DynamoDB, Kinesis", shape=cylinder, fillcolor="#f8fafc", color="#64748b"]
 
-  app -> java [label="Java SDK path"]
-  app -> kotlin [label="Kotlin SDK path"]
+  app -> java [label="Java SDK"]
+  app -> kotlin [label="Kotlin SDK"]
   java -> sdkj [label="wraps"]
   kotlin -> sdkk [label="uses"]
   sdkj -> crt [label="HTTP clients"]

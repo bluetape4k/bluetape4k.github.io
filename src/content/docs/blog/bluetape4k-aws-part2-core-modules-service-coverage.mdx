@@ -5,13 +5,13 @@ sidebar:
   order: -202606032320
 blog:
   date: 2026-06-03T23:20:00+09:00
-  image: /assets/bluetape4k-aws-part1-hero.png
-  imageAlt: Small robotic operators wiring AWS service blocks and local test equipment on a Kotlin workbench
-  cardDescription: "Java SDK v2 path, Kotlin SDK path, CRT-backed S3 TransferManager, and the compileOnly dependency model."
+  image: /assets/bluetape4k-aws-part2-hero.png
+  imageAlt: Small robotic operators wiring aws-java, aws-kotlin, CRT engine, and S3 TransferManager blocks on a Kotlin workbench
+  cardDescription: "Java SDK v2 approach, Kotlin SDK approach, CRT-backed S3 TransferManager, and the compileOnly dependency model."
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/bluetape4k-aws-part1-hero.png" alt="Small robotic operators wiring AWS service blocks and local test equipment on a Kotlin workbench" loading="eager" />
+  <img src="/assets/bluetape4k-aws-part2-hero.png" alt="Small robotic operators wiring aws-java, aws-kotlin, CRT engine, and S3 TransferManager blocks on a Kotlin workbench" loading="eager" />
   <figcaption>Creating an SDK client is easy. Keeping it clean at the service boundary is the harder part.</figcaption>
 </figure>
 
@@ -29,11 +29,11 @@ keeps the native suspend model of the Kotlin SDK while adding CRT HTTP engine de
 helpers, and service-specific DSL builders.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-part2-api-layers-01.png" alt="Two AWS SDK paths through bluetape4k aws-java and aws-kotlin toward AWS services" loading="lazy" />
-  <figcaption>The two SDK paths differ, but service code usually wants a small and consistent interface.</figcaption>
+  <img src="/assets/bluetape4k-aws-part2-api-layers-01.png" alt="Two AWS SDK approaches through bluetape4k aws-java and aws-kotlin toward AWS services" loading="lazy" />
+  <figcaption>The two SDK approaches differ, but service code usually wants a small and consistent interface.</figcaption>
 </figure>
 
-## Java SDK v2 Path
+## Java SDK v2 Approach
 
 When a service uses AWS Java SDK v2 directly, there are several early decisions. Sync and async
 clients have different shapes. Async clients bring HTTP client selection and `CompletableFuture`
@@ -94,7 +94,7 @@ The same idea appears across services. DynamoDB Enhanced Async Table scan/query 
 helpers around the Java SDK v2 clients. The point is to keep Java SDK v2's broad service coverage
 while making it less awkward in coroutine-heavy Kotlin services.
 
-## Kotlin SDK Path
+## Kotlin SDK Approach
 
 `bluetape4k-aws-kotlin` starts from a different place. AWS Kotlin SDK operations are already
 `suspend` functions. The useful work is not converting `CompletableFuture`; it is making client
@@ -103,7 +103,7 @@ correctly.
 
 The Kotlin module defaults its HTTP engine to CRT. `HttpClientEngineProvider.defaultHttpEngine`
 returns `Crt.httpEngine`, while `HttpClientEngineProvider.OkHttp.httpEngine` remains available when
-a service needs OkHttp explicitly. So the Kotlin SDK path also has a CRT-first default with a clear
+a service needs OkHttp explicitly. So the Kotlin SDK approach also has a CRT-first default with a clear
 escape hatch.
 
 ```kotlin
@@ -146,7 +146,7 @@ suspend fun consumeShard(client: aws.sdk.kotlin.services.kinesis.KinesisClient) 
 }
 ```
 
-## Service Coverage
+## AWS Service Coverage
 
 The core modules are useful because the pattern is repeated across many AWS services, not because
 there is one nice S3 helper. S3, SQS, SNS, DynamoDB, KMS, SES/SESv2, CloudWatch, CloudWatch Logs,
@@ -158,7 +158,7 @@ framework entry points on top of that foundation.
   <figcaption>Core wrappers carry broad SDK coverage; framework modules expose the focused entry points applications use most often.</figcaption>
 </figure>
 
-| Service | Java SDK v2 path | Kotlin SDK path | Convenience features |
+| Service | Java SDK v2 | Kotlin SDK | Convenience features |
 |---|---|---|---|
 | S3 | sync/async/coroutine, CRT async, TransferManager | suspend client, file/string/byte helpers | large transfers, file upload/download, object listing |
 | DynamoDB | Enhanced Client, async table, coroutine/Flow | table/item/batch helpers, model DSL | item conversion, batch write, scan/query |
@@ -192,12 +192,12 @@ uses as `implementation` dependencies.
 
 ## Which Module Should You Choose?
 
-Use `bluetape4k-aws-java` when the service needs the broad AWS Java SDK v2 path or wants the S3
+Use `bluetape4k-aws-java` when the service needs broad AWS Java SDK v2 coverage or wants the S3
 large-transfer route with TransferManager, CRT-backed async clients, coroutine helpers, and Virtual
 Threads. This is especially useful where direct SDK use would otherwise require choosing the HTTP
 client, async client, executor, and coroutine bridge in every service.
 
-Use `bluetape4k-aws-kotlin` when new code wants to stay on the AWS Kotlin SDK path and keep native
+Use `bluetape4k-aws-kotlin` when new code wants to use the AWS Kotlin SDK and keep native
 `suspend` operations. Its advantages are the CRT default engine, OkHttp escape hatch, `withXxxClient`
 lifecycle helpers, and service-specific request DSLs.
 
@@ -223,8 +223,8 @@ selection explicit.
 ## Closing
 
 `bluetape4k-aws-java` and `bluetape4k-aws-kotlin` solve the same integration problem from different
-SDK paths. The Java path keeps AWS Java SDK v2 coverage, adds coroutine bridges, and makes the S3
-CRT/TransferManager/Virtual Threads route easier to adopt. The Kotlin path keeps the AWS Kotlin
+SDK choices. The Java approach keeps AWS Java SDK v2 coverage, adds coroutine bridges, and makes the S3
+CRT/TransferManager/Virtual Threads route easier to adopt. The Kotlin approach keeps the AWS Kotlin
 SDK's native suspend model and adds CRT defaults, OkHttp choice, lifecycle helpers, and request DSLs.
 
 Next, we will move up to the framework layer: Spring Boot 4 auto-configuration, SQS listeners, Ktor
