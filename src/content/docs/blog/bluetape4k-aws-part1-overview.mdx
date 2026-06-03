@@ -24,7 +24,7 @@ examples, and Part 4 compares the approach with Spring Cloud AWS.
 
 AWS already has the [AWS SDK for Java v2](https://github.com/aws/aws-sdk-java-v2) and the
 [AWS SDK for Kotlin](https://github.com/awslabs/aws-sdk-kotlin). Both are powerful, official
-starting points for AWS APIs. Application code usually wants a narrower surface though:
+starting points for AWS APIs. Application code usually wants a smaller, service-shaped interface:
 `suspend` functions, coroutine-friendly async bridges, framework-specific configuration, local
 emulators, and version alignment through a BOM.
 
@@ -36,7 +36,7 @@ wiring that feels native to those stacks. The central question is not "should bl
 SDK?" It is "how should service code use the SDKs without carrying every integration detail itself?"
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-module-map-01.png" alt="Bluetape4k AWS module map with application surfaces, BOM, runtime modules, framework integrations, examples, local verification, and AWS services" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-module-map-01.png" alt="Bluetape4k AWS module map with application entry points, BOM, runtime modules, framework integrations, examples, local verification, and AWS services" loading="lazy" />
   <figcaption>`bluetape4k-aws` keeps the BOM, SDK wrappers, framework adapters, examples, and local verification model aligned.</figcaption>
 </figure>
 
@@ -46,7 +46,7 @@ The repository is easiest to read as three layers.
 
 First, there are core SDK wrappers. `bluetape4k-aws-java` works with AWS Java SDK v2 sync and async
 clients, plus coroutine extensions. Java SDK v2 has broad service coverage and a stable production
-surface, but its async model needs a Kotlin-friendly bridge in coroutine services. For high-throughput
+API, but its async model needs a Kotlin-friendly bridge in coroutine services. For high-throughput
 S3 transfer paths, the design also allows AWS CRT runtime dependencies and CRT-backed `S3AsyncClient`
 beans so Spring auto-configuration can build the transfer manager on the optimized client.
 `bluetape4k-aws-kotlin` is closer to the AWS Kotlin SDK side: native suspend helpers and DSL
@@ -54,7 +54,7 @@ builders for code that wants to stay on the Kotlin SDK path.
 
 Second, the core stays framework-neutral. S3, SQS, SNS, DynamoDB, KMS, SES, CloudWatch, Kinesis,
 and STS helpers should not force a web framework into plain service code. That lets the same helper
-surface work from CLI tools, workers, Spring Boot services, and Ktor services.
+interface work from CLI tools, workers, Spring Boot services, and Ktor services.
 
 Third, the edges become framework-aware. `bluetape4k-aws-spring-boot` owns Spring Boot 4
 auto-configuration, templates, repositories, listeners, and property binding. `bluetape4k-aws-ktor`
@@ -62,7 +62,7 @@ owns Ktor 3 SigV4 signing, coroutine S3 REST clients, SQS consumer runtime, and 
 repository helpers. The core remains portable; the edge speaks the framework's language.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-request-flow-01.png" alt="AWS request flow from Kotlin service through framework adapter, bluetape4k AWS wrapper, AWS SDK client, then LocalStack or AWS services" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-request-flow-01.png" alt="AWS request flow from a Kotlin service through a framework adapter, bluetape4k AWS wrapper, AWS SDK client, then LocalStack or AWS services" loading="lazy" />
   <figcaption>Service code sees a Kotlin-first API; the runtime can route to emulator-backed tests or real AWS.</figcaption>
 </figure>
 
@@ -72,7 +72,7 @@ The project provides these module families.
 The Spring module started from the kind of Spring-friendly AWS integration experience Spring Cloud
 AWS popularized, but targets Spring Boot 4 with coroutine-oriented bluetape4k helpers. The same core
 helpers then extend into Ktor 3, so the Spring Boot and Ktor modules are not competing stacks; they
-are framework adapters over the same AWS wrapper model.
+are framework adapters over the same AWS wrapper interface.
 
 | Area | Representative module | Responsibility |
 |---|---|---|
