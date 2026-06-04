@@ -1,0 +1,12 @@
+graph 1 9.5347 1.6944
+node service 0.72569 0.84722 1.4514 0.5 "Domain Service" rounded box black lightgrey
+node ops 3.2083 1.4444 1.5139 0.5 GraphOperations rounded box black lightgrey
+node schema 3.2083 0.25 1.2326 0.5 "Schema DSL" rounded box black lightgrey
+node execution 5.7691 0.84722 1.6076 0.5 "Execution Models" rounded box black lightgrey
+node adapter 8.5538 0.84722 1.9618 0.5 "Graph Storage Adapter" rounded box black lightgrey
+edge service ops 7 1.4558 0.99722 1.9528 0.99722 2.5208 0.99722 2.5208 0.99722 2.5208 0.99722 2.5208 1.0296 2.5208 1.0296 solid black
+edge service schema 7 1.4538 0.89722 2.1214 0.89722 3.0069 0.89722 3.0069 0.89722 3.0069 0.89722 3.0069 0.66571 3.0069 0.66571 solid black
+edge ops execution 7 3.8958 1.1886 3.8958 1.0077 3.8958 0.79722 3.8958 0.79722 3.8958 0.79722 4.7984 0.79722 4.7984 0.79722 solid black
+edge schema execution 7 3.4097 0.50496 3.4097 0.6054 3.4097 0.69722 3.4097 0.69722 3.4097 0.69722 4.8038 0.69722 4.8038 0.69722 solid black
+edge execution adapter 4 6.5783 0.84722 6.5783 0.84722 7.4098 0.84722 7.4098 0.84722 solid black
+stop

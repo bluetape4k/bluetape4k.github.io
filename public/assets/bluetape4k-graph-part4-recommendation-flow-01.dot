@@ -1,0 +1,15 @@
+digraph G {
+  graph [rankdir=LR, splines=ortho, nodesep=0.7, ranksep=1.0];
+  node [shape=box, style=rounded];
+  "user" [label="Seed User"];
+  "purchased" [label="Purchased Products"];
+  "cobuyers" [label="Co-buyers"];
+  "products" [label="Product Candidates"];
+  "follows" [label="Follow Graph"];
+  "people" [label="Follow Candidates"];
+  "user" -> "purchased";
+  "purchased" -> "cobuyers";
+  "cobuyers" -> "products";
+  "user" -> "follows";
+  "follows" -> "people";
+}

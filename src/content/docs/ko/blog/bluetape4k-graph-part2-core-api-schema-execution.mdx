@@ -1,0 +1,182 @@
+---
+title: "Bluetape4k Graph Part 2: core API와 실행 모델"
+description: graph-core의 GraphOperations, schema DSL, batch write, transaction, merge, virtual thread, coroutine API를 실제 사용 관점에서 정리한다.
+sidebar:
+  order: -202606041531
+blog:
+  date: 2026-06-04T15:31:00+09:00
+  image: /assets/bluetape4k-graph-part2-hero.png
+  imageAlt: 로봇 작업자들이 GraphOperations, Schema DSL, transaction, coroutine 실행 모델 블록을 조립하는 3D 작업대 일러스트
+  cardDescription: "graph storage를 바꿔도 서비스 코드가 바로 무너지지 않도록 core API와 실행 모델을 먼저 잡습니다."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-graph-part2-hero.png" alt="로봇 작업자들이 GraphOperations, Schema DSL, transaction, coroutine 실행 모델 블록을 조립하는 3D 작업대 일러스트" loading="eager" />
+  <figcaption>공통 API의 목적은 database를 숨기는 것이 아니라 반복 코드를 줄이는 것입니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-04 · bluetape4k-graph series · Part 2</p>
+
+Part 1에서는 어떤 graph db를 어떤 상황에서 고를지 봤습니다. 이번에는 그 위에 올라가는 `graph-core`를 보겠습니다.
+제가 여기서 먼저 잡고 싶었던 부분은 단순합니다. 서비스 코드는 vertex, edge, traversal 같은 graph 용어로 쓰고,
+driver/query 차이는 graph storage adapter가 맡게 하는 것입니다. 서비스 코드마다 driver boilerplate가 조금씩 자라기
+시작하면, 어느 순간 팀 안에 작은 graph framework가 하나씩 생깁니다. 보통 그런 framework는 만든 사람도 오래 보고
+싶어 하지 않습니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-graph-part2-core-api-flow-01.png" alt="Core API execution flow from domain service to GraphOperations, Schema DSL, execution models, and graph storage adapter" loading="lazy" />
+  <figcaption>서비스는 graph 용어로 코드를 쓰고, graph storage adapter는 실제 query와 driver 차이를 맡습니다.</figcaption>
+</figure>
+
+## GraphOperations가 묶는 기능
+
+`GraphOperations`는 서비스 코드가 가장 자주 만나는 graph 작업을 하나의 facade로 묶습니다. 내부적으로는 session,
+vertex repository, edge repository, traversal repository, algorithm repository가 합쳐진 형태입니다.
+
+| 영역 | 대표 메소드 | 서비스 코드에서 하는 일 |
+|---|---|---|
+| Session | `createGraph`, `dropGraph`, `graphExists` | 테스트 fixture나 tenant별 graph lifecycle을 관리합니다. |
+| Vertex | `createVertex`, `createVertices`, `findVertexById`, `findVerticesByLabel`, `updateVertex`, `deleteVertex`, `countVertices` | 사용자, 상품, 문서 같은 node를 만들고 조회합니다. |
+| Edge | `createEdge`, `createEdges`, `findEdgesByLabel`, `findEdgesByStartId`, `findEdgesByEndId`, `deleteEdge` | `KNOWS`, `PURCHASED`, `MENTIONS` 같은 관계를 저장하고 추적합니다. |
+| Traversal | `neighbors`, `shortestPath`, `allPaths`, `aStarPath` | shared identity, 친구 추천, 경로 탐색처럼 graph다운 query를 표현합니다. |
+| Algorithm | `pageRank`, `degreeCentrality`, `connectedComponents`, `bfs`, `dfs`, `detectCycles` | ranking, component 탐지, cycle 탐지 같은 분석 작업을 실행합니다. |
+
+작은 서비스라면 driver를 직접 써도 됩니다. 문제는 graph query가 늘어나면서 같은 검증, 같은 batch 처리, 같은 테스트
+fixture 코드가 여러 서비스에 흩어지는 순간입니다. 저는 그 반복 코드를 `GraphOperations` 아래로 모으고, graph db별로
+달라져야 하는 부분만 adapter에 남기는 쪽이 유지보수하기 낫다고 봅니다. graph 코드는 처음에는 몇 줄입니다. 방심하면
+테스트 helper와 retry wrapper와 schema bootstrap이 옆에서 조용히 자랍니다.
+
+```kotlin
+val people = ops.createVertices(
+    "Person",
+    listOf(
+        mapOf("email" to "alice@example.com", "name" to "Alice"),
+        mapOf("email" to "bob@example.com", "name" to "Bob"),
+    )
+)
+
+ops.createEdges(
+    "KNOWS",
+    listOf(BatchEdge(people[0].id, people[1].id, mapOf("since" to 2026)))
+)
+```
+
+`createVertices`와 `createEdges`의 기본 구현은 single-row API를 반복합니다. 그래서 모든 adapter가 최소 기능을
+제공할 수 있습니다. 다만 운영 성능이 필요한 graph storage adapter는 native batch write와 all-or-fail semantics로
+override할 수 있습니다. 공통 API가 느린 구현을 강제하지는 않습니다.
+
+## Schema DSL
+
+schema DSL은 Exposed Table처럼 `VertexLabel`과 `EdgeLabel`을 object로 선언합니다.
+
+```kotlin
+object PersonLabel : VertexLabel("Person") {
+    val email = string("email")
+    val name = string("name")
+}
+
+object KnowsLabel : EdgeLabel("KNOWS", PersonLabel, PersonLabel) {
+    val since = integer("since")
+}
+```
+
+여기서 주의할 점이 있습니다. schema 관리는 모든 graph db에서 같은 의미로 동작하지 않습니다. 어떤 storage는 unique
+constraint나 index DDL을 안정적으로 제공하지만, 어떤 storage는 같은 수준의 portable DDL을 만들기 어렵습니다.
+
+그래서 `schemaManager()`는 선택한 adapter가 schema 기능을 실제로 제공할 때만 열립니다. 지원하지 않는 경우에는 아무
+작업도 하지 않고 성공을 반환하지 않습니다. 예를 들어 unique constraint를 만들었다고 로그에는 남았는데 실제 DB에는
+없다면, 호출자는 설정이 끝났다고 믿고 배포하게 됩니다. 이 문제는 테스트에서 빨간 줄 한 번 보는 것보다 운영에서 훨씬
+비쌉니다. 그래서 `UnsupportedOperationException`으로 즉시 실패시켜 설정 누락을 빨리 드러냅니다.
+
+## Transaction과 merge
+
+transaction DSL은 CRUD 범위만 노출합니다. graph 생성/삭제 같은 lifecycle 명령은 graph db마다 DDL과 auto-commit
+의미가 달라서 transaction block 안에 넣지 않습니다.
+
+<figure class="bt4k-sequence">
+  <img src="/assets/bluetape4k-graph-part2-transaction-sequence-01.png" alt="Transaction and batch write sequence for GraphOperations" loading="lazy" />
+  <figcaption>transaction block은 vertex/edge write를 묶고, adapter는 commit 또는 rollback을 책임집니다.</figcaption>
+</figure>
+
+merge도 같은 원칙입니다. `mergeVertex`는 `matchProperties`가 비어 있으면 거부하고, `setProperties`가 identity key를
+덮어쓰지 못하게 검증합니다. 선택한 graph storage가 atomic merge를 제공하지 않는다면 read-then-write fallback으로
+흉내 내지 않습니다. 동시 요청이 들어오는 운영 환경에서 그런 fallback은 중복 vertex를 만들 수 있습니다. “대부분의 경우
+괜찮다”는 말은 race condition 앞에서 별로 힘이 없습니다.
+
+```kotlin
+val alice = ops.mergeVertex(
+    label = "Person",
+    matchProperties = mapOf("email" to "alice@example.com"),
+    setProperties = mapOf("name" to "Alice"),
+)
+```
+
+## 실행 모델
+
+`bluetape4k-graph`는 sync API, virtual-thread facade, suspend API를 제공합니다. 선택 기준은 단순합니다.
+
+| 실행 모델 | 잘 맞는 상황 |
+|---|---|
+| Sync | 단일 작업, 테스트, driver가 이미 blocking인 일반 서비스 |
+| Virtual Threads | blocking driver를 높은 동시성으로 다룰 때 |
+| Coroutine | Ktor나 coroutine-native service에서 structured concurrency가 중요할 때 |
+
+성능 이야기는 숫자만으로 끝나지 않습니다. 어떤 요청 경로에서 병목이 줄었는지가 더 중요합니다. 아래 결과는
+`ApiModelBenchmark`를 TinkerGraph fixture 위에서 짧게 돌린 smoke-scale 측정입니다. release-grade ranking으로 쓰기에는
+짧지만, 실행 모델의 성격을 이해하는 데는 충분합니다.
+
+<figure class="bt4k-chart">
+  <img src="/assets/bluetape4k-graph-part2-api-model-benchmark-01.png" alt="API model benchmark chart for BFS latency with sync, virtual thread, and coroutine models" loading="lazy" />
+  <figcaption>단일 BFS는 sync가 빠르고, 100-way launch/create 비용은 coroutine이 작습니다. workload가 다르면 선택도 달라집니다.</figcaption>
+</figure>
+
+| Scenario | API model | 평균 | Error | Allocation |
+|---|---|---:|---:|---:|
+| PageRank throughput | Sync | 138,943.484 ops/s | ±40,362.146 | 28,451 B/op |
+| PageRank throughput | Virtual Thread | 40,283.460 ops/s | ±9,678.720 | 29,456 B/op |
+| PageRank throughput | Coroutine Flow | 36,879.554 ops/s | ±85,084.781 | 29,516 B/op |
+| BFS depth=5 | Sync | 4.724 us/op | ±3.022 | 21,990 B/op |
+| BFS depth=5 | Virtual Thread | 18.668 us/op | ±8.229 | 23,152 B/op |
+| BFS depth=5 | Coroutine Flow | 20.244 us/op | ±11.268 | 23,455 B/op |
+| BFS 100-way | Virtual Thread | 240.903 us/op | ±167.502 | 2,318,801 B/op |
+| BFS 100-way | Coroutine async | 279.828 us/op | ±329.942 | 2,367,754 B/op |
+| 100-way launch/create | Virtual Thread | 51.042 us/op | ±173.745 | 61,464 B/op |
+| 100-way launch/create | Coroutine async | 5.916 us/op | ±3.127 | 28,373 B/op |
+
+실행 조건은 `benchmark/graph-benchmark`의 `ApiModelBenchmark` 기준입니다. GraalVM JDK 25.0.3, JMH 1 fork, warmup 1회,
+measurement 3회, 각 1초, `-prof gc`로 측정했습니다.
+
+```bash
+java -jar benchmark/graph-benchmark/build/benchmarks/main/jars/graph-benchmark-main-jmh-*-JMH.jar \
+  '.*ApiModelBenchmark.*' \
+  -wi 1 -i 3 -r 1s -w 1s -f 1 \
+  -prof gc \
+  -rf json \
+  -rff docs/benchmark/2026-05-21-api-model-jmh.json
+```
+
+그래서 coroutine을 “항상 더 빠른 실행 모델”로 쓰면 안 됩니다. coroutine은 Kotlin 서비스의 조합성, cancellation,
+structured concurrency가 필요할 때 선택합니다. blocking driver를 높은 동시성으로 다뤄야 하는 Spring MVC 쪽이라면
+Virtual Threads가 더 자연스러운 선택일 수 있습니다. 실행 모델은 취향 투표가 아니라 요청 경로와 driver 특성에 맞춰
+고르는 도구입니다.
+
+다음 글에서는 graph data를 CSV, NDJSON, GraphML로 import/export하는 `graph-io`와 benchmark 결과를 읽는 방법을
+보겠습니다. OkIO는 포맷이 아니라 buffering, compression, async I/O 경로를 조합하는 역할로 따로 보겠습니다.
+
+## 참고한 소스
+
+- [GraphOperations](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/graph/graph-core/src/main/kotlin/io/bluetape4k/graph/repository/GraphOperations.kt)
+- [GraphVertexRepository](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/graph/graph-core/src/main/kotlin/io/bluetape4k/graph/repository/GraphVertexRepository.kt)
+- [GraphEdgeRepository](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/graph/graph-core/src/main/kotlin/io/bluetape4k/graph/repository/GraphEdgeRepository.kt)
+- [GraphTraversalRepository](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/graph/graph-core/src/main/kotlin/io/bluetape4k/graph/repository/GraphTraversalRepository.kt)
+- [GraphAlgorithmRepository](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/graph/graph-core/src/main/kotlin/io/bluetape4k/graph/repository/GraphAlgorithmRepository.kt)
+- [GraphMergeOperations](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/graph/graph-core/src/main/kotlin/io/bluetape4k/graph/repository/GraphMergeOperations.kt)
+- [GraphTransactionScope](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/graph/graph-core/src/main/kotlin/io/bluetape4k/graph/repository/GraphTransactionScope.kt)
+- [API model benchmark](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/docs/benchmark/2026-05-21-api-model-results.md)
+
+## 시리즈
+
+- Part 1: [그래프 데이터베이스 선택 지도](/ko/blog/bluetape4k-graph-part1-overview-database-selection/)
+- Part 2: [core API와 실행 모델](/ko/blog/bluetape4k-graph-part2-core-api-schema-execution/)
+- Part 3: [graph I/O와 benchmark 읽기](/ko/blog/bluetape4k-graph-part3-graph-io-benchmarks/)
+- Part 4: [workshop 시나리오와 서비스 통합](/ko/blog/bluetape4k-graph-part4-workshop-service-integration/)

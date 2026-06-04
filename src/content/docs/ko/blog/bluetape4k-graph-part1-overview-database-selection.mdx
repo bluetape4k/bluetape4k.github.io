@@ -1,0 +1,134 @@
+---
+title: "Bluetape4k Graph Part 1: 그래프 데이터베이스 선택 지도"
+description: bluetape4k-graph가 Neo4j, Memgraph, Apache AGE, TinkerGraph, FalkorDB를 어떤 기준으로 묶고, 어떤 기준으로 골라야 하는지 정리한다.
+sidebar:
+  order: -202606041530
+blog:
+  date: 2026-06-04T15:30:00+09:00
+  image: /assets/bluetape4k-graph-part1-hero.png
+  imageAlt: 로봇 엔지니어가 Neo4j, Memgraph, AGE, TinkerGraph, FalkorDB 그래프 데이터베이스 블록을 비교하는 3D 작업대 일러스트
+  cardDescription: "그래프 데이터베이스를 도입하기로 했다면, 다음 문제는 어떤 graph db로 시작하느냐입니다."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-graph-part1-hero.png" alt="로봇 엔지니어가 Neo4j, Memgraph, AGE, TinkerGraph, FalkorDB 그래프 데이터베이스 블록을 비교하는 3D 작업대 일러스트" loading="eager" />
+  <figcaption>그래프 데이터베이스 선택은 취향 문제가 아니라 workload 문제입니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-04 · bluetape4k-graph series · Part 1</p>
+
+이 글은 `bluetape4k-graph` 시리즈의 1편입니다. 예전 글인
+[GraphDB, 언제 도입해야 할까?](/ko/blog/when-to-adopt-graphdb/)에서는 “관계 자체가 업무의 중심일 때만
+그래프 데이터베이스를 도입하자”는 기준을 잡았습니다. 이번에는 그 다음 문제를 보겠습니다. 그래프를 쓰기로 마음먹은 뒤
+실제로 더 오래 붙잡게 되는 질문, “그래서 Neo4j를 쓸까, Memgraph를 볼까, 테스트는 뭘로 돌리지?”입니다.
+
+`bluetape4k-graph`는 그래프 데이터베이스를 다시 구현하는 라이브러리가 아닙니다. 그런 일을 시작하면 라이브러리 하나
+만들려다 작은 데이터베이스 회사를 차리게 됩니다. Neo4j, Memgraph, Apache AGE, TinkerGraph, FalkorDB가 이미 잘하는
+엔진과 query language는 그대로 두고, Kotlin/JVM 서비스에서 매번 반복되는 부분만 공통 API와 adapter로 묶었습니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-graph-part1-backend-selection-01.png" alt="Graph storage selection map for Neo4j, Memgraph, Apache AGE, TinkerGraph, and FalkorDB" loading="lazy" />
+  <figcaption>먼저 테스트/운영/쓰기/읽기 성격을 나누고 graph db를 고르는 편이 시행착오가 적습니다.</figcaption>
+</figure>
+
+## 제공하는 graph db
+
+현재 프로젝트 기준으로 바로 붙일 수 있는 graph storage는 아래와 같습니다.
+
+| Graph DB | API 성격 | 어울리는 상황 |
+|---|---|---|
+| Neo4j | Neo4j Java Driver 기반 Cypher | 운영 성숙도와 생태계가 중요한 기본 production 선택 |
+| Memgraph | Neo4j 호환 protocol 기반 Cypher | low-latency, write-heavy 후보를 검증해야 하는 경우 |
+| Apache AGE | PostgreSQL 위에서 Cypher-over-SQL | PostgreSQL 중심 운영 환경에 그래프를 얹고 싶은 경우 |
+| TinkerGraph | TinkerPop/Gremlin in-memory | 단위 테스트, 예제, 로컬 fixture |
+| FalkorDB | Redis module 기반 openCypher subset | Redis 운영 환경에 가벼운 graph service를 붙이는 경우 |
+
+이 표를 볼 때 한 가지는 꼭 분리해서 봐야 합니다. “가장 좋은 graph db”를 고르는 문제가 아니라, 내 workload에 맞는
+운영 후보와 테스트 후보를 나누는 문제입니다. 테스트는 TinkerGraph로 빠르게 돌리고, 운영 후보는 Neo4j나 Memgraph로
+검증합니다. 조직이 PostgreSQL 표준 운영에 강하게 묶여 있으면 AGE를 고려할 수 있습니다. FalkorDB는 Redis 기반 단순
+graph workload에 매력적이지만, edge-heavy write에서는 반드시 직접 측정해야 합니다. 여기서 감으로 고르면 나중에
+benchmark가 친절하게 혼내 줍니다.
+
+## Cypher는 무엇인가
+
+Neo4j, Memgraph, Apache AGE, FalkorDB를 이야기하면 자연스럽게 Cypher가 나옵니다. Cypher는 graph pattern을 문자열로
+표현하는 query language입니다. SQL이 table과 row를 기준으로 묻는다면, Cypher는 vertex와 edge가 만드는 관계 모양을
+그려서 묻습니다.
+
+```cypher
+MATCH (alice:Person {email: $email})-[:KNOWS]->(friend:Person)
+RETURN friend.name
+```
+
+이 query는 `Person` vertex에서 시작해 `KNOWS` edge를 따라가고, 연결된 `Person`을 반환합니다. 코드로 복잡한 join과
+재귀 탐색을 직접 조립하기보다, “이런 관계 모양을 찾아줘”라고 database에 말하는 방식입니다.
+
+그래서 `bluetape4k-graph`의 공통 API가 Cypher를 없애지는 않습니다. 없애려고 하면 결국 덜 좋은 Cypher를 하나 더
+만드는 셈입니다. 서비스의 기본 CRUD, batch write, traversal, 테스트 fixture는 `GraphOperations`로 단순하게 시작합니다.
+반대로 운영에서 query planner, index, projection까지 세밀하게 잡아야 하는 query는 Neo4j/Memgraph/AGE/FalkorDB가
+제공하는 native Cypher를 그대로 쓰는 편이 맞습니다. 공통 API는 native query를 막는 벽이 아니라, 반복되는 서비스 코드를
+줄이는 기준점입니다.
+
+## 모듈은 이렇게 나뉩니다
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-graph-part1-module-layering-01.png" alt="bluetape4k-graph module layers from examples and framework adapters to graph-core, graph I/O, and graph storage adapters" loading="lazy" />
+  <figcaption>`graph-core`를 중심에 두고 graph storage adapter, graph I/O, Spring Boot/Ktor integration이 붙습니다.</figcaption>
+</figure>
+
+| 모듈 | 역할 |
+|---|---|
+| `graph-core` | `GraphOperations`, schema DSL, traversal, algorithm, transaction/merge 기반 기능 |
+| `graph-age`, `graph-neo4j`, `graph-memgraph`, `graph-tinkerpop`, `graph-falkordb` | graph storage별 구현 |
+| `graph-io/*` | CSV, NDJSON, GraphML bulk import/export와 OkIO 기반 I/O 조합 |
+| `spring-boot/graph-spring-boot` | Spring Boot 4 auto-configuration |
+| `ktor/graph-ktor` | Ktor plugin 기반 graph lifecycle |
+| `examples/*` | code graph, fraud detection, IAM, recommendation, supply-chain 등 runnable scenario |
+
+처음부터 모든 graph db 차이를 추상화 뒤에 숨기겠다는 접근은 위험합니다. 그래프 workload는 query planner, index,
+traversal 방식, transaction 의미의 차이가 큽니다. 그래서 `bluetape4k-graph`는 공통 CRUD/traversal은 묶지만,
+선택한 graph storage가 안전하게 지원하지 않는 기능은 조용히 성공한 척하지 않습니다. “되는 줄 알았는데 운영 DB에는
+아무것도 안 만들어져 있더라”는 종류의 놀라움은 가능한 한 테스트 단계에서 끝내야 합니다.
+
+## 아주 작은 시작점
+
+테스트나 문서 예제는 TinkerGraph가 가장 편합니다. Docker 없이 graph를 만들고, vertex/edge를 넣고, neighbor를
+검증할 수 있습니다.
+
+```kotlin
+val ops: GraphOperations = TinkerGraphOperations()
+
+ops.createGraph("demo")
+
+val alice = ops.createVertex("Person", mapOf("name" to "Alice"))
+val bob = ops.createVertex("Person", mapOf("name" to "Bob"))
+ops.createEdge(alice.id, bob.id, "KNOWS", mapOf("since" to 2026))
+
+val neighbors = ops.neighbors(alice.id, NeighborOptions(edgeLabel = "KNOWS"))
+```
+
+이 정도 예제가 단순해 보여도 의미가 있습니다. 서비스 코드는 `GraphOperations`로 시작하고, 실제 운영 후보는 같은
+테스트를 Neo4j, Memgraph, AGE, FalkorDB로 옮겨가며 측정할 수 있습니다.
+
+## 선택 기준
+
+제가 기본값을 하나만 고른다면 production은 Neo4j, 테스트는 TinkerGraph입니다. 낮은 latency와 write-heavy workload를
+진지하게 검증한다면 Memgraph를 후보에 넣습니다. PostgreSQL 중심으로 운영 복잡도를 줄여야 한다면 AGE가 현실적인 선택이
+될 수 있습니다. Redis 기반 graph service가 이미 운영 모델과 잘 맞는다면 FalkorDB도 검토할 수 있지만, edge-heavy
+write는 반드시 benchmark로 확인해야 합니다.
+
+다음 글에서는 `graph-core`의 API, schema DSL, transaction/merge, sync/virtual-thread/coroutine 실행 모델을 보겠습니다.
+
+## 참고한 소스
+
+- [bluetape4k-graph README](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/README.md)
+- [한국어 README](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/README.ko.md)
+- [benchmark guide](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/benchmark/README.md)
+- [GraphOperations](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/graph/graph-core/src/main/kotlin/io/bluetape4k/graph/repository/GraphOperations.kt)
+
+## 시리즈
+
+- Part 1: [그래프 데이터베이스 선택 지도](/ko/blog/bluetape4k-graph-part1-overview-database-selection/)
+- Part 2: [core API와 실행 모델](/ko/blog/bluetape4k-graph-part2-core-api-schema-execution/)
+- Part 3: [graph I/O와 benchmark 읽기](/ko/blog/bluetape4k-graph-part3-graph-io-benchmarks/)
+- Part 4: [workshop 시나리오와 서비스 통합](/ko/blog/bluetape4k-graph-part4-workshop-service-integration/)
