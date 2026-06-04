@@ -141,8 +141,8 @@ by side.
 One caveat: `WriteThroughService` in `cache-benchmark` does not mean the same thing as the
 writer-backed write-through strategy in `exposed-workshop` chapter 11. The current implementation
 is closer to cache-aside PUT management because application code saves to DB and then updates the
-cache. I created [bluetape4k-workshop #246](https://github.com/bluetape4k/bluetape4k-workshop/issues/246)
-to make that distinction explicit in the workshop.
+cache. That distinction should stay explicit in the workshop, because the names sound closer than
+the behavior actually is.
 
 ## Benchmark Results
 

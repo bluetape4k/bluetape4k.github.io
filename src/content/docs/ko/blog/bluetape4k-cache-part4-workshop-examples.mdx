@@ -125,7 +125,7 @@ interface ProductCacheService {
 - Near Cache가 read path를 충분히 줄이는가?
 - write-through 비용은 받아들일 수 있는가?
 
-단, `cache-benchmark`의 `WriteThroughService`는 `exposed-workshop` 11장의 writer-backed write-through와 의미가 다릅니다. 현재 구현은 애플리케이션 코드가 DB 저장 후 cache update를 직접 관리하는 cache-aside 성격이 강합니다. 이 차이를 정리하려고 [bluetape4k-workshop #246](https://github.com/bluetape4k/bluetape4k-workshop/issues/246)을 추가했습니다.
+단, `cache-benchmark`의 `WriteThroughService`는 `exposed-workshop` 11장의 writer-backed write-through와 의미가 다릅니다. 현재 구현은 애플리케이션 코드가 DB 저장 후 cache update를 직접 관리하는 cache-aside 성격이 강합니다. 이 차이는 예제 코드에서 명확히 드러나는 편이 좋습니다.
 
 ## Benchmark 결과
 

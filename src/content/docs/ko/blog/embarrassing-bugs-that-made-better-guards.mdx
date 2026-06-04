@@ -42,7 +42,6 @@ Nightly가 깨지고, 결국 테스트와 release gate로 바뀐 이야기다.
 
 ## 1. 빈 properties 값이 `null`이 아니라 `0`이 됐다
 
-관련 issue: [#491](https://github.com/bluetape4k/bluetape4k-projects/issues/491)
 
 이건 작고 민망한 버그다. Java Properties에서 `maxWaitMillis=` 같은 값은 사람이 보면 "값이 비어 있다"다.
 그런데 `JavaPropsMapper`는 Properties 값을 untyped string으로 읽고, nullable numeric Kotlin constructor
@@ -97,9 +96,7 @@ configuration round-trip test를 둔다. `null`, empty string, `0`은 설정 파
 
 ## 2. Nightly가 가르쳐준 것: "테스트가 낡았다"도 버그다
 
-관련 issue: [#595](https://github.com/bluetape4k/bluetape4k-projects/issues/595)
 
-관련 PR: [#598](https://github.com/bluetape4k/bluetape4k-projects/pull/598)
 
 Nightly run `26243476594`는 IO HTTP, infra search-messaging, Testcontainers graphdb-memgraph
 세 조각에서 실패했다. 이런 실패는 처음 보면 "외부 서비스가 흔들렸나?"로 보인다. 그런데 실제로는
@@ -110,9 +107,9 @@ Nightly run `26243476594`는 IO HTTP, infra search-messaging, Testcontainers gra
 테스트를 "이미 있는 검증"으로 믿었다. 그런데 테스트도 코드다. DSL이 바뀌면 테스트도 낡고,
 Testcontainers reuse가 켜져 있으면 CI의 credential state도 낡을 수 있다.
 
-PR #598의 한 조각은 MyBatis dynamic-sql join validation test를 현재 `on` 기반 Kotlin DSL과
-현재 exception type에 맞춘 것이다. 또 다른 조각은 secured Elasticsearch singleton reuse를 꺼서
-stale CI credentials 문제를 피한 것이다.
+수정 내용 중 하나는 MyBatis dynamic-sql join validation test를 현재 `on` 기반 Kotlin DSL과
+현재 exception type에 맞추는 것이었다. 또 다른 내용은 secured Elasticsearch singleton reuse를 꺼서
+stale CI credentials 문제를 피하는 것이었다.
 
 ### 어떻게 찾았나
 
@@ -142,9 +139,7 @@ state를 재활용해서 거짓 실패를 만들면 release signal로는 나쁘�
 
 ## 3. Memgraph는 query가 아니라 `close()`에서 멈췄다
 
-관련 issue: [#602](https://github.com/bluetape4k/bluetape4k-projects/issues/602)
 
-관련 PR: [#604](https://github.com/bluetape4k/bluetape4k-projects/pull/604)
 
 Full Nightly에서 `MemgraphServerTest`가 timeout을 냈다. 처음에는 자연스럽게 container startup,
 readiness, image version을 의심하게 된다. 그런데 Bolt query path는 이미 성공했다. 멈춘 곳은
@@ -199,9 +194,7 @@ Testcontainers-backed driver test에서 query는 성공했는데 cleanup에서 �
 
 ## 4. `catch (Throwable)`이 coroutine cancellation을 HTTP failure로 만들었다
 
-관련 issue: [#654](https://github.com/bluetape4k/bluetape4k-projects/issues/654)
 
-관련 PR: [#670](https://github.com/bluetape4k/bluetape4k-projects/pull/670)
 
 Vert.x route coroutine helper는 suspend handler에서 발생한 실패를 `RoutingContext.fail(...)`로 넘겼다.
 평범한 exception에는 맞는 처리다. 문제는 broad `Throwable` catch가 `CancellationException`까지 잡았다는
@@ -259,10 +252,7 @@ suspend boundary에서 broad catch를 쓰면 항상 먼저 질문한다.
 
 ## 5. `runCatching`이 interrupt를 timeout처럼 보이게 했다
 
-관련 issues: [#656](https://github.com/bluetape4k/bluetape4k-projects/issues/656),
-[#657](https://github.com/bluetape4k/bluetape4k-projects/issues/657)
 
-관련 PR: [#669](https://github.com/bluetape4k/bluetape4k-projects/pull/669)
 
 gRPC server shutdown code는 `runCatching { awaitTermination(...) }.getOrDefault(false)`를 사용했다.
 겉보기에는 깔끔하다. graceful termination이 실패하거나 timeout이면 `false`로 보고 `shutdownNow()`로
@@ -350,9 +340,8 @@ API라면 explicit catch로 interrupt status를 보존해야 한다.
 셋째, broad catch와 `runCatching`은 lifecycle/coroutine boundary에서 편한 만큼 위험하다. cancellation과
 interruption은 예외라기보다 신호다. 신호를 삼키면 나중에 훨씬 이상한 곳에서 문제가 터진다.
 
-마지막으로 issue [#497](https://github.com/bluetape4k/bluetape4k-projects/issues/497)과
-PR [#567](https://github.com/bluetape4k/bluetape4k-projects/pull/567)에서 만든 `checkDisabledTests` 같은
-release gate가 중요하다. 부끄러운 실수를 개인 기억에만 맡기면 반복된다. 보고서, test, gate, lesson으로
+마지막으로 `checkDisabledTests` 같은 release gate가 중요하다. 부끄러운 실수를 개인 기억에만 맡기면
+반복된다. 보고서, test, gate, lesson으로
 바꿔야 다음 사람이 같은 구덩이에 덜 빠진다.
 
 ```kotlin

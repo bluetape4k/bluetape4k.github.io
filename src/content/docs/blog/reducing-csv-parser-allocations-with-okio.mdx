@@ -7,7 +7,7 @@ blog:
   date: 2026-05-29T00:32:00+09:00
   image: /assets/csv-parser-okio-hero.png
   imageAlt: Editorial illustration of a CSV parser reading byte segments without unnecessary copies
-  cardDescription: A benchmark-backed walkthrough of the #651 CSV parser optimization, from Reader parsing to Okio UnsafeCursor segment scanning.
+  cardDescription: A benchmark-backed walkthrough of the CSV parser optimization, from Reader parsing to Okio UnsafeCursor segment scanning.
 ---
 
 <figure class="bt4k-blog-hero">
@@ -21,14 +21,14 @@ blog:
 but it decoded every character before appending field data to a `StringBuilder`. For large
 UTF-8 CSV streams, the hot path was doing more allocation and decode work than necessary.
 
-Issue [#651](https://github.com/bluetape4k/bluetape4k-projects/issues/651) targeted that path.
-The final PR kept the public API unchanged, added an internal Okio-backed lexer for supported
+The parser optimization targeted that path.
+The final change kept the public API unchanged, added an internal Okio-backed lexer for supported
 UTF-8 CSV settings, and falls back to the existing reader lexer when the settings are outside
 the fast path.
 
 <figure class="bt4k-architecture">
   <img src="/assets/csv-okio-throughput-comparison-01.png" alt="CSV parser throughput comparison chart showing existing and Okio ops per second" loading="lazy" />
-  <figcaption>A benchmark-backed walkthrough of the #651 CSV parser optimization, from Reader parsing to Okio UnsafeCursor segment scanning.</figcaption>
+  <figcaption>A benchmark-backed walkthrough of the CSV parser optimization, from Reader parsing to Okio UnsafeCursor segment scanning.</figcaption>
 </figure>
 
 ## What Changed
@@ -116,7 +116,7 @@ The important constraints are to close the cursor with `use`, read only
 
 ## Guardrails
 
-`UnsafeCursor` needs behavior locks. The PR compares the Okio lexer against the existing
+`UnsafeCursor` needs behavior locks. The regression suite compares the Okio lexer against the existing
 reader lexer on RFC 4180 examples and on the real `extra_words.csv` fixture.
 
 ```kotlin
@@ -205,9 +205,6 @@ path reduced allocations with `BufferedSource` and `UnsafeCursor`; the write pat
 
 ## Source Links
 
-- Issue: [#651 perf(csv): reduce large CSV parsing allocations](https://github.com/bluetape4k/bluetape4k-projects/issues/651)
-- PR: [#673 perf(csv): scan UTF-8 fields with Okio segments](https://github.com/bluetape4k/bluetape4k-projects/pull/673)
-- Follow-up: [#674 perf(csv): add Okio BufferedSink fast path for writer pipelines](https://github.com/bluetape4k/bluetape4k-projects/issues/674)
 - Follow-up article: [When the CSV Writer Took Off Its Ankle Weights](/blog/csv-writer-okio-buffered-sink/)
 - Main implementation: [`OkioCsvLexer`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/main/kotlin/io/bluetape4k/csv/internal/OkioCsvLexer.kt)
 - Benchmarks: [`CsvParserBenchmark`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/test/kotlin/io/bluetape4k/csv/benchmark/CsvParserBenchmark.kt)

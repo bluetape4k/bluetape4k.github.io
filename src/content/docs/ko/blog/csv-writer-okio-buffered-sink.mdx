@@ -7,7 +7,7 @@ blog:
   date: 2026-05-29T08:27:00+09:00
   image: /assets/csv-writer-hero.png
   imageAlt: CSV writer pipeline이 row를 buffered byte sink로 보내는 소개용 일러스트
-  cardDescription: "#674 후속 작업. Flow row pipeline, UTF-8 sink, CSV semantics 보호, 그리고 large export 3.25배 개선을 정리합니다."
+  cardDescription: "Okio CSV writer 후속 작업. Flow row pipeline, UTF-8 sink, CSV semantics 보호, 그리고 large export 3.25배 개선을 정리합니다."
 ---
 
 <figure class="bt4k-blog-hero">
@@ -23,8 +23,7 @@ blog:
 그러면 자연스럽게 다음 질문이 나온다. 읽기는 byte와 segment를 존중해서 빨라졌는데, 쓰기는 왜 아직도
 파일 export 전체를 `OutputStreamWriter`에게 공손하게 맡기고 있을까?
 
-Issue [#674](https://github.com/bluetape4k/bluetape4k-projects/issues/674)는 그 찝찝한 부분을 정리한
-작업이다. 다행히 public API는 이미 좋은 모양이었다.
+이번 writer 최적화는 그 찝찝한 부분을 정리한 작업이다. 다행히 public API는 이미 좋은 모양이었다.
 
 ```kotlin
 suspend fun writeFile(
@@ -42,7 +41,7 @@ suspend fun writeFile(
 
 <figure class="bt4k-architecture">
   <img src="/assets/csv-okio-writer-throughput-01.png" alt="CSV writer throughput comparison chart showing existing Writer and Okio BufferedSink ops per second" loading="lazy" />
-  <figcaption>#674 후속 작업. Flow row pipeline, UTF-8 sink, CSV semantics 보호, 그리고 large export 3.25배 개선을 정리합니다.</figcaption>
+  <figcaption>Okio CSV writer 후속 작업. Flow row pipeline, UTF-8 sink, CSV semantics 보호, 그리고 large export 3.25배 개선을 정리합니다.</figcaption>
 </figure>
 
 ## 수상한 부분은 Flow가 아니었다
@@ -185,8 +184,6 @@ reader 최적화에서는 `BufferedSource`와 `UnsafeCursor`가 핵심이었다.
 
 ## Source Links
 
-- Issue: [#674 perf(csv): add Okio BufferedSink fast path for writer pipelines](https://github.com/bluetape4k/bluetape4k-projects/issues/674)
-- PR: [#675 perf(csv): write UTF-8 files through Okio sink](https://github.com/bluetape4k/bluetape4k-projects/pull/675)
 - Writer implementation: [`OkioDelimitedWriter`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/main/kotlin/io/bluetape4k/csv/internal/OkioDelimitedWriter.kt)
 - Flow writer integration: [`FlowCsvWriterImpl`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/main/kotlin/io/bluetape4k/csv/v2/FlowCsvWriterImpl.kt)
 - Benchmarks: [`CsvParserBenchmark`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/test/kotlin/io/bluetape4k/csv/benchmark/CsvParserBenchmark.kt)
