@@ -29,6 +29,11 @@ path, and Kafka is a write-only event stream.
   <figcaption>Choose by repository role, not by module name.</figcaption>
 </figure>
 
+In prose, the map says this: a JaVers commit is one audit boundary, but the operational destination
+depends on the role. If people will query history, use a durable store. If screens read latest
+snapshots often, add a fast read store. If downstream consumers need audit events, emit a stream.
+Expecting one repository to do all three jobs usually makes the design blurry.
+
 ## Exposed JDBC
 
 `ExposedCdoSnapshotRepository` stores commit metadata and CDO snapshots through Exposed tables.
@@ -83,6 +88,28 @@ javers.commit("system", order)
 That contract matters. Kafka is useful for downstream consumers, projections, and audit pipelines.
 It is not the repository that answers "give me the latest snapshot for this object." Pair it with
 Exposed or Redis when query reads are required.
+
+## Combining Persistence Roles
+
+Production systems often need a combination rather than a single adapter. Exposed + Kafka is the
+obvious shape: keep queryable durable history in SQL and publish the same snapshot event to
+downstream consumers. Exposed + Redis is another common shape: SQL keeps durable history, while
+Redis serves hot latest/history reads.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-javers-part2-composition-map-01.png" alt="Diagram showing current Exposed, Redis, and Kafka adapters and the planned composite repository direction" loading="lazy" />
+  <figcaption>The current adapters are role-specific. Exposed + Kafka fan-out is planned as a future composite repository.</figcaption>
+</figure>
+
+Today `bluetape4k-javers` does not provide a first-class `CompositeCdoSnapshotRepository` that
+writes to Exposed and also fans out to Kafka. The design is feasible: delegate reads to a primary
+repository such as Exposed or Redis, then fan out writes to secondary repositories such as Kafka.
+The hard part is making the failure policy explicit. A Kafka publish failure might fail the whole
+commit, become a best-effort secondary write, or move into a retry path.
+
+So the article should keep current and planned behavior separate. Exposed, Redis, and Kafka are
+available today as individual adapters. Treat Exposed + Kafka as a planned capability until the
+composite repository is implemented.
 
 ## Selection Table
 

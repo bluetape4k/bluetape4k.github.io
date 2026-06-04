@@ -29,6 +29,22 @@ At that point the audit code tends to repeat itself across every entity.
 stores snapshots of its state, and computes diffs between objects or versions. This repository adds
 Kotlin/JVM-friendly helpers, codecs, persistence adapters, and DDD examples around that model.
 
+It helps to understand JaVers itself before looking at the bluetape4k adapters. JaVers is not tied
+to JPA revision tables in the way Hibernate Envers is. It is an object auditing and diff library:
+the application commits a domain object, JaVers inspects the object graph, records changed
+properties, and stores versioned snapshots. That makes it useful for Kotlin/JVM services that want
+to explain how a domain object changed, not only which database row was updated.
+
+| Feature | What it gives you |
+|---|---|
+| Object auditing | Commit object state as versioned snapshots |
+| Object diff | Compute property-level differences between objects or versions |
+| JQL query | Query history by instance, class, commit, or version range |
+
+This is also different from CDC. Debezium-style CDC turns database log changes into a stream.
+JaVers starts from the application object and commit metadata. Use CDC when every database change
+must be streamed outward. Use JaVers when readers need object history and human-readable diffs.
+
 <figure class="bt4k-architecture">
   <img src="/assets/bluetape4k-javers-part1-snapshot-flow-01.png" alt="Flow from domain object to JaVers commit, snapshot repository, and query or diff reader" loading="lazy" />
   <figcaption>The application commits aggregates, and readers query snapshot history or object diffs.</figcaption>
@@ -92,6 +108,11 @@ abstract class AbstractCdoSnapshotRepository<T : Any>(
 
 The workshop `ProductAuditService` shows the smallest useful shape. It commits the product to
 JaVers and upserts the current row through Exposed.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-javers-part1-product-audit-sequence-01.png" alt="Sequence diagram showing ProductAuditService committing to JaVers, persisting snapshots, and updating ProductTable" loading="lazy" />
+  <figcaption>Even the small example is easier to read when current state and audit history have separate responsibilities.</figcaption>
+</figure>
 
 ```kotlin
 fun save(author: String, product: Product) {

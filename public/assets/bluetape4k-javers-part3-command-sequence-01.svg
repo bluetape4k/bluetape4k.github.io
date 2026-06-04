@@ -18,7 +18,7 @@
 </defs>
 <rect class="canvas" width="1290" height="680"/>
 <rect class="frame" x="34" y="28" width="1222" height="624" rx="24"/>
-<text class="title" x="645" y="82" text-anchor="middle">DDD Command Audit Sequence</text>
+<text class="title" x="645" y="82" text-anchor="middle">DDD Command Audit Flow</text>
 <text class="subtitle" x="645" y="116" text-anchor="middle">Persist aggregate state, commit to JaVers, then publish the domain event</text>
 <path class="edge" d="M330 229 H350 V229 H358"/>
 <path class="edge" d="M630 229 H650 V229 H658"/>

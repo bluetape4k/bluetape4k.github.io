@@ -1,0 +1,12 @@
+digraph G {
+  graph [rankdir=LR, splines=ortho, nodesep=0.7, ranksep=1.0];
+  node [shape=box, style=rounded];
+  app [label="Application Commit"];
+  primary [label="Primary Store"];
+  stream [label="Event Stream"];
+  future [label="Planned Composite"];
+  app -> primary;
+  app -> stream;
+  primary -> future;
+  stream -> future;
+}
