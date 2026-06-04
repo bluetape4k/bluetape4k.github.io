@@ -13,18 +13,10 @@ description: bluetape4k가 여러 리포지토리의 의존성 버전을 정렬�
 
 | 범위 | Maven coordinate | Version |
 | --- | --- | --- |
-| 공유 third-party dependency governance | `io.github.bluetape4k:bluetape4k-dependencies` | `1.1.3` |
-| Core bluetape4k library module | `io.github.bluetape4k:bluetape4k-bom` | `1.9.1` |
-| Exposed JDBC/R2DBC extension | `io.github.bluetape4k.exposed:bluetape4k-exposed-bom` | `1.9.1` |
-| AWS SDK wrapper | `io.github.bluetape4k.aws:bluetape4k-aws-bom` | `0.2.1` |
-| Graph database integration | `io.github.bluetape4k.graph:bluetape4k-graph-bom` | `0.4.1` |
-| Leader election module | `io.github.bluetape4k.leader:bluetape4k-leader-bom` | `0.2.1` |
-| Image processing module | `io.github.bluetape4k.image:bluetape4k-image-bom` | `0.1.2` |
-| JaVers audit/diff module | `io.github.bluetape4k.javers:bluetape4k-javers-bom` | `0.1.2` |
-| Text processing module | `io.github.bluetape4k.text:bluetape4k-text-bom` | `0.1.2` |
+| 애플리케이션 dependency governance | `io.github.bluetape4k:bluetape4k-dependencies` | `1.2.0` |
 
-`bluetape4k-dependencies`를 먼저 import하고, 그 뒤에 `bluetape4k-bom`, 선택한
-module에 필요한 repository-specific BOM을 이어서 import합니다.
+`bluetape4k-dependencies`를 `implementation(platform(...))`으로 한 번만 가져옵니다.
+그 다음 서비스에 필요한 bluetape4k module을 version 없이 추가합니다.
 
 ## 관리되는 계열
 
@@ -37,8 +29,8 @@ module에 필요한 repository-specific BOM을 이어서 import합니다.
 ## Repository workflow
 
 1. 중앙 BOM에서 공유 version을 변경합니다.
-2. 각 repository가 중앙 BOM을 먼저 import합니다.
-3. Repository-specific BOM은 그 뒤에 import합니다.
+2. 각 repository가 중앙 BOM을 `platform(...)`으로 먼저 가져옵니다.
+3. bluetape4k module dependency는 version 없이 선언합니다.
 4. `compileTestKotlin`과 focused test로 영향 범위를 검증합니다.
 
 ## 왜 필요한가

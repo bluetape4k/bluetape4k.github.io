@@ -12,35 +12,48 @@ description: Kotlin 백엔드 프로젝트에 bluetape4k 의존성 거버넌스�
 
 ## 현재 BOM 추가
 
-`bluetape4k-dependencies`를 첫 dependency-management layer로 사용하고,
-그 다음에 published library family를 위한 bluetape4k core BOM을 추가합니다.
+Gradle Kotlin DSL에서는 `bluetape4k-dependencies` version만 version catalog에
+두고, bluetape4k module alias에는 version을 쓰지 않습니다.
+
+```toml
+[versions]
+bluetape4k-dependencies = "1.2.0"
+
+[libraries]
+bluetape4k-dependencies = { module = "io.github.bluetape4k:bluetape4k-dependencies", version.ref = "bluetape4k-dependencies" }
+bluetape4k-core = { module = "io.github.bluetape4k:bluetape4k-core" }
+bluetape4k-coroutines = { module = "io.github.bluetape4k:bluetape4k-coroutines" }
+```
+
+중앙 BOM은 공유 third-party version과 bluetape4k 모듈 version을 관리합니다.
+애플리케이션의 module dependency에는 version을 쓰지 않습니다.
 
 ```kotlin
-dependencyManagement {
-    imports {
-        mavenBom("io.github.bluetape4k:bluetape4k-dependencies:1.1.3")
-        mavenBom("io.github.bluetape4k:bluetape4k-bom:1.9.1")
-    }
+dependencies {
+    implementation(platform(libs.bluetape4k.dependencies))
+    implementation(libs.bluetape4k.core)
+    implementation(libs.bluetape4k.coroutines)
 }
 ```
 
-중앙 BOM은 공유 third-party version을 관리합니다. Core BOM은
-published `bluetape4k-projects` module을 관리합니다.
+Repository-specific module을 사용할 때도 규칙은 같습니다. 중앙 BOM은 그대로 두고,
+서비스에 필요한 module만 추가합니다.
 
-Repository-specific module을 사용할 때는 해당 repository가 BOM을 publish한
-경우 중앙 BOM과 core BOM 뒤에 추가합니다.
+```toml
+[libraries]
+exposed-jdbc = { module = "io.github.bluetape4k.exposed:bluetape4k-exposed-jdbc" }
+bluetape4k-aws = { module = "io.github.bluetape4k.aws:bluetape4k-aws-spring-boot" }
+```
 
 ```kotlin
-dependencyManagement {
-    imports {
-        mavenBom("io.github.bluetape4k:bluetape4k-dependencies:1.1.3")
-        mavenBom("io.github.bluetape4k:bluetape4k-bom:1.9.1")
-        mavenBom("io.github.bluetape4k.exposed:bluetape4k-exposed-bom:1.9.1")
-    }
+dependencies {
+    implementation(platform(libs.bluetape4k.dependencies))
+    implementation(libs.exposed.jdbc)
+    implementation(libs.bluetape4k.aws)
 }
 ```
 
-현재 repository-specific BOM version은 [버전 거버넌스](/ko/ecosystem/version-governance/)에서
+현재 dependency governance 기준은 [버전 거버넌스](/ko/ecosystem/version-governance/)에서
 확인할 수 있습니다.
 
 ## 시작 지점 선택
