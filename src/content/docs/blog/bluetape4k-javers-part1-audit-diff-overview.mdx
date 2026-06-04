@@ -1,0 +1,149 @@
+---
+title: "Bluetape4k JaVers Part 1: Audit and Diff Overview"
+description: How bluetape4k-javers brings JaVers commits, snapshots, and object diffs into Kotlin/JVM services.
+sidebar:
+  order: -202606041420
+blog:
+  date: 2026-06-04T14:20:00+09:00
+  image: /assets/bluetape4k-javers-part1-hero.png
+  imageAlt: 3D workbench illustration of small robotic auditors inspecting JaVers snapshots and diff cards
+  cardDescription: "Start with the JaVers commit, snapshot, and diff model before creating another audit table per entity."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-javers-part1-hero.png" alt="3D workbench illustration of small robotic auditors inspecting JaVers snapshots and diff cards" loading="eager" />
+  <figcaption>Auditing is not only about storing changes. Someone has to read them later.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-04 · bluetape4k-javers series · Part 1</p>
+
+This is Part 1 of the `bluetape4k-javers` series. Part 1 sets up the audit and diff model, Part 2
+compares Exposed, Redis, and Kafka persistence roles, and Part 3 maps the workshop and DDD/CQRS
+examples onto a practical command flow.
+
+The easiest way to add audit history is to create one history table per entity. That works for a
+while. Then fields grow, nested objects appear, and readers start asking who changed what and why.
+At that point the audit code tends to repeat itself across every entity.
+
+`bluetape4k-javers` solves that problem with JaVers' object audit model. JaVers commits an object,
+stores snapshots of its state, and computes diffs between objects or versions. This repository adds
+Kotlin/JVM-friendly helpers, codecs, persistence adapters, and DDD examples around that model.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-javers-part1-snapshot-flow-01.png" alt="Flow from domain object to JaVers commit, snapshot repository, and query or diff reader" loading="lazy" />
+  <figcaption>The application commits aggregates, and readers query snapshot history or object diffs.</figcaption>
+</figure>
+
+## JaVers Mental Model
+
+| Concept | Meaning |
+|---|---|
+| Commit | A change unit with author, commit id, and commit properties |
+| CDO Snapshot | The state of one object at one version |
+| GlobalId | JaVers identity such as `Order/1` |
+| Diff | Property-level changes between objects or snapshots |
+| Shadow | An object reconstructed from snapshot history |
+
+The important point is that a JaVers commit is not just a log line. It carries object state,
+changed properties, and commit metadata together.
+
+```kotlin
+val product = Product(1L, "Widget", BigDecimal("9.99"), "Tools")
+
+javers.commit("alice", product)
+
+val snapshots = javers.findSnapshots(
+    QueryBuilder.byInstanceId(1L, Product::class.java).build()
+)
+```
+
+That gives the application one audit boundary instead of a separate hand-written history path for
+every entity.
+
+## What bluetape4k Adds
+
+`bluetape4k-javers` does not rewrite JaVers. It keeps the JaVers model and adds the pieces that
+Kotlin/JVM services in the bluetape4k stack keep needing.
+
+| Module | Responsibility |
+|---|---|
+| `javers-core` | Extensions, codecs, and repository base classes |
+| `javers-exposed` | Exposed JDBC CDO snapshot repository |
+| `javers-persistence-redis` | Lettuce and Redisson Redis snapshot repositories |
+| `javers-persistence-kafka` | Write-only Kafka snapshot stream repository |
+| `javers-ddd` | Aggregate, domain event, repository, and publisher helpers |
+| `examples/javers-exposed-ddd` | Exposed + JaVers + event projection example |
+
+The shared base is `AbstractCdoSnapshotRepository`. It handles snapshot encode/decode, commit head
+state, sequence handling, and query filtering. Concrete repositories implement storage-specific
+operations such as `saveSnapshot`, `loadSnapshots`, and `getKeys`.
+
+```kotlin
+abstract class AbstractCdoSnapshotRepository<T : Any>(
+    protected val codec: JaversCodec<T>,
+) : CdoSnapshotRepository {
+    override fun persist(commit: Commit?) {
+        // commit snapshots -> repository-specific saveSnapshot(...)
+    }
+}
+```
+
+## The Small Workshop Example
+
+The workshop `ProductAuditService` shows the smallest useful shape. It commits the product to
+JaVers and upserts the current row through Exposed.
+
+```kotlin
+fun save(author: String, product: Product) {
+    javers.commit(author, product)
+    transaction {
+        ProductTable.upsert {
+            it[id] = product.id
+            it[name] = product.name
+            it[price] = product.price
+            it[category] = product.category
+        }
+    }
+}
+```
+
+Diffs can be computed without persisting either side:
+
+```kotlin
+val diff = javers.compare(
+    oldProduct,
+    oldProduct.copy(price = BigDecimal("7.50")),
+)
+```
+
+The tests check `INITIAL`, `UPDATE`, and `TERMINAL` snapshots, latest snapshot lookup, and
+property-level value changes.
+
+## When It Fits
+
+JaVers fits best when object-level history matters. If a business flow needs to show changed
+properties, author metadata, latest snapshots, and reconstructed object state, JaVers gives that
+model directly. If all the service needs is a simple append-only event row, a small audit table may
+still be enough.
+
+## Source Links
+
+- Repository: [bluetape4k-javers](https://github.com/bluetape4k/bluetape4k-javers)
+- README: [README.md](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/README.md)
+- Korean README: [README.ko.md](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/README.ko.md)
+- Core repository base: [`AbstractCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-core/src/main/kotlin/io/bluetape4k/javers/repository/AbstractCdoSnapshotRepository.kt)
+- Workshop audit service: [`ProductAuditService.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/exposed/javers-audit/src/main/kotlin/io/bluetape4k/workshop/exposed/javers/service/ProductAuditService.kt)
+
+## Closing
+
+Audit history is useful only when it can be read and explained later. `bluetape4k-javers` brings
+JaVers commits, snapshots, and diffs into the bluetape4k stack so Kotlin services can avoid
+rebuilding the same audit path per entity.
+
+Next, we choose where those snapshots should live.
+
+## Series Links
+
+- [Part 1: Audit and diff overview](/blog/bluetape4k-javers-part1-audit-diff-overview/)
+- [Part 2: Exposed, Redis, and Kafka persistence](/blog/bluetape4k-javers-part2-persistence-options/)
+- [Part 3: DDD and workshop audit example](/blog/bluetape4k-javers-part3-ddd-workshop-example/)

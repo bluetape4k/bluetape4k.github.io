@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1290" height="680" viewBox="0 0 1290 680">
+<defs>
+  <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+    <path d="M 1 1 L 7 4 L 1 7 Z" fill="#496A8F"/>
+  </marker>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#22344A" flood-opacity="0.12"/>
+  </filter>
+  <style>
+    .canvas{fill:#F6F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
+    .title{font-family:"Architects Daughter","Comic Sans MS",cursive;font-size:42px;fill:#22344A;font-weight:400}
+    .subtitle,.footer{font-family:"Comic Sans MS","Comic Sans",sans-serif;font-size:17px;fill:#536476;font-weight:400}
+    .nodeTitle{font-family:"Architects Daughter","Comic Sans MS",cursive;font-size:25px;fill:#22344A;font-weight:400}
+    .nodeBody,.edgeLabel{font-family:"Comic Sans MS","Comic Sans",sans-serif;font-size:16px;fill:#3F5269;font-weight:400}
+    .edge{fill:none;stroke:#496A8F;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    g[id]{filter:url(#shadow)}
+  </style>
+</defs>
+<rect class="canvas" width="1290" height="680"/>
+<rect class="frame" x="34" y="28" width="1222" height="624" rx="24"/>
+<text class="title" x="645" y="82" text-anchor="middle">DDD Command Audit Sequence</text>
+<text class="subtitle" x="645" y="116" text-anchor="middle">Persist aggregate state, commit to JaVers, then publish the domain event</text>
+<path class="edge" d="M330 229 H350 V229 H358"/>
+<path class="edge" d="M630 229 H650 V229 H658"/>
+<path class="edge" d="M930 229 H950 V229 H958"/>
+<path class="edge" d="M1100 288 V354 H1100 V408"/>
+<path class="edge" d="M970 479 H950 V479 H942"/>
+<g id="cmd">
+  <rect x="70" y="170" width="260" height="118" rx="12" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="200" y="212" text-anchor="middle">Command Handler</text>
+  <text class="nodeBody" x="200" y="245" text-anchor="middle">PlaceOrder / MarkPaid</text>
+</g>
+<g id="agg">
+  <rect x="370" y="170" width="260" height="118" rx="12" fill="#F3ECFF" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="500" y="212" text-anchor="middle">Order Aggregate</text>
+  <text class="nodeBody" x="500" y="245" text-anchor="middle">@Id stable identity</text>
+</g>
+<g id="store">
+  <rect x="670" y="170" width="260" height="118" rx="12" fill="#EAF8EF" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="800" y="212" text-anchor="middle">Exposed Store</text>
+  <text class="nodeBody" x="800" y="245" text-anchor="middle">source of truth</text>
+</g>
+<g id="javers">
+  <rect x="970" y="170" width="260" height="118" rx="12" fill="#FFF4D9" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="1100" y="212" text-anchor="middle">JaVers Audit</text>
+  <text class="nodeBody" x="1100" y="245" text-anchor="middle">snapshot + commit metadata</text>
+</g>
+<g id="event">
+  <rect x="970" y="420" width="260" height="118" rx="12" fill="#FFF0E8" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="1100" y="462" text-anchor="middle">Event Publisher</text>
+  <text class="nodeBody" x="1100" y="495" text-anchor="middle">Kafka / Spring / NATS</text>
+</g>
+<g id="read">
+  <rect x="670" y="420" width="260" height="118" rx="12" fill="#E9F7F5" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="800" y="462" text-anchor="middle">Read Model</text>
+  <text class="nodeBody" x="800" y="495" text-anchor="middle">Redis order summary</text>
+</g>
+<rect x="88" y="590" width="1114" height="56" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
+<text class="footer" x="645" y="613" text-anchor="middle">AggregateRepository.save() orders the command-side work.</text>
+<text class="footer" x="645" y="636" text-anchor="middle">History queries come from JaVers snapshots; read models come from projected events.</text>
+</svg>

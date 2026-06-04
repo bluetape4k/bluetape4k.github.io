@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1290" height="680" viewBox="0 0 1290 680">
+<defs>
+  <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+    <path d="M 1 1 L 7 4 L 1 7 Z" fill="#496A8F"/>
+  </marker>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#22344A" flood-opacity="0.12"/>
+  </filter>
+  <style>
+    .canvas{fill:#F6F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
+    .title{font-family:"Architects Daughter","Comic Sans MS",cursive;font-size:42px;fill:#22344A;font-weight:400}
+    .subtitle,.footer{font-family:"Comic Sans MS","Comic Sans",sans-serif;font-size:17px;fill:#536476;font-weight:400}
+    .nodeTitle{font-family:"Architects Daughter","Comic Sans MS",cursive;font-size:25px;fill:#22344A;font-weight:400}
+    .nodeBody,.edgeLabel{font-family:"Comic Sans MS","Comic Sans",sans-serif;font-size:16px;fill:#3F5269;font-weight:400}
+    .edge{fill:none;stroke:#496A8F;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    g[id]{filter:url(#shadow)}
+  </style>
+</defs>
+<rect class="canvas" width="1290" height="680"/>
+<rect class="frame" x="34" y="28" width="1222" height="624" rx="24"/>
+<text class="title" x="645" y="82" text-anchor="middle">JaVers Snapshot Flow</text>
+<text class="subtitle" x="645" y="116" text-anchor="middle">Domain changes become commits, snapshots, and readable diffs</text>
+<path class="edge" d="M330 249 H350 V249 H358"/>
+<path class="edge" d="M630 249 H650 V249 H658"/>
+<path class="edge" d="M930 249 H950 V249 H958"/>
+<g id="domain">
+  <rect x="70" y="190" width="260" height="118" rx="12" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="200" y="232" text-anchor="middle">Domain Object</text>
+  <text class="nodeBody" x="200" y="265" text-anchor="middle">Order / Product aggregate</text>
+</g>
+<g id="commit">
+  <rect x="370" y="190" width="260" height="118" rx="12" fill="#FFF4D9" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="500" y="232" text-anchor="middle">JaVers Commit</text>
+  <text class="nodeBody" x="500" y="265" text-anchor="middle">author, commit id, properties</text>
+</g>
+<g id="repo">
+  <rect x="670" y="190" width="260" height="118" rx="12" fill="#EAF8EF" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="800" y="232" text-anchor="middle">Snapshot Repository</text>
+  <text class="nodeBody" x="800" y="265" text-anchor="middle">Exposed / Redis / Kafka adapter</text>
+</g>
+<g id="query">
+  <rect x="970" y="190" width="260" height="118" rx="12" fill="#F3ECFF" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="1100" y="232" text-anchor="middle">Query &amp; Diff</text>
+  <text class="nodeBody" x="1100" y="265" text-anchor="middle">history, latest snapshot, compare</text>
+</g>
+<rect x="88" y="590" width="1114" height="56" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
+<text class="footer" x="645" y="613" text-anchor="middle">bluetape4k-javers adds Kotlin-friendly helpers around the JaVers audit model.</text>
+<text class="footer" x="645" y="636" text-anchor="middle">Use it when object-level history matters more than a hand-written audit table.</text>
+</svg>

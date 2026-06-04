@@ -1,0 +1,134 @@
+---
+title: "Bluetape4k JaVers Part 2: Exposed, Redis, Kafka persistence 선택"
+description: bluetape4k-javers의 Exposed, Redis, Kafka repository가 각각 어떤 역할을 맡고 어떤 기준으로 선택해야 하는지 정리한다.
+sidebar:
+  order: -202606041430
+blog:
+  date: 2026-06-04T14:30:00+09:00
+  image: /assets/bluetape4k-javers-part2-hero.png
+  imageAlt: 작은 로봇 작업자들이 JaVers snapshot을 Exposed, Redis, Kafka 저장소로 분류하는 3D 작업대 일러스트
+  cardDescription: "Exposed는 durable history, Redis는 빠른 snapshot read, Kafka는 write-only event stream으로 본다."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-javers-part2-hero.png" alt="작은 로봇 작업자들이 JaVers snapshot을 Exposed, Redis, Kafka 저장소로 분류하는 3D 작업대 일러스트" loading="eager" />
+  <figcaption>persistence라는 이름이 같아도 읽기, 쓰기, 복구 모델은 다릅니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-04 · bluetape4k-javers series · Part 2</p>
+
+Part 1에서는 JaVers의 commit, snapshot, diff 모델을 봤습니다. Part 2의 질문은 더 운영적입니다.
+
+> snapshot을 어디에 둘 것인가?
+
+`bluetape4k-javers`는 Exposed JDBC, Redis, Kafka repository를 제공합니다. 이름만 보면 모두 persistence처럼
+보이지만 같은 역할이 아닙니다. Exposed는 durable SQL history에 가깝고, Redis는 빠른 snapshot read에 가깝고,
+Kafka는 query repository가 아니라 snapshot event stream에 가깝습니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-javers-part2-backend-selection-01.png" alt="JaVers commit에서 Exposed, Redis, Kafka persistence 역할로 나뉘는 선택 지도" loading="lazy" />
+  <figcaption>저장소 선택은 module 이름보다 읽기/쓰기 역할과 복구 모델로 결정하는 편이 안전합니다.</figcaption>
+</figure>
+
+## Exposed JDBC: SQL에 남기는 durable history
+
+`ExposedCdoSnapshotRepository`는 JaVers snapshot과 commit metadata를 Exposed table에 저장합니다. 구현은
+`CommitTable`과 `CdoSnapshotTable`을 만들고, snapshot마다 global id, commit id, version, type, state,
+changed properties, managed type을 저장합니다.
+
+```kotlin
+val snapshotRepository = ExposedCdoSnapshotRepository(database)
+snapshotRepository.ensureSchema()
+
+val javers = JaversBuilder.javers()
+    .registerJaversRepository(snapshotRepository)
+    .registerEntity(Order::class.java)
+    .build()
+```
+
+이 방식은 SQL transaction과 운영 DB backup/restore 흐름에 audit history를 같이 두고 싶을 때 맞습니다.
+현재 row를 Exposed로 관리하고, audit snapshot도 같은 JDBC 경계에 두면 운영자가 이해하기 쉽습니다.
+
+| 장점 | 주의점 |
+|---|---|
+| durable 저장, backup/restore가 명확함 | history table이 커질 수 있으므로 query shape를 봐야 함 |
+| transaction 경계가 익숙함 | 대량 history 조회는 memory materialization을 조심해야 함 |
+| SQL로 상태 확인이 가능함 | snapshot JSON codec과 schema 변경 정책을 관리해야 함 |
+
+## Redis: snapshot read를 빠르게
+
+Redis repository는 두 가지 구현을 제공합니다. Lettuce 구현은 global id별 LIST에 snapshot을 최신순으로
+넣고, Redis HASH로 global id index와 commit sequence를 관리합니다. Redisson 구현은 `RListMultimap`과 `RMap`을
+사용합니다. 둘 다 기본 codec은 LZ4 + Fory 조합입니다.
+
+```kotlin
+val repo = LettuceCdoSnapshotRepository("order", redisClient)
+val javers = JaversBuilder.javers()
+    .registerJaversRepository(repo)
+    .build()
+```
+
+Redis는 "감사 원장"이라기보다 빠른 snapshot read 경로로 보는 편이 자연스럽습니다. 최신 snapshot이나 짧은 history를
+자주 읽고, durable source는 다른 곳에 둔다면 Redis adapter가 잘 맞습니다.
+
+Lettuce 구현에는 한 가지 중요한 세부가 있습니다. `saveSnapshot`은 `MULTI/EXEC`로 LIST push와 index update를
+묶고, shared synchronous connection의 transaction interleaving을 막기 위해 lock을 둡니다. 성능 이야기보다
+정확성 이야기입니다. snapshot을 넣었는데 index가 빠지는 식의 상태를 피해야 합니다.
+
+## Kafka: query repository가 아니라 stream
+
+`KafkaCdoSnapshotRepository`는 의도적으로 write-only입니다. `saveSnapshot`은 snapshot을 Kafka default topic으로
+보내지만, `getKeys`, `contains`, `getSeq`, `loadSnapshots` 같은 read method는 empty/false/0을 반환합니다. 첫
+read call에는 warning을 남겨 contract를 드러냅니다.
+
+```kotlin
+val repo = KafkaCdoSnapshotRepository(kafkaTemplate)
+val javers = JaversBuilder.javers()
+    .registerJaversRepository(repo)
+    .build()
+
+// commit -> snapshot event is published to Kafka
+javers.commit("system", order)
+```
+
+이 설계는 이상한 것이 아니라 역할을 명확히 한 것입니다. Kafka topic은 downstream consumer, projection, 외부
+감사 파이프라인으로 snapshot event를 흘리는 데 좋습니다. 하지만 "이 객체의 최신 snapshot을 지금 읽어줘"라는
+질문에는 Kafka repository만으로 답하지 않습니다. 그 질문은 Exposed나 Redis 같은 read-side repository가 맡아야
+합니다.
+
+## 선택 기준
+
+| 기준 | Exposed JDBC | Redis | Kafka |
+|---|---|---|---|
+| 주 역할 | durable snapshot history | cache-friendly snapshot read | snapshot event stream |
+| 읽기 | JaVers query 가능 | 빠른 latest/history read | 항상 empty/false/0 |
+| 쓰기 | Exposed transaction 안에서 row 저장 | LIST/multimap + index update | Kafka publish ack까지 대기 |
+| 복구 | DB backup/restore | Redis persistence/재구성 정책 필요 | consumer replay/projection 정책 필요 |
+| 운영 복잡도 | DB schema와 용량 관리 | key 설계, TTL/persistence 정책 | topic, consumer, replay 관리 |
+| 추천 사용 | audit history를 DB와 함께 운영 | read-heavy history/projection | downstream audit/event pipeline |
+
+가장 피해야 할 선택은 "Kafka도 persistence니까 Kafka만 쓰자"입니다. 이 저장소의 Kafka adapter는 그렇게 설계되어
+있지 않습니다. query가 필요하면 Kafka stream과 별도의 read store를 같이 둡니다.
+
+## Source Links
+
+- Repository: [bluetape4k-javers](https://github.com/bluetape4k/bluetape4k-javers)
+- Exposed repository: [`ExposedCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-exposed/src/main/kotlin/io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepository.kt)
+- Lettuce repository: [`LettuceCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/LettuceCdoSnapshotRepository.kt)
+- Redisson repository: [`RedissonCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/RedissonCdoSnapshotRepository.kt)
+- Kafka repository: [`KafkaCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/repository/KafkaCdoSnapshotRepository.kt)
+
+## 마무리
+
+`bluetape4k-javers`의 persistence 선택은 "어떤 저장소가 더 멋진가"가 아닙니다. audit history를 SQL과 함께
+운영하려면 Exposed, snapshot read를 빠르게 만들려면 Redis, snapshot event를 흘리려면 Kafka입니다. 특히 Kafka는
+write-only contract를 일부러 드러냅니다. 이름이 persistence라도 query store가 아니라는 점을 코드가 말하고 있습니다.
+
+다음 글에서는 이 선택지를 DDD command flow와 workshop 예제에 얹어 봅니다. aggregate를 저장하고, JaVers에 commit하고,
+domain event를 발행하는 순서가 왜 중요한지 보겠습니다.
+
+## 시리즈 링크
+
+- [Part 1: audit와 diff의 기본 모델](/ko/blog/bluetape4k-javers-part1-audit-diff-overview/)
+- [Part 2: Exposed, Redis, Kafka persistence 선택](/ko/blog/bluetape4k-javers-part2-persistence-options/)
+- [Part 3: DDD와 workshop audit 예제](/ko/blog/bluetape4k-javers-part3-ddd-workshop-example/)

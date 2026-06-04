@@ -1,0 +1,162 @@
+---
+title: "Bluetape4k JaVers Part 3: DDD와 workshop audit 예제"
+description: workshop javers-audit와 javers-exposed-ddd 예제로 command handler, repository, JaVers commit, domain event, read model 흐름을 정리한다.
+sidebar:
+  order: -202606041440
+blog:
+  date: 2026-06-04T14:40:00+09:00
+  image: /assets/bluetape4k-javers-part3-hero.png
+  imageAlt: 작은 로봇 작업자들이 DDD command flow와 JaVers audit archive를 연결하는 3D 작업대 일러스트
+  cardDescription: "manual audit table에서 출발해 JaVers snapshot, DDD repository, Kafka/Redis projection 흐름으로 확장한다."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-javers-part3-hero.png" alt="작은 로봇 작업자들이 DDD command flow와 JaVers audit archive를 연결하는 3D 작업대 일러스트" loading="eager" />
+  <figcaption>감사 기록은 command 흐름 옆에 붙어야지, 나중에 기억으로 복원하면 안 됩니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-04 · bluetape4k-javers series · Part 3</p>
+
+Part 1에서는 JaVers의 commit/snapshot/diff 모델을 봤고, Part 2에서는 Exposed, Redis, Kafka persistence의
+역할을 나눴습니다. 마지막 Part 3에서는 예제로 내려옵니다. 여기서 보는 코드는 두 갈래입니다.
+
+| 예제 | 보여주는 것 |
+|---|---|
+| `bluetape4k-workshop/exposed/javers-audit` | product row를 Exposed에 저장하고 JaVers로 history/diff를 읽는 작은 예제 |
+| `examples/javers-exposed-ddd` | Order aggregate, Exposed source of truth, JaVers audit, domain event, Redis read model |
+
+즉 Part 3은 깊은 walkthrough가 아니라 전체적인 적용 지도입니다. 코드를 어디서 시작하고, 어떤 순서로 audit를 붙이고,
+어디까지가 source of truth인지 판단하는 기준을 잡는 데 목적이 있습니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-javers-part3-command-sequence-01.png" alt="Command handler가 Order aggregate를 저장하고 JaVers audit와 event publisher, Redis read model로 이어지는 sequence diagram" loading="lazy" />
+  <figcaption>command side에서는 aggregate 저장, JaVers commit, domain event 발행 순서가 명확해야 합니다.</figcaption>
+</figure>
+
+## manual audit table에서 시작해 보자
+
+처음 audit를 붙일 때는 대개 table을 직접 만듭니다. `product_history`에 이전 가격, 새 가격, 변경자, 변경 시각을
+넣습니다. 이 방식은 작은 업무에서는 좋습니다. 문제는 객체가 조금만 복잡해져도 같은 코드가 반복된다는 점입니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-javers-part3-manual-vs-javers-01.png" alt="Manual audit table 방식과 JaVers snapshot flow를 비교하는 diagram" loading="lazy" />
+  <figcaption>Exposed는 현재 row를 저장하고, JaVers는 변경 이력과 object diff semantics를 맡습니다.</figcaption>
+</figure>
+
+workshop의 `ProductAuditService`는 이 반복을 어떻게 줄이는지 보여줍니다.
+
+```kotlin
+fun save(author: String, product: Product) {
+    author.requireNotBlank("author")
+    javers.commit(author, product)
+    transaction {
+        ProductTable.upsert {
+            it[id] = product.id
+            it[name] = product.name
+            it[price] = product.price
+            it[category] = product.category
+        }
+    }
+}
+```
+
+여기서 Exposed는 현재 product row를 저장합니다. JaVers는 변경 history를 저장합니다. 이 둘을 섞어 생각하지
+않는 것이 중요합니다. history를 읽을 때는 `findSnapshots`를 사용하고, 최신 snapshot은 helper로 가져옵니다.
+
+```kotlin
+fun getHistory(productId: Long): List<CdoSnapshot> {
+    val query = QueryBuilder.byInstanceId(productId, Product::class.java).build()
+    return javers.findSnapshots(query)
+        .sortedBy { it.commitMetadata.commitDate }
+}
+```
+
+삭제도 그냥 row delete로 끝내지 않습니다. `commitShallowDelete`로 terminal snapshot을 남기고, 그 다음 Exposed
+row를 삭제합니다. test는 `INITIAL`, `UPDATE`, `TERMINAL` snapshot type을 확인합니다.
+
+## DDD 예제에서는 순서가 더 중요하다
+
+`examples/javers-exposed-ddd`는 command side 예제입니다. `OrderCommandHandler`는 command를 받아 aggregate를
+만들거나 상태를 바꾸고, repository에 저장합니다.
+
+```kotlin
+fun handle(command: MarkOrderPaidCommand): Order {
+    val current = requireNotNull(repository.load(command.orderId)) {
+        "Order not found: ${command.orderId.value}"
+    }
+    val now = clock.instant()
+    val paid = current.markPaid(now)
+    return repository.save(
+        aggregate = paid,
+        author = command.author,
+        event = OrderMarkedPaid(
+            aggregateId = paid.id,
+            occurredOn = now,
+        ),
+    )
+}
+```
+
+여기서 `OrderRepository`는 `AggregateRepository`를 상속합니다. source of truth는 `OrdersTable`입니다. repository는
+먼저 Exposed table에 aggregate를 저장하고, base class가 JaVers commit과 event publish를 이어갑니다.
+
+```kotlin
+fun save(aggregate: T, author: String, events: Collection<DomainEvent>): T {
+    val saved = persist(aggregate)
+    javers.commit(author, saved, events.toJaversProperties())
+    eventPublisher.publishAll(events)
+    return saved
+}
+```
+
+순서가 중요합니다. aggregate persistence가 실패했는데 audit commit이나 event publish가 먼저 나가면, history와
+현재 row가 서로 다른 이야기를 하게 됩니다. 이 예제는 "저장 성공 -> JaVers commit -> domain event" 순서를
+명시합니다.
+
+## read model은 audit history와 다르다
+
+예제에는 Redis 기반 `OrderSummary` projection도 있습니다. 이것은 audit history가 아니라 query-side read model입니다.
+Kafka event consumer가 event를 받아 summary를 갱신하고, query service는 Redis에서 summary를 읽습니다.
+
+이 구분을 놓치면 JaVers snapshot을 모든 read model 대체재로 쓰려 하게 됩니다. JaVers는 "어떻게 변했나"를
+설명하는 데 강합니다. read model은 "지금 화면에 무엇을 빠르게 보여줄까"를 담당합니다. 둘은 함께 쓸 수 있지만
+역할은 다릅니다.
+
+## 새 aggregate에 붙이는 checklist
+
+새 Exposed aggregate에 JaVers audit를 붙일 때는 아래 순서로 보는 편이 좋습니다.
+
+| 단계 | 확인할 것 |
+|---|---|
+| 1. identity | aggregate id가 안정적인가, JaVers `@Id`가 명확한가 |
+| 2. source of truth | 현재 상태는 어느 table/repository가 책임지는가 |
+| 3. commit point | command handler에서 state transition 뒤 어디서 commit할 것인가 |
+| 4. metadata | author, domain event type, aggregate id를 commit property로 남길 것인가 |
+| 5. persistence | Exposed, Redis, Kafka 중 history/query/stream 역할을 어떻게 나눌 것인가 |
+| 6. tests | INITIAL/UPDATE/TERMINAL, diff, latest snapshot, event projection을 확인하는가 |
+
+작은 서비스에서는 workshop 방식처럼 현재 row + JaVers history만으로 충분합니다. command/event 흐름이 커지면
+DDD helper와 event publisher를 붙입니다. downstream projection이 필요하면 Kafka/Redis를 더합니다.
+
+## Source Links
+
+- Workshop audit example: [exposed/javers-audit](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/exposed/javers-audit)
+- Product audit service: [`ProductAuditService.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/exposed/javers-audit/src/main/kotlin/io/bluetape4k/workshop/exposed/javers/service/ProductAuditService.kt)
+- DDD example: [examples/javers-exposed-ddd](https://github.com/bluetape4k/bluetape4k-javers/tree/develop/examples/javers-exposed-ddd)
+- Command handler: [`OrderCommandHandler.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/service/OrderCommandHandler.kt)
+- Aggregate repository: [`AggregateRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/AggregateRepository.kt)
+
+## 마무리
+
+`bluetape4k-javers`를 붙이는 핵심은 "history table을 없애자"가 아닙니다. 현재 상태와 변경 이력을 다른 책임으로
+나누자는 것입니다. Exposed table은 현재 aggregate를 저장하고, JaVers는 object history와 diff를 맡고, event
+publisher와 read model은 query-side 흐름을 만듭니다.
+
+이 구분이 있으면 audit code가 entity마다 반복되는 일을 줄이고, 나중에 reader가 변경 이력을 이해할 수 있는
+형태로 남길 수 있습니다.
+
+## 시리즈 링크
+
+- [Part 1: audit와 diff의 기본 모델](/ko/blog/bluetape4k-javers-part1-audit-diff-overview/)
+- [Part 2: Exposed, Redis, Kafka persistence 선택](/ko/blog/bluetape4k-javers-part2-persistence-options/)
+- [Part 3: DDD와 workshop audit 예제](/ko/blog/bluetape4k-javers-part3-ddd-workshop-example/)
