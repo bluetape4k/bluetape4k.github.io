@@ -7,7 +7,7 @@ blog:
   date: 2026-05-29T08:27:00+09:00
   image: /assets/csv-writer-hero.png
   imageAlt: Editorial illustration of a CSV writer pipeline sending rows into a buffered byte sink
-  cardDescription: The #674 follow-up to the Okio CSV reader work: Flow rows, UTF-8 sinks, behavior locks, and a 3.25x large export win.
+  cardDescription: "The Okio CSV writer follow-up: Flow rows, UTF-8 sinks, behavior locks, and a 3.25x large export win."
 ---
 
 <figure class="bt4k-blog-hero">
@@ -23,7 +23,7 @@ through a character-first lexer and let Okio scan source segments directly.
 That left an obvious follow-up question: if reading got faster by respecting bytes and
 segments, why was writing still politely handing every file export to `OutputStreamWriter`?
 
-Issue [#674](https://github.com/bluetape4k/bluetape4k-projects/issues/674) cleaned up that path.
+The writer optimization cleaned up that path.
 The public API already had the right shape:
 
 ```kotlin
@@ -43,7 +43,7 @@ cancellation, and move on.
 
 <figure class="bt4k-architecture">
   <img src="/assets/csv-okio-writer-throughput-01.png" alt="CSV writer throughput comparison chart showing existing Writer and Okio BufferedSink ops per second" loading="lazy" />
-  <figcaption>The #674 follow-up to the Okio CSV reader work: Flow rows, UTF-8 sinks, behavior locks, and a 3.25x large export win.</figcaption>
+  <figcaption>The Okio CSV writer follow-up: Flow rows, UTF-8 sinks, behavior locks, and a 3.25x large export win.</figcaption>
 </figure>
 
 ## The Suspicious Part Was Not Flow
@@ -188,8 +188,6 @@ paths for unsupported cases, and lock behavior with examples that include awkwar
 
 ## Source Links
 
-- Issue: [#674 perf(csv): add Okio BufferedSink fast path for writer pipelines](https://github.com/bluetape4k/bluetape4k-projects/issues/674)
-- PR: [#675 perf(csv): write UTF-8 files through Okio sink](https://github.com/bluetape4k/bluetape4k-projects/pull/675)
 - Writer implementation: [`OkioDelimitedWriter`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/main/kotlin/io/bluetape4k/csv/internal/OkioDelimitedWriter.kt)
 - Flow writer integration: [`FlowCsvWriterImpl`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/main/kotlin/io/bluetape4k/csv/v2/FlowCsvWriterImpl.kt)
 - Benchmarks: [`CsvParserBenchmark`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/test/kotlin/io/bluetape4k/csv/benchmark/CsvParserBenchmark.kt)

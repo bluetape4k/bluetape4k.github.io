@@ -42,7 +42,6 @@ Each case follows the same shape.
 
 ## 1. An Empty Properties Value Became `0` Instead of `null`
 
-Related issue: [#491](https://github.com/bluetape4k/bluetape4k-projects/issues/491)
 
 This was a small, embarrassing bug. In Java Properties, a value like `maxWaitMillis=` reads to a
 human as "the value is empty." But `JavaPropsMapper` read Properties values as untyped strings,
@@ -101,9 +100,7 @@ are different values.
 
 ## 2. What Nightly Taught Us: A Stale Test Is Also a Bug
 
-Related issue: [#595](https://github.com/bluetape4k/bluetape4k-projects/issues/595)
 
-Related PR: [#598](https://github.com/bluetape4k/bluetape4k-projects/pull/598)
 
 Nightly run `26243476594` failed in three slices: IO HTTP, infra search-messaging, and
 Testcontainers graphdb-memgraph. At first glance, that kind of failure looks like external
@@ -114,7 +111,7 @@ service instability. In reality, some tests had simply fallen behind the current
 I treated existing tests as existing verification. But tests are code too. If the DSL changes,
 tests can go stale. If Testcontainers reuse is enabled, CI credential state can go stale too.
 
-One part of PR #598 updated MyBatis dynamic-sql join validation tests for the current `on`-based
+One part of the fix updated MyBatis dynamic-sql join validation tests for the current `on`-based
 Kotlin DSL and current exception type. Another part disabled secured Elasticsearch singleton
 reuse to avoid stale CI credentials.
 
@@ -145,9 +142,7 @@ When an external-service test fails, check three things first.
 
 ## 3. Memgraph Did Not Hang in the Query. It Hung in `close()`
 
-Related issue: [#602](https://github.com/bluetape4k/bluetape4k-projects/issues/602)
 
-Related PR: [#604](https://github.com/bluetape4k/bluetape4k-projects/pull/604)
 
 Full Nightly timed out in `MemgraphServerTest`. The natural first suspects were container
 startup, readiness, or the image version. But the Bolt query path had already succeeded. The
@@ -204,9 +199,7 @@ bounded cleanup path.
 
 ## 4. `catch (Throwable)` Turned Coroutine Cancellation into HTTP Failure
 
-Related issue: [#654](https://github.com/bluetape4k/bluetape4k-projects/issues/654)
 
-Related PR: [#670](https://github.com/bluetape4k/bluetape4k-projects/pull/670)
 
 The Vert.x route coroutine helper forwarded failures from a suspend handler to
 `RoutingContext.fail(...)`. That is fine for ordinary exceptions. The problem was that a broad
@@ -265,10 +258,7 @@ helper such as `runCatchingNonCancellation`.
 
 ## 5. `runCatching` Made Interrupts Look Like Timeouts
 
-Related issues: [#656](https://github.com/bluetape4k/bluetape4k-projects/issues/656),
-[#657](https://github.com/bluetape4k/bluetape4k-projects/issues/657)
 
-Related PR: [#669](https://github.com/bluetape4k/bluetape4k-projects/pull/669)
 
 The gRPC server shutdown code used
 `runCatching { awaitTermination(...) }.getOrDefault(false)`. It looked neat. If graceful
@@ -362,9 +352,7 @@ Third, broad catch and `runCatching` are convenient but dangerous around lifecyc
 boundaries. Cancellation and interruption are signals, not just exceptions. If those signals are
 swallowed, the actual problem will show up somewhere much stranger later.
 
-The `checkDisabledTests` release gate from issue
-[#497](https://github.com/bluetape4k/bluetape4k-projects/issues/497) and
-PR [#567](https://github.com/bluetape4k/bluetape4k-projects/pull/567) matters for the same
+The `checkDisabledTests` release gate matters for the same
 reason. If an embarrassing mistake only lives in someone's memory, it will repeat. It has to
 become a report, a test, a gate, or a lesson.
 

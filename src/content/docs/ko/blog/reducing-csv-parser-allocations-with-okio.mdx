@@ -7,7 +7,7 @@ blog:
   date: 2026-05-29T00:32:00+09:00
   image: /assets/csv-parser-okio-hero.png
   imageAlt: CSV parser가 불필요한 copy 없이 byte segment를 읽는 소개용 일러스트
-  cardDescription: "#651 CSV parser 최적화 작업을 Reader 기반 파싱에서 Okio UnsafeCursor segment scanning까지 benchmark와 함께 정리합니다."
+  cardDescription: "CSV parser 최적화 작업을 Reader 기반 파싱에서 Okio UnsafeCursor segment scanning까지 benchmark와 함께 정리합니다."
 ---
 
 <figure class="bt4k-blog-hero">
@@ -21,13 +21,12 @@ blog:
 단순하고 정확했지만, 큰 CSV를 읽을 때는 모든 문자를 `Reader`에서 decode한 뒤 `StringBuilder`에
 누적하고 다시 field 문자열로 만드는 흐름이 반복됐다.
 
-Issue [#651](https://github.com/bluetape4k/bluetape4k-projects/issues/651)의 목표는 이 경로의
-allocation을 줄이고, 특히 큰 CSV workload에서 throughput을 끌어올리는 것이었다. 결론부터 말하면
+이번 최적화의 목표는 allocation을 줄이고, 특히 큰 CSV workload에서 throughput을 끌어올리는 것이었다. 결론부터 말하면
 Okio segment와 read-only `UnsafeCursor`를 사용한 UTF-8 fast path가 가장 효과적이었다.
 
 <figure class="bt4k-architecture">
   <img src="/assets/csv-okio-throughput-comparison-01.png" alt="CSV parser throughput comparison chart showing existing and Okio ops per second" loading="lazy" />
-  <figcaption>#651 CSV parser 최적화 작업을 Reader 기반 파싱에서 Okio UnsafeCursor segment scanning까지 benchmark와 함께 정리합니다.</figcaption>
+  <figcaption>CSV parser 최적화 작업을 Reader 기반 파싱에서 Okio UnsafeCursor segment scanning까지 benchmark와 함께 정리합니다.</figcaption>
 </figure>
 
 ## 출발점
@@ -237,9 +236,6 @@ suspend fun writeCsvFileWithOkio(
 
 ## 참고 링크
 
-- Issue: [#651 perf(csv): reduce large CSV parsing allocations](https://github.com/bluetape4k/bluetape4k-projects/issues/651)
-- PR: [#673 perf(csv): scan UTF-8 fields with Okio segments](https://github.com/bluetape4k/bluetape4k-projects/pull/673)
-- Follow-up: [#674 perf(csv): add Okio BufferedSink fast path for writer pipelines](https://github.com/bluetape4k/bluetape4k-projects/issues/674)
 - Follow-up article: [CSV Writer가 모래주머니를 벗었을 때](/ko/blog/csv-writer-okio-buffered-sink/)
 - Main implementation: [`OkioCsvLexer`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/main/kotlin/io/bluetape4k/csv/internal/OkioCsvLexer.kt)
 - Benchmarks: [`CsvParserBenchmark`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/test/kotlin/io/bluetape4k/csv/benchmark/CsvParserBenchmark.kt)

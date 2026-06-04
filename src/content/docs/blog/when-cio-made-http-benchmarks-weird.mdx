@@ -24,8 +24,8 @@ virtual threads, server fixtures, and pool settings differently.
 
 That makes "just pick the one you like" the most dangerous advice this module could give. If we
 do not know which client holds up under which workload, the abstraction becomes a random-choice
-button. Issue [#589](https://github.com/bluetape4k/bluetape4k-projects/issues/589) was not just a
-tuning ticket. It was a small campaign to measure first, explain the numbers, and leave behind
+button. The benchmark cleanup was not just a
+tuning task. It was a small campaign to measure first, explain the numbers, and leave behind
 selection rules.
 
 The first run did not start cleanly. Ktor CIO produced numbers that looked wrong.
@@ -48,15 +48,13 @@ ephemeral ports in the Docker fixture before the benchmark could measure the cli
 The CIO row had been limited to one thread while other rows used the class-level thread count.
 It was in the same table, but it was not running under the same rules.
 
-So issue [#587](https://github.com/bluetape4k/bluetape4k-projects/issues/587) was not about
+So the CIO follow-up was not about
 making CIO look fast. It was about measuring CIO under the same conditions. We kept the bad
 number, wrote down why it was bad, and fixed the fixture.
 
 ## The First Win Was Vert.x
 
-The most dramatic change in issue
-[#590](https://github.com/bluetape4k/bluetape4k-projects/issues/590) and
-PR [#593](https://github.com/bluetape4k/bluetape4k-projects/pull/593) was not Ktor. It was
+The most dramatic change in the follow-up work was not Ktor. It was
 Vert.x.
 
 The Vert.x WebClient benchmark was capped by the default HTTP/1 pool. It was not measuring what
@@ -71,7 +69,7 @@ That can be read as an optimization story. The more useful lesson is simpler.
 
 ## Same Server, Same Concurrency
 
-PR [#594](https://github.com/bluetape4k/bluetape4k-projects/pull/594) cleaned up the measuring
+The next cleanup pass corrected the measuring
 conditions.
 
 - The HTTP client benchmark fixture was moved to `BluetapeWebfluxServer`.
@@ -142,11 +140,6 @@ When I first saw the CIO numbers, I was disappointed. My first reaction was clos
 Ktor 3 and this is what we get?" That embarrassment forced us to look at the measuring
 conditions, and the final record became much better because of it.
 
-- [#589](https://github.com/bluetape4k/bluetape4k-projects/issues/589): benchmark-driven HTTP component performance epic
-- [#590](https://github.com/bluetape4k/bluetape4k-projects/issues/590): benchmark-gated self-improve track
-- [#587](https://github.com/bluetape4k/bluetape4k-projects/issues/587): Ktor CIO benchmark inclusion and fair comparison
-- [PR #593](https://github.com/bluetape4k/bluetape4k-projects/pull/593): Vert.x pool tuning and initial CIO rows
-- [PR #594](https://github.com/bluetape4k/bluetape4k-projects/pull/594): WebFlux fixture and equal-thread CIO comparison
 - [Benchmark report](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/docs/benchmarks/2026-05-21-io-http-client-benchmark.md)
 
 A benchmark is not just a tool for proving "my code is fast." Sometimes it tells you, "do not
