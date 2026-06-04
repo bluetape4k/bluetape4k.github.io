@@ -1,0 +1,145 @@
+---
+title: "Bluetape4k JaVers Part 3: DDD and Workshop Audit Example"
+description: How the workshop javers-audit and javers-exposed-ddd examples connect command handlers, repositories, JaVers commits, domain events, and read models.
+sidebar:
+  order: -202606041440
+blog:
+  date: 2026-06-04T14:40:00+09:00
+  image: /assets/bluetape4k-javers-part3-hero.png
+  imageAlt: 3D workbench illustration of robotic developers wiring a DDD command flow to JaVers audit storage
+  cardDescription: "Move from manual audit tables to JaVers snapshots, DDD repositories, and Kafka/Redis projection flow."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-javers-part3-hero.png" alt="3D workbench illustration of robotic developers wiring a DDD command flow to JaVers audit storage" loading="eager" />
+  <figcaption>Audit history belongs next to the command flow, not in someone's memory.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-04 · bluetape4k-javers series · Part 3</p>
+
+Part 1 introduced the JaVers audit model. Part 2 split the persistence roles. Part 3 maps that
+model onto two examples: the workshop `javers-audit` module and the `javers-exposed-ddd` command
+side example.
+
+| Example | What to inspect |
+|---|---|
+| `bluetape4k-workshop/exposed/javers-audit` | Product row persistence with JaVers history and diff queries |
+| `examples/javers-exposed-ddd` | Order aggregate, Exposed source of truth, JaVers audit, domain events, Redis read model |
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-javers-part3-command-sequence-01.png" alt="Command handler sequence through order aggregate, Exposed store, JaVers audit, event publisher, and read model" loading="lazy" />
+  <figcaption>The command side persists aggregate state, commits to JaVers, then publishes the domain event.</figcaption>
+</figure>
+
+## From Manual Audit to JaVers
+
+Manual audit tables are fine until every entity needs its own copy logic. The workshop example
+keeps the current product row in Exposed and lets JaVers own history and diffs.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-javers-part3-manual-vs-javers-01.png" alt="Comparison between manual audit table code and JaVers snapshot flow" loading="lazy" />
+  <figcaption>Exposed keeps the current row. JaVers owns change history and object diff semantics.</figcaption>
+</figure>
+
+```kotlin
+fun save(author: String, product: Product) {
+    author.requireNotBlank("author")
+    javers.commit(author, product)
+    transaction {
+        ProductTable.upsert {
+            it[id] = product.id
+            it[name] = product.name
+            it[price] = product.price
+            it[category] = product.category
+        }
+    }
+}
+```
+
+History reads come from JaVers snapshots:
+
+```kotlin
+fun getHistory(productId: Long): List<CdoSnapshot> {
+    val query = QueryBuilder.byInstanceId(productId, Product::class.java).build()
+    return javers.findSnapshots(query)
+        .sortedBy { it.commitMetadata.commitDate }
+}
+```
+
+The tests verify initial, update, terminal snapshots, latest snapshot lookup, and value changes.
+
+## DDD Command Flow
+
+The DDD example starts with an `OrderCommandHandler`. It loads or creates the aggregate, applies one
+state transition, and saves through the repository.
+
+```kotlin
+fun handle(command: MarkOrderPaidCommand): Order {
+    val current = requireNotNull(repository.load(command.orderId)) {
+        "Order not found: ${command.orderId.value}"
+    }
+    val now = clock.instant()
+    val paid = current.markPaid(now)
+    return repository.save(
+        aggregate = paid,
+        author = command.author,
+        event = OrderMarkedPaid(
+            aggregateId = paid.id,
+            occurredOn = now,
+        ),
+    )
+}
+```
+
+`OrderRepository` extends `AggregateRepository`. The source of truth is still `OrdersTable`; the
+base repository commits the saved aggregate to JaVers and publishes events afterward.
+
+```kotlin
+fun save(aggregate: T, author: String, events: Collection<DomainEvent>): T {
+    val saved = persist(aggregate)
+    javers.commit(author, saved, events.toJaversProperties())
+    eventPublisher.publishAll(events)
+    return saved
+}
+```
+
+The ordering matters: persist the aggregate first, commit the saved state to JaVers, then publish
+the domain event. If those steps are reversed, current state, history, and projections can tell
+different stories.
+
+## Read Model Is Not Audit History
+
+The example also has a Redis-backed `OrderSummary` projection. That is a query-side read model, not
+the audit log itself. JaVers answers "how did this object change?" The read model answers "what does
+the screen need now?" They can work together, but they should not be confused.
+
+## Adoption Checklist
+
+| Step | Check |
+|---|---|
+| Identity | Stable aggregate id and clear JaVers `@Id` |
+| Source of truth | Which table or repository owns current state |
+| Commit point | Where the command flow commits the saved aggregate |
+| Metadata | Author, event type, aggregate id, and event attributes |
+| Persistence | Exposed, Redis, and Kafka roles split by history/query/stream |
+| Tests | INITIAL/UPDATE/TERMINAL, diff, latest snapshot, projection flow |
+
+## Source Links
+
+- Workshop audit example: [exposed/javers-audit](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/exposed/javers-audit)
+- Product audit service: [`ProductAuditService.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/exposed/javers-audit/src/main/kotlin/io/bluetape4k/workshop/exposed/javers/service/ProductAuditService.kt)
+- DDD example: [examples/javers-exposed-ddd](https://github.com/bluetape4k/bluetape4k-javers/tree/develop/examples/javers-exposed-ddd)
+- Command handler: [`OrderCommandHandler.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/service/OrderCommandHandler.kt)
+- Aggregate repository: [`AggregateRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/AggregateRepository.kt)
+
+## Closing
+
+The point is not to delete every audit table. The point is to separate responsibilities. Exposed
+stores current aggregate state, JaVers stores object history and diffs, and event publishers plus
+read models serve query-side consumers.
+
+## Series Links
+
+- [Part 1: Audit and diff overview](/blog/bluetape4k-javers-part1-audit-diff-overview/)
+- [Part 2: Exposed, Redis, and Kafka persistence](/blog/bluetape4k-javers-part2-persistence-options/)
+- [Part 3: DDD and workshop audit example](/blog/bluetape4k-javers-part3-ddd-workshop-example/)

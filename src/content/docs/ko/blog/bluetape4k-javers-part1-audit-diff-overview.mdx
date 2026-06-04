@@ -1,0 +1,170 @@
+---
+title: "Bluetape4k JaVers Part 1: audit와 diff의 기본 모델"
+description: bluetape4k-javers가 JaVers의 commit, snapshot, object diff 모델을 Kotlin/JVM 서비스에서 어떻게 쓰기 쉽게 만드는지 정리한다.
+sidebar:
+  order: -202606041420
+blog:
+  date: 2026-06-04T14:20:00+09:00
+  image: /assets/bluetape4k-javers-part1-hero.png
+  imageAlt: 작은 로봇 작업자들이 JaVers snapshot과 diff 카드를 점검하는 3D 작업대 일러스트
+  cardDescription: "entity별 audit table을 직접 만들기 전에 JaVers commit, snapshot, diff 모델부터 잡는다."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-javers-part1-hero.png" alt="작은 로봇 작업자들이 JaVers snapshot과 diff 카드를 점검하는 3D 작업대 일러스트" loading="eager" />
+  <figcaption>감사는 저장만의 문제가 아닙니다. 나중에 사람이 읽을 수 있어야 합니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-04 · bluetape4k-javers series · Part 1</p>
+
+이 글은 `bluetape4k-javers` 시리즈의 1편입니다. Part 1에서는 audit와 diff의 기본 모델을 잡고,
+Part 2에서는 Exposed, Redis, Kafka persistence 선택 기준을 봅니다. Part 3에서는 workshop과
+DDD/CQRS 예제로 실제 흐름을 따라갑니다.
+
+서비스에 변경 이력을 붙이는 가장 쉬운 방법은 entity마다 history table을 하나씩 만드는 것입니다.
+처음에는 괜찮습니다. `product_history`, `order_history`, `member_history`를 만들고, 변경 전후 값을
+복사해 넣으면 됩니다. 그런데 필드가 늘고, nested object가 생기고, "어느 사용자가 어떤 이유로 바꿨나"를
+찾기 시작하면 금방 같은 코드를 여러 군데 반복하게 됩니다.
+
+`bluetape4k-javers`는 이 지점을 JaVers의 object audit 모델로 풉니다. JaVers는 객체를 commit하고,
+그 시점의 상태를 snapshot으로 남기고, 두 객체나 두 snapshot 사이의 diff를 계산합니다. 이 저장소는 그 위에
+Kotlin/JVM 서비스에서 반복해서 필요한 helper, codec, repository adapter, DDD 예제를 얹습니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-javers-part1-snapshot-flow-01.png" alt="Domain object가 JaVers commit을 거쳐 snapshot repository와 query/diff로 이어지는 흐름" loading="lazy" />
+  <figcaption>애플리케이션은 aggregate를 commit하고, reader는 snapshot history와 diff를 읽습니다.</figcaption>
+</figure>
+
+## JaVers를 먼저 이해하자
+
+JaVers의 중심 단어는 commit과 snapshot입니다.
+
+| 개념 | 의미 |
+|---|---|
+| Commit | author, commit id, commit property와 함께 저장되는 변경 단위 |
+| CDO Snapshot | 특정 객체의 특정 버전 상태 |
+| GlobalId | `Order/1`처럼 객체 identity를 표현하는 JaVers id |
+| Diff | 두 객체 또는 snapshot 사이의 property-level 변경 |
+| Shadow | snapshot을 다시 객체 형태로 복원한 결과 |
+
+이 모델이 좋은 이유는 audit 코드를 entity별로 새로 만들지 않아도 된다는 점입니다. 객체 identity와 현재 상태를
+JaVers에 넘기면 JaVers가 snapshot을 만들고, 나중에 JQL query로 history를 가져오거나 `compare`로 diff를
+계산할 수 있습니다.
+
+```kotlin
+val product = Product(1L, "Widget", BigDecimal("9.99"), "Tools")
+
+javers.commit("alice", product)
+
+val snapshots = javers.findSnapshots(
+    QueryBuilder.byInstanceId(1L, Product::class.java).build()
+)
+```
+
+여기서 중요한 것은 `commit`이 단순 로그 한 줄이 아니라는 점입니다. snapshot에는 객체 상태, 변경 property,
+commit metadata가 같이 들어갑니다. 그래서 "누가 바꿨나"와 "무엇이 바뀌었나"를 같은 audit 흐름 안에서 볼 수
+있습니다.
+
+## bluetape4k-javers가 붙이는 것
+
+`bluetape4k-javers`는 JaVers를 다시 구현하는 라이브러리가 아닙니다. JaVers의 audit/diff 모델을 그대로 쓰되,
+bluetape4k stack에서 자주 필요한 경계를 정리합니다.
+
+| 모듈 | 맡는 일 |
+|---|---|
+| `javers-core` | extension, codec, cache-backed repository base |
+| `javers-exposed` | Exposed JDBC 기반 CDO snapshot repository |
+| `javers-persistence-redis` | Lettuce/Redisson 기반 Redis snapshot 저장소 |
+| `javers-persistence-kafka` | snapshot을 Kafka topic으로 내보내는 write-only repository |
+| `javers-ddd` | aggregate, domain event, repository, publisher helper |
+| `examples/javers-exposed-ddd` | Exposed + JaVers + event projection 예제 |
+
+core의 `AbstractCdoSnapshotRepository`는 공통 repository 동작을 묶습니다. snapshot encode/decode, commit head,
+sequence, query parameter filtering 같은 반복 코드를 base class에 두고, 실제 저장소는 `saveSnapshot`,
+`loadSnapshots`, `getKeys` 같은 최소 동작을 구현합니다.
+
+```kotlin
+abstract class AbstractCdoSnapshotRepository<T : Any>(
+    protected val codec: JaversCodec<T>,
+) : CdoSnapshotRepository {
+    override fun persist(commit: Commit?) {
+        // commit snapshots -> repository-specific saveSnapshot(...)
+    }
+}
+```
+
+이 구조 덕분에 Part 2에서 볼 Exposed, Redis, Kafka adapter는 같은 JaVers repository contract를 공유합니다.
+다만 역할은 다릅니다. Exposed는 durable SQL history, Redis는 빠른 snapshot read, Kafka는 downstream consumer로
+snapshot event를 흘리는 쪽에 가깝습니다.
+
+## 작은 예제로 보면
+
+workshop의 `ProductAuditService`는 가장 작은 흐름을 보여줍니다. product를 저장할 때 JaVers에 먼저 commit하고,
+Exposed table에는 현재 row를 upsert합니다. history는 JaVers snapshot에서 읽고, 현재 row는 Exposed에서 읽는
+구조입니다.
+
+```kotlin
+fun save(author: String, product: Product) {
+    javers.commit(author, product)
+    transaction {
+        ProductTable.upsert {
+            it[id] = product.id
+            it[name] = product.name
+            it[price] = product.price
+            it[category] = product.category
+        }
+    }
+}
+```
+
+diff는 저장하지 않고도 계산할 수 있습니다.
+
+```kotlin
+val diff = javers.compare(
+    oldProduct,
+    oldProduct.copy(price = BigDecimal("7.50")),
+)
+```
+
+test는 price나 category 변경을 `ValueChange`로 확인합니다. 삭제는 `commitShallowDelete`로 terminal snapshot을
+남깁니다. 이 정도만 있어도 "변경 이력을 어떻게 남길까"와 "변경 전후를 어떻게 보여줄까"를 같은 도구로 설명할
+수 있습니다.
+
+## 언제 잘 맞나
+
+JaVers 방식은 아래 조건에서 특히 자연스럽습니다.
+
+| 상황 | 이유 |
+|---|---|
+| 객체 단위 변경 이력이 필요하다 | snapshot과 diff가 domain object 기준으로 남습니다 |
+| 변경 property를 보여줘야 한다 | `ValueChange`, `ListChange` 같은 diff type을 그대로 쓸 수 있습니다 |
+| audit metadata가 중요하다 | author와 commit property를 commit 단위로 저장합니다 |
+| 현재 row와 history를 분리하고 싶다 | Exposed row는 source of truth, JaVers는 history로 둘 수 있습니다 |
+| DDD command flow와 연결하고 싶다 | aggregate save 뒤 JaVers commit과 domain event 발행을 묶을 수 있습니다 |
+
+반대로 모든 경우에 JaVers가 필요한 것은 아닙니다. 단순 append-only 로그 한 줄이면 충분한 업무도 있습니다.
+예를 들어 "상태 변경 시각과 actor만 남기면 된다" 정도라면 직접 audit table이 더 작고 명확할 수 있습니다.
+JaVers가 빛나는 지점은 변경된 객체 상태를 다시 읽고, 비교하고, domain history로 보여줘야 할 때입니다.
+
+## Source Links
+
+- Repository: [bluetape4k-javers](https://github.com/bluetape4k/bluetape4k-javers)
+- README: [README.md](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/README.md)
+- Korean README: [README.ko.md](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/README.ko.md)
+- Core repository base: [`AbstractCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-core/src/main/kotlin/io/bluetape4k/javers/repository/AbstractCdoSnapshotRepository.kt)
+- Workshop audit service: [`ProductAuditService.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/exposed/javers-audit/src/main/kotlin/io/bluetape4k/workshop/exposed/javers/service/ProductAuditService.kt)
+
+## 마무리
+
+audit는 "저장해두면 언젠가 보겠지"로 끝나면 금방 쓸모가 줄어듭니다. 나중에 읽을 수 있어야 하고, 변경 전후를
+설명할 수 있어야 하며, domain object와 연결되어야 합니다. `bluetape4k-javers`는 JaVers의 commit/snapshot/diff
+모델을 bluetape4k stack에 맞게 연결하는 라이브러리입니다.
+
+다음 글에서는 snapshot을 어디에 둘지 봅니다. Exposed, Redis, Kafka는 모두 persistence라는 이름을 달고 있지만,
+같은 역할을 하지 않습니다.
+
+## 시리즈 링크
+
+- [Part 1: audit와 diff의 기본 모델](/ko/blog/bluetape4k-javers-part1-audit-diff-overview/)
+- [Part 2: Exposed, Redis, Kafka persistence 선택](/ko/blog/bluetape4k-javers-part2-persistence-options/)
+- [Part 3: DDD와 workshop audit 예제](/ko/blog/bluetape4k-javers-part3-ddd-workshop-example/)

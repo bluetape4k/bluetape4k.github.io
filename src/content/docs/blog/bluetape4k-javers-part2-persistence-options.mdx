@@ -1,0 +1,118 @@
+---
+title: "Bluetape4k JaVers Part 2: Exposed, Redis, and Kafka Persistence"
+description: How to choose between the Exposed, Redis, and Kafka JaVers repositories in bluetape4k-javers.
+sidebar:
+  order: -202606041430
+blog:
+  date: 2026-06-04T14:30:00+09:00
+  image: /assets/bluetape4k-javers-part2-hero.png
+  imageAlt: 3D workbench illustration of robotic engineers sorting JaVers snapshots into Exposed, Redis, and Kafka stations
+  cardDescription: "Exposed is durable history, Redis is fast snapshot reads, and Kafka is a write-only event stream."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-javers-part2-hero.png" alt="3D workbench illustration of robotic engineers sorting JaVers snapshots into Exposed, Redis, and Kafka stations" loading="eager" />
+  <figcaption>The word persistence is shared. The read, write, and recovery roles are not.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-04 · bluetape4k-javers series · Part 2</p>
+
+Part 1 covered JaVers commits, snapshots, and diffs. Part 2 asks an operational question: where
+should those snapshots live?
+
+`bluetape4k-javers` provides Exposed JDBC, Redis, and Kafka repositories. They should not be chosen
+as interchangeable storage engines. Exposed is durable SQL history, Redis is a fast snapshot read
+path, and Kafka is a write-only event stream.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-javers-part2-backend-selection-01.png" alt="Persistence role map from a JaVers commit to Exposed, Redis, and Kafka" loading="lazy" />
+  <figcaption>Choose by repository role, not by module name.</figcaption>
+</figure>
+
+## Exposed JDBC
+
+`ExposedCdoSnapshotRepository` stores commit metadata and CDO snapshots through Exposed tables.
+It creates `CommitTable` and `CdoSnapshotTable`, then stores global id, commit id, version, type,
+encoded state, changed properties, and managed type.
+
+```kotlin
+val snapshotRepository = ExposedCdoSnapshotRepository(database)
+snapshotRepository.ensureSchema()
+
+val javers = JaversBuilder.javers()
+    .registerJaversRepository(snapshotRepository)
+    .registerEntity(Order::class.java)
+    .build()
+```
+
+This is the natural choice when audit history should live with SQL operations, backups, and
+transaction boundaries.
+
+## Redis
+
+The Redis module provides Lettuce and Redisson implementations. The Lettuce repository stores
+snapshots newest-first in Redis LIST keys and maintains global id and sequence indexes in HASH
+keys. The Redisson repository uses `RListMultimap` for snapshots and `RMap` for commit sequences.
+Both default to LZ4 + Fory encoding.
+
+```kotlin
+val repo = LettuceCdoSnapshotRepository("order", redisClient)
+val javers = JaversBuilder.javers()
+    .registerJaversRepository(repo)
+    .build()
+```
+
+Redis works best as a fast snapshot read path. If durable history is elsewhere and readers need
+short history or latest-state lookup, Redis is a good fit.
+
+## Kafka
+
+`KafkaCdoSnapshotRepository` is intentionally write-only. `saveSnapshot` publishes the encoded
+snapshot to Kafka with the global id as the key. Read methods return empty, false, or zero, and the
+first read-path call logs a warning.
+
+```kotlin
+val repo = KafkaCdoSnapshotRepository(kafkaTemplate)
+val javers = JaversBuilder.javers()
+    .registerJaversRepository(repo)
+    .build()
+
+javers.commit("system", order)
+```
+
+That contract matters. Kafka is useful for downstream consumers, projections, and audit pipelines.
+It is not the repository that answers "give me the latest snapshot for this object." Pair it with
+Exposed or Redis when query reads are required.
+
+## Selection Table
+
+| Criterion | Exposed JDBC | Redis | Kafka |
+|---|---|---|---|
+| Main role | Durable snapshot history | Cache-friendly snapshot read | Snapshot event stream |
+| Reads | JaVers queries | Fast latest/history reads | Empty/false/zero |
+| Writes | Exposed transaction path | LIST/multimap plus indexes | Kafka publish acknowledgement |
+| Recovery | Database backup/restore | Redis persistence or rebuild policy | Consumer replay/projection policy |
+| Best fit | Audit history with SQL operations | Read-heavy history/projection | Downstream audit/event pipeline |
+
+The easiest mistake is to use Kafka alone because it also says persistence. In this repository,
+Kafka is a stream adapter. It deliberately does not pretend to be a query store.
+
+## Source Links
+
+- Repository: [bluetape4k-javers](https://github.com/bluetape4k/bluetape4k-javers)
+- Exposed repository: [`ExposedCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-exposed/src/main/kotlin/io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepository.kt)
+- Lettuce repository: [`LettuceCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/LettuceCdoSnapshotRepository.kt)
+- Redisson repository: [`RedissonCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/RedissonCdoSnapshotRepository.kt)
+- Kafka repository: [`KafkaCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/repository/KafkaCdoSnapshotRepository.kt)
+
+## Closing
+
+Persistence choice in `bluetape4k-javers` is about role. Exposed keeps durable history near SQL,
+Redis serves fast snapshot reads, and Kafka streams snapshot events to other consumers. Choose the
+adapter by the question the application needs to answer.
+
+## Series Links
+
+- [Part 1: Audit and diff overview](/blog/bluetape4k-javers-part1-audit-diff-overview/)
+- [Part 2: Exposed, Redis, and Kafka persistence](/blog/bluetape4k-javers-part2-persistence-options/)
+- [Part 3: DDD and workshop audit example](/blog/bluetape4k-javers-part3-ddd-workshop-example/)
