@@ -1,0 +1,14 @@
+graph 1 14.377 2.0785
+node app 1.1252 1.0922 2.2504 0.63917 "Example application\ncontroller, route, worker" rounded,filled box #06b6d4 #ecfeff
+node spring 4.6499 1.6894 3.3546 0.63917 "Spring Boot path\nS3Operations, @SqsListener, repository" rounded,filled box #38bdf8 #e0f2fe
+node ktor 4.6499 0.49498 2.365 0.63917 "Ktor path\nS3KtorClient, routes, plugins" rounded,filled box #22c55e #dcfce7
+node helpers 8.8309 1.0922 3.5629 0.63917 "bluetape4k-aws helpers\ncoroutine bridge, CRT, explicit SDK modules" rounded,filled box #f59e0b #fef3c7
+node emulator 12.856 1.7589 3.0421 0.63917 "Local verification\nFloci or LocalStack, Testcontainers" rounded,filled box #a855f7 #f3e8ff
+node aws 12.856 0.43943 2.1775 0.87885 "AWS services\nS3, SQS, DynamoDB, KMS" rounded,filled cylinder #fb923c #fff7ed
+edge app spring 7 2.2544 1.231 2.7512 1.231 3.2239 1.231 3.2239 1.231 3.2239 1.231 3.2239 1.2445 3.2239 1.2445 solid #64748b
+edge app ktor 7 1.1267 0.76862 1.1267 0.61905 1.1267 0.47401 1.1267 0.47401 1.1267 0.47401 3.3354 0.47401 3.3354 0.47401 solid #64748b
+edge spring helpers 7 6.085 1.3663 6.085 1.2256 6.085 1.0922 6.085 1.0922 6.085 1.0922 6.9187 1.0922 6.9187 1.0922 solid #64748b
+edge ktor helpers 7 4.6544 0.81833 4.6544 0.89418 4.6544 0.95339 4.6544 0.95339 4.6544 0.95339 6.9209 0.95339 6.9209 0.95339 solid #64748b
+edge helpers emulator 7 10.619 1.1453 11.133 1.1453 11.557 1.1453 11.557 1.1453 11.557 1.1453 11.557 1.3075 11.557 1.3075 solid #64748b
+edge helpers aws 4 10.614 0.82574 10.614 0.82574 11.635 0.82574 11.635 0.82574 solid #64748b
+stop

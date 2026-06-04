@@ -1,0 +1,20 @@
+digraph AwsPart5StorageProfiles {
+  graph [rankdir=TB, bgcolor="#ffffff", pad=0.35, nodesep=0.55, ranksep=0.72, splines=ortho]
+  node [shape=box, style="rounded,filled", fontname="Architects Daughter", fontsize=12, margin="0.12,0.08", color="#94a3b8", fillcolor="#f8fafc"]
+  edge [fontname="Comic Mono", fontsize=10, color="#64748b", penwidth=1.4, arrowsize=0.7]
+
+  app [label="Application code\nuses StorageService only", fillcolor="#ecfeff", color="#06b6d4"]
+  contract [label="StorageService\nupload, download, getUrl, delete", fillcolor="#fef3c7", color="#f59e0b"]
+  local [label="local profile\nLocalStorageService, Files", fillcolor="#f8fafc", color="#94a3b8"]
+  s3 [label="s3 profile\nS3StorageService, S3Client", fillcolor="#e0f2fe", color="#38bdf8"]
+  presigned [label="s3-presigned profile\nS3PresignedStorageService, S3Presigner", fillcolor="#dcfce7", color="#22c55e"]
+  verify [label="Tests\nno Docker local, Floci-backed S3 profiles", fillcolor="#f3e8ff", color="#a855f7"]
+
+  app -> contract
+  contract -> local
+  contract -> s3
+  contract -> presigned
+  local -> verify
+  s3 -> verify
+  presigned -> verify
+}
