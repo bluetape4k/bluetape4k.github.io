@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="860" viewBox="0 0 1800 860">
+<svg xmlns="http://www.w3.org/2000/svg" width="1900" height="860" viewBox="0 0 1900 860">
 <defs>
   <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
     <path d="M 1 1 L 7 4 L 1 7 Z" fill="#496A8F"/>
@@ -20,94 +20,94 @@
     g[id]{filter:url(#shadow)}
   </style>
 </defs>
-<rect class="canvas" width="1800" height="860"/>
-<rect class="frame" x="34" y="28" width="1732" height="804" rx="24"/>
-<text class="title" x="900" y="82" text-anchor="middle">Abuser Detection Entity Graph</text>
-<text class="subtitle" x="900" y="118" text-anchor="middle">Users connect to identifiers; shared identifiers become review evidence</text>
+<rect class="canvas" width="1900" height="860"/>
+<rect class="frame" x="34" y="28" width="1832" height="804" rx="24"/>
+<text class="title" x="950" y="82" text-anchor="middle">Abuser Detection Entity Graph</text>
+<text class="subtitle" x="950" y="118" text-anchor="middle">Users connect to identifiers; shared identifiers become review evidence</text>
 <g>
-  <path class="edge" d="M400 298 H460 V233 H520"/>
-  <rect x="399" y="239" width="122" height="28" rx="8" fill="#FFFFFF" stroke="#D7E2EC"/>
-  <text class="edgeLabel" x="460" y="258" text-anchor="middle">USES_DEVICE</text>
+  <path class="edge" d="M400 427 H480 V322 H560"/>
+  <rect x="419" y="348" width="122" height="28" rx="8" fill="#FFFFFF" stroke="#D7E2EC"/>
+  <text class="edgeLabel" x="480" y="367" text-anchor="middle">USES_DEVICE</text>
 </g>
 <g>
-  <path class="edge" d="M400 298 H460 V433 H520"/>
-  <rect x="400" y="339" width="120" height="28" rx="8" fill="#FFFFFF" stroke="#D7E2EC"/>
-  <text class="edgeLabel" x="460" y="358" text-anchor="middle">USES_IP</text>
+  <path class="edge" d="M400 427 H480 V592 H560"/>
+  <rect x="420" y="483" width="120" height="28" rx="8" fill="#FFFFFF" stroke="#D7E2EC"/>
+  <text class="edgeLabel" x="480" y="502" text-anchor="middle">USES_IP</text>
 </g>
 <g>
-  <path class="edge" d="M400 298 H655 V218 H910"/>
-  <rect x="595" y="231" width="120" height="28" rx="8" fill="#FFFFFF" stroke="#D7E2EC"/>
-  <text class="edgeLabel" x="655" y="250" text-anchor="middle">HAS_PHONE</text>
+  <path class="edge" d="M400 427 H700 V307 H1000"/>
+  <rect x="640" y="340" width="120" height="28" rx="8" fill="#FFFFFF" stroke="#D7E2EC"/>
+  <text class="edgeLabel" x="700" y="359" text-anchor="middle">HAS_PHONE</text>
 </g>
 <g>
-  <path class="edge" d="M400 298 H655 V433 H910"/>
-  <rect x="590" y="339" width="130" height="28" rx="8" fill="#FFFFFF" stroke="#D7E2EC"/>
-  <text class="edgeLabel" x="655" y="358" text-anchor="middle">USES_PAYMENT</text>
+  <path class="edge" d="M400 427 H700 V592 H1000"/>
+  <rect x="635" y="483" width="130" height="28" rx="8" fill="#FFFFFF" stroke="#D7E2EC"/>
+  <text class="edgeLabel" x="700" y="502" text-anchor="middle">USES_PAYMENT</text>
 </g>
 <g>
-  <path class="edge" d="M400 298 H850 V318 H1300"/>
-  <rect x="789" y="281" width="122" height="28" rx="8" fill="#FFFFFF" stroke="#D7E2EC"/>
-  <text class="edgeLabel" x="850" y="300" text-anchor="middle">REFERRED_BY</text>
+  <path class="edge" d="M400 427 H925 V437 H1450"/>
+  <rect x="864" y="405" width="122" height="28" rx="8" fill="#FFFFFF" stroke="#D7E2EC"/>
+  <text class="edgeLabel" x="925" y="424" text-anchor="middle">REFERRED_BY</text>
 </g>
 <g id="user">
-  <rect x="130" y="210" width="270" height="176" rx="8" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
-  <rect x="130" y="210" width="270" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
-  <line x1="130" y1="258" x2="400" y2="258" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="tableTitle" x="265" y="241" text-anchor="middle">User</text>
-  <line x1="130" y1="258" x2="400" y2="258" stroke="#D7E2EC"/>
-  <text class="tableField" x="148" y="279">userId</text>
-  <line x1="130" y1="288" x2="400" y2="288" stroke="#D7E2EC"/>
-  <text class="tableField" x="148" y="309">email</text>
-  <line x1="130" y1="318" x2="400" y2="318" stroke="#D7E2EC"/>
-  <text class="tableField" x="148" y="339">risk fields</text>
+  <rect x="130" y="339" width="270" height="176" rx="8" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
+  <rect x="130" y="339" width="270" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
+  <line x1="130" y1="387" x2="400" y2="387" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="tableTitle" x="265" y="370" text-anchor="middle">User</text>
+  <line x1="130" y1="387" x2="400" y2="387" stroke="#D7E2EC"/>
+  <text class="tableField" x="148" y="408">userId</text>
+  <line x1="130" y1="417" x2="400" y2="417" stroke="#D7E2EC"/>
+  <text class="tableField" x="148" y="438">email</text>
+  <line x1="130" y1="447" x2="400" y2="447" stroke="#D7E2EC"/>
+  <text class="tableField" x="148" y="468">risk fields</text>
 </g>
 <g id="device">
-  <rect x="520" y="160" width="270" height="146" rx="8" fill="#FFF4D9" stroke="#7B8CA3" stroke-width="2"/>
-  <rect x="520" y="160" width="270" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
-  <line x1="520" y1="208" x2="790" y2="208" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="tableTitle" x="655" y="191" text-anchor="middle">Device</text>
-  <line x1="520" y1="208" x2="790" y2="208" stroke="#D7E2EC"/>
-  <text class="tableField" x="538" y="229">deviceId</text>
-  <line x1="520" y1="238" x2="790" y2="238" stroke="#D7E2EC"/>
-  <text class="tableField" x="538" y="259">fingerprint</text>
+  <rect x="560" y="249" width="270" height="146" rx="8" fill="#FFF4D9" stroke="#7B8CA3" stroke-width="2"/>
+  <rect x="560" y="249" width="270" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
+  <line x1="560" y1="297" x2="830" y2="297" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="tableTitle" x="695" y="280" text-anchor="middle">Device</text>
+  <line x1="560" y1="297" x2="830" y2="297" stroke="#D7E2EC"/>
+  <text class="tableField" x="578" y="318">deviceId</text>
+  <line x1="560" y1="327" x2="830" y2="327" stroke="#D7E2EC"/>
+  <text class="tableField" x="578" y="348">fingerprint</text>
 </g>
 <g id="ip">
-  <rect x="520" y="360" width="270" height="146" rx="8" fill="#EAF8EF" stroke="#7B8CA3" stroke-width="2"/>
-  <rect x="520" y="360" width="270" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
-  <line x1="520" y1="408" x2="790" y2="408" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="tableTitle" x="655" y="391" text-anchor="middle">IpAddress</text>
-  <line x1="520" y1="408" x2="790" y2="408" stroke="#D7E2EC"/>
-  <text class="tableField" x="538" y="429">address</text>
-  <line x1="520" y1="438" x2="790" y2="438" stroke="#D7E2EC"/>
-  <text class="tableField" x="538" y="459">network</text>
+  <rect x="560" y="519" width="270" height="146" rx="8" fill="#EAF8EF" stroke="#7B8CA3" stroke-width="2"/>
+  <rect x="560" y="519" width="270" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
+  <line x1="560" y1="567" x2="830" y2="567" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="tableTitle" x="695" y="550" text-anchor="middle">IpAddress</text>
+  <line x1="560" y1="567" x2="830" y2="567" stroke="#D7E2EC"/>
+  <text class="tableField" x="578" y="588">address</text>
+  <line x1="560" y1="597" x2="830" y2="597" stroke="#D7E2EC"/>
+  <text class="tableField" x="578" y="618">network</text>
 </g>
 <g id="phone">
-  <rect x="910" y="160" width="270" height="116" rx="8" fill="#F3ECFF" stroke="#7B8CA3" stroke-width="2"/>
-  <rect x="910" y="160" width="270" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
-  <line x1="910" y1="208" x2="1180" y2="208" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="tableTitle" x="1045" y="191" text-anchor="middle">PhoneNumber</text>
-  <line x1="910" y1="208" x2="1180" y2="208" stroke="#D7E2EC"/>
-  <text class="tableField" x="928" y="229">phoneHash</text>
+  <rect x="1000" y="249" width="270" height="116" rx="8" fill="#F3ECFF" stroke="#7B8CA3" stroke-width="2"/>
+  <rect x="1000" y="249" width="270" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
+  <line x1="1000" y1="297" x2="1270" y2="297" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="tableTitle" x="1135" y="280" text-anchor="middle">PhoneNumber</text>
+  <line x1="1000" y1="297" x2="1270" y2="297" stroke="#D7E2EC"/>
+  <text class="tableField" x="1018" y="318">phoneHash</text>
 </g>
 <g id="payment">
-  <rect x="910" y="360" width="270" height="146" rx="8" fill="#FFF0E8" stroke="#7B8CA3" stroke-width="2"/>
-  <rect x="910" y="360" width="270" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
-  <line x1="910" y1="408" x2="1180" y2="408" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="tableTitle" x="1045" y="391" text-anchor="middle">PaymentMethod</text>
-  <line x1="910" y1="408" x2="1180" y2="408" stroke="#D7E2EC"/>
-  <text class="tableField" x="928" y="429">paymentToken</text>
-  <line x1="910" y1="438" x2="1180" y2="438" stroke="#D7E2EC"/>
-  <text class="tableField" x="928" y="459">provider</text>
+  <rect x="1000" y="519" width="270" height="146" rx="8" fill="#FFF0E8" stroke="#7B8CA3" stroke-width="2"/>
+  <rect x="1000" y="519" width="270" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
+  <line x1="1000" y1="567" x2="1270" y2="567" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="tableTitle" x="1135" y="550" text-anchor="middle">PaymentMethod</text>
+  <line x1="1000" y1="567" x2="1270" y2="567" stroke="#D7E2EC"/>
+  <text class="tableField" x="1018" y="588">paymentToken</text>
+  <line x1="1000" y1="597" x2="1270" y2="597" stroke="#D7E2EC"/>
+  <text class="tableField" x="1018" y="618">provider</text>
 </g>
 <g id="referral">
-  <rect x="1300" y="260" width="270" height="116" rx="8" fill="#E9F7F5" stroke="#7B8CA3" stroke-width="2"/>
-  <rect x="1300" y="260" width="270" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
-  <line x1="1300" y1="308" x2="1570" y2="308" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="tableTitle" x="1435" y="291" text-anchor="middle">User</text>
-  <line x1="1300" y1="308" x2="1570" y2="308" stroke="#D7E2EC"/>
-  <text class="tableField" x="1318" y="329">referrer user</text>
+  <rect x="1450" y="379" width="270" height="116" rx="8" fill="#E9F7F5" stroke="#7B8CA3" stroke-width="2"/>
+  <rect x="1450" y="379" width="270" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
+  <line x1="1450" y1="427" x2="1720" y2="427" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="tableTitle" x="1585" y="410" text-anchor="middle">User</text>
+  <line x1="1450" y1="427" x2="1720" y2="427" stroke="#D7E2EC"/>
+  <text class="tableField" x="1468" y="448">referrer user</text>
 </g>
-<rect x="88" y="764" width="1624" height="62" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
-<text class="footer" x="900" y="789" text-anchor="middle">The graph stores hashes and safe tokens, not raw phone numbers or card data.</text>
-<text class="footer" x="900" y="813" text-anchor="middle">The same identifier vertex can point back to multiple users, which is the cluster signal.</text>
+<rect x="88" y="764" width="1724" height="62" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
+<text class="footer" x="950" y="789" text-anchor="middle">The graph stores hashes and safe tokens, not raw phone numbers or card data.</text>
+<text class="footer" x="950" y="813" text-anchor="middle">The same identifier vertex can point back to multiple users, which is the cluster signal.</text>
 </svg>

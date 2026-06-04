@@ -193,15 +193,15 @@ const diagrams = [
     title: "Abuser Detection Entity Graph",
     subtitle: "Users connect to identifiers; shared identifiers become review evidence",
     kind: "erd",
-    width: 1800,
+    width: 1900,
     height: 860,
     tables: [
-      ["user", "User", ["userId", "email", "risk fields"], 130, 210, colors.blue, 270],
-      ["device", "Device", ["deviceId", "fingerprint"], 520, 160, colors.amber, 270],
-      ["ip", "IpAddress", ["address", "network"], 520, 360, colors.green, 270],
-      ["phone", "PhoneNumber", ["phoneHash"], 910, 160, colors.lavender, 270],
-      ["payment", "PaymentMethod", ["paymentToken", "provider"], 910, 360, colors.orange, 270],
-      ["referral", "User", ["referrer user"], 1300, 260, colors.teal, 270],
+      ["user", "User", ["userId", "email", "risk fields"], 130, 330, colors.blue, 270],
+      ["device", "Device", ["deviceId", "fingerprint"], 560, 240, colors.amber, 270],
+      ["ip", "IpAddress", ["address", "network"], 560, 510, colors.green, 270],
+      ["phone", "PhoneNumber", ["phoneHash"], 1000, 240, colors.lavender, 270],
+      ["payment", "PaymentMethod", ["paymentToken", "provider"], 1000, 510, colors.orange, 270],
+      ["referral", "User", ["referrer user"], 1450, 370, colors.teal, 270],
     ],
     relations: [
       ["user", "device", "USES_DEVICE"],
@@ -512,6 +512,22 @@ function tableHeight(table) {
   return 86 + table[2].length * 30;
 }
 
+function layoutErdTables(diagram) {
+  const footerY = diagram.height - 96;
+  const bodyTop = diagram.erdBodyTop ?? 205;
+  const bodyBottom = diagram.erdBodyBottom ?? footerY - 55;
+  const minY = Math.min(...diagram.tables.map((item) => item[4]));
+  const maxY = Math.max(...diagram.tables.map((item) => item[4] + tableHeight(item)));
+  const contentCenter = (minY + maxY) / 2;
+  const targetCenter = (bodyTop + bodyBottom) / 2;
+  const offsetY = Math.round(targetCenter - contentCenter);
+  return diagram.tables.map((item) => {
+    const copy = [...item];
+    copy[4] += offsetY;
+    return copy;
+  });
+}
+
 function table(table) {
   const [id, title, fields, x, y, fill, width = 280] = table;
   const height = tableHeight(table);
@@ -576,6 +592,7 @@ function erdSvg(diagram) {
   const width = diagram.width;
   const height = diagram.height;
   const footerY = height - 96;
+  const tables = layoutErdTables(diagram);
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
 <defs>
   <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
@@ -590,8 +607,8 @@ function erdSvg(diagram) {
 <rect class="frame" x="34" y="28" width="${width - 68}" height="${height - 56}" rx="24"/>
 <text class="title" x="${width / 2}" y="82" text-anchor="middle">${esc(diagram.title)}</text>
 <text class="subtitle" x="${width / 2}" y="118" text-anchor="middle">${esc(diagram.subtitle)}</text>
-${diagram.relations.map(([from, to, label]) => relation(from, to, label, diagram.tables)).join("\n")}
-${diagram.tables.map(table).join("\n")}
+${diagram.relations.map(([from, to, label]) => relation(from, to, label, tables)).join("\n")}
+${tables.map(table).join("\n")}
 <rect x="88" y="${footerY}" width="${width - 176}" height="62" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
 <text class="footer" x="${width / 2}" y="${footerY + 25}" text-anchor="middle">${esc(diagram.footer[0])}</text>
 <text class="footer" x="${width / 2}" y="${footerY + 49}" text-anchor="middle">${esc(diagram.footer[1])}</text>
