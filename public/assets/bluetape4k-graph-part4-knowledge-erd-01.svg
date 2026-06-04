@@ -25,61 +25,61 @@
 <text class="title" x="800" y="82" text-anchor="middle">Knowledge Graph Entity Graph</text>
 <text class="subtitle" x="800" y="118" text-anchor="middle">Documents mention entities; entities relate to concepts and to each other</text>
 <g>
-  <path class="edge" d="M420 388 H515 V278 H610"/>
-  <rect x="455" y="306" width="120" height="28" rx="8" fill="#FFFFFF" stroke="#D7E2EC"/>
-  <text class="edgeLabel" x="515" y="325" text-anchor="middle">MENTIONS</text>
+  <path class="edge" d="M420 437 H515 V327 H610"/>
+  <rect x="455" y="355" width="120" height="28" rx="8" fill="#FFFFFF" stroke="#D7E2EC"/>
+  <text class="edgeLabel" x="515" y="374" text-anchor="middle">MENTIONS</text>
 </g>
 <g>
-  <path class="edge" d="M900 278 H995 V263 H1090"/>
-  <rect x="935" y="244" width="120" height="28" rx="8" fill="#FFFFFF" stroke="#D7E2EC"/>
-  <text class="edgeLabel" x="995" y="263" text-anchor="middle">IS_A</text>
+  <path class="edge" d="M900 327 H995 V312 H1090"/>
+  <rect x="935" y="293" width="120" height="28" rx="8" fill="#FFFFFF" stroke="#D7E2EC"/>
+  <text class="edgeLabel" x="995" y="312" text-anchor="middle">IS_A</text>
 </g>
 <g>
-  <path class="edge" d="M900 278 H995 V488 H1090"/>
-  <rect x="935" y="356" width="120" height="28" rx="8" fill="#FFFFFF" stroke="#D7E2EC"/>
-  <text class="edgeLabel" x="995" y="375" text-anchor="middle">RELATED_TO</text>
+  <path class="edge" d="M900 327 H995 V537 H1090"/>
+  <rect x="935" y="405" width="120" height="28" rx="8" fill="#FFFFFF" stroke="#D7E2EC"/>
+  <text class="edgeLabel" x="995" y="424" text-anchor="middle">RELATED_TO</text>
 </g>
 <g id="document">
-  <rect x="130" y="300" width="290" height="176" rx="8" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
-  <rect x="130" y="300" width="290" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
-  <line x1="130" y1="348" x2="420" y2="348" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="tableTitle" x="275" y="331" text-anchor="middle">Document</text>
-  <line x1="130" y1="348" x2="420" y2="348" stroke="#D7E2EC"/>
-  <text class="tableField" x="148" y="369">documentId</text>
-  <line x1="130" y1="378" x2="420" y2="378" stroke="#D7E2EC"/>
-  <text class="tableField" x="148" y="399">title</text>
-  <line x1="130" y1="408" x2="420" y2="408" stroke="#D7E2EC"/>
-  <text class="tableField" x="148" y="429">source</text>
+  <rect x="130" y="349" width="290" height="176" rx="8" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
+  <rect x="130" y="349" width="290" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
+  <line x1="130" y1="397" x2="420" y2="397" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="tableTitle" x="275" y="380" text-anchor="middle">Document</text>
+  <line x1="130" y1="397" x2="420" y2="397" stroke="#D7E2EC"/>
+  <text class="tableField" x="148" y="418">documentId</text>
+  <line x1="130" y1="427" x2="420" y2="427" stroke="#D7E2EC"/>
+  <text class="tableField" x="148" y="448">title</text>
+  <line x1="130" y1="457" x2="420" y2="457" stroke="#D7E2EC"/>
+  <text class="tableField" x="148" y="478">source</text>
 </g>
 <g id="entity">
-  <rect x="610" y="190" width="290" height="176" rx="8" fill="#EAF8EF" stroke="#7B8CA3" stroke-width="2"/>
-  <rect x="610" y="190" width="290" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
-  <line x1="610" y1="238" x2="900" y2="238" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="tableTitle" x="755" y="221" text-anchor="middle">Entity</text>
-  <line x1="610" y1="238" x2="900" y2="238" stroke="#D7E2EC"/>
-  <text class="tableField" x="628" y="259">entityId</text>
-  <line x1="610" y1="268" x2="900" y2="268" stroke="#D7E2EC"/>
-  <text class="tableField" x="628" y="289">name</text>
-  <line x1="610" y1="298" x2="900" y2="298" stroke="#D7E2EC"/>
-  <text class="tableField" x="628" y="319">type</text>
+  <rect x="610" y="239" width="290" height="176" rx="8" fill="#EAF8EF" stroke="#7B8CA3" stroke-width="2"/>
+  <rect x="610" y="239" width="290" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
+  <line x1="610" y1="287" x2="900" y2="287" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="tableTitle" x="755" y="270" text-anchor="middle">Entity</text>
+  <line x1="610" y1="287" x2="900" y2="287" stroke="#D7E2EC"/>
+  <text class="tableField" x="628" y="308">entityId</text>
+  <line x1="610" y1="317" x2="900" y2="317" stroke="#D7E2EC"/>
+  <text class="tableField" x="628" y="338">name</text>
+  <line x1="610" y1="347" x2="900" y2="347" stroke="#D7E2EC"/>
+  <text class="tableField" x="628" y="368">type</text>
 </g>
 <g id="concept">
-  <rect x="1090" y="190" width="290" height="146" rx="8" fill="#FFF4D9" stroke="#7B8CA3" stroke-width="2"/>
-  <rect x="1090" y="190" width="290" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
-  <line x1="1090" y1="238" x2="1380" y2="238" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="tableTitle" x="1235" y="221" text-anchor="middle">Concept</text>
-  <line x1="1090" y1="238" x2="1380" y2="238" stroke="#D7E2EC"/>
-  <text class="tableField" x="1108" y="259">conceptId</text>
-  <line x1="1090" y1="268" x2="1380" y2="268" stroke="#D7E2EC"/>
-  <text class="tableField" x="1108" y="289">name</text>
+  <rect x="1090" y="239" width="290" height="146" rx="8" fill="#FFF4D9" stroke="#7B8CA3" stroke-width="2"/>
+  <rect x="1090" y="239" width="290" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
+  <line x1="1090" y1="287" x2="1380" y2="287" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="tableTitle" x="1235" y="270" text-anchor="middle">Concept</text>
+  <line x1="1090" y1="287" x2="1380" y2="287" stroke="#D7E2EC"/>
+  <text class="tableField" x="1108" y="308">conceptId</text>
+  <line x1="1090" y1="317" x2="1380" y2="317" stroke="#D7E2EC"/>
+  <text class="tableField" x="1108" y="338">name</text>
 </g>
 <g id="related">
-  <rect x="1090" y="430" width="290" height="116" rx="8" fill="#F3ECFF" stroke="#7B8CA3" stroke-width="2"/>
-  <rect x="1090" y="430" width="290" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
-  <line x1="1090" y1="478" x2="1380" y2="478" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="tableTitle" x="1235" y="461" text-anchor="middle">Entity</text>
-  <line x1="1090" y1="478" x2="1380" y2="478" stroke="#D7E2EC"/>
-  <text class="tableField" x="1108" y="499">related entity</text>
+  <rect x="1090" y="479" width="290" height="116" rx="8" fill="#F3ECFF" stroke="#7B8CA3" stroke-width="2"/>
+  <rect x="1090" y="479" width="290" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
+  <line x1="1090" y1="527" x2="1380" y2="527" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="tableTitle" x="1235" y="510" text-anchor="middle">Entity</text>
+  <line x1="1090" y1="527" x2="1380" y2="527" stroke="#D7E2EC"/>
+  <text class="tableField" x="1108" y="548">related entity</text>
 </g>
 <rect x="88" y="684" width="1424" height="62" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
 <text class="footer" x="800" y="709" text-anchor="middle">Full-text or vector search finds candidates; graph paths explain why entities are connected.</text>
