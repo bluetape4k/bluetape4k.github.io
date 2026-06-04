@@ -1,0 +1,10 @@
+graph 1 6.7812 1.6944
+node app 0.89757 0.84722 1.7951 0.5 "Application Commit" rounded box black lightgrey
+node primary 3.4375 1.4444 1.2847 0.5 "Primary Store" rounded box black lightgrey
+node stream 3.4375 0.25 1.2535 0.5 "Event Stream" rounded box black lightgrey
+node future 5.9306 0.84722 1.7014 0.5 "Planned Composite" rounded box black lightgrey
+edge app primary 7 1.7955 0.89722 2.4811 0.89722 3.309 0.89722 3.309 0.89722 3.309 0.89722 3.309 1.0301 3.309 1.0301 solid black
+edge app stream 7 1.8017 0.69722 2.394 0.69722 3.059 0.69722 3.059 0.69722 3.059 0.69722 3.059 0.66487 3.059 0.66487 solid black
+edge primary future 7 3.809 1.1895 3.809 1.089 3.809 0.99722 3.809 0.99722 3.809 0.99722 4.9139 0.99722 4.9139 0.99722 solid black
+edge stream future 7 3.559 0.50439 3.559 0.64729 3.559 0.79722 3.559 0.79722 3.559 0.79722 4.9145 0.79722 4.9145 0.79722 solid black
+stop

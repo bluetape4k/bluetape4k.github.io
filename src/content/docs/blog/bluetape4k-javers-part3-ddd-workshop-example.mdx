@@ -26,8 +26,13 @@ side example.
 | `bluetape4k-workshop/exposed/javers-audit` | Product row persistence with JaVers history and diff queries |
 | `examples/javers-exposed-ddd` | Order aggregate, Exposed source of truth, JaVers audit, domain events, Redis read model |
 
+Most Java/Kotlin developers have heard of DDD, but fewer have run aggregate roots, command
+handlers, domain events, and projections together in production. JaVers in that flow is rarer
+still. This post therefore starts with the small workshop example and then reads the DDD example as
+command side plus read side, instead of assuming the reader already lives inside a DDD framework.
+
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-javers-part3-command-sequence-01.png" alt="Command handler sequence through order aggregate, Exposed store, JaVers audit, event publisher, and read model" loading="lazy" />
+  <img src="/assets/bluetape4k-javers-part3-command-sequence-01.png" alt="Command handler flow through order aggregate, Exposed store, JaVers audit, event publisher, and read model" loading="lazy" />
   <figcaption>The command side persists aggregate state, commits to JaVers, then publishes the domain event.</figcaption>
 </figure>
 
@@ -73,6 +78,17 @@ The tests verify initial, update, terminal snapshots, latest snapshot lookup, an
 The DDD example starts with an `OrderCommandHandler`. It loads or creates the aggregate, applies one
 state transition, and saves through the repository.
 
+The scenario is intentionally small. A user places an order, and later payment marks it as paid.
+The command side stores the current order in an Exposed table, records the same change as a JaVers
+snapshot, and publishes an `OrderPlaced` or `OrderMarkedPaid` event. The query side consumes the
+event and updates a Redis `OrderSummary`. Redis is not the audit log; it is the read model for
+queries and screens.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-javers-part3-example-sequence-01.png" alt="Sequence diagram from the javers-exposed-ddd README showing command handling, audit commit, event publishing, and Redis projection" loading="lazy" />
+  <figcaption>The example README sequence shows command handling, audit commit, event publishing, and Redis projection in one flow.</figcaption>
+</figure>
+
 ```kotlin
 fun handle(command: MarkOrderPaidCommand): Order {
     val current = requireNotNull(repository.load(command.orderId)) {
@@ -110,8 +126,58 @@ different stories.
 ## Read Model Is Not Audit History
 
 The example also has a Redis-backed `OrderSummary` projection. That is a query-side read model, not
-the audit log itself. JaVers answers "how did this object change?" The read model answers "what does
-the screen need now?" They can work together, but they should not be confused.
+the audit log itself. When that line gets blurry, teams are likely to try using JaVers snapshots as
+a replacement for every read model. JaVers answers "how did this object change?" The read model
+answers "what does the screen need now?" They can work together, but they should not be confused.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-javers-part3-example-cqrs-flow-01.png" alt="CQRS flow diagram from the javers-exposed-ddd README" loading="lazy" />
+  <figcaption>The source-of-truth store, JaVers audit store, Kafka event stream, and Redis read model have separate responsibilities.</figcaption>
+</figure>
+
+## CDC, Envers, and JaVers
+
+CDC, Hibernate Envers, and JaVers all sit near audit history, but they start from different places.
+
+| Option | Starts from | Best fit |
+|---|---|---|
+| CDC | Database log | Stream database changes to external systems |
+| Hibernate Envers | JPA entity revision | Fast entity-level revision tables in a JPA application |
+| JaVers | Domain object commit | Object diffs, commit metadata, and DDD command/event audit flow |
+
+The current example benchmark should also be stated plainly. In the documented H2 benchmark for
+`examples/javers-exposed-ddd`, Hibernate Envers is faster:
+
+| Scenario | Hibernate Envers ms/op | JaVers + Exposed ms/op |
+|---|---:|---:|
+| insert | 1.049 | 3.627 |
+| update | 1.383 | 2.848 |
+| audit-query | 8.010 | 105.339 |
+
+This is a narrow persistence benchmark, not a reason to dismiss JaVers. The JaVers + Exposed
+example is valuable when explicit aggregate commits, commit metadata, domain events, and CQRS
+projection are part of the design. But the latency gap is real. The audit-query path especially
+needs follow-up work around repository queries, snapshot materialization, codec overhead, and index
+design.
+
+## Next Steps
+
+`bluetape4k-javers` is not finished. The examples in this post make the next improvement areas
+clear, and I plan to evolve the library in these directions.
+
+| Plan | Expected benefit |
+|---|---|
+| Analyze JaVers + Exposed latency and move benchmarks into a benchmark module | Make the Envers gap explicit and identify query, codec, and index work |
+| Push common Exposed JQL filters down to SQL | Reduce audit-query cost when many snapshots exist |
+| Add an Exposed + Kafka composite repository | Keep queryable history in SQL while streaming the same snapshot events to Kafka |
+| Add Kafka snapshot publishing and pluggable event pipeline adapters | Make Spring events, NATS, and other event paths easier to attach |
+| Design a read-capable Kafka audit projection path | Extend Kafka from a write-only stream into a projection-backed read flow |
+| Clarify Redis repository parity and Redisson near-cache strategy | Make Lettuce/Redisson selection clearer and lower hot snapshot read latency |
+| Evaluate R2DBC persistence | Support coroutine/R2DBC services without blocking JDBC as the only SQL path |
+| Add Spring Boot auto-configuration | Start JaVers repository wiring with less application setup |
+| Make Exposed schema mapping configurable | Fit production naming rules, schema separation, and multi-tenant layouts |
+| Strengthen codec compatibility and security checks | Manage snapshot format compatibility and reduce JDK serialization risk |
+| Add Spring transaction coverage for DDD event publishing | Make aggregate persistence, JaVers commit, and event publishing boundaries safer |
 
 ## Adoption Checklist
 
