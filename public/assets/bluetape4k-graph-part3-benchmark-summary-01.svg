@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1460" height="820" viewBox="0 0 1460 820">
+<defs><style>
+    .canvas{fill:#F6F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
+    .title{font-family:"Architects Daughter","Comic Sans MS",cursive;font-size:42px;fill:#22344A;font-weight:400}
+    .subtitle,.footer,.axis{font-family:"Comic Mono","Comic Sans MS",sans-serif;font-size:17px;fill:#536476;font-weight:400}
+    .nodeTitle{font-family:"Architects Daughter","Comic Sans MS",cursive;font-size:24px;fill:#22344A;font-weight:400}
+    .nodeBody{font-family:"Comic Mono","Comic Sans MS",sans-serif;font-size:16px;fill:#3F5269;font-weight:400}
+    .tableTitle{font-family:"Architects Daughter","Comic Sans MS",cursive;font-size:24px;fill:#22344A;font-weight:400}
+    .tableField,.edgeLabel{font-family:"Comic Mono","Comic Sans MS",sans-serif;font-size:15px;fill:#3F5269;font-weight:400}
+    .edge{fill:none;stroke:#496A8F;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    .bus{fill:none;stroke:#496A8F;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+    .lifeline{stroke:#91A6BD;stroke-width:2;stroke-dasharray:8 8}
+    g[id]{filter:url(#shadow)}
+  </style></defs>
+<rect class="canvas" width="1460" height="820"/>
+<rect class="frame" x="34" y="28" width="1392" height="764" rx="24"/>
+<text class="title" x="730" y="82" text-anchor="middle">Graph I/O Quick-Run Latency</text>
+<text class="subtitle" x="730" y="118" text-anchor="middle">Small graph export/import benchmark, milliseconds per operation, lower is better</text>
+<text class="axis" x="350" y="145">log scale, lower is better</text>
+<g>
+  <text class="nodeBody" x="322" y="195" text-anchor="end">CSV export</text>
+  <rect x="350" y="170" width="102" height="36" rx="9" fill="#EAF4FF" stroke="#7B8CA3"/>
+  <text class="nodeBody" x="470" y="195">1.017 ms/op</text>
+</g>
+<g>
+  <text class="nodeBody" x="322" y="265" text-anchor="end">Jackson3 export</text>
+  <rect x="350" y="240" width="120" height="36" rx="9" fill="#EAF8EF" stroke="#7B8CA3"/>
+  <text class="nodeBody" x="488" y="265">1.275 ms/op</text>
+</g>
+<g>
+  <text class="nodeBody" x="322" y="335" text-anchor="end">GraphML export</text>
+  <rect x="350" y="310" width="186" height="36" rx="9" fill="#FFF4D9" stroke="#7B8CA3"/>
+  <text class="nodeBody" x="554" y="335">2.582 ms/op</text>
+</g>
+<g>
+  <text class="nodeBody" x="322" y="405" text-anchor="end">CSV import</text>
+  <rect x="350" y="380" width="429" height="36" rx="9" fill="#EAF4FF" stroke="#7B8CA3"/>
+  <text class="nodeBody" x="797" y="405">17.9 ms/op</text>
+</g>
+<g>
+  <text class="nodeBody" x="322" y="475" text-anchor="end">Jackson3 import</text>
+  <rect x="350" y="450" width="444" height="36" rx="9" fill="#EAF8EF" stroke="#7B8CA3"/>
+  <text class="nodeBody" x="812" y="475">19.9 ms/op</text>
+</g>
+<g>
+  <text class="nodeBody" x="322" y="545" text-anchor="end">GraphML import</text>
+  <rect x="350" y="520" width="452" height="36" rx="9" fill="#FFF4D9" stroke="#7B8CA3"/>
+  <text class="nodeBody" x="820" y="545">21.1 ms/op</text>
+</g>
+<g>
+  <text class="nodeBody" x="322" y="615" text-anchor="end">GraphML before caching</text>
+  <rect x="350" y="590" width="880" height="36" rx="9" fill="#FFF0F1" stroke="#7B8CA3"/>
+  <text class="nodeBody" x="1248" y="615">413.0 ms/op</text>
+</g>
+<rect x="88" y="724" width="1284" height="62" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
+<text class="footer" x="730" y="749" text-anchor="middle">Source: docs/benchmark/2026-04-18-graph-io-bulk-results.md, quick-run @Fork(0).</text>
+<text class="footer" x="730" y="773" text-anchor="middle">Use this smoke result for regression checks; run longer raw-JSON benchmarks for variance.</text>
+</svg>

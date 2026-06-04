@@ -1,0 +1,13 @@
+graph 1 17.913 1.2292
+node service 0.39236 0.5 0.78472 0.5 Service rounded box black lightgrey
+node ops 4.5521 0.5 1.5139 0.5 GraphOperations rounded box black lightgrey
+node tx 9.2847 0.5 1.6181 0.5 "Transaction Scope" rounded box black lightgrey
+node adapter 13.523 0.5 1.441 0.5 "Storage Adapter" rounded box black lightgrey
+node db 17.411 0.5 1.0035 0.5 "Graph DB" rounded box black lightgrey
+edge service ops 4 0.79121 0.41667 0.79121 0.41667 3.6303 0.41667 3.6303 0.41667 "1. transaction { ... }" 2.2899 1.1146 solid black
+edge service ops 4 0.79121 0.58333 0.79121 0.58333 3.6303 0.58333 3.6303 0.58333 "6. neighbors / shortestPath" 2.2899 0.11458 solid black
+edge ops tx 4 5.3125 0.5 5.3125 0.5 8.3108 0.5 8.3108 0.5 "2. expose CRUD-only scope" 6.8924 0.61458 solid black
+edge tx adapter 4 10.097 0.41667 10.097 0.41667 12.638 0.41667 12.638 0.41667 "3. createVertices batch" 11.448 1.1146 solid black
+edge tx adapter 4 10.097 0.58333 10.097 0.58333 12.638 0.58333 12.638 0.58333 "4. createEdges batch" 11.448 0.11458 solid black
+edge adapter db 4 14.249 0.5 14.249 0.5 16.745 0.5 16.745 0.5 "5. commit or rollback" 15.576 0.61458 solid black
+stop

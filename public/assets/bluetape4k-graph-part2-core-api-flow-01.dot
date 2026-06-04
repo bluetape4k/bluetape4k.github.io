@@ -1,0 +1,14 @@
+digraph G {
+  graph [rankdir=LR, splines=ortho, nodesep=0.7, ranksep=1.0];
+  node [shape=box, style=rounded];
+  "service" [label="Domain Service"];
+  "ops" [label="GraphOperations"];
+  "schema" [label="Schema DSL"];
+  "execution" [label="Execution Models"];
+  "adapter" [label="Graph Storage Adapter"];
+  "service" -> "ops";
+  "service" -> "schema";
+  "ops" -> "execution";
+  "schema" -> "execution";
+  "execution" -> "adapter";
+}

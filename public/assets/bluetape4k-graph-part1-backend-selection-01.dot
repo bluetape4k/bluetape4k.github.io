@@ -1,0 +1,15 @@
+digraph G {
+  graph [rankdir=LR, splines=ortho, nodesep=0.7, ranksep=1.0];
+  node [shape=box, style=rounded];
+  "app" [label="Application Graph Workload"];
+  "neo4j" [label="Neo4j"];
+  "memgraph" [label="Memgraph"];
+  "age" [label="Apache AGE"];
+  "tinker" [label="TinkerGraph"];
+  "falkor" [label="FalkorDB"];
+  "app" -> "neo4j";
+  "app" -> "memgraph";
+  "app" -> "age";
+  "app" -> "tinker";
+  "app" -> "falkor";
+}

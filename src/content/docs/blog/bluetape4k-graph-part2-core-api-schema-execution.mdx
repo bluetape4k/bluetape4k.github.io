@@ -1,0 +1,122 @@
+---
+title: "Bluetape4k Graph Part 2: Core API and Execution Models"
+description: How graph-core organizes GraphOperations, schema DSL, batch writes, transactions, merge, virtual threads, and coroutine APIs.
+sidebar:
+  order: -202606041531
+blog:
+  date: 2026-06-04T15:31:00+09:00
+  image: /assets/bluetape4k-graph-part2-hero.png
+  imageAlt: Robotic builders assembling GraphOperations, Schema DSL, transaction, and coroutine execution model blocks on a 3D workbench
+  cardDescription: "The core API reduces repeated service code without pretending every graph storage behaves the same."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-graph-part2-hero.png" alt="Robotic builders assembling GraphOperations, Schema DSL, transaction, and coroutine execution model blocks on a 3D workbench" loading="eager" />
+  <figcaption>The point of a common API is to reduce repetition, not to hide reality.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-04 · bluetape4k-graph series · Part 2</p>
+
+Part 1 covered graph storage selection. This part looks at `graph-core`, the common layer I wanted before the adapters
+grew too much service-specific code. The goal is simple: service code should speak in vertices, edges, traversal, and
+algorithms while graph storage adapters handle driver and query details. Without that boundary, every service slowly
+grows its own tiny graph framework. Most of those frameworks are loved only on the day they are born.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-graph-part2-core-api-flow-01.png" alt="Core API execution flow from domain service to GraphOperations, Schema DSL, execution models, and graph storage adapter" loading="lazy" />
+  <figcaption>Service code depends on graph concepts; execution and storage selection stay outside the domain flow.</figcaption>
+</figure>
+
+| Area | Representative methods | What service code gets |
+|---|---|---|
+| Session | `createGraph`, `dropGraph`, `graphExists` | graph lifecycle for fixtures or tenant graphs |
+| Vertex | `createVertex`, `createVertices`, `findVertexById`, `updateVertex`, `deleteVertex` | node CRUD without direct driver code |
+| Edge | `createEdge`, `createEdges`, `findEdgesByLabel`, `findEdgesByStartId`, `findEdgesByEndId` | relationship CRUD and evidence lookup |
+| Traversal | `neighbors`, `shortestPath`, `allPaths`, `aStarPath` | shared identity, recommendations, and path queries |
+| Algorithm | `pageRank`, `degreeCentrality`, `connectedComponents`, `bfs`, `dfs`, `detectCycles` | ranking, components, traversal visits, and cycle checks |
+
+```kotlin
+val people = ops.createVertices(
+    "Person",
+    listOf(
+        mapOf("email" to "alice@example.com", "name" to "Alice"),
+        mapOf("email" to "bob@example.com", "name" to "Bob"),
+    )
+)
+
+ops.createEdges(
+    "KNOWS",
+    listOf(BatchEdge(people[0].id, people[1].id, mapOf("since" to 2026)))
+)
+```
+
+The default batch methods can loop over single-row APIs so every adapter can provide a baseline. Production adapters can
+override them with native batch writes and all-or-fail semantics. The common API should not force slow behavior; it
+should provide the shared contract and let storage-specific implementations do the efficient thing when they can.
+
+## Schema, transaction, and merge
+
+Schema is declared with `VertexLabel` and `EdgeLabel`, similar to Exposed table objects.
+
+```kotlin
+object PersonLabel : VertexLabel("Person") {
+    val email = string("email")
+    val name = string("name")
+}
+```
+
+Schema management is not equally portable across graph storage engines. `schemaManager()` opens only when the selected
+adapter can actually create the requested indexes or constraints. If a storage engine cannot safely provide that DDL,
+the library fails with `UnsupportedOperationException` instead of returning success for a no-op. A missing unique
+constraint should fail during setup or tests, not after production traffic has trusted it. A green setup log with no
+actual constraint behind it is the kind of surprise that gets expensive quickly.
+
+<figure class="bt4k-sequence">
+  <img src="/assets/bluetape4k-graph-part2-transaction-sequence-01.png" alt="Transaction and batch write sequence for GraphOperations" loading="lazy" />
+  <figcaption>Transaction blocks expose CRUD work and leave lifecycle commands to storage-specific code.</figcaption>
+</figure>
+
+Merge follows the same rule. `mergeVertex` requires non-empty match properties and refuses to overwrite identity keys.
+If the selected storage cannot provide atomic merge semantics, the library fails fast rather than pretending a
+read-then-write fallback is safe under concurrency. “Usually safe” is not a comforting phrase when duplicate identity
+vertices start showing up under concurrent traffic.
+
+## Execution models and benchmark shape
+
+| Model | Good fit |
+|---|---|
+| Sync | Single operations, tests, ordinary blocking drivers |
+| Virtual Threads | Blocking drivers under higher concurrency |
+| Coroutine | Ktor or coroutine-native service composition |
+
+<figure class="bt4k-chart">
+  <img src="/assets/bluetape4k-graph-part2-api-model-benchmark-01.png" alt="API model benchmark chart for BFS latency with sync, virtual thread, and coroutine models" loading="lazy" />
+  <figcaption>Single in-memory BFS favors sync; launch/create overhead favors coroutines. The workload decides.</figcaption>
+</figure>
+
+The `ApiModelBenchmark` smoke run used GraalVM JDK 25.0.3, JMH one fork, one warmup iteration, three measurement
+iterations, one second per iteration, and `-prof gc`. PageRank throughput was 138,943.484 ops/s for sync, 40,283.460
+ops/s for virtual threads, and 36,879.554 ops/s for coroutine Flow. BFS depth=5 latency was 4.724 us/op for sync,
+18.668 us/op for virtual threads, and 20.244 us/op for coroutine Flow. These are short smoke results, so read the
+Error column in the source before treating the ranking as release-grade evidence.
+
+So coroutines are not the “always faster” model. Use them when Kotlin composition, cancellation, and structured
+concurrency matter. Use virtual threads when a Spring MVC service needs to run blocking graph drivers at higher
+concurrency. Execution model selection is not a preference poll; it follows the request path and the driver behavior.
+
+## Sources
+
+- [GraphOperations](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/graph/graph-core/src/main/kotlin/io/bluetape4k/graph/repository/GraphOperations.kt)
+- [GraphVertexRepository](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/graph/graph-core/src/main/kotlin/io/bluetape4k/graph/repository/GraphVertexRepository.kt)
+- [GraphTraversalRepository](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/graph/graph-core/src/main/kotlin/io/bluetape4k/graph/repository/GraphTraversalRepository.kt)
+- [GraphAlgorithmRepository](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/graph/graph-core/src/main/kotlin/io/bluetape4k/graph/repository/GraphAlgorithmRepository.kt)
+- [GraphMergeOperations](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/graph/graph-core/src/main/kotlin/io/bluetape4k/graph/repository/GraphMergeOperations.kt)
+- [GraphTransactionScope](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/graph/graph-core/src/main/kotlin/io/bluetape4k/graph/repository/GraphTransactionScope.kt)
+- [API model benchmark](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/docs/benchmark/2026-05-21-api-model-results.md)
+
+## Series
+
+- Part 1: [Database Selection Map](/blog/bluetape4k-graph-part1-overview-database-selection/)
+- Part 2: [Core API and Execution Models](/blog/bluetape4k-graph-part2-core-api-schema-execution/)
+- Part 3: [Graph I/O and Benchmarks](/blog/bluetape4k-graph-part3-graph-io-benchmarks/)
+- Part 4: [Workshop Scenarios and Service Integration](/blog/bluetape4k-graph-part4-workshop-service-integration/)
