@@ -1,0 +1,21 @@
+digraph AwsPart4ComparisonMap {
+  graph [rankdir=TB, bgcolor="#ffffff", pad=0.35, nodesep=0.56, ranksep=0.70, splines=ortho]
+  node [shape=box, style="rounded,filled", fontname="Architects Daughter", fontsize=12, margin="0.12,0.08", color="#94a3b8", fillcolor="#f8fafc"]
+  edge [fontname="Comic Mono", fontsize=10, color="#64748b", penwidth=1.4, arrowsize=0.7]
+
+  question [label="Application question\nWhich integration owns AWS wiring?", fillcolor="#f8fafc", color="#94a3b8"]
+  spring [label="Spring Cloud AWS\nSpring Boot starters, templates, listeners", fillcolor="#dcfce7", color="#22c55e"]
+  bluetape [label="bluetape4k-aws\nKotlin helpers, Spring Boot 4 or Ktor 3", fillcolor="#e0f2fe", color="#38bdf8"]
+  springFocus [label="Spring-first boundary\nBoot auto-config and Spring idioms", fillcolor="#f0fdf4", color="#16a34a"]
+  bluetapeFocus [label="Kotlin/JVM boundary\ncoroutines, CRT, explicit dependencies", fillcolor="#ecfeff", color="#06b6d4"]
+  shared [label="Shared AWS reality\nIAM, retries, idempotency, provisioning", fillcolor="#fef3c7", color="#f59e0b"]
+  decision [label="Decision\nChoose one owner per service boundary", fillcolor="#fff7ed", color="#fb923c"]
+
+  question -> spring
+  question -> bluetape
+  spring -> springFocus
+  bluetape -> bluetapeFocus
+  springFocus -> shared
+  bluetapeFocus -> shared
+  shared -> decision
+}

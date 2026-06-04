@@ -1,0 +1,223 @@
+---
+title: "Bluetape4k AWS Part 4: Comparing with Spring Cloud AWS"
+description: A comparison of Spring Cloud AWS and bluetape4k-aws by Spring integration, Kotlin coroutines, Ktor support, CRT-backed S3 transfer, and operational ownership.
+sidebar:
+  order: -202606040200
+blog:
+  date: 2026-06-04T02:00:00+09:00
+  image: /assets/bluetape4k-aws-part4-hero.png
+  imageAlt: A 3D illustration of small robotic operators comparing AWS service blocks on a scale between a green Spring workbench and a blue Kotlin workbench
+  cardDescription: "A comparison of Spring Cloud AWS and bluetape4k-aws by ownership boundary rather than feature count."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-aws-part4-hero.png" alt="A 3D illustration of small robotic operators comparing AWS service blocks on a scale between a green Spring workbench and a blue Kotlin workbench" loading="eager" />
+  <figcaption>The point of comparison is not to pick a winner. It is to decide where repeated AWS work should live.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-04 · bluetape4k-aws series · Part 4</p>
+
+This is Part 4 of the `bluetape4k-aws` series. Part 1 covered the
+[repository overview and mental model](/blog/bluetape4k-aws-part1-overview/), Part 2 mapped the
+[core modules and AWS service coverage](/blog/bluetape4k-aws-part2-core-modules-service-coverage/), and
+Part 3 covered [Spring Boot and Ktor integration](/blog/bluetape4k-aws-part3-spring-boot-ktor-examples/).
+This post compares `bluetape4k-aws` with Spring Cloud AWS, one of the best-known AWS integration libraries
+in the Java and Spring ecosystem.
+
+The premise matters. Today, `bluetape4k-aws` approaches the problem differently from Spring Cloud AWS.
+Spring Cloud AWS is a Spring-first integration layer that makes AWS managed services easier to use inside
+Spring Boot applications. `bluetape4k-aws` starts from the AWS Java SDK v2 and AWS Kotlin SDK, then provides
+helpers for repeated Kotlin/JVM service work. Those shared helpers are then connected to Spring Boot 4 or
+Ktor 3.
+
+That difference in direction does not mean the target feature set is narrow. Over time, `bluetape4k-aws`
+is intended to cover the convenience features Spring Cloud AWS provides for Spring Boot. At the same time,
+the Ktor integration will continue to grow. The goal is to offer Spring-friendly convenience and Ktor-friendly
+coroutine runtime support over the same AWS helper layer.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-aws-part4-comparison-map-01.png" alt="Comparison map between Spring Cloud AWS and bluetape4k AWS by ownership boundary" loading="lazy" />
+  <figcaption>Both libraries sit on the AWS SDK family, but they place repeated work at different boundaries.</figcaption>
+</figure>
+
+## How to Read This Comparison
+
+If a service is Spring Boot-only, the team already knows Spring Cloud conventions, and the templates,
+listeners, and external configuration features in Spring Cloud AWS are enough, Spring Cloud AWS is the
+obvious first option. It has established documentation and ecosystem fit, and it explains AWS integration
+through Spring Boot auto-configuration.
+
+`bluetape4k-aws` chooses a different starting point. Spring Cloud AWS first improves the Spring application
+experience. `bluetape4k-aws` first builds Kotlin/JVM helpers, then places Spring Boot 4 or Ktor 3 adapters
+on top. On the Java SDK v2 side, it makes CRT-backed HTTP clients and S3 TransferManager usage easy to adopt.
+On the AWS Kotlin SDK side, CRT is the default HTTP engine while still allowing a different engine when a
+service needs one.
+
+So this post is not a verdict that one library should replace the other. The current boundaries are different.
+The long-term direction for `bluetape4k-aws` is to keep adding Spring Cloud AWS-style convenience to the
+Spring Boot 4 adapter while also expanding matching Ktor 3 capabilities. Ktor services, coroutine-first
+helpers, CRT-backed large S3 transfers, Exposed database registry support, and local-emulator testing make
+the `bluetape4k-aws` boundary clearer.
+
+## Same Problem, Different Ownership
+
+Both libraries reduce the amount of AWS SDK work application code repeats. The difference is what the
+framework owns and what the application must choose explicitly.
+
+| Comparison point | Spring Cloud AWS | bluetape4k-aws |
+|---|---|---|
+| Starting point | Make AWS managed services easy in the Spring Boot and Spring Cloud ecosystem. | Reduce repeated AWS SDK work in Kotlin/JVM services. |
+| Framework scope | Spring Boot starters, auto-configuration, Spring templates, annotation listeners. | Shared `aws-java`, `aws-kotlin`, and `aws-exposed` helpers with Spring Boot 4 or Ktor 3 adapters. Spring Boot convenience keeps expanding. |
+| SDK stance | Connect AWS Java SDK v2 to Spring Boot auto-configuration. | Cover AWS Java SDK v2 and AWS Kotlin SDK with Kotlin extensions, coroutines, and DSL builders. |
+| Async support | Wrap AWS SDK async clients through Spring messaging, listener, and container abstractions. | Connect `CompletableFuture`, `suspend`, and `Flow` explicitly so application code can stay coroutine-shaped. |
+| Large S3 transfer | Provide S3 integration and template/resource models. | Emphasize CRT clients and S3 TransferManager helpers, exposed through `S3TransferOperations` in the Spring Boot adapter. |
+| Ktor | Not a target framework. | Provide Ktor 3 plugins, SigV4, S3 REST client, SQS consumer, DynamoDB plugin, and Exposed plugin. |
+| Dependency policy | Starters bring the auto-configuration and dependencies a Spring Boot application needs. | Keep AWS service dependencies explicit where possible, so the application chooses the SDK modules it needs. |
+| Local testing | Provides test/Testcontainers support and samples. | Uses Floci-first, LocalStack fallback, and Testcontainers-backed examples throughout the series. |
+
+The important distinction is not feature count. If Spring should own AWS integration inside a Spring Boot
+application, Spring Cloud AWS is a good fit. If a service should start from Kotlin/JVM AWS helpers and then
+choose Spring Boot 4 or Ktor 3 on top, `bluetape4k-aws` fits that direction. Over time, the Spring Boot adapter
+is expected to grow closer to the convenience scope Spring Cloud AWS provides.
+
+## Where Spring Cloud AWS Fits Well
+
+Spring Cloud AWS is designed around Spring Cloud and Spring Boot applications. Its current README targets
+Spring Cloud AWS 4.x at Spring Boot 4.0.x, Spring Framework 7.0.x, and AWS Java SDK 2.x. Its documentation
+covers S3, SNS, SES, Parameter Store, Secrets Manager, SQS, CloudWatch, DynamoDB, Spring Integration AWS,
+and Kinesis Stream Binder.
+
+It is the right first library to evaluate when:
+
+- The application is Spring Boot-centered and should manage AWS integration through Spring beans, properties, and starters.
+- SQS consumers should be explained through `@SqsListener` and Spring message conversion.
+- S3 should be used with `S3Template`, resource abstractions, and Spring Boot configuration properties.
+- Secrets Manager or Parameter Store should become Spring external configuration.
+- The team already works with Spring Cloud release trains, starter BOMs, actuator, and observability conventions.
+
+The advantage is not just the number of features. A Spring Boot team can explain AWS integration using
+language it already knows. Spring Cloud AWS reduces repeated setup and opens extension points in a familiar
+Spring style.
+
+## What bluetape4k-aws Solves Differently
+
+`bluetape4k-aws` starts in a different place. It has a Spring Boot adapter, but the center of the project is
+not Spring. It is the repeated work Kotlin/JVM services face when they use AWS SDKs directly. The core modules
+come first, and framework adapters sit on top. Because of that structure, the current feature set is not a
+one-to-one copy of Spring Cloud AWS. The intended direction is to keep adding Spring Boot convenience to
+`bluetape4k-aws-spring-boot` while connecting the same helper layer to Ktor adapters as well.
+
+The first difference is SDK choice. `bluetape4k-aws-java` gives AWS Java SDK v2 services sync, async, and
+coroutine extensions. For S3, it can create CRT-backed `S3AsyncClient` instances and provides upload/download
+helpers around `S3TransferManager`. Large-file transfer often needs more than small object APIs, so this is
+treated as a primary usage path. `S3ClientFactory` also provides virtual-thread executor support when creating
+transfer managers.
+
+The second difference is AWS Kotlin SDK support. `bluetape4k-aws-kotlin` keeps native `suspend` APIs and DSL
+builders while using CRT as the default HTTP engine. A service can inject another `HttpClientEngine` when it
+needs to, but the default flow is CRT-backed. Kotlin services can compare and choose Java SDK v2 helpers and
+Kotlin SDK helpers inside the same project.
+
+The third difference is Ktor. Spring Cloud AWS targets Spring applications, while `bluetape4k-aws` provides
+a separate Ktor 3 adapter. `AwsSigV4Plugin`, `S3KtorClient`, `SqsConsumer`, `DynamoDbKtorPlugin`, and
+`AwsExposedPlugin` do not imitate Spring Boot auto-configuration. They connect AWS work through Ktor's
+`install(...)`, route helper, and lifecycle event model. Future Spring Boot adapter conveniences should also
+be mapped into Ktor-friendly usage where that makes sense.
+
+The fourth difference is dependency ownership. `bluetape4k-aws` does not try to bring every AWS service
+dependency into the application. The application declares the SDK modules it actually uses. The library
+provides helpers and adapters, while the service chooses which AWS clients are present at runtime. That makes
+configuration more visible, but it also keeps module graphs and production binaries intentional.
+
+## SQS and S3 Show the Difference
+
+SQS shows the personality of both libraries. Spring Cloud AWS provides `SqsTemplate`,
+`SqsMessageListenerContainer`, `@SqsListener`, message conversion, acknowledgement, batch processing, and
+observability features. In Spring Boot applications, the queue listener can be described inside the Spring
+bean lifecycle.
+
+`bluetape4k-aws-spring-boot` also provides `@SqsListener` and coroutine listener containers. Today it is not
+trying to claim full Spring Cloud AWS abstraction parity. It focuses on reducing repeated SQS receive, delete,
+visibility timeout, retry, and manual acknowledgement code in Kotlin coroutine handlers. On the Ktor side,
+`SqsConsumer` remains a plugin that manages polling through application start and stop lifecycle events.
+
+S3 follows the same pattern. Spring Cloud AWS is convenient when a Spring application wants to handle S3
+through templates and resource abstractions. `bluetape4k-aws` goes one level closer to SDK execution. Small
+object operations use coroutine templates and helpers, while large file transfers use CRT-backed async clients
+and `S3TransferManager`. The Spring Boot adapter exposes that through `S3TransferOperations`, and the core
+module provides transfer manager extensions.
+
+This is not only a performance point. In production code, it matters whether the service can state which HTTP
+client and transfer runtime its S3 path uses. `bluetape4k-aws` keeps that decision in configuration, client
+factories, and operation helpers instead of hiding it completely inside the framework.
+
+## Can They Be Used Together?
+
+Yes, but one AWS boundary should have one owner. If the same Spring Boot application lets Spring Cloud AWS and
+`bluetape4k-aws-spring-boot` both manage the same SQS queue listener, ownership of receive loops, ack, retry,
+and visibility timeout becomes unclear.
+
+Reasonable combinations look like this:
+
+- Let Spring Cloud AWS own Spring-centered SQS/S3/config integration in a Spring Boot application.
+- Use only `bluetape4k-aws-java` or `bluetape4k-aws-kotlin` in modules that need Kotlin helpers.
+- Use `bluetape4k-aws-ktor` in Ktor services while sharing AWS helper conventions with Spring Boot services.
+- Put large S3 transfers that need CRT and TransferManager behind a separate `bluetape4k-aws-java` boundary.
+
+The key is to avoid duplicate ownership. The same queue, bucket operation, or configuration source should not
+be owned by both libraries at once.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-aws-part4-decision-guide-01.png" alt="Decision guide for choosing Spring Cloud AWS or bluetape4k AWS by workload shape" loading="lazy" />
+  <figcaption>The decision point is not framework preference. It is where repeated AWS work should live.</figcaption>
+</figure>
+
+## Decision Guide
+
+Use these as current starting points.
+
+| Situation | First option to evaluate |
+|---|---|
+| The application is Spring Boot-based and Spring Cloud conventions are already the team standard. | Spring Cloud AWS |
+| AWS integration should be described through Spring starters, properties, templates, and listeners. | Spring Cloud AWS |
+| AWS Java SDK v2 async clients need coroutine-centered helpers. | bluetape4k-aws-java |
+| AWS Kotlin SDK should use CRT by default with DSL helpers. | bluetape4k-aws-kotlin |
+| A Spring Boot 4 service or Ktor 3 service should sit on the same AWS helper rules. | bluetape4k-aws |
+| Ktor needs SigV4, an S3 REST client, SQS consumer, or DynamoDB plugin. | bluetape4k-aws-ktor |
+| Large S3 file transfer should explicitly use CRT and TransferManager. | bluetape4k-aws-java / bluetape4k-aws-spring-boot |
+| Exposed database registry should connect to AWS Secrets Manager or Parameter Store. | bluetape4k-aws-exposed / bluetape4k-aws-spring-boot |
+
+This table is not a ranking. Spring Cloud AWS is a mature choice for running Spring applications in a Spring
+way. `bluetape4k-aws` is a choice for reducing repeated AWS SDK work in Kotlin/JVM services and letting the
+selected framework, Spring Boot 4 or Ktor 3, use the same helper layer. The goal is to keep absorbing Spring
+Boot convenience features from Spring Cloud AWS while expanding Ktor integration at the same time.
+
+## Operational Responsibilities Remain
+
+No library removes AWS operational responsibility. IAM policy, encryption, timeout, retry, idempotency, queue
+ordering, DLQs, S3 multipart thresholds, DynamoDB capacity, table migration, and gaps between local emulators
+and real AWS still belong to the application and its operating environment.
+
+For SNS HTTP endpoints in particular, signature validation must remain an application responsibility.
+The SNS parser in `bluetape4k-aws-spring-boot` makes it easier to read message type, topic ARN, token, and
+payload. It is not a security boundary that completes authentication. The same principle applies when using
+Spring Cloud AWS. Libraries can help parse and wire messages; the trust boundary must still be designed.
+
+## Source Links
+
+- Spring Cloud AWS: [GitHub README](https://github.com/awspring/spring-cloud-aws)
+- Spring Cloud AWS 4.0.2: [Reference documentation](https://docs.awspring.io/spring-cloud-aws/docs/4.0.2/reference/html/index.html)
+- bluetape4k-aws: [GitHub repository](https://github.com/bluetape4k/bluetape4k-aws)
+- bluetape4k-aws: [`aws-spring-boot` README](https://github.com/bluetape4k/bluetape4k-aws/tree/develop/aws-spring-boot)
+- bluetape4k-aws: [`aws-ktor` README](https://github.com/bluetape4k/bluetape4k-aws/tree/develop/aws-ktor)
+
+The next post will walk through real examples from `examples/` and `bluetape4k-workshop/aws` in more detail.
+This post set the selection criteria; Part 5 will show how those criteria turn into code.
+
+## Series Links
+
+- [Part 1: bluetape4k-aws overview](/blog/bluetape4k-aws-part1-overview/)
+- [Part 2: core modules and AWS service coverage](/blog/bluetape4k-aws-part2-core-modules-service-coverage/)
+- [Part 3: Spring Boot and Ktor integration](/blog/bluetape4k-aws-part3-spring-boot-ktor-examples/)
+- [Part 4: bluetape4k-aws vs Spring Cloud AWS](/blog/bluetape4k-aws-part4-vs-spring-cloud-aws/)
+- [Part 5: applying the real examples](/blog/bluetape4k-aws-part5-real-world-examples/)

@@ -1,0 +1,17 @@
+graph 1 9.161 4.2225
+node app 1.3023 2.1113 2.6046 0.63917 "Workload shape\nframework and runtime needs" rounded,filled box #94a3b8 #f8fafc
+node springOnly 4.7524 3.9029 2.5525 0.63917 "Spring Boot only\nSpring Cloud idioms already fit" rounded,filled box #22c55e #dcfce7
+node kotlin 4.7524 2.7085 2.9067 0.63917 "Kotlin coroutine service\nJava SDK v2 or Kotlin SDK helpers" rounded,filled box #38bdf8 #e0f2fe
+node ktor 4.7524 1.514 2.4796 0.63917 "Ktor runtime\nplugins, SigV4, SQS consumer" rounded,filled box #a855f7 #f3e8ff
+node transfer 4.7524 0.31958 2.3442 0.63917 "S3 large transfer\nCRT and TransferManager" rounded,filled box #f59e0b #fef3c7
+node outcome1 8.0306 3.9029 2.2608 0.5 "Prefer Spring Cloud AWS" rounded,filled box #16a34a #f0fdf4
+node outcome2 8.0306 1.514 2.0942 0.5 "Prefer bluetape4k-aws" rounded,filled box #06b6d4 #ecfeff
+edge app springOnly 7 1.2999 2.4357 1.2999 2.952 1.2999 3.9029 1.2999 3.9029 1.2999 3.9029 3.345 3.9029 3.345 3.9029 solid #64748b
+edge app kotlin 7 2.6078 2.2038 3.0391 2.2038 3.411 2.2038 3.411 2.2038 3.411 2.2038 3.411 2.2593 3.411 2.2593 solid #64748b
+edge app ktor 7 2.6088 2.0187 3.5875 2.0187 4.7582 2.0187 4.7582 2.0187 4.7582 2.0187 4.7582 1.9632 4.7582 1.9632 solid #64748b
+edge app transfer 7 1.2999 1.7868 1.2999 1.2705 1.2999 0.31958 1.2999 0.31958 1.2999 0.31958 3.4472 0.31958 3.4472 0.31958 solid #64748b
+edge springOnly outcome1 4 6.0339 3.9029 6.0339 3.9029 6.7672 3.9029 6.7672 3.9029 solid #64748b
+edge kotlin outcome2 7 6.1054 2.3871 6.1054 2.0589 6.1054 1.5974 6.1054 1.5974 6.1054 1.5974 6.8512 1.5974 6.8512 1.5974 solid #64748b
+edge ktor outcome2 4 5.9964 1.4307 5.9964 1.4307 6.8532 1.4307 6.8532 1.4307 solid #64748b
+edge transfer outcome2 7 5.9285 0.31958 6.8707 0.31958 8.036 0.31958 8.036 0.31958 8.036 0.31958 8.036 1.1341 8.036 1.1341 solid #64748b
+stop
