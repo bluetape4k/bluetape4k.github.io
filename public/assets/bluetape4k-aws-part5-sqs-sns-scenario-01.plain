@@ -1,0 +1,16 @@
+graph 1 18.419 2.0785
+node client 1.1877 1.0922 2.3754 0.63917 "HTTP client / test\nqueue, topic, listener routes" rounded,filled box #06b6d4 #ecfeff
+node api 4.2003 1.0922 2.1775 0.63917 "Spring WebFlux API\nSqsSnsExampleController" rounded,filled box #22c55e #dcfce7
+node ops 6.9941 1.0922 1.9379 0.63917 "SQS / SNS operations\ncoroutine templates" rounded,filled box #f59e0b #fef3c7
+node fanout 9.8713 1.7589 2.3442 0.63917 "SNS to SQS fanout\npolicy, subscription, redrive" rounded,filled box #fb7185 #ffe4e6
+node aws 9.8713 0.43943 1.8962 0.87885 "LocalStack SQS/SNS\nor AWS endpoints" rounded,filled cylinder #fb923c #fff7ed
+node listener 14.063 0.43943 2.8442 0.63917 "@SqsListener container\ntyped payloads, manual ack, retry" rounded,filled box #a855f7 #f3e8ff
+node store 17.32 0.43943 2.1983 0.63917 "ReceivedOrderStore\nmessages, orders, events" rounded,filled box #38bdf8 #e0f2fe
+edge client api 4 2.3784 1.0922 2.3784 1.0922 2.9798 1.0922 2.9798 1.0922 solid #64748b
+edge api ops 4 5.2924 1.0922 5.2924 1.0922 5.8942 1.0922 5.8942 1.0922 solid #64748b
+edge ops fanout 7 7.9648 1.1453 8.3961 1.1453 8.8081 1.1453 8.8081 1.1453 8.8081 1.1453 8.8081 1.3075 8.8081 1.3075 solid #64748b
+edge ops aws 4 7.9682 0.82574 7.9682 0.82574 8.791 0.82574 8.791 0.82574 solid #64748b
+edge aws listener 4 10.822 0.3329 10.822 0.3329 12.507 0.3329 12.507 0.3329 solid #64748b
+edge listener aws 4 12.638 0.54595 12.638 0.54595 10.951 0.54595 10.951 0.54595 "ack or retry" 11.842 0.25887 solid #64748b
+edge listener store 4 15.491 0.43943 15.491 0.43943 16.089 0.43943 16.089 0.43943 solid #64748b
+stop
