@@ -21,19 +21,25 @@ npm run dev
 
 ## Analytics
 
-The site includes Plausible Analytics for page-level traffic, including blog paths
-under `/blog/` and `/ko/blog/`.
+The site includes Cloudflare Web Analytics for privacy-friendly page-level
+traffic, including blog paths under `/blog/` and `/ko/blog/`.
 
 Defaults:
 
-- Domain: `bluetape4k.github.io`
-- Script URL: `https://plausible.io/js/script.js`
+- Beacon token: `fb7d02d7cd7c40d6bc9ad4cd2bf14551`
+- Script URL: `https://static.cloudflareinsights.com/beacon.min.js`
 
-Override when needed:
+Override the Cloudflare Web Analytics snippet token when needed:
 
 ```bash
-PUBLIC_PLAUSIBLE_DOMAIN=example.com \
-PUBLIC_PLAUSIBLE_SCRIPT_URL=https://plausible.example.com/js/script.js \
+PUBLIC_CLOUDFLARE_BEACON_TOKEN=example-snippet-token npm run build
+```
+
+Override the beacon script URL only when Cloudflare changes the snippet source:
+
+```bash
+PUBLIC_CLOUDFLARE_BEACON_TOKEN=example-snippet-token \
+PUBLIC_CLOUDFLARE_BEACON_SCRIPT_URL=https://static.cloudflareinsights.com/beacon.min.js \
 npm run build
 ```
 
