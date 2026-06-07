@@ -1,6 +1,9 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 
+const plausibleDomain = process.env.PUBLIC_PLAUSIBLE_DOMAIN ?? 'bluetape4k.github.io';
+const plausibleScriptUrl = process.env.PUBLIC_PLAUSIBLE_SCRIPT_URL ?? 'https://plausible.io/js/script.js';
+
 export default defineConfig({
   site: 'https://bluetape4k.github.io',
   integrations: [
@@ -99,6 +102,14 @@ export default defineConfig({
           attrs: {
             name: 'twitter:image',
             content: 'https://bluetape4k.github.io/og-image.png',
+          },
+        },
+        {
+          tag: 'script',
+          attrs: {
+            defer: true,
+            'data-domain': plausibleDomain,
+            src: plausibleScriptUrl,
           },
         },
         {
