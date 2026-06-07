@@ -1,8 +1,22 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 
-const plausibleDomain = process.env.PUBLIC_PLAUSIBLE_DOMAIN ?? 'bluetape4k.github.io';
-const plausibleScriptUrl = process.env.PUBLIC_PLAUSIBLE_SCRIPT_URL ?? 'https://plausible.io/js/script.js';
+const cloudflareBeaconToken =
+  process.env.PUBLIC_CLOUDFLARE_BEACON_TOKEN ?? 'fb7d02d7cd7c40d6bc9ad4cd2bf14551';
+const cloudflareBeaconScriptUrl =
+  process.env.PUBLIC_CLOUDFLARE_BEACON_SCRIPT_URL ?? 'https://static.cloudflareinsights.com/beacon.min.js';
+const cloudflareAnalyticsHead = cloudflareBeaconToken
+  ? [
+      {
+        tag: 'script',
+        attrs: {
+          defer: true,
+          'data-cf-beacon': JSON.stringify({ token: cloudflareBeaconToken }),
+          src: cloudflareBeaconScriptUrl,
+        },
+      },
+    ]
+  : [];
 
 export default defineConfig({
   site: 'https://bluetape4k.github.io',
@@ -104,14 +118,7 @@ export default defineConfig({
             content: 'https://bluetape4k.github.io/og-image.png',
           },
         },
-        {
-          tag: 'script',
-          attrs: {
-            defer: true,
-            'data-domain': plausibleDomain,
-            src: plausibleScriptUrl,
-          },
-        },
+        ...cloudflareAnalyticsHead,
         {
           tag: 'script',
           attrs: {
