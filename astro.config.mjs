@@ -2,7 +2,7 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 
 const cloudflareBeaconToken =
-  process.env.PUBLIC_CLOUDFLARE_BEACON_TOKEN ?? 'fb7d02d7cd7c40d6bc9ad4cd2bf14551';
+  process.env.PUBLIC_CLOUDFLARE_BEACON_TOKEN ?? 'a9408513fe144222b89e86151b26e70f';
 const cloudflareBeaconScriptUrl =
   process.env.PUBLIC_CLOUDFLARE_BEACON_SCRIPT_URL ?? 'https://static.cloudflareinsights.com/beacon.min.js';
 const cloudflareAnalyticsHead = cloudflareBeaconToken
