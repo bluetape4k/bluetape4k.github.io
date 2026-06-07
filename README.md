@@ -26,7 +26,7 @@ traffic, including blog paths under `/blog/` and `/ko/blog/`.
 
 Defaults:
 
-- Beacon token: `fb7d02d7cd7c40d6bc9ad4cd2bf14551`
+- Beacon token: `a9408513fe144222b89e86151b26e70f`
 - Script URL: `https://static.cloudflareinsights.com/beacon.min.js`
 
 Override the Cloudflare Web Analytics snippet token when needed:
