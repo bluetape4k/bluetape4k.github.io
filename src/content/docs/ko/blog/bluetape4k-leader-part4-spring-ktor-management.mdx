@@ -115,7 +115,7 @@ fun process(region: String)
 
 주의할 점은 `process-#region`이 아니라 `"'process-' + #region"`이라는 점입니다.
 따옴표 없는 `process-`는 문자열 prefix가 아니라 SpEL 식별자로 해석됩니다.
-Spring property placeholder도 사용할 수 있습니다.
+Spring property placeholder도 씁니다.
 
 ```kotlin
 @LeaderElection(name = "\${spring.application.name}-warmup")

@@ -1,13 +1,13 @@
 ---
 title: "Bluetape4k Graph Part 4: workshop 시나리오와 서비스 통합"
-description: bluetape4k-workshop의 abuser detection, recommendation, knowledge graph, social network 예제로 graph API를 서비스에 붙이는 기준을 정리한다.
+description: bluetape4k-workshop의 abuser detection, recommendation, knowledge graph, social network 예제로 graph API를 서비스에 연결하는 기준을 정리한다.
 sidebar:
   order: -202606041533
 blog:
   date: 2026-06-04T15:33:00+09:00
   image: /assets/bluetape4k-graph-part4-hero.png
   imageAlt: 로봇 작업자들이 abuse detection, recommendation, knowledge graph, social network 그래프 보드를 살펴보는 3D 작업대 일러스트
-  cardDescription: "API 설명만으로는 부족합니다. runnable workshop 예제로 어떤 문제를 graph로 푸는지 봅니다."
+  cardDescription: "API 설명만으로는 부족합니다. 실행 가능한 workshop 예제로 어떤 문제를 graph로 푸는지 봅니다."
 ---
 
 <figure class="bt4k-blog-hero">
@@ -18,10 +18,10 @@ blog:
 <p class="bt4k-post-meta">2026-06-04 · bluetape4k-graph series · Part 4</p>
 
 Part 1부터 Part 3까지는 graph db 선택, core API, graph I/O를 봤습니다. 마지막 글에서는 `bluetape4k-workshop`의
-runnable 예제로 실제 서비스 문제를 어떻게 graph로 표현하는지 보겠습니다. 여기서는 깊이 파고드는 walkthrough보다
-“내 서비스에도 이 모양의 문제가 있나?”를 빠르게 판단하는 지도를 제공하는 쪽에 가깝습니다. 예제 이름만 던지고 끝내면
-결국 독자가 소스 트리를 다시 뒤져야 합니다. 그건 블로그가 아니라 숙제 배포에 가깝죠. 그래서 각 예제가 어떤 관계를
-모델링하고, 어떤 판단 기준을 주는지 글 안에서 같이 보겠습니다.
+실행 가능한 예제로 실제 서비스 문제를 graph로 어떻게 표현하는지 보겠습니다. 여기서는 깊이 파고드는 구현 안내보다
+“내 서비스에도 이런 모양의 문제가 있나?”를 빠르게 판단하는 지도에 가깝습니다. 예제 이름만 던지고 끝내면 결국 독자가
+소스 트리를 다시 뒤져야 합니다. 그건 블로그라기보다 숙제 배포에 가깝죠. 그래서 각 예제가 어떤 관계를 모델링하고,
+어떤 판단 기준을 주는지 글 안에서 같이 보겠습니다.
 
 | 예제 | graph pattern | 배울 점 |
 |---|---|---|
@@ -34,8 +34,8 @@ runnable 예제로 실제 서비스 문제를 어떻게 graph로 표현하는지
 
 어뷰저 탐지는 graph가 잘 맞는 전형적인 문제입니다. 한 사용자를 시작점으로 device, IP address, phone hash, payment
 token, referral 같은 identifier를 따라가고, 다시 그 identifier를 공유하는 다른 사용자를 찾습니다. relational DB로도
-구현할 수 있지만 identifier 종류가 늘어날수록 join과 조건 분기가 빠르게 지저분해집니다. 처음에는 query 하나였는데,
-나중에는 “이 조건은 왜 여기 있고, 이 join은 누가 추가했나”를 추적하는 시간이 더 길어집니다.
+구현할 수 있지만 identifier 종류가 늘수록 join과 조건 분기가 빠르게 지저분해집니다. 처음에는 query 하나였는데,
+나중에는 “이 조건은 왜 여기 있고, 이 join은 누가 추가했나”를 추적하는 시간이 더 길어지기 마련입니다.
 
 <figure class="bt4k-architecture">
   <img src="/assets/bluetape4k-graph-part4-abuser-identity-flow-01.png" alt="Abuser detection identity flow from seed user to shared identifiers, related users, suspicion evidence, and risk ranking" loading="lazy" />
@@ -43,7 +43,7 @@ token, referral 같은 identifier를 따라가고, 다시 그 identifier를 공�
 </figure>
 
 `AbuserDetectionService.findAbuseCluster()`는 seed user가 없으면 빈 cluster를 반환합니다. seed가 있으면 먼저 OUTGOING
-identifier edge를 따라가고, 각 identifier에서 INCOMING 방향으로 user를 다시 찾습니다. 마지막에는 seed user를 제외해
+identifier edge를 따라가고, 각 identifier에서 INCOMING 방향으로 user를 다시 찾습니다. 마지막에는 seed user를 빼고
 같은 identifier를 공유한 다른 사용자를 cluster로 반환합니다.
 
 <figure class="bt4k-architecture">
@@ -57,9 +57,9 @@ val identifiers = IdentifierEdgeLabel.all.flatMap { edgeLabel ->
 }
 ```
 
-`explainSuspicion()`은 seed user에서 출발하는 edge path를 모아 “왜 의심스러운가”를 설명할 수 있게 합니다.
+`explainSuspicion()`은 seed user에서 출발하는 edge path를 모아 “왜 의심스러운가”를 설명합니다.
 `detectReferralLoops()`는 cycle detection으로 referral loop를 찾고, `rankSuspiciousUsers()`는 PageRank로 review queue에
-올릴 후보를 정렬합니다. phone은 hash로, payment는 PCI-safe token으로 넣어야 합니다. 예제가 작아도 보안 경계는 작지
+올릴 후보를 정렬합니다. phone은 hash로, payment는 PCI-safe token으로 넣어야 합니다. 예제는 작아도 보안 경계는 작지
 않습니다.
 
 ## 추천 서비스
@@ -76,7 +76,7 @@ val identifiers = IdentifierEdgeLabel.all.flatMap { edgeLabel ->
   <figcaption>`PURCHASED`는 상품 후보를 만들고, `FOLLOWS`는 팔로워 후보를 만듭니다. 후보 생성과 점수 계산은 별도 단계로 둡니다.</figcaption>
 </figure>
 
-`RecommendationService.recommendProducts()`는 seed user가 산 상품을 찾고, 그 상품을 산 다른 사용자를 찾고, 그
+`RecommendationService.recommendProducts()`는 seed user가 산 상품을 찾고, 그 상품을 산 다른 사용자를 찾은 뒤, 그
 co-buyer가 산 다른 상품을 후보로 올립니다. 이미 seed user가 산 상품은 제외하고, 점수는 distinct co-buyer 수로
 계산합니다.
 
@@ -87,12 +87,12 @@ val candidates = coBuyers.flatMap { buyer -> findPurchasedProducts(buyer.id) }
 ```
 
 `recommendFollows()`는 direct follow를 찾은 뒤 2-hop follow candidate를 만들고, mutual follow count로 정렬합니다.
-자기 자신과 이미 follow한 사람은 후보에서 제외합니다. 이 예제는 추천 알고리즘의 완성판이 아닙니다. 더 정확히는
+자기 자신과 이미 follow한 사람은 후보에서 제외합니다. 이 예제는 추천 알고리즘의 완성본이 아닙니다. 더 정확히는
 “candidate generation과 scoring을 graph traversal로 어떻게 분리할까?”를 보여주는 작은 뼈대입니다.
 
 큰 graph에서는 이 구현을 그대로 운영에 올리면 N+1 traversal 문제가 생길 수 있습니다. 운영 graph가 커지면 native
 Cypher나 Gremlin query로 내려가는 편이 맞습니다. 공통 API는 시작점과 테스트를 단순하게 만들기 위한 장치입니다. 무거운
-query까지 공통 API에 가두면, 추상화가 도와주는 것이 아니라 병목을 예쁘게 포장하게 됩니다.
+query까지 공통 API에 가두면, 추상화가 돕는 대신 병목을 예쁘게 포장하게 됩니다.
 
 ## Knowledge graph
 
@@ -116,14 +116,14 @@ Knowledge graph 예제는 문서, entity, concept의 관계를 다룹니다. 문
 | `RELATED_TO` | `Entity -> Entity` | entity 사이의 의미 관계를 표현합니다. relationType으로 관계 종류를 구분합니다. |
 | `IS_A` | `Entity -> Concept` | entity가 어떤 concept에 속하는지 표현합니다. |
 
-이 예제의 핵심은 “검색 결과를 단순 문자열 목록으로 끝내지 않는 것”입니다. `findMentionedEntities(documentId)`로 문서가
+이 예제의 핵심은 검색 결과를 단순 문자열 목록으로 끝내지 않는 것입니다. `findMentionedEntities(documentId)`로 문서가
 언급한 entity를 찾고, `findRelatedEntities(entityId, depth)`로 여러 hop의 의미 관계를 따라갑니다.
 `findConceptsForEntity(entityId)`는 entity가 속한 concept을 찾고, `inferRelationshipPaths(from, to)`는 두 entity 사이의
 관계 경로를 설명합니다.
 
 이 구조는 RAG나 검색 시스템에서도 자주 필요합니다. vector search가 “비슷한 문서”를 잘 찾는다면, knowledge graph는
 “왜 연결되는지”를 edge path로 설명하는 데 강점이 있습니다. 모든 검색을 graph로 바꾸자는 뜻은 아닙니다. 모든 문제를
-graph로 풀기 시작하면 graph가 아니라 새로운 만능 망치가 됩니다. 문서 본문 검색은 전문 검색이나 vector index가 맡고,
+graph로 풀기 시작하면 graph가 아니라 새로운 만능 망치가 됩니다. 문서 본문 검색은 전문 검색이나 vector index에 맡기고,
 의미 관계와 설명 가능한 연결은 graph가 맡는 식으로 나누는 편이 현실적입니다.
 
 ## Social network
@@ -146,7 +146,7 @@ Social network 예제는 graph 교과서에 가까운 문제를 서비스 코드
 | shortest path / all paths | 두 사람 사이의 연결 경로를 찾습니다. |
 | mutual connections | 두 사람 사이의 공통 지인을 계산합니다. |
 
-이 예제는 “graph를 쓰면 멋진 추천이 자동으로 나온다”가 아닙니다. 실제로 필요한 것은 방향, depth, 제외 조건입니다.
+이 예제는 “graph를 쓰면 멋진 추천이 자동으로 나온다”는 이야기가 아닙니다. 실제로 필요한 것은 방향, depth, 제외 조건입니다.
 예를 들어 `FOLLOWS`는 방향이 중요하지만 `KNOWS`는 서비스 정책에 따라 양방향으로 취급할 수 있습니다. 2-hop 추천에서는
 자기 자신과 이미 연결된 사람을 빼야 합니다. shortest path는 설명 가능한 경로를 주지만, depth 제한을 두지 않으면 큰
 graph에서 비용이 빠르게 커집니다.
@@ -181,7 +181,7 @@ class AbuseReviewService(
 }
 ```
 
-운영 후보를 Neo4j로 바꾸고 싶다면 property만 graph db에 맞춰 바꿉니다. code path는 그대로 두고, driver와
+운영에서 Neo4j를 쓰고 싶다면 property만 graph db에 맞춰 바꿉니다. code path는 그대로 두고, driver와
 `GraphOperations` 구현만 auto-configuration이 바꿉니다.
 
 ```yaml
@@ -218,7 +218,7 @@ fun Application.module() {
 
 이미 DI container나 bootstrap 코드에서 `GraphOperations`와 `GraphSuspendOperations`를 만들었다면 `operations(sync,
 suspend)`로 넣을 수 있습니다. 이 경우 기본값은 caller-owned lifecycle입니다. 누가 만든 객체를 누가 닫을지 애매하게
-두면 shutdown 때 꼭 한 번쯤은 이상한 일이 생깁니다. Ktor plugin이 driver를 닫아야 한다면 `closeOnStop = true`를
+두면 shutdown 때 꼭 한 번쯤 이상한 일이 생깁니다. Ktor plugin이 driver를 닫아야 한다면 `closeOnStop = true`를
 명시합니다.
 
 ```kotlin
@@ -234,7 +234,7 @@ install(GraphPlugin) {
 
 처음부터 모든 데이터를 graph로 옮기면 보통 실패합니다. 마이그레이션이 커지고, 운영 리스크도 커지고, 회의도 길어집니다.
 먼저 variable-depth traversal, shortest path, shared identity, recommendation 후보 생성처럼 relational query가 급격히
-복잡해지는 기능을 찾습니다. 그 기능만 graph로 분리하고, source-of-truth가 relational DB라면 그대로 유지합니다. 테스트는
+복잡해지는 기능을 찾습니다. 그 기능만 graph로 분리하고, source-of-truth가 relational DB라면 그대로 둡니다. 테스트는
 TinkerGraph로 시작하고, 운영 후보는 Neo4j나 Memgraph, AGE, FalkorDB로 옮겨 측정합니다.
 
 이 시리즈의 결론은 단순합니다. graph는 관계가 업무의 중심일 때 씁니다. `bluetape4k-graph`는 그 선택을 Kotlin/JVM

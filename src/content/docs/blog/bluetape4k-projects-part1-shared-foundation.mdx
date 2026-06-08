@@ -77,10 +77,10 @@ The current root README shows the boundary clearly.
 | I/O | `io`, `okio`, `csv`, `protobuf`, `jackson2/3`, `http`, `grpc` | Bytes, files, serializers, HTTP, and RPC boundaries |
 | Data | `jdbc`, `r2dbc`, `hibernate`, `mongodb`, `cassandra` | Persistence helpers and coroutine data access |
 | Infrastructure | `lettuce`, `redisson`, `kafka`, `nats`, `opentelemetry`, `resilience4j` | Adapters around operational systems |
-| Application | `spring-boot/*`, `ktor/*`, `examples/*` | Service entrypoints and runnable examples |
+| Application | `spring-boot/*`, `ktor/*`, `examples/*` | Service entrypoints and working examples |
 | Testing | `assertions`, `junit5`, `testcontainers` | Reusable integration-test fixtures |
 
-The important point is not "pull in the whole ecosystem." The model is selective adoption. The
+The model is selective adoption, not "pull in the whole ecosystem." The
 BOM aligns versions, and each module can be picked up only when the service actually touches that
 boundary.
 

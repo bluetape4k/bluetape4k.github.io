@@ -82,7 +82,7 @@ val cache = LettuceCaches.nearCache<String>(redisClient) {
 [LettuceNearCacheConfig.kt](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/cache/cache-lettuce/src/main/kotlin/io/bluetape4k/cache/nearcache/LettuceNearCacheConfig.kt),
 [LettuceNearCacheTrackingTest.kt](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/cache/cache-lettuce/src/test/kotlin/io/bluetape4k/cache/nearcache/LettuceNearCacheTrackingTest.kt)
 
-RESP3 방식의 매력은 서버가 key tracking에 참여한다는 점입니다. 애플리케이션은 L1을 빠르게 쓰고, Redis는 변경된 key에 대해 invalidation을 push합니다. 즉, "내가 뭘 읽었더라?"를 client가 일기장에 적는 대신 Redis가 출석부를 들고 있는 모양입니다. 물론 출석부도 잘 관리해야 합니다.
+RESP3 방식의 매력은 서버가 key tracking에 참여한다는 점입니다. 애플리케이션은 L1을 빠르게 쓰고, Redis는 변경된 key에 대해 invalidation을 push합니다. "내가 뭘 읽었더라?"를 client가 일기장에 적는 대신 Redis가 출석부를 들고 있는 모양입니다. 물론 출석부도 잘 관리해야 합니다.
 
 ## Benchmark 결과
 

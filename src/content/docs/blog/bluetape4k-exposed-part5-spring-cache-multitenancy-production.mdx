@@ -214,7 +214,7 @@ record instead of creating a new task. Then it calls the gateway and transitions
 | External call | Fake gateway paths for success, retryable failure, and permanent failure |
 | State transition | `SUCCEEDED` for success, `RETRYABLE_FAILED` for retryable failure |
 
-The important point is not just that an outbox table exists. The useful part is that intent storage, duplicate
+An outbox table alone is not the useful part. The useful part is that intent storage, duplicate
 prevention, and state transition can be modeled as one application pattern inside an Exposed transaction. It can be added
 from the point that needs it, without starting with JPA event listeners or a separate messaging framework.
 

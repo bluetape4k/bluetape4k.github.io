@@ -83,7 +83,7 @@ RETURN friend.name
 | `graph-io/*` | CSV, NDJSON, GraphML bulk import/export와 OkIO 기반 I/O 조합 |
 | `spring-boot/graph-spring-boot` | Spring Boot 4 auto-configuration |
 | `ktor/graph-ktor` | Ktor plugin 기반 graph lifecycle |
-| `examples/*` | code graph, fraud detection, IAM, recommendation, supply-chain 등 runnable scenario |
+| `examples/*` | code graph, fraud detection, IAM, recommendation, supply-chain 등 실행 가능한 scenario |
 
 처음부터 모든 graph db 차이를 추상화 뒤에 숨기겠다는 접근은 위험합니다. 그래프 workload는 query planner, index,
 traversal 방식, transaction 의미의 차이가 큽니다. 그래서 `bluetape4k-graph`는 공통 CRUD/traversal은 묶지만,

@@ -38,7 +38,7 @@ become very large production details.
 BZip2, and Zip are exposed through a common `Compressor` layer. JDK, Kryo, and Apache Fory serializers are exposed
 through the `BinarySerializer` contract.
 
-The important point is not merely that many algorithms exist. The value is keeping every service from inventing its
+The value is not the number of algorithms. It is keeping every service from inventing its
 own `try/catch`, empty-byte handling, corrupted input policy, and serializer failure behavior. For example, `compress()`
 returns `emptyByteArray` for null or empty input, while `compressOrNull()` variants let callers model damaged input as
 `null` instead of an exception.

@@ -122,7 +122,7 @@ class OrderMessageListener(
 
 listener method는 `String`, AWS SDK `Message`, `SqsReceivedMessage`, typed payload를 받을 수 있습니다.
 `SqsAcknowledgement`를 파라미터로 받으면 수동 ack 방식이 됩니다. handler가 정상 종료되면 message를
-삭제하고, 예외가 나면 삭제하지 않습니다. `error-visibility-timeout-seconds`와 retry 설정을 통해 실패 후
+삭제하고, 예외가 나면 삭제하지 않습니다. `error-visibility-timeout-seconds`와 retry 설정으로 실패 후
 재전달 시점도 명시할 수 있습니다.
 
 DynamoDB는 `DynamoDbEnhancedAsyncClient` 위에 coroutine repository를 얹습니다. 예제 repository는 table

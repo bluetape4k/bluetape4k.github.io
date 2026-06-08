@@ -91,7 +91,7 @@ The first decision is whether the value needs AEAD or DAEAD.
 | DAEAD | Same plaintext produces same ciphertext, so equality lookup and indexes are possible | Deterministic output still leaves pattern-analysis risk |
 
 For memo, note, or token payload fields that do not need lookup, AEAD is the right default. For values such as email or a
-national identifier that need equality lookup, DAEAD may be necessary. Security is not just an "encrypted" checkbox; it
+national identifier that need equality lookup, DAEAD may be necessary. Security needs more than an "encrypted" checkbox; it
 also includes the queries the application must support.
 
 The difference is clearer in code. A DAEAD column uses deterministic encryption, so the same plaintext maps to the same

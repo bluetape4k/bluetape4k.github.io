@@ -349,7 +349,7 @@ Second, do not guess the failure location. If Testcontainers appears in the fail
 immediately fix the container. If the stack points to `close()`, look at cleanup.
 
 Third, broad catch and `runCatching` are convenient but dangerous around lifecycle and coroutine
-boundaries. Cancellation and interruption are signals, not just exceptions. If those signals are
+boundaries. Cancellation and interruption are signals, not plain exceptions. If those signals are
 swallowed, the actual problem will show up somewhere much stranger later.
 
 The `checkDisabledTests` release gate matters for the same

@@ -95,7 +95,7 @@ It is the right first library to evaluate when:
 - Secrets Manager or Parameter Store should become Spring external configuration.
 - The team already works with Spring Cloud release trains, starter BOMs, actuator, and observability conventions.
 
-The advantage is not just the number of features. A Spring Boot team can explain AWS integration using
+Feature count is not the real advantage. A Spring Boot team can explain AWS integration using
 language it already knows. Spring Cloud AWS reduces repeated setup and opens extension points in a familiar
 Spring style.
 
@@ -147,7 +147,7 @@ object operations use coroutine templates and helpers, while large file transfer
 and `S3TransferManager`. The Spring Boot adapter exposes that through `S3TransferOperations`, and the core
 module provides transfer manager extensions.
 
-This is not only a performance point. In production code, it matters whether the service can state which HTTP
+This goes beyond performance. In production code, it matters whether the service can state which HTTP
 client and transfer runtime its S3 path uses. `bluetape4k-aws` keeps that decision in configuration, client
 factories, and operation helpers instead of hiding it completely inside the framework.
 
@@ -211,7 +211,7 @@ Spring Cloud AWS. Libraries can help parse and wire messages; the trust boundary
 - bluetape4k-aws: [`aws-spring-boot` README](https://github.com/bluetape4k/bluetape4k-aws/tree/develop/aws-spring-boot)
 - bluetape4k-aws: [`aws-ktor` README](https://github.com/bluetape4k/bluetape4k-aws/tree/develop/aws-ktor)
 
-The next post will walk through real examples from `examples/` and `bluetape4k-workshop/aws` in more detail.
+The next post will use real examples from `examples/` and `bluetape4k-workshop/aws` in more detail.
 This post set the selection criteria; Part 5 will show how those criteria turn into code.
 
 ## Series Links

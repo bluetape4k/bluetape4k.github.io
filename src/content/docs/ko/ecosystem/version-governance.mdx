@@ -1,11 +1,11 @@
 ---
 title: 버전 거버넌스
-description: bluetape4k가 여러 리포지토리의 의존성 버전을 정렬하는 방식.
+description: bluetape4k가 여러 리포지토리의 의존성 버전을 맞추는 방식.
 ---
 
 ## 중앙 규칙
 
-`bluetape4k-dependencies`는 조직 전체의 공유 dependency version을 정의하는 source of truth입니다.
+`bluetape4k-dependencies`는 조직 전체의 공유 dependency version을 정의하는 기준입니다.
 
 하위 repository는 중앙 BOM과 generated shared-version catalog update를 사용해야 합니다. 중앙에서 관리되는 library를 각 repository의 Dependabot bump에 맡기지 않습니다.
 
@@ -16,7 +16,7 @@ description: bluetape4k가 여러 리포지토리의 의존성 버전을 정렬�
 | 애플리케이션 dependency governance | `io.github.bluetape4k:bluetape4k-dependencies` | `1.2.0` |
 
 `bluetape4k-dependencies`를 `implementation(platform(...))`으로 한 번만 가져옵니다.
-그 다음 서비스에 필요한 bluetape4k module을 version 없이 추가합니다.
+그다음 서비스에 필요한 bluetape4k module을 version 없이 추가합니다.
 
 ## 관리되는 계열
 
@@ -35,6 +35,6 @@ description: bluetape4k가 여러 리포지토리의 의존성 버전을 정렬�
 
 ## 왜 필요한가
 
-bluetape4k repository들은 서로 같은 Kotlin, Spring Boot, Exposed, Jackson, Ktor version을 기대합니다. Version drift가 생기면 example, workshop, downstream service가 서로 다른 dependency graph로 검증됩니다.
+bluetape4k repository들은 같은 Kotlin, Spring Boot, Exposed, Jackson, Ktor version을 기대합니다. Version drift가 생기면 example, workshop, downstream service가 서로 다른 dependency graph로 검증됩니다.
 
-중앙 거버넌스는 dependency upgrade를 느리게 만들기 위한 장치가 아니라, upgrade를 한 번에 이해하고 검증하기 위한 장치입니다.
+중앙 거버넌스는 dependency upgrade를 느리게 만들려는 장치가 아니라, upgrade를 한 번에 이해하고 검증하기 위한 장치입니다.

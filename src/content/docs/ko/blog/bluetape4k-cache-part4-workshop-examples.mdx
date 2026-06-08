@@ -207,7 +207,7 @@ suspend fun getProduct(id: String): String? {
 전체 소스:
 [ResilientProductService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-resilience/src/main/kotlin/io/bluetape4k/workshop/cache/resilience/service/ResilientProductService.kt)
 
-이 예제는 운영적으로 중요합니다. 캐시는 성능을 위해 붙였는데, Redis가 잠깐 불안정해졌다고 서비스 전체가 같이 영향을 받으면 이상합니다. 캐시는 보조 인프라입니다. 보조 인프라가 서비스의 중심 장애가 되면 설계를 다시 봐야 합니다.
+이 예제는 운영에서 바로 중요해집니다. 캐시는 성능을 위해 붙였는데, Redis가 잠깐 불안정해졌다고 서비스 전체가 같이 영향을 받으면 이상합니다. 캐시는 보조 인프라입니다. 보조 인프라가 서비스의 중심 장애가 되면 설계를 다시 봐야 합니다.
 
 ## 실전 체크리스트
 

@@ -121,7 +121,7 @@ val alice = ops.mergeVertex(
 | Virtual Threads | blocking driver를 높은 동시성으로 다룰 때 |
 | Coroutine | Ktor나 coroutine-native service에서 structured concurrency가 중요할 때 |
 
-성능 이야기는 숫자만으로 끝나지 않습니다. 어떤 요청 경로에서 병목이 줄었는지가 더 중요합니다. 아래 결과는
+성능 이야기는 숫자만으로 끝나지 않습니다. 어떤 요청 경로에서 병목이 줄었는지를 봐야 합니다. 아래 결과는
 `ApiModelBenchmark`를 TinkerGraph fixture 위에서 짧게 돌린 smoke-scale 측정입니다. release-grade ranking으로 쓰기에는
 짧지만, 실행 모델의 성격을 이해하는 데는 충분합니다.
 

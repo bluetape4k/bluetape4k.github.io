@@ -212,7 +212,7 @@ Write-behind는 쓰기 latency를 낮출 수 있습니다. 대신 설계해야 �
 [CacheWriteMode.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/CacheWriteMode.kt),
 [LocalCacheConfig.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/LocalCacheConfig.kt)
 
-이 분리가 중요합니다. "어디에 캐시할 것인가"와 "언제 쓸 것인가"는 다른 질문입니다. 같은 Redis를 쓰더라도 read-through, write-through, write-behind는 운영 의미가 다릅니다.
+이 분리는 꼭 필요합니다. "어디에 캐시할 것인가"와 "언제 쓸 것인가"는 다른 질문입니다. 같은 Redis를 쓰더라도 read-through, write-through, write-behind는 운영 의미가 다릅니다.
 
 | 질문 | 예 |
 |---|---|

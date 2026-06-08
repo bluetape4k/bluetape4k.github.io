@@ -104,7 +104,7 @@ AI에게 "조심해"라고 말하는 것만으로는 부족하다. 사람도 CI,
 반복적으로 중요한 규칙은 hook으로 옮긴다.
 
 Claude 환경에는 sensitive file 차단, destructive git guard, Kotlin checker, Gradle test guard, README sync
-reminder, keyword detector 같은 hooks가 있다. Codex 환경도 hooks와 native subagents, skill routing을 통해
+reminder, keyword detector 같은 hooks가 있다. Codex 환경도 hooks와 native subagents, skill routing으로
 비슷한 역할을 한다.
 
 hook의 목적은 모델을 못 믿어서가 아니라, 흔한 실수를 일찍 발견하는 것이다. destructive command, 잘못된
@@ -128,8 +128,8 @@ Codex native subagents나 OMX team mode를 쓰면 여러 작업을 병렬로 맡
 ## Codex와 Claude는 같은 환경을 다른 방식으로 읽는다
 
 실제로는 Codex와 Claude가 완전히 같은 방식으로 일하지 않는다. Codex는 `AGENTS.md`, skills, MCP/context-mode,
-qmd, native subagents를 통해 repository context를 읽는다. Claude는 `CLAUDE.md`, commands, skills, hooks,
-project history를 통해 비슷한 정보를 읽는다.
+qmd, native subagents로 repository context를 읽는다. Claude는 `CLAUDE.md`, commands, skills, hooks,
+project history에서 비슷한 정보를 읽는다.
 
 그래서 durable guidance는 한쪽에만 머물면 안 된다. Codex 쪽에서 발견한 반복 규칙이 Claude 작업에도
 필요하다면 repository 문서나 shared skill로 옮겨야 한다. 반대로 Claude가 반복해서 잡아낸 문제도 Codex가

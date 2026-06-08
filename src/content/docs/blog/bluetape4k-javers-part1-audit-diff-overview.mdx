@@ -12,7 +12,7 @@ blog:
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/bluetape4k-javers-part1-hero.png" alt="3D workbench illustration of small robotic auditors inspecting JaVers snapshots and diff cards" loading="eager" />
-  <figcaption>Auditing is not only about storing changes. Someone has to read them later.</figcaption>
+  <figcaption>Auditing stores changes so someone can read them later.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-06-04 · bluetape4k-javers series · Part 1</p>
@@ -33,7 +33,7 @@ It helps to understand JaVers itself before looking at the bluetape4k adapters. 
 to JPA revision tables in the way Hibernate Envers is. It is an object auditing and diff library:
 the application commits a domain object, JaVers inspects the object graph, records changed
 properties, and stores versioned snapshots. That makes it useful for Kotlin/JVM services that want
-to explain how a domain object changed, not only which database row was updated.
+to explain how a domain object changed, not merely which database row was updated.
 
 | Feature | What it gives you |
 |---|---|
@@ -60,7 +60,7 @@ must be streamed outward. Use JaVers when readers need object history and human-
 | Diff | Property-level changes between objects or snapshots |
 | Shadow | An object reconstructed from snapshot history |
 
-The important point is that a JaVers commit is not just a log line. It carries object state,
+A JaVers commit is more than a log line. It carries object state,
 changed properties, and commit metadata together.
 
 ```kotlin
