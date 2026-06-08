@@ -7,7 +7,7 @@ blog:
   date: 2026-06-04T03:00:00+09:00
   image: /assets/bluetape4k-aws-part5-hero.png
   imageAlt: A 3D illustration of small robotic builders assembling Spring Boot, Ktor, S3, SQS, DynamoDB, StorageService, LocalStack, and Floci blocks into an AWS example lab
-  cardDescription: "A practical walk through examples/ and bluetape4k-workshop/aws for Spring Boot, Ktor, S3, SQS, and DynamoDB."
+  cardDescription: "A practical tour of examples/ and bluetape4k-workshop/aws for Spring Boot, Ktor, S3, SQS, and DynamoDB."
 ---
 
 <figure class="bt4k-blog-hero">
@@ -23,7 +23,7 @@ This is Part 5 of the `bluetape4k-aws` series. Part 1 covered the
 Part 3 covered [Spring Boot and Ktor integration](/blog/bluetape4k-aws-part3-spring-boot-ktor-examples/),
 and Part 4 compared [`bluetape4k-aws` with Spring Cloud AWS](/blog/bluetape4k-aws-part4-vs-spring-cloud-aws/).
 
-This post moves into runnable examples. `bluetape4k-aws/examples/` contains Spring Boot 4 and Ktor 3
+This post moves into working examples. `bluetape4k-aws/examples/` contains Spring Boot 4 and Ktor 3
 examples for S3, SQS, DynamoDB, and Exposed. `bluetape4k-workshop/aws` contains workshop examples that
 show how application code can hide a storage backend behind one service contract.
 
@@ -93,7 +93,7 @@ bluetape4k:
 
 For real AWS, remove `endpoint-override` and use the AWS SDK credential chain. The tests create a bucket
 and verify upload, download, list, presigned GET/PUT, delete, and deterministic test-KMS backed
-client-side encryption helpers. This is not only sample text; it proves the calls work with the settings.
+client-side encryption helpers. This is executable proof that the calls work with the settings.
 
 Read the S3 example in four steps:
 
@@ -185,14 +185,14 @@ framework's natural vocabulary.
 
 ## Read SQS, DynamoDB, And Exposed Next
 
-After S3, SQS is the next useful example. SQS is not only about wrapping `sendMessage`. Receive loops,
+After S3, SQS is the next useful example. SQS goes beyond wrapping `sendMessage`. Receive loops,
 visibility timeout, delete timing, retry, typed payload conversion, and manual acknowledgement all show up.
 
 The Spring Boot SQS example exposes that boundary through `@SqsListener`.
 
 <figure class="bt4k-architecture">
   <img src="/assets/bluetape4k-aws-part5-sqs-sns-scenario-01.png" alt="Spring Boot SQS and SNS example flow from HTTP client through WebFlux API, SQS and SNS operations, fanout, LocalStack, SQS listener container, and ReceivedOrderStore" loading="lazy" />
-  <figcaption>The SQS/SNS example connects REST publishing, SNS fanout, listener handling, manual acknowledgement, retry, and DLQ setup in one runnable flow.</figcaption>
+  <figcaption>The SQS/SNS example connects REST publishing, SNS fanout, listener handling, manual acknowledgement, retry, and DLQ setup in one executable flow.</figcaption>
 </figure>
 
 ```kotlin
@@ -242,7 +242,7 @@ move into the shared base class.
 
 The Exposed example is where AWS meets the database registry. A service that reads AWS configuration or
 secrets to build database connections needs `aws-exposed` plus a framework adapter. In this post, treat it
-as another “configuration → helper → framework wiring → test” example rather than a full Exposed walkthrough.
+as another “configuration → helper → framework wiring → test” example rather than a full Exposed guide.
 
 ## StorageService Workshop: Where Service Code Stabilizes
 
@@ -297,7 +297,7 @@ class S3Config {
 ```
 
 Because `S3Client` is blocking, implementations wrap calls with `withContext(Dispatchers.IO)`. That detail
-is worth keeping in the example. The point is not only “use S3,” but also where blocking I/O belongs in a
+is worth keeping in the example. The example shows both how to use S3 and where blocking I/O belongs in a
 Kotlin coroutine service.
 
 ```kotlin

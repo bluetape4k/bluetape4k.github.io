@@ -17,7 +17,7 @@ blog:
 
 <p class="bt4k-post-meta">2026-06-04 · bluetape4k-graph series · Part 4</p>
 
-This final part maps the runnable `bluetape4k-workshop` graph examples. It is an overview, not a deep walkthrough. The
+This final part maps the working `bluetape4k-workshop` graph examples. It is an overview, not a deep guide. The
 goal is to help you recognize whether your own service has the same shape of problem. If an article only lists example
 names and sends the reader back to the source tree, that is not documentation; it is homework distribution. So each
 example below explains the relationship model and the decision it helps validate.
@@ -76,7 +76,7 @@ until the bottleneck looks prettier.
 
 The knowledge graph example models `Document`, `Entity`, and `Concept` vertices. `MENTIONS` connects documents to
 entities, `RELATED_TO` connects entities to other entities, and `IS_A` connects entities to concepts. The useful service
-operations are not just "search": `findMentionedEntities(documentId)`, `findRelatedEntities(entityId, depth)`,
+operations go beyond "search": `findMentionedEntities(documentId)`, `findRelatedEntities(entityId, depth)`,
 `findConceptsForEntity(entityId)`, and `inferRelationshipPaths(from, to)` explain why two things are connected.
 
 <figure class="bt4k-architecture">

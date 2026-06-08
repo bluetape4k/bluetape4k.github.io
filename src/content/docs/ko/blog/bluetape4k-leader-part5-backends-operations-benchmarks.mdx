@@ -106,7 +106,7 @@ backend를 고른 뒤에도 운영 질문은 남습니다.
 
 history recorder는 success/completed/failed를 남기되, sink 장애가 본 작업을 망치지 않도록 best-effort로 감쌉니다. cancellation은 삼키지 않습니다. 이 원칙은 Part 4에서 본 Ktor lifecycle과도 같습니다. 취소는 취소고, 일반 실패는 기록 가능한 실패입니다.
 
-Micrometer 쪽은 AOP 경계에서 시도, 획득, not-acquired, execution duration, task failure, active gauge를 기록합니다. 운영 dashboard에서는 lock contention과 backend failure를 같은 skip으로 뭉개지 않는 것이 중요합니다. lock contention은 정상적인 건너뛰기이고, backend failure는 신뢰성 문제입니다.
+Micrometer 쪽은 AOP 경계에서 시도, 획득, not-acquired, execution duration, task failure, active gauge를 기록합니다. 운영 dashboard에서는 lock contention과 backend failure를 같은 skip으로 뭉개지 않아야 합니다. lock contention은 정상적인 건너뛰기이고, backend failure는 신뢰성 문제입니다.
 
 ## Benchmark: 숫자는 방향을 보여 주고, 해석 조건은 계약이다
 

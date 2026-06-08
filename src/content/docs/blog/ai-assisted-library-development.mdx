@@ -82,7 +82,7 @@ ended with just "done." Each task recorded what went wrong, what decision was ma
 next agent should avoid. Repeated decisions were promoted into skills.
 
 The most useful skills were `bluetape4k-workflow`, `bluetape4k-design`, and
-`bluetape4k-patterns`. These are not just checklists. They encode how bluetape4k work should
+`bluetape4k-patterns`. They are working rules, not checklists; they encode how bluetape4k work should
 proceed: when design is required, when fast track is enough, which Kotlin validation and test
 styles to use, and how GitHub issues and PRs should be written. AI no longer had to guess the
 process from scratch each time.
@@ -95,8 +95,8 @@ That classification alone reduced token usage and repeated instructions.
 
 ## `bluetape4k-workflow` Is a Stage Gatekeeper
 
-The core feature of `bluetape4k-workflow` is that it acts as a stage-by-stage gatekeeper. It is
-not just a procedure list that says what to do next. Each stage checks whether the work is allowed
+The core feature of `bluetape4k-workflow` is that it acts as a stage-by-stage gatekeeper. It does
+more than say what to do next. Each stage checks whether the work is allowed
 to move forward. If a stage has not passed, the workflow stops the task from jumping ahead and
 forces missing design, tests, documentation, or review work to be completed first.
 
@@ -181,7 +181,7 @@ code review, and documentation.
 Benchmarks became easier to create and use. I could implement the same problem in multiple ways and
 compare throughput, latency, allocation, coroutine versus virtual-thread behavior, cache strategies,
 and serialization approaches. AI helped build benchmark fixtures, repeated measurement code, and
-ways to interpret the results. The result was not just "this is faster." It became user-facing guidance on
+ways to interpret the results. Instead of stopping at "this is faster," the result became user-facing guidance on
 which approach to choose under which conditions.
 
 Examples became more varied. Instead of only showing API calls, the examples could show learning

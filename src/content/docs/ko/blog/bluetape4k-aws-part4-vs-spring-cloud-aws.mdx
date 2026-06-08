@@ -52,7 +52,7 @@ adapter를 올립니다. Java SDK v2 쪽에서는 CRT 기반 HTTP client와 S3 T
 있게 하고, AWS Kotlin SDK 쪽에서도 CRT를 기본 방식으로 사용하면서 필요하면 다른 HTTP engine으로 바꿀 수
 있게 둡니다.
 
-따라서 이 글은 어느 하나를 고르라는 판정이 아닙니다. 현재는 적용 범위가 다르지만, 앞으로
+그래서 이 글은 어느 하나를 고르라는 판정이 아닙니다. 현재는 적용 범위가 다르지만, 앞으로
 `bluetape4k-aws`는 Spring Cloud AWS가 제공하는 편의 기능을 Spring Boot 4 adapter에 계속 보강하고, 동시에
 Ktor 3 adapter에도 대응 기능을 넓혀 갈 예정입니다. Ktor 서비스, coroutine 중심 helper, CRT 기반 대용량
 S3 전송, Exposed database registry, local emulator 중심 테스트 같은 요구가 함께 생기면 `bluetape4k-aws`가
@@ -74,7 +74,7 @@ S3 전송, Exposed database registry, local emulator 중심 테스트 같은 요
 | dependency 정책 | starter가 Spring Boot 애플리케이션에 필요한 auto-configuration과 의존성을 가져온다. | AWS service dependency는 가능한 명시적으로 두고, 애플리케이션이 필요한 SDK module만 선택하게 한다. |
 | local testing | Spring Cloud AWS test/testcontainers module과 sample이 있다. | Floci 우선, LocalStack fallback, Testcontainers 기반 examples를 같은 series에서 계속 검증한다. |
 
-이 표만 보면 `bluetape4k-aws`가 더 넓어 보일 수 있지만, 지금 시점의 판단은 기능 수보다 책임 경계가 중요합니다.
+이 표만 보면 `bluetape4k-aws`가 더 넓어 보일 수 있지만, 지금 시점에는 기능 수보다 책임 경계를 봐야 합니다.
 Spring Boot 애플리케이션 안에서 Spring이 AWS 통합의 중심이 되길 원하면 Spring Cloud AWS가 잘 맞습니다.
 Kotlin/JVM 공통 helper를 먼저 세우고, 그 위에서 Spring Boot 4 또는 Ktor 3를 선택해 쓰고 싶다면
 `bluetape4k-aws`가 잘 맞습니다. 장기적으로는 Spring Boot adapter의 편의 기능도 Spring Cloud AWS가 제공하는
@@ -150,7 +150,7 @@ Boot adapter에서는 이것을 `S3TransferOperations`로 노출하고, core mod
 제공합니다.
 
 이 차이는 성능만의 문제가 아닙니다. 운영 코드에서 “이 서비스의 S3 전송은 어떤 HTTP client와 어떤 transfer
-runtime을 쓰는가”를 명시할 수 있는지가 중요합니다. `bluetape4k-aws`는 그 결정을 프레임워크 안에 완전히 숨기기보다,
+runtime을 쓰는가”를 명시할 수 있어야 합니다. `bluetape4k-aws`는 그 결정을 프레임워크 안에 완전히 숨기기보다,
 설정과 client factory, operation helper로 분리해 둡니다.
 
 ## 함께 쓸 수 있나

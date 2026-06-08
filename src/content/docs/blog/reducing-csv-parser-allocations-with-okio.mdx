@@ -7,7 +7,7 @@ blog:
   date: 2026-05-29T00:32:00+09:00
   image: /assets/csv-parser-okio-hero.png
   imageAlt: Editorial illustration of a CSV parser reading byte segments without unnecessary copies
-  cardDescription: A benchmark-backed walkthrough of the CSV parser optimization, from Reader parsing to Okio UnsafeCursor segment scanning.
+  cardDescription: A benchmark-backed account of the CSV parser optimization, from Reader parsing to Okio UnsafeCursor segment scanning.
 ---
 
 <figure class="bt4k-blog-hero">
@@ -28,7 +28,7 @@ the fast path.
 
 <figure class="bt4k-architecture">
   <img src="/assets/csv-okio-throughput-comparison-01.png" alt="CSV parser throughput comparison chart showing existing and Okio ops per second" loading="lazy" />
-  <figcaption>A benchmark-backed walkthrough of the CSV parser optimization, from Reader parsing to Okio UnsafeCursor segment scanning.</figcaption>
+  <figcaption>A benchmark-backed account of the CSV parser optimization, from Reader parsing to Okio UnsafeCursor segment scanning.</figcaption>
 </figure>
 
 ## What Changed
@@ -214,6 +214,6 @@ path reduced allocations with `BufferedSource` and `UnsafeCursor`; the write pat
 
 ## Closing
 
-The useful lesson is not just "use Okio." The useful lesson is to use the right layer of Okio.
+The useful lesson is not "use Okio." It is to use the right layer of Okio.
 `BufferedSource` gave a clean stream boundary, `Buffer` avoided early string materialization,
 and read-only `UnsafeCursor` made segment scanning fast enough to matter.
