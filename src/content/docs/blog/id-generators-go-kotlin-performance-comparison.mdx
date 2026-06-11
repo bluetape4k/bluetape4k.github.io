@@ -1,0 +1,243 @@
+---
+title: "ID Generator Performance: Fix Go, Then Fix Kotlin Again"
+description: A three-pass benchmark story for bluetape-go and bluetape4k-idgenerators across Snowflake, ULID, KSUID, and KsuidMillis.
+sidebar:
+  order: -202606111320
+blog:
+  date: 2026-06-11T13:20:00+09:00
+  image: /assets/id-generators-performance-hero.png
+  imageAlt: Editorial 3D workbench illustration comparing Go and Kotlin ID generators
+  cardDescription: Go ID generator implementation, first comparison, Go entropy improvements, second comparison, Kotlin ULID/KSUID/Snowflake improvements, and the third comparison.
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/id-generators-performance-hero.png" alt="Editorial 3D workbench illustration comparing Go and Kotlin ID generators" loading="eager" />
+  <figcaption>ID generator performance was less about language rivalry and more about finding the clock, entropy, and allocation leaks.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-11 · bluetape4k idgenerators benchmark note</p>
+
+The original goal was simple: add `idgenerators` to `bluetape-go`, then compare the result with
+the existing `bluetape4k-idgenerators` module. I expected Go to lead many rows because the
+implementation can stay close to primitives and small structs.
+
+The benchmark did not end that neatly. Go was still reading random entropy too often. Kotlin was
+creating intermediate objects in Snowflake. `ULID`, `KSUID`, and `KsuidMillis` each had different
+hot spots. The work became a three-pass comparison.
+
+1. Build the Go implementation and run the first comparison.
+2. Reduce Go per-call overhead and entropy cost, then run the second comparison.
+3. Improve Kotlin Snowflake, ULID, KSUID, and KsuidMillis, then run the third comparison.
+
+The result is not a clean "Go is faster" or "Kotlin won" story. Each ID family moved for a
+different reason, and every optimization made the next bottleneck easier to see.
+
+## The bluetape-go ID Generator Implementation
+
+`bluetape-go` keeps the implementation in the `id` package.
+
+- UUID v4/v7 expose convenience functions and reusable generators.
+- ULID is split between random and monotonic generators.
+- KSUID includes the regular seconds-based variant plus a millisecond variant aligned with the JVM implementation.
+- Snowflake exposes an integer hot path.
+
+The API shape keeps direct string entrypoints for application code and integer hot paths for rows
+where the benchmark should not mix string allocation into ID generation.
+
+```go
+id.NewULIDMonotonicGenerator().NextString()
+id.NewKSUIDGenerator().NextString()
+id.NewKSUIDMillisGenerator().NextString()
+id.NewSnowflakeGenerator(...).NextInt64()
+```
+
+The code lives in [`bluetape-go/id`](https://github.com/bluetape4k/bluetape-go/tree/develop/id)
+and [`id_benchmark_test.go`](https://github.com/bluetape4k/bluetape-go/blob/develop/id/id_benchmark_test.go).
+The first benchmark note is
+[`Issue #168 ID generator benchmark`](https://github.com/bluetape4k/bluetape-go/blob/develop/docs/research/2026-06-10-issue-168-id-generator-benchmark.md).
+
+## First Comparison: Not as Simple as Expected
+
+The first comparison did not give Go every row. Go was much lower on the Snowflake synthetic-clock
+hot path. Kotlin was already strong on UUID v7, single-thread monotonic ULID, and KSUID seconds.
+
+The benchmark shape matters here. The Go Snowflake row uses a synthetic clock hook. The Kotlin
+Snowflake row uses the real system clock and a `kotlinx-benchmark` batch shape. That row is useful
+as a hot-path data point, but it should not be read as a production-equivalent language verdict.
+
+Still, the first comparison did its job. The Go profile showed that generator reuse alone was not
+enough. The larger cost was lower in the stack: random entropy reads and string encoding.
+
+## Go Improvements: Entropy Came Before Allocation
+
+The Go optimization had two main changes.
+
+First, the default entropy source changed. If UUID, ULID, and KSUID read `crypto/rand` for every
+ID, the benchmark starts measuring random-read overhead more than ID generation. The package now
+uses a local locked buffered reader for the default generators. The source still comes from
+`crypto/rand`. The report also records the boundary: these are identifiers, not authentication or
+authorization secrets.
+
+Second, `KSUIDMillis` avoids an unnecessary temporary slice in string encoding. It writes the
+27-character prefix into a fixed local buffer instead of building a larger output and slicing it
+afterward.
+
+The final `benchstat` summary was clear:
+
+| Go benchmark | Baseline | Final | Change |
+|---|---:|---:|---:|
+| UUID v4 reused | 224.10 ns/op | 45.57 ns/op | -79.67% |
+| UUID v7 reused | 255.60 ns/op | 73.95 ns/op | -71.07% |
+| ULID random | 104.50 ns/op | 63.12 ns/op | -39.60% |
+| ULID monotonic | 65.80 ns/op | 65.31 ns/op | -0.74% |
+| KSUID seconds | 393.10 ns/op | 217.90 ns/op | -44.58% |
+| KSUID millis | 316.80 ns/op | 122.80 ns/op | -61.23% |
+| KSUID millis parallel | 621.00 ns/op | 209.00 ns/op | -66.35% |
+
+The flat `ULID monotonic` row is important. That path was no longer dominated by entropy reads.
+State management and encoding were more visible. One optimization did not move every generator.
+
+The full Go optimization report is
+[`Issue #192 ID generator performance optimization`](https://github.com/bluetape4k/bluetape-go/blob/develop/docs/research/2026-06-11-issue-192-id-generator-performance.md).
+
+## Second Comparison: The Bottleneck Moved
+
+After the Go improvement, the comparison changed. Go led UUID v4, KSUID millis, and the concurrent
+ULID/KSUID rows. Kotlin still led UUID v7 and single-thread monotonic ULID.
+
+| Generator | Go ns/id | Kotlin ns/id | Lower row |
+|---|---:|---:|---|
+| Snowflake synthetic clock | 11.98 | 244.06 | Go |
+| ULID monotonic | 65.31 | 37.01 | Kotlin |
+| UUID v4 reused generator | 45.57 | 95.09 | Go |
+| UUID v7 reused generator | 73.95 | 23.59 | Kotlin |
+| KSUID millis | 122.80 | 167.80 | Go |
+| KSUID seconds | 217.90 | 187.93 | Kotlin |
+
+The concurrent rows showed the Go entropy buffering effect more strongly:
+
+| Generator | Go ns/id | Kotlin ns/id | Lower row |
+|---|---:|---:|---|
+| Snowflake synthetic clock | 92.37 | 373.89 | Go |
+| ULID monotonic | 180.20 | 408.56 | Go |
+| UUID v4 reused generator | 145.00 | 329.69 | Go |
+| UUID v7 reused generator | 202.80 | 115.42 | Kotlin |
+| KSUID millis | 209.00 | 396.50 | Go |
+| KSUID seconds | 244.20 | 388.70 | Go |
+
+At that point, the Kotlin side deserved another pass. Once the Go noise was reduced, Kotlin's
+object path and entropy staging became easier to see.
+
+## Kotlin Improvements: Snowflake, ULID, KSUID, KsuidMillis
+
+The Kotlin work happened in `bluetape4k-idgenerators`. The target was to keep the public API stable
+while reducing unnecessary objects and random payload staging.
+
+Snowflake used to create a `SnowflakeId` intermediate object and then extract the `Long`. The new
+internal sequencer fast path lets `nextId()` and `nextIds(size)` receive the value directly when
+the sequencer supports it.
+
+```kotlin
+internal interface SnowflakeValueSequencer {
+    fun nextValue(): Long
+}
+```
+
+This does not show up much in throughput. The benchmark generates 65,536 IDs per operation, while
+Snowflake has a 4,096 sequence-per-millisecond ceiling. With the real system clock, the benchmark
+hits that ceiling first. The allocation profile is the real win:
+
+| Snowflake profile | Baseline | Candidate 3 | Delta |
+|---|---:|---:|---:|
+| `gc.alloc.rate.norm` | 14,579,592.553 B/op | 6,970,033.101 B/op | -52.19% |
+| `gc.alloc.rate` | 868.813 MB/s | 415.382 MB/s | -52.19% |
+| `gc.count` | 6 | 3 | -50.00% |
+
+ULID no longer stages randomness through a `ByteArray(10)`. It writes the 80 random bits directly
+from `nextBits(16)` and `nextLong()`.
+
+KSUID and `KsuidMillis` now write the timestamp explicitly, then randomize only the payload bytes.
+The seconds-based variant randomizes the 16-byte payload after the 4-byte timestamp. The
+millisecond variant randomizes the 12-byte payload after the 8-byte timestamp.
+
+Candidate 3 moved the decision-relevant Kotlin rows like this:
+
+| Kotlin workload | Baseline | Candidate 3 | Delta |
+|---|---:|---:|---:|
+| `single.ulidMonotonicString` | 577.327 ops/s | 580.638 ops/s | +0.57% |
+| `single.ulidMonotonicValueOnly` | 831.422 ops/s | 847.083 ops/s | +1.88% |
+| `single.ulidMonotonicWithUniqueness` | 360.095 ops/s | 365.002 ops/s | +1.36% |
+| `single.ksuidSecondsFixedInstantString` | 79.546 ops/s | 88.611 ops/s | +11.40% |
+| `single.ksuidSecondsWithUniqueness` | 71.890 ops/s | 74.321 ops/s | +3.38% |
+| `single.ksuidMillisFixedInstantString` | 94.588 ops/s | 98.104 ops/s | +3.72% |
+| `single.ksuidMillisWithUniqueness` | 82.114 ops/s | 82.655 ops/s | +0.66% |
+| `concurrent.ulidMonotonicString` | 38.331 ops/s | 45.414 ops/s | +18.48% |
+| `concurrent.ulidMonotonicWithUniqueness` | 35.542 ops/s | 45.857 ops/s | +29.02% |
+| `concurrent.ksuidMillisDefaultString` | 68.632 ops/s | 70.704 ops/s | +3.02% |
+| `concurrent.ksuidMillisWithUniqueness` | 53.496 ops/s | 56.906 ops/s | +6.37% |
+| `concurrent.ksuidSecondsDefaultString` | 60.633 ops/s | 62.924 ops/s | +3.78% |
+| `concurrent.ksuidSecondsWithUniqueness` | 52.908 ops/s | 53.445 ops/s | +1.01% |
+
+One row needs a caveat. `single.ksuidMillisDefaultString` dipped in the full candidate 3 run, but
+a same-JVM targeted repeat measured only -1.74% from baseline. Since the KSUID millis path did not
+change between candidate 2 and candidate 3, the report keeps that full-run dip as benchmark noise
+instead of hiding it. Once bad rows are deleted from a performance report, it stops being a
+benchmark and starts being a brochure.
+
+## Third Comparison: Each Runtime Leads Somewhere Different
+
+The final comparison used the current Go implementation and Kotlin candidate 3. Kotlin throughput
+rows were normalized to `ns/id` with `1e9 / (ops/s * 65_536)`.
+
+| Workload | Go ns/id | Kotlin ns/id | Lower | Note |
+|---|---:|---:|---|---|
+| Snowflake single | 11.98 | 244.02 | Go | Go synthetic clock; Kotlin real clock/batch ceiling |
+| Snowflake concurrent | 90.01 | 243.65 | Go | Go synthetic clock; Kotlin real clock/batch ceiling |
+| ULID monotonic single | 64.96 | 26.28 | Kotlin |  |
+| ULID monotonic concurrent | 194.80 | 336.00 | Go |  |
+| KSUID seconds single | 215.60 | 175.86 | Kotlin |  |
+| KSUID seconds concurrent | 256.40 | 242.50 | Kotlin |  |
+| KSUID millis single | 123.50 | 167.07 | Go | Kotlin targeted repeat was 157.03 ns/id |
+| KSUID millis concurrent | 215.90 | 215.81 | Kotlin | Effectively tied |
+
+Leaving out `KsuidMillis` would distort the story. After the Go pass, KSUID millis had a clear Go
+lead. After Kotlin randomized only the payload region, the concurrent row became a practical tie.
+Go still leads the single row. This variant needs its own measurement whenever millisecond
+precision is part of the service design.
+
+ULID is also split. Kotlin leads the single-thread monotonic row, while Go leads the concurrent
+monotonic row. The cost depends on where monotonic state, entropy, and encoding show up in the
+workload.
+
+Kotlin leads both KSUID seconds rows after the improvement. Snowflake still looks much lower on
+the Go side, but the clock model caveat dominates that row. Kotlin's real Snowflake win in this
+pass is allocation reduction, not a throughput ranking.
+
+## The Useful Conclusion
+
+The least useful conclusion would be "which language is faster?" That sentence feels satisfying,
+but it hides the actual engineering work.
+
+The useful conclusions are more specific:
+
+- Snowflake needs clock model and sequence ceiling separated from language comparison.
+- Go's early UUID/ULID/KSUID bottleneck was closer to entropy reads than generator reuse.
+- Kotlin Snowflake improved most clearly in allocation profile, not throughput.
+- Kotlin ULID/KSUID/KsuidMillis moved when payload staging was reduced.
+- `KsuidMillis` needs to be tracked as its own variant; KSUID seconds cannot stand in for it.
+
+ID generator code looks small. The benchmark is not. Clock access, randomness, encoding,
+uniqueness checks, and batch size all pull the result in different directions. The best outcome of
+this work is not one fast row. It is knowing where to look first the next time an ID generator
+number looks suspicious.
+
+## Source Notes
+
+- Go implementation: [`bluetape-go/id`](https://github.com/bluetape4k/bluetape-go/tree/develop/id)
+- Go benchmark source: [`id_benchmark_test.go`](https://github.com/bluetape4k/bluetape-go/blob/develop/id/id_benchmark_test.go)
+- First comparison report: [`Issue #168 ID generator benchmark`](https://github.com/bluetape4k/bluetape-go/blob/develop/docs/research/2026-06-10-issue-168-id-generator-benchmark.md)
+- Go optimization report: [`Issue #192 ID generator performance optimization`](https://github.com/bluetape4k/bluetape-go/blob/develop/docs/research/2026-06-11-issue-192-id-generator-performance.md)
+- Kotlin optimization report: [`ID Generators Self-Improve Benchmark`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/docs/benchmarks/2026-06-11-idgenerators-self-improve-benchmark.md)
+- Kotlin raw artifacts: [`docs/benchmarks/raw/issue-738`](https://github.com/bluetape4k/bluetape4k-projects/tree/develop/docs/benchmarks/raw/issue-738)
+- Third comparison report: [`Issue #192 ID generator third comparison`](https://github.com/bluetape4k/bluetape-go/blob/develop/docs/research/2026-06-11-issue-192-id-generator-third-comparison.md)
+- Third comparison raw artifacts: [`docs/research/outputs/issue-192`](https://github.com/bluetape4k/bluetape-go/tree/develop/docs/research/outputs/issue-192)
