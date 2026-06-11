@@ -1,13 +1,13 @@
 ---
-title: "ID 생성기 성능 비교: Go를 고치고, Kotlin도 다시 고쳤다"
-description: bluetape-go와 bluetape4k-idgenerators의 Snowflake, ULID, KSUID, KsuidMillis 성능을 세 차례 비교하며 병목이 어떻게 이동했는지 정리한 글.
+title: "Global Unique ID 생성기 성능 개선기: Go, Kotlin 중심으로"
+description: bluetape-go와 bluetape4k-idgenerators의 Snowflake, ULID, KSUID, KsuidMillis 성능을 세 차례 benchmark로 비교하며 병목이 어떻게 이동했는지 정리한 글.
 sidebar:
   order: -202606111320
 blog:
   date: 2026-06-11T13:20:00+09:00
   image: /assets/id-generators-performance-hero.png
   imageAlt: Go와 Kotlin ID generator들을 같은 benchmark workbench에서 비교하는 3D 일러스트
-  cardDescription: Go ID generator 구현, 1차 비교, Go entropy 개선, 2차 비교, Kotlin ULID/KSUID/Snowflake 개선, 3차 비교까지 숫자로 정리합니다.
+  cardDescription: Go ID generator 구현, Phase 1 비교, Go entropy 개선, Phase 2 비교, Kotlin ULID/KSUID/Snowflake 개선, Phase 3 비교까지 chart 중심으로 정리합니다.
 ---
 
 <figure class="bt4k-blog-hero">
@@ -17,17 +17,29 @@ blog:
 
 <p class="bt4k-post-meta">2026-06-11 · bluetape4k idgenerators benchmark note</p>
 
-처음 목표는 단순했다. `bluetape-go`에 `idgenerators` 구현을 붙이고,
-기존 `bluetape4k-idgenerators`와 비교한다. Go 쪽은 primitive와 작은 struct를 많이 쓰니
+나는 주로 Kotlin으로 backend를 만든다. 그런데 최근에는 Go에도 관심이 생겼다. Go는 보통 가볍고,
+개발 속도가 빠르며, runtime 성능도 좋다고 알려져 있다. 이 평가를 내가 만든 코드로 직접 확인해 보고 싶었다.
+
+비교 대상은 Global Unique ID 생성기로 잡았다. 이유는 세 가지다.
+
+- ID 생성기는 호출 빈도가 높다.
+- 전역에서 고유해야 한다.
+- 동시 생성에서도 깨지면 안 된다.
+
+즉 단순히 빠르기만 해서는 안 된다. 고유성과 동시성까지 같이 만족해야 한다. 겉으로는 작아 보이지만,
+막상 구현하면 요구사항이 꽤 까다롭다. 그래서 benchmark하기 좋은 주제라고 생각했다.
+
+처음 목표는 단순했다. `bluetape-go`에 `idgenerators`를 구현하고,
+기존 `bluetape4k-idgenerators`와 비교한다. Go는 primitive와 작은 struct를 많이 쓰니
 꽤 앞설 것이라고 예상했다.
 
-그런데 benchmark는 그렇게 얌전하게 끝나지 않았다. Go도 매번 random entropy를 읽고 있었고,
+그런데 benchmark는 기대를 여지없이 무너뜨렸다. Go도 매번 random entropy를 읽고 있었고,
 Kotlin도 Snowflake에서 불필요한 중간 객체를 만들고 있었다. `ULID`, `KSUID`, `KsuidMillis`도
 각각 다른 병목을 갖고 있었다. 결국 작업은 세 번의 비교로 커졌다.
 
 1. Go 구현을 만들고 1차 비교를 했다.
-2. Go 쪽 per-call allocation과 entropy 병목을 줄이고 2차 비교를 했다.
-3. Kotlin 쪽 Snowflake, ULID, KSUID, KsuidMillis를 다시 줄이고 3차 비교를 했다.
+2. Go의 per-call allocation과 entropy 병목을 줄이고 2차 비교를 했다.
+3. Kotlin의 Snowflake, ULID, KSUID, KsuidMillis 병목을 줄이고 3차 비교를 했다.
 
 이 글은 그 과정의 기록이다. 결론부터 말하면 "Go가 빠르다"나 "Kotlin이 이겼다"로 끝낼 수 없는
 숫자가 나왔다. generator family마다 병목이 달랐고, 한번 고친 뒤에는 다음 병목이 바로 보였다.
@@ -36,13 +48,13 @@ Kotlin도 Snowflake에서 불필요한 중간 객체를 만들고 있었다. `UL
 
 `bluetape-go`의 구현은 `id` 패키지에 모았다.
 
-- UUID v4/v7은 convenience 함수와 재사용 가능한 generator를 모두 제공한다.
-- ULID는 random ULID와 monotonic ULID를 나눈다.
-- KSUID는 초 단위 timestamp를 쓰는 기본 KSUID와, JVM 쪽 구현과 맞춘 millisecond variant를 함께 둔다.
-- Snowflake는 integer ID hot path를 노출한다.
+- UUID v4/v7은 바로 쓰는 함수와 재사용 가능한 generator를 모두 제공한다.
+- ULID를 제공한다.
+- KSUID는 초 단위 timestamp를 쓰는 기본 KSUID와, JVM 구현에 맞춘 millisecond variant를 함께 제공한다.
+- Snowflake는 Long ID를 제공한다.
 
-구현의 출발점은 단순했다. Go API에서는 문자열 ID를 바로 얻는 `NextString()` 류 entrypoint와,
-benchmark에서 allocation이 섞이지 않도록 정수 hot path를 분리한 entrypoint를 같이 둔다.
+구현의 출발점은 단순했다. Go API에서는 문자열 ID를 바로 얻는 `NextString()` 계열 함수와,
+benchmark에서 allocation이 섞이지 않도록 Long 수형을 바로 돌려주는 함수를 같이 둔다.
 
 ```go
 id.NewULIDMonotonicGenerator().NextString()
@@ -58,44 +70,41 @@ id.NewSnowflakeGenerator(...).NextInt64()
 
 ## 1차 비교: 예상보다 단순하지 않았다
 
-1차 비교에서는 Go가 모든 row를 가져가지는 못했다. Snowflake처럼 synthetic clock으로 hot path를 재는
-row는 Go가 압도적으로 낮은 `ns/id`를 보였다. 반대로 Kotlin의 UUID v7, single-thread monotonic ULID,
-KSUID seconds는 이미 꽤 강했다.
+1차 Benchmark 결과는 예상보다 복잡했다. Go가 모든 항목에서 앞서지 않았다. Snowflake처럼 synthetic
+clock으로 핵심 생성 경로를 재는 항목은 Go가 압도적으로 빠르게 나왔다. 반대로 Kotlin의 UUID v7,
+single-thread monotonic ULID, KSUID seconds는 이미 꽤 강했다.
 
-중요한 점은 benchmark shape였다. Go Snowflake row는 synthetic clock hook을 쓰는 hot path였다.
-Kotlin Snowflake row는 real system clock과 `kotlinx-benchmark` batch shape를 사용했다. 이 둘을 같은
-production verdict로 읽으면 안 된다. Snowflake row는 "Go 코드가 이 상황에서 빠르다"는 자료이지,
+<figure class="bt4k-chart">
+  <img src="/assets/id-generators-benchmark-phase-1-chart-01.png" alt="ID Generator Benchmark Phase 1에서 Go 첫 구현과 기존 Kotlin 구현의 ns/id를 비교한 chart" loading="lazy" />
+  <figcaption>Phase 1은 "Go가 당연히 이긴다"는 가정을 깨뜨렸다. Snowflake는 Go가 빠르지만, 문자열 ID 계열에서는 Kotlin이 이미 앞선 항목이 많았다.</figcaption>
+</figure>
+
+중요한 점은 측정 방식이었다. Go Snowflake 항목은 synthetic clock hook을 쓰는 핵심 생성 경로였다.
+Kotlin Snowflake 항목은 real system clock과 `kotlinx-benchmark` batch 방식을 사용했다. 이 둘을 같은
+운영 환경 결론으로 읽으면 안 된다. Snowflake 항목은 "Go 코드가 이 상황에서 빠르다"는 자료이지,
 "언어 차이만으로 이 정도가 난다"는 자료가 아니다.
 
-그래도 1차 비교는 쓸모가 있었다. Go 쪽 profile을 보니, 기대와 달리 generator 재사용만으로는 gap이
+그래도 1차 비교는 쓸모가 있었다. Go profile을 보니, 기대와 달리 generator 재사용만으로는 차이가
 크게 줄지 않았다. 병목은 더 아래에 있었다. random entropy read와 문자열 encoding이 눈에 띄었다.
 
 ## Go 개선: 매번 할당보다 먼저 entropy가 보였다
 
-Go 쪽 개선은 두 갈래였다.
+Go 개선은 두 갈래였다.
 
 첫째, default entropy source를 바꿨다. UUID, ULID, KSUID가 매 ID마다 `crypto/rand`를 직접 두드리면
 ID 생성이라기보다 syscall 체조에 가깝다. 그래서 package-local locked buffered reader를 두고,
 기본 generator들이 이 reader를 공유하도록 했다. entropy source는 여전히 `crypto/rand` 기반이다.
-ID는 인증 토큰이 아니라 identifier라는 boundary도 보고서에 명시했다.
+ID는 인증 토큰이 아니라 identifier라는 경계도 보고서에 명시했다.
 
 둘째, `KSUIDMillis` 문자열 encoding에서 불필요한 임시 slice를 줄였다. 27글자 prefix를 고정 local
 buffer에 바로 encode해서, 이전처럼 만든 뒤 자르는 경로를 피했다.
 
-최종 `benchstat` 요약은 꽤 선명했다.
+최종 `benchstat` 요약은 꽤 선명했다. geomean latency는 58.34% 줄었다. UUID v4 reused는
+224.10 ns/op에서 45.57 ns/op로, KSUID millis는 316.80 ns/op에서 122.80 ns/op로 내려갔다. 반대로
+`ULID monotonic`은 65.80 ns/op에서 65.31 ns/op로 거의 움직이지 않았다.
 
-| Go benchmark | Baseline | Final | Change |
-|---|---:|---:|---:|
-| UUID v4 reused | 224.10 ns/op | 45.57 ns/op | -79.67% |
-| UUID v7 reused | 255.60 ns/op | 73.95 ns/op | -71.07% |
-| ULID random | 104.50 ns/op | 63.12 ns/op | -39.60% |
-| ULID monotonic | 65.80 ns/op | 65.31 ns/op | -0.74% |
-| KSUID seconds | 393.10 ns/op | 217.90 ns/op | -44.58% |
-| KSUID millis | 316.80 ns/op | 122.80 ns/op | -61.23% |
-| KSUID millis parallel | 621.00 ns/op | 209.00 ns/op | -66.35% |
-
-`ULID monotonic`이 거의 움직이지 않은 것도 중요하다. 이 row는 entropy buffering이 아니라 monotonic
-state 관리와 encoding 쪽이 더 큰 비중을 갖고 있었다. 즉, "한 가지 최적화가 모든 ID generator를
+`ULID monotonic`이 거의 움직이지 않은 숫자도 눈여겨볼 만하다. 이 항목은 entropy buffering이 아니라 monotonic
+state 관리와 encoding의 비중이 더 컸다. 즉, "한 가지 최적화가 모든 ID generator를
 고친다"는 식의 이야기는 여기서 바로 깨진다.
 
 자세한 Go 개선 기록은
@@ -103,39 +112,28 @@ state 관리와 encoding 쪽이 더 큰 비중을 갖고 있었다. 즉, "한 �
 
 ## 2차 비교: 병목이 이동했다
 
-Go 개선 뒤의 2차 비교에서는 표정이 달라졌다. Go는 UUID v4, KSUID millis, concurrent ULID/KSUID row에서
+Go 개선 뒤의 2차 비교에서는 양상이 달라졌다. Go는 UUID v4, KSUID millis, concurrent ULID/KSUID 항목에서
 강해졌다. Kotlin은 UUID v7과 single-thread monotonic ULID에서 여전히 좋은 숫자를 냈다.
 
-| Generator | Go ns/id | Kotlin ns/id | Lower row |
-|---|---:|---:|---|
-| Snowflake synthetic clock | 11.98 | 244.06 | Go |
-| ULID monotonic | 65.31 | 37.01 | Kotlin |
-| UUID v4 reused generator | 45.57 | 95.09 | Go |
-| UUID v7 reused generator | 73.95 | 23.59 | Kotlin |
-| KSUID millis | 122.80 | 167.80 | Go |
-| KSUID seconds | 217.90 | 187.93 | Kotlin |
+<figure class="bt4k-chart">
+  <img src="/assets/id-generators-benchmark-phase-2-chart-01.png" alt="ID Generator Benchmark Phase 2에서 Go 개선 후 Go와 Kotlin의 ns/id를 비교한 chart" loading="lazy" />
+  <figcaption>Phase 2에서는 Go entropy buffering 효과가 보인다. 특히 concurrent 항목에서 Go가 앞서는 항목이 크게 늘었다.</figcaption>
+</figure>
 
-Concurrent row는 Go 쪽 entropy buffering 효과가 더 잘 보였다.
+2차 Chart가 보여 주는 핵심은 "Go가 빨라졌다"보다 "병목이 이동했다"에 가깝다. Go는 random entropy
+read 비용을 줄이자 UUID v4와 KSUID millis에서 앞서기 시작했다. 반면 UUID v7과 single-thread
+monotonic ULID는 Kotlin이 계속 빠르다. 어느 한 runtime의 일반 승리로 읽기에는 항목별 성격이 너무 다르다.
 
-| Generator | Go ns/id | Kotlin ns/id | Lower row |
-|---|---:|---:|---|
-| Snowflake synthetic clock | 92.37 | 373.89 | Go |
-| ULID monotonic | 180.20 | 408.56 | Go |
-| UUID v4 reused generator | 145.00 | 329.69 | Go |
-| UUID v7 reused generator | 202.80 | 115.42 | Kotlin |
-| KSUID millis | 209.00 | 396.50 | Go |
-| KSUID seconds | 244.20 | 388.70 | Go |
-
-이쯤 되면 Kotlin 쪽도 그냥 두기 어렵다. Go를 고쳐놓고 보니, Kotlin implementation에도 줄일 수 있는
-object path와 entropy staging이 보였다.
+이쯤 되면 Kotlin도 그냥 두기 어렵다. Go를 고쳐놓고 보니, Kotlin implementation에도 줄일 수 있는
+객체 생성 경로와 entropy 처리 단계가 보였다.
 
 ## Kotlin 개선: Snowflake, ULID, KSUID, KsuidMillis
 
-Kotlin 작업은 `bluetape4k-idgenerators`에서 했다. 이쪽의 목표는 public API를 흔들지 않고, 생성 경로의
-불필요한 객체와 random payload staging을 줄이는 것이었다.
+Kotlin 작업은 `bluetape4k-idgenerators`에서 했다. 목표는 public API를 흔들지 않고, 생성 경로의
+불필요한 객체와 random payload 단계를 줄이는 것이었다.
 
 Snowflake는 `SnowflakeId` 중간 객체를 만들고 다시 `Long`으로 꺼내는 경로가 있었다. 그래서 내부
-sequencer에 value fast path를 추가했다. public API는 그대로 두고, `nextId()`와 `nextIds(size)`가
+sequencer에 Long 값 생성 경로를 추가했다. public API는 그대로 두고, `nextId()`와 `nextIds(size)`가
 가능하면 `Long` 값을 바로 받도록 했다.
 
 ```kotlin
@@ -146,7 +144,7 @@ internal interface SnowflakeValueSequencer {
 
 이 변화는 throughput 표에서 크게 보이지 않는다. 이유가 있다. benchmark가 65,536개 ID를 한 operation에서
 만들고, Snowflake sequence는 millisecond마다 4,096개가 한계다. real clock에서는 clock ceiling이 먼저
-나온다. 대신 allocation profile은 또렷했다.
+나온다. 대신 allocation profile에서는 차이가 또렷했다.
 
 | Snowflake profile | Baseline | Candidate 3 | Delta |
 |---|---:|---:|---:|
@@ -154,80 +152,61 @@ internal interface SnowflakeValueSequencer {
 | `gc.alloc.rate` | 868.813 MB/s | 415.382 MB/s | -52.19% |
 | `gc.count` | 6 | 3 | -50.00% |
 
-ULID는 `ByteArray(10)`을 만들고 `Random.nextBytes`로 채우는 staging을 피했다. 80-bit randomness를
-직접 `nextBits(16)`과 `nextLong()`으로 받아 value/string path에 넣는다.
+ULID는 `ByteArray(10)`을 만들고 `Random.nextBytes`로 채우는 단계를 피했다. 80-bit randomness를
+직접 `nextBits(16)`과 `nextLong()`으로 받아 value/string 생성 경로에 넣는다.
 
-KSUID와 `KsuidMillis`는 timestamp를 먼저 명시적으로 쓰고, random payload 부분만 채우도록 바꿨다.
+KSUID와 `KsuidMillis`는 timestamp를 명시적으로 기록한 뒤 random payload 부분만 채우도록 바꿨다.
 초 단위 KSUID는 4바이트 timestamp 뒤의 16바이트 payload만, millisecond variant는 8바이트 timestamp
 뒤의 12바이트 payload만 randomize한다.
 
-Kotlin candidate 3의 decision-relevant row는 다음과 같다.
+Kotlin candidate 3에서 가장 크게 움직인 항목은 concurrent ULID였다. `concurrent.ulidMonotonicString`은
+18.48%, uniqueness를 같이 보는 항목은 29.02% 좋아졌다. KSUID와 `KsuidMillis`는 payload randomization을
+줄인 만큼 제한적으로 움직였다. 이 변화는 최종 비교 Chart인 Phase 3에서 다시 확인할 수 있다.
 
-| Kotlin workload | Baseline | Candidate 3 | Delta |
-|---|---:|---:|---:|
-| `single.ulidMonotonicString` | 577.327 ops/s | 580.638 ops/s | +0.57% |
-| `single.ulidMonotonicValueOnly` | 831.422 ops/s | 847.083 ops/s | +1.88% |
-| `single.ulidMonotonicWithUniqueness` | 360.095 ops/s | 365.002 ops/s | +1.36% |
-| `single.ksuidSecondsFixedInstantString` | 79.546 ops/s | 88.611 ops/s | +11.40% |
-| `single.ksuidSecondsWithUniqueness` | 71.890 ops/s | 74.321 ops/s | +3.38% |
-| `single.ksuidMillisFixedInstantString` | 94.588 ops/s | 98.104 ops/s | +3.72% |
-| `single.ksuidMillisWithUniqueness` | 82.114 ops/s | 82.655 ops/s | +0.66% |
-| `concurrent.ulidMonotonicString` | 38.331 ops/s | 45.414 ops/s | +18.48% |
-| `concurrent.ulidMonotonicWithUniqueness` | 35.542 ops/s | 45.857 ops/s | +29.02% |
-| `concurrent.ksuidMillisDefaultString` | 68.632 ops/s | 70.704 ops/s | +3.02% |
-| `concurrent.ksuidMillisWithUniqueness` | 53.496 ops/s | 56.906 ops/s | +6.37% |
-| `concurrent.ksuidSecondsDefaultString` | 60.633 ops/s | 62.924 ops/s | +3.78% |
-| `concurrent.ksuidSecondsWithUniqueness` | 52.908 ops/s | 53.445 ops/s | +1.01% |
-
-여기서도 숫자를 너무 예쁘게 포장하면 안 된다. `single.ksuidMillisDefaultString`은 full candidate 3 run에서
-잠깐 낮게 나왔지만, 같은 JVM targeted repeat에서는 baseline 대비 -1.74% 수준이었다. KSUID millis code
-path가 candidate 2와 candidate 3 사이에서 바뀌지 않았기 때문에, 보고서에는 full-run dip을 benchmark
-noise로 남겼다. 성능 글에서 안 좋은 row를 지우기 시작하면 그때부터 benchmark가 아니라 광고가 된다.
+여기서도 숫자를 너무 예쁘게 포장하면 안 된다. `single.ksuidMillisDefaultString`은 candidate 3 전체 run에서
+잠깐 낮게 나왔지만, 같은 JVM에서 반복한 targeted run에서는 baseline 대비 -1.74% 수준이었다. KSUID millis
+코드 경로가 candidate 2와 candidate 3 사이에서 바뀌지 않았기 때문에, 보고서에는 전체 run에서 보인 하락을
+benchmark noise로 남겼다. 성능 글에서 안 좋은 항목을 지우기 시작하면 그때부터 benchmark가 아니라 광고가 된다.
 
 ## 3차 비교: Go와 Kotlin이 각자 다른 곳에서 앞선다
 
-마지막으로 현재 Go 구현과 Kotlin candidate 3을 다시 비교했다. Kotlin throughput row는 batch size
+마지막으로 현재 Go 구현과 Kotlin candidate 3을 다시 비교했다. Kotlin throughput 항목은 batch size
 65,536 기준 `1e9 / (ops/s * 65_536)`으로 `ns/id`로 정규화했다.
 
-| Workload | Go ns/id | Kotlin ns/id | Lower | Note |
-|---|---:|---:|---|---|
-| Snowflake single | 11.98 | 244.02 | Go | Go synthetic clock; Kotlin real clock/batch ceiling |
-| Snowflake concurrent | 90.01 | 243.65 | Go | Go synthetic clock; Kotlin real clock/batch ceiling |
-| ULID monotonic single | 64.96 | 26.28 | Kotlin |  |
-| ULID monotonic concurrent | 194.80 | 336.00 | Go |  |
-| KSUID seconds single | 215.60 | 175.86 | Kotlin |  |
-| KSUID seconds concurrent | 256.40 | 242.50 | Kotlin |  |
-| KSUID millis single | 123.50 | 167.07 | Go | Kotlin targeted repeat was 157.03 ns/id |
-| KSUID millis concurrent | 215.90 | 215.81 | Kotlin | Effectively tied |
+<figure class="bt4k-chart">
+  <img src="/assets/id-generators-benchmark-phase-3-chart-01.png" alt="ID Generator Benchmark Phase 3에서 최종 Go와 Kotlin candidate 3의 ns/id를 비교한 chart" loading="lazy" />
+  <figcaption>3차 비교는 어느 한쪽의 완승이 아니다. Snowflake는 clock model caveat가 크고, ULID와 KSUID는 single/concurrent 항목이 갈린다.</figcaption>
+</figure>
 
-`KsuidMillis`를 빼면 그림이 틀어진다. Go 개선 뒤에는 `KSUID millis`가 꽤 큰 Go lead였는데,
-Kotlin payload-only randomization 이후 concurrent row는 사실상 동률까지 왔다. single row에서는 Go가
-아직 낮다. 이 차이는 timestamp precision variant가 실제 서비스에서 어떤 형태로 쓰이는지에 따라 다시
-재야 한다.
+`KsuidMillis`는 KSUID seconds와 timestamp precision이 다른 별도 variant다. 그래서 KSUID seconds 결과로
+`KsuidMillis` 성능을 대충 추측해버리면 안 된다. Go 개선 뒤 2차 Benchmark에서는 `KSUID millis`는 Go가
+압승이었는데, Kotlin payload-only randomization 이후 3차 Benchmark에서는 동시 생성 시나리오에서 동률까지
+왔다. single-thread 항목에서는 Go의 ns/id가 더 낮아 더 빠르다. 이 차이는 timestamp 정밀도가 다른 variant가 실제
+서비스에서 어떤 형태로 쓰이는지에 따라 다시 재야 한다.
 
-`ULID`도 한 줄로 말하기 어렵다. single-thread monotonic row는 Kotlin이 낮고, concurrent monotonic row는
-Go가 낮다. monotonic state를 어떻게 보호하고, entropy와 encoding이 어느 쪽에서 더 크게 보이는지가
-workload별로 갈린다.
+`ULID`도 한 줄로 말하기 어렵다. single-thread monotonic 항목은 Kotlin의 ns/id가 낮아 더 빠르고,
+concurrent monotonic 항목은 Go의 ns/id가 낮아 더 빠르다. monotonic state를 어떻게 보호하고, entropy와
+encoding 중 어디가 더 크게 드러나는지가 workload별로 갈린다.
 
-`KSUID seconds`는 Kotlin 개선 뒤 single/concurrent 모두 Kotlin row가 낮았다. 반대로 Snowflake는 여전히
-Go 숫자가 낮지만, 이 row는 clock model 차이가 너무 크다. Kotlin에서 이번에 얻은 실질적 개선은
-throughput ranking이 아니라 allocation 절감이다.
+`KSUID seconds`는 Kotlin 개선 뒤 single/concurrent 모두 Kotlin의 ns/id가 낮아 더 빠르다. 반대로
+Snowflake는 여전히 Go 숫자가 낮지만, 이 항목은 clock model 차이가 너무 크다. Kotlin에서 이번에 얻은 실질적 개선은
+throughput 순위가 아니라 allocation 절감이다.
 
 ## 이번 작업의 진짜 결론
 
-이번 비교에서 제일 위험한 결론은 "Go와 Kotlin 중 무엇이 더 빠른가"다. 그 문장은 보기에는 시원하지만,
-실제로는 별로 쓸모가 없다.
+이번 비교에서 제일 조심해야 할 결론은 "Go와 Kotlin 중 무엇이 더 빠른가"다. 이 질문만으로는
+benchmark 결과를 제대로 설명하기 어렵다.
 
-더 쓸모 있는 결론은 이쪽이다.
+결론은 다음과 같다.
 
 - Snowflake는 clock model과 sequence ceiling을 분리해서 봐야 한다.
-- Go의 UUID/ULID/KSUID 초기 병목은 generator 재사용보다 entropy read 쪽에 가까웠다.
+- Go의 UUID/ULID/KSUID 초기 병목은 generator 재사용보다 entropy read에 가까웠다.
 - Kotlin Snowflake는 throughput보다 allocation profile에서 개선이 크게 보였다.
-- Kotlin ULID/KSUID/KsuidMillis는 payload staging을 줄이면 concurrent row가 움직인다.
-- `KsuidMillis`는 별도 variant로 봐야 한다. KSUID seconds 결과로 대충 대표시키면 안 된다.
+- Kotlin ULID/KSUID/KsuidMillis는 payload 단계를 줄이면 concurrent 항목에서 성능이 달라진다.
+- `KsuidMillis`는 별도 variant로 봐야 한다. KSUID seconds 결과로 대충 추측해버리면 안 된다.
 
 ID generator는 작아 보이는 코드다. 그래서 benchmark도 간단할 것 같지만, 실제로는 clock, random,
-encoding, uniqueness set, batch size가 서로 다른 방향으로 끌어당긴다. 이번 작업의 수확은 빠른 row
+encoding, uniqueness set, batch size가 서로 다른 방향으로 끌어당긴다. 이번 작업의 수확은 빠른 항목
 몇 개가 아니다. 다음에 ID generator를 고칠 때 "어디부터 의심해야 하는지"를 알게 된 점이다.
 
 ## Source notes
