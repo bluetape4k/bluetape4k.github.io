@@ -1,5 +1,10 @@
 # AGENTS.md - bluetape4k.github.io
 
+This repository inherits the workspace guidance from `../AGENTS.md`.
+Read and follow the workspace root guide first. This file only adds
+repo-specific layout, commands, domain rules, and local exceptions.
+
+
 Astro/Starlight site for bluetape4k public documentation and blog posts.
 
 ## Scope
@@ -32,21 +37,3 @@ For content-only blog edits:
 2. Run `npm run build` when frontmatter, links, assets, components, routing, or MDX structure changed.
 3. For prose-only edits, at minimum run `npm run build` unless the change is extremely small and the validation gap is reported.
 4. Check changed routes when publishing, merging, or touching links/assets.
-
-## Git
-
-- Work from `develop` unless the user asks otherwise.
-- Keep diffs small and reviewable.
-- Use Lore commit messages when committing:
-
-```text
-<intent line: why the change was made, not what changed>
-
-Constraint: <external constraint that shaped the decision>
-Rejected: <alternative considered> | <reason for rejection>
-Confidence: <low|medium|high>
-Scope-risk: <narrow|moderate|broad>
-Directive: <forward-looking warning for future modifiers>
-Tested: <what was verified>
-Not-tested: <known gaps in verification>
-```
