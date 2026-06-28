@@ -167,6 +167,13 @@ exporter. That is the next level of evidence when the question moves from “whi
 “why is this path slower?” In batch code, row mapping and chunk processing can create enough objects for
 GC metrics to warn before the throughput number tells the whole story.
 
+`bluetape4k-image` already has a useful reference point. Its large image streaming benchmark handles a
+load-transform-write pipeline, which is close to batch work in the sense that large inputs move through
+several processing stages. That report measures primary latency with `kotlinx-benchmark`, then records a
+separate JMH GC profiler addendum with `gc.alloc.rate.norm`. In that run, the Scrimage `ByteArray` path
+allocated about 216 MiB/op for `large-photo`, while the vips `Path` path stayed around 0.54 MiB/op. That is
+the kind of signal an average-time table alone can hide.
+
 ## Keep the Variables in @Param
 
 The comparison axes are fixed first. Database and driver belong to benchmark classes/profiles; scenario
@@ -378,3 +385,4 @@ the mistake entered the measurement.
 - [`AbstractR2dbcBatchBenchmark.kt`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/utils/batch/src/benchmark/kotlin/io/bluetape4k/batch/benchmark/r2dbc/AbstractR2dbcBatchBenchmark.kt)
 - [`BenchmarkMarkdownExporter.kt`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/utils/batch/src/benchmark/kotlin/io/bluetape4k/batch/benchmark/support/BenchmarkMarkdownExporter.kt)
 - [`utils/batch/benchmark/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/utils/batch/benchmark/README.md)
+- [`bluetape4k-image large streaming benchmark`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/benchmark/images-benchmark/docs/large-streaming-2026-06-05.md)
