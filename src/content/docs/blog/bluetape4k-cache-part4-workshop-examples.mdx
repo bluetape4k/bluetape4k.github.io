@@ -119,14 +119,18 @@ The implementations separate the strategies.
 | `CaffeineService` | Local in-JVM cache |
 | `RedisCacheService` | Remote distributed cache |
 | `NearCacheService` | Local + Redis near cache |
-| `WriteThroughService` | Currently closer to cache-aside PUT management: DB write followed by cache update |
+| `WriteThroughService` | true write-through: save writes DB and Redis cache synchronously |
 | `ReadThroughService` | DB load on cache miss |
+| `WriteBehindService` | cache-first writes, DB flush asynchronously on updates |
 
 Related source:
 [NoCacheService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/NoCacheService.kt),
 [CaffeineService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/CaffeineService.kt),
 [RedisCacheService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/RedisCacheService.kt),
-[NearCacheService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/NearCacheService.kt)
+[NearCacheService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/NearCacheService.kt),
+[ReadThroughService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/ReadThroughService.kt),
+[WriteThroughService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/WriteThroughService.kt),
+[WriteBehindService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/WriteBehindService.kt)
 
 This structure is useful because benchmark code and production code share the same questions.
 Changing the strategy behind one interface lets you compare throughput and code complexity side
@@ -138,11 +142,16 @@ by side.
 - Does Near Cache reduce the read path enough?
 - Can we accept the write-through cost?
 
-One caveat: `WriteThroughService` in `cache-benchmark` does not mean the same thing as the
-writer-backed write-through strategy in `exposed-workshop` chapter 11. The current implementation
-is closer to cache-aside PUT management because application code saves to DB and then updates the
-cache. That distinction should stay explicit in the workshop, because the names sound closer than
-the behavior actually is.
+One caveat: in `cache-benchmark`, `WriteThroughService` is true synchronous write-through, so
+`save()` updates DB and Redis in the same request flow.
+
+`ReadThroughService` keeps writes in an app-managed cache-aside pattern (DB save + explicit cache
+update), while `WriteBehindService` updates cache first and flushes DB asynchronously for updates.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/cache-series-workshop-strategy-01.png" alt="Workshop cache-benchmark strategies and their read/write contracts" loading="lazy" />
+  <figcaption>All profiles share one API. Only the write path differs in how soon and where the DB and Redis are synchronized.</figcaption>
+</figure>
 
 ## Benchmark Results
 
