@@ -1,6 +1,6 @@
 ---
 title: "Rebuilding Batch Benchmarks: Moving from measureTimeMillis to kotlinx-benchmark"
-description: How the bluetape4k-exposed batch benchmarks moved from ad hoc timing to a repeatable kotlinx-benchmark/JMH setup with generated documentation.
+description: Why the bluetape4k-exposed batch benchmarks moved from ad hoc timing to a repeatable kotlinx-benchmark/JMH setup with generated documentation.
 sidebar:
   order: -202606282358
 blog:
@@ -150,6 +150,23 @@ The benchmark mode is `thrpt`, reported as `ops/sec`; higher is better. The gene
 `avg ms`; lower is better. A benchmark post should always state the metric direction. Otherwise readers
 have to pause at every table.
 
+`kotlinx-benchmark` is not limited to elapsed time. On JVM it runs on top of JMH, so the generated
+benchmark JAR can be run with JMH profilers. For example, `-prof gc` adds allocation rate, allocation per
+operation, GC count, and GC time signals such as `gc.alloc.rate`, `gc.alloc.rate.norm`, `gc.count`, and
+when applicable, `gc.time`.
+
+```bash
+java -jar utils/batch/build/benchmarks/benchmark/jars/<benchmark-jar>.jar \
+  '.*PostgreSqlJdbcBatchBenchmark.*' \
+  -prof gc
+```
+
+The current `utils/batch/benchmark/*.md` tables and charts are still centered on `thrpt` and `avg ms`.
+Documenting GC profiler output would require another pass over the benchmark execution and markdown
+exporter. That is the next level of evidence when the question moves from “which path is faster?” to
+“why is this path slower?” In batch code, row mapping and chunk processing can create enough objects for
+GC metrics to warn before the throughput number tells the whole story.
+
 ## Keep the Variables in @Param
 
 The comparison axes are fixed first. Database and driver belong to benchmark classes/profiles; scenario
@@ -191,6 +208,8 @@ The matrix is not tiny.
 | End-to-End | 3 DBs x 2 drivers x 3 data sizes x 3 pool sizes x 3 partition counts = 162 |
 
 Once the matrix is this large, “I timed it once” is not enough.
+By the time you notice that the number lied, you may have already spent a while cleaning up the wrong
+thing.
 
 ## Separate Seed From End-to-End
 
@@ -275,7 +294,7 @@ the detailed rows.
 | Notes | DB-specific interpretation cautions |
 
 Manual number copying is how benchmark docs drift. Once the values drift, the document becomes an old
-rumor instead of evidence.
+record instead of evidence.
 
 ## Reading the Representative Results
 
