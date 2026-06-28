@@ -1,0 +1,263 @@
+---
+title: "Exposed R2DBC Workshop: Ktor Multi-Tenant Routing Patterns"
+description: How the Ktor + Exposed R2DBC workshop separates schema-per-tenant and routing-datasource examples, and how that differs from the Spring/JDBC path.
+sidebar:
+  order: -202606282215
+blog:
+  date: 2026-06-28T22:15:00+09:00
+  image: /assets/exposed-r2dbc-ktor-multitenant-hero.png
+  imageAlt: Robotic builders arranging X-TENANT-ID and route key blocks between Ktor, Exposed, and R2DBC components on a 3D workbench
+  cardDescription: "In Ktor, keep tenant state out of ThreadLocal. Resolve it once, store it on the call, and pass explicit routing values."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/exposed-r2dbc-ktor-multitenant-hero.png" alt="Robotic builders arranging X-TENANT-ID and route key blocks between Ktor, Exposed, and R2DBC components on a 3D workbench" loading="eager" />
+  <figcaption>A tenant header is only the starting point. Do not let a raw string travel all the way to schema selection.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-28 · exposed-r2dbc-workshop · issue #34</p>
+
+Multi-tenant examples look simple from a distance. A request has `X-TENANT-ID`, and the service should use the `korean`
+schema or the `english` schema. That can sound like one header read and one `SET SCHEMA`.
+
+That shortcut becomes risky quickly. Raw header strings drift into repositories, request-scoped state starts acting like
+global state, and a reused R2DBC connection may still carry the previous tenant schema. The worst multi-tenancy failure
+is not always a loud crash. It is quietly reading the wrong tenant's data.
+
+This post covers two Ktor examples from `exposed-r2dbc-workshop`.
+
+| Module | Problem |
+|---|---|
+| `10-multi-tenant/07-multitenant-ktor` | Switch tenant schemas inside one R2DBC database |
+| `11-high-performance/06-routing-datasource-ktor-r2dbc` | Select an R2DBC target from tenant + read/write routing |
+
+The shapes differ, but the rule is the same: validate headers in the plugin, then pass only validated values to handlers
+and repositories.
+
+## Stop Raw Headers At The Plugin
+
+The Ktor example stores request-scoped tenant state in `ApplicationCall.attributes`. The WebFlux example teaches
+ReactorContext. Spring MVC/JDBC examples teach ThreadLocal or AOP boundaries. The Ktor version does not copy those
+carriers. It uses the Ktor call as the request boundary.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/exposed-r2dbc-ktor-tenant-sequence-01.png" alt="Sequence diagram where a Ktor plugin validates X-TENANT-ID, stores a tenant enum in call attributes, and a tenant transaction helper switches the R2DBC schema" loading="lazy" />
+  <figcaption>Raw headers stop at the plugin. Schema selection receives a validated enum.</figcaption>
+</figure>
+
+The plugin makes that boundary explicit.
+
+```kotlin
+val TenantPlugin = createApplicationPlugin(name = "TenantPlugin") {
+    onCall { call ->
+        val rawValues = call.request.headers.getAll(TenantHeader).orEmpty()
+        val tenantId = normalizeTenantHeader(rawValues)
+        val tenant = Tenants.findById(tenantId)
+            ?: throw InvalidTenantException("Unknown tenant id: $tenantId")
+        call.attributes.put(TenantAttributeKey, tenant)
+    }
+}
+```
+
+The important part is that `TenantAttributeKey` stores `Tenants.Tenant`, not a string. `X-TENANT-ID: korean` does not
+escape the plugin as raw text. If repositories or transaction helpers start parsing `"korean"` again, validation spreads
+across the codebase and fixes become harder.
+
+Duplicate headers are handled deliberately.
+
+```kotlin
+private fun normalizeTenantHeader(values: List<String>): String {
+    if (values.isEmpty()) {
+        throw InvalidTenantException("Missing tenant id header: $TenantHeader")
+    }
+    val normalized = values
+        .flatMap { it.split(',') }
+        .map { it.trim() }
+    if (normalized.any { it.isEmpty() }) {
+        throw InvalidTenantException("Blank tenant id header: $TenantHeader")
+    }
+    val distinct = normalized.toSet()
+    if (distinct.size != 1) {
+        throw InvalidTenantException("Conflicting tenant id headers: $TenantHeader")
+    }
+    return distinct.single()
+}
+```
+
+Repeated equivalent values are accepted after trimming. Conflicting `korean` and `english` values return `400`.
+
+## Switch Schema Inside The Transaction
+
+Once the tenant is known, the next question is where to switch schema. The example keeps that decision inside a tenant
+transaction helper.
+
+```kotlin
+suspend fun <T> suspendTransactionWithTenant(
+    tenant: Tenants.Tenant,
+    db: R2dbcDatabase,
+    readOnly: Boolean = false,
+    statement: suspend R2dbcTransaction.() -> T,
+): T =
+    suspendTransaction(db = db, readOnly = readOnly) {
+        SchemaUtils.setSchema(getSchemaDefinition(tenant))
+        statement()
+    }
+```
+
+That helper matters because schema is connection state. If an R2DBC pool reuses a connection, the previous schema can
+still matter unless the transaction boundary resets it for the current tenant.
+
+The tests target that risk directly.
+
+```kotlin
+val observed = (1..20).map { index ->
+    val tenant = if (index % 2 == 0) Tenant.ENGLISH else Tenant.KOREAN
+    client.get("/actors/2") {
+        header(TenantHeader, tenant.id)
+    }.body<ActorRecord>().firstName
+}
+```
+
+The test constrains the pool to size `1` and alternates tenants. `브래드` and `Brad` must not mix. Without this kind of
+test, schema leakage can hide for a long time because the endpoint still returns a valid actor.
+
+## Route Datasource With A Value
+
+The chapter 11 Ktor R2DBC example demonstrates target selection instead of schema switching. It reads `X-Tenant-Id`,
+`X-Read-Only`, and the `/readonly` path, then selects one of `default:rw`, `default:ro`, `acme:rw`, or `acme:ro`.
+
+The same rule applies: parse once in the plugin and pass a validated `RoutingRequest`.
+
+```kotlin
+private fun ApplicationCall.resolveRoutingRequest(): RoutingRequest {
+    val tenant = request.headers[TENANT_HEADER]
+        ?.trim()
+        ?.takeUnless { it.isBlank() }
+        ?.let { tenantId ->
+            RoutingTenant.from(tenantId)
+                ?: throw InvalidRoutingRequestException("Unknown tenant id: $tenantId")
+        }
+        ?: RoutingTenant.DEFAULT
+
+    val explicitReadOnly = request.headers[READ_ONLY_HEADER]
+        ?.trim()
+        ?.let { raw ->
+            raw.toBooleanStrictOrNull()
+                ?: throw InvalidRoutingRequestException("$READ_ONLY_HEADER must be true or false")
+        }
+        ?: false
+
+    return RoutingRequest(
+        tenant = tenant,
+        readOnly = explicitReadOnly || request.path().endsWith("/readonly"),
+    )
+}
+```
+
+`RoutingRequest` is small, but it is the routing contract.
+
+```kotlin
+data class RoutingRequest(
+    val tenant: RoutingTenant,
+    val readOnly: Boolean,
+) {
+    val mode: RoutingMode = if (readOnly) RoutingMode.READ_ONLY else RoutingMode.READ_WRITE
+    val key: String = "${tenant.id}:${mode.suffix}"
+    val expectedMarker: String = "${tenant.id}-${mode.suffix}"
+
+    fun asReadWrite(): RoutingRequest = copy(readOnly = false)
+}
+```
+
+The repository does not know headers or paths. It selects a database through `route.key`.
+
+```kotlin
+suspend fun findMarker(route: RoutingRequest): RoutingMarkerResponse {
+    awaitReady()
+    return route.toResponse(findMarkerValue(route))
+}
+
+private suspend fun findMarkerValue(route: RoutingRequest): String? =
+    suspendTransaction(db = registry.database(route), readOnly = true) {
+        RoutingMarkerTable
+            .selectAll()
+            .singleOrNull()
+            ?.getOrNull(RoutingMarkerTable.marker)
+    }
+```
+
+Tests verify the actual target with marker rows, not just response fields.
+
+```kotlin
+val pathResponse = client.get("/routing/marker/readonly") {
+    header(TENANT_HEADER, "acme")
+}.body<RoutingMarkerResponse>()
+
+val headerResponse = client.get("/routing/marker") {
+    header(TENANT_HEADER, "acme")
+    header(READ_ONLY_HEADER, "true")
+}.body<RoutingMarkerResponse>()
+
+pathResponse.marker shouldBeEqualTo "acme-ro"
+headerResponse.marker shouldBeEqualTo "acme-ro"
+```
+
+`PATCH /routing/marker` rejects `X-Read-Only: true` instead of silently overriding it. Ambiguous routing input should fail
+early.
+
+## Do Not Copy The Carrier
+
+When moving from Spring/JDBC examples to Ktor/R2DBC examples, the common mistake is to copy the context carrier.
+ThreadLocal, ReactorContext, and Ktor call attributes can solve similar problems, but they are not the same mechanism.
+Copy the invariant, not the carrier.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/exposed-r2dbc-ktor-routing-strategy-map-01.png" alt="Strategy map comparing how Spring JDBC and Ktor Exposed R2DBC solve tenant routing with different runtime boundaries" loading="lazy" />
+  <figcaption>The carrier changes with the runtime. The invariant does not: validate, pass explicit values, and test isolation.</figcaption>
+</figure>
+
+| Question | Spring/JDBC path | Ktor/R2DBC path |
+|---|---|---|
+| Where is request state stored? | ThreadLocal, ScopedValue, ReactorContext | `ApplicationCall.attributes` |
+| Where are headers parsed? | Filter, interceptor, AOP boundary | Ktor plugin |
+| What reaches DB selection? | Tenant context or routing key | `Tenants.Tenant`, `RoutingRequest` |
+| Transaction boundary | JDBC transaction / Spring transaction operator | `suspendTransaction`, `suspendTransactionWithTenant` |
+| Tests that matter | Tenant isolation, cleanup, read/write separation | Call attribute isolation, pool reuse, target marker checks |
+
+Ktor services should not start with "let's use ThreadLocal here too." The point of the example is coroutine-safe request
+routing. Resolve once, store it on the call, and pass the value explicitly.
+
+## Try The Examples
+
+The schema-per-tenant example separates actor data by tenant.
+
+```bash
+curl -H 'X-TENANT-ID: korean' http://localhost:8080/actors/2
+# {"id":2,"firstName":"브래드","lastName":"피트",...}
+
+curl -H 'X-TENANT-ID: english' http://localhost:8080/actors/2
+# {"id":2,"firstName":"Brad","lastName":"Pitt",...}
+```
+
+The routing-datasource example changes the selected target marker.
+
+```bash
+curl -H 'X-Tenant-Id: acme' http://localhost:8080/routing/marker
+# {"tenant":"acme","readOnly":false,"routingKey":"acme:rw","marker":"acme-rw"}
+
+curl -H 'X-Tenant-Id: acme' http://localhost:8080/routing/marker/readonly
+# {"tenant":"acme","readOnly":true,"routingKey":"acme:ro","marker":"acme-ro"}
+```
+
+Those marker values are not decoration. The tests use them to prove that the request reached the intended database
+target.
+
+## Source Links
+
+- Ktor schema-per-tenant README: [10-multi-tenant/07-multitenant-ktor/README.md](https://github.com/bluetape4k/exposed-r2dbc-workshop/blob/develop/10-multi-tenant/07-multitenant-ktor/README.md)
+- `TenantPlugin.kt`: [source](https://github.com/bluetape4k/exposed-r2dbc-workshop/blob/develop/10-multi-tenant/07-multitenant-ktor/src/main/kotlin/exposed/r2dbc/multitenant/ktor/tenant/TenantPlugin.kt)
+- `TenantTransaction.kt`: [source](https://github.com/bluetape4k/exposed-r2dbc-workshop/blob/develop/10-multi-tenant/07-multitenant-ktor/src/main/kotlin/exposed/r2dbc/multitenant/ktor/tenant/TenantTransaction.kt)
+- Ktor routing datasource README: [11-high-performance/06-routing-datasource-ktor-r2dbc/README.md](https://github.com/bluetape4k/exposed-r2dbc-workshop/blob/develop/11-high-performance/06-routing-datasource-ktor-r2dbc/README.md)
+- `RoutingRequestPlugin.kt`: [source](https://github.com/bluetape4k/exposed-r2dbc-workshop/blob/develop/11-high-performance/06-routing-datasource-ktor-r2dbc/src/main/kotlin/exposed/r2dbc/examples/routing/ktor/routing/RoutingRequestPlugin.kt)
+- `RoutingMarkerRepository.kt`: [source](https://github.com/bluetape4k/exposed-r2dbc-workshop/blob/develop/11-high-performance/06-routing-datasource-ktor-r2dbc/src/main/kotlin/exposed/r2dbc/examples/routing/ktor/domain/RoutingMarkerRepository.kt)
+- Issue #34: [Blog: Ktor and Exposed R2DBC multi-tenant routing patterns](https://github.com/bluetape4k/bluetape4k.github.io/issues/34)
