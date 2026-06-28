@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Graph operation call path variants</title>
+  <desc id="desc">Diagram showing how synchronous graph calls and virtual-thread wrapped graph calls reach the same graph backend through different execution paths.</desc>
+  <defs>
+    <marker id="arrow-blue" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 0 L 14 7 L 0 14 Z" fill="#387fb8" stroke="#387fb8"/>
+    </marker>
+    <marker id="arrow-pink" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 0 L 14 7 L 0 14 Z" fill="#c95c76" stroke="#c95c76"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#17324d" flood-opacity="0.14"/>
+    </filter>
+    <style>
+      .title { font-family: 'Architects Daughter', 'Comic Mono', sans-serif; font-size: 42px; fill: #18324a; }
+      .subtitle { font-family: 'Comic Mono', monospace; font-size: 23px; fill: #52687d; }
+      .lane-title { font-family: 'Architects Daughter', 'Comic Mono', sans-serif; font-size: 34px; fill: #18324a; }
+      .card-title { font-family: 'Comic Mono', monospace; font-size: 27px; font-weight: 700; fill: #1f3347; }
+      .card-text { font-family: 'Comic Mono', monospace; font-size: 21px; fill: #54677a; }
+      .note { font-family: 'Comic Mono', monospace; font-size: 22px; fill: #394d61; }
+      .canvas { fill: #eef5f8; }
+      .panel { fill: #f9fcfe; stroke: #d0dcea; stroke-width: 3; filter: url(#shadow); }
+      .sync-card { fill: #e7f3fc; stroke: #8fc3e8; stroke-width: 3; }
+      .vt-card { fill: #fff0f3; stroke: #efa7b8; stroke-width: 3; }
+      .backend-card { fill: #edf7ef; stroke: #94cba0; stroke-width: 3; }
+      .wait-card { fill: #fff8df; stroke: #e2c260; stroke-width: 3; }
+      .sync-line { fill: none; stroke: #387fb8; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-blue); }
+      .vt-line { fill: none; stroke: #c95c76; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-pink); }
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" class="canvas"/>
+  <rect x="52" y="48" width="1496" height="804" rx="34" class="panel"/>
+
+  <text x="104" y="122" class="title">One graph API, two execution paths</text>
+  <text x="104" y="164" class="subtitle">The backend work is the same. The question is whether wrapping cost is smaller than the wait.</text>
+
+  <text x="112" y="254" class="lane-title">Sync path</text>
+  <text x="112" y="548" class="lane-title">Virtual Thread path</text>
+
+  <g transform="translate(110 280)">
+    <rect x="0" y="0" width="285" height="126" rx="22" class="sync-card"/>
+    <text x="28" y="47" class="card-title">Caller thread</text>
+    <text x="28" y="84" class="card-text">calls GraphOperations</text>
+  </g>
+  <g transform="translate(505 280)">
+    <rect x="0" y="0" width="285" height="126" rx="22" class="sync-card"/>
+    <text x="28" y="47" class="card-title">Sync method</text>
+    <text x="28" y="84" class="card-text">direct backend call</text>
+  </g>
+  <g transform="translate(900 280)">
+    <rect x="0" y="0" width="285" height="126" rx="22" class="backend-card"/>
+    <text x="28" y="47" class="card-title">Graph backend</text>
+    <text x="28" y="84" class="card-text">TinkerGraph or DB</text>
+  </g>
+  <g transform="translate(1295 280)">
+    <rect x="0" y="0" width="150" height="126" rx="22" class="wait-card"/>
+    <text x="30" y="47" class="card-title">Wait</text>
+    <text x="30" y="84" class="card-text">caller pays</text>
+  </g>
+
+  <path class="sync-line" d="M 395 343 L 505 343"/>
+  <path class="sync-line" d="M 790 343 L 900 343"/>
+  <path class="sync-line" d="M 1185 343 L 1295 343"/>
+
+  <g transform="translate(110 574)">
+    <rect x="0" y="0" width="285" height="126" rx="22" class="vt-card"/>
+    <text x="28" y="47" class="card-title">Caller thread</text>
+    <text x="28" y="84" class="card-text">gets CompletableFuture</text>
+  </g>
+  <g transform="translate(505 574)">
+    <rect x="0" y="0" width="285" height="126" rx="22" class="vt-card"/>
+    <text x="28" y="47" class="card-title">VT adapter</text>
+    <text x="28" y="84" class="card-text">virtualFutureOf { ... }</text>
+  </g>
+  <g transform="translate(900 574)">
+    <rect x="0" y="0" width="285" height="126" rx="22" class="backend-card"/>
+    <text x="28" y="47" class="card-title">Graph backend</text>
+    <text x="28" y="84" class="card-text">same sync operation</text>
+  </g>
+  <g transform="translate(1295 574)">
+    <rect x="0" y="0" width="150" height="126" rx="22" class="wait-card"/>
+    <text x="30" y="47" class="card-title">Wait</text>
+    <text x="30" y="84" class="card-text">VT absorbs</text>
+  </g>
+
+  <path class="vt-line" d="M 395 637 L 505 637"/>
+  <path class="vt-line" d="M 790 637 L 900 637"/>
+  <path class="vt-line" d="M 1185 637 L 1295 637"/>
+
+  <g transform="translate(104 770)">
+    <rect x="0" y="0" width="1376" height="68" rx="18" fill="#eef2ff" stroke="#c4cbee" stroke-width="2"/>
+    <text x="24" y="29" class="note">Rule of thumb: for in-memory microsecond work, Sync wins.</text>
+    <text x="24" y="55" class="note">For blocking network I/O and many concurrent requests, Virtual Threads can buy simpler scaling.</text>
+  </g>
+</svg>
