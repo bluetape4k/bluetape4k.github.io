@@ -165,6 +165,12 @@ java -jar utils/batch/build/benchmarks/benchmark/jars/<benchmark-jar>.jar \
 “왜 느린가”로 넘어가면 GC와 allocation 지표가 필요합니다. 특히 배치 코드에서는 row mapping이나 chunk 처리에서
 객체를 많이 만들면 throughput 숫자보다 GC 지표가 먼저 경고를 줄 때가 있습니다.
 
+참고할 만한 사례는 `bluetape4k-image`에 있습니다. 대용량 이미지 streaming benchmark는 batch 작업처럼 큰 입력을
+읽고, 변환하고, 다시 쓰는 흐름을 다룹니다. 그 문서에서는 `kotlinx-benchmark`로 평균 시간을 측정한 뒤,
+별도 JMH GC profiler 결과로 `gc.alloc.rate.norm`을 남겼습니다. Scrimage `ByteArray` 경로가
+`large-photo`에서 약 216 MiB/op를 할당하고, vips `Path` 경로가 약 0.54 MiB/op에 머문다는 차이는
+평균 시간만 봤다면 놓치기 쉬운 신호입니다.
+
 ## 조합 변수는 @Param으로 고정한다
 
 배치 benchmark에서 가장 먼저 고정한 것은 비교 축입니다. DB와 driver는 benchmark class/profile이 맡고,
@@ -375,3 +381,4 @@ DB schema, network, driver version, JVM option, pool setting, transaction 크기
 - [`AbstractR2dbcBatchBenchmark.kt`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/utils/batch/src/benchmark/kotlin/io/bluetape4k/batch/benchmark/r2dbc/AbstractR2dbcBatchBenchmark.kt)
 - [`BenchmarkMarkdownExporter.kt`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/utils/batch/src/benchmark/kotlin/io/bluetape4k/batch/benchmark/support/BenchmarkMarkdownExporter.kt)
 - [`utils/batch/benchmark/README.ko.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/utils/batch/benchmark/README.ko.md)
+- [`bluetape4k-image large streaming benchmark`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/benchmark/images-benchmark/docs/large-streaming-2026-06-05.md)
