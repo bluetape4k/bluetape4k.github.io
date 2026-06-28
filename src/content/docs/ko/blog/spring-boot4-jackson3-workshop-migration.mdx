@@ -1,0 +1,262 @@
+---
+title: "Spring Boot 4 Workshop에서 Jackson3로 갈아타기"
+description: bluetape4k-workshop의 Spring Boot 4 예제에서 Jackson2 흔적을 걷어내고 Jackson3 기준으로 맞춘 과정을 정리한다.
+sidebar:
+  order: -202606290110
+blog:
+  date: 2026-06-29T01:10:00+09:00
+  image: /assets/spring-boot4-jackson3-workshop-hero.png
+  imageAlt: Spring Boot 4와 Jackson 3 블록을 중심으로 로봇 작업자들이 Jackson 2 블록을 치우고 migration checklist를 정리하는 3D 작업대 일러스트
+  cardDescription: "Spring Boot 4 예제는 Jackson3 기준에 맞아야 한다. 의존성, import, mapper bean, 예외 사례를 점검한다."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/spring-boot4-jackson3-workshop-hero.png" alt="Spring Boot 4와 Jackson 3 블록을 중심으로 로봇 작업자들이 Jackson 2 블록을 치우고 migration checklist를 정리하는 3D 작업대 일러스트" loading="eager" />
+  <figcaption>Spring Boot 4 예제에서는 Jackson 버전도 예제의 일부입니다. classpath가 틀리면 예제는 설명을 시작하기도 전에 실패합니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-29 · bluetape4k-workshop · issue #37</p>
+
+Spring Boot 4로 예제를 올리면 Spring Framework 7, starter 이름, test package 변경부터 확인하게 됩니다.
+그런데 실제 정리 과정에서는 JSON 쪽에서 예상보다 자주 문제가 생겼습니다.
+
+Spring Boot 4의 기본 JSON 구성은 Jackson 3입니다. Spring Boot 문서도 Jackson 3을 기본이자 선호 라이브러리로
+설명하고, Jackson 2 지원은 migration을 위한 임시 경로로 둡니다. 따라서 Spring Boot 4 workshop 모듈이
+`bluetape4k-jackson2`나 Jackson 2 import를 계속 들고 있으면, Boot 4 예제 안에 Boot 3 시절의 JSON 구성이
+함께 남습니다.
+
+예제는 "대충 돌아가는 샘플"이 아닙니다. 사용자가 그대로 가져가서 자기 프로젝트에서 첫 삽을 뜨는 출발점입니다.
+그 출발점에 오래된 classpath를 남겨두면, 독자가 자기 프로젝트로 옮기는 순간 `NoSuchMethodError`나
+설정 충돌을 먼저 만날 수 있습니다. 그때는 예제를 만든 사람이 아니라 예제를 따라 한 사람이 뚜껑이 열립니다.
+
+## 문제는 버전 숫자가 아니라 호환성 기준선이다
+
+`bluetape4k-workshop`의 issue #65에서는 Spring workshop 모듈 몇 곳에 남아 있던
+`bluetape4k-jackson2` 의존성을 정리했습니다. 대상은 Spring Kafka reply 예제와 Spring Data Elasticsearch
+예제였습니다.
+
+정리 방향은 단순했습니다.
+
+| 확인할 것 | Spring Boot 4 예제에서 기대하는 상태 |
+|---|---|
+| bluetape4k JSON helper | `bluetape4k-jackson3` |
+| Jackson package | `tools.jackson.*` |
+| Jackson BOM | `tools.jackson:jackson-bom` |
+| Spring Boot 기준 | Spring Boot 4 BOM과 starter |
+| 예외 | 아직 Jackson 2 API만 노출하는 upstream 또는 annotation package |
+
+여기서 중요한 점은 "Jackson2를 싹 지운다"가 아닙니다. Spring Boot 4 예제가 어떤 호환성 기준선을 보여주는지
+분명히 하는 것입니다. 예제가 Boot 4라면 기본 JSON 구성도 Jackson 3이어야 합니다.
+
+`bluetape4k-workshop` root build는 Spring Boot 4 BOM과 Jackson 3 BOM을 함께 관리합니다.
+
+```kotlin
+dependencyManagement {
+    imports {
+        mavenBom(rootLibs.spring.boot4.dependencies.get().toString())
+        mavenBom(rootLibs.jackson3.bom.get().toString())
+    }
+}
+```
+
+버전 catalog에도 Jackson 2와 Jackson 3 alias가 나란히 있습니다.
+
+```toml
+# Jackson 2
+jackson-bom = { module = "com.fasterxml.jackson:jackson-bom", version.ref = "jackson" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind" }
+
+# Jackson 3
+jackson3-bom = { module = "tools.jackson:jackson-bom", version.ref = "jackson3" }
+jackson3-databind = { module = "tools.jackson.core:jackson-databind" }
+jackson3-module-kotlin = { module = "tools.jackson.module:jackson-module-kotlin" }
+```
+
+둘 다 catalog에 있다고 해서 아무 모듈이나 골라 써도 된다는 뜻은 아닙니다. catalog는 부품 창고에 가깝습니다.
+어떤 부품을 꺼낼지는 예제가 기준으로 삼는 Spring Boot 버전이 결정합니다.
+
+## 의존성은 이렇게 바꿨다
+
+`messaging/kafka-reply`는 request-reply 흐름을 보여주는 Spring Kafka 예제입니다. Spring Boot 4 기준에서는
+Jackson 3 의존성을 명시합니다.
+
+```kotlin
+dependencies {
+    api(libs.bluetape4k.jackson3)
+    api(libs.jackson3.databind)
+    api(libs.jackson3.module.kotlin)
+    api(libs.jackson3.module.blackbird)
+
+    implementation(libs.bluetape4k.kafka4)
+    implementation(libs.bluetape4k.coroutines)
+    implementation(libs.spring.boot.starter.webflux.lib)
+}
+```
+
+이 변경은 "새 기능을 하나 더 붙인 작업"이 아닙니다. 예제가 설명하는 실행 환경을 맞춘 작업입니다. Spring Boot 4,
+Spring Kafka 4, Jackson 3, `bluetape4k-jackson3`가 서로 맞는 버전 조합이 되도록 정리했습니다.
+
+비슷하게 `spring-data/elasticsearch`도 Spring Boot 4 예제 기준에 맞춰 `bluetape4k-jackson3`를 사용합니다.
+
+```kotlin
+dependencies {
+    implementation(libs.spring.boot.starter.data.elasticsearch.lib)
+    implementation(libs.spring.boot.starter.webflux.lib)
+
+    implementation(libs.bluetape4k.jackson3)
+    implementation(libs.bluetape4k.coroutines)
+}
+```
+
+여기까지는 쉽습니다. 진짜 조심할 부분은 import와 bean입니다.
+
+## import는 package 이름만 봐도 실수를 찾을 수 있다
+
+Jackson 3는 dependency group과 package가 달라졌습니다. Spring Boot 4 migration guide도
+`com.fasterxml.jackson`에서 `tools.jackson`으로 옮겨야 한다고 설명합니다. 예제 코드에서는 이런 모양이 됩니다.
+
+```kotlin
+import io.bluetape4k.jackson3.Jackson
+import tools.jackson.databind.json.JsonMapper
+
+@Configuration(proxyBeanMethods = false)
+class JacksonConfig {
+
+    @Bean
+    fun jsonMapper(): JsonMapper = Jackson.defaultJsonMapper
+
+}
+```
+
+`bluetape4k-jackson3`의 `Jackson.defaultJsonMapper`는 Kotlin module, Java time, Blackbird 같은 기본 구성을
+미리 잡아둔 mapper입니다. 예제에서 매번 module 등록 코드를 다시 쓰지 않아도 됩니다.
+
+추가 설정이 필요하면 `rebuild()`로 이어갑니다.
+
+```kotlin
+protected val defaultMapper: JsonMapper by lazy {
+    Jackson.defaultJsonMapper
+        .rebuild()
+        .apply {
+            configure(SerializationFeature.INDENT_OUTPUT, true)
+        }
+        .build()
+}
+```
+
+이 패턴은 workshop에서 꽤 중요합니다. 사용자는 예제를 보고 "Jackson module을 어떻게 다시 조립하지?"가 아니라
+"내 설정만 어디에 얹으면 되지?"를 확인해야 합니다. 친절하지 않은 예제는 README를 읽는 사람에게
+숙제를 떠넘깁니다.
+
+## `com.fasterxml.jackson.annotation`은 예외다
+
+여기서 성급하게 `rg "com.fasterxml.jackson"` 결과를 모두 지우면 또 다른 삽질이 시작됩니다.
+
+Jackson 3 migration에서 package가 `tools.jackson`으로 옮겨졌지만, annotation package는 호환성을 위해
+`com.fasterxml.jackson.annotation`에 남습니다. 그래서 workshop 소스에도 이런 import가 정상적으로 남아 있습니다.
+
+```kotlin
+import com.fasterxml.jackson.annotation.JsonView
+```
+
+그래서 점검 규칙은 이렇게 잡아야 합니다.
+
+| 검색 결과 | 처리 |
+|---|---|
+| `com.fasterxml.jackson.databind.*` | Jackson 3 모듈에서는 대체로 `tools.jackson.databind.*`로 이동 |
+| `com.fasterxml.jackson.module.*` | Jackson 3 모듈에서는 `tools.jackson.module.*`로 이동 |
+| `com.fasterxml.jackson.annotation.*` | 바로 삭제하지 말고 그대로 둘 수 있는지 확인 |
+| `bluetape4k-jackson2` | Spring Boot 4 예제라면 `bluetape4k-jackson3`로 전환 검토 |
+
+"문자열이 보이면 삭제"는 자동화처럼 보여도 실제로는 삽질 자동화입니다. migration에서는 검색 결과를 먼저
+분류해야 합니다.
+
+## 설정 파일도 같이 확인해야 한다
+
+의존성과 import만 바꿨다고 끝나지 않습니다. Spring Boot 4 + Jackson 3 조합에서는 `spring.jackson.*` 설정도
+확인해야 합니다.
+
+`bluetape4k-workshop`의 Exposed 예제 rewrite 과정에서는 이런 문제가 있었습니다.
+
+```yaml
+spring:
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+```
+
+Jackson 2에서는 익숙한 설정입니다. 하지만 Jackson 3에서는 enum과 기본값이 바뀌면서 이 설정이 context loading을
+깨뜨릴 수 있습니다. 해당 예제에서는 `spring.jackson` 섹션을 제거하고, 필요한 mapper 설정을 코드에서 다루는
+방식으로 정리했습니다.
+
+Spring Boot 4에는 `spring.jackson.use-jackson2-defaults=true` 같은 migration 완충 장치도 있습니다. 다만
+workshop 예제에서는 완충 장치를 기본 설정처럼 깔아두기보다, Jackson 3 기준에서 실제로 필요한 설정만 코드로
+보여주는 쪽이 맞습니다. Boot 4 예제라면 Boot 4에서 권장하는 기본 구성을 보여줘야 합니다.
+
+## 그래도 못 바꾸는 경우는 있다
+
+모든 모듈을 한 번에 Jackson 3로 옮기면 정리가 쉬워집니다. 하지만 upstream이 아직 Jackson 2 API만 노출하면
+강행할 수 없습니다.
+
+issue #65에서도 Quarkus Jackson extension 모듈은 그대로 두었습니다. 소스가 여전히 Jackson 2 API를
+노출했기 때문입니다. `spring-data/elasticsearch-webflux` 쪽도 Elasticsearch client와 Spring Boot 4 Jackson 3
+조합에서 충돌하는 테스트는 비활성화되어 있습니다.
+
+이 경우에는 억지로 포장하지 말고 현재 상태를 문서에 남기는 편이 낫습니다.
+
+```kotlin
+@Disabled("Elasticsearch Client 가 Jackson2 를 사용합니다. Spring Boot 4 는 Jackson 3를 사용해서 충돌이 발생합니다.")
+```
+
+독자에게 필요한 정보는 "전부 해결했습니다"라는 말이 아닙니다. 어떤 부분은 전환했고, 어떤 부분은 upstream 지원이
+올 때까지 남겨두었는지입니다. 예제 저장소에서는 이런 솔직함이 더 유용합니다.
+
+## migration checklist
+
+Spring Boot 4 workshop 모듈을 만들거나 정리할 때는 아래 순서로 확인하면 됩니다.
+
+| 단계 | 확인할 것 | 예시 |
+|---|---|---|
+| 1 | 모듈 기준 | Spring Boot 4 모듈인지 먼저 확인 |
+| 2 | bluetape4k JSON helper | `bluetape4k-jackson2` 대신 `bluetape4k-jackson3` |
+| 3 | Jackson dependency | `jackson3-databind`, `jackson3-module-kotlin` |
+| 4 | import | `tools.jackson.databind.*`, `tools.jackson.module.*` |
+| 5 | annotation 예외 | `com.fasterxml.jackson.annotation.*`는 무조건 삭제하지 않기 |
+| 6 | mapper bean | `JsonMapper`와 `Jackson.defaultJsonMapper` 우선 검토 |
+| 7 | 설정 파일 | `spring.jackson.*` 속성이 Jackson 3에서도 유효한지 확인 |
+| 8 | upstream 예외 | Jackson 2만 지원하는 client/extension은 문서에 상태를 남기기 |
+| 9 | 검증 | 관련 module `testClasses` 또는 `test` 실행 |
+
+issue #65에서 실제로 돌린 검증은 아래였습니다.
+
+```bash
+./gradlew :messaging-kafka-reply:testClasses :spring-data-elasticsearch:testClasses
+```
+
+한 가지 웃긴 점도 있었습니다. Jackson migration을 확인하려고 했는데, 처음에는 version catalog의 중복 alias가
+Gradle configuration을 먼저 깨뜨렸습니다. 모듈 문제가 아니라 catalog 문제가 입구에서 막고 있었습니다. 이런 일이
+생기면 테스트를 탓하기 전에 catalog부터 봐야 합니다. classpath 삽질의 시작점은 생각보다 자주 `libs.versions.toml`입니다.
+
+## 예제는 의존성 조합까지 보여주는 문서다
+
+Spring Boot 4 workshop 예제에서 Jackson 3로 옮긴 이유는 단순히 새 버전을 쓰고 싶어서가 아닙니다. 예제는
+사용자에게 "이 조합으로 시작하면 된다"는 기준선을 제공해야 합니다.
+
+Spring Boot 4를 쓰는 예제가 Jackson 2 helper를 들고 있으면 사용자는 두 가지를 동시에 배웁니다. 하나는 예제가
+보여주려는 기능이고, 다른 하나는 피해야 할 classpath 혼합입니다. 두 번째는 굳이 가르칠 필요가 없습니다.
+
+Spring Boot 4, Jackson 3, `bluetape4k-jackson3`, `tools.jackson.*`, `JsonMapper`. 이 다섯 가지가 맞아야
+독자는 예제의 핵심 흐름에 집중할 수 있습니다. 예제에서 가장 좋은 상태는 의존성 문제를 먼저 해결하느라 시간을 쓰지
+않아도 되는 상태입니다. 문제가 숨어 있어서 에러가 안 나는 것이 아니라, 처음부터 의존성 조합이 맞아야 합니다.
+
+## Source links
+
+- [Spring Boot JSON documentation](https://docs.spring.io/spring-boot/reference/features/json.html)
+- [Spring Boot 4.0 Migration Guide — Upgrading Jackson](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Migration-Guide#upgrading-jackson)
+- [`Issue 65 Jackson3 Workshop Spring Modules`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/docs/lessons/2026-05-14-issue-65-jackson3-workshop-spring.md)
+- [`messaging/kafka-reply/build.gradle.kts`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/messaging/kafka-reply/build.gradle.kts)
+- [`spring-data/elasticsearch/build.gradle.kts`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-data/elasticsearch/build.gradle.kts)
+- [`json/jsonview-examples/JacksonConfig.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/json/jsonview-examples/src/main/kotlin/io/bluetape4k/workshop/jsonview/config/JacksonConfig.kt)
+- [`json/jackson-examples/AbstractJacksonTest.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/json/jackson-examples/src/test/kotlin/io/bluetape4k/workshop/jackson/AbstractJacksonTest.kt)
+- [`Issue 97 Exposed rewrite lesson`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/docs/lessons/2026-05-23-issue-97-exposed-rewrite.md)
+- [`Serialization/Messaging Basic BT Feature Documentation`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/docs/lessons/2026-05-24-serialization-messaging-basic-bt-features.md)
