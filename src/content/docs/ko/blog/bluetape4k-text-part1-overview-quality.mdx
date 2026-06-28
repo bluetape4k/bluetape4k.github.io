@@ -1,0 +1,244 @@
+---
+title: "Bluetape4k Text Part 1: 텍스트 처리의 시작점과 품질 기준"
+description: bluetape4k-text가 한국어·일본어 토큰화, 언어 감지, 키워드 검색을 어떤 문제에 맞춰 나누고, 품질 기준을 어떻게 잡았는지 정리한다.
+sidebar:
+  order: -202606290146
+blog:
+  date: 2026-06-29T01:46:00+09:00
+  image: /assets/bluetape4k-text-part1-hero.png
+  imageAlt: 로봇 사서들이 한국어, 일본어, 영어 텍스트 조각을 tokenizer, language detection, Aho-Corasick search, quality gate로 분류하는 3D 작업대 일러스트
+  cardDescription: "문자열을 자르고 찾는 일도 서비스 경계로 들어오면 설계 문제가 됩니다. bluetape4k-text의 모듈 지도와 품질 기준을 먼저 봅니다."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-text-part1-hero.png" alt="로봇 사서들이 한국어, 일본어, 영어 텍스트 조각을 tokenizer, language detection, Aho-Corasick search, quality gate로 분류하는 3D 작업대 일러스트" loading="eager" />
+  <figcaption>텍스트 처리는 문자열 함수 몇 개로 시작할 수 있지만, 서비스 경계에 들어오면 금방 품질과 안전 문제로 바뀝니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-29 · bluetape4k-text series · Part 1</p>
+
+이 글은 `bluetape4k-text` 시리즈의 1편입니다. 이번 글에서는 전체 지도를 먼저 봅니다. 한국어 토큰화, 일본어 토큰화,
+언어 감지, Aho-Corasick 검색이 각각 어디에 쓰이는지, 그리고 이 라이브러리가 품질을 어떤 방식으로 확인하는지 정리합니다.
+
+텍스트 처리는 처음에는 단순합니다. `trim()`, `lowercase()`, `split(" ")`, `contains()`만으로도 제법 많은 일을
+처리합니다. 문제는 그 코드가 실제 서비스 입력 경계로 들어오는 순간부터입니다. 한국어와 일본어가 섞이고, emoji만 들어오고,
+금칙어 사전이 커지고, 사용자가 아주 긴 문자열을 던지면 "문자열 처리"가 아니라 운영 사고 후보가 됩니다.
+
+`bluetape4k-text`는 그 지점을 다룹니다. 거대한 NLP 플랫폼을 만들자는 이야기가 아닙니다. Kotlin/JVM 서비스에서 자주
+필요한 텍스트 처리 기본 도구를 모듈로 나누고, 예제와 품질 게이트로 최소한의 기준선을 잡아두자는 쪽에 가깝습니다.
+
+## 무엇을 해결하나
+
+서비스에서 텍스트 처리가 필요한 상황은 대체로 아래처럼 나뉩니다.
+
+| 상황 | 필요한 처리 | bluetape4k-text 모듈 |
+|---|---|---|
+| 한국어 검색어/문장 처리 | 정규화, 형태소 분석, 구 추출, 어간 추출, 문장 분리 | `tokenizer-korean` |
+| 일본어 검색어/문장 처리 | Kuromoji 기반 형태소 분석, 명사 필터링, 금칙어 처리 | `tokenizer-japanese` |
+| 다국어 입력 라우팅 | 입력 언어 감지, 혼합 언어 감지, detector 재사용 | `lingua` |
+| 금칙어·키워드 다중 검색 | 사전 기반 multi-keyword matching, masking, Flow matching | `text-search` |
+| HTTP/API 입력 경계 | blank/oversized 입력 거부, raw text 노출 방지 | `tokenizer-core` |
+
+여기서 중요한 점은 "모든 텍스트 문제를 한 모듈로 해결한다"가 아닙니다. 서비스가 지금 해결해야 하는 경계를 먼저 보고,
+그 경계에 맞는 모듈만 고르면 됩니다. 한국어 입력만 토큰화하면 `tokenizer-korean`이면 충분합니다. 금칙어 사전 기반
+검색만 필요하면 `text-search`부터 보면 됩니다. 언어 감지만 필요하면 tokenizer를 끌고 올 이유가 없습니다.
+
+## 처리 흐름으로 보면 더 쉽다
+
+실제 서비스에서는 이 기능들이 보통 한 흐름으로 붙습니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-text-part1-pipeline-01.png" alt="Raw input moves through normalization, tokenizer and language detection modules, service decisions, and quality gates" loading="lazy" />
+  <figcaption>입력 경계를 먼저 정리하고, 필요한 분석 모듈만 붙인 뒤, 서비스 판단과 품질 게이트로 이어갑니다.</figcaption>
+</figure>
+
+예를 들어 사용자 입력을 받아 검색 index에 넣거나 abuse-word filtering을 해야 한다고 해봅시다. 먼저 입력 길이와 blank
+여부를 확인합니다. 그 다음 정규화하고, 필요한 경우 언어를 감지합니다. 한국어/일본어라면 tokenizer로 검색에 쓸 token을
+만들고, 금칙어 사전이 있다면 `text-search`로 한 번에 matching합니다.
+
+이 과정을 늦게 정리하면 코드가 금방 흩어집니다. controller에서 `String.contains`를 하고, service에서 다시 lowercase를
+하고, 데이터 접근 계층 근처에서 또 normalization을 합니다. 나중에는 같은 입력이 어디서는 통과하고 어디서는 막힙니다.
+이쯤 되면 텍스트 처리가 아니라 텍스트 처리 똥 치우기가 됩니다.
+
+## 모듈은 이렇게 나뉜다
+
+`bluetape4k-text` 저장소는 아래 모듈로 구성됩니다.
+
+| 모듈 | 역할 |
+|---|---|
+| `tokenizer-core` | `TokenizeRequest`, `BlockwordRequest`, `Severity`, dictionary utility, 길이 제한 같은 공통 모델 |
+| `tokenizer-korean` | `KoreanProcessor` facade: 정규화, tokenization, phrase extraction, stemming, sentence split, blockword masking |
+| `tokenizer-japanese` | `JapaneseProcessor` facade: Kuromoji IPAdic tokenization, noun filtering, blockword detection/masking |
+| `lingua` | Lingua 기반 detector factory와 `detectAllLanguagesOf` 같은 Kotlin helper |
+| `text-search` | `AhoCorasickAutomaton`, DSL builder, replacement, word boundary, Kotlin Flow matching |
+| `bluetape4k-text-bom` | 소비자가 여러 text artifact를 같은 버전으로 맞추기 위한 BOM |
+
+의존성도 모듈 단위로 가져갑니다.
+
+```kotlin
+dependencies {
+    implementation("io.github.bluetape4k.text:tokenizer-korean:<version>")
+    implementation("io.github.bluetape4k.text:tokenizer-japanese:<version>")
+    implementation("io.github.bluetape4k.text:lingua:<version>")
+    implementation("io.github.bluetape4k.text:text-search:<version>")
+}
+```
+
+처음부터 전부 넣을 필요는 없습니다. 텍스트 처리는 라이브러리보다 사전과 입력 특성의 영향을 많이 받습니다. 작게 붙이고,
+실제 입력으로 확인하면서 넓혀가는 편이 낫습니다.
+
+## 코드로 보는 작은 시작점
+
+한국어 처리는 `KoreanProcessor` facade에서 시작합니다.
+
+```kotlin
+val normalized = KoreanProcessor.normalize("안됔ㅋㅋㅋㅋㅋ")
+// "안돼ㅋㅋㅋ"
+
+val tokens = KoreanProcessor.tokenize("주말특가 쇼핑몰")
+val surfaces = KoreanProcessor.tokensToStrings(tokens)
+// ["주말", "특가", "쇼핑몰"]
+```
+
+일본어 쪽은 Kuromoji 기반 tokenization과 명사 필터링을 제공합니다.
+
+```kotlin
+val tokens = JapaneseProcessor.tokenize("私は、日本語の勉強をしています。")
+val nouns = JapaneseProcessor.filterNoun(tokens).map { it.surface }
+// ["私", "日本語", "勉強"]
+```
+
+언어 감지는 detector를 매번 만들지 않고 재사용하는 쪽이 기본입니다. 모델 로딩 비용이 있기 때문입니다.
+
+```kotlin
+val detector = languageDetectorOf(
+    languages = setOf(Language.ENGLISH, Language.KOREAN, Language.JAPANESE),
+    minimumRelativeDistance = 0.0,
+    isEveryLanguageModelPreloaded = true,
+)
+
+val languages = detector.detectAllLanguagesOf("Hello service. 안녕하세요. こんにちは。")
+// setOf(Language.ENGLISH, Language.KOREAN, Language.JAPANESE)
+```
+
+금칙어·위험 키워드가 많아지면 `contains()`를 키워드 수만큼 반복하기보다 automaton을 한 번 만들고 입력을 한 번 훑는 편이
+맞습니다. 이 부분은 Part 3에서 더 자세히 봅니다.
+
+```kotlin
+val automaton = ahoCorasick<String> {
+    ignoreCase = true
+    wordBoundary = WordBoundary.WHITESPACE_SEPARATED
+    keyword("password reset", "ACCOUNT_TAKEOVER")
+    keyword("card declined", "PAYMENT_RISK")
+}
+
+val matches = automaton.parseText("user requested password reset before card declined")
+```
+
+## 입력 경계가 먼저다
+
+텍스트 처리 라이브러리를 붙일 때 은근히 자주 놓치는 부분이 입력 경계입니다. tokenizer나 language detector는 비싼 작업일 수
+있습니다. 그 전에 blank 입력과 너무 긴 입력을 잘라야 합니다.
+
+`tokenizer-safety-examples`는 이 경계를 작게 보여줍니다.
+
+```kotlin
+private fun validate(text: String, maxLength: Int): SafetyResponse? {
+    if (text.length > maxLength) {
+        return SafetyResponse(413, "text too long: ${text.length} chars (max $maxLength)")
+    }
+    if (text.isBlank()) {
+        return SafetyResponse(400, "text is blank")
+    }
+    return null
+}
+```
+
+이 예제에서 더 중요한 부분은 에러 메시지입니다. 너무 긴 입력을 거부할 때도 원문을 응답에 넣지 않습니다. 응답에는 길이와
+최대값만 담습니다. 검색어, 채팅 메시지, 신고 본문에는 민감한 내용이 섞일 수 있습니다. 에러 응답에 원문을 그대로 넣으면
+로그와 모니터링 시스템까지 오염됩니다. 정말 하기 싫은 종류의 삽질입니다.
+
+## 품질 기준은 벤치마크가 아니라 릴리스 게이트다
+
+`bluetape4k-text` 0.2.0의 품질 문서는 의도적으로 과장하지 않습니다. 외부 NLP 시스템과 정확도를 겨루는 벤치마크가
+아닙니다. 저장소 안에서 재현 가능한 fixture를 두고, 릴리스 전에 반드시 깨지지 않아야 할 동작을 고정한 게이트입니다.
+
+| 영역 | 확인하는 내용 |
+|---|---|
+| Korean tokenizer | 한국어/일본어 혼합 문장에서 기대한 한국어 surface token이 유지되는지 |
+| Japanese tokenizer | 한국어/일본어 혼합 문장에서 기대한 일본어 surface token이 유지되는지 |
+| Language detection | 영어/한국어/일본어 혼합 입력과 emoji-only unknown 입력을 구분하는지 |
+| Input safety | oversized request가 raw user text를 에러 메시지에 포함하지 않는지 |
+
+예를 들어 한국어 fixture는 이런 입력을 다룹니다.
+
+```kotlin
+"서울에서 東京까지 주말 특가 티켓" to listOf("서울", "에서", "까지", "주말", "특가", "티켓")
+```
+
+일본어 fixture도 같은 종류의 혼합 입력을 봅니다.
+
+```kotlin
+"서울から東京まで週末チケット" to listOf("東京", "週末", "チケット")
+```
+
+언어 감지 fixture는 `"Hello 안녕 こんにちは"`를 영어, 한국어, 일본어 집합으로 검증합니다. emoji만 들어온 입력은 빈 집합으로
+처리합니다. 이런 테스트는 화려하지 않습니다. 대신 릴리스할 때 실제 서비스에서 자주 부딪히는 경계를 놓치지 않게 해줍니다.
+
+품질 문서의 표현이 중요한 이유도 여기에 있습니다. 이 게이트는 “대규모 corpus에서 최고 정확도”를 주장하지 않습니다.
+“Kotlin 서비스에서 채택할 때 최소한 이 입력들은 안정적으로 처리한다”를 확인합니다. 둘은 다릅니다. 전자를 주장하려면
+완전히 다른 벤치마크와 데이터셋이 필요합니다.
+
+## 사전 업데이트도 운영 작업이다
+
+텍스트 처리는 코드만으로 끝나지 않습니다. 사전이 바뀌면 결과가 바뀝니다. 금칙어가 추가되면 사용자 경험도 바뀝니다.
+그래서 dictionary update plan은 아래 순서를 둡니다.
+
+| 단계 | 내용 |
+|---|---|
+| 1 | owning module resource root의 UTF-8 text file을 수정 |
+| 2 | whitespace trim, 빈 줄 제거 |
+| 3 | 의미 없는 순서라면 deterministic sort |
+| 4 | 중복 제거 |
+| 5 | 해당 module test 실행 |
+| 6 | release note에 변경 영역과 검증 command 기록 |
+
+이 절차가 조금 귀찮아 보여도, 사전 변경은 “데이터만 조금 바꿨다”로 끝나지 않습니다. tokenizer 결과와 blockword masking이
+바뀝니다. 운영에서 보면 코드 배포와 비슷하게 다뤄야 합니다.
+
+## 어디에 쓰나
+
+Part 1의 결론은 단순합니다.
+
+| 서비스 문제 | 시작 모듈 |
+|---|---|
+| 한국어 검색 전처리 | `tokenizer-korean` |
+| 일본어 검색 전처리 | `tokenizer-japanese` |
+| 다국어 routing | `lingua` |
+| abuse-word filtering | `text-search` 또는 tokenizer blockword 기능 |
+| API 입력 방어 | `tokenizer-core` request model과 safety example |
+| 여러 text artifact 버전 정렬 | `bluetape4k-text-bom` |
+
+`String.contains`와 `split`이 항상 나쁜 것은 아닙니다. 작은 내부 도구라면 충분할 때도 많습니다. 다만 그 코드가 사용자 입력,
+다국어 문장, 금칙어 사전, 검색 index, 로그/모니터링 경계로 들어오기 시작하면 기준이 필요합니다.
+
+`bluetape4k-text`는 그 기준을 모듈과 예제로 나눠 제공합니다. 다음 글에서는 한국어/일본어 tokenizer와 Lingua 언어 감지를
+조금 더 구체적으로 보겠습니다.
+
+## 참고한 소스
+
+- [bluetape4k-text README](https://github.com/bluetape4k/bluetape4k-text/blob/develop/README.md)
+- [한국어 README](https://github.com/bluetape4k/bluetape4k-text/blob/develop/README.ko.md)
+- [Text Quality Gate And Fixture Corpus](https://github.com/bluetape4k/bluetape4k-text/blob/develop/docs/superpowers/specs/2026-05-27-issue-83-text-quality-benchmark-spec.md)
+- [0.2.0 Quality Report](https://github.com/bluetape4k/bluetape4k-text/blob/develop/docs/superpowers/research/2026-05-27-issue-86-quality-report.md)
+- [Dictionary And Blockword Update Pipeline Plan](https://github.com/bluetape4k/bluetape4k-text/blob/develop/docs/superpowers/plans/2026-05-27-issue-85-dictionary-update-pipeline-plan.md)
+- [kotlin/text-processing workshop](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/kotlin/text-processing)
+- [TokenizerSafetyExamples](https://github.com/bluetape4k/bluetape4k-text/blob/develop/examples/tokenizer-safety-examples/src/main/kotlin/io/bluetape4k/text/examples/tokenizer/TokenizerSafetyExamples.kt)
+- [LinguaExamples](https://github.com/bluetape4k/bluetape4k-text/blob/develop/examples/lingua-examples/src/main/kotlin/io/bluetape4k/text/examples/lingua/LinguaExamples.kt)
+- [TextSearchExamples](https://github.com/bluetape4k/bluetape4k-text/blob/develop/examples/text-search-examples/src/main/kotlin/io/bluetape4k/text/examples/search/TextSearchExamples.kt)
+
+## 시리즈
+
+- Part 1: [텍스트 처리의 시작점과 품질 기준](/ko/blog/bluetape4k-text-part1-overview-quality/)
+- Part 2: 한국어·일본어 tokenizer와 언어 감지
+- Part 3: Aho-Corasick 검색과 workshop 시나리오
