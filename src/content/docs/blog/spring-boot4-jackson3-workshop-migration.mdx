@@ -1,0 +1,250 @@
+---
+title: "Migrating Workshop Spring Modules to Jackson 3 on Spring Boot 4"
+description: A practical note on aligning bluetape4k-workshop Spring Boot 4 examples with the Jackson 3 compatibility line.
+sidebar:
+  order: -202606290110
+blog:
+  date: 2026-06-29T01:10:00+09:00
+  image: /assets/spring-boot4-jackson3-workshop-hero.png
+  imageAlt: 3D workbench illustration where robot builders move a Jackson 2 block aside and align Spring Boot 4, Jackson 3, tools.jackson, JsonMapper, and a migration checklist
+  cardDescription: "Spring Boot 4 examples should follow the Jackson 3 line. Check dependencies, imports, mapper beans, and exceptions."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/spring-boot4-jackson3-workshop-hero.png" alt="3D workbench illustration where robot builders move a Jackson 2 block aside and align Spring Boot 4, Jackson 3, tools.jackson, JsonMapper, and a migration checklist" loading="eager" />
+  <figcaption>In Spring Boot 4 examples, the Jackson version is part of the example. A wrong classpath fails before the guide can explain anything useful.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-29 · bluetape4k-workshop · issue #37</p>
+
+When moving examples to Spring Boot 4, the visible changes are usually Spring Framework 7, starter names,
+and test package moves. The JSON line is easier to miss, but it is often where examples start to fail.
+
+Spring Boot 4 uses Jackson 3 as its preferred default JSON library. Jackson 2 support remains as a migration
+bridge, not as the long-term line for new Spring Boot 4 examples. If a Spring Boot 4 workshop module still
+depends on `bluetape4k-jackson2` or imports Jackson 2 mapper packages, the example starts teaching a mixed
+classpath instead of the intended pattern.
+
+Examples are not throwaway samples. Users copy them when starting real projects. If an example carries the
+wrong compatibility line, the first failure can appear before the interesting code even runs.
+
+## The Problem Is the Compatibility Line
+
+In `bluetape4k-workshop` issue #65, a few Spring workshop modules still referenced `bluetape4k-jackson2`.
+The fix moved the supported Spring modules to Jackson 3, specifically the Spring Kafka reply example and the
+Spring Data Elasticsearch example.
+
+The rule is not “delete every trace of Jackson 2.” The rule is to make the example line explicit.
+
+| Check | Spring Boot 4 example line |
+|---|---|
+| bluetape4k JSON helper | `bluetape4k-jackson3` |
+| Jackson package | `tools.jackson.*` |
+| Jackson BOM | `tools.jackson:jackson-bom` |
+| Spring Boot line | Spring Boot 4 BOM and starters |
+| Exception | Upstream modules that still expose Jackson 2 APIs, or annotation packages |
+
+The workshop root build imports both Spring Boot 4 and Jackson 3 BOMs.
+
+```kotlin
+dependencyManagement {
+    imports {
+        mavenBom(rootLibs.spring.boot4.dependencies.get().toString())
+        mavenBom(rootLibs.jackson3.bom.get().toString())
+    }
+}
+```
+
+The version catalog still contains both Jackson lines.
+
+```toml
+# Jackson 2
+jackson-bom = { module = "com.fasterxml.jackson:jackson-bom", version.ref = "jackson" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind" }
+
+# Jackson 3
+jackson3-bom = { module = "tools.jackson:jackson-bom", version.ref = "jackson3" }
+jackson3-databind = { module = "tools.jackson.core:jackson-databind" }
+jackson3-module-kotlin = { module = "tools.jackson.module:jackson-module-kotlin" }
+```
+
+Having both in the catalog does not mean every module can choose freely. The catalog is the parts shelf. The
+example baseline decides which line is assembled.
+
+## The Dependency Change
+
+`messaging/kafka-reply` demonstrates Spring Kafka request-reply flow. On the Spring Boot 4 line, it declares
+Jackson 3 directly.
+
+```kotlin
+dependencies {
+    api(libs.bluetape4k.jackson3)
+    api(libs.jackson3.databind)
+    api(libs.jackson3.module.kotlin)
+    api(libs.jackson3.module.blackbird)
+
+    implementation(libs.bluetape4k.kafka4)
+    implementation(libs.bluetape4k.coroutines)
+    implementation(libs.spring.boot.starter.webflux.lib)
+}
+```
+
+This is not a feature add-on. It aligns the example with the world it claims to show: Spring Boot 4, Spring
+Kafka 4, Jackson 3, and `bluetape4k-jackson3`.
+
+`spring-data/elasticsearch` follows the same line.
+
+```kotlin
+dependencies {
+    implementation(libs.spring.boot.starter.data.elasticsearch.lib)
+    implementation(libs.spring.boot.starter.webflux.lib)
+
+    implementation(libs.bluetape4k.jackson3)
+    implementation(libs.bluetape4k.coroutines)
+}
+```
+
+That is the easy part. Imports and mapper beans are where most mistakes show up.
+
+## Imports Expose the Mistake
+
+Jackson 3 changed the dependency group and package names. The Spring Boot migration guide calls out the move
+from `com.fasterxml.jackson` to `tools.jackson`. Workshop code should look like this when it configures a
+Jackson 3 mapper.
+
+```kotlin
+import io.bluetape4k.jackson3.Jackson
+import tools.jackson.databind.json.JsonMapper
+
+@Configuration(proxyBeanMethods = false)
+class JacksonConfig {
+
+    @Bean
+    fun jsonMapper(): JsonMapper = Jackson.defaultJsonMapper
+
+}
+```
+
+`Jackson.defaultJsonMapper` from `bluetape4k-jackson3` provides a Kotlin-ready default mapper with the common
+modules already wired. Examples do not have to rebuild the same setup in every module.
+
+When extra settings are needed, use `rebuild()`.
+
+```kotlin
+protected val defaultMapper: JsonMapper by lazy {
+    Jackson.defaultJsonMapper
+        .rebuild()
+        .apply {
+            configure(SerializationFeature.INDENT_OUTPUT, true)
+        }
+        .build()
+}
+```
+
+That is a useful workshop pattern. The reader sees where to add local configuration without learning how to
+reassemble every Jackson module first.
+
+## `com.fasterxml.jackson.annotation` Is Different
+
+A naive search-and-delete pass over `com.fasterxml.jackson` is dangerous.
+
+Jackson 3 moved most mapper packages to `tools.jackson`, but annotations remain under
+`com.fasterxml.jackson.annotation` for compatibility. These imports can still be valid:
+
+```kotlin
+import com.fasterxml.jackson.annotation.JsonView
+```
+
+Use a classification rule instead.
+
+| Search result | Action |
+|---|---|
+| `com.fasterxml.jackson.databind.*` | Usually move to `tools.jackson.databind.*` in Jackson 3 modules |
+| `com.fasterxml.jackson.module.*` | Usually move to `tools.jackson.module.*` in Jackson 3 modules |
+| `com.fasterxml.jackson.annotation.*` | Do not delete blindly; verify whether the annotation is still valid |
+| `bluetape4k-jackson2` | In Spring Boot 4 examples, evaluate a move to `bluetape4k-jackson3` |
+
+Migration needs classification, not string replacement.
+
+## Configuration Files Can Break Too
+
+Dependencies and imports are not the whole migration. Spring Boot 4 with Jackson 3 can also change how
+`spring.jackson.*` properties behave.
+
+During the Exposed example rewrite, this familiar setting broke context loading:
+
+```yaml
+spring:
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+```
+
+The fix in that example line was to remove the `spring.jackson` section and handle the needed mapper
+configuration in code. Spring Boot 4 also provides migration aids such as
+`spring.jackson.use-jackson2-defaults=true`, but workshop examples should not hide the new default line unless
+that compatibility bridge is the actual lesson.
+
+## Some Boundaries Cannot Move Yet
+
+Forcing every module to Jackson 3 may look clean, but upstream APIs decide the real boundary.
+
+In issue #65, Quarkus Jackson extension modules were left unchanged because the local source still exposed
+Jackson 2 APIs. The `spring-data/elasticsearch-webflux` tests also document a Jackson 2 client boundary that
+collides with the Spring Boot 4 Jackson 3 line.
+
+```kotlin
+@Disabled("Elasticsearch Client 가 Jackson2 를 사용합니다. Spring Boot 4 는 Jackson 3를 사용해서 충돌이 발생합니다.")
+```
+
+That kind of note is better than pretending the migration is complete. Users need to know which boundary was
+moved and which one still waits for upstream support.
+
+## Migration Checklist
+
+Use this checklist when creating or cleaning a Spring Boot 4 workshop module.
+
+| Step | Check | Example |
+|---|---|---|
+| 1 | Module baseline | Confirm it is a Spring Boot 4 module |
+| 2 | bluetape4k JSON helper | Prefer `bluetape4k-jackson3` over `bluetape4k-jackson2` |
+| 3 | Jackson dependency | Use `jackson3-databind`, `jackson3-module-kotlin` |
+| 4 | Imports | Use `tools.jackson.databind.*`, `tools.jackson.module.*` |
+| 5 | Annotation exception | Do not blindly delete `com.fasterxml.jackson.annotation.*` |
+| 6 | Mapper bean | Prefer `JsonMapper` and `Jackson.defaultJsonMapper` |
+| 7 | Config files | Re-check `spring.jackson.*` properties under Jackson 3 |
+| 8 | Upstream exceptions | Document clients or extensions that still require Jackson 2 |
+| 9 | Verification | Run the relevant module `testClasses` or `test` task |
+
+Issue #65 used this verification command:
+
+```bash
+./gradlew :messaging-kafka-reply:testClasses :spring-data-elasticsearch:testClasses
+```
+
+One practical lesson came from an unrelated failure: a duplicate version-catalog alias blocked Gradle
+configuration before module validation could even start. When a dependency migration fails before task
+selection, inspect `libs.versions.toml` before blaming the module tests.
+
+## Examples Document the Line
+
+The point of moving Spring Boot 4 workshop modules to Jackson 3 was not novelty. The point was to give users a
+clean starting line.
+
+A Spring Boot 4 example that still carries Jackson 2 helpers teaches two things at once: the intended example
+and a classpath mixture the user should probably avoid. The second lesson is not worth exporting.
+
+Spring Boot 4, Jackson 3, `bluetape4k-jackson3`, `tools.jackson.*`, and `JsonMapper` should point in the same
+direction. When they do, the example becomes quieter for the right reason: the compatibility line is aligned.
+
+## Source Links
+
+- [Spring Boot JSON documentation](https://docs.spring.io/spring-boot/reference/features/json.html)
+- [Spring Boot 4.0 Migration Guide — Upgrading Jackson](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Migration-Guide#upgrading-jackson)
+- [`Issue 65 Jackson3 Workshop Spring Modules`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/docs/lessons/2026-05-14-issue-65-jackson3-workshop-spring.md)
+- [`messaging/kafka-reply/build.gradle.kts`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/messaging/kafka-reply/build.gradle.kts)
+- [`spring-data/elasticsearch/build.gradle.kts`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-data/elasticsearch/build.gradle.kts)
+- [`json/jsonview-examples/JacksonConfig.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/json/jsonview-examples/src/main/kotlin/io/bluetape4k/workshop/jsonview/config/JacksonConfig.kt)
+- [`json/jackson-examples/AbstractJacksonTest.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/json/jackson-examples/src/test/kotlin/io/bluetape4k/workshop/jackson/AbstractJacksonTest.kt)
+- [`Issue 97 Exposed rewrite lesson`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/docs/lessons/2026-05-23-issue-97-exposed-rewrite.md)
+- [`Serialization/Messaging Basic BT Feature Documentation`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/docs/lessons/2026-05-24-serialization-messaging-basic-bt-features.md)
