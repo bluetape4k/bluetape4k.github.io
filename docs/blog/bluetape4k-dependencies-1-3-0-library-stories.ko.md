@@ -1,0 +1,534 @@
+# bluetape4k-dependencies 1.3.0: 새 기능도 넣고, 똥도 치우고
+
+Draft status: Korean review draft.
+Target route later: `src/content/docs/ko/blog/bluetape4k-dependencies-1-3-0-library-stories.mdx`
+
+`bluetape4k-dependencies`는 Spring 진영의 `spring-boot-dependencies`처럼 여러 라이브러리의 의존성 버전을 한곳에서
+맞춰 쓰기 위한 BOM입니다. 애플리케이션이나 라이브러리는 BOM 하나를 가져오고, 각 모듈은 같은 버전 집합 위에서
+맞물려 동작합니다.
+
+`bluetape4k-dependencies 1.3.0`으로 올라가면 `projects`, `exposed`, `aws`, `image`, `text`, `leader`, `graph`,
+`javers`의 버전도 같이 올라갑니다. 중요한 건 버전 숫자 자체가 아닙니다. 개발자가 실제로 확인하려는 질문은 조금 다릅니다.
+
+- 새로 무엇을 쓸 수 있나?
+- 어떤 버그가 고쳐졌나?
+- 왜 그런 버그가 생겼나?
+- 내 코드에서는 어디를 조심하면 좋을까?
+
+이번 글에서는 이 주제로 이야기를 풀어보려고 합니다. `dependencies` 내부의 catalog 관리 방식은 다루지 않습니다.
+각 라이브러리에서 무엇이 좋아졌고, 어떤 부분을 보강했는지, 실제 코드나 운영 예시에서는 어떻게 보이는지 살펴보겠습니다.
+
+## 포함된 라이브러리들
+
+| 라이브러리 | 버전 | 주요 변경 |
+|---|---:|---|
+| `projects` | `1.11.0` | JDBC transaction helper의 `Connection` 상태 복원 버그 수정 |
+| `exposed` | `1.11.0` | cache health indicator, BigQuery dry-run, CockroachDB retry helper |
+| `aws` | `0.4.0` | Ktor CloudWatch/Logs plugin, DynamoDB/DAX/IMDS/S3 계열 보강 |
+| `image` | `0.3.0` | OCR 예제, Okio 기반 large-file image I/O |
+| `text` | `0.2.1` | tokenizer/blockword를 웹 서비스에서 안전하게 쓰기 위한 예제 |
+| `leader` | `0.4.0` | backend 예제와 성능 근거 보강, Kubernetes runtime 충돌 수정 |
+| `graph` | `0.5.1` | `0.5.x` 패치 라인 안정화 |
+| `javers` | `0.2.1` | JaVers/Exposed 연동의 의존성 경계 정리 |
+
+`graph`와 `javers`는 이번 버전에서 변화가 작은 편입니다. 기능을 새로 여는 릴리즈라기보다 이미 있던 기능을
+안정적으로 가져오기 위한 정리에 가깝습니다. 반대로 `projects`, `exposed`, `aws`, `image`, `text`, `leader`에는
+개발자가 읽어볼 만한 사건이 꽤 있었습니다.
+
+## projects 1.11.0: transaction helper는 빌린 물건을 원래대로 돌려놔야 한다
+
+먼저 `projects`입니다. 여기서 가장 먼저 볼 수정은
+[`Connection.withTransaction`](https://github.com/bluetape4k/bluetape4k-projects/issues/817)입니다.
+
+**신규 기능 / 버그 수정**
+
+- `Connection.withTransaction`이 호출자가 넘긴 `Connection` 상태를 제대로 복원하지 못하던 문제를 수정했습니다.
+- `autoCommit`, isolation뿐 아니라 `isReadOnly`까지 저장하고 되돌리도록 보강했습니다.
+- `Exception`만 처리하던 실패 경로를 넓혔습니다.
+- rollback과 restore 과정에서 실패를 조용히 묻어두지 않도록 정리했습니다.
+
+처음에는 transaction helper가 그렇게 어려운 코드라고 생각하지 않았습니다. `autoCommit`을 끄고, 작업을 실행하고,
+실패하면 rollback하고, 마지막에 원래대로 돌려놓으면 끝난다고 판단했습니다.
+
+이 시나리오대로 작동하면 성공이라고 생각했습니다. 문제는 "원래대로"에 고려하지 못한 요소들이 있었다는 겁니다.
+`autoCommit`과 isolation은 챙겼지만 `isReadOnly`는 미처 생각하지 못했습니다. 실패 처리도 `Exception` 중심으로
+묶었습니다. 그런데 JVM에서는 `Exception`이 아닌 실패도 있습니다. restore가 실패했을 때 log만 남기고 지나가는 것도
+문제였습니다.
+
+문제의 모양을 의사코드로 줄이면 이렇게 됩니다.
+
+```kotlin
+// 고치기 전 사고방식에 가까운 형태
+fun <T> Connection.withTransaction(block: (Connection) -> T): T {
+    val oldAutoCommit = autoCommit
+    val oldIsolation = transactionIsolation
+
+    autoCommit = false
+    try {
+        val result = block(this)
+        commit()
+        return result
+    } catch (e: Exception) {
+        rollback()
+        throw e
+    } finally {
+        autoCommit = oldAutoCommit
+        transactionIsolation = oldIsolation
+        // isReadOnly는 원래 값이 무엇이었는지 모른다.
+        // restore 실패를 어떻게 다룰지도 애매하다.
+    }
+}
+```
+
+작은 테스트에서는 이런 문제가 잘 드러나지 않습니다. 새 connection을 만들고, 테스트가 끝나면 닫아 버리면 되니까요.
+하지만 실제 서비스에서는 대개 connection pool에서 빌려 씁니다. 이때 helper가 상태를 덜 돌려놓으면, 다음 요청이
+그 상태를 그대로 물려받습니다.
+
+```text
+request A
+  -> connection 빌림
+  -> withReadOnlyTransaction 실행
+  -> isReadOnly 복원 누락
+  -> connection pool로 반환
+
+request B
+  -> 같은 connection을 다시 빌림
+  -> 쓰기 작업 실행
+  -> "왜 read-only connection이지?"가 여기서 터짐
+```
+
+보강 후에는 저장하고 되돌려야 할 상태를 명시적으로 다룹니다.
+
+```kotlin
+// 핵심만 줄인 형태
+val oldAutoCommit = conn.autoCommit
+val oldIsolation = conn.transactionIsolation
+val oldReadOnly = conn.isReadOnly
+
+try {
+    conn.autoCommit = false
+    return block(conn).also { conn.commit() }
+} catch (t: Throwable) {
+    runCatching { conn.rollback() }.onFailure { t.addSuppressed(it) }
+    throw t
+} finally {
+    restoreConnectionState(
+        autoCommit = oldAutoCommit,
+        isolation = oldIsolation,
+        readOnly = oldReadOnly,
+    )
+}
+```
+
+JDBC helper를 직접 만든다면 connection을 내 것으로 보면 안 됩니다. 잠깐 빌린 물건입니다. 빌린 물건은 원래 상태로
+돌려줘야 합니다. `autoCommit`만 보면 부족합니다. isolation, read-only, rollback 실패, restore 실패까지 같이 봐야
+합니다.
+
+테스트에는 이런 경우를 포함하는 게 안전합니다.
+
+- 처음부터 `autoCommit=false`인 connection
+- 처음부터 `isReadOnly=true`인 connection
+- 작업 중 `Exception`이 아닌 실패가 나는 경우
+- rollback은 성공했지만 restore가 실패하는 경우
+- read-only transaction이 끝난 뒤 원래 read-only 상태가 유지되는지 확인하는 경우
+
+helper가 짧은 코드라고 해서 영향 범위도 작다고 할 수 없습니다. 남의 connection을 만지는 순간, 그 코드는 꽤 조심히
+다뤄야 하는 코드가 됩니다.
+
+## exposed 1.11.0: cache는 빠른 것도 좋지만, 아프면 티가 나야 한다
+
+`exposed 1.11.0`에서는 cache와 database 쪽 보강이 많았습니다.
+
+**신규 기능 / 버그 수정**
+
+- [`cache consistency health indicator`](https://github.com/bluetape4k/bluetape4k-exposed/issues/225)를 추가했습니다.
+- BigQuery query를 실행 전에 dry-run으로 확인할 수 있는 길을 정리했습니다.
+- CockroachDB transaction retry helper를 보강했습니다.
+- Trino session option처럼 dialect별로 자주 필요한 설정을 다듬었습니다.
+
+cache 기능을 만들 때는 보통 빠른 읽기부터 생각합니다. DB를 덜 읽고, 같은 값을 더 빨리 돌려주고, write-through나
+write-behind로 저장 경로를 정리합니다. 여기까지는 성능 개선이라 설명하기도 쉽습니다.
+
+문제는 운영 환경입니다. 운영에서는 cache가 빠른지만 보지 않습니다.
+
+- write-behind queue가 밀리고 있는가?
+- flush job이 죽었는가?
+- 마지막 flush error가 무엇인가?
+- consistency check가 실패했는데도 health가 `UP`으로 보이는가?
+
+처음에는 consistency report API가 있으니 충분하다고 생각했습니다. 하지만 운영자가 매번 Kotlin API를 직접 호출해서
+상태를 볼 수는 없습니다. Spring Boot 애플리케이션이라면 결국 `/actuator/health`에서 보여야 합니다.
+
+cache 장애는 늦게 발견되면 단순히 귀찮은 정도로 끝나지 않습니다. 읽기는 계속 빠르게 성공하는 것처럼 보이는데,
+뒤에서 write-behind가 밀리거나 flush가 실패하면 데이터 일관성이 깨질 수 있습니다. 장애가 났는데도 겉으로는
+평화로운 상태가 됩니다. 이런 평화로움은 별로 좋은 징조가 아닙니다. 대개 나중에 더 큰 소리로 돌아옵니다.
+
+그래서 cache consistency 상태를 Actuator health에 올렸습니다. health indicator는 repository들의 `CacheHealthReport`
+를 모아서 아래 값을 노출합니다.
+
+```kotlin
+mapOf(
+    "mode" to mode.name,
+    "queueDepth" to queueDepth,
+    "flushJobRunning" to isFlushJobRunning,
+    "lastFlushError" to lastFlushError?.message,
+)
+```
+
+예를 들어 write-behind queue에 아직 flush되지 않은 항목이 남아 있는데 flush job이 멈춰 있다면, 상태는
+`OUT_OF_SERVICE`로 내려갈 수 있습니다.
+
+```json
+{
+  "status": "OUT_OF_SERVICE",
+  "details": {
+    "repositoryCount": 1,
+    "reports": [
+      {
+        "mode": "WRITE_BEHIND",
+        "queueDepth": 3,
+        "flushJobRunning": false,
+        "lastFlushError": null
+      }
+    ]
+  }
+}
+```
+
+flush 자체가 실패한 경우에는 `DOWN`으로 보는 편이 맞습니다. 이때는 마지막 실패 메시지도 같이 내려옵니다.
+
+```json
+{
+  "status": "DOWN",
+  "details": {
+    "repositoryCount": 1,
+    "reports": [
+      {
+        "mode": "WRITE_BEHIND",
+        "queueDepth": 1,
+        "flushJobRunning": true,
+        "lastFlushError": "planned write-behind flush failure"
+      }
+    ]
+  }
+}
+```
+
+글로만 보면 단순한 health check지만, 운영에서는 이 차이가 큽니다.
+
+```text
+사용자 요청
+  -> cache write 성공
+  -> background flush 실패
+  -> queueDepth 증가 / lastFlushError 기록
+  -> /actuator/health 에서 DOWN 또는 OUT_OF_SERVICE
+  -> 운영자가 "DB 반영이 밀린다"는 사실을 바로 봄
+```
+
+BigQuery dry-run도 비슷한 생각에서 봐야 합니다. query를 실제로 실행하기 전에 유효성과 비용을 확인하면, 운영 query를
+던지고 나서야 배우는 일을 줄일 수 있습니다. CockroachDB retry helper도 마찬가지입니다. serializable transaction에서
+retry가 필요하다고 해서 아무 실패나 다시 시도하면 안 됩니다. `SQLSTATE 40001`처럼 재시도해도 되는 실패만 골라야
+합니다.
+
+```kotlin
+repeat(maxAttempts) { attempt ->
+    try {
+        return transaction { updateAccountBalance() }
+    } catch (e: SQLException) {
+        if (e.sqlState != "40001" || attempt == maxAttempts - 1) {
+            throw e
+        }
+        delay(backoff(attempt))
+    }
+}
+```
+
+cache와 retry는 "문제를 없애는 기능"이라기보다 "문제를 빨리 드러내고, 안전하게 다시 시도하는 장치"입니다.
+cache는 빠르게 만드는 기능이기도 하지만, 운영에서는 상태를 드러내는 기능이 훨씬 더 중요할 때가 있습니다.
+
+## aws 0.4.0: CloudWatch plugin이 애플리케이션 주인이 되면 곤란하다
+
+`aws 0.4.0`은 새로 열린 기능이 많은 릴리즈입니다.
+
+**신규 기능 / 버그 수정**
+
+- [`Ktor CloudWatch/Logs plugin`](https://github.com/bluetape4k/bluetape4k-aws/issues/201)을 추가했습니다.
+- DynamoDB Ktor integration과 optional DAX 사용성을 보강했습니다.
+- IMDS helper, S3 Access Grants, S3 Vectors 관련 API를 넓혔습니다.
+- SQS/S3 관측 정보를 Micrometer와 엮는 길을 정리했습니다.
+
+처음 CloudWatch plugin을 만들 때는 목표를 단순하게 잡았습니다. Ktor에서 metric과 log를 CloudWatch로 보내는 정도였습니다.
+말만 들으면 단순합니다. 그런데 막상 구현해 보면 보내는 코드보다 안 해야 할 일이 더 많습니다.
+
+이 plugin에서 조심해야 했던 기준은 여섯 가지였습니다.
+
+- 기본값으로는 아무것도 보내지 않습니다.
+- 사용자가 주입한 AWS client는 plugin이 닫지 않습니다.
+- plugin이 직접 만든 client만 애플리케이션 종료 시점에 닫습니다.
+- 종료 시 flush는 정해진 시간 안에서 끝냅니다.
+- cancellation을 삼키지 않습니다.
+- 전역 logging 설정을 몰래 바꾸지 않습니다.
+
+cloud integration은 애플리케이션의 수명 주기 옆에 붙습니다. 여기서 선을 넘으면 helper가 아니라 침입자가 됩니다.
+종료할 때 process를 붙잡고 늘어지거나, 사용자가 관리하던 client를 닫아 버리거나, local 개발 환경에서도 AWS에
+붙으려고 하면 곤란합니다.
+
+사용하는 쪽에서는 이런 모양을 기대할 수 있습니다.
+
+```kotlin
+install(CloudWatchKtorPlugin) {
+    namespace = "OrderService"
+    batchSize = 100
+    // 외부에서 주입한 client라면 plugin이 닫지 않는다.
+    cloudWatchAsyncClient = sharedCloudWatchClient
+}
+
+routing {
+    post("/orders") {
+        val order = call.receive<CreateOrderRequest>()
+
+        application.cloudWatch().putMetricDatum(
+            metricName = "OrderCreated",
+            value = 1.0,
+            unit = StandardUnit.COUNT,
+        )
+
+        call.respond(HttpStatusCode.Accepted)
+    }
+}
+```
+
+CloudWatch Logs도 마찬가지입니다. plugin이 전역 logging appender를 바꿔 끼우는 방식이 아니라, 필요한 event를
+명시적으로 buffer에 넣고 정해진 시점에 flush하는 흐름입니다.
+
+```text
+Ktor route
+  -> CloudWatchLogs runtime에 event 추가
+  -> batchSize 또는 flush 시점 도달
+  -> PutLogEvents 호출
+  -> application stop 때 bounded timeout 안에서 마지막 flush
+```
+
+이 기능은 Ktor service에서 전역 logging 체계를 건드리지 않고 CloudWatch로 필요한 metric이나 log event만 보내고
+싶을 때 도움이 됩니다. 다만 cloud 연동을 붙일 때는 늘 같은 질문을 해야 합니다.
+
+이 기능이 애플리케이션의 무엇을 대신 관리하는가? 그리고 그 권한을 가져가도 되는가?
+
+저는 처음에 "잘 보내는 것"에 더 관심이 있었습니다. 하지만 실제로는 "함부로 건드리지 않는 것"이 더 중요했습니다.
+AWS 쪽 기능은 권한, 비용, 네트워크, 종료 시점이 한 번에 엮입니다. 작게 잘못 만들어도 문제를 꼬박꼬박
+만듭니다.
+
+## image 0.3.0: OCR보다 먼저 파일 크기를 봐야 한다
+
+`image 0.3.0`에서는 OCR 쪽 변화가 큽니다.
+
+**신규 기능 / 버그 수정**
+
+- [`images-ocr` 사용 예제](https://github.com/bluetape4k/bluetape4k-image/issues/171)를 추가했습니다.
+- basic, Spring Boot, Ktor에서 이미지를 읽고 text를 추출하는 흐름을 보여줍니다.
+- language selection, page segmentation option을 예제에서 확인할 수 있습니다.
+- [`large-file image I/O`](https://github.com/bluetape4k/bluetape4k-image/issues/165)를 위해 Okio `Source`/`Sink` 기반
+  경로를 보강했습니다.
+
+OCR은 설명하기 좋은 기능입니다. 이미지에서 글자를 뽑아내는 기능이라 독자가 바로 이해하기도 쉽습니다. 하지만 실제 서비스에서는
+OCR보다 먼저 파일 I/O가 옵니다. 그리고 파일 I/O는 생각보다 빨리 현실적인 문제가 됩니다.
+
+예제에서는 작은 이미지를 씁니다. 테스트도 작은 이미지로 합니다. 이때는 `ByteArray` 중심 API가 편합니다. 코드도 짧고,
+설명도 쉽습니다. 문제는 사용자가 예제처럼 행동하지 않는다는 겁니다. 예제에서는 300KB짜리 이미지를 읽었는데, 실제
+서비스에서는 30MB짜리 스캔 파일이 올라옵니다. 둘 다 이미지입니다. 하지만 JVM heap 입장에서는 전혀 다른 부하입니다.
+
+그래서 `0.3.0`에서는 Okio `Source`/`Sink` 기반 경로를 보강했습니다. 파일을 무조건 통째로 메모리에 올리는
+방식만 보여주지 않기 위해서입니다. OCR preprocessing, thumbnail generation, upload/download 흐름에서는 이 차이가
+꽤 큽니다.
+
+```kotlin
+// 작은 예제에서는 편하다.
+val bytes: ByteArray = Files.readAllBytes(path)
+val text = ocr.extractText(bytes)
+
+// 큰 파일이 들어오는 서비스에서는 이 흐름을 먼저 고민해야 한다.
+FileSystem.SYSTEM.source(path).use { source ->
+    FileSystem.SYSTEM.sink(output).use { sink ->
+        imageIo.resize(source, sink, width = 1200)
+    }
+}
+```
+
+서비스 흐름으로 보면 이런 차이가 납니다.
+
+```text
+나쁜 흐름
+  upload -> ByteArray 전체 로딩 -> resize/OCR -> ByteArray 응답
+
+나은 흐름
+  upload -> Source로 읽기 -> backend 처리 -> Sink로 쓰기
+```
+
+물론 `Source`를 받는다고 모든 문제가 사라지는 것은 아닙니다. Scrimage나 libvips가 decode/encode 단계에서 buffer를
+잡을 수 있습니다. 그래서 문서에는 어느 부분에서 메모리 사용을 줄일 수 있는지, backend 특성상 어디에서 buffer가
+생길 수 있는지를 같이 적어야 합니다.
+
+image/OCR 기능을 붙인다면 option보다 먼저 파일 흐름을 점검해야 합니다. 파일은 어디서 열리는가? 어디서 닫히는가?
+어느 단계에서 메모리에 올라오는가? 이 질문을 먼저 던지면 나중에 꽤 많은 문제를 피할 수 있습니다.
+
+## text 0.2.1: tokenizer를 API 뒤에 붙이면 입력 길이가 보안 설정이 된다
+
+`text 0.2.1`은 큰 알고리즘 교체보다 "서비스에 붙일 때 덜 불안하게 만드는" 쪽에 가까운 릴리즈입니다.
+
+**신규 기능 / 버그 수정**
+
+- runnable text-search 예제를 보강했습니다.
+- Lingua detector reuse와 threshold 동작을 테스트로 묶었습니다.
+- [`tokenizer/blockword 웹 서비스 안전 예제`](https://github.com/bluetape4k/bluetape4k-text/issues/99)를 추가했습니다.
+- 긴 입력, validation failure, error response에서 조심할 부분을 문서화했습니다.
+
+library만 놓고 보면 tokenizer는 단순합니다. 문자열을 넣고 token을 받습니다. 하지만 이 기능을 REST API 뒤에 붙이면
+문제가 달라집니다. 이때부터 문자열 길이는 단순한 파라미터가 아니라 운영 경계가 됩니다.
+
+웹 API에서는 경계를 이렇게 잡는 게 안전합니다.
+
+```kotlin
+private const val MAX_TEXT_LENGTH = 20_000
+
+post("/tokenize") {
+    val request = call.receive<TokenizeRequest>()
+
+    if (request.text.length > MAX_TEXT_LENGTH) {
+        call.respond(
+            HttpStatusCode.PayloadTooLarge,
+            mapOf("message" to "text is too long", "limit" to MAX_TEXT_LENGTH),
+        )
+        return@post
+    }
+
+    val tokens = tokenizer.tokenize(request.text)
+    call.respond(TokenizeResponse(tokens = tokens))
+}
+```
+
+여기서 조심할 부분은 실패 응답에 원문을 넣지 않는 것입니다.
+
+```json
+{
+  "message": "text is too long",
+  "limit": 20000
+}
+```
+
+다음처럼 돌려주면 편해 보여도 피해야 합니다.
+
+```json
+{
+  "message": "text is too long: 주민등록번호가 포함된 긴 원문..."
+}
+```
+
+처음에는 "이건 예제에서 조금만 다루면 되겠지"라고 생각했습니다. 그런데 Maven Central에 올라간 library는 누군가의
+web service 뒤에 붙습니다. 예제가 안전한 모양을 보여주지 않으면, 각 서비스가 알아서 길이를 정하고, 알아서 error를
+만들고, 알아서 log를 남깁니다. "알아서"는 생각보다 자주 우리를 배신합니다.
+
+이번 보강은 tokenizer 자체를 더 화려하게 만드는 작업은 아닙니다. tokenizer를 서비스 경계에 세울 때 필요한 안전장치를
+만든 작업입니다. 긴 입력 제한, `400`/`413` mapping, 원문 노출 회피 같은 내용은 작은 변화로 비춰질 수 있습니다.
+하지만 실제 서비스에 붙일 때는 이런 부분이 훨씬 오래 도움이 됩니다.
+
+## leader 0.4.0: leader provider 선택이 더 어려울 때가 있다
+
+`leader 0.4.0`에서는 backend 예제와 성능 근거를 보강했습니다.
+
+**신규 기능 / 버그 수정**
+
+- Redis, SQL, Kubernetes, Consul, etcd, DynamoDB backend 예제를 정리했습니다.
+- backend별 선택에 참고할 수 있는 성능 근거를 보강했습니다.
+- [`Kubernetes K3s test runtime 충돌`](https://github.com/bluetape4k/bluetape4k-leader/issues/480)을 수정했습니다.
+
+분산 leader election은 leader algorithm만 보면 끝날 것 같지만, 실제로는 provider나 storage 선택에서 고민이
+시작됩니다. Redis를 쓸지, SQL을 쓸지, Kubernetes Lease를 쓸지에 따라 장애 감지 방식, 운영 도구, test runtime,
+의존성이 모두 달라집니다. 그래서 예제와 benchmark가 필요합니다.
+
+이번 수정에서 문제가 된 부분도 결국 Kubernetes provider를 고를 때 따라오는 runtime 의존성이었습니다.
+
+```text
+NoSuchMethodError: io.vertx.ext.web.client.WebClientOptions.setMaxPoolSize(int)
+```
+
+leader election을 테스트하는데 Vert.x method가 없다는 오류가 납니다. 처음에는 엉뚱한 곳에서 터진 것처럼 보였습니다.
+하지만 Kubernetes provider는 Fabric8 Kubernetes client를 쓰고, Fabric8은 다시 Vert.x runtime과 맞물립니다.
+provider 하나를 고른 것 같지만 실제로는 그 provider가 끌고 오는 storage/runtime 조합까지 같이 고른 셈입니다.
+
+Fabric8 Kubernetes client `7.7.0`은 Vert.x 4 web-client API를 기대합니다. 그런데 test runtime classpath에는
+Vert.x 5가 올라올 수 있었습니다. "최신이면 더 낫겠지"가 여기서는 틀렸습니다. 같이 쓰는 라이브러리끼리는 서로 맞는
+버전 줄이 있습니다.
+
+이 문제는 코드만 봐서는 잘 드러나지 않습니다. dependency graph를 봐야 합니다.
+
+```bash
+./gradlew :bluetape4k-leader-k8s:dependencyInsight \
+  --configuration k8sTestRuntimeClasspath \
+  --dependency vertx-web-client
+```
+
+의도한 상태는 대략 이런 형태입니다.
+
+```text
+K3s test runtime
+  -> fabric8-kubernetes-client 7.7.0
+      -> expects Vert.x 4 web-client API
+  -> vertx-web-client 4.x
+  -> k8sTest 통과
+```
+
+반대로 Vert.x 5가 올라오면 test 코드는 leader election을 검증하기도 전에 runtime method mismatch에서 넘어집니다.
+이 사례는 Kubernetes backend를 쓰는 쪽에도 그대로 적용됩니다. leader provider를 선택할 때는 lock 저장소만 볼 게
+아니라, 그 provider가 끌고 오는 client/runtime line까지 확인해야 합니다.
+
+## graph와 javers: 변화가 작은 릴리즈도 사용자는 체감할 수 있다
+
+`graph`와 `javers`도 이번 `dependencies 1.3.0`에 포함됩니다.
+
+**신규 기능 / 버그 수정**
+
+- `graph 0.5.1`: `0.5.x` 패치 라인을 안정적으로 소비합니다.
+- `javers 0.2.1`: JaVers/Exposed 연동에서 의존성 경계를 정리한 패치 성격의 릴리즈입니다.
+
+`graph 0.5.1`을 설명할 때 다음 기능선까지 끌어오면 릴리즈의 의미가 흐려집니다. `graph`의 다음 기능선은 `0.6.0`
+쪽에 있습니다. chunked graph export cursor API 같은 내용은 그 라인의 이야기입니다. 이번 `dependencies 1.3.0`이
+가져온 것은 `0.5.1`입니다.
+
+`javers`도 비슷합니다. 큰 기능은 `0.2.0`에서 `javers-exposed`, `javers-ddd`, DDD workshop example로 들어왔고,
+`0.2.1`은 Exposed BOM 경계를 Gradle `implementation` scope에 맞춰 정리한 쪽에 가깝습니다.
+
+이런 변경은 작은 변화로 비춰질 수 있습니다. 하지만 이 라이브러리를 가져다 쓰는 쪽에는 바로 영향을 줍니다. 필요 이상으로
+의존성이 밖으로 새어 나오지 않는 것, 다음 BOM에서 안전하게 가져올 수 있는 선을 맞추는 것, 이런 작업은 새 API처럼
+보이지 않아도 소비자의 dependency graph를 오래 안정시킵니다.
+
+Gradle 의존성으로 보면 차이가 더 분명합니다.
+
+```kotlin
+// 소비자가 직접 써야 하는 API라면 노출될 수 있다.
+api("io.github.bluetape4k:javers-exposed")
+
+// 내부 구현에만 필요하다면 밖으로 새지 않게 둔다.
+implementation("org.jetbrains.exposed:exposed-core")
+```
+
+여기서 확인할 부분은 "새 기능이 얼마나 많나"가 아닙니다. 이 BOM을 가져왔을 때 내 프로젝트의 dependency graph가
+불필요하게 커지지 않는지, 다음 기능선과 현재 안정화된 패치 라인을 섞어 이해하지 않는지가 더 중요합니다.
+
+## 마무리
+
+`dependencies 1.3.0`에서 개발자가 바로 가져갈 만한 내용은 다음 정도로 정리할 수 있습니다.
+
+- JDBC helper를 직접 만들거나 감싼다면 `Connection`의 원래 상태를 어디까지 복원해야 하는지 확인해 보세요.
+- write-behind cache를 쓴다면 `/actuator/health`에서 `queueDepth`, `flushJobRunning`, `lastFlushError`를 볼 수 있어야 합니다.
+- Ktor에서 CloudWatch/Logs를 붙일 때는 plugin이 AWS client와 application lifecycle을 어디까지 관리하는지 확인해야 합니다.
+- image/OCR 기능을 붙일 때는 OCR option보다 파일이 메모리에 올라오는 지점을 먼저 봐야 합니다.
+- tokenizer/blockword API를 REST endpoint 뒤에 붙인다면 입력 길이 제한과 error response에서 원문 노출 여부를 먼저 정해야 합니다.
+- Kubernetes provider처럼 client/runtime dependency가 얽힌 backend를 고를 때는 `dependencyInsight`로 실제 classpath를 확인하는 습관이 도움이 됩니다.
+- `graph`, `javers`처럼 변화가 작은 패치 라인도 dependency graph를 안정적으로 유지하는 데 의미가 있습니다.
+
+이 글에서 다룬 내용은 화려한 기능 소개라기보다, 실제로 서비스를 만들 때 한 번쯤 마주칠 수 있는 경계들입니다.
+새 기능을 쓰기 전에 이 경계만 먼저 확인해도 삽질 시간이 꽤 줄어듭니다. 적어도 제가 이미 한 삽질은 재사용하지
+않으셔도 됩니다.
+
+버전과 배포를 맞추는 이야기는 따로 다뤄보겠습니다. Maven Central에 한 번 올라간 artifact는 되돌릴 수 없으니까요.
+버전 배포 쪽도 방심하면 뒤통수 맞고, 꽤 긴 삽질이 기다리는 경우가 많습니다.
