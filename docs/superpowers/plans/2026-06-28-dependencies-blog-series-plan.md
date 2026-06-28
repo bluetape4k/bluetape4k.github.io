@@ -67,7 +67,8 @@ Posts:
 
 First post details:
 
-- Working title: `bluetape4k-dependencies 1.3.0: 새 기능보다 흥미로운 버그와 결정들`
+- Public title pattern: `bluetape4k-dependencies 1.3.0 활용기 Part N: {소제목}`
+- First public title: `bluetape4k-dependencies 1.3.0 활용기 Part 1: 새 기능도 넣고 똥도 치우고`
 - Reader problem: "I know the BOM moved from 1.2.0 to 1.3.0. Which library
   changes should I actually care about, why did they happen, and where can I
   use them?"

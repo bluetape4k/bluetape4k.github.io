@@ -1,5 +1,5 @@
 ---
-title: "bluetape4k-dependencies로 여러 라이브러리 같이 쓰기"
+title: "bluetape4k-dependencies 사용 가이드: 여러 라이브러리 같이 쓰기"
 description: "bluetape4k ecosystem의 여러 라이브러리를 한 애플리케이션에서 함께 쓸 때 BOM을 어떻게 가져오고, 모듈 버전은 왜 빼야 하는지 예제로 정리한다."
 sidebar:
   order: -202606281100
@@ -15,7 +15,7 @@ blog:
   <figcaption>애플리케이션은 `projects`, `exposed`, `aws`, `image`, `text`, `graph`, `leader`, `javers`의 버전을 따로 외우지 않아도 됩니다. 먼저 BOM을 가져오고, 필요한 모듈만 고르면 됩니다.</figcaption>
 </figure>
 
-<p class="bt4k-post-meta">2026-06-28 · bluetape4k dependency usage note</p>
+<p class="bt4k-post-meta">2026-06-28 · bluetape4k dependencies 사용 가이드</p>
 
 `bluetape4k`를 하나만 쓸 때는 고민이 많지 않습니다. `bluetape4k-core` 하나 넣고 끝낼 수도 있습니다.
 그런데 실제 서비스에서는 보통 그렇게 끝나지 않습니다.
@@ -245,7 +245,7 @@ build script를 비슷한 형태로 유지하는 데 도움이 됩니다.
 4. 예외적으로 개별 버전을 override하면 이유와 제거 조건을 남긴다.
 
 이 정도면 충분합니다. catalog는 `bluetape4k`를 만드는 쪽에서 버전과 alias를 관리하기 위한 도구에 가깝습니다.
-사용하는 쪽에서는 BOM을 믿고 필요한 모듈을 고르는 쪽이 훨씬 중요합니다.
+사용하는 쪽에서는 BOM을 가져오고 필요한 모듈을 고르는 일이 먼저입니다.
 
 ## Maven Central에 올라간 버전은 덮어쓸 수 없다
 
@@ -266,14 +266,13 @@ Maven Central에는 롤백 버튼이 없습니다.
 
 ## 다음에 읽을 글
 
-이번 글은 `bluetape4k-dependencies`를 사용하는 개발자 관점에서 BOM을 어떻게 가져오고, 왜 모듈 버전을 직접 적지 않는지
-정리했습니다. `1.2.0`에서 `1.3.0`으로 올렸을 때 각 라이브러리에서 실제로 무엇이 좋아졌는지, 어떤 버그와
-기술부채를 치웠는지는 아래 글에서 이어서 볼 수 있습니다.
+여기까지가 `bluetape4k-dependencies`를 사용하는 개발자 관점의 기본 사용법입니다. `1.2.0`에서 `1.3.0`으로 올렸을 때
+각 라이브러리에서 실제로 무엇이 좋아졌는지, 어떤 버그와 기술부채를 치웠는지는 아래 글에서 이어서 볼 수 있습니다.
 
-- [bluetape4k-dependencies 1.3.0: 새 기능도 넣고, 똥도 치우고](/ko/blog/bluetape4k-dependencies-1-3-0-library-stories/)
-- [bluetape4k-dependencies 1.3.0으로 서비스 조합하기](/ko/blog/bluetape4k-dependencies-1-3-0-service-composition/)
-- [운영에서 티 나는 1.3.0 변화](/ko/blog/bluetape4k-dependencies-1-3-0-production-signals/)
-- [입력 경계에서 치운 똥들](/ko/blog/bluetape4k-dependencies-1-3-0-input-boundaries/)
+- [bluetape4k-dependencies 1.3.0 활용기 Part 1: 새 기능도 넣고 똥도 치우고](/ko/blog/bluetape4k-dependencies-1-3-0-library-stories/)
+- [bluetape4k-dependencies 1.3.0 활용기 Part 2: 서비스 조합하기](/ko/blog/bluetape4k-dependencies-1-3-0-service-composition/)
+- [bluetape4k-dependencies 1.3.0 활용기 Part 3: 운영에서 티 나는 변화](/ko/blog/bluetape4k-dependencies-1-3-0-production-signals/)
+- [bluetape4k-dependencies 1.3.0 활용기 Part 4: 입력 경계에서 치운 똥들](/ko/blog/bluetape4k-dependencies-1-3-0-input-boundaries/)
 
 ## 참고한 소스
 
