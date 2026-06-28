@@ -1,0 +1,364 @@
+---
+title: "bluetape4k-dependencies 제작기 Part 1: 왜 BOM이 필요했나"
+description: "여러 bluetape4k 라이브러리를 독립적으로 만들고 배포하면서 왜 중앙 BOM이 필요해졌는지, Spring Boot dependencies 방식과 1.0.0 공개 계약을 기준으로 정리한다."
+sidebar:
+  order: -202606281500
+blog:
+  date: 2026-06-28T15:00:00+09:00
+  image: /assets/bluetape4k-dependencies-version-governance-hero.png
+  imageAlt: 작은 로봇 작업자들이 모듈 블록을 컨베이어와 중앙 정렬 장치로 모아 dependency BOM을 맞추는 3D 작업대 일러스트
+  cardDescription: "라이브러리가 하나일 때는 버전 하나면 충분하지만, 여러 저장소가 같이 움직이면 BOM은 선택이 아니라 운영 장치가 된다."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-dependencies-version-governance-hero.png" alt="작은 로봇 작업자들이 모듈 블록을 컨베이어와 중앙 정렬 장치로 모아 dependency BOM을 맞추는 3D 작업대 일러스트" loading="eager" />
+  <figcaption>여러 라이브러리를 따로 배포하면서도 사용자는 한 조합으로 가져가야 합니다. 이 간격을 메우는 공개 계약이 BOM입니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-28 · bluetape4k-dependencies 제작기 Part 1</p>
+
+라이브러리를 하나만 만들 때는 버전 관리가 단순합니다.
+
+```kotlin
+implementation("io.github.bluetape4k:bluetape4k-core:1.11.0")
+```
+
+여기까지는 별일이 없습니다. 새 버전을 만들고, release note를 쓰고, 사용자는 그 버전을 참조해서 사용합니다. 문제는 라이브러리가
+하나가 아닐 때 시작됩니다.
+
+`bluetape4k`는 `projects`, `exposed`, `aws`, `image`, `text`, `graph`, `leader`, `javers`처럼 저장소가 나뉘어
+있습니다. 각 저장소는 자기 일정으로 개발되고, 자기 버전으로 배포됩니다. 여기서 라이브러리를 만드는 사람의 질문과
+사용하는 사람의 질문이 갈라집니다.
+
+```text
+만드는 사람:
+  projects 1.11.0 나왔고,
+  exposed 1.11.0 나왔고,
+  aws 0.4.0 나왔고,
+  image 0.3.0 나왔고...
+
+쓰는 사람:
+  그래서 같이 써도 되는 조합이 뭔데?
+```
+
+이 질문이 나오기 시작하면 버전 관리는 더 이상 `build.gradle.kts` 한 줄 문제가 아닙니다. 여러 라이브러리를 묶어서
+만드는 쪽에서는 "어떤 버전들이 같은 train에 탔는가"를 공개적으로 설명해야 합니다. 안 그러면 사용자가 직접 조합을
+맞춰야 합니다. 그건 친절한 오픈소스 경험이라기보다 dependency 퍼즐에 가깝습니다. 퍼즐은 가끔 재미있지만,
+`NoSuchMethodError`가 튀어나오기 시작하면 뚜껑이 열리기 시작합니다.
+
+## 익숙한 예: Spring Boot dependencies
+
+JVM 개발자라면 이미 비슷한 모델을 자주 씁니다. Spring Boot를 쓸 때 보통 모든 Spring, Jackson, Tomcat, Netty,
+Micrometer 버전을 직접 고르지 않습니다.
+
+Gradle에서는 이런 식으로 가져옵니다.
+
+```kotlin
+dependencies {
+    implementation(platform("org.springframework.boot:spring-boot-dependencies:4.1.0"))
+
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+}
+```
+
+Maven에서는 `dependencyManagement`에서 import합니다.
+
+```xml
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-dependencies</artifactId>
+            <version>4.1.0</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+```
+
+핵심은 "Spring Boot가 세상의 모든 dependency를 대신 골라준다"가 아닙니다. 핵심은 공개된 조합입니다.
+
+```text
+spring-boot-dependencies 4.1.0을 쓰면
+  -> 이 Spring Boot 라인에서 검증한 dependency version set을 쓴다.
+```
+
+사용자는 각 dependency의 버전을 외우지 않습니다. 대신 `spring-boot-dependencies` 버전을 고릅니다. 문제가 생기면
+"내가 직접 고른 Jackson 버전이 이상한가?"부터 보지 않고, "이 Boot 라인에서 기대하는 dependency graph와 다른가?"
+부터 확인할 수 있습니다.
+
+`bluetape4k-dependencies`도 같은 문제를 풀기 위해 만들었습니다. 규모는 Spring Boot보다 훨씬 작지만, 문제의 모양은
+비슷합니다.
+
+## 저장소가 나뉘면 버전도 흩어진다
+
+처음에는 각 저장소가 자기 버전만 잘 관리하면 된다고 생각하기 쉽습니다.
+
+```text
+bluetape4k-projects  -> 1.11.0
+bluetape4k-exposed   -> 1.11.0
+bluetape4k-aws       -> 0.4.0
+bluetape4k-image     -> 0.3.0
+bluetape4k-text      -> 0.2.1
+bluetape4k-graph     -> 0.5.1
+bluetape4k-leader    -> 0.4.0
+bluetape4k-javers    -> 0.2.1
+```
+
+저장소 내부에서는 이 방식이 괜찮습니다. `aws`는 AWS SDK와 Ktor/Spring Boot 경계를 보고, `exposed`는 Exposed와
+DB driver를 보고, `leader`는 leader provider와 storage 선택을 봅니다. 각 저장소는 자기 책임을 나눠 갖습니다.
+
+하지만 사용자 프로젝트에서는 이 저장소들이 다시 한 classpath에 모입니다.
+
+```kotlin
+dependencies {
+    implementation("io.github.bluetape4k:bluetape4k-core:1.11.0")
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-jdbc:1.10.0")
+    implementation("io.github.bluetape4k.aws:bluetape4k-aws-spring-boot:0.4.0")
+    implementation("io.github.bluetape4k.leader:bluetape4k-leader-spring-boot:0.3.1")
+}
+```
+
+이 코드는 컴파일될 수도 있습니다. 그래서 더 위험합니다. 컴파일이 안 되면 바로 고치면 됩니다. 컴파일은 되는데 실행 중에
+터지는 조합은 훨씬 귀찮습니다.
+
+예를 들어 다음 같은 일이 생길 수 있습니다.
+
+```text
+Spring Boot line은 4.x를 기대한다.
+어떤 모듈은 아직 Boot 3.x 이름을 가진 artifact를 가져온다.
+다른 모듈은 Ktor 3.x 기준으로 올라갔다.
+transitive dependency는 서로 다른 Netty/Fabric8/Vert.x 계열을 끌고 온다.
+```
+
+이때부터는 "내 서비스 코드 문제인가?", "라이브러리 조합 문제인가?", "transitive dependency가 덮였나?"를 하나씩
+봐야 합니다. 이건 기능 개발이 아닙니다. 똥 치우기입니다. 물론 내가 싸지른 똥이면 더 성실하게 치워야 합니다.
+
+그래서 중앙 BOM이 필요합니다.
+
+## BOM은 "같이 쓰는 버전"을 공개한다
+
+BOM은 사용자가 가져가는 공개 계약입니다.
+
+```text
+upstream library repositories
+    -> 각 저장소가 자기 BOM을 배포한다
+    -> bluetape4k-dependencies가 sub-BOM들을 모은다
+    -> 사용자는 bluetape4k-dependencies 하나를 import한다
+```
+
+흐름을 다이어그램으로 보면 이렇습니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-dependencies-bom-flow-01.png" alt="projects, exposed, aws, image, text, graph, leader, javers BOM과 외부 dependency line이 bluetape4k-dependencies 중앙 BOM으로 모이고, application, workshop, library repo가 하나의 BOM으로 가져가는 흐름도" loading="lazy" />
+  <figcaption>각 저장소는 자기 BOM을 책임지고, `bluetape4k-dependencies`는 그 조합을 공개 BOM으로 묶습니다. 사용자는 중앙 BOM 하나를 import하고 각 모듈 dependency에는 버전을 적지 않습니다.</figcaption>
+</figure>
+
+`bluetape4k-dependencies 1.3.0`은 이런 식의 조합을 의미합니다.
+
+| 포함된 BOM | 버전 |
+|---|---:|
+| `io.github.bluetape4k:bluetape4k-bom` | `1.11.0` |
+| `io.github.bluetape4k.exposed:bluetape4k-exposed-bom` | `1.11.0` |
+| `io.github.bluetape4k.aws:bluetape4k-aws-bom` | `0.4.0` |
+| `io.github.bluetape4k.image:bluetape4k-image-bom` | `0.3.0` |
+| `io.github.bluetape4k.text:bluetape4k-text-bom` | `0.2.1` |
+| `io.github.bluetape4k.graph:bluetape4k-graph-bom` | `0.5.1` |
+| `io.github.bluetape4k.leader:bluetape4k-leader-bom` | `0.4.0` |
+| `io.github.bluetape4k.javers:bluetape4k-javers-bom` | `0.2.1` |
+
+사용자는 이 표를 외울 필요가 없습니다. 이 표를 외우지 않아도 되게 만드는 것이 BOM의 역할입니다.
+
+```kotlin
+dependencies {
+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.3.0"))
+
+    implementation("io.github.bluetape4k:bluetape4k-core")
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-jdbc")
+    implementation("io.github.bluetape4k.aws:bluetape4k-aws-spring-boot")
+    implementation("io.github.bluetape4k.leader:bluetape4k-leader-spring-boot")
+}
+```
+
+여기서 각 모듈에 버전을 적지 않습니다. 버전은 BOM이 결정합니다. 이 원칙이 깨지면 다시 사용자 프로젝트가 조합 책임을
+가져갑니다.
+
+## 1.0.0에서 잡은 첫 공개 계약
+
+`bluetape4k-dependencies 1.0.0`을 만들 때 제일 먼저 정해야 했던 것은 멋진 자동화가 아니었습니다.
+먼저 정해야 했던 것은 "무엇을 공개 계약으로 볼 것인가"였습니다.
+
+`bluetape4k-dependencies`에는 두 종류의 정보가 있습니다.
+
+| 구분 | 대상 | 결과물 |
+|---|---|---|
+| BOM | 사용자 dependency resolution | `io.github.bluetape4k:bluetape4k-dependencies` |
+| Gradle Version Catalog | bluetape4k 저장소들의 build alias와 plugin/library version | `gradle/libs.versions.toml` |
+
+둘 다 중요하지만 독자가 다릅니다.
+
+애플리케이션 개발자는 BOM을 가져오면 됩니다. catalog 구조를 알 필요가 없습니다. 반대로 여러 `bluetape4k` 저장소를
+같이 관리하는 개발자는 catalog도 봐야 합니다. Kotlin, Spring Boot, Exposed, Ktor, Jackson, AWS SDK 같은 공통 라인을
+어디서 올릴지 정해야 하기 때문입니다.
+
+처음에는 이 경계가 생각보다 헷갈렸습니다. "버전 정보를 한곳에 둔다"라고 말하면 BOM과 catalog를 같은 물건으로
+생각하기 쉽습니다. 하지만 실제로는 쓰임이 다릅니다.
+
+```text
+BOM:
+  Maven Central에 올라간다.
+  애플리케이션과 외부 사용자가 import한다.
+  dependency resolution 결과에 직접 영향을 준다.
+
+Catalog:
+  bluetape4k 저장소들이 build script에서 alias로 쓴다.
+  git ref로 고정해서 가져간다.
+  Gradle plugin/library alias와 공통 version source-of-truth 역할을 한다.
+```
+
+이 둘을 섞어서 설명하면 사용자도 헷갈리고, 만드는 사람도 헷갈립니다. 사용자에게 "catalog를 이렇게 관리합니다"부터
+설명하면 글이 갑자기 운영 문서가 됩니다. 반대로 여러 저장소를 관리하는 사람에게 "BOM 가져오세요"만 말하면 실제로
+어디에서 버전을 올리고, downstream repo를 어떻게 동기화할지 남습니다.
+
+이번 제작기에서는 만드는 사람 쪽 이야기를 합니다. 그래서 catalog도 나오지만, 목적은 catalog 자랑이 아닙니다. 목적은
+여러 저장소의 버전 결정을 어떻게 한곳으로 모으고, 그 결과를 BOM이라는 공개 계약으로 내보낼지 설명하는 것입니다.
+
+## Gradle java-platform으로 BOM을 만든다
+
+구현 자체는 Gradle의 `java-platform` plugin을 사용합니다. 중요한 부분만 줄이면 이런 모양입니다.
+
+```kotlin
+plugins {
+    `java-platform`
+    `maven-publish`
+    signing
+}
+
+javaPlatform {
+    allowDependencies()
+}
+
+dependencies {
+    api(platform(libs.bluetape4k.bom))
+    api(platform(libs.bluetape4k.aws.bom))
+    api(platform(libs.bluetape4k.image.bom))
+    api(platform(libs.bluetape4k.text.bom))
+    api(platform(libs.bluetape4k.graph.bom))
+    api(platform(libs.bluetape4k.leader.bom))
+    api(platform(libs.bluetape4k.exposed.bom))
+    api(platform(libs.bluetape4k.javers.bom))
+
+    constraints {
+        api(libs.exposed.core)
+        api(libs.fabric8.kubernetes.client)
+        api(libs.ktor.bom)
+        api(libs.netty.bom)
+        api(libs.testcontainers.bom)
+    }
+}
+```
+
+여기서 sub-BOM을 `platform(...)`으로 가져오는 이유가 중요합니다. 각 저장소가 이미 자기 모듈 묶음을 BOM으로 공개하고
+있다면, 중앙 BOM이 모든 artifact를 하나씩 다시 나열할 필요는 없습니다.
+
+```text
+나쁜 방향:
+  중앙 BOM이 모든 bluetape4k artifact version을 직접 constraint로 반복한다.
+
+나은 방향:
+  각 저장소 BOM은 자기 모듈을 책임진다.
+  중앙 BOM은 sub-BOM들을 조합하고, 공통 외부 dependency line을 맞춘다.
+```
+
+반복이 늘어나면 실수도 늘어납니다. 어떤 모듈을 새로 추가했는데 중앙 BOM constraint에 빠지거나, 이미 sub-BOM에서
+관리하는 artifact를 중앙 BOM에서도 또 관리하면 "어디가 진짜 source of truth인가"가 흐려집니다.
+
+1.3.0에서 generated bluetape4k artifact version 관리를 imported sub-BOM에 위임한 것도 같은 이유입니다. 중앙에서
+모든 것을 직접 움켜쥐면 통제력이 생긴다고 착각하기 쉽습니다. 실제로는 손에 든 것이 너무 많아져서 떨어뜨리기 쉽습니다.
+
+## 만드는 사람의 workflow가 바뀐다
+
+BOM을 만들면 사용자는 편해집니다. 대신 만드는 쪽의 workflow는 더 엄격해집니다.
+
+```text
+1. upstream 저장소를 배포한다.
+2. upstream BOM artifact가 Maven Central에서 보이는지 확인한다.
+3. bluetape4k-dependencies가 그 BOM 버전을 가져간다.
+4. 중앙 BOM을 build/publishToMavenLocal로 검증한다.
+5. Maven Central에 bluetape4k-dependencies를 마지막에 배포한다.
+6. workshop/example/application은 BOM 버전만 올려서 확인한다.
+```
+
+여기서 순서를 틀리면 바로 티가 납니다.
+
+```text
+dependencies BOM이 aws 0.4.0을 가리킨다.
+하지만 aws 0.4.0 BOM이 아직 Maven Central에 없다.
+  -> 사용자 프로젝트는 dependency resolution에서 실패한다.
+```
+
+이 실패는 코드 버그가 아닙니다. 배포 순서 문제입니다. 그런데 사용자는 그런 사정을 알 필요가 없습니다. 사용자는
+그냥 "BOM을 가져왔는데 build가 깨진다"라고 경험합니다. 만드는 쪽에서 치워야 할 똥입니다.
+
+그래서 `bluetape4k-dependencies`는 마지막에 배포되어야 합니다. upstream 라이브러리를 먼저 배포하고, 그 artifact가
+보이는지 확인하고, 마지막에 중앙 BOM을 내보냅니다.
+
+## Maven Central에는 롤백 버튼이 없다
+
+로컬 build에서는 실수해도 대체로 다시 고치면 됩니다. snapshot도 다시 찍을 수 있습니다. 하지만 release artifact가
+Maven Central에 올라가면 같은 버전을 덮어쓸 수 없습니다.
+
+```text
+1.3.0을 배포했다.
+POM metadata나 dependency 조합에 문제가 있다.
+같은 1.3.0으로 다시 올릴 수 없다.
+  -> 1.3.1 같은 새 버전을 배포해야 한다.
+```
+
+이 제약은 운영 이야기에 가깝지만, 여러 라이브러리를 만드는 개발자에게는 꽤 현실적인 문제입니다. release train에서
+하나라도 빠뜨리면 "아, 다시 올리면 되지"가 통하지 않습니다. Maven Central에는 롤백 버튼이 없습니다.
+
+실제로 `1.3.1`은 `1.3.0` 직후 metadata와 release guidance를 정리한 패치 릴리즈였습니다. 코드 기능이 아니라
+배포 계약 주변의 똥을 치운 셈입니다. 재미있는 일은 아닙니다. 하지만 이런 종류의 정리는 다음 사용자가 같은 냄새를
+덜 맡게 해 줍니다.
+
+## 이 글을 자기 라이브러리에 적용한다면
+
+여러 라이브러리를 같이 만들고 있다면, 처음부터 거대한 release platform을 만들 필요는 없습니다. 대신 다음 질문을
+먼저 던지는 편이 좋습니다.
+
+| 질문 | 확인할 것 |
+|---|---|
+| 사용자가 같이 써야 하는 라이브러리가 둘 이상인가? | 그렇다면 조합 버전을 문서가 아니라 artifact로 제공할 수 있는지 본다. |
+| 각 저장소가 자기 BOM을 갖고 있는가? | 중앙 BOM이 모든 artifact를 반복하지 않고 sub-BOM을 조합할 수 있다. |
+| 공개 계약과 내부 build alias가 섞여 있지 않은가? | BOM과 catalog의 독자를 분리한다. |
+| release 순서가 정해져 있는가? | upstream artifact 확인 뒤 central BOM을 마지막에 배포한다. |
+| 이미 배포된 버전을 덮어쓸 수 있다고 생각하고 있지 않은가? | Maven Central release는 패치 버전으로 복구한다. |
+
+핵심은 자동화 도구를 많이 만드는 것이 아닙니다. 먼저 "어떤 버전 조합을 사용자에게 약속할 것인가"를 정해야 합니다.
+그다음에야 catalog sync, artifact availability check, release checklist가 의미를 갖습니다.
+
+## 다음 글
+
+이번 글에서는 `bluetape4k-dependencies`가 왜 필요했는지와 1.0.0에서 어떤 공개 계약을 잡았는지 봤습니다.
+
+다음 글에서는 더 현실적인 이야기를 하겠습니다. `1.3.0`까지 오면서 upstream artifact가 늦게 보이거나, catalog와 BOM
+역할을 섞어 설명하거나, release 순서를 사람이 기억으로 버티려 했던 부분을 어떻게 고쳤는지 정리할 예정입니다.
+버전 배포 쪽도 방심하면 뒤통수를 맞고, 그 뒤에는 꽤 성실한 삽질이 기다립니다.
+
+## 시리즈 글
+
+사용자 관점에서 `bluetape4k-dependencies`를 가져오는 방법부터 보고 싶다면
+[사용 가이드](/ko/blog/bluetape4k-dependencies-usage-guide/)를 먼저 읽으면 됩니다.
+
+- [bluetape4k-dependencies 제작기 Part 1: 왜 BOM이 필요했나](/ko/blog/bluetape4k-dependencies-making-part1-why-bom/)
+
+## 참고한 소스
+
+- [`bluetape4k-dependencies` README.ko.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/README.ko.md)
+- [`bluetape4k-dependencies` CHANGELOG.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/CHANGELOG.md)
+- [`bluetape4k-dependencies` build.gradle.kts](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/build.gradle.kts)
+- [`bluetape4k-dependencies` libs.versions.toml](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/gradle/libs.versions.toml)
+- [`bluetape4k-dependencies` version-management.ko.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/docs/version-management.ko.md)
