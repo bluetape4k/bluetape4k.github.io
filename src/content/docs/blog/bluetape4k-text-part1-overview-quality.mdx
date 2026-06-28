@@ -1,0 +1,241 @@
+---
+title: "Bluetape4k Text Part 1: Starting Point and Quality Baseline"
+description: A practical overview of how bluetape4k-text separates Korean and Japanese tokenization, language detection, keyword search, and release quality evidence.
+sidebar:
+  order: -202606290146
+blog:
+  date: 2026-06-29T01:46:00+09:00
+  image: /assets/bluetape4k-text-part1-hero.png
+  imageAlt: A 3D workbench illustration where robot librarians sort Korean, Japanese, and English text strips into tokenizer, language detection, Aho-Corasick search, and quality gate stations
+  cardDescription: "Text processing becomes a service-boundary problem once user input, multilingual content, dictionaries, and safety checks meet."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-text-part1-hero.png" alt="A 3D workbench illustration where robot librarians sort Korean, Japanese, and English text strips into tokenizer, language detection, Aho-Corasick search, and quality gate stations" loading="eager" />
+  <figcaption>Text processing can start with a few string helpers, but service boundaries quickly turn it into a quality and safety problem.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-29 · bluetape4k-text series · Part 1</p>
+
+This is Part 1 of the `bluetape4k-text` series. We start with the map: where Korean tokenization, Japanese tokenization,
+language detection, and Aho-Corasick search fit, and how the repository defines its release quality gate.
+
+Text processing looks simple at first. `trim()`, `lowercase()`, `split(" ")`, and `contains()` solve many small jobs. The
+problem starts when that code moves to a real service boundary. Korean and Japanese can appear in the same text, emoji-only
+input can arrive, keyword dictionaries can grow, and users can send very large payloads.
+
+`bluetape4k-text` handles that boundary. It is not trying to become a large NLP platform. It provides reusable text-processing
+primitives for Kotlin/JVM services, then backs them with examples and deterministic quality checks.
+
+## What It Solves
+
+Service text-processing work usually falls into these buckets.
+
+| Situation | Processing needed | bluetape4k-text module |
+|---|---|---|
+| Korean search text | normalization, morphology, phrase extraction, stemming, sentence split | `tokenizer-korean` |
+| Japanese search text | Kuromoji tokenization, noun filtering, blockword handling | `tokenizer-japanese` |
+| Multilingual routing | language detection, mixed-language detection, detector reuse | `lingua` |
+| Multi-keyword matching | dictionary-backed matching, masking, Flow matching | `text-search` |
+| HTTP/API input boundary | blank/oversized rejection, no raw-text echo | `tokenizer-core` |
+
+The important point is not to pull every module into every service. Choose the module that matches the boundary you are
+solving. Korean tokenization starts with `tokenizer-korean`. Dictionary-backed keyword matching can start with `text-search`.
+Language detection does not require bringing in the tokenizer modules.
+
+## The Pipeline View
+
+In real services, these pieces usually form one input pipeline.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-text-part1-pipeline-01.png" alt="Raw input moves through normalization, tokenizer and language detection modules, service decisions, and quality gates" loading="lazy" />
+  <figcaption>Start by defending the input boundary, then attach only the analysis modules the service decision needs.</figcaption>
+</figure>
+
+Suppose a service needs to accept user text, prepare search/index terms, or filter abuse words. First check blank and oversized
+input. Then normalize the text. Detect language if routing depends on it. Use tokenizers for Korean or Japanese text when
+search-friendly terms matter. Use `text-search` when a keyword dictionary needs to be matched in one pass.
+
+If this is delayed, string handling spreads quickly. A controller calls `String.contains`, a service lowercases the text again,
+and another layer repeats normalization before indexing. The same input can pass in one path and fail in another.
+
+## Module Map
+
+The repository is split into these modules.
+
+| Module | Role |
+|---|---|
+| `tokenizer-core` | shared models such as `TokenizeRequest`, `BlockwordRequest`, `Severity`, dictionary utilities, and length guards |
+| `tokenizer-korean` | `KoreanProcessor` facade: normalization, tokenization, phrase extraction, stemming, sentence split, blockword masking |
+| `tokenizer-japanese` | `JapaneseProcessor` facade: Kuromoji IPAdic tokenization, noun filtering, blockword detection/masking |
+| `lingua` | Lingua-backed detector factories and Kotlin helpers such as `detectAllLanguagesOf` |
+| `text-search` | `AhoCorasickAutomaton`, DSL builder, replacement, word boundary, Kotlin Flow matching |
+| `bluetape4k-text-bom` | BOM for aligning multiple text artifacts to the same version |
+
+Dependencies can be added module by module.
+
+```kotlin
+dependencies {
+    implementation("io.github.bluetape4k.text:tokenizer-korean:<version>")
+    implementation("io.github.bluetape4k.text:tokenizer-japanese:<version>")
+    implementation("io.github.bluetape4k.text:lingua:<version>")
+    implementation("io.github.bluetape4k.text:text-search:<version>")
+}
+```
+
+Start small. Text behavior depends heavily on dictionaries and real input shape, so it is better to add the smallest module
+first and widen after checking representative data.
+
+## Small Starting Points
+
+Korean processing can start from the `KoreanProcessor` facade.
+
+```kotlin
+val normalized = KoreanProcessor.normalize("안됔ㅋㅋㅋㅋㅋ")
+// "안돼ㅋㅋㅋ"
+
+val tokens = KoreanProcessor.tokenize("주말특가 쇼핑몰")
+val surfaces = KoreanProcessor.tokensToStrings(tokens)
+// ["주말", "특가", "쇼핑몰"]
+```
+
+Japanese processing uses Kuromoji-backed tokenization and noun filtering.
+
+```kotlin
+val tokens = JapaneseProcessor.tokenize("私は、日本語の勉強をしています。")
+val nouns = JapaneseProcessor.filterNoun(tokens).map { it.surface }
+// ["私", "日本語", "勉強"]
+```
+
+Language detectors should normally be reused because model loading has a cost.
+
+```kotlin
+val detector = languageDetectorOf(
+    languages = setOf(Language.ENGLISH, Language.KOREAN, Language.JAPANESE),
+    minimumRelativeDistance = 0.0,
+    isEveryLanguageModelPreloaded = true,
+)
+
+val languages = detector.detectAllLanguagesOf("Hello service. 안녕하세요. こんにちは。")
+// setOf(Language.ENGLISH, Language.KOREAN, Language.JAPANESE)
+```
+
+When the keyword dictionary grows, build an automaton once and scan the input once instead of repeating `contains()` per
+keyword. Part 3 will go deeper into this.
+
+```kotlin
+val automaton = ahoCorasick<String> {
+    ignoreCase = true
+    wordBoundary = WordBoundary.WHITESPACE_SEPARATED
+    keyword("password reset", "ACCOUNT_TAKEOVER")
+    keyword("card declined", "PAYMENT_RISK")
+}
+
+val matches = automaton.parseText("user requested password reset before card declined")
+```
+
+## Input Boundary First
+
+One easy mistake is to attach a tokenizer or language detector before validating the input. Those processors can be expensive,
+so blank and oversized input should be rejected before processor work starts.
+
+`tokenizer-safety-examples` shows the boundary in a small form.
+
+```kotlin
+private fun validate(text: String, maxLength: Int): SafetyResponse? {
+    if (text.length > maxLength) {
+        return SafetyResponse(413, "text too long: ${text.length} chars (max $maxLength)")
+    }
+    if (text.isBlank()) {
+        return SafetyResponse(400, "text is blank")
+    }
+    return null
+}
+```
+
+The response also avoids echoing raw text. Search queries, reports, and chat messages can contain sensitive content. Error
+responses should carry metadata such as actual length and maximum length, not the submitted body.
+
+## Quality Gate, Not Benchmark Hype
+
+The `bluetape4k-text` 0.2.0 quality documents are intentionally modest. They do not claim leaderboard-style NLP accuracy.
+They define deterministic repository fixtures that must stay stable before release.
+
+| Area | What the gate checks |
+|---|---|
+| Korean tokenizer | expected Korean surface tokens remain present in mixed Korean/Japanese text |
+| Japanese tokenizer | expected Japanese surface tokens remain present in mixed Korean/Japanese text |
+| Language detection | English/Korean/Japanese mixed input and emoji-only unknown input are handled explicitly |
+| Input safety | oversized request messages include length/max values without raw user text |
+
+One Korean fixture uses this shape.
+
+```kotlin
+"서울에서 東京까지 주말 특가 티켓" to listOf("서울", "에서", "까지", "주말", "특가", "티켓")
+```
+
+The Japanese fixture mirrors that kind of mixed input.
+
+```kotlin
+"서울から東京まで週末チケット" to listOf("東京", "週末", "チケット")
+```
+
+Language detection checks that `"Hello 안녕 こんにちは"` resolves to English, Korean, and Japanese, while emoji-only input returns
+an empty set.
+
+This distinction matters. The quality gate says, "these repository behaviors are reproducible and protected." It does not
+say, "this library beats every NLP system over a large external corpus."
+
+## Dictionaries Are Operational State
+
+Text processing does not end with code. Dictionaries change behavior. Adding a noun or blockword changes tokenization,
+masking, and user experience.
+
+The dictionary update plan uses a small repeatable workflow.
+
+| Step | Work |
+|---|---|
+| 1 | edit UTF-8 text files under the owning module resource root |
+| 2 | trim whitespace and remove blank rows |
+| 3 | sort deterministically when source order has no meaning |
+| 4 | remove duplicates |
+| 5 | run tests for the touched module |
+| 6 | record the changed dictionary area and validation command in release notes |
+
+That is more process than a quick data edit, but dictionary changes are user-visible. Treat them closer to code changes than
+incidental file edits.
+
+## Where To Start
+
+| Service problem | Start with |
+|---|---|
+| Korean search preprocessing | `tokenizer-korean` |
+| Japanese search preprocessing | `tokenizer-japanese` |
+| multilingual routing | `lingua` |
+| abuse-word filtering | `text-search` or tokenizer blockword APIs |
+| API input defense | `tokenizer-core` request models and safety examples |
+| multiple text artifacts on one version | `bluetape4k-text-bom` |
+
+`String.contains` and `split` are not wrong by default. They are often enough for small internal tools. Once the same code
+touches user input, multilingual text, dictionaries, search indexes, and logs, it needs a clearer boundary.
+
+`bluetape4k-text` provides that boundary as modules and examples. Part 2 will focus on Korean/Japanese tokenizers and Lingua
+language detection.
+
+## Source Links
+
+- [bluetape4k-text README](https://github.com/bluetape4k/bluetape4k-text/blob/develop/README.md)
+- [Korean README](https://github.com/bluetape4k/bluetape4k-text/blob/develop/README.ko.md)
+- [Text Quality Gate And Fixture Corpus](https://github.com/bluetape4k/bluetape4k-text/blob/develop/docs/superpowers/specs/2026-05-27-issue-83-text-quality-benchmark-spec.md)
+- [0.2.0 Quality Report](https://github.com/bluetape4k/bluetape4k-text/blob/develop/docs/superpowers/research/2026-05-27-issue-86-quality-report.md)
+- [Dictionary And Blockword Update Pipeline Plan](https://github.com/bluetape4k/bluetape4k-text/blob/develop/docs/superpowers/plans/2026-05-27-issue-85-dictionary-update-pipeline-plan.md)
+- [kotlin/text-processing workshop](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/kotlin/text-processing)
+- [TokenizerSafetyExamples](https://github.com/bluetape4k/bluetape4k-text/blob/develop/examples/tokenizer-safety-examples/src/main/kotlin/io/bluetape4k/text/examples/tokenizer/TokenizerSafetyExamples.kt)
+- [LinguaExamples](https://github.com/bluetape4k/bluetape4k-text/blob/develop/examples/lingua-examples/src/main/kotlin/io/bluetape4k/text/examples/lingua/LinguaExamples.kt)
+- [TextSearchExamples](https://github.com/bluetape4k/bluetape4k-text/blob/develop/examples/text-search-examples/src/main/kotlin/io/bluetape4k/text/examples/search/TextSearchExamples.kt)
+
+## Series
+
+- Part 1: [Starting Point and Quality Baseline](/blog/bluetape4k-text-part1-overview-quality/)
+- Part 2: Korean/Japanese tokenizers and language detection
+- Part 3: Aho-Corasick search and workshop scenarios
