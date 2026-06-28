@@ -1,0 +1,357 @@
+---
+title: "bluetape4k-dependencies 제작기 Part 2: 1.0.0 BOM을 공개 계약으로 만들기"
+description: "bluetape4k-dependencies 1.0.0을 Maven Central에서 소비 가능한 BOM으로 만들기 위해 java-platform, sub-BOM 위임, catalog 경계, Spring Boot 아티팩트 이름을 어떻게 정리했는지 살펴본다."
+sidebar:
+  order: -202606281600
+blog:
+  date: 2026-06-28T16:00:00+09:00
+  image: /assets/bluetape4k-dependencies-version-governance-hero.png
+  imageAlt: 작은 로봇 작업자들이 모듈 블록을 컨베이어와 중앙 정렬 장치로 모아 dependency BOM을 맞추는 3D 작업대 일러스트
+  cardDescription: "BOM은 버전 표가 아니라 사용자 프로젝트의 dependency resolution을 바꾸는 공개 계약이다."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-dependencies-version-governance-hero.png" alt="작은 로봇 작업자들이 모듈 블록을 컨베이어와 중앙 정렬 장치로 모아 dependency BOM을 맞추는 3D 작업대 일러스트" loading="eager" />
+  <figcaption>BOM은 README에 적어 둔 추천 조합이 아닙니다. Maven Central에 올라가고, 사용자의 dependency graph에 영향을 주는 공개 계약입니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-28 · bluetape4k-dependencies 제작기 Part 2</p>
+
+[앞 글](/ko/blog/bluetape4k-dependencies-making-part1-why-bom/)에서는 왜 `bluetape4k-dependencies`가 필요했는지
+살펴봤습니다. 저장소가 나뉘고, 각 저장소가 자기 속도로 배포되기 시작하면 사용자는 이런 질문을 하게 됩니다.
+
+```text
+projects는 1.11.0이고,
+exposed는 1.11.0이고,
+aws는 0.4.0이고...
+
+그래서 내 서비스에서는 뭘 import하면 되는데?
+```
+
+이번 글에서는 그 질문에 답하기 위해 `1.0.0`에서 무엇을 공개 계약으로 만들었는지 정리합니다.
+여기서 말하는 공개 계약은 문서의 권장 조합이 아닙니다. 사용자가 Gradle이나 Maven에서 import했을 때 실제
+dependency resolution에 참여하는 artifact입니다.
+
+## BOM이라는 이름만 붙인다고 BOM이 되지는 않는다
+
+처음에는 단순하게 생각하기 쉽습니다.
+
+```text
+모든 bluetape4k artifact와 version을 한 파일에 적는다.
+그 파일을 Maven Central에 올린다.
+사용자는 그걸 import해서 쓴다.
+```
+
+말은 쉽습니다. 문제는 "모든 artifact를 한 파일에 적는다"에서 시작됩니다.
+
+예를 들어 `bluetape4k-exposed`가 새 모듈을 추가했다고 해 보겠습니다.
+
+```text
+exposed repo:
+  bluetape4k-exposed-bom 1.11.0
+    - bluetape4k-exposed-jdbc
+    - bluetape4k-exposed-r2dbc
+    - bluetape4k-exposed-cache
+    - bluetape4k-exposed-bigquery
+```
+
+이 정보를 중앙 BOM에서도 하나씩 다시 쓰면 같은 사실을 두 군데에서 관리하게 됩니다.
+
+```kotlin
+// 나쁜 방향에 가까운 형태
+constraints {
+    api("io.github.bluetape4k.exposed:bluetape4k-exposed-jdbc:1.11.0")
+    api("io.github.bluetape4k.exposed:bluetape4k-exposed-r2dbc:1.11.0")
+    api("io.github.bluetape4k.exposed:bluetape4k-exposed-cache:1.11.0")
+    api("io.github.bluetape4k.exposed:bluetape4k-exposed-bigquery:1.11.0")
+}
+```
+
+한두 개일 때는 괜찮습니다. 그런데 저장소가 늘고 모듈이 늘면 빠뜨리는 순간이 옵니다. 새 모듈을 실제 repo BOM에는
+넣었는데 중앙 BOM constraint에는 빠뜨리기 쉽습니다. 반대로 삭제한 모듈이 중앙 BOM에 남기 쉽습니다.
+이런 경우에는 사용자가 잘못한 게 아닙니다. 만든 쪽에서 같은 정보를 두 번 관리하다가 똥을 싸지른 겁니다.
+
+그래서 `bluetape4k-dependencies`는 각 저장소 BOM을 다시 import하는 쪽을 선택했습니다.
+
+```kotlin
+dependencies {
+    api(platform(libs.bluetape4k.bom))
+    api(platform(libs.bluetape4k.aws.bom))
+    api(platform(libs.bluetape4k.image.bom))
+    api(platform(libs.bluetape4k.text.bom))
+    api(platform(libs.bluetape4k.graph.bom))
+    api(platform(libs.bluetape4k.leader.bom))
+    api(platform(libs.bluetape4k.exposed.bom))
+    api(platform(libs.bluetape4k.javers.bom))
+}
+```
+
+각 저장소 BOM은 자기 모듈을 책임집니다. 중앙 BOM은 그 BOM들을 조합합니다. 역할이 나뉘면 같은 정보를 두 번 고칠 일이
+줄어듭니다. 실수를 없앨 수는 없지만, 어느 쪽에서 치워야 하는지는 분명해집니다.
+
+## Gradle java-platform으로 공개 BOM을 만든다
+
+`bluetape4k-dependencies`는 Gradle의 `java-platform` plugin으로 BOM을 만듭니다. 핵심 설정은 다음 형태입니다.
+
+```kotlin
+plugins {
+    `java-platform`
+    `maven-publish`
+    signing
+}
+
+javaPlatform {
+    allowDependencies()
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("BluetapeDependencies") {
+            from(components["javaPlatform"])
+
+            pom {
+                name.set("bluetape4k-dependencies")
+                description.set("Centralized BOM for the bluetape4k ecosystem")
+                url.set("https://github.com/bluetape4k/bluetape4k-dependencies")
+            }
+        }
+    }
+}
+```
+
+여기서 `allowDependencies()`를 켭니다. constraint만 나열하는 플랫폼에서는 없어도 되지만,
+`bluetape4k-dependencies`는 다른 BOM을 `api(platform(...))`으로 import합니다. 중앙 BOM이 sub-BOM을 조합하는
+구조이기 때문입니다.
+
+외부 dependency line도 같은 방식으로 관리합니다.
+
+```kotlin
+dependencies {
+    api(platform(libs.aws2.bom))
+    api(platform(libs.ktor.bom))
+    api(platform(libs.netty.bom))
+    api(platform(libs.vertx.dependencies))
+
+    constraints {
+        api(libs.exposed.core)
+        api(libs.fabric8.kubernetes.client)
+        api(libs.postgresql)
+        api(libs.redisson)
+    }
+}
+```
+
+여기서도 같은 기준을 유지합니다. 이미 BOM이 있는 큰 dependency line은 BOM으로 import하고, BOM으로 묶기 어려운 개별
+dependency는 constraint로 관리합니다. 모든 것을 직접 constraint로 쓰면 통제력이 좋아진다고 착각하기 쉽습니다.
+실제로는 손에 쥔 물건이 너무 많아져서 떨어뜨릴 확률이 올라갑니다.
+
+## BOM과 catalog는 독자가 다르다
+
+`bluetape4k-dependencies`를 만들면서 가장 쉽게 헷갈렸던 지점은 BOM과 Gradle Version Catalog의 경계였습니다.
+둘 다 버전을 다루기 때문에 같은 물건으로 착각하기 쉽습니다. 문제는 독자가 다르다는 겁니다.
+
+| 구분 | 누가 쓰나 | 어디에 영향을 주나 |
+|---|---|---|
+| BOM | 애플리케이션, 라이브러리 사용자 | dependency resolution |
+| Gradle Version Catalog | bluetape4k 저장소를 관리하는 개발자 | build script alias, plugin/library version |
+
+사용자는 보통 이렇게 씁니다.
+
+```kotlin
+dependencies {
+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.0.0"))
+
+    implementation("io.github.bluetape4k:bluetape4k-core")
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-jdbc")
+}
+```
+
+애플리케이션 개발자는 `gradle/libs.versions.toml`의 구조를 알 필요가 없습니다. BOM 하나를 import하고, 모듈 dependency에는
+버전을 적지 않으면 됩니다.
+
+반대로 bluetape4k 저장소를 같이 관리하는 개발자는 catalog를 보게 됩니다.
+
+```toml
+[versions]
+kotlin = "2.4.0"
+spring-boot = "4.1.0"
+bluetape4k-exposed-bom = "1.11.0"
+
+[libraries]
+bluetape4k-exposed-bom = { module = "io.github.bluetape4k.exposed:bluetape4k-exposed-bom", version.ref = "bluetape4k-exposed-bom" }
+```
+
+이 catalog는 Maven Central에 올라가는 사용자용 artifact가 아닙니다. 여러 저장소가 checkout된
+`bluetape4k-dependencies` git ref에서 읽는 build authoring 계약입니다. 쉽게 말하면:
+
+```text
+BOM:
+  사용자 프로젝트의 dependency graph를 맞춘다.
+
+Catalog:
+  bluetape4k 저장소들이 build.gradle.kts를 같은 이름 체계로 작성하게 한다.
+```
+
+이 둘을 섞어 설명하면 글도 꼬이고 운영도 꼬입니다. 사용자는 catalog를 몰라도 됩니다. 여러 저장소를 관리하는 사람은
+catalog를 몰라서는 안 됩니다. 독자가 다르면 문서도 달라져야 합니다.
+
+## 공개 전에 Spring Boot 이름부터 정리했다
+
+`1.0.0`에서 의외로 영향이 컸던 결정은 Spring Boot artifact 이름이었습니다.
+
+전환기에는 `spring-boot3`, `spring-boot4`처럼 major line을 이름에 박아 넣은 artifact가 섞이기 쉽습니다.
+전환 중인 내부 저장소에서는 이런 이름이 도움이 됩니다. 어떤 runtime line을 보고 있는지 즉시 드러나기 때문입니다.
+
+첫 공개 BOM에서는 기준을 다르게 잡았습니다.
+
+```text
+사용자에게 앞으로 밀고 갈 표준 line:
+  Spring Boot 4
+
+공개 artifact 이름:
+  bluetape4k-spring-boot-core
+  bluetape4k-aws-spring-boot
+  bluetape4k-leader-spring-boot
+```
+
+그래서 `spring-boot4`를 이름에 계속 남기는 대신 versionless `spring-boot` 이름을 공개 표준으로 잡았습니다.
+Spring Boot 3 artifact는 기존 라인에 남길 수 있지만, `bluetape4k-dependencies`의 첫 공개 계약에는 넣지 않았습니다.
+
+겉으로는 이름 정리 하나입니다. 사용자 dependency가 이렇게 쌓이면 영향은 바로 커집니다.
+
+```kotlin
+dependencies {
+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.0.0"))
+
+    implementation("io.github.bluetape4k:bluetape4k-spring-boot-core")
+    implementation("io.github.bluetape4k.aws:bluetape4k-aws-spring-boot")
+    implementation("io.github.bluetape4k.leader:bluetape4k-leader-spring-boot")
+}
+```
+
+사용자는 Boot 4가 표준인 BOM을 import했고, artifact 이름도 같은 방향을 가리킵니다. 여기서 `spring-boot3`와
+`spring-boot4` 이름이 동시에 나오면 사용자는 "그래서 지금 어느 쪽을 쓰라는 건데?"라고 묻게 됩니다.
+이 질문이 나오면 문서가 제 역할을 못한 겁니다.
+
+## POM metadata도 기능이다
+
+BOM은 코드가 거의 없습니다. 그렇다고 대충 배포해도 되는 artifact는 아닙니다.
+
+Maven Central에 올라가는 artifact라면 POM metadata도 사용자와 도구가 읽습니다.
+
+```kotlin
+pom {
+    name.set("bluetape4k-dependencies")
+    description.set("Centralized BOM for the bluetape4k ecosystem")
+    url.set("https://github.com/bluetape4k/bluetape4k-dependencies")
+
+    licenses {
+        license {
+            name.set("MIT License")
+            url.set("https://opensource.org/licenses/MIT")
+        }
+    }
+
+    scm {
+        connection.set("scm:git:git://github.com/bluetape4k/bluetape4k-dependencies.git")
+        developerConnection.set("scm:git:ssh://github.com/bluetape4k/bluetape4k-dependencies.git")
+        url.set("https://github.com/bluetape4k/bluetape4k-dependencies")
+    }
+}
+```
+
+처음에는 이런 metadata를 "배포 주변 정리" 정도로 넘기기 쉽습니다. Maven Central에 올라간 뒤에는 얘기가
+달라집니다. 잘못된 license, 빈 version, snapshot이 섞인 POM은 사용자 프로젝트와 보안/라이선스 도구에 그대로
+노출됩니다.
+
+그래서 local 검증도 코드 테스트처럼 다룹니다.
+
+```bash
+scripts/sync-managed-catalog.py --check --summary
+scripts/verify-managed-artifacts.py --summary
+scripts/sync-shared-versions.py --workspace .. --check --summary
+./gradlew build publishToMavenLocal --no-daemon
+```
+
+`publishToMavenLocal`은 재미있는 명령은 아닙니다. 그래도 공개 artifact의 POM을 미리 확인해 둡니다.
+Maven Central에 올린 뒤에 "어? license 이름이 이상한데?"를 발견하면 분위기가 바로 싸해집니다.
+그때는 같은 version을 다시 올릴 수 없습니다. 이 이야기는 다음 글에서 더 아프게 다룹니다.
+
+## 사용자가 보는 최종 모양
+
+`1.0.0`에서 잡고 싶었던 최종 경험은 단순합니다.
+
+Gradle:
+
+```kotlin
+dependencies {
+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.0.0"))
+
+    implementation("io.github.bluetape4k:bluetape4k-core")
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-jdbc")
+    implementation("io.github.bluetape4k.aws:bluetape4k-aws-java")
+}
+```
+
+Maven:
+
+```xml
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>io.github.bluetape4k</groupId>
+            <artifactId>bluetape4k-dependencies</artifactId>
+            <version>1.0.0</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+```
+
+이 구조가 잡히면 사용자는 각 저장소 버전을 외우지 않아도 됩니다. 만드는 쪽은 더 바빠집니다. 각 저장소 BOM을
+제대로 만들고, 중앙 BOM에 맞게 조합하고, Maven Central에 공개되는 POM까지 검증하게 됩니다.
+
+좋은 공개 계약은 사용자를 편하게 만들지만, 만드는 사람에게는 일을 숨겨 주지 않습니다. 오히려 어디서 실수하면 안
+되는지 더 선명하게 보여 줍니다.
+
+## 자기 라이브러리에 적용한다면
+
+여러 라이브러리를 같이 배포하고 있다면, 처음부터 완벽한 release platform을 만들 필요는 없습니다. 대신 아래 질문부터
+확인하는 편이 좋습니다.
+
+| 질문 | 기준 |
+|---|---|
+| 각 저장소가 자기 BOM을 갖고 있는가? | 그렇다면 중앙 BOM은 sub-BOM을 import하는 쪽이 낫다. |
+| 중앙 BOM이 artifact를 반복 관리하고 있지 않은가? | 반복이 늘수록 누락과 stale constraint가 늘어난다. |
+| catalog를 사용자용 artifact처럼 설명하고 있지 않은가? | catalog는 build authoring 계약이고, BOM은 dependency resolution 계약이다. |
+| 공개 artifact 이름이 앞으로 갈 방향과 맞는가? | 전환기 이름을 첫 공개 계약에 그대로 가져오면 사용자가 헷갈린다. |
+| `publishToMavenLocal`로 POM을 봤는가? | license, SCM, snapshot, 빈 version은 배포 전에 잡아야 한다. |
+
+이 체크리스트는 화려하지 않습니다. BOM은 원래 화려하면 이상한 겁니다. 사용자가 직접 만지는 코드는 적고,
+문제가 생겼을 때만 티가 납니다. 티가 나는 순간은 대개 문제가 생기는 경우일 겁니다.
+
+## 다음 글
+
+이번 글에서는 `1.0.0`에서 BOM을 공개 계약으로 만들기 위해 어떤 경계를 잡았는지 봤습니다.
+
+다음 글에서는 `1.3.0`까지 오면서 release train에서 실제로 맞은 뒤통수를 정리합니다. snapshot ref와 release ref를
+섞어 보고, Central artifact가 아직 안 보이는데 BOM부터 올릴 뻔하고, catalog를 Maven Central artifact처럼 설명한
+문제를 어떻게 고쳤는지 살펴보겠습니다.
+
+## 시리즈 글
+
+사용자 관점에서 `bluetape4k-dependencies`를 사용하는 방법부터 보고 싶다면
+[사용 가이드](/ko/blog/bluetape4k-dependencies-usage-guide/)를 먼저 읽으면 됩니다.
+
+- [bluetape4k-dependencies 제작기 Part 1: 왜 BOM이 필요했나](/ko/blog/bluetape4k-dependencies-making-part1-why-bom/)
+- [bluetape4k-dependencies 제작기 Part 2: 1.0.0 BOM을 공개 계약으로 만들기](/ko/blog/bluetape4k-dependencies-making-part2-public-bom/)
+- [bluetape4k-dependencies 제작기 Part 3: Maven Central에는 롤백 버튼이 없다](/ko/blog/bluetape4k-dependencies-making-part3-release-train/)
+
+## 참고한 소스
+
+- [`bluetape4k-dependencies` README.ko.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/README.ko.md)
+- [`bluetape4k-dependencies` CHANGELOG.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/CHANGELOG.md)
+- [`bluetape4k-dependencies` build.gradle.kts](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/build.gradle.kts)
+- [`bluetape4k-dependencies` libs.versions.toml](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/gradle/libs.versions.toml)
+- [`bluetape4k-dependencies` version-management.ko.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/docs/version-management.ko.md)

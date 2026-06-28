@@ -1,0 +1,298 @@
+---
+title: "bluetape4k-dependencies 제작기 Part 3: Maven Central에는 롤백 버튼이 없다"
+description: "bluetape4k-dependencies 1.3.0까지 release train을 운영하면서 snapshot ref, Central artifact 확인, transient 403, POM metadata, 1.3.1 패치까지 어떤 실수를 줄였는지 정리한다."
+sidebar:
+  order: -202606281700
+blog:
+  date: 2026-06-28T17:00:00+09:00
+  image: /assets/bluetape4k-dependencies-version-governance-hero.png
+  imageAlt: 작은 로봇 작업자들이 모듈 블록을 컨베이어와 중앙 정렬 장치로 모아 dependency BOM을 맞추는 3D 작업대 일러스트
+  cardDescription: "여러 저장소를 순서대로 배포하는 일은 운영 이야기 같지만, 방심하면 뒤통수를 맞고 꽤 성실한 삽질이 기다린다."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-dependencies-version-governance-hero.png" alt="작은 로봇 작업자들이 모듈 블록을 컨베이어와 중앙 정렬 장치로 모아 dependency BOM을 맞추는 3D 작업대 일러스트" loading="eager" />
+  <figcaption>여러 저장소를 하나의 BOM으로 묶을 때는 기능 개발보다 배포 순서가 더 까다로울 때가 있습니다. Maven Central에는 롤백 버튼이 없습니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-28 · bluetape4k-dependencies 제작기 Part 3</p>
+
+[Part 2](/ko/blog/bluetape4k-dependencies-making-part2-public-bom/)에서는 `1.0.0` BOM을 공개 계약으로 만들 때
+정한 경계를 봤습니다. 중앙 BOM은 각 저장소 BOM을 import하고, 사용자는 중앙 BOM 하나를 사용하며, catalog는
+유지보수자용 build authoring 계약으로 남깁니다.
+
+여기까지는 구조 이야기입니다. 구조를 만들고 나면 그다음부터는 배포가 기다립니다.
+
+운영 이야기라서 재미없을 것 같지만, 버전 배포 쪽도 방심하면 뒤통수를 맞고 꽤 성실한 삽질이 기다립니다.
+특히 Maven Central에 한 번 올라간 release artifact는 같은 version으로 다시 올릴 수 없습니다.
+`1.3.0`까지 오면서 제일 뼈아프게 확인한 건 이겁니다.
+
+```text
+release train에서 "나중에 고치지 뭐"는 전략이 아니다.
+```
+
+## snapshot matrix는 release matrix가 아니다
+
+개발 중에는 snapshot이 필요합니다. 여러 저장소가 동시에 움직이니 `develop`에서는 다음 train의 snapshot을
+미리 물려서 검증합니다.
+
+예를 들어 `1.3.0`을 준비하던 시점의 개발 refs는 이런 모양이었습니다.
+
+```text
+bluetape4k-bom:1.11.0-SNAPSHOT
+bluetape4k-aws-bom:0.4.0-SNAPSHOT
+bluetape4k-exposed-bom:1.11.0-SNAPSHOT
+bluetape4k-graph-bom:0.6.0-SNAPSHOT
+bluetape4k-image-bom:0.3.0-SNAPSHOT
+bluetape4k-javers-bom:0.3.0-SNAPSHOT
+bluetape4k-leader-bom:0.4.0-SNAPSHOT
+bluetape4k-text-bom:0.3.0-SNAPSHOT
+```
+
+그런데 이 목록을 그대로 release matrix로 보면 안 됩니다. 실제 `1.3.0` stable 후보는 다릅니다.
+
+| Upstream BOM | `1.2.0` 입력 | `1.3.0` stable 후보 |
+|---|---:|---:|
+| `bluetape4k-bom` | `1.10.0` | `1.11.0` |
+| `bluetape4k-aws-bom` | `0.3.1` | `0.4.0` |
+| `bluetape4k-exposed-bom` | `1.10.0` | `1.11.0` |
+| `bluetape4k-image-bom` | `0.2.0` | `0.3.0` |
+| `bluetape4k-text-bom` | `0.2.0` | `0.2.1` |
+| `bluetape4k-graph-bom` | `0.5.0` | `0.5.1` |
+| `bluetape4k-leader-bom` | `0.3.1` | `0.4.0` |
+| `bluetape4k-javers-bom` | `0.2.0` | `0.2.1` |
+
+`graph`는 개발 line으로는 `0.6.0-SNAPSHOT`을 볼 수 있어도, 이번 stable train에는 `0.5.1`을 넣어야 했습니다.
+`javers`도 마찬가지입니다. 다음 개발 version과 이번 release input을 섞으면 BOM이 거짓말을 하게 됩니다.
+
+이런 실수는 코드 리뷰에서 놓치기 쉽습니다. 버전 숫자가 비슷하고, snapshot은 "어차피 다음 버전"이라는 착각을 만들기
+때문입니다. 그래서 문서에 matrix를 고정했습니다. 사람 기억으로 버티는 release gate는 release gate가 아닙니다.
+
+## Central에 보이기 전에는 release input이 아니다
+
+공식 release BOM은 snapshot artifact를 가리키면 안 됩니다. 여기까지는 당연합니다.
+진짜 조건은 따로 있습니다. 그 release artifact가 실제로 Central에서 조회되어야 합니다.
+
+```text
+잘못된 순서:
+  1. dependencies BOM에서 aws 0.4.0을 가리킨다.
+  2. dependencies BOM을 먼저 배포한다.
+  3. aws 0.4.0은 아직 Central에 없다.
+  4. 사용자는 BOM import 단계에서 깨진다.
+
+맞는 순서:
+  1. aws 0.4.0을 배포한다.
+  2. Central에서 aws 0.4.0 BOM이 조회되는지 확인한다.
+  3. dependencies BOM이 aws 0.4.0을 가리키게 한다.
+  4. dependencies BOM을 마지막에 배포한다.
+```
+
+코드 diff만 보면 작은 차이입니다. 사용자 입장에서는 전혀 작지 않습니다. 사용자는 "아, 내부 release train에서 aws가 아직
+안 올라왔구나"라고 생각하지 않습니다. 그냥 "BOM 가져왔더니 build가 깨지네?"라고 봅니다.
+
+그래서 release checklist에는 missing-only 원칙을 넣었습니다.
+
+```text
+1. release matrix를 확정한다.
+2. 각 upstream BOM version이 Central에 있는지 확인한다.
+3. 이미 있는 artifact는 다시 배포하지 않는다.
+4. 없는 artifact만 upstream release action을 실행한다.
+5. 다시 Central 조회를 통과한 뒤 dependencies BOM을 배포한다.
+```
+
+이미 있는 version을 다시 배포하려고 하면 또 다른 문제가 생깁니다. Maven Central release artifact는 같은 version으로
+재배포할 수 없습니다. 없는 것만 배포합니다. 이미 있는 version을 또 누르면 CI가 막아 주기도 합니다. 그래도 운 좋게 막히는
+것을 운영 절차라고 부르면 곤란합니다.
+
+## snapshot 403은 테스트 실패와 다르게 봐야 한다
+
+`1.3.0` 준비 과정에서 snapshot을 소비하는 downstream workflow도 손봤습니다.
+
+Central snapshot repository는 같은 `-SNAPSHOT` metadata를 짧은 시간에 여러 job이 동시에 조회할 때 일시적으로
+`HEAD 403`이나 `GET 403`을 반환하기도 합니다. 이 실패를 test failure와 섞으면 엉뚱한 곳을 파게 됩니다.
+
+그래서 `retry-snapshot-resolution.sh`는 snapshot metadata 403 signature만 재시도합니다.
+
+```bash
+is_snapshot_resolution_failure() {
+  local log_file="$1"
+  grep -Eiq "Received status code 403|GET 403|HEAD 403" "$log_file" &&
+    grep -Eiq \
+      "central\.sonatype\.com/repository/maven-snapshots|maven-metadata\.xml|Unable to load Maven meta-data|Could not resolve .*SNAPSHOT" \
+      "$log_file"
+}
+```
+
+기준은 단순합니다. 아무 실패나 재시도하지 않습니다.
+
+```text
+재시도한다:
+  Central snapshot metadata/artifact 403
+
+재시도하지 않는다:
+  test assertion failure
+  NoSuchMethodError
+  missing snapshot 404
+  compile error
+```
+
+이 구분이 없으면 retry는 장애 완화 도구가 아니라 장애 은폐 도구가 됩니다. 테스트가 실패했는데 "한 번 더 돌리면
+되겠지"라고 하면 잠깐 마음은 편합니다. 대신 원인은 그대로 남습니다. 나중에 더 큰 비용으로 돌아옵니다.
+
+테스트도 이 경계를 고정했습니다.
+
+```text
+403 snapshot metadata -> retry 후 성공 가능
+일반 test failure -> retry하지 않고 실패
+snapshot 404 -> retry하지 않고 실패
+```
+
+처음 보면 과한 장치입니다. 그래도 release train에서는 "실패가 무엇인지 분류하는 코드"도 기능입니다.
+잘못 분류하면 사람이 잘못된 작업을 하게 됩니다.
+
+## catalog를 Maven Central artifact처럼 설명한 것도 고쳤다
+
+`1.3.1`은 코드 기능 릴리즈라기보다 `1.3.0` 직후에 발견한 배포 계약 주변 문제를 정리한 patch였습니다.
+
+대표적으로 두 가지가 있었습니다.
+
+```text
+1. generated POM license metadata를 MIT License로 바로잡았다.
+2. Gradle version catalog를 Maven Central publication처럼 설명한 release guidance를 고쳤다.
+```
+
+두 번째는 실제 사용 경로를 잘못 안내합니다. `bluetape4k-dependencies`에는 BOM과 catalog가 같이 있습니다.
+다만 둘은 배포 경로가 다릅니다.
+
+```text
+BOM:
+  io.github.bluetape4k:bluetape4k-dependencies
+  Maven Central에 올라간다.
+
+Catalog:
+  gradle/libs.versions.toml
+  checkout된 git ref 또는 catalog tag에서 읽는다.
+  Maven Central artifact가 아니다.
+```
+
+이걸 잘못 설명하면 downstream repository를 관리하는 사람이 엉뚱한 곳을 찾게 됩니다. "catalog도 Central에 올라가나?"
+라는 질문이 나오는 순간 문서가 잘못 안내한 겁니다.
+
+license metadata도 마찬가지입니다. 기능 코드가 바뀐 것은 아니지만, 공개 artifact의 metadata는 소비자 도구가 읽습니다.
+Maven Central에 올라가는 artifact라면 license, SCM, developer metadata도 release 품질에 포함됩니다.
+
+이런 수정은 diff만 보면 작습니다. 그래도 사용자 dependency graph와 compliance 도구에 들어가는 정보라면
+꽤 조심히 다뤄야 하는 코드가 됩니다.
+
+## Maven Central에는 롤백 버튼이 없다
+
+여기까지의 이야기를 한 문장으로 줄이면 이렇습니다.
+
+```text
+Maven Central에 올라간 release version은 같은 version으로 다시 고칠 수 없다.
+```
+
+예를 들어 `1.3.0`을 배포한 뒤 POM metadata나 dependency 조합에 문제가 보이면, 같은 `1.3.0`을 다시 올릴 수 없습니다.
+새 버전으로 다시 배포합니다.
+
+```text
+1.3.0 배포
+  -> POM metadata 문제 발견
+  -> 같은 1.3.0 재배포 불가
+  -> 1.3.1 배포
+```
+
+이 제약이 있으니 release 전 체크가 길어집니다.
+
+```bash
+scripts/sync-managed-catalog.py --check --summary
+scripts/verify-managed-artifacts.py --summary
+scripts/sync-shared-versions.py --workspace .. --check --summary
+scripts/sync-dependabot-ignores.py --workspace .. --check --summary
+./gradlew build publishToMavenLocal --no-daemon
+```
+
+체크리스트가 길면 귀찮습니다. 그런데 Maven Central에 올라간 뒤 똥 치우는 것이 더 귀찮습니다.
+그때는 새 patch version, 새 release note, 새 GitHub Release, 새 Central 조회, downstream sync가 따라옵니다.
+한 번이면 교훈이고, 두 번이면 습관입니다. 습관으로 만들기에는 비용이 큽니다.
+
+## release train은 마지막에 BOM을 배포한다
+
+`bluetape4k-dependencies`는 release train에서 먼저 만질 것 같지만, 실제 배포 순서에서는 마지막에 가깝습니다.
+
+```text
+1. upstream repo별 release 준비
+2. upstream repo별 tag/release/publish
+3. Maven Central에서 upstream BOM 조회 확인
+4. dependencies repo의 matrix를 release version으로 고정
+5. managed catalog / artifact availability / shared version drift 검사
+6. dependencies BOM publish
+7. workshop/example/application은 BOM version만 올려서 확인
+```
+
+이 순서가 답답해 보여도 이유가 있습니다. 중앙 BOM이 먼저 나가면 사용자는 깨진 조합을 받습니다.
+중앙 BOM을 마지막에 내보내면 "이 BOM version은 적어도 그 시점에 Central에서 조회되는 upstream artifact들을
+가리킨다"라고 말할 근거가 생깁니다.
+
+여기서도 catalog와 BOM의 역할을 나눠야 합니다.
+
+```text
+dependencies BOM:
+  사용자 dependency resolution 계약
+  Maven Central release artifact
+
+dependencies catalog:
+  여러 bluetape4k repo의 build authoring 계약
+  git ref / catalog tag 기준
+```
+
+downstream workshop이나 example은 BOM version만 올려서 확인합니다. catalog ref는 유지보수자가 쓰는 도구이고,
+애플리케이션 사용 경험의 중심은 BOM입니다.
+
+## 자기 release train에 적용한다면
+
+여러 저장소를 같이 배포한다면, 다음 정도는 자동화하거나 최소한 체크리스트로 고정해 두는 편이 좋습니다.
+
+| 질문 | 확인할 것 |
+|---|---|
+| snapshot matrix와 release matrix를 분리했는가? | 다음 개발 line을 이번 stable input으로 착각하지 않는다. |
+| upstream artifact가 Central에 보이는가? | BOM이 가리키는 모든 upstream BOM을 HTTP 200 수준으로 확인한다. |
+| 이미 배포된 version을 다시 배포하려 하지 않는가? | missing-only release를 기본값으로 둔다. |
+| transient failure와 진짜 실패를 구분하는가? | snapshot 403만 재시도하고 test failure, 404, binary incompatibility는 재시도하지 않는다. |
+| catalog와 BOM을 같은 물건처럼 설명하지 않았는가? | BOM은 Maven Central, catalog는 git ref build contract다. |
+| `publishToMavenLocal`로 POM을 봤는가? | license, SCM, snapshot, 빈 version은 배포 전 확인한다. |
+| release 후 consumer sync 기준이 있는가? | workshop/example/application은 검증된 BOM version으로 올린다. |
+
+이 표는 멋진 자동화 이야기가 아닙니다. 실수 방지용입니다. release train에서는 멋진 것보다 덜 터지는 것이 더 중요합니다.
+터지더라도 어디서 터졌는지 바로 알 수 있어야 합니다.
+
+## 여기까지의 결론
+
+`bluetape4k-dependencies`를 만들면서 배운 건 BOM 자체보다 BOM 주변의 경계였습니다.
+
+- 사용자는 BOM을 import하고 모듈 버전은 적지 않습니다.
+- 각 저장소 BOM은 자기 모듈을 책임지고, 중앙 BOM은 sub-BOM을 조합합니다.
+- catalog는 유지보수자용 build 계약이지 Maven Central artifact가 아닙니다.
+- release BOM은 snapshot을 가리키면 안 되고, Central에 보이는 upstream artifact만 가리켜야 합니다.
+- Maven Central에 올라간 release version은 같은 version으로 다시 고칠 수 없습니다.
+
+버전 관리 글은 재미없습니다. 그래도 실제로 깨지는 순간에는 제일 시끄러운 문제가 됩니다.
+그때 덜 놀라려면 release 전에 조금 더 지루해지는 편이 낫습니다. 지루함은 비용이지만, 배포 후 똥 치우기보다는 쌉니다.
+
+## 시리즈 글
+
+사용자 관점에서 `bluetape4k-dependencies`를 가져오는 방법부터 보고 싶다면
+[사용 가이드](/ko/blog/bluetape4k-dependencies-usage-guide/)를 먼저 읽으면 됩니다.
+
+- [bluetape4k-dependencies 제작기 Part 1: 왜 BOM이 필요했나](/ko/blog/bluetape4k-dependencies-making-part1-why-bom/)
+- [bluetape4k-dependencies 제작기 Part 2: 1.0.0 BOM을 공개 계약으로 만들기](/ko/blog/bluetape4k-dependencies-making-part2-public-bom/)
+- [bluetape4k-dependencies 제작기 Part 3: Maven Central에는 롤백 버튼이 없다](/ko/blog/bluetape4k-dependencies-making-part3-release-train/)
+
+## 참고한 소스
+
+- [`bluetape4k-dependencies` CHANGELOG.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/CHANGELOG.md)
+- [`bluetape4k-dependencies` version-management.ko.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/docs/version-management.ko.md)
+- [`bluetape4k-dependencies` WIP.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/WIP.md)
+- [`bluetape4k-dependencies` retry-snapshot-resolution.sh](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/scripts/retry-snapshot-resolution.sh)
+- [`bluetape4k-dependencies` retry snapshot tests](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/tests/test_retry_snapshot_resolution.py)
+- [`bluetape4k-dependencies` 1.3.1 release checklist](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/docs/superpowers/plans/2026-06-28-dependencies-1-3-1-release-checklist.md)

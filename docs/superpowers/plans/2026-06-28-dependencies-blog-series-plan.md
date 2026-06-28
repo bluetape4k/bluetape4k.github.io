@@ -123,14 +123,16 @@ Write this as a three-post series:
      familiar analogy.
    - File: `src/content/docs/ko/blog/bluetape4k-dependencies-making-part1-why-bom.mdx`
    - Route: `/ko/blog/bluetape4k-dependencies-making-part1-why-bom/`
-2. `spring-dependencies처럼 1.0.0 BOM 만들기`
+2. `bluetape4k-dependencies 제작기 Part 2: 1.0.0 BOM을 공개 계약으로 만들기`
    - Reader problem: "What does it take to turn a group of libraries into a
      consumable BOM contract?"
    - Explain the first public BOM, Maven Central consumer contract, versionless
      module dependencies, and the limited role of Gradle catalog as an internal
      build/development helper.
    - Do not present catalog internals as something application users must know.
-3. `1.3.0까지 배포하며 배운 것`
+   - File: `src/content/docs/ko/blog/bluetape4k-dependencies-making-part2-public-bom.mdx`
+   - Route: `/ko/blog/bluetape4k-dependencies-making-part2-public-bom/`
+3. `bluetape4k-dependencies 제작기 Part 3: Maven Central에는 롤백 버튼이 없다`
    - Reader problem: "What went wrong once multiple repositories had to be
      released in order?"
    - Explain missing upstream artifacts, dependency-ordered internal releases,
@@ -138,6 +140,8 @@ Write this as a three-post series:
      gate.
    - Use "Maven Central에는 롤백 버튼이 없다" for the irreversible-release
      framing. Do not use "후회 버튼".
+   - File: `src/content/docs/ko/blog/bluetape4k-dependencies-making-part3-release-train.mdx`
+   - Route: `/ko/blog/bluetape4k-dependencies-making-part3-release-train/`
 
 This series may use `1.0.x`, `1.1.x`, `1.2.0`, `1.3.0`, and `1.3.1` as
 evidence. It should not be framed as the unique value of `1.3.0`.
