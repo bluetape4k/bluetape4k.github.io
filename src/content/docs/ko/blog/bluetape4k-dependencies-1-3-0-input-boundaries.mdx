@@ -1,0 +1,266 @@
+---
+title: "입력 경계에서 치운 똥들"
+description: "Image OCR, large-file I/O, Text tokenizer와 blockword API처럼 입력 경계에서 터지기 쉬운 문제를 dependencies 1.3.0 기준으로 정리한다."
+sidebar:
+  order: -202606281400
+blog:
+  date: 2026-06-28T14:00:00+09:00
+  image: /assets/bluetape4k-dependencies-1-3-0-hero.png
+  imageAlt: 작은 로봇 작업자들이 projects, exposed, aws, image, text, leader, graph, javers 모듈 블록과 dependency BOM 보드를 점검하는 3D 작업대 일러스트
+  cardDescription: "입력 경계는 작은 샘플로는 멀쩡하고 운영 데이터에서 아프다. Image와 Text 쪽 보강을 실제 API 관점에서 본다."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-dependencies-1-3-0-hero.png" alt="작은 로봇 작업자들이 projects, exposed, aws, image, text, leader, graph, javers 모듈 블록과 dependency BOM 보드를 점검하는 3D 작업대 일러스트" loading="eager" />
+  <figcaption>입력 경계에서 생긴 문제는 대개 예쁜 샘플 데이터가 아니라 큰 파일, 긴 문자열, 이상한 인코딩, 애매한 실패 응답에서 시작됩니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-28 · bluetape4k dependencies 1.3.0 input boundaries</p>
+
+API를 만들다 보면 입력 경계를 가볍게 보는 순간이 있습니다. 작은 파일, 짧은 문자열, 정상적인 JSON, 개발자가 직접 만든
+테스트 데이터에서는 거의 문제가 없습니다.
+
+그러다 운영에서 이런 입력이 들어옵니다.
+
+- 80MB TIFF 파일
+- 회전 정보가 이상한 이미지
+- OCR이 가능한지 애매한 스캔본
+- 30만 자짜리 검색어
+- 금칙어 우회를 노린 문자열
+- encoding이 깨진 텍스트
+
+이때부터 "입력은 그냥 받아서 처리하면 되지"라는 생각이 빠르게 퇴근합니다. 남는 것은 timeout, memory, 400/413
+응답, log masking, 그리고 이미 만들어 둔 버그를 치우는 일입니다. 좋게 말하면 기술부채 해결이고, 좀 더 솔직하게
+말하면 똥 치우기입니다.
+
+`dependencies 1.3.0`에서 `image 0.3.0`과 `text 0.2.1` 변화는 이 입력 경계를 다룰 때 특히 의미가 있습니다.
+
+## Image: OCR보다 먼저 파일이 어디서 메모리에 올라오는지 본다
+
+OCR 기능을 붙일 때 가장 먼저 보고 싶은 것은 인식률입니다. 이건 당연합니다. 하지만 서버 입장에서는 그 전에 더 중요한
+질문이 있습니다.
+
+> 이 파일은 어느 순간 메모리에 통째로 올라오나?
+
+작은 예제에서는 이런 코드가 편합니다.
+
+```kotlin
+fun extractText(file: MultipartFile): OcrResult {
+    val bytes = file.bytes
+    return ocr.read(bytes, language = "kor+eng")
+}
+```
+
+샘플 이미지가 300KB라면 아무 문제도 없습니다. 테스트도 잘 통과합니다. 그런데 운영에서 80MB짜리 TIFF가 들어오면
+상황이 달라집니다. 동시 요청이 몇 개만 겹쳐도 memory pressure가 갑자기 커집니다.
+
+원하는 방향은 파일을 너무 빨리 `ByteArray`로 바꾸지 않는 것입니다. `image 0.3.0` 라인에서는 OCR 예제와 Okio 기반
+large-file I/O 경로를 같이 봐야 합니다.
+
+```kotlin
+fun extractText(path: Path): OcrResult {
+    return FileSystem.SYSTEM.source(path).buffer().use { source ->
+        imageReader
+            .read(source)
+            .autoOrient()
+            .resize(maxWidth = 2_000)
+            .grayscale()
+            .sharpenForOcr()
+            .runOcr(language = "kor+eng")
+    }
+}
+```
+
+이 코드는 실제 API 이름을 그대로 보여주기 위한 예제가 아니라, 처리 순서를 보여주기 위한 의사코드입니다. 중요한 흐름은
+다음과 같습니다.
+
+```text
+upload stream
+  -> temporary file
+  -> Okio source
+  -> image decode
+  -> orientation/resize/preprocess
+  -> OCR
+  -> structured result
+```
+
+이 순서에서 각 단계마다 제한을 걸 수 있습니다.
+
+| 단계 | 걸어야 할 제한 |
+|---|---|
+| upload | request size, content type, timeout |
+| temporary file | disk quota, cleanup policy |
+| decode | 지원 format, 최대 픽셀 수 |
+| preprocess | resize 한계, native runtime 실패 처리 |
+| OCR | language, timeout, 빈 결과 처리 |
+
+이미지 API에서 버그를 많이 만드는 지점은 OCR option이 아니라 입력 제한입니다. "이 정도 파일은 들어오지 않겠지"는
+정책이 아닙니다. 그 생각으로 만든 API는 언젠가 친절한 사용자가 최대한 큰 파일로 테스트해 줍니다.
+
+## API 응답은 실패를 숨기지 않아야 한다
+
+OCR API는 실패 종류도 나눠야 합니다.
+
+```kotlin
+post("/ocr") {
+    val file = call.receiveMultipartFile("file")
+
+    when {
+        file.size > 20.megabytes -> call.respond(HttpStatusCode.PayloadTooLarge)
+        !file.contentType.isSupportedImage() -> call.respond(HttpStatusCode.UnsupportedMediaType)
+        else -> {
+            val result = ocrService.extract(file)
+            call.respond(result)
+        }
+    }
+}
+```
+
+여기서 `500`으로 다 밀어 넣으면 운영자가 할 일이 늘어납니다.
+
+| 실패 | HTTP status | 이유 |
+|---|---:|---|
+| 파일이 너무 큼 | `413` | 서버 문제가 아니라 요청 크기 문제 |
+| 지원하지 않는 format | `415` | 클라이언트가 입력을 바꿔야 함 |
+| OCR timeout | `504` 또는 재시도 가능 실패 | 처리 시간이 한계를 넘음 |
+| native runtime 오류 | `500` | 서버 환경 또는 library runtime 확인 필요 |
+
+실패를 잘 나누면 클라이언트도 고칠 수 있고, 운영자도 원인을 좁힐 수 있습니다. 실패 응답을 대충 만들면 모두가 같은
+로그 앞에서 같은 표정을 짓게 됩니다.
+
+## Text: tokenizer 앞에는 길이 제한이 있어야 한다
+
+텍스트 API도 비슷합니다. tokenizer는 편리하지만, 외부 입력을 그대로 넣으면 안 됩니다.
+
+```kotlin
+post("/tokenize") {
+    val request = call.receive<TokenizeRequest>()
+    val tokens = koreanTokenizer.tokenize(request.text)
+    call.respond(tokens)
+}
+```
+
+이 코드는 문서 예제처럼 보이지만, 실제 API로는 부족합니다. 최소한 길이 제한과 실패 응답을 먼저 정해야 합니다.
+
+```kotlin
+post("/tokenize") {
+    val request = call.receive<TokenizeRequest>()
+
+    if (request.text.length > 10_000) {
+        call.respond(
+            HttpStatusCode.PayloadTooLarge,
+            ErrorResponse(code = "TEXT_TOO_LONG", message = "text is too long")
+        )
+        return@post
+    }
+
+    val tokens = koreanTokenizer.tokenize(request.text)
+    call.respond(TokenizeResponse(tokens))
+}
+```
+
+여기서 조심할 점은 error response에 원문을 그대로 넣지 않는 것입니다.
+
+```kotlin
+// 피하는 편이 좋다.
+ErrorResponse(
+    code = "INVALID_TEXT",
+    message = "invalid text: ${request.text}"
+)
+```
+
+검색어, 이름, 주소, 메시지 본문이 log나 error response에 그대로 남으면 개인정보 문제가 될 수 있습니다.
+tokenizer나 blockword API는 입력 문자열을 다루기 때문에 log masking과 error response를 같이 설계해야 합니다.
+
+## Blockword: 금칙어 검사는 통과/실패만으로 끝나지 않는다
+
+금칙어 검사는 언뜻 단순합니다.
+
+```kotlin
+if (blockwordMatcher.contains(request.title)) {
+    throw BadRequestException("blocked word")
+}
+```
+
+하지만 실제 서비스에서는 더 많은 질문이 따라옵니다.
+
+- 어떤 field를 검사할 것인가?
+- 원문을 log에 남길 것인가?
+- 어느 단어가 걸렸는지 사용자에게 알려줄 것인가?
+- 우회 문자열을 normalize할 것인가?
+- 관리자가 사전을 어떻게 갱신할 것인가?
+
+이 질문에 대한 답이 없으면 금칙어 검사는 나중에 정책 논쟁이 됩니다. 기술 문제처럼 시작했는데, 운영 정책과 고객 응대가
+같이 들어옵니다.
+
+의사코드로는 이런 경계를 잡아두는 편이 낫습니다.
+
+```kotlin
+fun validatePost(request: CreatePostRequest) {
+    request.title.requireLength(max = 200)
+    request.body.requireLength(max = 10_000)
+
+    val normalizedTitle = textNormalizer.normalize(request.title)
+    val normalizedBody = textNormalizer.normalize(request.body)
+
+    val hit = blockwordMatcher.findFirst(normalizedTitle, normalizedBody)
+
+    if (hit != null) {
+        throw InvalidInputException(
+            code = "BLOCKED_WORD",
+            publicMessage = "입력값에 사용할 수 없는 표현이 포함되어 있습니다.",
+            logContext = mapOf(
+                "field" to hit.field,
+                "ruleId" to hit.ruleId,
+            ),
+        )
+    }
+}
+```
+
+`publicMessage`에는 원문을 넣지 않습니다. log에도 원문 대신 field, rule id, request id처럼 추적 가능한 값만 남기는
+편이 안전합니다. 운영자가 원인을 확인할 수는 있어야 하지만, 그 과정에서 민감한 입력을 더 넓게 퍼뜨리면 안 됩니다.
+
+## 입력 경계 checklist
+
+`image`와 `text` 쪽 API를 만들 때는 다음 항목을 먼저 정해두면 좋습니다.
+
+| 경계 | 확인할 질문 |
+|---|---|
+| request size | 이 endpoint가 받을 수 있는 최대 크기는 얼마인가? |
+| decode/tokenize timeout | 처리 시간이 길어질 때 어디서 끊을 것인가? |
+| memory | 입력을 `ByteArray`나 `String`으로 통째 복사하는 지점은 어디인가? |
+| status code | 사용자 입력 문제와 서버 문제를 어떻게 나눌 것인가? |
+| error response | 원문 입력이 응답이나 log에 새지 않는가? |
+| normalization | OCR/text/blockword 전에 정규화가 필요한가? |
+| observability | 실패 횟수, timeout, payload-too-large를 metric으로 볼 수 있는가? |
+
+이 checklist는 거창한 보안 프레임워크가 아닙니다. 실제로는 "나중에 내가 치울 똥을 오늘 조금 덜 만들자"에 가깝습니다.
+
+## 마무리
+
+`dependencies 1.3.0`에서 `image`와 `text` 변화는 입력 경계를 다시 보게 만듭니다. OCR이 들어오면 파일 크기와 memory를
+봐야 하고, tokenizer와 blockword가 들어오면 문자열 길이, 실패 응답, log masking을 봐야 합니다.
+
+새 기능은 보통 "무엇을 할 수 있게 됐나"로 소개됩니다. 그런데 서비스에서는 "어디까지 받아도 되는가"가 더 중요할 때가
+많습니다. 입력 경계를 정하지 않은 기능은, 사용자가 성실하게 이상한 입력을 보내는 순간 바로 숙제가 됩니다.
+
+숙제는 줄이는 편이 좋습니다. 특히 내가 낸 숙제라면 더 그렇습니다.
+
+## 시리즈 글
+
+처음 `bluetape4k-dependencies`를 가져오는 방법부터 보고 싶다면
+[사용 가이드](/ko/blog/bluetape4k-dependencies-usage-guide/)를 먼저 읽으면 됩니다.
+
+- [bluetape4k-dependencies 1.3.0: 새 기능도 넣고, 똥도 치우고](/ko/blog/bluetape4k-dependencies-1-3-0-library-stories/)
+- [bluetape4k-dependencies 1.3.0으로 서비스 조합하기](/ko/blog/bluetape4k-dependencies-1-3-0-service-composition/)
+- [운영에서 티 나는 1.3.0 변화](/ko/blog/bluetape4k-dependencies-1-3-0-production-signals/)
+- [입력 경계에서 치운 똥들](/ko/blog/bluetape4k-dependencies-1-3-0-input-boundaries/)
+
+## 참고한 소스
+
+- [`bluetape4k-image` CHANGELOG.md](https://github.com/bluetape4k/bluetape4k-image/blob/develop/CHANGELOG.md)
+- [`bluetape4k-image` issue #165](https://github.com/bluetape4k/bluetape4k-image/issues/165)
+- [`bluetape4k-image` issue #171](https://github.com/bluetape4k/bluetape4k-image/issues/171)
+- [`bluetape4k-text` CHANGELOG.md](https://github.com/bluetape4k/bluetape4k-text/blob/develop/CHANGELOG.md)
+- [`bluetape4k-text` issue #99](https://github.com/bluetape4k/bluetape4k-text/issues/99)

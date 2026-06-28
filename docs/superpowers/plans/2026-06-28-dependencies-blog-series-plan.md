@@ -6,26 +6,29 @@ Language: Korean-first drafts, English localization after Korean approval.
 
 ## Decision
 
-Split the material into two blog series.
+Split the material into one usage guide and two blog series. Do not mix the
+audiences.
 
-### Series A: ecosystem version and release management journey
+### Guide: using `bluetape4k-dependencies`
 
-Purpose: explain why `bluetape4k-dependencies` exists, how the ecosystem moved
-from local version drift to shared governance, and how release-train discipline
-evolved.
+Audience: application developers who consume bluetape4k libraries.
 
-Candidate posts:
+Purpose: show how to import the BOM and declare versionless bluetape4k modules
+in Gradle and Maven.
 
-1. Why `bluetape4k-dependencies` exists: local catalog drift, shared versions,
-   and the first public BOM.
-2. Maven BOM vs Gradle version catalog: what is published to Maven Central and
-   what is consumed by git ref or catalog tag.
-3. Release train operations: projects, exposed, AWS, image, text, graph,
-   leader, javers, and final dependencies BOM.
-4. Checklist after the 1.3.0 incident: operator memory is not a release gate.
+Published or draft post:
 
-This series may use `1.0.x`, `1.1.x`, `1.2.0`, `1.3.0`, and `1.3.1` as
-evidence. It should not be framed as the unique value of `1.3.0`.
+- `bluetape4k-dependencies로 여러 라이브러리 같이 쓰기`
+  - File: `src/content/docs/ko/blog/bluetape4k-dependencies-usage-guide.mdx`
+  - Route: `/ko/blog/bluetape4k-dependencies-usage-guide/`
+
+This guide must not become an internal catalog/governance article. Ordinary
+application developers do not need to know catalog internals. They need to know:
+
+1. Import `io.github.bluetape4k:bluetape4k-dependencies`.
+2. Omit versions on bluetape4k module dependencies.
+3. Upgrade by changing the BOM version first.
+4. Treat per-module version overrides as documented exceptions.
 
 ### Series B: `dependencies 1.2.0 -> 1.3.0` library-facing changes
 
@@ -35,7 +38,34 @@ bug fixes, and design decisions from `projects`, `exposed`, `aws`, `image`,
 `text`, `graph`, `leader`, and `javers`. Do not make the article mainly about
 the internal structure of `bluetape4k-dependencies`.
 
-First post:
+Audience: bluetape4k library users and application developers who want to know
+what changed in the libraries pulled together by the BOM.
+
+Posts:
+
+1. `bluetape4k-dependencies 1.3.0: 새 기능도 넣고, 똥도 치우고`
+2. `bluetape4k-dependencies 1.3.0으로 서비스 조합하기`
+   - Reader problem: "I imported the BOM. Which modules should I choose for a
+     realistic Spring Boot or Ktor service?"
+   - Core angle: compose Exposed, AWS, Leader, and Text in one service without
+     hand-picking module versions.
+   - Examples: Spring Boot batch/worker service, Ktor API service, dependency
+     snippets, and upgrade checks.
+3. `운영에서 티 나는 1.3.0 변화`
+   - Reader problem: "Which changes help me notice production problems earlier?"
+   - Core angle: Exposed cache health, AWS CloudWatch/Logs, leader metrics and
+     backend evidence.
+   - Examples: Actuator health payload, CloudWatch metric/log path, leader
+     backend/metric checks.
+4. `입력 경계에서 치운 똥들`
+   - Reader problem: "Where do 1.3.0 changes help protect API and file-input
+     boundaries?"
+   - Core angle: Image OCR and large-file IO, Text tokenizer/blockword safety,
+     safe failure mapping, and practical request limits.
+   - Examples: OCR preprocessing pipeline, Okio file reads, tokenizer/blockword
+     400/413 handling.
+
+First post details:
 
 - Working title: `bluetape4k-dependencies 1.3.0: 새 기능보다 흥미로운 버그와 결정들`
 - Reader problem: "I know the BOM moved from 1.2.0 to 1.3.0. Which library
@@ -72,6 +102,43 @@ First post:
   - K3s-backed leader election tests isolating the Fabric8-compatible Vert.x 4
     runtime.
 
+### Series A: ecosystem version and release management journey
+
+Audience: developers who build and maintain multiple related libraries, not
+ordinary bluetape4k application users.
+
+Purpose: explain why `bluetape4k-dependencies` exists, how the ecosystem moved
+from local version drift to shared governance, and what the 1.3.0 release train
+taught about release discipline.
+
+Write this as a three-post series:
+
+1. `왜 dependencies가 필요했나`
+   - Reader problem: "I maintain several libraries. Why does version alignment
+     stop being a local build-file problem?"
+   - Explain repository split, duplicated dependency decisions, drift, and why a
+     Spring-style BOM becomes necessary.
+   - Use `spring-boot-dependencies` / Spring dependency management as the
+     familiar analogy.
+2. `spring-dependencies처럼 1.0.0 BOM 만들기`
+   - Reader problem: "What does it take to turn a group of libraries into a
+     consumable BOM contract?"
+   - Explain the first public BOM, Maven Central consumer contract, versionless
+     module dependencies, and the limited role of Gradle catalog as an internal
+     build/development helper.
+   - Do not present catalog internals as something application users must know.
+3. `1.3.0까지 배포하며 배운 것`
+   - Reader problem: "What went wrong once multiple repositories had to be
+     released in order?"
+   - Explain missing upstream artifacts, dependency-ordered internal releases,
+     dependencies BOM published last, and why operator memory is not a release
+     gate.
+   - Use "Maven Central에는 롤백 버튼이 없다" for the irreversible-release
+     framing. Do not use "후회 버튼".
+
+This series may use `1.0.x`, `1.1.x`, `1.2.0`, `1.3.0`, and `1.3.1` as
+evidence. It should not be framed as the unique value of `1.3.0`.
+
 ## Drafting Rules
 
 - Korean-first.
@@ -80,6 +147,11 @@ First post:
 - Do not flatten this into a release-train operation post or a dependencies
   catalog architecture post; keep Series B about the libraries that the
   dependencies BOM version unlocks.
+- Do not let Series A become an application-user guide. Series A is for people
+  building and releasing multiple related libraries.
+- Use natural Korean without replacing valid technical terms. Avoid English
+  sentence structure and awkward imported metaphors. Prefer "롤백 버튼" over
+  "후회 버튼" when discussing Maven Central release irreversibility.
 - After Korean approval, create matching English post and route/asset parity.
 
 ## Evidence
