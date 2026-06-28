@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="980" viewBox="0 0 1600 980" role="img" aria-labelledby="title desc">
+  <title id="title">Graph benchmark latency comparison between Sync and Virtual Threads</title>
+  <desc id="desc">Bar chart comparing average microseconds per operation for representative TinkerGraph graph operations.</desc>
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#17324d" flood-opacity="0.16"/>
+    </filter>
+    <style>
+      .title { font-family: 'Architects Daughter', 'Comic Mono', sans-serif; font-size: 42px; fill: #18324a; }
+      .subtitle { font-family: 'Comic Mono', monospace; font-size: 24px; fill: #52687d; }
+      .label { font-family: 'Comic Mono', monospace; font-size: 25px; fill: #26394c; }
+      .small { font-family: 'Comic Mono', monospace; font-size: 21px; fill: #627487; }
+      .value { font-family: 'Comic Mono', monospace; font-size: 23px; font-weight: 700; fill: #18324a; }
+      .axis { stroke: #9fb0c2; stroke-width: 3; }
+      .grid { stroke: #d8e1ea; stroke-width: 2; }
+      .sync { fill: #68a9df; }
+      .vt { fill: #ef8fa7; }
+      .card { fill: #f8fbfd; stroke: #d0dcea; stroke-width: 3; filter: url(#shadow); }
+    </style>
+  </defs>
+
+  <rect width="1600" height="980" fill="#edf4f8"/>
+  <rect x="52" y="50" width="1496" height="878" rx="34" class="card"/>
+
+  <text x="104" y="122" class="title">TinkerGraph: Sync vs Virtual Threads</text>
+  <text x="104" y="166" class="subtitle">JMH AverageTime, microseconds per operation. Lower is faster.</text>
+
+  <g transform="translate(104 232)">
+    <rect x="0" y="0" width="32" height="32" rx="8" class="sync"/>
+    <text x="46" y="25" class="small">Sync</text>
+    <rect x="158" y="0" width="32" height="32" rx="8" class="vt"/>
+    <text x="204" y="25" class="small">Virtual Thread + CompletableFuture.join()</text>
+  </g>
+
+  <g transform="translate(104 315)">
+    <line x1="0" y1="495" x2="1320" y2="495" class="axis"/>
+    <line x1="0" y1="0" x2="0" y2="495" class="axis"/>
+
+    <g class="grid">
+      <line x1="0" y1="371.25" x2="1320" y2="371.25"/>
+      <line x1="0" y1="247.5" x2="1320" y2="247.5"/>
+      <line x1="0" y1="123.75" x2="1320" y2="123.75"/>
+      <line x1="0" y1="0" x2="1320" y2="0"/>
+    </g>
+
+    <g class="small">
+      <text x="-64" y="502">0</text>
+      <text x="-92" y="379">10</text>
+      <text x="-92" y="255">20</text>
+      <text x="-92" y="131">30</text>
+      <text x="-92" y="8">40</text>
+    </g>
+
+    <g transform="translate(105 0)">
+      <text x="0" y="555" text-anchor="middle" class="label">findVertexById</text>
+      <rect x="-58" y="473.2" width="52" height="21.8" rx="8" class="sync"/>
+      <rect x="18" y="395.3" width="52" height="99.7" rx="8" class="vt"/>
+      <text x="-32" y="461" text-anchor="middle" class="value">1.8</text>
+      <text x="44" y="383" text-anchor="middle" class="value">8.1</text>
+    </g>
+
+    <g transform="translate(345 0)">
+      <text x="0" y="555" text-anchor="middle" class="label">neighbors</text>
+      <rect x="-58" y="458.1" width="52" height="36.9" rx="8" class="sync"/>
+      <rect x="18" y="363.9" width="52" height="131.1" rx="8" class="vt"/>
+      <text x="-32" y="446" text-anchor="middle" class="value">3.0</text>
+      <text x="44" y="352" text-anchor="middle" class="value">10.6</text>
+    </g>
+
+    <g transform="translate(585 0)">
+      <text x="0" y="555" text-anchor="middle" class="label">bfs</text>
+      <rect x="-58" y="442.8" width="52" height="52.2" rx="8" class="sync"/>
+      <rect x="18" y="339.2" width="52" height="155.8" rx="8" class="vt"/>
+      <text x="-32" y="431" text-anchor="middle" class="value">4.2</text>
+      <text x="44" y="327" text-anchor="middle" class="value">12.6</text>
+    </g>
+
+    <g transform="translate(825 0)">
+      <text x="0" y="555" text-anchor="middle" class="label">pageRank</text>
+      <rect x="-58" y="405.0" width="52" height="90.0" rx="8" class="sync"/>
+      <rect x="18" y="306.2" width="52" height="188.8" rx="8" class="vt"/>
+      <text x="-32" y="393" text-anchor="middle" class="value">7.3</text>
+      <text x="44" y="294" text-anchor="middle" class="value">15.3</text>
+    </g>
+
+    <g transform="translate(1065 0)">
+      <text x="0" y="555" text-anchor="middle" class="label">shortestPath</text>
+      <rect x="-58" y="222.4" width="52" height="272.6" rx="8" class="sync"/>
+      <rect x="18" y="104.7" width="52" height="390.3" rx="8" class="vt"/>
+      <text x="-32" y="210" text-anchor="middle" class="value">22.0</text>
+      <text x="44" y="93" text-anchor="middle" class="value">31.5</text>
+    </g>
+  </g>
+
+  <text x="104" y="918" class="small">Fixture: TinkerGraph in-memory. This chart exposes API wrapping cost, not network database throughput.</text>
+</svg>
