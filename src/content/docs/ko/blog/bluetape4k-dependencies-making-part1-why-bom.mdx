@@ -260,7 +260,7 @@ dependencies {
 }
 ```
 
-여기서 sub-BOM을 `platform(...)`으로 가져오는 이유가 중요합니다. 각 저장소가 이미 자기 모듈 묶음을 BOM으로 공개하고
+여기서 sub-BOM을 `platform(...)`으로 가져오는 이유가 드러납니다. 각 저장소가 이미 자기 모듈 묶음을 BOM으로 공개하고
 있다면, 중앙 BOM이 모든 artifact를 하나씩 다시 나열할 필요는 없습니다.
 
 ```text
@@ -354,6 +354,8 @@ POM metadata나 dependency 조합에 문제가 있다.
 [사용 가이드](/ko/blog/bluetape4k-dependencies-usage-guide/)를 먼저 읽으면 됩니다.
 
 - [bluetape4k-dependencies 제작기 Part 1: 왜 BOM이 필요했나](/ko/blog/bluetape4k-dependencies-making-part1-why-bom/)
+- [bluetape4k-dependencies 제작기 Part 2: 1.0.0 BOM을 공개 계약으로 만들기](/ko/blog/bluetape4k-dependencies-making-part2-public-bom/)
+- [bluetape4k-dependencies 제작기 Part 3: Maven Central에는 롤백 버튼이 없다](/ko/blog/bluetape4k-dependencies-making-part3-release-train/)
 
 ## 참고한 소스
 
