@@ -114,13 +114,15 @@ taught about release discipline.
 
 Write this as a three-post series:
 
-1. `왜 dependencies가 필요했나`
+1. `bluetape4k-dependencies 제작기 Part 1: 왜 BOM이 필요했나`
    - Reader problem: "I maintain several libraries. Why does version alignment
      stop being a local build-file problem?"
    - Explain repository split, duplicated dependency decisions, drift, and why a
      Spring-style BOM becomes necessary.
    - Use `spring-boot-dependencies` / Spring dependency management as the
      familiar analogy.
+   - File: `src/content/docs/ko/blog/bluetape4k-dependencies-making-part1-why-bom.mdx`
+   - Route: `/ko/blog/bluetape4k-dependencies-making-part1-why-bom/`
 2. `spring-dependencies처럼 1.0.0 BOM 만들기`
    - Reader problem: "What does it take to turn a group of libraries into a
      consumable BOM contract?"
