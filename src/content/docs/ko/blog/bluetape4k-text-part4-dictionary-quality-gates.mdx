@@ -1,0 +1,294 @@
+---
+title: "Bluetape4k Text Part 4: 사전과 금칙어 변경을 테스트로 다루기"
+description: classpath 사전, runtime 추가 API, 금칙어 severity, 입력 경계 테스트를 함께 보면서 사전 변경을 운영 코드에서 안전하게 다루는 방법을 정리한다.
+sidebar:
+  order: -202606290324
+blog:
+  date: 2026-06-29T03:24:00+09:00
+  image: /assets/bluetape4k-text-part4-hero.png
+  imageAlt: 작은 로봇 작업자들이 사전 카드의 중복을 제거하고 품질 게이트와 테스트 체크리스트를 통과시키는 작업대 일러스트
+  cardDescription: "사전 파일 한 줄은 작지만 tokenizer와 금칙어 필터의 동작을 바꿉니다. 사전 변경을 어떻게 정리하고, 어떤 테스트로 막아야 하는지 살펴봅니다."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-text-part4-hero.png" alt="작은 로봇 작업자들이 사전 카드의 중복을 제거하고 품질 게이트와 테스트 체크리스트를 통과시키는 작업대 일러스트" loading="eager" />
+  <figcaption>사전 변경은 텍스트 파일 수정 같지만, 실제로는 서비스 동작을 바꾸는 배포입니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-29 · bluetape4k-text series · Part 4</p>
+
+Part 3에서는 keyword 사전을 Aho-Corasick automaton으로 만들고 요청 입력을 한 번 훑는 구조를 봤습니다. 그런데 automaton이나
+tokenizer가 아무리 깔끔해도, 결국 입력으로 들어가는 사전이 흔들리면 결과도 흔들립니다.
+
+사전 파일은 대체로 평범합니다. 한 줄에 단어 하나, 비슷한 형식의 파일 몇 개, 테스트 몇 개. 그래서 더 방심하기 쉽습니다. “단어 하나
+추가했을 뿐인데요?”로 시작한 일이 금칙어 오탐, masking 누락, tokenizer 결과 변경으로 이어지면 그때부터는 똥 치우기입니다.
+이번 글에서는 `bluetape4k-text`에서 사전과 금칙어 변경을 어떻게 다루면 좋은지 정리해 보겠습니다.
+
+## 사전은 코드다
+
+`bluetape4k-text`의 사전은 classpath resource로 들어갑니다. 라이브러리 사용자는 보통 이 파일을 직접 만지지 않지만, 사전이
+어떻게 읽히는지 알면 운영 코드에서 runtime 추가 API를 쓸 때도 실수를 줄일 수 있습니다.
+
+| 모듈 | resource 기준 경로 | loader | 확인할 때 |
+|---|---|---|---|
+| `tokenizer-core` | 공통 classpath resource | `DictionaryProvider` | 파일 로딩, `.gz` 압축 사전, 누락 파일 처리 |
+| `tokenizer-korean` | `koreantext` | `KoreanDictionaryProvider` | 품사 사전, 고유명사, 금칙어 severity |
+| `tokenizer-japanese` | `japanesetext` | `JapaneseDictionaryProvider` | 일본어 금칙어와 category fixture |
+
+`DictionaryProvider`는 UTF-8 resource를 읽고 각 줄을 `trim()`합니다. `.gz` 파일이면 `GZIPInputStream`으로 풀어서 읽습니다.
+없는 resource를 요청하면 `IllegalStateException`을 던집니다. 빈 사전으로 처리하고 넘어가지 않습니다. 이 편이 낫습니다. 사전
+파일 경로를 틀렸는데 서비스가 평화롭게 떠 있으면, 나중에 결과가 이상해졌을 때 원인을 찾기 훨씬 어려워집니다.
+
+여기까지만 보면 “사전은 결국 jar 안의 resource로만 넣어야 하나?”라는 생각이 들 수 있습니다. 그렇지는 않습니다. 현재
+기본 사전은 resource로 배포하지만, 애플리케이션에서는 DB나 파일에서 단어를 읽어 runtime API로 넣을 수 있습니다. 즉,
+`bluetape4k-text`가 사전 저장소를 하나로 고정하는 구조는 아닙니다.
+
+## 변경 절차는 단순해야 한다
+
+사전 변경 절차는 복잡할 필요가 없습니다. 대신 매번 같은 순서로 처리해야 합니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-text-part4-dictionary-gate-01.png" alt="Dictionary resource files are normalized, validated by focused tests, and then documented for release and rollout" loading="lazy" />
+  <figcaption>사전 파일을 정리한 뒤, 바뀐 영역에 맞는 테스트를 먼저 통과시킵니다.</figcaption>
+</figure>
+
+기본 절차는 이렇습니다.
+
+| 단계 | 하는 일 | 이유 |
+|---|---|---|
+| 1 | UTF-8 text file로 준비 | classpath resource에서 일관되게 읽기 위해 |
+| 2 | 앞뒤 공백 제거, 빈 줄 제거 | 눈에 안 보이는 차이로 fixture가 흔들리지 않게 |
+| 3 | 의미 없는 중복 제거 | 같은 단어가 여러 번 들어가도 결과가 좋아지지 않음 |
+| 4 | 순서가 의미 없을 때만 정렬 | diff를 작게 만들고 review를 쉽게 하기 위해 |
+| 5 | 바뀐 사전 영역의 테스트 실행 | tokenizer와 blockword 결과가 바뀌었는지 확인 |
+| 6 | release note에 변경 영역과 검증 명령 기록 | 다음 사람이 같은 확인을 반복할 수 있게 |
+
+코드로 줄이면 이런 모양입니다. 실제 프로젝트에서는 정렬이 의미를 바꾸지 않는 파일에만 적용해야 합니다.
+
+```kotlin
+val cleanedWords = lines.asSequence()
+    .map(String::trim)
+    .filter(String::isNotEmpty)
+    .distinct()
+    .sorted()
+    .toList()
+```
+
+여기서 `.sorted()`를 습관처럼 넣으면 안 됩니다. 어떤 사전은 순서가 동작에 영향을 줄 수 있습니다. 그런 파일은 중복과 공백만
+정리하고, 정렬은 하지 않는 편이 맞습니다. 작은 자동화가 큰 사고를 만들 때는 대개 “이번 것도 똑같겠지”에서 출발합니다.
+
+## Runtime 추가는 import 지점이다
+
+한국어 tokenizer는 runtime에 단어를 추가할 수 있습니다.
+
+```kotlin
+KoreanProcessor.addNounsToDictionary("블루테이프4K", "주말특가")
+```
+
+금칙어도 runtime에 추가할 수 있습니다.
+
+```kotlin
+KoreanProcessor.addBlockwords(
+    words = listOf("걸레"),
+    severity = Severity.LOW,
+)
+
+val response = KoreanProcessor.maskBlockwords(
+    BlockwordRequest("홈쇼핑 미니미는 무슨 걸.레 어쩌라구?")
+)
+
+response.maskedText
+// "홈쇼핑 미니미는 무슨 ** 어쩌라구?"
+
+response.blockWords
+// ["걸레"]
+```
+
+이 API는 운영에서 임시 대응을 할 때도 유용하고, 서비스가 가진 사전 저장소를 import하는 지점으로도 쓸 수 있습니다. 예를 들어
+관리자 화면에서 사전을 DB에 저장하고, 배포나 재시작 시점에 읽어서 tokenizer에 주입할 수 있습니다.
+
+```kotlin
+interface DictionaryWordSource {
+    suspend fun loadNouns(): List<String>
+    suspend fun loadBlockwords(): List<String>
+}
+
+suspend fun importDictionary(source: DictionaryWordSource) {
+    KoreanProcessor.addNounsToDictionary(source.loadNouns())
+    KoreanProcessor.addBlockwords(
+        words = source.loadBlockwords(),
+        severity = Severity.MIDDLE,
+    )
+}
+```
+
+파일을 쓰는 서비스라면 같은 구조로 바꿀 수 있습니다.
+
+```kotlin
+val words = Path("config/blockwords.txt")
+    .readLines()
+    .map(String::trim)
+    .filter(String::isNotEmpty)
+
+KoreanProcessor.addBlockwords(words, Severity.HIGH)
+```
+
+다만 runtime 추가와 classpath 사전 배포는 같은 일이 아닙니다. runtime에 추가한 단어는 그 process의 메모리 상태입니다. DB나
+파일에서 읽어 넣을 수는 있지만, 여러 instance에 같은 변경을 언제 반영할지, 재시작 뒤에도 유지할지, 언제 제거할지는 서비스가
+정해야 합니다.
+`bluetape4k-text`의 versioned dictionary reload는 아직 별도 작업입니다. 여기서는 현재 사용할 수 있는 runtime 추가 API와
+classpath 사전 배포만 다룹니다.
+
+## 금칙어는 noun 사전도 같이 본다
+
+`KoreanProcessor.addBlockwords`는 단어를 금칙어 사전에만 넣지 않습니다. 내부적으로 noun dictionary와 proper noun set에도 함께
+추가합니다. 처음 보면 “왜 금칙어를 명사 사전에 넣지?”라는 생각이 듭니다.
+
+이유는 tokenizer 때문입니다. 금칙어가 복합 명사나 변형된 입력 안에 들어오면 tokenizer가 그 단어를 하나의 후보로 잡아야 masking
+단계까지 연결됩니다. 금칙어 사전에만 단어를 넣고 tokenizer 쪽 사전이 모르면, “사전에는 있는데 결과에서는 못 찾는” 이상한 상황이
+생길 수 있습니다.
+
+테스트에는 이런 종류의 사례가 들어 있습니다.
+
+```kotlin
+KoreanProcessor.addBlockwords(
+    words = listOf("분수쑈"),
+    severity = Severity.LOW,
+)
+
+KoreanProcessor.maskBlockwords(
+    BlockwordRequest("분수쑈를 진행합니다")
+).maskedText
+// "***를 진행합니다"
+```
+
+실제 금칙어 처리는 예쁜 단어만으로 테스트할 수 없습니다. 운영에서 문제가 되는 입력은 대체로 예쁘지 않습니다. 그래도 테스트가
+불편한 단어를 다루는 이유는 명확합니다. 필터가 보기 좋은 예제에서만 통과하면, 진짜 입력이 들어왔을 때 다시 똥 치우기를 하게
+됩니다.
+
+## Severity는 정책이다
+
+한국어 금칙어는 `LOW`, `MIDDLE`, `HIGH` severity를 가집니다. 요청 severity를 어떻게 보느냐에 따라 검사 범위가 달라집니다.
+
+| 요청 severity | 검사 대상 |
+|---|---|
+| `LOW` | `LOW`, `MIDDLE`, `HIGH` |
+| `MIDDLE` | `MIDDLE`, `HIGH` |
+| `HIGH` | `HIGH` |
+
+이 구조는 “낮은 기준으로 보면 더 많이 잡고, 높은 기준으로 보면 가장 위험한 것만 잡는다”는 정책입니다. 그래서 테스트도 severity별
+기대 결과를 분리해서 남겨야 합니다. 단순히 “금칙어가 하나 잡혔다”로는 부족합니다. 어느 severity에서 잡혀야 하는지까지 남겨야
+나중에 정책을 바꿨을 때 diff가 설명됩니다.
+
+예를 들어 `mask` 길이도 테스트해야 합니다.
+
+```kotlin
+val response = KoreanProcessor.maskBlockwords(
+    BlockwordRequest(
+        text = "걸.레 그리고 걸.레",
+        mask = "##",
+    )
+)
+
+response.maskedText
+// "#### 그리고 ####"
+
+response.blockWords
+// ["걸레", "걸레"]
+```
+
+여기서 결과가 `"## 그리고 ##"`가 되면 span 처리 계약이 바뀐 겁니다. masking은 단순 치환으로 끝나지 않습니다. 사용자에게 보여줄
+텍스트의 offset과 길이를 다룹니다. 이 부분을 대충 넘기면 프론트엔드 highlight, moderation 화면, audit log가 서로 다른 이야기를 하기
+시작합니다.
+
+## 입력 경계는 processor 전에 막는다
+
+사전과 금칙어가 잘 준비되어도, 입력 경계가 약하면 서비스 코드에서 다시 문제가 생깁니다. `BlockwordRequest`는 빈 문자열과 너무
+긴 입력을 거부합니다. 너무 긴 입력의 제한은 `100_000`자입니다.
+
+예제 모듈의 `TokenizerSafetyHandler`는 processor를 부르기 전에 먼저 입력을 확인합니다.
+
+```kotlin
+fun handleBlockword(text: String): SafetyResponse {
+    if (text.isBlank()) {
+        return SafetyResponse(400, "text is blank")
+    }
+    if (text.length > maxLength) {
+        return SafetyResponse(
+            status = 413,
+            body = "text too long: ${text.length} chars (max $maxLength)",
+        )
+    }
+
+    return processor.mask(text)
+}
+```
+
+테스트는 여기서 세 가지를 봅니다.
+
+| 상황 | 기대 결과 |
+|---|---|
+| 입력이 너무 길다 | `413`, 길이와 최대값은 알려주지만 원문은 에러에 넣지 않음 |
+| 입력이 비어 있다 | `400`, processor를 호출하지 않음 |
+| processor 내부 오류 | `500`, 외부에는 sanitized message만 반환 |
+
+이런 테스트는 겉으로는 재미가 없습니다. 하지만 운영에서는 이런 부분이 훨씬 중요할 때가 많습니다. 금칙어 필터가 실패했는데 에러
+메시지에 사용자가 보낸 원문을 그대로 넣으면, 그 순간부터 필터 문제가 아니라 개인정보와 로그 정책 문제가 됩니다.
+
+## 검증 명령은 사전 종류별로 남긴다
+
+사전 변경을 검증할 때는 전체 빌드만 돌리고 끝내지 말고, 바뀐 영역을 직접 확인하는 테스트를 같이 남기는 편이 좋습니다.
+
+| 변경 영역 | 검증 명령 |
+|---|---|
+| 공통 dictionary loader | `./gradlew :tokenizer-core:test --tests "io.bluetape4k.tokenizer.utils.DictionaryProviderTest"` |
+| 한국어 noun/POS 사전 | `./gradlew :tokenizer-korean:test` |
+| 한국어 금칙어 사전 | `./gradlew :tokenizer-korean:test --tests "io.bluetape4k.tokenizer.korean.block.KoreanBlockwordProcessorTest"` |
+| 일본어 금칙어 사전 | `./gradlew :tokenizer-japanese:test --tests "io.bluetape4k.tokenizer.japanese.block.JapaneseBlockwordProcessorTest"` |
+| 입력 안전 예제 | `./gradlew :examples:tokenizer-safety-examples:test` |
+
+여기서 중요한 점은 이 테스트들이 “한국어/일본어 NLP 정확도 benchmark”가 아니라는 겁니다. 목표는 더 좁습니다. 저장소 안에 있는
+사전, fixture, 입력 경계가 기대한 대로 동작하는지 반복해서 확인하는 품질 게이트입니다.
+
+큰 정확도 claim을 하려면 별도 dataset, 평가 기준, 통계가 필요합니다. 이 글의 범위는 다릅니다. “이번 사전 변경으로 우리가 이미
+보장하던 동작이 깨지지 않았는가?”를 확인하는 쪽입니다. 이 선을 지키는 편이 글도, 테스트도, release note도 덜 위험합니다.
+
+## 운영 코드에서 가져갈 기준
+
+서비스에서 `bluetape4k-text`를 쓸 때는 아래 기준을 가져가면 됩니다.
+
+| 기준 | 적용 방법 |
+|---|---|
+| 사전 변경은 동작 변경으로 본다 | release note와 테스트 명령을 함께 남긴다 |
+| runtime 추가는 import 지점으로 쓴다 | DB/file에서 읽은 단어를 주입하되, instance 반영과 제거 정책은 따로 정한다 |
+| 금칙어는 tokenizer 결과와 같이 본다 | masking 결과뿐 아니라 detected word와 span도 테스트한다 |
+| severity는 정책이다 | severity별 expected output을 fixture로 남긴다 |
+| 입력 경계는 먼저 막는다 | processor 호출 전에 길이와 blank를 확인하고 원문을 에러에 남기지 않는다 |
+
+사전 변경은 대개 작게 느껴집니다. 하지만 tokenizer와 필터에서는 작은 한 줄이 “잡아야 할 것을 못 잡는 문제”나 “정상 문장을 막는 문제”가
+될 수 있습니다. 그래서 사전 작업은 멋진 새 기능이라기보다, 다음 배포에서 같은 삽질을 반복하지 않게 해주는 품질 관리에 가깝습니다.
+
+사전을 바꿀 때마다 이 정도만 지켜도 충분히 도움이 됩니다. 파일은 깨끗하게, 테스트는 구체적으로, release note에는 무엇을 바꾸고
+무엇으로 확인했는지 남기기. 재미있는 일은 아니지만, 나중에 장애 회의에서 “그 단어 하나 때문에요?”라는 질문에 설명하고 싶지 않다면
+이쪽이 낫습니다.
+
+## 참고한 소스
+
+- [DictionaryProvider](https://github.com/bluetape4k/bluetape4k-text/blob/develop/tokenizer-core/src/main/kotlin/io/bluetape4k/tokenizer/utils/DictionaryProvider.kt)
+- [DictionaryProviderTest](https://github.com/bluetape4k/bluetape4k-text/blob/develop/tokenizer-core/src/test/kotlin/io/bluetape4k/tokenizer/utils/DictionaryProviderTest.kt)
+- [KoreanDictionaryProvider](https://github.com/bluetape4k/bluetape4k-text/blob/develop/tokenizer-korean/src/main/kotlin/io/bluetape4k/tokenizer/korean/utils/KoreanDictionaryProvider.kt)
+- [KoreanProcessor](https://github.com/bluetape4k/bluetape4k-text/blob/develop/tokenizer-korean/src/main/kotlin/io/bluetape4k/tokenizer/korean/KoreanProcessor.kt)
+- [KoreanBlockwordProcessorTest](https://github.com/bluetape4k/bluetape4k-text/blob/develop/tokenizer-korean/src/test/kotlin/io/bluetape4k/tokenizer/korean/block/KoreanBlockwordProcessorTest.kt)
+- [JapaneseBlockwordProcessorTest](https://github.com/bluetape4k/bluetape4k-text/blob/develop/tokenizer-japanese/src/test/kotlin/io/bluetape4k/tokenizer/japanese/block/JapaneseBlockwordProcessorTest.kt)
+- [BlockwordRequest](https://github.com/bluetape4k/bluetape4k-text/blob/develop/tokenizer-core/src/main/kotlin/io/bluetape4k/tokenizer/model/BlockwordRequest.kt)
+- [TokenizerSafetyExamples](https://github.com/bluetape4k/bluetape4k-text/blob/develop/examples/tokenizer-safety-examples/src/main/kotlin/io/bluetape4k/text/examples/tokenizer/TokenizerSafetyExamples.kt)
+- [TokenizerSafetyExamplesTest](https://github.com/bluetape4k/bluetape4k-text/blob/develop/examples/tokenizer-safety-examples/src/test/kotlin/io/bluetape4k/text/examples/tokenizer/TokenizerSafetyExamplesTest.kt)
+- [Dictionary update pipeline plan](https://github.com/bluetape4k/bluetape4k-text/blob/develop/docs/superpowers/plans/2026-05-27-issue-85-dictionary-update-pipeline-plan.md)
+- [Text quality gates lesson](https://github.com/bluetape4k/bluetape4k-text/blob/develop/docs/lessons/2026-05-27-text-0-2-0-quality-gates.md)
+
+## 시리즈
+
+- Part 1: [텍스트 처리의 시작점과 품질 기준](/ko/blog/bluetape4k-text-part1-overview-quality/)
+- Part 2: [tokenizer와 언어 감지로 입력을 라우팅하기](/ko/blog/bluetape4k-text-part2-tokenizers-lingua/)
+- Part 3: [Aho-Corasick 검색과 workshop 시나리오](/ko/blog/bluetape4k-text-part3-aho-corasick-workshop/)
+- Part 4: [사전과 금칙어 변경을 테스트로 다루기](/ko/blog/bluetape4k-text-part4-dictionary-quality-gates/)
