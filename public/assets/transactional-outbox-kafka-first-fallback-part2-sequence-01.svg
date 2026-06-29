@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="940" viewBox="0 0 1400 940" role="img" aria-labelledby="title desc">
+<title id="title">Kafka-first fallback sequence</title>
+<desc id="desc">Sequence diagram showing order transaction, direct Kafka publish success, fallback storage, relay, and reconciler repair.</desc>
+<defs>
+<marker id="seq-arrow" viewBox="0 0 16 16" refX="13" refY="8" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M2 2 L14 8 L2 14 Z" fill="#2563eb"/></marker>
+<marker id="seq-fail" viewBox="0 0 16 16" refX="13" refY="8" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M2 2 L14 8 L2 14 Z" fill="#dc2626"/></marker>
+<marker id="seq-amber" viewBox="0 0 16 16" refX="13" refY="8" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M2 2 L14 8 L2 14 Z" fill="#d97706"/></marker>
+<marker id="seq-slate" viewBox="0 0 16 16" refX="13" refY="8" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M2 2 L14 8 L2 14 Z" fill="#475569"/></marker>
+</defs>
+<style>text{font-family:"Architects Daughter","Comic Mono","Comic Sans MS",system-ui,sans-serif;fill:#1f2937}.caption{fill:#475569}.life{stroke:#94a3b8;stroke-width:3;stroke-dasharray:10 10}.message{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}.return{fill:none;stroke-width:3;stroke-dasharray:9 8;stroke-linecap:round}.labelText{font-size:15px;font-weight:700}.branchText{font-family:"Comic Mono","Architects Daughter",monospace;font-size:15px;font-weight:700;fill:#334155}</style>
+<rect x="0" y="0" width="1400" height="940" fill="#fbfaf7"/>
+<text class="" x="700.0" y="58.0" text-anchor="middle" font-size="32" font-weight="800">Kafka-first fallback sequence</text>
+<text class="caption" x="700.0" y="88.0" text-anchor="middle" font-size="17" font-weight="500">Success does not touch event_publications; failure stores a durable retry row outside the order transaction.</text>
+<rect class="header" x="25.0" y="118" width="170" height="58" rx="10" fill="#ffffff" stroke="#2563eb" stroke-width="3"/>
+<text class="" x="110.0" y="154.0" text-anchor="middle" font-size="18" font-weight="700">Client</text>
+<line class="lifeline life" x1="110.0" y1="176" x2="110.0" y2="880"/>
+<rect class="header" x="250.0" y="118" width="170" height="58" rx="10" fill="#ffffff" stroke="#2563eb" stroke-width="3"/>
+<text class="" x="335.0" y="154.0" text-anchor="middle" font-size="18" font-weight="700">Order API</text>
+<line class="lifeline life" x1="335.0" y1="176" x2="335.0" y2="880"/>
+<rect class="header" x="475.0" y="118" width="170" height="58" rx="10" fill="#ffffff" stroke="#2563eb" stroke-width="3"/>
+<text class="" x="560.0" y="154.0" text-anchor="middle" font-size="18" font-weight="700">Order Tx</text>
+<line class="lifeline life" x1="560.0" y1="176" x2="560.0" y2="880"/>
+<rect class="header" x="700.0" y="118" width="170" height="58" rx="10" fill="#ffffff" stroke="#2563eb" stroke-width="3"/>
+<text class="" x="785.0" y="154.0" text-anchor="middle" font-size="18" font-weight="700">Publisher</text>
+<line class="lifeline life" x1="785.0" y1="176" x2="785.0" y2="880"/>
+<rect class="header" x="925.0" y="118" width="170" height="58" rx="10" fill="#ffffff" stroke="#2563eb" stroke-width="3"/>
+<text class="" x="1010.0" y="154.0" text-anchor="middle" font-size="18" font-weight="700">Outbox DB</text>
+<line class="lifeline life" x1="1010.0" y1="176" x2="1010.0" y2="880"/>
+<rect class="header" x="1150.0" y="118" width="170" height="58" rx="10" fill="#ffffff" stroke="#2563eb" stroke-width="3"/>
+<text class="" x="1235.0" y="154.0" text-anchor="middle" font-size="18" font-weight="700">Relay / Reconciler</text>
+<line class="lifeline life" x1="1235.0" y1="176" x2="1235.0" y2="880"/>
+<rect class="activation" x="326.0" y="210.0" width="18" height="115.0" rx="5" fill="#bfdbfe" stroke="#475569" stroke-width="2"/>
+<rect class="activation" x="551.0" y="248.0" width="18" height="82.0" rx="5" fill="#bfdbfe" stroke="#475569" stroke-width="2"/>
+<rect class="activation" x="776.0" y="352.0" width="18" height="260.0" rx="5" fill="#fde68a" stroke="#475569" stroke-width="2"/>
+<rect class="activation" x="1001.0" y="520.0" width="18" height="130.0" rx="5" fill="#fed7aa" stroke="#475569" stroke-width="2"/>
+<rect class="activation" x="1226.0" y="682.0" width="18" height="140.0" rx="5" fill="#cbd5e1" stroke="#475569" stroke-width="2"/>
+<path class="message" d="M 110.0 224.0 L 335.0 224.0" stroke="#2563eb" marker-end="url(#seq-arrow)"/>
+<rect class="label" x="156.9" y="180.0" width="131.2" height="30" rx="15" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+<text class="labelText" x="222.5" y="200.0" text-anchor="middle">POST /api/orders</text>
+<path class="message" d="M 335.0 264.0 L 560.0 264.0" stroke="#2563eb" marker-end="url(#seq-arrow)"/>
+<rect class="label" x="381.9" y="220.0" width="131.2" height="30" rx="15" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+<text class="labelText" x="447.5" y="240.0" text-anchor="middle">save order in Tx</text>
+<path class="return" d="M 560.0 316.0 L 335.0 316.0" stroke="#475569" marker-end="url(#seq-slate)"/>
+<rect class="label" x="383.5" y="272.0" width="128.0" height="30" rx="15" fill="#ffffff" stroke="#475569" stroke-width="2"/>
+<text class="labelText" x="447.5" y="292.0" text-anchor="middle">order committed</text>
+<rect class="alt" x="300" y="350" width="840" height="282" rx="14" fill="#eef6ff" stroke="#93c5fd" stroke-width="2"/>
+<text class="branchText" x="318" y="377">alt direct Kafka publish succeeds</text>
+<path class="message" d="M 335.0 438.0 L 785.0 438.0" stroke="#2563eb" marker-end="url(#seq-arrow)"/>
+<rect class="label" x="465.7" y="394.0" width="188.6" height="30" rx="15" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+<text class="labelText" x="560.0" y="414.0" text-anchor="middle">publishDirectOrFallback</text>
+<path class="message" d="M 785.0 488.0 L 1235.0 488.0" stroke="#2563eb" marker-end="url(#seq-arrow)"/>
+<rect class="label" x="932.1" y="444.0" width="155.8" height="30" rx="15" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+<text class="labelText" x="1010.0" y="464.0" text-anchor="middle">send to Kafka topic</text>
+<path class="return" d="M 785.0 522.0 L 335.0 522.0" stroke="#16a34a" marker-end="url(#seq-arrow)"/>
+<rect class="label" x="494.4" y="478.0" width="131.2" height="30" rx="15" fill="#ffffff" stroke="#16a34a" stroke-width="2"/>
+<text class="labelText" x="560.0" y="498.0" text-anchor="middle">PUBLISHED_DIRECT</text>
+<line class="branchDivider" x1="300" y1="548" x2="1140" y2="548" stroke="#93c5fd" stroke-width="2" stroke-dasharray="8 8"/>
+<text class="branchText" x="318" y="582">else Kafka fails or times out after 3 attempts</text>
+<path class="message" d="M 785.0 624.0 L 1010.0 624.0" stroke="#d97706" marker-end="url(#seq-amber)"/>
+<rect class="label" x="815.5" y="580.0" width="164.0" height="30" rx="15" fill="#ffffff" stroke="#d97706" stroke-width="2"/>
+<text class="labelText" x="897.5" y="600.0" text-anchor="middle">upsert NOT_PUBLISHED</text>
+<rect class="alt" x="752" y="658" width="560" height="188" rx="14" fill="#fff7ed" stroke="#fdba74" stroke-width="2"/>
+<text class="branchText" x="770" y="685">loop scheduled relay claim</text>
+<path class="message" d="M 1235.0 724.0 L 1010.0 724.0" stroke="#d97706" marker-end="url(#seq-amber)"/>
+<rect class="label" x="1044.6" y="680.0" width="155.8" height="30" rx="15" fill="#ffffff" stroke="#d97706" stroke-width="2"/>
+<text class="labelText" x="1122.5" y="700.0" text-anchor="middle">claim eligible rows</text>
+<path class="return" d="M 1010.0 772.0 L 1235.0 772.0" stroke="#475569" marker-end="url(#seq-slate)"/>
+<rect class="label" x="1058.5" y="728.0" width="128.0" height="30" rx="15" fill="#ffffff" stroke="#475569" stroke-width="2"/>
+<text class="labelText" x="1122.5" y="748.0" text-anchor="middle">payload batch</text>
+<path class="message" d="M 1235.0 820.0 L 785.0 820.0" stroke="#dc2626" marker-end="url(#seq-fail)"/>
+<rect class="label" x="899.3" y="776.0" width="221.4" height="30" rx="15" fill="#ffffff" stroke="#dc2626" stroke-width="2"/>
+<text class="labelText" x="1010.0" y="796.0" text-anchor="middle">Kafka send + mark published</text>
+<rect class="alt" x="88" y="856" width="1160" height="62" rx="12" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2"/>
+<text class="branchText" x="108" y="884">repair: reconciler scans orders without publications</text>
+<text class="branchText" x="108" y="906">and rebuilds deterministic rows when fallback persistence failed</text>
+</svg>
