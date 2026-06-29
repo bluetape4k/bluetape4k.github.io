@@ -1,0 +1,340 @@
+---
+title: "Bluetape4k Text Part 3: Aho-Corasick Search and Workshop Scenarios"
+description: How to replace repeated contains checks with a reusable Aho-Corasick automaton, then use it in workshop-style abuse-word filtering and alert workflows.
+sidebar:
+  order: -202606290252
+blog:
+  date: 2026-06-29T02:52:00+09:00
+  image: /assets/bluetape4k-text-part3-hero.png
+  imageAlt: A 3D workbench illustration where robotic builders assemble keyword cards, a trie-like automaton, a text scanner, and match output bins
+  cardDescription: "As keyword dictionaries grow, repeated contains checks become expensive and harder to reason about. Build the automaton once, then scan each input once."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-text-part3-hero.png" alt="A 3D workbench illustration where robotic builders assemble keyword cards, a trie-like automaton, a text scanner, and match output bins" loading="eager" />
+  <figcaption>When the keyword list grows, the working model is simple: build the dictionary once and scan each input once.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-29 · bluetape4k-text series · Part 3</p>
+
+Part 2 covered routing input through tokenizers and language detection. This post moves to the next step: finding risk keywords
+or abuse words after the input path has been chosen.
+
+For a small list, `keywords.any { text.contains(it) }` is fine. Ten keywords and short inputs do not need a more complicated
+structure. The problem starts when the dictionary grows into hundreds or thousands of entries: abuse words, brand names,
+security events, URL schemes, and code keywords.
+
+The `text-search` module places an Aho-Corasick automaton at that boundary. Build the automaton once from the keyword
+dictionary. Then scan each input once and emit matches with positions, keywords, and associated values.
+
+## Why Replace Repeated `contains()`
+
+The simplest implementation looks like this.
+
+```kotlin
+fun hasRisk(text: String, keywords: List<String>): Boolean =
+    keywords.any { keyword -> text.contains(keyword, ignoreCase = true) }
+```
+
+For a small internal tool, this may be the better implementation. It is readable and has fewer moving parts. Once the
+dictionary grows, the cost shape changes because the input is scanned again for each keyword.
+
+| Approach | Dictionary work | Input work | Good fit |
+|---|---|---|---|
+| Repeated `contains()` | none | scan the input per keyword | small keyword lists and low call volume |
+| Aho-Corasick | prebuild keyword trie and failure transitions | scan the input once and emit matches | large reused dictionaries in services |
+
+Repeated `contains()` lines keywords up for every request. Aho-Corasick assembles the dictionary first and then passes text
+through that machine. The first approach is cheap to write. The second approach is better when the same dictionary is reused
+many times.
+
+## Processing Path
+
+In service code, `text-search` usually fits like this.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-text-part3-aho-corasick-flow-01.png" alt="Keyword dictionaries are compiled into an immutable automaton, user text is scanned once, and matches are used for masking, alerts, or highlighting" loading="lazy" />
+  <figcaption>Compile dictionaries into an automaton at build/reload time, then use the request path only for scanning and decisions.</figcaption>
+</figure>
+
+The most common mistake is rebuilding the automaton per request. Building creates the keyword trie and failure transitions. Do
+that at service startup, configuration reload, or dictionary-version change, not inside each request handler.
+
+After build, `AhoCorasickAutomaton` is immutable and thread-safe. Multiple requests can share the same instance. The service
+method can then choose between `parseText`, `containsMatch`, `replaceAll`, and `matchesAsFlow`.
+
+## Builder and DSL
+
+The builder API is the most explicit starting point.
+
+```kotlin
+val automaton = AhoCorasickAutomaton.builder<String>()
+    .add("password reset", "ACCOUNT_TAKEOVER")
+    .add("card declined", "PAYMENT_RISK")
+    .options(
+        SearchOptions(
+            ignoreCase = true,
+            allowOverlaps = false,
+            wordBoundary = WordBoundary.WHITESPACE_SEPARATED,
+        )
+    )
+    .build()
+
+val matches = automaton.parseText(
+    "user requested password reset before card declined"
+)
+
+matches.map { it.value }
+// ["ACCOUNT_TAKEOVER", "PAYMENT_RISK"]
+```
+
+The DSL gives the same shape with less boilerplate.
+
+```kotlin
+val automaton = ahoCorasick<String> {
+    ignoreCase = true
+    allowOverlaps = false
+    wordBoundary = WordBoundary.WHITESPACE_SEPARATED
+    keyword("password reset", "ACCOUNT_TAKEOVER")
+    keyword("card declined", "PAYMENT_RISK")
+}
+```
+
+Values do not need to be strings. Production code often reads better with enums or small data classes.
+
+```kotlin
+enum class RiskType {
+    ACCOUNT_TAKEOVER,
+    PAYMENT_RISK,
+}
+
+val automaton = ahoCorasick<RiskType> {
+    ignoreCase = true
+    wordBoundary = WordBoundary.WHITESPACE_SEPARATED
+    keyword("password reset", RiskType.ACCOUNT_TAKEOVER)
+    keyword("card declined", RiskType.PAYMENT_RISK)
+}
+```
+
+That lets downstream code branch on typed values instead of comparing string constants.
+
+## Workshop Abuse-Word Filter
+
+The `kotlin/text-processing` workshop module contains `AbuseWordFilter`. It shows the service-helper shape around `text-search`.
+
+```kotlin
+class AbuseWordFilter(abuseWords: Collection<String>) {
+    private val automaton: AhoCorasickAutomaton<String> = ahoCorasick {
+        ignoreCase = true
+        allowOverlaps = true
+        normalization = NormalizationForm.NFC
+        abuseWords.filter { it.isNotBlank() }
+            .forEach { word -> keyword(word, word) }
+    }
+
+    fun containsAbuse(text: String): Boolean =
+        automaton.containsMatch(text)
+
+    fun filterText(text: String): String =
+        automaton.replaceAll(text) { match ->
+            "*".repeat(match.length)
+        }
+
+    fun findMatches(text: String): List<AhoCorasickMatch<String>> =
+        automaton.parseText(text)
+}
+```
+
+The helper exposes three different service decisions.
+
+| Method | Internal API | Service meaning |
+|---|---|---|
+| `containsAbuse` | `containsMatch` | stop when existence is enough |
+| `filterText` | `replaceAll` | mask the matched span with `*` |
+| `findMatches` | `parseText` | inspect position, keyword, and value |
+
+The tests pin that contract directly.
+
+```kotlin
+val filter = AbuseWordFilter(listOf("badword", "spam", "abuse", "hate"))
+
+filter.containsAbuse("This message contains badword!")
+// true
+
+filter.filterText("badword and spam together")
+// "******* and **** together"
+
+filter.findMatches("spam and abuse are badword").size
+// 3
+```
+
+Abuse filtering rarely ends at true or false. The service may mask display text, raise a report score, or send the item to a
+moderation queue. That is why the automaton value is useful: it can carry category, severity, or policy metadata.
+
+## Pick Boundary Options First
+
+`SearchOptions` collects small choices that have large behavioral effects.
+
+| Option | Use when | Watch out for |
+|---|---|---|
+| `ignoreCase` | English keywords should ignore case | keywords are normalized through the same pipeline |
+| `allowOverlaps` | choose whether to surface overlapping matches | replacement still uses non-overlapping spans |
+| `wordBoundary` | substring matches would be false positives | prefer `WHITESPACE_SEPARATED` over `LATIN_ALPHA` for Korean/CJK |
+| `normalization` | jamo, fullwidth text, or compatibility chars are possible | `NFKC` is expensive, so use it only where needed |
+| `stopOnFirstMatch` | blocking APIs only need existence | Flow should use `take(1)` |
+
+Korean word boundaries deserve care. `LATIN_ALPHA` uses `Character.isAlphabetic`, and Hangul/CJK characters are alphabetic as
+well. For Korean token-like matching, `WHITESPACE_SEPARATED` is usually safer.
+
+```kotlin
+val automaton = ahoCorasick<String> {
+    normalization = NormalizationForm.NFC
+    wordBoundary = WordBoundary.WHITESPACE_SEPARATED
+    keyword("사과", "APPLE")
+    keyword("바나나", "BANANA")
+}
+
+automaton.parseText("오늘 사과 와 바나나 를 먹었다").map { it.value }
+// ["APPLE", "BANANA"]
+```
+
+Normalization is another deliberate choice. It is useful when inputs can contain decomposed Hangul or compatibility characters
+such as `㈜`, but it is not free.
+
+```kotlin
+val automaton = ahoCorasick<String> {
+    normalization = NormalizationForm.NFKC
+    keyword("(주)", "CORP")
+}
+
+automaton.parseText("회사명: ㈜블루테이프").first().value
+// "CORP"
+```
+
+## Flow for Streaming Boundaries
+
+`matchesAsFlow` emits matches as a `Flow`. The example uses it to collect the first alert-like match.
+
+```kotlin
+val automaton = ahoCorasick {
+    ignoreCase = true
+    keyword("critical login", "ACCOUNT_TAKEOVER")
+    keyword("card declined", "PAYMENT_RISK")
+}
+
+val firstAlert = automaton.matchesAsFlow(
+    "critical login failed before card declined"
+).take(1).toList().firstOrNull()
+
+firstAlert?.value
+// "ACCOUNT_TAKEOVER"
+```
+
+Do not rely on `stopOnFirstMatch` for Flow. Use `take(1)` at the collector. With default options, traversal can emit matches
+as it finds them and cooperative cancellation can stop the producer.
+
+There is one caveat: `allowOverlaps = false` or a non-`NONE` `wordBoundary` requires whole-result post-processing. In that
+case, the Flow still checks cancellation between sends, but it cannot behave like a purely streaming scan.
+
+## Benchmark Direction
+
+The repository includes a JMH benchmark. Treat the numbers as a local comparison snapshot, not a production ranking.
+
+Run command:
+
+```bash
+./gradlew :text-search:benchmark
+```
+
+The baseline file is `docs/benchmark/2026-06-04-issue-97-ahocorasick-baselines.json`, and `ops/s` is higher-is-better.
+
+| Benchmark | Ops/s | What it means |
+|---|---:|---|
+| `parseTextNoMatch` | 12,209.23 | 5,000-keyword automaton with no matches |
+| `parseTextDenseMatches` | 3,566.90 | dense overlapping matches |
+| `parseTextLargeDictionary` | 3,116.99 | 5,000 keywords and 2,000 match tokens |
+| `matchesAsFlowLargeDictionaryCollect` | 712.62 | collect all Flow results for a large dictionary |
+| `naiveContainsSmallDictionary` | 248.39 | 1,000 sequential `String.contains` checks |
+| `parseTextNfkcNormalization` | 3.68 | NFKC plus ignore-case path |
+
+The point is not "Aho-Corasick is always N times faster." The benchmark scenarios are different, and normalization has its own
+cost. The useful conclusion is narrower: if a service repeatedly uses a large dictionary, rebuilding repeated `contains`
+scans into a reusable automaton is the right structure.
+
+The `parseTextNfkcNormalization` result is also a warning. `NFKC` can be very expensive. Enable it only where the input data
+needs it.
+
+## Service Shape
+
+Application code usually wants a boundary like this.
+
+```kotlin
+class RiskKeywordService(
+    keywords: Collection<RiskKeyword>,
+) {
+    private val automaton = ahoCorasick<RiskKeyword> {
+        ignoreCase = true
+        allowOverlaps = true
+        normalization = NormalizationForm.NFC
+        keywords.forEach { keyword(it.phrase, it) }
+    }
+
+    fun inspect(text: String): RiskInspection {
+        if (text.isBlank()) return RiskInspection.clean()
+        if (text.length > MAX_TEXT_LENGTH) return RiskInspection.rejected()
+
+        val matches = automaton.parseText(text)
+        if (matches.isEmpty()) return RiskInspection.clean()
+
+        return RiskInspection.flagged(
+            categories = matches.mapTo(linkedSetOf()) { it.value.category },
+            masked = automaton.replaceAll(text) { "*".repeat(it.length) },
+        )
+    }
+}
+```
+
+When dictionary reload is needed, build a new automaton and swap the reference. Avoid mutating an existing matcher while
+requests are using it. Immutable matchers are much easier to test and reason about.
+
+The same input boundary from Part 1 still applies. Reject oversized input before matching, and do not echo raw submitted text
+into error messages or logs.
+
+## When Not to Use It
+
+Aho-Corasick is not always the right answer.
+
+| Situation | Simpler choice |
+|---|---|
+| 3-5 keywords and low call volume | repeated `contains()` |
+| regex syntax is the actual requirement | regex or parser |
+| context or semantic classification is required | tokenizer, rule engine, or ML classifier |
+| every request has a different dictionary | measure with automaton build cost included |
+| very short input and a tiny dictionary | simpler code may be easier to maintain |
+
+It fits best when a dictionary is reused and match positions matter: abuse words, security events, brand/product names, URL
+schemes, and code keywords. `replaceAll` and `tokenize` then let the same match result feed masking or highlighting.
+
+The practical rule is short. Small keyword lists can stay simple. Large reused dictionaries should become immutable automatons.
+Choose options from input evidence and test fixtures, not from a desire to enable every feature at once.
+
+## Sources
+
+- [text-search README](https://github.com/bluetape4k/bluetape4k-text/blob/develop/text-search/README.md)
+- [AhoCorasickAutomaton](https://github.com/bluetape4k/bluetape4k-text/blob/develop/text-search/src/main/kotlin/io/bluetape4k/text/search/AhoCorasickAutomaton.kt)
+- [SearchOptions](https://github.com/bluetape4k/bluetape4k-text/blob/develop/text-search/src/main/kotlin/io/bluetape4k/text/search/SearchOptions.kt)
+- [matchesAsFlow](https://github.com/bluetape4k/bluetape4k-text/blob/develop/text-search/src/main/kotlin/io/bluetape4k/text/search/flow/AhoCorasickFlowExtensions.kt)
+- [AhoCorasickScenarioTest](https://github.com/bluetape4k/bluetape4k-text/blob/develop/text-search/src/test/kotlin/io/bluetape4k/text/search/AhoCorasickScenarioTest.kt)
+- [AhoCorasickKoreanTest](https://github.com/bluetape4k/bluetape4k-text/blob/develop/text-search/src/test/kotlin/io/bluetape4k/text/search/AhoCorasickKoreanTest.kt)
+- [AhoCorasickFlowTest](https://github.com/bluetape4k/bluetape4k-text/blob/develop/text-search/src/test/kotlin/io/bluetape4k/text/search/flow/AhoCorasickFlowTest.kt)
+- [AhoCorasickBenchmark](https://github.com/bluetape4k/bluetape4k-text/blob/develop/text-search/src/benchmark/kotlin/io/bluetape4k/text/search/benchmark/AhoCorasickBenchmark.kt)
+- [Aho-Corasick benchmark baseline](https://github.com/bluetape4k/bluetape4k-text/blob/develop/docs/benchmark/2026-06-04-issue-97-ahocorasick-baselines.json)
+- [TextSearchExamples](https://github.com/bluetape4k/bluetape4k-text/blob/develop/examples/text-search-examples/src/main/kotlin/io/bluetape4k/text/examples/search/TextSearchExamples.kt)
+- [AbuseWordFilter](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/kotlin/text-processing/src/main/kotlin/io/bluetape4k/workshop/text/filter/AbuseWordFilter.kt)
+- [AbuseWordFilterTest](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/kotlin/text-processing/src/test/kotlin/io/bluetape4k/workshop/text/filter/AbuseWordFilterTest.kt)
+
+## Series
+
+- Part 1: [Starting Point and Quality Baseline](/blog/bluetape4k-text-part1-overview-quality/)
+- Part 2: [Routing Input with Tokenizers and Language Detection](/blog/bluetape4k-text-part2-tokenizers-lingua/)
+- Part 3: [Aho-Corasick Search and Workshop Scenarios](/blog/bluetape4k-text-part3-aho-corasick-workshop/)

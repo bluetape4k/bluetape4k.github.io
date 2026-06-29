@@ -1,0 +1,285 @@
+---
+title: "Bluetape4k Text Part 2: Routing Input with Tokenizers and Language Detection"
+description: A practical guide to using Korean and Japanese tokenizers plus Lingua language detection at a service input boundary.
+sidebar:
+  order: -202606290218
+blog:
+  date: 2026-06-29T02:18:00+09:00
+  image: /assets/bluetape4k-text-part2-hero.png
+  imageAlt: A 3D workbench illustration where robotic builders route multilingual text cards through Korean tokenizer, Japanese tokenizer, and Lingua detector machines
+  cardDescription: "Korean, Japanese, and fallback text paths should not be pushed through one generic string function. This post shows where the bluetape4k-text tokenizer and Lingua boundaries fit."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-text-part2-hero.png" alt="A 3D workbench illustration where robotic builders route multilingual text cards through Korean tokenizer, Japanese tokenizer, and Lingua detector machines" loading="eager" />
+  <figcaption>Multilingual input is easier to reason about when language detection chooses the route and each tokenizer owns its own output shape.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-29 · bluetape4k-text series · Part 2</p>
+
+Part 1 mapped the whole `bluetape4k-text` repository. This post goes one level deeper from a service-input point of view. A user may submit a search query, report text, product name, or comment. The input may contain Korean, Japanese, English, or only emoji.
+
+Pushing all of that through `split(" ")` is tempting at first. It stays simple until search quality drops, a blockword slips through, or a mixed-language input breaks an assumption. Then the code stops being "simple string handling" and becomes a debugging session around where the text was cut incorrectly.
+
+The working rule for Part 2 is small:
+
+1. Validate the input boundary first.
+2. Detect the language.
+3. Send Korean text to `KoreanProcessor`, Japanese text to `JapaneseProcessor`, and other input to a simpler fallback path.
+4. Keep the result explicit: tokens, nouns, language sets, or fallback decisions.
+
+## Processing Path
+
+A service usually reads best when the path is drawn like this.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-text-part2-language-branches-01.png" alt="Raw input is validated, passed through Lingua language detection, and routed to Korean tokenizer, Japanese tokenizer, or generic fallback path" loading="lazy" />
+  <figcaption>Language detection is a routing decision. Tokenization is the language-specific analysis step.</figcaption>
+</figure>
+
+Lingua does not replace a tokenizer. It helps decide where the text should go. Korean and Japanese tokenization happen after that decision. If a service detects the language and then still sends every input through the same tokenizer path, the detector is mostly decorative. Decorative code is fun only until someone has to maintain it.
+
+## Korean Input: Normalize First, Then Freeze the Expected Output
+
+Korean input often arrives in unstable forms. Repeated characters grow, informal typos appear, particles attach to nouns, and endings attach to verbs. Before indexing or filtering, keep normalization and tokenization as separate steps.
+
+```kotlin
+val normalized = KoreanProcessor.normalize("그랰ㅋㅋㅋㅋ 샤릉햌ㅋㅋ")
+// "그래ㅋㅋㅋ 사랑해ㅋㅋ"
+
+val tokens = KoreanProcessor.tokenize(
+    KoreanProcessor.normalize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋ")
+)
+
+val surfaces = KoreanProcessor.tokensToStrings(tokens)
+// ["한국어", "를", "처리", "하는", "예시", "입니다", "ㅋㅋㅋ"]
+```
+
+`normalize` reduces common colloquial noise, while `tokenize` returns tokens with part-of-speech and position metadata. If a service only needs surface strings, `tokensToStrings` removes space tokens and returns the text values.
+
+Phrase extraction is another common Korean search path.
+
+```kotlin
+val phrases = KoreanProcessor.extractPhrases(
+    KoreanProcessor.tokenize(KoreanProcessor.normalize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋ"))
+)
+
+phrases.joinToString("/")
+// "한국어(Noun: 0, 3)/처리(Noun: 5, 2)/처리하는 예시(Noun: 5, 7)/예시(Noun: 10, 2)"
+```
+
+This is more than "cutting a string." It creates units that downstream code can use for search candidates, index terms, recommendations, and tests. Freezing this output in tests makes dictionary updates and tokenizer changes easier to review.
+
+Stemming is a separate decision as well.
+
+```kotlin
+val stemmed = KoreanProcessor.stem(KoreanProcessor.tokenize("가느다란"))
+stemmed.first().stem
+// "갈다"
+```
+
+Services often need both the surface form and the normalized stem. The surface form is useful for display and highlighting. The stem is useful for grouping or search expansion. Mixing the two into a single string field usually becomes painful later.
+
+## Korean Dictionaries and Blockwords
+
+`KoreanProcessor` can extend noun and blockword dictionaries at runtime.
+
+```kotlin
+KoreanProcessor.addNounsToDictionary("블루테이프4K", "주말특가")
+
+KoreanProcessor.addBlockwords(
+    listOf("은꼴사", "물쑈", "혼숙"),
+    severity = Severity.LOW,
+)
+
+val response = KoreanProcessor.maskBlockwords(
+    BlockwordRequest("홈쇼핑 미니미는 무슨 은꼴사야 어쩌라구? 물쑈야? 혼숙이야?")
+)
+
+response.maskedText
+// "홈쇼핑 미니미는 무슨 ***야 어쩌라구? **야? **이야?"
+```
+
+Runtime dictionary updates are useful because they do not require a service restart. They still change service behavior. A new dictionary word can change tokenization. A new blockword can hide normal text or stop a dangerous term from passing through. Both outcomes need tests.
+
+Treat dictionary changes as behavior changes, not as harmless data edits. Keep representative input, expected tokens, and expected masking results near the change.
+
+## Japanese Input: Start with Noun Candidates
+
+`JapaneseProcessor` wraps Kuromoji IPAdic tokenization. The smallest useful check is the surface list.
+
+```kotlin
+val tokens = JapaneseProcessor.tokenize("お寿司が食べたい。")
+val surfaces = tokens.map { it.surface }
+// ["お", "寿司", "が", "食べ", "たい", "。"]
+```
+
+For search and recommendation candidates, nouns are often the first useful result.
+
+```kotlin
+val nouns = JapaneseProcessor.filterNoun(
+    JapaneseProcessor.tokenize("私は、日本語の勉強をしています。")
+).map { it.surface }
+
+// ["私", "日本語", "勉強"]
+```
+
+Making noun candidates explicit keeps downstream code simpler. The service can decide whether to index them, compare them against risk keywords, or use them as recommendation inputs. Starting with raw substring checks looks cheaper, but exception cases around particles, inflection, and compounds grow quickly.
+
+Japanese blockword handling stays behind the same facade.
+
+```kotlin
+val found = JapaneseProcessor.findBlockwords("ホモの男性を理解できない").map { it.surface }
+// ["ホモ"]
+
+val result = JapaneseProcessor.maskBlockwords(
+    blockwordRequestOf("ホモの男性を理解できない")
+)
+
+result.maskedText
+// "**の男性を理解できない"
+```
+
+Japanese tokenization also validates oversized input before expensive work. If the boundary is missing, the tokenizer may get blamed for a problem that should have been rejected at the service edge.
+
+## Mixed Input: Both Sides Need to Survive
+
+Real service input is not always single-language.
+
+```kotlin
+val ko = KoreanProcessor.tokensToStrings(
+    KoreanProcessor.tokenize(KoreanProcessor.normalize("서울에서 東京까지 주말 특가 티켓"))
+)
+// contains ["서울", "에서", "까지", "주말", "특가", "티켓"]
+
+val ja = JapaneseProcessor.tokenize("서울から東京まで週末チケット").map { it.surface }
+// contains ["東京", "週末", "チケット"]
+```
+
+These tests do not claim perfect translation. They check that the Korean tokenizer preserves Korean surfaces and that the Japanese tokenizer preserves Japanese surfaces in mixed input. That is the practical baseline a service often needs.
+
+## Lingua: Reuse the Detector
+
+Language detection starts with the `lingua` helpers.
+
+```kotlin
+val detector = allLanguageDetector {
+    withMinimumRelativeDistance(0.0)
+}
+
+detector.detectAllLanguagesOf("Hello 안녕 こんにちは")
+// setOf(Language.ENGLISH, Language.KOREAN, Language.JAPANESE)
+```
+
+`detectAllLanguagesOf` returns an empty set for blank input and for input that has no usable language signal.
+
+```kotlin
+detector.detectAllLanguagesOf("   ")
+// emptySet()
+
+detector.detectAllLanguagesOf("🔥🎉🧪")
+// emptySet()
+```
+
+Treat the empty set as an explicit fallback condition. A search query may go through generic normalization only. A report flow may store "language unresolved" for later review. The important part is not pretending that detection succeeded.
+
+The detector should be reused. Model construction is expensive. The workshop `LanguageDetectionService` keeps a detector field and shares it across calls.
+
+```kotlin
+class LanguageDetectionService {
+    private val detector: LanguageDetector = allLanguageDetector {
+        withMinimumRelativeDistance(0.0)
+        withLowAccuracyMode()
+    }
+
+    fun detectLanguage(text: String): Language? {
+        if (text.isBlank()) return null
+        val detected = detector.detectLanguageOf(text)
+        return if (detected == Language.UNKNOWN) null else detected
+    }
+}
+```
+
+When the service needs confidence, keep the score map next to the decision.
+
+```kotlin
+val values = service.computeConfidenceValues(
+    "This is a well-formed English sentence with enough words for detection."
+)
+
+val top = values.keys.firstOrNull()
+// Language.ENGLISH
+```
+
+Production code should not make every decision from `detectLanguage` alone. Short one-word input can be uncertain. Use confidence, input length, and service policy together, then route uncertain input to a visible fallback path.
+
+## A Service Shape
+
+This is the level of shape that is useful in application code.
+
+```kotlin
+fun analyzeText(text: String): TextAnalysis {
+    if (text.isBlank()) return TextAnalysis.rejected(400)
+    if (text.length > MAX_TOKENIZE_TEXT_LENGTH) return TextAnalysis.rejected(413)
+
+    val languages = detector.detectAllLanguagesOf(text)
+
+    return when {
+        Language.KOREAN in languages -> {
+            val normalized = KoreanProcessor.normalize(text)
+            val tokens = KoreanProcessor.tokensToStrings(KoreanProcessor.tokenize(normalized))
+            TextAnalysis.korean(tokens)
+        }
+
+        Language.JAPANESE in languages -> {
+            val nouns = JapaneseProcessor
+                .filterNoun(JapaneseProcessor.tokenize(text))
+                .map { it.surface }
+            TextAnalysis.japanese(nouns)
+        }
+
+        else -> {
+            TextAnalysis.generic(TextNormalizer.extractKeywords(text))
+        }
+    }
+}
+```
+
+Real services will add policy. If Korean and Japanese are both detected, should the service run both tokenizers or pick a primary language? For abuse filtering, running both is often safer. For search query normalization, latency and cost may push the service toward one path. The important part is that validation, detection, and tokenizer selection are visible and testable.
+
+## Selection Table
+
+This post is not claiming that `bluetape4k-text` solves every NLP problem. It provides reusable boundaries for service code.
+
+| Situation | Start with | Watch out for |
+|---|---|---|
+| Korean search or product names | `KoreanProcessor.normalize` + `tokenize` | Freeze expected tokens before and after dictionary changes |
+| Korean phrase search | `extractPhrases` | Keep ranking/index policy separate from phrase extraction |
+| Japanese search candidates | `JapaneseProcessor.tokenize` + `filterNoun` | Decide whether particles and verbs are needed |
+| Japanese blockwords | `findBlockwords` + `maskBlockwords` | Validate length and never leak raw text in errors |
+| Multilingual routing | Lingua `detectAllLanguagesOf` | Reuse detectors and keep blank/unknown fallback explicit |
+| Simple English keywords | Workshop `TextNormalizer` | Keep simple inputs on a simple path |
+
+One generic string function is fast to write. Once search quality, blockword filtering, logs, and user reports depend on the result, that early shortcut becomes debt. A few explicit tokenizer and detector branches give the service something much better: testable behavior.
+
+Part 3 moves to `text-search` and the workshop abuse-word filtering example. That is where Aho-Corasick becomes useful: many keywords, one pass over the input.
+
+## Sources
+
+- [bluetape4k-text README](https://github.com/bluetape4k/bluetape4k-text/blob/develop/README.md)
+- [Korean README](https://github.com/bluetape4k/bluetape4k-text/blob/develop/README.ko.md)
+- [KoreanProcessor](https://github.com/bluetape4k/bluetape4k-text/blob/develop/tokenizer-korean/src/main/kotlin/io/bluetape4k/tokenizer/korean/KoreanProcessor.kt)
+- [KoreanProcessorTest](https://github.com/bluetape4k/bluetape4k-text/blob/develop/tokenizer-korean/src/test/kotlin/io/bluetape4k/tokenizer/korean/KoreanProcessorTest.kt)
+- [JapaneseProcessor](https://github.com/bluetape4k/bluetape4k-text/blob/develop/tokenizer-japanese/src/main/kotlin/io/bluetape4k/tokenizer/japanese/JapaneseProcessor.kt)
+- [JapaneseProcessorTest](https://github.com/bluetape4k/bluetape4k-text/blob/develop/tokenizer-japanese/src/test/kotlin/io/bluetape4k/tokenizer/japanese/JapaneseProcessorTest.kt)
+- [Lingua helpers](https://github.com/bluetape4k/bluetape4k-text/blob/develop/lingua/src/main/kotlin/io/bluetape4k/lingua/LanguageDetector.kt)
+- [LanguageDetectorExtensionsTest](https://github.com/bluetape4k/bluetape4k-text/blob/develop/lingua/src/test/kotlin/io/bluetape4k/lingua/LanguageDetectorExtensionsTest.kt)
+- [kotlin/text-processing workshop](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/kotlin/text-processing)
+- [LanguageDetectionService](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/kotlin/text-processing/src/main/kotlin/io/bluetape4k/workshop/text/detection/LanguageDetectionService.kt)
+- [TextNormalizer](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/kotlin/text-processing/src/main/kotlin/io/bluetape4k/workshop/text/normalize/TextNormalizer.kt)
+
+## Series
+
+- Part 1: [Starting Point and Quality Baseline](/blog/bluetape4k-text-part1-overview-quality/)
+- Part 2: [Routing Input with Tokenizers and Language Detection](/blog/bluetape4k-text-part2-tokenizers-lingua/)
+- Part 3: [Aho-Corasick Search and Workshop Scenarios](/blog/bluetape4k-text-part3-aho-corasick-workshop/)
