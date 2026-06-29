@@ -1,0 +1,316 @@
+---
+title: "Bluetape4k Text Part 2: tokenizer와 언어 감지로 입력을 라우팅하기"
+description: 한국어 tokenizer, 일본어 tokenizer, Lingua 언어 감지를 서비스 입력 경계에서 어떻게 나눠 쓰면 좋은지 코드와 기대 결과로 정리한다.
+sidebar:
+  order: -202606290218
+blog:
+  date: 2026-06-29T02:18:00+09:00
+  image: /assets/bluetape4k-text-part2-hero.png
+  imageAlt: 로봇 작업자들이 Korean tokenizer, Japanese tokenizer, Lingua detector 장비로 다국어 텍스트 카드를 분류하는 3D 작업대 일러스트
+  cardDescription: "한국어, 일본어, 그 외 입력을 같은 문자열 처리 코드로 밀어 넣으면 금방 한계가 옵니다. tokenizer와 Lingua detector를 서비스 경계에서 나눠 쓰는 기준을 봅니다."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-text-part2-hero.png" alt="로봇 작업자들이 Korean tokenizer, Japanese tokenizer, Lingua detector 장비로 다국어 텍스트 카드를 분류하는 3D 작업대 일러스트" loading="eager" />
+  <figcaption>다국어 입력은 먼저 언어를 나누고, 각 언어에 맞는 작은 처리 경로로 보내는 편이 안전합니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-29 · bluetape4k-text series · Part 2</p>
+
+Part 1에서는 `bluetape4k-text`의 전체 지도를 봤습니다. 이번에는 실제 서비스 입력을 기준으로 한 단계 더 들어갑니다.
+사용자가 검색어, 신고 문구, 상품명, 댓글을 입력한다고 해봅시다. 입력에는 한국어, 일본어, 영어가 섞일 수 있고, emoji만
+들어올 수도 있습니다.
+
+이때 모든 입력을 `split(" ")`로 밀어 넣으면 초반에는 편합니다. 문제는 검색 품질이 이상해지거나 금칙어 필터가 빠지는
+순간입니다. 그때부터 코드는 “간단한 문자열 처리”가 아니라, 어디서부터 잘못 잘렸는지 찾아야 하는 삽질 코스가 됩니다.
+
+그래서 Part 2의 기준은 단순합니다.
+
+1. 먼저 입력 경계를 검증합니다.
+2. 언어를 감지합니다.
+3. 한국어는 `KoreanProcessor`, 일본어는 `JapaneseProcessor`, 그 외 입력은 더 단순한 경로로 보냅니다.
+4. 결과는 token, noun, language set처럼 다음 단계가 테스트할 수 있는 값으로 남깁니다.
+
+## 처리 경로
+
+서비스 코드는 아래 흐름으로 잡으면 이해하기 쉽습니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-text-part2-language-branches-01.png" alt="Raw input is validated, passed through Lingua language detection, and routed to Korean tokenizer, Japanese tokenizer, or generic fallback path" loading="lazy" />
+  <figcaption>언어 감지는 라우팅 결정이고, tokenizer는 각 언어에 맞는 결과를 만드는 단계입니다.</figcaption>
+</figure>
+
+먼저 나눠 볼 것은 Lingua와 tokenizer의 역할입니다. Lingua는 “이 입력을 어느 처리 경로로 보낼까?”를
+결정하는 쪽에 가깝습니다. 한국어 형태소 분석과 일본어 형태소 분석은 그 다음 단계입니다. 역할이 섞이면 코드가 금방
+애매해집니다. detector 결과를 보고도 모든 입력을 같은 tokenizer에 넣는다면, 굳이 detector를 둔 의미가 줄어듭니다.
+
+## 한국어 입력: 정규화부터 결과를 고정한다
+
+한국어 입력은 같은 의미라도 표기가 쉽게 흔들립니다. 반복 문자가 길어지고, 구어체 오타가 들어오고, 조사와 어미가 붙습니다.
+검색 index나 필터링에 바로 넣기 전에 정규화와 tokenization을 분리해두는 편이 좋습니다.
+
+```kotlin
+val normalized = KoreanProcessor.normalize("그랰ㅋㅋㅋㅋ 샤릉햌ㅋㅋ")
+// "그래ㅋㅋㅋ 사랑해ㅋㅋ"
+
+val tokens = KoreanProcessor.tokenize(
+    KoreanProcessor.normalize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋ")
+)
+
+val surfaces = KoreanProcessor.tokensToStrings(tokens)
+// ["한국어", "를", "처리", "하는", "예시", "입니다", "ㅋㅋㅋ"]
+```
+
+이 예제에서 `normalize`는 구어체 반복과 오타를 줄이고, `tokenize`는 품사와 위치 정보를 가진 token을 만듭니다.
+서비스 코드에 문자열 목록만 필요하다면 `tokensToStrings`로 공백 token을 빼고 surface만 가져가면 됩니다.
+
+한국어 검색에서 자주 필요한 작업은 phrase extraction입니다.
+
+```kotlin
+val phrases = KoreanProcessor.extractPhrases(
+    KoreanProcessor.tokenize(KoreanProcessor.normalize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋ"))
+)
+
+phrases.joinToString("/")
+// "한국어(Noun: 0, 3)/처리(Noun: 5, 2)/처리하는 예시(Noun: 5, 7)/예시(Noun: 10, 2)"
+```
+
+여기서 얻는 값은 단순히 “문자열을 잘랐다”가 아닙니다. 검색어 후보, 색인 단어, 추천 키워드처럼 다음 단계가 사용할 수 있는
+단위입니다. 이 값을 테스트로 고정해두면 사전 업데이트나 tokenizer 변경 때 어떤 결과가 달라졌는지 바로 확인됩니다.
+
+어간 복원도 같은 이유로 따로 봐야 합니다.
+
+```kotlin
+val stemmed = KoreanProcessor.stem(KoreanProcessor.tokenize("가느다란"))
+stemmed.first().stem
+// "갈다"
+```
+
+검색 품질을 맞추다 보면 “사용자가 입력한 표면형”과 “검색에 사용할 원형”을 나눠야 할 때가 있습니다. 둘을 구분하지 않고
+문자열만 저장하면 나중에 ranking이나 highlighting에서 뚜껑이 열립니다. 표면형은 화면에 보여줄 때 필요하고, stem은 검색
+확장이나 grouping에 필요합니다.
+
+## 한국어 사전과 금칙어: 런타임 확장은 편하지만 조심해야 한다
+
+`KoreanProcessor`는 런타임 명사 사전과 금칙어 사전을 확장합니다.
+
+```kotlin
+KoreanProcessor.addNounsToDictionary("블루테이프4K", "주말특가")
+
+KoreanProcessor.addBlockwords(
+    listOf("은꼴사", "물쑈", "혼숙"),
+    severity = Severity.LOW,
+)
+
+val response = KoreanProcessor.maskBlockwords(
+    BlockwordRequest("홈쇼핑 미니미는 무슨 은꼴사야 어쩌라구? 물쑈야? 혼숙이야?")
+)
+
+response.maskedText
+// "홈쇼핑 미니미는 무슨 ***야 어쩌라구? **야? **이야?"
+```
+
+런타임 확장은 운영에서 유용합니다. 서비스 재시작 없이 새 단어를 넣을 수 있기 때문입니다. 다만 이건 “설정 조금 바꿨다”로
+끝낼 일이 아닙니다. 사전이 바뀌면 tokenization 결과와 masking 결과가 바뀝니다. 금칙어 사전을 잘못 넣으면 정상 문구가
+가려지고, 반대로 빠뜨리면 필터를 통과합니다. 둘 다 고객센터가 좋아할 만한 일은 아닙니다.
+
+그래서 사전 변경은 테스트와 함께 움직여야 합니다. 입력 문장, 기대 token, 기대 masking 결과를 작게라도 고정해두면 다음
+릴리스에서 같은 실수를 덜 합니다. 사전 변경은 코드보다 티가 덜 날 뿐, 서비스 동작을 바꾸는 변경입니다.
+
+## 일본어 입력: 명사 후보를 먼저 만든다
+
+일본어는 `JapaneseProcessor`가 Kuromoji IPAdic 기반 형태소 분석을 감쌉니다. 가장 작은 시작점은 surface 목록 확인입니다.
+
+```kotlin
+val tokens = JapaneseProcessor.tokenize("お寿司が食べたい。")
+val surfaces = tokens.map { it.surface }
+// ["お", "寿司", "が", "食べ", "たい", "。"]
+```
+
+검색이나 추천 후보를 만들 때는 모든 token이 필요한 경우보다 명사만 필요한 경우가 많습니다.
+
+```kotlin
+val nouns = JapaneseProcessor.filterNoun(
+    JapaneseProcessor.tokenize("私は、日本語の勉強をしています。")
+).map { it.surface }
+
+// ["私", "日本語", "勉強"]
+```
+
+이렇게 명사 후보를 명시적으로 뽑아두면 뒤쪽 코드가 단순해집니다. 검색 index에 넣을지, 추천 후보로 쓸지, 위험 키워드와
+비교할지 결정하기 쉬워집니다. 반대로 controller에서 “일본어니까 대충 문자열 포함 여부만 보자”로 시작하면 나중에 조사,
+활용형, 복합어 때문에 예외 처리가 늘어납니다. 예외 처리는 한두 개일 때는 견딜 만하지만, 스무 개쯤 되면 이미 작은 framework를
+만들고 있는 겁니다.
+
+일본어 금칙어도 같은 facade에서 처리합니다.
+
+```kotlin
+val found = JapaneseProcessor.findBlockwords("ホモの男性を理解できない").map { it.surface }
+// ["ホモ"]
+
+val result = JapaneseProcessor.maskBlockwords(
+    blockwordRequestOf("ホモの男性を理解できない")
+)
+
+result.maskedText
+// "**の男性を理解できない"
+```
+
+일본어 쪽도 입력 길이 경계를 먼저 봅니다. `JapaneseProcessor.tokenize`, `findBlockwords`, `maskBlockwords`는 너무 긴 입력을
+비용이 큰 형태소 분석 전에 거부합니다. 이 경계가 없으면 tokenizer가 잘못한 것도 아닌데 tokenizer가 욕을 먹습니다. 사실은
+입구에서 막았어야 할 입력을 안 막은 겁니다.
+
+## 혼합 입력: 둘 다 살아남아야 한다
+
+서비스 입력에는 한 언어만 들어오지 않습니다.
+
+```kotlin
+val ko = KoreanProcessor.tokensToStrings(
+    KoreanProcessor.tokenize(KoreanProcessor.normalize("서울에서 東京까지 주말 특가 티켓"))
+)
+// contains ["서울", "에서", "까지", "주말", "특가", "티켓"]
+
+val ja = JapaneseProcessor.tokenize("서울から東京まで週末チケット").map { it.surface }
+// contains ["東京", "週末", "チケット"]
+```
+
+이 테스트가 보는 것은 “혼합 문장을 완벽하게 번역한다”가 아닙니다. 한국어 tokenizer는 한국어 surface를 안정적으로 남기고,
+일본어 tokenizer는 일본어 surface를 안정적으로 남기는지 확인합니다. 실제 서비스에서는 이 정도 기준이 필요합니다. 검색어
+중 일부가 다른 언어여도 필요한 token이 살아 있어야 합니다.
+
+## Lingua: detector는 만들고 버리는 객체가 아니다
+
+언어 감지는 `lingua` 모듈의 helper로 시작합니다.
+
+```kotlin
+val detector = allLanguageDetector {
+    withMinimumRelativeDistance(0.0)
+}
+
+detector.detectAllLanguagesOf("Hello 안녕 こんにちは")
+// setOf(Language.ENGLISH, Language.KOREAN, Language.JAPANESE)
+```
+
+`detectAllLanguagesOf`는 공백 입력이면 빈 집합을 반환하고, emoji처럼 인식할 수 없는 입력도 빈 집합으로 처리합니다.
+
+```kotlin
+detector.detectAllLanguagesOf("   ")
+// emptySet()
+
+detector.detectAllLanguagesOf("🔥🎉🧪")
+// emptySet()
+```
+
+여기서 빈 집합은 `UNKNOWN`과 비슷하게 다루면 됩니다. 검색어라면 generic normalization만 하고, tokenizer 경로는 건너뜁니다.
+신고 문구라면 “언어 미확정” 상태를 명시적으로 남겨 후속 분석에서 다시 봅니다. 여기서 실패를 숨기면 안 됩니다.
+언어를 모르는데 아는 척하면, 뒤에서 더 큰 똥 치우기가 기다립니다.
+
+Lingua detector는 매번 만들지 않는 편이 좋습니다. 모델 생성 비용이 있기 때문입니다. workshop의 `LanguageDetectionService`도
+detector를 필드로 만들고 재사용합니다.
+
+```kotlin
+class LanguageDetectionService {
+    private val detector: LanguageDetector = allLanguageDetector {
+        withMinimumRelativeDistance(0.0)
+        withLowAccuracyMode()
+    }
+
+    fun detectLanguage(text: String): Language? {
+        if (text.isBlank()) return null
+        val detected = detector.detectLanguageOf(text)
+        return if (detected == Language.UNKNOWN) null else detected
+    }
+}
+```
+
+confidence가 필요할 때는 map을 받아 top result와 함께 판단합니다.
+
+```kotlin
+val values = service.computeConfidenceValues(
+    "This is a well-formed English sentence with enough words for detection."
+)
+
+val top = values.keys.firstOrNull()
+// Language.ENGLISH
+```
+
+운영 코드에서는 `detectLanguage` 하나로 모든 결정을 끝내기보다, confidence와 입력 길이, 서비스 정책을 함께 보는 편이
+낫습니다. 짧은 단어 하나만 들어온 입력은 언어 감지 자체가 불안정할 수 있습니다. 이때는 tokenizer로 무리하게 보내지 말고
+fallback 경로를 명확히 두는 게 좋습니다.
+
+## 서비스 코드에서는 이렇게 나눈다
+
+아래는 실제 서비스에서 사용할 수 있는 정도의 의사코드입니다.
+
+```kotlin
+fun analyzeText(text: String): TextAnalysis {
+    if (text.isBlank()) return TextAnalysis.rejected(400)
+    if (text.length > MAX_TOKENIZE_TEXT_LENGTH) return TextAnalysis.rejected(413)
+
+    val languages = detector.detectAllLanguagesOf(text)
+
+    return when {
+        Language.KOREAN in languages -> {
+            val normalized = KoreanProcessor.normalize(text)
+            val tokens = KoreanProcessor.tokensToStrings(KoreanProcessor.tokenize(normalized))
+            TextAnalysis.korean(tokens)
+        }
+
+        Language.JAPANESE in languages -> {
+            val nouns = JapaneseProcessor
+                .filterNoun(JapaneseProcessor.tokenize(text))
+                .map { it.surface }
+            TextAnalysis.japanese(nouns)
+        }
+
+        else -> {
+            TextAnalysis.generic(TextNormalizer.extractKeywords(text))
+        }
+    }
+}
+```
+
+현업에서는 여기서 정책이 더 붙습니다. 한국어와 일본어가 둘 다 있으면 둘 다 돌릴지, primary language만 고를지 정해야 합니다.
+신고/보안 필터라면 둘 다 돌리는 편이 낫고, 검색 query normalization이라면 비용과 지연시간을 보고 결정해야 합니다.
+정답은 하나가 아닙니다. 다만 입력 경계, 언어 감지, tokenizer 선택이 한 함수 안에서 명시적으로 드러나야 테스트하기 쉽습니다.
+
+## 어디까지 믿을까
+
+이 글의 예제는 “모든 NLP 문제를 해결한다”는 이야기가 아닙니다. `bluetape4k-text`는 서비스 코드에서 반복되는 텍스트 처리
+경계를 작게 재사용하게 해주는 라이브러리입니다.
+
+| 상황 | 추천 시작점 | 주의할 점 |
+|---|---|---|
+| 한국어 검색어/상품명 처리 | `KoreanProcessor.normalize` + `tokenize` | 사전 변경 전후 기대 token을 테스트로 고정 |
+| 한국어 phrase 기반 검색 | `extractPhrases` | phrase 결과를 ranking/색인과 바로 연결하지 말고 정책을 분리 |
+| 일본어 검색 후보 | `JapaneseProcessor.tokenize` + `filterNoun` | 조사/동사까지 필요한지 먼저 결정 |
+| 일본어 금칙어 처리 | `findBlockwords` + `maskBlockwords` | 입력 길이와 원문 노출 방어를 먼저 확인 |
+| 다국어 라우팅 | Lingua `detectAllLanguagesOf` | detector 재사용, blank/unknown fallback 명시 |
+| 간단한 영어 검색어 | workshop `TextNormalizer` | tokenizer가 필요 없는 입력은 단순 경로 유지 |
+
+한국어와 일본어 처리를 같은 문자열 함수로 버티는 건 처음에는 빠릅니다. 하지만 검색 품질, 금칙어 필터, 로그 분석, 고객 신고
+처리로 이어지면 그 빠름은 금방 빚이 됩니다. tokenizer와 detector를 잘게 나눠 쓰면 코드가 조금 늘어납니다. 대신 어디에서
+어떤 결과가 나왔는지 테스트로 잡아두면 됩니다. 운영에서는 그쪽이 훨씬 덜 피곤합니다.
+
+다음 글에서는 Part 3으로 넘어가 `text-search`의 Aho-Corasick 검색과 workshop의 abuse-word filtering 예제를 보겠습니다.
+키워드가 많아졌을 때 `contains()`를 반복하지 않고 입력을 한 번 훑는 구조를 다룹니다.
+
+## 참고한 소스
+
+- [bluetape4k-text README](https://github.com/bluetape4k/bluetape4k-text/blob/develop/README.md)
+- [한국어 README](https://github.com/bluetape4k/bluetape4k-text/blob/develop/README.ko.md)
+- [KoreanProcessor](https://github.com/bluetape4k/bluetape4k-text/blob/develop/tokenizer-korean/src/main/kotlin/io/bluetape4k/tokenizer/korean/KoreanProcessor.kt)
+- [KoreanProcessorTest](https://github.com/bluetape4k/bluetape4k-text/blob/develop/tokenizer-korean/src/test/kotlin/io/bluetape4k/tokenizer/korean/KoreanProcessorTest.kt)
+- [JapaneseProcessor](https://github.com/bluetape4k/bluetape4k-text/blob/develop/tokenizer-japanese/src/main/kotlin/io/bluetape4k/tokenizer/japanese/JapaneseProcessor.kt)
+- [JapaneseProcessorTest](https://github.com/bluetape4k/bluetape4k-text/blob/develop/tokenizer-japanese/src/test/kotlin/io/bluetape4k/tokenizer/japanese/JapaneseProcessorTest.kt)
+- [Lingua helpers](https://github.com/bluetape4k/bluetape4k-text/blob/develop/lingua/src/main/kotlin/io/bluetape4k/lingua/LanguageDetector.kt)
+- [LanguageDetectorExtensionsTest](https://github.com/bluetape4k/bluetape4k-text/blob/develop/lingua/src/test/kotlin/io/bluetape4k/lingua/LanguageDetectorExtensionsTest.kt)
+- [kotlin/text-processing workshop](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/kotlin/text-processing)
+- [LanguageDetectionService](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/kotlin/text-processing/src/main/kotlin/io/bluetape4k/workshop/text/detection/LanguageDetectionService.kt)
+- [TextNormalizer](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/kotlin/text-processing/src/main/kotlin/io/bluetape4k/workshop/text/normalize/TextNormalizer.kt)
+
+## 시리즈
+
+- Part 1: [텍스트 처리의 시작점과 품질 기준](/ko/blog/bluetape4k-text-part1-overview-quality/)
+- Part 2: [tokenizer와 언어 감지로 입력을 라우팅하기](/ko/blog/bluetape4k-text-part2-tokenizers-lingua/)
+- Part 3: [Aho-Corasick 검색과 workshop 시나리오](/ko/blog/bluetape4k-text-part3-aho-corasick-workshop/)
