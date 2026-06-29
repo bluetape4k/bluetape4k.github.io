@@ -1,0 +1,274 @@
+---
+title: "Transactional Outbox Part 2: Kafka-First Fallback to Keep the Hot Transaction Small"
+description: A workshop walkthrough of storing only the order row in the DB transaction, publishing directly to Kafka, and creating event_publications fallback rows only on failure.
+sidebar:
+  order: -202606300105
+blog:
+  date: 2026-06-30T01:05:00+09:00
+  image: /assets/transactional-outbox-kafka-first-fallback-part2-hero.png
+  imageAlt: A 3D workbench illustration where small robot workers connect an orders database, Kafka conveyor, fallback outbox tray, and relay station
+  cardDescription: "A Kafka-first outbox variant that writes durable fallback rows only when direct Kafka publish fails."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/transactional-outbox-kafka-first-fallback-part2-hero.png" alt="A 3D workbench illustration where small robot workers connect an orders database, Kafka conveyor, fallback outbox tray, and relay station" loading="eager" />
+  <figcaption>The success path skips event rows; the failure path pays the outbox cost.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-30 · transactional outbox series · Part 2</p>
+
+Part 1 stayed close to the classic transactional outbox model: write the domain row and the outbox row in the same
+database transaction, then let a relay publish the outbox row to Kafka. It is robust and easy to explain, but every hot
+write also pays for an extra event row.
+
+Part 2 starts from a different question.
+
+> Do we always need to write the outbox table first when Kafka is healthy?
+
+The workshop example answers "not always." The order transaction owns only `orders`. After that transaction commits, the
+application publishes the event directly to Kafka. If Kafka publish fails or times out, it stores a `NOT_PUBLISHED` row in
+`event_publications`. During a Kafka outage or long broker timeout, the system degrades back to the familiar outbox relay
+path.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/transactional-outbox-kafka-first-fallback-part2-architecture-01.png" alt="Architecture diagram showing orders-only transaction, direct Kafka publish, fallback event_publications row, relay, and reconciler" loading="lazy" />
+  <figcaption>The success path writes only the orders row. The fallback path introduces event_publications and relay work.</figcaption>
+</figure>
+
+## What changes from classic outbox
+
+A classic outbox is usually described like this.
+
+| Step | Classic transactional outbox |
+|---|---|
+| 1 | Insert `orders` and `outbox` in the same DB transaction |
+| 2 | Relay claims an `outbox` row |
+| 3 | Mark the row as `PUBLISHED` after Kafka publish succeeds |
+
+The Kafka-first fallback path changes the success case.
+
+| Step | Kafka-first fallback |
+|---|---|
+| 1 | Insert only `orders` inside the DB transaction |
+| 2 | Publish directly to Kafka after the transaction |
+| 3 | Do not create an `event_publications` row when direct publish succeeds |
+| 4 | Store `NOT_PUBLISHED` only when direct publish fails or times out |
+| 5 | Let the existing outbox relay publish the fallback row |
+
+The trade-off is explicit: we reduce transaction write amplification, but we must acknowledge the small gap between direct
+publish failure and fallback persistence. The example exposes that gap through `FALLBACK_STORE_FAILED` and a reconciler
+instead of pretending it cannot happen.
+
+## The hot transaction writes orders only
+
+`TransactionalOrderWriter` is the transaction boundary. It intentionally does not write an outbox row.
+
+```kotlin
+@Transactional
+fun saveOrder(customerId: String, product: String, quantity: Int): OrderRecord {
+    validate(customerId, product, quantity)
+
+    val orderId = OrderTable.insertAndGetId {
+        it[OrderTable.customerId] = customerId
+        it[OrderTable.product] = product
+        it[OrderTable.quantity] = quantity
+        it[OrderTable.status] = OrderStatus.PENDING
+    }
+
+    return getOrder(orderId.value)
+}
+```
+
+The first test locks this down: after saving one order, `orders = 1` and `event_publications = 0`. Without that test,
+someone could quietly move the outbox insert back into the transaction while trying to make the flow "safer."
+
+The public use case then builds an event and hands it to the publisher.
+
+```kotlin
+fun placeOrder(request: OrderRequest): OrderResponse {
+    val order = transactionalOrderWriter.saveOrder(
+        customerId = request.customerId,
+        product = request.product,
+        quantity = request.quantity,
+    )
+    val event = OrderPlacedEvent.from(order)
+    val publicationStatus = orderEventPublisher.publishDirectOrFallback(event)
+    return OrderResponse.from(order, publicationStatus)
+}
+```
+
+At this point, the order transaction is already over. That is why the API response carries a publication status such as
+`PUBLISHED_DIRECT`, `FALLBACK_STORED`, or `FALLBACK_STORE_FAILED`.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/transactional-outbox-kafka-first-fallback-part2-sequence-01.png" alt="Sequence diagram between Client, Order API, Order Tx, Publisher, Outbox DB, and Relay/Reconciler for Kafka-first fallback" loading="lazy" />
+  <figcaption>Direct publish success leaves the fallback table empty. Direct publish failure creates a NOT_PUBLISHED row.</figcaption>
+</figure>
+
+## Direct Kafka publish must fail small
+
+Kafka publish should not wait forever. The example bounds both direct attempts and total timeout.
+
+```kotlin
+for (attempt in 1..properties.directPublishAttempts) {
+    val remainingMillis = TimeUnit.NANOSECONDS.toMillis(deadline - System.nanoTime())
+    if (remainingMillis <= 0) break
+
+    val timeoutMillis = minOf(properties.directPublishTimeout.toMillis(), remainingMillis)
+    var future: CompletableFuture<*>? = null
+    try {
+        future = kafkaTemplate.send(properties.topic, event.eventId, payload)
+        future.get(timeoutMillis, TimeUnit.MILLISECONDS)
+        outboxMetrics.recordDirectPublish("success")
+        return OrderPublicationStatus.PUBLISHED_DIRECT
+    } catch (e: TimeoutException) {
+        future?.cancel(true)
+        lastFailure = e
+        outboxMetrics.recordDirectPublish("timeout")
+    } catch (e: Exception) {
+        lastFailure = e
+        outboxMetrics.recordDirectPublish("failure")
+    }
+}
+```
+
+The tests verify the three-attempt failure path and assert that error summaries do not leak words such as
+secret/token/password. Operators often inspect outbox tables directly, so failure context must not become credential
+exposure.
+
+Fallback persistence runs in a separate transaction.
+
+```kotlin
+@Transactional(propagation = Propagation.REQUIRES_NEW)
+fun upsertNotPublished(
+    event: OrderPlacedEvent,
+    payload: String,
+    directAttemptCount: Int,
+    errorCode: String,
+    errorSummary: String,
+) {
+    EventPublicationTable.insert {
+        it[eventId] = event.eventId
+        it[aggregateType] = "Order"
+        it[aggregateId] = event.orderId.toString()
+        it[eventType] = "OrderPlaced"
+        it[EventPublicationTable.payload] = payload
+        it[status] = EventPublicationStatus.NOT_PUBLISHED
+        it[EventPublicationTable.directAttemptCount] = directAttemptCount
+        it[relayRetryCount] = 0
+        it[lastErrorCode] = errorCode
+        it[lastErrorSummary] = sanitize(errorSummary)
+        it[nextAttemptAt] = now
+    }
+}
+```
+
+Once the row exists, the problem is back in familiar outbox territory.
+
+## Relay checks the claim owner
+
+The relay claims `NOT_PUBLISHED` or `FAILED` rows. The important part is that claiming is a conditional update, not just a
+select.
+
+```kotlin
+val updated = EventPublicationTable.update({
+    (EventPublicationTable.id eq rowId) and eligibleForClaim(now)
+}) {
+    it[EventPublicationTable.claimedBy] = claimedBy
+    it[EventPublicationTable.claimedUntil] = claimUntil
+    it[updatedAt] = now
+}
+```
+
+After publish succeeds, the relay marks the row as `PUBLISHED` only when the claim owner still matches. This is the minimum
+guard against two relays processing the same row or a stale worker overwriting a newer claim. The tests cover concurrent
+claim attempts and stale-claim TTL recovery.
+
+Repeated failures move the row to `FAILED`, then to `DEAD_LETTER` after the retry cap. This part looks close to a classic
+outbox relay. The difference is table semantics: this table contains failed or reconstructed events, not every event.
+
+## The dangerous gap is fallback persistence failure
+
+The weak point is precise.
+
+1. `orders` committed.
+2. Direct Kafka publish failed.
+3. Fallback row persistence also failed.
+
+At that point, an event can be lost. The example does not hide that risk. It returns and records `FALLBACK_STORE_FAILED`,
+then relies on a reconciler that scans older `orders` rows without publication rows and reconstructs deterministic events.
+
+```kotlin
+fun reconcileOnce(): ReconcileResult {
+    val cutoff = LocalDateTime.now(clock).minus(properties.reconcilerGrace)
+    val candidates = eventPublicationRepository.findOrdersWithoutPublications()
+        .filter { event -> !event.createdAt.isAfter(cutoff) }
+
+    val reconstructed = candidates.count { event ->
+        val payload = objectMapper.writeValueAsString(event)
+        eventPublicationRepository.upsertReconstructed(event, payload)
+    }
+
+    return ReconcileResult(
+        scanned = candidates.size,
+        reconstructed = reconstructed,
+        duplicateRiskDocumented = true,
+    )
+}
+```
+
+`duplicateRiskDocumented = true` matters. Reconciliation reduces the chance of losing an event, but it does not create
+free exactly-once delivery. Consumers still need idempotency by `eventId`. That is where the Part 1 idempotency topic
+comes back.
+
+## When this variant is worth considering
+
+This is not "always better than classic outbox." It fits only under the right constraints.
+
+| Good fit | Avoid when |
+|---|---|
+| Kafka is usually healthy and you want to reduce success-path write amplification | You cannot tolerate any event-loss gap |
+| Consumers already enforce idempotency by event id | The event row must share the exact atomic boundary with the domain row |
+| You can operate fallback, reconciler, and metrics | The event payload cannot be reconstructed from domain state |
+| You need graceful degradation into an outbox relay during Kafka trouble | The outbox row itself is the audit/source-of-truth record |
+
+A real system might also use Redis as a buffer between direct publish failure and DB fallback persistence. That can work,
+but it moves the design burden to buffer durability, eviction policy, consumer group recovery, and duplicate handling. Do
+not trade one extra DB row for an unobservable recovery path.
+
+## Signals to watch in production
+
+The example keeps metrics intentionally small.
+
+| Metric | Meaning |
+|---|---|
+| `workshop.outbox.direct.publish.attempts` | Direct Kafka publish success/failure/timeout |
+| `workshop.outbox.fallback.stored` | Fallback row persistence success/failure |
+| `workshop.outbox.relay.events` | Relay published/failed/dead-lettered/claim-lost outcomes |
+| `workshop.outbox.reconciler.events` | Reconstructed gaps |
+
+I would alert aggressively on `fallback.stored{result=failure}` and `reconciler.events{result=reconstructed}`. Those are
+not just Kafka outage signals; they mean the system was near an event-loss gap.
+
+Admin endpoints are disabled by default. Manual relay/reconcile endpoints are useful during incidents, but if exposed
+carelessly they can repeat processing or leak payloads. The tests verify the disabled default and that publication lookup
+does not expose raw payloads or raw exception details.
+
+## Summary
+
+Kafka-first fallback does not discard transactional outbox. It skips the outbox cost on the success path and falls back to
+outbox relay on the failure path. The price is the publish/fallback gap, reconciler duplicate risk, and a hard requirement
+for consumer idempotency.
+
+The main point is not "this is faster." The point is making the cost boundary explicit: pay for an outbox row on every hot
+write, or pay fallback/reconcile cost only when Kafka publish fails. The workshop example keeps that choice visible in
+code, tests, metrics, and diagrams.
+
+## Source Links
+
+- Workshop pull request: [bluetape4k-workshop PR #349](https://github.com/bluetape4k/bluetape4k-workshop/pull/349)
+- Example module: [`messaging/kafka-outbox-fallback`](https://github.com/bluetape4k/bluetape4k-workshop/tree/aabebff7bb5429a23751df4a476dfdaa2fd62d7e/messaging/kafka-outbox-fallback)
+- Transaction boundary: [`TransactionalOrderWriter.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/aabebff7bb5429a23751df4a476dfdaa2fd62d7e/messaging/kafka-outbox-fallback/src/main/kotlin/io/bluetape4k/workshop/messaging/fallback/domain/TransactionalOrderWriter.kt)
+- Direct publisher: [`OrderEventPublisher.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/aabebff7bb5429a23751df4a476dfdaa2fd62d7e/messaging/kafka-outbox-fallback/src/main/kotlin/io/bluetape4k/workshop/messaging/fallback/publication/OrderEventPublisher.kt)
+- Fallback repository: [`EventPublicationRepository.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/aabebff7bb5429a23751df4a476dfdaa2fd62d7e/messaging/kafka-outbox-fallback/src/main/kotlin/io/bluetape4k/workshop/messaging/fallback/publication/EventPublicationRepository.kt)
+- Flow tests: [`KafkaOutboxFallbackFlowTest.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/aabebff7bb5429a23751df4a476dfdaa2fd62d7e/messaging/kafka-outbox-fallback/src/test/kotlin/io/bluetape4k/workshop/messaging/fallback/KafkaOutboxFallbackFlowTest.kt)
