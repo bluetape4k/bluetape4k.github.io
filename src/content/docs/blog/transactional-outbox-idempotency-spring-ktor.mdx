@@ -1,0 +1,226 @@
+---
+title: "Transactional Outbox and Idempotency in Spring and Ktor Examples"
+description: A source-backed walkthrough of database transaction boundaries, outbox rows, idempotency keys, retryable failures, and realtime relay behavior in the workshop examples.
+sidebar:
+  order: -202606291310
+blog:
+  date: 2026-06-29T13:10:00+09:00
+  image: /assets/transactional-outbox-idempotency-hero.png
+  imageAlt: bluetape4k 3D miniature workbench hero where robot builders assemble a DB transaction, outbox tray, relay robot, API block, idempotency key, and retry cards
+  cardDescription: "Use Spring and Ktor examples to see how domain rows, outbox rows, duplicate requests, and retries stay inside explicit failure boundaries."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/transactional-outbox-idempotency-hero.png" alt="bluetape4k 3D miniature workbench hero where robot builders assemble a DB transaction, outbox tray, relay robot, API block, idempotency key, and retry cards" loading="eager" />
+  <figcaption>The outbox is not decoration around messaging. It records what was committed so delivery can fail and recover without guessing.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-29 · bluetape4k-workshop / exposed-workshop · issue #184</p>
+
+Suppose a service writes domain state and then calls another service, publishes an event, or returns a response that a
+client may retry. The code path looks simple: persist, call, respond.
+
+The failure path is less polite. The process can die after the database write and before the HTTP call. The external API
+can succeed before the local status update. The client can see a timeout and send the same request again. Without an
+explicit boundary, duplicate requests, partial writes, and delivery gaps start to look the same.
+
+This post is not a pattern encyclopedia. It uses the `bluetape4k-workshop` and `exposed-workshop` examples to show one
+practical question: what belongs in the database transaction, and what should become retryable work after commit?
+
+## Start with the Failure Boundary
+
+Outbox and idempotency work together because they separate durable user intent from best-effort delivery. The request
+records the intent first. Delivery happens after commit and can be retried from stored state.
+
+<figure class="bt4k-chart">
+  <img src="/assets/transactional-outbox-idempotency-flow-01.png" alt="Transactional outbox and idempotency flow diagram showing client, Spring or Ktor service, DB transaction, outbox, relay, API, and retry path" loading="lazy" />
+  <figcaption>The key move is writing the domain row and outbox row together. After commit, delivery can fail and still be retried.</figcaption>
+</figure>
+
+In `messaging/transactional-outbox`, `OrderService` writes the order row and outbox row inside the same Spring
+transaction.
+
+```kotlin
+val orderId = OrderTable.insertAndGetId {
+    it[OrderTable.customerId] = customerId
+    it[OrderTable.product] = product
+    it[OrderTable.quantity] = quantity
+    it[OrderTable.status] = OrderStatus.PENDING
+}
+
+OutboxEventTable.insert {
+    it[OutboxEventTable.aggregateType] = "Order"
+    it[OutboxEventTable.aggregateId] = orderId.value.toString()
+    it[OutboxEventTable.eventType] = "OrderPlaced"
+    it[OutboxEventTable.payload] = payload
+    it[OutboxEventTable.status] = OutboxStatus.PENDING
+}
+```
+
+That prevents a state where the order exists but no publishable intent exists. If the transaction rolls back, both rows
+are gone. The starting point is explicit.
+
+## The Idempotency Key Makes Retries Ordinary
+
+From the HTTP client side, retry after timeout is normal. The server still must avoid doing the external work twice.
+The Spring and Ktor HTTP outbox examples put a unique index on `idempotencyKey` and return the existing record when the
+key is already present.
+
+```kotlin
+fun submit(request: CreatePaymentRequest): PaymentResponse {
+    val command = request.toCommand()
+    val created = repository.createPending(command)
+    if (!created.inserted) {
+        return created.record.toResponse(duplicate = true)
+    }
+    return dispatch(created.record.id, command)
+}
+```
+
+The repository repeats that rule at the database boundary.
+
+```kotlin
+transaction(database) {
+    findByIdempotencyKey(command.idempotencyKey)?.let {
+        CreatePaymentResult(it, inserted = false)
+    } ?: insertPending(command)
+}
+```
+
+The HTTP contract follows the same shape in Spring and Ktor: new records return `201 Created`; duplicate keys return the
+stored row with `200 OK`. A duplicate request is not treated as an exceptional mystery. It is expected retry traffic with
+a stable identity.
+
+## Spring and Ktor Differ in How the Boundary Is Expressed
+
+Both examples teach the same business rule.
+
+| Comparison point | Spring Boot example | Ktor example |
+|---|---|---|
+| HTTP entry | `@RestController` + `ResponseEntity` | explicit `Route.paymentRoutes` |
+| repository call | blocking Exposed JDBC transaction | Exposed JDBC transaction inside `withContext(Dispatchers.IO)` |
+| duplicate key | unique index + existing row reread | same unique index + existing row reread |
+| gateway failure | retryable/permanent exception becomes status | suspend gateway uses the same status rule |
+| validation/error mapping | MVC `ErrorAdvice` | Ktor `StatusPages` |
+
+The Ktor version is worth reading because it keeps blocking JDBC work out of the main coroutine path.
+
+```kotlin
+private suspend fun <T> transactionIO(block: () -> T): T =
+    withContext(Dispatchers.IO) {
+        transaction(database) {
+            block()
+        }
+    }
+```
+
+The important comparison is not which framework wins. It is whether both frameworks express the same failure contract
+without hiding blocking work or duplicate-request behavior.
+
+## First Call, Same-Key Retry, Relay Retry
+
+The sequence below collects the three common cases: first submit, same-key retry, and retryable delivery failure.
+
+<figure class="bt4k-chart">
+  <img src="/assets/transactional-outbox-idempotency-sequence-01.png" alt="Sequence diagram for first payment call, duplicate idempotency retry, and relay retry after commit" loading="lazy" />
+  <figcaption>A duplicate key does not call the external API again. Relay failure is retried from the row that survived commit.</figcaption>
+</figure>
+
+The tests lock that behavior down. The Spring and Ktor service tests submit the same key twice and verify that the
+second response points to the first row while the gateway was called only once.
+
+```kotlin
+val first = service.submit(CreatePaymentRequest("order-2", 2_500, "key-2"))
+val duplicate = service.submit(CreatePaymentRequest("order-2", 2_500, "key-2"))
+
+duplicate.id shouldBeEqualTo first.id
+duplicate.duplicate shouldBeEqualTo true
+gateway.commands.size shouldBeEqualTo 1
+```
+
+Retryable failure follows the stored row as well. The first call records `RETRYABLE_FAILED`; the retry endpoint dispatches
+from the same record.
+
+```kotlin
+val failed = service.submit(CreatePaymentRequest("order-retry", 1_000, "retry-key"))
+failed.status shouldBeEqualTo PaymentStatus.RETRYABLE_FAILED
+
+val retried = service.retry(failed.id)
+retried.status shouldBeEqualTo PaymentStatus.SUCCEEDED
+retried.attempts shouldBeEqualTo 2
+```
+
+## Commit Does Not End All Failure
+
+Transactional outbox does not remove failure. It moves failure to a place that can be inspected and retried.
+
+| Failure point | Expected behavior | Source example |
+|---|---|---|
+| Before the database transaction | no durable record; retry behaves like a new request | payment `createPending` |
+| After domain row but before outbox row | same transaction rolls back both rows | `OrderService.placeOrder` |
+| After commit but before relay | outbox row remains available for polling | `OutboxPublisher.publishPendingEvents` |
+| Retryable external failure | `RETRYABLE_FAILED`, eligible for `/retry` | Spring/Ktor `PaymentService.retry` |
+| Permanent external failure | `PERMANENT_FAILED`, retry rejected | Spring/Ktor service tests |
+| Kafka publish failure | retry count increases; budget exhaustion moves to `DEAD_LETTER` | `OutboxTransactionTest` |
+| Same idempotency key retry | stored row returned; no second external call | Spring/Ktor service tests |
+
+`OutboxPublisher` records Kafka send failure by incrementing retry state and eventually moving the row to `DEAD_LETTER`.
+
+```kotlin
+catch (e: Exception) {
+    val newRetry = currentRetry + 1
+    incrementRetry(eventId, newRetry)
+    false
+}
+```
+
+The claim is not “nothing fails after commit.” Things still fail after commit. The difference is that the failure leaves
+a row behind. Operators can read status and retry count instead of reconstructing intent from scattered logs.
+
+## Realtime Outbox Uses the Same Rule for UI Delivery
+
+`07-spring-outbox-realtime` and `08-ktor-outbox-realtime` move from HTTP payment to notification delivery. The repository
+creates a notification row and realtime outbox row in the same transaction. The service then reads pending rows and
+tries delivery.
+
+```kotlin
+val notificationId = Notifications.insertAndGetId {
+    it[recipientId] = command.recipientId
+    it[message] = command.message
+}.value
+
+val eventId = RealtimeOutbox.insertAndGetId {
+    it[aggregateId] = notificationId
+    it[eventType] = "notification.created"
+    it[status] = OutboxStatus.PENDING.name
+    it[attempts] = 0
+}.value
+```
+
+Successful delivery marks `PUBLISHED`; failed delivery marks `FAILED`. `replayAfter(eventId)` reads published rows after
+a cursor. For WebSocket or SSE style delivery, that means recovery can be based on database state instead of whatever was
+still in memory.
+
+## Rules to Take from the Examples
+
+The examples leave a compact set of rules.
+
+- Put user intent and outbox intent in the same transaction.
+- Assume external delivery can fail after commit and record status.
+- Keep retryable and permanent failures distinct.
+- Treat the idempotency key as a database unique boundary, not controller decoration.
+- Spring and Ktor code shapes can differ; the failure contract should not.
+
+Outbox and idempotency make the happy path longer. That extra length matters in production. A short path without stored
+state is pleasant until a timeout hides what happened. With an outbox row and idempotency key, the system can read where
+the failure landed and retry from there.
+
+## Source notes
+
+- Transactional outbox workshop: [`messaging/transactional-outbox`](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/messaging/transactional-outbox)
+- Atomic order write: [`OrderService.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/messaging/transactional-outbox/src/main/kotlin/io/bluetape4k/workshop/messaging/outbox/domain/OrderService.kt)
+- Kafka relay and retry status: [`OutboxPublisher.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/messaging/transactional-outbox/src/main/kotlin/io/bluetape4k/workshop/messaging/outbox/outbox/OutboxPublisher.kt)
+- Spring HTTP outbox/idempotency: [`03-spring-http-outbox-idempotency`](https://github.com/bluetape4k/exposed-workshop/tree/develop/12-production-integration/03-spring-http-outbox-idempotency)
+- Ktor HTTP outbox/idempotency: [`04-ktor-http-outbox-idempotency`](https://github.com/bluetape4k/exposed-workshop/tree/develop/12-production-integration/04-ktor-http-outbox-idempotency)
+- Spring realtime outbox: [`07-spring-outbox-realtime`](https://github.com/bluetape4k/exposed-workshop/tree/develop/12-production-integration/07-spring-outbox-realtime)
+- Ktor realtime outbox: [`08-ktor-outbox-realtime`](https://github.com/bluetape4k/exposed-workshop/tree/develop/12-production-integration/08-ktor-outbox-realtime)
