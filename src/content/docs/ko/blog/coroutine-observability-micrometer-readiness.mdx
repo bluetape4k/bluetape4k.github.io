@@ -1,0 +1,183 @@
+---
+title: "Coroutine Observability: Micrometer tracing과 readiness가 실제로 지키는 경계"
+description: coroutine WebFlux/Ktor 예제에서 span 전파, traceparent, readiness probe, request-id correlation을 어떻게 검증하는지 정리한다.
+sidebar:
+  order: -202606300917
+blog:
+  date: 2026-06-30T09:17:00+09:00
+  image: /assets/coroutine-observability-micrometer-readiness-hero.png
+  imageAlt: 작은 로봇 작업자들이 Spring/Ktor 서비스, coroutine span lane, Zipkin trace tree, Prometheus/Grafana dashboard, readiness gauge를 조립하는 3D 작업대 일러스트
+  cardDescription: "Coroutine service에서 trace가 끊기지 않게 만들고, readiness를 실제 운영 계약으로 검증하는 workshop 예제를 살펴봅니다."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/coroutine-observability-micrometer-readiness-hero.png" alt="작은 로봇 작업자들이 Spring/Ktor 서비스, coroutine span lane, Zipkin trace tree, Prometheus/Grafana dashboard, readiness gauge를 조립하는 3D 작업대 일러스트" loading="eager" />
+  <figcaption>Trace와 readiness는 화면에 예쁘게 보이기 위한 장식이 아니라, 장애가 났을 때 어디까지 믿어도 되는지 알려주는 계약입니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-30 · bluetape4k-workshop / exposed-workshop · issue #185</p>
+
+Coroutine 기반 WebFlux나 Ktor 서비스는 로컬에서 잘 돌아갑니다. 그런데 운영 로그를 보면 trace가 중간에서 끊긴 것처럼 보이고,
+readiness probe는 `UP`인데 실제 요청은 DB에서 막히는 경우가 있습니다. 이때 대시보드를 더 크게 붙인다고 문제가 풀리지는
+않습니다. 먼저 "어떤 신호가 어떤 코드를 증명하는가"를 정해야 합니다.
+
+이번 글은 `bluetape4k-workshop`의 observability 예제와 `exposed-workshop`의 readiness 예제를 기준으로 정리합니다.
+핵심은 세 가지입니다.
+
+- suspend boundary를 지나도 parent span이 유지되어야 합니다.
+- WebClient 같은 downstream 호출에는 `traceparent`가 실제로 나가야 합니다.
+- readiness는 프레임워크 endpoint가 아니라 DB reachability를 증명하는 운영 계약이어야 합니다.
+
+## 먼저 work path와 observe path를 분리한다
+
+Prometheus, Grafana, Zipkin, Actuator는 일을 시작하지 않습니다. 이미 실행된 request path에서 나온 meter와 span을
+읽을 뿐입니다. 이 구분이 흐려지면 다이어그램도 틀리고 운영 판단도 틀어집니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/coroutine-observability-trace-flow-01.png" alt="Coroutine observability architecture diagram separating work-producing request path from observe-only scrape query and trace export path" loading="lazy" />
+  <figcaption>업무 요청은 handler, observation scope, suspend service, DB/HTTP client로 흐릅니다. Prometheus/Grafana/Zipkin은 그 뒤에 남은 신호를 관찰합니다.</figcaption>
+</figure>
+
+`micrometer-tracing-coroutines` 예제의 `CoroutineService`는 `withObservationSuspending`으로 suspend block을 감쌉니다.
+`delay(...)`와 `WebClient.awaitBodyOrNull()` 같은 suspension point를 지나도 span scope가 사라지지 않아야 하기 때문입니다.
+
+```kotlin
+private suspend fun getTodoById(id: Int): Todo? {
+    return withObservationSuspending("get-todo-by-id", observationRegistry) {
+        client.get()
+            .uri("/todos/${id}")
+            .retrieve()
+            .awaitBodyOrNull<Todo>()
+    }
+}
+```
+
+여기서 봐야 할 것은 helper 이름이 아닙니다. "suspend 함수 안의 nested span을 어떤 scope로 열고 닫는가"입니다.
+coroutine은 carrier thread를 바꿀 수 있습니다. ThreadLocal만 믿고 있으면 span tree가 갑자기 평평해집니다. 로그를 보던
+사람 입장에서는 "분명 같은 요청인데 왜 남남처럼 보이지?"가 됩니다. 뚜껑 열리는 지점입니다.
+
+## 테스트가 trace 전파를 고정한다
+
+`observability-basic` 예제는 가장 작은 경로를 씁니다. WebFlux suspend endpoint가 HTTP server span을 만들고,
+`OrderService`가 `order.service.fetch` span을 하나 더 만들며, Spring Boot가 관리하는 `WebClient.Builder`가 downstream
+호출에 W3C `traceparent`를 넣습니다.
+
+```kotlin
+@AutoConfigureTracing
+class TracePropagationTest : AbstractBasicTest() {
+    @Test
+    fun `GET orders id - traceparent header propagated to downstream`() = runSuspendIO {
+        webTestClient.get()
+            .uri("/orders/1")
+            .exchange()
+            .expectStatus().isOk
+
+        val request = mockServer.takeRequest(2, TimeUnit.SECONDS)
+        request.headers["traceparent"].shouldNotBeNull()
+    }
+}
+```
+
+`observability-advanced` 예제는 cache-aside 흐름까지 넣습니다. Cache miss에서는 `user.service.get` 아래에
+`user.cache.get`, `user.db.find`, `user.cache.put`이 자식 span으로 붙어야 합니다. Cache hit이면 DB span이 없어야 합니다.
+이 차이를 테스트가 고정합니다.
+
+```text
+http.server.requests
+  └─ user.service.get
+       ├─ user.cache.get
+       ├─ user.db.find
+       └─ user.cache.put
+```
+
+`UserServiceTest`는 `hasParentObservationContextSatisfying`으로 parent-child 관계를 확인합니다. 단순히 "span 이름이
+있다"는 수준이 아닙니다. cache miss 경로에서 세 child span이 같은 service span 아래에 붙는지 확인합니다.
+
+## CancellationException은 error span이 아니다
+
+Coroutine observability에서 자주 하는 실수는 예외 처리를 `runCatching {}` 같은 넓은 그물로 덮는 것입니다.
+예제들은 `CancellationException`을 먼저 다시 던지고, cancellation이 아닌 예외만 `observation.error(e)`로 기록합니다.
+
+```kotlin
+return try {
+    withContext(ObservationScopeContextElement(observation)) {
+        block()
+    }
+} catch (e: CancellationException) {
+    throw e
+} catch (e: Throwable) {
+    observation.error(e)
+    throw e
+} finally {
+    observation.stop()
+}
+```
+
+이 규칙은 관측성 코드가 structured concurrency를 망치지 않게 합니다. 요청이 취소된 것을 실패 span으로 쌓아두면 장애가
+아닌 것을 장애처럼 보게 됩니다. 반대로 5xx나 Redis 실패처럼 실제 오류인 것은 span error로 남겨야 합니다.
+
+## Readiness는 "살아 있음"이 아니라 "받아도 됨"이다
+
+Spring Boot와 Ktor 예제는 같은 운영 계약을 다른 프레임워크 모양으로 표현합니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/coroutine-observability-readiness-sequence-01.png" alt="Sequence diagram for readiness probe checking endpoint state repository ping database reachability and UP or DOWN response branches" loading="lazy" />
+  <figcaption>readiness endpoint는 내부 상태와 DB ping을 함께 확인합니다. 실패하면 200이 아니라 503으로 내려가야 합니다.</figcaption>
+</figure>
+
+Spring 쪽은 Actuator readiness group에 custom health contributor를 붙입니다.
+
+```kotlin
+override fun health(): Health =
+    when {
+        !state.isDatabaseAvailable() ->
+            Health.down()
+                .withDetail("database", "degraded by example state")
+                .build()
+        else -> databaseHealth()
+    }
+```
+
+Ktor 쪽은 `/readyz` route를 직접 구현합니다.
+
+```kotlin
+get("/readyz") {
+    val databaseReady = readinessState.isDatabaseAvailable() && repository.ping()
+    call.respond(
+        status = if (databaseReady) HttpStatusCode.OK else HttpStatusCode.ServiceUnavailable,
+        message = ReadinessResponse(
+            status = if (databaseReady) "UP" else "DOWN",
+            database = if (databaseReady) "reachable" else "degraded",
+            requestId = call.callId.orEmpty(),
+        ),
+    )
+}
+```
+
+Spring은 Actuator convention을 얻는 대신 endpoint shape와 lifecycle을 프레임워크에 맡깁니다. Ktor는 `/readyz`의 의미와
+응답 모양을 코드로 직접 소유합니다. 둘 중 무엇이 더 낫다는 이야기가 아닙니다. 운영팀과 플랫폼이 어떤 contract를 기대하는지에
+맞춰 선택해야 합니다.
+
+## 빠진 신호는 대개 빠진 코드다
+
+아래 표는 예제를 보면서 운영에서 바로 확인할 수 있는 징후를 묶은 것입니다.
+
+| 빠진 신호 | 의심할 wiring | 예제 근거 |
+|---|---|---|
+| downstream 요청에 `traceparent` 없음 | tracing bridge 또는 managed `WebClient.Builder`를 우회 | `TracePropagationTest` |
+| cache miss인데 DB span이 service span의 자식이 아님 | coroutine resume 뒤 current observation scope가 복원되지 않음 | `ObservationScopeContextElement` |
+| cancellation이 error span으로 쌓임 | `CancellationException`을 넓은 catch에서 삼킴 | `observed()` helper |
+| readiness가 DB 장애에도 200 | readiness state와 repository ping을 endpoint에 연결하지 않음 | Spring `DatabaseReadinessHealthIndicator`, Ktor `/readyz` |
+| request-id가 로그와 response에서 다름 | header sanitize/echo 경계가 없음 | Spring `RequestCorrelationFilter`, Ktor `CallId` |
+
+관측성은 "무엇을 설치했는가"보다 "어떤 실패를 어떤 신호로 고정했는가"가 중요합니다. Trace가 이어지고, readiness가 거짓말하지
+않고, request-id가 응답과 로그에 같이 남으면 장애 분석은 추측에서 확인으로 넘어갑니다. 아직 삽질은 남지만, 최소한 삽질할
+방향은 보입니다.
+
+## Source notes
+
+- [`micrometer-tracing-coroutines`](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/observability/micrometer-tracing-coroutines)
+- [`observability-basic`](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/observability/observability-basic)
+- [`observability-advanced`](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/observability/observability-advanced)
+- [`09-spring-observability-readiness`](https://github.com/bluetape4k/exposed-workshop/tree/develop/12-production-integration/09-spring-observability-readiness)
+- [`10-ktor-observability-readiness`](https://github.com/bluetape4k/exposed-workshop/tree/develop/12-production-integration/10-ktor-observability-readiness)
