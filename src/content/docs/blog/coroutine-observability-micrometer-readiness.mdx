@@ -1,0 +1,179 @@
+---
+title: "Coroutine Observability: The Boundaries Micrometer Tracing and Readiness Actually Prove"
+description: A source-backed walkthrough of coroutine span propagation, traceparent, readiness probes, and request-id correlation in the bluetape4k workshop examples.
+sidebar:
+  order: -202606300917
+blog:
+  date: 2026-06-30T09:17:00+09:00
+  image: /assets/coroutine-observability-micrometer-readiness-hero.png
+  imageAlt: A 3D workbench illustration where small robot workers assemble Spring and Ktor service blocks, coroutine span lanes, a Zipkin trace tree, Prometheus and Grafana dashboards, and a readiness gauge
+  cardDescription: "A workshop walkthrough of keeping traces connected across coroutine boundaries and treating readiness as a real operational contract."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/coroutine-observability-micrometer-readiness-hero.png" alt="A 3D workbench illustration where small robot workers assemble Spring and Ktor service blocks, coroutine span lanes, a Zipkin trace tree, Prometheus and Grafana dashboards, and a readiness gauge" loading="eager" />
+  <figcaption>Tracing and readiness are not decoration for dashboards. They define what operators can trust during a failure.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-30 · bluetape4k-workshop / exposed-workshop · issue #185</p>
+
+A coroutine-based WebFlux or Ktor service can work perfectly in local tests and still become confusing in production.
+Traces appear to split across suspend boundaries. A readiness probe says `UP` while real requests stall on the database.
+Adding another dashboard does not fix that. The first job is to decide which signal proves which part of the code path.
+
+This post uses the observability examples in `bluetape4k-workshop` and the readiness examples in `exposed-workshop`.
+The contract is small:
+
+- parent spans must survive suspend boundaries;
+- downstream `WebClient` calls must carry `traceparent`;
+- readiness must prove database reachability, not just endpoint availability.
+
+## Separate the work path from the observe path
+
+Prometheus, Grafana, Zipkin, Actuator, and registries do not trigger business work. They read the meters and spans left
+behind by the request path. If that boundary is unclear, both diagrams and operational decisions drift.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/coroutine-observability-trace-flow-01.png" alt="Coroutine observability architecture diagram separating work-producing request path from observe-only scrape query and trace export path" loading="lazy" />
+  <figcaption>The business request moves through the handler, observation scope, suspend service, and downstream clients. Prometheus, Grafana, and Zipkin observe the signals after that work is recorded.</figcaption>
+</figure>
+
+In `micrometer-tracing-coroutines`, `CoroutineService` wraps suspend blocks with `withObservationSuspending`. The scope
+must stay alive across `delay(...)` and `WebClient.awaitBodyOrNull()` suspension points.
+
+```kotlin
+private suspend fun getTodoById(id: Int): Todo? {
+    return withObservationSuspending("get-todo-by-id", observationRegistry) {
+        client.get()
+            .uri("/todos/${id}")
+            .retrieve()
+            .awaitBodyOrNull<Todo>()
+    }
+}
+```
+
+The important part is not the helper name. It is how the current span is opened, restored, and stopped inside suspend
+code. Coroutines may resume on another carrier thread. If the trace scope is only thread-local, a span tree can suddenly
+look flat.
+
+## Tests pin down trace propagation
+
+`observability-basic` keeps the path intentionally small. A WebFlux suspend endpoint creates the HTTP server span,
+`OrderService` creates `order.service.fetch`, and the Spring-managed `WebClient.Builder` injects W3C `traceparent` into
+the downstream inventory call.
+
+```kotlin
+@AutoConfigureTracing
+class TracePropagationTest : AbstractBasicTest() {
+    @Test
+    fun `GET orders id - traceparent header propagated to downstream`() = runSuspendIO {
+        webTestClient.get()
+            .uri("/orders/1")
+            .exchange()
+            .expectStatus().isOk
+
+        val request = mockServer.takeRequest(2, TimeUnit.SECONDS)
+        request.headers["traceparent"].shouldNotBeNull()
+    }
+}
+```
+
+`observability-advanced` adds cache-aside behavior. On a cache miss, `user.cache.get`, `user.db.find`, and
+`user.cache.put` must be child spans under `user.service.get`. On a cache hit, the DB span must not exist.
+
+```text
+http.server.requests
+  └─ user.service.get
+       ├─ user.cache.get
+       ├─ user.db.find
+       └─ user.cache.put
+```
+
+`UserServiceTest` verifies the parent-child relationship with `hasParentObservationContextSatisfying`. It does not only
+check that span names exist; it checks that the cache-miss spans attach to the same service span.
+
+## CancellationException is not a failed span
+
+A common coroutine observability mistake is wrapping suspend calls in a broad helper such as `runCatching {}`. The
+examples rethrow `CancellationException` first and record only non-cancellation failures as observation errors.
+
+```kotlin
+return try {
+    withContext(ObservationScopeContextElement(observation)) {
+        block()
+    }
+} catch (e: CancellationException) {
+    throw e
+} catch (e: Throwable) {
+    observation.error(e)
+    throw e
+} finally {
+    observation.stop()
+}
+```
+
+That keeps observability code from breaking structured concurrency. A cancellation should not pollute error dashboards.
+Real failures such as 5xx responses or Redis errors should still become span errors or explicit fallback signals.
+
+## Readiness means "ready to receive", not merely "alive"
+
+The Spring Boot and Ktor examples express the same operational contract with different framework shapes.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/coroutine-observability-readiness-sequence-01.png" alt="Sequence diagram for readiness probe checking endpoint state repository ping database reachability and UP or DOWN response branches" loading="lazy" />
+  <figcaption>The readiness endpoint checks both example state and repository/database reachability. A degraded dependency must return 503, not a misleading 200.</figcaption>
+</figure>
+
+The Spring example plugs a custom health contributor into Actuator readiness.
+
+```kotlin
+override fun health(): Health =
+    when {
+        !state.isDatabaseAvailable() ->
+            Health.down()
+                .withDetail("database", "degraded by example state")
+                .build()
+        else -> databaseHealth()
+    }
+```
+
+The Ktor example implements `/readyz` directly.
+
+```kotlin
+get("/readyz") {
+    val databaseReady = readinessState.isDatabaseAvailable() && repository.ping()
+    call.respond(
+        status = if (databaseReady) HttpStatusCode.OK else HttpStatusCode.ServiceUnavailable,
+        message = ReadinessResponse(
+            status = if (databaseReady) "UP" else "DOWN",
+            database = if (databaseReady) "reachable" else "degraded",
+            requestId = call.callId.orEmpty(),
+        ),
+    )
+}
+```
+
+Spring gives you Actuator conventions and health groups. Ktor makes the response shape and route behavior explicit in
+application code. Neither is universally better. The choice depends on the operational contract your platform expects.
+
+## Missing signals usually mean missing wiring
+
+| Missing signal | Likely wiring issue | Example evidence |
+|---|---|---|
+| No `traceparent` on downstream calls | Tracing bridge is missing, or code bypasses the managed `WebClient.Builder` | `TracePropagationTest` |
+| DB span is not a child of the service span on cache miss | Current observation scope is not restored after coroutine resume | `ObservationScopeContextElement` |
+| Cancellation appears as a failed span | `CancellationException` is swallowed by a broad catch | local `observed()` helper |
+| Readiness returns 200 during DB degradation | Readiness state and repository ping are not connected to the endpoint | Spring `DatabaseReadinessHealthIndicator`, Ktor `/readyz` |
+| Request id differs between logs and responses | Missing sanitize/echo boundary | Spring `RequestCorrelationFilter`, Ktor `CallId` |
+
+Observability is less about what you installed and more about which failure is fixed to which signal. When traces stay
+connected, readiness does not lie, and request ids line up between responses and logs, incident analysis moves from
+guessing to checking.
+
+## Source notes
+
+- [`micrometer-tracing-coroutines`](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/observability/micrometer-tracing-coroutines)
+- [`observability-basic`](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/observability/observability-basic)
+- [`observability-advanced`](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/observability/observability-advanced)
+- [`09-spring-observability-readiness`](https://github.com/bluetape4k/exposed-workshop/tree/develop/12-production-integration/09-spring-observability-readiness)
+- [`10-ktor-observability-readiness`](https://github.com/bluetape4k/exposed-workshop/tree/develop/12-production-integration/10-ktor-observability-readiness)
