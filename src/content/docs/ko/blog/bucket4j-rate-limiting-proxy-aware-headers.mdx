@@ -1,0 +1,350 @@
+---
+title: "Bucket4j Rate Limiting: caller identity부터 정해야 bucket도 맞다"
+description: bluetape4k-workshop의 Bucket4j Caffeine, Redis, advanced, bluetape4k WebFlux 예제를 바탕으로 proxy-aware identity, Redis/Caffeine bucket store, rate-limit response header를 정리한다.
+sidebar:
+  order: -202606301530
+blog:
+  date: 2026-06-30T15:30:00+09:00
+  image: /assets/bluetape4k-rate-limit-workshop-hero.png
+  imageAlt: API Gateway rate limiter 작업대에서 허용 요청, 429 응답, Redis, Caffeine cache가 작은 3D 장치로 배치된 일러스트
+  cardDescription: "Bucket4j rate limiting을 Caffeine vs Redis 문제가 아니라 caller identity, proxy trust, response header 계약으로 나눠서 봅니다."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-rate-limit-workshop-hero.png" alt="API Gateway rate limiter 작업대에서 허용 요청, 429 응답, Redis, Caffeine cache가 작은 3D 장치로 배치된 일러스트" loading="eager" />
+  <figcaption>Rate limiter는 token bucket을 어디에 저장할지보다, 누구의 bucket을 깎을지부터 정해야 합니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-30 · bluetape4k-workshop · Bucket4j rate limiting</p>
+
+Public API에 rate limiter를 붙일 때는 token bucket부터 떠올리기 쉽습니다. 하지만 운영에서 먼저 틀어지는 지점은
+bucket 자료구조가 아니라 caller identity입니다. `remoteAddress`를 그대로 쓰면 proxy 뒤에서 모든 사용자가 한 사람처럼
+보일 수 있고, `X-Forwarded-For`를 무조건 믿으면 공격자가 header를 바꿔 quota를 우회할 수 있습니다.
+
+`bluetape4k-workshop/ratelimit`에는 이 문제를 단계별로 볼 수 있는 네 가지 예제가 있습니다. 한 글에 다 설명하려면 각 예제의
+역할을 먼저 나눠야 합니다.
+
+| 예제 | 이 글에서의 역할 | 핵심 포인트 |
+|---|---|---|
+| [`bucket4j-caffeine-web`](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/ratelimit/bucket4j-caffeine-web) | 단일 JVM starter baseline | Caffeine JCache에 bucket을 두고 WebMVC endpoint를 제한한다 |
+| [`bucket4j-redis`](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/ratelimit/bucket4j-redis) | 분산 bucket baseline | Redis/Lettuce에 bucket state를 두고 WebFlux endpoint를 제한한다 |
+| [`bucker4j-bluetape4k-webflux`](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/ratelimit/bucker4j-bluetape4k-webflux) | bluetape4k limiter API 예제 | `DistributedRateLimiter`로 user-token 기반 bucket을 적용한다 |
+| [`bucket4j-advanced`](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/ratelimit/bucket4j-advanced) | 본문 중심 예제 | IP, user, combined key를 분리하고 proxy trust와 표준 header를 다룬다 |
+
+그래서 이 글의 중심은 `bucket4j-advanced`입니다. Caffeine과 Redis는 저장소 선택을 보여주고, bluetape4k WebFlux 예제는
+기본 API 사용법을 보여줍니다. 하지만 실제 운영에서 자주 터지는 문제는 “저장소가 Redis냐 Caffeine이냐”보다 “같은 bucket으로
+묶으면 안 되는 요청을 묶었는가”에 가깝습니다.
+
+## Rate Limiting Architecture
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-rate-limit-workshop-architecture-02.png" alt="Client, proxy, identity strategy, WebFilter, Redis or Caffeine bucket storage, handler and 429 response path를 보여주는 Bucket4j rate-limit architecture diagram" loading="lazy" />
+  <figcaption>IP, user, combined key는 서로 다른 caller identity 계약입니다. Redis와 Caffeine은 그 계약을 저장하는 위치입니다.</figcaption>
+</figure>
+
+Rate limiting을 “요청 수를 세는 기능”으로만 보면 설계가 금방 납작해집니다. 실제로는 세 가지 질문을 따로 답해야 합니다.
+
+| 질문 | 잘못 답했을 때 생기는 문제 |
+|---|---|
+| 어떤 identity로 bucket을 나눌 것인가? | NAT 뒤의 정상 사용자까지 같이 막거나, 공격자가 header를 바꿔 우회한다 |
+| bucket state를 어디에 둘 것인가? | instance가 여러 대일 때 quota가 instance별로 따로 돈다 |
+| 제한 결과를 client에게 어떻게 알려줄 것인가? | client가 언제 재시도해야 하는지 알 수 없어 재시도 폭탄을 만든다 |
+
+그림을 코드로 풀면 두 단계입니다. 먼저 Bucket4j 설정에서 “어떤 bucket 정책을 어떤 limiter bean에 묶을지”를 정합니다. 그 다음
+WebFilter가 요청에서 identity를 뽑아 bucket key를 만들고, 그 key로 token 하나를 소비할 수 있는지 확인합니다.
+
+## Bucket4j 설정은 bucket policy와 limiter bean을 분리한다
+
+`bucket4j-advanced`의
+[`RateLimitConfig`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/ratelimit/bucket4j-advanced/src/main/kotlin/io/bluetape4k/workshop/bucket4j/advanced/config/RateLimitConfig.kt)는
+Redis proxy manager를 하나 만들고, IP/user/combined 전략별로 `BucketConfiguration`, `AsyncBucketProxyProvider`,
+`DistributedSuspendRateLimiter`를 따로 등록합니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-rate-limit-workshop-spring-classes-01.png" alt="RateLimitConfig, BucketConfiguration, AsyncBucketProxyProvider, DistributedSuspendRateLimiter, SuspendRateLimiter, IpRateLimitWebFilter, RequestUtils, RateLimitResult 관계를 보여주는 Spring configuration class diagram" loading="lazy" />
+  <figcaption>Spring configuration은 policy, provider, limiter bean을 분리해서 만들고, WebFilter는 `RateLimitResult`만 보고 HTTP 응답을 결정합니다. Solid line은 interface 구현, dashed line은 생성·사용·반환 관계입니다.</figcaption>
+</figure>
+
+Class Diagram으로 보면 `RateLimitConfig`는 세 가지 전략별 bean을 같은 모양으로 찍어내는 wiring class입니다. `BucketConfiguration`은
+quota 정책이고, `AsyncBucketProxyProvider`는 key별 remote bucket을 찾는 provider입니다. `DistributedSuspendRateLimiter`는
+`SuspendRateLimiter` 구현체이며, HTTP filter는 이 구현체를 주입받아 `RateLimitResult`만 해석합니다. 즉 Spring bean wiring과
+HTTP 처리 정책 사이의 경계는 `consume(key, 1)` 호출 하나로 좁아집니다.
+
+```kotlin
+@Bean
+fun proxyManager(lettuceClient: RedisClient): LettuceBasedProxyManager<ByteArray> {
+    return lettuceBasedProxyManagerOf(lettuceClient) {
+        ClientSideConfig.getDefault()
+            .withExpirationAfterWriteStrategy(
+                ExpirationAfterWriteStrategy
+                    .basedOnTimeForRefillingBucketUpToMax(Duration.ofSeconds(90))
+            )
+            .withExecutionStrategy(ExecutionStrategy.background(VirtualThreadExecutor))
+    }
+}
+
+@Bean
+@Qualifier("ipBucketConfiguration")
+fun ipBucketConfiguration(): BucketConfiguration = bucketConfiguration {
+    addLimit { it.capacity(20).refillIntervally(20, Duration.ofSeconds(10)) }
+    addLimit { it.capacity(100).refillGreedy(10, Duration.ofMinutes(1)) }
+}
+
+@Bean
+@Qualifier("ipBucketProxyProvider")
+fun ipBucketProxyProvider(
+    proxyManager: ProxyManager<ByteArray>,
+    @Qualifier("ipBucketConfiguration") ipBucketConfiguration: BucketConfiguration,
+): AsyncBucketProxyProvider =
+    AsyncBucketProxyProvider(proxyManager.asAsync(), ipBucketConfiguration)
+
+@Bean
+@Qualifier("ipRateLimiter")
+fun ipRateLimiter(
+    @Qualifier("ipBucketProxyProvider") ipBucketProxyProvider: AsyncBucketProxyProvider,
+): DistributedSuspendRateLimiter =
+    DistributedSuspendRateLimiter(ipBucketProxyProvider)
+```
+
+핵심은 Redis 설정과 bucket 정책, limiter bean을 한 덩어리로 뭉개지 않는다는 점입니다. Redis는 token state를 저장하는 공용
+backend이고, `ipBucketConfiguration`은 “IP bucket은 10초에 20개, 1분에 100개”라는 정책입니다. `ipRateLimiter`는 그 정책을
+실제로 소비하는 진입점입니다. user/combined 전략도 같은 구조를 쓰되 capacity만 다르게 둡니다.
+
+## bluetape4k RateLimiter는 Bucket4j probe를 결과 객체로 감싼다
+
+`bluetape4k-bucket4j`의
+[`RateLimiter`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/ratelimit/RateLimiter.kt)와
+[`SuspendRateLimiter`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/ratelimit/SuspendRateLimiter.kt)는
+Bucket4j를 직접 노출하지 않고, `consume(key, numToken)` 하나로 즉시 소비 결과를 돌려주는 facade입니다.
+
+```kotlin
+interface SuspendRateLimiter<K> {
+    suspend fun consume(key: K, numToken: Long = 1): RateLimitResult
+}
+```
+
+`consume`은 refill을 기다리는 API가 아닙니다. 지금 token을 소비할 수 있는지 즉시 판단하고, 그 결과를
+[`RateLimitResult`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/ratelimit/RateLimitResult.kt)로
+돌려줍니다.
+
+```kotlin
+val result = rateLimiter.consume("ip:203.0.113.10", 1)
+
+when {
+    result.isConsumed -> chain.filter(exchange).awaitSingleOrNull()
+    result.isRejected -> {
+        exchange.response.statusCode = HttpStatus.TOO_MANY_REQUESTS
+        Mono.empty<Void>().awaitSingleOrNull()
+    }
+    result.isError -> chain.filter(exchange).awaitSingleOrNull() // 예제 정책: fail open
+}
+```
+
+`RateLimitResult`는 세 상태를 갖습니다.
+
+| 상태 | 의미 | HTTP filter에서의 사용 |
+|---|---|---|
+| `CONSUMED` | token 소비 성공 | handler로 요청을 넘긴다 |
+| `REJECTED` | token 부족 | `429`와 `Retry-After`를 쓴다 |
+| `ERROR` | bucket provider/Redis 처리 실패 | 운영 정책에 따라 fail-open 또는 fail-closed |
+
+분산 coroutine 구현인
+[`DistributedSuspendRateLimiter`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/ratelimit/distributed/DistributedSuspendRateLimiter.kt)는
+`AsyncBucketProxyProvider`에서 key별 bucket proxy를 찾고, `tryConsumeAndReturnRemaining(numToken)`의 `ConsumptionProbe`를
+await한 뒤 `RateLimitResult`로 변환합니다. 추가로 `availableTokens`를 한 번 더 읽지 않고, consume 시도와 남은 token 관측을
+probe 하나로 끝냅니다.
+
+```kotlin
+val bucketProxy = asyncBucketProxyProvider.resolveBucket(key)
+val probe = bucketProxy.tryConsumeAndReturnRemaining(numToken).await()
+return toRateLimitResult(probe, numToken)
+```
+
+그래서 workshop filter가 알아야 할 것은 Bucket4j 내부 타입이 아니라 `RateLimitResult`입니다. HTTP layer는 이 결과를 보고
+계속 진행할지, `429`로 끊을지, backend 장애를 fail-open/fail-closed 중 어디로 보낼지만 결정하면 됩니다.
+
+## extractIp로 만든 identity가 permit 판단의 key가 된다
+
+요청이 `/api/anonymous`로 들어오면
+[`IpRateLimitWebFilter`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/ratelimit/bucket4j-advanced/src/main/kotlin/io/bluetape4k/workshop/bucket4j/advanced/filter/IpRateLimitWebFilter.kt)가
+먼저 실행됩니다. 여기서 `RequestUtils.extractIp(exchange, trustProxy)`로 caller identity를 정하고, `ip:<address>` 형태의
+bucket key를 만든 뒤 `rateLimiter.consume(key, 1L)`을 호출합니다.
+
+```kotlin
+val ip = RequestUtils.extractIp(exchange, trustProxy)
+val effectiveIp = ip?.takeIf { it.isNotBlank() } ?: "unknown"
+
+val key = "ip:$effectiveIp"
+val result = rateLimiter.consume(key, 1L)
+
+exchange.response.headers.set(
+    HeaderConstants.X_RATELIMIT_REMAINING,
+    result.availableTokens.toString()
+)
+
+if (result.isConsumed) {
+    chain.filter(exchange).awaitSingleOrNull()
+} else {
+    val retryAfterSecs = result.retryAfter
+        ?.let { TimeUnit.NANOSECONDS.toSeconds(it.toNanos()).coerceAtLeast(1) }
+        ?: 1L
+    exchange.response.headers.set(HeaderConstants.RETRY_AFTER, retryAfterSecs.toString())
+    exchange.response.statusCode = HttpStatus.TOO_MANY_REQUESTS
+    Mono.empty<Void>().awaitSingleOrNull()
+}
+```
+
+여기서 permit 판단은 `result.isConsumed`입니다. token 하나를 소비할 수 있으면 handler로 넘기고, `result.isRejected`면
+handler를 호출하지 않은 채 `429 Too Many Requests`와 `Retry-After`를 반환합니다. `DistributedSuspendRateLimiter`가 provider
+오류를 `RateLimitResult.error`로 바꿔주기 때문에, filter는 이 오류를 운영 정책에 맞춰 fail-open 또는 fail-closed로 처리할 수
+있습니다.
+
+그 앞단의 identity 추출은 아래처럼 proxy trust 설정에 따라 달라집니다.
+
+```kotlin
+fun extractIp(exchange: ServerWebExchange, trustProxy: Boolean = false): String? {
+    val request = exchange.request
+    if (trustProxy) {
+        val forwardedFor = request.headers.getFirst(HeaderConstants.X_FORWARDED_FOR)
+        if (!forwardedFor.isNullOrBlank()) {
+            return forwardedFor.split(",").first().trim()
+        }
+        val realIp = request.headers.getFirst(HeaderConstants.X_REAL_IP)
+        if (!realIp.isNullOrBlank()) {
+            return realIp.trim()
+        }
+    }
+    return request.remoteAddress?.address?.hostAddress
+}
+```
+
+WebFlux와 WebMVC에서 달라지는 부분은 정책이 아니라 request API입니다. WebFlux는 `ServerWebExchange`에서
+`exchange.request.headers`와 `exchange.request.remoteAddress`를 읽습니다. 같은 규칙을 Servlet/WebMVC filter나 interceptor에서
+쓴다면 `HttpServletRequest#getHeader()`와 `request.remoteAddr`를 사용합니다.
+
+```kotlin
+fun extractIp(request: HttpServletRequest, trustProxy: Boolean = false): String? {
+    if (trustProxy) {
+        val forwardedFor = request.getHeader(HeaderConstants.X_FORWARDED_FOR)
+        if (!forwardedFor.isNullOrBlank()) {
+            return forwardedFor.split(",").first().trim()
+        }
+        val realIp = request.getHeader(HeaderConstants.X_REAL_IP)
+        if (!realIp.isNullOrBlank()) {
+            return realIp.trim()
+        }
+    }
+    return request.remoteAddr
+}
+```
+
+두 코드의 의미는 같습니다. `trustProxy=false`면 framework가 직접 본 peer 주소를 쓰고, `trustProxy=true`일 때만 proxy header를
+identity 후보로 인정합니다. 차이는 WebFlux가 reactive server request model을 쓰고, WebMVC가 Servlet request model을 쓴다는
+점입니다.
+
+즉 “rate limit을 적용한다”는 말은 단순히 Bucket4j를 켜는 것이 아닙니다. 이 예제에서는 `extractIp`로 identity를 결정하고,
+그 identity를 bucket key로 바꾼 뒤, `consume` 결과가 permit인지 reject인지 판단합니다. 그래서 proxy trust 설정을 잘못 잡으면
+Bucket4j 설정이 아무리 좋아도 엉뚱한 사람의 token을 깎습니다.
+
+## Caffeine vs Redis는 저장소 선택이다
+
+`bucket4j-caffeine-web`은 단일 JVM에서 starter 구성을 보기 좋습니다. 예제 테스트 profile은 `/hello`를 5회/10초,
+`/world`를 10회/10초로 제한하고, token이 소진되면 `429`를 검증합니다. 로컬 servlet app이나 단일 instance service라면
+이 정도 예제가 가장 빠르게 이해됩니다.
+
+반대로 `bucket4j-redis`는 WebFlux + Redis/Lettuce 조합입니다. 여러 application instance가 같은 Redis bucket state를
+공유하므로, “pod A에서는 아직 token이 남았고 pod B에서는 다 썼다” 같은 상태 분리가 줄어듭니다.
+
+| 선택 | 맞는 상황 | 조심할 점 |
+|---|---|---|
+| Caffeine local bucket | 단일 JVM, local dev, starter behavior 확인 | instance가 늘어나면 quota도 instance 수만큼 늘어난다 |
+| Redis distributed bucket | 여러 instance, gateway/service scale-out | Redis 장애 시 fail-open/fail-closed 정책을 정해야 한다 |
+
+여기까지는 저장소 문제입니다. 하지만 운영 장애는 여기서 끝나지 않습니다. 저장소를 Redis로 바꿔도 key를 잘못 잡으면 여전히
+엉뚱한 사람을 막습니다.
+
+## key는 endpoint 성격에 맞춰야 한다
+
+`bucket4j-advanced`는 세 filter를 path prefix로 분리합니다.
+
+| Endpoint | Key shape | Bucket |
+|---|---|---|
+| `GET /api/anonymous/hello` | `ip:<address>` | 20 tokens / 10s, 100 tokens / min |
+| `GET /api/authenticated/hello` | `user:<userId>` | 50 tokens / 10s, 200 tokens / min |
+| `GET /api/sensitive/hello` | `combined:<ip>:<userId>` | 10 tokens / 10s, 50 tokens / min |
+
+익명 endpoint는 IP bucket이 자연스럽습니다. 로그인 사용자는 `X-User-ID` 같은 인증 identity가 더 낫습니다. 민감한 작업은
+IP와 userId를 함께 묶어 “한 IP 뒤의 여러 사용자”와 “한 사용자의 여러 접속 위치”를 더 세밀하게 다룰 수 있습니다.
+
+```kotlin
+val key = "combined:$effectiveIp:$userId"
+val result = rateLimiter.consume(key, 1L)
+```
+
+이 한 줄이 단순해 보여도, 그 앞에는 정책 결정이 있습니다. userId가 없으면 `combined` filter는 `400`을 냅니다. user-based
+filter는 `X-User-ID`가 없으면 `401`을 냅니다. “header가 없으면 remote address로 fallback”하는 방식은 편하지만, 인증 endpoint
+에서는 잘못된 identity를 정상처럼 취급할 수 있습니다.
+
+## proxy trust는 보안 설정이다
+
+프록시 뒤에 있는 서비스에서 `remoteAddress`만 보면 대부분 proxy나 load balancer 주소가 나옵니다. 그렇다고 무조건
+`X-Forwarded-For`를 믿으면 더 큰 문제가 생깁니다. client가 직접 보낸 `X-Forwarded-For`를 그대로 믿으면 공격자는 자기 IP를
+매 요청마다 바꾼 것처럼 꾸밀 수 있습니다.
+
+`bucket4j-advanced`는 기본값을 `ratelimit.trust-proxy=false`로 둡니다. 이 경우 `X-Forwarded-For`와 `X-Real-IP`는 무시하고
+TCP remote address를 사용합니다. `trust-proxy=true`일 때만 `X-Forwarded-For`의 leftmost IP를 client IP로 봅니다.
+
+앞에서 본 WebFlux/WebMVC 코드 모두 이 정책은 같습니다. 이 설정은 “기능 옵션”보다 “보안 경계”에 가깝습니다. application
+앞단에 신뢰할 수 있는 reverse proxy가 있고, 외부 client가 proxy header를 직접 주입할 수 없을 때만 켜야 합니다.
+
+## response header는 client와의 운영 계약이다
+
+Rate limiter가 `429`만 던지면 client는 언제 다시 시도해야 하는지 모릅니다. 그래서 `bucket4j-advanced`는 남은 token과
+재시도 시간을 header로 드러냅니다.
+
+| Header | 의미 |
+|---|---|
+| `X-RateLimit-Remaining` | 이번 요청 처리 뒤 남은 token 수 |
+| `X-RateLimit-Reset` | reset까지 남은 초. 현재 filter는 계산값을 넣고, README는 reserved header라는 성격을 함께 설명한다 |
+| `Retry-After` | `429 Too Many Requests`일 때 client가 기다려야 할 초 |
+
+basic `bucker4j-bluetape4k-webflux` 예제는 `X-Bluetape4k-Remaining-Token`을 사용합니다. `bucket4j-advanced`는 글에서 보여주기
+좋게 표준에 가까운 `X-RateLimit-Remaining`과 `Retry-After`로 정리했습니다.
+
+## 예제 요청
+
+`bucket4j-advanced`를 실행한 뒤에는 아래 요청으로 세 정책을 바로 확인할 수 있습니다.
+
+```bash
+# IP-based anonymous endpoint
+curl -i http://localhost:8080/api/anonymous/hello
+
+# userId-based authenticated endpoint
+curl -i -H "X-User-ID: alice" \
+  http://localhost:8080/api/authenticated/hello
+
+# combined IP + userId endpoint
+curl -i -H "X-User-ID: alice" \
+  http://localhost:8080/api/sensitive/hello
+
+# ignored unless ratelimit.trust-proxy=true
+curl -i -H "X-Forwarded-For: 203.0.113.10, 10.0.0.7" \
+  http://localhost:8080/api/anonymous/hello
+```
+
+테스트도 같은 방향을 검증합니다. IP bucket은 token 소진 뒤 `429`와 `Retry-After`를 확인하고, user bucket은 다른 userId가
+서로 독립적인지 확인합니다. combined bucket은 userId가 없으면 `400`, quota가 소진되면 `429`를 냅니다.
+
+## 정리
+
+Coroutine/WebFlux 환경이라고 rate limiting의 운영 계약이 달라지지는 않습니다. 다만 async filter 안에서 token 소비,
+header 기록, fail-open/fail-closed 정책이 한 흐름에 섞이기 때문에 대충 한 filter로 몰아넣으면 나중에 읽기가 어렵습니다.
+
+이 workshop 예제들은 역할을 나눠서 봐야 좋습니다.
+
+- `bucket4j-caffeine-web`: local bucket의 가장 작은 starter
+- `bucket4j-redis`: distributed bucket의 starter
+- `bucker4j-bluetape4k-webflux`: bluetape4k `DistributedRateLimiter` 사용법
+- `bucket4j-advanced`: 운영에서 중요한 identity, proxy trust, response header 계약
+
+Rate limiter를 붙일 때는 “Redis를 쓸까?”보다 먼저 “누구의 요청으로 볼 것인가?”를 정해야 합니다. bucket은 그 다음입니다.
