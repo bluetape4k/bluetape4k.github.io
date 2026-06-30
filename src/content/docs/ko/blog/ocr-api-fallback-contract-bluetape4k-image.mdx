@@ -56,13 +56,29 @@ Full source:
 
 ```kotlin
 data class ImageOcrResponse(
+    // 요청을 log, trace, client 문의와 연결하기 위한 correlation id입니다.
     val requestId: String,
+
+    // client가 가장 먼저 봐야 하는 처리 결과입니다.
+    // COMPLETED, UNAVAILABLE, FAILED는 같은 response shape 안에서 구분됩니다.
     val status: OcrStatus,
+
+    // 실제로 사용한 OCR engine 이름입니다. native OCR을 끈 경우에는 disabled처럼 표시됩니다.
     val engine: String,
+
+    // 요청에서 선택했거나 service가 정규화한 OCR language 목록입니다.
     val languages: List<String>,
+
+    // OCR engine이 confidence를 제공하지 못하면 null입니다.
     val confidence: Double?,
+
+    // 최종 인식 문자열입니다. UNAVAILABLE/FAILED에서는 빈 문자열일 수 있습니다.
     val text: String,
+
+    // line 단위로 쪼갠 구조화 결과입니다. UI highlighting이나 후처리에 사용합니다.
     val blocks: List<OcrTextBlock>,
+
+    // client와 operator가 볼 수 있는 주의 사항입니다. exception parsing을 대신합니다.
     val warnings: List<String>,
 )
 ```
@@ -233,7 +249,7 @@ Full source:
 
 ## 마무리
 
-OCR 서비스는 `String`을 반환하는 endpoint로 시작하면 금방 막힙니다. 실전에서는 upload byte 크기, decoded pixel
+OCR 서비스는 검출된 문자열만 반환하는 endpoint로 시작하면 금방 막힙니다. 실전에서는 upload byte 크기, decoded pixel
 budget, preprocessing 비용, native runtime 준비 상태, timeout, 실패 응답, client retry 정책이 같이 움직입니다.
 
 Coroutines, Ktor, Spring Boot 중 무엇을 쓰더라도 기본 계약은 크게 달라지지 않습니다. HTTP adapter는 file을 받고

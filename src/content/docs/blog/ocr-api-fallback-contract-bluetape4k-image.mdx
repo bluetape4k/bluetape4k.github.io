@@ -57,13 +57,29 @@ The response model does not return text alone.
 
 ```kotlin
 data class ImageOcrResponse(
+    // Correlation id used to connect logs, traces, and client support cases.
     val requestId: String,
+
+    // The first field clients should branch on.
+    // COMPLETED, UNAVAILABLE, and FAILED share the same response shape.
     val status: OcrStatus,
+
+    // OCR engine used for this response. Disabled native OCR is reported explicitly.
     val engine: String,
+
+    // OCR language list requested by the client or normalized by the service.
     val languages: List<String>,
+
+    // Nullable when the OCR engine cannot report confidence.
     val confidence: Double?,
+
+    // Final recognized text. It can be empty for UNAVAILABLE or FAILED responses.
     val text: String,
+
+    // Structured line-level OCR result for highlighting or post-processing.
     val blocks: List<OcrTextBlock>,
+
+    // Client/operator-readable notes that replace exception-message parsing.
     val warnings: List<String>,
 )
 ```
@@ -237,7 +253,7 @@ Full source:
 
 ## Closing
 
-An OCR service gets stuck quickly if it starts as an endpoint returning `String`. In practice, upload
+An OCR service gets stuck quickly if it starts as an endpoint returning only detected text. In practice, upload
 byte limits, decoded pixel budgets, preprocessing cost, native runtime readiness, timeouts, failure
 responses, and client retry policy move together.
 
