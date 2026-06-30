@@ -52,6 +52,20 @@ private suspend fun getTodoById(id: Int): Todo? {
 }
 ```
 
+The public helper shape is intentionally small. It accepts the span name, `ObservationRegistry`, and suspend block, then
+delegates the actual scope lifecycle to `withObservationContextSuspending`.
+
+```kotlin
+suspend inline fun <T: Any> withObservationSuspending(
+    name: String,
+    registry: ObservationRegistry,
+    crossinline block: suspend () -> T?,
+): T? =
+    withObservationContextSuspending(name, registry) {
+        block()
+    }
+```
+
 The important part is not the helper name. It is how the current span is opened, restored, and stopped inside suspend
 code. Coroutines may resume on another carrier thread. If the trace scope is only thread-local, a span tree can suddenly
 look flat.
