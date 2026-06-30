@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1720" height="1040" viewBox="0 0 1720 1040" role="img" aria-labelledby="title desc">
+  <title id="title">OCR API fallback contract workflow</title>
+  <desc id="desc">Upload validation, native OCR execution, completed response, unavailable fallback response, and failed response paths.</desc>
+  <defs>
+    <marker id="arrow-blue" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="16" refX="13" refY="8" orient="auto">
+      <path d="M 2 2 L 14 8 L 2 14 Z" fill="#2f6fed" stroke="none"/>
+    </marker>
+    <marker id="arrow-teal" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="16" refX="13" refY="8" orient="auto">
+      <path d="M 2 2 L 14 8 L 2 14 Z" fill="#008b8b" stroke="none"/>
+    </marker>
+    <marker id="arrow-amber" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="16" refX="13" refY="8" orient="auto">
+      <path d="M 2 2 L 14 8 L 2 14 Z" fill="#b7791f" stroke="none"/>
+    </marker>
+    <marker id="arrow-red" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="16" refX="13" refY="8" orient="auto">
+      <path d="M 2 2 L 14 8 L 2 14 Z" fill="#c53030" stroke="none"/>
+    </marker>
+    <filter id="soft-shadow" x="-15%" y="-20%" width="130%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#23395b" flood-opacity="0.14"/>
+    </filter>
+    <style>
+      .bg { fill: #f7f9fc; }
+      .lane { fill: #ffffff; stroke: #d8e2ef; stroke-width: 2; }
+      .lane-title { font: 700 30px 'Architects Daughter', 'Comic Mono', 'Comic Sans MS', cursive; fill: #26364d; }
+      .card { fill: #ffffff; stroke-width: 3; filter: url(#soft-shadow); }
+      .card-blue { stroke: #2f6fed; }
+      .card-teal { stroke: #008b8b; }
+      .card-amber { stroke: #b7791f; }
+      .card-red { stroke: #c53030; }
+      .card-title { font: 700 28px 'Architects Daughter', 'Comic Mono', 'Comic Sans MS', cursive; fill: #1f2937; }
+      .card-body { font: 18px 'Comic Mono', 'SFMono-Regular', monospace; fill: #4b5563; }
+      .label { font: 700 18px 'Comic Mono', 'SFMono-Regular', monospace; fill: #374151; }
+      .flow { fill: none; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+      .flow-blue { stroke: #2f6fed; marker-end: url(#arrow-blue); }
+      .flow-teal { stroke: #008b8b; marker-end: url(#arrow-teal); }
+      .flow-amber { stroke: #b7791f; marker-end: url(#arrow-amber); }
+      .flow-red { stroke: #c53030; marker-end: url(#arrow-red); }
+      .badge { fill: #eef6ff; stroke: #b8d4ff; stroke-width: 2; }
+      .dot-blue { fill: #2f6fed; }
+      .dot-teal { fill: #008b8b; }
+      .dot-amber { fill: #b7791f; }
+      .dot-red { fill: #c53030; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1720" height="1040"/>
+  <rect class="lane" x="42" y="62" width="1636" height="280" rx="24"/>
+  <rect class="lane" x="42" y="372" width="1636" height="250" rx="24"/>
+  <rect class="lane" x="42" y="672" width="1636" height="300" rx="24"/>
+  <text class="lane-title" x="78" y="112">HTTP upload boundary</text>
+  <text class="lane-title" x="78" y="422">Native OCR boundary</text>
+  <text class="lane-title" x="78" y="722">Client-visible response contract</text>
+
+  <g id="card-upload">
+    <rect class="card card-blue" x="80" y="152" width="260" height="120" rx="14"/>
+    <circle class="dot-blue" cx="112" cy="190" r="11"/>
+    <text class="card-title" x="135" y="193">Client upload</text>
+    <text class="card-body" x="112" y="228">multipart file</text>
+    <text class="card-body" x="112" y="252">language=eng</text>
+  </g>
+  <g id="card-adapter">
+    <rect class="card card-blue" x="430" y="152" width="260" height="120" rx="14"/>
+    <circle class="dot-blue" cx="462" cy="190" r="11"/>
+    <text class="card-title" x="485" y="193">HTTP adapter</text>
+    <text class="card-body" x="462" y="228">Spring or Ktor</text>
+    <text class="card-body" x="462" y="252">file field guard</text>
+  </g>
+  <g id="card-validation">
+    <rect class="card card-blue" x="780" y="152" width="260" height="120" rx="14"/>
+    <circle class="dot-blue" cx="812" cy="190" r="11"/>
+    <text class="card-title" x="835" y="193">Upload guard</text>
+    <text class="card-body" x="812" y="228">size, type</text>
+    <text class="card-body" x="812" y="252">magic bytes</text>
+  </g>
+  <g id="card-decode">
+    <rect class="card card-blue" x="1130" y="152" width="260" height="120" rx="14"/>
+    <circle class="dot-blue" cx="1162" cy="190" r="11"/>
+    <text class="card-title" x="1185" y="193">Decode image</text>
+    <text class="card-body" x="1162" y="228">pixel budget</text>
+    <text class="card-body" x="1162" y="252">preprocess</text>
+  </g>
+
+  <g id="card-native-gate">
+    <rect class="card card-teal" x="780" y="420" width="260" height="120" rx="14"/>
+    <circle class="dot-teal" cx="812" cy="458" r="11"/>
+    <text class="card-title" x="835" y="461">Native gate</text>
+    <text class="card-body" x="812" y="496">enabled?</text>
+    <text class="card-body" x="812" y="520">tessdata ready?</text>
+  </g>
+  <g id="card-tesseract">
+    <rect class="card card-teal" x="1130" y="420" width="260" height="120" rx="14"/>
+    <circle class="dot-teal" cx="1162" cy="458" r="11"/>
+    <text class="card-title" x="1185" y="461">Tesseract OCR</text>
+    <text class="card-body" x="1162" y="496">single native lane</text>
+    <text class="card-body" x="1162" y="520">timeout guarded</text>
+  </g>
+  <g id="card-mapper">
+    <rect class="card card-teal" x="1480" y="420" width="210" height="120" rx="14"/>
+    <circle class="dot-teal" cx="1512" cy="458" r="11"/>
+    <text class="card-title" x="1535" y="461">Mapper</text>
+    <text class="card-body" x="1512" y="496">status</text>
+    <text class="card-body" x="1512" y="520">warnings</text>
+  </g>
+
+  <g id="card-unavailable">
+    <rect class="card card-amber" x="780" y="720" width="260" height="140" rx="14"/>
+    <circle class="dot-amber" cx="812" cy="758" r="11"/>
+    <text class="card-title" x="835" y="761">UNAVAILABLE</text>
+    <text class="card-body" x="812" y="798">native disabled</text>
+    <text class="card-body" x="812" y="822">config missing</text>
+    <text class="card-body" x="812" y="846">empty text</text>
+  </g>
+  <g id="card-failed">
+    <rect class="card card-red" x="1130" y="720" width="260" height="140" rx="14"/>
+    <circle class="dot-red" cx="1162" cy="758" r="11"/>
+    <text class="card-title" x="1185" y="761">FAILED</text>
+    <text class="card-body" x="1162" y="798">timeout</text>
+    <text class="card-body" x="1162" y="822">OCR exception</text>
+    <text class="card-body" x="1162" y="846">safe warning</text>
+  </g>
+  <g id="card-completed">
+    <rect class="card card-teal" x="1480" y="720" width="210" height="140" rx="14"/>
+    <circle class="dot-teal" cx="1512" cy="758" r="11"/>
+    <text class="card-title" x="1535" y="761">COMPLETED</text>
+    <text class="card-body" x="1512" y="798">text</text>
+    <text class="card-body" x="1512" y="822">blocks</text>
+    <text class="card-body" x="1512" y="846">languages</text>
+  </g>
+
+  <path id="flow-upload-adapter" class="flow flow-blue" data-connector="upload-to-adapter" d="M 340 212 L 430 212"/>
+  <path id="flow-adapter-guard" class="flow flow-blue" data-connector="adapter-to-guard" d="M 690 212 L 780 212"/>
+  <path id="flow-guard-decode" class="flow flow-blue" data-connector="guard-to-decode" d="M 1040 212 L 1130 212"/>
+  <path id="flow-decode-native" class="flow flow-teal" data-connector="decode-to-native-gate" d="M 1260 272 L 1260 334 Q 1260 352 1242 352 L 928 352 Q 910 352 910 370 L 910 420"/>
+  <path id="flow-native-ocr" class="flow flow-teal" data-connector="native-gate-to-tesseract" d="M 1040 480 L 1130 480"/>
+  <path id="flow-ocr-mapper" class="flow flow-teal" data-connector="tesseract-to-mapper" d="M 1390 480 L 1480 480"/>
+  <path id="flow-mapper-completed" class="flow flow-teal" data-connector="mapper-to-completed" d="M 1585 540 L 1585 720"/>
+  <path id="flow-native-unavailable" class="flow flow-amber" data-connector="native-gate-to-unavailable" d="M 910 540 L 910 720"/>
+  <path id="flow-ocr-failed" class="flow flow-red" data-connector="tesseract-to-failed" d="M 1260 540 L 1260 720"/>
+
+  <rect class="badge" x="1102" y="318" width="200" height="38" rx="19"/>
+  <text class="label" x="1128" y="343">validated image</text>
+  <rect class="badge" x="858" y="628" width="270" height="38" rx="19"/>
+  <text class="label" x="884" y="653">disabled or missing native</text>
+  <rect class="badge" x="1200" y="628" width="224" height="38" rx="19"/>
+  <text class="label" x="1226" y="653">timeout or OCR error</text>
+  <rect class="badge" x="1488" y="628" width="186" height="38" rx="19"/>
+  <text class="label" x="1514" y="653">text extracted</text>
+</svg>
