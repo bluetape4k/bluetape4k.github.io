@@ -1,23 +1,23 @@
 ---
-title: "Operating an OCR API in Practice: Large Image Preprocessing and Failure Response Contracts"
-description: A source-backed look at upload guards, decoded pixel budgets, native OCR dependencies, timeouts, and failure response contracts using the bluetape4k-workshop OCR API and bluetape4k-image OCR/benchmark examples.
+title: "Operating an OCR Service in Practice: Large Image Preprocessing and Failure Response Contracts"
+description: A source-backed look at upload guards, decoded pixel budgets, native OCR dependencies, timeouts, and failure response contracts using the bluetape4k-workshop OCR service and bluetape4k-image OCR/benchmark examples.
 sidebar:
   order: -202606302150
 blog:
   date: 2026-06-30T21:50:00+09:00
   image: /assets/ocr-api-fallback-contract-hero.png
-  imageAlt: 3D illustration of an OCR API workbench with image upload, validation, native OCR execution, completed response, and fallback response panels
-  cardDescription: "Treat an OCR API as a large-image input boundary, native OCR runtime boundary, and failure response contract, not just a text extraction endpoint."
+  imageAlt: 3D illustration of an OCR service workbench with image upload, validation, native OCR execution, completed response, and fallback response panels
+  cardDescription: "Treat an OCR service as a large-image input boundary, native OCR runtime boundary, and failure response contract, not just a text extraction endpoint."
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/ocr-api-fallback-contract-hero.png" alt="3D illustration of an OCR API workbench with image upload, validation, native OCR execution, completed response, and fallback response panels" loading="eager" />
-  <figcaption>An OCR API must return a client-readable response even when recognition cannot run.</figcaption>
+  <img src="/assets/ocr-api-fallback-contract-hero.png" alt="3D illustration of an OCR service workbench with image upload, validation, native OCR execution, completed response, and fallback response panels" loading="eager" />
+  <figcaption>An OCR service must return a client-readable response even when recognition cannot run.</figcaption>
 </figure>
 
-<p class="bt4k-post-meta">2026-06-30 · bluetape4k-workshop · bluetape4k-image OCR API</p>
+<p class="bt4k-post-meta">2026-06-30 · bluetape4k-workshop · bluetape4k-image OCR service</p>
 
-An OCR demo often ends with a file upload and extracted text. A real API does not. A compressed
+An OCR demo often ends with a file upload and extracted text. A real service does not. A compressed
 upload may decode into a much larger image, the declared content type may be false, Tesseract may
 be missing from the host, or the native OCR call may time out.
 
@@ -28,8 +28,8 @@ cannot run OCR or because OCR failed at runtime. Mixing those two cases makes cl
 and alerts harder to reason about.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/ocr-api-fallback-contract-workflow-01.png" alt="OCR API workflow diagram with vertical lanes for HTTP upload boundary, image preprocessing boundary, native OCR boundary, and response contract boundary" loading="lazy" />
-  <figcaption>A practical OCR API splits upload guard, image preprocessing, native OCR, and response contract. `BAD_REQUEST` is not a fallback; it is an input-boundary rejection.</figcaption>
+  <img src="/assets/ocr-api-fallback-contract-workflow-01.png" alt="OCR service workflow diagram with vertical lanes for HTTP upload boundary, image preprocessing boundary, native OCR boundary, and response contract boundary" loading="lazy" />
+  <figcaption>A practical OCR service splits upload guard, image preprocessing, native OCR, and response contract. `BAD_REQUEST` is not a fallback; it is an input-boundary rejection.</figcaption>
 </figure>
 
 ## Example API Shape
@@ -237,7 +237,7 @@ Full source:
 
 ## Closing
 
-An OCR API gets stuck quickly if it starts as an endpoint returning `String`. In practice, upload
+An OCR service gets stuck quickly if it starts as an endpoint returning `String`. In practice, upload
 byte limits, decoded pixel budgets, preprocessing cost, native runtime readiness, timeouts, failure
 responses, and client retry policy move together.
 
@@ -248,5 +248,5 @@ work with concurrency and timeout controls, then return `COMPLETED`, `UNAVAILABL
 inside the same response shape.
 
 Image detection will need a similar failure response contract, but the result shape is different:
-object bounding boxes, labels, and scores instead of line-based text. That belongs in the separate
-detection/OCR follow-up backlog rather than in this OCR API article.
+object bounding boxes, labels, and scores instead of line-based text. A separate example will cover
+that path.
