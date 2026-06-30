@@ -179,6 +179,11 @@ traffic을 보내도 되는가"를 묻습니다. 여기서 실패하면 process�
 coroutine dispatcher는 정상일 수 있다는 점이 중요합니다. process는 살아 있으니 liveness는 성공할 수 있습니다. 하지만
 주문을 처리하려면 DB가 필요하므로 readiness는 실패해야 합니다. "살아 있음"과 "받아도 됨"이 갈라지는 지점입니다.
 
+여담이지만, 이 차이는 장애 대화에서도 자주 드러납니다. Backend 개발자는 connection pool 고갈로 DB 요청이 timeout 나는
+상황을 "DB 사용 불가"보다 "DB가 죽었다"라고 표현하는 경우가 많습니다. 인프라 담당자는 "DB는 잘 살아 있는데?"라고
+반박합니다. 둘 다 자기 관찰 범위에서는 맞는 말을 하고 있습니다. 문제는 liveness와 readiness를 구분하지 않으면 "process가
+살아 있음", "DB process가 살아 있음", "서비스가 DB를 사용할 수 있음"을 한 문장으로 뭉개 버린다는 점입니다.
+
 Spring Boot와 Ktor 예제는 이 운영 계약을 다른 프레임워크 모양으로 표현합니다.
 
 <figure class="bt4k-architecture">

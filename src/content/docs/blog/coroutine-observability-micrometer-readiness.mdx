@@ -179,6 +179,12 @@ timeouts while the HTTP server and coroutine dispatcher are still healthy. The p
 still pass. The service cannot safely process orders without usable database access, so readiness must fail. That is the
 gap between "alive" and "ready to receive".
 
+This distinction also shows up in incident language. Backend developers often describe connection-pool exhaustion and
+database timeouts as "the DB is down" rather than "the service cannot use the DB." Infrastructure engineers can fairly
+answer, "the database process is healthy." Both statements can be true within their own observation boundary. The
+problem is that without separate liveness and readiness semantics, "the process is alive," "the database process is
+alive," and "this service can use the database" collapse into one overloaded sentence.
+
 The Spring Boot and Ktor examples express this operational contract with different framework shapes.
 
 <figure class="bt4k-architecture">
