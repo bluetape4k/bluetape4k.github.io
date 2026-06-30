@@ -175,9 +175,9 @@ Liveness와 readiness는 실패했을 때 플랫폼이 취해야 할 행동부�
 traffic을 보내도 되는가"를 묻습니다. 여기서 실패하면 process를 죽이는 대신 load balancer나 Service endpoint에서
 잠시 빼야 합니다.
 
-그래서 DB가 내려갔지만 HTTP server와 coroutine dispatcher는 정상인 상황이 중요합니다. process는 살아 있으니 liveness는
-성공할 수 있습니다. 하지만 주문을 처리하려면 DB가 필요하므로 readiness는 실패해야 합니다. "살아 있음"과 "받아도 됨"이
-갈라지는 지점입니다.
+그래서 DB가 내려간 경우뿐 아니라 connection pool이 차서 timeout으로 DB를 사용할 수 없는 경우에도, HTTP server와
+coroutine dispatcher는 정상일 수 있다는 점이 중요합니다. process는 살아 있으니 liveness는 성공할 수 있습니다. 하지만
+주문을 처리하려면 DB가 필요하므로 readiness는 실패해야 합니다. "살아 있음"과 "받아도 됨"이 갈라지는 지점입니다.
 
 Spring Boot와 Ktor 예제는 이 운영 계약을 다른 프레임워크 모양으로 표현합니다.
 
