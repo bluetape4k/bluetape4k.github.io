@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="940" viewBox="0 0 1600 940" role="img" aria-labelledby="title desc">
+  <title id="title">OCR document preprocessing benchmark chart</title>
+  <desc id="desc">Latency and managed heap allocation for representative Scrimage and libvips OCR document preprocessing rows.</desc>
+  <defs>
+    <filter id="soft-shadow" x="-10%" y="-14%" width="120%" height="138%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#1f2937" flood-opacity="0.12"/>
+    </filter>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 38px 'Architects Daughter', 'Comic Mono', 'Comic Sans MS', cursive; fill: #1f2937; }
+      .subtitle { font: 18px 'Comic Mono', 'SFMono-Regular', monospace; fill: #667085; }
+      .panel { fill: #ffffff; stroke: #d8e2ef; stroke-width: 2; filter: url(#soft-shadow); }
+      .panel-title { font: 700 27px 'Architects Daughter', 'Comic Mono', 'Comic Sans MS', cursive; fill: #26364d; }
+      .axis { stroke: #d0d8e4; stroke-width: 2; }
+      .grid { stroke: #e8edf5; stroke-width: 1; }
+      .label { font: 17px 'Comic Mono', 'SFMono-Regular', monospace; fill: #344054; }
+      .value { font: 700 17px 'Comic Mono', 'SFMono-Regular', monospace; fill: #1f2937; }
+      .note { font: 15px 'Comic Mono', 'SFMono-Regular', monospace; fill: #667085; }
+      .scrimage { fill: #4f86c6; }
+      .vips { fill: #2f9d82; }
+      .alloc-scrimage { fill: #8a6fb5; }
+      .alloc-vips { fill: #c58b3d; }
+      .legend { font: 16px 'Comic Mono', 'SFMono-Regular', monospace; fill: #53606f; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1600" height="940"/>
+  <text class="title" x="70" y="70">OCR document preprocessing: lower is better</text>
+  <text class="subtitle" x="70" y="104">2480x3508 input -> 1240x1754 grayscale JPEG, macOS arm64, GraalVM Java 25.0.3</text>
+
+  <rect class="panel" x="60" y="140" width="700" height="690" rx="18"/>
+  <rect class="panel" x="840" y="140" width="700" height="690" rx="18"/>
+  <text class="panel-title" x="100" y="196">Latency, ms/op</text>
+  <text class="panel-title" x="880" y="196">Managed heap allocation, MiB/op</text>
+
+  <line class="grid" x1="380" y1="245" x2="380" y2="695"/>
+  <line class="grid" x1="480" y1="245" x2="480" y2="695"/>
+  <line class="grid" x1="580" y1="245" x2="580" y2="695"/>
+  <line class="grid" x1="680" y1="245" x2="680" y2="695"/>
+  <line class="axis" x1="320" y1="720" x2="740" y2="720"/>
+  <text class="note" x="317" y="745">0</text>
+  <text class="note" x="467" y="745">60</text>
+  <text class="note" x="617" y="745">120</text>
+  <text class="note" x="717" y="745">180</text>
+
+  <text class="label" x="100" y="264">Scrimage ByteArray</text>
+  <rect class="scrimage" x="320" y="240" width="335" height="30" rx="8"/>
+  <text class="value" x="669" y="263">143.64</text>
+  <text class="label" x="100" y="334">Scrimage Path</text>
+  <rect class="scrimage" x="320" y="310" width="339" height="30" rx="8"/>
+  <text class="value" x="673" y="333">145.13</text>
+  <text class="label" x="100" y="404">Scrimage suspended</text>
+  <rect class="scrimage" x="320" y="380" width="398" height="30" rx="8"/>
+  <text class="value" x="725" y="403">170.69</text>
+  <text class="label" x="100" y="474">vips ByteArray</text>
+  <rect class="vips" x="320" y="450" width="36" height="30" rx="8"/>
+  <text class="value" x="371" y="473">15.38</text>
+  <text class="label" x="100" y="544">vips Path</text>
+  <rect class="vips" x="320" y="520" width="13" height="30" rx="6"/>
+  <text class="value" x="351" y="543">5.47</text>
+  <text class="label" x="100" y="614">vips Stream</text>
+  <rect class="vips" x="320" y="590" width="36" height="30" rx="8"/>
+  <text class="value" x="371" y="613">15.59</text>
+
+  <line class="grid" x1="1160" y1="245" x2="1160" y2="695"/>
+  <line class="grid" x1="1260" y1="245" x2="1260" y2="695"/>
+  <line class="grid" x1="1360" y1="245" x2="1360" y2="695"/>
+  <line class="grid" x1="1460" y1="245" x2="1460" y2="695"/>
+  <line class="axis" x1="1100" y1="720" x2="1520" y2="720"/>
+  <text class="note" x="1097" y="745">0</text>
+  <text class="note" x="1247" y="745">60</text>
+  <text class="note" x="1397" y="745">120</text>
+  <text class="note" x="1497" y="745">180</text>
+
+  <text class="label" x="880" y="264">Scrimage ByteArray</text>
+  <rect class="alloc-scrimage" x="1100" y="240" width="384" height="30" rx="8"/>
+  <text class="value" x="1495" y="263">164.46</text>
+  <text class="label" x="880" y="334">Scrimage Path</text>
+  <rect class="alloc-scrimage" x="1100" y="310" width="383" height="30" rx="8"/>
+  <text class="value" x="1495" y="333">164.34</text>
+  <text class="label" x="880" y="404">Scrimage suspended</text>
+  <rect class="alloc-scrimage" x="1100" y="380" width="388" height="30" rx="8"/>
+  <text class="value" x="1495" y="403">166.10</text>
+  <text class="label" x="880" y="474">vips ByteArray</text>
+  <rect class="alloc-vips" x="1100" y="450" width="5" height="30" rx="3"/>
+  <text class="value" x="1123" y="473">0.34</text>
+  <text class="label" x="880" y="544">vips Path</text>
+  <rect class="alloc-vips" x="1100" y="520" width="5" height="30" rx="3"/>
+  <text class="value" x="1123" y="543">0.34</text>
+  <text class="label" x="880" y="614">vips Stream</text>
+  <rect class="alloc-vips" x="1100" y="590" width="5" height="30" rx="3"/>
+  <text class="value" x="1123" y="613">1.40</text>
+
+  <circle class="scrimage" cx="86" cy="870" r="8"/>
+  <text class="legend" x="104" y="876">Scrimage JVM pipeline</text>
+  <circle class="vips" cx="300" cy="870" r="8"/>
+  <text class="legend" x="318" y="876">libvips Java 25 FFM pipeline</text>
+  <text class="note" x="840" y="876">Source: large-streaming-2026-06-05.md, ocr-document workload.</text>
+</svg>
