@@ -244,6 +244,11 @@ Coroutine-based services do not need a completely different observability model.
 thread-per-request service: create the HTTP server span, attach service and downstream spans as children, record real
 errors, and make readiness report whether the instance can safely receive traffic.
 
+Virtual Threads fit the same rule. When Spring MVC or blocking clients run on virtual threads, the code shape is closer
+to classic thread-per-request, and `ThreadLocal`-based observation scope is easier to reason about than in coroutine
+suspend/resume code. The operational contract still does not change. More virtual threads do not create more database
+connections. Connection-pool exhaustion, downstream timeouts, and readiness returning 503 remain the same decisions.
+
 The difference is that coroutine code must be more explicit about what still belongs to the same request. Execution can
 suspend and resume on another carrier thread. If the current observation lives only in a thread-local scope, it can
 disappear at exactly that boundary. That is why the example restores scope through `ThreadContextElement` and also keeps

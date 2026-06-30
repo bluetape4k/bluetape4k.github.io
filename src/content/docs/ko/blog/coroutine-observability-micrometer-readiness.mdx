@@ -246,6 +246,11 @@ Coroutine 환경이라고 해서 observability의 기본 방식이 완전히 바
 downstream span을 자식으로 붙이고, error를 기록하고, readiness가 traffic 수신 가능 여부를 말하게 하는 큰 구조는 기존
 thread-per-request 서비스와 같습니다.
 
+Virtual Threads도 이 관점에서는 비슷합니다. Spring MVC나 blocking client를 virtual thread 위에서 돌리면 코드 모양은
+기존 thread-per-request에 더 가깝고, `ThreadLocal` 기반 observation scope도 coroutine보다 직관적으로 따라옵니다. 그렇다고
+운영 계약이 달라지는 것은 아닙니다. Virtual thread가 많아져도 DB connection pool이 자동으로 늘지는 않습니다. connection
+pool 고갈, downstream timeout, readiness 503 같은 판단은 그대로 필요합니다.
+
 다만 coroutine에서는 "언제 같은 요청이라고 볼 수 있는가"를 더 명시적으로 다뤄야 합니다. suspend/resume 때문에 실행 thread가
 바뀔 수 있고, ThreadLocal에만 기대면 현재 observation이 끊길 수 있습니다. 그래서 `ThreadContextElement`로 scope를
 resume 시점마다 복원하고, Reactor context에도 observation을 넣어 둡니다.
