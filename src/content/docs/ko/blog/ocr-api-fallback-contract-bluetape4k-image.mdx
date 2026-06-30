@@ -1,37 +1,37 @@
 ---
-title: "OCR API는 데모보다 fallback 계약이 먼저다"
-description: bluetape4k-workshop OCR API와 bluetape4k-image images-ocr 예제를 바탕으로 upload 검증, native OCR 의존성, timeout, fallback 응답 계약을 정리합니다.
+title: "OCR API를 실전에서 운영하기: 큰 이미지 전처리와 실패 응답 계약"
+description: bluetape4k-workshop OCR API와 bluetape4k-image OCR/benchmark 예제를 바탕으로 upload guard, decoded pixel budget, native OCR dependency, timeout, 실패 응답 계약을 정리합니다.
 sidebar:
   order: -202606302150
 blog:
   date: 2026-06-30T21:50:00+09:00
   image: /assets/ocr-api-fallback-contract-hero.png
   imageAlt: OCR API 작업대에서 이미지 업로드, 검증, native OCR 실행, 완료와 fallback 응답 패널이 배치된 3D 일러스트
-  cardDescription: "OCR API를 단순한 text extraction endpoint가 아니라 upload guard, native runtime, fallback response contract로 나누어 봅니다."
+  cardDescription: "OCR API를 글자 인식 endpoint가 아니라 큰 이미지 입력 경계, native OCR runtime, 실패 응답 계약으로 나누어 봅니다."
 ---
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/ocr-api-fallback-contract-hero.png" alt="OCR API 작업대에서 이미지 업로드, 검증, native OCR 실행, 완료와 fallback 응답 패널이 배치된 3D 일러스트" loading="eager" />
-  <figcaption>OCR API는 글자를 뽑는 기능보다, OCR을 못 할 때도 client가 해석할 수 있는 응답 계약이 먼저 필요합니다.</figcaption>
+  <figcaption>OCR API는 글자를 뽑는 기능보다, OCR을 못 할 때도 client가 해석할 수 있는 응답을 먼저 약속해야 합니다.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-06-30 · bluetape4k-workshop · bluetape4k-image OCR API</p>
 
-OCR demo는 보통 이미지를 올리고 text가 나오는 화면으로 끝납니다. 운영 API는 거기서 끝나지 않습니다.
-이미지가 너무 클 수 있고, content type이 거짓일 수 있고, Tesseract native runtime이 host에 없을 수 있고,
-OCR이 timeout 될 수 있습니다.
+OCR demo는 보통 이미지를 올리고 text가 나오는 화면으로 끝납니다. 실전 API는 거기서 끝나지 않습니다.
+이미지가 압축된 byte로는 작아 보여도 decode하면 너무 클 수 있고, content type이 거짓일 수 있고,
+Tesseract native runtime이 host에 없을 수 있고, OCR call이 timeout될 수 있습니다.
 
-그래서 `bluetape4k-workshop/image-processing/ocr-api` 예제는 OCR 성공보다 먼저 실패와 fallback을
-응답 모델에 넣습니다. 핵심은 "OCR을 못 했다"를 HTTP 500으로 뭉개지 않는 것입니다. 요청은 유효하지만
-현재 host에서 OCR을 수행할 수 없다면 `UNAVAILABLE`, native OCR이 실행되다가 timeout이나 OCR 오류가 나면
-`FAILED`로 구분합니다.
+그래서 `bluetape4k-workshop/image-processing/ocr-api` 예제는 "인식 결과가 잘 나오는가"보다 먼저
+입력 경계와 실패 응답을 모델링합니다. 잘못된 요청은 `BAD_REQUEST`로 끊고, 유효한 이미지인데 현재
+host에서 OCR을 수행할 수 없는 경우만 fallback 응답으로 돌려줍니다. 이 차이를 섞으면 client도,
+운영자도, 장애 알림도 같이 헷갈립니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/ocr-api-fallback-contract-workflow-01.png" alt="Upload validation, native OCR execution, completed response, unavailable fallback response, and failed response paths를 보여주는 OCR API workflow diagram" loading="lazy" />
-  <figcaption>OCR API의 책임은 upload guard, native OCR boundary, client-visible response contract로 나누는 편이 안전합니다.</figcaption>
+  <img src="/assets/ocr-api-fallback-contract-workflow-01.png" alt="HTTP upload boundary, image preprocessing boundary, native OCR boundary, response contract boundary를 세로 lane으로 나누어 보여주는 OCR API workflow diagram" loading="lazy" />
+  <figcaption>실전 OCR API는 upload guard, image preprocessing, native OCR, response contract를 분리해서 봐야 합니다. `BAD_REQUEST`는 fallback이 아니라 입력 경계에서 끝나는 요청입니다.</figcaption>
 </figure>
 
-## 예제 입력과 API 모양
+## 예제 API 모양
 
 글에서 사용할 예제 이미지는 아래처럼 읽기 쉬운 문서형 이미지라고 가정합니다.
 
@@ -72,7 +72,7 @@ Full source:
 
 `status`가 먼저 나오기 때문에 client는 text가 빈 문자열인지 아닌지를 추측하지 않아도 됩니다.
 
-## Upload guard가 fallback보다 먼저다
+## 입력 경계: byte 크기만 보면 늦다
 
 fallback 응답은 "아무 이미지나 받아도 된다"는 뜻이 아닙니다. `ImageOcrServiceImpl`은 OCR을 시도하기 전에
 다음 조건을 먼저 검사합니다.
@@ -83,15 +83,23 @@ fallback 응답은 "아무 이미지나 받아도 된다"는 뜻이 아닙니다
 | `maxUploadBytes` | 요청 하나가 heap과 native runtime을 압박하지 않게 한다 |
 | JPEG/PNG/WebP content type | API contract를 좁혀서 client와 server의 기대를 맞춘다 |
 | Magic byte와 declared type 비교 | `image/png`라고 보낸 JPEG 같은 spoofing을 막는다 |
-| Decoded dimension/pixel budget | 압축은 작지만 decoded image가 큰 payload를 막는다 |
+| Decoded pixel budget | `width * height` 기준으로 decode 이후 비용을 제한한다 |
 
-이 순서가 중요합니다. Tesseract가 꺼져 있더라도 corrupt image는 fallback으로 성공 처리하지 않습니다.
-먼저 image로 decode 가능한지 확인하고, 그 다음 native OCR을 사용할 수 있는지 판단합니다.
+여기서 제한하는 값은 결국 decoded pixel budget입니다. 예를 들어 `4096x3860` 이미지는 업로드 byte가 작아도
+decode하면 약 15.8M pixels입니다. 실전에서는 "가로/세로가 몇이냐"를 따로 분리해서 보기보다
+`width * height`가 API worker와 preprocessing pipeline을 얼마나 압박하는지를 제한 값으로 삼는 편이 직접적입니다.
+예제도 `maxImagePixels`로 이 값을 끊습니다.
 
 Full source:
-[ImageOcrServiceImpl.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/image-processing/ocr-api/src/main/kotlin/io/bluetape4k/workshop/imageprocessing/ocr/service/ImageOcrServiceImpl.kt)
+[ImageOcrServiceImpl.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/image-processing/ocr-api/src/main/kotlin/io/bluetape4k/workshop/imageprocessing/ocr/service/ImageOcrServiceImpl.kt),
+[ImageOcrProperties.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/image-processing/ocr-api/src/main/kotlin/io/bluetape4k/workshop/imageprocessing/ocr/config/ImageOcrProperties.kt)
 
-## Completed와 fallback은 같은 shape를 가진다
+중요한 점은 `BAD_REQUEST`가 fallback 상태가 아니라는 것입니다. 빈 파일, unsupported content type,
+magic byte mismatch, corrupt image, pixel budget 초과는 입력 경계에서 실패합니다. fallback 응답은
+잘못된 요청을 정상화하는 장치가 아닙니다. `BAD_REQUEST`는 입력 경계에서 끊고, fallback은 유효한 이미지가
+OCR runtime 문제로 처리되지 못했을 때만 사용합니다.
+
+## 같은 응답 shape 안에서 상태를 구분한다
 
 Native OCR이 정상 실행되면 `COMPLETED` 응답은 text와 line-based block을 함께 돌려줍니다.
 
@@ -113,7 +121,8 @@ Native OCR이 정상 실행되면 `COMPLETED` 응답은 text와 line-based block
 }
 ```
 
-Native OCR을 끈 상태라면 요청 image는 여전히 검증하지만 OCR은 수행하지 않습니다. 이때 응답은 `UNAVAILABLE`입니다.
+Native OCR을 끈 상태라면 요청 image는 여전히 검증하지만 OCR은 수행하지 않습니다. 이때 응답은
+`UNAVAILABLE`입니다.
 
 ```json
 {
@@ -139,7 +148,7 @@ Tesseract 설정이 빠졌거나 language pack을 찾지 못하는 경우도 cli
 | `UNAVAILABLE` | 비어 있음 | native disabled, Tesseract/tessdata/language pack 미준비 | 같은 request를 나중에 재시도하거나 OCR 없는 UX로 처리한다 |
 | `FAILED` | 비어 있음 | timeout, OCR runtime exception | 입력 품질 또는 OCR 처리 실패로 보고 재시도 정책을 별도로 둔다 |
 
-중요한 점은 세 상태가 같은 response shape를 가진다는 것입니다. Client는 예외 문자열을 parsing하지 않고
+세 상태가 같은 response shape를 가진다는 점이 중요합니다. Client는 예외 문자열을 parsing하지 않고
 `status`, `warnings`, `text`, `blocks`만 보면 됩니다.
 
 ## Native OCR은 host 계약이다
@@ -164,13 +173,47 @@ workshop에서는 이 사실을 property로 드러냅니다.
 | `workshop.ocr.max-upload-bytes` | upload byte budget을 제한한다 |
 | `workshop.ocr.max-image-pixels` | decoded image pixel budget을 제한한다 |
 
-`ImageOcrServiceImpl`은 native OCR 구간을 `Semaphore(permits = 1)`, `withTimeout`, `runInterruptible(Dispatchers.IO)`로
-감쌉니다. 이것은 coroutine API라는 이유로 native call을 가볍게 보지 않겠다는 신호입니다. Native OCR은 CPU와
-native memory를 쓰는 host-level 작업이므로 concurrency와 timeout을 명시적으로 잡아야 합니다.
+`ImageOcrServiceImpl`은 native OCR 구간을 `Semaphore(permits = 1)`, `withTimeout`,
+`runInterruptible(Dispatchers.IO)`로 감쌉니다. 이것은 coroutine API라는 이유로 native call을 가볍게
+보지 않겠다는 신호입니다. Native OCR은 CPU와 native memory를 쓰는 host-level 작업이므로 concurrency와
+timeout을 명시적으로 잡아야 합니다.
 
 Full source:
 [TesseractOcrEngine.kt](https://github.com/bluetape4k/bluetape4k-image/blob/develop/images-ocr/src/main/kotlin/io/bluetape4k/images/ocr/TesseractOcrEngine.kt),
 [images-ocr README](https://github.com/bluetape4k/bluetape4k-image/tree/develop/images-ocr)
+
+## 큰 이미지는 OCR 전에 이미 비용이 든다
+
+OCR API에서 memory pressure는 Tesseract에 들어간 뒤에만 생기지 않습니다. Upload byte는 작아도 decoded image가
+크면 JVM heap과 native pipeline이 먼저 일을 합니다.
+
+`images-benchmark`의 large streaming 결과에는 document/OCR-like workload가 있습니다. 2480x3508 문서형 입력을
+1240x1754로 resize하고 grayscale/JPEG encoding까지 수행한 측정입니다. OCR 자체를 잰 benchmark는 아니지만,
+"OCR 전에 이미지 전처리 비용이 어느 정도인가"를 판단하는 데는 충분히 유용합니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/ocr-api-fallback-contract-benchmark-chart-01.png" alt="OCR document preprocessing benchmark chart comparing Scrimage and libvips latency and managed heap allocation" loading="lazy" />
+  <figcaption>문서형 OCR 전처리 workload에서는 libvips Java 25 FFM 경로가 latency와 managed heap allocation 모두에서 훨씬 작았습니다. 이 숫자는 OCR 인식 시간이 아니라 decode/resize/grayscale/encode pipeline의 비용입니다.</figcaption>
+</figure>
+
+| Boundary | Latency | Managed heap allocation | 해석 |
+|---|---:|---:|---|
+| Scrimage `ByteArray` | 143.64 ms/op | 164.46 MiB/op | 편하지만 compressed input byte를 먼저 staging한다 |
+| Scrimage `Path` | 145.13 ms/op | 164.34 MiB/op | blocking Scrimage boundary에서는 비슷한 수준 |
+| Scrimage `InputStream` / `OutputStream` | 148.39 ms/op | 165.33 MiB/op | stream boundary여도 decoded heap 비용은 남는다 |
+| Scrimage Okio `Source` / `Sink` | 145.59 ms/op | 165.34 MiB/op | lifecycle/integration 장점이지 latency win은 아니다 |
+| Scrimage suspended source/sink | 170.69 ms/op | 166.10 MiB/op | blocking stream bridge overhead가 보인다 |
+| vips `ByteArray` | 15.38 ms/op | 0.34 MiB/op | 빠르지만 compressed input byte staging은 남는다 |
+| vips `Path` | 5.47 ms/op | 0.34 MiB/op | 이 snapshot에서 가장 강한 row |
+| vips `InputStream` / `OutputStream` | 15.59 ms/op | 1.40 MiB/op | 낮은 managed allocation, stream boundary 비용은 존재 |
+
+Source:
+[large-streaming-2026-06-05.md](https://github.com/bluetape4k/bluetape4k-image/blob/develop/benchmark/images-benchmark/docs/large-streaming-2026-06-05.md)
+
+이 결과가 API 설계로 이어지는 지점은 단순합니다. OCR API는 `maxUploadBytes`만 두면 부족합니다. 압축 byte가
+작은 큰 이미지가 들어올 수 있으므로 decoded pixel budget도 함께 둬야 합니다. 그리고 전처리 비용이 중요한 서비스라면
+pure JVM path와 libvips path를 같은 말로 취급하면 안 됩니다. vips는 OCR engine이 아니라 이미지 전처리 비용을 줄이는
+선택지입니다. 글자를 읽는 일은 여전히 Tesseract 같은 OCR runtime이 맡습니다.
 
 ## Ktor와 Spring Boot 차이는 adapter에 머문다
 
@@ -188,30 +231,15 @@ Full source:
 [KtorOcrApiApplication.kt](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/ktor-ocr-api/src/main/kotlin/io/bluetape4k/images/examples/ktor/ocr/KtorOcrApiApplication.kt),
 [SpringBootOcrApiApplication.kt](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-ocr-api/src/main/kotlin/io/bluetape4k/images/examples/spring/ocr/SpringBootOcrApiApplication.kt)
 
-## 큰 이미지는 OCR 전에 이미 비용이 든다
-
-OCR API에서 memory pressure는 Tesseract에 들어간 뒤에만 생기지 않습니다. Upload byte는 작아도 decoded image가 크면
-이미 JVM heap과 native pipeline에 부담이 됩니다.
-
-`images-benchmark`의 large streaming 결과에는 document/OCR-like workload가 있습니다. 2480x3508 문서형 입력을
-1240x1754로 resize하고 grayscale/JPEG encoding까지 수행한 측정에서 pure JVM scrimage 경로는 대략 143-170 ms/op,
-관리 heap allocation은 약 164-166 MiB/op 수준이었습니다. 같은 workload의 Java 25 FFM libvips 경로는 대략
-5.47-15.59 ms/op, 관리 heap allocation은 약 0.34-1.40 MiB/op로 훨씬 작았습니다.
-
-이 숫자는 OCR API의 직접 benchmark가 아니라 large-image 처리 비용의 배경 신호입니다. 그래도 API boundary에서는
-`maxUploadBytes`와 `maxImagePixels`를 둘 다 둬야 한다는 판단에는 충분합니다.
-
-Source:
-[large-streaming-2026-06-05.md](https://github.com/bluetape4k/bluetape4k-image/blob/develop/benchmark/images-benchmark/docs/large-streaming-2026-06-05.md)
-
 ## 마무리
 
-OCR API는 `String`을 반환하는 endpoint로 시작하면 금방 막힙니다. 운영에서는 upload 검증, native runtime 준비 상태,
-timeout, fallback 응답, client retry 정책이 같이 움직입니다.
+OCR API는 `String`을 반환하는 endpoint로 시작하면 금방 막힙니다. 실전에서는 upload byte 크기, decoded pixel
+budget, preprocessing 비용, native runtime 준비 상태, timeout, 실패 응답, client retry 정책이 같이 움직입니다.
 
 Coroutines, Ktor, Spring Boot 중 무엇을 쓰더라도 기본 계약은 크게 달라지지 않습니다. HTTP adapter는 file을 받고
-service request를 만들 뿐입니다. 진짜 중요한 부분은 OCR을 못 했을 때도 client가 같은 response shape 안에서
-`COMPLETED`, `UNAVAILABLE`, `FAILED`를 구분할 수 있게 하는 것입니다.
+service request를 만들 뿐입니다. 조심할 지점은 native OCR을 "suspend 함수 안에서 호출했으니 가볍다"고 착각하지
+않는 것입니다. blocking/native call은 concurrency와 timeout으로 감싸고, client에게는 `COMPLETED`,
+`UNAVAILABLE`, `FAILED`를 같은 response shape 안에서 돌려줘야 합니다.
 
-이미지 detection은 OCR과 비슷한 실패 계약을 갖게 됩니다. 다만 detection은 object bounding box, label, score 같은
-결과 shape가 다르므로 별도 backlog에서 OCR contract와 어떻게 연결할지 다루는 편이 낫습니다.
+이미지 detection은 OCR과 비슷한 실패 응답 계약을 갖게 됩니다. 다만 detection은 object bounding box, label,
+score 같은 결과 shape가 다르므로 별도 backlog에서 OCR contract와 어떻게 연결할지 다루는 편이 낫습니다.
