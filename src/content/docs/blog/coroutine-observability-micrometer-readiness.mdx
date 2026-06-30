@@ -174,9 +174,10 @@ process is still worth keeping alive. If it fails, an orchestrator such as Kuber
 Readiness asks whether this instance should receive traffic right now. If it fails, the instance should be removed from
 the load balancer or Service endpoints without necessarily killing the process.
 
-That distinction matters when the database is down but the HTTP server and coroutine dispatcher are still healthy. The
-process can be alive, so liveness can still pass. The service cannot safely process orders without the database, so
-readiness must fail. That is the gap between "alive" and "ready to receive".
+That distinction matters not only when the database is down, but also when a saturated connection pool causes database
+timeouts while the HTTP server and coroutine dispatcher are still healthy. The process can be alive, so liveness can
+still pass. The service cannot safely process orders without usable database access, so readiness must fail. That is the
+gap between "alive" and "ready to receive".
 
 The Spring Boot and Ktor examples express this operational contract with different framework shapes.
 
