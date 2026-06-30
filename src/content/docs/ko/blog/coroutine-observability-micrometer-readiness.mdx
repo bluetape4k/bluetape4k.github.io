@@ -52,18 +52,56 @@ private suspend fun getTodoById(id: Int): Todo? {
 }
 ```
 
-helper의 public 원형은 일부러 작습니다. 이름과 `ObservationRegistry`, suspend block만 받고, 실제 scope lifecycle은
-`withObservationContextSuspending`에 맡깁니다.
+`withObservationSuspending` 자체는 얇은 wrapper입니다. 핵심은 `withObservationContextSuspending`이 만든 coroutine
+context입니다. 예제에서 기대하는 동작은 "현재 observation을 Reactor context에도 넣고, coroutine resume 시점마다
+Micrometer scope를 다시 열어 주는 것"입니다.
 
 ```kotlin
-suspend inline fun <T: Any> withObservationSuspending(
+suspend fun <T: Any> withObservationContextSuspending(
     name: String,
-    registry: ObservationRegistry,
-    crossinline block: suspend () -> T?,
-): T? =
-    withObservationContextSuspending(name, registry) {
-        block()
+    observationRegistry: ObservationRegistry,
+    block: suspend CoroutineScope.() -> T?,
+): T? {
+    name.requireNotBlank("name")
+    val observation = observationRegistry.start(name)
+
+    return try {
+        withContext(observation.asCoroutineObservationContext()) {
+            block()
+        }
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Throwable) {
+        observation.error(e)
+        throw e
+    } finally {
+        observation.stop()
     }
+}
+```
+
+그리고 `asCoroutineObservationContext()`가 실제 다리 역할을 합니다.
+
+```kotlin
+private class ObservationScopeContextElement(
+    private val observation: Observation,
+): ThreadContextElement<Observation.Scope>, AbstractCoroutineContextElement(Key) {
+    companion object Key: CoroutineContext.Key<ObservationScopeContextElement>
+
+    override fun updateThreadContext(context: CoroutineContext): Observation.Scope =
+        observation.openScope()
+
+    override fun restoreThreadContext(context: CoroutineContext, oldState: Observation.Scope) {
+        oldState.close()
+    }
+}
+
+private suspend fun Observation.asCoroutineObservationContext(): CoroutineContext {
+    val reactorContext = (currentReactiveContext() ?: Context.empty())
+        .put(ObservationThreadLocalAccessor.KEY, this)
+
+    return reactorContext.asCoroutineContext() + ObservationScopeContextElement(this)
+}
 ```
 
 여기서 봐야 할 것은 helper 이름이 아닙니다. "suspend 함수 안의 nested span을 어떤 scope로 열고 닫는가"입니다.

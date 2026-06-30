@@ -52,18 +52,56 @@ private suspend fun getTodoById(id: Int): Todo? {
 }
 ```
 
-The public helper shape is intentionally small. It accepts the span name, `ObservationRegistry`, and suspend block, then
-delegates the actual scope lifecycle to `withObservationContextSuspending`.
+`withObservationSuspending` itself is only a thin wrapper. The important shape is the coroutine context created by
+`withObservationContextSuspending`: the current observation is stored in Reactor context, and a `ThreadContextElement`
+reopens the Micrometer scope whenever the coroutine resumes on a carrier thread.
 
 ```kotlin
-suspend inline fun <T: Any> withObservationSuspending(
+suspend fun <T: Any> withObservationContextSuspending(
     name: String,
-    registry: ObservationRegistry,
-    crossinline block: suspend () -> T?,
-): T? =
-    withObservationContextSuspending(name, registry) {
-        block()
+    observationRegistry: ObservationRegistry,
+    block: suspend CoroutineScope.() -> T?,
+): T? {
+    name.requireNotBlank("name")
+    val observation = observationRegistry.start(name)
+
+    return try {
+        withContext(observation.asCoroutineObservationContext()) {
+            block()
+        }
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Throwable) {
+        observation.error(e)
+        throw e
+    } finally {
+        observation.stop()
     }
+}
+```
+
+The bridge is `asCoroutineObservationContext()`.
+
+```kotlin
+private class ObservationScopeContextElement(
+    private val observation: Observation,
+): ThreadContextElement<Observation.Scope>, AbstractCoroutineContextElement(Key) {
+    companion object Key: CoroutineContext.Key<ObservationScopeContextElement>
+
+    override fun updateThreadContext(context: CoroutineContext): Observation.Scope =
+        observation.openScope()
+
+    override fun restoreThreadContext(context: CoroutineContext, oldState: Observation.Scope) {
+        oldState.close()
+    }
+}
+
+private suspend fun Observation.asCoroutineObservationContext(): CoroutineContext {
+    val reactorContext = (currentReactiveContext() ?: Context.empty())
+        .put(ObservationThreadLocalAccessor.KEY, this)
+
+    return reactorContext.asCoroutineContext() + ObservationScopeContextElement(this)
+}
 ```
 
 The important part is not the helper name. It is how the current span is opened, restored, and stopped inside suspend
