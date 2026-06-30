@@ -1,0 +1,226 @@
+---
+title: "OCR APIs Need a Fallback Contract Before the Demo"
+description: A source-backed look at upload validation, native OCR dependencies, timeout handling, and fallback response contracts using the bluetape4k-workshop OCR API and bluetape4k-image images-ocr examples.
+sidebar:
+  order: -202606302150
+blog:
+  date: 2026-06-30T21:50:00+09:00
+  image: /assets/ocr-api-fallback-contract-hero.png
+  imageAlt: 3D illustration of an OCR API workbench with image upload, validation, native OCR execution, completed response, and fallback response panels
+  cardDescription: "Treat an OCR API as an upload guard, native runtime boundary, and fallback response contract, not just a text extraction endpoint."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/ocr-api-fallback-contract-hero.png" alt="3D illustration of an OCR API workbench with image upload, validation, native OCR execution, completed response, and fallback response panels" loading="eager" />
+  <figcaption>An OCR API needs a client-readable response contract even when OCR cannot run.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-30 · bluetape4k-workshop · bluetape4k-image OCR API</p>
+
+An OCR demo often ends with a file upload and extracted text. A production API does not. The image
+may be too large, the declared content type may be false, Tesseract may be missing from the host,
+or the native OCR call may time out.
+
+That is why the `bluetape4k-workshop/image-processing/ocr-api` example models failure and fallback
+before the happy path. The important part is not to collapse "OCR could not run" into a generic
+HTTP 500. If the request is valid but the current host cannot run OCR, the API returns
+`UNAVAILABLE`. If native OCR starts and then times out or throws an OCR error, the API returns
+`FAILED`.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/ocr-api-fallback-contract-workflow-01.png" alt="OCR API workflow diagram showing upload validation, native OCR execution, completed response, unavailable fallback response, and failed response paths" loading="lazy" />
+  <figcaption>The safer split is upload guard, native OCR boundary, and client-visible response contract.</figcaption>
+</figure>
+
+## Example Input and API Shape
+
+The sample used in this post is a clean document-like image.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/ocr-api-fallback-contract-sample-input-01.png" alt="OCR API sample input image with the title BLUETAPE OCR and three document lines" loading="lazy" />
+  <figcaption>Actual OCR output depends on font, resolution, traineddata, and preprocessing. The JSON below is a source-backed illustration of the workshop contract.</figcaption>
+</figure>
+
+The workshop API accepts a multipart upload.
+
+```bash
+curl -F "file=@sample.png;type=image/png" \
+  -F "language=eng" \
+  http://localhost:8080/api/images/ocr
+```
+
+The controller turns the `file` part and optional `language` query parameter into a service request.
+Full source:
+[ImageOcrController.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/image-processing/ocr-api/src/main/kotlin/io/bluetape4k/workshop/imageprocessing/ocr/web/ImageOcrController.kt)
+
+The response model does not return text alone.
+
+```kotlin
+data class ImageOcrResponse(
+    val requestId: String,
+    val status: OcrStatus,
+    val engine: String,
+    val languages: List<String>,
+    val confidence: Double?,
+    val text: String,
+    val blocks: List<OcrTextBlock>,
+    val warnings: List<String>,
+)
+```
+
+Full source:
+[ImageOcrModels.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/image-processing/ocr-api/src/main/kotlin/io/bluetape4k/workshop/imageprocessing/ocr/model/ImageOcrModels.kt)
+
+Because `status` is explicit, clients do not need to infer meaning from an empty text field.
+
+## Upload Guard Comes Before Fallback
+
+A fallback response does not mean the API accepts any image. `ImageOcrServiceImpl` validates the
+request before it attempts OCR.
+
+| Guard | Why it exists |
+|---|---|
+| Reject empty bytes | Do not treat an empty multipart field as a valid OCR request |
+| `maxUploadBytes` | Keep one request from pressuring heap and native runtime resources |
+| JPEG/PNG/WebP content type | Keep the client/server contract narrow |
+| Magic-byte check against declared type | Reject spoofed uploads such as JPEG bytes declared as PNG |
+| Decoded dimension and pixel budget | Reject small compressed payloads that expand into huge decoded images |
+
+The order matters. Even when Tesseract is disabled, a corrupt image is not converted into a
+successful fallback. The service first confirms that the upload is a real image, then decides
+whether native OCR can run.
+
+Full source:
+[ImageOcrServiceImpl.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/image-processing/ocr-api/src/main/kotlin/io/bluetape4k/workshop/imageprocessing/ocr/service/ImageOcrServiceImpl.kt)
+
+## Completed and Fallback Share One Shape
+
+When native OCR succeeds, the `COMPLETED` response returns text and line-based blocks.
+
+```json
+{
+  "requestId": "ocr-20260630-0001",
+  "status": "COMPLETED",
+  "engine": "tesseract",
+  "languages": ["eng"],
+  "confidence": null,
+  "text": "BLUETAPE OCR\nLine 1: Upload image\nLine 2: Validate native OCR\nLine 3: Return fallback safely",
+  "blocks": [
+    { "index": 0, "text": "BLUETAPE OCR", "confidence": null },
+    { "index": 1, "text": "Line 1: Upload image", "confidence": null },
+    { "index": 2, "text": "Line 2: Validate native OCR", "confidence": null },
+    { "index": 3, "text": "Line 3: Return fallback safely", "confidence": null }
+  ],
+  "warnings": ["Confidence is not available from the current OCR engine."]
+}
+```
+
+When native OCR is disabled, the API still validates the image but does not run OCR. The response
+is `UNAVAILABLE`.
+
+```json
+{
+  "requestId": "ocr-20260630-0002",
+  "status": "UNAVAILABLE",
+  "engine": "disabled",
+  "languages": ["eng"],
+  "confidence": null,
+  "text": "",
+  "blocks": [],
+  "warnings": [
+    "Native OCR is disabled. Enable workshop.ocr.native-enabled=true or -Docr.enabled=true."
+  ]
+}
+```
+
+Missing Tesseract configuration or language data is also expressed as `UNAVAILABLE`. A timeout or
+runtime OCR exception becomes `FAILED`.
+
+| Status | text/blocks | Common cause | Client interpretation |
+|---|---|---|---|
+| `COMPLETED` | Filled | OCR completed | Use `text` and `blocks` |
+| `UNAVAILABLE` | Empty | Native disabled, Tesseract/tessdata/language pack not ready | Retry later or continue with an OCR-less UX |
+| `FAILED` | Empty | Timeout or OCR runtime exception | Treat it as input quality or processing failure and apply a separate retry policy |
+
+The key point is that all three states share the same response shape. Clients read `status`,
+`warnings`, `text`, and `blocks` instead of parsing exception messages.
+
+## Native OCR Is a Host Contract
+
+`bluetape4k-image/images-ocr` provides a Tess4J/Tesseract-backed engine, but it does not bundle the
+Tesseract binary or traineddata. The host or container must provide the native runtime.
+
+```bash
+brew install tesseract
+ls /opt/homebrew/share/tessdata/eng.traineddata
+
+sudo apt-get install -y tesseract-ocr tesseract-ocr-eng
+```
+
+The workshop exposes this through configuration.
+
+| Property | Role |
+|---|---|
+| `workshop.ocr.native-enabled` | Enables the native OCR path |
+| `workshop.ocr.tessdata-path` | Points to host-specific traineddata |
+| `workshop.ocr.timeout` | Keeps a native call from holding an API worker too long |
+| `workshop.ocr.max-upload-bytes` | Limits upload byte budget |
+| `workshop.ocr.max-image-pixels` | Limits decoded image pixel budget |
+
+`ImageOcrServiceImpl` wraps the native OCR section with `Semaphore(permits = 1)`, `withTimeout`,
+and `runInterruptible(Dispatchers.IO)`. That is the right signal: a coroutine API does not make a
+native OCR call cheap. Native OCR consumes CPU and native memory, so concurrency and timeout must
+be explicit.
+
+Full source:
+[TesseractOcrEngine.kt](https://github.com/bluetape4k/bluetape4k-image/blob/develop/images-ocr/src/main/kotlin/io/bluetape4k/images/ocr/TesseractOcrEngine.kt),
+[images-ocr README](https://github.com/bluetape4k/bluetape4k-image/tree/develop/images-ocr)
+
+## Ktor and Spring Boot Differ Only at the Adapter
+
+`bluetape4k-image` includes two OCR quickstarts.
+
+| Example | Route | Upload handling | Error shape |
+|---|---|---|---|
+| [Ktor OCR API](https://github.com/bluetape4k/bluetape4k-image/tree/develop/examples/ktor-ocr-api) | `/api/ocr` | Reads streamed multipart parts up to `maxInputBytes + 1` | `error`, `message`, `status`, `path` |
+| [Spring Boot OCR API](https://github.com/bluetape4k/bluetape4k-image/tree/develop/examples/spring-boot-ocr-api) | `/api/ocr` | Reads `MultipartFile.bytes` on `Dispatchers.IO` | `error`, `message` |
+
+Both eventually call `immutableImageOf(uploadBytes).suspendExtractText(...)`. The difference is how
+the HTTP stack reads multipart data and shapes errors. The OCR engine contract remains in
+`images-ocr`.
+
+Full source:
+[KtorOcrApiApplication.kt](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/ktor-ocr-api/src/main/kotlin/io/bluetape4k/images/examples/ktor/ocr/KtorOcrApiApplication.kt),
+[SpringBootOcrApiApplication.kt](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-ocr-api/src/main/kotlin/io/bluetape4k/images/examples/spring/ocr/SpringBootOcrApiApplication.kt)
+
+## Large Images Cost Money Before OCR Starts
+
+Memory pressure in an OCR API does not start only inside Tesseract. A small compressed upload can
+expand into a large decoded image and pressure heap or native pipelines before recognition begins.
+
+The `images-benchmark` large-streaming report includes a document/OCR-like workload. It processes
+a 2480x3508 document input, resizes it to 1240x1754, applies grayscale, and encodes JPEG output.
+In that workload, the pure-JVM scrimage path was roughly 143-170 ms/op with about 164-166 MiB/op
+of managed allocation. The Java 25 FFM libvips path was roughly 5.47-15.59 ms/op with about
+0.34-1.40 MiB/op of managed allocation.
+
+Those numbers are not direct OCR API benchmarks. They are background evidence for large-image
+processing cost. They still justify having both `maxUploadBytes` and `maxImagePixels` at the API
+boundary.
+
+Source:
+[large-streaming-2026-06-05.md](https://github.com/bluetape4k/bluetape4k-image/blob/develop/benchmark/images-benchmark/docs/large-streaming-2026-06-05.md)
+
+## Closing
+
+An OCR API gets stuck quickly if it starts as an endpoint returning `String`. In production,
+upload validation, native runtime readiness, timeouts, fallback responses, and client retry policy
+move together.
+
+Whether the adapter is coroutines, Ktor, or Spring Boot does not change the core contract very
+much. The HTTP layer receives a file and builds a service request. The important part is that the
+client can distinguish `COMPLETED`, `UNAVAILABLE`, and `FAILED` inside the same response shape.
+
+Image detection will need a similar failure contract, but the result shape is different: object
+bounding boxes, labels, and scores instead of line-based text. That belongs in the separate
+detection/OCR follow-up backlog rather than in this OCR API article.
