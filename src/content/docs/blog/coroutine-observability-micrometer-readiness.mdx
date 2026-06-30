@@ -131,7 +131,16 @@ Real failures such as 5xx responses or Redis errors should still become span err
 
 ## Readiness means "ready to receive", not merely "alive"
 
-The Spring Boot and Ktor examples express the same operational contract with different framework shapes.
+Liveness and readiness differ first in the action a platform should take when they fail. Liveness asks whether the
+process is still worth keeping alive. If it fails, an orchestrator such as Kubernetes normally restarts the container.
+Readiness asks whether this instance should receive traffic right now. If it fails, the instance should be removed from
+the load balancer or Service endpoints without necessarily killing the process.
+
+That distinction matters when the database is down but the HTTP server and coroutine dispatcher are still healthy. The
+process can be alive, so liveness can still pass. The service cannot safely process orders without the database, so
+readiness must fail. That is the gap between "alive" and "ready to receive".
+
+The Spring Boot and Ktor examples express this operational contract with different framework shapes.
 
 <figure class="bt4k-architecture">
   <img src="/assets/coroutine-observability-readiness-sequence-01.png" alt="Sequence diagram for readiness probe checking endpoint state repository ping database reachability and UP or DOWN response branches" loading="lazy" />

@@ -132,7 +132,16 @@ return try {
 
 ## Readiness는 "살아 있음"이 아니라 "받아도 됨"이다
 
-Spring Boot와 Ktor 예제는 같은 운영 계약을 다른 프레임워크 모양으로 표현합니다.
+Liveness와 readiness는 실패했을 때 플랫폼이 취해야 할 행동부터 다릅니다. Liveness는 "이 process를 계속 살려 둘 수
+있는가"를 묻습니다. 여기서 실패하면 Kubernetes 같은 orchestrator는 보통 container를 재시작합니다. Readiness는 "지금
+traffic을 보내도 되는가"를 묻습니다. 여기서 실패하면 process를 죽이는 대신 load balancer나 Service endpoint에서
+잠시 빼야 합니다.
+
+그래서 DB가 내려갔지만 HTTP server와 coroutine dispatcher는 정상인 상황이 중요합니다. process는 살아 있으니 liveness는
+성공할 수 있습니다. 하지만 주문을 처리하려면 DB가 필요하므로 readiness는 실패해야 합니다. "살아 있음"과 "받아도 됨"이
+갈라지는 지점입니다.
+
+Spring Boot와 Ktor 예제는 이 운영 계약을 다른 프레임워크 모양으로 표현합니다.
 
 <figure class="bt4k-architecture">
   <img src="/assets/coroutine-observability-readiness-sequence-01.png" alt="Sequence diagram for readiness probe checking endpoint state repository ping database reachability and UP or DOWN response branches" loading="lazy" />
