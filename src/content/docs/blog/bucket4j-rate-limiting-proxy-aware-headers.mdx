@@ -1,0 +1,355 @@
+---
+title: "Bucket4j Rate Limiting: Choose the Caller Identity Before the Bucket"
+description: A source-backed walkthrough of bluetape4k-workshop Bucket4j examples covering Caffeine, Redis, proxy-aware identity, and client-visible rate-limit headers.
+sidebar:
+  order: -202606301530
+blog:
+  date: 2026-06-30T15:30:00+09:00
+  image: /assets/bluetape4k-rate-limit-workshop-hero.png
+  imageAlt: A 3D API Gateway rate-limiter workbench with allowed requests, 429 responses, Redis, and Caffeine cache blocks
+  cardDescription: "A practical look at Bucket4j rate limiting as caller identity, proxy trust, bucket storage, and response-header contracts."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-rate-limit-workshop-hero.png" alt="A 3D API Gateway rate-limiter workbench with allowed requests, 429 responses, Redis, and Caffeine cache blocks" loading="eager" />
+  <figcaption>A rate limiter should decide whose bucket it consumes before it decides where that bucket is stored.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-30 · bluetape4k-workshop · Bucket4j rate limiting</p>
+
+When a public API needs rate limiting, it is natural to start with token buckets. In production, though, the first
+mistake is often not the bucket data structure. It is caller identity. Using `remoteAddress` blindly can make every user
+behind a proxy look like one caller. Trusting `X-Forwarded-For` blindly can let an attacker rotate quota by changing a
+request header.
+
+`bluetape4k-workshop/ratelimit` has four modules that make the problem easy to study in layers. The post works best when
+each module has a clear role.
+
+| Example | Role in this post | Main point |
+|---|---|---|
+| [`bucket4j-caffeine-web`](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/ratelimit/bucket4j-caffeine-web) | Single-JVM starter baseline | Stores buckets in Caffeine JCache and limits WebMVC endpoints |
+| [`bucket4j-redis`](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/ratelimit/bucket4j-redis) | Distributed bucket baseline | Stores token state in Redis/Lettuce and limits WebFlux endpoints |
+| [`bucker4j-bluetape4k-webflux`](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/ratelimit/bucker4j-bluetape4k-webflux) | bluetape4k limiter API example | Applies user-token buckets through `DistributedRateLimiter` |
+| [`bucket4j-advanced`](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/ratelimit/bucket4j-advanced) | Main article example | Separates IP, user, combined keys, proxy trust, and standard response headers |
+
+The center of the article is therefore `bucket4j-advanced`. Caffeine and Redis explain storage choices. The bluetape4k
+WebFlux module shows the library API. The operational problem, however, is usually not just "Redis or Caffeine?" It is
+"did we put the right requests into the same bucket?"
+
+## Rate Limiting Architecture
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-rate-limit-workshop-architecture-02.png" alt="Bucket4j rate-limit architecture diagram showing client, proxy, identity strategy, WebFilter, Redis or Caffeine bucket storage, handler, and 429 response path" loading="lazy" />
+  <figcaption>IP, user, and combined keys are caller-identity contracts. Redis and Caffeine are where those contracts store token state.</figcaption>
+</figure>
+
+If rate limiting is treated as "count requests", the design gets flat quickly. In practice, three questions have to be
+answered separately.
+
+| Question | Failure mode |
+|---|---|
+| Which identity partitions the bucket? | A NATed user group can be blocked together, or an attacker can spoof a header to bypass the limit |
+| Where is bucket state stored? | Multiple instances can each grant their own quota |
+| How is the result exposed to clients? | Clients cannot tell when to retry and may amplify traffic |
+
+In code, the diagram has two steps. First, the Bucket4j configuration decides which bucket policy is attached to which
+limiter bean. Then the WebFilter extracts an identity from the request, builds a bucket key, and asks whether one token
+can be consumed for that key.
+
+## Bucket4j Configuration Separates Policy from Limiter Beans
+
+[`RateLimitConfig`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/ratelimit/bucket4j-advanced/src/main/kotlin/io/bluetape4k/workshop/bucket4j/advanced/config/RateLimitConfig.kt)
+creates one Redis proxy manager, then registers separate `BucketConfiguration`, `AsyncBucketProxyProvider`, and
+`DistributedSuspendRateLimiter` beans for the IP, user, and combined strategies.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-rate-limit-workshop-spring-classes-01.png" alt="Spring configuration class diagram showing relationships among RateLimitConfig, BucketConfiguration, AsyncBucketProxyProvider, DistributedSuspendRateLimiter, SuspendRateLimiter, IpRateLimitWebFilter, RequestUtils, and RateLimitResult" loading="lazy" />
+  <figcaption>Spring configuration creates separate policy, provider, and limiter beans. The WebFilter makes HTTP decisions from `RateLimitResult`. Solid lines mean interface implementation; dashed lines mean creates, uses, or returns.</figcaption>
+</figure>
+
+As a class diagram, `RateLimitConfig` is the wiring class that produces the same bean shape for each strategy.
+`BucketConfiguration` owns the quota policy, `AsyncBucketProxyProvider` resolves the remote bucket for a key, and
+`DistributedSuspendRateLimiter` implements `SuspendRateLimiter`. The HTTP filter only injects that limiter and interprets
+`RateLimitResult`, so the boundary between Spring bean wiring and HTTP behavior is a single `consume(key, 1)` call.
+
+```kotlin
+@Bean
+fun proxyManager(lettuceClient: RedisClient): LettuceBasedProxyManager<ByteArray> {
+    return lettuceBasedProxyManagerOf(lettuceClient) {
+        ClientSideConfig.getDefault()
+            .withExpirationAfterWriteStrategy(
+                ExpirationAfterWriteStrategy
+                    .basedOnTimeForRefillingBucketUpToMax(Duration.ofSeconds(90))
+            )
+            .withExecutionStrategy(ExecutionStrategy.background(VirtualThreadExecutor))
+    }
+}
+
+@Bean
+@Qualifier("ipBucketConfiguration")
+fun ipBucketConfiguration(): BucketConfiguration = bucketConfiguration {
+    addLimit { it.capacity(20).refillIntervally(20, Duration.ofSeconds(10)) }
+    addLimit { it.capacity(100).refillGreedy(10, Duration.ofMinutes(1)) }
+}
+
+@Bean
+@Qualifier("ipBucketProxyProvider")
+fun ipBucketProxyProvider(
+    proxyManager: ProxyManager<ByteArray>,
+    @Qualifier("ipBucketConfiguration") ipBucketConfiguration: BucketConfiguration,
+): AsyncBucketProxyProvider =
+    AsyncBucketProxyProvider(proxyManager.asAsync(), ipBucketConfiguration)
+
+@Bean
+@Qualifier("ipRateLimiter")
+fun ipRateLimiter(
+    @Qualifier("ipBucketProxyProvider") ipBucketProxyProvider: AsyncBucketProxyProvider,
+): DistributedSuspendRateLimiter =
+    DistributedSuspendRateLimiter(ipBucketProxyProvider)
+```
+
+The Redis proxy manager is the shared backend for token state. `ipBucketConfiguration` is the actual policy: 20 tokens
+per 10 seconds plus 100 tokens per minute for anonymous IP traffic. `ipRateLimiter` is the entry point that consumes
+that policy. The user and combined strategies use the same structure with different capacities.
+
+## bluetape4k RateLimiter Wraps Bucket4j Probes as Result Objects
+
+[`RateLimiter`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/ratelimit/RateLimiter.kt)
+and
+[`SuspendRateLimiter`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/ratelimit/SuspendRateLimiter.kt)
+are small facades around Bucket4j. They do not expose Bucket4j internals to the HTTP filter. The filter calls
+`consume(key, numToken)` and receives one stable result object.
+
+```kotlin
+interface SuspendRateLimiter<K> {
+    suspend fun consume(key: K, numToken: Long = 1): RateLimitResult
+}
+```
+
+`consume` does not wait for refill. It attempts immediate token consumption and returns a
+[`RateLimitResult`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/ratelimit/RateLimitResult.kt).
+
+```kotlin
+val result = rateLimiter.consume("ip:203.0.113.10", 1)
+
+when {
+    result.isConsumed -> chain.filter(exchange).awaitSingleOrNull()
+    result.isRejected -> {
+        exchange.response.statusCode = HttpStatus.TOO_MANY_REQUESTS
+        Mono.empty<Void>().awaitSingleOrNull()
+    }
+    result.isError -> chain.filter(exchange).awaitSingleOrNull() // example policy: fail open
+}
+```
+
+`RateLimitResult` has three operational states.
+
+| Status | Meaning | Use in an HTTP filter |
+|---|---|---|
+| `CONSUMED` | The token was consumed | Continue to the handler |
+| `REJECTED` | The bucket had insufficient tokens | Return `429` with `Retry-After` |
+| `ERROR` | Provider or Redis processing failed | Choose fail-open or fail-closed |
+
+The distributed coroutine implementation,
+[`DistributedSuspendRateLimiter`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/ratelimit/distributed/DistributedSuspendRateLimiter.kt),
+resolves the key-specific async bucket proxy, awaits one `tryConsumeAndReturnRemaining(numToken)` `ConsumptionProbe`,
+and maps that probe to `RateLimitResult`. It does not read `availableTokens` again after consuming.
+
+```kotlin
+val bucketProxy = asyncBucketProxyProvider.resolveBucket(key)
+val probe = bucketProxy.tryConsumeAndReturnRemaining(numToken).await()
+return toRateLimitResult(probe, numToken)
+```
+
+That is the useful boundary for the workshop. The HTTP layer does not need to know Bucket4j probe internals. It only
+needs to map `RateLimitResult` to "continue", "429", or the chosen provider-failure policy.
+
+## The Identity from extractIp Becomes the Permit Key
+
+For `/api/anonymous`, the
+[`IpRateLimitWebFilter`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/ratelimit/bucket4j-advanced/src/main/kotlin/io/bluetape4k/workshop/bucket4j/advanced/filter/IpRateLimitWebFilter.kt)
+extracts caller identity with `RequestUtils.extractIp(exchange, trustProxy)`, builds an `ip:<address>` bucket key, and
+calls `rateLimiter.consume(key, 1L)`.
+
+```kotlin
+val ip = RequestUtils.extractIp(exchange, trustProxy)
+val effectiveIp = ip?.takeIf { it.isNotBlank() } ?: "unknown"
+
+val key = "ip:$effectiveIp"
+val result = rateLimiter.consume(key, 1L)
+
+exchange.response.headers.set(
+    HeaderConstants.X_RATELIMIT_REMAINING,
+    result.availableTokens.toString()
+)
+
+if (result.isConsumed) {
+    chain.filter(exchange).awaitSingleOrNull()
+} else {
+    val retryAfterSecs = result.retryAfter
+        ?.let { TimeUnit.NANOSECONDS.toSeconds(it.toNanos()).coerceAtLeast(1) }
+        ?: 1L
+    exchange.response.headers.set(HeaderConstants.RETRY_AFTER, retryAfterSecs.toString())
+    exchange.response.statusCode = HttpStatus.TOO_MANY_REQUESTS
+    Mono.empty<Void>().awaitSingleOrNull()
+}
+```
+
+The permit decision is `result.isConsumed`. If one token was consumed, the request reaches the handler. If
+`result.isRejected`, the filter returns `429 Too Many Requests` with `Retry-After` and never calls the handler. Because
+`DistributedSuspendRateLimiter` converts provider failures into `RateLimitResult.error`, the filter can make the
+fail-open or fail-closed decision explicitly at the HTTP boundary.
+
+The identity extraction in front of that decision changes with proxy trust:
+
+```kotlin
+fun extractIp(exchange: ServerWebExchange, trustProxy: Boolean = false): String? {
+    val request = exchange.request
+    if (trustProxy) {
+        val forwardedFor = request.headers.getFirst(HeaderConstants.X_FORWARDED_FOR)
+        if (!forwardedFor.isNullOrBlank()) {
+            return forwardedFor.split(",").first().trim()
+        }
+        val realIp = request.headers.getFirst(HeaderConstants.X_REAL_IP)
+        if (!realIp.isNullOrBlank()) {
+            return realIp.trim()
+        }
+    }
+    return request.remoteAddress?.address?.hostAddress
+}
+```
+
+The difference between WebFlux and WebMVC is the request API, not the policy. WebFlux reads from
+`ServerWebExchange`, using `exchange.request.headers` and `exchange.request.remoteAddress`. The same rule in a
+Servlet/WebMVC filter or interceptor would use `HttpServletRequest#getHeader()` and `request.remoteAddr`.
+
+```kotlin
+fun extractIp(request: HttpServletRequest, trustProxy: Boolean = false): String? {
+    if (trustProxy) {
+        val forwardedFor = request.getHeader(HeaderConstants.X_FORWARDED_FOR)
+        if (!forwardedFor.isNullOrBlank()) {
+            return forwardedFor.split(",").first().trim()
+        }
+        val realIp = request.getHeader(HeaderConstants.X_REAL_IP)
+        if (!realIp.isNullOrBlank()) {
+            return realIp.trim()
+        }
+    }
+    return request.remoteAddr
+}
+```
+
+The two versions mean the same thing. With `trustProxy=false`, use the peer address observed by the framework. With
+`trustProxy=true`, allow trusted proxy headers to become identity candidates. WebFlux uses a reactive server request
+model; WebMVC uses the Servlet request model.
+
+So "adding rate limiting" is not just enabling Bucket4j. In this example, `extractIp` decides the identity, that identity
+becomes the bucket key, and `consume` decides whether the request is permitted or rejected. If proxy trust is wrong, even
+a well-configured Bucket4j policy consumes tokens from the wrong caller.
+
+## Caffeine vs Redis Is a Storage Choice
+
+`bucket4j-caffeine-web` is the smallest starter-style example. Its test profile limits `/hello` to 5 requests per 10
+seconds and `/world` to 10 requests per 10 seconds, then verifies `429` after the bucket is exhausted. For a local
+servlet app or a single-instance service, this is the fastest way to see the starter behavior.
+
+`bucket4j-redis` moves the same kind of token state into Redis/Lettuce for WebFlux. Multiple application instances share
+the same bucket state, so quota is not accidentally multiplied by the number of pods.
+
+| Choice | Fits | Watch out for |
+|---|---|---|
+| Caffeine local bucket | Single JVM, local development, starter behavior | Quota scales with instance count |
+| Redis distributed bucket | Multi-instance services and gateway/service scale-out | Redis failure needs a fail-open or fail-closed policy |
+
+That is the storage part. A Redis-backed limiter can still block the wrong caller if the key is wrong.
+
+## The Key Should Match the Endpoint
+
+`bucket4j-advanced` splits three filters by path prefix.
+
+| Endpoint | Key shape | Bucket |
+|---|---|---|
+| `GET /api/anonymous/hello` | `ip:<address>` | 20 tokens / 10s, 100 tokens / min |
+| `GET /api/authenticated/hello` | `user:<userId>` | 50 tokens / 10s, 200 tokens / min |
+| `GET /api/sensitive/hello` | `combined:<ip>:<userId>` | 10 tokens / 10s, 50 tokens / min |
+
+Anonymous endpoints naturally start with IP buckets. Authenticated endpoints should normally use an authenticated
+identity such as `X-User-ID`. Sensitive operations can combine IP and user ID to distinguish users behind the same NAT
+from one user moving across network locations.
+
+```kotlin
+val key = "combined:$effectiveIp:$userId"
+val result = rateLimiter.consume(key, 1L)
+```
+
+That line looks small, but a policy decision sits in front of it. The combined filter returns `400` when the user ID is
+missing. The user-based filter returns `401` when `X-User-ID` is absent. Falling back from a missing authenticated
+identity to `remoteAddress` is convenient, but it can silently treat the wrong identity as valid.
+
+## Proxy Trust Is a Security Setting
+
+Behind a proxy, `remoteAddress` often means "load balancer" rather than "real client." Trusting `X-Forwarded-For` by
+default is not a safe fix. If a client can send that header directly, it can pretend to be a different IP on every
+request.
+
+`bucket4j-advanced` defaults to `ratelimit.trust-proxy=false`. In that mode, `X-Forwarded-For` and `X-Real-IP` are
+ignored and the TCP remote address is used. Only when `trust-proxy=true` does the utility take the leftmost
+`X-Forwarded-For` value as the client address.
+
+The WebFlux and WebMVC versions above share that same policy. This is closer to a security boundary than a convenience
+switch. Enable it only when the service sits behind a known, controlled reverse proxy and outside clients cannot inject
+proxy headers directly.
+
+## Response Headers Are a Client Contract
+
+A bare `429` tells the client it was rejected, but not how to behave next. `bucket4j-advanced` exposes remaining tokens
+and retry timing through response headers.
+
+| Header | Meaning |
+|---|---|
+| `X-RateLimit-Remaining` | Tokens remaining after this request |
+| `X-RateLimit-Reset` | Seconds until reset; the example writes a calculated value while the README still treats it as reserved |
+| `Retry-After` | Seconds to wait before retrying; present on `429 Too Many Requests` responses |
+
+The basic `bucker4j-bluetape4k-webflux` module uses `X-Bluetape4k-Remaining-Token`. The advanced module is better for
+this article because it demonstrates `X-RateLimit-Remaining` and `Retry-After`, which are easier to discuss as an HTTP
+client contract.
+
+## Example Requests
+
+After starting `bucket4j-advanced`, these requests exercise the three policies.
+
+```bash
+# IP-based anonymous endpoint
+curl -i http://localhost:8080/api/anonymous/hello
+
+# userId-based authenticated endpoint
+curl -i -H "X-User-ID: alice" \
+  http://localhost:8080/api/authenticated/hello
+
+# combined IP + userId endpoint
+curl -i -H "X-User-ID: alice" \
+  http://localhost:8080/api/sensitive/hello
+
+# ignored unless ratelimit.trust-proxy=true
+curl -i -H "X-Forwarded-For: 203.0.113.10, 10.0.0.7" \
+  http://localhost:8080/api/anonymous/hello
+```
+
+The tests cover the same operational shape: the IP bucket returns `429` and `Retry-After` when exhausted, user buckets
+for different user IDs remain independent, the combined endpoint returns `400` without a user ID, and exhausted combined
+quota returns `429`.
+
+## Wrap-Up
+
+WebFlux and coroutines do not change the operational contract of rate limiting. They do make it easier to hide token
+consumption, response headers, and fail-open/fail-closed behavior inside one async filter if the example is too compact.
+
+The workshop modules are most useful when read as separate pieces:
+
+- `bucket4j-caffeine-web`: the smallest local-bucket starter
+- `bucket4j-redis`: the distributed-bucket starter
+- `bucker4j-bluetape4k-webflux`: bluetape4k `DistributedRateLimiter` usage
+- `bucket4j-advanced`: operational identity, proxy trust, and response-header contracts
+
+Before asking "should this bucket live in Redis?", decide "whose request is this?" The bucket comes after that.
