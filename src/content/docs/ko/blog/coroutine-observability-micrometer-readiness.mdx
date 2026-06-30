@@ -52,6 +52,20 @@ private suspend fun getTodoById(id: Int): Todo? {
 }
 ```
 
+helper의 public 원형은 일부러 작습니다. 이름과 `ObservationRegistry`, suspend block만 받고, 실제 scope lifecycle은
+`withObservationContextSuspending`에 맡깁니다.
+
+```kotlin
+suspend inline fun <T: Any> withObservationSuspending(
+    name: String,
+    registry: ObservationRegistry,
+    crossinline block: suspend () -> T?,
+): T? =
+    withObservationContextSuspending(name, registry) {
+        block()
+    }
+```
+
 여기서 봐야 할 것은 helper 이름이 아닙니다. "suspend 함수 안의 nested span을 어떤 scope로 열고 닫는가"입니다.
 coroutine은 carrier thread를 바꿀 수 있습니다. ThreadLocal만 믿고 있으면 span tree가 갑자기 평평해집니다. 로그를 보던
 사람 입장에서는 "분명 같은 요청인데 왜 남남처럼 보이지?"가 됩니다. 뚜껑 열리는 지점입니다.
