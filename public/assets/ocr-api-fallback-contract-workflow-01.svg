@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1880" height="1080" viewBox="0 0 1880 1080" role="img" aria-labelledby="title desc">
-  <title id="title">OCR API production workflow</title>
+<svg xmlns="http://www.w3.org/2000/svg" width="2240" height="1220" viewBox="0 0 2240 1220" role="img" aria-labelledby="title desc">
+  <title id="title">OCR Service Runtime Boundaries</title>
   <desc id="desc">Vertical responsibility lanes for HTTP upload boundary, image preprocessing boundary, native OCR boundary, and response contract boundary.</desc>
   <defs>
     <marker id="arrow-blue" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto">
@@ -22,6 +22,8 @@
     </filter>
     <style>
       .bg { fill: #f6f8fb; }
+      .title-text { font: 700 42px 'Architects Daughter', 'Comic Mono', 'Comic Sans MS', cursive; fill: #1f2937; }
+      .subtitle-text { font: 19px 'Comic Mono', 'SFMono-Regular', monospace; fill: #596579; }
       .lane { stroke: #d4deea; stroke-width: 2; }
       .lane-a { fill: #edf5ff; }
       .lane-b { fill: #f1f8f4; }
@@ -59,141 +61,144 @@
     </style>
   </defs>
 
-  <rect class="bg" x="0" y="0" width="1880" height="1080"/>
-  <rect class="lane lane-a" x="40" y="78" width="420" height="932" rx="24"/>
-  <rect class="lane lane-b" x="500" y="78" width="420" height="932" rx="24"/>
-  <rect class="lane lane-c" x="960" y="78" width="420" height="932" rx="24"/>
-  <rect class="lane lane-d" x="1420" y="78" width="420" height="932" rx="24"/>
+  <rect class="bg" x="0" y="0" width="2240" height="1220"/>
+  <text class="title-text" x="70" y="66">OCR Service Runtime Boundaries</text>
+  <text class="subtitle-text" x="70" y="98">Bad requests stop at upload guard; valid images move through preprocessing, native OCR, and response states.</text>
 
-  <text class="lane-title" x="82" y="126">HTTP Upload Boundary</text>
-  <text class="lane-sub" x="82" y="154">adapter-level request contract</text>
-  <text class="lane-title" x="542" y="126">Image Preprocessing</text>
-  <text class="lane-sub" x="542" y="154">bytes, headers, decoded pixels</text>
-  <text class="lane-title" x="1002" y="126">Native OCR Boundary</text>
-  <text class="lane-sub" x="1002" y="154">host runtime and timeout lane</text>
-  <text class="lane-title" x="1462" y="126">Response Contract</text>
-  <text class="lane-sub" x="1462" y="154">client-readable result shape</text>
+  <rect class="lane lane-a" x="50" y="130" width="430" height="950" rx="24"/>
+  <rect class="lane lane-b" x="620" y="130" width="430" height="950" rx="24"/>
+  <rect class="lane lane-c" x="1190" y="130" width="430" height="950" rx="24"/>
+  <rect class="lane lane-d" x="1760" y="130" width="430" height="950" rx="24"/>
+
+  <text class="lane-title" x="92" y="178">HTTP Upload Boundary</text>
+  <text class="lane-sub" x="92" y="206">adapter-level request contract</text>
+  <text class="lane-title" x="662" y="178">Image Preprocessing</text>
+  <text class="lane-sub" x="662" y="206">bytes, headers, decoded pixels</text>
+  <text class="lane-title" x="1232" y="178">Native OCR Boundary</text>
+  <text class="lane-sub" x="1232" y="206">host runtime and timeout lane</text>
+  <text class="lane-title" x="1802" y="178">Response Contract</text>
+  <text class="lane-sub" x="1802" y="206">client-readable result shape</text>
 
   <g id="card-client-upload" data-node="client-upload">
-    <rect class="card card-blue" id="rect-client-upload" x="90" y="170" width="320" height="130" rx="16"/>
-    <circle class="dot-blue" cx="124" cy="210" r="11"/>
-    <text class="card-title" x="148" y="214">Client Upload</text>
-    <text class="card-body" x="124" y="250">multipart file</text>
-    <text class="card-body" x="124" y="274">language=eng</text>
+    <rect class="card card-blue" id="rect-client-upload" x="100" y="235" width="330" height="130" rx="16"/>
+    <circle class="dot-blue" cx="134" cy="275" r="11"/>
+    <text class="card-title" x="158" y="279">Client Upload</text>
+    <text class="card-body" x="134" y="315">multipart file</text>
+    <text class="card-body" x="134" y="339">language=eng</text>
   </g>
 
   <g id="card-http-adapter" data-node="http-adapter">
-    <rect class="card card-blue" id="rect-http-adapter" x="90" y="380" width="320" height="130" rx="16"/>
-    <circle class="dot-blue" cx="124" cy="420" r="11"/>
-    <text class="card-title" x="148" y="424">HTTP Adapter</text>
-    <text class="card-body" x="124" y="460">Spring or Ktor</text>
-    <text class="card-body" x="124" y="484">builds service request</text>
+    <rect class="card card-blue" id="rect-http-adapter" x="100" y="455" width="330" height="130" rx="16"/>
+    <circle class="dot-blue" cx="134" cy="495" r="11"/>
+    <text class="card-title" x="158" y="499">HTTP Adapter</text>
+    <text class="card-body" x="134" y="535">Spring or Ktor</text>
+    <text class="card-body" x="134" y="559">builds service request</text>
   </g>
 
   <g id="card-upload-guard" data-node="upload-guard">
-    <rect class="card card-blue" id="rect-upload-guard" x="550" y="170" width="320" height="130" rx="16"/>
-    <circle class="dot-blue" cx="584" cy="210" r="11"/>
-    <text class="card-title" x="608" y="214">Upload Guard</text>
-    <text class="card-body" x="584" y="250">empty bytes, max bytes</text>
-    <text class="card-body" x="584" y="274">type + magic bytes</text>
+    <rect class="card card-blue" id="rect-upload-guard" x="670" y="235" width="330" height="130" rx="16"/>
+    <circle class="dot-blue" cx="704" cy="275" r="11"/>
+    <text class="card-title" x="728" y="279">Upload Guard</text>
+    <text class="card-body" x="704" y="315">empty bytes, max bytes</text>
+    <text class="card-body" x="704" y="339">type + magic bytes</text>
   </g>
 
   <g id="card-pixel-budget" data-node="pixel-budget">
-    <rect class="card card-blue" id="rect-pixel-budget" x="550" y="380" width="320" height="130" rx="16"/>
-    <circle class="dot-blue" cx="584" cy="420" r="11"/>
-    <text class="card-title" x="608" y="424">Pixel Budget</text>
-    <text class="card-body" x="584" y="460">width * height cap</text>
-    <text class="card-body" x="584" y="484">decode only if bounded</text>
+    <rect class="card card-blue" id="rect-pixel-budget" x="670" y="455" width="330" height="130" rx="16"/>
+    <circle class="dot-blue" cx="704" cy="495" r="11"/>
+    <text class="card-title" x="728" y="499">Pixel Budget</text>
+    <text class="card-body" x="704" y="535">width * height cap</text>
+    <text class="card-body" x="704" y="559">decode only if bounded</text>
   </g>
 
   <g id="card-preprocess" data-node="preprocess">
-    <rect class="card card-teal" id="rect-preprocess" x="550" y="590" width="320" height="130" rx="16"/>
-    <circle class="dot-teal" cx="584" cy="630" r="11"/>
-    <text class="card-title" x="608" y="634">Preprocess</text>
-    <text class="card-body" x="584" y="670">resize / grayscale</text>
-    <text class="card-body" x="584" y="694">lower OCR cost</text>
+    <rect class="card card-teal" id="rect-preprocess" x="670" y="675" width="330" height="130" rx="16"/>
+    <circle class="dot-teal" cx="704" cy="715" r="11"/>
+    <text class="card-title" x="728" y="719">Preprocess</text>
+    <text class="card-body" x="704" y="755">resize / grayscale</text>
+    <text class="card-body" x="704" y="779">lower OCR cost</text>
   </g>
 
   <g id="card-native-gate" data-node="native-gate">
-    <rect class="card card-amber" id="rect-native-gate" x="1010" y="380" width="320" height="130" rx="16"/>
-    <circle class="dot-amber" cx="1044" cy="420" r="11"/>
-    <text class="card-title" x="1068" y="424">Native Gate</text>
-    <text class="card-body" x="1044" y="460">enabled?</text>
-    <text class="card-body" x="1044" y="484">tessdata ready?</text>
+    <rect class="card card-amber" id="rect-native-gate" x="1240" y="455" width="330" height="130" rx="16"/>
+    <circle class="dot-amber" cx="1274" cy="495" r="11"/>
+    <text class="card-title" x="1298" y="499">Native Gate</text>
+    <text class="card-body" x="1274" y="535">enabled?</text>
+    <text class="card-body" x="1274" y="559">tessdata ready?</text>
   </g>
 
   <g id="card-tesseract" data-node="tesseract">
-    <rect class="card card-teal" id="rect-tesseract" x="1010" y="590" width="320" height="130" rx="16"/>
-    <circle class="dot-teal" cx="1044" cy="630" r="11"/>
-    <text class="card-title" x="1068" y="634">Tesseract OCR</text>
-    <text class="card-body" x="1044" y="670">Semaphore(1)</text>
-    <text class="card-body" x="1044" y="694">withTimeout + IO</text>
+    <rect class="card card-teal" id="rect-tesseract" x="1240" y="675" width="330" height="130" rx="16"/>
+    <circle class="dot-teal" cx="1274" cy="715" r="11"/>
+    <text class="card-title" x="1298" y="719">Tesseract OCR</text>
+    <text class="card-body" x="1274" y="755">Semaphore(1)</text>
+    <text class="card-body" x="1274" y="779">withTimeout + IO</text>
   </g>
 
   <g id="card-bad-request" data-node="bad-request">
-    <rect class="card card-gray" id="rect-bad-request" x="1470" y="170" width="320" height="130" rx="16"/>
-    <circle class="dot-gray" cx="1504" cy="210" r="11"/>
-    <text class="card-title" x="1528" y="214">BAD_REQUEST</text>
-    <text class="card-body" x="1504" y="250">not a fallback</text>
-    <text class="card-body" x="1504" y="274">reject invalid input</text>
+    <rect class="card card-gray" id="rect-bad-request" x="1810" y="235" width="330" height="130" rx="16"/>
+    <circle class="dot-gray" cx="1844" cy="275" r="11"/>
+    <text class="card-title" x="1868" y="279">BAD_REQUEST</text>
+    <text class="card-body" x="1844" y="315">not a fallback</text>
+    <text class="card-body" x="1844" y="339">reject invalid input</text>
   </g>
 
   <g id="card-unavailable" data-node="unavailable">
-    <rect class="card card-amber" id="rect-unavailable" x="1470" y="380" width="320" height="130" rx="16"/>
-    <circle class="dot-amber" cx="1504" cy="420" r="11"/>
-    <text class="card-title" x="1528" y="424">UNAVAILABLE</text>
-    <text class="card-body" x="1504" y="460">valid image</text>
-    <text class="card-body" x="1504" y="484">runtime not ready</text>
+    <rect class="card card-amber" id="rect-unavailable" x="1810" y="455" width="330" height="130" rx="16"/>
+    <circle class="dot-amber" cx="1844" cy="495" r="11"/>
+    <text class="card-title" x="1868" y="499">UNAVAILABLE</text>
+    <text class="card-body" x="1844" y="535">valid image</text>
+    <text class="card-body" x="1844" y="559">runtime not ready</text>
   </g>
 
   <g id="card-completed" data-node="completed">
-    <rect class="card card-teal" id="rect-completed" x="1470" y="590" width="320" height="130" rx="16"/>
-    <circle class="dot-teal" cx="1504" cy="630" r="11"/>
-    <text class="card-title" x="1528" y="634">COMPLETED</text>
-    <text class="card-body" x="1504" y="670">text + blocks</text>
-    <text class="card-body" x="1504" y="694">same response shape</text>
+    <rect class="card card-teal" id="rect-completed" x="1810" y="675" width="330" height="130" rx="16"/>
+    <circle class="dot-teal" cx="1844" cy="715" r="11"/>
+    <text class="card-title" x="1868" y="719">COMPLETED</text>
+    <text class="card-body" x="1844" y="755">text + blocks</text>
+    <text class="card-body" x="1844" y="779">same response shape</text>
   </g>
 
   <g id="card-failed" data-node="failed">
-    <rect class="card card-red" id="rect-failed" x="1470" y="800" width="320" height="130" rx="16"/>
-    <circle class="dot-red" cx="1504" cy="840" r="11"/>
-    <text class="card-title" x="1528" y="844">FAILED</text>
-    <text class="card-body" x="1504" y="880">timeout</text>
-    <text class="card-body" x="1504" y="904">OCR exception</text>
+    <rect class="card card-red" id="rect-failed" x="1810" y="895" width="330" height="130" rx="16"/>
+    <circle class="dot-red" cx="1844" cy="935" r="11"/>
+    <text class="card-title" x="1868" y="939">FAILED</text>
+    <text class="card-body" x="1844" y="975">timeout</text>
+    <text class="card-body" x="1844" y="999">OCR exception</text>
   </g>
 
-  <path id="flow-upload-adapter" class="flow flow-blue" data-connector="upload-to-adapter" d="M 250 300 L 250 380"/>
-  <path id="flow-adapter-guard" class="flow flow-blue" data-connector="adapter-to-guard" d="M 410 445 L 550 445"/>
-  <path id="flow-guard-pixel" class="flow flow-blue" data-connector="guard-to-pixel" d="M 710 300 L 710 380"/>
-  <path id="flow-pixel-preprocess" class="flow flow-teal" data-connector="pixel-to-preprocess" d="M 710 510 L 710 590"/>
-  <path id="flow-guard-bad-request" class="flow flow-gray" data-connector="guard-to-bad-request" d="M 870 235 L 1470 235"/>
-  <path id="flow-preprocess-native" class="flow flow-teal" data-connector="preprocess-to-native-gate" d="M 870 655 L 930 655 Q 948 655 948 637 L 948 463 Q 948 445 966 445 L 1010 445"/>
-  <path id="flow-native-unavailable" class="flow flow-amber" data-connector="native-gate-to-unavailable" d="M 1330 445 L 1470 445"/>
-  <path id="flow-native-tesseract" class="flow flow-teal" data-connector="native-gate-to-tesseract" d="M 1170 510 L 1170 590"/>
-  <path id="flow-tesseract-completed" class="flow flow-teal" data-connector="tesseract-to-completed" d="M 1330 655 L 1470 655"/>
-  <path id="flow-tesseract-failed" class="flow flow-red" data-connector="tesseract-to-failed" d="M 1170 720 L 1170 768 Q 1170 786 1188 786 L 1414 786 Q 1432 786 1432 804 L 1432 847 Q 1432 865 1450 865 L 1470 865"/>
+  <path id="flow-upload-adapter" class="flow flow-blue" data-connector="upload-to-adapter" d="M 265 365 L 265 455"/>
+  <path id="flow-adapter-guard" class="flow flow-blue" data-connector="adapter-to-guard" d="M 430 520 L 670 520"/>
+  <path id="flow-guard-pixel" class="flow flow-blue" data-connector="guard-to-pixel" d="M 835 365 L 835 455"/>
+  <path id="flow-pixel-preprocess" class="flow flow-teal" data-connector="pixel-to-preprocess" d="M 835 585 L 835 675"/>
+  <path id="flow-guard-bad-request" class="flow flow-gray" data-connector="guard-to-bad-request" d="M 1000 300 L 1810 300"/>
+  <path id="flow-preprocess-native" class="flow flow-teal" data-connector="preprocess-to-native-gate" d="M 1000 740 L 1088 740 Q 1106 740 1106 722 L 1106 538 Q 1106 520 1124 520 L 1240 520"/>
+  <path id="flow-native-unavailable" class="flow flow-amber" data-connector="native-gate-to-unavailable" d="M 1570 520 L 1810 520"/>
+  <path id="flow-native-tesseract" class="flow flow-teal" data-connector="native-gate-to-tesseract" d="M 1405 585 L 1405 675"/>
+  <path id="flow-tesseract-completed" class="flow flow-teal" data-connector="tesseract-to-completed" d="M 1570 740 L 1810 740"/>
+  <path id="flow-tesseract-failed" class="flow flow-red" data-connector="tesseract-to-failed" d="M 1405 805 L 1405 858 Q 1405 876 1423 876 L 1708 876 Q 1726 876 1726 894 L 1726 942 Q 1726 960 1744 960 L 1810 960"/>
 
-  <rect class="pill pill-blue" x="430" y="398" width="168" height="36" rx="18"/>
-  <text class="pill-text" x="452" y="422">request bytes</text>
-  <rect class="pill pill-gray" x="1112" y="190" width="214" height="36" rx="18"/>
-  <text class="pill-text" x="1134" y="214">invalid input stops</text>
-  <rect class="pill pill-teal" x="892" y="602" width="146" height="36" rx="18"/>
-  <text class="pill-text" x="914" y="626">valid image</text>
-  <rect class="pill pill-amber" x="1348" y="398" width="154" height="36" rx="18"/>
-  <text class="pill-text" x="1370" y="422">runtime gap</text>
-  <rect class="pill pill-red" x="1232" y="742" width="180" height="36" rx="18"/>
-  <text class="pill-text" x="1254" y="766">OCR failed safely</text>
+  <rect class="pill pill-blue" x="468" y="472" width="168" height="36" rx="18"/>
+  <text class="pill-text" x="490" y="496">request bytes</text>
+  <rect class="pill pill-gray" x="1292" y="252" width="214" height="36" rx="18"/>
+  <text class="pill-text" x="1314" y="276">invalid input stops</text>
+  <rect class="pill pill-teal" x="1030" y="690" width="146" height="36" rx="18"/>
+  <text class="pill-text" x="1052" y="714">valid image</text>
+  <rect class="pill pill-amber" x="1608" y="472" width="154" height="36" rx="18"/>
+  <text class="pill-text" x="1630" y="496">runtime gap</text>
+  <rect class="pill pill-red" x="1500" y="824" width="180" height="36" rx="18"/>
+  <text class="pill-text" x="1522" y="848">OCR failed safely</text>
 
   <g id="legend">
-    <circle class="dot-blue" cx="90" cy="1038" r="8"/>
-    <text class="legend-text" x="108" y="1044">upload guard</text>
-    <circle class="dot-teal" cx="260" cy="1038" r="8"/>
-    <text class="legend-text" x="278" y="1044">valid OCR path</text>
-    <circle class="dot-amber" cx="475" cy="1038" r="8"/>
-    <text class="legend-text" x="493" y="1044">runtime unavailable</text>
-    <circle class="dot-red" cx="745" cy="1038" r="8"/>
-    <text class="legend-text" x="763" y="1044">runtime failure</text>
-    <circle class="dot-gray" cx="970" cy="1038" r="8"/>
-    <text class="legend-text" x="988" y="1044">bad request, not fallback</text>
+    <circle class="dot-blue" cx="90" cy="1168" r="8"/>
+    <text class="legend-text" x="108" y="1174">upload guard</text>
+    <circle class="dot-teal" cx="260" cy="1168" r="8"/>
+    <text class="legend-text" x="278" y="1174">valid OCR path</text>
+    <circle class="dot-amber" cx="475" cy="1168" r="8"/>
+    <text class="legend-text" x="493" y="1174">runtime unavailable</text>
+    <circle class="dot-red" cx="745" cy="1168" r="8"/>
+    <text class="legend-text" x="763" y="1174">runtime failure</text>
+    <circle class="dot-gray" cx="970" cy="1168" r="8"/>
+    <text class="legend-text" x="988" y="1174">bad request, not fallback</text>
   </g>
 </svg>

@@ -1,23 +1,23 @@
 ---
-title: "OCR API를 실전에서 운영하기: 큰 이미지 전처리와 실패 응답 계약"
-description: bluetape4k-workshop OCR API와 bluetape4k-image OCR/benchmark 예제를 바탕으로 upload guard, decoded pixel budget, native OCR dependency, timeout, 실패 응답 계약을 정리합니다.
+title: "OCR 서비스를 실전에서 운영하기: 큰 이미지 전처리와 실패 응답 계약"
+description: bluetape4k-workshop OCR 서비스와 bluetape4k-image OCR/benchmark 예제를 바탕으로 upload guard, decoded pixel budget, native OCR dependency, timeout, 실패 응답 계약을 정리합니다.
 sidebar:
   order: -202606302150
 blog:
   date: 2026-06-30T21:50:00+09:00
   image: /assets/ocr-api-fallback-contract-hero.png
-  imageAlt: OCR API 작업대에서 이미지 업로드, 검증, native OCR 실행, 완료와 fallback 응답 패널이 배치된 3D 일러스트
-  cardDescription: "OCR API를 글자 인식 endpoint가 아니라 큰 이미지 입력 경계, native OCR runtime, 실패 응답 계약으로 나누어 봅니다."
+  imageAlt: OCR 서비스 작업대에서 이미지 업로드, 검증, native OCR 실행, 완료와 fallback 응답 패널이 배치된 3D 일러스트
+  cardDescription: "OCR 서비스를 글자 인식 endpoint가 아니라 큰 이미지 입력 경계, native OCR runtime, 실패 응답 계약으로 나누어 봅니다."
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/ocr-api-fallback-contract-hero.png" alt="OCR API 작업대에서 이미지 업로드, 검증, native OCR 실행, 완료와 fallback 응답 패널이 배치된 3D 일러스트" loading="eager" />
-  <figcaption>OCR API는 글자를 뽑는 기능보다, OCR을 못 할 때도 client가 해석할 수 있는 응답을 먼저 약속해야 합니다.</figcaption>
+  <img src="/assets/ocr-api-fallback-contract-hero.png" alt="OCR 서비스 작업대에서 이미지 업로드, 검증, native OCR 실행, 완료와 fallback 응답 패널이 배치된 3D 일러스트" loading="eager" />
+  <figcaption>OCR 서비스는 글자를 뽑는 기능보다, OCR을 못 할 때도 client가 해석할 수 있는 응답을 먼저 약속해야 합니다.</figcaption>
 </figure>
 
-<p class="bt4k-post-meta">2026-06-30 · bluetape4k-workshop · bluetape4k-image OCR API</p>
+<p class="bt4k-post-meta">2026-06-30 · bluetape4k-workshop · bluetape4k-image OCR service</p>
 
-OCR demo는 보통 이미지를 올리고 text가 나오는 화면으로 끝납니다. 실전 API는 거기서 끝나지 않습니다.
+OCR demo는 보통 이미지를 올리고 text가 나오는 화면으로 끝납니다. 실전 서비스는 거기서 끝나지 않습니다.
 이미지가 압축된 byte로는 작아 보여도 decode하면 너무 클 수 있고, content type이 거짓일 수 있고,
 Tesseract native runtime이 host에 없을 수 있고, OCR call이 timeout될 수 있습니다.
 
@@ -27,8 +27,8 @@ host에서 OCR을 수행할 수 없는 경우만 fallback 응답으로 돌려줍
 운영자도, 장애 알림도 같이 헷갈립니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/ocr-api-fallback-contract-workflow-01.png" alt="HTTP upload boundary, image preprocessing boundary, native OCR boundary, response contract boundary를 세로 lane으로 나누어 보여주는 OCR API workflow diagram" loading="lazy" />
-  <figcaption>실전 OCR API는 upload guard, image preprocessing, native OCR, response contract를 분리해서 봐야 합니다. `BAD_REQUEST`는 fallback이 아니라 입력 경계에서 끝나는 요청입니다.</figcaption>
+  <img src="/assets/ocr-api-fallback-contract-workflow-01.png" alt="HTTP upload boundary, image preprocessing boundary, native OCR boundary, response contract boundary를 세로 lane으로 나누어 보여주는 OCR 서비스 workflow diagram" loading="lazy" />
+  <figcaption>실전 OCR 서비스는 upload guard, image preprocessing, native OCR, response contract를 분리해서 봐야 합니다. `BAD_REQUEST`는 fallback이 아니라 입력 경계에서 끝나는 요청입니다.</figcaption>
 </figure>
 
 ## 예제 API 모양
@@ -233,7 +233,7 @@ Full source:
 
 ## 마무리
 
-OCR API는 `String`을 반환하는 endpoint로 시작하면 금방 막힙니다. 실전에서는 upload byte 크기, decoded pixel
+OCR 서비스는 `String`을 반환하는 endpoint로 시작하면 금방 막힙니다. 실전에서는 upload byte 크기, decoded pixel
 budget, preprocessing 비용, native runtime 준비 상태, timeout, 실패 응답, client retry 정책이 같이 움직입니다.
 
 Coroutines, Ktor, Spring Boot 중 무엇을 쓰더라도 기본 계약은 크게 달라지지 않습니다. HTTP adapter는 file을 받고
@@ -242,4 +242,4 @@ service request를 만들 뿐입니다. 조심할 지점은 native OCR을 "suspe
 `UNAVAILABLE`, `FAILED`를 같은 response shape 안에서 돌려줘야 합니다.
 
 이미지 detection은 OCR과 비슷한 실패 응답 계약을 갖게 됩니다. 다만 detection은 object bounding box, label,
-score 같은 결과 shape가 다르므로 별도 backlog에서 OCR contract와 어떻게 연결할지 다루는 편이 낫습니다.
+score 같은 결과 shape가 다르므로 별도 예제로 다루도록 할 예정입니다.
