@@ -235,6 +235,25 @@ Spring은 Actuator convention을 얻는 대신 endpoint shape와 lifecycle을 �
 않고, request-id가 응답과 로그에 같이 남으면 장애 분석은 추측에서 확인으로 넘어갑니다. 아직 삽질은 남지만, 최소한 삽질할
 방향은 보입니다.
 
+## Coroutines라고 운영 계약이 달라지지는 않는다
+
+Coroutine 환경이라고 해서 observability의 기본 방식이 완전히 바뀌지는 않습니다. HTTP server span을 만들고, service와
+downstream span을 자식으로 붙이고, error를 기록하고, readiness가 traffic 수신 가능 여부를 말하게 하는 큰 구조는 기존
+thread-per-request 서비스와 같습니다.
+
+다만 coroutine에서는 "언제 같은 요청이라고 볼 수 있는가"를 더 명시적으로 다뤄야 합니다. suspend/resume 때문에 실행 thread가
+바뀔 수 있고, ThreadLocal에만 기대면 현재 observation이 끊길 수 있습니다. 그래서 `ThreadContextElement`로 scope를
+resume 시점마다 복원하고, Reactor context에도 observation을 넣어 둡니다.
+
+조심할 지점은 세 가지입니다.
+
+1. Context propagation을 테스트로 고정합니다. downstream `traceparent`와 parent-child span 관계가 실제로 이어지는지 확인해야 합니다.
+2. Cancellation을 실패로 기록하지 않습니다. `CancellationException`은 먼저 다시 던지고, 실제 장애만 `observation.error(e)`로 남깁니다.
+3. Readiness는 coroutine이 도는지가 아니라 요청을 처리할 수 있는지를 말해야 합니다. DB나 cache 같은 필수 dependency가 내려갔으면 process가 살아 있어도 503이어야 합니다.
+
+결국 coroutine observability는 새 개념을 많이 외우는 문제가 아닙니다. 기존 관측성 계약을 유지하되, suspend boundary에서
+context와 cancellation이 새지 않도록 확인하는 문제입니다.
+
 ## Source notes
 
 - [`micrometer-tracing-coroutines`](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/observability/micrometer-tracing-coroutines)

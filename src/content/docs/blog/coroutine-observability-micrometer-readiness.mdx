@@ -231,6 +231,26 @@ Observability is less about what you installed and more about which failure is f
 connected, readiness does not lie, and request ids line up between responses and logs, incident analysis moves from
 guessing to checking.
 
+## Coroutines do not change the operational contract
+
+Coroutine-based services do not need a completely different observability model. The broad shape is the same as a
+thread-per-request service: create the HTTP server span, attach service and downstream spans as children, record real
+errors, and make readiness report whether the instance can safely receive traffic.
+
+The difference is that coroutine code must be more explicit about what still belongs to the same request. Execution can
+suspend and resume on another carrier thread. If the current observation lives only in a thread-local scope, it can
+disappear at exactly that boundary. That is why the example restores scope through `ThreadContextElement` and also keeps
+the observation in Reactor context.
+
+The practical cautions are narrow:
+
+1. Pin context propagation with tests. Verify both downstream `traceparent` and parent-child span relationships.
+2. Do not turn cancellation into a failed span. Rethrow `CancellationException` first, and record only real failures with `observation.error(e)`.
+3. Readiness must describe whether requests can be handled, not whether coroutines are still running. If a required dependency such as the database is degraded, the process can be alive while readiness returns 503.
+
+In short, coroutine observability is not about memorizing a separate model. It is about preserving the existing
+observability contract across suspend boundaries without leaking context or misclassifying cancellation.
+
 ## Source notes
 
 - [`micrometer-tracing-coroutines`](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/observability/micrometer-tracing-coroutines)
