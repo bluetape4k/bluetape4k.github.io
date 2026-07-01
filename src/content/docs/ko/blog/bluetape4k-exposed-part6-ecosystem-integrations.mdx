@@ -1,0 +1,258 @@
+---
+title: "Bluetape4k Exposed Part 6: BigQuery, Trino, CockroachDB, DuckDB 통합 예제"
+description: Exposed SQL DSL을 분석 플랫폼, 페더레이션 엔진, 분산 SQL, 내장 분석 엔진에 붙일 때 어떤 경계를 먼저 검증해야 하는지 워크숍 예제로 정리한다.
+sidebar:
+  order: -202607010110
+blog:
+  date: 2026-07-01T01:10:00+09:00
+  image: /assets/bluetape4k-exposed-part6-ecosystem-integrations-hero.png
+  imageAlt: BigQuery dry-run, Trino federation, CockroachDB 재시도 흐름, DuckDB 내장 분석 장치를 작은 로봇 작업자들이 조립하는 3D 디오라마
+  cardDescription: "분석 플랫폼과 특수 DB를 Exposed DSL에 붙일 때, 실행보다 먼저 검증해야 할 경계를 예제로 봅니다."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-exposed-part6-ecosystem-integrations-hero.png" alt="BigQuery dry-run, Trino federation, CockroachDB 재시도 흐름, DuckDB 내장 분석 장치를 작은 로봇 작업자들이 조립하는 3D 디오라마" loading="eager" />
+  <figcaption>Exposed를 OLTP DB 밖으로 가져갈 때는 "연결된다"보다 "어떤 계약을 먼저 검증할 것인가"가 더 중요합니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-07-01 · bluetape4k-exposed 시리즈 · Part 6</p>
+
+Part 4에서 JSON, 암호화, dialect 이야기를 했고, Part 5에서는 캐시와 운영 예제를 봤습니다. 이번 글은 그 다음
+경계입니다. Exposed SQL DSL을 BigQuery, Trino, CockroachDB, DuckDB 같은 생태계 통합 지점에 붙일 때 무엇을
+검증해야 하는가입니다.
+
+여기서 핵심은 "다른 DB도 Exposed로 다룰 수 있다"가 아닙니다. 이 네 가지는 모두 "그냥 다른 JDBC DB"라고 보기
+어렵습니다.
+
+| 예제 | 먼저 검증할 계약 | 기본 실행 경계 |
+|---|---|---|
+| BigQuery | 실행 전 dry-run 요청과 옵션 매핑 | mock REST client, 인증 정보 없음 |
+| Trino | session 옵션과 `EXPLAIN` 가능한 SQL 형태 | 로컬 SQL 생성, coordinator 연결 없음 |
+| CockroachDB | SQLSTATE `40001`에서 전체 transaction 재시도 | Testcontainers CockroachDB |
+| DuckDB | 파일 기반 내장 분석과 transaction/Flow 경계 | 로컬 DuckDB 파일, 서버 없음 |
+
+그래서 `exposed-workshop/13-ecosystem-integrations`의 예제는 실제 서비스를 바로 사용하는 방식으로 만들지 않았습니다.
+대부분은 로컬 실행, 가짜 객체, mock, Testcontainers 경계를 먼저 둡니다. 비용, 인증 정보, 네트워크를 열기 전에
+애플리케이션이 가져야 하는 기능을 테스트하려는 의도입니다.
+
+## BigQuery: 실행보다 dry-run 계약이 먼저다
+
+BigQuery 예제는 실제 분석 쿼리를 실행하지 않습니다. Exposed가 만든 쿼리를 BigQuery `jobs.query` 요청으로 바꾸고,
+`dryRun=true`와 옵션 매핑이 맞는지 확인합니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-exposed-part6-bigquery-dry-run-flow.png" alt="BigQuery dry-run flow from Exposed query through dry-run request to mocked BigQuery REST response" loading="lazy" />
+  <figcaption>BigQuery 예제는 비용이 드는 실행 전에 요청 형태와 옵션 계약을 검증합니다.</figcaption>
+</figure>
+
+핵심 코드는 간단합니다.
+
+```kotlin
+fun validateRegionalRevenueDryRun(
+    context: BigQueryContext,
+    options: BigQueryQueryOptions = defaultDryRunOptions(),
+    minimumRevenue: BigDecimal = BigDecimal("10.00"),
+): QueryResponse =
+    context.validateQuery(buildRegionalRevenueQuery(minimumRevenue), options)
+```
+
+`defaultDryRunOptions()`는 `maximumBytesBilled`, `labels`, `priority`, `location`, `timeoutMs`를 설정합니다. 테스트는
+mock BigQuery REST client로 요청을 잡아냅니다. 여기서 중요한 점은 클라우드 인증 정보를 읽지 않는다는 보장입니다.
+기본 명령은 `GOOGLE_APPLICATION_CREDENTIALS`, ADC, service-account 파일, API key를 읽지 않아야 합니다.
+
+```bash
+./gradlew :01-bigquery-dry-run:test
+```
+
+이 예제는 BigQuery 성능 예제가 아닙니다. 실행 전에 "이 query를 이 옵션으로 보낼 수 있는가"를 확인하는 안전장치입니다.
+운영에서 BigQuery 비용을 한 번 잘못 열면 꽤 비싼 공부가 됩니다. dry-run은 그 공부를 테스트로 미루는 장치입니다.
+
+## Trino: connection 옵션은 애플리케이션 계약이다
+
+Trino 예제도 실제 coordinator에 연결하지 않습니다. 대신 애플리케이션이 다루는 profile을 `TrinoConnectionOptions`로
+바꾸고, Exposed가 만든 쿼리를 `EXPLAIN` 요청으로 감쌉니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-exposed-part6-trino-session-sequence.png" alt="Trino session options sequence showing validated workshop profile, Exposed SQL generation, and EXPLAIN request preparation" loading="lazy" />
+  <figcaption>Trino에서는 catalog, schema, source, tag, session property를 애플리케이션 설정으로 먼저 관리합니다.</figcaption>
+</figure>
+
+profile은 JDBC driver 속성을 여기저기 흩뿌리지 않고, 애플리케이션 값으로 먼저 검증합니다.
+
+```kotlin
+data class TrinoWorkshopConnectionProfile(
+    val catalog: String = "hive",
+    val schema: String = "analytics",
+    val source: String = "exposed-workshop",
+    val clientTags: List<String> = listOf("exposed", "analytics", "workshop"),
+    val sessionProperties: Map<String, String> = mapOf(
+        "join_distribution_type" to "AUTOMATIC",
+        "query_max_execution_time" to "5m",
+    ),
+): Serializable
+```
+
+그 다음 쿼리 형태를 봅니다.
+
+```kotlin
+fun buildExplainRequest(sql: String): String {
+    sql.requireNotBlank("sql")
+    return "EXPLAIN\n$sql"
+}
+```
+
+이 테스트가 connector별 pushdown을 보장하지는 않습니다. Trino의 pushdown은 connector와 catalog 설정에 따라
+달라집니다. 대신 이 예제는 projection, predicate, ordering, top-N 신호가 살아 있는 SQL을 만들고, 실제 클러스터에
+연결하기 전에 요청 경계를 확인합니다.
+
+## CockroachDB: 마지막 SQL 문이 아니라 전체 transaction을 다시 실행한다
+
+CockroachDB는 PostgreSQL wire protocol을 쓰지만 transaction 실패를 다루는 방식은 애플리케이션 코드가 알아야 합니다.
+Serializable 충돌이 나면 SQLSTATE `40001`과 `restart transaction` 계열 메시지가 올 수 있습니다. 이때 마지막
+`UPDATE`만 다시 실행하면 안 됩니다. 읽기, 검증, 갱신, ledger 저장을 포함한 전체 transaction을 다시 실행해야 합니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-exposed-part6-cockroachdb-retry-sequence.png" alt="CockroachDB serializable retry sequence showing application service, retry helper, Exposed transaction attempt, CockroachDB, and ledger state" loading="lazy" />
+  <figcaption>CockroachDB 재시도 경계는 전체 Exposed transaction block을 다시 실행하는 쪽에 둡니다.</figcaption>
+</figure>
+
+예제 서비스는 재시도 책임을 `withCockroachTransaction`에 맡깁니다.
+
+```kotlin
+return withCockroachTransaction(db = db, options = retryOptions) {
+    val current = CockroachInventory
+        .selectAll()
+        .where { CockroachInventory.sku eq sku }
+        .single()
+        .toInventorySnapshot()
+
+    CockroachInventory.update({ CockroachInventory.sku eq sku }) {
+        it[quantityOnHand] = current.quantityOnHand - quantity
+        it[version] = current.version + 1
+    }
+    CockroachLedger.insert {
+        it[CockroachLedger.sku] = sku
+        it[quantityDelta] = -quantity
+        it[CockroachLedger.reason] = reason
+    }
+}
+```
+
+테스트는 CockroachDB Testcontainers를 띄워 정상 예약, 한 번 재시도해야 하는 충돌, 재시도하면 안 되는 SQL error를
+확인합니다.
+
+```bash
+./gradlew :03-cockroachdb-retry:test
+```
+
+여기서 예제가 보여주는 것은 CockroachDB 전용 dialect가 아닙니다. "어떤 실패만 재시도할 것인가"와 "재시도 단위를 어디에
+둘 것인가"입니다. 이 경계를 서비스마다 직접 판단하기 시작하면 코드가 금방 지저분해집니다.
+
+## DuckDB: 원격 분석 플랫폼이 아니라 내장 분석 엔진이다
+
+DuckDB는 앞의 세 예제와 결이 다릅니다. BigQuery와 Trino가 원격 플랫폼 경계를 다루고, CockroachDB가 분산 SQL
+transaction 경계를 다룬다면, DuckDB는 애플리케이션 프로세스 안에서 작은 분석 엔진을 여는 쪽입니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-exposed-part6-duckdb-architecture.png" alt="DuckDB embedded analytics architecture with application event fixture, Exposed DSL, DuckDB analytics session, file-backed database, and coroutine Flow boundary" loading="lazy" />
+  <figcaption>DuckDB 예제는 별도 서버 없이 파일 기반 database에서 집계 SQL을 실행합니다.</figcaption>
+</figure>
+
+예제는 파일 기반 database를 씁니다. 이 선택이 중요합니다. 단순 `jdbc:duckdb:` 메모리 database는 connection마다
+독립 catalog가 되기 쉽습니다. 여러 Exposed transaction 사이에서 행이 유지되어야 하는 워크숍에는 맞지 않습니다.
+
+```kotlin
+class DuckDbAnalyticsSession private constructor(
+    val db: Database,
+    private val rootConnection: DuckDBConnection,
+): AutoCloseable {
+    companion object {
+        fun file(path: Path): DuckDbAnalyticsSession {
+            val rootConnection = DriverManager
+                .getConnection("jdbc:duckdb:${path}") as DuckDBConnection
+            val db = Database.connect(
+                getNewConnection = { WorkshopDuckDbConnectionWrapper(rootConnection.duplicate()) },
+            )
+            return DuckDbAnalyticsSession(db, rootConnection)
+        }
+    }
+}
+```
+
+집계 쿼리는 Exposed DSL로 만들고 DuckDB가 로컬에서 실행합니다.
+
+```kotlin
+fun buildDailyCategorySalesQuery(): Query =
+    DuckDbOrderEvents
+        .select(
+            DuckDbOrderEvents.region,
+            DuckDbOrderEvents.category,
+            DuckDbOrderEvents.eventDate,
+            DuckDbOrderEvents.orderId.count(),
+            DuckDbOrderEvents.amount.sum(),
+        )
+        .groupBy(
+            DuckDbOrderEvents.region,
+            DuckDbOrderEvents.category,
+            DuckDbOrderEvents.eventDate,
+        )
+```
+
+여기서 헷갈리기 쉬운 부분이 `queryFlow`입니다. `streamDailyCategorySales`는 `Flow`를 반환하지만, JDBC 행을
+transaction 밖에서 한 줄씩 흘려보낸다는 뜻은 아닙니다. 대표 패턴은 아래처럼 transaction 안에서 쿼리 결과를 먼저
+`List<DailyCategorySales>`로 읽고, 이미 읽은 행을 coroutine 처리 흐름의 입력으로 넘기는 쪽입니다.
+
+```kotlin
+fun streamDailyCategorySales(
+    db: Database,
+    dispatcher: CoroutineDispatcher = Dispatchers.IO,
+): Flow<DailyCategorySales> =
+    queryFlow(db, dispatcher) {
+        buildDailyCategorySalesQuery().map(::toDailyCategorySales)
+    }
+```
+
+즉 `Flow` 경계는 "DB cursor를 오래 열어둔다"가 아니라 "transaction 안에서 읽은 분석 결과를 이후 처리 흐름에서
+다루기 쉽게 만든다"에 가깝습니다. 긴 원본 구현과 테스트는 아래 참고 링크에서 확인하면 됩니다. 이름이 `Flow`라고 해서
+DB cursor 생명주기까지 coroutine 밖으로 끌고 나가면 디버깅하기 싫은 버그가 됩니다.
+
+## 선택 기준
+
+해결할 문제 상황에 따라 4가지 예제를 중심으로 선택 기준을 본다면 다음과 같습니다.
+
+| 상황 | 먼저 볼 예제 | 가져갈 규칙 |
+|---|---|---|
+| 분석 쿼리를 실행 전에 검증하고 싶다 | BigQuery dry-run | 비용과 인증 정보보다 요청 계약을 먼저 테스트 |
+| 페더레이션 쿼리를 애플리케이션 설정으로 제어하고 싶다 | Trino session 옵션 | catalog/schema/source/session property를 타입이 있는 설정 객체로 관리 |
+| 분산 SQL에서 serializable 충돌을 다룬다 | CockroachDB 재시도 | 재시도 단위는 마지막 SQL 문이 아니라 전체 transaction |
+| 로컬/CI/오프라인 작업에서 분석 SQL을 돌리고 싶다 | DuckDB 내장 분석 | 파일 기반 session과 이미 읽은 행을 Flow로 넘기는 경계를 명확히 둔다 |
+
+이 글의 결론은 "Exposed로 모든 DB를 똑같이 다루자"가 아닙니다. 오히려 반대입니다. DB와 플랫폼이 달라지는 지점에서는
+같게 보이는 API보다 서로 다른 계약을 먼저 드러내야 합니다. BigQuery는 dry-run 요청, Trino는 session 옵션,
+CockroachDB는 재시도 분류, DuckDB는 파일 기반 내장 session이 그 계약입니다.
+
+Exposed DSL은 이 경계에서 SQL을 만들고 transaction block을 표현하는 좋은 공통 언어가 됩니다. 하지만 실행 모델,
+인증 정보, 재시도, cursor 생명주기까지 같은 척하지는 않습니다. 예제가 작아 보이는 이유도 여기에 있습니다. 작은 예제에서
+경계를 정확히 잡아야 운영 코드가 커져도 덜 흔들립니다.
+
+## 참고 링크
+
+- Chapter 13: [Ecosystem Integrations](https://github.com/bluetape4k/exposed-workshop/tree/develop/13-ecosystem-integrations)
+- BigQuery dry-run: [01-bigquery-dry-run/README.ko.md](https://github.com/bluetape4k/exposed-workshop/blob/develop/13-ecosystem-integrations/01-bigquery-dry-run/README.ko.md)
+- Trino session options: [02-trino-session-options/README.ko.md](https://github.com/bluetape4k/exposed-workshop/blob/develop/13-ecosystem-integrations/02-trino-session-options/README.ko.md)
+- CockroachDB retry: [03-cockroachdb-retry/README.ko.md](https://github.com/bluetape4k/exposed-workshop/blob/develop/13-ecosystem-integrations/03-cockroachdb-retry/README.ko.md)
+- DuckDB embedded analytics: [09-duckdb-embedded-analytics/README.ko.md](https://github.com/bluetape4k/exposed-workshop/blob/develop/13-ecosystem-integrations/09-duckdb-embedded-analytics/README.ko.md)
+- DuckDB workshop source: [DuckDbEmbeddedAnalyticsWorkshop.kt](https://github.com/bluetape4k/exposed-workshop/blob/develop/13-ecosystem-integrations/09-duckdb-embedded-analytics/src/main/kotlin/exposed/examples/duckdb/analytics/DuckDbEmbeddedAnalyticsWorkshop.kt)
+- BigQuery support: [bluetape4k-exposed/exposed-bigquery](https://github.com/bluetape4k/bluetape4k-exposed/tree/develop/exposed/exposed-bigquery)
+- Trino support: [bluetape4k-exposed/exposed-trino](https://github.com/bluetape4k/bluetape4k-exposed/tree/develop/exposed/exposed-trino)
+- CockroachDB support: [bluetape4k-exposed/exposed-cockroachdb](https://github.com/bluetape4k/bluetape4k-exposed/tree/develop/exposed/exposed-cockroachdb)
+- DuckDB support: [bluetape4k-exposed/exposed-duckdb](https://github.com/bluetape4k/bluetape4k-exposed/tree/develop/exposed/exposed-duckdb)
+
+## 시리즈 링크
+
+- [Part 1: 왜 Exposed인가](/ko/blog/bluetape4k-exposed-part1-why-exposed/)
+- [Part 2: JDBC repository와 SQL DSL](/ko/blog/bluetape4k-exposed-part2-jdbc-repositories-sql-dsl/)
+- [Part 3: R2DBC, 코루틴, 가상 스레드](/ko/blog/bluetape4k-exposed-part3-r2dbc-coroutines-virtual-threads/)
+- [Part 4: JSON, 암호화, 다이얼렉트](/ko/blog/bluetape4k-exposed-part4-json-encryption-dialects/)
+- [Part 5: 실전 예제 - 다양한 캐시 전략, 멀티테넌시](/ko/blog/bluetape4k-exposed-part5-spring-cache-multitenancy-production/)
+- [Part 6: BigQuery, Trino, CockroachDB, DuckDB 통합 예제](/ko/blog/bluetape4k-exposed-part6-ecosystem-integrations/)

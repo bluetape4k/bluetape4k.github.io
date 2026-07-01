@@ -1,0 +1,259 @@
+---
+title: "Bluetape4k Exposed Part 6: BigQuery, Trino, CockroachDB, and DuckDB Integrations"
+description: Workshop examples for checking the boundaries that matter when Exposed SQL DSL meets analytics platforms, federation engines, distributed SQL, and embedded analytics.
+sidebar:
+  order: -202607010110
+blog:
+  date: 2026-07-01T01:10:00+09:00
+  image: /assets/bluetape4k-exposed-part6-ecosystem-integrations-hero.png
+  imageAlt: A 3D diorama where small robotic builders assemble BigQuery dry-run, Trino federation, CockroachDB retry loop, and DuckDB embedded analytics stations
+  cardDescription: "Before running against special-purpose databases, check the contracts that make the integration safe."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-exposed-part6-ecosystem-integrations-hero.png" alt="A 3D diorama where small robotic builders assemble BigQuery dry-run, Trino federation, CockroachDB retry loop, and DuckDB embedded analytics stations" loading="eager" />
+  <figcaption>When Exposed leaves ordinary OLTP boundaries, "it connects" matters less than "which contract did we verify first?"</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-07-01 · bluetape4k-exposed series · Part 6</p>
+
+Part 4 covered JSON, encryption, and dialects. Part 5 moved into cache and production examples. This post looks at the
+next boundary: what to verify when Exposed SQL DSL meets BigQuery, Trino, CockroachDB, and DuckDB.
+
+The point is not "use Exposed for every database in the same way." These four integrations are not just another JDBC
+database with a different URL.
+
+| Example | Contract to verify first | Default execution boundary |
+|---|---|---|
+| BigQuery | Dry-run request and option mapping before execution | Mocked REST client, no credential |
+| Trino | Session options and SQL shape suitable for `EXPLAIN` | Local SQL generation, no coordinator |
+| CockroachDB | Whole-transaction retry on SQLSTATE `40001` | Testcontainers CockroachDB |
+| DuckDB | File-backed embedded analytics and transaction/Flow boundary | Local DuckDB file, no server |
+
+That is why `exposed-workshop/13-ecosystem-integrations` does not start by calling real services. Most examples begin at
+a local, fake, mocked, or Testcontainers boundary. Before enabling cost, credentials, and network access, the application
+should test the contract it owns.
+
+## BigQuery: Dry-Run Before Execution
+
+The BigQuery example does not execute a warehouse query. It turns an Exposed query into a BigQuery `jobs.query` request
+and checks that `dryRun=true` plus the query options are mapped correctly.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-exposed-part6-bigquery-dry-run-flow.png" alt="BigQuery dry-run flow from Exposed query through dry-run request to mocked BigQuery REST response" loading="lazy" />
+  <figcaption>The BigQuery example verifies request shape and options before any billable execution.</figcaption>
+</figure>
+
+The main function is intentionally small.
+
+```kotlin
+fun validateRegionalRevenueDryRun(
+    context: BigQueryContext,
+    options: BigQueryQueryOptions = defaultDryRunOptions(),
+    minimumRevenue: BigDecimal = BigDecimal("10.00"),
+): QueryResponse =
+    context.validateQuery(buildRegionalRevenueQuery(minimumRevenue), options)
+```
+
+`defaultDryRunOptions()` sets `maximumBytesBilled`, `labels`, `priority`, `location`, and `timeoutMs`. Tests capture the
+outgoing request with a mocked BigQuery REST client. The important guarantee is credential freedom: the default command
+must not read `GOOGLE_APPLICATION_CREDENTIALS`, ADC, service-account files, or API keys.
+
+```bash
+./gradlew :01-bigquery-dry-run:test
+```
+
+This is not a BigQuery performance example. It is a safety check for "can this query be sent with these options?" before
+real execution. Accidentally learning that lesson from a live warehouse bill is a poor feedback loop.
+
+## Trino: Connection Options Are Application Contracts
+
+The Trino example also avoids a live coordinator. Instead, it turns an application-facing profile into
+`TrinoConnectionOptions` and wraps generated SQL in an `EXPLAIN` request shape.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-exposed-part6-trino-session-sequence.png" alt="Trino session options sequence showing validated workshop profile, Exposed SQL generation, and EXPLAIN request preparation" loading="lazy" />
+  <figcaption>For Trino, catalog, schema, source, tags, and session properties are owned first as application configuration.</figcaption>
+</figure>
+
+The profile validates application values before they become driver properties.
+
+```kotlin
+data class TrinoWorkshopConnectionProfile(
+    val catalog: String = "hive",
+    val schema: String = "analytics",
+    val source: String = "exposed-workshop",
+    val clientTags: List<String> = listOf("exposed", "analytics", "workshop"),
+    val sessionProperties: Map<String, String> = mapOf(
+        "join_distribution_type" to "AUTOMATIC",
+        "query_max_execution_time" to "5m",
+    ),
+): Serializable
+```
+
+Then the example checks the query boundary.
+
+```kotlin
+fun buildExplainRequest(sql: String): String {
+    sql.requireNotBlank("sql")
+    return "EXPLAIN\n$sql"
+}
+```
+
+The test does not prove connector-specific pushdown. Trino pushdown depends on the connector and catalog configuration.
+The workshop proves a smaller contract: generated SQL keeps projection, predicate, ordering, and top-N signals that a
+real Trino catalog can inspect later.
+
+## CockroachDB: Retry the Whole Transaction, Not the Last Statement
+
+CockroachDB speaks the PostgreSQL wire protocol, but application code still needs to understand its transaction failure
+boundary. A serializable conflict can return SQLSTATE `40001` with a `restart transaction` style message. In that case,
+rerunning only the last `UPDATE` is wrong. The read, validation, update, and ledger insert all need to be retried as one
+transaction.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-exposed-part6-cockroachdb-retry-sequence.png" alt="CockroachDB serializable retry sequence showing application service, retry helper, Exposed transaction attempt, CockroachDB, and ledger state" loading="lazy" />
+  <figcaption>The CockroachDB retry boundary wraps the whole Exposed transaction block.</figcaption>
+</figure>
+
+The service delegates retry ownership to `withCockroachTransaction`.
+
+```kotlin
+return withCockroachTransaction(db = db, options = retryOptions) {
+    val current = CockroachInventory
+        .selectAll()
+        .where { CockroachInventory.sku eq sku }
+        .single()
+        .toInventorySnapshot()
+
+    CockroachInventory.update({ CockroachInventory.sku eq sku }) {
+        it[quantityOnHand] = current.quantityOnHand - quantity
+        it[version] = current.version + 1
+    }
+    CockroachLedger.insert {
+        it[CockroachLedger.sku] = sku
+        it[quantityDelta] = -quantity
+        it[CockroachLedger.reason] = reason
+    }
+}
+```
+
+The test starts CockroachDB through Testcontainers and checks normal reservation, one retryable conflict, and a
+non-retryable SQL error that must not be replayed.
+
+```bash
+./gradlew :03-cockroachdb-retry:test
+```
+
+The example is not about a custom CockroachDB dialect. It is about deciding which failures are retryable and where the
+retry unit belongs. Once every service starts making that judgment alone, the code gets messy fast.
+
+## DuckDB: Embedded Analytics, Not a Remote Warehouse
+
+DuckDB is different from the other three. BigQuery and Trino show remote platform boundaries, and CockroachDB shows a
+distributed SQL transaction boundary. DuckDB opens a small analytics engine inside the application process.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-exposed-part6-duckdb-architecture.png" alt="DuckDB embedded analytics architecture with application event fixture, Exposed DSL, DuckDB analytics session, file-backed database, and coroutine Flow boundary" loading="lazy" />
+  <figcaption>The DuckDB example runs aggregate SQL against a file-backed database without a server process.</figcaption>
+</figure>
+
+The workshop uses a file-backed database. That choice matters. A plain `jdbc:duckdb:` in-memory database can create an
+independent catalog per connection. That is not a good default when separate Exposed transactions must observe the same
+rows.
+
+```kotlin
+class DuckDbAnalyticsSession private constructor(
+    val db: Database,
+    private val rootConnection: DuckDBConnection,
+): AutoCloseable {
+    companion object {
+        fun file(path: Path): DuckDbAnalyticsSession {
+            val rootConnection = DriverManager
+                .getConnection("jdbc:duckdb:${path}") as DuckDBConnection
+            val db = Database.connect(
+                getNewConnection = { WorkshopDuckDbConnectionWrapper(rootConnection.duplicate()) },
+            )
+            return DuckDbAnalyticsSession(db, rootConnection)
+        }
+    }
+}
+```
+
+The aggregate query is still written with Exposed DSL and executed locally by DuckDB.
+
+```kotlin
+fun buildDailyCategorySalesQuery(): Query =
+    DuckDbOrderEvents
+        .select(
+            DuckDbOrderEvents.region,
+            DuckDbOrderEvents.category,
+            DuckDbOrderEvents.eventDate,
+            DuckDbOrderEvents.orderId.count(),
+            DuckDbOrderEvents.amount.sum(),
+        )
+        .groupBy(
+            DuckDbOrderEvents.region,
+            DuckDbOrderEvents.category,
+            DuckDbOrderEvents.eventDate,
+        )
+```
+
+The easy-to-misread part is `queryFlow`. `streamDailyCategorySales` returns a `Flow`, but it does not stream JDBC rows
+outside the transaction one by one. The representative pattern is to materialize the query result as
+`List<DailyCategorySales>` inside the transaction, then hand those materialized rows to the coroutine pipeline.
+
+```kotlin
+fun streamDailyCategorySales(
+    db: Database,
+    dispatcher: CoroutineDispatcher = Dispatchers.IO,
+): Flow<DailyCategorySales> =
+    queryFlow(db, dispatcher) {
+        buildDailyCategorySalesQuery().map(::toDailyCategorySales)
+    }
+```
+
+So the `Flow` boundary means "make already-read analytics rows pipeline-friendly", not "keep a JDBC cursor open across
+the coroutine pipeline." The longer implementation and tests are linked below for readers who want the raw code. If a
+`Flow` name tempts code to drag a JDBC cursor outside its transaction, debugging will be unpleasant.
+
+## Selection Rules
+
+When the four examples are read together, the selection rule is clear.
+
+| Situation | Example to inspect first | Rule to copy |
+|---|---|---|
+| Validate warehouse SQL before execution | BigQuery dry-run | Test request contract before cost and credentials |
+| Control federation query settings from application code | Trino session options | Keep catalog/schema/source/session properties in a typed profile |
+| Handle serializable conflicts in distributed SQL | CockroachDB retry | Retry the whole transaction, not the final statement |
+| Run analytics SQL in local, CI, or offline jobs | DuckDB embedded analytics | Make file-backed session and materialized Flow boundaries explicit |
+
+The conclusion is not "make every database look the same through Exposed." It is the opposite. When the database or
+platform changes, expose the different contract first. BigQuery has a dry-run request, Trino has session options,
+CockroachDB has retry classification, and DuckDB has a file-backed embedded session.
+
+Exposed DSL is a useful common language at that boundary: it builds SQL and expresses transaction blocks. It should not
+pretend that execution model, credentials, retry semantics, and cursor lifetime are all the same. The examples are small
+because small examples are where those boundaries are easiest to see.
+
+## Source Links
+
+- Chapter 13: [Ecosystem Integrations](https://github.com/bluetape4k/exposed-workshop/tree/develop/13-ecosystem-integrations)
+- BigQuery dry-run: [01-bigquery-dry-run/README.md](https://github.com/bluetape4k/exposed-workshop/blob/develop/13-ecosystem-integrations/01-bigquery-dry-run/README.md)
+- Trino session options: [02-trino-session-options/README.md](https://github.com/bluetape4k/exposed-workshop/blob/develop/13-ecosystem-integrations/02-trino-session-options/README.md)
+- CockroachDB retry: [03-cockroachdb-retry/README.md](https://github.com/bluetape4k/exposed-workshop/blob/develop/13-ecosystem-integrations/03-cockroachdb-retry/README.md)
+- DuckDB embedded analytics: [09-duckdb-embedded-analytics/README.md](https://github.com/bluetape4k/exposed-workshop/blob/develop/13-ecosystem-integrations/09-duckdb-embedded-analytics/README.md)
+- DuckDB workshop source: [DuckDbEmbeddedAnalyticsWorkshop.kt](https://github.com/bluetape4k/exposed-workshop/blob/develop/13-ecosystem-integrations/09-duckdb-embedded-analytics/src/main/kotlin/exposed/examples/duckdb/analytics/DuckDbEmbeddedAnalyticsWorkshop.kt)
+- BigQuery support: [bluetape4k-exposed/exposed-bigquery](https://github.com/bluetape4k/bluetape4k-exposed/tree/develop/exposed/exposed-bigquery)
+- Trino support: [bluetape4k-exposed/exposed-trino](https://github.com/bluetape4k/bluetape4k-exposed/tree/develop/exposed/exposed-trino)
+- CockroachDB support: [bluetape4k-exposed/exposed-cockroachdb](https://github.com/bluetape4k/bluetape4k-exposed/tree/develop/exposed/exposed-cockroachdb)
+- DuckDB support: [bluetape4k-exposed/exposed-duckdb](https://github.com/bluetape4k/bluetape4k-exposed/tree/develop/exposed/exposed-duckdb)
+
+## Series Links
+
+- [Part 1: Why Exposed?](/blog/bluetape4k-exposed-part1-why-exposed/)
+- [Part 2: JDBC repositories and SQL DSL](/blog/bluetape4k-exposed-part2-jdbc-repositories-sql-dsl/)
+- [Part 3: R2DBC, Coroutines, and Virtual Threads](/blog/bluetape4k-exposed-part3-r2dbc-coroutines-virtual-threads/)
+- [Part 4: JSON, Encryption, and Dialects](/blog/bluetape4k-exposed-part4-json-encryption-dialects/)
+- [Part 5: Production Examples with Cache and Multi-Tenancy](/blog/bluetape4k-exposed-part5-spring-cache-multitenancy-production/)
+- [Part 6: BigQuery, Trino, CockroachDB, and DuckDB Integrations](/blog/bluetape4k-exposed-part6-ecosystem-integrations/)
