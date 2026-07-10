@@ -52,18 +52,20 @@ skills, MCP, native subagents, repo-local `AGENTS.md`가 있다. 도구는 다�
 몇 줄에 맡기면 매번 조금씩 빠진다. skill로 만들면 어떤 자료를 먼저 읽고, 어떤 gate를 통과하고, 어떤
 검증을 해야 하는지 더 안정적으로 재사용할 수 있다.
 
-bluetape4k에서는 `bluetape4k-workflow`가 첫 router 역할을 한다. 작업을 Full Design, Fast Track, Bug Fix,
-Code Review, Maintenance 같은 lane으로 나누고, 그 작업에 맞는 검증 수준을 고른다.
+bluetape4k에서는 `bluetape4k-workflow`가 첫 router 역할을 한다. 작업을 Type A Full Feature, B Fast Track,
+C Bug Fix, D Code Review, E Maintenance, P Publish, F Self Improve로 나누고, 그 작업에 맞는 검증 수준을
+고른다.
 
-아래에는 더 좁은 skill들이 있다. `bluetape4k-design`은 새 module, 큰 API 변경, multi-layer 변경처럼
-설계가 필요한 작업을 맡는다. `bluetape4k-patterns`는 Kotlin 구현과 final checklist를 다룬다.
-`ecc-kotlin-exposed`, `ecc-springboot-kotlin`, `ecc-kotlin-testing`, `kotlin-coroutines-skill`은 Exposed,
-Spring Boot, testing, coroutine 같은 도메인별 판단을 분리한다. `review-delta`, `review-pr`, `code-review`,
-`bugfix-workflow`는 변경 검토와 후속 수정을 위한 절차다.
+아래에는 더 좁은 skill들이 있다. `bluetape4k-full-feature`는 새 module, 큰 API 변경, multi-layer 변경처럼
+설계가 필요한 작업을 맡고, `bluetape4k-code-patterns`는 Kotlin 구현과 검증을 다룬다.
+`bluetape4k-bugfix`는 재현 가능한 결함 수정을 맡으며, `bluetape4k-publish`와
+`bluetape4k-publish-go`는 release 작업을 맡는다. `ecc-kotlin-exposed`, `ecc-springboot-kotlin`,
+`ecc-kotlin-testing`, `kotlin-coroutines-skill`은 도메인별 판단을 분리한다.
 
 "README도 맞춰 줘", "Exposed deprecated import를 조심해 줘", "affected module test로 증명해 줘" 같은
-지시를 매번 새로 쓰면 빠지기 쉽다. 관련 skill이 checklist를 가져오면 반복 지시가 줄고, 검증 기준도 더
-명확해진다.
+지시를 매번 새로 쓰면 빠지기 쉽다. 관련 skill은 차단 가능한 checklist를 가져온다. 실행 항목마다 action,
+evidence, failure를 적고, 체크되지 않은 항목은 다음 단계를 막는다. `SKIPPED`는 허용하지 않으며, `N/A`는
+해당 항목이 적용되지 않는다는 구체적인 범위 증거가 있어야 한다.
 
 ## qmd는 오래된 결정을 찾는 검색 계층이다
 
