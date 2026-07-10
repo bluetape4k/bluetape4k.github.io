@@ -48,9 +48,9 @@ Token usage was another cost. Repeating the same background, repository structur
 
 The turning point was accumulating memory, wiki notes, lessons, and custom skills. Work no longer ended with just "done." Each task recorded what went wrong, what decision was made, and what the next agent should avoid. Repeated decisions were promoted into skills.
 
-The most important skills were `bluetape4k-workflow`, `bluetape4k-design`, and `bluetape4k-patterns`. These are not just checklists. They encode how bluetape4k work should proceed: when design is required, when fast track is enough, which Kotlin validation and test styles to use, and how GitHub issues and PRs should be written. AI no longer had to guess the process from scratch each time.
+The most important skills were `bluetape4k-workflow`, `bluetape4k-full-feature`, and `bluetape4k-code-patterns`. They encode bluetape4k working rules as enforceable checklists: when design is required, when fast track is enough, which Kotlin validation and test styles to use, and how GitHub issues and PRs should be written. AI no longer had to guess the process from scratch each time.
 
-`bluetape4k-workflow` became the first router for each task. It classifies work into Full Design, Fast Track, Bug Fix, Code Review, or Maintenance, then decides which steps are required and which steps can be skipped. Small documentation edits should not pay the cost of a full design process. New modules and public APIs, on the other hand, must go through brainstorming, spec, plan, review, tests, and lessons. That classification alone reduced token usage and repeated instructions.
+`bluetape4k-workflow` became the first router for each task. It classifies work as Type A Full Feature, B Fast Track, C Bug Fix, D Code Review, E Maintenance, P Publish, or F Self Improve. Small documentation edits should not pay the cost of a full design process, but an untriggered gate is `N/A` only when concrete scope evidence proves it inapplicable. New modules and public APIs, on the other hand, must go through brainstorming, spec, plan, review, tests, and lessons. That classification alone reduced token usage and repeated instructions.
 
 ## `bluetape4k-workflow` Is A Stage Gatekeeper
 
@@ -73,7 +73,7 @@ That mattered because different work sizes need different procedures.
   <section>
     <strong>New module, public API, or cross-repo change</strong>
     <ol>
-      <li>Classify as Full Design</li>
+      <li>Classify as Full Feature</li>
       <li>Create brainstorming, spec, and plan</li>
       <li>Run multi-perspective spec/plan review</li>
       <li>Run Claude Code/Codex cross-review</li>
@@ -84,9 +84,9 @@ That mattered because different work sizes need different procedures.
   </section>
 </div>
 
-For example, a small blog text change is classified as Maintenance. The workflow asks whether a spec is needed and skips unnecessary ceremony. It still checks that the site builds, the live page reflects the change, and any repeatable lesson is captured. Small work stays fast, but leaves evidence.
+For example, a small blog text change is classified as Maintenance. The workflow marks untriggered design gates `N/A` with scope evidence instead of silently skipping them. It still checks that the site builds, the live page reflects the change, and any repeatable lesson is captured. Small work stays fast, but leaves evidence.
 
-By contrast, a new Ktor module or Spring Boot auto-configuration change must pass the Full Design gate. Brainstorming explores options, the spec fixes the scope, and the plan breaks down implementation order and tests. Then Claude Code and Codex review the spec and plan from different angles. After implementation, the change must pass 6-Tier code review and CI. This looks slower, but it reduces the cost of moving quickly in the wrong direction.
+By contrast, a new Ktor module or Spring Boot auto-configuration change must pass the Full Feature gate. Brainstorming explores options, the spec fixes the scope, and the plan breaks down implementation order and tests. Then Claude Code and Codex review the spec and plan from different angles. After implementation, the change must pass 6-Tier code review and CI. This looks slower, but it reduces the cost of moving quickly in the wrong direction.
 
 For large work, I used the `superpowers` style of brainstorming, spec, and plan before implementation. Brainstorming widened the alternatives and risks before coding. The spec locked down what would and would not be built. The plan split implementation order, test strategy, documentation updates, and CI impact into concrete work items. Instead of asking AI to "just build it," I made it produce artifacts a human could review.
 

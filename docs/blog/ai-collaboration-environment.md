@@ -42,11 +42,11 @@ Scope matters. Global rules live under the home directory. bluetape4k-wide rules
 
 A prompt is an instruction. A skill is a procedure. If a task repeats often, it becomes a skill.
 
-In bluetape4k, `bluetape4k-workflow` is the first router. It classifies work into lanes such as Full Design, Fast Track, Bug Fix, Code Review, and Maintenance, then selects the lightest verification level that is still safe.
+In bluetape4k, `bluetape4k-workflow` is the first router. It classifies work as Type A Full Feature, B Fast Track, C Bug Fix, D Code Review, E Maintenance, P Publish, or F Self Improve, then selects the lightest verification level that is still safe.
 
-Below that router are narrower skills. `bluetape4k-design` covers new modules, broad API changes, and multi-layer work. `bluetape4k-patterns` covers Kotlin implementation and final checklists. `ecc-kotlin-exposed`, `ecc-springboot-kotlin`, `ecc-kotlin-testing`, and `kotlin-coroutines-skill` handle Exposed, Spring Boot, testing, and coroutine-specific judgment. `review-delta`, `review-pr`, `code-review`, and `bugfix-workflow` handle review and follow-up fixes.
+Below that router are narrower skills. `bluetape4k-full-feature` covers new modules, broad API changes, and multi-layer work. `bluetape4k-code-patterns` covers Kotlin implementation and validation. `bluetape4k-bugfix` owns reproducible fixes, while `bluetape4k-publish` and `bluetape4k-publish-go` own release work. `ecc-kotlin-exposed`, `ecc-springboot-kotlin`, `ecc-kotlin-testing`, and `kotlin-coroutines-skill` handle domain-specific judgment.
 
-This keeps me from repeating "also update the README", "watch for deprecated Exposed imports", or "prove it with the affected module tests" in every session. Once the task shape is known, the relevant skill brings the checklist with it. The result is more stable because the process is explicit.
+This keeps me from repeating "also update the README", "watch for deprecated Exposed imports", or "prove it with the affected module tests" in every session. Once the task shape is known, the relevant skill brings a blocking checklist with it. Every executable row names its action, evidence, and failure behavior. Unchecked rows block dependent work, `SKIPPED` is not accepted, and `N/A` needs concrete scope evidence.
 
 ## qmd Is The Search Layer For Old Decisions
 

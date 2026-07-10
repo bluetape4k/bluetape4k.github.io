@@ -58,19 +58,21 @@ If a prompt says "think this way," a skill says "work through this procedure." R
 fragile when it is left to a few prompt lines. A skill can say which context to read first, which
 gate to pass, and which verification evidence is required.
 
-In bluetape4k, `bluetape4k-workflow` is the first router. It classifies work into lanes such as Full
-Design, Fast Track, Bug Fix, Code Review, and Maintenance, then selects the verification level that
-fits the work.
+In bluetape4k, `bluetape4k-workflow` is the first router. It classifies work as Type A Full Feature,
+B Fast Track, C Bug Fix, D Code Review, E Maintenance, P Publish, or F Self Improve, then selects the
+verification level that fits the work.
 
-More focused skills sit below it. `bluetape4k-design` handles new modules, broad API changes, and
-multi-layer work. `bluetape4k-patterns` handles Kotlin implementation and final checklists.
-`ecc-kotlin-exposed`, `ecc-springboot-kotlin`, `ecc-kotlin-testing`, and `kotlin-coroutines-skill`
-separate Exposed, Spring Boot, testing, and coroutine-specific judgment. `review-delta`,
-`review-pr`, `code-review`, and `bugfix-workflow` handle review and follow-up fixes.
+More focused skills sit below it. `bluetape4k-full-feature` handles new modules, broad API changes,
+and multi-layer work. `bluetape4k-code-patterns` handles Kotlin implementation and validation.
+`bluetape4k-bugfix` owns reproducible fixes, while `bluetape4k-publish` and
+`bluetape4k-publish-go` own release work. `ecc-kotlin-exposed`, `ecc-springboot-kotlin`,
+`ecc-kotlin-testing`, and `kotlin-coroutines-skill` separate domain-specific judgment.
 
 Instructions like "also update the README," "watch for deprecated Exposed imports," or "prove this
 with affected module tests" are easy to forget when they have to be repeated every time. Loading the
-right skill brings the checklist into the task and makes the verification standard explicit.
+right skill brings a blocking checklist into the task. Every executable row names its action,
+evidence, and failure behavior. Unchecked rows block dependent work, `SKIPPED` is not accepted, and
+`N/A` needs concrete scope evidence.
 
 ## qmd Is the Search Layer for Old Decisions
 
