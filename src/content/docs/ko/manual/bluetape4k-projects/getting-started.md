@@ -3,7 +3,6 @@ title: 시작하기
 description: bluetape4k-projects 모듈을 선택하고 설치한 뒤 가이드, 매뉴얼, 실행 예제로 이동합니다.
 ---
 
-# 시작하기
 
 ## 1. BOM 가져오기
 

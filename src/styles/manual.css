@@ -1,0 +1,48 @@
+.bt4k-manual-map {
+  margin-block: 2rem;
+}
+
+.bt4k-manual-map__summary {
+  display: flex;
+  align-items: baseline;
+  gap: .65rem;
+  margin-block-end: 1rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: .75rem;
+  background: color-mix(in srgb, var(--sl-color-accent-low) 30%, transparent);
+}
+
+.bt4k-manual-map__summary strong { font-size: 1.7rem; color: var(--sl-color-white); }
+.bt4k-manual-map__summary code { margin-inline-start: auto; font-size: .75rem; }
+.bt4k-manual-map > ul,
+.bt4k-manual-map details ul { margin: 0; padding: 0; list-style: none; }
+.bt4k-manual-map > ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
+.bt4k-manual-map details { border: 1px solid var(--sl-color-gray-5); border-radius: .75rem; overflow: hidden; }
+.bt4k-manual-map summary { display: flex; justify-content: space-between; padding: .85rem 1rem; cursor: pointer; color: var(--sl-color-text-accent); font-weight: 700; }
+.bt4k-manual-map details ul { border-top: 1px solid var(--sl-color-gray-5); }
+.bt4k-manual-map details li + li { border-top: 1px solid color-mix(in srgb, var(--sl-color-gray-5) 55%, transparent); }
+.bt4k-manual-map details a { display: flex; justify-content: space-between; gap: .8rem; padding: .75rem 1rem; color: var(--sl-color-text); text-decoration: none; }
+.bt4k-manual-map details a:hover { background: var(--sl-color-accent-low); }
+.bt4k-manual-map details a small { display: block; margin-top: .15rem; color: var(--sl-color-gray-3); font-size: .72rem; }
+.bt4k-manual-map a:focus-visible,
+.bt4k-manual-source a:focus-visible { outline: 3px solid var(--sl-color-text-accent); outline-offset: -3px; }
+
+.bt4k-manual-source {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .45rem;
+  margin-block: .8rem 1.25rem;
+  font-size: .78rem;
+}
+.bt4k-manual-source > * { padding: .3rem .55rem; border: 1px solid var(--sl-color-gray-5); border-radius: 999px; }
+.bt4k-manual-source a { color: var(--sl-color-text-accent); text-decoration: none; }
+
+@media (max-width: 42rem) {
+  .bt4k-manual-map > ul { grid-template-columns: 1fr; }
+}
+
+@media print {
+  .bt4k-manual-map, .bt4k-manual-source { break-inside: avoid; }
+  .bt4k-manual-source a { color: #000; }
+}

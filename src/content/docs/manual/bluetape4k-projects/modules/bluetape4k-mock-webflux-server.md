@@ -14,17 +14,16 @@ manual:
   layer: "build"
 ---
 
-# bluetape4k-mock-webflux-server
 
-## Problem {#problem}
+## Problem
 
 A standalone Spring Boot 4 + WebFlux mock server for integration testing. It provides HTTP endpoints compatible with httpbin.org and jsonplaceholder.typicode.com, implemented with Kotlin Coroutines (suspend fun, Flow). This manual connects that purpose to the current build, source entry points, tests, configuration resources, and lifecycle evidence instead of duplicating the README feature list.
 
-## When to use {#when-to-use}
+## When to use
 
 Use `bluetape4k-mock-webflux-server` when the application needs fixture ownership, isolation, deterministic cleanup, and failure diagnostics. Start with the source entry points below and confirm that their ownership and failure contracts match the calling component. Prefer a smaller standard-library or already-adopted module when it satisfies the same contract without another runtime boundary.
 
-## Coordinates {#coordinates}
+## Coordinates
 
 ```kotlin
 dependencies {
@@ -35,15 +34,15 @@ dependencies {
 
 Gradle project path: `:bluetape4k-mock-webflux-server`. Source directory: `testing/mock-webflux-server`.
 
-## Concepts {#concepts}
+## Concepts
 
 The first source-level concepts to inspect are `MockWebfluxServerApplication`, `AdminController`, `PingController`, `GlobalExceptionHandler`, `HttpsServerLifecycle`, `WebFluxJacksonConfig`, `HttpbinAdvancedController`, and `HttpbinController`. File names are navigation anchors; read each declaration and its tests before treating it as a public contract.
 
-## Quick start {#quick-start}
+## Quick start
 
 Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`MockWebfluxServerApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/MockWebfluxServerApplication.kt) first; it is a concrete source entry point for the module.
 
-## API by task {#api-by-task}
+## API by task
 
 | Entry point | What to verify |
 | --- | --- |
@@ -58,11 +57,11 @@ Add the coordinate above, refresh Gradle, and start from the smallest entry poin
 | [`HttpbinStreamController`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/httpbin/HttpbinStreamController.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 | [`HttpbinSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/httpbin/HttpbinSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
-## Patterns {#patterns}
+## Patterns
 
 The README evidence is organized around **Architecture**, **Comparison with bluetape4k-mock-web-server**, **Diagrams**, **Request Routing Overview**, **Class Diagram**, **Sequence Diagram — httpbin GET**, **Features**, **Configuration**, **Examples**, and **Run via Docker**. Use those topics as a navigation map, then confirm behavior in source and tests. Keep adoption narrow and connect owned resources to the caller lifecycle.
 
-## Integrations {#integrations}
+## Integrations
 
 The current build declares these integration edges:
 
@@ -83,7 +82,7 @@ implementation(project(":bluetape4k-logging"))
 
 Treat `compileOnly` edges as caller-provided capabilities and verify runtime availability before using their APIs.
 
-## Configuration {#configuration}
+## Configuration
 
 Configuration resources found in the module:
 
@@ -98,15 +97,15 @@ Configuration resources found in the module:
 
 Read property names and defaults from these resources and the binding source before overriding them.
 
-## Failures {#failures}
+## Failures
 
 Failure semantics are defined by the linked entry points and tests, not inferred from the artifact name. Keep cancellation and timeout signals intact, close owned resources, and translate backend exceptions only at a boundary that can add a stable domain contract. Use the test anchors below to verify the exact behavior before adding retries or fallbacks.
 
-## Operations {#operations}
+## Operations
 
 Keep fixtures isolated, bound resource use, expose diagnostics, and close shared services deterministically. Keep capacity, timeout, retry, and shutdown settings next to the component that owns the resource; avoid process-wide defaults that hide which caller accepted the trade-off.
 
-## Testing {#testing}
+## Testing
 
 Run the module test task:
 
@@ -125,15 +124,15 @@ Representative test anchors:
 - [`HttpbinContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/mock-webflux-server/src/test/kotlin/io/bluetape4k/mockwebflux/httpbin/HttpbinContractTest.kt)
 - [`HttpbinStreamContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/mock-webflux-server/src/test/kotlin/io/bluetape4k/mockwebflux/httpbin/HttpbinStreamContractTest.kt)
 
-## Workshops {#workshops}
+## Workshops
 
 No dedicated workshop path is registered in the manual manifest. Use the module README and the representative tests above as runnable evidence.
 
-## Limitations {#limitations}
+## Limitations
 
 This page documents the repository state represented by the linked source and tests. It does not turn optional backends into application defaults or claim performance without a benchmark artifact. Re-check compatibility and lifecycle notes when the module version changes.
 
-## Sources {#sources}
+## Sources
 
 - [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/mock-webflux-server/README.md)
 - [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/mock-webflux-server/build.gradle.kts)

@@ -14,17 +14,16 @@ manual:
   layer: "build"
 ---
 
-# Module bluetape4k-csv
 
-## Problem {#problem}
+## Problem
 
 bluetape4k-csv is a Kotlin-native CSV/TSV parsing library with a self-implemented RFC 4180 compliant engine. This manual connects that purpose to the current build, source entry points, tests, configuration resources, and lifecycle evidence instead of duplicating the README feature list.
 
-## When to use {#when-to-use}
+## When to use
 
 Use `bluetape4k-csv` when the application needs encoding boundaries, resource ownership, streaming, compatibility, and malformed input. Start with the source entry points below and confirm that their ownership and failure contracts match the calling component. Prefer a smaller standard-library or already-adopted module when it satisfies the same contract without another runtime boundary.
 
-## Coordinates {#coordinates}
+## Coordinates
 
 ```kotlin
 dependencies {
@@ -35,15 +34,15 @@ dependencies {
 
 Gradle project path: `:bluetape4k-csv`. Source directory: `io/csv`.
 
-## Concepts {#concepts}
+## Concepts
 
 The first source-level concepts to inspect are `CsvRecordReader`, `CsvRecordWriter`, `CsvSettings`, `CvsParserDefaults`, `Record`, `RecordFactory`, `RecordReader`, and `RecordReaderSupport`. File names are navigation anchors; read each declaration and its tests before treating it as a public contract.
 
-## Quick start {#quick-start}
+## Quick start
 
 Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`CsvRecordReader`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/csv/src/main/kotlin/io/bluetape4k/csv/CsvRecordReader.kt) first; it is a concrete source entry point for the module.
 
-## API by task {#api-by-task}
+## API by task
 
 | Entry point | What to verify |
 | --- | --- |
@@ -58,11 +57,11 @@ Add the coordinate above, refresh Gradle, and start from the smallest entry poin
 | [`RecordWriter`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/csv/src/main/kotlin/io/bluetape4k/csv/RecordWriter.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 | [`RecordWriterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/csv/src/main/kotlin/io/bluetape4k/csv/RecordWriterSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
-## Patterns {#patterns}
+## Patterns
 
 The README evidence is organized around **Overview**, **Architecture**, **CSV/TSV Class Structure**, **CSV/TSV Processing Flow**, **Key Features**, **Sync vs Async API**, **Settings**, **null vs Empty String**, **UTF-8 Writer Fast Path**, and **Usage Examples**. Use those topics as a navigation map, then confirm behavior in source and tests. Keep adoption narrow and connect owned resources to the caller lifecycle.
 
-## Integrations {#integrations}
+## Integrations
 
 The current build declares these integration edges:
 
@@ -75,19 +74,19 @@ compileOnly(libs.kotlinx.coroutines.core)
 
 Treat `compileOnly` edges as caller-provided capabilities and verify runtime availability before using their APIs.
 
-## Configuration {#configuration}
+## Configuration
 
 No module-level configuration resource was found under `src/main/resources`. Configuration is supplied through constructors, builders, function arguments, or the integrating framework; confirm defaults in source.
 
-## Failures {#failures}
+## Failures
 
 Failure semantics are defined by the linked entry points and tests, not inferred from the artifact name. Keep cancellation and timeout signals intact, close owned resources, and translate backend exceptions only at a boundary that can add a stable domain contract. Use the test anchors below to verify the exact behavior before adding retries or fallbacks.
 
-## Operations {#operations}
+## Operations
 
 Track payload size, allocation, latency, malformed-input rate, resource closure, and protocol errors. Keep capacity, timeout, retry, and shutdown settings next to the component that owns the resource; avoid process-wide defaults that hide which caller accepted the trade-off.
 
-## Testing {#testing}
+## Testing
 
 Run the module test task:
 
@@ -106,15 +105,15 @@ Representative test anchors:
 - [`RecordReaderSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/csv/src/test/kotlin/io/bluetape4k/csv/RecordReaderSupportTest.kt)
 - [`RecordWriterSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/csv/src/test/kotlin/io/bluetape4k/csv/RecordWriterSupportTest.kt)
 
-## Workshops {#workshops}
+## Workshops
 
 No dedicated workshop path is registered in the manual manifest. Use the module README and the representative tests above as runnable evidence.
 
-## Limitations {#limitations}
+## Limitations
 
 This page documents the repository state represented by the linked source and tests. It does not turn optional backends into application defaults or claim performance without a benchmark artifact. Re-check compatibility and lifecycle notes when the module version changes.
 
-## Sources {#sources}
+## Sources
 
 - [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/csv/README.md)
 - [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/csv/build.gradle.kts)

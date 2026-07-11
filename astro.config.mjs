@@ -2,7 +2,8 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 
 const cloudflareBeaconToken =
-  process.env.PUBLIC_CLOUDFLARE_BEACON_TOKEN ?? 'a9408513fe144222b89e86151b26e70f';
+  process.env.PUBLIC_CLOUDFLARE_BEACON_TOKEN ??
+  (process.env.NODE_ENV === 'production' ? 'a9408513fe144222b89e86151b26e70f' : '');
 const cloudflareBeaconScriptUrl =
   process.env.PUBLIC_CLOUDFLARE_BEACON_SCRIPT_URL ?? 'https://static.cloudflareinsights.com/beacon.min.js';
 const cloudflareAnalyticsHead = cloudflareBeaconToken
@@ -44,8 +45,9 @@ export default defineConfig({
       favicon: '/avatar.png',
       components: {
         Footer: './src/components/StarlightFooter.astro',
+        PageTitle: './src/components/ManualPageTitle.astro',
       },
-      customCss: ['./src/styles/custom.css'],
+      customCss: ['./src/styles/custom.css', './src/styles/atlas.css', './src/styles/manual.css'],
       head: [
         {
           tag: 'meta',
@@ -194,6 +196,8 @@ export default defineConfig({
           translations: { ko: '생태계' },
           items: [
             { label: 'Repositories', translations: { ko: '리포지토리' }, slug: 'ecosystem/repositories' },
+            { label: 'Ecosystem Atlas', translations: { ko: '생태계 지도' }, slug: 'ecosystem/atlas' },
+            { label: 'Projects Manual', translations: { ko: 'Projects 매뉴얼' }, slug: 'manual/bluetape4k-projects' },
             { label: 'Examples', translations: { ko: '예제' }, slug: 'ecosystem/examples' },
             {
               label: 'Version Governance',

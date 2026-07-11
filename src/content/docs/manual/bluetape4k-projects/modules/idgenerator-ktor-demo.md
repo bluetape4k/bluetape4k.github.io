@@ -14,27 +14,26 @@ manual:
   layer: "learn"
 ---
 
-# idgenerator Ktor Demo
 
-## Problem {#problem}
+## Problem
 
 Runnable Ktor application that exposes bluetape4k idgenerators through HTTP endpoints. This manual connects that purpose to the current build, source entry points, tests, configuration resources, and lifecycle evidence instead of duplicating the README feature list.
 
-## When to use {#when-to-use}
+## When to use
 
 Use `idgenerator-ktor-demo` when the application needs the runnable entry point, required services, expected behavior, and the production pattern demonstrated. Start with the source entry points below and confirm that their ownership and failure contracts match the calling component. Prefer a smaller standard-library or already-adopted module when it satisfies the same contract without another runtime boundary.
 
-## Coordinates {#coordinates}
+## Coordinates
 
 This example project is not published as a Maven artifact. Run it from the repository and inspect its Gradle tasks before choosing a command.
 
 Gradle project path: `:idgenerator-ktor-demo`. Source directory: `examples/ktor/idgenerator-ktor-demo`.
 
-## Concepts {#concepts}
+## Concepts
 
 The first source-level concepts to inspect are `IdGeneratorKtorApplication`. File names are navigation anchors; read each declaration and its tests before treating it as a public contract.
 
-## Quick start {#quick-start}
+## Quick start
 
 List the project tasks before running the example or benchmark:
 
@@ -44,17 +43,17 @@ List the project tasks before running the example or benchmark:
 
 Then use the command documented by the module README and keep required external services isolated.
 
-## API by task {#api-by-task}
+## API by task
 
 | Entry point | What to verify |
 | --- | --- |
 | [`IdGeneratorKtorApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/ktor/idgenerator-ktor-demo/src/main/kotlin/io/bluetape4k/examples/ktor/idgenerator/IdGeneratorKtorApplication.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
-## Patterns {#patterns}
+## Patterns
 
 The README evidence is organized around **Architecture**, **Run**, **Test**, **Endpoints**, **Explicit Routes**, **Explicit Batch Routes**, **Generic Routes**, **Metadata**, and **Generator Choice**. Use those topics as a navigation map, then confirm behavior in source and tests. Keep adoption narrow and connect owned resources to the caller lifecycle.
 
-## Integrations {#integrations}
+## Integrations
 
 The current build declares these integration edges:
 
@@ -69,19 +68,19 @@ runtimeOnly(libs.logback.classic)
 
 Treat `compileOnly` edges as caller-provided capabilities and verify runtime availability before using their APIs.
 
-## Configuration {#configuration}
+## Configuration
 
 No module-level configuration resource was found under `src/main/resources`. Configuration is supplied through constructors, builders, function arguments, or the integrating framework; confirm defaults in source.
 
-## Failures {#failures}
+## Failures
 
 Failure semantics are defined by the linked entry points and tests, not inferred from the artifact name. Keep cancellation and timeout signals intact, close owned resources, and translate backend exceptions only at a boundary that can add a stable domain contract. Use the test anchors below to verify the exact behavior before adding retries or fallbacks.
 
-## Operations {#operations}
+## Operations
 
 Run the example in an isolated environment and observe startup, dependency health, requests, and shutdown. Keep capacity, timeout, retry, and shutdown settings next to the component that owns the resource; avoid process-wide defaults that hide which caller accepted the trade-off.
 
-## Testing {#testing}
+## Testing
 
 Run the module test task:
 
@@ -93,15 +92,15 @@ Representative test anchors:
 
 - [`IdGeneratorKtorApplicationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/ktor/idgenerator-ktor-demo/src/test/kotlin/io/bluetape4k/examples/ktor/idgenerator/IdGeneratorKtorApplicationTest.kt)
 
-## Workshops {#workshops}
+## Workshops
 
 No dedicated workshop path is registered in the manual manifest. Use the module README and the representative tests above as runnable evidence.
 
-## Limitations {#limitations}
+## Limitations
 
 This page documents the repository state represented by the linked source and tests. It does not turn optional backends into application defaults or claim performance without a benchmark artifact. Re-check compatibility and lifecycle notes when the module version changes.
 
-## Sources {#sources}
+## Sources
 
 - [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/ktor/idgenerator-ktor-demo/README.md)
 - [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/ktor/idgenerator-ktor-demo/build.gradle.kts)

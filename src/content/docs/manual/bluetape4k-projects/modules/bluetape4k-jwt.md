@@ -14,17 +14,16 @@ manual:
   layer: "build"
 ---
 
-# Module bluetape4k-jwt
 
-## Problem {#problem}
+## Problem
 
 A library for creating and parsing JSON Web Tokens (JWT). Built on jjwt 0.13.x, it provides a Kotlin-friendly API and KeyChain management. This manual connects that purpose to the current build, source entry points, tests, configuration resources, and lifecycle evidence instead of duplicating the README feature list.
 
-## When to use {#when-to-use}
+## When to use
 
 Use `bluetape4k-jwt` when the application needs input contracts, value semantics, algorithmic cost, and deterministic output. Start with the source entry points below and confirm that their ownership and failure contracts match the calling component. Prefer a smaller standard-library or already-adopted module when it satisfies the same contract without another runtime boundary.
 
-## Coordinates {#coordinates}
+## Coordinates
 
 ```kotlin
 dependencies {
@@ -35,15 +34,15 @@ dependencies {
 
 Gradle project path: `:bluetape4k-jwt`. Source directory: `utils/jwt`.
 
-## Concepts {#concepts}
+## Concepts
 
 The first source-level concepts to inspect are `JwtConsts`, `JwtCodecs`, `JwtComposer`, `JwtComposerDsl`, `KeyChain`, `KeyChainDto`, `AbstractKeyChainRepository`, and `KeyChainRepository`. File names are navigation anchors; read each declaration and its tests before treating it as a public contract.
 
-## Quick start {#quick-start}
+## Quick start
 
 Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`JwtConsts`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/JwtConsts.kt) first; it is a concrete source entry point for the module.
 
-## API by task {#api-by-task}
+## API by task
 
 | Entry point | What to verify |
 | --- | --- |
@@ -58,11 +57,11 @@ Add the coordinate above, refresh Gradle, and start from the smallest entry poin
 | [`InMemoryKeyChainRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/keychain/repository/inmemory/InMemoryKeyChainRepository.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 | [`RedisKeyChainRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/keychain/repository/redis/RedisKeyChainRepository.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
-## Patterns {#patterns}
+## Patterns
 
 The README evidence is organized around **Architecture**, **JWT Create and Verify Flow**, **Class Diagram**, **JWT Token Structure**, **Key Features**, **Usage Examples**, **Basic JWT Creation and Parsing**, **Creating JWTs with Kotlin DSL**, **Using JwtReader**, and **KeyChain Rotation**. Use those topics as a navigation map, then confirm behavior in source and tests. Keep adoption narrow and connect owned resources to the caller lifecycle.
 
-## Integrations {#integrations}
+## Integrations
 
 The current build declares these integration edges:
 
@@ -83,7 +82,7 @@ compileOnly(libs.zstd.jni)
 
 Treat `compileOnly` edges as caller-provided capabilities and verify runtime availability before using their APIs.
 
-## Configuration {#configuration}
+## Configuration
 
 Configuration resources found in the module:
 
@@ -91,15 +90,15 @@ Configuration resources found in the module:
 
 Read property names and defaults from these resources and the binding source before overriding them.
 
-## Failures {#failures}
+## Failures
 
 Failure semantics are defined by the linked entry points and tests, not inferred from the artifact name. Keep cancellation and timeout signals intact, close owned resources, and translate backend exceptions only at a boundary that can add a stable domain contract. Use the test anchors below to verify the exact behavior before adding retries or fallbacks.
 
-## Operations {#operations}
+## Operations
 
 Measure hot paths, bound input sizes, and monitor failures at the application boundary that calls the utility. Keep capacity, timeout, retry, and shutdown settings next to the component that owns the resource; avoid process-wide defaults that hide which caller accepted the trade-off.
 
-## Testing {#testing}
+## Testing
 
 Run the module test task:
 
@@ -118,15 +117,15 @@ Representative test anchors:
 - [`RedisKeyChainRepositoryTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/jwt/src/test/kotlin/io/bluetape4k/jwt/keychain/redis/RedisKeyChainRepositoryTest.kt)
 - [`AbstractJwtProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/jwt/src/test/kotlin/io/bluetape4k/jwt/provider/AbstractJwtProviderTest.kt)
 
-## Workshops {#workshops}
+## Workshops
 
 No dedicated workshop path is registered in the manual manifest. Use the module README and the representative tests above as runnable evidence.
 
-## Limitations {#limitations}
+## Limitations
 
 This page documents the repository state represented by the linked source and tests. It does not turn optional backends into application defaults or claim performance without a benchmark artifact. Re-check compatibility and lifecycle notes when the module version changes.
 
-## Sources {#sources}
+## Sources
 
 - [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/jwt/README.md)
 - [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/jwt/build.gradle.kts)

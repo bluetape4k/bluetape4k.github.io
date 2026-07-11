@@ -14,17 +14,16 @@ manual:
   layer: "build"
 ---
 
-# Module bluetape4k-testcontainers
 
-## Problem {#problem}
+## Problem
 
 A server wrapper and utility library for building integration tests quickly on top of Testcontainers 2.0.3. This manual connects that purpose to the current build, source entry points, tests, configuration resources, and lifecycle evidence instead of duplicating the README feature list.
 
-## When to use {#when-to-use}
+## When to use
 
 Use `bluetape4k-testcontainers` when the application needs fixture ownership, isolation, deterministic cleanup, and failure diagnostics. Start with the source entry points below and confirm that their ownership and failure contracts match the calling component. Prefer a smaller standard-library or already-adopted module when it satisfies the same contract without another runtime boundary.
 
-## Coordinates {#coordinates}
+## Coordinates
 
 ```kotlin
 dependencies {
@@ -35,15 +34,15 @@ dependencies {
 
 Gradle project path: `:bluetape4k-testcontainers`. Source directory: `testing/testcontainers`.
 
-## Concepts {#concepts}
+## Concepts
 
 The first source-level concepts to inspect are `GenericContainerExtensions`, `GenericServer`, `PropertyExportingServer`, `AwsEmulatorServer`, `AwsEmulatorServerExtensions`, `DynamoDbLocalServer`, `ElasticMqServer`, and `FlociServer`. File names are navigation anchors; read each declaration and its tests before treating it as a public contract.
 
-## Quick start {#quick-start}
+## Quick start
 
 Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`GenericContainerExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/GenericContainerExtensions.kt) first; it is a concrete source entry point for the module.
 
-## API by task {#api-by-task}
+## API by task
 
 | Entry point | What to verify |
 | --- | --- |
@@ -58,11 +57,11 @@ Add the coordinate above, refresh Gradle, and start from the smallest entry poin
 | [`LocalStackServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/LocalStackServer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 | [`MiniStackServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/MiniStackServer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
-## Patterns {#patterns}
+## Patterns
 
 The README evidence is organized around **Architecture**, **Container Lifecycle**, **Supported Container Class Diagram**, **Supported Container Structure**, **Key Features**, **System Property Export (PropertyExportingServer)**, **Exported Keys by Server**, **Usage Examples**, **Database**, and **PostgreSQL Extensions**. Use those topics as a navigation map, then confirm behavior in source and tests. Keep adoption narrow and connect owned resources to the caller lifecycle.
 
-## Integrations {#integrations}
+## Integrations
 
 The current build declares these integration edges:
 
@@ -83,7 +82,7 @@ compileOnly(libs.testcontainers.cockroachdb)
 
 Treat `compileOnly` edges as caller-provided capabilities and verify runtime availability before using their APIs.
 
-## Configuration {#configuration}
+## Configuration
 
 Configuration resources found in the module:
 
@@ -92,15 +91,15 @@ Configuration resources found in the module:
 
 Read property names and defaults from these resources and the binding source before overriding them.
 
-## Failures {#failures}
+## Failures
 
 Failure semantics are defined by the linked entry points and tests, not inferred from the artifact name. Keep cancellation and timeout signals intact, close owned resources, and translate backend exceptions only at a boundary that can add a stable domain contract. Use the test anchors below to verify the exact behavior before adding retries or fallbacks.
 
-## Operations {#operations}
+## Operations
 
 Keep fixtures isolated, bound resource use, expose diagnostics, and close shared services deterministically. Keep capacity, timeout, retry, and shutdown settings next to the component that owns the resource; avoid process-wide defaults that hide which caller accepted the trade-off.
 
-## Testing {#testing}
+## Testing
 
 Run the module test task:
 
@@ -119,15 +118,15 @@ Representative test anchors:
 - [`RegisterSystemPropertiesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/test/kotlin/io/bluetape4k/testcontainers/RegisterSystemPropertiesTest.kt)
 - [`DynamoDbLocalServerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/test/kotlin/io/bluetape4k/testcontainers/aws/DynamoDbLocalServerTest.kt)
 
-## Workshops {#workshops}
+## Workshops
 
 No dedicated workshop path is registered in the manual manifest. Use the module README and the representative tests above as runnable evidence.
 
-## Limitations {#limitations}
+## Limitations
 
 This page documents the repository state represented by the linked source and tests. It does not turn optional backends into application defaults or claim performance without a benchmark artifact. Re-check compatibility and lifecycle notes when the module version changes.
 
-## Sources {#sources}
+## Sources
 
 - [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/README.md)
 - [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/build.gradle.kts)

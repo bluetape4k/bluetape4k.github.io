@@ -3,7 +3,6 @@ title: Getting started
 description: Select and install a bluetape4k-projects module, then move from guide to manual to runnable example.
 ---
 
-# Getting started
 
 ## 1. Import the BOM
 

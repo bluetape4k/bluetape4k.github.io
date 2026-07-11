@@ -14,17 +14,16 @@ manual:
   layer: "build"
 ---
 
-# Kotlin logging and MDC support
 
-## Problem {#problem}
+## Problem
 
 Backend code needs a consistent logger declaration, lazy message evaluation, and request context that survives coroutine boundaries without leaking into the next request. High-volume paths may also need bounded asynchronous log delivery. `bluetape4k-logging` builds these contracts on SLF4J and kotlin-logging.
 
-## When to use {#when-to-use}
+## When to use
 
 Use `KLogging` for class/companion loggers, `KotlinLogging.logger {}` for package-level functions, and scoped MDC helpers when logs must carry trace, request, tenant, or user identifiers. Use coroutine MDC helpers inside suspend code. Choose `KLoggingChannel` only after measuring that synchronous logging is a bottleneck and deciding how queued messages should behave during shutdown.
 
-## Coordinates {#coordinates}
+## Coordinates
 
 ```kotlin
 dependencies {
@@ -36,13 +35,13 @@ dependencies {
 
 The application still chooses one SLF4J provider. Do not ship multiple competing providers.
 
-## Concepts {#concepts}
+## Concepts
 
 `KLogging` exposes a lazily initialized SLF4J `Logger` named from the owning type. Lambda-based extensions avoid formatting messages when a level is disabled. `withLoggingContext` installs MDC key/value pairs for one block and restores or removes prior values in `finally`. `withCoroutineLoggingContext` carries the context through coroutine suspension.
 
 `KLoggingChannel` introduces a queue and runtime lifecycle; unlike ordinary logging, delivery can lag behind the caller.
 
-## Quick start {#quick-start}
+## Quick start
 
 ```kotlin
 import io.bluetape4k.logging.KLogging
@@ -59,7 +58,7 @@ class OrderService {
 
 The MDC helper restores the previous value after the block, including exceptional exits.
 
-## API by task {#api-by-task}
+## API by task
 
 | Task | API |
 | --- | --- |
@@ -70,27 +69,27 @@ The MDC helper restores the previous value after the block, including exceptiona
 | MDC across suspend/async boundaries | `withCoroutineLoggingContext` |
 | Queue-backed asynchronous logging | `KLoggingChannel` |
 
-## Patterns {#patterns}
+## Patterns
 
 Add correlation data at the transport boundary and keep the MDC scope around the operation that owns it. Use stable low-cardinality keys such as `traceId`, `requestId`, and `tenantId`; do not place secrets or unbounded payloads in MDC. Keep log messages lazy and structured enough for the selected backend encoder.
 
-## Integrations {#integrations}
+## Integrations
 
 The module targets SLF4J and works with Logback or another chosen provider. Coroutine MDC support integrates SLF4J MDC with Kotlin coroutine context. Observability modules can populate trace identifiers, but logging does not create spans or metrics by itself.
 
-## Configuration {#configuration}
+## Configuration
 
 Log level, encoder, appenders, retention, and destination belong to the SLF4J provider configuration. `withLoggingContext` has `restorePrevious=true` by default. Channel logging adds queue/runtime options documented by `KLoggingChannel`; select them from measured throughput and loss tolerance rather than copying a global default.
 
-## Failures {#failures}
+## Failures
 
 Logger backend failures follow the selected provider. Scoped MDC cleanup runs in `finally`; map cleanup callbacks deliberately ignore cleanup exceptions so they do not replace the business exception. A bounded async queue can reject, block, or lose work according to its policy, and shutdown before draining can leave messages unwritten.
 
-## Operations {#operations}
+## Operations
 
 Monitor log volume, dropped/queued message count for channel logging, appender latency, and disk/network backpressure. Redact secrets before values enter MDC or message lambdas. Close asynchronous logging resources during application shutdown and test the drain behavior explicitly.
 
-## Testing {#testing}
+## Testing
 
 `KLoggingTest` and `KotlinLoggingTest` cover logger naming and creation. `MdcSupportTest` and `MdcSupportCoroutinesTest` verify restoration and propagation. `KLoggingChannelTest` covers the channel lifecycle.
 
@@ -98,15 +97,15 @@ Monitor log volume, dropped/queued message count for channel logging, appender l
 ./gradlew :bluetape4k-logging:test --no-configuration-cache
 ```
 
-## Workshops {#workshops}
+## Workshops
 
 No dedicated logging workshop is registered. Ktor and Spring observability examples are the best place to connect request IDs and tracing context to this module. A focused exercise should verify nested MDC restoration and coroutine `async` propagation.
 
-## Limitations {#limitations}
+## Limitations
 
 MDC is thread-local state underneath the coroutine bridge; plain thread switches without the bridge can lose context. Logging is not tracing, auditing, or secure secret storage. Asynchronous delivery improves caller latency only by moving work to a queue and therefore adds buffering and shutdown trade-offs.
 
-## Sources {#sources}
+## Sources
 
 - [Module README and examples](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/bluetape4k/logging/README.md)
 - [`KLogging` source](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/bluetape4k/logging/src/main/kotlin/io/bluetape4k/logging/KLogging.kt)
