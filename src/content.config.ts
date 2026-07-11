@@ -16,6 +16,17 @@ export const collections = {
             cardDescription: z.string().optional(),
           })
           .optional(),
+        manual: z
+          .object({
+            id: z.string(),
+            repository: z.literal('bluetape4k-projects'),
+            group: z.string(),
+            kind: z.enum(['library', 'example', 'benchmark']),
+            sourceCommit: z.string().regex(/^[0-9a-f]{40}$/),
+            sourcePath: z.string(),
+            layer: z.enum(['build', 'learn', 'apply']),
+          })
+          .optional(),
       }),
     }),
   }),
