@@ -1,0 +1,399 @@
+---
+title: "Bluetape Skills Part 2: Starting Work with bluetape-workflow"
+description: How bluetape-workflow classifies requests and carries them through first-plan approval, Action–Evidence–Failure checklists, leaf skills, and final DoD evidence.
+sidebar:
+  order: -202607111710
+blog:
+  date: 2026-07-11T17:10:00+09:00
+  image: /assets/bluetape-workflow-guide-hero.png
+  imageAlt: A central workflow router connecting small robotic developers to specialized workbenches and sequential verification gates
+  cardDescription: How bluetape-workflow routes a request through classification, plan approval, leaf skills, step evidence, and final DoD.
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape-workflow-guide-hero.png" alt="A central workflow router connecting small robotic developers to specialized workbenches and sequential verification gates" loading="eager" />
+  <figcaption>Classify one request first, then let only approved and verified work cross each gate.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-07-11 · Bluetape Skills Part 2</p>
+
+This article connects the skill layer from ["Turning AI Collaboration Into
+Infrastructure"](/blog/ai-collaboration-environment/) and the sharing and installation structure
+from [Part 1](/blog/bluetape-skills-sharing/) to an actual execution procedure. The focus is what
+happens to one request as it moves through classification, approval, execution, and verification.
+
+Installing the skills does not mean memorizing every name. Bluetape ecosystem work starts with
+`$bluetape-workflow`. It is not a universal prompt that writes all the code. It is a router that
+first identifies the shape of the request and then selects the right leaf skill and validation
+level.
+
+The router has this structure because earlier procedures failed in both directions. Agents skipped
+gates, treated a later success as proof of an earlier step, or reduced checks because a change looked
+small. At other times, safe local work stopped repeatedly to ask for permission even after the scope
+had been approved.
+
+The current boundary is different: approve the scope and deliverables once in the first concrete
+plan, then continue safe and reversible work without repeated handoffs. Every open gate still needs
+fresh evidence before it passes.
+
+```text
+$bluetape-workflow
+
+Add a new cache usage example to the bluetape4k-exposed README.
+```
+
+That request changes documentation rather than production behavior, so it routes to Type E
+Maintenance. A reproducible failure routes to Type C Bug Fix. A new module or broad API design routes
+to Type A Full Feature. Classification changes the plan, evidence, test scope, and the gates that
+must pass before a PR can open.
+
+## The First Step Is Classification, Not Implementation
+
+An explicit user classification wins. Otherwise, `bluetape-workflow` chooses the lightest safe type.
+
+| Type | Use it for | Execution skill |
+| --- | --- | --- |
+| A · Full Feature | New modules, services, dependencies, broad public APIs, multi-layer changes | `$bluetape-full-feature` |
+| B · Fast Track | Small features or extensions with bounded impact | `$bluetape-fast-track` |
+| C · Bug Fix | Reproducible defects, regressions, wrong output, failing tests | `$bluetape-bugfix` |
+| D · Code Review | Review, audit, or investigation without an implementation request | Code review plus a language pattern skill |
+| E · Maintenance | README, KDoc, docs, AGENTS, skills, config, CI hygiene | `$bluetape-maintenance` |
+| P · Publish | Snapshots, releases, BOM/catalog trains, tags, Maven Central | `$bluetape-publish-jvm` or `$bluetape-publish-go` |
+| F · Self Improve | Benchmark loops with a baseline and stop condition | `$bluetape-self-improve` |
+
+Calling a task small does not automatically make it Type B. A new dependency or module is Type A
+even when the diff is short. A review stays Type D unless the user also requests implementation. A
+bug fix mixed with an unrelated feature becomes two workflows. Risk and required evidence matter
+more than the label attached to the request.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape-workflow-type-router-01.png" alt="One user request entering bluetape-workflow and branching by risk and evidence scope into Full Feature, Fast Track, Bug Fix, Code Review, Maintenance, Publish, and Self Improve" loading="lazy" />
+  <figcaption>The router chooses the lightest safe lane from the change risk and the evidence it requires.</figcaption>
+</figure>
+
+## Stay Read-Only Until the First Plan Is Approved
+
+After classification, the agent does not edit files immediately. It presents a concrete plan first.
+
+```text
+Work type: Type E - Maintenance
+Basis: Only README examples and wording change; production behavior stays unchanged.
+
+1. Action: Inspect the current README locales and actual API usage.
+   Expected DoD: Source and documentation identifiers match.
+2. Action: Update README.md and README.ko.md over the same scope.
+   Expected DoD: Both locales contain corresponding examples and links.
+3. Action: Run the diff check and documentation build.
+   Expected DoD: Changed routes and links render correctly.
+```
+
+Discovery remains read-only until this point. The agent may inspect `AGENTS.md`, skills, source,
+status, issue and PR metadata, and prior lessons. It may not edit files, create durable plans,
+commit, open a PR, dispatch a workflow, or merge before the first plan is approved.
+
+This gate is not meant to reduce autonomy. Fast implementation under the wrong classification only
+increases the amount of work that must be undone. The user confirms scope and outputs once; the agent
+then owns the approved local edits and checks without asking again at every step.
+
+## Repeated Failures Clarified the Approval Boundary
+
+Earlier guidance scattered "work autonomously" and "get plan approval first" across different
+documents. Some tasks began editing without a plan. Others requested approval for every local change
+after the plan was already accepted.
+
+The boundary is now explicit.
+
+| Situation | Current behavior |
+| --- | --- |
+| Inspect status, source, skills, issue/PR metadata | Read-only discovery is allowed before approval |
+| First concrete plan | Show Action and Expected DoD, then obtain approval |
+| Approved local edits, tests, and verification | Continue without repeated permission handoffs |
+| A new task that materially changes the scope | Present and approve the changed plan |
+| Merge, tag, publish, release, destructive cleanup | Confirm that the approved external-action scope covers it |
+
+The approval gate separates decisions the user must make from execution the agent should finish. It
+is not a checkpoint inserted after every command.
+
+## Every Checklist Row Has Three Parts
+
+After approval, the router instantiates its own checklist, the common gates, and the selected leaf
+skill checklist. Every executable row has the same shape.
+
+```markdown
+- [ ] **CG-07 — Lock behavior and run targeted proof**
+  - **Action:** Run the smallest tests and build checks that prove the changed contract.
+  - **Evidence:** Record the command, result, and affected module or route.
+  - **Failure:** Return to implementation instead of entering the next stage.
+```
+
+`Action` names the work, `Evidence` names the proof, and `Failure` defines the recovery path. Together
+they turn a checkbox into a gate rather than a reminder.
+
+The status rules are strict.
+
+- `[ ]` means unproved and blocks dependent work.
+- `UNKNOWN`, stale output, and an agent's unsupported completion claim are failures.
+- `SKIPPED` does not exist. `N/A` needs concrete evidence of why the row does not apply.
+- A later success never proves an earlier missing gate.
+
+A passing site build does not prove plan approval or locale parity. For a README-only change, Kotlin
+compiler diagnostics may be `N/A`, but the task should still show evidence such as "zero `.kt` files
+changed."
+
+These rules also came from real misses: checking optional rows without proof, closing rows as `N/A`
+without examining scope, and marking checkboxes before reading command output. The contract therefore
+adds several constraints.
+
+- Create the checklist before editing files.
+- Classify each row as required, conditional, or `N/A` before execution.
+- Record evidence immediately after reading it.
+- Leave failed rows unchecked and block dependent work.
+- If order was violated, repair the missing row and rerun affected downstream validation.
+- Before completion, reconcile `Required checks: X/Y; N/A: N; Blocked: N` with the actual rows.
+
+Evidence reconstructed later is recorded as a repair, not normal execution. Every downstream check
+that depended on the missing gate must be refreshed.
+
+## The Router Opens Six Gates in Order
+
+The core flow is concise.
+
+```text
+WF-01 Classify
+  -> WF-02 Write the first concrete plan
+  -> WF-03 Obtain first-plan approval
+  -> WF-04 Load execution contracts
+  -> WF-05 Execute gates in dependency order
+  -> WF-06 Repair skipped or weak gates
+```
+
+`WF-04` does not load every skill. Type E loads `$bluetape-maintenance`, the common gates, and only
+the references the current task triggers. Kotlin work adds `$bluetape-kotlin-patterns`, Go adds
+`$bluetape-go-patterns`, and article work adds `$bluetape-writer`. Context stays small, but every
+selected instruction file is read completely.
+
+`WF-05` preserves dependency order. Editing code before a test is not automatically a workflow
+failure. Skipping reproduction and regression coverage in a bug fix is. In that case, `WF-06`
+repairs the missing gate and refreshes every affected check.
+
+`WF-06` exists to stop the inertia of "we have already come this far." When a miss is found,
+downstream work pauses. The missing Action and DoD are reconstructed, fresh PASS evidence is
+collected, and only then does execution resume.
+
+## Common Gates Protect the Work Before and After the Leaf Skill
+
+Leaf skills own type-specific execution. The 17 common gates own repository-wide safety.
+
+| Range | What it checks |
+| --- | --- |
+| CG-01–03 | Guidance, status and diff, historical evidence, user work, and worktree boundaries |
+| CG-04–05 | Conversation/document/KDoc language and public contract documentation |
+| CG-06–08 | Ecosystem reuse, targeted proof, and serialization of heavyweight tests |
+| CG-09–12 | Issue/PR metadata, PR body and reviews, side-effect authority, post-merge local sync |
+| CG-13–15 | Chezmoi source-first changes, Codex self-audit, global policy and Claude boundaries |
+| CG-16–17 | Authoritative commands and line-by-line completion proof |
+
+Not every task runs every operation. Blog work makes public API KDoc and Testcontainers `N/A`, while
+locale parity, site build, PR body, and post-merge sync remain required. User-scope skill changes
+activate CG-13 and CG-14: editing a live file alone cannot pass. The workflow must update the chezmoi
+source, apply it, prove parity, self-audit, commit, and push.
+
+The common gates absorbed recurring closeout failures too: creating issues and PRs without checking
+assignee, milestone, or labels; merging after green CI without rereading new review comments; and
+leaving local `develop` behind after a remote merge. Each is now a separate proof. A PR body is read
+from GitHub directly, and its final `##` heading must be `## DoD Status`.
+
+## The Decisions Before Coding Matter More Than Coding
+
+In my experience, the Superpowers brainstorming, spec, and plan stages matter much more than writing
+the code. Coding transfers a chosen direction into files and tests. If the goal, boundary, API
+contract, or failure mode is wrong, fast clean code merely completes the wrong implementation
+sooner. When the earlier stages are precise, implementation becomes a series of small verifiable
+steps.
+
+Type A therefore does not begin with the editor.
+
+| Stage | What it fixes before coding | What goes wrong without it |
+| --- | --- | --- |
+| Brainstorming | User problem, scope and exclusions, 2–3 approaches, selection rationale, architecture, failure handling | The first idea is mistaken for the requirement, producing unnecessary features or wrong boundaries |
+| Design Spec | Approved behavior and API contract, alternatives and rejection reasons, compatibility, failure modes, acceptance criteria, DoD | Implementers interpret the request differently and tests have no stable contract to prove |
+| Implementation Plan | Spec-to-task mapping, dependency order, exact files, TDD steps, validation commands, docs, rollback, hazards | Design restarts during implementation and tests, README, CI, Nightly, or BOM registration is missed |
+| Coding | Failing tests and minimal implementation following the approved spec and plan | Weak earlier decisions turn the code itself into an implicit design document |
+
+Brainstorming is not a meeting for producing the largest number of ideas. It compares viable
+approaches, removes scope with YAGNI, and obtains a design decision. The design spec turns that
+decision into a contract that implementation and tests can read consistently.
+
+The plan is not a short task list either. It maps every acceptance criterion to files, tests, and
+commands. It corrects dependencies between tasks and makes follow-up surfaces explicit: README
+locales and KDoc for public behavior, or CI, Nightly, coverage, and BOM registration for a new
+module.
+
+This preparation does not necessarily reduce the amount of code. It reduces code written in the
+wrong direction, architecture debates discovered during review, and missing operational contracts
+found only after the PR opens. Speed is the time from an approved requirement to a verified result,
+not raw code-generation throughput.
+
+Artifacts do not become safe merely by existing. Brainstorming, specs, and plans need independent
+perspectives. Authors already know their intended context and unconsciously fill in missing
+assumptions. Multi-perspective review removes that invisible help and tests performance, stability,
+security, operations, API, and caller concerns explicitly.
+
+## `2-R`, `3-R`, and `6-R` Run 7-Tier Review Until `P0/P1=0`
+
+The most important Full Feature review gates are `2-R`, `3-R`, and `6-R`. They review different
+artifacts, but they use the same 7-Tier engine and convergence rule. Running a review once is not
+enough. Revision and re-review continue until the latest integrated result reaches `P0=0` and
+`P1=0`.
+
+| Gate | Artifact | Condition that opens the next stage |
+| --- | --- | --- |
+| `2-R` · Spec Review | Approved design spec, research evidence, boundaries, failure modes, compatibility, acceptance criteria | Latest integrated design review has `P0=0`, `P1=0` |
+| `3-R` · Plan Review | Spec-to-task mapping, dependency order, tests, docs, rollback, repository hazards | Latest integrated plan review has `P0=0`, `P1=0` |
+| `6-R` · Pre-PR Review | Current branch diff, tests and diagnostics, docs, module changes, PR evidence | Latest integrated diff review has `P0=0`, `P1=0` |
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape-workflow-7-tier-review-01.png" alt="The 2-R Spec, 3-R Plan, and 6-R Pre-PR gates passing through six independent perspectives—Performance, Stability, Security, Operator and Ops, Developer and API, User and Caller—before main-session integration, with a repair loop until P0 and P1 reach zero" loading="lazy" />
+  <figcaption>All three gates use the same 7-Tier engine. The next gate opens only when the main session's latest integration reaches P0=0 and P1=0.</figcaption>
+</figure>
+
+Seven tiers do not mean seven copies of the same code review. Six independent perspectives cover
+Performance, Stability, Security, Operator/Ops, Developer/API, and User/Caller. The main session is
+the seventh tier: it integrates the findings, removes duplicates, resolves conflicts, normalizes
+severity to `P0/P1/P2/P3`, and makes the gate decision.
+
+The red loop in the diagram is the convergence rule. Fix blockers, rerun affected validation, reopen
+every review perspective whose assumptions changed, and integrate again. The gate asks whether the
+latest artifact is blocker-free, not whether a review once ran.
+
+`P0/P1` findings are immediate blockers, not TODOs. A blocker at `2-R` stops the plan, one at `3-R`
+stops implementation, and one at `6-R` stops the PR. After a fix, rerun the affected perspectives
+rather than mechanically repeating every review. If a fix changes several assumptions, reopen all
+related perspectives.
+
+`P2/P3` findings are not silently discarded. Fix them in scope, record why they are deferred, or
+create a follow-up issue. The absolute gate condition remains `P0=0`, `P1=0` in the latest review.
+An older zero-blocker result or later green CI does not prove the current artifact is clean.
+
+## Each Execution Lane Handles Failure Differently
+
+Classification selects more than a name. Each lane has its own sequence, evidence, and return point.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape-workflow-execution-lanes-01.png" alt="Seven workflow lanes comparing Full Feature design review, Fast Track bounded change, Bug Fix RED and GREEN, read-only Code Review, Maintenance source-first parity, Publish irreversible holds, and Self Improve benchmark feedback" loading="lazy" />
+  <figcaption>Every lane starts at the same router, but its ordering, evidence, and failure recovery are different.</figcaption>
+</figure>
+
+### Bug Fix
+
+Type C begins by reproducing the defect. It identifies root cause, creates a regression test that
+fails when the bug returns, and applies the smallest fix. If reproduction fails, it does not edit
+files based on speculation.
+
+### Fast Track
+
+Type B proves that impact is bounded and relies on targeted tests. A small feature does not exempt
+documentation or public API checks, and any remaining P0/P1 finding blocks progression.
+
+### Full Feature
+
+Type A runs through spec, plan, advisor review, implementation, verification, and code review. A new
+module also checks `settings.gradle.kts`, README locales, repository module lists, CI, Nightly,
+coverage, and BOM/catalog registration. In particular, `2-R`, `3-R`, and `6-R` independently review
+the spec, plan, and current diff until each reaches `P0/P1=0`.
+
+### Maintenance
+
+Type E preserves production behavior while changing README, articles, AGENTS, skills, or config.
+User-scope Codex guidance starts from managed source, not the live target that the next chezmoi apply
+could overwrite.
+
+### Publish and Self Improve
+
+Type P pins the target version, latest external version, authority, consumer scope, and dispatch
+hold. Even with plan approval, irreversible actions such as tags, stable publication, and release
+creation need explicit authority.
+
+Type F requires an objective, primary metric, benchmark command, fresh baseline, threshold, and stop
+condition. It tests one hypothesis at a time and integrates only a candidate that passes tests,
+sealed-file validation, and the benchmark acceptance rule.
+
+## Progress Reports Should Be DoD-Centered
+
+During execution, a concise gate report is more useful than "still working."
+
+```text
+Type E · BLOG-04 PASS
+Action: Completed the Korean primary route.
+Evidence: Verified the /ko/blog/... route and source links.
+Next: Naturalness review and site build.
+```
+
+The final report reconciles every applicable row.
+
+```text
+Required checks: 18/18
+N/A: 4
+Blocked: 0
+P0/P1: 0
+```
+
+For a PR, the workflow rereads assignee, milestone, labels, CI, and review threads from GitHub. The
+body's final `##` heading must be `## DoD Status`. If merge was approved, the work ends only after
+the real local checkout matches its upstream branch.
+
+## How Much Did This Improve the Actual Work?
+
+There was a long period of friction. Agents skipped parts of longer guidance, marked checklist rows
+without evidence, and lost improvements when live configuration drifted from managed source. As
+those failures became workflow gates, the practical result changed noticeably.
+
+My subjective satisfaction reached about 90% with `gpt-5.5` at `high` reasoning and about 98% with
+the current `gpt-5.6-sol` at `high`. These are not benchmark-suite success rates. They summarize my
+experience reviewing real Bluetape work, and they do not isolate model improvement from skill
+improvement.
+
+The largest gain was not the prose quality of the first answer. It was continuity: approved work
+continued without unnecessary stops, every stage produced evidence, and a failed gate was less
+often hidden by later success. In Full Feature work, the 7-Tier loops at `2-R`, `3-R`, and `6-R`
+substantially reduced drift between design, plan, and implementation. A better model follows a skill
+more reliably; a better skill helps that model produce consistent repository-specific results.
+
+## What to Remember When Using It
+
+Start the request with `$bluetape-workflow`. Review the router's classification and first plan. After
+approval, look beyond descriptions and confirm that Evidence contains real commands, files, URLs,
+tests, and results.
+
+```text
+$bluetape-workflow
+
+Reproduce this failure, fix the root cause, and prove it with a regression test.
+```
+
+```text
+$bluetape-workflow
+
+Add this module and include README locales, CI, Nightly, and BOM registration.
+```
+
+```text
+$bluetape-workflow
+
+Review this PR without editing it, prioritizing P0/P1 findings.
+```
+
+Using the workflow does not mean running the longest process every time. It means classifying the
+work accurately, opening only the required procedure, and never crossing an open gate without
+evidence. Small documentation work stays light. Releases and new modules receive the rigor their
+risk demands.
+
+## Series
+
+- Start here: [Turning AI Collaboration Into Infrastructure](/blog/ai-collaboration-environment/)
+- [Bluetape Skills Part 1: Sharing and Installing the Toolkit](/blog/bluetape-skills-sharing/)
+- [Bluetape Skills Part 2: Starting Work with bluetape-workflow](/blog/bluetape-skills-workflow-guide/)
+
+## Repository
+
+- [bluetape4k/bluetape-skills](https://github.com/bluetape4k/bluetape-skills)
