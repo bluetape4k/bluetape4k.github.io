@@ -1,0 +1,67 @@
+---
+import catalog from '../data/ecosystem/catalog.json';
+import '../styles/atlas.css';
+
+type Locale = 'en' | 'ko';
+type Layer = 'build' | 'learn' | 'apply';
+interface CatalogNode {
+  id: string;
+  type: string;
+  layer: Layer;
+  label: Record<Locale, string>;
+  description: Record<Locale, string>;
+  url: string;
+}
+
+const { locale = 'en' } = Astro.props as { locale?: Locale };
+const layers: Layer[] = ['build', 'learn', 'apply'];
+const layerLabels: Record<Locale, Record<Layer, string>> = {
+  en: { build: 'Build', learn: 'Learn', apply: 'Apply' },
+  ko: { build: 'Build · 만들기', learn: 'Learn · 익히기', apply: 'Apply · 적용하기' },
+};
+const copy = locale === 'ko' ? layerLabels.ko : layerLabels.en;
+const nodes = catalog.nodes as CatalogNode[];
+const label = (node: CatalogNode) => node.label[locale] ?? node.label.en;
+const description = (node: CatalogNode) => node.description[locale] ?? node.description.en;
+---
+
+<nav class="bt4k-atlas" aria-label={locale === 'ko' ? '생태계 지도' : 'Ecosystem atlas'} data-atlas>
+  <div class="bt4k-atlas__filters" role="group" aria-label={locale === 'ko' ? '콘텐츠 단계' : 'Content layer'}>
+    {layers.map((layer) => (
+      <button type="button" data-atlas-filter={layer} aria-pressed="true">{copy[layer]}</button>
+    ))}
+  </div>
+
+  <ul class="bt4k-atlas__nodes">
+    {layers.map((layer) => (
+      <li class="bt4k-atlas__layer" data-layer={layer}>
+        <h2>{copy[layer]}</h2>
+        <ul>
+          {nodes.filter((node) => node.layer === layer).map((node) => (
+            <li class="bt4k-atlas__node">
+              <a href={node.url}>
+                <strong>{label(node)}</strong>
+                <span>{node.type}</span>
+                <small>{description(node)}</small>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<script>
+  for (const atlas of document.querySelectorAll('[data-atlas]')) {
+    for (const button of atlas.querySelectorAll('[data-atlas-filter]')) {
+      button.addEventListener('click', () => {
+        const active = button.getAttribute('aria-pressed') === 'true';
+        button.setAttribute('aria-pressed', String(!active));
+        const layer = button.getAttribute('data-atlas-filter');
+        const element = atlas.querySelector(`[data-layer="${layer}"]`);
+        if (element instanceof HTMLElement) element.hidden = active;
+      });
+    }
+  }
+</script>
