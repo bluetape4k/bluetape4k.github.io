@@ -32,6 +32,8 @@
 
 사용자는 특정 기술 영역이나 과제를 선택한 뒤 세 층을 오갈 수 있어야 한다. 예를 들어 Redis near-cache 매뉴얼은 관련 모듈, workshop 예제, 실제 적용 recipe를 함께 연결한다.
 
+이 세 층은 Kotlin/JVM 생태계의 주 탐색 축이다. `bluetape-go`, `bluetape-rs`, `bluetape-py`와 각 언어 workshop은 Kotlin Build/Learn 열에 섞지 않는다. 이들은 동일 조직에서 관리하는 별도 언어 생태계이므로 주 지도 아래의 **Other languages** 영역에서 Go, Rust, Python별로 독립된 library → workshop 흐름을 제공한다.
+
 ### 3.2 두 단계 지도
 
 지도는 두 단계로 제공한다.
@@ -41,7 +43,28 @@
 
 이번 범위에서는 `bluetape4k-projects`의 저장소 지도를 구현한다. 지도는 장식용 그래픽이 아니라 검색과 페이지 이동을 위한 탐색 UI다. 모바일과 키보드 환경에서는 동일한 내용을 계층형 목록으로 사용할 수 있어야 한다.
 
-### 3.3 하위 문서 유형
+### 3.3 선택한 지도 표현
+
+검토한 표현은 다음 세 가지다.
+
+1. **단순 카드 그리드**: 구현과 반응형 처리는 쉽지만, 관계 데이터가 시각적으로 드러나지 않아 현재 결과처럼 링크 목록으로 보인다.
+2. **자유 배치 네트워크 그래프**: 관계선은 풍부하지만 노드가 많아질수록 위치가 불안정하고, 문서 탐색과 모바일 접근성이 나빠진다.
+3. **단계형 생태계 맵**: Build → Learn → Apply를 가로 흐름으로 고정하고, 각 단계 안에서 도메인 cluster와 연결선을 보여 준다. 선택한 노드의 실제 관계는 강조하고 나머지는 낮은 대비로 유지한다.
+
+세 번째 방식을 채택한다. 첫 화면은 사용 흐름을 즉시 설명하고, 노드를 선택하거나 저장소 지도로 내려가면 분야별 전체 지형과 실제 관계를 더 자세히 보여 준다. 즉 상위는 흐름 중심, 하위는 구조·관계 중심이다.
+
+### 3.4 맵의 공간 구조
+
+- 중앙의 주 무대는 **Kotlin/JVM ecosystem**이다.
+- Build에는 Foundation, Data, Web, Distributed systems, Observability, Testing 같은 repository cluster를 둔다.
+- Learn에는 core workshop과 Exposed, R2DBC, Timefold 등 목적별 workshop cluster를 둔다.
+- Apply에는 reference application, production recipe, benchmark를 둔다.
+- repository와 workshop, workshop과 application 사이에는 catalog의 `relations`를 사용한 연결선을 표시한다.
+- hover, focus, 선택 상태에서는 관련 경로만 밝게 강조하고 설명 패널에 다음 이동 목적을 표시한다.
+- Other languages는 주 무대와 연결선을 공유하지 않는 하단 rail로 분리하고 Go, Rust, Python의 독립 생태계를 각각 표시한다.
+- 모바일에서는 연결선을 제거하고 Kotlin 단계와 Other languages를 접을 수 있는 순서형 section으로 바꾼다.
+
+### 3.5 하위 문서 유형
 
 - **Repository hub**: 저장소 역할, 도메인 지도, 권장 학습 순서, 관련 workshop
 - **Task guide**: HTTP 호출, 캐시, 직렬화, 데이터 접근, 관측성과 같은 문제 중심 안내
@@ -54,7 +77,9 @@
 
 ### 4.1 홈과 허브
 
-홈과 저장소 허브는 어두운 기술 지도 스타일을 사용한다. 저장소와 모듈은 색상만으로 구분하지 않고 레이블과 그룹을 함께 제공한다. 검색, Build/Learn/Apply 필터, 기술 영역 필터를 지도와 함께 노출한다.
+홈과 저장소 허브는 어두운 기술 지도 스타일을 사용한다. 배경에는 절제된 grid와 단계 간 흐름을 나타내는 lane을 사용하고, 노드는 둥근 카드보다 지도상의 장소처럼 보이는 compact panel로 표현한다. 저장소와 모듈은 색상만으로 구분하지 않고 레이블, 그룹, 유형 표식을 함께 제공한다.
+
+상단에는 Kotlin/JVM이라는 명확한 범위 표식과 Build/Learn/Apply 단계 설명을 둔다. 검색과 기술 영역 필터는 맵의 보조 수단으로 유지하며, 필터를 눌러 열 전체를 숨기는 대신 관련 경로를 강조하는 방식으로 동작한다. 지도 아래에는 Other languages rail을 시각적으로 분리해 Go, Rust, Python을 Kotlin 생태계의 일부로 오해하지 않게 한다.
 
 ### 4.2 매뉴얼
 
@@ -173,6 +198,7 @@ GitHub Pages
 
 - 지도 기능은 pointer 없이 키보드로 사용할 수 있어야 한다.
 - 지도와 같은 정보를 계층형 목록으로도 제공한다.
+- 관계선은 장식이며 접근성 트리의 유일한 정보 전달 수단이 아니다.
 - 색상 외에 레이블, 아이콘, 그룹 제목으로 유형을 구분한다.
 - 본문 제목 구조와 landmark를 의미에 맞게 사용한다.
 - 코드 블록, 표, 경고 문구는 작은 화면에서 가로 스크롤이나 재배치가 가능해야 한다.
@@ -194,6 +220,8 @@ GitHub Pages
 - locale parity와 내부 링크 검사가 통과한다.
 - Astro/Starlight build가 통과한다.
 - 지도, 목록 fallback, 검색, breadcrumb, 언어 전환을 검증한다.
+- Kotlin/JVM 노드와 Other languages 노드가 서로 다른 영역과 탐색 landmark에 렌더링되는지 검증한다.
+- 관계 강조가 hover뿐 아니라 keyboard focus에서도 동일하게 동작하는지 검증한다.
 - 데스크톱과 모바일의 대표 viewport에서 탐색 흐름을 검증한다.
 - GitHub Pages 배포 후 대표 영문·한글 경로와 정적 자산을 확인한다.
 
