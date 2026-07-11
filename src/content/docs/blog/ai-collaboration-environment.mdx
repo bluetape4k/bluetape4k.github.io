@@ -29,6 +29,13 @@ procedures, searchable history, and verification gates that a human teammate wou
 In bluetape4k, that responsibility is shared by `AGENTS.md`, `CLAUDE.md`, skills, qmd, memory, and
 hooks. Models keep changing. This working environment survives into the next session.
 
+## The Full Process
+
+<figure class="bt4k-architecture">
+  <img src="/assets/ai-collaboration-process.png" alt="An AI collaboration environment cycling through intent definition, context search, workflow routing, execution, verification, and memory promotion" loading="lazy" />
+  <figcaption>These stages do not operate in isolation. Lessons from verification flow back into the intent and context of the next task.</figcaption>
+</figure>
+
 ## `AGENTS.md` and `CLAUDE.md` Are Onboarding Docs
 
 When a human joins a project, you give them more than a README. You explain the code layout,
@@ -171,3 +178,20 @@ AI collaboration is less about a better prompt and more about a better working e
 used as a one-off generator, each session drifts. If AI is onboarded like a teammate, procedures are
 managed like code, and verification plus memory become infrastructure, the work becomes more stable
 across sessions.
+
+## Follow-Up: Turning the Working Environment Into Shareable Skills
+
+This article described `AGENTS.md`, skills, search, memory, and hooks as one AI collaboration
+environment. Operating that environment exposed another set of problems: agents skipped parts of
+long instructions, copied `SKILL.md` without its references, and lost live-only changes after the
+next chezmoi apply. The `bluetape4k-*` namespace also looked too narrowly tied to Kotlin/JVM once Go,
+Python, and Rust skills entered the same family.
+
+The follow-up Bluetape Skills series records how we addressed those problems. Part 1 covers canonical
+names, a distribution unit that includes references and validation scripts, mapping historical GNO
+records across renamed skills, and source-first chezmoi synchronization. Part 2 explains how
+`$bluetape-workflow` classifies requests and carries them through first-plan approval, blocking
+checklists, and concrete completion evidence.
+
+- [Bluetape Skills Part 1: Sharing and Installing the Toolkit](/blog/bluetape-skills-sharing/)
+- [Bluetape Skills Part 2: Starting Work with bluetape-workflow](/blog/bluetape-skills-workflow-guide/)
