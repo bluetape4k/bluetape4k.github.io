@@ -1,0 +1,118 @@
+{
+  "nodes": [
+    {
+      "id": "bluetape4k-projects", "type": "repository", "layer": "build", "group": "Kotlin/JVM",
+      "label": { "en": "Core Kotlin libraries", "ko": "Kotlin 핵심 라이브러리" },
+      "description": { "en": "Coroutine-first backend foundations and integrations.", "ko": "코루틴 중심의 백엔드 기반 기능과 통합 모듈입니다." },
+      "url": "https://github.com/bluetape4k/bluetape4k-projects", "relations": ["bluetape4k-workshop"]
+    },
+    {
+      "id": "bluetape4k-exposed", "type": "repository", "layer": "build", "group": "Kotlin/JVM",
+      "label": { "en": "Exposed extensions", "ko": "Exposed 확장" },
+      "description": { "en": "JDBC and R2DBC repository patterns for JetBrains Exposed.", "ko": "JetBrains Exposed용 JDBC·R2DBC 저장소 패턴을 제공합니다." },
+      "url": "https://github.com/bluetape4k/bluetape4k-exposed", "relations": ["exposed-workshop", "exposed-r2dbc-workshop"]
+    },
+    {
+      "id": "bluetape4k-aws", "type": "repository", "layer": "build", "group": "Kotlin/JVM",
+      "label": { "en": "AWS integrations", "ko": "AWS 통합" },
+      "description": { "en": "Coroutine-friendly wrappers for AWS SDKs.", "ko": "AWS SDK를 코루틴 친화적으로 사용할 수 있게 합니다." },
+      "url": "https://github.com/bluetape4k/bluetape4k-aws", "relations": []
+    },
+    {
+      "id": "bluetape4k-graph", "type": "repository", "layer": "build", "group": "Kotlin/JVM",
+      "label": { "en": "Graph data", "ko": "그래프 데이터" },
+      "description": { "en": "Common patterns for graph databases and query engines.", "ko": "그래프 데이터베이스와 쿼리 엔진의 공통 패턴을 제공합니다." },
+      "url": "https://github.com/bluetape4k/bluetape4k-graph", "relations": []
+    },
+    {
+      "id": "bluetape4k-leader", "type": "repository", "layer": "build", "group": "Kotlin/JVM",
+      "label": { "en": "Leader election", "ko": "리더 선출" },
+      "description": { "en": "Distributed leader election APIs and backends.", "ko": "분산 리더 선출 API와 백엔드를 제공합니다." },
+      "url": "https://github.com/bluetape4k/bluetape4k-leader", "relations": []
+    },
+    {
+      "id": "bluetape4k-text", "type": "repository", "layer": "build", "group": "Kotlin/JVM",
+      "label": { "en": "Text processing", "ko": "텍스트 처리" },
+      "description": { "en": "Language detection, tokenization, and multi-pattern search.", "ko": "언어 감지, 토큰화, 다중 패턴 검색을 제공합니다." },
+      "url": "https://github.com/bluetape4k/bluetape4k-text", "relations": []
+    },
+    {
+      "id": "bluetape4k-image", "type": "repository", "layer": "build", "group": "Kotlin/JVM",
+      "label": { "en": "Image processing", "ko": "이미지 처리" },
+      "description": { "en": "JVM image pipelines with multiple processing backends.", "ko": "여러 처리 백엔드를 지원하는 JVM 이미지 파이프라인입니다." },
+      "url": "https://github.com/bluetape4k/bluetape4k-image", "relations": []
+    },
+    {
+      "id": "bluetape4k-javers", "type": "repository", "layer": "build", "group": "Kotlin/JVM",
+      "label": { "en": "Audit and diff", "ko": "감사와 변경 비교" },
+      "description": { "en": "JaVers integrations for audit history and object diffs.", "ko": "감사 이력과 객체 변경 비교를 위한 JaVers 통합입니다." },
+      "url": "https://github.com/bluetape4k/bluetape4k-javers", "relations": []
+    },
+    {
+      "id": "bluetape4k-dependencies", "type": "repository", "layer": "build", "group": "Governance",
+      "label": { "en": "Dependency governance", "ko": "의존성 거버넌스" },
+      "description": { "en": "A shared BOM and compatibility catalog for the ecosystem.", "ko": "생태계 공통 BOM과 호환성 카탈로그를 관리합니다." },
+      "url": "https://github.com/bluetape4k/bluetape4k-dependencies", "relations": []
+    },
+    {
+      "id": "bluetape-go", "type": "repository", "layer": "build", "group": "Go",
+      "label": { "en": "Go libraries", "ko": "Go 라이브러리" },
+      "description": { "en": "Backend utilities and infrastructure packages for Go.", "ko": "Go 백엔드 유틸리티와 인프라 패키지입니다." },
+      "url": "https://github.com/bluetape4k/bluetape-go", "relations": ["bluetape-go-workshop"]
+    },
+    {
+      "id": "bluetape-rs", "type": "repository", "layer": "build", "group": "Rust",
+      "label": { "en": "Rust libraries", "ko": "Rust 라이브러리" },
+      "description": { "en": "Backend primitives and infrastructure integrations for Rust.", "ko": "Rust 백엔드 기본 기능과 인프라 통합을 제공합니다." },
+      "url": "https://github.com/bluetape4k/bluetape-rs", "relations": ["bluetape-rs-workshop"]
+    },
+    {
+      "id": "bluetape-py", "type": "repository", "layer": "build", "group": "Python",
+      "label": { "en": "Python libraries", "ko": "Python 라이브러리" },
+      "description": { "en": "Python backend, testing, logging, and operations utilities.", "ko": "Python 백엔드, 테스트, 로깅, 운영 유틸리티입니다." },
+      "url": "https://github.com/bluetape4k/bluetape-py", "relations": []
+    },
+    {
+      "id": "bluetape4k-workshop", "type": "workshop", "layer": "learn", "group": "Kotlin/JVM",
+      "label": { "en": "bluetape4k workshop", "ko": "bluetape4k 워크숍" },
+      "description": { "en": "Runnable examples for the core Kotlin ecosystem.", "ko": "Kotlin 핵심 생태계를 실행하며 익히는 예제 모음입니다." },
+      "url": "https://github.com/bluetape4k/bluetape4k-workshop", "relations": ["bluetape4k-projects"]
+    },
+    {
+      "id": "exposed-workshop", "type": "workshop", "layer": "learn", "group": "Data",
+      "label": { "en": "Exposed workshop", "ko": "Exposed 워크숍" },
+      "description": { "en": "Hands-on JDBC examples for JetBrains Exposed.", "ko": "JetBrains Exposed JDBC를 실습하는 예제입니다." },
+      "url": "https://github.com/bluetape4k/exposed-workshop", "relations": ["bluetape4k-exposed"]
+    },
+    {
+      "id": "exposed-r2dbc-workshop", "type": "workshop", "layer": "learn", "group": "Data",
+      "label": { "en": "Exposed R2DBC workshop", "ko": "Exposed R2DBC 워크숍" },
+      "description": { "en": "Reactive SQL examples with Exposed and R2DBC.", "ko": "Exposed와 R2DBC를 활용한 리액티브 SQL 예제입니다." },
+      "url": "https://github.com/bluetape4k/exposed-r2dbc-workshop", "relations": ["bluetape4k-exposed"]
+    },
+    {
+      "id": "timefold-workshop", "type": "workshop", "layer": "learn", "group": "Optimization",
+      "label": { "en": "Timefold workshop", "ko": "Timefold 워크숍" },
+      "description": { "en": "Constraint-solving examples for scheduling problems.", "ko": "일정 문제를 다루는 제약 조건 최적화 예제입니다." },
+      "url": "https://github.com/bluetape4k/timefold-workshop", "relations": []
+    },
+    {
+      "id": "bluetape-go-workshop", "type": "workshop", "layer": "learn", "group": "Go",
+      "label": { "en": "Go workshop", "ko": "Go 워크숍" },
+      "description": { "en": "Runnable services built with bluetape-go.", "ko": "bluetape-go로 서비스를 만들어 보는 실행형 예제입니다." },
+      "url": "https://github.com/bluetape4k/bluetape-go-workshop", "relations": ["bluetape-go"]
+    },
+    {
+      "id": "bluetape-rs-workshop", "type": "workshop", "layer": "learn", "group": "Rust",
+      "label": { "en": "Rust workshop", "ko": "Rust 워크숍" },
+      "description": { "en": "Runnable backend examples built with bluetape-rs.", "ko": "bluetape-rs로 백엔드를 구성하는 실행형 예제입니다." },
+      "url": "https://github.com/bluetape4k/bluetape-rs-workshop", "relations": ["bluetape-rs"]
+    },
+    {
+      "id": "clinic-appointment", "type": "application", "layer": "apply", "group": "Reference applications",
+      "label": { "en": "Clinic appointment", "ko": "진료 예약 애플리케이션" },
+      "description": { "en": "A reference application that assembles ecosystem patterns.", "ko": "생태계 패턴을 조합한 참조 애플리케이션입니다." },
+      "url": "https://github.com/bluetape4k/clinic-appointment", "relations": []
+    }
+  ]
+}

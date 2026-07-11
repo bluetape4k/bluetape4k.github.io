@@ -1,0 +1,107 @@
+.bt4k-atlas {
+  --atlas-line: color-mix(in srgb, var(--sl-color-accent) 38%, var(--sl-color-gray-5));
+  margin-block: 2rem;
+  padding: clamp(1rem, 3vw, 2rem);
+  border: 1px solid var(--atlas-line);
+  border-radius: 1rem;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--sl-color-black) 92%, #11213b), var(--sl-color-black));
+}
+
+.bt4k-atlas__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .65rem;
+  margin-block-end: 1.5rem;
+}
+
+.bt4k-atlas__filters button {
+  padding: .55rem .9rem;
+  border: 1px solid var(--atlas-line);
+  border-radius: 999px;
+  color: var(--sl-color-white);
+  background: transparent;
+  cursor: pointer;
+}
+
+.bt4k-atlas__filters button[aria-pressed='true'] {
+  color: var(--sl-color-black);
+  background: var(--sl-color-accent-high);
+}
+
+.bt4k-atlas__filters button:focus-visible,
+.bt4k-atlas__node a:focus-visible {
+  outline: 3px solid var(--sl-color-text-accent);
+  outline-offset: 3px;
+}
+
+.bt4k-atlas__nodes,
+.bt4k-atlas__layer > ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bt4k-atlas__nodes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.bt4k-atlas__layer h2 {
+  margin-block: 0 .75rem;
+  color: var(--sl-color-text-accent);
+  font-size: 1rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.bt4k-atlas__layer > ul {
+  display: grid;
+  gap: .65rem;
+}
+
+.bt4k-atlas__node a {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: .3rem .75rem;
+  min-height: 100%;
+  padding: .85rem;
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: .65rem;
+  color: var(--sl-color-white);
+  background: color-mix(in srgb, var(--sl-color-gray-6) 72%, transparent);
+  text-decoration: none;
+  transition: border-color 150ms ease, transform 150ms ease;
+}
+
+.bt4k-atlas__node a:hover {
+  border-color: var(--sl-color-accent);
+  transform: translateY(-2px);
+}
+
+.bt4k-atlas__node span {
+  color: var(--sl-color-gray-2);
+  font-size: .72rem;
+  text-transform: uppercase;
+}
+
+.bt4k-atlas__node small {
+  grid-column: 1 / -1;
+  color: var(--sl-color-gray-2);
+  line-height: 1.45;
+}
+
+@media (max-width: 50rem) {
+  .bt4k-atlas__nodes { grid-template-columns: 1fr; }
+}
+
+@media (prefers-contrast: more) {
+  .bt4k-atlas,
+  .bt4k-atlas__node a,
+  .bt4k-atlas__filters button { border-width: 2px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bt4k-atlas__node a { transition: none; }
+  .bt4k-atlas__node a:hover { transform: none; }
+}
