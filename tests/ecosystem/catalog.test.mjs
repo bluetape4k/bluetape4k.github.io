@@ -61,6 +61,7 @@ test('rejects relations across language ecosystems', () => {
 
 test('accepts a valid bilingual catalog node', () => {
   assert.deepEqual(validateCatalog({ nodes: [node()] }), []);
+  assert.deepEqual(validateCatalog({ nodes: [node({ layer: 'apply', type: 'application' })] }), []);
 });
 
 test('the checked-in catalog covers the Build, Learn, and Apply ecosystem', async () => {
