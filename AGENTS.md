@@ -13,8 +13,8 @@ This file governs every file in this repository.
 
 ## Blog Workflow
 
-- Use `bluetape4k-blog` for blog writing, review, localization, and publishing.
-- Use `bluetape4k-diagram` whenever hero figures, diagrams, charts, benchmark visuals, or rendered visual QA are touched.
+- Use `bluetape-writer` for blog writing, review, localization, and publishing.
+- Use `bluetape-diagram` whenever hero figures, diagrams, charts, benchmark visuals, or rendered visual QA are touched.
 - For Korean blog prose that reads translated, generic, or LLM-like, use `$humanize-korean` only after technical facts, code links, metrics, and intended meaning are stable.
 - Reject or manually repair any humanization result that changes facts, claims, dates, numbers, source links, identifiers, API names, configuration keys, commands, or user-preferred wording.
 - Korean posts live under `src/content/docs/ko/blog/`; English posts live under `src/content/docs/blog/`.
