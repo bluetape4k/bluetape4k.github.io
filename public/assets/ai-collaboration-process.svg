@@ -10,16 +10,16 @@
     <filter id="shadow" x="-10%" y="-20%" width="120%" height="140%">
       <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#1f2937" flood-opacity="0.16"/>
     </filter>
-    <marker id="arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" orient="auto">
-      <path d="M2 2 L10 6 L2 10 Z" fill="#334155"/>
+    <marker id="arrow" viewBox="0 0 14 14" refX="13" refY="7" markerWidth="14" markerHeight="14" markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M1 1 L13 7 L1 13 Z" fill="#334155"/>
     </marker>
     <style>
-      .title { font: 800 42px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #14213d; }
-      .subtitle { font: 500 22px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #52616f; }
-      .stage-title { font: 800 26px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #101828; }
-      .stage-body { font: 500 18px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #475467; }
-      .small { font: 700 15px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #344054; }
-      .label { font: 800 16px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #ffffff; }
+      .title { font: 42px "Architects Daughter", cursive; fill: #14213d; }
+      .subtitle { font: 500 22px "Comic Mono", ui-monospace, monospace; fill: #52616f; }
+      .stage-title { font: 26px "Architects Daughter", cursive; fill: #101828; }
+      .stage-body { font: 500 18px "Comic Mono", ui-monospace, monospace; fill: #475467; }
+      .small { font: 700 15px "Comic Mono", ui-monospace, monospace; fill: #344054; }
+      .label { font: 800 16px "Comic Mono", ui-monospace, monospace; fill: #ffffff; }
       .card { fill: #ffffff; stroke: #d0d5dd; stroke-width: 2; rx: 26; filter: url(#shadow); }
       .lane { fill: rgba(255, 255, 255, 0.58); stroke: #d9e2ec; stroke-width: 2; rx: 28; }
       .line { fill: none; stroke: #334155; stroke-width: 4; marker-end: url(#arrow); }
@@ -67,29 +67,29 @@
   <text x="1262" y="356" class="stage-body">and keep ownership</text>
   <text x="1262" y="384" class="stage-body">boundaries clear.</text>
 
-  <path d="M420 309 H456" class="line"/>
-  <path d="M800 309 H836" class="line"/>
-  <path d="M1180 309 H1216" class="line"/>
+  <path d="M420 309 H470" class="connector line"/>
+  <path d="M800 309 H850" class="connector line"/>
+  <path d="M1180 309 H1230" class="connector line"/>
 
-  <rect x="250" y="560" width="330" height="250" class="card"/>
-  <rect x="282" y="592" width="76" height="34" rx="17" fill="#7c3aed"/>
-  <text x="305" y="615" class="label">06</text>
-  <text x="282" y="666" class="stage-title">Memory</text>
-  <text x="282" y="704" class="stage-body">Promote lessons, specs,</text>
-  <text x="282" y="732" class="stage-body">plans, and decisions into</text>
-  <text x="282" y="760" class="stage-body">durable repository docs.</text>
+  <rect x="90" y="560" width="330" height="250" class="card"/>
+  <rect x="122" y="592" width="76" height="34" rx="17" fill="#7c3aed"/>
+  <text x="145" y="615" class="label">06</text>
+  <text x="122" y="666" class="stage-title">Memory</text>
+  <text x="122" y="704" class="stage-body">Promote lessons, specs,</text>
+  <text x="122" y="732" class="stage-body">plans, and decisions into</text>
+  <text x="122" y="760" class="stage-body">durable repository docs.</text>
 
-  <rect x="770" y="560" width="330" height="250" class="card"/>
-  <rect x="802" y="592" width="76" height="34" rx="17" fill="#be123c"/>
-  <text x="825" y="615" class="label">05</text>
-  <text x="802" y="666" class="stage-title">Verify</text>
-  <text x="802" y="704" class="stage-body">Run diagnostics, builds,</text>
-  <text x="802" y="732" class="stage-body">targeted tests, review,</text>
-  <text x="802" y="760" class="stage-body">and evidence checks.</text>
+  <rect x="1205" y="560" width="330" height="250" class="card"/>
+  <rect x="1237" y="592" width="76" height="34" rx="17" fill="#be123c"/>
+  <text x="1260" y="615" class="label">05</text>
+  <text x="1237" y="666" class="stage-title">Verify</text>
+  <text x="1237" y="704" class="stage-body">Run diagnostics, builds,</text>
+  <text x="1237" y="732" class="stage-body">targeted tests, review,</text>
+  <text x="1237" y="760" class="stage-body">and evidence checks.</text>
 
-  <path d="M1370 434 C1370 520 1050 506 1000 552" class="line"/>
-  <path d="M770 685 H594" class="line"/>
-  <path d="M250 685 C128 685 122 430 244 432" class="loop"/>
+  <path d="M1370 434 V560" class="connector line"/>
+  <path d="M1205 685 H420" class="connector line"/>
+  <path d="M255 560 V434" class="connector loop"/>
 
   <rect x="110" y="872" width="1380" height="58" class="lane"/>
   <text x="145" y="908" class="small">Compounding rule:</text>
