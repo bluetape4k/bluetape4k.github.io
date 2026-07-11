@@ -4,64 +4,312 @@ import '../styles/atlas.css';
 
 type Locale = 'en' | 'ko';
 type Layer = 'build' | 'learn' | 'apply';
+type Ecosystem = 'kotlin' | 'go' | 'rust' | 'python';
+type OtherEcosystem = Exclude<Ecosystem, 'kotlin'>;
+
 interface CatalogNode {
   id: string;
   type: string;
   layer: Layer;
+  ecosystem: Ecosystem;
+  group: string;
   label: Record<Locale, string>;
   description: Record<Locale, string>;
   url: string;
+  relations: string[];
+}
+
+interface Route {
+  from: string;
+  to: string;
 }
 
 const { locale = 'en' } = Astro.props as { locale?: Locale };
 const layers: Layer[] = ['build', 'learn', 'apply'];
-const layerLabels: Record<Locale, Record<Layer, string>> = {
-  en: { build: 'Build', learn: 'Learn', apply: 'Apply' },
-  ko: { build: 'Build · 만들기', learn: 'Learn · 익히기', apply: 'Apply · 적용하기' },
-};
-const copy = locale === 'ko' ? layerLabels.ko : layerLabels.en;
+const ecosystems: OtherEcosystem[] = ['go', 'rust', 'python'];
 const nodes = catalog.nodes as CatalogNode[];
+const kotlinNodes = nodes.filter((node) => node.ecosystem === 'kotlin');
+const kotlinNodeById = new Map(kotlinNodes.map((node) => [node.id, node]));
+const rank: Record<Layer, number> = { build: 0, learn: 1, apply: 2 };
+
+const copy = locale === 'ko'
+  ? {
+      eyebrow: 'Kotlin/JVM 생태계',
+      title: '코드에서 학습으로, 학습에서 실제 적용으로',
+      intro: '노드를 선택하면 연결된 저장소와 학습 경로가 강조됩니다.',
+      mapLabel: 'Kotlin/JVM Build Learn Apply 생태계 지도',
+      routeLabel: '저장소와 학습 경로 연결선',
+      stages: {
+        build: { label: 'Build', caption: '제품을 구성하는 라이브러리' },
+        learn: { label: 'Learn', caption: '실행하며 익히는 Workshop' },
+        apply: { label: 'Apply', caption: '패턴을 조합한 실제 사례' },
+      },
+      detailLabel: '선택한 생태계 항목',
+      detailTitle: 'Kotlin/JVM 여정',
+      detailBody: 'Build에서 출발해 관련 Workshop을 거쳐 실제 적용 사례로 이동하세요.',
+      open: '저장소 열기',
+      inspect: '관계 살펴보기',
+      otherEyebrow: 'Other languages',
+      otherTitle: '다른 언어 생태계',
+      otherIntro: 'Go, Rust, Python 라이브러리는 Kotlin/JVM 지도와 분리된 독립 생태계입니다.',
+      languageLabels: { go: 'Go', rust: 'Rust', python: 'Python' },
+    }
+  : {
+      eyebrow: 'Kotlin/JVM ecosystem',
+      title: 'From building, to learning, to applying',
+      intro: 'Select a node to illuminate its repositories and learning path.',
+      mapLabel: 'Kotlin/JVM Build Learn Apply ecosystem map',
+      routeLabel: 'Repository and learning path connections',
+      stages: {
+        build: { label: 'Build', caption: 'Libraries that compose production systems' },
+        learn: { label: 'Learn', caption: 'Runnable workshops for deliberate practice' },
+        apply: { label: 'Apply', caption: 'Reference systems that combine the patterns' },
+      },
+      detailLabel: 'Selected ecosystem item',
+      detailTitle: 'Kotlin/JVM journey',
+      detailBody: 'Start with Build, follow a related workshop, and continue to an applied reference.',
+      open: 'Open repository',
+      inspect: 'Explore relations',
+      otherEyebrow: 'Other languages',
+      otherTitle: 'Sibling language ecosystems',
+      otherIntro: 'Go, Rust, and Python libraries live beside the Kotlin/JVM ecosystem, not inside it.',
+      languageLabels: { go: 'Go', rust: 'Rust', python: 'Python' },
+    };
+
 const label = (node: CatalogNode) => node.label[locale] ?? node.label.en;
 const description = (node: CatalogNode) => node.description[locale] ?? node.description.en;
+const groupsFor = (layer: Layer) => {
+  const groups = new Map<string, CatalogNode[]>();
+  for (const node of kotlinNodes.filter((candidate) => candidate.layer === layer)) {
+    const members = groups.get(node.group) ?? [];
+    members.push(node);
+    groups.set(node.group, members);
+  }
+  return [...groups.entries()];
+};
+
+const routeKeys = new Set<string>();
+const routes: Route[] = [];
+for (const node of kotlinNodes) {
+  for (const targetId of node.relations) {
+    const target = kotlinNodeById.get(targetId);
+    if (!target) continue;
+    const key = [node.id, target.id].sort().join('::');
+    if (routeKeys.has(key)) continue;
+    routeKeys.add(key);
+    const forward = rank[node.layer] <= rank[target.layer];
+    routes.push({ from: forward ? node.id : target.id, to: forward ? target.id : node.id });
+  }
+}
 ---
 
-<nav class="bt4k-atlas" aria-label={locale === 'ko' ? '생태계 지도' : 'Ecosystem atlas'} data-atlas>
-  <div class="bt4k-atlas__filters" role="group" aria-label={locale === 'ko' ? '콘텐츠 단계' : 'Content layer'}>
-    {layers.map((layer) => (
-      <button type="button" data-atlas-filter={layer} aria-pressed="true">{copy[layer]}</button>
-    ))}
-  </div>
+<div class="bt4k-atlas" data-atlas data-active-node="">
+  <section class="bt4k-atlas__kotlin-map" data-ecosystem="kotlin" aria-labelledby={`kotlin-map-title-${locale}`}>
+    <header class="bt4k-atlas__hero">
+      <div>
+        <p class="bt4k-atlas__eyebrow">{copy.eyebrow}</p>
+        <h2 id={`kotlin-map-title-${locale}`}>{copy.title}</h2>
+      </div>
+      <p>{copy.intro}</p>
+    </header>
 
-  <ul class="bt4k-atlas__nodes">
-    {layers.map((layer) => (
-      <li class="bt4k-atlas__layer" data-layer={layer}>
-        <h2>{copy[layer]}</h2>
-        <ul>
-          {nodes.filter((node) => node.layer === layer).map((node) => (
-            <li class="bt4k-atlas__node">
-              <a href={node.url}>
-                <strong>{label(node)}</strong>
-                <span>{node.type}</span>
-                <small>{description(node)}</small>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </li>
-    ))}
-  </ul>
-</nav>
+    <nav class="bt4k-atlas__map-canvas" data-map-canvas aria-label={copy.mapLabel}>
+      <div class="bt4k-atlas__routes" aria-label={copy.routeLabel} aria-hidden="true">
+        {routes.map((route, index) => (
+          <span
+            class="bt4k-atlas__route"
+            data-route-from={route.from}
+            data-route-to={route.to}
+            style={`--route-index: ${index}`}
+          ></span>
+        ))}
+      </div>
+
+      <ul class="bt4k-atlas__nodes bt4k-atlas__lanes">
+        {layers.map((layer, index) => (
+          <li class="bt4k-atlas__lane" data-stage={layer} style={`--stage-index: ${index}`}>
+            <header class="bt4k-atlas__stage-header">
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <div>
+                <h3>{copy.stages[layer].label}</h3>
+                <p>{copy.stages[layer].caption}</p>
+              </div>
+            </header>
+
+            <div class="bt4k-atlas__groups">
+              {groupsFor(layer).map(([group, members]) => (
+                <section class="bt4k-atlas__group" aria-labelledby={`${locale}-${layer}-${group.replaceAll(' ', '-').toLowerCase()}`}>
+                  <h4 id={`${locale}-${layer}-${group.replaceAll(' ', '-').toLowerCase()}`}>{group}</h4>
+                  <ul>
+                    {members.map((node) => (
+                      <li class="bt4k-atlas__node" data-node-shell={node.id}>
+                        <button
+                          type="button"
+                          data-map-node
+                          data-node-id={node.id}
+                          data-relations={node.relations.join(' ')}
+                          data-label={label(node)}
+                          data-description={description(node)}
+                          data-meta={`${node.group} · ${node.type}`}
+                          data-url={node.url}
+                          aria-label={`${copy.inspect}: ${label(node)}`}
+                        >
+                          <span class="bt4k-atlas__node-marker" aria-hidden="true"></span>
+                          <span>
+                            <strong>{label(node)}</strong>
+                            <small>{description(node)}</small>
+                          </span>
+                        </button>
+                        <a href={node.url} aria-label={`${copy.open}: ${label(node)}`}>
+                          <span>{node.type}</span><span aria-hidden="true">↗</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              ))}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <aside
+      class="bt4k-atlas__detail"
+      aria-live="polite"
+      data-map-detail
+      data-default-title={copy.detailTitle}
+      data-default-body={copy.detailBody}
+    >
+      <p data-detail-meta>{copy.detailLabel}</p>
+      <h3 data-detail-title>{copy.detailTitle}</h3>
+      <p data-detail-body>{copy.detailBody}</p>
+      <a data-detail-link href="https://github.com/bluetape4k/bluetape4k-projects">{copy.open}<span aria-hidden="true"> ↗</span></a>
+    </aside>
+  </section>
+
+  <nav class="bt4k-atlas__other-languages" aria-labelledby={`other-languages-title-${locale}`}>
+    <header>
+      <p class="bt4k-atlas__eyebrow">{copy.otherEyebrow}</p>
+      <h2 id={`other-languages-title-${locale}`}>{copy.otherTitle}</h2>
+      <p>{copy.otherIntro}</p>
+    </header>
+    <ul>
+      {ecosystems.map((ecosystem) => (
+        <li class="bt4k-atlas__language-track" data-ecosystem={ecosystem}>
+          <h3>{copy.languageLabels[ecosystem]}</h3>
+          <ol>
+            {nodes.filter((node) => node.ecosystem === ecosystem).map((node) => (
+              <li data-language-stage={node.layer}>
+                <a href={node.url}>
+                  <span>{node.layer}</span>
+                  <strong>{label(node)}</strong>
+                  <small>{description(node)}</small>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</div>
 
 <script>
-  for (const atlas of document.querySelectorAll('[data-atlas]')) {
-    for (const button of atlas.querySelectorAll('[data-atlas-filter]')) {
+  for (const atlas of document.querySelectorAll<HTMLElement>('[data-atlas]')) {
+    const canvas = atlas.querySelector<HTMLElement>('[data-map-canvas]');
+    const nodeButtons = [...atlas.querySelectorAll<HTMLButtonElement>('[data-map-node]')];
+    const routes = [...atlas.querySelectorAll<HTMLElement>('[data-route-from]')];
+    const detail = atlas.querySelector<HTMLElement>('[data-map-detail]');
+    const detailMeta = detail?.querySelector<HTMLElement>('[data-detail-meta]');
+    const detailTitle = detail?.querySelector<HTMLElement>('[data-detail-title]');
+    const detailBody = detail?.querySelector<HTMLElement>('[data-detail-body]');
+    const detailLink = detail?.querySelector<HTMLAnchorElement>('[data-detail-link]');
+    let selectedNode = '';
+
+    const drawRoutes = () => {
+      if (!canvas) return;
+      const canvasRect = canvas.getBoundingClientRect();
+      for (const route of routes) {
+        const from = atlas.querySelector<HTMLElement>(`[data-node-id="${route.dataset.routeFrom}"]`);
+        const to = atlas.querySelector<HTMLElement>(`[data-node-id="${route.dataset.routeTo}"]`);
+        if (!from || !to) continue;
+        const fromRect = from.getBoundingClientRect();
+        const toRect = to.getBoundingClientRect();
+        const startX = fromRect.right - canvasRect.left;
+        const startY = fromRect.top + fromRect.height / 2 - canvasRect.top;
+        const endX = toRect.left - canvasRect.left;
+        const endY = toRect.top + toRect.height / 2 - canvasRect.top;
+        const deltaX = endX - startX;
+        const deltaY = endY - startY;
+        route.style.setProperty('--route-left', `${startX}px`);
+        route.style.setProperty('--route-top', `${startY}px`);
+        route.style.setProperty('--route-length', `${Math.hypot(deltaX, deltaY)}px`);
+        route.style.setProperty('--route-angle', `${Math.atan2(deltaY, deltaX)}rad`);
+      }
+    };
+
+    const clearActive = () => {
+      atlas.dataset.activeNode = '';
+      for (const node of nodeButtons) {
+        node.removeAttribute('data-related');
+        node.removeAttribute('data-dimmed');
+        node.setAttribute('aria-pressed', 'false');
+      }
+      for (const route of routes) route.removeAttribute('data-related');
+      if (detailTitle && detail) detailTitle.textContent = detail.dataset.defaultTitle ?? '';
+      if (detailBody && detail) detailBody.textContent = detail.dataset.defaultBody ?? '';
+      if (detailMeta) detailMeta.textContent = detailMeta.dataset.defaultMeta ?? detailMeta.textContent;
+    };
+
+    const activate = (button: HTMLButtonElement) => {
+      const id = button.dataset.nodeId ?? '';
+      const relatedIds = new Set([id, ...(button.dataset.relations ?? '').split(' ').filter(Boolean)]);
+      atlas.dataset.activeNode = id;
+      for (const node of nodeButtons) {
+        const related = relatedIds.has(node.dataset.nodeId ?? '');
+        node.toggleAttribute('data-related', related);
+        node.toggleAttribute('data-dimmed', !related);
+        node.setAttribute('aria-pressed', String(selectedNode === node.dataset.nodeId));
+      }
+      for (const route of routes) {
+        const related = route.dataset.routeFrom === id || route.dataset.routeTo === id;
+        route.toggleAttribute('data-related', related);
+      }
+      if (detailMeta) detailMeta.textContent = button.dataset.meta ?? '';
+      if (detailTitle) detailTitle.textContent = button.dataset.label ?? '';
+      if (detailBody) detailBody.textContent = button.dataset.description ?? '';
+      if (detailLink && button.dataset.url) detailLink.href = button.dataset.url;
+    };
+
+    for (const button of nodeButtons) {
+      button.setAttribute('aria-pressed', 'false');
+      button.addEventListener('pointerenter', () => {
+        if (!selectedNode) activate(button);
+      });
+      button.addEventListener('pointerleave', () => {
+        if (!selectedNode) clearActive();
+      });
+      button.addEventListener('focusin', () => activate(button));
+      button.addEventListener('focusout', () => {
+        if (!selectedNode) queueMicrotask(clearActive);
+      });
       button.addEventListener('click', () => {
-        const active = button.getAttribute('aria-pressed') === 'true';
-        button.setAttribute('aria-pressed', String(!active));
-        const layer = button.getAttribute('data-atlas-filter');
-        const element = atlas.querySelector(`[data-layer="${layer}"]`);
-        if (element instanceof HTMLElement) element.hidden = active;
+        selectedNode = selectedNode === button.dataset.nodeId ? '' : button.dataset.nodeId ?? '';
+        if (selectedNode) activate(button);
+        else clearActive();
       });
     }
+
+    atlas.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        selectedNode = '';
+        clearActive();
+      }
+    });
+
+    requestAnimationFrame(drawRoutes);
+    const observer = new ResizeObserver(drawRoutes);
+    if (canvas) observer.observe(canvas);
   }
 </script>

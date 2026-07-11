@@ -5,23 +5,41 @@ import test from 'node:test';
 const componentUrl = new URL('../../src/components/EcosystemAtlas.astro', import.meta.url);
 const stylesheetUrl = new URL('../../src/styles/atlas.css', import.meta.url);
 
-test('atlas keeps an accessible hierarchical list available without JavaScript', async () => {
+test('atlas keeps accessible Kotlin and sibling-language landmarks without JavaScript', async () => {
   const source = await readFile(componentUrl, 'utf8');
 
-  assert.match(source, /<nav[^>]+aria-label=/);
+  assert.match(source, /bt4k-atlas__kotlin-map/);
+  assert.match(source, /bt4k-atlas__other-languages/);
+  assert.match(source, /data-ecosystem="kotlin"/);
+  assert.match(source, /data-ecosystem={ecosystem}/);
   assert.match(source, /<ul[^>]+bt4k-atlas__nodes/);
   assert.match(source, /<a href=/);
   assert.doesNotMatch(source, /<svg|<noscript/);
 });
 
-test('atlas exposes Build, Learn, and Apply filter state', async () => {
+test('atlas renders staged lanes, relation routes, and a live detail panel', async () => {
   const source = await readFile(componentUrl, 'utf8');
 
-  assert.match(source, /data-atlas-filter=/);
-  assert.match(source, /aria-pressed="true"/);
-  assert.match(source, /node\.layer/);
-  assert.match(source, /node\.type/);
-  assert.match(source, /element\.hidden/);
+  assert.match(source, /data-stage={layer}/);
+  assert.match(source, /data-node-id={node\.id}/);
+  assert.match(source, /data-relations={node\.relations\.join/);
+  assert.match(source, /data-route-from={route\.from}/);
+  assert.match(source, /data-route-to={route\.to}/);
+  assert.match(source, /aria-live="polite"/);
+  assert.match(source, /ResizeObserver/);
+  assert.match(source, /--route-angle/);
+});
+
+test('atlas highlights relation paths without hiding content', async () => {
+  const source = await readFile(componentUrl, 'utf8');
+
+  assert.match(source, /data-active-node/);
+  assert.match(source, /data-related/);
+  assert.match(source, /data-dimmed/);
+  assert.match(source, /pointerenter/);
+  assert.match(source, /focusin/);
+  assert.match(source, /event\.key === 'Escape'/);
+  assert.doesNotMatch(source, /element\.hidden|data-atlas-filter/);
 });
 
 test('atlas styles keyboard focus, high contrast, reduced motion, and mobile layout', async () => {
