@@ -1,5 +1,6 @@
 const TYPES = new Set(['repository', 'workshop', 'application', 'guide']);
 const LAYERS = new Set(['build', 'learn', 'apply']);
+const ECOSYSTEMS = new Set(['kotlin', 'go', 'rust', 'python']);
 
 export function validateCatalog(catalog) {
   const errors = [];
@@ -17,6 +18,10 @@ export function validateCatalog(catalog) {
     else ids.set(node.id, node);
     if (!TYPES.has(node.type)) errors.push(`${prefix}: invalid type ${String(node.type)}`);
     if (!LAYERS.has(node.layer)) errors.push(`${prefix}: invalid layer ${String(node.layer)}`);
+    if (!ECOSYSTEMS.has(node.ecosystem)) errors.push(`${prefix}: invalid ecosystem ${String(node.ecosystem)}`);
+    if (node.layer === 'apply' && node.ecosystem !== 'kotlin') {
+      errors.push(`${prefix}: only Kotlin nodes may use apply`);
+    }
     if (!nonEmpty(node.group)) errors.push(`${prefix}: group is required`);
     for (const locale of ['en', 'ko']) {
       if (!nonEmpty(node.label?.[locale])) errors.push(`${prefix}: label.${locale} is required`);
@@ -30,6 +35,9 @@ export function validateCatalog(catalog) {
     for (const targetId of node.relations) {
       const target = ids.get(targetId);
       if (!target) errors.push(`${node.id}: missing relation target ${targetId}`);
+      else if (target.ecosystem !== node.ecosystem) {
+        errors.push(`${node.id}: cross-ecosystem relation ${targetId}`);
+      }
       else if (!Array.isArray(target.relations) || !target.relations.includes(node.id)) {
         errors.push(`${node.id}: relation ${targetId} is not reciprocal`);
       }
