@@ -23,7 +23,7 @@
   <text x="56" y="76" class="title">Share the contract, keep the runtime private</text>
   <text x="58" y="108" class="subtitle">A portable skill bundle includes everything needed to execute the guidance — and nothing personal.</text>
 
-  <path class="connector" d="M 300 365 H 340 Q 360 365 360 345 V 320 Q 360 300 370 300 H 380" marker-end="url(#arrow-blue)"/>
+  <path class="connector" d="M 300 365 H 380" marker-end="url(#arrow-blue)"/>
 
   <g filter="url(#shadow)">
     <rect x="50" y="150" width="250" height="430" rx="28" fill="#f3effb" stroke="#8a6fd1" stroke-width="2.5"/>

@@ -29,7 +29,7 @@
   <path class="connector" d="M 380 235 H 450" marker-end="url(#arrow-blue-right)"/>
   <path class="connector" d="M 760 235 H 830" marker-end="url(#arrow-blue-right)"/>
   <path class="connector" d="M 1140 235 H 1210" marker-end="url(#arrow-blue-right)"/>
-  <path class="connector" d="M 1365 300 V 340 Q 1365 360 1345 360 H 1325 Q 1305 360 1305 380 V 410" marker-end="url(#arrow-blue-right)"/>
+  <path class="connector" d="M 1365 300 V 410" marker-end="url(#arrow-blue-right)"/>
   <path class="connector" d="M 1210 475 H 1140" marker-end="url(#arrow-blue-left)"/>
   <path class="connector" d="M 830 475 H 760" marker-end="url(#arrow-blue-left)"/>
   <path class="connector" d="M 450 475 H 380" marker-end="url(#arrow-blue-left)"/>
