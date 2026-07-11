@@ -26,6 +26,9 @@ test('atlas renders staged lanes, relation routes, and a live detail panel', asy
   assert.match(source, /data-route-from={route\.from}/);
   assert.match(source, /data-route-to={route\.to}/);
   assert.match(source, /aria-live="polite"/);
+  assert.match(source, /data-default-meta=/);
+  assert.match(source, /data-default-url=/);
+  assert.match(source, /detailLink\.href = detail\.dataset\.defaultUrl/);
   assert.match(source, /ResizeObserver/);
   assert.match(source, /--route-angle/);
 });

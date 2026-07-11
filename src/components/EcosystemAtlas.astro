@@ -178,8 +178,10 @@ for (const node of kotlinNodes) {
       class="bt4k-atlas__detail"
       aria-live="polite"
       data-map-detail
+      data-default-meta={copy.detailLabel}
       data-default-title={copy.detailTitle}
       data-default-body={copy.detailBody}
+      data-default-url="https://github.com/bluetape4k/bluetape4k-projects"
     >
       <p data-detail-meta>{copy.detailLabel}</p>
       <h3 data-detail-title>{copy.detailTitle}</h3>
@@ -259,7 +261,8 @@ for (const node of kotlinNodes) {
       for (const route of routes) route.removeAttribute('data-related');
       if (detailTitle && detail) detailTitle.textContent = detail.dataset.defaultTitle ?? '';
       if (detailBody && detail) detailBody.textContent = detail.dataset.defaultBody ?? '';
-      if (detailMeta) detailMeta.textContent = detailMeta.dataset.defaultMeta ?? detailMeta.textContent;
+      if (detailMeta && detail) detailMeta.textContent = detail.dataset.defaultMeta ?? '';
+      if (detailLink && detail) detailLink.href = detail.dataset.defaultUrl ?? '';
     };
 
     const activate = (button: HTMLButtonElement) => {
