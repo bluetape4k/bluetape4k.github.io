@@ -4,6 +4,8 @@ import test from 'node:test';
 
 const componentUrl = new URL('../../src/components/EcosystemAtlas.astro', import.meta.url);
 const stylesheetUrl = new URL('../../src/styles/atlas.css', import.meta.url);
+const atlasPageUrl = new URL('../../src/content/docs/ecosystem/atlas.mdx', import.meta.url);
+const koreanAtlasPageUrl = new URL('../../src/content/docs/ko/ecosystem/atlas.mdx', import.meta.url);
 
 test('atlas keeps accessible Kotlin and sibling-language landmarks without JavaScript', async () => {
   const source = await readFile(componentUrl, 'utf8');
@@ -62,4 +64,18 @@ test('atlas styles keyboard focus, high contrast, reduced motion, and mobile lay
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
   assert.match(css, /@media\s*\(max-width:/);
   assert.match(css, /bt4k-atlas__routes\s*{\s*display:\s*none/);
+});
+
+test('atlas pages explain the Kotlin-first boundary and the manual drill-down', async () => {
+  const [english, korean] = await Promise.all([
+    readFile(atlasPageUrl, 'utf8'),
+    readFile(koreanAtlasPageUrl, 'utf8'),
+  ]);
+
+  assert.match(english, /Kotlin\/JVM is the primary map/);
+  assert.match(english, /Go, Rust, and Python/);
+  assert.match(english, /repository → group → module → manual/);
+  assert.match(korean, /Kotlin\/JVM이 중심 지도/);
+  assert.match(korean, /Go, Rust, Python/);
+  assert.match(korean, /저장소 → 그룹 → 모듈 → 매뉴얼/);
 });
