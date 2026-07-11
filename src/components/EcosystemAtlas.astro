@@ -293,7 +293,10 @@ for (const node of kotlinNodes) {
       button.addEventListener('pointerleave', () => {
         if (!selectedNode) clearActive();
       });
-      button.addEventListener('focusin', () => activate(button));
+      button.addEventListener('focusin', () => {
+        if (selectedNode && selectedNode !== button.dataset.nodeId) selectedNode = '';
+        activate(button);
+      });
       button.addEventListener('focusout', () => {
         if (!selectedNode) queueMicrotask(clearActive);
       });
