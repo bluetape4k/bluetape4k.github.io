@@ -49,8 +49,17 @@ test('atlas highlights relation paths without hiding content', async () => {
 test('atlas styles keyboard focus, high contrast, reduced motion, and mobile layout', async () => {
   const css = await readFile(stylesheetUrl, 'utf8');
 
+  assert.match(css, /bt4k-atlas__kotlin-map/);
+  assert.match(css, /grid-template-columns:\s*repeat\(3/);
+  assert.match(css, /bt4k-atlas__routes/);
+  assert.match(css, /--route-angle/);
+  assert.match(css, /\[data-related\]/);
+  assert.match(css, /\[data-dimmed\]/);
+  assert.match(css, /bt4k-atlas__other-languages/);
+  assert.match(css, /\[data-ecosystem='go'\]/);
   assert.match(css, /:focus-visible/);
   assert.match(css, /prefers-contrast:\s*more/);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
   assert.match(css, /@media\s*\(max-width:/);
+  assert.match(css, /bt4k-atlas__routes\s*{\s*display:\s*none/);
 });
