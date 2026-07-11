@@ -1,0 +1,17 @@
+---
+import DefaultPageTitle from '@astrojs/starlight/components/PageTitle.astro';
+import '../styles/manual.css';
+
+const manual = Astro.locals.starlightRoute.entry.data.manual;
+---
+
+<DefaultPageTitle />
+{manual && (
+  <aside class="bt4k-manual-source" aria-label="Manual source">
+    <span>{manual.layer}</span>
+    <span>{manual.group}</span>
+    <a href={`https://github.com/bluetape4k/${manual.repository}/blob/${manual.sourceCommit}/${manual.sourcePath}`}>
+      source {manual.sourceCommit.slice(0, 9)}
+    </a>
+  </aside>
+)}

@@ -3,7 +3,6 @@ title: Repository map
 description: How the registered modules are grouped for Build, Learn, and Apply navigation.
 ---
 
-# Repository map
 
 The manual inventory is generated from Gradle `subprojects`; directory names are navigation metadata, not a copied source of truth.
 

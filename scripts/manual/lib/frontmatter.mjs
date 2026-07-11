@@ -23,8 +23,14 @@ export function transformManual({ content, module, repository, sourceCommit, sou
     `  layer: ${yamlScalar(layerFor(module.kind))}`,
   ].join('\n');
   const withMetadata = `${content.slice(0, end)}\n${metadata}${content.slice(end)}`;
-  return withMetadata.replaceAll(
+  return stripFirstHeading(withMetadata.replaceAll(
     /\]\(\.\.\/\.\.\/\.\.\/\.\.\/([^)]+)\)/g,
     `](https://github.com/bluetape4k/${repository}/blob/${sourceCommit}/$1)`,
-  );
+  ));
+}
+
+export function stripFirstHeading(content) {
+  return content
+    .replace(/\n# [^\n]+\n/, '\n')
+    .replace(/^(#{2,6} .+?) \{#[a-z0-9-]+\}$/gm, '$1');
 }

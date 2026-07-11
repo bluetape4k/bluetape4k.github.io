@@ -1,0 +1,44 @@
+---
+import manifest from '../data/manual/bluetape4k-projects.manifest.json';
+import '../styles/manual.css';
+
+type Locale = 'en' | 'ko';
+type Module = (typeof manifest.modules)[number];
+const { locale = 'en' } = Astro.props as { locale?: Locale };
+const groups = [...new Set(manifest.modules.map((module) => module.group))].sort();
+const copy = locale === 'ko'
+  ? { label: 'bluetape4k-projects 모듈 매뉴얼', modules: '개 모듈', open: '매뉴얼 열기' }
+  : { label: 'bluetape4k-projects module manuals', modules: 'modules', open: 'Open manual' };
+const title = (module: Module) => module.id.replace(/^bluetape4k-/, '');
+---
+
+<nav class="bt4k-manual-map" aria-label={copy.label}>
+  <div class="bt4k-manual-map__summary">
+    <strong>{manifest.modules.length}</strong>
+    <span>{copy.modules}</span>
+    <code>{manifest.sourceCommit.slice(0, 9)}</code>
+  </div>
+  <ul>
+    {groups.map((group, index) => {
+      const modules = manifest.modules.filter((module) => module.group === group);
+      return (
+        <li>
+          <details open={index < 2}>
+            <summary><span>{group}</span><small>{modules.length}</small></summary>
+            <ul>
+              {modules.map((module) => (
+                <li>
+                  <a href={module.routes[locale]}>
+                    <span><strong>{title(module)}</strong><small>{module.kind} · {module.layer}</small></span>
+                    <span aria-hidden="true">→</span>
+                    <span class="sr-only">{copy.open}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </details>
+        </li>
+      );
+    })}
+  </ul>
+</nav>

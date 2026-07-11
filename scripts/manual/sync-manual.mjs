@@ -5,7 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { digestEntries } from './lib/digest.mjs';
 import { destinationFor, localeOf } from './lib/paths.mjs';
-import { layerFor, transformManual } from './lib/frontmatter.mjs';
+import { layerFor, stripFirstHeading, transformManual } from './lib/frontmatter.mjs';
 
 const siteRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
@@ -58,7 +58,7 @@ export async function buildSnapshot({ source, repository = 'bluetape4k-projects'
     const module = byPath.get(relative);
     const transformed = module
       ? transformManual({ content, module, repository, sourceCommit: commit, sourcePath: `docs/manual/${relative}` })
-      : content;
+      : stripFirstHeading(content);
     contentEntries.push({ path: destinationFor(locale, relative), content: transformed });
   }
   const normalized = {

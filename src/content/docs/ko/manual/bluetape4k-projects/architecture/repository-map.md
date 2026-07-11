@@ -3,7 +3,6 @@ title: 저장소 지도
 description: 등록 모듈을 Build, Learn, Apply 탐색에 맞게 분류한 지도입니다.
 ---
 
-# 저장소 지도
 
 매뉴얼 inventory는 Gradle `subprojects`에서 생성합니다. 디렉터리 이름은 탐색을 위한 metadata이며 복사된 진실 원천이 아닙니다.
 

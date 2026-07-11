@@ -3,7 +3,6 @@ title: bluetape4k-projects Manual
 description: Task-oriented manuals for every registered library, example, and benchmark module.
 ---
 
-# bluetape4k-projects Manual
 
 This manual is the detailed companion to the repository README. It follows the live Gradle project model and gives every registered module an English and Korean page with the same evidence contract.
 

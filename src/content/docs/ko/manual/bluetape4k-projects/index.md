@@ -3,7 +3,6 @@ title: bluetape4k-projects 매뉴얼
 description: 등록된 모든 라이브러리, 예제, 벤치마크 모듈을 위한 작업 중심 매뉴얼입니다.
 ---
 
-# bluetape4k-projects 매뉴얼
 
 이 매뉴얼은 저장소 README를 대체하는 문서가 아니라 더 깊게 설명하는 동반 문서입니다. 실제 Gradle project model을 기준으로 모든 등록 모듈에 동일한 근거 계약을 가진 영문·한글 페이지를 제공합니다.
 
