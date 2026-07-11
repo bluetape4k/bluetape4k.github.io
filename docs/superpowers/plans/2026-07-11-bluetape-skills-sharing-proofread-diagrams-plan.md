@@ -295,15 +295,18 @@ Expected: one MDX embed and both asset files present.
 - Create: `public/assets/bluetape-skills-source-first-sync-01.svg`
 - Create: `public/assets/bluetape-skills-source-first-sync-01.png`
 
-- [ ] **Step 1: Load the sequence reference**
+- [ ] **Step 1: Confirm flow-style architecture semantics**
 
-Read:
+Use the already loaded architecture reference and record this classification:
 
-```bash
-sed -n '1,360p' "$HOME/.codex/skills/bluetape-diagram/references/sequence.md"
+```text
+reader question = which delivery responsibility must pass before the next responsibility opens?
+diagram kind = flow-style architecture pipeline
+not a sequence diagram = no runtime participants, calls, returns, branches, lifelines, or activations
+layout = two-row responsibility cards with rounded orthogonal progression
 ```
 
-Expected: ordered-flow, branch, connector, and arrowhead rules loaded before SVG creation.
+Expected: architecture rules govern cards, responsibility labels, spacing, and connectors. Do not add fake participants or message lanes merely to visualize order.
 
 - [ ] **Step 2: Create the SVG canvas and eight stages**
 
