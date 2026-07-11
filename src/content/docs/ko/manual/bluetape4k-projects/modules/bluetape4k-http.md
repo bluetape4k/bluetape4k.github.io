@@ -1,0 +1,140 @@
+---
+manualId: bluetape4k-http
+title: "Module bluetape4k-http"
+description: "bluetape4k-http는 다양한 HTTP 클라이언트 라이브러리를 Kotlin 확장 함수와 DSL로 통합하여 제공하는 모듈입니다."
+kind: library
+group: io
+manual:
+  id: "bluetape4k-http"
+  repository: "bluetape4k-projects"
+  group: "io"
+  kind: "library"
+  sourceCommit: "0c14ff5fa62a236de94bed884cb4a7faa31df7c4"
+  sourcePath: "docs/manual/ko/modules/bluetape4k-http.md"
+  layer: "build"
+---
+
+# Module bluetape4k-http
+
+## 해결하는 문제 {#problem}
+
+bluetape4k-http는 다양한 HTTP 클라이언트 라이브러리를 Kotlin 확장 함수와 DSL로 통합하여 제공하는 모듈입니다. 이 매뉴얼은 README의 기능 목록을 반복하지 않고 현재 build, source entry point, test, 설정 resource, lifecycle 근거를 연결합니다.
+
+## 사용 시점 {#when-to-use}
+
+애플리케이션에 encoding boundary, resource ownership, streaming, 호환성, malformed input이 필요할 때 `bluetape4k-http`를 선택합니다. 아래 source entry point에서 시작해 ownership과 failure 계약이 caller lifecycle에 맞는지 확인합니다. 표준 API나 이미 도입한 더 작은 모듈이 같은 계약을 만족한다면 그쪽을 우선합니다.
+
+## 의존성 좌표 {#coordinates}
+
+```kotlin
+dependencies {
+    implementation(platform("io.github.bluetape4k:bluetape4k-bom:<version>"))
+    implementation("io.github.bluetape4k:bluetape4k-http")
+}
+```
+
+Gradle project path는 `:bluetape4k-http`, source directory는 `io/http`입니다.
+
+## 핵심 개념 {#concepts}
+
+먼저 확인할 source 개념은 `AsyncClientConnectionManager`, `CloseableHttpAsyncClientCoroutines`, `HttpAsyncClient`, `HttpAsyncClientCoroutines`, `MinimalHttpAsyncClient`, `ConfigurableHttpRequest`, `SimpleHttpRequest`, `SimpleHttpResponse`입니다. 파일 이름은 탐색 anchor일 뿐이므로 public 계약으로 사용하기 전에 선언과 test를 함께 읽습니다.
+
+## 빠른 시작 {#quick-start}
+
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`AsyncClientConnectionManager`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/main/kotlin/io/bluetape4k/http/hc5/async/AsyncClientConnectionManager.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+
+## 작업별 API {#api-by-task}
+
+| Entry point | 확인할 내용 |
+| --- | --- |
+| [`AsyncClientConnectionManager`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/main/kotlin/io/bluetape4k/http/hc5/async/AsyncClientConnectionManager.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`CloseableHttpAsyncClientCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/main/kotlin/io/bluetape4k/http/hc5/async/CloseableHttpAsyncClientCoroutines.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`HttpAsyncClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/main/kotlin/io/bluetape4k/http/hc5/async/HttpAsyncClient.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`HttpAsyncClientCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/main/kotlin/io/bluetape4k/http/hc5/async/HttpAsyncClientCoroutines.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`MinimalHttpAsyncClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/main/kotlin/io/bluetape4k/http/hc5/async/MinimalHttpAsyncClient.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ConfigurableHttpRequest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/main/kotlin/io/bluetape4k/http/hc5/async/methods/ConfigurableHttpRequest.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`SimpleHttpRequest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/main/kotlin/io/bluetape4k/http/hc5/async/methods/SimpleHttpRequest.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`SimpleHttpResponse`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/main/kotlin/io/bluetape4k/http/hc5/async/methods/SimpleHttpResponse.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`SimpleRequestProducer`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/main/kotlin/io/bluetape4k/http/hc5/async/methods/SimpleRequestProducer.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`SimpleResponseConsumer`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/main/kotlin/io/bluetape4k/http/hc5/async/methods/SimpleResponseConsumer.kt) | constructor, function, ownership 계약을 확인합니다. |
+
+## 권장 패턴 {#patterns}
+
+README 근거는 **개요**, **아키텍처**, **전체 아키텍처: 다중 백엔드 HTTP 클라이언트**, **HTTP 클라이언트 계층 (HC5)**, **OkHttp3 클라이언트 계층**, **비동기 HTTP 요청 흐름 (HC5 Async + Coroutines)**, **주요 기능**, **1. Apache HttpComponents 5 (HC5)**, **2. OkHttp3**, **3. Vert.x HttpClient** 순서로 탐색할 수 있습니다. 이 항목으로 방향을 잡고 source와 test에서 동작을 확인합니다. 도입 범위는 좁게 유지하고 소유한 resource를 caller lifecycle에 연결합니다.
+
+## 연동 {#integrations}
+
+현재 build에 선언된 integration edge는 다음과 같습니다.
+
+```kotlin
+api(project(":bluetape4k-io"))
+api(project(":bluetape4k-netty"))
+api(project(":bluetape4k-resilience4j"))
+api(project(":bluetape4k-coroutines"))
+compileOnly(libs.kotlinx.coroutines.core)
+compileOnly(libs.kotlinx.coroutines.reactive)
+compileOnly(libs.kotlinx.coroutines.reactor)
+compileOnly(libs.okhttp3)
+compileOnly(libs.okhttp3.coroutines)
+compileOnly(libs.okhttp3.logging.interceptor)
+compileOnly(libs.okhttp3.mockwebserver)
+compileOnly(libs.httpclient5)
+```
+
+`compileOnly` edge는 caller가 제공해야 하는 capability이므로 API를 사용하기 전에 runtime에 실제 dependency가 있는지 확인합니다.
+
+## 설정 {#configuration}
+
+`src/main/resources` 아래에서 모듈 수준 설정 resource를 찾지 못했습니다. constructor, builder, function argument, 연동 framework로 설정하며 default는 source에서 확인합니다.
+
+## 실패 동작 {#failures}
+
+failure 의미는 artifact 이름이 아니라 아래 entry point와 test가 결정합니다. cancellation과 timeout signal을 보존하고 소유한 resource를 닫습니다. backend exception은 안정된 domain 계약을 추가할 수 있는 boundary에서만 변환합니다. retry나 fallback을 넣기 전에 test anchor로 실제 동작을 확인합니다.
+
+## 운영 {#operations}
+
+payload 크기, allocation, latency, malformed input 비율, resource close, protocol 오류를 관찰합니다. capacity, timeout, retry, shutdown 설정은 resource를 소유한 component 가까이에 둡니다. 누가 trade-off를 받아들였는지 알 수 없는 process-wide default는 피합니다.
+
+## 테스트 {#testing}
+
+모듈 test task는 다음과 같습니다.
+
+```bash
+./gradlew :bluetape4k-http:test --no-configuration-cache
+```
+
+대표 test anchor는 다음과 같습니다.
+
+- [`AbstractHttpTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/test/kotlin/io/bluetape4k/http/AbstractHttpTest.kt)
+- [`HttpClientBenchmark`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/test/kotlin/io/bluetape4k/http/benchmark/HttpClientBenchmark.kt)
+- [`HttpClientBenchmarkTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/test/kotlin/io/bluetape4k/http/benchmark/HttpClientBenchmarkTest.kt)
+- [`HttpClientCompressionCacheBenchmark`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/test/kotlin/io/bluetape4k/http/benchmark/HttpClientCompressionCacheBenchmark.kt)
+- [`HttpClientLatencyBenchmark`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/test/kotlin/io/bluetape4k/http/benchmark/HttpClientLatencyBenchmark.kt)
+- [`AbstractHc5Test`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/test/kotlin/io/bluetape4k/http/hc5/AbstractHc5Test.kt)
+- [`AsyncHttpClientCoroutinesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/test/kotlin/io/bluetape4k/http/hc5/async/AsyncHttpClientCoroutinesTest.kt)
+- [`AsyncHttpClientTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/test/kotlin/io/bluetape4k/http/hc5/async/AsyncHttpClientTest.kt)
+
+## 워크숍 {#workshops}
+
+manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README와 위 representative test를 실행 근거로 사용합니다.
+
+## 제한 사항 {#limitations}
+
+이 페이지는 연결된 source와 test가 나타내는 현재 저장소 상태를 설명합니다. optional backend를 애플리케이션 기본값으로 만들거나 benchmark artifact 없이 성능을 단정하지 않습니다. 모듈 버전이 바뀌면 호환성과 lifecycle 설명을 다시 확인해야 합니다.
+
+## 근거 {#sources}
+
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/build.gradle.kts)
+- [`AsyncClientConnectionManager`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/main/kotlin/io/bluetape4k/http/hc5/async/AsyncClientConnectionManager.kt)
+- [`CloseableHttpAsyncClientCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/main/kotlin/io/bluetape4k/http/hc5/async/CloseableHttpAsyncClientCoroutines.kt)
+- [`HttpAsyncClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/main/kotlin/io/bluetape4k/http/hc5/async/HttpAsyncClient.kt)
+- [`HttpAsyncClientCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/main/kotlin/io/bluetape4k/http/hc5/async/HttpAsyncClientCoroutines.kt)
+- [`MinimalHttpAsyncClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/main/kotlin/io/bluetape4k/http/hc5/async/MinimalHttpAsyncClient.kt)
+- [`ConfigurableHttpRequest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/main/kotlin/io/bluetape4k/http/hc5/async/methods/ConfigurableHttpRequest.kt)
+- [`SimpleHttpRequest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/main/kotlin/io/bluetape4k/http/hc5/async/methods/SimpleHttpRequest.kt)
+- [`SimpleHttpResponse`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/main/kotlin/io/bluetape4k/http/hc5/async/methods/SimpleHttpResponse.kt)
+- [`SimpleRequestProducer`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/main/kotlin/io/bluetape4k/http/hc5/async/methods/SimpleRequestProducer.kt)
+- [`SimpleResponseConsumer`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/main/kotlin/io/bluetape4k/http/hc5/async/methods/SimpleResponseConsumer.kt)
+- [`AbstractHttpTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/test/kotlin/io/bluetape4k/http/AbstractHttpTest.kt)
+- [`HttpClientBenchmark`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/http/src/test/kotlin/io/bluetape4k/http/benchmark/HttpClientBenchmark.kt)
