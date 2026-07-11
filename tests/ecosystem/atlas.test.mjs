@@ -41,6 +41,7 @@ test('atlas highlights relation paths without hiding content', async () => {
   assert.match(source, /data-dimmed/);
   assert.match(source, /pointerenter/);
   assert.match(source, /focusin/);
+  assert.match(source, /selectedNode !== button\.dataset\.nodeId/);
   assert.match(source, /event\.key === 'Escape'/);
   assert.doesNotMatch(source, /element\.hidden|data-atlas-filter/);
 });
