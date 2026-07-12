@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "0c14ff5fa62a236de94bed884cb4a7faa31df7c4"
+  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
   sourcePath: "docs/manual/en/modules/bluetape4k-protobuf.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ The first source-level concepts to inspect are `DateTimeSupport`, `DurationSuppo
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`DateTimeSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/DateTimeSupport.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`DateTimeSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/DateTimeSupport.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`DateTimeSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/DateTimeSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`DurationSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/DurationSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`MessageSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/MessageSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`MoneySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/MoneySupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`TimestampSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/TimestampSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`TypeAlias`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/TypeAlias.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`ProtobufSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/serializers/ProtobufSerializer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`LettuceProtobufCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/serializers/redis/LettuceProtobufCodecs.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`RedissonProtobufCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/serializers/redis/RedissonProtobufCodec.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`RedissonProtobufCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/serializers/redis/RedissonProtobufCodecs.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`DateTimeSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/DateTimeSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`DurationSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/DurationSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`MessageSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/MessageSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`MoneySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/MoneySupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`TimestampSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/TimestampSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`TypeAlias`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/TypeAlias.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ProtobufSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/serializers/ProtobufSerializer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`LettuceProtobufCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/serializers/redis/LettuceProtobufCodecs.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`RedissonProtobufCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/serializers/redis/RedissonProtobufCodec.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`RedissonProtobufCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/serializers/redis/RedissonProtobufCodecs.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -103,14 +103,14 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`DateTimeSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/test/kotlin/io/bluetape4k/protobuf/DateTimeSupportTest.kt)
-- [`DurationSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/test/kotlin/io/bluetape4k/protobuf/DurationSupportTest.kt)
-- [`DynamicMessageExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/test/kotlin/io/bluetape4k/protobuf/DynamicMessageExamples.kt)
-- [`MessageSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/test/kotlin/io/bluetape4k/protobuf/MessageSupportTest.kt)
-- [`MoneySupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/test/kotlin/io/bluetape4k/protobuf/MoneySupportTest.kt)
-- [`TimestampSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/test/kotlin/io/bluetape4k/protobuf/TimestampSupportTest.kt)
-- [`ProtobufSerializerSecurityTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/test/kotlin/io/bluetape4k/protobuf/serializers/ProtobufSerializerSecurityTest.kt)
-- [`ProtobufSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/test/kotlin/io/bluetape4k/protobuf/serializers/ProtobufSerializerTest.kt)
+- [`DateTimeSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/test/kotlin/io/bluetape4k/protobuf/DateTimeSupportTest.kt)
+- [`DurationSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/test/kotlin/io/bluetape4k/protobuf/DurationSupportTest.kt)
+- [`DynamicMessageExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/test/kotlin/io/bluetape4k/protobuf/DynamicMessageExamples.kt)
+- [`MessageSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/test/kotlin/io/bluetape4k/protobuf/MessageSupportTest.kt)
+- [`MoneySupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/test/kotlin/io/bluetape4k/protobuf/MoneySupportTest.kt)
+- [`TimestampSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/test/kotlin/io/bluetape4k/protobuf/TimestampSupportTest.kt)
+- [`ProtobufSerializerSecurityTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/test/kotlin/io/bluetape4k/protobuf/serializers/ProtobufSerializerSecurityTest.kt)
+- [`ProtobufSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/test/kotlin/io/bluetape4k/protobuf/serializers/ProtobufSerializerTest.kt)
 
 ## Workshops
 
@@ -122,17 +122,17 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/build.gradle.kts)
-- [`DateTimeSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/DateTimeSupport.kt)
-- [`DurationSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/DurationSupport.kt)
-- [`MessageSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/MessageSupport.kt)
-- [`MoneySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/MoneySupport.kt)
-- [`TimestampSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/TimestampSupport.kt)
-- [`TypeAlias`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/TypeAlias.kt)
-- [`ProtobufSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/serializers/ProtobufSerializer.kt)
-- [`LettuceProtobufCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/serializers/redis/LettuceProtobufCodecs.kt)
-- [`RedissonProtobufCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/serializers/redis/RedissonProtobufCodec.kt)
-- [`RedissonProtobufCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/serializers/redis/RedissonProtobufCodecs.kt)
-- [`DateTimeSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/test/kotlin/io/bluetape4k/protobuf/DateTimeSupportTest.kt)
-- [`DurationSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/protobuf/src/test/kotlin/io/bluetape4k/protobuf/DurationSupportTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/build.gradle.kts)
+- [`DateTimeSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/DateTimeSupport.kt)
+- [`DurationSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/DurationSupport.kt)
+- [`MessageSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/MessageSupport.kt)
+- [`MoneySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/MoneySupport.kt)
+- [`TimestampSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/TimestampSupport.kt)
+- [`TypeAlias`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/TypeAlias.kt)
+- [`ProtobufSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/serializers/ProtobufSerializer.kt)
+- [`LettuceProtobufCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/serializers/redis/LettuceProtobufCodecs.kt)
+- [`RedissonProtobufCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/serializers/redis/RedissonProtobufCodec.kt)
+- [`RedissonProtobufCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/serializers/redis/RedissonProtobufCodecs.kt)
+- [`DateTimeSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/test/kotlin/io/bluetape4k/protobuf/DateTimeSupportTest.kt)
+- [`DurationSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/protobuf/src/test/kotlin/io/bluetape4k/protobuf/DurationSupportTest.kt)

@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "learning"
   kind: "example"
-  sourceCommit: "0c14ff5fa62a236de94bed884cb4a7faa31df7c4"
+  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-examples-jpa-blazepersistence-demo.md"
   layer: "learn"
 ---
@@ -47,14 +47,14 @@ example이나 benchmark를 실행하기 전에 project task를 확인합니다.
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`BlazePersistenceConfiguration`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/config/BlazePersistenceConfiguration.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`MemberPage`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/dto/MemberPage.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`MemberSearchCondition`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/dto/MemberSearchCondition.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Member`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/model/Member.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Team`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/model/Team.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`MemberBlazeRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/repository/MemberBlazeRepository.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`MemberSummaryView`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/view/MemberSummaryView.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`MemberTeamView`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/view/MemberTeamView.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`BlazePersistenceConfiguration`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/config/BlazePersistenceConfiguration.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`MemberPage`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/dto/MemberPage.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`MemberSearchCondition`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/dto/MemberSearchCondition.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Member`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/model/Member.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Team`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/model/Team.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`MemberBlazeRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/repository/MemberBlazeRepository.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`MemberSummaryView`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/view/MemberSummaryView.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`MemberTeamView`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/view/MemberTeamView.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -103,12 +103,12 @@ failure 의미는 artifact 이름이 아니라 아래 entry point와 test가 결
 
 대표 test anchor는 다음과 같습니다.
 
-- [`AbstractBlazePersistenceTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/jpa-blazepersistence-demo/src/test/kotlin/io/bluetape4k/examples/jpa/blazepersistence/AbstractBlazePersistenceTest.kt)
-- [`BlazePersistenceApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/jpa-blazepersistence-demo/src/test/kotlin/io/bluetape4k/examples/jpa/blazepersistence/BlazePersistenceApplication.kt)
-- [`TestEntityManager`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/jpa-blazepersistence-demo/src/test/kotlin/io/bluetape4k/examples/jpa/blazepersistence/TestEntityManager.kt)
-- [`AbstractDomainTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/jpa-blazepersistence-demo/src/test/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/AbstractDomainTest.kt)
-- [`MemberBlazeRepositoryTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/jpa-blazepersistence-demo/src/test/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/repository/MemberBlazeRepositoryTest.kt)
-- [`InitMemberService`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/jpa-blazepersistence-demo/src/test/kotlin/io/bluetape4k/examples/jpa/blazepersistence/services/InitMemberService.kt)
+- [`AbstractBlazePersistenceTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-blazepersistence-demo/src/test/kotlin/io/bluetape4k/examples/jpa/blazepersistence/AbstractBlazePersistenceTest.kt)
+- [`BlazePersistenceApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-blazepersistence-demo/src/test/kotlin/io/bluetape4k/examples/jpa/blazepersistence/BlazePersistenceApplication.kt)
+- [`TestEntityManager`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-blazepersistence-demo/src/test/kotlin/io/bluetape4k/examples/jpa/blazepersistence/TestEntityManager.kt)
+- [`AbstractDomainTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-blazepersistence-demo/src/test/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/AbstractDomainTest.kt)
+- [`MemberBlazeRepositoryTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-blazepersistence-demo/src/test/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/repository/MemberBlazeRepositoryTest.kt)
+- [`InitMemberService`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-blazepersistence-demo/src/test/kotlin/io/bluetape4k/examples/jpa/blazepersistence/services/InitMemberService.kt)
 
 ## 워크숍
 
@@ -120,17 +120,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/jpa-blazepersistence-demo/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/jpa-blazepersistence-demo/build.gradle.kts)
-- [`BlazePersistenceConfiguration`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/config/BlazePersistenceConfiguration.kt)
-- [`MemberPage`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/dto/MemberPage.kt)
-- [`MemberSearchCondition`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/dto/MemberSearchCondition.kt)
-- [`Member`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/model/Member.kt)
-- [`Team`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/model/Team.kt)
-- [`MemberBlazeRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/repository/MemberBlazeRepository.kt)
-- [`MemberSummaryView`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/view/MemberSummaryView.kt)
-- [`MemberTeamView`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/view/MemberTeamView.kt)
-- [`AbstractBlazePersistenceTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/jpa-blazepersistence-demo/src/test/kotlin/io/bluetape4k/examples/jpa/blazepersistence/AbstractBlazePersistenceTest.kt)
-- [`BlazePersistenceApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/jpa-blazepersistence-demo/src/test/kotlin/io/bluetape4k/examples/jpa/blazepersistence/BlazePersistenceApplication.kt)
-- [`TestEntityManager`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/jpa-blazepersistence-demo/src/test/kotlin/io/bluetape4k/examples/jpa/blazepersistence/TestEntityManager.kt)
-- [`AbstractDomainTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/jpa-blazepersistence-demo/src/test/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/AbstractDomainTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-blazepersistence-demo/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-blazepersistence-demo/build.gradle.kts)
+- [`BlazePersistenceConfiguration`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/config/BlazePersistenceConfiguration.kt)
+- [`MemberPage`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/dto/MemberPage.kt)
+- [`MemberSearchCondition`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/dto/MemberSearchCondition.kt)
+- [`Member`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/model/Member.kt)
+- [`Team`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/model/Team.kt)
+- [`MemberBlazeRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/repository/MemberBlazeRepository.kt)
+- [`MemberSummaryView`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/view/MemberSummaryView.kt)
+- [`MemberTeamView`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-blazepersistence-demo/src/main/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/view/MemberTeamView.kt)
+- [`AbstractBlazePersistenceTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-blazepersistence-demo/src/test/kotlin/io/bluetape4k/examples/jpa/blazepersistence/AbstractBlazePersistenceTest.kt)
+- [`BlazePersistenceApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-blazepersistence-demo/src/test/kotlin/io/bluetape4k/examples/jpa/blazepersistence/BlazePersistenceApplication.kt)
+- [`TestEntityManager`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-blazepersistence-demo/src/test/kotlin/io/bluetape4k/examples/jpa/blazepersistence/TestEntityManager.kt)
+- [`AbstractDomainTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-blazepersistence-demo/src/test/kotlin/io/bluetape4k/examples/jpa/blazepersistence/domain/AbstractDomainTest.kt)

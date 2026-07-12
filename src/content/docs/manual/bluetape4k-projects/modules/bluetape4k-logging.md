@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "0c14ff5fa62a236de94bed884cb4a7faa31df7c4"
+  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
   sourcePath: "docs/manual/en/modules/bluetape4k-logging.md"
   layer: "build"
 ---
@@ -107,8 +107,8 @@ MDC is thread-local state underneath the coroutine bridge; plain thread switches
 
 ## Sources
 
-- [Module README and examples](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/bluetape4k/logging/README.md)
-- [`KLogging` source](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/bluetape4k/logging/src/main/kotlin/io/bluetape4k/logging/KLogging.kt)
-- [Scoped MDC implementation](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/bluetape4k/logging/src/main/kotlin/io/bluetape4k/logging/MdcSupport.kt)
-- [Coroutine/channel logging source](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/bluetape4k/logging/src/main/kotlin/io/bluetape4k/logging/coroutines)
-- [Logging tests](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/bluetape4k/logging/src/test/kotlin/io/bluetape4k/logging)
+- [Module README and examples](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/bluetape4k/logging/README.md)
+- [`KLogging` source](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/bluetape4k/logging/src/main/kotlin/io/bluetape4k/logging/KLogging.kt)
+- [Scoped MDC implementation](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/bluetape4k/logging/src/main/kotlin/io/bluetape4k/logging/MdcSupport.kt)
+- [Coroutine/channel logging source](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/bluetape4k/logging/src/main/kotlin/io/bluetape4k/logging/coroutines)
+- [Logging tests](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/bluetape4k/logging/src/test/kotlin/io/bluetape4k/logging)

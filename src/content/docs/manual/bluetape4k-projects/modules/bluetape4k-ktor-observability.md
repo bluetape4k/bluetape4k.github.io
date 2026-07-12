@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "web"
   kind: "library"
-  sourceCommit: "0c14ff5fa62a236de94bed884cb4a7faa31df7c4"
+  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
   sourcePath: "docs/manual/en/modules/bluetape4k-ktor-observability.md"
   layer: "build"
 ---
@@ -40,21 +40,21 @@ The first source-level concepts to inspect are `Bluetape4kKtorObservability`, `B
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`Bluetape4kKtorObservability`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/Bluetape4kKtorObservability.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`Bluetape4kKtorObservability`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/Bluetape4kKtorObservability.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`Bluetape4kKtorObservability`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/Bluetape4kKtorObservability.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`Bluetape4kKtorObservabilityConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/Bluetape4kKtorObservabilityConfig.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`CallLoggingSettings`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/CallLoggingSettings.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`CorrelationIdSettings`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/CorrelationIdSettings.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`KtorCallIdSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorCallIdSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`KtorCallLoggingSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorCallLoggingSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`KtorOpenTelemetryTracingConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorOpenTelemetryTracingConfig.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`KtorOpenTelemetryTracingSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorOpenTelemetryTracingSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`KtorPrometheusRoutes`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorPrometheusRoutes.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Bluetape4kKtorObservability`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/Bluetape4kKtorObservability.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Bluetape4kKtorObservabilityConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/Bluetape4kKtorObservabilityConfig.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`CallLoggingSettings`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/CallLoggingSettings.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`CorrelationIdSettings`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/CorrelationIdSettings.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`KtorCallIdSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorCallIdSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`KtorCallLoggingSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorCallLoggingSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`KtorOpenTelemetryTracingConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorOpenTelemetryTracingConfig.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`KtorOpenTelemetryTracingSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorOpenTelemetryTracingSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`KtorPrometheusRoutes`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorPrometheusRoutes.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -100,7 +100,7 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`Bluetape4kKtorObservabilityTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/ktor/observability/src/test/kotlin/io/bluetape4k/ktor/observability/Bluetape4kKtorObservabilityTest.kt)
+- [`Bluetape4kKtorObservabilityTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/observability/src/test/kotlin/io/bluetape4k/ktor/observability/Bluetape4kKtorObservabilityTest.kt)
 
 ## Workshops
 
@@ -112,15 +112,15 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/ktor/observability/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/ktor/observability/build.gradle.kts)
-- [`Bluetape4kKtorObservability`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/Bluetape4kKtorObservability.kt)
-- [`Bluetape4kKtorObservabilityConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/Bluetape4kKtorObservabilityConfig.kt)
-- [`CallLoggingSettings`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/CallLoggingSettings.kt)
-- [`CorrelationIdSettings`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/CorrelationIdSettings.kt)
-- [`KtorCallIdSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorCallIdSupport.kt)
-- [`KtorCallLoggingSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorCallLoggingSupport.kt)
-- [`KtorOpenTelemetryTracingConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorOpenTelemetryTracingConfig.kt)
-- [`KtorOpenTelemetryTracingSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorOpenTelemetryTracingSupport.kt)
-- [`KtorPrometheusRoutes`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorPrometheusRoutes.kt)
-- [`Bluetape4kKtorObservabilityTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/ktor/observability/src/test/kotlin/io/bluetape4k/ktor/observability/Bluetape4kKtorObservabilityTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/observability/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/observability/build.gradle.kts)
+- [`Bluetape4kKtorObservability`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/Bluetape4kKtorObservability.kt)
+- [`Bluetape4kKtorObservabilityConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/Bluetape4kKtorObservabilityConfig.kt)
+- [`CallLoggingSettings`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/CallLoggingSettings.kt)
+- [`CorrelationIdSettings`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/CorrelationIdSettings.kt)
+- [`KtorCallIdSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorCallIdSupport.kt)
+- [`KtorCallLoggingSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorCallLoggingSupport.kt)
+- [`KtorOpenTelemetryTracingConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorOpenTelemetryTracingConfig.kt)
+- [`KtorOpenTelemetryTracingSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorOpenTelemetryTracingSupport.kt)
+- [`KtorPrometheusRoutes`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorPrometheusRoutes.kt)
+- [`Bluetape4kKtorObservabilityTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/observability/src/test/kotlin/io/bluetape4k/ktor/observability/Bluetape4kKtorObservabilityTest.kt)

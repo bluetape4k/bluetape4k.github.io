@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "0c14ff5fa62a236de94bed884cb4a7faa31df7c4"
+  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
   sourcePath: "docs/manual/en/modules/bluetape4k-okio.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ The first source-level concepts to inspect are `BufferSupport`, `BufferedSourceE
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`BufferSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/main/kotlin/io/bluetape4k/okio/BufferSupport.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`BufferSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/main/kotlin/io/bluetape4k/okio/BufferSupport.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`BufferSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/main/kotlin/io/bluetape4k/okio/BufferSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`BufferedSourceExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/main/kotlin/io/bluetape4k/okio/BufferedSourceExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`ByteStringSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/main/kotlin/io/bluetape4k/okio/ByteStringSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`InputStreamSource`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/main/kotlin/io/bluetape4k/okio/InputStreamSource.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`OkioConsts`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/main/kotlin/io/bluetape4k/okio/OkioConsts.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`OutputStreamSink`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/main/kotlin/io/bluetape4k/okio/OutputStreamSink.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`SinkSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/main/kotlin/io/bluetape4k/okio/SinkSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`SourceSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/main/kotlin/io/bluetape4k/okio/SourceSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`TimeoutSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/main/kotlin/io/bluetape4k/okio/TimeoutSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`AbstractBase64Sink`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/main/kotlin/io/bluetape4k/okio/base64/AbstractBase64Sink.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`BufferSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/main/kotlin/io/bluetape4k/okio/BufferSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`BufferedSourceExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/main/kotlin/io/bluetape4k/okio/BufferedSourceExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ByteStringSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/main/kotlin/io/bluetape4k/okio/ByteStringSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`InputStreamSource`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/main/kotlin/io/bluetape4k/okio/InputStreamSource.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`OkioConsts`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/main/kotlin/io/bluetape4k/okio/OkioConsts.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`OutputStreamSink`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/main/kotlin/io/bluetape4k/okio/OutputStreamSink.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`SinkSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/main/kotlin/io/bluetape4k/okio/SinkSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`SourceSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/main/kotlin/io/bluetape4k/okio/SourceSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`TimeoutSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/main/kotlin/io/bluetape4k/okio/TimeoutSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`AbstractBase64Sink`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/main/kotlin/io/bluetape4k/okio/base64/AbstractBase64Sink.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -99,14 +99,14 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`AbstractOkioTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/test/kotlin/io/bluetape4k/okio/AbstractOkioTest.kt)
-- [`BufferCursorKotlinTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/test/kotlin/io/bluetape4k/okio/BufferCursorKotlinTest.kt)
-- [`BufferCursorTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/test/kotlin/io/bluetape4k/okio/BufferCursorTest.kt)
-- [`BufferFactory`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/test/kotlin/io/bluetape4k/okio/BufferFactory.kt)
-- [`BufferKotlinTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/test/kotlin/io/bluetape4k/okio/BufferKotlinTest.kt)
-- [`BufferSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/test/kotlin/io/bluetape4k/okio/BufferSupportTest.kt)
-- [`BufferTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/test/kotlin/io/bluetape4k/okio/BufferTest.kt)
-- [`BufferedSinkTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/test/kotlin/io/bluetape4k/okio/BufferedSinkTest.kt)
+- [`AbstractOkioTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/test/kotlin/io/bluetape4k/okio/AbstractOkioTest.kt)
+- [`BufferCursorKotlinTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/test/kotlin/io/bluetape4k/okio/BufferCursorKotlinTest.kt)
+- [`BufferCursorTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/test/kotlin/io/bluetape4k/okio/BufferCursorTest.kt)
+- [`BufferFactory`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/test/kotlin/io/bluetape4k/okio/BufferFactory.kt)
+- [`BufferKotlinTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/test/kotlin/io/bluetape4k/okio/BufferKotlinTest.kt)
+- [`BufferSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/test/kotlin/io/bluetape4k/okio/BufferSupportTest.kt)
+- [`BufferTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/test/kotlin/io/bluetape4k/okio/BufferTest.kt)
+- [`BufferedSinkTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/test/kotlin/io/bluetape4k/okio/BufferedSinkTest.kt)
 
 ## Workshops
 
@@ -118,17 +118,17 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/build.gradle.kts)
-- [`BufferSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/main/kotlin/io/bluetape4k/okio/BufferSupport.kt)
-- [`BufferedSourceExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/main/kotlin/io/bluetape4k/okio/BufferedSourceExtensions.kt)
-- [`ByteStringSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/main/kotlin/io/bluetape4k/okio/ByteStringSupport.kt)
-- [`InputStreamSource`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/main/kotlin/io/bluetape4k/okio/InputStreamSource.kt)
-- [`OkioConsts`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/main/kotlin/io/bluetape4k/okio/OkioConsts.kt)
-- [`OutputStreamSink`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/main/kotlin/io/bluetape4k/okio/OutputStreamSink.kt)
-- [`SinkSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/main/kotlin/io/bluetape4k/okio/SinkSupport.kt)
-- [`SourceSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/main/kotlin/io/bluetape4k/okio/SourceSupport.kt)
-- [`TimeoutSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/main/kotlin/io/bluetape4k/okio/TimeoutSupport.kt)
-- [`AbstractBase64Sink`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/main/kotlin/io/bluetape4k/okio/base64/AbstractBase64Sink.kt)
-- [`AbstractOkioTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/test/kotlin/io/bluetape4k/okio/AbstractOkioTest.kt)
-- [`BufferCursorKotlinTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/okio/src/test/kotlin/io/bluetape4k/okio/BufferCursorKotlinTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/build.gradle.kts)
+- [`BufferSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/main/kotlin/io/bluetape4k/okio/BufferSupport.kt)
+- [`BufferedSourceExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/main/kotlin/io/bluetape4k/okio/BufferedSourceExtensions.kt)
+- [`ByteStringSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/main/kotlin/io/bluetape4k/okio/ByteStringSupport.kt)
+- [`InputStreamSource`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/main/kotlin/io/bluetape4k/okio/InputStreamSource.kt)
+- [`OkioConsts`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/main/kotlin/io/bluetape4k/okio/OkioConsts.kt)
+- [`OutputStreamSink`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/main/kotlin/io/bluetape4k/okio/OutputStreamSink.kt)
+- [`SinkSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/main/kotlin/io/bluetape4k/okio/SinkSupport.kt)
+- [`SourceSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/main/kotlin/io/bluetape4k/okio/SourceSupport.kt)
+- [`TimeoutSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/main/kotlin/io/bluetape4k/okio/TimeoutSupport.kt)
+- [`AbstractBase64Sink`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/main/kotlin/io/bluetape4k/okio/base64/AbstractBase64Sink.kt)
+- [`AbstractOkioTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/test/kotlin/io/bluetape4k/okio/AbstractOkioTest.kt)
+- [`BufferCursorKotlinTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/okio/src/test/kotlin/io/bluetape4k/okio/BufferCursorKotlinTest.kt)

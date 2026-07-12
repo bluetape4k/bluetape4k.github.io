@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "0c14ff5fa62a236de94bed884cb4a7faa31df7c4"
+  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-vertx.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ Gradle project path는 `:bluetape4k-vertx`, source directory는 `io/vertx`입니
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`CoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/main/kotlin/io/bluetape4k/vertx/CoroutineSupport.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`CoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/main/kotlin/io/bluetape4k/vertx/CoroutineSupport.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`CoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/main/kotlin/io/bluetape4k/vertx/CoroutineSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`FutureExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/main/kotlin/io/bluetape4k/vertx/FutureExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`VertxSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/main/kotlin/io/bluetape4k/vertx/VertxSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`VertxDecorators`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxDecorators.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`VertxFutureBulkheadSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureBulkheadSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`VertxFutureCircuitBreakerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureCircuitBreakerSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`VertxFutureRateLimiterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureRateLimiterSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`VertxFutureRetrySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureRetrySupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`VertxFutureSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`VertxFutureTimeLimiterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureTimeLimiterSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`CoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/main/kotlin/io/bluetape4k/vertx/CoroutineSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`FutureExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/main/kotlin/io/bluetape4k/vertx/FutureExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`VertxSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/main/kotlin/io/bluetape4k/vertx/VertxSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`VertxDecorators`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxDecorators.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`VertxFutureBulkheadSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureBulkheadSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`VertxFutureCircuitBreakerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureCircuitBreakerSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`VertxFutureRateLimiterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureRateLimiterSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`VertxFutureRetrySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureRetrySupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`VertxFutureSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`VertxFutureTimeLimiterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureTimeLimiterSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -104,14 +104,14 @@ payload 크기, allocation, latency, malformed input 비율, resource close, pro
 
 대표 test anchor는 다음과 같습니다.
 
-- [`AbstractVertxTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/test/kotlin/io/bluetape4k/vertx/AbstractVertxTest.kt)
-- [`SampleVerticle`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/test/kotlin/io/bluetape4k/vertx/SampleVerticle.kt)
-- [`VertxSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/test/kotlin/io/bluetape4k/vertx/VertxSupportTest.kt)
-- [`LifecycleExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/test/kotlin/io/bluetape4k/vertx/examples/LifecycleExamples.kt)
-- [`SampleVerticleTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/test/kotlin/io/bluetape4k/vertx/examples/SampleVerticleTest.kt)
-- [`VertxJunit5Examples`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/test/kotlin/io/bluetape4k/vertx/examples/VertxJunit5Examples.kt)
-- [`AbstractVertxFutureTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/test/kotlin/io/bluetape4k/vertx/resilience4j/AbstractVertxFutureTest.kt)
-- [`VertxDecoratorsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/test/kotlin/io/bluetape4k/vertx/resilience4j/VertxDecoratorsTest.kt)
+- [`AbstractVertxTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/test/kotlin/io/bluetape4k/vertx/AbstractVertxTest.kt)
+- [`SampleVerticle`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/test/kotlin/io/bluetape4k/vertx/SampleVerticle.kt)
+- [`VertxSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/test/kotlin/io/bluetape4k/vertx/VertxSupportTest.kt)
+- [`LifecycleExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/test/kotlin/io/bluetape4k/vertx/examples/LifecycleExamples.kt)
+- [`SampleVerticleTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/test/kotlin/io/bluetape4k/vertx/examples/SampleVerticleTest.kt)
+- [`VertxJunit5Examples`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/test/kotlin/io/bluetape4k/vertx/examples/VertxJunit5Examples.kt)
+- [`AbstractVertxFutureTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/test/kotlin/io/bluetape4k/vertx/resilience4j/AbstractVertxFutureTest.kt)
+- [`VertxDecoratorsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/test/kotlin/io/bluetape4k/vertx/resilience4j/VertxDecoratorsTest.kt)
 
 ## 워크숍
 
@@ -123,17 +123,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/build.gradle.kts)
-- [`CoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/main/kotlin/io/bluetape4k/vertx/CoroutineSupport.kt)
-- [`FutureExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/main/kotlin/io/bluetape4k/vertx/FutureExtensions.kt)
-- [`VertxSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/main/kotlin/io/bluetape4k/vertx/VertxSupport.kt)
-- [`VertxDecorators`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxDecorators.kt)
-- [`VertxFutureBulkheadSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureBulkheadSupport.kt)
-- [`VertxFutureCircuitBreakerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureCircuitBreakerSupport.kt)
-- [`VertxFutureRateLimiterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureRateLimiterSupport.kt)
-- [`VertxFutureRetrySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureRetrySupport.kt)
-- [`VertxFutureSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureSupport.kt)
-- [`VertxFutureTimeLimiterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureTimeLimiterSupport.kt)
-- [`AbstractVertxTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/test/kotlin/io/bluetape4k/vertx/AbstractVertxTest.kt)
-- [`SampleVerticle`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/io/vertx/src/test/kotlin/io/bluetape4k/vertx/SampleVerticle.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/build.gradle.kts)
+- [`CoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/main/kotlin/io/bluetape4k/vertx/CoroutineSupport.kt)
+- [`FutureExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/main/kotlin/io/bluetape4k/vertx/FutureExtensions.kt)
+- [`VertxSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/main/kotlin/io/bluetape4k/vertx/VertxSupport.kt)
+- [`VertxDecorators`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxDecorators.kt)
+- [`VertxFutureBulkheadSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureBulkheadSupport.kt)
+- [`VertxFutureCircuitBreakerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureCircuitBreakerSupport.kt)
+- [`VertxFutureRateLimiterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureRateLimiterSupport.kt)
+- [`VertxFutureRetrySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureRetrySupport.kt)
+- [`VertxFutureSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureSupport.kt)
+- [`VertxFutureTimeLimiterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureTimeLimiterSupport.kt)
+- [`AbstractVertxTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/test/kotlin/io/bluetape4k/vertx/AbstractVertxTest.kt)
+- [`SampleVerticle`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/vertx/src/test/kotlin/io/bluetape4k/vertx/SampleVerticle.kt)

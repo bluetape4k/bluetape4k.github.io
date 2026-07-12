@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "utilities"
   kind: "library"
-  sourceCommit: "0c14ff5fa62a236de94bed884cb4a7faa31df7c4"
+  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
   sourcePath: "docs/manual/en/modules/bluetape4k-workflow.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ The first source-level concepts to inspect are `ErrorStrategy`, `NamedSuspendWor
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`ErrorStrategy`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/ErrorStrategy.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`ErrorStrategy`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/ErrorStrategy.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`ErrorStrategy`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/ErrorStrategy.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`NamedSuspendWork`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/NamedSuspendWork.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`NamedWork`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/NamedWork.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`ParallelPolicy`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/ParallelPolicy.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`RetryPolicy`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/RetryPolicy.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`SuspendWork`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/SuspendWork.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`SuspendWorkFlow`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/SuspendWorkFlow.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`Work`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/Work.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`WorkAdapters`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/WorkAdapters.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`WorkContext`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/WorkContext.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ErrorStrategy`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/ErrorStrategy.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`NamedSuspendWork`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/NamedSuspendWork.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`NamedWork`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/NamedWork.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ParallelPolicy`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/ParallelPolicy.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`RetryPolicy`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/RetryPolicy.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`SuspendWork`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/SuspendWork.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`SuspendWorkFlow`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/SuspendWorkFlow.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Work`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/Work.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`WorkAdapters`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/WorkAdapters.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`WorkContext`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/WorkContext.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -97,14 +97,14 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`AbstractWorkflowTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/api/AbstractWorkflowTest.kt)
-- [`WorkAdapterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/api/WorkAdapterTest.kt)
-- [`WorkContextTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/api/WorkContextTest.kt)
-- [`WorkReportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/api/WorkReportTest.kt)
-- [`ConditionalWorkFlowTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/core/ConditionalWorkFlowTest.kt)
-- [`ParallelWorkFlowTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/core/ParallelWorkFlowTest.kt)
-- [`RepeatWorkFlowTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/core/RepeatWorkFlowTest.kt)
-- [`RetryWorkFlowTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/core/RetryWorkFlowTest.kt)
+- [`AbstractWorkflowTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/api/AbstractWorkflowTest.kt)
+- [`WorkAdapterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/api/WorkAdapterTest.kt)
+- [`WorkContextTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/api/WorkContextTest.kt)
+- [`WorkReportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/api/WorkReportTest.kt)
+- [`ConditionalWorkFlowTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/core/ConditionalWorkFlowTest.kt)
+- [`ParallelWorkFlowTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/core/ParallelWorkFlowTest.kt)
+- [`RepeatWorkFlowTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/core/RepeatWorkFlowTest.kt)
+- [`RetryWorkFlowTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/core/RetryWorkFlowTest.kt)
 
 ## Workshops
 
@@ -116,17 +116,17 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/build.gradle.kts)
-- [`ErrorStrategy`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/ErrorStrategy.kt)
-- [`NamedSuspendWork`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/NamedSuspendWork.kt)
-- [`NamedWork`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/NamedWork.kt)
-- [`ParallelPolicy`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/ParallelPolicy.kt)
-- [`RetryPolicy`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/RetryPolicy.kt)
-- [`SuspendWork`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/SuspendWork.kt)
-- [`SuspendWorkFlow`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/SuspendWorkFlow.kt)
-- [`Work`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/Work.kt)
-- [`WorkAdapters`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/WorkAdapters.kt)
-- [`WorkContext`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/WorkContext.kt)
-- [`AbstractWorkflowTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/api/AbstractWorkflowTest.kt)
-- [`WorkAdapterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/api/WorkAdapterTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/build.gradle.kts)
+- [`ErrorStrategy`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/ErrorStrategy.kt)
+- [`NamedSuspendWork`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/NamedSuspendWork.kt)
+- [`NamedWork`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/NamedWork.kt)
+- [`ParallelPolicy`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/ParallelPolicy.kt)
+- [`RetryPolicy`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/RetryPolicy.kt)
+- [`SuspendWork`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/SuspendWork.kt)
+- [`SuspendWorkFlow`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/SuspendWorkFlow.kt)
+- [`Work`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/Work.kt)
+- [`WorkAdapters`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/WorkAdapters.kt)
+- [`WorkContext`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/WorkContext.kt)
+- [`AbstractWorkflowTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/api/AbstractWorkflowTest.kt)
+- [`WorkAdapterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/api/WorkAdapterTest.kt)

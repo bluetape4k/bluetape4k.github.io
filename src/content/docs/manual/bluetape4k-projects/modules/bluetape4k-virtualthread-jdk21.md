@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "concurrency"
   kind: "library"
-  sourceCommit: "0c14ff5fa62a236de94bed884cb4a7faa31df7c4"
+  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
   sourcePath: "docs/manual/en/modules/bluetape4k-virtualthread-jdk21.md"
   layer: "build"
 ---
@@ -40,14 +40,14 @@ The first source-level concepts to inspect are `Jdk21VirtualThreadRuntime`, and 
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`Jdk21VirtualThreadRuntime`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/jdk21/src/main/java/io/bluetape4k/concurrent/virtualthread/jdk21/Jdk21VirtualThreadRuntime.java) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`Jdk21VirtualThreadRuntime`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/jdk21/src/main/java/io/bluetape4k/concurrent/virtualthread/jdk21/Jdk21VirtualThreadRuntime.java) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`Jdk21VirtualThreadRuntime`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/jdk21/src/main/java/io/bluetape4k/concurrent/virtualthread/jdk21/Jdk21VirtualThreadRuntime.java) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`Jdk21StructuredTaskScopeProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/jdk21/src/main/kotlin/io/bluetape4k/concurrent/virtualthread/jdk21/Jdk21StructuredTaskScopeProvider.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Jdk21VirtualThreadRuntime`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/jdk21/src/main/java/io/bluetape4k/concurrent/virtualthread/jdk21/Jdk21VirtualThreadRuntime.java) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Jdk21StructuredTaskScopeProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/jdk21/src/main/kotlin/io/bluetape4k/concurrent/virtualthread/jdk21/Jdk21StructuredTaskScopeProvider.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -69,8 +69,8 @@ Treat `compileOnly` edges as caller-provided capabilities and verify runtime ava
 
 Configuration resources found in the module:
 
-- [`io.bluetape4k.concurrent.virtualthread.StructuredTaskScopeProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/jdk21/src/main/resources/META-INF/services/io.bluetape4k.concurrent.virtualthread.StructuredTaskScopeProvider)
-- [`io.bluetape4k.concurrent.virtualthread.VirtualThreadRuntime`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/jdk21/src/main/resources/META-INF/services/io.bluetape4k.concurrent.virtualthread.VirtualThreadRuntime)
+- [`io.bluetape4k.concurrent.virtualthread.StructuredTaskScopeProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/jdk21/src/main/resources/META-INF/services/io.bluetape4k.concurrent.virtualthread.StructuredTaskScopeProvider)
+- [`io.bluetape4k.concurrent.virtualthread.VirtualThreadRuntime`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/jdk21/src/main/resources/META-INF/services/io.bluetape4k.concurrent.virtualthread.VirtualThreadRuntime)
 
 Read property names and defaults from these resources and the binding source before overriding them.
 
@@ -92,9 +92,9 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`Jdk21StructuredTaskScopeProviderExtTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/jdk21/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/jdk21/Jdk21StructuredTaskScopeProviderExtTest.kt)
-- [`Jdk21StructuredTaskScopeProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/jdk21/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/jdk21/Jdk21StructuredTaskScopeProviderTest.kt)
-- [`Jdk21TaskContextTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/jdk21/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/jdk21/Jdk21TaskContextTest.kt)
+- [`Jdk21StructuredTaskScopeProviderExtTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/jdk21/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/jdk21/Jdk21StructuredTaskScopeProviderExtTest.kt)
+- [`Jdk21StructuredTaskScopeProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/jdk21/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/jdk21/Jdk21StructuredTaskScopeProviderTest.kt)
+- [`Jdk21TaskContextTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/jdk21/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/jdk21/Jdk21TaskContextTest.kt)
 
 ## Workshops
 
@@ -106,10 +106,10 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/jdk21/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/jdk21/build.gradle.kts)
-- [`Jdk21VirtualThreadRuntime`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/jdk21/src/main/java/io/bluetape4k/concurrent/virtualthread/jdk21/Jdk21VirtualThreadRuntime.java)
-- [`Jdk21StructuredTaskScopeProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/jdk21/src/main/kotlin/io/bluetape4k/concurrent/virtualthread/jdk21/Jdk21StructuredTaskScopeProvider.kt)
-- [`Jdk21StructuredTaskScopeProviderExtTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/jdk21/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/jdk21/Jdk21StructuredTaskScopeProviderExtTest.kt)
-- [`Jdk21StructuredTaskScopeProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/jdk21/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/jdk21/Jdk21StructuredTaskScopeProviderTest.kt)
-- [`Jdk21TaskContextTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/jdk21/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/jdk21/Jdk21TaskContextTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/jdk21/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/jdk21/build.gradle.kts)
+- [`Jdk21VirtualThreadRuntime`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/jdk21/src/main/java/io/bluetape4k/concurrent/virtualthread/jdk21/Jdk21VirtualThreadRuntime.java)
+- [`Jdk21StructuredTaskScopeProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/jdk21/src/main/kotlin/io/bluetape4k/concurrent/virtualthread/jdk21/Jdk21StructuredTaskScopeProvider.kt)
+- [`Jdk21StructuredTaskScopeProviderExtTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/jdk21/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/jdk21/Jdk21StructuredTaskScopeProviderExtTest.kt)
+- [`Jdk21StructuredTaskScopeProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/jdk21/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/jdk21/Jdk21StructuredTaskScopeProviderTest.kt)
+- [`Jdk21TaskContextTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/jdk21/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/jdk21/Jdk21TaskContextTest.kt)
