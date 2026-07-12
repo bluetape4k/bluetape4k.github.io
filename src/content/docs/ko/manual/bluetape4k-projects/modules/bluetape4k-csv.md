@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
+  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
   sourcePath: "docs/manual/ko/modules/bluetape4k-csv.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ Gradle project path는 `:bluetape4k-csv`, source directory는 `io/csv`입니다.
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`CsvRecordReader`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/main/kotlin/io/bluetape4k/csv/CsvRecordReader.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`CsvRecordReader`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/main/kotlin/io/bluetape4k/csv/CsvRecordReader.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`CsvRecordReader`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/main/kotlin/io/bluetape4k/csv/CsvRecordReader.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`CsvRecordWriter`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/main/kotlin/io/bluetape4k/csv/CsvRecordWriter.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`CsvSettings`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/main/kotlin/io/bluetape4k/csv/CsvSettings.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`CvsParserDefaults`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/main/kotlin/io/bluetape4k/csv/CvsParserDefaults.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Record`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/main/kotlin/io/bluetape4k/csv/Record.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`RecordFactory`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/main/kotlin/io/bluetape4k/csv/RecordFactory.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`RecordReader`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/main/kotlin/io/bluetape4k/csv/RecordReader.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`RecordReaderSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/main/kotlin/io/bluetape4k/csv/RecordReaderSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`RecordWriter`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/main/kotlin/io/bluetape4k/csv/RecordWriter.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`RecordWriterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/main/kotlin/io/bluetape4k/csv/RecordWriterSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`CsvRecordReader`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/main/kotlin/io/bluetape4k/csv/CsvRecordReader.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`CsvRecordWriter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/main/kotlin/io/bluetape4k/csv/CsvRecordWriter.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`CsvSettings`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/main/kotlin/io/bluetape4k/csv/CsvSettings.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`CvsParserDefaults`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/main/kotlin/io/bluetape4k/csv/CvsParserDefaults.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Record`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/main/kotlin/io/bluetape4k/csv/Record.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`RecordFactory`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/main/kotlin/io/bluetape4k/csv/RecordFactory.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`RecordReader`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/main/kotlin/io/bluetape4k/csv/RecordReader.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`RecordReaderSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/main/kotlin/io/bluetape4k/csv/RecordReaderSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`RecordWriter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/main/kotlin/io/bluetape4k/csv/RecordWriter.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`RecordWriterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/main/kotlin/io/bluetape4k/csv/RecordWriterSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -96,14 +96,14 @@ payload 크기, allocation, latency, malformed input 비율, resource close, pro
 
 대표 test anchor는 다음과 같습니다.
 
-- [`AbstractRecordReaderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/test/kotlin/io/bluetape4k/csv/AbstractRecordReaderTest.kt)
-- [`CsvEdgeCaseTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/test/kotlin/io/bluetape4k/csv/CsvEdgeCaseTest.kt)
-- [`CsvRecordReaderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/test/kotlin/io/bluetape4k/csv/CsvRecordReaderTest.kt)
-- [`CsvRecordWriterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/test/kotlin/io/bluetape4k/csv/CsvRecordWriterTest.kt)
-- [`NativeCsvRecordReaderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/test/kotlin/io/bluetape4k/csv/NativeCsvRecordReaderTest.kt)
-- [`RFC4180ComplianceTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/test/kotlin/io/bluetape4k/csv/RFC4180ComplianceTest.kt)
-- [`RecordReaderSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/test/kotlin/io/bluetape4k/csv/RecordReaderSupportTest.kt)
-- [`RecordWriterSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/test/kotlin/io/bluetape4k/csv/RecordWriterSupportTest.kt)
+- [`AbstractRecordReaderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/test/kotlin/io/bluetape4k/csv/AbstractRecordReaderTest.kt)
+- [`CsvEdgeCaseTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/test/kotlin/io/bluetape4k/csv/CsvEdgeCaseTest.kt)
+- [`CsvRecordReaderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/test/kotlin/io/bluetape4k/csv/CsvRecordReaderTest.kt)
+- [`CsvRecordWriterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/test/kotlin/io/bluetape4k/csv/CsvRecordWriterTest.kt)
+- [`NativeCsvRecordReaderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/test/kotlin/io/bluetape4k/csv/NativeCsvRecordReaderTest.kt)
+- [`RFC4180ComplianceTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/test/kotlin/io/bluetape4k/csv/RFC4180ComplianceTest.kt)
+- [`RecordReaderSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/test/kotlin/io/bluetape4k/csv/RecordReaderSupportTest.kt)
+- [`RecordWriterSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/test/kotlin/io/bluetape4k/csv/RecordWriterSupportTest.kt)
 
 ## 워크숍
 
@@ -115,17 +115,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/build.gradle.kts)
-- [`CsvRecordReader`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/main/kotlin/io/bluetape4k/csv/CsvRecordReader.kt)
-- [`CsvRecordWriter`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/main/kotlin/io/bluetape4k/csv/CsvRecordWriter.kt)
-- [`CsvSettings`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/main/kotlin/io/bluetape4k/csv/CsvSettings.kt)
-- [`CvsParserDefaults`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/main/kotlin/io/bluetape4k/csv/CvsParserDefaults.kt)
-- [`Record`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/main/kotlin/io/bluetape4k/csv/Record.kt)
-- [`RecordFactory`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/main/kotlin/io/bluetape4k/csv/RecordFactory.kt)
-- [`RecordReader`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/main/kotlin/io/bluetape4k/csv/RecordReader.kt)
-- [`RecordReaderSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/main/kotlin/io/bluetape4k/csv/RecordReaderSupport.kt)
-- [`RecordWriter`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/main/kotlin/io/bluetape4k/csv/RecordWriter.kt)
-- [`RecordWriterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/main/kotlin/io/bluetape4k/csv/RecordWriterSupport.kt)
-- [`AbstractRecordReaderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/test/kotlin/io/bluetape4k/csv/AbstractRecordReaderTest.kt)
-- [`CsvEdgeCaseTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/csv/src/test/kotlin/io/bluetape4k/csv/CsvEdgeCaseTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/build.gradle.kts)
+- [`CsvRecordReader`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/main/kotlin/io/bluetape4k/csv/CsvRecordReader.kt)
+- [`CsvRecordWriter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/main/kotlin/io/bluetape4k/csv/CsvRecordWriter.kt)
+- [`CsvSettings`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/main/kotlin/io/bluetape4k/csv/CsvSettings.kt)
+- [`CvsParserDefaults`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/main/kotlin/io/bluetape4k/csv/CvsParserDefaults.kt)
+- [`Record`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/main/kotlin/io/bluetape4k/csv/Record.kt)
+- [`RecordFactory`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/main/kotlin/io/bluetape4k/csv/RecordFactory.kt)
+- [`RecordReader`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/main/kotlin/io/bluetape4k/csv/RecordReader.kt)
+- [`RecordReaderSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/main/kotlin/io/bluetape4k/csv/RecordReaderSupport.kt)
+- [`RecordWriter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/main/kotlin/io/bluetape4k/csv/RecordWriter.kt)
+- [`RecordWriterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/main/kotlin/io/bluetape4k/csv/RecordWriterSupport.kt)
+- [`AbstractRecordReaderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/test/kotlin/io/bluetape4k/csv/AbstractRecordReaderTest.kt)
+- [`CsvEdgeCaseTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/csv/src/test/kotlin/io/bluetape4k/csv/CsvEdgeCaseTest.kt)

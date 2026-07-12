@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "web"
   kind: "library"
-  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
+  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
   sourcePath: "docs/manual/en/modules/bluetape4k-ktor-core.md"
   layer: "build"
 ---
@@ -40,20 +40,20 @@ The first source-level concepts to inspect are `ApiErrorResponse`, `Bluetape4kKt
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`ApiErrorResponse`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/ApiErrorResponse.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`ApiErrorResponse`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/ApiErrorResponse.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`ApiErrorResponse`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/ApiErrorResponse.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`Bluetape4kKtorCore`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorCore.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`Bluetape4kKtorCoreConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorCoreConfig.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`Bluetape4kKtorJson`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorJson.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`Bluetape4kStatusPages`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kStatusPages.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`HealthResponse`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/HealthResponse.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`KtorHealthRoutes`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/KtorHealthRoutes.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`KtorRequestParameters`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/KtorRequestParameters.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ApiErrorResponse`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/ApiErrorResponse.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Bluetape4kKtorCore`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorCore.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Bluetape4kKtorCoreConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorCoreConfig.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Bluetape4kKtorJson`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorJson.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Bluetape4kStatusPages`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kStatusPages.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`HealthResponse`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/HealthResponse.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`KtorHealthRoutes`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/KtorHealthRoutes.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`KtorRequestParameters`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/KtorRequestParameters.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -96,7 +96,7 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`Bluetape4kKtorCoreTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/core/src/test/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorCoreTest.kt)
+- [`Bluetape4kKtorCoreTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/core/src/test/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorCoreTest.kt)
 
 ## Workshops
 
@@ -108,14 +108,14 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/core/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/core/build.gradle.kts)
-- [`ApiErrorResponse`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/ApiErrorResponse.kt)
-- [`Bluetape4kKtorCore`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorCore.kt)
-- [`Bluetape4kKtorCoreConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorCoreConfig.kt)
-- [`Bluetape4kKtorJson`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorJson.kt)
-- [`Bluetape4kStatusPages`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kStatusPages.kt)
-- [`HealthResponse`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/HealthResponse.kt)
-- [`KtorHealthRoutes`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/KtorHealthRoutes.kt)
-- [`KtorRequestParameters`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/KtorRequestParameters.kt)
-- [`Bluetape4kKtorCoreTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/core/src/test/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorCoreTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/core/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/core/build.gradle.kts)
+- [`ApiErrorResponse`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/ApiErrorResponse.kt)
+- [`Bluetape4kKtorCore`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorCore.kt)
+- [`Bluetape4kKtorCoreConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorCoreConfig.kt)
+- [`Bluetape4kKtorJson`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorJson.kt)
+- [`Bluetape4kStatusPages`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kStatusPages.kt)
+- [`HealthResponse`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/HealthResponse.kt)
+- [`KtorHealthRoutes`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/KtorHealthRoutes.kt)
+- [`KtorRequestParameters`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/KtorRequestParameters.kt)
+- [`Bluetape4kKtorCoreTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/core/src/test/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorCoreTest.kt)

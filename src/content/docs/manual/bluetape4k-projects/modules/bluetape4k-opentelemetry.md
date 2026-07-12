@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "infrastructure"
   kind: "library"
-  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
+  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
   sourcePath: "docs/manual/en/modules/bluetape4k-opentelemetry.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ The first source-level concepts to inspect are `ContextExtensions`, `OpenTelemet
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`ContextExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/ContextExtensions.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`ContextExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/ContextExtensions.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`ContextExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/ContextExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`OpenTelemetrySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/OpenTelemetrySupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`AttributeKeySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/common/AttributeKeySupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`AttributesSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/common/AttributesSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`CompletableResultCodeSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/CompletableResultCodeSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`ContextCoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/ContextCoroutineSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`FlowSpanSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/FlowSpanSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`SpanCoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/SpanCoroutineSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`MeterProviderSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/metrics/MeterProviderSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`MetricExporterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/metrics/MetricExporterSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ContextExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/ContextExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`OpenTelemetrySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/OpenTelemetrySupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`AttributeKeySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/common/AttributeKeySupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`AttributesSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/common/AttributesSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`CompletableResultCodeSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/CompletableResultCodeSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ContextCoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/ContextCoroutineSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`FlowSpanSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/FlowSpanSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`SpanCoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/SpanCoroutineSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`MeterProviderSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/metrics/MeterProviderSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`MetricExporterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/metrics/MetricExporterSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -104,14 +104,14 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`AbstractOtelTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/AbstractOtelTest.kt)
-- [`RedactionAssertions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/RedactionAssertions.kt)
-- [`AttributeKeySupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/common/AttributeKeySupportTest.kt)
-- [`AttributesSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/common/AttributesSupportTest.kt)
-- [`CoroutineSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/coroutines/CoroutineSupportTest.kt)
-- [`FlowSpanSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/coroutines/FlowSpanSupportTest.kt)
-- [`SpanCoroutineSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/coroutines/SpanCoroutineSupportTest.kt)
-- [`TracerWithSpanTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/coroutines/TracerWithSpanTest.kt)
+- [`AbstractOtelTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/AbstractOtelTest.kt)
+- [`RedactionAssertions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/RedactionAssertions.kt)
+- [`AttributeKeySupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/common/AttributeKeySupportTest.kt)
+- [`AttributesSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/common/AttributesSupportTest.kt)
+- [`CoroutineSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/coroutines/CoroutineSupportTest.kt)
+- [`FlowSpanSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/coroutines/FlowSpanSupportTest.kt)
+- [`SpanCoroutineSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/coroutines/SpanCoroutineSupportTest.kt)
+- [`TracerWithSpanTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/coroutines/TracerWithSpanTest.kt)
 
 ## Workshops
 
@@ -123,17 +123,17 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/build.gradle.kts)
-- [`ContextExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/ContextExtensions.kt)
-- [`OpenTelemetrySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/OpenTelemetrySupport.kt)
-- [`AttributeKeySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/common/AttributeKeySupport.kt)
-- [`AttributesSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/common/AttributesSupport.kt)
-- [`CompletableResultCodeSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/CompletableResultCodeSupport.kt)
-- [`ContextCoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/ContextCoroutineSupport.kt)
-- [`FlowSpanSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/FlowSpanSupport.kt)
-- [`SpanCoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/SpanCoroutineSupport.kt)
-- [`MeterProviderSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/metrics/MeterProviderSupport.kt)
-- [`MetricExporterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/metrics/MetricExporterSupport.kt)
-- [`AbstractOtelTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/AbstractOtelTest.kt)
-- [`RedactionAssertions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/RedactionAssertions.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/build.gradle.kts)
+- [`ContextExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/ContextExtensions.kt)
+- [`OpenTelemetrySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/OpenTelemetrySupport.kt)
+- [`AttributeKeySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/common/AttributeKeySupport.kt)
+- [`AttributesSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/common/AttributesSupport.kt)
+- [`CompletableResultCodeSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/CompletableResultCodeSupport.kt)
+- [`ContextCoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/ContextCoroutineSupport.kt)
+- [`FlowSpanSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/FlowSpanSupport.kt)
+- [`SpanCoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/SpanCoroutineSupport.kt)
+- [`MeterProviderSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/metrics/MeterProviderSupport.kt)
+- [`MetricExporterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/metrics/MetricExporterSupport.kt)
+- [`AbstractOtelTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/AbstractOtelTest.kt)
+- [`RedactionAssertions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/RedactionAssertions.kt)

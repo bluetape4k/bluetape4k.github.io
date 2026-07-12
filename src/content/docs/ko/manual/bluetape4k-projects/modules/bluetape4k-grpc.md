@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
+  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
   sourcePath: "docs/manual/ko/modules/bluetape4k-grpc.md"
   layer: "build"
 ---
@@ -40,21 +40,21 @@ Gradle project path는 `:bluetape4k-grpc`, source directory는 `io/grpc`입니�
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`AbstractGrpcClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/main/kotlin/io/bluetape4k/grpc/AbstractGrpcClient.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`AbstractGrpcClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/main/kotlin/io/bluetape4k/grpc/AbstractGrpcClient.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`AbstractGrpcClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/main/kotlin/io/bluetape4k/grpc/AbstractGrpcClient.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`AbstractGrpcServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/main/kotlin/io/bluetape4k/grpc/AbstractGrpcServer.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`GrpcChannelSecurity`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/main/kotlin/io/bluetape4k/grpc/GrpcChannelSecurity.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`GrpcServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/main/kotlin/io/bluetape4k/grpc/GrpcServer.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`ManagedChannelSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/main/kotlin/io/bluetape4k/grpc/ManagedChannelSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`ServerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/main/kotlin/io/bluetape4k/grpc/ServerSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`AbstractGrpcInprocessClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/main/kotlin/io/bluetape4k/grpc/inprocess/AbstractGrpcInprocessClient.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`AbstractGrpcInprocessServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/main/kotlin/io/bluetape4k/grpc/inprocess/AbstractGrpcInprocessServer.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`ServerInterceptorSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/main/kotlin/io/bluetape4k/grpc/interceptor/ServerInterceptorSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`AbstractGrpcClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/main/kotlin/io/bluetape4k/grpc/AbstractGrpcClient.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`AbstractGrpcServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/main/kotlin/io/bluetape4k/grpc/AbstractGrpcServer.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`GrpcChannelSecurity`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/main/kotlin/io/bluetape4k/grpc/GrpcChannelSecurity.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`GrpcServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/main/kotlin/io/bluetape4k/grpc/GrpcServer.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ManagedChannelSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/main/kotlin/io/bluetape4k/grpc/ManagedChannelSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ServerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/main/kotlin/io/bluetape4k/grpc/ServerSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`AbstractGrpcInprocessClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/main/kotlin/io/bluetape4k/grpc/inprocess/AbstractGrpcInprocessClient.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`AbstractGrpcInprocessServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/main/kotlin/io/bluetape4k/grpc/inprocess/AbstractGrpcInprocessServer.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ServerInterceptorSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/main/kotlin/io/bluetape4k/grpc/interceptor/ServerInterceptorSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -103,14 +103,14 @@ payload 크기, allocation, latency, malformed input 비율, resource close, pro
 
 대표 test anchor는 다음과 같습니다.
 
-- [`AbstractGrpcTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/test/kotlin/io/bluetape4k/grpc/AbstractGrpcTest.kt)
-- [`GrpcChannelSecurityTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/test/kotlin/io/bluetape4k/grpc/GrpcChannelSecurityTest.kt)
-- [`GrpcServerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/test/kotlin/io/bluetape4k/grpc/GrpcServerTest.kt)
-- [`GrpcSupportValidationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/test/kotlin/io/bluetape4k/grpc/GrpcSupportValidationTest.kt)
-- [`ManagedChannelSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/test/kotlin/io/bluetape4k/grpc/ManagedChannelSupportTest.kt)
-- [`GreeterClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/test/kotlin/io/bluetape4k/grpc/examples/helloworld/GreeterClient.kt)
-- [`GreeterServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/test/kotlin/io/bluetape4k/grpc/examples/helloworld/GreeterServer.kt)
-- [`GreeterService`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/test/kotlin/io/bluetape4k/grpc/examples/helloworld/GreeterService.kt)
+- [`AbstractGrpcTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/test/kotlin/io/bluetape4k/grpc/AbstractGrpcTest.kt)
+- [`GrpcChannelSecurityTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/test/kotlin/io/bluetape4k/grpc/GrpcChannelSecurityTest.kt)
+- [`GrpcServerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/test/kotlin/io/bluetape4k/grpc/GrpcServerTest.kt)
+- [`GrpcSupportValidationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/test/kotlin/io/bluetape4k/grpc/GrpcSupportValidationTest.kt)
+- [`ManagedChannelSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/test/kotlin/io/bluetape4k/grpc/ManagedChannelSupportTest.kt)
+- [`GreeterClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/test/kotlin/io/bluetape4k/grpc/examples/helloworld/GreeterClient.kt)
+- [`GreeterServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/test/kotlin/io/bluetape4k/grpc/examples/helloworld/GreeterServer.kt)
+- [`GreeterService`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/test/kotlin/io/bluetape4k/grpc/examples/helloworld/GreeterService.kt)
 
 ## 워크숍
 
@@ -122,17 +122,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/build.gradle.kts)
-- [`AbstractGrpcClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/main/kotlin/io/bluetape4k/grpc/AbstractGrpcClient.kt)
-- [`AbstractGrpcServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/main/kotlin/io/bluetape4k/grpc/AbstractGrpcServer.kt)
-- [`GrpcChannelSecurity`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/main/kotlin/io/bluetape4k/grpc/GrpcChannelSecurity.kt)
-- [`GrpcServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/main/kotlin/io/bluetape4k/grpc/GrpcServer.kt)
-- [`ManagedChannelSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/main/kotlin/io/bluetape4k/grpc/ManagedChannelSupport.kt)
-- [`ServerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/main/kotlin/io/bluetape4k/grpc/ServerSupport.kt)
-- [`AbstractGrpcInprocessClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/main/kotlin/io/bluetape4k/grpc/inprocess/AbstractGrpcInprocessClient.kt)
-- [`AbstractGrpcInprocessServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/main/kotlin/io/bluetape4k/grpc/inprocess/AbstractGrpcInprocessServer.kt)
-- [`ServerInterceptorSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/main/kotlin/io/bluetape4k/grpc/interceptor/ServerInterceptorSupport.kt)
-- [`AbstractGrpcTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/test/kotlin/io/bluetape4k/grpc/AbstractGrpcTest.kt)
-- [`GrpcChannelSecurityTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/test/kotlin/io/bluetape4k/grpc/GrpcChannelSecurityTest.kt)
-- [`GrpcServerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/grpc/src/test/kotlin/io/bluetape4k/grpc/GrpcServerTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/build.gradle.kts)
+- [`AbstractGrpcClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/main/kotlin/io/bluetape4k/grpc/AbstractGrpcClient.kt)
+- [`AbstractGrpcServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/main/kotlin/io/bluetape4k/grpc/AbstractGrpcServer.kt)
+- [`GrpcChannelSecurity`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/main/kotlin/io/bluetape4k/grpc/GrpcChannelSecurity.kt)
+- [`GrpcServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/main/kotlin/io/bluetape4k/grpc/GrpcServer.kt)
+- [`ManagedChannelSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/main/kotlin/io/bluetape4k/grpc/ManagedChannelSupport.kt)
+- [`ServerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/main/kotlin/io/bluetape4k/grpc/ServerSupport.kt)
+- [`AbstractGrpcInprocessClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/main/kotlin/io/bluetape4k/grpc/inprocess/AbstractGrpcInprocessClient.kt)
+- [`AbstractGrpcInprocessServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/main/kotlin/io/bluetape4k/grpc/inprocess/AbstractGrpcInprocessServer.kt)
+- [`ServerInterceptorSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/main/kotlin/io/bluetape4k/grpc/interceptor/ServerInterceptorSupport.kt)
+- [`AbstractGrpcTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/test/kotlin/io/bluetape4k/grpc/AbstractGrpcTest.kt)
+- [`GrpcChannelSecurityTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/test/kotlin/io/bluetape4k/grpc/GrpcChannelSecurityTest.kt)
+- [`GrpcServerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/grpc/src/test/kotlin/io/bluetape4k/grpc/GrpcServerTest.kt)

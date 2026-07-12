@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "infrastructure"
   kind: "library"
-  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
+  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
   sourcePath: "docs/manual/ko/modules/bluetape4k-resilience4j.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ Gradle project path는 `:bluetape4k-resilience4j`, source directory는 `infra/re
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`RetryAsyncContextBridge`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/main/java/io/bluetape4k/resilience4j/retry/RetryAsyncContextBridge.java)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`RetryAsyncContextBridge`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/java/io/bluetape4k/resilience4j/retry/RetryAsyncContextBridge.java)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`RetryAsyncContextBridge`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/main/java/io/bluetape4k/resilience4j/retry/RetryAsyncContextBridge.java) | constructor, function, ownership 계약을 확인합니다. |
-| [`CallableSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/CallableSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`CancellationSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/CancellationSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`CompletionStageSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/CompletionStageSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`DecoratorsSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/DecoratorsSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`SupplierSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/SupplierSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`SuspendDecorators`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/SuspendDecorators.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`SuspendSupplierExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/SuspendSupplierExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`BulkheadCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/bulkhead/BulkheadCoroutines.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`BulkheadExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/bulkhead/BulkheadExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`RetryAsyncContextBridge`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/java/io/bluetape4k/resilience4j/retry/RetryAsyncContextBridge.java) | constructor, function, ownership 계약을 확인합니다. |
+| [`CallableSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/CallableSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`CancellationSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/CancellationSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`CompletionStageSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/CompletionStageSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`DecoratorsSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/DecoratorsSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`SupplierSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/SupplierSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`SuspendDecorators`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/SuspendDecorators.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`SuspendSupplierExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/SuspendSupplierExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`BulkheadCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/bulkhead/BulkheadCoroutines.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`BulkheadExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/bulkhead/BulkheadExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -102,14 +102,14 @@ connection 상태, queue 깊이, retry, timeout, remote 오류, graceful shutdow
 
 대표 test anchor는 다음과 같습니다.
 
-- [`AsyncHelloWorldService`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/AsyncHelloWorldService.kt)
-- [`CallableSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/CallableSupportTest.kt)
-- [`CompletionStageSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/CompletionStageSupportTest.kt)
-- [`DecoratorExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/DecoratorExtensionsTest.kt)
-- [`DecoratorsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/DecoratorsTest.kt)
-- [`HelloWorldException`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/HelloWorldException.kt)
-- [`HelloWorldService`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/HelloWorldService.kt)
-- [`Resilience4jCancellationContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/Resilience4jCancellationContractTest.kt)
+- [`AsyncHelloWorldService`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/AsyncHelloWorldService.kt)
+- [`CallableSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/CallableSupportTest.kt)
+- [`CompletionStageSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/CompletionStageSupportTest.kt)
+- [`DecoratorExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/DecoratorExtensionsTest.kt)
+- [`DecoratorsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/DecoratorsTest.kt)
+- [`HelloWorldException`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/HelloWorldException.kt)
+- [`HelloWorldService`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/HelloWorldService.kt)
+- [`Resilience4jCancellationContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/Resilience4jCancellationContractTest.kt)
 
 ## 워크숍
 
@@ -121,17 +121,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/build.gradle.kts)
-- [`RetryAsyncContextBridge`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/main/java/io/bluetape4k/resilience4j/retry/RetryAsyncContextBridge.java)
-- [`CallableSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/CallableSupport.kt)
-- [`CancellationSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/CancellationSupport.kt)
-- [`CompletionStageSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/CompletionStageSupport.kt)
-- [`DecoratorsSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/DecoratorsSupport.kt)
-- [`SupplierSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/SupplierSupport.kt)
-- [`SuspendDecorators`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/SuspendDecorators.kt)
-- [`SuspendSupplierExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/SuspendSupplierExtensions.kt)
-- [`BulkheadCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/bulkhead/BulkheadCoroutines.kt)
-- [`BulkheadExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/bulkhead/BulkheadExtensions.kt)
-- [`AsyncHelloWorldService`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/AsyncHelloWorldService.kt)
-- [`CallableSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/CallableSupportTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/build.gradle.kts)
+- [`RetryAsyncContextBridge`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/java/io/bluetape4k/resilience4j/retry/RetryAsyncContextBridge.java)
+- [`CallableSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/CallableSupport.kt)
+- [`CancellationSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/CancellationSupport.kt)
+- [`CompletionStageSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/CompletionStageSupport.kt)
+- [`DecoratorsSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/DecoratorsSupport.kt)
+- [`SupplierSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/SupplierSupport.kt)
+- [`SuspendDecorators`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/SuspendDecorators.kt)
+- [`SuspendSupplierExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/SuspendSupplierExtensions.kt)
+- [`BulkheadCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/bulkhead/BulkheadCoroutines.kt)
+- [`BulkheadExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/bulkhead/BulkheadExtensions.kt)
+- [`AsyncHelloWorldService`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/AsyncHelloWorldService.kt)
+- [`CallableSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/CallableSupportTest.kt)

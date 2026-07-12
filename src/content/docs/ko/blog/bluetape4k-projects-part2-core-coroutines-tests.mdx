@@ -94,6 +94,23 @@ val doubled = source.map { it * 2 }
 `kotlin/coroutines`와 `spring-boot/webflux-coroutines` 예제는 학습용 코드에서 시작해 실제 HTTP 요청
 경로로 이어지는 모양을 보여줍니다.
 
+## 계약의 기준은 매뉴얼이다
+
+이 글은 모듈이 왜 필요한지를 설명하며 모든 운영 규칙을 복제하지 않습니다. 저장소가 소유한 매뉴얼이
+source of truth이고, 각 규칙을 정확한 source commit과 representative test에 연결합니다.
+
+| 결정 | 기준 매뉴얼 장 |
+|---|---|
+| 한 번 검증하고 내부 불변식을 non-null로 유지 | [Core: 검증과 불변식](/ko/manual/bluetape4k-projects/modules/bluetape4k-core/validation/) |
+| stack/ring의 순서와 eviction 선택 | [Core: Bounded collections](/ko/manual/bluetape4k-projects/modules/bluetape4k-core/bounded-collections/) |
+| active와 queued 비동기 작업의 용량 제한 | [Core: Concurrency와 lifecycle](/ko/manual/bluetape4k-projects/modules/bluetape4k-core/concurrency-lifecycle/) |
+| coroutine 소유자와 종료 시점 결정 | [Coroutines: Lifecycle과 scope ownership](/ko/manual/bluetape4k-projects/modules/bluetape4k-coroutines/lifecycle/) |
+| loser를 누수하지 않는 Deferred race | [Coroutines: Deferred 조합과 race](/ko/manual/bluetape4k-projects/modules/bluetape4k-coroutines/deferred/) |
+| ordered 또는 completion-order Flow 처리 선택 | [Coroutines: 순서 보존과 병렬 Flow](/ko/manual/bluetape4k-projects/modules/bluetape4k-coroutines/flow/) |
+
+Workshop은 실행 가능한 companion입니다. Blog나 workshop이 매뉴얼과 달라지면 `docs/manual`을 먼저
+고치고, 그 계약에서 설명 자료를 다시 파생합니다.
+
 ## logging: 로그는 장애 때 읽는 글이다
 
 로그는 평소에는 배경처럼 지나갑니다. 장애가 나면 갑자기 본문이 됩니다. 그때 `requestId`나 `orderId`가
@@ -189,8 +206,8 @@ class CacheTest {
 
 | 모듈 | 이런 냄새가 날 때 | 같이 보면 좋은 예제 |
 |---|---|---|
-| `bluetape4k-core` | `if (x.isBlank()) throw ...`가 여기저기 생김 | [`core` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/core/README.md) |
-| `bluetape4k-coroutines` | `Deferred`, `Flow`, cancellation 처리를 서비스마다 다시 씀 | [`kotlin/coroutines` workshop](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/kotlin/coroutines) |
+| `bluetape4k-core` | `if (x.isBlank()) throw ...`가 여기저기 생김 | [Core 매뉴얼](/ko/manual/bluetape4k-projects/modules/bluetape4k-core/) |
+| `bluetape4k-coroutines` | `Deferred`, `Flow`, cancellation 처리를 서비스마다 다시 씀 | [Coroutines 매뉴얼](/ko/manual/bluetape4k-projects/modules/bluetape4k-coroutines/) |
 | `bluetape4k-logging` | `requestId`가 coroutine 경계에서 가끔 사라짐 | [`logging` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/logging/README.md) |
 | `bluetape4k-assertions` | `assertEquals`, `assertTrue`, null/collection check가 테스트마다 다른 문체로 섞임 | [`assertions` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/assertions/README.ko.md) |
 | `bluetape4k-junit5` | 임시 파일, 출력 캡처, coroutine 대기 코드가 테스트마다 복붙됨 | [`junit5` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/README.md) |
@@ -207,6 +224,8 @@ class CacheTest {
 
 - Core README: [bluetape4k/core/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/core/README.md)
 - Coroutines README: [bluetape4k/coroutines/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/coroutines/README.md)
+- Core 매뉴얼: [결정 중심 reference](/ko/manual/bluetape4k-projects/modules/bluetape4k-core/)
+- Coroutines 매뉴얼: [lifecycle, composition, Flow, operations](/ko/manual/bluetape4k-projects/modules/bluetape4k-coroutines/)
 - Logging README: [bluetape4k/logging/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/logging/README.md)
 - Assertions README: [testing/assertions/README.ko.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/assertions/README.ko.md)
 - JUnit 5 README: [testing/junit5/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/README.md)

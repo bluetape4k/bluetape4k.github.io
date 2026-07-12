@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "web"
   kind: "library"
-  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
+  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
   sourcePath: "docs/manual/en/modules/bluetape4k-ktor-testing.md"
   layer: "build"
 ---
@@ -40,16 +40,16 @@ The first source-level concepts to inspect are `Bluetape4kKtorTesting`, `Expecte
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`Bluetape4kKtorTesting`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/Bluetape4kKtorTesting.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`Bluetape4kKtorTesting`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/Bluetape4kKtorTesting.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`Bluetape4kKtorTesting`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/Bluetape4kKtorTesting.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`ExpectedApiError`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/ExpectedApiError.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`KtorJsonMockEngineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/KtorJsonMockEngineSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`KtorResponseAssertions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/KtorResponseAssertions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Bluetape4kKtorTesting`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/Bluetape4kKtorTesting.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ExpectedApiError`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/ExpectedApiError.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`KtorJsonMockEngineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/KtorJsonMockEngineSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`KtorResponseAssertions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/KtorResponseAssertions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -94,7 +94,7 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`Bluetape4kKtorTestingTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/testing/src/test/kotlin/io/bluetape4k/ktor/testing/Bluetape4kKtorTestingTest.kt)
+- [`Bluetape4kKtorTestingTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/testing/src/test/kotlin/io/bluetape4k/ktor/testing/Bluetape4kKtorTestingTest.kt)
 
 ## Workshops
 
@@ -106,10 +106,10 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/testing/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/testing/build.gradle.kts)
-- [`Bluetape4kKtorTesting`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/Bluetape4kKtorTesting.kt)
-- [`ExpectedApiError`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/ExpectedApiError.kt)
-- [`KtorJsonMockEngineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/KtorJsonMockEngineSupport.kt)
-- [`KtorResponseAssertions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/KtorResponseAssertions.kt)
-- [`Bluetape4kKtorTestingTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/testing/src/test/kotlin/io/bluetape4k/ktor/testing/Bluetape4kKtorTestingTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/testing/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/testing/build.gradle.kts)
+- [`Bluetape4kKtorTesting`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/Bluetape4kKtorTesting.kt)
+- [`ExpectedApiError`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/ExpectedApiError.kt)
+- [`KtorJsonMockEngineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/KtorJsonMockEngineSupport.kt)
+- [`KtorResponseAssertions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/KtorResponseAssertions.kt)
+- [`Bluetape4kKtorTestingTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/testing/src/test/kotlin/io/bluetape4k/ktor/testing/Bluetape4kKtorTestingTest.kt)

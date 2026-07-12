@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
+  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
   sourcePath: "docs/manual/ko/modules/bluetape4k-tink.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ Gradle project path는 `:bluetape4k-tink`, source directory는 `io/tink`입니�
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`SecureRandomSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/main/kotlin/io/bluetape4k/tink/SecureRandomSupport.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`SecureRandomSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/main/kotlin/io/bluetape4k/tink/SecureRandomSupport.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`SecureRandomSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/main/kotlin/io/bluetape4k/tink/SecureRandomSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`TinkSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/main/kotlin/io/bluetape4k/tink/TinkSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`TinkAead`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/main/kotlin/io/bluetape4k/tink/aead/TinkAead.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`TinkAeadExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/main/kotlin/io/bluetape4k/tink/aead/TinkAeadExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`TinkAeads`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/main/kotlin/io/bluetape4k/tink/aead/TinkAeads.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`TinkDaeads`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/main/kotlin/io/bluetape4k/tink/daead/TinkDaeads.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`TinkDeterministicAead`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/main/kotlin/io/bluetape4k/tink/daead/TinkDeterministicAead.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`TinkDigester`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/main/kotlin/io/bluetape4k/tink/digest/TinkDigester.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`TinkDigesterExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/main/kotlin/io/bluetape4k/tink/digest/TinkDigesterExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`TinkDigesters`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/main/kotlin/io/bluetape4k/tink/digest/TinkDigesters.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`SecureRandomSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/main/kotlin/io/bluetape4k/tink/SecureRandomSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`TinkSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/main/kotlin/io/bluetape4k/tink/TinkSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`TinkAead`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/main/kotlin/io/bluetape4k/tink/aead/TinkAead.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`TinkAeadExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/main/kotlin/io/bluetape4k/tink/aead/TinkAeadExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`TinkAeads`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/main/kotlin/io/bluetape4k/tink/aead/TinkAeads.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`TinkDaeads`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/main/kotlin/io/bluetape4k/tink/daead/TinkDaeads.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`TinkDeterministicAead`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/main/kotlin/io/bluetape4k/tink/daead/TinkDeterministicAead.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`TinkDigester`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/main/kotlin/io/bluetape4k/tink/digest/TinkDigester.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`TinkDigesterExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/main/kotlin/io/bluetape4k/tink/digest/TinkDigesterExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`TinkDigesters`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/main/kotlin/io/bluetape4k/tink/digest/TinkDigesters.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -96,14 +96,14 @@ payload 크기, allocation, latency, malformed input 비율, resource close, pro
 
 대표 test anchor는 다음과 같습니다.
 
-- [`SecureRandomSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/test/kotlin/io/bluetape4k/tink/SecureRandomSupportTest.kt)
-- [`TinkSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/test/kotlin/io/bluetape4k/tink/TinkSupportTest.kt)
-- [`TinkAeadExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/test/kotlin/io/bluetape4k/tink/aead/TinkAeadExtensionsTest.kt)
-- [`TinkAeadTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/test/kotlin/io/bluetape4k/tink/aead/TinkAeadTest.kt)
-- [`TinkDeterministicAeadTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/test/kotlin/io/bluetape4k/tink/daead/TinkDeterministicAeadTest.kt)
-- [`TinkDigesterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/test/kotlin/io/bluetape4k/tink/digest/TinkDigesterTest.kt)
-- [`TinkEncryptorTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/test/kotlin/io/bluetape4k/tink/encrypt/TinkEncryptorTest.kt)
-- [`InMemoryVersionedDaeadKeysetStore`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/test/kotlin/io/bluetape4k/tink/keyset/InMemoryVersionedDaeadKeysetStore.kt)
+- [`SecureRandomSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/test/kotlin/io/bluetape4k/tink/SecureRandomSupportTest.kt)
+- [`TinkSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/test/kotlin/io/bluetape4k/tink/TinkSupportTest.kt)
+- [`TinkAeadExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/test/kotlin/io/bluetape4k/tink/aead/TinkAeadExtensionsTest.kt)
+- [`TinkAeadTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/test/kotlin/io/bluetape4k/tink/aead/TinkAeadTest.kt)
+- [`TinkDeterministicAeadTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/test/kotlin/io/bluetape4k/tink/daead/TinkDeterministicAeadTest.kt)
+- [`TinkDigesterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/test/kotlin/io/bluetape4k/tink/digest/TinkDigesterTest.kt)
+- [`TinkEncryptorTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/test/kotlin/io/bluetape4k/tink/encrypt/TinkEncryptorTest.kt)
+- [`InMemoryVersionedDaeadKeysetStore`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/test/kotlin/io/bluetape4k/tink/keyset/InMemoryVersionedDaeadKeysetStore.kt)
 
 ## 워크숍
 
@@ -115,17 +115,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/build.gradle.kts)
-- [`SecureRandomSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/main/kotlin/io/bluetape4k/tink/SecureRandomSupport.kt)
-- [`TinkSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/main/kotlin/io/bluetape4k/tink/TinkSupport.kt)
-- [`TinkAead`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/main/kotlin/io/bluetape4k/tink/aead/TinkAead.kt)
-- [`TinkAeadExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/main/kotlin/io/bluetape4k/tink/aead/TinkAeadExtensions.kt)
-- [`TinkAeads`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/main/kotlin/io/bluetape4k/tink/aead/TinkAeads.kt)
-- [`TinkDaeads`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/main/kotlin/io/bluetape4k/tink/daead/TinkDaeads.kt)
-- [`TinkDeterministicAead`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/main/kotlin/io/bluetape4k/tink/daead/TinkDeterministicAead.kt)
-- [`TinkDigester`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/main/kotlin/io/bluetape4k/tink/digest/TinkDigester.kt)
-- [`TinkDigesterExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/main/kotlin/io/bluetape4k/tink/digest/TinkDigesterExtensions.kt)
-- [`TinkDigesters`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/main/kotlin/io/bluetape4k/tink/digest/TinkDigesters.kt)
-- [`SecureRandomSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/test/kotlin/io/bluetape4k/tink/SecureRandomSupportTest.kt)
-- [`TinkSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/tink/src/test/kotlin/io/bluetape4k/tink/TinkSupportTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/build.gradle.kts)
+- [`SecureRandomSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/main/kotlin/io/bluetape4k/tink/SecureRandomSupport.kt)
+- [`TinkSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/main/kotlin/io/bluetape4k/tink/TinkSupport.kt)
+- [`TinkAead`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/main/kotlin/io/bluetape4k/tink/aead/TinkAead.kt)
+- [`TinkAeadExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/main/kotlin/io/bluetape4k/tink/aead/TinkAeadExtensions.kt)
+- [`TinkAeads`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/main/kotlin/io/bluetape4k/tink/aead/TinkAeads.kt)
+- [`TinkDaeads`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/main/kotlin/io/bluetape4k/tink/daead/TinkDaeads.kt)
+- [`TinkDeterministicAead`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/main/kotlin/io/bluetape4k/tink/daead/TinkDeterministicAead.kt)
+- [`TinkDigester`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/main/kotlin/io/bluetape4k/tink/digest/TinkDigester.kt)
+- [`TinkDigesterExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/main/kotlin/io/bluetape4k/tink/digest/TinkDigesterExtensions.kt)
+- [`TinkDigesters`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/main/kotlin/io/bluetape4k/tink/digest/TinkDigesters.kt)
+- [`SecureRandomSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/test/kotlin/io/bluetape4k/tink/SecureRandomSupportTest.kt)
+- [`TinkSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/tink/src/test/kotlin/io/bluetape4k/tink/TinkSupportTest.kt)

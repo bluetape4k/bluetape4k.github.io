@@ -1,6 +1,7 @@
 {
+  "schemaVersion": 2,
   "repository": "bluetape4k-projects",
-  "sourceCommit": "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6",
+  "sourceCommit": "dda876503926aa16302b4416e3f3a3e2bff26526",
   "modules": [
     {
       "artifact": "io.github.bluetape4k:bluetape4k-annotations",
@@ -23,7 +24,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-annotations/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-annotations/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-assertions",
@@ -46,7 +48,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-assertions/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-assertions/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-avro",
@@ -69,7 +72,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-avro/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-avro/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-bom",
@@ -87,7 +91,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-bom/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-bom/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-bucket4j",
@@ -110,7 +115,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-bucket4j/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-bucket4j/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-cache-core",
@@ -133,7 +139,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-cache-core/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-core/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-cache-hazelcast",
@@ -157,7 +164,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-cache-lettuce",
@@ -181,7 +189,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-cache-redisson",
@@ -205,7 +214,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-cassandra",
@@ -228,10 +238,77 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-cassandra/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cassandra/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-core",
+      "assets": [
+        "assets/core/bounded-collection-ordering.svg",
+        "assets/core/bounded-collection-ordering.png",
+        "assets/core/concurrent-reducer-capacity.svg",
+        "assets/core/concurrent-reducer-capacity.png",
+        "assets/core/shutdown-order.svg",
+        "assets/core/shutdown-order.png",
+        "assets/core/validation-boundary.svg",
+        "assets/core/validation-boundary.png"
+      ],
+      "chapters": [
+        {
+          "en": "en/modules/bluetape4k-core/validation.md",
+          "id": "validation",
+          "ko": "ko/modules/bluetape4k-core/validation.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/modules/bluetape4k-core/validation/",
+            "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-core/validation/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-core/bounded-collections.md",
+          "id": "bounded-collections",
+          "ko": "ko/modules/bluetape4k-core/bounded-collections.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/modules/bluetape4k-core/bounded-collections/",
+            "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-core/bounded-collections/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-core/encoding-data.md",
+          "id": "encoding-data",
+          "ko": "ko/modules/bluetape4k-core/encoding-data.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/modules/bluetape4k-core/encoding-data/",
+            "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-core/encoding-data/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-core/time-ranges.md",
+          "id": "time-ranges",
+          "ko": "ko/modules/bluetape4k-core/time-ranges.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/modules/bluetape4k-core/time-ranges/",
+            "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-core/time-ranges/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-core/concurrency-lifecycle.md",
+          "id": "concurrency-lifecycle",
+          "ko": "ko/modules/bluetape4k-core/concurrency-lifecycle.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/modules/bluetape4k-core/concurrency-lifecycle/",
+            "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-core/concurrency-lifecycle/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-core/recipes.md",
+          "id": "recipes",
+          "ko": "ko/modules/bluetape4k-core/recipes.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/modules/bluetape4k-core/recipes/",
+            "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-core/recipes/"
+          }
+        }
+      ],
       "en": "en/modules/bluetape4k-core.md",
       "gradlePath": ":bluetape4k-core",
       "group": "foundation",
@@ -255,6 +332,87 @@
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-coroutines",
+      "assets": [
+        "assets/coroutines/deferred-race-policy.svg",
+        "assets/coroutines/deferred-race-policy.png",
+        "assets/coroutines/module-foundation.svg",
+        "assets/coroutines/module-foundation.png",
+        "assets/coroutines/observability-boundaries.svg",
+        "assets/coroutines/observability-boundaries.png",
+        "assets/coroutines/ordered-parallel-flow.svg",
+        "assets/coroutines/ordered-parallel-flow.png",
+        "assets/coroutines/scope-lifecycle.svg",
+        "assets/coroutines/scope-lifecycle.png",
+        "assets/coroutines/structured-policies.svg",
+        "assets/coroutines/structured-policies.png",
+        "assets/coroutines/subject-contracts.svg",
+        "assets/coroutines/subject-contracts.png"
+      ],
+      "chapters": [
+        {
+          "en": "en/modules/bluetape4k-coroutines/lifecycle.md",
+          "id": "lifecycle",
+          "ko": "ko/modules/bluetape4k-coroutines/lifecycle.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/modules/bluetape4k-coroutines/lifecycle/",
+            "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-coroutines/lifecycle/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-coroutines/deferred.md",
+          "id": "deferred",
+          "ko": "ko/modules/bluetape4k-coroutines/deferred.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/modules/bluetape4k-coroutines/deferred/",
+            "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-coroutines/deferred/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-coroutines/flow.md",
+          "id": "flow",
+          "ko": "ko/modules/bluetape4k-coroutines/flow.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/modules/bluetape4k-coroutines/flow/",
+            "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-coroutines/flow/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-coroutines/subjects.md",
+          "id": "subjects",
+          "ko": "ko/modules/bluetape4k-coroutines/subjects.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/modules/bluetape4k-coroutines/subjects/",
+            "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-coroutines/subjects/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-coroutines/structured-concurrency.md",
+          "id": "structured-concurrency",
+          "ko": "ko/modules/bluetape4k-coroutines/structured-concurrency.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/modules/bluetape4k-coroutines/structured-concurrency/",
+            "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-coroutines/structured-concurrency/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-coroutines/operations.md",
+          "id": "operations",
+          "ko": "ko/modules/bluetape4k-coroutines/operations.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/modules/bluetape4k-coroutines/operations/",
+            "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-coroutines/operations/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-coroutines/recipes.md",
+          "id": "recipes",
+          "ko": "ko/modules/bluetape4k-coroutines/recipes.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/modules/bluetape4k-coroutines/recipes/",
+            "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-coroutines/recipes/"
+          }
+        }
+      ],
       "en": "en/modules/bluetape4k-coroutines.md",
       "gradlePath": ":bluetape4k-coroutines",
       "group": "foundation",
@@ -297,7 +455,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-csv/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-csv/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-elasticsearch",
@@ -320,7 +479,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-elasticsearch/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-elasticsearch/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": null,
@@ -341,7 +501,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-examples-coroutines-demo/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-examples-coroutines-demo/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": null,
@@ -364,7 +525,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-examples-jpa-blazepersistence-demo/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-examples-jpa-blazepersistence-demo/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": null,
@@ -387,7 +549,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-examples-jpa-querydsl-demo/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-examples-jpa-querydsl-demo/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": null,
@@ -408,7 +571,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-examples-redisson-demo/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-examples-redisson-demo/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": null,
@@ -429,7 +593,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-examples-virtualthreads-demo/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-examples-virtualthreads-demo/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-fastjson2",
@@ -452,7 +617,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-fastjson2/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-fastjson2/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-feign",
@@ -475,7 +641,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-feign/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-feign/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-geo",
@@ -499,7 +666,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-geo/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-geo/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-grpc",
@@ -522,7 +690,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-grpc/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-grpc/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-hibernate",
@@ -545,7 +714,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-hibernate-cache-lettuce",
@@ -568,7 +738,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate-cache-lettuce/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate-cache-lettuce/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-hibernate-reactive",
@@ -592,7 +763,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate-reactive/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate-reactive/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-http",
@@ -615,7 +787,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-http/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-http/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-idgenerators",
@@ -638,7 +811,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-idgenerators/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-idgenerators/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-io",
@@ -661,7 +835,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-io/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-io/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-jackson2",
@@ -685,7 +860,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-jackson2/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-jackson2/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-jackson3",
@@ -709,7 +885,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-jackson3/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-jackson3/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-javatimes",
@@ -732,7 +909,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-javatimes/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-javatimes/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-jdbc",
@@ -755,7 +933,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-jdbc/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-jdbc/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-json",
@@ -778,7 +957,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-json/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-json/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-junit5",
@@ -802,7 +982,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-junit5/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-junit5/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-jwt",
@@ -826,7 +1007,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-jwt/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-jwt/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-kafka",
@@ -849,7 +1031,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-kafka/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-kafka/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-kafka-logback",
@@ -872,7 +1055,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-kafka-logback/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-kafka-logback/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-kafka4",
@@ -895,7 +1079,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-kafka4/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-kafka4/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-ktor-core",
@@ -918,7 +1103,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-ktor-core/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-ktor-core/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-ktor-observability",
@@ -941,7 +1127,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-ktor-observability/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-ktor-observability/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-ktor-openapi",
@@ -964,7 +1151,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-ktor-openapi/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-ktor-openapi/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-ktor-resilience4j",
@@ -987,7 +1175,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-ktor-resilience4j/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-ktor-resilience4j/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-ktor-testing",
@@ -1010,7 +1199,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-ktor-testing/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-ktor-testing/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-lettuce",
@@ -1033,7 +1223,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-lettuce/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-lettuce/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-logging",
@@ -1056,7 +1247,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-logging/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-logging/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-math",
@@ -1079,7 +1271,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-math/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-math/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-measured",
@@ -1102,7 +1295,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-measured/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-measured/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-micrometer",
@@ -1125,7 +1319,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-micrometer/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-micrometer/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-mock-web-server",
@@ -1149,7 +1344,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-mock-web-server/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-mock-web-server/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-mock-webflux-server",
@@ -1173,7 +1369,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-mock-webflux-server/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-mock-webflux-server/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-money",
@@ -1196,7 +1393,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-money/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-money/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-mongodb",
@@ -1219,7 +1417,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-mongodb/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-mongodb/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-mutiny",
@@ -1242,7 +1441,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-mutiny/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-mutiny/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-nats",
@@ -1265,7 +1465,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-nats/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-nats/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-netty",
@@ -1288,7 +1489,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-netty/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-netty/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-okio",
@@ -1311,7 +1513,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-okio/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-okio/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-opentelemetry",
@@ -1334,7 +1537,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-opentelemetry/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-opentelemetry/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-probabilistic",
@@ -1356,7 +1560,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-probabilistic/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-probabilistic/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-protobuf",
@@ -1379,7 +1584,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-protobuf/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-protobuf/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-pulsar",
@@ -1402,7 +1608,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-pulsar/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-pulsar/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-r2dbc",
@@ -1426,7 +1633,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-redis",
@@ -1444,7 +1652,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-redis/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redis/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-redisson",
@@ -1467,7 +1676,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-redisson/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redisson/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-resilience4j",
@@ -1491,7 +1701,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-resilience4j/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-resilience4j/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-retrofit2",
@@ -1514,7 +1725,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-retrofit2/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-retrofit2/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-rule-engine",
@@ -1537,7 +1749,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-rule-engine/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-rule-engine/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-science",
@@ -1560,7 +1773,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-science/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-science/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-spring-boot-cassandra",
@@ -1583,7 +1797,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-spring-boot-cassandra-demo",
@@ -1604,7 +1819,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra-demo/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra-demo/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-spring-boot-core",
@@ -1627,7 +1843,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-spring-boot-hibernate-lettuce",
@@ -1651,7 +1868,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-hibernate-lettuce/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-hibernate-lettuce/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-spring-boot-hibernate-lettuce-demo",
@@ -1675,7 +1893,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-hibernate-lettuce-demo/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-hibernate-lettuce-demo/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-spring-boot-mongodb",
@@ -1699,7 +1918,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-spring-boot-r2dbc",
@@ -1722,7 +1942,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-r2dbc/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-r2dbc/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-spring-boot-redis",
@@ -1745,7 +1966,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-states",
@@ -1768,7 +1990,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-states/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-states/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-testcontainers",
@@ -1792,7 +2015,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-testcontainers/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-testcontainers/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-tink",
@@ -1815,7 +2039,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-tink/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-tink/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-vertx",
@@ -1838,7 +2063,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-vertx/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-vertx/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-virtualthread-api",
@@ -1861,7 +2087,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-virtualthread-api/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-virtualthread-api/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-virtualthread-jdk21",
@@ -1886,7 +2113,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-virtualthread-jdk21/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-virtualthread-jdk21/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-virtualthread-jdk25",
@@ -1911,7 +2139,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-virtualthread-jdk25/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-virtualthread-jdk25/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-workflow",
@@ -1934,7 +2163,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-workflow/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-workflow/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": null,
@@ -1957,7 +2187,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/idgenerator-ktor-demo/",
         "ko": "/ko/manual/bluetape4k-projects/modules/idgenerator-ktor-demo/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": null,
@@ -1981,7 +2212,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/idgenerator-spring-boot-demo/",
         "ko": "/ko/manual/bluetape4k-projects/modules/idgenerator-spring-boot-demo/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": null,
@@ -2004,7 +2236,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/observability-ktor-demo/",
         "ko": "/ko/manual/bluetape4k-projects/modules/observability-ktor-demo/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": null,
@@ -2028,7 +2261,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/observability-spring-boot-demo/",
         "ko": "/ko/manual/bluetape4k-projects/modules/observability-spring-boot-demo/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": null,
@@ -2046,7 +2280,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/protobuf-codec-benchmark/",
         "ko": "/ko/manual/bluetape4k-projects/modules/protobuf-codec-benchmark/"
-      }
+      },
+      "chapters": []
     },
     {
       "artifact": null,
@@ -2064,7 +2299,8 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/web-framework-benchmark/",
         "ko": "/ko/manual/bluetape4k-projects/modules/web-framework-benchmark/"
-      }
+      },
+      "chapters": []
     }
   ]
 }

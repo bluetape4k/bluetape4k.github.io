@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "data"
   kind: "library"
-  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
+  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
   sourcePath: "docs/manual/ko/modules/bluetape4k-hibernate-reactive.md"
   layer: "build"
 ---
@@ -40,20 +40,20 @@ Gradle project path는 `:bluetape4k-hibernate-reactive`, source directory는 `da
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`EntityManagerFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/mutiny/EntityManagerFactorySupport.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`EntityManagerFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/mutiny/EntityManagerFactorySupport.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`EntityManagerFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/mutiny/EntityManagerFactorySupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`SessionFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/mutiny/SessionFactorySupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`SessionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/mutiny/SessionSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`StatelessSessionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/mutiny/StatelessSessionSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`EntityManagerFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/stage/EntityManagerFactorySupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`SessionFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/stage/SessionFactorySupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`SessionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/stage/SessionSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`StatelessSessionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/stage/StatelessSessionSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`EntityManagerFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/mutiny/EntityManagerFactorySupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`SessionFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/mutiny/SessionFactorySupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`SessionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/mutiny/SessionSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`StatelessSessionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/mutiny/StatelessSessionSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`EntityManagerFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/stage/EntityManagerFactorySupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`SessionFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/stage/SessionFactorySupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`SessionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/stage/SessionSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`StatelessSessionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/stage/StatelessSessionSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -102,14 +102,14 @@ pool 포화, query latency, retry, transaction rollback, schema 호환성을 관
 
 대표 test anchor는 다음과 같습니다.
 
-- [`Author_`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/src/test/java/io/bluetape4k/hibernate/reactive/examples/model/Author_.java)
-- [`Book_`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/src/test/java/io/bluetape4k/hibernate/reactive/examples/model/Book_.java)
-- [`AbstractHibernateReactiveTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/src/test/kotlin/io/bluetape4k/hibernate/reactive/AbstractHibernateReactiveTest.kt)
-- [`MySQLLauncher`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/src/test/kotlin/io/bluetape4k/hibernate/reactive/MySQLLauncher.kt)
-- [`Author`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/src/test/kotlin/io/bluetape4k/hibernate/reactive/examples/model/Author.kt)
-- [`Book`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/src/test/kotlin/io/bluetape4k/hibernate/reactive/examples/model/Book.kt)
-- [`AbstractMutinyTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/src/test/kotlin/io/bluetape4k/hibernate/reactive/examples/mutiny/AbstractMutinyTest.kt)
-- [`MutinyExtrasTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/src/test/kotlin/io/bluetape4k/hibernate/reactive/examples/mutiny/MutinyExtrasTest.kt)
+- [`Author_`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/src/test/java/io/bluetape4k/hibernate/reactive/examples/model/Author_.java)
+- [`Book_`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/src/test/java/io/bluetape4k/hibernate/reactive/examples/model/Book_.java)
+- [`AbstractHibernateReactiveTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/src/test/kotlin/io/bluetape4k/hibernate/reactive/AbstractHibernateReactiveTest.kt)
+- [`MySQLLauncher`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/src/test/kotlin/io/bluetape4k/hibernate/reactive/MySQLLauncher.kt)
+- [`Author`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/src/test/kotlin/io/bluetape4k/hibernate/reactive/examples/model/Author.kt)
+- [`Book`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/src/test/kotlin/io/bluetape4k/hibernate/reactive/examples/model/Book.kt)
+- [`AbstractMutinyTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/src/test/kotlin/io/bluetape4k/hibernate/reactive/examples/mutiny/AbstractMutinyTest.kt)
+- [`MutinyExtrasTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/src/test/kotlin/io/bluetape4k/hibernate/reactive/examples/mutiny/MutinyExtrasTest.kt)
 
 ## 워크숍
 
@@ -121,17 +121,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/build.gradle.kts)
-- [`EntityManagerFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/mutiny/EntityManagerFactorySupport.kt)
-- [`SessionFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/mutiny/SessionFactorySupport.kt)
-- [`SessionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/mutiny/SessionSupport.kt)
-- [`StatelessSessionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/mutiny/StatelessSessionSupport.kt)
-- [`EntityManagerFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/stage/EntityManagerFactorySupport.kt)
-- [`SessionFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/stage/SessionFactorySupport.kt)
-- [`SessionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/stage/SessionSupport.kt)
-- [`StatelessSessionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/stage/StatelessSessionSupport.kt)
-- [`Author_`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/src/test/java/io/bluetape4k/hibernate/reactive/examples/model/Author_.java)
-- [`Book_`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/src/test/java/io/bluetape4k/hibernate/reactive/examples/model/Book_.java)
-- [`AbstractHibernateReactiveTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/src/test/kotlin/io/bluetape4k/hibernate/reactive/AbstractHibernateReactiveTest.kt)
-- [`MySQLLauncher`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/hibernate-reactive/src/test/kotlin/io/bluetape4k/hibernate/reactive/MySQLLauncher.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/build.gradle.kts)
+- [`EntityManagerFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/mutiny/EntityManagerFactorySupport.kt)
+- [`SessionFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/mutiny/SessionFactorySupport.kt)
+- [`SessionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/mutiny/SessionSupport.kt)
+- [`StatelessSessionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/mutiny/StatelessSessionSupport.kt)
+- [`EntityManagerFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/stage/EntityManagerFactorySupport.kt)
+- [`SessionFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/stage/SessionFactorySupport.kt)
+- [`SessionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/stage/SessionSupport.kt)
+- [`StatelessSessionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/src/main/kotlin/io/bluetape4k/hibernate/reactive/stage/StatelessSessionSupport.kt)
+- [`Author_`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/src/test/java/io/bluetape4k/hibernate/reactive/examples/model/Author_.java)
+- [`Book_`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/src/test/java/io/bluetape4k/hibernate/reactive/examples/model/Book_.java)
+- [`AbstractHibernateReactiveTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/src/test/kotlin/io/bluetape4k/hibernate/reactive/AbstractHibernateReactiveTest.kt)
+- [`MySQLLauncher`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate-reactive/src/test/kotlin/io/bluetape4k/hibernate/reactive/MySQLLauncher.kt)

@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "learning"
   kind: "example"
-  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
+  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
   sourcePath: "docs/manual/en/modules/bluetape4k-examples-virtualthreads-demo.md"
   layer: "learn"
 ---
@@ -84,14 +84,14 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`AbstractVirtualThreadTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/AbstractVirtualThreadTest.kt)
-- [`Example1_PlatformAndVirtualThread`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/part1/Example1_PlatformAndVirtualThread.kt)
-- [`Example2_PlatformAndVirtualThreadBuilder`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/part1/Example2_PlatformAndVirtualThreadBuilder.kt)
-- [`Example3_CreateStartedAndUnstartedVirtualThread`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/part1/Example3_CreateStartedAndUnstartedVirtualThread.kt)
-- [`Example4_VirtualThreadFactory`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/part1/Example4_VirtualThreadFactory.kt)
-- [`Example5_VirtualThreadPerTaskExecutor`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/part1/Example5_VirtualThreadPerTaskExecutor.kt)
-- [`Rule2RunBlockingSynchronousCode`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/part2/Rule2RunBlockingSynchronousCode.kt)
-- [`Rule3DoNotPooledVirtualThreads`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/part2/Rule3DoNotPooledVirtualThreads.kt)
+- [`AbstractVirtualThreadTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/AbstractVirtualThreadTest.kt)
+- [`Example1_PlatformAndVirtualThread`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/part1/Example1_PlatformAndVirtualThread.kt)
+- [`Example2_PlatformAndVirtualThreadBuilder`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/part1/Example2_PlatformAndVirtualThreadBuilder.kt)
+- [`Example3_CreateStartedAndUnstartedVirtualThread`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/part1/Example3_CreateStartedAndUnstartedVirtualThread.kt)
+- [`Example4_VirtualThreadFactory`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/part1/Example4_VirtualThreadFactory.kt)
+- [`Example5_VirtualThreadPerTaskExecutor`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/part1/Example5_VirtualThreadPerTaskExecutor.kt)
+- [`Rule2RunBlockingSynchronousCode`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/part2/Rule2RunBlockingSynchronousCode.kt)
+- [`Rule3DoNotPooledVirtualThreads`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/part2/Rule3DoNotPooledVirtualThreads.kt)
 
 ## Workshops
 
@@ -103,13 +103,13 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/virtualthreads-demo/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/virtualthreads-demo/build.gradle.kts)
-- [`AbstractVirtualThreadTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/AbstractVirtualThreadTest.kt)
-- [`Example1_PlatformAndVirtualThread`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/part1/Example1_PlatformAndVirtualThread.kt)
-- [`Example2_PlatformAndVirtualThreadBuilder`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/part1/Example2_PlatformAndVirtualThreadBuilder.kt)
-- [`Example3_CreateStartedAndUnstartedVirtualThread`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/part1/Example3_CreateStartedAndUnstartedVirtualThread.kt)
-- [`Example4_VirtualThreadFactory`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/part1/Example4_VirtualThreadFactory.kt)
-- [`Example5_VirtualThreadPerTaskExecutor`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/part1/Example5_VirtualThreadPerTaskExecutor.kt)
-- [`Rule2RunBlockingSynchronousCode`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/part2/Rule2RunBlockingSynchronousCode.kt)
-- [`Rule3DoNotPooledVirtualThreads`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/part2/Rule3DoNotPooledVirtualThreads.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/virtualthreads-demo/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/virtualthreads-demo/build.gradle.kts)
+- [`AbstractVirtualThreadTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/AbstractVirtualThreadTest.kt)
+- [`Example1_PlatformAndVirtualThread`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/part1/Example1_PlatformAndVirtualThread.kt)
+- [`Example2_PlatformAndVirtualThreadBuilder`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/part1/Example2_PlatformAndVirtualThreadBuilder.kt)
+- [`Example3_CreateStartedAndUnstartedVirtualThread`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/part1/Example3_CreateStartedAndUnstartedVirtualThread.kt)
+- [`Example4_VirtualThreadFactory`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/part1/Example4_VirtualThreadFactory.kt)
+- [`Example5_VirtualThreadPerTaskExecutor`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/part1/Example5_VirtualThreadPerTaskExecutor.kt)
+- [`Rule2RunBlockingSynchronousCode`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/part2/Rule2RunBlockingSynchronousCode.kt)
+- [`Rule3DoNotPooledVirtualThreads`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/virtualthreads-demo/src/test/kotlin/io/bluetape4k/examples/virtualthreads/part2/Rule3DoNotPooledVirtualThreads.kt)

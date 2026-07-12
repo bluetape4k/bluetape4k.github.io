@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "experiments"
   kind: "benchmark"
-  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
+  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
   sourcePath: "docs/manual/en/modules/web-framework-benchmark.md"
   layer: "apply"
 ---
@@ -87,6 +87,6 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/benchmark/web-framework-benchmark/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/benchmark/web-framework-benchmark/build.gradle.kts)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/benchmark/web-framework-benchmark/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/benchmark/web-framework-benchmark/build.gradle.kts)
 

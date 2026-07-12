@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "spring"
   kind: "library"
-  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
+  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
   sourcePath: "docs/manual/en/modules/bluetape4k-spring-boot-cassandra-demo.md"
   layer: "build"
 ---
@@ -93,14 +93,14 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`AbstractCassandraCoroutineTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/AbstractCassandraCoroutineTest.kt)
-- [`AbstractCassandraTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/AbstractCassandraTest.kt)
-- [`AbstractReactiveCassandraTestConfiguration`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/AbstractReactiveCassandraTestConfiguration.kt)
-- [`ReadmeCoroutineRepositoryContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/ReadmeCoroutineRepositoryContractTest.kt)
-- [`AuditedPerson`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/auditing/AuditedPerson.kt)
-- [`AuditedPersonRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/auditing/AuditedPersonRepository.kt)
-- [`AuditingTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/auditing/AuditingTest.kt)
-- [`AuditingTestConfiguration`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/auditing/AuditingTestConfiguration.kt)
+- [`AbstractCassandraCoroutineTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/AbstractCassandraCoroutineTest.kt)
+- [`AbstractCassandraTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/AbstractCassandraTest.kt)
+- [`AbstractReactiveCassandraTestConfiguration`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/AbstractReactiveCassandraTestConfiguration.kt)
+- [`ReadmeCoroutineRepositoryContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/ReadmeCoroutineRepositoryContractTest.kt)
+- [`AuditedPerson`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/auditing/AuditedPerson.kt)
+- [`AuditedPersonRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/auditing/AuditedPersonRepository.kt)
+- [`AuditingTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/auditing/AuditingTest.kt)
+- [`AuditingTestConfiguration`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/auditing/AuditingTestConfiguration.kt)
 
 ## Workshops
 
@@ -112,13 +112,13 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/spring-boot/cassandra-demo/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/spring-boot/cassandra-demo/build.gradle.kts)
-- [`AbstractCassandraCoroutineTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/AbstractCassandraCoroutineTest.kt)
-- [`AbstractCassandraTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/AbstractCassandraTest.kt)
-- [`AbstractReactiveCassandraTestConfiguration`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/AbstractReactiveCassandraTestConfiguration.kt)
-- [`ReadmeCoroutineRepositoryContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/ReadmeCoroutineRepositoryContractTest.kt)
-- [`AuditedPerson`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/auditing/AuditedPerson.kt)
-- [`AuditedPersonRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/auditing/AuditedPersonRepository.kt)
-- [`AuditingTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/auditing/AuditingTest.kt)
-- [`AuditingTestConfiguration`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/auditing/AuditingTestConfiguration.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/spring-boot/cassandra-demo/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/spring-boot/cassandra-demo/build.gradle.kts)
+- [`AbstractCassandraCoroutineTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/AbstractCassandraCoroutineTest.kt)
+- [`AbstractCassandraTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/AbstractCassandraTest.kt)
+- [`AbstractReactiveCassandraTestConfiguration`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/AbstractReactiveCassandraTestConfiguration.kt)
+- [`ReadmeCoroutineRepositoryContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/ReadmeCoroutineRepositoryContractTest.kt)
+- [`AuditedPerson`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/auditing/AuditedPerson.kt)
+- [`AuditedPersonRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/auditing/AuditedPersonRepository.kt)
+- [`AuditingTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/auditing/AuditingTest.kt)
+- [`AuditingTestConfiguration`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/spring-boot/cassandra-demo/src/test/kotlin/io/bluetape4k/examples/cassandra/auditing/AuditingTestConfiguration.kt)
