@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "infrastructure"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/en/modules/bluetape4k-lettuce.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ The first source-level concepts to inspect are `LettuceClients`, `LettuceConst`,
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`LettuceClients`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/LettuceClients.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`LettuceClients`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/LettuceClients.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`LettuceClients`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/LettuceClients.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`LettuceConst`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/LettuceConst.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`RedisCommandSupports`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/RedisCommandSupports.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`RedisFutureSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/RedisFutureSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`LettuceAtomicLong`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/atomic/LettuceAtomicLong.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`LettuceSuspendAtomicLong`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/atomic/LettuceSuspendAtomicLong.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`LettuceBinaryCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/codec/LettuceBinaryCodec.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`LettuceBinaryCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/codec/LettuceBinaryCodecs.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`LettuceIntCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/codec/LettuceIntCodec.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`LettuceJsonCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/codec/LettuceJsonCodec.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`LettuceClients`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/LettuceClients.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`LettuceConst`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/LettuceConst.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`RedisCommandSupports`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/RedisCommandSupports.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`RedisFutureSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/RedisFutureSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`LettuceAtomicLong`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/atomic/LettuceAtomicLong.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`LettuceSuspendAtomicLong`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/atomic/LettuceSuspendAtomicLong.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`LettuceBinaryCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/codec/LettuceBinaryCodec.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`LettuceBinaryCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/codec/LettuceBinaryCodecs.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`LettuceIntCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/codec/LettuceIntCodec.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`LettuceJsonCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/codec/LettuceJsonCodec.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -104,14 +104,14 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`AbstractLettuceTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/AbstractLettuceTest.kt)
-- [`AsyncCommandsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/AsyncCommandsTest.kt)
-- [`CoroutinesCommandTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/CoroutinesCommandTest.kt)
-- [`LettuceClientsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/LettuceClientsTest.kt)
-- [`LettuceTestUtils`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/LettuceTestUtils.kt)
-- [`RedisCommandSupportsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/RedisCommandSupportsTest.kt)
-- [`RedisFutureSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/RedisFutureSupportTest.kt)
-- [`LettuceAtomicLongTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/atomic/LettuceAtomicLongTest.kt)
+- [`AbstractLettuceTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/AbstractLettuceTest.kt)
+- [`AsyncCommandsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/AsyncCommandsTest.kt)
+- [`CoroutinesCommandTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/CoroutinesCommandTest.kt)
+- [`LettuceClientsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/LettuceClientsTest.kt)
+- [`LettuceTestUtils`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/LettuceTestUtils.kt)
+- [`RedisCommandSupportsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/RedisCommandSupportsTest.kt)
+- [`RedisFutureSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/RedisFutureSupportTest.kt)
+- [`LettuceAtomicLongTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/atomic/LettuceAtomicLongTest.kt)
 
 ## Workshops
 
@@ -123,17 +123,17 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/build.gradle.kts)
-- [`LettuceClients`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/LettuceClients.kt)
-- [`LettuceConst`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/LettuceConst.kt)
-- [`RedisCommandSupports`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/RedisCommandSupports.kt)
-- [`RedisFutureSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/RedisFutureSupport.kt)
-- [`LettuceAtomicLong`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/atomic/LettuceAtomicLong.kt)
-- [`LettuceSuspendAtomicLong`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/atomic/LettuceSuspendAtomicLong.kt)
-- [`LettuceBinaryCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/codec/LettuceBinaryCodec.kt)
-- [`LettuceBinaryCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/codec/LettuceBinaryCodecs.kt)
-- [`LettuceIntCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/codec/LettuceIntCodec.kt)
-- [`LettuceJsonCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/codec/LettuceJsonCodec.kt)
-- [`AbstractLettuceTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/AbstractLettuceTest.kt)
-- [`AsyncCommandsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/AsyncCommandsTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/build.gradle.kts)
+- [`LettuceClients`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/LettuceClients.kt)
+- [`LettuceConst`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/LettuceConst.kt)
+- [`RedisCommandSupports`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/RedisCommandSupports.kt)
+- [`RedisFutureSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/RedisFutureSupport.kt)
+- [`LettuceAtomicLong`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/atomic/LettuceAtomicLong.kt)
+- [`LettuceSuspendAtomicLong`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/atomic/LettuceSuspendAtomicLong.kt)
+- [`LettuceBinaryCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/codec/LettuceBinaryCodec.kt)
+- [`LettuceBinaryCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/codec/LettuceBinaryCodecs.kt)
+- [`LettuceIntCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/codec/LettuceIntCodec.kt)
+- [`LettuceJsonCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/codec/LettuceJsonCodec.kt)
+- [`AbstractLettuceTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/AbstractLettuceTest.kt)
+- [`AsyncCommandsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/AsyncCommandsTest.kt)

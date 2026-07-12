@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "utilities"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/en/modules/bluetape4k-mutiny.md"
   layer: "build"
 ---
@@ -40,15 +40,15 @@ The first source-level concepts to inspect are `CoroutineSupport`, `MultiSupport
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`CoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/mutiny/src/main/kotlin/io/bluetape4k/mutiny/CoroutineSupport.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`CoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/mutiny/src/main/kotlin/io/bluetape4k/mutiny/CoroutineSupport.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`CoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/mutiny/src/main/kotlin/io/bluetape4k/mutiny/CoroutineSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`MultiSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/mutiny/src/main/kotlin/io/bluetape4k/mutiny/MultiSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`UniSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/mutiny/src/main/kotlin/io/bluetape4k/mutiny/UniSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`CoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/mutiny/src/main/kotlin/io/bluetape4k/mutiny/CoroutineSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`MultiSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/mutiny/src/main/kotlin/io/bluetape4k/mutiny/MultiSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`UniSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/mutiny/src/main/kotlin/io/bluetape4k/mutiny/UniSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -90,9 +90,9 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`CoroutineSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/mutiny/src/test/kotlin/io/bluetape4k/mutiny/CoroutineSupportTest.kt)
-- [`MultiSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/mutiny/src/test/kotlin/io/bluetape4k/mutiny/MultiSupportTest.kt)
-- [`UniSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/mutiny/src/test/kotlin/io/bluetape4k/mutiny/UniSupportTest.kt)
+- [`CoroutineSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/mutiny/src/test/kotlin/io/bluetape4k/mutiny/CoroutineSupportTest.kt)
+- [`MultiSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/mutiny/src/test/kotlin/io/bluetape4k/mutiny/MultiSupportTest.kt)
+- [`UniSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/mutiny/src/test/kotlin/io/bluetape4k/mutiny/UniSupportTest.kt)
 
 ## Workshops
 
@@ -104,11 +104,11 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/mutiny/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/mutiny/build.gradle.kts)
-- [`CoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/mutiny/src/main/kotlin/io/bluetape4k/mutiny/CoroutineSupport.kt)
-- [`MultiSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/mutiny/src/main/kotlin/io/bluetape4k/mutiny/MultiSupport.kt)
-- [`UniSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/mutiny/src/main/kotlin/io/bluetape4k/mutiny/UniSupport.kt)
-- [`CoroutineSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/mutiny/src/test/kotlin/io/bluetape4k/mutiny/CoroutineSupportTest.kt)
-- [`MultiSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/mutiny/src/test/kotlin/io/bluetape4k/mutiny/MultiSupportTest.kt)
-- [`UniSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/mutiny/src/test/kotlin/io/bluetape4k/mutiny/UniSupportTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/mutiny/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/mutiny/build.gradle.kts)
+- [`CoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/mutiny/src/main/kotlin/io/bluetape4k/mutiny/CoroutineSupport.kt)
+- [`MultiSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/mutiny/src/main/kotlin/io/bluetape4k/mutiny/MultiSupport.kt)
+- [`UniSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/mutiny/src/main/kotlin/io/bluetape4k/mutiny/UniSupport.kt)
+- [`CoroutineSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/mutiny/src/test/kotlin/io/bluetape4k/mutiny/CoroutineSupportTest.kt)
+- [`MultiSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/mutiny/src/test/kotlin/io/bluetape4k/mutiny/MultiSupportTest.kt)
+- [`UniSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/mutiny/src/test/kotlin/io/bluetape4k/mutiny/UniSupportTest.kt)

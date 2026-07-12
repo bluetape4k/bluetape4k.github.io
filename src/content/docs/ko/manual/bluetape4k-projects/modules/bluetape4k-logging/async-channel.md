@@ -8,7 +8,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-logging/async-channel.md"
   layer: "build"
   chapterId: "async-channel"
@@ -62,7 +62,7 @@ collector는 개별 log emission exception을 catch하고 error log를 시도합
 
 ## Source와 tests
 
-- [`KLoggingChannel.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/logging/src/main/kotlin/io/bluetape4k/logging/coroutines/KLoggingChannel.kt)
-- [`KLoggingChannelTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/logging/src/test/kotlin/io/bluetape4k/logging/coroutines/KLoggingChannelTest.kt)
+- [`KLoggingChannel.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/logging/src/main/kotlin/io/bluetape4k/logging/coroutines/KLoggingChannel.kt)
+- [`KLoggingChannelTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/logging/src/test/kotlin/io/bluetape4k/logging/coroutines/KLoggingChannelTest.kt)
 
 설정과 장애 진단은 [Operations & recipes](./operations-recipes.md)에서 마무리합니다.

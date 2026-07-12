@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "utilities"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-workflow.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ Gradle project path는 `:bluetape4k-workflow`, source directory는 `utils/workfl
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`ErrorStrategy`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/ErrorStrategy.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`ErrorStrategy`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/ErrorStrategy.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`ErrorStrategy`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/ErrorStrategy.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`NamedSuspendWork`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/NamedSuspendWork.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`NamedWork`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/NamedWork.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`ParallelPolicy`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/ParallelPolicy.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`RetryPolicy`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/RetryPolicy.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`SuspendWork`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/SuspendWork.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`SuspendWorkFlow`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/SuspendWorkFlow.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Work`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/Work.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`WorkAdapters`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/WorkAdapters.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`WorkContext`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/WorkContext.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ErrorStrategy`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/ErrorStrategy.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`NamedSuspendWork`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/NamedSuspendWork.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`NamedWork`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/NamedWork.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ParallelPolicy`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/ParallelPolicy.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`RetryPolicy`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/RetryPolicy.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`SuspendWork`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/SuspendWork.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`SuspendWorkFlow`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/SuspendWorkFlow.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Work`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/Work.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`WorkAdapters`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/WorkAdapters.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`WorkContext`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/WorkContext.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -97,14 +97,14 @@ hot path를 측정하고 입력 크기를 제한하며 utility를 호출하는 a
 
 대표 test anchor는 다음과 같습니다.
 
-- [`AbstractWorkflowTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/api/AbstractWorkflowTest.kt)
-- [`WorkAdapterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/api/WorkAdapterTest.kt)
-- [`WorkContextTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/api/WorkContextTest.kt)
-- [`WorkReportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/api/WorkReportTest.kt)
-- [`ConditionalWorkFlowTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/core/ConditionalWorkFlowTest.kt)
-- [`ParallelWorkFlowTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/core/ParallelWorkFlowTest.kt)
-- [`RepeatWorkFlowTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/core/RepeatWorkFlowTest.kt)
-- [`RetryWorkFlowTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/core/RetryWorkFlowTest.kt)
+- [`AbstractWorkflowTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/api/AbstractWorkflowTest.kt)
+- [`WorkAdapterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/api/WorkAdapterTest.kt)
+- [`WorkContextTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/api/WorkContextTest.kt)
+- [`WorkReportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/api/WorkReportTest.kt)
+- [`ConditionalWorkFlowTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/core/ConditionalWorkFlowTest.kt)
+- [`ParallelWorkFlowTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/core/ParallelWorkFlowTest.kt)
+- [`RepeatWorkFlowTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/core/RepeatWorkFlowTest.kt)
+- [`RetryWorkFlowTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/core/RetryWorkFlowTest.kt)
 
 ## 워크숍
 
@@ -116,17 +116,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/build.gradle.kts)
-- [`ErrorStrategy`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/ErrorStrategy.kt)
-- [`NamedSuspendWork`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/NamedSuspendWork.kt)
-- [`NamedWork`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/NamedWork.kt)
-- [`ParallelPolicy`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/ParallelPolicy.kt)
-- [`RetryPolicy`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/RetryPolicy.kt)
-- [`SuspendWork`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/SuspendWork.kt)
-- [`SuspendWorkFlow`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/SuspendWorkFlow.kt)
-- [`Work`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/Work.kt)
-- [`WorkAdapters`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/WorkAdapters.kt)
-- [`WorkContext`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/WorkContext.kt)
-- [`AbstractWorkflowTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/api/AbstractWorkflowTest.kt)
-- [`WorkAdapterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/api/WorkAdapterTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/build.gradle.kts)
+- [`ErrorStrategy`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/ErrorStrategy.kt)
+- [`NamedSuspendWork`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/NamedSuspendWork.kt)
+- [`NamedWork`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/NamedWork.kt)
+- [`ParallelPolicy`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/ParallelPolicy.kt)
+- [`RetryPolicy`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/RetryPolicy.kt)
+- [`SuspendWork`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/SuspendWork.kt)
+- [`SuspendWorkFlow`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/SuspendWorkFlow.kt)
+- [`Work`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/Work.kt)
+- [`WorkAdapters`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/WorkAdapters.kt)
+- [`WorkContext`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/main/kotlin/io/bluetape4k/workflow/api/WorkContext.kt)
+- [`AbstractWorkflowTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/api/AbstractWorkflowTest.kt)
+- [`WorkAdapterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/workflow/src/test/kotlin/io/bluetape4k/workflow/api/WorkAdapterTest.kt)

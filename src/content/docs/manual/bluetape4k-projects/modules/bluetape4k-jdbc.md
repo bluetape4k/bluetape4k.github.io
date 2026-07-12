@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "data"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/en/modules/bluetape4k-jdbc.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ The first source-level concepts to inspect are `JdbcDrivers`, `RefreshingJdbcPas
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`JdbcDrivers`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/JdbcDrivers.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`JdbcDrivers`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/JdbcDrivers.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`JdbcDrivers`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/JdbcDrivers.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`RefreshingJdbcPasswordDataSource`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/datasource/RefreshingJdbcPasswordDataSource.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`HikariSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/hikari/HikariSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`ArgumentSetter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/sql/ArgumentSetter.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`ConnectionExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/sql/ConnectionExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`DataSourceExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/sql/DataSourceExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`DataSourceTransactionExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/sql/DataSourceTransactionExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`GetColumnToken`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/sql/GetColumnToken.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`PrepareStatementSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/sql/PrepareStatementSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`PreparedStatementArgumentSetter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/sql/PreparedStatementArgumentSetter.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`JdbcDrivers`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/JdbcDrivers.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`RefreshingJdbcPasswordDataSource`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/datasource/RefreshingJdbcPasswordDataSource.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`HikariSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/hikari/HikariSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ArgumentSetter`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/sql/ArgumentSetter.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ConnectionExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/sql/ConnectionExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`DataSourceExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/sql/DataSourceExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`DataSourceTransactionExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/sql/DataSourceTransactionExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`GetColumnToken`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/sql/GetColumnToken.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`PrepareStatementSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/sql/PrepareStatementSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`PreparedStatementArgumentSetter`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/sql/PreparedStatementArgumentSetter.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -98,14 +98,14 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`AbstractJdbcTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/test/kotlin/io/bluetape4k/jdbc/AbstractJdbcTest.kt)
-- [`JdbcDriversTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/test/kotlin/io/bluetape4k/jdbc/JdbcDriversTest.kt)
-- [`RefreshingJdbcPasswordDataSourceTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/test/kotlin/io/bluetape4k/jdbc/datasource/RefreshingJdbcPasswordDataSourceTest.kt)
-- [`HikariSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/test/kotlin/io/bluetape4k/jdbc/hikari/HikariSupportTest.kt)
-- [`Actor`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/test/kotlin/io/bluetape4k/jdbc/model/Actor.kt)
-- [`TestBean`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/test/kotlin/io/bluetape4k/jdbc/model/TestBean.kt)
-- [`AbstractJdbcSqlTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/test/kotlin/io/bluetape4k/jdbc/sql/AbstractJdbcSqlTest.kt)
-- [`ConnectionExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/test/kotlin/io/bluetape4k/jdbc/sql/ConnectionExtensionsTest.kt)
+- [`AbstractJdbcTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/test/kotlin/io/bluetape4k/jdbc/AbstractJdbcTest.kt)
+- [`JdbcDriversTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/test/kotlin/io/bluetape4k/jdbc/JdbcDriversTest.kt)
+- [`RefreshingJdbcPasswordDataSourceTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/test/kotlin/io/bluetape4k/jdbc/datasource/RefreshingJdbcPasswordDataSourceTest.kt)
+- [`HikariSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/test/kotlin/io/bluetape4k/jdbc/hikari/HikariSupportTest.kt)
+- [`Actor`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/test/kotlin/io/bluetape4k/jdbc/model/Actor.kt)
+- [`TestBean`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/test/kotlin/io/bluetape4k/jdbc/model/TestBean.kt)
+- [`AbstractJdbcSqlTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/test/kotlin/io/bluetape4k/jdbc/sql/AbstractJdbcSqlTest.kt)
+- [`ConnectionExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/test/kotlin/io/bluetape4k/jdbc/sql/ConnectionExtensionsTest.kt)
 
 ## Workshops
 
@@ -117,17 +117,17 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/build.gradle.kts)
-- [`JdbcDrivers`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/JdbcDrivers.kt)
-- [`RefreshingJdbcPasswordDataSource`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/datasource/RefreshingJdbcPasswordDataSource.kt)
-- [`HikariSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/hikari/HikariSupport.kt)
-- [`ArgumentSetter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/sql/ArgumentSetter.kt)
-- [`ConnectionExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/sql/ConnectionExtensions.kt)
-- [`DataSourceExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/sql/DataSourceExtensions.kt)
-- [`DataSourceTransactionExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/sql/DataSourceTransactionExtensions.kt)
-- [`GetColumnToken`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/sql/GetColumnToken.kt)
-- [`PrepareStatementSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/sql/PrepareStatementSupport.kt)
-- [`PreparedStatementArgumentSetter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/sql/PreparedStatementArgumentSetter.kt)
-- [`AbstractJdbcTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/test/kotlin/io/bluetape4k/jdbc/AbstractJdbcTest.kt)
-- [`JdbcDriversTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/jdbc/src/test/kotlin/io/bluetape4k/jdbc/JdbcDriversTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/build.gradle.kts)
+- [`JdbcDrivers`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/JdbcDrivers.kt)
+- [`RefreshingJdbcPasswordDataSource`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/datasource/RefreshingJdbcPasswordDataSource.kt)
+- [`HikariSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/hikari/HikariSupport.kt)
+- [`ArgumentSetter`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/sql/ArgumentSetter.kt)
+- [`ConnectionExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/sql/ConnectionExtensions.kt)
+- [`DataSourceExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/sql/DataSourceExtensions.kt)
+- [`DataSourceTransactionExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/sql/DataSourceTransactionExtensions.kt)
+- [`GetColumnToken`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/sql/GetColumnToken.kt)
+- [`PrepareStatementSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/sql/PrepareStatementSupport.kt)
+- [`PreparedStatementArgumentSetter`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/main/kotlin/io/bluetape4k/jdbc/sql/PreparedStatementArgumentSetter.kt)
+- [`AbstractJdbcTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/test/kotlin/io/bluetape4k/jdbc/AbstractJdbcTest.kt)
+- [`JdbcDriversTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/jdbc/src/test/kotlin/io/bluetape4k/jdbc/JdbcDriversTest.kt)

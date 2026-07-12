@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "utilities"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/en/modules/bluetape4k-states.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ The first source-level concepts to inspect are `BaseStateMachine`, `StateMachine
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`BaseStateMachine`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/main/kotlin/io/bluetape4k/states/api/BaseStateMachine.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`BaseStateMachine`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/main/kotlin/io/bluetape4k/states/api/BaseStateMachine.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`BaseStateMachine`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/main/kotlin/io/bluetape4k/states/api/BaseStateMachine.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`StateMachine`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/main/kotlin/io/bluetape4k/states/api/StateMachine.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`StateMachineException`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/main/kotlin/io/bluetape4k/states/api/StateMachineException.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`SuspendStateMachineInterface`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/main/kotlin/io/bluetape4k/states/api/SuspendStateMachineInterface.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`TransitionResult`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/main/kotlin/io/bluetape4k/states/api/TransitionResult.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`DefaultStateMachine`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/main/kotlin/io/bluetape4k/states/core/DefaultStateMachine.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`ParentTransitionKey`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/main/kotlin/io/bluetape4k/states/core/ParentTransitionKey.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`StateMachineDsl`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/main/kotlin/io/bluetape4k/states/core/StateMachineDsl.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`TransitionKey`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/main/kotlin/io/bluetape4k/states/core/TransitionKey.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`TransitionRegistry`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/main/kotlin/io/bluetape4k/states/core/TransitionRegistry.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`BaseStateMachine`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/main/kotlin/io/bluetape4k/states/api/BaseStateMachine.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`StateMachine`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/main/kotlin/io/bluetape4k/states/api/StateMachine.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`StateMachineException`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/main/kotlin/io/bluetape4k/states/api/StateMachineException.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`SuspendStateMachineInterface`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/main/kotlin/io/bluetape4k/states/api/SuspendStateMachineInterface.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`TransitionResult`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/main/kotlin/io/bluetape4k/states/api/TransitionResult.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`DefaultStateMachine`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/main/kotlin/io/bluetape4k/states/core/DefaultStateMachine.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ParentTransitionKey`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/main/kotlin/io/bluetape4k/states/core/ParentTransitionKey.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`StateMachineDsl`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/main/kotlin/io/bluetape4k/states/core/StateMachineDsl.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`TransitionKey`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/main/kotlin/io/bluetape4k/states/core/TransitionKey.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`TransitionRegistry`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/main/kotlin/io/bluetape4k/states/core/TransitionRegistry.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -95,14 +95,14 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`DefaultStateMachineTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/test/kotlin/io/bluetape4k/states/core/DefaultStateMachineTest.kt)
-- [`GuardedTransitionTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/test/kotlin/io/bluetape4k/states/core/GuardedTransitionTest.kt)
-- [`NestedStateMachineDslTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/test/kotlin/io/bluetape4k/states/core/NestedStateMachineDslTest.kt)
-- [`StateMachineDslTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/test/kotlin/io/bluetape4k/states/core/StateMachineDslTest.kt)
-- [`SuspendStateMachineTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/test/kotlin/io/bluetape4k/states/coroutines/SuspendStateMachineTest.kt)
-- [`AppointmentExampleTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/test/kotlin/io/bluetape4k/states/examples/AppointmentExampleTest.kt)
-- [`OrderExampleTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/test/kotlin/io/bluetape4k/states/examples/OrderExampleTest.kt)
-- [`TurnstileExampleTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/test/kotlin/io/bluetape4k/states/examples/TurnstileExampleTest.kt)
+- [`DefaultStateMachineTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/test/kotlin/io/bluetape4k/states/core/DefaultStateMachineTest.kt)
+- [`GuardedTransitionTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/test/kotlin/io/bluetape4k/states/core/GuardedTransitionTest.kt)
+- [`NestedStateMachineDslTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/test/kotlin/io/bluetape4k/states/core/NestedStateMachineDslTest.kt)
+- [`StateMachineDslTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/test/kotlin/io/bluetape4k/states/core/StateMachineDslTest.kt)
+- [`SuspendStateMachineTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/test/kotlin/io/bluetape4k/states/coroutines/SuspendStateMachineTest.kt)
+- [`AppointmentExampleTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/test/kotlin/io/bluetape4k/states/examples/AppointmentExampleTest.kt)
+- [`OrderExampleTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/test/kotlin/io/bluetape4k/states/examples/OrderExampleTest.kt)
+- [`TurnstileExampleTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/test/kotlin/io/bluetape4k/states/examples/TurnstileExampleTest.kt)
 
 ## Workshops
 
@@ -114,17 +114,17 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/build.gradle.kts)
-- [`BaseStateMachine`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/main/kotlin/io/bluetape4k/states/api/BaseStateMachine.kt)
-- [`StateMachine`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/main/kotlin/io/bluetape4k/states/api/StateMachine.kt)
-- [`StateMachineException`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/main/kotlin/io/bluetape4k/states/api/StateMachineException.kt)
-- [`SuspendStateMachineInterface`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/main/kotlin/io/bluetape4k/states/api/SuspendStateMachineInterface.kt)
-- [`TransitionResult`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/main/kotlin/io/bluetape4k/states/api/TransitionResult.kt)
-- [`DefaultStateMachine`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/main/kotlin/io/bluetape4k/states/core/DefaultStateMachine.kt)
-- [`ParentTransitionKey`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/main/kotlin/io/bluetape4k/states/core/ParentTransitionKey.kt)
-- [`StateMachineDsl`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/main/kotlin/io/bluetape4k/states/core/StateMachineDsl.kt)
-- [`TransitionKey`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/main/kotlin/io/bluetape4k/states/core/TransitionKey.kt)
-- [`TransitionRegistry`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/main/kotlin/io/bluetape4k/states/core/TransitionRegistry.kt)
-- [`DefaultStateMachineTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/test/kotlin/io/bluetape4k/states/core/DefaultStateMachineTest.kt)
-- [`GuardedTransitionTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/states/src/test/kotlin/io/bluetape4k/states/core/GuardedTransitionTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/build.gradle.kts)
+- [`BaseStateMachine`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/main/kotlin/io/bluetape4k/states/api/BaseStateMachine.kt)
+- [`StateMachine`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/main/kotlin/io/bluetape4k/states/api/StateMachine.kt)
+- [`StateMachineException`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/main/kotlin/io/bluetape4k/states/api/StateMachineException.kt)
+- [`SuspendStateMachineInterface`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/main/kotlin/io/bluetape4k/states/api/SuspendStateMachineInterface.kt)
+- [`TransitionResult`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/main/kotlin/io/bluetape4k/states/api/TransitionResult.kt)
+- [`DefaultStateMachine`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/main/kotlin/io/bluetape4k/states/core/DefaultStateMachine.kt)
+- [`ParentTransitionKey`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/main/kotlin/io/bluetape4k/states/core/ParentTransitionKey.kt)
+- [`StateMachineDsl`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/main/kotlin/io/bluetape4k/states/core/StateMachineDsl.kt)
+- [`TransitionKey`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/main/kotlin/io/bluetape4k/states/core/TransitionKey.kt)
+- [`TransitionRegistry`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/main/kotlin/io/bluetape4k/states/core/TransitionRegistry.kt)
+- [`DefaultStateMachineTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/test/kotlin/io/bluetape4k/states/core/DefaultStateMachineTest.kt)
+- [`GuardedTransitionTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/states/src/test/kotlin/io/bluetape4k/states/core/GuardedTransitionTest.kt)

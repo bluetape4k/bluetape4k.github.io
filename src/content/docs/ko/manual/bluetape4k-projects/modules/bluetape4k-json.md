@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-json.md"
   layer: "build"
 ---
@@ -40,14 +40,14 @@ Gradle project path는 `:bluetape4k-json`, source directory는 `io/json`입니�
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`JsonSerializationException`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/json/src/main/kotlin/io/bluetape4k/json/JsonSerializationException.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`JsonSerializationException`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/json/src/main/kotlin/io/bluetape4k/json/JsonSerializationException.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`JsonSerializationException`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/json/src/main/kotlin/io/bluetape4k/json/JsonSerializationException.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`JsonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/json/src/main/kotlin/io/bluetape4k/json/JsonSerializer.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`JsonSerializationException`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/json/src/main/kotlin/io/bluetape4k/json/JsonSerializationException.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`JsonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/json/src/main/kotlin/io/bluetape4k/json/JsonSerializer.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -86,8 +86,8 @@ payload 크기, allocation, latency, malformed input 비율, resource close, pro
 
 대표 test anchor는 다음과 같습니다.
 
-- [`JsonSerializationExceptionTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/json/src/test/kotlin/io/bluetape4k/json/JsonSerializationExceptionTest.kt)
-- [`JsonSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/json/src/test/kotlin/io/bluetape4k/json/JsonSerializerTest.kt)
+- [`JsonSerializationExceptionTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/json/src/test/kotlin/io/bluetape4k/json/JsonSerializationExceptionTest.kt)
+- [`JsonSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/json/src/test/kotlin/io/bluetape4k/json/JsonSerializerTest.kt)
 
 ## 워크숍
 
@@ -99,9 +99,9 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/json/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/json/build.gradle.kts)
-- [`JsonSerializationException`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/json/src/main/kotlin/io/bluetape4k/json/JsonSerializationException.kt)
-- [`JsonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/json/src/main/kotlin/io/bluetape4k/json/JsonSerializer.kt)
-- [`JsonSerializationExceptionTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/json/src/test/kotlin/io/bluetape4k/json/JsonSerializationExceptionTest.kt)
-- [`JsonSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/json/src/test/kotlin/io/bluetape4k/json/JsonSerializerTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/json/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/json/build.gradle.kts)
+- [`JsonSerializationException`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/json/src/main/kotlin/io/bluetape4k/json/JsonSerializationException.kt)
+- [`JsonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/json/src/main/kotlin/io/bluetape4k/json/JsonSerializer.kt)
+- [`JsonSerializationExceptionTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/json/src/test/kotlin/io/bluetape4k/json/JsonSerializationExceptionTest.kt)
+- [`JsonSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/json/src/test/kotlin/io/bluetape4k/json/JsonSerializerTest.kt)

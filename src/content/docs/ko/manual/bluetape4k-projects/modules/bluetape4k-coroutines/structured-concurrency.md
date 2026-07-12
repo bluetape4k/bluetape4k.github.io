@@ -8,7 +8,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-coroutines/structured-concurrency.md"
   layer: "build"
   chapterId: "structured-concurrency"
@@ -87,8 +87,8 @@ Supervision은 실패 은폐가 아닙니다. API response에서 실패 widget�
 
 ## Source와 representative tests
 
-- [`StructuredConcurrency.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/StructuredConcurrency.kt)
-- [`StructuredConcurrencyTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/coroutines/src/test/kotlin/io/bluetape4k/coroutines/StructuredConcurrencyTest.kt)
+- [`StructuredConcurrency.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/StructuredConcurrency.kt)
+- [`StructuredConcurrencyTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/coroutines/src/test/kotlin/io/bluetape4k/coroutines/StructuredConcurrencyTest.kt)
 - Core virtual-thread scope 구현은 `bluetape4k-core`의 concurrency package가 제공합니다.
 
 선택한 정책을 production에서 관찰하고 종료하는 방법은 [운영과 관측 가능성](./operations.md)에서 다룹니다.

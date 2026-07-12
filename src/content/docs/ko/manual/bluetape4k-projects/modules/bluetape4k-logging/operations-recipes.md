@@ -8,7 +8,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-logging/operations-recipes.md"
   layer: "build"
   chapterId: "operations-recipes"
@@ -70,8 +70,8 @@ Channel test는 capturing appender로 level/order/prefix/error를 확인하고 `
 
 ## Source와 이어 읽기
 
-- [전체 logging 테스트](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/logging/src/test/kotlin/io/bluetape4k/logging)
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/logging/README.ko.md)
+- [전체 logging 테스트](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/logging/src/test/kotlin/io/bluetape4k/logging)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/logging/README.ko.md)
 - [Coroutine MDC](./coroutine-mdc.md)
 - [Async channel](./async-channel.md)
 

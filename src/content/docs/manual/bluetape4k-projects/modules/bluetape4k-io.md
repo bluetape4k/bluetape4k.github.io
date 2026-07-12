@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/en/modules/bluetape4k-io.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ The first source-level concepts to inspect are `BOMSupport`, `ByteBufferExtensio
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`BOMSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/main/kotlin/io/bluetape4k/io/BOMSupport.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`BOMSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/main/kotlin/io/bluetape4k/io/BOMSupport.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`BOMSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/main/kotlin/io/bluetape4k/io/BOMSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`ByteBufferExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/main/kotlin/io/bluetape4k/io/ByteBufferExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`ByteBufferInputStream`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/main/kotlin/io/bluetape4k/io/ByteBufferInputStream.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`ByteBufferOutputStream`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/main/kotlin/io/bluetape4k/io/ByteBufferOutputStream.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`FileCoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/main/kotlin/io/bluetape4k/io/FileCoroutineSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`FileSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/main/kotlin/io/bluetape4k/io/FileSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`FileSupportResult`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/main/kotlin/io/bluetape4k/io/FileSupportResult.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`FlushableSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/main/kotlin/io/bluetape4k/io/FlushableSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`HexDumpSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/main/kotlin/io/bluetape4k/io/HexDumpSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`InputStreamSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/main/kotlin/io/bluetape4k/io/InputStreamSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`BOMSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/main/kotlin/io/bluetape4k/io/BOMSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ByteBufferExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/main/kotlin/io/bluetape4k/io/ByteBufferExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ByteBufferInputStream`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/main/kotlin/io/bluetape4k/io/ByteBufferInputStream.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ByteBufferOutputStream`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/main/kotlin/io/bluetape4k/io/ByteBufferOutputStream.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`FileCoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/main/kotlin/io/bluetape4k/io/FileCoroutineSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`FileSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/main/kotlin/io/bluetape4k/io/FileSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`FileSupportResult`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/main/kotlin/io/bluetape4k/io/FileSupportResult.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`FlushableSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/main/kotlin/io/bluetape4k/io/FlushableSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`HexDumpSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/main/kotlin/io/bluetape4k/io/HexDumpSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`InputStreamSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/main/kotlin/io/bluetape4k/io/InputStreamSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -104,14 +104,14 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`AbstractIOTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/test/kotlin/io/bluetape4k/io/AbstractIOTest.kt)
-- [`BOMSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/test/kotlin/io/bluetape4k/io/BOMSupportTest.kt)
-- [`ByteBufferExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/test/kotlin/io/bluetape4k/io/ByteBufferExtensionsTest.kt)
-- [`ByteBufferStreamTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/test/kotlin/io/bluetape4k/io/ByteBufferStreamTest.kt)
-- [`FileCoroutinesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/test/kotlin/io/bluetape4k/io/FileCoroutinesTest.kt)
-- [`FileSupportResultTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/test/kotlin/io/bluetape4k/io/FileSupportResultTest.kt)
-- [`FileSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/test/kotlin/io/bluetape4k/io/FileSupportTest.kt)
-- [`HexDumpSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/test/kotlin/io/bluetape4k/io/HexDumpSupportTest.kt)
+- [`AbstractIOTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/test/kotlin/io/bluetape4k/io/AbstractIOTest.kt)
+- [`BOMSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/test/kotlin/io/bluetape4k/io/BOMSupportTest.kt)
+- [`ByteBufferExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/test/kotlin/io/bluetape4k/io/ByteBufferExtensionsTest.kt)
+- [`ByteBufferStreamTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/test/kotlin/io/bluetape4k/io/ByteBufferStreamTest.kt)
+- [`FileCoroutinesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/test/kotlin/io/bluetape4k/io/FileCoroutinesTest.kt)
+- [`FileSupportResultTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/test/kotlin/io/bluetape4k/io/FileSupportResultTest.kt)
+- [`FileSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/test/kotlin/io/bluetape4k/io/FileSupportTest.kt)
+- [`HexDumpSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/test/kotlin/io/bluetape4k/io/HexDumpSupportTest.kt)
 
 ## Workshops
 
@@ -123,17 +123,17 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/build.gradle.kts)
-- [`BOMSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/main/kotlin/io/bluetape4k/io/BOMSupport.kt)
-- [`ByteBufferExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/main/kotlin/io/bluetape4k/io/ByteBufferExtensions.kt)
-- [`ByteBufferInputStream`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/main/kotlin/io/bluetape4k/io/ByteBufferInputStream.kt)
-- [`ByteBufferOutputStream`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/main/kotlin/io/bluetape4k/io/ByteBufferOutputStream.kt)
-- [`FileCoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/main/kotlin/io/bluetape4k/io/FileCoroutineSupport.kt)
-- [`FileSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/main/kotlin/io/bluetape4k/io/FileSupport.kt)
-- [`FileSupportResult`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/main/kotlin/io/bluetape4k/io/FileSupportResult.kt)
-- [`FlushableSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/main/kotlin/io/bluetape4k/io/FlushableSupport.kt)
-- [`HexDumpSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/main/kotlin/io/bluetape4k/io/HexDumpSupport.kt)
-- [`InputStreamSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/main/kotlin/io/bluetape4k/io/InputStreamSupport.kt)
-- [`AbstractIOTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/test/kotlin/io/bluetape4k/io/AbstractIOTest.kt)
-- [`BOMSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/io/src/test/kotlin/io/bluetape4k/io/BOMSupportTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/build.gradle.kts)
+- [`BOMSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/main/kotlin/io/bluetape4k/io/BOMSupport.kt)
+- [`ByteBufferExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/main/kotlin/io/bluetape4k/io/ByteBufferExtensions.kt)
+- [`ByteBufferInputStream`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/main/kotlin/io/bluetape4k/io/ByteBufferInputStream.kt)
+- [`ByteBufferOutputStream`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/main/kotlin/io/bluetape4k/io/ByteBufferOutputStream.kt)
+- [`FileCoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/main/kotlin/io/bluetape4k/io/FileCoroutineSupport.kt)
+- [`FileSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/main/kotlin/io/bluetape4k/io/FileSupport.kt)
+- [`FileSupportResult`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/main/kotlin/io/bluetape4k/io/FileSupportResult.kt)
+- [`FlushableSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/main/kotlin/io/bluetape4k/io/FlushableSupport.kt)
+- [`HexDumpSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/main/kotlin/io/bluetape4k/io/HexDumpSupport.kt)
+- [`InputStreamSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/main/kotlin/io/bluetape4k/io/InputStreamSupport.kt)
+- [`AbstractIOTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/test/kotlin/io/bluetape4k/io/AbstractIOTest.kt)
+- [`BOMSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/io/src/test/kotlin/io/bluetape4k/io/BOMSupportTest.kt)

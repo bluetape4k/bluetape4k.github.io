@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "infrastructure"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/en/modules/bluetape4k-bucket4j.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ The first source-level concepts to inspect are `BucketKeyValidation`, `Configura
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`BucketKeyValidation`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/BucketKeyValidation.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`BucketKeyValidation`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/BucketKeyValidation.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`BucketKeyValidation`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/BucketKeyValidation.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`ConfigurationSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/ConfigurationSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`SuspendLocalBucket`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/coroutines/SuspendLocalBucket.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`AsyncBucketProxyProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/AsyncBucketProxyProvider.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`BucketProxyProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/BucketProxyProvider.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`LettuceBasedProxyManagerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/redis/LettuceBasedProxyManagerSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`RedissonBasedProxyManagerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/redis/RedissonBasedProxyManagerSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`Slf4jBucketListener`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/internal/Slf4jBucketListener.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`AbstractLocalBucketProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/local/AbstractLocalBucketProvider.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`LocalBucketProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/local/LocalBucketProvider.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`BucketKeyValidation`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/BucketKeyValidation.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ConfigurationSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/ConfigurationSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`SuspendLocalBucket`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/coroutines/SuspendLocalBucket.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`AsyncBucketProxyProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/AsyncBucketProxyProvider.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`BucketProxyProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/BucketProxyProvider.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`LettuceBasedProxyManagerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/redis/LettuceBasedProxyManagerSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`RedissonBasedProxyManagerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/redis/RedissonBasedProxyManagerSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Slf4jBucketListener`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/internal/Slf4jBucketListener.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`AbstractLocalBucketProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/local/AbstractLocalBucketProvider.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`LocalBucketProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/local/LocalBucketProvider.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -103,14 +103,14 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`AbstractBucket4jTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/AbstractBucket4jTest.kt)
-- [`ConfigurationSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/ConfigurationSupportTest.kt)
-- [`TestRedisServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/TestRedisServer.kt)
-- [`SuspendLocalBucketListenerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/coroutines/SuspendLocalBucketListenerTest.kt)
-- [`SuspendedLocalBucketTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/coroutines/SuspendedLocalBucketTest.kt)
-- [`AbstractAsyncBucketProxyProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/distributed/AbstractAsyncBucketProxyProviderTest.kt)
-- [`AbstractBucketProxyProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/distributed/AbstractBucketProxyProviderTest.kt)
-- [`LettuceAsyncBucketProxyProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/distributed/redis/LettuceAsyncBucketProxyProviderTest.kt)
+- [`AbstractBucket4jTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/AbstractBucket4jTest.kt)
+- [`ConfigurationSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/ConfigurationSupportTest.kt)
+- [`TestRedisServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/TestRedisServer.kt)
+- [`SuspendLocalBucketListenerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/coroutines/SuspendLocalBucketListenerTest.kt)
+- [`SuspendedLocalBucketTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/coroutines/SuspendedLocalBucketTest.kt)
+- [`AbstractAsyncBucketProxyProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/distributed/AbstractAsyncBucketProxyProviderTest.kt)
+- [`AbstractBucketProxyProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/distributed/AbstractBucketProxyProviderTest.kt)
+- [`LettuceAsyncBucketProxyProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/distributed/redis/LettuceAsyncBucketProxyProviderTest.kt)
 
 ## Workshops
 
@@ -122,17 +122,17 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/build.gradle.kts)
-- [`BucketKeyValidation`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/BucketKeyValidation.kt)
-- [`ConfigurationSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/ConfigurationSupport.kt)
-- [`SuspendLocalBucket`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/coroutines/SuspendLocalBucket.kt)
-- [`AsyncBucketProxyProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/AsyncBucketProxyProvider.kt)
-- [`BucketProxyProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/BucketProxyProvider.kt)
-- [`LettuceBasedProxyManagerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/redis/LettuceBasedProxyManagerSupport.kt)
-- [`RedissonBasedProxyManagerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/redis/RedissonBasedProxyManagerSupport.kt)
-- [`Slf4jBucketListener`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/internal/Slf4jBucketListener.kt)
-- [`AbstractLocalBucketProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/local/AbstractLocalBucketProvider.kt)
-- [`LocalBucketProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/local/LocalBucketProvider.kt)
-- [`AbstractBucket4jTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/AbstractBucket4jTest.kt)
-- [`ConfigurationSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/ConfigurationSupportTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/build.gradle.kts)
+- [`BucketKeyValidation`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/BucketKeyValidation.kt)
+- [`ConfigurationSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/ConfigurationSupport.kt)
+- [`SuspendLocalBucket`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/coroutines/SuspendLocalBucket.kt)
+- [`AsyncBucketProxyProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/AsyncBucketProxyProvider.kt)
+- [`BucketProxyProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/BucketProxyProvider.kt)
+- [`LettuceBasedProxyManagerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/redis/LettuceBasedProxyManagerSupport.kt)
+- [`RedissonBasedProxyManagerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/redis/RedissonBasedProxyManagerSupport.kt)
+- [`Slf4jBucketListener`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/internal/Slf4jBucketListener.kt)
+- [`AbstractLocalBucketProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/local/AbstractLocalBucketProvider.kt)
+- [`LocalBucketProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/local/LocalBucketProvider.kt)
+- [`AbstractBucket4jTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/AbstractBucket4jTest.kt)
+- [`ConfigurationSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/ConfigurationSupportTest.kt)

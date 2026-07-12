@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/en/modules/bluetape4k-vertx.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ The first source-level concepts to inspect are `CoroutineSupport`, `FutureExtens
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`CoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/CoroutineSupport.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`CoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/CoroutineSupport.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`CoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/CoroutineSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`FutureExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/FutureExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`VertxSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/VertxSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`VertxDecorators`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxDecorators.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`VertxFutureBulkheadSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureBulkheadSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`VertxFutureCircuitBreakerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureCircuitBreakerSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`VertxFutureRateLimiterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureRateLimiterSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`VertxFutureRetrySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureRetrySupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`VertxFutureSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`VertxFutureTimeLimiterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureTimeLimiterSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`CoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/CoroutineSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`FutureExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/FutureExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`VertxSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/VertxSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`VertxDecorators`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxDecorators.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`VertxFutureBulkheadSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureBulkheadSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`VertxFutureCircuitBreakerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureCircuitBreakerSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`VertxFutureRateLimiterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureRateLimiterSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`VertxFutureRetrySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureRetrySupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`VertxFutureSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`VertxFutureTimeLimiterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureTimeLimiterSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -104,14 +104,14 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`AbstractVertxTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/test/kotlin/io/bluetape4k/vertx/AbstractVertxTest.kt)
-- [`SampleVerticle`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/test/kotlin/io/bluetape4k/vertx/SampleVerticle.kt)
-- [`VertxSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/test/kotlin/io/bluetape4k/vertx/VertxSupportTest.kt)
-- [`LifecycleExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/test/kotlin/io/bluetape4k/vertx/examples/LifecycleExamples.kt)
-- [`SampleVerticleTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/test/kotlin/io/bluetape4k/vertx/examples/SampleVerticleTest.kt)
-- [`VertxJunit5Examples`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/test/kotlin/io/bluetape4k/vertx/examples/VertxJunit5Examples.kt)
-- [`AbstractVertxFutureTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/test/kotlin/io/bluetape4k/vertx/resilience4j/AbstractVertxFutureTest.kt)
-- [`VertxDecoratorsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/test/kotlin/io/bluetape4k/vertx/resilience4j/VertxDecoratorsTest.kt)
+- [`AbstractVertxTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/test/kotlin/io/bluetape4k/vertx/AbstractVertxTest.kt)
+- [`SampleVerticle`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/test/kotlin/io/bluetape4k/vertx/SampleVerticle.kt)
+- [`VertxSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/test/kotlin/io/bluetape4k/vertx/VertxSupportTest.kt)
+- [`LifecycleExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/test/kotlin/io/bluetape4k/vertx/examples/LifecycleExamples.kt)
+- [`SampleVerticleTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/test/kotlin/io/bluetape4k/vertx/examples/SampleVerticleTest.kt)
+- [`VertxJunit5Examples`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/test/kotlin/io/bluetape4k/vertx/examples/VertxJunit5Examples.kt)
+- [`AbstractVertxFutureTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/test/kotlin/io/bluetape4k/vertx/resilience4j/AbstractVertxFutureTest.kt)
+- [`VertxDecoratorsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/test/kotlin/io/bluetape4k/vertx/resilience4j/VertxDecoratorsTest.kt)
 
 ## Workshops
 
@@ -123,17 +123,17 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/build.gradle.kts)
-- [`CoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/CoroutineSupport.kt)
-- [`FutureExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/FutureExtensions.kt)
-- [`VertxSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/VertxSupport.kt)
-- [`VertxDecorators`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxDecorators.kt)
-- [`VertxFutureBulkheadSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureBulkheadSupport.kt)
-- [`VertxFutureCircuitBreakerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureCircuitBreakerSupport.kt)
-- [`VertxFutureRateLimiterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureRateLimiterSupport.kt)
-- [`VertxFutureRetrySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureRetrySupport.kt)
-- [`VertxFutureSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureSupport.kt)
-- [`VertxFutureTimeLimiterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureTimeLimiterSupport.kt)
-- [`AbstractVertxTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/test/kotlin/io/bluetape4k/vertx/AbstractVertxTest.kt)
-- [`SampleVerticle`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/vertx/src/test/kotlin/io/bluetape4k/vertx/SampleVerticle.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/build.gradle.kts)
+- [`CoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/CoroutineSupport.kt)
+- [`FutureExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/FutureExtensions.kt)
+- [`VertxSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/VertxSupport.kt)
+- [`VertxDecorators`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxDecorators.kt)
+- [`VertxFutureBulkheadSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureBulkheadSupport.kt)
+- [`VertxFutureCircuitBreakerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureCircuitBreakerSupport.kt)
+- [`VertxFutureRateLimiterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureRateLimiterSupport.kt)
+- [`VertxFutureRetrySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureRetrySupport.kt)
+- [`VertxFutureSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureSupport.kt)
+- [`VertxFutureTimeLimiterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/main/kotlin/io/bluetape4k/vertx/resilience4j/VertxFutureTimeLimiterSupport.kt)
+- [`AbstractVertxTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/test/kotlin/io/bluetape4k/vertx/AbstractVertxTest.kt)
+- [`SampleVerticle`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/vertx/src/test/kotlin/io/bluetape4k/vertx/SampleVerticle.kt)

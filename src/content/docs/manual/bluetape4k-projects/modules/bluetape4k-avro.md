@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/en/modules/bluetape4k-avro.md"
   layer: "build"
 ---
@@ -40,19 +40,19 @@ The first source-level concepts to inspect are `AvroGenericRecordSerializer`, `A
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`AvroGenericRecordSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/avro/src/main/kotlin/io/bluetape4k/avro/AvroGenericRecordSerializer.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`AvroGenericRecordSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/avro/src/main/kotlin/io/bluetape4k/avro/AvroGenericRecordSerializer.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`AvroGenericRecordSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/avro/src/main/kotlin/io/bluetape4k/avro/AvroGenericRecordSerializer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`AvroReflectSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/avro/src/main/kotlin/io/bluetape4k/avro/AvroReflectSerializer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`AvroSpecificRecordSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/avro/src/main/kotlin/io/bluetape4k/avro/AvroSpecificRecordSerializer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`CodecFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/avro/src/main/kotlin/io/bluetape4k/avro/CodecFactorySupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`DefaultAvroGenericRecordSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/avro/src/main/kotlin/io/bluetape4k/avro/impl/DefaultAvroGenericRecordSerializer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`DefaultAvroReflectSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/avro/src/main/kotlin/io/bluetape4k/avro/impl/DefaultAvroReflectSerializer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`DefaultAvroSpecificRecordSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/avro/src/main/kotlin/io/bluetape4k/avro/impl/DefaultAvroSpecificRecordSerializer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`AvroGenericRecordSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/avro/src/main/kotlin/io/bluetape4k/avro/AvroGenericRecordSerializer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`AvroReflectSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/avro/src/main/kotlin/io/bluetape4k/avro/AvroReflectSerializer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`AvroSpecificRecordSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/avro/src/main/kotlin/io/bluetape4k/avro/AvroSpecificRecordSerializer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`CodecFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/avro/src/main/kotlin/io/bluetape4k/avro/CodecFactorySupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`DefaultAvroGenericRecordSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/avro/src/main/kotlin/io/bluetape4k/avro/impl/DefaultAvroGenericRecordSerializer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`DefaultAvroReflectSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/avro/src/main/kotlin/io/bluetape4k/avro/impl/DefaultAvroReflectSerializer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`DefaultAvroSpecificRecordSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/avro/src/main/kotlin/io/bluetape4k/avro/impl/DefaultAvroSpecificRecordSerializer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -96,12 +96,12 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`AbstractAvroTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/avro/src/test/kotlin/io/bluetape4k/avro/AbstractAvroTest.kt)
-- [`CodecFactorySupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/avro/src/test/kotlin/io/bluetape4k/avro/CodecFactorySupportTest.kt)
-- [`TestMessageProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/avro/src/test/kotlin/io/bluetape4k/avro/TestMessageProvider.kt)
-- [`DefaultAvroGenericRecordSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/avro/src/test/kotlin/io/bluetape4k/avro/impl/DefaultAvroGenericRecordSerializerTest.kt)
-- [`DefaultAvroReflectSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/avro/src/test/kotlin/io/bluetape4k/avro/impl/DefaultAvroReflectSerializerTest.kt)
-- [`DefaultAvroSpecificRecordSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/avro/src/test/kotlin/io/bluetape4k/avro/impl/DefaultAvroSpecificRecordSerializerTest.kt)
+- [`AbstractAvroTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/avro/src/test/kotlin/io/bluetape4k/avro/AbstractAvroTest.kt)
+- [`CodecFactorySupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/avro/src/test/kotlin/io/bluetape4k/avro/CodecFactorySupportTest.kt)
+- [`TestMessageProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/avro/src/test/kotlin/io/bluetape4k/avro/TestMessageProvider.kt)
+- [`DefaultAvroGenericRecordSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/avro/src/test/kotlin/io/bluetape4k/avro/impl/DefaultAvroGenericRecordSerializerTest.kt)
+- [`DefaultAvroReflectSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/avro/src/test/kotlin/io/bluetape4k/avro/impl/DefaultAvroReflectSerializerTest.kt)
+- [`DefaultAvroSpecificRecordSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/avro/src/test/kotlin/io/bluetape4k/avro/impl/DefaultAvroSpecificRecordSerializerTest.kt)
 
 ## Workshops
 
@@ -113,17 +113,17 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/avro/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/avro/build.gradle.kts)
-- [`AvroGenericRecordSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/avro/src/main/kotlin/io/bluetape4k/avro/AvroGenericRecordSerializer.kt)
-- [`AvroReflectSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/avro/src/main/kotlin/io/bluetape4k/avro/AvroReflectSerializer.kt)
-- [`AvroSpecificRecordSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/avro/src/main/kotlin/io/bluetape4k/avro/AvroSpecificRecordSerializer.kt)
-- [`CodecFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/avro/src/main/kotlin/io/bluetape4k/avro/CodecFactorySupport.kt)
-- [`DefaultAvroGenericRecordSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/avro/src/main/kotlin/io/bluetape4k/avro/impl/DefaultAvroGenericRecordSerializer.kt)
-- [`DefaultAvroReflectSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/avro/src/main/kotlin/io/bluetape4k/avro/impl/DefaultAvroReflectSerializer.kt)
-- [`DefaultAvroSpecificRecordSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/avro/src/main/kotlin/io/bluetape4k/avro/impl/DefaultAvroSpecificRecordSerializer.kt)
-- [`AbstractAvroTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/avro/src/test/kotlin/io/bluetape4k/avro/AbstractAvroTest.kt)
-- [`CodecFactorySupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/avro/src/test/kotlin/io/bluetape4k/avro/CodecFactorySupportTest.kt)
-- [`TestMessageProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/avro/src/test/kotlin/io/bluetape4k/avro/TestMessageProvider.kt)
-- [`DefaultAvroGenericRecordSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/avro/src/test/kotlin/io/bluetape4k/avro/impl/DefaultAvroGenericRecordSerializerTest.kt)
-- [`DefaultAvroReflectSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/avro/src/test/kotlin/io/bluetape4k/avro/impl/DefaultAvroReflectSerializerTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/avro/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/avro/build.gradle.kts)
+- [`AvroGenericRecordSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/avro/src/main/kotlin/io/bluetape4k/avro/AvroGenericRecordSerializer.kt)
+- [`AvroReflectSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/avro/src/main/kotlin/io/bluetape4k/avro/AvroReflectSerializer.kt)
+- [`AvroSpecificRecordSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/avro/src/main/kotlin/io/bluetape4k/avro/AvroSpecificRecordSerializer.kt)
+- [`CodecFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/avro/src/main/kotlin/io/bluetape4k/avro/CodecFactorySupport.kt)
+- [`DefaultAvroGenericRecordSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/avro/src/main/kotlin/io/bluetape4k/avro/impl/DefaultAvroGenericRecordSerializer.kt)
+- [`DefaultAvroReflectSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/avro/src/main/kotlin/io/bluetape4k/avro/impl/DefaultAvroReflectSerializer.kt)
+- [`DefaultAvroSpecificRecordSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/avro/src/main/kotlin/io/bluetape4k/avro/impl/DefaultAvroSpecificRecordSerializer.kt)
+- [`AbstractAvroTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/avro/src/test/kotlin/io/bluetape4k/avro/AbstractAvroTest.kt)
+- [`CodecFactorySupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/avro/src/test/kotlin/io/bluetape4k/avro/CodecFactorySupportTest.kt)
+- [`TestMessageProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/avro/src/test/kotlin/io/bluetape4k/avro/TestMessageProvider.kt)
+- [`DefaultAvroGenericRecordSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/avro/src/test/kotlin/io/bluetape4k/avro/impl/DefaultAvroGenericRecordSerializerTest.kt)
+- [`DefaultAvroReflectSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/avro/src/test/kotlin/io/bluetape4k/avro/impl/DefaultAvroReflectSerializerTest.kt)

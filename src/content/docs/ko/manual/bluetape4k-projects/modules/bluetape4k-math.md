@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "utilities"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-math.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ Gradle project path는 `:bluetape4k-math`, source directory는 `utils/math`입�
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`Aggregation`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/Aggregation.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`Aggregation`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/main/kotlin/io/bluetape4k/math/Aggregation.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`Aggregation`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/Aggregation.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`BigDecimalHistogram`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/BigDecimalHistogram.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`BigDecimalStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/BigDecimalStatistics.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`CategoricalStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/CategoricalStatistics.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`ComparableHistogram`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/ComparableHistogram.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`ComparableStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/ComparableStatistics.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Descriptives`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/Descriptives.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`DoubleHistogram`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/DoubleHistogram.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`DoubleStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/DoubleStatistics.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`GroupingSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/GroupingSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Aggregation`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/main/kotlin/io/bluetape4k/math/Aggregation.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`BigDecimalHistogram`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/main/kotlin/io/bluetape4k/math/BigDecimalHistogram.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`BigDecimalStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/main/kotlin/io/bluetape4k/math/BigDecimalStatistics.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`CategoricalStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/main/kotlin/io/bluetape4k/math/CategoricalStatistics.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ComparableHistogram`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/main/kotlin/io/bluetape4k/math/ComparableHistogram.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ComparableStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/main/kotlin/io/bluetape4k/math/ComparableStatistics.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Descriptives`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/main/kotlin/io/bluetape4k/math/Descriptives.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`DoubleHistogram`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/main/kotlin/io/bluetape4k/math/DoubleHistogram.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`DoubleStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/main/kotlin/io/bluetape4k/math/DoubleStatistics.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`GroupingSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/main/kotlin/io/bluetape4k/math/GroupingSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -98,14 +98,14 @@ hot path를 측정하고 입력 크기를 제한하며 utility를 호출하는 a
 
 대표 test anchor는 다음과 같습니다.
 
-- [`AggregationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/test/kotlin/io/bluetape4k/math/AggregationTest.kt)
-- [`BigDecimalHistogramTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/test/kotlin/io/bluetape4k/math/BigDecimalHistogramTest.kt)
-- [`BigDecimalStatisticsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/test/kotlin/io/bluetape4k/math/BigDecimalStatisticsTest.kt)
-- [`CategoricalStatisticsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/test/kotlin/io/bluetape4k/math/CategoricalStatisticsTest.kt)
-- [`ComparableHistogramTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/test/kotlin/io/bluetape4k/math/ComparableHistogramTest.kt)
-- [`ComparableStatisticsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/test/kotlin/io/bluetape4k/math/ComparableStatisticsTest.kt)
-- [`DescriptivesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/test/kotlin/io/bluetape4k/math/DescriptivesTest.kt)
-- [`DoubleHistogramTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/test/kotlin/io/bluetape4k/math/DoubleHistogramTest.kt)
+- [`AggregationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/test/kotlin/io/bluetape4k/math/AggregationTest.kt)
+- [`BigDecimalHistogramTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/test/kotlin/io/bluetape4k/math/BigDecimalHistogramTest.kt)
+- [`BigDecimalStatisticsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/test/kotlin/io/bluetape4k/math/BigDecimalStatisticsTest.kt)
+- [`CategoricalStatisticsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/test/kotlin/io/bluetape4k/math/CategoricalStatisticsTest.kt)
+- [`ComparableHistogramTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/test/kotlin/io/bluetape4k/math/ComparableHistogramTest.kt)
+- [`ComparableStatisticsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/test/kotlin/io/bluetape4k/math/ComparableStatisticsTest.kt)
+- [`DescriptivesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/test/kotlin/io/bluetape4k/math/DescriptivesTest.kt)
+- [`DoubleHistogramTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/test/kotlin/io/bluetape4k/math/DoubleHistogramTest.kt)
 
 ## 워크숍
 
@@ -117,17 +117,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/build.gradle.kts)
-- [`Aggregation`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/Aggregation.kt)
-- [`BigDecimalHistogram`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/BigDecimalHistogram.kt)
-- [`BigDecimalStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/BigDecimalStatistics.kt)
-- [`CategoricalStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/CategoricalStatistics.kt)
-- [`ComparableHistogram`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/ComparableHistogram.kt)
-- [`ComparableStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/ComparableStatistics.kt)
-- [`Descriptives`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/Descriptives.kt)
-- [`DoubleHistogram`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/DoubleHistogram.kt)
-- [`DoubleStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/DoubleStatistics.kt)
-- [`GroupingSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/GroupingSupport.kt)
-- [`AggregationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/test/kotlin/io/bluetape4k/math/AggregationTest.kt)
-- [`BigDecimalHistogramTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/test/kotlin/io/bluetape4k/math/BigDecimalHistogramTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/build.gradle.kts)
+- [`Aggregation`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/main/kotlin/io/bluetape4k/math/Aggregation.kt)
+- [`BigDecimalHistogram`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/main/kotlin/io/bluetape4k/math/BigDecimalHistogram.kt)
+- [`BigDecimalStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/main/kotlin/io/bluetape4k/math/BigDecimalStatistics.kt)
+- [`CategoricalStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/main/kotlin/io/bluetape4k/math/CategoricalStatistics.kt)
+- [`ComparableHistogram`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/main/kotlin/io/bluetape4k/math/ComparableHistogram.kt)
+- [`ComparableStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/main/kotlin/io/bluetape4k/math/ComparableStatistics.kt)
+- [`Descriptives`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/main/kotlin/io/bluetape4k/math/Descriptives.kt)
+- [`DoubleHistogram`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/main/kotlin/io/bluetape4k/math/DoubleHistogram.kt)
+- [`DoubleStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/main/kotlin/io/bluetape4k/math/DoubleStatistics.kt)
+- [`GroupingSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/main/kotlin/io/bluetape4k/math/GroupingSupport.kt)
+- [`AggregationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/test/kotlin/io/bluetape4k/math/AggregationTest.kt)
+- [`BigDecimalHistogramTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/math/src/test/kotlin/io/bluetape4k/math/BigDecimalHistogramTest.kt)

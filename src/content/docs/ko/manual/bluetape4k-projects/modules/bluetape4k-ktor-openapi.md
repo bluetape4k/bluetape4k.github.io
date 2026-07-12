@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "web"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-ktor-openapi.md"
   layer: "build"
 ---
@@ -40,13 +40,13 @@ Gradle project path는 `:bluetape4k-ktor-openapi`, source directory는 `ktor/ope
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`KtorOpenApiRoutes`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/openapi/src/main/kotlin/io/bluetape4k/ktor/openapi/KtorOpenApiRoutes.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`KtorOpenApiRoutes`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/ktor/openapi/src/main/kotlin/io/bluetape4k/ktor/openapi/KtorOpenApiRoutes.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`KtorOpenApiRoutes`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/openapi/src/main/kotlin/io/bluetape4k/ktor/openapi/KtorOpenApiRoutes.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`KtorOpenApiRoutes`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/ktor/openapi/src/main/kotlin/io/bluetape4k/ktor/openapi/KtorOpenApiRoutes.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -88,7 +88,7 @@ request latency, status code, cancellation, queueing, dependency failure, shutdo
 
 대표 test anchor는 다음과 같습니다.
 
-- [`KtorOpenApiRoutesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/openapi/src/test/kotlin/io/bluetape4k/ktor/openapi/KtorOpenApiRoutesTest.kt)
+- [`KtorOpenApiRoutesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/ktor/openapi/src/test/kotlin/io/bluetape4k/ktor/openapi/KtorOpenApiRoutesTest.kt)
 
 ## 워크숍
 
@@ -100,7 +100,7 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/openapi/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/openapi/build.gradle.kts)
-- [`KtorOpenApiRoutes`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/openapi/src/main/kotlin/io/bluetape4k/ktor/openapi/KtorOpenApiRoutes.kt)
-- [`KtorOpenApiRoutesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/openapi/src/test/kotlin/io/bluetape4k/ktor/openapi/KtorOpenApiRoutesTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/ktor/openapi/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/ktor/openapi/build.gradle.kts)
+- [`KtorOpenApiRoutes`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/ktor/openapi/src/main/kotlin/io/bluetape4k/ktor/openapi/KtorOpenApiRoutes.kt)
+- [`KtorOpenApiRoutesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/ktor/openapi/src/test/kotlin/io/bluetape4k/ktor/openapi/KtorOpenApiRoutesTest.kt)
