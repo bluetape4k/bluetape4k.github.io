@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "infrastructure"
   kind: "library"
-  sourceCommit: "0c14ff5fa62a236de94bed884cb4a7faa31df7c4"
+  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
   sourcePath: "docs/manual/en/modules/bluetape4k-kafka.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ The first source-level concepts to inspect are `ConsumerSupport`, `ProducerSuppo
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`ConsumerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/ConsumerSupport.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`ConsumerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/ConsumerSupport.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`ConsumerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/ConsumerSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`ProducerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/ProducerSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`TopicPartitionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/TopicPartitionSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`BinaryKafkaCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/codec/BinaryKafkaCodecs.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`ByteArrayKafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/codec/ByteArrayKafkaCodec.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`JacksonKafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/codec/JacksonKafkaCodec.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`KafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/codec/KafkaCodec.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`KafkaCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/codec/KafkaCodecs.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`StringKafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/codec/StringKafkaCodec.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`ProducerCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/coroutines/ProducerCoroutines.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ConsumerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/ConsumerSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ProducerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/ProducerSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`TopicPartitionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/TopicPartitionSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`BinaryKafkaCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/codec/BinaryKafkaCodecs.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ByteArrayKafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/codec/ByteArrayKafkaCodec.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`JacksonKafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/codec/JacksonKafkaCodec.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`KafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/codec/KafkaCodec.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`KafkaCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/codec/KafkaCodecs.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`StringKafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/codec/StringKafkaCodec.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ProducerCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/coroutines/ProducerCoroutines.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -104,14 +104,14 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`AbstractKafkaTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/test/kotlin/io/bluetape4k/kafka/AbstractKafkaTest.kt)
-- [`ConsumerSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/test/kotlin/io/bluetape4k/kafka/ConsumerSupportTest.kt)
-- [`ProducerSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/test/kotlin/io/bluetape4k/kafka/ProducerSupportTest.kt)
-- [`TopicPartitionSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/test/kotlin/io/bluetape4k/kafka/TopicPartitionSupportTest.kt)
-- [`AbstractKafkaCodecPoisonPillTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/test/kotlin/io/bluetape4k/kafka/codec/AbstractKafkaCodecPoisonPillTest.kt)
-- [`AbstractKafkaCodecTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/test/kotlin/io/bluetape4k/kafka/codec/AbstractKafkaCodecTest.kt)
-- [`ByteArrayKafkaCodecTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/test/kotlin/io/bluetape4k/kafka/codec/ByteArrayKafkaCodecTest.kt)
-- [`JacksonKafkaCodecSecurityTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/test/kotlin/io/bluetape4k/kafka/codec/JacksonKafkaCodecSecurityTest.kt)
+- [`AbstractKafkaTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/test/kotlin/io/bluetape4k/kafka/AbstractKafkaTest.kt)
+- [`ConsumerSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/test/kotlin/io/bluetape4k/kafka/ConsumerSupportTest.kt)
+- [`ProducerSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/test/kotlin/io/bluetape4k/kafka/ProducerSupportTest.kt)
+- [`TopicPartitionSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/test/kotlin/io/bluetape4k/kafka/TopicPartitionSupportTest.kt)
+- [`AbstractKafkaCodecPoisonPillTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/test/kotlin/io/bluetape4k/kafka/codec/AbstractKafkaCodecPoisonPillTest.kt)
+- [`AbstractKafkaCodecTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/test/kotlin/io/bluetape4k/kafka/codec/AbstractKafkaCodecTest.kt)
+- [`ByteArrayKafkaCodecTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/test/kotlin/io/bluetape4k/kafka/codec/ByteArrayKafkaCodecTest.kt)
+- [`JacksonKafkaCodecSecurityTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/test/kotlin/io/bluetape4k/kafka/codec/JacksonKafkaCodecSecurityTest.kt)
 
 ## Workshops
 
@@ -123,17 +123,17 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/build.gradle.kts)
-- [`ConsumerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/ConsumerSupport.kt)
-- [`ProducerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/ProducerSupport.kt)
-- [`TopicPartitionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/TopicPartitionSupport.kt)
-- [`BinaryKafkaCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/codec/BinaryKafkaCodecs.kt)
-- [`ByteArrayKafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/codec/ByteArrayKafkaCodec.kt)
-- [`JacksonKafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/codec/JacksonKafkaCodec.kt)
-- [`KafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/codec/KafkaCodec.kt)
-- [`KafkaCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/codec/KafkaCodecs.kt)
-- [`StringKafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/codec/StringKafkaCodec.kt)
-- [`ProducerCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/coroutines/ProducerCoroutines.kt)
-- [`AbstractKafkaTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/test/kotlin/io/bluetape4k/kafka/AbstractKafkaTest.kt)
-- [`ConsumerSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/kafka/src/test/kotlin/io/bluetape4k/kafka/ConsumerSupportTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/build.gradle.kts)
+- [`ConsumerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/ConsumerSupport.kt)
+- [`ProducerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/ProducerSupport.kt)
+- [`TopicPartitionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/TopicPartitionSupport.kt)
+- [`BinaryKafkaCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/codec/BinaryKafkaCodecs.kt)
+- [`ByteArrayKafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/codec/ByteArrayKafkaCodec.kt)
+- [`JacksonKafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/codec/JacksonKafkaCodec.kt)
+- [`KafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/codec/KafkaCodec.kt)
+- [`KafkaCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/codec/KafkaCodecs.kt)
+- [`StringKafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/codec/StringKafkaCodec.kt)
+- [`ProducerCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/main/kotlin/io/bluetape4k/kafka/coroutines/ProducerCoroutines.kt)
+- [`AbstractKafkaTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/test/kotlin/io/bluetape4k/kafka/AbstractKafkaTest.kt)
+- [`ConsumerSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka/src/test/kotlin/io/bluetape4k/kafka/ConsumerSupportTest.kt)

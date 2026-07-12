@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "0c14ff5fa62a236de94bed884cb4a7faa31df7c4"
+  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-logging.md"
   layer: "build"
 ---
@@ -107,8 +107,8 @@ MDC의 기반은 thread-local state이므로 bridge 없이 thread가 바뀌면 c
 
 ## 근거
 
-- [모듈 README와 예제](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/bluetape4k/logging/README.ko.md)
-- [`KLogging` source](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/bluetape4k/logging/src/main/kotlin/io/bluetape4k/logging/KLogging.kt)
-- [Scoped MDC 구현](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/bluetape4k/logging/src/main/kotlin/io/bluetape4k/logging/MdcSupport.kt)
-- [Coroutine/channel logging source](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/bluetape4k/logging/src/main/kotlin/io/bluetape4k/logging/coroutines)
-- [Logging 테스트](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/bluetape4k/logging/src/test/kotlin/io/bluetape4k/logging)
+- [모듈 README와 예제](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/bluetape4k/logging/README.ko.md)
+- [`KLogging` source](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/bluetape4k/logging/src/main/kotlin/io/bluetape4k/logging/KLogging.kt)
+- [Scoped MDC 구현](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/bluetape4k/logging/src/main/kotlin/io/bluetape4k/logging/MdcSupport.kt)
+- [Coroutine/channel logging source](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/bluetape4k/logging/src/main/kotlin/io/bluetape4k/logging/coroutines)
+- [Logging 테스트](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/bluetape4k/logging/src/test/kotlin/io/bluetape4k/logging)

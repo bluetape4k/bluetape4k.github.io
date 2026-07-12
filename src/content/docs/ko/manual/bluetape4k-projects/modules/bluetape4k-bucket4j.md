@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "infrastructure"
   kind: "library"
-  sourceCommit: "0c14ff5fa62a236de94bed884cb4a7faa31df7c4"
+  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-bucket4j.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ Gradle project path는 `:bluetape4k-bucket4j`, source directory는 `infra/bucket
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`BucketKeyValidation`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/BucketKeyValidation.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`BucketKeyValidation`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/BucketKeyValidation.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`BucketKeyValidation`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/BucketKeyValidation.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`ConfigurationSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/ConfigurationSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`SuspendLocalBucket`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/coroutines/SuspendLocalBucket.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`AsyncBucketProxyProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/AsyncBucketProxyProvider.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`BucketProxyProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/BucketProxyProvider.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`LettuceBasedProxyManagerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/redis/LettuceBasedProxyManagerSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`RedissonBasedProxyManagerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/redis/RedissonBasedProxyManagerSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Slf4jBucketListener`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/internal/Slf4jBucketListener.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`AbstractLocalBucketProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/local/AbstractLocalBucketProvider.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`LocalBucketProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/local/LocalBucketProvider.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`BucketKeyValidation`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/BucketKeyValidation.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ConfigurationSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/ConfigurationSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`SuspendLocalBucket`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/coroutines/SuspendLocalBucket.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`AsyncBucketProxyProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/AsyncBucketProxyProvider.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`BucketProxyProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/BucketProxyProvider.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`LettuceBasedProxyManagerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/redis/LettuceBasedProxyManagerSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`RedissonBasedProxyManagerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/redis/RedissonBasedProxyManagerSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Slf4jBucketListener`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/internal/Slf4jBucketListener.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`AbstractLocalBucketProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/local/AbstractLocalBucketProvider.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`LocalBucketProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/local/LocalBucketProvider.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -103,14 +103,14 @@ connection 상태, queue 깊이, retry, timeout, remote 오류, graceful shutdow
 
 대표 test anchor는 다음과 같습니다.
 
-- [`AbstractBucket4jTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/AbstractBucket4jTest.kt)
-- [`ConfigurationSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/ConfigurationSupportTest.kt)
-- [`TestRedisServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/TestRedisServer.kt)
-- [`SuspendLocalBucketListenerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/coroutines/SuspendLocalBucketListenerTest.kt)
-- [`SuspendedLocalBucketTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/coroutines/SuspendedLocalBucketTest.kt)
-- [`AbstractAsyncBucketProxyProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/distributed/AbstractAsyncBucketProxyProviderTest.kt)
-- [`AbstractBucketProxyProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/distributed/AbstractBucketProxyProviderTest.kt)
-- [`LettuceAsyncBucketProxyProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/distributed/redis/LettuceAsyncBucketProxyProviderTest.kt)
+- [`AbstractBucket4jTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/AbstractBucket4jTest.kt)
+- [`ConfigurationSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/ConfigurationSupportTest.kt)
+- [`TestRedisServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/TestRedisServer.kt)
+- [`SuspendLocalBucketListenerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/coroutines/SuspendLocalBucketListenerTest.kt)
+- [`SuspendedLocalBucketTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/coroutines/SuspendedLocalBucketTest.kt)
+- [`AbstractAsyncBucketProxyProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/distributed/AbstractAsyncBucketProxyProviderTest.kt)
+- [`AbstractBucketProxyProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/distributed/AbstractBucketProxyProviderTest.kt)
+- [`LettuceAsyncBucketProxyProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/distributed/redis/LettuceAsyncBucketProxyProviderTest.kt)
 
 ## 워크숍
 
@@ -122,17 +122,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/build.gradle.kts)
-- [`BucketKeyValidation`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/BucketKeyValidation.kt)
-- [`ConfigurationSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/ConfigurationSupport.kt)
-- [`SuspendLocalBucket`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/coroutines/SuspendLocalBucket.kt)
-- [`AsyncBucketProxyProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/AsyncBucketProxyProvider.kt)
-- [`BucketProxyProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/BucketProxyProvider.kt)
-- [`LettuceBasedProxyManagerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/redis/LettuceBasedProxyManagerSupport.kt)
-- [`RedissonBasedProxyManagerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/redis/RedissonBasedProxyManagerSupport.kt)
-- [`Slf4jBucketListener`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/internal/Slf4jBucketListener.kt)
-- [`AbstractLocalBucketProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/local/AbstractLocalBucketProvider.kt)
-- [`LocalBucketProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/local/LocalBucketProvider.kt)
-- [`AbstractBucket4jTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/AbstractBucket4jTest.kt)
-- [`ConfigurationSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/ConfigurationSupportTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/build.gradle.kts)
+- [`BucketKeyValidation`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/BucketKeyValidation.kt)
+- [`ConfigurationSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/ConfigurationSupport.kt)
+- [`SuspendLocalBucket`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/coroutines/SuspendLocalBucket.kt)
+- [`AsyncBucketProxyProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/AsyncBucketProxyProvider.kt)
+- [`BucketProxyProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/BucketProxyProvider.kt)
+- [`LettuceBasedProxyManagerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/redis/LettuceBasedProxyManagerSupport.kt)
+- [`RedissonBasedProxyManagerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/distributed/redis/RedissonBasedProxyManagerSupport.kt)
+- [`Slf4jBucketListener`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/internal/Slf4jBucketListener.kt)
+- [`AbstractLocalBucketProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/local/AbstractLocalBucketProvider.kt)
+- [`LocalBucketProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/local/LocalBucketProvider.kt)
+- [`AbstractBucket4jTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/AbstractBucket4jTest.kt)
+- [`ConfigurationSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/bucket4j/src/test/kotlin/io/bluetape4k/bucket4j/ConfigurationSupportTest.kt)

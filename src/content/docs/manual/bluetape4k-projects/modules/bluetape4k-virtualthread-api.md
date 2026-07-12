@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "concurrency"
   kind: "library"
-  sourceCommit: "0c14ff5fa62a236de94bed884cb4a7faa31df7c4"
+  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
   sourcePath: "docs/manual/en/modules/bluetape4k-virtualthread-api.md"
   layer: "build"
 ---
@@ -40,16 +40,16 @@ The first source-level concepts to inspect are `StructuredScopes`, `TaskContext`
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`StructuredScopes`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/api/src/main/kotlin/io/bluetape4k/concurrent/virtualthread/StructuredScopes.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`StructuredScopes`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/api/src/main/kotlin/io/bluetape4k/concurrent/virtualthread/StructuredScopes.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`StructuredScopes`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/api/src/main/kotlin/io/bluetape4k/concurrent/virtualthread/StructuredScopes.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`TaskContext`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/api/src/main/kotlin/io/bluetape4k/concurrent/virtualthread/TaskContext.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`VirtualThreadRuntime`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/api/src/main/kotlin/io/bluetape4k/concurrent/virtualthread/VirtualThreadRuntime.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`VirtualThreads`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/api/src/main/kotlin/io/bluetape4k/concurrent/virtualthread/VirtualThreads.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`StructuredScopes`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/api/src/main/kotlin/io/bluetape4k/concurrent/virtualthread/StructuredScopes.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`TaskContext`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/api/src/main/kotlin/io/bluetape4k/concurrent/virtualthread/TaskContext.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`VirtualThreadRuntime`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/api/src/main/kotlin/io/bluetape4k/concurrent/virtualthread/VirtualThreadRuntime.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`VirtualThreads`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/api/src/main/kotlin/io/bluetape4k/concurrent/virtualthread/VirtualThreads.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -87,9 +87,9 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`StructuredScopesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/api/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/StructuredScopesTest.kt)
-- [`TaskContextTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/api/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/TaskContextTest.kt)
-- [`VirtualThreadsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/api/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/VirtualThreadsTest.kt)
+- [`StructuredScopesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/api/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/StructuredScopesTest.kt)
+- [`TaskContextTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/api/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/TaskContextTest.kt)
+- [`VirtualThreadsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/api/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/VirtualThreadsTest.kt)
 
 ## Workshops
 
@@ -101,12 +101,12 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/api/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/api/build.gradle.kts)
-- [`StructuredScopes`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/api/src/main/kotlin/io/bluetape4k/concurrent/virtualthread/StructuredScopes.kt)
-- [`TaskContext`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/api/src/main/kotlin/io/bluetape4k/concurrent/virtualthread/TaskContext.kt)
-- [`VirtualThreadRuntime`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/api/src/main/kotlin/io/bluetape4k/concurrent/virtualthread/VirtualThreadRuntime.kt)
-- [`VirtualThreads`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/api/src/main/kotlin/io/bluetape4k/concurrent/virtualthread/VirtualThreads.kt)
-- [`StructuredScopesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/api/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/StructuredScopesTest.kt)
-- [`TaskContextTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/api/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/TaskContextTest.kt)
-- [`VirtualThreadsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/virtualthread/api/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/VirtualThreadsTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/api/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/api/build.gradle.kts)
+- [`StructuredScopes`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/api/src/main/kotlin/io/bluetape4k/concurrent/virtualthread/StructuredScopes.kt)
+- [`TaskContext`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/api/src/main/kotlin/io/bluetape4k/concurrent/virtualthread/TaskContext.kt)
+- [`VirtualThreadRuntime`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/api/src/main/kotlin/io/bluetape4k/concurrent/virtualthread/VirtualThreadRuntime.kt)
+- [`VirtualThreads`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/api/src/main/kotlin/io/bluetape4k/concurrent/virtualthread/VirtualThreads.kt)
+- [`StructuredScopesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/api/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/StructuredScopesTest.kt)
+- [`TaskContextTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/api/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/TaskContextTest.kt)
+- [`VirtualThreadsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/virtualthread/api/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/VirtualThreadsTest.kt)

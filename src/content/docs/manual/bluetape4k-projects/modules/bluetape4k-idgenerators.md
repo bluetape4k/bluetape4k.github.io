@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "utilities"
   kind: "library"
-  sourceCommit: "0c14ff5fa62a236de94bed884cb4a7faa31df7c4"
+  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
   sourcePath: "docs/manual/en/modules/bluetape4k-idgenerators.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ The first source-level concepts to inspect are `IdGenerator`, `LongIdGenerator`,
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`IdGenerator`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/IdGenerator.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`IdGenerator`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/IdGenerator.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`IdGenerator`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/IdGenerator.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`LongIdGenerator`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/LongIdGenerator.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`MachineIdSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/MachineIdSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`Flake`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/flake/Flake.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`Hashids`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/hashids/Hashids.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`HashidsSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/hashids/HashidsSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`BitInputStream`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/ksuid/BitInputStream.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`BitOutputStream`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/ksuid/BitOutputStream.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`BytesBase62`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/ksuid/BytesBase62.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`Ksuid`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/ksuid/Ksuid.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`IdGenerator`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/IdGenerator.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`LongIdGenerator`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/LongIdGenerator.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`MachineIdSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/MachineIdSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Flake`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/flake/Flake.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Hashids`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/hashids/Hashids.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`HashidsSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/hashids/HashidsSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`BitInputStream`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/ksuid/BitInputStream.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`BitOutputStream`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/ksuid/BitOutputStream.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`BytesBase62`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/ksuid/BytesBase62.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Ksuid`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/ksuid/Ksuid.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -96,14 +96,14 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`IdSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/test/kotlin/io/bluetape4k/idgenerators/IdSupportTest.kt)
-- [`FlakeTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/test/kotlin/io/bluetape4k/idgenerators/flake/FlakeTest.kt)
-- [`HashIdsSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/test/kotlin/io/bluetape4k/idgenerators/hashids/HashIdsSupportTest.kt)
-- [`HashidsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/test/kotlin/io/bluetape4k/idgenerators/hashids/HashidsTest.kt)
-- [`BytesBase62Test`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/test/kotlin/io/bluetape4k/idgenerators/ksuid/BytesBase62Test.kt)
-- [`KsuidEdgeCasesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/test/kotlin/io/bluetape4k/idgenerators/ksuid/KsuidEdgeCasesTest.kt)
-- [`KsuidGeneratorTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/test/kotlin/io/bluetape4k/idgenerators/ksuid/KsuidGeneratorTest.kt)
-- [`KsuidMillisTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/test/kotlin/io/bluetape4k/idgenerators/ksuid/KsuidMillisTest.kt)
+- [`IdSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/test/kotlin/io/bluetape4k/idgenerators/IdSupportTest.kt)
+- [`FlakeTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/test/kotlin/io/bluetape4k/idgenerators/flake/FlakeTest.kt)
+- [`HashIdsSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/test/kotlin/io/bluetape4k/idgenerators/hashids/HashIdsSupportTest.kt)
+- [`HashidsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/test/kotlin/io/bluetape4k/idgenerators/hashids/HashidsTest.kt)
+- [`BytesBase62Test`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/test/kotlin/io/bluetape4k/idgenerators/ksuid/BytesBase62Test.kt)
+- [`KsuidEdgeCasesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/test/kotlin/io/bluetape4k/idgenerators/ksuid/KsuidEdgeCasesTest.kt)
+- [`KsuidGeneratorTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/test/kotlin/io/bluetape4k/idgenerators/ksuid/KsuidGeneratorTest.kt)
+- [`KsuidMillisTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/test/kotlin/io/bluetape4k/idgenerators/ksuid/KsuidMillisTest.kt)
 
 ## Workshops
 
@@ -115,17 +115,17 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/build.gradle.kts)
-- [`IdGenerator`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/IdGenerator.kt)
-- [`LongIdGenerator`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/LongIdGenerator.kt)
-- [`MachineIdSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/MachineIdSupport.kt)
-- [`Flake`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/flake/Flake.kt)
-- [`Hashids`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/hashids/Hashids.kt)
-- [`HashidsSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/hashids/HashidsSupport.kt)
-- [`BitInputStream`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/ksuid/BitInputStream.kt)
-- [`BitOutputStream`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/ksuid/BitOutputStream.kt)
-- [`BytesBase62`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/ksuid/BytesBase62.kt)
-- [`Ksuid`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/ksuid/Ksuid.kt)
-- [`IdSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/test/kotlin/io/bluetape4k/idgenerators/IdSupportTest.kt)
-- [`FlakeTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/utils/idgenerators/src/test/kotlin/io/bluetape4k/idgenerators/flake/FlakeTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/build.gradle.kts)
+- [`IdGenerator`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/IdGenerator.kt)
+- [`LongIdGenerator`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/LongIdGenerator.kt)
+- [`MachineIdSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/MachineIdSupport.kt)
+- [`Flake`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/flake/Flake.kt)
+- [`Hashids`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/hashids/Hashids.kt)
+- [`HashidsSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/hashids/HashidsSupport.kt)
+- [`BitInputStream`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/ksuid/BitInputStream.kt)
+- [`BitOutputStream`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/ksuid/BitOutputStream.kt)
+- [`BytesBase62`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/ksuid/BytesBase62.kt)
+- [`Ksuid`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/main/kotlin/io/bluetape4k/idgenerators/ksuid/Ksuid.kt)
+- [`IdSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/test/kotlin/io/bluetape4k/idgenerators/IdSupportTest.kt)
+- [`FlakeTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/idgenerators/src/test/kotlin/io/bluetape4k/idgenerators/flake/FlakeTest.kt)

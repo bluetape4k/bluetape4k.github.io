@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "data"
   kind: "library"
-  sourceCommit: "0c14ff5fa62a236de94bed884cb4a7faa31df7c4"
+  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
   sourcePath: "docs/manual/en/modules/bluetape4k-cassandra.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ The first source-level concepts to inspect are `CassandraAdmin`, `CqlIdentifierS
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`CassandraAdmin`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/CassandraAdmin.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`CassandraAdmin`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/CassandraAdmin.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`CassandraAdmin`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/CassandraAdmin.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`CqlIdentifierSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/CqlIdentifierSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`CqlQuerySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/CqlQuerySupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`CqlSessionProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/CqlSessionProvider.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`CqlSessionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/CqlSessionSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`AsyncCqlSessionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/cql/AsyncCqlSessionSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`AsyncResultSetSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/cql/AsyncResultSetSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`DataTypeSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/cql/DataTypeSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`RowSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/cql/RowSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`StatementSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/cql/StatementSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`CassandraAdmin`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/CassandraAdmin.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`CqlIdentifierSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/CqlIdentifierSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`CqlQuerySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/CqlQuerySupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`CqlSessionProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/CqlSessionProvider.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`CqlSessionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/CqlSessionSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`AsyncCqlSessionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/cql/AsyncCqlSessionSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`AsyncResultSetSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/cql/AsyncResultSetSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`DataTypeSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/cql/DataTypeSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`RowSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/cql/RowSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`StatementSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/cql/StatementSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -100,14 +100,14 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`AbstractCassandraTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/test/kotlin/io/bluetape4k/cassandra/AbstractCassandraTest.kt)
-- [`CassandraAdminTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/test/kotlin/io/bluetape4k/cassandra/CassandraAdminTest.kt)
-- [`CqlIdentifierSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/test/kotlin/io/bluetape4k/cassandra/CqlIdentifierSupportTest.kt)
-- [`CqlQuerySupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/test/kotlin/io/bluetape4k/cassandra/CqlQuerySupportTest.kt)
-- [`CqlSessionProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/test/kotlin/io/bluetape4k/cassandra/CqlSessionProviderTest.kt)
-- [`CqlSessionSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/test/kotlin/io/bluetape4k/cassandra/CqlSessionSupportTest.kt)
-- [`AsyncCqlSessionSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/test/kotlin/io/bluetape4k/cassandra/cql/AsyncCqlSessionSupportTest.kt)
-- [`AsyncResultSetSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/test/kotlin/io/bluetape4k/cassandra/cql/AsyncResultSetSupportTest.kt)
+- [`AbstractCassandraTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/test/kotlin/io/bluetape4k/cassandra/AbstractCassandraTest.kt)
+- [`CassandraAdminTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/test/kotlin/io/bluetape4k/cassandra/CassandraAdminTest.kt)
+- [`CqlIdentifierSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/test/kotlin/io/bluetape4k/cassandra/CqlIdentifierSupportTest.kt)
+- [`CqlQuerySupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/test/kotlin/io/bluetape4k/cassandra/CqlQuerySupportTest.kt)
+- [`CqlSessionProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/test/kotlin/io/bluetape4k/cassandra/CqlSessionProviderTest.kt)
+- [`CqlSessionSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/test/kotlin/io/bluetape4k/cassandra/CqlSessionSupportTest.kt)
+- [`AsyncCqlSessionSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/test/kotlin/io/bluetape4k/cassandra/cql/AsyncCqlSessionSupportTest.kt)
+- [`AsyncResultSetSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/test/kotlin/io/bluetape4k/cassandra/cql/AsyncResultSetSupportTest.kt)
 
 ## Workshops
 
@@ -119,17 +119,17 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/build.gradle.kts)
-- [`CassandraAdmin`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/CassandraAdmin.kt)
-- [`CqlIdentifierSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/CqlIdentifierSupport.kt)
-- [`CqlQuerySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/CqlQuerySupport.kt)
-- [`CqlSessionProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/CqlSessionProvider.kt)
-- [`CqlSessionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/CqlSessionSupport.kt)
-- [`AsyncCqlSessionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/cql/AsyncCqlSessionSupport.kt)
-- [`AsyncResultSetSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/cql/AsyncResultSetSupport.kt)
-- [`DataTypeSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/cql/DataTypeSupport.kt)
-- [`RowSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/cql/RowSupport.kt)
-- [`StatementSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/cql/StatementSupport.kt)
-- [`AbstractCassandraTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/test/kotlin/io/bluetape4k/cassandra/AbstractCassandraTest.kt)
-- [`CassandraAdminTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/data/cassandra/src/test/kotlin/io/bluetape4k/cassandra/CassandraAdminTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/build.gradle.kts)
+- [`CassandraAdmin`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/CassandraAdmin.kt)
+- [`CqlIdentifierSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/CqlIdentifierSupport.kt)
+- [`CqlQuerySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/CqlQuerySupport.kt)
+- [`CqlSessionProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/CqlSessionProvider.kt)
+- [`CqlSessionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/CqlSessionSupport.kt)
+- [`AsyncCqlSessionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/cql/AsyncCqlSessionSupport.kt)
+- [`AsyncResultSetSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/cql/AsyncResultSetSupport.kt)
+- [`DataTypeSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/cql/DataTypeSupport.kt)
+- [`RowSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/cql/RowSupport.kt)
+- [`StatementSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/main/kotlin/io/bluetape4k/cassandra/cql/StatementSupport.kt)
+- [`AbstractCassandraTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/test/kotlin/io/bluetape4k/cassandra/AbstractCassandraTest.kt)
+- [`CassandraAdminTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/data/cassandra/src/test/kotlin/io/bluetape4k/cassandra/CassandraAdminTest.kt)

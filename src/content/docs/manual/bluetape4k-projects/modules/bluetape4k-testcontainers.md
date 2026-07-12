@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "testing"
   kind: "library"
-  sourceCommit: "0c14ff5fa62a236de94bed884cb4a7faa31df7c4"
+  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
   sourcePath: "docs/manual/en/modules/bluetape4k-testcontainers.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ The first source-level concepts to inspect are `GenericContainerExtensions`, `Ge
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`GenericContainerExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/GenericContainerExtensions.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`GenericContainerExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/GenericContainerExtensions.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`GenericContainerExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/GenericContainerExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`GenericServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/GenericServer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`PropertyExportingServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/PropertyExportingServer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`AwsEmulatorServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/AwsEmulatorServer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`AwsEmulatorServerExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/AwsEmulatorServerExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`DynamoDbLocalServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/DynamoDbLocalServer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`ElasticMqServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/ElasticMqServer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`FlociServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/FlociServer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`LocalStackServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/LocalStackServer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`MiniStackServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/MiniStackServer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`GenericContainerExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/GenericContainerExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`GenericServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/GenericServer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`PropertyExportingServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/PropertyExportingServer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`AwsEmulatorServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/AwsEmulatorServer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`AwsEmulatorServerExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/AwsEmulatorServerExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`DynamoDbLocalServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/DynamoDbLocalServer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ElasticMqServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/ElasticMqServer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`FlociServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/FlociServer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`LocalStackServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/LocalStackServer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`MiniStackServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/MiniStackServer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -86,8 +86,8 @@ Treat `compileOnly` edges as caller-provided capabilities and verify runtime ava
 
 Configuration resources found in the module:
 
-- [`rootCA.pem`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/main/resources/certs/rootCA.pem)
-- [`redisson-cluster.yml`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/main/resources/redisson-cluster.yml)
+- [`rootCA.pem`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/main/resources/certs/rootCA.pem)
+- [`redisson-cluster.yml`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/main/resources/redisson-cluster.yml)
 
 Read property names and defaults from these resources and the binding source before overriding them.
 
@@ -109,14 +109,14 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`AbstractContainerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/test/kotlin/io/bluetape4k/testcontainers/AbstractContainerTest.kt)
-- [`ContainerReusePolicyTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/test/kotlin/io/bluetape4k/testcontainers/ContainerReusePolicyTest.kt)
-- [`GenericContainerExtensionsSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/test/kotlin/io/bluetape4k/testcontainers/GenericContainerExtensionsSupportTest.kt)
-- [`GenericServerSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/test/kotlin/io/bluetape4k/testcontainers/GenericServerSupportTest.kt)
-- [`GenericServerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/test/kotlin/io/bluetape4k/testcontainers/GenericServerTest.kt)
-- [`PropertyExportingServerContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/test/kotlin/io/bluetape4k/testcontainers/PropertyExportingServerContractTest.kt)
-- [`RegisterSystemPropertiesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/test/kotlin/io/bluetape4k/testcontainers/RegisterSystemPropertiesTest.kt)
-- [`DynamoDbLocalServerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/test/kotlin/io/bluetape4k/testcontainers/aws/DynamoDbLocalServerTest.kt)
+- [`AbstractContainerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/test/kotlin/io/bluetape4k/testcontainers/AbstractContainerTest.kt)
+- [`ContainerReusePolicyTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/test/kotlin/io/bluetape4k/testcontainers/ContainerReusePolicyTest.kt)
+- [`GenericContainerExtensionsSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/test/kotlin/io/bluetape4k/testcontainers/GenericContainerExtensionsSupportTest.kt)
+- [`GenericServerSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/test/kotlin/io/bluetape4k/testcontainers/GenericServerSupportTest.kt)
+- [`GenericServerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/test/kotlin/io/bluetape4k/testcontainers/GenericServerTest.kt)
+- [`PropertyExportingServerContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/test/kotlin/io/bluetape4k/testcontainers/PropertyExportingServerContractTest.kt)
+- [`RegisterSystemPropertiesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/test/kotlin/io/bluetape4k/testcontainers/RegisterSystemPropertiesTest.kt)
+- [`DynamoDbLocalServerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/test/kotlin/io/bluetape4k/testcontainers/aws/DynamoDbLocalServerTest.kt)
 
 ## Workshops
 
@@ -128,17 +128,17 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/build.gradle.kts)
-- [`GenericContainerExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/GenericContainerExtensions.kt)
-- [`GenericServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/GenericServer.kt)
-- [`PropertyExportingServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/PropertyExportingServer.kt)
-- [`AwsEmulatorServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/AwsEmulatorServer.kt)
-- [`AwsEmulatorServerExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/AwsEmulatorServerExtensions.kt)
-- [`DynamoDbLocalServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/DynamoDbLocalServer.kt)
-- [`ElasticMqServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/ElasticMqServer.kt)
-- [`FlociServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/FlociServer.kt)
-- [`LocalStackServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/LocalStackServer.kt)
-- [`MiniStackServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/MiniStackServer.kt)
-- [`AbstractContainerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/test/kotlin/io/bluetape4k/testcontainers/AbstractContainerTest.kt)
-- [`ContainerReusePolicyTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/testing/testcontainers/src/test/kotlin/io/bluetape4k/testcontainers/ContainerReusePolicyTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/build.gradle.kts)
+- [`GenericContainerExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/GenericContainerExtensions.kt)
+- [`GenericServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/GenericServer.kt)
+- [`PropertyExportingServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/PropertyExportingServer.kt)
+- [`AwsEmulatorServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/AwsEmulatorServer.kt)
+- [`AwsEmulatorServerExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/AwsEmulatorServerExtensions.kt)
+- [`DynamoDbLocalServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/DynamoDbLocalServer.kt)
+- [`ElasticMqServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/ElasticMqServer.kt)
+- [`FlociServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/FlociServer.kt)
+- [`LocalStackServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/LocalStackServer.kt)
+- [`MiniStackServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/main/kotlin/io/bluetape4k/testcontainers/aws/MiniStackServer.kt)
+- [`AbstractContainerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/test/kotlin/io/bluetape4k/testcontainers/AbstractContainerTest.kt)
+- [`ContainerReusePolicyTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/testcontainers/src/test/kotlin/io/bluetape4k/testcontainers/ContainerReusePolicyTest.kt)

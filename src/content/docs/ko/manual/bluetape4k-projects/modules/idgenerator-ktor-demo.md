@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "learning"
   kind: "example"
-  sourceCommit: "0c14ff5fa62a236de94bed884cb4a7faa31df7c4"
+  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
   sourcePath: "docs/manual/ko/modules/idgenerator-ktor-demo.md"
   layer: "learn"
 ---
@@ -47,7 +47,7 @@ example이나 benchmark를 실행하기 전에 project task를 확인합니다.
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`IdGeneratorKtorApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/ktor/idgenerator-ktor-demo/src/main/kotlin/io/bluetape4k/examples/ktor/idgenerator/IdGeneratorKtorApplication.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`IdGeneratorKtorApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/ktor/idgenerator-ktor-demo/src/main/kotlin/io/bluetape4k/examples/ktor/idgenerator/IdGeneratorKtorApplication.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -90,7 +90,7 @@ failure 의미는 artifact 이름이 아니라 아래 entry point와 test가 결
 
 대표 test anchor는 다음과 같습니다.
 
-- [`IdGeneratorKtorApplicationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/ktor/idgenerator-ktor-demo/src/test/kotlin/io/bluetape4k/examples/ktor/idgenerator/IdGeneratorKtorApplicationTest.kt)
+- [`IdGeneratorKtorApplicationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/ktor/idgenerator-ktor-demo/src/test/kotlin/io/bluetape4k/examples/ktor/idgenerator/IdGeneratorKtorApplicationTest.kt)
 
 ## 워크숍
 
@@ -102,7 +102,7 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/ktor/idgenerator-ktor-demo/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/ktor/idgenerator-ktor-demo/build.gradle.kts)
-- [`IdGeneratorKtorApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/ktor/idgenerator-ktor-demo/src/main/kotlin/io/bluetape4k/examples/ktor/idgenerator/IdGeneratorKtorApplication.kt)
-- [`IdGeneratorKtorApplicationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/0c14ff5fa62a236de94bed884cb4a7faa31df7c4/examples/ktor/idgenerator-ktor-demo/src/test/kotlin/io/bluetape4k/examples/ktor/idgenerator/IdGeneratorKtorApplicationTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/ktor/idgenerator-ktor-demo/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/ktor/idgenerator-ktor-demo/build.gradle.kts)
+- [`IdGeneratorKtorApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/ktor/idgenerator-ktor-demo/src/main/kotlin/io/bluetape4k/examples/ktor/idgenerator/IdGeneratorKtorApplication.kt)
+- [`IdGeneratorKtorApplicationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/ktor/idgenerator-ktor-demo/src/test/kotlin/io/bluetape4k/examples/ktor/idgenerator/IdGeneratorKtorApplicationTest.kt)
