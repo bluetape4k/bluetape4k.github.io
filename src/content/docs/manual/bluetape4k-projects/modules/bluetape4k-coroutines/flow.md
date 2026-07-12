@@ -8,7 +8,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/en/modules/bluetape4k-coroutines/flow.md"
   layer: "build"
   chapterId: "flow"
@@ -91,9 +91,9 @@ Track P95/P99 item latency, active transforms, buffer utilization, and downstrea
 
 ## Source and representative tests
 
-- [`AsyncFlow.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/flow/AsyncFlow.kt)
-- [`mapParallel.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/flow/extensions/mapParallel.kt)
-- [`AsyncFlowTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/coroutines/src/test/kotlin/io/bluetape4k/coroutines/flow/AsyncFlowTest.kt)
-- [`MapParallelTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/coroutines/src/test/kotlin/io/bluetape4k/coroutines/flow/extensions/MapParallelTest.kt)
+- [`AsyncFlow.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/flow/AsyncFlow.kt)
+- [`mapParallel.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/flow/extensions/mapParallel.kt)
+- [`AsyncFlowTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/coroutines/src/test/kotlin/io/bluetape4k/coroutines/flow/AsyncFlowTest.kt)
+- [`MapParallelTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/coroutines/src/test/kotlin/io/bluetape4k/coroutines/flow/extensions/MapParallelTest.kt)
 
 For callback and hot-stream delivery semantics, continue with [Subjects and event contracts](./subjects.md).

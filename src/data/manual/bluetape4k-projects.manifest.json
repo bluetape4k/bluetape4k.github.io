@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "repository": "bluetape4k-projects",
-  "sourceCommit": "dda876503926aa16302b4416e3f3a3e2bff26526",
+  "sourceCommit": "952a8a2566d05c0b7fd977f982bb83f5335848f8",
   "modules": [
     {
       "artifact": "io.github.bluetape4k:bluetape4k-annotations",
@@ -1228,6 +1228,70 @@
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-logging",
+      "assets": [
+        "assets/logging/logger-api-map.svg",
+        "assets/logging/logger-api-map.png",
+        "assets/logging/mdc-scope-lifecycle.svg",
+        "assets/logging/mdc-scope-lifecycle.png",
+        "assets/logging/async-channel-sequence.svg",
+        "assets/logging/async-channel-sequence.png"
+      ],
+      "chapters": [
+        {
+          "en": "en/modules/bluetape4k-logging/logger-foundation.md",
+          "id": "logger-foundation",
+          "ko": "ko/modules/bluetape4k-logging/logger-foundation.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/modules/bluetape4k-logging/logger-foundation/",
+            "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-logging/logger-foundation/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-logging/lazy-messages.md",
+          "id": "lazy-messages",
+          "ko": "ko/modules/bluetape4k-logging/lazy-messages.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/modules/bluetape4k-logging/lazy-messages/",
+            "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-logging/lazy-messages/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-logging/scoped-mdc.md",
+          "id": "scoped-mdc",
+          "ko": "ko/modules/bluetape4k-logging/scoped-mdc.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/modules/bluetape4k-logging/scoped-mdc/",
+            "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-logging/scoped-mdc/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-logging/coroutine-mdc.md",
+          "id": "coroutine-mdc",
+          "ko": "ko/modules/bluetape4k-logging/coroutine-mdc.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/modules/bluetape4k-logging/coroutine-mdc/",
+            "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-logging/coroutine-mdc/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-logging/async-channel.md",
+          "id": "async-channel",
+          "ko": "ko/modules/bluetape4k-logging/async-channel.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/modules/bluetape4k-logging/async-channel/",
+            "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-logging/async-channel/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-logging/operations-recipes.md",
+          "id": "operations-recipes",
+          "ko": "ko/modules/bluetape4k-logging/operations-recipes.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/modules/bluetape4k-logging/operations-recipes/",
+            "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-logging/operations-recipes/"
+          }
+        }
+      ],
       "en": "en/modules/bluetape4k-logging.md",
       "gradlePath": ":bluetape4k-logging",
       "group": "foundation",
@@ -1247,8 +1311,7 @@
       "routes": {
         "en": "/manual/bluetape4k-projects/modules/bluetape4k-logging/",
         "ko": "/ko/manual/bluetape4k-projects/modules/bluetape4k-logging/"
-      },
-      "chapters": []
+      }
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-math",

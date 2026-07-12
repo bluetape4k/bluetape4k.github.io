@@ -8,7 +8,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-coroutines/lifecycle.md"
   layer: "build"
   chapterId: "lifecycle"
@@ -120,9 +120,9 @@ fun closeScope() {
 
 ## Source와 검증 근거
 
-- [`CloseableCoroutineScope.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/CloseableCoroutineScope.kt)
-- [`DefaultCoroutineScope.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/DefaultCoroutineScope.kt)
-- [`ThreadPoolCoroutineScope.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/ThreadPoolCoroutineScope.kt)
-- [`AbstractCoroutineScopeTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/coroutines/src/test/kotlin/io/bluetape4k/coroutines/AbstractCoroutineScopeTest.kt)
+- [`CloseableCoroutineScope.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/CloseableCoroutineScope.kt)
+- [`DefaultCoroutineScope.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/DefaultCoroutineScope.kt)
+- [`ThreadPoolCoroutineScope.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/ThreadPoolCoroutineScope.kt)
+- [`AbstractCoroutineScopeTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/coroutines/src/test/kotlin/io/bluetape4k/coroutines/AbstractCoroutineScopeTest.kt)
 
 다음 장에서는 owner가 시작한 여러 `Deferred` 가운데 winner와 loser cleanup을 어떻게 정의하는지 설명합니다: [Deferred 조정](./deferred.md).

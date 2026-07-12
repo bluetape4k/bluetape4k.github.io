@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "utilities"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/en/modules/bluetape4k-jwt.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ The first source-level concepts to inspect are `JwtConsts`, `JwtCodecs`, `JwtCom
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`JwtConsts`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/JwtConsts.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`JwtConsts`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/JwtConsts.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`JwtConsts`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/JwtConsts.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`JwtCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/codec/JwtCodecs.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`JwtComposer`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/composer/JwtComposer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`JwtComposerDsl`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/composer/JwtComposerDsl.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`KeyChain`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/keychain/KeyChain.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`KeyChainDto`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/keychain/KeyChainDto.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`AbstractKeyChainRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/keychain/repository/AbstractKeyChainRepository.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`KeyChainRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/keychain/repository/KeyChainRepository.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`InMemoryKeyChainRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/keychain/repository/inmemory/InMemoryKeyChainRepository.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`RedisKeyChainRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/keychain/repository/redis/RedisKeyChainRepository.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`JwtConsts`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/JwtConsts.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`JwtCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/codec/JwtCodecs.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`JwtComposer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/composer/JwtComposer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`JwtComposerDsl`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/composer/JwtComposerDsl.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`KeyChain`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/keychain/KeyChain.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`KeyChainDto`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/keychain/KeyChainDto.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`AbstractKeyChainRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/keychain/repository/AbstractKeyChainRepository.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`KeyChainRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/keychain/repository/KeyChainRepository.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`InMemoryKeyChainRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/keychain/repository/inmemory/InMemoryKeyChainRepository.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`RedisKeyChainRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/keychain/repository/redis/RedisKeyChainRepository.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -86,7 +86,7 @@ Treat `compileOnly` edges as caller-provided capabilities and verify runtime ava
 
 Configuration resources found in the module:
 
-- [`gen-keypair.sh`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/main/resources/gen-keypair.sh)
+- [`gen-keypair.sh`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/main/resources/gen-keypair.sh)
 
 Read property names and defaults from these resources and the binding source before overriding them.
 
@@ -108,14 +108,14 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`AbstractJwtTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/test/kotlin/io/bluetape4k/jwt/AbstractJwtTest.kt)
-- [`JwtComposerDslTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/test/kotlin/io/bluetape4k/jwt/composer/JwtComposerDslTest.kt)
-- [`JwtComposerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/test/kotlin/io/bluetape4k/jwt/composer/JwtComposerTest.kt)
-- [`AbstractKeyChainRepositoryTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/test/kotlin/io/bluetape4k/jwt/keychain/AbstractKeyChainRepositoryTest.kt)
-- [`KeyChainTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/test/kotlin/io/bluetape4k/jwt/keychain/KeyChainTest.kt)
-- [`InMemoryKeyChainRepositoryTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/test/kotlin/io/bluetape4k/jwt/keychain/inmemory/InMemoryKeyChainRepositoryTest.kt)
-- [`RedisKeyChainRepositoryTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/test/kotlin/io/bluetape4k/jwt/keychain/redis/RedisKeyChainRepositoryTest.kt)
-- [`AbstractJwtProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/test/kotlin/io/bluetape4k/jwt/provider/AbstractJwtProviderTest.kt)
+- [`AbstractJwtTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/test/kotlin/io/bluetape4k/jwt/AbstractJwtTest.kt)
+- [`JwtComposerDslTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/test/kotlin/io/bluetape4k/jwt/composer/JwtComposerDslTest.kt)
+- [`JwtComposerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/test/kotlin/io/bluetape4k/jwt/composer/JwtComposerTest.kt)
+- [`AbstractKeyChainRepositoryTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/test/kotlin/io/bluetape4k/jwt/keychain/AbstractKeyChainRepositoryTest.kt)
+- [`KeyChainTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/test/kotlin/io/bluetape4k/jwt/keychain/KeyChainTest.kt)
+- [`InMemoryKeyChainRepositoryTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/test/kotlin/io/bluetape4k/jwt/keychain/inmemory/InMemoryKeyChainRepositoryTest.kt)
+- [`RedisKeyChainRepositoryTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/test/kotlin/io/bluetape4k/jwt/keychain/redis/RedisKeyChainRepositoryTest.kt)
+- [`AbstractJwtProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/test/kotlin/io/bluetape4k/jwt/provider/AbstractJwtProviderTest.kt)
 
 ## Workshops
 
@@ -127,17 +127,17 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/build.gradle.kts)
-- [`JwtConsts`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/JwtConsts.kt)
-- [`JwtCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/codec/JwtCodecs.kt)
-- [`JwtComposer`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/composer/JwtComposer.kt)
-- [`JwtComposerDsl`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/composer/JwtComposerDsl.kt)
-- [`KeyChain`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/keychain/KeyChain.kt)
-- [`KeyChainDto`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/keychain/KeyChainDto.kt)
-- [`AbstractKeyChainRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/keychain/repository/AbstractKeyChainRepository.kt)
-- [`KeyChainRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/keychain/repository/KeyChainRepository.kt)
-- [`InMemoryKeyChainRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/keychain/repository/inmemory/InMemoryKeyChainRepository.kt)
-- [`RedisKeyChainRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/keychain/repository/redis/RedisKeyChainRepository.kt)
-- [`AbstractJwtTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/test/kotlin/io/bluetape4k/jwt/AbstractJwtTest.kt)
-- [`JwtComposerDslTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/jwt/src/test/kotlin/io/bluetape4k/jwt/composer/JwtComposerDslTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/build.gradle.kts)
+- [`JwtConsts`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/JwtConsts.kt)
+- [`JwtCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/codec/JwtCodecs.kt)
+- [`JwtComposer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/composer/JwtComposer.kt)
+- [`JwtComposerDsl`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/composer/JwtComposerDsl.kt)
+- [`KeyChain`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/keychain/KeyChain.kt)
+- [`KeyChainDto`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/keychain/KeyChainDto.kt)
+- [`AbstractKeyChainRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/keychain/repository/AbstractKeyChainRepository.kt)
+- [`KeyChainRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/keychain/repository/KeyChainRepository.kt)
+- [`InMemoryKeyChainRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/keychain/repository/inmemory/InMemoryKeyChainRepository.kt)
+- [`RedisKeyChainRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/main/kotlin/io/bluetape4k/jwt/keychain/repository/redis/RedisKeyChainRepository.kt)
+- [`AbstractJwtTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/test/kotlin/io/bluetape4k/jwt/AbstractJwtTest.kt)
+- [`JwtComposerDslTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/jwt/src/test/kotlin/io/bluetape4k/jwt/composer/JwtComposerDslTest.kt)

@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-retrofit2.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ Gradle project path는 `:bluetape4k-retrofit2`, source directory는 `io/retrofit
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`ExceptionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/ExceptionSupport.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`ExceptionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/ExceptionSupport.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`ExceptionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/ExceptionSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`RetrofitCallSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/RetrofitCallSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`RetrofitSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/RetrofitSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`SuspendRetrofitCallSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/SuspendRetrofitCallSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Hc5CallFactory`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/clients/hc5/Hc5CallFactory.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Hc5OkHttp3Support`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/clients/hc5/Hc5OkHttp3Support.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`VertxCallFactory`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/clients/vertx/VertxCallFactory.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`VertxOkHttp3Support`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/clients/vertx/VertxOkHttp3Support.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`ResultCall`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/result/ResultCall.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`ResultCallAdapterFactory`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/result/ResultCallAdapterFactory.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ExceptionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/ExceptionSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`RetrofitCallSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/RetrofitCallSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`RetrofitSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/RetrofitSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`SuspendRetrofitCallSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/SuspendRetrofitCallSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Hc5CallFactory`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/clients/hc5/Hc5CallFactory.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Hc5OkHttp3Support`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/clients/hc5/Hc5OkHttp3Support.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`VertxCallFactory`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/clients/vertx/VertxCallFactory.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`VertxOkHttp3Support`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/clients/vertx/VertxOkHttp3Support.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ResultCall`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/result/ResultCall.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ResultCallAdapterFactory`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/result/ResultCallAdapterFactory.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -104,14 +104,14 @@ payload 크기, allocation, latency, malformed input 비율, resource close, pro
 
 대표 test anchor는 다음과 같습니다.
 
-- [`AbstractRetrofitTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/test/kotlin/io/bluetape4k/retrofit2/AbstractRetrofitTest.kt)
-- [`ExceptionSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/test/kotlin/io/bluetape4k/retrofit2/ExceptionSupportTest.kt)
-- [`RetrofitBuilderSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/test/kotlin/io/bluetape4k/retrofit2/RetrofitBuilderSupportTest.kt)
-- [`RetrofitSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/test/kotlin/io/bluetape4k/retrofit2/RetrofitSupportTest.kt)
-- [`RetryRetrofitCallSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/test/kotlin/io/bluetape4k/retrofit2/RetryRetrofitCallSupportTest.kt)
-- [`SuspendRetrofitCallSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/test/kotlin/io/bluetape4k/retrofit2/SuspendRetrofitCallSupportTest.kt)
-- [`AbstractClientTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/test/kotlin/io/bluetape4k/retrofit2/client/AbstractClientTest.kt)
-- [`AbstractDetectTempEmailTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/test/kotlin/io/bluetape4k/retrofit2/client/AbstractDetectTempEmailTest.kt)
+- [`AbstractRetrofitTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/test/kotlin/io/bluetape4k/retrofit2/AbstractRetrofitTest.kt)
+- [`ExceptionSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/test/kotlin/io/bluetape4k/retrofit2/ExceptionSupportTest.kt)
+- [`RetrofitBuilderSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/test/kotlin/io/bluetape4k/retrofit2/RetrofitBuilderSupportTest.kt)
+- [`RetrofitSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/test/kotlin/io/bluetape4k/retrofit2/RetrofitSupportTest.kt)
+- [`RetryRetrofitCallSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/test/kotlin/io/bluetape4k/retrofit2/RetryRetrofitCallSupportTest.kt)
+- [`SuspendRetrofitCallSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/test/kotlin/io/bluetape4k/retrofit2/SuspendRetrofitCallSupportTest.kt)
+- [`AbstractClientTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/test/kotlin/io/bluetape4k/retrofit2/client/AbstractClientTest.kt)
+- [`AbstractDetectTempEmailTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/test/kotlin/io/bluetape4k/retrofit2/client/AbstractDetectTempEmailTest.kt)
 
 ## 워크숍
 
@@ -123,17 +123,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/build.gradle.kts)
-- [`ExceptionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/ExceptionSupport.kt)
-- [`RetrofitCallSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/RetrofitCallSupport.kt)
-- [`RetrofitSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/RetrofitSupport.kt)
-- [`SuspendRetrofitCallSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/SuspendRetrofitCallSupport.kt)
-- [`Hc5CallFactory`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/clients/hc5/Hc5CallFactory.kt)
-- [`Hc5OkHttp3Support`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/clients/hc5/Hc5OkHttp3Support.kt)
-- [`VertxCallFactory`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/clients/vertx/VertxCallFactory.kt)
-- [`VertxOkHttp3Support`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/clients/vertx/VertxOkHttp3Support.kt)
-- [`ResultCall`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/result/ResultCall.kt)
-- [`ResultCallAdapterFactory`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/result/ResultCallAdapterFactory.kt)
-- [`AbstractRetrofitTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/test/kotlin/io/bluetape4k/retrofit2/AbstractRetrofitTest.kt)
-- [`ExceptionSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/retrofit2/src/test/kotlin/io/bluetape4k/retrofit2/ExceptionSupportTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/build.gradle.kts)
+- [`ExceptionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/ExceptionSupport.kt)
+- [`RetrofitCallSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/RetrofitCallSupport.kt)
+- [`RetrofitSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/RetrofitSupport.kt)
+- [`SuspendRetrofitCallSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/SuspendRetrofitCallSupport.kt)
+- [`Hc5CallFactory`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/clients/hc5/Hc5CallFactory.kt)
+- [`Hc5OkHttp3Support`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/clients/hc5/Hc5OkHttp3Support.kt)
+- [`VertxCallFactory`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/clients/vertx/VertxCallFactory.kt)
+- [`VertxOkHttp3Support`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/clients/vertx/VertxOkHttp3Support.kt)
+- [`ResultCall`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/result/ResultCall.kt)
+- [`ResultCallAdapterFactory`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/main/kotlin/io/bluetape4k/retrofit2/result/ResultCallAdapterFactory.kt)
+- [`AbstractRetrofitTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/test/kotlin/io/bluetape4k/retrofit2/AbstractRetrofitTest.kt)
+- [`ExceptionSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/retrofit2/src/test/kotlin/io/bluetape4k/retrofit2/ExceptionSupportTest.kt)

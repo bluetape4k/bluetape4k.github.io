@@ -8,7 +8,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-coroutines/operations.md"
   layer: "build"
   chapterId: "operations"
@@ -90,8 +90,8 @@ Production code에서는 `runBlocking`을 호출할 thread와 framework shutdown
 
 ## Source와 verification anchors
 
-- Lifecycle 구현: [`CloseableCoroutineScope.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/CloseableCoroutineScope.kt)
-- Flow pressure: [`AsyncFlow.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/flow/AsyncFlow.kt)
-- Subject cancellation tests: [`SubjectCancellationTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/coroutines/src/test/kotlin/io/bluetape4k/coroutines/flow/extensions/subject/SubjectCancellationTest.kt)
+- Lifecycle 구현: [`CloseableCoroutineScope.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/CloseableCoroutineScope.kt)
+- Flow pressure: [`AsyncFlow.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/flow/AsyncFlow.kt)
+- Subject cancellation tests: [`SubjectCancellationTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/coroutines/src/test/kotlin/io/bluetape4k/coroutines/flow/extensions/subject/SubjectCancellationTest.kt)
 
 끝으로 이 계약들을 실행 가능한 조합으로 묶는 [실전 레시피와 Workshop](./recipes.md)을 봅니다.

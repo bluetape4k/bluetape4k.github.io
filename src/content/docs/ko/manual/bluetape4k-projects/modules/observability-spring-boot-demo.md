@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "learning"
   kind: "example"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/ko/modules/observability-spring-boot-demo.md"
   layer: "learn"
 ---
@@ -47,7 +47,7 @@ example이나 benchmark를 실행하기 전에 project task를 확인합니다.
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`ObservabilitySpringBootDemoApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/observability-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/spring/observability/ObservabilitySpringBootDemoApplication.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ObservabilitySpringBootDemoApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/spring-boot/observability-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/spring/observability/ObservabilitySpringBootDemoApplication.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -74,7 +74,7 @@ runtimeOnly(libs.opentelemetry.exporter.otlp)
 
 모듈에서 찾은 설정 resource는 다음과 같습니다.
 
-- [`application.yaml`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/observability-spring-boot-demo/src/main/resources/application.yaml)
+- [`application.yaml`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/spring-boot/observability-spring-boot-demo/src/main/resources/application.yaml)
 
 override하기 전에 이 resource와 binding source에서 property 이름과 default를 확인합니다.
 
@@ -96,7 +96,7 @@ failure 의미는 artifact 이름이 아니라 아래 entry point와 test가 결
 
 대표 test anchor는 다음과 같습니다.
 
-- [`ObservabilitySpringBootDemoApplicationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/observability-spring-boot-demo/src/test/kotlin/io/bluetape4k/examples/spring/observability/ObservabilitySpringBootDemoApplicationTest.kt)
+- [`ObservabilitySpringBootDemoApplicationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/spring-boot/observability-spring-boot-demo/src/test/kotlin/io/bluetape4k/examples/spring/observability/ObservabilitySpringBootDemoApplicationTest.kt)
 
 ## 워크숍
 
@@ -108,7 +108,7 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/observability-spring-boot-demo/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/observability-spring-boot-demo/build.gradle.kts)
-- [`ObservabilitySpringBootDemoApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/observability-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/spring/observability/ObservabilitySpringBootDemoApplication.kt)
-- [`ObservabilitySpringBootDemoApplicationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/observability-spring-boot-demo/src/test/kotlin/io/bluetape4k/examples/spring/observability/ObservabilitySpringBootDemoApplicationTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/spring-boot/observability-spring-boot-demo/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/spring-boot/observability-spring-boot-demo/build.gradle.kts)
+- [`ObservabilitySpringBootDemoApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/spring-boot/observability-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/spring/observability/ObservabilitySpringBootDemoApplication.kt)
+- [`ObservabilitySpringBootDemoApplicationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/spring-boot/observability-spring-boot-demo/src/test/kotlin/io/bluetape4k/examples/spring/observability/ObservabilitySpringBootDemoApplicationTest.kt)

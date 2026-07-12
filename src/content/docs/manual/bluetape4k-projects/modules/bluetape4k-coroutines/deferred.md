@@ -8,7 +8,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/en/modules/bluetape4k-coroutines/deferred.md"
   layer: "build"
   chapterId: "deferred"
@@ -109,9 +109,9 @@ The helper does not transfer ownership: the scope that started the source deferr
 
 ## Source and representative tests
 
-- [`DeferredSupport.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/support/DeferredSupport.kt)
-- [`DeferredValue.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/DeferredValue.kt)
-- [`DeferredSupportTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/coroutines/src/test/kotlin/io/bluetape4k/coroutines/support/DeferredSupportTest.kt)
-- [`StructuredConcurrencyTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/coroutines/src/test/kotlin/io/bluetape4k/coroutines/StructuredConcurrencyTest.kt)
+- [`DeferredSupport.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/support/DeferredSupport.kt)
+- [`DeferredValue.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/DeferredValue.kt)
+- [`DeferredSupportTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/coroutines/src/test/kotlin/io/bluetape4k/coroutines/support/DeferredSupportTest.kt)
+- [`StructuredConcurrencyTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/coroutines/src/test/kotlin/io/bluetape4k/coroutines/StructuredConcurrencyTest.kt)
 
 For ordering and concurrency across stream items, continue with [Ordered and parallel Flow](./flow.md).

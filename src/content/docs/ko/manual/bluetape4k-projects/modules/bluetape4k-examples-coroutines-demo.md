@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "learning"
   kind: "example"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-examples-coroutines-demo.md"
   layer: "learn"
 ---
@@ -77,14 +77,14 @@ failure 의미는 artifact 이름이 아니라 아래 entry point와 test가 결
 
 대표 test anchor는 다음과 같습니다.
 
-- [`TestSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/TestSupport.kt)
-- [`CoroutineBuilderExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/builders/CoroutineBuilderExamples.kt)
-- [`CoroutineContextBuilderExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/builders/CoroutineContextBuilderExamples.kt)
-- [`CancellationExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/cancellation/CancellationExamples.kt)
-- [`ActorExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/channels/ActorExamples.kt)
-- [`ChannelExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/channels/ChannelExamples.kt)
-- [`MutexExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/concurrency/MutexExamples.kt)
-- [`CoroutineContextExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/context/CoroutineContextExamples.kt)
+- [`TestSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/TestSupport.kt)
+- [`CoroutineBuilderExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/builders/CoroutineBuilderExamples.kt)
+- [`CoroutineContextBuilderExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/builders/CoroutineContextBuilderExamples.kt)
+- [`CancellationExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/cancellation/CancellationExamples.kt)
+- [`ActorExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/channels/ActorExamples.kt)
+- [`ChannelExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/channels/ChannelExamples.kt)
+- [`MutexExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/concurrency/MutexExamples.kt)
+- [`CoroutineContextExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/context/CoroutineContextExamples.kt)
 
 ## 워크숍
 
@@ -96,13 +96,13 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/coroutines-demo/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/coroutines-demo/build.gradle.kts)
-- [`TestSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/TestSupport.kt)
-- [`CoroutineBuilderExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/builders/CoroutineBuilderExamples.kt)
-- [`CoroutineContextBuilderExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/builders/CoroutineContextBuilderExamples.kt)
-- [`CancellationExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/cancellation/CancellationExamples.kt)
-- [`ActorExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/channels/ActorExamples.kt)
-- [`ChannelExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/channels/ChannelExamples.kt)
-- [`MutexExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/concurrency/MutexExamples.kt)
-- [`CoroutineContextExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/context/CoroutineContextExamples.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/coroutines-demo/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/coroutines-demo/build.gradle.kts)
+- [`TestSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/TestSupport.kt)
+- [`CoroutineBuilderExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/builders/CoroutineBuilderExamples.kt)
+- [`CoroutineContextBuilderExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/builders/CoroutineContextBuilderExamples.kt)
+- [`CancellationExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/cancellation/CancellationExamples.kt)
+- [`ActorExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/channels/ActorExamples.kt)
+- [`ChannelExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/channels/ChannelExamples.kt)
+- [`MutexExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/concurrency/MutexExamples.kt)
+- [`CoroutineContextExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/coroutines-demo/src/test/kotlin/io/bluetape4k/examples/coroutines/context/CoroutineContextExamples.kt)

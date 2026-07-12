@@ -8,7 +8,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/en/modules/bluetape4k-coroutines/operations.md"
   layer: "build"
   chapterId: "operations"
@@ -90,8 +90,8 @@ Review which thread calls `runBlocking` and the framework shutdown deadline. Nev
 
 ## Source and verification anchors
 
-- lifecycle: [`CloseableCoroutineScope.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/CloseableCoroutineScope.kt)
-- Flow pressure: [`AsyncFlow.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/flow/AsyncFlow.kt)
-- Subject cancellation: [`SubjectCancellationTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/coroutines/src/test/kotlin/io/bluetape4k/coroutines/flow/extensions/subject/SubjectCancellationTest.kt)
+- lifecycle: [`CloseableCoroutineScope.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/CloseableCoroutineScope.kt)
+- Flow pressure: [`AsyncFlow.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/flow/AsyncFlow.kt)
+- Subject cancellation: [`SubjectCancellationTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/coroutines/src/test/kotlin/io/bluetape4k/coroutines/flow/extensions/subject/SubjectCancellationTest.kt)
 
 Finally, assemble the contracts into runnable scenarios in [Recipes and workshops](./recipes.md).

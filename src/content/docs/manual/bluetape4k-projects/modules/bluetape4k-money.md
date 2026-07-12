@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "utilities"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/en/modules/bluetape4k-money.md"
   layer: "build"
 ---
@@ -40,18 +40,18 @@ The first source-level concepts to inspect are `CurrencyConversionSupport`, `Cur
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`CurrencyConversionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/money/src/main/kotlin/io/bluetape4k/money/CurrencyConversionSupport.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`CurrencyConversionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/money/src/main/kotlin/io/bluetape4k/money/CurrencyConversionSupport.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`CurrencyConversionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/money/src/main/kotlin/io/bluetape4k/money/CurrencyConversionSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`CurrencyConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/money/src/main/kotlin/io/bluetape4k/money/CurrencyConverter.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`CurrencySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/money/src/main/kotlin/io/bluetape4k/money/CurrencySupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`FastMoneySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/money/src/main/kotlin/io/bluetape4k/money/FastMoneySupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`MoneyAmountSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/money/src/main/kotlin/io/bluetape4k/money/MoneyAmountSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`MoneySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/money/src/main/kotlin/io/bluetape4k/money/MoneySupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`CurrencyConversionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/money/src/main/kotlin/io/bluetape4k/money/CurrencyConversionSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`CurrencyConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/money/src/main/kotlin/io/bluetape4k/money/CurrencyConverter.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`CurrencySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/money/src/main/kotlin/io/bluetape4k/money/CurrencySupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`FastMoneySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/money/src/main/kotlin/io/bluetape4k/money/FastMoneySupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`MoneyAmountSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/money/src/main/kotlin/io/bluetape4k/money/MoneyAmountSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`MoneySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/money/src/main/kotlin/io/bluetape4k/money/MoneySupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -91,12 +91,12 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`CurrencyConversionSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/money/src/test/kotlin/io/bluetape4k/money/CurrencyConversionSupportTest.kt)
-- [`CurrencyConverterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/money/src/test/kotlin/io/bluetape4k/money/CurrencyConverterTest.kt)
-- [`CurrencyUnitSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/money/src/test/kotlin/io/bluetape4k/money/CurrencyUnitSupportTest.kt)
-- [`FastMoneySupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/money/src/test/kotlin/io/bluetape4k/money/FastMoneySupportTest.kt)
-- [`MoneyAmountSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/money/src/test/kotlin/io/bluetape4k/money/MoneyAmountSupportTest.kt)
-- [`MoneySupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/money/src/test/kotlin/io/bluetape4k/money/MoneySupportTest.kt)
+- [`CurrencyConversionSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/money/src/test/kotlin/io/bluetape4k/money/CurrencyConversionSupportTest.kt)
+- [`CurrencyConverterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/money/src/test/kotlin/io/bluetape4k/money/CurrencyConverterTest.kt)
+- [`CurrencyUnitSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/money/src/test/kotlin/io/bluetape4k/money/CurrencyUnitSupportTest.kt)
+- [`FastMoneySupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/money/src/test/kotlin/io/bluetape4k/money/FastMoneySupportTest.kt)
+- [`MoneyAmountSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/money/src/test/kotlin/io/bluetape4k/money/MoneyAmountSupportTest.kt)
+- [`MoneySupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/money/src/test/kotlin/io/bluetape4k/money/MoneySupportTest.kt)
 
 ## Workshops
 
@@ -108,17 +108,17 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/money/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/money/build.gradle.kts)
-- [`CurrencyConversionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/money/src/main/kotlin/io/bluetape4k/money/CurrencyConversionSupport.kt)
-- [`CurrencyConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/money/src/main/kotlin/io/bluetape4k/money/CurrencyConverter.kt)
-- [`CurrencySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/money/src/main/kotlin/io/bluetape4k/money/CurrencySupport.kt)
-- [`FastMoneySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/money/src/main/kotlin/io/bluetape4k/money/FastMoneySupport.kt)
-- [`MoneyAmountSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/money/src/main/kotlin/io/bluetape4k/money/MoneyAmountSupport.kt)
-- [`MoneySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/money/src/main/kotlin/io/bluetape4k/money/MoneySupport.kt)
-- [`CurrencyConversionSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/money/src/test/kotlin/io/bluetape4k/money/CurrencyConversionSupportTest.kt)
-- [`CurrencyConverterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/money/src/test/kotlin/io/bluetape4k/money/CurrencyConverterTest.kt)
-- [`CurrencyUnitSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/money/src/test/kotlin/io/bluetape4k/money/CurrencyUnitSupportTest.kt)
-- [`FastMoneySupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/money/src/test/kotlin/io/bluetape4k/money/FastMoneySupportTest.kt)
-- [`MoneyAmountSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/money/src/test/kotlin/io/bluetape4k/money/MoneyAmountSupportTest.kt)
-- [`MoneySupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/money/src/test/kotlin/io/bluetape4k/money/MoneySupportTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/money/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/money/build.gradle.kts)
+- [`CurrencyConversionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/money/src/main/kotlin/io/bluetape4k/money/CurrencyConversionSupport.kt)
+- [`CurrencyConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/money/src/main/kotlin/io/bluetape4k/money/CurrencyConverter.kt)
+- [`CurrencySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/money/src/main/kotlin/io/bluetape4k/money/CurrencySupport.kt)
+- [`FastMoneySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/money/src/main/kotlin/io/bluetape4k/money/FastMoneySupport.kt)
+- [`MoneyAmountSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/money/src/main/kotlin/io/bluetape4k/money/MoneyAmountSupport.kt)
+- [`MoneySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/money/src/main/kotlin/io/bluetape4k/money/MoneySupport.kt)
+- [`CurrencyConversionSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/money/src/test/kotlin/io/bluetape4k/money/CurrencyConversionSupportTest.kt)
+- [`CurrencyConverterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/money/src/test/kotlin/io/bluetape4k/money/CurrencyConverterTest.kt)
+- [`CurrencyUnitSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/money/src/test/kotlin/io/bluetape4k/money/CurrencyUnitSupportTest.kt)
+- [`FastMoneySupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/money/src/test/kotlin/io/bluetape4k/money/FastMoneySupportTest.kt)
+- [`MoneyAmountSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/money/src/test/kotlin/io/bluetape4k/money/MoneyAmountSupportTest.kt)
+- [`MoneySupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/money/src/test/kotlin/io/bluetape4k/money/MoneySupportTest.kt)

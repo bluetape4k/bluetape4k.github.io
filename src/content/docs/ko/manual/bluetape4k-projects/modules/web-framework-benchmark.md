@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "experiments"
   kind: "benchmark"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/ko/modules/web-framework-benchmark.md"
   layer: "apply"
 ---
@@ -87,6 +87,6 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/benchmark/web-framework-benchmark/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/benchmark/web-framework-benchmark/build.gradle.kts)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/benchmark/web-framework-benchmark/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/benchmark/web-framework-benchmark/build.gradle.kts)
 

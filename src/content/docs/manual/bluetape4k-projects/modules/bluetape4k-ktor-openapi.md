@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "web"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/en/modules/bluetape4k-ktor-openapi.md"
   layer: "build"
 ---
@@ -40,13 +40,13 @@ The first source-level concepts to inspect are `KtorOpenApiRoutes`. File names a
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`KtorOpenApiRoutes`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/openapi/src/main/kotlin/io/bluetape4k/ktor/openapi/KtorOpenApiRoutes.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`KtorOpenApiRoutes`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/openapi/src/main/kotlin/io/bluetape4k/ktor/openapi/KtorOpenApiRoutes.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`KtorOpenApiRoutes`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/openapi/src/main/kotlin/io/bluetape4k/ktor/openapi/KtorOpenApiRoutes.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`KtorOpenApiRoutes`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/openapi/src/main/kotlin/io/bluetape4k/ktor/openapi/KtorOpenApiRoutes.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -88,7 +88,7 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`KtorOpenApiRoutesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/openapi/src/test/kotlin/io/bluetape4k/ktor/openapi/KtorOpenApiRoutesTest.kt)
+- [`KtorOpenApiRoutesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/openapi/src/test/kotlin/io/bluetape4k/ktor/openapi/KtorOpenApiRoutesTest.kt)
 
 ## Workshops
 
@@ -100,7 +100,7 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/openapi/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/openapi/build.gradle.kts)
-- [`KtorOpenApiRoutes`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/openapi/src/main/kotlin/io/bluetape4k/ktor/openapi/KtorOpenApiRoutes.kt)
-- [`KtorOpenApiRoutesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/openapi/src/test/kotlin/io/bluetape4k/ktor/openapi/KtorOpenApiRoutesTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/openapi/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/openapi/build.gradle.kts)
+- [`KtorOpenApiRoutes`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/openapi/src/main/kotlin/io/bluetape4k/ktor/openapi/KtorOpenApiRoutes.kt)
+- [`KtorOpenApiRoutesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/openapi/src/test/kotlin/io/bluetape4k/ktor/openapi/KtorOpenApiRoutesTest.kt)

@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "utilities"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/en/modules/bluetape4k-javatimes.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ The first source-level concepts to inspect are `AbstractTemporalInterval`, `Inte
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`AbstractTemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/AbstractTemporalInterval.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`AbstractTemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/AbstractTemporalInterval.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`AbstractTemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/AbstractTemporalInterval.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`IntervalTypealias`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/IntervalTypealias.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`MutableTemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/MutableTemporalInterval.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`ReadableTemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/ReadableTemporalInterval.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`TemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/TemporalInterval.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`TemporalIntervalSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`TemporalIntervalWindowed`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalWindowed.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`ITimeBlock`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/period/ITimeBlock.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`ITimeCalendar`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/period/ITimeCalendar.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`ITimePeriod`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/period/ITimePeriod.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`AbstractTemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/AbstractTemporalInterval.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`IntervalTypealias`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/IntervalTypealias.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`MutableTemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/MutableTemporalInterval.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ReadableTemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/ReadableTemporalInterval.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`TemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/TemporalInterval.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`TemporalIntervalSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`TemporalIntervalWindowed`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalWindowed.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ITimeBlock`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/period/ITimeBlock.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ITimeCalendar`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/period/ITimeCalendar.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ITimePeriod`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/period/ITimePeriod.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -95,14 +95,14 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`TemporalIntervalSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalSupportTest.kt)
-- [`TemporalIntervalTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalTest.kt)
-- [`TemporalIntervalWindowedTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalWindowedTest.kt)
-- [`AbstractPeriodTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/period/AbstractPeriodTest.kt)
-- [`PeriodRelationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/period/PeriodRelationTest.kt)
-- [`TimeBlockTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/period/TimeBlockTest.kt)
-- [`TimeCalendarConfigTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/period/TimeCalendarConfigTest.kt)
-- [`TimeCalendarTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/period/TimeCalendarTest.kt)
+- [`TemporalIntervalSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalSupportTest.kt)
+- [`TemporalIntervalTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalTest.kt)
+- [`TemporalIntervalWindowedTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalWindowedTest.kt)
+- [`AbstractPeriodTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/period/AbstractPeriodTest.kt)
+- [`PeriodRelationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/period/PeriodRelationTest.kt)
+- [`TimeBlockTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/period/TimeBlockTest.kt)
+- [`TimeCalendarConfigTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/period/TimeCalendarConfigTest.kt)
+- [`TimeCalendarTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/period/TimeCalendarTest.kt)
 
 ## Workshops
 
@@ -114,17 +114,17 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/build.gradle.kts)
-- [`AbstractTemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/AbstractTemporalInterval.kt)
-- [`IntervalTypealias`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/IntervalTypealias.kt)
-- [`MutableTemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/MutableTemporalInterval.kt)
-- [`ReadableTemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/ReadableTemporalInterval.kt)
-- [`TemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/TemporalInterval.kt)
-- [`TemporalIntervalSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalSupport.kt)
-- [`TemporalIntervalWindowed`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalWindowed.kt)
-- [`ITimeBlock`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/period/ITimeBlock.kt)
-- [`ITimeCalendar`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/period/ITimeCalendar.kt)
-- [`ITimePeriod`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/period/ITimePeriod.kt)
-- [`TemporalIntervalSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalSupportTest.kt)
-- [`TemporalIntervalTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/build.gradle.kts)
+- [`AbstractTemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/AbstractTemporalInterval.kt)
+- [`IntervalTypealias`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/IntervalTypealias.kt)
+- [`MutableTemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/MutableTemporalInterval.kt)
+- [`ReadableTemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/ReadableTemporalInterval.kt)
+- [`TemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/TemporalInterval.kt)
+- [`TemporalIntervalSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalSupport.kt)
+- [`TemporalIntervalWindowed`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalWindowed.kt)
+- [`ITimeBlock`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/period/ITimeBlock.kt)
+- [`ITimeCalendar`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/period/ITimeCalendar.kt)
+- [`ITimePeriod`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/period/ITimePeriod.kt)
+- [`TemporalIntervalSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalSupportTest.kt)
+- [`TemporalIntervalTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalTest.kt)

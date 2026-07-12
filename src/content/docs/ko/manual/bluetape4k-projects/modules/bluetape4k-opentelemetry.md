@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "infrastructure"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-opentelemetry.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ Gradle project path는 `:bluetape4k-opentelemetry`, source directory는 `infra/o
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`ContextExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/ContextExtensions.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`ContextExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/ContextExtensions.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`ContextExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/ContextExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`OpenTelemetrySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/OpenTelemetrySupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`AttributeKeySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/common/AttributeKeySupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`AttributesSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/common/AttributesSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`CompletableResultCodeSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/CompletableResultCodeSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`ContextCoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/ContextCoroutineSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`FlowSpanSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/FlowSpanSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`SpanCoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/SpanCoroutineSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`MeterProviderSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/metrics/MeterProviderSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`MetricExporterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/metrics/MetricExporterSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ContextExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/ContextExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`OpenTelemetrySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/OpenTelemetrySupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`AttributeKeySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/common/AttributeKeySupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`AttributesSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/common/AttributesSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`CompletableResultCodeSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/CompletableResultCodeSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ContextCoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/ContextCoroutineSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`FlowSpanSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/FlowSpanSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`SpanCoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/SpanCoroutineSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`MeterProviderSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/metrics/MeterProviderSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`MetricExporterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/metrics/MetricExporterSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -104,14 +104,14 @@ connection 상태, queue 깊이, retry, timeout, remote 오류, graceful shutdow
 
 대표 test anchor는 다음과 같습니다.
 
-- [`AbstractOtelTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/AbstractOtelTest.kt)
-- [`RedactionAssertions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/RedactionAssertions.kt)
-- [`AttributeKeySupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/common/AttributeKeySupportTest.kt)
-- [`AttributesSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/common/AttributesSupportTest.kt)
-- [`CoroutineSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/coroutines/CoroutineSupportTest.kt)
-- [`FlowSpanSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/coroutines/FlowSpanSupportTest.kt)
-- [`SpanCoroutineSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/coroutines/SpanCoroutineSupportTest.kt)
-- [`TracerWithSpanTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/coroutines/TracerWithSpanTest.kt)
+- [`AbstractOtelTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/AbstractOtelTest.kt)
+- [`RedactionAssertions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/RedactionAssertions.kt)
+- [`AttributeKeySupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/common/AttributeKeySupportTest.kt)
+- [`AttributesSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/common/AttributesSupportTest.kt)
+- [`CoroutineSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/coroutines/CoroutineSupportTest.kt)
+- [`FlowSpanSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/coroutines/FlowSpanSupportTest.kt)
+- [`SpanCoroutineSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/coroutines/SpanCoroutineSupportTest.kt)
+- [`TracerWithSpanTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/coroutines/TracerWithSpanTest.kt)
 
 ## 워크숍
 
@@ -123,17 +123,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/build.gradle.kts)
-- [`ContextExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/ContextExtensions.kt)
-- [`OpenTelemetrySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/OpenTelemetrySupport.kt)
-- [`AttributeKeySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/common/AttributeKeySupport.kt)
-- [`AttributesSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/common/AttributesSupport.kt)
-- [`CompletableResultCodeSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/CompletableResultCodeSupport.kt)
-- [`ContextCoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/ContextCoroutineSupport.kt)
-- [`FlowSpanSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/FlowSpanSupport.kt)
-- [`SpanCoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/SpanCoroutineSupport.kt)
-- [`MeterProviderSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/metrics/MeterProviderSupport.kt)
-- [`MetricExporterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/metrics/MetricExporterSupport.kt)
-- [`AbstractOtelTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/AbstractOtelTest.kt)
-- [`RedactionAssertions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/RedactionAssertions.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/build.gradle.kts)
+- [`ContextExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/ContextExtensions.kt)
+- [`OpenTelemetrySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/OpenTelemetrySupport.kt)
+- [`AttributeKeySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/common/AttributeKeySupport.kt)
+- [`AttributesSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/common/AttributesSupport.kt)
+- [`CompletableResultCodeSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/CompletableResultCodeSupport.kt)
+- [`ContextCoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/ContextCoroutineSupport.kt)
+- [`FlowSpanSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/FlowSpanSupport.kt)
+- [`SpanCoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/SpanCoroutineSupport.kt)
+- [`MeterProviderSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/metrics/MeterProviderSupport.kt)
+- [`MetricExporterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/metrics/MetricExporterSupport.kt)
+- [`AbstractOtelTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/AbstractOtelTest.kt)
+- [`RedactionAssertions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/RedactionAssertions.kt)

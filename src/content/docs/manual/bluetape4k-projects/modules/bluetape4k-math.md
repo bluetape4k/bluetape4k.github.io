@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "utilities"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/en/modules/bluetape4k-math.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ The first source-level concepts to inspect are `Aggregation`, `BigDecimalHistogr
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`Aggregation`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/main/kotlin/io/bluetape4k/math/Aggregation.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`Aggregation`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/Aggregation.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`Aggregation`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/main/kotlin/io/bluetape4k/math/Aggregation.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`BigDecimalHistogram`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/main/kotlin/io/bluetape4k/math/BigDecimalHistogram.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`BigDecimalStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/main/kotlin/io/bluetape4k/math/BigDecimalStatistics.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`CategoricalStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/main/kotlin/io/bluetape4k/math/CategoricalStatistics.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`ComparableHistogram`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/main/kotlin/io/bluetape4k/math/ComparableHistogram.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`ComparableStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/main/kotlin/io/bluetape4k/math/ComparableStatistics.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`Descriptives`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/main/kotlin/io/bluetape4k/math/Descriptives.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`DoubleHistogram`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/main/kotlin/io/bluetape4k/math/DoubleHistogram.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`DoubleStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/main/kotlin/io/bluetape4k/math/DoubleStatistics.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`GroupingSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/main/kotlin/io/bluetape4k/math/GroupingSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Aggregation`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/Aggregation.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`BigDecimalHistogram`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/BigDecimalHistogram.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`BigDecimalStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/BigDecimalStatistics.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`CategoricalStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/CategoricalStatistics.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ComparableHistogram`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/ComparableHistogram.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ComparableStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/ComparableStatistics.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Descriptives`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/Descriptives.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`DoubleHistogram`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/DoubleHistogram.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`DoubleStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/DoubleStatistics.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`GroupingSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/GroupingSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -98,14 +98,14 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`AggregationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/test/kotlin/io/bluetape4k/math/AggregationTest.kt)
-- [`BigDecimalHistogramTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/test/kotlin/io/bluetape4k/math/BigDecimalHistogramTest.kt)
-- [`BigDecimalStatisticsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/test/kotlin/io/bluetape4k/math/BigDecimalStatisticsTest.kt)
-- [`CategoricalStatisticsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/test/kotlin/io/bluetape4k/math/CategoricalStatisticsTest.kt)
-- [`ComparableHistogramTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/test/kotlin/io/bluetape4k/math/ComparableHistogramTest.kt)
-- [`ComparableStatisticsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/test/kotlin/io/bluetape4k/math/ComparableStatisticsTest.kt)
-- [`DescriptivesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/test/kotlin/io/bluetape4k/math/DescriptivesTest.kt)
-- [`DoubleHistogramTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/test/kotlin/io/bluetape4k/math/DoubleHistogramTest.kt)
+- [`AggregationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/test/kotlin/io/bluetape4k/math/AggregationTest.kt)
+- [`BigDecimalHistogramTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/test/kotlin/io/bluetape4k/math/BigDecimalHistogramTest.kt)
+- [`BigDecimalStatisticsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/test/kotlin/io/bluetape4k/math/BigDecimalStatisticsTest.kt)
+- [`CategoricalStatisticsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/test/kotlin/io/bluetape4k/math/CategoricalStatisticsTest.kt)
+- [`ComparableHistogramTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/test/kotlin/io/bluetape4k/math/ComparableHistogramTest.kt)
+- [`ComparableStatisticsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/test/kotlin/io/bluetape4k/math/ComparableStatisticsTest.kt)
+- [`DescriptivesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/test/kotlin/io/bluetape4k/math/DescriptivesTest.kt)
+- [`DoubleHistogramTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/test/kotlin/io/bluetape4k/math/DoubleHistogramTest.kt)
 
 ## Workshops
 
@@ -117,17 +117,17 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/build.gradle.kts)
-- [`Aggregation`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/main/kotlin/io/bluetape4k/math/Aggregation.kt)
-- [`BigDecimalHistogram`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/main/kotlin/io/bluetape4k/math/BigDecimalHistogram.kt)
-- [`BigDecimalStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/main/kotlin/io/bluetape4k/math/BigDecimalStatistics.kt)
-- [`CategoricalStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/main/kotlin/io/bluetape4k/math/CategoricalStatistics.kt)
-- [`ComparableHistogram`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/main/kotlin/io/bluetape4k/math/ComparableHistogram.kt)
-- [`ComparableStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/main/kotlin/io/bluetape4k/math/ComparableStatistics.kt)
-- [`Descriptives`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/main/kotlin/io/bluetape4k/math/Descriptives.kt)
-- [`DoubleHistogram`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/main/kotlin/io/bluetape4k/math/DoubleHistogram.kt)
-- [`DoubleStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/main/kotlin/io/bluetape4k/math/DoubleStatistics.kt)
-- [`GroupingSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/main/kotlin/io/bluetape4k/math/GroupingSupport.kt)
-- [`AggregationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/test/kotlin/io/bluetape4k/math/AggregationTest.kt)
-- [`BigDecimalHistogramTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/math/src/test/kotlin/io/bluetape4k/math/BigDecimalHistogramTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/build.gradle.kts)
+- [`Aggregation`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/Aggregation.kt)
+- [`BigDecimalHistogram`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/BigDecimalHistogram.kt)
+- [`BigDecimalStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/BigDecimalStatistics.kt)
+- [`CategoricalStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/CategoricalStatistics.kt)
+- [`ComparableHistogram`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/ComparableHistogram.kt)
+- [`ComparableStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/ComparableStatistics.kt)
+- [`Descriptives`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/Descriptives.kt)
+- [`DoubleHistogram`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/DoubleHistogram.kt)
+- [`DoubleStatistics`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/DoubleStatistics.kt)
+- [`GroupingSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/main/kotlin/io/bluetape4k/math/GroupingSupport.kt)
+- [`AggregationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/test/kotlin/io/bluetape4k/math/AggregationTest.kt)
+- [`BigDecimalHistogramTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/math/src/test/kotlin/io/bluetape4k/math/BigDecimalHistogramTest.kt)

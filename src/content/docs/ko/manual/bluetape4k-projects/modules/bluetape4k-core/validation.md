@@ -8,7 +8,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-core/validation.md"
   layer: "build"
   chapterId: "validation"
@@ -69,7 +69,7 @@ Happy path만이 아니라 경계 바로 아래/위, null, empty, blank, open/cl
 
 ## Source와 representative tests
 
-- [`RequireSupport.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/src/main/kotlin/io/bluetape4k/support/RequireSupport.kt)
-- [`RequireSupportTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/src/test/kotlin/io/bluetape4k/support/RequireSupportTest.kt)
+- [`RequireSupport.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/main/kotlin/io/bluetape4k/support/RequireSupport.kt)
+- [`RequireSupportTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/test/kotlin/io/bluetape4k/support/RequireSupportTest.kt)
 
 검증한 값을 고정된 memory budget에 보관하는 방법은 [Bounded collections](./bounded-collections.md)에서 이어집니다.

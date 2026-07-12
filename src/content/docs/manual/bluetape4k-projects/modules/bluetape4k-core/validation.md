@@ -8,7 +8,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/en/modules/bluetape4k-core/validation.md"
   layer: "build"
   chapterId: "validation"
@@ -67,7 +67,7 @@ Cover values immediately below and above boundaries, null, empty, blank, open/cl
 
 ## Source and representative tests
 
-- [`RequireSupport.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/src/main/kotlin/io/bluetape4k/support/RequireSupport.kt)
-- [`RequireSupportTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/src/test/kotlin/io/bluetape4k/support/RequireSupportTest.kt)
+- [`RequireSupport.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/main/kotlin/io/bluetape4k/support/RequireSupport.kt)
+- [`RequireSupportTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/test/kotlin/io/bluetape4k/support/RequireSupportTest.kt)
 
 Next, keep validated data inside a fixed memory budget with [Bounded collections](./bounded-collections.md).

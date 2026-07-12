@@ -1,6 +1,6 @@
 ---
 manualId: bluetape4k-core
-title: Core Kotlin utility
+title: Core Kotlin 라이브러리
 description: bluetape4k 전반에서 사용하는 validation, codec, collection, range, time DSL, reflection, concurrency primitive를 제공합니다.
 kind: library
 group: foundation
@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-core.md"
   layer: "build"
 ---
@@ -194,7 +194,7 @@ core의 API는 범위가 넓어 lifecycle과 성능 특성이 모두 같지 않�
 
 ## 근거
 
-- [모듈 README와 API catalog](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/README.ko.md)
-- [Main source package](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/src/main/kotlin/io/bluetape4k)
-- [모듈 테스트](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/src/test/kotlin/io/bluetape4k)
-- [모듈 build와 dependency](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/build.gradle.kts)
+- [모듈 README와 API catalog](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/README.ko.md)
+- [Main source package](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/main/kotlin/io/bluetape4k)
+- [모듈 테스트](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/test/kotlin/io/bluetape4k)
+- [모듈 build와 dependency](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/build.gradle.kts)

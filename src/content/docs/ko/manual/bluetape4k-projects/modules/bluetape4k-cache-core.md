@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "caching"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-cache-core.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ Gradle project path는 `:bluetape4k-cache-core`, source directory는 `cache/cach
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`Cache2kSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/cache2k/Cache2kSupport.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`Cache2kSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/cache2k/Cache2kSupport.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`Cache2kSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/cache2k/Cache2kSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`CaffeineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/caffeine/CaffeineSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`EhcacheSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/ehcache/EhcacheSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`CaffeineSuspendJCache`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/CaffeineSuspendJCache.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`JCacheEntryEventListener`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/JCacheEntryEventListener.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`JCacheSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/JCacheSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`JCacheType`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/JCacheType.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`JCaching`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/JCaching.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`SuspendJCache`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/SuspendJCache.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`SuspendJCacheEntry`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/SuspendJCacheEntry.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Cache2kSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/cache2k/Cache2kSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`CaffeineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/caffeine/CaffeineSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`EhcacheSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/ehcache/EhcacheSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`CaffeineSuspendJCache`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/CaffeineSuspendJCache.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`JCacheEntryEventListener`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/JCacheEntryEventListener.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`JCacheSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/JCacheSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`JCacheType`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/JCacheType.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`JCaching`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/JCaching.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`SuspendJCache`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/SuspendJCache.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`SuspendJCacheEntry`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/SuspendJCacheEntry.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -104,14 +104,14 @@ hit ratio, load latency, eviction, stale read, backend 오류, reconnect 동작�
 
 대표 test anchor는 다음과 같습니다.
 
-- [`Cache2kSupportExtTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/test/kotlin/io/bluetape4k/cache/cache2k/Cache2kSupportExtTest.kt)
-- [`Cache2kSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/test/kotlin/io/bluetape4k/cache/cache2k/Cache2kSupportTest.kt)
-- [`CaffeineSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/test/kotlin/io/bluetape4k/cache/caffeine/CaffeineSupportTest.kt)
-- [`EhcacheSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/test/kotlin/io/bluetape4k/cache/ehcache/EhcacheSupportTest.kt)
-- [`CaffeineSuspendJCacheTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/test/kotlin/io/bluetape4k/cache/jcache/CaffeineSuspendJCacheTest.kt)
-- [`JCacheEntryEventListenerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/test/kotlin/io/bluetape4k/cache/jcache/JCacheEntryEventListenerTest.kt)
-- [`JCacheReadWriteThroughExample`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/test/kotlin/io/bluetape4k/cache/jcache/JCacheReadWriteThroughExample.kt)
-- [`JCacheSupportExtTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/test/kotlin/io/bluetape4k/cache/jcache/JCacheSupportExtTest.kt)
+- [`Cache2kSupportExtTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/test/kotlin/io/bluetape4k/cache/cache2k/Cache2kSupportExtTest.kt)
+- [`Cache2kSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/test/kotlin/io/bluetape4k/cache/cache2k/Cache2kSupportTest.kt)
+- [`CaffeineSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/test/kotlin/io/bluetape4k/cache/caffeine/CaffeineSupportTest.kt)
+- [`EhcacheSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/test/kotlin/io/bluetape4k/cache/ehcache/EhcacheSupportTest.kt)
+- [`CaffeineSuspendJCacheTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/test/kotlin/io/bluetape4k/cache/jcache/CaffeineSuspendJCacheTest.kt)
+- [`JCacheEntryEventListenerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/test/kotlin/io/bluetape4k/cache/jcache/JCacheEntryEventListenerTest.kt)
+- [`JCacheReadWriteThroughExample`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/test/kotlin/io/bluetape4k/cache/jcache/JCacheReadWriteThroughExample.kt)
+- [`JCacheSupportExtTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/test/kotlin/io/bluetape4k/cache/jcache/JCacheSupportExtTest.kt)
 
 ## 워크숍
 
@@ -123,17 +123,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/build.gradle.kts)
-- [`Cache2kSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/cache2k/Cache2kSupport.kt)
-- [`CaffeineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/caffeine/CaffeineSupport.kt)
-- [`EhcacheSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/ehcache/EhcacheSupport.kt)
-- [`CaffeineSuspendJCache`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/CaffeineSuspendJCache.kt)
-- [`JCacheEntryEventListener`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/JCacheEntryEventListener.kt)
-- [`JCacheSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/JCacheSupport.kt)
-- [`JCacheType`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/JCacheType.kt)
-- [`JCaching`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/JCaching.kt)
-- [`SuspendJCache`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/SuspendJCache.kt)
-- [`SuspendJCacheEntry`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/SuspendJCacheEntry.kt)
-- [`Cache2kSupportExtTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/test/kotlin/io/bluetape4k/cache/cache2k/Cache2kSupportExtTest.kt)
-- [`Cache2kSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/cache/cache-core/src/test/kotlin/io/bluetape4k/cache/cache2k/Cache2kSupportTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/build.gradle.kts)
+- [`Cache2kSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/cache2k/Cache2kSupport.kt)
+- [`CaffeineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/caffeine/CaffeineSupport.kt)
+- [`EhcacheSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/ehcache/EhcacheSupport.kt)
+- [`CaffeineSuspendJCache`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/CaffeineSuspendJCache.kt)
+- [`JCacheEntryEventListener`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/JCacheEntryEventListener.kt)
+- [`JCacheSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/JCacheSupport.kt)
+- [`JCacheType`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/JCacheType.kt)
+- [`JCaching`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/JCaching.kt)
+- [`SuspendJCache`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/SuspendJCache.kt)
+- [`SuspendJCacheEntry`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/jcache/SuspendJCacheEntry.kt)
+- [`Cache2kSupportExtTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/test/kotlin/io/bluetape4k/cache/cache2k/Cache2kSupportExtTest.kt)
+- [`Cache2kSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/cache/cache-core/src/test/kotlin/io/bluetape4k/cache/cache2k/Cache2kSupportTest.kt)

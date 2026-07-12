@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "data"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-hibernate.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ Gradle project path는 `:bluetape4k-hibernate`, source directory는 `data/hibern
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`EntityManagerFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/EntityManagerFactorySupport.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`EntityManagerFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/EntityManagerFactorySupport.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`EntityManagerFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/EntityManagerFactorySupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`EntityManagerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/EntityManagerSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`HibernateConsts`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/HibernateConsts.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`SessionFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/SessionFactorySupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`SessionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/SessionSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`AbstractObjectAsJsonConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/converters/AbstractObjectAsJsonConverter.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`CompressedStringConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/converters/CompressedStringConverter.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`DurationAsTimestampConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/converters/DurationAsTimestampConverter.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`EncryptedStringConverters`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/converters/EncryptedStringConverters.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`LocaleAsStringConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/converters/LocaleAsStringConverter.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`EntityManagerFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/EntityManagerFactorySupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`EntityManagerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/EntityManagerSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`HibernateConsts`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/HibernateConsts.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`SessionFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/SessionFactorySupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`SessionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/SessionSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`AbstractObjectAsJsonConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/converters/AbstractObjectAsJsonConverter.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`CompressedStringConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/converters/CompressedStringConverter.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`DurationAsTimestampConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/converters/DurationAsTimestampConverter.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`EncryptedStringConverters`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/converters/EncryptedStringConverters.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`LocaleAsStringConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/converters/LocaleAsStringConverter.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -104,14 +104,14 @@ pool 포화, query latency, retry, transaction rollback, schema 호환성을 관
 
 대표 test anchor는 다음과 같습니다.
 
-- [`AbstractHibernateTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/test/kotlin/io/bluetape4k/hibernate/AbstractHibernateTest.kt)
-- [`EntityManagerFactorySupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/test/kotlin/io/bluetape4k/hibernate/EntityManagerFactorySupportTest.kt)
-- [`EntityManagerSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/test/kotlin/io/bluetape4k/hibernate/EntityManagerSupportTest.kt)
-- [`HibernateApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/test/kotlin/io/bluetape4k/hibernate/HibernateApplication.kt)
-- [`HibernateConstsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/test/kotlin/io/bluetape4k/hibernate/HibernateConstsTest.kt)
-- [`SessionFactorySupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/test/kotlin/io/bluetape4k/hibernate/SessionFactorySupportTest.kt)
-- [`SessionSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/test/kotlin/io/bluetape4k/hibernate/SessionSupportTest.kt)
-- [`TestEntityManager`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/test/kotlin/io/bluetape4k/hibernate/TestEntityManager.kt)
+- [`AbstractHibernateTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/test/kotlin/io/bluetape4k/hibernate/AbstractHibernateTest.kt)
+- [`EntityManagerFactorySupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/test/kotlin/io/bluetape4k/hibernate/EntityManagerFactorySupportTest.kt)
+- [`EntityManagerSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/test/kotlin/io/bluetape4k/hibernate/EntityManagerSupportTest.kt)
+- [`HibernateApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/test/kotlin/io/bluetape4k/hibernate/HibernateApplication.kt)
+- [`HibernateConstsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/test/kotlin/io/bluetape4k/hibernate/HibernateConstsTest.kt)
+- [`SessionFactorySupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/test/kotlin/io/bluetape4k/hibernate/SessionFactorySupportTest.kt)
+- [`SessionSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/test/kotlin/io/bluetape4k/hibernate/SessionSupportTest.kt)
+- [`TestEntityManager`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/test/kotlin/io/bluetape4k/hibernate/TestEntityManager.kt)
 
 ## 워크숍
 
@@ -123,17 +123,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/build.gradle.kts)
-- [`EntityManagerFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/EntityManagerFactorySupport.kt)
-- [`EntityManagerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/EntityManagerSupport.kt)
-- [`HibernateConsts`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/HibernateConsts.kt)
-- [`SessionFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/SessionFactorySupport.kt)
-- [`SessionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/SessionSupport.kt)
-- [`AbstractObjectAsJsonConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/converters/AbstractObjectAsJsonConverter.kt)
-- [`CompressedStringConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/converters/CompressedStringConverter.kt)
-- [`DurationAsTimestampConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/converters/DurationAsTimestampConverter.kt)
-- [`EncryptedStringConverters`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/converters/EncryptedStringConverters.kt)
-- [`LocaleAsStringConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/converters/LocaleAsStringConverter.kt)
-- [`AbstractHibernateTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/test/kotlin/io/bluetape4k/hibernate/AbstractHibernateTest.kt)
-- [`EntityManagerFactorySupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/data/hibernate/src/test/kotlin/io/bluetape4k/hibernate/EntityManagerFactorySupportTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/build.gradle.kts)
+- [`EntityManagerFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/EntityManagerFactorySupport.kt)
+- [`EntityManagerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/EntityManagerSupport.kt)
+- [`HibernateConsts`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/HibernateConsts.kt)
+- [`SessionFactorySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/SessionFactorySupport.kt)
+- [`SessionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/SessionSupport.kt)
+- [`AbstractObjectAsJsonConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/converters/AbstractObjectAsJsonConverter.kt)
+- [`CompressedStringConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/converters/CompressedStringConverter.kt)
+- [`DurationAsTimestampConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/converters/DurationAsTimestampConverter.kt)
+- [`EncryptedStringConverters`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/converters/EncryptedStringConverters.kt)
+- [`LocaleAsStringConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/main/kotlin/io/bluetape4k/hibernate/converters/LocaleAsStringConverter.kt)
+- [`AbstractHibernateTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/test/kotlin/io/bluetape4k/hibernate/AbstractHibernateTest.kt)
+- [`EntityManagerFactorySupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/hibernate/src/test/kotlin/io/bluetape4k/hibernate/EntityManagerFactorySupportTest.kt)

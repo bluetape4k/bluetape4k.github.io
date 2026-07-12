@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "experiments"
   kind: "benchmark"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/en/modules/protobuf-codec-benchmark.md"
   layer: "apply"
 ---
@@ -87,6 +87,6 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/benchmark/protobuf-codec-benchmark/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/benchmark/protobuf-codec-benchmark/build.gradle.kts)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/benchmark/protobuf-codec-benchmark/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/benchmark/protobuf-codec-benchmark/build.gradle.kts)
 

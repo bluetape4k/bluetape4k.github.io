@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "testing"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-mock-webflux-server.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ Gradle project path는 `:bluetape4k-mock-webflux-server`, source directory는 `t
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`MockWebfluxServerApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/MockWebfluxServerApplication.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`MockWebfluxServerApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/MockWebfluxServerApplication.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`MockWebfluxServerApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/MockWebfluxServerApplication.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`AdminController`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/admin/AdminController.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`PingController`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/admin/PingController.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`GlobalExceptionHandler`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/config/GlobalExceptionHandler.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`HttpsServerLifecycle`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/config/HttpsServerLifecycle.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`WebFluxJacksonConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/config/WebFluxJacksonConfig.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`HttpbinAdvancedController`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/httpbin/HttpbinAdvancedController.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`HttpbinController`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/httpbin/HttpbinController.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`HttpbinStreamController`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/httpbin/HttpbinStreamController.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`HttpbinSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/httpbin/HttpbinSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`MockWebfluxServerApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/MockWebfluxServerApplication.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`AdminController`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/admin/AdminController.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`PingController`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/admin/PingController.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`GlobalExceptionHandler`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/config/GlobalExceptionHandler.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`HttpsServerLifecycle`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/config/HttpsServerLifecycle.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`WebFluxJacksonConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/config/WebFluxJacksonConfig.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`HttpbinAdvancedController`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/httpbin/HttpbinAdvancedController.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`HttpbinController`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/httpbin/HttpbinController.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`HttpbinStreamController`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/httpbin/HttpbinStreamController.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`HttpbinSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/httpbin/HttpbinSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -86,14 +86,14 @@ implementation(project(":bluetape4k-logging"))
 
 모듈에서 찾은 설정 resource는 다음과 같습니다.
 
-- [`application.yml`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/main/resources/application.yml)
-- [`localhost.p12`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/main/resources/certs/localhost.p12)
-- [`rootCA.pem`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/main/resources/certs/rootCA.pem)
-- [`albums.json`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/main/resources/jsonplaceholder/albums.json)
-- [`comments.json`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/main/resources/jsonplaceholder/comments.json)
-- [`photos.json`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/main/resources/jsonplaceholder/photos.json)
-- [`posts.json`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/main/resources/jsonplaceholder/posts.json)
-- [`todos.json`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/main/resources/jsonplaceholder/todos.json)
+- [`application.yml`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/main/resources/application.yml)
+- [`localhost.p12`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/main/resources/certs/localhost.p12)
+- [`rootCA.pem`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/main/resources/certs/rootCA.pem)
+- [`albums.json`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/main/resources/jsonplaceholder/albums.json)
+- [`comments.json`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/main/resources/jsonplaceholder/comments.json)
+- [`photos.json`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/main/resources/jsonplaceholder/photos.json)
+- [`posts.json`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/main/resources/jsonplaceholder/posts.json)
+- [`todos.json`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/main/resources/jsonplaceholder/todos.json)
 
 override하기 전에 이 resource와 binding source에서 property 이름과 default를 확인합니다.
 
@@ -115,14 +115,14 @@ fixture를 격리하고 resource 사용량을 제한하며 diagnostic을 남기�
 
 대표 test anchor는 다음과 같습니다.
 
-- [`AbstractMockWebfluxServerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/test/kotlin/io/bluetape4k/mockwebflux/AbstractMockWebfluxServerTest.kt)
-- [`ReadmeRouteContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/test/kotlin/io/bluetape4k/mockwebflux/ReadmeRouteContractTest.kt)
-- [`AdminResetContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/test/kotlin/io/bluetape4k/mockwebflux/admin/AdminResetContractTest.kt)
-- [`PingContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/test/kotlin/io/bluetape4k/mockwebflux/admin/PingContractTest.kt)
-- [`GlobalExceptionHandlerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/test/kotlin/io/bluetape4k/mockwebflux/config/GlobalExceptionHandlerTest.kt)
-- [`HttpbinAdvancedContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/test/kotlin/io/bluetape4k/mockwebflux/httpbin/HttpbinAdvancedContractTest.kt)
-- [`HttpbinContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/test/kotlin/io/bluetape4k/mockwebflux/httpbin/HttpbinContractTest.kt)
-- [`HttpbinStreamContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/test/kotlin/io/bluetape4k/mockwebflux/httpbin/HttpbinStreamContractTest.kt)
+- [`AbstractMockWebfluxServerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/test/kotlin/io/bluetape4k/mockwebflux/AbstractMockWebfluxServerTest.kt)
+- [`ReadmeRouteContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/test/kotlin/io/bluetape4k/mockwebflux/ReadmeRouteContractTest.kt)
+- [`AdminResetContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/test/kotlin/io/bluetape4k/mockwebflux/admin/AdminResetContractTest.kt)
+- [`PingContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/test/kotlin/io/bluetape4k/mockwebflux/admin/PingContractTest.kt)
+- [`GlobalExceptionHandlerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/test/kotlin/io/bluetape4k/mockwebflux/config/GlobalExceptionHandlerTest.kt)
+- [`HttpbinAdvancedContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/test/kotlin/io/bluetape4k/mockwebflux/httpbin/HttpbinAdvancedContractTest.kt)
+- [`HttpbinContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/test/kotlin/io/bluetape4k/mockwebflux/httpbin/HttpbinContractTest.kt)
+- [`HttpbinStreamContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/test/kotlin/io/bluetape4k/mockwebflux/httpbin/HttpbinStreamContractTest.kt)
 
 ## 워크숍
 
@@ -134,17 +134,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/build.gradle.kts)
-- [`MockWebfluxServerApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/MockWebfluxServerApplication.kt)
-- [`AdminController`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/admin/AdminController.kt)
-- [`PingController`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/admin/PingController.kt)
-- [`GlobalExceptionHandler`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/config/GlobalExceptionHandler.kt)
-- [`HttpsServerLifecycle`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/config/HttpsServerLifecycle.kt)
-- [`WebFluxJacksonConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/config/WebFluxJacksonConfig.kt)
-- [`HttpbinAdvancedController`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/httpbin/HttpbinAdvancedController.kt)
-- [`HttpbinController`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/httpbin/HttpbinController.kt)
-- [`HttpbinStreamController`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/httpbin/HttpbinStreamController.kt)
-- [`HttpbinSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/httpbin/HttpbinSupport.kt)
-- [`AbstractMockWebfluxServerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/test/kotlin/io/bluetape4k/mockwebflux/AbstractMockWebfluxServerTest.kt)
-- [`ReadmeRouteContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-webflux-server/src/test/kotlin/io/bluetape4k/mockwebflux/ReadmeRouteContractTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/build.gradle.kts)
+- [`MockWebfluxServerApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/MockWebfluxServerApplication.kt)
+- [`AdminController`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/admin/AdminController.kt)
+- [`PingController`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/admin/PingController.kt)
+- [`GlobalExceptionHandler`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/config/GlobalExceptionHandler.kt)
+- [`HttpsServerLifecycle`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/config/HttpsServerLifecycle.kt)
+- [`WebFluxJacksonConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/config/WebFluxJacksonConfig.kt)
+- [`HttpbinAdvancedController`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/httpbin/HttpbinAdvancedController.kt)
+- [`HttpbinController`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/httpbin/HttpbinController.kt)
+- [`HttpbinStreamController`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/httpbin/HttpbinStreamController.kt)
+- [`HttpbinSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/main/kotlin/io/bluetape4k/mockwebflux/httpbin/HttpbinSupport.kt)
+- [`AbstractMockWebfluxServerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/test/kotlin/io/bluetape4k/mockwebflux/AbstractMockWebfluxServerTest.kt)
+- [`ReadmeRouteContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/mock-webflux-server/src/test/kotlin/io/bluetape4k/mockwebflux/ReadmeRouteContractTest.kt)

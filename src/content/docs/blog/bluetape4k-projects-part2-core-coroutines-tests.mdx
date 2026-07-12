@@ -136,6 +136,16 @@ The helper looks small, but logging style becomes an operational habit. Habits t
 during incidents, which is the most expensive time to notice them. Logs are not prose for quiet days. They are text that
 must still make sense under pressure.
 
+The blog explains the motivation and intuition. The manual owns exact choices and lifecycle contracts.
+
+| Decision | Canonical manual chapter |
+|---|---|
+| Choose a class logger or stable category | [Logging: logger foundation](/manual/bluetape4k-projects/modules/bluetape4k-logging/logger-foundation/) |
+| Avoid disabled-level work and isolate supplier failure | [Logging: lazy messages](/manual/bluetape4k-projects/modules/bluetape4k-logging/lazy-messages/) |
+| Restore or remove nested request context | [Logging: scoped MDC](/manual/bluetape4k-projects/modules/bluetape4k-logging/scoped-mdc/) |
+| Keep context across suspension and dispatcher switches | [Logging: coroutine MDC](/manual/bluetape4k-projects/modules/bluetape4k-logging/coroutine-mdc/) |
+| Choose buffer 64, suspend backpressure, and cancel-not-drain | [Logging: async channel](/manual/bluetape4k-projects/modules/bluetape4k-logging/async-channel/) |
+
 ## tests: Fixtures Get Duplicated Quickly
 
 Test code is less visible than production code, but duplication often grows faster there. It creates temp folders, changes system
@@ -203,7 +213,7 @@ Test code should be less creative so production code can be more honest.
 |---|---|---|
 | `bluetape4k-core` | `if (x.isBlank()) throw ...` appears in several places | [Core manual](/manual/bluetape4k-projects/modules/bluetape4k-core/) |
 | `bluetape4k-coroutines` | `Deferred`, `Flow`, or cancellation handling is rebuilt in each service | [Coroutines manual](/manual/bluetape4k-projects/modules/bluetape4k-coroutines/) |
-| `bluetape4k-logging` | Request ids sometimes disappear across coroutine boundaries | [`logging` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/logging/README.md) |
+| `bluetape4k-logging` | Request ids sometimes disappear across coroutine boundaries | [Logging manual](/manual/bluetape4k-projects/modules/bluetape4k-logging/) |
 | `bluetape4k-assertions` | `assertEquals`, `assertTrue`, null checks, and collection checks mix different styles across tests | [`assertions` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/assertions/README.md) |
 | `bluetape4k-junit5` | Temp files, output capture, or coroutine waits are copied between tests | [`junit5` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/README.md) |
 | `bluetape4k-testcontainers` | Redis, Kafka, or DB fixtures start differently in each class | [`testcontainers` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/testcontainers/README.md) |
@@ -221,7 +231,7 @@ code in front of you.
 - Coroutines README: [bluetape4k/coroutines/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/coroutines/README.md)
 - Core manual: [decision-oriented reference](/manual/bluetape4k-projects/modules/bluetape4k-core/)
 - Coroutines manual: [lifecycle, composition, Flow, and operations](/manual/bluetape4k-projects/modules/bluetape4k-coroutines/)
-- Logging README: [bluetape4k/logging/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/logging/README.md)
+- Logging manual: [logger, MDC, coroutine, and async lifecycle](/manual/bluetape4k-projects/modules/bluetape4k-logging/)
 - Assertions README: [testing/assertions/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/assertions/README.md)
 - JUnit 5 README: [testing/junit5/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/README.md)
 - Testcontainers README: [testing/testcontainers/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/testcontainers/README.md)

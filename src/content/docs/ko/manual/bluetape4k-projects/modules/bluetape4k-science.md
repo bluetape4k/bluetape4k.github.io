@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "utilities"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-science.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ Gradle project path는 `:bluetape4k-science`, source directory는 `utils/science
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`BoundingBox`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/main/kotlin/io/bluetape4k/science/coords/BoundingBox.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`BoundingBox`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/BoundingBox.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`BoundingBox`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/main/kotlin/io/bluetape4k/science/coords/BoundingBox.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`BoundingBoxRelation`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/main/kotlin/io/bluetape4k/science/coords/BoundingBoxRelation.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`CoordConverters`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/main/kotlin/io/bluetape4k/science/coords/CoordConverters.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`DM`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/main/kotlin/io/bluetape4k/science/coords/DM.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`DMS`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/main/kotlin/io/bluetape4k/science/coords/DMS.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`GeoLocation`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/main/kotlin/io/bluetape4k/science/coords/GeoLocation.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`UtmZone`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/main/kotlin/io/bluetape4k/science/coords/UtmZone.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`UtmZoneSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/main/kotlin/io/bluetape4k/science/coords/UtmZoneSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Vector`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/main/kotlin/io/bluetape4k/science/coords/Vector.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`NetCdfException`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/main/kotlin/io/bluetape4k/science/exposed/NetCdfException.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`BoundingBox`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/BoundingBox.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`BoundingBoxRelation`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/BoundingBoxRelation.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`CoordConverters`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/CoordConverters.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`DM`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/DM.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`DMS`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/DMS.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`GeoLocation`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/GeoLocation.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`UtmZone`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/UtmZone.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`UtmZoneSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/UtmZoneSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Vector`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/Vector.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`NetCdfException`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/exposed/NetCdfException.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -104,14 +104,14 @@ hot path를 측정하고 입력 크기를 제한하며 utility를 호출하는 a
 
 대표 test anchor는 다음과 같습니다.
 
-- [`BoundingBoxRelationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/test/kotlin/io/bluetape4k/science/coords/BoundingBoxRelationTest.kt)
-- [`BoundingBoxTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/test/kotlin/io/bluetape4k/science/coords/BoundingBoxTest.kt)
-- [`CoordConvertersTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/test/kotlin/io/bluetape4k/science/coords/CoordConvertersTest.kt)
-- [`DmTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/test/kotlin/io/bluetape4k/science/coords/DmTest.kt)
-- [`DmsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/test/kotlin/io/bluetape4k/science/coords/DmsTest.kt)
-- [`GeoLocationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/test/kotlin/io/bluetape4k/science/coords/GeoLocationTest.kt)
-- [`UtmZoneSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/test/kotlin/io/bluetape4k/science/coords/UtmZoneSupportTest.kt)
-- [`UtmZoneTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/test/kotlin/io/bluetape4k/science/coords/UtmZoneTest.kt)
+- [`BoundingBoxRelationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/BoundingBoxRelationTest.kt)
+- [`BoundingBoxTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/BoundingBoxTest.kt)
+- [`CoordConvertersTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/CoordConvertersTest.kt)
+- [`DmTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/DmTest.kt)
+- [`DmsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/DmsTest.kt)
+- [`GeoLocationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/GeoLocationTest.kt)
+- [`UtmZoneSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/UtmZoneSupportTest.kt)
+- [`UtmZoneTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/UtmZoneTest.kt)
 
 ## 워크숍
 
@@ -123,17 +123,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/build.gradle.kts)
-- [`BoundingBox`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/main/kotlin/io/bluetape4k/science/coords/BoundingBox.kt)
-- [`BoundingBoxRelation`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/main/kotlin/io/bluetape4k/science/coords/BoundingBoxRelation.kt)
-- [`CoordConverters`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/main/kotlin/io/bluetape4k/science/coords/CoordConverters.kt)
-- [`DM`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/main/kotlin/io/bluetape4k/science/coords/DM.kt)
-- [`DMS`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/main/kotlin/io/bluetape4k/science/coords/DMS.kt)
-- [`GeoLocation`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/main/kotlin/io/bluetape4k/science/coords/GeoLocation.kt)
-- [`UtmZone`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/main/kotlin/io/bluetape4k/science/coords/UtmZone.kt)
-- [`UtmZoneSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/main/kotlin/io/bluetape4k/science/coords/UtmZoneSupport.kt)
-- [`Vector`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/main/kotlin/io/bluetape4k/science/coords/Vector.kt)
-- [`NetCdfException`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/main/kotlin/io/bluetape4k/science/exposed/NetCdfException.kt)
-- [`BoundingBoxRelationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/test/kotlin/io/bluetape4k/science/coords/BoundingBoxRelationTest.kt)
-- [`BoundingBoxTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/science/src/test/kotlin/io/bluetape4k/science/coords/BoundingBoxTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/build.gradle.kts)
+- [`BoundingBox`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/BoundingBox.kt)
+- [`BoundingBoxRelation`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/BoundingBoxRelation.kt)
+- [`CoordConverters`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/CoordConverters.kt)
+- [`DM`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/DM.kt)
+- [`DMS`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/DMS.kt)
+- [`GeoLocation`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/GeoLocation.kt)
+- [`UtmZone`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/UtmZone.kt)
+- [`UtmZoneSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/UtmZoneSupport.kt)
+- [`Vector`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/Vector.kt)
+- [`NetCdfException`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/exposed/NetCdfException.kt)
+- [`BoundingBoxRelationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/BoundingBoxRelationTest.kt)
+- [`BoundingBoxTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/BoundingBoxTest.kt)
