@@ -8,7 +8,21 @@ export function layerFor(kind) {
   return 'build';
 }
 
-export function transformManual({ content, module, repository, sourceCommit, sourcePath }) {
+function rewriteManualAssets(content, repository) {
+  return content.replaceAll(
+    /(!?\[[^\]]*\]\()(?:(?:\.\.\/)+)assets\/([^)]+)(\))/g,
+    `$1/manual-assets/${repository}/$2$3`,
+  );
+}
+
+function rewriteRepositoryLinks(content, repository, sourceCommit) {
+  return content.replaceAll(
+    /(\]\()(?:(?:\.\.\/){4,})([^)]+)(\))/g,
+    `$1https://github.com/bluetape4k/${repository}/blob/${sourceCommit}/$2$3`,
+  );
+}
+
+export function transformManual({ content, module, chapter, repository, sourceCommit, sourcePath }) {
   if (!content.startsWith('---\n')) throw new Error(`${sourcePath}: YAML frontmatter is required`);
   const end = content.indexOf('\n---\n', 4);
   if (end < 0) throw new Error(`${sourcePath}: YAML frontmatter is not closed`);
@@ -21,11 +35,13 @@ export function transformManual({ content, module, repository, sourceCommit, sou
     `  sourceCommit: ${yamlScalar(sourceCommit)}`,
     `  sourcePath: ${yamlScalar(sourcePath)}`,
     `  layer: ${yamlScalar(layerFor(module.kind))}`,
+    ...(chapter ? [`  chapterId: ${yamlScalar(chapter.id)}`] : []),
   ].join('\n');
   const withMetadata = `${content.slice(0, end)}\n${metadata}${content.slice(end)}`;
-  return stripFirstHeading(withMetadata.replaceAll(
-    /\]\(\.\.\/\.\.\/\.\.\/\.\.\/([^)]+)\)/g,
-    `](https://github.com/bluetape4k/${repository}/blob/${sourceCommit}/$1)`,
+  return stripFirstHeading(rewriteRepositoryLinks(
+    rewriteManualAssets(withMetadata, repository),
+    repository,
+    sourceCommit,
   ));
 }
 
