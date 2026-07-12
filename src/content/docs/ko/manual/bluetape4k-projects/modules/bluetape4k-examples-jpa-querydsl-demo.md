@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "learning"
   kind: "example"
-  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
+  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
   sourcePath: "docs/manual/ko/modules/bluetape4k-examples-jpa-querydsl-demo.md"
   layer: "learn"
 ---
@@ -47,16 +47,16 @@ example이나 benchmark를 실행하기 전에 project task를 확인합니다.
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`MemberDto`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/dto/MemberDto.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`MemberSearchCondition`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/dto/MemberSearchCondition.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`MemberTeamDto`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/dto/MemberTeamDto.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`TeamDto`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/dto/TeamDto.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`dto-mapping`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/mapper/dto-mapping.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Member`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/model/Member.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Team`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/model/Team.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`MemberRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/repository/MemberRepository.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`MemberRepositoryCustom`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/repository/MemberRepositoryCustom.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`MemberRepositoryImpl`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/repository/MemberRepositoryImpl.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`MemberDto`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/dto/MemberDto.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`MemberSearchCondition`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/dto/MemberSearchCondition.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`MemberTeamDto`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/dto/MemberTeamDto.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`TeamDto`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/dto/TeamDto.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`dto-mapping`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/mapper/dto-mapping.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Member`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/model/Member.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Team`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/model/Team.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`MemberRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/repository/MemberRepository.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`MemberRepositoryCustom`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/repository/MemberRepositoryCustom.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`MemberRepositoryImpl`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/repository/MemberRepositoryImpl.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -103,13 +103,13 @@ failure 의미는 artifact 이름이 아니라 아래 entry point와 test가 결
 
 대표 test anchor는 다음과 같습니다.
 
-- [`AbstractQuerydslTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/src/test/kotlin/io/bluetape4k/examples/jpa/querydsl/AbstractQuerydslTest.kt)
-- [`QuerydslApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/src/test/kotlin/io/bluetape4k/examples/jpa/querydsl/QuerydslApplication.kt)
-- [`TestEntityManager`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/src/test/kotlin/io/bluetape4k/examples/jpa/querydsl/TestEntityManager.kt)
-- [`AbstractDomainTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/src/test/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/AbstractDomainTest.kt)
-- [`JpaRepositoryTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/src/test/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/repository/JpaRepositoryTest.kt)
-- [`QuerydslExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/src/test/kotlin/io/bluetape4k/examples/jpa/querydsl/examples/QuerydslExamples.kt)
-- [`InitMemberService`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/src/test/kotlin/io/bluetape4k/examples/jpa/querydsl/services/InitMemberService.kt)
+- [`AbstractQuerydslTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/src/test/kotlin/io/bluetape4k/examples/jpa/querydsl/AbstractQuerydslTest.kt)
+- [`QuerydslApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/src/test/kotlin/io/bluetape4k/examples/jpa/querydsl/QuerydslApplication.kt)
+- [`TestEntityManager`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/src/test/kotlin/io/bluetape4k/examples/jpa/querydsl/TestEntityManager.kt)
+- [`AbstractDomainTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/src/test/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/AbstractDomainTest.kt)
+- [`JpaRepositoryTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/src/test/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/repository/JpaRepositoryTest.kt)
+- [`QuerydslExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/src/test/kotlin/io/bluetape4k/examples/jpa/querydsl/examples/QuerydslExamples.kt)
+- [`InitMemberService`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/src/test/kotlin/io/bluetape4k/examples/jpa/querydsl/services/InitMemberService.kt)
 
 ## 워크숍
 
@@ -121,17 +121,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/build.gradle.kts)
-- [`MemberDto`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/dto/MemberDto.kt)
-- [`MemberSearchCondition`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/dto/MemberSearchCondition.kt)
-- [`MemberTeamDto`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/dto/MemberTeamDto.kt)
-- [`TeamDto`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/dto/TeamDto.kt)
-- [`dto-mapping`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/mapper/dto-mapping.kt)
-- [`Member`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/model/Member.kt)
-- [`Team`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/model/Team.kt)
-- [`MemberRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/repository/MemberRepository.kt)
-- [`MemberRepositoryCustom`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/repository/MemberRepositoryCustom.kt)
-- [`MemberRepositoryImpl`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/repository/MemberRepositoryImpl.kt)
-- [`AbstractQuerydslTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/src/test/kotlin/io/bluetape4k/examples/jpa/querydsl/AbstractQuerydslTest.kt)
-- [`QuerydslApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/jpa-querydsl-demo/src/test/kotlin/io/bluetape4k/examples/jpa/querydsl/QuerydslApplication.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/build.gradle.kts)
+- [`MemberDto`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/dto/MemberDto.kt)
+- [`MemberSearchCondition`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/dto/MemberSearchCondition.kt)
+- [`MemberTeamDto`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/dto/MemberTeamDto.kt)
+- [`TeamDto`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/dto/TeamDto.kt)
+- [`dto-mapping`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/mapper/dto-mapping.kt)
+- [`Member`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/model/Member.kt)
+- [`Team`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/model/Team.kt)
+- [`MemberRepository`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/repository/MemberRepository.kt)
+- [`MemberRepositoryCustom`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/repository/MemberRepositoryCustom.kt)
+- [`MemberRepositoryImpl`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/src/main/kotlin/io/bluetape4k/examples/jpa/querydsl/domain/repository/MemberRepositoryImpl.kt)
+- [`AbstractQuerydslTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/src/test/kotlin/io/bluetape4k/examples/jpa/querydsl/AbstractQuerydslTest.kt)
+- [`QuerydslApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/jpa-querydsl-demo/src/test/kotlin/io/bluetape4k/examples/jpa/querydsl/QuerydslApplication.kt)

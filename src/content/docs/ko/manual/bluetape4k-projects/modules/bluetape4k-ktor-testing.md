@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "web"
   kind: "library"
-  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
+  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
   sourcePath: "docs/manual/ko/modules/bluetape4k-ktor-testing.md"
   layer: "build"
 ---
@@ -40,16 +40,16 @@ Gradle project path는 `:bluetape4k-ktor-testing`, source directory는 `ktor/tes
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`Bluetape4kKtorTesting`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/Bluetape4kKtorTesting.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`Bluetape4kKtorTesting`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/Bluetape4kKtorTesting.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`Bluetape4kKtorTesting`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/Bluetape4kKtorTesting.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`ExpectedApiError`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/ExpectedApiError.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`KtorJsonMockEngineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/KtorJsonMockEngineSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`KtorResponseAssertions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/KtorResponseAssertions.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Bluetape4kKtorTesting`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/Bluetape4kKtorTesting.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ExpectedApiError`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/ExpectedApiError.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`KtorJsonMockEngineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/KtorJsonMockEngineSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`KtorResponseAssertions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/KtorResponseAssertions.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -94,7 +94,7 @@ request latency, status code, cancellation, queueing, dependency failure, shutdo
 
 대표 test anchor는 다음과 같습니다.
 
-- [`Bluetape4kKtorTestingTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/testing/src/test/kotlin/io/bluetape4k/ktor/testing/Bluetape4kKtorTestingTest.kt)
+- [`Bluetape4kKtorTestingTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/testing/src/test/kotlin/io/bluetape4k/ktor/testing/Bluetape4kKtorTestingTest.kt)
 
 ## 워크숍
 
@@ -106,10 +106,10 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/testing/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/testing/build.gradle.kts)
-- [`Bluetape4kKtorTesting`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/Bluetape4kKtorTesting.kt)
-- [`ExpectedApiError`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/ExpectedApiError.kt)
-- [`KtorJsonMockEngineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/KtorJsonMockEngineSupport.kt)
-- [`KtorResponseAssertions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/KtorResponseAssertions.kt)
-- [`Bluetape4kKtorTestingTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/ktor/testing/src/test/kotlin/io/bluetape4k/ktor/testing/Bluetape4kKtorTestingTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/testing/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/testing/build.gradle.kts)
+- [`Bluetape4kKtorTesting`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/Bluetape4kKtorTesting.kt)
+- [`ExpectedApiError`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/ExpectedApiError.kt)
+- [`KtorJsonMockEngineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/KtorJsonMockEngineSupport.kt)
+- [`KtorResponseAssertions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/testing/src/main/kotlin/io/bluetape4k/ktor/testing/KtorResponseAssertions.kt)
+- [`Bluetape4kKtorTestingTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/testing/src/test/kotlin/io/bluetape4k/ktor/testing/Bluetape4kKtorTestingTest.kt)

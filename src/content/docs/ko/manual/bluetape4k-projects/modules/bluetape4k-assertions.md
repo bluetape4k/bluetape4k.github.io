@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "testing"
   kind: "library"
-  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
+  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
   sourcePath: "docs/manual/ko/modules/bluetape4k-assertions.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ Gradle project path는 `:bluetape4k-assertions`, source directory는 `testing/as
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`Arrays`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Arrays.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`Arrays`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Arrays.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`Arrays`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Arrays.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Basic`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Basic.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`CharSequences`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/CharSequences.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Collections`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Collections.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`DateTimesInstantZoned`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/DateTimesInstantZoned.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`DateTimesLegacy`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/DateTimesLegacy.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`DateTimesLocal`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/DateTimesLocal.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Exceptions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Exceptions.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Maps`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Maps.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Numerical`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Numerical.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Arrays`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Arrays.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Basic`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Basic.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`CharSequences`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/CharSequences.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Collections`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Collections.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`DateTimesInstantZoned`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/DateTimesInstantZoned.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`DateTimesLegacy`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/DateTimesLegacy.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`DateTimesLocal`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/DateTimesLocal.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Exceptions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Exceptions.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Maps`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Maps.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Numerical`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Numerical.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -96,14 +96,14 @@ fixture를 격리하고 resource 사용량을 제한하며 diagnostic을 남기�
 
 대표 test anchor는 다음과 같습니다.
 
-- [`ArraysTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/test/kotlin/io/bluetape4k/assertions/ArraysTest.kt)
-- [`BasicTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/test/kotlin/io/bluetape4k/assertions/BasicTest.kt)
-- [`CharSequencesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/test/kotlin/io/bluetape4k/assertions/CharSequencesTest.kt)
-- [`CollectionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/test/kotlin/io/bluetape4k/assertions/CollectionsTest.kt)
-- [`CompatibilitySmokeTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/test/kotlin/io/bluetape4k/assertions/CompatibilitySmokeTest.kt)
-- [`DateTimesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/test/kotlin/io/bluetape4k/assertions/DateTimesTest.kt)
-- [`ExceptionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/test/kotlin/io/bluetape4k/assertions/ExceptionsTest.kt)
-- [`MapsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/test/kotlin/io/bluetape4k/assertions/MapsTest.kt)
+- [`ArraysTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/test/kotlin/io/bluetape4k/assertions/ArraysTest.kt)
+- [`BasicTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/test/kotlin/io/bluetape4k/assertions/BasicTest.kt)
+- [`CharSequencesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/test/kotlin/io/bluetape4k/assertions/CharSequencesTest.kt)
+- [`CollectionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/test/kotlin/io/bluetape4k/assertions/CollectionsTest.kt)
+- [`CompatibilitySmokeTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/test/kotlin/io/bluetape4k/assertions/CompatibilitySmokeTest.kt)
+- [`DateTimesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/test/kotlin/io/bluetape4k/assertions/DateTimesTest.kt)
+- [`ExceptionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/test/kotlin/io/bluetape4k/assertions/ExceptionsTest.kt)
+- [`MapsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/test/kotlin/io/bluetape4k/assertions/MapsTest.kt)
 
 ## 워크숍
 
@@ -115,17 +115,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/build.gradle.kts)
-- [`Arrays`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Arrays.kt)
-- [`Basic`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Basic.kt)
-- [`CharSequences`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/CharSequences.kt)
-- [`Collections`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Collections.kt)
-- [`DateTimesInstantZoned`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/DateTimesInstantZoned.kt)
-- [`DateTimesLegacy`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/DateTimesLegacy.kt)
-- [`DateTimesLocal`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/DateTimesLocal.kt)
-- [`Exceptions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Exceptions.kt)
-- [`Maps`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Maps.kt)
-- [`Numerical`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Numerical.kt)
-- [`ArraysTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/test/kotlin/io/bluetape4k/assertions/ArraysTest.kt)
-- [`BasicTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/assertions/src/test/kotlin/io/bluetape4k/assertions/BasicTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/build.gradle.kts)
+- [`Arrays`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Arrays.kt)
+- [`Basic`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Basic.kt)
+- [`CharSequences`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/CharSequences.kt)
+- [`Collections`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Collections.kt)
+- [`DateTimesInstantZoned`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/DateTimesInstantZoned.kt)
+- [`DateTimesLegacy`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/DateTimesLegacy.kt)
+- [`DateTimesLocal`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/DateTimesLocal.kt)
+- [`Exceptions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Exceptions.kt)
+- [`Maps`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Maps.kt)
+- [`Numerical`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/main/kotlin/io/bluetape4k/assertions/Numerical.kt)
+- [`ArraysTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/test/kotlin/io/bluetape4k/assertions/ArraysTest.kt)
+- [`BasicTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/assertions/src/test/kotlin/io/bluetape4k/assertions/BasicTest.kt)

@@ -91,6 +91,23 @@ failure and cancellation in every service. If every service decides where to `aw
 how much `Flow` ordering to preserve, async code becomes harder to reason about than it needs to be. The `kotlin/coroutines` and
 `spring-boot/webflux-coroutines` workshops show the path from learning examples to real HTTP request wiring.
 
+## The Manual Owns the Contract
+
+This article explains why these modules exist; it does not duplicate every operational rule. The repository-owned
+manual is the source of truth and links each rule to the exact source commit and representative tests.
+
+| Decision | Canonical manual chapter |
+|---|---|
+| Validate once and keep internal invariants non-null | [Core: validation and invariants](/manual/bluetape4k-projects/modules/bluetape4k-core/validation/) |
+| Choose stack/ring ordering and eviction | [Core: bounded collections](/manual/bluetape4k-projects/modules/bluetape4k-core/bounded-collections/) |
+| Bound active and queued asynchronous work | [Core: concurrency and lifecycle](/manual/bluetape4k-projects/modules/bluetape4k-core/concurrency-lifecycle/) |
+| Decide who owns a coroutine and when it stops | [Coroutines: lifecycle and scope ownership](/manual/bluetape4k-projects/modules/bluetape4k-coroutines/lifecycle/) |
+| Race deferred work without leaking losers | [Coroutines: Deferred composition and races](/manual/bluetape4k-projects/modules/bluetape4k-coroutines/deferred/) |
+| Choose ordered or completion-order Flow processing | [Coroutines: ordered and parallel Flow](/manual/bluetape4k-projects/modules/bluetape4k-coroutines/flow/) |
+
+Workshops remain runnable companions. If a blog or workshop disagrees with the manual, update `docs/manual` first and
+derive the explanatory material from that contract.
+
 ## logging: Logs Are What People Read During Incidents
 
 Most days, logs sit in the background. During an incident, they become the text everyone reads. If `requestId` or
@@ -184,8 +201,8 @@ Test code should be less creative so production code can be more honest.
 
 | Module | Smell | Useful example |
 |---|---|---|
-| `bluetape4k-core` | `if (x.isBlank()) throw ...` appears in several places | [`core` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/core/README.md) |
-| `bluetape4k-coroutines` | `Deferred`, `Flow`, or cancellation handling is rebuilt in each service | [`kotlin/coroutines` workshop](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/kotlin/coroutines) |
+| `bluetape4k-core` | `if (x.isBlank()) throw ...` appears in several places | [Core manual](/manual/bluetape4k-projects/modules/bluetape4k-core/) |
+| `bluetape4k-coroutines` | `Deferred`, `Flow`, or cancellation handling is rebuilt in each service | [Coroutines manual](/manual/bluetape4k-projects/modules/bluetape4k-coroutines/) |
 | `bluetape4k-logging` | Request ids sometimes disappear across coroutine boundaries | [`logging` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/logging/README.md) |
 | `bluetape4k-assertions` | `assertEquals`, `assertTrue`, null checks, and collection checks mix different styles across tests | [`assertions` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/assertions/README.md) |
 | `bluetape4k-junit5` | Temp files, output capture, or coroutine waits are copied between tests | [`junit5` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/README.md) |
@@ -202,6 +219,8 @@ code in front of you.
 
 - Core README: [bluetape4k/core/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/core/README.md)
 - Coroutines README: [bluetape4k/coroutines/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/coroutines/README.md)
+- Core manual: [decision-oriented reference](/manual/bluetape4k-projects/modules/bluetape4k-core/)
+- Coroutines manual: [lifecycle, composition, Flow, and operations](/manual/bluetape4k-projects/modules/bluetape4k-coroutines/)
 - Logging README: [bluetape4k/logging/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/logging/README.md)
 - Assertions README: [testing/assertions/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/assertions/README.md)
 - JUnit 5 README: [testing/junit5/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/README.md)

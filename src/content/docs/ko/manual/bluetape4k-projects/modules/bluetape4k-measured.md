@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "utilities"
   kind: "library"
-  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
+  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
   sourcePath: "docs/manual/ko/modules/bluetape4k-measured.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ Gradle project path는 `:bluetape4k-measured`, source directory는 `utils/measur
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`Angle`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/main/kotlin/io/bluetape4k/measured/Angle.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`Angle`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Angle.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`Angle`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/main/kotlin/io/bluetape4k/measured/Angle.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Area`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/main/kotlin/io/bluetape4k/measured/Area.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`BinarySize`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/main/kotlin/io/bluetape4k/measured/BinarySize.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`EnergyPower`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/main/kotlin/io/bluetape4k/measured/EnergyPower.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Frequency`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/main/kotlin/io/bluetape4k/measured/Frequency.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`GraphicsLength`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/main/kotlin/io/bluetape4k/measured/GraphicsLength.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Length`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/main/kotlin/io/bluetape4k/measured/Length.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Mass`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/main/kotlin/io/bluetape4k/measured/Mass.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Motion`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/main/kotlin/io/bluetape4k/measured/Motion.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Pressure`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/main/kotlin/io/bluetape4k/measured/Pressure.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Angle`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Angle.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Area`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Area.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`BinarySize`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/BinarySize.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`EnergyPower`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/EnergyPower.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Frequency`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Frequency.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`GraphicsLength`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/GraphicsLength.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Length`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Length.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Mass`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Mass.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Motion`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Motion.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Pressure`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Pressure.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -93,14 +93,14 @@ hot path를 측정하고 입력 크기를 제한하며 utility를 호출하는 a
 
 대표 test anchor는 다음과 같습니다.
 
-- [`AngleTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/test/kotlin/io/bluetape4k/measured/AngleTest.kt)
-- [`AreaTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/test/kotlin/io/bluetape4k/measured/AreaTest.kt)
-- [`BinarySizeTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/test/kotlin/io/bluetape4k/measured/BinarySizeTest.kt)
-- [`EnergyPowerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/test/kotlin/io/bluetape4k/measured/EnergyPowerTest.kt)
-- [`FrequencyTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/test/kotlin/io/bluetape4k/measured/FrequencyTest.kt)
-- [`GraphicsLengthTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/test/kotlin/io/bluetape4k/measured/GraphicsLengthTest.kt)
-- [`LengthTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/test/kotlin/io/bluetape4k/measured/LengthTest.kt)
-- [`MassTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/test/kotlin/io/bluetape4k/measured/MassTest.kt)
+- [`AngleTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/test/kotlin/io/bluetape4k/measured/AngleTest.kt)
+- [`AreaTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/test/kotlin/io/bluetape4k/measured/AreaTest.kt)
+- [`BinarySizeTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/test/kotlin/io/bluetape4k/measured/BinarySizeTest.kt)
+- [`EnergyPowerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/test/kotlin/io/bluetape4k/measured/EnergyPowerTest.kt)
+- [`FrequencyTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/test/kotlin/io/bluetape4k/measured/FrequencyTest.kt)
+- [`GraphicsLengthTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/test/kotlin/io/bluetape4k/measured/GraphicsLengthTest.kt)
+- [`LengthTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/test/kotlin/io/bluetape4k/measured/LengthTest.kt)
+- [`MassTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/test/kotlin/io/bluetape4k/measured/MassTest.kt)
 
 ## 워크숍
 
@@ -112,17 +112,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/build.gradle.kts)
-- [`Angle`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/main/kotlin/io/bluetape4k/measured/Angle.kt)
-- [`Area`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/main/kotlin/io/bluetape4k/measured/Area.kt)
-- [`BinarySize`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/main/kotlin/io/bluetape4k/measured/BinarySize.kt)
-- [`EnergyPower`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/main/kotlin/io/bluetape4k/measured/EnergyPower.kt)
-- [`Frequency`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/main/kotlin/io/bluetape4k/measured/Frequency.kt)
-- [`GraphicsLength`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/main/kotlin/io/bluetape4k/measured/GraphicsLength.kt)
-- [`Length`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/main/kotlin/io/bluetape4k/measured/Length.kt)
-- [`Mass`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/main/kotlin/io/bluetape4k/measured/Mass.kt)
-- [`Motion`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/main/kotlin/io/bluetape4k/measured/Motion.kt)
-- [`Pressure`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/main/kotlin/io/bluetape4k/measured/Pressure.kt)
-- [`AngleTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/test/kotlin/io/bluetape4k/measured/AngleTest.kt)
-- [`AreaTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/measured/src/test/kotlin/io/bluetape4k/measured/AreaTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/build.gradle.kts)
+- [`Angle`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Angle.kt)
+- [`Area`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Area.kt)
+- [`BinarySize`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/BinarySize.kt)
+- [`EnergyPower`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/EnergyPower.kt)
+- [`Frequency`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Frequency.kt)
+- [`GraphicsLength`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/GraphicsLength.kt)
+- [`Length`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Length.kt)
+- [`Mass`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Mass.kt)
+- [`Motion`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Motion.kt)
+- [`Pressure`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Pressure.kt)
+- [`AngleTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/test/kotlin/io/bluetape4k/measured/AngleTest.kt)
+- [`AreaTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/test/kotlin/io/bluetape4k/measured/AreaTest.kt)

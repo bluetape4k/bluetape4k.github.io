@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "utilities"
   kind: "library"
-  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
+  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
   sourcePath: "docs/manual/ko/modules/bluetape4k-javatimes.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ Gradle project path는 `:bluetape4k-javatimes`, source directory는 `utils/javat
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`AbstractTemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/AbstractTemporalInterval.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`AbstractTemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/AbstractTemporalInterval.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`AbstractTemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/AbstractTemporalInterval.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`IntervalTypealias`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/IntervalTypealias.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`MutableTemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/MutableTemporalInterval.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`ReadableTemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/ReadableTemporalInterval.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`TemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/TemporalInterval.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`TemporalIntervalSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`TemporalIntervalWindowed`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalWindowed.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`ITimeBlock`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/period/ITimeBlock.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`ITimeCalendar`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/period/ITimeCalendar.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`ITimePeriod`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/period/ITimePeriod.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`AbstractTemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/AbstractTemporalInterval.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`IntervalTypealias`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/IntervalTypealias.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`MutableTemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/MutableTemporalInterval.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ReadableTemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/ReadableTemporalInterval.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`TemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/TemporalInterval.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`TemporalIntervalSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`TemporalIntervalWindowed`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalWindowed.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ITimeBlock`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/period/ITimeBlock.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ITimeCalendar`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/period/ITimeCalendar.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ITimePeriod`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/period/ITimePeriod.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -95,14 +95,14 @@ hot path를 측정하고 입력 크기를 제한하며 utility를 호출하는 a
 
 대표 test anchor는 다음과 같습니다.
 
-- [`TemporalIntervalSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalSupportTest.kt)
-- [`TemporalIntervalTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalTest.kt)
-- [`TemporalIntervalWindowedTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalWindowedTest.kt)
-- [`AbstractPeriodTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/period/AbstractPeriodTest.kt)
-- [`PeriodRelationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/period/PeriodRelationTest.kt)
-- [`TimeBlockTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/period/TimeBlockTest.kt)
-- [`TimeCalendarConfigTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/period/TimeCalendarConfigTest.kt)
-- [`TimeCalendarTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/period/TimeCalendarTest.kt)
+- [`TemporalIntervalSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalSupportTest.kt)
+- [`TemporalIntervalTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalTest.kt)
+- [`TemporalIntervalWindowedTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalWindowedTest.kt)
+- [`AbstractPeriodTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/period/AbstractPeriodTest.kt)
+- [`PeriodRelationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/period/PeriodRelationTest.kt)
+- [`TimeBlockTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/period/TimeBlockTest.kt)
+- [`TimeCalendarConfigTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/period/TimeCalendarConfigTest.kt)
+- [`TimeCalendarTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/period/TimeCalendarTest.kt)
 
 ## 워크숍
 
@@ -114,17 +114,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/build.gradle.kts)
-- [`AbstractTemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/AbstractTemporalInterval.kt)
-- [`IntervalTypealias`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/IntervalTypealias.kt)
-- [`MutableTemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/MutableTemporalInterval.kt)
-- [`ReadableTemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/ReadableTemporalInterval.kt)
-- [`TemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/TemporalInterval.kt)
-- [`TemporalIntervalSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalSupport.kt)
-- [`TemporalIntervalWindowed`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalWindowed.kt)
-- [`ITimeBlock`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/period/ITimeBlock.kt)
-- [`ITimeCalendar`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/period/ITimeCalendar.kt)
-- [`ITimePeriod`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/period/ITimePeriod.kt)
-- [`TemporalIntervalSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalSupportTest.kt)
-- [`TemporalIntervalTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/build.gradle.kts)
+- [`AbstractTemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/AbstractTemporalInterval.kt)
+- [`IntervalTypealias`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/IntervalTypealias.kt)
+- [`MutableTemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/MutableTemporalInterval.kt)
+- [`ReadableTemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/ReadableTemporalInterval.kt)
+- [`TemporalInterval`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/TemporalInterval.kt)
+- [`TemporalIntervalSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalSupport.kt)
+- [`TemporalIntervalWindowed`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalWindowed.kt)
+- [`ITimeBlock`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/period/ITimeBlock.kt)
+- [`ITimeCalendar`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/period/ITimeCalendar.kt)
+- [`ITimePeriod`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/main/kotlin/io/bluetape4k/javatimes/period/ITimePeriod.kt)
+- [`TemporalIntervalSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalSupportTest.kt)
+- [`TemporalIntervalTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/javatimes/src/test/kotlin/io/bluetape4k/javatimes/interval/TemporalIntervalTest.kt)

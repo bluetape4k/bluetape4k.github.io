@@ -1,8 +1,11 @@
 {
   "repository": "bluetape4k-projects",
-  "sourceCommit": "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6",
-  "sourceDigest": "cb6fbda1c750668df8e8ab430ebc58ca50c6722e32f06724ef6fce17f8c03779",
-  "contentDigest": "5243d78aa437f26dd0bd00c0d9917bcb8cfffdc1a5324d7be90ccf8915cf54cd",
-  "sourceFiles": 186,
-  "contentFiles": 186
+  "sourceCommit": "dda876503926aa16302b4416e3f3a3e2bff26526",
+  "sourceDigest": "5e18c5165874ae22cb29b3f1c4712870f423a79eb4d10487837c163769173a12",
+  "contentDigest": "86939631d290ac2e71c537712be8181e27091c8abde8e4b2bc45b80f0b225615",
+  "assetDigest": "4a3b411eb333078d96977918e791e32536eee80ffc700d8df2cb24a73418e840",
+  "sourceFiles": 212,
+  "documentFiles": 212,
+  "assetFiles": 22,
+  "contentFiles": 234
 }

@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
+  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
   sourcePath: "docs/manual/ko/modules/bluetape4k-netty.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ Gradle project path는 `:bluetape4k-netty`, source directory는 `io/netty`입니
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`NettyTransportSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/main/kotlin/io/bluetape4k/netty/NettyTransportSupport.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`NettyTransportSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/main/kotlin/io/bluetape4k/netty/NettyTransportSupport.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`NettyTransportSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/main/kotlin/io/bluetape4k/netty/NettyTransportSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`BitBuf`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/BitBuf.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`BitBufImpl`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/BitBufImpl.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`ByteBufExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/ByteBufExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`ByteBufUtilSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/ByteBufUtilSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Medium`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/Medium.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`SmallLong`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/SmallLong.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Smart`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/Smart.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`UMedium`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/UMedium.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`USmallLong`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/USmallLong.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`NettyTransportSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/main/kotlin/io/bluetape4k/netty/NettyTransportSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`BitBuf`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/BitBuf.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`BitBufImpl`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/BitBufImpl.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ByteBufExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/ByteBufExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ByteBufUtilSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/ByteBufUtilSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Medium`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/Medium.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`SmallLong`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/SmallLong.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Smart`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/Smart.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`UMedium`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/UMedium.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`USmallLong`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/USmallLong.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -100,14 +100,14 @@ payload 크기, allocation, latency, malformed input 비율, resource close, pro
 
 대표 test anchor는 다음과 같습니다.
 
-- [`AbstractNettyTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/test/kotlin/io/bluetape4k/netty/AbstractNettyTest.kt)
-- [`NettyTransportSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/test/kotlin/io/bluetape4k/netty/NettyTransportSupportTest.kt)
-- [`BitBufTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/test/kotlin/io/bluetape4k/netty/buffer/BitBufTest.kt)
-- [`ByteBufByteArrayTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/test/kotlin/io/bluetape4k/netty/buffer/ByteBufByteArrayTest.kt)
-- [`ByteBufByteTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/test/kotlin/io/bluetape4k/netty/buffer/ByteBufByteTest.kt)
-- [`ByteBufMediumIntLongTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/test/kotlin/io/bluetape4k/netty/buffer/ByteBufMediumIntLongTest.kt)
-- [`ByteBufShortAddTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/test/kotlin/io/bluetape4k/netty/buffer/ByteBufShortAddTest.kt)
-- [`ByteBufSmartVarIntTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/test/kotlin/io/bluetape4k/netty/buffer/ByteBufSmartVarIntTest.kt)
+- [`AbstractNettyTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/test/kotlin/io/bluetape4k/netty/AbstractNettyTest.kt)
+- [`NettyTransportSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/test/kotlin/io/bluetape4k/netty/NettyTransportSupportTest.kt)
+- [`BitBufTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/test/kotlin/io/bluetape4k/netty/buffer/BitBufTest.kt)
+- [`ByteBufByteArrayTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/test/kotlin/io/bluetape4k/netty/buffer/ByteBufByteArrayTest.kt)
+- [`ByteBufByteTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/test/kotlin/io/bluetape4k/netty/buffer/ByteBufByteTest.kt)
+- [`ByteBufMediumIntLongTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/test/kotlin/io/bluetape4k/netty/buffer/ByteBufMediumIntLongTest.kt)
+- [`ByteBufShortAddTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/test/kotlin/io/bluetape4k/netty/buffer/ByteBufShortAddTest.kt)
+- [`ByteBufSmartVarIntTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/test/kotlin/io/bluetape4k/netty/buffer/ByteBufSmartVarIntTest.kt)
 
 ## 워크숍
 
@@ -119,17 +119,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/build.gradle.kts)
-- [`NettyTransportSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/main/kotlin/io/bluetape4k/netty/NettyTransportSupport.kt)
-- [`BitBuf`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/BitBuf.kt)
-- [`BitBufImpl`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/BitBufImpl.kt)
-- [`ByteBufExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/ByteBufExtensions.kt)
-- [`ByteBufUtilSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/ByteBufUtilSupport.kt)
-- [`Medium`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/Medium.kt)
-- [`SmallLong`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/SmallLong.kt)
-- [`Smart`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/Smart.kt)
-- [`UMedium`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/UMedium.kt)
-- [`USmallLong`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/USmallLong.kt)
-- [`AbstractNettyTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/test/kotlin/io/bluetape4k/netty/AbstractNettyTest.kt)
-- [`NettyTransportSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/netty/src/test/kotlin/io/bluetape4k/netty/NettyTransportSupportTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/build.gradle.kts)
+- [`NettyTransportSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/main/kotlin/io/bluetape4k/netty/NettyTransportSupport.kt)
+- [`BitBuf`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/BitBuf.kt)
+- [`BitBufImpl`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/BitBufImpl.kt)
+- [`ByteBufExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/ByteBufExtensions.kt)
+- [`ByteBufUtilSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/ByteBufUtilSupport.kt)
+- [`Medium`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/Medium.kt)
+- [`SmallLong`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/SmallLong.kt)
+- [`Smart`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/Smart.kt)
+- [`UMedium`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/UMedium.kt)
+- [`USmallLong`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/USmallLong.kt)
+- [`AbstractNettyTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/test/kotlin/io/bluetape4k/netty/AbstractNettyTest.kt)
+- [`NettyTransportSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/netty/src/test/kotlin/io/bluetape4k/netty/NettyTransportSupportTest.kt)

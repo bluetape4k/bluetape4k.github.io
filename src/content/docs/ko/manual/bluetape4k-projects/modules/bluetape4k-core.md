@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
+  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
   sourcePath: "docs/manual/ko/modules/bluetape4k-core.md"
   layer: "build"
 ---
@@ -39,6 +39,21 @@ dependencies {
 이 모듈은 하나의 runtime subsystem이 아니라 toolbox입니다. 주요 영역은 `support` validation과 extension, `codec` encoder, `collections` bounded/paginated container, `range` value type, `concurrent` helper, `functional` adapter, `time` DSL, reflection과 Apache Commons bridge입니다.
 
 validation 이름은 failure 의미를 드러냅니다. 새 `require*` helper는 caller 입력을 `IllegalArgumentException`으로 거부합니다. `BoundedStack`, `RingBuffer` 같은 collection은 capacity가 계약에 포함됩니다.
+
+## 매뉴얼 지도
+
+Core를 API 이름순으로 읽기보다 경계가 실행 흐름을 따라 이동하는 순서로 읽습니다.
+
+![Core boundary validation map](/manual-assets/bluetape4k-projects/core/validation-boundary.svg)
+
+| 설계 질문 | 장 | 결정할 계약 |
+| --- | --- | --- |
+| 잘못된 caller 입력을 어디서 끊을까? | [검증과 불변식](./bluetape4k-core/validation.md) | exception type, parameter name, non-null 내부 모델 |
+| bytes를 text로 어떻게 옮길까? | [Encoding과 데이터 경계](./bluetape4k-core/encoding-data.md) | charset, URL-safe Base64/Hex, malformed input |
+| 최근 N개를 어떤 순서로 유지할까? | [Bounded collections](./bluetape4k-core/bounded-collections.md) | capacity, eviction, stack/ring read order |
+| 시간 조회의 끝을 포함할까? | [시간과 범위](./bluetape4k-core/time-ranges.md) | endpoint inclusion, overlap, timezone |
+| active와 waiting work를 어디까지 허용할까? | [Concurrency와 lifecycle](./bluetape4k-core/concurrency-lifecycle.md) | rejection, cancellation, close order |
+| 위 계약을 한 component로 어떻게 묶을까? | [Core 실전 레시피](./bluetape4k-core/recipes.md) | end-to-end test와 운영 signal |
 
 ## 빠른 시작
 
@@ -179,7 +194,7 @@ core의 API는 범위가 넓어 lifecycle과 성능 특성이 모두 같지 않�
 
 ## 근거
 
-- [모듈 README와 API catalog](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/bluetape4k/core/README.ko.md)
-- [Main source package](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/bluetape4k/core/src/main/kotlin/io/bluetape4k)
-- [모듈 테스트](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/bluetape4k/core/src/test/kotlin/io/bluetape4k)
-- [모듈 build와 dependency](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/bluetape4k/core/build.gradle.kts)
+- [모듈 README와 API catalog](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/README.ko.md)
+- [Main source package](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/src/main/kotlin/io/bluetape4k)
+- [모듈 테스트](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/src/test/kotlin/io/bluetape4k)
+- [모듈 build와 dependency](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/build.gradle.kts)

@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "learning"
   kind: "example"
-  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
+  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
   sourcePath: "docs/manual/en/modules/idgenerator-spring-boot-demo.md"
   layer: "learn"
 ---
@@ -47,14 +47,14 @@ Then use the command documented by the module README and keep required external 
 
 | Entry point | What to verify |
 | --- | --- |
-| [`IdGeneratorDemoApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/IdGeneratorDemoApplication.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`IdGeneratorConfiguration`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/config/IdGeneratorConfiguration.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`IdGeneratorProperties`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/config/IdGeneratorProperties.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`IdGeneratorController`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/controller/IdGeneratorController.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`IdGeneratorExceptionHandler`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/controller/IdGeneratorExceptionHandler.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`IdGeneratorResponses`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/controller/IdGeneratorResponses.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`IdGeneratorRegistry`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/service/IdGeneratorRegistry.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`IdGeneratorService`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/service/IdGeneratorService.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`IdGeneratorDemoApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/IdGeneratorDemoApplication.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`IdGeneratorConfiguration`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/config/IdGeneratorConfiguration.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`IdGeneratorProperties`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/config/IdGeneratorProperties.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`IdGeneratorController`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/controller/IdGeneratorController.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`IdGeneratorExceptionHandler`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/controller/IdGeneratorExceptionHandler.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`IdGeneratorResponses`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/controller/IdGeneratorResponses.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`IdGeneratorRegistry`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/service/IdGeneratorRegistry.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`IdGeneratorService`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/service/IdGeneratorService.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -79,7 +79,7 @@ Treat `compileOnly` edges as caller-provided capabilities and verify runtime ava
 
 Configuration resources found in the module:
 
-- [`application.yaml`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/spring-boot/idgenerator-spring-boot-demo/src/main/resources/application.yaml)
+- [`application.yaml`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/idgenerator-spring-boot-demo/src/main/resources/application.yaml)
 
 Read property names and defaults from these resources and the binding source before overriding them.
 
@@ -101,7 +101,7 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`IdGeneratorDemoApplicationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/spring-boot/idgenerator-spring-boot-demo/src/test/kotlin/io/bluetape4k/examples/idgenerator/IdGeneratorDemoApplicationTest.kt)
+- [`IdGeneratorDemoApplicationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/idgenerator-spring-boot-demo/src/test/kotlin/io/bluetape4k/examples/idgenerator/IdGeneratorDemoApplicationTest.kt)
 
 ## Workshops
 
@@ -113,14 +113,14 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/spring-boot/idgenerator-spring-boot-demo/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/spring-boot/idgenerator-spring-boot-demo/build.gradle.kts)
-- [`IdGeneratorDemoApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/IdGeneratorDemoApplication.kt)
-- [`IdGeneratorConfiguration`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/config/IdGeneratorConfiguration.kt)
-- [`IdGeneratorProperties`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/config/IdGeneratorProperties.kt)
-- [`IdGeneratorController`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/controller/IdGeneratorController.kt)
-- [`IdGeneratorExceptionHandler`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/controller/IdGeneratorExceptionHandler.kt)
-- [`IdGeneratorResponses`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/controller/IdGeneratorResponses.kt)
-- [`IdGeneratorRegistry`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/service/IdGeneratorRegistry.kt)
-- [`IdGeneratorService`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/service/IdGeneratorService.kt)
-- [`IdGeneratorDemoApplicationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/examples/spring-boot/idgenerator-spring-boot-demo/src/test/kotlin/io/bluetape4k/examples/idgenerator/IdGeneratorDemoApplicationTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/idgenerator-spring-boot-demo/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/idgenerator-spring-boot-demo/build.gradle.kts)
+- [`IdGeneratorDemoApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/IdGeneratorDemoApplication.kt)
+- [`IdGeneratorConfiguration`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/config/IdGeneratorConfiguration.kt)
+- [`IdGeneratorProperties`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/config/IdGeneratorProperties.kt)
+- [`IdGeneratorController`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/controller/IdGeneratorController.kt)
+- [`IdGeneratorExceptionHandler`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/controller/IdGeneratorExceptionHandler.kt)
+- [`IdGeneratorResponses`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/controller/IdGeneratorResponses.kt)
+- [`IdGeneratorRegistry`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/service/IdGeneratorRegistry.kt)
+- [`IdGeneratorService`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/idgenerator-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/idgenerator/service/IdGeneratorService.kt)
+- [`IdGeneratorDemoApplicationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/idgenerator-spring-boot-demo/src/test/kotlin/io/bluetape4k/examples/idgenerator/IdGeneratorDemoApplicationTest.kt)

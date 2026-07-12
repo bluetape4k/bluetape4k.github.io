@@ -136,6 +136,11 @@ Gradle Kotlin DSL에서는 `dependencyManagement { imports }`보다 `implementat
 4. Spring Boot 또는 Ktor 예제로 실제 application wiring을 확인합니다.
 5. cache, virtual threads, CSV/Okio 같은 주제별 블로그를 필요한 만큼 따라갑니다.
 
+블로그는 이야기로 들어가는 입구이고, 저장소가 소유한 매뉴얼은 실행 가능한 기준 문서입니다.
+[`bluetape4k-projects` 매뉴얼](/ko/manual/bluetape4k-projects/)에서 저장소 → 그룹 → 모듈의 3단 지도를 본 뒤,
+필요한 모듈로 내려가면 선택표, 실패 계약, representative test, immutable source link를 확인할 수 있습니다.
+매뉴얼은 `docs/manual`에서 동기화되며, 이 글은 의도적으로 더 짧은 설명 글로 유지합니다.
+
 <figure class="bt4k-architecture">
   <img src="/assets/bluetape4k-projects-module-chart-01.png" alt="Bluetape4k Projects module composition chart" loading="lazy" />
   <figcaption>모듈 수가 많아 보일수록, 먼저 전체 비율을 보고 지금 필요한 칸만 집는 편이 낫습니다.</figcaption>
@@ -147,6 +152,7 @@ Gradle Kotlin DSL에서는 `dependencyManagement { imports }`보다 `implementat
 - README: [README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/README.md)
 - Korean README: [README.ko.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/README.ko.md)
 - BOM README: [bluetape4k/bom/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/bom/README.md)
+- Projects 매뉴얼: [저장소 지도와 모듈 매뉴얼](/ko/manual/bluetape4k-projects/)
 - Cache deep dive: [Bluetape4k Cache Part 1](/ko/blog/bluetape4k-cache-part1-cache-module/)
 
 ## 마무리

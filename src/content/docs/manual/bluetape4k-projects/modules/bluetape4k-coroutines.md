@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
+  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
   sourcePath: "docs/manual/en/modules/bluetape4k-coroutines.md"
   layer: "build"
 ---
@@ -18,6 +18,8 @@ manual:
 ## Problem
 
 Kotlin coroutines provide the primitives, but backend code still repeats scope ownership, `Deferred` coordination, Flow windowing and parallel mapping, subject-like multicast behavior, and bridges to Java structured concurrency. Repeating those pieces makes cancellation and shutdown behavior inconsistent. `bluetape4k-coroutines` packages the repository's shared contracts.
+
+![Decision map for the bluetape4k-coroutines manual](/manual-assets/bluetape4k-projects/coroutines/module-foundation.svg)
 
 ## When to use
 
@@ -192,8 +194,8 @@ Custom Flow operators do not remove the need to understand cold versus hot strea
 
 ## Sources
 
-- [Module README and examples](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/bluetape4k/coroutines/README.md)
-- [`DeferredValue` lifecycle contract](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/DeferredValue.kt)
-- [Flow extension source](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/flow)
-- [Coroutine tests](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/bluetape4k/coroutines/src/test/kotlin/io/bluetape4k/coroutines)
-- [Module build and benchmark configuration](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/bluetape4k/coroutines/build.gradle.kts)
+- [Module README and examples](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/coroutines/README.md)
+- [`DeferredValue` lifecycle contract](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/DeferredValue.kt)
+- [Flow extension source](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/flow)
+- [Coroutine tests](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/coroutines/src/test/kotlin/io/bluetape4k/coroutines)
+- [Module build and benchmark configuration](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/coroutines/build.gradle.kts)

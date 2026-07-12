@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
+  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
   sourcePath: "docs/manual/en/modules/bluetape4k-core.md"
   layer: "build"
 ---
@@ -39,6 +39,21 @@ The repository compiles with Java 21 and Kotlin 2.3. Core is an API dependency o
 The module is a toolbox rather than one runtime subsystem. Its main families are `support` validation/extensions, `codec` encoders, `collections` bounded and paginated containers, `range` value types, `concurrent` helpers, `functional` adapters, `time` DSLs, and reflection/Apache Commons bridges.
 
 Validation names encode failure semantics: new `require*` helpers reject caller input with `IllegalArgumentException`. Collection capacity is part of the type contract; for example, `BoundedStack` and `RingBuffer` retain only a bounded working set.
+
+## Manual map
+
+Read Core in the order boundaries move through an execution flow rather than alphabetically by API name.
+
+![Core boundary validation map](/manual-assets/bluetape4k-projects/core/validation-boundary.svg)
+
+| Design question | Chapter | Contract to decide |
+| --- | --- | --- |
+| Where should invalid caller input stop? | [Validation and invariants](./bluetape4k-core/validation.md) | Exception type, parameter name, non-null internal model |
+| How should bytes cross a text boundary? | [Encoding and data boundaries](./bluetape4k-core/encoding-data.md) | Charset, URL-safe Base64/Hex, malformed input |
+| In what order should the latest N values be retained? | [Bounded collections](./bluetape4k-core/bounded-collections.md) | Capacity, eviction, stack/ring read order |
+| Does a time query include its end? | [Time and ranges](./bluetape4k-core/time-ranges.md) | Endpoint inclusion, overlap, timezone |
+| How much active and waiting work is allowed? | [Concurrency and lifecycle](./bluetape4k-core/concurrency-lifecycle.md) | Rejection, cancellation, close order |
+| How do these contracts form one component? | [Practical Core recipes](./bluetape4k-core/recipes.md) | End-to-end tests and operational signals |
 
 ## Quick start
 
@@ -179,7 +194,7 @@ The breadth of core means its APIs do not share one lifecycle or performance pro
 
 ## Sources
 
-- [Module README and API catalog](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/bluetape4k/core/README.md)
-- [Main source packages](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/bluetape4k/core/src/main/kotlin/io/bluetape4k)
-- [Module tests](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/bluetape4k/core/src/test/kotlin/io/bluetape4k)
-- [Module build and dependencies](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/bluetape4k/core/build.gradle.kts)
+- [Module README and API catalog](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/README.md)
+- [Main source packages](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/src/main/kotlin/io/bluetape4k)
+- [Module tests](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/src/test/kotlin/io/bluetape4k)
+- [Module build and dependencies](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/build.gradle.kts)

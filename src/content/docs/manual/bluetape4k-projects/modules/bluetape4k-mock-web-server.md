@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "testing"
   kind: "library"
-  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
+  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
   sourcePath: "docs/manual/en/modules/bluetape4k-mock-web-server.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ The first source-level concepts to inspect are `MockServerApplication`, `AdminCo
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`MockServerApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/MockServerApplication.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`MockServerApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/MockServerApplication.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`MockServerApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/MockServerApplication.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`AdminController`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/admin/AdminController.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`PingController`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/admin/PingController.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`GlobalExceptionHandler`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/config/GlobalExceptionHandler.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`HttpsConfiguration`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/config/HttpsConfiguration.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`HttpbinAdvancedController`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/httpbin/HttpbinAdvancedController.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`HttpbinController`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/httpbin/HttpbinController.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`HttpbinStreamController`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/httpbin/HttpbinStreamController.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`HttpbinSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/httpbin/HttpbinSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`ImageLoaderService`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/httpbin/ImageLoaderService.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`MockServerApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/MockServerApplication.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`AdminController`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/admin/AdminController.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`PingController`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/admin/PingController.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`GlobalExceptionHandler`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/config/GlobalExceptionHandler.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`HttpsConfiguration`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/config/HttpsConfiguration.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`HttpbinAdvancedController`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/httpbin/HttpbinAdvancedController.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`HttpbinController`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/httpbin/HttpbinController.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`HttpbinStreamController`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/httpbin/HttpbinStreamController.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`HttpbinSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/httpbin/HttpbinSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ImageLoaderService`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/httpbin/ImageLoaderService.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -83,14 +83,14 @@ Treat `compileOnly` edges as caller-provided capabilities and verify runtime ava
 
 Configuration resources found in the module:
 
-- [`application.yml`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/main/resources/application.yml)
-- [`localhost.p12`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/main/resources/certs/localhost.p12)
-- [`rootCA.pem`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/main/resources/certs/rootCA.pem)
-- [`albums.json`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/main/resources/jsonplaceholder/albums.json)
-- [`comments.json`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/main/resources/jsonplaceholder/comments.json)
-- [`photos.json`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/main/resources/jsonplaceholder/photos.json)
-- [`posts.json`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/main/resources/jsonplaceholder/posts.json)
-- [`todos.json`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/main/resources/jsonplaceholder/todos.json)
+- [`application.yml`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/main/resources/application.yml)
+- [`localhost.p12`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/main/resources/certs/localhost.p12)
+- [`rootCA.pem`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/main/resources/certs/rootCA.pem)
+- [`albums.json`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/main/resources/jsonplaceholder/albums.json)
+- [`comments.json`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/main/resources/jsonplaceholder/comments.json)
+- [`photos.json`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/main/resources/jsonplaceholder/photos.json)
+- [`posts.json`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/main/resources/jsonplaceholder/posts.json)
+- [`todos.json`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/main/resources/jsonplaceholder/todos.json)
 
 Read property names and defaults from these resources and the binding source before overriding them.
 
@@ -112,14 +112,14 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`MockServerTestBase`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/test/kotlin/io/bluetape4k/mockserver/MockServerTestBase.kt)
-- [`ReadmeHttpsPortContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/test/kotlin/io/bluetape4k/mockserver/ReadmeHttpsPortContractTest.kt)
-- [`AdminResetContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/test/kotlin/io/bluetape4k/mockserver/admin/AdminResetContractTest.kt)
-- [`PingContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/test/kotlin/io/bluetape4k/mockserver/admin/PingContractTest.kt)
-- [`HttpbinAdvancedContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/test/kotlin/io/bluetape4k/mockserver/httpbin/HttpbinAdvancedContractTest.kt)
-- [`HttpbinContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/test/kotlin/io/bluetape4k/mockserver/httpbin/HttpbinContractTest.kt)
-- [`HttpbinStreamContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/test/kotlin/io/bluetape4k/mockserver/httpbin/HttpbinStreamContractTest.kt)
-- [`HttpbinSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/test/kotlin/io/bluetape4k/mockserver/httpbin/HttpbinSupportTest.kt)
+- [`MockServerTestBase`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/test/kotlin/io/bluetape4k/mockserver/MockServerTestBase.kt)
+- [`ReadmeHttpsPortContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/test/kotlin/io/bluetape4k/mockserver/ReadmeHttpsPortContractTest.kt)
+- [`AdminResetContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/test/kotlin/io/bluetape4k/mockserver/admin/AdminResetContractTest.kt)
+- [`PingContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/test/kotlin/io/bluetape4k/mockserver/admin/PingContractTest.kt)
+- [`HttpbinAdvancedContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/test/kotlin/io/bluetape4k/mockserver/httpbin/HttpbinAdvancedContractTest.kt)
+- [`HttpbinContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/test/kotlin/io/bluetape4k/mockserver/httpbin/HttpbinContractTest.kt)
+- [`HttpbinStreamContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/test/kotlin/io/bluetape4k/mockserver/httpbin/HttpbinStreamContractTest.kt)
+- [`HttpbinSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/test/kotlin/io/bluetape4k/mockserver/httpbin/HttpbinSupportTest.kt)
 
 ## Workshops
 
@@ -131,17 +131,17 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/build.gradle.kts)
-- [`MockServerApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/MockServerApplication.kt)
-- [`AdminController`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/admin/AdminController.kt)
-- [`PingController`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/admin/PingController.kt)
-- [`GlobalExceptionHandler`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/config/GlobalExceptionHandler.kt)
-- [`HttpsConfiguration`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/config/HttpsConfiguration.kt)
-- [`HttpbinAdvancedController`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/httpbin/HttpbinAdvancedController.kt)
-- [`HttpbinController`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/httpbin/HttpbinController.kt)
-- [`HttpbinStreamController`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/httpbin/HttpbinStreamController.kt)
-- [`HttpbinSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/httpbin/HttpbinSupport.kt)
-- [`ImageLoaderService`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/httpbin/ImageLoaderService.kt)
-- [`MockServerTestBase`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/test/kotlin/io/bluetape4k/mockserver/MockServerTestBase.kt)
-- [`ReadmeHttpsPortContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/testing/mock-web-server/src/test/kotlin/io/bluetape4k/mockserver/ReadmeHttpsPortContractTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/build.gradle.kts)
+- [`MockServerApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/MockServerApplication.kt)
+- [`AdminController`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/admin/AdminController.kt)
+- [`PingController`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/admin/PingController.kt)
+- [`GlobalExceptionHandler`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/config/GlobalExceptionHandler.kt)
+- [`HttpsConfiguration`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/config/HttpsConfiguration.kt)
+- [`HttpbinAdvancedController`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/httpbin/HttpbinAdvancedController.kt)
+- [`HttpbinController`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/httpbin/HttpbinController.kt)
+- [`HttpbinStreamController`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/httpbin/HttpbinStreamController.kt)
+- [`HttpbinSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/httpbin/HttpbinSupport.kt)
+- [`ImageLoaderService`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/main/kotlin/io/bluetape4k/mockserver/httpbin/ImageLoaderService.kt)
+- [`MockServerTestBase`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/test/kotlin/io/bluetape4k/mockserver/MockServerTestBase.kt)
+- [`ReadmeHttpsPortContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/testing/mock-web-server/src/test/kotlin/io/bluetape4k/mockserver/ReadmeHttpsPortContractTest.kt)

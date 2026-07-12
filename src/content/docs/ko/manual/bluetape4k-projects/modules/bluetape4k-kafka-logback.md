@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "infrastructure"
   kind: "library"
-  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
+  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
   sourcePath: "docs/manual/ko/modules/bluetape4k-kafka-logback.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ Gradle project path는 `:bluetape4k-kafka-logback`, source directory는 `infra/k
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`AbstractKafkaAppender`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/AbstractKafkaAppender.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`AbstractKafkaAppender`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/AbstractKafkaAppender.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`AbstractKafkaAppender`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/AbstractKafkaAppender.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`KafkaAppender`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/KafkaAppender.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`KafkaProducerConfigDiagnostics`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/KafkaProducerConfigDiagnostics.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`DefaultKafkaExporter`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/exporter/DefaultKafkaExporter.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`ExportExceptionHandler`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/exporter/ExportExceptionHandler.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`KafkaExporter`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/exporter/KafkaExporter.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`NoopExportExceptionHandler`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/exporter/NoopExportExceptionHandler.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`AbstractKafkaKeyProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/keyprovider/AbstractKafkaKeyProvider.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`ContextNameKafkaKeyProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/keyprovider/ContextNameKafkaKeyProvider.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`HostnameKafkaKeyProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/keyprovider/HostnameKafkaKeyProvider.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`AbstractKafkaAppender`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/AbstractKafkaAppender.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`KafkaAppender`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/KafkaAppender.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`KafkaProducerConfigDiagnostics`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/KafkaProducerConfigDiagnostics.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`DefaultKafkaExporter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/exporter/DefaultKafkaExporter.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ExportExceptionHandler`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/exporter/ExportExceptionHandler.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`KafkaExporter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/exporter/KafkaExporter.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`NoopExportExceptionHandler`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/exporter/NoopExportExceptionHandler.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`AbstractKafkaKeyProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/keyprovider/AbstractKafkaKeyProvider.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ContextNameKafkaKeyProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/keyprovider/ContextNameKafkaKeyProvider.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`HostnameKafkaKeyProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/keyprovider/HostnameKafkaKeyProvider.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -95,14 +95,14 @@ connection 상태, queue 깊이, retry, timeout, remote 오류, graceful shutdow
 
 대표 test anchor는 다음과 같습니다.
 
-- [`AbstractKafkaIntegrationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/test/kotlin/io/bluetape4k/kafka/logback/AbstractKafkaIntegrationTest.kt)
-- [`KafkaAppenderIT`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/test/kotlin/io/bluetape4k/kafka/logback/KafkaAppenderIT.kt)
-- [`KafkaAppenderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/test/kotlin/io/bluetape4k/kafka/logback/KafkaAppenderTest.kt)
-- [`LogbackIntegrationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/test/kotlin/io/bluetape4k/kafka/logback/LogbackIntegrationTest.kt)
-- [`DefaultKafkaExporterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/test/kotlin/io/bluetape4k/kafka/logback/exporter/DefaultKafkaExporterTest.kt)
-- [`AbstractKafkaKeyProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/test/kotlin/io/bluetape4k/kafka/logback/keyprovider/AbstractKafkaKeyProviderTest.kt)
-- [`ContextNameKafkaKeyProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/test/kotlin/io/bluetape4k/kafka/logback/keyprovider/ContextNameKafkaKeyProviderTest.kt)
-- [`HostnameKafkaKeyProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/test/kotlin/io/bluetape4k/kafka/logback/keyprovider/HostnameKafkaKeyProviderTest.kt)
+- [`AbstractKafkaIntegrationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/test/kotlin/io/bluetape4k/kafka/logback/AbstractKafkaIntegrationTest.kt)
+- [`KafkaAppenderIT`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/test/kotlin/io/bluetape4k/kafka/logback/KafkaAppenderIT.kt)
+- [`KafkaAppenderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/test/kotlin/io/bluetape4k/kafka/logback/KafkaAppenderTest.kt)
+- [`LogbackIntegrationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/test/kotlin/io/bluetape4k/kafka/logback/LogbackIntegrationTest.kt)
+- [`DefaultKafkaExporterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/test/kotlin/io/bluetape4k/kafka/logback/exporter/DefaultKafkaExporterTest.kt)
+- [`AbstractKafkaKeyProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/test/kotlin/io/bluetape4k/kafka/logback/keyprovider/AbstractKafkaKeyProviderTest.kt)
+- [`ContextNameKafkaKeyProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/test/kotlin/io/bluetape4k/kafka/logback/keyprovider/ContextNameKafkaKeyProviderTest.kt)
+- [`HostnameKafkaKeyProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/test/kotlin/io/bluetape4k/kafka/logback/keyprovider/HostnameKafkaKeyProviderTest.kt)
 
 ## 워크숍
 
@@ -114,17 +114,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/build.gradle.kts)
-- [`AbstractKafkaAppender`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/AbstractKafkaAppender.kt)
-- [`KafkaAppender`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/KafkaAppender.kt)
-- [`KafkaProducerConfigDiagnostics`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/KafkaProducerConfigDiagnostics.kt)
-- [`DefaultKafkaExporter`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/exporter/DefaultKafkaExporter.kt)
-- [`ExportExceptionHandler`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/exporter/ExportExceptionHandler.kt)
-- [`KafkaExporter`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/exporter/KafkaExporter.kt)
-- [`NoopExportExceptionHandler`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/exporter/NoopExportExceptionHandler.kt)
-- [`AbstractKafkaKeyProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/keyprovider/AbstractKafkaKeyProvider.kt)
-- [`ContextNameKafkaKeyProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/keyprovider/ContextNameKafkaKeyProvider.kt)
-- [`HostnameKafkaKeyProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/keyprovider/HostnameKafkaKeyProvider.kt)
-- [`AbstractKafkaIntegrationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/test/kotlin/io/bluetape4k/kafka/logback/AbstractKafkaIntegrationTest.kt)
-- [`KafkaAppenderIT`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/infra/kafka-logback/src/test/kotlin/io/bluetape4k/kafka/logback/KafkaAppenderIT.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/build.gradle.kts)
+- [`AbstractKafkaAppender`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/AbstractKafkaAppender.kt)
+- [`KafkaAppender`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/KafkaAppender.kt)
+- [`KafkaProducerConfigDiagnostics`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/KafkaProducerConfigDiagnostics.kt)
+- [`DefaultKafkaExporter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/exporter/DefaultKafkaExporter.kt)
+- [`ExportExceptionHandler`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/exporter/ExportExceptionHandler.kt)
+- [`KafkaExporter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/exporter/KafkaExporter.kt)
+- [`NoopExportExceptionHandler`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/exporter/NoopExportExceptionHandler.kt)
+- [`AbstractKafkaKeyProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/keyprovider/AbstractKafkaKeyProvider.kt)
+- [`ContextNameKafkaKeyProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/keyprovider/ContextNameKafkaKeyProvider.kt)
+- [`HostnameKafkaKeyProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/main/kotlin/io/bluetape4k/kafka/logback/keyprovider/HostnameKafkaKeyProvider.kt)
+- [`AbstractKafkaIntegrationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/test/kotlin/io/bluetape4k/kafka/logback/AbstractKafkaIntegrationTest.kt)
+- [`KafkaAppenderIT`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka-logback/src/test/kotlin/io/bluetape4k/kafka/logback/KafkaAppenderIT.kt)

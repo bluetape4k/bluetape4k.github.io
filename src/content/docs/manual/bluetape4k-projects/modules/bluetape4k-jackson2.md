@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6"
+  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
   sourcePath: "docs/manual/en/modules/bluetape4k-jackson2.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ The first source-level concepts to inspect are `Jackson`, `JacksonSerializer`, `
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`Jackson`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/Jackson.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`Jackson`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/Jackson.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`Jackson`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/Jackson.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`JacksonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/JacksonSerializer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`JsonGeneratorExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/JsonGeneratorExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`JsonMapperSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/JsonMapperSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`JsonNodeExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/JsonNodeExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`AsyncJsonParser`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/async/AsyncJsonParser.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`SuspendJsonParser`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/async/SuspendJsonParser.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`CborJacksonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/binary/CborJacksonSerializer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`CborJsonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/binary/CborJsonSerializer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`IonJacksonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/binary/IonJacksonSerializer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Jackson`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/Jackson.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`JacksonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/JacksonSerializer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`JsonGeneratorExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/JsonGeneratorExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`JsonMapperSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/JsonMapperSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`JsonNodeExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/JsonNodeExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`AsyncJsonParser`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/async/AsyncJsonParser.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`SuspendJsonParser`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/async/SuspendJsonParser.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`CborJacksonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/binary/CborJacksonSerializer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`CborJsonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/binary/CborJsonSerializer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`IonJacksonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/binary/IonJacksonSerializer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -86,7 +86,7 @@ Treat `compileOnly` edges as caller-provided capabilities and verify runtime ava
 
 Configuration resources found in the module:
 
-- [`com.fasterxml.jackson.databind.Module`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/main/resources/META-INF/services/com.fasterxml.jackson.databind.Module)
+- [`com.fasterxml.jackson.databind.Module`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/main/resources/META-INF/services/com.fasterxml.jackson.databind.Module)
 
 Read property names and defaults from these resources and the binding source before overriding them.
 
@@ -108,14 +108,14 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`DisallowedTypedPayload`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/test/kotlin/com/example/disallowed/DisallowedTypedPayload.kt)
-- [`AbstractJsonSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/test/kotlin/io/bluetape4k/jackson/AbstractJsonSerializerTest.kt)
-- [`JacksonSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/test/kotlin/io/bluetape4k/jackson/JacksonSerializerTest.kt)
-- [`JacksonTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/test/kotlin/io/bluetape4k/jackson/JacksonTest.kt)
-- [`JsonGeneratorExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/test/kotlin/io/bluetape4k/jackson/JsonGeneratorExtensionsTest.kt)
-- [`JsonMapperSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/test/kotlin/io/bluetape4k/jackson/JsonMapperSupportTest.kt)
-- [`JsonNodeExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/test/kotlin/io/bluetape4k/jackson/JsonNodeExtensionsTest.kt)
-- [`AsyncJsonParserTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/test/kotlin/io/bluetape4k/jackson/async/AsyncJsonParserTest.kt)
+- [`DisallowedTypedPayload`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/test/kotlin/com/example/disallowed/DisallowedTypedPayload.kt)
+- [`AbstractJsonSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/test/kotlin/io/bluetape4k/jackson/AbstractJsonSerializerTest.kt)
+- [`JacksonSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/test/kotlin/io/bluetape4k/jackson/JacksonSerializerTest.kt)
+- [`JacksonTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/test/kotlin/io/bluetape4k/jackson/JacksonTest.kt)
+- [`JsonGeneratorExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/test/kotlin/io/bluetape4k/jackson/JsonGeneratorExtensionsTest.kt)
+- [`JsonMapperSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/test/kotlin/io/bluetape4k/jackson/JsonMapperSupportTest.kt)
+- [`JsonNodeExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/test/kotlin/io/bluetape4k/jackson/JsonNodeExtensionsTest.kt)
+- [`AsyncJsonParserTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/test/kotlin/io/bluetape4k/jackson/async/AsyncJsonParserTest.kt)
 
 ## Workshops
 
@@ -127,17 +127,17 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/build.gradle.kts)
-- [`Jackson`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/Jackson.kt)
-- [`JacksonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/JacksonSerializer.kt)
-- [`JsonGeneratorExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/JsonGeneratorExtensions.kt)
-- [`JsonMapperSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/JsonMapperSupport.kt)
-- [`JsonNodeExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/JsonNodeExtensions.kt)
-- [`AsyncJsonParser`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/async/AsyncJsonParser.kt)
-- [`SuspendJsonParser`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/async/SuspendJsonParser.kt)
-- [`CborJacksonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/binary/CborJacksonSerializer.kt)
-- [`CborJsonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/binary/CborJsonSerializer.kt)
-- [`IonJacksonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/binary/IonJacksonSerializer.kt)
-- [`DisallowedTypedPayload`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/test/kotlin/com/example/disallowed/DisallowedTypedPayload.kt)
-- [`AbstractJsonSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/5d133ec6ff1d208ebdd0d923cd41bd39e497d8d6/io/jackson2/src/test/kotlin/io/bluetape4k/jackson/AbstractJsonSerializerTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/build.gradle.kts)
+- [`Jackson`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/Jackson.kt)
+- [`JacksonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/JacksonSerializer.kt)
+- [`JsonGeneratorExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/JsonGeneratorExtensions.kt)
+- [`JsonMapperSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/JsonMapperSupport.kt)
+- [`JsonNodeExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/JsonNodeExtensions.kt)
+- [`AsyncJsonParser`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/async/AsyncJsonParser.kt)
+- [`SuspendJsonParser`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/async/SuspendJsonParser.kt)
+- [`CborJacksonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/binary/CborJacksonSerializer.kt)
+- [`CborJsonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/binary/CborJsonSerializer.kt)
+- [`IonJacksonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/main/kotlin/io/bluetape4k/jackson/binary/IonJacksonSerializer.kt)
+- [`DisallowedTypedPayload`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/test/kotlin/com/example/disallowed/DisallowedTypedPayload.kt)
+- [`AbstractJsonSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/jackson2/src/test/kotlin/io/bluetape4k/jackson/AbstractJsonSerializerTest.kt)
