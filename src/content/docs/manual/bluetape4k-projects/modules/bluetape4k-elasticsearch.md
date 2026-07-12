@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "infrastructure"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/en/modules/bluetape4k-elasticsearch.md"
   layer: "build"
 ---
@@ -40,20 +40,20 @@ The first source-level concepts to inspect are `ElasticsearchClientDsl`, `Elasti
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`ElasticsearchClientDsl`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/ElasticsearchClientDsl.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`ElasticsearchClientDsl`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/ElasticsearchClientDsl.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`ElasticsearchClientDsl`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/ElasticsearchClientDsl.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`ElasticsearchClients`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/ElasticsearchClients.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`ElasticsearchDefaults`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/ElasticsearchDefaults.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`BulkApiCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/coroutines/BulkApiCoroutines.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`BulkIngesterCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/coroutines/BulkIngesterCoroutines.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`ElasticsearchCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/coroutines/ElasticsearchCoroutines.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`SearchApiCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/coroutines/SearchApiCoroutines.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`JsonpMappers`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/support/JsonpMappers.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ElasticsearchClientDsl`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/ElasticsearchClientDsl.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ElasticsearchClients`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/ElasticsearchClients.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ElasticsearchDefaults`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/ElasticsearchDefaults.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`BulkApiCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/coroutines/BulkApiCoroutines.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`BulkIngesterCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/coroutines/BulkIngesterCoroutines.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ElasticsearchCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/coroutines/ElasticsearchCoroutines.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`SearchApiCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/coroutines/SearchApiCoroutines.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`JsonpMappers`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/support/JsonpMappers.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -102,13 +102,13 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`ElasticsearchClientsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/src/test/kotlin/io/bluetape4k/elasticsearch/ElasticsearchClientsTest.kt)
-- [`BulkApiCoroutinesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/src/test/kotlin/io/bluetape4k/elasticsearch/coroutines/BulkApiCoroutinesTest.kt)
-- [`BulkIngesterCoroutinesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/src/test/kotlin/io/bluetape4k/elasticsearch/coroutines/BulkIngesterCoroutinesTest.kt)
-- [`ElasticsearchCoroutinesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/src/test/kotlin/io/bluetape4k/elasticsearch/coroutines/ElasticsearchCoroutinesTest.kt)
-- [`SearchApiCoroutinesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/src/test/kotlin/io/bluetape4k/elasticsearch/coroutines/SearchApiCoroutinesTest.kt)
-- [`SearchApiCoroutinesUnitTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/src/test/kotlin/io/bluetape4k/elasticsearch/coroutines/SearchApiCoroutinesUnitTest.kt)
-- [`ProductIndexExample`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/src/test/kotlin/io/bluetape4k/elasticsearch/examples/ProductIndexExample.kt)
+- [`ElasticsearchClientsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/src/test/kotlin/io/bluetape4k/elasticsearch/ElasticsearchClientsTest.kt)
+- [`BulkApiCoroutinesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/src/test/kotlin/io/bluetape4k/elasticsearch/coroutines/BulkApiCoroutinesTest.kt)
+- [`BulkIngesterCoroutinesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/src/test/kotlin/io/bluetape4k/elasticsearch/coroutines/BulkIngesterCoroutinesTest.kt)
+- [`ElasticsearchCoroutinesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/src/test/kotlin/io/bluetape4k/elasticsearch/coroutines/ElasticsearchCoroutinesTest.kt)
+- [`SearchApiCoroutinesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/src/test/kotlin/io/bluetape4k/elasticsearch/coroutines/SearchApiCoroutinesTest.kt)
+- [`SearchApiCoroutinesUnitTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/src/test/kotlin/io/bluetape4k/elasticsearch/coroutines/SearchApiCoroutinesUnitTest.kt)
+- [`ProductIndexExample`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/src/test/kotlin/io/bluetape4k/elasticsearch/examples/ProductIndexExample.kt)
 
 ## Workshops
 
@@ -120,17 +120,17 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/build.gradle.kts)
-- [`ElasticsearchClientDsl`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/ElasticsearchClientDsl.kt)
-- [`ElasticsearchClients`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/ElasticsearchClients.kt)
-- [`ElasticsearchDefaults`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/ElasticsearchDefaults.kt)
-- [`BulkApiCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/coroutines/BulkApiCoroutines.kt)
-- [`BulkIngesterCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/coroutines/BulkIngesterCoroutines.kt)
-- [`ElasticsearchCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/coroutines/ElasticsearchCoroutines.kt)
-- [`SearchApiCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/coroutines/SearchApiCoroutines.kt)
-- [`JsonpMappers`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/support/JsonpMappers.kt)
-- [`ElasticsearchClientsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/src/test/kotlin/io/bluetape4k/elasticsearch/ElasticsearchClientsTest.kt)
-- [`BulkApiCoroutinesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/src/test/kotlin/io/bluetape4k/elasticsearch/coroutines/BulkApiCoroutinesTest.kt)
-- [`BulkIngesterCoroutinesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/src/test/kotlin/io/bluetape4k/elasticsearch/coroutines/BulkIngesterCoroutinesTest.kt)
-- [`ElasticsearchCoroutinesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/elasticsearch/src/test/kotlin/io/bluetape4k/elasticsearch/coroutines/ElasticsearchCoroutinesTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/build.gradle.kts)
+- [`ElasticsearchClientDsl`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/ElasticsearchClientDsl.kt)
+- [`ElasticsearchClients`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/ElasticsearchClients.kt)
+- [`ElasticsearchDefaults`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/ElasticsearchDefaults.kt)
+- [`BulkApiCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/coroutines/BulkApiCoroutines.kt)
+- [`BulkIngesterCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/coroutines/BulkIngesterCoroutines.kt)
+- [`ElasticsearchCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/coroutines/ElasticsearchCoroutines.kt)
+- [`SearchApiCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/coroutines/SearchApiCoroutines.kt)
+- [`JsonpMappers`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/src/main/kotlin/io/bluetape4k/elasticsearch/support/JsonpMappers.kt)
+- [`ElasticsearchClientsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/src/test/kotlin/io/bluetape4k/elasticsearch/ElasticsearchClientsTest.kt)
+- [`BulkApiCoroutinesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/src/test/kotlin/io/bluetape4k/elasticsearch/coroutines/BulkApiCoroutinesTest.kt)
+- [`BulkIngesterCoroutinesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/src/test/kotlin/io/bluetape4k/elasticsearch/coroutines/BulkIngesterCoroutinesTest.kt)
+- [`ElasticsearchCoroutinesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/infra/elasticsearch/src/test/kotlin/io/bluetape4k/elasticsearch/coroutines/ElasticsearchCoroutinesTest.kt)

@@ -8,7 +8,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-core/time-ranges.md"
   layer: "build"
   chapterId: "time-ranges"
@@ -96,11 +96,11 @@ Core의 `instantOf`, `toLocalDateTime`, `toOffsetDateTime`, `toZonedDateTime`은
 
 ## Source와 representative test
 
-- [`Range.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/main/kotlin/io/bluetape4k/ranges/Range.kt)
-- [`ClosedOpenRange.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/main/kotlin/io/bluetape4k/ranges/ClosedOpenRange.kt)
-- [`InstantSupport.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/main/kotlin/io/bluetape4k/javatimes/InstantSupport.kt)
-- [`RangeBoundaryTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/test/kotlin/io/bluetape4k/ranges/RangeBoundaryTest.kt)
-- [`RangeSupportTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/test/kotlin/io/bluetape4k/ranges/RangeSupportTest.kt)
-- [`InstantSupportTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/test/kotlin/io/bluetape4k/javatimes/InstantSupportTest.kt)
+- [`Range.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/core/src/main/kotlin/io/bluetape4k/ranges/Range.kt)
+- [`ClosedOpenRange.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/core/src/main/kotlin/io/bluetape4k/ranges/ClosedOpenRange.kt)
+- [`InstantSupport.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/core/src/main/kotlin/io/bluetape4k/javatimes/InstantSupport.kt)
+- [`RangeBoundaryTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/core/src/test/kotlin/io/bluetape4k/ranges/RangeBoundaryTest.kt)
+- [`RangeSupportTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/core/src/test/kotlin/io/bluetape4k/ranges/RangeSupportTest.kt)
+- [`InstantSupportTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/core/src/test/kotlin/io/bluetape4k/javatimes/InstantSupportTest.kt)
 
 입력 경계는 [검증과 불변식](./validation.md), 실제 조립은 [Core 실전 레시피](./recipes.md)로 이어집니다.

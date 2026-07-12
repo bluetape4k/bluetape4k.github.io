@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "utilities"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/en/modules/bluetape4k-science.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ The first source-level concepts to inspect are `BoundingBox`, `BoundingBoxRelati
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`BoundingBox`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/BoundingBox.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`BoundingBox`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/BoundingBox.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`BoundingBox`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/BoundingBox.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`BoundingBoxRelation`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/BoundingBoxRelation.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`CoordConverters`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/CoordConverters.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`DM`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/DM.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`DMS`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/DMS.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`GeoLocation`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/GeoLocation.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`UtmZone`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/UtmZone.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`UtmZoneSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/UtmZoneSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`Vector`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/Vector.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`NetCdfException`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/exposed/NetCdfException.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`BoundingBox`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/BoundingBox.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`BoundingBoxRelation`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/BoundingBoxRelation.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`CoordConverters`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/CoordConverters.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`DM`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/DM.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`DMS`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/DMS.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`GeoLocation`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/GeoLocation.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`UtmZone`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/UtmZone.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`UtmZoneSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/UtmZoneSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Vector`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/Vector.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`NetCdfException`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/main/kotlin/io/bluetape4k/science/exposed/NetCdfException.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -104,14 +104,14 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`BoundingBoxRelationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/BoundingBoxRelationTest.kt)
-- [`BoundingBoxTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/BoundingBoxTest.kt)
-- [`CoordConvertersTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/CoordConvertersTest.kt)
-- [`DmTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/DmTest.kt)
-- [`DmsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/DmsTest.kt)
-- [`GeoLocationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/GeoLocationTest.kt)
-- [`UtmZoneSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/UtmZoneSupportTest.kt)
-- [`UtmZoneTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/UtmZoneTest.kt)
+- [`BoundingBoxRelationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/BoundingBoxRelationTest.kt)
+- [`BoundingBoxTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/BoundingBoxTest.kt)
+- [`CoordConvertersTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/CoordConvertersTest.kt)
+- [`DmTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/DmTest.kt)
+- [`DmsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/DmsTest.kt)
+- [`GeoLocationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/GeoLocationTest.kt)
+- [`UtmZoneSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/UtmZoneSupportTest.kt)
+- [`UtmZoneTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/UtmZoneTest.kt)
 
 ## Workshops
 
@@ -123,17 +123,17 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/build.gradle.kts)
-- [`BoundingBox`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/BoundingBox.kt)
-- [`BoundingBoxRelation`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/BoundingBoxRelation.kt)
-- [`CoordConverters`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/CoordConverters.kt)
-- [`DM`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/DM.kt)
-- [`DMS`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/DMS.kt)
-- [`GeoLocation`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/GeoLocation.kt)
-- [`UtmZone`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/UtmZone.kt)
-- [`UtmZoneSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/UtmZoneSupport.kt)
-- [`Vector`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/Vector.kt)
-- [`NetCdfException`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/main/kotlin/io/bluetape4k/science/exposed/NetCdfException.kt)
-- [`BoundingBoxRelationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/BoundingBoxRelationTest.kt)
-- [`BoundingBoxTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/BoundingBoxTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/build.gradle.kts)
+- [`BoundingBox`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/BoundingBox.kt)
+- [`BoundingBoxRelation`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/BoundingBoxRelation.kt)
+- [`CoordConverters`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/CoordConverters.kt)
+- [`DM`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/DM.kt)
+- [`DMS`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/DMS.kt)
+- [`GeoLocation`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/GeoLocation.kt)
+- [`UtmZone`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/UtmZone.kt)
+- [`UtmZoneSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/UtmZoneSupport.kt)
+- [`Vector`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/main/kotlin/io/bluetape4k/science/coords/Vector.kt)
+- [`NetCdfException`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/main/kotlin/io/bluetape4k/science/exposed/NetCdfException.kt)
+- [`BoundingBoxRelationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/BoundingBoxRelationTest.kt)
+- [`BoundingBoxTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/science/src/test/kotlin/io/bluetape4k/science/coords/BoundingBoxTest.kt)

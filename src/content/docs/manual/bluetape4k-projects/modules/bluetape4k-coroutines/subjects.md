@@ -8,7 +8,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/en/modules/bluetape4k-coroutines/subjects.md"
   layer: "build"
   chapterId: "subjects"
@@ -75,9 +75,9 @@ History is retained memory. Choose size-bound or size-and-time-bound replay from
 
 ## Source and representative tests
 
-- [`subject` implementations](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/flow/extensions/subject)
-- [`SubjectCancellationTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/coroutines/src/test/kotlin/io/bluetape4k/coroutines/flow/extensions/subject/SubjectCancellationTest.kt)
-- [`PublishSubjectTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/coroutines/src/test/kotlin/io/bluetape4k/coroutines/flow/extensions/subject/PublishSubjectTest.kt)
-- [`ReplaySubjectSizeBoundTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/coroutines/src/test/kotlin/io/bluetape4k/coroutines/flow/extensions/subject/ReplaySubjectSizeBoundTest.kt)
+- [`subject` implementations](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/flow/extensions/subject)
+- [`SubjectCancellationTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/coroutines/src/test/kotlin/io/bluetape4k/coroutines/flow/extensions/subject/SubjectCancellationTest.kt)
+- [`PublishSubjectTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/coroutines/src/test/kotlin/io/bluetape4k/coroutines/flow/extensions/subject/PublishSubjectTest.kt)
+- [`ReplaySubjectSizeBoundTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/coroutines/src/test/kotlin/io/bluetape4k/coroutines/flow/extensions/subject/ReplaySubjectSizeBoundTest.kt)
 
 Next: choose child-failure semantics at scope level in [Structured concurrency policies](./structured-concurrency.md).

@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "data"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-r2dbc.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ Gradle project path는 `:bluetape4k-r2dbc`, source directory는 `data/r2dbc`입�
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`R2dbcClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/R2dbcClient.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`R2dbcClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/R2dbcClient.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`R2dbcClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/R2dbcClient.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`R2dbcClientAutoConfiguration`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/config/R2dbcClientAutoConfiguration.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`ConnectionFactoryUtils`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/connection/ConnectionFactoryUtils.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`R2dbcTransactionManager`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/connection/R2dbcTransactionManager.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`CompositeDatabasePopulator`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/connection/init/CompositeDatabasePopulator.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`ConnectionFactoryInitializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/connection/init/ConnectionFactoryInitializer.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`ResourceDatabasePopulator`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/connection/init/ResourceDatabasePopulator.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`MappingR2dbcConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/convert/MappingR2dbcConverter.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`JsonToMapConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/convert/postgresql/JsonToMapConverter.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`MapToJsonConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/convert/postgresql/MapToJsonConverter.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`R2dbcClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/R2dbcClient.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`R2dbcClientAutoConfiguration`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/config/R2dbcClientAutoConfiguration.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ConnectionFactoryUtils`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/connection/ConnectionFactoryUtils.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`R2dbcTransactionManager`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/connection/R2dbcTransactionManager.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`CompositeDatabasePopulator`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/connection/init/CompositeDatabasePopulator.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ConnectionFactoryInitializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/connection/init/ConnectionFactoryInitializer.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ResourceDatabasePopulator`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/connection/init/ResourceDatabasePopulator.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`MappingR2dbcConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/convert/MappingR2dbcConverter.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`JsonToMapConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/convert/postgresql/JsonToMapConverter.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`MapToJsonConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/convert/postgresql/MapToJsonConverter.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -86,8 +86,8 @@ compileOnly("org.springframework.boot:spring-boot-starter-data-r2dbc")
 
 모듈에서 찾은 설정 resource는 다음과 같습니다.
 
-- [`spring.factories`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/main/resources/META-INF/spring.factories)
-- [`org.springframework.boot.autoconfigure.AutoConfiguration.imports`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/main/resources/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports)
+- [`spring.factories`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/main/resources/META-INF/spring.factories)
+- [`org.springframework.boot.autoconfigure.AutoConfiguration.imports`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/main/resources/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports)
 
 override하기 전에 이 resource와 binding source에서 property 이름과 default를 확인합니다.
 
@@ -109,14 +109,14 @@ pool 포화, query latency, retry, transaction rollback, schema 호환성을 관
 
 대표 test anchor는 다음과 같습니다.
 
-- [`AbstractR2dbcTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/test/kotlin/io/bluetape4k/r2dbc/AbstractR2dbcTest.kt)
-- [`R2dbcTestApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/test/kotlin/io/bluetape4k/r2dbc/R2dbcTestApplication.kt)
-- [`R2dbcClientAutoConfigurationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/test/kotlin/io/bluetape4k/r2dbc/config/R2dbcClientAutoConfigurationTest.kt)
-- [`R2dbcConfigurationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/test/kotlin/io/bluetape4k/r2dbc/config/R2dbcConfigurationTest.kt)
-- [`ConnectionInitTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/test/kotlin/io/bluetape4k/r2dbc/connection/init/ConnectionInitTest.kt)
-- [`PostgresJsonConvertersTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/test/kotlin/io/bluetape4k/r2dbc/convert/postgresql/PostgresJsonConvertersTest.kt)
-- [`DatabaseClientBuilderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/test/kotlin/io/bluetape4k/r2dbc/core/DatabaseClientBuilderTest.kt)
-- [`DeleteTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/test/kotlin/io/bluetape4k/r2dbc/core/DeleteTest.kt)
+- [`AbstractR2dbcTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/test/kotlin/io/bluetape4k/r2dbc/AbstractR2dbcTest.kt)
+- [`R2dbcTestApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/test/kotlin/io/bluetape4k/r2dbc/R2dbcTestApplication.kt)
+- [`R2dbcClientAutoConfigurationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/test/kotlin/io/bluetape4k/r2dbc/config/R2dbcClientAutoConfigurationTest.kt)
+- [`R2dbcConfigurationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/test/kotlin/io/bluetape4k/r2dbc/config/R2dbcConfigurationTest.kt)
+- [`ConnectionInitTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/test/kotlin/io/bluetape4k/r2dbc/connection/init/ConnectionInitTest.kt)
+- [`PostgresJsonConvertersTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/test/kotlin/io/bluetape4k/r2dbc/convert/postgresql/PostgresJsonConvertersTest.kt)
+- [`DatabaseClientBuilderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/test/kotlin/io/bluetape4k/r2dbc/core/DatabaseClientBuilderTest.kt)
+- [`DeleteTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/test/kotlin/io/bluetape4k/r2dbc/core/DeleteTest.kt)
 
 ## 워크숍
 
@@ -128,17 +128,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/build.gradle.kts)
-- [`R2dbcClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/R2dbcClient.kt)
-- [`R2dbcClientAutoConfiguration`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/config/R2dbcClientAutoConfiguration.kt)
-- [`ConnectionFactoryUtils`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/connection/ConnectionFactoryUtils.kt)
-- [`R2dbcTransactionManager`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/connection/R2dbcTransactionManager.kt)
-- [`CompositeDatabasePopulator`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/connection/init/CompositeDatabasePopulator.kt)
-- [`ConnectionFactoryInitializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/connection/init/ConnectionFactoryInitializer.kt)
-- [`ResourceDatabasePopulator`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/connection/init/ResourceDatabasePopulator.kt)
-- [`MappingR2dbcConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/convert/MappingR2dbcConverter.kt)
-- [`JsonToMapConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/convert/postgresql/JsonToMapConverter.kt)
-- [`MapToJsonConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/convert/postgresql/MapToJsonConverter.kt)
-- [`AbstractR2dbcTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/test/kotlin/io/bluetape4k/r2dbc/AbstractR2dbcTest.kt)
-- [`R2dbcTestApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/data/r2dbc/src/test/kotlin/io/bluetape4k/r2dbc/R2dbcTestApplication.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/build.gradle.kts)
+- [`R2dbcClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/R2dbcClient.kt)
+- [`R2dbcClientAutoConfiguration`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/config/R2dbcClientAutoConfiguration.kt)
+- [`ConnectionFactoryUtils`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/connection/ConnectionFactoryUtils.kt)
+- [`R2dbcTransactionManager`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/connection/R2dbcTransactionManager.kt)
+- [`CompositeDatabasePopulator`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/connection/init/CompositeDatabasePopulator.kt)
+- [`ConnectionFactoryInitializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/connection/init/ConnectionFactoryInitializer.kt)
+- [`ResourceDatabasePopulator`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/connection/init/ResourceDatabasePopulator.kt)
+- [`MappingR2dbcConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/convert/MappingR2dbcConverter.kt)
+- [`JsonToMapConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/convert/postgresql/JsonToMapConverter.kt)
+- [`MapToJsonConverter`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/main/kotlin/io/bluetape4k/r2dbc/convert/postgresql/MapToJsonConverter.kt)
+- [`AbstractR2dbcTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/test/kotlin/io/bluetape4k/r2dbc/AbstractR2dbcTest.kt)
+- [`R2dbcTestApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/data/r2dbc/src/test/kotlin/io/bluetape4k/r2dbc/R2dbcTestApplication.kt)

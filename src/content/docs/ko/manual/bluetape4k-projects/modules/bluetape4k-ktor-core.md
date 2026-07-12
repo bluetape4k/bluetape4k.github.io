@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "web"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-ktor-core.md"
   layer: "build"
 ---
@@ -40,20 +40,20 @@ Gradle project path는 `:bluetape4k-ktor-core`, source directory는 `ktor/core`�
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`ApiErrorResponse`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/ApiErrorResponse.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`ApiErrorResponse`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/ApiErrorResponse.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`ApiErrorResponse`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/ApiErrorResponse.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Bluetape4kKtorCore`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorCore.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Bluetape4kKtorCoreConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorCoreConfig.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Bluetape4kKtorJson`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorJson.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Bluetape4kStatusPages`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kStatusPages.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`HealthResponse`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/HealthResponse.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`KtorHealthRoutes`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/KtorHealthRoutes.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`KtorRequestParameters`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/KtorRequestParameters.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ApiErrorResponse`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/ApiErrorResponse.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Bluetape4kKtorCore`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorCore.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Bluetape4kKtorCoreConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorCoreConfig.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Bluetape4kKtorJson`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorJson.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Bluetape4kStatusPages`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kStatusPages.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`HealthResponse`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/HealthResponse.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`KtorHealthRoutes`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/KtorHealthRoutes.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`KtorRequestParameters`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/KtorRequestParameters.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -96,7 +96,7 @@ request latency, status code, cancellation, queueing, dependency failure, shutdo
 
 대표 test anchor는 다음과 같습니다.
 
-- [`Bluetape4kKtorCoreTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/core/src/test/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorCoreTest.kt)
+- [`Bluetape4kKtorCoreTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/ktor/core/src/test/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorCoreTest.kt)
 
 ## 워크숍
 
@@ -108,14 +108,14 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/core/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/core/build.gradle.kts)
-- [`ApiErrorResponse`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/ApiErrorResponse.kt)
-- [`Bluetape4kKtorCore`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorCore.kt)
-- [`Bluetape4kKtorCoreConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorCoreConfig.kt)
-- [`Bluetape4kKtorJson`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorJson.kt)
-- [`Bluetape4kStatusPages`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kStatusPages.kt)
-- [`HealthResponse`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/HealthResponse.kt)
-- [`KtorHealthRoutes`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/KtorHealthRoutes.kt)
-- [`KtorRequestParameters`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/KtorRequestParameters.kt)
-- [`Bluetape4kKtorCoreTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/core/src/test/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorCoreTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/ktor/core/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/ktor/core/build.gradle.kts)
+- [`ApiErrorResponse`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/ApiErrorResponse.kt)
+- [`Bluetape4kKtorCore`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorCore.kt)
+- [`Bluetape4kKtorCoreConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorCoreConfig.kt)
+- [`Bluetape4kKtorJson`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorJson.kt)
+- [`Bluetape4kStatusPages`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/Bluetape4kStatusPages.kt)
+- [`HealthResponse`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/HealthResponse.kt)
+- [`KtorHealthRoutes`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/KtorHealthRoutes.kt)
+- [`KtorRequestParameters`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/ktor/core/src/main/kotlin/io/bluetape4k/ktor/core/KtorRequestParameters.kt)
+- [`Bluetape4kKtorCoreTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/ktor/core/src/test/kotlin/io/bluetape4k/ktor/core/Bluetape4kKtorCoreTest.kt)

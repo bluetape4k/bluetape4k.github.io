@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/en/modules/bluetape4k-grpc.md"
   layer: "build"
 ---
@@ -40,21 +40,21 @@ The first source-level concepts to inspect are `AbstractGrpcClient`, `AbstractGr
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`AbstractGrpcClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/AbstractGrpcClient.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`AbstractGrpcClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/AbstractGrpcClient.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`AbstractGrpcClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/AbstractGrpcClient.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`AbstractGrpcServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/AbstractGrpcServer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`GrpcChannelSecurity`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/GrpcChannelSecurity.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`GrpcServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/GrpcServer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`ManagedChannelSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/ManagedChannelSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`ServerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/ServerSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`AbstractGrpcInprocessClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/inprocess/AbstractGrpcInprocessClient.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`AbstractGrpcInprocessServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/inprocess/AbstractGrpcInprocessServer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`ServerInterceptorSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/interceptor/ServerInterceptorSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`AbstractGrpcClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/AbstractGrpcClient.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`AbstractGrpcServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/AbstractGrpcServer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`GrpcChannelSecurity`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/GrpcChannelSecurity.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`GrpcServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/GrpcServer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ManagedChannelSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/ManagedChannelSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ServerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/ServerSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`AbstractGrpcInprocessClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/inprocess/AbstractGrpcInprocessClient.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`AbstractGrpcInprocessServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/inprocess/AbstractGrpcInprocessServer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ServerInterceptorSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/interceptor/ServerInterceptorSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -103,14 +103,14 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`AbstractGrpcTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/test/kotlin/io/bluetape4k/grpc/AbstractGrpcTest.kt)
-- [`GrpcChannelSecurityTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/test/kotlin/io/bluetape4k/grpc/GrpcChannelSecurityTest.kt)
-- [`GrpcServerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/test/kotlin/io/bluetape4k/grpc/GrpcServerTest.kt)
-- [`GrpcSupportValidationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/test/kotlin/io/bluetape4k/grpc/GrpcSupportValidationTest.kt)
-- [`ManagedChannelSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/test/kotlin/io/bluetape4k/grpc/ManagedChannelSupportTest.kt)
-- [`GreeterClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/test/kotlin/io/bluetape4k/grpc/examples/helloworld/GreeterClient.kt)
-- [`GreeterServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/test/kotlin/io/bluetape4k/grpc/examples/helloworld/GreeterServer.kt)
-- [`GreeterService`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/test/kotlin/io/bluetape4k/grpc/examples/helloworld/GreeterService.kt)
+- [`AbstractGrpcTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/test/kotlin/io/bluetape4k/grpc/AbstractGrpcTest.kt)
+- [`GrpcChannelSecurityTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/test/kotlin/io/bluetape4k/grpc/GrpcChannelSecurityTest.kt)
+- [`GrpcServerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/test/kotlin/io/bluetape4k/grpc/GrpcServerTest.kt)
+- [`GrpcSupportValidationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/test/kotlin/io/bluetape4k/grpc/GrpcSupportValidationTest.kt)
+- [`ManagedChannelSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/test/kotlin/io/bluetape4k/grpc/ManagedChannelSupportTest.kt)
+- [`GreeterClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/test/kotlin/io/bluetape4k/grpc/examples/helloworld/GreeterClient.kt)
+- [`GreeterServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/test/kotlin/io/bluetape4k/grpc/examples/helloworld/GreeterServer.kt)
+- [`GreeterService`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/test/kotlin/io/bluetape4k/grpc/examples/helloworld/GreeterService.kt)
 
 ## Workshops
 
@@ -122,17 +122,17 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/build.gradle.kts)
-- [`AbstractGrpcClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/AbstractGrpcClient.kt)
-- [`AbstractGrpcServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/AbstractGrpcServer.kt)
-- [`GrpcChannelSecurity`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/GrpcChannelSecurity.kt)
-- [`GrpcServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/GrpcServer.kt)
-- [`ManagedChannelSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/ManagedChannelSupport.kt)
-- [`ServerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/ServerSupport.kt)
-- [`AbstractGrpcInprocessClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/inprocess/AbstractGrpcInprocessClient.kt)
-- [`AbstractGrpcInprocessServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/inprocess/AbstractGrpcInprocessServer.kt)
-- [`ServerInterceptorSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/interceptor/ServerInterceptorSupport.kt)
-- [`AbstractGrpcTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/test/kotlin/io/bluetape4k/grpc/AbstractGrpcTest.kt)
-- [`GrpcChannelSecurityTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/test/kotlin/io/bluetape4k/grpc/GrpcChannelSecurityTest.kt)
-- [`GrpcServerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/grpc/src/test/kotlin/io/bluetape4k/grpc/GrpcServerTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/build.gradle.kts)
+- [`AbstractGrpcClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/AbstractGrpcClient.kt)
+- [`AbstractGrpcServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/AbstractGrpcServer.kt)
+- [`GrpcChannelSecurity`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/GrpcChannelSecurity.kt)
+- [`GrpcServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/GrpcServer.kt)
+- [`ManagedChannelSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/ManagedChannelSupport.kt)
+- [`ServerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/ServerSupport.kt)
+- [`AbstractGrpcInprocessClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/inprocess/AbstractGrpcInprocessClient.kt)
+- [`AbstractGrpcInprocessServer`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/inprocess/AbstractGrpcInprocessServer.kt)
+- [`ServerInterceptorSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/main/kotlin/io/bluetape4k/grpc/interceptor/ServerInterceptorSupport.kt)
+- [`AbstractGrpcTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/test/kotlin/io/bluetape4k/grpc/AbstractGrpcTest.kt)
+- [`GrpcChannelSecurityTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/test/kotlin/io/bluetape4k/grpc/GrpcChannelSecurityTest.kt)
+- [`GrpcServerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/grpc/src/test/kotlin/io/bluetape4k/grpc/GrpcServerTest.kt)

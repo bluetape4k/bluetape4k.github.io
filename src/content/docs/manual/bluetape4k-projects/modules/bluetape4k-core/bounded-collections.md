@@ -8,7 +8,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/en/modules/bluetape4k-core/bounded-collections.md"
   layer: "build"
   chapterId: "bounded-collections"
@@ -54,9 +54,9 @@ Observe eviction count, capacity saturation, and snapshot size. Test wrap-around
 
 ## Source and representative tests
 
-- [`BoundedStack.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/main/kotlin/io/bluetape4k/collections/BoundedStack.kt)
-- [`RingBuffer.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/main/kotlin/io/bluetape4k/collections/RingBuffer.kt)
-- [`BoundedStackTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/test/kotlin/io/bluetape4k/collections/BoundedStackTest.kt)
-- [`RingBufferTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/test/kotlin/io/bluetape4k/collections/RingBufferTest.kt)
+- [`BoundedStack.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/core/src/main/kotlin/io/bluetape4k/collections/BoundedStack.kt)
+- [`RingBuffer.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/core/src/main/kotlin/io/bluetape4k/collections/RingBuffer.kt)
+- [`BoundedStackTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/core/src/test/kotlin/io/bluetape4k/collections/BoundedStackTest.kt)
+- [`RingBufferTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/core/src/test/kotlin/io/bluetape4k/collections/RingBufferTest.kt)
 
 Capacity for running and waiting asynchronous work belongs in [Concurrency and lifecycle](./concurrency-lifecycle.md).

@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "testing"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-junit5.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ Gradle project path는 `:bluetape4k-junit5`, source directory는 `testing/junit5
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`ExtensionContext`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/ExtensionContext.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`ExtensionContext`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/ExtensionContext.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`ExtensionContext`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/ExtensionContext.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`AwaitilityConfigurationExtension`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/awaitility/AwaitilityConfigurationExtension.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`AwaitilityCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/awaitility/AwaitilityCoroutines.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`MultithreadingTester`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/concurrency/MultithreadingTester.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`StructuredTaskScopeTester`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/concurrency/StructuredTaskScopeTester.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`TestingExecutors`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/concurrency/TestingExecutors.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`CancellationContracts`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/coroutines/CancellationContracts.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`CoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/coroutines/CoroutineSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`SuspendedJobTester`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/coroutines/SuspendedJobTester.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`FakeValueExtension`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/faker/FakeValueExtension.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ExtensionContext`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/ExtensionContext.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`AwaitilityConfigurationExtension`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/awaitility/AwaitilityConfigurationExtension.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`AwaitilityCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/awaitility/AwaitilityCoroutines.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`MultithreadingTester`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/concurrency/MultithreadingTester.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`StructuredTaskScopeTester`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/concurrency/StructuredTaskScopeTester.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`TestingExecutors`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/concurrency/TestingExecutors.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`CancellationContracts`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/coroutines/CancellationContracts.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`CoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/coroutines/CoroutineSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`SuspendedJobTester`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/coroutines/SuspendedJobTester.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`FakeValueExtension`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/faker/FakeValueExtension.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -86,8 +86,8 @@ api(libs.awaitility.kotlin)
 
 모듈에서 찾은 설정 resource는 다음과 같습니다.
 
-- [`org.junit.jupiter.api.extension.Extension`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/main/resources/META-INF/services/org.junit.jupiter.api.extension.Extension)
-- [`org.junit.platform.launcher.TestExecutionListener`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/main/resources/META-INF/services/org.junit.platform.launcher.TestExecutionListener)
+- [`org.junit.jupiter.api.extension.Extension`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/main/resources/META-INF/services/org.junit.jupiter.api.extension.Extension)
+- [`org.junit.platform.launcher.TestExecutionListener`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/main/resources/META-INF/services/org.junit.platform.launcher.TestExecutionListener)
 
 override하기 전에 이 resource와 binding source에서 property 이름과 default를 확인합니다.
 
@@ -109,14 +109,14 @@ fixture를 격리하고 resource 사용량을 제한하며 diagnostic을 남기�
 
 대표 test anchor는 다음과 같습니다.
 
-- [`ExtensionContextSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/test/kotlin/io/bluetape4k/junit5/ExtensionContextSupportTest.kt)
-- [`AwaitilityCoroutinesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/test/kotlin/io/bluetape4k/junit5/awaitility/AwaitilityCoroutinesTest.kt)
-- [`MultithreadingTesterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/test/kotlin/io/bluetape4k/junit5/concurrency/MultithreadingTesterTest.kt)
-- [`StructuredTaskScopeTesterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/test/kotlin/io/bluetape4k/junit5/concurrency/StructuredTaskScopeTesterTest.kt)
-- [`CancellationContractsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/test/kotlin/io/bluetape4k/junit5/coroutines/CancellationContractsTest.kt)
-- [`CoroutineSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/test/kotlin/io/bluetape4k/junit5/coroutines/CoroutineSupportTest.kt)
-- [`SuspendedJobTesterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/test/kotlin/io/bluetape4k/junit5/coroutines/SuspendedJobTesterTest.kt)
-- [`DataFakerExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/test/kotlin/io/bluetape4k/junit5/faker/DataFakerExamples.kt)
+- [`ExtensionContextSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/test/kotlin/io/bluetape4k/junit5/ExtensionContextSupportTest.kt)
+- [`AwaitilityCoroutinesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/test/kotlin/io/bluetape4k/junit5/awaitility/AwaitilityCoroutinesTest.kt)
+- [`MultithreadingTesterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/test/kotlin/io/bluetape4k/junit5/concurrency/MultithreadingTesterTest.kt)
+- [`StructuredTaskScopeTesterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/test/kotlin/io/bluetape4k/junit5/concurrency/StructuredTaskScopeTesterTest.kt)
+- [`CancellationContractsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/test/kotlin/io/bluetape4k/junit5/coroutines/CancellationContractsTest.kt)
+- [`CoroutineSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/test/kotlin/io/bluetape4k/junit5/coroutines/CoroutineSupportTest.kt)
+- [`SuspendedJobTesterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/test/kotlin/io/bluetape4k/junit5/coroutines/SuspendedJobTesterTest.kt)
+- [`DataFakerExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/test/kotlin/io/bluetape4k/junit5/faker/DataFakerExamples.kt)
 
 ## 워크숍
 
@@ -128,17 +128,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/build.gradle.kts)
-- [`ExtensionContext`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/ExtensionContext.kt)
-- [`AwaitilityConfigurationExtension`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/awaitility/AwaitilityConfigurationExtension.kt)
-- [`AwaitilityCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/awaitility/AwaitilityCoroutines.kt)
-- [`MultithreadingTester`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/concurrency/MultithreadingTester.kt)
-- [`StructuredTaskScopeTester`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/concurrency/StructuredTaskScopeTester.kt)
-- [`TestingExecutors`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/concurrency/TestingExecutors.kt)
-- [`CancellationContracts`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/coroutines/CancellationContracts.kt)
-- [`CoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/coroutines/CoroutineSupport.kt)
-- [`SuspendedJobTester`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/coroutines/SuspendedJobTester.kt)
-- [`FakeValueExtension`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/faker/FakeValueExtension.kt)
-- [`ExtensionContextSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/test/kotlin/io/bluetape4k/junit5/ExtensionContextSupportTest.kt)
-- [`AwaitilityCoroutinesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/testing/junit5/src/test/kotlin/io/bluetape4k/junit5/awaitility/AwaitilityCoroutinesTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/build.gradle.kts)
+- [`ExtensionContext`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/ExtensionContext.kt)
+- [`AwaitilityConfigurationExtension`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/awaitility/AwaitilityConfigurationExtension.kt)
+- [`AwaitilityCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/awaitility/AwaitilityCoroutines.kt)
+- [`MultithreadingTester`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/concurrency/MultithreadingTester.kt)
+- [`StructuredTaskScopeTester`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/concurrency/StructuredTaskScopeTester.kt)
+- [`TestingExecutors`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/concurrency/TestingExecutors.kt)
+- [`CancellationContracts`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/coroutines/CancellationContracts.kt)
+- [`CoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/coroutines/CoroutineSupport.kt)
+- [`SuspendedJobTester`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/coroutines/SuspendedJobTester.kt)
+- [`FakeValueExtension`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/main/kotlin/io/bluetape4k/junit5/faker/FakeValueExtension.kt)
+- [`ExtensionContextSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/test/kotlin/io/bluetape4k/junit5/ExtensionContextSupportTest.kt)
+- [`AwaitilityCoroutinesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/testing/junit5/src/test/kotlin/io/bluetape4k/junit5/awaitility/AwaitilityCoroutinesTest.kt)

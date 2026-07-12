@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/en/modules/bluetape4k-tink.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ The first source-level concepts to inspect are `SecureRandomSupport`, `TinkSuppo
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`SecureRandomSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/main/kotlin/io/bluetape4k/tink/SecureRandomSupport.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`SecureRandomSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/main/kotlin/io/bluetape4k/tink/SecureRandomSupport.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`SecureRandomSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/main/kotlin/io/bluetape4k/tink/SecureRandomSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`TinkSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/main/kotlin/io/bluetape4k/tink/TinkSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`TinkAead`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/main/kotlin/io/bluetape4k/tink/aead/TinkAead.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`TinkAeadExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/main/kotlin/io/bluetape4k/tink/aead/TinkAeadExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`TinkAeads`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/main/kotlin/io/bluetape4k/tink/aead/TinkAeads.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`TinkDaeads`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/main/kotlin/io/bluetape4k/tink/daead/TinkDaeads.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`TinkDeterministicAead`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/main/kotlin/io/bluetape4k/tink/daead/TinkDeterministicAead.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`TinkDigester`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/main/kotlin/io/bluetape4k/tink/digest/TinkDigester.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`TinkDigesterExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/main/kotlin/io/bluetape4k/tink/digest/TinkDigesterExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`TinkDigesters`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/main/kotlin/io/bluetape4k/tink/digest/TinkDigesters.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`SecureRandomSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/main/kotlin/io/bluetape4k/tink/SecureRandomSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`TinkSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/main/kotlin/io/bluetape4k/tink/TinkSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`TinkAead`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/main/kotlin/io/bluetape4k/tink/aead/TinkAead.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`TinkAeadExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/main/kotlin/io/bluetape4k/tink/aead/TinkAeadExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`TinkAeads`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/main/kotlin/io/bluetape4k/tink/aead/TinkAeads.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`TinkDaeads`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/main/kotlin/io/bluetape4k/tink/daead/TinkDaeads.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`TinkDeterministicAead`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/main/kotlin/io/bluetape4k/tink/daead/TinkDeterministicAead.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`TinkDigester`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/main/kotlin/io/bluetape4k/tink/digest/TinkDigester.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`TinkDigesterExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/main/kotlin/io/bluetape4k/tink/digest/TinkDigesterExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`TinkDigesters`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/main/kotlin/io/bluetape4k/tink/digest/TinkDigesters.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -96,14 +96,14 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`SecureRandomSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/test/kotlin/io/bluetape4k/tink/SecureRandomSupportTest.kt)
-- [`TinkSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/test/kotlin/io/bluetape4k/tink/TinkSupportTest.kt)
-- [`TinkAeadExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/test/kotlin/io/bluetape4k/tink/aead/TinkAeadExtensionsTest.kt)
-- [`TinkAeadTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/test/kotlin/io/bluetape4k/tink/aead/TinkAeadTest.kt)
-- [`TinkDeterministicAeadTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/test/kotlin/io/bluetape4k/tink/daead/TinkDeterministicAeadTest.kt)
-- [`TinkDigesterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/test/kotlin/io/bluetape4k/tink/digest/TinkDigesterTest.kt)
-- [`TinkEncryptorTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/test/kotlin/io/bluetape4k/tink/encrypt/TinkEncryptorTest.kt)
-- [`InMemoryVersionedDaeadKeysetStore`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/test/kotlin/io/bluetape4k/tink/keyset/InMemoryVersionedDaeadKeysetStore.kt)
+- [`SecureRandomSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/test/kotlin/io/bluetape4k/tink/SecureRandomSupportTest.kt)
+- [`TinkSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/test/kotlin/io/bluetape4k/tink/TinkSupportTest.kt)
+- [`TinkAeadExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/test/kotlin/io/bluetape4k/tink/aead/TinkAeadExtensionsTest.kt)
+- [`TinkAeadTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/test/kotlin/io/bluetape4k/tink/aead/TinkAeadTest.kt)
+- [`TinkDeterministicAeadTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/test/kotlin/io/bluetape4k/tink/daead/TinkDeterministicAeadTest.kt)
+- [`TinkDigesterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/test/kotlin/io/bluetape4k/tink/digest/TinkDigesterTest.kt)
+- [`TinkEncryptorTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/test/kotlin/io/bluetape4k/tink/encrypt/TinkEncryptorTest.kt)
+- [`InMemoryVersionedDaeadKeysetStore`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/test/kotlin/io/bluetape4k/tink/keyset/InMemoryVersionedDaeadKeysetStore.kt)
 
 ## Workshops
 
@@ -115,17 +115,17 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/build.gradle.kts)
-- [`SecureRandomSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/main/kotlin/io/bluetape4k/tink/SecureRandomSupport.kt)
-- [`TinkSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/main/kotlin/io/bluetape4k/tink/TinkSupport.kt)
-- [`TinkAead`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/main/kotlin/io/bluetape4k/tink/aead/TinkAead.kt)
-- [`TinkAeadExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/main/kotlin/io/bluetape4k/tink/aead/TinkAeadExtensions.kt)
-- [`TinkAeads`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/main/kotlin/io/bluetape4k/tink/aead/TinkAeads.kt)
-- [`TinkDaeads`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/main/kotlin/io/bluetape4k/tink/daead/TinkDaeads.kt)
-- [`TinkDeterministicAead`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/main/kotlin/io/bluetape4k/tink/daead/TinkDeterministicAead.kt)
-- [`TinkDigester`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/main/kotlin/io/bluetape4k/tink/digest/TinkDigester.kt)
-- [`TinkDigesterExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/main/kotlin/io/bluetape4k/tink/digest/TinkDigesterExtensions.kt)
-- [`TinkDigesters`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/main/kotlin/io/bluetape4k/tink/digest/TinkDigesters.kt)
-- [`SecureRandomSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/test/kotlin/io/bluetape4k/tink/SecureRandomSupportTest.kt)
-- [`TinkSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/tink/src/test/kotlin/io/bluetape4k/tink/TinkSupportTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/build.gradle.kts)
+- [`SecureRandomSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/main/kotlin/io/bluetape4k/tink/SecureRandomSupport.kt)
+- [`TinkSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/main/kotlin/io/bluetape4k/tink/TinkSupport.kt)
+- [`TinkAead`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/main/kotlin/io/bluetape4k/tink/aead/TinkAead.kt)
+- [`TinkAeadExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/main/kotlin/io/bluetape4k/tink/aead/TinkAeadExtensions.kt)
+- [`TinkAeads`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/main/kotlin/io/bluetape4k/tink/aead/TinkAeads.kt)
+- [`TinkDaeads`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/main/kotlin/io/bluetape4k/tink/daead/TinkDaeads.kt)
+- [`TinkDeterministicAead`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/main/kotlin/io/bluetape4k/tink/daead/TinkDeterministicAead.kt)
+- [`TinkDigester`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/main/kotlin/io/bluetape4k/tink/digest/TinkDigester.kt)
+- [`TinkDigesterExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/main/kotlin/io/bluetape4k/tink/digest/TinkDigesterExtensions.kt)
+- [`TinkDigesters`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/main/kotlin/io/bluetape4k/tink/digest/TinkDigesters.kt)
+- [`SecureRandomSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/test/kotlin/io/bluetape4k/tink/SecureRandomSupportTest.kt)
+- [`TinkSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/io/tink/src/test/kotlin/io/bluetape4k/tink/TinkSupportTest.kt)

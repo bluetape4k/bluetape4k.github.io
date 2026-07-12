@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "repository": "bluetape4k-projects",
-  "sourceCommit": "952a8a2566d05c0b7fd977f982bb83f5335848f8",
+  "sourceCommit": "ebe06db0b305bb2df767beb74bba95f79641bcc8",
   "modules": [
     {
       "artifact": "io.github.bluetape4k:bluetape4k-annotations",

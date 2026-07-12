@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "utilities"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/en/modules/bluetape4k-geo.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ The first source-level concepts to inspect are `Address`, `Geocode`, `GeocodeAdd
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`Address`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/Address.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`Address`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/Address.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`Address`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/Address.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`Geocode`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/Geocode.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`GeocodeAddressFinder`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/GeocodeAddressFinder.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`SuspendGeocodeAddressFinder`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/SuspendGeocodeAddressFinder.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`BingAddress`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/bing/BingAddress.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`BingAddressFinder`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/bing/BingAddressFinder.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`BingMapModel`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/bing/BingMapModel.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`BingMapService`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/bing/BingMapService.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`GeoApiContextSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/google/GeoApiContextSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`GoogleAddress`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/google/GoogleAddress.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Address`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/Address.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Geocode`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/Geocode.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`GeocodeAddressFinder`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/GeocodeAddressFinder.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`SuspendGeocodeAddressFinder`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/SuspendGeocodeAddressFinder.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`BingAddress`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/bing/BingAddress.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`BingAddressFinder`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/bing/BingAddressFinder.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`BingMapModel`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/bing/BingMapModel.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`BingMapService`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/bing/BingMapService.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`GeoApiContextSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/google/GeoApiContextSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`GoogleAddress`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/google/GoogleAddress.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -86,11 +86,11 @@ Treat `compileOnly` edges as caller-provided capabilities and verify runtime ava
 
 Configuration resources found in the module:
 
-- [`GeoLite2-ASN.mmdb`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/main/resources/GeoLite2-ASN.mmdb)
-- [`GeoLite2-City.mmdb`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/main/resources/GeoLite2-City.mmdb)
-- [`GeoLite2-Country.mmdb`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/main/resources/GeoLite2-Country.mmdb)
-- [`BingMapApi.http`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/main/resources/bing/BingMapApi.http)
-- [`location.json`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/main/resources/bing/location.json)
+- [`GeoLite2-ASN.mmdb`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/main/resources/GeoLite2-ASN.mmdb)
+- [`GeoLite2-City.mmdb`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/main/resources/GeoLite2-City.mmdb)
+- [`GeoLite2-Country.mmdb`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/main/resources/GeoLite2-Country.mmdb)
+- [`BingMapApi.http`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/main/resources/bing/BingMapApi.http)
+- [`location.json`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/main/resources/bing/location.json)
 
 Read property names and defaults from these resources and the binding source before overriding them.
 
@@ -112,14 +112,14 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`GeoReadmeContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/test/kotlin/io/bluetape4k/geo/GeoReadmeContractTest.kt)
-- [`AbstractGeocodeTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/test/kotlin/io/bluetape4k/geocode/AbstractGeocodeTest.kt)
-- [`JsonSerializationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/test/kotlin/io/bluetape4k/geocode/JsonSerializationTest.kt)
-- [`BingAddressFinderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/test/kotlin/io/bluetape4k/geocode/bing/BingAddressFinderTest.kt)
-- [`BingMapServiceTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/test/kotlin/io/bluetape4k/geocode/bing/BingMapServiceTest.kt)
-- [`GoogleAddressFinderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/test/kotlin/io/bluetape4k/geocode/google/GoogleAddressFinderTest.kt)
-- [`AbstractGeoHashTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/test/kotlin/io/bluetape4k/geohash/AbstractGeoHashTest.kt)
-- [`BoudingBoxTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/test/kotlin/io/bluetape4k/geohash/BoudingBoxTest.kt)
+- [`GeoReadmeContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/test/kotlin/io/bluetape4k/geo/GeoReadmeContractTest.kt)
+- [`AbstractGeocodeTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/test/kotlin/io/bluetape4k/geocode/AbstractGeocodeTest.kt)
+- [`JsonSerializationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/test/kotlin/io/bluetape4k/geocode/JsonSerializationTest.kt)
+- [`BingAddressFinderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/test/kotlin/io/bluetape4k/geocode/bing/BingAddressFinderTest.kt)
+- [`BingMapServiceTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/test/kotlin/io/bluetape4k/geocode/bing/BingMapServiceTest.kt)
+- [`GoogleAddressFinderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/test/kotlin/io/bluetape4k/geocode/google/GoogleAddressFinderTest.kt)
+- [`AbstractGeoHashTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/test/kotlin/io/bluetape4k/geohash/AbstractGeoHashTest.kt)
+- [`BoudingBoxTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/test/kotlin/io/bluetape4k/geohash/BoudingBoxTest.kt)
 
 ## Workshops
 
@@ -131,17 +131,17 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/build.gradle.kts)
-- [`Address`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/Address.kt)
-- [`Geocode`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/Geocode.kt)
-- [`GeocodeAddressFinder`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/GeocodeAddressFinder.kt)
-- [`SuspendGeocodeAddressFinder`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/SuspendGeocodeAddressFinder.kt)
-- [`BingAddress`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/bing/BingAddress.kt)
-- [`BingAddressFinder`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/bing/BingAddressFinder.kt)
-- [`BingMapModel`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/bing/BingMapModel.kt)
-- [`BingMapService`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/bing/BingMapService.kt)
-- [`GeoApiContextSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/google/GeoApiContextSupport.kt)
-- [`GoogleAddress`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/google/GoogleAddress.kt)
-- [`GeoReadmeContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/test/kotlin/io/bluetape4k/geo/GeoReadmeContractTest.kt)
-- [`AbstractGeocodeTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/geo/src/test/kotlin/io/bluetape4k/geocode/AbstractGeocodeTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/build.gradle.kts)
+- [`Address`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/Address.kt)
+- [`Geocode`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/Geocode.kt)
+- [`GeocodeAddressFinder`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/GeocodeAddressFinder.kt)
+- [`SuspendGeocodeAddressFinder`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/SuspendGeocodeAddressFinder.kt)
+- [`BingAddress`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/bing/BingAddress.kt)
+- [`BingAddressFinder`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/bing/BingAddressFinder.kt)
+- [`BingMapModel`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/bing/BingMapModel.kt)
+- [`BingMapService`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/bing/BingMapService.kt)
+- [`GeoApiContextSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/google/GeoApiContextSupport.kt)
+- [`GoogleAddress`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/main/kotlin/io/bluetape4k/geocode/google/GoogleAddress.kt)
+- [`GeoReadmeContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/test/kotlin/io/bluetape4k/geo/GeoReadmeContractTest.kt)
+- [`AbstractGeocodeTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/utils/geo/src/test/kotlin/io/bluetape4k/geocode/AbstractGeocodeTest.kt)

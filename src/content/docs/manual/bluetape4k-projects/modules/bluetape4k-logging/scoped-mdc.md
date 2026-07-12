@@ -8,7 +8,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/en/modules/bluetape4k-logging/scoped-mdc.md"
   layer: "build"
   chapterId: "scoped-mdc"
@@ -58,7 +58,7 @@ Do not store passwords, tokens, raw payloads, or unbounded collections. Setting 
 
 ## Source and tests
 
-- [`MdcSupport.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/logging/src/main/kotlin/io/bluetape4k/logging/MdcSupport.kt)
-- [`MdcSupportTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/logging/src/test/kotlin/io/bluetape4k/logging/MdcSupportTest.kt)
+- [`MdcSupport.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/logging/src/main/kotlin/io/bluetape4k/logging/MdcSupport.kt)
+- [`MdcSupportTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/logging/src/test/kotlin/io/bluetape4k/logging/MdcSupportTest.kt)
 
 Use [Coroutine MDC](./coroutine-mdc.md) when suspend code can switch threads.

@@ -8,7 +8,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-core/recipes.md"
   layer: "build"
   chapterId: "recipes"
@@ -166,6 +166,6 @@ ShutdownQueue.register(runtime)
 - [Bounded collections](./bounded-collections.md)
 - [시간과 범위](./time-ranges.md)
 - [Concurrency와 lifecycle](./concurrency-lifecycle.md)
-- [`bluetape4k-core` tests](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/test/kotlin/io/bluetape4k)
+- [`bluetape4k-core` tests](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/core/src/test/kotlin/io/bluetape4k)
 
 별도의 workshop이 없어도 위 representative test를 runnable specification으로 사용할 수 있습니다. Consumer module에서는 필요한 helper만 묶은 작은 integration test를 추가하고, 이 매뉴얼을 계약의 source of truth로 유지합니다.

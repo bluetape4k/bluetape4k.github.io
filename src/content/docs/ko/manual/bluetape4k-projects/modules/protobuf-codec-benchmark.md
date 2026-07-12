@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "experiments"
   kind: "benchmark"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/ko/modules/protobuf-codec-benchmark.md"
   layer: "apply"
 ---
@@ -87,6 +87,6 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/benchmark/protobuf-codec-benchmark/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/benchmark/protobuf-codec-benchmark/build.gradle.kts)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/benchmark/protobuf-codec-benchmark/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/benchmark/protobuf-codec-benchmark/build.gradle.kts)
 

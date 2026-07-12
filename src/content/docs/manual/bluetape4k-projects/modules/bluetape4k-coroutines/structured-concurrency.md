@@ -8,7 +8,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/en/modules/bluetape4k-coroutines/structured-concurrency.md"
   layer: "build"
   chapterId: "structured-concurrency"
@@ -87,8 +87,8 @@ Supervision is not failure suppression. Define how failed widgets appear in the 
 
 ## Source and representative tests
 
-- [`StructuredConcurrency.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/StructuredConcurrency.kt)
-- [`StructuredConcurrencyTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/coroutines/src/test/kotlin/io/bluetape4k/coroutines/StructuredConcurrencyTest.kt)
+- [`StructuredConcurrency.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/coroutines/src/main/kotlin/io/bluetape4k/coroutines/StructuredConcurrency.kt)
+- [`StructuredConcurrencyTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/coroutines/src/test/kotlin/io/bluetape4k/coroutines/StructuredConcurrencyTest.kt)
 - Core virtual-thread scope implementations live in the `bluetape4k-core` concurrency package.
 
 Continue with [Operations and observability](./operations.md) to operate and shut down the selected policy.

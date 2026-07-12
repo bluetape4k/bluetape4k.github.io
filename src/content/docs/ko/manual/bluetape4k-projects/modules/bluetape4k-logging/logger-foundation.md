@@ -8,7 +8,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-logging/logger-foundation.md"
   layer: "build"
   chapterId: "logger-foundation"
@@ -60,10 +60,10 @@ val serviceLog = KotlinLogging.logger(InvoiceService::class)
 
 ## Source와 tests
 
-- [`KLogging.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/logging/src/main/kotlin/io/bluetape4k/logging/KLogging.kt)
-- [`KotlinLogging.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/logging/src/main/kotlin/io/bluetape4k/logging/KotlinLogging.kt)
-- [`KLoggerNameResolver.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/logging/src/main/kotlin/io/bluetape4k/logging/internal/KLoggerNameResolver.kt)
-- [`KLoggingTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/logging/src/test/kotlin/io/bluetape4k/logging/KLoggingTest.kt)
-- [`KotlinLoggingTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/logging/src/test/kotlin/io/bluetape4k/logging/KotlinLoggingTest.kt)
+- [`KLogging.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/logging/src/main/kotlin/io/bluetape4k/logging/KLogging.kt)
+- [`KotlinLogging.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/logging/src/main/kotlin/io/bluetape4k/logging/KotlinLogging.kt)
+- [`KLoggerNameResolver.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/logging/src/main/kotlin/io/bluetape4k/logging/internal/KLoggerNameResolver.kt)
+- [`KLoggingTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/logging/src/test/kotlin/io/bluetape4k/logging/KLoggingTest.kt)
+- [`KotlinLoggingTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/bluetape4k/logging/src/test/kotlin/io/bluetape4k/logging/KotlinLoggingTest.kt)
 
 다음: message 계산 비용과 실패를 [Lazy messages](./lazy-messages.md)에서 다룹니다.

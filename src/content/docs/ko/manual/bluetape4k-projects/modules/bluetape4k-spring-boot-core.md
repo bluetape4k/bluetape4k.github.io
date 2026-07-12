@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "spring"
   kind: "library"
-  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
+  sourceCommit: "ebe06db0b305bb2df767beb74bba95f79641bcc8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-spring-boot-core.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ Gradle project path는 `:bluetape4k-spring-boot-core`, source directory는 `spri
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`AnnotationExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/beans/AnnotationExtensions.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`AnnotationExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/beans/AnnotationExtensions.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`AnnotationExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/beans/AnnotationExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`BeanFactoryExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/beans/BeanFactoryExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`BeanUtilsSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/beans/BeanUtilsSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`PropertyAccessorUtilsSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/beans/PropertyAccessorUtilsSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`ProfileSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/config/ProfileSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`PropertyResolverExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/core/PropertyResolverExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`ToStringCreatorSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/core/ToStringCreatorSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`DataBufferSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/core/io/buffer/DataBufferSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`ExampleMatcherSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/data/ExampleMatcherSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`RestClientBuilderDsl`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/http/RestClientBuilderDsl.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`AnnotationExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/beans/AnnotationExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`BeanFactoryExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/beans/BeanFactoryExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`BeanUtilsSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/beans/BeanUtilsSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`PropertyAccessorUtilsSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/beans/PropertyAccessorUtilsSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ProfileSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/config/ProfileSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`PropertyResolverExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/core/PropertyResolverExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ToStringCreatorSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/core/ToStringCreatorSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`DataBufferSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/core/io/buffer/DataBufferSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ExampleMatcherSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/data/ExampleMatcherSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`RestClientBuilderDsl`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/http/RestClientBuilderDsl.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -104,14 +104,14 @@ condition report, startup failure, pool/client health, request latency, graceful
 
 대표 test anchor는 다음과 같습니다.
 
-- [`AbstractSpringTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/test/kotlin/io/bluetape4k/spring/AbstractSpringTest.kt)
-- [`AnnotationExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/test/kotlin/io/bluetape4k/spring/beans/AnnotationExtensionsTest.kt)
-- [`BeanFactoryExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/test/kotlin/io/bluetape4k/spring/beans/BeanFactoryExtensionsTest.kt)
-- [`BeanUtilsSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/test/kotlin/io/bluetape4k/spring/beans/BeanUtilsSupportTest.kt)
-- [`PropertyResolverExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/test/kotlin/io/bluetape4k/spring/core/PropertyResolverExtensionsTest.kt)
-- [`ToStringCreatorExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/test/kotlin/io/bluetape4k/spring/core/ToStringCreatorExtensionsTest.kt)
-- [`DataBufferSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/test/kotlin/io/bluetape4k/spring/core/io/buffer/DataBufferSupportTest.kt)
-- [`ExampleMatcherSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/test/kotlin/io/bluetape4k/spring/data/ExampleMatcherSupportTest.kt)
+- [`AbstractSpringTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/test/kotlin/io/bluetape4k/spring/AbstractSpringTest.kt)
+- [`AnnotationExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/test/kotlin/io/bluetape4k/spring/beans/AnnotationExtensionsTest.kt)
+- [`BeanFactoryExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/test/kotlin/io/bluetape4k/spring/beans/BeanFactoryExtensionsTest.kt)
+- [`BeanUtilsSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/test/kotlin/io/bluetape4k/spring/beans/BeanUtilsSupportTest.kt)
+- [`PropertyResolverExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/test/kotlin/io/bluetape4k/spring/core/PropertyResolverExtensionsTest.kt)
+- [`ToStringCreatorExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/test/kotlin/io/bluetape4k/spring/core/ToStringCreatorExtensionsTest.kt)
+- [`DataBufferSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/test/kotlin/io/bluetape4k/spring/core/io/buffer/DataBufferSupportTest.kt)
+- [`ExampleMatcherSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/test/kotlin/io/bluetape4k/spring/data/ExampleMatcherSupportTest.kt)
 
 ## 워크숍
 
@@ -123,17 +123,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/build.gradle.kts)
-- [`AnnotationExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/beans/AnnotationExtensions.kt)
-- [`BeanFactoryExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/beans/BeanFactoryExtensions.kt)
-- [`BeanUtilsSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/beans/BeanUtilsSupport.kt)
-- [`PropertyAccessorUtilsSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/beans/PropertyAccessorUtilsSupport.kt)
-- [`ProfileSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/config/ProfileSupport.kt)
-- [`PropertyResolverExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/core/PropertyResolverExtensions.kt)
-- [`ToStringCreatorSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/core/ToStringCreatorSupport.kt)
-- [`DataBufferSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/core/io/buffer/DataBufferSupport.kt)
-- [`ExampleMatcherSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/data/ExampleMatcherSupport.kt)
-- [`RestClientBuilderDsl`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/http/RestClientBuilderDsl.kt)
-- [`AbstractSpringTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/test/kotlin/io/bluetape4k/spring/AbstractSpringTest.kt)
-- [`AnnotationExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/spring-boot/core/src/test/kotlin/io/bluetape4k/spring/beans/AnnotationExtensionsTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/build.gradle.kts)
+- [`AnnotationExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/beans/AnnotationExtensions.kt)
+- [`BeanFactoryExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/beans/BeanFactoryExtensions.kt)
+- [`BeanUtilsSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/beans/BeanUtilsSupport.kt)
+- [`PropertyAccessorUtilsSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/beans/PropertyAccessorUtilsSupport.kt)
+- [`ProfileSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/config/ProfileSupport.kt)
+- [`PropertyResolverExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/core/PropertyResolverExtensions.kt)
+- [`ToStringCreatorSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/core/ToStringCreatorSupport.kt)
+- [`DataBufferSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/core/io/buffer/DataBufferSupport.kt)
+- [`ExampleMatcherSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/data/ExampleMatcherSupport.kt)
+- [`RestClientBuilderDsl`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/main/kotlin/io/bluetape4k/spring/http/RestClientBuilderDsl.kt)
+- [`AbstractSpringTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/test/kotlin/io/bluetape4k/spring/AbstractSpringTest.kt)
+- [`AnnotationExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/ebe06db0b305bb2df767beb74bba95f79641bcc8/spring-boot/core/src/test/kotlin/io/bluetape4k/spring/beans/AnnotationExtensionsTest.kt)
