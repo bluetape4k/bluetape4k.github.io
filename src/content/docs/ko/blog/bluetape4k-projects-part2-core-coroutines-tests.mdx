@@ -140,6 +140,16 @@ class OrderService {
 흩어지면 장애 때만 티가 납니다. 그리고 장애 때 티 나는 문제는 보통 제일 비쌉니다. 로그는 평소에
 읽는 글이 아니라, 일이 터졌을 때 반드시 읽혀야 하는 글입니다.
 
+Blog는 여기서 이유와 감각을 설명하고, 정확한 선택과 lifecycle 계약은 매뉴얼이 소유합니다.
+
+| 결정 | 기준 매뉴얼 장 |
+|---|---|
+| class logger와 안정적인 category 선택 | [Logging: Logger foundation](/ko/manual/bluetape4k-projects/modules/bluetape4k-logging/logger-foundation/) |
+| 꺼진 level에서 message 계산을 피하고 supplier 실패 격리 | [Logging: Lazy messages](/ko/manual/bluetape4k-projects/modules/bluetape4k-logging/lazy-messages/) |
+| nested request context 복원 또는 제거 | [Logging: Scoped MDC](/ko/manual/bluetape4k-projects/modules/bluetape4k-logging/scoped-mdc/) |
+| suspension과 dispatcher 전환 뒤 context 유지 | [Logging: Coroutine MDC](/ko/manual/bluetape4k-projects/modules/bluetape4k-logging/coroutine-mdc/) |
+| buffer 64, suspend backpressure, cancel-not-drain 선택 | [Logging: Async channel](/ko/manual/bluetape4k-projects/modules/bluetape4k-logging/async-channel/) |
+
 ## tests: 테스트 fixture도 금방 중복된다
 
 테스트 코드는 운영 코드보다 덜 보일 뿐, 중복은 더 심할 때가 많습니다. 임시 디렉터리를 만들고, system
@@ -208,7 +218,7 @@ class CacheTest {
 |---|---|---|
 | `bluetape4k-core` | `if (x.isBlank()) throw ...`가 여기저기 생김 | [Core 매뉴얼](/ko/manual/bluetape4k-projects/modules/bluetape4k-core/) |
 | `bluetape4k-coroutines` | `Deferred`, `Flow`, cancellation 처리를 서비스마다 다시 씀 | [Coroutines 매뉴얼](/ko/manual/bluetape4k-projects/modules/bluetape4k-coroutines/) |
-| `bluetape4k-logging` | `requestId`가 coroutine 경계에서 가끔 사라짐 | [`logging` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/logging/README.md) |
+| `bluetape4k-logging` | `requestId`가 coroutine 경계에서 가끔 사라짐 | [Logging 매뉴얼](/ko/manual/bluetape4k-projects/modules/bluetape4k-logging/) |
 | `bluetape4k-assertions` | `assertEquals`, `assertTrue`, null/collection check가 테스트마다 다른 문체로 섞임 | [`assertions` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/assertions/README.ko.md) |
 | `bluetape4k-junit5` | 임시 파일, 출력 캡처, coroutine 대기 코드가 테스트마다 복붙됨 | [`junit5` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/README.md) |
 | `bluetape4k-testcontainers` | Redis, Kafka, DB fixture를 클래스마다 다른 방식으로 띄움 | [`testcontainers` README](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/testcontainers/README.md) |
@@ -226,7 +236,7 @@ class CacheTest {
 - Coroutines README: [bluetape4k/coroutines/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/coroutines/README.md)
 - Core 매뉴얼: [결정 중심 reference](/ko/manual/bluetape4k-projects/modules/bluetape4k-core/)
 - Coroutines 매뉴얼: [lifecycle, composition, Flow, operations](/ko/manual/bluetape4k-projects/modules/bluetape4k-coroutines/)
-- Logging README: [bluetape4k/logging/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/bluetape4k/logging/README.md)
+- Logging 매뉴얼: [logger, MDC, coroutine, async lifecycle](/ko/manual/bluetape4k-projects/modules/bluetape4k-logging/)
 - Assertions README: [testing/assertions/README.ko.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/assertions/README.ko.md)
 - JUnit 5 README: [testing/junit5/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/junit5/README.md)
 - Testcontainers README: [testing/testcontainers/README.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/testing/testcontainers/README.md)

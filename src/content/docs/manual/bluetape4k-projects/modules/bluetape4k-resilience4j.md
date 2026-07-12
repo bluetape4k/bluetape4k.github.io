@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "infrastructure"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/en/modules/bluetape4k-resilience4j.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ The first source-level concepts to inspect are `RetryAsyncContextBridge`, `Calla
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`RetryAsyncContextBridge`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/java/io/bluetape4k/resilience4j/retry/RetryAsyncContextBridge.java) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`RetryAsyncContextBridge`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/main/java/io/bluetape4k/resilience4j/retry/RetryAsyncContextBridge.java) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`RetryAsyncContextBridge`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/java/io/bluetape4k/resilience4j/retry/RetryAsyncContextBridge.java) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`CallableSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/CallableSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`CancellationSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/CancellationSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`CompletionStageSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/CompletionStageSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`DecoratorsSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/DecoratorsSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`SupplierSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/SupplierSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`SuspendDecorators`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/SuspendDecorators.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`SuspendSupplierExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/SuspendSupplierExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`BulkheadCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/bulkhead/BulkheadCoroutines.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`BulkheadExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/bulkhead/BulkheadExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`RetryAsyncContextBridge`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/main/java/io/bluetape4k/resilience4j/retry/RetryAsyncContextBridge.java) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`CallableSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/CallableSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`CancellationSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/CancellationSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`CompletionStageSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/CompletionStageSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`DecoratorsSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/DecoratorsSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`SupplierSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/SupplierSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`SuspendDecorators`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/SuspendDecorators.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`SuspendSupplierExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/SuspendSupplierExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`BulkheadCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/bulkhead/BulkheadCoroutines.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`BulkheadExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/bulkhead/BulkheadExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -102,14 +102,14 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`AsyncHelloWorldService`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/AsyncHelloWorldService.kt)
-- [`CallableSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/CallableSupportTest.kt)
-- [`CompletionStageSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/CompletionStageSupportTest.kt)
-- [`DecoratorExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/DecoratorExtensionsTest.kt)
-- [`DecoratorsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/DecoratorsTest.kt)
-- [`HelloWorldException`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/HelloWorldException.kt)
-- [`HelloWorldService`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/HelloWorldService.kt)
-- [`Resilience4jCancellationContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/Resilience4jCancellationContractTest.kt)
+- [`AsyncHelloWorldService`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/AsyncHelloWorldService.kt)
+- [`CallableSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/CallableSupportTest.kt)
+- [`CompletionStageSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/CompletionStageSupportTest.kt)
+- [`DecoratorExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/DecoratorExtensionsTest.kt)
+- [`DecoratorsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/DecoratorsTest.kt)
+- [`HelloWorldException`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/HelloWorldException.kt)
+- [`HelloWorldService`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/HelloWorldService.kt)
+- [`Resilience4jCancellationContractTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/Resilience4jCancellationContractTest.kt)
 
 ## Workshops
 
@@ -121,17 +121,17 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/build.gradle.kts)
-- [`RetryAsyncContextBridge`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/java/io/bluetape4k/resilience4j/retry/RetryAsyncContextBridge.java)
-- [`CallableSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/CallableSupport.kt)
-- [`CancellationSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/CancellationSupport.kt)
-- [`CompletionStageSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/CompletionStageSupport.kt)
-- [`DecoratorsSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/DecoratorsSupport.kt)
-- [`SupplierSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/SupplierSupport.kt)
-- [`SuspendDecorators`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/SuspendDecorators.kt)
-- [`SuspendSupplierExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/SuspendSupplierExtensions.kt)
-- [`BulkheadCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/bulkhead/BulkheadCoroutines.kt)
-- [`BulkheadExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/bulkhead/BulkheadExtensions.kt)
-- [`AsyncHelloWorldService`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/AsyncHelloWorldService.kt)
-- [`CallableSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/CallableSupportTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/build.gradle.kts)
+- [`RetryAsyncContextBridge`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/main/java/io/bluetape4k/resilience4j/retry/RetryAsyncContextBridge.java)
+- [`CallableSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/CallableSupport.kt)
+- [`CancellationSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/CancellationSupport.kt)
+- [`CompletionStageSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/CompletionStageSupport.kt)
+- [`DecoratorsSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/DecoratorsSupport.kt)
+- [`SupplierSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/SupplierSupport.kt)
+- [`SuspendDecorators`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/SuspendDecorators.kt)
+- [`SuspendSupplierExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/SuspendSupplierExtensions.kt)
+- [`BulkheadCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/bulkhead/BulkheadCoroutines.kt)
+- [`BulkheadExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/main/kotlin/io/bluetape4k/resilience4j/bulkhead/BulkheadExtensions.kt)
+- [`AsyncHelloWorldService`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/AsyncHelloWorldService.kt)
+- [`CallableSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/resilience4j/src/test/kotlin/io/bluetape4k/resilience4j/CallableSupportTest.kt)

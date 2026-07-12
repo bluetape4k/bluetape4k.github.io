@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "concurrency"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-virtualthread-jdk25.md"
   layer: "build"
 ---
@@ -40,14 +40,14 @@ Gradle project path는 `:bluetape4k-virtualthread-jdk25`, source directory는 `v
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`Jdk25VirtualThreadRuntime`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/virtualthread/jdk25/src/main/java/io/bluetape4k/concurrent/virtualthread/jdk25/Jdk25VirtualThreadRuntime.java)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`Jdk25VirtualThreadRuntime`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/virtualthread/jdk25/src/main/java/io/bluetape4k/concurrent/virtualthread/jdk25/Jdk25VirtualThreadRuntime.java)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`Jdk25VirtualThreadRuntime`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/virtualthread/jdk25/src/main/java/io/bluetape4k/concurrent/virtualthread/jdk25/Jdk25VirtualThreadRuntime.java) | constructor, function, ownership 계약을 확인합니다. |
-| [`Jdk25StructuredTaskScopeProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/virtualthread/jdk25/src/main/kotlin/io/bluetape4k/concurrent/virtualthread/jdk25/Jdk25StructuredTaskScopeProvider.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Jdk25VirtualThreadRuntime`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/virtualthread/jdk25/src/main/java/io/bluetape4k/concurrent/virtualthread/jdk25/Jdk25VirtualThreadRuntime.java) | constructor, function, ownership 계약을 확인합니다. |
+| [`Jdk25StructuredTaskScopeProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/virtualthread/jdk25/src/main/kotlin/io/bluetape4k/concurrent/virtualthread/jdk25/Jdk25StructuredTaskScopeProvider.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -69,8 +69,8 @@ implementation(libs.kotlinx.coroutines.core)
 
 모듈에서 찾은 설정 resource는 다음과 같습니다.
 
-- [`io.bluetape4k.concurrent.virtualthread.StructuredTaskScopeProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/virtualthread/jdk25/src/main/resources/META-INF/services/io.bluetape4k.concurrent.virtualthread.StructuredTaskScopeProvider)
-- [`io.bluetape4k.concurrent.virtualthread.VirtualThreadRuntime`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/virtualthread/jdk25/src/main/resources/META-INF/services/io.bluetape4k.concurrent.virtualthread.VirtualThreadRuntime)
+- [`io.bluetape4k.concurrent.virtualthread.StructuredTaskScopeProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/virtualthread/jdk25/src/main/resources/META-INF/services/io.bluetape4k.concurrent.virtualthread.StructuredTaskScopeProvider)
+- [`io.bluetape4k.concurrent.virtualthread.VirtualThreadRuntime`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/virtualthread/jdk25/src/main/resources/META-INF/services/io.bluetape4k.concurrent.virtualthread.VirtualThreadRuntime)
 
 override하기 전에 이 resource와 binding source에서 property 이름과 default를 확인합니다.
 
@@ -92,9 +92,9 @@ active work, queue 깊이, cancellation, timeout, executor 포화, shutdown 완�
 
 대표 test anchor는 다음과 같습니다.
 
-- [`Jdk25StructuredTaskScopeProviderExtTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/virtualthread/jdk25/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/jdk25/Jdk25StructuredTaskScopeProviderExtTest.kt)
-- [`Jdk25StructuredTaskScopeProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/virtualthread/jdk25/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/jdk25/Jdk25StructuredTaskScopeProviderTest.kt)
-- [`Jdk25TaskContextTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/virtualthread/jdk25/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/jdk25/Jdk25TaskContextTest.kt)
+- [`Jdk25StructuredTaskScopeProviderExtTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/virtualthread/jdk25/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/jdk25/Jdk25StructuredTaskScopeProviderExtTest.kt)
+- [`Jdk25StructuredTaskScopeProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/virtualthread/jdk25/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/jdk25/Jdk25StructuredTaskScopeProviderTest.kt)
+- [`Jdk25TaskContextTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/virtualthread/jdk25/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/jdk25/Jdk25TaskContextTest.kt)
 
 ## 워크숍
 
@@ -106,10 +106,10 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/virtualthread/jdk25/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/virtualthread/jdk25/build.gradle.kts)
-- [`Jdk25VirtualThreadRuntime`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/virtualthread/jdk25/src/main/java/io/bluetape4k/concurrent/virtualthread/jdk25/Jdk25VirtualThreadRuntime.java)
-- [`Jdk25StructuredTaskScopeProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/virtualthread/jdk25/src/main/kotlin/io/bluetape4k/concurrent/virtualthread/jdk25/Jdk25StructuredTaskScopeProvider.kt)
-- [`Jdk25StructuredTaskScopeProviderExtTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/virtualthread/jdk25/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/jdk25/Jdk25StructuredTaskScopeProviderExtTest.kt)
-- [`Jdk25StructuredTaskScopeProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/virtualthread/jdk25/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/jdk25/Jdk25StructuredTaskScopeProviderTest.kt)
-- [`Jdk25TaskContextTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/virtualthread/jdk25/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/jdk25/Jdk25TaskContextTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/virtualthread/jdk25/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/virtualthread/jdk25/build.gradle.kts)
+- [`Jdk25VirtualThreadRuntime`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/virtualthread/jdk25/src/main/java/io/bluetape4k/concurrent/virtualthread/jdk25/Jdk25VirtualThreadRuntime.java)
+- [`Jdk25StructuredTaskScopeProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/virtualthread/jdk25/src/main/kotlin/io/bluetape4k/concurrent/virtualthread/jdk25/Jdk25StructuredTaskScopeProvider.kt)
+- [`Jdk25StructuredTaskScopeProviderExtTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/virtualthread/jdk25/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/jdk25/Jdk25StructuredTaskScopeProviderExtTest.kt)
+- [`Jdk25StructuredTaskScopeProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/virtualthread/jdk25/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/jdk25/Jdk25StructuredTaskScopeProviderTest.kt)
+- [`Jdk25TaskContextTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/virtualthread/jdk25/src/test/kotlin/io/bluetape4k/concurrent/virtualthread/jdk25/Jdk25TaskContextTest.kt)

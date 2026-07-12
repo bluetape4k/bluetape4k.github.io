@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "infrastructure"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/en/modules/bluetape4k-micrometer.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ The first source-level concepts to inspect are `KeyValueSupport`, `TimerExtensio
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`KeyValueSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/common/KeyValueSupport.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`KeyValueSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/common/KeyValueSupport.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`KeyValueSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/common/KeyValueSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`TimerExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/TimerExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`Cache2kCacheMetrics`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/cache/Cache2kCacheMetrics.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`MeasuredCall`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/MeasuredCall.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`MeasuredCallAdapter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/MeasuredCallAdapter.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`MetricsRecorder`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/MetricsRecorder.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`MicrometerRetrofitMetricsFactory`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/MicrometerRetrofitMetricsFactory.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`MicrometerRetrofitMetricsRecorder`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/MicrometerRetrofitMetricsRecorder.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`Outcome`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/Outcome.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`RetrofitCallMetricsCollector`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/RetrofitCallMetricsCollector.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`KeyValueSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/common/KeyValueSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`TimerExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/TimerExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Cache2kCacheMetrics`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/cache/Cache2kCacheMetrics.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`MeasuredCall`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/MeasuredCall.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`MeasuredCallAdapter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/MeasuredCallAdapter.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`MetricsRecorder`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/MetricsRecorder.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`MicrometerRetrofitMetricsFactory`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/MicrometerRetrofitMetricsFactory.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`MicrometerRetrofitMetricsRecorder`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/MicrometerRetrofitMetricsRecorder.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Outcome`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/Outcome.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`RetrofitCallMetricsCollector`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/RetrofitCallMetricsCollector.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -104,14 +104,14 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`KeyValueSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/test/kotlin/io/bluetape4k/micrometer/common/KeyValueSupportTest.kt)
-- [`AbstractMicrometerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/test/kotlin/io/bluetape4k/micrometer/instrument/AbstractMicrometerTest.kt)
-- [`TimerExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/test/kotlin/io/bluetape4k/micrometer/instrument/TimerExtensionsTest.kt)
-- [`Cache2kCacheMetricsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/test/kotlin/io/bluetape4k/micrometer/instrument/cache/Cache2kCacheMetricsTest.kt)
-- [`OutcomeTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/test/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/OutcomeTest.kt)
-- [`Retrofit2MetricsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/test/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/Retrofit2MetricsTest.kt)
-- [`RetrofitMetricsSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/test/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/RetrofitMetricsSupportTest.kt)
-- [`RetrofitMetricsUnitTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/test/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/RetrofitMetricsUnitTest.kt)
+- [`KeyValueSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/test/kotlin/io/bluetape4k/micrometer/common/KeyValueSupportTest.kt)
+- [`AbstractMicrometerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/test/kotlin/io/bluetape4k/micrometer/instrument/AbstractMicrometerTest.kt)
+- [`TimerExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/test/kotlin/io/bluetape4k/micrometer/instrument/TimerExtensionsTest.kt)
+- [`Cache2kCacheMetricsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/test/kotlin/io/bluetape4k/micrometer/instrument/cache/Cache2kCacheMetricsTest.kt)
+- [`OutcomeTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/test/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/OutcomeTest.kt)
+- [`Retrofit2MetricsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/test/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/Retrofit2MetricsTest.kt)
+- [`RetrofitMetricsSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/test/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/RetrofitMetricsSupportTest.kt)
+- [`RetrofitMetricsUnitTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/test/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/RetrofitMetricsUnitTest.kt)
 
 ## Workshops
 
@@ -123,17 +123,17 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/build.gradle.kts)
-- [`KeyValueSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/common/KeyValueSupport.kt)
-- [`TimerExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/TimerExtensions.kt)
-- [`Cache2kCacheMetrics`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/cache/Cache2kCacheMetrics.kt)
-- [`MeasuredCall`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/MeasuredCall.kt)
-- [`MeasuredCallAdapter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/MeasuredCallAdapter.kt)
-- [`MetricsRecorder`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/MetricsRecorder.kt)
-- [`MicrometerRetrofitMetricsFactory`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/MicrometerRetrofitMetricsFactory.kt)
-- [`MicrometerRetrofitMetricsRecorder`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/MicrometerRetrofitMetricsRecorder.kt)
-- [`Outcome`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/Outcome.kt)
-- [`RetrofitCallMetricsCollector`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/RetrofitCallMetricsCollector.kt)
-- [`KeyValueSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/test/kotlin/io/bluetape4k/micrometer/common/KeyValueSupportTest.kt)
-- [`AbstractMicrometerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/micrometer/src/test/kotlin/io/bluetape4k/micrometer/instrument/AbstractMicrometerTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/build.gradle.kts)
+- [`KeyValueSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/common/KeyValueSupport.kt)
+- [`TimerExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/TimerExtensions.kt)
+- [`Cache2kCacheMetrics`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/cache/Cache2kCacheMetrics.kt)
+- [`MeasuredCall`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/MeasuredCall.kt)
+- [`MeasuredCallAdapter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/MeasuredCallAdapter.kt)
+- [`MetricsRecorder`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/MetricsRecorder.kt)
+- [`MicrometerRetrofitMetricsFactory`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/MicrometerRetrofitMetricsFactory.kt)
+- [`MicrometerRetrofitMetricsRecorder`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/MicrometerRetrofitMetricsRecorder.kt)
+- [`Outcome`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/Outcome.kt)
+- [`RetrofitCallMetricsCollector`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/main/kotlin/io/bluetape4k/micrometer/instrument/retrofit2/RetrofitCallMetricsCollector.kt)
+- [`KeyValueSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/test/kotlin/io/bluetape4k/micrometer/common/KeyValueSupportTest.kt)
+- [`AbstractMicrometerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/micrometer/src/test/kotlin/io/bluetape4k/micrometer/instrument/AbstractMicrometerTest.kt)

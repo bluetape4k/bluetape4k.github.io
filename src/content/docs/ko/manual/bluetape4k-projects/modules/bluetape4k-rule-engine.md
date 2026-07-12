@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "utilities"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-rule-engine.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ Gradle project path는 `:bluetape4k-rule-engine`, source directory는 `utils/rul
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`RuleDefaults`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/RuleDefaults.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`RuleDefaults`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/RuleDefaults.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`RuleDefaults`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/RuleDefaults.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Action`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/annotation/Action.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Condition`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/annotation/Condition.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Fact`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/annotation/Fact.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Priority`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/annotation/Priority.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Rule`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/annotation/Rule.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Action`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/api/Action.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Condition`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/api/Condition.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Facts`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/api/Facts.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Rule`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/api/Rule.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`RuleDefaults`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/RuleDefaults.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Action`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/annotation/Action.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Condition`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/annotation/Condition.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Fact`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/annotation/Fact.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Priority`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/annotation/Priority.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Rule`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/annotation/Rule.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Action`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/api/Action.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Condition`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/api/Condition.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Facts`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/api/Facts.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Rule`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/api/Rule.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -104,14 +104,14 @@ hot path를 측정하고 입력 크기를 제한하며 utility를 호출하는 a
 
 대표 test anchor는 다음과 같습니다.
 
-- [`ConditionTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/test/kotlin/io/bluetape4k/rule/api/ConditionTest.kt)
-- [`FactsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/test/kotlin/io/bluetape4k/rule/api/FactsTest.kt)
-- [`RuleDefinitionTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/test/kotlin/io/bluetape4k/rule/api/RuleDefinitionTest.kt)
-- [`RuleEngineConfigTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/test/kotlin/io/bluetape4k/rule/api/RuleEngineConfigTest.kt)
-- [`ActionMethodOrderBeanTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/test/kotlin/io/bluetape4k/rule/core/ActionMethodOrderBeanTest.kt)
-- [`DefaultRuleEngineListenerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/test/kotlin/io/bluetape4k/rule/core/DefaultRuleEngineListenerTest.kt)
-- [`DefaultRuleEngineTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/test/kotlin/io/bluetape4k/rule/core/DefaultRuleEngineTest.kt)
-- [`DefaultRuleListenerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/test/kotlin/io/bluetape4k/rule/core/DefaultRuleListenerTest.kt)
+- [`ConditionTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/test/kotlin/io/bluetape4k/rule/api/ConditionTest.kt)
+- [`FactsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/test/kotlin/io/bluetape4k/rule/api/FactsTest.kt)
+- [`RuleDefinitionTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/test/kotlin/io/bluetape4k/rule/api/RuleDefinitionTest.kt)
+- [`RuleEngineConfigTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/test/kotlin/io/bluetape4k/rule/api/RuleEngineConfigTest.kt)
+- [`ActionMethodOrderBeanTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/test/kotlin/io/bluetape4k/rule/core/ActionMethodOrderBeanTest.kt)
+- [`DefaultRuleEngineListenerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/test/kotlin/io/bluetape4k/rule/core/DefaultRuleEngineListenerTest.kt)
+- [`DefaultRuleEngineTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/test/kotlin/io/bluetape4k/rule/core/DefaultRuleEngineTest.kt)
+- [`DefaultRuleListenerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/test/kotlin/io/bluetape4k/rule/core/DefaultRuleListenerTest.kt)
 
 ## 워크숍
 
@@ -123,17 +123,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/build.gradle.kts)
-- [`RuleDefaults`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/RuleDefaults.kt)
-- [`Action`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/annotation/Action.kt)
-- [`Condition`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/annotation/Condition.kt)
-- [`Fact`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/annotation/Fact.kt)
-- [`Priority`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/annotation/Priority.kt)
-- [`Rule`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/annotation/Rule.kt)
-- [`Action`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/api/Action.kt)
-- [`Condition`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/api/Condition.kt)
-- [`Facts`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/api/Facts.kt)
-- [`Rule`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/api/Rule.kt)
-- [`ConditionTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/test/kotlin/io/bluetape4k/rule/api/ConditionTest.kt)
-- [`FactsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/rule-engine/src/test/kotlin/io/bluetape4k/rule/api/FactsTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/build.gradle.kts)
+- [`RuleDefaults`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/RuleDefaults.kt)
+- [`Action`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/annotation/Action.kt)
+- [`Condition`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/annotation/Condition.kt)
+- [`Fact`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/annotation/Fact.kt)
+- [`Priority`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/annotation/Priority.kt)
+- [`Rule`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/annotation/Rule.kt)
+- [`Action`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/api/Action.kt)
+- [`Condition`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/api/Condition.kt)
+- [`Facts`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/api/Facts.kt)
+- [`Rule`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/main/kotlin/io/bluetape4k/rule/api/Rule.kt)
+- [`ConditionTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/test/kotlin/io/bluetape4k/rule/api/ConditionTest.kt)
+- [`FactsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/rule-engine/src/test/kotlin/io/bluetape4k/rule/api/FactsTest.kt)

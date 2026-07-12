@@ -8,7 +8,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-core/bounded-collections.md"
   layer: "build"
   chapterId: "bounded-collections"
@@ -56,9 +56,9 @@ Eviction count, capacity 도달률, snapshot size를 관찰합니다. 테스트�
 
 ## Source와 representative tests
 
-- [`BoundedStack.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/src/main/kotlin/io/bluetape4k/collections/BoundedStack.kt)
-- [`RingBuffer.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/src/main/kotlin/io/bluetape4k/collections/RingBuffer.kt)
-- [`BoundedStackTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/src/test/kotlin/io/bluetape4k/collections/BoundedStackTest.kt)
-- [`RingBufferTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/src/test/kotlin/io/bluetape4k/collections/RingBufferTest.kt)
+- [`BoundedStack.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/main/kotlin/io/bluetape4k/collections/BoundedStack.kt)
+- [`RingBuffer.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/main/kotlin/io/bluetape4k/collections/RingBuffer.kt)
+- [`BoundedStackTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/test/kotlin/io/bluetape4k/collections/BoundedStackTest.kt)
+- [`RingBufferTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/test/kotlin/io/bluetape4k/collections/RingBufferTest.kt)
 
 실행 중/대기 중 비동기 work의 capacity는 collection이 아니라 [Concurrency와 lifecycle](./concurrency-lifecycle.md)에서 다룹니다.

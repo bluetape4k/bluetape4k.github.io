@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "web"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-ktor-observability.md"
   layer: "build"
 ---
@@ -40,21 +40,21 @@ Gradle project path는 `:bluetape4k-ktor-observability`, source directory는 `kt
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`Bluetape4kKtorObservability`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/Bluetape4kKtorObservability.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`Bluetape4kKtorObservability`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/Bluetape4kKtorObservability.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`Bluetape4kKtorObservability`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/Bluetape4kKtorObservability.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Bluetape4kKtorObservabilityConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/Bluetape4kKtorObservabilityConfig.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`CallLoggingSettings`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/CallLoggingSettings.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`CorrelationIdSettings`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/CorrelationIdSettings.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`KtorCallIdSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorCallIdSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`KtorCallLoggingSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorCallLoggingSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`KtorOpenTelemetryTracingConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorOpenTelemetryTracingConfig.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`KtorOpenTelemetryTracingSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorOpenTelemetryTracingSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`KtorPrometheusRoutes`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorPrometheusRoutes.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Bluetape4kKtorObservability`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/Bluetape4kKtorObservability.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Bluetape4kKtorObservabilityConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/Bluetape4kKtorObservabilityConfig.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`CallLoggingSettings`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/CallLoggingSettings.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`CorrelationIdSettings`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/CorrelationIdSettings.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`KtorCallIdSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorCallIdSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`KtorCallLoggingSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorCallLoggingSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`KtorOpenTelemetryTracingConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorOpenTelemetryTracingConfig.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`KtorOpenTelemetryTracingSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorOpenTelemetryTracingSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`KtorPrometheusRoutes`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorPrometheusRoutes.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -100,7 +100,7 @@ request latency, status code, cancellation, queueing, dependency failure, shutdo
 
 대표 test anchor는 다음과 같습니다.
 
-- [`Bluetape4kKtorObservabilityTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/observability/src/test/kotlin/io/bluetape4k/ktor/observability/Bluetape4kKtorObservabilityTest.kt)
+- [`Bluetape4kKtorObservabilityTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/observability/src/test/kotlin/io/bluetape4k/ktor/observability/Bluetape4kKtorObservabilityTest.kt)
 
 ## 워크숍
 
@@ -112,15 +112,15 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/observability/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/observability/build.gradle.kts)
-- [`Bluetape4kKtorObservability`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/Bluetape4kKtorObservability.kt)
-- [`Bluetape4kKtorObservabilityConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/Bluetape4kKtorObservabilityConfig.kt)
-- [`CallLoggingSettings`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/CallLoggingSettings.kt)
-- [`CorrelationIdSettings`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/CorrelationIdSettings.kt)
-- [`KtorCallIdSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorCallIdSupport.kt)
-- [`KtorCallLoggingSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorCallLoggingSupport.kt)
-- [`KtorOpenTelemetryTracingConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorOpenTelemetryTracingConfig.kt)
-- [`KtorOpenTelemetryTracingSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorOpenTelemetryTracingSupport.kt)
-- [`KtorPrometheusRoutes`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorPrometheusRoutes.kt)
-- [`Bluetape4kKtorObservabilityTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/ktor/observability/src/test/kotlin/io/bluetape4k/ktor/observability/Bluetape4kKtorObservabilityTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/observability/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/observability/build.gradle.kts)
+- [`Bluetape4kKtorObservability`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/Bluetape4kKtorObservability.kt)
+- [`Bluetape4kKtorObservabilityConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/Bluetape4kKtorObservabilityConfig.kt)
+- [`CallLoggingSettings`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/CallLoggingSettings.kt)
+- [`CorrelationIdSettings`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/CorrelationIdSettings.kt)
+- [`KtorCallIdSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorCallIdSupport.kt)
+- [`KtorCallLoggingSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorCallLoggingSupport.kt)
+- [`KtorOpenTelemetryTracingConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorOpenTelemetryTracingConfig.kt)
+- [`KtorOpenTelemetryTracingSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorOpenTelemetryTracingSupport.kt)
+- [`KtorPrometheusRoutes`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/observability/src/main/kotlin/io/bluetape4k/ktor/observability/KtorPrometheusRoutes.kt)
+- [`Bluetape4kKtorObservabilityTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/ktor/observability/src/test/kotlin/io/bluetape4k/ktor/observability/Bluetape4kKtorObservabilityTest.kt)

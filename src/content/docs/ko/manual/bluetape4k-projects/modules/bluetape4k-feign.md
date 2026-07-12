@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-feign.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ Gradle project path는 `:bluetape4k-feign`, source directory는 `io/feign`입니
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`FeignBuilderSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/main/kotlin/io/bluetape4k/feign/FeignBuilderSupport.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`FeignBuilderSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/main/kotlin/io/bluetape4k/feign/FeignBuilderSupport.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`FeignBuilderSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/main/kotlin/io/bluetape4k/feign/FeignBuilderSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`FeignRequestSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/main/kotlin/io/bluetape4k/feign/FeignRequestSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`FeignResponseSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/main/kotlin/io/bluetape4k/feign/FeignResponseSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`AsyncVertxHttpClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/main/kotlin/io/bluetape4k/feign/clients/vertx/AsyncVertxHttpClient.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`VertxFeignSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/main/kotlin/io/bluetape4k/feign/clients/vertx/VertxFeignSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`VertxHttpClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/main/kotlin/io/bluetape4k/feign/clients/vertx/VertxHttpClient.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`FeignFastjsonDecoder`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/main/kotlin/io/bluetape4k/feign/codec/FeignFastjsonDecoder.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`FeignFastjsonEncoder`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/main/kotlin/io/bluetape4k/feign/codec/FeignFastjsonEncoder.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`JacksonDecoder2`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/main/kotlin/io/bluetape4k/feign/codec/JacksonDecoder2.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`JacksonEncoder2`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/main/kotlin/io/bluetape4k/feign/codec/JacksonEncoder2.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`FeignBuilderSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/main/kotlin/io/bluetape4k/feign/FeignBuilderSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`FeignRequestSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/main/kotlin/io/bluetape4k/feign/FeignRequestSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`FeignResponseSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/main/kotlin/io/bluetape4k/feign/FeignResponseSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`AsyncVertxHttpClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/main/kotlin/io/bluetape4k/feign/clients/vertx/AsyncVertxHttpClient.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`VertxFeignSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/main/kotlin/io/bluetape4k/feign/clients/vertx/VertxFeignSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`VertxHttpClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/main/kotlin/io/bluetape4k/feign/clients/vertx/VertxHttpClient.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`FeignFastjsonDecoder`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/main/kotlin/io/bluetape4k/feign/codec/FeignFastjsonDecoder.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`FeignFastjsonEncoder`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/main/kotlin/io/bluetape4k/feign/codec/FeignFastjsonEncoder.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`JacksonDecoder2`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/main/kotlin/io/bluetape4k/feign/codec/JacksonDecoder2.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`JacksonEncoder2`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/main/kotlin/io/bluetape4k/feign/codec/JacksonEncoder2.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -104,14 +104,14 @@ payload 크기, allocation, latency, malformed input 비율, resource close, pro
 
 대표 test anchor는 다음과 같습니다.
 
-- [`AbstractFeignTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/test/kotlin/io/bluetape4k/feign/AbstractFeignTest.kt)
-- [`FeignBuilderSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/test/kotlin/io/bluetape4k/feign/FeignBuilderSupportTest.kt)
-- [`FeignRequestSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/test/kotlin/io/bluetape4k/feign/FeignRequestSupportTest.kt)
-- [`FeignResponseSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/test/kotlin/io/bluetape4k/feign/FeignResponseSupportTest.kt)
-- [`RetryerRegressionTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/test/kotlin/io/bluetape4k/feign/RetryerRegressionTest.kt)
-- [`AbstractClientTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/test/kotlin/io/bluetape4k/feign/clients/AbstractClientTest.kt)
-- [`AbstractCoroutineClientTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/test/kotlin/io/bluetape4k/feign/clients/AbstractCoroutineClientTest.kt)
-- [`AbstractHttpbinCoroutineTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/test/kotlin/io/bluetape4k/feign/clients/AbstractHttpbinCoroutineTest.kt)
+- [`AbstractFeignTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/test/kotlin/io/bluetape4k/feign/AbstractFeignTest.kt)
+- [`FeignBuilderSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/test/kotlin/io/bluetape4k/feign/FeignBuilderSupportTest.kt)
+- [`FeignRequestSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/test/kotlin/io/bluetape4k/feign/FeignRequestSupportTest.kt)
+- [`FeignResponseSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/test/kotlin/io/bluetape4k/feign/FeignResponseSupportTest.kt)
+- [`RetryerRegressionTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/test/kotlin/io/bluetape4k/feign/RetryerRegressionTest.kt)
+- [`AbstractClientTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/test/kotlin/io/bluetape4k/feign/clients/AbstractClientTest.kt)
+- [`AbstractCoroutineClientTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/test/kotlin/io/bluetape4k/feign/clients/AbstractCoroutineClientTest.kt)
+- [`AbstractHttpbinCoroutineTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/test/kotlin/io/bluetape4k/feign/clients/AbstractHttpbinCoroutineTest.kt)
 
 ## 워크숍
 
@@ -123,17 +123,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/build.gradle.kts)
-- [`FeignBuilderSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/main/kotlin/io/bluetape4k/feign/FeignBuilderSupport.kt)
-- [`FeignRequestSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/main/kotlin/io/bluetape4k/feign/FeignRequestSupport.kt)
-- [`FeignResponseSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/main/kotlin/io/bluetape4k/feign/FeignResponseSupport.kt)
-- [`AsyncVertxHttpClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/main/kotlin/io/bluetape4k/feign/clients/vertx/AsyncVertxHttpClient.kt)
-- [`VertxFeignSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/main/kotlin/io/bluetape4k/feign/clients/vertx/VertxFeignSupport.kt)
-- [`VertxHttpClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/main/kotlin/io/bluetape4k/feign/clients/vertx/VertxHttpClient.kt)
-- [`FeignFastjsonDecoder`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/main/kotlin/io/bluetape4k/feign/codec/FeignFastjsonDecoder.kt)
-- [`FeignFastjsonEncoder`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/main/kotlin/io/bluetape4k/feign/codec/FeignFastjsonEncoder.kt)
-- [`JacksonDecoder2`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/main/kotlin/io/bluetape4k/feign/codec/JacksonDecoder2.kt)
-- [`JacksonEncoder2`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/main/kotlin/io/bluetape4k/feign/codec/JacksonEncoder2.kt)
-- [`AbstractFeignTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/test/kotlin/io/bluetape4k/feign/AbstractFeignTest.kt)
-- [`FeignBuilderSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/feign/src/test/kotlin/io/bluetape4k/feign/FeignBuilderSupportTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/build.gradle.kts)
+- [`FeignBuilderSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/main/kotlin/io/bluetape4k/feign/FeignBuilderSupport.kt)
+- [`FeignRequestSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/main/kotlin/io/bluetape4k/feign/FeignRequestSupport.kt)
+- [`FeignResponseSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/main/kotlin/io/bluetape4k/feign/FeignResponseSupport.kt)
+- [`AsyncVertxHttpClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/main/kotlin/io/bluetape4k/feign/clients/vertx/AsyncVertxHttpClient.kt)
+- [`VertxFeignSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/main/kotlin/io/bluetape4k/feign/clients/vertx/VertxFeignSupport.kt)
+- [`VertxHttpClient`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/main/kotlin/io/bluetape4k/feign/clients/vertx/VertxHttpClient.kt)
+- [`FeignFastjsonDecoder`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/main/kotlin/io/bluetape4k/feign/codec/FeignFastjsonDecoder.kt)
+- [`FeignFastjsonEncoder`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/main/kotlin/io/bluetape4k/feign/codec/FeignFastjsonEncoder.kt)
+- [`JacksonDecoder2`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/main/kotlin/io/bluetape4k/feign/codec/JacksonDecoder2.kt)
+- [`JacksonEncoder2`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/main/kotlin/io/bluetape4k/feign/codec/JacksonEncoder2.kt)
+- [`AbstractFeignTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/test/kotlin/io/bluetape4k/feign/AbstractFeignTest.kt)
+- [`FeignBuilderSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/feign/src/test/kotlin/io/bluetape4k/feign/FeignBuilderSupportTest.kt)

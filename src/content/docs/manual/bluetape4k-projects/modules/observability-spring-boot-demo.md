@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "learning"
   kind: "example"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/en/modules/observability-spring-boot-demo.md"
   layer: "learn"
 ---
@@ -47,7 +47,7 @@ Then use the command documented by the module README and keep required external 
 
 | Entry point | What to verify |
 | --- | --- |
-| [`ObservabilitySpringBootDemoApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/observability-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/spring/observability/ObservabilitySpringBootDemoApplication.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ObservabilitySpringBootDemoApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/spring-boot/observability-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/spring/observability/ObservabilitySpringBootDemoApplication.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -74,7 +74,7 @@ Treat `compileOnly` edges as caller-provided capabilities and verify runtime ava
 
 Configuration resources found in the module:
 
-- [`application.yaml`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/observability-spring-boot-demo/src/main/resources/application.yaml)
+- [`application.yaml`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/spring-boot/observability-spring-boot-demo/src/main/resources/application.yaml)
 
 Read property names and defaults from these resources and the binding source before overriding them.
 
@@ -96,7 +96,7 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`ObservabilitySpringBootDemoApplicationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/observability-spring-boot-demo/src/test/kotlin/io/bluetape4k/examples/spring/observability/ObservabilitySpringBootDemoApplicationTest.kt)
+- [`ObservabilitySpringBootDemoApplicationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/spring-boot/observability-spring-boot-demo/src/test/kotlin/io/bluetape4k/examples/spring/observability/ObservabilitySpringBootDemoApplicationTest.kt)
 
 ## Workshops
 
@@ -108,7 +108,7 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/observability-spring-boot-demo/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/observability-spring-boot-demo/build.gradle.kts)
-- [`ObservabilitySpringBootDemoApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/observability-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/spring/observability/ObservabilitySpringBootDemoApplication.kt)
-- [`ObservabilitySpringBootDemoApplicationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/spring-boot/observability-spring-boot-demo/src/test/kotlin/io/bluetape4k/examples/spring/observability/ObservabilitySpringBootDemoApplicationTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/spring-boot/observability-spring-boot-demo/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/spring-boot/observability-spring-boot-demo/build.gradle.kts)
+- [`ObservabilitySpringBootDemoApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/spring-boot/observability-spring-boot-demo/src/main/kotlin/io/bluetape4k/examples/spring/observability/ObservabilitySpringBootDemoApplication.kt)
+- [`ObservabilitySpringBootDemoApplicationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/spring-boot/observability-spring-boot-demo/src/test/kotlin/io/bluetape4k/examples/spring/observability/ObservabilitySpringBootDemoApplicationTest.kt)

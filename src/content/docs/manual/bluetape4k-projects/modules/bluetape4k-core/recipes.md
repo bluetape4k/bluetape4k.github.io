@@ -8,7 +8,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/en/modules/bluetape4k-core/recipes.md"
   layer: "build"
   chapterId: "recipes"
@@ -166,6 +166,6 @@ Call `runtime.close()` from the normal application lifecycle. ShutdownQueue regi
 - [Bounded collections](./bounded-collections.md)
 - [Time and ranges](./time-ranges.md)
 - [Concurrency and lifecycle](./concurrency-lifecycle.md)
-- [`bluetape4k-core` tests](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/src/test/kotlin/io/bluetape4k)
+- [`bluetape4k-core` tests](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/test/kotlin/io/bluetape4k)
 
 Even without a dedicated workshop, the representative tests are runnable specifications. Add a small consumer integration test for only the helpers you compose, and keep this manual as the contract source of truth.

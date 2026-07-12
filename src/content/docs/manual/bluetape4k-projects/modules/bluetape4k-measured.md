@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "utilities"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/en/modules/bluetape4k-measured.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ The first source-level concepts to inspect are `Angle`, `Area`, `BinarySize`, `E
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`Angle`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Angle.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`Angle`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/main/kotlin/io/bluetape4k/measured/Angle.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`Angle`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Angle.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`Area`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Area.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`BinarySize`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/BinarySize.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`EnergyPower`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/EnergyPower.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`Frequency`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Frequency.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`GraphicsLength`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/GraphicsLength.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`Length`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Length.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`Mass`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Mass.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`Motion`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Motion.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`Pressure`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Pressure.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Angle`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/main/kotlin/io/bluetape4k/measured/Angle.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Area`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/main/kotlin/io/bluetape4k/measured/Area.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`BinarySize`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/main/kotlin/io/bluetape4k/measured/BinarySize.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`EnergyPower`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/main/kotlin/io/bluetape4k/measured/EnergyPower.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Frequency`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/main/kotlin/io/bluetape4k/measured/Frequency.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`GraphicsLength`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/main/kotlin/io/bluetape4k/measured/GraphicsLength.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Length`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/main/kotlin/io/bluetape4k/measured/Length.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Mass`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/main/kotlin/io/bluetape4k/measured/Mass.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Motion`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/main/kotlin/io/bluetape4k/measured/Motion.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Pressure`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/main/kotlin/io/bluetape4k/measured/Pressure.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -93,14 +93,14 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`AngleTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/test/kotlin/io/bluetape4k/measured/AngleTest.kt)
-- [`AreaTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/test/kotlin/io/bluetape4k/measured/AreaTest.kt)
-- [`BinarySizeTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/test/kotlin/io/bluetape4k/measured/BinarySizeTest.kt)
-- [`EnergyPowerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/test/kotlin/io/bluetape4k/measured/EnergyPowerTest.kt)
-- [`FrequencyTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/test/kotlin/io/bluetape4k/measured/FrequencyTest.kt)
-- [`GraphicsLengthTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/test/kotlin/io/bluetape4k/measured/GraphicsLengthTest.kt)
-- [`LengthTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/test/kotlin/io/bluetape4k/measured/LengthTest.kt)
-- [`MassTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/test/kotlin/io/bluetape4k/measured/MassTest.kt)
+- [`AngleTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/test/kotlin/io/bluetape4k/measured/AngleTest.kt)
+- [`AreaTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/test/kotlin/io/bluetape4k/measured/AreaTest.kt)
+- [`BinarySizeTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/test/kotlin/io/bluetape4k/measured/BinarySizeTest.kt)
+- [`EnergyPowerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/test/kotlin/io/bluetape4k/measured/EnergyPowerTest.kt)
+- [`FrequencyTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/test/kotlin/io/bluetape4k/measured/FrequencyTest.kt)
+- [`GraphicsLengthTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/test/kotlin/io/bluetape4k/measured/GraphicsLengthTest.kt)
+- [`LengthTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/test/kotlin/io/bluetape4k/measured/LengthTest.kt)
+- [`MassTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/test/kotlin/io/bluetape4k/measured/MassTest.kt)
 
 ## Workshops
 
@@ -112,17 +112,17 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/build.gradle.kts)
-- [`Angle`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Angle.kt)
-- [`Area`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Area.kt)
-- [`BinarySize`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/BinarySize.kt)
-- [`EnergyPower`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/EnergyPower.kt)
-- [`Frequency`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Frequency.kt)
-- [`GraphicsLength`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/GraphicsLength.kt)
-- [`Length`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Length.kt)
-- [`Mass`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Mass.kt)
-- [`Motion`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Motion.kt)
-- [`Pressure`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/main/kotlin/io/bluetape4k/measured/Pressure.kt)
-- [`AngleTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/test/kotlin/io/bluetape4k/measured/AngleTest.kt)
-- [`AreaTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/measured/src/test/kotlin/io/bluetape4k/measured/AreaTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/build.gradle.kts)
+- [`Angle`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/main/kotlin/io/bluetape4k/measured/Angle.kt)
+- [`Area`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/main/kotlin/io/bluetape4k/measured/Area.kt)
+- [`BinarySize`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/main/kotlin/io/bluetape4k/measured/BinarySize.kt)
+- [`EnergyPower`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/main/kotlin/io/bluetape4k/measured/EnergyPower.kt)
+- [`Frequency`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/main/kotlin/io/bluetape4k/measured/Frequency.kt)
+- [`GraphicsLength`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/main/kotlin/io/bluetape4k/measured/GraphicsLength.kt)
+- [`Length`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/main/kotlin/io/bluetape4k/measured/Length.kt)
+- [`Mass`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/main/kotlin/io/bluetape4k/measured/Mass.kt)
+- [`Motion`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/main/kotlin/io/bluetape4k/measured/Motion.kt)
+- [`Pressure`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/main/kotlin/io/bluetape4k/measured/Pressure.kt)
+- [`AngleTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/test/kotlin/io/bluetape4k/measured/AngleTest.kt)
+- [`AreaTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/measured/src/test/kotlin/io/bluetape4k/measured/AreaTest.kt)

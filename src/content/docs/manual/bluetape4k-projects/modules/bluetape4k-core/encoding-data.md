@@ -8,7 +8,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/en/modules/bluetape4k-core/encoding-data.md"
   layer: "build"
   chapterId: "encoding-data"
@@ -93,10 +93,10 @@ Observe payload size, malformed-input counts, and protocol version. Consider a s
 
 ## Source and representative tests
 
-- [`StringEncoderSupport.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/src/main/kotlin/io/bluetape4k/codec/StringEncoderSupport.kt)
-- [`Base64StringEncoder.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/src/main/kotlin/io/bluetape4k/codec/Base64StringEncoder.kt)
-- [`HexStringEncoder.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/src/main/kotlin/io/bluetape4k/codec/HexStringEncoder.kt)
-- [`StringEncoderSupportTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/src/test/kotlin/io/bluetape4k/codec/StringEncoderSupportTest.kt)
-- [`AbstractStringEncoderTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/src/test/kotlin/io/bluetape4k/codec/AbstractStringEncoderTest.kt)
+- [`StringEncoderSupport.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/main/kotlin/io/bluetape4k/codec/StringEncoderSupport.kt)
+- [`Base64StringEncoder.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/main/kotlin/io/bluetape4k/codec/Base64StringEncoder.kt)
+- [`HexStringEncoder.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/main/kotlin/io/bluetape4k/codec/HexStringEncoder.kt)
+- [`StringEncoderSupportTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/test/kotlin/io/bluetape4k/codec/StringEncoderSupportTest.kt)
+- [`AbstractStringEncoderTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/test/kotlin/io/bluetape4k/codec/AbstractStringEncoderTest.kt)
 
 Continue with [Validation and invariants](./validation.md) for boundary failures and [Core recipes](./recipes.md) for an assembled flow.

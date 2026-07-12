@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "infrastructure"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-nats.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ Gradle project path는 `:bluetape4k-nats`, source directory는 `infra/nats`입�
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`ConnectionExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/ConnectionExtensions.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`ConnectionExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/ConnectionExtensions.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`ConnectionExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/ConnectionExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`Consumer`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/Consumer.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`ConsumerContext`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/ConsumerContext.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`JetStream`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/JetStream.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`JetStreamApiException`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/JetStreamApiException.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`JetStreamManagement`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/JetStreamManagement.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`JetStreamOptions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/JetStreamOptions.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`KeyValueManagement`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/KeyValueManagement.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`KeyValueOptions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/KeyValueOptions.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`NatsConsts`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/NatsConsts.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ConnectionExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/ConnectionExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`Consumer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/Consumer.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ConsumerContext`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/ConsumerContext.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`JetStream`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/JetStream.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`JetStreamApiException`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/JetStreamApiException.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`JetStreamManagement`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/JetStreamManagement.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`JetStreamOptions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/JetStreamOptions.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`KeyValueManagement`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/KeyValueManagement.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`KeyValueOptions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/KeyValueOptions.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`NatsConsts`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/NatsConsts.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -100,14 +100,14 @@ connection 상태, queue 깊이, retry, timeout, remote 오류, graceful shutdow
 
 대표 test anchor는 다음과 같습니다.
 
-- [`AbstractNatsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/test/kotlin/io/bluetape4k/nats/AbstractNatsTest.kt)
-- [`SimplePublishExample`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/test/kotlin/io/bluetape4k/nats/SimplePublishExample.kt)
-- [`ConnectionExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/test/kotlin/io/bluetape4k/nats/client/ConnectionExtensionsTest.kt)
-- [`ConsumerExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/test/kotlin/io/bluetape4k/nats/client/ConsumerExtensionsTest.kt)
-- [`JetStreamOptionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/test/kotlin/io/bluetape4k/nats/client/JetStreamOptionsTest.kt)
-- [`KeyValueOptionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/test/kotlin/io/bluetape4k/nats/client/KeyValueOptionsTest.kt)
-- [`NatsManagementExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/test/kotlin/io/bluetape4k/nats/client/NatsManagementExtensionsTest.kt)
-- [`NatsMessageTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/test/kotlin/io/bluetape4k/nats/client/NatsMessageTest.kt)
+- [`AbstractNatsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/test/kotlin/io/bluetape4k/nats/AbstractNatsTest.kt)
+- [`SimplePublishExample`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/test/kotlin/io/bluetape4k/nats/SimplePublishExample.kt)
+- [`ConnectionExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/test/kotlin/io/bluetape4k/nats/client/ConnectionExtensionsTest.kt)
+- [`ConsumerExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/test/kotlin/io/bluetape4k/nats/client/ConsumerExtensionsTest.kt)
+- [`JetStreamOptionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/test/kotlin/io/bluetape4k/nats/client/JetStreamOptionsTest.kt)
+- [`KeyValueOptionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/test/kotlin/io/bluetape4k/nats/client/KeyValueOptionsTest.kt)
+- [`NatsManagementExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/test/kotlin/io/bluetape4k/nats/client/NatsManagementExtensionsTest.kt)
+- [`NatsMessageTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/test/kotlin/io/bluetape4k/nats/client/NatsMessageTest.kt)
 
 ## 워크숍
 
@@ -119,17 +119,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/build.gradle.kts)
-- [`ConnectionExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/ConnectionExtensions.kt)
-- [`Consumer`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/Consumer.kt)
-- [`ConsumerContext`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/ConsumerContext.kt)
-- [`JetStream`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/JetStream.kt)
-- [`JetStreamApiException`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/JetStreamApiException.kt)
-- [`JetStreamManagement`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/JetStreamManagement.kt)
-- [`JetStreamOptions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/JetStreamOptions.kt)
-- [`KeyValueManagement`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/KeyValueManagement.kt)
-- [`KeyValueOptions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/KeyValueOptions.kt)
-- [`NatsConsts`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/NatsConsts.kt)
-- [`AbstractNatsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/test/kotlin/io/bluetape4k/nats/AbstractNatsTest.kt)
-- [`SimplePublishExample`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/nats/src/test/kotlin/io/bluetape4k/nats/SimplePublishExample.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/build.gradle.kts)
+- [`ConnectionExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/ConnectionExtensions.kt)
+- [`Consumer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/Consumer.kt)
+- [`ConsumerContext`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/ConsumerContext.kt)
+- [`JetStream`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/JetStream.kt)
+- [`JetStreamApiException`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/JetStreamApiException.kt)
+- [`JetStreamManagement`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/JetStreamManagement.kt)
+- [`JetStreamOptions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/JetStreamOptions.kt)
+- [`KeyValueManagement`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/KeyValueManagement.kt)
+- [`KeyValueOptions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/KeyValueOptions.kt)
+- [`NatsConsts`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/main/kotlin/io/bluetape4k/nats/client/NatsConsts.kt)
+- [`AbstractNatsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/test/kotlin/io/bluetape4k/nats/AbstractNatsTest.kt)
+- [`SimplePublishExample`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/nats/src/test/kotlin/io/bluetape4k/nats/SimplePublishExample.kt)

@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "infrastructure"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-kafka4.md"
   layer: "build"
 ---
@@ -40,22 +40,22 @@ Gradle project path는 `:bluetape4k-kafka4`, source directory는 `infra/kafka4`�
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`ConsumerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/ConsumerSupport.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`ConsumerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/ConsumerSupport.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`ConsumerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/ConsumerSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`ProducerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/ProducerSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`TopicPartitionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/TopicPartitionSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`BinaryKafkaCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/codec/BinaryKafkaCodecs.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`ByteArrayKafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/codec/ByteArrayKafkaCodec.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`JacksonKafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/codec/JacksonKafkaCodec.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`KafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/codec/KafkaCodec.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`KafkaCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/codec/KafkaCodecs.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`StringKafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/codec/StringKafkaCodec.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`ProducerCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/coroutines/ProducerCoroutines.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ConsumerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/ConsumerSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ProducerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/ProducerSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`TopicPartitionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/TopicPartitionSupport.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`BinaryKafkaCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/codec/BinaryKafkaCodecs.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ByteArrayKafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/codec/ByteArrayKafkaCodec.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`JacksonKafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/codec/JacksonKafkaCodec.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`KafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/codec/KafkaCodec.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`KafkaCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/codec/KafkaCodecs.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`StringKafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/codec/StringKafkaCodec.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`ProducerCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/coroutines/ProducerCoroutines.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -104,14 +104,14 @@ connection 상태, queue 깊이, retry, timeout, remote 오류, graceful shutdow
 
 대표 test anchor는 다음과 같습니다.
 
-- [`AbstractKafkaTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/test/kotlin/io/bluetape4k/kafka/AbstractKafkaTest.kt)
-- [`ConsumerSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/test/kotlin/io/bluetape4k/kafka/ConsumerSupportTest.kt)
-- [`ProducerSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/test/kotlin/io/bluetape4k/kafka/ProducerSupportTest.kt)
-- [`TopicPartitionSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/test/kotlin/io/bluetape4k/kafka/TopicPartitionSupportTest.kt)
-- [`AbstractKafkaCodecPoisonPillTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/test/kotlin/io/bluetape4k/kafka/codec/AbstractKafkaCodecPoisonPillTest.kt)
-- [`AbstractKafkaCodecTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/test/kotlin/io/bluetape4k/kafka/codec/AbstractKafkaCodecTest.kt)
-- [`ByteArrayKafkaCodecTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/test/kotlin/io/bluetape4k/kafka/codec/ByteArrayKafkaCodecTest.kt)
-- [`JacksonKafkaCodecSecurityTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/test/kotlin/io/bluetape4k/kafka/codec/JacksonKafkaCodecSecurityTest.kt)
+- [`AbstractKafkaTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/test/kotlin/io/bluetape4k/kafka/AbstractKafkaTest.kt)
+- [`ConsumerSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/test/kotlin/io/bluetape4k/kafka/ConsumerSupportTest.kt)
+- [`ProducerSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/test/kotlin/io/bluetape4k/kafka/ProducerSupportTest.kt)
+- [`TopicPartitionSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/test/kotlin/io/bluetape4k/kafka/TopicPartitionSupportTest.kt)
+- [`AbstractKafkaCodecPoisonPillTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/test/kotlin/io/bluetape4k/kafka/codec/AbstractKafkaCodecPoisonPillTest.kt)
+- [`AbstractKafkaCodecTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/test/kotlin/io/bluetape4k/kafka/codec/AbstractKafkaCodecTest.kt)
+- [`ByteArrayKafkaCodecTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/test/kotlin/io/bluetape4k/kafka/codec/ByteArrayKafkaCodecTest.kt)
+- [`JacksonKafkaCodecSecurityTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/test/kotlin/io/bluetape4k/kafka/codec/JacksonKafkaCodecSecurityTest.kt)
 
 ## 워크숍
 
@@ -123,17 +123,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/build.gradle.kts)
-- [`ConsumerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/ConsumerSupport.kt)
-- [`ProducerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/ProducerSupport.kt)
-- [`TopicPartitionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/TopicPartitionSupport.kt)
-- [`BinaryKafkaCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/codec/BinaryKafkaCodecs.kt)
-- [`ByteArrayKafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/codec/ByteArrayKafkaCodec.kt)
-- [`JacksonKafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/codec/JacksonKafkaCodec.kt)
-- [`KafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/codec/KafkaCodec.kt)
-- [`KafkaCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/codec/KafkaCodecs.kt)
-- [`StringKafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/codec/StringKafkaCodec.kt)
-- [`ProducerCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/coroutines/ProducerCoroutines.kt)
-- [`AbstractKafkaTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/test/kotlin/io/bluetape4k/kafka/AbstractKafkaTest.kt)
-- [`ConsumerSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/infra/kafka4/src/test/kotlin/io/bluetape4k/kafka/ConsumerSupportTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/build.gradle.kts)
+- [`ConsumerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/ConsumerSupport.kt)
+- [`ProducerSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/ProducerSupport.kt)
+- [`TopicPartitionSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/TopicPartitionSupport.kt)
+- [`BinaryKafkaCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/codec/BinaryKafkaCodecs.kt)
+- [`ByteArrayKafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/codec/ByteArrayKafkaCodec.kt)
+- [`JacksonKafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/codec/JacksonKafkaCodec.kt)
+- [`KafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/codec/KafkaCodec.kt)
+- [`KafkaCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/codec/KafkaCodecs.kt)
+- [`StringKafkaCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/codec/StringKafkaCodec.kt)
+- [`ProducerCoroutines`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/main/kotlin/io/bluetape4k/kafka/coroutines/ProducerCoroutines.kt)
+- [`AbstractKafkaTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/test/kotlin/io/bluetape4k/kafka/AbstractKafkaTest.kt)
+- [`ConsumerSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/infra/kafka4/src/test/kotlin/io/bluetape4k/kafka/ConsumerSupportTest.kt)

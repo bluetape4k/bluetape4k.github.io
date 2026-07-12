@@ -8,7 +8,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-core/concurrency-lifecycle.md"
   layer: "build"
   chapterId: "concurrency-lifecycle"
@@ -114,9 +114,9 @@ ShutdownQueue.register(service)  // dependent wrapper later; closes first
 
 ## Source와 representative test
 
-- [`ConcurrentReducer.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/src/main/kotlin/io/bluetape4k/concurrent/ConcurrentReducer.kt)
-- [`ConcurrentReducerTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/src/test/kotlin/io/bluetape4k/concurrent/ConcurrentReducerTest.kt)
-- [`ShutdownQueue.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/src/main/kotlin/io/bluetape4k/utils/ShutdownQueue.kt)
-- [`ShutdownQueueTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/bluetape4k/core/src/test/kotlin/io/bluetape4k/utils/ShutdownQueueTest.kt)
+- [`ConcurrentReducer.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/main/kotlin/io/bluetape4k/concurrent/ConcurrentReducer.kt)
+- [`ConcurrentReducerTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/test/kotlin/io/bluetape4k/concurrent/ConcurrentReducerTest.kt)
+- [`ShutdownQueue.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/main/kotlin/io/bluetape4k/utils/ShutdownQueue.kt)
+- [`ShutdownQueueTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/bluetape4k/core/src/test/kotlin/io/bluetape4k/utils/ShutdownQueueTest.kt)
 
 Process-local bounded state는 [Bounded collections](./bounded-collections.md), 전체 조립은 [Core 실전 레시피](./recipes.md)에서 이어집니다.

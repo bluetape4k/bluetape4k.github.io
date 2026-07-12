@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "utilities"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-probabilistic.md"
   layer: "build"
 ---
@@ -40,21 +40,21 @@ Gradle project path는 `:bluetape4k-probabilistic`, source directory는 `utils/p
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`BloomFilter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/BloomFilter.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`BloomFilter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/BloomFilter.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`BloomFilter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/BloomFilter.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`BloomFilterConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/BloomFilterConfig.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`BloomFilters`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/BloomFilters.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`BloomHasher`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/BloomHasher.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`InMemoryBloomFilter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/InMemoryBloomFilter.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`InMemoryMutableBloomFilter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/InMemoryMutableBloomFilter.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`InMemorySuspendBloomFilter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/InMemorySuspendBloomFilter.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`MutableBloomFilter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/MutableBloomFilter.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`SuspendBloomFilter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/SuspendBloomFilter.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`BloomFilter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/BloomFilter.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`BloomFilterConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/BloomFilterConfig.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`BloomFilters`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/BloomFilters.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`BloomHasher`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/BloomHasher.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`InMemoryBloomFilter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/InMemoryBloomFilter.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`InMemoryMutableBloomFilter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/InMemoryMutableBloomFilter.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`InMemorySuspendBloomFilter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/InMemorySuspendBloomFilter.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`MutableBloomFilter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/MutableBloomFilter.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`SuspendBloomFilter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/SuspendBloomFilter.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -93,9 +93,9 @@ hot path를 측정하고 입력 크기를 제한하며 utility를 호출하는 a
 
 대표 test anchor는 다음과 같습니다.
 
-- [`BloomFilterConfigTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/probabilistic/src/test/kotlin/io/bluetape4k/probabilistic/bloomfilter/BloomFilterConfigTest.kt)
-- [`InMemoryBloomFilterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/probabilistic/src/test/kotlin/io/bluetape4k/probabilistic/bloomfilter/InMemoryBloomFilterTest.kt)
-- [`InMemorySuspendBloomFilterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/probabilistic/src/test/kotlin/io/bluetape4k/probabilistic/bloomfilter/InMemorySuspendBloomFilterTest.kt)
+- [`BloomFilterConfigTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/probabilistic/src/test/kotlin/io/bluetape4k/probabilistic/bloomfilter/BloomFilterConfigTest.kt)
+- [`InMemoryBloomFilterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/probabilistic/src/test/kotlin/io/bluetape4k/probabilistic/bloomfilter/InMemoryBloomFilterTest.kt)
+- [`InMemorySuspendBloomFilterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/probabilistic/src/test/kotlin/io/bluetape4k/probabilistic/bloomfilter/InMemorySuspendBloomFilterTest.kt)
 
 ## 워크숍
 
@@ -107,17 +107,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/probabilistic/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/probabilistic/build.gradle.kts)
-- [`BloomFilter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/BloomFilter.kt)
-- [`BloomFilterConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/BloomFilterConfig.kt)
-- [`BloomFilters`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/BloomFilters.kt)
-- [`BloomHasher`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/BloomHasher.kt)
-- [`InMemoryBloomFilter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/InMemoryBloomFilter.kt)
-- [`InMemoryMutableBloomFilter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/InMemoryMutableBloomFilter.kt)
-- [`InMemorySuspendBloomFilter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/InMemorySuspendBloomFilter.kt)
-- [`MutableBloomFilter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/MutableBloomFilter.kt)
-- [`SuspendBloomFilter`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/SuspendBloomFilter.kt)
-- [`BloomFilterConfigTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/probabilistic/src/test/kotlin/io/bluetape4k/probabilistic/bloomfilter/BloomFilterConfigTest.kt)
-- [`InMemoryBloomFilterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/probabilistic/src/test/kotlin/io/bluetape4k/probabilistic/bloomfilter/InMemoryBloomFilterTest.kt)
-- [`InMemorySuspendBloomFilterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/utils/probabilistic/src/test/kotlin/io/bluetape4k/probabilistic/bloomfilter/InMemorySuspendBloomFilterTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/probabilistic/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/probabilistic/build.gradle.kts)
+- [`BloomFilter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/BloomFilter.kt)
+- [`BloomFilterConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/BloomFilterConfig.kt)
+- [`BloomFilters`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/BloomFilters.kt)
+- [`BloomHasher`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/BloomHasher.kt)
+- [`InMemoryBloomFilter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/InMemoryBloomFilter.kt)
+- [`InMemoryMutableBloomFilter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/InMemoryMutableBloomFilter.kt)
+- [`InMemorySuspendBloomFilter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/InMemorySuspendBloomFilter.kt)
+- [`MutableBloomFilter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/MutableBloomFilter.kt)
+- [`SuspendBloomFilter`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/probabilistic/src/main/kotlin/io/bluetape4k/probabilistic/bloomfilter/SuspendBloomFilter.kt)
+- [`BloomFilterConfigTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/probabilistic/src/test/kotlin/io/bluetape4k/probabilistic/bloomfilter/BloomFilterConfigTest.kt)
+- [`InMemoryBloomFilterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/probabilistic/src/test/kotlin/io/bluetape4k/probabilistic/bloomfilter/InMemoryBloomFilterTest.kt)
+- [`InMemorySuspendBloomFilterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/utils/probabilistic/src/test/kotlin/io/bluetape4k/probabilistic/bloomfilter/InMemorySuspendBloomFilterTest.kt)

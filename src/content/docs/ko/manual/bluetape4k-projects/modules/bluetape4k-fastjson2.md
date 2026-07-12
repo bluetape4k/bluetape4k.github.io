@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/ko/modules/bluetape4k-fastjson2.md"
   layer: "build"
 ---
@@ -40,17 +40,17 @@ Gradle project path는 `:bluetape4k-fastjson2`, source directory는 `io/fastjson
 
 ## 빠른 시작
 
-위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`FastjsonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/fastjson2/src/main/kotlin/io/bluetape4k/fastjson2/FastjsonSerializer.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`FastjsonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/fastjson2/src/main/kotlin/io/bluetape4k/fastjson2/FastjsonSerializer.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
 
 ## 작업별 API
 
 | Entry point | 확인할 내용 |
 | --- | --- |
-| [`FastjsonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/fastjson2/src/main/kotlin/io/bluetape4k/fastjson2/FastjsonSerializer.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`JSONArrayExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/fastjson2/src/main/kotlin/io/bluetape4k/fastjson2/extensions/JSONArrayExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`JSONBExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/fastjson2/src/main/kotlin/io/bluetape4k/fastjson2/extensions/JSONBExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`JSONExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/fastjson2/src/main/kotlin/io/bluetape4k/fastjson2/extensions/JSONExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
-| [`JSONObjectExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/fastjson2/src/main/kotlin/io/bluetape4k/fastjson2/extensions/JSONObjectExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`FastjsonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/fastjson2/src/main/kotlin/io/bluetape4k/fastjson2/FastjsonSerializer.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`JSONArrayExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/fastjson2/src/main/kotlin/io/bluetape4k/fastjson2/extensions/JSONArrayExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`JSONBExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/fastjson2/src/main/kotlin/io/bluetape4k/fastjson2/extensions/JSONBExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`JSONExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/fastjson2/src/main/kotlin/io/bluetape4k/fastjson2/extensions/JSONExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`JSONObjectExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/fastjson2/src/main/kotlin/io/bluetape4k/fastjson2/extensions/JSONObjectExtensions.kt) | constructor, function, ownership 계약을 확인합니다. |
 
 ## 권장 패턴
 
@@ -91,14 +91,14 @@ payload 크기, allocation, latency, malformed input 비율, resource close, pro
 
 대표 test anchor는 다음과 같습니다.
 
-- [`AbstractFastjson2Test`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/AbstractFastjson2Test.kt)
-- [`AbstractJsonSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/AbstractJsonSerializerTest.kt)
-- [`FastjsonSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/FastjsonSerializerTest.kt)
-- [`JSONArrayExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/extensions/JSONArrayExtensionsTest.kt)
-- [`JSONBExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/extensions/JSONBExtensionsTest.kt)
-- [`JSONExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/extensions/JSONExtensionsTest.kt)
-- [`JSONObjectExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/extensions/JSONObjectExtensionsTest.kt)
-- [`models`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/model/models.kt)
+- [`AbstractFastjson2Test`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/AbstractFastjson2Test.kt)
+- [`AbstractJsonSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/AbstractJsonSerializerTest.kt)
+- [`FastjsonSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/FastjsonSerializerTest.kt)
+- [`JSONArrayExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/extensions/JSONArrayExtensionsTest.kt)
+- [`JSONBExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/extensions/JSONBExtensionsTest.kt)
+- [`JSONExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/extensions/JSONExtensionsTest.kt)
+- [`JSONObjectExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/extensions/JSONObjectExtensionsTest.kt)
+- [`models`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/model/models.kt)
 
 ## 워크숍
 
@@ -110,17 +110,17 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 ## 근거
 
-- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/fastjson2/README.ko.md)
-- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/fastjson2/build.gradle.kts)
-- [`FastjsonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/fastjson2/src/main/kotlin/io/bluetape4k/fastjson2/FastjsonSerializer.kt)
-- [`JSONArrayExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/fastjson2/src/main/kotlin/io/bluetape4k/fastjson2/extensions/JSONArrayExtensions.kt)
-- [`JSONBExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/fastjson2/src/main/kotlin/io/bluetape4k/fastjson2/extensions/JSONBExtensions.kt)
-- [`JSONExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/fastjson2/src/main/kotlin/io/bluetape4k/fastjson2/extensions/JSONExtensions.kt)
-- [`JSONObjectExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/fastjson2/src/main/kotlin/io/bluetape4k/fastjson2/extensions/JSONObjectExtensions.kt)
-- [`AbstractFastjson2Test`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/AbstractFastjson2Test.kt)
-- [`AbstractJsonSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/AbstractJsonSerializerTest.kt)
-- [`FastjsonSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/FastjsonSerializerTest.kt)
-- [`JSONArrayExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/extensions/JSONArrayExtensionsTest.kt)
-- [`JSONBExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/extensions/JSONBExtensionsTest.kt)
-- [`JSONExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/extensions/JSONExtensionsTest.kt)
-- [`JSONObjectExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/extensions/JSONObjectExtensionsTest.kt)
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/fastjson2/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/fastjson2/build.gradle.kts)
+- [`FastjsonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/fastjson2/src/main/kotlin/io/bluetape4k/fastjson2/FastjsonSerializer.kt)
+- [`JSONArrayExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/fastjson2/src/main/kotlin/io/bluetape4k/fastjson2/extensions/JSONArrayExtensions.kt)
+- [`JSONBExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/fastjson2/src/main/kotlin/io/bluetape4k/fastjson2/extensions/JSONBExtensions.kt)
+- [`JSONExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/fastjson2/src/main/kotlin/io/bluetape4k/fastjson2/extensions/JSONExtensions.kt)
+- [`JSONObjectExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/fastjson2/src/main/kotlin/io/bluetape4k/fastjson2/extensions/JSONObjectExtensions.kt)
+- [`AbstractFastjson2Test`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/AbstractFastjson2Test.kt)
+- [`AbstractJsonSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/AbstractJsonSerializerTest.kt)
+- [`FastjsonSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/FastjsonSerializerTest.kt)
+- [`JSONArrayExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/extensions/JSONArrayExtensionsTest.kt)
+- [`JSONBExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/extensions/JSONBExtensionsTest.kt)
+- [`JSONExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/extensions/JSONExtensionsTest.kt)
+- [`JSONObjectExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/fastjson2/src/test/kotlin/io/bluetape4k/fastjson2/extensions/JSONObjectExtensionsTest.kt)

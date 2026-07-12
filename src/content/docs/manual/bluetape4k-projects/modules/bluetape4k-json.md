@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/en/modules/bluetape4k-json.md"
   layer: "build"
 ---
@@ -40,14 +40,14 @@ The first source-level concepts to inspect are `JsonSerializationException`, and
 
 ## Quick start
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`JsonSerializationException`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/json/src/main/kotlin/io/bluetape4k/json/JsonSerializationException.kt) first; it is a concrete source entry point for the module.
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`JsonSerializationException`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/json/src/main/kotlin/io/bluetape4k/json/JsonSerializationException.kt) first; it is a concrete source entry point for the module.
 
 ## API by task
 
 | Entry point | What to verify |
 | --- | --- |
-| [`JsonSerializationException`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/json/src/main/kotlin/io/bluetape4k/json/JsonSerializationException.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`JsonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/json/src/main/kotlin/io/bluetape4k/json/JsonSerializer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`JsonSerializationException`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/json/src/main/kotlin/io/bluetape4k/json/JsonSerializationException.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`JsonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/json/src/main/kotlin/io/bluetape4k/json/JsonSerializer.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -86,8 +86,8 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`JsonSerializationExceptionTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/json/src/test/kotlin/io/bluetape4k/json/JsonSerializationExceptionTest.kt)
-- [`JsonSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/json/src/test/kotlin/io/bluetape4k/json/JsonSerializerTest.kt)
+- [`JsonSerializationExceptionTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/json/src/test/kotlin/io/bluetape4k/json/JsonSerializationExceptionTest.kt)
+- [`JsonSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/json/src/test/kotlin/io/bluetape4k/json/JsonSerializerTest.kt)
 
 ## Workshops
 
@@ -99,9 +99,9 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/json/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/json/build.gradle.kts)
-- [`JsonSerializationException`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/json/src/main/kotlin/io/bluetape4k/json/JsonSerializationException.kt)
-- [`JsonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/json/src/main/kotlin/io/bluetape4k/json/JsonSerializer.kt)
-- [`JsonSerializationExceptionTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/json/src/test/kotlin/io/bluetape4k/json/JsonSerializationExceptionTest.kt)
-- [`JsonSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/io/json/src/test/kotlin/io/bluetape4k/json/JsonSerializerTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/json/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/json/build.gradle.kts)
+- [`JsonSerializationException`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/json/src/main/kotlin/io/bluetape4k/json/JsonSerializationException.kt)
+- [`JsonSerializer`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/json/src/main/kotlin/io/bluetape4k/json/JsonSerializer.kt)
+- [`JsonSerializationExceptionTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/json/src/test/kotlin/io/bluetape4k/json/JsonSerializationExceptionTest.kt)
+- [`JsonSerializerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/io/json/src/test/kotlin/io/bluetape4k/json/JsonSerializerTest.kt)

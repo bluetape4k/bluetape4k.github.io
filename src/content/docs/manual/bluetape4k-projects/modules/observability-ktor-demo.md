@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "learning"
   kind: "example"
-  sourceCommit: "dda876503926aa16302b4416e3f3a3e2bff26526"
+  sourceCommit: "952a8a2566d05c0b7fd977f982bb83f5335848f8"
   sourcePath: "docs/manual/en/modules/observability-ktor-demo.md"
   layer: "learn"
 ---
@@ -47,7 +47,7 @@ Then use the command documented by the module README and keep required external 
 
 | Entry point | What to verify |
 | --- | --- |
-| [`ObservabilityKtorApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/ktor/observability-ktor-demo/src/main/kotlin/io/bluetape4k/examples/ktor/observability/ObservabilityKtorApplication.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ObservabilityKtorApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/ktor/observability-ktor-demo/src/main/kotlin/io/bluetape4k/examples/ktor/observability/ObservabilityKtorApplication.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
 
 ## Patterns
 
@@ -93,7 +93,7 @@ Run the module test task:
 
 Representative test anchors:
 
-- [`ObservabilityKtorApplicationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/ktor/observability-ktor-demo/src/test/kotlin/io/bluetape4k/examples/ktor/observability/ObservabilityKtorApplicationTest.kt)
+- [`ObservabilityKtorApplicationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/ktor/observability-ktor-demo/src/test/kotlin/io/bluetape4k/examples/ktor/observability/ObservabilityKtorApplicationTest.kt)
 
 ## Workshops
 
@@ -105,7 +105,7 @@ This page documents the repository state represented by the linked source and te
 
 ## Sources
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/ktor/observability-ktor-demo/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/ktor/observability-ktor-demo/build.gradle.kts)
-- [`ObservabilityKtorApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/ktor/observability-ktor-demo/src/main/kotlin/io/bluetape4k/examples/ktor/observability/ObservabilityKtorApplication.kt)
-- [`ObservabilityKtorApplicationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/dda876503926aa16302b4416e3f3a3e2bff26526/examples/ktor/observability-ktor-demo/src/test/kotlin/io/bluetape4k/examples/ktor/observability/ObservabilityKtorApplicationTest.kt)
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/ktor/observability-ktor-demo/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/ktor/observability-ktor-demo/build.gradle.kts)
+- [`ObservabilityKtorApplication`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/ktor/observability-ktor-demo/src/main/kotlin/io/bluetape4k/examples/ktor/observability/ObservabilityKtorApplication.kt)
+- [`ObservabilityKtorApplicationTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/952a8a2566d05c0b7fd977f982bb83f5335848f8/examples/ktor/observability-ktor-demo/src/test/kotlin/io/bluetape4k/examples/ktor/observability/ObservabilityKtorApplicationTest.kt)
