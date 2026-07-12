@@ -7,6 +7,14 @@ export function destinationFor(locale, relativePath) {
   return path.posix.join(base, relativePath.replace(new RegExp(`^${locale}/`), ''));
 }
 
+export function assetDestinationFor(repository, relativePath) {
+  return path.posix.join(
+    'public/manual-assets',
+    repository,
+    relativePath.replace(/^assets\//, ''),
+  );
+}
+
 export function localeOf(relativePath) {
   if (relativePath.startsWith('en/')) return 'en';
   if (relativePath.startsWith('ko/')) return 'ko';
