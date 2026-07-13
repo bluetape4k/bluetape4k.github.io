@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "data"
   kind: "library"
-  sourceCommit: "4a375c338033b1f99b4bce6bcc9c62617d820087"
+  sourceCommit: "d42c9dcf3dfa8f169b3bda9c56d3c8531b3ff296"
   sourcePath: "docs/manual/en/modules/bluetape4k-hibernate-reactive/stateless-sessions.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"

@@ -1,5 +1,5 @@
 {
-  "authoringSourceRef": "4a375c338033b1f99b4bce6bcc9c62617d820087",
+  "authoringSourceRef": "d42c9dcf3dfa8f169b3bda9c56d3c8531b3ff296",
   "minorVersion": "1.11",
   "modules": [
     {
@@ -869,7 +869,62 @@
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-hibernate-cache-lettuce",
-      "chapters": [],
+      "chapters": [
+        {
+          "en": "en/modules/bluetape4k-hibernate-cache-lettuce/architecture-regions.md",
+          "id": "architecture-regions",
+          "ko": "ko/modules/bluetape4k-hibernate-cache-lettuce/architecture-regions.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-cache-lettuce/architecture-regions/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-cache-lettuce/architecture-regions/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-hibernate-cache-lettuce/configuration-codecs-ttl.md",
+          "id": "configuration-codecs-ttl",
+          "ko": "ko/modules/bluetape4k-hibernate-cache-lettuce/configuration-codecs-ttl.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-cache-lettuce/configuration-codecs-ttl/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-cache-lettuce/configuration-codecs-ttl/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-hibernate-cache-lettuce/entity-query-collection-cache.md",
+          "id": "entity-query-collection-cache",
+          "ko": "ko/modules/bluetape4k-hibernate-cache-lettuce/entity-query-collection-cache.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-cache-lettuce/entity-query-collection-cache/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-cache-lettuce/entity-query-collection-cache/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-hibernate-cache-lettuce/keys-concurrency-invalidation.md",
+          "id": "keys-concurrency-invalidation",
+          "ko": "ko/modules/bluetape4k-hibernate-cache-lettuce/keys-concurrency-invalidation.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-cache-lettuce/keys-concurrency-invalidation/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-cache-lettuce/keys-concurrency-invalidation/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-hibernate-cache-lettuce/lifecycle-failures-operations.md",
+          "id": "lifecycle-failures-operations",
+          "ko": "ko/modules/bluetape4k-hibernate-cache-lettuce/lifecycle-failures-operations.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-cache-lettuce/lifecycle-failures-operations/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-cache-lettuce/lifecycle-failures-operations/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-hibernate-cache-lettuce/spring-boot-ecosystem.md",
+          "id": "spring-boot-ecosystem",
+          "ko": "ko/modules/bluetape4k-hibernate-cache-lettuce/spring-boot-ecosystem.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-cache-lettuce/spring-boot-ecosystem/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-cache-lettuce/spring-boot-ecosystem/"
+          }
+        }
+      ],
       "en": "en/modules/bluetape4k-hibernate-cache-lettuce.md",
       "gradlePath": ":bluetape4k-hibernate-cache-lettuce",
       "group": "caching",
@@ -2217,7 +2272,62 @@
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-spring-boot-hibernate-lettuce",
-      "chapters": [],
+      "chapters": [
+        {
+          "en": "en/modules/bluetape4k-spring-boot-hibernate-lettuce/auto-configuration-conditions.md",
+          "id": "auto-configuration-conditions",
+          "ko": "ko/modules/bluetape4k-spring-boot-hibernate-lettuce/auto-configuration-conditions.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-hibernate-lettuce/auto-configuration-conditions/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-hibernate-lettuce/auto-configuration-conditions/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-spring-boot-hibernate-lettuce/properties-and-hibernate-mapping.md",
+          "id": "properties-and-hibernate-mapping",
+          "ko": "ko/modules/bluetape4k-spring-boot-hibernate-lettuce/properties-and-hibernate-mapping.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-hibernate-lettuce/properties-and-hibernate-mapping/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-hibernate-lettuce/properties-and-hibernate-mapping/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-spring-boot-hibernate-lettuce/cache-lifecycle-ownership.md",
+          "id": "cache-lifecycle-ownership",
+          "ko": "ko/modules/bluetape4k-spring-boot-hibernate-lettuce/cache-lifecycle-ownership.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-hibernate-lettuce/cache-lifecycle-ownership/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-hibernate-lettuce/cache-lifecycle-ownership/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-spring-boot-hibernate-lettuce/observability-actuator-metrics.md",
+          "id": "observability-actuator-metrics",
+          "ko": "ko/modules/bluetape4k-spring-boot-hibernate-lettuce/observability-actuator-metrics.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-hibernate-lettuce/observability-actuator-metrics/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-hibernate-lettuce/observability-actuator-metrics/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-spring-boot-hibernate-lettuce/testing-and-failure-modes.md",
+          "id": "testing-and-failure-modes",
+          "ko": "ko/modules/bluetape4k-spring-boot-hibernate-lettuce/testing-and-failure-modes.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-hibernate-lettuce/testing-and-failure-modes/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-hibernate-lettuce/testing-and-failure-modes/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-spring-boot-hibernate-lettuce/ecosystem-paths.md",
+          "id": "ecosystem-paths",
+          "ko": "ko/modules/bluetape4k-spring-boot-hibernate-lettuce/ecosystem-paths.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-hibernate-lettuce/ecosystem-paths/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-hibernate-lettuce/ecosystem-paths/"
+          }
+        }
+      ],
       "en": "en/modules/bluetape4k-spring-boot-hibernate-lettuce.md",
       "gradlePath": ":bluetape4k-spring-boot-hibernate-lettuce",
       "group": "spring",
@@ -2292,7 +2402,62 @@
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-spring-boot-r2dbc",
-      "chapters": [],
+      "chapters": [
+        {
+          "en": "en/modules/bluetape4k-spring-boot-r2dbc/entity-operations.md",
+          "id": "entity-operations",
+          "ko": "ko/modules/bluetape4k-spring-boot-r2dbc/entity-operations.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-r2dbc/entity-operations/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-r2dbc/entity-operations/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-spring-boot-r2dbc/flow-and-cardinality.md",
+          "id": "flow-and-cardinality",
+          "ko": "ko/modules/bluetape4k-spring-boot-r2dbc/flow-and-cardinality.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-r2dbc/flow-and-cardinality/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-r2dbc/flow-and-cardinality/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-spring-boot-r2dbc/write-operations.md",
+          "id": "write-operations",
+          "ko": "ko/modules/bluetape4k-spring-boot-r2dbc/write-operations.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-r2dbc/write-operations/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-r2dbc/write-operations/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-spring-boot-r2dbc/queries-and-repositories.md",
+          "id": "queries-and-repositories",
+          "ko": "ko/modules/bluetape4k-spring-boot-r2dbc/queries-and-repositories.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-r2dbc/queries-and-repositories/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-r2dbc/queries-and-repositories/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-spring-boot-r2dbc/transactions-and-testing.md",
+          "id": "transactions-and-testing",
+          "ko": "ko/modules/bluetape4k-spring-boot-r2dbc/transactions-and-testing.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-r2dbc/transactions-and-testing/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-r2dbc/transactions-and-testing/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-spring-boot-r2dbc/ecosystem-paths.md",
+          "id": "ecosystem-paths",
+          "ko": "ko/modules/bluetape4k-spring-boot-r2dbc/ecosystem-paths.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-r2dbc/ecosystem-paths/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-r2dbc/ecosystem-paths/"
+          }
+        }
+      ],
       "en": "en/modules/bluetape4k-spring-boot-r2dbc.md",
       "gradlePath": ":bluetape4k-spring-boot-r2dbc",
       "group": "spring",
@@ -2677,5 +2842,5 @@
   "repository": "bluetape4k/bluetape4k-projects",
   "repositorySlug": "bluetape4k-projects",
   "schemaVersion": 2,
-  "sourceCommit": "4a375c338033b1f99b4bce6bcc9c62617d820087"
+  "sourceCommit": "d42c9dcf3dfa8f169b3bda9c56d3c8531b3ff296"
 }
