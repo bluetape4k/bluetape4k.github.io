@@ -4,7 +4,7 @@
   "schema": 1,
   "versions": [
     {
-      "authoringSourceRef": "073ab365abcd91889ecd82d0077522cac2f13e15",
+      "authoringSourceRef": "b10b0d9ae7ca2321572f3ae7f9d31d04dbb6c0c5",
       "channel": "stable",
       "documents": {
         "en": [
@@ -67,6 +67,11 @@
           "modules/bluetape4k-jackson3",
           "modules/bluetape4k-javatimes",
           "modules/bluetape4k-jdbc",
+          "modules/bluetape4k-jdbc/connection-lifecycle",
+          "modules/bluetape4k-jdbc/ecosystem-paths",
+          "modules/bluetape4k-jdbc/resultset-mapping",
+          "modules/bluetape4k-jdbc/statements-batches",
+          "modules/bluetape4k-jdbc/transactions",
           "modules/bluetape4k-json",
           "modules/bluetape4k-junit5",
           "modules/bluetape4k-jwt",
@@ -191,6 +196,11 @@
           "modules/bluetape4k-jackson3",
           "modules/bluetape4k-javatimes",
           "modules/bluetape4k-jdbc",
+          "modules/bluetape4k-jdbc/connection-lifecycle",
+          "modules/bluetape4k-jdbc/ecosystem-paths",
+          "modules/bluetape4k-jdbc/resultset-mapping",
+          "modules/bluetape4k-jdbc/statements-batches",
+          "modules/bluetape4k-jdbc/transactions",
           "modules/bluetape4k-json",
           "modules/bluetape4k-junit5",
           "modules/bluetape4k-jwt",
@@ -259,7 +269,7 @@
       "minorVersion": "1.11",
       "releaseCommit": "6187173b58e8b4c5c435c145e00e94708f31ef75",
       "releaseRef": "1.11.0",
-      "sourceCommit": "073ab365abcd91889ecd82d0077522cac2f13e15"
+      "sourceCommit": "b10b0d9ae7ca2321572f3ae7f9d31d04dbb6c0c5"
     }
   ]
 }

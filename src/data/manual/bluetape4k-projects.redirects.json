@@ -237,6 +237,26 @@
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-jdbc/"
     },
     {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-jdbc/connection-lifecycle/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-jdbc/connection-lifecycle/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-jdbc/ecosystem-paths/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-jdbc/ecosystem-paths/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-jdbc/resultset-mapping/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-jdbc/resultset-mapping/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-jdbc/statements-batches/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-jdbc/statements-batches/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-jdbc/transactions/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-jdbc/transactions/"
+    },
+    {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-json/",
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-json/"
     },
@@ -723,6 +743,26 @@
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-jdbc/",
       "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-jdbc/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-jdbc/connection-lifecycle/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-jdbc/connection-lifecycle/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-jdbc/ecosystem-paths/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-jdbc/ecosystem-paths/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-jdbc/resultset-mapping/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-jdbc/resultset-mapping/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-jdbc/statements-batches/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-jdbc/statements-batches/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-jdbc/transactions/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-jdbc/transactions/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-json/",
