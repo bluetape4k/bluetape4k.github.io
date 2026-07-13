@@ -47,6 +47,7 @@ test('chapter metadata and repository-owned asset routes are added', () => {
       '',
       '![Scope lifecycle](../../../assets/coroutines/scope-lifecycle.svg)',
       '',
+      '',
     ].join('\n'),
     module: {
       id: 'bluetape4k-coroutines',
@@ -69,4 +70,5 @@ test('chapter metadata and repository-owned asset routes are added', () => {
 
   assert.match(result, /chapterId: "lifecycle"/);
   assert.match(result, /\/manual-assets\/bluetape4k-projects\/1\.11\/coroutines\/scope-lifecycle\.svg/);
+  assert.ok(!result.endsWith('\n\n'), 'generated manuals end with one LF');
 });

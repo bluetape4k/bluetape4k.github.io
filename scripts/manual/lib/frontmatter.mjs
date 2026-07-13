@@ -89,7 +89,7 @@ export function transformManual({
     repository,
     minorVersion,
     sourcePath,
-  ));
+  )).replace(/\n+$/, '\n');
 }
 
 export function setDocumentSlug(content, slug) {

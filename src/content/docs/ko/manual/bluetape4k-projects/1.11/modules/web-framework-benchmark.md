@@ -94,4 +94,3 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 - [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/benchmark/web-framework-benchmark/README.ko.md)
 - [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/benchmark/web-framework-benchmark/build.gradle.kts)
-
