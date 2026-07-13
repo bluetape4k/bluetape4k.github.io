@@ -1,3 +1,6 @@
+import path from 'node:path';
+import { githubSourceUrlFor } from './paths.mjs';
+
 function yamlScalar(value) {
   return JSON.stringify(value);
 }
@@ -8,21 +11,56 @@ export function layerFor(kind) {
   return 'build';
 }
 
-function rewriteManualAssets(content, repository) {
+function rewriteManualAssets(content, repository, minorVersion) {
   return content.replaceAll(
     /(!?\[[^\]]*\]\()(?:(?:\.\.\/)+)assets\/([^)]+)(\))/g,
-    `$1/manual-assets/${repository}/$2$3`,
+    `$1/manual-assets/${repository}/${minorVersion}/$2$3`,
   );
 }
 
-function rewriteRepositoryLinks(content, repository, sourceCommit) {
+function rewriteRepositoryLinks(content, repository, releaseRef) {
   return content.replaceAll(
     /(\]\()(?:(?:\.\.\/){4,})([^)]+)(\))/g,
-    `$1https://github.com/bluetape4k/${repository}/blob/${sourceCommit}/$2$3`,
+    (_match, prefix, repositoryPath, suffix) => {
+      const leaf = repositoryPath.split('/').at(-1);
+      const view = leaf.includes('.') ? 'blob' : 'tree';
+      return `${prefix}${githubSourceUrlFor({
+        repositoryFullName: `bluetape4k/${repository}`,
+        releaseRef,
+        sourcePath: repositoryPath,
+        kind: view,
+      })}${suffix}`;
+    },
   );
 }
 
-export function transformManual({ content, module, chapter, repository, sourceCommit, sourcePath }) {
+function rewriteManualLinks(content, repository, minorVersion, sourcePath) {
+  return content.replaceAll(
+    /(\]\()([^)\s]+\.md)(#[^)]*)?(\))/g,
+    (match, prefix, href, fragment = '', suffix) => {
+      if (/^(?:[a-z][a-z+.-]*:|\/|#)/i.test(href)) return match;
+      const target = path.posix.normalize(path.posix.join(path.posix.dirname(sourcePath), href));
+      const localized = /^docs\/manual\/(en|ko)\/(.+)\.md$/.exec(target);
+      if (!localized) return match;
+      const [, locale, relative] = localized;
+      const document = relative.replace(/\/index$/, '');
+      const localePrefix = locale === 'ko' ? '/ko' : '';
+      return `${prefix}${localePrefix}/manual/${repository}/${minorVersion}/${document}/${fragment}${suffix}`;
+    },
+  );
+}
+
+export function transformManual({
+  content,
+  module,
+  chapter,
+  repository,
+  sourceCommit,
+  sourcePath,
+  releaseRef,
+  releaseCommit,
+  minorVersion,
+}) {
   if (!content.startsWith('---\n')) throw new Error(`${sourcePath}: YAML frontmatter is required`);
   const end = content.indexOf('\n---\n', 4);
   if (end < 0) throw new Error(`${sourcePath}: YAML frontmatter is not closed`);
@@ -34,15 +72,38 @@ export function transformManual({ content, module, chapter, repository, sourceCo
     `  kind: ${yamlScalar(module.kind)}`,
     `  sourceCommit: ${yamlScalar(sourceCommit)}`,
     `  sourcePath: ${yamlScalar(sourcePath)}`,
+    `  minorVersion: ${yamlScalar(minorVersion)}`,
+    `  releaseRef: ${yamlScalar(releaseRef)}`,
+    `  releaseCommit: ${yamlScalar(releaseCommit)}`,
+    `  sourceDir: ${yamlScalar(module.sourceDir)}`,
     `  layer: ${yamlScalar(layerFor(module.kind))}`,
     ...(chapter ? [`  chapterId: ${yamlScalar(chapter.id)}`] : []),
   ].join('\n');
   const withMetadata = `${content.slice(0, end)}\n${metadata}${content.slice(end)}`;
-  return stripFirstHeading(rewriteRepositoryLinks(
-    rewriteManualAssets(withMetadata, repository),
+  return stripFirstHeading(rewriteManualLinks(
+    rewriteRepositoryLinks(
+      rewriteManualAssets(withMetadata, repository, minorVersion),
+      repository,
+      releaseRef,
+    ),
     repository,
-    sourceCommit,
+    minorVersion,
+    sourcePath,
   ));
+}
+
+export function setDocumentSlug(content, slug) {
+  if (typeof slug !== 'string' || !/^(?:ko\/)?manual\/bluetape4k-projects\/\d+\.\d+(?:\/.*)?$/.test(slug)) {
+    throw new Error(`SLUG_UNSAFE: ${String(slug)}`);
+  }
+  if (!content.startsWith('---\n')) throw new Error('YAML frontmatter is required before setting a slug');
+  const end = content.indexOf('\n---\n', 4);
+  if (end < 0) throw new Error('YAML frontmatter is not closed before setting a slug');
+  const frontmatter = content.slice(4, end);
+  const next = /^slug:/m.test(frontmatter)
+    ? frontmatter.replace(/^slug:.*$/m, `slug: ${yamlScalar(slug)}`)
+    : `slug: ${yamlScalar(slug)}\n${frontmatter}`;
+  return `---\n${next}${content.slice(end)}`;
 }
 
 export function stripFirstHeading(content) {

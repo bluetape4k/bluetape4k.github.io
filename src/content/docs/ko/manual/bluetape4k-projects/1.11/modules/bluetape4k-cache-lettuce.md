@@ -1,0 +1,146 @@
+---
+slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-lettuce"
+manualId: bluetape4k-cache-lettuce
+title: "Module bluetape4k-cache-lettuce"
+description: "bluetape4k-cache-lettuce는 Lettuce(Redis) 기반 JCache Provider와 NearCache 구현을 제공합니다."
+kind: library
+group: caching
+manual:
+  id: "bluetape4k-cache-lettuce"
+  repository: "bluetape4k-projects"
+  group: "caching"
+  kind: "library"
+  sourceCommit: "073ab365abcd91889ecd82d0077522cac2f13e15"
+  sourcePath: "docs/manual/ko/modules/bluetape4k-cache-lettuce.md"
+  minorVersion: "1.11"
+  releaseRef: "1.11.0"
+  releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
+  sourceDir: "cache/cache-lettuce"
+  layer: "build"
+---
+
+
+## 해결하는 문제
+
+bluetape4k-cache-lettuce는 Lettuce(Redis) 기반 JCache Provider와 NearCache 구현을 제공합니다. 이 매뉴얼은 README의 기능 목록을 반복하지 않고 현재 build, source entry point, test, 설정 resource, lifecycle 근거를 연결합니다.
+
+## 사용 시점
+
+애플리케이션에 cache key, consistency, invalidation, backend ownership이 필요할 때 `bluetape4k-cache-lettuce`를 선택합니다. 아래 source entry point에서 시작해 ownership과 failure 계약이 caller lifecycle에 맞는지 확인합니다. 표준 API나 이미 도입한 더 작은 모듈이 같은 계약을 만족한다면 그쪽을 우선합니다.
+
+## 의존성 좌표
+
+```kotlin
+dependencies {
+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:<version>"))
+    implementation("io.github.bluetape4k:bluetape4k-cache-lettuce")
+}
+```
+
+Gradle project path는 `:bluetape4k-cache-lettuce`, source directory는 `cache/cache-lettuce`입니다.
+
+## 핵심 개념
+
+먼저 확인할 source 개념은 `LettuceCaches`, `LettuceCacheConfig`, `LettuceCacheManager`, `LettuceCachingProvider`, `LettuceJCache`, `LettuceJCaching`, `LettuceSuspendCacheManager`, `LettuceSuspendJCache`입니다. 파일 이름은 탐색 anchor일 뿐이므로 public 계약으로 사용하기 전에 선언과 test를 함께 읽습니다.
+
+## 빠른 시작
+
+위 좌표를 추가하고 Gradle을 refresh한 뒤 필요한 작업을 소유한 가장 작은 entry point에서 시작합니다. 먼저 [`LettuceCaches`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/main/kotlin/io/bluetape4k/cache/LettuceCaches.kt)를 확인합니다. 이 파일이 모듈의 구체적인 source entry point입니다.
+
+## 작업별 API
+
+| Entry point | 확인할 내용 |
+| --- | --- |
+| [`LettuceCaches`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/main/kotlin/io/bluetape4k/cache/LettuceCaches.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`LettuceCacheConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/main/kotlin/io/bluetape4k/cache/jcache/LettuceCacheConfig.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`LettuceCacheManager`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/main/kotlin/io/bluetape4k/cache/jcache/LettuceCacheManager.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`LettuceCachingProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/main/kotlin/io/bluetape4k/cache/jcache/LettuceCachingProvider.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`LettuceJCache`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/main/kotlin/io/bluetape4k/cache/jcache/LettuceJCache.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`LettuceJCaching`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/main/kotlin/io/bluetape4k/cache/jcache/LettuceJCaching.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`LettuceSuspendCacheManager`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/main/kotlin/io/bluetape4k/cache/jcache/LettuceSuspendCacheManager.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`LettuceSuspendJCache`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/main/kotlin/io/bluetape4k/cache/jcache/LettuceSuspendJCache.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`LettuceAsyncMemoizer`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/main/kotlin/io/bluetape4k/cache/memoizer/LettuceAsyncMemoizer.kt) | constructor, function, ownership 계약을 확인합니다. |
+| [`LettuceMemoizer`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/main/kotlin/io/bluetape4k/cache/memoizer/LettuceMemoizer.kt) | constructor, function, ownership 계약을 확인합니다. |
+
+## 권장 패턴
+
+loading 계약을 하나로 명확히 선택합니다. **캐시 어사이드(cache-aside)**에서는 caller가 miss를 처리해 값을 load하고 cache에 다시 씁니다. **read-through**에서는 cache loader가 miss 경로를 소유합니다. **write-through**에서는 cache API가 성공을 반환하기 전에 backing store까지 write를 전파합니다. 구현에 이 계약이 없다면 일반 `put`을 write-through라고 부르지 않습니다. 2단계 Near Cache는 L1을 먼저 읽고 miss이면 L2를 조회한 뒤 L1을 채웁니다. 구현이 정한 순서대로 L2와 L1을 write 또는 invalidate하고, backend update 실패 뒤 오래된 L1 값이 남지 않는지 partial failure test로 확인합니다.
+
+## 연동
+
+현재 build에 선언된 integration edge는 다음과 같습니다.
+
+```kotlin
+api(project(":bluetape4k-cache-core"))
+api(project(":bluetape4k-lettuce"))
+api(libs.lettuce.core)
+api(libs.caffeine)
+implementation(project(":bluetape4k-coroutines"))
+implementation(project(":bluetape4k-resilience4j"))
+implementation(libs.kotlinx.coroutines.core)
+implementation(libs.kotlinx.coroutines.reactive)
+implementation(project(":bluetape4k-protobuf"))
+implementation(project(":bluetape4k-io"))
+```
+
+`compileOnly` edge는 caller가 제공해야 하는 capability이므로 API를 사용하기 전에 runtime에 실제 dependency가 있는지 확인합니다.
+
+## 설정
+
+모듈에서 찾은 설정 resource는 다음과 같습니다.
+
+- [`javax.cache.spi.CachingProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/main/resources/META-INF/services/javax.cache.spi.CachingProvider)
+
+override하기 전에 이 resource와 binding source에서 property 이름과 default를 확인합니다.
+
+## 실패 동작
+
+failure 의미는 artifact 이름이 아니라 아래 entry point와 test가 결정합니다. cancellation과 timeout signal을 보존하고 소유한 resource를 닫습니다. backend exception은 안정된 domain 계약을 추가할 수 있는 boundary에서만 변환합니다. retry나 fallback을 넣기 전에 test anchor로 실제 동작을 확인합니다.
+
+## 운영
+
+hit ratio, load latency, eviction, stale read, backend 오류, reconnect 동작을 관찰합니다. capacity, timeout, retry, shutdown 설정은 resource를 소유한 component 가까이에 둡니다. 누가 trade-off를 받아들였는지 알 수 없는 process-wide default는 피합니다.
+
+## 테스트
+
+모듈 test task는 다음과 같습니다.
+
+```bash
+./gradlew :bluetape4k-cache-lettuce:test --no-configuration-cache
+```
+
+대표 test anchor는 다음과 같습니다.
+
+- [`LettuceJCachesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/test/kotlin/io/bluetape4k/cache/LettuceJCachesTest.kt)
+- [`RedisServers`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/test/kotlin/io/bluetape4k/cache/RedisServers.kt)
+- [`LettuceCachingProviderTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/test/kotlin/io/bluetape4k/cache/jcache/LettuceCachingProviderTest.kt)
+- [`LettuceJCacheManagerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/test/kotlin/io/bluetape4k/cache/jcache/LettuceJCacheManagerTest.kt)
+- [`LettuceJCacheTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/test/kotlin/io/bluetape4k/cache/jcache/LettuceJCacheTest.kt)
+- [`LettuceSuspendJCacheManagerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/test/kotlin/io/bluetape4k/cache/jcache/LettuceSuspendJCacheManagerTest.kt)
+- [`LettuceSuspendJCacheTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/test/kotlin/io/bluetape4k/cache/jcache/LettuceSuspendJCacheTest.kt)
+- [`LettuceAsyncMemoizerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/test/kotlin/io/bluetape4k/cache/memoizer/LettuceAsyncMemoizerTest.kt)
+
+## 워크숍
+
+manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README와 위 representative test를 실행 근거로 사용합니다.
+
+## 제한 사항
+
+이 페이지는 연결된 source와 test가 나타내는 현재 저장소 상태를 설명합니다. optional backend를 애플리케이션 기본값으로 만들거나 benchmark artifact 없이 성능을 단정하지 않습니다. 모듈 버전이 바뀌면 호환성과 lifecycle 설명을 다시 확인해야 합니다.
+
+## 근거
+
+- [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/README.ko.md)
+- [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/build.gradle.kts)
+- [`LettuceCaches`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/main/kotlin/io/bluetape4k/cache/LettuceCaches.kt)
+- [`LettuceCacheConfig`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/main/kotlin/io/bluetape4k/cache/jcache/LettuceCacheConfig.kt)
+- [`LettuceCacheManager`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/main/kotlin/io/bluetape4k/cache/jcache/LettuceCacheManager.kt)
+- [`LettuceCachingProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/main/kotlin/io/bluetape4k/cache/jcache/LettuceCachingProvider.kt)
+- [`LettuceJCache`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/main/kotlin/io/bluetape4k/cache/jcache/LettuceJCache.kt)
+- [`LettuceJCaching`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/main/kotlin/io/bluetape4k/cache/jcache/LettuceJCaching.kt)
+- [`LettuceSuspendCacheManager`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/main/kotlin/io/bluetape4k/cache/jcache/LettuceSuspendCacheManager.kt)
+- [`LettuceSuspendJCache`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/main/kotlin/io/bluetape4k/cache/jcache/LettuceSuspendJCache.kt)
+- [`LettuceAsyncMemoizer`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/main/kotlin/io/bluetape4k/cache/memoizer/LettuceAsyncMemoizer.kt)
+- [`LettuceMemoizer`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/main/kotlin/io/bluetape4k/cache/memoizer/LettuceMemoizer.kt)
+- [`LettuceJCachesTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/test/kotlin/io/bluetape4k/cache/LettuceJCachesTest.kt)
+- [`RedisServers`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/cache/cache-lettuce/src/test/kotlin/io/bluetape4k/cache/RedisServers.kt)

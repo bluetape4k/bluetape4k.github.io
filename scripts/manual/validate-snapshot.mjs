@@ -1,59 +1,98 @@
-import { readFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { digestEntries } from './lib/digest.mjs';
+import { loadRedirectCatalog, validateVersionCatalog } from './lib/catalog.mjs';
+import { safeRelativePath } from './lib/paths.mjs';
+import { sanitizeDiagnostic } from './lib/release.mjs';
+import { validateCommittedSite } from './sync-manual.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const repository = process.argv[2] ?? 'bluetape4k-projects';
-const manifest = JSON.parse(await readFile(path.join(root, `src/data/manual/${repository}.manifest.json`), 'utf8'));
-const snapshot = JSON.parse(await readFile(path.join(root, `src/data/manual/${repository}.snapshot.json`), 'utf8'));
-const ids = manifest.modules.map((module) => module.id);
-if (new Set(ids).size !== ids.length) throw new Error('Duplicate manual IDs in site manifest');
-const entries = [];
-for (const module of manifest.modules) {
-  for (const locale of ['en', 'ko']) {
-    const routePath = module[locale].replace(new RegExp(`^${locale}/`), '');
-    const base = locale === 'ko' ? 'src/content/docs/ko/manual' : 'src/content/docs/manual';
-    const file = path.join(base, repository, routePath);
-    const content = await readFile(path.join(root, file), 'utf8');
-    if (!content.includes(`id: ${JSON.stringify(module.id)}`)) throw new Error(`${file}: manual ID mismatch`);
-    entries.push({ path: file, content });
+
+function parseArgs(argv) {
+  let repository = 'bluetape4k-projects';
+  let report;
+  for (let index = 0; index < argv.length; index += 1) {
+    if (argv[index] === '--report') {
+      report = argv[++index];
+      if (!report) throw new Error('REPORT_PATH: --report requires a path');
+    } else if (!argv[index].startsWith('-')) repository = argv[index];
+    else throw new Error(`CLI_OPTION: ${argv[index]}`);
   }
-  for (const chapter of module.chapters ?? []) {
-    for (const locale of ['en', 'ko']) {
-      const routePath = chapter[locale].replace(new RegExp(`^${locale}/`), '');
-      const base = locale === 'ko' ? 'src/content/docs/ko/manual' : 'src/content/docs/manual';
-      const file = path.join(base, repository, routePath);
-      const content = await readFile(path.join(root, file), 'utf8');
-      if (!content.includes(`id: ${JSON.stringify(module.id)}`)) throw new Error(`${file}: manual ID mismatch`);
-      if (!content.includes(`chapterId: ${JSON.stringify(chapter.id)}`)) throw new Error(`${file}: chapter ID mismatch`);
-      entries.push({ path: file, content });
+  return { repository, report };
+}
+
+function driftPaths(error) {
+  const values = [];
+  for (const candidate of [error?.actual, error?.path]) {
+    if (typeof candidate !== 'string') continue;
+    const relative = candidate.startsWith(`${root}${path.sep}`) ? path.relative(root, candidate) : candidate;
+    const sanitized = sanitizeDiagnostic({ actual: relative }).actual;
+    if (typeof sanitized !== 'string' || !/^(?:src|public)\//.test(sanitized)) continue;
+    try { values.push(safeRelativePath(sanitized)); } catch { /* unsafe diagnostics are omitted */ }
+  }
+  return [...new Set(values)].slice(0, 10);
+}
+
+export function failureReport(error) {
+  const diagnostic = sanitizeDiagnostic(error);
+  return {
+    status: 'fail',
+    repository: 'bluetape4k/bluetape4k-projects',
+    code: diagnostic.code ?? 'VALIDATION_FAILED',
+    driftPaths: driftPaths(error),
+  };
+}
+
+async function validate(repository) {
+  const result = await validateCommittedSite({ targetRoot: root, repository });
+  const catalogPath = path.join(root, `src/data/manual/${repository}.versions.json`);
+  const catalog = validateVersionCatalog(JSON.parse(await readFile(catalogPath, 'utf8')));
+  const redirects = loadRedirectCatalog(new URL(`../../src/data/manual/${repository}.redirects.json`, import.meta.url));
+  for (const version of catalog.versions) {
+    const en = version.documents.en.join('\n');
+    const ko = version.documents.ko.join('\n');
+    if (en !== ko) {
+      const error = new Error(`LOCALE_PARITY: ${version.minorVersion}`);
+      error.code = 'LOCALE_PARITY';
+      error.actual = `src/data/manual/${repository}.versions.json`;
+      throw error;
     }
   }
+  const latest = catalog.versions.find(({ minorVersion }) => minorVersion === catalog.latest);
+  const manifest = JSON.parse(await readFile(path.join(root, `src/data/manual/${repository}.${catalog.latest}.manifest.json`), 'utf8'));
+  return {
+    status: 'pass',
+    repository: catalog.repository,
+    latest: catalog.latest,
+    releaseRef: latest.releaseRef,
+    releaseCommit: latest.releaseCommit,
+    sourceCommit: latest.sourceCommit,
+    versions: catalog.versions.length,
+    documents: result.documents,
+    assets: result.assets,
+    redirects: redirects.entries.length,
+    modules: manifest.modules.length,
+    generationId: result.generationId,
+    driftPaths: [],
+  };
 }
-const allContent = [];
-for (const locale of ['en', 'ko']) {
-  for (const relative of ['index.md', 'getting-started.md', 'architecture/repository-map.md']) {
-    const base = locale === 'ko' ? 'src/content/docs/ko/manual' : 'src/content/docs/manual';
-    const file = path.join(base, repository, relative);
-    allContent.push({ path: file, content: await readFile(path.join(root, file), 'utf8') });
+
+async function main(argv) {
+  const options = parseArgs(argv);
+  let report;
+  try {
+    report = await validate(options.repository);
+  } catch (error) {
+    report = failureReport(error);
+    if (options.report) await writeFile(path.resolve(options.report), `${JSON.stringify(report, null, 2)}\n`);
+    console.error(`Manual snapshot invalid: code=${report.code} drift=${report.driftPaths.join(',') || 'none'}`);
+    process.exitCode = 1;
+    return;
   }
+  if (options.report) await writeFile(path.resolve(options.report), `${JSON.stringify(report, null, 2)}\n`);
+  console.log(
+    `Manual snapshot valid: repository=${report.repository} latest=${report.latest} release=${report.releaseRef} releaseCommit=${report.releaseCommit} sourceCommit=${report.sourceCommit} versions=${report.versions} documents=${report.documents} assets=${report.assets} redirects=${report.redirects} generation=${report.generationId}`,
+  );
 }
-allContent.push(...entries);
-if (digestEntries(allContent) !== snapshot.contentDigest) throw new Error('Manual snapshot content digest mismatch');
-if (manifest.schemaVersion === 2) {
-  const assets = [];
-  for (const relative of manifest.modules.flatMap((module) => module.assets ?? [])) {
-    const file = path.join('public/manual-assets', repository, relative.replace(/^assets\//, ''));
-    assets.push({ path: file, content: await readFile(path.join(root, file)) });
-  }
-  if (digestEntries(assets) !== snapshot.assetDigest) throw new Error('Manual snapshot asset digest mismatch');
-  if (snapshot.documentFiles !== allContent.length) throw new Error('Manual snapshot document count mismatch');
-  if (snapshot.assetFiles !== assets.length) throw new Error('Manual snapshot asset count mismatch');
-  if (snapshot.contentFiles !== allContent.length + assets.length) throw new Error('Manual snapshot total count mismatch');
-} else if (snapshot.contentFiles !== allContent.length) {
-  throw new Error('Manual snapshot legacy content count mismatch');
-}
-console.log(
-  `Manual snapshot valid: ${manifest.modules.length} modules, ${allContent.length} localized files, ${snapshot.assetFiles ?? 0} assets.`,
-);
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) await main(process.argv.slice(2));

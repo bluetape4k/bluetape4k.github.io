@@ -1,111 +1,318 @@
+import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { mkdtemp, mkdir, readFile, readdir, rm, rename, writeFile } from 'node:fs/promises';
-import os from 'node:os';
+import { lstat, readFile, readdir, realpath } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+import {
+  buildRedirectCatalog,
+  buildUnavailablePage,
+  mergeVersionCatalog,
+  stableJson,
+  validateVersionCatalog,
+} from './lib/catalog.mjs';
 import { digestEntries } from './lib/digest.mjs';
-import { assetDestinationFor, destinationFor, localeOf } from './lib/paths.mjs';
-import { layerFor, stripFirstHeading, transformManual } from './lib/frontmatter.mjs';
+import { layerFor, setDocumentSlug, transformManual } from './lib/frontmatter.mjs';
+import {
+  assetDestinationFor,
+  destinationFor,
+  localeOf,
+  manualRouteFor,
+  resolveApprovedPath,
+  safeRelativePath,
+} from './lib/paths.mjs';
+import { publishStaged, recoverPublication, stagePublication } from './lib/publication.mjs';
+import { assertReleaseUnmoved, resolveRelease, sanitizeDiagnostic } from './lib/release.mjs';
 
 const siteRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
+const REPOSITORY_SLUG = 'bluetape4k-projects';
+const REPOSITORY_FULL_NAME = `bluetape4k/${REPOSITORY_SLUG}`;
+const SHA = /^[0-9a-f]{40}$/;
+const DIGEST = /^[0-9a-f]{64}$/;
+const MINOR = /^\d+\.\d+$/;
+const RELEASE = /^(?:v)?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)$/;
+
+class SyncError extends Error {
+  constructor(code, expected, actual, exitCode) {
+    super(`${code}: manual sync rejected`);
+    this.name = 'SyncError';
+    this.code = code;
+    this.expected = expected;
+    this.actual = actual;
+    this.exitCode = exitCode;
+  }
+}
+
+function fail(code, expected, actual, exitCode) {
+  throw new SyncError(code, expected, actual, exitCode);
+}
 
 async function walk(root, prefix = '') {
   const entries = [];
   for (const item of await readdir(path.join(root, prefix), { withFileTypes: true })) {
     const relative = path.posix.join(prefix, item.name);
+    if (item.isSymbolicLink()) fail('SOURCE_SYMLINK', 'regular manual path', relative, 4);
     if (item.isDirectory()) entries.push(...await walk(root, relative));
     else entries.push(relative);
   }
   return entries.sort();
 }
 
-function parseArgs(argv) {
-  const result = { repository: 'bluetape4k-projects', check: false };
+async function approvedRootPath(root) {
+  const absolute = path.resolve(root);
+  const info = await lstat(absolute);
+  if (info.isSymbolicLink()) fail('PATH_SYMLINK', 'non-symlink root', absolute, 4);
+  if (!info.isDirectory()) fail('PATH_TYPE', 'directory root', absolute, 4);
+  return realpath(absolute);
+}
+
+async function approvedDirectory(root, relative) {
+  const absolute = await resolveApprovedPath(root, safeRelativePath(relative));
+  const info = await lstat(absolute);
+  if (!info.isDirectory()) fail('PATH_TYPE', 'directory', relative, 4);
+  return absolute;
+}
+
+async function approvedFile(root, relative) {
+  const safe = safeRelativePath(relative);
+  const absolute = await resolveApprovedPath(root, safe);
+  const info = await lstat(absolute);
+  if (!info.isFile()) fail('PATH_TYPE', 'regular file', safe, 4);
+  return { relative: safe, absolute };
+}
+
+async function readApproved(root, relative, encoding) {
+  const approved = await approvedFile(root, relative);
+  return readFile(approved.absolute, encoding);
+}
+
+export function parseArgs(argv) {
+  const result = { repository: REPOSITORY_SLUG };
+  const modes = [];
   for (let index = 0; index < argv.length; index += 1) {
-    if (argv[index] === '--check') result.check = true;
-    else if (argv[index] === '--source') result.source = argv[++index];
-    else if (argv[index] === '--repository') result.repository = argv[++index];
+    const argument = argv[index];
+    if (argument === '--latest') modes.push('latest');
+    else if (argument === '--release') {
+      modes.push('release');
+      result.releaseRef = argv[++index];
+      if (!result.releaseRef) fail('CLI_RELEASE', 'release value', null, 2);
+      if (!RELEASE.test(result.releaseRef)) fail('CLI_RELEASE', 'stable semantic release', result.releaseRef, 2);
+    } else if (argument === '--refresh') {
+      modes.push('refresh');
+      result.releaseRef = argv[++index];
+      if (!result.releaseRef) fail('CLI_RELEASE', 'release value', null, 2);
+      if (!RELEASE.test(result.releaseRef)) fail('CLI_RELEASE', 'stable semantic release', result.releaseRef, 2);
+    } else if (argument === '--check') modes.push('check');
+    else if (argument === '--recover') modes.push('recover');
+    else if (argument === '--source') {
+      result.source = argv[++index];
+      if (!result.source) fail('CLI_SOURCE', 'source path', null, 2);
+    } else if (argument === '--repository') {
+      result.repository = argv[++index];
+      if (!result.repository) fail('CLI_REPOSITORY', REPOSITORY_SLUG, null, 2);
+    } else fail('CLI_ARGUMENT', 'known option', argument, 2);
   }
-  if (!result.source) throw new Error('--source is required');
+  if (modes.length !== 1) fail('CLI_MODE', 'exactly one mode', modes.join(','), 2);
+  result.mode = modes[0];
+  if (result.repository !== REPOSITORY_SLUG) fail('CLI_REPOSITORY', REPOSITORY_SLUG, result.repository, 2);
+  const writeMode = ['latest', 'release', 'refresh'].includes(result.mode);
+  if (writeMode && !result.source) fail('CLI_SOURCE', 'source path', null, 2);
+  if (!writeMode && result.source) fail('CLI_MODE', `${result.mode} without source`, 'source supplied', 2);
   return result;
 }
 
-function sourceCommit(source) {
-  return execFileSync('git', ['-C', source, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+function documentId(relative) {
+  const withoutLocale = relative.replace(/^(?:en|ko)\//, '').replace(/\.md$/, '');
+  if (withoutLocale === 'index') return 'index';
+  return withoutLocale.replace(/\/index$/, '');
 }
 
-export async function buildSnapshot({ source, repository = 'bluetape4k-projects' }) {
-  const root = path.resolve(source);
-  const commit = sourceCommit(root);
-  if (!/^[0-9a-f]{40}$/.test(commit)) throw new Error(`Invalid source commit: ${commit}`);
-  const manualRoot = path.join(root, 'docs/manual');
-  const manifest = JSON.parse(await readFile(path.join(manualRoot, 'generated/manifest.json'), 'utf8'));
-  if (manifest.schemaVersion !== 2) throw new Error(`Unsupported manual schema: ${manifest.schemaVersion}`);
+async function approvedManifestPath(manualRoot, relative, prefix, suffix = '') {
+  const safe = safeRelativePath(relative);
+  if (!safe.startsWith(prefix) || (suffix && !safe.endsWith(suffix))) {
+    fail('PATH_UNSAFE', `${prefix}*${suffix}`, relative, 4);
+  }
+  return { relative: safe, absolute: await resolveApprovedPath(manualRoot, safe) };
+}
+
+function versionEntry(input, documents) {
+  return {
+    minorVersion: input.minorVersion,
+    releaseRef: input.releaseRef,
+    releaseCommit: input.releaseCommit,
+    authoringSourceRef: input.authoringSourceRef,
+    sourceCommit: input.sourceCommit,
+    channel: 'stable',
+    documents,
+  };
+}
+
+function nextCatalog(previousCatalog, entry, allowReleaseRefresh = false) {
+  if (!previousCatalog) {
+    return validateVersionCatalog({
+      schema: 1,
+      repository: REPOSITORY_FULL_NAME,
+      latest: entry.minorVersion,
+      versions: [entry],
+    });
+  }
+  const previous = validateVersionCatalog(previousCatalog);
+  const current = previous.versions.find(({ minorVersion }) => minorVersion === entry.minorVersion);
+  if (current && current.releaseRef === entry.releaseRef) {
+    if (stableJson(current) !== stableJson(entry)) {
+      if (!allowReleaseRefresh) fail('CATALOG_RELEASE_REWRITE', current.releaseRef, entry.releaseRef, 4);
+      if (current.releaseCommit !== entry.releaseCommit) {
+        fail('CATALOG_RELEASE_COMMIT', current.releaseCommit, entry.releaseCommit, 4);
+      }
+      return validateVersionCatalog({
+        ...previous,
+        versions: previous.versions.map((item) => item.minorVersion === entry.minorVersion
+          ? { ...entry, channel: item.channel }
+          : item),
+      });
+    }
+    return previous;
+  }
+  return mergeVersionCatalog(previous, entry);
+}
+
+function initialRedirects() {
+  return { schema: 1, repository: REPOSITORY_FULL_NAME, redirects: [] };
+}
+
+function assertResolvedInput(input) {
+  if (!input || typeof input !== 'object') fail('SOURCE_INPUT', 'resolved input', input, 2);
+  if (input.repositorySlug !== REPOSITORY_SLUG || input.repositoryFullName !== REPOSITORY_FULL_NAME) {
+    fail('REPOSITORY_IDENTITY', REPOSITORY_FULL_NAME, input.repositoryFullName, 3);
+  }
+  if (!SHA.test(input.releaseCommit) || !SHA.test(input.sourceCommit)) fail('SOURCE_COMMIT', '40 lowercase hex', null, 4);
+  if (!MINOR.test(input.minorVersion)) fail('MINOR_UNSAFE', 'major.minor', input.minorVersion, 4);
+  if (typeof input.authoringSourceRef !== 'string' || input.authoringSourceRef.length === 0) {
+    fail('SOURCE_REF', 'authoring source ref', input.authoringSourceRef, 4);
+  }
+}
+
+export async function buildSnapshot(input, {
+  previousCatalog = null,
+  previousRedirects = null,
+  allowReleaseRefresh = false,
+} = {}) {
+  assertResolvedInput(input);
+  const root = await approvedRootPath(input.source);
+  const manualRoot = await approvedDirectory(root, 'docs/manual');
+  const manifest = JSON.parse(await readApproved(root, 'docs/manual/generated/manifest.json', 'utf8'));
+  if (manifest.schemaVersion !== 2 || !Array.isArray(manifest.modules)) {
+    fail('MANIFEST_SCHEMA', 2, manifest.schemaVersion, 4);
+  }
   const byPath = new Map();
+  const approvedAssets = [];
   for (const module of manifest.modules) {
+    if (typeof module.sourceDir !== 'string' || !module.sourceDir.trim()) {
+      fail('MANIFEST_SOURCE_DIR', 'non-empty sourceDir', module.id, 4);
+    }
     for (const locale of ['en', 'ko']) {
-      const relative = module[locale];
-      if (byPath.has(relative)) throw new Error(`Duplicate manual path: ${relative}`);
+      const { relative } = await approvedManifestPath(manualRoot, module[locale], `${locale}/`, '.md');
+      if (byPath.has(relative)) fail('MANIFEST_DUPLICATE_PATH', 'unique path', relative, 4);
       byPath.set(relative, { module, chapter: null });
     }
     for (const chapter of module.chapters ?? []) {
       for (const locale of ['en', 'ko']) {
-        const relative = chapter[locale];
-        if (byPath.has(relative)) throw new Error(`Duplicate manual path: ${relative}`);
+        const { relative } = await approvedManifestPath(manualRoot, chapter[locale], `${locale}/`, '.md');
+        if (byPath.has(relative)) fail('MANIFEST_DUPLICATE_PATH', 'unique path', relative, 4);
         byPath.set(relative, { module, chapter });
       }
     }
+    for (const relative of module.assets ?? []) {
+      approvedAssets.push(await approvedManifestPath(manualRoot, relative, 'assets/'));
+    }
   }
+
   const sourcePaths = (await walk(manualRoot)).filter((item) => /^(en|ko)\/.*\.md$/.test(item));
   const sourceEntries = [];
   const contentEntries = [];
+  const documents = { en: [], ko: [] };
   for (const relative of sourcePaths) {
-    const content = await readFile(path.join(manualRoot, relative), 'utf8');
+    const absolute = await resolveApprovedPath(manualRoot, safeRelativePath(relative));
+    const content = await readFile(absolute, 'utf8');
     sourceEntries.push({ path: relative, content });
     const locale = localeOf(relative);
+    documents[locale].push(documentId(relative));
     const owner = byPath.get(relative);
-    const transformed = owner
-      ? transformManual({
-          content,
-          module: owner.module,
-          chapter: owner.chapter,
-          repository,
-          sourceCommit: commit,
-          sourcePath: `docs/manual/${relative}`,
-        })
-      : stripFirstHeading(content);
-    contentEntries.push({ path: destinationFor(locale, relative), content: transformed });
+    const module = owner?.module ?? {
+      id: documentId(relative),
+      group: 'overview',
+      kind: 'guide',
+      sourceDir: 'docs/manual',
+    };
+    const transformed = transformManual({
+      content,
+      module,
+      chapter: owner?.chapter ?? null,
+      repository: input.repositorySlug,
+      repositoryFullName: input.repositoryFullName,
+      sourceCommit: input.sourceCommit,
+      sourcePath: `docs/manual/${relative}`,
+      releaseRef: input.releaseRef,
+      releaseCommit: input.releaseCommit,
+      minorVersion: input.minorVersion,
+    });
+    const route = manualRouteFor(locale, input.repositorySlug, input.minorVersion, relative.slice(`${locale}/`.length));
+    contentEntries.push({
+      path: destinationFor(locale, relative, input.minorVersion),
+      content: setDocumentSlug(transformed, route.replace(/^\//, '').replace(/\/$/, '')),
+    });
   }
-  const assetPaths = manifest.modules.flatMap((module) => module.assets ?? []);
-  if (new Set(assetPaths).size !== assetPaths.length) throw new Error('Duplicate manual asset path');
+  documents.en.sort();
+  documents.ko.sort();
+
+  const assetPaths = approvedAssets.map(({ relative }) => relative);
+  if (new Set(assetPaths).size !== assetPaths.length) fail('MANIFEST_DUPLICATE_ASSET', 'unique asset', null, 4);
   const assetEntries = [];
-  for (const relative of assetPaths.sort()) {
-    const content = await readFile(path.join(manualRoot, relative));
-    assetEntries.push({ path: assetDestinationFor(repository, relative), content });
+  const assetAliases = [];
+  for (const relative of [...assetPaths].sort()) {
+    const approved = approvedAssets.find((candidate) => candidate.relative === relative);
+    const content = await readFile(approved.absolute);
+    assetEntries.push({ path: assetDestinationFor(input.repositorySlug, relative, input.minorVersion), content });
+    assetAliases.push({
+      path: `public/manual-assets/${input.repositorySlug}/${relative.replace(/^assets\//, '')}`,
+      content,
+    });
   }
-  const normalized = {
-    schemaVersion: manifest.schemaVersion,
-    repository,
-    sourceCommit: commit,
+
+  const normalizedManifest = {
+    schemaVersion: 2,
+    repository: input.repositoryFullName,
+    repositorySlug: input.repositorySlug,
+    minorVersion: input.minorVersion,
+    releaseRef: input.releaseRef,
+    releaseCommit: input.releaseCommit,
+    authoringSourceRef: input.authoringSourceRef,
+    sourceCommit: input.sourceCommit,
     modules: manifest.modules.map((module) => ({
       ...module,
       layer: layerFor(module.kind),
       routes: {
-        en: `/manual/${repository}/${module.en.replace(/^en\//, '').replace(/\.md$/, '')}/`,
-        ko: `/ko/manual/${repository}/${module.ko.replace(/^ko\//, '').replace(/\.md$/, '')}/`,
+        en: manualRouteFor('en', input.repositorySlug, input.minorVersion, module.en.replace(/^en\//, '')),
+        ko: manualRouteFor('ko', input.repositorySlug, input.minorVersion, module.ko.replace(/^ko\//, '')),
       },
       chapters: (module.chapters ?? []).map((chapter) => ({
         ...chapter,
         routes: {
-          en: `/manual/${repository}/${chapter.en.replace(/^en\//, '').replace(/\.md$/, '')}/`,
-          ko: `/ko/manual/${repository}/${chapter.ko.replace(/^ko\//, '').replace(/\.md$/, '')}/`,
+          en: manualRouteFor('en', input.repositorySlug, input.minorVersion, chapter.en.replace(/^en\//, '')),
+          ko: manualRouteFor('ko', input.repositorySlug, input.minorVersion, chapter.ko.replace(/^ko\//, '')),
         },
       })),
     })),
   };
   const snapshot = {
-    repository,
-    sourceCommit: commit,
+    schemaVersion: 1,
+    repository: input.repositoryFullName,
+    repositorySlug: input.repositorySlug,
+    minorVersion: input.minorVersion,
+    releaseRef: input.releaseRef,
+    releaseCommit: input.releaseCommit,
+    authoringSourceRef: input.authoringSourceRef,
+    sourceCommit: input.sourceCommit,
     sourceDigest: digestEntries(sourceEntries),
     contentDigest: digestEntries(contentEntries),
     assetDigest: digestEntries(assetEntries),
@@ -114,75 +321,416 @@ export async function buildSnapshot({ source, repository = 'bluetape4k-projects'
     assetFiles: assetEntries.length,
     contentFiles: contentEntries.length + assetEntries.length,
   };
-  contentEntries.push({ path: `src/data/manual/${repository}.manifest.json`, content: `${JSON.stringify(normalized, null, 2)}\n` });
-  contentEntries.push({ path: `src/data/manual/${repository}.snapshot.json`, content: `${JSON.stringify(snapshot, null, 2)}\n` });
-  return { contentEntries, assetEntries, snapshot };
+  const entry = versionEntry(input, documents);
+  const catalog = nextCatalog(previousCatalog, entry, allowReleaseRefresh);
+  const redirects = buildRedirectCatalog({
+    previous: previousRedirects ?? initialRedirects(),
+    latestEntry: catalog.versions.find(({ minorVersion }) => minorVersion === catalog.latest),
+  });
+  const unavailableEntries = [];
+  for (const sourceVersion of catalog.versions) {
+    for (const targetVersion of catalog.versions) {
+      if (sourceVersion.minorVersion === targetVersion.minorVersion) continue;
+      for (const locale of ['en', 'ko']) {
+        const targetDocuments = new Set(targetVersion.documents[locale]);
+        for (const missingDocument of sourceVersion.documents[locale].filter((item) => !targetDocuments.has(item))) {
+          unavailableEntries.push(buildUnavailablePage({
+            locale,
+            targetMinor: targetVersion.minorVersion,
+            sourceMinor: sourceVersion.minorVersion,
+            documentId: missingDocument,
+          }));
+        }
+      }
+    }
+  }
+  const manifestBytes = stableJson(normalizedManifest);
+  const snapshotBytes = stableJson(snapshot);
+  const dataEntries = [
+    { path: `src/data/manual/${input.repositorySlug}.${input.minorVersion}.manifest.json`, content: manifestBytes },
+    { path: `src/data/manual/${input.repositorySlug}.${input.minorVersion}.snapshot.json`, content: snapshotBytes },
+    { path: `src/data/manual/${input.repositorySlug}.manifest.json`, content: manifestBytes },
+    { path: `src/data/manual/${input.repositorySlug}.snapshot.json`, content: snapshotBytes },
+    { path: `src/data/manual/${input.repositorySlug}.versions.json`, content: stableJson(catalog) },
+    { path: `src/data/manual/${input.repositorySlug}.redirects.json`, content: stableJson(redirects) },
+  ];
+  const entries = [...contentEntries, ...assetEntries, ...assetAliases, ...unavailableEntries, ...dataEntries]
+    .sort((left, right) => left.path.localeCompare(right.path));
+  if (new Set(entries.map(({ path: entryPath }) => entryPath)).size !== entries.length) {
+    fail('CONTENT_DUPLICATE_PATH', 'unique generated path', null, 4);
+  }
+  return { entries, contentEntries, assetEntries, assetAliases, snapshot, manifest: normalizedManifest, catalog, redirects };
 }
 
-async function currentContent(entries, targetRoot) {
-  const current = [];
-  for (const entry of entries) {
-    try { current.push({ path: entry.path, content: await readFile(path.join(targetRoot, entry.path)) }); }
-    catch { current.push({ path: entry.path, content: null }); }
-  }
-  return current;
-}
-
-export async function syncManual(options) {
-  const repository = options.repository ?? 'bluetape4k-projects';
-  const built = await buildSnapshot({ ...options, repository });
-  const targetRoot = options.targetRoot ?? siteRoot;
-  if (options.check) {
-    const expected = [...built.contentEntries, ...built.assetEntries];
-    const current = await currentContent(expected, targetRoot);
-    const drift = expected
-      .filter((entry, index) => {
-        const actual = current[index].content;
-        return actual === null || !Buffer.from(entry.content).equals(actual);
-      })
-      .map((entry) => entry.path);
-    if (drift.length) throw new Error(`Manual snapshot drift (${drift.length} files): ${drift.slice(0, 5).join(', ')}`);
-    return built.snapshot;
-  }
-  const temp = await mkdtemp(path.join(os.tmpdir(), 'bt4k-manual-sync-'));
+async function optionalJson(root, relative, fallback = null) {
   try {
-    const generatedEntries = [...built.contentEntries, ...built.assetEntries];
-    for (const entry of generatedEntries) {
-      const target = path.join(temp, entry.path);
-      await mkdir(path.dirname(target), { recursive: true });
-      await writeFile(target, entry.content);
+    return JSON.parse(await readApproved(root, relative, 'utf8'));
+  } catch (error) {
+    if (error.code === 'ENOENT') return fallback;
+    throw error;
+  }
+}
+
+function commandOutput(command, args, options = {}) {
+  try {
+    return execFileSync(command, args, { ...options, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+  } catch (cause) {
+    const error = new SyncError('SOURCE_RELEASE_CONTRACT', 0, cause.status ?? 1, 4);
+    error.cause = cause;
+    throw error;
+  }
+}
+
+function gitOutput(source, args) {
+  try {
+    return execFileSync('git', ['-C', source, ...args], {
+      encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'],
+    }).trim();
+  } catch (cause) {
+    const error = new SyncError('SOURCE_GIT', 'successful git command', cause.status ?? 1, 4);
+    error.cause = cause;
+    throw error;
+  }
+}
+
+function validatorEnvironment() {
+  return Object.fromEntries(
+    ['PATH', 'HOME', 'LANG', 'LC_ALL', 'TMPDIR']
+      .filter((name) => typeof process.env[name] === 'string')
+      .map((name) => [name, process.env[name]]),
+  );
+}
+
+function canonicalGeneration(entries) {
+  const chunks = [];
+  for (const entry of [...entries].sort((a, b) => a.path.localeCompare(b.path))) {
+    const name = Buffer.from(entry.path);
+    const content = Buffer.isBuffer(entry.content) ? entry.content : Buffer.from(entry.content);
+    chunks.push(Buffer.from(`${name.length}:`), name, Buffer.from(`${content.length}:`), content);
+  }
+  return createHash('sha256').update(Buffer.concat(chunks)).digest('hex');
+}
+
+function canonicalTargetDigest(entries) {
+  const hash = createHash('sha256');
+  for (const entry of [...entries].sort((a, b) => a.path.localeCompare(b.path))) {
+    const name = Buffer.from(entry.path);
+    const content = Buffer.isBuffer(entry.content) ? entry.content : Buffer.from(entry.content);
+    hash.update(`P${name.length}:`).update(name).update(`${content.length}:`).update(content);
+  }
+  return hash.digest('hex');
+}
+
+function dependencies(overrides = {}) {
+  return {
+    resolveReleaseImpl: resolveRelease,
+    assertReleaseUnmovedImpl: assertReleaseUnmoved,
+    recoverPublicationImpl: recoverPublication,
+    stagePublicationImpl: stagePublication,
+    publishStagedImpl: publishStaged,
+    buildSnapshotImpl: buildSnapshot,
+    commandRunner: commandOutput,
+    gitRunner: gitOutput,
+    fetchImpl: globalThis.fetch,
+    ...overrides,
+  };
+}
+
+export async function validateCommittedSite({ targetRoot = siteRoot, repository = REPOSITORY_SLUG }) {
+  if (repository !== REPOSITORY_SLUG) fail('CLI_REPOSITORY', REPOSITORY_SLUG, repository, 2);
+  const root = await approvedRootPath(targetRoot);
+  const publicationEntries = [];
+  const catalogPath = `src/data/manual/${repository}.versions.json`;
+  const redirectsPath = `src/data/manual/${repository}.redirects.json`;
+  const catalogBytes = await readApproved(root, catalogPath);
+  const redirectsBytes = await readApproved(root, redirectsPath);
+  const catalog = validateVersionCatalog(JSON.parse(catalogBytes));
+  const redirects = JSON.parse(redirectsBytes);
+  publicationEntries.push(
+    { path: catalogPath, content: catalogBytes },
+    { path: redirectsPath, content: redirectsBytes },
+  );
+  if (!redirects || redirects.schema !== 1 || redirects.repository !== REPOSITORY_FULL_NAME || !Array.isArray(redirects.redirects)) {
+    fail('REDIRECT_SCHEMA', 1, redirects?.schema, 4);
+  }
+  const redirectSources = new Set();
+  for (const redirect of redirects.redirects) {
+    if (redirectSources.has(redirect.source)) fail('REDIRECT_DUPLICATE', 'unique source', redirect.source, 4);
+    redirectSources.add(redirect.source);
+    if (!redirect.target.includes(`/${catalog.latest}/`)) {
+      fail('REDIRECT_LATEST', catalog.latest, redirect.target, 4);
     }
-    const targets = [
-      `src/content/docs/manual/${repository}`,
-      `src/content/docs/ko/manual/${repository}`,
-      `public/manual-assets/${repository}`,
-    ];
-    for (const target of targets) {
-      const staged = path.join(temp, target);
-      await mkdir(staged, { recursive: true });
-      const absolute = path.join(targetRoot, target);
-      await rm(absolute, { recursive: true, force: true });
-      await mkdir(path.dirname(absolute), { recursive: true });
-      await rename(staged, absolute);
+  }
+  for (const version of catalog.versions) {
+    const minor = version.minorVersion;
+    const manifestPath = `src/data/manual/${repository}.${minor}.manifest.json`;
+    const snapshotPath = `src/data/manual/${repository}.${minor}.snapshot.json`;
+    const manifestBytes = await readApproved(root, manifestPath);
+    const snapshotBytes = await readApproved(root, snapshotPath);
+    const manifest = JSON.parse(manifestBytes);
+    const snapshot = JSON.parse(snapshotBytes);
+    if (minor === catalog.latest) {
+      publicationEntries.push(
+        { path: manifestPath, content: manifestBytes },
+        { path: snapshotPath, content: snapshotBytes },
+      );
     }
-    for (const entry of built.contentEntries.filter((item) => item.path.startsWith('src/data/'))) {
-      const target = path.join(targetRoot, entry.path);
-      await mkdir(path.dirname(target), { recursive: true });
-      await writeFile(target, entry.content);
+    if (manifest.minorVersion !== minor || snapshot.minorVersion !== minor) fail('SNAPSHOT_MINOR', minor, snapshot.minorVersion, 4);
+    for (const field of ['releaseRef', 'releaseCommit', 'sourceCommit']) {
+      if (manifest[field] !== version[field] || snapshot[field] !== version[field]) {
+        fail('SNAPSHOT_PROVENANCE', `${field}=${version[field]}`, `${manifest[field]}|${snapshot[field]}`, 4);
+      }
     }
-    return built.snapshot;
-  } finally {
-    await rm(temp, { recursive: true, force: true });
+    const contentEntries = [];
+    for (const relative of [...version.documents.en.map((id) => `en/${id === 'index' ? 'index' : id}.md`),
+      ...version.documents.ko.map((id) => `ko/${id === 'index' ? 'index' : id}.md`)]) {
+      const locale = localeOf(relative);
+      const destination = destinationFor(locale, relative, minor);
+      contentEntries.push({ path: destination, content: await readApproved(root, destination) });
+    }
+    const assetEntries = [];
+    for (const relative of manifest.modules.flatMap((module) => module.assets ?? []).sort()) {
+      const destination = assetDestinationFor(repository, relative, minor);
+      const content = await readApproved(root, destination);
+      assetEntries.push({ path: destination, content });
+      if (minor === catalog.latest) {
+        const alias = `public/manual-assets/${repository}/${relative.replace(/^assets\//, '')}`;
+        const aliasContent = await readApproved(root, alias);
+        if (!content.equals(aliasContent)) fail('ASSET_ALIAS', destination, alias, 4);
+        publicationEntries.push({ path: alias, content: aliasContent });
+      }
+    }
+    if (digestEntries(contentEntries) !== snapshot.contentDigest) fail('DIGEST_MISMATCH', snapshot.contentDigest, 'content', 4);
+    if (digestEntries(assetEntries) !== snapshot.assetDigest) fail('DIGEST_MISMATCH', snapshot.assetDigest, 'assets', 4);
+    if (snapshot.documentFiles !== contentEntries.length || snapshot.assetFiles !== assetEntries.length) {
+      fail('SNAPSHOT_COUNT', snapshot.contentFiles, contentEntries.length + assetEntries.length, 4);
+    }
+    if (minor === catalog.latest) publicationEntries.push(...contentEntries, ...assetEntries);
+  }
+  const unavailablePaths = new Set();
+  for (const sourceVersion of catalog.versions) {
+    for (const targetVersion of catalog.versions) {
+      if (sourceVersion.minorVersion === targetVersion.minorVersion) continue;
+      for (const locale of ['en', 'ko']) {
+        const targetDocuments = new Set(targetVersion.documents[locale]);
+        for (const missingDocument of sourceVersion.documents[locale].filter((item) => !targetDocuments.has(item))) {
+          const expected = buildUnavailablePage({
+            locale,
+            targetMinor: targetVersion.minorVersion,
+            sourceMinor: sourceVersion.minorVersion,
+            documentId: missingDocument,
+          });
+          if (unavailablePaths.has(expected.path)) fail('CONTENT_DUPLICATE_PATH', 'unique unavailable path', expected.path, 4);
+          unavailablePaths.add(expected.path);
+          let actual;
+          try { actual = await readApproved(root, expected.path); }
+          catch { fail('UNAVAILABLE_DRIFT', expected.path, 'missing', 4); }
+          if (!actual.equals(Buffer.from(expected.content))) fail('UNAVAILABLE_DRIFT', expected.path, 'content mismatch', 4);
+          publicationEntries.push({ path: expected.path, content: actual });
+        }
+      }
+    }
+  }
+  const latestManifest = `src/data/manual/${repository}.${catalog.latest}.manifest.json`;
+  const latestSnapshot = `src/data/manual/${repository}.${catalog.latest}.snapshot.json`;
+  for (const [alias, fixed] of [
+    [`src/data/manual/${repository}.manifest.json`, latestManifest],
+    [`src/data/manual/${repository}.snapshot.json`, latestSnapshot],
+  ]) {
+    const aliasContent = await readApproved(root, alias);
+    if (!aliasContent.equals(await readApproved(root, fixed))) {
+      fail('LATEST_ALIAS', fixed, alias, 4);
+    }
+    publicationEntries.push({ path: alias, content: aliasContent });
+  }
+  const marker = JSON.parse(await readApproved(root, '.manual-sync-generation.json', 'utf8'));
+  const expectedGeneration = canonicalGeneration(publicationEntries);
+  const expectedTreeDigest = canonicalTargetDigest(publicationEntries);
+  if (!DIGEST.test(marker.generationId) || !DIGEST.test(marker.treeDigest)
+    || marker.generationId !== expectedGeneration || marker.treeDigest !== expectedTreeDigest) {
+    fail('PUBLICATION_MARKER', `${expectedGeneration}|${expectedTreeDigest}`, `${marker.generationId}|${marker.treeDigest}`, 4);
+  }
+  const latest = catalog.versions.find(({ minorVersion }) => minorVersion === catalog.latest);
+  return {
+    repository: REPOSITORY_FULL_NAME,
+    latest: catalog.latest,
+    releaseRef: latest.releaseRef,
+    releaseCommit: latest.releaseCommit,
+    sourceCommit: latest.sourceCommit,
+    documents: latest.documents.en.length + latest.documents.ko.length,
+    assets: JSON.parse(await readApproved(root, latestManifest, 'utf8')).modules
+      .flatMap((module) => module.assets ?? []).length,
+    generationId: marker.generationId,
+    changed: false,
+    mutated: false,
+    recovery: { recovered: false },
+  };
+}
+
+export async function syncManual(options, dependencyOverrides = {}) {
+  const deps = dependencies(dependencyOverrides);
+  const targetRoot = options.targetRoot ?? siteRoot;
+  if (options.mode === 'check' || options.check === true) {
+    return validateCommittedSite({ targetRoot, repository: options.repository ?? REPOSITORY_SLUG });
+  }
+  let recovery;
+  try {
+    recovery = await deps.recoverPublicationImpl(targetRoot);
+  } catch (error) {
+    error.exitCode ??= 5;
+    error.recovery = { recovered: false };
+    throw error;
+  }
+  if (options.mode === 'recover') {
+    return { changed: false, mutated: false, recovery };
+  }
+
+  const source = await approvedRootPath(options.source);
+  let resolvedRelease;
+  try {
+    resolvedRelease = await deps.resolveReleaseImpl({
+      repository: REPOSITORY_FULL_NAME,
+      releaseRef: options.mode === 'latest' ? undefined : options.releaseRef,
+      fetchImpl: deps.fetchImpl,
+    });
+  } catch (error) {
+    error.exitCode ??= 3;
+    error.recovery = recovery;
+    throw error;
+  }
+  const head = deps.gitRunner(source, ['rev-parse', 'HEAD']);
+  if (!SHA.test(head)) fail('SOURCE_COMMIT', '40 lowercase hex', head, 4);
+  const validatorRelative = 'scripts/manual/validate_release_manuals.rb';
+  const validator = await approvedFile(source, validatorRelative);
+  const dirty = deps.gitRunner(source, ['status', '--porcelain', '--', 'docs/manual', validatorRelative]);
+  if (dirty) fail('SOURCE_DIRTY', 'clean docs/manual and validator', 'dirty', 4);
+  if (options.sourceCommit && options.sourceCommit !== head) fail('SOURCE_DRIFT', options.sourceCommit, head, 4);
+  const committedValidator = deps.gitRunner(source, ['rev-parse', `HEAD:${validatorRelative}`]);
+  const workingValidator = deps.gitRunner(source, ['hash-object', validator.absolute]);
+  if (!SHA.test(committedValidator) || workingValidator !== committedValidator) {
+    fail('SOURCE_VALIDATOR_BLOB', committedValidator, workingValidator, 4);
+  }
+  deps.commandRunner('ruby', [validator.absolute, resolvedRelease.releaseRef, resolvedRelease.releaseCommit], {
+    cwd: source,
+    env: validatorEnvironment(),
+  });
+
+  const previousCatalog = await optionalJson(targetRoot, `src/data/manual/${REPOSITORY_SLUG}.versions.json`);
+  const previousRedirects = await optionalJson(targetRoot, `src/data/manual/${REPOSITORY_SLUG}.redirects.json`);
+  let built;
+  try {
+    built = await deps.buildSnapshotImpl({
+      source,
+      repositorySlug: REPOSITORY_SLUG,
+      repositoryFullName: REPOSITORY_FULL_NAME,
+      releaseRef: resolvedRelease.releaseRef,
+      releaseCommit: resolvedRelease.releaseCommit,
+      minorVersion: resolvedRelease.minorVersion,
+      authoringSourceRef: options.authoringSourceRef ?? head,
+      sourceCommit: head,
+    }, {
+      previousCatalog,
+      previousRedirects,
+      allowReleaseRefresh: options.mode === 'refresh',
+    });
+  } catch (error) {
+    error.exitCode ??= 4;
+    error.recovery = recovery;
+    throw error;
+  }
+  try {
+    await deps.assertReleaseUnmovedImpl(resolvedRelease, deps.fetchImpl);
+  } catch (error) {
+    error.exitCode ??= 3;
+    error.recovery = recovery;
+    throw error;
+  }
+  let publication;
+  try {
+    const staged = await deps.stagePublicationImpl({
+      targetRoot,
+      entries: built.entries,
+      generationId: canonicalGeneration(built.entries),
+    });
+    publication = await deps.publishStagedImpl({ targetRoot, staged });
+  } catch (error) {
+    error.exitCode ??= 5;
+    error.recovery = recovery;
+    throw error;
+  }
+  return {
+    repository: REPOSITORY_FULL_NAME,
+    latest: built.catalog.latest,
+    minor: built.snapshot.minorVersion,
+    releaseRef: built.snapshot.releaseRef,
+    releaseCommit: built.snapshot.releaseCommit,
+    sourceCommit: built.snapshot.sourceCommit,
+    documents: built.snapshot.documentFiles,
+    assets: built.snapshot.assetFiles,
+    changed: publication.changed,
+    mutated: publication.changed,
+    recovery,
+  };
+}
+
+function safeField(value, pattern) {
+  return typeof value === 'string' && pattern.test(value) ? value : undefined;
+}
+
+function diagnostic(error, options = {}) {
+  const value = sanitizeDiagnostic(error);
+  value.repository = REPOSITORY_FULL_NAME;
+  const minor = safeField(options.minor ?? error.minor, MINOR);
+  if (minor) value.minor = minor;
+  const safePath = safeField(error.path, /^[A-Za-z0-9._/-]{1,200}$/);
+  if (safePath) value.path = safePath;
+  value.mutated = error.mutated === true;
+  const recovery = error.recovery ?? options.recovery;
+  if (recovery && typeof recovery === 'object') {
+    value.recovery = {
+      recovered: recovery.recovered === true,
+      ...(typeof recovery.committed === 'boolean' ? { committed: recovery.committed } : {}),
+    };
+  }
+  return value;
+}
+
+function exitCodeFor(error) {
+  if ([2, 3, 4, 5].includes(error?.exitCode)) return error.exitCode;
+  if (/^(?:CLI_)/.test(error?.code ?? '')) return 2;
+  if (/^(?:GITHUB_|RELEASE_|REPOSITORY_)/.test(error?.code ?? '')) return 3;
+  if (/^(?:PUBLICATION_)/.test(error?.code ?? '')) return 5;
+  return 4;
+}
+
+function summary(result, mode) {
+  if (mode === 'recover') {
+    return `Manual recovery: recovered=${result.recovery.recovered === true} changed=false`;
+  }
+  if (mode === 'check') {
+    return `Manual check: repository=${result.repository} latest=${result.latest} release=${result.releaseRef} documents=${result.documents} assets=${result.assets} changed=false`;
+  }
+  return `Manual sync: repository=${result.repository} latest=${result.latest} release=${result.releaseRef} releaseCommit=${result.releaseCommit} sourceCommit=${result.sourceCommit} documents=${result.documents} assets=${result.assets} changed=${result.changed}`;
+}
+
+export async function runCli(argv, dependencyOverrides = {}) {
+  try {
+    const options = parseArgs(argv);
+    const result = await syncManual({ ...options, targetRoot: dependencyOverrides.targetRoot }, dependencyOverrides);
+    return { exitCode: 0, stdout: `${summary(result, options.mode)}\n`, stderr: '', result };
+  } catch (error) {
+    return {
+      exitCode: exitCodeFor(error),
+      stdout: '',
+      stderr: `${JSON.stringify(diagnostic(error))}\n`,
+      error,
+    };
   }
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  try {
-    const options = parseArgs(process.argv.slice(2));
-    const snapshot = await syncManual(options);
-    console.log(`Manual snapshot ${options.check ? 'matches' : 'written'}: ${snapshot.contentFiles} files @ ${snapshot.sourceCommit}`);
-  } catch (error) {
-    console.error(error.message);
-    process.exitCode = 1;
-  }
+  const outcome = await runCli(process.argv.slice(2));
+  if (outcome.stdout) process.stdout.write(outcome.stdout);
+  if (outcome.stderr) process.stderr.write(outcome.stderr);
+  process.exitCode = outcome.exitCode;
 }
