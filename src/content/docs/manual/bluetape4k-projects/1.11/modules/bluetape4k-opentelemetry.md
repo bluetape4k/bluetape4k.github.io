@@ -1,0 +1,144 @@
+---
+slug: "manual/bluetape4k-projects/1.11/modules/bluetape4k-opentelemetry"
+manualId: bluetape4k-opentelemetry
+title: "Module bluetape4k-opentelemetry"
+description: "OpenTelemetry is an observability framework for cloud-native software. This module provides Kotlin extension functions and utilities that make it easier and more idiomatic to use OpenTelemetry on the JVM."
+kind: library
+group: infrastructure
+manual:
+  id: "bluetape4k-opentelemetry"
+  repository: "bluetape4k-projects"
+  group: "infrastructure"
+  kind: "library"
+  sourceCommit: "073ab365abcd91889ecd82d0077522cac2f13e15"
+  sourcePath: "docs/manual/en/modules/bluetape4k-opentelemetry.md"
+  minorVersion: "1.11"
+  releaseRef: "1.11.0"
+  releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
+  sourceDir: "infra/opentelemetry"
+  layer: "build"
+---
+
+
+## Problem
+
+OpenTelemetry is an observability framework for cloud-native software. This module provides Kotlin extension functions and utilities that make it easier and more idiomatic to use OpenTelemetry on the JVM. This manual connects that purpose to the current build, source entry points, tests, configuration resources, and lifecycle evidence instead of duplicating the README feature list.
+
+## When to use
+
+Use `bluetape4k-opentelemetry` when the application needs client lifecycle, reconnect policy, backpressure, retries, and observability. Start with the source entry points below and confirm that their ownership and failure contracts match the calling component. Prefer a smaller standard-library or already-adopted module when it satisfies the same contract without another runtime boundary.
+
+## Coordinates
+
+```kotlin
+dependencies {
+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:<version>"))
+    implementation("io.github.bluetape4k:bluetape4k-opentelemetry")
+}
+```
+
+Gradle project path: `:bluetape4k-opentelemetry`. Source directory: `infra/opentelemetry`.
+
+## Concepts
+
+The first source-level concepts to inspect are `ContextExtensions`, `OpenTelemetrySupport`, `AttributeKeySupport`, `AttributesSupport`, `CompletableResultCodeSupport`, `ContextCoroutineSupport`, `FlowSpanSupport`, and `SpanCoroutineSupport`. File names are navigation anchors; read each declaration and its tests before treating it as a public contract.
+
+## Quick start
+
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`ContextExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/ContextExtensions.kt) first; it is a concrete source entry point for the module.
+
+## API by task
+
+| Entry point | What to verify |
+| --- | --- |
+| [`ContextExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/ContextExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`OpenTelemetrySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/OpenTelemetrySupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`AttributeKeySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/common/AttributeKeySupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`AttributesSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/common/AttributesSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`CompletableResultCodeSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/CompletableResultCodeSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ContextCoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/ContextCoroutineSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`FlowSpanSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/FlowSpanSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`SpanCoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/SpanCoroutineSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`MeterProviderSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/metrics/MeterProviderSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`MetricExporterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/metrics/MetricExporterSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+
+## Patterns
+
+The README evidence is organized around **Features**, **Architecture Diagrams**, **Core Class Structure**, **Component Overview**, **Span Lifecycle in a Coroutine Context**, **Distributed Trace Propagation**, **Dependency**, **Key Features**, **1. OpenTelemetry SDK Setup**, and **2. Creating Tracers and Managing Spans**. Use those topics as a navigation map, then confirm behavior in source and tests. Keep adoption narrow and connect owned resources to the caller lifecycle.
+
+## Integrations
+
+The current build declares these integration edges:
+
+```kotlin
+implementation(platform(libs.spring.boot.dependencies))
+api(project(":bluetape4k-io"))
+implementation(project(":bluetape4k-netty"))
+api(libs.opentelemetry.api)
+api(libs.opentelemetry.sdk)
+api(libs.opentelemetry.extension.kotlin)
+compileOnly(libs.opentelemetry.sdk.extensions.autoconfigure)
+compileOnly(libs.opentelemetry.sdk.metrics)
+compileOnly(libs.opentelemetry.sdk.logs)
+compileOnly(libs.opentelemetry.sdk.trace)
+compileOnly(libs.opentelemetry.sdk.testing)
+compileOnly(libs.opentelemetry.exporter.logging)
+```
+
+Treat `compileOnly` edges as caller-provided capabilities and verify runtime availability before using their APIs.
+
+## Configuration
+
+No module-level configuration resource was found under `src/main/resources`. Configuration is supplied through constructors, builders, function arguments, or the integrating framework; confirm defaults in source.
+
+## Failures
+
+Failure semantics are defined by the linked entry points and tests, not inferred from the artifact name. Keep cancellation and timeout signals intact, close owned resources, and translate backend exceptions only at a boundary that can add a stable domain contract. Use the test anchors below to verify the exact behavior before adding retries or fallbacks.
+
+## Operations
+
+Track connection state, queue depth, retries, timeouts, remote errors, and graceful shutdown. Keep capacity, timeout, retry, and shutdown settings next to the component that owns the resource; avoid process-wide defaults that hide which caller accepted the trade-off.
+
+## Testing
+
+Run the module test task:
+
+```bash
+./gradlew :bluetape4k-opentelemetry:test --no-configuration-cache
+```
+
+Representative test anchors:
+
+- [`AbstractOtelTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/AbstractOtelTest.kt)
+- [`RedactionAssertions`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/RedactionAssertions.kt)
+- [`AttributeKeySupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/common/AttributeKeySupportTest.kt)
+- [`AttributesSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/common/AttributesSupportTest.kt)
+- [`CoroutineSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/coroutines/CoroutineSupportTest.kt)
+- [`FlowSpanSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/coroutines/FlowSpanSupportTest.kt)
+- [`SpanCoroutineSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/coroutines/SpanCoroutineSupportTest.kt)
+- [`TracerWithSpanTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/coroutines/TracerWithSpanTest.kt)
+
+## Workshops
+
+No dedicated workshop path is registered in the manual manifest. Use the module README and the representative tests above as runnable evidence.
+
+## Limitations
+
+This page documents the repository state represented by the linked source and tests. It does not turn optional backends into application defaults or claim performance without a benchmark artifact. Re-check compatibility and lifecycle notes when the module version changes.
+
+## Sources
+
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/build.gradle.kts)
+- [`ContextExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/ContextExtensions.kt)
+- [`OpenTelemetrySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/OpenTelemetrySupport.kt)
+- [`AttributeKeySupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/common/AttributeKeySupport.kt)
+- [`AttributesSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/common/AttributesSupport.kt)
+- [`CompletableResultCodeSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/CompletableResultCodeSupport.kt)
+- [`ContextCoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/ContextCoroutineSupport.kt)
+- [`FlowSpanSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/FlowSpanSupport.kt)
+- [`SpanCoroutineSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/coroutines/SpanCoroutineSupport.kt)
+- [`MeterProviderSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/metrics/MeterProviderSupport.kt)
+- [`MetricExporterSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/main/kotlin/io/bluetape4k/opentelemetry/metrics/MetricExporterSupport.kt)
+- [`AbstractOtelTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/AbstractOtelTest.kt)
+- [`RedactionAssertions`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/opentelemetry/src/test/kotlin/io/bluetape4k/opentelemetry/RedactionAssertions.kt)

@@ -1,0 +1,140 @@
+---
+slug: "manual/bluetape4k-projects/1.11/modules/bluetape4k-netty"
+manualId: bluetape4k-netty
+title: "Module bluetape4k-netty"
+description: "Extension functions for working with the Netty framework."
+kind: library
+group: io
+manual:
+  id: "bluetape4k-netty"
+  repository: "bluetape4k-projects"
+  group: "io"
+  kind: "library"
+  sourceCommit: "073ab365abcd91889ecd82d0077522cac2f13e15"
+  sourcePath: "docs/manual/en/modules/bluetape4k-netty.md"
+  minorVersion: "1.11"
+  releaseRef: "1.11.0"
+  releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
+  sourceDir: "io/netty"
+  layer: "build"
+---
+
+
+## Problem
+
+Extension functions for working with the Netty framework. This manual connects that purpose to the current build, source entry points, tests, configuration resources, and lifecycle evidence instead of duplicating the README feature list.
+
+## When to use
+
+Use `bluetape4k-netty` when the application needs encoding boundaries, resource ownership, streaming, compatibility, and malformed input. Start with the source entry points below and confirm that their ownership and failure contracts match the calling component. Prefer a smaller standard-library or already-adopted module when it satisfies the same contract without another runtime boundary.
+
+## Coordinates
+
+```kotlin
+dependencies {
+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:<version>"))
+    implementation("io.github.bluetape4k:bluetape4k-netty")
+}
+```
+
+Gradle project path: `:bluetape4k-netty`. Source directory: `io/netty`.
+
+## Concepts
+
+The first source-level concepts to inspect are `NettyTransportSupport`, `BitBuf`, `BitBufImpl`, `ByteBufExtensions`, `ByteBufUtilSupport`, `Medium`, `SmallLong`, and `Smart`. File names are navigation anchors; read each declaration and its tests before treating it as a public contract.
+
+## Quick start
+
+Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`NettyTransportSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/main/kotlin/io/bluetape4k/netty/NettyTransportSupport.kt) first; it is a concrete source entry point for the module.
+
+## API by task
+
+| Entry point | What to verify |
+| --- | --- |
+| [`NettyTransportSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/main/kotlin/io/bluetape4k/netty/NettyTransportSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`BitBuf`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/BitBuf.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`BitBufImpl`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/BitBufImpl.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ByteBufExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/ByteBufExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`ByteBufUtilSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/ByteBufUtilSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Medium`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/Medium.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`SmallLong`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/SmallLong.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`Smart`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/Smart.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`UMedium`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/UMedium.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+| [`USmallLong`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/USmallLong.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+
+## Patterns
+
+The README evidence is organized around **Overview**, **Key Features**, **Adding the Dependency**, **Architecture Diagrams**, **ByteBuf Extension API Structure**, **Smart Encoding Data Flow**, **ByteBuf Processing Flow**, **Basic Usage**, **1. Reading from ByteBuf**, and **2. Writing to ByteBuf**. Use those topics as a navigation map, then confirm behavior in source and tests. Keep adoption narrow and connect owned resources to the caller lifecycle.
+
+## Integrations
+
+The current build declares these integration edges:
+
+```kotlin
+api(project(":bluetape4k-io"))
+api(libs.netty.buffer)
+api(libs.netty.all)
+compileOnly(libs.jctools.core)
+compileOnly(libs.kotlinx.coroutines.core)
+compileOnly(libs.netty.transport.classes.epoll)
+compileOnly(libs.netty.transport.classes.kqueue)
+compileOnly(libs.netty.resolver.dns.classes.macos)
+```
+
+Treat `compileOnly` edges as caller-provided capabilities and verify runtime availability before using their APIs.
+
+## Configuration
+
+No module-level configuration resource was found under `src/main/resources`. Configuration is supplied through constructors, builders, function arguments, or the integrating framework; confirm defaults in source.
+
+## Failures
+
+Failure semantics are defined by the linked entry points and tests, not inferred from the artifact name. Keep cancellation and timeout signals intact, close owned resources, and translate backend exceptions only at a boundary that can add a stable domain contract. Use the test anchors below to verify the exact behavior before adding retries or fallbacks.
+
+## Operations
+
+Track payload size, allocation, latency, malformed-input rate, resource closure, and protocol errors. Keep capacity, timeout, retry, and shutdown settings next to the component that owns the resource; avoid process-wide defaults that hide which caller accepted the trade-off.
+
+## Testing
+
+Run the module test task:
+
+```bash
+./gradlew :bluetape4k-netty:test --no-configuration-cache
+```
+
+Representative test anchors:
+
+- [`AbstractNettyTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/test/kotlin/io/bluetape4k/netty/AbstractNettyTest.kt)
+- [`NettyTransportSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/test/kotlin/io/bluetape4k/netty/NettyTransportSupportTest.kt)
+- [`BitBufTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/test/kotlin/io/bluetape4k/netty/buffer/BitBufTest.kt)
+- [`ByteBufByteArrayTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/test/kotlin/io/bluetape4k/netty/buffer/ByteBufByteArrayTest.kt)
+- [`ByteBufByteTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/test/kotlin/io/bluetape4k/netty/buffer/ByteBufByteTest.kt)
+- [`ByteBufMediumIntLongTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/test/kotlin/io/bluetape4k/netty/buffer/ByteBufMediumIntLongTest.kt)
+- [`ByteBufShortAddTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/test/kotlin/io/bluetape4k/netty/buffer/ByteBufShortAddTest.kt)
+- [`ByteBufSmartVarIntTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/test/kotlin/io/bluetape4k/netty/buffer/ByteBufSmartVarIntTest.kt)
+
+## Workshops
+
+No dedicated workshop path is registered in the manual manifest. Use the module README and the representative tests above as runnable evidence.
+
+## Limitations
+
+This page documents the repository state represented by the linked source and tests. It does not turn optional backends into application defaults or claim performance without a benchmark artifact. Re-check compatibility and lifecycle notes when the module version changes.
+
+## Sources
+
+- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/README.md)
+- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/build.gradle.kts)
+- [`NettyTransportSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/main/kotlin/io/bluetape4k/netty/NettyTransportSupport.kt)
+- [`BitBuf`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/BitBuf.kt)
+- [`BitBufImpl`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/BitBufImpl.kt)
+- [`ByteBufExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/ByteBufExtensions.kt)
+- [`ByteBufUtilSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/ByteBufUtilSupport.kt)
+- [`Medium`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/Medium.kt)
+- [`SmallLong`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/SmallLong.kt)
+- [`Smart`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/Smart.kt)
+- [`UMedium`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/UMedium.kt)
+- [`USmallLong`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/main/kotlin/io/bluetape4k/netty/buffer/USmallLong.kt)
+- [`AbstractNettyTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/test/kotlin/io/bluetape4k/netty/AbstractNettyTest.kt)
+- [`NettyTransportSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/netty/src/test/kotlin/io/bluetape4k/netty/NettyTransportSupportTest.kt)

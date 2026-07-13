@@ -1,0 +1,98 @@
+---
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { selectorTarget, validateVersionCatalog } from '../../scripts/manual/lib/catalog.mjs';
+
+interface Props {
+  entryId: string;
+  locale: 'en' | 'ko';
+  minorVersion: string;
+  placement: 'header' | 'mobile';
+}
+
+const { entryId, locale, minorVersion, placement } = Astro.props;
+type CatalogVersion = {
+  minorVersion: string;
+  releaseRef: string;
+  documents: Record<'en' | 'ko', string[]>;
+};
+type Catalog = ReturnType<typeof validateVersionCatalog> & { versions: CatalogVersion[]; latest: string };
+type VersionItem = {
+  current: boolean;
+  href: string;
+  label: string;
+  releaseRef: string;
+  state: string;
+};
+let catalog: Catalog | undefined;
+try {
+  const bytes = readFileSync(
+    path.join(process.cwd(), 'src/data/manual/bluetape4k-projects.versions.json'),
+    'utf8',
+  );
+  catalog = validateVersionCatalog(JSON.parse(bytes)) as Catalog;
+} catch (error) {
+  if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+}
+
+const localizedId = locale === 'ko' ? entryId.replace(/^ko\//, '') : entryId;
+const routeSegments = localizedId.replace(/\/$/, '').split('/');
+const isVersionedManualRoute = routeSegments[0] === 'manual'
+  && routeSegments[1] === 'bluetape4k-projects'
+  && routeSegments[2] === minorVersion;
+const documentId = isVersionedManualRoute ? routeSegments.slice(3).join('/') || 'index' : undefined;
+const sourceDocuments = catalog?.versions.find((item: CatalogVersion) => item.minorVersion === minorVersion)?.documents[locale];
+const currentVersion = catalog?.versions.find((item: CatalogVersion) => item.minorVersion === minorVersion);
+const versions: VersionItem[] | undefined = documentId && sourceDocuments?.includes(documentId) ? catalog?.versions.map((item: CatalogVersion) => {
+  const target = selectorTarget(catalog, {
+    locale,
+    targetMinor: item.minorVersion,
+    sourceMinor: minorVersion,
+    documentId,
+  });
+  const current = item.minorVersion === minorVersion;
+  const latest = item.minorVersion === catalog.latest;
+  const state = locale === 'ko'
+    ? (latest ? '최신 안정판' : '보존 버전')
+    : (latest ? 'Latest stable' : 'Archived');
+  return {
+    current,
+    href: target.href,
+    label: locale === 'ko' ? `버전 ${item.minorVersion}` : `Version ${item.minorVersion}`,
+    releaseRef: item.releaseRef,
+    state,
+  };
+}) : undefined;
+const summaryText = locale === 'ko' ? `Projects 문서 ${minorVersion}` : `Projects docs ${minorVersion}`;
+const summaryLabel = locale === 'ko' ? `${summaryText} — 문서 버전 선택` : `${summaryText} — Select documentation version`;
+const kindText = locale === 'ko' ? 'Projects 문서' : 'Projects docs';
+const releaseText = locale === 'ko' ? '릴리스' : 'Release';
+const releaseUrl = currentVersion
+  ? `https://github.com/bluetape4k/bluetape4k-projects/releases/tag/${encodeURIComponent(currentVersion.releaseRef)}`
+  : undefined;
+---
+
+{versions && versions.length > 0 && (
+  <details class:list={['bt4k-manual-version', `bt4k-manual-version--${placement}`]}>
+    <summary aria-label={summaryLabel}>
+      <span>{kindText}</span><span>{minorVersion}</span>
+    </summary>
+    <div class="bt4k-manual-version__menu">
+      <ul>
+        {versions.map((item: VersionItem) => (
+          <li>
+            <a href={item.href} aria-current={item.current ? 'page' : undefined}>
+              <span>{item.label} <small>{item.state}</small></span>
+              <code>{item.releaseRef}</code>
+            </a>
+          </li>
+        ))}
+      </ul>
+      {releaseUrl && currentVersion && (
+        <a class="bt4k-manual-version__release" href={releaseUrl}>
+          {releaseText} {currentVersion.releaseRef} ↗
+        </a>
+      )}
+    </div>
+  </details>
+)}

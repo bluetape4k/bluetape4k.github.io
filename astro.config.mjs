@@ -1,5 +1,10 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import { loadRedirectCatalog } from './scripts/manual/lib/catalog.mjs';
+
+const manualRedirects = loadRedirectCatalog(
+  new URL('./src/data/manual/bluetape4k-projects.redirects.json', import.meta.url),
+);
 
 const cloudflareBeaconToken =
   process.env.PUBLIC_CLOUDFLARE_BEACON_TOKEN ??
@@ -21,6 +26,9 @@ const cloudflareAnalyticsHead = cloudflareBeaconToken
 
 export default defineConfig({
   site: 'https://bluetape4k.github.io',
+  redirects: Object.fromEntries(
+    manualRedirects.entries.map(({ source, destination }) => [source, destination]),
+  ),
   integrations: [
     starlight({
       title: {
@@ -39,12 +47,15 @@ export default defineConfig({
         },
       },
       defaultLocale: 'root',
+      routeMiddleware: './src/starlightRouteData.ts',
       logo: {
         src: './src/assets/logo.png',
       },
       favicon: '/avatar.png',
       components: {
         Footer: './src/components/StarlightFooter.astro',
+        Header: './src/components/ManualHeader.astro',
+        MobileMenuFooter: './src/components/ManualMobileMenuFooter.astro',
         PageTitle: './src/components/ManualPageTitle.astro',
       },
       customCss: ['./src/styles/custom.css', './src/styles/atlas.css', './src/styles/manual.css'],
@@ -197,7 +208,7 @@ export default defineConfig({
           items: [
             { label: 'Repositories', translations: { ko: '리포지토리' }, slug: 'ecosystem/repositories' },
             { label: 'Ecosystem Atlas', translations: { ko: '생태계 지도' }, slug: 'ecosystem/atlas' },
-            { label: 'Projects Manual', translations: { ko: 'Projects 매뉴얼' }, slug: 'manual/bluetape4k-projects' },
+            { label: 'Projects Manual', translations: { ko: 'Projects 매뉴얼' }, link: '/manual/bluetape4k-projects/' },
             { label: 'Examples', translations: { ko: '예제' }, slug: 'ecosystem/examples' },
             {
               label: 'Version Governance',

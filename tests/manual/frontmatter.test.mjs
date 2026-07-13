@@ -1,17 +1,33 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { transformManual } from '../../scripts/manual/lib/frontmatter.mjs';
+import { setDocumentSlug, transformManual } from '../../scripts/manual/lib/frontmatter.mjs';
 
-test('manual metadata and immutable source links are added', () => {
+test('pins dotted minor routes with an explicit Starlight slug', () => {
+  const result = setDocumentSlug('---\ntitle: Core\n---\n\nBody\n', 'manual/bluetape4k-projects/1.11/modules/core');
+  assert.match(result, /^slug: "manual\/bluetape4k-projects\/1\.11\/modules\/core"$/m);
+  assert.throws(() => setDocumentSlug(result, 'manual/bluetape4k-projects/111/modules/core'), /SLUG_UNSAFE/);
+});
+
+test('manual metadata keeps provenance while source links use the published release', () => {
   const sourceCommit = 'a'.repeat(40);
   const result = transformManual({
-    content: '---\ntitle: Core\n---\n\n# Core\n\n## Problem {#problem}\n\n[Source](../../../../src/Core.kt)\n',
-    module: { id: 'core', group: 'foundation', kind: 'library' },
+    content: '---\ntitle: Core\n---\n\n# Core\n\n## Problem {#problem}\n\n[Lifecycle](./core/lifecycle.md)\n\n[Source](../../../../src/Core.kt)\n\n[Module](../../../../bluetape4k/core)\n',
+    module: { id: 'core', group: 'foundation', kind: 'library', sourceDir: 'bluetape4k/core' },
     repository: 'bluetape4k-projects', sourceCommit, sourcePath: 'docs/manual/en/modules/core.md',
+    releaseRef: '1.11.0',
+    releaseCommit: 'c'.repeat(40),
+    minorVersion: '1.11',
   });
   assert.match(result, /manual:\n  id: "core"/);
   assert.match(result, /layer: "build"/);
-  assert.match(result, new RegExp(`github.com/bluetape4k/bluetape4k-projects/blob/${sourceCommit}/src/Core.kt`));
+  assert.match(result, /releaseRef: "1\.11\.0"/);
+  assert.match(result, /minorVersion: "1\.11"/);
+  assert.match(result, new RegExp(`releaseCommit: "${'c'.repeat(40)}"`));
+  assert.match(result, /sourceDir: "bluetape4k\/core"/);
+  assert.match(result, /github\.com\/bluetape4k\/bluetape4k-projects\/blob\/1\.11\.0\/src\/Core\.kt/);
+  assert.match(result, /github\.com\/bluetape4k\/bluetape4k-projects\/tree\/1\.11\.0\/bluetape4k\/core/);
+  assert.match(result, /\[Lifecycle\]\(\/manual\/bluetape4k-projects\/1\.11\/modules\/core\/lifecycle\/\)/);
+  assert.doesNotMatch(result, new RegExp(`/blob/${sourceCommit}/`));
   assert.doesNotMatch(result, /^# Core$/m);
   assert.match(result, /^## Problem$/m);
   assert.doesNotMatch(result, /\{#problem\}/);
@@ -32,7 +48,12 @@ test('chapter metadata and repository-owned asset routes are added', () => {
       '![Scope lifecycle](../../../assets/coroutines/scope-lifecycle.svg)',
       '',
     ].join('\n'),
-    module: { id: 'bluetape4k-coroutines', group: 'foundation', kind: 'library' },
+    module: {
+      id: 'bluetape4k-coroutines',
+      group: 'foundation',
+      kind: 'library',
+      sourceDir: 'bluetape4k/coroutines',
+    },
     chapter: {
       id: 'lifecycle',
       en: 'en/modules/bluetape4k-coroutines/lifecycle.md',
@@ -41,8 +62,11 @@ test('chapter metadata and repository-owned asset routes are added', () => {
     repository: 'bluetape4k-projects',
     sourceCommit,
     sourcePath: 'docs/manual/en/modules/bluetape4k-coroutines/lifecycle.md',
+    releaseRef: '1.11.0',
+    releaseCommit: 'd'.repeat(40),
+    minorVersion: '1.11',
   });
 
   assert.match(result, /chapterId: "lifecycle"/);
-  assert.match(result, /\/manual-assets\/bluetape4k-projects\/coroutines\/scope-lifecycle\.svg/);
+  assert.match(result, /\/manual-assets\/bluetape4k-projects\/1\.11\/coroutines\/scope-lifecycle\.svg/);
 });

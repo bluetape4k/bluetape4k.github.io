@@ -1,17 +1,40 @@
 ---
 import DefaultPageTitle from '@astrojs/starlight/components/PageTitle.astro';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { validateVersionCatalog } from '../../scripts/manual/lib/catalog.mjs';
 import '../styles/manual.css';
 
-const manual = Astro.locals.starlightRoute.entry.data.manual;
+const { starlightRoute } = Astro.locals;
+const manual = starlightRoute.entry.data.manual;
+const locale = starlightRoute.lang === 'ko' ? 'ko' : 'en';
+let latestMinor;
+try {
+  const bytes = readFileSync(
+    path.join(process.cwd(), 'src/data/manual/bluetape4k-projects.versions.json'),
+    'utf8',
+  );
+  latestMinor = validateVersionCatalog(JSON.parse(bytes)).latest;
+} catch (error) {
+  if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+}
+const archived = Boolean(manual?.minorVersion && latestMinor && manual.minorVersion !== latestMinor);
+const releaseUrl = manual?.releaseRef
+  ? `https://github.com/bluetape4k/bluetape4k-projects/releases/tag/${encodeURIComponent(manual.releaseRef)}`
+  : undefined;
+const stateText = archived
+  ? (locale === 'ko' ? '보존 버전' : 'Archived')
+  : (locale === 'ko' ? '최신 안정판' : 'Latest stable');
+const releaseLabel = locale === 'ko'
+  ? `Projects ${manual?.releaseRef} 릴리스 기준`
+  : `Based on Projects release ${manual?.releaseRef}`;
 ---
 
 <DefaultPageTitle />
-{manual && (
-  <aside class="bt4k-manual-source" aria-label="Manual source">
-    <span>{manual.layer}</span>
-    <span>{manual.group}</span>
-    <a href={`https://github.com/bluetape4k/${manual.repository}/blob/${manual.sourceCommit}/${manual.sourcePath}`}>
-      source {manual.sourceCommit.slice(0, 9)}
-    </a>
-  </aside>
+{manual?.minorVersion && releaseUrl && (
+  <p class="bt4k-manual-provenance" aria-label={locale === 'ko' ? '매뉴얼 배포 기준' : 'Manual release provenance'}>
+    <span class="bt4k-manual-provenance__state">{stateText}</span>
+    <span aria-hidden="true">·</span>
+    <a href={releaseUrl}>{releaseLabel}</a>
+  </p>
 )}
