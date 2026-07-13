@@ -94,4 +94,3 @@ This page documents the repository state represented by the linked source and te
 
 - [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/benchmark/web-framework-benchmark/README.md)
 - [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/benchmark/web-framework-benchmark/build.gradle.kts)
-
