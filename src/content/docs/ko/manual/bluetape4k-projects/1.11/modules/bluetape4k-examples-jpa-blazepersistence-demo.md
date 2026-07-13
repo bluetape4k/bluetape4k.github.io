@@ -10,7 +10,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "learning"
   kind: "example"
-  sourceCommit: "b10b0d9ae7ca2321572f3ae7f9d31d04dbb6c0c5"
+  sourceCommit: "4a375c338033b1f99b4bce6bcc9c62617d820087"
   sourcePath: "docs/manual/ko/modules/bluetape4k-examples-jpa-blazepersistence-demo.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
