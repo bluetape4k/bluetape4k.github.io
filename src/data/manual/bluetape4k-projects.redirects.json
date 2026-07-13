@@ -205,8 +205,56 @@
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-reactive/"
     },
     {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate-reactive/failure-cancellation-operations/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-reactive/failure-cancellation-operations/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate-reactive/mutiny-stage-bootstrap/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-reactive/mutiny-stage-bootstrap/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate-reactive/persistence-choice/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-reactive/persistence-choice/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate-reactive/session-transaction-lifecycle/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-reactive/session-transaction-lifecycle/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate-reactive/stateless-sessions/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-reactive/stateless-sessions/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate-reactive/typed-queries-fetching/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-reactive/typed-queries-fetching/"
+    },
+    {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate/",
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate/converters-security/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate/converters-security/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate/ecosystem-paths/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate/ecosystem-paths/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate/entity-model-lifecycle/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate/entity-model-lifecycle/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate/entitymanager-transactions/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate/entitymanager-transactions/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate/queries-criteria-querydsl/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate/queries-criteria-querydsl/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate/stateless-batch-events/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate/stateless-batch-events/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-http/",
@@ -395,6 +443,30 @@
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/",
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-r2dbc/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/connections-and-pools/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-r2dbc/connections-and-pools/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/crud-and-mapping/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-r2dbc/crud-and-mapping/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/dynamic-queries/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-r2dbc/dynamic-queries/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/ecosystem-paths/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-r2dbc/ecosystem-paths/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/sql-and-binding/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-r2dbc/sql-and-binding/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/transactions-and-lifecycle/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-r2dbc/transactions-and-lifecycle/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redis/",
@@ -713,8 +785,56 @@
       "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-reactive/"
     },
     {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate-reactive/failure-cancellation-operations/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-reactive/failure-cancellation-operations/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate-reactive/mutiny-stage-bootstrap/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-reactive/mutiny-stage-bootstrap/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate-reactive/persistence-choice/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-reactive/persistence-choice/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate-reactive/session-transaction-lifecycle/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-reactive/session-transaction-lifecycle/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate-reactive/stateless-sessions/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-reactive/stateless-sessions/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate-reactive/typed-queries-fetching/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-reactive/typed-queries-fetching/"
+    },
+    {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate/",
       "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate/converters-security/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate/converters-security/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate/ecosystem-paths/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate/ecosystem-paths/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate/entity-model-lifecycle/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate/entity-model-lifecycle/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate/entitymanager-transactions/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate/entitymanager-transactions/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate/queries-criteria-querydsl/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate/queries-criteria-querydsl/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate/stateless-batch-events/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate/stateless-batch-events/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-http/",
@@ -903,6 +1023,30 @@
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/",
       "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-r2dbc/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/connections-and-pools/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-r2dbc/connections-and-pools/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/crud-and-mapping/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-r2dbc/crud-and-mapping/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/dynamic-queries/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-r2dbc/dynamic-queries/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/ecosystem-paths/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-r2dbc/ecosystem-paths/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/sql-and-binding/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-r2dbc/sql-and-binding/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/transactions-and-lifecycle/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-r2dbc/transactions-and-lifecycle/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-redis/",
