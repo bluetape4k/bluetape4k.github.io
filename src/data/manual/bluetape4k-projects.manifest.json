@@ -1,5 +1,5 @@
 {
-  "authoringSourceRef": "073ab365abcd91889ecd82d0077522cac2f13e15",
+  "authoringSourceRef": "b10b0d9ae7ca2321572f3ae7f9d31d04dbb6c0c5",
   "minorVersion": "1.11",
   "modules": [
     {
@@ -1009,7 +1009,53 @@
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-jdbc",
-      "chapters": [],
+      "chapters": [
+        {
+          "en": "en/modules/bluetape4k-jdbc/connection-lifecycle.md",
+          "id": "connection-lifecycle",
+          "ko": "ko/modules/bluetape4k-jdbc/connection-lifecycle.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-jdbc/connection-lifecycle/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-jdbc/connection-lifecycle/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-jdbc/statements-batches.md",
+          "id": "statements-batches",
+          "ko": "ko/modules/bluetape4k-jdbc/statements-batches.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-jdbc/statements-batches/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-jdbc/statements-batches/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-jdbc/resultset-mapping.md",
+          "id": "resultset-mapping",
+          "ko": "ko/modules/bluetape4k-jdbc/resultset-mapping.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-jdbc/resultset-mapping/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-jdbc/resultset-mapping/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-jdbc/transactions.md",
+          "id": "transactions",
+          "ko": "ko/modules/bluetape4k-jdbc/transactions.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-jdbc/transactions/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-jdbc/transactions/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-jdbc/ecosystem-paths.md",
+          "id": "ecosystem-paths",
+          "ko": "ko/modules/bluetape4k-jdbc/ecosystem-paths.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-jdbc/ecosystem-paths/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-jdbc/ecosystem-paths/"
+          }
+        }
+      ],
       "en": "en/modules/bluetape4k-jdbc.md",
       "gradlePath": ":bluetape4k-jdbc",
       "group": "data",
@@ -2466,5 +2512,5 @@
   "repository": "bluetape4k/bluetape4k-projects",
   "repositorySlug": "bluetape4k-projects",
   "schemaVersion": 2,
-  "sourceCommit": "073ab365abcd91889ecd82d0077522cac2f13e15"
+  "sourceCommit": "b10b0d9ae7ca2321572f3ae7f9d31d04dbb6c0c5"
 }

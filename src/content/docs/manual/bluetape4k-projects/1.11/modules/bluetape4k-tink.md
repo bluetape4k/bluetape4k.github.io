@@ -10,7 +10,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "073ab365abcd91889ecd82d0077522cac2f13e15"
+  sourceCommit: "b10b0d9ae7ca2321572f3ae7f9d31d04dbb6c0c5"
   sourcePath: "docs/manual/en/modules/bluetape4k-tink.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
