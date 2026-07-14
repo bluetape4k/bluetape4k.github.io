@@ -64,6 +64,23 @@ test('accepts a valid bilingual catalog node', () => {
   assert.deepEqual(validateCatalog({ nodes: [node({ layer: 'apply', type: 'application' })] }), []);
 });
 
+test('manual routes are unversioned roots owned by the same catalog node', () => {
+  assert.deepEqual(validateCatalog({ nodes: [node({ manualRoute: '/manual/projects/' })] }), []);
+  for (const manualRoute of [
+    'https://example.com/manual/projects/',
+    '/manual/other/',
+    '/manual/projects/1.11/',
+    '/ko/manual/projects/',
+    '/manual/projects/?version=1.11',
+    '/manual/projects/#latest',
+  ]) {
+    assert.ok(
+      validateCatalog({ nodes: [node({ manualRoute })] }).some((error) => error.includes('invalid manual route')),
+      manualRoute,
+    );
+  }
+});
+
 test('the checked-in catalog covers the Build, Learn, and Apply ecosystem', async () => {
   const catalog = JSON.parse(await readFile(new URL('../../src/data/ecosystem/catalog.json', import.meta.url), 'utf8'));
 
@@ -89,6 +106,11 @@ test('the checked-in catalog covers the Build, Learn, and Apply ecosystem', asyn
   ]) {
     assert(ids.has(id), `missing ecosystem node: ${id}`);
   }
+  const manualRoutes = Object.fromEntries(catalog.nodes.filter(({ manualRoute }) => manualRoute).map(({ id, manualRoute }) => [id, manualRoute]));
+  assert.deepEqual(manualRoutes, {
+    'bluetape4k-projects': '/manual/bluetape4k-projects/',
+    'bluetape4k-exposed': '/manual/bluetape4k-exposed/',
+  });
 });
 
 function node(overrides = {}) {

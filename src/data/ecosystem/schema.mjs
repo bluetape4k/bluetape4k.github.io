@@ -28,6 +28,9 @@ export function validateCatalog(catalog) {
       if (!nonEmpty(node.description?.[locale])) errors.push(`${prefix}: description.${locale} is required`);
     }
     if (!validDestination(node.route, node.url)) errors.push(`${prefix}: valid route or URL is required`);
+    if (node.manualRoute !== undefined && node.manualRoute !== `/manual/${node.id}/`) {
+      errors.push(`${prefix}: invalid manual route ${String(node.manualRoute)}`);
+    }
     if (!Array.isArray(node.relations)) errors.push(`${prefix}: relations must be an array`);
   }
 

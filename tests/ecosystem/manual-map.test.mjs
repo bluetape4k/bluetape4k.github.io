@@ -19,3 +19,19 @@ test('manual title links public release provenance without claiming a document s
   assert.doesNotMatch(source, /sourcePath|githubSourceUrlFor|kind:\s*'blob'/);
   assert.match(source, /DefaultPageTitle/);
 });
+
+test('ecosystem atlas prefers localized manual roots while preserving GitHub', async () => {
+  const [source, catalogBytes] = await Promise.all([
+    readFile(new URL('../../src/components/EcosystemAtlas.astro', import.meta.url), 'utf8'),
+    readFile(new URL('../../src/data/ecosystem/catalog.json', import.meta.url), 'utf8'),
+  ]);
+  const catalog = JSON.parse(catalogBytes);
+  const routes = Object.fromEntries(catalog.nodes.filter(({ manualRoute }) => manualRoute).map(({ id, manualRoute }) => [id, manualRoute]));
+  assert.deepEqual(routes, {
+    'bluetape4k-projects': '/manual/bluetape4k-projects/',
+    'bluetape4k-exposed': '/manual/bluetape4k-exposed/',
+  });
+  assert.match(source, /locale === 'ko' \? '\/ko' : ''/);
+  assert.match(source, /primaryUrl\(node\)/);
+  assert.match(source, /href={node\.url}/);
+});

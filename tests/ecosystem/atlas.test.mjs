@@ -31,6 +31,10 @@ test('atlas renders staged lanes, relation routes, and a live detail panel', asy
   assert.match(source, /data-default-meta=/);
   assert.match(source, /data-default-url=/);
   assert.match(source, /detailLink\.href = detail\.dataset\.defaultUrl/);
+  assert.match(source, /manualUrl\(node\) \? copy\.openManual : copy\.openRepository/);
+  assert.match(source, /data-link-label={primaryLabel\(node\)}/);
+  assert.match(source, /data-detail-link-label/);
+  assert.match(source, /href={node\.url}/);
   assert.match(source, /ResizeObserver/);
   assert.match(source, /--route-angle/);
 });
