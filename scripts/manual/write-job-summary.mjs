@@ -19,7 +19,13 @@ try {
 }
 
 const lines = ['## Manual validation', ''];
-if (report.status === 'pass') {
+if (report.status === 'pass' && Array.isArray(report.repositories)) {
+  lines.push(
+    '| Repository | Latest minor | Release | Release commit | Source commit | Documents | Assets |',
+    '| --- | --- | --- | --- | --- | ---: | ---: |',
+    ...report.repositories.map((item) => `| ${safe(item.repository)} | ${safe(item.latest)} | ${safe(item.releaseRef)} | ${safe(item.releaseCommit)} | ${safe(item.sourceCommit)} | ${safe(item.documents)} | ${safe(item.assets)} |`),
+  );
+} else if (report.status === 'pass') {
   lines.push(
     '| Field | Value |',
     '| --- | --- |',
