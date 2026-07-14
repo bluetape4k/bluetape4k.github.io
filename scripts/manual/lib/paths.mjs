@@ -1,8 +1,7 @@
 import { lstat, realpath } from 'node:fs/promises';
 import path from 'node:path';
+import { validateRepositoryRegistry } from './repositories.mjs';
 
-const REPOSITORY_SLUG = 'bluetape4k-projects';
-const REPOSITORY_FULL_NAME = `bluetape4k/${REPOSITORY_SLUG}`;
 const MINOR_VERSION = /^\d+\.\d+$/;
 const RELEASE_REF = /^(?:v)?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)$/;
 
@@ -18,7 +17,11 @@ function assertLocale(locale) {
 }
 
 function assertRepository(repository) {
-  if (repository !== REPOSITORY_SLUG) fail('REPOSITORY_UNSUPPORTED', repository);
+  try {
+    return validateRepositoryRegistry({ schema: 1, repositories: [repository] }).repositories[0];
+  } catch {
+    fail('REPOSITORY_UNSUPPORTED', repository?.repository ?? repository);
+  }
 }
 
 function assertMinor(minorVersion) {
@@ -57,30 +60,31 @@ export function safeRelativePath(value) {
   return normalized;
 }
 
-function contentPrefix(locale, minorVersion) {
+function contentPrefix(locale, repository, minorVersion) {
   return locale === 'ko'
-    ? `src/content/docs/ko/manual/${REPOSITORY_SLUG}/${minorVersion}`
-    : `src/content/docs/manual/${REPOSITORY_SLUG}/${minorVersion}`;
+    ? `src/content/docs/ko/manual/${repository.slug}/${minorVersion}`
+    : `src/content/docs/manual/${repository.slug}/${minorVersion}`;
 }
 
-export function destinationFor(locale, relativePath, minorVersion) {
+export function destinationFor(locale, repository, relativePath, minorVersion) {
   assertLocale(locale);
+  const approved = assertRepository(repository);
   assertMinor(minorVersion);
   const safe = safeRelativePath(relativePath);
   const localePrefix = `${locale}/`;
   if (!safe.startsWith(localePrefix)) fail('LOCALE_UNSUPPORTED', relativePath);
-  const prefix = contentPrefix(locale, minorVersion);
+  const prefix = contentPrefix(locale, approved, minorVersion);
   const destination = path.posix.join(prefix, safe.slice(localePrefix.length));
   if (destination !== prefix && !destination.startsWith(`${prefix}/`)) fail('PATH_UNSAFE', destination);
   return destination;
 }
 
 export function assetDestinationFor(repository, relativePath, minorVersion) {
-  assertRepository(repository);
+  const approved = assertRepository(repository);
   assertMinor(minorVersion);
   const safe = safeRelativePath(relativePath);
   if (!safe.startsWith('assets/')) fail('PATH_UNSAFE', relativePath);
-  const prefix = `public/manual-assets/${REPOSITORY_SLUG}/${minorVersion}`;
+  const prefix = `public/manual-assets/${approved.slug}/${minorVersion}`;
   const destination = path.posix.join(prefix, safe.slice('assets/'.length));
   if (!destination.startsWith(`${prefix}/`)) fail('PATH_UNSAFE', destination);
   return destination;
@@ -88,21 +92,21 @@ export function assetDestinationFor(repository, relativePath, minorVersion) {
 
 export function manualRouteFor(locale, repository, minorVersion, relativePath) {
   assertLocale(locale);
-  assertRepository(repository);
+  const approved = assertRepository(repository);
   assertMinor(minorVersion);
   const safe = safeRelativePath(relativePath).replace(/\.md$/, '');
   const routeId = safe === 'index' ? 'index' : safe.replace(/\/index$/, '');
   const suffix = routeId === 'index' ? '' : `${routeId}/`;
   const localePrefix = locale === 'ko' ? '/ko' : '';
-  return `${localePrefix}/manual/${REPOSITORY_SLUG}/${minorVersion}/${suffix}`;
+  return `${localePrefix}/manual/${approved.slug}/${minorVersion}/${suffix}`;
 }
 
-export function githubSourceUrlFor({ repositoryFullName, releaseRef, sourcePath, kind }) {
-  if (repositoryFullName !== REPOSITORY_FULL_NAME) fail('REPOSITORY_UNSUPPORTED', repositoryFullName);
+export function githubSourceUrlFor({ repository, releaseRef, sourcePath, kind }) {
+  const approved = assertRepository(repository);
   if (typeof releaseRef !== 'string' || !RELEASE_REF.test(releaseRef)) fail('RELEASE_UNSAFE', releaseRef);
   if (!['blob', 'tree'].includes(kind)) fail('SOURCE_KIND_UNSUPPORTED', kind);
   const encodedPath = safeRelativePath(sourcePath).split('/').map(encodeURIComponent).join('/');
-  return `https://github.com/${REPOSITORY_FULL_NAME}/${kind}/${releaseRef}/${encodedPath}`;
+  return `https://github.com/${approved.repository}/${kind}/${releaseRef}/${encodedPath}`;
 }
 
 export async function resolveApprovedPath(root, relativePath, { allowMissing = false } = {}) {

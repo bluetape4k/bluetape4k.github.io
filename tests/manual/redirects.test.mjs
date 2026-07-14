@@ -10,6 +10,13 @@ import { failureReport } from '../../scripts/manual/validate-snapshot.mjs';
 
 const projectRoot = path.resolve(new URL('../..', import.meta.url).pathname);
 const repository = 'bluetape4k/bluetape4k-projects';
+const projects = {
+  slug: 'bluetape4k-projects',
+  repository,
+  label: { en: 'Projects docs', ko: 'Projects 문서' },
+  latestMinor: '1.11',
+  route: { en: '/manual/bluetape4k-projects/', ko: '/ko/manual/bluetape4k-projects/' },
+};
 
 async function write(root, relative, content) {
   const target = path.join(root, relative);
@@ -52,7 +59,7 @@ async function catalogFixture(t, values = catalogs()) {
 }
 
 test('loads production redirects as direct locale-preserving links to the catalog latest', async () => {
-  const loaded = loadRedirectCatalog(new URL('../../src/data/manual/bluetape4k-projects.redirects.json', import.meta.url));
+  const loaded = loadRedirectCatalog(new URL('../../src/data/manual/bluetape4k-projects.redirects.json', import.meta.url), projects);
   const versions = JSON.parse(await readFile(new URL('../../src/data/manual/bluetape4k-projects.versions.json', import.meta.url), 'utf8'));
   const latest = versions.versions.find(({ minorVersion }) => minorVersion === versions.latest);
   const expectedRedirects = latest.documents.en.length + latest.documents.ko.length;
@@ -81,7 +88,7 @@ test('rejects unsafe, cross-locale, and non-latest redirect routes', async (t) =
     const base = catalogs();
     Object.assign(base.redirects.redirects[0], mutation);
     const url = await catalogFixture(t, base);
-    assert.throws(() => loadRedirectCatalog(url), undefined, label);
+    assert.throws(() => loadRedirectCatalog(url, projects), undefined, label);
   }
 
   const bogus = catalogs();
@@ -90,12 +97,12 @@ test('rejects unsafe, cross-locale, and non-latest redirect routes', async (t) =
     target: '/manual/bluetape4k-projects/1.11/modules/shared/',
   });
   const bogusUrl = await catalogFixture(t, bogus);
-  assert.throws(() => loadRedirectCatalog(bogusUrl), /REDIRECT_SOURCE_SET/);
+  assert.throws(() => loadRedirectCatalog(bogusUrl, projects), /REDIRECT_SOURCE_SET/);
 
   const missing = catalogs();
   missing.redirects.redirects.pop();
   const missingUrl = await catalogFixture(t, missing);
-  assert.throws(() => loadRedirectCatalog(missingUrl), /REDIRECT_SOURCE_SET/);
+  assert.throws(() => loadRedirectCatalog(missingUrl, projects), /REDIRECT_SOURCE_SET/);
 });
 
 test('Astro static output creates accessible noindex navigation HTML for a legacy route', async (t) => {
@@ -112,7 +119,8 @@ test('Astro static output creates accessible noindex navigation HTML for a legac
   await write(fixture, 'astro.config.mjs', [
     "import { defineConfig } from 'astro/config';",
     `import { loadRedirectCatalog } from ${JSON.stringify(loaderUrl)};`,
-    "const catalog = loadRedirectCatalog(new URL('./src/data/manual/bluetape4k-projects.redirects.json', import.meta.url));",
+    `const repository = ${JSON.stringify(projects)};`,
+    "const catalog = loadRedirectCatalog(new URL('./src/data/manual/bluetape4k-projects.redirects.json', import.meta.url), repository);",
     'export default defineConfig({ redirects: Object.fromEntries(catalog.entries.map(({ source, destination }) => [source, destination])) });',
     '',
   ].join('\n'));

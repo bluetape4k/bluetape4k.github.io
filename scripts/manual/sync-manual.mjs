@@ -23,10 +23,13 @@ import {
 } from './lib/paths.mjs';
 import { publishStaged, recoverPublication, stagePublication } from './lib/publication.mjs';
 import { assertReleaseUnmoved, resolveRelease, sanitizeDiagnostic } from './lib/release.mjs';
+import { loadRepositoryRegistry, repositoryBySlug } from './lib/repositories.mjs';
 
 const siteRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const REPOSITORY_SLUG = 'bluetape4k-projects';
-const REPOSITORY_FULL_NAME = `bluetape4k/${REPOSITORY_SLUG}`;
+const repositoryRegistry = loadRepositoryRegistry(new URL('../../src/data/manual/repositories.json', import.meta.url));
+const PROJECTS_REPOSITORY = repositoryBySlug(repositoryRegistry, 'bluetape4k-projects');
+const REPOSITORY_SLUG = PROJECTS_REPOSITORY.slug;
+const REPOSITORY_FULL_NAME = PROJECTS_REPOSITORY.repository;
 const SHA = /^[0-9a-f]{40}$/;
 const DIGEST = /^[0-9a-f]{64}$/;
 const MINOR = /^\d+\.\d+$/;
@@ -147,16 +150,16 @@ function versionEntry(input, documents) {
   };
 }
 
-function nextCatalog(previousCatalog, entry, allowReleaseRefresh = false) {
+function nextCatalog(previousCatalog, entry, repository, allowReleaseRefresh = false) {
   if (!previousCatalog) {
     return validateVersionCatalog({
       schema: 1,
-      repository: REPOSITORY_FULL_NAME,
+      repository: repository.repository,
       latest: entry.minorVersion,
       versions: [entry],
-    });
+    }, repository);
   }
-  const previous = validateVersionCatalog(previousCatalog);
+  const previous = validateVersionCatalog(previousCatalog, repository);
   const current = previous.versions.find(({ minorVersion }) => minorVersion === entry.minorVersion);
   if (current && current.releaseRef === entry.releaseRef) {
     if (stableJson(current) !== stableJson(entry)) {
@@ -169,15 +172,15 @@ function nextCatalog(previousCatalog, entry, allowReleaseRefresh = false) {
         versions: previous.versions.map((item) => item.minorVersion === entry.minorVersion
           ? { ...entry, channel: item.channel }
           : item),
-      });
+      }, repository);
     }
     return previous;
   }
-  return mergeVersionCatalog(previous, entry);
+  return mergeVersionCatalog(previous, entry, repository);
 }
 
-function initialRedirects() {
-  return { schema: 1, repository: REPOSITORY_FULL_NAME, redirects: [] };
+function initialRedirects(repository) {
+  return { schema: 1, repository: repository.repository, redirects: [] };
 }
 
 function assertResolvedInput(input) {
@@ -190,6 +193,7 @@ function assertResolvedInput(input) {
   if (typeof input.authoringSourceRef !== 'string' || input.authoringSourceRef.length === 0) {
     fail('SOURCE_REF', 'authoring source ref', input.authoringSourceRef, 4);
   }
+  return PROJECTS_REPOSITORY;
 }
 
 export async function buildSnapshot(input, {
@@ -197,7 +201,7 @@ export async function buildSnapshot(input, {
   previousRedirects = null,
   allowReleaseRefresh = false,
 } = {}) {
-  assertResolvedInput(input);
+  const repository = assertResolvedInput(input);
   const root = await approvedRootPath(input.source);
   const manualRoot = await approvedDirectory(root, 'docs/manual');
   const manifest = JSON.parse(await readApproved(root, 'docs/manual/generated/manifest.json', 'utf8'));
@@ -248,18 +252,17 @@ export async function buildSnapshot(input, {
       content,
       module,
       chapter: owner?.chapter ?? null,
-      repository: input.repositorySlug,
-      repositoryFullName: input.repositoryFullName,
+      repository,
       sourceCommit: input.sourceCommit,
       sourcePath: `docs/manual/${relative}`,
       releaseRef: input.releaseRef,
       releaseCommit: input.releaseCommit,
       minorVersion: input.minorVersion,
     });
-    const route = manualRouteFor(locale, input.repositorySlug, input.minorVersion, relative.slice(`${locale}/`.length));
+    const route = manualRouteFor(locale, repository, input.minorVersion, relative.slice(`${locale}/`.length));
     contentEntries.push({
-      path: destinationFor(locale, relative, input.minorVersion),
-      content: setDocumentSlug(transformed, route.replace(/^\//, '').replace(/\/$/, '')),
+      path: destinationFor(locale, repository, relative, input.minorVersion),
+      content: setDocumentSlug(transformed, repository, route.replace(/^\//, '').replace(/\/$/, '')),
     });
   }
   documents.en.sort();
@@ -272,7 +275,7 @@ export async function buildSnapshot(input, {
   for (const relative of [...assetPaths].sort()) {
     const approved = approvedAssets.find((candidate) => candidate.relative === relative);
     const content = await readFile(approved.absolute);
-    assetEntries.push({ path: assetDestinationFor(input.repositorySlug, relative, input.minorVersion), content });
+    assetEntries.push({ path: assetDestinationFor(repository, relative, input.minorVersion), content });
     assetAliases.push({
       path: `public/manual-assets/${input.repositorySlug}/${relative.replace(/^assets\//, '')}`,
       content,
@@ -292,14 +295,14 @@ export async function buildSnapshot(input, {
       ...module,
       layer: layerFor(module.kind),
       routes: {
-        en: manualRouteFor('en', input.repositorySlug, input.minorVersion, module.en.replace(/^en\//, '')),
-        ko: manualRouteFor('ko', input.repositorySlug, input.minorVersion, module.ko.replace(/^ko\//, '')),
+        en: manualRouteFor('en', repository, input.minorVersion, module.en.replace(/^en\//, '')),
+        ko: manualRouteFor('ko', repository, input.minorVersion, module.ko.replace(/^ko\//, '')),
       },
       chapters: (module.chapters ?? []).map((chapter) => ({
         ...chapter,
         routes: {
-          en: manualRouteFor('en', input.repositorySlug, input.minorVersion, chapter.en.replace(/^en\//, '')),
-          ko: manualRouteFor('ko', input.repositorySlug, input.minorVersion, chapter.ko.replace(/^ko\//, '')),
+          en: manualRouteFor('en', repository, input.minorVersion, chapter.en.replace(/^en\//, '')),
+          ko: manualRouteFor('ko', repository, input.minorVersion, chapter.ko.replace(/^ko\//, '')),
         },
       })),
     })),
@@ -322,9 +325,10 @@ export async function buildSnapshot(input, {
     contentFiles: contentEntries.length + assetEntries.length,
   };
   const entry = versionEntry(input, documents);
-  const catalog = nextCatalog(previousCatalog, entry, allowReleaseRefresh);
+  const catalog = nextCatalog(previousCatalog, entry, repository, allowReleaseRefresh);
   const redirects = buildRedirectCatalog({
-    previous: previousRedirects ?? initialRedirects(),
+    repository,
+    previous: previousRedirects ?? initialRedirects(repository),
     latestEntry: catalog.versions.find(({ minorVersion }) => minorVersion === catalog.latest),
   });
   const unavailableEntries = [];
@@ -335,6 +339,7 @@ export async function buildSnapshot(input, {
         const targetDocuments = new Set(targetVersion.documents[locale]);
         for (const missingDocument of sourceVersion.documents[locale].filter((item) => !targetDocuments.has(item))) {
           unavailableEntries.push(buildUnavailablePage({
+            repository,
             locale,
             targetMinor: targetVersion.minorVersion,
             sourceMinor: sourceVersion.minorVersion,
@@ -438,13 +443,14 @@ function dependencies(overrides = {}) {
 
 export async function validateCommittedSite({ targetRoot = siteRoot, repository = REPOSITORY_SLUG }) {
   if (repository !== REPOSITORY_SLUG) fail('CLI_REPOSITORY', REPOSITORY_SLUG, repository, 2);
+  const repositoryDescriptor = PROJECTS_REPOSITORY;
   const root = await approvedRootPath(targetRoot);
   const publicationEntries = [];
   const catalogPath = `src/data/manual/${repository}.versions.json`;
   const redirectsPath = `src/data/manual/${repository}.redirects.json`;
   const catalogBytes = await readApproved(root, catalogPath);
   const redirectsBytes = await readApproved(root, redirectsPath);
-  const catalog = validateVersionCatalog(JSON.parse(catalogBytes));
+  const catalog = validateVersionCatalog(JSON.parse(catalogBytes), repositoryDescriptor);
   const redirects = JSON.parse(redirectsBytes);
   publicationEntries.push(
     { path: catalogPath, content: catalogBytes },
@@ -485,12 +491,12 @@ export async function validateCommittedSite({ targetRoot = siteRoot, repository 
     for (const relative of [...version.documents.en.map((id) => `en/${id === 'index' ? 'index' : id}.md`),
       ...version.documents.ko.map((id) => `ko/${id === 'index' ? 'index' : id}.md`)]) {
       const locale = localeOf(relative);
-      const destination = destinationFor(locale, relative, minor);
+      const destination = destinationFor(locale, repositoryDescriptor, relative, minor);
       contentEntries.push({ path: destination, content: await readApproved(root, destination) });
     }
     const assetEntries = [];
     for (const relative of manifest.modules.flatMap((module) => module.assets ?? []).sort()) {
-      const destination = assetDestinationFor(repository, relative, minor);
+      const destination = assetDestinationFor(repositoryDescriptor, relative, minor);
       const content = await readApproved(root, destination);
       assetEntries.push({ path: destination, content });
       if (minor === catalog.latest) {
@@ -515,6 +521,7 @@ export async function validateCommittedSite({ targetRoot = siteRoot, repository 
         const targetDocuments = new Set(targetVersion.documents[locale]);
         for (const missingDocument of sourceVersion.documents[locale].filter((item) => !targetDocuments.has(item))) {
           const expected = buildUnavailablePage({
+            repository: repositoryDescriptor,
             locale,
             targetMinor: targetVersion.minorVersion,
             sourceMinor: sourceVersion.minorVersion,

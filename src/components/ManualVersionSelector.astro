@@ -1,7 +1,12 @@
 ---
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { selectorTarget, validateVersionCatalog } from '../../scripts/manual/lib/catalog.mjs';
+import { loadRepositoryRegistry, repositoryBySlug } from '../../scripts/manual/lib/repositories.mjs';
+
+const manualRepositories = loadRepositoryRegistry(pathToFileURL(path.join(process.cwd(), 'src/data/manual/repositories.json')));
+const projectsRepository = repositoryBySlug(manualRepositories, 'bluetape4k-projects');
 
 interface Props {
   entryId: string;
@@ -30,7 +35,7 @@ try {
     path.join(process.cwd(), 'src/data/manual/bluetape4k-projects.versions.json'),
     'utf8',
   );
-  catalog = validateVersionCatalog(JSON.parse(bytes)) as Catalog;
+  catalog = validateVersionCatalog(JSON.parse(bytes), projectsRepository) as Catalog;
 } catch (error) {
   if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
 }
@@ -49,7 +54,7 @@ const versions: VersionItem[] | undefined = documentId && sourceDocuments?.inclu
     targetMinor: item.minorVersion,
     sourceMinor: minorVersion,
     documentId,
-  });
+  }, projectsRepository);
   const current = item.minorVersion === minorVersion;
   const latest = item.minorVersion === catalog.latest;
   const state = locale === 'ko'

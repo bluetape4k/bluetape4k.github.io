@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { githubSourceUrlFor } from './paths.mjs';
+import { githubSourceUrlFor, manualRouteFor } from './paths.mjs';
 
 function yamlScalar(value) {
   return JSON.stringify(value);
@@ -14,7 +14,7 @@ export function layerFor(kind) {
 function rewriteManualAssets(content, repository, minorVersion) {
   return content.replaceAll(
     /(!?\[[^\]]*\]\()(?:(?:\.\.\/)+)assets\/([^)]+)(\))/g,
-    `$1/manual-assets/${repository}/${minorVersion}/$2$3`,
+    `$1/manual-assets/${repository.slug}/${minorVersion}/$2$3`,
   );
 }
 
@@ -25,7 +25,7 @@ function rewriteRepositoryLinks(content, repository, releaseRef) {
       const leaf = repositoryPath.split('/').at(-1);
       const view = leaf.includes('.') ? 'blob' : 'tree';
       return `${prefix}${githubSourceUrlFor({
-        repositoryFullName: `bluetape4k/${repository}`,
+        repository,
         releaseRef,
         sourcePath: repositoryPath,
         kind: view,
@@ -43,9 +43,8 @@ function rewriteManualLinks(content, repository, minorVersion, sourcePath) {
       const localized = /^docs\/manual\/(en|ko)\/(.+)\.md$/.exec(target);
       if (!localized) return match;
       const [, locale, relative] = localized;
-      const document = relative.replace(/\/index$/, '');
-      const localePrefix = locale === 'ko' ? '/ko' : '';
-      return `${prefix}${localePrefix}/manual/${repository}/${minorVersion}/${document}/${fragment}${suffix}`;
+      const route = manualRouteFor(locale, repository, minorVersion, `${relative}.md`);
+      return `${prefix}${route}${fragment}${suffix}`;
     },
   );
 }
@@ -67,7 +66,7 @@ export function transformManual({
   const metadata = [
     'manual:',
     `  id: ${yamlScalar(module.id)}`,
-    `  repository: ${yamlScalar(repository)}`,
+    `  repository: ${yamlScalar(repository.slug)}`,
     `  group: ${yamlScalar(module.group)}`,
     `  kind: ${yamlScalar(module.kind)}`,
     `  sourceCommit: ${yamlScalar(sourceCommit)}`,
@@ -92,8 +91,10 @@ export function transformManual({
   )).replace(/\n+$/, '\n');
 }
 
-export function setDocumentSlug(content, slug) {
-  if (typeof slug !== 'string' || !/^(?:ko\/)?manual\/bluetape4k-projects\/\d+\.\d+(?:\/.*)?$/.test(slug)) {
+export function setDocumentSlug(content, repository, slug) {
+  const route = manualRouteFor('en', repository, repository.latestMinor, 'index.md');
+  const expectedSlug = route.split('/')[2];
+  if (typeof slug !== 'string' || !new RegExp(`^(?:ko/)?manual/${expectedSlug}/\\d+\\.\\d+(?:/.*)?$`).test(slug)) {
     throw new Error(`SLUG_UNSAFE: ${String(slug)}`);
   }
   if (!content.startsWith('---\n')) throw new Error('YAML frontmatter is required before setting a slug');
