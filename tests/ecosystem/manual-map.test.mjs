@@ -32,6 +32,7 @@ test('ecosystem atlas prefers localized manual roots while preserving GitHub', a
     'bluetape4k-exposed': '/manual/bluetape4k-exposed/',
     'bluetape4k-aws': '/manual/bluetape4k-aws/',
     'bluetape4k-leader': '/manual/bluetape4k-leader/',
+    'bluetape4k-image': '/manual/bluetape4k-image/',
   });
   assert.match(source, /locale === 'ko' \? '\/ko' : ''/);
   assert.match(source, /primaryUrl\(node\)/);
