@@ -4,13 +4,13 @@
       "id": "bluetape4k-projects", "type": "repository", "layer": "build", "ecosystem": "kotlin", "group": "Foundation",
       "label": { "en": "Core Kotlin libraries", "ko": "Kotlin 핵심 라이브러리" },
       "description": { "en": "Coroutine-first backend foundations and integrations.", "ko": "코루틴 중심의 백엔드 기반 기능과 통합 모듈입니다." },
-      "url": "https://github.com/bluetape4k/bluetape4k-projects", "relations": ["bluetape4k-workshop"]
+      "url": "https://github.com/bluetape4k/bluetape4k-projects", "manualRoute": "/manual/bluetape4k-projects/", "relations": ["bluetape4k-workshop"]
     },
     {
       "id": "bluetape4k-exposed", "type": "repository", "layer": "build", "ecosystem": "kotlin", "group": "Data",
       "label": { "en": "Exposed extensions", "ko": "Exposed 확장" },
       "description": { "en": "JDBC and R2DBC repository patterns for JetBrains Exposed.", "ko": "JetBrains Exposed용 JDBC·R2DBC 저장소 패턴을 제공합니다." },
-      "url": "https://github.com/bluetape4k/bluetape4k-exposed", "relations": ["exposed-workshop", "exposed-r2dbc-workshop"]
+      "url": "https://github.com/bluetape4k/bluetape4k-exposed", "manualRoute": "/manual/bluetape4k-exposed/", "relations": ["exposed-workshop", "exposed-r2dbc-workshop"]
     },
     {
       "id": "bluetape4k-aws", "type": "repository", "layer": "build", "ecosystem": "kotlin", "group": "Infrastructure",

@@ -16,6 +16,7 @@ interface CatalogNode {
   label: Record<Locale, string>;
   description: Record<Locale, string>;
   url: string;
+  manualRoute?: string;
   relations: string[];
 }
 
@@ -47,7 +48,8 @@ const copy = locale === 'ko'
       detailLabel: '선택한 생태계 항목',
       detailTitle: 'Kotlin/JVM 여정',
       detailBody: 'Build에서 출발해 관련 Workshop을 거쳐 실제 적용 사례로 이동하세요.',
-      open: '저장소 열기',
+      openManual: '매뉴얼 열기',
+      openRepository: '저장소 열기',
       inspect: '관계 살펴보기',
       otherEyebrow: 'Other languages',
       otherTitle: '다른 언어 생태계',
@@ -68,7 +70,8 @@ const copy = locale === 'ko'
       detailLabel: 'Selected ecosystem item',
       detailTitle: 'Kotlin/JVM journey',
       detailBody: 'Start with Build, follow a related workshop, and continue to an applied reference.',
-      open: 'Open repository',
+      openManual: 'Open manual',
+      openRepository: 'Open repository',
       inspect: 'Explore relations',
       otherEyebrow: 'Other languages',
       otherTitle: 'Sibling language ecosystems',
@@ -78,6 +81,11 @@ const copy = locale === 'ko'
 
 const label = (node: CatalogNode) => node.label[locale] ?? node.label.en;
 const description = (node: CatalogNode) => node.description[locale] ?? node.description.en;
+const manualUrl = (node: CatalogNode) => node.manualRoute
+  ? `${locale === 'ko' ? '/ko' : ''}${node.manualRoute}`
+  : undefined;
+const primaryUrl = (node: CatalogNode) => manualUrl(node) ?? node.url;
+const primaryLabel = (node: CatalogNode) => manualUrl(node) ? copy.openManual : copy.openRepository;
 const groupsFor = (layer: Layer) => {
   const groups = new Map<string, CatalogNode[]>();
   for (const node of kotlinNodes.filter((candidate) => candidate.layer === layer)) {
@@ -151,7 +159,8 @@ for (const node of kotlinNodes) {
                           data-label={label(node)}
                           data-description={description(node)}
                           data-meta={`${node.group} · ${node.type}`}
-                          data-url={node.url}
+                          data-url={primaryUrl(node)}
+                          data-link-label={primaryLabel(node)}
                           aria-label={`${copy.inspect}: ${label(node)}`}
                         >
                           <span class="bt4k-atlas__node-marker" aria-hidden="true"></span>
@@ -160,9 +169,14 @@ for (const node of kotlinNodes) {
                             <small>{description(node)}</small>
                           </span>
                         </button>
-                        <a href={node.url} aria-label={`${copy.open}: ${label(node)}`}>
-                          <span>{node.type}</span><span aria-hidden="true">↗</span>
+                        <a href={primaryUrl(node)} aria-label={`${primaryLabel(node)}: ${label(node)}`}>
+                          <span>{manualUrl(node) ? 'manual' : node.type}</span><span aria-hidden="true">↗</span>
                         </a>
+                        {manualUrl(node) && (
+                          <a href={node.url} aria-label={`${copy.openRepository}: ${label(node)}`}>
+                            <span>GitHub</span><span aria-hidden="true">↗</span>
+                          </a>
+                        )}
                       </li>
                     ))}
                   </ul>
@@ -181,12 +195,13 @@ for (const node of kotlinNodes) {
       data-default-meta={copy.detailLabel}
       data-default-title={copy.detailTitle}
       data-default-body={copy.detailBody}
-      data-default-url="https://github.com/bluetape4k/bluetape4k-projects"
+      data-default-url={`${locale === 'ko' ? '/ko' : ''}/manual/bluetape4k-projects/`}
+      data-default-link-label={copy.openManual}
     >
       <p data-detail-meta>{copy.detailLabel}</p>
       <h3 data-detail-title>{copy.detailTitle}</h3>
       <p data-detail-body>{copy.detailBody}</p>
-      <a data-detail-link href="https://github.com/bluetape4k/bluetape4k-projects">{copy.open}<span aria-hidden="true"> ↗</span></a>
+      <a data-detail-link href={`${locale === 'ko' ? '/ko' : ''}/manual/bluetape4k-projects/`}><span data-detail-link-label>{copy.openManual}</span><span aria-hidden="true"> ↗</span></a>
     </aside>
   </section>
 
@@ -227,6 +242,7 @@ for (const node of kotlinNodes) {
     const detailTitle = detail?.querySelector<HTMLElement>('[data-detail-title]');
     const detailBody = detail?.querySelector<HTMLElement>('[data-detail-body]');
     const detailLink = detail?.querySelector<HTMLAnchorElement>('[data-detail-link]');
+    const detailLinkLabel = detail?.querySelector<HTMLElement>('[data-detail-link-label]');
     let selectedNode = '';
 
     const drawRoutes = () => {
@@ -263,6 +279,7 @@ for (const node of kotlinNodes) {
       if (detailBody && detail) detailBody.textContent = detail.dataset.defaultBody ?? '';
       if (detailMeta && detail) detailMeta.textContent = detail.dataset.defaultMeta ?? '';
       if (detailLink && detail) detailLink.href = detail.dataset.defaultUrl ?? '';
+      if (detailLinkLabel && detail) detailLinkLabel.textContent = detail.dataset.defaultLinkLabel ?? '';
     };
 
     const activate = (button: HTMLButtonElement) => {
@@ -283,6 +300,7 @@ for (const node of kotlinNodes) {
       if (detailTitle) detailTitle.textContent = button.dataset.label ?? '';
       if (detailBody) detailBody.textContent = button.dataset.description ?? '';
       if (detailLink && button.dataset.url) detailLink.href = button.dataset.url;
+      if (detailLinkLabel) detailLinkLabel.textContent = button.dataset.linkLabel ?? '';
     };
 
     for (const button of nodeButtons) {
