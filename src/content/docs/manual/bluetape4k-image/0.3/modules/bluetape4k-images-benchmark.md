@@ -1,0 +1,138 @@
+---
+slug: "manual/bluetape4k-image/0.3/modules/bluetape4k-images-benchmark"
+manualId: "bluetape4k-images-benchmark"
+id: "bluetape4k-images-benchmark"
+title: "Image processing benchmarks"
+locale: "en"
+kind: "benchmark"
+gradlePath: ":bluetape4k-images-benchmark"
+sourceDir: "benchmark/images-benchmark"
+releaseRef: "0.3.0"
+artifact: null
+manual:
+  id: "bluetape4k-images-benchmark"
+  repository: "bluetape4k-image"
+  group: "benchmarks"
+  kind: "benchmark"
+  sourceCommit: "6d265160a89feeef27cc5fc562b169d517ca56d4"
+  sourcePath: "docs/manual/en/modules/bluetape4k-images-benchmark.md"
+  minorVersion: "0.3"
+  releaseRef: "0.3.0"
+  releaseCommit: "a571c30004f571fe8cfcddc29670c1404d212ec6"
+  sourceDir: "benchmark/images-benchmark"
+  layer: "apply"
+---
+
+
+> Performance benchmark
+
+## Problem
+
+This non-published module keeps reproducible evidence for Scrimage and libvips decisions. It measures geometry, encoding, filter chains, IO boundaries, concurrent compressed-file IO, managed allocation, and complete large-file load-transform-write pipelines using `kotlinx-benchmark` on its JVM JMH backend.
+
+## When to use it
+
+Use it before claiming that a backend or IO boundary is faster, when checking a performance regression, or when choosing Scrimage versus libvips for a measured workload. Do not use one headline ratio as a production capacity estimate.
+
+## Coordinates
+
+The benchmark is repository-only and publishes no artifact. Its project dependencies are aligned from the same `bluetape4k-dependencies` release catalog used by the 0.3.0 source.
+
+## Core concepts
+
+- `AverageTime` is lower-is-better; throughput is higher-is-better.
+- Fixture, host, JVM, backend, warmups, iterations, fork count, command, and raw JSON belong to every comparison.
+- Java 25 selects the FFM backend; `-Pvips.impl=java21` selects the Java 21 JNI backend.
+- GC-profiler results cover managed heap only, not libvips native memory.
+- Full pipelines provide stronger application evidence than isolated, potentially lazy geometry operations.
+
+## Quick start
+
+For the Java 25 FFM lane, install JDK 25 and system libvips (`brew install vips` on macOS).
+
+```bash
+./gradlew :bluetape4k-images-benchmark:benchmarkBenchmark \
+  -Pvips.impl=java25 --console=plain
+```
+
+Focused large-file evidence:
+
+```bash
+./gradlew :bluetape4k-images-benchmark:benchmarkLargeStreamingBenchmark \
+  -Pvips.impl=java25 --console=plain
+```
+
+Run backends sequentially on the same compatible host when comparing Java 21 JNI with Java 25 FFM.
+
+## API by task
+
+| Question | Benchmark |
+| --- | --- |
+| Resize/encode backend latency | `ImageResizeBenchmark`, `ImageEncodeBenchmark` |
+| Scrimage filter cost | `ImageFilterBenchmark` |
+| Chained transform allocation | `ImagePipelineBenchmark` |
+| Path/stream/Okio/suspended boundary | `ImageIoBoundaryBenchmark` |
+| Concurrent compressed-file throughput | `ImageFileIoThroughputBenchmark` |
+| End-to-end large-file behavior | `ImageLargeStreamingBenchmark` |
+| JNI versus FFM wrapper | `VipsBackendBenchmark`, `VipsBackendEncodeBenchmark` |
+
+## Recommended patterns
+
+Start with the production-shaped scenario, then isolate a suspected boundary. Preserve raw JSON and environment metadata. Re-run both candidates on one host, one JVM policy, and equivalent fixtures. Use native profiling in addition to JMH GC data for libvips lifetime questions.
+
+## Integrations
+
+The suite compares [`bluetape4k-images`](/manual/bluetape4k-image/0.3/modules/bluetape4k-images/) with the binding-neutral [`vips API`](/manual/bluetape4k-image/0.3/modules/bluetape4k-images-vips-api/) and the [Java 21 JNI](/manual/bluetape4k-image/0.3/modules/bluetape4k-images-vips-java21/) or [Java 25 FFM](/manual/bluetape4k-image/0.3/modules/bluetape4k-images-vips-java25/) runtime.
+
+## Configuration
+
+The complete benchmark uses three warmups, five measurements, one fork, average-time mode, and milliseconds. Focused configurations use one warmup and three one-second measurements. The build selects a JDK 21 or 25 toolchain from `vips.impl` and adds `--enable-native-access=ALL-UNNAMED` for benchmark forks.
+
+## Failure modes
+
+- Near-zero vips rows: verify native availability; unavailable methods consume `null` and return immediately.
+- Java 21 JNI skips on macOS arm64: the recorded 0.3.0 host found an incompatible x86_64 JVips dylib; use a compatible host.
+- Large variance: avoid parallel benchmark processes, check thermal/load state, and keep fixtures and forks identical.
+- Native load failure: verify system libvips and the FFM/JNI library path before interpreting results.
+
+## Operations
+
+Representative 0.3.0 evidence on macOS arm64, GraalVM Java 25.0.3 found the full libvips `Path` pipeline at `7.13 ms/op` for `large-photo` and `5.47 ms/op` for `ocr-document`; Scrimage `Path` measured `223.19` and `145.13 ms/op`. These are local comparable snapshots, not a universal ranking. Scrimage suspended boundaries were slower in both boundary and many-file tests, so they are documented as lifecycle/integration APIs rather than performance optimizations.
+
+## Testing
+
+Validate task wiring without paying for a full run:
+
+```bash
+./gradlew :bluetape4k-images-benchmark:benchmarkBenchmark \
+  -Pvips.impl=java25 --dry-run --console=plain
+```
+
+For publishable evidence, retain generated JSON, record the exact command/environment, update the dated report, and regenerate matching SVG/PNG charts.
+
+## Workshops and learning path
+
+1. Run [`basic-processing`](/manual/bluetape4k-image/0.3/modules/basic-processing/) to understand the user-facing operations.
+2. Read the natural-photo result and benchmark source together.
+3. Study IO-boundary and allocation reports before interpreting coroutine APIs.
+4. Use the large-streaming report for the strongest end-to-end backend comparison.
+5. Re-run the focused scenario on deployment-like hardware before deciding.
+
+## Limitations
+
+- The 0.3.0 reports mix a fresh macOS Java 25 run with explicitly historical Linux rows; they are not one experiment.
+- The macOS arm64 run did not produce compatible Java 21 JNI measurements.
+- `vips_resize` does not encode its result; libvips lazy evaluation means geometry-only speedups do not equal completed pixel-pipeline speedups.
+- GC allocation excludes native memory.
+- IO API convenience, latency, throughput, and backend selection are separate questions.
+- No benchmark proves production behavior under different data, concurrency, hardware, JVM, codecs, or storage.
+
+## Sources
+
+- [Benchmark README](https://github.com/bluetape4k/bluetape4k-image/blob/0.3.0/benchmark/images-benchmark/README.md)
+- [Natural-photo results](https://github.com/bluetape4k/bluetape4k-image/blob/0.3.0/benchmark/images-benchmark/docs/benchmark-results-2026-05-28-natural-photos.md)
+- [IO-boundary baseline](https://github.com/bluetape4k/bluetape4k-image/blob/0.3.0/benchmark/images-benchmark/docs/io-boundary-baseline-2026-05-29.md)
+- [File IO throughput](https://github.com/bluetape4k/bluetape4k-image/blob/0.3.0/benchmark/images-benchmark/docs/file-io-throughput-2026-05-29.md)
+- [Memory profile](https://github.com/bluetape4k/bluetape4k-image/blob/0.3.0/benchmark/images-benchmark/docs/memory-profile-2026-05-29.md)
+- [Large streaming pipeline](https://github.com/bluetape4k/bluetape4k-image/blob/0.3.0/benchmark/images-benchmark/docs/large-streaming-2026-06-05.md)
+- [Gradle build file](https://github.com/bluetape4k/bluetape4k-image/blob/0.3.0/benchmark/images-benchmark/build.gradle.kts)

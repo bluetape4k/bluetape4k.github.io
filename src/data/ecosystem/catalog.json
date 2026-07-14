@@ -40,7 +40,7 @@
       "id": "bluetape4k-image", "type": "repository", "layer": "build", "ecosystem": "kotlin", "group": "Foundation",
       "label": { "en": "Image processing", "ko": "이미지 처리" },
       "description": { "en": "JVM image pipelines with multiple processing backends.", "ko": "여러 처리 백엔드를 지원하는 JVM 이미지 파이프라인입니다." },
-      "url": "https://github.com/bluetape4k/bluetape4k-image", "relations": []
+      "url": "https://github.com/bluetape4k/bluetape4k-image", "manualRoute": "/manual/bluetape4k-image/", "relations": []
     },
     {
       "id": "bluetape4k-javers", "type": "repository", "layer": "build", "ecosystem": "kotlin", "group": "Data",
