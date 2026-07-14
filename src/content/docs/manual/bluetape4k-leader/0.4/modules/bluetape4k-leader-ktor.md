@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-leader"
   group: "frameworks"
   kind: "library"
-  sourceCommit: "6bb3ba3f6cdc1286b5ee7d8b7b47d9e92f9c6e3d"
+  sourceCommit: "848f79344c636456cebe2069e18f732840bf680d"
   sourcePath: "docs/manual/en/modules/bluetape4k-leader-ktor.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -78,7 +78,7 @@ Configure the elector in its backend module, then set schedule interval/delay an
 
 ## Failure modes
 
-Missing plugin/elector is startup configuration failure. Backend failures and action failures surface; normal contention skips. Cancellation should stop scheduling and release owned state.
+A missing plugin or elector is a startup configuration failure. Direct elector calls propagate backend and action failures. `Application.leaderScheduled` catches non-cancellation `Exception`, logs it at WARN, suppresses that iteration, and continues with the next cycle; normal contention still skips. Cancellation stops scheduling and lets the elector release owned state.
 
 ## Operations
 

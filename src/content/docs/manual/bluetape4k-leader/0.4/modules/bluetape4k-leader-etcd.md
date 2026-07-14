@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-leader"
   group: "backends"
   kind: "library"
-  sourceCommit: "6bb3ba3f6cdc1286b5ee7d8b7b47d9e92f9c6e3d"
+  sourceCommit: "848f79344c636456cebe2069e18f732840bf680d"
   sourcePath: "docs/manual/en/modules/bluetape4k-leader-etcd.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
