@@ -182,6 +182,13 @@ function initialRedirects(repository) {
   return { schema: 1, repository: repository.repository, redirects: [] };
 }
 
+function manifestAssets(manifest) {
+  return [
+    ...(manifest.overview?.assets ?? []),
+    ...manifest.modules.flatMap((module) => module.assets ?? []),
+  ];
+}
+
 function assertResolvedInput(input) {
   if (!input || typeof input !== 'object') fail('SOURCE_INPUT', 'resolved input', input, 2);
   let repository;
@@ -212,6 +219,9 @@ export async function buildSnapshot(input, {
   }
   const byPath = new Map();
   const approvedAssets = [];
+  for (const relative of manifest.overview?.assets ?? []) {
+    approvedAssets.push(await approvedManifestPath(manualRoot, relative, 'assets/'));
+  }
   for (const module of manifest.modules) {
     if (typeof module.sourceDir !== 'string' || !module.sourceDir.trim()) {
       fail('MANIFEST_SOURCE_DIR', 'non-empty sourceDir', module.id, 4);
@@ -293,6 +303,7 @@ export async function buildSnapshot(input, {
     releaseCommit: input.releaseCommit,
     authoringSourceRef: input.authoringSourceRef,
     sourceCommit: input.sourceCommit,
+    ...(manifest.overview ? { overview: manifest.overview } : {}),
     modules: manifest.modules.map((module) => ({
       ...module,
       layer: layerFor(module.kind),
@@ -501,7 +512,7 @@ export async function validateCommittedRepository({ targetRoot = siteRoot, repos
       contentEntries.push({ path: destination, content: await readApproved(root, destination) });
     }
     const assetEntries = [];
-    for (const relative of manifest.modules.flatMap((module) => module.assets ?? []).sort()) {
+    for (const relative of manifestAssets(manifest).sort()) {
       const destination = assetDestinationFor(repositoryDescriptor, relative, minor);
       const content = await readApproved(root, destination);
       assetEntries.push({ path: destination, content });
@@ -571,8 +582,7 @@ export async function validateCommittedRepository({ targetRoot = siteRoot, repos
     releaseCommit: latest.releaseCommit,
     sourceCommit: latest.sourceCommit,
     documents: latest.documents.en.length + latest.documents.ko.length,
-    assets: JSON.parse(await readApproved(root, latestManifest, 'utf8')).modules
-      .flatMap((module) => module.assets ?? []).length,
+    assets: manifestAssets(JSON.parse(await readApproved(root, latestManifest, 'utf8'))).length,
     generationId: marker.generationId,
     changed: false,
     mutated: false,

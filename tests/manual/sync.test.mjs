@@ -61,6 +61,9 @@ async function createSourceFixture({ validatorExit = 0, validatorScript } = {}) 
   git(source, 'config', 'user.email', 'manual@example.com');
   const manifest = {
     schemaVersion: 2,
+    overview: {
+      assets: ['assets/overview/repository-map.svg'],
+    },
     modules: [{
       id: 'sample', group: 'foundation', kind: 'library', sourceDir: 'sample',
       en: 'en/modules/sample.md', ko: 'ko/modules/sample.md',
@@ -87,6 +90,7 @@ async function createSourceFixture({ validatorExit = 0, validatorScript } = {}) 
   await write(source, 'docs/manual/ko/modules/sample/chapter-one.md', chapter);
   await write(source, 'docs/manual/assets/sample/model.svg', '<svg xmlns="http://www.w3.org/2000/svg"/>\n');
   await write(source, 'docs/manual/assets/sample/model.png', Buffer.from([0x89, 0x50, 0x4e, 0x47]));
+  await write(source, 'docs/manual/assets/overview/repository-map.svg', '<svg xmlns="http://www.w3.org/2000/svg"/>\n');
   await write(
     source,
     'scripts/manual/validate_release_manuals.rb',
@@ -210,6 +214,9 @@ test('buildSnapshot accepts resolved provenance, writes nothing, and emits no un
   assert.ok(built.entries.some(({ path: entryPath }) => entryPath === `src/data/manual/${SLUG}.manifest.json`));
   assert.ok(built.entries.some(({ path: entryPath }) => entryPath === `public/manual-assets/${SLUG}/1.11/sample/model.svg`));
   assert.ok(built.entries.some(({ path: entryPath }) => entryPath === `public/manual-assets/${SLUG}/sample/model.svg`));
+  assert.ok(built.entries.some(({ path: entryPath }) => entryPath === `public/manual-assets/${SLUG}/1.11/overview/repository-map.svg`));
+  assert.ok(built.entries.some(({ path: entryPath }) => entryPath === `public/manual-assets/${SLUG}/overview/repository-map.svg`));
+  assert.deepEqual(built.manifest.overview.assets, ['assets/overview/repository-map.svg']);
   assert.equal(built.entries.some(({ path: entryPath }) => new RegExp(`docs/(?:ko/)?manual/${SLUG}/modules/`).test(entryPath)), false);
 });
 

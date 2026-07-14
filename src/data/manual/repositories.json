@@ -13,6 +13,19 @@
         "en": "/manual/bluetape4k-projects/",
         "ko": "/ko/manual/bluetape4k-projects/"
       }
+    },
+    {
+      "slug": "bluetape4k-exposed",
+      "repository": "bluetape4k/bluetape4k-exposed",
+      "label": {
+        "en": "Exposed docs",
+        "ko": "Exposed 문서"
+      },
+      "latestMinor": "1.11",
+      "route": {
+        "en": "/manual/bluetape4k-exposed/",
+        "ko": "/ko/manual/bluetape4k-exposed/"
+      }
     }
   ]
 }

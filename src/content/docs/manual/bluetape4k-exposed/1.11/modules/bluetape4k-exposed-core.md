@@ -1,0 +1,115 @@
+---
+slug: "manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-core"
+manualId: "bluetape4k-exposed-core"
+id: "bluetape4k-exposed-core"
+title: "Exposed Core Library"
+locale: "en"
+kind: "library"
+gradlePath: ":bluetape4k-exposed-core"
+sourceDir: "exposed/core"
+releaseRef: "1.11.0"
+artifact: io.github.bluetape4k.exposed:bluetape4k-exposed-core
+manual:
+  id: "bluetape4k-exposed-core"
+  repository: "bluetape4k-exposed"
+  group: "foundation"
+  kind: "library"
+  sourceCommit: "eea10abd857fdb806319f93bddf30f92542d787a"
+  sourcePath: "docs/manual/en/modules/bluetape4k-exposed-core.md"
+  minorVersion: "1.11"
+  releaseRef: "1.11.0"
+  releaseCommit: "0b494a5fd1e083006046764757342b68a397e4c5"
+  sourceDir: "exposed/core"
+  layer: "build"
+---
+
+
+> Shared table, identifier, result mapping, audit, paging, and column-type primitives for both JDBC and R2DBC paths.
+
+## Problem
+
+Exposed supplies its DSL and table model. Production projects still repeat generated-ID declarations, `ResultRow` conversions, paging values, audit columns, soft-delete flags, and specialized column types. This module centralizes those cross-runtime conventions without opening a database connection or transaction.
+
+## When to use it
+
+Use it as the common foundation for `bluetape4k-exposed-jdbc` or `bluetape4k-exposed-r2dbc`. It is also useful when a shared schema module must compile independently of the final driver path.
+
+## Coordinates
+
+```kotlin
+dependencies {
+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:<version>"))
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-core")
+}
+```
+
+## Core concepts
+
+- ID table families use client-side generators through `clientDefault`.
+- `ExposedPage` carries page metadata and content; repository `findPage` obtains count and content separately.
+- `AuditableIdTable` fills `createdBy` on insert. Only audited repository update methods guarantee `updatedAt` and `updatedBy`.
+- `UserContext` resolves `ScopedValue`, then thread-local state, then `system`.
+- Soft delete is a table convention; ordinary repository reads do not silently filter deleted rows.
+
+## Quick start
+
+```kotlin
+object Events : UlidTable("events") {
+    val payload = varchar("payload", 400)
+}
+```
+
+The generated value is a client default, so application code can build an insert without delegating ID generation to a database sequence.
+
+## API by task
+
+| Task | Stable 1.11 API |
+|---|---|
+| Generated IDs | `KsuidTable`, `KsuidMillisTable`, `UlidTable`, `SnowflakeIdTable`, `TimebasedUUIDTable` |
+| Soft-delete schema | `SoftDeletedIdTable` |
+| Audit schema/context | `AuditableIdTable`, `AuditableIntIdTable`, `AuditableLongIdTable`, `AuditableUUIDTable`, `UserContext` |
+| Paging value | `ExposedPage` |
+| Row/column helpers | `ResultRowExtensions`, `ColumnExtensions`, `ExposedColumnSupports` |
+| Specialized data | compressed, serialized, INET, phone, and blob column helpers |
+
+## Recommended patterns
+
+Keep table declarations and pure row mappers in a shared persistence model. Let a service or framework transaction boundary choose JDBC or R2DBC. Use one ID strategy per aggregate and record its ordering and storage properties in the schema decision.
+
+## Integrations
+
+The JDBC, R2DBC, DAO, serialization, measurement, cache, and database-adapter modules build on this foundation. Optional column types require their corresponding runtime libraries.
+
+## Configuration
+
+Core has no connection configuration. Configure ID generators and optional codecs in application code, and bind `UserContext` at the request or job boundary.
+
+## Failure modes
+
+- Reading a generated ID as database-generated can produce wrong migration assumptions.
+- Calling a generic update on an auditable table does not populate the audited update fields.
+- Relying on thread-local user state across coroutine dispatcher hops loses context; use `withCoroutineUser`/`asContextElement`.
+- Treating `findPage` count and content as one snapshot is unsafe unless the surrounding transaction/isolation supplies that guarantee.
+
+## Operations
+
+Persist audit timestamps in UTC, inspect ID index locality for high-write tables, and make soft-delete retention/purge an explicit operational policy.
+
+## Testing
+
+Test table defaults against the actual dialects you deploy. The repository uses JDBC test support for core integration tests, including H2, MariaDB, MySQL, PostgreSQL, and pgjdbc-ng coverage where applicable.
+
+## Workshops and learning path
+
+Read [Entity and ID model](/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-core/entity-id-model/) and [Mapping conventions](/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-core/mapping-conventions/), then continue to [transaction boundaries](/manual/bluetape4k-exposed/1.11/guides/transaction-boundaries/).
+
+## Limitations
+
+Core does not own transactions, connections, Spring beans, driver selection, or repository lifecycle. Release 1.11 documentation must not rely on later develop-only DDD APIs.
+
+## Sources
+
+- [Core build](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.11.0/exposed/core/build.gradle.kts)
+- [Column extensions](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.11.0/exposed/core/src/main/kotlin/io/bluetape4k/exposed/core/ColumnExtensions.kt)
+- [User context](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.11.0/exposed/core/src/main/kotlin/io/bluetape4k/exposed/core/auditable/UserContext.kt)
+- [Auditable table](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.11.0/exposed/core/src/main/kotlin/io/bluetape4k/exposed/core/auditable/AuditableIdTable.kt)
