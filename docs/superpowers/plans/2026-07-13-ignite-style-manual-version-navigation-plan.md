@@ -45,7 +45,7 @@ No dependency, content snapshot, route catalog, sidebar, blog, diagram, or deplo
 **Files:**
 - Modify: `tests/manual/version-ui.test.mjs`
 
-- [ ] **Step 1: Extend the fixture with the new override files and mappings**
+- [x] **Step 1: Extend the fixture with the new override files and mappings**
 
 Copy the not-yet-created override files when present so the pre-implementation
 run fails through assertions/build status rather than an unhandled filesystem
@@ -83,7 +83,7 @@ components: {
 }
 ```
 
-- [ ] **Step 2: Replace the old page-title selector source contract**
+- [x] **Step 2: Replace the old page-title selector source contract**
 
 Assert that the selector exposes placement-aware classes and localized copy,
 and that the two new overrides mount it in the correct order. Read missing
@@ -112,7 +112,7 @@ test('manual selector is mounted beside language selection and in the mobile pre
 });
 ```
 
-- [ ] **Step 3: Update fixture HTML assertions for global placement and truthful provenance**
+- [x] **Step 3: Update fixture HTML assertions for global placement and truthful provenance**
 
 After the existing fixture build, assert:
 
@@ -130,7 +130,7 @@ assert.doesNotMatch(latestNewKo, /소스 1\.12\.0/);
 assert.doesNotMatch(missingCatalogNonManual, /bt4k-manual-version--(?:header|mobile)/);
 ```
 
-- [ ] **Step 4: Run the focused test and confirm the intended RED**
+- [x] **Step 4: Run the focused test and confirm the intended RED**
 
 Run:
 
@@ -155,7 +155,7 @@ does not contain placement classes or release provenance.
 - Modify: `src/components/ManualVersionSelector.astro`
 - Modify: `astro.config.mjs`
 
-- [ ] **Step 1: Add the desktop header override**
+- [x] **Step 1: Add the desktop header override**
 
 Follow the installed Starlight 0.39.2 `Header.astro` structure exactly for the
 default virtual components. Derive manual context once:
@@ -183,7 +183,7 @@ Insert the selector immediately after the language selector:
 Preserve the installed header grid, search visibility, title overflow, social
 divider, and `md:sl-flex` desktop breakpoint CSS verbatim.
 
-- [ ] **Step 2: Add the mobile menu footer override**
+- [x] **Step 2: Add the mobile menu footer override**
 
 Derive the same manual context and render the selector before the unchanged
 Starlight preference row:
@@ -206,7 +206,7 @@ Starlight preference row:
 
 Preserve the installed mobile preference CSS verbatim.
 
-- [ ] **Step 3: Make the shared selector placement-aware**
+- [x] **Step 3: Make the shared selector placement-aware**
 
 Extend props and render classes:
 
@@ -249,7 +249,7 @@ Use one native details menu for both placements:
 Keep `selectorTarget(...)`, document membership, stable/archive copy, anchors,
 and `aria-current` unchanged.
 
-- [ ] **Step 4: Register both Starlight overrides**
+- [x] **Step 4: Register both Starlight overrides**
 
 Add to the existing component map:
 
@@ -258,7 +258,7 @@ Header: './src/components/ManualHeader.astro',
 MobileMenuFooter: './src/components/ManualMobileMenuFooter.astro',
 ```
 
-- [ ] **Step 5: Run the focused test**
+- [x] **Step 5: Run the focused test**
 
 Run:
 
@@ -280,7 +280,7 @@ remain failing until Task 3.
 - Modify: `src/components/ManualPageTitle.astro`
 - Modify: `src/styles/manual.css`
 
-- [ ] **Step 1: Reduce the page-title component to release provenance**
+- [x] **Step 1: Reduce the page-title component to release provenance**
 
 Remove `githubSourceUrlFor`, `ManualVersionSelector`, and the layer/group/version
 pill markup. Keep catalog lookup for stable/archive state. Build a safe release
@@ -311,7 +311,7 @@ Render:
 )}
 ```
 
-- [ ] **Step 2: Replace pill styles with header/mobile selector styles**
+- [x] **Step 2: Replace pill styles with header/mobile selector styles**
 
 Delete `.bt4k-manual-source` rules. Define the shared trigger and dropdown:
 
@@ -359,7 +359,7 @@ and print rules:
 }
 ```
 
-- [ ] **Step 3: Run focused GREEN**
+- [x] **Step 3: Run focused GREEN**
 
 Run:
 
@@ -370,7 +370,7 @@ node --test tests/manual/version-ui.test.mjs
 Expected: PASS, including fixture builds, localized HTML, non-manual scoping,
 Pagefind behavior, release links, and style contracts.
 
-- [ ] **Step 4: Refactor only while green**
+- [x] **Step 4: Refactor only while green**
 
 Remove duplicated copy or selectors introduced during Tasks 2–3 without adding
 state, helpers, or dependencies. Rerun the focused test after each cleanup.
@@ -385,7 +385,7 @@ state, helpers, or dependencies. Rerun the focused test after each cleanup.
 **Files:**
 - Modify: `docs/superpowers/checklists/2026-07-13-ignite-style-manual-version-navigation.md`
 
-- [ ] **Step 1: Run the full automated suite**
+- [x] **Step 1: Run the full automated suite**
 
 Run:
 
@@ -395,7 +395,7 @@ npm test
 
 Expected: all manual and ecosystem Node tests pass with zero failures.
 
-- [ ] **Step 2: Run the production build**
+- [x] **Step 2: Run the production build**
 
 Run:
 
@@ -405,7 +405,7 @@ npm run build
 
 Expected: Astro check reports zero errors and the production build completes.
 
-- [ ] **Step 3: Inspect representative built routes**
+- [x] **Step 3: Inspect representative built routes**
 
 Check the generated Korean manual, English manual, and non-manual pages:
 
@@ -418,7 +418,7 @@ rg -n "bt4k-manual-version--header|bt4k-manual-version--mobile|Manual|Based on r
 Expected: both manual selectors and localized provenance appear on manual
 routes; the ecosystem route has no selector.
 
-- [ ] **Step 4: Run final diff hygiene and scoped review**
+- [x] **Step 4: Run final diff hygiene and scoped review**
 
 Run:
 
@@ -431,7 +431,7 @@ Review behavior, accessibility, mobile/zoom wrapping, localization, release
 provenance, non-manual isolation, Starlight override drift, and accidental
 changes. Expected: P0=0/P1=0 and only approved files in scope.
 
-- [ ] **Step 5: Reconcile the workflow checklist**
+- [x] **Step 5: Reconcile the workflow checklist**
 
 Record every command/result, check all applicable rows, prove N/A rows with
 scope evidence, and report:

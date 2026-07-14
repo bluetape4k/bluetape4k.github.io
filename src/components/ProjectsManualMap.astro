@@ -16,7 +16,7 @@ const title = (module: Module) => module.id.replace(/^bluetape4k-/, '');
   <div class="bt4k-manual-map__summary">
     <strong>{manifest.modules.length}</strong>
     <span>{copy.modules}</span>
-    <code>{manifest.sourceCommit.slice(0, 9)}</code>
+    <code>{manifest.releaseRef}</code>
   </div>
   <ul>
     {groups.map((group, index) => {

@@ -18,6 +18,14 @@ description: bluetape4k가 여러 리포지토리의 의존성 버전을 맞추�
 `bluetape4k-dependencies`를 `implementation(platform(...))`으로 한 번만 가져옵니다.
 그다음 서비스에 필요한 bluetape4k module을 version 없이 추가합니다.
 
+## 사용자가 선택하는 버전
+
+애플리케이션에서는 `bluetape4k-dependencies`의 배포 버전만 정하면 됩니다. `projects`, `exposed`, `aws` 같은 저장소별 BOM 버전은 중앙 BOM이 알맞게 조합하므로, 사용자가 따로 맞출 필요가 없습니다.
+
+매뉴얼 상단의 `Projects 문서 1.11` 같은 표시는 **문서가 설명하는 저장소의 릴리스 계열**입니다. 애플리케이션에 입력할 dependency 버전이 아닙니다. `bluetape4k-aws`처럼 저장소가 `0.x` 버전을 사용하더라도 같은 원칙을 적용합니다.
+
+저장소별 정확한 버전 조합은 장애 재현이나 dependency 충돌 분석처럼 세부 정보가 필요한 경우에만 확인합니다. 일반적인 설치 안내에서는 중앙 BOM 외의 버전 표를 노출하지 않습니다.
+
 ## 관리되는 계열
 
 - Kotlin, kotlinx, Dokka, Kover
