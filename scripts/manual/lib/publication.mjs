@@ -15,10 +15,10 @@ import {
 import path from 'node:path';
 
 const JOURNAL = '.manual-sync-journal.json';
-const MARKER = '.manual-sync-generation.json';
 const STATE = '.manual-sync';
 const GENERATION = /^[0-9a-f]{64}$/;
-const METADATA = new Set([STATE, JOURNAL, MARKER]);
+const SCOPE = /^bluetape4k-[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const METADATA = new Set([STATE, JOURNAL]);
 
 function failure(code, detail, cause) {
   const error = new Error(`${code}: ${detail}`);
@@ -44,6 +44,13 @@ function safeTargetRelative(value) {
   if (METADATA.has(top) || top.startsWith('.manual-sync')) throw failure('PUBLICATION_PATH', value);
   return safe;
 }
+
+function validateScope(value) {
+  if (typeof value !== 'string' || !SCOPE.test(value)) throw failure('PUBLICATION_SCOPE', String(value));
+  return value;
+}
+
+const markerFor = (scope) => `.manual-sync-generation.${validateScope(scope)}.json`;
 
 function validateGeneration(value) {
   if (!GENERATION.test(value)) throw failure('PUBLICATION_GENERATION', String(value));
@@ -215,8 +222,9 @@ async function persistJournal(root, journal) {
 
 function validateStaged(staged) {
   if (!staged || typeof staged !== 'object') throw failure('PUBLICATION_STAGED', 'missing staged publication');
+  const scope = validateScope(staged.scope);
   validateGeneration(staged.generationId);
-  const expectedStagingRoot = path.posix.join(STATE, 'staging', staged.generationId);
+  const expectedStagingRoot = path.posix.join(STATE, 'staging', scope, staged.generationId);
   if (safeRelative(staged.stagingRoot) !== expectedStagingRoot) throw failure('PUBLICATION_STAGED_PATH', staged.stagingRoot);
   if (!Array.isArray(staged.expected) || staged.expected.length === 0) throw failure('PUBLICATION_STAGED', 'missing targets');
   const targets = [];
@@ -250,10 +258,14 @@ async function verifyStagedBytes(root, staged) {
   if (actualTreeDigest !== staged.treeDigest) throw failure('PUBLICATION_TREE_DIGEST', staged.treeDigest);
 }
 
-function validateJournal(journal) {
+function validateJournal(journal, expectedScope) {
   if (!journal || journal.schema !== 1) throw failure('PUBLICATION_JOURNAL', 'invalid schema');
+  const scope = validateScope(journal.scope);
+  if (expectedScope !== undefined && scope !== validateScope(expectedScope)) {
+    throw failure('PUBLICATION_SCOPE_MISMATCH', `${scope} != ${expectedScope}`);
+  }
   validateGeneration(journal.generationId);
-  const expectedStagingRoot = path.posix.join(STATE, 'staging', journal.generationId);
+  const expectedStagingRoot = path.posix.join(STATE, 'staging', scope, journal.generationId);
   if (safeRelative(journal.stagingRoot) !== expectedStagingRoot) throw failure('PUBLICATION_JOURNAL_PATH', journal.stagingRoot);
   if (!GENERATION.test(journal.preTreeDigest) || !GENERATION.test(journal.expectedTreeDigest)) throw failure('PUBLICATION_JOURNAL', 'invalid tree digest');
   if (!Array.isArray(journal.targets)) throw failure('PUBLICATION_JOURNAL', 'targets');
@@ -264,7 +276,7 @@ function validateJournal(journal) {
     if (safeRelative(item.staged) !== path.posix.join(expectedStagingRoot, target)) {
       throw failure('PUBLICATION_JOURNAL_PATH', item.staged);
     }
-    const expectedBackup = path.posix.join(STATE, 'backups', journal.generationId, String(index).padStart(6, '0'));
+    const expectedBackup = path.posix.join(STATE, 'backups', scope, journal.generationId, String(index).padStart(6, '0'));
     if (safeRelative(item.backup) !== expectedBackup) throw failure('PUBLICATION_JOURNAL_PATH', item.backup);
     if (!GENERATION.test(item.expectedDigest)) throw failure('PUBLICATION_JOURNAL', 'target digest');
     if (item.preImageDigest !== null && !GENERATION.test(item.preImageDigest)) throw failure('PUBLICATION_JOURNAL', 'pre-image digest');
@@ -279,7 +291,7 @@ function validateJournal(journal) {
 }
 
 async function cleanup(root, journal) {
-  await durableDelete(root, path.posix.join(STATE, 'backups', journal.generationId), true);
+  await durableDelete(root, path.posix.join(STATE, 'backups', journal.scope, journal.generationId), true);
   await durableDelete(root, journal.stagingRoot, true);
   await durableDelete(root, JOURNAL);
 }
@@ -312,11 +324,12 @@ async function repairTargetPathForRollback(root, relative) {
 }
 
 async function markerMatches(root, journal) {
-  if (!(await existsBelow(root, MARKER))) return false;
-  let marker;
-  try { marker = JSON.parse(await readBelow(root, MARKER, 'utf8')); } catch { return false; }
-  return marker.generationId === journal.generationId
-    && marker.treeDigest === journal.expectedTreeDigest
+  const marker = markerFor(journal.scope);
+  if (!(await existsBelow(root, marker))) return false;
+  let markerData;
+  try { markerData = JSON.parse(await readBelow(root, marker, 'utf8')); } catch { return false; }
+  return markerData.generationId === journal.generationId
+    && markerData.treeDigest === journal.expectedTreeDigest
     && await digestTargets(root, journal.targets.map(({ target }) => target)) === journal.expectedTreeDigest;
 }
 
@@ -343,7 +356,8 @@ async function rollback(root, journal) {
   await cleanup(root, journal);
 }
 
-export async function stagePublication({ targetRoot, entries, generationId }) {
+export async function stagePublication({ targetRoot, entries, generationId, scope }) {
+  validateScope(scope);
   const root = await rootIdentity(targetRoot);
   validateGeneration(generationId);
   if (!Array.isArray(entries) || entries.length === 0) throw failure('PUBLICATION_ENTRIES', 'empty');
@@ -357,7 +371,7 @@ export async function stagePublication({ targetRoot, entries, generationId }) {
   }
   const actualGeneration = sha256(canonicalBytes(normalized));
   if (generationId !== actualGeneration) throw failure('PUBLICATION_GENERATION_DIGEST', generationId);
-  const stagingRoot = path.posix.join(STATE, 'staging', generationId);
+  const stagingRoot = path.posix.join(STATE, 'staging', scope, generationId);
   await assertNoSymlink(root, stagingRoot);
   if (await exists(absoluteBelow(root, stagingRoot))) await durableDelete(root, stagingRoot, true);
   const expected = [];
@@ -369,21 +383,18 @@ export async function stagePublication({ targetRoot, entries, generationId }) {
     expected.push({ target: entry.path, staged: stagedPath, digest: entryDigest });
   }
   const overlay = new Map(normalized.map((entry) => [entry.path, entry.content]));
-  return { generationId, stagingRoot, expected, treeDigest: await digestTargets(root, normalized.map(({ path: entryPath }) => entryPath), overlay) };
+  return { scope, generationId, stagingRoot, expected, treeDigest: await digestTargets(root, normalized.map(({ path: entryPath }) => entryPath), overlay) };
 }
 
-export async function recoverPublication(targetRoot) {
+export async function recoverPublication(targetRoot, expectedScope) {
+  if (expectedScope !== undefined) validateScope(expectedScope);
   const root = await rootIdentity(targetRoot);
   await assertNoSymlink(root, JOURNAL);
   if (!(await existsBelow(root, JOURNAL))) {
-    for (const relative of [path.posix.join(STATE, 'staging'), path.posix.join(STATE, 'backups')]) {
-      await assertNoSymlink(root, relative);
-      if (await exists(absoluteBelow(root, relative))) await durableDelete(root, relative, true);
-    }
     return { recovered: false };
   }
   let journal;
-  try { journal = validateJournal(JSON.parse(await readBelow(root, JOURNAL, 'utf8'))); }
+  try { journal = validateJournal(JSON.parse(await readBelow(root, JOURNAL, 'utf8')), expectedScope); }
   catch (error) { throw error.code?.startsWith('PUBLICATION_') ? error : failure('PUBLICATION_JOURNAL', error.message, error); }
   for (const item of journal.targets) {
     await assertNoSymlink(root, item.target);
@@ -401,10 +412,11 @@ export async function recoverPublication(targetRoot) {
 export async function publishStaged({ targetRoot, staged, injectFailure = async () => {} }) {
   const root = await rootIdentity(targetRoot);
   validateStaged(staged);
-  if (await existsBelow(root, JOURNAL)) await recoverPublication(root);
+  if (await existsBelow(root, JOURNAL)) await recoverPublication(root, staged.scope);
   await verifyStagedBytes(root, staged);
-  if (await existsBelow(root, MARKER)) {
-    const marker = JSON.parse(await readBelow(root, MARKER, 'utf8'));
+  const markerPath = markerFor(staged.scope);
+  if (await existsBelow(root, markerPath)) {
+    const marker = JSON.parse(await readBelow(root, markerPath, 'utf8'));
     if (marker.generationId === staged.generationId
       && marker.treeDigest === staged.treeDigest
       && await digestTargets(root, staged.expected.map(({ target }) => target)) === staged.treeDigest) {
@@ -414,6 +426,7 @@ export async function publishStaged({ targetRoot, staged, injectFailure = async 
   }
   const journal = {
     schema: 1,
+    scope: staged.scope,
     generationId: staged.generationId,
     stagingRoot: staged.stagingRoot,
     preTreeDigest: await digestTargets(root, staged.expected.map(({ target }) => target)),
@@ -425,7 +438,7 @@ export async function publishStaged({ targetRoot, staged, injectFailure = async 
     journal.targets.push({
       target: item.target,
       staged: item.staged,
-      backup: path.posix.join(STATE, 'backups', staged.generationId, String(index).padStart(6, '0')),
+      backup: path.posix.join(STATE, 'backups', staged.scope, staged.generationId, String(index).padStart(6, '0')),
       existedBefore: present,
       preImageDigest: present ? await targetDigest(root, item.target) : null,
       backupComplete: false,
@@ -470,7 +483,7 @@ export async function publishStaged({ targetRoot, staged, injectFailure = async 
       throw failure('PUBLICATION_TREE_DIGEST', journal.expectedTreeDigest);
     }
     await injectFailure('beforeCommitMarkerPersistence', { journal });
-    await durableWrite(root, MARKER, stableJson({ generationId: journal.generationId, treeDigest: journal.expectedTreeDigest }));
+    await durableWrite(root, markerPath, stableJson({ generationId: journal.generationId, treeDigest: journal.expectedTreeDigest }));
     markerWritten = true;
     await injectFailure('afterCommitMarkerPersistence', { journal });
     await injectFailure('beforeCleanup', { journal });
