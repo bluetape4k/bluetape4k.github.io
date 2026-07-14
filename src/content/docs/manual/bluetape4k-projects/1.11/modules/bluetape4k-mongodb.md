@@ -2,7 +2,7 @@
 slug: "manual/bluetape4k-projects/1.11/modules/bluetape4k-mongodb"
 manualId: bluetape4k-mongodb
 title: "Module bluetape4k-mongodb"
-description: "An extension library that makes the MongoDB Kotlin Coroutine Driver more convenient to use."
+description: "Use MongoDB Kotlin Coroutine Driver client, collection, BSON, and aggregation APIs with small helpers that remove repeated setup without hiding driver behavior."
 kind: library
 group: data
 manual:
@@ -10,7 +10,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "data"
   kind: "library"
-  sourceCommit: "46993c010f5bef45fef0943bbc93728d16119bd5"
+  sourceCommit: "dd05a2a56058bd08d503308a2eb98ac1cf73918d"
   sourcePath: "docs/manual/en/modules/bluetape4k-mongodb.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -20,15 +20,24 @@ manual:
 ---
 
 
-## Problem
+## What it provides
 
-An extension library that makes the MongoDB Kotlin Coroutine Driver more convenient to use. This manual connects that purpose to the current build, source entry points, tests, configuration resources, and lifecycle evidence instead of duplicating the README feature list.
+`bluetape4k-mongodb` adds small convenience APIs on top of the MongoDB Kotlin Coroutine Driver. It provides a `MongoClientSettings` DSL and client cache, database and collection helpers, `Document` builders, aggregation stage builders, and basic session and transaction lifecycle wrappers.
 
-## When to use
+It does not replace the MongoDB driver. The official driver still owns connection pools, server selection, retryable reads and writes, BSON codecs, query execution, `suspend`, and `Flow`. If you need Spring beans, repositories, `MongoTemplate`, or a mapping context, compare this module with [`bluetape4k-spring-boot-mongodb`](/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-mongodb/).
 
-Use `bluetape4k-mongodb` when the application needs transaction boundaries, connection ownership, query behavior, and serialization. Start with the source entry points below and confirm that their ownership and failure contracts match the calling component. Prefer a smaller standard-library or already-adopted module when it satisfies the same contract without another runtime boundary.
+## Decide before adoption
+
+- Decide whether you want the official coroutine driver directly with less repeated client and collection code.
+- Choose caller-owned clients from `mongoClientOf` or JVM-wide shared clients from `MongoClientProvider`.
+- Choose raw `Document` values or application types backed by a configured codec registry.
+- Distinguish eager `List` collection from keeping the driver's `Flow` through the processing pipeline.
+- Confirm that the deployment topology supports sessions and transactions. A standalone MongoDB server cannot run multi-document transactions.
+- Do not mix low-level driver helpers with Spring Data repository and mapping responsibilities without a clear ownership boundary.
 
 ## Coordinates
+
+Consumers manage only the central BOM version, not individual MongoDB driver versions.
 
 ```kotlin
 dependencies {
@@ -37,100 +46,127 @@ dependencies {
 }
 ```
 
-Gradle project path: `:bluetape4k-mongodb`. Source directory: `data/mongodb`.
+Gradle project path: `:bluetape4k-mongodb`. Source directory: `data/mongodb`. The kotlinx.serialization BSON codec is `compileOnly`, so applications that use it must provide the runtime dependency.
 
-## Concepts
+## First client and collection
 
-The first source-level concepts to inspect are `MongoClientExtensions`, `MongoClientProvider`, `MongoClientSupport`, `MongoCollectionExtensions`, `MongoDatabaseExtensions`, `AggregationSupport`, and `DocumentExtensions`. File names are navigation anchors; read each declaration and its tests before treating it as a public contract.
+This minimal setup makes the caller own the client lifecycle.
 
-## Quick start
+```kotlin
+val client = mongoClientOf("mongodb://localhost:27017")
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`MongoClientExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/main/kotlin/io/bluetape4k/mongodb/MongoClientExtensions.kt) first; it is a concrete source entry point for the module.
+try {
+    val database = client.getDatabase("catalog")
+    val products = database.getCollectionOf<Document>("products")
 
-## API by task
+    products.insertOne(documentOf("sku" to "A-100", "stock" to 3))
+    val product = products.findFirst(Filters.eq("sku", "A-100"))
+} finally {
+    client.close()
+}
+```
 
-| Entry point | What to verify |
-| --- | --- |
-| [`MongoClientExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/main/kotlin/io/bluetape4k/mongodb/MongoClientExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`MongoClientProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/main/kotlin/io/bluetape4k/mongodb/MongoClientProvider.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`MongoClientSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/main/kotlin/io/bluetape4k/mongodb/MongoClientSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`MongoCollectionExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/main/kotlin/io/bluetape4k/mongodb/MongoCollectionExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`MongoDatabaseExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/main/kotlin/io/bluetape4k/mongodb/MongoDatabaseExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`AggregationSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/main/kotlin/io/bluetape4k/mongodb/aggregation/AggregationSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`DocumentExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/main/kotlin/io/bluetape4k/mongodb/bson/DocumentExtensions.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+`getCollectionOf<T>` only passes `T::class.java` to the driver. It does not add serialization support, so the database codec registry must be able to encode and decode `T`.
 
-## Patterns
+## API selection map
 
-The README evidence is organized around **Features**, **Architecture Diagrams**, **Core Class Structure**, **Module API Structure**, **Aggregation Pipeline Data Flow**, **Dependency**, **Core Features**, **1. Creating a MongoClient**, **2. Database & Collection Extensions**, and **3. Collection Convenience Functions**. Use those topics as a navigation map, then confirm behavior in source and tests. Keep adoption narrow and connect owned resources to the caller lifecycle.
+| Task | Start with | Boundary to remember |
+| --- | --- | --- |
+| Create a caller-owned client | `mongoClient`, `mongoClientOf` | The caller closes the returned client. |
+| Share a client in the JVM | `MongoClientProvider.getOrCreate` | Release 1.11.0 has no explicit eviction or close-all API. |
+| Collect database or collection names | `listDatabaseNamesAsList`, `listCollectionNamesList` | These collect every name into memory. |
+| Obtain a typed collection | `getCollectionOf<T>` | Encoding and decoding remain codec-registry responsibilities. |
+| Find one, check existence, or upsert | `findFirst`, `exists`, `upsert` | These compose native driver operations. |
+| Query filter, sort, and page as `Flow` | `findAsFlow` | Execution and backpressure follow the coroutine driver. |
+| Scope sessions and transactions | `withClientSession`, `inTransaction` | Pass the session to native collection operations explicitly. |
+| Build BSON documents | `documentOf`, `Document.getAs<T>` | `getAs` is a safe cast, not numeric conversion or schema validation. |
+| Build aggregation stages | `pipeline`, `matchStage`, and peers | Native `aggregate` executes the pipeline. |
+
+## Learning path
+
+These chapters follow the 1.11.0 release source and tests from client ownership through transactions, codecs, and operational validation. Each chapter separates official driver behavior from the helper added by this module.
+
+1. [Module boundary and client lifecycle](/manual/bluetape4k-projects/1.11/modules/bluetape4k-mongodb/module-boundary-client-lifecycle/) — compare direct clients with provider caching and inspect the 1.11.0 cache-key constraints.
+2. [Database, Collection, and Flow](/manual/bluetape4k-projects/1.11/modules/bluetape4k-mongodb/database-collection-flow/) — use typed collections, first-result lookup, existence checks, upsert, and lazy query results.
+3. [Documents, codecs, and query boundaries](/manual/bluetape4k-projects/1.11/modules/bluetape4k-mongodb/documents-codecs-queries/) — distinguish the `Document` DSL, safe casts, codec registry, and official query extensions.
+4. [Sessions and transactions](/manual/bluetape4k-projects/1.11/modules/bluetape4k-mongodb/sessions-transactions/) — follow session passing, commit, abort, close, and cancellation boundaries.
+5. [Aggregation pipeline construction](/manual/bluetape4k-projects/1.11/modules/bluetape4k-mongodb/aggregation-pipelines/) — separate stage construction from execution by native `aggregate`.
+6. [Testing, operations, and ecosystem paths](/manual/bluetape4k-projects/1.11/modules/bluetape4k-mongodb/testing-operations-ecosystem/) — combine unit and Testcontainers evidence and move toward Spring Data MongoDB when needed.
+
+For a first adoption, follow chapters 1→2→3 and complete one client and one collection. If transactions are required, read chapter 4 first and prepare a replica-set or sharded-cluster test environment.
+
+## Recommended patterns
+
+Do not create a client for every operation. Share it for the lifetime of an application component. The component closes directly created clients; provider-returned clients are shared resources and should be identified as such at the call site. The 1.11.0 provider does not include builder settings in the string-cache key, so use the completed `MongoClientSettings` overload when the same URL needs distinct settings.
+
+For potentially large results, keep the driver `Flow` instead of using eager helpers such as `listDatabaseNamesAsList`. Give `findAsFlow` a stable sort and explicit bounds. For repeated paging APIs, compare the cost of large skips with cursor-based pagination.
 
 ## Integrations
 
-The current build declares these integration edges:
+The module exposes the MongoDB Kotlin Coroutine Driver, Kotlin query extensions, and BSON Kotlin APIs. KProperty-based filters, sorts, updates, and projections come from the official `mongodb-driver-kotlin-extensions`; this module does not define another query DSL.
 
-```kotlin
-api(project(":bluetape4k-io"))
-api(project(":bluetape4k-coroutines"))
-api(libs.mongodb.driver.kotlin.coroutine)
-api(libs.mongodb.driver.kotlin.extensions)
-api(libs.mongo.bson.kotlin)
-compileOnly(libs.mongo.bson.kotlinx)
-implementation(libs.kotlinx.coroutines.core)
-```
-
-Treat `compileOnly` edges as caller-provided capabilities and verify runtime availability before using their APIs.
+Use [`bluetape4k-spring-boot-mongodb`](/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-mongodb/) when the application needs reactive repositories, `ReactiveMongoOperations`, auto-configuration, or a Criteria DSL. When both modules are present, avoid creating both a low-level client and a Spring-managed client for the same workload unless ownership is intentional.
 
 ## Configuration
 
-No module-level configuration resource was found under `src/main/resources`. Configuration is supplied through constructors, builders, function arguments, or the integrating framework; confirm defaults in source.
+The module has no properties or resource files of its own. Configure endpoints, credentials, TLS, application names, timeouts, pools, and codec registries through the official `MongoClientSettings.Builder` API.
 
-## Failures
+```kotlin
+val client = mongoClientOf(connectionString) {
+    applicationName("catalog-api")
+    applyToConnectionPoolSettings { pool ->
+        pool.maxSize(32)
+    }
+}
+```
 
-Failure semantics are defined by the linked entry points and tests, not inferred from the artifact name. Keep cancellation and timeout signals intact, close owned resources, and translate backend exceptions only at a boundary that can add a stable domain contract. Use the test anchors below to verify the exact behavior before adding retries or fallbacks.
+Do not log connection strings that contain credentials. Provider caches use either the string or `MongoClientSettings` as keys, so unbounded per-tenant credentials also create unbounded clients and pools.
+
+## Failure behavior
+
+Helpers do not translate MongoDB exceptions or add retries. `findFirst` returns `null` when nothing matches. `Document.getAs<T>` returns `null` when a key is absent or its runtime type differs. Add explicit validation when those cases must be distinguished from corrupt data.
+
+`inTransaction` commits on success and attempts an abort before rethrowing the original failure. An abort failure is attached as a suppressed exception. In 1.11.0, cancellation-path abort does not run in a `NonCancellable` context, so do not assume cleanup is guaranteed under aggressive cancellation.
 
 ## Operations
 
-Track pool saturation, query latency, retries, transaction rollbacks, and schema compatibility. Keep capacity, timeout, retry, and shutdown settings next to the component that owns the resource; avoid process-wide defaults that hide which caller accepted the trade-off.
+Observe driver command latency, server-selection timeout, connection-pool wait, retries, and transaction aborts. Use bounded operation and collection labels; never put filter values or entire documents into high-cardinality metric labels.
+
+When using the provider, monitor client creation and settings cardinality. Release 1.11.0 has no cache eviction API, so it is not a suitable dynamic registry for an unbounded number of tenants or credentials.
 
 ## Testing
 
-Run the module test task:
+`DocumentExtensionsTest` and `AggregationSupportTest` run without MongoDB. The remaining module tests use a `MongoDBServer` Testcontainer and should run sequentially with other heavy suites.
 
 ```bash
 ./gradlew :bluetape4k-mongodb:test --no-configuration-cache
 ```
 
-Representative test anchors:
-
-- [`AbstractMongoTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/test/kotlin/io/bluetape4k/mongodb/AbstractMongoTest.kt)
-- [`MongoClientSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/test/kotlin/io/bluetape4k/mongodb/MongoClientSupportTest.kt)
-- [`MongoCollectionExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/test/kotlin/io/bluetape4k/mongodb/MongoCollectionExtensionsTest.kt)
-- [`MongoDatabaseExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/test/kotlin/io/bluetape4k/mongodb/MongoDatabaseExtensionsTest.kt)
-- [`AggregationSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/test/kotlin/io/bluetape4k/mongodb/aggregation/AggregationSupportTest.kt)
-- [`DocumentExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/test/kotlin/io/bluetape4k/mongodb/bson/DocumentExtensionsTest.kt)
-- [`AggregationExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/test/kotlin/io/bluetape4k/mongodb/examples/AggregationExamples.kt)
-- [`BasicCrudExamples`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/test/kotlin/io/bluetape4k/mongodb/examples/BasicCrudExamples.kt)
+`AbstractMongoTest` is an internal fixture under `src/test`, not an API in the published artifact. Application tests should own their Testcontainers fixture and connect a coroutine `MongoClient`, not the sync client.
 
 ## Workshops
 
-No dedicated workshop path is registered in the manual manifest. Use the module README and the representative tests above as runnable evidence.
+`BasicCrudExamples` combines native suspend CRUD with `findFirst`, `exists`, `upsert`, and `findAsFlow`. `AggregationExamples` builds stages with `pipeline` and executes them through native `aggregate(...).toList()`.
 
-## Limitations
+Continue with the [`bluetape4k-spring-boot-mongodb`](/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-mongodb/) manual for Spring Data mapping, Criteria, Query, Update, and reactive operations. Understanding the driver-level boundary first makes the framework's lifecycle and exception translation easier to evaluate.
 
-This page documents the repository state represented by the linked source and tests. It does not turn optional backends into application defaults or claim performance without a benchmark artifact. Re-check compatibility and lifecycle notes when the module version changes.
+## Release 1.11.0 scope
 
-## Sources
+This manual targets release commit `6187173b58e8b4c5c435c145e00e94708f31ef75`. Its production API consists of seven Kotlin source files covering client, database, collection, BSON, and aggregation helpers.
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/build.gradle.kts)
-- [`MongoClientExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/main/kotlin/io/bluetape4k/mongodb/MongoClientExtensions.kt)
-- [`MongoClientProvider`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/main/kotlin/io/bluetape4k/mongodb/MongoClientProvider.kt)
-- [`MongoClientSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/main/kotlin/io/bluetape4k/mongodb/MongoClientSupport.kt)
-- [`MongoCollectionExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/main/kotlin/io/bluetape4k/mongodb/MongoCollectionExtensions.kt)
-- [`MongoDatabaseExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/main/kotlin/io/bluetape4k/mongodb/MongoDatabaseExtensions.kt)
-- [`AggregationSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/main/kotlin/io/bluetape4k/mongodb/aggregation/AggregationSupport.kt)
-- [`DocumentExtensions`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/main/kotlin/io/bluetape4k/mongodb/bson/DocumentExtensions.kt)
-- [`AbstractMongoTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/test/kotlin/io/bluetape4k/mongodb/AbstractMongoTest.kt)
-- [`MongoClientSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/test/kotlin/io/bluetape4k/mongodb/MongoClientSupportTest.kt)
-- [`MongoCollectionExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/test/kotlin/io/bluetape4k/mongodb/MongoCollectionExtensionsTest.kt)
-- [`MongoDatabaseExtensionsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/test/kotlin/io/bluetape4k/mongodb/MongoDatabaseExtensionsTest.kt)
-- [`AggregationSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/test/kotlin/io/bluetape4k/mongodb/aggregation/AggregationSupportTest.kt)
+It does not provide repositories, an object-mapping framework, schema migration, auto-configuration, health indicators, metrics, or a transaction manager. Explicit provider-cache close APIs and `NonCancellable` transaction cleanup are also outside the 1.11.0 scope.
+
+## Sources and tests
+
+- [`build.gradle.kts`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/build.gradle.kts)
+- [`MongoClientSupport.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/main/kotlin/io/bluetape4k/mongodb/MongoClientSupport.kt)
+- [`MongoClientProvider.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/main/kotlin/io/bluetape4k/mongodb/MongoClientProvider.kt)
+- [`MongoClientExtensions.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/main/kotlin/io/bluetape4k/mongodb/MongoClientExtensions.kt)
+- [`MongoCollectionExtensions.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/main/kotlin/io/bluetape4k/mongodb/MongoCollectionExtensions.kt)
+- [`MongoDatabaseExtensions.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/main/kotlin/io/bluetape4k/mongodb/MongoDatabaseExtensions.kt)
+- [`DocumentExtensions.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/main/kotlin/io/bluetape4k/mongodb/bson/DocumentExtensions.kt)
+- [`AggregationSupport.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/main/kotlin/io/bluetape4k/mongodb/aggregation/AggregationSupport.kt)
+- [`MongoClientSupportTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/test/kotlin/io/bluetape4k/mongodb/MongoClientSupportTest.kt)
+- [`MongoCollectionExtensionsTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/test/kotlin/io/bluetape4k/mongodb/MongoCollectionExtensionsTest.kt)
+- [`AggregationSupportTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/test/kotlin/io/bluetape4k/mongodb/aggregation/AggregationSupportTest.kt)
+- [`BasicCrudExamples.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/mongodb/src/test/kotlin/io/bluetape4k/mongodb/examples/BasicCrudExamples.kt)
