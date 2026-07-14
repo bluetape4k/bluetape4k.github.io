@@ -553,6 +553,30 @@
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-mongodb/"
     },
     {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-mongodb/aggregation-pipelines/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-mongodb/aggregation-pipelines/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-mongodb/database-collection-flow/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-mongodb/database-collection-flow/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-mongodb/documents-codecs-queries/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-mongodb/documents-codecs-queries/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-mongodb/module-boundary-client-lifecycle/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-mongodb/module-boundary-client-lifecycle/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-mongodb/sessions-transactions/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-mongodb/sessions-transactions/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-mongodb/testing-operations-ecosystem/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-mongodb/testing-operations-ecosystem/"
+    },
+    {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-mutiny/",
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-mutiny/"
     },
@@ -693,6 +717,30 @@
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-cassandra/"
     },
     {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra/async-and-cql-operations/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-cassandra/async-and-cql-operations/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra/configuration-and-ownership/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-cassandra/configuration-and-ownership/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra/failures-testing-and-ecosystem/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-cassandra/failures-testing-and-ecosystem/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra/models-schema-and-converters/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-cassandra/models-schema-and-converters/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra/reactive-coroutine-operations/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-cassandra/reactive-coroutine-operations/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra/write-options-and-batches/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-cassandra/write-options-and-batches/"
+    },
+    {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/",
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-core/"
     },
@@ -755,6 +803,30 @@
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/",
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-mongodb/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/aggregation-collections-streaming/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-mongodb/aggregation-collections-streaming/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/auto-configuration-boundaries/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-mongodb/auto-configuration-boundaries/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/coroutine-reads-cardinality/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-mongodb/coroutine-reads-cardinality/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/query-dsl/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-mongodb/query-dsl/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/testing-operations-ecosystem/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-mongodb/testing-operations-ecosystem/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/writes-and-atomic-operations/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-mongodb/writes-and-atomic-operations/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-r2dbc/",
@@ -1421,6 +1493,30 @@
       "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-mongodb/"
     },
     {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-mongodb/aggregation-pipelines/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-mongodb/aggregation-pipelines/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-mongodb/database-collection-flow/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-mongodb/database-collection-flow/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-mongodb/documents-codecs-queries/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-mongodb/documents-codecs-queries/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-mongodb/module-boundary-client-lifecycle/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-mongodb/module-boundary-client-lifecycle/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-mongodb/sessions-transactions/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-mongodb/sessions-transactions/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-mongodb/testing-operations-ecosystem/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-mongodb/testing-operations-ecosystem/"
+    },
+    {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-mutiny/",
       "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-mutiny/"
     },
@@ -1561,6 +1657,30 @@
       "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-cassandra/"
     },
     {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra/async-and-cql-operations/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-cassandra/async-and-cql-operations/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra/configuration-and-ownership/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-cassandra/configuration-and-ownership/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra/failures-testing-and-ecosystem/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-cassandra/failures-testing-and-ecosystem/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra/models-schema-and-converters/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-cassandra/models-schema-and-converters/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra/reactive-coroutine-operations/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-cassandra/reactive-coroutine-operations/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra/write-options-and-batches/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-cassandra/write-options-and-batches/"
+    },
+    {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/",
       "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-core/"
     },
@@ -1623,6 +1743,30 @@
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/",
       "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-mongodb/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/aggregation-collections-streaming/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-mongodb/aggregation-collections-streaming/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/auto-configuration-boundaries/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-mongodb/auto-configuration-boundaries/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/coroutine-reads-cardinality/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-mongodb/coroutine-reads-cardinality/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/query-dsl/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-mongodb/query-dsl/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/testing-operations-ecosystem/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-mongodb/testing-operations-ecosystem/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/writes-and-atomic-operations/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-mongodb/writes-and-atomic-operations/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-r2dbc/",
