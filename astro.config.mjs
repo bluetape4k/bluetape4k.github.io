@@ -1,14 +1,22 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import { loadRedirectCatalog } from './scripts/manual/lib/catalog.mjs';
-import { loadRepositoryRegistry, repositoryBySlug } from './scripts/manual/lib/repositories.mjs';
+import { loadRepositoryRegistry } from './scripts/manual/lib/repositories.mjs';
 
 const manualRepositories = loadRepositoryRegistry(new URL('./src/data/manual/repositories.json', import.meta.url));
-const projectsRepository = repositoryBySlug(manualRepositories, 'bluetape4k-projects');
-const manualRedirects = loadRedirectCatalog(
-  new URL('./src/data/manual/bluetape4k-projects.redirects.json', import.meta.url),
-  projectsRepository,
-);
+const redirectEntries = [];
+const redirectSources = new Set();
+for (const repository of manualRepositories.repositories) {
+  const catalog = loadRedirectCatalog(
+    new URL(`./src/data/manual/${repository.slug}.redirects.json`, import.meta.url),
+    repository,
+  );
+  for (const entry of catalog.entries) {
+    if (redirectSources.has(entry.source)) throw new Error(`REDIRECT_SOURCE_COLLISION: ${entry.source}`);
+    redirectSources.add(entry.source);
+    redirectEntries.push(entry);
+  }
+}
 
 const cloudflareBeaconToken =
   process.env.PUBLIC_CLOUDFLARE_BEACON_TOKEN ??
@@ -31,7 +39,7 @@ const cloudflareAnalyticsHead = cloudflareBeaconToken
 export default defineConfig({
   site: 'https://bluetape4k.github.io',
   redirects: Object.fromEntries(
-    manualRedirects.entries.map(({ source, destination }) => [source, destination]),
+    redirectEntries.map(({ source, destination }) => [source, destination]),
   ),
   integrations: [
     starlight({

@@ -81,6 +81,7 @@ test('rejects unsafe, cross-locale, and non-latest redirect routes', async (t) =
     ['query', { target: '/manual/bluetape4k-projects/1.11/modules/shared/?from=old' }],
     ['fragment', { target: '/manual/bluetape4k-projects/1.11/modules/shared/#old' }],
     ['wrong locale', { target: '/ko/manual/bluetape4k-projects/1.11/modules/shared/' }],
+    ['wrong repository', { target: '/manual/bluetape4k-exposed/1.11/modules/shared/' }],
     ['wrong version', { target: '/manual/bluetape4k-projects/1.10/modules/shared/' }],
     ['versioned source', { source: '/manual/bluetape4k-projects/1.11/modules/shared/' }],
   ];
@@ -103,6 +104,13 @@ test('rejects unsafe, cross-locale, and non-latest redirect routes', async (t) =
   missing.redirects.redirects.pop();
   const missingUrl = await catalogFixture(t, missing);
   assert.throws(() => loadRedirectCatalog(missingUrl, projects), /REDIRECT_SOURCE_SET/);
+});
+
+test('Astro combines every registered redirect catalog and rejects source collisions', async () => {
+  const source = await readFile(path.join(projectRoot, 'astro.config.mjs'), 'utf8');
+  assert.match(source, /for \(const repository of manualRepositories\.repositories\)/);
+  assert.match(source, /src\/data\/manual\/\$\{repository\.slug\}\.redirects\.json/);
+  assert.match(source, /REDIRECT_SOURCE_COLLISION/);
 });
 
 test('Astro static output creates accessible noindex navigation HTML for a legacy route', async (t) => {

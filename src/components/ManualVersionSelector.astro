@@ -6,16 +6,23 @@ import { selectorTarget, validateVersionCatalog } from '../../scripts/manual/lib
 import { loadRepositoryRegistry, repositoryBySlug } from '../../scripts/manual/lib/repositories.mjs';
 
 const manualRepositories = loadRepositoryRegistry(pathToFileURL(path.join(process.cwd(), 'src/data/manual/repositories.json')));
-const projectsRepository = repositoryBySlug(manualRepositories, 'bluetape4k-projects');
+type ManualRepository = {
+  slug: string;
+  repository: string;
+  label: Record<'en' | 'ko', string>;
+};
 
 interface Props {
   entryId: string;
   locale: 'en' | 'ko';
   minorVersion: string;
+  repository: string;
   placement: 'header' | 'mobile';
 }
 
-const { entryId, locale, minorVersion, placement } = Astro.props;
+const { entryId, locale, minorVersion, repository: repositorySlug, placement } = Astro.props;
+let repository: ManualRepository | undefined;
+try { repository = repositoryBySlug(manualRepositories, repositorySlug); } catch { /* malformed metadata renders no selector */ }
 type CatalogVersion = {
   minorVersion: string;
   releaseRef: string;
@@ -31,11 +38,13 @@ type VersionItem = {
 };
 let catalog: Catalog | undefined;
 try {
-  const bytes = readFileSync(
-    path.join(process.cwd(), 'src/data/manual/bluetape4k-projects.versions.json'),
-    'utf8',
-  );
-  catalog = validateVersionCatalog(JSON.parse(bytes), projectsRepository) as Catalog;
+  if (repository) {
+    const bytes = readFileSync(
+      path.join(process.cwd(), `src/data/manual/${repository.slug}.versions.json`),
+      'utf8',
+    );
+    catalog = validateVersionCatalog(JSON.parse(bytes), repository) as Catalog;
+  }
 } catch (error) {
   if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
 }
@@ -43,7 +52,7 @@ try {
 const localizedId = locale === 'ko' ? entryId.replace(/^ko\//, '') : entryId;
 const routeSegments = localizedId.replace(/\/$/, '').split('/');
 const isVersionedManualRoute = routeSegments[0] === 'manual'
-  && routeSegments[1] === 'bluetape4k-projects'
+  && routeSegments[1] === repository?.slug
   && routeSegments[2] === minorVersion;
 const documentId = isVersionedManualRoute ? routeSegments.slice(3).join('/') || 'index' : undefined;
 const sourceDocuments = catalog?.versions.find((item: CatalogVersion) => item.minorVersion === minorVersion)?.documents[locale];
@@ -54,7 +63,7 @@ const versions: VersionItem[] | undefined = documentId && sourceDocuments?.inclu
     targetMinor: item.minorVersion,
     sourceMinor: minorVersion,
     documentId,
-  }, projectsRepository);
+  }, repository);
   const current = item.minorVersion === minorVersion;
   const latest = item.minorVersion === catalog.latest;
   const state = locale === 'ko'
@@ -68,16 +77,17 @@ const versions: VersionItem[] | undefined = documentId && sourceDocuments?.inclu
     state,
   };
 }) : undefined;
-const summaryText = locale === 'ko' ? `Projects 문서 ${minorVersion}` : `Projects docs ${minorVersion}`;
+const repositoryLabel = repository?.label[locale];
+const summaryText = `${repositoryLabel ?? ''} ${minorVersion}`.trim();
 const summaryLabel = locale === 'ko' ? `${summaryText} — 문서 버전 선택` : `${summaryText} — Select documentation version`;
-const kindText = locale === 'ko' ? 'Projects 문서' : 'Projects docs';
+const kindText = repositoryLabel;
 const releaseText = locale === 'ko' ? '릴리스' : 'Release';
 const releaseUrl = currentVersion
-  ? `https://github.com/bluetape4k/bluetape4k-projects/releases/tag/${encodeURIComponent(currentVersion.releaseRef)}`
+  ? `https://github.com/${repository?.repository}/releases/tag/${encodeURIComponent(currentVersion.releaseRef)}`
   : undefined;
 ---
 
-{versions && versions.length > 0 && (
+{repository && kindText && versions && versions.length > 0 && (
   <details class:list={['bt4k-manual-version', `bt4k-manual-version--${placement}`]}>
     <summary aria-label={summaryLabel}>
       <span>{kindText}</span><span>{minorVersion}</span>
