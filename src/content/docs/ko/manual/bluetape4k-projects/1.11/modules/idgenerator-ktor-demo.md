@@ -10,7 +10,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "learning"
   kind: "example"
-  sourceCommit: "a9051bd77bf5870d3787f15c1d32088412f2bdbb"
+  sourceCommit: "ece059d6f79ae8b6d769e44ec98483a1225f6260"
   sourcePath: "docs/manual/ko/modules/idgenerator-ktor-demo.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"

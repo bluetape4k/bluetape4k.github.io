@@ -10,9 +10,12 @@ test('projects map renders group to module to localized manual route', async () 
   assert.match(source, /<details/);
 });
 
-test('manual title exposes immutable source metadata only when present', async () => {
+test('manual title links public release provenance without claiming a document source', async () => {
   const source = await readFile(new URL('../../src/components/ManualPageTitle.astro', import.meta.url), 'utf8');
   assert.match(source, /data\.manual/);
-  assert.match(source, /sourceCommit/);
+  assert.match(source, /releaseRef/);
+  assert.match(source, /releases\/tag/);
+  assert.match(source, /bt4k-manual-provenance/);
+  assert.doesNotMatch(source, /sourcePath|githubSourceUrlFor|kind:\s*'blob'/);
   assert.match(source, /DefaultPageTitle/);
 });
