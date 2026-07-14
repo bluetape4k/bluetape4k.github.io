@@ -57,6 +57,30 @@
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-core/"
     },
     {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-core/cache-aside-loader-writer/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-core/cache-aside-loader-writer/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-core/local-providers-jcache/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-core/local-providers-jcache/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-core/memoizers-single-flight/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-core/memoizers-single-flight/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-core/near-cache-semantics/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-core/near-cache-semantics/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-core/resilience-failures-lifecycle/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-core/resilience-failures-lifecycle/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-core/testing-ecosystem-paths/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-core/testing-ecosystem-paths/"
+    },
+    {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/",
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-hazelcast/"
     },
@@ -377,6 +401,30 @@
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/"
     },
     {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-lettuce/clients-and-connections/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/clients-and-connections/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-lettuce/codecs-and-serialization/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/codecs-and-serialization/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-lettuce/commands-and-coroutines/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/commands-and-coroutines/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-lettuce/filters-scripts-and-primitives/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/filters-scripts-and-primitives/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-lettuce/maps-and-cache-loading/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/maps-and-cache-loading/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-lettuce/operations-and-ecosystem/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/operations-and-ecosystem/"
+    },
+    {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-logging/",
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-logging/"
     },
@@ -499,6 +547,30 @@
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redisson/",
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redisson/cache-modes-persistence/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/cache-modes-persistence/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redisson/client-distributed-objects-streams/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/client-distributed-objects-streams/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redisson/codecs-security-wire-format/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/codecs-security-wire-format/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redisson/future-coroutine-boundaries/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/future-coroutine-boundaries/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redisson/lifecycle-testing-ecosystem/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/lifecycle-testing-ecosystem/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redisson/local-cache-pubsub-invalidation/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/local-cache-pubsub-invalidation/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-resilience4j/",
@@ -707,6 +779,30 @@
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-core/",
       "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-core/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-core/cache-aside-loader-writer/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-core/cache-aside-loader-writer/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-core/local-providers-jcache/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-core/local-providers-jcache/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-core/memoizers-single-flight/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-core/memoizers-single-flight/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-core/near-cache-semantics/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-core/near-cache-semantics/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-core/resilience-failures-lifecycle/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-core/resilience-failures-lifecycle/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-core/testing-ecosystem-paths/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-core/testing-ecosystem-paths/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/",
@@ -1029,6 +1125,30 @@
       "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/"
     },
     {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-lettuce/clients-and-connections/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/clients-and-connections/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-lettuce/codecs-and-serialization/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/codecs-and-serialization/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-lettuce/commands-and-coroutines/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/commands-and-coroutines/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-lettuce/filters-scripts-and-primitives/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/filters-scripts-and-primitives/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-lettuce/maps-and-cache-loading/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/maps-and-cache-loading/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-lettuce/operations-and-ecosystem/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/operations-and-ecosystem/"
+    },
+    {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-logging/",
       "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-logging/"
     },
@@ -1151,6 +1271,30 @@
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-redisson/",
       "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-redisson/cache-modes-persistence/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/cache-modes-persistence/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-redisson/client-distributed-objects-streams/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/client-distributed-objects-streams/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-redisson/codecs-security-wire-format/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/codecs-security-wire-format/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-redisson/future-coroutine-boundaries/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/future-coroutine-boundaries/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-redisson/lifecycle-testing-ecosystem/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/lifecycle-testing-ecosystem/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-redisson/local-cache-pubsub-invalidation/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/local-cache-pubsub-invalidation/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-resilience4j/",
