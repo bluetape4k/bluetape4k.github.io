@@ -23,13 +23,10 @@ import {
 } from './lib/paths.mjs';
 import { publishStaged, recoverPublication, stagePublication } from './lib/publication.mjs';
 import { assertReleaseUnmoved, resolveRelease, sanitizeDiagnostic } from './lib/release.mjs';
-import { loadRepositoryRegistry, repositoryBySlug } from './lib/repositories.mjs';
+import { loadRepositoryRegistry, repositoryBySlug, validateRepositoryRegistry } from './lib/repositories.mjs';
 
 const siteRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const repositoryRegistry = loadRepositoryRegistry(new URL('../../src/data/manual/repositories.json', import.meta.url));
-const PROJECTS_REPOSITORY = repositoryBySlug(repositoryRegistry, 'bluetape4k-projects');
-const REPOSITORY_SLUG = PROJECTS_REPOSITORY.slug;
-const REPOSITORY_FULL_NAME = PROJECTS_REPOSITORY.repository;
 const SHA = /^[0-9a-f]{40}$/;
 const DIGEST = /^[0-9a-f]{64}$/;
 const MINOR = /^\d+\.\d+$/;
@@ -90,7 +87,7 @@ async function readApproved(root, relative, encoding) {
 }
 
 export function parseArgs(argv) {
-  const result = { repository: REPOSITORY_SLUG };
+  const result = {};
   const modes = [];
   for (let index = 0; index < argv.length; index += 1) {
     const argument = argv[index];
@@ -112,13 +109,15 @@ export function parseArgs(argv) {
       if (!result.source) fail('CLI_SOURCE', 'source path', null, 2);
     } else if (argument === '--repository') {
       result.repository = argv[++index];
-      if (!result.repository) fail('CLI_REPOSITORY', REPOSITORY_SLUG, null, 2);
+      if (!result.repository) fail('CLI_REPOSITORY', 'repository slug', null, 2);
     } else fail('CLI_ARGUMENT', 'known option', argument, 2);
   }
   if (modes.length !== 1) fail('CLI_MODE', 'exactly one mode', modes.join(','), 2);
   result.mode = modes[0];
-  if (result.repository !== REPOSITORY_SLUG) fail('CLI_REPOSITORY', REPOSITORY_SLUG, result.repository, 2);
   const writeMode = ['latest', 'release', 'refresh'].includes(result.mode);
+  if ((writeMode || result.mode === 'recover') && !result.repository) {
+    fail('CLI_REPOSITORY', 'explicit --repository <slug>', null, 2);
+  }
   if (writeMode && !result.source) fail('CLI_SOURCE', 'source path', null, 2);
   if (!writeMode && result.source) fail('CLI_MODE', `${result.mode} without source`, 'source supplied', 2);
   return result;
@@ -185,15 +184,18 @@ function initialRedirects(repository) {
 
 function assertResolvedInput(input) {
   if (!input || typeof input !== 'object') fail('SOURCE_INPUT', 'resolved input', input, 2);
-  if (input.repositorySlug !== REPOSITORY_SLUG || input.repositoryFullName !== REPOSITORY_FULL_NAME) {
-    fail('REPOSITORY_IDENTITY', REPOSITORY_FULL_NAME, input.repositoryFullName, 3);
+  let repository;
+  try {
+    repository = validateRepositoryRegistry({ schema: 1, repositories: [input.repository] }).repositories[0];
+  } catch {
+    fail('REPOSITORY_IDENTITY', 'approved repository descriptor', input.repository, 3);
   }
   if (!SHA.test(input.releaseCommit) || !SHA.test(input.sourceCommit)) fail('SOURCE_COMMIT', '40 lowercase hex', null, 4);
   if (!MINOR.test(input.minorVersion)) fail('MINOR_UNSAFE', 'major.minor', input.minorVersion, 4);
   if (typeof input.authoringSourceRef !== 'string' || input.authoringSourceRef.length === 0) {
     fail('SOURCE_REF', 'authoring source ref', input.authoringSourceRef, 4);
   }
-  return PROJECTS_REPOSITORY;
+  return repository;
 }
 
 export async function buildSnapshot(input, {
@@ -277,15 +279,15 @@ export async function buildSnapshot(input, {
     const content = await readFile(approved.absolute);
     assetEntries.push({ path: assetDestinationFor(repository, relative, input.minorVersion), content });
     assetAliases.push({
-      path: `public/manual-assets/${input.repositorySlug}/${relative.replace(/^assets\//, '')}`,
+      path: `public/manual-assets/${repository.slug}/${relative.replace(/^assets\//, '')}`,
       content,
     });
   }
 
   const normalizedManifest = {
     schemaVersion: 2,
-    repository: input.repositoryFullName,
-    repositorySlug: input.repositorySlug,
+    repository: repository.repository,
+    repositorySlug: repository.slug,
     minorVersion: input.minorVersion,
     releaseRef: input.releaseRef,
     releaseCommit: input.releaseCommit,
@@ -309,8 +311,8 @@ export async function buildSnapshot(input, {
   };
   const snapshot = {
     schemaVersion: 1,
-    repository: input.repositoryFullName,
-    repositorySlug: input.repositorySlug,
+    repository: repository.repository,
+    repositorySlug: repository.slug,
     minorVersion: input.minorVersion,
     releaseRef: input.releaseRef,
     releaseCommit: input.releaseCommit,
@@ -352,12 +354,12 @@ export async function buildSnapshot(input, {
   const manifestBytes = stableJson(normalizedManifest);
   const snapshotBytes = stableJson(snapshot);
   const dataEntries = [
-    { path: `src/data/manual/${input.repositorySlug}.${input.minorVersion}.manifest.json`, content: manifestBytes },
-    { path: `src/data/manual/${input.repositorySlug}.${input.minorVersion}.snapshot.json`, content: snapshotBytes },
-    { path: `src/data/manual/${input.repositorySlug}.manifest.json`, content: manifestBytes },
-    { path: `src/data/manual/${input.repositorySlug}.snapshot.json`, content: snapshotBytes },
-    { path: `src/data/manual/${input.repositorySlug}.versions.json`, content: stableJson(catalog) },
-    { path: `src/data/manual/${input.repositorySlug}.redirects.json`, content: stableJson(redirects) },
+    { path: `src/data/manual/${repository.slug}.${input.minorVersion}.manifest.json`, content: manifestBytes },
+    { path: `src/data/manual/${repository.slug}.${input.minorVersion}.snapshot.json`, content: snapshotBytes },
+    { path: `src/data/manual/${repository.slug}.manifest.json`, content: manifestBytes },
+    { path: `src/data/manual/${repository.slug}.snapshot.json`, content: snapshotBytes },
+    { path: `src/data/manual/${repository.slug}.versions.json`, content: stableJson(catalog) },
+    { path: `src/data/manual/${repository.slug}.redirects.json`, content: stableJson(redirects) },
   ];
   const entries = [...contentEntries, ...assetEntries, ...assetAliases, ...unavailableEntries, ...dataEntries]
     .sort((left, right) => left.path.localeCompare(right.path));
@@ -437,26 +439,30 @@ function dependencies(overrides = {}) {
     commandRunner: commandOutput,
     gitRunner: gitOutput,
     fetchImpl: globalThis.fetch,
+    repositoryRegistry,
     ...overrides,
   };
 }
 
-export async function validateCommittedSite({ targetRoot = siteRoot, repository = REPOSITORY_SLUG }) {
-  if (repository !== REPOSITORY_SLUG) fail('CLI_REPOSITORY', REPOSITORY_SLUG, repository, 2);
-  const repositoryDescriptor = PROJECTS_REPOSITORY;
+export async function validateCommittedRepository({ targetRoot = siteRoot, repository }) {
+  const repositoryDescriptor = validateRepositoryRegistry({ schema: 1, repositories: [repository] }).repositories[0];
+  const repositorySlug = repositoryDescriptor.slug;
   const root = await approvedRootPath(targetRoot);
   const publicationEntries = [];
-  const catalogPath = `src/data/manual/${repository}.versions.json`;
-  const redirectsPath = `src/data/manual/${repository}.redirects.json`;
+  const catalogPath = `src/data/manual/${repositorySlug}.versions.json`;
+  const redirectsPath = `src/data/manual/${repositorySlug}.redirects.json`;
   const catalogBytes = await readApproved(root, catalogPath);
   const redirectsBytes = await readApproved(root, redirectsPath);
   const catalog = validateVersionCatalog(JSON.parse(catalogBytes), repositoryDescriptor);
+  if (catalog.latest !== repositoryDescriptor.latestMinor) {
+    fail('REPOSITORY_LATEST_MINOR', repositoryDescriptor.latestMinor, catalog.latest, 4);
+  }
   const redirects = JSON.parse(redirectsBytes);
   publicationEntries.push(
     { path: catalogPath, content: catalogBytes },
     { path: redirectsPath, content: redirectsBytes },
   );
-  if (!redirects || redirects.schema !== 1 || redirects.repository !== REPOSITORY_FULL_NAME || !Array.isArray(redirects.redirects)) {
+  if (!redirects || redirects.schema !== 1 || redirects.repository !== repositoryDescriptor.repository || !Array.isArray(redirects.redirects)) {
     fail('REDIRECT_SCHEMA', 1, redirects?.schema, 4);
   }
   const redirectSources = new Set();
@@ -469,8 +475,8 @@ export async function validateCommittedSite({ targetRoot = siteRoot, repository 
   }
   for (const version of catalog.versions) {
     const minor = version.minorVersion;
-    const manifestPath = `src/data/manual/${repository}.${minor}.manifest.json`;
-    const snapshotPath = `src/data/manual/${repository}.${minor}.snapshot.json`;
+    const manifestPath = `src/data/manual/${repositorySlug}.${minor}.manifest.json`;
+    const snapshotPath = `src/data/manual/${repositorySlug}.${minor}.snapshot.json`;
     const manifestBytes = await readApproved(root, manifestPath);
     const snapshotBytes = await readApproved(root, snapshotPath);
     const manifest = JSON.parse(manifestBytes);
@@ -500,7 +506,7 @@ export async function validateCommittedSite({ targetRoot = siteRoot, repository 
       const content = await readApproved(root, destination);
       assetEntries.push({ path: destination, content });
       if (minor === catalog.latest) {
-        const alias = `public/manual-assets/${repository}/${relative.replace(/^assets\//, '')}`;
+        const alias = `public/manual-assets/${repositorySlug}/${relative.replace(/^assets\//, '')}`;
         const aliasContent = await readApproved(root, alias);
         if (!content.equals(aliasContent)) fail('ASSET_ALIAS', destination, alias, 4);
         publicationEntries.push({ path: alias, content: aliasContent });
@@ -538,11 +544,11 @@ export async function validateCommittedSite({ targetRoot = siteRoot, repository 
       }
     }
   }
-  const latestManifest = `src/data/manual/${repository}.${catalog.latest}.manifest.json`;
-  const latestSnapshot = `src/data/manual/${repository}.${catalog.latest}.snapshot.json`;
+  const latestManifest = `src/data/manual/${repositorySlug}.${catalog.latest}.manifest.json`;
+  const latestSnapshot = `src/data/manual/${repositorySlug}.${catalog.latest}.snapshot.json`;
   for (const [alias, fixed] of [
-    [`src/data/manual/${repository}.manifest.json`, latestManifest],
-    [`src/data/manual/${repository}.snapshot.json`, latestSnapshot],
+    [`src/data/manual/${repositorySlug}.manifest.json`, latestManifest],
+    [`src/data/manual/${repositorySlug}.snapshot.json`, latestSnapshot],
   ]) {
     const aliasContent = await readApproved(root, alias);
     if (!aliasContent.equals(await readApproved(root, fixed))) {
@@ -550,7 +556,7 @@ export async function validateCommittedSite({ targetRoot = siteRoot, repository 
     }
     publicationEntries.push({ path: alias, content: aliasContent });
   }
-  const marker = JSON.parse(await readApproved(root, '.manual-sync-generation.json', 'utf8'));
+  const marker = JSON.parse(await readApproved(root, `.manual-sync-generation.${repositorySlug}.json`, 'utf8'));
   const expectedGeneration = canonicalGeneration(publicationEntries);
   const expectedTreeDigest = canonicalTargetDigest(publicationEntries);
   if (!DIGEST.test(marker.generationId) || !DIGEST.test(marker.treeDigest)
@@ -559,7 +565,7 @@ export async function validateCommittedSite({ targetRoot = siteRoot, repository 
   }
   const latest = catalog.versions.find(({ minorVersion }) => minorVersion === catalog.latest);
   return {
-    repository: REPOSITORY_FULL_NAME,
+    repository: repositoryDescriptor.repository,
     latest: catalog.latest,
     releaseRef: latest.releaseRef,
     releaseCommit: latest.releaseCommit,
@@ -574,15 +580,47 @@ export async function validateCommittedSite({ targetRoot = siteRoot, repository 
   };
 }
 
+export async function validateCommittedSite({ targetRoot = siteRoot, repository, registry = repositoryRegistry }) {
+  const approvedRegistry = validateRepositoryRegistry(registry);
+  if (repository !== undefined) {
+    const descriptor = typeof repository === 'string'
+      ? repositoryBySlug(approvedRegistry, repository)
+      : repositoryBySlug(approvedRegistry, repository?.slug);
+    try {
+      return await validateCommittedRepository({ targetRoot, repository: descriptor });
+    } catch (error) {
+      error.repository ??= descriptor.repository;
+      throw error;
+    }
+  }
+  const repositories = [];
+  for (const descriptor of approvedRegistry.repositories) {
+    try {
+      repositories.push(await validateCommittedRepository({ targetRoot, repository: descriptor }));
+    } catch (error) {
+      error.repository ??= descriptor.repository;
+      throw error;
+    }
+  }
+  return { repositories, changed: false, mutated: false };
+}
+
 export async function syncManual(options, dependencyOverrides = {}) {
   const deps = dependencies(dependencyOverrides);
   const targetRoot = options.targetRoot ?? siteRoot;
   if (options.mode === 'check' || options.check === true) {
-    return validateCommittedSite({ targetRoot, repository: options.repository ?? REPOSITORY_SLUG });
+    return validateCommittedSite({ targetRoot, repository: options.repository, registry: deps.repositoryRegistry });
+  }
+  let repository;
+  try {
+    const repositorySlug = typeof options.repository === 'string' ? options.repository : options.repository?.slug;
+    repository = repositoryBySlug(deps.repositoryRegistry, repositorySlug);
+  } catch {
+    fail('CLI_REPOSITORY', 'registered repository slug', options.repository, 2);
   }
   let recovery;
   try {
-    recovery = await deps.recoverPublicationImpl(targetRoot);
+    recovery = await deps.recoverPublicationImpl(targetRoot, repository.slug);
   } catch (error) {
     error.exitCode ??= 5;
     error.recovery = { recovered: false };
@@ -596,7 +634,7 @@ export async function syncManual(options, dependencyOverrides = {}) {
   let resolvedRelease;
   try {
     resolvedRelease = await deps.resolveReleaseImpl({
-      repository: PROJECTS_REPOSITORY,
+      repository,
       releaseRef: options.mode === 'latest' ? undefined : options.releaseRef,
       fetchImpl: deps.fetchImpl,
     });
@@ -622,14 +660,13 @@ export async function syncManual(options, dependencyOverrides = {}) {
     env: validatorEnvironment(),
   });
 
-  const previousCatalog = await optionalJson(targetRoot, `src/data/manual/${REPOSITORY_SLUG}.versions.json`);
-  const previousRedirects = await optionalJson(targetRoot, `src/data/manual/${REPOSITORY_SLUG}.redirects.json`);
+  const previousCatalog = await optionalJson(targetRoot, `src/data/manual/${repository.slug}.versions.json`);
+  const previousRedirects = await optionalJson(targetRoot, `src/data/manual/${repository.slug}.redirects.json`);
   let built;
   try {
     built = await deps.buildSnapshotImpl({
       source,
-      repositorySlug: REPOSITORY_SLUG,
-      repositoryFullName: REPOSITORY_FULL_NAME,
+      repository,
       releaseRef: resolvedRelease.releaseRef,
       releaseCommit: resolvedRelease.releaseCommit,
       minorVersion: resolvedRelease.minorVersion,
@@ -646,7 +683,7 @@ export async function syncManual(options, dependencyOverrides = {}) {
     throw error;
   }
   try {
-    await deps.assertReleaseUnmovedImpl(resolvedRelease, PROJECTS_REPOSITORY, deps.fetchImpl);
+    await deps.assertReleaseUnmovedImpl(resolvedRelease, repository, deps.fetchImpl);
   } catch (error) {
     error.exitCode ??= 3;
     error.recovery = recovery;
@@ -658,6 +695,7 @@ export async function syncManual(options, dependencyOverrides = {}) {
       targetRoot,
       entries: built.entries,
       generationId: canonicalGeneration(built.entries),
+      scope: repository.slug,
     });
     publication = await deps.publishStagedImpl({ targetRoot, staged });
   } catch (error) {
@@ -666,7 +704,7 @@ export async function syncManual(options, dependencyOverrides = {}) {
     throw error;
   }
   return {
-    repository: REPOSITORY_FULL_NAME,
+    repository: repository.repository,
     latest: built.catalog.latest,
     minor: built.snapshot.minorVersion,
     releaseRef: built.snapshot.releaseRef,
@@ -686,7 +724,11 @@ function safeField(value, pattern) {
 
 function diagnostic(error, options = {}) {
   const value = sanitizeDiagnostic(error);
-  value.repository = REPOSITORY_FULL_NAME;
+  if (typeof error?.repository === 'string') value.repository = error.repository;
+  else if (typeof options.repository === 'string') {
+    try { value.repository = repositoryBySlug(repositoryRegistry, options.repository).repository; }
+    catch { /* an unknown repository is already represented by the error code */ }
+  }
   const minor = safeField(options.minor ?? error.minor, MINOR);
   if (minor) value.minor = minor;
   const safePath = safeField(error.path, /^[A-Za-z0-9._/-]{1,200}$/);
@@ -715,6 +757,9 @@ function summary(result, mode) {
     return `Manual recovery: recovered=${result.recovery.recovered === true} changed=false`;
   }
   if (mode === 'check') {
+    if (Array.isArray(result.repositories)) {
+      return `Manual check: repositories=${result.repositories.length} changed=false`;
+    }
     return `Manual check: repository=${result.repository} latest=${result.latest} release=${result.releaseRef} documents=${result.documents} assets=${result.assets} changed=false`;
   }
   return `Manual sync: repository=${result.repository} latest=${result.latest} release=${result.releaseRef} releaseCommit=${result.releaseCommit} sourceCommit=${result.sourceCommit} documents=${result.documents} assets=${result.assets} changed=${result.changed}`;

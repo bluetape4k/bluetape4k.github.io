@@ -12,12 +12,28 @@ import {
   parseArgs,
   runCli,
   syncManual,
+  validateCommittedRepository,
   validateCommittedSite,
 } from '../../scripts/manual/sync-manual.mjs';
 import { stagePublication } from '../../scripts/manual/lib/publication.mjs';
 
 const FULL_NAME = 'bluetape4k/bluetape4k-projects';
 const SLUG = 'bluetape4k-projects';
+const PROJECTS = {
+  slug: SLUG,
+  repository: FULL_NAME,
+  label: { en: 'Projects docs', ko: 'Projects 문서' },
+  latestMinor: '1.11',
+  route: { en: '/manual/bluetape4k-projects/', ko: '/ko/manual/bluetape4k-projects/' },
+};
+const EXPOSED = {
+  slug: 'bluetape4k-exposed',
+  repository: 'bluetape4k/bluetape4k-exposed',
+  label: { en: 'Exposed docs', ko: 'Exposed 문서' },
+  latestMinor: '1.11',
+  route: { en: '/manual/bluetape4k-exposed/', ko: '/ko/manual/bluetape4k-exposed/' },
+};
+const TEST_REGISTRY = { schema: 1, repositories: [PROJECTS, EXPOSED] };
 const RELEASE_COMMIT = '6'.repeat(40);
 
 async function write(root, relative, content) {
@@ -80,12 +96,11 @@ async function createSourceFixture({ validatorExit = 0, validatorScript } = {}) 
   return { source, manifest, sourceCommit };
 }
 
-function resolved(source, sourceCommit, releaseRef = '1.11.0') {
+function resolved(source, sourceCommit, releaseRef = '1.11.0', repository = PROJECTS) {
   const [, major, minor] = releaseRef.match(/^(?:v)?(\d+)\.(\d+)\.(\d+)$/);
   return {
     source,
-    repositorySlug: SLUG,
-    repositoryFullName: FULL_NAME,
+    repository,
     releaseRef,
     releaseCommit: RELEASE_COMMIT,
     minorVersion: `${major}.${minor}`,
@@ -97,7 +112,7 @@ function resolved(source, sourceCommit, releaseRef = '1.11.0') {
 function dependenciesFor(input, overrides = {}) {
   return {
     resolveReleaseImpl: async () => ({
-      repository: FULL_NAME,
+      repository: input.repository.repository,
       releaseRef: input.releaseRef,
       releaseCommit: input.releaseCommit,
       minorVersion: input.minorVersion,
@@ -108,19 +123,21 @@ function dependenciesFor(input, overrides = {}) {
 }
 
 test('parses explicit CLI modes and rejects conflicting modes', () => {
-  assert.deepEqual(parseArgs(['--source', '/source', '--latest']), {
+  assert.deepEqual(parseArgs(['--repository', SLUG, '--source', '/source', '--latest']), {
     repository: SLUG, mode: 'latest', source: '/source',
   });
-  assert.deepEqual(parseArgs(['--source', '/source', '--release', '1.11.0']), {
+  assert.deepEqual(parseArgs(['--repository', SLUG, '--source', '/source', '--release', '1.11.0']), {
     repository: SLUG, mode: 'release', source: '/source', releaseRef: '1.11.0',
   });
-  assert.deepEqual(parseArgs(['--source', '/source', '--refresh', '1.11.0']), {
+  assert.deepEqual(parseArgs(['--repository', SLUG, '--source', '/source', '--refresh', '1.11.0']), {
     repository: SLUG, mode: 'refresh', source: '/source', releaseRef: '1.11.0',
   });
-  assert.deepEqual(parseArgs(['--check']), { repository: SLUG, mode: 'check' });
-  assert.deepEqual(parseArgs(['--recover']), { repository: SLUG, mode: 'recover' });
+  assert.deepEqual(parseArgs(['--check']), { mode: 'check' });
+  assert.deepEqual(parseArgs(['--repository', SLUG, '--check']), { repository: SLUG, mode: 'check' });
+  assert.deepEqual(parseArgs(['--repository', SLUG, '--recover']), { repository: SLUG, mode: 'recover' });
+  assert.throws(() => parseArgs(['--source', '/source', '--latest']), /CLI_REPOSITORY/);
   assert.throws(() => parseArgs(['--latest', '--release', '1.11.0', '--source', '/source']), /CLI_MODE/);
-  assert.throws(() => parseArgs(['--latest']), /CLI_SOURCE/);
+  assert.throws(() => parseArgs(['--repository', SLUG, '--latest']), /CLI_SOURCE/);
   assert.throws(() => parseArgs(['--check', '--source', '/source']), /CLI_MODE/);
   assert.throws(() => parseArgs(['--source', '/source', '--release', 'main']), /CLI_RELEASE/);
   assert.throws(() => parseArgs(['--source', '/source', '--refresh', 'main']), /CLI_RELEASE/);
@@ -284,7 +301,7 @@ test('publishes a new minor without changing older content or assets and keeps r
   const nextCommit = commit(fixture.source, 'Prepare 1.12 manual');
   const nextInput = resolved(fixture.source, nextCommit, '1.12.0');
   await syncManual({ ...nextInput, mode: 'release', targetRoot }, dependenciesFor(nextInput));
-  await validateCommittedSite({ targetRoot, repository: SLUG });
+  await validateCommittedRepository({ targetRoot, repository: { ...PROJECTS, latestMinor: '1.12' } });
 
   assert.deepEqual(await readFile(oldDocument), oldBytes[0]);
   assert.deepEqual(await readFile(oldAsset), oldBytes[1]);
@@ -308,7 +325,7 @@ test('publishes a new minor without changing older content or assets and keeps r
   );
   await writeFile(unavailable, 'drifted fallback\n');
   await assert.rejects(
-    validateCommittedSite({ targetRoot, repository: SLUG }),
+    validateCommittedRepository({ targetRoot, repository: { ...PROJECTS, latestMinor: '1.12' } }),
     /UNAVAILABLE_DRIFT/,
   );
   await writeFile(unavailable, unavailableContent);
@@ -334,6 +351,10 @@ test('check mode is source-free, offline, read-only, and validates committed art
   assert.equal(result.latest, '1.11');
   assert.equal(await treeDigest(targetRoot), before);
   await validateCommittedSite({ targetRoot, repository: SLUG });
+  await assert.rejects(
+    validateCommittedRepository({ targetRoot, repository: { ...PROJECTS, latestMinor: '1.12' } }),
+    /REPOSITORY_LATEST_MINOR/,
+  );
 
   for (const artifact of ['manifest', 'snapshot']) {
     const artifactPath = path.join(targetRoot, `src/data/manual/${SLUG}.1.11.${artifact}.json`);
@@ -355,7 +376,7 @@ test('check mode is source-free, offline, read-only, and validates committed art
     }
   }
 
-  const markerPath = path.join(targetRoot, '.manual-sync-generation.json');
+  const markerPath = path.join(targetRoot, `.manual-sync-generation.${SLUG}.json`);
   const markerBytes = await readFile(markerPath, 'utf8');
   for (const field of ['generationId', 'treeDigest']) {
     const marker = JSON.parse(markerBytes);
@@ -368,6 +389,55 @@ test('check mode is source-free, offline, read-only, and validates committed art
     );
     await writeFile(markerPath, markerBytes);
   }
+});
+
+test('publishes and validates Projects and Exposed without cross-repository mutation', async (t) => {
+  const fixture = await createSourceFixture();
+  const targetRoot = await mkdtemp(path.join(os.tmpdir(), 'bt4k-manual-multi-site-'));
+  t.after(() => rm(fixture.source, { recursive: true, force: true }));
+  t.after(() => rm(targetRoot, { recursive: true, force: true }));
+
+  const projectsInput = resolved(fixture.source, fixture.sourceCommit);
+  const exposedInput = resolved(fixture.source, fixture.sourceCommit, '1.11.0', EXPOSED);
+  const exposedBuilt = await buildSnapshot(exposedInput);
+  assert.ok(exposedBuilt.entries.every(({ path: entryPath }) => entryPath.includes(EXPOSED.slug)));
+
+  await syncManual(
+    { ...projectsInput, mode: 'release', targetRoot },
+    dependenciesFor(projectsInput, { repositoryRegistry: TEST_REGISTRY }),
+  );
+  const projectsMarkerPath = path.join(targetRoot, `.manual-sync-generation.${SLUG}.json`);
+  const projectsSnapshotPath = path.join(targetRoot, `src/data/manual/${SLUG}.snapshot.json`);
+  const projectsDocumentPath = path.join(targetRoot, `src/content/docs/manual/${SLUG}/1.11/modules/sample.md`);
+  const projectsBefore = await Promise.all([
+    readFile(projectsMarkerPath), readFile(projectsSnapshotPath), readFile(projectsDocumentPath),
+  ]);
+
+  await syncManual(
+    { ...exposedInput, mode: 'release', targetRoot },
+    dependenciesFor(exposedInput, { repositoryRegistry: TEST_REGISTRY }),
+  );
+  assert.deepEqual(await Promise.all([
+    readFile(projectsMarkerPath), readFile(projectsSnapshotPath), readFile(projectsDocumentPath),
+  ]), projectsBefore);
+
+  const aggregate = await validateCommittedSite({ targetRoot, registry: TEST_REGISTRY });
+  assert.deepEqual(aggregate.repositories.map(({ repository }) => repository), [
+    PROJECTS.repository,
+    EXPOSED.repository,
+  ]);
+  assert.equal(aggregate.mutated, false);
+
+  const exposedDocument = path.join(targetRoot, `src/content/docs/manual/${EXPOSED.slug}/1.11/modules/sample.md`);
+  const original = await readFile(exposedDocument);
+  await writeFile(exposedDocument, 'drifted\n');
+  const driftedTree = await treeDigest(targetRoot);
+  await assert.rejects(
+    validateCommittedSite({ targetRoot, registry: TEST_REGISTRY }),
+    /DIGEST_MISMATCH/,
+  );
+  assert.equal(await treeDigest(targetRoot), driftedTree);
+  await writeFile(exposedDocument, original);
 });
 
 test('offline validation rejects a symlink target root and matching external artifact bytes', async (t) => {
@@ -415,7 +485,7 @@ test('release contract failure exits 4 without staging or publication mutation',
   t.after(() => rm(targetRoot, { recursive: true, force: true }));
   const input = resolved(fixture.source, fixture.sourceCommit);
   const result = await runCli(
-    ['--source', fixture.source, '--release', '1.11.0'],
+    ['--repository', SLUG, '--source', fixture.source, '--release', '1.11.0'],
     { targetRoot, ...dependenciesFor(input) },
   );
   assert.equal(result.exitCode, 4);
@@ -471,7 +541,7 @@ test('rejects modified, index-hidden, and symlink validators without executing a
       }
     }
     const input = resolved(fixture.source, fixture.sourceCommit);
-    const result = await runCli(['--source', fixture.source, '--release', '1.11.0'], {
+    const result = await runCli(['--repository', SLUG, '--source', fixture.source, '--release', '1.11.0'], {
       targetRoot,
       ...dependenciesFor(input),
     });
@@ -491,7 +561,7 @@ test('a moved release aborts before staging with exit 3 and sanitized output', a
   const moved = Object.assign(new Error('token ghp_SENTINEL_SUPER_SECRET_1234567890'), {
     code: 'RELEASE_MOVED', expected: RELEASE_COMMIT, actual: '7'.repeat(40),
   });
-  const result = await runCli(['--source', fixture.source, '--release', '1.11.0'], {
+  const result = await runCli(['--repository', SLUG, '--source', fixture.source, '--release', '1.11.0'], {
     targetRoot,
     ...dependenciesFor(input, { assertReleaseUnmovedImpl: async () => { throw moved; } }),
   });
@@ -523,6 +593,7 @@ test('mutating sync recovers every Task 4 interruption before resolving a releas
       targetRoot,
       entries: orphanEntries,
       generationId: generationFor(orphanEntries),
+      scope: SLUG,
     });
     const child = spawnSync(process.execPath, ['--input-type=module', '-e', `
       import { publishStaged } from ${JSON.stringify(moduleUrl)};
@@ -556,7 +627,7 @@ test('mutating sync recovers every Task 4 interruption before resolving a releas
 
 test('recover mode performs recovery only', async () => {
   const calls = [];
-  const result = await syncManual({ mode: 'recover', targetRoot: '/unused' }, {
+  const result = await syncManual({ mode: 'recover', repository: SLUG, targetRoot: '/unused' }, {
     recoverPublicationImpl: async () => { calls.push('recover'); return { recovered: true, committed: false }; },
     resolveReleaseImpl: async () => { calls.push('release'); },
   });

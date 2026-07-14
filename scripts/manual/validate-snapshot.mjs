@@ -11,13 +11,16 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const registry = loadRepositoryRegistry(new URL('../../src/data/manual/repositories.json', import.meta.url));
 
 function parseArgs(argv) {
-  let repository = 'bluetape4k-projects';
+  let repository;
   let report;
   for (let index = 0; index < argv.length; index += 1) {
     if (argv[index] === '--report') {
       report = argv[++index];
       if (!report) throw new Error('REPORT_PATH: --report requires a path');
-    } else if (!argv[index].startsWith('-')) repository = argv[index];
+    } else if (argv[index] === '--repository') {
+      repository = argv[++index];
+      if (!repository) throw new Error('CLI_REPOSITORY: --repository requires a slug');
+    }
     else throw new Error(`CLI_OPTION: ${argv[index]}`);
   }
   return { repository, report };
@@ -35,19 +38,20 @@ function driftPaths(error) {
   return [...new Set(values)].slice(0, 10);
 }
 
-export function failureReport(error) {
+export function failureReport(error, repository) {
   const diagnostic = sanitizeDiagnostic(error);
+  const repositoryIdentity = repository ?? (typeof error?.repository === 'string' ? error.repository : undefined);
   return {
     status: 'fail',
-    repository: 'bluetape4k/bluetape4k-projects',
+    ...(repositoryIdentity ? { repository: repositoryIdentity } : {}),
     code: diagnostic.code ?? 'VALIDATION_FAILED',
     driftPaths: driftPaths(error),
   };
 }
 
-async function validate(repository) {
-  const repositoryDescriptor = repositoryBySlug(registry, repository);
-  const result = await validateCommittedSite({ targetRoot: root, repository });
+async function validateRepository(repositoryDescriptor) {
+  const repository = repositoryDescriptor.slug;
+  const result = await validateCommittedSite({ targetRoot: root, repository, registry });
   const catalogPath = path.join(root, `src/data/manual/${repository}.versions.json`);
   const catalog = validateVersionCatalog(JSON.parse(await readFile(catalogPath, 'utf8')), repositoryDescriptor);
   const redirects = loadRedirectCatalog(new URL(`../../src/data/manual/${repository}.redirects.json`, import.meta.url), repositoryDescriptor);
@@ -80,22 +84,37 @@ async function validate(repository) {
   };
 }
 
+async function validate(repository) {
+  if (repository) return validateRepository(repositoryBySlug(registry, repository));
+  const repositories = [];
+  for (const descriptor of registry.repositories) repositories.push(await validateRepository(descriptor));
+  return { status: 'pass', repositories };
+}
+
 async function main(argv) {
   const options = parseArgs(argv);
   let report;
   try {
     report = await validate(options.repository);
   } catch (error) {
-    report = failureReport(error);
+    let repositoryIdentity;
+    if (options.repository) {
+      try { repositoryIdentity = repositoryBySlug(registry, options.repository).repository; } catch { /* reported by code */ }
+    }
+    report = failureReport(error, repositoryIdentity);
     if (options.report) await writeFile(path.resolve(options.report), `${JSON.stringify(report, null, 2)}\n`);
     console.error(`Manual snapshot invalid: code=${report.code} drift=${report.driftPaths.join(',') || 'none'}`);
     process.exitCode = 1;
     return;
   }
   if (options.report) await writeFile(path.resolve(options.report), `${JSON.stringify(report, null, 2)}\n`);
-  console.log(
-    `Manual snapshot valid: repository=${report.repository} latest=${report.latest} release=${report.releaseRef} releaseCommit=${report.releaseCommit} sourceCommit=${report.sourceCommit} versions=${report.versions} documents=${report.documents} assets=${report.assets} redirects=${report.redirects} generation=${report.generationId}`,
-  );
+  if (Array.isArray(report.repositories)) {
+    console.log(`Manual snapshots valid: repositories=${report.repositories.length}`);
+  } else {
+    console.log(
+      `Manual snapshot valid: repository=${report.repository} latest=${report.latest} release=${report.releaseRef} releaseCommit=${report.releaseCommit} sourceCommit=${report.sourceCommit} versions=${report.versions} documents=${report.documents} assets=${report.assets} redirects=${report.redirects} generation=${report.generationId}`,
+    );
+  }
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) await main(process.argv.slice(2));

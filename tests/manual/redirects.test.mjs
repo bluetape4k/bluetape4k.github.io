@@ -146,10 +146,11 @@ test('snapshot validation writes a sanitized provenance report and summary', asy
   const reportBytes = await readFile(reportPath, 'utf8');
   const report = JSON.parse(reportBytes);
   assert.equal(report.status, 'pass');
-  assert.equal(report.latest, '1.11');
-  assert.match(report.releaseCommit, /^[0-9a-f]{40}$/);
-  assert.match(report.sourceCommit, /^[0-9a-f]{40}$/);
-  assert.match(report.generationId, /^[0-9a-f]{64}$/);
+  assert.equal(report.repositories.length, 1);
+  assert.equal(report.repositories[0].latest, '1.11');
+  assert.match(report.repositories[0].releaseCommit, /^[0-9a-f]{40}$/);
+  assert.match(report.repositories[0].sourceCommit, /^[0-9a-f]{40}$/);
+  assert.match(report.repositories[0].generationId, /^[0-9a-f]{64}$/);
   for (const secret of ['must-not-leak', 'authorization', 'headers', 'rawBody', 'query']) {
     assert.ok(!reportBytes.toLowerCase().includes(secret.toLowerCase()), secret);
   }

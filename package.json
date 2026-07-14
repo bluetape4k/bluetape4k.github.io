@@ -10,7 +10,7 @@
     "build:draft": "node scripts/draft-mode.mjs sync && astro check && astro build",
     "build:publish": "node scripts/draft-mode.mjs clean && astro check && astro build",
     "test": "node --test tests/manual/*.test.mjs tests/ecosystem/*.test.mjs",
-    "sync:manual": "node scripts/manual/sync-manual.mjs --repository bluetape4k-projects",
+    "sync:manual": "node scripts/manual/sync-manual.mjs",
     "check:manual": "node scripts/manual/validate-snapshot.mjs",
     "preview": "astro preview",
     "preview:draft": "npm run build:draft && astro preview"
