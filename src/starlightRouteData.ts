@@ -6,15 +6,14 @@ import { validateVersionCatalog } from '../scripts/manual/lib/catalog.mjs';
 import { loadRepositoryRegistry, repositoryBySlug } from '../scripts/manual/lib/repositories.mjs';
 
 const manualRepositories = loadRepositoryRegistry(pathToFileURL(path.join(process.cwd(), 'src/data/manual/repositories.json')));
-const projectsRepository = repositoryBySlug(manualRepositories, 'bluetape4k-projects');
-
-function latestMinor(): string | undefined {
+function latestMinor(repositorySlug: string): string | undefined {
+  const repository = repositoryBySlug(manualRepositories, repositorySlug);
   try {
     const bytes = readFileSync(
-      path.join(process.cwd(), 'src/data/manual/bluetape4k-projects.versions.json'),
+      path.join(process.cwd(), `src/data/manual/${repository.slug}.versions.json`),
       'utf8',
     );
-    return validateVersionCatalog(JSON.parse(bytes), projectsRepository).latest;
+    return validateVersionCatalog(JSON.parse(bytes), repository).latest;
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
     return undefined;
@@ -23,8 +22,8 @@ function latestMinor(): string | undefined {
 
 export const onRequest = defineRouteMiddleware((context) => {
   const route = context.locals.starlightRoute;
-  const manual = route.entry.data.manual as { minorVersion?: string } | undefined;
-  const latest = latestMinor();
+  const manual = route.entry.data.manual as { minorVersion?: string; repository?: string } | undefined;
+  const latest = manual?.repository ? latestMinor(manual.repository) : undefined;
   if (manual?.minorVersion && latest && manual.minorVersion !== latest) {
     route.entry.data.pagefind = false;
   }

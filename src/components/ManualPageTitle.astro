@@ -8,35 +8,47 @@ import { loadRepositoryRegistry, repositoryBySlug } from '../../scripts/manual/l
 import '../styles/manual.css';
 
 const manualRepositories = loadRepositoryRegistry(pathToFileURL(path.join(process.cwd(), 'src/data/manual/repositories.json')));
-const projectsRepository = repositoryBySlug(manualRepositories, 'bluetape4k-projects');
+type ManualRepository = {
+  slug: string;
+  repository: string;
+  label: Record<'en' | 'ko', string>;
+};
 
 const { starlightRoute } = Astro.locals;
 const manual = starlightRoute.entry.data.manual;
 const locale = starlightRoute.lang === 'ko' ? 'ko' : 'en';
+let repository: ManualRepository | undefined;
+try { if (manual?.repository) repository = repositoryBySlug(manualRepositories, manual.repository); } catch { /* malformed metadata renders no provenance */ }
 let latestMinor;
 try {
-  const bytes = readFileSync(
-    path.join(process.cwd(), 'src/data/manual/bluetape4k-projects.versions.json'),
-    'utf8',
-  );
-  latestMinor = validateVersionCatalog(JSON.parse(bytes), projectsRepository).latest;
+  if (repository) {
+    const bytes = readFileSync(
+      path.join(process.cwd(), `src/data/manual/${repository.slug}.versions.json`),
+      'utf8',
+    );
+    latestMinor = validateVersionCatalog(JSON.parse(bytes), repository).latest;
+  }
 } catch (error) {
   if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
 }
-const archived = Boolean(manual?.minorVersion && latestMinor && manual.minorVersion !== latestMinor);
-const releaseUrl = manual?.releaseRef
-  ? `https://github.com/bluetape4k/bluetape4k-projects/releases/tag/${encodeURIComponent(manual.releaseRef)}`
+const localizedId = locale === 'ko' ? starlightRoute.entry.id.replace(/^ko\//, '') : starlightRoute.entry.id;
+const routeRepository = localizedId.replace(/\/$/, '').split('/')[1];
+const routeMatches = routeRepository === repository?.slug;
+const archived = Boolean(routeMatches && manual?.minorVersion && latestMinor && manual.minorVersion !== latestMinor);
+const releaseUrl = routeMatches && manual?.releaseRef
+  ? `https://github.com/${repository?.repository}/releases/tag/${encodeURIComponent(manual.releaseRef)}`
   : undefined;
 const stateText = archived
   ? (locale === 'ko' ? '보존 버전' : 'Archived')
   : (locale === 'ko' ? '최신 안정판' : 'Latest stable');
+const repositoryName = repository?.label.en.replace(/ docs$/, '');
 const releaseLabel = locale === 'ko'
-  ? `Projects ${manual?.releaseRef} 릴리스 기준`
-  : `Based on Projects release ${manual?.releaseRef}`;
+  ? `${repositoryName} ${manual?.releaseRef} 릴리스 기준`
+  : `Based on ${repositoryName} release ${manual?.releaseRef}`;
 ---
 
 <DefaultPageTitle />
-{manual?.minorVersion && releaseUrl && (
+{repository && manual?.minorVersion && releaseUrl && (
   <p class="bt4k-manual-provenance" aria-label={locale === 'ko' ? '매뉴얼 배포 기준' : 'Manual release provenance'}>
     <span class="bt4k-manual-provenance__state">{stateText}</span>
     <span aria-hidden="true">·</span>
