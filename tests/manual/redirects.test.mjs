@@ -99,7 +99,9 @@ test('rejects unsafe, cross-locale, and non-latest redirect routes', async (t) =
 });
 
 test('Astro static output creates accessible noindex navigation HTML for a legacy route', async (t) => {
-  const fixture = await mkdtemp(path.join(projectRoot, '.tmp', 'manual-redirect-build-'));
+  const fixtureParent = path.join(projectRoot, '.tmp');
+  await mkdir(fixtureParent, { recursive: true });
+  const fixture = await mkdtemp(path.join(fixtureParent, 'manual-redirect-build-'));
   t.after(() => rm(fixture, { recursive: true, force: true }));
   const values = catalogs();
   await write(fixture, 'src/data/manual/bluetape4k-projects.redirects.json', JSON.stringify(values.redirects));
