@@ -1,0 +1,1270 @@
+{
+  "authoringSourceRef": "eea10abd857fdb806319f93bddf30f92542d787a",
+  "minorVersion": "1.11",
+  "modules": [
+    {
+      "artifact": null,
+      "chapters": [],
+      "en": "en/modules/benchmark-exposed-benchmark.md",
+      "gradlePath": ":benchmark-exposed-benchmark",
+      "group": "benchmark",
+      "id": "benchmark-exposed-benchmark",
+      "kind": "benchmark",
+      "ko": "ko/modules/benchmark-exposed-benchmark.md",
+      "layer": "apply",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/benchmark-exposed-benchmark/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/benchmark-exposed-benchmark/"
+      },
+      "sourceDir": "benchmark/exposed-benchmark",
+      "sourcePaths": [
+        "benchmark/exposed-benchmark/src/benchmark/kotlin"
+      ],
+      "testPaths": [],
+      "title": {
+        "en": "Exposed Repository Benchmark",
+        "ko": "Exposed 저장소 벤치마크"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-batch",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-batch.md",
+      "gradlePath": ":bluetape4k-exposed-batch",
+      "group": "integration",
+      "id": "bluetape4k-exposed-batch",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-batch.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-batch/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-batch/"
+      },
+      "sourceDir": "utils/batch",
+      "sourcePaths": [
+        "utils/batch/src/benchmark/kotlin",
+        "utils/batch/src/main/kotlin"
+      ],
+      "testPaths": [
+        "utils/batch/src/test/kotlin",
+        "utils/batch/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed Batch Utilities",
+        "ko": "Exposed 배치 유틸리티"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-bigquery",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-bigquery.md",
+      "gradlePath": ":bluetape4k-exposed-bigquery",
+      "group": "database",
+      "id": "bluetape4k-exposed-bigquery",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-bigquery.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-bigquery/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-bigquery/"
+      },
+      "sourceDir": "exposed/bigquery",
+      "sourcePaths": [
+        "exposed/bigquery/src/main/kotlin"
+      ],
+      "testPaths": [
+        "exposed/bigquery/src/test/kotlin",
+        "exposed/bigquery/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed BigQuery Adapter",
+        "ko": "Exposed BigQuery 어댑터"
+      },
+      "workshops": [
+        "examples/exposed-bigquery-dry-run"
+      ]
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-bom",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-bom.md",
+      "gradlePath": ":bluetape4k-exposed-bom",
+      "group": "foundation",
+      "id": "bluetape4k-exposed-bom",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-bom.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-bom/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-bom/"
+      },
+      "sourceDir": "exposed/bom",
+      "sourcePaths": [],
+      "testPaths": [],
+      "title": {
+        "en": "Exposed Bill of Materials",
+        "ko": "Exposed BOM"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-cache",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-cache.md",
+      "gradlePath": ":bluetape4k-exposed-cache",
+      "group": "foundation",
+      "id": "bluetape4k-exposed-cache",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-cache.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-cache/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-cache/"
+      },
+      "sourceDir": "exposed/cache",
+      "sourcePaths": [
+        "exposed/cache/src/main/kotlin",
+        "exposed/cache/src/testFixtures/kotlin"
+      ],
+      "testPaths": [
+        "exposed/cache/src/test/kotlin",
+        "exposed/cache/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed Cache Foundation",
+        "ko": "Exposed 캐시 기반 모듈"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-clickhouse",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-clickhouse.md",
+      "gradlePath": ":bluetape4k-exposed-clickhouse",
+      "group": "database",
+      "id": "bluetape4k-exposed-clickhouse",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-clickhouse.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-clickhouse/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-clickhouse/"
+      },
+      "sourceDir": "exposed/clickhouse",
+      "sourcePaths": [
+        "exposed/clickhouse/src/main/kotlin"
+      ],
+      "testPaths": [
+        "exposed/clickhouse/src/test/kotlin",
+        "exposed/clickhouse/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed ClickHouse Adapter",
+        "ko": "Exposed ClickHouse 어댑터"
+      },
+      "workshops": [
+        "examples/exposed-clickhouse-oltp-olap"
+      ]
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-cockroachdb",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-cockroachdb.md",
+      "gradlePath": ":bluetape4k-exposed-cockroachdb",
+      "group": "database",
+      "id": "bluetape4k-exposed-cockroachdb",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-cockroachdb.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-cockroachdb/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-cockroachdb/"
+      },
+      "sourceDir": "exposed/cockroachdb",
+      "sourcePaths": [
+        "exposed/cockroachdb/src/main/kotlin"
+      ],
+      "testPaths": [
+        "exposed/cockroachdb/src/test/kotlin",
+        "exposed/cockroachdb/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed CockroachDB Adapter",
+        "ko": "Exposed CockroachDB 어댑터"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-core",
+      "chapters": [
+        {
+          "en": "en/modules/bluetape4k-exposed-core/entity-id-model.md",
+          "id": "entity-id-model",
+          "ko": "ko/modules/bluetape4k-exposed-core/entity-id-model.md",
+          "routes": {
+            "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-core/entity-id-model/",
+            "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-core/entity-id-model/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-exposed-core/mapping-conventions.md",
+          "id": "mapping-conventions",
+          "ko": "ko/modules/bluetape4k-exposed-core/mapping-conventions.md",
+          "routes": {
+            "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-core/mapping-conventions/",
+            "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-core/mapping-conventions/"
+          }
+        }
+      ],
+      "en": "en/modules/bluetape4k-exposed-core.md",
+      "gradlePath": ":bluetape4k-exposed-core",
+      "group": "foundation",
+      "id": "bluetape4k-exposed-core",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-core.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-core/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-core/"
+      },
+      "sourceDir": "exposed/core",
+      "sourcePaths": [
+        "exposed/core/src/main/kotlin"
+      ],
+      "testPaths": [
+        "exposed/core/src/test/kotlin",
+        "exposed/core/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed Core Library",
+        "ko": "Exposed 핵심 라이브러리"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-dao",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-dao.md",
+      "gradlePath": ":bluetape4k-exposed-dao",
+      "group": "foundation",
+      "id": "bluetape4k-exposed-dao",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-dao.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-dao/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-dao/"
+      },
+      "sourceDir": "exposed/dao",
+      "sourcePaths": [
+        "exposed/dao/src/main/kotlin"
+      ],
+      "testPaths": [
+        "exposed/dao/src/test/kotlin",
+        "exposed/dao/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed DAO Extensions",
+        "ko": "Exposed DAO 확장"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-duckdb",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-duckdb.md",
+      "gradlePath": ":bluetape4k-exposed-duckdb",
+      "group": "database",
+      "id": "bluetape4k-exposed-duckdb",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-duckdb.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-duckdb/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-duckdb/"
+      },
+      "sourceDir": "exposed/duckdb",
+      "sourcePaths": [
+        "exposed/duckdb/src/main/kotlin"
+      ],
+      "testPaths": [
+        "exposed/duckdb/src/test/kotlin",
+        "exposed/duckdb/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed DuckDB Adapter",
+        "ko": "Exposed DuckDB 어댑터"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-fastjson2",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-fastjson2.md",
+      "gradlePath": ":bluetape4k-exposed-fastjson2",
+      "group": "serialization",
+      "id": "bluetape4k-exposed-fastjson2",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-fastjson2.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-fastjson2/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-fastjson2/"
+      },
+      "sourceDir": "exposed/fastjson2",
+      "sourcePaths": [
+        "exposed/fastjson2/src/main/kotlin"
+      ],
+      "testPaths": [
+        "exposed/fastjson2/src/test/kotlin",
+        "exposed/fastjson2/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed Fastjson2 Serialization",
+        "ko": "Exposed Fastjson2 직렬화"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-jackson2",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-jackson2.md",
+      "gradlePath": ":bluetape4k-exposed-jackson2",
+      "group": "serialization",
+      "id": "bluetape4k-exposed-jackson2",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-jackson2.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jackson2/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jackson2/"
+      },
+      "sourceDir": "exposed/jackson2",
+      "sourcePaths": [
+        "exposed/jackson2/src/main/kotlin"
+      ],
+      "testPaths": [
+        "exposed/jackson2/src/test/kotlin",
+        "exposed/jackson2/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed Jackson 2 Serialization",
+        "ko": "Exposed Jackson 2 직렬화"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-jackson3",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-jackson3.md",
+      "gradlePath": ":bluetape4k-exposed-jackson3",
+      "group": "serialization",
+      "id": "bluetape4k-exposed-jackson3",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-jackson3.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jackson3/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jackson3/"
+      },
+      "sourceDir": "exposed/jackson3",
+      "sourcePaths": [
+        "exposed/jackson3/src/main/kotlin"
+      ],
+      "testPaths": [
+        "exposed/jackson3/src/test/kotlin",
+        "exposed/jackson3/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed Jackson 3 Serialization",
+        "ko": "Exposed Jackson 3 직렬화"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-jdbc",
+      "chapters": [
+        {
+          "en": "en/modules/bluetape4k-exposed-jdbc/transaction-ownership.md",
+          "id": "transaction-ownership",
+          "ko": "ko/modules/bluetape4k-exposed-jdbc/transaction-ownership.md",
+          "routes": {
+            "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc/transaction-ownership/",
+            "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc/transaction-ownership/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-exposed-jdbc/repository-patterns.md",
+          "id": "repository-patterns",
+          "ko": "ko/modules/bluetape4k-exposed-jdbc/repository-patterns.md",
+          "routes": {
+            "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc/repository-patterns/",
+            "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc/repository-patterns/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-exposed-jdbc/operations-testing.md",
+          "id": "operations-testing",
+          "ko": "ko/modules/bluetape4k-exposed-jdbc/operations-testing.md",
+          "routes": {
+            "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc/operations-testing/",
+            "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc/operations-testing/"
+          }
+        }
+      ],
+      "en": "en/modules/bluetape4k-exposed-jdbc.md",
+      "gradlePath": ":bluetape4k-exposed-jdbc",
+      "group": "jdbc",
+      "id": "bluetape4k-exposed-jdbc",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-jdbc.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc/"
+      },
+      "sourceDir": "exposed/jdbc",
+      "sourcePaths": [
+        "exposed/jdbc/src/main/kotlin"
+      ],
+      "testPaths": [
+        "exposed/jdbc/src/test/kotlin",
+        "exposed/jdbc/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed JDBC Library",
+        "ko": "Exposed JDBC 라이브러리"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-jdbc-caffeine",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-jdbc-caffeine.md",
+      "gradlePath": ":bluetape4k-exposed-jdbc-caffeine",
+      "group": "jdbc",
+      "id": "bluetape4k-exposed-jdbc-caffeine",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-jdbc-caffeine.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc-caffeine/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc-caffeine/"
+      },
+      "sourceDir": "exposed/jdbc-caffeine",
+      "sourcePaths": [
+        "exposed/jdbc-caffeine/src/main/kotlin"
+      ],
+      "testPaths": [
+        "exposed/jdbc-caffeine/src/test/kotlin",
+        "exposed/jdbc-caffeine/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed JDBC Caffeine Cache",
+        "ko": "Exposed JDBC Caffeine 캐시"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-jdbc-lettuce",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-jdbc-lettuce.md",
+      "gradlePath": ":bluetape4k-exposed-jdbc-lettuce",
+      "group": "jdbc",
+      "id": "bluetape4k-exposed-jdbc-lettuce",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-jdbc-lettuce.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc-lettuce/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc-lettuce/"
+      },
+      "sourceDir": "exposed/jdbc-lettuce",
+      "sourcePaths": [
+        "exposed/jdbc-lettuce/src/main/kotlin"
+      ],
+      "testPaths": [
+        "exposed/jdbc-lettuce/src/test/kotlin",
+        "exposed/jdbc-lettuce/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed JDBC Lettuce Cache",
+        "ko": "Exposed JDBC Lettuce 캐시"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-jdbc-redisson",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-jdbc-redisson.md",
+      "gradlePath": ":bluetape4k-exposed-jdbc-redisson",
+      "group": "jdbc",
+      "id": "bluetape4k-exposed-jdbc-redisson",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-jdbc-redisson.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc-redisson/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc-redisson/"
+      },
+      "sourceDir": "exposed/jdbc-redisson",
+      "sourcePaths": [
+        "exposed/jdbc-redisson/src/main/kotlin"
+      ],
+      "testPaths": [
+        "exposed/jdbc-redisson/src/test/kotlin",
+        "exposed/jdbc-redisson/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed JDBC Redisson Cache",
+        "ko": "Exposed JDBC Redisson 캐시"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-jdbc-tests",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-jdbc-tests.md",
+      "gradlePath": ":bluetape4k-exposed-jdbc-tests",
+      "group": "jdbc",
+      "id": "bluetape4k-exposed-jdbc-tests",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-jdbc-tests.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc-tests/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc-tests/"
+      },
+      "sourceDir": "exposed/jdbc-tests",
+      "sourcePaths": [
+        "exposed/jdbc-tests/src/main/kotlin"
+      ],
+      "testPaths": [
+        "exposed/jdbc-tests/src/test/kotlin",
+        "exposed/jdbc-tests/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed JDBC Test Support",
+        "ko": "Exposed JDBC 테스트 지원"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-ktor",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-ktor.md",
+      "gradlePath": ":bluetape4k-exposed-ktor",
+      "group": "integration",
+      "id": "bluetape4k-exposed-ktor",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-ktor.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-ktor/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-ktor/"
+      },
+      "sourceDir": "ktor/exposed",
+      "sourcePaths": [
+        "ktor/exposed/src/main/kotlin"
+      ],
+      "testPaths": [
+        "ktor/exposed/src/test/kotlin"
+      ],
+      "title": {
+        "en": "Exposed Ktor Integration",
+        "ko": "Exposed Ktor 연동"
+      },
+      "workshops": [
+        "examples/ktor-exposed-demo"
+      ]
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-measured",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-measured.md",
+      "gradlePath": ":bluetape4k-exposed-measured",
+      "group": "serialization",
+      "id": "bluetape4k-exposed-measured",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-measured.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-measured/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-measured/"
+      },
+      "sourceDir": "exposed/measured",
+      "sourcePaths": [
+        "exposed/measured/src/main/kotlin"
+      ],
+      "testPaths": [
+        "exposed/measured/src/test/kotlin",
+        "exposed/measured/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed Measurement Support",
+        "ko": "Exposed 측정 지원"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-mysql8",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-mysql8.md",
+      "gradlePath": ":bluetape4k-exposed-mysql8",
+      "group": "database",
+      "id": "bluetape4k-exposed-mysql8",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-mysql8.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-mysql8/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-mysql8/"
+      },
+      "sourceDir": "exposed/mysql8",
+      "sourcePaths": [
+        "exposed/mysql8/src/main/kotlin"
+      ],
+      "testPaths": [
+        "exposed/mysql8/src/test/kotlin",
+        "exposed/mysql8/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed MySQL 8 Adapter",
+        "ko": "Exposed MySQL 8 어댑터"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-postgresql",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-postgresql.md",
+      "gradlePath": ":bluetape4k-exposed-postgresql",
+      "group": "database",
+      "id": "bluetape4k-exposed-postgresql",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-postgresql.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-postgresql/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-postgresql/"
+      },
+      "sourceDir": "exposed/postgresql",
+      "sourcePaths": [
+        "exposed/postgresql/src/main/kotlin"
+      ],
+      "testPaths": [
+        "exposed/postgresql/src/test/kotlin",
+        "exposed/postgresql/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed PostgreSQL Adapter",
+        "ko": "Exposed PostgreSQL 어댑터"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-r2dbc",
+      "chapters": [
+        {
+          "en": "en/modules/bluetape4k-exposed-r2dbc/coroutine-transactions.md",
+          "id": "coroutine-transactions",
+          "ko": "ko/modules/bluetape4k-exposed-r2dbc/coroutine-transactions.md",
+          "routes": {
+            "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc/coroutine-transactions/",
+            "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc/coroutine-transactions/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-exposed-r2dbc/repository-patterns.md",
+          "id": "repository-patterns",
+          "ko": "ko/modules/bluetape4k-exposed-r2dbc/repository-patterns.md",
+          "routes": {
+            "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc/repository-patterns/",
+            "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc/repository-patterns/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-exposed-r2dbc/cancellation-and-testing.md",
+          "id": "cancellation-and-testing",
+          "ko": "ko/modules/bluetape4k-exposed-r2dbc/cancellation-and-testing.md",
+          "routes": {
+            "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc/cancellation-and-testing/",
+            "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc/cancellation-and-testing/"
+          }
+        }
+      ],
+      "en": "en/modules/bluetape4k-exposed-r2dbc.md",
+      "gradlePath": ":bluetape4k-exposed-r2dbc",
+      "group": "r2dbc",
+      "id": "bluetape4k-exposed-r2dbc",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-r2dbc.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc/"
+      },
+      "sourceDir": "exposed/r2dbc",
+      "sourcePaths": [
+        "exposed/r2dbc/src/main/kotlin"
+      ],
+      "testPaths": [
+        "exposed/r2dbc/src/test/kotlin",
+        "exposed/r2dbc/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed R2DBC Library",
+        "ko": "Exposed R2DBC 라이브러리"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-r2dbc-caffeine",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-r2dbc-caffeine.md",
+      "gradlePath": ":bluetape4k-exposed-r2dbc-caffeine",
+      "group": "r2dbc",
+      "id": "bluetape4k-exposed-r2dbc-caffeine",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-r2dbc-caffeine.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc-caffeine/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc-caffeine/"
+      },
+      "sourceDir": "exposed/r2dbc-caffeine",
+      "sourcePaths": [
+        "exposed/r2dbc-caffeine/src/main/kotlin"
+      ],
+      "testPaths": [
+        "exposed/r2dbc-caffeine/src/test/kotlin",
+        "exposed/r2dbc-caffeine/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed R2DBC Caffeine Cache",
+        "ko": "Exposed R2DBC Caffeine 캐시"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-r2dbc-lettuce",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-r2dbc-lettuce.md",
+      "gradlePath": ":bluetape4k-exposed-r2dbc-lettuce",
+      "group": "r2dbc",
+      "id": "bluetape4k-exposed-r2dbc-lettuce",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-r2dbc-lettuce.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc-lettuce/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc-lettuce/"
+      },
+      "sourceDir": "exposed/r2dbc-lettuce",
+      "sourcePaths": [
+        "exposed/r2dbc-lettuce/src/main/kotlin"
+      ],
+      "testPaths": [
+        "exposed/r2dbc-lettuce/src/test/kotlin",
+        "exposed/r2dbc-lettuce/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed R2DBC Lettuce Cache",
+        "ko": "Exposed R2DBC Lettuce 캐시"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-r2dbc-redisson",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-r2dbc-redisson.md",
+      "gradlePath": ":bluetape4k-exposed-r2dbc-redisson",
+      "group": "r2dbc",
+      "id": "bluetape4k-exposed-r2dbc-redisson",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-r2dbc-redisson.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc-redisson/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc-redisson/"
+      },
+      "sourceDir": "exposed/r2dbc-redisson",
+      "sourcePaths": [
+        "exposed/r2dbc-redisson/src/main/kotlin"
+      ],
+      "testPaths": [
+        "exposed/r2dbc-redisson/src/test/kotlin",
+        "exposed/r2dbc-redisson/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed R2DBC Redisson Cache",
+        "ko": "Exposed R2DBC Redisson 캐시"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-r2dbc-tests",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-r2dbc-tests.md",
+      "gradlePath": ":bluetape4k-exposed-r2dbc-tests",
+      "group": "r2dbc",
+      "id": "bluetape4k-exposed-r2dbc-tests",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-r2dbc-tests.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc-tests/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc-tests/"
+      },
+      "sourceDir": "exposed/r2dbc-tests",
+      "sourcePaths": [
+        "exposed/r2dbc-tests/src/main/kotlin"
+      ],
+      "testPaths": [
+        "exposed/r2dbc-tests/src/test/kotlin",
+        "exposed/r2dbc-tests/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed R2DBC Test Support",
+        "ko": "Exposed R2DBC 테스트 지원"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-spring-boot-batch",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-spring-boot-batch.md",
+      "gradlePath": ":bluetape4k-exposed-spring-boot-batch",
+      "group": "integration",
+      "id": "bluetape4k-exposed-spring-boot-batch",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-spring-boot-batch.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-spring-boot-batch/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-spring-boot-batch/"
+      },
+      "sourceDir": "spring-boot/batch-exposed",
+      "sourcePaths": [
+        "spring-boot/batch-exposed/src/main/kotlin",
+        "spring-boot/batch-exposed/src/main/resources"
+      ],
+      "testPaths": [
+        "spring-boot/batch-exposed/src/test/kotlin",
+        "spring-boot/batch-exposed/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed Spring Boot Batch Integration",
+        "ko": "Exposed Spring Boot Batch 연동"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-spring-boot-jdbc",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-spring-boot-jdbc.md",
+      "gradlePath": ":bluetape4k-exposed-spring-boot-jdbc",
+      "group": "integration",
+      "id": "bluetape4k-exposed-spring-boot-jdbc",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-spring-boot-jdbc.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-spring-boot-jdbc/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-spring-boot-jdbc/"
+      },
+      "sourceDir": "spring-boot/jdbc",
+      "sourcePaths": [
+        "spring-boot/jdbc/src/main/kotlin",
+        "spring-boot/jdbc/src/main/resources"
+      ],
+      "testPaths": [
+        "spring-boot/jdbc/src/test/kotlin",
+        "spring-boot/jdbc/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed Spring Boot JDBC Integration",
+        "ko": "Exposed Spring Boot JDBC 연동"
+      },
+      "workshops": [
+        "examples/jdbc-demo"
+      ]
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-spring-boot-r2dbc",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-spring-boot-r2dbc.md",
+      "gradlePath": ":bluetape4k-exposed-spring-boot-r2dbc",
+      "group": "integration",
+      "id": "bluetape4k-exposed-spring-boot-r2dbc",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-spring-boot-r2dbc.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-spring-boot-r2dbc/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-spring-boot-r2dbc/"
+      },
+      "sourceDir": "spring-boot/r2dbc",
+      "sourcePaths": [
+        "spring-boot/r2dbc/src/main/kotlin",
+        "spring-boot/r2dbc/src/main/resources"
+      ],
+      "testPaths": [
+        "spring-boot/r2dbc/src/test/kotlin",
+        "spring-boot/r2dbc/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed Spring Boot R2DBC Integration",
+        "ko": "Exposed Spring Boot R2DBC 연동"
+      },
+      "workshops": [
+        "examples/r2dbc-demo"
+      ]
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-spring-modulith",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-spring-modulith.md",
+      "gradlePath": ":bluetape4k-exposed-spring-modulith",
+      "group": "integration",
+      "id": "bluetape4k-exposed-spring-modulith",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-spring-modulith.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-spring-modulith/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-spring-modulith/"
+      },
+      "sourceDir": "spring-boot/spring-modulith",
+      "sourcePaths": [
+        "spring-boot/spring-modulith/src/main/kotlin",
+        "spring-boot/spring-modulith/src/main/resources"
+      ],
+      "testPaths": [
+        "spring-boot/spring-modulith/src/test/kotlin",
+        "spring-boot/spring-modulith/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed Spring Modulith Integration",
+        "ko": "Exposed Spring Modulith 연동"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-starrocks",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-starrocks.md",
+      "gradlePath": ":bluetape4k-exposed-starrocks",
+      "group": "database",
+      "id": "bluetape4k-exposed-starrocks",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-starrocks.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-starrocks/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-starrocks/"
+      },
+      "sourceDir": "exposed/starrocks",
+      "sourcePaths": [
+        "exposed/starrocks/src/main/kotlin"
+      ],
+      "testPaths": [
+        "exposed/starrocks/src/test/kotlin",
+        "exposed/starrocks/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed StarRocks Adapter",
+        "ko": "Exposed StarRocks 어댑터"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-timefold-solver-persistence",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-timefold-solver-persistence.md",
+      "gradlePath": ":bluetape4k-exposed-timefold-solver-persistence",
+      "group": "integration",
+      "id": "bluetape4k-exposed-timefold-solver-persistence",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-timefold-solver-persistence.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-timefold-solver-persistence/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-timefold-solver-persistence/"
+      },
+      "sourceDir": "exposed/timefold-solver-persistence",
+      "sourcePaths": [
+        "exposed/timefold-solver-persistence/src/main/kotlin"
+      ],
+      "testPaths": [
+        "exposed/timefold-solver-persistence/src/test/kotlin",
+        "exposed/timefold-solver-persistence/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed Timefold Solver Persistence",
+        "ko": "Exposed Timefold Solver 영속성 연동"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-tink",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-tink.md",
+      "gradlePath": ":bluetape4k-exposed-tink",
+      "group": "serialization",
+      "id": "bluetape4k-exposed-tink",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-tink.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-tink/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-tink/"
+      },
+      "sourceDir": "exposed/tink",
+      "sourcePaths": [
+        "exposed/tink/src/main/kotlin"
+      ],
+      "testPaths": [
+        "exposed/tink/src/test/kotlin",
+        "exposed/tink/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed Tink Encryption",
+        "ko": "Exposed Tink 암호화"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": "io.github.bluetape4k.exposed:bluetape4k-exposed-trino",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-exposed-trino.md",
+      "gradlePath": ":bluetape4k-exposed-trino",
+      "group": "database",
+      "id": "bluetape4k-exposed-trino",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-exposed-trino.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-trino/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-trino/"
+      },
+      "sourceDir": "exposed/trino",
+      "sourcePaths": [
+        "exposed/trino/src/main/kotlin"
+      ],
+      "testPaths": [
+        "exposed/trino/src/test/kotlin",
+        "exposed/trino/src/test/resources"
+      ],
+      "title": {
+        "en": "Exposed Trino Adapter",
+        "ko": "Exposed Trino 어댑터"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": null,
+      "chapters": [],
+      "en": "en/modules/examples-exposed-bigquery-dry-run.md",
+      "gradlePath": ":examples-exposed-bigquery-dry-run",
+      "group": "example",
+      "id": "examples-exposed-bigquery-dry-run",
+      "kind": "example",
+      "ko": "ko/modules/examples-exposed-bigquery-dry-run.md",
+      "layer": "learn",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/examples-exposed-bigquery-dry-run/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/examples-exposed-bigquery-dry-run/"
+      },
+      "sourceDir": "examples/exposed-bigquery-dry-run",
+      "sourcePaths": [],
+      "testPaths": [
+        "examples/exposed-bigquery-dry-run/src/test/kotlin",
+        "examples/exposed-bigquery-dry-run/src/test/resources"
+      ],
+      "title": {
+        "en": "BigQuery Dry-run Example",
+        "ko": "BigQuery Dry Run 예제"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": null,
+      "chapters": [],
+      "en": "en/modules/examples-exposed-clickhouse-oltp-olap.md",
+      "gradlePath": ":examples-exposed-clickhouse-oltp-olap",
+      "group": "example",
+      "id": "examples-exposed-clickhouse-oltp-olap",
+      "kind": "example",
+      "ko": "ko/modules/examples-exposed-clickhouse-oltp-olap.md",
+      "layer": "learn",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/examples-exposed-clickhouse-oltp-olap/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/examples-exposed-clickhouse-oltp-olap/"
+      },
+      "sourceDir": "examples/exposed-clickhouse-oltp-olap",
+      "sourcePaths": [],
+      "testPaths": [
+        "examples/exposed-clickhouse-oltp-olap/src/test/kotlin",
+        "examples/exposed-clickhouse-oltp-olap/src/test/resources"
+      ],
+      "title": {
+        "en": "ClickHouse OLTP/OLAP Example",
+        "ko": "ClickHouse OLTP/OLAP 예제"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": null,
+      "chapters": [],
+      "en": "en/modules/examples-ktor-exposed-demo.md",
+      "gradlePath": ":examples-ktor-exposed-demo",
+      "group": "example",
+      "id": "examples-ktor-exposed-demo",
+      "kind": "example",
+      "ko": "ko/modules/examples-ktor-exposed-demo.md",
+      "layer": "learn",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/examples-ktor-exposed-demo/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/examples-ktor-exposed-demo/"
+      },
+      "sourceDir": "examples/ktor-exposed-demo",
+      "sourcePaths": [
+        "examples/ktor-exposed-demo/src/main/kotlin"
+      ],
+      "testPaths": [
+        "examples/ktor-exposed-demo/src/test/kotlin",
+        "examples/ktor-exposed-demo/src/test/resources"
+      ],
+      "title": {
+        "en": "Ktor and Exposed Example",
+        "ko": "Ktor와 Exposed 연동 예제"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": null,
+      "chapters": [],
+      "en": "en/modules/exposed-spring-boot-jdbc-demo.md",
+      "gradlePath": ":exposed-spring-boot-jdbc-demo",
+      "group": "example",
+      "id": "exposed-spring-boot-jdbc-demo",
+      "kind": "example",
+      "ko": "ko/modules/exposed-spring-boot-jdbc-demo.md",
+      "layer": "learn",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/exposed-spring-boot-jdbc-demo/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/exposed-spring-boot-jdbc-demo/"
+      },
+      "sourceDir": "examples/jdbc-demo",
+      "sourcePaths": [
+        "examples/jdbc-demo/src/main/kotlin",
+        "examples/jdbc-demo/src/main/resources"
+      ],
+      "testPaths": [
+        "examples/jdbc-demo/src/test/kotlin",
+        "examples/jdbc-demo/src/test/resources"
+      ],
+      "title": {
+        "en": "Spring Boot JDBC Example",
+        "ko": "Spring Boot JDBC 예제"
+      },
+      "workshops": []
+    },
+    {
+      "artifact": null,
+      "chapters": [],
+      "en": "en/modules/exposed-spring-boot-r2dbc-demo.md",
+      "gradlePath": ":exposed-spring-boot-r2dbc-demo",
+      "group": "example",
+      "id": "exposed-spring-boot-r2dbc-demo",
+      "kind": "example",
+      "ko": "ko/modules/exposed-spring-boot-r2dbc-demo.md",
+      "layer": "learn",
+      "routes": {
+        "en": "/manual/bluetape4k-exposed/1.11/modules/exposed-spring-boot-r2dbc-demo/",
+        "ko": "/ko/manual/bluetape4k-exposed/1.11/modules/exposed-spring-boot-r2dbc-demo/"
+      },
+      "sourceDir": "examples/r2dbc-demo",
+      "sourcePaths": [
+        "examples/r2dbc-demo/src/main/kotlin",
+        "examples/r2dbc-demo/src/main/resources"
+      ],
+      "testPaths": [
+        "examples/r2dbc-demo/src/test/kotlin",
+        "examples/r2dbc-demo/src/test/resources"
+      ],
+      "title": {
+        "en": "Spring Boot R2DBC Example",
+        "ko": "Spring Boot R2DBC 예제"
+      },
+      "workshops": []
+    }
+  ],
+  "overview": {
+    "assets": [
+      "assets/batch/runtime.png",
+      "assets/batch/runtime.svg",
+      "assets/cache/cache-selection.png",
+      "assets/cache/cache-selection.svg",
+      "assets/database/adapter-map.png",
+      "assets/database/adapter-map.svg",
+      "assets/overview/module-map.png",
+      "assets/overview/module-map.svg",
+      "assets/overview/repository-overview.png",
+      "assets/overview/repository-overview.svg",
+      "assets/persistence/path-decision.png",
+      "assets/persistence/path-decision.svg",
+      "assets/persistence/transaction-ownership.png",
+      "assets/persistence/transaction-ownership.svg",
+      "assets/spring/jdbc-auto-configuration.png",
+      "assets/spring/jdbc-auto-configuration.svg",
+      "assets/spring/modulith-publication.png",
+      "assets/spring/modulith-publication.svg",
+      "assets/spring/r2dbc-auto-configuration.png",
+      "assets/spring/r2dbc-auto-configuration.svg"
+    ],
+    "documents": {
+      "en": [
+        "en/architecture/repository-map.md",
+        "en/getting-started.md",
+        "en/guides/audit-with-javers.md",
+        "en/guides/cache-selection.md",
+        "en/guides/database-adapter-matrix.md",
+        "en/guides/hibernate-vs-exposed.md",
+        "en/guides/jdbc-vs-r2dbc.md",
+        "en/guides/learning-path.md",
+        "en/guides/oltp-vs-olap.md",
+        "en/guides/serialization-and-encryption.md",
+        "en/guides/spring-and-ktor.md",
+        "en/guides/testing-and-operations.md",
+        "en/guides/transaction-boundaries.md",
+        "en/index.md"
+      ],
+      "ko": [
+        "ko/architecture/repository-map.md",
+        "ko/getting-started.md",
+        "ko/guides/audit-with-javers.md",
+        "ko/guides/cache-selection.md",
+        "ko/guides/database-adapter-matrix.md",
+        "ko/guides/hibernate-vs-exposed.md",
+        "ko/guides/jdbc-vs-r2dbc.md",
+        "ko/guides/learning-path.md",
+        "ko/guides/oltp-vs-olap.md",
+        "ko/guides/serialization-and-encryption.md",
+        "ko/guides/spring-and-ktor.md",
+        "ko/guides/testing-and-operations.md",
+        "ko/guides/transaction-boundaries.md",
+        "ko/index.md"
+      ]
+    }
+  },
+  "releaseCommit": "0b494a5fd1e083006046764757342b68a397e4c5",
+  "releaseRef": "1.11.0",
+  "repository": "bluetape4k/bluetape4k-exposed",
+  "repositorySlug": "bluetape4k-exposed",
+  "schemaVersion": 2,
+  "sourceCommit": "eea10abd857fdb806319f93bddf30f92542d787a"
+}
