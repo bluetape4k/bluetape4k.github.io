@@ -39,6 +39,19 @@
         "en": "/manual/bluetape4k-aws/",
         "ko": "/ko/manual/bluetape4k-aws/"
       }
+    },
+    {
+      "slug": "bluetape4k-leader",
+      "repository": "bluetape4k/bluetape4k-leader",
+      "label": {
+        "en": "Leader docs",
+        "ko": "Leader 문서"
+      },
+      "latestMinor": "0.4",
+      "route": {
+        "en": "/manual/bluetape4k-leader/",
+        "ko": "/ko/manual/bluetape4k-leader/"
+      }
     }
   ]
 }

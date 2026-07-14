@@ -110,6 +110,8 @@ test('the checked-in catalog covers the Build, Learn, and Apply ecosystem', asyn
   assert.deepEqual(manualRoutes, {
     'bluetape4k-projects': '/manual/bluetape4k-projects/',
     'bluetape4k-exposed': '/manual/bluetape4k-exposed/',
+    'bluetape4k-aws': '/manual/bluetape4k-aws/',
+    'bluetape4k-leader': '/manual/bluetape4k-leader/',
   });
 });
 

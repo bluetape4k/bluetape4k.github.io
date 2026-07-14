@@ -1,0 +1,104 @@
+---
+slug: "manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-consul"
+manualId: "bluetape4k-leader-consul"
+id: "bluetape4k-leader-consul"
+title: "Consul backend"
+locale: "en"
+kind: "library"
+gradlePath: ":bluetape4k-leader-consul"
+sourceDir: "leader-consul"
+releaseRef: "0.4.0"
+artifact: io.github.bluetape4k.leader:bluetape4k-leader-consul
+manual:
+  id: "bluetape4k-leader-consul"
+  repository: "bluetape4k-leader"
+  group: "backends"
+  kind: "library"
+  sourceCommit: "6bb3ba3f6cdc1286b5ee7d8b7b47d9e92f9c6e3d"
+  sourcePath: "docs/manual/en/modules/bluetape4k-leader-consul.md"
+  minorVersion: "0.4"
+  releaseRef: "0.4.0"
+  releaseCommit: "17ab7f872c1f96318c73d3580729cac20a67e017"
+  sourceDir: "leader-consul"
+  layer: "build"
+---
+
+
+> Library module
+
+## Problem
+
+> **Preview:** Validate API and operational behavior before production adoption.
+
+Preview backend using Consul sessions and KV acquire/release for single and fixed-slot group election. It supports blocking, future, coroutine, and Spring factory surfaces.
+
+## When to use it
+
+Use it when Consul is already operated and its session model fits the job. Do not add Consul solely for election without accepting its ACL, session, and watch operations.
+
+## Coordinates
+
+Artifact: `io.github.bluetape4k.leader:bluetape4k-leader-consul`
+
+```kotlin
+dependencies {
+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:<version>"))
+    implementation("io.github.bluetape4k.leader:bluetape4k-leader-consul")
+}
+```
+
+## Core concepts
+
+A session owns an encoded KV key. Session TTL is 10–86,400 seconds; default `lockDelay` is zero, so expiry may permit overlap with a still-running old holder.
+
+## Quick start
+
+```kotlin
+val elector = ConsulLeaderElector(
+    ConsulEndpoint("http://localhost:8500"),
+    ConsulLeaderElectionOptions(
+        leaderOptions = LeaderElectionOptions(leaseTime = 10.seconds)
+    )
+)
+elector.runIfLeader("daily-report") { generateReport() }
+```
+
+## API by task
+
+Use `ConsulLeaderElector`/group for blocking code and `ConsulSuspendLeaderElector`/group for coroutines. Caller-owned `ConsulEndpoint` carries URL, datacenter, token, and timeout.
+
+## Recommended patterns
+
+Use an application-specific key prefix, least-privilege ACLs, idempotent actions, and external fencing if overlap is unacceptable.
+
+## Integrations
+
+Spring creates factories from a caller-owned `ConsulEndpoint`. Core listener decorators work, but long-lived blocking-query watches remain application-owned.
+
+## Configuration
+
+Set key/session prefixes, request timeout, TTL-range lease, wait time, group size, and `lockDelay`. The client/session environment is caller-owned.
+
+## Failure modes
+
+Contention skips. HTTP, ACL, session, or timeout failures propagate. With zero lock delay, expired ownership can overlap until the old process stops.
+
+## Operations
+
+Monitor session renewals, KV latency, ACL failures, orphan sessions, and skip rate. Include datacenter and prefix in runbooks.
+
+## Testing
+
+Use Consul integration tests for single/group and blocking/suspend paths; test TTL bounds, owner payload, failure classification, and release.
+
+## Workshops and learning path
+
+Run the consul-maintenance example, then compare Consul with etcd and ZooKeeper by ownership and failure semantics.
+
+## Limitations
+
+Preview status means API/operations may change. Consul's lock is a lease, not fencing; the endpoint and agent lifecycle are not managed by the library.
+
+## Sources
+
+[Elector](https://github.com/bluetape4k/bluetape4k-leader/blob/0.4.0/leader-consul/src/main/kotlin/io/bluetape4k/leader/consul/ConsulLeaderElector.kt) · [Options](https://github.com/bluetape4k/bluetape4k-leader/blob/0.4.0/leader-consul/src/main/kotlin/io/bluetape4k/leader/consul/ConsulLeaderElectionOptions.kt) · [Stable guide](https://github.com/bluetape4k/bluetape4k-leader/blob/0.4.0/leader-consul/README.md)

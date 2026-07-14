@@ -1,0 +1,510 @@
+{
+  "redirects": [
+    {
+      "source": "/ko/manual/bluetape4k-leader/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/architecture/repository-map/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/architecture/repository-map/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/architecture/runtime-model/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/architecture/runtime-model/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/backends/cluster-coordination/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/backends/cluster-coordination/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/backends/control-plane-leases/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/backends/control-plane-leases/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/backends/document-stores/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/backends/document-stores/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/backends/exposed-sql/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/backends/exposed-sql/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/backends/redis/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/backends/redis/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/benchmarks/interpreting-results/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/benchmarks/interpreting-results/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/core/execution-apis/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/core/execution-apis/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/core/lease-extension/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/core/lease-extension/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/core/result-semantics/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/core/result-semantics/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/core/single-group-strategic/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/core/single-group-strategic/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/frameworks/ktor/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/frameworks/ktor/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/frameworks/micrometer/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/frameworks/micrometer/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/frameworks/spring-boot/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/frameworks/spring-boot/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/getting-started/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/getting-started/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/guides/backend-selection/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/guides/backend-selection/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/guides/election-model-selection/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/guides/election-model-selection/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/guides/execution-model-selection/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/guides/execution-model-selection/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/guides/failure-and-cancellation/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/guides/failure-and-cancellation/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/guides/identity-state-and-history/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/guides/identity-state-and-history/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/guides/learning-path/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/guides/learning-path/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/guides/lease-lifecycle/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/guides/lease-lifecycle/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/guides/observability-and-operations/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/guides/observability-and-operations/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/guides/scheduled-job-migration/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/guides/scheduled-job-migration/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/guides/spring-vs-ktor/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/guides/spring-vs-ktor/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/guides/testing/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/guides/testing/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/batch-scheduler/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/batch-scheduler/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/benchmark/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/benchmark/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/bluetape4k-leader-bom/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-bom/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/bluetape4k-leader-consul/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-consul/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/bluetape4k-leader-core/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-core/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/bluetape4k-leader-dynamodb/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-dynamodb/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/bluetape4k-leader-etcd/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-etcd/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/bluetape4k-leader-exposed-core/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-exposed-core/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/bluetape4k-leader-exposed-jdbc/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-exposed-jdbc/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/bluetape4k-leader-exposed-r2dbc/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-exposed-r2dbc/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/bluetape4k-leader-hazelcast/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-hazelcast/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/bluetape4k-leader-k8s/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-k8s/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/bluetape4k-leader-ktor/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-ktor/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/bluetape4k-leader-micrometer/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-micrometer/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/bluetape4k-leader-mongodb/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-mongodb/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/bluetape4k-leader-redis-lettuce/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-redis-lettuce/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/bluetape4k-leader-redis-redisson/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-redis-redisson/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/bluetape4k-leader-spring-boot/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-spring-boot/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/bluetape4k-leader-zookeeper/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-zookeeper/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/cache-warmer/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/cache-warmer/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/consul-maintenance/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/consul-maintenance/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/dynamodb-export/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/dynamodb-export/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/etcd-reconciler/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/etcd-reconciler/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/k8s-lease/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/k8s-lease/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/k8s-operator/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/k8s-operator/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/ktor-app/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/ktor-app/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/migration-gate/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/migration-gate/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/prometheus-dashboard/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/prometheus-dashboard/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/rate-limiter/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/rate-limiter/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/redisson-watchdog/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/redisson-watchdog/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/strategic-election/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/strategic-election/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/tenant-aggregator/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/tenant-aggregator/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/virtual-thread-runner/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/virtual-thread-runner/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/webhook-poller/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/webhook-poller/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-leader/modules/zookeeper-scheduler/",
+      "target": "/ko/manual/bluetape4k-leader/0.4/modules/zookeeper-scheduler/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/",
+      "target": "/manual/bluetape4k-leader/0.4/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/architecture/repository-map/",
+      "target": "/manual/bluetape4k-leader/0.4/architecture/repository-map/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/architecture/runtime-model/",
+      "target": "/manual/bluetape4k-leader/0.4/architecture/runtime-model/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/backends/cluster-coordination/",
+      "target": "/manual/bluetape4k-leader/0.4/backends/cluster-coordination/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/backends/control-plane-leases/",
+      "target": "/manual/bluetape4k-leader/0.4/backends/control-plane-leases/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/backends/document-stores/",
+      "target": "/manual/bluetape4k-leader/0.4/backends/document-stores/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/backends/exposed-sql/",
+      "target": "/manual/bluetape4k-leader/0.4/backends/exposed-sql/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/backends/redis/",
+      "target": "/manual/bluetape4k-leader/0.4/backends/redis/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/benchmarks/interpreting-results/",
+      "target": "/manual/bluetape4k-leader/0.4/benchmarks/interpreting-results/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/core/execution-apis/",
+      "target": "/manual/bluetape4k-leader/0.4/core/execution-apis/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/core/lease-extension/",
+      "target": "/manual/bluetape4k-leader/0.4/core/lease-extension/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/core/result-semantics/",
+      "target": "/manual/bluetape4k-leader/0.4/core/result-semantics/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/core/single-group-strategic/",
+      "target": "/manual/bluetape4k-leader/0.4/core/single-group-strategic/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/frameworks/ktor/",
+      "target": "/manual/bluetape4k-leader/0.4/frameworks/ktor/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/frameworks/micrometer/",
+      "target": "/manual/bluetape4k-leader/0.4/frameworks/micrometer/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/frameworks/spring-boot/",
+      "target": "/manual/bluetape4k-leader/0.4/frameworks/spring-boot/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/getting-started/",
+      "target": "/manual/bluetape4k-leader/0.4/getting-started/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/guides/backend-selection/",
+      "target": "/manual/bluetape4k-leader/0.4/guides/backend-selection/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/guides/election-model-selection/",
+      "target": "/manual/bluetape4k-leader/0.4/guides/election-model-selection/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/guides/execution-model-selection/",
+      "target": "/manual/bluetape4k-leader/0.4/guides/execution-model-selection/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/guides/failure-and-cancellation/",
+      "target": "/manual/bluetape4k-leader/0.4/guides/failure-and-cancellation/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/guides/identity-state-and-history/",
+      "target": "/manual/bluetape4k-leader/0.4/guides/identity-state-and-history/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/guides/learning-path/",
+      "target": "/manual/bluetape4k-leader/0.4/guides/learning-path/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/guides/lease-lifecycle/",
+      "target": "/manual/bluetape4k-leader/0.4/guides/lease-lifecycle/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/guides/observability-and-operations/",
+      "target": "/manual/bluetape4k-leader/0.4/guides/observability-and-operations/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/guides/scheduled-job-migration/",
+      "target": "/manual/bluetape4k-leader/0.4/guides/scheduled-job-migration/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/guides/spring-vs-ktor/",
+      "target": "/manual/bluetape4k-leader/0.4/guides/spring-vs-ktor/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/guides/testing/",
+      "target": "/manual/bluetape4k-leader/0.4/guides/testing/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/batch-scheduler/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/batch-scheduler/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/benchmark/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/benchmark/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/bluetape4k-leader-bom/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-bom/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/bluetape4k-leader-consul/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-consul/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/bluetape4k-leader-core/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-core/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/bluetape4k-leader-dynamodb/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-dynamodb/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/bluetape4k-leader-etcd/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-etcd/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/bluetape4k-leader-exposed-core/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-exposed-core/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/bluetape4k-leader-exposed-jdbc/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-exposed-jdbc/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/bluetape4k-leader-exposed-r2dbc/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-exposed-r2dbc/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/bluetape4k-leader-hazelcast/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-hazelcast/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/bluetape4k-leader-k8s/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-k8s/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/bluetape4k-leader-ktor/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-ktor/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/bluetape4k-leader-micrometer/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-micrometer/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/bluetape4k-leader-mongodb/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-mongodb/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/bluetape4k-leader-redis-lettuce/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-redis-lettuce/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/bluetape4k-leader-redis-redisson/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-redis-redisson/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/bluetape4k-leader-spring-boot/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-spring-boot/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/bluetape4k-leader-zookeeper/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-zookeeper/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/cache-warmer/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/cache-warmer/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/consul-maintenance/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/consul-maintenance/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/dynamodb-export/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/dynamodb-export/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/etcd-reconciler/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/etcd-reconciler/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/k8s-lease/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/k8s-lease/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/k8s-operator/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/k8s-operator/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/ktor-app/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/ktor-app/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/migration-gate/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/migration-gate/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/prometheus-dashboard/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/prometheus-dashboard/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/rate-limiter/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/rate-limiter/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/redisson-watchdog/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/redisson-watchdog/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/strategic-election/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/strategic-election/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/tenant-aggregator/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/tenant-aggregator/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/virtual-thread-runner/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/virtual-thread-runner/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/webhook-poller/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/webhook-poller/"
+    },
+    {
+      "source": "/manual/bluetape4k-leader/modules/zookeeper-scheduler/",
+      "target": "/manual/bluetape4k-leader/0.4/modules/zookeeper-scheduler/"
+    }
+  ],
+  "repository": "bluetape4k/bluetape4k-leader",
+  "schema": 1
+}
