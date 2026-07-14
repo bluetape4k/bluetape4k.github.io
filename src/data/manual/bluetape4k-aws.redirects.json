@@ -1,0 +1,294 @@
+{
+  "redirects": [
+    {
+      "source": "/ko/manual/bluetape4k-aws/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/architecture/repository-map/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/architecture/repository-map/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/architecture/runtime-boundaries/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/architecture/runtime-boundaries/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/getting-started/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/getting-started/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/guides/database-with-exposed/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/guides/database-with-exposed/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/guides/learning-path/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/guides/learning-path/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/guides/sdk-selection/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/guides/sdk-selection/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/guides/service-learning-paths/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/guides/service-learning-paths/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/guides/spring-vs-ktor/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/guides/spring-vs-ktor/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/guides/testing-and-operations/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/guides/testing-and-operations/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/modules/aws-ktor-dynamodb-examples/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/modules/aws-ktor-dynamodb-examples/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/modules/aws-ktor-exposed-examples/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/modules/aws-ktor-exposed-examples/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/modules/aws-ktor-s3-examples/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/modules/aws-ktor-s3-examples/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/modules/aws-ktor-sqs-examples/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/modules/aws-ktor-sqs-examples/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/modules/aws-spring-boot-dynamodb-examples/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/modules/aws-spring-boot-dynamodb-examples/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/modules/aws-spring-boot-exposed-examples/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/modules/aws-spring-boot-exposed-examples/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/modules/aws-spring-boot-s3-examples/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/modules/aws-spring-boot-s3-examples/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/modules/aws-spring-boot-sqs-examples/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/modules/aws-spring-boot-sqs-examples/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/modules/bluetape4k-aws-bom/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-bom/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/modules/bluetape4k-aws-exposed/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-exposed/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/modules/bluetape4k-aws-exposed/database-settings/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-exposed/database-settings/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/modules/bluetape4k-aws-exposed/rds-iam-and-hikari/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-exposed/rds-iam-and-hikari/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/modules/bluetape4k-aws-exposed/transaction-boundaries/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-exposed/transaction-boundaries/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/modules/bluetape4k-aws-java/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-java/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/modules/bluetape4k-aws-java/client-lifecycle/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-java/client-lifecycle/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/modules/bluetape4k-aws-java/service-patterns/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-java/service-patterns/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/modules/bluetape4k-aws-java/sync-async-coroutines/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-java/sync-async-coroutines/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/modules/bluetape4k-aws-kotlin/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-kotlin/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/modules/bluetape4k-aws-ktor/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-ktor/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/modules/bluetape4k-aws-ktor/client-and-sigv4/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-ktor/client-and-sigv4/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/modules/bluetape4k-aws-ktor/runtime-lifecycle/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-ktor/runtime-lifecycle/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/modules/bluetape4k-aws-ktor/service-plugins/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-ktor/service-plugins/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/modules/bluetape4k-aws-spring-boot/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-spring-boot/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/modules/bluetape4k-aws-spring-boot/auto-configuration/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-spring-boot/auto-configuration/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/modules/bluetape4k-aws-spring-boot/runtime-operations/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-spring-boot/runtime-operations/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-aws/modules/bluetape4k-aws-spring-boot/storage-and-messaging/",
+      "target": "/ko/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-spring-boot/storage-and-messaging/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/",
+      "target": "/manual/bluetape4k-aws/0.4/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/architecture/repository-map/",
+      "target": "/manual/bluetape4k-aws/0.4/architecture/repository-map/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/architecture/runtime-boundaries/",
+      "target": "/manual/bluetape4k-aws/0.4/architecture/runtime-boundaries/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/getting-started/",
+      "target": "/manual/bluetape4k-aws/0.4/getting-started/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/guides/database-with-exposed/",
+      "target": "/manual/bluetape4k-aws/0.4/guides/database-with-exposed/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/guides/learning-path/",
+      "target": "/manual/bluetape4k-aws/0.4/guides/learning-path/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/guides/sdk-selection/",
+      "target": "/manual/bluetape4k-aws/0.4/guides/sdk-selection/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/guides/service-learning-paths/",
+      "target": "/manual/bluetape4k-aws/0.4/guides/service-learning-paths/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/guides/spring-vs-ktor/",
+      "target": "/manual/bluetape4k-aws/0.4/guides/spring-vs-ktor/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/guides/testing-and-operations/",
+      "target": "/manual/bluetape4k-aws/0.4/guides/testing-and-operations/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/modules/aws-ktor-dynamodb-examples/",
+      "target": "/manual/bluetape4k-aws/0.4/modules/aws-ktor-dynamodb-examples/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/modules/aws-ktor-exposed-examples/",
+      "target": "/manual/bluetape4k-aws/0.4/modules/aws-ktor-exposed-examples/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/modules/aws-ktor-s3-examples/",
+      "target": "/manual/bluetape4k-aws/0.4/modules/aws-ktor-s3-examples/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/modules/aws-ktor-sqs-examples/",
+      "target": "/manual/bluetape4k-aws/0.4/modules/aws-ktor-sqs-examples/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/modules/aws-spring-boot-dynamodb-examples/",
+      "target": "/manual/bluetape4k-aws/0.4/modules/aws-spring-boot-dynamodb-examples/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/modules/aws-spring-boot-exposed-examples/",
+      "target": "/manual/bluetape4k-aws/0.4/modules/aws-spring-boot-exposed-examples/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/modules/aws-spring-boot-s3-examples/",
+      "target": "/manual/bluetape4k-aws/0.4/modules/aws-spring-boot-s3-examples/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/modules/aws-spring-boot-sqs-examples/",
+      "target": "/manual/bluetape4k-aws/0.4/modules/aws-spring-boot-sqs-examples/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/modules/bluetape4k-aws-bom/",
+      "target": "/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-bom/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/modules/bluetape4k-aws-exposed/",
+      "target": "/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-exposed/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/modules/bluetape4k-aws-exposed/database-settings/",
+      "target": "/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-exposed/database-settings/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/modules/bluetape4k-aws-exposed/rds-iam-and-hikari/",
+      "target": "/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-exposed/rds-iam-and-hikari/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/modules/bluetape4k-aws-exposed/transaction-boundaries/",
+      "target": "/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-exposed/transaction-boundaries/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/modules/bluetape4k-aws-java/",
+      "target": "/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-java/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/modules/bluetape4k-aws-java/client-lifecycle/",
+      "target": "/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-java/client-lifecycle/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/modules/bluetape4k-aws-java/service-patterns/",
+      "target": "/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-java/service-patterns/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/modules/bluetape4k-aws-java/sync-async-coroutines/",
+      "target": "/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-java/sync-async-coroutines/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/modules/bluetape4k-aws-kotlin/",
+      "target": "/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-kotlin/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/modules/bluetape4k-aws-ktor/",
+      "target": "/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-ktor/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/modules/bluetape4k-aws-ktor/client-and-sigv4/",
+      "target": "/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-ktor/client-and-sigv4/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/modules/bluetape4k-aws-ktor/runtime-lifecycle/",
+      "target": "/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-ktor/runtime-lifecycle/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/modules/bluetape4k-aws-ktor/service-plugins/",
+      "target": "/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-ktor/service-plugins/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/modules/bluetape4k-aws-spring-boot/",
+      "target": "/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-spring-boot/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/modules/bluetape4k-aws-spring-boot/auto-configuration/",
+      "target": "/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-spring-boot/auto-configuration/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/modules/bluetape4k-aws-spring-boot/runtime-operations/",
+      "target": "/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-spring-boot/runtime-operations/"
+    },
+    {
+      "source": "/manual/bluetape4k-aws/modules/bluetape4k-aws-spring-boot/storage-and-messaging/",
+      "target": "/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-spring-boot/storage-and-messaging/"
+    }
+  ],
+  "repository": "bluetape4k/bluetape4k-aws",
+  "schema": 1
+}

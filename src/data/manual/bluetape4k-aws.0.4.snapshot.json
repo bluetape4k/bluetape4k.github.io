@@ -1,0 +1,17 @@
+{
+  "assetDigest": "bdb2dda4e2e901a44ef60d88bdc5c36d1ee033ebf9749fece20bf09f85af01fe",
+  "assetFiles": 10,
+  "authoringSourceRef": "cf9f7a4ed610f85b4af440bcdabedcab55f47bd1",
+  "contentDigest": "9f298cc48cb706532d5c215e0b7ce22ddd0d60d5f72fbfbe39e53989582d4449",
+  "contentFiles": 82,
+  "documentFiles": 72,
+  "minorVersion": "0.4",
+  "releaseCommit": "be4e6daea5654f84579955307ec56a58c8f405be",
+  "releaseRef": "0.4.0",
+  "repository": "bluetape4k/bluetape4k-aws",
+  "repositorySlug": "bluetape4k-aws",
+  "schemaVersion": 1,
+  "sourceCommit": "cf9f7a4ed610f85b4af440bcdabedcab55f47bd1",
+  "sourceDigest": "351de289de4eb4ddae71a6defd902c8010cb9e6fb6a31a09c87da389835122a5",
+  "sourceFiles": 72
+}

@@ -26,6 +26,19 @@
         "en": "/manual/bluetape4k-exposed/",
         "ko": "/ko/manual/bluetape4k-exposed/"
       }
+    },
+    {
+      "slug": "bluetape4k-aws",
+      "repository": "bluetape4k/bluetape4k-aws",
+      "label": {
+        "en": "AWS docs",
+        "ko": "AWS 문서"
+      },
+      "latestMinor": "0.4",
+      "route": {
+        "en": "/manual/bluetape4k-aws/",
+        "ko": "/ko/manual/bluetape4k-aws/"
+      }
     }
   ]
 }
