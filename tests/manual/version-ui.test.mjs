@@ -117,7 +117,11 @@ async function queryPagefind(dist, term) {
     const pagefind = await import(`${new URL(`file://${path.join(dist, 'pagefind/pagefind.js')}`).href}?fixture=${Date.now()}`);
     await pagefind.options({ basePath: `http://127.0.0.1:${port}/pagefind/` });
     await pagefind.init();
-    const result = await pagefind.search(term);
+    let result = await pagefind.search(term);
+    if (result.results.length === 0) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      result = await pagefind.search(term);
+    }
     return await Promise.all(result.results.map(async (item) => (await item.data()).url));
   } finally {
     server.close();
