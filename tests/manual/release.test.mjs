@@ -7,8 +7,23 @@ import {
   sanitizeDiagnostic,
 } from '../../scripts/manual/lib/release.mjs';
 
-const REPOSITORY = 'bluetape4k/bluetape4k-projects';
+const PROJECTS = {
+  slug: 'bluetape4k-projects',
+  repository: 'bluetape4k/bluetape4k-projects',
+  label: { en: 'Projects docs', ko: 'Projects 문서' },
+  latestMinor: '1.11',
+  route: { en: '/manual/bluetape4k-projects/', ko: '/ko/manual/bluetape4k-projects/' },
+};
+const EXPOSED = {
+  slug: 'bluetape4k-exposed',
+  repository: 'bluetape4k/bluetape4k-exposed',
+  label: { en: 'Exposed docs', ko: 'Exposed 문서' },
+  latestMinor: '1.11',
+  route: { en: '/manual/bluetape4k-exposed/', ko: '/ko/manual/bluetape4k-exposed/' },
+};
+const REPOSITORY = PROJECTS.repository;
 const COMMIT = '6187173b58e8b4c5c435c145e00e94708f31ef75';
+const EXPOSED_COMMIT = '0b494a5fd1e083006046764757342b68a397e4c5';
 const TAG_ONE = '1111111111111111111111111111111111111111';
 const TAG_TWO = '2222222222222222222222222222222222222222';
 
@@ -23,6 +38,7 @@ function response(body, status = 200, url = 'https://api.github.com/') {
 }
 
 function githubFixture({
+  repository = REPOSITORY,
   fullName = REPOSITORY,
   release = {},
   tagType = 'tag',
@@ -36,7 +52,7 @@ function githubFixture({
   const fetchImpl = async (url, options = {}) => {
     requests.push({ url: String(url), options });
     const pathname = new URL(url).pathname;
-    if (pathname === `/repos/${REPOSITORY}`) return response({ full_name: fullName }, 200, url);
+    if (pathname === `/repos/${repository}`) return response({ full_name: fullName }, 200, url);
     if (pathname.endsWith('/releases/latest') || pathname.includes('/releases/tags/')) {
       return response({ tag_name: '1.11.0', draft: false, prerelease: false, ...release, ...identities.release }, 200, url);
     }
@@ -67,7 +83,7 @@ async function rejectsCode(promise, code) {
 
 test('resolves an exact release through an annotated tag chain to an immutable commit', async () => {
   const fixture = githubFixture();
-  assert.deepEqual(await resolveRelease({ repository: REPOSITORY, releaseRef: '1.11.0', fetchImpl: fixture.fetchImpl }), {
+  assert.deepEqual(await resolveRelease({ repository: PROJECTS, releaseRef: '1.11.0', fetchImpl: fixture.fetchImpl }), {
     repository: REPOSITORY,
     releaseRef: '1.11.0',
     releaseCommit: COMMIT,
@@ -76,16 +92,41 @@ test('resolves an exact release through an annotated tag chain to an immutable c
   assert.ok(fixture.requests.some(({ url }) => url.endsWith(`/git/tags/${TAG_TWO}`)));
 });
 
+test('resolves an Exposed release from the selected repository descriptor', async () => {
+  const fixture = githubFixture({
+    repository: EXPOSED.repository,
+    fullName: EXPOSED.repository,
+    tagType: 'commit',
+    refSha: EXPOSED_COMMIT,
+  });
+  assert.deepEqual(await resolveRelease({ repository: EXPOSED, releaseRef: '1.11.0', fetchImpl: fixture.fetchImpl }), {
+    repository: EXPOSED.repository,
+    releaseRef: '1.11.0',
+    releaseCommit: EXPOSED_COMMIT,
+    minorVersion: '1.11',
+  });
+});
+
 test('uses the latest release endpoint when no release ref is supplied', async () => {
   const fixture = githubFixture({ tagType: 'commit' });
-  await resolveRelease({ repository: REPOSITORY, fetchImpl: fixture.fetchImpl });
+  await resolveRelease({ repository: PROJECTS, fetchImpl: fixture.fetchImpl });
   assert.ok(fixture.requests.some(({ url }) => url.endsWith('/releases/latest')));
 });
 
 test('rejects non-allowlisted repositories and mismatched GitHub identity', async () => {
   await rejectsCode(resolveRelease({ repository: 'other/project', releaseRef: '1.11.0', fetchImpl: async () => response({}) }), 'REPOSITORY_IDENTITY');
   const fixture = githubFixture({ fullName: 'fork/bluetape4k-projects' });
-  await rejectsCode(resolveRelease({ repository: REPOSITORY, releaseRef: '1.11.0', fetchImpl: fixture.fetchImpl }), 'REPOSITORY_IDENTITY');
+  await rejectsCode(resolveRelease({ repository: PROJECTS, releaseRef: '1.11.0', fetchImpl: fixture.fetchImpl }), 'REPOSITORY_IDENTITY');
+});
+
+test('rejects Exposed payload identity when Projects is selected', async () => {
+  const identities = {
+    release: { repository_url: `https://api.github.com/repos/${EXPOSED.repository}` },
+  };
+  await rejectsCode(
+    resolveRelease({ repository: PROJECTS, releaseRef: '1.11.0', fetchImpl: githubFixture({ identities }).fetchImpl }),
+    'REPOSITORY_IDENTITY',
+  );
 });
 
 test('rejects invalid repository_url identity on release, ref, and annotated-tag responses', async () => {
@@ -97,7 +138,7 @@ test('rejects invalid repository_url identity on release, ref, and annotated-tag
   for (const [stage, repositoryUrl] of cases) {
     const identities = { [stage]: { repository_url: repositoryUrl } };
     await rejectsCode(
-      resolveRelease({ repository: REPOSITORY, releaseRef: '1.11.0', fetchImpl: githubFixture({ identities }).fetchImpl }),
+      resolveRelease({ repository: PROJECTS, releaseRef: '1.11.0', fetchImpl: githubFixture({ identities }).fetchImpl }),
       'REPOSITORY_IDENTITY',
     );
   }
@@ -111,20 +152,20 @@ test('validates repository.full_name and repository_url independently', async ()
     },
   };
   await rejectsCode(
-    resolveRelease({ repository: REPOSITORY, releaseRef: '1.11.0', fetchImpl: githubFixture({ identities }).fetchImpl }),
+    resolveRelease({ repository: PROJECTS, releaseRef: '1.11.0', fetchImpl: githubFixture({ identities }).fetchImpl }),
     'REPOSITORY_IDENTITY',
   );
 });
 
 test('rejects draft, prerelease, release tag mismatch, and moved tags', async () => {
-  await rejectsCode(resolveRelease({ repository: REPOSITORY, releaseRef: '1.11.0', fetchImpl: githubFixture({ release: { draft: true } }).fetchImpl }), 'RELEASE_DRAFT');
-  await rejectsCode(resolveRelease({ repository: REPOSITORY, releaseRef: '1.11.0', fetchImpl: githubFixture({ release: { prerelease: true } }).fetchImpl }), 'RELEASE_PRERELEASE');
-  await rejectsCode(resolveRelease({ repository: REPOSITORY, releaseRef: '1.11.0', fetchImpl: githubFixture({ release: { tag_name: '1.11.1' } }).fetchImpl }), 'RELEASE_TAG_MISMATCH');
+  await rejectsCode(resolveRelease({ repository: PROJECTS, releaseRef: '1.11.0', fetchImpl: githubFixture({ release: { draft: true } }).fetchImpl }), 'RELEASE_DRAFT');
+  await rejectsCode(resolveRelease({ repository: PROJECTS, releaseRef: '1.11.0', fetchImpl: githubFixture({ release: { prerelease: true } }).fetchImpl }), 'RELEASE_PRERELEASE');
+  await rejectsCode(resolveRelease({ repository: PROJECTS, releaseRef: '1.11.0', fetchImpl: githubFixture({ release: { tag_name: '1.11.1' } }).fetchImpl }), 'RELEASE_TAG_MISMATCH');
 
   const moved = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
   const fixture = githubFixture({ movedCommit: moved, tagType: 'commit' });
-  const resolved = await resolveRelease({ repository: REPOSITORY, releaseRef: '1.11.0', fetchImpl: fixture.fetchImpl });
-  await rejectsCode(assertReleaseUnmoved(resolved, fixture.fetchImpl), 'RELEASE_MOVED');
+  const resolved = await resolveRelease({ repository: PROJECTS, releaseRef: '1.11.0', fetchImpl: fixture.fetchImpl });
+  await rejectsCode(assertReleaseUnmoved(resolved, PROJECTS, fixture.fetchImpl), 'RELEASE_MOVED');
 });
 
 test('bounds annotated tag traversal and detects cycles', async () => {
@@ -139,7 +180,7 @@ test('bounds annotated tag traversal and detects cycles', async () => {
     if (pathname.endsWith(`/git/tags/${cycleB}`)) return response({ object: { type: 'tag', sha: cycleA } }, 200, url);
     throw new Error(`Unexpected request: ${url}`);
   };
-  await rejectsCode(resolveRelease({ repository: REPOSITORY, releaseRef: '1.11.0', fetchImpl }), 'RELEASE_TAG_CYCLE');
+  await rejectsCode(resolveRelease({ repository: PROJECTS, releaseRef: '1.11.0', fetchImpl }), 'RELEASE_TAG_CYCLE');
 });
 
 test('rejects an actual seventeen-step annotated tag chain', async () => {
@@ -160,7 +201,7 @@ test('rejects an actual seventeen-step annotated tag chain', async () => {
     throw new Error(`Unexpected request: ${url}`);
   };
   await rejectsCode(
-    resolveRelease({ repository: REPOSITORY, releaseRef: '1.11.0', fetchImpl }),
+    resolveRelease({ repository: PROJECTS, releaseRef: '1.11.0', fetchImpl }),
     'RELEASE_TAG_DEPTH',
   );
   assert.equal(tagReads, 16);
@@ -169,13 +210,13 @@ test('rejects an actual seventeen-step annotated tag chain', async () => {
 test('rejects non-canonical intermediate and final Git object SHAs', async () => {
   const fixture = githubFixture({ tagType: 'commit', refSha: 'not-a-sha' });
   await rejectsCode(
-    resolveRelease({ repository: REPOSITORY, releaseRef: '1.11.0', fetchImpl: fixture.fetchImpl }),
+    resolveRelease({ repository: PROJECTS, releaseRef: '1.11.0', fetchImpl: fixture.fetchImpl }),
     'RELEASE_TAG_SHA',
   );
 
   const invalidFinal = githubFixture({ commit: 'ABCDEF' });
   await rejectsCode(
-    resolveRelease({ repository: REPOSITORY, releaseRef: '1.11.0', fetchImpl: invalidFinal.fetchImpl }),
+    resolveRelease({ repository: PROJECTS, releaseRef: '1.11.0', fetchImpl: invalidFinal.fetchImpl }),
     'RELEASE_TAG_SHA',
   );
 });
@@ -194,7 +235,7 @@ test('sanitizes diagnostics to stable safe fields and never emits a token sentin
   try {
     let diagnostic;
     try {
-      await resolveRelease({ repository: REPOSITORY, releaseRef: '1.11.0', fetchImpl: fixture.fetchImpl });
+      await resolveRelease({ repository: PROJECTS, releaseRef: '1.11.0', fetchImpl: fixture.fetchImpl });
       assert.fail('expected release rejection');
     } catch (error) {
       error.status = 422;
