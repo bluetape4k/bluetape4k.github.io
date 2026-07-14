@@ -154,11 +154,17 @@ test('snapshot validation writes a sanitized provenance report and summary', asy
   const reportBytes = await readFile(reportPath, 'utf8');
   const report = JSON.parse(reportBytes);
   assert.equal(report.status, 'pass');
-  assert.equal(report.repositories.length, 1);
-  assert.equal(report.repositories[0].latest, '1.11');
-  assert.match(report.repositories[0].releaseCommit, /^[0-9a-f]{40}$/);
-  assert.match(report.repositories[0].sourceCommit, /^[0-9a-f]{40}$/);
-  assert.match(report.repositories[0].generationId, /^[0-9a-f]{64}$/);
+  assert.equal(report.repositories.length, 2);
+  assert.deepEqual(report.repositories.map(({ repository }) => repository).sort(), [
+    'bluetape4k/bluetape4k-exposed',
+    'bluetape4k/bluetape4k-projects',
+  ]);
+  for (const repository of report.repositories) {
+    assert.equal(repository.latest, '1.11');
+    assert.match(repository.releaseCommit, /^[0-9a-f]{40}$/);
+    assert.match(repository.sourceCommit, /^[0-9a-f]{40}$/);
+    assert.match(repository.generationId, /^[0-9a-f]{64}$/);
+  }
   for (const secret of ['must-not-leak', 'authorization', 'headers', 'rawBody', 'query']) {
     assert.ok(!reportBytes.toLowerCase().includes(secret.toLowerCase()), secret);
   }
@@ -170,6 +176,7 @@ test('snapshot validation writes a sanitized provenance report and summary', asy
   assert.match(summary.stdout, /^## Manual validation/m);
   assert.match(summary.stdout, /1\.11\.0/);
   assert.match(summary.stdout, /6187173b58e8b4c5c435c145e00e94708f31ef75/);
+  assert.match(summary.stdout, /0b494a5fd1e083006046764757342b68a397e4c5/);
 
   const token = `ghp_${'x'.repeat(36)}`;
   const failure = failureReport({ code: 'CATALOG_DRIFT', actual: `src/${token}` });
