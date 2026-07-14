@@ -445,6 +445,30 @@
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-kafka/"
     },
     {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-kafka/codecs-wire-format-security/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-kafka/codecs-wire-format-security/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-kafka/coroutine-producer/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-kafka/coroutine-producer/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-kafka/failures-testing-operations-ecosystem/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-kafka/failures-testing-operations-ecosystem/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-kafka/kafka-streams-dsl/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-kafka/kafka-streams-dsl/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-kafka/module-boundary-client-records/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-kafka/module-boundary-client-records/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-kafka/spring-kafka-templates-listeners/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-kafka/spring-kafka-templates-listeners/"
+    },
+    {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-kafka4/",
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-kafka4/"
     },
@@ -585,6 +609,30 @@
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-nats/"
     },
     {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-nats/connection-options-ownership/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-nats/connection-options-ownership/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-nats/core-pubsub-request-reply/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-nats/core-pubsub-request-reply/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-nats/failures-testing-operations-ecosystem/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-nats/failures-testing-operations-ecosystem/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-nats/jetstream-streams-consumers/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-nats/jetstream-streams-consumers/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-nats/keyvalue-objectstore-services/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-nats/keyvalue-objectstore-services/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-nats/messages-subscriptions-dispatchers/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-nats/messages-subscriptions-dispatchers/"
+    },
+    {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-netty/",
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-netty/"
     },
@@ -607,6 +655,30 @@
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-pulsar/",
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-pulsar/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-pulsar/cancellation-failures-testing-operations/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-pulsar/cancellation-failures-testing-operations/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-pulsar/client-lifecycle-configuration/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-pulsar/client-lifecycle-configuration/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-pulsar/consumers-flow-acknowledgement/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-pulsar/consumers-flow-acknowledgement/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-pulsar/jackson-schemas-wire-compatibility/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-pulsar/jackson-schemas-wire-compatibility/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-pulsar/producers-coroutine-send/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-pulsar/producers-coroutine-send/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-pulsar/readers-and-positions/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-pulsar/readers-and-positions/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/",
@@ -1385,6 +1457,30 @@
       "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-kafka/"
     },
     {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-kafka/codecs-wire-format-security/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-kafka/codecs-wire-format-security/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-kafka/coroutine-producer/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-kafka/coroutine-producer/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-kafka/failures-testing-operations-ecosystem/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-kafka/failures-testing-operations-ecosystem/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-kafka/kafka-streams-dsl/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-kafka/kafka-streams-dsl/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-kafka/module-boundary-client-records/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-kafka/module-boundary-client-records/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-kafka/spring-kafka-templates-listeners/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-kafka/spring-kafka-templates-listeners/"
+    },
+    {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-kafka4/",
       "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-kafka4/"
     },
@@ -1525,6 +1621,30 @@
       "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-nats/"
     },
     {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-nats/connection-options-ownership/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-nats/connection-options-ownership/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-nats/core-pubsub-request-reply/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-nats/core-pubsub-request-reply/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-nats/failures-testing-operations-ecosystem/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-nats/failures-testing-operations-ecosystem/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-nats/jetstream-streams-consumers/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-nats/jetstream-streams-consumers/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-nats/keyvalue-objectstore-services/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-nats/keyvalue-objectstore-services/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-nats/messages-subscriptions-dispatchers/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-nats/messages-subscriptions-dispatchers/"
+    },
+    {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-netty/",
       "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-netty/"
     },
@@ -1547,6 +1667,30 @@
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-pulsar/",
       "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-pulsar/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-pulsar/cancellation-failures-testing-operations/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-pulsar/cancellation-failures-testing-operations/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-pulsar/client-lifecycle-configuration/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-pulsar/client-lifecycle-configuration/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-pulsar/consumers-flow-acknowledgement/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-pulsar/consumers-flow-acknowledgement/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-pulsar/jackson-schemas-wire-compatibility/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-pulsar/jackson-schemas-wire-compatibility/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-pulsar/producers-coroutine-send/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-pulsar/producers-coroutine-send/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-pulsar/readers-and-positions/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-pulsar/readers-and-positions/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/",

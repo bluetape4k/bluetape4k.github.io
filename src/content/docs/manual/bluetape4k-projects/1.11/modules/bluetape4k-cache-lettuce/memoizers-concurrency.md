@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "caching"
   kind: "library"
-  sourceCommit: "dd05a2a56058bd08d503308a2eb98ac1cf73918d"
+  sourceCommit: "a9051bd77bf5870d3787f15c1d32088412f2bdbb"
   sourcePath: "docs/manual/en/modules/bluetape4k-cache-lettuce/memoizers-concurrency.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
