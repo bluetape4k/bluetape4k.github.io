@@ -89,8 +89,56 @@
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-lettuce/"
     },
     {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/jcache-provider-manager/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-lettuce/jcache-provider-manager/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/memoizers-concurrency/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-lettuce/memoizers-concurrency/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/near-cache-l1-l2/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-lettuce/near-cache-l1-l2/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/operations-ecosystem/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-lettuce/operations-ecosystem/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/resp3-invalidation-lua/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-lettuce/resp3-invalidation-lua/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/sync-suspend-jcache/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-lettuce/sync-suspend-jcache/"
+    },
+    {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/",
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-redisson/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/config-codec-ownership/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-redisson/config-codec-ownership/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/ecosystem-paths/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-redisson/ecosystem-paths/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/failures-cancellation-operations/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-redisson/failures-cancellation-operations/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/memoizers-concurrency/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-redisson/memoizers-concurrency/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/near-cache-invalidation/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-redisson/near-cache-invalidation/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/redisson-jcache-suspend/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-redisson/redisson-jcache-suspend/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cassandra/",
@@ -545,6 +593,30 @@
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-redis/"
     },
     {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redis/cache-spring-separation/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-redis/cache-spring-separation/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redis/lettuce-vs-redisson/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-redis/lettuce-vs-redisson/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redis/lifecycle-codec-boundaries/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-redis/lifecycle-codec-boundaries/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redis/selective-dependency-migration/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-redis/selective-dependency-migration/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redis/testing-operations-ecosystem/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-redis/testing-operations-ecosystem/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redis/umbrella-dependency-contract/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-redis/umbrella-dependency-contract/"
+    },
+    {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redisson/",
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/"
     },
@@ -813,8 +885,56 @@
       "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-lettuce/"
     },
     {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/jcache-provider-manager/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-lettuce/jcache-provider-manager/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/memoizers-concurrency/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-lettuce/memoizers-concurrency/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/near-cache-l1-l2/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-lettuce/near-cache-l1-l2/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/operations-ecosystem/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-lettuce/operations-ecosystem/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/resp3-invalidation-lua/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-lettuce/resp3-invalidation-lua/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/sync-suspend-jcache/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-lettuce/sync-suspend-jcache/"
+    },
+    {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/",
       "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-redisson/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/config-codec-ownership/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-redisson/config-codec-ownership/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/ecosystem-paths/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-redisson/ecosystem-paths/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/failures-cancellation-operations/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-redisson/failures-cancellation-operations/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/memoizers-concurrency/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-redisson/memoizers-concurrency/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/near-cache-invalidation/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-redisson/near-cache-invalidation/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/redisson-jcache-suspend/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-redisson/redisson-jcache-suspend/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cassandra/",
@@ -1267,6 +1387,30 @@
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-redis/",
       "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-redis/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-redis/cache-spring-separation/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-redis/cache-spring-separation/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-redis/lettuce-vs-redisson/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-redis/lettuce-vs-redisson/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-redis/lifecycle-codec-boundaries/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-redis/lifecycle-codec-boundaries/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-redis/selective-dependency-migration/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-redis/selective-dependency-migration/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-redis/testing-operations-ecosystem/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-redis/testing-operations-ecosystem/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-redis/umbrella-dependency-contract/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-redis/umbrella-dependency-contract/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-redisson/",

@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "infrastructure"
   kind: "library"
-  sourceCommit: "0ecae4a1b0b25e9654cd631b437ef81215d81974"
+  sourceCommit: "03115e34f03bad535921d3cad5cd23a2e7814581"
   sourcePath: "docs/manual/en/modules/bluetape4k-redisson/codecs-security-wire-format.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
