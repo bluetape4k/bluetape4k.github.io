@@ -30,6 +30,8 @@ test('ecosystem atlas prefers localized manual roots while preserving GitHub', a
   assert.deepEqual(routes, {
     'bluetape4k-projects': '/manual/bluetape4k-projects/',
     'bluetape4k-exposed': '/manual/bluetape4k-exposed/',
+    'bluetape4k-aws': '/manual/bluetape4k-aws/',
+    'bluetape4k-leader': '/manual/bluetape4k-leader/',
   });
   assert.match(source, /locale === 'ko' \? '\/ko' : ''/);
   assert.match(source, /primaryUrl\(node\)/);

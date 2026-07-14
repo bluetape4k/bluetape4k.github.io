@@ -1,0 +1,102 @@
+---
+slug: "manual/bluetape4k-leader/0.4/modules/bluetape4k-leader-dynamodb"
+manualId: "bluetape4k-leader-dynamodb"
+id: "bluetape4k-leader-dynamodb"
+title: "DynamoDB backend"
+locale: "en"
+kind: "library"
+gradlePath: ":bluetape4k-leader-dynamodb"
+sourceDir: "leader-dynamodb"
+releaseRef: "0.4.0"
+artifact: io.github.bluetape4k.leader:bluetape4k-leader-dynamodb
+manual:
+  id: "bluetape4k-leader-dynamodb"
+  repository: "bluetape4k-leader"
+  group: "backends"
+  kind: "library"
+  sourceCommit: "6bb3ba3f6cdc1286b5ee7d8b7b47d9e92f9c6e3d"
+  sourcePath: "docs/manual/en/modules/bluetape4k-leader-dynamodb.md"
+  minorVersion: "0.4"
+  releaseRef: "0.4.0"
+  releaseCommit: "17ab7f872c1f96318c73d3580729cac20a67e017"
+  sourceDir: "leader-dynamodb"
+  layer: "build"
+---
+
+
+> Library module
+
+## Problem
+
+> **Preview:** Validate API and operational behavior before production adoption.
+
+Preview backend using DynamoDB conditional writes and logical lease expiry. It supports blocking, async, virtual-thread, coroutine, and group election.
+
+## When to use it
+
+Use it for AWS workloads that already depend on DynamoDB and need region-local coordination without another service.
+
+## Coordinates
+
+Artifact: `io.github.bluetape4k.leader:bluetape4k-leader-dynamodb`
+
+```kotlin
+dependencies {
+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:<version>"))
+    implementation("io.github.bluetape4k.leader:bluetape4k-leader-dynamodb")
+}
+```
+
+## Core concepts
+
+The table has string partition key `lockName`; rows store owner IDs, millisecond `leaseExpiry`, and second `ttl`. Correctness uses `leaseExpiry`; DynamoDB TTL is cleanup metadata only.
+
+## Quick start
+
+```kotlin
+val elector = DynamoDbLeaderElector(
+    dynamoDbClient,
+    DynamoDbLeaderElectionOptions(tableName = "bluetape4k_leader_locks")
+)
+elector.runIfLeader("export") { exportData() }
+```
+
+## API by task
+
+Choose sync, async-client suspend, virtual-thread, or group classes. The application provisions the table and owns both AWS clients.
+
+## Recommended patterns
+
+Use PAY_PER_REQUEST or capacity sized for contention, stable key prefixes, idempotent actions, and conditional owner checks for extend/release.
+
+## Integrations
+
+Spring auto-configuration can use caller-owned AWS clients. The dynamodb-export example shows a complete job lifecycle.
+
+## Configuration
+
+Configure table name, key prefix, wait/lease/minimum lease, retry behavior, and TTL attribute. Enable TTL on numeric `ttl` for cleanup.
+
+## Failure modes
+
+Conditional-check contention skips; SDK, IAM, throttling, and network failures propagate. TTL deletion delay must never decide whether acquisition is safe.
+
+## Operations
+
+Monitor consumed capacity, throttles, conditional failures, latency, stale-row count, and clock skew. Keep the table lifecycle in infrastructure code.
+
+## Testing
+
+Use DynamoDB Local/Testcontainers for two-client acquire, expiry, stale-owner release, group slots, suspend and virtual-thread paths.
+
+## Workshops and learning path
+
+Run dynamodb-export and compare the AWS operational model with Redis or SQL backends.
+
+## Limitations
+
+Preview status and eventually executed TTL cleanup require conservative operations. Cross-region coordination and global-table conflict behavior are outside this contract.
+
+## Sources
+
+[Elector](https://github.com/bluetape4k/bluetape4k-leader/blob/0.4.0/leader-dynamodb/src/main/kotlin/io/bluetape4k/leader/dynamodb/DynamoDbLeaderElector.kt) · [Options](https://github.com/bluetape4k/bluetape4k-leader/blob/0.4.0/leader-dynamodb/src/main/kotlin/io/bluetape4k/leader/dynamodb/DynamoDbLeaderElectionOptions.kt) · [Stable guide](https://github.com/bluetape4k/bluetape4k-leader/blob/0.4.0/leader-dynamodb/README.md)

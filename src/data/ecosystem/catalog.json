@@ -16,7 +16,7 @@
       "id": "bluetape4k-aws", "type": "repository", "layer": "build", "ecosystem": "kotlin", "group": "Infrastructure",
       "label": { "en": "AWS integrations", "ko": "AWS 통합" },
       "description": { "en": "Coroutine-friendly wrappers for AWS SDKs.", "ko": "AWS SDK를 코루틴 친화적으로 사용할 수 있게 합니다." },
-      "url": "https://github.com/bluetape4k/bluetape4k-aws", "relations": []
+      "url": "https://github.com/bluetape4k/bluetape4k-aws", "manualRoute": "/manual/bluetape4k-aws/", "relations": []
     },
     {
       "id": "bluetape4k-graph", "type": "repository", "layer": "build", "ecosystem": "kotlin", "group": "Data",
@@ -28,7 +28,7 @@
       "id": "bluetape4k-leader", "type": "repository", "layer": "build", "ecosystem": "kotlin", "group": "Infrastructure",
       "label": { "en": "Leader election", "ko": "리더 선출" },
       "description": { "en": "Distributed leader election APIs and backends.", "ko": "분산 리더 선출 API와 백엔드를 제공합니다." },
-      "url": "https://github.com/bluetape4k/bluetape4k-leader", "relations": []
+      "url": "https://github.com/bluetape4k/bluetape4k-leader", "manualRoute": "/manual/bluetape4k-leader/", "relations": []
     },
     {
       "id": "bluetape4k-text", "type": "repository", "layer": "build", "ecosystem": "kotlin", "group": "Foundation",
