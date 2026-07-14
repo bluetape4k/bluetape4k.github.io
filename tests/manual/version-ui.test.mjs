@@ -129,17 +129,21 @@ test('manual selector is mounted beside language selection and in the mobile pre
 });
 
 test('versioned Projects manuals use the central dependency BOM only', async () => {
-  const { output, status } = spawnSync('rg', [
+  const { output, status } = spawnSync('git', [
+    'grep',
     '-l',
     'io\\.github\\.bluetape4k:bluetape4k-bom:<version>',
+    '--',
     'src/content/docs/manual/bluetape4k-projects',
     'src/content/docs/ko/manual/bluetape4k-projects',
   ], { cwd: projectRoot, encoding: 'utf8' });
   assert.equal(status, 1, `repository BOM leaked into consumer guidance:\n${output}`);
 
-  const central = spawnSync('rg', [
+  const central = spawnSync('git', [
+    'grep',
     '-l',
     'io\\.github\\.bluetape4k:bluetape4k-dependencies:<version>',
+    '--',
     'src/content/docs/manual/bluetape4k-projects',
     'src/content/docs/ko/manual/bluetape4k-projects',
   ], { cwd: projectRoot, encoding: 'utf8' });
