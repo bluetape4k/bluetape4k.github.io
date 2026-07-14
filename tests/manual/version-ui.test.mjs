@@ -35,15 +35,14 @@ async function write(targetRoot, relative, content) {
   await writeFile(target, content);
 }
 
-function manualPage({ locale = 'en', minor, title, id, repository = projects }) {
+function manualPage({ locale = 'en', minor, title, id, repository = projects, body = `Static navigation fixture for ${minor}.` }) {
   const commit = minor === '1.12' ? 'b'.repeat(40) : 'a'.repeat(40);
   return [
     '---', `title: ${JSON.stringify(title)}`, `slug: ${locale === 'ko' ? 'ko/' : ''}manual/${repository.slug}/${minor}/modules/${id}`, 'manual:', `  id: ${id}`,
     `  repository: ${repository.slug}`, '  group: fixture', '  kind: library',
     `  sourceCommit: ${commit}`, `  sourcePath: docs/manual/${locale}/modules/${id}.md`,
     `  minorVersion: ${JSON.stringify(minor)}`, `  releaseRef: ${JSON.stringify(`${minor}.0`)}`, `  releaseCommit: ${commit}`,
-    '  sourceDir: fixture', '  layer: build', '---', '', `# ${title}`, '',
-    `Static navigation fixture for ${minor}.`, '',
+    '  sourceDir: fixture', '  layer: build', '---', '', `# ${title}`, '', body, '',
   ].join('\n');
 }
 
@@ -74,8 +73,8 @@ async function fixtureProject(t) {
   await write(fixture, 'src/content.config.ts', await read('src/content.config.ts'));
   await write(fixture, 'src/data/manual/repositories.json', JSON.stringify({ schema: 1, repositories: [projects, exposed] }));
   await write(fixture, 'src/content/docs/index.md', '---\ntitle: Non manual fixture\n---\n\n# Non manual fixture\n');
-  await write(fixture, 'src/content/docs/manual/bluetape4k-projects/1.11/modules/shared.md', manualPage({ minor: '1.11', title: 'Unique Shared Manual Token', id: 'shared' }));
-  await write(fixture, 'src/content/docs/manual/bluetape4k-projects/1.12/modules/shared.md', manualPage({ minor: '1.12', title: 'Unique Shared Manual Token', id: 'shared' }));
+  await write(fixture, 'src/content/docs/manual/bluetape4k-projects/1.11/modules/shared.md', manualPage({ minor: '1.11', title: 'Archived shared fixture', id: 'shared', body: 'archivedmanualsentinel' }));
+  await write(fixture, 'src/content/docs/manual/bluetape4k-projects/1.12/modules/shared.md', manualPage({ minor: '1.12', title: 'Latest shared fixture', id: 'shared', body: 'latestmanualsentinel' }));
   await write(fixture, 'src/content/docs/manual/bluetape4k-projects/1.12/modules/new.md', manualPage({ minor: '1.12', title: 'New fixture page', id: 'new' }));
   await write(fixture, 'src/content/docs/manual/bluetape4k-projects/1x11/modules/shared.md', manualPage({ minor: '1.11', title: 'Malformed route fixture', id: 'shared' }).replaceAll('/1.11/', '/1x11/'));
   await write(fixture, 'src/content/docs/ko/manual/bluetape4k-projects/1.12/modules/new.md', manualPage({ locale: 'ko', minor: '1.12', title: '새 테스트 문서', id: 'new' }));
@@ -117,10 +116,11 @@ async function queryPagefind(dist, term) {
     const pagefind = await import(`${new URL(`file://${path.join(dist, 'pagefind/pagefind.js')}`).href}?fixture=${Date.now()}`);
     await pagefind.options({ basePath: `http://127.0.0.1:${port}/pagefind/` });
     await pagefind.init();
-    let result = await pagefind.search(term);
-    if (result.results.length === 0) {
-      await new Promise((resolve) => setTimeout(resolve, 100));
+    let result;
+    for (let attempt = 0; attempt < 10; attempt += 1) {
       result = await pagefind.search(term);
+      if (result.results.length > 0) break;
+      await new Promise((resolve) => setTimeout(resolve, 200));
     }
     return await Promise.all(result.results.map(async (item) => (await item.data()).url));
   } finally {
@@ -283,8 +283,10 @@ test('actual Astro builds preserve defaults without a catalog and exclude archiv
   assert.match(unavailable, /\/manual\/bluetape4k-projects\/1\.12\/modules\/new\//);
   assert.doesNotMatch(unavailable, /<main[^>]*data-pagefind-body/);
 
-  const urls = await queryPagefind(path.join(fixture, 'dist'), 'Unique Shared Manual Token');
+  const urls = await queryPagefind(path.join(fixture, 'dist'), 'latestmanualsentinel');
   const manualUrls = urls.filter((url) => url.includes('/manual/bluetape4k-projects/'));
   assert.equal(manualUrls.length, 1, manualUrls.join('\n'));
   assert.match(manualUrls[0], /\/1\.12\/modules\/shared\/$/);
+  const archivedUrls = await queryPagefind(path.join(fixture, 'dist'), 'archivedmanualsentinel');
+  assert.equal(archivedUrls.length, 0, archivedUrls.join('\n'));
 });
