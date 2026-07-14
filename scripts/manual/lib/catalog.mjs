@@ -2,8 +2,8 @@ import path from 'node:path';
 import { readFileSync } from 'node:fs';
 import { parseStableRelease, mergeVersionCatalog as mergeBaseCatalog } from './version.mjs';
 import { manualRouteFor, safeRelativePath } from './paths.mjs';
+import { validateRepositoryRegistry } from './repositories.mjs';
 
-const REPOSITORY = 'bluetape4k/bluetape4k-projects';
 const SHA = /^[0-9a-f]{40}$/;
 
 function fail(code, actual) {
@@ -17,6 +17,14 @@ function compareMinor(left, right) {
   const a = left.split('.').map(Number);
   const b = right.split('.').map(Number);
   return a[0] - b[0] || a[1] - b[1];
+}
+
+function approvedRepository(repository) {
+  try {
+    return validateRepositoryRegistry({ schema: 1, repositories: [repository] }).repositories[0];
+  } catch {
+    fail('REPOSITORY_UNSUPPORTED', repository?.repository ?? repository);
+  }
 }
 
 function canonicalDocumentId(documentId) {
@@ -46,10 +54,11 @@ function normalizeEntry(entry) {
   return { ...structuredClone(entry), documents: normalizeDocuments(entry.documents) };
 }
 
-export function validateVersionCatalog(catalog) {
+export function validateVersionCatalog(catalog, repository) {
+  const approved = approvedRepository(repository);
   if (!catalog || typeof catalog !== 'object') fail('CATALOG_TYPE', catalog);
   if (catalog.schema !== 1) fail('CATALOG_SCHEMA', catalog.schema);
-  if (catalog.repository !== REPOSITORY) fail('REPOSITORY_UNSUPPORTED', catalog.repository);
+  if (catalog.repository !== approved.repository) fail('REPOSITORY_UNSUPPORTED', catalog.repository);
   if (!Array.isArray(catalog.versions)) fail('CATALOG_VERSIONS', catalog.versions);
   const versions = catalog.versions.map(normalizeEntry);
   const minors = versions.map(({ minorVersion }) => minorVersion);
@@ -63,18 +72,19 @@ export function validateVersionCatalog(catalog) {
   return { ...structuredClone(catalog), versions };
 }
 
-export function mergeVersionCatalog(previous, entry) {
-  const normalized = validateVersionCatalog(previous);
+export function mergeVersionCatalog(previous, entry, repository) {
+  const normalized = validateVersionCatalog(previous, repository);
   const nextEntry = normalizeEntry(entry);
-  return validateVersionCatalog(mergeBaseCatalog(normalized, nextEntry));
+  return validateVersionCatalog(mergeBaseCatalog(normalized, nextEntry), repository);
 }
 
 function version(catalog, minorVersion) {
   return catalog.versions.find((candidate) => candidate.minorVersion === minorVersion);
 }
 
-export function selectorTarget(catalog, request) {
-  const normalized = validateVersionCatalog(catalog);
+export function selectorTarget(catalog, request, repository) {
+  const approved = approvedRepository(repository);
+  const normalized = validateVersionCatalog(catalog, approved);
   const { locale, targetMinor, sourceMinor, documentId } = request;
   if (!['en', 'ko'].includes(locale)) fail('LOCALE_UNSUPPORTED', locale);
   const safeDocument = canonicalDocumentId(documentId);
@@ -83,12 +93,12 @@ export function selectorTarget(catalog, request) {
   if (!target || !source) fail('CATALOG_VERSION', !target ? targetMinor : sourceMinor);
   if (!source.documents[locale].includes(safeDocument)) fail('CATALOG_DOCUMENT', safeDocument);
   if (target.documents[locale].includes(safeDocument)) {
-    return { kind: 'document', href: manualRouteFor(locale, 'bluetape4k-projects', targetMinor, `${safeDocument}.md`) };
+    return { kind: 'document', href: manualRouteFor(locale, approved, targetMinor, `${safeDocument}.md`) };
   }
   const localePrefix = locale === 'ko' ? '/ko' : '';
   return {
     kind: 'not-available',
-    href: `${localePrefix}/manual/bluetape4k-projects/${targetMinor}/not-available/from-${sourceMinor}/${safeDocument}/`,
+    href: `${localePrefix}/manual/${approved.slug}/${targetMinor}/not-available/from-${sourceMinor}/${safeDocument}/`,
     targetMinor,
     sourceMinor,
     documentId: safeDocument,
@@ -129,16 +139,16 @@ function safeRedirectRoute(value, code) {
   return value;
 }
 
-function parseRedirectSource(value) {
+function parseRedirectSource(value, repository) {
   const safe = safeRedirectRoute(value, 'REDIRECT_SOURCE');
-  const match = safe.match(/^\/(ko\/)?manual\/bluetape4k-projects\/(.*)$/);
+  const match = safe.match(new RegExp(`^/(ko/)?manual/${repository.slug}/(.*)$`));
   if (!match || /^\d+\.\d+(?:\/|$)/.test(match[2])) fail('REDIRECT_SOURCE', value);
   return { locale: match[1] ? 'ko' : 'en', documentId: match[2].replace(/\/$/, '') || 'index' };
 }
 
-function parseRedirectDestination(value) {
+function parseRedirectDestination(value, repository) {
   const safe = safeRedirectRoute(value, 'REDIRECT_TARGET');
-  const match = safe.match(/^\/(ko\/)?manual\/bluetape4k-projects\/(\d+\.\d+)\/(.*)$/);
+  const match = safe.match(new RegExp(`^/(ko/)?manual/${repository.slug}/(\\d+\\.\\d+)/(.*)$`));
   if (!match) fail('REDIRECT_TARGET', value);
   return {
     locale: match[1] ? 'ko' : 'en',
@@ -147,14 +157,15 @@ function parseRedirectDestination(value) {
   };
 }
 
-export function loadRedirectCatalog(redirectUrl) {
+export function loadRedirectCatalog(redirectUrl, repository) {
+  const approved = approvedRepository(repository);
   if (!(redirectUrl instanceof URL) || redirectUrl.protocol !== 'file:') fail('REDIRECT_CATALOG_URL', redirectUrl);
   const name = path.posix.basename(redirectUrl.pathname);
-  if (!name.endsWith('.redirects.json')) fail('REDIRECT_CATALOG_URL', redirectUrl.href);
+  if (name !== `${approved.slug}.redirects.json`) fail('REDIRECT_CATALOG_URL', redirectUrl.href);
   const versionUrl = new URL(name.replace(/\.redirects\.json$/, '.versions.json'), redirectUrl);
   const redirects = JSON.parse(readFileSync(redirectUrl, 'utf8'));
-  const versions = validateVersionCatalog(JSON.parse(readFileSync(versionUrl, 'utf8')));
-  if (!redirects || redirects.schema !== 1 || redirects.repository !== REPOSITORY) fail('REDIRECT_SCHEMA', redirects?.schema);
+  const versions = validateVersionCatalog(JSON.parse(readFileSync(versionUrl, 'utf8')), approved);
+  if (!redirects || redirects.schema !== 1 || redirects.repository !== approved.repository) fail('REDIRECT_SCHEMA', redirects?.schema);
   assertRedirects(redirects.redirects);
   const expectedSources = new Set();
   for (const catalogVersion of versions.versions) {
@@ -162,7 +173,7 @@ export function loadRedirectCatalog(redirectUrl) {
       const localePrefix = locale === 'ko' ? '/ko' : '';
       for (const documentId of catalogVersion.documents[locale]) {
         const suffix = documentId === 'index' ? '' : `${documentId}/`;
-        expectedSources.add(`${localePrefix}/manual/bluetape4k-projects/${suffix}`);
+        expectedSources.add(`${localePrefix}/manual/${approved.slug}/${suffix}`);
       }
     }
   }
@@ -172,8 +183,8 @@ export function loadRedirectCatalog(redirectUrl) {
   if (unexpected || missing) fail('REDIRECT_SOURCE_SET', unexpected ?? missing);
   const latest = version(versions, versions.latest);
   const entries = redirects.redirects.map(({ source, target }) => {
-    const parsedSource = parseRedirectSource(source);
-    const parsedTarget = parseRedirectDestination(target);
+    const parsedSource = parseRedirectSource(source, approved);
+    const parsedTarget = parseRedirectDestination(target, approved);
     if (parsedSource.locale !== parsedTarget.locale) fail('REDIRECT_LOCALE', `${source} -> ${target}`);
     if (parsedTarget.minorVersion !== versions.latest) fail('REDIRECT_LATEST', target);
     if (!latest.documents[parsedTarget.locale].includes(parsedTarget.documentId)) fail('REDIRECT_DOCUMENT', parsedTarget.documentId);
@@ -182,8 +193,8 @@ export function loadRedirectCatalog(redirectUrl) {
   return { latest: versions.latest, entries };
 }
 
-function targetDocument(target) {
-  const match = target.match(/^\/(ko\/)?manual\/bluetape4k-projects\/\d+\.\d+\/(.*)$/);
+function targetDocument(target, repository) {
+  const match = target.match(new RegExp(`^/(ko/)?manual/${repository.slug}/\\d+\\.\\d+/(.*)$`));
   if (!match) fail('REDIRECT_TARGET', target);
   return { locale: match[1] ? 'ko' : 'en', documentId: match[2].replace(/\/$/, '') || 'index' };
 }
@@ -193,31 +204,32 @@ function successorFor(successors, locale, documentId) {
   return configured === undefined ? undefined : canonicalDocumentId(configured);
 }
 
-export function buildRedirectCatalog({ previous, latestEntry, successors = {} }) {
-  if (!previous || previous.schema !== 1 || previous.repository !== REPOSITORY) fail('REDIRECT_SCHEMA', previous?.schema);
+export function buildRedirectCatalog({ repository, previous, latestEntry, successors = {} }) {
+  const approved = approvedRepository(repository);
+  if (!previous || previous.schema !== 1 || previous.repository !== approved.repository) fail('REDIRECT_SCHEMA', previous?.schema);
   assertRedirects(previous.redirects);
   const latest = normalizeEntry(latestEntry);
   const redirects = new Map();
   for (const redirect of previous.redirects) {
-    const { locale, documentId } = targetDocument(redirect.target);
+    const { locale, documentId } = targetDocument(redirect.target, approved);
     const configured = successorFor(successors, locale, documentId);
     const targetId = latest.documents[locale].includes(documentId)
       ? documentId
       : configured ?? 'index';
     if (!latest.documents[locale].includes(targetId)) fail('REDIRECT_DOCUMENT', targetId);
-    redirects.set(redirect.source, manualRouteFor(locale, 'bluetape4k-projects', latest.minorVersion, `${targetId}.md`));
+    redirects.set(redirect.source, manualRouteFor(locale, approved, latest.minorVersion, `${targetId}.md`));
   }
   for (const locale of ['en', 'ko']) {
     const localePrefix = locale === 'ko' ? '/ko' : '';
     for (const documentId of latest.documents[locale]) {
       const sourceSuffix = documentId === 'index' ? '' : `${documentId}/`;
-      const source = `${localePrefix}/manual/bluetape4k-projects/${sourceSuffix}`;
-      redirects.set(source, manualRouteFor(locale, 'bluetape4k-projects', latest.minorVersion, `${documentId}.md`));
+      const source = `${localePrefix}/manual/${approved.slug}/${sourceSuffix}`;
+      redirects.set(source, manualRouteFor(locale, approved, latest.minorVersion, `${documentId}.md`));
     }
   }
   return {
     schema: 1,
-    repository: REPOSITORY,
+    repository: approved.repository,
     redirects: [...redirects].map(([source, target]) => ({ source, target })).toSorted((a, b) => a.source.localeCompare(b.source)),
   };
 }
@@ -240,14 +252,15 @@ export function stableJson(value) {
   return `${JSON.stringify(stableValue(value), null, 2)}\n`;
 }
 
-export function buildUnavailablePage({ locale, targetMinor, sourceMinor, documentId }) {
+export function buildUnavailablePage({ repository, locale, targetMinor, sourceMinor, documentId }) {
+  const approved = approvedRepository(repository);
   if (!['en', 'ko'].includes(locale)) fail('LOCALE_UNSUPPORTED', locale);
   const safeDocument = canonicalDocumentId(documentId);
   if (!/^\d+\.\d+$/.test(targetMinor) || !/^\d+\.\d+$/.test(sourceMinor)) fail('MINOR_UNSAFE', targetMinor);
   const prefix = locale === 'ko' ? 'src/content/docs/ko' : 'src/content/docs';
-  const route = manualRouteFor(locale, 'bluetape4k-projects', sourceMinor, `${safeDocument}.md`);
+  const route = manualRouteFor(locale, approved, sourceMinor, `${safeDocument}.md`);
   const unavailableId = `not-available/from-${sourceMinor}/${safeDocument}`;
-  const slug = manualRouteFor(locale, 'bluetape4k-projects', targetMinor, `${unavailableId}.md`)
+  const slug = manualRouteFor(locale, approved, targetMinor, `${unavailableId}.md`)
     .replace(/^\//, '')
     .replace(/\/$/, '');
   const title = locale === 'ko'
@@ -257,7 +270,7 @@ export function buildUnavailablePage({ locale, targetMinor, sourceMinor, documen
     ? `문서 ID: \`${safeDocument}\`\n\n이 문서는 해당 버전 이후에 추가되었습니다.\n\n[${sourceMinor} 버전으로 돌아가기](${route})`
     : `Document ID: \`${safeDocument}\`\n\nThis document was added after this version.\n\n[Return to version ${sourceMinor}](${route})`;
   return {
-    path: path.posix.join(prefix, `manual/bluetape4k-projects/${targetMinor}/not-available/from-${sourceMinor}/${safeDocument}.md`),
+    path: path.posix.join(prefix, `manual/${approved.slug}/${targetMinor}/not-available/from-${sourceMinor}/${safeDocument}.md`),
     content: `---\ntitle: ${JSON.stringify(title)}\nslug: ${JSON.stringify(slug)}\npagefind: false\nsidebar:\n  hidden: true\n---\n\n# ${title}\n\n${body}\n`,
   };
 }

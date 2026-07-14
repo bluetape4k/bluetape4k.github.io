@@ -2,10 +2,26 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { setDocumentSlug, transformManual } from '../../scripts/manual/lib/frontmatter.mjs';
 
+const projects = {
+  slug: 'bluetape4k-projects',
+  repository: 'bluetape4k/bluetape4k-projects',
+  label: { en: 'Projects docs', ko: 'Projects 문서' },
+  latestMinor: '1.11',
+  route: { en: '/manual/bluetape4k-projects/', ko: '/ko/manual/bluetape4k-projects/' },
+};
+const exposed = {
+  slug: 'bluetape4k-exposed',
+  repository: 'bluetape4k/bluetape4k-exposed',
+  label: { en: 'Exposed docs', ko: 'Exposed 문서' },
+  latestMinor: '1.11',
+  route: { en: '/manual/bluetape4k-exposed/', ko: '/ko/manual/bluetape4k-exposed/' },
+};
+
 test('pins dotted minor routes with an explicit Starlight slug', () => {
-  const result = setDocumentSlug('---\ntitle: Core\n---\n\nBody\n', 'manual/bluetape4k-projects/1.11/modules/core');
+  const result = setDocumentSlug('---\ntitle: Core\n---\n\nBody\n', projects, 'manual/bluetape4k-projects/1.11/modules/core');
   assert.match(result, /^slug: "manual\/bluetape4k-projects\/1\.11\/modules\/core"$/m);
-  assert.throws(() => setDocumentSlug(result, 'manual/bluetape4k-projects/111/modules/core'), /SLUG_UNSAFE/);
+  assert.throws(() => setDocumentSlug(result, projects, 'manual/bluetape4k-projects/111/modules/core'), /SLUG_UNSAFE/);
+  assert.throws(() => setDocumentSlug(result, exposed, 'manual/bluetape4k-projects/1.11/modules/core'), /SLUG_UNSAFE/);
 });
 
 test('manual metadata keeps provenance while source links use the published release', () => {
@@ -13,7 +29,7 @@ test('manual metadata keeps provenance while source links use the published rele
   const result = transformManual({
     content: '---\ntitle: Core\n---\n\n# Core\n\n## Problem {#problem}\n\n[Lifecycle](./core/lifecycle.md)\n\n[Source](../../../../src/Core.kt)\n\n[Module](../../../../bluetape4k/core)\n',
     module: { id: 'core', group: 'foundation', kind: 'library', sourceDir: 'bluetape4k/core' },
-    repository: 'bluetape4k-projects', sourceCommit, sourcePath: 'docs/manual/en/modules/core.md',
+    repository: projects, sourceCommit, sourcePath: 'docs/manual/en/modules/core.md',
     releaseRef: '1.11.0',
     releaseCommit: 'c'.repeat(40),
     minorVersion: '1.11',
@@ -60,7 +76,7 @@ test('chapter metadata and repository-owned asset routes are added', () => {
       en: 'en/modules/bluetape4k-coroutines/lifecycle.md',
       ko: 'ko/modules/bluetape4k-coroutines/lifecycle.md',
     },
-    repository: 'bluetape4k-projects',
+    repository: projects,
     sourceCommit,
     sourcePath: 'docs/manual/en/modules/bluetape4k-coroutines/lifecycle.md',
     releaseRef: '1.11.0',
@@ -71,4 +87,22 @@ test('chapter metadata and repository-owned asset routes are added', () => {
   assert.match(result, /chapterId: "lifecycle"/);
   assert.match(result, /\/manual-assets\/bluetape4k-projects\/1\.11\/coroutines\/scope-lifecycle\.svg/);
   assert.ok(!result.endsWith('\n\n'), 'generated manuals end with one LF');
+});
+
+test('rewrites Exposed metadata, manuals, assets, and source links inside Exposed', () => {
+  const result = transformManual({
+    content: '---\ntitle: JDBC\n---\n\n# JDBC\n\n[Guide](../guides/jdbc-vs-r2dbc.md)\n\n![Map](../../../assets/persistence/path-decision.svg)\n\n[Source](../../../../exposed/jdbc)\n',
+    module: { id: 'bluetape4k-exposed-jdbc', group: 'persistence', kind: 'library', sourceDir: 'exposed/jdbc' },
+    repository: exposed,
+    sourceCommit: 'e'.repeat(40),
+    sourcePath: 'docs/manual/en/modules/bluetape4k-exposed-jdbc.md',
+    releaseRef: '1.11.0',
+    releaseCommit: 'f'.repeat(40),
+    minorVersion: '1.11',
+  });
+
+  assert.match(result, /repository: "bluetape4k-exposed"/);
+  assert.match(result, /\/manual\/bluetape4k-exposed\/1\.11\/guides\/jdbc-vs-r2dbc\//);
+  assert.match(result, /\/manual-assets\/bluetape4k-exposed\/1\.11\/persistence\/path-decision\.svg/);
+  assert.match(result, /github\.com\/bluetape4k\/bluetape4k-exposed\/tree\/1\.11\.0\/exposed\/jdbc/);
 });

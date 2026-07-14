@@ -1,9 +1,13 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import { loadRedirectCatalog } from './scripts/manual/lib/catalog.mjs';
+import { loadRepositoryRegistry, repositoryBySlug } from './scripts/manual/lib/repositories.mjs';
 
+const manualRepositories = loadRepositoryRegistry(new URL('./src/data/manual/repositories.json', import.meta.url));
+const projectsRepository = repositoryBySlug(manualRepositories, 'bluetape4k-projects');
 const manualRedirects = loadRedirectCatalog(
   new URL('./src/data/manual/bluetape4k-projects.redirects.json', import.meta.url),
+  projectsRepository,
 );
 
 const cloudflareBeaconToken =

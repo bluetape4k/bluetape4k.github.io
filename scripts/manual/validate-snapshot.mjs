@@ -5,8 +5,10 @@ import { loadRedirectCatalog, validateVersionCatalog } from './lib/catalog.mjs';
 import { safeRelativePath } from './lib/paths.mjs';
 import { sanitizeDiagnostic } from './lib/release.mjs';
 import { validateCommittedSite } from './sync-manual.mjs';
+import { loadRepositoryRegistry, repositoryBySlug } from './lib/repositories.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
+const registry = loadRepositoryRegistry(new URL('../../src/data/manual/repositories.json', import.meta.url));
 
 function parseArgs(argv) {
   let repository = 'bluetape4k-projects';
@@ -44,10 +46,11 @@ export function failureReport(error) {
 }
 
 async function validate(repository) {
+  const repositoryDescriptor = repositoryBySlug(registry, repository);
   const result = await validateCommittedSite({ targetRoot: root, repository });
   const catalogPath = path.join(root, `src/data/manual/${repository}.versions.json`);
-  const catalog = validateVersionCatalog(JSON.parse(await readFile(catalogPath, 'utf8')));
-  const redirects = loadRedirectCatalog(new URL(`../../src/data/manual/${repository}.redirects.json`, import.meta.url));
+  const catalog = validateVersionCatalog(JSON.parse(await readFile(catalogPath, 'utf8')), repositoryDescriptor);
+  const redirects = loadRedirectCatalog(new URL(`../../src/data/manual/${repository}.redirects.json`, import.meta.url), repositoryDescriptor);
   for (const version of catalog.versions) {
     const en = version.documents.en.join('\n');
     const ko = version.documents.ko.join('\n');

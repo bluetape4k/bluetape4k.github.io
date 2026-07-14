@@ -2,8 +2,13 @@
 import DefaultPageTitle from '@astrojs/starlight/components/PageTitle.astro';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { validateVersionCatalog } from '../../scripts/manual/lib/catalog.mjs';
+import { loadRepositoryRegistry, repositoryBySlug } from '../../scripts/manual/lib/repositories.mjs';
 import '../styles/manual.css';
+
+const manualRepositories = loadRepositoryRegistry(pathToFileURL(path.join(process.cwd(), 'src/data/manual/repositories.json')));
+const projectsRepository = repositoryBySlug(manualRepositories, 'bluetape4k-projects');
 
 const { starlightRoute } = Astro.locals;
 const manual = starlightRoute.entry.data.manual;
@@ -14,7 +19,7 @@ try {
     path.join(process.cwd(), 'src/data/manual/bluetape4k-projects.versions.json'),
     'utf8',
   );
-  latestMinor = validateVersionCatalog(JSON.parse(bytes)).latest;
+  latestMinor = validateVersionCatalog(JSON.parse(bytes), projectsRepository).latest;
 } catch (error) {
   if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
 }

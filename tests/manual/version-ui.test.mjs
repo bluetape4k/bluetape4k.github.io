@@ -14,6 +14,13 @@ const readOptional = (relative) => read(relative).catch((error) => {
   throw error;
 });
 const projectRoot = path.resolve(new URL('../..', import.meta.url).pathname);
+const projects = {
+  slug: 'bluetape4k-projects',
+  repository: 'bluetape4k/bluetape4k-projects',
+  label: { en: 'Projects docs', ko: 'Projects 문서' },
+  latestMinor: '1.12',
+  route: { en: '/manual/bluetape4k-projects/', ko: '/ko/manual/bluetape4k-projects/' },
+};
 
 async function write(targetRoot, relative, content) {
   const target = path.join(targetRoot, relative);
@@ -50,7 +57,7 @@ async function fixtureProject(t) {
   for (const relative of [
     'src/components/ManualPageTitle.astro', 'src/components/ManualVersionSelector.astro',
     'src/styles/manual.css', 'src/starlightRouteData.ts',
-    'scripts/manual/lib/catalog.mjs', 'scripts/manual/lib/paths.mjs', 'scripts/manual/lib/version.mjs',
+    'scripts/manual/lib/catalog.mjs', 'scripts/manual/lib/paths.mjs', 'scripts/manual/lib/repositories.mjs', 'scripts/manual/lib/version.mjs',
   ]) await cp(path.join(projectRoot, relative), path.join(fixture, relative), { recursive: true });
   await write(fixture, 'package.json', '{"type":"module"}\n');
   await write(fixture, 'astro.config.mjs', [
@@ -58,6 +65,7 @@ async function fixtureProject(t) {
     "export default defineConfig({ integrations: [starlight({ title: 'Fixture', locales: { root: { label: 'English', lang: 'en' }, ko: { label: '한국어', lang: 'ko' } }, defaultLocale: 'root', routeMiddleware: './src/starlightRouteData.ts', components: { Header: './src/components/ManualHeader.astro', MobileMenuFooter: './src/components/ManualMobileMenuFooter.astro', PageTitle: './src/components/ManualPageTitle.astro' } })] });", '',
   ].join('\n'));
   await write(fixture, 'src/content.config.ts', await read('src/content.config.ts'));
+  await write(fixture, 'src/data/manual/repositories.json', JSON.stringify({ schema: 1, repositories: [projects] }));
   await write(fixture, 'src/content/docs/index.md', '---\ntitle: Non manual fixture\n---\n\n# Non manual fixture\n');
   await write(fixture, 'src/content/docs/manual/bluetape4k-projects/1.11/modules/shared.md', manualPage({ minor: '1.11', title: 'Unique Shared Manual Token', id: 'shared' }));
   await write(fixture, 'src/content/docs/manual/bluetape4k-projects/1.12/modules/shared.md', manualPage({ minor: '1.12', title: 'Unique Shared Manual Token', id: 'shared' }));
@@ -65,7 +73,7 @@ async function fixtureProject(t) {
   await write(fixture, 'src/content/docs/manual/bluetape4k-projects/1x11/modules/shared.md', manualPage({ minor: '1.11', title: 'Malformed route fixture', id: 'shared' }).replaceAll('/1.11/', '/1x11/'));
   await write(fixture, 'src/content/docs/ko/manual/bluetape4k-projects/1.12/modules/new.md', manualPage({ locale: 'ko', minor: '1.12', title: '새 테스트 문서', id: 'new' }));
   for (const locale of ['en', 'ko']) {
-    const unavailable = buildUnavailablePage({ locale, targetMinor: '1.11', sourceMinor: '1.12', documentId: 'modules/new' });
+    const unavailable = buildUnavailablePage({ repository: projects, locale, targetMinor: '1.11', sourceMinor: '1.12', documentId: 'modules/new' });
     await write(fixture, unavailable.path, unavailable.content);
   }
   return fixture;
