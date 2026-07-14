@@ -1,17 +1,17 @@
 {
   "assetDigest": "d5731d4ba3678ef9cec2eee5a7f77345f0af0f267ef600cfb1887a7374b8ddd0",
   "assetFiles": 30,
-  "authoringSourceRef": "0ecae4a1b0b25e9654cd631b437ef81215d81974",
-  "contentDigest": "2c9e2c2b5e147dfa003470e82bb766e8096226d5a1e8d44746216b0186e79bf9",
-  "contentFiles": 392,
-  "documentFiles": 362,
+  "authoringSourceRef": "03115e34f03bad535921d3cad5cd23a2e7814581",
+  "contentDigest": "72cbaf3c3cd73d6906c8ec3f148e5923b3bd0cb3b3c6c96027313d61585e5e15",
+  "contentFiles": 428,
+  "documentFiles": 398,
   "minorVersion": "1.11",
   "releaseCommit": "6187173b58e8b4c5c435c145e00e94708f31ef75",
   "releaseRef": "1.11.0",
   "repository": "bluetape4k/bluetape4k-projects",
   "repositorySlug": "bluetape4k-projects",
   "schemaVersion": 1,
-  "sourceCommit": "0ecae4a1b0b25e9654cd631b437ef81215d81974",
-  "sourceDigest": "22a3283cd5638a94c9a35e1ab7fb4c08bd108296a1d5249c583bdaa6ac230d8f",
-  "sourceFiles": 362
+  "sourceCommit": "03115e34f03bad535921d3cad5cd23a2e7814581",
+  "sourceDigest": "afceef199ce87f439334b2dc02e1c73a074c37a3ee4a4132eeedec3024e86aa3",
+  "sourceFiles": 398
 }

@@ -1,8 +1,8 @@
 ---
 slug: "manual/bluetape4k-projects/1.11/modules/bluetape4k-redis"
 manualId: bluetape4k-redis
-title: "bluetape4k-redis"
-description: "An umbrella module that bundles both the Lettuce and Redisson Redis clients. Existing code depending on bluetape4k-redis continues to work without modification."
+title: "Module bluetape4k-redis"
+description: "The dependency contract, selection rules, and migration boundaries of the Redis umbrella module that exports Lettuce and Redisson together."
 kind: library
 group: infrastructure
 manual:
@@ -10,7 +10,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "infrastructure"
   kind: "library"
-  sourceCommit: "0ecae4a1b0b25e9654cd631b437ef81215d81974"
+  sourceCommit: "03115e34f03bad535921d3cad5cd23a2e7814581"
   sourcePath: "docs/manual/en/modules/bluetape4k-redis.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -20,15 +20,24 @@ manual:
 ---
 
 
-## Problem
+## What it provides
 
-An umbrella module that bundles both the Lettuce and Redisson Redis clients. Existing code depending on bluetape4k-redis continues to work without modification. This manual connects that purpose to the current build, source entry points, tests, configuration resources, and lifecycle evidence instead of duplicating the README feature list.
+`bluetape4k-redis` is an umbrella module that brings `bluetape4k-lettuce` and `bluetape4k-redisson` into an application through one coordinate. It adds no Kotlin API of its own; its Gradle model exports both submodules as `api` dependencies. This is useful when an existing application uses both client families or is migrating between them.
 
-## When to use
+The artifact name does not imply Spring Data Redis, a Spring Cache provider, or client auto-configuration. Those capabilities belong to `bluetape4k-spring-boot-redis`, `bluetape4k-cache-lettuce`, and `bluetape4k-cache-redisson`.
 
-Use `bluetape4k-redis` when the application needs client lifecycle, reconnect policy, backpressure, retries, and observability. Start with the source entry points below and confirm that their ownership and failure contracts match the calling component. Prefer a smaller standard-library or already-adopted module when it satisfies the same contract without another runtime boundary.
+## Decide before adoption
 
-## Coordinates
+- Confirm that the application actually uses both Lettuce and Redisson APIs.
+- Prefer Lettuce alone when Redis commands and coroutine adapters are the main requirement.
+- Choose Redisson for distributed locks, objects, Streams, or Redisson Near Cache.
+- Do not assume that the two clients share lifecycle or codec wire-format rules.
+- Start from a separate module when the requirement is a Spring Data Redis serializer or Spring Cache abstraction.
+- Plan to replace the umbrella coordinate with one client after a migration ends.
+
+## Add the dependency
+
+Consumers manage only the `bluetape4k-dependencies` BOM version, not separate Lettuce, Redisson, or bluetape4k module versions.
 
 ```kotlin
 dependencies {
@@ -37,66 +46,100 @@ dependencies {
 }
 ```
 
-Gradle project path: `:bluetape4k-redis`. Source directory: `infra/redis`.
+This coordinate puts both client artifacts on the compile and runtime classpaths. If the application uses only one, follow [Selective dependency migration](/manual/bluetape4k-projects/1.11/modules/bluetape4k-redis/selective-dependency-migration/) to reduce the classpath and operational surface.
 
-## Concepts
+## Make the first choice
 
-The module is configuration or platform metadata and has no Kotlin/Java source type to index.
+Keep the umbrella during a transition, but isolate each client family behind separate packages or adapters.
 
-## Quick start
+```kotlin
+dependencies {
+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:<version>"))
+    implementation("io.github.bluetape4k:bluetape4k-redis")
+}
+```
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. The module has no Kotlin/Java source entry point; inspect its Gradle model and README.
+Once new code uses only Lettuce and all Redisson calls are gone, replace the coordinate with `bluetape4k-lettuce`. The umbrella exposes no factory or initialization function of its own; use the [Lettuce manual](/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/) and [Redisson manual](/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/) for client examples.
 
-## API by task
+## Selection map
 
-No Kotlin/Java source file is registered for this module. Use the build model and README as its public surface.
+| Requirement | Start with | Boundary to keep explicit |
+| --- | --- | --- |
+| Both client families during a migration | `bluetape4k-redis` | The umbrella groups dependencies only. |
+| Redis commands, pipelines, `RedisFuture`, coroutines | `bluetape4k-lettuce` | Assign ownership of the client and cached connections. |
+| Distributed objects, locks, Streams, Redisson transactions | `bluetape4k-redisson` | Treat `shutdown()` and the Codec as deployment contracts. |
+| Function-result or cache-aside abstraction | `bluetape4k-cache-lettuce` or `bluetape4k-cache-redisson` | Distinguish client helpers from cache providers. |
+| Spring `RedisTemplate` serializers | `bluetape4k-spring-boot-redis` | The umbrella creates no Spring beans. |
 
-## Patterns
+## Learning path
 
-The README evidence is organized around **Module Structure**, **Dependency**, **Full Bundle (umbrella)**, **Selective Client Dependencies**, **Submodule Details**, **bluetape4k-lettuce**, **bluetape4k-redisson**, **Module Dependency Structure**, **Exported API Surface**, and **Spring Data Redis**. Use those topics as a navigation map, then confirm behavior in source and tests. Keep adoption narrow and connect owned resources to the caller lifecycle.
+These chapters start from the actual 1.11.0 Gradle contract. They do not invent umbrella APIs or tests; they show how to select, operate, and remove client dependencies using concrete build examples.
+
+1. [Umbrella dependency contract](/manual/bluetape4k-projects/1.11/modules/bluetape4k-redis/umbrella-dependency-contract/) — inspect the two exported artifacts and the capabilities the umbrella does not provide.
+2. [Choosing Lettuce or Redisson](/manual/bluetape4k-projects/1.11/modules/bluetape4k-redis/lettuce-vs-redisson/) — compare a command-oriented client with a distributed-object client by requirement.
+3. [Selective dependency migration](/manual/bluetape4k-projects/1.11/modules/bluetape4k-redis/selective-dependency-migration/) — inventory usages and reduce the build to one client coordinate.
+4. [Lifecycle and codec boundaries](/manual/bluetape4k-projects/1.11/modules/bluetape4k-redis/lifecycle-codec-boundaries/) — manage shutdown, coroutine behavior, keyspaces, and wire formats per client.
+5. [Separating cache providers and Spring Data Redis](/manual/bluetape4k-projects/1.11/modules/bluetape4k-redis/cache-spring-separation/) — distinguish client helpers, cache abstractions, and serializer modules.
+6. [Testing, operations, and ecosystem paths](/manual/bluetape4k-projects/1.11/modules/bluetape4k-redis/testing-operations-ecosystem/) — connect submodule tests and metrics to workshops and Exposed caching.
+
+For a new adoption, read chapters 1 and 2 and choose the smaller dependency. For an existing umbrella consumer, use chapters 3 and 4 to lock usage and compatibility boundaries before changing the build.
+
+## Recommended patterns
+
+New applications should depend directly on Lettuce or Redisson when the requirement is clear. If both clients are necessary, keep their key prefixes and wire formats separate so that one client never decodes the other client's values with an incompatible Codec. Create clients once per application lifecycle, not per request, and close them at shutdown.
+
+The umbrella makes a migration easy to start but does not prove that it is complete. Inspect source usage and the runtime classpath before removing a client.
 
 ## Integrations
 
-The current build declares these integration edges:
+The 1.11.0 build declares exactly two integration edges:
 
 ```kotlin
 api(project(":bluetape4k-lettuce"))
 api(project(":bluetape4k-redisson"))
 ```
 
-Treat `compileOnly` edges as caller-provided capabilities and verify runtime availability before using their APIs.
+Follow each detailed manual for its transitive and optional runtime boundaries. The umbrella does not add a Spring Boot starter, Spring Cache provider, or database loader/writer.
 
 ## Configuration
 
-No module-level configuration resource was found under `src/main/resources`. Configuration is supplied through constructors, builders, function arguments, or the integrating framework; confirm defaults in source.
+`bluetape4k-redis` has no configuration class, bean, property, or resource. Configure Lettuce URIs and `ClientResources`, Redisson `Config`, timeouts, retries, pools, and Codecs in the component that owns the actual client. Do not assume equivalent names or defaults across the two implementations.
 
-## Failures
+## Failure behavior
 
-Failure semantics are defined by the linked entry points and tests, not inferred from the artifact name. Keep cancellation and timeout signals intact, close owned resources, and translate backend exceptions only at a boundary that can add a stable domain contract. Use the test anchors below to verify the exact behavior before adding retries or fallbacks.
+The umbrella does not translate exceptions or add retries and fallbacks. Connection failures, timeouts, cancellation, and Codec decode errors follow the selected client contract. Using both clients adds two failure surfaces; do not implement automatic cross-client fallback until data consistency and duplicate-execution rules are defined.
 
 ## Operations
 
-Track connection state, queue depth, retries, timeouts, remote errors, and graceful shutdown. Keep capacity, timeout, retry, and shutdown settings next to the component that owns the resource; avoid process-wide defaults that hide which caller accepted the trade-off.
+Observe connection counts, reconnects, command latency, timeouts, queues, and shutdown separately for each active client. Lettuce and Redisson use separate pools even when they connect to the same Redis deployment. While the umbrella remains, include the dependency tree and number of client instances in deployment checks.
 
 ## Testing
 
-Run the module test task:
+The umbrella has no production source or dedicated tests. A successful `:bluetape4k-redis:test` task must not be presented as a suite that validates umbrella behavior. Verify real contracts in the selected submodule and in application integration tests.
 
 ```bash
-./gradlew :bluetape4k-redis:test --no-configuration-cache
+./gradlew :bluetape4k-lettuce:test --no-build-cache --no-configuration-cache
+./gradlew :bluetape4k-redisson:test --no-build-cache --no-configuration-cache
 ```
 
-No Kotlin/Java test file was found in the manifest's test paths. Verify the module build and add a focused contract test when adopting behavior not covered elsewhere.
+Both tasks use Redis Testcontainers, so do not run them in parallel with other heavy database suites. Documentation-only changes need release-file link and structure checks, not those heavy tests.
 
 ## Workshops
 
-No dedicated workshop path is registered in the manual manifest. Use the module README and the representative tests above as runnable evidence.
+There is no umbrella-specific workshop. Use `LettuceClientsTest` and `RedisFutureSupportTest` for small Lettuce examples, and `RedissonClientSupportTest` and `RStreamSupportTest` for Redisson. Continue to [bluetape4k-workshop](https://github.com/bluetape4k/bluetape4k-workshop) and [Exposed Workshop](https://github.com/bluetape4k/exposed-workshop) for cache-and-database scenarios.
 
-## Limitations
+## 1.11.0 scope
 
-This page documents the repository state represented by the linked source and tests. It does not turn optional backends into application defaults or claim performance without a benchmark artifact. Re-check compatibility and lifecycle notes when the module version changes.
+This manual follows `infra/redis/build.gradle.kts` at the `bluetape4k-projects` 1.11.0 release commit. The umbrella supplies both submodule artifacts. It does not supply a common facade, automatic client selection, Spring configuration, a cache provider, or integration tests.
 
-## Sources
+The README command for `:bluetape4k-redis:test` shows how to run a Gradle task; it does not mean that the umbrella contains test code. Changes made to submodules after 1.11.0 are not described as release behavior here.
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/redis/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/redis/build.gradle.kts)
+## Sources and links
+
+- [`infra/redis/build.gradle.kts`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/redis/build.gradle.kts)
+- [`infra/redis/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/redis/README.md)
+- [`bluetape4k-lettuce` manual](/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/)
+- [`bluetape4k-redisson` manual](/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/)
+- [`bluetape4k-cache-lettuce` manual](/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-lettuce/)
+- [`bluetape4k-cache-redisson` manual](/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-redisson/)
+- [`bluetape4k-spring-boot-redis` manual](/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-redis/)
