@@ -1,8 +1,8 @@
 ---
 slug: "manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce"
 manualId: bluetape4k-lettuce
-title: "bluetape4k-lettuce"
-description: "A Kotlin extension module for the Lettuce Redis client, providing high-performance binary codecs and RedisFuture → Coroutines adapters."
+title: "Module bluetape4k-lettuce"
+description: "Operate the Lettuce Redis client from Kotlin with connection, coroutine, codec, map, and script utilities."
 kind: library
 group: infrastructure
 manual:
@@ -10,7 +10,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "infrastructure"
   kind: "library"
-  sourceCommit: "d42c9dcf3dfa8f169b3bda9c56d3c8531b3ff296"
+  sourceCommit: "0ecae4a1b0b25e9654cd631b437ef81215d81974"
   sourcePath: "docs/manual/en/modules/bluetape4k-lettuce.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -20,15 +20,24 @@ manual:
 ---
 
 
-## Problem
+## Capabilities
 
-A Kotlin extension module for the Lettuce Redis client, providing high-performance binary codecs and RedisFuture → Coroutines adapters. This manual connects that purpose to the current build, source entry points, tests, configuration resources, and lifecycle evidence instead of duplicating the README feature list.
+`bluetape4k-lettuce` adds Kotlin-oriented client and connection factories, sync/async/coroutine command entry points, `RedisFuture` adapters, object codecs, and distributed data structures to Lettuce. It also includes loaded maps, Lua script execution, and probabilistic filters.
 
-## When to use
+It is not a framework that owns the Redis lifecycle. The application must decide who closes clients, connections, and write-behind workers.
 
-Use `bluetape4k-lettuce` when the application needs client lifecycle, reconnect policy, backpressure, retries, and observability. Start with the source entry points below and confirm that their ownership and failure contracts match the calling component. Prefer a smaller standard-library or already-adopted module when it satisfies the same contract without another runtime boundary.
+## Decisions before adoption
 
-## Coordinates
+- Decide whether raw Lettuce is enough or wrappers and coroutine adapters are needed.
+- Assign ownership of `RedisClient`, cached connections, and shared `ClientResources`.
+- Choose one sync, async-future, or coroutine path per call chain.
+- Freeze the Redis wire format and plan codec migrations.
+- Define cache-miss, write-through, and write-behind failure policy.
+- Use Lua only when a single Redis command cannot provide the required atomicity.
+
+## Dependencies
+
+Consumers manage only the central `bluetape4k-dependencies` BOM version.
 
 ```kotlin
 dependencies {
@@ -37,108 +46,88 @@ dependencies {
 }
 ```
 
-Gradle project path: `:bluetape4k-lettuce`. Source directory: `infra/lettuce`.
+Coroutine, cache-core, Kryo/Fory, and compression capabilities are optional and require the corresponding runtime dependencies when used.
 
-## Concepts
+## First connection
 
-The first source-level concepts to inspect are `LettuceClients`, `LettuceConst`, `RedisCommandSupports`, `RedisFutureSupport`, `LettuceAtomicLong`, `LettuceSuspendAtomicLong`, `LettuceBinaryCodec`, and `LettuceBinaryCodecs`. File names are navigation anchors; read each declaration and its tests before treating it as a public contract.
+```kotlin
+val client = LettuceClients.clientOf("redis://localhost:6379")
+try {
+    val commands = LettuceClients.commands(client)
+    commands.set("greeting", "hello")
+    check(commands.get("greeting") == "hello")
+} finally {
+    LettuceClients.shutdown(client)
+}
+```
 
-## Quick start
+`commands(client)` reuses a client-scoped cached connection. Direct connections and loaded-map connections remain owned by their creators.
 
-Add the coordinate above, refresh Gradle, and start from the smallest entry point that owns the required task. Open [`LettuceClients`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/LettuceClients.kt) first; it is a concrete source entry point for the module.
+## API map
 
-## API by task
+| Task | Start with | Boundary |
+| --- | --- | --- |
+| Client and cached connection | `LettuceClients` | Distinguish `shutdown(client)` from process-wide `shutdown()`. |
+| Sync/async/coroutine commands | `commands`, `asyncCommands`, `coroutinesCommands` | Lettuce marks its coroutine API experimental. |
+| Await futures | `awaitSuspending`, `awaitAll` | Preserve failures and cancellation. |
+| Store objects | `LettuceBinaryCodecs`, `LettuceJsonCodecs` | A codec defines the persisted wire format. |
+| Maps with loaders and writers | `LettuceMap`, `LettuceLoadedMap` | Write-through and write-behind fail at different times. |
+| Atomic scripts | `RedisScriptRunner` | It falls back from `EVALSHA` to `EVAL` only on `NOSCRIPT`. |
+| Probabilistic structures | `LettuceBloomFilter`, `LettuceCuckooFilter` | Include false positives and initialization parameters in the contract. |
 
-| Entry point | What to verify |
-| --- | --- |
-| [`LettuceClients`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/LettuceClients.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`LettuceConst`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/LettuceConst.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`RedisCommandSupports`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/RedisCommandSupports.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`RedisFutureSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/RedisFutureSupport.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`LettuceAtomicLong`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/atomic/LettuceAtomicLong.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`LettuceSuspendAtomicLong`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/atomic/LettuceSuspendAtomicLong.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`LettuceBinaryCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/codec/LettuceBinaryCodec.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`LettuceBinaryCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/codec/LettuceBinaryCodecs.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`LettuceIntCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/codec/LettuceIntCodec.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
-| [`LettuceJsonCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/codec/LettuceJsonCodec.kt) | Inspect this declaration's constructors, functions, and ownership contract. |
+## Learning path
 
-## Patterns
+These chapters go beyond a feature list. They follow the 1.11.0 release source and representative tests, with runnable examples for ownership, cancellation, wire compatibility, and write-behind failures.
 
-The README evidence is organized around **Features**, **Performance Optimizations**, **Codec Benchmark Results**, **Connection Benchmark Results**, **Key Techniques**, **1. Shared DEFAULTCLIENTRESOURCES (NCPU Thread Pool)**, **2. Tuned SocketOptions**, **3. withPipeline{} — Batch Flush Extension**, **4. Collection.awaitAll() — Bulk Await**, and **Lessons from Benchmarking**. Use those topics as a navigation map, then confirm behavior in source and tests. Keep adoption narrow and connect owned resources to the caller lifecycle.
+1. [Clients and connections](/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/clients-and-connections/)
+2. [Commands and coroutines](/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/commands-and-coroutines/)
+3. [Codecs and serialization](/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/codecs-and-serialization/)
+4. [Maps and cache loading](/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/maps-and-cache-loading/)
+5. [Filters, scripts, and primitives](/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/filters-scripts-and-primitives/)
+6. [Operations and ecosystem](/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/operations-and-ecosystem/)
+
+## Recommended patterns
+
+Reuse a client per application and close it from the shutdown lifecycle. Issue all pipelined commands inside `withPipeline`, then await the futures outside the block. Migrate codecs with a new key prefix or a full cache reset. Treat write-behind capacity, flush failures, dead letters, and shutdown draining as operational state.
 
 ## Integrations
 
-The current build declares these integration edges:
-
-```kotlin
-api(project(":bluetape4k-core"))
-api(project(":bluetape4k-io"))
-api(project(":bluetape4k-netty"))
-api(libs.lettuce.core)
-compileOnly(project(":bluetape4k-coroutines"))
-compileOnly(libs.kotlinx.coroutines.core)
-compileOnly(libs.kotlinx.coroutines.reactor)
-compileOnly(project(":bluetape4k-cache-core"))
-compileOnly(libs.fory.kotlin)
-compileOnly(libs.kryo5)
-compileOnly(libs.lz4.java)
-compileOnly(libs.snappy.java)
-```
-
-Treat `compileOnly` edges as caller-provided capabilities and verify runtime availability before using their APIs.
+Lettuce core is an API dependency; coroutine, cache-core, serializers, and compression libraries are optional. Use [`bluetape4k-cache-lettuce`](/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-lettuce/) for memoization and [`bluetape4k-hibernate-cache-lettuce`](/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-cache-lettuce/) for Hibernate second-level caching.
 
 ## Configuration
 
-No module-level configuration resource was found under `src/main/resources`. Configuration is supplied through constructors, builders, function arguments, or the integrating framework; confirm defaults in source.
+Default clients share NCPU-sized `ClientResources` and enable keep-alive and TCP_NODELAY. Override the connection timeout with `-Dbluetape4k.lettuce.connectTimeoutMs`. `LettuceCacheConfig` validates TTL, key prefix, write mode, queue capacity, and shutdown timeout inputs.
 
-## Failures
+## Failure behavior
 
-Failure semantics are defined by the linked entry points and tests, not inferred from the artifact name. Keep cancellation and timeout signals intact, close owned resources, and translate backend exceptions only at a boundary that can add a stable domain contract. Use the test anchors below to verify the exact behavior before adding retries or fallbacks.
+`awaitAll()` propagates a failed future instead of returning a partial list. Write-through does not update Redis when the writer fails. A full write-behind queue raises `IllegalStateException`; repeated flush failures are sent to dead-letter keys on a best-effort basis. Coroutine maps rethrow `CancellationException`.
 
 ## Operations
 
-Track connection state, queue depth, retries, timeouts, remote errors, and graceful shutdown. Keep capacity, timeout, retry, and shutdown settings next to the component that owns the resource; avoid process-wide defaults that hide which caller accepted the trade-off.
+Observe connection and reconnect state, command latency, pipeline batch size, write-behind queues and dead letters, and cache hit/miss rates. `shutdown(client)` closes that client's cached connections; parameterless `shutdown()` closes shared resources and belongs only at process termination.
 
 ## Testing
 
-Run the module test task:
-
 ```bash
-./gradlew :bluetape4k-lettuce:test --no-configuration-cache
+./gradlew :bluetape4k-lettuce:test --no-build-cache --no-configuration-cache
 ```
 
-Representative test anchors:
-
-- [`AbstractLettuceTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/AbstractLettuceTest.kt)
-- [`AsyncCommandsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/AsyncCommandsTest.kt)
-- [`CoroutinesCommandTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/CoroutinesCommandTest.kt)
-- [`LettuceClientsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/LettuceClientsTest.kt)
-- [`LettuceTestUtils`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/LettuceTestUtils.kt)
-- [`RedisCommandSupportsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/RedisCommandSupportsTest.kt)
-- [`RedisFutureSupportTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/RedisFutureSupportTest.kt)
-- [`LettuceAtomicLongTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/atomic/LettuceAtomicLongTest.kt)
+The release tests cover cached connection reuse, future ordering and failure propagation, codec incompatibility, loader/writer modes, cancellation, and script fallback. Redis tests use Testcontainers and should not run in parallel with other heavy database suites.
 
 ## Workshops
 
-No dedicated workshop path is registered in the manual manifest. Use the module README and the representative tests above as runnable evidence.
+Start with `LettuceClientsTest`, `RedisFutureSupportTest`, `LettuceLoadedMapTest`, and `RedisScriptTest`. Continue to [bluetape4k-workshop](https://github.com/bluetape4k/bluetape4k-workshop) and [Exposed Workshop](https://github.com/bluetape4k/exposed-workshop) for cache and database boundaries.
 
-## Limitations
+## 1.11.0 scope
 
-This page documents the repository state represented by the linked source and tests. It does not turn optional backends into application defaults or claim performance without a benchmark artifact. Re-check compatibility and lifecycle notes when the module version changes.
+`LettuceCacheConfig` exposes near-cache fields, but the 1.11.0 loaded maps do not consume them and provide neither a Caffeine store nor RESP3 client-tracking invalidation. Do not treat the `*_WITH_NEAR_CACHE` presets as a working local-cache guarantee. RESP3 appears only in a rejected benchmark configuration.
 
-## Sources
+## Source and tests
 
-- [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/README.md)
-- [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/build.gradle.kts)
-- [`LettuceClients`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/LettuceClients.kt)
-- [`LettuceConst`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/LettuceConst.kt)
-- [`RedisCommandSupports`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/RedisCommandSupports.kt)
-- [`RedisFutureSupport`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/RedisFutureSupport.kt)
-- [`LettuceAtomicLong`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/atomic/LettuceAtomicLong.kt)
-- [`LettuceSuspendAtomicLong`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/atomic/LettuceSuspendAtomicLong.kt)
-- [`LettuceBinaryCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/codec/LettuceBinaryCodec.kt)
-- [`LettuceBinaryCodecs`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/codec/LettuceBinaryCodecs.kt)
-- [`LettuceIntCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/codec/LettuceIntCodec.kt)
-- [`LettuceJsonCodec`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/codec/LettuceJsonCodec.kt)
-- [`AbstractLettuceTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/AbstractLettuceTest.kt)
-- [`AsyncCommandsTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/AsyncCommandsTest.kt)
+- [`LettuceClients.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/LettuceClients.kt)
+- [`RedisFutureSupport.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/RedisFutureSupport.kt)
+- [`LettuceBinaryCodecs.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/codec/LettuceBinaryCodecs.kt)
+- [`LettuceLoadedMap.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/map/LettuceLoadedMap.kt)
+- [`RedisScript.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/script/RedisScript.kt)
+- [`LettuceClientsTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/LettuceClientsTest.kt)
+- [`LettuceSuspendedLoadedMapTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/map/LettuceSuspendedLoadedMapTest.kt)

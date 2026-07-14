@@ -10,7 +10,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "caching"
   kind: "library"
-  sourceCommit: "d42c9dcf3dfa8f169b3bda9c56d3c8531b3ff296"
+  sourceCommit: "0ecae4a1b0b25e9654cd631b437ef81215d81974"
   sourcePath: "docs/manual/ko/modules/bluetape4k-cache-redisson.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"

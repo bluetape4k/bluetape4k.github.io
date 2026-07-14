@@ -7,7 +7,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "overview"
   kind: "guide"
-  sourceCommit: "d42c9dcf3dfa8f169b3bda9c56d3c8531b3ff296"
+  sourceCommit: "0ecae4a1b0b25e9654cd631b437ef81215d81974"
   sourcePath: "docs/manual/ko/index.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"

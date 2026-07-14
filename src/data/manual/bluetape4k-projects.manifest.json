@@ -1,5 +1,5 @@
 {
-  "authoringSourceRef": "d42c9dcf3dfa8f169b3bda9c56d3c8531b3ff296",
+  "authoringSourceRef": "0ecae4a1b0b25e9654cd631b437ef81215d81974",
   "minorVersion": "1.11",
   "modules": [
     {
@@ -169,7 +169,62 @@
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-cache-core",
-      "chapters": [],
+      "chapters": [
+        {
+          "en": "en/modules/bluetape4k-cache-core/local-providers-jcache.md",
+          "id": "local-providers-jcache",
+          "ko": "ko/modules/bluetape4k-cache-core/local-providers-jcache.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-core/local-providers-jcache/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-core/local-providers-jcache/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-cache-core/cache-aside-loader-writer.md",
+          "id": "cache-aside-loader-writer",
+          "ko": "ko/modules/bluetape4k-cache-core/cache-aside-loader-writer.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-core/cache-aside-loader-writer/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-core/cache-aside-loader-writer/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-cache-core/memoizers-single-flight.md",
+          "id": "memoizers-single-flight",
+          "ko": "ko/modules/bluetape4k-cache-core/memoizers-single-flight.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-core/memoizers-single-flight/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-core/memoizers-single-flight/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-cache-core/near-cache-semantics.md",
+          "id": "near-cache-semantics",
+          "ko": "ko/modules/bluetape4k-cache-core/near-cache-semantics.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-core/near-cache-semantics/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-core/near-cache-semantics/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-cache-core/resilience-failures-lifecycle.md",
+          "id": "resilience-failures-lifecycle",
+          "ko": "ko/modules/bluetape4k-cache-core/resilience-failures-lifecycle.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-core/resilience-failures-lifecycle/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-core/resilience-failures-lifecycle/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-cache-core/testing-ecosystem-paths.md",
+          "id": "testing-ecosystem-paths",
+          "ko": "ko/modules/bluetape4k-cache-core/testing-ecosystem-paths.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-core/testing-ecosystem-paths/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-core/testing-ecosystem-paths/"
+          }
+        }
+      ],
       "en": "en/modules/bluetape4k-cache-core.md",
       "gradlePath": ":bluetape4k-cache-core",
       "group": "caching",
@@ -1510,7 +1565,62 @@
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-lettuce",
-      "chapters": [],
+      "chapters": [
+        {
+          "en": "en/modules/bluetape4k-lettuce/clients-and-connections.md",
+          "id": "clients-and-connections",
+          "ko": "ko/modules/bluetape4k-lettuce/clients-and-connections.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/clients-and-connections/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/clients-and-connections/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-lettuce/commands-and-coroutines.md",
+          "id": "commands-and-coroutines",
+          "ko": "ko/modules/bluetape4k-lettuce/commands-and-coroutines.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/commands-and-coroutines/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/commands-and-coroutines/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-lettuce/codecs-and-serialization.md",
+          "id": "codecs-and-serialization",
+          "ko": "ko/modules/bluetape4k-lettuce/codecs-and-serialization.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/codecs-and-serialization/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/codecs-and-serialization/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-lettuce/maps-and-cache-loading.md",
+          "id": "maps-and-cache-loading",
+          "ko": "ko/modules/bluetape4k-lettuce/maps-and-cache-loading.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/maps-and-cache-loading/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/maps-and-cache-loading/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-lettuce/filters-scripts-and-primitives.md",
+          "id": "filters-scripts-and-primitives",
+          "ko": "ko/modules/bluetape4k-lettuce/filters-scripts-and-primitives.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/filters-scripts-and-primitives/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/filters-scripts-and-primitives/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-lettuce/operations-and-ecosystem.md",
+          "id": "operations-and-ecosystem",
+          "ko": "ko/modules/bluetape4k-lettuce/operations-and-ecosystem.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/operations-and-ecosystem/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/operations-and-ecosystem/"
+          }
+        }
+      ],
       "en": "en/modules/bluetape4k-lettuce.md",
       "gradlePath": ":bluetape4k-lettuce",
       "group": "infrastructure",
@@ -2081,7 +2191,62 @@
     },
     {
       "artifact": "io.github.bluetape4k:bluetape4k-redisson",
-      "chapters": [],
+      "chapters": [
+        {
+          "en": "en/modules/bluetape4k-redisson/client-distributed-objects-streams.md",
+          "id": "client-distributed-objects-streams",
+          "ko": "ko/modules/bluetape4k-redisson/client-distributed-objects-streams.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/client-distributed-objects-streams/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/client-distributed-objects-streams/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-redisson/future-coroutine-boundaries.md",
+          "id": "future-coroutine-boundaries",
+          "ko": "ko/modules/bluetape4k-redisson/future-coroutine-boundaries.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/future-coroutine-boundaries/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/future-coroutine-boundaries/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-redisson/codecs-security-wire-format.md",
+          "id": "codecs-security-wire-format",
+          "ko": "ko/modules/bluetape4k-redisson/codecs-security-wire-format.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/codecs-security-wire-format/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/codecs-security-wire-format/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-redisson/local-cache-pubsub-invalidation.md",
+          "id": "local-cache-pubsub-invalidation",
+          "ko": "ko/modules/bluetape4k-redisson/local-cache-pubsub-invalidation.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/local-cache-pubsub-invalidation/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/local-cache-pubsub-invalidation/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-redisson/cache-modes-persistence.md",
+          "id": "cache-modes-persistence",
+          "ko": "ko/modules/bluetape4k-redisson/cache-modes-persistence.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/cache-modes-persistence/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/cache-modes-persistence/"
+          }
+        },
+        {
+          "en": "en/modules/bluetape4k-redisson/lifecycle-testing-ecosystem.md",
+          "id": "lifecycle-testing-ecosystem",
+          "ko": "ko/modules/bluetape4k-redisson/lifecycle-testing-ecosystem.md",
+          "routes": {
+            "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/lifecycle-testing-ecosystem/",
+            "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/lifecycle-testing-ecosystem/"
+          }
+        }
+      ],
       "en": "en/modules/bluetape4k-redisson.md",
       "gradlePath": ":bluetape4k-redisson",
       "group": "infrastructure",
@@ -2842,5 +3007,5 @@
   "repository": "bluetape4k/bluetape4k-projects",
   "repositorySlug": "bluetape4k-projects",
   "schemaVersion": 2,
-  "sourceCommit": "d42c9dcf3dfa8f169b3bda9c56d3c8531b3ff296"
+  "sourceCommit": "0ecae4a1b0b25e9654cd631b437ef81215d81974"
 }
