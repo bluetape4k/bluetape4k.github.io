@@ -596,7 +596,7 @@ export async function syncManual(options, dependencyOverrides = {}) {
   let resolvedRelease;
   try {
     resolvedRelease = await deps.resolveReleaseImpl({
-      repository: REPOSITORY_FULL_NAME,
+      repository: PROJECTS_REPOSITORY,
       releaseRef: options.mode === 'latest' ? undefined : options.releaseRef,
       fetchImpl: deps.fetchImpl,
     });
@@ -646,7 +646,7 @@ export async function syncManual(options, dependencyOverrides = {}) {
     throw error;
   }
   try {
-    await deps.assertReleaseUnmovedImpl(resolvedRelease, deps.fetchImpl);
+    await deps.assertReleaseUnmovedImpl(resolvedRelease, PROJECTS_REPOSITORY, deps.fetchImpl);
   } catch (error) {
     error.exitCode ??= 3;
     error.recovery = recovery;

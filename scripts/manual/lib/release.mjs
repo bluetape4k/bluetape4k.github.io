@@ -1,6 +1,6 @@
 import { parseStableRelease } from './version.mjs';
+import { validateRepositoryRegistry } from './repositories.mjs';
 
-const ALLOWED_REPOSITORY = 'bluetape4k/bluetape4k-projects';
 const API_ORIGIN = 'https://api.github.com';
 const MAX_ANNOTATED_TAG_DEPTH = 16;
 const CANONICAL_GIT_SHA = /^[0-9a-f]{40}$/;
@@ -32,11 +32,24 @@ function endpoint(pathname) {
   return new URL(pathname, API_ORIGIN).toString();
 }
 
-function assertPayloadIdentity(payload) {
+function approvedRepository(repository) {
+  try {
+    return validateRepositoryRegistry({ schema: 1, repositories: [repository] }).repositories[0];
+  } catch {
+    fail('REPOSITORY_IDENTITY', 'approved repository descriptor', repository);
+  }
+}
+
+function stampRepository(error, repository) {
+  if (error && typeof error === 'object') error.repository ??= repository.repository;
+  return error;
+}
+
+function assertPayloadIdentity(payload, repository) {
   if (Object.hasOwn(payload?.repository ?? {}, 'full_name')) {
     const fullName = payload.repository.full_name;
-    if (fullName !== ALLOWED_REPOSITORY) {
-      fail('REPOSITORY_IDENTITY', ALLOWED_REPOSITORY, fullName);
+    if (fullName !== repository.repository) {
+      fail('REPOSITORY_IDENTITY', repository.repository, fullName);
     }
   }
 
@@ -47,7 +60,7 @@ function assertPayloadIdentity(payload) {
       try {
         const url = new URL(repositoryUrl);
         matches = url.origin === API_ORIGIN
-          && url.pathname === `/repos/${ALLOWED_REPOSITORY}`
+          && url.pathname === `/repos/${repository.repository}`
           && url.search === ''
           && url.hash === ''
           && url.username === ''
@@ -57,12 +70,12 @@ function assertPayloadIdentity(payload) {
       }
     }
     if (!matches) {
-      fail('REPOSITORY_IDENTITY', `${API_ORIGIN}/repos/${ALLOWED_REPOSITORY}`, repositoryUrl);
+      fail('REPOSITORY_IDENTITY', `${API_ORIGIN}/repos/${repository.repository}`, repositoryUrl);
     }
   }
 }
 
-async function requestJson(pathname, fetchImpl) {
+async function requestJson(pathname, repository, fetchImpl) {
   const url = endpoint(pathname);
   let response;
   try {
@@ -86,17 +99,17 @@ async function requestJson(pathname, fetchImpl) {
       cause,
     });
   }
-  assertPayloadIdentity(payload);
+  assertPayloadIdentity(payload, repository);
   return payload;
 }
 
-function repositoryPath(suffix = '') {
-  return `/repos/${ALLOWED_REPOSITORY}${suffix}`;
+function repositoryPath(repository, suffix = '') {
+  return `/repos/${repository.repository}${suffix}`;
 }
 
-async function resolveCommit(tagName, fetchImpl) {
+async function resolveCommit(tagName, repository, fetchImpl) {
   const encodedTag = encodeURIComponent(tagName);
-  const ref = await requestJson(repositoryPath(`/git/ref/tags/${encodedTag}`), fetchImpl);
+  const ref = await requestJson(repositoryPath(repository, `/git/ref/tags/${encodedTag}`), repository, fetchImpl);
   let object = ref?.object;
   const visited = new Set();
 
@@ -115,7 +128,7 @@ async function resolveCommit(tagName, fetchImpl) {
       fail('RELEASE_TAG_CYCLE', 'acyclic annotated tag chain', object?.sha ?? null);
     }
     visited.add(object.sha);
-    const tag = await requestJson(repositoryPath(`/git/tags/${encodeURIComponent(object.sha)}`), fetchImpl);
+    const tag = await requestJson(repositoryPath(repository, `/git/tags/${encodeURIComponent(object.sha)}`), repository, fetchImpl);
     object = tag?.object;
     assertCanonicalSha(object);
   }
@@ -127,47 +140,57 @@ async function resolveCommit(tagName, fetchImpl) {
 }
 
 export async function resolveRelease({ repository, releaseRef, fetchImpl = fetch }) {
-  if (repository !== ALLOWED_REPOSITORY) {
-    fail('REPOSITORY_IDENTITY', ALLOWED_REPOSITORY, repository);
-  }
-  if (releaseRef !== undefined) parseStableRelease(releaseRef);
+  const approved = approvedRepository(repository);
+  try {
+    if (releaseRef !== undefined) parseStableRelease(releaseRef);
 
-  const repositoryPayload = await requestJson(repositoryPath(), fetchImpl);
-  if (repositoryPayload?.full_name !== ALLOWED_REPOSITORY) {
-    fail('REPOSITORY_IDENTITY', ALLOWED_REPOSITORY, repositoryPayload?.full_name ?? null);
-  }
+    const repositoryPayload = await requestJson(repositoryPath(approved), approved, fetchImpl);
+    if (repositoryPayload?.full_name !== approved.repository) {
+      fail('REPOSITORY_IDENTITY', approved.repository, repositoryPayload?.full_name ?? null);
+    }
 
-  const releasePath = releaseRef
-    ? repositoryPath(`/releases/tags/${encodeURIComponent(releaseRef)}`)
-    : repositoryPath('/releases/latest');
-  const release = await requestJson(releasePath, fetchImpl);
-  if (release?.draft !== false) fail('RELEASE_DRAFT', false, release?.draft ?? null);
-  if (release?.prerelease !== false) fail('RELEASE_PRERELEASE', false, release?.prerelease ?? null);
-  if (releaseRef && release?.tag_name !== releaseRef) {
-    fail('RELEASE_TAG_MISMATCH', releaseRef, release?.tag_name ?? null);
-  }
+    const releasePath = releaseRef
+      ? repositoryPath(approved, `/releases/tags/${encodeURIComponent(releaseRef)}`)
+      : repositoryPath(approved, '/releases/latest');
+    const release = await requestJson(releasePath, approved, fetchImpl);
+    if (release?.draft !== false) fail('RELEASE_DRAFT', false, release?.draft ?? null);
+    if (release?.prerelease !== false) fail('RELEASE_PRERELEASE', false, release?.prerelease ?? null);
+    if (releaseRef && release?.tag_name !== releaseRef) {
+      fail('RELEASE_TAG_MISMATCH', releaseRef, release?.tag_name ?? null);
+    }
 
-  const tagName = release?.tag_name;
-  const parsed = parseStableRelease(tagName);
-  const releaseCommit = await resolveCommit(tagName, fetchImpl);
-  return {
-    repository: ALLOWED_REPOSITORY,
-    releaseRef: tagName,
-    releaseCommit,
-    minorVersion: parsed.minorVersion,
-  };
+    const tagName = release?.tag_name;
+    const parsed = parseStableRelease(tagName);
+    const releaseCommit = await resolveCommit(tagName, approved, fetchImpl);
+    return {
+      repository: approved.repository,
+      releaseRef: tagName,
+      releaseCommit,
+      minorVersion: parsed.minorVersion,
+    };
+  } catch (error) {
+    throw stampRepository(error, approved);
+  }
 }
 
-export async function assertReleaseUnmoved(resolved, fetchImpl = fetch) {
-  const current = await resolveRelease({
-    repository: resolved?.repository,
-    releaseRef: resolved?.releaseRef,
-    fetchImpl,
-  });
-  if (current.releaseCommit !== resolved?.releaseCommit) {
-    fail('RELEASE_MOVED', resolved?.releaseCommit ?? null, current.releaseCommit);
+export async function assertReleaseUnmoved(resolved, repository, fetchImpl = fetch) {
+  const approved = approvedRepository(repository);
+  try {
+    if (resolved?.repository !== approved.repository) {
+      fail('REPOSITORY_IDENTITY', approved.repository, resolved?.repository ?? null);
+    }
+    const current = await resolveRelease({
+      repository: approved,
+      releaseRef: resolved?.releaseRef,
+      fetchImpl,
+    });
+    if (current.releaseCommit !== resolved?.releaseCommit) {
+      fail('RELEASE_MOVED', resolved?.releaseCommit ?? null, current.releaseCommit);
+    }
+    return resolved;
+  } catch (error) {
+    throw stampRepository(error, approved);
   }
-  return resolved;
 }
 
 function safeScalar(value) {
@@ -192,11 +215,11 @@ function safeScalar(value) {
   return value;
 }
 
-function safeUrl(value) {
-  if (typeof value !== 'string') return undefined;
+function safeUrl(value, repository) {
+  if (typeof value !== 'string' || typeof repository !== 'string') return undefined;
   try {
     const url = new URL(value);
-    const allowedPrefix = `/repos/${ALLOWED_REPOSITORY}`;
+    const allowedPrefix = `/repos/${repository}`;
     const allowedPath = url.pathname === allowedPrefix || url.pathname.startsWith(`${allowedPrefix}/`);
     if (url.origin !== API_ORIGIN || !allowedPath || TOKEN_LIKE.test(decodeURIComponent(url.pathname))) {
       return undefined;
@@ -211,7 +234,7 @@ export function sanitizeDiagnostic(error) {
   const diagnostic = {};
   if (typeof error?.code === 'string' && SAFE_CODE.test(error.code)) diagnostic.code = error.code;
   if (Number.isInteger(error?.status) && error.status >= 100 && error.status <= 599) diagnostic.status = error.status;
-  const url = safeUrl(error?.url);
+  const url = safeUrl(error?.url, error?.repository);
   if (url) diagnostic.url = url;
   const expected = safeScalar(error?.expected);
   if (expected !== undefined) diagnostic.expected = expected;
