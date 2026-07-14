@@ -8,7 +8,10 @@ import test from 'node:test';
 import { pathToFileURL } from 'node:url';
 import { publishStaged, recoverPublication, stagePublication } from '../../scripts/manual/lib/publication.mjs';
 
-const metadata = new Set(['.manual-sync', '.manual-sync-journal.json', '.manual-sync-generation.json']);
+const PROJECTS = 'bluetape4k-projects';
+const EXPOSED = 'bluetape4k-exposed';
+const markerFor = (scope) => `.manual-sync-generation.${scope}.json`;
+const metadata = new Set(['.manual-sync', '.manual-sync-journal.json']);
 
 function canonicalBytes(entries) {
   const chunks = [];
@@ -28,7 +31,7 @@ async function digestTree(root) {
   const files = [];
   async function visit(directory, prefix = '') {
     for (const entry of (await readdir(directory, { withFileTypes: true })).sort((a, b) => a.name.localeCompare(b.name))) {
-      if (!prefix && metadata.has(entry.name)) continue;
+      if (!prefix && (metadata.has(entry.name) || entry.name.startsWith('.manual-sync-generation.'))) continue;
       const relative = path.posix.join(prefix, entry.name);
       const absolute = path.join(directory, entry.name);
       if (entry.isDirectory()) await visit(absolute, relative);
@@ -86,8 +89,8 @@ async function fixture() {
   return root;
 }
 
-async function staged(root, source = entries) {
-  return stagePublication({ targetRoot: root, entries: source, generationId: generationFor(source) });
+async function staged(root, source = entries, scope = PROJECTS) {
+  return stagePublication({ targetRoot: root, entries: source, generationId: generationFor(source), scope });
 }
 
 test('stages canonical input and rejects unsafe, duplicate, and dishonest generations', async (t) => {
@@ -96,14 +99,14 @@ test('stages canonical input and rejects unsafe, duplicate, and dishonest genera
   const result = await staged(root);
   assert.equal(result.generationId, generationFor(entries));
   assert.equal(await readFile(path.join(root, result.stagingRoot, 'content/index.md'), 'utf8'), 'new content\n');
-  await assert.rejects(() => stagePublication({ targetRoot: root, entries: [entries[0], entries[0]], generationId: generationFor([entries[0], entries[0]]) }), /PUBLICATION_DUPLICATE/);
-  await assert.rejects(() => stagePublication({ targetRoot: root, entries: [{ path: '../outside', content: 'x' }], generationId: 'a'.repeat(64) }), /PUBLICATION_PATH/);
-  await assert.rejects(() => stagePublication({ targetRoot: root, entries, generationId: 'A'.repeat(64) }), /PUBLICATION_GENERATION/);
-  await assert.rejects(() => stagePublication({ targetRoot: root, entries, generationId: 'a'.repeat(64) }), /PUBLICATION_GENERATION_DIGEST/);
-  for (const reserved of ['.manual-sync/attack', '.manual-sync-journal.json', '.manual-sync-generation.json']) {
+  await assert.rejects(() => stagePublication({ targetRoot: root, entries: [entries[0], entries[0]], generationId: generationFor([entries[0], entries[0]]), scope: PROJECTS }), /PUBLICATION_DUPLICATE/);
+  await assert.rejects(() => stagePublication({ targetRoot: root, entries: [{ path: '../outside', content: 'x' }], generationId: 'a'.repeat(64), scope: PROJECTS }), /PUBLICATION_PATH/);
+  await assert.rejects(() => stagePublication({ targetRoot: root, entries, generationId: 'A'.repeat(64), scope: PROJECTS }), /PUBLICATION_GENERATION/);
+  await assert.rejects(() => stagePublication({ targetRoot: root, entries, generationId: 'a'.repeat(64), scope: PROJECTS }), /PUBLICATION_GENERATION_DIGEST/);
+  for (const reserved of ['.manual-sync/attack', '.manual-sync-journal.json', '.manual-sync-generation.json', markerFor(PROJECTS)]) {
     const reservedEntries = [{ path: reserved, content: 'x' }];
     await assert.rejects(() => stagePublication({
-      targetRoot: root, entries: reservedEntries, generationId: generationFor(reservedEntries),
+      targetRoot: root, entries: reservedEntries, generationId: generationFor(reservedEntries), scope: PROJECTS,
     }), /PUBLICATION_PATH/);
   }
 });
@@ -131,13 +134,72 @@ test('publishes deterministically and identical input is unchanged', async (t) =
   t.after(() => rm(root, { recursive: true, force: true }));
   const first = await publishStaged({ targetRoot: root, staged: await staged(root) });
   const firstDigest = await digestTree(root);
-  const firstMarker = await readFile(path.join(root, '.manual-sync-generation.json'));
+  const firstMarker = await readFile(path.join(root, markerFor(PROJECTS)));
   assert.deepEqual(first, { changed: true });
   const second = await publishStaged({ targetRoot: root, staged: await staged(root) });
   assert.deepEqual(second, { changed: false });
   assert.equal(await digestTree(root), firstDigest);
-  assert.deepEqual(await readFile(path.join(root, '.manual-sync-generation.json')), firstMarker);
+  assert.deepEqual(await readFile(path.join(root, markerFor(PROJECTS))), firstMarker);
   assert.doesNotMatch(firstMarker.toString(), /timestamp|created|updated/i);
+});
+
+test('keeps markers and target bytes isolated by repository scope', async (t) => {
+  const root = await fixture();
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const projectsEntries = [{ path: 'manual/projects/index.md', content: 'projects\n' }];
+  const exposedEntries = [{ path: 'manual/exposed/index.md', content: 'exposed\n' }];
+
+  await publishStaged({ targetRoot: root, staged: await staged(root, projectsEntries, PROJECTS) });
+  const projectsMarker = await readFile(path.join(root, markerFor(PROJECTS)));
+  const projectsBytes = await readFile(path.join(root, projectsEntries[0].path));
+
+  await publishStaged({ targetRoot: root, staged: await staged(root, exposedEntries, EXPOSED) });
+  assert.deepEqual(await readFile(path.join(root, markerFor(PROJECTS))), projectsMarker);
+  assert.deepEqual(await readFile(path.join(root, projectsEntries[0].path)), projectsBytes);
+  assert.equal(await readFile(path.join(root, exposedEntries[0].path), 'utf8'), 'exposed\n');
+  assert.equal(await exists(path.join(root, markerFor(EXPOSED))), true);
+
+  const changedExposed = [{ path: 'manual/exposed/index.md', content: 'changed\n' }];
+  await assert.rejects(
+    publishStaged({
+      targetRoot: root,
+      staged: await staged(root, changedExposed, EXPOSED),
+      injectFailure(point) { if (point === 'afterTargetRename') throw new Error('stop'); },
+    }),
+    /PUBLICATION_ROLLBACK/,
+  );
+  assert.deepEqual(await readFile(path.join(root, markerFor(PROJECTS))), projectsMarker);
+  assert.deepEqual(await readFile(path.join(root, projectsEntries[0].path)), projectsBytes);
+});
+
+test('rejects unknown scope before mutation and fails closed on a journal scope mismatch', async (t) => {
+  const root = await fixture();
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const before = await digestTree(root);
+  for (const scope of [undefined, '../escape', 'other-project', 'bluetape4k-projects/escape']) {
+    await assert.rejects(
+      stagePublication({ targetRoot: root, entries, generationId: generationFor(entries), scope }),
+      /PUBLICATION_SCOPE/,
+    );
+    assert.equal(await digestTree(root), before);
+  }
+
+  const moduleUrl = pathToFileURL(path.resolve('scripts/manual/lib/publication.mjs')).href;
+  const projectsStage = await staged(root, [{ path: 'manual/projects/index.md', content: 'projects\n' }], PROJECTS);
+  const child = spawnSync(process.execPath, ['--input-type=module', '-e', `
+    import { publishStaged } from ${JSON.stringify(moduleUrl)};
+    const [root, staged] = JSON.parse(process.env.CASE);
+    await publishStaged({ targetRoot: root, staged, injectFailure(point) {
+      if (point === 'afterJournalPersistence') process.kill(process.pid, 'SIGKILL');
+    }});
+  `], { env: { ...process.env, CASE: JSON.stringify([root, projectsStage]) } });
+  assert.notEqual(child.status, 0);
+  const journalBytes = await readFile(path.join(root, '.manual-sync-journal.json'));
+
+  await assert.rejects(() => recoverPublication(root, EXPOSED), /PUBLICATION_SCOPE_MISMATCH/);
+  assert.deepEqual(await readFile(path.join(root, '.manual-sync-journal.json')), journalBytes);
+  assert.equal(await exists(path.join(root, markerFor(EXPOSED))), false);
+  await recoverPublication(root, PROJECTS);
 });
 
 test('ignores unrelated repository files and symlinks while preserving them', async (t) => {
@@ -219,13 +281,14 @@ test('rejects forged journal paths, invalid generations, and symlink swaps witho
   const validGeneration = 'a'.repeat(64);
   const forged = {
     schema: 1,
+    scope: PROJECTS,
     generationId: validGeneration,
-    stagingRoot: `.manual-sync/staging/${validGeneration}`,
+    stagingRoot: `.manual-sync/staging/${PROJECTS}/${validGeneration}`,
     preTreeDigest: validGeneration,
     expectedTreeDigest: validGeneration,
     targets: [{
       target: '../manual-external/sentinel',
-      staged: `.manual-sync/staging/${validGeneration}/sentinel`,
+      staged: `.manual-sync/staging/${PROJECTS}/${validGeneration}/sentinel`,
       backup: '../manual-external/sentinel',
       existedBefore: true,
       preImageDigest: validGeneration,
@@ -246,7 +309,7 @@ test('rejects forged journal paths, invalid generations, and symlink swaps witho
   await writeFile(inRootSentinel, 'keep me');
   const forgedInternal = structuredClone(forged);
   forgedInternal.targets[0].target = 'content/index.md';
-  forgedInternal.targets[0].staged = `.manual-sync/staging/${validGeneration}/content/index.md`;
+  forgedInternal.targets[0].staged = `.manual-sync/staging/${PROJECTS}/${validGeneration}/content/index.md`;
   forgedInternal.targets[0].backup = 'unrelated.txt';
   await writeFile(path.join(root, '.manual-sync-journal.json'), JSON.stringify(forgedInternal));
   await assert.rejects(() => recoverPublication(root), /PUBLICATION_JOURNAL_PATH/);
@@ -271,9 +334,10 @@ test('cleans an interrupted partial backup without treating it as verified', asy
   const stage = await staged(root, [entries[0]]);
   const before = await digestTargets(root, [entries[0].path]);
   const generation = stage.generationId;
-  const backup = `.manual-sync/backups/${generation}/000000`;
+  const backup = `.manual-sync/backups/${PROJECTS}/${generation}/000000`;
   const journal = {
     schema: 1,
+    scope: PROJECTS,
     generationId: generation,
     stagingRoot: stage.stagingRoot,
     preTreeDigest: before,
@@ -304,7 +368,7 @@ test('uses byte content rather than text normalization for generation identity',
   const root = await fixture();
   t.after(() => rm(root, { recursive: true, force: true }));
   const binary = [{ path: 'assets/raw.bin', content: Buffer.from([0, 13, 10, 255]) }];
-  const stage = await stagePublication({ targetRoot: root, entries: binary, generationId: generationFor(binary) });
+  const stage = await stagePublication({ targetRoot: root, entries: binary, generationId: generationFor(binary), scope: PROJECTS });
   assert.equal(stage.expected[0].digest, digest(binary[0].content));
 });
 
@@ -313,7 +377,7 @@ test('recomputes canonical generation and tree digests before publishing a stage
   t.after(() => rm(root, { recursive: true, force: true }));
   const stage = await staged(root);
   const forgedGeneration = 'b'.repeat(64);
-  const forgedRoot = `.manual-sync/staging/${forgedGeneration}`;
+  const forgedRoot = `.manual-sync/staging/${PROJECTS}/${forgedGeneration}`;
   await rename(path.join(root, stage.stagingRoot), path.join(root, forgedRoot));
   const forged = {
     ...stage,
@@ -325,5 +389,5 @@ test('recomputes canonical generation and tree digests before publishing a stage
     })),
   };
   await assert.rejects(() => publishStaged({ targetRoot: root, staged: forged }), /PUBLICATION_GENERATION_DIGEST/);
-  assert.equal(await exists(path.join(root, '.manual-sync-generation.json')), false);
+  assert.equal(await exists(path.join(root, markerFor(PROJECTS))), false);
 });
