@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "caching"
   kind: "library"
-  sourceCommit: "03115e34f03bad535921d3cad5cd23a2e7814581"
+  sourceCommit: "46993c010f5bef45fef0943bbc93728d16119bd5"
   sourcePath: "docs/manual/en/modules/bluetape4k-cache-core/cache-aside-loader-writer.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"

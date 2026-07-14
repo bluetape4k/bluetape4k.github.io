@@ -85,6 +85,30 @@
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-hazelcast/"
     },
     {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/imap-memoizers-concurrency/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-hazelcast/imap-memoizers-concurrency/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/imap-near-cache-invalidation/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-hazelcast/imap-near-cache-invalidation/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/jcache-instance-ownership/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-hazelcast/jcache-instance-ownership/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/jcache-near-cache-serialization/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-hazelcast/jcache-near-cache-serialization/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/operations-testing-ecosystem/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-hazelcast/operations-testing-ecosystem/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/suspend-jcache-async-boundaries/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-hazelcast/suspend-jcache-async-boundaries/"
+    },
+    {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/",
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-lettuce/"
     },
@@ -673,6 +697,30 @@
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-core/"
     },
     {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/error-responses-and-observability/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-core/error-responses-and-observability/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/execution-resources-and-lifecycle/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-core/execution-resources-and-lifecycle/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/rest-client-and-coroutines/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-core/rest-client-and-coroutines/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/spring-context-and-configuration/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-core/spring-context-and-configuration/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/testing-and-ecosystem-paths/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-core/testing-and-ecosystem-paths/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/webflux-request-and-buffers/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-core/webflux-request-and-buffers/"
+    },
+    {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-hibernate-lettuce-demo/",
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-hibernate-lettuce-demo/"
     },
@@ -739,6 +787,30 @@
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/",
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-redis/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/binary-serializers/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-redis/binary-serializers/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/compression-wire-format/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-redis/compression-wire-format/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/migration-security-compatibility/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-redis/migration-security-compatibility/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/module-boundary-dependencies/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-redis/module-boundary-dependencies/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/serialization-context-templates/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-redis/serialization-context-templates/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/testing-operations-ecosystem/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-redis/testing-operations-ecosystem/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-states/",
@@ -879,6 +951,30 @@
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/",
       "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-hazelcast/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/imap-memoizers-concurrency/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-hazelcast/imap-memoizers-concurrency/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/imap-near-cache-invalidation/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-hazelcast/imap-near-cache-invalidation/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/jcache-instance-ownership/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-hazelcast/jcache-instance-ownership/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/jcache-near-cache-serialization/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-hazelcast/jcache-near-cache-serialization/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/operations-testing-ecosystem/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-hazelcast/operations-testing-ecosystem/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/suspend-jcache-async-boundaries/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-hazelcast/suspend-jcache-async-boundaries/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/",
@@ -1469,6 +1565,30 @@
       "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-core/"
     },
     {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/error-responses-and-observability/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-core/error-responses-and-observability/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/execution-resources-and-lifecycle/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-core/execution-resources-and-lifecycle/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/rest-client-and-coroutines/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-core/rest-client-and-coroutines/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/spring-context-and-configuration/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-core/spring-context-and-configuration/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/testing-and-ecosystem-paths/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-core/testing-and-ecosystem-paths/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/webflux-request-and-buffers/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-core/webflux-request-and-buffers/"
+    },
+    {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-hibernate-lettuce-demo/",
       "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-hibernate-lettuce-demo/"
     },
@@ -1535,6 +1655,30 @@
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/",
       "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-redis/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/binary-serializers/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-redis/binary-serializers/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/compression-wire-format/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-redis/compression-wire-format/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/migration-security-compatibility/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-redis/migration-security-compatibility/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/module-boundary-dependencies/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-redis/module-boundary-dependencies/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/serialization-context-templates/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-redis/serialization-context-templates/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/testing-operations-ecosystem/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-redis/testing-operations-ecosystem/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-states/",
