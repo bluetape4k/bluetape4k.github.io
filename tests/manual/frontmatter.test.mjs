@@ -49,6 +49,40 @@ test('manual metadata keeps provenance while source links use the published rele
   assert.doesNotMatch(result, /\{#problem\}/);
 });
 
+test('derives safe frontmatter from a plain Markdown title', () => {
+  const result = transformManual({
+    content: '# Core model\n\nBody\n',
+    module: { id: 'core', group: 'foundation', kind: 'library', sourceDir: 'graph/core' },
+    repository: projects,
+    sourceCommit: 'a'.repeat(40),
+    sourcePath: 'docs/manual/en/architecture/core-model.md',
+    releaseRef: '1.11.0',
+    releaseCommit: 'c'.repeat(40),
+    minorVersion: '1.11',
+  });
+
+  assert.match(result, /^title: "Core model"$/m);
+  assert.match(result, /manual:\n  id: "core"/);
+  assert.doesNotMatch(result, /^# Core model$/m);
+  assert.match(result, /\nBody\n$/);
+});
+
+test('preserves later H1 sections when deriving frontmatter from a plain Markdown title', () => {
+  const result = transformManual({
+    content: '# Document title\n\nIntro\n\n# Preserved section\n\nBody\n',
+    module: { id: 'core', group: 'foundation', kind: 'library', sourceDir: 'graph/core' },
+    repository: projects,
+    sourceCommit: 'a'.repeat(40),
+    sourcePath: 'docs/manual/en/architecture/core-model.md',
+    releaseRef: '1.11.0',
+    releaseCommit: 'c'.repeat(40),
+    minorVersion: '1.11',
+  });
+
+  assert.doesNotMatch(result, /^# Document title$/m);
+  assert.match(result, /^# Preserved section$/m);
+});
+
 test('chapter metadata and repository-owned asset routes are added', () => {
   const sourceCommit = 'b'.repeat(40);
   const result = transformManual({

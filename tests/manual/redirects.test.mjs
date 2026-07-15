@@ -154,10 +154,11 @@ test('snapshot validation writes a sanitized provenance report and summary', asy
   const reportBytes = await readFile(reportPath, 'utf8');
   const report = JSON.parse(reportBytes);
   assert.equal(report.status, 'pass');
-  assert.equal(report.repositories.length, 5);
+  assert.equal(report.repositories.length, 6);
   assert.deepEqual(report.repositories.map(({ repository }) => repository).sort(), [
     'bluetape4k/bluetape4k-aws',
     'bluetape4k/bluetape4k-exposed',
+    'bluetape4k/bluetape4k-graph',
     'bluetape4k/bluetape4k-image',
     'bluetape4k/bluetape4k-leader',
     'bluetape4k/bluetape4k-projects',
@@ -165,6 +166,7 @@ test('snapshot validation writes a sanitized provenance report and summary', asy
   const expectedLatest = new Map([
     ['bluetape4k/bluetape4k-aws', '0.4'],
     ['bluetape4k/bluetape4k-exposed', '1.11'],
+    ['bluetape4k/bluetape4k-graph', '0.5'],
     ['bluetape4k/bluetape4k-image', '0.3'],
     ['bluetape4k/bluetape4k-leader', '0.4'],
     ['bluetape4k/bluetape4k-projects', '1.11'],

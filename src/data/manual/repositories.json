@@ -65,6 +65,19 @@
         "en": "/manual/bluetape4k-image/",
         "ko": "/ko/manual/bluetape4k-image/"
       }
+    },
+    {
+      "slug": "bluetape4k-graph",
+      "repository": "bluetape4k/bluetape4k-graph",
+      "label": {
+        "en": "Graph docs",
+        "ko": "Graph 문서"
+      },
+      "latestMinor": "0.5",
+      "route": {
+        "en": "/manual/bluetape4k-graph/",
+        "ko": "/ko/manual/bluetape4k-graph/"
+      }
     }
   ]
 }

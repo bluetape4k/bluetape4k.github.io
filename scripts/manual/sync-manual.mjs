@@ -228,8 +228,9 @@ export async function buildSnapshot(input, {
     }
     for (const locale of ['en', 'ko']) {
       const { relative } = await approvedManifestPath(manualRoot, module[locale], `${locale}/`, '.md');
-      if (byPath.has(relative)) fail('MANIFEST_DUPLICATE_PATH', 'unique path', relative, 4);
-      byPath.set(relative, { module, chapter: null });
+      if (!byPath.has(relative)) byPath.set(relative, { module, chapter: null });
+      else if (byPath.get(relative)?.chapter) fail('MANIFEST_DUPLICATE_PATH', 'unique path', relative, 4);
+      else byPath.set(relative, null);
     }
     for (const chapter of module.chapters ?? []) {
       for (const locale of ['en', 'ko']) {
