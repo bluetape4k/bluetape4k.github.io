@@ -5,6 +5,13 @@ function yamlScalar(value) {
   return JSON.stringify(value);
 }
 
+function withFrontmatter(content, sourcePath) {
+  if (content.startsWith('---\n')) return content;
+  const heading = /^# ([^\n]+)\n(?:\n)?/.exec(content);
+  if (!heading) throw new Error(`${sourcePath}: YAML frontmatter or a leading H1 is required`);
+  return `---\ntitle: ${yamlScalar(heading[1].trim())}\n---\n\n${content}`;
+}
+
 export function layerFor(kind) {
   if (kind === 'example') return 'learn';
   if (kind === 'benchmark') return 'apply';
@@ -60,7 +67,7 @@ export function transformManual({
   releaseCommit,
   minorVersion,
 }) {
-  if (!content.startsWith('---\n')) throw new Error(`${sourcePath}: YAML frontmatter is required`);
+  content = withFrontmatter(content, sourcePath);
   const end = content.indexOf('\n---\n', 4);
   if (end < 0) throw new Error(`${sourcePath}: YAML frontmatter is not closed`);
   const metadata = [

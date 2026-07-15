@@ -1,0 +1,38 @@
+---
+slug: "manual/bluetape4k-graph/0.5/benchmarks/graph-io"
+title: "Graph I/O benchmarks"
+manual:
+  id: "graph-io-benchmark"
+  repository: "bluetape4k-graph"
+  group: "benchmarks"
+  kind: "benchmark"
+  sourceCommit: "fa6b818344736f8554a97f654ce88fa332aec44d"
+  sourcePath: "docs/manual/en/benchmarks/graph-io.md"
+  minorVersion: "0.5"
+  releaseRef: "0.5.1"
+  releaseCommit: "3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907"
+  sourceDir: "benchmark/graph-io-benchmark"
+  layer: "apply"
+---
+
+
+## Workload and harness
+
+`graph-io-benchmark` measures CSV, Jackson 2/3 NDJSON, GraphML, and OkIO export/import/round trips over in-memory TinkerGraph and temporary files. The pinned [build configuration](https://github.com/bluetape4k/bluetape4k-graph/blob/3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907/benchmark/graph-io-benchmark/build.gradle.kts) defines 3 warmups and 5 three-second iterations for `main`; [benchmark state](https://github.com/bluetape4k/bluetape4k-graph/blob/3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907/benchmark/graph-io-benchmark/src/main/kotlin/io/bluetape4k/graph/benchmark/io/BulkGraphIoBenchmarkState.kt) owns temporary resources.
+
+Prerequisites: JDK 21, release commit `3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907`, and sufficient temporary disk space. Docker is not required.
+
+```bash
+./gradlew :graph-io-benchmark:smokeBenchmark --rerun-tasks --console=plain
+./gradlew :graph-io-benchmark:benchmark --rerun-tasks --console=plain
+```
+
+The smoke configuration uses `sizeName=smoke`, 1 warmup, 1 measurement of 200 ms, and representative CSV/Jackson3-OkIO/GraphML-OkIO round trips. It validates wiring only. The full run writes JMH reports below `benchmark/graph-io-benchmark/build/reports/benchmarks/`. Average `ms/op` is lower-is-better; compare methods only at the same size and execution model.
+
+The committed [2026-04-18 result](https://github.com/bluetape4k/bluetape4k-graph/blob/3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907/docs/benchmark/2026-04-18-graph-io-bulk-results.md) includes numeric small-dataset rows and run conditions. It does not justify comparing a suspend outlier with another machine or claiming a serializer wins for remote databases.
+
+## Variance, cleanup, and diagnosis
+
+Run three full trials, retain JSON, and compare intervals. Warmups and forks address JVM state but not filesystem cache, antivirus, compression, or disk contention. Trial teardown removes temporary directories; after interruption, inspect the module build directory and OS temporary space before rerunning.
+
+If import counts differ, treat it as correctness failure before reading latency. If JSON is absent, inspect the first failing benchmark and teardown log. This workload does not prove remote-driver throughput, encrypted production storage, huge graphs, memory ceilings, or crash recovery. Read [graph-io execution model](/manual/bluetape4k-graph/0.5/graph-io/execution-model/) and [overview](/manual/bluetape4k-graph/0.5/benchmarks/overview/).

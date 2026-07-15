@@ -1,0 +1,52 @@
+---
+slug: "ko/manual/bluetape4k-graph/0.5/examples/ktor-graph"
+title: "Ktor 그래프 연동"
+manual:
+  id: "ktor-graph-examples"
+  repository: "bluetape4k-graph"
+  group: "examples"
+  kind: "example"
+  sourceCommit: "fa6b818344736f8554a97f654ce88fa332aec44d"
+  sourcePath: "docs/manual/ko/examples/ktor-graph.md"
+  minorVersion: "0.5"
+  releaseRef: "0.5.1"
+  releaseCommit: "3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907"
+  sourceDir: "examples/ktor-graph-examples"
+  layer: "learn"
+---
+
+
+## 문제와 백엔드
+
+그래프 초기화, 개수 조회, 경로 탐색을 Ktor 플러그인과 HTTP 경계로 노출합니다. **TinkerGraph**를 써서 저장소 모델과 웹 계층을 나누어 검증합니다. 먼저 [핵심 모델](/ko/manual/bluetape4k-graph/0.5/architecture/core-model/), [TinkerPop](/ko/manual/bluetape4k-graph/0.5/backends/tinkerpop/), [Ktor 연동](/ko/manual/bluetape4k-graph/0.5/frameworks/ktor/)을 읽습니다.
+
+## 그래프 모델
+
+- 정점: City
+- 간선: ROAD
+- 주요 속성: name, distance
+
+## 준비와 릴리스 경계
+
+JDK 21, 커밋 `3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907`, 저장소의 Gradle Wrapper가 필요합니다. 예제는 배포되지 않으므로 릴리스 소스를 체크아웃하고 Gradle 프로젝트로 실행합니다. 소비자 애플리케이션에서는 `bluetape4k-dependencies:<ecosystem-version>`만 선택하고 필요한 그래프 모듈은 개별 버전 없이 추가합니다.
+
+## 실행과 관찰
+
+```bash
+./gradlew :ktor-graph-examples:test --tests "io.bluetape4k.graph.examples.ktor.KtorGraphAppTest"
+```
+
+라우트 테스트는 초기화 응답이 `reset`인지, 도시가 세 개인지, 경로가 `Seoul -> Daejeon -> Busan`인지 검증합니다. 실패하면 플러그인 초기화, 응답 직렬화, 그래프 고정 데이터와 탐색을 나누어 진단합니다.
+
+## 코드 읽는 순서
+
+1. [스키마](https://github.com/bluetape4k/bluetape4k-graph/blob/3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907/examples/ktor-graph-examples/src/main/kotlin/io/bluetape4k/graph/examples/ktor/KtorGraphAppMain.kt)
+2. [서비스](https://github.com/bluetape4k/bluetape4k-graph/blob/3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907/examples/ktor-graph-examples/src/main/kotlin/io/bluetape4k/graph/examples/ktor/KtorGraphAppMain.kt)
+3. [완전한 실행 테스트](https://github.com/bluetape4k/bluetape4k-graph/blob/3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907/examples/ktor-graph-examples/src/test/kotlin/io/bluetape4k/graph/examples/ktor/KtorGraphAppTest.kt)
+4. [빌드 파일](https://github.com/bluetape4k/bluetape4k-graph/blob/3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907/examples/ktor-graph-examples/build.gradle.kts)
+
+[supply-chain-graph](/ko/manual/bluetape4k-graph/0.5/examples/supply-chain-graph/) 다음에 읽고 [code-graph](/ko/manual/bluetape4k-graph/0.5/examples/code-graph/)로 이어가십시오. [동기·코루틴 API](/ko/manual/bluetape4k-graph/0.5/architecture/paired-apis/), [테스트](/ko/manual/bluetape4k-graph/0.5/guides/testing/), [운영](/ko/manual/bluetape4k-graph/0.5/guides/operations/)도 함께 보십시오.
+
+## 확장과 운영 진단
+
+결과를 바꾸는 간선과 단언을 하나 추가하고 suspend API로 반복하십시오. 영속 백엔드 테스트는 직렬로 실행하고 끊어진 경로와 잘못된 입력도 검증하십시오. 이 고정 데이터는 처리량, 군집, 권한, 테넌트 격리, 마이그레이션, 백업, 원격 드라이버 제한 시간, 인덱스 품질을 증명하지 않습니다.

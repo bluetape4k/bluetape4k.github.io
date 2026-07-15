@@ -220,6 +220,31 @@ test('buildSnapshot accepts resolved provenance, writes nothing, and emits no un
   assert.equal(built.entries.some(({ path: entryPath }) => new RegExp(`docs/(?:ko/)?manual/${SLUG}/modules/`).test(entryPath)), false);
 });
 
+test('publishes a document shared by multiple modules as a neutral guide', async (t) => {
+  const fixture = await createSourceFixture();
+  t.after(() => rm(fixture.source, { recursive: true, force: true }));
+  fixture.manifest.modules.push({
+    id: 'sample-peer', group: 'benchmarks', kind: 'benchmark', sourceDir: 'sample-peer',
+    en: 'en/modules/sample.md', ko: 'ko/modules/sample.md', chapters: [], assets: [],
+  });
+  await write(
+    fixture.source,
+    'docs/manual/generated/manifest.json',
+    `${JSON.stringify(fixture.manifest, null, 2)}\n`,
+  );
+
+  const built = await buildSnapshot(resolved(fixture.source, fixture.sourceCommit));
+  const shared = built.entries.find(({ path: entryPath }) => (
+    entryPath === `src/content/docs/manual/${SLUG}/1.11/modules/sample.md`
+  ));
+
+  assert.ok(shared);
+  assert.match(shared.content, /  id: "modules\/sample"/);
+  assert.match(shared.content, /  group: "overview"/);
+  assert.match(shared.content, /  kind: "guide"/);
+  assert.match(shared.content, /  sourceDir: "docs\/manual"/);
+});
+
 test('rejects traversal, absolute, and symlink manifest paths before reading outside the manual root', async (t) => {
   for (const fixtureCase of ['document-traversal', 'asset-absolute', 'document-symlink', 'asset-symlink']) {
     const fixture = await createSourceFixture();
