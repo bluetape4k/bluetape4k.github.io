@@ -4,6 +4,7 @@ import { pathToFileURL } from 'node:url';
 import { defineRouteMiddleware } from '@astrojs/starlight/route-data';
 import { validateVersionCatalog } from '../scripts/manual/lib/catalog.mjs';
 import { loadRepositoryRegistry, repositoryBySlug } from '../scripts/manual/lib/repositories.mjs';
+import { withBlogSocialPreview } from './lib/socialPreview';
 
 const manualRepositories = loadRepositoryRegistry(pathToFileURL(path.join(process.cwd(), 'src/data/manual/repositories.json')));
 function latestMinor(repositorySlug: string): string | undefined {
@@ -22,6 +23,15 @@ function latestMinor(repositorySlug: string): string | undefined {
 
 export const onRequest = defineRouteMiddleware((context) => {
   const route = context.locals.starlightRoute;
+  const blog = route.entry.data.blog as { image: string; imageAlt: string } | undefined;
+  if (blog) {
+    route.head = withBlogSocialPreview(
+      route.head,
+      blog,
+      context.site ?? new URL('https://bluetape4k.github.io'),
+    );
+  }
+
   const manual = route.entry.data.manual as { minorVersion?: string; repository?: string } | undefined;
   const latest = manual?.repository ? latestMinor(manual.repository) : undefined;
   if (manual?.minorVersion && latest && manual.minorVersion !== latest) {
