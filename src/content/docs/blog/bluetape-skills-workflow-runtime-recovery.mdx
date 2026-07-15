@@ -1,0 +1,316 @@
+---
+title: "Bluetape Skills Part 3: Recovering and Resuming Interrupted Workflows"
+description: How the Bluetape Skills 1.1.0 native workflow runtime records lane state, liveness, component evidence, and receipts so interrupted work can resume safely.
+sidebar:
+  order: -202607152330
+blog:
+  date: 2026-07-15T23:30:00+09:00
+  image: /assets/bluetape-skills-runtime-recovery-hero.png
+  imageAlt: A robotic developer at a dark workbench inspecting the receipt for a stalled workflow lane and connecting a blue recovery bridge
+  cardDescription: How the 1.1.0 runtime identifies interrupted lanes and recovers workflows from receipts and component evidence.
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape-skills-runtime-recovery-hero.png" alt="A robotic developer at a dark workbench inspecting the receipt for a stalled workflow lane and connecting a blue recovery bridge" loading="eager" />
+  <figcaption>Resume an interrupted workflow from its remaining state and evidence, not from a completion claim.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-07-15 · Bluetape Skills Part 3</p>
+
+[Part 2](/blog/bluetape-skills-workflow-guide/) explained how `$bluetape-workflow` classifies a task
+and validates the approved plan with Action–Evidence–Failure checklists. That structure catches
+missed gates well. Once work spans a long session and several native subagents, however, a checklist
+alone cannot answer every operational question.
+
+When an agent stops responding, is it still computing or has it stalled? How much of an earlier
+agent's result should a new session trust? Can the whole run finish because several lanes reported
+completion? If a receipt is damaged, can recovery continue from the last line that still looks
+valid?
+
+Bluetape Skills `1.1.0`, released on July 14, 2026, adds the Phase 2 native workflow runtime to
+address these questions. It does not introduce another orchestrator. Instead, it records native
+coordination performed by the Codex main session as verifiable state. After an interruption, that
+state supports a concrete decision: resume the run, replace a lane, or create a separate recovery
+run.
+
+## Why Workflows Need to Be Recoverable
+
+When work finishes in one session, the conversation usually gives a rough picture of progress. As
+the run grows longer and splits into multiple lanes, reported progress and actual state can drift.
+An agent may say it is done without running a required check. It may change files without verifying
+that they fall inside the approved write scope.
+
+Treating silence as immediate failure is also unsafe. A large build or an external response can
+leave an agent quiet while it is still working normally. The reverse is true as well: a continuing
+heartbeat does not prove progress. A signal that an agent is alive and evidence that the task is
+closer to completion are different facts.
+
+Replacement introduces a harder problem. If the old agent sends a late result after a new agent has
+taken over, that result must not overwrite the current state. The same applies across sessions: the
+previous owner and the new owner cannot modify the same run at once. The runtime needs an explicit
+record of who currently holds write authority.
+
+A recoverable workflow therefore needs more than a task list. It records the current run and lane
+states, owner generation, liveness observations, replacement lineage, per-component checks and
+evidence, and receipt validation. A later session can then continue from the recorded state rather
+than reconstructing it from old conversation history.
+
+## From Document Checklists to a Native Runtime
+
+The `1.0.0` checklist contract defined the Action each task must perform, the Evidence it must
+produce, and the Failure condition that stops dependent work. `1.1.0` keeps that contract and adds a
+state-recording layer so the same rules remain enforceable while multiple lanes are active.
+
+The public bundle includes [manifest version `1.1.0`](https://github.com/bluetape4k/bluetape-skills/blob/v1.1.0/skills/bluetape-workflow/references/workflow-manifest.json),
+the [liveness contract](https://github.com/bluetape4k/bluetape-skills/blob/v1.1.0/skills/bluetape-workflow/references/liveness-contract.md),
+the [topology contract](https://github.com/bluetape4k/bluetape-skills/blob/v1.1.0/skills/bluetape-workflow/references/topology-contract.md),
+receipt validation rules, and a guarded CLI. The manifest pins run and lane states, observation
+intervals, replacement limits, and completion rules. The contracts define which commands may
+change each state and what evidence those transitions require.
+
+The runtime is not a scheduler that performs the work. It records and validates workflow state
+under `.bluetape`. Creating native subagents, sending messages, waiting, listing agents, and
+interrupting them remain responsibilities of the Codex main session. The runtime records the main
+session's intent before an action and its bounded observed evidence afterward, using defined state
+transitions.
+
+That separation prevents a recorded command from being mistaken for an executed native action. A
+CLI `lane-start` does not mean an agent was created. The main session must perform the native spawn,
+inspect its result, and only then record `startup-ack`. Silence is not an ACK.
+
+## How Runs and Lanes Move
+
+A run represents the complete approved task. A lane is a bounded unit of that task assigned to one
+agent or to the main session. The basic startup path is:
+
+```text
+bluetape-flow.py: run-approve -> run-start -> lane-create -> lane-start
+Codex main session: native spawn
+bluetape-flow.py: startup-ack
+```
+
+These arrows do not all belong to the same executor. From `run-approve` through `lane-start`,
+`bluetape-flow.py` records approval and execution intent. The main session then creates the agent
+with a native agent tool. Only after observing the native result does it record that bounded
+evidence with `startup-ack`.
+
+A lane moves through states such as `pending`, `starting`, `running`, `suspected_stall`, and
+`recovering` before reaching a terminal state. The terminal states are `completed`, `failed`,
+`blocked`, and `cancelled`. A replaced lane records `replaced`; its successor uses a distinct lane
+and agent id. Reusing only the old lane id would falsely present the replacement as the same
+execution.
+
+The new lane receives a scope no broader than the original assignment and exactly one checkpoint.
+It also records parent lineage to the old lane. This fences late results from the previous agent
+after replacement. Those results may still be useful as reference material, but they cannot become
+completion evidence without verification by the current owner.
+
+Before completing a lane, the main session rereads its evidence and collects actual changed paths
+from Git status and the branch diff. It verifies that every path remains under the pinned repository
+root and inside the write scope. An empty write scope means “write no files,” not “write anywhere.”
+After `lane-complete`, required checks and component evidence must still be present before the whole
+run can be considered complete.
+
+## Liveness Is Not Progress
+
+The liveness values in the manifest establish time boundaries for recovery decisions.
+
+| Item | `v1.1.0` value | Meaning |
+| --- | ---: | --- |
+| Observation interval | 30 seconds | Default interval for checking active native subagent state again |
+| Suspected stall | 120 seconds | Silence threshold for considering a stall when no valid silence lease exists |
+| Maximum silence lease | 600 seconds | Longest silence a single lease may cover |
+| Probe grace | 60 seconds | Time to wait for a probe response after a suspected stall |
+
+The 600-second value is not a limit for the entire task. It is the maximum interval one lease can
+cover when silence is justified by a build or an external wait. Renewing a lease requires new
+bounded evidence and a reason for the expected silence. Repeating “still working” cannot extend the
+lease indefinitely.
+
+The runtime also does not interrupt an agent as soon as 120 seconds pass. `liveness-check` is a
+read-only decision that evaluates the current record and recommends the next action. For a
+suspected stall, the workflow records `stall-record` and `probe-sent`; the main session then uses
+native `send_message` or checks the agent list. It performs a native interrupt only when the agent
+does not answer within the 60-second probe grace period and policy returns interrupt authority.
+
+Reduced to command names, the recovery path looks like this:
+
+```text
+bluetape-flow.py: liveness-check -> stall-record -> probe-sent
+Codex main session: native probe -> native interrupt (when authority is present)
+bluetape-flow.py: interrupt-result -> lane-reassign
+```
+
+The Python/native-tool boundary applies here too. `probe-sent` first records intent to send the
+probe. The main session performs the actual message and interruption. The CLI records the observed
+result with `interrupt-result` before `lane-reassign` reserves a new lane. A lane may be replaced at
+most once.
+
+A heartbeat proves only that the agent is alive. It is not a changed path, a check result,
+component coverage, main verification, or completion evidence. Reusing a heartbeat for completion
+would collapse “an agent that can respond” and “work that has passed verification” into the same
+state.
+
+## The Weakest Required Component Determines Completion
+
+Completion reports from several lanes do not establish whether the whole run is complete. One lane
+can own multiple components, and work from separate lanes can converge in one required check. The
+runtime therefore records the approved topology by component.
+
+Each component carries these fields:
+
+- `required`: marks whether this component blocks overall completion.
+- `owner_lane`: identifies the lane responsible for its evidence.
+- `required_checks`: lists the checks that must pass.
+- `dependencies`: lists component ids that must complete first.
+- `evidence_refs`: points to bounded evidence available in the receipt.
+- `coverage_state`: states whether current evidence covers the component.
+
+The completion rule is `weakest_required_component`. A run cannot advance beyond its least-complete
+required component. For example, both the writing lane and site-verification lane may report
+`completed`, but the run cannot finish if the Korean route build failed or Hero evidence is empty.
+
+| Required component | Owner lane | Required check | Evidence | Decision |
+| --- | --- | --- | --- | --- |
+| Korean article | `write-ko` | source-link check | Present | May complete |
+| English article | `write-en` | locale parity | Present | May complete |
+| Rendered routes | `verify-site` | production build | Missing | Cannot complete |
+
+In this example, `Rendered routes` remains the weakest component even though the first two are
+ready. `completion-check` looks for missing terminal lanes, required components, checks,
+replacement lineage, evidence, and main verification. If any required item is absent, `complete`
+does not run.
+
+Removing a component from the topology is also an explicit operation. A difficult required
+component cannot be silently dropped from the list. `topology-remove` requires a reason and
+prevents implicit removal of a dependency or a required component that the run still needs.
+
+## Recovering Interrupted Work from Receipts
+
+Recovery begins by determining whether the receipt is healthy. A new session resuming a run with a
+valid receipt follows a different path from a run whose receipt chain is damaged.
+
+### Resume a Healthy Receipt with a New Owner Epoch
+
+First, replay the run with the read-only `resume-check` command. If it finds an unfinished
+replacement reservation, ownership does not transfer immediately. The workflow must finish the new
+lane with `replacement-repair` or explicitly stop it with `replacement-block`.
+
+After the check passes, `resume` creates a new owner handle, appends a `run_resumed` event, and
+increments the owner epoch by 1. The previous handle is fenced and removed. The new session does
+not reuse the former owner's credential, and the previous owner and agents cannot modify state at
+the latest epoch.
+
+The owner credential does not belong in command arguments or JSON. It exists only in an owner file
+with mode `0600` under an allowed state root. `resume` issues a new file as an ownership transfer;
+it does not copy a token through the conversation as a handoff.
+
+### Move a Damaged Receipt into a Separate Recovery Run
+
+When a receipt is damaged, continuing from the last readable event may look convenient. Doing so
+would make it impossible to prove where the original record ends and a manually appended record
+begins.
+
+`receipt-diagnose` is a read-only diagnosis, not a repair command. It reports the first damaged
+sequence, the head of the trusted prefix, manifest identity, lock state, and the damaged receipt
+hash. Use that result to identify the damage, but do not truncate, edit, or continue the original
+chain.
+
+After recovery is approved, `recovery-run-create` verifies the diagnosis checksum and approval
+evidence. It keeps an immutable copy of the damaged original under `quarantine/` with permission
+`0600`, then creates a separate run whose first event carries the provenance. The new run is an
+independent planned run, not the next sequence in the old chain. In-place migration is not
+supported.
+
+This division makes recovery slightly more deliberate. In return, it keeps ownership transfer for
+a healthy run separate from restarting work after record corruption. Increment the epoch when the
+receipt is healthy; preserve the diagnosis and original receipt and move to a new run when it is
+damaged.
+
+## The Runtime Records; Codex Executes
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape-skills-native-runtime-boundary-01.png" alt="Responsibility boundary in which the Codex main session directly runs native agent tools and uses the guarded evidence runtime to record intent and observed evidence in the manifest, receipt, and topology" loading="lazy" />
+  <figcaption>The Codex main session performs native actions; the runtime records their intent and observed results as bounded evidence.</figcaption>
+</figure>
+
+Although `bluetape-flow.py` is written in Python, it does not call native coordination tools. Agent
+spawn, messaging, waiting, listing, and interruption belong to the Codex main session. Claiming that
+the CLI performed them would blur the boundary between the executor and the receipt writer.
+
+The boundary can be summarized as: record intent, perform the native action, then record observed
+evidence. A native spawn must follow `lane-start`, and a native probe must follow `probe-sent`.
+`interrupt-result` contains only the bounded interruption result observed by the main session. CLI
+output alone is not evidence that a native action occurred.
+
+The guarded `bluetape-flow.py` CLI is the only supported write path for `.bluetape` state. Editing a
+receipt or manifest state directly when something goes wrong is unsupported. Read-only commands do
+not silently change caches or receipts either.
+
+Evidence has its own boundary. Owner credentials, secrets, raw prompts, unbounded tool output, and
+fencing information are not accepted as ordinary JSON fields in receipts or reports. The runtime
+does not need a copy of every native-tool conversation. It needs only the bounded observation that
+can validate the next state transition. This keeps the receipt a workflow state ledger rather than
+a duplicate session transcript.
+
+## Installing and Validating 1.1.0
+
+When upgrading an existing installation to `1.1.0`, validating a shallow clone of the tag in a
+separate directory is safer than overwriting the current checkout.
+
+```bash
+git clone --branch v1.1.0 --depth 1 https://github.com/bluetape4k/bluetape-skills.git bluetape-skills-v1.1.0
+cd bluetape-skills-v1.1.0
+./scripts/validate.sh
+./scripts/install.sh --force
+```
+
+`validate.sh` checks the public bundle boundary, manifest inventory, workflow contracts, and the
+shipped regression tests. It requires Bash, `rg`, Python 3, and `uv`. `install.sh --force` moves each
+existing canonical skill directory to a timestamped backup before installing the new version. If
+you have edited skills locally, inspect those changes with `git log` and `git diff` before forcing a
+replacement.
+
+Restart Codex after installation so it can load the new skills. `code-review` and `self-audit` are
+external companion skills outside the public canonical bundle. Install them separately if you use
+the Code Review path or the harness self-audit gate.
+
+At publication, the `v1.1.0` release candidate recorded passing validation for 14 canonical skills,
+133 tests and 151 subtests, and source/bundle parity across 83 files. These are release-time results,
+not fresh measurements from rerunning the full suite and archive installation while writing this
+article.
+
+## When to Use the Runtime
+
+Not every task needs the Phase 2 runtime. For a small wording change that one agent can finish
+quickly, with obvious changed files and checks, the ordinary checklist and Git diff may be enough.
+Creating a run, lanes, and topology can cost more than the recovery risk warrants.
+
+The recorded state becomes useful when any of these conditions apply:
+
+- Work may outlive one session or need a handoff to a new session.
+- Several native subagents work in parallel lanes.
+- The workflow must distinguish agent silence from a legitimate long-running operation.
+- A stalled lane may need replacement, with late results from the old agent fenced out.
+- Completion depends on required checks and evidence from several components.
+- A damaged receipt requires a recovery run that preserves provenance.
+
+The decision is not about the number of commands. Ask whether a later session can read the current
+owner, lane states, component evidence, and receipt and choose a safe next action without guessing
+from conversation history. If that is difficult, the runtime has a job to do. For short work with
+clear boundaries, finish with the checklist alone.
+
+## Series
+
+- Start here: [Turning AI Collaboration Into Infrastructure](/blog/ai-collaboration-environment/)
+- [Bluetape Skills Part 1: Sharing and Installing the Toolkit](/blog/bluetape-skills-sharing/)
+- [Bluetape Skills Part 2: Starting Work with bluetape-workflow](/blog/bluetape-skills-workflow-guide/)
+- [Bluetape Skills Part 3: Recovering and Resuming Interrupted Workflows](/blog/bluetape-skills-workflow-runtime-recovery/)
+
+## Sources
+
+- [bluetape4k/bluetape-skills repository](https://github.com/bluetape4k/bluetape-skills)
+- [Bluetape Skills v1.1.0 release](https://github.com/bluetape4k/bluetape-skills/releases/tag/v1.1.0)
+- [Phase 2 native workflow runtime tracking issue #5](https://github.com/bluetape4k/bluetape-skills/issues/5)
+- [v1.1.0 release candidate PR #6](https://github.com/bluetape4k/bluetape-skills/pull/6)
+- [v1.0.0...v1.1.0 change comparison](https://github.com/bluetape4k/bluetape-skills/compare/v1.0.0...v1.1.0)
