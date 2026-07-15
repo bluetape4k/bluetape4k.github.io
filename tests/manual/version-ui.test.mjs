@@ -61,7 +61,7 @@ async function fixtureProject(t) {
   }
   for (const relative of [
     'src/components/ManualPageTitle.astro', 'src/components/ManualVersionSelector.astro',
-    'src/styles/manual.css', 'src/starlightRouteData.ts',
+    'src/styles/manual.css', 'src/starlightRouteData.ts', 'src/lib/socialPreview.ts',
     'scripts/manual/lib/catalog.mjs', 'scripts/manual/lib/paths.mjs', 'scripts/manual/lib/repositories.mjs', 'scripts/manual/lib/version.mjs',
   ]) await cp(path.join(projectRoot, relative), path.join(fixture, relative), { recursive: true });
   await write(fixture, 'package.json', '{"type":"module"}\n');
