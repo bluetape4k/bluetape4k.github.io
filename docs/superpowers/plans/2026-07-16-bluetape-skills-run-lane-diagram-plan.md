@@ -122,7 +122,7 @@ Expected: zero blocking failures and meaningful counts. Weak or zero counts requ
 - [ ] **Step 3: Run fallback semantic invariants**
 
 ```bash
-test "$(rg -c 'id="lane-(write-ko|write-en|verify-site|replacement-lane)' public/assets/bluetape-skills-run-lane-model-01.svg)" -ge 4
+test "$(rg -o 'id="(lane-write-ko|lane-write-en|lane-verify-site|replacement-lane)"' public/assets/bluetape-skills-run-lane-model-01.svg | wc -l | tr -d ' ')" -ge 4
 test "$(rg -o '>pending<' public/assets/bluetape-skills-run-lane-model-01.svg | wc -l | tr -d ' ')" -ge 2
 test "$(rg -o 'marker-end=' public/assets/bluetape-skills-run-lane-model-01.svg | wc -l | tr -d ' ')" -ge 8
 rg -q '>suspected_stall<' public/assets/bluetape-skills-run-lane-model-01.svg
