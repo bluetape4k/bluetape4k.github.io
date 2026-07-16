@@ -15,7 +15,8 @@
     .bus{fill:none;stroke:#496A8F;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
     .lifeline{stroke:#91A6BD;stroke-width:2;stroke-dasharray:8 8}
     g[id]{filter:url(#shadow)}
-  </style>
+
+    .syntax-keyword{fill:#7E22CE}.syntax-type{fill:#0F766E}.syntax-function{fill:#1D4ED8}.syntax-string{fill:#B45309}.syntax-number{fill:#C2410C}.syntax-comment{fill:#64748B}.syntax-operator{fill:#BE123C}</style>
 </defs>
 <rect class="canvas" width="1500" height="760"/>
 <rect class="frame" x="34" y="28" width="1432" height="704" rx="24"/>
@@ -48,7 +49,7 @@
 </g>
 <g>
   <rect x="155.5" y="208" width="255" height="31" rx="9" fill="#EAF4FF" stroke="#D7E2EC"/>
-  <text class="nodeBody" x="283" y="229" text-anchor="middle">1. transaction { ... }</text>
+  <text class="nodeBody" x="283" y="229" text-anchor="middle" data-code-snippet="kotlin"><tspan class="syntax-number">1</tspan>. transaction { ... }</text>
   <path class="edge" d="M183 250 H382"/>
 </g>
 <g>
