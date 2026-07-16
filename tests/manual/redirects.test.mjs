@@ -194,7 +194,7 @@ test('snapshot validation writes a sanitized provenance report and summary', asy
   assert.match(summary.stdout, /be4e6daea5654f84579955307ec56a58c8f405be/);
   assert.match(summary.stdout, /cf9f7a4ed610f85b4af440bcdabedcab55f47bd1/);
   assert.match(summary.stdout, /bffe19439ca891fa5301a76421bdef7ba75252a0/);
-  assert.match(summary.stdout, /dd5a341e436b63fb47575e17fed761d007314202/);
+  assert.match(summary.stdout, /51a3c728ed263b214c1a3ce05efb0bee2c456c9d/);
 
   const token = `ghp_${'x'.repeat(36)}`;
   const failure = failureReport({ code: 'CATALOG_DRIFT', actual: `src/${token}` });
