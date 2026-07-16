@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-javers"
   group: "foundation"
   kind: "library"
-  sourceCommit: "dd5a341e436b63fb47575e17fed761d007314202"
+  sourceCommit: "51a3c728ed263b214c1a3ce05efb0bee2c456c9d"
   sourcePath: "docs/manual/ko/modules/javers-core.md"
   minorVersion: "0.2"
   releaseRef: "0.2.1"

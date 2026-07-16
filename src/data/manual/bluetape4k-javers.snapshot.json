@@ -1,8 +1,8 @@
 {
-  "assetDigest": "9684a0da2cfa4dc2f561ac3d45df4530465a7d516c5cad61bb85487100e7dc61",
+  "assetDigest": "e919f6e02e43264e744d0655504995a8af9ca56dd79ad889a3dede3b540e11b6",
   "assetFiles": 10,
-  "authoringSourceRef": "dd5a341e436b63fb47575e17fed761d007314202",
-  "contentDigest": "ca5e098688bb9b2cb8eccde25e9141074e92d4e62455a26280066c6f508c5ea6",
+  "authoringSourceRef": "51a3c728ed263b214c1a3ce05efb0bee2c456c9d",
+  "contentDigest": "245e9a9726f6e5dc6c8efac4eb17379b6c944876c0e801a0ff416cec5b20830b",
   "contentFiles": 58,
   "documentFiles": 48,
   "minorVersion": "0.2",
@@ -11,7 +11,7 @@
   "repository": "bluetape4k/bluetape4k-javers",
   "repositorySlug": "bluetape4k-javers",
   "schemaVersion": 1,
-  "sourceCommit": "dd5a341e436b63fb47575e17fed761d007314202",
+  "sourceCommit": "51a3c728ed263b214c1a3ce05efb0bee2c456c9d",
   "sourceDigest": "ae58346f18476a36210bb56f0f9621e2e930565b26c21d9acacb0608c43997ba",
   "sourceFiles": 48
 }
