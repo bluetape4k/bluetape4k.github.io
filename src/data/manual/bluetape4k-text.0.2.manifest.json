@@ -1,0 +1,232 @@
+{
+  "authoringSourceRef": "5bdcab0887cf27ce79348d08e64db6d196b9cc89",
+  "minorVersion": "0.2",
+  "modules": [
+    {
+      "artifact": "io.github.bluetape4k.text:bluetape4k-text-bom",
+      "chapters": [],
+      "en": "en/modules/bluetape4k-text-bom.md",
+      "gradlePath": ":bluetape4k-text-bom",
+      "group": "foundation",
+      "id": "bluetape4k-text-bom",
+      "kind": "bom",
+      "ko": "ko/modules/bluetape4k-text-bom.md",
+      "layer": "build",
+      "projectName": "bluetape4k-text-bom",
+      "routes": {
+        "en": "/manual/bluetape4k-text/0.2/modules/bluetape4k-text-bom/",
+        "ko": "/ko/manual/bluetape4k-text/0.2/modules/bluetape4k-text-bom/"
+      },
+      "sourceDir": "bom",
+      "sourcePaths": [
+        "bom"
+      ],
+      "status": "stable",
+      "title": {
+        "en": "Text BOM",
+        "ko": "Text BOM"
+      }
+    },
+    {
+      "artifact": "io.github.bluetape4k.text:lingua",
+      "chapters": [],
+      "en": "en/modules/lingua.md",
+      "gradlePath": ":lingua",
+      "group": "language",
+      "id": "lingua",
+      "kind": "library",
+      "ko": "ko/modules/lingua.md",
+      "layer": "build",
+      "projectName": "lingua",
+      "routes": {
+        "en": "/manual/bluetape4k-text/0.2/modules/lingua/",
+        "ko": "/ko/manual/bluetape4k-text/0.2/modules/lingua/"
+      },
+      "sourceDir": "lingua",
+      "sourcePaths": [
+        "lingua"
+      ],
+      "status": "stable",
+      "title": {
+        "en": "Language detection library",
+        "ko": "언어 감지 라이브러리"
+      }
+    },
+    {
+      "artifact": "io.github.bluetape4k.text:text-search",
+      "chapters": [],
+      "en": "en/modules/text-search.md",
+      "gradlePath": ":text-search",
+      "group": "search",
+      "id": "text-search",
+      "kind": "library",
+      "ko": "ko/modules/text-search.md",
+      "layer": "build",
+      "projectName": "text-search",
+      "routes": {
+        "en": "/manual/bluetape4k-text/0.2/modules/text-search/",
+        "ko": "/ko/manual/bluetape4k-text/0.2/modules/text-search/"
+      },
+      "sourceDir": "text-search",
+      "sourcePaths": [
+        "text-search"
+      ],
+      "status": "stable",
+      "title": {
+        "en": "Multi-pattern text search library",
+        "ko": "다중 패턴 텍스트 검색 라이브러리"
+      }
+    },
+    {
+      "artifact": "io.github.bluetape4k.text:tokenizer-core",
+      "chapters": [],
+      "en": "en/modules/tokenizer-core.md",
+      "gradlePath": ":tokenizer-core",
+      "group": "foundation",
+      "id": "tokenizer-core",
+      "kind": "library",
+      "ko": "ko/modules/tokenizer-core.md",
+      "layer": "build",
+      "projectName": "tokenizer-core",
+      "routes": {
+        "en": "/manual/bluetape4k-text/0.2/modules/tokenizer-core/",
+        "ko": "/ko/manual/bluetape4k-text/0.2/modules/tokenizer-core/"
+      },
+      "sourceDir": "tokenizer-core",
+      "sourcePaths": [
+        "tokenizer-core"
+      ],
+      "status": "stable",
+      "title": {
+        "en": "Tokenizer core library",
+        "ko": "토크나이저 핵심 라이브러리"
+      }
+    },
+    {
+      "artifact": "io.github.bluetape4k.text:tokenizer-japanese",
+      "chapters": [],
+      "en": "en/modules/tokenizer-japanese.md",
+      "gradlePath": ":tokenizer-japanese",
+      "group": "language",
+      "id": "tokenizer-japanese",
+      "kind": "library",
+      "ko": "ko/modules/tokenizer-japanese.md",
+      "layer": "build",
+      "projectName": "tokenizer-japanese",
+      "routes": {
+        "en": "/manual/bluetape4k-text/0.2/modules/tokenizer-japanese/",
+        "ko": "/ko/manual/bluetape4k-text/0.2/modules/tokenizer-japanese/"
+      },
+      "sourceDir": "tokenizer-japanese",
+      "sourcePaths": [
+        "tokenizer-japanese"
+      ],
+      "status": "stable",
+      "title": {
+        "en": "Japanese tokenizer library",
+        "ko": "일본어 토크나이저 라이브러리"
+      }
+    },
+    {
+      "artifact": "io.github.bluetape4k.text:tokenizer-korean",
+      "chapters": [],
+      "en": "en/modules/tokenizer-korean.md",
+      "gradlePath": ":tokenizer-korean",
+      "group": "language",
+      "id": "tokenizer-korean",
+      "kind": "library",
+      "ko": "ko/modules/tokenizer-korean.md",
+      "layer": "build",
+      "projectName": "tokenizer-korean",
+      "routes": {
+        "en": "/manual/bluetape4k-text/0.2/modules/tokenizer-korean/",
+        "ko": "/ko/manual/bluetape4k-text/0.2/modules/tokenizer-korean/"
+      },
+      "sourceDir": "tokenizer-korean",
+      "sourcePaths": [
+        "tokenizer-korean"
+      ],
+      "status": "stable",
+      "title": {
+        "en": "Korean tokenizer library",
+        "ko": "한국어 토크나이저 라이브러리"
+      }
+    }
+  ],
+  "overview": {
+    "assets": [
+      "assets/architecture/capability-map.png",
+      "assets/architecture/capability-map.svg",
+      "assets/architecture/text-processing-pipeline.png",
+      "assets/architecture/text-processing-pipeline.svg",
+      "assets/guides/language-detection-selection.png",
+      "assets/guides/language-detection-selection.svg",
+      "assets/operations/request-safety-boundary.png",
+      "assets/operations/request-safety-boundary.svg",
+      "assets/overview/repository-learning-map.png",
+      "assets/overview/repository-learning-map.svg",
+      "assets/text-search/search-flow.png",
+      "assets/text-search/search-flow.svg"
+    ],
+    "documents": {
+      "en": [
+        "en/architecture/processing-model.md",
+        "en/architecture/repository-map.md",
+        "en/architecture/runtime-boundaries.md",
+        "en/examples/lingua-examples.md",
+        "en/examples/text-search-examples.md",
+        "en/examples/tokenizer-safety-examples.md",
+        "en/getting-started.md",
+        "en/guides/capability-selection.md",
+        "en/guides/dictionaries-and-blockwords.md",
+        "en/guides/input-safety.md",
+        "en/guides/learning-path.md",
+        "en/guides/mixed-language-processing.md",
+        "en/guides/testing.md",
+        "en/index.md",
+        "en/modules/bluetape4k-text-bom.md",
+        "en/modules/lingua.md",
+        "en/modules/text-search.md",
+        "en/modules/tokenizer-core.md",
+        "en/modules/tokenizer-japanese.md",
+        "en/modules/tokenizer-korean.md",
+        "en/operations/failure-contracts.md",
+        "en/operations/startup-and-memory.md",
+        "en/quality/aho-corasick-benchmarks.md",
+        "en/quality/quality-gates.md"
+      ],
+      "ko": [
+        "ko/architecture/processing-model.md",
+        "ko/architecture/repository-map.md",
+        "ko/architecture/runtime-boundaries.md",
+        "ko/examples/lingua-examples.md",
+        "ko/examples/text-search-examples.md",
+        "ko/examples/tokenizer-safety-examples.md",
+        "ko/getting-started.md",
+        "ko/guides/capability-selection.md",
+        "ko/guides/dictionaries-and-blockwords.md",
+        "ko/guides/input-safety.md",
+        "ko/guides/learning-path.md",
+        "ko/guides/mixed-language-processing.md",
+        "ko/guides/testing.md",
+        "ko/index.md",
+        "ko/modules/bluetape4k-text-bom.md",
+        "ko/modules/lingua.md",
+        "ko/modules/text-search.md",
+        "ko/modules/tokenizer-core.md",
+        "ko/modules/tokenizer-japanese.md",
+        "ko/modules/tokenizer-korean.md",
+        "ko/operations/failure-contracts.md",
+        "ko/operations/startup-and-memory.md",
+        "ko/quality/aho-corasick-benchmarks.md",
+        "ko/quality/quality-gates.md"
+      ]
+    }
+  },
+  "releaseCommit": "2db7671afad20045afdcb5793c0113b8b23b972b",
+  "releaseRef": "0.2.1",
+  "repository": "bluetape4k/bluetape4k-text",
+  "repositorySlug": "bluetape4k-text",
+  "schemaVersion": 2,
+  "sourceCommit": "5bdcab0887cf27ce79348d08e64db6d196b9cc89"
+}

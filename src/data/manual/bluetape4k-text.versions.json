@@ -1,0 +1,69 @@
+{
+  "latest": "0.2",
+  "repository": "bluetape4k/bluetape4k-text",
+  "schema": 1,
+  "versions": [
+    {
+      "authoringSourceRef": "5bdcab0887cf27ce79348d08e64db6d196b9cc89",
+      "channel": "stable",
+      "documents": {
+        "en": [
+          "architecture/processing-model",
+          "architecture/repository-map",
+          "architecture/runtime-boundaries",
+          "examples/lingua-examples",
+          "examples/text-search-examples",
+          "examples/tokenizer-safety-examples",
+          "getting-started",
+          "guides/capability-selection",
+          "guides/dictionaries-and-blockwords",
+          "guides/input-safety",
+          "guides/learning-path",
+          "guides/mixed-language-processing",
+          "guides/testing",
+          "index",
+          "modules/bluetape4k-text-bom",
+          "modules/lingua",
+          "modules/text-search",
+          "modules/tokenizer-core",
+          "modules/tokenizer-japanese",
+          "modules/tokenizer-korean",
+          "operations/failure-contracts",
+          "operations/startup-and-memory",
+          "quality/aho-corasick-benchmarks",
+          "quality/quality-gates"
+        ],
+        "ko": [
+          "architecture/processing-model",
+          "architecture/repository-map",
+          "architecture/runtime-boundaries",
+          "examples/lingua-examples",
+          "examples/text-search-examples",
+          "examples/tokenizer-safety-examples",
+          "getting-started",
+          "guides/capability-selection",
+          "guides/dictionaries-and-blockwords",
+          "guides/input-safety",
+          "guides/learning-path",
+          "guides/mixed-language-processing",
+          "guides/testing",
+          "index",
+          "modules/bluetape4k-text-bom",
+          "modules/lingua",
+          "modules/text-search",
+          "modules/tokenizer-core",
+          "modules/tokenizer-japanese",
+          "modules/tokenizer-korean",
+          "operations/failure-contracts",
+          "operations/startup-and-memory",
+          "quality/aho-corasick-benchmarks",
+          "quality/quality-gates"
+        ]
+      },
+      "minorVersion": "0.2",
+      "releaseCommit": "2db7671afad20045afdcb5793c0113b8b23b972b",
+      "releaseRef": "0.2.1",
+      "sourceCommit": "5bdcab0887cf27ce79348d08e64db6d196b9cc89"
+    }
+  ]
+}

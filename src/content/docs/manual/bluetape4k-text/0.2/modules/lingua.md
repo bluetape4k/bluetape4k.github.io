@@ -1,0 +1,90 @@
+---
+slug: "manual/bluetape4k-text/0.2/modules/lingua"
+title: "Language detection library"
+manual:
+  id: "lingua"
+  repository: "bluetape4k-text"
+  group: "language"
+  kind: "library"
+  sourceCommit: "5bdcab0887cf27ce79348d08e64db6d196b9cc89"
+  sourcePath: "docs/manual/en/modules/lingua.md"
+  minorVersion: "0.2"
+  releaseRef: "0.2.1"
+  releaseCommit: "2db7671afad20045afdcb5793c0113b8b23b972b"
+  sourceDir: "lingua"
+  layer: "build"
+---
+
+
+The `lingua` module is a Kotlin-friendly layer over the Lingua detector plus script-oriented Unicode helpers. Use it to estimate a language, collect likely languages from mixed text, or make a cheap script-based decision before loading a statistical model.
+
+## What it provides
+
+- detector factories for all languages, explicit `Language` sets, and ISO code sets;
+- builder and parameter-based configuration;
+- `detectAllLanguagesOf(text): Set<Language>` for mixed input;
+- correction for ambiguous short Latin tokens;
+- `UnicodeDetector` and character properties for Korean, Japanese, Chinese, Thai, and Latin scripts.
+
+## Add the dependency
+
+```kotlin
+dependencies {
+    implementation("io.github.bluetape4k.text:lingua:0.2.1")
+}
+```
+
+The upstream Lingua engine is transitive.
+
+## Smallest useful example
+
+```kotlin
+import com.github.pemistahl.lingua.api.Language
+import io.bluetape4k.lingua.detectAllLanguagesOf
+import io.bluetape4k.lingua.languageDetectorOf
+
+val detector = languageDetectorOf(
+    languages = setOf(Language.ENGLISH, Language.KOREAN, Language.JAPANESE),
+    minimumRelativeDistance = 0.0,
+    isEveryLanguageModelPreloaded = true,
+    isLowAccuracyModeEnabled = false,
+)
+
+println(detector.detectAllLanguagesOf("Hello 안녕하세요 こんにちは"))
+// [ENGLISH, KOREAN, JAPANESE] as a set; iteration order is not a contract
+```
+
+Build the detector once for the languages your application supports. Preloading favors predictable later calls at the cost of startup and memory.
+
+## Script-first routing
+
+```kotlin
+import io.bluetape4k.lingua.UnicodeDetector
+import java.util.Locale
+
+val unicode = UnicodeDetector()
+println(unicode.containsAny("Hello 안녕", Locale.KOREAN)) // true
+println(unicode.filterString("Hello 안녕", Locale.KOREAN)) // [안, 녕]
+```
+
+Unicode filtering is deterministic but does not infer natural language. It is useful for a fast supported-script gate. Use statistical detection when Latin-language distinctions or ambiguous mixed text matter.
+
+## When to choose it
+
+Choose a restricted detector for a known set of supported languages. Use all-language detection only when the broader model set is genuinely required. Enable low-accuracy mode when its resource trade-off is acceptable and verify it with your text distribution.
+
+## Constraints and failure behavior
+
+Detection is evidence, not certainty. Short input and shared vocabulary can be ambiguous. Blank mixed-language input returns an empty set; when token-level detection yields no usable result, the extension falls back to whole-text detection. Define an unknown/ambiguous route instead of forcing every result into a processor.
+
+## Continue learning
+
+- [Language detection selection](/manual/bluetape4k-text/0.2/guides/mixed-language-processing/)
+- [Lingua runnable example](/manual/bluetape4k-text/0.2/examples/lingua-examples/)
+- [Runtime boundaries](/manual/bluetape4k-text/0.2/architecture/runtime-boundaries/)
+
+## Source evidence
+
+- [Detector factories](https://github.com/bluetape4k/bluetape4k-text/blob/0.2.1/lingua/src/main/kotlin/io/bluetape4k/lingua/LanguageDetector.kt)
+- [UnicodeDetector](https://github.com/bluetape4k/bluetape4k-text/blob/0.2.1/lingua/src/main/kotlin/io/bluetape4k/lingua/UnicodeDetector.kt)
+- [Lingua example](https://github.com/bluetape4k/bluetape4k-text/blob/0.2.1/examples/lingua-examples/src/main/kotlin/io/bluetape4k/text/examples/lingua/LinguaExamples.kt)

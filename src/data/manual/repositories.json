@@ -91,6 +91,19 @@
         "en": "/manual/bluetape4k-javers/",
         "ko": "/ko/manual/bluetape4k-javers/"
       }
+    },
+    {
+      "slug": "bluetape4k-text",
+      "repository": "bluetape4k/bluetape4k-text",
+      "label": {
+        "en": "Text docs",
+        "ko": "Text 문서"
+      },
+      "latestMinor": "0.2",
+      "route": {
+        "en": "/manual/bluetape4k-text/",
+        "ko": "/ko/manual/bluetape4k-text/"
+      }
     }
   ]
 }

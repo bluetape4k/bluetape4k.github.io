@@ -154,7 +154,7 @@ test('snapshot validation writes a sanitized provenance report and summary', asy
   const reportBytes = await readFile(reportPath, 'utf8');
   const report = JSON.parse(reportBytes);
   assert.equal(report.status, 'pass');
-  assert.equal(report.repositories.length, 7);
+  assert.equal(report.repositories.length, 8);
   assert.deepEqual(report.repositories.map(({ repository }) => repository).sort(), [
     'bluetape4k/bluetape4k-aws',
     'bluetape4k/bluetape4k-exposed',
@@ -163,6 +163,7 @@ test('snapshot validation writes a sanitized provenance report and summary', asy
     'bluetape4k/bluetape4k-javers',
     'bluetape4k/bluetape4k-leader',
     'bluetape4k/bluetape4k-projects',
+    'bluetape4k/bluetape4k-text',
   ]);
   const expectedLatest = new Map([
     ['bluetape4k/bluetape4k-aws', '0.4'],
@@ -172,6 +173,7 @@ test('snapshot validation writes a sanitized provenance report and summary', asy
     ['bluetape4k/bluetape4k-javers', '0.2'],
     ['bluetape4k/bluetape4k-leader', '0.4'],
     ['bluetape4k/bluetape4k-projects', '1.11'],
+    ['bluetape4k/bluetape4k-text', '0.2'],
   ]);
   for (const repository of report.repositories) {
     assert.equal(repository.latest, expectedLatest.get(repository.repository));
@@ -195,6 +197,8 @@ test('snapshot validation writes a sanitized provenance report and summary', asy
   assert.match(summary.stdout, /cf9f7a4ed610f85b4af440bcdabedcab55f47bd1/);
   assert.match(summary.stdout, /bffe19439ca891fa5301a76421bdef7ba75252a0/);
   assert.match(summary.stdout, /51a3c728ed263b214c1a3ce05efb0bee2c456c9d/);
+  assert.match(summary.stdout, /2db7671afad20045afdcb5793c0113b8b23b972b/);
+  assert.match(summary.stdout, /5bdcab0887cf27ce79348d08e64db6d196b9cc89/);
 
   const token = `ghp_${'x'.repeat(36)}`;
   const failure = failureReport({ code: 'CATALOG_DRIFT', actual: `src/${token}` });
