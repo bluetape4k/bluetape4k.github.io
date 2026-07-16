@@ -1,0 +1,55 @@
+---
+import DefaultPagination from '@astrojs/starlight/components/Pagination.astro';
+import { Icon } from '@astrojs/starlight/components';
+
+type NavigationLink = { label: string; href: string };
+type ManualRouteNavigation = { home?: NavigationLink };
+
+const route = Astro.locals.starlightRoute as typeof Astro.locals.starlightRoute & {
+  manualNavigation?: ManualRouteNavigation;
+};
+const home = route.manualNavigation?.home;
+const { prev, next } = route.pagination;
+const korean = route.locale === 'ko';
+const labels = korean
+  ? { previous: '이전 문서', home: '매뉴얼 홈', next: '다음 문서' }
+  : { previous: 'Previous', home: 'Manual Home', next: 'Next' };
+---
+
+{
+  home ? (
+    <nav
+      class="bt4k-manual-pagination print:hidden"
+      aria-label={korean ? '매뉴얼 페이지 이동' : 'Manual page navigation'}
+    >
+      <div class="bt4k-manual-pagination__previous">
+        {prev && (
+          <a href={prev.href} rel="prev">
+            <Icon name="left-arrow" size="1.25rem" />
+            <span>
+              <small>{labels.previous}</small>
+              <strong>{prev.label}</strong>
+            </span>
+          </a>
+        )}
+      </div>
+      <a class="bt4k-manual-pagination__home" href={home.href}>
+        <Icon name="document" size="1.1rem" />
+        <span>{labels.home}</span>
+      </a>
+      <div class="bt4k-manual-pagination__next">
+        {next && (
+          <a href={next.href} rel="next">
+            <span>
+              <small>{labels.next}</small>
+              <strong>{next.label}</strong>
+            </span>
+            <Icon name="right-arrow" size="1.25rem" />
+          </a>
+        )}
+      </div>
+    </nav>
+  ) : (
+    <DefaultPagination />
+  )
+}
