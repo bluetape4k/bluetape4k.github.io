@@ -18,7 +18,9 @@ const repositories = {
   repositories: slugs.map((slug) => ({
     slug,
     repository: `bluetape4k/${slug}`,
-    label: { en: `${slug} docs`, ko: `${slug} 문서` },
+    label: slug === 'bluetape4k-projects'
+      ? { en: 'Bluetape4k docs', ko: 'Bluetape4k 문서' }
+      : { en: `${slug} docs`, ko: `${slug} 문서` },
     latestMinor: slug === 'bluetape4k-projects' ? '1.12' : '0.2',
     route: { en: `/manual/${slug}/`, ko: `/ko/manual/${slug}/` },
   })),
@@ -57,7 +59,12 @@ const catalogs = Object.fromEntries(repositories.repositories.map((repository) =
         schema: 1,
         repository: repository.repository,
         latest: '0.2',
-        versions: [release('0.2', ['index'])],
+        versions: [release('0.2', [
+          'index',
+          'getting-started',
+          'architecture/repository-map',
+          'guides/learning-path',
+        ])],
       },
 ]));
 
@@ -108,6 +115,21 @@ test('expands only the current repository', () => {
   );
   assert.equal(result.sidebar[0].entries[0].label, 'Manual Home');
   assert.equal(result.sidebar[1].entries[0].href, '/manual/bluetape4k-exposed/0.2/');
+});
+
+test('builds the complete latest tree before a non-current repository is opened', () => {
+  const result = navigation();
+  const exposed = result.sidebar[1];
+
+  assert.equal(exposed.collapsed, true);
+  assert.deepEqual(exposed.entries.map(({ label }) => label), [
+    'Manual Home',
+    'Getting started',
+    'Architecture',
+    'Guides',
+  ]);
+  assert.equal(exposed.entries[2].entries[0].href, '/manual/bluetape4k-exposed/0.2/architecture/repository-map/');
+  assert.equal(exposed.entries[3].entries[0].href, '/manual/bluetape4k-exposed/0.2/guides/learning-path/');
 });
 
 test('builds a nested tree and reveals the current page', () => {

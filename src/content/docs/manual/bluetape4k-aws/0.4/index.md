@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-aws"
   group: "overview"
   kind: "guide"
-  sourceCommit: "cf9f7a4ed610f85b4af440bcdabedcab55f47bd1"
+  sourceCommit: "a64a49d44060154ec4371de9f7818168b75a6a67"
   sourcePath: "docs/manual/en/index.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -22,6 +22,15 @@ manual:
 `bluetape4k-aws` connects Kotlin/JVM applications to AWS through two SDK paths and two application frameworks. It provides coroutine adapters for AWS SDK for Java v2, small extensions around the AWS SDK for Kotlin, Spring Boot auto-configuration, Ktor plugins, and an Exposed JDBC bridge for AWS-backed database settings.
 
 This manual is organized around decisions rather than package names. Start by choosing the Java or Kotlin SDK path, then choose direct library use, Spring Boot, or Ktor. Service guides for S3, DynamoDB, and SQS/SNS lead to runnable examples, while the database and operations guides make ownership and shutdown boundaries explicit.
+
+## Core capabilities
+
+- **Two SDK paths:** [SDK selection](/manual/bluetape4k-aws/0.4/guides/sdk-selection/) explains when to extend AWS SDK for Java v2 with coroutine adapters and when to use the AWS SDK for Kotlin directly.
+- **Coroutine-friendly service APIs:** The [Java SDK extensions](/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-java/) bridge sync and async clients into structured Kotlin execution, while the [Kotlin SDK extensions](/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-kotlin/) reduce request and response boilerplate.
+- **Service patterns and examples:** [Service learning paths](/manual/bluetape4k-aws/0.4/guides/service-learning-paths/) connect S3, DynamoDB, SQS, and SNS helpers to runnable Ktor and Spring Boot examples.
+- **Application frameworks:** [Spring Boot and Ktor](/manual/bluetape4k-aws/0.4/guides/spring-vs-ktor/) integrations manage client construction, configuration, lifecycle, and request signing at the appropriate framework boundary.
+- **Database integration:** The [Exposed database guide](/manual/bluetape4k-aws/0.4/guides/database-with-exposed/) turns AWS-provided database settings and RDS IAM authentication into explicit JDBC configuration.
+- **Testing and operations:** [Testing and operations](/manual/bluetape4k-aws/0.4/guides/testing-and-operations/) separates emulator proof from AWS integration proof and defines client ownership, shutdown, retry, and observability checks.
 
 ## Version baseline
 

@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-image"
   group: "overview"
   kind: "guide"
-  sourceCommit: "6d265160a89feeef27cc5fc562b169d517ca56d4"
+  sourceCommit: "471a5f364520923911dc31d91be5179a6985337e"
   sourcePath: "docs/manual/ko/guides/spring-vs-ktor.md"
   minorVersion: "0.3"
   releaseRef: "0.3.0"

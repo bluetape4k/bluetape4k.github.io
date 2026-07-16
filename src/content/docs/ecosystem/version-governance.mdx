@@ -22,7 +22,7 @@ Then add the bluetape4k modules your service uses without module versions.
 
 Applications only choose the published version of `bluetape4k-dependencies`. The central BOM composes repository BOMs such as `projects`, `exposed`, and `aws`, so consumers do not align those versions themselves.
 
-A label such as `Projects docs 1.11` at the top of a manual identifies the **repository release line described by that documentation**. It is not a dependency version to copy into an application. The same rule applies when a repository such as `bluetape4k-aws` uses a `0.x` release line.
+A label such as `Bluetape4k docs 1.11` at the top of a manual identifies the **repository release line described by that documentation**. It is not a dependency version to copy into an application. The same rule applies when a repository such as `bluetape4k-aws` uses a `0.x` release line.
 
 Exact repository version composition is useful for reproducing failures or diagnosing dependency conflicts. Normal installation guidance therefore avoids presenting subordinate BOM versions as consumer choices.
 

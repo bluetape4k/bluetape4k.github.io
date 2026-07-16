@@ -13,7 +13,7 @@ const repository = 'bluetape4k/bluetape4k-projects';
 const projects = {
   slug: 'bluetape4k-projects',
   repository,
-  label: { en: 'Projects docs', ko: 'Projects 문서' },
+  label: { en: 'Bluetape4k docs', ko: 'Bluetape4k 문서' },
   latestMinor: '1.11',
   route: { en: '/manual/bluetape4k-projects/', ko: '/ko/manual/bluetape4k-projects/' },
 };
@@ -194,11 +194,11 @@ test('snapshot validation writes a sanitized provenance report and summary', asy
   assert.match(summary.stdout, /6187173b58e8b4c5c435c145e00e94708f31ef75/);
   assert.match(summary.stdout, /0b494a5fd1e083006046764757342b68a397e4c5/);
   assert.match(summary.stdout, /be4e6daea5654f84579955307ec56a58c8f405be/);
-  assert.match(summary.stdout, /cf9f7a4ed610f85b4af440bcdabedcab55f47bd1/);
+  assert.match(summary.stdout, /e1463bff0f864add7c54b7188f492cfe36336cdd/);
   assert.match(summary.stdout, /bffe19439ca891fa5301a76421bdef7ba75252a0/);
-  assert.match(summary.stdout, /51a3c728ed263b214c1a3ce05efb0bee2c456c9d/);
+  assert.match(summary.stdout, /37423566ffd4f389ce3e85c573ed8348bbeaff2c/);
   assert.match(summary.stdout, /2db7671afad20045afdcb5793c0113b8b23b972b/);
-  assert.match(summary.stdout, /5bdcab0887cf27ce79348d08e64db6d196b9cc89/);
+  assert.match(summary.stdout, /bf802d7362ac221690043fddd3a3da433af02bed/);
 
   const token = `ghp_${'x'.repeat(36)}`;
   const failure = failureReport({ code: 'CATALOG_DRIFT', actual: `src/${token}` });

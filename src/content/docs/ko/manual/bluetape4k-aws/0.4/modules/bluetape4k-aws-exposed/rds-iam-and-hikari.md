@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-aws"
   group: "database"
   kind: "library"
-  sourceCommit: "cf9f7a4ed610f85b4af440bcdabedcab55f47bd1"
+  sourceCommit: "a64a49d44060154ec4371de9f7818168b75a6a67"
   sourcePath: "docs/manual/ko/modules/bluetape4k-aws-exposed/rds-iam-and-hikari.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"

@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-text"
   group: "overview"
   kind: "guide"
-  sourceCommit: "5bdcab0887cf27ce79348d08e64db6d196b9cc89"
+  sourceCommit: "bf802d7362ac221690043fddd3a3da433af02bed"
   sourcePath: "docs/manual/en/index.md"
   minorVersion: "0.2"
   releaseRef: "0.2.1"
@@ -20,13 +20,14 @@ manual:
 
 ![Repository learning map](/manual-assets/bluetape4k-text/0.2/overview/repository-learning-map.png)
 
-## Choose by outcome
+## Core capabilities
 
 | I need to… | Start with | Learn by running |
 |---|---|---|
 | normalize, tokenize, stem, or extract phrases from Korean | [Korean tokenizer](/manual/bluetape4k-text/0.2/modules/tokenizer-korean/) | [Tokenizer safety example](/manual/bluetape4k-text/0.2/examples/tokenizer-safety-examples/) |
 | tokenize Japanese and inspect parts of speech | [Japanese tokenizer](/manual/bluetape4k-text/0.2/modules/tokenizer-japanese/) | [Tokenizer safety example](/manual/bluetape4k-text/0.2/examples/tokenizer-safety-examples/) |
 | detect one or several languages in a text | [Lingua](/manual/bluetape4k-text/0.2/modules/lingua/) | [Lingua example](/manual/bluetape4k-text/0.2/examples/lingua-examples/) |
+| remove domain-specific blockwords with managed dictionaries | [Dictionaries and blockwords](/manual/bluetape4k-text/0.2/guides/dictionaries-and-blockwords/) | [Tokenizer safety example](/manual/bluetape4k-text/0.2/examples/tokenizer-safety-examples/) |
 | find many keywords in one pass | [Text search](/manual/bluetape4k-text/0.2/modules/text-search/) | [Text search example](/manual/bluetape4k-text/0.2/examples/text-search-examples/) |
 | build a custom tokenizer or request boundary | [Tokenizer core](/manual/bluetape4k-text/0.2/modules/tokenizer-core/) | [Input safety](/manual/bluetape4k-text/0.2/guides/input-safety/) |
 | align every Text artifact version | [Text BOM](/manual/bluetape4k-text/0.2/modules/bluetape4k-text-bom/) | [Getting started](/manual/bluetape4k-text/0.2/getting-started/) |

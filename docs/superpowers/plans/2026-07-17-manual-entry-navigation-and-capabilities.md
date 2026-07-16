@@ -16,10 +16,10 @@
 - Modify: `tests/manual/navigation.test.mjs`
 - Modify: `tests/manual/repositories.test.mjs`
 
-- [ ] Add a navigation assertion that every repository group contains its complete catalog-derived tree, including `getting-started` and nested sections, even when that repository is not current.
-- [ ] Preserve assertions that only the current repository is initially expanded and that archived current routes use archived membership.
-- [ ] Change the Projects fixture label expectation to `Bluetape4k docs` / `Bluetape4k 문서`.
-- [ ] Run `node --test tests/manual/navigation.test.mjs tests/manual/repositories.test.mjs` and confirm the new complete-tree test fails before implementation.
+- [x] Add a navigation assertion that every repository group contains its complete catalog-derived tree, including `getting-started` and nested sections, even when that repository is not current.
+- [x] Preserve assertions that only the current repository is initially expanded and that archived current routes use archived membership.
+- [x] Change the Projects fixture label expectation to `Bluetape4k docs` / `Bluetape4k 문서`.
+- [x] Run `node --test tests/manual/navigation.test.mjs tests/manual/repositories.test.mjs` and confirm the new complete-tree test fails before implementation.
 
 ### Task 2: Generate complete trees for non-current repositories
 
@@ -30,11 +30,11 @@
 - Modify: `src/content/docs/ecosystem/version-governance.mdx`
 - Modify: `src/content/docs/ko/ecosystem/version-governance.mdx`
 
-- [ ] Replace the current-repository-only tree helper with one repository tree builder that receives `currentId` only for the active repository.
-- [ ] Generate all non-current repository entries from their latest catalogs instead of emitting only Manual Home.
-- [ ] Keep non-current repository groups collapsed and nested sections collapsed.
-- [ ] Rename all current user-facing Projects manual/navigation labels to `Bluetape4k docs` / `Bluetape4k 문서`, while leaving routes and repository identifiers unchanged.
-- [ ] Run the focused tests and require all assertions to pass.
+- [x] Replace the current-repository-only tree helper with one repository tree builder that receives `currentId` only for the active repository.
+- [x] Generate all non-current repository entries from their latest catalogs instead of emitting only Manual Home.
+- [x] Keep non-current repository groups collapsed and nested sections collapsed.
+- [x] Rename all current user-facing Projects manual/navigation labels to `Bluetape4k docs` / `Bluetape4k 문서`, while leaving routes and repository identifiers unchanged.
+- [x] Run the focused tests and require all assertions to pass.
 
 ### Task 3: Add the shared Home capability contract to canonical manuals
 
@@ -43,32 +43,31 @@
   - `docs/manual/en/index.md`
   - `docs/manual/ko/index.md`
 
-- [ ] Add `Core capabilities` / `핵심 기능` directly after the opening explanation and before version/setup detail.
-- [ ] Give every capability a concrete link to an existing guide, architecture page, module page, or example.
-- [ ] Preserve each repository's pinned release claims, responsibility boundary, source links, and existing diagrams.
-- [ ] Compare English and Korean capability sets for exact conceptual parity, then edit Korean sentences for native technical flow.
-- [ ] Run `git diff --check` and each repository's existing lightweight Ruby manual validation/export checks; do not run Gradle/JVM module tests for these Markdown-only diffs.
-- [ ] Commit each repository independently with the Lore commit protocol so the website can pin an exact source commit.
+- [x] Add `Core capabilities` / `핵심 기능` directly after the opening explanation and before version/setup detail.
+- [x] Give every capability a concrete link to an existing guide, architecture page, module page, or example.
+- [x] Preserve each repository's pinned release claims, responsibility boundary, source links, and existing diagrams.
+- [x] Compare English and Korean capability sets for exact conceptual parity, then edit Korean sentences for native technical flow.
+- [x] Run `git diff --check` and each repository's existing lightweight Ruby manual validation/export checks; do not run Gradle/JVM module tests for these Markdown-only diffs.
+- [x] Commit each repository independently with the Lore commit protocol so the website can pin an exact source commit.
 
 ### Task 4: Publish the canonical Home changes into the website snapshots
 
 **Files:**
 - Regenerate the existing website snapshot/catalog/digest files for all eight repositories with `node scripts/manual/sync-manual.mjs --refresh <release> --repository <slug> --source <worktree>`.
 
-- [ ] Refresh repositories sequentially from their committed source worktrees to preserve publication isolation.
-- [ ] Verify each refresh reports the expected repository, release, source commit, document count, and no cross-repository mutation.
-- [ ] Run `npm run check:manual` and require all eight repositories to validate.
+- [x] Refresh repositories sequentially from their committed source worktrees to preserve publication isolation.
+- [x] Verify each refresh reports the expected repository, release, source commit, document count, and no cross-repository mutation.
+- [x] Run `npm run check:manual` and require all eight repositories to validate.
 
 ### Task 5: Complete site and content verification
 
 **Files:**
 - Review all changed files across the nine repositories.
 
-- [ ] Run `git diff --check` in every repository.
-- [ ] Run `node --test tests/manual/navigation.test.mjs tests/manual/repositories.test.mjs`.
-- [ ] Run `npm test` and require the full manual/ecosystem test suite to pass.
-- [ ] Run `npm run build` and verify representative English/Korean Projects and Leader manual routes are generated.
-- [ ] Search generated HTML to prove `Bluetape4k 문서`, Leader `매뉴얼 홈`, `시작하기`, and its section groups are present on a non-Leader manual page.
-- [ ] Review final diffs for production-code exclusion, locale parity, stale `Projects docs` labels, invalid links, and P0/P1 findings.
-- [ ] Commit the website change with the Lore commit protocol and report source commits, snapshot source commits, validation results, and any PR/merge boundary still pending.
-
+- [x] Run `git diff --check` in every repository.
+- [x] Run `node --test tests/manual/navigation.test.mjs tests/manual/repositories.test.mjs`.
+- [x] Run `npm test` and require the full manual/ecosystem test suite to pass.
+- [x] Run `npm run build` and verify representative English/Korean Projects and Leader manual routes are generated.
+- [x] Search generated HTML to prove `Bluetape4k 문서`, Leader `매뉴얼 홈`, `시작하기`, and its section groups are present on a non-Leader manual page.
+- [x] Review final diffs for production-code exclusion, locale parity, stale `Projects docs` labels, invalid links, and P0/P1 findings.
+- [x] Commit the website change with the Lore commit protocol and report source commits, snapshot source commits, validation results, and any PR/merge boundary still pending.

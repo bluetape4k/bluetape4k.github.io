@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-leader"
   group: "overview"
   kind: "guide"
-  sourceCommit: "848f79344c636456cebe2069e18f732840bf680d"
+  sourceCommit: "27627f5cf430ef2640d5847ecfeef914ea935c4c"
   sourcePath: "docs/manual/ko/index.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -22,6 +22,15 @@ manual:
 bluetape4k-leader 0.4.0으로 분산 리더 선출을 설계하고 운영하는 방법을 릴리스 소스에 맞춰 설명합니다.
 
 ![Leader 저장소와 학습 구조](/manual-assets/bluetape4k-leader/0.4/overview/repository-learning-map.png)
+
+## 핵심 기능
+
+- **선출 모델:** [단일·그룹·전략 선출](/ko/manual/bluetape4k-leader/0.4/core/single-group-strategic/)로 전체에서 하나만 실행하거나, 정해진 수만 병렬로 실행하거나, 정책에 따라 소유권을 나눌 수 있습니다.
+- **실행 API:** [블로킹·Future·가상 스레드·코루틴 API](/ko/manual/bluetape4k-leader/0.4/core/execution-apis/)가 애플리케이션 실행 방식과 관계없이 같은 선출 결과 규칙을 유지합니다.
+- **리스 생명 주기:** [리스 연장](/ko/manual/bluetape4k-leader/0.4/core/lease-extension/)과 [리스 생명 주기 가이드](/ko/manual/bluetape4k-leader/0.4/guides/lease-lifecycle/)에서 대기 시간, 리스 시간, 최소 보유 시간, 갱신, 해제, 상실 동작을 정합니다.
+- **분산 백엔드:** [백엔드 선택 가이드](/ko/manual/bluetape4k-leader/0.4/guides/backend-selection/)를 따라 핵심 계약을 바꾸지 않고 Redis, SQL, 문서 저장소, 클러스터 조정 시스템, 컨트롤 플레인 리스를 선택할 수 있습니다.
+- **프레임워크 연동:** [Spring Boot](/ko/manual/bluetape4k-leader/0.4/frameworks/spring-boot/), [Ktor](/ko/manual/bluetape4k-leader/0.4/frameworks/ktor/), [Micrometer](/ko/manual/bluetape4k-leader/0.4/frameworks/micrometer/) 모듈이 설정, 생명 주기, 메트릭을 애플리케이션에 연결합니다.
+- **운영과 워크숍:** [관측성과 운영](/ko/manual/bluetape4k-leader/0.4/guides/observability-and-operations/), 스케줄러·마이그레이션·대시보드 예제를 이용해 선출 동작을 실제 배포와 런북으로 이어 갈 수 있습니다.
 
 ## 백엔드보다 실행 규칙을 먼저 정한다
 

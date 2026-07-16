@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-leader"
   group: "overview"
   kind: "guide"
-  sourceCommit: "848f79344c636456cebe2069e18f732840bf680d"
+  sourceCommit: "27627f5cf430ef2640d5847ecfeef914ea935c4c"
   sourcePath: "docs/manual/en/index.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -22,6 +22,15 @@ manual:
 A release-faithful guide to choosing, running, and operating distributed leader election with bluetape4k-leader 0.4.0.
 
 ![Leader repository and learning map](/manual-assets/bluetape4k-leader/0.4/overview/repository-learning-map.png)
+
+## Core capabilities
+
+- **Election models:** [Single, group, and strategic election](/manual/bluetape4k-leader/0.4/core/single-group-strategic/) support one global leader, bounded parallel leaders, and policy-driven ownership.
+- **Execution APIs:** [Blocking, future, virtual-thread, and coroutine APIs](/manual/bluetape4k-leader/0.4/core/execution-apis/) preserve the same election result semantics across application execution models.
+- **Lease lifecycle:** [Lease extension](/manual/bluetape4k-leader/0.4/core/lease-extension/) and the [lease lifecycle guide](/manual/bluetape4k-leader/0.4/guides/lease-lifecycle/) define wait time, lease time, minimum hold, renewal, release, and loss behavior.
+- **Distributed backends:** The [backend selection guide](/manual/bluetape4k-leader/0.4/guides/backend-selection/) covers Redis, SQL, document stores, cluster coordination systems, and control-plane leases without changing the core contract.
+- **Framework integration:** [Spring Boot](/manual/bluetape4k-leader/0.4/frameworks/spring-boot/), [Ktor](/manual/bluetape4k-leader/0.4/frameworks/ktor/), and [Micrometer](/manual/bluetape4k-leader/0.4/frameworks/micrometer/) modules connect configuration, lifecycle, and metrics to the host application.
+- **Operations and workshops:** [Observability and operations](/manual/bluetape4k-leader/0.4/guides/observability-and-operations/) plus runnable scheduler, migration, and dashboard examples turn election behavior into deployable runbooks.
 
 ## Start with the decision, not the backend
 

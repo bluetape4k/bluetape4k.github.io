@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-aws"
   group: "overview"
   kind: "guide"
-  sourceCommit: "cf9f7a4ed610f85b4af440bcdabedcab55f47bd1"
+  sourceCommit: "a64a49d44060154ec4371de9f7818168b75a6a67"
   sourcePath: "docs/manual/ko/guides/database-with-exposed.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"

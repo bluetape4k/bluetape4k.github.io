@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-graph"
   group: "overview"
   kind: "guide"
-  sourceCommit: "fa6b818344736f8554a97f654ce88fa332aec44d"
+  sourceCommit: "2d9d09279f4b8a138dd46e3a3ffaf07699f7cfa0"
   sourcePath: "docs/manual/ko/index.md"
   minorVersion: "0.5"
   releaseRef: "0.5.1"
@@ -17,6 +17,15 @@ manual:
 
 
 이 매뉴얼은 커밋 `3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907`에서 출시한 안정 버전 `0.5.1`을 설명한다. 공통 모델, 동기·코루틴 API, 지원 백엔드 다섯 개, graph-io, 프레임워크 연동이 범위다. Amazon Neptune은 0.5.1에서 **지원하지 않는다**. 백로그 이슈도 현재 기능으로 다루지 않는다.
+
+## 핵심 기능
+
+- **백엔드 독립 그래프 모델:** [핵심 모델](/ko/manual/bluetape4k-graph/0.5/architecture/core-model/)에서 모든 백엔드가 같은 vertex, edge, path, element ID 규칙을 사용합니다.
+- **동기·코루틴 API:** [대응 API](/ko/manual/bluetape4k-graph/0.5/architecture/paired-apis/)가 저장소, 순회, 배치, merge, 트랜잭션 연산을 블로킹 실행과 일시 중단 실행에서 같은 구조로 제공합니다.
+- **다섯 가지 데이터베이스 백엔드:** [백엔드 선택 가이드](/ko/manual/bluetape4k-graph/0.5/backends/selection-guide/)에서 Neo4j, Memgraph, Apache AGE, TinkerPop/TinkerGraph, FalkorDB를 쿼리 언어, 트랜잭션 동작, 운영 조건으로 비교합니다.
+- **스키마·순회·트랜잭션:** [스키마와 트랜잭션](/ko/manual/bluetape4k-graph/0.5/architecture/schema-and-transactions/)에서 label, index, constraint, merge, path, 소유권 경계를 설명합니다.
+- **그래프 가져오기와 내보내기:** [graph-io 형식](/ko/manual/bluetape4k-graph/0.5/graph-io/formats/), [실행 모델](/ko/manual/bluetape4k-graph/0.5/graph-io/execution-model/), [OkIO 보안](/ko/manual/bluetape4k-graph/0.5/graph-io/okio-security/)으로 CSV, NDJSON, GraphML, 압축, 인증 암호화를 다룹니다.
+- **애플리케이션 연동과 예제:** [Spring Boot](/ko/manual/bluetape4k-graph/0.5/frameworks/spring-boot/), [Ktor](/ko/manual/bluetape4k-graph/0.5/frameworks/ktor/), [학습 경로](/ko/manual/bluetape4k-graph/0.5/guides/learning-path/)가 공통 API를 실행 가능한 도메인 예제와 운영 검증으로 연결합니다.
 
 ## 무엇부터 결정할까
 

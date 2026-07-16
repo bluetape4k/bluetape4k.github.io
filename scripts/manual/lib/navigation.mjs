@@ -163,7 +163,7 @@ function nestedEntries({ ids, prefix, byId, locale, repository, minorVersion, cu
   return entries;
 }
 
-function currentRepositoryEntries({ ids, byId, locale, repository, minorVersion, currentId }) {
+function repositoryEntries({ ids, byId, locale, repository, minorVersion, currentId }) {
   if (!byId.has('index')) {
     fail('NAVIGATION_HOME_MISSING', `${repository.slug}@${minorVersion}:${locale}`);
   }
@@ -250,20 +250,14 @@ export function buildManualNavigation({ registry, catalogs, documents, current }
     if (!byId.has('index')) {
       fail('NAVIGATION_HOME_MISSING', `${repository.slug}@${minorVersion}:${current.locale}`);
     }
-    const entries = repository.slug === current.repository
-      ? currentRepositoryEntries({
-          ids,
-          byId,
-          locale: current.locale,
-          repository,
-          minorVersion,
-          currentId: current.documentId,
-        })
-      : [link({
-          label: current.locale === 'ko' ? '매뉴얼 홈' : 'Manual Home',
-          href: manualRouteFor(current.locale, repository, minorVersion, 'index.md'),
-          documentId: 'index',
-        })];
+    const entries = repositoryEntries({
+      ids,
+      byId,
+      locale: current.locale,
+      repository,
+      minorVersion,
+      currentId: repository.slug === current.repository ? current.documentId : undefined,
+    });
     return {
       type: 'group',
       label: repository.label[current.locale],

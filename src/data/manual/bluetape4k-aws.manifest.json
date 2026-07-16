@@ -1,5 +1,5 @@
 {
-  "authoringSourceRef": "cf9f7a4ed610f85b4af440bcdabedcab55f47bd1",
+  "authoringSourceRef": "a64a49d44060154ec4371de9f7818168b75a6a67",
   "minorVersion": "0.4",
   "modules": [
     {
@@ -573,5 +573,5 @@
   "repository": "bluetape4k/bluetape4k-aws",
   "repositorySlug": "bluetape4k-aws",
   "schemaVersion": 2,
-  "sourceCommit": "cf9f7a4ed610f85b4af440bcdabedcab55f47bd1"
+  "sourceCommit": "a64a49d44060154ec4371de9f7818168b75a6a67"
 }

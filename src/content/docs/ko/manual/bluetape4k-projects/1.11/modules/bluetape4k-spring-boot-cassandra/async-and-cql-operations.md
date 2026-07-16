@@ -7,7 +7,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "overview"
   kind: "guide"
-  sourceCommit: "ece059d6f79ae8b6d769e44ec98483a1225f6260"
+  sourceCommit: "e1463bff0f864add7c54b7188f492cfe36336cdd"
   sourcePath: "docs/manual/ko/modules/bluetape4k-spring-boot-cassandra/async-and-cql-operations.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"

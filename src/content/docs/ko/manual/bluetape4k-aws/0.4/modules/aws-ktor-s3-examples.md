@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-aws"
   group: "example-s3"
   kind: "example"
-  sourceCommit: "cf9f7a4ed610f85b4af440bcdabedcab55f47bd1"
+  sourceCommit: "a64a49d44060154ec4371de9f7818168b75a6a67"
   sourcePath: "docs/manual/ko/modules/aws-ktor-s3-examples.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"

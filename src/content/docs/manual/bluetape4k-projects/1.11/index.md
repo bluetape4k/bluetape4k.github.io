@@ -7,7 +7,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "overview"
   kind: "guide"
-  sourceCommit: "ece059d6f79ae8b6d769e44ec98483a1225f6260"
+  sourceCommit: "e1463bff0f864add7c54b7188f492cfe36336cdd"
   sourcePath: "docs/manual/en/index.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -18,6 +18,15 @@ manual:
 
 
 This manual is the detailed companion to the repository README. It follows the live Gradle project model and gives every registered module an English and Korean page with the same evidence contract.
+
+## Core capabilities
+
+- **Kotlin foundation:** [Core](/manual/bluetape4k-projects/1.11/modules/bluetape4k-core/), [logging](/manual/bluetape4k-projects/1.11/modules/bluetape4k-logging/), and serialization modules provide the shared types, validation, diagnostics, and wire-format building blocks used across the ecosystem.
+- **Coroutines and execution models:** [Coroutines](/manual/bluetape4k-projects/1.11/modules/bluetape4k-coroutines/), virtual-thread modules, and reactive adapters make blocking, asynchronous, and suspending boundaries explicit.
+- **Data access:** [JDBC](/manual/bluetape4k-projects/1.11/modules/bluetape4k-jdbc/), R2DBC, Hibernate, MongoDB, and Cassandra modules add Kotlin-friendly repositories, batching, transactions, and test support.
+- **Distributed infrastructure:** [Redis](/manual/bluetape4k-projects/1.11/modules/bluetape4k-redis/), Kafka, messaging, search, caching, resilience, metrics, and tracing modules cover common service infrastructure without hiding its failure boundaries.
+- **Web applications:** [Ktor core](/manual/bluetape4k-projects/1.11/modules/bluetape4k-ktor-core/), Spring Boot, HTTP client, gRPC, and OpenAPI modules connect the shared libraries to application runtimes.
+- **Testing and utilities:** [Assertions](/manual/bluetape4k-projects/1.11/modules/bluetape4k-assertions/), JUnit 5, Testcontainers, mock servers, time, ID, money, workflow, and other focused utilities shorten repeatable application and test code.
 
 ## Choose a path
 

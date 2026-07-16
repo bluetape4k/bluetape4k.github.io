@@ -22,7 +22,7 @@ const SLUG = 'bluetape4k-projects';
 const PROJECTS = {
   slug: SLUG,
   repository: FULL_NAME,
-  label: { en: 'Projects docs', ko: 'Projects 문서' },
+  label: { en: 'Bluetape4k docs', ko: 'Bluetape4k 문서' },
   latestMinor: '1.11',
   route: { en: '/manual/bluetape4k-projects/', ko: '/ko/manual/bluetape4k-projects/' },
 };

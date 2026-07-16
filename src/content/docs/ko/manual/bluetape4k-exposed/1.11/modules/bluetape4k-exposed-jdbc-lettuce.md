@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "jdbc"
   kind: "library"
-  sourceCommit: "eea10abd857fdb806319f93bddf30f92542d787a"
+  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
   sourcePath: "docs/manual/ko/modules/bluetape4k-exposed-jdbc-lettuce.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
