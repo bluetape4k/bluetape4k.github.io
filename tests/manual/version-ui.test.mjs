@@ -36,10 +36,11 @@ async function write(targetRoot, relative, content) {
 
 function manualPage({ locale = 'en', minor, title, id, repository = projects, body = `Static navigation fixture for ${minor}.` }) {
   const commit = minor === '1.12' ? 'b'.repeat(40) : 'a'.repeat(40);
+  const suffix = id === 'index' ? '' : `/${id}`;
   return [
-    '---', `title: ${JSON.stringify(title)}`, `slug: ${locale === 'ko' ? 'ko/' : ''}manual/${repository.slug}/${minor}/modules/${id}`, 'manual:', `  id: ${id}`,
+    '---', `title: ${JSON.stringify(title)}`, `slug: ${locale === 'ko' ? 'ko/' : ''}manual/${repository.slug}/${minor}${suffix}`, 'manual:', `  id: ${JSON.stringify(id)}`,
     `  repository: ${repository.slug}`, '  group: fixture', '  kind: library',
-    `  sourceCommit: ${commit}`, `  sourcePath: docs/manual/${locale}/modules/${id}.md`,
+    `  sourceCommit: ${commit}`, `  sourcePath: docs/manual/${locale}/${id}.md`,
     `  minorVersion: ${JSON.stringify(minor)}`, `  releaseRef: ${JSON.stringify(`${minor}.0`)}`, `  releaseCommit: ${commit}`,
     '  sourceDir: fixture', '  layer: build', '---', '', `# ${title}`, '', body, '',
   ].join('\n');
@@ -60,26 +61,35 @@ async function fixtureProject(t) {
     }
   }
   for (const relative of [
-    'src/components/ManualPageTitle.astro', 'src/components/ManualVersionSelector.astro',
+    'src/components/ManualPageTitle.astro', 'src/components/ManualPagination.astro', 'src/components/ManualVersionSelector.astro',
     'src/styles/manual.css', 'src/starlightRouteData.ts', 'src/lib/socialPreview.ts',
-    'scripts/manual/lib/catalog.mjs', 'scripts/manual/lib/paths.mjs', 'scripts/manual/lib/repositories.mjs', 'scripts/manual/lib/version.mjs',
+    'scripts/manual/lib/catalog.mjs', 'scripts/manual/lib/navigation.mjs', 'scripts/manual/lib/paths.mjs',
+    'scripts/manual/lib/repositories.mjs', 'scripts/manual/lib/version.mjs',
   ]) await cp(path.join(projectRoot, relative), path.join(fixture, relative), { recursive: true });
   await write(fixture, 'package.json', '{"type":"module"}\n');
   await write(fixture, 'astro.config.mjs', [
     "import { defineConfig } from 'astro/config';", "import starlight from '@astrojs/starlight';",
-    "export default defineConfig({ integrations: [starlight({ title: 'Fixture', locales: { root: { label: 'English', lang: 'en' }, ko: { label: '한국어', lang: 'ko' } }, defaultLocale: 'root', routeMiddleware: './src/starlightRouteData.ts', components: { Header: './src/components/ManualHeader.astro', MobileMenuFooter: './src/components/ManualMobileMenuFooter.astro', PageTitle: './src/components/ManualPageTitle.astro' } })] });", '',
+    "export default defineConfig({ integrations: [starlight({ title: 'Fixture', locales: { root: { label: 'English', lang: 'en' }, ko: { label: '한국어', lang: 'ko' } }, defaultLocale: 'root', routeMiddleware: './src/starlightRouteData.ts', components: { Header: './src/components/ManualHeader.astro', MobileMenuFooter: './src/components/ManualMobileMenuFooter.astro', Pagination: './src/components/ManualPagination.astro', PageTitle: './src/components/ManualPageTitle.astro' } })] });", '',
   ].join('\n'));
   await write(fixture, 'src/content.config.ts', await read('src/content.config.ts'));
   await write(fixture, 'src/data/manual/repositories.json', JSON.stringify({ schema: 1, repositories: [projects, exposed] }));
   await write(fixture, 'src/content/docs/index.md', '---\ntitle: Non manual fixture\n---\n\n# Non manual fixture\n');
-  await write(fixture, 'src/content/docs/manual/bluetape4k-projects/1.11/modules/shared.md', manualPage({ minor: '1.11', title: 'Archived shared fixture', id: 'shared', body: 'archivedmanualsentinel' }));
-  await write(fixture, 'src/content/docs/manual/bluetape4k-projects/1.12/modules/shared.md', manualPage({ minor: '1.12', title: 'Latest shared fixture', id: 'shared', body: 'latestmanualsentinel' }));
-  await write(fixture, 'src/content/docs/manual/bluetape4k-projects/1.12/modules/new.md', manualPage({ minor: '1.12', title: 'New fixture page', id: 'new' }));
-  await write(fixture, 'src/content/docs/manual/bluetape4k-projects/1x11/modules/shared.md', manualPage({ minor: '1.11', title: 'Malformed route fixture', id: 'shared' }).replaceAll('/1.11/', '/1x11/'));
-  await write(fixture, 'src/content/docs/ko/manual/bluetape4k-projects/1.12/modules/new.md', manualPage({ locale: 'ko', minor: '1.12', title: '새 테스트 문서', id: 'new' }));
-  await write(fixture, 'src/content/docs/ko/manual/bluetape4k-projects/1.12/modules/shared.md', manualPage({ locale: 'ko', minor: '1.12', title: '공유 테스트 문서', id: 'shared' }));
-  await write(fixture, 'src/content/docs/manual/bluetape4k-exposed/1.11/modules/shared.md', manualPage({ minor: '1.11', title: 'Exposed Shared Manual Token', id: 'shared', repository: exposed }));
-  await write(fixture, 'src/content/docs/ko/manual/bluetape4k-exposed/1.11/modules/shared.md', manualPage({ locale: 'ko', minor: '1.11', title: 'Exposed 공유 매뉴얼', id: 'shared', repository: exposed }));
+  await write(fixture, 'src/content/docs/manual/bluetape4k-projects/1.11/index.md', manualPage({ minor: '1.11', title: 'Archived Projects home', id: 'index' }));
+  await write(fixture, 'src/content/docs/manual/bluetape4k-projects/1.11/modules/shared.md', manualPage({ minor: '1.11', title: 'Archived shared fixture', id: 'modules/shared', body: 'archivedmanualsentinel' }));
+  await write(fixture, 'src/content/docs/ko/manual/bluetape4k-projects/1.11/index.md', manualPage({ locale: 'ko', minor: '1.11', title: '보존 Projects 매뉴얼 홈', id: 'index' }));
+  await write(fixture, 'src/content/docs/ko/manual/bluetape4k-projects/1.11/modules/shared.md', manualPage({ locale: 'ko', minor: '1.11', title: '보존 공유 테스트 문서', id: 'modules/shared' }));
+  await write(fixture, 'src/content/docs/manual/bluetape4k-projects/1.12/index.md', manualPage({ minor: '1.12', title: 'Projects home', id: 'index' }));
+  await write(fixture, 'src/content/docs/manual/bluetape4k-projects/1.12/guides/learning-path.md', manualPage({ minor: '1.12', title: 'Learning path fixture', id: 'guides/learning-path' }));
+  await write(fixture, 'src/content/docs/manual/bluetape4k-projects/1.12/modules/new.md', manualPage({ minor: '1.12', title: 'New fixture page', id: 'modules/new' }));
+  await write(fixture, 'src/content/docs/manual/bluetape4k-projects/1.12/modules/shared.md', manualPage({ minor: '1.12', title: 'Latest shared fixture', id: 'modules/shared', body: 'latestmanualsentinel' }));
+  await write(fixture, 'src/content/docs/ko/manual/bluetape4k-projects/1.12/index.md', manualPage({ locale: 'ko', minor: '1.12', title: 'Projects 매뉴얼 홈', id: 'index' }));
+  await write(fixture, 'src/content/docs/ko/manual/bluetape4k-projects/1.12/guides/learning-path.md', manualPage({ locale: 'ko', minor: '1.12', title: '학습 경로 테스트', id: 'guides/learning-path' }));
+  await write(fixture, 'src/content/docs/ko/manual/bluetape4k-projects/1.12/modules/new.md', manualPage({ locale: 'ko', minor: '1.12', title: '새 테스트 문서', id: 'modules/new' }));
+  await write(fixture, 'src/content/docs/ko/manual/bluetape4k-projects/1.12/modules/shared.md', manualPage({ locale: 'ko', minor: '1.12', title: '공유 테스트 문서', id: 'modules/shared' }));
+  await write(fixture, 'src/content/docs/manual/bluetape4k-exposed/1.11/index.md', manualPage({ minor: '1.11', title: 'Exposed home', id: 'index', repository: exposed }));
+  await write(fixture, 'src/content/docs/manual/bluetape4k-exposed/1.11/modules/shared.md', manualPage({ minor: '1.11', title: 'Exposed Shared Manual Token', id: 'modules/shared', repository: exposed }));
+  await write(fixture, 'src/content/docs/ko/manual/bluetape4k-exposed/1.11/index.md', manualPage({ locale: 'ko', minor: '1.11', title: 'Exposed 매뉴얼 홈', id: 'index', repository: exposed }));
+  await write(fixture, 'src/content/docs/ko/manual/bluetape4k-exposed/1.11/modules/shared.md', manualPage({ locale: 'ko', minor: '1.11', title: 'Exposed 공유 매뉴얼', id: 'modules/shared', repository: exposed }));
   for (const locale of ['en', 'ko']) {
     const unavailable = buildUnavailablePage({ repository: projects, locale, targetMinor: '1.11', sourceMinor: '1.12', documentId: 'modules/new' });
     await write(fixture, unavailable.path, unavailable.content);
@@ -206,7 +216,7 @@ test('manual pagination provides previous, Home, and next while preserving defau
   assert.match(styles, /@media print/);
 });
 
-test('actual Astro builds preserve defaults without a catalog and exclude archived manuals from Pagefind', { timeout: 60_000 }, async (t) => {
+test('actual Astro builds enforce publication contracts and preserve non-manual defaults', { timeout: 60_000 }, async (t) => {
   const fixture = await fixtureProject(t);
   const versionedPage = path.join(fixture, 'src/content/docs/manual/bluetape4k-projects/1.11/modules/shared.md');
   const validSource = await readFile(versionedPage, 'utf8');
@@ -218,18 +228,15 @@ test('actual Astro builds preserve defaults without a catalog and exclude archiv
   assert.match(`${invalidBuild.stdout}\n${invalidBuild.stderr}`, /minorVersion|releaseCommit|InvalidContentEntryDataError/);
   await writeFile(versionedPage, validSource);
 
-  buildFixture(fixture);
-  const missingCatalogManual = await readFile(path.join(fixture, 'dist/manual/bluetape4k-projects/1.11/modules/shared/index.html'), 'utf8');
-  const missingCatalogNonManual = await readFile(path.join(fixture, 'dist/index.html'), 'utf8');
-  assert.match(missingCatalogManual, /<main[^>]*data-pagefind-body/);
-  assert.doesNotMatch(missingCatalogManual, /bt4k-manual-version/);
-  assert.match(missingCatalogNonManual, /<main[^>]*data-pagefind-body/);
+  const missingCatalogBuild = runFixtureBuild(fixture);
+  assert.notEqual(missingCatalogBuild.status, 0, 'a published repository without a version catalog must fail');
+  assert.match(`${missingCatalogBuild.stdout}\n${missingCatalogBuild.stderr}`, /NAVIGATION_CATALOG_MISSING/);
 
   const catalog = {
     schema: 1, repository: 'bluetape4k/bluetape4k-projects', latest: '1.12',
     versions: [
-      { minorVersion: '1.11', releaseRef: '1.11.0', releaseCommit: 'a'.repeat(40), sourceCommit: 'a'.repeat(40), channel: 'archived', documents: { en: ['modules/shared'], ko: [] } },
-      { minorVersion: '1.12', releaseRef: '1.12.0', releaseCommit: 'b'.repeat(40), sourceCommit: 'b'.repeat(40), channel: 'stable', documents: { en: ['modules/new', 'modules/shared'], ko: ['modules/new', 'modules/shared'] } },
+      { minorVersion: '1.11', releaseRef: '1.11.0', releaseCommit: 'a'.repeat(40), sourceCommit: 'a'.repeat(40), channel: 'archived', documents: { en: ['index', 'modules/shared'], ko: ['index', 'modules/shared'] } },
+      { minorVersion: '1.12', releaseRef: '1.12.0', releaseCommit: 'b'.repeat(40), sourceCommit: 'b'.repeat(40), channel: 'stable', documents: { en: ['guides/learning-path', 'index', 'modules/new', 'modules/shared'], ko: ['guides/learning-path', 'index', 'modules/new', 'modules/shared'] } },
     ],
   };
   await write(fixture, 'src/data/manual/bluetape4k-projects.versions.json', `${JSON.stringify(catalog, null, 2)}\n`);
@@ -237,19 +244,21 @@ test('actual Astro builds preserve defaults without a catalog and exclude archiv
     schema: 1, repository: exposed.repository, latest: '1.11',
     versions: [{
       minorVersion: '1.11', releaseRef: '1.11.0', releaseCommit: 'c'.repeat(40), sourceCommit: 'd'.repeat(40),
-      channel: 'stable', documents: { en: ['modules/shared'], ko: ['modules/shared'] },
+      channel: 'stable', documents: { en: ['index', 'modules/shared'], ko: ['index', 'modules/shared'] },
     }],
   };
   await write(fixture, 'src/data/manual/bluetape4k-exposed.versions.json', `${JSON.stringify(exposedCatalog, null, 2)}\n`);
   buildFixture(fixture);
 
   const archived = await readFile(path.join(fixture, 'dist/manual/bluetape4k-projects/1.11/modules/shared/index.html'), 'utf8');
+  const latestHome = await readFile(path.join(fixture, 'dist/manual/bluetape4k-projects/1.12/index.html'), 'utf8');
+  const latestGuide = await readFile(path.join(fixture, 'dist/manual/bluetape4k-projects/1.12/guides/learning-path/index.html'), 'utf8');
   const latest = await readFile(path.join(fixture, 'dist/manual/bluetape4k-projects/1.12/modules/shared/index.html'), 'utf8');
   const latestNew = await readFile(path.join(fixture, 'dist/manual/bluetape4k-projects/1.12/modules/new/index.html'), 'utf8');
   const latestNewKo = await readFile(path.join(fixture, 'dist/ko/manual/bluetape4k-projects/1.12/modules/new/index.html'), 'utf8');
-  const malformedRoute = await readFile(path.join(fixture, 'dist/manual/bluetape4k-projects/1x11/modules/shared/index.html'), 'utf8');
   const exposedManual = await readFile(path.join(fixture, 'dist/manual/bluetape4k-exposed/1.11/modules/shared/index.html'), 'utf8');
   const exposedManualKo = await readFile(path.join(fixture, 'dist/ko/manual/bluetape4k-exposed/1.11/modules/shared/index.html'), 'utf8');
+  const nonManual = await readFile(path.join(fixture, 'dist/index.html'), 'utf8');
   const unavailable = await readFile(path.join(fixture, 'dist/manual/bluetape4k-projects/1.11/not-available/from-1.12/modules/new/index.html'), 'utf8');
   const unavailableKo = await readFile(path.join(fixture, 'dist/ko/manual/bluetape4k-projects/1.11/not-available/from-1.12/modules/new/index.html'), 'utf8');
   assert.match(archived, />Archived</);
@@ -261,7 +270,6 @@ test('actual Astro builds preserve defaults without a catalog and exclude archiv
   assert.match(exposedManual, />Exposed docs<\/span>\s*<span>1\.11<\/span>/);
   assert.match(exposedManualKo, />Exposed 문서<\/span>\s*<span>1\.11<\/span>/);
   assert.doesNotMatch(archived, /<main[^>]*data-pagefind-body/);
-  assert.doesNotMatch(malformedRoute, /bt4k-manual-version/);
   assert.match(latest, /<main[^>]*data-pagefind-body/);
   assert.match(archived, /href="\/manual\/bluetape4k-projects\/1\.12\/modules\/shared\/"/);
   assert.match(latestNew, /href="\/manual\/bluetape4k-projects\/1\.11\/not-available\/from-1\.12\/modules\/new\/"/);
@@ -274,11 +282,36 @@ test('actual Astro builds preserve defaults without a catalog and exclude archiv
   assert.match(exposedManualKo, /Exposed 1\.11\.0 릴리스 기준/);
   assert.doesNotMatch(latestNew, /Source 1\.12\.0/);
   assert.doesNotMatch(latestNewKo, /소스 1\.12\.0/);
-  assert.doesNotMatch(missingCatalogNonManual, /bt4k-manual-version--(?:header|mobile)/);
+  assert.match(latest, />Projects docs<\/span>/);
+  assert.match(latest, />Exposed docs<\/span>/);
+  assert.match(latest, />Manual Home<\/span>/);
+  assert.match(latestNewKo, />매뉴얼 홈<\/span>/);
+  assert.match(latestNewKo, />이전 문서<\/small>/);
+  assert.match(latestNew, /aria-current="page"/);
+  assert.match(latestGuide, /href="\/manual\/bluetape4k-projects\/1\.12\/modules\/new\/" rel="next"/);
+  assert.match(latestNew, /href="\/manual\/bluetape4k-projects\/1\.12\/guides\/learning-path\/" rel="prev"/);
+  assert.match(latestNew, /href="\/manual\/bluetape4k-projects\/1\.12\/modules\/shared\/" rel="next"/);
+  assert.doesNotMatch(latestHome, /rel="prev"/);
+  assert.doesNotMatch(latest, /rel="next"/);
+  assert.match(archived, /href="\/manual\/bluetape4k-projects\/1\.11\/"/);
+  assert.doesNotMatch(archived, /href="\/manual\/bluetape4k-projects\/1\.12\/modules\/new\/"/);
+  assert.match(latest, /href="\/manual\/bluetape4k-exposed\/1\.11\/"/);
+  assert.doesNotMatch(nonManual, /bt4k-manual-pagination/);
+  assert.doesNotMatch(nonManual, /bt4k-manual-version--(?:header|mobile)/);
   for (const text of ['This page is not available in version 1.11', 'Document ID: ', 'modules/new', 'This document was added after this version.', 'Return to version 1.12']) assert.ok(unavailable.includes(text));
   for (const text of ['이 문서는 1.11 버전에 없습니다', '문서 ID: ', 'modules/new', '이 문서는 해당 버전 이후에 추가되었습니다.', '1.12 버전으로 돌아가기']) assert.ok(unavailableKo.includes(text));
   assert.match(unavailable, /\/manual\/bluetape4k-projects\/1\.12\/modules\/new\//);
   assert.doesNotMatch(unavailable, /<main[^>]*data-pagefind-body/);
   assert.ok((await readFile(path.join(fixture, 'dist/pagefind/pagefind-entry.json'), 'utf8')).length > 0);
   assert.ok((await readFile(path.join(fixture, 'dist/pagefind/pagefind.js'), 'utf8')).length > 0);
+
+  await write(
+    fixture,
+    'src/content/docs/manual/bluetape4k-projects/1x11/modules/malformed.md',
+    manualPage({ minor: '1.11', title: 'Malformed route fixture', id: 'modules/malformed' })
+      .replace('manual/bluetape4k-projects/1.11/modules/malformed', 'manual/bluetape4k-projects/1x11/modules/malformed'),
+  );
+  const malformedBuild = runFixtureBuild(fixture);
+  assert.notEqual(malformedBuild.status, 0, 'a route that disagrees with manual metadata must fail');
+  assert.match(`${malformedBuild.stdout}\n${malformedBuild.stderr}`, /NAVIGATION_ROUTE_MISMATCH/);
 });
