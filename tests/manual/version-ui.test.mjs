@@ -188,6 +188,24 @@ test('manual version UI styles cover focus, zoom wrapping, contrast, touch, and 
   assert.match(source, /@media print/);
 });
 
+test('manual pagination provides previous, Home, and next while preserving defaults', async () => {
+  const config = await read('astro.config.mjs');
+  const component = await read('src/components/ManualPagination.astro');
+  const styles = await read('src/styles/manual.css');
+  assert.match(config, /Pagination:\s*['"]\.\/src\/components\/ManualPagination\.astro['"]/);
+  assert.match(component, /DefaultPagination/);
+  assert.match(component, /manualNavigation\?\.home/);
+  for (const copy of ['Previous', 'Next', 'Manual Home', '이전 문서', '다음 문서', '매뉴얼 홈']) {
+    assert.ok(component.includes(copy), `missing pagination copy: ${copy}`);
+  }
+  assert.match(styles, /\.bt4k-manual-pagination/);
+  assert.match(styles, /grid-template-areas/);
+  assert.match(styles, /:focus-visible/);
+  assert.match(styles, /overflow-wrap:\s*anywhere/);
+  assert.match(styles, /@media\s*\(forced-colors:\s*active\)/);
+  assert.match(styles, /@media print/);
+});
+
 test('actual Astro builds preserve defaults without a catalog and exclude archived manuals from Pagefind', { timeout: 60_000 }, async (t) => {
   const fixture = await fixtureProject(t);
   const versionedPage = path.join(fixture, 'src/content/docs/manual/bluetape4k-projects/1.11/modules/shared.md');

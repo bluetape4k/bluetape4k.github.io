@@ -68,6 +68,7 @@ export default defineConfig({
         Footer: './src/components/StarlightFooter.astro',
         Header: './src/components/ManualHeader.astro',
         MobileMenuFooter: './src/components/ManualMobileMenuFooter.astro',
+        Pagination: './src/components/ManualPagination.astro',
         PageTitle: './src/components/ManualPageTitle.astro',
       },
       customCss: ['./src/styles/custom.css', './src/styles/atlas.css', './src/styles/manual.css'],

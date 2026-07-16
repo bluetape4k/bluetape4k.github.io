@@ -106,20 +106,61 @@
 }
 .bt4k-manual-provenance a { color: var(--sl-color-text-accent); text-decoration: none; }
 
+.bt4k-manual-pagination {
+  display: grid;
+  grid-template-areas: 'previous home next';
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: stretch;
+  gap: .75rem;
+  margin-block-start: 2rem;
+}
+.bt4k-manual-pagination__previous { grid-area: previous; }
+.bt4k-manual-pagination__home { grid-area: home; }
+.bt4k-manual-pagination__next { grid-area: next; }
+.bt4k-manual-pagination a {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  min-block-size: 44px;
+  block-size: 100%;
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: .5rem;
+  padding: .75rem;
+  color: var(--sl-color-gray-2);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.bt4k-manual-pagination__next a { justify-content: flex-end; text-align: end; }
+.bt4k-manual-pagination__home { justify-content: center; white-space: nowrap; }
+.bt4k-manual-pagination small,
+.bt4k-manual-pagination strong { display: block; }
+.bt4k-manual-pagination strong { color: var(--sl-color-white); }
+.bt4k-manual-pagination a:hover { border-color: var(--sl-color-gray-2); }
+.bt4k-manual-pagination a:focus-visible {
+  outline: 3px solid var(--sl-color-text-accent);
+  outline-offset: 3px;
+}
+
 @media (forced-colors: active) {
   .bt4k-manual-version summary,
   .bt4k-manual-version__menu,
   .bt4k-manual-version li + li,
   .bt4k-manual-version__release { border-color: CanvasText; }
   .bt4k-manual-provenance__state::before { background: CanvasText; }
+  .bt4k-manual-pagination a { border-color: CanvasText; }
 }
 
 @media (max-width: 42rem) {
   .bt4k-manual-map > ul { grid-template-columns: 1fr; }
+  .bt4k-manual-pagination {
+    grid-template-areas: 'previous' 'home' 'next';
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 @media print {
   .bt4k-manual-map, .bt4k-manual-provenance, .bt4k-manual-version { break-inside: avoid; }
   .bt4k-manual-version { display: none; }
   .bt4k-manual-provenance a { color: #000; }
+  .bt4k-manual-pagination { display: none; }
 }
