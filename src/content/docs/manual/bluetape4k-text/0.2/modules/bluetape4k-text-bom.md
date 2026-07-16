@@ -1,0 +1,69 @@
+---
+slug: "manual/bluetape4k-text/0.2/modules/bluetape4k-text-bom"
+title: "Text BOM"
+manual:
+  id: "bluetape4k-text-bom"
+  repository: "bluetape4k-text"
+  group: "foundation"
+  kind: "library"
+  sourceCommit: "5bdcab0887cf27ce79348d08e64db6d196b9cc89"
+  sourcePath: "docs/manual/en/modules/bluetape4k-text-bom.md"
+  minorVersion: "0.2"
+  releaseRef: "0.2.1"
+  releaseCommit: "2db7671afad20045afdcb5793c0113b8b23b972b"
+  sourceDir: "bom"
+  layer: "build"
+---
+
+
+The Text BOM aligns versions for the five published runtime libraries. It contains dependency constraints only: importing it does not add a tokenizer, detector, or search API to your classpath.
+
+## What it provides
+
+- one version for `tokenizer-core`, `tokenizer-korean`, `tokenizer-japanese`, `lingua`, and `text-search`;
+- Gradle platform and Maven dependency-management compatibility;
+- a Text-only alternative when the wider `bluetape4k-dependencies` BOM is not appropriate.
+
+## Add the dependency
+
+Prefer the ecosystem BOM when your application consumes libraries from several bluetape4k repositories:
+
+```kotlin
+dependencies {
+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:<release>"))
+    implementation("io.github.bluetape4k.text:lingua")
+    implementation("io.github.bluetape4k.text:text-search")
+}
+```
+
+Import the Text BOM directly when you intentionally manage only this repository's artifacts:
+
+```kotlin
+dependencies {
+    implementation(platform("io.github.bluetape4k.text:bluetape4k-text-bom:0.2.1"))
+    implementation("io.github.bluetape4k.text:tokenizer-korean")
+}
+```
+
+## How it works
+
+The BOM is a Gradle `java-platform` project. Its published POM contributes dependency-management constraints. Runtime classes remain in the five library artifacts, so a build that imports only the BOM will compile no Text API calls.
+
+## When to choose it
+
+Choose `bluetape4k-dependencies` for normal ecosystem applications. Choose `bluetape4k-text-bom` when Text has an intentionally independent release policy in your build. Avoid declaring versions on individual Text modules after importing either BOM; doing so bypasses the alignment you selected.
+
+## Constraints
+
+The BOM aligns compatible coordinates but cannot validate your runtime composition. It also does not add optional coroutines support required by the `text-search` Flow extension in applications that call it.
+
+## Continue learning
+
+- [Getting started](/manual/bluetape4k-text/0.2/getting-started/)
+- [Repository map](/manual/bluetape4k-text/0.2/architecture/repository-map/)
+- [Capability selection](/manual/bluetape4k-text/0.2/guides/capability-selection/)
+
+## Source evidence
+
+- [BOM README](https://github.com/bluetape4k/bluetape4k-text/blob/0.2.1/bom/README.md)
+- [BOM build](https://github.com/bluetape4k/bluetape4k-text/blob/0.2.1/bom/build.gradle.kts)
