@@ -34,11 +34,11 @@ async function write(targetRoot, relative, content) {
   await writeFile(target, content);
 }
 
-function manualPage({ locale = 'en', minor, title, id, repository = projects, body = `Static navigation fixture for ${minor}.` }) {
+function manualPage({ locale = 'en', minor, title, id, manualId = id, repository = projects, body = `Static navigation fixture for ${minor}.` }) {
   const commit = minor === '1.12' ? 'b'.repeat(40) : 'a'.repeat(40);
   const suffix = id === 'index' ? '' : `/${id}`;
   return [
-    '---', `title: ${JSON.stringify(title)}`, `slug: ${locale === 'ko' ? 'ko/' : ''}manual/${repository.slug}/${minor}${suffix}`, 'manual:', `  id: ${JSON.stringify(id)}`,
+    '---', `title: ${JSON.stringify(title)}`, `slug: ${locale === 'ko' ? 'ko/' : ''}manual/${repository.slug}/${minor}${suffix}`, 'manual:', `  id: ${JSON.stringify(manualId)}`,
     `  repository: ${repository.slug}`, '  group: fixture', '  kind: library',
     `  sourceCommit: ${commit}`, `  sourcePath: docs/manual/${locale}/${id}.md`,
     `  minorVersion: ${JSON.stringify(minor)}`, `  releaseRef: ${JSON.stringify(`${minor}.0`)}`, `  releaseCommit: ${commit}`,
@@ -82,10 +82,12 @@ async function fixtureProject(t) {
   await write(fixture, 'src/content/docs/manual/bluetape4k-projects/1.12/guides/learning-path.md', manualPage({ minor: '1.12', title: 'Learning path fixture', id: 'guides/learning-path' }));
   await write(fixture, 'src/content/docs/manual/bluetape4k-projects/1.12/modules/new.md', manualPage({ minor: '1.12', title: 'New fixture page', id: 'modules/new' }));
   await write(fixture, 'src/content/docs/manual/bluetape4k-projects/1.12/modules/shared.md', manualPage({ minor: '1.12', title: 'Latest shared fixture', id: 'modules/shared', body: 'latestmanualsentinel' }));
+  await write(fixture, 'src/content/docs/manual/bluetape4k-projects/1.12/modules/shared/operations.md', manualPage({ minor: '1.12', title: 'Shared operations fixture', id: 'modules/shared/operations', manualId: 'modules/shared' }));
   await write(fixture, 'src/content/docs/ko/manual/bluetape4k-projects/1.12/index.md', manualPage({ locale: 'ko', minor: '1.12', title: 'Projects 매뉴얼 홈', id: 'index' }));
   await write(fixture, 'src/content/docs/ko/manual/bluetape4k-projects/1.12/guides/learning-path.md', manualPage({ locale: 'ko', minor: '1.12', title: '학습 경로 테스트', id: 'guides/learning-path' }));
   await write(fixture, 'src/content/docs/ko/manual/bluetape4k-projects/1.12/modules/new.md', manualPage({ locale: 'ko', minor: '1.12', title: '새 테스트 문서', id: 'modules/new' }));
   await write(fixture, 'src/content/docs/ko/manual/bluetape4k-projects/1.12/modules/shared.md', manualPage({ locale: 'ko', minor: '1.12', title: '공유 테스트 문서', id: 'modules/shared' }));
+  await write(fixture, 'src/content/docs/ko/manual/bluetape4k-projects/1.12/modules/shared/operations.md', manualPage({ locale: 'ko', minor: '1.12', title: '공유 운영 테스트 문서', id: 'modules/shared/operations', manualId: 'modules/shared' }));
   await write(fixture, 'src/content/docs/manual/bluetape4k-exposed/1.11/index.md', manualPage({ minor: '1.11', title: 'Exposed home', id: 'index', repository: exposed }));
   await write(fixture, 'src/content/docs/manual/bluetape4k-exposed/1.11/modules/shared.md', manualPage({ minor: '1.11', title: 'Exposed Shared Manual Token', id: 'modules/shared', repository: exposed }));
   await write(fixture, 'src/content/docs/ko/manual/bluetape4k-exposed/1.11/index.md', manualPage({ locale: 'ko', minor: '1.11', title: 'Exposed 매뉴얼 홈', id: 'index', repository: exposed }));
@@ -236,7 +238,7 @@ test('actual Astro builds enforce publication contracts and preserve non-manual 
     schema: 1, repository: 'bluetape4k/bluetape4k-projects', latest: '1.12',
     versions: [
       { minorVersion: '1.11', releaseRef: '1.11.0', releaseCommit: 'a'.repeat(40), sourceCommit: 'a'.repeat(40), channel: 'archived', documents: { en: ['index', 'modules/shared'], ko: ['index', 'modules/shared'] } },
-      { minorVersion: '1.12', releaseRef: '1.12.0', releaseCommit: 'b'.repeat(40), sourceCommit: 'b'.repeat(40), channel: 'stable', documents: { en: ['guides/learning-path', 'index', 'modules/new', 'modules/shared'], ko: ['guides/learning-path', 'index', 'modules/new', 'modules/shared'] } },
+      { minorVersion: '1.12', releaseRef: '1.12.0', releaseCommit: 'b'.repeat(40), sourceCommit: 'b'.repeat(40), channel: 'stable', documents: { en: ['guides/learning-path', 'index', 'modules/new', 'modules/shared', 'modules/shared/operations'], ko: ['guides/learning-path', 'index', 'modules/new', 'modules/shared', 'modules/shared/operations'] } },
     ],
   };
   await write(fixture, 'src/data/manual/bluetape4k-projects.versions.json', `${JSON.stringify(catalog, null, 2)}\n`);
@@ -254,6 +256,7 @@ test('actual Astro builds enforce publication contracts and preserve non-manual 
   const latestHome = await readFile(path.join(fixture, 'dist/manual/bluetape4k-projects/1.12/index.html'), 'utf8');
   const latestGuide = await readFile(path.join(fixture, 'dist/manual/bluetape4k-projects/1.12/guides/learning-path/index.html'), 'utf8');
   const latest = await readFile(path.join(fixture, 'dist/manual/bluetape4k-projects/1.12/modules/shared/index.html'), 'utf8');
+  const latestOperations = await readFile(path.join(fixture, 'dist/manual/bluetape4k-projects/1.12/modules/shared/operations/index.html'), 'utf8');
   const latestNew = await readFile(path.join(fixture, 'dist/manual/bluetape4k-projects/1.12/modules/new/index.html'), 'utf8');
   const latestNewKo = await readFile(path.join(fixture, 'dist/ko/manual/bluetape4k-projects/1.12/modules/new/index.html'), 'utf8');
   const exposedManual = await readFile(path.join(fixture, 'dist/manual/bluetape4k-exposed/1.11/modules/shared/index.html'), 'utf8');
@@ -292,7 +295,8 @@ test('actual Astro builds enforce publication contracts and preserve non-manual 
   assert.match(latestNew, /href="\/manual\/bluetape4k-projects\/1\.12\/guides\/learning-path\/" rel="prev"/);
   assert.match(latestNew, /href="\/manual\/bluetape4k-projects\/1\.12\/modules\/shared\/" rel="next"/);
   assert.doesNotMatch(latestHome, /rel="prev"/);
-  assert.doesNotMatch(latest, /rel="next"/);
+  assert.match(latest, /href="\/manual\/bluetape4k-projects\/1\.12\/modules\/shared\/operations\/" rel="next"/);
+  assert.doesNotMatch(latestOperations, /rel="next"/);
   assert.match(archived, /href="\/manual\/bluetape4k-projects\/1\.11\/"/);
   assert.doesNotMatch(archived, /href="\/manual\/bluetape4k-projects\/1\.12\/modules\/new\/"/);
   assert.match(latest, /href="\/manual\/bluetape4k-exposed\/1\.11\/"/);
