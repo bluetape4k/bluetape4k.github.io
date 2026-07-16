@@ -79,9 +79,10 @@
     <text x="426" y="565" text-anchor="middle" class="tiny">owner + state</text>
   </g>
 
-  <path class="connector" d="M 296 329 H 312 Q 322 329 322 319 V 317 Q 322 317 330 317" stroke="#6ee7ff" marker-end="url(#arrow-cyan)"/>
-  <path class="connector" d="M 296 419 H 312 Q 322 419 322 425 H 330" stroke="#6ee7ff" marker-end="url(#arrow-cyan)"/>
-  <path class="connector" d="M 296 509 H 312 Q 322 509 322 533 H 330" stroke="#6ee7ff" marker-end="url(#arrow-cyan)"/>
+  <path class="secondary" d="M 296 419 H 310 Q 318 419 318 411 V 325 Q 318 317 326 317 M 318 419 V 525 Q 318 533 326 533" stroke="#6ee7ff"/>
+  <path class="connector" d="M 318 317 H 330" stroke="#6ee7ff" marker-end="url(#arrow-cyan)"/>
+  <path class="connector" d="M 318 425 H 330" stroke="#6ee7ff" marker-end="url(#arrow-cyan)"/>
+  <path class="connector" d="M 318 533 H 330" stroke="#6ee7ff" marker-end="url(#arrow-cyan)"/>
 
   <g id="completion-gate" filter="url(#shadow)">
     <rect x="566" y="290" width="166" height="176" rx="16" fill="#152b4c" stroke="#4f8cff" stroke-width="1.8"/>
@@ -100,7 +101,7 @@
   <path class="connector" d="M 522 317 H 540 Q 550 317 550 327 V 335 Q 550 345 560 345 H 566" stroke="#4f8cff" marker-end="url(#arrow-blue)"/>
   <path class="connector" d="M 522 425 H 542 Q 552 425 552 409 V 399 Q 552 389 562 389 H 566" stroke="#4f8cff" marker-end="url(#arrow-blue)"/>
   <path class="connector" d="M 522 533 H 540 Q 550 533 550 469 V 445 Q 550 435 560 435 H 566" stroke="#4f8cff" marker-end="url(#arrow-blue)"/>
-  <path class="connector" d="M 649 466 V 493 Q 649 499 649 505" stroke="#4fd18b" marker-end="url(#arrow-green)"/>
+  <path class="connector" d="M 649 466 V 505" stroke="#4fd18b" marker-end="url(#arrow-green)"/>
 
   <g id="lane-panel">
     <rect x="818" y="142" width="724" height="552" rx="26" fill="#10243a" stroke="#4f8cff" stroke-width="2.5" filter="url(#shadow)"/>
@@ -124,45 +125,45 @@
   </g>
 
   <g id="native-ack-note">
-    <rect x="976" y="334" width="250" height="48" rx="12" fill="#0d1d31" stroke="#3e7593" stroke-width="1.3"/>
-    <text x="1101" y="355" text-anchor="middle" class="small">Main session: native spawn</text>
-    <text x="1101" y="373" text-anchor="middle" class="tiny">then observed startup-ack</text>
+    <rect x="846" y="334" width="250" height="48" rx="12" fill="#0d1d31" stroke="#3e7593" stroke-width="1.3"/>
+    <text x="971" y="355" text-anchor="middle" class="small">Main session: native spawn</text>
+    <text x="971" y="373" text-anchor="middle" class="tiny">then observed startup-ack</text>
   </g>
 
   <g id="recovery-path">
-    <rect x="846" y="436" width="154" height="78" rx="14" fill="#253044" stroke="#f5b942" stroke-width="1.8" filter="url(#shadow)"/>
+    <rect x="1266" y="436" width="154" height="78" rx="14" fill="#253044" stroke="#f5b942" stroke-width="1.8" filter="url(#shadow)"/>
     <rect x="1056" y="436" width="154" height="78" rx="14" fill="#253044" stroke="#f5b942" stroke-width="1.8" filter="url(#shadow)"/>
-    <rect x="1266" y="436" width="154" height="78" rx="14" fill="#2b2f3d" stroke="#f5b942" stroke-width="1.8" filter="url(#shadow)"/>
-    <text x="923" y="469" text-anchor="middle" class="small">suspected_stall</text>
-    <text x="923" y="493" text-anchor="middle" class="tiny">probe required</text>
+    <rect x="846" y="436" width="154" height="78" rx="14" fill="#2b2f3d" stroke="#f5b942" stroke-width="1.8" filter="url(#shadow)"/>
+    <text x="1343" y="469" text-anchor="middle" class="small">suspected_stall</text>
+    <text x="1343" y="493" text-anchor="middle" class="tiny">probe required</text>
     <text x="1133" y="480" text-anchor="middle" class="label">recovering</text>
-    <text x="1343" y="480" text-anchor="middle" class="label">replaced</text>
+    <text x="923" y="480" text-anchor="middle" class="label">replaced</text>
 
-    <path class="connector" d="M 1248 314 V 394 Q 1248 404 1238 404 H 933 Q 923 404 923 414 V 436" stroke="#f5b942" marker-end="url(#arrow-amber)"/>
-    <path class="connector" d="M 1000 475 H 1056" stroke="#f5b942" marker-end="url(#arrow-amber)"/>
-    <path class="connector" d="M 1210 475 H 1266" stroke="#f5b942" marker-end="url(#arrow-amber)"/>
-    <path class="secondary" d="M 1110 436 V 410 Q 1110 400 1120 400 H 1204 Q 1214 400 1214 390 V 314" stroke="#4f8cff" marker-end="url(#arrow-blue)"/>
-    <text x="1159" y="393" text-anchor="middle" class="tiny">probe ack</text>
+    <path class="connector" d="M 1275 314 V 400 Q 1275 410 1285 410 H 1333 Q 1343 410 1343 420 V 436" stroke="#f5b942" marker-end="url(#arrow-amber)"/>
+    <path class="connector" d="M 1266 475 H 1210" stroke="#f5b942" marker-end="url(#arrow-amber)"/>
+    <path class="connector" d="M 1056 475 H 1000" stroke="#f5b942" marker-end="url(#arrow-amber)"/>
+    <path class="secondary" d="M 1133 436 V 360 Q 1133 350 1143 350 H 1176 Q 1186 350 1186 340 V 314" stroke="#4f8cff" marker-end="url(#arrow-blue)"/>
+    <text x="1159" y="343" text-anchor="middle" class="tiny">probe ack</text>
   </g>
 
   <g id="replacement-lane" filter="url(#shadow)">
-    <rect x="1250" y="568" width="202" height="92" rx="15" fill="#15304b" stroke="#6ee7ff" stroke-width="1.8"/>
-    <text x="1351" y="594" text-anchor="middle" class="label">replacement lane</text>
-    <text x="1351" y="617" text-anchor="middle" class="small">new lane id + new agent id</text>
-    <text x="1351" y="644" text-anchor="middle" class="label">pending</text>
+    <rect x="830" y="568" width="202" height="92" rx="15" fill="#15304b" stroke="#6ee7ff" stroke-width="1.8"/>
+    <text x="931" y="594" text-anchor="middle" class="label">replacement lane</text>
+    <text x="931" y="617" text-anchor="middle" class="small">new lane id + new agent id</text>
+    <text x="931" y="644" text-anchor="middle" class="label">pending</text>
   </g>
-  <path class="connector" d="M 1343 514 V 556 Q 1343 562 1343 568" stroke="#6ee7ff" marker-end="url(#arrow-cyan)"/>
+  <path class="connector" d="M 923 514 V 568" stroke="#6ee7ff" marker-end="url(#arrow-cyan)"/>
 
   <g id="lineage">
-    <rect x="852" y="570" width="224" height="62" rx="12" fill="#0d1d31" stroke="#7f6734" stroke-width="1.2"/>
-    <text x="964" y="595" text-anchor="middle" class="small">late result fenced</text>
-    <text x="964" y="616" text-anchor="middle" class="tiny">reference only until re-verified</text>
-    <path class="secondary" d="M 923 514 V 650 Q 923 666 939 666 H 1220 Q 1236 666 1236 650 V 624 Q 1236 614 1246 614 H 1250" stroke="#f5b942" stroke-dasharray="9 8" marker-end="url(#arrow-amber-small)"/>
-    <text x="1116" y="659" text-anchor="middle" class="tiny">parent lineage</text>
+    <rect x="1090" y="570" width="220" height="62" rx="12" fill="#0d1d31" stroke="#7f6734" stroke-width="1.2"/>
+    <text x="1200" y="595" text-anchor="middle" class="small">late result fenced</text>
+    <text x="1200" y="616" text-anchor="middle" class="tiny">reference only until re-verified</text>
+    <path class="secondary" d="M 1343 514 V 526 Q 1343 536 1333 536 H 980 Q 970 536 970 546 V 568" stroke="#f5b942" stroke-dasharray="9 8" marker-end="url(#arrow-amber-small)"/>
+    <text x="1155" y="530" text-anchor="middle" class="tiny">parent lineage</text>
   </g>
 
-  <path class="connector" d="M 649 577 V 708 Q 649 718 659 718 H 702 Q 712 718 712 728" stroke="#4fd18b" marker-end="url(#arrow-green)"/>
-  <path class="connector" d="M 1395 314 V 338 Q 1395 348 1405 348 H 1492 Q 1502 348 1502 358 V 708 Q 1502 718 1492 718 H 1395 Q 1385 718 1385 728" stroke="#4fd18b" marker-end="url(#arrow-green)"/>
+  <path class="connector" d="M 649 577 V 690 Q 649 708 667 708 H 694 Q 712 708 712 718 V 728" stroke="#4fd18b" marker-end="url(#arrow-green)"/>
+  <path class="connector" d="M 1395 314 V 338 Q 1395 348 1405 348 H 1492 Q 1502 348 1502 358 V 690 Q 1502 708 1484 708 H 1403 Q 1385 708 1385 718 V 728" stroke="#4fd18b" marker-end="url(#arrow-green)"/>
 
   <g id="completion-strip">
     <rect x="58" y="728" width="1484" height="96" rx="22" fill="#0d1d31" stroke="#365f97" stroke-width="1.8"/>
