@@ -18,6 +18,10 @@ export function layerFor(kind) {
   return 'build';
 }
 
+function contentKindFor(kind) {
+  return kind === 'bom' ? 'library' : kind;
+}
+
 function rewriteManualAssets(content, repository, minorVersion) {
   return content.replaceAll(
     /(!?\[[^\]]*\]\()(?:(?:\.\.\/)+)assets\/([^)]+)(\))/g,
@@ -75,7 +79,7 @@ export function transformManual({
     `  id: ${yamlScalar(module.id)}`,
     `  repository: ${yamlScalar(repository.slug)}`,
     `  group: ${yamlScalar(module.group)}`,
-    `  kind: ${yamlScalar(module.kind)}`,
+    `  kind: ${yamlScalar(contentKindFor(module.kind))}`,
     `  sourceCommit: ${yamlScalar(sourceCommit)}`,
     `  sourcePath: ${yamlScalar(sourcePath)}`,
     `  minorVersion: ${yamlScalar(minorVersion)}`,

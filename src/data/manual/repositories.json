@@ -78,6 +78,19 @@
         "en": "/manual/bluetape4k-graph/",
         "ko": "/ko/manual/bluetape4k-graph/"
       }
+    },
+    {
+      "slug": "bluetape4k-javers",
+      "repository": "bluetape4k/bluetape4k-javers",
+      "label": {
+        "en": "Javers docs",
+        "ko": "Javers 문서"
+      },
+      "latestMinor": "0.2",
+      "route": {
+        "en": "/manual/bluetape4k-javers/",
+        "ko": "/ko/manual/bluetape4k-javers/"
+      }
     }
   ]
 }

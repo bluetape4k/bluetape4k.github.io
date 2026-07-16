@@ -1,0 +1,198 @@
+{
+  "redirects": [
+    {
+      "source": "/ko/manual/bluetape4k-javers/",
+      "target": "/ko/manual/bluetape4k-javers/0.2/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-javers/architecture/audit-model/",
+      "target": "/ko/manual/bluetape4k-javers/0.2/architecture/audit-model/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-javers/architecture/repository-composition/",
+      "target": "/ko/manual/bluetape4k-javers/0.2/architecture/repository-composition/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-javers/architecture/repository-map/",
+      "target": "/ko/manual/bluetape4k-javers/0.2/architecture/repository-map/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-javers/benchmarks/exposed-ddd-envers/",
+      "target": "/ko/manual/bluetape4k-javers/0.2/benchmarks/exposed-ddd-envers/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-javers/benchmarks/overview/",
+      "target": "/ko/manual/bluetape4k-javers/0.2/benchmarks/overview/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-javers/examples/javers-exposed-ddd/",
+      "target": "/ko/manual/bluetape4k-javers/0.2/examples/javers-exposed-ddd/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-javers/getting-started/",
+      "target": "/ko/manual/bluetape4k-javers/0.2/getting-started/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-javers/guides/cross-repository-paths/",
+      "target": "/ko/manual/bluetape4k-javers/0.2/guides/cross-repository-paths/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-javers/guides/ddd-and-cqrs/",
+      "target": "/ko/manual/bluetape4k-javers/0.2/guides/ddd-and-cqrs/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-javers/guides/learning-path/",
+      "target": "/ko/manual/bluetape4k-javers/0.2/guides/learning-path/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-javers/guides/testing/",
+      "target": "/ko/manual/bluetape4k-javers/0.2/guides/testing/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-javers/modules/bluetape4k-javers-bom/",
+      "target": "/ko/manual/bluetape4k-javers/0.2/modules/bluetape4k-javers-bom/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-javers/modules/javers-core/",
+      "target": "/ko/manual/bluetape4k-javers/0.2/modules/javers-core/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-javers/modules/javers-ddd/",
+      "target": "/ko/manual/bluetape4k-javers/0.2/modules/javers-ddd/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-javers/modules/javers-exposed/",
+      "target": "/ko/manual/bluetape4k-javers/0.2/modules/javers-exposed/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-javers/modules/javers-persistence-kafka/",
+      "target": "/ko/manual/bluetape4k-javers/0.2/modules/javers-persistence-kafka/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-javers/modules/javers-persistence-redis/",
+      "target": "/ko/manual/bluetape4k-javers/0.2/modules/javers-persistence-redis/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-javers/operations/failure-contracts/",
+      "target": "/ko/manual/bluetape4k-javers/0.2/operations/failure-contracts/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-javers/operations/observability/",
+      "target": "/ko/manual/bluetape4k-javers/0.2/operations/observability/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-javers/persistence/exposed/",
+      "target": "/ko/manual/bluetape4k-javers/0.2/persistence/exposed/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-javers/persistence/kafka/",
+      "target": "/ko/manual/bluetape4k-javers/0.2/persistence/kafka/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-javers/persistence/redis/",
+      "target": "/ko/manual/bluetape4k-javers/0.2/persistence/redis/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-javers/persistence/selection-guide/",
+      "target": "/ko/manual/bluetape4k-javers/0.2/persistence/selection-guide/"
+    },
+    {
+      "source": "/manual/bluetape4k-javers/",
+      "target": "/manual/bluetape4k-javers/0.2/"
+    },
+    {
+      "source": "/manual/bluetape4k-javers/architecture/audit-model/",
+      "target": "/manual/bluetape4k-javers/0.2/architecture/audit-model/"
+    },
+    {
+      "source": "/manual/bluetape4k-javers/architecture/repository-composition/",
+      "target": "/manual/bluetape4k-javers/0.2/architecture/repository-composition/"
+    },
+    {
+      "source": "/manual/bluetape4k-javers/architecture/repository-map/",
+      "target": "/manual/bluetape4k-javers/0.2/architecture/repository-map/"
+    },
+    {
+      "source": "/manual/bluetape4k-javers/benchmarks/exposed-ddd-envers/",
+      "target": "/manual/bluetape4k-javers/0.2/benchmarks/exposed-ddd-envers/"
+    },
+    {
+      "source": "/manual/bluetape4k-javers/benchmarks/overview/",
+      "target": "/manual/bluetape4k-javers/0.2/benchmarks/overview/"
+    },
+    {
+      "source": "/manual/bluetape4k-javers/examples/javers-exposed-ddd/",
+      "target": "/manual/bluetape4k-javers/0.2/examples/javers-exposed-ddd/"
+    },
+    {
+      "source": "/manual/bluetape4k-javers/getting-started/",
+      "target": "/manual/bluetape4k-javers/0.2/getting-started/"
+    },
+    {
+      "source": "/manual/bluetape4k-javers/guides/cross-repository-paths/",
+      "target": "/manual/bluetape4k-javers/0.2/guides/cross-repository-paths/"
+    },
+    {
+      "source": "/manual/bluetape4k-javers/guides/ddd-and-cqrs/",
+      "target": "/manual/bluetape4k-javers/0.2/guides/ddd-and-cqrs/"
+    },
+    {
+      "source": "/manual/bluetape4k-javers/guides/learning-path/",
+      "target": "/manual/bluetape4k-javers/0.2/guides/learning-path/"
+    },
+    {
+      "source": "/manual/bluetape4k-javers/guides/testing/",
+      "target": "/manual/bluetape4k-javers/0.2/guides/testing/"
+    },
+    {
+      "source": "/manual/bluetape4k-javers/modules/bluetape4k-javers-bom/",
+      "target": "/manual/bluetape4k-javers/0.2/modules/bluetape4k-javers-bom/"
+    },
+    {
+      "source": "/manual/bluetape4k-javers/modules/javers-core/",
+      "target": "/manual/bluetape4k-javers/0.2/modules/javers-core/"
+    },
+    {
+      "source": "/manual/bluetape4k-javers/modules/javers-ddd/",
+      "target": "/manual/bluetape4k-javers/0.2/modules/javers-ddd/"
+    },
+    {
+      "source": "/manual/bluetape4k-javers/modules/javers-exposed/",
+      "target": "/manual/bluetape4k-javers/0.2/modules/javers-exposed/"
+    },
+    {
+      "source": "/manual/bluetape4k-javers/modules/javers-persistence-kafka/",
+      "target": "/manual/bluetape4k-javers/0.2/modules/javers-persistence-kafka/"
+    },
+    {
+      "source": "/manual/bluetape4k-javers/modules/javers-persistence-redis/",
+      "target": "/manual/bluetape4k-javers/0.2/modules/javers-persistence-redis/"
+    },
+    {
+      "source": "/manual/bluetape4k-javers/operations/failure-contracts/",
+      "target": "/manual/bluetape4k-javers/0.2/operations/failure-contracts/"
+    },
+    {
+      "source": "/manual/bluetape4k-javers/operations/observability/",
+      "target": "/manual/bluetape4k-javers/0.2/operations/observability/"
+    },
+    {
+      "source": "/manual/bluetape4k-javers/persistence/exposed/",
+      "target": "/manual/bluetape4k-javers/0.2/persistence/exposed/"
+    },
+    {
+      "source": "/manual/bluetape4k-javers/persistence/kafka/",
+      "target": "/manual/bluetape4k-javers/0.2/persistence/kafka/"
+    },
+    {
+      "source": "/manual/bluetape4k-javers/persistence/redis/",
+      "target": "/manual/bluetape4k-javers/0.2/persistence/redis/"
+    },
+    {
+      "source": "/manual/bluetape4k-javers/persistence/selection-guide/",
+      "target": "/manual/bluetape4k-javers/0.2/persistence/selection-guide/"
+    }
+  ],
+  "repository": "bluetape4k/bluetape4k-javers",
+  "schema": 1
+}
