@@ -81,7 +81,16 @@ inspect its result, and only then record `startup-ack`. Silence is not an ACK.
 ## How Runs and Lanes Move
 
 A run represents the complete approved task. A lane is a bounded unit of that task assigned to one
-agent or to the main session. The basic startup path is:
+agent or to the main session. The left side of the diagram shows one run dividing work across lanes
+and collecting their proof. The right side follows one lane through normal execution, recovery, and
+replacement.
+
+<figure class="post-figure">
+  <img src="/assets/bluetape-skills-run-lane-model-01.png" alt="One run dividing work across write-ko, write-en, and verify-site lanes, then collecting required checks, component evidence, and main verification, while a stalled lane is replaced by a distinct lane with a new identity and recorded lineage" loading="lazy" />
+  <figcaption>A run owns the complete outcome, while each lane owns bounded work. Lanes may run in parallel or in dependency order, but a terminal lane state does not complete the run. Required checks, component evidence, and main verification must also be present. Replacement creates a new lane and agent identity with explicit parent lineage, and v1.1.0 permits at most one replacement per lane.</figcaption>
+</figure>
+
+The basic startup path is:
 
 ```text
 bluetape-flow.py: run-approve -> run-start -> lane-create -> lane-start

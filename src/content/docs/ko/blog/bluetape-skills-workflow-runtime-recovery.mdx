@@ -75,6 +75,14 @@ evidence를 정해진 상태 전이로 기록하는 것이다.
 ## run과 lane은 어떻게 움직이나
 
 run은 승인된 전체 작업을 나타내고, lane은 그 안에서 한 agent나 main session이 맡은 제한된 작업 단위다.
+아래 그림의 왼쪽은 하나의 run이 여러 lane으로 작업을 나누고 결과를 모으는 구조를 보여 준다. 오른쪽에서는
+lane 하나가 정상 실행과 복구·교체를 거치는 흐름을 따라간다.
+
+<figure class="post-figure">
+  <img src="/assets/bluetape-skills-run-lane-model-01.png" alt="하나의 run이 write-ko, write-en, verify-site lane으로 작업을 나누고 required check, component evidence, main verification을 모아 완료되며, 정체된 lane은 별도 ID와 lineage를 가진 replacement lane으로 교체되는 구조" loading="lazy" />
+  <figcaption>Run은 승인된 작업 전체의 결과를 책임지고, lane은 그 안에서 범위가 제한된 작업 하나를 맡는다. Lane은 병렬 또는 순차로 실행할 수 있지만, terminal state에 도달했다고 run까지 끝난 것은 아니다. Required check, component evidence, main verification이 모두 있어야 run을 완료할 수 있다. 교체할 때는 기존 lane을 재사용하지 않고 새 lane과 agent id, parent lineage를 기록하며, v1.1.0은 lane당 교체를 한 번으로 제한한다.</figcaption>
+</figure>
+
 기본 시작 흐름은 다음과 같다.
 
 ```text
