@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "overview"
   kind: "guide"
-  sourceCommit: "eea10abd857fdb806319f93bddf30f92542d787a"
+  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
   sourcePath: "docs/manual/ko/index.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -22,6 +22,15 @@ manual:
 `bluetape4k-exposed`는 JetBrains Exposed를 사용하는 애플리케이션에 저장소 패턴, 트랜잭션 경계, 캐시, 데이터베이스별 확장과 애플리케이션 연동을 제공한다. 이 매뉴얼은 기능 목록보다 먼저 선택 기준을 설명한다. JDBC와 R2DBC 중 어느 경로를 택할지, 캐시는 언제 붙일지, 데이터베이스 어댑터와 Spring Boot·Ktor 연동을 어디에 배치할지를 순서대로 확인할 수 있다.
 
 ![Exposed 저장소 구성 개요](/manual-assets/bluetape4k-exposed/1.11/overview/repository-overview.png)
+
+## 핵심 기능
+
+- **저장소 기반 기능:** [Core](/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-core/), [DAO](/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-dao/), 저장소 규칙을 이용해 Exposed 테이블과 엔티티를 재사용 가능한 Kotlin 데이터 접근 구성 요소로 만듭니다.
+- **JDBC와 R2DBC:** 블로킹 트랜잭션에는 [JDBC](/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc/), 코루틴 중심의 논블로킹 접근에는 [R2DBC](/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc/)를 사용합니다. 두 경로의 트랜잭션 소유권과 취소 규칙은 서로 다릅니다.
+- **트랜잭션과 배치:** [트랜잭션 경계](/ko/manual/bluetape4k-exposed/1.11/guides/transaction-boundaries/)와 [배치 유틸리티](/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-batch/)에서 작업 조합, 일괄 처리, 실패 동작을 설명합니다.
+- **캐시:** [캐시 선택 가이드](/ko/manual/bluetape4k-exposed/1.11/guides/cache-selection/)를 따라 JDBC·R2DBC 저장소에 공통 캐시 계약과 Caffeine, Lettuce, Redisson 구현을 연결할 수 있습니다.
+- **데이터베이스와 데이터 형식 확장:** [데이터베이스 어댑터 표](/ko/manual/bluetape4k-exposed/1.11/guides/database-adapter-matrix/)와 [직렬화·암호화 가이드](/ko/manual/bluetape4k-exposed/1.11/guides/serialization-and-encryption/)에서 DB별 SQL, JSON, 측정값, 암호화 컬럼을 다룹니다.
+- **애플리케이션 연동:** [Spring Boot와 Ktor](/ko/manual/bluetape4k-exposed/1.11/guides/spring-and-ktor/) 모듈이 설정, 생명 주기, 프레임워크별 트랜잭션 연결을 맡습니다.
 
 ## 버전 기준
 

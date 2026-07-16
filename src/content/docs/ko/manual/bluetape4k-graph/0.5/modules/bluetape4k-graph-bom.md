@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-graph"
   group: "foundation"
   kind: "library"
-  sourceCommit: "fa6b818344736f8554a97f654ce88fa332aec44d"
+  sourceCommit: "2d9d09279f4b8a138dd46e3a3ffaf07699f7cfa0"
   sourcePath: "docs/manual/ko/modules/bluetape4k-graph-bom.md"
   minorVersion: "0.5"
   releaseRef: "0.5.1"

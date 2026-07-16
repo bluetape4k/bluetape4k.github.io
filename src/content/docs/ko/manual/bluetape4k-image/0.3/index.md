@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-image"
   group: "overview"
   kind: "guide"
-  sourceCommit: "6d265160a89feeef27cc5fc562b169d517ca56d4"
+  sourceCommit: "471a5f364520923911dc31d91be5179a6985337e"
   sourcePath: "docs/manual/ko/index.md"
   minorVersion: "0.3"
   releaseRef: "0.3.0"
@@ -22,6 +22,15 @@ manual:
 <code>bluetape4k-image</code>에는 Kotlin/JVM 애플리케이션에서 사용할 수 있는 이미지 처리 계열이 두 가지 있다. <code>bluetape4k-images</code> 계열은 Scrimage와 Java2D를 바탕으로 불변 이미지 연산, 필터, 변환, 분석, CAPTCHA, OCR과 프레임워크 연동을 제공한다. libvips 계열은 바인딩과 분리된 공통 API, Java 21 JNI 백엔드, Java 25 FFM 백엔드를 제공한다.
 
 이 매뉴얼은 패키지 이름을 나열하지 않는다. 런타임과 백엔드를 먼저 고르고, 실행 예제 하나를 끝까지 따라간 뒤, 세부 API나 설정이 필요할 때 모듈 문서를 찾아가는 방식으로 구성했다.
+
+## 핵심 기능
+
+- **불변 JVM 이미지 처리:** [이미지 모델](/ko/manual/bluetape4k-image/0.3/core/immutable-image-model/), [로딩과 쓰기](/ko/manual/bluetape4k-image/0.3/core/loading-and-writing/), [변환과 필터](/ko/manual/bluetape4k-image/0.3/core/transforms-and-filters/)에서 Scrimage와 Java2D를 안전하게 조합하는 흐름을 설명합니다.
+- **분석과 이미지 형식:** [분석과 유사도](/ko/manual/bluetape4k-image/0.3/core/analysis-and-similarity/), [codec 선택 가이드](/ko/manual/bluetape4k-image/0.3/guides/codec-and-format-selection/)를 이용해 메타데이터, 비교, 인코딩, 이미지 형식을 선택할 수 있습니다.
+- **바코드·CAPTCHA·OCR:** [CAPTCHA](/ko/manual/bluetape4k-image/0.3/integrations/captcha/), [OCR](/ko/manual/bluetape4k-image/0.3/integrations/ocr/), 바코드 모듈이 웹 애플리케이션에서 자주 쓰는 추출과 인증 흐름을 제공합니다.
+- **네이티브 libvips 백엔드:** 공통 [Vips API](/ko/manual/bluetape4k-image/0.3/native/vips-api/)에 [Java 21 JNI](/ko/manual/bluetape4k-image/0.3/native/java21-jni/) 또는 [Java 25 FFM](/ko/manual/bluetape4k-image/0.3/native/java25-ffm/) 백엔드를 연결하며, 네이티브 자원 소유권을 명시적으로 관리합니다.
+- **웹 프레임워크 연동:** [Ktor](/ko/manual/bluetape4k-image/0.3/integrations/ktor/)와 [Spring Boot](/ko/manual/bluetape4k-image/0.3/integrations/spring-boot/)가 이미지 처리, 업로드, CAPTCHA, OCR, 상태 점검, 메트릭을 애플리케이션 생명 주기에 연결합니다.
+- **스토리지와 운영 선택:** [스토리지와 CDN](/ko/manual/bluetape4k-image/0.3/integrations/storage-and-cdn/), [성능 선택](/ko/manual/bluetape4k-image/0.3/guides/performance-selection/), [테스트와 운영](/ko/manual/bluetape4k-image/0.3/guides/testing-and-operations/) 문서에서 애플리케이션이 직접 책임질 경계를 정합니다.
 
 ## 버전 기준
 

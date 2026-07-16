@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-leader"
   group: "overview"
   kind: "guide"
-  sourceCommit: "848f79344c636456cebe2069e18f732840bf680d"
+  sourceCommit: "27627f5cf430ef2640d5847ecfeef914ea935c4c"
   sourcePath: "docs/manual/en/guides/backend-selection.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"

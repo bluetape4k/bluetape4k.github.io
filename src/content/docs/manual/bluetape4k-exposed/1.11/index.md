@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "overview"
   kind: "guide"
-  sourceCommit: "eea10abd857fdb806319f93bddf30f92542d787a"
+  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
   sourcePath: "docs/manual/en/index.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -22,6 +22,15 @@ manual:
 `bluetape4k-exposed` adds repository patterns, transaction boundaries, caching, database-specific extensions, and application integrations to JetBrains Exposed. This manual starts with decisions rather than a feature catalog: choose JDBC or R2DBC, decide when caching is justified, and place database adapters and Spring Boot or Ktor integrations on the correct data-access path.
 
 ![Exposed repository overview](/manual-assets/bluetape4k-exposed/1.11/overview/repository-overview.png)
+
+## Core capabilities
+
+- **Repository foundations:** [Core](/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-core/), [DAO](/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-dao/), and repository conventions turn Exposed tables and entities into reusable Kotlin data-access components.
+- **JDBC and R2DBC:** Choose [JDBC](/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc/) for blocking transactions or [R2DBC](/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc/) for coroutine-first non-blocking access, with separate ownership and cancellation contracts.
+- **Transactions and batch work:** The [transaction boundary guide](/manual/bluetape4k-exposed/1.11/guides/transaction-boundaries/) and [batch utilities](/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-batch/) cover composition, batching, and failure behavior.
+- **Caching:** The [cache selection guide](/manual/bluetape4k-exposed/1.11/guides/cache-selection/) connects shared cache contracts to Caffeine, Lettuce, and Redisson for JDBC and R2DBC repositories.
+- **Database and data-format extensions:** The [database adapter matrix](/manual/bluetape4k-exposed/1.11/guides/database-adapter-matrix/) and [serialization/encryption guide](/manual/bluetape4k-exposed/1.11/guides/serialization-and-encryption/) cover vendor-specific SQL, JSON, measured values, and encrypted columns.
+- **Application integration:** [Spring Boot and Ktor](/manual/bluetape4k-exposed/1.11/guides/spring-and-ktor/) modules own configuration, lifecycle, and framework-specific transaction wiring.
 
 ## Version baseline
 

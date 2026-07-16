@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-javers"
   group: "overview"
   kind: "guide"
-  sourceCommit: "51a3c728ed263b214c1a3ce05efb0bee2c456c9d"
+  sourceCommit: "37423566ffd4f389ce3e85c573ed8348bbeaff2c"
   sourcePath: "docs/manual/en/index.md"
   minorVersion: "0.2"
   releaseRef: "0.2.1"
@@ -17,6 +17,15 @@ manual:
 
 
 Object auditing becomes difficult when application state, audit history, and query projections are treated as one store. `bluetape4k-javers` 0.2.1 gives Kotlin services a JaVers audit layer with Exposed, Redis, and Kafka adapters, but each adapter has a different responsibility. This manual starts with those boundaries so that a service does not accidentally use a cache or stream as its only recoverable record.
+
+## Core capabilities
+
+- **Audit snapshots and diffs:** The [audit model](/manual/bluetape4k-javers/0.2/architecture/audit-model/) explains JaVers commits, snapshots, changes, shadows, and the query semantics built on them.
+- **DDD aggregate history:** [javers-ddd](/manual/bluetape4k-javers/0.2/modules/javers-ddd/) and the [DDD/CQRS guide](/manual/bluetape4k-javers/0.2/guides/ddd-and-cqrs/) connect aggregate commands and domain events to explicit JaVers commits.
+- **Relational persistence:** [Exposed persistence](/manual/bluetape4k-javers/0.2/persistence/exposed/) stores recoverable CDO snapshots in a JDBC database without replacing the application's own Exposed repositories.
+- **Redis and Kafka adapters:** [Redis](/manual/bluetape4k-javers/0.2/persistence/redis/) supports cache/read-model paths, while [Kafka](/manual/bluetape4k-javers/0.2/persistence/kafka/) publishes audit records for downstream consumers; neither silently becomes the business source of truth.
+- **Failure and observability contracts:** [Failure contracts](/manual/bluetape4k-javers/0.2/operations/failure-contracts/) and [observability](/manual/bluetape4k-javers/0.2/operations/observability/) define partial-write, retry, lag, and recovery signals.
+- **Runnable learning and comparison:** The [Exposed DDD example](/manual/bluetape4k-javers/0.2/examples/javers-exposed-ddd/) and [JaVers/Exposed DDD/Envers comparison](/manual/bluetape4k-javers/0.2/benchmarks/exposed-ddd-envers/) connect the abstractions to code and measured evidence.
 
 The manual is pinned to release `0.2.1` (`bffe19439ca891fa5301a76421bdef7ba75252a0`). Ktor integration, Spring Boot 4 auto-configuration and examples, and the dedicated Gradle benchmark module were added after that release. They are not 0.2 features.
 

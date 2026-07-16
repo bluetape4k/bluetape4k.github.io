@@ -16,7 +16,7 @@ const projectRoot = path.resolve(new URL('../..', import.meta.url).pathname);
 const projects = {
   slug: 'bluetape4k-projects',
   repository: 'bluetape4k/bluetape4k-projects',
-  label: { en: 'Projects docs', ko: 'Projects 문서' },
+  label: { en: 'Bluetape4k docs', ko: 'Bluetape4k 문서' },
   latestMinor: '1.12',
   route: { en: '/manual/bluetape4k-projects/', ko: '/ko/manual/bluetape4k-projects/' },
 };
@@ -265,11 +265,11 @@ test('actual Astro builds enforce publication contracts and preserve non-manual 
   const unavailable = await readFile(path.join(fixture, 'dist/manual/bluetape4k-projects/1.11/not-available/from-1.12/modules/new/index.html'), 'utf8');
   const unavailableKo = await readFile(path.join(fixture, 'dist/ko/manual/bluetape4k-projects/1.11/not-available/from-1.12/modules/new/index.html'), 'utf8');
   assert.match(archived, />Archived</);
-  assert.match(archived, /aria-label="Projects docs 1\.11 — Select documentation version"/);
+  assert.match(archived, /aria-label="Bluetape4k docs 1\.11 — Select documentation version"/);
   assert.match(archived, /bt4k-manual-version--header/);
   assert.match(archived, /bt4k-manual-version--mobile/);
-  assert.match(archived, />Projects docs<\/span>\s*<span>1\.11<\/span>/);
-  assert.match(latestNewKo, />Projects 문서<\/span>\s*<span>1\.12<\/span>/);
+  assert.match(archived, />Bluetape4k docs<\/span>\s*<span>1\.11<\/span>/);
+  assert.match(latestNewKo, />Bluetape4k 문서<\/span>\s*<span>1\.12<\/span>/);
   assert.match(exposedManual, />Exposed docs<\/span>\s*<span>1\.11<\/span>/);
   assert.match(exposedManualKo, />Exposed 문서<\/span>\s*<span>1\.11<\/span>/);
   assert.doesNotMatch(archived, /<main[^>]*data-pagefind-body/);
@@ -279,13 +279,13 @@ test('actual Astro builds enforce publication contracts and preserve non-manual 
   assert.match(latestNew, /releases\/tag\/1\.12\.0/);
   assert.match(latestNewKo, /releases\/tag\/1\.12\.0/);
   assert.match(exposedManual, /bluetape4k-exposed\/releases\/tag\/1\.11\.0/);
-  assert.match(latestNew, /Based on Projects release 1\.12\.0/);
-  assert.match(latestNewKo, /Projects 1\.12\.0 릴리스 기준/);
+  assert.match(latestNew, /Based on Bluetape4k release 1\.12\.0/);
+  assert.match(latestNewKo, /Bluetape4k 1\.12\.0 릴리스 기준/);
   assert.match(exposedManual, /Based on Exposed release 1\.11\.0/);
   assert.match(exposedManualKo, /Exposed 1\.11\.0 릴리스 기준/);
   assert.doesNotMatch(latestNew, /Source 1\.12\.0/);
   assert.doesNotMatch(latestNewKo, /소스 1\.12\.0/);
-  assert.match(latest, />Projects docs<\/span>/);
+  assert.match(latest, />Bluetape4k docs<\/span>/);
   assert.match(latest, />Exposed docs<\/span>/);
   assert.match(latest, />Manual Home<\/span>/);
   assert.match(latestNewKo, />매뉴얼 홈<\/span>/);

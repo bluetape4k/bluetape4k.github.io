@@ -221,7 +221,7 @@ export default defineConfig({
           items: [
             { label: 'Repositories', translations: { ko: '리포지토리' }, slug: 'ecosystem/repositories' },
             { label: 'Ecosystem Atlas', translations: { ko: '생태계 지도' }, slug: 'ecosystem/atlas' },
-            { label: 'Projects Manual', translations: { ko: 'Projects 매뉴얼' }, link: '/manual/bluetape4k-projects/' },
+            { label: 'Bluetape4k Manual', translations: { ko: 'Bluetape4k 매뉴얼' }, link: '/manual/bluetape4k-projects/' },
             { label: 'Examples', translations: { ko: '예제' }, slug: 'ecosystem/examples' },
             {
               label: 'Version Governance',

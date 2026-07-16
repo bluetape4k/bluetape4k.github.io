@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-text"
   group: "overview"
   kind: "guide"
-  sourceCommit: "5bdcab0887cf27ce79348d08e64db6d196b9cc89"
+  sourceCommit: "bf802d7362ac221690043fddd3a3da433af02bed"
   sourcePath: "docs/manual/ko/index.md"
   minorVersion: "0.2"
   releaseRef: "0.2.1"
@@ -20,13 +20,14 @@ manual:
 
 ![저장소 학습 지도](/manual-assets/bluetape4k-text/0.2/overview/repository-learning-map.png)
 
-## 목적에 따라 선택하기
+## 핵심 기능
 
 | 필요한 일 | 먼저 읽을 문서 | 실행하며 배울 예제 |
 |---|---|---|
 | 한국어를 정규화·토큰화하거나 어간·구문을 추출한다 | [한국어 토크나이저](/ko/manual/bluetape4k-text/0.2/modules/tokenizer-korean/) | [토크나이저 안전 예제](/ko/manual/bluetape4k-text/0.2/examples/tokenizer-safety-examples/) |
 | 일본어를 토큰화하고 품사를 살펴본다 | [일본어 토크나이저](/ko/manual/bluetape4k-text/0.2/modules/tokenizer-japanese/) | [토크나이저 안전 예제](/ko/manual/bluetape4k-text/0.2/examples/tokenizer-safety-examples/) |
 | 한 문장에 포함된 언어를 하나 이상 찾는다 | [Lingua](/ko/manual/bluetape4k-text/0.2/modules/lingua/) | [Lingua 예제](/ko/manual/bluetape4k-text/0.2/examples/lingua-examples/) |
+| 도메인 사전으로 불용어를 걸러 낸다 | [사전과 불용어](/ko/manual/bluetape4k-text/0.2/guides/dictionaries-and-blockwords/) | [토크나이저 안전 예제](/ko/manual/bluetape4k-text/0.2/examples/tokenizer-safety-examples/) |
 | 여러 키워드를 한 번에 찾는다 | [텍스트 검색](/ko/manual/bluetape4k-text/0.2/modules/text-search/) | [텍스트 검색 예제](/ko/manual/bluetape4k-text/0.2/examples/text-search-examples/) |
 | 자체 토크나이저나 요청 경계를 만든다 | [Tokenizer Core](/ko/manual/bluetape4k-text/0.2/modules/tokenizer-core/) | [입력 안전성](/ko/manual/bluetape4k-text/0.2/guides/input-safety/) |
 | Text 모듈의 버전을 한꺼번에 맞춘다 | [Text BOM](/ko/manual/bluetape4k-text/0.2/modules/bluetape4k-text-bom/) | [시작하기](/ko/manual/bluetape4k-text/0.2/getting-started/) |

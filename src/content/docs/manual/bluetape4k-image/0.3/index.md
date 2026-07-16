@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-image"
   group: "overview"
   kind: "guide"
-  sourceCommit: "6d265160a89feeef27cc5fc562b169d517ca56d4"
+  sourceCommit: "471a5f364520923911dc31d91be5179a6985337e"
   sourcePath: "docs/manual/en/index.md"
   minorVersion: "0.3"
   releaseRef: "0.3.0"
@@ -22,6 +22,15 @@ manual:
 <code>bluetape4k-image</code> provides two image-processing families for Kotlin/JVM applications. The <code>bluetape4k-images</code> path builds on Scrimage and Java2D for immutable image operations, filters, transforms, analysis, CAPTCHA, OCR, and framework integration. The libvips path exposes a binding-neutral API with a Java 21 JNI backend and a Java 25 FFM backend for native processing.
 
 This manual is organized around decisions and production tasks rather than package names. Start with the runtime and backend choice, complete one runnable workshop, and then open the module reference when you need exact API or configuration details.
+
+## Core capabilities
+
+- **Immutable JVM processing:** The [image model](/manual/bluetape4k-image/0.3/core/immutable-image-model/), [loading and writing](/manual/bluetape4k-image/0.3/core/loading-and-writing/), and [transforms and filters](/manual/bluetape4k-image/0.3/core/transforms-and-filters/) cover safe Scrimage and Java2D pipelines.
+- **Analysis and formats:** [Analysis and similarity](/manual/bluetape4k-image/0.3/core/analysis-and-similarity/) plus the [codec guide](/manual/bluetape4k-image/0.3/guides/codec-and-format-selection/) explain metadata, comparison, encoding, and format choices.
+- **Barcode, CAPTCHA, and OCR:** The integration guides for [CAPTCHA](/manual/bluetape4k-image/0.3/integrations/captcha/) and [OCR](/manual/bluetape4k-image/0.3/integrations/ocr/), together with the published barcode modules, provide common extraction and challenge flows.
+- **Native libvips backends:** The binding-neutral [Vips API](/manual/bluetape4k-image/0.3/native/vips-api/) supports a [Java 21 JNI](/manual/bluetape4k-image/0.3/native/java21-jni/) backend and a [Java 25 FFM](/manual/bluetape4k-image/0.3/native/java25-ffm/) backend with explicit native-resource ownership.
+- **Web framework integration:** [Ktor](/manual/bluetape4k-image/0.3/integrations/ktor/) and [Spring Boot](/manual/bluetape4k-image/0.3/integrations/spring-boot/) connect image processing, upload, CAPTCHA, OCR, health, and metrics to application lifecycles.
+- **Storage and production selection:** [Storage and CDN](/manual/bluetape4k-image/0.3/integrations/storage-and-cdn/), [performance selection](/manual/bluetape4k-image/0.3/guides/performance-selection/), and [testing and operations](/manual/bluetape4k-image/0.3/guides/testing-and-operations/) define the boundaries the application must own.
 
 ## Version baseline
 

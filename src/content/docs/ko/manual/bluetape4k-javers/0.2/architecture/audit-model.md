@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-javers"
   group: "overview"
   kind: "guide"
-  sourceCommit: "51a3c728ed263b214c1a3ce05efb0bee2c456c9d"
+  sourceCommit: "37423566ffd4f389ce3e85c573ed8348bbeaff2c"
   sourcePath: "docs/manual/ko/architecture/audit-model.md"
   minorVersion: "0.2"
   releaseRef: "0.2.1"

@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-graph"
   group: "overview"
   kind: "guide"
-  sourceCommit: "fa6b818344736f8554a97f654ce88fa332aec44d"
+  sourceCommit: "2d9d09279f4b8a138dd46e3a3ffaf07699f7cfa0"
   sourcePath: "docs/manual/en/index.md"
   minorVersion: "0.5"
   releaseRef: "0.5.1"
@@ -17,6 +17,15 @@ manual:
 
 
 This manual describes the stable `0.5.1` contract at commit `3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907`. It covers the common model, paired synchronous/coroutine APIs, five supported backends, graph-io, and framework integration. Amazon Neptune is **not supported** in 0.5.1; backlog issues are not part of this contract.
+
+## Core capabilities
+
+- **Backend-independent graph model:** The [core model](/manual/bluetape4k-graph/0.5/architecture/core-model/) gives every backend the same vertex, edge, path, and element-ID vocabulary.
+- **Synchronous and coroutine APIs:** [Paired APIs](/manual/bluetape4k-graph/0.5/architecture/paired-apis/) keep repository, traversal, batch, merge, and transaction operations aligned across blocking and suspending execution.
+- **Five database backends:** The [backend selection guide](/manual/bluetape4k-graph/0.5/backends/selection-guide/) compares Neo4j, Memgraph, Apache AGE, TinkerPop/TinkerGraph, and FalkorDB by query language, transaction behavior, and operational fit.
+- **Schema, traversal, and transactions:** [Schema and transactions](/manual/bluetape4k-graph/0.5/architecture/schema-and-transactions/) explains labels, indexes, constraints, merge semantics, paths, and ownership boundaries.
+- **Graph import and export:** [graph-io formats](/manual/bluetape4k-graph/0.5/graph-io/formats/), [execution models](/manual/bluetape4k-graph/0.5/graph-io/execution-model/), and [OkIO security](/manual/bluetape4k-graph/0.5/graph-io/okio-security/) cover CSV, NDJSON, GraphML, compression, and authenticated encryption.
+- **Application integration and examples:** [Spring Boot](/manual/bluetape4k-graph/0.5/frameworks/spring-boot/), [Ktor](/manual/bluetape4k-graph/0.5/frameworks/ktor/), and the [learning path](/manual/bluetape4k-graph/0.5/guides/learning-path/) connect the common API to runnable domain examples and production checks.
 
 ## Start with a decision
 

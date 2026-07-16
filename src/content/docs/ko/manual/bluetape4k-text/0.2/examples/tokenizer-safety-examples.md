@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-text"
   group: "overview"
   kind: "guide"
-  sourceCommit: "5bdcab0887cf27ce79348d08e64db6d196b9cc89"
+  sourceCommit: "bf802d7362ac221690043fddd3a3da433af02bed"
   sourcePath: "docs/manual/ko/examples/tokenizer-safety-examples.md"
   minorVersion: "0.2"
   releaseRef: "0.2.1"
