@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { buildManualNavigation } from '../../scripts/manual/lib/navigation.mjs';
+import { buildManualNavigation, parseManualRouteId } from '../../scripts/manual/lib/navigation.mjs';
 
 const slugs = [
   'bluetape4k-projects',
@@ -202,4 +202,16 @@ test('fails when generated content descriptors are duplicated', () => {
 
 test('fails when the current page is outside the selected catalog', () => {
   assert.throws(() => navigation({ documentId: 'modules/missing' }), /NAVIGATION_CURRENT_MISSING/);
+});
+
+test('derives nested document identity from its published route', () => {
+  assert.deepEqual(
+    parseManualRouteId('/ko/manual/bluetape4k-aws/0.4/modules/bluetape4k-aws-exposed/database-settings/'),
+    {
+      locale: 'ko',
+      repository: 'bluetape4k-aws',
+      minorVersion: '0.4',
+      documentId: 'modules/bluetape4k-aws-exposed/database-settings',
+    },
+  );
 });

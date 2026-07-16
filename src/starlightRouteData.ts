@@ -4,8 +4,7 @@ import { pathToFileURL } from 'node:url';
 import { getCollection } from 'astro:content';
 import { defineRouteMiddleware } from '@astrojs/starlight/route-data';
 import { validateVersionCatalog } from '../scripts/manual/lib/catalog.mjs';
-import { buildManualNavigation } from '../scripts/manual/lib/navigation.mjs';
-import { manualRouteFor } from '../scripts/manual/lib/paths.mjs';
+import { buildManualNavigation, parseManualRouteId } from '../scripts/manual/lib/navigation.mjs';
 import { loadRepositoryRegistry, repositoryBySlug } from '../scripts/manual/lib/repositories.mjs';
 import { withBlogSocialPreview } from './lib/socialPreview';
 
@@ -44,9 +43,15 @@ const manualCatalogs = Object.fromEntries(
 const manualDocuments = (await getCollection('docs')).flatMap((entry) => {
   const manual = entry.data.manual;
   if (!manual) return [];
+  const location = parseManualRouteId(entry.id.replace(/\.(?:md|mdx)$/, '').replace(/\/index$/, ''));
+  if (location.repository !== manual.repository || location.minorVersion !== manual.minorVersion) {
+    throw new Error(
+      `NAVIGATION_ROUTE_MISMATCH: ${location.repository}@${location.minorVersion} != ${manual.repository}@${manual.minorVersion}`,
+    );
+  }
   return [{
-    id: manual.id,
-    locale: entry.id.startsWith('ko/') ? 'ko' : 'en',
+    id: location.documentId,
+    locale: location.locale,
     repository: manual.repository,
     minorVersion: manual.minorVersion,
     title: entry.data.title,
@@ -69,12 +74,16 @@ export const onRequest = defineRouteMiddleware((context) => {
 
   const repository = repositoryBySlug(manualRepositories, manual.repository);
   const catalog = manualCatalogs[repository.slug];
+  const location = parseManualRouteId(route.id);
   const locale = route.locale === 'ko' ? 'ko' : 'en';
-  const expectedSlug = manualRouteFor(locale, repository, manual.minorVersion, `${manual.id}.md`)
-    .replace(/^\//, '')
-    .replace(/\/$/, '');
-  if (route.id !== expectedSlug) {
-    throw new Error(`NAVIGATION_ROUTE_MISMATCH: ${route.id} != ${expectedSlug}`);
+  if (
+    location.locale !== locale
+    || location.repository !== repository.slug
+    || location.minorVersion !== manual.minorVersion
+  ) {
+    throw new Error(
+      `NAVIGATION_ROUTE_MISMATCH: ${route.id} != ${locale}/manual/${repository.slug}/${manual.minorVersion}`,
+    );
   }
   if (manual.minorVersion !== catalog.latest) {
     route.entry.data.pagefind = false;
@@ -88,7 +97,7 @@ export const onRequest = defineRouteMiddleware((context) => {
       locale,
       repository: repository.slug,
       minorVersion: manual.minorVersion,
-      documentId: manual.id,
+      documentId: location.documentId,
     },
   });
   route.sidebar = navigation.sidebar;

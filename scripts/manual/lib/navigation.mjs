@@ -77,6 +77,19 @@ function descriptorKey({ repository, minorVersion, locale, id }) {
   return `${repository}\u0000${minorVersion}\u0000${locale}\u0000${id}`;
 }
 
+export function parseManualRouteId(routeId) {
+  if (typeof routeId !== 'string') fail('NAVIGATION_ROUTE_INVALID', routeId);
+  const normalized = routeId.replace(/^\/+|\/+$/g, '');
+  const match = /^(ko\/)?manual\/([^/]+)\/([^/]+)(?:\/(.+))?$/.exec(normalized);
+  if (!match) fail('NAVIGATION_ROUTE_INVALID', routeId);
+  return {
+    locale: match[1] ? 'ko' : 'en',
+    repository: match[2],
+    minorVersion: match[3],
+    documentId: match[4] ?? 'index',
+  };
+}
+
 function indexDocuments(documents) {
   const index = new Map();
   for (const document of documents) {
