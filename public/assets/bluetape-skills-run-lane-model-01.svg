@@ -1,0 +1,191 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900">
+  <style>
+    .title { font-family: 'Architects Daughter', 'Comic Sans MS', cursive; fill: #f2f7ff; font-size: 38px; }
+    .panel-title { font-family: 'Architects Daughter', 'Comic Sans MS', cursive; fill: #f2f7ff; font-size: 23px; }
+    .subtitle, .label, .small, .tiny, .legend { font-family: 'Comic Mono', 'SFMono-Regular', Consolas, monospace; }
+    .subtitle { fill: #9fb5cc; font-size: 15px; }
+    .label { fill: #dce9f7; font-size: 15px; }
+    .small { fill: #9fb5cc; font-size: 12px; }
+    .tiny { fill: #9fb5cc; font-size: 10px; }
+    .legend { fill: #b7c8da; font-size: 11px; }
+    .connector { fill: none; stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
+    .secondary { fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  </style>
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="7" stdDeviation="8" flood-color="#020817" flood-opacity="0.55"/>
+    </filter>
+    <marker id="arrow-cyan" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 1 L 13 7 L 0 13 Z" fill="#6ee7ff"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 1 L 13 7 L 0 13 Z" fill="#4f8cff"/>
+    </marker>
+    <marker id="arrow-amber" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 1 L 13 7 L 0 13 Z" fill="#f5b942"/>
+    </marker>
+    <marker id="arrow-amber-small" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 1 L 9 5 L 0 9 Z" fill="#f5b942"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 1 L 13 7 L 0 13 Z" fill="#4fd18b"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="#07111f"/>
+  <rect x="24" y="24" width="1552" height="852" rx="34" fill="#0a1728" stroke="#203a56" stroke-width="2.5"/>
+
+  <g id="title">
+    <text x="62" y="76" class="title">Run owns the outcome. Lanes own bounded work.</text>
+    <text x="64" y="110" class="subtitle">One approved run can contain many lanes, but completion still converges through shared proof.</text>
+  </g>
+
+  <g id="run-panel">
+    <rect x="58" y="142" width="724" height="552" rx="26" fill="#10243a" stroke="#6ee7ff" stroke-width="2.5" filter="url(#shadow)"/>
+    <text x="86" y="181" class="panel-title">ONE RUN, MULTIPLE LANES</text>
+    <text x="88" y="205" class="small">static ownership + completion topology</text>
+
+    <rect x="84" y="220" width="672" height="438" rx="20" fill="#0d1d31" stroke="#2f5878" stroke-width="1.7"/>
+    <text x="108" y="250" class="label">RUN</text>
+    <text x="154" y="250" class="small">approved whole outcome</text>
+
+    <rect x="106" y="276" width="190" height="286" rx="16" fill="#15304b" stroke="#3e7593" stroke-width="1.5"/>
+    <text x="201" y="315" text-anchor="middle" class="label">Approved objective</text>
+    <text x="201" y="340" text-anchor="middle" class="small">one bounded result</text>
+    <line x1="132" y1="364" x2="270" y2="364" stroke="#3e7593" stroke-width="1"/>
+    <text x="201" y="397" text-anchor="middle" class="label">Owner epoch</text>
+    <text x="201" y="422" text-anchor="middle" class="small">current authority</text>
+    <line x1="132" y1="446" x2="270" y2="446" stroke="#3e7593" stroke-width="1"/>
+    <text x="201" y="479" text-anchor="middle" class="label">Required topology</text>
+    <text x="201" y="504" text-anchor="middle" class="small">components + checks</text>
+  </g>
+
+  <g id="lane-write-ko" filter="url(#shadow)">
+    <rect x="330" y="276" width="192" height="82" rx="14" fill="#15304b" stroke="#6ee7ff" stroke-width="1.8"/>
+    <text x="426" y="309" text-anchor="middle" class="label">write-ko</text>
+    <text x="426" y="333" text-anchor="middle" class="small">bounded assignment</text>
+    <text x="426" y="349" text-anchor="middle" class="tiny">owner + state</text>
+  </g>
+  <g id="lane-write-en" filter="url(#shadow)">
+    <rect x="330" y="384" width="192" height="82" rx="14" fill="#15304b" stroke="#6ee7ff" stroke-width="1.8"/>
+    <text x="426" y="417" text-anchor="middle" class="label">write-en</text>
+    <text x="426" y="441" text-anchor="middle" class="small">bounded assignment</text>
+    <text x="426" y="457" text-anchor="middle" class="tiny">owner + state</text>
+  </g>
+  <g id="lane-verify-site" filter="url(#shadow)">
+    <rect x="330" y="492" width="192" height="82" rx="14" fill="#15304b" stroke="#6ee7ff" stroke-width="1.8"/>
+    <text x="426" y="525" text-anchor="middle" class="label">verify-site</text>
+    <text x="426" y="549" text-anchor="middle" class="small">bounded assignment</text>
+    <text x="426" y="565" text-anchor="middle" class="tiny">owner + state</text>
+  </g>
+
+  <path class="connector" d="M 296 329 H 312 Q 322 329 322 319 V 317 Q 322 317 330 317" stroke="#6ee7ff" marker-end="url(#arrow-cyan)"/>
+  <path class="connector" d="M 296 419 H 312 Q 322 419 322 425 H 330" stroke="#6ee7ff" marker-end="url(#arrow-cyan)"/>
+  <path class="connector" d="M 296 509 H 312 Q 322 509 322 533 H 330" stroke="#6ee7ff" marker-end="url(#arrow-cyan)"/>
+
+  <g id="completion-gate" filter="url(#shadow)">
+    <rect x="566" y="290" width="166" height="176" rx="16" fill="#152b4c" stroke="#4f8cff" stroke-width="1.8"/>
+    <text x="649" y="326" text-anchor="middle" class="label">Required components</text>
+    <text x="649" y="352" text-anchor="middle" class="small">checks + evidence</text>
+    <line x1="590" y1="375" x2="708" y2="375" stroke="#365f97" stroke-width="1"/>
+    <text x="649" y="404" text-anchor="middle" class="small">weakest required</text>
+    <text x="649" y="424" text-anchor="middle" class="small">component gates all</text>
+    <text x="649" y="449" text-anchor="middle" class="tiny">weakest_required_component</text>
+
+    <rect x="566" y="505" width="166" height="72" rx="14" fill="#163a35" stroke="#4fd18b" stroke-width="2"/>
+    <text x="649" y="535" text-anchor="middle" class="label">Main verification</text>
+    <text x="649" y="559" text-anchor="middle" class="small">re-read all proof</text>
+  </g>
+
+  <path class="connector" d="M 522 317 H 540 Q 550 317 550 327 V 335 Q 550 345 560 345 H 566" stroke="#4f8cff" marker-end="url(#arrow-blue)"/>
+  <path class="connector" d="M 522 425 H 542 Q 552 425 552 409 V 399 Q 552 389 562 389 H 566" stroke="#4f8cff" marker-end="url(#arrow-blue)"/>
+  <path class="connector" d="M 522 533 H 540 Q 550 533 550 469 V 445 Q 550 435 560 435 H 566" stroke="#4f8cff" marker-end="url(#arrow-blue)"/>
+  <path class="connector" d="M 649 466 V 493 Q 649 499 649 505" stroke="#4fd18b" marker-end="url(#arrow-green)"/>
+
+  <g id="lane-panel">
+    <rect x="818" y="142" width="724" height="552" rx="26" fill="#10243a" stroke="#4f8cff" stroke-width="2.5" filter="url(#shadow)"/>
+    <text x="846" y="181" class="panel-title">ONE LANE, RECOVERY + REPLACEMENT</text>
+    <text x="848" y="205" class="small">time-ordered state + explicit lineage</text>
+  </g>
+
+  <g id="happy-path">
+    <rect x="846" y="236" width="138" height="78" rx="14" fill="#15304b" stroke="#6ee7ff" stroke-width="1.7" filter="url(#shadow)"/>
+    <rect x="1006" y="236" width="138" height="78" rx="14" fill="#15304b" stroke="#6ee7ff" stroke-width="1.7" filter="url(#shadow)"/>
+    <rect x="1166" y="236" width="138" height="78" rx="14" fill="#152b4c" stroke="#4f8cff" stroke-width="1.7" filter="url(#shadow)"/>
+    <rect x="1326" y="236" width="138" height="78" rx="14" fill="#163a35" stroke="#4fd18b" stroke-width="2" filter="url(#shadow)"/>
+    <text x="915" y="282" text-anchor="middle" class="label">pending</text>
+    <text x="1075" y="282" text-anchor="middle" class="label">starting</text>
+    <text x="1235" y="282" text-anchor="middle" class="label">running</text>
+    <text x="1395" y="282" text-anchor="middle" class="label">completed</text>
+
+    <path class="connector" d="M 984 275 H 1006" stroke="#6ee7ff" marker-end="url(#arrow-cyan)"/>
+    <path class="connector" d="M 1144 275 H 1166" stroke="#4f8cff" marker-end="url(#arrow-blue)"/>
+    <path class="connector" d="M 1304 275 H 1326" stroke="#4fd18b" marker-end="url(#arrow-green)"/>
+  </g>
+
+  <g id="native-ack-note">
+    <rect x="976" y="334" width="250" height="48" rx="12" fill="#0d1d31" stroke="#3e7593" stroke-width="1.3"/>
+    <text x="1101" y="355" text-anchor="middle" class="small">Main session: native spawn</text>
+    <text x="1101" y="373" text-anchor="middle" class="tiny">then observed startup-ack</text>
+  </g>
+
+  <g id="recovery-path">
+    <rect x="846" y="436" width="154" height="78" rx="14" fill="#253044" stroke="#f5b942" stroke-width="1.8" filter="url(#shadow)"/>
+    <rect x="1056" y="436" width="154" height="78" rx="14" fill="#253044" stroke="#f5b942" stroke-width="1.8" filter="url(#shadow)"/>
+    <rect x="1266" y="436" width="154" height="78" rx="14" fill="#2b2f3d" stroke="#f5b942" stroke-width="1.8" filter="url(#shadow)"/>
+    <text x="923" y="469" text-anchor="middle" class="small">suspected_stall</text>
+    <text x="923" y="493" text-anchor="middle" class="tiny">probe required</text>
+    <text x="1133" y="480" text-anchor="middle" class="label">recovering</text>
+    <text x="1343" y="480" text-anchor="middle" class="label">replaced</text>
+
+    <path class="connector" d="M 1248 314 V 394 Q 1248 404 1238 404 H 933 Q 923 404 923 414 V 436" stroke="#f5b942" marker-end="url(#arrow-amber)"/>
+    <path class="connector" d="M 1000 475 H 1056" stroke="#f5b942" marker-end="url(#arrow-amber)"/>
+    <path class="connector" d="M 1210 475 H 1266" stroke="#f5b942" marker-end="url(#arrow-amber)"/>
+    <path class="secondary" d="M 1110 436 V 410 Q 1110 400 1120 400 H 1204 Q 1214 400 1214 390 V 314" stroke="#4f8cff" marker-end="url(#arrow-blue)"/>
+    <text x="1159" y="393" text-anchor="middle" class="tiny">probe ack</text>
+  </g>
+
+  <g id="replacement-lane" filter="url(#shadow)">
+    <rect x="1250" y="568" width="202" height="92" rx="15" fill="#15304b" stroke="#6ee7ff" stroke-width="1.8"/>
+    <text x="1351" y="594" text-anchor="middle" class="label">replacement lane</text>
+    <text x="1351" y="617" text-anchor="middle" class="small">new lane id + new agent id</text>
+    <text x="1351" y="644" text-anchor="middle" class="label">pending</text>
+  </g>
+  <path class="connector" d="M 1343 514 V 556 Q 1343 562 1343 568" stroke="#6ee7ff" marker-end="url(#arrow-cyan)"/>
+
+  <g id="lineage">
+    <rect x="852" y="570" width="224" height="62" rx="12" fill="#0d1d31" stroke="#7f6734" stroke-width="1.2"/>
+    <text x="964" y="595" text-anchor="middle" class="small">late result fenced</text>
+    <text x="964" y="616" text-anchor="middle" class="tiny">reference only until re-verified</text>
+    <path class="secondary" d="M 923 514 V 650 Q 923 666 939 666 H 1220 Q 1236 666 1236 650 V 624 Q 1236 614 1246 614 H 1250" stroke="#f5b942" stroke-dasharray="9 8" marker-end="url(#arrow-amber-small)"/>
+    <text x="1116" y="659" text-anchor="middle" class="tiny">parent lineage</text>
+  </g>
+
+  <path class="connector" d="M 649 577 V 708 Q 649 718 659 718 H 702 Q 712 718 712 728" stroke="#4fd18b" marker-end="url(#arrow-green)"/>
+  <path class="connector" d="M 1395 314 V 338 Q 1395 348 1405 348 H 1492 Q 1502 348 1502 358 V 708 Q 1502 718 1492 718 H 1395 Q 1385 718 1385 728" stroke="#4fd18b" marker-end="url(#arrow-green)"/>
+
+  <g id="completion-strip">
+    <rect x="58" y="728" width="1484" height="96" rx="22" fill="#0d1d31" stroke="#365f97" stroke-width="1.8"/>
+    <text x="88" y="764" class="panel-title">Lane complete != Run complete</text>
+    <text x="90" y="792" class="small">A terminal lane is one input to the final decision.</text>
+
+    <rect x="500" y="748" width="586" height="56" rx="14" fill="#152b4c" stroke="#4f8cff" stroke-width="1.5"/>
+    <text x="793" y="773" text-anchor="middle" class="small">terminal lanes + required checks + component evidence</text>
+    <text x="793" y="794" text-anchor="middle" class="small">+ main verification</text>
+
+    <rect x="1160" y="748" width="330" height="56" rx="14" fill="#163a35" stroke="#4fd18b" stroke-width="2"/>
+    <text x="1325" y="783" text-anchor="middle" class="label">RUN COMPLETED</text>
+    <path class="connector" d="M 1086 776 H 1160" stroke="#4fd18b" marker-end="url(#arrow-green)"/>
+  </g>
+
+  <g id="legend">
+    <line x1="84" y1="851" x2="124" y2="851" stroke="#6ee7ff" stroke-width="4" stroke-linecap="round"/>
+    <text x="138" y="855" class="legend">assignment</text>
+    <line x1="286" y1="851" x2="326" y2="851" stroke="#4f8cff" stroke-width="4" stroke-linecap="round"/>
+    <text x="340" y="855" class="legend">evidence / state</text>
+    <line x1="548" y1="851" x2="588" y2="851" stroke="#f5b942" stroke-width="4" stroke-linecap="round"/>
+    <text x="602" y="855" class="legend">recovery / lineage</text>
+    <line x1="842" y1="851" x2="882" y2="851" stroke="#4fd18b" stroke-width="4" stroke-linecap="round"/>
+    <text x="896" y="855" class="legend">verified completion</text>
+  </g>
+</svg>
