@@ -26,7 +26,8 @@
       .wait-card { fill: #fff8df; stroke: #e2c260; stroke-width: 3; }
       .sync-line { fill: none; stroke: #387fb8; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-blue); }
       .vt-line { fill: none; stroke: #c95c76; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-pink); }
-    </style>
+
+    .syntax-keyword{fill:#7E22CE}.syntax-type{fill:#0F766E}.syntax-function{fill:#1D4ED8}.syntax-string{fill:#B45309}.syntax-number{fill:#C2410C}.syntax-comment{fill:#64748B}.syntax-operator{fill:#BE123C}</style>
   </defs>
 
   <rect width="1600" height="900" class="canvas"/>
@@ -71,7 +72,7 @@
   <g transform="translate(505 574)">
     <rect x="0" y="0" width="285" height="126" rx="22" class="vt-card"/>
     <text x="28" y="47" class="card-title">VT adapter</text>
-    <text x="28" y="84" class="card-text">virtualFutureOf { ... }</text>
+    <text x="28" y="84" class="card-text" data-code-snippet="kotlin">virtualFutureOf <tspan class="syntax-operator">{</tspan> <tspan class="syntax-operator">.</tspan><tspan class="syntax-operator">.</tspan><tspan class="syntax-operator">.</tspan> <tspan class="syntax-operator">}</tspan></text>
   </g>
   <g transform="translate(900 574)">
     <rect x="0" y="0" width="285" height="126" rx="22" class="backend-card"/>
