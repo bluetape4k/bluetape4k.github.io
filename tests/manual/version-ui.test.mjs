@@ -168,6 +168,15 @@ test('the Pagefind integration remains pinned to the supported Starlight 0.39.2 
   assert.match(middleware, /route\.entry\.data\.pagefind\s*=\s*false/);
 });
 
+test('manual route middleware derives sidebar and pagination from one navigation model', async () => {
+  const middleware = await read('src/starlightRouteData.ts');
+  assert.match(middleware, /getCollection\(['"]docs['"]\)/);
+  assert.match(middleware, /buildManualNavigation\(/);
+  assert.match(middleware, /route\.sidebar\s*=\s*navigation\.sidebar/);
+  assert.match(middleware, /route\.pagination\s*=\s*navigation\.pagination/);
+  assert.match(middleware, /route\.manualNavigation\s*=/);
+});
+
 test('manual version UI styles cover focus, zoom wrapping, contrast, touch, and print', async () => {
   const source = await read('src/styles/manual.css');
   assert.match(source, /\.bt4k-manual-version/);
