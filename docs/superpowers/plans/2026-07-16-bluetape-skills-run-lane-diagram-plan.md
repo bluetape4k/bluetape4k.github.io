@@ -1,6 +1,6 @@
 # Bluetape Skills Run and Lane Diagram Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Add one dark two-panel diagram that explains Run ownership, Lane lifecycle and replacement, then embed it in both Part 3 locales.
 
@@ -25,7 +25,7 @@
 - Reference: `public/assets/bluetape-skills-native-runtime-boundary-01.svg`
 - Reference: `docs/superpowers/specs/2026-07-16-bluetape-skills-run-lane-diagram-design.md`
 
-- [ ] **Step 1: Reconfirm the source-backed vocabulary**
+- [x] **Step 1: Reconfirm the source-backed vocabulary**
 
 ```bash
 git -C /Users/debop/work/bluetape4k/bluetape-skills show v1.1.0:skills/bluetape-workflow/references/workflow-manifest.json \
@@ -38,7 +38,7 @@ git -C /Users/debop/work/bluetape4k/bluetape-skills show v1.1.0:skills/bluetape-
 
 Expected: separate Run/Lane states and evidence for weakest-component completion, distinct replacement identity, lineage, and the native-tool boundary.
 
-- [ ] **Step 2: Inspect the approved dark-family reference**
+- [x] **Step 2: Inspect the approved dark-family reference**
 
 ```bash
 sips -g pixelWidth -g pixelHeight public/assets/bluetape-skills-native-runtime-boundary-01.png
@@ -48,7 +48,7 @@ rg -n '#07111f|#10243a|#6ee7ff|#4f8cff|#f5b942|#4fd18b|Architects Daughter|Comic
 
 Expected: `2400x1440` and nonzero palette/font matches. Open the PNG at full size and record that its title, cards, and markers remain readable.
 
-- [ ] **Step 3: Create the SVG with these exact semantic groups**
+- [x] **Step 3: Create the SVG with these exact semantic groups**
 
 Create a `1600x900` SVG whose top-level groups and visible labels are:
 
@@ -71,7 +71,7 @@ Create a `1600x900` SVG whose top-level groups and visible labels are:
 
 Use the approved palette and fonts. Define explicit markers with `markerUnits="userSpaceOnUse"`, `14x14` primary heads, and `10x10` lineage heads. Use only straight or rounded orthogonal paths. Keep the three primary Lane cards equal and do not connect them to each other. Route every Lane into checks/evidence, then main verification. Route `recovering -> running` for probe success and `recovering -> replaced -> replacement lane: pending` for replacement. Keep lineage dashed amber with a solid head. Never connect Lane `completed` directly to `RUN COMPLETED`. Use no icons.
 
-- [ ] **Step 4: Validate the SVG structure**
+- [x] **Step 4: Validate the SVG structure**
 
 ```bash
 xmllint --noout public/assets/bluetape-skills-run-lane-model-01.svg
@@ -84,7 +84,7 @@ rg -q 'weakest_required_component' public/assets/bluetape-skills-run-lane-model-
 
 Expected: XML validation succeeds and every semantic group and completion label is present.
 
-- [ ] **Step 5: Commit the SVG source**
+- [x] **Step 5: Commit the SVG source**
 
 ```bash
 git add public/assets/bluetape-skills-run-lane-model-01.svg
@@ -98,7 +98,7 @@ git commit -m "docs: clarify run ownership and lane recovery" \
 - Modify: `public/assets/bluetape-skills-run-lane-model-01.svg`
 - Create: `public/assets/bluetape-skills-run-lane-model-01.png`
 
-- [ ] **Step 1: Render at scale 2 and verify dimensions**
+- [x] **Step 1: Render at scale 2 and verify dimensions**
 
 ```bash
 cairosvg public/assets/bluetape-skills-run-lane-model-01.svg \
@@ -108,7 +108,7 @@ sips -g pixelWidth -g pixelHeight public/assets/bluetape-skills-run-lane-model-0
 
 Expected: `3200x1800`.
 
-- [ ] **Step 2: Run the blocking common audits**
+- [x] **Step 2: Run the blocking common audits**
 
 ```bash
 python3 "$HOME/.codex/skills/bluetape-diagram/scripts/diagram-connector-audit.py" public/assets/bluetape-skills-run-lane-model-01.svg
@@ -119,7 +119,7 @@ python3 "$HOME/.codex/skills/bluetape-diagram/scripts/diagram-mixed-corner-audit
 
 Expected: zero blocking failures and meaningful counts. Weak or zero counts require Step 3 evidence.
 
-- [ ] **Step 3: Run fallback semantic invariants**
+- [x] **Step 3: Run fallback semantic invariants**
 
 ```bash
 test "$(rg -o 'id="(lane-write-ko|lane-write-en|lane-verify-site|replacement-lane)"' public/assets/bluetape-skills-run-lane-model-01.svg | wc -l | tr -d ' ')" -ge 4
@@ -134,11 +134,11 @@ rg -q 'RUN COMPLETED' public/assets/bluetape-skills-run-lane-model-01.svg
 
 Expected: all entity, state, lineage, connector, and completion checks exit zero.
 
-- [ ] **Step 4: Inspect the full-size PNG and repair until it passes**
+- [x] **Step 4: Inspect the full-size PNG and repair until it passes**
 
 Check original-size readability, clipping, contrast, panel separation, perpendicular endpoints, rounded bends, crossings, card intrusion, solid amber lineage head, legend parity, and balanced whitespace. Confirm Lane `completed` cannot bypass checks/evidence/main verification. After any repair, repeat Steps 1-4.
 
-- [ ] **Step 5: Commit the approved SVG/PNG pair**
+- [x] **Step 5: Commit the approved SVG/PNG pair**
 
 ```bash
 git diff --check -- public/assets/bluetape-skills-run-lane-model-01.svg public/assets/bluetape-skills-run-lane-model-01.png
@@ -153,7 +153,7 @@ git commit -m "docs: render the run and lane workflow model" \
 - Modify: `src/content/docs/ko/blog/bluetape-skills-workflow-runtime-recovery.mdx:77`
 - Modify: `src/content/docs/blog/bluetape-skills-workflow-runtime-recovery.mdx:83`
 
-- [ ] **Step 1: Insert the Korean figure before the startup command example**
+- [x] **Step 1: Insert the Korean figure before the startup command example**
 
 ```mdx
 run은 승인된 전체 작업을 나타내고, lane은 그 안에서 한 agent나 main session이 맡은 제한된 작업 단위다.
@@ -168,7 +168,7 @@ run은 승인된 전체 작업을 나타내고, lane은 그 안에서 한 agent�
 기본 시작 흐름은 다음과 같다.
 ```
 
-- [ ] **Step 2: Insert the English parity figure in the same position**
+- [x] **Step 2: Insert the English parity figure in the same position**
 
 ```mdx
 A run represents the complete approved task. A lane is a bounded unit of that task assigned to one
@@ -183,7 +183,7 @@ and collecting their proof; the right side follows one lane through normal execu
 The basic startup path is:
 ```
 
-- [ ] **Step 3: Verify parity and commit**
+- [x] **Step 3: Verify parity and commit**
 
 ```bash
 test "$(rg -l 'bluetape-skills-run-lane-model-01.png' src/content/docs/{ko/blog,blog}/bluetape-skills-workflow-runtime-recovery.mdx | wc -l | tr -d ' ')" -eq 2
@@ -202,7 +202,7 @@ Expected: both locale files use the same PNG once and preserve the same completi
 - Verify: `dist/ko/blog/bluetape-skills-workflow-runtime-recovery/index.html`
 - Verify: `dist/blog/bluetape-skills-workflow-runtime-recovery/index.html`
 
-- [ ] **Step 1: Run the production build**
+- [x] **Step 1: Run the production build**
 
 ```bash
 npm run build
@@ -210,7 +210,7 @@ npm run build
 
 Expected: `astro check` reports zero errors and Astro completes the build.
 
-- [ ] **Step 2: Verify generated route asset references**
+- [x] **Step 2: Verify generated route asset references**
 
 ```bash
 for page in dist/ko/blog/bluetape-skills-workflow-runtime-recovery/index.html dist/blog/bluetape-skills-workflow-runtime-recovery/index.html; do
@@ -222,7 +222,7 @@ test -s dist/assets/bluetape-skills-run-lane-model-01.png || test -s dist/blueta
 
 Expected: both pages reference the new PNG and the built asset exists.
 
-- [ ] **Step 3: Run final repository and visual verification**
+- [x] **Step 3: Run final repository and visual verification**
 
 ```bash
 git diff --check
@@ -233,7 +233,7 @@ sips -g pixelWidth -g pixelHeight public/assets/bluetape-skills-run-lane-model-0
 
 Open both diagram PNGs side by side at original size. Confirm family parity, readable text, distinct panels, correct lineage, no direct Lane-complete shortcut, and balanced margins. Review both MDX diffs for natural prose and identical facts. Expected: `P0=0`, `P1=0`.
 
-- [ ] **Step 4: Commit only verification-driven repairs**
+- [x] **Step 4: Commit only verification-driven repairs**
 
 If verification changed a file, stage the SVG, PNG, and both MDX files and commit:
 
