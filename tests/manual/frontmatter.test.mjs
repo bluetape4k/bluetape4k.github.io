@@ -49,6 +49,29 @@ test('manual metadata keeps provenance while source links use the published rele
   assert.doesNotMatch(result, /\{#problem\}/);
 });
 
+test('publishes a repository BOM through the site library content kind', () => {
+  const result = transformManual({
+    content: '# Javers BOM\n\nBody\n',
+    module: { id: 'bluetape4k-javers-bom', group: 'foundation', kind: 'bom', sourceDir: 'bom' },
+    repository: {
+      slug: 'bluetape4k-javers',
+      repository: 'bluetape4k/bluetape4k-javers',
+      label: { en: 'Javers docs', ko: 'Javers 문서' },
+      latestMinor: '0.2',
+      route: { en: '/manual/bluetape4k-javers/', ko: '/ko/manual/bluetape4k-javers/' },
+    },
+    sourceCommit: 'a'.repeat(40),
+    sourcePath: 'docs/manual/en/modules/bluetape4k-javers-bom.md',
+    releaseRef: '0.2.1',
+    releaseCommit: 'b'.repeat(40),
+    minorVersion: '0.2',
+  });
+
+  assert.match(result, /kind: "library"/);
+  assert.doesNotMatch(result, /kind: "bom"/);
+  assert.match(result, /layer: "build"/);
+});
+
 test('derives safe frontmatter from a plain Markdown title', () => {
   const result = transformManual({
     content: '# Core model\n\nBody\n',

@@ -1,0 +1,69 @@
+{
+  "latest": "0.2",
+  "repository": "bluetape4k/bluetape4k-javers",
+  "schema": 1,
+  "versions": [
+    {
+      "authoringSourceRef": "dd5a341e436b63fb47575e17fed761d007314202",
+      "channel": "stable",
+      "documents": {
+        "en": [
+          "architecture/audit-model",
+          "architecture/repository-composition",
+          "architecture/repository-map",
+          "benchmarks/exposed-ddd-envers",
+          "benchmarks/overview",
+          "examples/javers-exposed-ddd",
+          "getting-started",
+          "guides/cross-repository-paths",
+          "guides/ddd-and-cqrs",
+          "guides/learning-path",
+          "guides/testing",
+          "index",
+          "modules/bluetape4k-javers-bom",
+          "modules/javers-core",
+          "modules/javers-ddd",
+          "modules/javers-exposed",
+          "modules/javers-persistence-kafka",
+          "modules/javers-persistence-redis",
+          "operations/failure-contracts",
+          "operations/observability",
+          "persistence/exposed",
+          "persistence/kafka",
+          "persistence/redis",
+          "persistence/selection-guide"
+        ],
+        "ko": [
+          "architecture/audit-model",
+          "architecture/repository-composition",
+          "architecture/repository-map",
+          "benchmarks/exposed-ddd-envers",
+          "benchmarks/overview",
+          "examples/javers-exposed-ddd",
+          "getting-started",
+          "guides/cross-repository-paths",
+          "guides/ddd-and-cqrs",
+          "guides/learning-path",
+          "guides/testing",
+          "index",
+          "modules/bluetape4k-javers-bom",
+          "modules/javers-core",
+          "modules/javers-ddd",
+          "modules/javers-exposed",
+          "modules/javers-persistence-kafka",
+          "modules/javers-persistence-redis",
+          "operations/failure-contracts",
+          "operations/observability",
+          "persistence/exposed",
+          "persistence/kafka",
+          "persistence/redis",
+          "persistence/selection-guide"
+        ]
+      },
+      "minorVersion": "0.2",
+      "releaseCommit": "bffe19439ca891fa5301a76421bdef7ba75252a0",
+      "releaseRef": "0.2.1",
+      "sourceCommit": "dd5a341e436b63fb47575e17fed761d007314202"
+    }
+  ]
+}
