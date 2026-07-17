@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-leader"
   group: "overview"
   kind: "guide"
-  sourceCommit: "dba8da7f095bd73aa5fb595b3b0741dcffd0e494"
+  sourceCommit: "9f8a2152256c1a1ccf4fdbb7d731cf7d6273d700"
   sourcePath: "docs/manual/ko/architecture/runtime-model.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"

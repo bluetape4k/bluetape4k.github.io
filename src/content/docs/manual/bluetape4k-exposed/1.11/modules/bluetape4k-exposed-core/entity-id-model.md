@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "foundation"
   kind: "library"
-  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
+  sourceCommit: "cd0ab9cf3b56ac909c72e5e512f9c6d1345d5f4a"
   sourcePath: "docs/manual/en/modules/bluetape4k-exposed-core/entity-id-model.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -17,6 +17,7 @@ manual:
   sourceDir: "exposed/core"
   layer: "build"
   chapterId: "entity-id-model"
+  chapterOrder: 1
 ---
 
 

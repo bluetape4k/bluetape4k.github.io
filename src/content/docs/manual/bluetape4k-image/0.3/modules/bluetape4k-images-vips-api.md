@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-image"
   group: "native"
   kind: "library"
-  sourceCommit: "4f32b77dff190acb79534b67b34f9056843ebeeb"
+  sourceCommit: "b6c46eba43a51a4224e0835cc197bf83358bd333"
   sourcePath: "docs/manual/en/modules/bluetape4k-images-vips-api.md"
   minorVersion: "0.3"
   releaseRef: "0.3.0"
@@ -99,17 +99,17 @@ The common API does not discover or instantiate a backend. AVIF/HEIC support dep
 <!-- release-readme-diagrams:start -->
 ## Release diagrams
 
-These diagrams are copied byte-for-byte from README assets in the `0.3.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+These diagrams are loaded directly from README assets published with the `0.3.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### Processing Pipeline diagram
 
-[![Processing Pipeline diagram](/manual-assets/bluetape4k-image/0.3/readme-diagrams/images-vips-api-architecture-02.png)](../../assets/readme-diagrams/images-vips-api-architecture-02.svg)
+[![Processing Pipeline diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-image/a571c30004f571fe8cfcddc29670c1404d212ec6/docs/images/readme-diagrams/images-vips-api-architecture-02.png)](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/docs/images/readme-diagrams/images-vips-api-architecture-02.svg)
 
 _Release README: [`images-vips-api/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/images-vips-api/README.md)_
 
 ### images vips api Class Structure diagram
 
-[![images vips api Class Structure diagram](/manual-assets/bluetape4k-image/0.3/readme-diagrams/images-vips-api-class-01.png)](../../assets/readme-diagrams/images-vips-api-class-01.svg)
+[![images vips api Class Structure diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-image/a571c30004f571fe8cfcddc29670c1404d212ec6/docs/images/readme-diagrams/images-vips-api-class-01.png)](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/docs/images/readme-diagrams/images-vips-api-class-01.svg)
 
 _Release README: [`images-vips-api/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/images-vips-api/README.md)_
 

@@ -11,7 +11,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
+  sourceCommit: "d6eb7f6e617535286959f850024052ad0ca96738"
   sourcePath: "docs/manual/en/modules/bluetape4k-retrofit2.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -131,23 +131,23 @@ This page documents the repository state represented by the linked source and te
 <!-- release-readme-diagrams:start -->
 ## Release diagrams
 
-These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+These diagrams are loaded directly from README assets published with the `1.11.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### Retrofit2 Module Architecture diagram
 
-[![Retrofit2 Module Architecture diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/io-retrofit2-diagram-01.png)](../../assets/readme-diagrams/io-retrofit2-diagram-01.svg)
+[![Retrofit2 Module Architecture diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/io-retrofit2-diagram-01.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/io-retrofit2-diagram-01.svg)
 
 _Release README: [`io/retrofit2/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/io/retrofit2/README.md)_
 
 ### Retrofit2 + Result Pattern Integration diagram
 
-[![Retrofit2 + Result Pattern Integration diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/io-retrofit2-diagram-02.png)](../../assets/readme-diagrams/io-retrofit2-diagram-02.svg)
+[![Retrofit2 + Result Pattern Integration diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/io-retrofit2-diagram-02.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/io-retrofit2-diagram-02.svg)
 
 _Release README: [`io/retrofit2/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/io/retrofit2/README.md)_
 
 ### Suspend Result HTTP Request Flow diagram
 
-[![Suspend Result HTTP Request Flow diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/io-retrofit2-sequence-01.png)](../../assets/readme-diagrams/io-retrofit2-sequence-01.svg)
+[![Suspend Result HTTP Request Flow diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/io-retrofit2-sequence-01.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/io-retrofit2-sequence-01.svg)
 
 _Release README: [`io/retrofit2/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/io/retrofit2/README.md)_
 

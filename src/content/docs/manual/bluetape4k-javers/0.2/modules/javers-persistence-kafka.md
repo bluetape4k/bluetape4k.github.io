@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-javers"
   group: "persistence"
   kind: "library"
-  sourceCommit: "6130ed5b22458c4e5d63e58f44460d06b1e9c07a"
+  sourceCommit: "08744a8df1e25bb3170c6b45d49afe5c96ca72b2"
   sourcePath: "docs/manual/en/modules/javers-persistence-kafka.md"
   minorVersion: "0.2"
   releaseRef: "0.2.1"

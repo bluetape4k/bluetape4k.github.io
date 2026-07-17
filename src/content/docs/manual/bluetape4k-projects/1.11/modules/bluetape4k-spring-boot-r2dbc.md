@@ -11,7 +11,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "spring"
   kind: "library"
-  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
+  sourceCommit: "d6eb7f6e617535286959f850024052ad0ca96738"
   sourcePath: "docs/manual/en/modules/bluetape4k-spring-boot-r2dbc.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -167,29 +167,29 @@ The API depends on reified types and Spring Data entity mapping. Use `bluetape4k
 <!-- release-readme-diagrams:start -->
 ## Release diagrams
 
-These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+These diagrams are loaded directly from README assets published with the `1.11.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### Core Class Structure diagram
 
-[![Core Class Structure diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/spring-boot-r2dbc-diagram-01.png)](../../assets/readme-diagrams/spring-boot-r2dbc-diagram-01.svg)
+[![Core Class Structure diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/spring-boot-r2dbc-diagram-01.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/spring-boot-r2dbc-diagram-01.svg)
 
 _Release README: [`spring-boot/r2dbc/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/spring-boot/r2dbc/README.md)_
 
 ### R2DBC + Coroutines Data Flow diagram
 
-[![R2DBC + Coroutines Data Flow diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/spring-boot-r2dbc-diagram-02.png)](../../assets/readme-diagrams/spring-boot-r2dbc-diagram-02.svg)
+[![R2DBC + Coroutines Data Flow diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/spring-boot-r2dbc-diagram-02.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/spring-boot-r2dbc-diagram-02.svg)
 
 _Release README: [`spring-boot/r2dbc/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/spring-boot/r2dbc/README.md)_
 
 ### CRUD Operation Hierarchy diagram
 
-[![CRUD Operation Hierarchy diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/spring-boot-r2dbc-diagram-03.png)](../../assets/readme-diagrams/spring-boot-r2dbc-diagram-03.svg)
+[![CRUD Operation Hierarchy diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/spring-boot-r2dbc-diagram-03.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/spring-boot-r2dbc-diagram-03.svg)
 
 _Release README: [`spring-boot/r2dbc/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/spring-boot/r2dbc/README.md)_
 
 ### Coroutine Conversion Sequence diagram
 
-[![Coroutine Conversion Sequence diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/spring-boot-r2dbc-sequence-01.png)](../../assets/readme-diagrams/spring-boot-r2dbc-sequence-01.svg)
+[![Coroutine Conversion Sequence diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/spring-boot-r2dbc-sequence-01.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/spring-boot-r2dbc-sequence-01.svg)
 
 _Release README: [`spring-boot/r2dbc/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/spring-boot/r2dbc/README.md)_
 

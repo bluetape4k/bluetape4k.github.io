@@ -11,7 +11,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "utilities"
   kind: "library"
-  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
+  sourceCommit: "d6eb7f6e617535286959f850024052ad0ca96738"
   sourcePath: "docs/manual/en/modules/bluetape4k-workflow.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -124,53 +124,53 @@ This page documents the repository state represented by the linked source and te
 <!-- release-readme-diagrams:start -->
 ## Release diagrams
 
-These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+These diagrams are loaded directly from README assets published with the `1.11.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### Concept Overview diagram
 
-[![Concept Overview diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/utils-workflow-diagram-01.png)](../../assets/readme-diagrams/utils-workflow-diagram-01.svg)
+[![Concept Overview diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/utils-workflow-diagram-01.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/utils-workflow-diagram-01.svg)
 
 _Release README: [`utils/workflow/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/utils/workflow/README.md)_
 
 ### WorkReport States diagram
 
-[![WorkReport States diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/utils-workflow-diagram-02.png)](../../assets/readme-diagrams/utils-workflow-diagram-02.svg)
+[![WorkReport States diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/utils-workflow-diagram-02.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/utils-workflow-diagram-02.svg)
 
 _Release README: [`utils/workflow/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/utils/workflow/README.md)_
 
 ### Execution Model diagram
 
-[![Execution Model diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/utils-workflow-diagram-03.png)](../../assets/readme-diagrams/utils-workflow-diagram-03.svg)
+[![Execution Model diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/utils-workflow-diagram-03.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/utils-workflow-diagram-03.svg)
 
 _Release README: [`utils/workflow/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/utils/workflow/README.md)_
 
 ### Sequential Flow diagram
 
-[![Sequential Flow diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/utils-workflow-diagram-04.png)](../../assets/readme-diagrams/utils-workflow-diagram-04.svg)
+[![Sequential Flow diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/utils-workflow-diagram-04.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/utils-workflow-diagram-04.svg)
 
 _Release README: [`utils/workflow/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/utils/workflow/README.md)_
 
 ### Parallel Flow diagram
 
-[![Parallel Flow diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/utils-workflow-diagram-05.png)](../../assets/readme-diagrams/utils-workflow-diagram-05.svg)
+[![Parallel Flow diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/utils-workflow-diagram-05.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/utils-workflow-diagram-05.svg)
 
 _Release README: [`utils/workflow/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/utils/workflow/README.md)_
 
 ### Conditional Flow diagram
 
-[![Conditional Flow diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/utils-workflow-diagram-06.png)](../../assets/readme-diagrams/utils-workflow-diagram-06.svg)
+[![Conditional Flow diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/utils-workflow-diagram-06.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/utils-workflow-diagram-06.svg)
 
 _Release README: [`utils/workflow/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/utils/workflow/README.md)_
 
 ### Repeat Flow diagram
 
-[![Repeat Flow diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/utils-workflow-diagram-07.png)](../../assets/readme-diagrams/utils-workflow-diagram-07.svg)
+[![Repeat Flow diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/utils-workflow-diagram-07.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/utils-workflow-diagram-07.svg)
 
 _Release README: [`utils/workflow/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/utils/workflow/README.md)_
 
 ### Retry Flow diagram
 
-[![Retry Flow diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/utils-workflow-diagram-08.png)](../../assets/readme-diagrams/utils-workflow-diagram-08.svg)
+[![Retry Flow diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/utils-workflow-diagram-08.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/utils-workflow-diagram-08.svg)
 
 _Release README: [`utils/workflow/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/utils/workflow/README.md)_
 

@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-image"
   group: "overview"
   kind: "guide"
-  sourceCommit: "4f32b77dff190acb79534b67b34f9056843ebeeb"
+  sourceCommit: "b6c46eba43a51a4224e0835cc197bf83358bd333"
   sourcePath: "docs/manual/ko/core/analysis-and-similarity.md"
   minorVersion: "0.3"
   releaseRef: "0.3.0"

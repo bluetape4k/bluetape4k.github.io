@@ -170,3 +170,48 @@ test('rewrites Exposed metadata, manuals, assets, and source links inside Expose
   assert.match(result, /\/manual-assets\/bluetape4k-exposed\/1\.11\/persistence\/path-decision\.svg/);
   assert.match(result, /github\.com\/bluetape4k\/bluetape4k-exposed\/tree\/1\.11\.0\/exposed\/jdbc/);
 });
+
+test('preserves release README diagram links pinned to releaseCommit', () => {
+  const releaseCommit = '7'.repeat(40);
+  const raw = `https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/${releaseCommit}/docs/images/readme-diagrams/sample.png`;
+  const svg = `https://github.com/bluetape4k/bluetape4k-projects/blob/${releaseCommit}/docs/images/readme-diagrams/sample.svg`;
+  const result = transformManual({
+    content: `---\ntitle: Release diagram\n---\n\n# Release diagram\n\n[![Sample](${raw})](${svg})\n`,
+    module: { id: 'sample', group: 'foundation', kind: 'library', sourceDir: 'sample' },
+    repository: projects,
+    sourceCommit: '8'.repeat(40),
+    sourcePath: 'docs/manual/en/modules/sample.md',
+    releaseRef: '1.11.0',
+    releaseCommit,
+    minorVersion: '1.11',
+  });
+
+  assert.match(result, new RegExp(raw));
+  assert.match(result, new RegExp(svg));
+  assert.doesNotMatch(result, /manual-assets\/.*readme-diagrams/);
+});
+
+test('rejects mirrored or incorrectly pinned release README diagrams', () => {
+  const base = {
+    module: { id: 'sample', group: 'foundation', kind: 'library', sourceDir: 'sample' },
+    repository: projects,
+    sourceCommit: '8'.repeat(40),
+    sourcePath: 'docs/manual/en/modules/sample.md',
+    releaseRef: '1.11.0',
+    releaseCommit: '7'.repeat(40),
+    minorVersion: '1.11',
+  };
+
+  assert.throws(() => transformManual({
+    ...base,
+    content: '---\ntitle: Local mirror\n---\n\n![Sample](../../assets/readme-diagrams/sample.png)\n',
+  }), /must use immutable GitHub links/);
+  assert.throws(() => transformManual({
+    ...base,
+    content: `---\ntitle: Stale release\n---\n\n![Sample](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/${'6'.repeat(40)}/docs/images/readme-diagrams/sample.png)\n`,
+  }), /expected 7777777777777777777777777777777777777777/);
+  assert.throws(() => transformManual({
+    ...base,
+    content: '---\ntitle: Mutable tag\n---\n\n![Sample](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/1.11.0/docs/images/readme-diagrams/sample.png)\n',
+  }), /uses 1\.11\.0, expected 7777777777777777777777777777777777777777/);
+});

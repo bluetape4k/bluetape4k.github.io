@@ -1,5 +1,5 @@
 {
-  "authoringSourceRef": "6130ed5b22458c4e5d63e58f44460d06b1e9c07a",
+  "authoringSourceRef": "08744a8df1e25bb3170c6b45d49afe5c96ca72b2",
   "minorVersion": "0.2",
   "modules": [
     {
@@ -189,13 +189,7 @@
       "assets/persistence/exposed-snapshot-flow.png",
       "assets/persistence/exposed-snapshot-flow.svg",
       "assets/persistence/persistence-decision-map.png",
-      "assets/persistence/persistence-decision-map.svg",
-      "assets/readme-diagrams/bluetape4k-javers-architecture-01.png",
-      "assets/readme-diagrams/bluetape4k-javers-architecture-01.svg",
-      "assets/readme-diagrams/bom-architecture-01.png",
-      "assets/readme-diagrams/bom-architecture-01.svg",
-      "assets/readme-diagrams/root-readme-overview-01.png",
-      "assets/readme-diagrams/root-readme-overview-01.svg"
+      "assets/persistence/persistence-decision-map.svg"
     ],
     "documents": {
       "en": [
@@ -243,5 +237,5 @@
   "repository": "bluetape4k/bluetape4k-javers",
   "repositorySlug": "bluetape4k-javers",
   "schemaVersion": 2,
-  "sourceCommit": "6130ed5b22458c4e5d63e58f44460d06b1e9c07a"
+  "sourceCommit": "08744a8df1e25bb3170c6b45d49afe5c96ca72b2"
 }

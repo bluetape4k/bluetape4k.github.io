@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-javers"
   group: "overview"
   kind: "guide"
-  sourceCommit: "6130ed5b22458c4e5d63e58f44460d06b1e9c07a"
+  sourceCommit: "08744a8df1e25bb3170c6b45d49afe5c96ca72b2"
   sourcePath: "docs/manual/ko/guides/testing.md"
   minorVersion: "0.2"
   releaseRef: "0.2.1"

@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-image"
   group: "capabilities"
   kind: "library"
-  sourceCommit: "4f32b77dff190acb79534b67b34f9056843ebeeb"
+  sourceCommit: "b6c46eba43a51a4224e0835cc197bf83358bd333"
   sourcePath: "docs/manual/ko/modules/bluetape4k-images-ocr.md"
   minorVersion: "0.3"
   releaseRef: "0.3.0"
@@ -103,23 +103,23 @@ Tesseract와 언어 데이터는 라이브러리에 포함되지 않습니다. d
 <!-- release-readme-diagrams:start -->
 ## 배포본 다이어그램
 
-아래 그림은 현재 개발 브랜치가 아니라 `0.3.0` 배포 태그의 README 자산을 바이트 단위로 그대로 옮긴 것입니다. 따라서 이후 SNAPSHOT 변경이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 SVG 원본이 열립니다.
+아래 그림은 `0.3.0` 배포본의 README 자산을 해당 배포 커밋에서 직접 불러옵니다. 이후 SNAPSHOT이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 같은 배포 커밋의 SVG 원본이 열립니다.
 
 ### images-ocr 아키텍처
 
-[![images-ocr 아키텍처](/manual-assets/bluetape4k-image/0.3/readme-diagrams/images-ocr-architecture-01.png)](../../assets/readme-diagrams/images-ocr-architecture-01.svg)
+[![images-ocr 아키텍처](https://raw.githubusercontent.com/bluetape4k/bluetape4k-image/a571c30004f571fe8cfcddc29670c1404d212ec6/docs/images/readme-diagrams/images-ocr-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/docs/images/readme-diagrams/images-ocr-architecture-01.svg)
 
 _배포본 README: [`images-ocr/README.ko.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/images-ocr/README.ko.md)_
 
 ### images-ocr 클래스 다이어그램
 
-[![images-ocr 클래스 다이어그램](/manual-assets/bluetape4k-image/0.3/readme-diagrams/images-ocr-class-diagram-01.png)](../../assets/readme-diagrams/images-ocr-class-diagram-01.svg)
+[![images-ocr 클래스 다이어그램](https://raw.githubusercontent.com/bluetape4k/bluetape4k-image/a571c30004f571fe8cfcddc29670c1404d212ec6/docs/images/readme-diagrams/images-ocr-class-diagram-01.png)](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/docs/images/readme-diagrams/images-ocr-class-diagram-01.svg)
 
 _배포본 README: [`images-ocr/README.ko.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/images-ocr/README.ko.md)_
 
 ### images-ocr Recognition 처리 순서
 
-[![images-ocr Recognition 처리 순서](/manual-assets/bluetape4k-image/0.3/readme-diagrams/images-ocr-sequence-diagram-01.png)](../../assets/readme-diagrams/images-ocr-sequence-diagram-01.svg)
+[![images-ocr Recognition 처리 순서](https://raw.githubusercontent.com/bluetape4k/bluetape4k-image/a571c30004f571fe8cfcddc29670c1404d212ec6/docs/images/readme-diagrams/images-ocr-sequence-diagram-01.png)](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/docs/images/readme-diagrams/images-ocr-sequence-diagram-01.svg)
 
 _배포본 README: [`images-ocr/README.ko.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/images-ocr/README.ko.md)_
 

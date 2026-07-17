@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-leader"
   group: "frameworks"
   kind: "library"
-  sourceCommit: "dba8da7f095bd73aa5fb595b3b0741dcffd0e494"
+  sourceCommit: "9f8a2152256c1a1ccf4fdbb7d731cf7d6273d700"
   sourcePath: "docs/manual/en/modules/bluetape4k-leader-micrometer.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -98,11 +98,11 @@ Metrics are observational and may be dropped. They do not provide durable audit,
 <!-- release-readme-diagrams:start -->
 ## Release diagrams
 
-These diagrams are copied byte-for-byte from README assets in the `0.4.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+These diagrams are loaded directly from README assets published with the `0.4.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### leader-micrometer instrumentation architecture diagram
 
-[![leader-micrometer instrumentation architecture diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/leader-micrometer-architecture-01.png)](../../assets/readme-diagrams/leader-micrometer-architecture-01.svg)
+[![leader-micrometer instrumentation architecture diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/leader-micrometer-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/leader-micrometer-architecture-01.svg)
 
 _Release README: [`leader-micrometer/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/leader-micrometer/README.md)_
 

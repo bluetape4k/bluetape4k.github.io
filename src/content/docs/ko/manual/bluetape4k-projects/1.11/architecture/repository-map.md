@@ -7,7 +7,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "overview"
   kind: "guide"
-  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
+  sourceCommit: "d6eb7f6e617535286959f850024052ad0ca96738"
   sourcePath: "docs/manual/ko/architecture/repository-map.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -37,35 +37,35 @@ manual:
 <!-- release-readme-diagrams:start -->
 ## 배포본 다이어그램
 
-아래 그림은 현재 개발 브랜치가 아니라 `1.11.0` 배포 태그의 README 자산을 바이트 단위로 그대로 옮긴 것입니다. 따라서 이후 SNAPSHOT 변경이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 SVG 원본이 열립니다.
+아래 그림은 `1.11.0` 배포본의 README 자산을 해당 배포 커밋에서 직접 불러옵니다. 이후 SNAPSHOT이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 같은 배포 커밋의 SVG 원본이 열립니다.
 
 ### Bluetape4k Projects 아키텍처
 
-[![Bluetape4k Projects 아키텍처](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/root-readme-en-diagram-01.png)](../../assets/readme-diagrams/root-readme-en-diagram-01.svg)
+[![Bluetape4k Projects 아키텍처](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/root-readme-en-diagram-01.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/root-readme-en-diagram-01.svg)
 
 _배포본 README: [`README.ko.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/README.ko.md)_
 
 ### Bluetape4k 프레임워크 개요
 
-[![Bluetape4k 프레임워크 개요](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/root-readme-overview-01.png)](../../assets/readme-diagrams/root-readme-overview-01.svg)
+[![Bluetape4k 프레임워크 개요](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/root-readme-overview-01.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/root-readme-overview-01.svg)
 
 _배포본 README: [`README.ko.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/README.ko.md)_
 
 ### ServiceLoader provider, 우선순위 정렬, platform fallback을 사용하는 VirtualThreads 런타임 선택 흐름
 
-[![ServiceLoader provider, 우선순위 정렬, platform fallback을 사용하는 VirtualThreads 런타임 선택 흐름](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/virtualthread-diagram-01.png)](../../assets/readme-diagrams/virtualthread-diagram-01.svg)
+[![ServiceLoader provider, 우선순위 정렬, platform fallback을 사용하는 VirtualThreads 런타임 선택 흐름](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/virtualthread-diagram-01.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/virtualthread-diagram-01.svg)
 
 _배포본 README: [`virtualthread/README.ko.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/virtualthread/README.ko.md)_
 
 ### 런타임 파사드, provider 인터페이스, JDK 구현체, scope 계약, TaskContext를 보여주는 가상 스레드 클래스 구조
 
-[![런타임 파사드, provider 인터페이스, JDK 구현체, scope 계약, TaskContext를 보여주는 가상 스레드 클래스 구조](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/virtualthread-diagram-02.png)](../../assets/readme-diagrams/virtualthread-diagram-02.svg)
+[![런타임 파사드, provider 인터페이스, JDK 구현체, scope 계약, TaskContext를 보여주는 가상 스레드 클래스 구조](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/virtualthread-diagram-02.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/virtualthread-diagram-02.svg)
 
 _배포본 README: [`virtualthread/README.ko.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/virtualthread/README.ko.md)_
 
 ### VirtualThreadRuntime 발견, 지원 여부 필터링, 우선순위 정렬, executor 위임을 보여주는 ServiceLoader 선택 시퀀스
 
-[![VirtualThreadRuntime 발견, 지원 여부 필터링, 우선순위 정렬, executor 위임을 보여주는 ServiceLoader 선택 시퀀스](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/virtualthread-sequence-01.png)](../../assets/readme-diagrams/virtualthread-sequence-01.svg)
+[![VirtualThreadRuntime 발견, 지원 여부 필터링, 우선순위 정렬, executor 위임을 보여주는 ServiceLoader 선택 시퀀스](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/virtualthread-sequence-01.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/virtualthread-sequence-01.svg)
 
 _배포본 README: [`virtualthread/README.ko.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/virtualthread/README.ko.md)_
 

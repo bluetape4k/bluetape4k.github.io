@@ -11,7 +11,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "spring"
   kind: "library"
-  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
+  sourceCommit: "d6eb7f6e617535286959f850024052ad0ca96738"
   sourcePath: "docs/manual/ko/modules/bluetape4k-spring-boot-r2dbc.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -181,29 +181,29 @@ API는 reified type과 Spring Data entity mapping에 의존합니다. raw SQL, b
 <!-- release-readme-diagrams:start -->
 ## 배포본 다이어그램
 
-아래 그림은 현재 개발 브랜치가 아니라 `1.11.0` 배포 태그의 README 자산을 바이트 단위로 그대로 옮긴 것입니다. 따라서 이후 SNAPSHOT 변경이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 SVG 원본이 열립니다.
+아래 그림은 `1.11.0` 배포본의 README 자산을 해당 배포 커밋에서 직접 불러옵니다. 이후 SNAPSHOT이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 같은 배포 커밋의 SVG 원본이 열립니다.
 
 ### Spring Boot R2DBC 핵심 클래스 구조 다이어그램
 
-[![Spring Boot R2DBC 핵심 클래스 구조 다이어그램](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/spring-boot-r2dbc-diagram-01.png)](../../assets/readme-diagrams/spring-boot-r2dbc-diagram-01.svg)
+[![Spring Boot R2DBC 핵심 클래스 구조 다이어그램](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/spring-boot-r2dbc-diagram-01.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/spring-boot-r2dbc-diagram-01.svg)
 
 _배포본 README: [`spring-boot/r2dbc/README.ko.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/spring-boot/r2dbc/README.ko.md)_
 
 ### R2DBC와 Coroutines 데이터 흐름 다이어그램
 
-[![R2DBC와 Coroutines 데이터 흐름 다이어그램](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/spring-boot-r2dbc-diagram-02.png)](../../assets/readme-diagrams/spring-boot-r2dbc-diagram-02.svg)
+[![R2DBC와 Coroutines 데이터 흐름 다이어그램](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/spring-boot-r2dbc-diagram-02.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/spring-boot-r2dbc-diagram-02.svg)
 
 _배포본 README: [`spring-boot/r2dbc/README.ko.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/spring-boot/r2dbc/README.ko.md)_
 
 ### R2DBC CRUD 연산 계층 구조 다이어그램
 
-[![R2DBC CRUD 연산 계층 구조 다이어그램](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/spring-boot-r2dbc-diagram-03.png)](../../assets/readme-diagrams/spring-boot-r2dbc-diagram-03.svg)
+[![R2DBC CRUD 연산 계층 구조 다이어그램](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/spring-boot-r2dbc-diagram-03.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/spring-boot-r2dbc-diagram-03.svg)
 
 _배포본 README: [`spring-boot/r2dbc/README.ko.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/spring-boot/r2dbc/README.ko.md)_
 
 ### R2DBC 코루틴 변환 시퀀스 다이어그램
 
-[![R2DBC 코루틴 변환 시퀀스 다이어그램](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/spring-boot-r2dbc-sequence-01.png)](../../assets/readme-diagrams/spring-boot-r2dbc-sequence-01.svg)
+[![R2DBC 코루틴 변환 시퀀스 다이어그램](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/spring-boot-r2dbc-sequence-01.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/spring-boot-r2dbc-sequence-01.svg)
 
 _배포본 README: [`spring-boot/r2dbc/README.ko.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/spring-boot/r2dbc/README.ko.md)_
 

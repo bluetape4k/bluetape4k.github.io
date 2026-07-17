@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-leader"
   group: "workshops"
   kind: "example"
-  sourceCommit: "dba8da7f095bd73aa5fb595b3b0741dcffd0e494"
+  sourceCommit: "9f8a2152256c1a1ccf4fdbb7d731cf7d6273d700"
   sourcePath: "docs/manual/ko/modules/etcd-reconciler.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -143,29 +143,29 @@ jetcd 접속 주소와 인증 정보, `nodeId`, 공유 조정 락, 리스 시간
 <!-- release-readme-diagrams:start -->
 ## 배포본 다이어그램
 
-아래 그림은 현재 개발 브랜치가 아니라 `0.4.0` 배포 태그의 README 자산을 바이트 단위로 그대로 옮긴 것입니다. 따라서 이후 SNAPSHOT 변경이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 SVG 원본이 열립니다.
+아래 그림은 `0.4.0` 배포본의 README 자산을 해당 배포 커밋에서 직접 불러옵니다. 이후 SNAPSHOT이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 같은 배포 커밋의 SVG 원본이 열립니다.
 
 ### etcd Reconciler 아키텍처
 
-[![etcd Reconciler 아키텍처](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/examples-etcd-reconciler-architecture-01.png)](../../assets/readme-diagrams/examples-etcd-reconciler-architecture-01.svg)
+[![etcd Reconciler 아키텍처](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/examples-etcd-reconciler-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/examples-etcd-reconciler-architecture-01.svg)
 
 _배포본 README: [`examples/etcd-reconciler/README.ko.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/examples/etcd-reconciler/README.ko.md)_
 
 ### Etcd reconciler 처리 흐름
 
-[![Etcd reconciler 처리 흐름](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/examples-etcd-reconciler-flow-01.png)](../../assets/readme-diagrams/examples-etcd-reconciler-flow-01.svg)
+[![Etcd reconciler 처리 흐름](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/examples-etcd-reconciler-flow-01.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/examples-etcd-reconciler-flow-01.svg)
 
 _배포본 README: [`examples/etcd-reconciler/README.ko.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/examples/etcd-reconciler/README.ko.md)_
 
 ### Etcd reconciler 실행 시나리오 다이어그램
 
-[![Etcd reconciler 실행 시나리오 다이어그램](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/examples-etcd-reconciler-scenario-01.png)](../../assets/readme-diagrams/examples-etcd-reconciler-scenario-01.svg)
+[![Etcd reconciler 실행 시나리오 다이어그램](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/examples-etcd-reconciler-scenario-01.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/examples-etcd-reconciler-scenario-01.svg)
 
 _배포본 README: [`examples/etcd-reconciler/README.ko.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/examples/etcd-reconciler/README.ko.md)_
 
 ### etcd Reconciler 실행 흐름
 
-[![etcd Reconciler 실행 흐름](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/examples-etcd-reconciler-sequence-01.png)](../../assets/readme-diagrams/examples-etcd-reconciler-sequence-01.svg)
+[![etcd Reconciler 실행 흐름](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/examples-etcd-reconciler-sequence-01.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/examples-etcd-reconciler-sequence-01.svg)
 
 _배포본 README: [`examples/etcd-reconciler/README.ko.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/examples/etcd-reconciler/README.ko.md)_
 
