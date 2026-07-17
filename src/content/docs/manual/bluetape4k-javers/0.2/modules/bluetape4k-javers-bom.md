@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-javers"
   group: "foundation"
   kind: "library"
-  sourceCommit: "6130ed5b22458c4e5d63e58f44460d06b1e9c07a"
+  sourceCommit: "08744a8df1e25bb3170c6b45d49afe5c96ca72b2"
   sourcePath: "docs/manual/en/modules/bluetape4k-javers-bom.md"
   minorVersion: "0.2"
   releaseRef: "0.2.1"
@@ -20,9 +20,9 @@ manual:
 
 ## Released dependency structure
 
-This diagram is copied from release `0.2.1` and shows the BOM structure for the version documented here.
+This diagram is loaded directly from the immutable `0.2.1` release commit and shows the BOM structure documented here. Select the preview to open the SVG at the same release commit.
 
-[![bluetape4k-javers 0.2.1 BOM structure](/manual-assets/bluetape4k-javers/0.2/readme-diagrams/bom-architecture-01.png)](../../assets/readme-diagrams/bom-architecture-01.svg)
+[![bluetape4k-javers 0.2.1 BOM structure](https://raw.githubusercontent.com/bluetape4k/bluetape4k-javers/bffe19439ca891fa5301a76421bdef7ba75252a0/docs/images/readme-diagrams/bom-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/docs/images/readme-diagrams/bom-architecture-01.svg)
 
 ## Coordinate and selection
 

@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-leader"
   group: "overview"
   kind: "guide"
-  sourceCommit: "dba8da7f095bd73aa5fb595b3b0741dcffd0e494"
+  sourceCommit: "9f8a2152256c1a1ccf4fdbb7d731cf7d6273d700"
   sourcePath: "docs/manual/ko/architecture/repository-map.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -50,29 +50,29 @@ manual:
 <!-- release-readme-diagrams:start -->
 ## 배포본 다이어그램
 
-아래 그림은 현재 개발 브랜치가 아니라 `0.4.0` 배포 태그의 README 자산을 바이트 단위로 그대로 옮긴 것입니다. 따라서 이후 SNAPSHOT 변경이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 SVG 원본이 열립니다.
+아래 그림은 `0.4.0` 배포본의 README 자산을 해당 배포 커밋에서 직접 불러옵니다. 이후 SNAPSHOT이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 같은 배포 커밋의 SVG 원본이 열립니다.
 
 ### Leader election 런타임 구조도
 
-[![Leader election 런타임 구조도](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/bluetape4k-leader-architecture-01.png)](../../assets/readme-diagrams/bluetape4k-leader-architecture-01.svg)
+[![Leader election 런타임 구조도](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/bluetape4k-leader-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/bluetape4k-leader-architecture-01.svg)
 
 _배포본 README: [`README.ko.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/README.ko.md)_
 
 ### runIfLeader 다이어그램
 
-[![runIfLeader 다이어그램](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/bluetape4k-leader-sequence-02.png)](../../assets/readme-diagrams/bluetape4k-leader-sequence-02.svg)
+[![runIfLeader 다이어그램](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/bluetape4k-leader-sequence-02.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/bluetape4k-leader-sequence-02.svg)
 
 _배포본 README: [`README.ko.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/README.ko.md)_
 
 ### Multi-leader group: slot-based semaphore 다이어그램
 
-[![Multi-leader group: slot-based semaphore 다이어그램](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/bluetape4k-leader-sequence-03.png)](../../assets/readme-diagrams/bluetape4k-leader-sequence-03.svg)
+[![Multi-leader group: slot-based semaphore 다이어그램](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/bluetape4k-leader-sequence-03.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/bluetape4k-leader-sequence-03.svg)
 
 _배포본 README: [`README.ko.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/README.ko.md)_
 
 ### Bluetape4k Leader 개요
 
-[![Bluetape4k Leader 개요](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/root-readme-overview-01.png)](../../assets/readme-diagrams/root-readme-overview-01.svg)
+[![Bluetape4k Leader 개요](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/root-readme-overview-01.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/root-readme-overview-01.svg)
 
 _배포본 README: [`README.ko.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/README.ko.md)_
 

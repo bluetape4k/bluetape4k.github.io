@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-graph"
   group: "backends"
   kind: "library"
-  sourceCommit: "c72de9d93ffcd3254f42c35f4cef5a5830062ed3"
+  sourceCommit: "8d30d7a22d69314803453cbb4a8fd4ea8150df0f"
   sourcePath: "docs/manual/en/modules/bluetape4k-graph-falkordb.md"
   minorVersion: "0.5"
   releaseRef: "0.5.1"
@@ -89,11 +89,11 @@ See [FalkorDB guide](/manual/bluetape4k-graph/0.5/backends/falkordb/), [backend 
 <!-- release-readme-diagrams:start -->
 ## Release diagrams
 
-These diagrams are copied byte-for-byte from README assets in the `0.5.1` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+These diagrams are loaded directly from README assets published with the `0.5.1` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### Overview diagram
 
-[![Overview diagram](/manual-assets/bluetape4k-graph/0.5/readme-diagrams/graph-graph-falkordb-architecture-01.png)](../../assets/readme-diagrams/graph-graph-falkordb-architecture-01.svg)
+[![Overview diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-graph/3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907/docs/images/readme-diagrams/graph-graph-falkordb-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-graph/blob/3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907/docs/images/readme-diagrams/graph-graph-falkordb-architecture-01.svg)
 
 _Release README: [`graph/graph-falkordb/README.md`](https://github.com/bluetape4k/bluetape4k-graph/blob/3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907/graph/graph-falkordb/README.md)_
 

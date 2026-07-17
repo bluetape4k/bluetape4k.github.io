@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-graph"
   group: "overview"
   kind: "guide"
-  sourceCommit: "c72de9d93ffcd3254f42c35f4cef5a5830062ed3"
+  sourceCommit: "8d30d7a22d69314803453cbb4a8fd4ea8150df0f"
   sourcePath: "docs/manual/en/benchmarks/age-and-neo4j.md"
   minorVersion: "0.5"
   releaseRef: "0.5.1"
@@ -41,17 +41,17 @@ Container startup failure, AGE extension initialization failure, Bolt readiness 
 <!-- release-readme-diagrams:start -->
 ## Release diagrams
 
-These diagrams are copied byte-for-byte from README assets in the `0.5.1` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+These diagrams are loaded directly from README assets published with the `0.5.1` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### graph-age-benchmark Architecture diagram
 
-[![graph-age-benchmark Architecture diagram](/manual-assets/bluetape4k-graph/0.5/readme-diagrams/benchmark/graph-age-benchmark-architecture-01.png)](../../assets/readme-diagrams/benchmark/graph-age-benchmark-architecture-01.svg)
+[![graph-age-benchmark Architecture diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-graph/3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907/docs/images/readme-diagrams/benchmark/graph-age-benchmark-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-graph/blob/3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907/docs/images/readme-diagrams/benchmark/graph-age-benchmark-architecture-01.svg)
 
 _Release README: [`benchmark/graph-age-benchmark/README.md`](https://github.com/bluetape4k/bluetape4k-graph/blob/3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907/benchmark/graph-age-benchmark/README.md)_
 
 ### graph-neo4j-benchmark Architecture diagram
 
-[![graph-neo4j-benchmark Architecture diagram](/manual-assets/bluetape4k-graph/0.5/readme-diagrams/benchmark/graph-neo4j-benchmark-architecture-01.png)](../../assets/readme-diagrams/benchmark/graph-neo4j-benchmark-architecture-01.svg)
+[![graph-neo4j-benchmark Architecture diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-graph/3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907/docs/images/readme-diagrams/benchmark/graph-neo4j-benchmark-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-graph/blob/3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907/docs/images/readme-diagrams/benchmark/graph-neo4j-benchmark-architecture-01.svg)
 
 _Release README: [`benchmark/graph-neo4j-benchmark/README.md`](https://github.com/bluetape4k/bluetape4k-graph/blob/3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907/benchmark/graph-neo4j-benchmark/README.md)_
 

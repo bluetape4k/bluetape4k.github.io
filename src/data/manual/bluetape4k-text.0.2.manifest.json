@@ -1,5 +1,5 @@
 {
-  "authoringSourceRef": "1d28940432ea5dc3e8f608577682f76b357e4f7e",
+  "authoringSourceRef": "df0e0d259666acdea51e0ba68e9587c99b81b3a5",
   "minorVersion": "0.2",
   "modules": [
     {
@@ -165,30 +165,6 @@
       "assets/operations/request-safety-boundary.svg",
       "assets/overview/repository-learning-map.png",
       "assets/overview/repository-learning-map.svg",
-      "assets/readme-diagrams/bluetape4k-text-architecture-01.png",
-      "assets/readme-diagrams/bluetape4k-text-architecture-01.svg",
-      "assets/readme-diagrams/bom-architecture-01.png",
-      "assets/readme-diagrams/bom-architecture-01.svg",
-      "assets/readme-diagrams/lingua-architecture-01.png",
-      "assets/readme-diagrams/lingua-architecture-01.svg",
-      "assets/readme-diagrams/lingua-class-02.png",
-      "assets/readme-diagrams/lingua-class-02.svg",
-      "assets/readme-diagrams/root-readme-module-chart-01.png",
-      "assets/readme-diagrams/root-readme-module-chart-01.svg",
-      "assets/readme-diagrams/root-readme-overview-01.png",
-      "assets/readme-diagrams/root-readme-overview-01.svg",
-      "assets/readme-diagrams/text-search-architecture-03.png",
-      "assets/readme-diagrams/text-search-architecture-03.svg",
-      "assets/readme-diagrams/text-search-class-01.png",
-      "assets/readme-diagrams/text-search-class-01.svg",
-      "assets/readme-diagrams/text-search-sequence-02.png",
-      "assets/readme-diagrams/text-search-sequence-02.svg",
-      "assets/readme-diagrams/tokenizer-core-class-01.png",
-      "assets/readme-diagrams/tokenizer-core-class-01.svg",
-      "assets/readme-diagrams/tokenizer-japanese-class-01.png",
-      "assets/readme-diagrams/tokenizer-japanese-class-01.svg",
-      "assets/readme-diagrams/tokenizer-korean-class-01.png",
-      "assets/readme-diagrams/tokenizer-korean-class-01.svg",
       "assets/text-search/search-flow.png",
       "assets/text-search/search-flow.svg"
     ],
@@ -252,5 +228,5 @@
   "repository": "bluetape4k/bluetape4k-text",
   "repositorySlug": "bluetape4k-text",
   "schemaVersion": 2,
-  "sourceCommit": "1d28940432ea5dc3e8f608577682f76b357e4f7e"
+  "sourceCommit": "df0e0d259666acdea51e0ba68e9587c99b81b3a5"
 }

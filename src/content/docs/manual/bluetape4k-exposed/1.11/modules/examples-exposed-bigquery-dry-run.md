@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "example"
   kind: "example"
-  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
+  sourceCommit: "cd0ab9cf3b56ac909c72e5e512f9c6d1345d5f4a"
   sourcePath: "docs/manual/en/modules/examples-exposed-bigquery-dry-run.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -109,11 +109,11 @@ The mock proves request construction only. It does not prove IAM, project or dat
 <!-- release-readme-diagrams:start -->
 ## Release diagrams
 
-These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+These diagrams are loaded directly from README assets published with the `1.11.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### BigQuery dry-run example flow
 
-[![BigQuery dry-run example flow](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/examples-exposed-bigquery-dry-run-flow-01.png)](../../assets/readme-diagrams/examples-exposed-bigquery-dry-run-flow-01.svg)
+[![BigQuery dry-run example flow](https://raw.githubusercontent.com/bluetape4k/bluetape4k-exposed/0b494a5fd1e083006046764757342b68a397e4c5/docs/images/readme-diagrams/examples-exposed-bigquery-dry-run-flow-01.png)](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/docs/images/readme-diagrams/examples-exposed-bigquery-dry-run-flow-01.svg)
 
 _Release README: [`examples/exposed-bigquery-dry-run/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/examples/exposed-bigquery-dry-run/README.md)_
 

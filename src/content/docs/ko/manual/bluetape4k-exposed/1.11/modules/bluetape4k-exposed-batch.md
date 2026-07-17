@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "integration"
   kind: "library"
-  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
+  sourceCommit: "cd0ab9cf3b56ac909c72e5e512f9c6d1345d5f4a"
   sourcePath: "docs/manual/ko/modules/bluetape4k-exposed-batch.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -113,23 +113,23 @@ dependencies {
 <!-- release-readme-diagrams:start -->
 ## 배포본 다이어그램
 
-아래 그림은 현재 개발 브랜치가 아니라 `1.11.0` 배포 태그의 README 자산을 바이트 단위로 그대로 옮긴 것입니다. 따라서 이후 SNAPSHOT 변경이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 SVG 원본이 열립니다.
+아래 그림은 `1.11.0` 배포본의 README 자산을 해당 배포 커밋에서 직접 불러옵니다. 이후 SNAPSHOT이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 같은 배포 커밋의 SVG 원본이 열립니다.
 
 ### Batch benchmark comparison 지도
 
-[![Batch benchmark comparison 지도](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/utils-batch-benchmark-map-01.png)](../../assets/readme-diagrams/utils-batch-benchmark-map-01.svg)
+[![Batch benchmark comparison 지도](https://raw.githubusercontent.com/bluetape4k/bluetape4k-exposed/0b494a5fd1e083006046764757342b68a397e4c5/docs/images/readme-diagrams/utils-batch-benchmark-map-01.png)](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/docs/images/readme-diagrams/utils-batch-benchmark-map-01.svg)
 
 _배포본 README: [`utils/batch/benchmark/README.ko.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/utils/batch/benchmark/README.ko.md)_
 
 ### Batch 런타임 role 지도
 
-[![Batch 런타임 role 지도](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/utils-batch-diagram-01.png)](../../assets/readme-diagrams/utils-batch-diagram-01.svg)
+[![Batch 런타임 role 지도](https://raw.githubusercontent.com/bluetape4k/bluetape4k-exposed/0b494a5fd1e083006046764757342b68a397e4c5/docs/images/readme-diagrams/utils-batch-diagram-01.png)](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/docs/images/readme-diagrams/utils-batch-diagram-01.svg)
 
 _배포본 README: [`utils/batch/README.ko.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/utils/batch/README.ko.md)_
 
 ### Batch chunk checkpoint 흐름
 
-[![Batch chunk checkpoint 흐름](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/utils-batch-sequence-01.png)](../../assets/readme-diagrams/utils-batch-sequence-01.svg)
+[![Batch chunk checkpoint 흐름](https://raw.githubusercontent.com/bluetape4k/bluetape4k-exposed/0b494a5fd1e083006046764757342b68a397e4c5/docs/images/readme-diagrams/utils-batch-sequence-01.png)](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/docs/images/readme-diagrams/utils-batch-sequence-01.svg)
 
 _배포본 README: [`utils/batch/README.ko.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/utils/batch/README.ko.md)_
 

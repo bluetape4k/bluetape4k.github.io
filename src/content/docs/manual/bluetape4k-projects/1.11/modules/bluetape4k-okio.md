@@ -11,7 +11,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
+  sourceCommit: "d6eb7f6e617535286959f850024052ad0ca96738"
   sourcePath: "docs/manual/en/modules/bluetape4k-okio.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -126,59 +126,59 @@ This page documents the repository state represented by the linked source and te
 <!-- release-readme-diagrams:start -->
 ## Release diagrams
 
-These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+These diagrams are loaded directly from README assets published with the `1.11.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### Sink / Source Adapter Hierarchy diagram
 
-[![Sink / Source Adapter Hierarchy diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/io-okio-diagram-01.png)](../../assets/readme-diagrams/io-okio-diagram-01.svg)
+[![Sink / Source Adapter Hierarchy diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/io-okio-diagram-01.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/io-okio-diagram-01.svg)
 
 _Release README: [`io/okio/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/io/okio/README.md)_
 
 ### NIO Channel Adapter Hierarchy diagram
 
-[![NIO Channel Adapter Hierarchy diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/io-okio-diagram-02.png)](../../assets/readme-diagrams/io-okio-diagram-02.svg)
+[![NIO Channel Adapter Hierarchy diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/io-okio-diagram-02.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/io-okio-diagram-02.svg)
 
 _Release README: [`io/okio/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/io/okio/README.md)_
 
 ### Coroutines Async I/O Hierarchy diagram
 
-[![Coroutines Async I/O Hierarchy diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/io-okio-diagram-03.png)](../../assets/readme-diagrams/io-okio-diagram-03.svg)
+[![Coroutines Async I/O Hierarchy diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/io-okio-diagram-03.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/io-okio-diagram-03.svg)
 
 _Release README: [`io/okio/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/io/okio/README.md)_
 
 ### Compression Factory (Compressable) diagram
 
-[![Compression Factory (Compressable) diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/io-okio-diagram-04.png)](../../assets/readme-diagrams/io-okio-diagram-04.svg)
+[![Compression Factory (Compressable) diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/io-okio-diagram-04.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/io-okio-diagram-04.svg)
 
 _Release README: [`io/okio/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/io/okio/README.md)_
 
 ### Compression Sink (One-Shot) — compress on close diagram
 
-[![Compression Sink (One-Shot) — compress on close diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/io-okio-sequence-01.png)](../../assets/readme-diagrams/io-okio-sequence-01.svg)
+[![Compression Sink (One-Shot) — compress on close diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/io-okio-sequence-01.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/io-okio-sequence-01.svg)
 
 _Release README: [`io/okio/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/io/okio/README.md)_
 
 ### Compression Sink (Streaming) — compress incrementally diagram
 
-[![Compression Sink (Streaming) — compress incrementally diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/io-okio-sequence-02.png)](../../assets/readme-diagrams/io-okio-sequence-02.svg)
+[![Compression Sink (Streaming) — compress incrementally diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/io-okio-sequence-02.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/io-okio-sequence-02.svg)
 
 _Release README: [`io/okio/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/io/okio/README.md)_
 
 ### Decompression Source (One-Shot) — decompress on first read diagram
 
-[![Decompression Source (One-Shot) — decompress on first read diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/io-okio-sequence-03.png)](../../assets/readme-diagrams/io-okio-sequence-03.svg)
+[![Decompression Source (One-Shot) — decompress on first read diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/io-okio-sequence-03.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/io-okio-sequence-03.svg)
 
 _Release README: [`io/okio/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/io/okio/README.md)_
 
 ### Tink Encryption + Compression Combined Flow diagram
 
-[![Tink Encryption + Compression Combined Flow diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/io-okio-sequence-04.png)](../../assets/readme-diagrams/io-okio-sequence-04.svg)
+[![Tink Encryption + Compression Combined Flow diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/io-okio-sequence-04.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/io-okio-sequence-04.svg)
 
 _Release README: [`io/okio/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/io/okio/README.md)_
 
 ### Coroutines Async File I/O Flow diagram
 
-[![Coroutines Async File I/O Flow diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/io-okio-sequence-05.png)](../../assets/readme-diagrams/io-okio-sequence-05.svg)
+[![Coroutines Async File I/O Flow diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/io-okio-sequence-05.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/io-okio-sequence-05.svg)
 
 _Release README: [`io/okio/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/io/okio/README.md)_
 

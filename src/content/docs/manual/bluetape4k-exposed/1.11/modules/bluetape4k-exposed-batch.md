@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "integration"
   kind: "library"
-  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
+  sourceCommit: "cd0ab9cf3b56ac909c72e5e512f9c6d1345d5f4a"
   sourcePath: "docs/manual/en/modules/bluetape4k-exposed-batch.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -113,23 +113,23 @@ The write/checkpoint boundary is at-least-once, not exactly-once. `InMemoryBatch
 <!-- release-readme-diagrams:start -->
 ## Release diagrams
 
-These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+These diagrams are loaded directly from README assets published with the `1.11.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### Batch benchmark comparison map
 
-[![Batch benchmark comparison map](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/utils-batch-benchmark-map-01.png)](../../assets/readme-diagrams/utils-batch-benchmark-map-01.svg)
+[![Batch benchmark comparison map](https://raw.githubusercontent.com/bluetape4k/bluetape4k-exposed/0b494a5fd1e083006046764757342b68a397e4c5/docs/images/readme-diagrams/utils-batch-benchmark-map-01.png)](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/docs/images/readme-diagrams/utils-batch-benchmark-map-01.svg)
 
 _Release README: [`utils/batch/benchmark/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/utils/batch/benchmark/README.md)_
 
 ### Batch runtime role map
 
-[![Batch runtime role map](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/utils-batch-diagram-01.png)](../../assets/readme-diagrams/utils-batch-diagram-01.svg)
+[![Batch runtime role map](https://raw.githubusercontent.com/bluetape4k/bluetape4k-exposed/0b494a5fd1e083006046764757342b68a397e4c5/docs/images/readme-diagrams/utils-batch-diagram-01.png)](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/docs/images/readme-diagrams/utils-batch-diagram-01.svg)
 
 _Release README: [`utils/batch/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/utils/batch/README.md)_
 
 ### Batch chunk checkpoint flow
 
-[![Batch chunk checkpoint flow](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/utils-batch-sequence-01.png)](../../assets/readme-diagrams/utils-batch-sequence-01.svg)
+[![Batch chunk checkpoint flow](https://raw.githubusercontent.com/bluetape4k/bluetape4k-exposed/0b494a5fd1e083006046764757342b68a397e4c5/docs/images/readme-diagrams/utils-batch-sequence-01.png)](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/docs/images/readme-diagrams/utils-batch-sequence-01.svg)
 
 _Release README: [`utils/batch/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/utils/batch/README.md)_
 

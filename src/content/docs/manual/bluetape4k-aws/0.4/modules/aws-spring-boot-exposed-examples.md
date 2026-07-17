@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-aws"
   group: "example-database"
   kind: "example"
-  sourceCommit: "6b25d4663a87099fc94ced293eb7ca024420edc7"
+  sourceCommit: "6e3e90395ce89b999944c6236cd292650585e28f"
   sourcePath: "docs/manual/en/modules/aws-spring-boot-exposed-examples.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -89,11 +89,11 @@ The test does not call AWS configuration services or RDS IAM and does not prove 
 <!-- release-readme-diagrams:start -->
 ## Release diagrams
 
-These diagrams are copied byte-for-byte from README assets in the `0.4.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+These diagrams are loaded directly from README assets published with the `0.4.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### aws spring boot exposed examples Architecture diagram
 
-[![aws spring boot exposed examples Architecture diagram](/manual-assets/bluetape4k-aws/0.4/readme-diagrams/examples-aws-spring-boot-exposed-examples-architecture-01.png)](../../assets/readme-diagrams/examples-aws-spring-boot-exposed-examples-architecture-01.svg)
+[![aws spring boot exposed examples Architecture diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/be4e6daea5654f84579955307ec56a58c8f405be/docs/images/readme-diagrams/examples-aws-spring-boot-exposed-examples-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/docs/images/readme-diagrams/examples-aws-spring-boot-exposed-examples-architecture-01.svg)
 
 _Release README: [`examples/aws-spring-boot-exposed-examples/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/examples/aws-spring-boot-exposed-examples/README.md)_
 

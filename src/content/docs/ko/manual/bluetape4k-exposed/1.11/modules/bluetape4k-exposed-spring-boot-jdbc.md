@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "integration"
   kind: "library"
-  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
+  sourceCommit: "cd0ab9cf3b56ac909c72e5e512f9c6d1345d5f4a"
   sourcePath: "docs/manual/ko/modules/bluetape4k-exposed-spring-boot-jdbc.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -114,17 +114,17 @@ Testcontainers로 운영과 같은 데이터베이스 계열을 사용합니다.
 <!-- release-readme-diagrams:start -->
 ## 배포본 다이어그램
 
-아래 그림은 현재 개발 브랜치가 아니라 `1.11.0` 배포 태그의 README 자산을 바이트 단위로 그대로 옮긴 것입니다. 따라서 이후 SNAPSHOT 변경이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 SVG 원본이 열립니다.
+아래 그림은 `1.11.0` 배포본의 README 자산을 해당 배포 커밋에서 직접 불러옵니다. 이후 SNAPSHOT이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 같은 배포 커밋의 SVG 원본이 열립니다.
 
 ### Spring Boot Exposed JDBC repository wiring 다이어그램
 
-[![Spring Boot Exposed JDBC repository wiring 다이어그램](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/spring-boot-exposed-jdbc-diagram-01.png)](../../assets/readme-diagrams/spring-boot-exposed-jdbc-diagram-01.svg)
+[![Spring Boot Exposed JDBC repository wiring 다이어그램](https://raw.githubusercontent.com/bluetape4k/bluetape4k-exposed/0b494a5fd1e083006046764757342b68a397e4c5/docs/images/readme-diagrams/spring-boot-exposed-jdbc-diagram-01.png)](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/docs/images/readme-diagrams/spring-boot-exposed-jdbc-diagram-01.svg)
 
 _배포본 README: [`spring-boot/jdbc/README.ko.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/spring-boot/jdbc/README.ko.md)_
 
 ### Spring Boot Exposed JDBC query resolution 처리 흐름
 
-[![Spring Boot Exposed JDBC query resolution 처리 흐름](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/spring-boot-exposed-jdbc-diagram-02.png)](../../assets/readme-diagrams/spring-boot-exposed-jdbc-diagram-02.svg)
+[![Spring Boot Exposed JDBC query resolution 처리 흐름](https://raw.githubusercontent.com/bluetape4k/bluetape4k-exposed/0b494a5fd1e083006046764757342b68a397e4c5/docs/images/readme-diagrams/spring-boot-exposed-jdbc-diagram-02.png)](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/docs/images/readme-diagrams/spring-boot-exposed-jdbc-diagram-02.svg)
 
 _배포본 README: [`spring-boot/jdbc/README.ko.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/spring-boot/jdbc/README.ko.md)_
 

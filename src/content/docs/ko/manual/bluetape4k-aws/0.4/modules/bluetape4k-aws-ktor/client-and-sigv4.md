@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-aws"
   group: "framework"
   kind: "library"
-  sourceCommit: "6b25d4663a87099fc94ced293eb7ca024420edc7"
+  sourceCommit: "6e3e90395ce89b999944c6236cd292650585e28f"
   sourcePath: "docs/manual/ko/modules/bluetape4k-aws-ktor/client-and-sigv4.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -17,6 +17,7 @@ manual:
   sourceDir: "aws-ktor"
   layer: "build"
   chapterId: "client-and-sigv4"
+  chapterOrder: 1
 ---
 
 

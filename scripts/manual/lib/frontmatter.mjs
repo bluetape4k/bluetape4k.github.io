@@ -45,6 +45,26 @@ function rewriteRepositoryLinks(content, repository, releaseRef) {
   );
 }
 
+function assertReleaseDiagramLinks(content, repository, releaseCommit, sourcePath) {
+  if (content.includes('assets/readme-diagrams/')) {
+    throw new Error(`${sourcePath}: release README diagrams must use immutable GitHub links`);
+  }
+
+  const escapedRepository = repository.repository.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const patterns = [
+    new RegExp(`https://raw\\.githubusercontent\\.com/${escapedRepository}/([^/)\\s]+)/docs/images/readme-diagrams/[^)\\s]+`, 'g'),
+    new RegExp(`https://github\\.com/${escapedRepository}/blob/([^/)\\s]+)/docs/images/readme-diagrams/[^)\\s]+`, 'g'),
+  ];
+  for (const pattern of patterns) {
+    for (const match of content.matchAll(pattern)) {
+      if (match[1] !== releaseCommit) {
+        throw new Error(`${sourcePath}: release README diagram uses ${match[1]}, expected ${releaseCommit}`);
+      }
+    }
+  }
+  return content;
+}
+
 function rewriteManualLinks(content, repository, minorVersion, sourcePath) {
   return content.replaceAll(
     /(\]\()([^)\s]+\.md)(#[^)]*)?(\))/g,
@@ -72,6 +92,7 @@ export function transformManual({
   releaseCommit,
   minorVersion,
 }) {
+  content = assertReleaseDiagramLinks(content, repository, releaseCommit, sourcePath);
   content = withFrontmatter(content, sourcePath);
   const end = content.indexOf('\n---\n', 4);
   if (end < 0) throw new Error(`${sourcePath}: YAML frontmatter is not closed`);

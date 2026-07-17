@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-leader"
   group: "backends"
   kind: "library"
-  sourceCommit: "dba8da7f095bd73aa5fb595b3b0741dcffd0e494"
+  sourceCommit: "9f8a2152256c1a1ccf4fdbb7d731cf7d6273d700"
   sourcePath: "docs/manual/en/modules/bluetape4k-leader-k8s.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -100,17 +100,17 @@ Preview API may evolve. Kubernetes API availability, RBAC, and rate limits are o
 <!-- release-readme-diagrams:start -->
 ## Release diagrams
 
-These diagrams are copied byte-for-byte from README assets in the `0.4.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+These diagrams are loaded directly from README assets published with the `0.4.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### leader-k8s architecture diagram
 
-[![leader-k8s architecture diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/leader-k8s-architecture-01.png)](../../assets/readme-diagrams/leader-k8s-architecture-01.svg)
+[![leader-k8s architecture diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/leader-k8s-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/leader-k8s-architecture-01.svg)
 
 _Release README: [`leader-k8s/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/leader-k8s/README.md)_
 
 ### leader-k8s acquire and release sequence diagram
 
-[![leader-k8s acquire and release sequence diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/leader-k8s-sequence-02.png)](../../assets/readme-diagrams/leader-k8s-sequence-02.svg)
+[![leader-k8s acquire and release sequence diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/leader-k8s-sequence-02.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/leader-k8s-sequence-02.svg)
 
 _Release README: [`leader-k8s/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/leader-k8s/README.md)_
 

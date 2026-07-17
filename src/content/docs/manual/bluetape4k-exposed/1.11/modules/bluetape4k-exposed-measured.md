@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "serialization"
   kind: "library"
-  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
+  sourceCommit: "cd0ab9cf3b56ac909c72e5e512f9c6d1345d5f4a"
   sourcePath: "docs/manual/en/modules/bluetape4k-exposed-measured.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -120,23 +120,23 @@ The module stores no unit metadata, provenance, uncertainty, significant figures
 <!-- release-readme-diagrams:start -->
 ## Release diagrams
 
-These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+These diagrams are loaded directly from README assets published with the `1.11.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### Measured column DSL coverage
 
-[![Measured column DSL coverage](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-measured-diagram-01.png)](../../assets/readme-diagrams/exposed-measured-diagram-01.svg)
+[![Measured column DSL coverage](https://raw.githubusercontent.com/bluetape4k/bluetape4k-exposed/0b494a5fd1e083006046764757342b68a397e4c5/docs/images/readme-diagrams/exposed-measured-diagram-01.png)](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/docs/images/readme-diagrams/exposed-measured-diagram-01.svg)
 
 _Release README: [`exposed/measured/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/measured/README.md)_
 
 ### Measured column conversion flow
 
-[![Measured column conversion flow](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-measured-diagram-02.png)](../../assets/readme-diagrams/exposed-measured-diagram-02.svg)
+[![Measured column conversion flow](https://raw.githubusercontent.com/bluetape4k/bluetape4k-exposed/0b494a5fd1e083006046764757342b68a397e4c5/docs/images/readme-diagrams/exposed-measured-diagram-02.png)](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/docs/images/readme-diagrams/exposed-measured-diagram-02.svg)
 
 _Release README: [`exposed/measured/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/measured/README.md)_
 
 ### Measured column round trip
 
-[![Measured column round trip](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-measured-sequence-01.png)](../../assets/readme-diagrams/exposed-measured-sequence-01.svg)
+[![Measured column round trip](https://raw.githubusercontent.com/bluetape4k/bluetape4k-exposed/0b494a5fd1e083006046764757342b68a397e4c5/docs/images/readme-diagrams/exposed-measured-sequence-01.png)](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/docs/images/readme-diagrams/exposed-measured-sequence-01.svg)
 
 _Release README: [`exposed/measured/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/measured/README.md)_
 

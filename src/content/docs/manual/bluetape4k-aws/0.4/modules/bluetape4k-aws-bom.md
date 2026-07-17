@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-aws"
   group: "foundation"
   kind: "library"
-  sourceCommit: "6b25d4663a87099fc94ced293eb7ca024420edc7"
+  sourceCommit: "6e3e90395ce89b999944c6236cd292650585e28f"
   sourcePath: "docs/manual/en/modules/bluetape4k-aws-bom.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -102,11 +102,11 @@ This BOM does not add AWS SDK service jars, create clients, or configure credent
 <!-- release-readme-diagrams:start -->
 ## Release diagrams
 
-These diagrams are copied byte-for-byte from README assets in the `0.4.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+These diagrams are loaded directly from README assets published with the `0.4.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### bom Architecture diagram
 
-[![bom Architecture diagram](/manual-assets/bluetape4k-aws/0.4/readme-diagrams/bom-architecture-01.png)](../../assets/readme-diagrams/bom-architecture-01.svg)
+[![bom Architecture diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/be4e6daea5654f84579955307ec56a58c8f405be/docs/images/readme-diagrams/bom-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/docs/images/readme-diagrams/bom-architecture-01.svg)
 
 _Release README: [`bom/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/bom/README.md)_
 

@@ -11,7 +11,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "spring"
   kind: "library"
-  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
+  sourceCommit: "d6eb7f6e617535286959f850024052ad0ca96738"
   sourcePath: "docs/manual/en/modules/bluetape4k-spring-boot-core.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -192,29 +192,29 @@ This manual describes the `bluetape4k-projects` 1.11.0 release source. Despite t
 <!-- release-readme-diagrams:start -->
 ## Release diagrams
 
-These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+These diagrams are loaded directly from README assets published with the `1.11.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### Spring Boot Core Capability Map diagram
 
-[![Spring Boot Core Capability Map diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/spring-boot-core-diagram-01.png)](../../assets/readme-diagrams/spring-boot-core-diagram-01.svg)
+[![Spring Boot Core Capability Map diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/spring-boot-core-diagram-01.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/spring-boot-core-diagram-01.svg)
 
 _Release README: [`spring-boot/core/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/spring-boot/core/README.md)_
 
 ### Spring WebFlux + Coroutines Request Flow diagram
 
-[![Spring WebFlux + Coroutines Request Flow diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/spring-boot-core-diagram-02.png)](../../assets/readme-diagrams/spring-boot-core-diagram-02.svg)
+[![Spring WebFlux + Coroutines Request Flow diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/spring-boot-core-diagram-02.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/spring-boot-core-diagram-02.svg)
 
 _Release README: [`spring-boot/core/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/spring-boot/core/README.md)_
 
 ### RestClient Coroutines DSL Structure diagram
 
-[![RestClient Coroutines DSL Structure diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/spring-boot-core-diagram-03.png)](../../assets/readme-diagrams/spring-boot-core-diagram-03.svg)
+[![RestClient Coroutines DSL Structure diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/spring-boot-core-diagram-03.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/spring-boot-core-diagram-03.svg)
 
 _Release README: [`spring-boot/core/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/spring-boot/core/README.md)_
 
 ### WebClient Dedicated Resource Configuration diagram
 
-[![WebClient Dedicated Resource Configuration diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/spring-boot-core-diagram-04.png)](../../assets/readme-diagrams/spring-boot-core-diagram-04.svg)
+[![WebClient Dedicated Resource Configuration diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/spring-boot-core-diagram-04.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/spring-boot-core-diagram-04.svg)
 
 _Release README: [`spring-boot/core/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/spring-boot/core/README.md)_
 

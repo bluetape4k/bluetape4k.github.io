@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-aws"
   group: "framework"
   kind: "library"
-  sourceCommit: "6b25d4663a87099fc94ced293eb7ca024420edc7"
+  sourceCommit: "6e3e90395ce89b999944c6236cd292650585e28f"
   sourcePath: "docs/manual/en/modules/bluetape4k-aws-ktor.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -100,35 +100,35 @@ The Ktor REST helpers do not replace the full AWS SDK surface, and installing a 
 <!-- release-readme-diagrams:start -->
 ## Release diagrams
 
-These diagrams are copied byte-for-byte from README assets in the `0.4.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+These diagrams are loaded directly from README assets published with the `0.4.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### AWS Ktor Architecture
 
-[![AWS Ktor Architecture](/manual-assets/bluetape4k-aws/0.4/readme-diagrams/aws-ktor-architecture-01.png)](../../assets/readme-diagrams/aws-ktor-architecture-01.svg)
+[![AWS Ktor Architecture](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/be4e6daea5654f84579955307ec56a58c8f405be/docs/images/readme-diagrams/aws-ktor-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/docs/images/readme-diagrams/aws-ktor-architecture-01.svg)
 
 _Release README: [`aws-ktor/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/aws-ktor/README.md)_
 
 ### Ktor S3 Access Grants flow
 
-[![Ktor S3 Access Grants flow](/manual-assets/bluetape4k-aws/0.4/readme-diagrams/aws-ktor-s3-access-grants-flow-01.png)](../../assets/readme-diagrams/aws-ktor-s3-access-grants-flow-01.svg)
+[![Ktor S3 Access Grants flow](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/be4e6daea5654f84579955307ec56a58c8f405be/docs/images/readme-diagrams/aws-ktor-s3-access-grants-flow-01.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/docs/images/readme-diagrams/aws-ktor-s3-access-grants-flow-01.svg)
 
 _Release README: [`aws-ktor/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/aws-ktor/README.md)_
 
 ### Advanced S3 helper architecture
 
-[![Advanced S3 helper architecture](/manual-assets/bluetape4k-aws/0.4/readme-diagrams/aws-ktor-s3-advanced-architecture-01.png)](../../assets/readme-diagrams/aws-ktor-s3-advanced-architecture-01.svg)
+[![Advanced S3 helper architecture](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/be4e6daea5654f84579955307ec56a58c8f405be/docs/images/readme-diagrams/aws-ktor-s3-advanced-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/docs/images/readme-diagrams/aws-ktor-s3-advanced-architecture-01.svg)
 
 _Release README: [`aws-ktor/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/aws-ktor/README.md)_
 
 ### Advanced S3 upload/load sequence
 
-[![Advanced S3 upload/load sequence](/manual-assets/bluetape4k-aws/0.4/readme-diagrams/aws-ktor-s3-advanced-sequence-01.png)](../../assets/readme-diagrams/aws-ktor-s3-advanced-sequence-01.svg)
+[![Advanced S3 upload/load sequence](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/be4e6daea5654f84579955307ec56a58c8f405be/docs/images/readme-diagrams/aws-ktor-s3-advanced-sequence-01.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/docs/images/readme-diagrams/aws-ktor-s3-advanced-sequence-01.svg)
 
 _Release README: [`aws-ktor/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/aws-ktor/README.md)_
 
 ### SQS Consumer And Publisher diagram
 
-[![SQS Consumer And Publisher diagram](/manual-assets/bluetape4k-aws/0.4/readme-diagrams/aws-ktor-sequence-01.png)](../../assets/readme-diagrams/aws-ktor-sequence-01.svg)
+[![SQS Consumer And Publisher diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/be4e6daea5654f84579955307ec56a58c8f405be/docs/images/readme-diagrams/aws-ktor-sequence-01.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/docs/images/readme-diagrams/aws-ktor-sequence-01.svg)
 
 _Release README: [`aws-ktor/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/aws-ktor/README.md)_
 

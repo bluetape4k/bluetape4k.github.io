@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-leader"
   group: "workshops"
   kind: "example"
-  sourceCommit: "dba8da7f095bd73aa5fb595b3b0741dcffd0e494"
+  sourceCommit: "9f8a2152256c1a1ccf4fdbb7d731cf7d6273d700"
   sourcePath: "docs/manual/en/modules/k8s-lease.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -143,29 +143,29 @@ The demo favors a compact, observable scenario. It does not define production to
 <!-- release-readme-diagrams:start -->
 ## Release diagrams
 
-These diagrams are copied byte-for-byte from README assets in the `0.4.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+These diagrams are loaded directly from README assets published with the `0.4.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### k8s lease Architecture diagram
 
-[![k8s lease Architecture diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/examples-k8s-lease-architecture-01.png)](../../assets/readme-diagrams/examples-k8s-lease-architecture-01.svg)
+[![k8s lease Architecture diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/examples-k8s-lease-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/examples-k8s-lease-architecture-01.svg)
 
 _Release README: [`examples/k8s-lease/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/examples/k8s-lease/README.md)_
 
 ### K8s lease flow diagram
 
-[![K8s lease flow diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/examples-k8s-lease-flow-01.png)](../../assets/readme-diagrams/examples-k8s-lease-flow-01.svg)
+[![K8s lease flow diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/examples-k8s-lease-flow-01.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/examples-k8s-lease-flow-01.svg)
 
 _Release README: [`examples/k8s-lease/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/examples/k8s-lease/README.md)_
 
 ### K8s Lease scenario diagram
 
-[![K8s Lease scenario diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/examples-k8s-lease-scenario-01.png)](../../assets/readme-diagrams/examples-k8s-lease-scenario-01.svg)
+[![K8s Lease scenario diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/examples-k8s-lease-scenario-01.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/examples-k8s-lease-scenario-01.svg)
 
 _Release README: [`examples/k8s-lease/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/examples/k8s-lease/README.md)_
 
 ### k8s lease Sequence Flow diagram
 
-[![k8s lease Sequence Flow diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/examples-k8s-lease-sequence-01.png)](../../assets/readme-diagrams/examples-k8s-lease-sequence-01.svg)
+[![k8s lease Sequence Flow diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/examples-k8s-lease-sequence-01.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/docs/images/readme-diagrams/examples-k8s-lease-sequence-01.svg)
 
 _Release README: [`examples/k8s-lease/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/examples/k8s-lease/README.md)_
 

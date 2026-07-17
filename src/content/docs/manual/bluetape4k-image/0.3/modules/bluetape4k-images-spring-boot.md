@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-image"
   group: "frameworks"
   kind: "library"
-  sourceCommit: "4f32b77dff190acb79534b67b34f9056843ebeeb"
+  sourceCommit: "b6c46eba43a51a4224e0835cc197bf83358bd333"
   sourcePath: "docs/manual/en/modules/bluetape4k-images-spring-boot.md"
   minorVersion: "0.3"
   releaseRef: "0.3.0"
@@ -117,11 +117,11 @@ S3 path uploads are read into a byte array because `S3Operations` has no streami
 <!-- release-readme-diagrams:start -->
 ## Release diagrams
 
-These diagrams are copied byte-for-byte from README assets in the `0.3.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+These diagrams are loaded directly from README assets published with the `0.3.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### Images Spring Boot Architecture diagram
 
-[![Images Spring Boot Architecture diagram](/manual-assets/bluetape4k-image/0.3/readme-diagrams/images-spring-boot-architecture-01.png)](../../assets/readme-diagrams/images-spring-boot-architecture-01.svg)
+[![Images Spring Boot Architecture diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-image/a571c30004f571fe8cfcddc29670c1404d212ec6/docs/images/readme-diagrams/images-spring-boot-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/docs/images/readme-diagrams/images-spring-boot-architecture-01.svg)
 
 _Release README: [`images-spring-boot/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/images-spring-boot/README.md)_
 

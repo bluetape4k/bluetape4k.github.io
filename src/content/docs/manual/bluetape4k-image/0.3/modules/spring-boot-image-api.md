@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-image"
   group: "workshops"
   kind: "example"
-  sourceCommit: "4f32b77dff190acb79534b67b34f9056843ebeeb"
+  sourceCommit: "b6c46eba43a51a4224e0835cc197bf83358bd333"
   sourcePath: "docs/manual/en/modules/spring-boot-image-api.md"
   minorVersion: "0.3"
   releaseRef: "0.3.0"
@@ -122,23 +122,23 @@ The workshop is a local quickstart. It omits S3/CDN configuration, authenticatio
 <!-- release-readme-diagrams:start -->
 ## Release diagrams
 
-These diagrams are copied byte-for-byte from README assets in the `0.3.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+These diagrams are loaded directly from README assets published with the `0.3.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### Spring Boot Image API Architecture
 
-[![Spring Boot Image API Architecture](/manual-assets/bluetape4k-image/0.3/readme-diagrams/examples-spring-boot-image-api-architecture-01.png)](../../assets/readme-diagrams/examples-spring-boot-image-api-architecture-01.svg)
+[![Spring Boot Image API Architecture](https://raw.githubusercontent.com/bluetape4k/bluetape4k-image/a571c30004f571fe8cfcddc29670c1404d212ec6/docs/images/readme-diagrams/examples-spring-boot-image-api-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/docs/images/readme-diagrams/examples-spring-boot-image-api-architecture-01.svg)
 
 _Release README: [`examples/spring-boot-image-api/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/examples/spring-boot-image-api/README.md)_
 
 ### Spring Boot Image API Scenario
 
-[![Spring Boot Image API Scenario](/manual-assets/bluetape4k-image/0.3/readme-diagrams/examples-spring-boot-image-api-scenario-01.png)](../../assets/readme-diagrams/examples-spring-boot-image-api-scenario-01.svg)
+[![Spring Boot Image API Scenario](https://raw.githubusercontent.com/bluetape4k/bluetape4k-image/a571c30004f571fe8cfcddc29670c1404d212ec6/docs/images/readme-diagrams/examples-spring-boot-image-api-scenario-01.png)](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/docs/images/readme-diagrams/examples-spring-boot-image-api-scenario-01.svg)
 
 _Release README: [`examples/spring-boot-image-api/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/examples/spring-boot-image-api/README.md)_
 
 ### Spring Boot Image API Sequence
 
-[![Spring Boot Image API Sequence](/manual-assets/bluetape4k-image/0.3/readme-diagrams/examples-spring-boot-image-api-sequence-01.png)](../../assets/readme-diagrams/examples-spring-boot-image-api-sequence-01.svg)
+[![Spring Boot Image API Sequence](https://raw.githubusercontent.com/bluetape4k/bluetape4k-image/a571c30004f571fe8cfcddc29670c1404d212ec6/docs/images/readme-diagrams/examples-spring-boot-image-api-sequence-01.png)](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/docs/images/readme-diagrams/examples-spring-boot-image-api-sequence-01.svg)
 
 _Release README: [`examples/spring-boot-image-api/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/examples/spring-boot-image-api/README.md)_
 

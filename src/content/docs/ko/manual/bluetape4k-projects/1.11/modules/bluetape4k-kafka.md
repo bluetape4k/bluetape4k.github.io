@@ -11,7 +11,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "messaging"
   kind: "library"
-  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
+  sourceCommit: "d6eb7f6e617535286959f850024052ad0ca96738"
   sourcePath: "docs/manual/ko/modules/bluetape4k-kafka.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -170,23 +170,23 @@ server 없는 helper test부터 실행하고 Kafka가 필요한 통합 test는 �
 <!-- release-readme-diagrams:start -->
 ## 배포본 다이어그램
 
-아래 그림은 현재 개발 브랜치가 아니라 `1.11.0` 배포 태그의 README 자산을 바이트 단위로 그대로 옮긴 것입니다. 따라서 이후 SNAPSHOT 변경이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 SVG 원본이 열립니다.
+아래 그림은 `1.11.0` 배포본의 README 자산을 해당 배포 커밋에서 직접 불러옵니다. 이후 SNAPSHOT이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 같은 배포 커밋의 SVG 원본이 열립니다.
 
 ### Kafka API 구조
 
-[![Kafka API 구조](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/infra-kafka-diagram-01.png)](../../assets/readme-diagrams/infra-kafka-diagram-01.svg)
+[![Kafka API 구조](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/infra-kafka-diagram-01.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/infra-kafka-diagram-01.svg)
 
 _배포본 README: [`infra/kafka/README.ko.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/infra/kafka/README.ko.md)_
 
 ### Kafka Streams 다이어그램
 
-[![Kafka Streams 다이어그램](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/infra-kafka-diagram-02.png)](../../assets/readme-diagrams/infra-kafka-diagram-02.svg)
+[![Kafka Streams 다이어그램](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/infra-kafka-diagram-02.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/infra-kafka-diagram-02.svg)
 
 _배포본 README: [`infra/kafka/README.ko.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/infra/kafka/README.ko.md)_
 
 ### Producer/Consumer 다이어그램
 
-[![Producer/Consumer 다이어그램](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/infra-kafka-sequence-01.png)](../../assets/readme-diagrams/infra-kafka-sequence-01.svg)
+[![Producer/Consumer 다이어그램](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/infra-kafka-sequence-01.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/docs/images/readme-diagrams/infra-kafka-sequence-01.svg)
 
 _배포본 README: [`infra/kafka/README.ko.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/infra/kafka/README.ko.md)_
 

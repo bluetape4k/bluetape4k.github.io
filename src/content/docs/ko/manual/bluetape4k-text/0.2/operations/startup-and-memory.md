@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-text"
   group: "overview"
   kind: "guide"
-  sourceCommit: "1d28940432ea5dc3e8f608577682f76b357e4f7e"
+  sourceCommit: "df0e0d259666acdea51e0ba68e9587c99b81b3a5"
   sourcePath: "docs/manual/ko/operations/startup-and-memory.md"
   minorVersion: "0.2"
   releaseRef: "0.2.1"
