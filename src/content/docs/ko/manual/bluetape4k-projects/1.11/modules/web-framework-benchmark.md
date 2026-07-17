@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/web-framework-benchmark"
 manualId: web-framework-benchmark
-title: "Web Framework Benchmark"
+title: "웹 프레임워크 성능 비교"
 description: "이 모듈은 Ktor CIO와 Spring WebFlux로 같은 HTTP workload를 구현하고 비교합니다. JDK HttpClient로 local loopback server에 요청을 보내므로, framework routing, JSON 응답 직렬화, 요청 처리, 최소 server lifecycle 비용이 함께 측정됩니다."
 kind: benchmark
-group: experiments
+group: examples
+learningOrder: 1520
 manual:
   id: "web-framework-benchmark"
   repository: "bluetape4k-projects"
-  group: "experiments"
+  group: "examples"
   kind: "benchmark"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/web-framework-benchmark.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "benchmark/web-framework-benchmark"
   layer: "apply"
+  learningOrder: 1520
 ---
 
 

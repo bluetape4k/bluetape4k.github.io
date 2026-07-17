@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-grpc"
 manualId: bluetape4k-grpc
-title: "Module bluetape4k-grpc"
+title: "gRPC 코루틴 확장"
 description: "gRPC 서버/클라이언트 구현을 위한 Kotlin 확장 라이브러리입니다."
 kind: library
 group: io
+learningOrder: 440
 manual:
   id: "bluetape4k-grpc"
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-grpc.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "io/grpc"
   layer: "build"
+  learningOrder: 440
 ---
 
 

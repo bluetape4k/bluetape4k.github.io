@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-mock-webflux-server"
 manualId: bluetape4k-mock-webflux-server
-title: "bluetape4k-mock-webflux-server"
+title: "WebFlux 모의 서버"
 description: "통합 테스트용 독립 실행형 Spring Boot 4 + WebFlux Mock 서버입니다. httpbin.org, jsonplaceholder.typicode.com와 호환되는 HTTP 엔드포인트를 Kotlin Coroutines (suspend fun, Flow)로 구현합니다. Docker 컨테이너 내부에서 80(HTTP) / 8443(HTTPS) 포트로 실행됩니다."
 kind: library
 group: testing
+learningOrder: 1140
 manual:
   id: "bluetape4k-mock-webflux-server"
   repository: "bluetape4k-projects"
   group: "testing"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-mock-webflux-server.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "testing/mock-webflux-server"
   layer: "build"
+  learningOrder: 1140
 ---
 
 

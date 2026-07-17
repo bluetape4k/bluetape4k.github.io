@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-elasticsearch"
 manualId: bluetape4k-elasticsearch
-title: "Module bluetape4k-elasticsearch"
+title: "Elasticsearch 클라이언트 확장"
 description: "Kotlin + Coroutines 환경에서 쓰기 위한 Elasticsearch 클라이언트 라이브러리입니다. Elasticsearch 9.x Java API 클라이언트를 Kotlin DSL로 만들고, suspend 함수와 Flow 기반 파이프라인으로 비동기 작업을 다루기 쉽게 해줍니다."
 kind: library
-group: infrastructure
+group: data
+learningOrder: 660
 manual:
   id: "bluetape4k-elasticsearch"
   repository: "bluetape4k-projects"
-  group: "infrastructure"
+  group: "data"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-elasticsearch.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "infra/elasticsearch"
   layer: "build"
+  learningOrder: 660
 ---
 
 

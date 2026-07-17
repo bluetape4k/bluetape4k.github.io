@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-r2dbc"
 manualId: bluetape4k-r2dbc
-title: "Module bluetape4k-r2dbc"
+title: "R2DBC 코루틴 확장"
 description: "Spring R2DBC를 Kotlin Coroutines와 Flow로 다루는 SQL 실행, mapping, transaction, connection pool 도구를 설명합니다."
 kind: library
 group: data
+learningOrder: 610
 manual:
   id: "bluetape4k-r2dbc"
   repository: "bluetape4k-projects"
   group: "data"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-r2dbc.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "data/r2dbc"
   layer: "build"
+  learningOrder: 610
 ---
 
 

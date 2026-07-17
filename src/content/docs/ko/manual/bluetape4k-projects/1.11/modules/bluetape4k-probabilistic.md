@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-probabilistic"
 manualId: bluetape4k-probabilistic
-title: "bluetape4k Probabilistic"
+title: "확률적 자료 구조"
 description: "JVM 애플리케이션에서 사용할 인메모리 확률적 자료구조 모듈입니다."
 kind: library
 group: utilities
+learningOrder: 1260
 manual:
   id: "bluetape4k-probabilistic"
   repository: "bluetape4k-projects"
   group: "utilities"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-probabilistic.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "utils/probabilistic"
   layer: "build"
+  learningOrder: 1260
 ---
 
 

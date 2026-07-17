@@ -1,22 +1,24 @@
 ---
 slug: "manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-mongodb"
 manualId: bluetape4k-spring-boot-mongodb
-title: "Spring Data MongoDB coroutine extensions"
+title: "Spring Data MongoDB Coroutine Support"
 description: "Use ReactiveMongoOperations with Flow and suspending functions, and compose Criteria, Query, and Update objects with Kotlin extensions."
 kind: library
 group: spring
+learningOrder: 920
 manual:
   id: "bluetape4k-spring-boot-mongodb"
   repository: "bluetape4k-projects"
   group: "spring"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/en/modules/bluetape4k-spring-boot-mongodb.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "spring-boot/mongodb"
   layer: "build"
+  learningOrder: 920
 ---
 
 

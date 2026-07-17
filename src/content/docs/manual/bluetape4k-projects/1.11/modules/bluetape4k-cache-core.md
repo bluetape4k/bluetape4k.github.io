@@ -1,22 +1,24 @@
 ---
 slug: "manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-core"
 manualId: bluetape4k-cache-core
-title: "Module bluetape4k-cache-core"
+title: "Cache Abstractions and Memoization"
 description: "Choose the shared contracts for local caches, JCache, memoizers, and two-tier Near Caches, then verify concurrency, failures, and lifecycle behavior."
 kind: library
 group: caching
+learningOrder: 500
 manual:
   id: "bluetape4k-cache-core"
   repository: "bluetape4k-projects"
   group: "caching"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/en/modules/bluetape4k-cache-core.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "cache/cache-core"
   layer: "build"
+  learningOrder: 500
 ---
 
 

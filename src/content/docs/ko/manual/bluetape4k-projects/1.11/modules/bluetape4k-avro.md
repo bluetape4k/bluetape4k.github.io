@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-avro"
 manualId: bluetape4k-avro
-title: "Module bluetape4k-avro"
+title: "Apache Avro 직렬화"
 description: "Apache Avro 직렬화/역직렬화를 위한 고수준 API를 제공하는 모듈입니다."
 kind: library
 group: io
+learningOrder: 370
 manual:
   id: "bluetape4k-avro"
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-avro.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "io/avro"
   layer: "build"
+  learningOrder: 370
 ---
 
 

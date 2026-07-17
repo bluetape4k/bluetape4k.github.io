@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-hibernate-lettuce-demo"
 manualId: bluetape4k-spring-boot-hibernate-lettuce-demo
-title: "bluetape4k-spring-boot-hibernate-lettuce-demo"
+title: "Spring Boot Hibernate 캐시 예제"
 description: "Spring Boot 4 + Hibernate 7 2nd Level Cache (2LC) with Lettuce Near Cache 데모 애플리케이션입니다."
 kind: library
-group: spring
+group: examples
+learningOrder: 1460
 manual:
   id: "bluetape4k-spring-boot-hibernate-lettuce-demo"
   repository: "bluetape4k-projects"
-  group: "spring"
+  group: "examples"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-spring-boot-hibernate-lettuce-demo.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "spring-boot/hibernate-lettuce-demo"
   layer: "build"
+  learningOrder: 1460
 ---
 
 

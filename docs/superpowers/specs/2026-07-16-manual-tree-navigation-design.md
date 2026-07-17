@@ -40,9 +40,12 @@ copied into Markdown frontmatter:
   provenance, and stable/archive state.
 - The selected version's validated document catalog and generated manual files
   define locale-specific membership and routes.
+- Repository manual manifests may provide localized functional titles,
+  learning groups, and explicit learning order. Publication carries that
+  metadata into the versioned snapshot so the manual source remains canonical.
 - Directory and document metadata provide section labels and ordering where
-  available. A deterministic fallback handles valid content without explicit
-  display metadata.
+  available. A deterministic alphabetical fallback handles repositories that
+  do not yet publish explicit learning metadata.
 
 The implementation must not write `prev`, `next`, or sidebar arrays into the
 generated Markdown pages. Those values would duplicate catalog state across
@@ -106,6 +109,12 @@ the selected catalog. Canonical groups include:
 - Quality and Benchmarks
 
 Large areas such as Modules remain collapsible and may contain nested groups.
+When module roots provide learning metadata, Modules is divided into localized
+learning stages and ordered by prerequisites rather than identifiers. Module
+overview pages precede their chapter sequence. A partially ordered module set
+is rejected because silently mixing explicit order with alphabetical order
+would make the reading path unstable.
+
 The tree must not expand hundreds of module pages at once. Only groups needed
 to reveal the current page are expanded initially; Starlight continues to own
 manual expansion state, keyboard behavior, mobile behavior, current-item

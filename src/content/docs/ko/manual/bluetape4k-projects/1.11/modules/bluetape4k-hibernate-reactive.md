@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-reactive"
 manualId: bluetape4k-hibernate-reactive
-title: "Module bluetape4k-hibernate-reactive"
+title: "Hibernate Reactive 확장"
 description: "Hibernate Reactive의 Mutiny·Stage API를 Kotlin 코루틴과 reified 타입으로 사용하는 방법을 설명합니다."
 kind: library
 group: data
+learningOrder: 650
 manual:
   id: "bluetape4k-hibernate-reactive"
   repository: "bluetape4k-projects"
   group: "data"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-hibernate-reactive.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "data/hibernate-reactive"
   layer: "build"
+  learningOrder: 650
 ---
 
 

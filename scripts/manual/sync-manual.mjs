@@ -226,17 +226,23 @@ export async function buildSnapshot(input, {
     if (typeof module.sourceDir !== 'string' || !module.sourceDir.trim()) {
       fail('MANIFEST_SOURCE_DIR', 'non-empty sourceDir', module.id, 4);
     }
+    if (
+      module.learningOrder !== undefined
+      && (!Number.isSafeInteger(module.learningOrder) || module.learningOrder <= 0)
+    ) {
+      fail('MANIFEST_LEARNING_ORDER', 'positive integer', module.id, 4);
+    }
     for (const locale of ['en', 'ko']) {
       const { relative } = await approvedManifestPath(manualRoot, module[locale], `${locale}/`, '.md');
       if (!byPath.has(relative)) byPath.set(relative, { module, chapter: null });
       else if (byPath.get(relative)?.chapter) fail('MANIFEST_DUPLICATE_PATH', 'unique path', relative, 4);
       else byPath.set(relative, null);
     }
-    for (const chapter of module.chapters ?? []) {
+    for (const [chapterIndex, chapter] of (module.chapters ?? []).entries()) {
       for (const locale of ['en', 'ko']) {
         const { relative } = await approvedManifestPath(manualRoot, chapter[locale], `${locale}/`, '.md');
         if (byPath.has(relative)) fail('MANIFEST_DUPLICATE_PATH', 'unique path', relative, 4);
-        byPath.set(relative, { module, chapter });
+        byPath.set(relative, { module, chapter, chapterOrder: chapterIndex + 1 });
       }
     }
     for (const relative of module.assets ?? []) {
@@ -265,6 +271,7 @@ export async function buildSnapshot(input, {
       content,
       module,
       chapter: owner?.chapter ?? null,
+      chapterOrder: owner?.chapterOrder,
       repository,
       sourceCommit: input.sourceCommit,
       sourcePath: `docs/manual/${relative}`,

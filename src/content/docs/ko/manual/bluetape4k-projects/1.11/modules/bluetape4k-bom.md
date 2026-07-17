@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-bom"
 manualId: bluetape4k-bom
-title: Bluetape4k BOM
+title: "Bluetape4k BOM"
 description: 중앙 BOM이 내부에서 사용하는 bluetape4k-projects 모듈 제약 조건과 유지보수 방식을 설명합니다.
 kind: library
 group: foundation
+learningOrder: 100
 manual:
   id: "bluetape4k-bom"
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-bom.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "bluetape4k/bom"
   layer: "build"
+  learningOrder: 100
 ---
 
 

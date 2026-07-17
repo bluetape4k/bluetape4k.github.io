@@ -291,7 +291,10 @@ test('actual Astro builds enforce publication contracts and preserve non-manual 
   assert.match(latestNewKo, />매뉴얼 홈<\/span>/);
   assert.match(latestNewKo, />이전 문서<\/small>/);
   assert.match(latestNew, /aria-current="page"/);
-  assert.match(latestGuide, /href="\/manual\/bluetape4k-projects\/1\.12\/modules\/new\/" rel="next"/);
+  assert.equal(
+    latestGuide.match(/href="([^"]+)" rel="next"/)?.[1],
+    '/manual/bluetape4k-projects/1.12/modules/new/',
+  );
   assert.match(latestNew, /href="\/manual\/bluetape4k-projects\/1\.12\/guides\/learning-path\/" rel="prev"/);
   assert.match(latestNew, /href="\/manual\/bluetape4k-projects\/1\.12\/modules\/shared\/" rel="next"/);
   assert.doesNotMatch(latestHome, /rel="prev"/);

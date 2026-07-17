@@ -1,22 +1,24 @@
 ---
 slug: "manual/bluetape4k-projects/1.11/modules/bluetape4k-ktor-core"
 manualId: bluetape4k-ktor-core
-title: "bluetape4k-ktor-core"
+title: "Ktor Application Foundations"
 description: "Small Ktor server defaults for bluetape4k applications."
 kind: library
 group: web
+learningOrder: 800
 manual:
   id: "bluetape4k-ktor-core"
   repository: "bluetape4k-projects"
   group: "web"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/en/modules/bluetape4k-ktor-core.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "ktor/core"
   layer: "build"
+  learningOrder: 800
 ---
 
 

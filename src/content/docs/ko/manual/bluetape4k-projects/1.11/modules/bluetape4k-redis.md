@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-redis"
 manualId: bluetape4k-redis
-title: "Module bluetape4k-redis"
+title: "Redis 명령 추상화"
 description: "Lettuce와 Redisson을 함께 내보내는 Redis 우산 모듈의 의존성 계약, 선택 기준과 마이그레이션 경계를 설명합니다."
 kind: library
-group: infrastructure
+group: caching
+learningOrder: 550
 manual:
   id: "bluetape4k-redis"
   repository: "bluetape4k-projects"
-  group: "infrastructure"
+  group: "caching"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-redis.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "infra/redis"
   layer: "build"
+  learningOrder: 550
 ---
 
 

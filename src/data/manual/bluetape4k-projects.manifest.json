@@ -1,5 +1,5 @@
 {
-  "authoringSourceRef": "e89bf724fd018af8c2ab4564a5c9a007fe27b46a",
+  "authoringSourceRef": "222f640a5a8937d3000dc49b2e2f585726ed70e6",
   "minorVersion": "1.11",
   "modules": [
     {
@@ -62,6 +62,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-annotations.md",
       "layer": "build",
+      "learningOrder": 120,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-annotations/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-annotations/"
@@ -74,6 +75,10 @@
         "bluetape4k/annotations/src/test/kotlin",
         "bluetape4k/annotations/src/test/resources"
       ],
+      "title": {
+        "en": "API Maturity Annotations",
+        "ko": "API 성숙도 애너테이션"
+      },
       "workshops": []
     },
     {
@@ -86,6 +91,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-assertions.md",
       "layer": "build",
+      "learningOrder": 1110,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-assertions/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-assertions/"
@@ -98,6 +104,10 @@
         "testing/assertions/src/test/kotlin",
         "testing/assertions/src/test/resources"
       ],
+      "title": {
+        "en": "Fluent Test Assertions",
+        "ko": "읽기 쉬운 테스트 단언"
+      },
       "workshops": []
     },
     {
@@ -110,6 +120,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-avro.md",
       "layer": "build",
+      "learningOrder": 370,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-avro/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-avro/"
@@ -122,6 +133,10 @@
         "io/avro/src/test/kotlin",
         "io/avro/src/test/resources"
       ],
+      "title": {
+        "en": "Apache Avro Serialization",
+        "ko": "Apache Avro 직렬화"
+      },
       "workshops": []
     },
     {
@@ -134,6 +149,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-bom.md",
       "layer": "build",
+      "learningOrder": 100,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-bom/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-bom/"
@@ -141,6 +157,10 @@
       "sourceDir": "bluetape4k/bom",
       "sourcePaths": [],
       "testPaths": [],
+      "title": {
+        "en": "Bluetape4k Bill of Materials",
+        "ko": "Bluetape4k BOM"
+      },
       "workshops": []
     },
     {
@@ -148,11 +168,12 @@
       "chapters": [],
       "en": "en/modules/bluetape4k-bucket4j.md",
       "gradlePath": ":bluetape4k-bucket4j",
-      "group": "infrastructure",
+      "group": "operations",
       "id": "bluetape4k-bucket4j",
       "kind": "library",
       "ko": "ko/modules/bluetape4k-bucket4j.md",
       "layer": "build",
+      "learningOrder": 1010,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-bucket4j/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-bucket4j/"
@@ -165,6 +186,10 @@
         "infra/bucket4j/src/test/kotlin",
         "infra/bucket4j/src/test/resources"
       ],
+      "title": {
+        "en": "Distributed Rate Limiting",
+        "ko": "분산 요청 속도 제한"
+      },
       "workshops": []
     },
     {
@@ -232,6 +257,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-cache-core.md",
       "layer": "build",
+      "learningOrder": 500,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-core/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-core/"
@@ -244,6 +270,10 @@
         "cache/cache-core/src/test/kotlin",
         "cache/cache-core/src/test/resources"
       ],
+      "title": {
+        "en": "Cache Abstractions and Memoization",
+        "ko": "캐시 추상화와 메모이제이션"
+      },
       "workshops": []
     },
     {
@@ -256,6 +286,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-cache-hazelcast.md",
       "layer": "build",
+      "learningOrder": 510,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-hazelcast/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-hazelcast/"
@@ -269,6 +300,10 @@
         "cache/cache-hazelcast/src/test/kotlin",
         "cache/cache-hazelcast/src/test/resources"
       ],
+      "title": {
+        "en": "Hazelcast Cache Integration",
+        "ko": "Hazelcast 캐시 통합"
+      },
       "workshops": []
     },
     {
@@ -336,6 +371,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-cache-lettuce.md",
       "layer": "build",
+      "learningOrder": 520,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-lettuce/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-lettuce/"
@@ -349,6 +385,10 @@
         "cache/cache-lettuce/src/test/kotlin",
         "cache/cache-lettuce/src/test/resources"
       ],
+      "title": {
+        "en": "Lettuce JCache and Near Cache",
+        "ko": "Lettuce JCache와 Near Cache"
+      },
       "workshops": []
     },
     {
@@ -416,6 +456,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-cache-redisson.md",
       "layer": "build",
+      "learningOrder": 530,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-redisson/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-redisson/"
@@ -429,6 +470,10 @@
         "cache/cache-redisson/src/test/kotlin",
         "cache/cache-redisson/src/test/resources"
       ],
+      "title": {
+        "en": "Redisson JCache and Near Cache",
+        "ko": "Redisson JCache와 Near Cache"
+      },
       "workshops": []
     },
     {
@@ -487,6 +532,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-cassandra.md",
       "layer": "build",
+      "learningOrder": 620,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-cassandra/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cassandra/"
@@ -499,6 +545,10 @@
         "data/cassandra/src/test/kotlin",
         "data/cassandra/src/test/resources"
       ],
+      "title": {
+        "en": "Cassandra Coroutine Client",
+        "ko": "Cassandra 코루틴 클라이언트"
+      },
       "workshops": []
     },
     {
@@ -576,6 +626,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-core.md",
       "layer": "build",
+      "learningOrder": 110,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-core/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-core/"
@@ -588,6 +639,10 @@
         "bluetape4k/core/src/test/kotlin",
         "bluetape4k/core/src/test/resources"
       ],
+      "title": {
+        "en": "Core Kotlin Library",
+        "ko": "핵심 Kotlin 라이브러리"
+      },
       "workshops": []
     },
     {
@@ -675,11 +730,12 @@
       ],
       "en": "en/modules/bluetape4k-coroutines.md",
       "gradlePath": ":bluetape4k-coroutines",
-      "group": "foundation",
+      "group": "concurrency",
       "id": "bluetape4k-coroutines",
       "kind": "library",
       "ko": "ko/modules/bluetape4k-coroutines.md",
       "layer": "build",
+      "learningOrder": 200,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-coroutines/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-coroutines/"
@@ -692,6 +748,10 @@
         "bluetape4k/coroutines/src/test/kotlin",
         "bluetape4k/coroutines/src/test/resources"
       ],
+      "title": {
+        "en": "Coroutine and Flow Extensions",
+        "ko": "Coroutine과 Flow 확장"
+      },
       "workshops": []
     },
     {
@@ -704,6 +764,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-csv.md",
       "layer": "build",
+      "learningOrder": 320,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-csv/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-csv/"
@@ -716,6 +777,10 @@
         "io/csv/src/test/kotlin",
         "io/csv/src/test/resources"
       ],
+      "title": {
+        "en": "CSV Data Processing",
+        "ko": "CSV 데이터 처리"
+      },
       "workshops": []
     },
     {
@@ -723,11 +788,12 @@
       "chapters": [],
       "en": "en/modules/bluetape4k-elasticsearch.md",
       "gradlePath": ":bluetape4k-elasticsearch",
-      "group": "infrastructure",
+      "group": "data",
       "id": "bluetape4k-elasticsearch",
       "kind": "library",
       "ko": "ko/modules/bluetape4k-elasticsearch.md",
       "layer": "build",
+      "learningOrder": 660,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-elasticsearch/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-elasticsearch/"
@@ -740,6 +806,10 @@
         "infra/elasticsearch/src/test/kotlin",
         "infra/elasticsearch/src/test/resources"
       ],
+      "title": {
+        "en": "Elasticsearch Client Extensions",
+        "ko": "Elasticsearch 클라이언트 확장"
+      },
       "workshops": []
     },
     {
@@ -747,11 +817,12 @@
       "chapters": [],
       "en": "en/modules/bluetape4k-examples-coroutines-demo.md",
       "gradlePath": ":bluetape4k-examples-coroutines-demo",
-      "group": "learning",
+      "group": "examples",
       "id": "bluetape4k-examples-coroutines-demo",
       "kind": "example",
       "ko": "ko/modules/bluetape4k-examples-coroutines-demo.md",
       "layer": "learn",
+      "learningOrder": 1400,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-examples-coroutines-demo/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-examples-coroutines-demo/"
@@ -762,6 +833,10 @@
         "examples/coroutines-demo/src/test/kotlin",
         "examples/coroutines-demo/src/test/resources"
       ],
+      "title": {
+        "en": "Kotlin Coroutine Examples",
+        "ko": "Kotlin 코루틴 예제"
+      },
       "workshops": []
     },
     {
@@ -769,11 +844,12 @@
       "chapters": [],
       "en": "en/modules/bluetape4k-examples-jpa-blazepersistence-demo.md",
       "gradlePath": ":bluetape4k-examples-jpa-blazepersistence-demo",
-      "group": "learning",
+      "group": "examples",
       "id": "bluetape4k-examples-jpa-blazepersistence-demo",
       "kind": "example",
       "ko": "ko/modules/bluetape4k-examples-jpa-blazepersistence-demo.md",
       "layer": "learn",
+      "learningOrder": 1440,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-examples-jpa-blazepersistence-demo/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-examples-jpa-blazepersistence-demo/"
@@ -786,6 +862,10 @@
         "examples/jpa-blazepersistence-demo/src/test/kotlin",
         "examples/jpa-blazepersistence-demo/src/test/resources"
       ],
+      "title": {
+        "en": "JPA with Blaze-Persistence",
+        "ko": "JPA와 Blaze-Persistence 예제"
+      },
       "workshops": []
     },
     {
@@ -793,11 +873,12 @@
       "chapters": [],
       "en": "en/modules/bluetape4k-examples-jpa-querydsl-demo.md",
       "gradlePath": ":bluetape4k-examples-jpa-querydsl-demo",
-      "group": "learning",
+      "group": "examples",
       "id": "bluetape4k-examples-jpa-querydsl-demo",
       "kind": "example",
       "ko": "ko/modules/bluetape4k-examples-jpa-querydsl-demo.md",
       "layer": "learn",
+      "learningOrder": 1430,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-examples-jpa-querydsl-demo/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-examples-jpa-querydsl-demo/"
@@ -810,6 +891,10 @@
         "examples/jpa-querydsl-demo/src/test/kotlin",
         "examples/jpa-querydsl-demo/src/test/resources"
       ],
+      "title": {
+        "en": "JPA with Querydsl",
+        "ko": "JPA와 Querydsl 예제"
+      },
       "workshops": []
     },
     {
@@ -817,11 +902,12 @@
       "chapters": [],
       "en": "en/modules/bluetape4k-examples-redisson-demo.md",
       "gradlePath": ":bluetape4k-examples-redisson-demo",
-      "group": "learning",
+      "group": "examples",
       "id": "bluetape4k-examples-redisson-demo",
       "kind": "example",
       "ko": "ko/modules/bluetape4k-examples-redisson-demo.md",
       "layer": "learn",
+      "learningOrder": 1420,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-examples-redisson-demo/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-examples-redisson-demo/"
@@ -832,6 +918,10 @@
         "examples/redisson-demo/src/test/kotlin",
         "examples/redisson-demo/src/test/resources"
       ],
+      "title": {
+        "en": "Redisson Examples",
+        "ko": "Redisson 예제"
+      },
       "workshops": []
     },
     {
@@ -839,11 +929,12 @@
       "chapters": [],
       "en": "en/modules/bluetape4k-examples-virtualthreads-demo.md",
       "gradlePath": ":bluetape4k-examples-virtualthreads-demo",
-      "group": "learning",
+      "group": "examples",
       "id": "bluetape4k-examples-virtualthreads-demo",
       "kind": "example",
       "ko": "ko/modules/bluetape4k-examples-virtualthreads-demo.md",
       "layer": "learn",
+      "learningOrder": 1410,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-examples-virtualthreads-demo/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-examples-virtualthreads-demo/"
@@ -854,6 +945,10 @@
         "examples/virtualthreads-demo/src/test/kotlin",
         "examples/virtualthreads-demo/src/test/resources"
       ],
+      "title": {
+        "en": "Java Virtual Thread Examples",
+        "ko": "Java 가상 스레드 예제"
+      },
       "workshops": []
     },
     {
@@ -866,6 +961,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-fastjson2.md",
       "layer": "build",
+      "learningOrder": 340,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-fastjson2/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-fastjson2/"
@@ -878,6 +974,10 @@
         "io/fastjson2/src/test/kotlin",
         "io/fastjson2/src/test/resources"
       ],
+      "title": {
+        "en": "Fastjson2 Serialization",
+        "ko": "Fastjson2 직렬화"
+      },
       "workshops": []
     },
     {
@@ -890,6 +990,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-feign.md",
       "layer": "build",
+      "learningOrder": 410,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-feign/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-feign/"
@@ -902,6 +1003,10 @@
         "io/feign/src/test/kotlin",
         "io/feign/src/test/resources"
       ],
+      "title": {
+        "en": "Declarative HTTP Clients with Feign",
+        "ko": "Feign 선언형 HTTP 클라이언트"
+      },
       "workshops": []
     },
     {
@@ -914,6 +1019,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-geo.md",
       "layer": "build",
+      "learningOrder": 1220,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-geo/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-geo/"
@@ -927,6 +1033,10 @@
         "utils/geo/src/test/kotlin",
         "utils/geo/src/test/resources"
       ],
+      "title": {
+        "en": "Geospatial Utilities",
+        "ko": "위치 정보 유틸리티"
+      },
       "workshops": []
     },
     {
@@ -939,6 +1049,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-grpc.md",
       "layer": "build",
+      "learningOrder": 440,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-grpc/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-grpc/"
@@ -951,6 +1062,10 @@
         "io/grpc/src/test/kotlin",
         "io/grpc/src/test/resources"
       ],
+      "title": {
+        "en": "Coroutine gRPC Extensions",
+        "ko": "gRPC 코루틴 확장"
+      },
       "workshops": []
     },
     {
@@ -1018,6 +1133,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-hibernate.md",
       "layer": "build",
+      "learningOrder": 640,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate/"
@@ -1030,6 +1146,10 @@
         "data/hibernate/src/test/kotlin",
         "data/hibernate/src/test/resources"
       ],
+      "title": {
+        "en": "Hibernate and Querydsl Extensions",
+        "ko": "Hibernate와 Querydsl 확장"
+      },
       "workshops": []
     },
     {
@@ -1097,6 +1217,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-hibernate-cache-lettuce.md",
       "layer": "build",
+      "learningOrder": 570,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-cache-lettuce/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-cache-lettuce/"
@@ -1109,6 +1230,10 @@
         "cache/hibernate-cache-lettuce/src/test/kotlin",
         "cache/hibernate-cache-lettuce/src/test/resources"
       ],
+      "title": {
+        "en": "Hibernate Second-Level Cache with Lettuce",
+        "ko": "Lettuce 기반 Hibernate 2차 캐시"
+      },
       "workshops": []
     },
     {
@@ -1176,6 +1301,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-hibernate-reactive.md",
       "layer": "build",
+      "learningOrder": 650,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-reactive/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-reactive/"
@@ -1189,6 +1315,10 @@
         "data/hibernate-reactive/src/test/kotlin",
         "data/hibernate-reactive/src/test/resources"
       ],
+      "title": {
+        "en": "Reactive Hibernate Extensions",
+        "ko": "Hibernate Reactive 확장"
+      },
       "workshops": []
     },
     {
@@ -1201,6 +1331,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-http.md",
       "layer": "build",
+      "learningOrder": 400,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-http/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-http/"
@@ -1213,6 +1344,10 @@
         "io/http/src/test/kotlin",
         "io/http/src/test/resources"
       ],
+      "title": {
+        "en": "HTTP Client Foundations",
+        "ko": "HTTP 클라이언트 기반 기능"
+      },
       "workshops": []
     },
     {
@@ -1225,6 +1360,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-idgenerators.md",
       "layer": "build",
+      "learningOrder": 1200,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-idgenerators/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-idgenerators/"
@@ -1237,6 +1373,10 @@
         "utils/idgenerators/src/test/kotlin",
         "utils/idgenerators/src/test/resources"
       ],
+      "title": {
+        "en": "Distributed ID Generators",
+        "ko": "분산 ID 생성기"
+      },
       "workshops": []
     },
     {
@@ -1249,6 +1389,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-io.md",
       "layer": "build",
+      "learningOrder": 300,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-io/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-io/"
@@ -1261,6 +1402,10 @@
         "io/io/src/test/kotlin",
         "io/io/src/test/resources"
       ],
+      "title": {
+        "en": "Kotlin I/O Utilities",
+        "ko": "Kotlin I/O 유틸리티"
+      },
       "workshops": []
     },
     {
@@ -1273,6 +1418,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-jackson2.md",
       "layer": "build",
+      "learningOrder": 350,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-jackson2/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-jackson2/"
@@ -1286,6 +1432,10 @@
         "io/jackson2/src/test/kotlin",
         "io/jackson2/src/test/resources"
       ],
+      "title": {
+        "en": "Jackson 2 Serialization",
+        "ko": "Jackson 2 직렬화"
+      },
       "workshops": []
     },
     {
@@ -1298,6 +1448,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-jackson3.md",
       "layer": "build",
+      "learningOrder": 360,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-jackson3/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-jackson3/"
@@ -1311,6 +1462,10 @@
         "io/jackson3/src/test/kotlin",
         "io/jackson3/src/test/resources"
       ],
+      "title": {
+        "en": "Jackson 3 Serialization",
+        "ko": "Jackson 3 직렬화"
+      },
       "workshops": []
     },
     {
@@ -1323,6 +1478,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-javatimes.md",
       "layer": "build",
+      "learningOrder": 1210,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-javatimes/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-javatimes/"
@@ -1335,6 +1491,10 @@
         "utils/javatimes/src/test/kotlin",
         "utils/javatimes/src/test/resources"
       ],
+      "title": {
+        "en": "Java Time Utilities",
+        "ko": "Java Time 유틸리티"
+      },
       "workshops": []
     },
     {
@@ -1393,6 +1553,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-jdbc.md",
       "layer": "build",
+      "learningOrder": 600,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-jdbc/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-jdbc/"
@@ -1405,6 +1566,10 @@
         "data/jdbc/src/test/kotlin",
         "data/jdbc/src/test/resources"
       ],
+      "title": {
+        "en": "JDBC and SQL Extensions",
+        "ko": "JDBC와 SQL 확장"
+      },
       "workshops": []
     },
     {
@@ -1417,6 +1582,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-json.md",
       "layer": "build",
+      "learningOrder": 330,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-json/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-json/"
@@ -1429,6 +1595,10 @@
         "io/json/src/test/kotlin",
         "io/json/src/test/resources"
       ],
+      "title": {
+        "en": "JSON Abstractions",
+        "ko": "JSON 추상화"
+      },
       "workshops": []
     },
     {
@@ -1441,6 +1611,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-junit5.md",
       "layer": "build",
+      "learningOrder": 1100,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-junit5/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-junit5/"
@@ -1454,6 +1625,10 @@
         "testing/junit5/src/test/kotlin",
         "testing/junit5/src/test/resources"
       ],
+      "title": {
+        "en": "JUnit 5 Test Support",
+        "ko": "JUnit 5 테스트 지원"
+      },
       "workshops": []
     },
     {
@@ -1466,6 +1641,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-jwt.md",
       "layer": "build",
+      "learningOrder": 1310,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-jwt/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-jwt/"
@@ -1479,6 +1655,10 @@
         "utils/jwt/src/test/kotlin",
         "utils/jwt/src/test/resources"
       ],
+      "title": {
+        "en": "JWT Authentication Utilities",
+        "ko": "JWT 인증 유틸리티"
+      },
       "workshops": []
     },
     {
@@ -1486,11 +1666,12 @@
       "chapters": [],
       "en": "en/modules/bluetape4k-kafka.md",
       "gradlePath": ":bluetape4k-kafka",
-      "group": "infrastructure",
+      "group": "messaging",
       "id": "bluetape4k-kafka",
       "kind": "library",
       "ko": "ko/modules/bluetape4k-kafka.md",
       "layer": "build",
+      "learningOrder": 700,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-kafka/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-kafka/"
@@ -1503,6 +1684,10 @@
         "infra/kafka/src/test/kotlin",
         "infra/kafka/src/test/resources"
       ],
+      "title": {
+        "en": "Kafka Client Extensions",
+        "ko": "Kafka 클라이언트 확장"
+      },
       "workshops": []
     },
     {
@@ -1510,11 +1695,12 @@
       "chapters": [],
       "en": "en/modules/bluetape4k-kafka-logback.md",
       "gradlePath": ":bluetape4k-kafka-logback",
-      "group": "infrastructure",
+      "group": "messaging",
       "id": "bluetape4k-kafka-logback",
       "kind": "library",
       "ko": "ko/modules/bluetape4k-kafka-logback.md",
       "layer": "build",
+      "learningOrder": 720,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-kafka-logback/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-kafka-logback/"
@@ -1527,6 +1713,10 @@
         "infra/kafka-logback/src/test/kotlin",
         "infra/kafka-logback/src/test/resources"
       ],
+      "title": {
+        "en": "Kafka Logback Appender",
+        "ko": "Kafka Logback Appender"
+      },
       "workshops": []
     },
     {
@@ -1534,11 +1724,12 @@
       "chapters": [],
       "en": "en/modules/bluetape4k-kafka4.md",
       "gradlePath": ":bluetape4k-kafka4",
-      "group": "infrastructure",
+      "group": "messaging",
       "id": "bluetape4k-kafka4",
       "kind": "library",
       "ko": "ko/modules/bluetape4k-kafka4.md",
       "layer": "build",
+      "learningOrder": 710,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-kafka4/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-kafka4/"
@@ -1551,6 +1742,10 @@
         "infra/kafka4/src/test/kotlin",
         "infra/kafka4/src/test/resources"
       ],
+      "title": {
+        "en": "Kafka 4 Client Extensions",
+        "ko": "Kafka 4 클라이언트 확장"
+      },
       "workshops": []
     },
     {
@@ -1563,6 +1758,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-ktor-core.md",
       "layer": "build",
+      "learningOrder": 800,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-ktor-core/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-ktor-core/"
@@ -1575,6 +1771,10 @@
         "ktor/core/src/test/kotlin",
         "ktor/core/src/test/resources"
       ],
+      "title": {
+        "en": "Ktor Application Foundations",
+        "ko": "Ktor 애플리케이션 기반 기능"
+      },
       "workshops": []
     },
     {
@@ -1587,6 +1787,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-ktor-observability.md",
       "layer": "build",
+      "learningOrder": 840,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-ktor-observability/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-ktor-observability/"
@@ -1599,6 +1800,10 @@
         "ktor/observability/src/test/kotlin",
         "ktor/observability/src/test/resources"
       ],
+      "title": {
+        "en": "Ktor Observability",
+        "ko": "Ktor 관측성"
+      },
       "workshops": []
     },
     {
@@ -1611,6 +1816,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-ktor-openapi.md",
       "layer": "build",
+      "learningOrder": 820,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-ktor-openapi/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-ktor-openapi/"
@@ -1623,6 +1829,10 @@
         "ktor/openapi/src/test/kotlin",
         "ktor/openapi/src/test/resources"
       ],
+      "title": {
+        "en": "Ktor OpenAPI Integration",
+        "ko": "Ktor OpenAPI 통합"
+      },
       "workshops": []
     },
     {
@@ -1635,6 +1845,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-ktor-resilience4j.md",
       "layer": "build",
+      "learningOrder": 830,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-ktor-resilience4j/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-ktor-resilience4j/"
@@ -1647,6 +1858,10 @@
         "ktor/resilience4j/src/test/kotlin",
         "ktor/resilience4j/src/test/resources"
       ],
+      "title": {
+        "en": "Ktor Resilience4j Integration",
+        "ko": "Ktor Resilience4j 통합"
+      },
       "workshops": []
     },
     {
@@ -1659,6 +1874,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-ktor-testing.md",
       "layer": "build",
+      "learningOrder": 810,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-ktor-testing/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-ktor-testing/"
@@ -1671,6 +1887,10 @@
         "ktor/testing/src/test/kotlin",
         "ktor/testing/src/test/resources"
       ],
+      "title": {
+        "en": "Ktor Test Support",
+        "ko": "Ktor 테스트 지원"
+      },
       "workshops": []
     },
     {
@@ -1733,11 +1953,12 @@
       ],
       "en": "en/modules/bluetape4k-lettuce.md",
       "gradlePath": ":bluetape4k-lettuce",
-      "group": "infrastructure",
+      "group": "caching",
       "id": "bluetape4k-lettuce",
       "kind": "library",
       "ko": "ko/modules/bluetape4k-lettuce.md",
       "layer": "build",
+      "learningOrder": 540,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/"
@@ -1750,6 +1971,10 @@
         "infra/lettuce/src/test/kotlin",
         "infra/lettuce/src/test/resources"
       ],
+      "title": {
+        "en": "Lettuce Coroutine Client",
+        "ko": "Lettuce 코루틴 클라이언트"
+      },
       "workshops": []
     },
     {
@@ -1825,6 +2050,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-logging.md",
       "layer": "build",
+      "learningOrder": 130,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-logging/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-logging/"
@@ -1837,6 +2063,10 @@
         "bluetape4k/logging/src/test/kotlin",
         "bluetape4k/logging/src/test/resources"
       ],
+      "title": {
+        "en": "Kotlin Logging and MDC",
+        "ko": "Kotlin 로깅과 MDC"
+      },
       "workshops": []
     },
     {
@@ -1849,6 +2079,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-math.md",
       "layer": "build",
+      "learningOrder": 1230,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-math/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-math/"
@@ -1861,6 +2092,10 @@
         "utils/math/src/test/kotlin",
         "utils/math/src/test/resources"
       ],
+      "title": {
+        "en": "Mathematical Utilities",
+        "ko": "수학 유틸리티"
+      },
       "workshops": []
     },
     {
@@ -1873,6 +2108,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-measured.md",
       "layer": "build",
+      "learningOrder": 1240,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-measured/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-measured/"
@@ -1885,6 +2121,10 @@
         "utils/measured/src/test/kotlin",
         "utils/measured/src/test/resources"
       ],
+      "title": {
+        "en": "Units of Measure",
+        "ko": "측정 단위"
+      },
       "workshops": []
     },
     {
@@ -1892,11 +2132,12 @@
       "chapters": [],
       "en": "en/modules/bluetape4k-micrometer.md",
       "gradlePath": ":bluetape4k-micrometer",
-      "group": "infrastructure",
+      "group": "operations",
       "id": "bluetape4k-micrometer",
       "kind": "library",
       "ko": "ko/modules/bluetape4k-micrometer.md",
       "layer": "build",
+      "learningOrder": 1020,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-micrometer/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-micrometer/"
@@ -1909,6 +2150,10 @@
         "infra/micrometer/src/test/kotlin",
         "infra/micrometer/src/test/resources"
       ],
+      "title": {
+        "en": "Micrometer Metrics Extensions",
+        "ko": "Micrometer 메트릭 확장"
+      },
       "workshops": []
     },
     {
@@ -1921,6 +2166,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-mock-web-server.md",
       "layer": "build",
+      "learningOrder": 1130,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-mock-web-server/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-mock-web-server/"
@@ -1934,6 +2180,10 @@
         "testing/mock-web-server/src/test/kotlin",
         "testing/mock-web-server/src/test/resources"
       ],
+      "title": {
+        "en": "HTTP Mock Server",
+        "ko": "HTTP 모의 서버"
+      },
       "workshops": []
     },
     {
@@ -1946,6 +2196,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-mock-webflux-server.md",
       "layer": "build",
+      "learningOrder": 1140,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-mock-webflux-server/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-mock-webflux-server/"
@@ -1959,6 +2210,10 @@
         "testing/mock-webflux-server/src/test/kotlin",
         "testing/mock-webflux-server/src/test/resources"
       ],
+      "title": {
+        "en": "WebFlux Mock Server",
+        "ko": "WebFlux 모의 서버"
+      },
       "workshops": []
     },
     {
@@ -1971,6 +2226,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-money.md",
       "layer": "build",
+      "learningOrder": 1250,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-money/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-money/"
@@ -1983,6 +2239,10 @@
         "utils/money/src/test/kotlin",
         "utils/money/src/test/resources"
       ],
+      "title": {
+        "en": "Monetary Calculations",
+        "ko": "통화 계산"
+      },
       "workshops": []
     },
     {
@@ -1995,6 +2255,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-mongodb.md",
       "layer": "build",
+      "learningOrder": 630,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-mongodb/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-mongodb/"
@@ -2007,6 +2268,10 @@
         "data/mongodb/src/test/kotlin",
         "data/mongodb/src/test/resources"
       ],
+      "title": {
+        "en": "MongoDB Coroutine Extensions",
+        "ko": "MongoDB 코루틴 확장"
+      },
       "workshops": []
     },
     {
@@ -2014,11 +2279,12 @@
       "chapters": [],
       "en": "en/modules/bluetape4k-mutiny.md",
       "gradlePath": ":bluetape4k-mutiny",
-      "group": "utilities",
+      "group": "concurrency",
       "id": "bluetape4k-mutiny",
       "kind": "library",
       "ko": "ko/modules/bluetape4k-mutiny.md",
       "layer": "build",
+      "learningOrder": 210,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-mutiny/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-mutiny/"
@@ -2031,6 +2297,10 @@
         "utils/mutiny/src/test/kotlin",
         "utils/mutiny/src/test/resources"
       ],
+      "title": {
+        "en": "Mutiny Reactive Extensions",
+        "ko": "Mutiny 반응형 확장"
+      },
       "workshops": []
     },
     {
@@ -2038,11 +2308,12 @@
       "chapters": [],
       "en": "en/modules/bluetape4k-nats.md",
       "gradlePath": ":bluetape4k-nats",
-      "group": "infrastructure",
+      "group": "messaging",
       "id": "bluetape4k-nats",
       "kind": "library",
       "ko": "ko/modules/bluetape4k-nats.md",
       "layer": "build",
+      "learningOrder": 730,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-nats/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-nats/"
@@ -2055,6 +2326,10 @@
         "infra/nats/src/test/kotlin",
         "infra/nats/src/test/resources"
       ],
+      "title": {
+        "en": "NATS Client Extensions",
+        "ko": "NATS 클라이언트 확장"
+      },
       "workshops": []
     },
     {
@@ -2067,6 +2342,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-netty.md",
       "layer": "build",
+      "learningOrder": 430,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-netty/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-netty/"
@@ -2079,6 +2355,10 @@
         "io/netty/src/test/kotlin",
         "io/netty/src/test/resources"
       ],
+      "title": {
+        "en": "Netty Extensions",
+        "ko": "Netty 확장"
+      },
       "workshops": []
     },
     {
@@ -2091,6 +2371,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-okio.md",
       "layer": "build",
+      "learningOrder": 310,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-okio/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-okio/"
@@ -2103,6 +2384,10 @@
         "io/okio/src/test/kotlin",
         "io/okio/src/test/resources"
       ],
+      "title": {
+        "en": "Okio Extensions",
+        "ko": "Okio 확장"
+      },
       "workshops": []
     },
     {
@@ -2110,11 +2395,12 @@
       "chapters": [],
       "en": "en/modules/bluetape4k-opentelemetry.md",
       "gradlePath": ":bluetape4k-opentelemetry",
-      "group": "infrastructure",
+      "group": "operations",
       "id": "bluetape4k-opentelemetry",
       "kind": "library",
       "ko": "ko/modules/bluetape4k-opentelemetry.md",
       "layer": "build",
+      "learningOrder": 1030,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-opentelemetry/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-opentelemetry/"
@@ -2127,6 +2413,10 @@
         "infra/opentelemetry/src/test/kotlin",
         "infra/opentelemetry/src/test/resources"
       ],
+      "title": {
+        "en": "OpenTelemetry Tracing",
+        "ko": "OpenTelemetry 추적"
+      },
       "workshops": []
     },
     {
@@ -2139,6 +2429,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-probabilistic.md",
       "layer": "build",
+      "learningOrder": 1260,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-probabilistic/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-probabilistic/"
@@ -2150,6 +2441,10 @@
       "testPaths": [
         "utils/probabilistic/src/test/kotlin"
       ],
+      "title": {
+        "en": "Probabilistic Data Structures",
+        "ko": "확률적 자료 구조"
+      },
       "workshops": []
     },
     {
@@ -2162,6 +2457,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-protobuf.md",
       "layer": "build",
+      "learningOrder": 380,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-protobuf/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-protobuf/"
@@ -2174,6 +2470,10 @@
         "io/protobuf/src/test/kotlin",
         "io/protobuf/src/test/resources"
       ],
+      "title": {
+        "en": "Protocol Buffers Serialization",
+        "ko": "Protocol Buffers 직렬화"
+      },
       "workshops": []
     },
     {
@@ -2181,11 +2481,12 @@
       "chapters": [],
       "en": "en/modules/bluetape4k-pulsar.md",
       "gradlePath": ":bluetape4k-pulsar",
-      "group": "infrastructure",
+      "group": "messaging",
       "id": "bluetape4k-pulsar",
       "kind": "library",
       "ko": "ko/modules/bluetape4k-pulsar.md",
       "layer": "build",
+      "learningOrder": 740,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-pulsar/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-pulsar/"
@@ -2198,6 +2499,10 @@
         "infra/pulsar/src/test/kotlin",
         "infra/pulsar/src/test/resources"
       ],
+      "title": {
+        "en": "Apache Pulsar Client Extensions",
+        "ko": "Apache Pulsar 클라이언트 확장"
+      },
       "workshops": []
     },
     {
@@ -2265,6 +2570,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-r2dbc.md",
       "layer": "build",
+      "learningOrder": 610,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-r2dbc/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-r2dbc/"
@@ -2278,6 +2584,10 @@
         "data/r2dbc/src/test/kotlin",
         "data/r2dbc/src/test/resources"
       ],
+      "title": {
+        "en": "R2DBC Coroutine Extensions",
+        "ko": "R2DBC 코루틴 확장"
+      },
       "workshops": []
     },
     {
@@ -2340,11 +2650,12 @@
       ],
       "en": "en/modules/bluetape4k-redis.md",
       "gradlePath": ":bluetape4k-redis",
-      "group": "infrastructure",
+      "group": "caching",
       "id": "bluetape4k-redis",
       "kind": "library",
       "ko": "ko/modules/bluetape4k-redis.md",
       "layer": "build",
+      "learningOrder": 550,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-redis/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-redis/"
@@ -2352,6 +2663,10 @@
       "sourceDir": "infra/redis",
       "sourcePaths": [],
       "testPaths": [],
+      "title": {
+        "en": "Redis Command Abstractions",
+        "ko": "Redis 명령 추상화"
+      },
       "workshops": []
     },
     {
@@ -2414,11 +2729,12 @@
       ],
       "en": "en/modules/bluetape4k-redisson.md",
       "gradlePath": ":bluetape4k-redisson",
-      "group": "infrastructure",
+      "group": "caching",
       "id": "bluetape4k-redisson",
       "kind": "library",
       "ko": "ko/modules/bluetape4k-redisson.md",
       "layer": "build",
+      "learningOrder": 560,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-redisson/"
@@ -2431,6 +2747,10 @@
         "infra/redisson/src/test/kotlin",
         "infra/redisson/src/test/resources"
       ],
+      "title": {
+        "en": "Redisson Coroutine Extensions",
+        "ko": "Redisson 코루틴 확장"
+      },
       "workshops": []
     },
     {
@@ -2438,11 +2758,12 @@
       "chapters": [],
       "en": "en/modules/bluetape4k-resilience4j.md",
       "gradlePath": ":bluetape4k-resilience4j",
-      "group": "infrastructure",
+      "group": "operations",
       "id": "bluetape4k-resilience4j",
       "kind": "library",
       "ko": "ko/modules/bluetape4k-resilience4j.md",
       "layer": "build",
+      "learningOrder": 1000,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-resilience4j/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-resilience4j/"
@@ -2456,6 +2777,10 @@
         "infra/resilience4j/src/test/kotlin",
         "infra/resilience4j/src/test/resources"
       ],
+      "title": {
+        "en": "Resilience Patterns with Resilience4j",
+        "ko": "Resilience4j 회복 탄력성 패턴"
+      },
       "workshops": []
     },
     {
@@ -2468,6 +2793,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-retrofit2.md",
       "layer": "build",
+      "learningOrder": 420,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-retrofit2/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-retrofit2/"
@@ -2480,6 +2806,10 @@
         "io/retrofit2/src/test/kotlin",
         "io/retrofit2/src/test/resources"
       ],
+      "title": {
+        "en": "Retrofit 2 Coroutine Extensions",
+        "ko": "Retrofit 2 코루틴 확장"
+      },
       "workshops": []
     },
     {
@@ -2492,6 +2822,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-rule-engine.md",
       "layer": "build",
+      "learningOrder": 1270,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-rule-engine/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-rule-engine/"
@@ -2504,6 +2835,10 @@
         "utils/rule-engine/src/test/kotlin",
         "utils/rule-engine/src/test/resources"
       ],
+      "title": {
+        "en": "Rule Engine",
+        "ko": "규칙 엔진"
+      },
       "workshops": []
     },
     {
@@ -2516,6 +2851,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-science.md",
       "layer": "build",
+      "learningOrder": 1280,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-science/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-science/"
@@ -2528,6 +2864,10 @@
         "utils/science/src/test/kotlin",
         "utils/science/src/test/resources"
       ],
+      "title": {
+        "en": "Scientific Computing Utilities",
+        "ko": "과학 계산 유틸리티"
+      },
       "workshops": []
     },
     {
@@ -2540,6 +2880,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-spring-boot-cassandra.md",
       "layer": "build",
+      "learningOrder": 910,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-cassandra/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-cassandra/"
@@ -2552,6 +2893,10 @@
         "spring-boot/cassandra/src/test/kotlin",
         "spring-boot/cassandra/src/test/resources"
       ],
+      "title": {
+        "en": "Spring Data Cassandra Coroutine Support",
+        "ko": "Spring Data Cassandra 코루틴 지원"
+      },
       "workshops": []
     },
     {
@@ -2559,11 +2904,12 @@
       "chapters": [],
       "en": "en/modules/bluetape4k-spring-boot-cassandra-demo.md",
       "gradlePath": ":bluetape4k-spring-boot-cassandra-demo",
-      "group": "spring",
+      "group": "examples",
       "id": "bluetape4k-spring-boot-cassandra-demo",
       "kind": "library",
       "ko": "ko/modules/bluetape4k-spring-boot-cassandra-demo.md",
       "layer": "build",
+      "learningOrder": 1450,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-cassandra-demo/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-cassandra-demo/"
@@ -2574,6 +2920,10 @@
         "spring-boot/cassandra-demo/src/test/kotlin",
         "spring-boot/cassandra-demo/src/test/resources"
       ],
+      "title": {
+        "en": "Spring Data Cassandra Example",
+        "ko": "Spring Data Cassandra 예제"
+      },
       "workshops": []
     },
     {
@@ -2586,6 +2936,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-spring-boot-core.md",
       "layer": "build",
+      "learningOrder": 900,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-core/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-core/"
@@ -2598,6 +2949,10 @@
         "spring-boot/core/src/test/kotlin",
         "spring-boot/core/src/test/resources"
       ],
+      "title": {
+        "en": "Spring Boot Application Foundations",
+        "ko": "Spring Boot 애플리케이션 기반 기능"
+      },
       "workshops": []
     },
     {
@@ -2665,6 +3020,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-spring-boot-hibernate-lettuce.md",
       "layer": "build",
+      "learningOrder": 950,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-hibernate-lettuce/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-hibernate-lettuce/"
@@ -2678,6 +3034,10 @@
         "spring-boot/hibernate-lettuce/src/test/kotlin",
         "spring-boot/hibernate-lettuce/src/test/resources"
       ],
+      "title": {
+        "en": "Spring Boot Hibernate Cache Integration",
+        "ko": "Spring Boot Hibernate 캐시 통합"
+      },
       "workshops": []
     },
     {
@@ -2685,11 +3045,12 @@
       "chapters": [],
       "en": "en/modules/bluetape4k-spring-boot-hibernate-lettuce-demo.md",
       "gradlePath": ":bluetape4k-spring-boot-hibernate-lettuce-demo",
-      "group": "spring",
+      "group": "examples",
       "id": "bluetape4k-spring-boot-hibernate-lettuce-demo",
       "kind": "library",
       "ko": "ko/modules/bluetape4k-spring-boot-hibernate-lettuce-demo.md",
       "layer": "build",
+      "learningOrder": 1460,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-hibernate-lettuce-demo/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-hibernate-lettuce-demo/"
@@ -2703,6 +3064,10 @@
         "spring-boot/hibernate-lettuce-demo/src/test/kotlin",
         "spring-boot/hibernate-lettuce-demo/src/test/resources"
       ],
+      "title": {
+        "en": "Spring Boot Hibernate Cache Example",
+        "ko": "Spring Boot Hibernate 캐시 예제"
+      },
       "workshops": []
     },
     {
@@ -2715,6 +3080,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-spring-boot-mongodb.md",
       "layer": "build",
+      "learningOrder": 920,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-mongodb/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-mongodb/"
@@ -2728,6 +3094,10 @@
         "spring-boot/mongodb/src/test/kotlin",
         "spring-boot/mongodb/src/test/resources"
       ],
+      "title": {
+        "en": "Spring Data MongoDB Coroutine Support",
+        "ko": "Spring Data MongoDB 코루틴 지원"
+      },
       "workshops": []
     },
     {
@@ -2795,6 +3165,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-spring-boot-r2dbc.md",
       "layer": "build",
+      "learningOrder": 930,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-r2dbc/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-r2dbc/"
@@ -2807,6 +3178,10 @@
         "spring-boot/r2dbc/src/test/kotlin",
         "spring-boot/r2dbc/src/test/resources"
       ],
+      "title": {
+        "en": "Spring Data R2DBC Coroutine Support",
+        "ko": "Spring Data R2DBC 코루틴 지원"
+      },
       "workshops": []
     },
     {
@@ -2819,6 +3194,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-spring-boot-redis.md",
       "layer": "build",
+      "learningOrder": 940,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-redis/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-redis/"
@@ -2831,6 +3207,10 @@
         "spring-boot/redis/src/test/kotlin",
         "spring-boot/redis/src/test/resources"
       ],
+      "title": {
+        "en": "Spring Data Redis Coroutine Support",
+        "ko": "Spring Data Redis 코루틴 지원"
+      },
       "workshops": []
     },
     {
@@ -2843,6 +3223,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-states.md",
       "layer": "build",
+      "learningOrder": 1290,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-states/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-states/"
@@ -2855,6 +3236,10 @@
         "utils/states/src/test/kotlin",
         "utils/states/src/test/resources"
       ],
+      "title": {
+        "en": "State Machine Utilities",
+        "ko": "상태 머신 유틸리티"
+      },
       "workshops": []
     },
     {
@@ -2867,6 +3252,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-testcontainers.md",
       "layer": "build",
+      "learningOrder": 1120,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-testcontainers/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-testcontainers/"
@@ -2880,6 +3266,10 @@
         "testing/testcontainers/src/test/kotlin",
         "testing/testcontainers/src/test/resources"
       ],
+      "title": {
+        "en": "Testcontainers Support",
+        "ko": "Testcontainers 테스트 지원"
+      },
       "workshops": []
     },
     {
@@ -2892,6 +3282,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-tink.md",
       "layer": "build",
+      "learningOrder": 390,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-tink/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-tink/"
@@ -2904,6 +3295,10 @@
         "io/tink/src/test/kotlin",
         "io/tink/src/test/resources"
       ],
+      "title": {
+        "en": "Google Tink Cryptography",
+        "ko": "Google Tink 암호화"
+      },
       "workshops": []
     },
     {
@@ -2916,6 +3311,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-vertx.md",
       "layer": "build",
+      "learningOrder": 450,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-vertx/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-vertx/"
@@ -2928,6 +3324,10 @@
         "io/vertx/src/test/kotlin",
         "io/vertx/src/test/resources"
       ],
+      "title": {
+        "en": "Vert.x Coroutine Extensions",
+        "ko": "Vert.x 코루틴 확장"
+      },
       "workshops": []
     },
     {
@@ -2940,6 +3340,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-virtualthread-api.md",
       "layer": "build",
+      "learningOrder": 220,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-virtualthread-api/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-virtualthread-api/"
@@ -2952,6 +3353,10 @@
         "virtualthread/api/src/test/kotlin",
         "virtualthread/api/src/test/resources"
       ],
+      "title": {
+        "en": "Virtual Thread Abstractions",
+        "ko": "가상 스레드 추상화"
+      },
       "workshops": []
     },
     {
@@ -2964,6 +3369,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-virtualthread-jdk21.md",
       "layer": "build",
+      "learningOrder": 230,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-virtualthread-jdk21/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-virtualthread-jdk21/"
@@ -2978,6 +3384,10 @@
         "virtualthread/jdk21/src/test/kotlin",
         "virtualthread/jdk21/src/test/resources"
       ],
+      "title": {
+        "en": "Virtual Threads for JDK 21",
+        "ko": "JDK 21 가상 스레드"
+      },
       "workshops": []
     },
     {
@@ -2990,6 +3400,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-virtualthread-jdk25.md",
       "layer": "build",
+      "learningOrder": 240,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-virtualthread-jdk25/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-virtualthread-jdk25/"
@@ -3004,6 +3415,10 @@
         "virtualthread/jdk25/src/test/kotlin",
         "virtualthread/jdk25/src/test/resources"
       ],
+      "title": {
+        "en": "Virtual Threads for JDK 25",
+        "ko": "JDK 25 가상 스레드"
+      },
       "workshops": []
     },
     {
@@ -3016,6 +3431,7 @@
       "kind": "library",
       "ko": "ko/modules/bluetape4k-workflow.md",
       "layer": "build",
+      "learningOrder": 1300,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/bluetape4k-workflow/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-workflow/"
@@ -3028,6 +3444,10 @@
         "utils/workflow/src/test/kotlin",
         "utils/workflow/src/test/resources"
       ],
+      "title": {
+        "en": "Workflow Engine",
+        "ko": "워크플로 엔진"
+      },
       "workshops": []
     },
     {
@@ -3035,11 +3455,12 @@
       "chapters": [],
       "en": "en/modules/idgenerator-ktor-demo.md",
       "gradlePath": ":idgenerator-ktor-demo",
-      "group": "learning",
+      "group": "examples",
       "id": "idgenerator-ktor-demo",
       "kind": "example",
       "ko": "ko/modules/idgenerator-ktor-demo.md",
       "layer": "learn",
+      "learningOrder": 1470,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/idgenerator-ktor-demo/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/idgenerator-ktor-demo/"
@@ -3052,6 +3473,10 @@
         "examples/ktor/idgenerator-ktor-demo/src/test/kotlin",
         "examples/ktor/idgenerator-ktor-demo/src/test/resources"
       ],
+      "title": {
+        "en": "Distributed ID Generation with Ktor",
+        "ko": "Ktor 분산 ID 생성 예제"
+      },
       "workshops": []
     },
     {
@@ -3059,11 +3484,12 @@
       "chapters": [],
       "en": "en/modules/idgenerator-spring-boot-demo.md",
       "gradlePath": ":idgenerator-spring-boot-demo",
-      "group": "learning",
+      "group": "examples",
       "id": "idgenerator-spring-boot-demo",
       "kind": "example",
       "ko": "ko/modules/idgenerator-spring-boot-demo.md",
       "layer": "learn",
+      "learningOrder": 1480,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/idgenerator-spring-boot-demo/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/idgenerator-spring-boot-demo/"
@@ -3077,6 +3503,10 @@
         "examples/spring-boot/idgenerator-spring-boot-demo/src/test/kotlin",
         "examples/spring-boot/idgenerator-spring-boot-demo/src/test/resources"
       ],
+      "title": {
+        "en": "Distributed ID Generation with Spring Boot",
+        "ko": "Spring Boot 분산 ID 생성 예제"
+      },
       "workshops": []
     },
     {
@@ -3084,11 +3514,12 @@
       "chapters": [],
       "en": "en/modules/observability-ktor-demo.md",
       "gradlePath": ":observability-ktor-demo",
-      "group": "learning",
+      "group": "examples",
       "id": "observability-ktor-demo",
       "kind": "example",
       "ko": "ko/modules/observability-ktor-demo.md",
       "layer": "learn",
+      "learningOrder": 1490,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/observability-ktor-demo/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/observability-ktor-demo/"
@@ -3101,6 +3532,10 @@
         "examples/ktor/observability-ktor-demo/src/test/kotlin",
         "examples/ktor/observability-ktor-demo/src/test/resources"
       ],
+      "title": {
+        "en": "Ktor Observability Example",
+        "ko": "Ktor 관측성 예제"
+      },
       "workshops": []
     },
     {
@@ -3108,11 +3543,12 @@
       "chapters": [],
       "en": "en/modules/observability-spring-boot-demo.md",
       "gradlePath": ":observability-spring-boot-demo",
-      "group": "learning",
+      "group": "examples",
       "id": "observability-spring-boot-demo",
       "kind": "example",
       "ko": "ko/modules/observability-spring-boot-demo.md",
       "layer": "learn",
+      "learningOrder": 1500,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/observability-spring-boot-demo/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/observability-spring-boot-demo/"
@@ -3126,6 +3562,10 @@
         "examples/spring-boot/observability-spring-boot-demo/src/test/kotlin",
         "examples/spring-boot/observability-spring-boot-demo/src/test/resources"
       ],
+      "title": {
+        "en": "Spring Boot Observability Example",
+        "ko": "Spring Boot 관측성 예제"
+      },
       "workshops": []
     },
     {
@@ -3133,11 +3573,12 @@
       "chapters": [],
       "en": "en/modules/protobuf-codec-benchmark.md",
       "gradlePath": ":protobuf-codec-benchmark",
-      "group": "experiments",
+      "group": "examples",
       "id": "protobuf-codec-benchmark",
       "kind": "benchmark",
       "ko": "ko/modules/protobuf-codec-benchmark.md",
       "layer": "apply",
+      "learningOrder": 1510,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/protobuf-codec-benchmark/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/protobuf-codec-benchmark/"
@@ -3145,6 +3586,10 @@
       "sourceDir": "benchmark/protobuf-codec-benchmark",
       "sourcePaths": [],
       "testPaths": [],
+      "title": {
+        "en": "Protobuf Codec Benchmark",
+        "ko": "Protobuf 코덱 성능 비교"
+      },
       "workshops": []
     },
     {
@@ -3152,11 +3597,12 @@
       "chapters": [],
       "en": "en/modules/web-framework-benchmark.md",
       "gradlePath": ":web-framework-benchmark",
-      "group": "experiments",
+      "group": "examples",
       "id": "web-framework-benchmark",
       "kind": "benchmark",
       "ko": "ko/modules/web-framework-benchmark.md",
       "layer": "apply",
+      "learningOrder": 1520,
       "routes": {
         "en": "/manual/bluetape4k-projects/1.11/modules/web-framework-benchmark/",
         "ko": "/ko/manual/bluetape4k-projects/1.11/modules/web-framework-benchmark/"
@@ -3164,6 +3610,10 @@
       "sourceDir": "benchmark/web-framework-benchmark",
       "sourcePaths": [],
       "testPaths": [],
+      "title": {
+        "en": "Web Framework Benchmark",
+        "ko": "웹 프레임워크 성능 비교"
+      },
       "workshops": []
     }
   ],
@@ -3722,5 +4172,5 @@
   "repository": "bluetape4k/bluetape4k-projects",
   "repositorySlug": "bluetape4k-projects",
   "schemaVersion": 2,
-  "sourceCommit": "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  "sourceCommit": "222f640a5a8937d3000dc49b2e2f585726ed70e6"
 }

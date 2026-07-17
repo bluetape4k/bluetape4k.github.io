@@ -1,22 +1,24 @@
 ---
 slug: "manual/bluetape4k-projects/1.11/modules/bluetape4k-measured"
 manualId: bluetape4k-measured
-title: "Module bluetape4k-measured"
+title: "Units of Measure"
 description: "bluetape4k-measured represents compound units such as m/s and kgm/s^2 in a type-safe way, based on composable unit types (Units) and measured values (Measure)."
 kind: library
 group: utilities
+learningOrder: 1240
 manual:
   id: "bluetape4k-measured"
   repository: "bluetape4k-projects"
   group: "utilities"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/en/modules/bluetape4k-measured.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "utils/measured"
   layer: "build"
+  learningOrder: 1240
 ---
 
 

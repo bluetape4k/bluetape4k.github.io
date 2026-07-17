@@ -37,6 +37,36 @@ const SECTION_LABELS = {
   benchmarks: { en: 'Benchmarks', ko: '벤치마크' },
 };
 
+const MODULE_GROUP_ORDER = [
+  'foundation',
+  'concurrency',
+  'io',
+  'caching',
+  'data',
+  'messaging',
+  'web',
+  'spring',
+  'operations',
+  'testing',
+  'utilities',
+  'examples',
+];
+
+const MODULE_GROUP_LABELS = {
+  foundation: { en: 'Foundations', ko: '기초' },
+  concurrency: { en: 'Concurrency', ko: '동시성' },
+  io: { en: 'I/O and Serialization', ko: 'I/O와 직렬화' },
+  caching: { en: 'Caching', ko: '캐시' },
+  data: { en: 'Data Access', ko: '데이터 접근' },
+  messaging: { en: 'Messaging', ko: '메시징' },
+  web: { en: 'Web and Ktor', ko: '웹과 Ktor' },
+  spring: { en: 'Spring Integrations', ko: 'Spring 통합' },
+  operations: { en: 'Operations and Observability', ko: '운영과 관측성' },
+  testing: { en: 'Testing', ko: '테스트' },
+  utilities: { en: 'Utilities', ko: '유틸리티' },
+  examples: { en: 'Examples and Benchmarks', ko: '예제와 성능 비교' },
+};
+
 function fail(code, actual) {
   const error = new Error(`${code}: ${String(actual)}`);
   error.code = code;
@@ -53,6 +83,10 @@ function words(value) {
 
 function sectionLabel(section, locale) {
   return SECTION_LABELS[section]?.[locale] ?? words(section);
+}
+
+function moduleGroupLabel(group, locale) {
+  return MODULE_GROUP_LABELS[group]?.[locale] ?? words(group);
 }
 
 function link({ label, href, isCurrent = false, documentId }) {
@@ -98,6 +132,14 @@ function indexDocuments(documents) {
     if (typeof document.title !== 'string' || document.title.trim() === '') {
       fail('NAVIGATION_TITLE_MISSING', key);
     }
+    for (const field of ['learningOrder', 'chapterOrder']) {
+      if (
+        document[field] !== undefined
+        && (!Number.isSafeInteger(document[field]) || document[field] <= 0)
+      ) {
+        fail('NAVIGATION_ORDER_INVALID', `${key}:${field}`);
+      }
+    }
     index.set(key, document);
   }
   return index;
@@ -127,7 +169,13 @@ function nestedEntries({ ids, prefix, byId, locale, repository, minorVersion, cu
   const children = [...new Set(ids
     .filter((id) => id.startsWith(`${prefix}/`))
     .map((id) => id.slice(prefix.length + 1).split('/')[0]))]
-    .toSorted((left, right) => left.localeCompare(right, 'en'));
+    .toSorted((left, right) => {
+      const leftDocument = byId.get(`${prefix}/${left}`);
+      const rightDocument = byId.get(`${prefix}/${right}`);
+      return (leftDocument?.chapterOrder ?? Number.MAX_SAFE_INTEGER)
+        - (rightDocument?.chapterOrder ?? Number.MAX_SAFE_INTEGER)
+        || left.localeCompare(right, locale);
+    });
   const entries = [];
   const overview = byId.get(prefix);
   if (overview) {
@@ -163,6 +211,69 @@ function nestedEntries({ ids, prefix, byId, locale, repository, minorVersion, cu
   return entries;
 }
 
+function moduleEntries({ ids, byId, locale, repository, minorVersion, currentId }) {
+  const moduleIds = [...new Set(ids
+    .filter((id) => id.startsWith('modules/'))
+    .map((id) => id.split('/').slice(0, 2).join('/')))];
+  const ordered = moduleIds.filter((id) => Number.isSafeInteger(byId.get(id)?.learningOrder));
+  if (ordered.length === 0) {
+    return nestedEntries({
+      ids,
+      prefix: 'modules',
+      byId,
+      locale,
+      repository,
+      minorVersion,
+      currentId,
+    });
+  }
+  if (ordered.length !== moduleIds.length) {
+    fail('NAVIGATION_LEARNING_ORDER_INCOMPLETE', `${repository.slug}@${minorVersion}:${locale}`);
+  }
+  const learningOrders = new Set();
+  for (const id of moduleIds) {
+    const document = byId.get(id);
+    if (typeof document.group !== 'string' || document.group.trim() === '') {
+      fail('NAVIGATION_GROUP_MISSING', `${repository.slug}@${minorVersion}:${locale}:${id}`);
+    }
+    if (learningOrders.has(document.learningOrder)) {
+      fail('NAVIGATION_LEARNING_ORDER_DUPLICATE', `${repository.slug}@${minorVersion}:${locale}:${document.learningOrder}`);
+    }
+    learningOrders.add(document.learningOrder);
+  }
+  const groups = [...new Set(moduleIds.map((id) => byId.get(id).group))]
+    .toSorted((left, right) => {
+      const leftRank = MODULE_GROUP_ORDER.indexOf(left);
+      const rightRank = MODULE_GROUP_ORDER.indexOf(right);
+      return (leftRank < 0 ? MODULE_GROUP_ORDER.length : leftRank)
+        - (rightRank < 0 ? MODULE_GROUP_ORDER.length : rightRank)
+        || left.localeCompare(right, 'en');
+    });
+  return groups.map((group) => ({
+    type: 'group',
+    label: moduleGroupLabel(group, locale),
+    entries: moduleIds
+      .filter((id) => byId.get(id).group === group)
+      .toSorted((left, right) => byId.get(left).learningOrder - byId.get(right).learningOrder)
+      .map((id) => {
+        const document = byId.get(id);
+        const descendants = ids.some((candidate) => candidate.startsWith(`${id}/`));
+        if (!descendants) {
+          return documentLink({ document, locale, repository, minorVersion, currentId });
+        }
+        return {
+          type: 'group',
+          label: document.title,
+          entries: nestedEntries({ ids, prefix: id, byId, locale, repository, minorVersion, currentId }),
+          collapsed: true,
+          badge: undefined,
+        };
+      }),
+    collapsed: true,
+    badge: undefined,
+  }));
+}
+
 function repositoryEntries({ ids, byId, locale, repository, minorVersion, currentId }) {
   if (!byId.has('index')) {
     fail('NAVIGATION_HOME_MISSING', `${repository.slug}@${minorVersion}:${locale}`);
@@ -191,15 +302,17 @@ function repositoryEntries({ ids, byId, locale, repository, minorVersion, curren
     entries.push({
       type: 'group',
       label: sectionLabel(section, locale),
-      entries: nestedEntries({
-        ids,
-        prefix: section,
-        byId,
-        locale,
-        repository,
-        minorVersion,
-        currentId,
-      }),
+      entries: section === 'modules'
+        ? moduleEntries({ ids, byId, locale, repository, minorVersion, currentId })
+        : nestedEntries({
+            ids,
+            prefix: section,
+            byId,
+            locale,
+            repository,
+            minorVersion,
+            currentId,
+          }),
       collapsed: true,
       badge: undefined,
     });

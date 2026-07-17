@@ -64,6 +64,7 @@ export function transformManual({
   content,
   module,
   chapter,
+  chapterOrder,
   repository,
   sourceCommit,
   sourcePath,
@@ -87,7 +88,9 @@ export function transformManual({
     `  releaseCommit: ${yamlScalar(releaseCommit)}`,
     `  sourceDir: ${yamlScalar(module.sourceDir)}`,
     `  layer: ${yamlScalar(layerFor(module.kind))}`,
+    ...(Number.isSafeInteger(module.learningOrder) ? [`  learningOrder: ${module.learningOrder}`] : []),
     ...(chapter ? [`  chapterId: ${yamlScalar(chapter.id)}`] : []),
+    ...(Number.isSafeInteger(chapterOrder) ? [`  chapterOrder: ${chapterOrder}`] : []),
   ].join('\n');
   const withMetadata = `${content.slice(0, end)}\n${metadata}${content.slice(end)}`;
   return stripFirstHeading(rewriteManualLinks(

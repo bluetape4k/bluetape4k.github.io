@@ -1,22 +1,24 @@
 ---
 slug: "manual/bluetape4k-projects/1.11/modules/bluetape4k-opentelemetry"
 manualId: bluetape4k-opentelemetry
-title: "Module bluetape4k-opentelemetry"
+title: "OpenTelemetry Tracing"
 description: "OpenTelemetry is an observability framework for cloud-native software. This module provides Kotlin extension functions and utilities that make it easier and more idiomatic to use OpenTelemetry on the JVM."
 kind: library
-group: infrastructure
+group: operations
+learningOrder: 1030
 manual:
   id: "bluetape4k-opentelemetry"
   repository: "bluetape4k-projects"
-  group: "infrastructure"
+  group: "operations"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/en/modules/bluetape4k-opentelemetry.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "infra/opentelemetry"
   layer: "build"
+  learningOrder: 1030
 ---
 
 

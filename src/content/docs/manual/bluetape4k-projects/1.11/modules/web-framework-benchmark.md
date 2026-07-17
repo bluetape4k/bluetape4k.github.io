@@ -4,19 +4,21 @@ manualId: web-framework-benchmark
 title: "Web Framework Benchmark"
 description: "This module compares equivalent embedded HTTP workloads implemented with Ktor CIO and Spring WebFlux."
 kind: benchmark
-group: experiments
+group: examples
+learningOrder: 1520
 manual:
   id: "web-framework-benchmark"
   repository: "bluetape4k-projects"
-  group: "experiments"
+  group: "examples"
   kind: "benchmark"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/en/modules/web-framework-benchmark.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "benchmark/web-framework-benchmark"
   layer: "apply"
+  learningOrder: 1520
 ---
 
 

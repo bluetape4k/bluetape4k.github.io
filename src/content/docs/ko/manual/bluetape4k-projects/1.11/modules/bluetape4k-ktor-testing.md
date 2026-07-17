@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-ktor-testing"
 manualId: bluetape4k-ktor-testing
-title: "bluetape4k-ktor-testing"
+title: "Ktor 테스트 지원"
 description: "bluetape4k 생태계를 위한 Ktor 테스트 helper 모듈입니다."
 kind: library
 group: web
+learningOrder: 810
 manual:
   id: "bluetape4k-ktor-testing"
   repository: "bluetape4k-projects"
   group: "web"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-ktor-testing.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "ktor/testing"
   layer: "build"
+  learningOrder: 810
 ---
 
 

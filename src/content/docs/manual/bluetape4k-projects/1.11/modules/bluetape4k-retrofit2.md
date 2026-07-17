@@ -1,22 +1,24 @@
 ---
 slug: "manual/bluetape4k-projects/1.11/modules/bluetape4k-retrofit2"
 manualId: bluetape4k-retrofit2
-title: "Module bluetape4k-retrofit2"
+title: "Retrofit 2 Coroutine Extensions"
 description: "bluetape4k-retrofit2 is a module that extends Retrofit2 with Kotlin DSL and Coroutines support."
 kind: library
 group: io
+learningOrder: 420
 manual:
   id: "bluetape4k-retrofit2"
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/en/modules/bluetape4k-retrofit2.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "io/retrofit2"
   layer: "build"
+  learningOrder: 420
 ---
 
 

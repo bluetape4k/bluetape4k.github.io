@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-netty"
 manualId: bluetape4k-netty
-title: "Module bluetape4k-netty"
+title: "Netty 확장"
 description: "Netty 라이브러리를 사용할 때 필요한 확장 함수들을 제공합니다."
 kind: library
 group: io
+learningOrder: 430
 manual:
   id: "bluetape4k-netty"
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-netty.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "io/netty"
   layer: "build"
+  learningOrder: 430
 ---
 
 

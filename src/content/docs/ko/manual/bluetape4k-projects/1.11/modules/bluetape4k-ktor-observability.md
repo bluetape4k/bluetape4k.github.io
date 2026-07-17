@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-ktor-observability"
 manualId: bluetape4k-ktor-observability
-title: "bluetape4k-ktor-observability"
+title: "Ktor 관측성"
 description: "bluetape4k 애플리케이션에서 관측성 기본값을 명시적으로 설치하는 Ktor 모듈입니다."
 kind: library
 group: web
+learningOrder: 840
 manual:
   id: "bluetape4k-ktor-observability"
   repository: "bluetape4k-projects"
   group: "web"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-ktor-observability.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "ktor/observability"
   layer: "build"
+  learningOrder: 840
 ---
 
 

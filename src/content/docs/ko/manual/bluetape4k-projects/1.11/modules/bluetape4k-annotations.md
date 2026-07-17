@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-annotations"
 manualId: bluetape4k-annotations
-title: API 성숙도 annotation
+title: "API 성숙도 애너테이션"
 description: 실험적 API, 내부 API, 주의가 필요한 API, 폐기 예정 API, beta API, 구현 제한 SPI에 명시적인 opt-in 계약을 적용합니다.
 kind: library
 group: foundation
+learningOrder: 120
 manual:
   id: "bluetape4k-annotations"
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-annotations.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "bluetape4k/annotations"
   layer: "build"
+  learningOrder: 120
 ---
 
 

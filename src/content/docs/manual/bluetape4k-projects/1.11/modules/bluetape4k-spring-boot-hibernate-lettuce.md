@@ -1,22 +1,24 @@
 ---
 slug: "manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-hibernate-lettuce"
 manualId: bluetape4k-spring-boot-hibernate-lettuce
-title: "Module bluetape4k-spring-boot-hibernate-lettuce"
+title: "Spring Boot Hibernate Cache Integration"
 description: "Configure Hibernate second-level Lettuce Near Cache in Spring Boot 4 with explicit conditions, properties, lifecycle, and operations."
 kind: library
 group: spring
+learningOrder: 950
 manual:
   id: "bluetape4k-spring-boot-hibernate-lettuce"
   repository: "bluetape4k-projects"
   group: "spring"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/en/modules/bluetape4k-spring-boot-hibernate-lettuce.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "spring-boot/hibernate-lettuce"
   layer: "build"
+  learningOrder: 950
 ---
 
 

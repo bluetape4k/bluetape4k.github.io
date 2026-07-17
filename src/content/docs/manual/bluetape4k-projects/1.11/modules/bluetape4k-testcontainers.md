@@ -1,22 +1,24 @@
 ---
 slug: "manual/bluetape4k-projects/1.11/modules/bluetape4k-testcontainers"
 manualId: bluetape4k-testcontainers
-title: "Module bluetape4k-testcontainers"
+title: "Testcontainers Support"
 description: "A server wrapper and utility library for building integration tests quickly on top of Testcontainers 2.0.3."
 kind: library
 group: testing
+learningOrder: 1120
 manual:
   id: "bluetape4k-testcontainers"
   repository: "bluetape4k-projects"
   group: "testing"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/en/modules/bluetape4k-testcontainers.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "testing/testcontainers"
   layer: "build"
+  learningOrder: 1120
 ---
 
 

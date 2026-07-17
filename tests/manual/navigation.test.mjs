@@ -152,6 +152,88 @@ test('traverses section boundaries in reading order', () => {
   assert.equal(result.pagination.next.documentId, 'modules/alpha/operations');
 });
 
+test('groups Projects modules by learning stage and follows explicit reading order', () => {
+  const customCatalogs = structuredClone(catalogs);
+  const projects = customCatalogs['bluetape4k-projects'].versions[1];
+  projects.documents = {
+    en: [...projects.documents.en],
+    ko: [...projects.documents.ko],
+  };
+  for (const locale of ['en', 'ko']) {
+    projects.documents[locale].push(
+      'modules/core',
+      'modules/coroutines',
+      'modules/jdbc',
+      'modules/alpha/concepts',
+    );
+  }
+  const customDocuments = documents.map((document) => {
+    if (document.repository !== 'bluetape4k-projects' || document.minorVersion !== '1.12') return document;
+    if (document.id === 'modules/alpha') {
+      return { ...document, group: 'data', learningOrder: 620 };
+    }
+    if (document.id === 'modules/alpha/operations') {
+      return { ...document, group: 'data', learningOrder: 620, chapterOrder: 2 };
+    }
+    return document;
+  });
+  for (const locale of ['en', 'ko']) {
+    customDocuments.push(
+      {
+        id: 'modules/core', locale, repository: 'bluetape4k-projects', minorVersion: '1.12',
+        title: locale === 'ko' ? '핵심 Kotlin 라이브러리' : 'Core Kotlin Library',
+        group: 'foundation', learningOrder: 110,
+      },
+      {
+        id: 'modules/coroutines', locale, repository: 'bluetape4k-projects', minorVersion: '1.12',
+        title: locale === 'ko' ? 'Coroutine과 Flow 확장' : 'Coroutine and Flow Extensions',
+        group: 'concurrency', learningOrder: 200,
+      },
+      {
+        id: 'modules/jdbc', locale, repository: 'bluetape4k-projects', minorVersion: '1.12',
+        title: locale === 'ko' ? 'JDBC와 SQL 확장' : 'JDBC and SQL Extensions',
+        group: 'data', learningOrder: 600,
+      },
+      {
+        id: 'modules/alpha/concepts', locale, repository: 'bluetape4k-projects', minorVersion: '1.12',
+        title: locale === 'ko' ? '핵심 개념' : 'Concepts',
+        group: 'data', learningOrder: 620, chapterOrder: 1,
+      },
+    );
+  }
+
+  const result = buildManualNavigation({
+    registry: repositories,
+    catalogs: customCatalogs,
+    documents: customDocuments,
+    current: {
+      locale: 'en', repository: 'bluetape4k-projects', minorVersion: '1.12', documentId: 'modules/jdbc',
+    },
+  });
+  const modules = result.sidebar[0].entries.find(({ label }) => label === 'Modules');
+
+  assert.deepEqual(modules.entries.map(({ label }) => label), [
+    'Foundations',
+    'Concurrency',
+    'Data Access',
+  ]);
+  assert.deepEqual(result.order.map(({ documentId }) => documentId), [
+    'index',
+    'getting-started',
+    'architecture/repository-map',
+    'guides/learning-path',
+    'modules/core',
+    'modules/coroutines',
+    'modules/jdbc',
+    'modules/alpha',
+    'modules/alpha/concepts',
+    'modules/alpha/operations',
+    'quality/release-gates',
+  ]);
+  assert.equal(result.pagination.prev.documentId, 'modules/coroutines');
+  assert.equal(result.pagination.next.documentId, 'modules/alpha');
+});
+
 test('uses archived membership without leaking latest pages', () => {
   const result = navigation({ minorVersion: '1.11', documentId: 'modules/alpha' });
   assert.deepEqual(result.order.map(({ documentId }) => documentId), [

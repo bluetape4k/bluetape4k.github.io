@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/idgenerator-ktor-demo"
 manualId: idgenerator-ktor-demo
-title: "idgenerator Ktor Demo"
+title: "Ktor 분산 ID 생성 예제"
 description: "bluetape4k idgenerators를 HTTP endpoint로 노출하는 실행 가능한 Ktor application입니다. 공통 bluetape4k Ktor 모듈을 사용해 JSON, 표준 오류 응답, health/readiness route, correlation ID, call logging, test assertion을 구성합니다."
 kind: example
-group: learning
+group: examples
+learningOrder: 1470
 manual:
   id: "idgenerator-ktor-demo"
   repository: "bluetape4k-projects"
-  group: "learning"
+  group: "examples"
   kind: "example"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/idgenerator-ktor-demo.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "examples/ktor/idgenerator-ktor-demo"
   layer: "learn"
+  learningOrder: 1470
 ---
 
 

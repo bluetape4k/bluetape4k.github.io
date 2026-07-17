@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-examples-coroutines-demo"
 manualId: bluetape4k-examples-coroutines-demo
-title: "Module Examples - Kotlin Coroutines"
+title: "Kotlin 코루틴 예제"
 description: "Kotlin Coroutines의 다양한 기능과 사용 패턴을 학습하기 위한 예제 모음입니다."
 kind: example
-group: learning
+group: examples
+learningOrder: 1400
 manual:
   id: "bluetape4k-examples-coroutines-demo"
   repository: "bluetape4k-projects"
-  group: "learning"
+  group: "examples"
   kind: "example"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-examples-coroutines-demo.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "examples/coroutines-demo"
   layer: "learn"
+  learningOrder: 1400
 ---
 
 
