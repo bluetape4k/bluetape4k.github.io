@@ -1,22 +1,24 @@
 ---
 slug: "manual/bluetape4k-projects/1.11/modules/observability-spring-boot-demo"
 manualId: observability-spring-boot-demo
-title: "bluetape4k Spring Boot observability demo"
+title: "Spring Boot Observability Example"
 description: "Runnable Spring Boot 4 application that shows how to use bluetape4k observation helpers with Spring Boot Actuator Prometheus metrics and application-owned OTLP tracing configuration."
 kind: example
-group: learning
+group: examples
+learningOrder: 1500
 manual:
   id: "observability-spring-boot-demo"
   repository: "bluetape4k-projects"
-  group: "learning"
+  group: "examples"
   kind: "example"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/en/modules/observability-spring-boot-demo.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "examples/spring-boot/observability-spring-boot-demo"
   layer: "learn"
+  learningOrder: 1500
 ---
 
 

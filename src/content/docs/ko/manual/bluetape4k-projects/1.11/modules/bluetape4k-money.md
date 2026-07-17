@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-money"
 manualId: bluetape4k-money
-title: "Module bluetape4k-money"
+title: "통화 계산"
 description: "Java 표준 Money API (JSR-354)를 기반으로 금융 및 통화 연산을 쉽게 수행할 수 있는 라이브러리입니다. JavaMoney Moneta 구현체를 사용하여 통화 단위, 금액 계산, 환율 변환을 지원합니다."
 kind: library
 group: utilities
+learningOrder: 1250
 manual:
   id: "bluetape4k-money"
   repository: "bluetape4k-projects"
   group: "utilities"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-money.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "utils/money"
   layer: "build"
+  learningOrder: 1250
 ---
 
 

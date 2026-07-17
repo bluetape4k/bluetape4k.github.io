@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-csv"
 manualId: bluetape4k-csv
-title: "Module bluetape4k-csv"
+title: "CSV 데이터 처리"
 description: "bluetape4k-csv는 RFC 4180을 준수하는 자체 구현 엔진을 사용하는 Kotlin 네이티브 CSV/TSV 파싱 라이브러리입니다."
 kind: library
 group: io
+learningOrder: 320
 manual:
   id: "bluetape4k-csv"
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-csv.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "io/csv"
   layer: "build"
+  learningOrder: 320
 ---
 
 

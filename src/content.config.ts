@@ -19,6 +19,8 @@ const manualBase = z.object({
   releaseRef: z.string().regex(/^v?\d+\.\d+\.\d+$/),
   sourceDir: z.string().min(1),
   layer: z.enum(['build', 'learn', 'apply']),
+  learningOrder: z.number().int().positive().optional(),
+  chapterOrder: z.number().int().positive().optional(),
 });
 
 const manual = manualBase.extend({

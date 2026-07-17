@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/observability-ktor-demo"
 manualId: observability-ktor-demo
-title: "bluetape4k Ktor observability demo"
+title: "Ktor 관측성 예제"
 description: "Ktor 3에서 애플리케이션이 소유한 Prometheus metrics route, opt-in OpenTelemetry tracing, bluetape4k event telemetry helper를 함께 사용하는 실행 가능한 예제입니다."
 kind: example
-group: learning
+group: examples
+learningOrder: 1490
 manual:
   id: "observability-ktor-demo"
   repository: "bluetape4k-projects"
-  group: "learning"
+  group: "examples"
   kind: "example"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/observability-ktor-demo.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "examples/ktor/observability-ktor-demo"
   layer: "learn"
+  learningOrder: 1490
 ---
 
 

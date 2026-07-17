@@ -1,22 +1,24 @@
 ---
 slug: "manual/bluetape4k-projects/1.11/modules/bluetape4k-examples-redisson-demo"
 manualId: bluetape4k-examples-redisson-demo
-title: "Module Examples - Redisson"
+title: "Redisson Examples"
 description: "A collection of examples demonstrating distributed Redis patterns using Redisson with Kotlin Coroutines."
 kind: example
-group: learning
+group: examples
+learningOrder: 1420
 manual:
   id: "bluetape4k-examples-redisson-demo"
   repository: "bluetape4k-projects"
-  group: "learning"
+  group: "examples"
   kind: "example"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/en/modules/bluetape4k-examples-redisson-demo.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "examples/redisson-demo"
   layer: "learn"
+  learningOrder: 1420
 ---
 
 

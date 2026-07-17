@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-fastjson2"
 manualId: bluetape4k-fastjson2
-title: "Module bluetape4k-fastjson2"
+title: "Fastjson2 직렬화"
 description: "bluetape4k-fastjson2는 Fastjson2 라이브러리를 Kotlin 확장 함수로 래핑하여 제공하는 모듈입니다."
 kind: library
 group: io
+learningOrder: 340
 manual:
   id: "bluetape4k-fastjson2"
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-fastjson2.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "io/fastjson2"
   layer: "build"
+  learningOrder: 340
 ---
 
 

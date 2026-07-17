@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-okio"
 manualId: bluetape4k-okio
-title: "Module bluetape4k-okio"
+title: "Okio 확장"
 description: "bluetape4k-okio는 Square의 Okio 라이브러리를 기반으로 한 고성능 I/O 확장 모듈입니다. Okio의 Source/ Sink 추상화 위에 압축, 암호화, Base64 인코딩, NIO 채널 통합, Kotlin Coroutines 비동기 I/O 등을 제공합니다."
 kind: library
 group: io
+learningOrder: 310
 manual:
   id: "bluetape4k-okio"
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-okio.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "io/okio"
   layer: "build"
+  learningOrder: 310
 ---
 
 

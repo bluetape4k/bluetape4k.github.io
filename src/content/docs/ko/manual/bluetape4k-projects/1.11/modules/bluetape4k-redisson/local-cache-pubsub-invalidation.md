@@ -7,16 +7,18 @@ chapterId: local-cache-pubsub-invalidation
 manual:
   id: "bluetape4k-redisson"
   repository: "bluetape4k-projects"
-  group: "infrastructure"
+  group: "caching"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-redisson/local-cache-pubsub-invalidation.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "infra/redisson"
   layer: "build"
+  learningOrder: 560
   chapterId: "local-cache-pubsub-invalidation"
+  chapterOrder: 4
 ---
 
 

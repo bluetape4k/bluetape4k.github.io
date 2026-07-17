@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-hazelcast"
 manualId: bluetape4k-cache-hazelcast
-title: "Module bluetape4k-cache-hazelcast"
+title: "Hazelcast 캐시 통합"
 description: "Hazelcast JCache와 IMap 기반 memoizer·Near Cache를 구성하고 클러스터 소유권, 무효화, 직렬화와 실패 경계를 검증하는 방법을 설명합니다."
 kind: library
 group: caching
+learningOrder: 510
 manual:
   id: "bluetape4k-cache-hazelcast"
   repository: "bluetape4k-projects"
   group: "caching"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-cache-hazelcast.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "cache/cache-hazelcast"
   layer: "build"
+  learningOrder: 510
 ---
 
 

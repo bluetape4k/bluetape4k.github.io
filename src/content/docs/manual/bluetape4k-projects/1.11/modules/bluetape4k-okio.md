@@ -1,22 +1,24 @@
 ---
 slug: "manual/bluetape4k-projects/1.11/modules/bluetape4k-okio"
 manualId: bluetape4k-okio
-title: "Module bluetape4k-okio"
+title: "Okio Extensions"
 description: "bluetape4k-okio is a high-performance I/O extension module built on Square's Okio library."
 kind: library
 group: io
+learningOrder: 310
 manual:
   id: "bluetape4k-okio"
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/en/modules/bluetape4k-okio.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "io/okio"
   layer: "build"
+  learningOrder: 310
 ---
 
 

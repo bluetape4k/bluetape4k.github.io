@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-ktor-core"
 manualId: bluetape4k-ktor-core
-title: "bluetape4k-ktor-core"
+title: "Ktor 애플리케이션 기반 기능"
 description: "bluetape4k 애플리케이션에서 공통으로 쓰는 작은 Ktor 서버 기본값 모듈입니다."
 kind: library
 group: web
+learningOrder: 800
 manual:
   id: "bluetape4k-ktor-core"
   repository: "bluetape4k-projects"
   group: "web"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-ktor-core.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "ktor/core"
   layer: "build"
+  learningOrder: 800
 ---
 
 

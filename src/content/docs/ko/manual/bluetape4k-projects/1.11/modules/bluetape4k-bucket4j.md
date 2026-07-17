@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-bucket4j"
 manualId: bluetape4k-bucket4j
-title: "Module bluetape4k-bucket4j"
+title: "분산 요청 속도 제한"
 description: "Bucket4j 기반으로 애플리케이션 레벨 Rate Limiter를 구성하기 위한 래퍼/유틸 모듈입니다."
 kind: library
-group: infrastructure
+group: operations
+learningOrder: 1010
 manual:
   id: "bluetape4k-bucket4j"
   repository: "bluetape4k-projects"
-  group: "infrastructure"
+  group: "operations"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-bucket4j.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "infra/bucket4j"
   layer: "build"
+  learningOrder: 1010
 ---
 
 

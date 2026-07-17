@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-workflow"
 manualId: bluetape4k-workflow
-title: "bluetape4k-workflow"
+title: "워크플로 엔진"
 description: "Kotlin DSL 기반 워크플로우 오케스트레이션 라이브러리입니다. 동기, 코루틴, Virtual Thread 실행 모델을 지원하며 선언적 DSL로 복잡한 워크플로우를 구성할 수 있습니다."
 kind: library
 group: utilities
+learningOrder: 1300
 manual:
   id: "bluetape4k-workflow"
   repository: "bluetape4k-projects"
   group: "utilities"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-workflow.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "utils/workflow"
   layer: "build"
+  learningOrder: 1300
 ---
 
 

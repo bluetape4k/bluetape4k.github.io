@@ -1,22 +1,24 @@
 ---
 slug: "manual/bluetape4k-projects/1.11/modules/bluetape4k-junit5"
 manualId: bluetape4k-junit5
-title: "Module bluetape4k-junit5"
+title: "JUnit 5 Test Support"
 description: "An extension library that reduces repetitive boilerplate in JUnit 5 tests."
 kind: library
 group: testing
+learningOrder: 1100
 manual:
   id: "bluetape4k-junit5"
   repository: "bluetape4k-projects"
   group: "testing"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/en/modules/bluetape4k-junit5.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "testing/junit5"
   layer: "build"
+  learningOrder: 1100
 ---
 
 

@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-redisson"
 manualId: bluetape4k-cache-redisson
-title: "Module bluetape4k-cache-redisson"
+title: "Redisson JCache와 Near Cache"
 description: "Redisson JCache, Redis-backed memoizer, RLocalCachedMap Near Cache를 정확한 동시성·무효화·수명주기 계약과 함께 사용하는 방법을 설명합니다."
 kind: library
 group: caching
+learningOrder: 530
 manual:
   id: "bluetape4k-cache-redisson"
   repository: "bluetape4k-projects"
   group: "caching"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-cache-redisson.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "cache/cache-redisson"
   layer: "build"
+  learningOrder: 530
 ---
 
 

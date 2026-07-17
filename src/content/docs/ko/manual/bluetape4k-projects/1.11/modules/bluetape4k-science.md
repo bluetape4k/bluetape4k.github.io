@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-science"
 manualId: bluetape4k-science
-title: "Module bluetape4k-science"
+title: "과학 계산 유틸리티"
 description: "GIS 좌표 변환, Shapefile 처리, JTS 도형 연산, PostGIS 데이터베이스 파이프라인, NetCDF 메타데이터 카탈로그를 통합 제공하는 Kotlin 모듈입니다."
 kind: library
 group: utilities
+learningOrder: 1280
 manual:
   id: "bluetape4k-science"
   repository: "bluetape4k-projects"
   group: "utilities"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-science.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "utils/science"
   layer: "build"
+  learningOrder: 1280
 ---
 
 

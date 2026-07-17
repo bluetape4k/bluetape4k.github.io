@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-jackson3"
 manualId: bluetape4k-jackson3
-title: "Module bluetape4k-jackson3"
+title: "Jackson 3 직렬화"
 description: "bluetape4k-jackson3은 Jackson 3.x 라이브러리를 Kotlin DSL과 확장 함수로 래핑하여 제공하는 모듈입니다."
 kind: library
 group: io
+learningOrder: 360
 manual:
   id: "bluetape4k-jackson3"
   repository: "bluetape4k-projects"
   group: "io"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-jackson3.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "io/jackson3"
   layer: "build"
+  learningOrder: 360
 ---
 
 

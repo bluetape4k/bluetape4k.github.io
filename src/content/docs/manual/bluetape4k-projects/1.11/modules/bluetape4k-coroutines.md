@@ -1,22 +1,24 @@
 ---
 slug: "manual/bluetape4k-projects/1.11/modules/bluetape4k-coroutines"
 manualId: bluetape4k-coroutines
-title: Coroutine and Flow extensions
+title: "Coroutine and Flow Extensions"
 description: Lifecycle-aware coroutine scopes, Deferred helpers, Flow operators, subjects, and structured-concurrency bridges.
 kind: library
-group: foundation
+group: concurrency
+learningOrder: 200
 manual:
   id: "bluetape4k-coroutines"
   repository: "bluetape4k-projects"
-  group: "foundation"
+  group: "concurrency"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/en/modules/bluetape4k-coroutines.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "bluetape4k/coroutines"
   layer: "build"
+  learningOrder: 200
 ---
 
 

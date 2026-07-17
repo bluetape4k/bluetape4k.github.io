@@ -55,6 +55,9 @@ const manualDocuments = (await getCollection('docs')).flatMap((entry) => {
     repository: manual.repository,
     minorVersion: manual.minorVersion,
     title: entry.data.title,
+    group: manual.group,
+    learningOrder: manual.learningOrder,
+    chapterOrder: manual.chapterOrder,
   }];
 });
 

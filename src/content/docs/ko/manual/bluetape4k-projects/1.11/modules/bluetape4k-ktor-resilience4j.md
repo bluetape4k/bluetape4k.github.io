@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-ktor-resilience4j"
 manualId: bluetape4k-ktor-resilience4j
-title: "bluetape4k-ktor-resilience4j"
+title: "Ktor Resilience4j 통합"
 description: "bluetape4k 생태계의 Ktor 서버 애플리케이션에서 route 단위로 Resilience4j 정책을 적용하는 helper 모듈입니다."
 kind: library
 group: web
+learningOrder: 830
 manual:
   id: "bluetape4k-ktor-resilience4j"
   repository: "bluetape4k-projects"
   group: "web"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-ktor-resilience4j.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "ktor/resilience4j"
   layer: "build"
+  learningOrder: 830
 ---
 
 

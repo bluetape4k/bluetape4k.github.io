@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-spring-boot-cassandra"
 manualId: bluetape4k-spring-boot-cassandra
-title: "Spring Data Cassandra 코루틴 라이브러리"
+title: "Spring Data Cassandra 코루틴 지원"
 description: "Spring Data Cassandra의 reactive·async API를 Kotlin coroutine과 Flow로 사용하고, 옵션·모델·스키마 작업을 단순화합니다."
 kind: library
 group: spring
+learningOrder: 910
 manual:
   id: "bluetape4k-spring-boot-cassandra"
   repository: "bluetape4k-projects"
   group: "spring"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-spring-boot-cassandra.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "spring-boot/cassandra"
   layer: "build"
+  learningOrder: 910
 ---
 
 

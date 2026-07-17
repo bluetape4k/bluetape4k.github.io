@@ -1,22 +1,24 @@
 ---
 slug: "manual/bluetape4k-projects/1.11/modules/bluetape4k-mock-web-server"
 manualId: bluetape4k-mock-web-server
-title: "bluetape4k-mock-web-server"
+title: "HTTP Mock Server"
 description: "A self-contained Spring Boot 4 + Virtual Threads HTTP mock server that replaces external HTTP dependencies in integration tests."
 kind: library
 group: testing
+learningOrder: 1130
 manual:
   id: "bluetape4k-mock-web-server"
   repository: "bluetape4k-projects"
   group: "testing"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/en/modules/bluetape4k-mock-web-server.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "testing/mock-web-server"
   layer: "build"
+  learningOrder: 1130
 ---
 
 

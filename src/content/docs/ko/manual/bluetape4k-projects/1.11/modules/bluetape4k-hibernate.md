@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate"
 manualId: bluetape4k-hibernate
-title: "Module bluetape4k-hibernate"
+title: "Hibernate와 Querydsl 확장"
 description: "Hibernate ORM과 JPA를 Kotlin에서 사용할 때 엔티티 수명주기, 쿼리, converter와 StatelessSession 경계를 다루는 방법을 설명합니다."
 kind: library
 group: data
+learningOrder: 640
 manual:
   id: "bluetape4k-hibernate"
   repository: "bluetape4k-projects"
   group: "data"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-hibernate.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "data/hibernate"
   layer: "build"
+  learningOrder: 640
 ---
 
 

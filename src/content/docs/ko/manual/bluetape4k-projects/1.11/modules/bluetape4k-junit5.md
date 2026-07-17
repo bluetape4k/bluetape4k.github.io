@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-junit5"
 manualId: bluetape4k-junit5
-title: "Module bluetape4k-junit5"
+title: "JUnit 5 테스트 지원"
 description: "JUnit 5 테스트 작성 시 반복 코드를 줄여주는 확장 라이브러리입니다."
 kind: library
 group: testing
+learningOrder: 1100
 manual:
   id: "bluetape4k-junit5"
   repository: "bluetape4k-projects"
   group: "testing"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-junit5.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "testing/junit5"
   layer: "build"
+  learningOrder: 1100
 ---
 
 

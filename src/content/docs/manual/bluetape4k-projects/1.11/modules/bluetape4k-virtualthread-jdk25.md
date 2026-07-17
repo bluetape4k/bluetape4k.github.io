@@ -1,22 +1,24 @@
 ---
 slug: "manual/bluetape4k-projects/1.11/modules/bluetape4k-virtualthread-jdk25"
 manualId: bluetape4k-virtualthread-jdk25
-title: "Module bluetape4k-virtualthread-jdk25"
+title: "Virtual Threads for JDK 25"
 description: "Java 25 virtual-thread implementation module."
 kind: library
 group: concurrency
+learningOrder: 240
 manual:
   id: "bluetape4k-virtualthread-jdk25"
   repository: "bluetape4k-projects"
   group: "concurrency"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/en/modules/bluetape4k-virtualthread-jdk25.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "virtualthread/jdk25"
   layer: "build"
+  learningOrder: 240
 ---
 
 

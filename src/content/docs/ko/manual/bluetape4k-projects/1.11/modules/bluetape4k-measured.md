@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-measured"
 manualId: bluetape4k-measured
-title: "Module bluetape4k-measured"
+title: "측정 단위"
 description: "bluetape4k-measured는 조합 가능한 단위 타입(Units)과 측정값(Measure) 기반으로, 복합 단위(m/s, kgm/s^2)를 타입 안전하게 표현하기 위한 모듈입니다."
 kind: library
 group: utilities
+learningOrder: 1240
 manual:
   id: "bluetape4k-measured"
   repository: "bluetape4k-projects"
   group: "utilities"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-measured.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "utils/measured"
   layer: "build"
+  learningOrder: 1240
 ---
 
 

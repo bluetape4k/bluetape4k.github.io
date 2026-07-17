@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-cache-lettuce"
 manualId: bluetape4k-cache-lettuce
-title: "Module bluetape4k-cache-lettuce"
+title: "Lettuce JCache와 Near Cache"
 description: "Redis JCache, 분산 memoizer와 Caffeine L1·Redis L2 Near Cache를 구성하고 무효화·TTL·수명주기를 검증하는 방법을 설명합니다."
 kind: library
 group: caching
+learningOrder: 520
 manual:
   id: "bluetape4k-cache-lettuce"
   repository: "bluetape4k-projects"
   group: "caching"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-cache-lettuce.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "cache/cache-lettuce"
   layer: "build"
+  learningOrder: 520
 ---
 
 

@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "overview"
   kind: "guide"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-mongodb/testing-operations-ecosystem.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"

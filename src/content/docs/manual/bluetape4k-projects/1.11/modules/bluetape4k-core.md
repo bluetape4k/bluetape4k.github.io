@@ -1,22 +1,24 @@
 ---
 slug: "manual/bluetape4k-projects/1.11/modules/bluetape4k-core"
 manualId: bluetape4k-core
-title: Core Kotlin library
+title: "Core Kotlin Library"
 description: Validation, codecs, collections, ranges, time DSLs, reflection helpers, and small concurrency primitives used across bluetape4k.
 kind: library
 group: foundation
+learningOrder: 110
 manual:
   id: "bluetape4k-core"
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/en/modules/bluetape4k-core.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "bluetape4k/core"
   layer: "build"
+  learningOrder: 110
 ---
 
 

@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-resilience4j"
 manualId: bluetape4k-resilience4j
-title: "Module bluetape4k-resilience4j"
+title: "Resilience4j 회복 탄력성 패턴"
 description: "Resilience4j는 장애 격리와 회복성을 위한 경량 오픈소스 라이브러리입니다."
 kind: library
-group: infrastructure
+group: operations
+learningOrder: 1000
 manual:
   id: "bluetape4k-resilience4j"
   repository: "bluetape4k-projects"
-  group: "infrastructure"
+  group: "operations"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-resilience4j.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "infra/resilience4j"
   layer: "build"
+  learningOrder: 1000
 ---
 
 

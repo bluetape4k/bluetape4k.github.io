@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-hibernate-cache-lettuce"
 manualId: bluetape4k-hibernate-cache-lettuce
-title: "Module bluetape4k-hibernate-cache-lettuce"
+title: "Lettuce 기반 Hibernate 2차 캐시"
 description: "Hibernate 2차 캐시를 Caffeine L1과 Redis L2로 구성하고 Region, TTL, 무효화, 장애 경계를 운영하는 방법을 설명합니다."
 kind: library
-group: cache
+group: caching
+learningOrder: 570
 manual:
   id: "bluetape4k-hibernate-cache-lettuce"
   repository: "bluetape4k-projects"
   group: "caching"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-hibernate-cache-lettuce.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "cache/hibernate-cache-lettuce"
   layer: "build"
+  learningOrder: 570
 ---
 
 

@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce"
 manualId: bluetape4k-lettuce
-title: "Module bluetape4k-lettuce"
+title: "Lettuce 코루틴 클라이언트"
 description: "Lettuce Redis client를 Kotlin에서 운용하는 connection, coroutine, codec, map, script 도구를 설명합니다."
 kind: library
-group: infrastructure
+group: caching
+learningOrder: 540
 manual:
   id: "bluetape4k-lettuce"
   repository: "bluetape4k-projects"
-  group: "infrastructure"
+  group: "caching"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-lettuce.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "infra/lettuce"
   layer: "build"
+  learningOrder: 540
 ---
 
 

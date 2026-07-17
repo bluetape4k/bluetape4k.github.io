@@ -1,22 +1,24 @@
 ---
 slug: "manual/bluetape4k-projects/1.11/modules/bluetape4k-micrometer"
 manualId: bluetape4k-micrometer
-title: "Module bluetape4k-micrometer"
+title: "Micrometer Metrics Extensions"
 description: "A module that provides application performance measurement and observability features using Micrometer and the Observation API."
 kind: library
-group: infrastructure
+group: operations
+learningOrder: 1020
 manual:
   id: "bluetape4k-micrometer"
   repository: "bluetape4k-projects"
-  group: "infrastructure"
+  group: "operations"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/en/modules/bluetape4k-micrometer.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "infra/micrometer"
   layer: "build"
+  learningOrder: 1020
 ---
 
 

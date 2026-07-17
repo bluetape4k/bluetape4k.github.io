@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-pulsar"
 manualId: bluetape4k-pulsar
-title: "Module bluetape4k-pulsar"
+title: "Apache Pulsar 클라이언트 확장"
 description: "Apache Pulsar Java Client를 Kotlin DSL, suspend 함수, Flow와 Jackson 2·3 JSON Schema로 사용하는 방법과 1.11.0의 수명주기 경계를 설명합니다."
 kind: library
-group: infrastructure
+group: messaging
+learningOrder: 740
 manual:
   id: "bluetape4k-pulsar"
   repository: "bluetape4k-projects"
-  group: "infrastructure"
+  group: "messaging"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-pulsar.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "infra/pulsar"
   layer: "build"
+  learningOrder: 740
 ---
 
 

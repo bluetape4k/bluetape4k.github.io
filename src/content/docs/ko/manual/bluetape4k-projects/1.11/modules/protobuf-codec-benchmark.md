@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/protobuf-codec-benchmark"
 manualId: protobuf-codec-benchmark
-title: "Protobuf Codec Benchmark"
+title: "Protobuf 코덱 성능 비교"
 description: "이 모듈은 bluetape4k 직렬화와 Redisson 연동 코드에서 사용하는 protobuf codec 경로를 측정합니다. 단일 protobuf payload를 메모리에 두고 encode/decode 처리량을 비교하므로, codec 구현 간 상대적인 차이를 보기 위한 좁은 범위의 benchmark입니다."
 kind: benchmark
-group: experiments
+group: examples
+learningOrder: 1510
 manual:
   id: "protobuf-codec-benchmark"
   repository: "bluetape4k-projects"
-  group: "experiments"
+  group: "examples"
   kind: "benchmark"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/protobuf-codec-benchmark.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "benchmark/protobuf-codec-benchmark"
   layer: "apply"
+  learningOrder: 1510
 ---
 
 

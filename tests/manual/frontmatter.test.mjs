@@ -28,7 +28,9 @@ test('manual metadata keeps provenance while source links use the published rele
   const sourceCommit = 'a'.repeat(40);
   const result = transformManual({
     content: '---\ntitle: Core\n---\n\n# Core\n\n## Problem {#problem}\n\n[Lifecycle](./core/lifecycle.md)\n\n[Source](../../../../src/Core.kt)\n\n[Module](../../../../bluetape4k/core)\n',
-    module: { id: 'core', group: 'foundation', kind: 'library', sourceDir: 'bluetape4k/core' },
+    module: {
+      id: 'core', group: 'foundation', kind: 'library', sourceDir: 'bluetape4k/core', learningOrder: 110,
+    },
     repository: projects, sourceCommit, sourcePath: 'docs/manual/en/modules/core.md',
     releaseRef: '1.11.0',
     releaseCommit: 'c'.repeat(40),
@@ -40,6 +42,7 @@ test('manual metadata keeps provenance while source links use the published rele
   assert.match(result, /minorVersion: "1\.11"/);
   assert.match(result, new RegExp(`releaseCommit: "${'c'.repeat(40)}"`));
   assert.match(result, /sourceDir: "bluetape4k\/core"/);
+  assert.match(result, /learningOrder: 110/);
   assert.match(result, /github\.com\/bluetape4k\/bluetape4k-projects\/blob\/1\.11\.0\/src\/Core\.kt/);
   assert.match(result, /github\.com\/bluetape4k\/bluetape4k-projects\/tree\/1\.11\.0\/bluetape4k\/core/);
   assert.match(result, /\[Lifecycle\]\(\/manual\/bluetape4k-projects\/1\.11\/modules\/core\/lifecycle\/\)/);
@@ -127,12 +130,14 @@ test('chapter metadata and repository-owned asset routes are added', () => {
       group: 'foundation',
       kind: 'library',
       sourceDir: 'bluetape4k/coroutines',
+      learningOrder: 200,
     },
     chapter: {
       id: 'lifecycle',
       en: 'en/modules/bluetape4k-coroutines/lifecycle.md',
       ko: 'ko/modules/bluetape4k-coroutines/lifecycle.md',
     },
+    chapterOrder: 1,
     repository: projects,
     sourceCommit,
     sourcePath: 'docs/manual/en/modules/bluetape4k-coroutines/lifecycle.md',
@@ -142,6 +147,8 @@ test('chapter metadata and repository-owned asset routes are added', () => {
   });
 
   assert.match(result, /chapterId: "lifecycle"/);
+  assert.match(result, /learningOrder: 200/);
+  assert.match(result, /chapterOrder: 1/);
   assert.match(result, /\/manual-assets\/bluetape4k-projects\/1\.11\/coroutines\/scope-lifecycle\.svg/);
   assert.ok(!result.endsWith('\n\n'), 'generated manuals end with one LF');
 });

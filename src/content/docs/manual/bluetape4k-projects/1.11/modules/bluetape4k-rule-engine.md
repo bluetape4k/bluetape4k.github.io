@@ -1,22 +1,24 @@
 ---
 slug: "manual/bluetape4k-projects/1.11/modules/bluetape4k-rule-engine"
 manualId: bluetape4k-rule-engine
-title: "bluetape4k-rule-engine"
+title: "Rule Engine"
 description: "A lightweight rule engine library for Kotlin. It follows the Easy Rules pattern and adds Kotlin DSLs, coroutine support (SuspendRule), and annotation-based rule definitions."
 kind: library
 group: utilities
+learningOrder: 1270
 manual:
   id: "bluetape4k-rule-engine"
   repository: "bluetape4k-projects"
   group: "utilities"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/en/modules/bluetape4k-rule-engine.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "utils/rule-engine"
   layer: "build"
+  learningOrder: 1270
 ---
 
 

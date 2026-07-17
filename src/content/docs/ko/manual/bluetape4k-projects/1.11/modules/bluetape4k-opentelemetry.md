@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-opentelemetry"
 manualId: bluetape4k-opentelemetry
-title: "Module bluetape4k-opentelemetry"
+title: "OpenTelemetry 추적"
 description: "OpenTelemetry는 클라우드 네이티브 소프트웨어를 위한 관측 가능성 프레임워크입니다. 이 모듈은 OpenTelemetry를 Kotlin에서 더욱 쉽고 편리하게 사용할 수 있도록 하는 확장 함수와 유틸리티를 제공합니다."
 kind: library
-group: infrastructure
+group: operations
+learningOrder: 1030
 manual:
   id: "bluetape4k-opentelemetry"
   repository: "bluetape4k-projects"
-  group: "infrastructure"
+  group: "operations"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-opentelemetry.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "infra/opentelemetry"
   layer: "build"
+  learningOrder: 1030
 ---
 
 

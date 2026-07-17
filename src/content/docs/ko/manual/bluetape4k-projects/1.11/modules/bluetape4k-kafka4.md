@@ -1,22 +1,24 @@
 ---
 slug: "ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-kafka4"
 manualId: bluetape4k-kafka4
-title: "Module bluetape4k-kafka4"
+title: "Kafka 4 클라이언트 확장"
 description: "bluetape4k-kafka4는 bluetape4k Kafka 유틸리티의 Kafka 4.x 라인입니다. 기존 bluetape4k-kafka와 같은 Kotlin 우선 API 형태를 유지하되 Kafka 4.2.x, Spring Kafka 4.x, Spring Boot 4, Jackson 3 기준으로 컴파일합니다."
 kind: library
-group: infrastructure
+group: messaging
+learningOrder: 710
 manual:
   id: "bluetape4k-kafka4"
   repository: "bluetape4k-projects"
-  group: "infrastructure"
+  group: "messaging"
   kind: "library"
-  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
+  sourceCommit: "222f640a5a8937d3000dc49b2e2f585726ed70e6"
   sourcePath: "docs/manual/ko/modules/bluetape4k-kafka4.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
   releaseCommit: "6187173b58e8b4c5c435c145e00e94708f31ef75"
   sourceDir: "infra/kafka4"
   layer: "build"
+  learningOrder: 710
 ---
 
 
