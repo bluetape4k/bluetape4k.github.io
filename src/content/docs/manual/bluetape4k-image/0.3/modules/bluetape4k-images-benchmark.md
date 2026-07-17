@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-image"
   group: "benchmarks"
   kind: "benchmark"
-  sourceCommit: "471a5f364520923911dc31d91be5179a6985337e"
+  sourceCommit: "4f32b77dff190acb79534b67b34f9056843ebeeb"
   sourcePath: "docs/manual/en/modules/bluetape4k-images-benchmark.md"
   minorVersion: "0.3"
   releaseRef: "0.3.0"
@@ -126,6 +126,19 @@ For publishable evidence, retain generated JSON, record the exact command/enviro
 - GC allocation excludes native memory.
 - IO API convenience, latency, throughput, and backend selection are separate questions.
 - No benchmark proves production behavior under different data, concurrency, hardware, JVM, codecs, or storage.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.3.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### images benchmark Architecture diagram
+
+[![images benchmark Architecture diagram](/manual-assets/bluetape4k-image/0.3/readme-diagrams/images-benchmark-architecture-01.png)](../../assets/readme-diagrams/images-benchmark-architecture-01.svg)
+
+_Release README: [`benchmark/images-benchmark/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/benchmark/images-benchmark/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-image"
   group: "workshops"
   kind: "example"
-  sourceCommit: "471a5f364520923911dc31d91be5179a6985337e"
+  sourceCommit: "4f32b77dff190acb79534b67b34f9056843ebeeb"
   sourcePath: "docs/manual/ko/modules/basic-processing.md"
   minorVersion: "0.3"
   releaseRef: "0.3.0"
@@ -107,6 +107,31 @@ JDK 21 이상이면 됩니다. 외부 서비스나 네이티브 패키지는 필
 ## 제약 사항
 
 단일 프로세스에서 파일을 생성하는 예제입니다. 업로드 검증, 저장 정책, 네이티브 코덱, 역압, 인증, 공개 URL은 다루지 않습니다.
+
+<!-- release-readme-diagrams:start -->
+## 배포본 다이어그램
+
+아래 그림은 현재 개발 브랜치가 아니라 `0.3.0` 배포 태그의 README 자산을 바이트 단위로 그대로 옮긴 것입니다. 따라서 이후 SNAPSHOT 변경이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 SVG 원본이 열립니다.
+
+### 기본 처리 아키텍처
+
+[![기본 처리 아키텍처](/manual-assets/bluetape4k-image/0.3/readme-diagrams/examples-basic-processing-architecture-01.png)](../../assets/readme-diagrams/examples-basic-processing-architecture-01.svg)
+
+_배포본 README: [`examples/basic-processing/README.ko.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/examples/basic-processing/README.ko.md)_
+
+### 기본 처리 실행 시나리오
+
+[![기본 처리 실행 시나리오](/manual-assets/bluetape4k-image/0.3/readme-diagrams/examples-basic-processing-scenario-01.png)](../../assets/readme-diagrams/examples-basic-processing-scenario-01.svg)
+
+_배포본 README: [`examples/basic-processing/README.ko.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/examples/basic-processing/README.ko.md)_
+
+### 기본 처리 순서
+
+[![기본 처리 순서](/manual-assets/bluetape4k-image/0.3/readme-diagrams/examples-basic-processing-sequence-01.png)](../../assets/readme-diagrams/examples-basic-processing-sequence-01.svg)
+
+_배포본 README: [`examples/basic-processing/README.ko.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/examples/basic-processing/README.ko.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## 근거 자료
 

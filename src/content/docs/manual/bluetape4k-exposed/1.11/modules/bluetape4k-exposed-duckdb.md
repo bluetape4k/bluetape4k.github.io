@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "database"
   kind: "library"
-  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
+  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
   sourcePath: "docs/manual/en/modules/bluetape4k-exposed-duckdb.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -105,6 +105,25 @@ Start with the [database adapter matrix](/manual/bluetape4k-exposed/1.11/guides/
 ## Limitations
 
 Release 1.11 does not provide row-streaming Flow, imported-key metadata, or a distributed service boundary. PostgreSQL dialect inheritance covers proven tests, not every PostgreSQL extension or DuckDB feature.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### DuckDB Exposed integration boundary
+
+[![DuckDB Exposed integration boundary](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-duckdb-diagram-01.png)](../../assets/readme-diagrams/exposed-duckdb-diagram-01.svg)
+
+_Release README: [`exposed/duckdb/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/duckdb/README.md)_
+
+### DuckDB query flow materialization
+
+[![DuckDB query flow materialization](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-duckdb-flow-02.png)](../../assets/readme-diagrams/exposed-duckdb-flow-02.svg)
+
+_Release README: [`exposed/duckdb/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/duckdb/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

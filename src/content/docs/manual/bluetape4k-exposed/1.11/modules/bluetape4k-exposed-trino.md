@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "database"
   kind: "library"
-  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
+  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
   sourcePath: "docs/manual/en/modules/bluetape4k-exposed-trino.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -104,6 +104,25 @@ Compare the adapter in the [database matrix](/manual/bluetape4k-exposed/1.11/gui
 ## Limitations
 
 Release 1.11 does not supply transactional atomicity, universal connector DDL, or true row-streaming Flow. The `TrinoUnsupported` annotation records known gaps but cannot discover connector capabilities at compile time.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Trino JDBC compatibility boundary diagram
+
+[![Trino JDBC compatibility boundary diagram](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-trino-diagram-01.png)](../../assets/readme-diagrams/exposed-trino-diagram-01.svg)
+
+_Release README: [`exposed/trino/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/trino/README.md)_
+
+### Trino Flow materialization contract diagram
+
+[![Trino Flow materialization contract diagram](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-trino-flow-02.png)](../../assets/readme-diagrams/exposed-trino-flow-02.svg)
+
+_Release README: [`exposed/trino/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/trino/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-image"
   group: "native"
   kind: "library"
-  sourceCommit: "471a5f364520923911dc31d91be5179a6985337e"
+  sourceCommit: "4f32b77dff190acb79534b67b34f9056843ebeeb"
   sourcePath: "docs/manual/ko/modules/bluetape4k-images-vips-api.md"
   minorVersion: "0.3"
   releaseRef: "0.3.0"
@@ -95,6 +95,25 @@ dependencies {
 ## 제약 사항
 
 공통 API가 백엔드를 자동 탐색하거나 생성하지 않습니다. AVIF/HEIC는 백엔드와 호스트 코덱을 모두 갖춰야 합니다. JNI와 FFM의 변환 결과 수명 규칙이 다르므로 중첩 `use`를 작성하기 전에 백엔드 문서를 확인하세요.
+
+<!-- release-readme-diagrams:start -->
+## 배포본 다이어그램
+
+아래 그림은 현재 개발 브랜치가 아니라 `0.3.0` 배포 태그의 README 자산을 바이트 단위로 그대로 옮긴 것입니다. 따라서 이후 SNAPSHOT 변경이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 SVG 원본이 열립니다.
+
+### images vips api 아키텍처 2 다이어그램
+
+[![images vips api 아키텍처 2 다이어그램](/manual-assets/bluetape4k-image/0.3/readme-diagrams/images-vips-api-architecture-02.png)](../../assets/readme-diagrams/images-vips-api-architecture-02.svg)
+
+_배포본 README: [`images-vips-api/README.ko.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/images-vips-api/README.ko.md)_
+
+### images vips api 클래스 구조도
+
+[![images vips api 클래스 구조도](/manual-assets/bluetape4k-image/0.3/readme-diagrams/images-vips-api-class-01.png)](../../assets/readme-diagrams/images-vips-api-class-01.svg)
+
+_배포본 README: [`images-vips-api/README.ko.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/images-vips-api/README.ko.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## 근거 자료
 

@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-graph"
   group: "frameworks"
   kind: "library"
-  sourceCommit: "2d9d09279f4b8a138dd46e3a3ffaf07699f7cfa0"
+  sourceCommit: "c72de9d93ffcd3254f42c35f4cef5a5830062ed3"
   sourcePath: "docs/manual/en/modules/bluetape4k-graph-ktor.md"
   minorVersion: "0.5"
   releaseRef: "0.5.1"
@@ -92,3 +92,16 @@ Expected: the fixture starts, assertions pass, and owned resources close in the 
 ## Non-goals and related guides
 
 See [Ktor integration](/manual/bluetape4k-graph/0.5/frameworks/ktor/), [paired APIs](/manual/bluetape4k-graph/0.5/architecture/paired-apis/), and [operations](/manual/bluetape4k-graph/0.5/guides/operations/). The plugin does not create request transactions, close caller-owned resources by default, or make blocking calls nonblocking.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.5.1` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### graph ktor Architecture diagram
+
+[![graph ktor Architecture diagram](/manual-assets/bluetape4k-graph/0.5/readme-diagrams/ktor-graph-ktor-architecture-01.png)](../../assets/readme-diagrams/ktor-graph-ktor-architecture-01.svg)
+
+_Release README: [`ktor/graph-ktor/README.md`](https://github.com/bluetape4k/bluetape4k-graph/blob/3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907/ktor/graph-ktor/README.md)_
+
+<!-- release-readme-diagrams:end -->

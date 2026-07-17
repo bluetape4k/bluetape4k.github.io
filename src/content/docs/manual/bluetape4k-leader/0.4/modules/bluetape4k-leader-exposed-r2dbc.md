@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-leader"
   group: "backends"
   kind: "library"
-  sourceCommit: "27627f5cf430ef2640d5847ecfeef914ea935c4c"
+  sourceCommit: "dba8da7f095bd73aa5fb595b3b0741dcffd0e494"
   sourcePath: "docs/manual/en/modules/bluetape4k-leader-exposed-r2dbc.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -91,6 +91,19 @@ Compare JDBC, then run migration-gate and the Ktor example to see lifecycle inte
 ## Limitations
 
 R2DBC removes blocked threads, not database round trips or database availability risk.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.4.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### leader exposed r2dbc Class Structure diagram
+
+[![leader exposed r2dbc Class Structure diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/leader-exposed-r2dbc-class-01.png)](../../assets/readme-diagrams/leader-exposed-r2dbc-class-01.svg)
+
+_Release README: [`leader-exposed-r2dbc/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/leader-exposed-r2dbc/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

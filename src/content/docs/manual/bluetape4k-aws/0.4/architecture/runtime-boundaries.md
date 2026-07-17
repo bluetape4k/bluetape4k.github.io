@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-aws"
   group: "overview"
   kind: "guide"
-  sourceCommit: "a64a49d44060154ec4371de9f7818168b75a6a67"
+  sourceCommit: "6b25d4663a87099fc94ced293eb7ca024420edc7"
   sourcePath: "docs/manual/en/architecture/runtime-boundaries.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"

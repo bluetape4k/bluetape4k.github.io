@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-image"
   group: "workshops"
   kind: "example"
-  sourceCommit: "471a5f364520923911dc31d91be5179a6985337e"
+  sourceCommit: "4f32b77dff190acb79534b67b34f9056843ebeeb"
   sourcePath: "docs/manual/en/modules/basic-processing.md"
   minorVersion: "0.3"
   releaseRef: "0.3.0"
@@ -107,6 +107,31 @@ The test invokes the same generator, asserts five non-empty files, decodes every
 ## Limitations
 
 This example is a single-process file generator. It does not cover upload validation, storage policy, native codecs, backpressure, authentication, or public delivery URLs.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.3.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Basic Processing Architecture
+
+[![Basic Processing Architecture](/manual-assets/bluetape4k-image/0.3/readme-diagrams/examples-basic-processing-architecture-01.png)](../../assets/readme-diagrams/examples-basic-processing-architecture-01.svg)
+
+_Release README: [`examples/basic-processing/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/examples/basic-processing/README.md)_
+
+### Basic Processing Scenario
+
+[![Basic Processing Scenario](/manual-assets/bluetape4k-image/0.3/readme-diagrams/examples-basic-processing-scenario-01.png)](../../assets/readme-diagrams/examples-basic-processing-scenario-01.svg)
+
+_Release README: [`examples/basic-processing/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/examples/basic-processing/README.md)_
+
+### Basic Processing Sequence
+
+[![Basic Processing Sequence](/manual-assets/bluetape4k-image/0.3/readme-diagrams/examples-basic-processing-sequence-01.png)](../../assets/readme-diagrams/examples-basic-processing-sequence-01.svg)
+
+_Release README: [`examples/basic-processing/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/examples/basic-processing/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

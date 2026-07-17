@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-leader"
   group: "workshops"
   kind: "example"
-  sourceCommit: "27627f5cf430ef2640d5847ecfeef914ea935c4c"
+  sourceCommit: "dba8da7f095bd73aa5fb595b3b0741dcffd0e494"
   sourcePath: "docs/manual/en/modules/k8s-operator.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -139,6 +139,37 @@ After this workshop, compare the backend manual with the core execution-model an
 A standby still runs the scheduler trigger. Keep the protected body behind the elector boundary and grant only the Lease RBAC verbs the controller needs.
 
 The demo favors a compact, observable scenario. It does not define production topology, credential rotation, capacity planning, disaster recovery, or a universal exactly-once guarantee.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.4.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### k8s operator Architecture diagram
+
+[![k8s operator Architecture diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/examples-k8s-operator-architecture-01.png)](../../assets/readme-diagrams/examples-k8s-operator-architecture-01.svg)
+
+_Release README: [`examples/k8s-operator/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/examples/k8s-operator/README.md)_
+
+### K8s operator flow diagram
+
+[![K8s operator flow diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/examples-k8s-operator-flow-01.png)](../../assets/readme-diagrams/examples-k8s-operator-flow-01.svg)
+
+_Release README: [`examples/k8s-operator/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/examples/k8s-operator/README.md)_
+
+### K8s Operator scenario diagram
+
+[![K8s Operator scenario diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/examples-k8s-operator-scenario-01.png)](../../assets/readme-diagrams/examples-k8s-operator-scenario-01.svg)
+
+_Release README: [`examples/k8s-operator/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/examples/k8s-operator/README.md)_
+
+### k8s operator Sequence Flow diagram
+
+[![k8s operator Sequence Flow diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/examples-k8s-operator-sequence-01.png)](../../assets/readme-diagrams/examples-k8s-operator-sequence-01.svg)
+
+_Release README: [`examples/k8s-operator/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/examples/k8s-operator/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

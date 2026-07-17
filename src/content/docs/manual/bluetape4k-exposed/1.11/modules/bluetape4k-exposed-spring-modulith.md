@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "integration"
   kind: "library"
-  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
+  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
   sourcePath: "docs/manual/en/modules/bluetape4k-exposed-spring-modulith.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -115,6 +115,25 @@ Read [Audit with JaVers](/manual/bluetape4k-exposed/1.11/guides/audit-with-javer
 ## Limitations
 
 The repository is JDBC-only and fixed to the named `springTransactionManager`. It does not provide broker delivery, distributed transactions, exactly-once listener side effects, schema migration, or domain audit history. Stored event types remain a compatibility obligation until their publications are completed or explicitly remediated.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Spring Modulith Exposed JDBC wiring diagram
+
+[![Spring Modulith Exposed JDBC wiring diagram](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/spring-boot-exposed-spring-modulith-diagram-01.png)](../../assets/readme-diagrams/spring-boot-exposed-spring-modulith-diagram-01.svg)
+
+_Release README: [`spring-boot/spring-modulith/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/spring-boot/spring-modulith/README.md)_
+
+### Spring Modulith publication lifecycle sequence diagram
+
+[![Spring Modulith publication lifecycle sequence diagram](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/spring-boot-exposed-spring-modulith-sequence-01.png)](../../assets/readme-diagrams/spring-boot-exposed-spring-modulith-sequence-01.svg)
+
+_Release README: [`spring-boot/spring-modulith/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/spring-boot/spring-modulith/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

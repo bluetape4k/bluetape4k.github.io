@@ -7,7 +7,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "overview"
   kind: "guide"
-  sourceCommit: "e1463bff0f864add7c54b7188f492cfe36336cdd"
+  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
   sourcePath: "docs/manual/en/architecture/repository-map.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -33,3 +33,40 @@ The manual inventory is generated from Gradle `subprojects`; directory names are
 | `virtualthread/` | Concurrency | Virtual-thread APIs and JDK implementations |
 | `examples/` | Learning | Runnable examples; not published |
 | `benchmark/` | Experiments | Reproducible performance investigations; not published |
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Module Structure diagram
+
+[![Module Structure diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/root-readme-en-diagram-01.png)](../../assets/readme-diagrams/root-readme-en-diagram-01.svg)
+
+_Release README: [`README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/README.md)_
+
+### Bluetape4k framework overview diagram
+
+[![Bluetape4k framework overview diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/root-readme-overview-01.png)](../../assets/readme-diagrams/root-readme-overview-01.svg)
+
+_Release README: [`README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/README.md)_
+
+### VirtualThreads runtime selection flow using ServiceLoader providers, priority sorting, and platform fallback
+
+[![VirtualThreads runtime selection flow using ServiceLoader providers, priority sorting, and platform fallback](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/virtualthread-diagram-01.png)](../../assets/readme-diagrams/virtualthread-diagram-01.svg)
+
+_Release README: [`virtualthread/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/virtualthread/README.md)_
+
+### Virtual thread class structure for runtime facades, provider interfaces, JDK implementations, scope contracts, and TaskContext
+
+[![Virtual thread class structure for runtime facades, provider interfaces, JDK implementations, scope contracts, and TaskContext](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/virtualthread-diagram-02.png)](../../assets/readme-diagrams/virtualthread-diagram-02.svg)
+
+_Release README: [`virtualthread/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/virtualthread/README.md)_
+
+### ServiceLoader selection sequence for VirtualThreadRuntime discovery, support filtering, priority sorting, and executor delegation
+
+[![ServiceLoader selection sequence for VirtualThreadRuntime discovery, support filtering, priority sorting, and executor delegation](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/virtualthread-sequence-01.png)](../../assets/readme-diagrams/virtualthread-sequence-01.svg)
+
+_Release README: [`virtualthread/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/virtualthread/README.md)_
+
+<!-- release-readme-diagrams:end -->

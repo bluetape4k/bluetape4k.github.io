@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "example"
   kind: "example"
-  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
+  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
   sourcePath: "docs/manual/ko/modules/exposed-spring-boot-jdbc-demo.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -149,6 +149,25 @@ Spring Boot Web/JDBC Starter, bluetape4k Exposed Spring Boot JDBC 모듈, Expose
 ## 제약 사항
 
 메모리 데이터베이스 하나, 시작 시 스키마 조정, 컨트롤러 소유 Exposed 트랜잭션을 사용하며 인증은 없습니다. 운영 마이그레이션 전략, 커넥션 풀 크기 산정, 모든 Spring Data 파생 질의 키워드의 지원을 보장하는 예제가 아닙니다.
+
+<!-- release-readme-diagrams:start -->
+## 배포본 다이어그램
+
+아래 그림은 현재 개발 브랜치가 아니라 `1.11.0` 배포 태그의 README 자산을 바이트 단위로 그대로 옮긴 것입니다. 따라서 이후 SNAPSHOT 변경이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 SVG 원본이 열립니다.
+
+### Spring Boot JDBC 예제 구조도
+
+[![Spring Boot JDBC 예제 구조도](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/spring-boot-exposed-jdbc-demo-diagram-01.png)](../../assets/readme-diagrams/spring-boot-exposed-jdbc-demo-diagram-01.svg)
+
+_배포본 README: [`examples/jdbc-demo/README.ko.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/examples/jdbc-demo/README.ko.md)_
+
+### Spring Boot JDBC 예제 request transaction 처리 흐름
+
+[![Spring Boot JDBC 예제 request transaction 처리 흐름](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/spring-boot-exposed-jdbc-demo-diagram-02.png)](../../assets/readme-diagrams/spring-boot-exposed-jdbc-demo-diagram-02.svg)
+
+_배포본 README: [`examples/jdbc-demo/README.ko.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/examples/jdbc-demo/README.ko.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## 근거 자료
 

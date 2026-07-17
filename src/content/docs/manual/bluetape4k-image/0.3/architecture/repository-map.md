@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-image"
   group: "overview"
   kind: "guide"
-  sourceCommit: "471a5f364520923911dc31d91be5179a6985337e"
+  sourceCommit: "4f32b77dff190acb79534b67b34f9056843ebeeb"
   sourcePath: "docs/manual/en/architecture/repository-map.md"
   minorVersion: "0.3"
   releaseRef: "0.3.0"
@@ -51,3 +51,22 @@ Start from [the learning path](/manual/bluetape4k-image/0.3/guides/learning-path
 
 - [Exact 0.3.0 project registration](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/settings.gradle.kts#L84-L123)
 - [Publishing inclusion rules](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/build.gradle.kts#L46-L58)
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.3.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### image Architecture diagram
+
+[![image Architecture diagram](/manual-assets/bluetape4k-image/0.3/readme-diagrams/bluetape4k-image-architecture-01.png)](../../assets/readme-diagrams/bluetape4k-image-architecture-01.svg)
+
+_Release README: [`README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/README.md)_
+
+### Bluetape4k Image overview diagram
+
+[![Bluetape4k Image overview diagram](/manual-assets/bluetape4k-image/0.3/readme-diagrams/root-readme-overview-01.png)](../../assets/readme-diagrams/root-readme-overview-01.svg)
+
+_Release README: [`README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/README.md)_
+
+<!-- release-readme-diagrams:end -->

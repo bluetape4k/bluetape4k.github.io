@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-image"
   group: "workshops"
   kind: "example"
-  sourceCommit: "471a5f364520923911dc31d91be5179a6985337e"
+  sourceCommit: "4f32b77dff190acb79534b67b34f9056843ebeeb"
   sourcePath: "docs/manual/en/modules/spring-boot-ocr-api.md"
   minorVersion: "0.3"
   releaseRef: "0.3.0"
@@ -112,6 +112,31 @@ MockMvc and a fake `OcrEngine` verify multipart success, `eng+kor` parsing, tess
 ## Limitations
 
 Authentication, queues, persistence, batch OCR, preprocessing policy, and rate limiting are outside this quickstart. OCR quality and language coverage are host-dependent.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.3.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Spring Boot OCR API Architecture
+
+[![Spring Boot OCR API Architecture](/manual-assets/bluetape4k-image/0.3/readme-diagrams/examples-spring-boot-ocr-api-architecture-01.png)](../../assets/readme-diagrams/examples-spring-boot-ocr-api-architecture-01.svg)
+
+_Release README: [`examples/spring-boot-ocr-api/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/examples/spring-boot-ocr-api/README.md)_
+
+### Spring Boot OCR API Scenario
+
+[![Spring Boot OCR API Scenario](/manual-assets/bluetape4k-image/0.3/readme-diagrams/examples-spring-boot-ocr-api-scenario-01.png)](../../assets/readme-diagrams/examples-spring-boot-ocr-api-scenario-01.svg)
+
+_Release README: [`examples/spring-boot-ocr-api/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/examples/spring-boot-ocr-api/README.md)_
+
+### Spring Boot OCR API Sequence
+
+[![Spring Boot OCR API Sequence](/manual-assets/bluetape4k-image/0.3/readme-diagrams/examples-spring-boot-ocr-api-sequence-01.png)](../../assets/readme-diagrams/examples-spring-boot-ocr-api-sequence-01.svg)
+
+_Release README: [`examples/spring-boot-ocr-api/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/examples/spring-boot-ocr-api/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

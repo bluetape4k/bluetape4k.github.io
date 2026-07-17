@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-aws"
   group: "foundation"
   kind: "library"
-  sourceCommit: "a64a49d44060154ec4371de9f7818168b75a6a67"
+  sourceCommit: "6b25d4663a87099fc94ced293eb7ca024420edc7"
   sourcePath: "docs/manual/en/modules/bluetape4k-aws-bom.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -98,6 +98,19 @@ Start with the central platform, choose one library, add one service SDK, and th
 ## Limitations
 
 This BOM does not add AWS SDK service jars, create clients, or configure credentials.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.4.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### bom Architecture diagram
+
+[![bom Architecture diagram](/manual-assets/bluetape4k-aws/0.4/readme-diagrams/bom-architecture-01.png)](../../assets/readme-diagrams/bom-architecture-01.svg)
+
+_Release README: [`bom/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/bom/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

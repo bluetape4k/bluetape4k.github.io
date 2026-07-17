@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "database"
   kind: "library"
-  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
+  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
   sourcePath: "docs/manual/en/modules/bluetape4k-exposed-mysql8.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -100,6 +100,25 @@ Read the [database adapter matrix](/manual/bluetape4k-exposed/1.11/guides/databa
 ## Limitations
 
 The module does not bundle Connector/J at runtime, manage schema/indexes, or make spatial functions portable to PostgreSQL/PostGIS. It is a MySQL 8 GIS extension, not a general MySQL adapter.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### MySQL8 GIS column DSL coverage
+
+[![MySQL8 GIS column DSL coverage](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-mysql8-diagram-01.png)](../../assets/readme-diagrams/exposed-mysql8-diagram-01.svg)
+
+_Release README: [`exposed/mysql8/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/mysql8/README.md)_
+
+### MySQL8 GIS serialization flow
+
+[![MySQL8 GIS serialization flow](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-mysql8-diagram-02.png)](../../assets/readme-diagrams/exposed-mysql8-diagram-02.svg)
+
+_Release README: [`exposed/mysql8/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/mysql8/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

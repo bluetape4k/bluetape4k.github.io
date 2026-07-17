@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "database"
   kind: "library"
-  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
+  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
   sourcePath: "docs/manual/ko/modules/bluetape4k-exposed-duckdb.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -112,3 +112,22 @@ DB 파일 크기, 쿼리 시간, 메모리 압력, 동시 접근을 관찰하세
 - [`DuckDBExtensions`](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.11.0/exposed/duckdb/src/main/kotlin/io/bluetape4k/exposed/duckdb/DuckDBExtensions.kt)
 - [`DuckDBDialectMetadata`](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.11.0/exposed/duckdb/src/main/kotlin/io/bluetape4k/exposed/duckdb/dialect/DuckDBDialectMetadata.kt)
 - [DB 테스트](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.11.0/exposed/duckdb/src/test/kotlin/io/bluetape4k/exposed/duckdb/DuckDBDatabaseTest.kt)
+
+<!-- release-readme-diagrams:start -->
+## 배포본 다이어그램
+
+아래 그림은 현재 개발 브랜치가 아니라 `1.11.0` 배포 태그의 README 자산을 바이트 단위로 그대로 옮긴 것입니다. 따라서 이후 SNAPSHOT 변경이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 SVG 원본이 열립니다.
+
+### DuckDB Exposed integration boundary
+
+[![DuckDB Exposed integration boundary](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-duckdb-diagram-01.png)](../../assets/readme-diagrams/exposed-duckdb-diagram-01.svg)
+
+_배포본 README: [`exposed/duckdb/README.ko.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/duckdb/README.ko.md)_
+
+### DuckDB query 흐름 materialization
+
+[![DuckDB query 흐름 materialization](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-duckdb-flow-02.png)](../../assets/readme-diagrams/exposed-duckdb-flow-02.svg)
+
+_배포본 README: [`exposed/duckdb/README.ko.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/duckdb/README.ko.md)_
+
+<!-- release-readme-diagrams:end -->

@@ -10,7 +10,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "data"
   kind: "library"
-  sourceCommit: "e1463bff0f864add7c54b7188f492cfe36336cdd"
+  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
   sourcePath: "docs/manual/en/modules/bluetape4k-r2dbc.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -148,6 +148,37 @@ Within the module, `ExecuteTest`, `InsertTest`, and `TransactionSupportTest` are
 This manual targets the `bluetape4k-projects` 1.11.0 tag. It does not describe the post-release auto-configuration back-off or `QueryBuilder.limit` and `offset` precondition checks as 1.11 features. In 1.11, callers must enforce `limit > 0` and `offset >= 0`.
 
 The 1.11.0 README mentions APIs that are absent from the release source: `sqlInsert`, `sqlUpdate`, `sqlDelete`, `awaitGeneratedKey`, `awaitSingleAsMap`, `awaitCount`, `awaitExists`, and `awaitList`. They are intentionally excluded; this manual uses only APIs present in release source and tests.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Extension Function API Overview diagram
+
+[![Extension Function API Overview diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/data-r2dbc-diagram-01.png)](../../assets/readme-diagrams/data-r2dbc-diagram-01.svg)
+
+_Release README: [`data/r2dbc/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/data/r2dbc/README.md)_
+
+### Core API Class Structure diagram
+
+[![Core API Class Structure diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/data-r2dbc-diagram-02.png)](../../assets/readme-diagrams/data-r2dbc-diagram-02.svg)
+
+_Release README: [`data/r2dbc/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/data/r2dbc/README.md)_
+
+### JDBC vs R2DBC Comparison diagram
+
+[![JDBC vs R2DBC Comparison diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/data-r2dbc-diagram-03.png)](../../assets/readme-diagrams/data-r2dbc-diagram-03.svg)
+
+_Release README: [`data/r2dbc/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/data/r2dbc/README.md)_
+
+### R2DBC Query Execution Flow diagram
+
+[![R2DBC Query Execution Flow diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/data-r2dbc-sequence-01.png)](../../assets/readme-diagrams/data-r2dbc-sequence-01.svg)
+
+_Release README: [`data/r2dbc/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/data/r2dbc/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources and tests
 

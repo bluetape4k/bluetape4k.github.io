@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-aws"
   group: "example-database"
   kind: "example"
-  sourceCommit: "a64a49d44060154ec4371de9f7818168b75a6a67"
+  sourceCommit: "6b25d4663a87099fc94ced293eb7ca024420edc7"
   sourcePath: "docs/manual/en/modules/aws-ktor-exposed-examples.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -84,6 +84,19 @@ Continue with the Spring Boot Exposed workshop to compare bean-managed lifecycle
 ## Limitations
 
 The local test does not exercise Secrets Manager, Parameter Store, RDS IAM, TLS, credential rotation, migrations, or production pool sizing.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.4.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### aws ktor exposed examples Architecture diagram
+
+[![aws ktor exposed examples Architecture diagram](/manual-assets/bluetape4k-aws/0.4/readme-diagrams/examples-aws-ktor-exposed-examples-architecture-01.png)](../../assets/readme-diagrams/examples-aws-ktor-exposed-examples-architecture-01.svg)
+
+_Release README: [`examples/aws-ktor-exposed-examples/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/examples/aws-ktor-exposed-examples/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

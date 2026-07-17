@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-graph"
   group: "backends"
   kind: "library"
-  sourceCommit: "2d9d09279f4b8a138dd46e3a3ffaf07699f7cfa0"
+  sourceCommit: "c72de9d93ffcd3254f42c35f4cef5a5830062ed3"
   sourcePath: "docs/manual/ko/modules/bluetape4k-graph-falkordb.md"
   minorVersion: "0.5"
   releaseRef: "0.5.1"
@@ -81,3 +81,16 @@ merge와 schema는 FalkorDB 전용 구현을 따른다. 0.5.1의 공통 suspend 
 ## 하지 않는 일과 관련 문서
 
 [FalkorDB](/ko/manual/bluetape4k-graph/0.5/backends/falkordb/), [구현 선택](/ko/manual/bluetape4k-graph/0.5/backends/selection-guide/), [운영](/ko/manual/bluetape4k-graph/0.5/guides/operations/)을 참고한다. 이 모듈은 FalkorDB를 설치하거나 숨은 트랜잭션 대안을 제공하지 않는다.
+
+<!-- release-readme-diagrams:start -->
+## 배포본 다이어그램
+
+아래 그림은 현재 개발 브랜치가 아니라 `0.5.1` 배포 태그의 README 자산을 바이트 단위로 그대로 옮긴 것입니다. 따라서 이후 SNAPSHOT 변경이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 SVG 원본이 열립니다.
+
+### Bluetape4k Graph falkordb 아키텍처
+
+[![Bluetape4k Graph falkordb 아키텍처](/manual-assets/bluetape4k-graph/0.5/readme-diagrams/graph-graph-falkordb-architecture-01.png)](../../assets/readme-diagrams/graph-graph-falkordb-architecture-01.svg)
+
+_배포본 README: [`graph/graph-falkordb/README.ko.md`](https://github.com/bluetape4k/bluetape4k-graph/blob/3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907/graph/graph-falkordb/README.ko.md)_
+
+<!-- release-readme-diagrams:end -->

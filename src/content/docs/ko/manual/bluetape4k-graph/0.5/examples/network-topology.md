@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-graph"
   group: "examples"
   kind: "example"
-  sourceCommit: "2d9d09279f4b8a138dd46e3a3ffaf07699f7cfa0"
+  sourceCommit: "c72de9d93ffcd3254f42c35f4cef5a5830062ed3"
   sourcePath: "docs/manual/ko/examples/network-topology.md"
   minorVersion: "0.5"
   releaseRef: "0.5.1"

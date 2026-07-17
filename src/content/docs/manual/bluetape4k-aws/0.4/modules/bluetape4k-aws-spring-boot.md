@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-aws"
   group: "framework"
   kind: "library"
-  sourceCommit: "a64a49d44060154ec4371de9f7818168b75a6a67"
+  sourceCommit: "6b25d4663a87099fc94ced293eb7ca024420edc7"
   sourcePath: "docs/manual/en/modules/bluetape4k-aws-spring-boot.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -96,6 +96,31 @@ Read `auto-configuration`, then `storage-and-messaging`, then `runtime-operation
 ## Limitations
 
 This is not awspring and does not enable every AWS service automatically. Optional integrations remain absent until their classes and properties are present.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.4.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### AWS Spring Boot architecture diagram
+
+[![AWS Spring Boot architecture diagram](/manual-assets/bluetape4k-aws/0.4/readme-diagrams/aws-spring-boot-architecture-01.png)](../../assets/readme-diagrams/aws-spring-boot-architecture-01.svg)
+
+_Release README: [`aws-spring-boot/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/aws-spring-boot/README.md)_
+
+### AWS Spring Boot configuration flow diagram
+
+[![AWS Spring Boot configuration flow diagram](/manual-assets/bluetape4k-aws/0.4/readme-diagrams/aws-spring-boot-flow-02.png)](../../assets/readme-diagrams/aws-spring-boot-flow-02.svg)
+
+_Release README: [`aws-spring-boot/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/aws-spring-boot/README.md)_
+
+### AWS Spring Boot SQS listener sequence diagram
+
+[![AWS Spring Boot SQS listener sequence diagram](/manual-assets/bluetape4k-aws/0.4/readme-diagrams/aws-spring-boot-sequence-03.png)](../../assets/readme-diagrams/aws-spring-boot-sequence-03.svg)
+
+_Release README: [`aws-spring-boot/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/aws-spring-boot/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

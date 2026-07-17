@@ -10,7 +10,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "infrastructure"
   kind: "library"
-  sourceCommit: "e1463bff0f864add7c54b7188f492cfe36336cdd"
+  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
   sourcePath: "docs/manual/en/modules/bluetape4k-redisson.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -163,3 +163,28 @@ Preset names in `RedissonCacheConfig` do not create database read/write-through.
 - [`RedissonClientCoroutineTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/redisson/src/test/kotlin/io/bluetape4k/redis/redisson/coroutines/RedissonClientCoroutineTest.kt)
 - [`RedissonNearCacheTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/redisson/src/test/kotlin/io/bluetape4k/redis/redisson/nearcache/RedissonNearCacheTest.kt)
 - [`RedissonCacheConfigTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/redisson/src/test/kotlin/io/bluetape4k/redis/redisson/cache/RedissonCacheConfigTest.kt)
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Codec Selection Map diagram
+
+[![Codec Selection Map diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/infra-redisson-diagram-01.png)](../../assets/readme-diagrams/infra-redisson-diagram-01.svg)
+
+_Release README: [`infra/redisson/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/infra/redisson/README.md)_
+
+### Batch / Transaction Processing Flow diagram
+
+[![Batch / Transaction Processing Flow diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/infra-redisson-diagram-02.png)](../../assets/readme-diagrams/infra-redisson-diagram-02.svg)
+
+_Release README: [`infra/redisson/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/infra/redisson/README.md)_
+
+### NearCache 2-Tier Cache Flow diagram
+
+[![NearCache 2-Tier Cache Flow diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/infra-redisson-sequence-01.png)](../../assets/readme-diagrams/infra-redisson-sequence-01.svg)
+
+_Release README: [`infra/redisson/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/infra/redisson/README.md)_
+
+<!-- release-readme-diagrams:end -->

@@ -10,7 +10,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "e1463bff0f864add7c54b7188f492cfe36336cdd"
+  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
   sourcePath: "docs/manual/en/modules/bluetape4k-core.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -196,6 +196,31 @@ No single workshop covers the entire toolbox. Higher-level repository examples e
 ## Limitations
 
 The breadth of core means its APIs do not share one lifecycle or performance profile. Read the source and tests for the selected family. Encoding is not encryption, reflection helpers do not make inaccessible APIs stable, and bounded containers do not provide distributed backpressure.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Module Overview diagram
+
+[![Module Overview diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/bluetape4k-core-diagram-01.png)](../../assets/readme-diagrams/bluetape4k-core-diagram-01.svg)
+
+_Release README: [`bluetape4k/core/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/bluetape4k/core/README.md)_
+
+### Core Class Structure diagram
+
+[![Core Class Structure diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/bluetape4k-core-diagram-02.png)](../../assets/readme-diagrams/bluetape4k-core-diagram-02.svg)
+
+_Release README: [`bluetape4k/core/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/bluetape4k/core/README.md)_
+
+### Validation Chaining Flow diagram
+
+[![Validation Chaining Flow diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/bluetape4k-core-sequence-01.png)](../../assets/readme-diagrams/bluetape4k-core-sequence-01.svg)
+
+_Release README: [`bluetape4k/core/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/bluetape4k/core/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

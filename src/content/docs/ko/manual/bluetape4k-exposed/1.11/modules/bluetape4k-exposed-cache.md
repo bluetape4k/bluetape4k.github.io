@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "foundation"
   kind: "library"
-  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
+  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
   sourcePath: "docs/manual/ko/modules/bluetape4k-exposed-cache.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -129,3 +129,28 @@ JDBC에는 동기 계약과 suspend 계약이 있습니다. R2DBC는 행을 엔�
 - [`R2dbcCacheRepository`](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.11.0/exposed/cache/src/main/kotlin/io/bluetape4k/exposed/cache/R2dbcCacheRepository.kt)
 - [`LocalCacheConfig`](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.11.0/exposed/cache/src/main/kotlin/io/bluetape4k/exposed/cache/LocalCacheConfig.kt)
 - [`RedisRepositoryResilienceConfig`](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.11.0/exposed/cache/src/main/kotlin/io/bluetape4k/exposed/cache/redis/RedisRepositoryResilienceConfig.kt)
+
+<!-- release-readme-diagrams:start -->
+## 배포본 다이어그램
+
+아래 그림은 현재 개발 브랜치가 아니라 `1.11.0` 배포 태그의 README 자산을 바이트 단위로 그대로 옮긴 것입니다. 따라서 이후 SNAPSHOT 변경이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 SVG 원본이 열립니다.
+
+### Repository Interface 클래스 다이어그램
+
+[![Repository Interface 클래스 다이어그램](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-cache-diagram-01.png)](../../assets/readme-diagrams/exposed-cache-diagram-01.svg)
+
+_배포본 README: [`exposed/cache/README.ko.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/cache/README.ko.md)_
+
+### Cache Configuration 선택 지도
+
+[![Cache Configuration 선택 지도](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-cache-diagram-02.png)](../../assets/readme-diagrams/exposed-cache-diagram-02.svg)
+
+_배포본 README: [`exposed/cache/README.ko.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/cache/README.ko.md)_
+
+### Cache write strategy 처리 흐름
+
+[![Cache write strategy 처리 흐름](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-cache-sequence-01.png)](../../assets/readme-diagrams/exposed-cache-sequence-01.svg)
+
+_배포본 README: [`exposed/cache/README.ko.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/cache/README.ko.md)_
+
+<!-- release-readme-diagrams:end -->

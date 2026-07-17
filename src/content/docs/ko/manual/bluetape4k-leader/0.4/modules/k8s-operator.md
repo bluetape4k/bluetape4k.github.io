@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-leader"
   group: "workshops"
   kind: "example"
-  sourceCommit: "27627f5cf430ef2640d5847ecfeef914ea935c4c"
+  sourceCommit: "dba8da7f095bd73aa5fb595b3b0741dcffd0e494"
   sourcePath: "docs/manual/ko/modules/k8s-operator.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -139,6 +139,37 @@ Lease 네임스페이스와 이름, 파드 식별자, 스케줄러 지연 시간
 대기 중인 파드에서도 스케줄러 신호는 발생합니다. 실제 작업 본문은 선출기 경계 안에 두고, 컨트롤러에는 필요한 Lease RBAC 권한만 부여해야 합니다.
 
 데모는 짧고 관찰하기 쉬운 시나리오에 집중합니다. 운영 토폴로지, 인증 정보 교체, 용량 계획, 재해 복구, 보편적인 `exactly-once` 실행 보장까지 정의하지는 않습니다.
+
+<!-- release-readme-diagrams:start -->
+## 배포본 다이어그램
+
+아래 그림은 현재 개발 브랜치가 아니라 `0.4.0` 배포 태그의 README 자산을 바이트 단위로 그대로 옮긴 것입니다. 따라서 이후 SNAPSHOT 변경이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 SVG 원본이 열립니다.
+
+### k8s operator 아키텍처
+
+[![k8s operator 아키텍처](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/examples-k8s-operator-architecture-01.png)](../../assets/readme-diagrams/examples-k8s-operator-architecture-01.svg)
+
+_배포본 README: [`examples/k8s-operator/README.ko.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/examples/k8s-operator/README.ko.md)_
+
+### K8s operator 처리 흐름
+
+[![K8s operator 처리 흐름](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/examples-k8s-operator-flow-01.png)](../../assets/readme-diagrams/examples-k8s-operator-flow-01.svg)
+
+_배포본 README: [`examples/k8s-operator/README.ko.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/examples/k8s-operator/README.ko.md)_
+
+### K8s Operator 실행 시나리오 다이어그램
+
+[![K8s Operator 실행 시나리오 다이어그램](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/examples-k8s-operator-scenario-01.png)](../../assets/readme-diagrams/examples-k8s-operator-scenario-01.svg)
+
+_배포본 README: [`examples/k8s-operator/README.ko.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/examples/k8s-operator/README.ko.md)_
+
+### k8s operator 실행 흐름
+
+[![k8s operator 실행 흐름](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/examples-k8s-operator-sequence-01.png)](../../assets/readme-diagrams/examples-k8s-operator-sequence-01.svg)
+
+_배포본 README: [`examples/k8s-operator/README.ko.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/examples/k8s-operator/README.ko.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## 근거 자료
 

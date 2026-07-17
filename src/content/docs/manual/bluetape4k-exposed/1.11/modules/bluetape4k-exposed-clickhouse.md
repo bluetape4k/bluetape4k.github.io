@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "database"
   kind: "library"
-  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
+  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
   sourcePath: "docs/manual/en/modules/bluetape4k-exposed-clickhouse.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -106,6 +106,25 @@ Use the [adapter matrix](/manual/bluetape4k-exposed/1.11/guides/database-adapter
 ## Limitations
 
 The wrapper makes Exposed callable; it cannot add transactions, savepoints, relational constraints, or rollback to ClickHouse. Only the engine/type/function surface covered in release 1.11 should be treated as supported.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### ClickHouse Exposed integration architecture
+
+[![ClickHouse Exposed integration architecture](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-clickhouse-diagram-01.png)](../../assets/readme-diagrams/exposed-clickhouse-diagram-01.svg)
+
+_Release README: [`exposed/clickhouse/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/clickhouse/README.md)_
+
+### ClickHouse DDL lifecycle
+
+[![ClickHouse DDL lifecycle](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-clickhouse-flow-02.png)](../../assets/readme-diagrams/exposed-clickhouse-flow-02.svg)
+
+_Release README: [`exposed/clickhouse/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/clickhouse/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

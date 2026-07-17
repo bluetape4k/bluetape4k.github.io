@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-javers"
   group: "overview"
   kind: "guide"
-  sourceCommit: "37423566ffd4f389ce3e85c573ed8348bbeaff2c"
+  sourceCommit: "6130ed5b22458c4e5d63e58f44460d06b1e9c07a"
   sourcePath: "docs/manual/ko/index.md"
   minorVersion: "0.2"
   releaseRef: "0.2.1"
@@ -28,6 +28,14 @@ manual:
 - **실행 예제와 비교 자료:** [Exposed DDD 예제](/ko/manual/bluetape4k-javers/0.2/examples/javers-exposed-ddd/)와 [JaVers·Exposed DDD·Envers 비교](/ko/manual/bluetape4k-javers/0.2/benchmarks/exposed-ddd-envers/)를 통해 추상화가 실제 코드와 측정 근거로 어떻게 이어지는지 확인할 수 있습니다.
 
 설명 기준은 `0.2.1` 릴리스와 커밋 `bffe19439ca891fa5301a76421bdef7ba75252a0`입니다. Ktor 연동, Spring Boot 4 자동 구성과 예제, 전용 Gradle 벤치마크 모듈은 0.2.1 뒤에 추가됐으므로 0.2 기능으로 다루지 않습니다.
+
+## 릴리스 구성 한눈에 보기
+
+아래 그림은 `0.2.1` 릴리스 README에 포함된 자산을 그대로 가져온 것입니다. 이 매뉴얼에서 사용할 수 있는 구조만 보여 주며, 이후 Snapshot에 추가된 모듈과 연결 관계는 일부러 넣지 않았습니다.
+
+[![bluetape4k-javers 0.2.1 저장소 개요](/manual-assets/bluetape4k-javers/0.2/readme-diagrams/root-readme-overview-01.png)](../assets/readme-diagrams/root-readme-overview-01.svg)
+
+## 학습 지도
 
 [![저장소 학습 지도](/manual-assets/bluetape4k-javers/0.2/overview/repository-learning-map.png)](../assets/overview/repository-learning-map.svg)
 

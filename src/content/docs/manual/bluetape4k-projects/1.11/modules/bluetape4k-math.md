@@ -10,7 +10,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "utilities"
   kind: "library"
-  sourceCommit: "e1463bff0f864add7c54b7188f492cfe36336cdd"
+  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
   sourcePath: "docs/manual/en/modules/bluetape4k-math.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -119,6 +119,25 @@ No dedicated workshop path is registered in the manual manifest. Use the module 
 ## Limitations
 
 This page documents the repository state represented by the linked source and tests. It does not turn optional backends into application defaults or claim performance without a benchmark artifact. Re-check compatibility and lifecycle notes when the module version changes.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Feature Structure diagram
+
+[![Feature Structure diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/utils-math-diagram-01.png)](../../assets/readme-diagrams/utils-math-diagram-01.svg)
+
+_Release README: [`utils/math/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/utils/math/README.md)_
+
+### Math Class Structure diagram
+
+[![Math Class Structure diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/utils-math-diagram-02.png)](../../assets/readme-diagrams/utils-math-diagram-02.svg)
+
+_Release README: [`utils/math/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/utils/math/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

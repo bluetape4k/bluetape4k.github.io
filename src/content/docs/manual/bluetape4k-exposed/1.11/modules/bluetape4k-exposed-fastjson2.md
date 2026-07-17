@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "serialization"
   kind: "library"
-  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
+  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
   sourcePath: "docs/manual/en/modules/bluetape4k-exposed-fastjson2.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -114,6 +114,25 @@ Start with the [serialization and encryption guide](/manual/bluetape4k-exposed/1
 ## Limitations
 
 The module does not version JSON documents, migrate stored rows, choose indexes, or guarantee that JSON functions behave identically across dialects. Fastjson2, Jackson 2, and Jackson 3 modules are alternatives for a column contract; switching one for another requires stored-data compatibility proof.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Fastjson2 JSON column boundary
+
+[![Fastjson2 JSON column boundary](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-fastjson2-diagram-01.png)](../../assets/readme-diagrams/exposed-fastjson2-diagram-01.svg)
+
+_Release README: [`exposed/fastjson2/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/fastjson2/README.md)_
+
+### Fastjson2 JSON round trip
+
+[![Fastjson2 JSON round trip](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-fastjson2-flow-02.png)](../../assets/readme-diagrams/exposed-fastjson2-flow-02.svg)
+
+_Release README: [`exposed/fastjson2/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/fastjson2/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

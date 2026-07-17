@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "r2dbc"
   kind: "library"
-  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
+  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
   sourcePath: "docs/manual/en/modules/bluetape4k-exposed-r2dbc.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -112,6 +112,37 @@ Read [Coroutine transactions](/manual/bluetape4k-exposed/1.11/modules/bluetape4k
 ## Limitations
 
 R2DBC is not an automatic performance upgrade and does not make blocking dependencies non-blocking. The library supplies no driver, universal cancellation guarantee, or implicit transaction.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Core R2DBC repository structure diagram
+
+[![Core R2DBC repository structure diagram](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-r2dbc-diagram-01.png)](../../assets/readme-diagrams/exposed-r2dbc-diagram-01.svg)
+
+_Release README: [`exposed/r2dbc/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/r2dbc/README.md)_
+
+### R2DBC repository capability map
+
+[![R2DBC repository capability map](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-r2dbc-diagram-02.png)](../../assets/readme-diagrams/exposed-r2dbc-diagram-02.svg)
+
+_Release README: [`exposed/r2dbc/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/r2dbc/README.md)_
+
+### R2DBC suspend transaction sequence diagram
+
+[![R2DBC suspend transaction sequence diagram](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-r2dbc-sequence-01.png)](../../assets/readme-diagrams/exposed-r2dbc-sequence-01.svg)
+
+_Release README: [`exposed/r2dbc/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/r2dbc/README.md)_
+
+### R2DBC soft-delete visibility flow diagram
+
+[![R2DBC soft-delete visibility flow diagram](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-r2dbc-sequence-02.png)](../../assets/readme-diagrams/exposed-r2dbc-sequence-02.svg)
+
+_Release README: [`exposed/r2dbc/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/r2dbc/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

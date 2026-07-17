@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-image"
   group: "native"
   kind: "library"
-  sourceCommit: "471a5f364520923911dc31d91be5179a6985337e"
+  sourceCommit: "4f32b77dff190acb79534b67b34f9056843ebeeb"
   sourcePath: "docs/manual/en/modules/bluetape4k-images-vips-java25.md"
   minorVersion: "0.3"
   releaseRef: "0.3.0"
@@ -99,6 +99,25 @@ First prove native startup and parent/child lifetime in unit tests, then smoke-t
 ## Limitations
 
 Derived images share their root arena and cannot outlive it. Non-path input is buffered under the 50 MiB guard. AVIF/HEIC API availability does not prove host codec support. The backend cannot run on a Java 21 JVM.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.3.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Performance vs scrimage diagram
+
+[![Performance vs scrimage diagram](/manual-assets/bluetape4k-image/0.3/readme-diagrams/images-vips-java25-architecture-02.png)](../../assets/readme-diagrams/images-vips-java25-architecture-02.svg)
+
+_Release README: [`images-vips-java25/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/images-vips-java25/README.md)_
+
+### images vips java25 Class Structure diagram
+
+[![images vips java25 Class Structure diagram](/manual-assets/bluetape4k-image/0.3/readme-diagrams/images-vips-java25-class-01.png)](../../assets/readme-diagrams/images-vips-java25-class-01.svg)
+
+_Release README: [`images-vips-java25/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/images-vips-java25/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

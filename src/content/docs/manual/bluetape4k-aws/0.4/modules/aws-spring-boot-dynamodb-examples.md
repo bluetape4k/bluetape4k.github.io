@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-aws"
   group: "example-database"
   kind: "example"
-  sourceCommit: "a64a49d44060154ec4371de9f7818168b75a6a67"
+  sourceCommit: "6b25d4663a87099fc94ced293eb7ca024420edc7"
   sourcePath: "docs/manual/en/modules/aws-spring-boot-dynamodb-examples.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -85,6 +85,19 @@ Compare the Ktor DynamoDB workshop for explicit plugin setup, then add condition
 ## Limitations
 
 The workshop uses a single-key table and scan. It does not cover indexes, transactions, optimistic concurrency, production capacity, IAM, or schema migration.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.4.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### aws spring boot dynamodb examples Architecture diagram
+
+[![aws spring boot dynamodb examples Architecture diagram](/manual-assets/bluetape4k-aws/0.4/readme-diagrams/examples-aws-spring-boot-dynamodb-examples-architecture-01.png)](../../assets/readme-diagrams/examples-aws-spring-boot-dynamodb-examples-architecture-01.svg)
+
+_Release README: [`examples/aws-spring-boot-dynamodb-examples/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/examples/aws-spring-boot-dynamodb-examples/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

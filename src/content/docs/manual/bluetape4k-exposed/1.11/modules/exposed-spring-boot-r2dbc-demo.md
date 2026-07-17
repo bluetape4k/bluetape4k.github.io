@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "example"
   kind: "example"
-  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
+  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
   sourcePath: "docs/manual/en/modules/exposed-spring-boot-r2dbc-demo.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -140,6 +140,25 @@ Read the demo in ownership order: `ExposedR2dbcConfig` → `DataInitializer` →
 ## Limitations
 
 The demo uses in-memory H2, asynchronous startup schema creation, one process, and no authentication. It does not provide a Spring reactive transaction manager, production migrations, pool sizing, retry policy, high availability, or evidence that R2DBC outperforms JDBC for a specific workload.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Spring Boot R2DBC demo structure diagram
+
+[![Spring Boot R2DBC demo structure diagram](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/spring-boot-exposed-r2dbc-demo-diagram-01.png)](../../assets/readme-diagrams/spring-boot-exposed-r2dbc-demo-diagram-01.svg)
+
+_Release README: [`examples/r2dbc-demo/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/examples/r2dbc-demo/README.md)_
+
+### WebFlux suspend request flow diagram
+
+[![WebFlux suspend request flow diagram](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/spring-boot-exposed-r2dbc-demo-diagram-02.png)](../../assets/readme-diagrams/spring-boot-exposed-r2dbc-demo-diagram-02.svg)
+
+_Release README: [`examples/r2dbc-demo/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/examples/r2dbc-demo/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

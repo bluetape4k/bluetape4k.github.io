@@ -10,7 +10,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "spring"
   kind: "library"
-  sourceCommit: "e1463bff0f864add7c54b7188f492cfe36336cdd"
+  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
   sourcePath: "docs/manual/en/modules/bluetape4k-spring-boot-mongodb.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -176,3 +176,34 @@ This manual targets the `bluetape4k-projects` 1.11.0 release source. The module 
 - [`CriteriaExtensionsTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/spring-boot/mongodb/src/test/kotlin/io/bluetape4k/spring/mongodb/query/CriteriaExtensionsTest.kt)
 - [`QueryExtensionsTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/spring-boot/mongodb/src/test/kotlin/io/bluetape4k/spring/mongodb/query/QueryExtensionsTest.kt)
 - [`UpdateExtensionsTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/spring-boot/mongodb/src/test/kotlin/io/bluetape4k/spring/mongodb/query/UpdateExtensionsTest.kt)
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Core Class Structure diagram
+
+[![Core Class Structure diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/spring-boot-mongodb-diagram-01.png)](../../assets/readme-diagrams/spring-boot-mongodb-diagram-01.svg)
+
+_Release README: [`spring-boot/mongodb/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/spring-boot/mongodb/README.md)_
+
+### ReactiveMongoOperations Coroutine Extension Flow diagram
+
+[![ReactiveMongoOperations Coroutine Extension Flow diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/spring-boot-mongodb-diagram-02.png)](../../assets/readme-diagrams/spring-boot-mongodb-diagram-02.svg)
+
+_Release README: [`spring-boot/mongodb/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/spring-boot/mongodb/README.md)_
+
+### Criteria / Query / Update DSL Flow diagram
+
+[![Criteria / Query / Update DSL Flow diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/spring-boot-mongodb-diagram-03.png)](../../assets/readme-diagrams/spring-boot-mongodb-diagram-03.svg)
+
+_Release README: [`spring-boot/mongodb/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/spring-boot/mongodb/README.md)_
+
+### Coroutine Conversion Sequence diagram
+
+[![Coroutine Conversion Sequence diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/spring-boot-mongodb-sequence-01.png)](../../assets/readme-diagrams/spring-boot-mongodb-sequence-01.svg)
+
+_Release README: [`spring-boot/mongodb/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/spring-boot/mongodb/README.md)_
+
+<!-- release-readme-diagrams:end -->

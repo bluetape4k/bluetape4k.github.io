@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "integration"
   kind: "library"
-  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
+  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
   sourcePath: "docs/manual/en/modules/bluetape4k-exposed-spring-boot-batch.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -117,6 +117,25 @@ Compare [Exposed Batch Utilities](/manual/bluetape4k-exposed/1.11/modules/blueta
 ## Limitations
 
 Range partitioning assumes a `Long`-compatible, unique, monotonic key and is best when large inserts or deletes do not reshape the range during execution. `lastKey` records read progress at Spring Batch checkpoints; it does not make external side effects atomic. The default virtual-thread executor is optional and replaceable, and must still respect database pool limits.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Spring Batch Exposed integration map
+
+[![Spring Batch Exposed integration map](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/spring-boot-batch-exposed-diagram-01.png)](../../assets/readme-diagrams/spring-boot-batch-exposed-diagram-01.svg)
+
+_Release README: [`spring-boot/batch-exposed/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/spring-boot/batch-exposed/README.md)_
+
+### Partitioned keyset restart flow
+
+[![Partitioned keyset restart flow](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/spring-boot-batch-exposed-sequence-01.png)](../../assets/readme-diagrams/spring-boot-batch-exposed-sequence-01.svg)
+
+_Release README: [`spring-boot/batch-exposed/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/spring-boot/batch-exposed/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

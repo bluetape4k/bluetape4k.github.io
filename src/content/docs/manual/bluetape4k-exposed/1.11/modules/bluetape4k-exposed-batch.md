@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "integration"
   kind: "library"
-  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
+  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
   sourcePath: "docs/manual/en/modules/bluetape4k-exposed-batch.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -109,6 +109,31 @@ Read [transaction boundaries](/manual/bluetape4k-exposed/1.11/guides/transaction
 ## Limitations
 
 The write/checkpoint boundary is at-least-once, not exactly-once. `InMemoryBatchJobRepository` is not restart-durable and cannot coordinate processes. The runtime is not a scheduler, queue, or Spring Batch replacement. Correct recovery depends on an atomic lease implementation, durable checkpoints, stable reader order, and an idempotent writer.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Batch benchmark comparison map
+
+[![Batch benchmark comparison map](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/utils-batch-benchmark-map-01.png)](../../assets/readme-diagrams/utils-batch-benchmark-map-01.svg)
+
+_Release README: [`utils/batch/benchmark/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/utils/batch/benchmark/README.md)_
+
+### Batch runtime role map
+
+[![Batch runtime role map](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/utils-batch-diagram-01.png)](../../assets/readme-diagrams/utils-batch-diagram-01.svg)
+
+_Release README: [`utils/batch/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/utils/batch/README.md)_
+
+### Batch chunk checkpoint flow
+
+[![Batch chunk checkpoint flow](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/utils-batch-sequence-01.png)](../../assets/readme-diagrams/utils-batch-sequence-01.svg)
+
+_Release README: [`utils/batch/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/utils/batch/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

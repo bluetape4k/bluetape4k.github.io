@@ -10,7 +10,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "data"
   kind: "library"
-  sourceCommit: "e1463bff0f864add7c54b7188f492cfe36336cdd"
+  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
   sourcePath: "docs/manual/ko/modules/bluetape4k-r2dbc.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -161,3 +161,34 @@ pool benchmark는 일반 회귀 테스트가 아닙니다. PostgreSQL·MySQL ben
 - [`ExecuteTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/r2dbc/src/test/kotlin/io/bluetape4k/r2dbc/core/ExecuteTest.kt)
 - [`ConnectionPoolSupportTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/r2dbc/src/test/kotlin/io/bluetape4k/r2dbc/pool/ConnectionPoolSupportTest.kt)
 - [`TransactionSupportTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/data/r2dbc/src/test/kotlin/io/bluetape4k/r2dbc/support/TransactionSupportTest.kt)
+
+<!-- release-readme-diagrams:start -->
+## 배포본 다이어그램
+
+아래 그림은 현재 개발 브랜치가 아니라 `1.11.0` 배포 태그의 README 자산을 바이트 단위로 그대로 옮긴 것입니다. 따라서 이후 SNAPSHOT 변경이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 SVG 원본이 열립니다.
+
+### Extension Function API 개요
+
+[![Extension Function API 개요](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/data-r2dbc-diagram-01.png)](../../assets/readme-diagrams/data-r2dbc-diagram-01.svg)
+
+_배포본 README: [`data/r2dbc/README.ko.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/data/r2dbc/README.ko.md)_
+
+### Core API 클래스 구조도
+
+[![Core API 클래스 구조도](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/data-r2dbc-diagram-02.png)](../../assets/readme-diagrams/data-r2dbc-diagram-02.svg)
+
+_배포본 README: [`data/r2dbc/README.ko.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/data/r2dbc/README.ko.md)_
+
+### JDBC vs R2DBC Comparison 다이어그램
+
+[![JDBC vs R2DBC Comparison 다이어그램](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/data-r2dbc-diagram-03.png)](../../assets/readme-diagrams/data-r2dbc-diagram-03.svg)
+
+_배포본 README: [`data/r2dbc/README.ko.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/data/r2dbc/README.ko.md)_
+
+### R2DBC Query Execution 처리 흐름
+
+[![R2DBC Query Execution 처리 흐름](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/data-r2dbc-sequence-01.png)](../../assets/readme-diagrams/data-r2dbc-sequence-01.svg)
+
+_배포본 README: [`data/r2dbc/README.ko.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/data/r2dbc/README.ko.md)_
+
+<!-- release-readme-diagrams:end -->

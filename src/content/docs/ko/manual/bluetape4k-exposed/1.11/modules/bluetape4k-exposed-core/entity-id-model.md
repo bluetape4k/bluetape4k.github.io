@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "foundation"
   kind: "library"
-  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
+  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
   sourcePath: "docs/manual/ko/modules/bluetape4k-exposed-core/entity-id-model.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"

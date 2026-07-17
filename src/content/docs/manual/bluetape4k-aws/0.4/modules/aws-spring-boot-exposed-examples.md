@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-aws"
   group: "example-database"
   kind: "example"
-  sourceCommit: "a64a49d44060154ec4371de9f7818168b75a6a67"
+  sourceCommit: "6b25d4663a87099fc94ced293eb7ca024420edc7"
   sourcePath: "docs/manual/en/modules/aws-spring-boot-exposed-examples.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -85,6 +85,19 @@ Compare the Ktor Exposed workshop for plugin-managed transactions, then continue
 ## Limitations
 
 The test does not call AWS configuration services or RDS IAM and does not prove TLS, migration tooling, credential rotation, or production pool sizing.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.4.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### aws spring boot exposed examples Architecture diagram
+
+[![aws spring boot exposed examples Architecture diagram](/manual-assets/bluetape4k-aws/0.4/readme-diagrams/examples-aws-spring-boot-exposed-examples-architecture-01.png)](../../assets/readme-diagrams/examples-aws-spring-boot-exposed-examples-architecture-01.svg)
+
+_Release README: [`examples/aws-spring-boot-exposed-examples/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/examples/aws-spring-boot-exposed-examples/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

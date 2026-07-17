@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-text"
   group: "overview"
   kind: "guide"
-  sourceCommit: "bf802d7362ac221690043fddd3a3da433af02bed"
+  sourceCommit: "1d28940432ea5dc3e8f608577682f76b357e4f7e"
   sourcePath: "docs/manual/en/architecture/repository-map.md"
   minorVersion: "0.2"
   releaseRef: "0.2.1"
@@ -70,3 +70,28 @@ Use `text-search` when you already know the exact patterns and need to find many
 - [Release project registration](https://github.com/bluetape4k/bluetape4k-text/blob/0.2.1/settings.gradle.kts)
 - [Release module overview](https://github.com/bluetape4k/bluetape4k-text/blob/0.2.1/README.md)
 - [Examples overview](https://github.com/bluetape4k/bluetape4k-text/blob/0.2.1/examples/README.md)
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.2.1` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### text Architecture diagram
+
+[![text Architecture diagram](/manual-assets/bluetape4k-text/0.2/readme-diagrams/bluetape4k-text-architecture-01.png)](../../assets/readme-diagrams/bluetape4k-text-architecture-01.svg)
+
+_Release README: [`README.md`](https://github.com/bluetape4k/bluetape4k-text/blob/2db7671afad20045afdcb5793c0113b8b23b972b/README.md)_
+
+### Bluetape4k Text module composition chart
+
+[![Bluetape4k Text module composition chart](/manual-assets/bluetape4k-text/0.2/readme-diagrams/root-readme-module-chart-01.png)](../../assets/readme-diagrams/root-readme-module-chart-01.svg)
+
+_Release README: [`README.md`](https://github.com/bluetape4k/bluetape4k-text/blob/2db7671afad20045afdcb5793c0113b8b23b972b/README.md)_
+
+### Bluetape4k Text overview diagram
+
+[![Bluetape4k Text overview diagram](/manual-assets/bluetape4k-text/0.2/readme-diagrams/root-readme-overview-01.png)](../../assets/readme-diagrams/root-readme-overview-01.svg)
+
+_Release README: [`README.md`](https://github.com/bluetape4k/bluetape4k-text/blob/2db7671afad20045afdcb5793c0113b8b23b972b/README.md)_
+
+<!-- release-readme-diagrams:end -->

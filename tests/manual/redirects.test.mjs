@@ -191,14 +191,10 @@ test('snapshot validation writes a sanitized provenance report and summary', asy
   assert.equal(summary.status, 0, summary.stderr);
   assert.match(summary.stdout, /^## Manual validation/m);
   assert.match(summary.stdout, /1\.11\.0/);
-  assert.match(summary.stdout, /6187173b58e8b4c5c435c145e00e94708f31ef75/);
-  assert.match(summary.stdout, /0b494a5fd1e083006046764757342b68a397e4c5/);
-  assert.match(summary.stdout, /be4e6daea5654f84579955307ec56a58c8f405be/);
-  assert.match(summary.stdout, /e1463bff0f864add7c54b7188f492cfe36336cdd/);
-  assert.match(summary.stdout, /bffe19439ca891fa5301a76421bdef7ba75252a0/);
-  assert.match(summary.stdout, /37423566ffd4f389ce3e85c573ed8348bbeaff2c/);
-  assert.match(summary.stdout, /2db7671afad20045afdcb5793c0113b8b23b972b/);
-  assert.match(summary.stdout, /bf802d7362ac221690043fddd3a3da433af02bed/);
+  for (const repository of report.repositories) {
+    assert.ok(summary.stdout.includes(repository.releaseCommit), repository.repository);
+    assert.ok(summary.stdout.includes(repository.sourceCommit), repository.repository);
+  }
 
   const token = `ghp_${'x'.repeat(36)}`;
   const failure = failureReport({ code: 'CATALOG_DRIFT', actual: `src/${token}` });

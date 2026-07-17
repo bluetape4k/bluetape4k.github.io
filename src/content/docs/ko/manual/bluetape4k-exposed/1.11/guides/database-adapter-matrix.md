@@ -8,7 +8,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "overview"
   kind: "guide"
-  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
+  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
   sourcePath: "docs/manual/ko/guides/database-adapter-matrix.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"

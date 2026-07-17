@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "foundation"
   kind: "library"
-  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
+  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
   sourcePath: "docs/manual/en/modules/bluetape4k-exposed-core.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -106,6 +106,43 @@ Read [Entity and ID model](/manual/bluetape4k-exposed/1.11/modules/bluetape4k-ex
 ## Limitations
 
 Core does not own transactions, connections, Spring beans, driver selection, or repository lifecycle. Release 1.11 documentation must not rely on later develop-only DDD APIs.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Auditable UML Class Diagram
+
+[![Auditable UML Class Diagram](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-core-diagram-01.png)](../../assets/readme-diagrams/exposed-core-diagram-01.svg)
+
+_Release README: [`exposed/core/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/core/README.md)_
+
+### Column Type Pipeline Map
+
+[![Column Type Pipeline Map](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-core-diagram-02.png)](../../assets/readme-diagrams/exposed-core-diagram-02.svg)
+
+_Release README: [`exposed/core/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/core/README.md)_
+
+### IdTable Selection Matrix
+
+[![IdTable Selection Matrix](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-core-diagram-03.png)](../../assets/readme-diagrams/exposed-core-diagram-03.svg)
+
+_Release README: [`exposed/core/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/core/README.md)_
+
+### ExposedPage Data Model
+
+[![ExposedPage Data Model](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-core-diagram-04.png)](../../assets/readme-diagrams/exposed-core-diagram-04.svg)
+
+_Release README: [`exposed/core/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/core/README.md)_
+
+### UserContext — Managing the Current User diagram
+
+[![UserContext — Managing the Current User diagram](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-core-sequence-01.png)](../../assets/readme-diagrams/exposed-core-sequence-01.svg)
+
+_Release README: [`exposed/core/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/core/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

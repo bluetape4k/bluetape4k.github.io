@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "foundation"
   kind: "library"
-  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
+  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
   sourcePath: "docs/manual/en/modules/bluetape4k-exposed-cache.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -121,6 +121,31 @@ Use the module's test fixtures to lock down miss loading, partial `getAll` misse
 ## Limitations
 
 The contracts do not provide a distributed transaction between cache and database, choose a serialization format, provision Redis, or make a local cache coherent across JVMs. Backend-specific semantics take precedence where their writer or invalidation configuration is more precise.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Repository Interface Class Diagram
+
+[![Repository Interface Class Diagram](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-cache-diagram-01.png)](../../assets/readme-diagrams/exposed-cache-diagram-01.svg)
+
+_Release README: [`exposed/cache/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/cache/README.md)_
+
+### Cache Configuration Decision Map
+
+[![Cache Configuration Decision Map](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-cache-diagram-02.png)](../../assets/readme-diagrams/exposed-cache-diagram-02.svg)
+
+_Release README: [`exposed/cache/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/cache/README.md)_
+
+### Write Strategy Patterns diagram
+
+[![Write Strategy Patterns diagram](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-cache-sequence-01.png)](../../assets/readme-diagrams/exposed-cache-sequence-01.svg)
+
+_Release README: [`exposed/cache/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/cache/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

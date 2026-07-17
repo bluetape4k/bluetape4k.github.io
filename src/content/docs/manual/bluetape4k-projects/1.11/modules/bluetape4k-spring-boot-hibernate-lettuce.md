@@ -10,7 +10,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "spring"
   kind: "library"
-  sourceCommit: "e1463bff0f864add7c54b7188f492cfe36336cdd"
+  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
   sourcePath: "docs/manual/en/modules/bluetape4k-spring-boot-hibernate-lettuce.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -180,3 +180,22 @@ Only two gauges are provided: active region count and total local entry count. R
 - [`LettuceNearCacheMetricsBinder.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/spring-boot/hibernate-lettuce/src/main/kotlin/io/bluetape4k/spring/boot/autoconfigure/cache/lettuce/LettuceNearCacheMetricsBinder.kt)
 - [`LettuceNearCacheAutoConfigurationTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/spring-boot/hibernate-lettuce/src/test/kotlin/io/bluetape4k/spring/boot/autoconfigure/cache/lettuce/LettuceNearCacheAutoConfigurationTest.kt)
 - [`LettuceNearCacheIntegrationTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/spring-boot/hibernate-lettuce/src/test/kotlin/io/bluetape4k/spring/boot/autoconfigure/cache/lettuce/LettuceNearCacheIntegrationTest.kt)
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Spring Boot Hibernate Lettuce class structure diagram
+
+[![Spring Boot Hibernate Lettuce class structure diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/spring-boot-hibernate-lettuce-diagram-01.png)](../../assets/readme-diagrams/spring-boot-hibernate-lettuce-diagram-01.svg)
+
+_Release README: [`spring-boot/hibernate-lettuce/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/spring-boot/hibernate-lettuce/README.md)_
+
+### Spring Boot Hibernate Lettuce auto-configuration flow diagram
+
+[![Spring Boot Hibernate Lettuce auto-configuration flow diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/spring-boot-hibernate-lettuce-diagram-02.png)](../../assets/readme-diagrams/spring-boot-hibernate-lettuce-diagram-02.svg)
+
+_Release README: [`spring-boot/hibernate-lettuce/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/spring-boot/hibernate-lettuce/README.md)_
+
+<!-- release-readme-diagrams:end -->

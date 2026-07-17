@@ -10,7 +10,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "infrastructure"
   kind: "library"
-  sourceCommit: "e1463bff0f864add7c54b7188f492cfe36336cdd"
+  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
   sourcePath: "docs/manual/en/modules/bluetape4k-redis.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -133,6 +133,25 @@ There is no umbrella-specific workshop. Use `LettuceClientsTest` and `RedisFutur
 This manual follows `infra/redis/build.gradle.kts` at the `bluetape4k-projects` 1.11.0 release commit. The umbrella supplies both submodule artifacts. It does not supply a common facade, automatic client selection, Spring configuration, a cache provider, or integration tests.
 
 The README command for `:bluetape4k-redis:test` shows how to run a Gradle task; it does not mean that the umbrella contains test code. Changes made to submodules after 1.11.0 are not described as release behavior here.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Module Dependency Structure diagram
+
+[![Module Dependency Structure diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/infra-redis-diagram-01.png)](../../assets/readme-diagrams/infra-redis-diagram-01.svg)
+
+_Release README: [`infra/redis/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/infra/redis/README.md)_
+
+### Exported API Surface diagram
+
+[![Exported API Surface diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/infra-redis-diagram-02.png)](../../assets/readme-diagrams/infra-redis-diagram-02.svg)
+
+_Release README: [`infra/redis/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/infra/redis/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources and links
 

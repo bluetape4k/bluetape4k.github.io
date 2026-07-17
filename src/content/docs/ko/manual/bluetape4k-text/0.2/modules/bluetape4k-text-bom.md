@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-text"
   group: "foundation"
   kind: "library"
-  sourceCommit: "bf802d7362ac221690043fddd3a3da433af02bed"
+  sourceCommit: "1d28940432ea5dc3e8f608577682f76b357e4f7e"
   sourcePath: "docs/manual/ko/modules/bluetape4k-text-bom.md"
   minorVersion: "0.2"
   releaseRef: "0.2.1"
@@ -67,3 +67,16 @@ BOM은 호환 좌표를 정렬하지만 런타임 조합이 맞는지는 검사�
 
 - [BOM README](https://github.com/bluetape4k/bluetape4k-text/blob/0.2.1/bom/README.md)
 - [BOM 빌드](https://github.com/bluetape4k/bluetape4k-text/blob/0.2.1/bom/build.gradle.kts)
+
+<!-- release-readme-diagrams:start -->
+## 배포본 다이어그램
+
+아래 그림은 현재 개발 브랜치가 아니라 `0.2.1` 배포 태그의 README 자산을 바이트 단위로 그대로 옮긴 것입니다. 따라서 이후 SNAPSHOT 변경이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 SVG 원본이 열립니다.
+
+### bom 아키텍처
+
+[![bom 아키텍처](/manual-assets/bluetape4k-text/0.2/readme-diagrams/bom-architecture-01.png)](../../assets/readme-diagrams/bom-architecture-01.svg)
+
+_배포본 README: [`bom/README.ko.md`](https://github.com/bluetape4k/bluetape4k-text/blob/2db7671afad20045afdcb5793c0113b8b23b972b/bom/README.ko.md)_
+
+<!-- release-readme-diagrams:end -->

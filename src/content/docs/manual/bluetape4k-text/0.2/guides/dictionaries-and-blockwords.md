@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-text"
   group: "overview"
   kind: "guide"
-  sourceCommit: "bf802d7362ac221690043fddd3a3da433af02bed"
+  sourceCommit: "1d28940432ea5dc3e8f608577682f76b357e4f7e"
   sourcePath: "docs/manual/en/guides/dictionaries-and-blockwords.md"
   minorVersion: "0.2"
   releaseRef: "0.2.1"

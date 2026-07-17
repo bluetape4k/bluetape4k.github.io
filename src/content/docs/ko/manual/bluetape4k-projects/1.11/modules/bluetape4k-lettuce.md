@@ -10,7 +10,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "infrastructure"
   kind: "library"
-  sourceCommit: "e1463bff0f864add7c54b7188f492cfe36336cdd"
+  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
   sourcePath: "docs/manual/ko/modules/bluetape4k-lettuce.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -131,3 +131,28 @@ connection 수와 reconnect, command latency, pipeline batch 크기, write-behin
 - [`RedisScript.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/script/RedisScript.kt)
 - [`LettuceClientsTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/LettuceClientsTest.kt)
 - [`LettuceSuspendedLoadedMapTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/map/LettuceSuspendedLoadedMapTest.kt)
+
+<!-- release-readme-diagrams:start -->
+## 배포본 다이어그램
+
+아래 그림은 현재 개발 브랜치가 아니라 `1.11.0` 배포 태그의 README 자산을 바이트 단위로 그대로 옮긴 것입니다. 따라서 이후 SNAPSHOT 변경이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 SVG 원본이 열립니다.
+
+### 분산 Primitive API 패밀리 다이어그램
+
+[![분산 Primitive API 패밀리 다이어그램](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/infra-lettuce-diagram-01.png)](../../assets/readme-diagrams/infra-lettuce-diagram-01.svg)
+
+_배포본 README: [`infra/lettuce/README.ko.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/infra/lettuce/README.ko.md)_
+
+### Lettuce Codec API 구조 다이어그램
+
+[![Lettuce Codec API 구조 다이어그램](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/infra-lettuce-diagram-02.png)](../../assets/readme-diagrams/infra-lettuce-diagram-02.svg)
+
+_배포본 README: [`infra/lettuce/README.ko.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/infra/lettuce/README.ko.md)_
+
+### LettuceLoadedMap Read-Through / Write-Through 흐름 다이어그램
+
+[![LettuceLoadedMap Read-Through / Write-Through 흐름 다이어그램](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/infra-lettuce-sequence-01.png)](../../assets/readme-diagrams/infra-lettuce-sequence-01.svg)
+
+_배포본 README: [`infra/lettuce/README.ko.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/infra/lettuce/README.ko.md)_
+
+<!-- release-readme-diagrams:end -->

@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-leader"
   group: "backends"
   kind: "library"
-  sourceCommit: "27627f5cf430ef2640d5847ecfeef914ea935c4c"
+  sourceCommit: "dba8da7f095bd73aa5fb595b3b0741dcffd0e494"
   sourcePath: "docs/manual/en/modules/bluetape4k-leader-hazelcast.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -94,6 +94,31 @@ Run cache-warmer, then compare the in-memory distributed model with Redis and Mo
 ## Limitations
 
 Hazelcast availability and split-brain policy become election dependencies. TTL ownership is not an external fencing token.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.4.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### leader-hazelcast implementation structure diagram
+
+[![leader-hazelcast implementation structure diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/leader-hazelcast-class-01.png)](../../assets/readme-diagrams/leader-hazelcast-class-01.svg)
+
+_Release README: [`leader-hazelcast/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/leader-hazelcast/README.md)_
+
+### Lock acquire/release sequence diagram
+
+[![Lock acquire/release sequence diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/leader-hazelcast-sequence-02.png)](../../assets/readme-diagrams/leader-hazelcast-sequence-02.svg)
+
+_Release README: [`leader-hazelcast/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/leader-hazelcast/README.md)_
+
+### Group election slot sequence (maxLeaders = N) diagram
+
+[![Group election slot sequence (maxLeaders = N) diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/leader-hazelcast-sequence-03.png)](../../assets/readme-diagrams/leader-hazelcast-sequence-03.svg)
+
+_Release README: [`leader-hazelcast/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/leader-hazelcast/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

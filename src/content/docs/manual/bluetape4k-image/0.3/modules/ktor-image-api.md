@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-image"
   group: "workshops"
   kind: "example"
-  sourceCommit: "471a5f364520923911dc31d91be5179a6985337e"
+  sourceCommit: "4f32b77dff190acb79534b67b34f9056843ebeeb"
   sourcePath: "docs/manual/en/modules/ktor-image-api.md"
   minorVersion: "0.3"
   releaseRef: "0.3.0"
@@ -110,6 +110,31 @@ The release test verifies readiness, a decodable PNG CAPTCHA, a thumbnail whose 
 ## Limitations
 
 This is intentionally local-only: no persistence, public URL, S3/CDN policy, authentication, distributed CAPTCHA state, or native acceleration is included.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.3.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Ktor Image API Architecture
+
+[![Ktor Image API Architecture](/manual-assets/bluetape4k-image/0.3/readme-diagrams/examples-ktor-image-api-architecture-01.png)](../../assets/readme-diagrams/examples-ktor-image-api-architecture-01.svg)
+
+_Release README: [`examples/ktor-image-api/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/examples/ktor-image-api/README.md)_
+
+### Ktor Image API Scenario
+
+[![Ktor Image API Scenario](/manual-assets/bluetape4k-image/0.3/readme-diagrams/examples-ktor-image-api-scenario-01.png)](../../assets/readme-diagrams/examples-ktor-image-api-scenario-01.svg)
+
+_Release README: [`examples/ktor-image-api/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/examples/ktor-image-api/README.md)_
+
+### Ktor Image API Sequence
+
+[![Ktor Image API Sequence](/manual-assets/bluetape4k-image/0.3/readme-diagrams/examples-ktor-image-api-sequence-01.png)](../../assets/readme-diagrams/examples-ktor-image-api-sequence-01.svg)
+
+_Release README: [`examples/ktor-image-api/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/examples/ktor-image-api/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 
