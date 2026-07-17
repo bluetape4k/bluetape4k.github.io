@@ -10,7 +10,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "spring"
   kind: "library"
-  sourceCommit: "e1463bff0f864add7c54b7188f492cfe36336cdd"
+  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
   sourcePath: "docs/manual/en/modules/bluetape4k-spring-boot-r2dbc.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -161,6 +161,37 @@ Continue to the [Exposed R2DBC Workshop](https://github.com/bluetape4k/exposed-r
 This manual targets the `bluetape4k-projects` 1.11.0 release source. Despite `spring-boot` in the module name, it has no separate auto-configuration, conditions, property binding, or pool management. It does not generate `R2dbcRepository` implementations or extend Spring Data repository interfaces.
 
 The API depends on reified types and Spring Data entity mapping. Use `bluetape4k-r2dbc` or Spring `DatabaseClient` for raw SQL, batching, detailed generated-key control, or custom row mapping.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Core Class Structure diagram
+
+[![Core Class Structure diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/spring-boot-r2dbc-diagram-01.png)](../../assets/readme-diagrams/spring-boot-r2dbc-diagram-01.svg)
+
+_Release README: [`spring-boot/r2dbc/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/spring-boot/r2dbc/README.md)_
+
+### R2DBC + Coroutines Data Flow diagram
+
+[![R2DBC + Coroutines Data Flow diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/spring-boot-r2dbc-diagram-02.png)](../../assets/readme-diagrams/spring-boot-r2dbc-diagram-02.svg)
+
+_Release README: [`spring-boot/r2dbc/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/spring-boot/r2dbc/README.md)_
+
+### CRUD Operation Hierarchy diagram
+
+[![CRUD Operation Hierarchy diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/spring-boot-r2dbc-diagram-03.png)](../../assets/readme-diagrams/spring-boot-r2dbc-diagram-03.svg)
+
+_Release README: [`spring-boot/r2dbc/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/spring-boot/r2dbc/README.md)_
+
+### Coroutine Conversion Sequence diagram
+
+[![Coroutine Conversion Sequence diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/spring-boot-r2dbc-sequence-01.png)](../../assets/readme-diagrams/spring-boot-r2dbc-sequence-01.svg)
+
+_Release README: [`spring-boot/r2dbc/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/spring-boot/r2dbc/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources and tests
 

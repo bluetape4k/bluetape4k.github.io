@@ -10,7 +10,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "e1463bff0f864add7c54b7188f492cfe36336cdd"
+  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
   sourcePath: "docs/manual/en/modules/bluetape4k-coroutines.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -196,6 +196,109 @@ Repository examples use these APIs through higher-level Ktor and Spring modules.
 ## Limitations
 
 Custom Flow operators do not remove the need to understand cold versus hot streams, buffering, and cancellation. Subject-like APIs can hide ownership if exposed globally. Virtual-thread bridges depend on the selected JDK implementation and should not be assumed to improve every CPU-bound workload.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Module Overview diagram
+
+[![Module Overview diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/bluetape4k-coroutines-diagram-01.png)](../../assets/readme-diagrams/bluetape4k-coroutines-diagram-01.svg)
+
+_Release README: [`bluetape4k/coroutines/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/bluetape4k/coroutines/README.md)_
+
+### Coroutines Class Structure diagram
+
+[![Coroutines Class Structure diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/bluetape4k-coroutines-diagram-02.png)](../../assets/readme-diagrams/bluetape4k-coroutines-diagram-02.svg)
+
+_Release README: [`bluetape4k/coroutines/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/bluetape4k/coroutines/README.md)_
+
+### 1. Flow Extension Categories diagram
+
+[![1. Flow Extension Categories diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/bluetape4k-coroutines-diagram-03.png)](../../assets/readme-diagrams/bluetape4k-coroutines-diagram-03.svg)
+
+_Release README: [`bluetape4k/coroutines/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/bluetape4k/coroutines/README.md)_
+
+### DeferredValue Usage Flow diagram
+
+[![DeferredValue Usage Flow diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/bluetape4k-coroutines-sequence-01.png)](../../assets/readme-diagrams/bluetape4k-coroutines-sequence-01.svg)
+
+_Release README: [`bluetape4k/coroutines/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/bluetape4k/coroutines/README.md)_
+
+### 2. chunked(n) — Fixed-Size Chunks diagram
+
+[![2. chunked(n) — Fixed-Size Chunks diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/bluetape4k-coroutines-sequence-02.png)](../../assets/readme-diagrams/bluetape4k-coroutines-sequence-02.svg)
+
+_Release README: [`bluetape4k/coroutines/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/bluetape4k/coroutines/README.md)_
+
+### 3. windowed(size, step) — Sliding Window diagram
+
+[![3. windowed(size, step) — Sliding Window diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/bluetape4k-coroutines-sequence-03.png)](../../assets/readme-diagrams/bluetape4k-coroutines-sequence-03.svg)
+
+_Release README: [`bluetape4k/coroutines/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/bluetape4k/coroutines/README.md)_
+
+### 4. sliding(n) / bufferedSliding(n) — One-Step Sliding Window diagram
+
+[![4. sliding(n) / bufferedSliding(n) — One-Step Sliding Window diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/bluetape4k-coroutines-sequence-04.png)](../../assets/readme-diagrams/bluetape4k-coroutines-sequence-04.svg)
+
+_Release README: [`bluetape4k/coroutines/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/bluetape4k/coroutines/README.md)_
+
+### 5. mapParallel(parallelism) — Parallel Transformation diagram
+
+[![5. mapParallel(parallelism) — Parallel Transformation diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/bluetape4k-coroutines-sequence-05.png)](../../assets/readme-diagrams/bluetape4k-coroutines-sequence-05.svg)
+
+_Release README: [`bluetape4k/coroutines/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/bluetape4k/coroutines/README.md)_
+
+### 6. concatMapEager { } — Order-Preserving Eager Parallel Collection diagram
+
+[![6. concatMapEager { } — Order-Preserving Eager Parallel Collection diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/bluetape4k-coroutines-sequence-06.png)](../../assets/readme-diagrams/bluetape4k-coroutines-sequence-06.svg)
+
+_Release README: [`bluetape4k/coroutines/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/bluetape4k/coroutines/README.md)_
+
+### 7. bufferingDebounce(timeout) — Debounced Batching diagram
+
+[![7. bufferingDebounce(timeout) — Debounced Batching diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/bluetape4k-coroutines-sequence-07.png)](../../assets/readme-diagrams/bluetape4k-coroutines-sequence-07.svg)
+
+_Release README: [`bluetape4k/coroutines/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/bluetape4k/coroutines/README.md)_
+
+### 8. throttleLeading / throttleTrailing / throttleBoth — Throttle Windows diagram
+
+[![8. throttleLeading / throttleTrailing / throttleBoth — Throttle Windows diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/bluetape4k-coroutines-sequence-08.png)](../../assets/readme-diagrams/bluetape4k-coroutines-sequence-08.svg)
+
+_Release README: [`bluetape4k/coroutines/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/bluetape4k/coroutines/README.md)_
+
+### 9. takeUntil(notifier) / skipUntil(notifier) — Gate Control diagram
+
+[![9. takeUntil(notifier) / skipUntil(notifier) — Gate Control diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/bluetape4k-coroutines-sequence-09.png)](../../assets/readme-diagrams/bluetape4k-coroutines-sequence-09.svg)
+
+_Release README: [`bluetape4k/coroutines/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/bluetape4k/coroutines/README.md)_
+
+### 10. merge(flows) — Unordered Merge diagram
+
+[![10. merge(flows) — Unordered Merge diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/bluetape4k-coroutines-sequence-10.png)](../../assets/readme-diagrams/bluetape4k-coroutines-sequence-10.svg)
+
+_Release README: [`bluetape4k/coroutines/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/bluetape4k/coroutines/README.md)_
+
+### 11. pairwise() / zipWithNext() — Adjacent Pairs diagram
+
+[![11. pairwise() / zipWithNext() — Adjacent Pairs diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/bluetape4k-coroutines-sequence-11.png)](../../assets/readme-diagrams/bluetape4k-coroutines-sequence-11.svg)
+
+_Release README: [`bluetape4k/coroutines/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/bluetape4k/coroutines/README.md)_
+
+### 12. scanWith(initial) { } — Lazy Scan Seed diagram
+
+[![12. scanWith(initial) { } — Lazy Scan Seed diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/bluetape4k-coroutines-sequence-12.png)](../../assets/readme-diagrams/bluetape4k-coroutines-sequence-12.svg)
+
+_Release README: [`bluetape4k/coroutines/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/bluetape4k/coroutines/README.md)_
+
+### 13. AsyncFlow — Ordered Async Results diagram
+
+[![13. AsyncFlow — Ordered Async Results diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/bluetape4k-coroutines-sequence-13.png)](../../assets/readme-diagrams/bluetape4k-coroutines-sequence-13.svg)
+
+_Release README: [`bluetape4k/coroutines/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/bluetape4k/coroutines/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

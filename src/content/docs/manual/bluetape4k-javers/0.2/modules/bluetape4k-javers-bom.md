@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-javers"
   group: "foundation"
   kind: "library"
-  sourceCommit: "37423566ffd4f389ce3e85c573ed8348bbeaff2c"
+  sourceCommit: "6130ed5b22458c4e5d63e58f44460d06b1e9c07a"
   sourcePath: "docs/manual/en/modules/bluetape4k-javers-bom.md"
   minorVersion: "0.2"
   releaseRef: "0.2.1"
@@ -17,6 +17,12 @@ manual:
 
 
 `bluetape4k-javers-bom` aligns the five published library artifacts from this repository. Most applications should import one `bluetape4k-dependencies` ecosystem version instead; use this narrower BOM only when the application deliberately manages compatibility with the rest of bluetape4k.
+
+## Released dependency structure
+
+This diagram is copied from release `0.2.1` and shows the BOM structure for the version documented here.
+
+[![bluetape4k-javers 0.2.1 BOM structure](/manual-assets/bluetape4k-javers/0.2/readme-diagrams/bom-architecture-01.png)](../../assets/readme-diagrams/bom-architecture-01.svg)
 
 ## Coordinate and selection
 

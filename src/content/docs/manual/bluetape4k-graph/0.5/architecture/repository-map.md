@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-graph"
   group: "overview"
   kind: "guide"
-  sourceCommit: "2d9d09279f4b8a138dd46e3a3ffaf07699f7cfa0"
+  sourceCommit: "c72de9d93ffcd3254f42c35f4cef5a5830062ed3"
   sourcePath: "docs/manual/en/architecture/repository-map.md"
   minorVersion: "0.5"
   releaseRef: "0.5.1"
@@ -42,3 +42,34 @@ rg -n 'fun shortestPath' graph/graph-core graph/graph-neo4j graph/graph-memgraph
 ```
 
 Expected: the contract appears in core, backend implementations or fallbacks supply behavior, and the domain example asserts a concrete path. If core passes but the example fails, inspect schema/data setup. If only one backend fails, inspect its query translation and capability test. If all implementations pass but an application route fails, move outward to framework lifetime and resource ownership.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.5.1` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### graph Architecture diagram
+
+[![graph Architecture diagram](/manual-assets/bluetape4k-graph/0.5/readme-diagrams/bluetape4k-graph-architecture-01.png)](../../assets/readme-diagrams/bluetape4k-graph-architecture-01.svg)
+
+_Release README: [`README.md`](https://github.com/bluetape4k/bluetape4k-graph/blob/3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907/README.md)_
+
+### graph Class Structure 2 diagram
+
+[![graph Class Structure 2 diagram](/manual-assets/bluetape4k-graph/0.5/readme-diagrams/bluetape4k-graph-class-02.png)](../../assets/readme-diagrams/bluetape4k-graph-class-02.svg)
+
+_Release README: [`README.md`](https://github.com/bluetape4k/bluetape4k-graph/blob/3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907/README.md)_
+
+### Backend capability matrix
+
+[![Backend capability matrix](/manual-assets/bluetape4k-graph/0.5/readme-diagrams/root-readme-backend-capability-matrix-01.png)](../../assets/readme-diagrams/root-readme-backend-capability-matrix-01.svg)
+
+_Release README: [`README.md`](https://github.com/bluetape4k/bluetape4k-graph/blob/3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907/README.md)_
+
+### Bluetape4k Graph overview diagram
+
+[![Bluetape4k Graph overview diagram](/manual-assets/bluetape4k-graph/0.5/readme-diagrams/root-readme-overview-01.png)](../../assets/readme-diagrams/root-readme-overview-01.svg)
+
+_Release README: [`README.md`](https://github.com/bluetape4k/bluetape4k-graph/blob/3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907/README.md)_
+
+<!-- release-readme-diagrams:end -->

@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-graph"
   group: "benchmarks"
   kind: "benchmark"
-  sourceCommit: "2d9d09279f4b8a138dd46e3a3ffaf07699f7cfa0"
+  sourceCommit: "c72de9d93ffcd3254f42c35f4cef5a5830062ed3"
   sourcePath: "docs/manual/en/benchmarks/graph-io.md"
   minorVersion: "0.5"
   releaseRef: "0.5.1"
@@ -36,3 +36,16 @@ The committed [2026-04-18 result](https://github.com/bluetape4k/bluetape4k-graph
 Run three full trials, retain JSON, and compare intervals. Warmups and forks address JVM state but not filesystem cache, antivirus, compression, or disk contention. Trial teardown removes temporary directories; after interruption, inspect the module build directory and OS temporary space before rerunning.
 
 If import counts differ, treat it as correctness failure before reading latency. If JSON is absent, inspect the first failing benchmark and teardown log. This workload does not prove remote-driver throughput, encrypted production storage, huge graphs, memory ceilings, or crash recovery. Read [graph-io execution model](/manual/bluetape4k-graph/0.5/graph-io/execution-model/) and [overview](/manual/bluetape4k-graph/0.5/benchmarks/overview/).
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.5.1` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### graph-io-benchmark Architecture diagram
+
+[![graph-io-benchmark Architecture diagram](/manual-assets/bluetape4k-graph/0.5/readme-diagrams/benchmark/graph-io-benchmark-architecture-01.png)](../../assets/readme-diagrams/benchmark/graph-io-benchmark-architecture-01.svg)
+
+_Release README: [`benchmark/graph-io-benchmark/README.md`](https://github.com/bluetape4k/bluetape4k-graph/blob/3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907/benchmark/graph-io-benchmark/README.md)_
+
+<!-- release-readme-diagrams:end -->

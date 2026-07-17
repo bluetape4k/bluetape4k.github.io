@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "example"
   kind: "example"
-  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
+  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
   sourcePath: "docs/manual/en/modules/examples-exposed-bigquery-dry-run.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -105,6 +105,19 @@ Continue with the [BigQuery adapter](/manual/bluetape4k-exposed/1.11/modules/blu
 ## Limitations
 
 The mock proves request construction only. It does not prove IAM, project or dataset existence, regional compatibility, quota, actual byte estimates, result correctness, live paging, or production cost controls.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### BigQuery dry-run example flow
+
+[![BigQuery dry-run example flow](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/examples-exposed-bigquery-dry-run-flow-01.png)](../../assets/readme-diagrams/examples-exposed-bigquery-dry-run-flow-01.svg)
+
+_Release README: [`examples/exposed-bigquery-dry-run/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/examples/exposed-bigquery-dry-run/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

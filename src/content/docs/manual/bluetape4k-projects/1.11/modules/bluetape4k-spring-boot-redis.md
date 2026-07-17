@@ -10,7 +10,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "spring"
   kind: "library"
-  sourceCommit: "e1463bff0f864add7c54b7188f492cfe36336cdd"
+  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
   sourcePath: "docs/manual/en/modules/bluetape4k-spring-boot-redis.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -156,6 +156,25 @@ For near-cache or distributed memoizer exercises, continue to the cache-lettuce 
 This manual targets release commit `6187173b58e8b4c5c435c145e00e94708f31ef75`. The production API consists of four Kotlin source files containing serializer and context helpers.
 
 Auto-configuration, customizers, properties, health indicators, metrics, client wrappers, and cache implementations are outside the 1.11.0 module. “Spring Boot 4” identifies its dependency line; it does not imply an auto-configuration module.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Redis Serializer Class Structure diagram
+
+[![Redis Serializer Class Structure diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/spring-boot-redis-diagram-01.png)](../../assets/readme-diagrams/spring-boot-redis-diagram-01.svg)
+
+_Release README: [`spring-boot/redis/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/spring-boot/redis/README.md)_
+
+### ReactiveRedisTemplate Serialization Flow diagram
+
+[![ReactiveRedisTemplate Serialization Flow diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/spring-boot-redis-diagram-02.png)](../../assets/readme-diagrams/spring-boot-redis-diagram-02.svg)
+
+_Release README: [`spring-boot/redis/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/spring-boot/redis/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources and tests
 

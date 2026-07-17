@@ -10,7 +10,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "e1463bff0f864add7c54b7188f492cfe36336cdd"
+  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
   sourcePath: "docs/manual/en/modules/bluetape4k-logging.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -123,6 +123,31 @@ Logging is not tracing, audit storage, or durable event delivery. MDC cannot fol
 ## Contract boundary
 
 The manual promotes only behavior verified in current source and representative tests: naming, lazy evaluation, fallback messages, MDC restore/remove, the coroutine bridge, and channel close behavior. README timing examples are not controlled benchmarks and are not library guarantees.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Logging class structure for KLogging, KotlinLogging, MDC helpers, and async channel logging
+
+[![Logging class structure for KLogging, KotlinLogging, MDC helpers, and async channel logging](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/bluetape4k-logging-diagram-01.png)](../../assets/readme-diagrams/bluetape4k-logging-diagram-01.svg)
+
+_Release README: [`bluetape4k/logging/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/bluetape4k/logging/README.md)_
+
+### Logging processing flow for level guards, lazy message suppliers, MDC context, and SLF4J emission
+
+[![Logging processing flow for level guards, lazy message suppliers, MDC context, and SLF4J emission](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/bluetape4k-logging-diagram-02.png)](../../assets/readme-diagrams/bluetape4k-logging-diagram-02.svg)
+
+_Release README: [`bluetape4k/logging/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/bluetape4k/logging/README.md)_
+
+### KLoggingChannel async logging sequence with SharedFlow buffering and background collector emission
+
+[![KLoggingChannel async logging sequence with SharedFlow buffering and background collector emission](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/bluetape4k-logging-sequence-01.png)](../../assets/readme-diagrams/bluetape4k-logging-sequence-01.svg)
+
+_Release README: [`bluetape4k/logging/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/bluetape4k/logging/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

@@ -4,7 +4,7 @@
   "schema": 1,
   "versions": [
     {
-      "authoringSourceRef": "e1463bff0f864add7c54b7188f492cfe36336cdd",
+      "authoringSourceRef": "e89bf724fd018af8c2ab4564a5c9a007fe27b46a",
       "channel": "stable",
       "documents": {
         "en": [
@@ -521,7 +521,7 @@
       "minorVersion": "1.11",
       "releaseCommit": "6187173b58e8b4c5c435c145e00e94708f31ef75",
       "releaseRef": "1.11.0",
-      "sourceCommit": "e1463bff0f864add7c54b7188f492cfe36336cdd"
+      "sourceCommit": "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
     }
   ]
 }

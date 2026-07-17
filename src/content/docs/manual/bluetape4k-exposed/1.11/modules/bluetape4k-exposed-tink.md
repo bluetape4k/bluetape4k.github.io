@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "serialization"
   kind: "library"
-  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
+  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
   sourcePath: "docs/manual/en/modules/bluetape4k-exposed-tink.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -119,6 +119,25 @@ Read the [serialization and encryption guide](/manual/bluetape4k-exposed/1.11/gu
 ## Limitations
 
 This is field encryption, not a key-management system, authorization layer, searchable-encryption scheme, or database-wide encryption replacement. It supports equality only through deterministic encryption; range, prefix, ordering, and substring queries are not preserved. Key loss is not recoverable by this module.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Tink encrypted column boundary diagram
+
+[![Tink encrypted column boundary diagram](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-tink-diagram-01.png)](../../assets/readme-diagrams/exposed-tink-diagram-01.svg)
+
+_Release README: [`exposed/tink/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/tink/README.md)_
+
+### AEAD and DAEAD behavior flow diagram
+
+[![AEAD and DAEAD behavior flow diagram](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-tink-diagram-02.png)](../../assets/readme-diagrams/exposed-tink-diagram-02.svg)
+
+_Release README: [`exposed/tink/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/tink/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

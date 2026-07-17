@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-aws"
   group: "example-s3"
   kind: "example"
-  sourceCommit: "a64a49d44060154ec4371de9f7818168b75a6a67"
+  sourceCommit: "6b25d4663a87099fc94ced293eb7ca024420edc7"
   sourcePath: "docs/manual/en/modules/aws-spring-boot-s3-examples.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -85,6 +85,19 @@ Compare the Ktor S3 workshop for direct SigV4 HTTP behavior, then add service-sp
 ## Limitations
 
 The deterministic KMS helper does not prove AWS KMS permissions or ciphertext behavior. The example does not benchmark large transfers, multipart recovery, versioned deletion, or bucket policy.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.4.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### aws spring boot s3 examples Architecture diagram
+
+[![aws spring boot s3 examples Architecture diagram](/manual-assets/bluetape4k-aws/0.4/readme-diagrams/examples-aws-spring-boot-s3-examples-architecture-01.png)](../../assets/readme-diagrams/examples-aws-spring-boot-s3-examples-architecture-01.svg)
+
+_Release README: [`examples/aws-spring-boot-s3-examples/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/examples/aws-spring-boot-s3-examples/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

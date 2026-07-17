@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-image"
   group: "capabilities"
   kind: "library"
-  sourceCommit: "471a5f364520923911dc31d91be5179a6985337e"
+  sourceCommit: "4f32b77dff190acb79534b67b34f9056843ebeeb"
   sourcePath: "docs/manual/en/modules/bluetape4k-images-captcha.md"
   minorVersion: "0.3"
   releaseRef: "0.3.0"
@@ -109,6 +109,19 @@ Start with generation and local one-shot verification, then move the store to sh
 ## Limitations
 
 The in-memory store is not distributed or durable and performs no background expiry cleanup. The module does not provide throttling, identity binding, accessibility alternatives, or a security guarantee against modern vision models.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.3.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### CAPTCHA challenge preview
+
+[![CAPTCHA challenge preview](/manual-assets/bluetape4k-image/0.3/readme-diagrams/images-captcha-example-01.png)](../../assets/readme-diagrams/images-captcha-example-01.svg)
+
+_Release README: [`images-captcha/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/images-captcha/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

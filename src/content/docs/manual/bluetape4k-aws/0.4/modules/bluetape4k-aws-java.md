@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-aws"
   group: "foundation"
   kind: "library"
-  sourceCommit: "a64a49d44060154ec4371de9f7818168b75a6a67"
+  sourceCommit: "6b25d4663a87099fc94ced293eb7ca024420edc7"
   sourcePath: "docs/manual/en/modules/bluetape4k-aws-java.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -98,6 +98,31 @@ Read `client-lifecycle`, then `sync-async-coroutines`, then `service-patterns`; 
 ## Limitations
 
 The artifact does not bring every AWS service SDK at runtime. Coroutine helpers do not turn synchronous clients into non-blocking clients.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.4.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### AWS Java architecture diagram
+
+[![AWS Java architecture diagram](/manual-assets/bluetape4k-aws/0.4/readme-diagrams/aws-java-architecture-01.png)](../../assets/readme-diagrams/aws-java-architecture-01.svg)
+
+_Release README: [`aws-java/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/aws-java/README.md)_
+
+### AWS Java operation flow diagram
+
+[![AWS Java operation flow diagram](/manual-assets/bluetape4k-aws/0.4/readme-diagrams/aws-java-flow-02.png)](../../assets/readme-diagrams/aws-java-flow-02.svg)
+
+_Release README: [`aws-java/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/aws-java/README.md)_
+
+### AWS Java coroutine sequence diagram
+
+[![AWS Java coroutine sequence diagram](/manual-assets/bluetape4k-aws/0.4/readme-diagrams/aws-java-sequence-03.png)](../../assets/readme-diagrams/aws-java-sequence-03.svg)
+
+_Release README: [`aws-java/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/aws-java/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

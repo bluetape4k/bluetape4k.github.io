@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "e1463bff0f864add7c54b7188f492cfe36336cdd"
+  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
   sourcePath: "docs/manual/en/modules/bluetape4k-core/concurrency-lifecycle.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"

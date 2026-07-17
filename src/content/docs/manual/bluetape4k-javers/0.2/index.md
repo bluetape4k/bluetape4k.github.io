@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-javers"
   group: "overview"
   kind: "guide"
-  sourceCommit: "37423566ffd4f389ce3e85c573ed8348bbeaff2c"
+  sourceCommit: "6130ed5b22458c4e5d63e58f44460d06b1e9c07a"
   sourcePath: "docs/manual/en/index.md"
   minorVersion: "0.2"
   releaseRef: "0.2.1"
@@ -28,6 +28,14 @@ Object auditing becomes difficult when application state, audit history, and que
 - **Runnable learning and comparison:** The [Exposed DDD example](/manual/bluetape4k-javers/0.2/examples/javers-exposed-ddd/) and [JaVers/Exposed DDD/Envers comparison](/manual/bluetape4k-javers/0.2/benchmarks/exposed-ddd-envers/) connect the abstractions to code and measured evidence.
 
 The manual is pinned to release `0.2.1` (`bffe19439ca891fa5301a76421bdef7ba75252a0`). Ktor integration, Spring Boot 4 auto-configuration and examples, and the dedicated Gradle benchmark module were added after that release. They are not 0.2 features.
+
+## Release overview
+
+This repository overview is copied from the `0.2.1` release. It shows only the structure available to users of this manual; newer Snapshot modules and relationships are intentionally excluded.
+
+[![bluetape4k-javers 0.2.1 repository overview](/manual-assets/bluetape4k-javers/0.2/readme-diagrams/root-readme-overview-01.png)](../assets/readme-diagrams/root-readme-overview-01.svg)
+
+## Learning map
 
 [![Repository learning map](/manual-assets/bluetape4k-javers/0.2/overview/repository-learning-map.png)](../assets/overview/repository-learning-map.svg)
 

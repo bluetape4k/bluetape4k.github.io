@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-aws"
   group: "database"
   kind: "library"
-  sourceCommit: "a64a49d44060154ec4371de9f7818168b75a6a67"
+  sourceCommit: "6b25d4663a87099fc94ced293eb7ca024420edc7"
   sourcePath: "docs/manual/en/modules/bluetape4k-aws-exposed.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -98,6 +98,31 @@ Follow `database-settings`, `rds-iam-and-hikari`, and `transaction-boundaries`, 
 ## Limitations
 
 This module resolves and owns infrastructure; it does not design Exposed tables or move blocking JDBC work off coroutine threads automatically.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.4.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### AWS Exposed architecture diagram
+
+[![AWS Exposed architecture diagram](/manual-assets/bluetape4k-aws/0.4/readme-diagrams/aws-exposed-architecture-01.png)](../../assets/readme-diagrams/aws-exposed-architecture-01.svg)
+
+_Release README: [`aws-exposed/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/aws-exposed/README.md)_
+
+### AWS Exposed configuration flow diagram
+
+[![AWS Exposed configuration flow diagram](/manual-assets/bluetape4k-aws/0.4/readme-diagrams/aws-exposed-flow-02.png)](../../assets/readme-diagrams/aws-exposed-flow-02.svg)
+
+_Release README: [`aws-exposed/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/aws-exposed/README.md)_
+
+### AWS Exposed database handle sequence diagram
+
+[![AWS Exposed database handle sequence diagram](/manual-assets/bluetape4k-aws/0.4/readme-diagrams/aws-exposed-sequence-03.png)](../../assets/readme-diagrams/aws-exposed-sequence-03.svg)
+
+_Release README: [`aws-exposed/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/aws-exposed/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

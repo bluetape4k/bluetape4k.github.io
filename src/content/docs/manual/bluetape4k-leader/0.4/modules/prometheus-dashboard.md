@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-leader"
   group: "workshops"
   kind: "example"
-  sourceCommit: "27627f5cf430ef2640d5847ecfeef914ea935c4c"
+  sourceCommit: "dba8da7f095bd73aa5fb595b3b0741dcffd0e494"
   sourcePath: "docs/manual/en/modules/prometheus-dashboard.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -139,6 +139,37 @@ After this workshop, compare the backend manual with the core execution-model an
 `leader_aop_active` is JVM-local; use `max by (lock_name)` across replicas instead of summing it. Metrics diagnose coordination but do not prove business-side idempotency.
 
 The demo favors a compact, observable scenario. It does not define production topology, credential rotation, capacity planning, disaster recovery, or a universal exactly-once guarantee.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.4.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### prometheus dashboard Architecture diagram
+
+[![prometheus dashboard Architecture diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/examples-prometheus-dashboard-architecture-01.png)](../../assets/readme-diagrams/examples-prometheus-dashboard-architecture-01.svg)
+
+_Release README: [`examples/prometheus-dashboard/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/examples/prometheus-dashboard/README.md)_
+
+### Prometheus dashboard flow diagram
+
+[![Prometheus dashboard flow diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/examples-prometheus-dashboard-flow-01.png)](../../assets/readme-diagrams/examples-prometheus-dashboard-flow-01.svg)
+
+_Release README: [`examples/prometheus-dashboard/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/examples/prometheus-dashboard/README.md)_
+
+### Prometheus dashboard scenario diagram
+
+[![Prometheus dashboard scenario diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/examples-prometheus-dashboard-scenario-01.png)](../../assets/readme-diagrams/examples-prometheus-dashboard-scenario-01.svg)
+
+_Release README: [`examples/prometheus-dashboard/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/examples/prometheus-dashboard/README.md)_
+
+### prometheus dashboard Sequence Flow diagram
+
+[![prometheus dashboard Sequence Flow diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/examples-prometheus-dashboard-sequence-01.png)](../../assets/readme-diagrams/examples-prometheus-dashboard-sequence-01.svg)
+
+_Release README: [`examples/prometheus-dashboard/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/examples/prometheus-dashboard/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

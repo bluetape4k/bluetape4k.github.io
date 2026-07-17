@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-image"
   group: "workshops"
   kind: "example"
-  sourceCommit: "471a5f364520923911dc31d91be5179a6985337e"
+  sourceCommit: "4f32b77dff190acb79534b67b34f9056843ebeeb"
   sourcePath: "docs/manual/en/modules/ktor-ocr-api.md"
   minorVersion: "0.3"
   releaseRef: "0.3.0"
@@ -112,6 +112,31 @@ Ktor `testApplication` verifies language parsing and tessdata propagation, wrong
 ## Limitations
 
 The workshop does not include authentication, persistence, batch OCR, preprocessing policy, queues, or distributed admission control. OCR quality and supported languages depend on the host installation.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.3.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Ktor OCR API Architecture
+
+[![Ktor OCR API Architecture](/manual-assets/bluetape4k-image/0.3/readme-diagrams/examples-ktor-ocr-api-architecture-01.png)](../../assets/readme-diagrams/examples-ktor-ocr-api-architecture-01.svg)
+
+_Release README: [`examples/ktor-ocr-api/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/examples/ktor-ocr-api/README.md)_
+
+### Ktor OCR API Scenario
+
+[![Ktor OCR API Scenario](/manual-assets/bluetape4k-image/0.3/readme-diagrams/examples-ktor-ocr-api-scenario-01.png)](../../assets/readme-diagrams/examples-ktor-ocr-api-scenario-01.svg)
+
+_Release README: [`examples/ktor-ocr-api/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/examples/ktor-ocr-api/README.md)_
+
+### Ktor OCR API Sequence
+
+[![Ktor OCR API Sequence](/manual-assets/bluetape4k-image/0.3/readme-diagrams/examples-ktor-ocr-api-sequence-01.png)](../../assets/readme-diagrams/examples-ktor-ocr-api-sequence-01.svg)
+
+_Release README: [`examples/ktor-ocr-api/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/examples/ktor-ocr-api/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

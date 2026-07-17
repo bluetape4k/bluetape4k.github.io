@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "foundation"
   kind: "library"
-  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
+  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
   sourcePath: "docs/manual/en/modules/bluetape4k-exposed-dao.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -97,6 +97,37 @@ Read [Mapping conventions](/manual/bluetape4k-exposed/1.11/modules/bluetape4k-ex
 ## Limitations
 
 This module does not make DAO entities detached, reactive, or safe outside a transaction. It does not own transaction creation.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### AuditableEntity UML Class Diagram
+
+[![AuditableEntity UML Class Diagram](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-dao-diagram-01.png)](../../assets/readme-diagrams/exposed-dao-diagram-01.svg)
+
+_Release README: [`exposed/dao/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/dao/README.md)_
+
+### Generated-ID DAO Support Matrix
+
+[![Generated-ID DAO Support Matrix](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-dao-diagram-02.png)](../../assets/readme-diagrams/exposed-dao-diagram-02.svg)
+
+_Release README: [`exposed/dao/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/dao/README.md)_
+
+### Entity Helper Pairing Map
+
+[![Entity Helper Pairing Map](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-dao-diagram-03.png)](../../assets/readme-diagrams/exposed-dao-diagram-03.svg)
+
+_Release README: [`exposed/dao/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/dao/README.md)_
+
+### Automatic field assignment diagram
+
+[![Automatic field assignment diagram](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-dao-sequence-01.png)](../../assets/readme-diagrams/exposed-dao-sequence-01.svg)
+
+_Release README: [`exposed/dao/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/dao/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

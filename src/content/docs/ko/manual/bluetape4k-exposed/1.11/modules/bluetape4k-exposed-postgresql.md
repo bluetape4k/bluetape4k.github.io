@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "database"
   kind: "library"
-  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
+  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
   sourcePath: "docs/manual/ko/modules/bluetape4k-exposed-postgresql.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -106,3 +106,22 @@ extension 누락, 차원·SRID 불일치, vector 미등록, index 누락은 시�
 - [PostGIS 확장](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.11.0/exposed/postgresql/src/main/kotlin/io/bluetape4k/exposed/postgresql/postgis/GeoExtensions.kt)
 - [`tstzrange` 확장](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.11.0/exposed/postgresql/src/main/kotlin/io/bluetape4k/exposed/postgresql/tsrange/TstzRangeExtensions.kt)
 - [Vector 테스트](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.11.0/exposed/postgresql/src/test/kotlin/io/bluetape4k/exposed/postgresql/pgvector/VectorColumnTypeTest.kt)
+
+<!-- release-readme-diagrams:start -->
+## 배포본 다이어그램
+
+아래 그림은 현재 개발 브랜치가 아니라 `1.11.0` 배포 태그의 README 자산을 바이트 단위로 그대로 옮긴 것입니다. 따라서 이후 SNAPSHOT 변경이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 SVG 원본이 열립니다.
+
+### PostgreSQL extension feature coverage
+
+[![PostgreSQL extension feature coverage](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-postgresql-diagram-01.png)](../../assets/readme-diagrams/exposed-postgresql-diagram-01.svg)
+
+_배포본 README: [`exposed/postgresql/README.ko.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/postgresql/README.ko.md)_
+
+### PostgreSQL column conversion 흐름
+
+[![PostgreSQL column conversion 흐름](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-postgresql-diagram-02.png)](../../assets/readme-diagrams/exposed-postgresql-diagram-02.svg)
+
+_배포본 README: [`exposed/postgresql/README.ko.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/postgresql/README.ko.md)_
+
+<!-- release-readme-diagrams:end -->

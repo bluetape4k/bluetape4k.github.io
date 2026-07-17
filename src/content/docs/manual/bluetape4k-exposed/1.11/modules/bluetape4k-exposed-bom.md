@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "foundation"
   kind: "library"
-  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
+  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
   sourcePath: "docs/manual/en/modules/bluetape4k-exposed-bom.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -97,6 +97,19 @@ Continue with [Getting started](/manual/bluetape4k-exposed/1.11/getting-started/
 ## Limitations
 
 The BOM cannot guarantee behavioral compatibility with an independently overridden Exposed, Kotlin, driver, or framework version. It also does not select JDBC over R2DBC.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Exposed BOM managed artifact map
+
+[![Exposed BOM managed artifact map](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-bom-diagram-01.png)](../../assets/readme-diagrams/exposed-bom-diagram-01.svg)
+
+_Release README: [`exposed/bom/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/bom/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

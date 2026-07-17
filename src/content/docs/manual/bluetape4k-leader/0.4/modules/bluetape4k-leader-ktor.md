@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-leader"
   group: "frameworks"
   kind: "library"
-  sourceCommit: "27627f5cf430ef2640d5847ecfeef914ea935c4c"
+  sourceCommit: "dba8da7f095bd73aa5fb595b3b0741dcffd0e494"
   sourcePath: "docs/manual/en/modules/bluetape4k-leader-ktor.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -95,6 +95,25 @@ Run ktor-app, then follow the chosen backend page. Compare with Spring when deci
 ## Limitations
 
 The integration schedules jobs; it does not provide durable scheduling, missed-run recovery, cron persistence, or exactly-once delivery.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.4.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### leader ktor Architecture diagram
+
+[![leader ktor Architecture diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/leader-ktor-architecture-01.png)](../../assets/readme-diagrams/leader-ktor-architecture-01.svg)
+
+_Release README: [`leader-ktor/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/leader-ktor/README.md)_
+
+### leader ktor Sequence Flow diagram
+
+[![leader ktor Sequence Flow diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/leader-ktor-sequence-01.png)](../../assets/readme-diagrams/leader-ktor-sequence-01.svg)
+
+_Release README: [`leader-ktor/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/leader-ktor/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

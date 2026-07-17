@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-leader"
   group: "foundation"
   kind: "library"
-  sourceCommit: "27627f5cf430ef2640d5847ecfeef914ea935c4c"
+  sourceCommit: "dba8da7f095bd73aa5fb595b3b0741dcffd0e494"
   sourcePath: "docs/manual/en/modules/bluetape4k-leader-core.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -93,6 +93,31 @@ Read the lifecycle and model-selection guides, then run batch-scheduler and stra
 ## Limitations
 
 Local electors coordinate only one JVM. A distributed lease cannot roll back external side effects; use idempotency or fencing where duplicates are unsafe.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.4.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### leader-core API contract map
+
+[![leader-core API contract map](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/leader-core-class-01.png)](../../assets/readme-diagrams/leader-core-class-01.svg)
+
+_Release README: [`leader-core/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/leader-core/README.md)_
+
+### Single-leader runIfLeader flow
+
+[![Single-leader runIfLeader flow](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/leader-core-sequence-02.png)](../../assets/readme-diagrams/leader-core-sequence-02.svg)
+
+_Release README: [`leader-core/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/leader-core/README.md)_
+
+### Group-leader slot flow
+
+[![Group-leader slot flow](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/leader-core-sequence-03.png)](../../assets/readme-diagrams/leader-core-sequence-03.svg)
+
+_Release README: [`leader-core/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/leader-core/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

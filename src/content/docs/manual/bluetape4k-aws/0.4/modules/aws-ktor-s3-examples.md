@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-aws"
   group: "example-s3"
   kind: "example"
-  sourceCommit: "a64a49d44060154ec4371de9f7818168b75a6a67"
+  sourceCommit: "6b25d4663a87099fc94ced293eb7ca024420edc7"
   sourcePath: "docs/manual/en/modules/aws-ktor-s3-examples.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -85,6 +85,19 @@ Continue to the Spring Boot S3 workshop for auto-configured SDK operations and T
 ## Limitations
 
 MockEngine tests do not prove S3 IAM, network behavior, multipart recovery, bucket policy, KMS integration, or production throughput.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.4.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### aws ktor s3 examples Architecture diagram
+
+[![aws ktor s3 examples Architecture diagram](/manual-assets/bluetape4k-aws/0.4/readme-diagrams/examples-aws-ktor-s3-examples-architecture-01.png)](../../assets/readme-diagrams/examples-aws-ktor-s3-examples-architecture-01.svg)
+
+_Release README: [`examples/aws-ktor-s3-examples/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/examples/aws-ktor-s3-examples/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

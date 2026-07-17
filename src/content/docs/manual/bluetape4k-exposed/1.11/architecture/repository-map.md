@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "overview"
   kind: "guide"
-  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
+  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
   sourcePath: "docs/manual/en/architecture/repository-map.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -35,3 +35,22 @@ A database adapter does not replace JDBC or R2DBC; it adds dialect or backend-sp
 ## Release scope
 
 This map contains only modules present in tag `1.11.0`. Develop-only modules stay out until a later stable minor establishes a new manual baseline. Use the [module manual](/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-bom/) for the exact project inventory and source locations.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Bluetape4k Exposed module composition diagram
+
+[![Bluetape4k Exposed module composition diagram](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/root-readme-module-relationships-01.png)](../../assets/readme-diagrams/root-readme-module-relationships-01.svg)
+
+_Release README: [`README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/README.md)_
+
+### Bluetape4k Exposed overview diagram
+
+[![Bluetape4k Exposed overview diagram](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/root-readme-overview-01.png)](../../assets/readme-diagrams/root-readme-overview-01.svg)
+
+_Release README: [`README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/README.md)_
+
+<!-- release-readme-diagrams:end -->

@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-graph"
   group: "benchmarks"
   kind: "benchmark"
-  sourceCommit: "2d9d09279f4b8a138dd46e3a3ffaf07699f7cfa0"
+  sourceCommit: "c72de9d93ffcd3254f42c35f4cef5a5830062ed3"
   sourcePath: "docs/manual/en/benchmarks/graph-operations.md"
   minorVersion: "0.5"
   releaseRef: "0.5.1"
@@ -35,3 +35,16 @@ The representative committed source is [2026-05-21 domain workload JSON](https:/
 Repeat the command at least three times on an idle machine, retain raw JSON, and inspect score error/intervals. Warmup reduces JIT effects; forks isolate JVM state; neither removes container, GC, filesystem, or thermal variance. Benchmark state teardown closes graph operations, drivers/pools, and containers; after interruption, verify no benchmark container remains before rerunning.
 
 A missing JSON report means the benchmark task or teardown failed. A timeout should be preserved as failure evidence, not converted into a numeric score. This benchmark does not prove cluster failover, durability, production indexes, authorization, or cost. See [overview](/manual/bluetape4k-graph/0.5/benchmarks/overview/) and [benchmark-based selection](/manual/bluetape4k-graph/0.5/guides/benchmark-based-selection/).
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.5.1` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### graph-benchmark Architecture diagram
+
+[![graph-benchmark Architecture diagram](/manual-assets/bluetape4k-graph/0.5/readme-diagrams/benchmark/graph-benchmark-architecture-01.png)](../../assets/readme-diagrams/benchmark/graph-benchmark-architecture-01.svg)
+
+_Release README: [`benchmark/graph-benchmark/README.md`](https://github.com/bluetape4k/bluetape4k-graph/blob/3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907/benchmark/graph-benchmark/README.md)_
+
+<!-- release-readme-diagrams:end -->

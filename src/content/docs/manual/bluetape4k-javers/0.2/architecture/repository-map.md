@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-javers"
   group: "overview"
   kind: "guide"
-  sourceCommit: "37423566ffd4f389ce3e85c573ed8348bbeaff2c"
+  sourceCommit: "6130ed5b22458c4e5d63e58f44460d06b1e9c07a"
   sourcePath: "docs/manual/en/architecture/repository-map.md"
   minorVersion: "0.2"
   releaseRef: "0.2.1"
@@ -17,6 +17,12 @@ manual:
 
 
 `bluetape4k-javers` owns JaVers audit and history semantics. It does not replace the application repository that owns current business state. Keeping those responsibilities separate makes recovery questions answerable.
+
+## Released architecture
+
+The following architecture is the original `0.2.1` release diagram. It is kept separate from the current README diagram because the Snapshot line has continued to evolve.
+
+[![bluetape4k-javers 0.2.1 architecture](/manual-assets/bluetape4k-javers/0.2/readme-diagrams/bluetape4k-javers-architecture-01.png)](../../assets/readme-diagrams/bluetape4k-javers-architecture-01.svg)
 
 | Release module | Responsibility | Not its job |
 | --- | --- | --- |

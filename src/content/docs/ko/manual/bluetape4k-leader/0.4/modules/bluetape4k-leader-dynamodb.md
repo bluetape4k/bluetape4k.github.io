@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-leader"
   group: "backends"
   kind: "library"
-  sourceCommit: "27627f5cf430ef2640d5847ecfeef914ea935c4c"
+  sourceCommit: "dba8da7f095bd73aa5fb595b3b0741dcffd0e494"
   sourcePath: "docs/manual/ko/modules/bluetape4k-leader-dynamodb.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -96,6 +96,25 @@ dynamodb-export 예제를 실행하고 AWS 운영 모델을 Redis 또는 SQL 백
 ## 제약 사항
 
 프리뷰이며 TTL 정리가 즉시 실행되지 않습니다. Cross-region 조율과 global table 충돌은 이 계약의 범위 밖입니다.
+
+<!-- release-readme-diagrams:start -->
+## 배포본 다이어그램
+
+아래 그림은 현재 개발 브랜치가 아니라 `0.4.0` 배포 태그의 README 자산을 바이트 단위로 그대로 옮긴 것입니다. 따라서 이후 SNAPSHOT 변경이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 SVG 원본이 열립니다.
+
+### leader-dynamodb 아키텍처
+
+[![leader-dynamodb 아키텍처](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/leader-dynamodb-architecture-01.png)](../../assets/readme-diagrams/leader-dynamodb-architecture-01.svg)
+
+_배포본 README: [`leader-dynamodb/README.ko.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/leader-dynamodb/README.ko.md)_
+
+### leader-dynamodb conditional lease 처리 순서
+
+[![leader-dynamodb conditional lease 처리 순서](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/leader-dynamodb-sequence-02.png)](../../assets/readme-diagrams/leader-dynamodb-sequence-02.svg)
+
+_배포본 README: [`leader-dynamodb/README.ko.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/leader-dynamodb/README.ko.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## 근거 자료
 

@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-graph"
   group: "foundation"
   kind: "library"
-  sourceCommit: "2d9d09279f4b8a138dd46e3a3ffaf07699f7cfa0"
+  sourceCommit: "c72de9d93ffcd3254f42c35f4cef5a5830062ed3"
   sourcePath: "docs/manual/en/modules/bluetape4k-graph-bom.md"
   minorVersion: "0.5"
   releaseRef: "0.5.1"
@@ -83,3 +83,16 @@ Expected: the release test or build completes with the ownership and capability 
 ## Non-goals and related guides
 
 See [repository map](/manual/bluetape4k-graph/0.5/architecture/repository-map/), [getting started](/manual/bluetape4k-graph/0.5/getting-started/), and the page for each selected module. This page does not recommend a standalone graph version, document backend APIs, or promise compatibility for examples and benchmark projects.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.5.1` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### bom Architecture diagram
+
+[![bom Architecture diagram](/manual-assets/bluetape4k-graph/0.5/readme-diagrams/bom-architecture-01.png)](../../assets/readme-diagrams/bom-architecture-01.svg)
+
+_Release README: [`bom/README.md`](https://github.com/bluetape4k/bluetape4k-graph/blob/3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907/bom/README.md)_
+
+<!-- release-readme-diagrams:end -->

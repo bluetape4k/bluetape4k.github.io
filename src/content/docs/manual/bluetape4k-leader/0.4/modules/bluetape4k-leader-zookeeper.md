@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-leader"
   group: "backends"
   kind: "library"
-  sourceCommit: "27627f5cf430ef2640d5847ecfeef914ea935c4c"
+  sourceCommit: "dba8da7f095bd73aa5fb595b3b0741dcffd0e494"
   sourcePath: "docs/manual/en/modules/bluetape4k-leader-zookeeper.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -92,6 +92,19 @@ Run zookeeper-scheduler, then compare session-bound ownership with TTL-based Red
 ## Limitations
 
 No fixed TTL guarantees release at `leaseTime`; session timeout controls it. ZooKeeper ownership does not fence an external side effect.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.4.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### leader zookeeper Class Structure diagram
+
+[![leader zookeeper Class Structure diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/leader-zookeeper-class-01.png)](../../assets/readme-diagrams/leader-zookeeper-class-01.svg)
+
+_Release README: [`leader-zookeeper/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/leader-zookeeper/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

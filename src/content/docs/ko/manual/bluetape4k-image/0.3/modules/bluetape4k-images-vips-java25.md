@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-image"
   group: "native"
   kind: "library"
-  sourceCommit: "471a5f364520923911dc31d91be5179a6985337e"
+  sourceCommit: "4f32b77dff190acb79534b67b34f9056843ebeeb"
   sourcePath: "docs/manual/ko/modules/bluetape4k-images-vips-java25.md"
   minorVersion: "0.3"
   releaseRef: "0.3.0"
@@ -99,6 +99,25 @@ Java 25에서 `./gradlew :bluetape4k-images-vips-java25:test`를 실행합니다
 ## 제약 사항
 
 파생 이미지는 루트 arena를 공유하므로 루트보다 오래 살 수 없습니다. `Path`가 아닌 입력은 50MiB 제한 안에서 버퍼링합니다. AVIF/HEIC enum이 있다는 사실만으로 호스트 코덱 지원을 보장하지 않으며 Java 21 JVM에서는 실행할 수 없습니다.
+
+<!-- release-readme-diagrams:start -->
+## 배포본 다이어그램
+
+아래 그림은 현재 개발 브랜치가 아니라 `0.3.0` 배포 태그의 README 자산을 바이트 단위로 그대로 옮긴 것입니다. 따라서 이후 SNAPSHOT 변경이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 SVG 원본이 열립니다.
+
+### Performance vs scrimage 다이어그램
+
+[![Performance vs scrimage 다이어그램](/manual-assets/bluetape4k-image/0.3/readme-diagrams/images-vips-java25-architecture-02.png)](../../assets/readme-diagrams/images-vips-java25-architecture-02.svg)
+
+_배포본 README: [`images-vips-java25/README.ko.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/images-vips-java25/README.ko.md)_
+
+### images vips java25 클래스 구조도
+
+[![images vips java25 클래스 구조도](/manual-assets/bluetape4k-image/0.3/readme-diagrams/images-vips-java25-class-01.png)](../../assets/readme-diagrams/images-vips-java25-class-01.svg)
+
+_배포본 README: [`images-vips-java25/README.ko.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/images-vips-java25/README.ko.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## 근거 자료
 

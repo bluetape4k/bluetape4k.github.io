@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "example"
   kind: "example"
-  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
+  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
   sourcePath: "docs/manual/en/modules/exposed-spring-boot-jdbc-demo.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -149,6 +149,25 @@ Follow the code in this order: `ExposedConfig` → `ProductEntity` → `ProductJ
 ## Limitations
 
 The demo uses one in-memory database, startup schema adjustment, controller-owned Exposed transactions, and no authentication. It is not a production migration strategy, connection-pool sizing guide, or proof that every Spring Data derived-query keyword is supported.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Spring Boot JDBC demo structure diagram
+
+[![Spring Boot JDBC demo structure diagram](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/spring-boot-exposed-jdbc-demo-diagram-01.png)](../../assets/readme-diagrams/spring-boot-exposed-jdbc-demo-diagram-01.svg)
+
+_Release README: [`examples/jdbc-demo/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/examples/jdbc-demo/README.md)_
+
+### Spring Boot JDBC demo request transaction flow diagram
+
+[![Spring Boot JDBC demo request transaction flow diagram](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/spring-boot-exposed-jdbc-demo-diagram-02.png)](../../assets/readme-diagrams/spring-boot-exposed-jdbc-demo-diagram-02.svg)
+
+_Release README: [`examples/jdbc-demo/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/examples/jdbc-demo/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

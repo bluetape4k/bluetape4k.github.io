@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-leader"
   group: "overview"
   kind: "guide"
-  sourceCommit: "27627f5cf430ef2640d5847ecfeef914ea935c4c"
+  sourceCommit: "dba8da7f095bd73aa5fb595b3b0741dcffd0e494"
   sourcePath: "docs/manual/en/architecture/repository-map.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -46,3 +46,34 @@ Release 0.4.0 marks core, Redis, Exposed, MongoDB, Hazelcast, ZooKeeper, framewo
 - [Bluetape4k Leader manual](/manual/bluetape4k-leader/0.4/)
 - [Learning path](/manual/bluetape4k-leader/0.4/guides/learning-path/)
 - [Choose a backend](/manual/bluetape4k-leader/0.4/guides/backend-selection/)
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.4.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Leader election runtime map
+
+[![Leader election runtime map](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/bluetape4k-leader-architecture-01.png)](../../assets/readme-diagrams/bluetape4k-leader-architecture-01.svg)
+
+_Release README: [`README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/README.md)_
+
+### How runIfLeader Works diagram
+
+[![How runIfLeader Works diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/bluetape4k-leader-sequence-02.png)](../../assets/readme-diagrams/bluetape4k-leader-sequence-02.svg)
+
+_Release README: [`README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/README.md)_
+
+### Multi-leader group: slot-based semaphore diagram
+
+[![Multi-leader group: slot-based semaphore diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/bluetape4k-leader-sequence-03.png)](../../assets/readme-diagrams/bluetape4k-leader-sequence-03.svg)
+
+_Release README: [`README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/README.md)_
+
+### Bluetape4k Leader overview diagram
+
+[![Bluetape4k Leader overview diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/root-readme-overview-01.png)](../../assets/readme-diagrams/root-readme-overview-01.svg)
+
+_Release README: [`README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/README.md)_
+
+<!-- release-readme-diagrams:end -->

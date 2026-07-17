@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-aws"
   group: "example-messaging"
   kind: "example"
-  sourceCommit: "a64a49d44060154ec4371de9f7818168b75a6a67"
+  sourceCommit: "6b25d4663a87099fc94ced293eb7ca024420edc7"
   sourcePath: "docs/manual/en/modules/aws-ktor-sqs-examples.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -85,6 +85,19 @@ Continue to the Spring Boot SQS/SNS workshop for annotations, typed payloads, fa
 ## Limitations
 
 The in-memory received-message store is for inspection only. The workshop does not prove production throughput, native redrive policy behavior, IAM, tracing export, or exactly-once processing.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.4.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### aws ktor sqs examples Architecture diagram
+
+[![aws ktor sqs examples Architecture diagram](/manual-assets/bluetape4k-aws/0.4/readme-diagrams/examples-aws-ktor-sqs-examples-architecture-01.png)](../../assets/readme-diagrams/examples-aws-ktor-sqs-examples-architecture-01.svg)
+
+_Release README: [`examples/aws-ktor-sqs-examples/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/be4e6daea5654f84579955307ec56a58c8f405be/examples/aws-ktor-sqs-examples/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

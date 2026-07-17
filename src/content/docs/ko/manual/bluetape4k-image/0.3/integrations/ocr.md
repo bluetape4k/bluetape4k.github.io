@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-image"
   group: "overview"
   kind: "guide"
-  sourceCommit: "471a5f364520923911dc31d91be5179a6985337e"
+  sourceCommit: "4f32b77dff190acb79534b67b34f9056843ebeeb"
   sourcePath: "docs/manual/ko/integrations/ocr.md"
   minorVersion: "0.3"
   releaseRef: "0.3.0"

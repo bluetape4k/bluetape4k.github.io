@@ -10,7 +10,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "e1463bff0f864add7c54b7188f492cfe36336cdd"
+  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
   sourcePath: "docs/manual/ko/modules/bluetape4k-bom.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -110,6 +110,19 @@ monitoring할 runtime component는 없습니다. 운영 작업은 dependency gov
 ## 제한 사항
 
 BOM은 버전을 정렬하지만 각 모듈이 애플리케이션의 framework, JDK, database, native-image 조건에 맞는지 보장하지 않습니다. demo와 example은 게시 library가 아니므로 의도적으로 제외됩니다.
+
+<!-- release-readme-diagrams:start -->
+## 배포본 다이어그램
+
+아래 그림은 현재 개발 브랜치가 아니라 `1.11.0` 배포 태그의 README 자산을 바이트 단위로 그대로 옮긴 것입니다. 따라서 이후 SNAPSHOT 변경이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 SVG 원본이 열립니다.
+
+### bluetape4k-bom platform constraints 다이어그램
+
+[![bluetape4k-bom platform constraints 다이어그램](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/bluetape4k-bom-diagram-01.png)](../../assets/readme-diagrams/bluetape4k-bom-diagram-01.svg)
+
+_배포본 README: [`bluetape4k/bom/README.ko.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/bluetape4k/bom/README.ko.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## 근거
 

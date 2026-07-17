@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "r2dbc"
   kind: "library"
-  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
+  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
   sourcePath: "docs/manual/ko/modules/bluetape4k-exposed-r2dbc-caffeine.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -117,3 +117,22 @@ repository.use { repo ->
 - [모듈 README](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.11.0/exposed/r2dbc-caffeine/README.md)
 - [추상 저장소](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.11.0/exposed/r2dbc-caffeine/src/main/kotlin/io/bluetape4k/exposed/r2dbc/caffeine/repository/AbstractR2dbcCaffeineRepository.kt)
 - [모듈 빌드](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.11.0/exposed/r2dbc-caffeine/build.gradle.kts)
+
+<!-- release-readme-diagrams:start -->
+## 배포본 다이어그램
+
+아래 그림은 현재 개발 브랜치가 아니라 `1.11.0` 배포 태그의 README 자산을 바이트 단위로 그대로 옮긴 것입니다. 따라서 이후 SNAPSHOT 변경이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 SVG 원본이 열립니다.
+
+### R2DBC Caffeine local cache 아키텍처
+
+[![R2DBC Caffeine local cache 아키텍처](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-r2dbc-caffeine-diagram-01.png)](../../assets/readme-diagrams/exposed-r2dbc-caffeine-diagram-01.svg)
+
+_배포본 README: [`exposed/r2dbc-caffeine/README.ko.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/r2dbc-caffeine/README.ko.md)_
+
+### R2DBC Caffeine cache 시퀀스 다이어그램
+
+[![R2DBC Caffeine cache 시퀀스 다이어그램](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-r2dbc-caffeine-sequence-01.png)](../../assets/readme-diagrams/exposed-r2dbc-caffeine-sequence-01.svg)
+
+_배포본 README: [`exposed/r2dbc-caffeine/README.ko.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/r2dbc-caffeine/README.ko.md)_
+
+<!-- release-readme-diagrams:end -->

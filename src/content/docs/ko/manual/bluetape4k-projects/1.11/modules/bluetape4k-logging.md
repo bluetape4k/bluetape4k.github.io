@@ -10,7 +10,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "foundation"
   kind: "library"
-  sourceCommit: "e1463bff0f864add7c54b7188f492cfe36336cdd"
+  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
   sourcePath: "docs/manual/ko/modules/bluetape4k-logging.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -129,3 +129,28 @@ Logging은 tracing, audit storage, durable event delivery가 아닙니다. MDC�
 - [모듈 source](https://github.com/bluetape4k/bluetape4k-projects/tree/1.11.0/bluetape4k/logging/src/main/kotlin/io/bluetape4k/logging)
 - [대표 테스트](https://github.com/bluetape4k/bluetape4k-projects/tree/1.11.0/bluetape4k/logging/src/test/kotlin/io/bluetape4k/logging)
 - [README](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/bluetape4k/logging/README.ko.md)
+
+<!-- release-readme-diagrams:start -->
+## 배포본 다이어그램
+
+아래 그림은 현재 개발 브랜치가 아니라 `1.11.0` 배포 태그의 README 자산을 바이트 단위로 그대로 옮긴 것입니다. 따라서 이후 SNAPSHOT 변경이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 SVG 원본이 열립니다.
+
+### KLogging, KotlinLogging, MDC 도우미, 비동기 채널 로깅의 클래스 구조
+
+[![KLogging, KotlinLogging, MDC 도우미, 비동기 채널 로깅의 클래스 구조](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/bluetape4k-logging-diagram-01.png)](../../assets/readme-diagrams/bluetape4k-logging-diagram-01.svg)
+
+_배포본 README: [`bluetape4k/logging/README.ko.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/bluetape4k/logging/README.ko.md)_
+
+### 레벨 가드, 지연 메시지 supplier, MDC 컨텍스트, SLF4J 출력으로 이어지는 로깅 처리 흐름
+
+[![레벨 가드, 지연 메시지 supplier, MDC 컨텍스트, SLF4J 출력으로 이어지는 로깅 처리 흐름](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/bluetape4k-logging-diagram-02.png)](../../assets/readme-diagrams/bluetape4k-logging-diagram-02.svg)
+
+_배포본 README: [`bluetape4k/logging/README.ko.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/bluetape4k/logging/README.ko.md)_
+
+### SharedFlow 버퍼와 백그라운드 collector로 로그 이벤트를 출력하는 KLoggingChannel 시퀀스
+
+[![SharedFlow 버퍼와 백그라운드 collector로 로그 이벤트를 출력하는 KLoggingChannel 시퀀스](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/bluetape4k-logging-sequence-01.png)](../../assets/readme-diagrams/bluetape4k-logging-sequence-01.svg)
+
+_배포본 README: [`bluetape4k/logging/README.ko.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/bluetape4k/logging/README.ko.md)_
+
+<!-- release-readme-diagrams:end -->

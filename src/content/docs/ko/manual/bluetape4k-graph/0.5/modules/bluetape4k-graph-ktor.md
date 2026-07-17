@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-graph"
   group: "frameworks"
   kind: "library"
-  sourceCommit: "2d9d09279f4b8a138dd46e3a3ffaf07699f7cfa0"
+  sourceCommit: "c72de9d93ffcd3254f42c35f4cef5a5830062ed3"
   sourcePath: "docs/manual/ko/modules/bluetape4k-graph-ktor.md"
   minorVersion: "0.5"
   releaseRef: "0.5.1"
@@ -90,3 +90,16 @@ install(GraphPlugin) {
 ## 하지 않는 일과 관련 문서
 
 [Ktor 연동](/ko/manual/bluetape4k-graph/0.5/frameworks/ktor/), [짝을 이루는 API](/ko/manual/bluetape4k-graph/0.5/architecture/paired-apis/), [운영](/ko/manual/bluetape4k-graph/0.5/guides/operations/)을 참고한다. 플러그인은 요청 트랜잭션을 만들거나 호출자 자원을 기본으로 닫지 않는다.
+
+<!-- release-readme-diagrams:start -->
+## 배포본 다이어그램
+
+아래 그림은 현재 개발 브랜치가 아니라 `0.5.1` 배포 태그의 README 자산을 바이트 단위로 그대로 옮긴 것입니다. 따라서 이후 SNAPSHOT 변경이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 SVG 원본이 열립니다.
+
+### Bluetape4k Graph ktor 아키텍처
+
+[![Bluetape4k Graph ktor 아키텍처](/manual-assets/bluetape4k-graph/0.5/readme-diagrams/ktor-graph-ktor-architecture-01.png)](../../assets/readme-diagrams/ktor-graph-ktor-architecture-01.svg)
+
+_배포본 README: [`ktor/graph-ktor/README.ko.md`](https://github.com/bluetape4k/bluetape4k-graph/blob/3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907/ktor/graph-ktor/README.ko.md)_
+
+<!-- release-readme-diagrams:end -->

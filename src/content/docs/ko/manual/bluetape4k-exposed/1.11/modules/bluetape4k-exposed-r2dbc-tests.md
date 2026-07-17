@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "r2dbc"
   kind: "library"
-  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
+  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
   sourcePath: "docs/manual/ko/modules/bluetape4k-exposed-r2dbc-tests.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -92,6 +92,25 @@ fixture가 닫힌 뒤 Flow를 collect하면 트랜잭션 문맥을 잃습니다.
 ## 제약 사항
 
 fixture가 특정 드라이버의 서버 작업 취소까지 보장하지는 않습니다. 운영 pool 부하를 재현하거나 장시간 복원력 테스트를 대신하지도 않습니다.
+
+<!-- release-readme-diagrams:start -->
+## 배포본 다이어그램
+
+아래 그림은 현재 개발 브랜치가 아니라 `1.11.0` 배포 태그의 README 자산을 바이트 단위로 그대로 옮긴 것입니다. 따라서 이후 SNAPSHOT 변경이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 SVG 원본이 열립니다.
+
+### R2DBC test support 아키텍처
+
+[![R2DBC test support 아키텍처](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-r2dbc-tests-diagram-01.png)](../../assets/readme-diagrams/exposed-r2dbc-tests-diagram-01.svg)
+
+_배포본 README: [`exposed/r2dbc-tests/README.ko.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/r2dbc-tests/README.ko.md)_
+
+### withTables R2DBC test 수명 주기 다이어그램
+
+[![withTables R2DBC test 수명 주기 다이어그램](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-r2dbc-tests-diagram-02.png)](../../assets/readme-diagrams/exposed-r2dbc-tests-diagram-02.svg)
+
+_배포본 README: [`exposed/r2dbc-tests/README.ko.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/r2dbc-tests/README.ko.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## 근거 자료
 

@@ -10,7 +10,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "data"
   kind: "library"
-  sourceCommit: "e1463bff0f864add7c54b7188f492cfe36336cdd"
+  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
   sourcePath: "docs/manual/en/modules/bluetape4k-cassandra.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -117,6 +117,31 @@ There is no module-specific workshop yet. The examples and source/test links ver
 ## 1.11.0 limitation
 
 In 1.11.0, `CqlSessionProvider` builds its keyspace-bootstrap admin session with `builderSupplier().build()`. The trailing builder block applies only to the final keyspace-bound session. Put contact point, local datacenter, authentication, and TLS settings required by both sessions in `builderSupplier`. This differs from the behavior introduced by PR #986 after 1.11.0.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Extension Function API Overview diagram
+
+[![Extension Function API Overview diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/data-cassandra-diagram-01.png)](../../assets/readme-diagrams/data-cassandra-diagram-01.svg)
+
+_Release README: [`data/cassandra/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/data/cassandra/README.md)_
+
+### Core API Structure diagram
+
+[![Core API Structure diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/data-cassandra-diagram-02.png)](../../assets/readme-diagrams/data-cassandra-diagram-02.svg)
+
+_Release README: [`data/cassandra/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/data/cassandra/README.md)_
+
+### Asynchronous Query Execution Flow diagram
+
+[![Asynchronous Query Execution Flow diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/data-cassandra-sequence-01.png)](../../assets/readme-diagrams/data-cassandra-sequence-01.svg)
+
+_Release README: [`data/cassandra/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/data/cassandra/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources and tests
 

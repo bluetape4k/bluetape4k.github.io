@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-image"
   group: "native"
   kind: "library"
-  sourceCommit: "471a5f364520923911dc31d91be5179a6985337e"
+  sourceCommit: "4f32b77dff190acb79534b67b34f9056843ebeeb"
   sourcePath: "docs/manual/en/modules/bluetape4k-images-vips-java21.md"
   minorVersion: "0.3"
   releaseRef: "0.3.0"
@@ -94,6 +94,25 @@ Start with the runtime/image tests on the deployment architecture, add a small e
 ## Limitations
 
 HEIC encoding is explicitly unsupported by this backend in `0.3.0`. AVIF and HEIF decoding/AVIF encoding still depend on host codec capability. Path loads read the complete compressed file after enforcing the 50 MiB bound.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.3.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### JVips Processing Pipeline diagram
+
+[![JVips Processing Pipeline diagram](/manual-assets/bluetape4k-image/0.3/readme-diagrams/images-vips-java21-architecture-01.png)](../../assets/readme-diagrams/images-vips-java21-architecture-01.svg)
+
+_Release README: [`images-vips-java21/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/images-vips-java21/README.md)_
+
+### images vips java21 Class Structure 2 diagram
+
+[![images vips java21 Class Structure 2 diagram](/manual-assets/bluetape4k-image/0.3/readme-diagrams/images-vips-java21-class-02.png)](../../assets/readme-diagrams/images-vips-java21-class-02.svg)
+
+_Release README: [`images-vips-java21/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/images-vips-java21/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

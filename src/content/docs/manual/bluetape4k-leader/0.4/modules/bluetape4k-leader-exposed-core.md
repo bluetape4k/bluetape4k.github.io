@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-leader"
   group: "backends"
   kind: "library"
-  sourceCommit: "27627f5cf430ef2640d5847ecfeef914ea935c4c"
+  sourceCommit: "dba8da7f095bd73aa5fb595b3b0741dcffd0e494"
   sourcePath: "docs/manual/en/modules/bluetape4k-leader-exposed-core.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -93,6 +93,19 @@ Read this before JDBC/R2DBC when migration ownership is separate. The migration-
 ## Limitations
 
 This is not a complete elector and selects no driver, pool, or transaction manager.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.4.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### leader exposed core ERD diagram
+
+[![leader exposed core ERD diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/leader-exposed-core-erd-01.png)](../../assets/readme-diagrams/leader-exposed-core-erd-01.svg)
+
+_Release README: [`leader-exposed-core/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/leader-exposed-core/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

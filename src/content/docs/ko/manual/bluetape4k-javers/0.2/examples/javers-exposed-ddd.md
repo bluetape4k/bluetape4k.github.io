@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-javers"
   group: "examples"
   kind: "example"
-  sourceCommit: "37423566ffd4f389ce3e85c573ed8348bbeaff2c"
+  sourceCommit: "6130ed5b22458c4e5d63e58f44460d06b1e9c07a"
   sourcePath: "docs/manual/ko/examples/javers-exposed-ddd.md"
   minorVersion: "0.2"
   releaseRef: "0.2.1"

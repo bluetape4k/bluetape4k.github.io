@@ -6,7 +6,7 @@ manual:
   repository: "bluetape4k-graph"
   group: "examples"
   kind: "example"
-  sourceCommit: "2d9d09279f4b8a138dd46e3a3ffaf07699f7cfa0"
+  sourceCommit: "c72de9d93ffcd3254f42c35f4cef5a5830062ed3"
   sourcePath: "docs/manual/en/examples/code-graph.md"
   minorVersion: "0.5"
   releaseRef: "0.5.1"
@@ -51,3 +51,28 @@ Continue [from ktor-graph](/manual/bluetape4k-graph/0.5/examples/ktor-graph/), t
 ## Exercises and production gaps
 
 Add one result-changing edge and assertion; repeat through the suspend API; then run a persistent-backend concrete test serially. Add disconnected and malformed inputs as diagnostics. This fixture does not prove throughput, clustering, authorization, tenant isolation, migration, backup, remote-driver timeout, or index quality.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.5.1` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### code graph examples architecture
+
+[![code graph examples architecture](/manual-assets/bluetape4k-graph/0.5/readme-diagrams/examples-code-graph-examples-architecture-01.png)](../../assets/readme-diagrams/examples-code-graph-examples-architecture-01.svg)
+
+_Release README: [`examples/code-graph-examples/README.md`](https://github.com/bluetape4k/bluetape4k-graph/blob/3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907/examples/code-graph-examples/README.md)_
+
+### code graph examples data flow
+
+[![code graph examples data flow](/manual-assets/bluetape4k-graph/0.5/readme-diagrams/examples-code-graph-examples-data-flow-03.png)](../../assets/readme-diagrams/examples-code-graph-examples-data-flow-03.svg)
+
+_Release README: [`examples/code-graph-examples/README.md`](https://github.com/bluetape4k/bluetape4k-graph/blob/3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907/examples/code-graph-examples/README.md)_
+
+### code graph examples ERD
+
+[![code graph examples ERD](/manual-assets/bluetape4k-graph/0.5/readme-diagrams/examples-code-graph-examples-erd-02.png)](../../assets/readme-diagrams/examples-code-graph-examples-erd-02.svg)
+
+_Release README: [`examples/code-graph-examples/README.md`](https://github.com/bluetape4k/bluetape4k-graph/blob/3e0fa7cb9e3bc70c2743aeebda2487f3e45e4907/examples/code-graph-examples/README.md)_
+
+<!-- release-readme-diagrams:end -->

@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-leader"
   group: "workshops"
   kind: "example"
-  sourceCommit: "27627f5cf430ef2640d5847ecfeef914ea935c4c"
+  sourceCommit: "dba8da7f095bd73aa5fb595b3b0741dcffd0e494"
   sourcePath: "docs/manual/en/modules/rate-limiter.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -139,6 +139,37 @@ After this workshop, compare the backend manual with the core execution-model an
 Winning leadership does not reserve rate-limit tokens. Workers must still handle rejection, retry policy, and back-pressure explicitly.
 
 The demo favors a compact, observable scenario. It does not define production topology, credential rotation, capacity planning, disaster recovery, or a universal exactly-once guarantee.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.4.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### rate limiter Architecture diagram
+
+[![rate limiter Architecture diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/examples-rate-limiter-architecture-01.png)](../../assets/readme-diagrams/examples-rate-limiter-architecture-01.svg)
+
+_Release README: [`examples/rate-limiter/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/examples/rate-limiter/README.md)_
+
+### Rate limiter flow diagram
+
+[![Rate limiter flow diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/examples-rate-limiter-flow-01.png)](../../assets/readme-diagrams/examples-rate-limiter-flow-01.svg)
+
+_Release README: [`examples/rate-limiter/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/examples/rate-limiter/README.md)_
+
+### Rate limiter scenario diagram
+
+[![Rate limiter scenario diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/examples-rate-limiter-scenario-01.png)](../../assets/readme-diagrams/examples-rate-limiter-scenario-01.svg)
+
+_Release README: [`examples/rate-limiter/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/examples/rate-limiter/README.md)_
+
+### rate limiter Sequence Flow diagram
+
+[![rate limiter Sequence Flow diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/examples-rate-limiter-sequence-01.png)](../../assets/readme-diagrams/examples-rate-limiter-sequence-01.svg)
+
+_Release README: [`examples/rate-limiter/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/examples/rate-limiter/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

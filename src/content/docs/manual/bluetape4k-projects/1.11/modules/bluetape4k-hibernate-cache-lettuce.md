@@ -10,7 +10,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "caching"
   kind: "library"
-  sourceCommit: "e1463bff0f864add7c54b7188f492cfe36336cdd"
+  sourceCommit: "e89bf724fd018af8c2ab4564a5c9a007fe27b46a"
   sourcePath: "docs/manual/en/modules/bluetape4k-hibernate-cache-lettuce.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -154,6 +154,31 @@ Compare broader cache-aside and read/write-through strategies in `bluetape4k-cac
 This manual targets the `bluetape4k-projects` 1.11.0 release source. The factory returns `NONSTRICT_READ_WRITE` by default, although an entity may request `READ_WRITE`. Prefer the default until distributed soft-lock overhead and eviction behavior have been measured.
 
 CLIENT TRACKING startup failure does not stop the factory. StorageAccess failures also do not fail the database transaction, so the cache must remain a rebuildable acceleration layer rather than a source of truth.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### Hibernate Lettuce Near Cache 2-Tier Structure diagram
+
+[![Hibernate Lettuce Near Cache 2-Tier Structure diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/cache-hibernate-cache-lettuce-diagram-01.png)](../../assets/readme-diagrams/cache-hibernate-cache-lettuce-diagram-01.svg)
+
+_Release README: [`cache/hibernate-cache-lettuce/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/cache/hibernate-cache-lettuce/README.md)_
+
+### Hibernate Lettuce Cache Layer Structure diagram
+
+[![Hibernate Lettuce Cache Layer Structure diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/cache-hibernate-cache-lettuce-diagram-02.png)](../../assets/readme-diagrams/cache-hibernate-cache-lettuce-diagram-02.svg)
+
+_Release README: [`cache/hibernate-cache-lettuce/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/cache/hibernate-cache-lettuce/README.md)_
+
+### getFromCache / putIntoCache Flow diagram
+
+[![getFromCache / putIntoCache Flow diagram](/manual-assets/bluetape4k-projects/1.11/readme-diagrams/cache-hibernate-cache-lettuce-sequence-01.png)](../../assets/readme-diagrams/cache-hibernate-cache-lettuce-sequence-01.svg)
+
+_Release README: [`cache/hibernate-cache-lettuce/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/6187173b58e8b4c5c435c145e00e94708f31ef75/cache/hibernate-cache-lettuce/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources and tests
 

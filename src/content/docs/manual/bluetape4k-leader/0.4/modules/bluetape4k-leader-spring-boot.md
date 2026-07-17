@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-leader"
   group: "frameworks"
   kind: "library"
-  sourceCommit: "27627f5cf430ef2640d5847ecfeef914ea935c4c"
+  sourceCommit: "dba8da7f095bd73aa5fb595b3b0741dcffd0e494"
   sourcePath: "docs/manual/en/modules/bluetape4k-leader-spring-boot.md"
   minorVersion: "0.4"
   releaseRef: "0.4.0"
@@ -94,6 +94,31 @@ Start with batch-scheduler, then webhook-poller and prometheus-dashboard. Read t
 ## Limitations
 
 AOP cannot make arbitrary side effects exactly once. Self/private invocation and long-lived streams require careful boundary testing; `FAIL_OPEN_RUN` permits duplicates by design.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `0.4.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### leader spring boot Architecture diagram
+
+[![leader spring boot Architecture diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/leader-spring-boot-architecture-01.png)](../../assets/readme-diagrams/leader-spring-boot-architecture-01.svg)
+
+_Release README: [`leader-spring-boot/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/leader-spring-boot/README.md)_
+
+### Sequence: AOP-triggered runIfLeader diagram
+
+[![Sequence: AOP-triggered runIfLeader diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/leader-spring-boot-sequence-01.png)](../../assets/readme-diagrams/leader-spring-boot-sequence-01.svg)
+
+_Release README: [`leader-spring-boot/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/leader-spring-boot/README.md)_
+
+### Sequence: reentrant @LeaderElection diagram
+
+[![Sequence: reentrant @LeaderElection diagram](/manual-assets/bluetape4k-leader/0.4/readme-diagrams/leader-spring-boot-sequence-02.png)](../../assets/readme-diagrams/leader-spring-boot-sequence-02.svg)
+
+_Release README: [`leader-spring-boot/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/17ab7f872c1f96318c73d3580729cac20a67e017/leader-spring-boot/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

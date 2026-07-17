@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-exposed"
   group: "database"
   kind: "library"
-  sourceCommit: "06bf8ce472aefbe925117901a971399cbee68a53"
+  sourceCommit: "803227f0f6aa061ddad6cb66721c565dee38f53c"
   sourcePath: "docs/manual/en/modules/bluetape4k-exposed-starrocks.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -104,6 +104,25 @@ Read the [database adapter matrix](/manual/bluetape4k-exposed/1.11/guides/databa
 ## Limitations
 
 Release 1.11 proves a narrow local AIO smoke scope. It does not promise full Connector/J, MySQL dialect, distributed transaction, batch ingestion, paging, or production DDL parity.
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are copied byte-for-byte from README assets in the `1.11.0` release tag. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG source.
+
+### StarRocks local OLAP integration boundary diagram
+
+[![StarRocks local OLAP integration boundary diagram](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-starrocks-diagram-01.png)](../../assets/readme-diagrams/exposed-starrocks-diagram-01.svg)
+
+_Release README: [`exposed/starrocks/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/starrocks/README.md)_
+
+### StarRocks local smoke lifecycle diagram
+
+[![StarRocks local smoke lifecycle diagram](/manual-assets/bluetape4k-exposed/1.11/readme-diagrams/exposed-starrocks-flow-02.png)](../../assets/readme-diagrams/exposed-starrocks-flow-02.svg)
+
+_Release README: [`exposed/starrocks/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/0b494a5fd1e083006046764757342b68a397e4c5/exposed/starrocks/README.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## Sources
 

@@ -14,7 +14,7 @@ manual:
   repository: "bluetape4k-image"
   group: "benchmarks"
   kind: "benchmark"
-  sourceCommit: "471a5f364520923911dc31d91be5179a6985337e"
+  sourceCommit: "4f32b77dff190acb79534b67b34f9056843ebeeb"
   sourcePath: "docs/manual/ko/modules/bluetape4k-images-benchmark.md"
   minorVersion: "0.3"
   releaseRef: "0.3.0"
@@ -126,6 +126,19 @@ Java 21 JNI와 Java 25 FFM은 두 환경을 모두 지원하는 같은 장비에
 - GC 할당량에는 네이티브 메모리가 포함되지 않습니다.
 - I/O API의 편의성, 지연 시간, 처리량, 백엔드 선택은 서로 다른 질문입니다.
 - 다른 데이터·동시성·하드웨어·JVM·코덱·저장소의 운영 성능을 보장하지 않습니다.
+
+<!-- release-readme-diagrams:start -->
+## 배포본 다이어그램
+
+아래 그림은 현재 개발 브랜치가 아니라 `0.3.0` 배포 태그의 README 자산을 바이트 단위로 그대로 옮긴 것입니다. 따라서 이후 SNAPSHOT 변경이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 SVG 원본이 열립니다.
+
+### images benchmark 아키텍처
+
+[![images benchmark 아키텍처](/manual-assets/bluetape4k-image/0.3/readme-diagrams/images-benchmark-architecture-01.png)](../../assets/readme-diagrams/images-benchmark-architecture-01.svg)
+
+_배포본 README: [`benchmark/images-benchmark/README.ko.md`](https://github.com/bluetape4k/bluetape4k-image/blob/a571c30004f571fe8cfcddc29670c1404d212ec6/benchmark/images-benchmark/README.ko.md)_
+
+<!-- release-readme-diagrams:end -->
 
 ## 근거 자료
 
