@@ -2,8 +2,10 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import { loadRedirectCatalog } from './scripts/manual/lib/catalog.mjs';
 import { loadRepositoryRegistry } from './scripts/manual/lib/repositories.mjs';
+import { buildStaticSidebar } from './scripts/manual/lib/sidebar.mjs';
 
 const manualRepositories = loadRepositoryRegistry(new URL('./src/data/manual/repositories.json', import.meta.url));
+const staticSidebar = buildStaticSidebar(manualRepositories);
 const redirectEntries = [];
 const redirectSources = new Set();
 for (const repository of manualRepositories.repositories) {
@@ -206,39 +208,7 @@ export default defineConfig({
       editLink: {
         baseUrl: 'https://github.com/bluetape4k/bluetape4k.github.io/edit/develop/',
       },
-      sidebar: [
-        {
-          label: 'Start',
-          translations: { ko: '시작' },
-          items: [
-            { label: 'Overview', translations: { ko: '개요' }, slug: '' },
-            { label: 'Getting Started', translations: { ko: '시작하기' }, slug: 'getting-started' },
-          ],
-        },
-        {
-          label: 'Ecosystem',
-          translations: { ko: '생태계' },
-          items: [
-            { label: 'Repositories', translations: { ko: '리포지토리' }, slug: 'ecosystem/repositories' },
-            { label: 'Ecosystem Atlas', translations: { ko: '생태계 지도' }, slug: 'ecosystem/atlas' },
-            { label: 'Bluetape4k Manual', translations: { ko: 'Bluetape4k 매뉴얼' }, link: '/manual/bluetape4k-projects/' },
-            { label: 'Examples', translations: { ko: '예제' }, slug: 'ecosystem/examples' },
-            {
-              label: 'Version Governance',
-              translations: { ko: '버전 거버넌스' },
-              slug: 'ecosystem/version-governance',
-            },
-          ],
-        },
-        {
-          label: 'Blog',
-          translations: { ko: '블로그' },
-          items: [
-            { label: 'Posts', translations: { ko: '글' }, slug: 'blog' },
-            { autogenerate: { directory: 'blog' } },
-          ],
-        },
-      ],
+      sidebar: staticSidebar,
     }),
   ],
 });

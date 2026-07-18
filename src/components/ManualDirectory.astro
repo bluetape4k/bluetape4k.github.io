@@ -1,0 +1,70 @@
+---
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { loadRepositoryRegistry } from '../../scripts/manual/lib/repositories.mjs';
+import '../styles/manual.css';
+
+type Locale = 'en' | 'ko';
+type Copy = {
+  label: string;
+  version: string;
+  open: string;
+  purpose: Record<string, string>;
+};
+
+const { locale = 'en' } = Astro.props as { locale?: Locale };
+const { repositories } = loadRepositoryRegistry(
+  pathToFileURL(path.join(process.cwd(), 'src/data/manual/repositories.json')),
+);
+
+const copy: Copy = locale === 'ko'
+  ? {
+      label: '저장소별 Bluetape4k 매뉴얼',
+      version: '최신 안정판',
+      open: '매뉴얼 열기',
+      purpose: {
+        'bluetape4k-projects': 'Kotlin 기반 기능과 코루틴, 데이터 접근, 인프라, 웹 통합, 테스트 도구를 찾을 때',
+        'bluetape4k-exposed': 'Exposed JDBC/R2DBC 저장소 패턴과 데이터베이스 어댑터를 적용할 때',
+        'bluetape4k-aws': 'AWS SDK를 Kotlin답게 사용하고 서비스별 통합 방법을 익힐 때',
+        'bluetape4k-leader': '분산 리더 선출과 임대(lease), 스케줄러의 동작 및 운영 방식을 설계할 때',
+        'bluetape4k-image': '이미지 처리와 코덱, 분석, OCR, 프레임워크 통합이 필요할 때',
+        'bluetape4k-graph': '그래프 모델과 저장소, 순회(traversal), 그래프 입출력을 선택하고 구현할 때',
+        'bluetape4k-javers': '변경 이력과 diff, snapshot, projection을 구성할 때',
+        'bluetape4k-text': '형태소 분석과 언어 감지, 사전, 문자열 검색 기능을 적용할 때',
+      },
+    }
+  : {
+      label: 'Bluetape4k manuals by repository',
+      version: 'Latest stable',
+      open: 'Open manual',
+      purpose: {
+        'bluetape4k-projects': 'For Kotlin foundations, coroutines, data access, infrastructure, web integration, and testing',
+        'bluetape4k-exposed': 'For Exposed JDBC/R2DBC repository patterns and database adapters',
+        'bluetape4k-aws': 'For Kotlin-friendly AWS SDK ergonomics and service integration',
+        'bluetape4k-leader': 'For distributed leader election, leases, schedulers, and operations',
+        'bluetape4k-image': 'For image processing, codecs, analysis, OCR, and framework integration',
+        'bluetape4k-graph': 'For graph models, backends, traversal, and graph I/O',
+        'bluetape4k-javers': 'For audit history, diffs, snapshots, and projections',
+        'bluetape4k-text': 'For tokenization, language detection, dictionaries, and text search',
+      },
+    };
+
+for (const repository of repositories) {
+  if (!copy.purpose[repository.slug]) throw new Error(`MANUAL_DIRECTORY_PURPOSE: ${repository.slug}`);
+}
+---
+
+<nav class="bt4k-manual-directory" aria-label={copy.label}>
+  <ul>
+    {repositories.map((repository) => (
+      <li>
+        <a href={repository.route[locale]}>
+          <span class="bt4k-manual-directory__version">{copy.version} {repository.latestMinor}</span>
+          <strong>{repository.label[locale]}</strong>
+          <span>{copy.purpose[repository.slug]}</span>
+          <small>{copy.open}<span aria-hidden="true"> →</span></small>
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>
