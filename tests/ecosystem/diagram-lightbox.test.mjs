@@ -108,3 +108,19 @@ test('Starlight mounts one localized dialog only for blog posts and manuals', as
   assert.match(component, /Close/);
   assert.match(component, /initializeDiagramLightbox/);
 });
+
+test('diagram styles provide visible controls, modal sizing, accessibility modes, and print exclusion', async () => {
+  const config = await read('astro.config.mjs');
+  const styles = await read('src/styles/diagram-lightbox.css');
+
+  assert.match(config, /['"]\.\/src\/styles\/diagram-lightbox\.css['"]/);
+  assert.match(styles, /\.bt4k-diagram-open/);
+  assert.match(styles, /cursor:\s*zoom-in/);
+  assert.match(styles, /\.bt4k-diagram-lightbox::backdrop/);
+  assert.match(styles, /max-inline-size:\s*100%/);
+  assert.match(styles, /max-block-size:\s*100%/);
+  assert.match(styles, /:focus-visible/);
+  assert.match(styles, /@media\s*\(forced-colors:\s*active\)/);
+  assert.match(styles, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
+  assert.match(styles, /@media print/);
+});
