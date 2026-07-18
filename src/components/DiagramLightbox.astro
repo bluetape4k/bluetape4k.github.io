@@ -1,0 +1,48 @@
+---
+interface Props {
+  scope: 'blog' | 'manual';
+  locale: 'en' | 'ko';
+}
+
+const { scope, locale } = Astro.props;
+const viewLarger = locale === 'ko' ? '크게 보기' : 'View larger';
+const close = locale === 'ko' ? '닫기' : 'Close';
+---
+
+<dialog
+  class="bt4k-diagram-lightbox"
+  data-bt4k-diagram-lightbox
+  data-scope={scope}
+  data-view-larger={viewLarger}
+  aria-label={viewLarger}
+>
+  <section class="bt4k-diagram-lightbox__panel" data-diagram-backdrop>
+    <header class="bt4k-diagram-lightbox__header">
+      <h2 class="bt4k-diagram-lightbox__title" data-diagram-title hidden></h2>
+      <button
+        class="bt4k-diagram-lightbox__close"
+        type="button"
+        data-diagram-close
+        aria-label={close}
+        title={close}
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18"></path>
+        </svg>
+      </button>
+    </header>
+    <div class="bt4k-diagram-lightbox__viewport" data-diagram-backdrop>
+      <img data-diagram-image alt="" />
+    </div>
+    <p class="bt4k-diagram-lightbox__caption" data-diagram-caption hidden></p>
+  </section>
+</dialog>
+
+<script>
+  import { initializeDiagramLightbox } from '../lib/diagramLightbox.mjs';
+
+  const dialog = document.querySelector('[data-bt4k-diagram-lightbox]');
+  if (dialog instanceof HTMLDialogElement) {
+    initializeDiagramLightbox({ dialog, root: document });
+  }
+</script>

@@ -87,3 +87,24 @@ test('an image can be claimed for enhancement only once', () => {
   assert.equal(claimDiagramImage(image), true);
   assert.equal(claimDiagramImage(image), false);
 });
+
+test('Starlight mounts one localized dialog only for blog posts and manuals', async () => {
+  const footer = await read('src/components/StarlightFooter.astro');
+  const component = await read('src/components/DiagramLightbox.astro');
+
+  assert.match(footer, /import DiagramLightbox from '.\/DiagramLightbox\.astro'/);
+  assert.match(footer, /starlightRoute\.entry\.data\.manual/);
+  assert.match(footer, /entryId\.startsWith\('blog\/'\)/);
+  assert.match(footer, /entryId\.startsWith\('ko\/blog\/'\)/);
+  assert.match(footer, /<DiagramLightbox scope=\{diagramScope\} locale=\{locale\}/);
+
+  assert.match(component, /<dialog/);
+  assert.match(component, /data-bt4k-diagram-lightbox/);
+  assert.match(component, /data-diagram-backdrop/);
+  assert.match(component, /aria-label=\{viewLarger\}/);
+  assert.match(component, /크게 보기/);
+  assert.match(component, /View larger/);
+  assert.match(component, /닫기/);
+  assert.match(component, /Close/);
+  assert.match(component, /initializeDiagramLightbox/);
+});
