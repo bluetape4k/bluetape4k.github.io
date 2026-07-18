@@ -80,7 +80,10 @@ the duration of a treatment. Treatment duration is configured separately for eac
 breaks, temporary closures, doctor schedules and absences, treatment types, equipment, and equipment downtime all sit
 under that clinic. The same request on the same date may be valid at Clinic A and invalid at Clinic B.
 
-<figure class="bt4k-architecture">
+<figure
+  class="bt4k-architecture"
+  data-diagram-title="Clinic appointment SaaS domain boundaries"
+>
   <img src="/assets/clinic-appointment-part1-saas-domain-map-01.png" alt="Dark architecture map connecting three clinics with different calendars, doctors, treatments, and equipment policies to clinic-scoped appointment decisions under one TenantGroup" loading="lazy" />
   <figcaption>The README diagrams provide the semantic reference. This blog diagram was rebuilt in a dark style after checking the current source.</figcaption>
 </figure>
