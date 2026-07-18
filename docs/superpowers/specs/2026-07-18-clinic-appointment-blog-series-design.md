@@ -330,7 +330,21 @@ TenantGroup
 | 6 | 휴진 표지와 점검 중 장비에서 예약을 옮기는 작업대 | 재배정 상태·데이터 흐름 |
 | 7 | 리뷰 카드가 다음 요구사항 보드로 돌아가는 작업대 | 요구사항 순환과 tenant/알림 운영 경계 |
 
-Hero는 기존 사이트의 polished 3D miniature workbench 언어를 따른다. 평면 diagram이나 icon sheet를 hero로 대체하지 않는다. 본문 diagram은 `clinic-appointment`의 기존 requirements source와 PNG를 우선 검토하고, 그대로 쓰기 어려울 때만 시리즈용 source asset을 새로 만든다.
+Hero는 기존 사이트의 polished 3D miniature workbench 언어를 따른다. 평면 diagram이나 icon sheet를 hero로 대체하지 않는다. Dark diagram은 본문에서 구조, 흐름, 상태 전이, 제약 관계를 설명하는 역할에 집중한다.
+
+### README와 requirements diagram 재사용 계약
+
+`clinic-appointment`의 README와 requirements 문서에 사용된 Mermaid, SVG, PNG diagram은 **의미와 구조를 확인하는 reference**이지, 블로그에 그대로 삽입할 최종 asset이 아니다. 같은 diagram을 블로그에서 사용하더라도 다음 계약에 따라 별도의 dark style SVG와 PNG로 다시 만든다.
+
+- 현재 README·requirements 문서와 실제 구현 source를 함께 읽고 node, edge, cardinality, 상태 전이, 분기, label의 의미를 보존한다. 오래된 rendered image만 보고 구조를 복제하지 않는다.
+- 단순 색상 반전이 아니라 deep navy 또는 charcoal canvas, 충분한 text contrast, 역할별 accent color를 적용한 블로그 전용 dark composition으로 다시 설계한다.
+- font는 diagram guideline에 맞춰 `Architects Daughter`와 `Comic Mono`를 사용하고, 한 시리즈 안에서는 같은 개념에 같은 색과 도형 문법을 사용한다.
+- 기존 README asset은 덮어쓰거나 이동하지 않는다. 블로그용 SVG와 PNG는 `bluetape4k.github.io/public/assets/` 아래에 `clinic-appointment-part{N}-{topic}-{NN}` 형식으로 별도 관리한다.
+- 한국어와 영문이 같은 기술 label을 자연스럽게 공유할 수 있으면 동일 asset을 사용한다. 번역이 이해에 실질적으로 도움이 되면 locale별 asset을 만들고 양쪽 article의 의미와 revision을 맞춘다.
+- 각 asset은 한 번에 하나씩 제작한다. SVG XML 검증, CairoSVG PNG 변환, diagram audit, full-size PNG 육안 검사를 통과한 뒤 다음 asset으로 이동한다.
+- 기존 README diagram과의 semantic parity를 검토하되, blog page의 폭과 dark theme에서 label이 읽히도록 grouping과 여백은 다시 조정할 수 있다.
+
+따라서 기존 README·requirements의 SVG나 PNG를 블로그 본문에 직접 embed하지 않는다. 기존 asset은 related-set reference로만 활용하고, 실제 article에는 source 사실을 다시 검증해 만든 blog-owned dark asset을 사용한다.
 
 ## 작성 순서
 
@@ -354,6 +368,8 @@ Hero는 기존 사이트의 polished 3D miniature workbench 언어를 따른다.
 - 한국어 글은 번역투 없이 실무 개발자 간 설명으로 읽힌다.
 - 영문은 문장별 직역이 아니라 같은 기술 주장과 근거를 자연스럽게 전달한다.
 - 한·영 title, part number, source link, hero, 본문 asset, series navigation이 일치한다.
+- README·requirements에서 가져온 diagram 개념은 원본 이미지를 직접 삽입하지 않고, semantic parity를 확인한 blog-owned dark SVG/PNG로 제공한다.
+- 새 diagram은 XML·render·audit 검증과 full-size PNG 육안 검사를 통과한다.
 - `npm run build`와 변경 route 검증이 통과한다.
 
 ## 범위 제외
@@ -364,6 +380,7 @@ Hero는 기존 사이트의 polished 3D miniature workbench 언어를 따른다.
 - benchmark를 일반적인 운영 성능 또는 비용 절감 수치로 확대하는 일
 - 환자 포털 전체 구현 안내
 - 모든 API와 entity를 빠짐없이 나열하는 reference manual
+- `clinic-appointment` README의 기존 diagram 자체를 dark style로 교체하는 일. 이 시리즈에서는 blog-owned 사본만 새로 만든다.
 - 시리즈 설계 승인 전에 7편을 한 번에 작성하거나 영문부터 작성하는 일
 - PR 생성, merge, site deploy. 이는 별도의 승인된 작성·배포 계획에서 다룬다.
 
