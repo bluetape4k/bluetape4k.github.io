@@ -168,7 +168,7 @@ test -f dist/ko/blog/clinic-appointment-part1-not-just-crud/index.html
 
 Expected: 두 글이 동일 asset과 유효한 route를 가진다.
 
-- [ ] **Step 3: Part 1 bilingual checkpoint를 커밋한다**
+- [x] **Step 3: Part 1 bilingual checkpoint를 커밋한다**
 
 Commit intent: `Give the clinic series a bilingual entry point`
 
