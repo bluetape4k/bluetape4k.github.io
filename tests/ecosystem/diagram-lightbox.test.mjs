@@ -124,3 +124,19 @@ test('diagram styles provide visible controls, modal sizing, accessibility modes
   assert.match(styles, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
   assert.match(styles, /@media print/);
 });
+
+test('the clinic article provides localized diagram titles without making the Hero zoomable', async () => {
+  const ko = await read('src/content/docs/ko/blog/clinic-appointment-part1-not-just-crud.mdx');
+  const en = await read('src/content/docs/blog/clinic-appointment-part1-not-just-crud.mdx');
+
+  assert.match(
+    ko,
+    /class="bt4k-architecture"\s+data-diagram-title="병원 예약 SaaS의 업무 영역"/,
+  );
+  assert.match(
+    en,
+    /class="bt4k-architecture"\s+data-diagram-title="Clinic appointment SaaS domain boundaries"/,
+  );
+  assert.doesNotMatch(ko, /class="bt4k-blog-hero"[^>]*data-diagram-title/);
+  assert.doesNotMatch(en, /class="bt4k-blog-hero"[^>]*data-diagram-title/);
+});
