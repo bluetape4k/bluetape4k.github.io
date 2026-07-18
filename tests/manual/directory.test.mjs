@@ -57,6 +57,8 @@ test('Astro installs the generated global sidebar without the Projects-only entr
 
 test('manual directory renders localized registry data and task guidance for every repository', () => {
   assert.match(componentSource, /loadRepositoryRegistry/);
+  assert.match(componentSource, /type ManualRepository =/);
+  assert.match(componentSource, /as \{ repositories: ManualRepository\[\] \}/);
   assert.match(componentSource, /repository\.label\[locale\]/);
   assert.match(componentSource, /repository\.latestMinor/);
   assert.match(componentSource, /repository\.route\[locale\]/);
