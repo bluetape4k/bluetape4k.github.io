@@ -62,7 +62,7 @@ object Appointments : LongIdTable("scheduling_appointments") {
 ```
 
 이것은 단지 외래 키가 많다는 뜻이 아닙니다. 예약의 유효성이 여러 업무 규칙의 교집합이라는 뜻입니다.
-[Appointments.kt](https://github.com/bluetape4k/clinic-appointment/blob/main/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/tables/Appointments.kt)의
+[Appointments.kt](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/tables/Appointments.kt)의
 인덱스도 이 특성을 드러냅니다. 의사·날짜 조합은 중복과 슬롯 조회에, 병원·날짜·상태 조합은 활성 예약과
 일괄 상태 변경에, 장비·날짜 조합은 장비 사용량 검사에 쓰입니다.
 
@@ -91,8 +91,8 @@ object Appointments : LongIdTable("scheduling_appointments") {
 병원별 정책을 정확히 계산해도 테넌트 검증을 빼먹으면 보안 결함이고, 테넌트를 완벽히 격리해도 휴진 시간에
 예약을 받으면 업무 결함입니다.
 
-현재 소스에서는 [TenantGroups.kt](https://github.com/bluetape4k/clinic-appointment/blob/main/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/tables/TenantGroups.kt)가
-격리 소유자를 정의하고, [Clinics.kt](https://github.com/bluetape4k/clinic-appointment/blob/main/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/tables/Clinics.kt)가
+현재 소스에서는 [TenantGroups.kt](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/tables/TenantGroups.kt)가
+격리 소유자를 정의하고, [Clinics.kt](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/tables/Clinics.kt)가
 `tenantGroupId`와 병원별 운영 설정을 가집니다. 병원마다 다른 업무시간·의사·장비가 예약 계산에 들어가는
 과정은 Part 3에서, 테넌트 접근 경계는 Part 7에서 더 자세히 다룹니다.
 
@@ -110,7 +110,7 @@ object Appointments : LongIdTable("scheduling_appointments") {
 | `appointment-notification` | 알림과 고가용성 발송 | API가 없어도 독립 프로세스로 실행할 수 있게 합니다. |
 | 프런트엔드 | 직원이 예약과 기준 정보를 관리하는 UI | Node/Angular 빌드와 Kotlin 빌드의 경계를 유지합니다. |
 
-특히 [architecture ADR-4](https://github.com/bluetape4k/clinic-appointment/blob/main/docs/requirements/architecture.md#adr-4-slotcalculationservice-vs-solverservice-역할-분리)는
+특히 [architecture ADR-4](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/requirements/architecture.md#adr-4-slotcalculationservice-vs-solverservice-역할-분리)는
 `SlotCalculationService`와 `SolverService`를 합치지 않기로 결정했습니다. 환자가 보는 한 건의 슬롯 조회는
 짧은 응답 시간이 중요하고, 관리자가 여러 예약을 재배치할 때는 전체 조합의 품질이 중요하기 때문입니다.
 비슷한 이름의 “스케줄링”이어도 호출 시점과 탐색 범위가 다르면 경계도 달라집니다.
@@ -122,7 +122,7 @@ object Appointments : LongIdTable("scheduling_appointments") {
 ## 기능 목록보다 먼저 문서의 역할을 설계했다
 
 이 저장소에서 흥미로운 점은 기능만 설계하지 않고 문서 체계도 요구사항으로 다뤘다는 것입니다.
-2026년 3월의 [Living Documentation 설계](https://github.com/bluetape4k/clinic-appointment/blob/main/docs/superpowers/specs/2026-03-30-living-docs-design.md)는
+2026년 3월의 [Living Documentation 설계](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-03-30-living-docs-design.md)는
 다음 역할을 나눴습니다.
 
 | 자료 | 답해야 하는 질문 |
@@ -168,10 +168,10 @@ Living documentation은 항상 정확한 문서 한 장을 약속하기보다, �
 ## 참고 링크
 
 - 저장소: [bluetape4k/clinic-appointment](https://github.com/bluetape4k/clinic-appointment)
-- 시작 문서: [README.ko.md](https://github.com/bluetape4k/clinic-appointment/blob/main/README.ko.md)
-- 요구사항 목록: [docs/requirements/README.md](https://github.com/bluetape4k/clinic-appointment/blob/main/docs/requirements/README.md)
-- 사용자 시나리오: [docs/requirements/user-scenarios.md](https://github.com/bluetape4k/clinic-appointment/blob/main/docs/requirements/user-scenarios.md)
-- 아키텍처 결정: [docs/requirements/architecture.md](https://github.com/bluetape4k/clinic-appointment/blob/main/docs/requirements/architecture.md)
+- 시작 문서: [README.ko.md](https://github.com/bluetape4k/clinic-appointment/blob/develop/README.ko.md)
+- 요구사항 목록: [docs/requirements/README.md](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/requirements/README.md)
+- 사용자 시나리오: [docs/requirements/user-scenarios.md](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/requirements/user-scenarios.md)
+- 아키텍처 결정: [docs/requirements/architecture.md](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/requirements/architecture.md)
 
 ## 시리즈 링크
 

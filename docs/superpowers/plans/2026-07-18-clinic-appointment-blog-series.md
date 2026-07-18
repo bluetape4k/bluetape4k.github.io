@@ -151,11 +151,11 @@ Commit intent: `Explain why clinic appointments outgrow CRUD`
 **Files:**
 - Create: `src/content/docs/blog/clinic-appointment-part1-not-just-crud.mdx`
 
-- [ ] **Step 1: 한국어 주장과 asset contract를 영문에 대응시킨다**
+- [x] **Step 1: 한국어 주장과 asset contract를 영문에 대응시킨다**
 
 Keep the same title direction, date, part number, source links, hero, domain-map asset, section order, and next-part preview. Translate the argument, not each sentence; retain Kotlin identifiers and domain names unchanged.
 
-- [ ] **Step 2: 한·영 parity와 route를 검증한다**
+- [x] **Step 2: 한·영 parity와 route를 검증한다**
 
 Run:
 
