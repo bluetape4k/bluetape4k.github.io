@@ -115,6 +115,10 @@ test('diagram styles provide visible controls, modal sizing, accessibility modes
 
   assert.match(config, /['"]\.\/src\/styles\/diagram-lightbox\.css['"]/);
   assert.match(styles, /\.bt4k-diagram-open/);
+  assert.match(
+    styles,
+    /\.bt4k-diagram-trigger\s*\{[^}]*inline-size:\s*fit-content/s,
+  );
   assert.match(styles, /cursor:\s*zoom-in/);
   assert.match(styles, /\.bt4k-diagram-lightbox::backdrop/);
   assert.match(styles, /max-inline-size:\s*100%/);

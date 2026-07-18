@@ -1,6 +1,7 @@
 .bt4k-diagram-trigger {
   position: relative;
   display: block;
+  inline-size: fit-content;
   max-inline-size: 100%;
 }
 
