@@ -5,6 +5,12 @@ import { loadRepositoryRegistry } from '../../scripts/manual/lib/repositories.mj
 import '../styles/manual.css';
 
 type Locale = 'en' | 'ko';
+type ManualRepository = {
+  slug: string;
+  label: Record<Locale, string>;
+  latestMinor: string;
+  route: Record<Locale, string>;
+};
 type Copy = {
   label: string;
   version: string;
@@ -15,7 +21,7 @@ type Copy = {
 const { locale = 'en' } = Astro.props as { locale?: Locale };
 const { repositories } = loadRepositoryRegistry(
   pathToFileURL(path.join(process.cwd(), 'src/data/manual/repositories.json')),
-);
+) as { repositories: ManualRepository[] };
 
 const copy: Copy = locale === 'ko'
   ? {
