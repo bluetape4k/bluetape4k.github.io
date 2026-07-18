@@ -89,7 +89,7 @@ Expected: 모든 command exit code 0, audit `PASS` 또는 해당 diagram kind에
 - Create: `public/assets/clinic-appointment-part1-saas-domain-map-01.png`
 - Create: `src/content/docs/ko/blog/clinic-appointment-part1-not-just-crud.mdx`
 
-- [ ] **Step 1: Part 1 사실을 현재 source에서 고정한다**
+- [x] **Step 1: Part 1 사실을 현재 source에서 고정한다**
 
 Run:
 
@@ -102,19 +102,19 @@ rg -n "object (TenantGroups|Clinics|Doctors|Equipments|TreatmentTypes|Appointmen
 
 Expected: SaaS 계층과 대표 entity가 README 설명뿐 아니라 현재 Exposed table/source에도 존재한다.
 
-- [ ] **Step 2: Part 1 hero를 생성하고 시리즈 visual language를 고정한다**
+- [x] **Step 2: Part 1 hero를 생성하고 시리즈 visual language를 고정한다**
 
 Prompt contract: miniature hospital scheduling workbench, tenant group board feeding several clinic boards, doctors/equipment/time slots as physical tokens, small robotic engineers assembling the model, polished dark navy scene, teal and purple accents, isometric camera, no text, no logo, 16:9.
 
 Expected: `public/assets/clinic-appointment-part1-hero.png`가 article card와 본문 hero에서 자르지 않아도 핵심 object를 보여준다.
 
-- [ ] **Step 3: SaaS domain map dark diagram을 만든다**
+- [x] **Step 3: SaaS domain map dark diagram을 만든다**
 
 Diagram content: `TenantGroup → Clinic → Operating Hours / Breaks / Closures / Holidays`, `Clinic → Doctors / Doctor Schedules / Absences`, `Clinic → Treatment Types / Equipment / Unavailability`, 모두 `Appointment`의 유효성에 합류한다. `appointment-core`, `appointment-api`, `appointment-solver`, `appointment-event`, `appointment-notification`은 하단 implementation lane에 배치한다.
 
 Expected: README architecture/module diagram의 사실을 보존하지만 deep navy canvas와 blog typography를 사용하는 별도 SVG/PNG다.
 
-- [ ] **Step 4: Part 1 한국어 MDX를 작성한다**
+- [x] **Step 4: Part 1 한국어 MDX를 작성한다**
 
 Section order:
 
@@ -130,7 +130,7 @@ Section order:
 
 Use: `/assets/clinic-appointment-part1-hero.png`, `/assets/clinic-appointment-part1-saas-domain-map-01.png`, GitHub source links pinned to the `main` branch paths that exist at writing time.
 
-- [ ] **Step 5: Part 1 route와 build를 검증한다**
+- [x] **Step 5: Part 1 route와 build를 검증한다**
 
 Run:
 
@@ -142,7 +142,7 @@ test -f dist/ko/blog/clinic-appointment-part1-not-just-crud/index.html
 
 Expected: exit code 0 and generated Korean route exists.
 
-- [ ] **Step 6: Part 1 한국어 checkpoint를 커밋한다**
+- [x] **Step 6: Part 1 한국어 checkpoint를 커밋한다**
 
 Commit intent: `Explain why clinic appointments outgrow CRUD`
 
