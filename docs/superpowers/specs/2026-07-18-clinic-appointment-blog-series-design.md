@@ -7,7 +7,7 @@
 - 시리즈 길이: 7편
 - 언어: 한국어 원문 우선, 한국어 승인 후 대응 영문 작성
 - 승인된 방향: 개발 과정 중심 구성
-- 현재 단계: Part 1 한·영 원문과 시각 자료 검증 완료, 배포 준비 중
+- 현재 단계: Part 1 한·영 원문, 한국어 자연스러움 교정, 시각 자료 재검증 완료, 병합 승인 대기 중
 
 ## 목표
 
@@ -109,7 +109,7 @@ TenantGroup
 - 환자 예약, 직원의 체크인과 진료 완료, 관리자의 휴진·장비 관리라는 대표 사용자 시나리오
 - `TenantGroup → Clinic → Doctor/TreatmentType/Equipment → Appointment` 계층
 - `appointment-core`, `event`, `solver`, `notification`, `api`, frontend의 역할 분리
-- 실시간 슬롯 조회, 상태 전이, 재배정, 최적화, 알림이 한 서비스 안에서 만나는 이유
+- 실시간 예약 가능 시간 조회, 상태 전이, 재배정, 최적화, 알림이 한 서비스 안에서 만나는 이유
 - README는 진입점, requirements는 업무 계약, spec/plan은 결정 기록, 구현/테스트는 현재 사실이라는 문서 체계
 
 **개발 과정 초점:** 초기 독립 저장소 요구와 living documentation 설계가 이후 기능 개발의 기준이 된 과정.
@@ -178,9 +178,9 @@ TenantGroup
 - `docs/superpowers/specs/2026-03-30-equipment-schedule-design.md`
 - `SlotCalculationServiceTest`, `EquipmentUnavailabilityServiceTest`
 
-**다음 편 연결:** 한 건의 가능한 슬롯을 찾는 것과 여러 예약을 동시에 더 좋은 배치로 옮기는 것은 다른 문제임을 제시한다.
+**다음 편 연결:** 한 건의 예약 가능 시간을 찾는 것과 여러 예약을 동시에 더 좋은 배치로 옮기는 것은 다른 문제임을 제시한다.
 
-### Part 4. 한 건의 슬롯 조회와 전체 일정 최적화는 다르다
+### Part 4. 한 건의 예약 가능 시간 조회와 전체 일정 최적화는 다르다
 
 **중심 질문:** Greedy 계산과 Constraint Solver의 경계를 어디에 둘 것인가.
 
@@ -313,7 +313,7 @@ TenantGroup
 | 1 | `clinic-appointment-part1-not-just-crud` | 병원 예약은 CRUD로 끝나지 않는다 | Clinic Appointments Are More Than CRUD |
 | 2 | `clinic-appointment-part2-state-machine-and-history` | 예약 상태는 enum이 아니다 | Appointment State Is More Than an Enum |
 | 3 | `clinic-appointment-part3-clinic-specific-availability` | 병원마다 다른 업무시간과 자원으로 예약 가능 시간을 계산하기 | Computing Availability from Clinic-Specific Hours and Resources |
-| 4 | `clinic-appointment-part4-greedy-vs-global-optimization` | 한 건의 슬롯 조회와 전체 일정 최적화는 다르다 | Real-Time Slot Search and Global Optimization Solve Different Problems |
+| 4 | `clinic-appointment-part4-greedy-vs-global-optimization` | 한 건의 예약 가능 시간 조회와 전체 일정 최적화는 다르다 | Real-Time Slot Search and Global Optimization Solve Different Problems |
 | 5 | `clinic-appointment-part5-timefold-constraints` | 병원 업무 규칙을 Timefold Constraint로 번역하기 | Translating Clinic Rules into Timefold Constraints |
 | 6 | `clinic-appointment-part6-closure-equipment-rescheduling` | 휴진과 장비 고장은 예약 설계를 어떻게 바꾸는가 | Rescheduling after Clinic Closures and Equipment Downtime |
 | 7 | `clinic-appointment-part7-review-and-operational-evolution` | 완성 뒤가 진짜 시작이다 | Reviews and Operations Start the Next Development Cycle |

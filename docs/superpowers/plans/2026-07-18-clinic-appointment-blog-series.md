@@ -128,9 +128,16 @@ Section order:
 다음 요구사항: 상태 전이를 별도 모델로 다뤄야 하는 이유
 ```
 
-Use: `/assets/clinic-appointment-part1-hero.png`, `/assets/clinic-appointment-part1-saas-domain-map-01.png`, GitHub source links pinned to the `main` branch paths that exist at writing time.
+Use: `/assets/clinic-appointment-part1-hero.png`, `/assets/clinic-appointment-part1-saas-domain-map-01.png`, GitHub source links pinned to the `develop` branch paths that exist at writing time.
 
-- [x] **Step 5: Part 1 route와 build를 검증한다**
+- [x] **Step 5: Part 1 한국어를 자연스러운 기술 문장으로 교정한다**
+
+`korean-naturalness-checklist.md`의 KO-01..06을 적용한다. 사실, 식별자, 숫자, 링크와 사용자가 직접 고친
+표현은 보존하고, 번역투, 명사형 문장, 어색한 주어·서술어, 기계적인 전환 표현을 문장별로 검토한다.
+
+Expected: 한국어 개발자가 기술 대화에서 자연스럽게 쓸 수 있는 문장으로 읽히며, 교정 전후 기술 주장이 같다.
+
+- [x] **Step 6: Part 1 route와 build를 검증한다**
 
 Run:
 
@@ -142,7 +149,7 @@ test -f dist/ko/blog/clinic-appointment-part1-not-just-crud/index.html
 
 Expected: exit code 0 and generated Korean route exists.
 
-- [x] **Step 6: Part 1 한국어 checkpoint를 커밋한다**
+- [x] **Step 7: Part 1 한국어 checkpoint를 커밋한다**
 
 Commit intent: `Explain why clinic appointments outgrow CRUD`
 
