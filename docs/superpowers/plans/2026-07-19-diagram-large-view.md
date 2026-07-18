@@ -10,6 +10,22 @@
 
 ---
 
+## 2026-07-19 전체 범위 결함 수정 보완안
+
+초기 구현의 블로그 선택자는 의미 클래스가 빠진 기술 그림을 놓쳤고, 매뉴얼 선택자는 `/manual-assets/`만 보아 릴리스 README와 공유하는 immutable GitHub 다이어그램을 제외했다. 아래 보완안은 뒤에 남아 있는 초기 구현 단계의 selector·링크 처리 설명보다 우선한다.
+
+- 블로그 전체를 감사해 `post-figure`, class 없는 기술 그림, Markdown chart를 `.bt4k-architecture` 또는 `.bt4k-chart`로 명시한다.
+- 대표 이미지와 benchmark 입력 사진은 각각 기존 Hero 클래스와 `.bt4k-screenshot`으로 명시해 확대 대상에서 제외한다.
+- 수정한 한국어·영어 기술 그림에는 짧은 현지화 `data-diagram-title`을 함께 둔다.
+- 매뉴얼은 `/manual-assets/`와 `bluetape4k` 조직의 immutable README 공유 후보를 찾되, 저장소·40자리 커밋·안전한 `docs/images/readme-diagrams/` 상대 경로·파일 stem이 일치하는 PNG/SVG 쌍만 향상한다.
+- 검증된 README 다이어그램의 GitHub 링크는 DOM에서 제거하고, 이미지와 아이콘은 같은 배포 커밋의 SVG를 크게 보기로 연다.
+- 저장소 전체 콘텐츠 계약 테스트로 모든 README 공유형 다이어그램과 모든 로컬 블로그 이미지의 명시적 분류를 검증한다.
+- 타깃 테스트 후 `npm test`, `npm run build`, 한국어·영어 블로그와 매뉴얼의 실제 브라우저 검증을 수행한다.
+
+중단 조건은 일반 원격 이미지 또는 대표 이미지·스크린샷이 확대 대상으로 들어오거나, README PNG와 다른 저장소·커밋·경로의 SVG가 열리거나, 기존 `/manual-assets/` 확대 기능이 퇴행하는 경우다.
+
+---
+
 ## 파일 구조
 
 ### 생성

@@ -24,7 +24,7 @@ Part 5에서는 한 층 더 내려갑니다. 같은 `runIfLeader`라도 Redis에
 
 ## 먼저 운영 중인 인프라의 재사용성을 검토한다
 
-<figure>
+<figure class="bt4k-architecture" data-diagram-title="리더 선출 백엔드 선택 기준">
   <img src="/assets/bluetape4k-leader-part5-backend-picker.png" alt="Decision map for choosing leader election storage backends by operation shape" loading="lazy" />
   <figcaption>backend-picker는 성능 순위표가 아니라 이미 운영 중인 기반에서 출발하는 선택 가이드입니다.</figcaption>
 </figure>
@@ -112,12 +112,12 @@ Micrometer 쪽은 AOP 경계에서 시도, 획득, not-acquired, execution durat
 
 benchmark README는 먼저 선을 긋습니다. 이 모듈은 같은 머신에서 before/after를 비교하기 위한 `kotlinx-benchmark` suite이고, release-grade performance claim이 아닙니다. 2026-05-21 baseline은 one fork, one thread, warmup 2회, 1초 measurement 3회 조건입니다. 2026-05-29에는 PostgreSQL/MySQL row가 추가됐고, 2026-06-01에는 Redis lease-extension row가 추가됐습니다.
 
-<figure>
+<figure class="bt4k-chart" data-diagram-title="분산 백엔드 처리량 비교">
   <img src="/assets/bluetape4k-leader-part5-distributed-throughput-chart-01.png" alt="Distributed backend throughput chart for bluetape4k-leader" loading="lazy" />
   <figcaption>Distributed backend throughput. Higher is better. Local and H2 shape rows are intentionally excluded from this chart.</figcaption>
 </figure>
 
-<figure>
+<figure class="bt4k-chart" data-diagram-title="분산 백엔드 지연 시간 비교">
   <img src="/assets/bluetape4k-leader-part5-distributed-latency-chart-01.png" alt="Distributed backend latency chart for bluetape4k-leader" loading="lazy" />
   <figcaption>Distributed backend average time. Lower is better. PostgreSQL/MySQL exposed rows are much slower in this single-machine benchmark shape.</figcaption>
 </figure>

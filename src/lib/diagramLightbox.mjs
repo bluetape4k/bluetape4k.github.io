@@ -2,7 +2,24 @@ export const BLOG_DIAGRAM_SELECTOR =
   'figure:is(.bt4k-architecture, .bt4k-chart, .bt4k-sequence) > img';
 
 export const MANUAL_DIAGRAM_SELECTOR =
-  '.sl-markdown-content img[src^="/manual-assets/"]';
+  [
+    '.sl-markdown-content img[src^="/manual-assets/"]',
+    '.sl-markdown-content img[src^="https://raw.githubusercontent.com/bluetape4k/"][src*="/docs/images/readme-diagrams/"]',
+  ].join(', ');
+
+const README_DIAGRAM_PNG =
+  /^https:\/\/raw\.githubusercontent\.com\/bluetape4k\/([a-z0-9][a-z0-9._-]*)\/([a-f0-9]{40})\/docs\/images\/readme-diagrams\/(.+)\.png$/i;
+const README_DIAGRAM_SVG_LINK =
+  /^https:\/\/github\.com\/bluetape4k\/([a-z0-9][a-z0-9._-]*)\/blob\/([a-f0-9]{40})\/docs\/images\/readme-diagrams\/(.+)\.svg$/i;
+
+function isSafeReadmeDiagramName(name) {
+  return name.split('/').every(
+    (segment) =>
+      /^[a-z0-9][a-z0-9._-]*$/i.test(segment)
+      && segment !== '.'
+      && segment !== '..',
+  );
+}
 
 export function selectBlogDiagramImages(root = document) {
   return [...root.querySelectorAll(BLOG_DIAGRAM_SELECTOR)];
@@ -12,11 +29,34 @@ export function selectManualDiagramImages(root = document) {
   return [...root.querySelectorAll(MANUAL_DIAGRAM_SELECTOR)];
 }
 
-export function claimDiagramImage(image) {
+export function claimDiagramImage(image, { expectedAnchor = null } = {}) {
   if (image.dataset.bt4kDiagramEnhanced === 'true') return false;
-  if (image.closest('a')) return false;
+  const anchor = image.closest('a');
+  if (anchor && anchor !== expectedAnchor) return false;
   image.dataset.bt4kDiagramEnhanced = 'true';
   return true;
+}
+
+export function resolveReadmeDiagramSource({ imageSource = '', linkTarget = '' }) {
+  const imageMatch = imageSource.trim().match(README_DIAGRAM_PNG);
+  const linkMatch = linkTarget.trim().match(README_DIAGRAM_SVG_LINK);
+  if (!imageMatch || !linkMatch) return '';
+
+  const [, imageRepo, imageRevision, imageName] = imageMatch;
+  const [, linkRepo, linkRevision, linkName] = linkMatch;
+  if (
+    !isSafeReadmeDiagramName(imageName)
+    || !isSafeReadmeDiagramName(linkName)
+    || imageName.includes('?')
+    || imageName.includes('#')
+    || linkName.includes('?')
+    || linkName.includes('#')
+    || imageRepo !== linkRepo
+    || imageRevision !== linkRevision
+    || imageName !== linkName
+  ) return '';
+
+  return `https://raw.githubusercontent.com/bluetape4k/${imageRepo}/${imageRevision}/docs/images/readme-diagrams/${imageName}.svg`;
 }
 
 export function resolveDiagramTitle({ scope, explicitTitle = '', alt = '' }) {
@@ -44,7 +84,7 @@ function createOpenButton(label) {
   return button;
 }
 
-function diagramMetadata(image, scope) {
+function diagramMetadata(image, scope, sourceOverride = '') {
   const figure = image.closest('figure');
   const explicitTitle = figure?.dataset.diagramTitle ?? '';
   const alt = image.getAttribute('alt')?.trim() ?? '';
@@ -53,26 +93,44 @@ function diagramMetadata(image, scope) {
       ? figure?.querySelector('figcaption')?.textContent?.trim() ?? ''
       : '';
   return {
-    source: image.currentSrc || image.getAttribute('src') || '',
+    source: sourceOverride || image.currentSrc || image.getAttribute('src') || '',
     alt,
     title: resolveDiagramTitle({ scope, explicitTitle, alt }),
     caption,
   };
 }
 
+function manualDiagramContext(image) {
+  const imageSource = image.getAttribute('src')?.trim() ?? '';
+  if (imageSource.startsWith('/manual-assets/')) {
+    return { insertionTarget: image, sourceAnchor: null, sourceOverride: '' };
+  }
+
+  const anchor = image.closest('a');
+  const linkTarget = anchor?.getAttribute('href')?.trim() ?? '';
+  const sourceOverride = resolveReadmeDiagramSource({ imageSource, linkTarget });
+  if (!anchor || !sourceOverride) return null;
+  return { insertionTarget: anchor, sourceAnchor: anchor, sourceOverride };
+}
+
 function enhanceImage({ image, scope, label, open }) {
-  if (!claimDiagramImage(image)) return;
+  const context =
+    scope === 'manual'
+      ? manualDiagramContext(image)
+      : { insertionTarget: image, sourceAnchor: null, sourceOverride: '' };
+  if (!context || !claimDiagramImage(image, { expectedAnchor: context.sourceAnchor })) return;
 
   const wrapper = document.createElement('span');
   wrapper.className = 'bt4k-diagram-trigger';
-  image.before(wrapper);
+  context.insertionTarget.before(wrapper);
   wrapper.append(image);
+  context.sourceAnchor?.remove();
 
   const button = createOpenButton(label);
   wrapper.append(button);
 
   const openCurrent = () => {
-    const metadata = diagramMetadata(image, scope);
+    const metadata = diagramMetadata(image, scope, context.sourceOverride);
     if (metadata.source && !button.disabled) open(metadata, button);
   };
   image.addEventListener('click', openCurrent);

@@ -24,7 +24,7 @@ That makes backend choice less about API style and more about operations. Leader
 
 ## Start with what you already run
 
-<figure>
+<figure class="bt4k-architecture" data-diagram-title="Leader election backend selection guide">
   <img src="/assets/bluetape4k-leader-part5-backend-picker.png" alt="Decision map for choosing leader election storage backends by operation shape" loading="lazy" />
   <figcaption>The backend-picker is not a performance leaderboard. It starts from the systems your team already knows how to operate.</figcaption>
 </figure>
@@ -112,12 +112,12 @@ Micrometer records attempts, acquisition, not-acquired reasons, execution durati
 
 The benchmark README starts with a boundary: these are comparable `kotlinx-benchmark` suites for same-machine before/after comparison, not release-grade performance claims. The 2026-05-21 baseline used one fork, one thread, two warmup iterations, and three one-second measurement iterations. PostgreSQL/MySQL rows were added on 2026-05-29, and focused Redis lease-extension rows were added on 2026-06-01.
 
-<figure>
+<figure class="bt4k-chart" data-diagram-title="Distributed backend throughput comparison">
   <img src="/assets/bluetape4k-leader-part5-distributed-throughput-chart-01.png" alt="Distributed backend throughput chart for bluetape4k-leader" loading="lazy" />
   <figcaption>Distributed backend throughput. Higher is better. Local and H2 shape rows are intentionally excluded from this chart.</figcaption>
 </figure>
 
-<figure>
+<figure class="bt4k-chart" data-diagram-title="Distributed backend latency comparison">
   <img src="/assets/bluetape4k-leader-part5-distributed-latency-chart-01.png" alt="Distributed backend latency chart for bluetape4k-leader" loading="lazy" />
   <figcaption>Distributed backend average time. Lower is better. PostgreSQL/MySQL exposed rows are much slower in this same-machine benchmark shape.</figcaption>
 </figure>
