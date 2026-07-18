@@ -28,6 +28,53 @@
 .bt4k-manual-map a:focus-visible,
 .bt4k-manual-provenance a:focus-visible { outline: 3px solid var(--sl-color-text-accent); outline-offset: 2px; }
 
+.bt4k-manual-directory > ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1rem 0 2rem;
+  padding: 0;
+  list-style: none;
+}
+.bt4k-manual-directory a {
+  display: flex;
+  min-block-size: 100%;
+  flex-direction: column;
+  gap: .7rem;
+  padding: 1rem;
+  border: 1px solid var(--bt4k-card-border);
+  border-radius: 8px;
+  color: var(--bt4k-card-title);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  background: var(--bt4k-card-bg);
+}
+.bt4k-manual-directory a:hover { border-color: var(--sl-color-accent); }
+.bt4k-manual-directory a:focus-visible {
+  outline: 3px solid var(--sl-color-text-accent);
+  outline-offset: 3px;
+}
+.bt4k-manual-directory strong { color: var(--bt4k-card-title); font-size: 1.05rem; }
+.bt4k-manual-directory a > span:not(.bt4k-manual-directory__version) {
+  color: var(--bt4k-card-text);
+  line-height: 1.55;
+}
+.bt4k-manual-directory__version {
+  inline-size: fit-content;
+  padding: .22rem .48rem;
+  border-radius: 999px;
+  color: #fff;
+  font-size: .78rem;
+  font-weight: 800;
+  line-height: 1;
+  background: #2563eb;
+}
+.bt4k-manual-directory small { margin-block-start: auto; color: var(--sl-color-text-accent); }
+:root[data-theme='dark'] .bt4k-manual-directory__version {
+  color: #0f172a;
+  background: #93c5fd;
+}
+
 .bt4k-manual-version {
   position: relative;
   max-inline-size: 100%;
@@ -148,10 +195,12 @@
   .bt4k-manual-version__release { border-color: CanvasText; }
   .bt4k-manual-provenance__state::before { background: CanvasText; }
   .bt4k-manual-pagination a { border-color: CanvasText; }
+  .bt4k-manual-directory a { border-color: CanvasText; }
 }
 
 @media (max-width: 42rem) {
   .bt4k-manual-map > ul { grid-template-columns: 1fr; }
+  .bt4k-manual-directory > ul { grid-template-columns: 1fr; }
   .bt4k-manual-pagination {
     grid-template-areas: 'previous' 'home' 'next';
     grid-template-columns: minmax(0, 1fr);
