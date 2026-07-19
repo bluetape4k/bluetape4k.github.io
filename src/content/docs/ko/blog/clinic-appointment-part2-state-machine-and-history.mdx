@@ -1,0 +1,233 @@
+---
+title: "병원 예약 SaaS 개발기 Part 2: 예약 상태는 enum이 아니다"
+description: 예약 상태를 단순한 값 목록이 아니라 허용된 상태 변화, 변경 이력, 취소 사유와 일정 최적화의 고정 정책을 포함한 업무 계약으로 설계한 과정을 설명합니다.
+sidebar:
+  order: -202607191000
+blog:
+  date: 2026-07-19T10:00:00+09:00
+  image: /assets/clinic-appointment-part2-hero.png
+  imageAlt: 작은 로봇 작업자들이 예약 상태 보드의 허용된 전이를 검사하고 같은 변경 내용을 이력 장부에 기록하는 어두운 미니어처 작업대
+  cardDescription: "현재 상태만 저장해서는 알 수 없는 허용된 변화, 변경 사유, 변경 이력을 하나의 계약으로 묶습니다."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-part2-hero.png" alt="작은 로봇 작업자들이 예약 상태 보드의 허용된 전이를 검사하고 같은 변경 내용을 이력 장부에 기록하는 어두운 미니어처 작업대" loading="eager" />
+  <figcaption>상태를 바꾸는 일과 그 이유를 기록하는 일은 하나의 업무입니다. 허용되지 않은 변화는 통과시키지 않고, 허용된 변화는 이력으로 남겨야 합니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-07-19 · 병원 예약 서비스 개발기 · Part 2</p>
+
+[Part 1](/ko/blog/clinic-appointment-part1-not-just-crud/)에서는 병원 예약 한 건이 병원별 업무시간과 의사,
+진료 유형, 장비, 운영 정책을 함께 만족해야 한다는 사실을 살펴봤습니다. 이제 예약이 만들어진 뒤의 업무로
+넘어가 보겠습니다.
+
+직원은 예약 요청을 확정하고, 환자가 도착하면 내원을 확인합니다. 진료실에서는 진료 시작과 완료를
+기록합니다. 환자가 오지 않으면 미내원으로 남기고, 휴진이 생기면 재배정 대기로 옮깁니다. 어느 단계에서든
+취소 버튼을 누를 수 있는 것도 아닙니다. 이미 진료가 끝난 예약을 취소하거나, 확정하지 않은 예약을 내원으로
+바꾸면 데이터에는 반영되더라도 업무 기록은 앞뒤가 맞지 않습니다.
+
+그래서 예약 상태는 `status` 열에 들어갈 문자열 목록으로 끝나지 않습니다. 현재 상태, 상태를 바꾸는 업무 행위, 다음
+상태, 변경 사유와 이력이 함께 있어야 업무 계약이 됩니다. 이번 글에서는 이 계약을 요구사항에서 상태 머신과
+API로 옮기고, 설계와 개발 과정에서 빠진 이력 조회와 취소 사유를 다시 요구사항으로 끌어올린 과정을 따라갑니다.
+
+## 요구사항: 상태 이름보다 먼저 업무 흐름을 적는다
+
+`clinic-appointment`의 [도메인 모델 문서](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/requirements/domain-model.md)는
+예약이 다음 상태를 거친다고 정의합니다.
+
+| 상태 | 병원 업무에서의 의미 | 대표적인 다음 행동 |
+|---|---|---|
+| `PENDING` | 아직 요청하지 않은 가예약 또는 미확정 예약 | 예약 요청, 취소 |
+| `REQUESTED` | 환자가 예약을 요청해 병원 확인을 기다리는 상태 | 확정, 재배정 대기, 취소 |
+| `CONFIRMED` | 병원이 받을 수 있다고 확정한 예약 | 내원 확인, 미내원, 재예약, 재배정 대기, 취소 |
+| `CHECKED_IN` | 환자가 병원에 도착한 상태 | 진료 시작, 취소 |
+| `IN_PROGRESS` | 진료가 진행 중인 상태 | 진료 완료 |
+| `COMPLETED` | 진료가 끝난 상태 | 종료 상태 |
+| `NO_SHOW` | 확정된 환자가 오지 않은 상태 | 종료 상태 |
+| `PENDING_RESCHEDULE` | 휴진이나 운영 변경으로 새 시간을 정해야 하는 상태 | 재배정 확정, 취소 |
+| `RESCHEDULED` | 다른 일정으로 재배정을 마친 상태 | 종료 상태 |
+| `CANCELLED` | 예약이 취소된 상태 | 종료 상태 |
+
+표만 보면 `enum`, 즉 열거형으로 충분해 보입니다. 문제는 표의 두 번째와 세 번째 열입니다. `CONFIRMED`에서
+`CHECKED_IN`으로 가는 것은 허용되지만 `PENDING`에서 곧바로 `CHECKED_IN`으로 가면 안 됩니다.
+`IN_PROGRESS`에서는 `COMPLETED`만 허용하고, 이미 끝난 `COMPLETED`에서는 더 이상 상태를 바꾸지 않습니다.
+
+상태 값만 정의하면 이런 규칙이 컨트롤러와 서비스의 `if` 문으로 흩어집니다. 새로운 경로를 추가할 때 일부만
+고치고 다른 곳을 놓치기 쉽고, 어느 상태에서 무엇이 가능한지 전체 그림을 확인하기도 어렵습니다. 요구사항을 코드로
+옮길 때는 상태 목록과 전이 규칙을 분리해서 표현해야 합니다.
+
+## 설계: 상태와 이벤트를 분리한다
+
+[AppointmentState.kt](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/statemachine/AppointmentState.kt)는
+상태를 Kotlin `sealed class`로 표현합니다. 이름은 데이터베이스와 API에서 사용하지만, 코드에서는
+`AppointmentState.CONFIRMED` 같은 닫힌 타입 계층으로 다룹니다.
+
+상태를 바꾸는 원인은 [AppointmentEvent.kt](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/statemachine/AppointmentEvent.kt)에
+따로 둡니다. `Request`, `Confirm`, `CheckIn`, `StartTreatment`, `Complete`는 추가 정보가 필요 없는 이벤트입니다. 반면
+`Cancel(reason)`과 `RequestReschedule(reason)`은 왜 상태가 바뀌었는지 함께 담습니다.
+
+```kotlin
+sealed class AppointmentEvent : Serializable {
+    data object Confirm : AppointmentEvent()
+    data object CheckIn : AppointmentEvent()
+    data class Cancel(val reason: String) : AppointmentEvent()
+    data class RequestReschedule(val reason: String) : AppointmentEvent()
+}
+```
+
+이 구분 덕분에 “현재 값이 `CANCELLED`다”와 “사용자가 이런 이유로 취소했다”를 같은 정보로 취급하지
+않습니다. 상태는 현재 결과이고, 이벤트는 그 결과를 만든 업무 행위입니다.
+
+[AppointmentStateMachine.kt](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/statemachine/AppointmentStateMachine.kt)는
+`(현재 상태, 이벤트 종류) → 다음 상태` 규칙을 한곳에 모아 둡니다.
+
+```kotlin
+private val transitions = buildMap {
+    put(PENDING to Request::class.java, REQUESTED)
+    put(REQUESTED to Confirm::class.java, CONFIRMED)
+    put(CONFIRMED to CheckIn::class.java, CHECKED_IN)
+    put(CHECKED_IN to StartTreatment::class.java, IN_PROGRESS)
+    put(IN_PROGRESS to Complete::class.java, COMPLETED)
+}
+```
+
+실제 규칙에는 미내원, 재예약, 재배정과 취소 경로도 들어 있습니다. `transition()`은 정의되지 않은 조합을
+받으면 `IllegalStateException`을 던집니다. API의
+[GlobalExceptionHandler](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/config/GlobalExceptionHandler.kt)는
+이 예외를 HTTP `409 Conflict`로 바꿉니다.
+
+`400 Bad Request`와 구분한 이유도 분명합니다. `COMPLETED`라는 상태 이름 자체는 유효한 입력입니다. 다만
+현재 예약이 `PENDING`이면 그 상태로 갈 수 없습니다. 요청 형식이 틀린 것이 아니라 현재 자원의 상태와
+요청이 충돌한 것입니다.
+
+<figure
+  class="bt4k-architecture"
+  data-diagram-title="예약 상태 머신과 변경 이력 기록 흐름"
+>
+  <img src="/assets/clinic-appointment-part2-state-machine-history-01.png" alt="예약의 정상 처리, 미내원, 재배정, 취소 상태 전이와 취소 사유가 컨트롤러에서 상태 머신, 데이터베이스 이력, 도메인 이벤트로 전달되는 과정을 함께 보여주는 어두운 구조도" loading="lazy" />
+  <figcaption>상단은 현재 소스의 상태 전이 규칙을, 하단은 취소 사유가 상태 검증과 이력, 도메인 이벤트에 같은 값으로 전달되는 흐름을 보여줍니다. 초록 테두리 상태는 Timefold Solver가 옮기지 않는 고정 상태입니다.</figcaption>
+</figure>
+
+## 구현: 현재 상태와 변경 이력을 같은 트랜잭션에 저장한다
+
+상태 머신이 다음 상태를 계산했다고 바로 끝나지는 않습니다. [AppointmentService](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/service/AppointmentService.kt)는
+현재 예약을 읽고, 요청한 목표 상태를 이벤트로 바꾸고, 상태 머신으로 전이를 검증합니다. 허용된 전이라면
+현재 상태 변경과 이력 추가를 같은 데이터베이스 트랜잭션에서 실행합니다.
+
+```kotlin
+val currentState = record.status
+val event = parseEvent(targetStatus, reason)
+val nextState = stateMachine.transition(currentState, event)
+
+transaction {
+    appointmentRepository.updateStatus(id, nextState)
+    stateHistoryRepository.save(
+        AppointmentStateHistoryRecord(
+            appointmentId = id,
+            fromState = currentState,
+            toState = nextState,
+            reason = reason,
+        )
+    )
+}
+```
+
+두 작업을 묶지 않으면 현재 상태만 바뀌고 이력이 빠지거나, 이력은 남았는데 현재 상태가 이전 값인 기록이
+생길 수 있습니다. 이력은 부가 로그가 아닙니다. 현재 상태가 어떻게 만들어졌는지 설명하는 업무 데이터입니다.
+
+[AppointmentStateHistory](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/tables/AppointmentStateHistory.kt)는
+변경 전후 상태인 `fromState`와 `toState`, `reason`, 추가 메모인 `note`, 변경 주체인 `changedBy`, 변경 시각인
+`changedAt`을 저장합니다. 현재 구현에서는 `reason`과 `note`, `changedBy`가 선택값입니다. 데이터 모델에
+저장할 항목을 마련하는 것과 모든 상태 변경 과정에서 실제 값을 기록하는 것은 별개의 문제입니다. 이 차이가
+실제 사용 흐름을 점검하면서 드러납니다.
+
+상태 변경을 저장한 뒤에는 `AppointmentDomainEvent.StatusChanged` 또는 `Cancelled`를 발행합니다. 알림이나
+후속 작업은 이 이벤트를 구독할 수 있습니다. 상태 테이블은 현재 결과를 빠르게 읽는 데 쓰고, 이력은 과거
+변화를 설명하며, 도메인 이벤트는 다른 모듈이 변화에 반응하도록 합니다. 셋은 비슷해 보여도 역할이 다릅니다.
+
+## 개발 과정에서 보강한 요구사항: 이력을 확인할 수 있어야 한다
+
+초기 구현은 상태가 바뀔 때마다 변경 전후 값을 이력에 남겼습니다. 기록을 보존한다는 요구사항은 충족한
+것처럼 보였습니다. 하지만 실제 운영 상황을 살펴보니 빈틈이 있었습니다. 병원 직원이 환자의 문의를 받고
+“이 예약은 언제, 왜 취소됐나요?”라고 확인하려 해도 저장된 이력을 볼 방법이 없었습니다.
+
+이 지점에서 요구사항은 “상태 변경 이력을 저장한다”에서 다음과 같이 확장됐습니다.
+
+> 권한이 있는 사용자는 예약의 상태가 언제, 어떤 순서로 바뀌었는지 확인할 수 있어야 한다.
+
+이에 따라 예약별 상태 이력을 조회하는 기능을 추가했습니다. 사용자는 내부 저장 형식을 알 필요 없이 변경
+전후 상태와 사유, 변경 시각을 최근 기록부터 확인합니다. 다른 병원, 즉 다른 테넌트의 예약 이력은 조회하지
+못하도록 기존 접근 범위도 적용했습니다.
+
+새로운 기능을 갑자기 추가한 것이 아닙니다. 개발 과정에서 “기록을 남긴다”는 문장을 운영자가 실제로
+사용할 수 있는 요구사항으로 완성한 것입니다. 데이터가 존재하는 것과 업무 담당자가 그 데이터를 확인할 수
+있는 것은 서로 다른 완료 조건입니다.
+
+## 개발 과정에서 보강한 요구사항: 취소 사유가 끝까지 같아야 한다
+
+취소 처리에서도 비슷한 누락이 발견됐습니다. 초기 구현은 예약을 취소 상태로 바꾸고 정해진 기본 사유를
+기록했습니다. 취소 기능 자체는 동작했지만, 환자 요청인지 병원 사정인지 같은 실제 취소 이유를 입력받지
+않았습니다.
+
+이대로라면 직원이 보는 이력과 환자에게 전달되는 알림이 실제 상황을 설명하지 못합니다. 나중에 한쪽만
+수정되면 변경 이력에는 “환자 요청”, 알림에는 “병원 사정”처럼 서로 다른 이유가 남을 수도 있습니다. 취소
+사유는 화면에 덧붙이는 설명이 아니라, 한 번의 업무 행위를 여러 기능이 함께 해석하는 기준입니다.
+
+그래서 취소할 때 실제 사유를 입력할 수 있게 하고, 값이 없을 때만 기존 기본 사유를 사용하도록
+보강했습니다. 한 번 결정한 사유는 상태 전이 검증, 변경 이력, 후속 알림을 위한 이벤트까지 같은 값으로
+전달합니다. 앞의 다이어그램 하단이 이 흐름을 보여줍니다.
+
+이 변경도 단순한 입력 항목 추가가 아닙니다. 설계와 개발 과정에서 서로 따로 보였던 상태 관리, 감사 기록,
+알림이 사실은 같은 업무 정보를 공유해야 한다는 점을 확인하고 계약을 보완한 사례입니다.
+
+## 상태 계약은 Timefold Solver가 움직일 수 있는 예약도 제한한다
+
+상태 관리는 API 안에서만 끝나지 않습니다. [AppointmentState.PINNED_STATUSES](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/statemachine/AppointmentState.kt)는
+`CONFIRMED`, `CHECKED_IN`, `IN_PROGRESS`, `COMPLETED`를 고정 상태로 정의합니다.
+
+Timefold Solver가 더 좋은 전체 일정을 찾더라도 이 상태의 예약은 옮기지 않습니다. 확정된 환자에게 이미
+약속한 시간을 최적화 점수 때문에 바꾸거나, 접수한 환자와 진행 중인 진료를 다른 시간으로 이동시키면 안
+되기 때문입니다. 완료된 예약은 이미 확정된 과거이므로 다시 배치할 대상도 아닙니다.
+
+여기서 상태는 “화면에 어떤 버튼을 보여 줄까”를 넘어 최적화 탐색 공간의 경계가 됩니다. Timefold Solver가 처리할 수
+있는 예약과 사람이 이미 확정한 업무를 나누는 정책입니다. 어떤 상태를 고정할지는 기술적인 성능 조정이
+아니라 병원 운영 계약으로 결정해야 합니다.
+
+## 추가 요구사항: 상태 변경의 주체까지 채워야 한다
+
+개발 과정에서 이력 조회와 취소 사유는 보강됐습니다. 그래도 현재 모델의 `changedBy`는 선택값이고, 모든
+상태 변경 경로가 변경 주체를 기록하지는 않습니다. 자동 재배정인지, 병원 직원의 수동 처리인지, 환자의
+요청인지 구분해야 한다면 인증 정보와 시스템 주체를 이력 기록까지 전달하는 요구사항이 더 필요합니다.
+
+이것이 이 시리즈에서 따라가려는 개발 과정입니다.
+
+```text
+상태를 관리한다
+  → 허용된 전이를 상태 머신으로 설계한다
+  → 현재 상태와 이력을 함께 저장한다
+  → 실제 사용 흐름에서 조회 경로와 취소 사유 누락을 찾는다
+  → 변경 주체와 테넌트 경계를 다음 요구사항으로 확장한다
+```
+
+구현을 마쳤다는 보고는 요구사항을 닫는 시점이 아닙니다. 실제 사용자가 활용할 수 있는지, 여러 기록이 같은
+업무 사실을 말하는지, 다른 기능이 이 상태를 어떻게 해석하는지 검토해야 다음 누락이 보입니다.
+
+상태 전이가 올바르게 동작해도 예약 자체가 가능한지는 아직 알 수 없습니다. 다음 편에서는 병원별 업무시간과
+휴식시간, 의사 일정, 진료 시간, 장비 사용 가능 여부를 겹쳐 실제로 예약할 수 있는 시간을 계산합니다.
+
+## 구현 코드 살펴보기
+
+- [예약 핵심 모듈](https://github.com/bluetape4k/clinic-appointment/tree/develop/appointment-core): 예약 상태와 상태 머신, 변경 이력 모델을 모아 둔 모듈입니다.
+- [예약 API 모듈](https://github.com/bluetape4k/clinic-appointment/tree/develop/appointment-api): 상태 변경 요청을 받아 업무 흐름을 실행하는 API 모듈입니다.
+- [예약 상태 머신](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/statemachine/AppointmentStateMachine.kt): 현재 상태와 이벤트에 따라 허용할 다음 상태를 결정합니다.
+- [예약 서비스](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/service/AppointmentService.kt): 상태 검증과 예약 변경, 변경 이력 저장을 하나의 업무 흐름으로 연결합니다.
+
+## 시리즈 링크
+
+- [Part 1: 병원 예약은 CRUD로 끝나지 않는다](/ko/blog/clinic-appointment-part1-not-just-crud/)
+- **Part 2: 예약 상태는 enum이 아니다**
+- Part 3 예정: 병원마다 다른 업무시간과 자원으로 예약 가능 시간을 계산하기
+- Part 4 예정: 한 건의 예약 가능 시간 조회와 전체 일정 최적화는 다르다
+- Part 5 예정: 병원 업무 규칙을 Timefold Constraint로 번역하기
+- Part 6 예정: 휴진과 장비 고장은 예약 설계를 어떻게 바꾸는가
+- Part 7 예정: 완성 뒤가 진짜 시작이다
