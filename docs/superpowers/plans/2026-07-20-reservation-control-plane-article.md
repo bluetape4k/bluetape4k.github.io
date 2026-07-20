@@ -213,15 +213,15 @@ Do not create the English article until the user reviews the Korean route and ap
 - Read: `public/assets/clinic-appointment-part4-closure-reschedule-sequence-02.svg`
 - Read: `/Users/debop/work/bluetape4k/bluetape4k-workshop/commerce/reservation-control-plane/src/main/kotlin/io/bluetape4k/workshop/commerce/reservation/**`
 
-- [ ] **Step 1: Record the shared dark visual contract**
+- [x] **Step 1: Record the shared dark visual contract**
 
 Use the recent navy/charcoal canvas, low-saturation cards, `Architects Daughter` titles, `Comic Mono` details, muted blue calls, olive state changes, teal returns, amber lock/metadata work, and muted red failures. Diagram labels stay English; Korean prose supplies captions.
 
-- [ ] **Step 2: Pin the Architecture source model**
+- [x] **Step 2: Pin the Architecture source model**
 
 The static component set is exactly: `Clients`, `Reservation HTTP API`, `Node-local bulkhead`, `Redis semaphore`, `Redis suppression lock`, `PostgreSQL authority`, `Expiry sweeper`, and `Notification worker`. The PostgreSQL boundary contains idempotency, capacity/hold, waitlist/offer, audit, and notification outbox responsibilities.
 
-- [ ] **Step 3: Pin the two time-ordered source models**
+- [x] **Step 3: Pin the two time-ordered source models**
 
 Sequence 1 uses Alice, Bob, Reservation API, Local/Redis Gate, and PostgreSQL. Sequence 2 uses Alice, Bob, Reservation API, Command/Handoff Service, and PostgreSQL. Do not add participants that do not carry a visible message.
 
@@ -231,11 +231,11 @@ Sequence 1 uses Alice, Bob, Reservation API, Local/Redis Gate, and PostgreSQL. S
 - Create: `public/assets/reservation-control-plane-architecture-01.svg`
 - Create: `public/assets/reservation-control-plane-architecture-01.png`
 
-- [ ] **Step 1: Create the SVG authority map**
+- [x] **Step 1: Create the SVG authority map**
 
 Use a wide `1920x1200` viewBox with three horizontal responsibility regions: request edge, execution guards, and PostgreSQL authority/background work. Include an in-image legend defining solid blue `required request path`, dashed amber `advisory Redis path`, and dashed teal `fallback keeps PostgreSQL authority`. Keep every connector orthogonal with rounded corners and explicit fixed-size per-color markers.
 
-- [ ] **Step 2: Normalize, parse, and render the Architecture**
+- [x] **Step 2: Normalize, parse, and render the Architecture**
 
 Run:
 
@@ -247,15 +247,15 @@ cairosvg public/assets/reservation-control-plane-architecture-01.svg -o public/a
 
 Expected: normalization reports `text_hazards=0` and `code_without_highlight=0`, XML parsing exits 0, and the PNG is `3840x2400`.
 
-- [ ] **Step 3: Run Architecture connector audits**
+- [x] **Step 3: Run Architecture connector audits**
 
 Run connector, geometry with `--fail-diagonal`, endpoint, and mixed-corner audits against the SVG. Expected: meaningful nonzero card/connector counts, `shared_segments=0`, label collision counts 0, and `failures=0`.
 
-- [ ] **Step 4: Inspect the full-size Architecture PNG**
+- [x] **Step 4: Inspect the full-size Architecture PNG**
 
 Open the PNG at full size. Confirm that Redis is visually advisory, PostgreSQL is the strongest authority boundary, labels are readable at article scale, connector endpoints are perpendicular, arrowheads match their lines, and margins are balanced.
 
-- [ ] **Step 5: Commit the Architecture pair**
+- [x] **Step 5: Commit the Architecture pair**
 
 Stage only the Architecture SVG/PNG and this plan's checked Task 5-6 evidence. Commit with a Lore message recording the dark style and authority-boundary decision.
 
@@ -265,23 +265,23 @@ Stage only the Architecture SVG/PNG and this plan's checked Task 5-6 evidence. C
 - Create: `public/assets/reservation-control-plane-last-seat-retry-sequence-02.svg`
 - Create: `public/assets/reservation-control-plane-last-seat-retry-sequence-02.png`
 
-- [ ] **Step 1: Create the Sequence SVG**
+- [x] **Step 1: Create the Sequence SVG**
 
 Use a dark `2400x1760` viewBox and exactly five participant headers. Include lifelines, activation bars, transparent chronological frames, and nine visible numbered label pills for: concurrent holds, local admission, Redis unavailable fallback, idempotency acquisition, Alice CAS/hold success, Bob 0-row failure, Alice commit plus lost response, same-key retry, and PostgreSQL Replay without a second capacity increment.
 
-- [ ] **Step 2: Normalize, parse, and render Sequence 1**
+- [x] **Step 2: Normalize, parse, and render Sequence 1**
 
 Run text normalization, `xmllint`, and CairoSVG at scale 2. Expected PNG dimensions: `4800x3520`.
 
-- [ ] **Step 3: Run common and sequence audits**
+- [x] **Step 3: Run common and sequence audits**
 
 Run connector, geometry, endpoint, mixed-corner, and `diagram-sequence-style-audit.py`. Expected: five participants, nine visible numbered messages, nonzero activations, a transparent Redis fallback frame, explicit per-color markers, collision counts 0, and `failures=0`.
 
-- [ ] **Step 4: Inspect the full-size Sequence 1 PNG**
+- [x] **Step 4: Inspect the full-size Sequence 1 PNG**
 
 Confirm Alice and Bob calls remain visually distinct, Bob's failed CAS is muted red, Alice's commit/replay is readable, the timeout is not mistaken for transaction rollback, and no label pill covers a message line or frame border.
 
-- [ ] **Step 5: Commit the Sequence 1 pair**
+- [x] **Step 5: Commit the Sequence 1 pair**
 
 Stage only the Sequence 1 SVG/PNG and checked Task 7 evidence. Commit with a Lore message recording the PostgreSQL authority invariant.
 
@@ -291,23 +291,23 @@ Stage only the Sequence 1 SVG/PNG and checked Task 7 evidence. Commit with a Lor
 - Create: `public/assets/reservation-control-plane-waitlist-handoff-sequence-03.svg`
 - Create: `public/assets/reservation-control-plane-waitlist-handoff-sequence-03.png`
 
-- [ ] **Step 1: Create the Sequence SVG**
+- [x] **Step 1: Create the Sequence SVG**
 
 Use a dark `2400x1980` viewBox and exactly five participant headers. Include ten visible numbered label pills for Bob waitlist join, Alice cancel, resource `FOR UPDATE`, hold cancellation, FIFO oldest waiter selection, `ACTIVE` offer plus outbox enqueue and commit, Bob accept, owner/state/revision/expiry checks, accepted state transitions plus confirmed hold, and final `occupiedCount = 1`. Add one transparent `else no waiter` branch that releases capacity.
 
-- [ ] **Step 2: Normalize, parse, and render Sequence 2**
+- [x] **Step 2: Normalize, parse, and render Sequence 2**
 
 Run text normalization, `xmllint`, and CairoSVG at scale 2. Expected PNG dimensions: `4800x3960`.
 
-- [ ] **Step 3: Run common and sequence audits**
+- [x] **Step 3: Run common and sequence audits**
 
 Run connector, geometry, endpoint, mixed-corner, and sequence-style audits. Expected: five participants, ten visible numbered messages, nonzero activations, a transparent waiter/else frame, explicit per-color markers, collision counts 0, and `failures=0`.
 
-- [ ] **Step 4: Inspect the full-size Sequence 2 PNG**
+- [x] **Step 4: Inspect the full-size Sequence 2 PNG**
 
 Confirm the resource lock precedes hold/waitlist/offer changes, the no-waiter release is subordinate to the Bob handoff path, the notification enqueue remains inside the transaction, and `occupiedCount = 1` is visible before and after acceptance.
 
-- [ ] **Step 5: Commit the Sequence 2 pair**
+- [x] **Step 5: Commit the Sequence 2 pair**
 
 Stage only the Sequence 2 SVG/PNG and checked Task 8 evidence. Commit with a Lore message recording the ownership-transfer invariant.
 
@@ -316,11 +316,11 @@ Stage only the Sequence 2 SVG/PNG and checked Task 8 evidence. Commit with a Lor
 **Files:**
 - Modify: `src/content/docs/ko/blog/reservation-control-plane-postgresql-authority.mdx`
 
-- [ ] **Step 1: Add the continuous example scenario**
+- [x] **Step 1: Add the continuous example scenario**
 
 Add a concrete section after the introductory problem statement with capacity 1 and example resource revision 42. State explicitly that 42 is illustrative. Carry Alice and Bob through concurrent hold, Redis fallback, Alice timeout/replay, Bob waitlist, Alice cancel, and Bob offer acceptance.
 
-- [ ] **Step 2: Embed the Architecture after the scenario**
+- [x] **Step 2: Embed the Architecture after the scenario**
 
 Use:
 
@@ -331,15 +331,15 @@ Use:
 </figure>
 ```
 
-- [ ] **Step 3: Embed Sequence 1 beside the last-seat explanation**
+- [x] **Step 3: Embed Sequence 1 beside the last-seat explanation**
 
 Embed `/assets/reservation-control-plane-last-seat-retry-sequence-02.png` at the end of the conditional-update section. The caption must state that timeout changes client knowledge, not the committed database outcome.
 
-- [ ] **Step 4: Embed Sequence 2 beside the handoff explanation**
+- [x] **Step 4: Embed Sequence 2 beside the handoff explanation**
 
 Embed `/assets/reservation-control-plane-waitlist-handoff-sequence-03.png` after the paragraph explaining why acceptance does not increment capacity. The caption must state that the occupied slot is transferred rather than released and reacquired.
 
-- [ ] **Step 5: Re-run fact and Korean naturalness checks**
+- [x] **Step 5: Re-run fact and Korean naturalness checks**
 
 Verify revision 42 remains illustrative, message order matches source, `occupiedCount` claims match the service code, and the new section does not repeat later explanations verbatim. Run the placeholder/unpublished-route scan and `git diff --check`.
 
@@ -349,21 +349,23 @@ Verify revision 42 remains illustrative, message order matches source, `occupied
 - Verify: `src/content/docs/ko/blog/reservation-control-plane-postgresql-authority.mdx`
 - Verify: `dist/ko/blog/reservation-control-plane-postgresql-authority/index.html`
 
-- [ ] **Step 1: Build the site**
+- [x] **Step 1: Build the site**
 
 Run `npm run build`. Expected: Astro check reports 0 errors, 0 warnings, and 0 hints; the site builds the Korean route.
 
-- [ ] **Step 2: Verify all three rendered assets**
+- [x] **Step 2: Verify all three rendered assets**
 
 Check the built HTML contains all three `/assets/reservation-control-plane-*.png` paths, the title, `PostgreSQL`, `Redis`, `Alice`, and `Bob`.
 
-- [ ] **Step 3: Inspect the local article route**
+- [x] **Step 3: Inspect the local article route**
 
 Open `http://127.0.0.1:4324/ko/blog/reservation-control-plane-postgresql-authority/`. Confirm the three diagrams appear in A-layout order, remain readable at article width, and produce no browser console errors.
 
-- [ ] **Step 4: Stop at the revised Korean review gate**
+- [x] **Step 4: Stop at the revised Korean review gate**
 
 Keep English localization, push, PR, merge, and deployment pending until the user approves the revised Korean prose and dark visuals.
+
+Evidence (2026-07-20): all three SVGs passed connector, geometry, endpoint, and mixed-corner audits; both sequence SVGs passed the sequence-style audit. PNG dimensions are `3840x2400`, `4800x3520`, and `4800x3960`. `npm run build` completed with Astro diagnostics at 0 errors, 0 warnings, and 0 hints. The local `4324` route loaded all three images at article width; the only browser warning was the expected giscus message for a post without an existing discussion.
 
 ### Task 11: Localize and verify the English article after Korean approval
 

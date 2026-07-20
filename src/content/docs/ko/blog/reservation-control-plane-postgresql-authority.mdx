@@ -30,6 +30,24 @@ blog:
 
 PostgreSQL과 Redis 중 어느 쪽이 더 좋은지 비교하려는 예제가 아닙니다. Redis 장애가 예약 정합성 장애로 번지지 않도록 둘의 책임을 분리합니다.
 
+## 하나의 예제로 전체 흐름을 먼저 보자
+
+이 글에서는 정원이 1인 자원을 두고 Alice와 Bob이 경쟁하는 상황을 계속 사용합니다. 설명을 쉽게 하려고 현재 resource revision을 `42`라고 두겠습니다. `42`는 예제 흐름을 위한 값일 뿐, 코드에 고정된 값은 아닙니다.
+
+1. Alice와 Bob이 revision `42`를 보고 거의 동시에 hold를 요청합니다.
+2. Redis 연결은 실패하지만 node-local 경계를 거쳐 두 요청 모두 PostgreSQL의 검사를 받습니다.
+3. Alice의 조건부 갱신만 성공해 `occupiedCount`가 1이 되고, Bob의 갱신은 0개 행을 바꿉니다.
+4. Alice의 transaction은 commit됐지만 응답이 오는 도중 timeout이 납니다. Alice가 같은 `Idempotency-Key`로 다시 보내면 저장된 응답을 재생하며 수량은 다시 증가하지 않습니다.
+5. Bob은 FIFO waitlist에 들어갑니다. 이후 Alice가 hold를 취소하면 자리를 비우지 않고 Bob에게 `ACTIVE` offer를 만듭니다.
+6. Bob이 offer의 소유권, 상태, revision, 만료 검사를 통과해 수락하면 confirmed hold의 새 소유자가 됩니다. `occupiedCount`는 처음부터 끝까지 1입니다.
+
+각 장치는 같은 일을 하지 않습니다. local bulkhead와 Redis는 PostgreSQL 앞의 실행량을 줄이고, PostgreSQL transaction은 수량·소유권·멱등 응답을 함께 결정합니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/reservation-control-plane-architecture-01.png" alt="Clients와 Reservation HTTP API, node-local bulkhead, Redis 보조 제어, PostgreSQL 최종 권한, background worker의 책임 경계를 보여주는 dark architecture diagram" loading="lazy" />
+  <figcaption>Redis는 경합을 줄이는 보조 경계이고, 수량·상태·소유권·재생 응답은 PostgreSQL이 최종 결정합니다.</figcaption>
+</figure>
+
 ## 마지막 한 자리는 한 번의 조건부 갱신으로 지킨다
 
 예약 생성 전에 현재 수량을 읽고 애플리케이션 코드에서 `available > 0`을 검사하면, 두 요청이 같은 값을 읽을 수 있습니다. 읽기와 갱신 사이에 틈이 있기 때문입니다.
@@ -48,6 +66,11 @@ PostgreSQL과 Redis 중 어느 쪽이 더 좋은지 비교하려는 예제가 �
 
 여기서 row lock이 모든 일을 하는 것은 아닙니다. 새 hold의 마지막 자리 경쟁은 revision을 포함한 조건부 갱신으로 막습니다. 반대로 취소, 만료, waitlist 승격처럼 이미 점유한 자리를 다른 소유자에게 넘길 때는 resource row를 먼저 잠급니다. 두 방식은 역할이 다르지만 최종 판단 장소는 같습니다.
 
+<figure class="bt4k-architecture">
+  <img src="/assets/reservation-control-plane-last-seat-retry-sequence-02.png" alt="Alice와 Bob의 마지막 자리 경쟁, Redis 장애 시 local fallback, PostgreSQL 조건부 갱신, timeout 뒤 같은 idempotency key 재시도와 replay를 보여주는 dark sequence diagram" loading="lazy" />
+  <figcaption>timeout은 클라이언트가 결과를 아는 시점을 바꿀 뿐, 이미 commit된 데이터베이스 결과를 되돌리지 않습니다. 같은 key의 재시도는 수량을 다시 올리지 않고 저장된 응답을 재생합니다.</figcaption>
+</figure>
+
 ## hold를 취소할 때 자리를 바로 비우지 않을 수도 있다
 
 예약 제어 플레인에는 수명이 다른 세 가지 객체가 있습니다.
@@ -61,6 +84,11 @@ PostgreSQL과 Redis 중 어느 쪽이 더 좋은지 비교하려는 예제가 �
 hold를 취소하거나 만료시켰다고 해서 항상 `occupiedCount`를 바로 줄이면 안 됩니다. 기다리는 사용자가 있다면 그 자리는 FIFO 첫 번째 대기자에게 넘어가야 합니다. [`ReservationCapacityHandoffService.promoteOrRelease()`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/main/kotlin/io/bluetape4k/workshop/commerce/reservation/application/ReservationCapacityHandoffService.kt)는 가장 오래 기다린 entry를 offer로 승격하고, 대기자가 없을 때만 capacity를 반환합니다.
 
 이때 offer를 수락하면서 `occupiedCount`를 다시 올리지 않습니다. 자리는 이미 이전 hold가 점유하고 있었고, 소유권만 waitlist의 다음 사용자에게 넘겼기 때문입니다. 한 자리를 반환했다가 다시 얻는 두 동작으로 나누면 그 사이에 다른 요청이 끼어들 수 있습니다.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/reservation-control-plane-waitlist-handoff-sequence-03.png" alt="Alice의 hold 취소, resource row 선점 잠금, Bob을 위한 FIFO offer 생성, 소유권 검증과 confirmed hold 전환을 보여주는 dark sequence diagram" loading="lazy" />
+  <figcaption>점유한 자리를 반환했다가 다시 얻는 것이 아니라 Alice에서 Bob으로 넘깁니다. 대기자가 없을 때만 `occupiedCount`를 줄입니다.</figcaption>
+</figure>
 
 [`WaitlistCommandService`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/main/kotlin/io/bluetape4k/workshop/commerce/reservation/application/WaitlistCommandService.kt)는 자리를 넘기는 transaction마다 resource row를 먼저 잠근 뒤 waitlist와 offer를 읽습니다. 그리고 `X-Reservation-Owner`에서 만든 digest가 일치하는지, offer가 아직 `ACTIVE`인지, 만료 전인지, revision이 같은지 확인합니다. offer URL을 알았다는 이유만으로 다른 사용자의 자리를 수락할 수는 없습니다.
 
