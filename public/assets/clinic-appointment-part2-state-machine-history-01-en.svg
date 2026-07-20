@@ -1,0 +1,207 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1180" viewBox="0 0 2000 1180" role="img" aria-labelledby="title desc">
+  <title id="title">Appointment state machine and history write flow</title>
+  <desc id="desc">The appointment lifecycle accepts only mapped events. Every accepted change updates the current state and appends an audit history record. A cancellation reason flows through the controller, state event, history, and domain event as one value.</desc>
+  <defs>
+    <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07101f" />
+      <stop offset="0.55" stop-color="#0c1730" />
+      <stop offset="1" stop-color="#10142a" />
+    </linearGradient>
+    <linearGradient id="machineFill" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#11243e" />
+      <stop offset="1" stop-color="#151b35" />
+    </linearGradient>
+    <linearGradient id="historyFill" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#152e3d" />
+      <stop offset="1" stop-color="#17213a" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#020617" flood-opacity="0.6" />
+    </filter>
+    <marker id="arrowBlue" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 1 1 L 13 7 L 1 13 Z" fill="#58a6c9" />
+    </marker>
+    <marker id="arrowGreen" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 1 1 L 13 7 L 1 13 Z" fill="#8da66b" />
+    </marker>
+    <marker id="arrowAmber" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 1 1 L 13 7 L 1 13 Z" fill="#c79a58" />
+    </marker>
+    <marker id="arrowRed" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 1 1 L 13 7 L 1 13 Z" fill="#c46b6b" />
+    </marker>
+    <style>
+      .title { font-family: 'Architects Daughter', cursive; font-size: 46px; font-weight: 700; fill: #f8fafc; }
+      .subtitle { font-family: 'Comic Mono', monospace; font-size: 20px; fill: #a9b8d4; }
+      .panel-title { font-family: 'Architects Daughter', cursive; font-size: 27px; font-weight: 700; fill: #f8fafc; }
+      .state { font-family: 'Comic Mono', monospace; font-size: 19px; font-weight: 700; fill: #f8fafc; }
+      .state-small { font-family: 'Comic Mono', monospace; font-size: 16px; font-weight: 700; fill: #f8fafc; }
+      .label { font-family: 'Comic Mono', 'Noto Sans KR', monospace; font-size: 16px; fill: #d7e2f4; }
+      .small { font-family: 'Comic Mono', 'Noto Sans KR', monospace; font-size: 14px; fill: #a9b8d4; }
+      .small-ko { font-family: 'Comic Mono', monospace; font-size: 14px; fill: #a9b8d4; }
+      .ko { font-family: 'Comic Mono', monospace; font-size: 15px; fill: #afbed4; }
+      .connector { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: 4; }
+      .normal { stroke: #58a6c9; marker-end: url(#arrowBlue); }
+      .accepted { stroke: #8da66b; marker-end: url(#arrowGreen); }
+      .reason { stroke: #c79a58; marker-end: url(#arrowAmber); }
+      .cancel { stroke: #c46b6b; marker-end: url(#arrowRed); }
+    </style>
+  </defs>
+
+  <rect width="2000" height="1180" rx="32" fill="url(#canvas)" />
+  <rect x="28" y="28" width="1944" height="1124" rx="28" fill="none" stroke="#263a5e" stroke-width="2" />
+
+  <text class="title" x="1000" y="70" text-anchor="middle">Appointment State Is a Contract</text>
+  <text class="subtitle" x="1000" y="106" text-anchor="middle">current state + allowed event + next state + reason + audit history</text>
+
+  <g>
+    <rect x="60" y="140" width="1880" height="570" rx="28" fill="url(#machineFill)" stroke="#2b4168" stroke-width="2" />
+    <text class="panel-title" x="96" y="184">1. Only allowed events can produce the next state</text>
+
+    <path class="connector normal" data-connector="pending-requested" d="M 284 292 H 372" />
+    <path class="connector normal" data-connector="requested-confirmed" d="M 606 292 H 694" />
+    <path class="connector accepted" data-connector="confirmed-checked-in" d="M 928 292 H 1016" />
+    <path class="connector accepted" data-connector="checked-in-progress" d="M 1250 292 H 1338" />
+    <path class="connector accepted" data-connector="progress-completed" d="M 1572 292 H 1660" />
+
+    <g filter="url(#shadow)">
+      <rect class="card" x="74" y="232" width="210" height="120" rx="20" fill="#102a40" stroke="#58a6c9" stroke-width="2" />
+      <text class="state" x="179" y="282" text-anchor="middle">PENDING</text>
+      <text class="ko" x="179" y="315" text-anchor="middle">tentative · unconfirmed</text>
+    </g>
+    <g filter="url(#shadow)">
+      <rect class="card" x="376" y="232" width="230" height="120" rx="20" fill="#122a43" stroke="#58a6c9" stroke-width="2" />
+      <text class="state" x="491" y="282" text-anchor="middle">REQUESTED</text>
+      <text class="ko" x="491" y="315" text-anchor="middle">appointment requested</text>
+    </g>
+    <g filter="url(#shadow)">
+      <rect class="card" x="698" y="232" width="230" height="120" rx="20" fill="#18344a" stroke="#8da66b" stroke-width="3" />
+      <text class="state" x="813" y="282" text-anchor="middle">CONFIRMED</text>
+      <text class="ko" x="813" y="315" text-anchor="middle">confirmed · pinned</text>
+    </g>
+    <g filter="url(#shadow)">
+      <rect class="card" x="1020" y="232" width="230" height="120" rx="20" fill="#203747" stroke="#8da66b" stroke-width="3" />
+      <text class="state" x="1135" y="282" text-anchor="middle">CHECKED_IN</text>
+      <text class="ko" x="1135" y="315" text-anchor="middle">checked in · pinned</text>
+    </g>
+    <g filter="url(#shadow)">
+      <rect class="card" x="1342" y="232" width="230" height="120" rx="20" fill="#273b43" stroke="#8da66b" stroke-width="3" />
+      <text class="state-small" x="1457" y="282" text-anchor="middle">IN_PROGRESS</text>
+      <text class="ko" x="1457" y="315" text-anchor="middle">in treatment · pinned</text>
+    </g>
+    <g filter="url(#shadow)">
+      <rect class="card" x="1664" y="232" width="262" height="120" rx="20" fill="#2e403d" stroke="#8da66b" stroke-width="3" />
+      <text class="state" x="1795" y="282" text-anchor="middle">COMPLETED</text>
+      <text class="ko" x="1795" y="315" text-anchor="middle">completed · pinned</text>
+    </g>
+
+    <g>
+      <rect x="288" y="250" width="80" height="30" rx="10" fill="#0c1a2c" stroke="#58a6c9" />
+      <text class="small" x="328" y="271" text-anchor="middle">Request</text>
+      <rect x="610" y="250" width="80" height="30" rx="10" fill="#0c1a2c" stroke="#58a6c9" />
+      <text class="small" x="650" y="271" text-anchor="middle">Confirm</text>
+      <rect x="932" y="250" width="80" height="30" rx="10" fill="#0c1a2c" stroke="#8da66b" />
+      <text class="small" x="972" y="271" text-anchor="middle">CheckIn</text>
+      <rect x="1254" y="250" width="80" height="30" rx="10" fill="#0c1a2c" stroke="#8da66b" />
+      <text class="small" x="1294" y="271" text-anchor="middle">Start</text>
+      <rect x="1576" y="250" width="80" height="30" rx="10" fill="#0c1a2c" stroke="#8da66b" />
+      <text class="small" x="1616" y="271" text-anchor="middle">Complete</text>
+    </g>
+
+    <path class="connector normal" data-connector="confirmed-no-show" d="M 760 352 V 386 Q 760 400 746 400 H 520 Q 506 400 506 414 V 440" />
+    <path class="connector reason" data-connector="requested-reschedule" d="M 376 330 H 344 Q 330 330 330 344 V 576 Q 330 590 344 590 H 926 Q 940 590 940 576 V 560" />
+    <path class="connector reason" data-connector="confirmed-reschedule" d="M 860 352 V 440" />
+    <path class="connector reason" data-connector="reschedule-confirmed" d="M 1120 500 H 1240" />
+    <path class="connector normal" data-connector="confirmed-pending" d="M 813 232 V 208 Q 813 194 799 194 H 193 Q 179 194 179 208 V 230" />
+
+    <g filter="url(#shadow)">
+      <rect class="card" x="376" y="440" width="260" height="120" rx="20" fill="#2e2939" stroke="#c79a58" stroke-width="2" />
+      <text class="state" x="506" y="490" text-anchor="middle">NO_SHOW</text>
+      <text class="ko" x="506" y="523" text-anchor="middle">absent after confirmation</text>
+    </g>
+    <g filter="url(#shadow)">
+      <rect class="card" x="760" y="440" width="360" height="120" rx="20" fill="#3c2d32" stroke="#c79a58" stroke-width="3" />
+      <text class="state-small" x="940" y="490" text-anchor="middle">PENDING_RESCHEDULE</text>
+      <text class="ko" x="940" y="523" text-anchor="middle">awaiting reassignment after closure</text>
+    </g>
+    <g filter="url(#shadow)">
+      <rect class="card" x="1244" y="440" width="280" height="120" rx="20" fill="#3a3330" stroke="#c79a58" stroke-width="2" />
+      <text class="state" x="1384" y="490" text-anchor="middle">RESCHEDULED</text>
+      <text class="ko" x="1384" y="523" text-anchor="middle">reassignment completed</text>
+    </g>
+    <g filter="url(#shadow)">
+      <rect class="card" x="1664" y="440" width="262" height="120" rx="20" fill="#422a34" stroke="#c46b6b" stroke-width="3" />
+      <text class="state" x="1795" y="490" text-anchor="middle">CANCELLED</text>
+      <text class="ko" x="1795" y="523" text-anchor="middle">cancellation reason preserved</text>
+    </g>
+
+    <rect x="100" y="606" width="1540" height="60" rx="18" fill="#251e2b" stroke="#6f4c5c" stroke-width="2" />
+    <text class="label" x="130" y="632">Cancel(reason)</text>
+    <text class="small-ko" x="130" y="653">Allowed only from PENDING · REQUESTED · CONFIRMED · CHECKED_IN · PENDING_RESCHEDULE</text>
+    <path class="connector cancel" data-connector="cancellable-cancelled" d="M 1640 636 H 1781 Q 1795 636 1795 622 V 560" />
+
+    <rect x="90" y="365" width="230" height="34" rx="11" fill="#0c1a2c" stroke="#58a6c9" />
+    <text class="small" x="205" y="388" text-anchor="middle">Reschedule to PENDING</text>
+    <rect x="406" y="404" width="200" height="30" rx="10" fill="#0c1a2c" stroke="#58a6c9" />
+    <text class="small" x="506" y="425" text-anchor="middle">MarkNoShow</text>
+    <rect x="1134" y="464" width="96" height="30" rx="10" fill="#0c1a2c" stroke="#c79a58" />
+    <text class="small" x="1182" y="485" text-anchor="middle">Confirm</text>
+  </g>
+
+  <g>
+    <rect x="60" y="742" width="1880" height="350" rx="28" fill="url(#historyFill)" stroke="#2b4168" stroke-width="2" />
+    <text class="panel-title" x="96" y="790">2. One cancellation reason flows unchanged through state, history, and event</text>
+
+    <path class="connector reason" data-connector="controller-reason" d="M 346 900 H 426" />
+    <path class="connector reason" data-connector="reason-machine" d="M 710 900 H 790" />
+    <path class="connector accepted" data-connector="machine-transaction" d="M 1074 900 H 1154" />
+    <path class="connector accepted" data-connector="transaction-event" d="M 1508 900 H 1588" />
+
+    <g filter="url(#shadow)">
+      <rect class="card" x="86" y="836" width="260" height="128" rx="20" fill="#12243e" stroke="#58a6c9" stroke-width="2" />
+      <text class="state-small" x="216" y="880" text-anchor="middle">Controller</text>
+      <text class="ko" x="216" y="912" text-anchor="middle">requested reason</text>
+      <text class="small" x="216" y="941" text-anchor="middle">DELETE ?reason=...</text>
+    </g>
+    <g filter="url(#shadow)">
+      <rect class="card" x="430" y="836" width="280" height="128" rx="20" fill="#332c2b" stroke="#c79a58" stroke-width="3" />
+      <text class="state-small" x="570" y="880" text-anchor="middle">effectiveReason</text>
+      <text class="ko" x="570" y="912" text-anchor="middle">input or default value</text>
+      <text class="small-ko" x="570" y="941" text-anchor="middle">resolved exactly once</text>
+    </g>
+    <g filter="url(#shadow)">
+      <rect class="card" x="794" y="836" width="280" height="128" rx="20" fill="#182f43" stroke="#58a6c9" stroke-width="2" />
+      <text class="state-small" x="934" y="880" text-anchor="middle">State machine</text>
+      <text class="ko" x="934" y="912" text-anchor="middle">Cancel(reason)</text>
+      <text class="small-ko" x="934" y="941" text-anchor="middle">409 when transition is denied</text>
+    </g>
+    <g filter="url(#shadow)">
+      <rect class="card" x="1158" y="820" width="350" height="160" rx="20" fill="#213744" stroke="#8da66b" stroke-width="3" />
+      <text class="state-small" x="1333" y="860" text-anchor="middle">Database transaction</text>
+      <rect x="1184" y="882" width="298" height="32" rx="10" fill="#172a39" stroke="#8da66b" />
+      <text class="small" x="1333" y="903" text-anchor="middle">Appointment.status = CANCELLED</text>
+      <rect x="1184" y="926" width="298" height="32" rx="10" fill="#172a39" stroke="#8da66b" />
+      <text class="small" x="1333" y="947" text-anchor="middle">History(from, to, reason)</text>
+    </g>
+    <g filter="url(#shadow)">
+      <rect class="card" x="1592" y="836" width="320" height="128" rx="20" fill="#2d3038" stroke="#8da66b" stroke-width="2" />
+      <text class="state-small" x="1752" y="880" text-anchor="middle">Domain event</text>
+      <text class="ko" x="1752" y="912" text-anchor="middle">Cancelled(reason)</text>
+      <text class="small-ko" x="1752" y="941" text-anchor="middle">source for downstream alerts</text>
+    </g>
+
+    <rect x="108" y="1014" width="1784" height="48" rx="16" fill="#0e1b2d" stroke="#31496d" />
+    <text class="label" x="1000" y="1044" text-anchor="middle">History: fromState | toState | reason | note | changedBy | changedAt   /   newest first: changedAt DESC, id DESC</text>
+  </g>
+
+  <g>
+    <circle cx="680" cy="1122" r="7" fill="#58a6c9" />
+    <text class="small-ko" x="697" y="1128">normal state transition</text>
+    <circle cx="890" cy="1122" r="7" fill="#8da66b" />
+    <text class="small-ko" x="907" y="1128">pinned or persisted</text>
+    <circle cx="1180" cy="1122" r="7" fill="#c79a58" />
+    <text class="small-ko" x="1197" y="1128">reassignment or reason flow</text>
+    <circle cx="1450" cy="1122" r="7" fill="#c46b6b" />
+    <text class="small-ko" x="1467" y="1128">cancellation</text>
+  </g>
+</svg>

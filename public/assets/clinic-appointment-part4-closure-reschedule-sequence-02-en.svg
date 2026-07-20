@@ -1,0 +1,265 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2600" height="2220" viewBox="0 0 2600 2220" role="img" aria-labelledby="title desc">
+  <title id="title">Two execution paths for closure rescheduling</title>
+  <desc id="desc">When a clinic operator starts closure rescheduling, the workflow chooses between a fast path that calculates and confirms candidates per appointment and a global optimization path that reads every appointment and resource in a date range and compares schedules with Timefold Solver. The two paths are not connected automatically.</desc>
+  <defs>
+    <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07101f" />
+      <stop offset="0.58" stop-color="#0c1730" />
+      <stop offset="1" stop-color="#10142a" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="7" stdDeviation="8" flood-color="#020617" flood-opacity="0.55" />
+    </filter>
+    <marker id="arrow-blue" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#5f9fc4" stroke="#5f9fc4" stroke-dasharray="none" />
+    </marker>
+    <marker id="arrow-green" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#88a86b" stroke="#88a86b" stroke-dasharray="none" />
+    </marker>
+    <marker id="arrow-amber" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#c99a58" stroke="#c99a58" stroke-dasharray="none" />
+    </marker>
+    <style>
+      .title { font-family: 'Architects Daughter', cursive; font-size: 46px; font-weight: 700; fill: #f8fafc; }
+      .subtitle { font-family: 'Comic Mono', monospace; font-size: 20px; fill: #a9b8d4; }
+      .frame { fill: none; stroke: #2b4168; stroke-width: 2; }
+      .participantCard { fill: #13233b; stroke: #5b789d; stroke-width: 2; filter: url(#shadow); }
+      .participantTitle { font-family: 'Architects Daughter', cursive; font-size: 20px; font-weight: 700; fill: #f8fafc; }
+      .role { font-family: 'Comic Mono', monospace; font-size: 13px; fill: #9fb0ca; }
+      .lifeline { stroke: #52647f; stroke-width: 2; stroke-dasharray: 8 9; }
+      .activation { fill: #203b4d; stroke: #73a5bd; stroke-width: 1.6; }
+      .activationGreen { fill: #30483f; stroke: #88a86b; stroke-width: 1.6; }
+      .activationAmber { fill: #493a27; stroke: #c99a58; stroke-width: 1.6; }
+      .seq { fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+      .seqReturn { fill: none; stroke-width: 2.7; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 9 7; }
+      .labelPill { fill: #101b30; stroke-width: 1.5; }
+      .labelText { font-family: 'Comic Mono', monospace; font-size: 16px; font-weight: 700; }
+      .badgeText { font-family: 'Comic Mono', monospace; font-size: 14px; font-weight: 700; }
+      .altBox { fill: none; stroke: #71839f; stroke-width: 2.2; stroke-dasharray: 12 8; }
+      .branchDivider { stroke: #71839f; stroke-width: 2; stroke-dasharray: 12 8; }
+      .loopBox { fill: none; stroke: #5f9fc4; stroke-width: 2; stroke-dasharray: 12 8; }
+      .frameLabel { fill: #101b30; stroke-width: 1.5; }
+      .frameText { font-family: 'Comic Mono', monospace; font-size: 16px; font-weight: 700; }
+      .note { font-family: 'Comic Mono', monospace; font-size: 17px; fill: #c7d3e7; }
+      .noteStrong { font-family: 'Architects Daughter', cursive; font-size: 19px; font-weight: 700; fill: #f1d6a7; }
+    </style>
+  </defs>
+
+  <rect width="2600" height="2220" rx="34" fill="url(#canvas)" />
+  <rect class="frame" x="30" y="28" width="2540" height="2164" rx="30" />
+  <text class="title" x="1300" y="74" text-anchor="middle">Where Closure Rescheduling Splits into Two Paths</text>
+  <text class="subtitle" x="1300" y="110" text-anchor="middle">Per-appointment candidate confirmation and Timefold global comparison have separate entry points</text>
+
+  <!-- participants and lifelines -->
+  <g id="participant-operator">
+    <rect class="participantCard" x="45" y="145" width="230" height="92" rx="16" />
+    <text class="participant participantTitle" x="160" y="183" text-anchor="middle">Clinic Operator</text>
+    <text class="role" x="160" y="213" text-anchor="middle">admin · automation</text>
+    <line class="lifeline" x1="160" y1="237" x2="160" y2="2070" />
+  </g>
+  <g id="participant-closure-service">
+    <rect class="participantCard" x="365" y="145" width="310" height="92" rx="16" />
+    <text class="participant participantTitle" x="520" y="183" text-anchor="middle">Closure Rescheduler</text>
+    <text class="role" x="520" y="213" text-anchor="middle">ClosureRescheduleService</text>
+    <line class="lifeline" x1="520" y1="237" x2="520" y2="2070" />
+  </g>
+  <g id="participant-slot-service">
+    <rect class="participantCard" x="725" y="145" width="310" height="92" rx="16" />
+    <text class="participant participantTitle" x="880" y="183" text-anchor="middle">Availability Calculator</text>
+    <text class="role" x="880" y="213" text-anchor="middle">SlotCalculationService</text>
+    <line class="lifeline" x1="880" y1="237" x2="880" y2="2070" />
+  </g>
+  <g id="participant-appointment-data">
+    <rect class="participantCard" x="1085" y="145" width="310" height="92" rx="16" />
+    <text class="participant participantTitle" x="1240" y="183" text-anchor="middle">Appointment &amp; Candidate Data</text>
+    <text class="role" x="1240" y="213" text-anchor="middle">appointments · history · candidates</text>
+    <line class="lifeline" x1="1240" y1="237" x2="1240" y2="2070" />
+  </g>
+  <g id="participant-solver-service">
+    <rect class="participantCard" x="1445" y="145" width="310" height="92" rx="16" />
+    <text class="participant participantTitle" x="1600" y="183" text-anchor="middle">Global Optimizer</text>
+    <text class="role" x="1600" y="213" text-anchor="middle">SolverService</text>
+    <line class="lifeline" x1="1600" y1="237" x2="1600" y2="2070" />
+  </g>
+  <g id="participant-schedule-data">
+    <rect class="participantCard" x="1805" y="145" width="310" height="92" rx="16" />
+    <text class="participant participantTitle" x="1960" y="183" text-anchor="middle">Clinic Schedule Data</text>
+    <text class="role" x="1960" y="213" text-anchor="middle">appointments · doctors · equipment</text>
+    <line class="lifeline" x1="1960" y1="237" x2="1960" y2="2070" />
+  </g>
+  <g id="participant-timefold">
+    <rect class="participantCard" x="2165" y="145" width="310" height="92" rx="16" />
+    <text class="participant participantTitle" x="2320" y="183" text-anchor="middle">Timefold Solver</text>
+    <text class="role" x="2320" y="213" text-anchor="middle">score-based global search</text>
+    <line class="lifeline" x1="2320" y1="237" x2="2320" y2="2070" />
+  </g>
+
+  <!-- branch frame -->
+  <g id="alt-reschedule-paths">
+    <rect class="altBox" x="85" y="285" width="2430" height="1795" rx="22" />
+    <rect class="frameLabel" x="115" y="265" width="360" height="40" rx="20" stroke="#5f9fc4" />
+    <text class="frameText" x="295" y="291" text-anchor="middle" fill="#a8d6ee">alt generate and confirm per appointment</text>
+    <line class="branchDivider" x1="85" y1="1490" x2="2515" y2="1490" />
+    <rect class="frameLabel" x="115" y="1470" width="380" height="40" rx="20" stroke="#c99a58" />
+    <text class="frameText" x="305" y="1496" text-anchor="middle" fill="#f1d6a7">else compare global schedules with Timefold</text>
+  </g>
+
+  <!-- activation bars -->
+  <rect class="activation" x="512" y="350" width="16" height="1090" rx="5" />
+  <rect class="activationGreen" x="872" y="750" width="16" height="150" rx="5" />
+  <rect class="activationGreen" x="1232" y="440" width="16" height="940" rx="5" />
+  <rect class="activationAmber" x="1592" y="1570" width="16" height="470" rx="5" />
+  <rect class="activationGreen" x="1952" y="1660" width="16" height="150" rx="5" />
+  <rect class="activationAmber" x="2312" y="1840" width="16" height="150" rx="5" />
+
+  <!-- fast candidate branch -->
+  <g id="m1">
+    <rect class="labelPill" x="218" y="300" width="244" height="38" rx="19" stroke="#5f9fc4" />
+    <circle cx="239" cy="319" r="14" fill="#173148" stroke="#5f9fc4" />
+    <text class="badgeText" x="239" y="324" text-anchor="middle" fill="#a8d6ee">1</text>
+    <text class="labelText" x="350" y="325" text-anchor="middle" fill="#a8d6ee">request closure rescheduling</text>
+    <path class="seq" d="M 160 360 H 520" stroke="#5f9fc4" marker-end="url(#arrow-blue)" />
+  </g>
+  <g id="m2">
+    <rect class="labelPill" x="690" y="390" width="380" height="38" rx="19" stroke="#5f9fc4" />
+    <circle cx="711" cy="409" r="14" fill="#173148" stroke="#5f9fc4" />
+    <text class="badgeText" x="711" y="414" text-anchor="middle" fill="#a8d6ee">2</text>
+    <text class="labelText" x="890" y="415" text-anchor="middle" fill="#a8d6ee">read active appointments on closure date</text>
+    <path class="seq" d="M 520 450 H 1240" stroke="#5f9fc4" marker-end="url(#arrow-blue)" />
+  </g>
+  <g id="m3">
+    <rect class="labelPill" x="700" y="480" width="360" height="38" rx="19" stroke="#5ab3aa" />
+    <circle cx="721" cy="499" r="14" fill="#173d3e" stroke="#5ab3aa" />
+    <text class="badgeText" x="721" y="504" text-anchor="middle" fill="#a9e4df">3</text>
+    <text class="labelText" x="890" y="505" text-anchor="middle" fill="#a9e4df">affected appointments</text>
+    <path class="seqReturn" d="M 1240 540 H 520" stroke="#5ab3aa" />
+    <polygon points="534,532 520,540 534,548" fill="#5ab3aa" stroke="#5ab3aa" stroke-dasharray="none" data-direct-solid-head="true" />
+  </g>
+  <g id="m4">
+    <rect class="labelPill" x="660" y="570" width="440" height="38" rx="19" stroke="#88a86b" />
+    <circle cx="681" cy="589" r="14" fill="#2c3b32" stroke="#88a86b" />
+    <text class="badgeText" x="681" y="594" text-anchor="middle" fill="#c9dda8">4</text>
+    <text class="labelText" x="890" y="595" text-anchor="middle" fill="#c9dda8">mark pending reschedule and append history</text>
+    <path class="seq" d="M 520 630 H 1240" stroke="#88a86b" marker-end="url(#arrow-green)" />
+  </g>
+
+  <g id="loop-affected-appointments">
+    <rect class="loopBox" x="430" y="690" width="1050" height="420" rx="20" />
+    <rect class="frameLabel" x="458" y="670" width="400" height="38" rx="19" stroke="#5f9fc4" />
+    <text class="frameText" x="658" y="695" text-anchor="middle" fill="#a8d6ee">loop each affected appointment and search date</text>
+  </g>
+  <g id="m5">
+    <rect class="labelPill" x="540" y="710" width="320" height="38" rx="19" stroke="#5f9fc4" />
+    <circle cx="561" cy="729" r="14" fill="#173148" stroke="#5f9fc4" />
+    <text class="badgeText" x="561" y="734" text-anchor="middle" fill="#a8d6ee">5</text>
+    <text class="labelText" x="710" y="735" text-anchor="middle" fill="#a8d6ee">calculate availability</text>
+    <path class="seq" d="M 520 770 H 880" stroke="#5f9fc4" marker-end="url(#arrow-blue)" />
+  </g>
+  <g id="m6">
+    <rect class="labelPill" x="555" y="800" width="290" height="38" rx="19" stroke="#5ab3aa" />
+    <circle cx="576" cy="819" r="14" fill="#173d3e" stroke="#5ab3aa" />
+    <text class="badgeText" x="576" y="824" text-anchor="middle" fill="#a9e4df">6</text>
+    <text class="labelText" x="710" y="825" text-anchor="middle" fill="#a9e4df">bookable times</text>
+    <path class="seqReturn" d="M 880 860 H 520" stroke="#5ab3aa" />
+    <polygon points="534,852 520,860 534,868" fill="#5ab3aa" stroke="#5ab3aa" stroke-dasharray="none" data-direct-solid-head="true" />
+  </g>
+  <g id="m7">
+    <rect class="labelPill" x="690" y="890" width="380" height="38" rx="19" stroke="#88a86b" />
+    <circle cx="711" cy="909" r="14" fill="#2c3b32" stroke="#88a86b" />
+    <text class="badgeText" x="711" y="914" text-anchor="middle" fill="#c9dda8">7</text>
+    <text class="labelText" x="890" y="915" text-anchor="middle" fill="#c9dda8">store candidates with priority</text>
+    <path class="seq" d="M 520 950 H 1240" stroke="#88a86b" marker-end="url(#arrow-green)" />
+  </g>
+  <g id="m8">
+    <rect class="labelPill" x="710" y="980" width="340" height="38" rx="19" stroke="#5ab3aa" />
+    <circle cx="731" cy="999" r="14" fill="#173d3e" stroke="#5ab3aa" />
+    <text class="badgeText" x="731" y="1004" text-anchor="middle" fill="#a9e4df">8</text>
+    <text class="labelText" x="890" y="1005" text-anchor="middle" fill="#a9e4df">stored candidates and priorities</text>
+    <path class="seqReturn" d="M 1240 1040 H 520" stroke="#5ab3aa" />
+    <polygon points="534,1032 520,1040 534,1048" fill="#5ab3aa" stroke="#5ab3aa" stroke-dasharray="none" data-direct-solid-head="true" />
+  </g>
+  <g id="m9">
+    <rect class="labelPill" x="220" y="1120" width="240" height="38" rx="19" stroke="#5ab3aa" />
+    <circle cx="241" cy="1139" r="14" fill="#173d3e" stroke="#5ab3aa" />
+    <text class="badgeText" x="241" y="1144" text-anchor="middle" fill="#a9e4df">9</text>
+    <text class="labelText" x="350" y="1145" text-anchor="middle" fill="#a9e4df">candidates for review</text>
+    <path class="seqReturn" d="M 520 1180 H 160" stroke="#5ab3aa" />
+    <polygon points="174,1172 160,1180 174,1188" fill="#5ab3aa" stroke="#5ab3aa" stroke-dasharray="none" data-direct-solid-head="true" />
+  </g>
+  <g id="m10">
+    <rect class="labelPill" x="205" y="1210" width="270" height="38" rx="19" stroke="#5f9fc4" />
+    <circle cx="226" cy="1229" r="14" fill="#173148" stroke="#5f9fc4" />
+    <text class="badgeText" x="226" y="1234" text-anchor="middle" fill="#a8d6ee">10</text>
+    <text class="labelText" x="350" y="1235" text-anchor="middle" fill="#a8d6ee">select or auto-select candidate</text>
+    <path class="seq" d="M 160 1270 H 520" stroke="#5f9fc4" marker-end="url(#arrow-blue)" />
+  </g>
+  <g id="m11">
+    <rect class="labelPill" x="635" y="1300" width="490" height="38" rx="19" stroke="#88a86b" />
+    <circle cx="656" cy="1319" r="14" fill="#2c3b32" stroke="#88a86b" />
+    <text class="badgeText" x="656" y="1324" text-anchor="middle" fill="#c9dda8">11</text>
+    <text class="labelText" x="890" y="1325" text-anchor="middle" fill="#c9dda8">create new appointment · close original · append history</text>
+    <path class="seq" d="M 520 1360 H 1240" stroke="#88a86b" marker-end="url(#arrow-green)" />
+  </g>
+  <g id="m12">
+    <rect class="labelPill" x="225" y="1390" width="230" height="38" rx="19" stroke="#5ab3aa" />
+    <circle cx="246" cy="1409" r="14" fill="#173d3e" stroke="#5ab3aa" />
+    <text class="badgeText" x="246" y="1414" text-anchor="middle" fill="#a9e4df">12</text>
+    <text class="labelText" x="350" y="1415" text-anchor="middle" fill="#a9e4df">rescheduling complete</text>
+    <path class="seqReturn" d="M 520 1450 H 160" stroke="#5ab3aa" />
+    <polygon points="174,1442 160,1450 174,1458" fill="#5ab3aa" stroke="#5ab3aa" stroke-dasharray="none" data-direct-solid-head="true" />
+  </g>
+
+  <!-- global optimization branch -->
+  <g id="m13">
+    <rect class="labelPill" x="660" y="1520" width="440" height="38" rx="19" stroke="#c99a58" />
+    <circle cx="681" cy="1539" r="14" fill="#423324" stroke="#c99a58" />
+    <text class="badgeText" x="681" y="1544" text-anchor="middle" fill="#f1d6a7">13</text>
+    <text class="labelText" x="890" y="1545" text-anchor="middle" fill="#f1d6a7">request global optimization for closure range</text>
+    <path class="seq" d="M 160 1580 H 1600" stroke="#c99a58" marker-end="url(#arrow-amber)" />
+  </g>
+  <g id="m14">
+    <rect class="labelPill" x="1635" y="1610" width="290" height="38" rx="19" stroke="#c99a58" />
+    <circle cx="1656" cy="1629" r="14" fill="#423324" stroke="#c99a58" />
+    <text class="badgeText" x="1656" y="1634" text-anchor="middle" fill="#f1d6a7">14</text>
+    <text class="labelText" x="1790" y="1635" text-anchor="middle" fill="#f1d6a7">read date-range data</text>
+    <path class="seq" d="M 1600 1670 H 1960" stroke="#c99a58" marker-end="url(#arrow-amber)" />
+  </g>
+  <g id="m15">
+    <rect class="labelPill" x="1615" y="1700" width="330" height="38" rx="19" stroke="#5ab3aa" />
+    <circle cx="1636" cy="1719" r="14" fill="#173d3e" stroke="#5ab3aa" />
+    <text class="badgeText" x="1636" y="1724" text-anchor="middle" fill="#a9e4df">15</text>
+    <text class="labelText" x="1790" y="1725" text-anchor="middle" fill="#a9e4df">schedule data and rules</text>
+    <path class="seqReturn" d="M 1960 1760 H 1600" stroke="#5ab3aa" />
+    <polygon points="1614,1752 1600,1760 1614,1768" fill="#5ab3aa" stroke="#5ab3aa" stroke-dasharray="none" data-direct-solid-head="true" />
+  </g>
+  <g id="m16">
+    <rect class="labelPill" x="1805" y="1790" width="310" height="38" rx="19" stroke="#c99a58" />
+    <circle cx="1826" cy="1809" r="14" fill="#423324" stroke="#c99a58" />
+    <text class="badgeText" x="1826" y="1814" text-anchor="middle" fill="#f1d6a7">16</text>
+    <text class="labelText" x="1970" y="1815" text-anchor="middle" fill="#f1d6a7">search global schedules</text>
+    <path class="seq" d="M 1600 1850 H 2320" stroke="#c99a58" marker-end="url(#arrow-amber)" />
+  </g>
+  <g id="m17">
+    <rect class="labelPill" x="1815" y="1880" width="290" height="38" rx="19" stroke="#5ab3aa" />
+    <circle cx="1836" cy="1899" r="14" fill="#173d3e" stroke="#5ab3aa" />
+    <text class="badgeText" x="1836" y="1904" text-anchor="middle" fill="#a9e4df">17</text>
+    <text class="labelText" x="1970" y="1905" text-anchor="middle" fill="#a9e4df">score and complete schedule</text>
+    <path class="seqReturn" d="M 2320 1940 H 1600" stroke="#5ab3aa" />
+    <polygon points="1614,1932 1600,1940 1614,1948" fill="#5ab3aa" stroke="#5ab3aa" stroke-dasharray="none" data-direct-solid-head="true" />
+  </g>
+  <g id="m18">
+    <rect class="labelPill" x="720" y="1970" width="340" height="38" rx="19" stroke="#5ab3aa" />
+    <circle cx="741" cy="1989" r="14" fill="#173d3e" stroke="#5ab3aa" />
+    <text class="badgeText" x="741" y="1994" text-anchor="middle" fill="#a9e4df">18</text>
+    <text class="labelText" x="900" y="1995" text-anchor="middle" fill="#a9e4df">optimization result for review</text>
+    <path class="seqReturn" d="M 1600 2030 H 160" stroke="#5ab3aa" />
+    <polygon points="174,2022 160,2030 174,2038" fill="#5ab3aa" stroke="#5ab3aa" stroke-dasharray="none" data-direct-solid-head="true" />
+  </g>
+
+  <!-- current integration boundary -->
+  <g id="integration-boundary">
+    <rect x="250" y="2110" width="2100" height="68" rx="16" fill="#1d2737" stroke="#c99a58" stroke-width="1.8" />
+    <text class="noteStrong" x="1300" y="2139" text-anchor="middle">The two paths are not connected automatically</text>
+    <text class="note" x="1300" y="2168" text-anchor="middle">Persisting solver results and continuing into state history and patient notification requires a separate review and approval workflow</text>
+  </g>
+</svg>

@@ -109,7 +109,7 @@ loads many appointments and resources across a date range and compares complete 
   class="bt4k-architecture"
   data-diagram-title="Choosing between real-time lookup and global optimization"
 >
-  <img src="/assets/clinic-appointment-part4-scheduling-choice-map-01.png" alt="Decision diagram separating SlotCalculationService for one patient's candidate list from SolverService for comparing total scores across many appointments, doctors, and devices" loading="lazy" />
+  <img src="/assets/clinic-appointment-part4-scheduling-choice-map-01-en.png" alt="Decision diagram separating SlotCalculationService for one patient's candidate list from SolverService for comparing total scores across many appointments, doctors, and devices" loading="lazy" />
   <figcaption>Choose by scope, response timing, and number of solutions to compare. Fast candidate calculation and score-based search are complementary paths, not competing implementations.</figcaption>
 </figure>
 
@@ -191,7 +191,7 @@ by nearby date and time. An administrator can choose a candidate, or an automati
   class="bt4k-architecture"
   data-diagram-title="Two clinic-closure rescheduling paths"
 >
-  <img src="/assets/clinic-appointment-part4-closure-reschedule-sequence-02.png" alt="Sequence diagram comparing ClosureRescheduleService, which calculates and confirms candidates per appointment, with SolverService, which compares a full date range of appointments and resources from a separate entry point" loading="lazy" />
+  <img src="/assets/clinic-appointment-part4-closure-reschedule-sequence-02-en.png" alt="Sequence diagram comparing ClosureRescheduleService, which calculates and confirms candidates per appointment, with SolverService, which compares a full date range of appointments and resources from a separate entry point" loading="lazy" />
   <figcaption>The candidate path changes state, stores options, and confirms a selected replacement. The optimization path returns a scored schedule but does not currently persist it or send patient notifications automatically.</figcaption>
 </figure>
 

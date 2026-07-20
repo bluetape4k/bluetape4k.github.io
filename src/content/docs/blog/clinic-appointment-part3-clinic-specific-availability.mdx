@@ -96,7 +96,7 @@ val effectiveRanges = computeEffectiveRanges(
   class="bt4k-architecture"
   data-diagram-title="Clinic-specific availability pipeline"
 >
-  <img src="/assets/clinic-appointment-part3-availability-pipeline-01.png" alt="Pipeline that checks holiday and full-day closure conditions, subtracts breaks, partial closures, and doctor absences from shared clinic and doctor hours, then filters candidates by treatment duration, concurrent-patient capacity, and equipment" loading="lazy" />
+  <img src="/assets/clinic-appointment-part3-availability-pipeline-01-en.png" alt="Pipeline that checks holiday and full-day closure conditions, subtracts breaks, partial closures, and doctor absences from shared clinic and doctor hours, then filters candidates by treatment duration, concurrent-patient capacity, and equipment" loading="lazy" />
   <figcaption>Availability is produced in stages: reject whole-day blockers, calculate the time both clinic and doctor can work, and then validate capacity and equipment for each candidate.</figcaption>
 </figure>
 
@@ -108,7 +108,7 @@ candidate-specific reservations and equipment are checked only after candidates 
   class="bt4k-architecture"
   data-diagram-title="Availability lookup sequence"
 >
-  <img src="/assets/clinic-appointment-part3-availability-sequence-02.png" alt="Sequence diagram in which an availability request checks clinic and holiday data, doctor and treatment data, effective time ranges, existing appointments, and equipment status before returning bookable slots" loading="lazy" />
+  <img src="/assets/clinic-appointment-part3-availability-sequence-02-en.png" alt="Sequence diagram in which an availability request checks clinic and holiday data, doctor and treatment data, effective time ranges, existing appointments, and equipment status before returning bookable slots" loading="lazy" />
   <figcaption>Whole-day blockers return an empty list early. Valid days proceed through range calculation and per-candidate capacity and equipment checks. Global schedule optimization stays on a separate solver path.</figcaption>
 </figure>
 
