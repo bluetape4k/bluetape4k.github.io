@@ -1,0 +1,208 @@
+---
+title: "병원 예약 SaaS 개발기 Part 6: 휴진과 장비 고장은 예약 설계를 어떻게 바꾸는가"
+description: 갑작스러운 휴진과 장비 사용 불가가 예약을 재배정 대기 상태로 옮기고, 후보 생성과 승인, 이력, 알림을 하나의 운영 흐름으로 연결하는 과정을 설명합니다.
+sidebar:
+  order: -202607211400
+blog:
+  date: 2026-07-21T14:00:00+09:00
+  image: /assets/clinic-appointment-part6-hero.png
+  imageAlt: 휴진으로 닫힌 병원 일정과 수리 중인 의료 장비 옆에서 작은 로봇 작업자들이 붉은 예약 카드를 재배정 후보를 거쳐 새 일정 보드로 옮기는 어두운 미니어처 장면
+  cardDescription: "휴진과 장비 고장을 상태 전이, 후보 생성, 승인, 감사 이력과 알림으로 이어지는 재배정 업무 흐름으로 설계합니다."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-part6-hero.png" alt="휴진으로 닫힌 병원 일정과 수리 중인 의료 장비 옆에서 작은 로봇 작업자들이 붉은 예약 카드를 재배정 후보를 거쳐 새 일정 보드로 옮기는 어두운 미니어처 장면" loading="eager" />
+  <figcaption>운영 중단은 빈 시간을 다시 찾는 계산으로 끝나지 않습니다. 원래 예약을 보존하고, 변경 이유와 후보, 승인 결과를 남긴 뒤 환자에게 전달해야 합니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-07-21 · 병원 예약 서비스 개발기 · Part 6</p>
+
+[Part 5](/ko/blog/clinic-appointment-part5-timefold-constraints/)에서는 휴진과 장비 사용 불가를 Solver가 반드시
+피해야 하는 Hard Constraint로 표현했습니다. 이 제약은 앞으로 만들 일정이 운영 불가능한 시간에 들어가지
+않도록 막습니다. 하지만 이미 확정된 예약이 있는 날 갑자기 휴진하거나, 검사 장비가 고장 나면 제약만으로는
+업무가 끝나지 않습니다.
+
+영향받은 예약을 찾아야 하고, 원래 약속을 함부로 지우지 않은 채 변경이 필요한 상태로 옮겨야 합니다. 대체
+후보를 만들고 누가 어떤 후보를 확정했는지 남겨야 하며, 환자에게 변경 사실도 알려야 합니다. 이번 글에서는
+현재 `clinic-appointment` 구현을 기준으로 휴진 재배정과 장비 충돌 탐지의 범위를 비교하고, 그 사이에 필요한
+운영 경계를 살펴봅니다.
+
+## 요구사항: 사건과 예약의 관계를 먼저 보존한다
+
+휴진일의 예약을 새 날짜로 곧바로 덮어쓰면 변경 전 약속이 사라집니다. 환자가 원래 언제 누구에게 어떤 진료를
+받기로 했는지, 왜 바뀌었는지, 대체 예약은 무엇인지 설명하기 어려워집니다. 그래서 현재 휴진 경로는 기존
+예약을 유지한 채 상태를 `PENDING_RESCHEDULE`로 바꾸고 상태 이력을 먼저 기록합니다.
+
+| 단계 | 남겨야 할 정보 | 이유 |
+|---|---|---|
+| 영향 범위 확정 | 병원, 사건 날짜, `REQUESTED`·`CONFIRMED` 예약 | 이미 종료되거나 취소된 예약을 건드리지 않는다 |
+| 재배정 대기 | 이전 상태, `PENDING_RESCHEDULE`, 변경 사유 | 아직 새 예약이 확정되지 않았음을 표현한다 |
+| 후보 생성 | 원본 예약 ID, 날짜, 시간, 의사, 우선순위 | 계산 결과를 검토 가능한 업무 데이터로 만든다 |
+| 확정 | 선택 후보, 새 예약 ID, 원본 예약 ID | 이전 약속과 새 약속의 연결을 보존한다 |
+| 완료 이력 | 원본 예약의 `RESCHEDULED`, 사유 | 누가 보더라도 변경 결과를 추적할 수 있게 한다 |
+
+`PENDING_RESCHEDULE`는 단순한 중간 enum이 아닙니다. “이 예약은 더 이상 원래 시간에 이행할 수 없지만,
+대체 약속은 아직 확정되지 않았다”는 운영 상태입니다. 이 상태가 있어야 후보가 없는 경우, 환자 확인을 기다리는
+경우, 관리자가 수동으로 조정하는 경우를 확정 완료와 구분할 수 있습니다.
+
+## 휴진: 상태 이력부터 후보 목록까지 한 흐름으로 만든다
+
+[ClosureRescheduleService](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/ClosureRescheduleService.kt)는
+휴진 날짜의 `REQUESTED`와 `CONFIRMED` 예약을 조회합니다. 대상 예약을 `PENDING_RESCHEDULE`로 바꾸고
+“임시휴진으로 인한 재배정”이라는 이력을 저장한 다음, 기본 7일 동안 원래 의사와 진료 유형으로 가능한 시간을
+찾습니다. API에서는 검색 범위를 1일에서 30일로 제한합니다.
+
+```kotlin
+val affected = appointmentRepository.findActiveByClinicAndDate(
+    clinicId, closureDate, AppointmentState.ACTIVE_STATUSES
+)
+
+appointmentRepository.updateStatusByClinicAndDate(
+    clinicId, closureDate, AppointmentState.ACTIVE_STATUSES,
+    AppointmentState.PENDING_RESCHEDULE,
+)
+
+stateHistoryRepository.save(
+    AppointmentStateHistoryRecord(
+        appointmentId = appointment.id!!,
+        fromState = appointment.status,
+        toState = AppointmentState.PENDING_RESCHEDULE,
+        reason = "임시휴진으로 인한 재배정",
+    )
+)
+```
+
+후보 계산은 Part 3의 `SlotCalculationService`를 다시 사용합니다. 각 예약에 대해 휴진 다음 날부터 날짜를
+늘려 가며 가능한 시간 목록을 얻고, 가까운 날짜와 시간부터 증가하는 `priority`를 부여해
+`RescheduleCandidateRecord`로 저장합니다. 계산 결과를 즉시 한 후보로 확정하지 않고 별도 레코드로 남기므로
+관리자는 여러 후보를 비교할 수 있고, 같은 입력으로 무엇을 제안했는지도 확인할 수 있습니다.
+
+## 배치 진행률은 트랜잭션 밖에서 보낸다
+
+휴진일에 예약이 많으면 후보 생성 진행률을 SSE로 보여 주고 싶어집니다. 여기서 데이터베이스 작업과 네트워크
+전송을 한 트랜잭션에 묶으면 문제가 생깁니다. 느린 클라이언트나 끊어진 SSE 연결을 기다리는 동안 JDBC
+커넥션을 계속 잡고 있게 되고, 전송 실패가 배치 전체 롤백으로 이어질 수도 있습니다.
+
+현재 `streamClosureReschedule()`은 상태 변경과 이력을 먼저 하나의 공유 트랜잭션으로 저장합니다. 이후에는
+예약 하나마다 후보를 별도 트랜잭션에서 저장하고, 커밋되어 DB 커넥션이 반환된 다음 `onProgress`를 호출합니다.
+마지막 완료 이벤트는 서비스가 아니라 SSE 컨트롤러가 책임집니다.
+
+```kotlin
+for (appointment in affected) {
+    val candidateCount = transaction {
+        // 이 예약의 후보를 계산하고 저장한다.
+    }
+    onProgress(appointment.id!!, candidateCount) // 트랜잭션 밖
+}
+```
+
+이 경계는 “콜백을 어디서 부를까”라는 구현 세부사항이 아닙니다. DB 원자성이 필요한 구간과 네트워크 지연을
+허용해야 하는 구간의 수명이 다르다는 운영 규칙입니다. 실패 범위도 예약별로 작아져 어느 예약까지 처리됐는지
+진행 정보와 저장 결과를 맞춰 보기 쉬워집니다.
+
+## 장비 고장: 현재 구현은 충돌을 찾는 데까지다
+
+장비 고장도 예약을 바꿀 수 있지만 현재 구현의 자동화 범위는 휴진 경로와 다릅니다.
+[EquipmentUnavailabilityService](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/EquipmentUnavailabilityService.kt)는
+일회성 또는 반복 사용 불가 규칙을 저장하고, 특정 날짜를 건너뛰는 `SKIP` 예외와 다른 날짜·시간으로 옮기는
+`RESCHEDULE` 예외를 펼쳐 실제 사용 불가 구간을 계산합니다.
+
+새 규칙을 저장하기 전에는 `previewConflicts()`로 충돌 예약을 미리 볼 수 있습니다. 저장한 뒤에는
+`detectConflictsByTenant()`가 장비 사용 불가 구간과 겹치는 예약을 반환합니다. 요청 URL의 tenant, 병원,
+장비가 같은 소유 경계에 있는지도 확인합니다.
+
+그러나 이 서비스는 충돌 예약을 `PENDING_RESCHEDULE`로 옮기거나 후보를 만들지 않습니다. 장비 충돌 목록을
+휴진 재배정 서비스에 그대로 넘기면 된다고 가정할 수도 없습니다. 휴진 경로는 원래 의사를 고정한 채 병원의
+빈 시간을 찾지만, 장비 고장에서는 다음 선택지가 생깁니다.
+
+- 같은 진료를 다른 정상 장비로 수행할 수 있는가
+- 다른 장비가 있는 다른 시간이나 병원으로 옮길 수 있는가
+- 장비 없이 가능한 다른 진료 방법이 있는가
+- 환자와 담당자가 수동으로 판단해야 하는가
+
+따라서 “충돌을 발견했다”와 “재배정을 완료했다” 사이에 명시적인 업무 정책이 필요합니다. 현재 코드가 제공하는
+범위를 넘어 자동 재배정까지 구현된 것처럼 설명하면 안 됩니다.
+
+<figure
+  class="bt4k-architecture"
+  data-diagram-title="휴진 재배정과 장비 충돌 탐지의 운영 경계"
+>
+  <img src="/assets/clinic-appointment-part6-rescheduling-flow-01.png" alt="휴진 사건은 활성 예약을 재배정 대기로 옮기고 후보를 저장하는 구현 경로로, 장비 사용 불가는 규칙을 펼쳐 충돌 예약을 반환하는 탐지 경로로 처리한 뒤 검토와 확정, 알림 경계에서 만나는 다이어그램" loading="lazy" />
+  <figcaption>휴진 서비스는 후보 저장과 확정까지 제공하지만 장비 서비스는 충돌 탐지까지 제공합니다. 어느 경로든 검토, 최종 저장, 이벤트와 알림을 한 덩어리의 자동화로 가정하지 않고 경계를 드러내야 합니다.</figcaption>
+</figure>
+
+## 확정: 원본을 지우지 않고 새 예약을 연결한다
+
+관리자가 후보를 고르면 `confirmReschedule()`은 후보가 해당 원본 예약에 속하는지 검증합니다. tenant가 있는
+API 경로에서는 원본 예약과 후보 의사가 같은 tenant에 속하고, 후보 의사가 원본 예약의 병원 소속인지도
+확인합니다. 그 뒤 후보의 날짜와 시간으로 새 `CONFIRMED` 예약을 만들고 `rescheduleFromId`에 원본 예약 ID를
+저장합니다.
+
+원본 예약은 삭제하지 않고 `RESCHEDULED`로 바꿉니다. “재배정 확정” 이력을 남기고 선택한 후보에도 표시합니다.
+자동 재배정 API는 이 계약을 우회하지 않습니다. 우선순위가 가장 높은 후보를 선택한 뒤 같은 확정 함수를
+호출하며, 후보가 없으면 `null`을 반환합니다.
+
+| 원본 예약 | 새 예약 |
+|---|---|
+| 상태: `RESCHEDULED` | 상태: `CONFIRMED` |
+| 최초 환자·진료·장비 정보 보존 | 후보의 날짜·시간·의사 사용 |
+| 상태 이력에 재배정 사유 기록 | `rescheduleFromId`로 원본 연결 |
+
+이 구조는 중복 데이터를 만들기 위한 것이 아닙니다. 환자 문의, 감사, 통계에서 “현재 유효한 예약”과 “왜
+바뀌었는가”를 동시에 답하기 위한 계보입니다.
+
+## Solver와 알림은 자동으로 이어지지 않는다
+
+여러 예약을 함께 조정해야 할 때는 Part 4와 Part 5의 `SolverService`를 별도로 실행해 전체 배치안을 비교할 수
+있습니다. 하지만 현재 Solver 결과는 제안입니다. `ClosureRescheduleService`가 Solver를 호출하거나 그 결과를
+자동 저장하지 않습니다. 누가 해답을 검토하고 어떤 상태 검증 뒤에 저장할지는 별도 업무 흐름으로 만들어야
+합니다.
+
+알림도 같은 경계에 있습니다. `appointment-notification` 모듈에는 재배정 이벤트를 받아 원본과 새 예약을
+알리는 `NotificationEventListener`가 있지만, 현재 `ClosureRescheduleService.confirmReschedule()`은 그 도메인
+이벤트를 발행하지 않습니다. 재배정 성공과 환자 통지가 자동으로 연결돼 있다고 가정하면 운영에서 조용한
+누락이 생깁니다.
+
+완전한 재배정 유스케이스라면 다음 순서를 명시해야 합니다.
+
+1. 현재 상태와 tenant 소유권을 다시 검증한다.
+2. 원본 상태 변경, 새 예약, 이력과 후보 선택을 원자적으로 저장한다.
+3. 커밋 이후 재배정 이벤트를 발행하거나 신뢰할 수 있는 outbox에 기록한다.
+4. 알림 채널이 실패해도 예약 트랜잭션을 되돌리지 않고 재시도·실패 이력을 남긴다.
+5. 환자 통지 여부와 운영자의 후속 조치를 조회할 수 있게 한다.
+
+## 운영 체크리스트: 재배정은 닫힌 고리가 되어야 한다
+
+휴진과 장비 고장을 운영 기능으로 완성하려면 알고리즘보다 상태와 책임 경계를 먼저 확인해야 합니다.
+
+- 사건의 적용 범위와 시작·종료 시각을 누가 확정하는가
+- 영향받은 예약을 어떤 상태에서만 재배정 대상으로 삼는가
+- 후보가 없거나 모두 거절된 예약을 어떻게 찾는가
+- 자동 후보와 Solver 제안 중 무엇을 누가 승인하는가
+- 원본 예약, 새 예약, 선택 후보와 상태 이력이 함께 추적되는가
+- 배치 진행률 전송이 DB 트랜잭션을 붙잡지 않는가
+- 이벤트 발행과 환자 알림의 성공·실패를 별도로 관찰할 수 있는가
+- 같은 사건을 다시 실행해도 상태와 후보가 중복되지 않는가
+
+현재 구현은 휴진 재배정의 핵심 상태와 후보, 장비 사용 불가의 충돌 탐지, tenant 소유권 검증을 제공합니다.
+동시에 장비 충돌의 자동 재배정, Solver 결과 저장, 재배정 이벤트 발행과 멱등한 재실행은 다음 운영 요구사항으로
+남아 있습니다. 구현된 범위와 필요한 범위를 구분해 두는 것이 사고 대응 자동화의 출발점입니다.
+
+## 구현 코드와 자료 살펴보기
+
+- [휴진 재배정 서비스](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/ClosureRescheduleService.kt): 재배정 대기 상태, 후보 생성, 수동·자동 확정과 원본-신규 예약 연결을 구현합니다.
+- [휴진 재배정 테스트](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/test/kotlin/io/bluetape4k/clinic/appointment/service/ClosureRescheduleServiceTest.kt): 후보 생성, 확정, 후보 없음, 잘못된 후보와 tenant 교차 접근을 검증합니다.
+- [장비 사용 불가 서비스](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/EquipmentUnavailabilityService.kt): 사용 불가 규칙과 예외를 펼치고 충돌 예약을 미리 보거나 조회합니다.
+- [장비 사용 불가 API](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/controller/EquipmentUnavailabilityController.kt): tenant·병원·장비 경계를 확인한 뒤 충돌 탐지와 미리보기를 제공합니다.
+- [SSE 배치 트랜잭션 회고](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/lessons/2026-05-19-sse-batch-stream-transaction-pattern.md): 네트워크 진행률 전송을 DB 트랜잭션 밖으로 옮긴 이유와 테스트 포인트를 기록합니다.
+- [알림 이벤트 리스너](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-notification/src/main/kotlin/io/bluetape4k/clinic/appointment/notification/NotificationEventListener.kt): 생성, 확정, 취소, 재배정 이벤트를 현재 프로세스 안에서 알림 채널로 연결합니다.
+
+## 시리즈 링크
+
+- [Part 1: 병원 예약은 CRUD로 끝나지 않는다](/ko/blog/clinic-appointment-part1-not-just-crud/)
+- [Part 2: 예약 상태는 enum이 아니다](/ko/blog/clinic-appointment-part2-state-machine-and-history/)
+- [Part 3: 병원마다 다른 업무시간과 자원으로 예약 가능 시간을 계산하기](/ko/blog/clinic-appointment-part3-clinic-specific-availability/)
+- [Part 4: 한 건의 예약 가능 시간 조회와 전체 일정 최적화는 다르다](/ko/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
+- [Part 5: 병원 업무 규칙을 Timefold Constraint로 번역하기](/ko/blog/clinic-appointment-part5-timefold-constraints/)
+- **Part 6: 휴진과 장비 고장은 예약 설계를 어떻게 바꾸는가**
+- [Part 7: 완성 뒤가 진짜 시작이다](/ko/blog/clinic-appointment-part7-review-and-operational-evolution/)
