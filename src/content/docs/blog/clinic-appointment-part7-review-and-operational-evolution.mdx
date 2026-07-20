@@ -147,6 +147,43 @@ A useful lesson is more specific than “this was difficult.” It preserves the
 verification commands, and a guard for future work. The next developer can then begin with source and evidence instead of
 reconstructing the same failure.
 
+## What We Have Not Solved Yet: Start the Next Cycle with Integrity
+
+This series did not solve every appointment problem. It concentrated on state transitions, availability, rescheduling,
+tenant isolation, and notification fault isolation. Before adding more features, a production service needs stronger
+boundaries in several areas.
+
+| Priority | Incomplete boundary | Next step |
+|---|---|---|
+| 1. Booking integrity | Races between slot lookup and creation, plus replayed requests | Make availability validation and persistence atomic; design the database lock or constraint strategy together with an idempotency key |
+| 2. Event delivery | In-process events do not survive every process failure after a database commit | Add a transactional outbox, event IDs and schema versions, consumer deduplication, retries, dead letters, and reconciliation |
+| 3. Operability | Logs alone cannot reconstruct one flow from patient request to notification provider | Connect SLOs and trace/correlation IDs to conflict rate, delivery success and latency, leader changes, and solver duration and score |
+| 4. Patient workflow | An administrator-oriented flow does not cover the real experience after self-service booking | Define patient authentication and portal, waitlists, no-show recovery, notification consent, accessibility, localization, and data-retention policy |
+| 5. Optimization governance | A good score does not guarantee an assignment that patients and operators can understand | Record constraint versions and recommendation reasons; validate fairness, manual overrides, and policy changes through shadow runs |
+
+The first item comes before feature growth. The current
+[AppointmentService.create()](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/service/AppointmentService.kt)
+constructs an `AppointmentRecord` from the request and saves it. If two clients have both observed “one slot remaining,”
+the earlier lookup cannot decide which concurrent write owns that capacity. A rule such as `resolveMaxConcurrent()` chooses
+the allowed quantity; it does not serialize competing writes. The server needs to revalidate availability and persist in
+one transaction, translate conflicts into a consistent 409 response, and return the same outcome when a network retry
+replays the same request.
+
+Adding a broker alone does not solve event delivery either. A database commit can succeed while event publication fails,
+creating a dual-write gap. Writing an outbox record in the appointment transaction and making publishers and consumers
+tolerant of duplicate delivery closes part of that gap. Operators still need reconciliation that compares appointment
+state with notification history and repairs omissions, turning “retry it” into a specific recovery procedure.
+
+The next question is what to measure. Average response time does not describe the health of an appointment service.
+Blocked double-booking attempts, notification delay, time to approve a reschedule, per-tenant error rates, and the manual
+adjustment rate of solver proposals connect technical signals to clinical operations. Recovery exercises for backups,
+Redis loss, provider failure, and a failed database migration belong at the same requirements level.
+
+Finally, broader optimization creates a larger duty to explain decisions. Emergency priority, patient preference, and
+clinician workload can conflict. The system should preserve which rule and weight produced a recommendation, compare new
+constraints in shadow mode before applying them, and keep the operator's reason for overriding a proposal. A solver result
+remains advice; the explanation and override history should become evidence for the next constraint change.
+
 ## Seven Principles from the Series
 
 The implementation repeatedly reinforced these principles:
@@ -171,6 +208,8 @@ closes here; the next cycle has already begun with real operational evidence.
 - [Tenant access checker](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/tenant/TenantClinicAccessChecker.kt): Validates tenant, clinic, doctor, treatment, and equipment as one boundary.
 - [Reminder scheduler](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-notification/src/main/kotlin/io/bluetape4k/clinic/appointment/notification/AppointmentReminderScheduler.kt): Uses Redis leader election and notification history to reduce duplicates.
 - [Resilient notification channel](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-notification/src/main/kotlin/io/bluetape4k/clinic/appointment/notification/ResilientNotificationChannel.kt): Isolates external calls with CircuitBreaker, Retry, and Bulkhead.
+- [Appointment creation service](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/service/AppointmentService.kt): Shows the current persistence and event-publication boundaries that future integrity and outbox work must strengthen.
+- [Project backlog](https://github.com/bluetape4k/clinic-appointment/blob/develop/TODO.md): Tracks follow-up candidates including the patient portal and asynchronous messaging.
 - [Timefold Solver 2 migration lesson](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/lessons/2026-05-20-timefold-solver-2-consumer.md): Records verification used to preserve solver meaning across API changes.
 - [Solver benchmark report](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/solver-benchmark-report.md): Keeps environment, input scale, score, and time together as a local baseline.
 
