@@ -1,0 +1,226 @@
+---
+title: "Clinic Appointment SaaS Part 2: Appointment State Is More Than an Enum"
+description: Design appointment state as a business contract that includes allowed transitions, change history, cancellation reasons, and pinning rules for schedule optimization.
+sidebar:
+  order: -202607191000
+blog:
+  date: 2026-07-19T10:00:00+09:00
+  image: /assets/clinic-appointment-part2-hero.png
+  imageAlt: Small robotic workers validate allowed transitions on an appointment state board and record the same changes in a history ledger on a dark miniature workbench
+  cardDescription: "Connect allowed transitions, reasons, and history instead of storing only the current appointment state."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-part2-hero.png" alt="Small robotic workers validate allowed transitions on an appointment state board and record the same changes in a history ledger on a dark miniature workbench" loading="eager" />
+  <figcaption>Changing a state and recording why it changed are one business operation. Invalid transitions must be rejected, and valid transitions must leave an audit trail.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-07-19 · clinic-appointment series · Part 2</p>
+
+[Part 1](/blog/clinic-appointment-part1-not-just-crud/) showed that one appointment must satisfy clinic-specific hours,
+doctors, treatments, equipment, and operating policies. Now we can move to what happens after an appointment exists.
+
+Staff confirm appointment requests and check patients in when they arrive. A treatment room records when care starts
+and finishes. A patient who never arrives becomes a no-show. A clinic closure moves affected appointments into a
+rescheduling queue. The Cancel button is not valid at every stage: cancelling completed care or checking in an
+unconfirmed request may update a database row, but it produces a business record that no longer makes sense.
+
+Appointment state therefore cannot end as a list of strings for a `status` column. The current state, the business
+action that changes it, the allowed next state, the reason, and the history form one contract. This article follows
+that contract from requirements to a state machine and API, then shows how implementation review added missing history
+queries and cancellation reasons back to the requirements.
+
+## Write the Workflow Before Naming the States
+
+The repository's [domain model](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/requirements/domain-model.md)
+defines the following lifecycle.
+
+| State | Meaning in clinic operations | Typical next action |
+|---|---|---|
+| `PENDING` | Draft or unsubmitted appointment | Request, cancel |
+| `REQUESTED` | Patient request waiting for clinic review | Confirm, request rescheduling, cancel |
+| `CONFIRMED` | Clinic has accepted the appointment | Check in, no-show, reschedule, cancel |
+| `CHECKED_IN` | Patient has arrived | Start treatment, cancel |
+| `IN_PROGRESS` | Treatment is underway | Complete treatment |
+| `COMPLETED` | Treatment has finished | Terminal state |
+| `NO_SHOW` | Confirmed patient did not arrive | Terminal state |
+| `PENDING_RESCHEDULE` | A new time is required after an operational change | Confirm rescheduling, cancel |
+| `RESCHEDULED` | Appointment was moved to another schedule | Terminal state |
+| `CANCELLED` | Appointment was cancelled | Terminal state |
+
+The first column looks like an enum. The other columns reveal the real problem. `CONFIRMED → CHECKED_IN` is valid,
+but `PENDING → CHECKED_IN` is not. `IN_PROGRESS` may move only to `COMPLETED`, and `COMPLETED` must not change again.
+
+If the code defines only state values, these rules spread across controller and service `if` statements. Adding one
+path may update some call sites and miss others, and the complete workflow becomes difficult to review. State names and
+transition rules need separate representations.
+
+## Separate State from Event
+
+[AppointmentState.kt](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/statemachine/AppointmentState.kt)
+models states as a Kotlin `sealed class`. Their names still appear in the database and API, while application code gets
+a closed type hierarchy such as `AppointmentState.CONFIRMED`.
+
+The cause of a change lives separately in
+[AppointmentEvent.kt](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/statemachine/AppointmentEvent.kt).
+`Request`, `Confirm`, `CheckIn`, `StartTreatment`, and `Complete` need no additional data. `Cancel(reason)` and
+`RequestReschedule(reason)` carry the reason for the change.
+
+```kotlin
+sealed class AppointmentEvent : Serializable {
+    data object Confirm : AppointmentEvent()
+    data object CheckIn : AppointmentEvent()
+    data class Cancel(val reason: String) : AppointmentEvent()
+    data class RequestReschedule(val reason: String) : AppointmentEvent()
+}
+```
+
+This keeps “the current value is `CANCELLED`” separate from “the user cancelled for this reason.” State is the current
+result; an event is the business action that produced it.
+
+[AppointmentStateMachine.kt](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/statemachine/AppointmentStateMachine.kt)
+collects the `(current state, event type) → next state` rules in one place.
+
+```kotlin
+private val transitions = buildMap {
+    put(PENDING to Request::class.java, REQUESTED)
+    put(REQUESTED to Confirm::class.java, CONFIRMED)
+    put(CONFIRMED to CheckIn::class.java, CHECKED_IN)
+    put(CHECKED_IN to StartTreatment::class.java, IN_PROGRESS)
+    put(IN_PROGRESS to Complete::class.java, COMPLETED)
+}
+```
+
+The complete map also covers no-show, rescheduling, and cancellation. `transition()` throws an
+`IllegalStateException` for an undefined pair, which the API's
+[GlobalExceptionHandler](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/config/GlobalExceptionHandler.kt)
+maps to HTTP `409 Conflict`.
+
+That distinction from `400 Bad Request` matters. `COMPLETED` is a valid state name. It is simply incompatible with an
+appointment that is currently `PENDING`. The request format is valid; the requested change conflicts with current
+resource state.
+
+<figure
+  class="bt4k-architecture"
+  data-diagram-title="Appointment state machine and history flow"
+>
+  <img src="/assets/clinic-appointment-part2-state-machine-history-01.png" alt="Dark architecture diagram showing normal appointment processing, no-show, rescheduling, and cancellation transitions, plus the path that carries a cancellation reason through the controller, state machine, database history, and domain event" loading="lazy" />
+  <figcaption>The upper lane follows the current transition rules. The lower lane carries one cancellation reason through validation, history, and the domain event. Green-outlined states are pinned against Timefold rescheduling.</figcaption>
+</figure>
+
+## Store Current State and History in One Transaction
+
+Calculating the next state is not enough.
+[AppointmentService](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/service/AppointmentService.kt)
+loads the appointment, converts the requested target into an event, and asks the state machine to validate the
+transition. For an allowed transition, it updates current state and appends history inside one database transaction.
+
+```kotlin
+val currentState = record.status
+val event = parseEvent(targetStatus, reason)
+val nextState = stateMachine.transition(currentState, event)
+
+transaction {
+    appointmentRepository.updateStatus(id, nextState)
+    stateHistoryRepository.save(
+        AppointmentStateHistoryRecord(
+            appointmentId = id,
+            fromState = currentState,
+            toState = nextState,
+            reason = reason,
+        )
+    )
+}
+```
+
+Without the transaction, current state can change while history is lost, or history can claim a change that never
+became current. History is not auxiliary logging. It is business data that explains how the current value came to be.
+
+[AppointmentStateHistory](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/tables/AppointmentStateHistory.kt)
+stores `fromState`, `toState`, `reason`, an optional `note`, `changedBy`, and `changedAt`. The current model makes
+`reason`, `note`, and `changedBy` optional. Providing columns for these values and populating them on every transition
+are separate completion criteria.
+
+After persistence, the service publishes `AppointmentDomainEvent.StatusChanged` or `Cancelled`. The current-state row
+supports fast reads, history explains the past, and domain events let other modules react. They carry related facts but
+serve different purposes.
+
+## A Stored History Still Needs a Read Path
+
+The first implementation appended every transition to history. That seemed to satisfy the requirement until a staff
+workflow exposed the missing half: when a patient asks, “When and why was this cancelled?”, staff had no way to view
+the stored records.
+
+The requirement became more concrete:
+
+> An authorized user must be able to see when an appointment changed state and in what order.
+
+The project added an appointment-scoped history query that returns transitions, reasons, and timestamps in reverse
+chronological order. Existing tenant boundaries apply, so one clinic cannot inspect another tenant's history. This was
+not an unrelated feature. It completed the operational meaning of “retain state-change history.” Data existing in a
+table and staff being able to use it are different definitions of done.
+
+## One Cancellation Reason Must Reach Every Consumer
+
+Cancellation exposed a similar gap. The early path changed the appointment to `CANCELLED` and recorded a fixed default
+reason. Cancellation technically worked, but the API did not capture whether the patient requested it or clinic
+operations forced it.
+
+That omission affects more than display text. If history and notification code evolve separately, history may say
+“patient request” while a notification says “clinic circumstances.” A cancellation reason is shared business data for
+one action, not optional decoration.
+
+The revised path accepts an actual reason, falls back to the legacy default only when it is absent, and carries the
+same value through transition validation, history, and the domain event used by notification work. The lower lane of
+the diagram makes that propagation explicit.
+
+## State Also Limits What Timefold May Move
+
+State policy reaches beyond the API.
+[AppointmentState.PINNED_STATUSES](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/statemachine/AppointmentState.kt)
+defines `CONFIRMED`, `CHECKED_IN`, `IN_PROGRESS`, and `COMPLETED` as pinned.
+
+Timefold Solver must not move these appointments just to improve a schedule score. A clinic has already promised a
+confirmed time, a checked-in patient is physically present, treatment in progress cannot move, and completed care is
+immutable history. State becomes a boundary on the optimization search space, not merely a rule for which button the
+UI should show.
+
+Choosing pinned states is therefore an operating policy, not a performance tuning knob. It separates work that the
+solver may propose from work that people have already committed to.
+
+## The Next Requirement Is Transition Identity
+
+History queries and cancellation reasons are now present, but `changedBy` remains optional and not every transition
+path records an actor. If an audit must distinguish automated rescheduling, clinic staff, and a patient request, the
+authenticated or system identity must travel all the way into history.
+
+```text
+manage appointment state
+  → define allowed transitions in one state machine
+  → persist current state and history together
+  → discover missing read paths and reasons in real workflows
+  → extend the contract with actor identity and tenant boundaries
+```
+
+Finishing implementation does not close the requirement. Review must still ask whether users can consume the data,
+whether every record tells the same story, and how other modules interpret the state.
+
+Correct transitions also do not prove that an appointment time is available. Part 3 combines clinic hours, breaks,
+doctor schedules, treatment duration, and equipment availability to calculate slots that can actually be booked.
+
+## Explore the Implementation
+
+- [Core appointment module](https://github.com/bluetape4k/clinic-appointment/tree/develop/appointment-core): Appointment states, the state machine, and history models.
+- [Appointment API module](https://github.com/bluetape4k/clinic-appointment/tree/develop/appointment-api): API workflows that request and persist state changes.
+- [Appointment state machine](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/statemachine/AppointmentStateMachine.kt): Selects an allowed next state from current state and event.
+- [Appointment service](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/service/AppointmentService.kt): Connects transition validation, appointment mutation, and history persistence.
+
+## Series
+
+- [Part 1: Clinic Appointments Are More Than CRUD](/blog/clinic-appointment-part1-not-just-crud/)
+- **Part 2: Appointment State Is More Than an Enum**
+- [Part 3: Computing Availability from Clinic-Specific Hours and Resources](/blog/clinic-appointment-part3-clinic-specific-availability/)
+- [Part 4: Real-Time Slot Search and Global Optimization Solve Different Problems](/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
+- [Part 5: Translating Clinic Rules into Timefold Constraints](/blog/clinic-appointment-part5-timefold-constraints/)
+- Part 6 planned: Rescheduling after Clinic Closures and Equipment Downtime
+- Part 7 planned: Reviews and Operations Start the Next Development Cycle

@@ -1,0 +1,247 @@
+---
+title: "Clinic Appointment SaaS Part 5: Translating Clinic Rules into Timefold Constraints"
+description: Turn clinic hours, closures, doctor absences, patient capacity, and equipment status into hard constraints, then score requested dates, original doctors, and schedule gaps as soft goals.
+sidebar:
+  order: -202607201400
+blog:
+  date: 2026-07-20T14:00:00+09:00
+  image: /assets/clinic-appointment-part5-hero.png
+  imageAlt: Small robotic workers connect red mandatory-rule cards and purple preference cards to a Timefold scoring machine on a dark clinic scheduling workbench
+  cardDescription: "Translate clinic policy into 12 hard Constraint Streams, 6 soft goals, and an explainable HardSoftScore."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-part5-hero.png" alt="Small robotic workers connect red mandatory-rule cards and purple preference cards to a Timefold scoring machine on a dark clinic scheduling workbench" loading="eager" />
+  <figcaption>To give clinic policy to a solver, separate “must not happen” from “prefer when possible,” then turn each statement into data and a calculable score.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-07-20 · clinic-appointment series · Part 5</p>
+
+[Part 4](/blog/clinic-appointment-part4-greedy-vs-global-optimization/) separated fast candidate calculation for one
+patient from global optimization across many appointments. Timefold Solver fits the second problem, but connecting the
+engine does not define a good schedule.
+
+“Do not schedule a doctor while absent” is relatively clear. “Stay near the patient's requested date,” “keep the
+original doctor,” and “balance workload” can conflict. The clinic's language must become constraints and scores that
+the solver can compare.
+
+This article follows the current `clinic-appointment` source: three planning variables, fixed problem facts, 12 hard
+Constraint Streams, 6 soft constraints, and the resulting `HardSoftScore`. It also separates what the tests and local
+benchmark prove from what still needs operational evidence.
+
+## Separate Must-Not Rules from Better-If Goals
+
+Putting every scheduling requirement into one flat penalty list loses a critical distinction. If an appointment outside
+operating hours and a changed original doctor are merely two weighted penalties, the solver could trade one for the
+other. The current model uses two score levels instead.
+
+- **Hard constraint**: violating it makes the schedule unacceptable for operation.
+- **Soft constraint**: ranks schedules that already satisfy every hard rule.
+
+`HardSoftScore` compares the hard component first and the soft component only between equal hard scores.
+`0hard/-500soft` is feasible with 500 points of preference penalties. `-1hard/0soft` is infeasible even though its soft
+component looks better.
+
+This is clinic policy rather than scoring convenience. Moving an appointment away from a preferred date and scheduling
+it during a closure are different categories of harm. Build the feasible boundary first; optimize operating quality
+inside that boundary.
+
+## Separate Values the Solver Changes from Facts It Reads
+
+[AppointmentPlanning](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-solver/src/main/kotlin/io/bluetape4k/clinic/appointment/solver/domain/AppointmentPlanning.kt)
+is the planning entity. Timefold may change `doctorId`, `appointmentDate`, and `startTime`. `@PlanningPin` keeps committed
+or in-progress appointments fixed through the `pinned` property.
+
+[ScheduleSolution](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-solver/src/main/kotlin/io/bluetape4k/clinic/appointment/solver/domain/ScheduleSolution.kt)
+provides appointments plus the clinic, doctors, treatments, equipment, hours, breaks, absences, closures, holidays,
+treatment-equipment mappings, and equipment downtime. These are problem facts: they evaluate candidate schedules but
+do not move during solving.
+
+<figure
+  class="bt4k-architecture"
+  data-diagram-title="Translating clinic policy into a Timefold score"
+>
+  <img src="/assets/clinic-appointment-part5-timefold-model-01.png" alt="Architecture diagram showing AppointmentPlanning variables and fixed ScheduleSolution facts flowing through 12 hard Constraint Streams and 6 soft goals into a HardSoftScore and SolverResult" loading="lazy" />
+  <figcaption>Planning entities and problem facts meet in the ConstraintProvider. Hard score decides feasibility first; soft score ranks feasible schedules before assignments and score are returned.</figcaption>
+</figure>
+
+The current
+[AppointmentConstraintProvider](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-solver/src/main/kotlin/io/bluetape4k/clinic/appointment/solver/constraint/AppointmentConstraintProvider.kt)
+registers 12 hard functions and 6 soft functions. The labels run from H1 to H11, but H4 is implemented as H4a for
+weekday breaks and H4b for the clinic default break. That produces 12 hard streams.
+
+```kotlin
+override fun defineConstraints(factory: ConstraintFactory): Array<Constraint> = arrayOf(
+    HardConstraints.withinOperatingHours(factory),
+    HardConstraints.withinDoctorSchedule(factory),
+    HardConstraints.noDoctorAbsenceConflict(factory),
+    HardConstraints.noBreakTimeConflict(factory),
+    HardConstraints.noDefaultBreakTimeConflict(factory),
+    // H5 through H11 omitted
+    SoftConstraints.doctorLoadBalance(factory),
+    SoftConstraints.minimizeGaps(factory),
+    SoftConstraints.preferOriginalDoctor(factory),
+    // S4 through S6 omitted
+)
+```
+
+## Hard Constraints Reject Schedules the Clinic Cannot Operate
+
+Clinic feasibility is more than avoiding overlapping start times. A candidate must fit clinic hours, doctor work and
+absence, closures and holidays, concurrent-patient policy, equipment capacity and downtime, and provider type.
+
+| Label | Current constraint | Clinic rule |
+|---|---|---|
+| H1 | `withinOperatingHours` | The whole appointment fits active weekday clinic hours. |
+| H2 | `withinDoctorSchedule` | The whole appointment fits the assigned doctor's schedule. |
+| H3 | `noDoctorAbsenceConflict` | It does not overlap a full or partial doctor absence. |
+| H4a | `noBreakTimeConflict` | It does not overlap weekday-specific breaks. |
+| H4b | `noDefaultBreakTimeConflict` | It does not overlap the clinic default break. |
+| H5 | `noClinicClosureConflict` | It does not overlap a full or partial clinic closure. |
+| H6 | `noHolidayConflict` | A clinic closed on holidays does not accept holiday appointments. |
+| H7 | `maxConcurrentPatientsPerDoctor` | The doctor's concurrent-patient policy is respected. |
+| H8 | `equipmentAvailability` | Concurrent use does not exceed equipment quantity. |
+| H9 | `providerTypeMatch` | The doctor's provider type matches the treatment requirement. |
+| H10 | `doctorBelongsToClinic` | The assigned doctor belongs to the appointment's clinic. |
+| H11 | `equipmentUnavailabilityConflict` | The appointment avoids maintenance and failure intervals. |
+
+Constraint Streams connect appointments to problem facts using `join`, `ifExists`, and `ifNotExists`. H3, for example,
+finds an absence for the same doctor and date, then penalizes a full-day absence or an overlapping interval.
+
+```kotlin
+fun noDoctorAbsenceConflict(factory: ConstraintFactory): Constraint =
+    factory.forEach(AppointmentPlanning::class.java)
+        .filter { it.doctorId != null && it.appointmentDate != null && it.startTime != null }
+        .ifExists(
+            DoctorAbsenceRecord::class.java,
+            Joiners.equal({ it.doctorId!! }, { it.doctorId }),
+            Joiners.equal({ it.appointmentDate!! }, { it.absenceDate }),
+            Joiners.filtering { appointment, absence ->
+                absence.startTime == null ||
+                    (absence.endTime != null &&
+                        appointment.startTime!! < absence.endTime &&
+                        absence.startTime < appointment.endTime!!)
+            },
+        )
+        .penalize(HardSoftScore.ONE_HARD)
+```
+
+The comparison uses the appointment's end as well as its start. A 30-minute treatment beginning at 10:50 overlaps an
+11:00 break. Full-day versus partial absence and full-day versus partial closure similarly require explicit data
+interpretation.
+
+## Soft Constraints Rank Feasible Schedules
+
+Many schedules can satisfy all hard constraints. One keeps the original doctor but leaves large gaps. Another compacts
+the day while moving the patient farther from the requested date. The current model compares six goals.
+
+| Label | Goal | Penalty |
+|---|---|---|
+| S1 | Balance appointments among doctors | 100 per appointment pair on the same doctor and date |
+| S2 | Minimize gaps in a doctor's day | 10 per minute between separated appointments |
+| S3 | Keep the original doctor during rescheduling | 1,000 when `doctorId` differs from `originalDoctorId` |
+| S4 | Prefer earlier rescheduling dates | 10 per day after the requested date |
+| S5 | Group appointments using the same equipment | 5 per gap minute between equipment reservations |
+| S6 | Stay close to the patient's requested date | 500 per absolute day of difference |
+
+Weights encode operating priorities, but a single weight is not the final priority. S3's 1,000-point penalty is larger
+than one S1 pair at 100, yet pair and minute penalties can occur many times across a full schedule. Entity count and
+accumulation determine the total trade-off.
+
+S4 and S6 also have different directions. S4 penalizes only dates later than requested to encourage early rescheduling.
+S6 penalizes distance on either side to preserve closeness to the original request. Whether both should remain and
+whether weights vary by clinic are policy questions that need explicit review.
+
+## A Score Must Be Explainable
+
+One aggregate score does not tell an administrator why a doctor changed or a date moved. Names such as
+`H3 noDoctorAbsenceConflict` and `S3 preferOriginalDoctor` make Constraint Match analysis possible. An operational API
+or UI can use those matches to show which appointment incurred which penalty.
+
+The current `SolverResult` returns the aggregate `HardSoftScore`, assignments, feasibility, solve duration, entity
+count, and pinned count. It does not yet expose per-constraint explanations. A staff approval workflow needs more than
+“this score is better”; explaining the proposed changes is a follow-up requirement.
+
+Pinned appointments also belong in that explanation. They do not move, but they reduce the time and resources available
+to other entities. Recording date range, total entities, and pinned count makes runs easier to compare and reproduce.
+
+## Verify One Constraint with a Small Scenario
+
+Full solver tests make it difficult to identify which constraint caused a score change.
+[ConstraintVerifierTest](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-solver/src/test/kotlin/io/bluetape4k/clinic/appointment/solver/constraint/ConstraintVerifierTest.kt)
+selects one constraint, supplies the smallest useful appointments and facts, and asserts the expected penalty.
+
+Current tests include representative hard rules for operating hours, doctor absence, closure, provider type, and clinic
+ownership, plus soft rules for load balance and original doctor. They do not provide one isolated test for every one of
+the 18 registered functions. Boundary times, capacities greater than one, and accumulated penalties need further
+regression coverage.
+
+Source review also exposes a calculation limit. H7 and H8 form overlapping appointment **pairs** and penalize only when
+allowed capacity is below two. They do not generally count a third or fourth simultaneous appointment when doctor
+capacity or equipment quantity is two or higher. Supporting arbitrary capacity requires grouped concurrent-use
+counting and tests rather than assuming the requirement table already matches the implementation.
+
+## Read the Benchmark as a Local Baseline
+
+The repository's [solver benchmark report](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/solver-benchmark-report.md)
+records a 2026-04-19 run on Apple M4 Pro and JDK 25. Every scenario returned a feasible solution with a hard score of zero.
+
+<figure
+  class="bt4k-chart"
+  data-diagram-title="Solver baseline by appointment count"
+>
+  <img src="/assets/clinic-appointment-part5-benchmark-scale-02.png" alt="Benchmark chart comparing measured solve time with configured limits for 10, 30, and 100 appointments, alongside HardSoftScore, score calculations per second, and search-space scale" loading="lazy" />
+  <figcaption>Measured runs finished below their configured limits and produced feasible solutions. These values are a local regression baseline, not a production latency SLA or proof of optimality.</figcaption>
+</figure>
+
+| Scenario | Appointments | Measured / limit | Score | Scores per second |
+|---|---:|---:|---:|---:|
+| Small | 10 | 5,030ms / 10,000ms | `0hard/0soft` | 133,758 |
+| Medium | 30 | 8,270ms / 15,000ms | `0hard/-500soft` | 100,613 |
+| Large | 100 | 16,163ms / 30,000ms | `0hard/-2000soft` | 116,135 |
+
+The reported search space grows from `3.57 × 10²²` to `3.37 × 10³²⁵`, making exhaustive enumeration impractical.
+The current configuration builds an initial solution with `FIRST_FIT_DECREASING` Construction Heuristic and improves it
+with `LATE_ACCEPTANCE` Local Search. The time limit is a search budget, not an optimality guarantee.
+
+Score, time, and input size must be read together. A lower soft score in a larger scenario does not mean the algorithm
+regressed; more appointments create more possible penalty matches. Production validation needs clinic-shaped datasets
+that include actual appointment distributions, equipment quantities, and pinned ratios.
+
+## Constraints Are Operating Policy
+
+Constraint code is not a one-time algorithm setting. Holiday operation, new equipment, higher concurrent capacity, or
+different patient priorities all change the facts, calculation, or weights.
+
+An operable constraint policy needs:
+
+- a stable constraint name, business description, and scope;
+- the reason it is hard or soft and the reason for its weight;
+- representative before-and-after schedules and score differences;
+- isolated constraint tests plus full-solver regression benchmarks;
+- the person who approved the result and when it became the live schedule.
+
+Part 6 follows these constraints into operational incidents. Clinic closures and equipment failures move appointments
+to `PENDING_RESCHEDULE` and connect candidate generation, global optimization, approval, history, and notification.
+
+## Explore the Implementation and References
+
+- [Schedule optimization module](https://github.com/bluetape4k/clinic-appointment/tree/develop/appointment-solver): Planning model, constraints, configuration, and execution service.
+- [ConstraintProvider](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-solver/src/main/kotlin/io/bluetape4k/clinic/appointment/solver/constraint/AppointmentConstraintProvider.kt): Registers the current 12 hard functions and 6 soft functions.
+- [Hard constraints](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-solver/src/main/kotlin/io/bluetape4k/clinic/appointment/solver/constraint/HardConstraints.kt): Evaluates time, absence, closure, capacity, equipment, and provider rules.
+- [Soft constraints](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-solver/src/main/kotlin/io/bluetape4k/clinic/appointment/solver/constraint/SoftConstraints.kt): Defines load, gap, doctor, date, and equipment preferences.
+- [Constraint tests](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-solver/src/test/kotlin/io/bluetape4k/clinic/appointment/solver/constraint/ConstraintVerifierTest.kt): Verifies selected constraints with small inputs.
+- [Solver configuration](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-solver/src/main/kotlin/io/bluetape4k/clinic/appointment/solver/config/SolverConfig.kt): Configures construction heuristic, local search, and termination.
+- [Solver benchmark report](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/solver-benchmark-report.md): Local baselines for three input sizes.
+- [Modeling planning problems](https://docs.timefold.ai/timefold-solver/latest/domain-modeling/modeling-planning-problems): Official Timefold guide to entities, variables, facts, and solutions.
+- [Score calculation and Constraint Streams](https://docs.timefold.ai/timefold-solver/latest/constraints-and-score/score-calculation): Official guide to hard/soft scores, Constraint Streams, and ConstraintVerifier.
+
+## Series
+
+- [Part 1: Clinic Appointments Are More Than CRUD](/blog/clinic-appointment-part1-not-just-crud/)
+- [Part 2: Appointment State Is More Than an Enum](/blog/clinic-appointment-part2-state-machine-and-history/)
+- [Part 3: Computing Availability from Clinic-Specific Hours and Resources](/blog/clinic-appointment-part3-clinic-specific-availability/)
+- [Part 4: Real-Time Slot Search and Global Optimization Solve Different Problems](/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
+- **Part 5: Translating Clinic Rules into Timefold Constraints**
+- Part 6 planned: Rescheduling after Clinic Closures and Equipment Downtime
+- Part 7 planned: Reviews and Operations Start the Next Development Cycle
