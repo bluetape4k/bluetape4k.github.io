@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Leader election coordination scopes</title>
+  <desc id="desc">Three service nodes coordinate tenant-specific aggregation jobs and one global migration through a shared provider.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07111f"/>
+      <stop offset="1" stop-color="#0d1c30"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#14243a"/>
+      <stop offset="1" stop-color="#0c1829"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#020611" flood-opacity="0.55"/>
+    </filter>
+    <marker id="arrow-teal" markerWidth="16" markerHeight="16" refX="13" refY="8" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M2 2 L14 8 L2 14 Z" fill="#37d5c8"/>
+    </marker>
+    <marker id="arrow-purple" markerWidth="16" markerHeight="16" refX="13" refY="8" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M2 2 L14 8 L2 14 Z" fill="#a78bfa"/>
+    </marker>
+    <marker id="arrow-amber" markerWidth="16" markerHeight="16" refX="13" refY="8" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M2 2 L14 8 L2 14 Z" fill="#f6b84a"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="900" rx="32" fill="url(#bg)"/>
+  <circle cx="1450" cy="90" r="220" fill="#16355b" opacity="0.18"/>
+  <circle cx="130" cy="820" r="260" fill="#2a1854" opacity="0.16"/>
+
+  <g font-family="'Architects Daughter', 'Comic Sans MS', sans-serif">
+    <text x="90" y="74" fill="#f4f7fb" font-size="38" font-weight="700">Choose the coordination key before choosing the backend</text>
+    <text x="90" y="112" fill="#8fa6c1" font-size="21">The key defines which work must be mutually exclusive.</text>
+
+    <g filter="url(#shadow)">
+      <rect x="70" y="150" width="1460" height="190" rx="24" fill="url(#panel)" stroke="#29415f" stroke-width="2"/>
+      <rect x="70" y="376" width="1460" height="184" rx="24" fill="url(#panel)" stroke="#29415f" stroke-width="2"/>
+      <rect x="70" y="596" width="1460" height="234" rx="24" fill="url(#panel)" stroke="#29415f" stroke-width="2"/>
+    </g>
+
+    <g font-size="18" font-weight="700" letter-spacing="2">
+      <text x="98" y="185" fill="#6f8bab">SERVICE NODES</text>
+      <text x="98" y="411" fill="#6f8bab">COORDINATION PROVIDER</text>
+      <text x="98" y="631" fill="#6f8bab">GUARDED STATE</text>
+    </g>
+
+    <g font-size="24" font-weight="700" text-anchor="middle">
+      <g>
+        <rect x="155" y="216" width="350" height="82" rx="16" fill="#101f32" stroke="#4c79a8" stroke-width="2"/>
+        <circle cx="196" cy="257" r="18" fill="#4c79a8"/>
+        <text x="331" y="266" fill="#e9f2fb">Service Node A</text>
+      </g>
+      <g>
+        <rect x="625" y="216" width="350" height="82" rx="16" fill="#101f32" stroke="#4c79a8" stroke-width="2"/>
+        <circle cx="666" cy="257" r="18" fill="#4c79a8"/>
+        <text x="801" y="266" fill="#e9f2fb">Service Node B</text>
+      </g>
+      <g>
+        <rect x="1095" y="216" width="350" height="82" rx="16" fill="#101f32" stroke="#4c79a8" stroke-width="2"/>
+        <circle cx="1136" cy="257" r="18" fill="#4c79a8"/>
+        <text x="1271" y="266" fill="#e9f2fb">Service Node C</text>
+      </g>
+    </g>
+
+    <g fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M330 298 V426" stroke="#37d5c8" marker-end="url(#arrow-teal)"/>
+      <path d="M800 298 V426" stroke="#a78bfa" marker-end="url(#arrow-purple)"/>
+      <path d="M1270 298 V426" stroke="#f6b84a" marker-end="url(#arrow-amber)"/>
+    </g>
+
+    <g text-anchor="middle">
+      <rect x="145" y="426" width="370" height="92" rx="18" fill="#0c2b31" stroke="#37d5c8" stroke-width="3"/>
+      <text x="330" y="462" fill="#b9fff7" font-size="25" font-weight="700">tenant:A</text>
+      <text x="330" y="493" fill="#75bdb7" font-size="18">one active owner</text>
+
+      <rect x="615" y="426" width="370" height="92" rx="18" fill="#251b3d" stroke="#a78bfa" stroke-width="3"/>
+      <text x="800" y="462" fill="#e9ddff" font-size="25" font-weight="700">tenant:B</text>
+      <text x="800" y="493" fill="#b8a4df" font-size="18">independent scope</text>
+
+      <rect x="1085" y="426" width="370" height="92" rx="18" fill="#342714" stroke="#f6b84a" stroke-width="3"/>
+      <text x="1270" y="462" fill="#ffe4a8" font-size="25" font-weight="700">migration:global</text>
+      <text x="1270" y="493" fill="#cdb37e" font-size="18">one guarded gate</text>
+    </g>
+
+    <g fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M330 518 V650" stroke="#37d5c8" marker-end="url(#arrow-teal)"/>
+      <path d="M800 518 V650" stroke="#a78bfa" marker-end="url(#arrow-purple)"/>
+      <path d="M1270 518 V650" stroke="#f6b84a" marker-end="url(#arrow-amber)"/>
+    </g>
+
+    <g text-anchor="middle">
+      <rect x="105" y="650" width="450" height="125" rx="20" fill="#0b2830" stroke="#2aa99f" stroke-width="2"/>
+      <text x="330" y="702" fill="#d8fffb" font-size="26" font-weight="700">Tenant A Aggregation</text>
+      <text x="330" y="740" fill="#82bcb7" font-size="19">can run beside Tenant B</text>
+
+      <rect x="1045" y="650" width="450" height="125" rx="20" fill="#302514" stroke="#d69a34" stroke-width="2"/>
+      <text x="1270" y="702" fill="#fff0ca" font-size="25" font-weight="700">Migration + Applied Marker</text>
+      <text x="1270" y="740" fill="#c8aa71" font-size="19">idempotent and committed together</text>
+
+      <rect x="575" y="650" width="450" height="125" rx="20" fill="#201733" stroke="#805fc8" stroke-width="2"/>
+      <text x="800" y="702" fill="#eadfff" font-size="26" font-weight="700">Tenant B Aggregation</text>
+      <text x="800" y="740" fill="#ac98d2" font-size="19">not blocked by Tenant A</text>
+    </g>
+
+    <g font-size="17" text-anchor="middle" font-weight="700">
+      <rect x="267" y="326" width="126" height="34" rx="17" fill="#103b40" stroke="#37d5c8"/>
+      <text x="330" y="349" fill="#aefbf4">same key</text>
+      <rect x="737" y="326" width="126" height="34" rx="17" fill="#33234f" stroke="#a78bfa"/>
+      <text x="800" y="349" fill="#dfd0ff">same key</text>
+      <rect x="1207" y="326" width="126" height="34" rx="17" fill="#493515" stroke="#f6b84a"/>
+      <text x="1270" y="349" fill="#ffe1a0">same key</text>
+    </g>
+
+    <text x="800" y="807" text-anchor="middle" fill="#8197b1" font-size="18">Mutual exclusion follows the coordination key, not the number of service instances.</text>
+  </g>
+</svg>
