@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1200" viewBox="0 0 2000 1200" role="img" aria-labelledby="title desc">
+  <title id="title">Choosing between real-time availability and global schedule optimization</title>
+  <desc id="desc">The processing scope, response timing, and decision criterion distinguish real-time availability in SlotCalculationService from global schedule optimization in SolverService. Closure rescheduling can expose candidate generation and global optimization as separate entry points.</desc>
+  <defs>
+    <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07101f" />
+      <stop offset="0.55" stop-color="#0c1730" />
+      <stop offset="1" stop-color="#10142a" />
+    </linearGradient>
+    <linearGradient id="leftPanel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#102b3e" />
+      <stop offset="1" stop-color="#111d35" />
+    </linearGradient>
+    <linearGradient id="rightPanel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#241d45" />
+      <stop offset="1" stop-color="#151a34" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#020617" flood-opacity="0.58" />
+    </filter>
+    <marker id="arrowCyan" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 1 1 L 13 7 L 1 13 Z" fill="#58a6c9" />
+    </marker>
+    <marker id="arrowPurple" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 1 1 L 13 7 L 1 13 Z" fill="#a78bfa" />
+    </marker>
+    <style>
+      .title { font-family: 'Architects Daughter', cursive; font-size: 42px; font-weight: 700; fill: #f8fafc; }
+      .subtitle { font-family: 'Comic Mono', monospace; font-size: 20px; fill: #a9b8d4; }
+      .panel-title { font-family: 'Architects Daughter', cursive; font-size: 30px; font-weight: 700; fill: #f8fafc; }
+      .card-title { font-family: 'Architects Daughter', cursive; font-size: 21px; font-weight: 700; fill: #f8fafc; }
+      .body { font-family: 'Comic Mono', monospace; font-size: 17px; fill: #c7d3e7; }
+      .small { font-family: 'Comic Mono', monospace; font-size: 15px; fill: #a9b8d4; }
+      .mono { font-family: 'Comic Mono', monospace; font-size: 17px; font-weight: 700; fill: #f8fafc; }
+      .question { font-family: 'Comic Mono', monospace; font-size: 18px; font-weight: 700; fill: #f8fafc; }
+      .connector { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: 4; }
+      .cyan { stroke: #58a6c9; marker-end: url(#arrowCyan); }
+      .purple { stroke: #a78bfa; marker-end: url(#arrowPurple); }
+    </style>
+  </defs>
+
+  <rect width="2000" height="1200" rx="32" fill="url(#canvas)" />
+  <rect x="28" y="28" width="1944" height="1144" rx="28" fill="none" stroke="#263a5e" stroke-width="2" />
+
+  <text class="title" x="1000" y="70" text-anchor="middle">One Availability Query and Global Optimization Are Different Requests</text>
+  <text class="subtitle" x="1000" y="108" text-anchor="middle">Start with processing scope · response timing · number of solutions to compare</text>
+
+  <g aria-label="selection questions">
+    <rect x="60" y="140" width="1880" height="190" rx="28" fill="#0f1d32" stroke="#2b4168" stroke-width="2" />
+    <text class="card-title" x="100" y="184">Three questions to ask first</text>
+
+    <g filter="url(#shadow)">
+      <rect x="100" y="210" width="530" height="86" rx="18" fill="#14283a" stroke="#4f6f91" stroke-width="2" />
+      <text class="question" x="365" y="242" text-anchor="middle">Processing scope</text>
+      <text class="small" x="365" y="271" text-anchor="middle">Candidates for one request, or combinations of many?</text>
+    </g>
+    <g filter="url(#shadow)">
+      <rect x="735" y="210" width="530" height="86" rx="18" fill="#14283a" stroke="#4f6f91" stroke-width="2" />
+      <text class="question" x="1000" y="242" text-anchor="middle">Response timing</text>
+      <text class="small" x="1000" y="271" text-anchor="middle">Answer within an API request, or use a solve-time budget?</text>
+    </g>
+    <g filter="url(#shadow)">
+      <rect x="1370" y="210" width="530" height="86" rx="18" fill="#14283a" stroke="#4f6f91" stroke-width="2" />
+      <text class="question" x="1635" y="242" text-anchor="middle">Decision criterion</text>
+      <text class="small" x="1635" y="271" text-anchor="middle">Any feasible candidate, or the best complete schedule?</text>
+    </g>
+  </g>
+
+  <g aria-label="real-time appointment availability">
+    <rect x="60" y="370" width="900" height="620" rx="28" fill="url(#leftPanel)" stroke="#58a6c9" stroke-width="2" />
+    <rect x="90" y="400" width="310" height="44" rx="14" fill="#15344b" stroke="#58a6c9" />
+    <text class="mono" x="245" y="428" text-anchor="middle">SlotCalculationService</text>
+    <text class="panel-title" x="100" y="488">Real-Time Appointment Availability</text>
+    <text class="subtitle" x="100" y="522">Compute feasible candidates for one patient's question</text>
+
+    <path class="connector cyan" data-connector="left-input-filter" d="M 510 640 V 678" />
+    <path class="connector cyan" data-connector="left-filter-result" d="M 510 800 V 838" />
+
+    <g filter="url(#shadow)">
+      <rect x="110" y="560" width="800" height="80" rx="18" fill="#15344b" stroke="#58a6c9" stroke-width="2" />
+      <text class="card-title" x="150" y="592">Input scope</text>
+      <text class="body" x="150" y="620">Limit the query by clinic · date · doctor · treatment type</text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="110" y="680" width="800" height="120" rx="18" fill="#142d40" stroke="#58a6c9" stroke-width="2" />
+      <text class="card-title" x="150" y="714">Calculation</text>
+      <text class="body" x="150" y="744">Intersect working hours; subtract breaks · closures · absences</text>
+      <text class="body" x="150" y="773">Filter bounded candidates by concurrent capacity and equipment</text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="110" y="840" width="800" height="100" rx="18" fill="#203744" stroke="#8da66b" stroke-width="2" />
+      <text class="card-title" x="150" y="875">Result and invocation</text>
+      <text class="body" x="150" y="905">Bookable times · remaining capacity · available equipment</text>
+      <text class="small" x="150" y="930">Patient-facing API request; closure-reschedule candidates</text>
+    </g>
+  </g>
+
+  <g aria-label="global schedule optimization">
+    <rect x="1040" y="370" width="900" height="620" rx="28" fill="url(#rightPanel)" stroke="#a78bfa" stroke-width="2" />
+    <rect x="1070" y="400" width="250" height="44" rx="14" fill="#30245b" stroke="#a78bfa" />
+    <text class="mono" x="1195" y="428" text-anchor="middle">SolverService</text>
+    <text class="panel-title" x="1080" y="488">Global Schedule Optimization</text>
+    <text class="subtitle" x="1080" y="522">Score combinations across appointments and resources</text>
+
+    <path class="connector purple" data-connector="right-input-search" d="M 1490 640 V 678" />
+    <path class="connector purple" data-connector="right-search-result" d="M 1490 800 V 838" />
+
+    <g filter="url(#shadow)">
+      <rect x="1090" y="560" width="800" height="80" rx="18" fill="#30245b" stroke="#a78bfa" stroke-width="2" />
+      <text class="card-title" x="1130" y="592">Input scope</text>
+      <text class="body" x="1130" y="620">Date range · appointments · doctors · equipment · rules</text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="1090" y="680" width="800" height="120" rx="18" fill="#2b244f" stroke="#a78bfa" stroke-width="2" />
+      <text class="card-title" x="1130" y="714">Search</text>
+      <text class="body" x="1130" y="744">Generate solutions with different doctors · dates · start times</text>
+      <text class="body" x="1130" y="773">Compare hard-constraint violations and soft-goal scores</text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="1090" y="840" width="800" height="100" rx="18" fill="#312c54" stroke="#c4b5fd" stroke-width="2" />
+      <text class="card-title" x="1130" y="875">Result and invocation</text>
+      <text class="body" x="1130" y="905">Assignments · constraint score · solve time · feasibility</text>
+      <text class="small" x="1130" y="930">Administrative batch; global closure-reschedule review</text>
+    </g>
+  </g>
+
+  <g aria-label="choice for closure rescheduling">
+    <path class="connector cyan" data-connector="left-reschedule" d="M 510 990 V 1016 Q 510 1030 524 1030 H 686 Q 700 1030 700 1044 V 1055" />
+    <path class="connector purple" data-connector="right-reschedule" d="M 1490 990 V 1016 Q 1490 1030 1476 1030 H 1314 Q 1300 1030 1300 1044 V 1055" />
+    <rect x="260" y="1055" width="1480" height="90" rx="22" fill="#121f35" stroke="#4f6f91" stroke-width="2" />
+    <text class="card-title" x="1000" y="1090" text-anchor="middle">Closure rescheduling chooses a path for the current workflow stage</text>
+    <text class="small" x="1000" y="1121" text-anchor="middle">The implementation exposes separate entry points for storing greedy candidates and re-solving a date range</text>
+  </g>
+
+  <circle cx="690" cy="1168" r="7" fill="#58a6c9" /><text class="small" x="708" y="1174">fast feasibility calculation</text>
+  <circle cx="1010" cy="1168" r="7" fill="#a78bfa" /><text class="small" x="1028" y="1174">score-based global search</text>
+  <text class="small" x="1900" y="1174" text-anchor="end">Greedy is a path for a different request, not an inferior fallback</text>
+</svg>
