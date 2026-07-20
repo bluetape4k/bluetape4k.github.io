@@ -1,0 +1,152 @@
+---
+title: "예약 요청이 몰릴 때 정원을 넘기지 않는 방법"
+description: PostgreSQL을 예약 수량의 최종 권한으로 두고 Redis를 보조 장치로 사용하는 reservation-control-plane 예제를 살펴본다.
+sidebar:
+  order: -202607202130
+blog:
+  date: 2026-07-20T21:30:00+09:00
+  image: /assets/reservation-control-plane-postgresql-authority-hero.png
+  imageAlt: 예약 요청 queue와 Redis 보조 gate가 PostgreSQL capacity counter로 모이는 3D miniature workbench
+  cardDescription: "동시 요청, 재시도, hold 만료, waitlist, Redis 장애가 겹쳐도 예약 정원을 지키는 경계를 코드와 테스트로 확인합니다."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/reservation-control-plane-postgresql-authority-hero.png" alt="예약 요청 queue와 Redis 보조 gate가 PostgreSQL capacity counter로 모이는 3D miniature workbench" loading="eager" />
+  <figcaption>Redis는 앞에서 경합을 줄이고, PostgreSQL은 마지막 자리가 누구에게 가는지 결정합니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-07-20 · bluetape4k-workshop · Reservation control plane</p>
+
+예약이 한 자리 남았습니다. 두 사용자가 거의 동시에 화면을 열면 둘 다 `available = 1`을 볼 수 있습니다. 두 요청 가운데 하나는 응답을 받기 전에 timeout이 나서 같은 명령을 다시 보낼 수도 있습니다. 그 사이 먼저 만든 hold가 만료되고, waitlist의 다음 사용자에게 자리를 넘기는 작업이 시작됩니다. 마침 Redis 연결까지 끊기면 상황은 더 복잡해집니다.
+
+현실에서 부딪히는 문제는 이런 식입니다. 동시 요청, 재시도, 만료 처리를 따로 떼어 놓으면 각각은 어렵지 않습니다. 하지만 모두 같은 예약 수량을 건드리기 시작하면 "누가 마지막으로 결정하는가"가 분명해야 합니다.
+
+`bluetape4k-workshop`의 [`commerce/reservation-control-plane`](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/commerce/reservation-control-plane) 예제는 이 경계를 다음처럼 나눕니다.
+
+- PostgreSQL은 예약 수량, 상태 전이, 소유권, 멱등 응답을 최종 결정합니다.
+- node-local bulkhead는 한 인스턴스가 JDBC 연결을 과도하게 점유하지 않게 막습니다.
+- Redis semaphore와 lock은 요청이 PostgreSQL에 도달하기 전에 경합과 중복 작업을 줄입니다.
+- Redis를 사용할 수 없어도 PostgreSQL의 검사를 건너뛰지 않습니다.
+
+PostgreSQL과 Redis 중 어느 쪽이 더 좋은지 비교하려는 예제가 아닙니다. Redis 장애가 예약 정합성 장애로 번지지 않도록 둘의 책임을 분리합니다.
+
+## 마지막 한 자리는 한 번의 조건부 갱신으로 지킨다
+
+예약 생성 전에 현재 수량을 읽고 애플리케이션 코드에서 `available > 0`을 검사하면, 두 요청이 같은 값을 읽을 수 있습니다. 읽기와 갱신 사이에 틈이 있기 때문입니다.
+
+예제의 [`CapacityResourceRepository.tryOccupy()`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/main/kotlin/io/bluetape4k/workshop/commerce/reservation/persistence/CapacityResourceRepository.kt)는 상태, revision, 수량 조건을 한 SQL `UPDATE`에 넣습니다.
+
+```kotlin
+(table.state eq ResourceState.OPEN) and
+    (table.revision eq expectedRevision) and
+    (table.occupiedCount less table.capacity)
+```
+
+조건을 만족한 한 요청만 `occupiedCount`와 `revision`을 함께 올립니다. 이미 다른 요청이 revision을 바꿨거나 정원이 찼다면 갱신된 행이 0개이므로 실패합니다. 마지막 한 자리를 차지할 권한을 애플리케이션의 이전 조회 결과가 아니라 PostgreSQL의 원자적 갱신이 판단하는 셈입니다.
+
+수량만 올리고 hold 저장에 실패하면 자리가 새는 문제도 남습니다. [`ReservationCommandService.hold()`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/main/kotlin/io/bluetape4k/workshop/commerce/reservation/application/ReservationCommandService.kt)는 capacity CAS와 hold insert를 같은 Spring transaction 안에서 실행합니다. hold를 저장하지 못하면 수량 증가도 rollback됩니다.
+
+여기서 row lock이 모든 일을 하는 것은 아닙니다. 새 hold의 마지막 자리 경쟁은 revision을 포함한 조건부 갱신으로 막습니다. 반대로 취소, 만료, waitlist 승격처럼 이미 점유한 자리를 다른 소유자에게 넘길 때는 resource row를 먼저 잠급니다. 두 방식은 역할이 다르지만 최종 판단 장소는 같습니다.
+
+## hold를 취소할 때 자리를 바로 비우지 않을 수도 있다
+
+예약 제어 플레인에는 수명이 다른 세 가지 객체가 있습니다.
+
+| 객체 | 맡은 역할 | 다음 전이에서 확인할 것 |
+| --- | --- | --- |
+| hold | 일정 시간 동안 자리를 점유 | owner, state, revision, policy version, expiry |
+| waitlist entry | 자리가 날 때까지 FIFO로 대기 | owner, `WAITING` 상태, sequence |
+| offer | 특정 대기자에게 자리를 잠시 제안 | owner, `ACTIVE` 상태, revision, expiry |
+
+hold를 취소하거나 만료시켰다고 해서 항상 `occupiedCount`를 바로 줄이면 안 됩니다. 기다리는 사용자가 있다면 그 자리는 FIFO 첫 번째 대기자에게 넘어가야 합니다. [`ReservationCapacityHandoffService.promoteOrRelease()`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/main/kotlin/io/bluetape4k/workshop/commerce/reservation/application/ReservationCapacityHandoffService.kt)는 가장 오래 기다린 entry를 offer로 승격하고, 대기자가 없을 때만 capacity를 반환합니다.
+
+이때 offer를 수락하면서 `occupiedCount`를 다시 올리지 않습니다. 자리는 이미 이전 hold가 점유하고 있었고, 소유권만 waitlist의 다음 사용자에게 넘겼기 때문입니다. 한 자리를 반환했다가 다시 얻는 두 동작으로 나누면 그 사이에 다른 요청이 끼어들 수 있습니다.
+
+[`WaitlistCommandService`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/main/kotlin/io/bluetape4k/workshop/commerce/reservation/application/WaitlistCommandService.kt)는 자리를 넘기는 transaction마다 resource row를 먼저 잠근 뒤 waitlist와 offer를 읽습니다. 그리고 `X-Reservation-Owner`에서 만든 digest가 일치하는지, offer가 아직 `ACTIVE`인지, 만료 전인지, revision이 같은지 확인합니다. offer URL을 알았다는 이유만으로 다른 사용자의 자리를 수락할 수는 없습니다.
+
+## 같은 요청을 다시 받았을 때 재생과 충돌을 구분한다
+
+클라이언트는 서버가 명령을 처리했는지 모른 채 timeout을 받을 수 있습니다. 같은 `Idempotency-Key`로 다시 요청할 때 서버가 무조건 "이미 봤다"고 끝내는 것만으로는 부족합니다. 첫 요청이 끝났는지, 아직 처리 중인지, 같은 key를 다른 명령에 재사용했는지를 구분해야 합니다.
+
+[`HttpIdempotencyRepository.acquire()`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/main/kotlin/io/bluetape4k/workshop/commerce/reservation/idempotency/HttpIdempotencyRepository.kt)는 결과를 다음처럼 나눕니다.
+
+| 결과 | 의미 | HTTP 경계에서의 처리 |
+| --- | --- | --- |
+| `New` | 이 scope에서 처음 받은 명령 | 명령을 실행하고 응답을 저장 |
+| `Takeover` | 이전 처리 lease가 만료됨 | 이전 owner token과 deadline을 CAS로 바꾼 뒤 재실행 |
+| `Replay` | 처리가 끝나 응답이 저장됨 | 원래 status와 body를 재생하고 `Idempotency-Replayed: true` 반환 |
+| `FingerprintConflict` | 같은 key에 다른 요청을 사용함 | `409 Conflict` |
+| `InProgress` | 다른 owner가 아직 처리 중임 | 중복 실행하지 않고 재시도 가능한 응답 |
+
+key의 scope에는 tenant와 operation이 들어갑니다. 요청 fingerprint에는 operation, canonical payload, owner digest가 들어갑니다. 따라서 같은 문자열 key라도 다른 tenant나 operation이면 별개이고, 같은 scope에서 payload나 owner가 바뀌면 충돌입니다.
+
+[`IdempotentReservationCommandService.execute()`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/main/kotlin/io/bluetape4k/workshop/commerce/reservation/application/IdempotentReservationCommandService.kt)는 명령 mutation과 재생할 HTTP body를 같은 PostgreSQL transaction에 저장합니다. "예약은 됐는데 재생할 응답은 없다"는 틈을 줄이기 위한 경계입니다.
+
+## Redis가 멈춰도 예약 규칙은 PostgreSQL에서 계속 검사한다
+
+Redis를 정합성의 최종 저장소로 사용하지 않는다고 해서 쓸모가 없는 것은 아닙니다. DB 앞에서 불필요한 작업을 줄이고 한꺼번에 몰리는 요청을 완화하는 데에는 잘 맞습니다.
+
+| 경계 | 역할 | 실패했을 때 |
+| --- | --- | --- |
+| node-local bulkhead | JDBC 동시 작업 수 제한 | foreground permit이 차면 요청 거부 |
+| Redis semaphore | 분산 환경의 advisory admission | Redis 오류면 local 경계로 진행, permit 부족이면 DB 진입 전 요청 거부 가능 |
+| Redis lock | 짧은 in-flight 중복 작업 억제 | Redis 오류면 PostgreSQL 멱등 기록에 판단을 맡김 |
+| PostgreSQL | 수량, 상태, 소유권, 응답의 최종 권한 | 명령을 실패시키며 Redis만으로 mutation하지 않음 |
+
+[`ReservationAdmissionGate`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/main/kotlin/io/bluetape4k/workshop/commerce/reservation/redis/ReservationAdmissionGate.kt)는 local bulkhead를 항상 먼저 거칩니다. Redis 호출에서 예외가 나면 `LOCAL_FALLBACK`으로 PostgreSQL 작업을 계속합니다. Redis semaphore가 정상적으로 "permit 없음"을 반환한 경우에는 부하를 줄이기 위해 요청을 거부할 수 있습니다. Redis 장애와 정상적인 admission rejection을 같은 결과로 취급하지 않는 것입니다.
+
+[`InFlightCommandSuppressor`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/main/kotlin/io/bluetape4k/workshop/commerce/reservation/redis/InFlightCommandSuppressor.kt)도 Redis lock을 얻지 못한 중복 실행을 짧게 막습니다. Redis가 고장 나면 명령을 버리지 않고 PostgreSQL idempotency row로 보냅니다. Redis lock은 빠른 중복 억제이고, PostgreSQL row는 durable한 중복 판단입니다.
+
+주의할 점도 있습니다. 이 예제가 사용하는 `LettuceSemaphore` permit에는 lease가 없습니다. 프로세스가 permit을 얻은 뒤 `finally`의 release까지 도달하지 못하고 죽으면 permit이 Redis key에 남을 수 있습니다. 전용 key를 초기화하거나 Redis를 재시작하기 전까지 admission 처리량이 줄어들 수 있습니다. 그래도 PostgreSQL의 수량 조건은 그대로 검사하므로 정원을 초과하는 문제와 permit 누수 문제를 구분해서 대응할 수 있습니다.
+
+## 실패 시나리오는 테스트 이름부터 구체적이다
+
+이 예제의 테스트는 mock 한두 개로 happy path만 확인하지 않습니다. [`ReservationWebIntegrationTest`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/test/kotlin/io/bluetape4k/workshop/commerce/reservation/web/ReservationWebIntegrationTest.kt)는 `PostgreSQLServer`로 실제 PostgreSQL을 띄우고 `WebTestClient`로 live HTTP server를 호출합니다.
+
+- `capacity one admits exactly one of ten concurrent live HTTP holds`는 정원 1인 resource에 HTTP hold 10개를 동시에 보내 정확히 하나만 성공하는지 확인합니다.
+- `hold command persists replay and rejects a different payload for the same key`는 성공 응답 재생과 fingerprint 충돌을 한 흐름에서 검증합니다.
+- `cancel hands occupied capacity to the oldest waiter instead of releasing it`는 취소된 자리가 FIFO 첫 대기자에게 넘어가고 수량이 중간에 풀리지 않는지 확인합니다.
+- [`RedisUnavailableBootIntegrationTest`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/test/kotlin/io/bluetape4k/workshop/commerce/reservation/RedisUnavailableBootIntegrationTest.kt)는 Redis 연결 실패가 PostgreSQL 기반 API 기동을 막지 않는지 확인합니다.
+- [`HttpIdempotencyRepositoryTest`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/test/kotlin/io/bluetape4k/workshop/commerce/reservation/idempotency/HttpIdempotencyRepositoryTest.kt)는 replay, fingerprint conflict, in-progress lease, 만료 owner takeover와 stale finalize 거부를 실제 PostgreSQL에서 검증합니다.
+- [`ReservationResourceTransactionServiceTest`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/test/kotlin/io/bluetape4k/workshop/commerce/reservation/sweeper/ReservationResourceTransactionServiceTest.kt)는 만료 hold와 offer가 FIFO handoff 또는 capacity release로 이어지는지 확인합니다.
+- [`ReservationExpirySweeperTest`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/test/kotlin/io/bluetape4k/workshop/commerce/reservation/sweeper/ReservationExpirySweeperTest.kt)는 leader tick, non-leader skip, bounded batch, local single-flight를 구분합니다.
+- [`NotificationOutboxTest`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/test/kotlin/io/bluetape4k/workshop/commerce/reservation/notification/NotificationOutboxTest.kt)는 안정된 delivery id, worker claim lease, bounded retry, provider 성공 직후 crash 복구를 확인합니다.
+
+테스트 수보다 먼저 볼 것은 각 테스트가 재현하는 실패입니다. 동시 HTTP 요청, Redis 부재, 만료 경쟁, worker crash처럼 실제로 경계가 흔들리는 순간을 입력으로 넣어야 "PostgreSQL이 최종 권한이다"라는 설명이 코드 주석에만 머물지 않습니다.
+
+## 이 예제가 아직 증명하지 않은 것
+
+이 예제는 한 애플리케이션 안에서 권한 경계를 구체적으로 보여 주지만, 다음 항목까지 증명하지는 않습니다.
+
+- 여러 리전과 network partition에서 같은 수량을 운영하는 방식
+- 장시간 부하에서의 처리량과 tail latency
+- 누수된 Redis semaphore permit을 자동으로 탐지하고 복구하는 정책
+- leader sweeper가 오래 멈춘 뒤 backlog를 안전하게 줄이는 운영 절차
+- PostgreSQL failover 중 `IN_PROGRESS` 멱등 요청을 어떻게 인계할지에 대한 운영 정책
+- SLO, alert threshold, dashboard 구성
+- `X-Reservation-Owner`를 실제 로그인 사용자나 서비스 인증서에 연결하는 인증·인가 경계
+- 실제 notification provider를 운영하는 전용 worker
+
+이 목록은 구현이 부족하다는 평가가 아닙니다. 테스트로 확인한 범위와 운영 환경에서 다시 증명해야 할 범위를 나누는 체크리스트입니다. 예제 코드를 실제 서비스에 옮길 때는 이 빈칸을 시스템 환경에 맞게 채워야 합니다.
+
+## 예약 확정은 PostgreSQL commit 뒤에만 일어난다
+
+예약 정원을 지키는 규칙은 단순해야 합니다. Redis admission을 통과했다고 예약이 확정되는 것이 아닙니다. PostgreSQL의 revision과 수량 조건을 통과하고, 상태·소유권 검사를 거쳐 transaction이 commit돼야 확정됩니다. Redis는 그 앞에서 중복 작업과 경합을 줄일 수 있지만 최종 결정을 대신하지 않습니다.
+
+같은 원리는 재고, 좌석, 쿠폰처럼 수량이 제한된 자원에도 적용할 수 있습니다. 먼저 durable한 최종 권한을 정하고, 그 다음에 캐시, semaphore, leader election을 보조 장치로 붙여야 합니다. 순서를 뒤집으면 보조 장치의 장애가 곧 정합성 장애가 됩니다.
+
+함께 읽을 글:
+
+- [한 건의 예약 가능 시간 조회와 전체 일정 최적화는 다르다](/ko/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
+- [Transactional Outbox와 Idempotency: Spring, Ktor 예제로 보는 실패 경계](/ko/blog/transactional-outbox-idempotency-spring-ktor/)
+- [Transactional Outbox Part 2: Kafka 우선 fallback으로 hot transaction 줄이기](/ko/blog/transactional-outbox-kafka-first-fallback-part2/)
+
+## 소스에서 이어 읽기
+
+- [reservation-control-plane README](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/README.ko.md)
+- [CapacityResourceRepository.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/main/kotlin/io/bluetape4k/workshop/commerce/reservation/persistence/CapacityResourceRepository.kt)
+- [ReservationCommandService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/main/kotlin/io/bluetape4k/workshop/commerce/reservation/application/ReservationCommandService.kt)
+- [WaitlistCommandService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/main/kotlin/io/bluetape4k/workshop/commerce/reservation/application/WaitlistCommandService.kt)
+- [HttpIdempotencyRepository.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/main/kotlin/io/bluetape4k/workshop/commerce/reservation/idempotency/HttpIdempotencyRepository.kt)
+- [ReservationAdmissionGate.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/main/kotlin/io/bluetape4k/workshop/commerce/reservation/redis/ReservationAdmissionGate.kt)
+- [ReservationWebIntegrationTest.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/test/kotlin/io/bluetape4k/workshop/commerce/reservation/web/ReservationWebIntegrationTest.kt)

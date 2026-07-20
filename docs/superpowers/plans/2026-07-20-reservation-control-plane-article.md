@@ -14,8 +14,9 @@
 
 - Create `src/content/docs/ko/blog/reservation-control-plane-postgresql-authority.mdx`: Korean primary article and local review route.
 - Create `src/content/docs/blog/reservation-control-plane-postgresql-authority.mdx`: English localization after Korean approval.
+- Create `public/assets/reservation-control-plane-postgresql-authority-hero.png`: schema-required shared hero for both locales.
 - Modify this plan only to check completed steps and record evidence.
-- Do not create visual assets in this iteration; the article uses prose, compact tables, and short Kotlin excerpts.
+- Do not create architecture diagrams or charts in this iteration; the article uses one schema-required hero plus prose, compact tables, and short Kotlin excerpts.
 
 ## Pinned Evidence
 
@@ -38,23 +39,23 @@
 - Read: `/Users/debop/work/bluetape4k/bluetape4k-workshop/commerce/reservation-control-plane/src/main/kotlin/io/bluetape4k/workshop/commerce/reservation/**`
 - Read: `/Users/debop/work/bluetape4k/bluetape4k-workshop/commerce/reservation-control-plane/src/test/kotlin/io/bluetape4k/workshop/commerce/reservation/**`
 
-- [ ] **Step 1: Record the authoritative capacity claim**
+- [x] **Step 1: Record the authoritative capacity claim**
 
 Use `CapacityResourceRepository.tryOccupy()` as the smallest proof: one SQL update combines resource state, expected revision, and `occupiedCount < capacity`, then increments both `occupiedCount` and `revision`. Pair it with the transaction in `ReservationCommandService.hold()` so a failed hold insert cannot leave an occupied slot.
 
-- [ ] **Step 2: Record the HTTP idempotency claim**
+- [x] **Step 2: Record the HTTP idempotency claim**
 
 Use `IdempotentReservationCommandService.execute()` and `HttpIdempotencyRepository.acquire()` to distinguish `New`, `Takeover`, `Replay`, `FingerprintConflict`, and `InProgress`. Preserve the actual 90-second lease and 24-hour default retention only if the draft mentions numbers.
 
-- [ ] **Step 3: Record the advisory Redis claim**
+- [x] **Step 3: Record the advisory Redis claim**
 
 Use `ReservationAdmissionGate`, `InFlightCommandSuppressor`, and `LettuceSemaphoreAdmissionBackend`. State that Redis errors fall back to the local/PostgreSQL path, while Redis capacity rejection can still shed load before the database. State the no-lease semaphore permit caveat without implying automatic recovery.
 
-- [ ] **Step 4: Record the ownership and handoff claim**
+- [x] **Step 4: Record the ownership and handoff claim**
 
 Use `WaitlistCommandService` and `ReservationCapacityHandoffService`: resource-first lock order, FIFO `oldestWaiting`, owner digest checks, active offer expiry, accepted offer conversion, and release only when no waiter exists.
 
-- [ ] **Step 5: Record test evidence and limits**
+- [x] **Step 5: Record test evidence and limits**
 
 Use PostgreSQL HTTP integration tests, `RedisUnavailableBootIntegrationTest`, idempotency repository tests, admission/suppression tests, waitlist tests, expiry sweeper tests, and notification outbox tests. Do not claim multi-region correctness, production load capacity, SLO compliance, production notification delivery, or automatic leaked-permit recovery.
 
@@ -63,9 +64,9 @@ Use PostgreSQL HTTP integration tests, `RedisUnavailableBootIntegrationTest`, id
 **Files:**
 - Create: `src/content/docs/ko/blog/reservation-control-plane-postgresql-authority.mdx`
 
-- [ ] **Step 1: Add local frontmatter and article chrome**
+- [x] **Step 1: Add local frontmatter and article chrome**
 
-Use this frontmatter shape with no image fields because this iteration creates no hero:
+Use this frontmatter shape with the schema-required hero:
 
 ```mdx
 ---
@@ -75,17 +76,21 @@ sidebar:
   order: -202607202130
 blog:
   date: 2026-07-20T21:30:00+09:00
+  image: /assets/reservation-control-plane-postgresql-authority-hero.png
+  imageAlt: 예약 요청 queue와 Redis 보조 gate가 PostgreSQL capacity counter로 모이는 3D miniature workbench
   cardDescription: "동시 요청, 재시도, hold 만료, waitlist, Redis 장애가 겹쳐도 예약 정원을 지키는 경계를 코드와 테스트로 확인합니다."
 ---
 
 <p class="bt4k-post-meta">2026-07-20 · bluetape4k-workshop · Reservation control plane</p>
 ```
 
-- [ ] **Step 2: Open with the last-slot race**
+Place a `bt4k-blog-hero` figure before the post meta. Compare it at equal size with the Flow extensions workshop, transactional outbox/idempotency, and cache workshop heroes.
+
+- [x] **Step 2: Open with the last-slot race**
 
 Describe two users reading the same last available slot, one timing out and retrying, and Redis becoming unavailable during expiry cleanup. End the introduction with the selection rule: PostgreSQL decides durable outcomes; Redis reduces duplicate work and contention.
 
-- [ ] **Step 3: Explain the PostgreSQL capacity boundary**
+- [x] **Step 3: Explain the PostgreSQL capacity boundary**
 
 Add a compact Kotlin excerpt based on `tryOccupy()`:
 
@@ -97,15 +102,15 @@ Add a compact Kotlin excerpt based on `tryOccupy()`:
 
 Explain why the predicate and increment must share one SQL update and why `ReservationCommandService.hold()` keeps the capacity CAS and hold insert in one transaction.
 
-- [ ] **Step 4: Explain hold, waitlist, and offer ownership**
+- [x] **Step 4: Explain hold, waitlist, and offer ownership**
 
 Use one lifecycle table with `hold`, `waitlist entry`, and `offer`. Explain resource-first lock order, owner digest checks, FIFO promotion, finite offer TTL, and the choice between promotion and capacity release.
 
-- [ ] **Step 5: Explain idempotency as a state machine**
+- [x] **Step 5: Explain idempotency as a state machine**
 
 Use a table for `New/Takeover`, `Replay`, `FingerprintConflict`, and `InProgress`. Explain that the key is scoped by tenant and operation and the fingerprint also binds canonical payload plus owner digest.
 
-- [ ] **Step 6: Explain Redis fail-open boundaries**
+- [x] **Step 6: Explain Redis fail-open boundaries**
 
 Use a responsibility table:
 
@@ -118,15 +123,15 @@ Use a responsibility table:
 
 Call out the `LettuceSemaphore` no-lease caveat and separate correctness from throughput degradation.
 
-- [ ] **Step 7: Read failure scenarios through tests**
+- [x] **Step 7: Read failure scenarios through tests**
 
 Connect each test family to one observable claim. Mention the real PostgreSQL/Testcontainers and HTTP server path, Redis-unavailable boot, idempotency outcomes, waitlist ownership, sweeper coordination, and durable notification intent.
 
-- [ ] **Step 8: State non-guarantees and link related posts**
+- [x] **Step 8: State non-guarantees and link related posts**
 
 List the concrete gaps: multi-region/network partitions, long-running load results, leaked-permit automation, prolonged sweeper outage recovery, PostgreSQL failover policy for in-progress idempotency, SLO/alerts, and authentication binding. Link the published Part 4 and transactional outbox/idempotency posts; do not add broken Part 6/7 links.
 
-- [ ] **Step 9: Add full source links**
+- [x] **Step 9: Add full source links**
 
 Link the module README and the exact classes/tests used in the body. Use `https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/...` for files and `tree/develop/...` for the module root.
 
@@ -135,15 +140,15 @@ Link the module README and the exact classes/tests used in the body. Use `https:
 **Files:**
 - Modify: `src/content/docs/ko/blog/reservation-control-plane-postgresql-authority.mdx`
 
-- [ ] **Step 1: Run the factual consistency pass**
+- [x] **Step 1: Run the factual consistency pass**
 
 Check every class, function, header, status, duration, and source URL against the pinned workshop ref. Remove or qualify unsupported statements.
 
-- [ ] **Step 2: Run the Korean naturalness checklist**
+- [x] **Step 2: Run the Korean naturalness checklist**
 
 Preserve the user wording `현실에서 부딪히는 문제`. Replace abstract noun-heavy headings with concrete problem/action headings. Remove marketing claims, English sentence skeletons, generic conclusions, and unexplained metaphors without changing facts.
 
-- [ ] **Step 3: Run static content checks**
+- [x] **Step 3: Run static content checks**
 
 Run:
 
@@ -158,9 +163,10 @@ Expected: `git diff --check` exits 0; the red-flag search returns no unresolved 
 
 **Files:**
 - Verify: `src/content/docs/ko/blog/reservation-control-plane-postgresql-authority.mdx`
+- Verify: `public/assets/reservation-control-plane-postgresql-authority-hero.png`
 - Verify: `dist/ko/blog/reservation-control-plane-postgresql-authority/index.html`
 
-- [ ] **Step 1: Build the site**
+- [x] **Step 1: Build the site**
 
 Run:
 
@@ -170,7 +176,7 @@ npm run build
 
 Expected: Astro check reports 0 errors and the build creates the Korean route.
 
-- [ ] **Step 2: Verify the rendered route artifact**
+- [x] **Step 2: Verify the rendered route artifact**
 
 Run:
 
@@ -181,7 +187,7 @@ rg -n '예약 요청이 몰릴 때 정원을 넘기지 않는 방법|PostgreSQL|
 
 Expected: the route exists and contains the article title plus both authority-boundary terms.
 
-- [ ] **Step 3: Start the local preview server**
+- [x] **Step 3: Start the local preview server**
 
 Run:
 
@@ -192,7 +198,7 @@ curl -I http://127.0.0.1:4324/ko/blog/reservation-control-plane-postgresql-autho
 
 Expected: the Astro development server listens on loopback port 4324 and the article route returns HTTP 200. Report the exact review URL to the user.
 
-- [ ] **Step 4: Stop at the Korean review gate**
+- [x] **Step 4: Stop at the Korean review gate**
 
 Do not create the English article until the user reviews the Korean route and approves the wording and structure.
 
