@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Reviews and operations create the next development cycle</title>
+  <desc id="desc">Requirements, design, implementation, tests and review, lessons, and new requirements form a loop informed by operational evidence.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#07111f"/><stop offset="1" stop-color="#101936"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#020617" flood-opacity="0.48"/></filter>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M 1 1 L 13 7 L 1 13 Z" fill="#67e8f9"/></marker>
+    <marker id="violetArrow" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M 1 1 L 13 7 L 1 13 Z" fill="#c084fc"/></marker>
+    <style>
+      .title{font-family:"Architects Daughter",cursive;font-size:46px;font-weight:700;fill:#f8fafc}.subtitle{font-family:"Comic Mono",monospace;font-size:19px;fill:#9fb2cc}.label{font-family:"Architects Daughter",cursive;font-size:28px;font-weight:700;fill:#f8fafc}.body{font-family:"Comic Mono",monospace;font-size:18px;fill:#d7e3f3}.small{font-family:"Comic Mono",monospace;font-size:15px;fill:#aebed2}.card{filter:url(#shadow);stroke-width:2}
+    </style>
+  </defs>
+  <rect width="1600" height="900" rx="34" fill="url(#bg)"/>
+  <circle cx="1450" cy="110" r="200" fill="#7c3aed" opacity=".08"/><circle cx="130" cy="780" r="220" fill="#0891b2" opacity=".08"/>
+  <text x="80" y="78" class="title">Done is a checkpoint in a living development loop</text>
+  <text x="82" y="116" class="subtitle">Review findings and production-shaped evidence become the next small, testable requirement.</text>
+
+  <rect x="90" y="180" width="380" height="160" rx="24" fill="#153247" stroke="#22d3ee" class="card"/>
+  <text x="120" y="226" class="small" fill="#67e8f9">01 · REQUIREMENTS</text><text x="120" y="272" class="label">Describe the observable need</text><text x="120" y="307" class="body">Behavior · boundary · acceptance evidence</text>
+  <rect x="610" y="180" width="380" height="160" rx="24" fill="#202a4a" stroke="#818cf8" class="card"/>
+  <text x="640" y="226" class="small" fill="#a5b4fc">02 · DESIGN / PLAN</text><text x="640" y="272" class="label">Choose the smallest safe change</text><text x="640" y="307" class="body">Data · API · migration · verification</text>
+  <rect x="1130" y="180" width="380" height="160" rx="24" fill="#27213f" stroke="#c084fc" class="card"/>
+  <text x="1160" y="226" class="small" fill="#d8b4fe">03 · IMPLEMENTATION</text><text x="1160" y="272" class="label">Keep boundaries explicit</text><text x="1160" y="307" class="body">Tenant · transaction · event · dependency</text>
+
+  <rect x="1130" y="580" width="380" height="160" rx="24" fill="#26213f" stroke="#c084fc" class="card"/>
+  <text x="1160" y="626" class="small" fill="#d8b4fe">04 · TESTS / REVIEW</text><text x="1160" y="672" class="label">Turn findings into evidence</text><text x="1160" y="707" class="body">Negative paths · compatibility · P0/P1</text>
+  <rect x="610" y="580" width="380" height="160" rx="24" fill="#15364a" stroke="#2dd4bf" class="card"/>
+  <text x="640" y="626" class="small" fill="#5eead4">05 · LESSONS</text><text x="640" y="672" class="label">Record why the fix exists</text><text x="640" y="707" class="body">Decision · rejected path · future guard</text>
+  <rect x="90" y="580" width="380" height="160" rx="24" fill="#183248" stroke="#38bdf8" class="card"/>
+  <text x="120" y="626" class="small" fill="#7dd3fc">06 · NEW REQUIREMENT</text><text x="120" y="672" class="label">Feed the learning back</text><text x="120" y="707" class="body">One review gap becomes one contract</text>
+
+  <path d="M 470 260 H 610" fill="none" stroke="#67e8f9" stroke-width="4" marker-end="url(#arrow)" data-connector="requirements-design"/>
+  <path d="M 990 260 H 1130" fill="none" stroke="#67e8f9" stroke-width="4" marker-end="url(#arrow)" data-connector="design-implementation"/>
+  <path d="M 1320 340 V 580" fill="none" stroke="#c084fc" stroke-width="4" marker-end="url(#violetArrow)" data-connector="implementation-review"/>
+  <path d="M 1130 660 H 990" fill="none" stroke="#c084fc" stroke-width="4" marker-end="url(#violetArrow)" data-connector="review-lessons"/>
+  <path d="M 610 660 H 470" fill="none" stroke="#67e8f9" stroke-width="4" marker-end="url(#arrow)" data-connector="lessons-new"/>
+  <path d="M 280 580 V 340" fill="none" stroke="#67e8f9" stroke-width="4" marker-end="url(#arrow)" data-connector="new-requirements"/>
+
+  <rect x="470" y="394" width="660" height="116" rx="24" fill="#0c1c31" stroke="#52657d" stroke-width="2" filter="url(#shadow)"/>
+  <text x="800" y="430" text-anchor="middle" class="small" fill="#fbbf24">OPERATIONAL INPUTS</text>
+  <rect x="500" y="452" width="132" height="34" rx="17" fill="#123b4d"/><text x="566" y="475" text-anchor="middle" class="small">Tenant isolation</text>
+  <rect x="652" y="452" width="132" height="34" rx="17" fill="#31244b"/><text x="718" y="475" text-anchor="middle" class="small">Notification</text>
+  <rect x="804" y="452" width="132" height="34" rx="17" fill="#18364a"/><text x="870" y="475" text-anchor="middle" class="small">Database parity</text>
+  <rect x="956" y="452" width="144" height="34" rx="17" fill="#332817"/><text x="1028" y="475" text-anchor="middle" class="small">Performance / SDK</text>
+
+  <rect x="90" y="794" width="1420" height="60" rx="20" fill="#0b1628" stroke="#26364e"/>
+  <text x="116" y="831" class="small">Living specifications, plans, tests, review findings, and lessons keep the implementation aligned with what operations actually reveal.</text>
+</svg>

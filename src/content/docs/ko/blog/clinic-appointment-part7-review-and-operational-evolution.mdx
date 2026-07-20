@@ -1,0 +1,188 @@
+---
+title: "병원 예약 SaaS 개발기 Part 7: 완성 뒤가 진짜 시작이다"
+description: 코드 리뷰와 운영 요구가 상태 이력 API, tenant 격리, 알림 복원력, 다중 DB 검증과 의존성 마이그레이션으로 이어지는 개발 피드백 루프를 돌아봅니다.
+sidebar:
+  order: -202607221400
+blog:
+  date: 2026-07-22T14:00:00+09:00
+  image: /assets/clinic-appointment-part7-hero.png
+  imageAlt: 작은 로봇 개발자들이 요구사항과 설계, 구현, 테스트와 리뷰, 교훈 카드를 원형 작업대로 돌리고 주변의 tenant 보안, 알림, 데이터베이스와 성능 신호를 다음 개발 주기에 연결하는 어두운 미니어처 장면
+  cardDescription: "리뷰 지적과 운영 증거를 다음 요구사항으로 되돌려 보내며 예약 SaaS를 계속 진화시키는 방법을 정리합니다."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-part7-hero.png" alt="작은 로봇 개발자들이 요구사항과 설계, 구현, 테스트와 리뷰, 교훈 카드를 원형 작업대로 돌리고 주변의 tenant 보안, 알림, 데이터베이스와 성능 신호를 다음 개발 주기에 연결하는 어두운 미니어처 장면" loading="eager" />
+  <figcaption>기능이 동작하는 순간은 결승선이 아니라 다음 관찰을 시작할 수 있는 기준점입니다. 리뷰와 운영에서 얻은 증거를 작은 요구사항으로 되돌려 보내야 시스템이 오래 갑니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-07-22 · 병원 예약 서비스 개발기 · Part 7</p>
+
+앞선 여섯 편에서는 상태 머신, 예약 가능 시간, 전체 최적화, 제약 조건, 휴진과 장비 고장 재배정을 차례로
+살펴봤습니다. 각 기능은 테스트를 통과하고 API로 호출할 수 있게 됐지만, 프로젝트는 그때 끝나지 않았습니다.
+코드 리뷰가 빠진 계약을 발견했고, 여러 병원을 한 서비스에서 운영하려니 접근 경계가 달라졌습니다. 인스턴스를
+늘리자 스케줄러 중복 실행을 막아야 했고, H2에서 통과한 마이그레이션을 PostgreSQL과 MySQL에서도 검증해야
+했습니다.
+
+이 글은 완성된 기능 목록을 요약하지 않습니다. 작은 리뷰 지적과 운영 조건이 어떻게 다음 요구사항이 되고,
+설계·구현·테스트·회고를 거쳐 다시 시스템의 기준으로 들어왔는지 살펴봅니다.
+
+## 리뷰는 빠진 계약을 가장 작은 요구사항으로 바꾼다
+
+초기 예약 API는 주요 상태 전이를 수행했지만 사용하는 사람이 필요한 모든 계약을 제공하지는 않았습니다.
+리뷰와 이슈 처리를 거치며 다음과 같은 작은 요구사항이 추가됐습니다.
+
+| 발견한 빈틈 | 새로 고정한 계약 | 구현에서 배운 점 |
+|---|---|---|
+| 상태가 바뀌었지만 외부에서 이력을 읽기 어렵다 | 상태 이력 조회 API | DB 레코드를 그대로 노출하지 않고 상태 이름을 평탄화한 응답 DTO를 둔다 |
+| 취소 사유가 고정 문자열이다 | 선택적 취소 사유와 하위 호환 기본값 | 상태 머신, 이력, 도메인 이벤트에 같은 `effectiveReason`을 전달한다 |
+| 목록이 커져도 전부 반환한다 | `ExposedPage<T>` 기반 페이지네이션 | 응답 형태가 바뀌면 프런트엔드 소비자도 함께 바꾼다 |
+| DTO 제약은 있지만 검증이 실행되지 않는다 | 모든 요청 본문에 `@Valid` | Kotlin에서는 `@field:` use-site target과 JSON 파싱 오류 처리가 필요하다 |
+| API 동작이 소스 밖에서 잘 보이지 않는다 | OpenAPI 어노테이션과 응답 문서 | 모든 파라미터가 아니라 의미가 불분명한 입력을 선별해 설명한다 |
+
+각 변경은 작지만 공통점이 있습니다. “코드가 있으니 동작할 것이다”를 믿지 않고 소비자가 관찰할 수 있는
+계약으로 바꿨습니다. 예를 들어 상태 이력 API는 예약 존재 확인과 이력 조회를 한 트랜잭션에서 수행하고,
+`changedAt DESC, id DESC`로 정렬해 같은 시각의 변경도 결정적인 순서로 반환합니다.
+
+취소 사유도 컨트롤러에서 받는 데서 끝나지 않습니다. 같은 값이 상태 전이, 감사 이력, 취소 도메인 이벤트에
+전달돼야 환자 응대와 알림이 서로 다른 이유를 보여 주지 않습니다. 리뷰의 가치는 지적 개수보다 이런 횡단
+계약을 찾아 작은 회귀 테스트로 고정하는 데 있습니다.
+
+## 단일 병원 가정이 깨지면 모든 ID의 의미가 달라진다
+
+여러 병원 그룹이 같은 SaaS를 사용하면서 가장 큰 변화는 테이블에 `tenant_group_id`를 추가한 일이 아니었습니다.
+URL에 있는 tenant와 JWT가 허용하는 tenant, 경로의 병원 ID, 본문이나 하위 경로의 의사·진료 유형·장비 ID를
+하나의 소유 경계로 묶어야 했습니다.
+
+현재 API는 `/api/{tenantCode}/...` 경로를 사용합니다.
+[TenantAuthorizationManager](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/security/TenantAuthorizationManager.kt)는
+URL의 `tenantCode`가 JWT `allowedTenants`에 들어 있는지 확인합니다. 인증되지 않은 요청은 tenant 조회를 하지
+않고 401 경로로 보내며, 인증된 요청에서 모르는 tenant는 404, 허용되지 않은 tenant는 403으로 구분합니다.
+
+```kotlin
+val tenantCode = context.variables["tenantCode"]
+    ?: TenantPathResolver.resolve(context.request)
+    ?: return AuthorizationDecision(false)
+
+return AuthorizationDecision(tenantCode in principal.allowedTenants)
+```
+
+인가가 통과했다고 해서 임의의 `doctorId`나 `equipmentId`를 믿을 수는 없습니다.
+`TenantClinicAccessChecker.verifySchedulingResources()`는 병원, 의사, 진료 유형과 선택 장비가 모두 같은
+tenant와 같은 병원에 속하는지 확인합니다. Repository의 `findByIdAndTenant()`는 JOIN 가드로 다른 tenant의
+자원 ID를 `null`로 만들고, API는 이를 일반적인 404로 반환해 존재 여부 노출을 줄입니다.
+
+또 하나의 결정은 `TenantContext`를 서비스 내부의 암묵적 전역 상태로 퍼뜨리지 않는 것이었습니다. 컨트롤러
+경계에서 tenant를 해석한 뒤 suspend 서비스와 Repository에는 `tenantGroupId`를 명시적으로 넘깁니다. 비동기
+실행과 코루틴 컨텍스트 전환이 늘어날수록 암묵적 ThreadLocal보다 함수 인자가 추적과 테스트에 안전합니다.
+
+## 알림은 이벤트 분리, 중복 방지, 장애 격리를 함께 본다
+
+예약 생성·확정·취소·재배정은 알림을 유발하지만 API 서비스가 문자나 이메일 구현을 직접 호출하면 상태 변경
+트랜잭션이 외부 채널 장애에 묶입니다. 현재 `AppointmentService`는 Spring
+`ApplicationEventPublisher`로 도메인 이벤트를 발행하고, `NotificationEventListener`가 같은 프로세스 안에서
+이벤트를 받아 채널을 호출합니다.
+
+여기서 “이벤트 기반”을 메시지 브로커나 outbox가 구현된 것처럼 확대해석하면 안 됩니다. 현재 리스너는
+`@EventListener` 기반의 in-process 경계입니다. 프로세스가 커밋 직후 종료돼도 반드시 전달된다는 보장은
+별도 신뢰성 설계가 필요합니다.
+
+리마인더는 또 다른 문제를 만납니다. 애플리케이션 인스턴스가 세 대라면 세 스케줄러가 같은 환자에게 메시지를
+보낼 수 있습니다. `AppointmentReminderScheduler`는 Redis 기반 `LettuceLeaderGroupElector`의
+`runIfLeader()` 안에서만 오늘·내일의 `CONFIRMED` 예약을 조회합니다. 성공 이력에 같은 예약과 이벤트 유형이
+있으면 건너뛰어 다음 실행의 중복도 줄입니다.
+
+외부 알림 채널은 `ResilientNotificationChannel`이 Resilience4j의 CircuitBreaker, Retry, Bulkhead로 감쌉니다.
+재시도는 일시 오류를 흡수하고, CircuitBreaker는 반복 실패 호출을 줄이며, Bulkhead는 동시에 막힐 수 있는 호출
+수를 제한합니다. 다만 래퍼가 최종 예외를 로그로 흡수하므로 호출이 반환됐다는 사실만으로 실제 전달 성공을
+판단해서는 안 됩니다. 알림 이력의 성공·실패 상태와 외부 공급자 응답을 관찰해야 합니다.
+
+## 데이터베이스 호환성은 프로필이 아니라 실행 증거다
+
+개발 중 H2가 편리하다고 해서 H2 마이그레이션 성공이 운영 DB의 안전을 증명하지는 않습니다. tenant 기능은
+기존 unique constraint와 index를 바꾸면서 DB별 DDL 차이를 드러냈습니다. H2는 테이블을 재생성해야 했고,
+MySQL과 PostgreSQL은 서로 다른 제약·인덱스 제거 문법과 이름을 처리해야 했습니다.
+
+그래서 V3부터 V6까지 tenant 마이그레이션을 `h2`, `mysql`, `postgresql` 디렉터리로 나눴습니다. 테스트도
+`FlywayMigrationTest`, `FlywayMySQLMigrationTest`, `FlywayPostgreSQLMigrationTest`로 분리해 각 엔진에서 실제로
+적용합니다. “SQL이 비슷해 보인다”보다 빈 스키마와 기존 스키마에 마이그레이션을 실행한 결과가 증거입니다.
+
+이후 Exposed Gradle plugin을 적용하면서 core, API, event, notification 모듈에 `generateMigrations` 작업도
+노출했습니다. 생성 도구가 있어도 검토 없이 운영 SQL을 대신 결정하게 할 수는 없습니다. DB별 수동 마이그레이션,
+생성된 diff, 실제 테스트 컨테이너 결과를 함께 비교해야 합니다.
+
+## 의존성 업그레이드는 컴파일보다 의미 보존을 검증한다
+
+Timefold Solver 2.1로 옮길 때 score, ConstraintVerifier, score director, move API가 한꺼번에 바뀌었습니다.
+import를 고쳐 컴파일을 통과하는 것만으로는 충분하지 않습니다. Constraint weight 타입이 `Long`으로 바뀌고,
+제약 ID에 허용되지 않는 문자가 생겼으며, move API는 preview 인터페이스와 `SequencedCollection`을 사용했습니다.
+
+마이그레이션의 목표는 새 API를 사용하는 것이 아니라 기존 일정 의미를 보존하는 것이었습니다. 그래서
+ConstraintVerifier 테스트와 solver 테스트를 다시 실행하고, 로컬 벤치마크 기준선으로 실행 시간·점수·입력
+규모를 비교했습니다. 벤치마크는 일반 CI에서 제외돼 있으므로 의존성 변경 PR에서는 별도 실행 증거를 남겨야
+합니다.
+
+성능 숫자도 영구 보증이 아닙니다. 2026년 4월 Apple M4 Pro와 JDK 25에서 얻은 10·30·100개 예약 결과는
+회귀를 발견할 출발점입니다. 실제 병원의 데이터 분포, 고정 예약 비율, 장비 수량과 JVM 버전이 바뀌면 기준선도
+다시 측정해야 합니다.
+
+<figure
+  class="bt4k-architecture"
+  data-diagram-title="리뷰와 운영 증거가 다음 요구사항이 되는 개발 루프"
+>
+  <img src="/assets/clinic-appointment-part7-development-loop-01.png" alt="요구사항, 설계와 계획, 구현, 테스트와 리뷰, 교훈, 새 요구사항이 순환하고 tenant 격리, 알림, 데이터베이스 호환성, 성능과 SDK 변화가 운영 입력으로 들어오는 개발 루프 다이어그램" loading="lazy" />
+  <figcaption>리뷰 결과는 수정 목록에서 끝나지 않고 다음 계약과 회귀 테스트가 됩니다. 운영에서 드러난 tenant, 알림, DB, 성능과 의존성 변화도 같은 루프를 통해 설계와 문서에 반영합니다.</figcaption>
+</figure>
+
+## 문서가 살아 있으려면 코드와 같은 피드백 루프에 있어야 한다
+
+이 프로젝트는 `docs/requirements`에 현재 요구사항을, `docs/superpowers/specs`와 `plans`에 설계와 실행 계획을,
+`docs/lessons`에 구현 중 발견한 교훈을 남겼습니다. 세 문서의 역할은 다릅니다.
+
+- **Requirements**: 지금 사용자가 기대할 수 있는 동작과 경계
+- **Spec / Plan**: 변경 전에 합의한 설계, 작업 순서와 검증 방법
+- **Lessons**: 실제 구현과 리뷰에서 달라진 점, 다시 밟지 말아야 할 실패 경로
+
+문서가 많다고 살아 있는 문서는 아닙니다. 경로가 tenant 방식으로 바뀌었는데 README가 예전 `/api/...`를
+가리키거나, Solver 제약 수가 늘었는데 요구사항 표가 그대로라면 문서는 오히려 위험합니다. 구현 변경과 함께
+현재 문서를 갱신하고, 역사적 설계 문서는 당시 결정 기록으로 분명히 구분해야 합니다.
+
+좋은 회고는 “어려웠다”로 끝나지 않습니다. 근본 원인, 선택한 해결책, 거절한 대안, 검증 명령과 앞으로 지킬
+가드를 남깁니다. 그러면 다음 개발자는 같은 문제를 처음부터 추측하지 않고 현재 코드와 테스트에서 출발할 수
+있습니다.
+
+## 이 시리즈가 남긴 설계 원칙
+
+일곱 편을 지나며 반복해서 확인한 원칙은 다음과 같습니다.
+
+1. 예약은 CRUD 행이 아니라 상태와 이력, 시간과 자원의 약속이다.
+2. 병원과 의사마다 다른 정책은 데이터로 만들고 계산 경계를 분리한다.
+3. 한 건의 빠른 후보 조회와 여러 예약의 전체 최적화는 서로 다른 유스케이스다.
+4. Solver 제약은 알고리즘 설정이 아니라 설명하고 테스트해야 하는 운영 정책이다.
+5. 휴진과 장비 고장은 원본, 후보, 승인, 알림을 잇는 업무 흐름을 요구한다.
+6. tenant, 트랜잭션, 이벤트와 외부 채널 경계는 ID와 함수 호출마다 다시 검증한다.
+7. 리뷰와 운영 증거를 작은 요구사항과 회귀 테스트로 되돌려 보내야 시스템이 진화한다.
+
+“완성”은 더 이상 코드를 바꾸지 않는 상태가 아닙니다. 현재 계약이 무엇인지 설명할 수 있고, 대표 실패 경로를
+테스트하며, 다음 변화가 왔을 때 어느 경계를 다시 검증해야 하는지 아는 상태에 가깝습니다. 병원 예약 SaaS의
+첫 개발 주기는 여기서 닫히지만, 실제 운영이 만드는 다음 주기는 이미 시작됐습니다.
+
+## 구현 코드와 자료 살펴보기
+
+- [상태 이력 API 회고](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/lessons/2026-05-18-issue-95-state-history-endpoint.md): 응답 DTO, 단일 트랜잭션과 결정적 정렬을 정리합니다.
+- [취소 사유 회고](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/lessons/2026-05-18-issue-96-cancel-reason.md): 하나의 실제 사유를 상태 머신, 이력과 이벤트에 전달합니다.
+- [Multitenancy 회고](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/lessons/2026-05-19-multitenancy.md): URL과 JWT 이중 가드, 자식 리소스 소유권, DB별 마이그레이션을 설명합니다.
+- [Tenant 접근 검사기](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/tenant/TenantClinicAccessChecker.kt): tenant와 병원, 의사, 진료 유형, 장비 ID를 한 경계로 검증합니다.
+- [리마인더 스케줄러](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-notification/src/main/kotlin/io/bluetape4k/clinic/appointment/notification/AppointmentReminderScheduler.kt): Redis 리더 선출과 알림 이력으로 중복 실행을 줄입니다.
+- [복원력 알림 채널](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-notification/src/main/kotlin/io/bluetape4k/clinic/appointment/notification/ResilientNotificationChannel.kt): CircuitBreaker, Retry, Bulkhead로 외부 채널 호출을 격리합니다.
+- [Timefold Solver 2 마이그레이션 회고](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/lessons/2026-05-20-timefold-solver-2-consumer.md): API 변화 속에서 기존 solver 의미를 보존한 검증을 기록합니다.
+- [Solver 벤치마크 보고서](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/solver-benchmark-report.md): 실행 환경, 입력 규모, 점수와 시간 기준선을 함께 제공합니다.
+
+## 시리즈 링크
+
+- [Part 1: 병원 예약은 CRUD로 끝나지 않는다](/ko/blog/clinic-appointment-part1-not-just-crud/)
+- [Part 2: 예약 상태는 enum이 아니다](/ko/blog/clinic-appointment-part2-state-machine-and-history/)
+- [Part 3: 병원마다 다른 업무시간과 자원으로 예약 가능 시간을 계산하기](/ko/blog/clinic-appointment-part3-clinic-specific-availability/)
+- [Part 4: 한 건의 예약 가능 시간 조회와 전체 일정 최적화는 다르다](/ko/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
+- [Part 5: 병원 업무 규칙을 Timefold Constraint로 번역하기](/ko/blog/clinic-appointment-part5-timefold-constraints/)
+- [Part 6: 휴진과 장비 고장은 예약 설계를 어떻게 바꾸는가](/ko/blog/clinic-appointment-part6-closure-equipment-rescheduling/)
+- **Part 7: 완성 뒤가 진짜 시작이다**

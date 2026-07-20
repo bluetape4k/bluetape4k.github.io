@@ -1,0 +1,202 @@
+---
+title: "Clinic Appointment SaaS Part 6: Rescheduling after Closures and Equipment Downtime"
+description: Model clinic closures and equipment downtime as an operational workflow that preserves original appointments, creates candidates, records approval, and hands off notification.
+sidebar:
+  order: -202607211400
+blog:
+  date: 2026-07-21T14:00:00+09:00
+  image: /assets/clinic-appointment-part6-hero.png
+  imageAlt: Small robotic workers move red appointment tiles from a closed clinic schedule and broken medical equipment through a rescheduling conveyor into a new schedule board on a dark miniature workbench
+  cardDescription: "Connect clinic closures and equipment downtime to pending state, candidate generation, approval, audit history, and notification boundaries."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-part6-hero.png" alt="Small robotic workers move red appointment tiles from a closed clinic schedule and broken medical equipment through a rescheduling conveyor into a new schedule board on a dark miniature workbench" loading="eager" />
+  <figcaption>An operational disruption requires more than another free slot. Preserve the original commitment, record why it changed, review alternatives, and communicate the confirmed outcome.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-07-21 · clinic-appointment series · Part 6</p>
+
+[Part 5](/blog/clinic-appointment-part5-timefold-constraints/) modeled clinic closures and equipment downtime as hard
+constraints. Those constraints prevent a future solution from using an impossible interval. They do not finish the work
+when a clinic closes unexpectedly or a machine fails after appointments have already been confirmed.
+
+The application must find affected appointments, preserve the original commitment, mark that a replacement is needed,
+generate alternatives, record the approval, and tell the patient. This article compares the implemented closure-rescheduling
+path with the implemented equipment-conflict path, then identifies the operational boundaries between them.
+
+## Preserve the Relationship between the Incident and the Appointment
+
+Overwriting an appointment with a new date destroys the old commitment. It becomes difficult to answer what the patient
+originally booked, why it changed, and which appointment replaced it. The current closure flow retains the original row,
+moves it to `PENDING_RESCHEDULE`, and records state history before proposing alternatives.
+
+| Stage | Data to preserve | Purpose |
+|---|---|---|
+| Determine impact | Clinic, incident date, `REQUESTED` and `CONFIRMED` appointments | Exclude completed and cancelled work |
+| Await replacement | Previous state, `PENDING_RESCHEDULE`, reason | Express that no replacement is confirmed yet |
+| Create candidates | Original ID, date, time, doctor, priority | Make calculation output reviewable business data |
+| Confirm | Selected candidate, new ID, original ID | Preserve the lineage between commitments |
+| Complete history | Original becomes `RESCHEDULED`, reason | Keep the outcome auditable |
+
+`PENDING_RESCHEDULE` is an operating state, not a decorative enum value. It means the original slot can no longer be
+fulfilled but a new commitment does not yet exist. That distinction supports no-candidate cases, patient confirmation,
+and manual intervention without pretending that rescheduling has completed.
+
+## A Closure Connects State History to Persisted Candidates
+
+[ClosureRescheduleService](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/ClosureRescheduleService.kt)
+loads `REQUESTED` and `CONFIRMED` appointments on the closure date. It moves them to `PENDING_RESCHEDULE`, writes the
+closure reason, and searches later dates with the original doctor and treatment type. The default search is seven days;
+the API limits it to 1 through 30 days.
+
+```kotlin
+val affected = appointmentRepository.findActiveByClinicAndDate(
+    clinicId, closureDate, AppointmentState.ACTIVE_STATUSES
+)
+
+appointmentRepository.updateStatusByClinicAndDate(
+    clinicId, closureDate, AppointmentState.ACTIVE_STATUSES,
+    AppointmentState.PENDING_RESCHEDULE,
+)
+
+stateHistoryRepository.save(
+    AppointmentStateHistoryRecord(
+        appointmentId = appointment.id!!,
+        fromState = appointment.status,
+        toState = AppointmentState.PENDING_RESCHEDULE,
+        reason = "임시휴진으로 인한 재배정",
+    )
+)
+```
+
+Candidate generation reuses `SlotCalculationService` from Part 3. It walks forward from the day after the closure,
+assigns increasing priority to available times, and saves each `RescheduleCandidateRecord`. Persisting proposals instead
+of immediately choosing one lets staff compare alternatives and inspect what the system offered for a given appointment.
+
+## Send Batch Progress outside the Database Transaction
+
+An administrator may watch a large closure batch through server-sent events. Sending SSE while a database transaction
+is open keeps a JDBC connection occupied by network latency. A slow or disconnected client can exhaust the pool or turn
+a delivery failure into an unintended batch rollback.
+
+`streamClosureReschedule()` therefore writes status changes and history in one shared transaction, then saves candidates
+in a separate transaction per appointment. It invokes `onProgress` only after that transaction commits and releases its
+connection. The SSE controller owns the terminal event.
+
+```kotlin
+for (appointment in affected) {
+    val candidateCount = transaction {
+        // Calculate and persist candidates for this appointment.
+    }
+    onProgress(appointment.id!!, candidateCount) // outside the transaction
+}
+```
+
+This is an operational boundary rather than callback placement trivia. Database atomicity and network delivery have
+different lifetimes and failure modes. Per-appointment commits also make partial progress easier to reconcile.
+
+## Equipment Downtime Currently Stops at Conflict Detection
+
+Equipment failure can trigger rescheduling, but its implemented automation differs from the closure path.
+[EquipmentUnavailabilityService](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/EquipmentUnavailabilityService.kt)
+stores one-time or recurring unavailability. `SKIP` exceptions omit one occurrence, while `RESCHEDULE` exceptions move
+that occurrence to a different date or time before the service expands concrete unavailable periods.
+
+`previewConflicts()` finds overlapping appointments before a rule is saved. `detectConflictsByTenant()` finds overlaps
+for a persisted rule after validating tenant ownership. Neither method changes appointment state or creates replacement
+candidates.
+
+That gap is intentional evidence about the domain. Equipment downtime introduces choices that a clinic-wide closure does
+not answer:
+
+- Can another unit of the same equipment serve the treatment?
+- Can the patient move to a time or clinic with a working unit?
+- Is there an alternative treatment method that does not require the equipment?
+- Must staff and the patient decide manually?
+
+“Conflict detected” and “appointment rescheduled” therefore need an explicit policy boundary. The current source should
+not be described as automatic equipment rescheduling.
+
+<figure
+  class="bt4k-architecture"
+  data-diagram-title="Operational boundary between closure rescheduling and equipment conflict detection"
+>
+  <img src="/assets/clinic-appointment-part6-rescheduling-flow-01.png" alt="Diagram showing a clinic closure implementation moving active appointments to pending reschedule and persisting candidates, an equipment downtime implementation returning conflicts, and both paths meeting at review, confirmation, persistence, and notification boundaries" loading="lazy" />
+  <figcaption>The closure service reaches candidate persistence and confirmation; the equipment service reaches conflict detection. Review, final persistence, event publication, and notification remain explicit boundaries rather than assumed automation.</figcaption>
+</figure>
+
+## Confirmation Links a New Appointment instead of Erasing the Old One
+
+When staff select a candidate, `confirmReschedule()` verifies that it belongs to the original appointment. The
+tenant-scoped API also verifies the original appointment and candidate doctor against the tenant, and checks that the
+doctor belongs to the original clinic.
+
+The method creates a new `CONFIRMED` appointment at the candidate date and time and stores the original ID in
+`rescheduleFromId`. It changes the original to `RESCHEDULED`, writes “재배정 확정” to state history, and marks the
+candidate selected. The automatic endpoint does not bypass this contract: it selects the highest-priority candidate and
+calls the same confirmation path, returning `null` when no candidate exists.
+
+| Original appointment | New appointment |
+|---|---|
+| Status becomes `RESCHEDULED` | Status starts as `CONFIRMED` |
+| Original patient, treatment, and equipment data remain | Candidate date, time, and doctor are used |
+| History records the reschedule | `rescheduleFromId` links back to the original |
+
+This lineage supports patient questions, audit, and reporting. It is not redundant storage: it distinguishes the current
+commitment from the reason and source of its change.
+
+## Solver Persistence and Notification Are Separate Boundaries
+
+Part 4 and Part 5 showed how `SolverService` can compare a global arrangement when several appointments compete for
+resources. The current solver result is still a proposal. The closure service does not invoke the solver or persist its
+result automatically. A separate workflow must decide who reviews the solution and which state checks precede persistence.
+
+Notification has the same gap. `appointment-notification` contains a `NotificationEventListener` for rescheduled events,
+but `ClosureRescheduleService.confirmReschedule()` does not publish that domain event today. A successful reschedule must
+not be assumed to have notified the patient.
+
+A complete use case should make this sequence explicit:
+
+1. Revalidate state and tenant ownership.
+2. Atomically write the original state change, new appointment, history, and candidate selection.
+3. After commit, publish a rescheduled event or write a reliable outbox record.
+4. Retry and record notification failure without rolling back the appointment transaction.
+5. Expose delivery status and staff follow-up.
+
+## Close the Operational Loop
+
+Before calling rescheduling complete, verify the responsibility boundaries as carefully as the algorithm:
+
+- Who confirms incident scope and effective times?
+- Which appointment states are eligible?
+- How are appointments with no acceptable candidate surfaced?
+- Who approves ranked candidates or a solver proposal?
+- Can the original, replacement, candidate, and history be traced together?
+- Does progress delivery release database connections first?
+- Are event publication and patient delivery independently observable?
+- Is rerunning the same incident idempotent?
+
+The current implementation supplies the core closure states and candidates, equipment conflict detection, and tenant
+ownership guards. Automatic equipment rescheduling, solver-result persistence, rescheduled-event publication, and
+idempotent incident reruns remain follow-up requirements. Keeping implemented and required behavior separate is the
+foundation of safe incident automation.
+
+## Explore the Implementation
+
+- [Closure rescheduling service](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/ClosureRescheduleService.kt): Pending state, candidates, manual and automatic confirmation, and appointment lineage.
+- [Closure rescheduling tests](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/test/kotlin/io/bluetape4k/clinic/appointment/service/ClosureRescheduleServiceTest.kt): Candidate generation, confirmation, no-candidate behavior, invalid candidates, and tenant isolation.
+- [Equipment unavailability service](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/EquipmentUnavailabilityService.kt): Expands rules and exceptions, previews conflicts, and detects persisted conflicts.
+- [Equipment unavailability API](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/controller/EquipmentUnavailabilityController.kt): Protects tenant, clinic, and equipment boundaries around conflict operations.
+- [SSE batch transaction lesson](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/lessons/2026-05-19-sse-batch-stream-transaction-pattern.md): Explains why network progress moved outside the database transaction.
+- [Notification event listener](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-notification/src/main/kotlin/io/bluetape4k/clinic/appointment/notification/NotificationEventListener.kt): Connects in-process appointment events to notification channels.
+
+## Series
+
+- [Part 1: Clinic Appointments Are More Than CRUD](/blog/clinic-appointment-part1-not-just-crud/)
+- [Part 2: Appointment State Is More Than an Enum](/blog/clinic-appointment-part2-state-machine-and-history/)
+- [Part 3: Computing Availability from Clinic-Specific Hours and Resources](/blog/clinic-appointment-part3-clinic-specific-availability/)
+- [Part 4: Real-Time Slot Search and Global Optimization Solve Different Problems](/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
+- [Part 5: Translating Clinic Rules into Timefold Constraints](/blog/clinic-appointment-part5-timefold-constraints/)
+- **Part 6: Rescheduling after Closures and Equipment Downtime**
+- [Part 7: Reviews and Operations Start the Next Development Cycle](/blog/clinic-appointment-part7-review-and-operational-evolution/)

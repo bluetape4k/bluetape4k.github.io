@@ -1,0 +1,185 @@
+---
+title: "Clinic Appointment SaaS Part 7: Reviews and Operations Start the Next Development Cycle"
+description: Follow review and operational evidence into state-history APIs, tenant isolation, resilient notifications, multi-database verification, and dependency migration.
+sidebar:
+  order: -202607221400
+blog:
+  date: 2026-07-22T14:00:00+09:00
+  image: /assets/clinic-appointment-part7-hero.png
+  imageAlt: Small robot engineers circulate requirements, design, implementation, tests, review, and lessons around a dark miniature workbench while tenant security, notifications, databases, and performance signals feed the next cycle
+  cardDescription: "Turn review findings and operational evidence into the next requirement, regression test, and durable design decision."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-part7-hero.png" alt="Small robot engineers circulate requirements, design, implementation, tests, review, and lessons around a dark miniature workbench while tenant security, notifications, databases, and performance signals feed the next cycle" loading="eager" />
+  <figcaption>A working feature is a checkpoint from which observation can begin. A durable system feeds review and operational evidence back into small, explicit requirements.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-07-22 · clinic-appointment series · Part 7</p>
+
+The first six articles covered state machines, availability, global optimization, constraints, and incident rescheduling.
+Those features passed tests and became callable APIs, but that did not finish the project. Reviews found missing consumer
+contracts. Serving multiple clinic groups changed every access boundary. Multiple application instances introduced
+scheduler duplication, and an H2 migration needed independent PostgreSQL and MySQL evidence.
+
+This final article is not a feature inventory. It follows how a small finding becomes a requirement, moves through design,
+implementation, tests, and lessons, and returns as a stronger baseline for the next change.
+
+## Turn Review Findings into the Smallest Observable Contract
+
+The early appointment API performed its major transitions but did not expose every contract a consumer needed. Review
+and issue work added several focused requirements.
+
+| Missing contract | New behavior | Implementation lesson |
+|---|---|---|
+| State changes cannot be inspected externally | State-history endpoint | Flatten state names in an API DTO instead of exposing persistence types |
+| Cancellation uses a fixed string | Optional reason with a compatible default | Send one `effectiveReason` to state machine, history, and domain event |
+| Lists grow without bounds | `ExposedPage<T>` pagination | Update frontend consumers when the response shape changes |
+| DTO constraints do not execute | `@Valid` on request bodies | Kotlin needs `@field:` targets and separate malformed-JSON handling |
+| Behavior is hard to discover outside source | OpenAPI annotations and responses | Document meaningful ambiguity rather than annotating every parameter |
+
+Each change turns an assumption into observable behavior. The history endpoint, for example, checks appointment existence
+and reads history in one transaction. It orders by `changedAt DESC, id DESC` so entries with the same timestamp still have
+a deterministic order.
+
+Cancellation reason also crosses several layers. The controller parameter is useful only if the same effective value
+reaches transition validation, audit history, and the cancellation event. Review creates durable value when it identifies
+these cross-cutting contracts and locks them with regression tests.
+
+## Multitenancy Changes the Meaning of Every Identifier
+
+Adding `tenant_group_id` was not the hardest part of serving multiple clinic groups. The application had to connect the
+tenant in the URL, tenants allowed by the JWT, the clinic in the path, and doctor, treatment, and equipment identifiers
+inside the request to one ownership boundary.
+
+The API now uses `/api/{tenantCode}/...`.
+[TenantAuthorizationManager](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/security/TenantAuthorizationManager.kt)
+checks whether the URL code is present in the JWT `allowedTenants` claim. An unauthenticated request does not query the
+tenant database and proceeds to the 401 path. An authenticated request gets 404 for an unknown tenant and 403 for a known
+but disallowed tenant.
+
+```kotlin
+val tenantCode = context.variables["tenantCode"]
+    ?: TenantPathResolver.resolve(context.request)
+    ?: return AuthorizationDecision(false)
+
+return AuthorizationDecision(tenantCode in principal.allowedTenants)
+```
+
+Passing authorization does not make arbitrary resource IDs safe.
+`TenantClinicAccessChecker.verifySchedulingResources()` confirms that clinic, doctor, treatment type, and optional
+equipment belong to both the same tenant and the same clinic. Repository methods such as `findByIdAndTenant()` use JOIN
+guards, turning a cross-tenant ID into the same 404 shape as a missing resource and reducing enumeration leakage.
+
+The design also keeps `TenantContext` at the controller boundary. Suspend services and repositories receive
+`tenantGroupId` explicitly instead of depending on implicit ThreadLocal state. Function parameters remain traceable when
+coroutines and asynchronous work cross execution contexts.
+
+## Notifications Need Event Boundaries, Deduplication, and Isolation
+
+Created, confirmed, cancelled, and rescheduled appointments can trigger notifications. Calling SMS or email providers
+directly from the API service would couple state changes to external channel failures. `AppointmentService` publishes
+Spring application events, and `NotificationEventListener` consumes them in the same process.
+
+That scope matters. The current `@EventListener` boundary is not a broker or transactional outbox. It does not guarantee
+delivery if the process stops immediately after commit. Stronger delivery semantics remain a separate design problem.
+
+Reminders add a multi-instance problem. Three application instances could otherwise send the same message three times.
+`AppointmentReminderScheduler` executes its today/tomorrow query inside Redis-backed
+`LettuceLeaderGroupElector.runIfLeader()`. It also skips an appointment when successful notification history already
+contains the same event type.
+
+`ResilientNotificationChannel` wraps external calls with Resilience4j CircuitBreaker, Retry, and Bulkhead. Retry absorbs
+transient faults, CircuitBreaker reduces calls into a repeatedly failing provider, and Bulkhead limits concurrent blockage.
+The wrapper logs and absorbs the final exception, however, so a returned method call alone is not delivery evidence.
+Notification history and provider responses must remain observable.
+
+## Database Compatibility Requires Execution Evidence
+
+H2 is convenient during development, but an H2 migration does not prove production DDL safety. Tenant migrations exposed
+differences in existing unique constraints, index names, and drop syntax. H2 required table recreation in one case, while
+MySQL and PostgreSQL needed engine-specific constraint and index operations.
+
+Tenant migrations V3 through V6 therefore have separate `h2`, `mysql`, and `postgresql` directories. Verification is also
+separate through `FlywayMigrationTest`, `FlywayMySQLMigrationTest`, and `FlywayPostgreSQLMigrationTest`. Executing the
+migration against each engine is stronger evidence than visually comparing similar SQL.
+
+The Exposed Gradle plugin later added `generateMigrations` tasks to core, API, event, and notification modules. Generation
+does not replace review. Engine-specific handwritten migrations, generated diffs, and real container results must be
+compared before changing an operational schema.
+
+## Dependency Migration Must Preserve Meaning, Not Only Compilation
+
+Timefold Solver 2.1 changed score, ConstraintVerifier, score-director, and move APIs together. Compilation fixes alone
+could not prove schedule behavior. Constraint weights changed to `Long`, constraint identifiers gained stricter character
+rules, and move tests adopted preview APIs and `SequencedCollection` types.
+
+The migration objective was to retain the existing scheduling semantics while adopting the new API. ConstraintVerifier
+and solver tests were rerun, then the local benchmark baseline compared input size, score, and duration. Because benchmark
+tests are excluded from normal CI, a dependency PR needs explicit benchmark evidence when performance behavior matters.
+
+The April 2026 Apple M4 Pro and JDK 25 measurements for 10, 30, and 100 appointments are a regression starting point, not
+a permanent promise. Clinic data distribution, pinned ratios, equipment quantity, JVM, and dependency versions all change
+the baseline.
+
+<figure
+  class="bt4k-architecture"
+  data-diagram-title="Development loop driven by review and operational evidence"
+>
+  <img src="/assets/clinic-appointment-part7-development-loop-01.png" alt="Diagram showing requirements, design and plan, implementation, tests and review, lessons, and a new requirement in a loop, informed by tenant isolation, notifications, database compatibility, performance, and SDK changes" loading="lazy" />
+  <figcaption>A review result becomes a contract and regression test rather than ending as a comment. Tenant, notification, database, performance, and dependency evidence enters the same loop and updates design and documentation.</figcaption>
+</figure>
+
+## Living Documentation Belongs in the Same Feedback Loop
+
+The project keeps current behavior in `docs/requirements`, change design and execution in `docs/superpowers/specs` and
+`plans`, and implementation findings in `docs/lessons`. Their roles are different:
+
+- **Requirements** describe the behavior and boundary a user can expect now.
+- **Specs and plans** record agreed design, sequence, and verification before a change.
+- **Lessons** record what implementation and review changed, failed alternatives, and future guards.
+
+More documents do not automatically mean living documentation. A README that still uses `/api/...` after tenant routes
+move to `/api/{tenantCode}/...` is actively dangerous. Current docs should change with behavior, while historical design
+artifacts should remain clearly identified as decision records from their time.
+
+A useful lesson is more specific than “this was difficult.” It preserves the root cause, chosen correction, rejected path,
+verification commands, and a guard for future work. The next developer can then begin with source and evidence instead of
+reconstructing the same failure.
+
+## Seven Principles from the Series
+
+The implementation repeatedly reinforced these principles:
+
+1. An appointment is a stateful commitment over time and resources, not a CRUD row.
+2. Clinic-specific policy belongs in data, with calculation boundaries kept explicit.
+3. Fast candidate search for one request and global optimization solve different use cases.
+4. Solver constraints are operating policy that must be explainable and tested.
+5. Closures and equipment downtime require lineage, candidates, approval, and communication.
+6. Tenant, transaction, event, and external-channel boundaries must be revalidated at each identifier and call.
+7. Review and operations should feed small requirements and regression tests back into development.
+
+“Done” does not mean the code will never change. It means the current contract is explainable, representative failures are
+tested, and the boundaries to revisit during the next change are known. This first clinic appointment development cycle
+closes here; the next cycle has already begun with real operational evidence.
+
+## Explore the Implementation and Lessons
+
+- [State-history endpoint lesson](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/lessons/2026-05-18-issue-95-state-history-endpoint.md): Response DTO, single transaction, and deterministic ordering.
+- [Cancellation-reason lesson](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/lessons/2026-05-18-issue-96-cancel-reason.md): Sends one effective reason through state machine, history, and event.
+- [Multitenancy lesson](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/lessons/2026-05-19-multitenancy.md): URL and JWT guards, child-resource ownership, and database-specific migrations.
+- [Tenant access checker](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/tenant/TenantClinicAccessChecker.kt): Validates tenant, clinic, doctor, treatment, and equipment as one boundary.
+- [Reminder scheduler](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-notification/src/main/kotlin/io/bluetape4k/clinic/appointment/notification/AppointmentReminderScheduler.kt): Uses Redis leader election and notification history to reduce duplicates.
+- [Resilient notification channel](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-notification/src/main/kotlin/io/bluetape4k/clinic/appointment/notification/ResilientNotificationChannel.kt): Isolates external calls with CircuitBreaker, Retry, and Bulkhead.
+- [Timefold Solver 2 migration lesson](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/lessons/2026-05-20-timefold-solver-2-consumer.md): Records verification used to preserve solver meaning across API changes.
+- [Solver benchmark report](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/solver-benchmark-report.md): Keeps environment, input scale, score, and time together as a local baseline.
+
+## Series
+
+- [Part 1: Clinic Appointments Are More Than CRUD](/blog/clinic-appointment-part1-not-just-crud/)
+- [Part 2: Appointment State Is More Than an Enum](/blog/clinic-appointment-part2-state-machine-and-history/)
+- [Part 3: Computing Availability from Clinic-Specific Hours and Resources](/blog/clinic-appointment-part3-clinic-specific-availability/)
+- [Part 4: Real-Time Slot Search and Global Optimization Solve Different Problems](/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
+- [Part 5: Translating Clinic Rules into Timefold Constraints](/blog/clinic-appointment-part5-timefold-constraints/)
+- [Part 6: Rescheduling after Closures and Equipment Downtime](/blog/clinic-appointment-part6-closure-equipment-rescheduling/)
+- **Part 7: Reviews and Operations Start the Next Development Cycle**
