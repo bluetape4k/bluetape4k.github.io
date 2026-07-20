@@ -124,8 +124,8 @@ val effectiveRanges = computeEffectiveRanges(
 ## 구현: 예약 시작 간격으로 후보를 만들고 진료 소요시간을 보장한다
 
 [SlotCalculationService](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/SlotCalculationService.kt)는
-앞에서 구한 유효 시간 범위 안에 예약 후보를 만듭니다. 후보의 시작 시각은 병원이 정한 예약 시작 간격만큼
-이동하고, 종료 시각은 진료 소요시간으로 계산합니다.
+앞에서 구한 유효 시간 범위 안에 예약 후보를 만듭니다. 후보 시작 시각은 병원이 정한 예약 시작 간격에 맞춰
+잡고, 종료 시각은 진료 소요시간으로 계산합니다.
 
 ```kotlin
 for (range in effectiveRanges) {
