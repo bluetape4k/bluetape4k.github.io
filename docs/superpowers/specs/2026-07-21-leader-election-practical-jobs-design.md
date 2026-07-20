@@ -163,4 +163,3 @@ Redis, Kubernetes Lease, RDB/Exposed, etcd, Consul, Zookeeper, DynamoDB를 절�
 - 모든 provider의 설치 튜토리얼
 - exactly-once 실행을 보장한다고 주장하는 범용 설계
 - PR 머지와 사이트 배포
-
