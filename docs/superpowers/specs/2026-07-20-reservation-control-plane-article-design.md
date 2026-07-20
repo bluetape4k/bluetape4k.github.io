@@ -14,7 +14,7 @@
 - 글 형태: 독립적인 실전 예제 글
 - 로케일: 한국어 우선 작성, 한국어 검수 후 영어판을 자연스럽게 현지화
 - 발행 범위: 로컬 작성과 검증까지. 배포와 병합은 별도 승인 없이는 수행하지 않는다.
-- 시각 자료: blog schema가 요구하는 hero 이미지 1개만 추가한다. 새 아키텍처 다이어그램이나 벤치마크 차트는 만들지 않고 코드 경로, 짧은 코드 조각, 보장 범위 표로 설명한다.
+- 시각 자료: hero 이미지 1개에 더해 dark style Architecture 1장과 Sequence Diagram 2장을 SVG/PNG 쌍으로 제작한다. 벤치마크 차트는 만들지 않는다.
 
 ## 제목과 경로
 
@@ -51,6 +51,17 @@
 동일한 마지막 자리를 여러 사용자가 동시에 hold하려는 상황에서 시작한다. 여기에 클라이언트 타임아웃 후 재시도, hold 만료, waitlist offer, Redis 연결 실패가 겹치면 단순한 `available > 0` 조회나 Redis 락만으로는 정합성을 설명할 수 없음을 보여준다.
 
 기능 목록부터 소개하지 않는다. 독자가 겪는 장애 장면을 먼저 제시하고, 글 전체에서 해결할 질문을 고정한다.
+
+글 전체는 다음 하나의 예제 시나리오를 이어서 사용한다.
+
+1. 정원이 1이고 resource revision이 42인 상태에서 Alice와 Bob이 같은 revision으로 hold를 요청한다.
+2. Redis가 응답하지 않아 두 요청은 local fallback으로 PostgreSQL까지 진행한다.
+3. Alice의 capacity CAS만 성공하고 Bob의 갱신은 0행으로 끝난다. Alice에게 보내던 HTTP 응답은 timeout으로 유실된다.
+4. Alice가 같은 `Idempotency-Key`로 재시도하면 PostgreSQL에 저장된 응답을 재생한다. Bob은 FIFO waitlist에 들어간다.
+5. Alice가 hold를 취소하면 `occupiedCount`를 0으로 내리지 않고 Bob을 위한 `ACTIVE` offer를 만든다.
+6. Bob이 offer를 수락하면 점유 수량은 1로 유지되고 소유권만 Bob에게 넘어간다.
+
+resource revision 42는 흐름을 이해하기 위한 예시 값이며, 구현의 고정 초기값처럼 설명하지 않는다.
 
 ### 2. 최종 판단은 PostgreSQL 트랜잭션에서 한다
 
@@ -116,6 +127,73 @@ Redis가 담당하는 중복 억제, 만료 sweeper 조정, best-effort admissio
 
 관련 글 링크는 본문 논리를 대신하지 않으며, 현재 글의 결론 뒤에 다음 읽을거리로 제공한다.
 
+## 시각 자료 설계
+
+세 도식은 사용자 선택에 따라 본문 앞에 모으지 않고 관련 설명 바로 뒤에 나누어 배치한다.
+
+| 자산 | 독자가 확인할 질문 | 본문 위치 |
+| --- | --- | --- |
+| `reservation-control-plane-architecture-01.svg/.png` | Redis와 PostgreSQL 중 누가 어떤 결정을 맡는가? | 예제 시나리오와 구성 요소 소개 직후 |
+| `reservation-control-plane-last-seat-retry-sequence-02.svg/.png` | Redis 장애와 동시 요청, timeout 재시도가 겹칠 때 마지막 자리는 어떻게 한 번만 배정되는가? | `마지막 한 자리는 한 번의 조건부 갱신으로 지킨다` 절 |
+| `reservation-control-plane-waitlist-handoff-sequence-03.svg/.png` | hold 취소 뒤 점유 수량을 풀지 않고 FIFO 첫 대기자에게 어떻게 넘기는가? | `hold를 취소할 때 자리를 바로 비우지 않을 수도 있다` 절 |
+
+### Architecture
+
+Architecture는 시간 순서가 아니라 정적 책임과 권한 경계를 보여준다.
+
+- Request edge: Client와 Reservation HTTP API
+- Execution guards: node-local bulkhead, Redis semaphore, Redis suppression lock
+- PostgreSQL authority: idempotency record, capacity resource, hold, waitlist entry, offer, notification outbox
+- Background work: expiry sweeper와 notification worker
+
+Client에서 HTTP API, local bulkhead, PostgreSQL로 이어지는 필수 경로와 Redis advisory 경로를 구분한다. Redis 오류 시 PostgreSQL 경로가 유지됨을 dashed fallback 관계와 범례로 표현한다. PostgreSQL 카드군은 수량, 상태, 소유권, 재생 응답을 최종 결정하는 단일 authority boundary로 묶는다. Architecture에 메시지 번호나 `alt` frame을 넣지 않는다.
+
+### Sequence 1: 마지막 자리 경쟁과 재시도
+
+참여자는 Alice, Bob, Reservation API, Local/Redis Gate, PostgreSQL로 제한한다. 다음 흐름을 번호가 보이는 message pill로 표현한다.
+
+1. Alice와 Bob이 같은 expected resource revision으로 hold를 요청한다.
+2. local bulkhead는 두 요청의 DB 진입을 제한하되 허용한다.
+3. Redis 오류 branch에서 두 요청은 `LOCAL_FALLBACK`으로 진행한다.
+4. PostgreSQL idempotency record가 새 요청을 획득한다.
+5. Alice의 capacity CAS와 hold insert가 같은 transaction에서 성공한다.
+6. Bob의 capacity CAS는 stale revision 또는 exhausted capacity로 0행 갱신되어 실패한다.
+7. Alice의 transaction이 idempotency 응답과 함께 commit되지만 HTTP 응답은 timeout으로 유실된다.
+8. Alice가 같은 key와 fingerprint로 재시도한다.
+9. PostgreSQL은 저장된 status/body를 `Replay`하고 capacity를 다시 올리지 않는다.
+
+Redis 정상 경로를 별도 happy path로 길게 반복하지 않는다. 이 도식의 질문은 Redis가 없을 때도 PostgreSQL이 최종 결과를 어떻게 한 번만 확정하는지다.
+
+### Sequence 2: FIFO 점유권 이전
+
+참여자는 Alice, Bob, Reservation API, Reservation Command/Handoff Service, PostgreSQL로 제한한다. 다음 흐름을 표현한다.
+
+1. Bob이 FIFO waitlist에 들어간다.
+2. Alice가 자신의 hold를 취소한다.
+3. service가 capacity resource row를 `FOR UPDATE`로 먼저 잠근다.
+4. Alice의 hold를 `HELD → CANCELLED`로 전이한다.
+5. 가장 오래 기다린 Bob의 entry를 `WAITING → OFFERED`로 전이하고 `ACTIVE` offer를 만든다.
+6. notification delivery를 enqueue하고 transaction을 commit한다. 이때 `occupiedCount`는 1이다.
+7. Bob이 offer를 수락한다.
+8. 같은 resource lock 안에서 owner digest, offer state, revision, expiry를 확인한다.
+9. offer와 waitlist entry를 `ACCEPTED`로 전이하고 confirmed hold를 만든다.
+10. transaction commit 뒤에도 `occupiedCount`는 1이다.
+
+`alt waiter missing` branch는 대기자가 없을 때만 capacity를 release한다는 한 줄로 보조한다. 주 흐름은 Bob에게 소유권을 넘기는 경로로 유지한다.
+
+### Dark style 기준
+
+- Architecture 기준: `public/assets/bluetape4k-rate-limit-workshop-architecture-02.png`
+- Sequence 기준: `public/assets/clinic-appointment-part3-availability-sequence-02.png`, `public/assets/clinic-appointment-part4-closure-reschedule-sequence-02.png`
+- 공통 배경: navy/charcoal gradient와 낮은 채도의 lane/card
+- 글꼴: `Architects Daughter`, `Comic Mono`
+- semantic color: call은 muted blue, 성공/상태는 olive green, 반환은 teal, lock/metadata는 amber, 실패는 muted red
+- marker: 색상별 고정 크기 arrowhead를 정의하고 PNG에서 색과 크기를 확인한다.
+- Sequence: participant header, lifeline, activation bar, numbered pill, 투명한 `alt`/`else` frame을 사용한다.
+- 라벨: 도식 내부는 저장소 정책에 따라 English로 쓰고, 본문 caption과 설명은 Korean으로 쓴다.
+
+각 도식은 SVG를 먼저 만들고 XML 검증, CairoSVG 2배 PNG 렌더링, 자동 audit, full-size PNG 육안 검사를 통과한 뒤 다음 도식으로 넘어간다.
+
 ## 사실 근거
 
 초안 작성 전에 다음 근거를 현재 `develop` 기준으로 다시 읽고 정확한 클래스, 함수, 테스트 이름을 고정한다.
@@ -157,11 +235,16 @@ Redis가 담당하는 중복 억제, 만료 sweeper 조정, best-effort admissio
 5. `git diff --check`와 `npm run build`를 실행한다.
 6. 한국어와 영어 경로, source link, 제목, 숫자, 표, 관련 글 링크의 로케일 parity를 확인한다.
 7. hero를 인접 workshop 글과 같은 크기로 비교하고, 로컬 서버에서 두 경로를 열어 렌더링을 확인한다.
+8. 세 SVG를 `xmllint`로 검사하고 CairoSVG로 2배 PNG를 렌더링한다.
+9. Architecture에는 connector, geometry, endpoint, mixed-corner audit를 실행한다.
+10. 두 Sequence에는 공통 audit와 sequence style audit를 각각 실행하고 번호 pill, marker, branch frame, activation bar를 full-size PNG에서 확인한다.
+11. 한국어 로컬 경로에서 세 PNG가 본문 문맥에 맞는 크기와 순서로 보이는지 브라우저로 검수한다.
 
 ## 제외 범위
 
 - `bluetape4k-workshop` 코드 변경
 - 성능 벤치마크 실행 또는 수치 주장
-- 새 아키텍처 다이어그램과 벤치마크 차트 제작
+- 벤치마크 차트 제작
+- 한 장의 Sequence에 마지막 자리 경쟁과 FIFO handoff를 모두 밀어 넣는 구성
 - 고정된 `실전 예제` 시리즈 번호나 별도 카테고리 체계 도입
 - 배포, PR 병합, release workflow 실행
