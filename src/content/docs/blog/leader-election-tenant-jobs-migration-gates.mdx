@@ -1,0 +1,254 @@
+---
+title: "How to Keep Multiple Servers from Running the Same Job"
+description: A source-backed guide to coordination keys, leases, completion markers, and failover using the bluetape4k-leader tenant aggregator and migration gate examples.
+sidebar:
+  order: -202607211300
+blog:
+  date: 2026-07-21T13:00:00+09:00
+  image: /assets/leader-election-practical-jobs-hero.png
+  imageAlt: dark 3D miniature workbench where three service nodes coordinate tenant jobs and one migration gate through a central console
+  cardDescription: "Keep tenant jobs parallel while guarding migrations globally. These examples define leader-election scope and failure boundaries from the work itself."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/leader-election-practical-jobs-hero.png" alt="dark 3D miniature workbench where three service nodes coordinate tenant jobs and one migration gate through a central console" loading="eager" />
+  <figcaption>The first question is not how many servers exist. It is which jobs are allowed to overlap.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-07-21 · bluetape4k-leader examples · issue #192</p>
+
+Imagine that a rolling deployment finishes and three servers start their schedulers at once. Every server begins aggregating
+tenant metrics. Every server also tries to run the same schema migration during startup. Code that behaved perfectly on one
+server now runs the aggregation three times and races the same DDL.
+
+Pinning the work to a configured `primaryNode` can quiet the system for a while. It also stops the work when that node goes
+down. Electing one global leader for the whole cluster solves a different problem: the migration may become exclusive, but
+unrelated tenant jobs now wait behind one another.
+
+This post uses the [`tenant-aggregator`](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples/tenant-aggregator)
+and [`migration-gate`](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples/migration-gate) examples from
+`bluetape4k-leader` to separate those two cases. Before asking who the leader is, decide which jobs must never execute at the
+same time.
+
+## Group the Jobs That Must Not Overlap Under One Key
+
+Leader election allows one owner among callers competing for the same coordination key. The key should therefore describe
+the conflicting work, not the server that happens to run it.
+
+- Tenant A aggregations must not overlap: `tenant-aggregator:metrics-tenant-A`
+- Tenant B may run beside Tenant A: `tenant-aggregator:metrics-tenant-B`
+- One schema migration must guard the whole cluster: `schema-v3`
+
+<figure class="bt4k-chart">
+  <img src="/assets/leader-election-coordination-scope-01.png" alt="dark architecture diagram where Service Nodes A, B, and C use tenant A, tenant B, and global migration coordination keys to reach separate guarded state" loading="lazy" />
+  <figcaption>The same key serializes work; different keys allow concurrency. A completion marker belongs to durable state, not lock ownership.</figcaption>
+</figure>
+
+A single `global-leader` key is easy to explain. It also lets a slow Tenant A aggregation block Tenant B and lets a startup
+migration pause scheduled jobs that do not touch the schema. Excessively narrow keys fail in the opposite direction. Two jobs
+that update the same state can both enter if they use different keys. A useful key continues to describe the same business
+conflict as the number of instances changes.
+
+## Serialize Only Work for the Same Tenant
+
+[`TenantAggregator`](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/examples/tenant-aggregator/src/main/kotlin/io/bluetape4k/leader/examples/tenant/TenantAggregator.kt)
+creates a child coroutine and a `SuspendLeaderElector` for each tenant. It derives the lock name directly from the tenant
+scope.
+
+```kotlin
+private suspend fun tenantLoop(tenantId: String) {
+    val lockName = "${options.lockNamePrefix}-$tenantId"
+    val elector = electorFactory(lockName, electionOptions)
+
+    while (currentCoroutineContext().isActive) {
+        elector.runIfLeader(lockName) {
+            runAggregate(tenantId)
+        }
+        delay(options.pollInterval)
+    }
+}
+```
+
+This is also why the example does not use `LeaderGroupElector` with several leader slots. A caller cannot control which
+tenant receives which slot. Independent lock names encode the intended rule without an assignment layer: one active runner
+for the same tenant, concurrent runners for different tenants.
+
+The test proves the concurrency contract instead of relying on its name. It starts three aggregators, tracks the number of
+coroutines inside each tenant's action, and records any value above one. Every tenant must make progress while the violation
+count remains zero.
+
+```kotlin
+// arrange
+val aggregators = createAggregators(nodes = 3, tenants = DEFAULT_TENANTS)
+val concurrentRunners = trackConcurrentRunnersByTenant()
+
+// act
+aggregators.forEach { it.start(scope) }
+waitUntil { DEFAULT_TENANTS.all { aggregateCount(it) >= 1 } }.shouldBeTrue()
+delay(2.seconds) // leave time for overlap to surface in later cycles
+
+// assert
+concurrentRunners.violations.get() shouldBeEqualTo 0
+DEFAULT_TENANTS.forEach {
+    aggregateCount(it) shouldBeGreaterOrEqualTo 1
+}
+```
+
+One failed aggregation does not poison the polling loop. The example isolates ordinary exceptions from
+`aggregateFunction` and tries again in the next cycle. It rethrows `CancellationException`, because swallowing cancellation
+would prevent `stopGracefully` from stopping the worker. A `supervisorScope` keeps one tenant's failure from cancelling the
+other tenant coroutines.
+
+This design proves mutual exclusion for one tenant. It does not make the aggregation exactly once. If the process dies after
+writing to an external system but before recording completion, the next leader can process the same input. The application
+still needs a replay-safe boundary such as an aggregation watermark, checkpoint, or idempotent upsert.
+
+## A Migration Needs Both a Global Lock and a Completion Marker
+
+A migration has a different conflict scope. Three instances changing the same schema should not receive three independent
+keys. They should compete for one cluster-wide key such as `schema-v3`.
+
+The global lock is still not a durable completion record. It says who owns the work now; it does not say that `schema-v3`
+finished during a previous deployment. [`MigrationGate`](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/examples/migration-gate/src/main/kotlin/io/bluetape4k/leader/examples/migration/MigrationGate.kt)
+uses three marker checks to close that gap.
+
+```kotlin
+fun runMigration(id: String): Outcome {
+    if (isApplied(id)) return Outcome.AlreadyApplied(id)       // precheck
+
+    val outcome = elector.runIfLeader(options.lockName) {
+        if (isApplied(id)) return@runIfLeader Outcome.AlreadyApplied(id)
+        migration()                                           // includes marker
+        Outcome.Migrated(id, elapsedMs())
+    }
+
+    if (outcome != null) return outcome
+    return if (isApplied(id)) Outcome.AlreadyApplied(id)       // post-skip
+    else Outcome.Skipped(id, "lock not acquired")
+}
+```
+
+The precheck avoids lock contention for completed migrations. The in-lock check catches a migration completed by another
+instance after the precheck. An instance that fails to acquire the lock checks the marker again so it can distinguish
+`AlreadyApplied` from `Skipped`. If the marker lookup itself fails, the gate returns `Outcome.Failed`; an unknown state is
+not equivalent to an unapplied migration.
+
+The three-instance test expects exactly the result implied by that sequence.
+
+```kotlin
+// arrange + act
+val outcomes = runConcurrently(instances = 3) {
+    gate.runMigration(
+        migrationId = migrationId,
+        isApplied = { markerExists(migrationId) },
+        migration = { migrateAndMarkApplied(migrationId) },
+    )
+}
+
+// assert
+migrationCalls.get() shouldBeEqualTo 1
+outcomes.count { it is Outcome.Migrated } shouldBeEqualTo 1
+outcomes.count { it is Outcome.AlreadyApplied } shouldBeEqualTo 2
+```
+
+There is an important limit. The example's `ExposedJdbcLeaderElector` does not auto-extend its lease. If a migration runs
+longer than `leaseTime`, another instance can acquire the same lock. The migration should therefore be idempotent, and the
+schema or data change should be committed with its completion marker in one transaction whenever possible. “A leader ran
+it” is not proof of exactly-once execution.
+
+## The Next Candidate Can Take Over After the Lease Expires
+
+A leased lock does not survive forever when its owner cannot release it. If Node A stops, Node B first receives a busy
+result. It can obtain ownership with a new token after the lease expires.
+
+<figure class="bt4k-chart">
+  <img src="/assets/leader-election-lease-failover-sequence-01.png" alt="dark sequence diagram where Node A owns a lease and fails before Node B takes over with a new token after expiry" loading="lazy" />
+  <figcaption>Lease expiry opens the door for a successor. It does not remove side effects created by the previous owner.</figcaption>
+</figure>
+
+That handoff is often overstated in three ways.
+
+- **Failover is not immediate.** A successor waits for release or lease expiry.
+- **It is not exactly once.** Node A may complete an external write and die before recording the result, allowing Node B to repeat it.
+- **Long-running work is not automatically safe.** If the action can outlive the lease, add the appropriate combination of extension, fencing tokens, checkpoints, and idempotency.
+
+`TenantAggregatorTest` starts Node A first, starts Node B while A owns the lock, then stops A and waits for B's execution
+count to increase. The contract being proved is that a candidate takes over and polling continues. It does not prove that
+every side effect happened only once.
+
+## Cache Warm-Up and Webhook Polling Need Different Boundaries Again
+
+The same leader API produces different designs when the job stores progress differently.
+
+The [`cache-warmer`](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples/cache-warmer) example uses one
+lock per cache partition. A failed warm-up for one partition does not stop other partitions. It needs parallelism like tenant
+aggregation, but the coordination key describes a cache partition instead of a tenant.
+
+The [`webhook-poller`](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples/webhook-poller) does more than
+elect one poller. It atomically claims database rows, reclaims rows after a claim lease, and moves an item to `FAILED` after
+`maxAttempts`. Leader election reduces overlapping pollers. Durable row state carries the at-least-once delivery and retry
+contract.
+
+The coordination key protects entry into the work. A job-specific durable record must still own progress, completion,
+attempt count, and terminal failure.
+
+## Choose a Provider by the Failure Behavior the Job Needs
+
+A provider ranking drops the conditions that matter most. Consider existing infrastructure, consistency and lease models,
+recovery behavior, observability, and the operational cost your team can sustain.
+
+| Scenario | Coordination key | Required state | Provider families to consider | Main caution |
+|---|---|---|---|---|
+| Tenant aggregation | one key per tenant ID | checkpoint or aggregation watermark | Redis, RDB/Exposed, etcd, Consul, ZooKeeper, DynamoDB | tenant count and polling frequency become backend load |
+| Schema or data migration | one global key per migration version | applied marker | RDB/Exposed, Kubernetes Lease, etcd, Consul, ZooKeeper | compare execution time with lease time and keep migrations idempotent |
+| Cache warm-up | one key per cache partition | partition completion and failure | Redis, RDB/Exposed, Kubernetes Lease | isolate one failed partition from the others |
+| Webhook polling | poller or shard key | claim lease, attempts, terminal status | RDB/Exposed plus an election provider suited to the deployment | election and row claims solve different problems |
+| One job inside Kubernetes | key includes namespace and job | separate completion state when needed | Kubernetes Lease | [`k8s-lease`](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples/k8s-lease) is a K3s-backed example, not a separate production backend module |
+
+Redis may be a natural fit when it is already critical infrastructure and the service uses many short-lived locks. An RDB
+can provide an understandable boundary when completion state belongs beside the job data. Kubernetes Lease suitability
+depends on whether the same coordination contract is needed outside Kubernetes and how control-plane failures should affect
+application jobs. etcd, Consul, ZooKeeper, and DynamoDB should be narrowed by the system's failure model and the team's
+operational capacity, not selected because they appear in a support list. [Part 5](/blog/bluetape4k-leader-part5-backends-operations-benchmarks/)
+covers backend implementations and benchmark conditions separately.
+
+## Frequent Leadership Changes Are an Operational Signal
+
+It is not enough to see that one node ran successfully. Watch for acquisition attempts with no successes, growing backend
+errors, execution time approaching the lease, and an active gauge outside its expected range.
+
+The [`prometheus-dashboard`](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples/prometheus-dashboard)
+example exposes `leader_aop_attempts_total`, `leader_aop_acquired_total`, `leader_aop_active`, and execution duration from
+`/actuator/prometheus`. Its example alerts cover missing acquisitions, backend errors, task failures, and long executions.
+Because `leader_aop_active` is JVM-local, a cluster dashboard should use
+`max by (lock_name) (leader_aop_active)` instead of summing the gauge.
+
+Lock names can contain tenant IDs, user data, URLs, or values with dangerous cardinality. The example therefore uses
+`REDACT` for metric lock labels by default. Expose only bounded hashes or separate low-cardinality tags when correlation is
+necessary. Also note that `LockExtender` currently provides no direct success or failure metric. An alert based on execution
+time approaching the lease is a conservative symptom, not direct evidence of an extension failure.
+
+Operations should reveal more than one successful election: whether acquisitions keep failing, leadership changes more
+often than expected, work consumes the lease budget, or a takeover repeats a side effect.
+
+Leader election reduces overlapping ownership among servers. The rest of the safety boundary comes from the coordination
+key, handling for work longer than the lease, durable markers, idempotency, and observability. Before opening a provider
+matrix, write down which jobs must not overlap and what must remain durable after a failure. The implementation choices then
+become much more concrete.
+
+## Sources
+
+- [TenantAggregator.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/examples/tenant-aggregator/src/main/kotlin/io/bluetape4k/leader/examples/tenant/TenantAggregator.kt)
+- [TenantAggregatorTest.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/examples/tenant-aggregator/src/test/kotlin/io/bluetape4k/leader/examples/tenant/TenantAggregatorTest.kt)
+- [MigrationGate.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/examples/migration-gate/src/main/kotlin/io/bluetape4k/leader/examples/migration/MigrationGate.kt)
+- [MigrationGateTest.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/examples/migration-gate/src/test/kotlin/io/bluetape4k/leader/examples/migration/MigrationGateTest.kt)
+- [Cache warmer example](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples/cache-warmer)
+- [Webhook poller example](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples/webhook-poller)
+- [Kubernetes Lease example](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples/k8s-lease)
+- [Prometheus dashboard example](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples/prometheus-dashboard)
+
+## Related reading
+
+- [The basic leader-election model](/blog/bluetape4k-leader-part1-overview/)
+- [Core APIs and execution models](/blog/bluetape4k-leader-part2-core-apis/)
+- [Backends, operations, and benchmarks](/blog/bluetape4k-leader-part5-backends-operations-benchmarks/)
