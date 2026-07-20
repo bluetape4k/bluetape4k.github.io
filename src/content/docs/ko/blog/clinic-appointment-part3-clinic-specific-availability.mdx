@@ -124,8 +124,8 @@ val effectiveRanges = computeEffectiveRanges(
 ## 구현: 예약 시작 간격으로 후보를 만들고 진료 소요시간을 보장한다
 
 [SlotCalculationService](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/SlotCalculationService.kt)는
-앞에서 구한 유효 시간 범위 안에 예약 후보를 만듭니다. 후보의 시작 시각은 병원이 정한 예약 시작 간격만큼
-이동하고, 종료 시각은 진료 소요시간으로 계산합니다.
+앞에서 구한 유효 시간 범위 안에 예약 후보를 만듭니다. 후보 시작 시각은 병원이 정한 예약 시작 간격에 맞춰
+잡고, 종료 시각은 진료 소요시간으로 계산합니다.
 
 ```kotlin
 for (range in effectiveRanges) {
@@ -243,6 +243,6 @@ Solver의 제약 조건과 입력 데이터도 함께 보강해야 합니다.
 - [Part 2: 예약 상태는 enum이 아니다](/ko/blog/clinic-appointment-part2-state-machine-and-history/)
 - **Part 3: 병원마다 다른 업무시간과 자원으로 예약 가능 시간을 계산하기**
 - [Part 4: 한 건의 예약 가능 시간 조회와 전체 일정 최적화는 다르다](/ko/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
-- Part 5 예정: 병원 업무 규칙을 Timefold Constraint로 번역하기
+- [Part 5: 병원 업무 규칙을 Timefold Constraint로 번역하기](/ko/blog/clinic-appointment-part5-timefold-constraints/)
 - Part 6 예정: 휴진과 장비 고장은 예약 설계를 어떻게 바꾸는가
 - Part 7 예정: 완성 뒤가 진짜 시작이다

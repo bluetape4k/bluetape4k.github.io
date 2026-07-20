@@ -1,0 +1,283 @@
+---
+title: "Clinic Appointment SaaS Part 4: Real-Time Slot Search and Global Optimization Solve Different Problems"
+description: Separate fast availability lookup for one patient from Timefold Solver optimization across many appointments, doctors, and devices, including closure rescheduling.
+sidebar:
+  order: -202607191400
+blog:
+  date: 2026-07-19T14:00:00+09:00
+  image: /assets/clinic-appointment-part4-hero.png
+  imageAlt: Small robotic workers operate one bench that quickly filters appointment candidates for a patient and another planning board that compares full schedules across patients, doctors, and equipment
+  cardDescription: "See why listing valid slots for one request and optimizing a clinic-wide schedule need separate services."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-part4-hero.png" alt="Small robotic workers operate one bench that quickly filters appointment candidates for a patient and another planning board that compares full schedules across patients, doctors, and equipment" loading="eager" />
+  <figcaption>Finding valid times for one patient and improving a schedule for many patients differ in input scope, latency budget, and what counts as a good result.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-07-19 · clinic-appointment series · Part 4</p>
+
+[Part 3](/blog/clinic-appointment-part3-clinic-specific-availability/) intersected clinic and doctor hours, removed
+breaks, closures, and absences, then checked concurrent-patient and equipment capacity. That calculation answers a
+question such as, “When can this patient see this doctor next Tuesday?”
+
+Choosing one valid time, however, does not prove that the choice is good for the clinic's full schedule. A 30-minute
+appointment may fit at 10 a.m., but consuming that slot may prevent a later 90-minute examination from using the only
+continuous opening and required device. One doctor may become overloaded while another remains idle.
+
+This article does not force both problems through the same algorithm. It separates their scope and response-time
+requirements, introduces Timefold Solver, and follows the two service boundaries through implementation and clinic-
+closure rescheduling.
+
+## Valid Time and Better Schedule Are Different Answers
+
+When a patient opens the booking screen, the API cannot make them wait for a clinic-wide optimization run. They have
+already selected a clinic, date, doctor, and treatment. The useful answer is the list of candidates that pass every
+required rule.
+
+An administrator planning next week or moving appointments after a closure has a different problem. Several
+appointments compete for doctors and equipment, while requested dates and existing doctor relationships should be
+preserved when possible. The question is no longer only “Is this placement valid?” but “Which valid combination is
+better for the whole clinic?”
+
+| Dimension | Real-time availability lookup | Global schedule optimization |
+|---|---|---|
+| Question | Which times may this patient choose? | How should many appointments be placed for a better overall schedule? |
+| Scope | One clinic, date, doctor, and treatment | One clinic, a date range, many appointments, doctors, and devices |
+| Decision | Does each candidate pass every mandatory rule? | Which valid schedule has the better overall score? |
+| Timing | Return inside the patient's API request | Search for a better solution within an execution budget |
+| Result | List of available slots | Doctor, date, and start per appointment plus a total score |
+
+Turning every lookup into an optimization problem makes a simple request unnecessarily expensive. Assigning many
+appointments one by one to the first valid space can produce a valid but poor overall schedule.
+
+## What Timefold Solver Does
+
+[Timefold Solver](https://docs.timefold.ai/timefold-solver/latest/introduction) is a JVM optimization engine for planning
+work against limited people, time, and resources. It can run inside a Kotlin or Spring application, but it does not
+understand clinic operations automatically. Developers must define:
+
+- the planning entities that the solver may change;
+- the value ranges it may assign;
+- the problem facts used for evaluation but not changed;
+- the constraints and score that distinguish invalid and preferable schedules.
+
+The clinic model maps these concepts as follows.
+
+| Timefold concept | Clinic appointment meaning |
+|---|---|
+| Planning entity | An appointment that may be rescheduled |
+| Planning variables | Assigned doctor, appointment date, start time |
+| Problem facts | Clinic hours, doctor schedules and absences, treatment types, equipment, closures, holidays |
+| Constraints and score | Prevent invalid timing and resource use, then prefer requested dates and existing doctors |
+
+[AppointmentPlanning](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-solver/src/main/kotlin/io/bluetape4k/clinic/appointment/solver/domain/AppointmentPlanning.kt)
+represents one planning entity. Timefold changes its `doctorId`, `appointmentDate`, and `startTime`. Appointments that
+are already committed, checked in, in progress, or completed are `pinned` and remain fixed.
+
+```kotlin
+@PlanningEntity
+class AppointmentPlanning(
+    @field:PlanningPin
+    val pinned: Boolean = false,
+
+    @field:PlanningVariable(valueRangeProviderRefs = ["doctorRange"])
+    var doctorId: Long? = null,
+
+    @field:PlanningVariable(valueRangeProviderRefs = ["dateRange"])
+    var appointmentDate: LocalDate? = null,
+
+    @field:PlanningVariable(valueRangeProviderRefs = ["timeSlotRange"])
+    var startTime: LocalTime? = null,
+)
+```
+
+[ScheduleSolution](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-solver/src/main/kotlin/io/bluetape4k/clinic/appointment/solver/domain/ScheduleSolution.kt)
+combines appointments with the clinic, doctor, treatment, equipment, operating-hour, break, absence, closure, and
+holiday facts needed to score them. Timefold compares scores while searching. It executes the priorities encoded by
+the application; it does not decide those priorities for the clinic.
+
+## Keep the Service Boundaries Separate
+
+The project gives real-time lookup and global optimization separate entry points.
+[SlotCalculationService](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/SlotCalculationService.kt)
+narrows one request and calculates valid candidates.
+[SolverService](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-solver/src/main/kotlin/io/bluetape4k/clinic/appointment/solver/service/SolverService.kt)
+loads many appointments and resources across a date range and compares complete solutions.
+
+<figure
+  class="bt4k-architecture"
+  data-diagram-title="Choosing between real-time lookup and global optimization"
+>
+  <img src="/assets/clinic-appointment-part4-scheduling-choice-map-01.png" alt="Decision diagram separating SlotCalculationService for one patient's candidate list from SolverService for comparing total scores across many appointments, doctors, and devices" loading="lazy" />
+  <figcaption>Choose by scope, response timing, and number of solutions to compare. Fast candidate calculation and score-based search are complementary paths, not competing implementations.</figcaption>
+</figure>
+
+This boundary keeps patient-facing latency independent of optimization duration. It also lets the clinic change global
+score policy without changing the basic contract for “Can this appointment happen at this time?”
+
+Calling the real-time path “greedy” requires care. The current service does not return only the first available time.
+It returns every candidate that passes the rules within the selected clinic, date, doctor, and treatment. It is called
+the fast candidate path because it does not create combinations across many appointments and compare global scores.
+
+## The Real-Time Path Limits the Search First
+
+The API packages clinic, doctor, treatment, and date into a `SlotQuery`. The service rejects holiday and full-day
+closure conditions, intersects clinic and doctor hours, generates starts at the clinic interval, and filters them by
+capacity and equipment.
+
+```kotlin
+fun getAvailableSlots(...): ResponseEntity<ApiResponse<List<AvailableSlot>>> {
+    val query = SlotQuery(clinicId, doctorId, treatmentTypeId, date)
+    val slots = slotCalculationService.findAvailableSlots(query)
+    return ResponseEntity.ok(ApiResponse.success(slots))
+}
+```
+
+The scope is small and termination is deterministic. Rejecting one candidate never triggers reassignment of unrelated
+appointments on another date.
+
+The returned list is not a seat map that guarantees booking. Another user may reserve the same doctor or device before
+confirmation. The final booking path must revalidate current data and use transaction and concurrency controls. Neither
+slot calculation nor Timefold replaces database concurrency control.
+
+## The Solver Path Treats Many Appointments as One Solution
+
+`SolverService.optimize()` accepts a clinic and date range, loads appointments and planning facts, builds a
+`ScheduleSolution`, and runs the solver.
+
+```kotlin
+fun optimize(
+    clinicId: Long,
+    dateRange: ClosedRange<LocalDate>,
+    timeLimit: Duration = Duration.ofSeconds(30),
+): SolverResult {
+    val solution = loadSolution(clinicId, dateRange)
+    val factory = if (timeLimit != Duration.ofSeconds(30)) {
+        AppointmentSolverConfig.createFactory(timeLimit)
+    } else {
+        solverFactory
+    }
+
+    val result = factory.buildSolver().solve(solution)
+    val score = result.score!!
+    return SolverResult(
+        score = score,
+        appointments = SolutionConverter.extractResults(result, originalMap),
+        isFeasible = score.isFeasible,
+        solveTimeMillis = solveTimeMillis,
+        entityCount = entityCount,
+        pinnedCount = pinnedCount,
+    )
+}
+```
+
+The default 30 seconds does not promise an optimal solution. The solver explores alternatives within its budget and
+returns the best solution found. The result includes assignments, score, feasibility, duration, total entities, and
+pinned count so an operator can understand the problem scope as well as the proposed schedule.
+
+The current service is an independent execution path. Patient availability APIs do not invoke it, and closure
+rescheduling does not automatically persist its output. When optimization runs, who reviews it, and how results become
+stored appointments belong to an application workflow outside the solver itself.
+
+## Clinic Closure Exposes the Two Paths
+
+A sudden closure makes the distinction concrete.
+[ClosureRescheduleService](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/ClosureRescheduleService.kt)
+moves active appointments to `PENDING_RESCHEDULE`, calculates later candidates per appointment, and stores them ordered
+by nearby date and time. An administrator can choose a candidate, or an automatic path can take the highest priority.
+
+<figure
+  class="bt4k-architecture"
+  data-diagram-title="Two clinic-closure rescheduling paths"
+>
+  <img src="/assets/clinic-appointment-part4-closure-reschedule-sequence-02.png" alt="Sequence diagram comparing ClosureRescheduleService, which calculates and confirms candidates per appointment, with SolverService, which compares a full date range of appointments and resources from a separate entry point" loading="lazy" />
+  <figcaption>The candidate path changes state, stores options, and confirms a selected replacement. The optimization path returns a scored schedule but does not currently persist it or send patient notifications automatically.</figcaption>
+</figure>
+
+The per-appointment path is simple and easy for staff to review. It does not reconsider the whole schedule when an
+early appointment consumes an option that would have helped later appointments.
+
+`SolverService.optimizeReschedule()` provides a separate whole-range path from the closure date through a search
+horizon. It can compare interactions among appointments, doctors, and equipment, but it also needs an execution budget,
+review, persistence, and patient-communication process.
+
+The current implementation does not connect the two paths automatically. That keeps several product decisions visible.
+
+- At what closure size should the solver run?
+- Which states may move, and which existing appointments remain pinned?
+- Are results persisted immediately or approved by staff?
+- When are state history and patient notifications recorded?
+
+Adding an optimization algorithm does not complete closure operations. Results must still flow through state, approval,
+history, and communication.
+
+## Choose the Path from the User's Question
+
+| Scenario | Path | Why |
+|---|---|---|
+| Patient checks one doctor's times on a date | `SlotCalculationService` | Small scope and immediate candidate list |
+| Staff explores alternatives for one appointment | `SlotCalculationService` | A person can compare one appointment's options |
+| Clinic plans many appointments across doctors and devices | `SolverService` | Complete schedules need score comparison |
+| Large closure moves many appointments | `SolverService` plus approval | Earlier choices affect later possibilities |
+| User confirms one candidate | Transaction and concurrency control | Revalidate current data and prevent duplicate confirmation |
+
+The paths may be composed. A fast filter can remove obviously impossible values before they become Timefold value
+ranges. The contracts must remain clear: one stage creates valid choices; the next compares combinations of those
+choices.
+
+## Test Boundaries, Not Only Assignments
+
+[SlotCalculationServiceTest](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/test/kotlin/io/bluetape4k/clinic/appointment/service/SlotCalculationServiceTest.kt)
+checks that breaks, partial closures, absences, treatment duration, capacity, and equipment leave only valid candidates.
+That service owns candidate-list correctness.
+
+[SolverServiceTest](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-solver/src/test/kotlin/io/bluetape4k/clinic/appointment/solver/service/SolverServiceTest.kt)
+checks that the date-range problem produces a result, keeps pinned appointments fixed, and supports a closure-to-horizon
+rescheduling range. Solver tests need to verify feasibility, pinning, and problem/result boundaries rather than only one
+appointment's chosen time.
+
+Review also corrected two easy misconceptions. “Greedy” does not mean that the current availability service returns the
+first candidate only. A closure-specific solver method does not mean the current closure workflow automatically runs
+global optimization. Describing the source boundary accurately gives product and engineering the same foundation for
+the next requirements.
+
+## The Next Requirement Is an Explainable Definition of Better
+
+Timefold does not define a good clinic schedule. Doctor and device conflicts are clear mandatory rules, but requested
+date versus original doctor, compact schedules versus balanced workload, and other preferences compete.
+
+```text
+clinic rules that must never be violated
+  → hard constraints and infeasibility penalties
+
+operating goals that should be satisfied when possible
+  → soft constraints and weighted penalties
+
+competing goals
+  → priorities and weights reviewed as clinic policy
+```
+
+Part 5 translates those clinic statements into Timefold Constraint Streams and a `HardSoftScore`.
+
+## Explore the Implementation and References
+
+- [Core appointment module](https://github.com/bluetape4k/clinic-appointment/tree/develop/appointment-core): Real-time slot calculation and per-appointment closure candidates.
+- [Slot calculation service](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/SlotCalculationService.kt): Produces candidates that pass rules within one request.
+- [Closure rescheduling service](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/ClosureRescheduleService.kt): Creates and confirms replacement candidates.
+- [Schedule optimization module](https://github.com/bluetape4k/clinic-appointment/tree/develop/appointment-solver): Timefold model, constraints, and execution path.
+- [Solver service](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-solver/src/main/kotlin/io/bluetape4k/clinic/appointment/solver/service/SolverService.kt): Loads a clinic date range and runs global optimization.
+- [Planning entity](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-solver/src/main/kotlin/io/bluetape4k/clinic/appointment/solver/domain/AppointmentPlanning.kt): Defines doctor, date, start time, and pinning.
+- [Planning solution](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-solver/src/main/kotlin/io/bluetape4k/clinic/appointment/solver/domain/ScheduleSolution.kt): Combines appointments with clinic, doctor, and resource facts.
+- [Timefold Solver introduction](https://docs.timefold.ai/timefold-solver/latest/introduction): Official overview of planning optimization.
+- [Modeling planning problems](https://docs.timefold.ai/timefold-solver/latest/domain-modeling/modeling-planning-problems): Official guide to entities, variables, facts, and solutions.
+
+## Series
+
+- [Part 1: Clinic Appointments Are More Than CRUD](/blog/clinic-appointment-part1-not-just-crud/)
+- [Part 2: Appointment State Is More Than an Enum](/blog/clinic-appointment-part2-state-machine-and-history/)
+- [Part 3: Computing Availability from Clinic-Specific Hours and Resources](/blog/clinic-appointment-part3-clinic-specific-availability/)
+- **Part 4: Real-Time Slot Search and Global Optimization Solve Different Problems**
+- [Part 5: Translating Clinic Rules into Timefold Constraints](/blog/clinic-appointment-part5-timefold-constraints/)
+- Part 6 planned: Rescheduling after Clinic Closures and Equipment Downtime
+- Part 7 planned: Reviews and Operations Start the Next Development Cycle

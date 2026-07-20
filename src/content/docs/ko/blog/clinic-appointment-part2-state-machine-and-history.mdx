@@ -23,8 +23,8 @@ blog:
 
 직원은 예약 요청을 확정하고, 환자가 도착하면 내원을 확인합니다. 진료실에서는 진료 시작과 완료를
 기록합니다. 환자가 오지 않으면 미내원으로 남기고, 휴진이 생기면 재배정 대기로 옮깁니다. 어느 단계에서든
-취소 버튼을 누를 수 있는 것도 아닙니다. 이미 진료가 끝난 예약을 취소하거나, 확정하지 않은 예약을 내원으로
-바꾸면 데이터에는 반영되더라도 업무 기록은 앞뒤가 맞지 않습니다.
+취소 버튼을 누를 수 있는 것도 아닙니다. 이미 진료가 끝난 예약을 취소하거나, 확정되지 않은 예약을
+`CHECKED_IN`으로 바꾸면 데이터에는 반영되더라도 업무 기록은 앞뒤가 맞지 않습니다.
 
 그래서 예약 상태는 `status` 열에 들어갈 문자열 목록으로 끝나지 않습니다. 현재 상태, 상태를 바꾸는 업무 행위, 다음
 상태, 변경 사유와 이력이 함께 있어야 업무 계약이 됩니다. 이번 글에서는 이 계약을 요구사항에서 상태 머신과
@@ -111,7 +111,7 @@ private val transitions = buildMap {
 ## 구현: 현재 상태와 변경 이력을 같은 트랜잭션에 저장한다
 
 상태 머신이 다음 상태를 계산했다고 바로 끝나지는 않습니다. [AppointmentService](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/service/AppointmentService.kt)는
-현재 예약을 읽고, 요청한 목표 상태를 이벤트로 바꾸고, 상태 머신으로 전이를 검증합니다. 허용된 전이라면
+현재 예약을 읽고, 요청한 목표 상태에 해당하는 이벤트를 만들고, 상태 머신으로 전이를 검증합니다. 허용된 전이라면
 현재 상태 변경과 이력 추가를 같은 데이터베이스 트랜잭션에서 실행합니다.
 
 ```kotlin
@@ -185,7 +185,7 @@ transaction {
 상태 관리는 API 안에서만 끝나지 않습니다. [AppointmentState.PINNED_STATUSES](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/statemachine/AppointmentState.kt)는
 `CONFIRMED`, `CHECKED_IN`, `IN_PROGRESS`, `COMPLETED`를 고정 상태로 정의합니다.
 
-Timefold Solver가 더 좋은 전체 일정을 찾더라도 이 상태의 예약은 옮기지 않습니다. 확정된 환자에게 이미
+Timefold Solver가 더 좋은 전체 일정을 찾더라도 이들 상태의 예약은 옮기지 않습니다. 확정된 환자에게 이미
 약속한 시간을 최적화 점수 때문에 바꾸거나, 접수한 환자와 진행 중인 진료를 다른 시간으로 이동시키면 안
 되기 때문입니다. 완료된 예약은 이미 확정된 과거이므로 다시 배치할 대상도 아닙니다.
 
@@ -228,6 +228,6 @@ Timefold Solver가 더 좋은 전체 일정을 찾더라도 이 상태의 예약
 - **Part 2: 예약 상태는 enum이 아니다**
 - [Part 3: 병원마다 다른 업무시간과 자원으로 예약 가능 시간을 계산하기](/ko/blog/clinic-appointment-part3-clinic-specific-availability/)
 - [Part 4: 한 건의 예약 가능 시간 조회와 전체 일정 최적화는 다르다](/ko/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
-- Part 5 예정: 병원 업무 규칙을 Timefold Constraint로 번역하기
+- [Part 5: 병원 업무 규칙을 Timefold Constraint로 번역하기](/ko/blog/clinic-appointment-part5-timefold-constraints/)
 - Part 6 예정: 휴진과 장비 고장은 예약 설계를 어떻게 바꾸는가
 - Part 7 예정: 완성 뒤가 진짜 시작이다
