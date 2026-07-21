@@ -35,7 +35,7 @@
       .seq { fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
       .seqReturn { fill: none; stroke-width: 2.7; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 9 7; }
       .labelPill { fill: #101b30; stroke-width: 1.5; }
-      .labelText { font-family: 'Comic Mono', monospace; font-size: 16px; font-weight: 700; }
+      .labelText { font-family: 'Comic Mono', monospace; font-size: 14px; font-weight: 700; }
       .badgeText { font-family: 'Comic Mono', monospace; font-size: 14px; font-weight: 700; }
       .altBox { fill: none; stroke: #c46b6b; stroke-width: 2.2; stroke-dasharray: 12 8; }
       .loopBox { fill: none; stroke: #c99a58; stroke-width: 2.2; stroke-dasharray: 12 8; }

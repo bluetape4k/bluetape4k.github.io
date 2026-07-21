@@ -29,7 +29,9 @@
       .subtitle { font-family: "Comic Mono", monospace; font-size: 19px; fill: #9fb2cc; }
       .label { font-family: "Architects Daughter", cursive; font-size: 27px; font-weight: 700; fill: #f8fafc; }
       .body { font-family: "Comic Mono", monospace; font-size: 18px; fill: #d7e3f3; }
+      .body-compact { font-family: "Comic Mono", monospace; font-size: 14px; fill: #d7e3f3; }
       .small { font-family: "Comic Mono", monospace; font-size: 15px; fill: #aebed2; }
+      .micro { font-family: "Comic Mono", monospace; font-size: 13px; fill: #aebed2; }
       .metric { font-family: "Comic Mono", monospace; font-size: 25px; font-weight: 700; }
       .card { stroke-width: 2; filter: url(#shadow); }
     </style>
@@ -49,9 +51,9 @@
   <text x="100" y="319" class="body">doctorId</text>
   <text x="100" y="352" class="body">appointmentDate</text>
   <text x="100" y="385" class="body">startTime</text>
-  <rect x="292" y="305" width="108" height="74" rx="18" fill="#0b1f31" stroke="#fbbf24" stroke-width="2"/>
-  <text x="346" y="333" text-anchor="middle" class="small" fill="#fde68a">@PlanningPin</text>
-  <text x="346" y="359" text-anchor="middle" class="body">pinned</text>
+  <rect x="278" y="305" width="132" height="74" rx="18" fill="#0b1f31" stroke="#fbbf24" stroke-width="2"/>
+  <text x="344" y="333" text-anchor="middle" class="micro" fill="#fde68a">@PlanningPin</text>
+  <text x="344" y="359" text-anchor="middle" class="body">pinned</text>
 
   <rect x="70" y="470" width="360" height="260" rx="26" fill="url(#facts)" stroke="#818cf8" class="card"/>
   <rect x="92" y="490" width="126" height="34" rx="17" fill="#4338ca"/>
@@ -70,17 +72,17 @@
   <rect x="619" y="330" width="104" height="34" rx="17" fill="#9f1239"/>
   <text x="671" y="353" text-anchor="middle" class="small" fill="#fff1f2">HARD</text>
   <text x="748" y="356" class="metric" fill="#fda4af">12 streams</text>
-  <text x="625" y="403" class="body">Operating windows · absences · closures</text>
-  <text x="625" y="436" class="body">Capacity · equipment · provider type</text>
-  <text x="625" y="467" class="small" fill="#fecdd3">A single violation makes the schedule infeasible.</text>
+  <text x="625" y="403" class="body-compact">Operating windows · absences · closures</text>
+  <text x="625" y="436" class="body-compact">Capacity · equipment · provider type</text>
+  <text x="625" y="467" class="micro" fill="#fecdd3">Any violation makes the schedule infeasible.</text>
 
   <rect x="595" y="516" width="400" height="174" rx="24" fill="#25183d" stroke="#c084fc" stroke-width="2"/>
   <rect x="619" y="536" width="104" height="34" rx="17" fill="#6b21a8"/>
   <text x="671" y="559" text-anchor="middle" class="small" fill="#faf5ff">SOFT</text>
   <text x="748" y="562" class="metric" fill="#d8b4fe">6 goals</text>
-  <text x="625" y="609" class="body">Load balance · gaps · original doctor</text>
-  <text x="625" y="642" class="body">Requested date · earlier slots · equipment</text>
-  <text x="625" y="673" class="small" fill="#e9d5ff">Penalties rank feasible schedules by preference.</text>
+  <text x="625" y="609" class="body-compact">Load balance · gaps · original doctor</text>
+  <text x="625" y="642" class="body-compact">Requested date · earlier slots · equipment</text>
+  <text x="625" y="673" class="micro" fill="#e9d5ff">Penalties rank feasible schedules.</text>
 
   <rect x="1160" y="250" width="360" height="206" rx="28" fill="url(#score)" stroke="#22d3ee" class="card"/>
   <text x="1200" y="306" class="label">HardSoftScore</text>
@@ -92,7 +94,7 @@
   <text x="1200" y="566" class="label">SolverResult</text>
   <text x="1200" y="611" class="body">doctor · date · start time</text>
   <text x="1200" y="648" class="body">score · feasible · solve time</text>
-  <text x="1200" y="685" class="small">Returned for review; not auto-persisted.</text>
+  <text x="1200" y="685" class="micro">Returned for review; not persisted.</text>
 
   <path d="M 430 360 H 555" fill="none" stroke="#65d8e8" stroke-width="4" marker-end="url(#arrow)" data-connector="entity-to-constraints"/>
   <path d="M 430 550 H 555" fill="none" stroke="#8b9dfa" stroke-width="4" marker-end="url(#arrow)" data-connector="facts-to-constraints"/>

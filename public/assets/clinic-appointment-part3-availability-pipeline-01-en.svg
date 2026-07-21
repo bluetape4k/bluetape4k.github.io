@@ -26,8 +26,10 @@
       .panel-title { font-family: 'Architects Daughter', cursive; font-size: 27px; font-weight: 700; fill: #f8fafc; }
       .card-title { font-family: 'Architects Daughter', cursive; font-size: 22px; font-weight: 700; fill: #f8fafc; }
       .body { font-family: 'Comic Mono', monospace; font-size: 17px; fill: #c7d3e7; }
+      .body-tight { font-family: 'Comic Mono', monospace; font-size: 13px; fill: #c7d3e7; }
       .mono { font-family: 'Comic Mono', monospace; font-size: 18px; font-weight: 700; fill: #f8fafc; }
-      .small { font-family: 'Comic Mono', monospace; font-size: 15px; fill: #a9b8d4; }
+      .small { font-family: 'Comic Mono', monospace; font-size: 14px; fill: #a9b8d4; }
+      .micro { font-family: 'Comic Mono', monospace; font-size: 12px; fill: #a9b8d4; }
       .tick { font-family: 'Comic Mono', monospace; font-size: 14px; fill: #8ea0bd; }
       .connector { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: 4; }
       .primary { stroke: #58a6c9; marker-end: url(#arrowBlue); }
@@ -52,13 +54,13 @@
       <rect class="card" x="90" y="220" width="510" height="240" rx="24" fill="#2d2432" stroke="#c46b6b" stroke-width="2" />
       <text class="card-title" x="345" y="264" text-anchor="middle">1. Check full-day blockers first</text>
       <rect x="122" y="292" width="210" height="48" rx="13" fill="#3d2931" stroke="#c46b6b" />
-      <text class="body" x="227" y="323" text-anchor="middle">holiday · full-day closure</text>
+      <text class="body-tight" x="227" y="323" text-anchor="middle">holiday · full-day closure</text>
       <rect x="358" y="292" width="210" height="48" rx="13" fill="#3d2931" stroke="#c46b6b" />
       <text class="body" x="463" y="323" text-anchor="middle">no clinic hours</text>
       <rect x="122" y="356" width="210" height="48" rx="13" fill="#3d2931" stroke="#c46b6b" />
       <text class="body" x="227" y="387" text-anchor="middle">no doctor hours</text>
       <rect x="358" y="356" width="210" height="48" rx="13" fill="#3d2931" stroke="#c46b6b" />
-      <text class="body" x="463" y="387" text-anchor="middle">doctor absent all day</text>
+      <text class="body-tight" x="463" y="387" text-anchor="middle">doctor absent all day</text>
       <text class="small" x="345" y="438" text-anchor="middle">Any match returns an empty list immediately</text>
     </g>
 
@@ -67,12 +69,12 @@
       <text class="card-title" x="1000" y="264" text-anchor="middle">2. Compute the effective time ranges</text>
       <rect x="744" y="296" width="220" height="52" rx="14" fill="#15344b" stroke="#58a6c9" />
       <text class="body" x="854" y="328" text-anchor="middle">clinic hours</text>
-      <text class="small" x="1000" y="329" text-anchor="middle">intersect</text>
+      <text class="micro" x="1000" y="329" text-anchor="middle">intersect</text>
       <rect x="1036" y="296" width="220" height="52" rx="14" fill="#15344b" stroke="#58a6c9" />
       <text class="body" x="1146" y="328" text-anchor="middle">doctor hours</text>
       <text class="small" x="1000" y="378" text-anchor="middle">subtract</text>
       <rect x="748" y="392" width="504" height="46" rx="13" fill="#302b34" stroke="#c79a58" />
-      <text class="body" x="1000" y="422" text-anchor="middle">breaks · partial closures · partial doctor absences</text>
+      <text class="body-tight" x="1000" y="422" text-anchor="middle">breaks · partial closures · partial doctor absences</text>
     </g>
 
     <g filter="url(#shadow)">
@@ -81,11 +83,11 @@
       <rect x="1432" y="292" width="210" height="48" rx="13" fill="#223c45" stroke="#8da66b" />
       <text class="body" x="1537" y="323" text-anchor="middle">staff type</text>
       <rect x="1668" y="292" width="210" height="48" rx="13" fill="#223c45" stroke="#8da66b" />
-      <text class="body" x="1773" y="323" text-anchor="middle">concurrent patients</text>
+      <text class="body-tight" x="1773" y="323" text-anchor="middle">concurrent patients</text>
       <rect x="1432" y="356" width="210" height="48" rx="13" fill="#223c45" stroke="#8da66b" />
-      <text class="body" x="1537" y="387" text-anchor="middle">equipment quantity</text>
+      <text class="body-tight" x="1537" y="387" text-anchor="middle">equipment quantity</text>
       <rect x="1668" y="356" width="210" height="48" rx="13" fill="#223c45" stroke="#8da66b" />
-      <text class="body" x="1773" y="387" text-anchor="middle">maintenance · downtime</text>
+      <text class="body-tight" x="1773" y="387" text-anchor="middle">maintenance · downtime</text>
       <text class="small" x="1655" y="438" text-anchor="middle">Return only candidates that pass every check</text>
     </g>
   </g>

@@ -30,7 +30,7 @@
       .lane-title { font-family: 'Architects Daughter', cursive; font-size: 27px; font-weight: 700; fill: #f8fafc; }
       .card-title { font-family: 'Architects Daughter', cursive; font-size: 25px; font-weight: 700; fill: #f8fafc; }
       .label { font-family: 'Comic Mono', monospace; font-size: 18px; fill: #d7e2f4; }
-      .small { font-family: 'Comic Mono', monospace; font-size: 16px; fill: #9eb0cc; }
+      .small { font-family: 'Comic Mono', monospace; font-size: 15px; fill: #9eb0cc; }
       .module { font-family: 'Comic Mono', monospace; font-size: 17px; font-weight: 700; fill: #f1f5f9; }
       .connector { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: 4; }
       .ownership { stroke: #39d9c7; marker-end: url(#arrowTeal); }
