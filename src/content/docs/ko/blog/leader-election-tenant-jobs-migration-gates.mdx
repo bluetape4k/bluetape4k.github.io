@@ -39,7 +39,7 @@ blog:
 - Schema migration은 클러스터 전체에서 하나만 진행해야 한다: `schema-v3`
 
 <figure class="bt4k-chart">
-  <img src="/assets/leader-election-coordination-scope-01.png" alt="Service Node A, B, C가 tenant A, tenant B, global migration coordination key를 거쳐 각각의 guarded state를 실행하는 dark architecture diagram" loading="lazy" />
+  <img src="/assets/leader-election-coordination-scope-01-ko.png" alt="서비스 노드 A, B, C가 tenant A, tenant B, global migration coordination key를 거쳐 각각의 보호 상태를 실행하는 어두운 배경의 아키텍처 다이어그램" loading="lazy" />
   <figcaption>같은 key는 직렬화하고 다른 key는 병렬로 실행합니다. 완료 마커는 lock 소유권이 아니라 durable state에 속합니다.</figcaption>
 </figure>
 
@@ -159,7 +159,7 @@ Lease가 있는 lock은 소유자가 명시적으로 release하지 못해도 영
 `busy`를 받고, lease가 끝난 뒤 새 token으로 소유권을 얻습니다.
 
 <figure class="bt4k-chart">
-  <img src="/assets/leader-election-lease-failover-sequence-01.png" alt="Node A가 lease를 얻어 작업하다 실패하고 Node B가 lease 만료 후 새 token으로 인계하는 dark sequence diagram" loading="lazy" />
+  <img src="/assets/leader-election-lease-failover-sequence-01-ko.png" alt="Node A가 lease를 얻어 작업하다 실패하고 Node B가 lease 만료 후 새 token으로 인계하는 어두운 배경의 시퀀스 다이어그램" loading="lazy" />
   <figcaption>Lease 만료는 다음 후보의 진입을 허용합니다. 이전 실행의 side effect를 없애 주지는 않습니다.</figcaption>
 </figure>
 

@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
-  <title id="title">Lease expiry and leader failover sequence</title>
-  <desc id="desc">Node A owns a lease and fails. Node B is initially rejected, then acquires after expiry and resumes an idempotent guarded job.</desc>
+  <title id="title">Lease 만료와 리더 인계 순서</title>
+  <desc id="desc">Node A가 lease를 보유한 채 실패한다. Node B는 처음에는 거절되지만 만료 후 lease를 획득하고 멱등한 보호 작업을 재개한다.</desc>
   <defs>
     <style>
-      .title-font { font-family: "Architects Daughter", "Comic Mono", cursive; }
-      .body-font { font-family: "Comic Mono", monospace; }
+      .ko-font { font-family: "Noto Sans KR", "Apple SD Gothic Neo", sans-serif; }
+      .mono-font { font-family: "Comic Mono", "Noto Sans KR", monospace; }
     </style>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#07111f"/>
@@ -38,30 +38,30 @@
   <circle cx="1510" cy="40" r="240" fill="#16355b" opacity="0.17"/>
   <circle cx="60" cy="940" r="250" fill="#2b1854" opacity="0.15"/>
 
-  <g class="body-font">
-    <text class="title title-font" x="800" y="64" text-anchor="middle" fill="#f4f7fb" font-size="38" font-weight="700">A lease enables takeover; it does not erase side effects</text>
-    <text class="subtitle" x="800" y="102" text-anchor="middle" fill="#91a8c1" font-size="20">Use fencing, idempotency, or a durable completion marker around guarded work.</text>
+  <g class="ko-font">
+    <text class="title" x="800" y="64" text-anchor="middle" fill="#f4f7fb" font-size="38" font-weight="700">Lease는 인계를 허용하지만 side effect를 지우지 않는다</text>
+    <text class="subtitle" x="800" y="102" text-anchor="middle" fill="#91a8c1" font-size="20">보호된 작업에는 fencing, idempotency 또는 durable completion marker가 필요합니다.</text>
 
     <g filter="url(#shadow)" text-anchor="middle">
       <g>
         <rect class="header" x="70" y="140" width="220" height="84" rx="17" fill="url(#header)" stroke="#4c79a8" stroke-width="2"/>
-        <text class="participant title-font" x="180" y="177" fill="#eaf3fc" font-size="24" font-weight="700">Node A</text>
-        <text class="role" x="180" y="205" fill="#7e9ab7" font-size="16">first owner</text>
+        <text class="participant" x="180" y="177" fill="#eaf3fc" font-size="24" font-weight="700">Node A</text>
+        <text class="role" x="180" y="205" fill="#7e9ab7" font-size="16">첫 owner</text>
       </g>
       <g>
         <rect class="header" x="455" y="140" width="290" height="84" rx="17" fill="url(#header)" stroke="#46b9b0" stroke-width="2"/>
-        <text class="participant title-font" x="600" y="177" fill="#ddfffb" font-size="24" font-weight="700">Coordination Provider</text>
-        <text class="role" x="600" y="205" fill="#77aaa7" font-size="16">lease authority</text>
+        <text class="participant" x="600" y="177" fill="#ddfffb" font-size="24" font-weight="700">조정 제공자</text>
+        <text class="role" x="600" y="205" fill="#77aaa7" font-size="16">lease 권한</text>
       </g>
       <g>
         <rect class="header" x="865" y="140" width="270" height="84" rx="17" fill="url(#header)" stroke="#a78bfa" stroke-width="2"/>
-        <text class="participant title-font" x="1000" y="177" fill="#eee5ff" font-size="24" font-weight="700">Guarded Job</text>
+        <text class="participant" x="1000" y="177" fill="#eee5ff" font-size="24" font-weight="700">보호된 작업</text>
         <text class="role" x="1000" y="205" fill="#a895c9" font-size="16">durable state</text>
       </g>
       <g>
         <rect class="header" x="1310" y="140" width="220" height="84" rx="17" fill="url(#header)" stroke="#d39c3f" stroke-width="2"/>
-        <text class="participant title-font" x="1420" y="177" fill="#fff0c9" font-size="24" font-weight="700">Node B</text>
-        <text class="role" x="1420" y="205" fill="#b99e6a" font-size="16">successor</text>
+        <text class="participant" x="1420" y="177" fill="#fff0c9" font-size="24" font-weight="700">Node B</text>
+        <text class="role" x="1420" y="205" fill="#b99e6a" font-size="16">후속 owner</text>
       </g>
     </g>
 
@@ -90,7 +90,7 @@
       <rect class="alt" x="54" y="464" width="1492" height="418" rx="24" fill="#10192a" fill-opacity="0.12" stroke="#6d8197" stroke-width="3" stroke-dasharray="12 10"/>
       <rect x="82" y="482" width="330" height="40" rx="20" fill="#241c38" stroke="#9c7ae0" stroke-width="2"/>
       <text x="109" y="508" fill="#d6c8f6" font-size="18" font-weight="700">alt</text>
-      <text x="166" y="508" fill="#d6c8f6" font-size="18">owner fails before release</text>
+      <text x="166" y="508" fill="#d6c8f6" font-size="18">release 전에 owner 실패</text>
     </g>
 
     <g fill="none" stroke-linecap="round" stroke-width="4">
@@ -104,21 +104,21 @@
     </g>
 
     <g font-size="17" font-weight="700">
-      <g><rect class="label" x="220" y="250" width="290" height="38" rx="19" fill="#10283b" stroke="#59b9ef"/><circle cx="244" cy="269" r="14" fill="#163d59" stroke="#59b9ef"/><text class="num" x="244" y="275" text-anchor="middle" fill="#dff5ff">1</text><text x="270" y="275" fill="#bce8ff">acquire(key, token A)</text></g>
-      <g><rect class="label" x="252" y="300" width="306" height="38" rx="19" fill="#10302f" stroke="#42d6c9"/><circle cx="276" cy="319" r="14" fill="#154743" stroke="#42d6c9"/><text class="num" x="276" y="325" text-anchor="middle" fill="#ddfffb">2</text><text x="302" y="325" fill="#b7f5ef">acquired until t + lease</text></g>
-      <g><rect class="label" x="520" y="350" width="270" height="38" rx="19" fill="#241a3b" stroke="#a78bfa"/><circle cx="544" cy="369" r="14" fill="#352456" stroke="#a78bfa"/><text class="num" x="544" y="375" text-anchor="middle" fill="#f2eaff">3</text><text x="570" y="375" fill="#ddcdff">run guarded action</text></g>
-      <g><rect class="label" x="246" y="400" width="274" height="38" rx="19" fill="#10283b" stroke="#59b9ef"/><circle cx="270" cy="419" r="14" fill="#163d59" stroke="#59b9ef"/><text class="num" x="270" y="425" text-anchor="middle" fill="#dff5ff">4</text><text x="296" y="425" fill="#bce8ff">renew(token A)</text></g>
+      <g><rect class="label" x="220" y="250" width="290" height="38" rx="19" fill="#10283b" stroke="#59b9ef"/><circle cx="244" cy="269" r="14" fill="#163d59" stroke="#59b9ef"/><text class="num" x="244" y="275" text-anchor="middle" fill="#dff5ff">1</text><text class="mono-font" x="270" y="275" fill="#bce8ff">acquire(key, token A)</text></g>
+      <g><rect class="label" x="252" y="300" width="306" height="38" rx="19" fill="#10302f" stroke="#42d6c9"/><circle cx="276" cy="319" r="14" fill="#154743" stroke="#42d6c9"/><text class="num" x="276" y="325" text-anchor="middle" fill="#ddfffb">2</text><text x="302" y="325" fill="#b7f5ef">t + lease까지 획득</text></g>
+      <g><rect class="label" x="520" y="350" width="270" height="38" rx="19" fill="#241a3b" stroke="#a78bfa"/><circle cx="544" cy="369" r="14" fill="#352456" stroke="#a78bfa"/><text class="num" x="544" y="375" text-anchor="middle" fill="#f2eaff">3</text><text x="570" y="375" fill="#ddcdff">보호된 작업 실행</text></g>
+      <g><rect class="label" x="246" y="400" width="274" height="38" rx="19" fill="#10283b" stroke="#59b9ef"/><circle cx="270" cy="419" r="14" fill="#163d59" stroke="#59b9ef"/><text class="num" x="270" y="425" text-anchor="middle" fill="#dff5ff">4</text><text class="mono-font" x="296" y="425" fill="#bce8ff">renew(token A)</text></g>
 
-      <g><rect class="label" x="238" y="529" width="258" height="38" rx="19" fill="#3a1b25" stroke="#ef6f7b"/><circle cx="262" cy="548" r="14" fill="#57212d" stroke="#ef6f7b"/><text class="num" x="262" y="554" text-anchor="middle" fill="#ffe8eb">5</text><text x="288" y="554" fill="#ffc4ca">Node A fails</text></g>
-      <g><rect class="label" x="862" y="574" width="346" height="38" rx="19" fill="#3a2a12" stroke="#f6b84a"/><circle cx="886" cy="593" r="14" fill="#5a3b10" stroke="#f6b84a"/><text class="num" x="886" y="599" text-anchor="middle" fill="#fff1c9">6</text><text x="912" y="599" fill="#ffe0a0">acquire(key): busy</text></g>
-      <g><rect class="label" x="670" y="645" width="280" height="38" rx="19" fill="#3a1b25" stroke="#ef6f7b"/><circle cx="694" cy="664" r="14" fill="#57212d" stroke="#ef6f7b"/><text class="num" x="694" y="670" text-anchor="middle" fill="#ffe8eb">7</text><text x="720" y="670" fill="#ffc4ca">lease expires</text></g>
-      <g><rect class="label" x="860" y="698" width="350" height="38" rx="19" fill="#3a2a12" stroke="#f6b84a"/><circle cx="884" cy="717" r="14" fill="#5a3b10" stroke="#f6b84a"/><text class="num" x="884" y="723" text-anchor="middle" fill="#fff1c9">8</text><text x="910" y="723" fill="#ffe0a0">acquire(key, token B)</text></g>
-      <text x="990" y="759" text-anchor="middle" fill="#8fe8df" font-size="16">acquired with a new ownership token</text>
-      <g><rect class="label" x="1118" y="786" width="270" height="38" rx="19" fill="#241a3b" stroke="#a78bfa"/><circle cx="1142" cy="805" r="14" fill="#352456" stroke="#a78bfa"/><text class="num" x="1142" y="811" text-anchor="middle" fill="#f2eaff">9</text><text x="1168" y="811" fill="#ddcdff">resume idempotently</text></g>
-      <g><rect class="label" x="1096" y="830" width="292" height="38" rx="19" fill="#3a2a12" stroke="#f6b84a"/><circle cx="1122" cy="849" r="14" fill="#5a3b10" stroke="#f6b84a"/><text class="num" x="1122" y="855" text-anchor="middle" fill="#fff1c9">10</text><text x="1150" y="855" fill="#ffe0a0">persist completion marker</text></g>
+      <g><rect class="label" x="238" y="529" width="258" height="38" rx="19" fill="#3a1b25" stroke="#ef6f7b"/><circle cx="262" cy="548" r="14" fill="#57212d" stroke="#ef6f7b"/><text class="num" x="262" y="554" text-anchor="middle" fill="#ffe8eb">5</text><text x="288" y="554" fill="#ffc4ca">Node A 실패</text></g>
+      <g><rect class="label" x="862" y="574" width="346" height="38" rx="19" fill="#3a2a12" stroke="#f6b84a"/><circle cx="886" cy="593" r="14" fill="#5a3b10" stroke="#f6b84a"/><text class="num" x="886" y="599" text-anchor="middle" fill="#fff1c9">6</text><text class="mono-font" x="912" y="599" fill="#ffe0a0">acquire(key): 사용 중</text></g>
+      <g><rect class="label" x="670" y="645" width="280" height="38" rx="19" fill="#3a1b25" stroke="#ef6f7b"/><circle cx="694" cy="664" r="14" fill="#57212d" stroke="#ef6f7b"/><text class="num" x="694" y="670" text-anchor="middle" fill="#ffe8eb">7</text><text x="720" y="670" fill="#ffc4ca">lease 만료</text></g>
+      <g><rect class="label" x="860" y="698" width="350" height="38" rx="19" fill="#3a2a12" stroke="#f6b84a"/><circle cx="884" cy="717" r="14" fill="#5a3b10" stroke="#f6b84a"/><text class="num" x="884" y="723" text-anchor="middle" fill="#fff1c9">8</text><text class="mono-font" x="910" y="723" fill="#ffe0a0">acquire(key, token B)</text></g>
+      <text x="990" y="759" text-anchor="middle" fill="#8fe8df" font-size="16">새 ownership token으로 획득</text>
+      <g><rect class="label" x="1118" y="786" width="270" height="38" rx="19" fill="#241a3b" stroke="#a78bfa"/><circle cx="1142" cy="805" r="14" fill="#352456" stroke="#a78bfa"/><text class="num" x="1142" y="811" text-anchor="middle" fill="#f2eaff">9</text><text x="1168" y="811" fill="#ddcdff">멱등하게 재개</text></g>
+      <g><rect class="label" x="1096" y="830" width="292" height="38" rx="19" fill="#3a2a12" stroke="#f6b84a"/><circle cx="1122" cy="849" r="14" fill="#5a3b10" stroke="#f6b84a"/><text class="num" x="1122" y="855" text-anchor="middle" fill="#fff1c9">10</text><text x="1150" y="855" fill="#ffe0a0">완료 마커 저장</text></g>
     </g>
 
     <rect x="90" y="915" width="1420" height="54" rx="18" fill="#111e31" stroke="#2e4867" stroke-width="2"/>
-    <text x="800" y="949" text-anchor="middle" fill="#dbe8f5" font-size="20" font-weight="700">Lease expiry permits takeover; it does not prove exactly-once side effects.</text>
+    <text x="800" y="949" text-anchor="middle" fill="#dbe8f5" font-size="20" font-weight="700">Lease 만료는 인계를 허용하지만 exactly-once side effect를 증명하지 않습니다.</text>
   </g>
 </svg>
