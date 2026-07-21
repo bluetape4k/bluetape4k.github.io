@@ -228,6 +228,40 @@ Lock names can contain tenant IDs, user data, URLs, or values with dangerous car
 necessary. Also note that `LockExtender` currently provides no direct success or failure metric. An alert based on execution
 time approaching the lease is a conservative symptom, not direct evidence of an extension failure.
 
+## Six Situations Leader Election Alone Does Not Cover
+
+The examples so far show where to place coordination keys, leases, and completion markers. Those rules do not make every
+job safe automatically. The following cases need contracts owned by the job itself rather than another leader-election
+option.
+
+- **Different jobs update the same state.** Suppose the daily aggregation uses `daily-aggregate` while a historical
+  backfill uses `aggregate-backfill`. Different names do not prevent both jobs from updating the same summary row. Derive
+  a shared key from the real write conflict, or contain the conflict with database constraints and explicit state transitions.
+- **The action outlives its lease.** A two-minute aggregation can overlap a successor when its lease lasts only 30 seconds.
+  Plan for extension failure and combine the appropriate fencing, checkpoint, and idempotency boundaries. A fencing token
+  rejects a stale owner only when the guarded resource validates that token.
+- **The tenant set changes after startup.** The current `TenantAggregator` creates one coroutine for every entry in
+  `options.tenants` when `start()` runs. A newly added tenant receives no worker, and a removed tenant's worker is not
+  retired automatically. A production scheduler needs reconciliation between the desired tenant set and its running workers.
+- **The deployment crosses regions or a network partition.** These examples do not establish how each backend behaves
+  under inter-region latency or a partition. Define whether an existing action stops, acquisition fails closed, and retries
+  resume after recovery, then exercise those choices under realistic failure conditions.
+- **Old and new worker versions run together.** A shared key elects one owner during a rolling deployment, but it does not
+  prove that v1 and v2 interpret markers and payloads identically. Giving each version a different key can instead let them
+  overlap. Schema compatibility, marker versions, and drain order belong in the rollout contract.
+- **An external side effect cannot validate a fencing token.** Payment APIs, mail servers, and external webhooks normally
+  cannot consume an internal leader token. A delayed request from a stale owner can still take effect after lease expiry.
+  Use idempotency keys, a durable outbox, result lookup, and reconciliation at that boundary.
+
+Before deployment, ask:
+
+- Can differently named jobs update the same state?
+- Can the tenant or shard set change while workers are running?
+- Does the worst-case runtime, including pauses, fit inside the lease budget?
+- Can the system identify and reconcile a replayed external side effect?
+- Do old and new versions interpret the key, marker, and payload the same way?
+- Has the selected backend been exercised under latency, disconnection, and recovery?
+
 Operations should reveal more than one successful election: whether acquisitions keep failing, leadership changes more
 often than expected, work consumes the lease budget, or a takeover repeats a side effect.
 
@@ -235,6 +269,10 @@ Leader election reduces overlapping ownership among servers. The rest of the saf
 key, handling for work longer than the lease, durable markers, idempotency, and observability. Before opening a provider
 matrix, write down which jobs must not overlap and what must remain durable after a failure. The implementation choices then
 become much more concrete.
+
+This article stops at identifying those boundaries. Future
+[`bluetape4k-workshop` examples](https://github.com/bluetape4k/bluetape4k-workshop/issues/548) will turn these problems into
+executable scenarios and show how to address them one by one.
 
 ## Sources
 

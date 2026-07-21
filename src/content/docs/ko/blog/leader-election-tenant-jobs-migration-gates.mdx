@@ -225,6 +225,41 @@ Lock name에는 tenant, user, URL처럼 민감하거나 cardinality가 큰 값�
 또한 현재 `LockExtender` 자체의 성공·실패 metric은 제공되지 않습니다. 실행 시간이 lease에 가까워졌다는 alert는
 연장 실패를 직접 관측한 값이 아니라 보수적인 징후입니다.
 
+## leader election만으로 막을 수 없는 여섯 가지 상황
+
+지금까지의 예제는 coordination key, lease, 완료 마커를 어디에 둘지 보여 줍니다. 하지만 여기서 설명한 규칙을 적용해도
+아래 상황까지 자동으로 안전해지지는 않습니다. 이는 leader election의 결함이라기보다 작업 자체에 별도의 계약이 필요한
+경우입니다.
+
+- **서로 다른 작업이 같은 데이터를 갱신한다.** 일일 집계는 `daily-aggregate`, 과거 데이터 backfill은
+  `aggregate-backfill`이라는 key를 쓴다고 해보겠습니다. 이름은 달라도 같은 요약 row를 갱신한다면 두 작업은 동시에
+  실행될 수 있습니다. Job 이름이 아니라 실제 쓰기 충돌을 기준으로 key를 공유하거나, DB constraint와 상태 전이로
+  충돌을 막아야 합니다.
+- **작업이 lease보다 오래 실행된다.** Lease가 30초인데 집계가 2분 걸리면 이전 owner가 아직 쓰는 동안 다음 owner가
+  진입할 수 있습니다. Lease 연장만 믿기보다 연장 실패를 포함해 fencing, checkpoint, idempotency를 조합해야 합니다.
+  Fencing token도 대상 저장소가 token을 검사할 때만 오래된 owner를 막을 수 있습니다.
+- **실행 중 tenant 목록이 바뀐다.** 현재 `TenantAggregator`는 `start()` 시점의 `options.tenants`마다 coroutine을
+  만듭니다. 시작 뒤 추가된 tenant에는 worker가 생기지 않고, 삭제된 tenant의 worker는 자동으로 정리되지 않습니다.
+  운영 환경에서는 원하는 tenant 목록과 실행 중인 worker를 주기적으로 맞추고 안전하게 추가·중지해야 합니다.
+- **여러 리전에 걸쳐 실행되거나 네트워크가 단절된다.** 이 글의 예제는 리전 간 지연이나 network partition에서 각
+  backend가 어떤 결과를 내는지 검증하지 않습니다. Backend 연결이 끊겼을 때 실행 중인 작업을 중단할지, 새로운 획득
+  시도를 실패로 처리할지, 복구 뒤 언제 다시 시도할지를 정하고 실제 장애 조건에서 확인해야 합니다.
+- **서로 다른 버전의 worker가 함께 실행된다.** Rolling deployment 중 v1과 v2가 같은 key를 사용해도 한 번에 한
+  owner만 선택될 뿐, 두 버전이 marker와 payload를 같은 의미로 해석한다는 보장은 없습니다. 그렇다고 버전마다 key를
+  나누면 두 버전이 동시에 실행될 수 있습니다. Schema 호환성, marker version, drain 순서를 배포 계약에 포함해야 합니다.
+- **외부 side effect가 fencing token을 받지 않는다.** 결제 API, 메일 서버, 외부 webhook은 보통 내부 leader token을
+  검증해 주지 않습니다. 이전 owner가 늦게 요청을 보내면 lease가 끝난 뒤에도 효과가 남을 수 있습니다. 이 경계에는
+  idempotency key, durable outbox, 결과 조회와 reconciliation이 필요합니다.
+
+배포 전에는 다음 질문을 확인하는 편이 좋습니다.
+
+- 이름이 다른 작업이 같은 상태를 갱신하지 않는가?
+- tenant나 shard 목록이 실행 중 바뀌는가?
+- GC pause와 네트워크 지연까지 포함한 최악 실행 시간이 lease보다 짧은가?
+- 중복 실행된 외부 호출의 결과를 식별하고 정합성을 복구할 수 있는가?
+- 구버전과 신버전이 key, marker, payload를 같은 의미로 해석하는가?
+- 선택한 backend의 지연, 연결 단절, 복구 조건을 실제로 시험했는가?
+
 운영에서 보고 싶은 것은 한 번의 선출 성공이 아닙니다. **획득 실패가 이어지는가, leader가 예상보다 자주 바뀌는가,
 작업 시간이 lease budget을 침범하는가, 인계 후 같은 side effect가 반복되는가**를 함께 봐야 합니다.
 
@@ -232,6 +267,10 @@ Leader election은 여러 서버가 같은 순간에 소유권을 주장하는 �
 범위, lease보다 긴 작업의 처리, durable marker, idempotency, 관측 지표가 함께 만듭니다. 구현을 시작할 때 provider
 목록부터 열기보다 "같이 실행되면 안 되는 작업은 무엇이고, 실패 뒤 무엇이 남아야 하는가"를 먼저 적으면 설계가 훨씬
 구체적으로 좁혀집니다.
+
+이 글은 위 상황에서 확인해야 할 경계까지만 다룹니다. 후속
+[`bluetape4k-workshop` 예제](https://github.com/bluetape4k/bluetape4k-workshop/issues/548)에서는 이런 문제를
+각각 어떻게 풀어 가는지 실행 가능한 시나리오로 설명할 예정입니다.
 
 ## Sources
 

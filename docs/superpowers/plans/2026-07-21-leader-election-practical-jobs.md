@@ -466,3 +466,32 @@ Also query unresolved review threads after CI is green. Expected: Build succeeds
 - [ ] **Step 5: Report merge-ready without merging**
 
 Update the PR DoD table with exact-head CI and review evidence, then report PR URL, SHA, Build status, P0/P1, locale routes, and asset count. Leave CG-16, CG-17, and CG-18 pending for fresh merge approval, merge, and cleanup.
+
+## Task 9: Add uncovered scenarios and register the workshop follow-up
+
+**Files:**
+- Modify: `docs/superpowers/specs/2026-07-21-leader-election-practical-jobs-design.md`
+- Modify: `docs/superpowers/plans/2026-07-21-leader-election-practical-jobs.md`
+- Modify: `src/content/docs/ko/blog/leader-election-tenant-jobs-migration-gates.mdx`
+- Modify: `src/content/docs/blog/leader-election-tenant-jobs-migration-gates.mdx`
+- External: one issue in `bluetape4k/bluetape4k-workshop`
+
+- [ ] **Step 1: Extend the Korean article with six bounded scenarios**
+
+Insert one section immediately before the current conclusion. For each scenario, explain the concrete failure, why the current examples do not close it, and which additional contract would be needed. End with a six-item pre-deployment checklist and a short statement that future `bluetape4k-workshop` examples will show how to address these problems.
+
+- [ ] **Step 2: Localize the same contracts into English**
+
+Keep the same six scenarios, checklist items, section order, and forward-looking boundary. Translate for natural English rather than copying Korean sentence structure.
+
+- [ ] **Step 3: Register one duplicate-checked workshop issue**
+
+Search open and closed issues in `bluetape4k/bluetape4k-workshop` for leader election, lease overlap, dynamic tenants, network partitions, mixed-version workers, fencing, and idempotent side effects. If no equivalent issue exists, create one English issue containing the six scenarios as acceptance items and link the blog PR for context. Do not promise exactly-once execution or a single provider-independent solution.
+
+- [ ] **Step 4: Verify prose, locale parity, routes, and the live issue**
+
+Run `git diff --check`, `npm run build`, verify both generated routes, compare H2 and scenario/checklist counts, and read the newly created issue back from GitHub. Review Korean prose for translationese and confirm P0=0/P1=0.
+
+- [ ] **Step 5: Update the existing PR without merging or deploying**
+
+Commit with the Lore trailers, push `codex/issue-192-leader-election-examples`, update PR #249 validation and DoD evidence, wait for exact-head CI, and reread reviews and unresolved threads. Stop at merge-ready; merging and deployment remain out of scope.

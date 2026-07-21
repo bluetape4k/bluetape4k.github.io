@@ -99,6 +99,21 @@ Redis, Kubernetes Lease, RDB/Exposed, etcd, Consul, Zookeeper, DynamoDB를 절�
 
 `prometheus-dashboard` 예제를 근거로 acquisition 성공/실패, 현재 leader, leadership 변경 빈도, action 실패를 확인할 수 있어야 한다고 설명한다. metric name과 실제 제공 범위는 작성 시 현재 source에서 다시 고정한다.
 
+### 8. 현재 예제가 다루지 않는 상황을 구체적인 실패 사례로 남긴다
+
+결론 직전에 짧은 사례 여섯 개와 점검표를 둔다. 각 사례는 `상황 -> 현재 예제로 부족한 이유 -> 추가로 필요한 장치` 순서로 설명하며, 범용 해법을 이미 제공하는 것처럼 쓰지 않는다.
+
+1. 일일 집계와 backfill이 서로 다른 coordination key로 같은 집계 테이블을 갱신하는 경우
+2. 작업이 lease보다 오래 실행되어 이전 owner와 새 owner의 실행 구간이 겹치는 경우
+3. `TenantAggregator.start()` 뒤 tenant가 추가되거나 삭제되는 경우
+4. multi-region 배치나 network partition처럼 지연과 backend failure가 커지는 경우
+5. 서로 다른 job 버전이 같은 key를 공유하는 rolling deployment
+6. 결제, 메일, webhook처럼 fencing token을 직접 적용하기 어려운 외부 side effect
+
+마지막 점검표는 conflict scope, dynamic membership, lease budget, replay safety, version compatibility, provider failure test를 배포 전 질문으로 정리한다. 절의 끝에서는 이 글이 문제의 경계를 확인하는 데까지만 책임진다고 명시하고, 후속 `bluetape4k-workshop` 예제에서 각 문제를 어떻게 풀어 가는지 설명할 예정이라고 예고한다.
+
+후속 예제는 `bluetape4k-workshop`의 단일 GitHub issue [#548](https://github.com/bluetape4k/bluetape4k-workshop/issues/548)로 등록한다. Issue는 여섯 시나리오를 독립적인 acceptance item으로 나누되, 이 글이나 `bluetape4k-leader`가 아직 제공하지 않는 범용 보장을 약속하지 않는다.
+
 ## 시각 자료
 
 ### Hero
