@@ -270,9 +270,10 @@ key, handling for work longer than the lease, durable markers, idempotency, and 
 matrix, write down which jobs must not overlap and what must remain durable after a failure. The implementation choices then
 become much more concrete.
 
-This article stops at identifying those boundaries. Future
-[`bluetape4k-workshop` examples](https://github.com/bluetape4k/bluetape4k-workshop/issues/548) will turn these problems into
-executable scenarios and show how to address them one by one.
+This article stops at identifying those boundaries. Follow-up work is tracked in
+[`bluetape4k-workshop` issue #548](https://github.com/bluetape4k/bluetape4k-workshop/issues/548). The issue will turn
+cross-job collisions, lease-overrun duplication, dynamic tenant membership, network partitions, mixed-version rollouts,
+and duplicate external side effects into executable examples.
 
 ## Sources
 
