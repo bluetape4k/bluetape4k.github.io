@@ -20,12 +20,12 @@
       <path d="M 0 0 L 10 5 L 0 10 Z" fill="#c99a58" stroke="#c99a58" stroke-dasharray="none" />
     </marker>
     <style>
-      .title { font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif; font-size: 46px; font-weight: 700; fill: #f8fafc; }
-      .subtitle { font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif; font-size: 20px; fill: #a9b8d4; }
+      .title { font-family: 'goorm Sans', sans-serif; font-size: 46px; font-weight: 700; fill: #f8fafc; }
+      .subtitle { font-family: 'goorm Sans', sans-serif; font-size: 20px; fill: #a9b8d4; }
       .frame { fill: none; stroke: #2b4168; stroke-width: 2; }
       .participantCard { fill: #13233b; stroke: #5b789d; stroke-width: 2; filter: url(#shadow); }
-      .participantTitle { font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif; font-size: 20px; font-weight: 700; fill: #f8fafc; }
-      .role { font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif; font-size: 13px; fill: #9fb0ca; }
+      .participantTitle { font-family: 'goorm Sans', sans-serif; font-size: 20px; font-weight: 700; fill: #f8fafc; }
+      .role { font-family: 'goorm Sans Code', 'goorm Sans', monospace; font-size: 13px; fill: #9fb0ca; }
       .lifeline { stroke: #52647f; stroke-width: 2; stroke-dasharray: 8 9; }
       .activation { fill: #203b4d; stroke: #73a5bd; stroke-width: 1.6; }
       .activationGreen { fill: #30483f; stroke: #88a86b; stroke-width: 1.6; }
@@ -33,22 +33,22 @@
       .seq { fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
       .seqReturn { fill: none; stroke-width: 2.7; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 9 7; }
       .labelPill { fill: #101b30; stroke-width: 1.5; }
-      .labelText { font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif; font-size: 16px; font-weight: 700; }
-      .badgeText { font-family: 'Comic Mono', monospace; font-size: 14px; font-weight: 700; }
+      .labelText { font-family: 'goorm Sans', sans-serif; font-size: 16px; font-weight: 700; }
+      .badgeText { font-family: 'goorm Sans Code', 'goorm Sans', monospace; font-size: 14px; font-weight: 700; }
       .altBox { fill: none; stroke: #71839f; stroke-width: 2.2; stroke-dasharray: 12 8; }
       .branchDivider { stroke: #71839f; stroke-width: 2; stroke-dasharray: 12 8; }
       .loopBox { fill: none; stroke: #5f9fc4; stroke-width: 2; stroke-dasharray: 12 8; }
       .frameLabel { fill: #101b30; stroke-width: 1.5; }
-      .frameText { font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif; font-size: 16px; font-weight: 700; }
-      .note { font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif; font-size: 17px; fill: #c7d3e7; }
-      .noteStrong { font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif; font-size: 19px; font-weight: 700; fill: #f1d6a7; }
+      .frameText { font-family: 'goorm Sans Code', 'goorm Sans', monospace; font-size: 16px; font-weight: 700; }
+      .note { font-family: 'goorm Sans', sans-serif; font-size: 17px; fill: #c7d3e7; }
+      .noteStrong { font-family: 'goorm Sans', sans-serif; font-size: 19px; font-weight: 700; fill: #f1d6a7; }
     </style>
   </defs>
 
   <rect width="2600" height="2220" rx="34" fill="url(#canvas)" />
   <rect class="frame" x="30" y="28" width="2540" height="2164" rx="30" />
-  <text class="title" x="1300" y="74" text-anchor="middle">휴진 재배정에서 두 경로는 어디서 갈라지는가</text>
-  <text class="subtitle" x="1300" y="110" text-anchor="middle">예약별 후보 생성·확정과 Timefold 전체 배치 비교는 서로 다른 실행 진입점을 가진다</text>
+  <text class="title" x="1300" y="74" text-anchor="middle">휴진 재배정에서 두 경로는 어디서 나뉘는가</text>
+  <text class="subtitle" x="1300" y="110" text-anchor="middle">예약별 후보 생성·확정과 Timefold 전체 배치 비교는 각각 다른 진입점에서 시작합니다.</text>
 
   <!-- participants and lifelines -->
   <g id="participant-operator">
@@ -131,7 +131,7 @@
     <rect class="labelPill" x="700" y="480" width="360" height="38" rx="19" stroke="#5ab3aa" />
     <circle cx="721" cy="499" r="14" fill="#173d3e" stroke="#5ab3aa" />
     <text class="badgeText" x="721" y="504" text-anchor="middle" fill="#a9e4df">3</text>
-    <text class="labelText" x="890" y="505" text-anchor="middle" fill="#a9e4df">영향받은 예약 목록</text>
+    <text class="labelText" x="890" y="505" text-anchor="middle" fill="#a9e4df">영향을 받은 예약 목록</text>
     <path class="seqReturn" d="M 1240 540 H 520" stroke="#5ab3aa" />
     <polygon points="534,532 520,540 534,548" fill="#5ab3aa" stroke="#5ab3aa" stroke-dasharray="none" data-direct-solid-head="true" />
   </g>
@@ -146,7 +146,7 @@
   <g id="loop-affected-appointments">
     <rect class="loopBox" x="430" y="690" width="1050" height="420" rx="20" />
     <rect class="frameLabel" x="458" y="670" width="400" height="38" rx="19" stroke="#5f9fc4" />
-    <text class="frameText" x="658" y="695" text-anchor="middle" fill="#a8d6ee">loop 영향받은 예약과 검색 날짜마다</text>
+    <text class="frameText" x="658" y="695" text-anchor="middle" fill="#a8d6ee">loop 영향을 받은 예약과 검색 날짜마다</text>
   </g>
   <g id="m5">
     <rect class="labelPill" x="540" y="710" width="320" height="38" rx="19" stroke="#5f9fc4" />
@@ -197,7 +197,7 @@
     <rect class="labelPill" x="635" y="1300" width="490" height="38" rx="19" stroke="#88a86b" />
     <circle cx="656" cy="1319" r="14" fill="#2c3b32" stroke="#88a86b" />
     <text class="badgeText" x="656" y="1324" text-anchor="middle" fill="#c9dda8">11</text>
-    <text class="labelText" x="890" y="1325" text-anchor="middle" fill="#c9dda8">새 예약 생성 · 원본 종결 · 이력 기록</text>
+    <text class="labelText" x="890" y="1325" text-anchor="middle" fill="#c9dda8">새 예약 생성 · 기존 예약 종료 · 이력 기록</text>
     <path class="seq" d="M 520 1360 H 1240" stroke="#88a86b" marker-end="url(#arrow-green)" />
   </g>
   <g id="m12">
@@ -259,7 +259,7 @@
   <!-- current integration boundary -->
   <g id="integration-boundary">
     <rect x="250" y="2110" width="2100" height="68" rx="16" fill="#1d2737" stroke="#c99a58" stroke-width="1.8" />
-    <text class="noteStrong" x="1300" y="2139" text-anchor="middle">현재 두 경로는 자동으로 연결되지 않는다</text>
-    <text class="note" x="1300" y="2168" text-anchor="middle">Solver 결과를 저장하고 상태 이력과 환자 알림으로 이어 가려면 별도의 검토·승인 흐름이 필요하다</text>
+    <text class="noteStrong" x="1300" y="2139" text-anchor="middle">현재 두 경로는 자동으로 이어지지 않는다</text>
+    <text class="note" x="1300" y="2168" text-anchor="middle">Solver 결과를 저장하고 상태 이력과 환자 알림으로 넘기려면 별도의 검토·승인 흐름이 필요합니다.</text>
   </g>
 </svg>

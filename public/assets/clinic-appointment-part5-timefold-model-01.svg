@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
-  <title id="title">Clinic scheduling model in Timefold Solver</title>
-  <desc id="desc">Planning entities and problem facts flow into hard and soft constraints, producing a HardSoftScore and an optimized schedule.</desc>
+  <title id="title">Timefold Solver의 병원 일정 계획 모델</title>
+  <desc id="desc">계획 엔티티와 고정된 문제 정보를 필수 제약과 선호 목표로 평가해 HardSoftScore와 일정 배정 결과를 만든다.</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#07111f"/>
@@ -25,12 +25,15 @@
       <path d="M 1 1 L 13 7 L 1 13 Z" fill="#65d8e8"/>
     </marker>
     <style>
-      .title { font-family: "Architects Daughter", cursive; font-size: 46px; font-weight: 700; fill: #f8fafc; }
-      .subtitle { font-family: "Comic Mono", monospace; font-size: 19px; fill: #9fb2cc; }
-      .label { font-family: "Architects Daughter", cursive; font-size: 27px; font-weight: 700; fill: #f8fafc; }
-      .body { font-family: "Comic Mono", monospace; font-size: 18px; fill: #d7e3f3; }
-      .small { font-family: "Comic Mono", monospace; font-size: 15px; fill: #aebed2; }
-      .metric { font-family: "Comic Mono", monospace; font-size: 25px; font-weight: 700; }
+      .title { font-family: "goorm Sans", sans-serif; font-size: 46px; font-weight: 700; fill: #f8fafc; }
+      .subtitle { font-family: "goorm Sans", sans-serif; font-size: 19px; fill: #9fb2cc; }
+      .label { font-family: "goorm Sans", sans-serif; font-size: 27px; font-weight: 700; fill: #f8fafc; }
+      .code-label { font-family: "goorm Sans Code", "goorm Sans", monospace; font-size: 27px; font-weight: 700; fill: #f8fafc; }
+      .body { font-family: "goorm Sans", sans-serif; font-size: 18px; fill: #d7e3f3; }
+      .code { font-family: "goorm Sans Code", "goorm Sans", monospace; font-size: 18px; fill: #d7e3f3; }
+      .small { font-family: "goorm Sans", sans-serif; font-size: 15px; fill: #aebed2; }
+      .code-small { font-family: "goorm Sans Code", "goorm Sans", monospace; font-size: 15px; fill: #aebed2; }
+      .metric { font-family: "goorm Sans Code", "goorm Sans", monospace; font-size: 25px; font-weight: 700; }
       .card { stroke-width: 2; filter: url(#shadow); }
     </style>
   </defs>
@@ -39,60 +42,60 @@
   <circle cx="1450" cy="100" r="190" fill="#6d28d9" opacity="0.08"/>
   <circle cx="120" cy="790" r="220" fill="#0891b2" opacity="0.08"/>
 
-  <text x="90" y="80" class="title">From clinic policy to a scored schedule</text>
-  <text x="92" y="118" class="subtitle">Timefold changes planning variables; clinic facts stay fixed while every candidate schedule is scored.</text>
+  <text x="90" y="80" class="title">병원 운영 규칙을 점수로 계산한다</text>
+  <text x="92" y="118" class="subtitle">Timefold는 계획 변수만 바꾸고, 병원 정보는 고정한 채 각 후보 일정을 평가합니다.</text>
 
   <rect x="70" y="180" width="360" height="250" rx="26" fill="url(#entity)" stroke="#2dd4bf" class="card"/>
   <rect x="92" y="200" width="142" height="34" rx="17" fill="#0f766e"/>
-  <text x="163" y="223" text-anchor="middle" class="small" fill="#ecfeff">PLANNING ENTITY</text>
-  <text x="100" y="276" class="label">AppointmentPlanning</text>
-  <text x="100" y="319" class="body">doctorId</text>
-  <text x="100" y="352" class="body">appointmentDate</text>
-  <text x="100" y="385" class="body">startTime</text>
+  <text x="163" y="223" text-anchor="middle" class="small" fill="#ecfeff">계획 엔티티</text>
+  <text x="100" y="276" class="code-label">AppointmentPlanning</text>
+  <text x="100" y="319" class="code">doctorId</text>
+  <text x="100" y="352" class="code">appointmentDate</text>
+  <text x="100" y="385" class="code">startTime</text>
   <rect x="292" y="305" width="108" height="74" rx="18" fill="#0b1f31" stroke="#fbbf24" stroke-width="2"/>
-  <text x="346" y="333" text-anchor="middle" class="small" fill="#fde68a">@PlanningPin</text>
-  <text x="346" y="359" text-anchor="middle" class="body">pinned</text>
+  <text x="346" y="333" text-anchor="middle" class="code-small" font-size="13" fill="#fde68a">@PlanningPin</text>
+  <text x="346" y="359" text-anchor="middle" class="code">pinned</text>
 
   <rect x="70" y="470" width="360" height="260" rx="26" fill="url(#facts)" stroke="#818cf8" class="card"/>
   <rect x="92" y="490" width="126" height="34" rx="17" fill="#4338ca"/>
-  <text x="155" y="513" text-anchor="middle" class="small" fill="#eef2ff">PROBLEM FACTS</text>
-  <text x="100" y="565" class="label">ScheduleSolution</text>
-  <text x="100" y="607" class="body">Clinic · Doctors · Treatments</text>
-  <text x="100" y="640" class="body">Hours · Breaks · Absences</text>
-  <text x="100" y="673" class="body">Closures · Holidays</text>
-  <text x="100" y="706" class="body">Equipment · Unavailability</text>
+  <text x="155" y="513" text-anchor="middle" class="small" fill="#eef2ff">고정된 문제 정보</text>
+  <text x="100" y="565" class="code-label">ScheduleSolution</text>
+  <text x="100" y="607" class="body">병원 · 의사 · 진료</text>
+  <text x="100" y="640" class="body">운영시간 · 휴식 · 부재</text>
+  <text x="100" y="673" class="body">휴진 · 공휴일</text>
+  <text x="100" y="706" class="body">장비 · 사용 불가 시간</text>
 
   <rect x="555" y="180" width="480" height="550" rx="30" fill="#0b1428" stroke="#53657f" class="card"/>
-  <text x="595" y="234" class="label">AppointmentConstraintProvider</text>
-  <text x="595" y="270" class="small">Every candidate schedule passes both lanes.</text>
+  <text x="595" y="234" class="code-label">AppointmentConstraintProvider</text>
+  <text x="595" y="270" class="small">모든 후보 일정은 두 종류의 제약을 거칩니다.</text>
 
   <rect x="595" y="310" width="400" height="174" rx="24" fill="#351924" stroke="#fb7185" stroke-width="2"/>
   <rect x="619" y="330" width="104" height="34" rx="17" fill="#9f1239"/>
-  <text x="671" y="353" text-anchor="middle" class="small" fill="#fff1f2">HARD</text>
-  <text x="748" y="356" class="metric" fill="#fda4af">12 streams</text>
-  <text x="625" y="403" class="body">Operating windows · absences · closures</text>
-  <text x="625" y="436" class="body">Capacity · equipment · provider type</text>
-  <text x="625" y="467" class="small" fill="#fecdd3">A single violation makes the schedule infeasible.</text>
+  <text x="671" y="353" text-anchor="middle" class="code-small" fill="#fff1f2">HARD</text>
+  <text x="748" y="356" class="metric" fill="#fda4af">필수 제약 12개</text>
+  <text x="625" y="403" class="body">운영시간 · 부재 · 휴진</text>
+  <text x="625" y="436" class="body">수용량 · 장비 · 의료진 유형</text>
+  <text x="625" y="467" class="small" fill="#fecdd3">하나라도 위반하면 실행할 수 없는 일정입니다.</text>
 
   <rect x="595" y="516" width="400" height="174" rx="24" fill="#25183d" stroke="#c084fc" stroke-width="2"/>
   <rect x="619" y="536" width="104" height="34" rx="17" fill="#6b21a8"/>
-  <text x="671" y="559" text-anchor="middle" class="small" fill="#faf5ff">SOFT</text>
-  <text x="748" y="562" class="metric" fill="#d8b4fe">6 goals</text>
-  <text x="625" y="609" class="body">Load balance · gaps · original doctor</text>
-  <text x="625" y="642" class="body">Requested date · earlier slots · equipment</text>
-  <text x="625" y="673" class="small" fill="#e9d5ff">Penalties rank feasible schedules by preference.</text>
+  <text x="671" y="559" text-anchor="middle" class="code-small" fill="#faf5ff">SOFT</text>
+  <text x="748" y="562" class="metric" fill="#d8b4fe">선호 목표 6개</text>
+  <text x="625" y="609" class="body">업무량 균형 · 빈 시간 · 기존 담당 의사</text>
+  <text x="625" y="642" class="body">요청 날짜 · 빠른 시간 · 장비</text>
+  <text x="625" y="673" class="small" fill="#e9d5ff">실행 가능한 일정끼리는 선호도 점수로 순위를 정합니다.</text>
 
   <rect x="1160" y="250" width="360" height="206" rx="28" fill="url(#score)" stroke="#22d3ee" class="card"/>
-  <text x="1200" y="306" class="label">HardSoftScore</text>
+  <text x="1200" y="306" class="code-label">HardSoftScore</text>
   <text x="1200" y="354" class="metric" fill="#67e8f9">0 hard / −N soft</text>
-  <text x="1200" y="393" class="body">Feasibility first</text>
-  <text x="1200" y="425" class="body">Preference quality second</text>
+  <text x="1200" y="393" class="body">필수 제약 충족이 우선</text>
+  <text x="1200" y="425" class="body">선호도는 그다음</text>
 
   <rect x="1160" y="510" width="360" height="220" rx="28" fill="#152743" stroke="#60a5fa" class="card"/>
-  <text x="1200" y="566" class="label">SolverResult</text>
-  <text x="1200" y="611" class="body">doctor · date · start time</text>
-  <text x="1200" y="648" class="body">score · feasible · solve time</text>
-  <text x="1200" y="685" class="small">Returned for review; not auto-persisted.</text>
+  <text x="1200" y="566" class="code-label">SolverResult</text>
+  <text x="1200" y="611" class="body">의사 · 날짜 · 시작 시각</text>
+  <text x="1200" y="648" class="body">점수 · 실행 가능 여부 · 계산 시간</text>
+  <text x="1200" y="685" class="small">검토용으로 반환하며 자동 저장하지 않습니다.</text>
 
   <path d="M 430 360 H 555" fill="none" stroke="#65d8e8" stroke-width="4" marker-end="url(#arrow)" data-connector="entity-to-constraints"/>
   <path d="M 430 550 H 555" fill="none" stroke="#8b9dfa" stroke-width="4" marker-end="url(#arrow)" data-connector="facts-to-constraints"/>
@@ -100,5 +103,5 @@
   <path d="M 1340 456 V 510" fill="none" stroke="#65d8e8" stroke-width="4" marker-end="url(#arrow)" data-connector="score-to-result"/>
 
   <rect x="70" y="792" width="1450" height="60" rx="20" fill="#0b1628" stroke="#26364e"/>
-  <text x="95" y="829" class="small">H4 is implemented as H4a weekday breaks + H4b clinic defaults, so labels H1–H11 become 12 hard Constraint Streams.</text>
+  <text x="95" y="829" class="small">H4는 H4a 요일별 휴식과 H4b 병원 기본 휴식으로 나뉘므로, H1–H11은 실제로 12개 필수 Constraint Stream이 됩니다.</text>
 </svg>

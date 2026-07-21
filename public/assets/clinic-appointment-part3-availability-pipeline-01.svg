@@ -21,14 +21,14 @@
       <path d="M 1 1 L 13 7 L 1 13 Z" fill="#8da66b" />
     </marker>
     <style>
-      .title { font-family: 'Noto Sans KR', sans-serif; font-size: 42px; font-weight: 700; fill: #f8fafc; }
-      .subtitle { font-family: 'Noto Sans KR', sans-serif; font-size: 20px; fill: #a9b8d4; }
-      .panel-title { font-family: 'Noto Sans KR', sans-serif; font-size: 27px; font-weight: 700; fill: #f8fafc; }
-      .card-title { font-family: 'Noto Sans KR', sans-serif; font-size: 22px; font-weight: 700; fill: #f8fafc; }
-      .body { font-family: 'Noto Sans KR', sans-serif; font-size: 17px; fill: #c7d3e7; }
-      .mono { font-family: 'Noto Sans KR', 'Comic Mono', monospace; font-size: 18px; font-weight: 700; fill: #f8fafc; }
-      .small { font-family: 'Noto Sans KR', sans-serif; font-size: 15px; fill: #a9b8d4; }
-      .tick { font-family: 'Comic Mono', monospace; font-size: 14px; fill: #8ea0bd; }
+      .title { font-family: 'goorm Sans', sans-serif; font-size: 42px; font-weight: 700; fill: #f8fafc; }
+      .subtitle { font-family: 'goorm Sans', sans-serif; font-size: 20px; fill: #a9b8d4; }
+      .panel-title { font-family: 'goorm Sans', sans-serif; font-size: 27px; font-weight: 700; fill: #f8fafc; }
+      .card-title { font-family: 'goorm Sans', sans-serif; font-size: 22px; font-weight: 700; fill: #f8fafc; }
+      .body { font-family: 'goorm Sans', sans-serif; font-size: 17px; fill: #c7d3e7; }
+      .mono { font-family: 'goorm Sans Code', 'goorm Sans', monospace; font-size: 18px; font-weight: 700; fill: #f8fafc; }
+      .small { font-family: 'goorm Sans', sans-serif; font-size: 15px; fill: #a9b8d4; }
+      .tick { font-family: 'goorm Sans Code', 'goorm Sans', monospace; font-size: 14px; fill: #8ea0bd; }
       .connector { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: 4; }
       .primary { stroke: #58a6c9; marker-end: url(#arrowBlue); }
       .accepted { stroke: #8da66b; marker-end: url(#arrowGreen); }
@@ -39,7 +39,7 @@
   <rect x="28" y="28" width="1944" height="1124" rx="28" fill="none" stroke="#263a5e" stroke-width="2" />
 
   <text class="title" x="1000" y="70" text-anchor="middle">예약 가능 시간은 여러 조건의 교집합이다</text>
-  <text class="subtitle" x="1000" y="106" text-anchor="middle">병원 현지 날짜에서 전체 차단 → 시간 범위 계산 → 후보별 자원 검사</text>
+  <text class="subtitle" x="1000" y="106" text-anchor="middle">병원 현지 날짜 확인 → 공통 시간 계산 → 후보별 자원 확인</text>
 
   <g>
     <rect x="60" y="140" width="1880" height="390" rx="28" fill="url(#panel)" stroke="#2b4168" stroke-width="2" />
@@ -50,7 +50,7 @@
 
     <g filter="url(#shadow)">
       <rect class="card" x="90" y="220" width="510" height="240" rx="24" fill="#2d2432" stroke="#c46b6b" stroke-width="2" />
-      <text class="card-title" x="345" y="264" text-anchor="middle">1. 날짜 전체를 먼저 확인</text>
+      <text class="card-title" x="345" y="264" text-anchor="middle">1. 하루 전체를 막는 조건 확인</text>
       <rect x="122" y="292" width="210" height="48" rx="13" fill="#3d2931" stroke="#c46b6b" />
       <text class="body" x="227" y="323" text-anchor="middle">공휴일 · 전일 휴진</text>
       <rect x="358" y="292" width="210" height="48" rx="13" fill="#3d2931" stroke="#c46b6b" />
@@ -59,12 +59,12 @@
       <text class="body" x="227" y="387" text-anchor="middle">의사 근무 없음</text>
       <rect x="358" y="356" width="210" height="48" rx="13" fill="#3d2931" stroke="#c46b6b" />
       <text class="body" x="463" y="387" text-anchor="middle">의사 전일 부재</text>
-      <text class="small" x="345" y="438" text-anchor="middle">하나라도 해당하면 빈 목록으로 즉시 종료</text>
+      <text class="small" x="345" y="438" text-anchor="middle">하나라도 해당하면 빈 목록을 반환하고 종료</text>
     </g>
 
     <g filter="url(#shadow)">
       <rect class="card" x="700" y="220" width="600" height="240" rx="24" fill="#172f43" stroke="#58a6c9" stroke-width="2" />
-      <text class="card-title" x="1000" y="264" text-anchor="middle">2. 실제로 쓸 수 있는 시간 범위 계산</text>
+      <text class="card-title" x="1000" y="264" text-anchor="middle">2. 병원과 의사가 함께 일할 수 있는 시간 계산</text>
       <rect x="744" y="296" width="220" height="52" rx="14" fill="#15344b" stroke="#58a6c9" />
       <text class="body" x="854" y="328" text-anchor="middle">병원 운영시간</text>
       <text class="small" x="1000" y="329" text-anchor="middle">겹침</text>
@@ -77,7 +77,7 @@
 
     <g filter="url(#shadow)">
       <rect class="card" x="1400" y="220" width="510" height="240" rx="24" fill="#203744" stroke="#8da66b" stroke-width="2" />
-      <text class="card-title" x="1655" y="264" text-anchor="middle">3. 시간 후보마다 자원 확인</text>
+      <text class="card-title" x="1655" y="264" text-anchor="middle">3. 시작 시각마다 자원 확인</text>
       <rect x="1432" y="292" width="210" height="48" rx="13" fill="#223c45" stroke="#8da66b" />
       <text class="body" x="1537" y="323" text-anchor="middle">의료진 유형</text>
       <rect x="1668" y="292" width="210" height="48" rx="13" fill="#223c45" stroke="#8da66b" />
@@ -86,13 +86,13 @@
       <text class="body" x="1537" y="387" text-anchor="middle">장비 수량</text>
       <rect x="1668" y="356" width="210" height="48" rx="13" fill="#223c45" stroke="#8da66b" />
       <text class="body" x="1773" y="387" text-anchor="middle">점검 · 고장 시간</text>
-      <text class="small" x="1655" y="438" text-anchor="middle">모두 통과한 후보만 환자에게 반환</text>
+      <text class="small" x="1655" y="438" text-anchor="middle">모든 조건을 통과한 시간만 반환</text>
     </g>
   </g>
 
   <g>
     <rect x="60" y="562" width="1880" height="510" rx="28" fill="#0f1d32" stroke="#2b4168" stroke-width="2" />
-    <text class="panel-title" x="96" y="606">예시: 30분마다 시작할 수 있는 60분 진료</text>
+    <text class="panel-title" x="96" y="606">예시: 30분 간격으로 시작하는 60분 진료</text>
 
     <text class="body" x="110" y="666">병원</text>
     <rect x="250" y="638" width="1530" height="38" rx="12" fill="#1c4562" stroke="#58a6c9" />
@@ -111,7 +111,7 @@
     <text class="small" x="1185" y="784" text-anchor="middle">휴진 14–15</text>
     <text class="small" x="1397" y="784" text-anchor="middle">부재</text>
 
-    <text class="body" x="110" y="846">남은 범위</text>
+    <text class="body" x="110" y="846">검토할 범위</text>
     <rect x="420" y="818" width="340" height="38" rx="12" fill="#304c45" stroke="#8da66b" />
     <rect x="930" y="818" width="170" height="38" rx="12" fill="#304c45" stroke="#8da66b" />
     <rect x="1270" y="818" width="85" height="38" rx="12" fill="#304c45" stroke="#8da66b" />
@@ -147,10 +147,10 @@
     <text class="body" x="1212" y="995">진료 한 건의 소요시간</text><text class="mono" x="1560" y="995">60분</text>
 
     <circle cx="630" cy="1044" r="7" fill="#58a6c9" /><text class="small" x="647" y="1050">운영·근무 시간</text>
-    <circle cx="875" cy="1044" r="7" fill="#c46b6b" /><text class="small" x="892" y="1050">미리 제외할 시간</text>
+    <circle cx="875" cy="1044" r="7" fill="#c46b6b" /><text class="small" x="892" y="1050">휴식·휴진·부재</text>
     <circle cx="1140" cy="1044" r="7" fill="#8da66b" /><text class="small" x="1157" y="1050">예약 가능</text>
     <circle cx="1350" cy="1044" r="7" fill="#c79a58" /><text class="small" x="1367" y="1050">후보별 자원 충돌</text>
   </g>
 
-  <text class="subtitle" x="1000" y="1125" text-anchor="middle">빈 시간 ≠ 예약 가능 시간 · 모든 계산은 병원의 현지 날짜와 시각을 기준으로 수행</text>
+  <text class="subtitle" x="1000" y="1125" text-anchor="middle">빈 시간 ≠ 예약 가능 시간 · 병원의 현지 날짜와 시각을 기준으로 계산합니다.</text>
 </svg>
