@@ -38,8 +38,8 @@
   <rect width="2000" height="1180" rx="32" fill="url(#canvas)" />
   <rect x="28" y="28" width="1944" height="1124" rx="28" fill="none" stroke="#263a5e" stroke-width="2" />
 
-  <text class="title" x="1000" y="70" text-anchor="middle">예약 가능 시간은 여러 조건의 교집합이다</text>
-  <text class="subtitle" x="1000" y="106" text-anchor="middle">병원 현지 날짜 확인 → 공통 시간 계산 → 후보별 자원 확인</text>
+  <text class="title" x="1000" y="84" text-anchor="middle">예약 가능 시간은 여러 조건의 교집합이다</text>
+  <text class="subtitle" x="1000" y="118" text-anchor="middle">병원 현지 날짜 확인 → 공통 시간 계산 → 후보별 자원 확인</text>
 
   <g>
     <rect x="60" y="140" width="1880" height="390" rx="28" fill="url(#panel)" stroke="#2b4168" stroke-width="2" />
