@@ -33,7 +33,7 @@
       .seq { fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
       .seqReturn { fill: none; stroke-width: 2.7; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 9 7; }
       .labelPill { fill: #101b30; stroke-width: 1.5; }
-      .labelText { font-family: 'Comic Mono', monospace; font-size: 16px; font-weight: 700; }
+      .labelText { font-family: 'Comic Mono', monospace; font-size: 13px; font-weight: 700; }
       .badgeText { font-family: 'Comic Mono', monospace; font-size: 14px; font-weight: 700; }
       .altBox { fill: none; stroke: #71839f; stroke-width: 2.2; stroke-dasharray: 12 8; }
       .branchDivider { stroke: #71839f; stroke-width: 2; stroke-dasharray: 12 8; }
@@ -114,10 +114,10 @@
 
   <!-- fast candidate branch -->
   <g id="m1">
-    <rect class="labelPill" x="218" y="300" width="244" height="38" rx="19" stroke="#5f9fc4" />
-    <circle cx="239" cy="319" r="14" fill="#173148" stroke="#5f9fc4" />
-    <text class="badgeText" x="239" y="324" text-anchor="middle" fill="#a8d6ee">1</text>
-    <text class="labelText" x="350" y="325" text-anchor="middle" fill="#a8d6ee">request closure rescheduling</text>
+    <rect class="labelPill" x="190" y="300" width="320" height="38" rx="19" stroke="#5f9fc4" />
+    <circle cx="211" cy="319" r="14" fill="#173148" stroke="#5f9fc4" />
+    <text class="badgeText" x="211" y="324" text-anchor="middle" fill="#a8d6ee">1</text>
+    <text class="labelText" x="360" y="325" text-anchor="middle" fill="#a8d6ee">request closure rescheduling</text>
     <path class="seq" d="M 160 360 H 520" stroke="#5f9fc4" marker-end="url(#arrow-blue)" />
   </g>
   <g id="m2">
@@ -187,10 +187,10 @@
     <polygon points="174,1172 160,1180 174,1188" fill="#5ab3aa" stroke="#5ab3aa" stroke-dasharray="none" data-direct-solid-head="true" />
   </g>
   <g id="m10">
-    <rect class="labelPill" x="205" y="1210" width="270" height="38" rx="19" stroke="#5f9fc4" />
-    <circle cx="226" cy="1229" r="14" fill="#173148" stroke="#5f9fc4" />
-    <text class="badgeText" x="226" y="1234" text-anchor="middle" fill="#a8d6ee">10</text>
-    <text class="labelText" x="350" y="1235" text-anchor="middle" fill="#a8d6ee">select or auto-select candidate</text>
+    <rect class="labelPill" x="185" y="1210" width="330" height="38" rx="19" stroke="#5f9fc4" />
+    <circle cx="206" cy="1229" r="14" fill="#173148" stroke="#5f9fc4" />
+    <text class="badgeText" x="206" y="1234" text-anchor="middle" fill="#a8d6ee">10</text>
+    <text class="labelText" x="370" y="1235" text-anchor="middle" fill="#a8d6ee">select or auto-select candidate</text>
     <path class="seq" d="M 160 1270 H 520" stroke="#5f9fc4" marker-end="url(#arrow-blue)" />
   </g>
   <g id="m11">
@@ -201,10 +201,10 @@
     <path class="seq" d="M 520 1360 H 1240" stroke="#88a86b" marker-end="url(#arrow-green)" />
   </g>
   <g id="m12">
-    <rect class="labelPill" x="225" y="1390" width="230" height="38" rx="19" stroke="#5ab3aa" />
-    <circle cx="246" cy="1409" r="14" fill="#173d3e" stroke="#5ab3aa" />
-    <text class="badgeText" x="246" y="1414" text-anchor="middle" fill="#a9e4df">12</text>
-    <text class="labelText" x="350" y="1415" text-anchor="middle" fill="#a9e4df">rescheduling complete</text>
+    <rect class="labelPill" x="205" y="1390" width="300" height="38" rx="19" stroke="#5ab3aa" />
+    <circle cx="226" cy="1409" r="14" fill="#173d3e" stroke="#5ab3aa" />
+    <text class="badgeText" x="226" y="1414" text-anchor="middle" fill="#a9e4df">12</text>
+    <text class="labelText" x="365" y="1415" text-anchor="middle" fill="#a9e4df">rescheduling complete</text>
     <path class="seqReturn" d="M 520 1450 H 160" stroke="#5ab3aa" />
     <polygon points="174,1442 160,1450 174,1458" fill="#5ab3aa" stroke="#5ab3aa" stroke-dasharray="none" data-direct-solid-head="true" />
   </g>

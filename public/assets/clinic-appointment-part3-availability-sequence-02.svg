@@ -23,33 +23,33 @@
       <path d="M 0 0 L 10 5 L 0 10 Z" fill="#c46b6b" stroke="#c46b6b" stroke-dasharray="none" />
     </marker>
     <style>
-      .title { font-family: 'Noto Sans KR', sans-serif; font-size: 44px; font-weight: 700; fill: #f8fafc; }
-      .subtitle { font-family: 'Noto Sans KR', sans-serif; font-size: 20px; fill: #a9b8d4; }
+      .title { font-family: 'goorm Sans', sans-serif; font-size: 44px; font-weight: 700; fill: #f8fafc; }
+      .subtitle { font-family: 'goorm Sans', sans-serif; font-size: 20px; fill: #a9b8d4; }
       .frame { fill: none; stroke: #2b4168; stroke-width: 2; }
       .participantCard { fill: #13233b; stroke: #5b789d; stroke-width: 2; filter: url(#shadow); }
-      .participantTitle { font-family: 'Noto Sans KR', sans-serif; font-size: 21px; font-weight: 700; fill: #f8fafc; }
-      .role { font-family: 'Noto Sans KR', sans-serif; font-size: 14px; fill: #9fb0ca; }
+      .participantTitle { font-family: 'goorm Sans', sans-serif; font-size: 21px; font-weight: 700; fill: #f8fafc; }
+      .role { font-family: 'goorm Sans Code', 'goorm Sans', monospace; font-size: 14px; fill: #9fb0ca; }
       .lifeline { stroke: #52647f; stroke-width: 2; stroke-dasharray: 8 9; }
       .activation { fill: #203b4d; stroke: #73a5bd; stroke-width: 1.6; }
       .activation-green { fill: #30483f; stroke: #88a86b; stroke-width: 1.6; }
       .seq { fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
       .seqReturn { fill: none; stroke-width: 2.7; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 9 7; }
       .labelPill { fill: #101b30; stroke-width: 1.5; }
-      .labelText { font-family: 'Noto Sans KR', sans-serif; font-size: 16px; font-weight: 700; }
-      .badgeText { font-family: 'Comic Mono', monospace; font-size: 14px; font-weight: 700; }
+      .labelText { font-family: 'goorm Sans', sans-serif; font-size: 16px; font-weight: 700; }
+      .badgeText { font-family: 'goorm Sans Code', 'goorm Sans', monospace; font-size: 14px; font-weight: 700; }
       .altBox { fill: none; stroke: #c46b6b; stroke-width: 2.2; stroke-dasharray: 12 8; }
       .loopBox { fill: none; stroke: #c99a58; stroke-width: 2.2; stroke-dasharray: 12 8; }
       .frameLabel { fill: #101b30; stroke-width: 1.5; }
-      .frameText { font-family: 'Noto Sans KR', sans-serif; font-size: 16px; font-weight: 700; }
-      .note { font-family: 'Noto Sans KR', sans-serif; font-size: 17px; fill: #c7d3e7; }
-      .noteStrong { font-family: 'Noto Sans KR', sans-serif; font-size: 18px; font-weight: 700; fill: #f1d6a7; }
+      .frameText { font-family: 'goorm Sans Code', 'goorm Sans', monospace; font-size: 16px; font-weight: 700; }
+      .note { font-family: 'goorm Sans', sans-serif; font-size: 17px; fill: #c7d3e7; }
+      .noteStrong { font-family: 'goorm Sans', sans-serif; font-size: 18px; font-weight: 700; fill: #f1d6a7; }
     </style>
   </defs>
 
   <rect width="2400" height="1760" rx="34" fill="url(#canvas)" />
   <rect class="frame" x="30" y="28" width="2340" height="1704" rx="30" />
-  <text class="title" x="1200" y="74" text-anchor="middle">예약 가능 시간은 어떤 순서로 계산되는가</text>
-  <text class="subtitle" x="1200" y="110" text-anchor="middle">조회 요청 → 병원·의사 일정 확인 → 유효 시간 계산 → 후보별 예약·장비 검사</text>
+  <text class="title" x="1200" y="74" text-anchor="middle">예약 가능 시간은 이 순서로 계산한다</text>
+  <text class="subtitle" x="1200" y="110" text-anchor="middle">조회 요청 → 병원·의사 일정 확인 → 공통 시간 계산 → 후보별 예약·장비 확인</text>
 
   <!-- participants and lifelines -->
   <g id="participant-user">
@@ -135,7 +135,7 @@
     <rect class="labelPill" x="1030" y="510" width="325" height="38" rx="19" stroke="#5ab3aa" />
     <circle cx="1051" cy="529" r="14" fill="#173d3e" stroke="#5ab3aa" />
     <text class="badgeText" x="1051" y="534" text-anchor="middle" fill="#a9e4df">4</text>
-    <text class="labelText" x="1204" y="535" text-anchor="middle" fill="#a9e4df">업무시간과 차단 정보</text>
+    <text class="labelText" x="1204" y="535" text-anchor="middle" fill="#a9e4df">운영시간과 휴진 정보</text>
     <path class="seqReturn" d="M 1525 570 H 860" stroke="#5ab3aa" />
     <polygon points="874,562 860,570 874,578" fill="#5ab3aa" stroke="#5ab3aa" stroke-dasharray="none" data-direct-solid-head="true" />
   </g>
@@ -163,13 +163,13 @@
   <g id="alt-whole-day-blocked">
     <rect class="altBox" x="430" y="770" width="1050" height="150" rx="20" />
     <rect class="frameLabel" x="458" y="750" width="400" height="38" rx="19" stroke="#c46b6b" />
-    <text class="frameText" x="658" y="775" text-anchor="middle" fill="#efb1b1">alt 공휴일 휴무 · 전일 휴진 · 의사 전일 부재</text>
+    <text class="frameText" x="658" y="775" text-anchor="middle" fill="#efb1b1">alt 하루 전체를 막는 조건</text>
   </g>
   <g id="m7">
     <rect class="labelPill" x="570" y="800" width="240" height="38" rx="19" stroke="#c46b6b" />
     <circle cx="591" cy="819" r="14" fill="#42262e" stroke="#c46b6b" />
     <text class="badgeText" x="591" y="824" text-anchor="middle" fill="#efb1b1">7</text>
-    <text class="labelText" x="702" y="825" text-anchor="middle" fill="#efb1b1">빈 목록으로 종료</text>
+    <text class="labelText" x="702" y="825" text-anchor="middle" fill="#efb1b1">빈 목록 반환</text>
     <path class="seqReturn" d="M 860 860 H 520" stroke="#c46b6b" />
     <polygon points="534,852 520,860 534,868" fill="#c46b6b" stroke="#c46b6b" stroke-dasharray="none" data-direct-solid-head="true" />
   </g>
@@ -179,7 +179,7 @@
     <rect class="labelPill" x="895" y="930" width="260" height="38" rx="19" stroke="#88a86b" />
     <circle cx="916" cy="949" r="14" fill="#2c3b32" stroke="#88a86b" />
     <text class="badgeText" x="916" y="954" text-anchor="middle" fill="#c9dda8">8</text>
-    <text class="labelText" x="1037" y="955" text-anchor="middle" fill="#c9dda8">유효 시간 범위 계산</text>
+    <text class="labelText" x="1037" y="955" text-anchor="middle" fill="#c9dda8">공통 시간 범위 계산</text>
     <path class="seq" d="M 860 990 H 1190" stroke="#88a86b" marker-end="url(#arrow-green)" />
   </g>
 
@@ -219,7 +219,7 @@
     <rect class="labelPill" x="1370" y="1300" width="360" height="38" rx="19" stroke="#5ab3aa" />
     <circle cx="1391" cy="1319" r="14" fill="#173d3e" stroke="#5ab3aa" />
     <text class="badgeText" x="1391" y="1324" text-anchor="middle" fill="#a9e4df">12</text>
-    <text class="labelText" x="1556" y="1325" text-anchor="middle" fill="#a9e4df">남은 인원·장비 상태</text>
+    <text class="labelText" x="1556" y="1325" text-anchor="middle" fill="#a9e4df">남은 수용량·장비 상태</text>
     <path class="seqReturn" d="M 2210 1360 H 860" stroke="#5ab3aa" />
     <polygon points="874,1352 860,1360 874,1368" fill="#5ab3aa" stroke="#5ab3aa" stroke-dasharray="none" data-direct-solid-head="true" />
   </g>
@@ -248,6 +248,6 @@
   <g id="solver-boundary">
     <rect x="200" y="1640" width="2000" height="68" rx="16" fill="#1d2737" stroke="#c99a58" stroke-width="1.8" />
     <text class="noteStrong" x="1200" y="1669" text-anchor="middle">전체 일정 최적화는 별도 경로</text>
-    <text class="note" x="1200" y="1698" text-anchor="middle">SolverService가 날짜 범위의 전체 예약과 자원을 읽고, Timefold Solver가 여러 배치를 비교한다 · Part 4</text>
+    <text class="note" x="1200" y="1698" text-anchor="middle">SolverService가 날짜 범위의 예약과 자원을 모아 Timefold Solver로 여러 배치를 비교합니다. · Part 4</text>
   </g>
 </svg>

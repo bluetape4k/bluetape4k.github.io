@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1180" viewBox="0 0 2000 1180" role="img" aria-labelledby="title desc">
-  <title id="title">Appointment state machine and history write flow</title>
-  <desc id="desc">The appointment lifecycle accepts only mapped events. Every accepted change updates the current state and appends an audit history record. A cancellation reason flows through the controller, state event, history, and domain event as one value.</desc>
+  <title id="title">예약 상태 머신과 변경 이력 기록 흐름</title>
+  <desc id="desc">예약 상태는 허용된 이벤트로만 바뀐다. 허용된 변경은 현재 상태와 변경 이력에 함께 기록되며, 취소 사유는 컨트롤러부터 상태 이벤트와 변경 이력, 도메인 이벤트까지 같은 값으로 전달된다.</desc>
   <defs>
     <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#07101f" />
@@ -31,15 +31,15 @@
       <path d="M 1 1 L 13 7 L 1 13 Z" fill="#c46b6b" />
     </marker>
     <style>
-      .title { font-family: 'Architects Daughter', cursive; font-size: 46px; font-weight: 700; fill: #f8fafc; }
-      .subtitle { font-family: 'Comic Mono', monospace; font-size: 20px; fill: #a9b8d4; }
-      .panel-title { font-family: 'Noto Sans KR', sans-serif; font-size: 27px; font-weight: 700; fill: #f8fafc; }
-      .state { font-family: 'Comic Mono', monospace; font-size: 19px; font-weight: 700; fill: #f8fafc; }
-      .state-small { font-family: 'Comic Mono', monospace; font-size: 16px; font-weight: 700; fill: #f8fafc; }
-      .label { font-family: 'Comic Mono', 'Noto Sans KR', monospace; font-size: 16px; fill: #d7e2f4; }
-      .small { font-family: 'Comic Mono', 'Noto Sans KR', monospace; font-size: 14px; fill: #a9b8d4; }
-      .small-ko { font-family: 'Noto Sans KR', sans-serif; font-size: 14px; fill: #a9b8d4; }
-      .ko { font-family: 'Noto Sans KR', sans-serif; font-size: 15px; fill: #afbed4; }
+      .title { font-family: 'goorm Sans', sans-serif; font-size: 46px; font-weight: 700; fill: #f8fafc; }
+      .subtitle { font-family: 'goorm Sans', sans-serif; font-size: 20px; fill: #a9b8d4; }
+      .panel-title { font-family: 'goorm Sans', sans-serif; font-size: 27px; font-weight: 700; fill: #f8fafc; }
+      .state { font-family: 'goorm Sans Code', 'goorm Sans', monospace; font-size: 19px; font-weight: 700; fill: #f8fafc; }
+      .state-small { font-family: 'goorm Sans Code', 'goorm Sans', monospace; font-size: 16px; font-weight: 700; fill: #f8fafc; }
+      .label { font-family: 'goorm Sans Code', 'goorm Sans', monospace; font-size: 16px; fill: #d7e2f4; }
+      .small { font-family: 'goorm Sans Code', 'goorm Sans', monospace; font-size: 14px; fill: #a9b8d4; }
+      .small-ko { font-family: 'goorm Sans', sans-serif; font-size: 14px; fill: #a9b8d4; }
+      .ko { font-family: 'goorm Sans', sans-serif; font-size: 15px; fill: #afbed4; }
       .connector { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: 4; }
       .normal { stroke: #58a6c9; marker-end: url(#arrowBlue); }
       .accepted { stroke: #8da66b; marker-end: url(#arrowGreen); }
@@ -51,12 +51,12 @@
   <rect width="2000" height="1180" rx="32" fill="url(#canvas)" />
   <rect x="28" y="28" width="1944" height="1124" rx="28" fill="none" stroke="#263a5e" stroke-width="2" />
 
-  <text class="title" x="1000" y="70" text-anchor="middle">Appointment State Is a Contract</text>
-  <text class="subtitle" x="1000" y="106" text-anchor="middle">current state + allowed event + next state + reason + audit history</text>
+  <text class="title" x="1000" y="70" text-anchor="middle">예약 상태는 지켜야 할 계약이다</text>
+  <text class="subtitle" x="1000" y="106" text-anchor="middle">현재 상태 + 허용 이벤트 + 다음 상태 + 사유 + 변경 이력</text>
 
   <g>
     <rect x="60" y="140" width="1880" height="570" rx="28" fill="url(#machineFill)" stroke="#2b4168" stroke-width="2" />
-    <text class="panel-title" x="96" y="184">1. 허용된 이벤트만 다음 상태를 만든다</text>
+    <text class="panel-title" x="96" y="184">1. 허용된 이벤트만 상태를 바꾼다</text>
 
     <path class="connector normal" data-connector="pending-requested" d="M 284 292 H 372" />
     <path class="connector normal" data-connector="requested-confirmed" d="M 606 292 H 694" />
@@ -77,22 +77,22 @@
     <g filter="url(#shadow)">
       <rect class="card" x="698" y="232" width="230" height="120" rx="20" fill="#18344a" stroke="#8da66b" stroke-width="3" />
       <text class="state" x="813" y="282" text-anchor="middle">CONFIRMED</text>
-      <text class="ko" x="813" y="315" text-anchor="middle">예약 확정 · pinned</text>
+      <text class="ko" x="813" y="315" text-anchor="middle">예약 확정 · 고정</text>
     </g>
     <g filter="url(#shadow)">
       <rect class="card" x="1020" y="232" width="230" height="120" rx="20" fill="#203747" stroke="#8da66b" stroke-width="3" />
       <text class="state" x="1135" y="282" text-anchor="middle">CHECKED_IN</text>
-      <text class="ko" x="1135" y="315" text-anchor="middle">내원 확인 · pinned</text>
+      <text class="ko" x="1135" y="315" text-anchor="middle">내원 확인 · 고정</text>
     </g>
     <g filter="url(#shadow)">
       <rect class="card" x="1342" y="232" width="230" height="120" rx="20" fill="#273b43" stroke="#8da66b" stroke-width="3" />
       <text class="state-small" x="1457" y="282" text-anchor="middle">IN_PROGRESS</text>
-      <text class="ko" x="1457" y="315" text-anchor="middle">진료 중 · pinned</text>
+      <text class="ko" x="1457" y="315" text-anchor="middle">진료 중 · 고정</text>
     </g>
     <g filter="url(#shadow)">
       <rect class="card" x="1664" y="232" width="262" height="120" rx="20" fill="#2e403d" stroke="#8da66b" stroke-width="3" />
       <text class="state" x="1795" y="282" text-anchor="middle">COMPLETED</text>
-      <text class="ko" x="1795" y="315" text-anchor="middle">진료 완료 · pinned</text>
+      <text class="ko" x="1795" y="315" text-anchor="middle">진료 완료 · 고정</text>
     </g>
 
     <g>
@@ -122,7 +122,7 @@
     <g filter="url(#shadow)">
       <rect class="card" x="760" y="440" width="360" height="120" rx="20" fill="#3c2d32" stroke="#c79a58" stroke-width="3" />
       <text class="state-small" x="940" y="490" text-anchor="middle">PENDING_RESCHEDULE</text>
-      <text class="ko" x="940" y="523" text-anchor="middle">휴진 등으로 재배정 대기</text>
+      <text class="ko" x="940" y="523" text-anchor="middle">휴진 등으로 재배정 필요</text>
     </g>
     <g filter="url(#shadow)">
       <rect class="card" x="1244" y="440" width="280" height="120" rx="20" fill="#3a3330" stroke="#c79a58" stroke-width="2" />
@@ -132,7 +132,7 @@
     <g filter="url(#shadow)">
       <rect class="card" x="1664" y="440" width="262" height="120" rx="20" fill="#422a34" stroke="#c46b6b" stroke-width="3" />
       <text class="state" x="1795" y="490" text-anchor="middle">CANCELLED</text>
-      <text class="ko" x="1795" y="523" text-anchor="middle">취소 사유 보존</text>
+      <text class="ko" x="1795" y="523" text-anchor="middle">취소 · 사유 기록</text>
     </g>
 
     <rect x="100" y="606" width="1540" height="60" rx="18" fill="#251e2b" stroke="#6f4c5c" stroke-width="2" />
@@ -150,7 +150,7 @@
 
   <g>
     <rect x="60" y="742" width="1880" height="350" rx="28" fill="url(#historyFill)" stroke="#2b4168" stroke-width="2" />
-    <text class="panel-title" x="96" y="790">2. 취소 사유 하나가 상태·이력·이벤트를 같은 값으로 통과한다</text>
+    <text class="panel-title" x="96" y="790">2. 취소 사유는 상태·이력·이벤트에 같은 값으로 남는다</text>
 
     <path class="connector reason" data-connector="controller-reason" d="M 346 900 H 426" />
     <path class="connector reason" data-connector="reason-machine" d="M 710 900 H 790" />
@@ -160,20 +160,20 @@
     <g filter="url(#shadow)">
       <rect class="card" x="86" y="836" width="260" height="128" rx="20" fill="#12243e" stroke="#58a6c9" stroke-width="2" />
       <text class="state-small" x="216" y="880" text-anchor="middle">Controller</text>
-      <text class="ko" x="216" y="912" text-anchor="middle">reason 요청값</text>
+      <text class="ko" x="216" y="912" text-anchor="middle">요청으로 받은 reason</text>
       <text class="small" x="216" y="941" text-anchor="middle">DELETE ?reason=...</text>
     </g>
     <g filter="url(#shadow)">
       <rect class="card" x="430" y="836" width="280" height="128" rx="20" fill="#332c2b" stroke="#c79a58" stroke-width="3" />
       <text class="state-small" x="570" y="880" text-anchor="middle">effectiveReason</text>
-      <text class="ko" x="570" y="912" text-anchor="middle">입력값 또는 기본값</text>
-      <text class="small-ko" x="570" y="941" text-anchor="middle">한 번만 결정</text>
+      <text class="ko" x="570" y="912" text-anchor="middle">입력값이 없으면 기본값 사용</text>
+      <text class="small-ko" x="570" y="941" text-anchor="middle">여기서 한 번만 결정</text>
     </g>
     <g filter="url(#shadow)">
       <rect class="card" x="794" y="836" width="280" height="128" rx="20" fill="#182f43" stroke="#58a6c9" stroke-width="2" />
       <text class="state-small" x="934" y="880" text-anchor="middle">State machine</text>
       <text class="ko" x="934" y="912" text-anchor="middle">Cancel(reason)</text>
-      <text class="small-ko" x="934" y="941" text-anchor="middle">허용되지 않으면 409</text>
+      <text class="small-ko" x="934" y="941" text-anchor="middle">허용되지 않은 전이면 409</text>
     </g>
     <g filter="url(#shadow)">
       <rect class="card" x="1158" y="820" width="350" height="160" rx="20" fill="#213744" stroke="#8da66b" stroke-width="3" />
@@ -187,7 +187,7 @@
       <rect class="card" x="1592" y="836" width="320" height="128" rx="20" fill="#2d3038" stroke="#8da66b" stroke-width="2" />
       <text class="state-small" x="1752" y="880" text-anchor="middle">Domain event</text>
       <text class="ko" x="1752" y="912" text-anchor="middle">Cancelled(reason)</text>
-      <text class="small-ko" x="1752" y="941" text-anchor="middle">후속 알림의 근거</text>
+      <text class="small-ko" x="1752" y="941" text-anchor="middle">후속 알림에 사용할 근거</text>
     </g>
 
     <rect x="108" y="1014" width="1784" height="48" rx="16" fill="#0e1b2d" stroke="#31496d" />
@@ -198,7 +198,7 @@
     <circle cx="680" cy="1122" r="7" fill="#58a6c9" />
     <text class="small-ko" x="697" y="1128">정상 상태 전이</text>
     <circle cx="890" cy="1122" r="7" fill="#8da66b" />
-    <text class="small-ko" x="907" y="1128">pinned 또는 기록 완료</text>
+    <text class="small-ko" x="907" y="1128">고정 또는 기록 완료</text>
     <circle cx="1180" cy="1122" r="7" fill="#c79a58" />
     <text class="small-ko" x="1197" y="1128">재배정·사유 전달</text>
     <circle cx="1450" cy="1122" r="7" fill="#c46b6b" />

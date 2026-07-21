@@ -36,8 +36,8 @@
       .panel-title { font-family: 'Architects Daughter', cursive; font-size: 27px; font-weight: 700; fill: #f8fafc; }
       .state { font-family: 'Comic Mono', monospace; font-size: 19px; font-weight: 700; fill: #f8fafc; }
       .state-small { font-family: 'Comic Mono', monospace; font-size: 16px; font-weight: 700; fill: #f8fafc; }
-      .label { font-family: 'Comic Mono', 'Noto Sans KR', monospace; font-size: 16px; fill: #d7e2f4; }
-      .small { font-family: 'Comic Mono', 'Noto Sans KR', monospace; font-size: 14px; fill: #a9b8d4; }
+      .label { font-family: 'Comic Mono', monospace; font-size: 16px; fill: #d7e2f4; }
+      .small { font-family: 'Comic Mono', monospace; font-size: 14px; fill: #a9b8d4; }
       .small-ko { font-family: 'Comic Mono', monospace; font-size: 14px; fill: #a9b8d4; }
       .ko { font-family: 'Comic Mono', monospace; font-size: 15px; fill: #afbed4; }
       .connector { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: 4; }

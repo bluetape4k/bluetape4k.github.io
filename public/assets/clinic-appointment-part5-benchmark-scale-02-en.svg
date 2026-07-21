@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Clinic appointment solver benchmark</title>
+  <desc id="desc">Small, medium, and large benchmark scenarios compare measured solve time with configured time limits, with score, throughput, and search-space scale.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07111f"/>
+      <stop offset="1" stop-color="#111a35"/>
+    </linearGradient>
+    <linearGradient id="actual" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#0ea5e9"/>
+      <stop offset="1" stop-color="#2dd4bf"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#020617" flood-opacity="0.5"/>
+    </filter>
+    <style>
+      .title { font-family: "Architects Daughter", cursive; font-size: 46px; font-weight: 700; fill: #f8fafc; }
+      .subtitle { font-family: "Comic Mono", monospace; font-size: 18px; fill: #a8b8ce; }
+      .row-title { font-family: "Architects Daughter", cursive; font-size: 30px; font-weight: 700; fill: #f8fafc; }
+      .body { font-family: "Comic Mono", monospace; font-size: 17px; fill: #d7e3f3; }
+      .small { font-family: "Comic Mono", monospace; font-size: 14px; fill: #aebed2; }
+      .metric { font-family: "Comic Mono", monospace; font-size: 22px; font-weight: 700; fill: #67e8f9; }
+      .score { font-family: "Comic Mono", monospace; font-size: 18px; font-weight: 700; fill: #86efac; }
+      .card { fill: #101d33; stroke: #2b3c57; stroke-width: 2; filter: url(#shadow); }
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" rx="34" fill="url(#bg)"/>
+  <circle cx="1470" cy="90" r="200" fill="#7c3aed" opacity="0.08"/>
+  <circle cx="80" cy="870" r="220" fill="#0891b2" opacity="0.08"/>
+
+  <text x="90" y="78" class="title">A bounded search, not an instant lookup</text>
+  <text x="92" y="116" class="subtitle">Measured solve time uses about half of each configured limit while keeping every baseline scenario feasible.</text>
+
+  <rect x="1090" y="54" width="170" height="34" rx="17" fill="#18334f" stroke="#2dd4bf"/>
+  <rect x="1106" y="65" width="42" height="12" rx="6" fill="url(#actual)"/>
+  <text x="1161" y="77" class="small">measured</text>
+  <rect x="1280" y="54" width="170" height="34" rx="17" fill="#18334f" stroke="#53657f"/>
+  <rect x="1296" y="65" width="42" height="12" rx="6" fill="#31445f"/>
+  <text x="1351" y="77" class="small">time limit</text>
+
+  <rect x="70" y="165" width="1460" height="180" rx="26" class="card"/>
+  <rect x="94" y="187" width="102" height="32" rx="16" fill="#0f766e"/>
+  <text x="145" y="209" text-anchor="middle" class="small" fill="#ecfeff">SMALL</text>
+  <text x="94" y="260" class="row-title">2 doctors · 10 appointments · 5 days</text>
+  <text x="94" y="302" class="small">search space 3.57 × 10²²</text>
+  <rect x="650" y="215" width="580" height="42" rx="21" fill="#263a54"/>
+  <rect x="650" y="215" width="292" height="42" rx="21" fill="url(#actual)"/>
+  <text x="666" y="242" class="body">5,030 ms</text>
+  <text x="1248" y="242" class="small">10,000 ms limit</text>
+  <text x="650" y="304" class="score">0 hard / 0 soft · feasible</text>
+  <text x="1090" y="304" class="metric">133,758 scores/sec</text>
+
+  <rect x="70" y="375" width="1460" height="180" rx="26" class="card"/>
+  <rect x="94" y="397" width="112" height="32" rx="16" fill="#4338ca"/>
+  <text x="150" y="419" text-anchor="middle" class="small" fill="#eef2ff">MEDIUM</text>
+  <text x="94" y="470" class="row-title">5 doctors · 30 appointments · 5 days</text>
+  <text x="94" y="512" class="small">search space 3.95 × 10⁷⁹</text>
+  <rect x="650" y="425" width="580" height="42" rx="21" fill="#263a54"/>
+  <rect x="650" y="425" width="320" height="42" rx="21" fill="url(#actual)"/>
+  <text x="666" y="452" class="body">8,270 ms</text>
+  <text x="1248" y="452" class="small">15,000 ms limit</text>
+  <text x="650" y="514" class="score">0 hard / −500 soft · feasible</text>
+  <text x="1090" y="514" class="metric">100,613 scores/sec</text>
+
+  <rect x="70" y="585" width="1460" height="180" rx="26" class="card"/>
+  <rect x="94" y="607" width="102" height="32" rx="16" fill="#6b21a8"/>
+  <text x="145" y="629" text-anchor="middle" class="small" fill="#faf5ff">LARGE</text>
+  <text x="94" y="680" class="row-title">10 doctors · 100 appointments · 10 days</text>
+  <text x="94" y="722" class="small">search space 3.37 × 10³²⁵</text>
+  <rect x="650" y="635" width="580" height="42" rx="21" fill="#263a54"/>
+  <rect x="650" y="635" width="312" height="42" rx="21" fill="url(#actual)"/>
+  <text x="666" y="662" class="body">16,163 ms</text>
+  <text x="1248" y="662" class="small">30,000 ms limit</text>
+  <text x="650" y="724" class="score">0 hard / −2,000 soft · feasible</text>
+  <text x="1090" y="724" class="metric">116,135 scores/sec</text>
+
+  <rect x="70" y="805" width="1460" height="58" rx="19" fill="#0b1628" stroke="#26364e"/>
+  <text x="95" y="840" class="small">Baseline: 2026-04-19 · Apple M4 Pro · JDK 25 · Timefold Solver. Local benchmark evidence, not a production SLA.</text>
+</svg>
