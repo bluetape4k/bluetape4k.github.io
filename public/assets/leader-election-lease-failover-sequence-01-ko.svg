@@ -3,8 +3,8 @@
   <desc id="desc">Node A가 lease를 보유한 채 실패한다. Node B는 처음에는 거절되지만 만료 후 lease를 획득하고 멱등한 보호 작업을 재개한다.</desc>
   <defs>
     <style>
-      .ko-font { font-family: "Noto Sans KR", "Apple SD Gothic Neo", sans-serif; }
-      .mono-font { font-family: "Comic Mono", "Noto Sans KR", monospace; }
+      .ko-font { font-family: "goorm Sans", sans-serif; }
+      .mono-font { font-family: "goorm Sans Code", "goorm Sans", monospace; }
     </style>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#07111f"/>
