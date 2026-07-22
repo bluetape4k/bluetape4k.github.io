@@ -281,7 +281,7 @@ PNG만 연결되어야 하며 hero만 공유한다.
 `git diff --check`와 `npm run build`를 실행하고 `/ko/blog/timefold-workshop-quickstarts-exposed-persistence/`와
 `/blog/timefold-workshop-quickstarts-exposed-persistence/`를 확인한다.
 
-- [ ] **Step 3: 커밋·푸시와 PR #251 갱신**
+- [x] **Step 3: 커밋·푸시와 PR #251 갱신**
 
 승인된 브랜치에 영문 동등성 변경을 커밋·푸시하고, PR 본문을 영문 route·자산·감사 수치로 갱신한다. 새
 HEAD의 CI와 리뷰 상태를 다시 확인하며 머지와 배포는 실행하지 않는다.
