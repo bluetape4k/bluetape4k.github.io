@@ -157,8 +157,8 @@ CDC, Hibernate Envers, JaVers를 섞어 보면 판단이 흐려지기 쉽습니�
 | Hibernate Envers | JPA entity revision | JPA entity revision table과 빠른 entity-level audit가 필요하다 |
 | JaVers | domain object commit | 객체 diff, commit metadata, DDD command/event 흐름과 audit를 묶고 싶다 |
 
-성능 이야기도 솔직하게 적어두는 편이 맞습니다. `examples/javers-exposed-ddd`의 H2 문서 benchmark에서는 Hibernate
-Envers가 더 빠릅니다.
+성능 이야기도 솔직하게 적어두는 편이 맞습니다. 아래 표는 초기 `examples/javers-exposed-ddd`의 H2 문서
+benchmark 결과입니다.
 
 | Scenario | Hibernate Envers ms/op | JaVers + Exposed ms/op |
 |---|---:|---:|
@@ -170,6 +170,10 @@ Envers가 더 빠릅니다.
 JaVers + Exposed 예제는 명시적인 aggregate commit, commit metadata, domain event integration, CQRS projection 흐름이
 필요할 때 의미가 있습니다. 하지만 latency가 높은 것도 사실입니다. 특히 audit-query 차이는 개선해야 할 문제입니다.
 repository query, snapshot materialization, codec, index 설계를 따로 점검하겠습니다.
+
+이후 별도 benchmark module과 PostgreSQL 측정 경로가 추가되었습니다. 현재 커밋된 결과와 감사 범위·인덱스 선택
+기준은 [Part 4](/ko/blog/bluetape4k-javers-part4-audit-cost/)에서 다룹니다. 서로 다른 환경과 측정 경로의 숫자를
+직접 이어 붙여 성능 추세로 해석하지는 않습니다.
 
 ## 다음 계획
 
@@ -229,3 +233,4 @@ publisher와 read model은 query-side 흐름을 만듭니다.
 - [Part 1: audit와 diff의 기본 모델](/ko/blog/bluetape4k-javers-part1-audit-diff-overview/)
 - [Part 2: Exposed, Redis, Kafka persistence 선택](/ko/blog/bluetape4k-javers-part2-persistence-options/)
 - [Part 3: DDD와 workshop audit 예제](/ko/blog/bluetape4k-javers-part3-ddd-workshop-example/)
+- [Part 4: 감사 로그는 공짜가 아니다](/ko/blog/bluetape4k-javers-part4-audit-cost/)
