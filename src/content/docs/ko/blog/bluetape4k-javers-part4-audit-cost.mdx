@@ -162,6 +162,35 @@ JDBC 처리 시간이 한 요청에 함께 들어갈 수 있습니다. 이 설�
 그래서 이 benchmark는 "JaVers가 더 느리다"는 판정이 아니라, 감사 이력을 어떤 형태로 얼마나 동기적으로 남길지
 결정하기 위한 출발점입니다. 객체 크기와 변경 빈도, 조회 요구를 넣어 다시 측정해야 저장 경로를 고를 수 있습니다.
 
+## 성능만으로 감사 방식을 고르지 않는 이유
+
+JaVers를 고르는 이유는 history table 하나를 더 만들기 위해서가 아닙니다. 한 aggregate가 어떻게 바뀌었는지 객체
+단위 diff로 읽어야 하거나, 누가 어떤 command와 event로 변경했는지 commit metadata를 함께 남겨야 할 때 의미가
+있습니다. 현재 상태 저장, JaVers commit, domain event 발행의 순서를 command 흐름에서 드러내고 싶을 때도 같은
+경계가 도움이 됩니다.
+
+반대로 JPA entity revision만 필요하면 Envers가 더 직접적일 수 있습니다. DB 변경을 다른 시스템에 빠짐없이 전달하는
+일이 우선이면 CDC가 출발점에 더 가깝습니다. benchmark의 쓰기 비용은 이 요구사항을 지우지 않습니다. 어떤 이력을
+설명해야 하는지와 그 이력을 어디서 조회할지를 먼저 정한 뒤 비용을 재는 편이 안전합니다.
+
+| 경로 | command 경로에서 다루는 일 | Kafka와 조회의 역할 | 잘 맞는 경우 |
+|---|---|---|---|
+| 원본 상태 + JaVers audit | 현재 상태 저장과 query 가능한 audit를 같은 command 흐름에서 다룬다 | Kafka는 선택적인 downstream event다 | 즉시 감사 조회와 객체 diff가 모두 필요하다 |
+| 원본 상태 + JaVers audit + Kafka projection | audit를 남긴 뒤 downstream event로 read model 갱신을 이어 간다 | Kafka는 화면·검색·외부 소비를 분리한다 | 빠른 조회 모델이나 다른 시스템 전달이 필요하다 |
+| Kafka snapshot stream + projection 저장소 | Kafka publish acknowledgement까지 확인한다 | Kafka repository는 write-only이고, 조회는 projector의 대상 저장소가 맡는다 | replay 가능한 이벤트 흐름을 별도로 운영할 수 있다 |
+
+앞의 두 경로에서는 JaVers audit store가 변경 이력을 조회하는 곳입니다. Kafka를 붙여도 그 역할이 바뀌지는 않습니다.
+Kafka consumer는 Redis나 RDBMS 같은 read model을 비동기로 갱신할 수 있지만, snapshot event만 보관한 Kafka
+repository는 audit query에 답할 수 없습니다. `KafkaCdoSnapshotProjector`처럼 별도 저장소에 projection해야 나중에
+이력을 조회할 수 있습니다.
+
+Kafka를 쓴다고 command 경로가 자동으로 비동기가 되는 것도 아닙니다. 현재 `KafkaCdoSnapshotRepository`는 기본
+최대 30초 동안 broker acknowledgement를 기다리고, timeout이나 publish 실패를 `RuntimeException`으로 전파합니다.
+따라서 consumer와 projection은 비동기로 처리해도, 현재 publish는 fire-and-forget이 아닙니다. 응답 경로를 실제로
+분리하려면 DB transaction과 Kafka 전달 사이의 유실·중복·재처리를 어떻게 다룰지 정해야 합니다. outbox, retry queue,
+fail-fast 또는 best-effort 정책은 이 글의 구현 완료 기능이 아니라, 서비스가 전달 보장을 설계할 때 선택해야 할 다음
+문제입니다.
+
 ## 조회가 느리다고 인덱스부터 추가하지 않는다
 
 두 번째 benchmark는 commit metadata의 `author`와 `commit_date` 인덱스를 후보로 두고 비교합니다. baseline,
@@ -232,6 +261,8 @@ benchmark와 운영 관측은 함께 봐야 합니다. benchmark는 후보 설�
 - Commit metadata index benchmark: [`ExposedCommitMetadataIndexBenchmark.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/benchmark/javers-exposed-benchmark/src/main/kotlin/io/bluetape4k/javers/benchmark/exposed/ExposedCommitMetadataIndexBenchmark.kt)
 - Exposed snapshot repository: [`ExposedCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-exposed/src/main/kotlin/io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepository.kt)
 - DDD audit boundary: [`AggregateRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/AggregateRepository.kt)
+- Kafka snapshot repository: [`KafkaCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/repository/KafkaCdoSnapshotRepository.kt)
+- Kafka snapshot projector: [`KafkaCdoSnapshotProjector.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjector.kt)
 - Raw comparison result: [`2026-06-08-javers-exposed-ddd-envers-comparison.json`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/docs/benchmark/2026-06-08-javers-exposed-ddd-envers-comparison.json)
 - Raw index result: [`2026-06-08-javers-exposed-commit-metadata-indexes.json`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/docs/benchmark/2026-06-08-javers-exposed-commit-metadata-indexes.json)
 
