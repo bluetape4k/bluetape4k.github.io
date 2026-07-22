@@ -263,17 +263,18 @@ benchmark와 운영 관측은 함께 봐야 합니다. benchmark는 후보 설�
 - DDD audit boundary: [`AggregateRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/AggregateRepository.kt)
 - Kafka snapshot repository: [`KafkaCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/repository/KafkaCdoSnapshotRepository.kt)
 - Kafka snapshot projector: [`KafkaCdoSnapshotProjector.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjector.kt)
-- Raw comparison result: [`2026-06-08-javers-exposed-ddd-envers-comparison.json`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/docs/benchmark/2026-06-08-javers-exposed-ddd-envers-comparison.json)
-- Raw index result: [`2026-06-08-javers-exposed-commit-metadata-indexes.json`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/docs/benchmark/2026-06-08-javers-exposed-commit-metadata-indexes.json)
 
 ## 마무리
 
-감사 이력은 장애 원인을 찾고 업무 결정을 설명하는 데 큰 도움이 됩니다. 그러나 신뢰를 얻는 대신 쓰기 지연, 저장
-공간, 조회와 운영 복잡도를 부담합니다. 이 비용을 숨기지 않아야 감사 기능을 오래 운영할 수 있습니다.
+| 순서 | 결정 | 확인할 근거 |
+|---|---|---|
+| 1 | 설명 책임이 있는 aggregate와 상태 전이를 고른다 | 장애·분쟁·규제 상황에서 누가 어떤 결정을 설명해야 하는가 |
+| 2 | 감사 조회와 화면 조회를 나눈다 | object diff가 필요한지, 별도 read model이 필요한지 |
+| 3 | 전달 경계를 정한다 | 동기 audit, Kafka projection, acknowledgement 대기, outbox/retry 설계 여부 |
+| 4 | 운영 조건으로 다시 측정한다 | p95·p99, 저장량, 보존 기간, query predicate, index 크기 |
 
-먼저 설명 책임이 있는 aggregate와 상태 전이를 정합니다. 그 범위로 실제 업무 경로를 측정합니다. 조회 병목이
-재현됐을 때만 query와 인덱스를 조정합니다. `bluetape4k-javers`의 benchmark도 정답표가 아니라 이 판단을 반복할 수
-있게 만드는 출발점입니다.
+이 선택지는 실제 workload로 검증해야 합니다. benchmark는 정답표가 아니며, Kafka를 붙였다고 audit query나 전달
+보장 책임이 저절로 정리되지는 않습니다.
 
 ## 시리즈 링크
 
