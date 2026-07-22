@@ -145,8 +145,8 @@ CDC, Hibernate Envers, and JaVers all sit near audit history, but they start fro
 | Hibernate Envers | JPA entity revision | Fast entity-level revision tables in a JPA application |
 | JaVers | Domain object commit | Object diffs, commit metadata, and DDD command/event audit flow |
 
-The current example benchmark should also be stated plainly. In the documented H2 benchmark for
-`examples/javers-exposed-ddd`, Hibernate Envers is faster:
+The original example benchmark should also be stated plainly. The following table is from the
+documented H2 benchmark for `examples/javers-exposed-ddd`:
 
 | Scenario | Hibernate Envers ms/op | JaVers + Exposed ms/op |
 |---|---:|---:|
@@ -159,6 +159,10 @@ example is valuable when explicit aggregate commits, commit metadata, domain eve
 projection are part of the design. But the latency gap is real. The audit-query path especially
 needs follow-up work around repository queries, snapshot materialization, codec overhead, and index
 design.
+
+A separate benchmark module and PostgreSQL path were added later. [Part 4](/blog/bluetape4k-javers-part4-audit-cost/)
+reads the currently committed result and connects it to audit-scope and index choices. Results from
+the two environments should not be joined into one performance trend.
 
 ## Next Steps
 
@@ -209,3 +213,4 @@ read models serve query-side consumers.
 - [Part 1: Audit and diff overview](/blog/bluetape4k-javers-part1-audit-diff-overview/)
 - [Part 2: Exposed, Redis, and Kafka persistence](/blog/bluetape4k-javers-part2-persistence-options/)
 - [Part 3: DDD and workshop audit example](/blog/bluetape4k-javers-part3-ddd-workshop-example/)
+- [Part 4: Audit logs are not free](/blog/bluetape4k-javers-part4-audit-cost/)

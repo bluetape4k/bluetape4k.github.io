@@ -1,0 +1,209 @@
+---
+title: "Bluetape4k JaVers Part 4: Audit Logs Are Not Free"
+description: Read the write and query cost of JaVers with Exposed from committed benchmarks, then choose an audit scope and commit metadata indexes from evidence.
+sidebar:
+  order: -202607221700
+blog:
+  date: 2026-07-22T17:00:00+09:00
+  image: /assets/bluetape4k-javers-part4-hero.png
+  imageAlt: 3D workbench illustration of small robotic workers sorting JaVers commits and snapshots while watching a cost gauge
+  cardDescription: "Use committed benchmark evidence to choose audit scope, snapshot storage, and commit metadata indexes."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-javers-part4-hero.png" alt="3D workbench illustration of small robotic workers sorting JaVers commits and snapshots while watching a cost gauge" loading="eager" />
+  <figcaption>Audit history improves accountability, but its write, storage, and query cost grows with its scope.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-07-22 · bluetape4k-javers series · Part 4</p>
+
+Part 3 followed a business object through persistence, a JaVers commit, and domain event
+publication. Once that flow works, the next question arrives quickly:
+
+> Should every change become audit history?
+
+"Keep as much as possible" sounds safe at first. As the audit scope grows, however, every change
+writes snapshots and commit metadata. More history also means more data to query. Adding indexes as
+soon as a query slows down moves cost back into writes and storage. Audit logs are not free.
+
+This post reads two benchmark results committed to `bluetape4k-javers`. The numbers are not a
+product leaderboard. We first separate the work included in each measured path, then connect the
+evidence to audit-scope and commit-metadata-index decisions.
+
+## Auditing Every Change Alters the Cost Model
+
+Without audit history, the primary cost is persisting and reading current state. With audit history,
+one business change can include current-state persistence, JaVers commit creation, snapshot encoding,
+and snapshot storage. A delete may also need a terminal snapshot instead of ending at a row delete.
+
+Reads split into two paths. Current-state queries read the business table. History queries read
+snapshots together with commit metadata. Questions such as "who changed this?" and "what changed in
+this period?" can add a join, predicates, and ordering across commit and snapshot tables.
+
+The cost is therefore more than one extra row.
+
+| Cost point | Question to answer |
+|---|---|
+| Write | How much do business persistence and the JaVers commit add to request latency? |
+| Storage | How long will full object state, changed properties, and commit metadata be retained? |
+| Query | How much can global-id, author, and date predicates narrow the SQL result? |
+| Operations | Who owns retention, deletion requests, schema changes, and codec compatibility? |
+
+## What One Change Stores
+
+`ExposedCdoSnapshotRepository` splits JaVers data across two tables. The commit table stores the
+author, commit time, properties, and sequence. The snapshot table stores the global id, version,
+snapshot type, encoded full state, changed properties, and managed type.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-javers-part4-audit-cost-map-01-en.png" alt="Cost map from a business change through current-state persistence, JaVers commit metadata and snapshot storage, and audit history queries" loading="lazy" />
+  <figcaption>Audit cost spans the business write, snapshot encoding and retention, metadata joins, and snapshot reconstruction.</figcaption>
+</figure>
+
+The current implementation encodes the full snapshot state as text. Larger objects and frequent
+changes increase retained volume. On the read path, audit queries join the two tables by commit id
+and order results by sequence descending. The base schema already indexes fields such as commit id,
+snapshot type, and managed type. It does not force secondary indexes on author or commit time.
+
+That is deliberate. Not every service queries history by author or time range. A default index that
+does not serve a real query still adds write and storage cost.
+
+## Separate the Measured Paths Before Comparing Them
+
+A benchmark that names `Envers`, `JaVers`, and `Exposed` invites a library ranking, but the current
+entries do different work.
+
+| Measured path | Work included |
+|---|---|
+| Hibernate Envers | JPA entity persistence, revision recording, and revision query |
+| JaVers in-memory | JaVers core commit and snapshot query without a database |
+| JaVers + Exposed repository | JaVers snapshot and commit metadata persistence in PostgreSQL |
+| JaVers + Exposed DDD path | Business-table persistence, JaVers audit, and repository orchestration |
+
+The in-memory result is closest to JaVers core overhead. The Exposed repository path includes SQL
+persistence. The DDD path handles current state and audit history together. Even when all three use
+the name `insert`, they do not complete the same work. Ratios without those boundaries are
+misleading.
+
+## Read the Work Before the Number
+
+The following result is a committed measurement from JDK 21.0.11 on macOS aarch64 with PostgreSQL
+18 Testcontainers. Each value is mean `ms/op` after 5 warmup and 40 measured iterations; lower is
+better. It is not a production p95 or p99 latency result, and it does not establish concurrent-user
+capacity.
+
+<figure class="bt4k-chart">
+  <img src="/assets/bluetape4k-javers-part4-benchmark-paths-01-en.png" alt="Chart comparing mean insert, update, and audit query time across Hibernate Envers, JaVers in-memory, Exposed repository, and Exposed DDD paths" loading="lazy" />
+  <figcaption>The four paths complete different work. Read the path boundary before comparing bar lengths.</figcaption>
+</figure>
+
+| Measured path | insert | update | audit query |
+|---|---:|---:|---:|
+| Hibernate Envers | 4.486 ms | 6.917 ms | 12.483 ms |
+| JaVers in-memory | 0.510 ms | 0.978 ms | 12.559 ms |
+| JaVers + Exposed repository | 8.499 ms | 5.945 ms | 0.763 ms |
+| JaVers + Exposed DDD path | 6.397 ms | 7.257 ms | 0.704 ms |
+
+The result supports a limited but useful reading. Persisting snapshots in PostgreSQL adds visible
+write work. Exposed audit queries were fast for this corpus. That is evidence that the current
+pushdown and indexes fit this data shape; it is not a promise that a table with hundreds of millions
+of snapshots will keep the same latency.
+
+A production decision needs another run with representative object size, change frequency,
+retention period, and query predicates. Mean time is not enough. Measure p95 and p99 latency,
+throughput, database CPU and I/O, plus table and index size.
+
+## Do Not Add an Index Before Reproducing the Query
+
+The second benchmark treats indexes on commit metadata `author` and `commit_date` as candidates. It
+compares a baseline, an author index, a commit-date index, and both indexes in temporary tables.
+
+<figure class="bt4k-chart">
+  <img src="/assets/bluetape4k-javers-part4-metadata-indexes-01-en.png" alt="Chart comparing author-query, date-range-query, and insert throughput for four commit metadata index configurations" loading="lazy" />
+  <figcaption>Index effects vary by query shape. This smoke benchmark is not evidence for production DDL.</figcaption>
+</figure>
+
+| Index configuration | Author query | Date-range query | insert |
+|---|---:|---:|---:|
+| None | 917.5 ops/s | 916.5 ops/s | 481.4 ops/s |
+| author | 907.1 ops/s | 904.7 ops/s | 488.6 ops/s |
+| commit date | 931.2 ops/s | 923.2 ops/s | 499.3 ops/s |
+| author + commit date | 945.9 ops/s | 873.8 ops/s | 518.6 ops/s |
+
+Both indexes produced the highest author-query throughput but lower date-range throughput than the
+baseline. The indexed variants also showed unexpectedly higher insert throughput. This run has only
+one warmup and one measured iteration, so the result cannot be generalized. It is an exploratory
+smoke benchmark, not a production DDL recommendation.
+
+Use this order before adding an index:
+
+1. Capture the slow query and its call frequency.
+2. Inspect its execution plan against a production-like data distribution.
+3. Measure write latency and index size along with query latency.
+4. Apply the index through a migration only where it is needed, then compare before and after.
+
+This is why `bluetape4k-javers` does not put author and commit-date indexes into the default schema.
+The service should choose them from a reproduced bottleneck instead of inheriting one query pattern
+from the library.
+
+## Three Ways to Set Audit Scope
+
+An index cannot fix an audit scope that is too broad. I review the scope in three levels.
+
+| Choice | Good fit | Trade-off |
+|---|---|---|
+| Audit core aggregates | Payments, contracts, permissions, and other decisions that need an explanation | Evidence for excluded objects must come from another log |
+| Audit important transitions | Approval, cancellation, or another decision matters more than intermediate calculations | Commit points must be explicit and covered by tests |
+| Audit every change | Regulation or internal control requires complete tracking | Plan capacity, retention, deletion, and sensitive-data masking first |
+
+More history is not always safer. If snapshots include personal data or secrets, access control and
+deletion policy become harder to design. Too little history creates the opposite failure: there may
+be no evidence when an incident or dispute must be explained.
+
+The useful question is "who will need to explain which decision later?" Select the business objects
+and state transitions needed for that explanation, measure write and retention volume for that
+scope, then choose indexes for the query predicates people actually use.
+
+## Before Production
+
+| Area | Check |
+|---|---|
+| Audit target | Inclusion and exclusion rules for aggregates and transitions are documented |
+| Transaction | A partial failure cannot make current state and audit history report different facts |
+| Retention | Retention, archive, deletion, and personal-data rules are defined |
+| Query path | The service knows whether it really queries by global id, author, or time range |
+| Benchmark | p95 and p99 are measured with a representative database, data distribution, and object size |
+| Observability | Write latency, query latency, table/index size, and failures are visible |
+| Compatibility | Tests prove old snapshots remain readable after codec and schema changes |
+
+Benchmarks and production telemetry belong together. A benchmark compares candidate designs;
+production telemetry checks whether those assumptions survive real traffic. Either one by itself
+leaves part of the cost model untested.
+
+## Resources
+
+- Benchmark module: [`benchmark/javers-exposed-benchmark`](https://github.com/bluetape4k/bluetape4k-javers/tree/develop/benchmark/javers-exposed-benchmark)
+- Persistence path benchmark: [`EnversComparisonBenchmark.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/benchmark/javers-exposed-benchmark/src/main/kotlin/io/bluetape4k/javers/benchmark/exposed/EnversComparisonBenchmark.kt)
+- Commit metadata index benchmark: [`ExposedCommitMetadataIndexBenchmark.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/benchmark/javers-exposed-benchmark/src/main/kotlin/io/bluetape4k/javers/benchmark/exposed/ExposedCommitMetadataIndexBenchmark.kt)
+- Exposed snapshot repository: [`ExposedCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-exposed/src/main/kotlin/io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepository.kt)
+- DDD audit boundary: [`AggregateRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/AggregateRepository.kt)
+- Raw comparison result: [`2026-06-08-javers-exposed-ddd-envers-comparison.json`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/docs/benchmark/2026-06-08-javers-exposed-ddd-envers-comparison.json)
+- Raw index result: [`2026-06-08-javers-exposed-commit-metadata-indexes.json`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/docs/benchmark/2026-06-08-javers-exposed-commit-metadata-indexes.json)
+
+## Closing
+
+Audit history helps explain incidents and business decisions, but it trades for write latency,
+storage, query work, and operational complexity. Keeping that cost visible is what makes the audit
+system sustainable.
+
+Start with the aggregates and transitions that carry an explanation obligation. Measure the real
+business path for that scope. Change queries and indexes only after reproducing a bottleneck. The
+`bluetape4k-javers` benchmarks are not an answer sheet; they are a starting point for repeating that
+decision with evidence.
+
+## Series Links
+
+- [Part 1: Audit and diff overview](/blog/bluetape4k-javers-part1-audit-diff-overview/)
+- [Part 2: Exposed, Redis, and Kafka persistence](/blog/bluetape4k-javers-part2-persistence-options/)
+- [Part 3: DDD and workshop audit example](/blog/bluetape4k-javers-part3-ddd-workshop-example/)
+- [Part 4: Audit logs are not free](/blog/bluetape4k-javers-part4-audit-cost/)
