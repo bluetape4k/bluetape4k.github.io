@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1040" viewBox="0 0 1600 1040" role="img" aria-labelledby="title desc">
+  <title id="title">commit metadata 인덱스 후보의 smoke benchmark</title>
+  <desc id="desc">인덱스 없음, author 인덱스, commit date 인덱스, 두 인덱스를 모두 둔 네 구성의 작성자 조회, 기간 조회, insert 처리량을 초당 작업 수로 비교한다.</desc>
+  <defs>
+    <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07101f" />
+      <stop offset="0.56" stop-color="#0c1730" />
+      <stop offset="1" stop-color="#11152b" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#020617" flood-opacity="0.48" />
+    </filter>
+    <style>
+      .title { font-family: 'goorm Sans', 'Architects Daughter', sans-serif; font-size: 42px; font-weight: 700; fill: #f8fafc; }
+      .subtitle { font-family: 'goorm Sans Code', 'Comic Mono', monospace; font-size: 18px; fill: #a9b8d4; }
+      .panel-title { font-family: 'goorm Sans', 'Architects Daughter', sans-serif; font-size: 28px; font-weight: 700; fill: #f8fafc; }
+      .label { font-family: 'goorm Sans Code', 'Comic Mono', monospace; font-size: 16px; fill: #c7d3e7; }
+      .value { font-family: 'goorm Sans Code', 'Comic Mono', monospace; font-size: 15px; font-weight: 700; fill: #f8fafc; }
+      .tick { font-family: 'goorm Sans Code', 'Comic Mono', monospace; font-size: 14px; fill: #8fa3c0; }
+      .note { font-family: 'goorm Sans Code', 'Comic Mono', monospace; font-size: 16px; fill: #c7d3e7; }
+      .warning { font-family: 'goorm Sans Code', 'Comic Mono', monospace; font-size: 17px; font-weight: 700; fill: #ffd391; }
+      .grid { stroke: #263a5e; stroke-width: 1; stroke-dasharray: 5 7; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="1040" rx="32" fill="url(#canvas)" />
+  <rect x="28" y="28" width="1544" height="984" rx="28" fill="none" stroke="#263a5e" stroke-width="2" />
+  <text class="title" x="800" y="72" text-anchor="middle">인덱스 효과는 조회 조건마다 다르다</text>
+  <text class="subtitle" x="800" y="108" text-anchor="middle">처리량 ops/s · 높을수록 빠름 · corpus 1,000건 · 예열 1회, 측정 1회의 탐색용 smoke benchmark</text>
+
+  <g aria-label="범례">
+    <rect x="175" y="145" width="18" height="18" rx="5" fill="#64748b" /><text class="label" x="204" y="160">인덱스 없음</text>
+    <rect x="480" y="145" width="18" height="18" rx="5" fill="#58a6c9" /><text class="label" x="509" y="160">author</text>
+    <rect x="755" y="145" width="18" height="18" rx="5" fill="#82b366" /><text class="label" x="784" y="160">commit date</text>
+    <rect x="1080" y="145" width="18" height="18" rx="5" fill="#a78bfa" /><text class="label" x="1109" y="160">author + commit date</text>
+  </g>
+
+  <g filter="url(#shadow)" aria-label="작성자 조회 처리량">
+    <rect x="45" y="210" width="490" height="660" rx="24" fill="#101d33" stroke="#2b4168" stroke-width="2" />
+    <text class="panel-title" x="290" y="258" text-anchor="middle">작성자 조회</text>
+    <text class="subtitle" x="290" y="288" text-anchor="middle">0–1,000 ops/s</text>
+    <line class="grid" x1="190" y1="320" x2="190" y2="770" /><line class="grid" x1="260" y1="320" x2="260" y2="770" /><line class="grid" x1="330" y1="320" x2="330" y2="770" /><line class="grid" x1="400" y1="320" x2="400" y2="770" /><line class="grid" x1="470" y1="320" x2="470" y2="770" />
+    <text class="label" x="80" y="382">없음</text><rect x="190" y="355" width="257" height="38" rx="10" fill="#64748b" /><text class="value" x="454" y="380">917.5</text>
+    <text class="label" x="80" y="482">author</text><rect x="190" y="455" width="254" height="38" rx="10" fill="#58a6c9" /><text class="value" x="451" y="480">907.1</text>
+    <text class="label" x="80" y="582">date</text><rect x="190" y="555" width="261" height="38" rx="10" fill="#82b366" /><text class="value" x="458" y="580">931.2</text>
+    <text class="label" x="80" y="682">둘 다</text><rect x="190" y="655" width="265" height="38" rx="10" fill="#a78bfa" /><text class="value" x="462" y="680">945.9</text>
+    <line x1="190" y1="770" x2="470" y2="770" stroke="#587092" stroke-width="2" />
+    <text class="tick" x="190" y="798" text-anchor="middle">0</text><text class="tick" x="260" y="798" text-anchor="middle">250</text><text class="tick" x="330" y="798" text-anchor="middle">500</text><text class="tick" x="400" y="798" text-anchor="middle">750</text><text class="tick" x="470" y="798" text-anchor="middle">1,000</text>
+  </g>
+
+  <g filter="url(#shadow)" aria-label="기간 조회 처리량">
+    <rect x="555" y="210" width="490" height="660" rx="24" fill="#101d33" stroke="#2b4168" stroke-width="2" />
+    <text class="panel-title" x="800" y="258" text-anchor="middle">기간 조회</text>
+    <text class="subtitle" x="800" y="288" text-anchor="middle">0–1,000 ops/s</text>
+    <line class="grid" x1="700" y1="320" x2="700" y2="770" /><line class="grid" x1="770" y1="320" x2="770" y2="770" /><line class="grid" x1="840" y1="320" x2="840" y2="770" /><line class="grid" x1="910" y1="320" x2="910" y2="770" /><line class="grid" x1="980" y1="320" x2="980" y2="770" />
+    <text class="label" x="590" y="382">없음</text><rect x="700" y="355" width="257" height="38" rx="10" fill="#64748b" /><text class="value" x="964" y="380">916.5</text>
+    <text class="label" x="590" y="482">author</text><rect x="700" y="455" width="253" height="38" rx="10" fill="#58a6c9" /><text class="value" x="960" y="480">904.7</text>
+    <text class="label" x="590" y="582">date</text><rect x="700" y="555" width="258" height="38" rx="10" fill="#82b366" /><text class="value" x="965" y="580">923.2</text>
+    <text class="label" x="590" y="682">둘 다</text><rect x="700" y="655" width="245" height="38" rx="10" fill="#a78bfa" /><text class="value" x="952" y="680">873.8</text>
+    <line x1="700" y1="770" x2="980" y2="770" stroke="#587092" stroke-width="2" />
+    <text class="tick" x="700" y="798" text-anchor="middle">0</text><text class="tick" x="770" y="798" text-anchor="middle">250</text><text class="tick" x="840" y="798" text-anchor="middle">500</text><text class="tick" x="910" y="798" text-anchor="middle">750</text><text class="tick" x="980" y="798" text-anchor="middle">1,000</text>
+  </g>
+
+  <g filter="url(#shadow)" aria-label="insert 처리량">
+    <rect x="1065" y="210" width="490" height="660" rx="24" fill="#101d33" stroke="#2b4168" stroke-width="2" />
+    <text class="panel-title" x="1310" y="258" text-anchor="middle">insert</text>
+    <text class="subtitle" x="1310" y="288" text-anchor="middle">0–550 ops/s</text>
+    <line class="grid" x1="1210" y1="320" x2="1210" y2="770" /><line class="grid" x1="1280" y1="320" x2="1280" y2="770" /><line class="grid" x1="1350" y1="320" x2="1350" y2="770" /><line class="grid" x1="1420" y1="320" x2="1420" y2="770" /><line class="grid" x1="1490" y1="320" x2="1490" y2="770" />
+    <text class="label" x="1100" y="382">없음</text><rect x="1210" y="355" width="245" height="38" rx="10" fill="#64748b" /><text class="value" x="1462" y="380">481.4</text>
+    <text class="label" x="1100" y="482">author</text><rect x="1210" y="455" width="249" height="38" rx="10" fill="#58a6c9" /><text class="value" x="1466" y="480">488.6</text>
+    <text class="label" x="1100" y="582">date</text><rect x="1210" y="555" width="254" height="38" rx="10" fill="#82b366" /><text class="value" x="1471" y="580">499.3</text>
+    <text class="label" x="1100" y="682">둘 다</text><rect x="1210" y="655" width="264" height="38" rx="10" fill="#a78bfa" /><text class="value" x="1481" y="680">518.6</text>
+    <line x1="1210" y1="770" x2="1490" y2="770" stroke="#587092" stroke-width="2" />
+    <text class="tick" x="1210" y="798" text-anchor="middle">0</text><text class="tick" x="1280" y="798" text-anchor="middle">138</text><text class="tick" x="1350" y="798" text-anchor="middle">275</text><text class="tick" x="1420" y="798" text-anchor="middle">413</text><text class="tick" x="1490" y="798" text-anchor="middle">550</text>
+  </g>
+
+  <rect x="120" y="905" width="1360" height="82" rx="20" fill="#2a241d" stroke="#d69b5b" stroke-width="2" />
+  <text class="warning" x="800" y="938" text-anchor="middle">운영 DDL 결정 금지: 이 결과는 예열 1회, 측정 1회의 후보 탐색입니다.</text>
+  <text class="note" x="800" y="969" text-anchor="middle">실제 query · 데이터 분포 · 실행 계획 · 쓰기 비용 · index 크기를 같은 환경에서 다시 측정해야 합니다.</text>
+</svg>
