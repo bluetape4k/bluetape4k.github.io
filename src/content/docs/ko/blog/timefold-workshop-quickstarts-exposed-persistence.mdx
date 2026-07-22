@@ -148,6 +148,46 @@ solverManager.solveBuilder()
 문서의 [라이브러리 통합](https://docs.timefold.ai/timefold-solver/latest/running-timefold-solver/library/library-integration)에서
 더 자세히 볼 수 있습니다.
 
+## Solver가 끝났다고 최적화에 성공한 것은 아니다
+
+`Solver`가 종료되면 그때까지 찾은 가장 좋은 해답을 돌려줍니다. 하지만 이 말은 전역 최적 해를 찾았다는
+뜻이 아닙니다. 메타휴리스틱 탐색은 보통 최적 해의 점수를 미리 알지 못하므로, 제한 시간이나 개선 정체로
+끝났을 때 현재 해답보다 더 좋은 조합이 남아 있는지 증명하지 못합니다. Timefold 공식 문서도 현실의 계획
+문제에서는 최적성 증명보다 [주어진 시간 안에 가장 좋은 해답을 찾는 것](https://docs.timefold.ai/timefold-solver/latest/optimization-algorithms/overview)을
+목표로 설명합니다.
+
+그래서 작업 상태의 `COMPLETED`는 "실행이 끝났다"는 뜻으로만 써야 합니다. 업무에 반영해도 된다는 판정은
+별도로 내려야 합니다.
+
+| 결과 | 의미 | 서비스의 대응 |
+|---|---|---|
+| 실행 가능 해 없음 | 가장 좋은 해답에도 Hard 제약 위반이 남아 있다 | 위반 제약과 부족한 자원을 보여 주고, 입력·자원·모델을 검토한다 |
+| 실행 가능하지만 최적성 미확인 | Hard 제약은 만족하지만 더 좋은 해답이 존재하지 않는다고 증명하지 못했다 | 업무별 최소 품질 기준과 실행 시간 한도를 보고 승인하거나 다시 실행한다 |
+| 실행 실패 | 문제 조회, Score 계산, Solver 실행 또는 결과 처리 중 예외가 발생했다 | 실패 단계와 원인을 저장하고 재시도 가능 여부를 판정한다 |
+| 취소 | 운영자나 시스템이 탐색을 중단했다 | 마지막 후보가 있더라도 자동 반영하지 않고 승인 가능 여부를 다시 확인한다 |
+
+여기서 "최적 해를 찾지 못했다"는 표현은 두 경우를 가리킬 수 있습니다. Hard 제약을 만족하는 해답 자체가
+없을 수도 있고, 실행 가능 해는 찾았지만 그것이 최적인지 알 수 없을 수도 있습니다. 전자는 자원 부족이나
+모델 충돌을 해결해야 하는 문제이고, 후자는 시간과 품질 사이의 운영 정책 문제입니다. 실제 필수 규칙보다
+Hard 제약을 넓게 잡았거나, 계획 값의 범위가 너무 좁거나, 자원 자체가 부족하면 실행 가능 해를 찾기
+어려워집니다. 병상 배정 예제처럼 미배정을 허용하고 Medium 점수로 드러내는 overconstrained planning은
+자원이 부족할 때도 비교 가능한 후보를 남기는 한 가지 방법입니다.
+
+학교 시간표 quickstart는 실행 중 예외도 숨기지 않습니다. `withExceptionHandler`에서 오류를 작업에 저장하고,
+이후 조회 요청이 들어오면 `TimetableSolverException`으로 전달합니다.
+
+```kotlin
+.withExceptionHandler { id, exception ->
+    jobIdToJob[id.toString()] = Job.ofException(exception)
+    log.error(exception) { "Solver failed for jobId: $id" }
+}
+```
+
+실제 서비스라면 여기에 실패한 단계, 재시도 횟수, 종료 이유, 마지막으로 확인한 Score를 더 남길 수 있습니다.
+단, 마지막 후보가 있다는 이유만으로 성공 처리해서는 안 됩니다. 작업 종료 여부를 확인한 뒤 Score가 실행
+가능한지, 업무별 최소 품질 기준을 넘었는지, 현재 데이터 버전과 충돌하지 않는지를 차례로 검사해야 합니다.
+이 검사를 통과한 후보만 승인 단계로 보냅니다.
+
 ## Exposed 예제가 실제로 저장하는 것은 Score다
 
 `timefold-workshop`의 Exposed 모듈은 Timefold Score 전용 컬럼 형식을 JDBC와 R2DBC에서 검증합니다. 예를 들어

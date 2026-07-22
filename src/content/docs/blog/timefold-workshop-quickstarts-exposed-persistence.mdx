@@ -152,6 +152,48 @@ for job ID uniqueness, state transitions, retries, cancellation, snapshot versio
 The Timefold documentation describes the `SolverManager` execution model in more detail under
 [library integration](https://docs.timefold.ai/timefold-solver/latest/running-timefold-solver/library/library-integration).
 
+## A Finished Solver Job Is Not Automatically a Successful Optimization
+
+When the `Solver` terminates, it returns the best solution found so far. That does not mean it proved the solution to be
+globally optimal. A metaheuristic search usually does not know the optimal score in advance. If it stops because of a time
+limit or a lack of recent improvement, it generally cannot prove that no better combination exists. The Timefold
+documentation therefore frames the practical goal as finding the
+[best solution within the available time](https://docs.timefold.ai/timefold-solver/latest/optimization-algorithms/overview),
+not proving optimality for every real-world planning problem.
+
+For that reason, a job state such as `COMPLETED` should mean only that execution ended. The application needs a separate
+decision before it treats the result as acceptable business data.
+
+| Outcome | Meaning | Service response |
+|---|---|---|
+| No feasible solution | The best solution still violates at least one hard constraint | Expose the violated constraints and missing resources, then review the input, capacity, and model |
+| Feasible, optimality unknown | Hard constraints are satisfied, but the search did not prove that a better solution is impossible | Compare the score with a business quality threshold and the time budget, then approve or run again |
+| Execution failed | An exception occurred while loading the problem, calculating the Score, solving, or processing the result | Store the failed stage and cause, then classify whether retry is safe |
+| Cancelled | An operator or the system stopped the search | Do not apply the last candidate automatically; evaluate whether it is eligible for approval |
+
+The phrase "failed to find the optimal solution" can therefore describe two different situations. The Solver may have
+failed to find any feasible solution, or it may have found a feasible solution without proving optimality. The first
+usually points to missing resources or a conflicting model. The second is an operational decision about time and quality.
+Feasibility becomes harder when rules are promoted to hard constraints too broadly, planning value ranges are too narrow,
+or the required resources do not exist. Overconstrained planning, such as allowing unassigned stays and exposing them
+through a medium score in the bed allocation example, is one way to retain comparable candidates when demand exceeds
+capacity.
+
+The school timetabling quickstart also keeps Solver exceptions visible. Its `withExceptionHandler` stores the error with
+the job, and a later read surfaces it as a `TimetableSolverException`.
+
+```kotlin
+.withExceptionHandler { id, exception ->
+    jobIdToJob[id.toString()] = Job.ofException(exception)
+    log.error(exception) { "Solver failed for jobId: $id" }
+}
+```
+
+A production service may additionally retain the failed stage, retry count, termination reason, and last observed Score.
+The existence of a last candidate must not turn the job into a success automatically. Check that execution ended, the
+Score is feasible, the result meets the business quality threshold, and the source-data version is still current. Only a
+candidate that passes those checks should move to approval.
+
 ## What the Exposed Examples Actually Persist
 
 The Exposed modules in `timefold-workshop` verify Timefold-specific Score column types over both JDBC and R2DBC. For
