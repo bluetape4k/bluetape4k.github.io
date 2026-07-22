@@ -167,6 +167,38 @@ The benchmark is therefore a starting point for choosing how much audit history 
 synchronously to write it, not a verdict that JaVers is slower. Use representative object size,
 change frequency, and read requirements before choosing a persistence path.
 
+## Do Not Choose an Audit Strategy from Performance Alone
+
+JaVers is not useful just because it can create another history table. It earns its cost when a
+team needs to read object-level diffs for an aggregate, keep commit metadata about who made a change
+and which command or event caused it, or make the order of current-state persistence, JaVers commit,
+and domain-event publication explicit in the command flow.
+
+A more direct alternative may be better. Envers fits when JPA entity revisions are enough. CDC
+starts closer to the requirement when the main goal is to deliver database changes
+reliably to other systems. Write-cost measurements do not remove those requirements. Decide which
+history needs an explanation and where it will be queried before measuring the cost of the path.
+
+| Path | Work handled in the command path | Kafka and query role | Good fit |
+|---|---|---|---|
+| Source state + JaVers audit | Handles current-state persistence and a queryable audit in the same command flow | Kafka is an optional downstream event path | Both immediate audit queries and object diffs are needed |
+| Source state + JaVers audit + Kafka projection | Writes the audit, then carries a downstream event to update a read model | Kafka separates UI, search, and external consumers | A faster read model or delivery to other systems is needed |
+| Kafka snapshot stream + projection store | Confirms Kafka publish acknowledgement | The Kafka repository is write-only; the projector target owns queries | A replayable event flow can be operated separately |
+
+In the first two paths, the JaVers audit store remains where change history is queried. Adding Kafka
+does not change that responsibility. A Kafka consumer can update a Redis or RDBMS read model
+asynchronously, but a Kafka repository that only holds snapshot events cannot answer an audit query.
+The snapshots must be projected into a separate store, such as with `KafkaCdoSnapshotProjector`, before
+they become queryable history.
+
+Kafka also does not make the command path asynchronous by itself. The current
+`KafkaCdoSnapshotRepository` waits for broker acknowledgement for up to 30 seconds by default and
+propagates timeout or publish failure as a `RuntimeException`. Consumers and their projections can
+run asynchronously, but the current publish is not fire-and-forget. Truly separating the response
+path requires a delivery design for loss, duplicates, and replay between the DB transaction and
+Kafka publish. An outbox, retry queue, and fail-fast or best-effort policy are follow-up choices for
+that design, not features this repository already implements.
+
 ## Do Not Add an Index Before Reproducing the Query
 
 The second benchmark treats indexes on commit metadata `author` and `commit_date` as candidates. It
@@ -241,6 +273,8 @@ leaves part of the cost model untested.
 - Commit metadata index benchmark: [`ExposedCommitMetadataIndexBenchmark.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/benchmark/javers-exposed-benchmark/src/main/kotlin/io/bluetape4k/javers/benchmark/exposed/ExposedCommitMetadataIndexBenchmark.kt)
 - Exposed snapshot repository: [`ExposedCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-exposed/src/main/kotlin/io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepository.kt)
 - DDD audit boundary: [`AggregateRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/AggregateRepository.kt)
+- Kafka snapshot repository: [`KafkaCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/repository/KafkaCdoSnapshotRepository.kt)
+- Kafka snapshot projector: [`KafkaCdoSnapshotProjector.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjector.kt)
 - Raw comparison result: [`2026-06-08-javers-exposed-ddd-envers-comparison.json`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/docs/benchmark/2026-06-08-javers-exposed-ddd-envers-comparison.json)
 - Raw index result: [`2026-06-08-javers-exposed-commit-metadata-indexes.json`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/docs/benchmark/2026-06-08-javers-exposed-commit-metadata-indexes.json)
 
