@@ -15,11 +15,11 @@
 **Files:**
 - Modify: `src/content/docs/ko/blog/bluetape4k-javers-part4-audit-cost.mdx` after the benchmark table ending at line 103
 
-- [ ] **Step 1: Add a section that preserves the comparison boundary**
+- [x] **Step 1: Add a section that preserves the comparison boundary**
 
 Add `## DB에 저장할 때 JaVers 경로가 더 무거워질 수 있는 이유` after the benchmark interpretation. State that both paths audit changes, but the `javers_exposed_repository` scenario stores JaVers commits and snapshots only; it does not persist the source-of-truth order table.
 
-- [ ] **Step 2: Add aligned Envers and JaVers pseudocode**
+- [x] **Step 2: Add aligned Envers and JaVers pseudocode**
 
 Add two fenced `text` blocks that describe the exact observed operations:
 
@@ -46,11 +46,11 @@ begin transaction
 commit transaction
 ```
 
-- [ ] **Step 3: Explain the observable extra work and DDD exclusion**
+- [x] **Step 3: Explain the observable extra work and DDD exclusion**
 
 Explain that `ExposedCdoSnapshotRepository.saveSnapshot()` encodes the full snapshot, checks commit metadata, and writes metadata plus snapshot rows. State that serialization, metadata lookup, payload size, and JDBC/SQL work can add latency. State that source-table persistence belongs to the separate DDD benchmark path, so it must not be attributed to the repository-only value.
 
-- [ ] **Step 4: Add the operational cost-condition table**
+- [x] **Step 4: Add the operational cost-condition table**
 
 Add this reader-facing table after the pseudocode explanation:
 
@@ -61,7 +61,7 @@ Add this reader-facing table after the pseudocode explanation:
 | commit metadata가 많음 | metadata payload와 조회·인덱스 판단 범위가 넓어짐 |
 | 동기 감사 경계를 유지함 | 업무 저장 요청이 audit write 완료를 함께 기다림 |
 
-- [ ] **Step 5: Verify Korean source links and Markdown**
+- [x] **Step 5: Verify Korean source links and Markdown**
 
 Run: `git diff --check` and `rg -n "DB에 저장할 때 JaVers 경로|ExposedCdoSnapshotRepository.saveSnapshot|DDD benchmark" src/content/docs/ko/blog/bluetape4k-javers-part4-audit-cost.mdx`
 
@@ -72,11 +72,11 @@ Expected: no whitespace errors; the section identifies the repository-only and D
 **Files:**
 - Modify: `src/content/docs/blog/bluetape4k-javers-part4-audit-cost.mdx` after the matching comparison table
 
-- [ ] **Step 1: Add an equivalent English section**
+- [x] **Step 1: Add an equivalent English section**
 
 Add `## Why the JaVers path can cost more when it writes to the database`. Preserve the same comparison boundary and avoid translating Korean sentence structure literally.
 
-- [ ] **Step 2: Localize the two pseudocode blocks and cost-condition table**
+- [x] **Step 2: Localize the two pseudocode blocks and cost-condition table**
 
 Use the same operation order, with English headings and this table:
 
@@ -87,7 +87,7 @@ Use the same operation order, with English headings and this table:
 | Richer commit metadata | The metadata payload and index/query considerations widen |
 | Synchronous audit boundary | The business write waits for the audit write to finish |
 
-- [ ] **Step 3: Verify locale parity**
+- [x] **Step 3: Verify locale parity**
 
 Run a bounded comparison of the Korean and English headings, pseudocode operation order, four cost conditions, and `ExposedCdoSnapshotRepository.saveSnapshot()` / DDD-path caveat.
 

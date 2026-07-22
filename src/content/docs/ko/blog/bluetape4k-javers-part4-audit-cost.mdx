@@ -110,6 +110,58 @@ in-memory 결과는 JaVers 자체 비용을 보는 데 가깝고, Exposed reposi
 운영 결정을 하려면 실제 객체 크기, 변경 빈도, 이력 보존 기간, 조회 조건을 넣어 다시 측정해야 합니다. 특히 평균값만
 보지 말고 p95·p99 지연, 처리량, DB CPU와 I/O, table과 index 크기를 함께 봐야 합니다.
 
+## DB에 저장할 때 JaVers 경로가 더 무거워질 수 있는 이유
+
+표의 `JaVers + Exposed repository`가 Envers보다 느리게 나온 insert 값을 보고 JaVers 자체가 항상 느리다고 결론 내리면
+안 됩니다. 두 경로 모두 변경을 감사하지만, DB에 남기는 모델과 측정 안에 들어간 작업이 다릅니다. 이 경로는 원본
+`OrdersTable`을 저장하지 않고 JaVers commit과 snapshot만 PostgreSQL에 기록합니다. 원본 상태 저장까지 포함한 것은
+별도의 `JaVers + Exposed DDD path`입니다.
+
+Hibernate Envers의 예제 경로는 JPA entity를 저장한 뒤, flush에서 변경을 감지해 revision과 entity audit row를
+기록합니다.
+
+```text
+Hibernate Envers
+
+begin transaction
+  persist current entity row
+  flush detects the change
+  write revision and entity audit rows
+commit transaction
+```
+
+JaVers + Exposed repository는 JaVers가 aggregate에서 commit과 snapshot을 만든 다음, repository가 그 snapshot을
+저장합니다.
+
+```text
+JaVers + Exposed repository
+
+build JaVers commit from the aggregate
+encode the full snapshot state
+
+begin transaction
+  check whether commit metadata exists
+  insert commit metadata when it is absent
+  insert snapshot row with state and changed properties
+commit transaction
+```
+
+`ExposedCdoSnapshotRepository.saveSnapshot()`은 snapshot 전체를 text로 인코딩하고, 같은 commit metadata가 이미 있는지
+확인한 뒤 없으면 commit row를 넣습니다. 이어서 global id, version, type, 전체 state, changed properties를 담은
+snapshot row를 추가합니다. 그래서 객체를 snapshot으로 만드는 비용, JSON/text payload 크기, metadata 확인, 추가 SQL과
+JDBC 처리 시간이 한 요청에 함께 들어갈 수 있습니다. 이 설명은 repository-only 경계에만 해당합니다. DDD path는 여기에
+원본 aggregate 저장과 repository orchestration까지 더합니다.
+
+| 비용이 커지는 조건 | DB 쓰기 경로에서 늘어나는 일 |
+|---|---|
+| aggregate 상태가 큼 | 전체 snapshot의 직렬화와 text payload가 커짐 |
+| 변경이 잦음 | commit·snapshot 행과 index 갱신이 빠르게 누적됨 |
+| commit metadata가 많음 | metadata payload와 조회·인덱스 판단 범위가 넓어짐 |
+| 동기 감사 경계를 유지함 | 업무 저장 요청이 audit write 완료를 함께 기다림 |
+
+그래서 이 benchmark는 "JaVers가 더 느리다"는 판정이 아니라, 감사 이력을 어떤 형태로 얼마나 동기적으로 남길지
+결정하기 위한 출발점입니다. 객체 크기와 변경 빈도, 조회 요구를 넣어 다시 측정해야 저장 경로를 고를 수 있습니다.
+
 ## 조회가 느리다고 인덱스부터 추가하지 않는다
 
 두 번째 benchmark는 commit metadata의 `author`와 `commit_date` 인덱스를 후보로 두고 비교합니다. baseline,
