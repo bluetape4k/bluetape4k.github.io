@@ -216,9 +216,125 @@ Do not merge PR #252 or deploy the site. Report the exact PR head and CI state o
 
 PR evidence at `3690cbe0ffcace3b8a6a76b2530308a9e3b522a1`: base `develop`, assignee `debop`, labels `documentation` and `enhancement`, and a body whose final Markdown heading is `## DoD Status`. CI restarted for that head; merge and deployment were not requested.
 
+### Task 5: Curate reader resources and turn the closing into a decision procedure
+
+**Files:**
+- Modify: `src/content/docs/ko/blog/bluetape4k-javers-part4-audit-cost.mdx` in `## 자료` and `## 마무리`
+- Modify: `src/content/docs/blog/bluetape4k-javers-part4-audit-cost.mdx` in `## Resources` and `## Closing`
+- Modify: `docs/superpowers/plans/2026-07-22-javers-part4-selection-and-kafka.md` with fresh validation evidence
+
+- [ ] **Step 1: Remove raw benchmark artifacts from both reader-resource lists**
+
+Delete exactly these two links in both locales:
+
+```text
+2026-06-08-javers-exposed-ddd-envers-comparison.json
+2026-06-08-javers-exposed-commit-metadata-indexes.json
+```
+
+Keep the benchmark module, benchmark source, Exposed repository, DDD boundary, Kafka repository, and Kafka projector links.
+
+- [ ] **Step 2: Replace the Korean closing prose with a four-step table**
+
+Use `## 마무리` followed by this table and one short paragraph:
+
+```markdown
+| 순서 | 결정 | 확인할 근거 |
+|---|---|---|
+| 1 | 설명 책임이 있는 aggregate와 상태 전이를 고른다 | 장애·분쟁·규제 상황에서 누가 어떤 결정을 설명해야 하는가 |
+| 2 | 감사 조회와 화면 조회를 나눈다 | object diff가 필요한지, 별도 read model이 필요한지 |
+| 3 | 전달 경계를 정한다 | 동기 audit, Kafka projection, acknowledgement 대기, outbox/retry 설계 여부 |
+| 4 | 운영 조건으로 다시 측정한다 | p95·p99, 저장량, 보존 기간, query predicate, index 크기 |
+```
+
+The paragraph must state that a benchmark validates these choices against the real workload and that Kafka does not automatically solve audit-query or delivery-guarantee responsibility.
+
+- [ ] **Step 3: Localize the same decision procedure in English**
+
+Keep `## Closing` and use these semantic rows:
+
+```markdown
+| Step | Decision | Evidence to check |
+|---|---|---|
+| 1 | Choose the aggregates and transitions that carry an explanation obligation | Who must explain which decision during an incident, dispute, or regulatory review? |
+| 2 | Separate audit queries from screen queries | Is an object diff required, and is a separate read model required? |
+| 3 | Set the delivery boundary | Synchronous audit, Kafka projection, acknowledgement wait, and outbox/retry design |
+| 4 | Measure again under operating conditions | p95/p99, storage volume, retention, query predicates, and index size |
+```
+
+Add the English equivalent of the Korean paragraph without literal translation.
+
+- [ ] **Step 4: Check resource curation and locale parity**
+
+Run:
+
+```bash
+! rg -n '2026-06-08-javers-exposed-(ddd-envers-comparison|commit-metadata-indexes)\\.json' \
+  src/content/docs/ko/blog/bluetape4k-javers-part4-audit-cost.mdx \
+  src/content/docs/blog/bluetape4k-javers-part4-audit-cost.mdx
+rg -n '순서 \| 결정 \| 확인할 근거|Step \| Decision \| Evidence to check|Kafka snapshot repository' \
+  src/content/docs/ko/blog/bluetape4k-javers-part4-audit-cost.mdx \
+  src/content/docs/blog/bluetape4k-javers-part4-audit-cost.mdx
+```
+
+Expected: no raw JSON reader link remains; both closing tables and source-backed resources exist.
+
+- [ ] **Step 5: Run rendered-document validation**
+
+Run:
+
+```bash
+git diff --check
+npm run build
+npm test
+```
+
+Expected: no whitespace errors, Astro check has zero errors, and every test passes.
+
+- [ ] **Step 6: Verify both local routes and commit the update**
+
+Run while the local preview is running:
+
+```bash
+printf 'GET /ko/blog/bluetape4k-javers-part4-audit-cost/ HTTP/1.1\\r\\nHost: 127.0.0.1\\r\\nConnection: close\\r\\n\\r\\n' | nc -w 3 127.0.0.1 4325 | head -n 1
+printf 'GET /blog/bluetape4k-javers-part4-audit-cost/ HTTP/1.1\\r\\nHost: 127.0.0.1\\r\\nConnection: close\\r\\n\\r\\n' | nc -w 3 127.0.0.1 4325 | head -n 1
+```
+
+Expected: both requests report `HTTP/1.1 200 OK` in the Astro preview log.
+
+Then commit with Lore trailers:
+
+```bash
+git add src/content/docs/ko/blog/bluetape4k-javers-part4-audit-cost.mdx \
+  src/content/docs/blog/bluetape4k-javers-part4-audit-cost.mdx \
+  docs/superpowers/plans/2026-07-22-javers-part4-selection-and-kafka.md
+git commit -m "Make the Part 4 audit decision process actionable"
+```
+
+### Task 6: Publish the exact documentation head to PR #252
+
+**Files:**
+- Modify: `docs/superpowers/plans/2026-07-22-javers-part4-selection-and-kafka.md`
+
+- [ ] **Step 1: Push the finalized documentation commit**
+
+```bash
+git push origin docs/issue-193-javers-audit-cost
+```
+
+Expected: the remote branch advances to the exact documentation head.
+
+- [ ] **Step 2: Verify PR authority and preserve the delivery boundary**
+
+```bash
+gh pr view 252 --json url,headRefOid,baseRefName,body,labels,assignees,mergeStateStatus,statusCheckRollup
+```
+
+Expected: the PR uses `develop` as base, retains `debop`, `documentation`, and `enhancement`, and its final Markdown heading is `## DoD Status`. Do not merge or deploy.
+
 ## Plan Self-Review
 
-- Spec coverage: Task 1 grounds the current source contract; Task 2 implements Korean semantics and links; Task 3 preserves bilingual parity; Task 4 validates routes and keeps the existing PR accurate.
+- Spec coverage: Task 1 grounds the current source contract; Task 2 implements Korean semantics and links; Task 3 preserves bilingual parity; Task 4 validates routes and keeps the existing PR accurate; Task 5 removes raw reader artifacts and makes the closing procedural; Task 6 publishes the exact PR head without merging.
 - Scope check: the plan changes only two article files and its evidence record. It does not implement Kafka, outbox, projections, or benchmarks.
 - Placeholder scan: no incomplete-marker or deferred-implementation text remains. Future outbox/retry language is explicitly a reader-facing boundary, not a work item.
 - Type consistency: `KafkaCdoSnapshotRepository`, `KafkaCdoSnapshotProjector`, `saveSnapshot()`, and `publishTimeout` match the inspected source names.
