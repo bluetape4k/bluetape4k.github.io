@@ -111,3 +111,41 @@ JaVers의 가치가 단순한 history table 생성이 아니라는 점을 명시
 | broker acknowledgement 대기를 비동기 처리로 오해 | 현재 code contract와 downstream consumer의 비동기를 명확히 구분 |
 | JaVers와 Envers를 단순 성능 순위로 해석 | 각 도구가 보장하는 audit semantics와 경계를 먼저 제시 |
 | outbox가 이미 구현되었다고 오해 | 미래 설계 과제로만 언급하고 현재 구현과 분리 |
+
+## 9. 마무리와 자료 편집 보강
+
+### 목적
+
+Part 4의 자료 목록에서 독자가 바로 활용하기 어려운 raw benchmark JSON 두 건을 제거한다. 마무리는 비용을 다시
+요약하는 문단 대신, 서비스가 audit path를 결정할 때 따를 수 있는 네 단계 판단표로 바꾼다.
+
+### 자료 목록
+
+다음 raw artifact 링크를 Korean과 English에서 모두 제거한다.
+
+- `2026-06-08-javers-exposed-ddd-envers-comparison.json`
+- `2026-06-08-javers-exposed-commit-metadata-indexes.json`
+
+benchmark module, benchmark source, Exposed repository, DDD boundary, Kafka repository, Kafka projector 링크는 유지한다.
+이들은 독자가 구현·측정 방법 또는 repository contract를 이해할 때 직접 읽을 수 있는 자료다.
+
+### 마무리 표
+
+Korean `## 마무리`과 English `## Closing`은 같은 네 행의 결정표로 구성한다.
+
+| 순서 | 결정 | 확인할 근거 |
+|---|---|---|
+| 1 | 설명 책임이 있는 aggregate와 상태 전이를 고른다 | 장애·분쟁·규제 상황에서 누가 어떤 결정을 설명해야 하는가 |
+| 2 | 감사 조회와 화면 조회를 나눈다 | object diff가 필요한지, 별도 read model이 필요한지 |
+| 3 | 전달 경계를 정한다 | 동기 audit, Kafka projection, acknowledgement 대기, outbox/retry 설계 여부 |
+| 4 | 운영 조건으로 다시 측정한다 | p95·p99, 저장량, 보존 기간, query predicate, index 크기 |
+
+표 뒤에는 다음 한 문단만 둔다. benchmark는 정답표가 아니라 위 선택지를 실제 workload로 검증하는 출발점이며,
+Kafka를 붙여도 audit query와 delivery guarantee의 책임이 저절로 해결되지는 않는다.
+
+### 검증
+
+1. 두 article의 raw JSON 링크가 모두 사라졌는지 검색한다.
+2. Korean과 English closing table의 행 수와 의미가 같은지 대조한다.
+3. `npm run build`, `npm test`, `git diff --check`와 두 locale route를 확인한다.
+4. 기존 PR #252만 갱신한다. merge와 deploy는 새 요청 전까지 하지 않는다.
