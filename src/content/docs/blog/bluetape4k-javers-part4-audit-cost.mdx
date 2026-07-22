@@ -113,6 +113,60 @@ A production decision needs another run with representative object size, change 
 retention period, and query predicates. Mean time is not enough. Measure p95 and p99 latency,
 throughput, database CPU and I/O, plus table and index size.
 
+## Why the JaVers Path Can Cost More When It Writes to the Database
+
+The slower `JaVers + Exposed repository` insert result does not mean that JaVers is always slower
+than Envers. Both paths audit changes, but they persist different models and complete different work.
+This scenario writes JaVers commits and snapshots to PostgreSQL; it does not persist the source-of-
+truth `OrdersTable`. Source-state persistence belongs to the separate `JaVers + Exposed DDD path`.
+
+The Hibernate Envers example persists a JPA entity, then its flush detects the change and records a
+revision plus entity audit rows.
+
+```text
+Hibernate Envers
+
+begin transaction
+  persist current entity row
+  flush detects the change
+  write revision and entity audit rows
+commit transaction
+```
+
+In the JaVers + Exposed repository path, JaVers first creates a commit and snapshot from the
+aggregate, then the repository persists that snapshot.
+
+```text
+JaVers + Exposed repository
+
+build JaVers commit from the aggregate
+encode the full snapshot state
+
+begin transaction
+  check whether commit metadata exists
+  insert commit metadata when it is absent
+  insert snapshot row with state and changed properties
+commit transaction
+```
+
+`ExposedCdoSnapshotRepository.saveSnapshot()` encodes the complete snapshot as text, checks whether
+the commit metadata already exists, inserts its commit row when needed, and then inserts a snapshot
+row containing the global id, version, type, full state, and changed properties. Snapshot creation,
+JSON/text payload size, metadata lookup, and additional JDBC/SQL work can therefore all contribute
+to one request's latency. That explanation applies only to the repository-only path. The DDD path
+also includes source aggregate persistence and repository orchestration.
+
+| Cost-increasing condition | Extra work on the database write path |
+|---|---|
+| Larger aggregate state | More full-snapshot serialization and text payload |
+| Frequent changes | Commit and snapshot rows, plus index maintenance, accumulate faster |
+| Richer commit metadata | The metadata payload and index/query considerations widen |
+| Synchronous audit boundary | The business write waits for the audit write to finish |
+
+The benchmark is therefore a starting point for choosing how much audit history to write and how
+synchronously to write it, not a verdict that JaVers is slower. Use representative object size,
+change frequency, and read requirements before choosing a persistence path.
+
 ## Do Not Add an Index Before Reproducing the Query
 
 The second benchmark treats indexes on commit metadata `author` and `commit_date` as candidates. It
