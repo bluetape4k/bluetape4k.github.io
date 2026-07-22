@@ -1,5 +1,5 @@
 ---
-title: "Timefold quickstart 다음 단계: 계획 모델에서 Exposed 영속화 경계까지"
+title: "Timefold Server 실전 적용: 계획 모델에서 Exposed 영속화 경계까지"
 description: 병상 배정과 학교 시간표 quickstart를 비교해 계획 대상·선택값·점수 구조를 읽고, SolverManager의 비동기 실행과 Exposed Score 저장 예제 사이에 실제 서비스가 채워야 할 경계를 설명합니다.
 sidebar:
   order: -202607221000
@@ -180,11 +180,11 @@ R2DBC의 [`HardSoftScoreTest`](https://github.com/bluetape4k/timefold-workshop/b
 ## 실제 서비스에서는 무엇을 더 저장해야 할까
 
 <figure
-  class="bt4k-sequence"
-  data-diagram-title="Solver 실행과 영속화 책임의 경계"
+  class="bt4k-architecture"
+  data-diagram-title="최적화 실행·영속화·승인 경계의 상호작용"
 >
-  <img src="/assets/timefold-workshop-solver-persistence-sequence-02.png" alt="계획 문제 제출과 검증, 작업 스냅샷 저장, SolverManager의 비동기 실행, 더 나은 해답 저장, 결과 조회와 승인, 승인된 배치의 업무 데이터 반영을 순서대로 보여 주는 시퀀스 다이어그램" loading="lazy" />
-  <figcaption>Solver가 만든 해답은 검토할 후보입니다. Score와 해답을 저장해도 승인 전에는 운영 중인 업무 데이터를 자동으로 덮어쓰지 않습니다.</figcaption>
+  <img src="/assets/timefold-workshop-solver-persistence-sequence-02.png" alt="운영자, 최적화 API, 작업 서비스, SolverManager, Solver, 후보 해답 저장소, 작업 저장소, 승인 서비스, 업무 데이터를 카드로 배치하고 요청, 영속화, 비동기 콜백, 승인 반영 관계를 연결선으로 나타낸 상호작용 다이어그램" loading="lazy" />
+  <figcaption>Solver 실행은 최적화 런타임에, 후보 해답과 작업 스냅샷은 서로 다른 Exposed 저장소에, 승인과 원본 반영은 업무 서비스에 둡니다. 연결선은 각 경계를 오가는 요청·콜백·데이터를 보여 줍니다.</figcaption>
 </figure>
 
 실제 서비스에서는 적어도 다음 데이터를 서로 구분해 저장하는 편이 좋습니다.
