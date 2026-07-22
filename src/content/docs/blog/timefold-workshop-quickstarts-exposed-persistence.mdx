@@ -1,0 +1,265 @@
+---
+title: "Timefold Server in Practice: From Planning Models to the Exposed Persistence Boundary"
+description: Compare the bed allocation and school timetabling quickstarts, then trace the boundary between asynchronous SolverManager execution, Exposed Score persistence, approval, and business data.
+sidebar:
+  order: -202607221000
+blog:
+  date: 2026-07-22T10:00:00+09:00
+  image: /assets/timefold-workshop-persistence-hero.png
+  imageAlt: A dark 3D miniature workbench where results from a bed allocation board and a school timetable board pass through a central optimization machine into database storage
+  cardDescription: "Bed allocation and school timetabling use the same Timefold APIs but model different planning variables and score levels. See what an application must add around Solver execution for durable jobs, approval, and business updates."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/timefold-workshop-persistence-hero.png" alt="A dark 3D miniature workbench where results from a bed allocation board and a school timetable board pass through a central optimization machine into database storage" loading="eager" />
+  <figcaption>Solving an optimization problem and safely accepting its result into a service are two different design problems.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-07-22 · Timefold Workshop · Quickstarts and persistence</p>
+
+## Application Design Starts Where the Quickstart Ends
+
+An optimization quickstart teaches the essential loop quickly: define the planning entities, identify the values the
+Solver may change, and score candidate solutions with constraints. Once that loop runs, the algorithm works. A real
+service immediately raises a different set of questions:
+
+- Where do we keep the problem data as it existed when optimization was requested?
+- How can a client inspect a running job and the best solution found so far?
+- Who approves a Solver result, and when does it become business data?
+- Can the application find jobs and results again after a restart?
+
+[`timefold-workshop`](https://github.com/bluetape4k/timefold-workshop) provides useful material on both sides of this
+boundary. The `bed-allocation` and `school-timetabling` modules model two different planning problems. The Exposed JDBC
+and R2DBC examples verify how Timefold `Score` values can be stored in database columns.
+
+Those examples do not form a complete persistence application by themselves. The quickstarts prove planning and Solver
+execution, while the Exposed examples prove Score round trips. Durable job state, problem snapshots, candidate solutions,
+approval, and business-data updates remain application responsibilities between those two endpoints.
+
+## Bed Allocation: Choose One Bed for the Entire Stay
+
+The planning entity in the bed allocation quickstart is
+[`Stay`](https://github.com/bluetape4k/timefold-workshop/blob/develop/01-quickstarts/bed-allocation/src/main/kotlin/timefold/workshop/bed/allocation/domain/Stay.kt).
+The patient, arrival and departure dates, required equipment, and department are fixed. Only `bed` is a planning
+variable. One stay receives one bed for its full duration.
+
+```kotlin
+@PlanningEntity
+class Stay {
+    var arrivalDate: LocalDate? = null
+    var departureDate: LocalDate? = null
+
+    @PlanningVariable(allowsUnassigned = true)
+    var bed: Bed? = null
+}
+```
+
+Because `allowsUnassigned = true`, the Solver may leave `bed` as `null` when capacity is insufficient or no bed satisfies
+the requirements. This does not hide failure. It makes an unassigned stay visible in the score and keeps candidate
+solutions comparable even when a fully assigned solution is impossible.
+
+[`BedPlan`](https://github.com/bluetape4k/timefold-workshop/blob/develop/01-quickstarts/bed-allocation/src/main/kotlin/timefold/workshop/bed/allocation/domain/BedPlan.kt)
+builds rooms and beds from departments, then groups them with stays and a `HardMediumSoftScore` in one planning problem.
+[`BedAllocationConstraintProvider`](https://github.com/bluetape4k/timefold-workshop/blob/develop/01-quickstarts/bed-allocation/src/main/kotlin/timefold/workshop/bed/allocation/solver/BedAllocationConstraintProvider.kt)
+treats same-night bed conflicts, room gender restrictions, department age ranges, and required equipment as Hard
+constraints. Unassigned nights are penalized at the Medium level. Preferences such as room capacity and department
+priority are compared at the Soft level.
+
+There is also a small inconsistency worth reviewing. `preferredPatientEquipment()` is placed in the Soft section, but
+the current implementation penalizes it with `HardMediumSoftScore.ofHard(50)`. Documentation based only on the method
+name and section would say that preferred equipment is Soft, while the running code says otherwise. Constraint names,
+comments, and score levels need to be reviewed together.
+
+## School Timetabling: Choose Both a Time and a Room
+
+The planning entity in the school timetabling quickstart is
+[`Lesson`](https://github.com/bluetape4k/timefold-workshop/blob/develop/01-quickstarts/school-timetabling/src/main/kotlin/timefold/workshop/school/timetabling/domain/Lesson.kt).
+Subject, teacher, and student group are fixed. The Solver changes both `timeslot` and `room` for each lesson.
+
+```kotlin
+@PlanningEntity
+data class Lesson(
+    val subject: String,
+    val teacher: String,
+    val studentGroup: String,
+) {
+    @PlanningVariable
+    var timeslot: Timeslot? = null
+
+    @PlanningVariable
+    var room: Room? = null
+}
+```
+
+[`Timetable`](https://github.com/bluetape4k/timefold-workshop/blob/develop/01-quickstarts/school-timetabling/src/main/kotlin/timefold/workshop/school/timetabling/domain/Timetable.kt)
+provides available timeslots and rooms as problem facts and stores the lessons with a `HardSoftScore`.
+[`TimetableConstraintProvider`](https://github.com/bluetape4k/timefold-workshop/blob/develop/01-quickstarts/school-timetabling/src/main/kotlin/timefold/workshop/school/timetabling/solver/TimetableConstraintProvider.kt)
+uses Hard constraints to prevent room, teacher, and student-group conflicts in the same timeslot. Soft constraints compare
+teacher room stability, gaps between lessons, and subject variety within a student group's day.
+
+Unlike bed allocation, each planning entity needs two values. Changing the timeslot also changes which room combinations
+are possible. The number of planning variables is not the only difference; the shape of the search space changes too.
+
+## Why the Same Timefold APIs Use Different Score Structures
+
+<figure
+  class="bt4k-architecture"
+  data-diagram-title="Planning Model Comparison: Bed Allocation and School Timetabling"
+>
+  <img src="/assets/timefold-workshop-planning-model-comparison-01-en.png" alt="A side-by-side comparison mapping Stay and its bed variable, department room and bed problem facts, and HardMediumSoftScore to Lesson, timeslot and room variables, timeslot and room problem facts, and HardSoftScore" loading="lazy" />
+  <figcaption>Both examples use the same Timefold annotations and Constraint Streams, but business rules decide what changes and how candidate solutions are ranked.</figcaption>
+</figure>
+
+Choosing between `HardSoftScore` and `HardMediumSoftScore` is not about selecting the more sophisticated-looking type.
+Score levels encode business priorities: a higher level is compared before every lower level. Bed allocation uses a
+separate Medium level so that assigning a suitable bed to as many patients as possible takes precedence over ordinary
+preferences. School timetabling first uses Hard constraints to eliminate conflicts, then compares the remaining quality
+goals at the Soft level.
+
+Timefold does not know which solution is better for a particular business. Developers express that judgment through the
+planning model and score calculation. Reading the official guides to
+[modeling planning problems](https://docs.timefold.ai/timefold-solver/latest/using-timefold-solver/modeling-planning-problems)
+and [scores and constraints](https://docs.timefold.ai/timefold-solver/latest/constraints-and-score/overview) together helps
+put the business boundary ahead of the annotations.
+
+## Separate Solver Execution from the API Request
+
+The school timetabling
+[`TimetableController`](https://github.com/bluetape4k/timefold-workshop/blob/develop/01-quickstarts/school-timetabling/src/main/kotlin/timefold/workshop/school/timetabling/controller/TimetableController.kt)
+starts optimization asynchronously through `SolverManager`. `POST /timetables` does not hold the connection open until
+a solution is ready. It returns a job ID, which the client uses to query the solution and status later.
+
+```kotlin
+val jobId = UUID.randomUUID().toString()
+jobIdToJob[jobId] = Job.ofTimetable(problem)
+
+solverManager.solveBuilder()
+    .withProblemId(jobId)
+    .withProblemFinder { jobIdToJob[it.toString()]!!.timetable!! }
+    .withBestSolutionEventConsumer { event ->
+        jobIdToJob[jobId] = Job.ofTimetable(event.solution()!!)
+    }
+    .run()
+```
+
+This shape demonstrates the important separation between a long-running Solver job and an HTTP request lifetime. The
+current job and solution, however, live in an in-process `ConcurrentHashMap`. They disappear when the server restarts.
+As the source comment notes, the map has no TTL and may keep growing in a long-running process. It also does not allow one
+server instance to query a job created by another instance.
+
+Replacing the quickstart map with a database is therefore not the whole design. The application still needs contracts
+for job ID uniqueness, state transitions, retries, cancellation, snapshot versions, and intermediate-solution retention.
+The Timefold documentation describes the `SolverManager` execution model in more detail under
+[library integration](https://docs.timefold.ai/timefold-solver/latest/running-timefold-solver/library/library-integration).
+
+## What the Exposed Examples Actually Persist
+
+The Exposed modules in `timefold-workshop` verify Timefold-specific Score column types over both JDBC and R2DBC. For
+example, the JDBC
+[`HardSoftScoreTest`](https://github.com/bluetape4k/timefold-workshop/blob/develop/exposed/jdbc-examples/src/test/kotlin/timefold/workshop/persistence/exposed/HardSoftScoreTest.kt)
+declares a `hardSoftScore("hardsoft_score")` column, inserts a Score, and checks that the same value is read back.
+
+```kotlin
+object T1 : IntIdTable() {
+    val name = varchar("name", 255)
+    val hardSoftScore = hardSoftScore("hardsoft_score")
+}
+
+val id = T1.insertAndGetId {
+    it[T1.hardSoftScore] = HardSoftScore.of(hard, soft)
+}
+
+val loaded = T1.selectAll().where { T1.id eq id }.single()
+loaded[T1.hardSoftScore] shouldBeEqualTo expected
+```
+
+The R2DBC
+[`HardSoftScoreTest`](https://github.com/bluetape4k/timefold-workshop/blob/develop/exposed/r2dbc-examples/src/test/kotlin/timefold/workshop/persistence/exposed/HardSoftScoreTest.kt)
+checks the same round trip through coroutines and the R2DBC DSL. The JDBC examples also cover DAO entities, while the
+R2DBC examples focus on the suspend-based DSL. That difference belongs to the application's data-access model, not to
+the Solver model.
+
+The tests prove a precise contract: a `HardSoftScore` can be written to a database column and read back as the same Score.
+They do not implement repositories for an entire `Timetable` or `BedPlan`, durable job state, multiple best-solution
+versions, or approval records. **Score persistence support** must not be expanded into a claim that the examples provide
+**PlanningSolution persistence**.
+
+## What a Production Service Still Needs to Store
+
+<figure
+  class="bt4k-architecture"
+  data-diagram-title="Interactions Across Optimization, Persistence, and Approval Boundaries"
+>
+  <img src="/assets/timefold-workshop-solver-persistence-sequence-02-en.png" alt="An interaction map connecting operator, optimization API, job service, SolverManager, Solver, candidate solution store, job store, approval service, and business data with request, persistence, callback, approval, and version-conflict paths" loading="lazy" />
+  <figcaption>Solver execution belongs to the optimization runtime, candidate solutions and job snapshots belong to separate Exposed stores, and approval plus source-of-truth updates belong to the business service.</figcaption>
+</figure>
+
+A production service should keep at least the following records distinct:
+
+| Record | Why it is needed |
+|---|---|
+| Problem snapshot | Reproduce the business data and constraint settings used for a run |
+| Job state | Query queued, running, completed, failed, and cancelled states with timestamps |
+| Candidate solution and Score | Compare results and explain why one was selected |
+| Approval record | Record who accepted which result and when |
+| Business-apply history | Connect a candidate solution to the source-of-truth data it changed |
+
+The most important boundary is that **a Solver result is not automatically the business source of truth**. Reservations,
+beds, classrooms, or other source data may change while the Solver is searching. Before applying a result, the service
+must compare the snapshot version with current data and rerun the necessary conflict checks. Only an approved solution
+should update business data inside a transaction, and a failure must not leave a partial update behind.
+
+Keeping every intermediate solution is rarely necessary. A service may overwrite the latest candidate or retain periodic
+versions depending on whether operators need progress visibility and which evidence incident analysis requires. The key
+is not volume. It is the traceable relationship between the problem, the generated candidate, the approving actor, and
+the applied business change.
+
+## Testing and Review: Verify Constraints and Boundaries Separately
+
+Optimization tests are easier to interpret when they are split into two layers instead of relying on one full Solver run.
+
+First, test each constraint with a small input. Pin facts such as whether a bed conflict is penalized once per overlapping
+night or whether a teacher conflict occurs only within the same timeslot. These tests verify the score-calculation
+contract, not the quality of the Solver search. They are especially useful for mismatches such as preferred equipment in
+the bed example, where the name, section, and actual score level disagree.
+
+Second, test the application boundary as a state and data lifecycle:
+
+- Can a completed job and its solution be queried after a server restart?
+- Can the same job ID avoid duplicate execution?
+- Do cancellation and failure retain an explicit state and cause?
+- Is a solution from a stale snapshot prevented from overwriting current business data?
+- Are approval and business application executed only once?
+
+A constraint test asks, "Is this solution scored correctly?" A boundary test asks, "Can this candidate be retained and
+applied safely?" Combining those questions makes Solver defects and application-state defects unnecessarily difficult to
+separate.
+
+## Checklist for Turning a Demo into an Application Feature
+
+The following order works well when extending a quickstart into a production feature:
+
+1. **State the business question in one sentence.** Define what the Solver may change and what makes one result better.
+2. **Separate planning entities from problem facts.** Keep only changing values as planning variables and capture the rest in a snapshot.
+3. **Agree on score levels in business language.** Document and test what Hard, Medium, and Soft mean operationally.
+4. **Separate the API request from Solver execution.** Define the job ID and status contract before adding time limits and cancellation.
+5. **Keep persistence units distinct.** Do not treat Score columns, candidates, snapshots, job state, approval, and apply history as one object.
+6. **Do not change the source of truth before approval.** Store the result as a candidate and recheck it against current data.
+7. **Choose JDBC or R2DBC as a data-access model.** Keep the Solver model and Score semantics the same while matching the service's transaction and concurrency model.
+8. **Test restarts and duplicate execution.** Treat failure, cancellation, retry, and stale-result application as seriously as the happy path.
+
+Timefold searches planning spaces with many combinations and compares candidate solutions through scores. Exposed Score
+columns persist an important part of that result. The application still owns the lifecycle of jobs and solutions between
+those tools, as well as the decision to accept a candidate into business data. Drawing that boundary first makes the
+next production tasks concrete without growing quickstart code into an accidental architecture.
+
+## Source Code and Further Reading
+
+- [`timefold-workshop` repository and module layout](https://github.com/bluetape4k/timefold-workshop)
+- [Bed allocation quickstart](https://github.com/bluetape4k/timefold-workshop/tree/develop/01-quickstarts/bed-allocation)
+- [School timetabling quickstart](https://github.com/bluetape4k/timefold-workshop/tree/develop/01-quickstarts/school-timetabling)
+- [Exposed JDBC Score examples](https://github.com/bluetape4k/timefold-workshop/tree/develop/exposed/jdbc-examples)
+- [Exposed R2DBC Score examples](https://github.com/bluetape4k/timefold-workshop/tree/develop/exposed/r2dbc-examples)
+- [Timefold documentation: modeling planning problems](https://docs.timefold.ai/timefold-solver/latest/using-timefold-solver/modeling-planning-problems)
+- [Timefold documentation: scores and constraints](https://docs.timefold.ai/timefold-solver/latest/constraints-and-score/overview)
+- [Issue #191, which started this article](https://github.com/bluetape4k/bluetape4k.github.io/issues/191)

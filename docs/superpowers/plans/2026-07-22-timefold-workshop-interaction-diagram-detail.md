@@ -214,12 +214,12 @@ Expected: 승인된 설계 문서, 구현 계획, SVG, PNG, MDX만 변경되며 
 - Create: `src/content/docs/blog/timefold-workshop-quickstarts-exposed-persistence.mdx`
 - Reference: `src/content/docs/ko/blog/timefold-workshop-quickstarts-exposed-persistence.mdx`
 
-- [ ] **Step 1: 같은 slug와 frontmatter로 영문 글 작성**
+- [x] **Step 1: 같은 slug와 frontmatter로 영문 글 작성**
 
 영문 글은 한국어판의 제목, 설명, 날짜, hero, 섹션 순서, 코드, 표, 수치, 소스 링크를 대응시킨다. 문장은
 한국어 어순을 직역하지 않고 실무 개발자에게 자연스러운 영어로 쓴다.
 
-- [ ] **Step 2: 두 영문 다이어그램 경로와 제목 연결**
+- [x] **Step 2: 두 영문 다이어그램 경로와 제목 연결**
 
 계획 모델 비교는 `/assets/timefold-workshop-planning-model-comparison-01-en.png`, 실행·영속화·승인 관계는
 `/assets/timefold-workshop-solver-persistence-sequence-02-en.png`를 사용한다. 각 `data-diagram-title`, `alt`,
@@ -231,17 +231,17 @@ Expected: 승인된 설계 문서, 구현 계획, SVG, PNG, MDX만 변경되며 
 - Create: `public/assets/timefold-workshop-planning-model-comparison-01-en.svg`
 - Create: `public/assets/timefold-workshop-planning-model-comparison-01-en.png`
 
-- [ ] **Step 1: 한국어판의 모델과 기하 구조를 유지해 영문 SVG 작성**
+- [x] **Step 1: 한국어판의 모델과 기하 구조를 유지해 영문 SVG 작성**
 
 `Stay`와 `bed`, `Lesson`과 `timeslot + room`, 문제 정보, `HardMediumSoftScore`와 `HardSoftScore`의 대응을
 그대로 유지한다. 영문 라벨은 카드 안에서 잘리지 않아야 한다.
 
-- [ ] **Step 2: XML·텍스트·연결선 검사 후 CairoSVG 렌더링**
+- [x] **Step 2: XML·텍스트·연결선 검사 후 CairoSVG 렌더링**
 
 `xmllint`, `diagram-svg-text-normalize.py`, 공통 연결선 감사와 CairoSVG `-s 2`를 실행한다. 예상 PNG 크기는
 `3600 × 2240`이다.
 
-- [ ] **Step 3: 전체 크기 PNG 검수**
+- [x] **Step 3: 전체 크기 PNG 검수**
 
 제목, 점수 설명, 화살촉, 카드 여백과 좌우 비교 구조가 읽히는지 확인한다.
 
@@ -251,17 +251,17 @@ Expected: 승인된 설계 문서, 구현 계획, SVG, PNG, MDX만 변경되며 
 - Create: `public/assets/timefold-workshop-solver-persistence-sequence-02-en.svg`
 - Create: `public/assets/timefold-workshop-solver-persistence-sequence-02-en.png`
 
-- [ ] **Step 1: 9개 카드와 14개 관계를 영문으로 지역화**
+- [x] **Step 1: 9개 카드와 14개 관계를 영문으로 지역화**
 
 한국어판의 9개 카드, 14개 의미 관계, 16개 `marker-end` 연결 경로를 유지한다. 작업 저장소와 후보 해답
 저장소는 별도 카드로 유지하고, 양방향 관계도 독립 단방향 경로 두 개로 표현한다.
 
-- [ ] **Step 2: XML·텍스트·연결선·기하 감사 후 CairoSVG 렌더링**
+- [x] **Step 2: XML·텍스트·연결선·기하 감사 후 CairoSVG 렌더링**
 
 예상 결과는 `markers=4`, `connectors=16`, `cards=9`, `labels=14`, 모든 충돌·침범·공유 선분·기하 실패 0건,
 endpoint PASS, mixed-corner `failures=0`, PNG `6400 × 3300`이다.
 
-- [ ] **Step 3: 전체 크기 PNG 검수**
+- [x] **Step 3: 전체 크기 PNG 검수**
 
 영문 라벨 잘림, 화살촉 크기·방향, 카드 사이 간격, 저장소 분리, 승인과 버전 충돌 경로를 확인한다.
 
@@ -271,12 +271,12 @@ endpoint PASS, mixed-corner `failures=0`, PNG `6400 × 3300`이다.
 - Verify: Korean and English MDX routes
 - Verify: four locale-specific technical diagram SVG/PNG pairs
 
-- [ ] **Step 1: 글과 자산의 동등성 검사**
+- [x] **Step 1: 글과 자산의 동등성 검사**
 
 두 글의 heading, 코드 블록, 표, 링크, figure 수를 비교한다. 영문 글에는 `-en.png`, 한국어 글에는 한국어
 PNG만 연결되어야 하며 hero만 공유한다.
 
-- [ ] **Step 2: 전체 사이트 빌드와 두 route 확인**
+- [x] **Step 2: 전체 사이트 빌드와 두 route 확인**
 
 `git diff --check`와 `npm run build`를 실행하고 `/ko/blog/timefold-workshop-quickstarts-exposed-persistence/`와
 `/blog/timefold-workshop-quickstarts-exposed-persistence/`를 확인한다.
