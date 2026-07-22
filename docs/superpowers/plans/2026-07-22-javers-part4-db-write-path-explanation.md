@@ -99,23 +99,23 @@ Expected: both routes make the same technical claims without introducing a libra
 - Modify: `docs/superpowers/plans/2026-07-22-javers-part4-db-write-path-explanation.md` by marking completed steps
 - Modify: existing pull request #252 body only if its DoD evidence changes
 
-- [ ] **Step 1: Run article validation**
+- [x] **Step 1: Run article validation**
 
 Run: `git diff --check`, `npm run build`, and `npm test` from the site worktree.
 
 Expected: no diff whitespace errors, no Astro diagnostics, and all tests pass.
 
-- [ ] **Step 2: Check the two rendered routes**
+- [x] **Step 2: Check the two rendered routes**
 
 Run the local preview and request both `/ko/blog/bluetape4k-javers-part4-audit-cost/` and `/blog/bluetape4k-javers-part4-audit-cost/`.
 
 Expected: HTTP 200 responses, localized titles, and readable fenced pseudocode in both articles.
 
-- [ ] **Step 3: Commit and publish the article update**
+- [x] **Step 3: Commit and publish the article update**
 
 Commit the two article files and this plan using the Lore commit protocol, push `docs/issue-193-javers-audit-cost`, and verify PR #252 points at the exact pushed head.
 
-- [ ] **Step 4: Refresh PR evidence**
+- [x] **Step 4: Refresh PR evidence**
 
 Verify PR #252's assignee, labels, base/head, final `## DoD Status` heading, CI status, and current review state. Do not merge or deploy.
 
