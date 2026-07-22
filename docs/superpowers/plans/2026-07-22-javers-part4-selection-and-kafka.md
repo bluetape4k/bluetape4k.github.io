@@ -223,7 +223,7 @@ PR evidence at `3690cbe0ffcace3b8a6a76b2530308a9e3b522a1`: base `develop`, assig
 - Modify: `src/content/docs/blog/bluetape4k-javers-part4-audit-cost.mdx` in `## Resources` and `## Closing`
 - Modify: `docs/superpowers/plans/2026-07-22-javers-part4-selection-and-kafka.md` with fresh validation evidence
 
-- [ ] **Step 1: Remove raw benchmark artifacts from both reader-resource lists**
+- [x] **Step 1: Remove raw benchmark artifacts from both reader-resource lists**
 
 Delete exactly these two links in both locales:
 
@@ -234,7 +234,7 @@ Delete exactly these two links in both locales:
 
 Keep the benchmark module, benchmark source, Exposed repository, DDD boundary, Kafka repository, and Kafka projector links.
 
-- [ ] **Step 2: Replace the Korean closing prose with a four-step table**
+- [x] **Step 2: Replace the Korean closing prose with a four-step table**
 
 Use `## 마무리` followed by this table and one short paragraph:
 
@@ -249,7 +249,7 @@ Use `## 마무리` followed by this table and one short paragraph:
 
 The paragraph must state that a benchmark validates these choices against the real workload and that Kafka does not automatically solve audit-query or delivery-guarantee responsibility.
 
-- [ ] **Step 3: Localize the same decision procedure in English**
+- [x] **Step 3: Localize the same decision procedure in English**
 
 Keep `## Closing` and use these semantic rows:
 
@@ -264,7 +264,7 @@ Keep `## Closing` and use these semantic rows:
 
 Add the English equivalent of the Korean paragraph without literal translation.
 
-- [ ] **Step 4: Check resource curation and locale parity**
+- [x] **Step 4: Check resource curation and locale parity**
 
 Run:
 
@@ -279,7 +279,7 @@ rg -n '순서 \| 결정 \| 확인할 근거|Step \| Decision \| Evidence to chec
 
 Expected: no raw JSON reader link remains; both closing tables and source-backed resources exist.
 
-- [ ] **Step 5: Run rendered-document validation**
+- [x] **Step 5: Run rendered-document validation**
 
 Run:
 
@@ -291,7 +291,7 @@ npm test
 
 Expected: no whitespace errors, Astro check has zero errors, and every test passes.
 
-- [ ] **Step 6: Verify both local routes and commit the update**
+- [x] **Step 6: Verify both local routes and commit the update**
 
 Run while the local preview is running:
 
@@ -309,6 +309,17 @@ git add src/content/docs/ko/blog/bluetape4k-javers-part4-audit-cost.mdx \
   src/content/docs/blog/bluetape4k-javers-part4-audit-cost.mdx \
   docs/superpowers/plans/2026-07-22-javers-part4-selection-and-kafka.md
 git commit -m "Make the Part 4 audit decision process actionable"
+```
+
+Evidence recorded on 2026-07-22:
+
+```text
+resource curation: PASS; neither raw JSON artifact remains in either article, while the benchmark and source-backed links remain
+locale parity: PASS; Korean and English each contain the four-step decision table and the Kafka snapshot repository link
+git diff --check: PASS
+npm run build: PASS; Astro static build completed
+npm test: PASS
+local preview: port 4326 returned 200 for /ko/blog/bluetape4k-javers-part4-audit-cost/ and /blog/bluetape4k-javers-part4-audit-cost/
 ```
 
 ### Task 6: Publish the exact documentation head to PR #252

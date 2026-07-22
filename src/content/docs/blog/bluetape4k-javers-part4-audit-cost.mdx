@@ -275,19 +275,18 @@ leaves part of the cost model untested.
 - DDD audit boundary: [`AggregateRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/AggregateRepository.kt)
 - Kafka snapshot repository: [`KafkaCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/repository/KafkaCdoSnapshotRepository.kt)
 - Kafka snapshot projector: [`KafkaCdoSnapshotProjector.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjector.kt)
-- Raw comparison result: [`2026-06-08-javers-exposed-ddd-envers-comparison.json`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/docs/benchmark/2026-06-08-javers-exposed-ddd-envers-comparison.json)
-- Raw index result: [`2026-06-08-javers-exposed-commit-metadata-indexes.json`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/docs/benchmark/2026-06-08-javers-exposed-commit-metadata-indexes.json)
 
 ## Closing
 
-Audit history helps explain incidents and business decisions, but it trades for write latency,
-storage, query work, and operational complexity. Keeping that cost visible is what makes the audit
-system sustainable.
+| Step | Decision | Evidence to check |
+|---|---|---|
+| 1 | Choose the aggregates and transitions that carry an explanation obligation | Who must explain which decision during an incident, dispute, or regulatory review? |
+| 2 | Separate audit queries from screen queries | Is an object diff required, and is a separate read model required? |
+| 3 | Set the delivery boundary | Synchronous audit, Kafka projection, acknowledgement wait, and outbox/retry design |
+| 4 | Measure again under operating conditions | p95/p99, storage volume, retention, query predicates, and index size |
 
-Start with the aggregates and transitions that carry an explanation obligation. Measure the real
-business path for that scope. Change queries and indexes only after reproducing a bottleneck. The
-`bluetape4k-javers` benchmarks are not an answer sheet; they are a starting point for repeating that
-decision with evidence.
+Validate these choices against the real workload. The benchmark is not an answer sheet, and adding
+Kafka does not automatically settle audit-query or delivery-guarantee responsibilities.
 
 ## Series Links
 
