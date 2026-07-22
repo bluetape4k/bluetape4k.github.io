@@ -45,7 +45,7 @@
 - Read: `docs/superpowers/specs/2026-07-22-issue-253-modulith-publications-outbox-design.md`.
 - Modify: 없음.
 
-- [ ] **Step 1: 워크숍 코드와 테스트에서 기사에 쓸 계약을 다시 추출한다**
+- [x] **Step 1: 워크숍 코드와 테스트에서 기사에 쓸 계약을 다시 추출한다**
 
 다음 명령으로 event 발행, listener 식별자, 실패·재전송·unloadable event 테스트를 확인한다.
 
@@ -56,7 +56,7 @@ rg -n -C 4 'publishEvent|OrderApprovedEvent|ApplicationModuleListener|reserve-st
 
 Expected: 주문 저장과 `OrderApprovedEvent` 발행은 같은 트랜잭션에 있고, listener id는 `fulfillment.reserve-stock`이며, 실패한 publication은 재전송 후 완료되고, 이전 event class를 읽을 수 없는 행은 객체 materialize 시점에 명시적 오류가 난다.
 
-- [ ] **Step 2: Outbox 글·사이트·GitHub에서 중복 여부를 재확인한다**
+- [x] **Step 2: Outbox 글·사이트·GitHub에서 중복 여부를 재확인한다**
 
 ```bash
 rg -n -i 'spring modulith|applicationmodulelistener|event publication|event_publication' \
@@ -67,7 +67,7 @@ gh pr list --state all --search 'modulith outbox' --limit 30
 
 Expected: 전용 publication 글과 PR은 없고, 기존 `transactional-outbox-idempotency-spring-ktor` 및 `transactional-outbox-kafka-first-fallback-part2`만 Outbox 비교 자료로 남는다.
 
-- [ ] **Step 3: 독자용 source link를 `develop` 기준으로 확정한다**
+- [x] **Step 3: 독자용 source link를 `develop` 기준으로 확정한다**
 
 본문 자료 섹션에는 아래 네 링크만 source 코드 근거로 사용한다.
 
@@ -87,7 +87,7 @@ Expected: 링크가 로컬 파일, raw 검색 기록, issue 번호 나열이 아
 - Create: `src/content/docs/ko/blog/spring-modulith-publications-vs-outbox.mdx`.
 - Read: `src/content/docs/ko/blog/transactional-outbox-idempotency-spring-ktor.mdx`, `src/content/docs/ko/blog/transactional-outbox-kafka-first-fallback-part2.mdx`, `src/content/docs/ko/blog/bluetape4k-javers-part4-audit-cost.mdx`.
 
-- [ ] **Step 1: frontmatter와 문제 중심의 도입부를 작성한다**
+- [x] **Step 1: frontmatter와 문제 중심의 도입부를 작성한다**
 
 다음 frontmatter를 사용한다. 공개 일시는 작업 당일이 아니라 PR 작성 시점의 발행 계획에 맞춰 조정할 수 있지만, 한국어·영어 값은 반드시 같게 유지한다.
 
@@ -107,7 +107,7 @@ blog:
 
 대표 이미지를 `bt4k-blog-hero` figure로 배치하고, `2026-07-23 · exposed-workshop / bluetape4k-exposed · issue #253` 메타 행 뒤에 주문 승인 성공 후 재고 예약이 실패하는 사례를 제시한다. 도입부는 Spring Modulith와 Outbox를 대체재라고 부르지 않는다.
 
-- [ ] **Step 2: 내부 전달과 실패 복구 섹션을 작성한다**
+- [x] **Step 2: 내부 전달과 실패 복구 섹션을 작성한다**
 
 아래 heading과 책임을 사용한다.
 
@@ -120,7 +120,7 @@ blog:
 
 두 번째 섹션에는 `OrderApplicationService.approve`의 핵심만 보여 주는 짧은 Kotlin snippet을 넣는다. 세 번째·네 번째 섹션에서는 `@ApplicationModuleListener(id = "fulfillment.reserve-stock")`, `EVENT_PUBLICATION`의 listener id/event type/serialized payload/status/attempts/date, `FAILED` publication 재전송, legacy event class의 `UnloadableEventPublicationException`을 차례대로 설명한다. 구현이 제공하지 않는 자동 무한 재시도나 외부 전달 보장은 추가하지 않는다.
 
-- [ ] **Step 3: 경계 비교와 선택 절차를 작성한다**
+- [x] **Step 3: 경계 비교와 선택 절차를 작성한다**
 
 `/assets/spring-modulith-publications-vs-outbox-interaction-01.png`을 다음 heading 직후에 배치한다.
 
@@ -140,7 +140,7 @@ blog:
 
 선택 절차는 `소비자가 같은 앱인가 → 로컬 listener의 복구만으로 충분한가 → 외부 소비자·브로커 전달을 보장해야 하는가` 순서로 쓴다. 기존 Outbox Part 1·Part 2는 이 절차를 끝낸 뒤 비교 심화 자료로만 링크한다.
 
-- [ ] **Step 4: 자료와 마무리를 작성한다**
+- [x] **Step 4: 자료와 마무리를 작성한다**
 
 마지막 heading은 아래 순서로 둔다.
 
@@ -151,11 +151,11 @@ blog:
 
 자료에는 워크숍 README·주문 서비스·fulfillment listener·Exposed repository와 기존 Outbox Part 1·Part 2의 독자용 링크만 넣는다. 마무리는 `같은 저장소에 행이 남는다`는 외형이 아니라 `누가 어느 실행 경계에서 그 행을 다시 읽는가`로 선택한다고 정리한다.
 
-- [ ] **Step 5: 한국어 자연스러움 체크리스트로 교정한다**
+- [x] **Step 5: 한국어 자연스러움 체크리스트로 교정한다**
 
 `/Users/debop/.codex/skills/bluetape-writer/references/korean-naturalness-checklist.md`의 KO-01~KO-06을 적용한다. 특히 `~를 통해`, `중요하다`, `강력하다`, 기계적인 세 항목 나열, "A뿐만 아니라 B도"를 구체적인 동작과 문장으로 바꾼다. API 이름·상태 이름·예외 타입·링크는 변경하지 않는다.
 
-- [ ] **Step 6: 한국어 기사 형태를 확인한다**
+- [x] **Step 6: 한국어 기사 형태를 확인한다**
 
 ```bash
 rg -n '^## |spring-modulith-publications-vs-outbox|ApplicationModuleListener|EVENT_PUBLICATION|resubmitIncompletePublications|UnloadableEventPublicationException|Transactional Outbox' \
@@ -172,7 +172,7 @@ Expected: 네 개의 내부 전달·복구 heading, 경계 비교·선택 headin
 - Create: `public/assets/spring-modulith-publications-vs-outbox-interaction-01.svg`.
 - Create: `public/assets/spring-modulith-publications-vs-outbox-interaction-01.png`.
 
-- [ ] **Step 1: 비슷한 대표 이미지를 확인한 뒤 hero를 생성한다**
+- [x] **Step 1: 비슷한 대표 이미지를 확인한 뒤 hero를 생성한다**
 
 `transactional-outbox-idempotency-hero.png`, `transactional-outbox-kafka-first-fallback-part2-hero.png`, `bluetape4k-javers-part4-hero.png`를 같은 크기로 열어 3D 미니어처, 로봇 작업자, 밝은 작업대, 큰 읽을거리 없는 구성을 확인한다. 이어서 다음 프롬프트로 새 hero를 생성하고 1672×941로 맞춘다.
 
@@ -188,7 +188,7 @@ sips -g pixelWidth -g pixelHeight public/assets/spring-modulith-publications-vs-
 
 Expected: `pixelWidth: 1672`, `pixelHeight: 941`; hero가 본문 다이어그램처럼 읽히지 않고 기존 기술 블로그 대표 이미지의 시각 언어와 맞는다.
 
-- [ ] **Step 2: 한국어 카드·연결선 다이어그램을 작성한다**
+- [x] **Step 2: 한국어 카드·연결선 다이어그램을 작성한다**
 
 `common.md`와 `architecture.md`를 기준으로 1800×1120 dark SVG를 만든다. 상단에는 `같은 Spring Boot 애플리케이션 안` 영역, 하단에는 `애플리케이션 밖으로 전달` 영역을 둔다. 상단 카드와 연결선은 다음 책임을 빠짐없이 보여 준다.
 
@@ -199,7 +199,7 @@ Orders → 트랜잭션 → OrderApprovedEvent → EVENT_PUBLICATION → fulfill
 
 하단은 `Orders → Outbox → Broker → 외부 소비자`를 별도 흐름으로 둔다. 두 영역 사이에는 화살표를 두지 않는다. primary flow arrowhead는 14×14이고, card와 card 사이의 선은 수평·수직·둥근 모서리만 사용한다. 각 카드는 가장 긴 라벨에 맞게 넓히고, `EVENT_PUBLICATION`에는 listener id/status/attempts의 보조 문구를 둔다.
 
-- [ ] **Step 3: 한국어 SVG를 한 자산 루프로 검증한다**
+- [x] **Step 3: 한국어 SVG를 한 자산 루프로 검증한다**
 
 ```bash
 xmllint --noout public/assets/spring-modulith-publications-vs-outbox-interaction-01.svg
@@ -227,7 +227,7 @@ Expected: XML parses, raster-text hazards and unhighlighted code counts are zero
 - Create: `public/assets/spring-modulith-publications-vs-outbox-interaction-01-en.svg`.
 - Create: `public/assets/spring-modulith-publications-vs-outbox-interaction-01-en.png`.
 
-- [ ] **Step 1: 한국어 글을 자연스럽게 영어로 현지화한다**
+- [x] **Step 1: 한국어 글을 자연스럽게 영어로 현지화한다**
 
 아래 frontmatter로 시작하고, Korean 글과 동일한 hero, `blog.date`, source links, 표 행, 코드 식별자, 자료 항목을 유지한다.
 
@@ -247,7 +247,7 @@ blog:
 
 한국어 관용구를 직역하지 않는다. `publication`, `listener`, `outbox`, `runtime`은 문맥상 자연스러운 기술 용어로 유지하고, "not a replacement"은 두 저장소의 적용 범위가 다르다는 문장으로 구체화한다.
 
-- [ ] **Step 2: 영어 다이어그램을 한국어 원본과 같은 geometry로 현지화한다**
+- [x] **Step 2: 영어 다이어그램을 한국어 원본과 같은 geometry로 현지화한다**
 
 한국어 SVG를 복제한 뒤 제목·카드·보조 문구·figure alt와 caption만 영어로 바꾼다. 상단에는 `Inside one Spring Boot application`, 하단에는 `Across an external delivery boundary`를 사용한다. 카드 흐름은 다음을 유지한다.
 
@@ -259,7 +259,7 @@ Orders → Outbox → Broker → External consumer
 
 영문 라벨 길이 때문에 카드를 좁히거나 글자 크기를 줄이지 않는다. 필요하면 card width와 canvas만 넓히고 연결선 port·label 좌표를 함께 옮긴다.
 
-- [ ] **Step 3: 영어 SVG를 독립적으로 렌더·감사한다**
+- [x] **Step 3: 영어 SVG를 독립적으로 렌더·감사한다**
 
 ```bash
 xmllint --noout public/assets/spring-modulith-publications-vs-outbox-interaction-01-en.svg
@@ -279,7 +279,7 @@ python3 /Users/debop/.codex/skills/bluetape-diagram/scripts/diagram-mixed-corner
 
 Expected: 한국어 자산과 별도로 XML·text·connector·geometry·endpoint·corner 검사를 통과하고, 3600×2240 PNG를 full size로 열었을 때 영어 라벨이 잘리지 않으며 화살표·카드 간격이 동일한 의미를 보인다.
 
-- [ ] **Step 4: 이중 언어 parity를 확인한다**
+- [x] **Step 4: 이중 언어 parity를 확인한다**
 
 ```bash
 for f in \
@@ -299,7 +299,7 @@ Expected: 두 글 모두 같은 날짜, hero, source links, 핵심 API·상태·
 - Verify: Task 2~4의 새 MDX·SVG·PNG 전체.
 - Modify: PR body only.
 
-- [ ] **Step 1: MDX·링크·자산 참조를 정적 검사한다**
+- [x] **Step 1: MDX·링크·자산 참조를 정적 검사한다**
 
 ```bash
 git diff --check
@@ -316,7 +316,7 @@ done
 
 Expected: diff whitespace errors가 없고, 세 PNG가 비어 있지 않으며, 로컬 경로·placeholder·비보안 링크가 없다.
 
-- [ ] **Step 2: Astro 검사와 빌드를 실행한다**
+- [x] **Step 2: Astro 검사와 빌드를 실행한다**
 
 ```bash
 npm run build
@@ -325,7 +325,7 @@ npm test
 
 Expected: `astro check`, `astro build`, repository manual/ecosystem tests 모두 exit code 0으로 끝난다.
 
-- [ ] **Step 3: 생성된 두 route와 이미지 embed를 확인한다**
+- [x] **Step 3: 생성된 두 route와 이미지 embed를 확인한다**
 
 ```bash
 test -f dist/ko/blog/spring-modulith-publications-vs-outbox/index.html

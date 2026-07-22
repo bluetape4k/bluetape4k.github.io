@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1120" viewBox="0 0 1800 1120" role="img" aria-labelledby="title desc">
+  <title id="title">같은 애플리케이션 안의 publication과 외부 Outbox 전달 경계</title>
+  <desc id="desc">위쪽은 주문 승인 뒤 Spring Modulith publication이 fulfillment 리스너의 완료와 실패 재전송을 기록하는 같은 애플리케이션 안의 흐름이다. 아래쪽은 Outbox를 브로커와 외부 소비자까지 전달하는 별도 경계다.</desc>
+  <defs>
+    <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07101f" />
+      <stop offset="0.55" stop-color="#0c1730" />
+      <stop offset="1" stop-color="#14172d" />
+    </linearGradient>
+    <linearGradient id="localZone" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b2c43" stop-opacity="0.82" />
+      <stop offset="1" stop-color="#10213c" stop-opacity="0.62" />
+    </linearGradient>
+    <linearGradient id="externalZone" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2d2049" stop-opacity="0.74" />
+      <stop offset="1" stop-color="#201a3e" stop-opacity="0.62" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#020617" flood-opacity="0.56" />
+    </filter>
+    <marker id="arrowBlue" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 1 1 L 13 7 L 1 13 Z" fill="#58a6c9" />
+    </marker>
+    <marker id="arrowOrange" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 1 1 L 13 7 L 1 13 Z" fill="#f4a261" />
+    </marker>
+    <marker id="arrowPurple" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 1 1 L 13 7 L 1 13 Z" fill="#a78bfa" />
+    </marker>
+    <style>
+      .title { font-family: 'goorm Sans', 'Architects Daughter', sans-serif; font-size: 43px; font-weight: 700; fill: #f8fafc; }
+      .subtitle { font-family: 'goorm Sans Code', 'Comic Mono', monospace; font-size: 20px; fill: #a9b8d4; }
+      .zone-title { font-family: 'goorm Sans', 'Architects Daughter', sans-serif; font-size: 27px; font-weight: 700; fill: #f8fafc; }
+      .zone-subtitle { font-family: 'goorm Sans Code', 'Comic Mono', monospace; font-size: 16px; fill: #c7d3e7; }
+      .card-title { font-family: 'goorm Sans', 'Architects Daughter', sans-serif; font-size: 24px; font-weight: 700; fill: #f8fafc; }
+      .card-code { font-family: 'goorm Sans Code', 'Comic Mono', monospace; font-size: 17px; font-weight: 700; fill: #dcecff; }
+      .body { font-family: 'goorm Sans Code', 'Comic Mono', monospace; font-size: 16px; fill: #c7d3e7; }
+      .small { font-family: 'goorm Sans Code', 'Comic Mono', monospace; font-size: 14px; fill: #a9b8d4; }
+      .label { font-family: 'goorm Sans Code', 'Comic Mono', monospace; font-size: 15px; font-weight: 700; fill: #f8fafc; }
+      .connector { fill: none; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+      .local { stroke: #58a6c9; marker-end: url(#arrowBlue); }
+      .failure { stroke: #f4a261; marker-end: url(#arrowOrange); }
+      .external { stroke: #a78bfa; marker-end: url(#arrowPurple); }
+    </style>
+  </defs>
+
+  <rect width="1800" height="1120" rx="34" fill="url(#canvas)" />
+  <rect x="28" y="28" width="1744" height="1064" rx="30" fill="none" stroke="#263a5e" stroke-width="2" />
+  <text class="title" x="900" y="78" text-anchor="middle">같은 앱 안의 완료 추적과 앱 밖 전달은 다른 경계다</text>
+  <text class="subtitle" x="900" y="114" text-anchor="middle">Spring Modulith publication은 로컬 리스너를, Outbox는 외부 전달을 위한 상태를 남깁니다.</text>
+
+  <rect x="60" y="158" width="1680" height="492" rx="30" fill="url(#localZone)" stroke="#2e6f94" stroke-width="2" />
+  <text class="zone-title" x="102" y="210">같은 Spring Boot 애플리케이션 안</text>
+  <text class="zone-subtitle" x="102" y="240">commit 뒤 local listener가 끝났는지 기록하고, 실패한 작업을 다시 보냅니다.</text>
+
+  <path class="connector local" data-connector="orders-transaction" d="M 330 394 H 370" />
+  <path class="connector local" data-connector="transaction-event" d="M 630 394 H 680" />
+  <path class="connector local" data-connector="event-publication" d="M 980 394 H 1030" />
+  <path class="connector local" data-connector="publication-listener" d="M 1370 394 H 1420" />
+  <path class="connector failure" data-connector="listener-failure" d="M 1565 494 V 522 Q 1565 538 1549 538 H 1474 Q 1458 538 1458 554 V 570" />
+  <path class="connector failure" data-connector="failure-resubmit" d="M 1500 630 H 1530" />
+  <path class="connector local" data-connector="resubmit-listener" d="M 1635 570 V 542 Q 1635 526 1651 526 H 1670 Q 1686 526 1686 510 V 494" />
+
+  <g filter="url(#shadow)" aria-label="주문 승인">
+    <rect x="100" y="314" width="230" height="160" rx="22" fill="#14334b" stroke="#58a6c9" stroke-width="2" />
+    <text class="card-title" x="215" y="361" text-anchor="middle">Orders</text>
+    <text class="body" x="215" y="399" text-anchor="middle">주문 승인</text>
+    <text class="small" x="215" y="431" text-anchor="middle">APPROVED</text>
+  </g>
+
+  <g filter="url(#shadow)" aria-label="트랜잭션">
+    <rect x="370" y="314" width="260" height="160" rx="22" fill="#14334b" stroke="#58a6c9" stroke-width="2" />
+    <text class="card-title" x="500" y="361" text-anchor="middle">트랜잭션</text>
+    <text class="body" x="500" y="399" text-anchor="middle">주문 저장</text>
+    <text class="small" x="500" y="431" text-anchor="middle">같은 commit</text>
+  </g>
+
+  <g filter="url(#shadow)" aria-label="OrderApprovedEvent">
+    <rect x="680" y="314" width="300" height="160" rx="22" fill="#14334b" stroke="#58a6c9" stroke-width="2" />
+    <text class="card-code" x="830" y="361" text-anchor="middle">OrderApprovedEvent</text>
+    <text class="body" x="830" y="399" text-anchor="middle">애플리케이션 이벤트 발행</text>
+    <text class="small" x="830" y="431" text-anchor="middle">orderKey · customerId</text>
+  </g>
+
+  <g filter="url(#shadow)" aria-label="EVENT_PUBLICATION">
+    <rect x="1030" y="294" width="340" height="200" rx="24" fill="#183c55" stroke="#58a6c9" stroke-width="2" />
+    <text class="card-code" x="1200" y="345" text-anchor="middle">EVENT_PUBLICATION</text>
+    <text class="body" x="1200" y="385" text-anchor="middle">리스너별 처리 상태</text>
+    <text class="small" x="1200" y="417" text-anchor="middle">listener id · status · attempts</text>
+    <text class="small" x="1200" y="447" text-anchor="middle">event type · serialized event</text>
+  </g>
+
+  <g filter="url(#shadow)" aria-label="재고 예약 리스너">
+    <rect x="1420" y="294" width="290" height="200" rx="24" fill="#17372c" stroke="#82b366" stroke-width="2" />
+    <text class="card-code" x="1565" y="345" text-anchor="middle">fulfillment</text>
+    <text class="card-code" x="1565" y="376" text-anchor="middle">reserve-stock</text>
+    <text class="body" x="1565" y="417" text-anchor="middle">재고 예약 처리</text>
+    <text class="small" x="1565" y="447" text-anchor="middle">성공하면 완료</text>
+  </g>
+
+  <g filter="url(#shadow)" aria-label="실패한 publication">
+    <rect x="1280" y="570" width="220" height="120" rx="20" fill="#4a2f24" stroke="#f4a261" stroke-width="2" />
+    <text class="card-title" x="1390" y="614" text-anchor="middle">실패</text>
+    <text class="small" x="1390" y="650" text-anchor="middle">FAILED publication</text>
+  </g>
+
+  <g filter="url(#shadow)" aria-label="재전송">
+    <rect x="1530" y="570" width="210" height="120" rx="20" fill="#4a2f24" stroke="#f4a261" stroke-width="2" />
+    <text class="card-title" x="1635" y="614" text-anchor="middle">재전송</text>
+    <text class="small" x="1635" y="650" text-anchor="middle">resubmit</text>
+  </g>
+
+  <rect x="60" y="708" width="1680" height="332" rx="30" fill="url(#externalZone)" stroke="#7556a8" stroke-width="2" />
+  <text class="zone-title" x="102" y="760">애플리케이션 밖으로 전달</text>
+  <text class="zone-subtitle" x="102" y="790">다른 서비스·브로커·실행 환경으로 나갈 이벤트는 Outbox와 relay가 책임집니다.</text>
+
+  <path class="connector external" data-connector="external-orders-outbox" d="M 450 918 H 600" />
+  <path class="connector external" data-connector="outbox-broker" d="M 960 918 H 1030" />
+  <path class="connector external" data-connector="broker-consumer" d="M 1320 918 H 1430" />
+
+  <g filter="url(#shadow)" aria-label="주문 변경">
+    <rect x="170" y="838" width="280" height="160" rx="22" fill="#2b2149" stroke="#a78bfa" stroke-width="2" />
+    <text class="card-title" x="310" y="886" text-anchor="middle">Orders</text>
+    <text class="body" x="310" y="924" text-anchor="middle">업무 변경 저장</text>
+    <text class="small" x="310" y="956" text-anchor="middle">발행할 이벤트 생성</text>
+  </g>
+
+  <g filter="url(#shadow)" aria-label="Outbox">
+    <rect x="600" y="838" width="360" height="160" rx="22" fill="#2b2149" stroke="#a78bfa" stroke-width="2" />
+    <text class="card-title" x="780" y="886" text-anchor="middle">Outbox</text>
+    <text class="body" x="780" y="924" text-anchor="middle">외부로 보낼 이벤트 intent</text>
+    <text class="small" x="780" y="956" text-anchor="middle">relay가 다시 읽음</text>
+  </g>
+
+  <g filter="url(#shadow)" aria-label="브로커">
+    <rect x="1030" y="838" width="290" height="160" rx="22" fill="#2b2149" stroke="#a78bfa" stroke-width="2" />
+    <text class="card-title" x="1175" y="886" text-anchor="middle">브로커</text>
+    <text class="body" x="1175" y="924" text-anchor="middle">외부 전달 채널</text>
+    <text class="small" x="1175" y="956" text-anchor="middle">Kafka 등</text>
+  </g>
+
+  <g filter="url(#shadow)" aria-label="외부 소비자">
+    <rect x="1430" y="838" width="280" height="160" rx="22" fill="#2b2149" stroke="#a78bfa" stroke-width="2" />
+    <text class="card-title" x="1570" y="886" text-anchor="middle">외부 소비자</text>
+    <text class="body" x="1570" y="924" text-anchor="middle">다른 서비스</text>
+    <text class="small" x="1570" y="956" text-anchor="middle">다른 실행 환경</text>
+  </g>
+
+  <circle cx="690" cy="1074" r="7" fill="#58a6c9" />
+  <text class="small" x="708" y="1080">같은 애플리케이션 안의 완료·실패·재전송</text>
+  <circle cx="1110" cy="1074" r="7" fill="#a78bfa" />
+  <text class="small" x="1128" y="1080">외부 전달과 통합 복구</text>
+</svg>
