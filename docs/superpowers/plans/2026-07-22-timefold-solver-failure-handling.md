@@ -74,6 +74,6 @@ Expected: diff 오류 없음, Astro diagnostics 오류·경고 없음.
 
 한글 `/ko/blog/timefold-workshop-quickstarts-exposed-persistence/`와 영문 `/blog/timefold-workshop-quickstarts-exposed-persistence/`가 HTTP 200이고 새 제목과 표를 포함하는지 확인한다.
 
-- [ ] **Step 3: 커밋과 기존 PR 갱신**
+- [x] **Step 3: 커밋과 기존 PR 갱신**
 
 Lore 형식의 영문 커밋으로 변경을 묶고 현재 브랜치를 push한다. PR #251 본문의 검증 결과와 exact head를 갱신하고, CI·리뷰·스레드 상태를 다시 확인한다.
