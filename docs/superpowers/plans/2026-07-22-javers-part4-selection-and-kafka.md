@@ -199,7 +199,7 @@ git commit -m "Record JaVers selection guidance verification"
 
 Expected: a Lore-trailer commit records the completed plan and exact validation evidence.
 
-- [ ] **Step 5: Push and verify PR #252 metadata**
+- [x] **Step 5: Push and verify PR #252 metadata**
 
 Run:
 
@@ -210,9 +210,11 @@ gh pr view 252 --json number,headRefOid,baseRefName,body,labels,assignees,mergeS
 
 Expected: PR #252 points to the exact pushed head, retains its issue-derived labels and `debop` assignee, and its final Markdown `##` heading remains `## DoD Status`.
 
-- [ ] **Step 6: Preserve the delivery boundary**
+- [x] **Step 6: Preserve the delivery boundary**
 
 Do not merge PR #252 or deploy the site. Report the exact PR head and CI state only after the user explicitly requests that next side effect.
+
+PR evidence at `3690cbe0ffcace3b8a6a76b2530308a9e3b522a1`: base `develop`, assignee `debop`, labels `documentation` and `enhancement`, and a body whose final Markdown heading is `## DoD Status`. CI restarted for that head; merge and deployment were not requested.
 
 ## Plan Self-Review
 
