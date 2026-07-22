@@ -327,7 +327,7 @@ local preview: port 4326 returned 200 for /ko/blog/bluetape4k-javers-part4-audit
 **Files:**
 - Modify: `docs/superpowers/plans/2026-07-22-javers-part4-selection-and-kafka.md`
 
-- [ ] **Step 1: Push the finalized documentation commit**
+- [x] **Step 1: Push the finalized documentation commit**
 
 ```bash
 git push origin docs/issue-193-javers-audit-cost
@@ -335,13 +335,15 @@ git push origin docs/issue-193-javers-audit-cost
 
 Expected: the remote branch advances to the exact documentation head.
 
-- [ ] **Step 2: Verify PR authority and preserve the delivery boundary**
+- [x] **Step 2: Verify PR authority and preserve the delivery boundary**
 
 ```bash
 gh pr view 252 --json url,headRefOid,baseRefName,body,labels,assignees,mergeStateStatus,statusCheckRollup
 ```
 
 Expected: the PR uses `develop` as base, retains `debop`, `documentation`, and `enhancement`, and its final Markdown heading is `## DoD Status`. Do not merge or deploy.
+
+PR evidence after documentation delivery at `450aa0273f417905b6782bf8f5eb3dff8c8bc0a7`: PR #252 targets `develop`, retains assignee `debop` and labels `documentation` and `enhancement`, and its final Markdown heading remains `## DoD Status`. The new Deploy Website Build check is in progress; the PR was not merged and the site was not deployed by this task.
 
 ## Plan Self-Review
 
