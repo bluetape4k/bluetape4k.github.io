@@ -11,7 +11,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "examples"
   kind: "benchmark"
-  sourceCommit: "d6eb7f6e617535286959f850024052ad0ca96738"
+  sourceCommit: "3a97a3fc2f3525c3a3384d511a9adb8571b0b680"
   sourcePath: "docs/manual/ko/modules/protobuf-codec-benchmark.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -56,7 +56,10 @@ example이나 benchmark를 실행하기 전에 project task를 확인합니다.
 
 ## 권장 패턴
 
-README 근거는 **무엇을 측정하나**, **최근 로컬 결과**, **실행** 순서로 탐색할 수 있습니다. 이 항목으로 방향을 잡고 source와 test에서 동작을 확인합니다. 도입 범위는 좁게 유지하고 소유한 resource를 caller lifecycle에 연결합니다.
+정확한 17-cell matrix는 serializer, Redisson, Lettuce 경로를 비교합니다. 유지된 optimized candidate만
+allocation claim 대상이며 baseline, compatibility control, fallback cell, 롤백된 serializer decode cell은 claim에
+사용할 수 없습니다. 커밋된 issue #757 report에는 canonical run 2회가 있으며 Lettuce heap/direct allocation
+결과를 accepted로 판정하지만 zero-copy나 일반 throughput 향상을 증명하지는 않습니다.
 
 ## 연동
 
@@ -72,7 +75,9 @@ failure 의미는 artifact 이름이 아니라 아래 entry point와 test가 결
 
 ## 운영
 
-환경과 raw result를 기록하고 같은 조건의 run만 비교하며 variance와 allocation을 확인합니다. capacity, timeout, retry, shutdown 설정은 resource를 소유한 component 가까이에 둡니다. 누가 trade-off를 받아들였는지 알 수 없는 process-wide default는 피합니다.
+JMH JAR 하나를 build하고 hash와 file identity를 고정한 뒤 rebuild 없이 canonical profile을 두 번 실행합니다.
+동등한 환경만 비교하고 fail-closed runner가 accepted한 근거만 publish하며 delivery manifest에서 report를 다시
+생성합니다.
 
 ## 테스트
 
@@ -96,3 +101,4 @@ manual manifest에 등록된 전용 workshop path가 없습니다. 모듈 README
 
 - [모듈 README](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/benchmark/protobuf-codec-benchmark/README.ko.md)
 - [모듈 build](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/benchmark/protobuf-codec-benchmark/build.gradle.kts)
+- [커밋된 issue #757 report](../../../benchmarks/2026-07-18-protobuf-buffer-allocation.md)

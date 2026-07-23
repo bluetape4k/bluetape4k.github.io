@@ -9,7 +9,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "caching"
   kind: "library"
-  sourceCommit: "d6eb7f6e617535286959f850024052ad0ca96738"
+  sourceCommit: "3a97a3fc2f3525c3a3384d511a9adb8571b0b680"
   sourcePath: "docs/manual/en/modules/bluetape4k-lettuce/codecs-and-serialization.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -36,6 +36,26 @@ connection.sync().set("user:1", User(1, "Alice"))
 
 The default binary codec is LZ4+Fory. FastFory is not wire-compatible with Fory, has no fallback, and does not support cyclic object graphs. A codec switch therefore needs a new prefix, dual writes, or a deliberate cache reset.
 
+## Protobuf caller-owned targets
+
+With `bluetape4k-protobuf` present, `LettuceProtobufCodecs.protobuf()` and
+`trustedInternalProtobuf()` use the nullable `encodeValue(value, target)` extension seam to write uncompressed
+Protobuf messages into Lettuce's caller-owned `ByteBuf`. Ordinary codec methods stay final; opening
+`LettuceBinaryCodec` also exposes Kotlin-generated JVM bridges, so custom subclasses must preserve the serializer's
+wire and trust contract.
+
+```kotlin
+val codec = LettuceProtobufCodecs.protobuf<MyBluetapeMessage>()
+val customPrefixCodec = LettuceBinaryCodec<MyMessage>(
+    ProtobufSerializer(allowedClassPrefixes = setOf("com.mycompany.proto.")),
+)
+```
+
+The default factory accepts only its default prefixes. The explicit custom-prefix codec, compressed factories,
+fallback values, and single-argument `ByteBuffer` methods retain copied compatibility behavior. On target-encode
+failure, `writerIndex` is unchanged, but capacity or attempted bytes may have changed; clear/reinitialize the range or
+discard the buffer. Existing callers need no migration. Java uses `LettuceProtobufCodecs.INSTANCE.protobuf()`.
+
 ## Untrusted payloads
 
 Use object deserializers only for trusted values written by the application. If external actors can modify Redis bytes, narrow Redis permissions and prefer primitives or JSON with an explicit type contract. Compression may cost more than it saves for small values, so benchmark representative payloads.
@@ -44,6 +64,7 @@ Use object deserializers only for trusted values written by the application. If 
 
 - [`LettuceBinaryCodecs.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/codec/LettuceBinaryCodecs.kt)
 - [`LettuceJsonCodec.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/main/kotlin/io/bluetape4k/redis/lettuce/codec/LettuceJsonCodec.kt)
+- [`LettuceProtobufCodecs.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/io/protobuf/src/main/kotlin/io/bluetape4k/protobuf/serializers/redis/LettuceProtobufCodecs.kt)
 - [`FastForyCompatibilityTest.kt`](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/infra/lettuce/src/test/kotlin/io/bluetape4k/redis/lettuce/codec/FastForyCompatibilityTest.kt)
 
 Continue with [Maps and cache loading](/manual/bluetape4k-projects/1.11/modules/bluetape4k-lettuce/maps-and-cache-loading/).

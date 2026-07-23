@@ -7,7 +7,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "overview"
   kind: "guide"
-  sourceCommit: "d6eb7f6e617535286959f850024052ad0ca96738"
+  sourceCommit: "3a97a3fc2f3525c3a3384d511a9adb8571b0b680"
   sourcePath: "docs/manual/en/modules/bluetape4k-spring-boot-cassandra/write-options-and-batches.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
