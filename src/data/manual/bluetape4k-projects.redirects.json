@@ -1009,6 +1009,10 @@
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/protobuf-codec-benchmark/"
     },
     {
+      "source": "/ko/manual/bluetape4k-projects/modules/serializer-benchmark/",
+      "target": "/ko/manual/bluetape4k-projects/1.11/modules/serializer-benchmark/"
+    },
+    {
       "source": "/ko/manual/bluetape4k-projects/modules/web-framework-benchmark/",
       "target": "/ko/manual/bluetape4k-projects/1.11/modules/web-framework-benchmark/"
     },
@@ -2019,6 +2023,10 @@
     {
       "source": "/manual/bluetape4k-projects/modules/protobuf-codec-benchmark/",
       "target": "/manual/bluetape4k-projects/1.11/modules/protobuf-codec-benchmark/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/serializer-benchmark/",
+      "target": "/manual/bluetape4k-projects/1.11/modules/serializer-benchmark/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/web-framework-benchmark/",

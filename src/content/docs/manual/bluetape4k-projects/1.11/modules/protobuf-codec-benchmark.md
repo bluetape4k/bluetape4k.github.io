@@ -11,7 +11,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "examples"
   kind: "benchmark"
-  sourceCommit: "d6eb7f6e617535286959f850024052ad0ca96738"
+  sourceCommit: "3a97a3fc2f3525c3a3384d511a9adb8571b0b680"
   sourcePath: "docs/manual/en/modules/protobuf-codec-benchmark.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -56,7 +56,10 @@ No Kotlin/Java source file is registered for this module. Use the build model an
 
 ## Patterns
 
-The README evidence is organized around **What It Measures**, **Latest Local Result**, and **Run**. Use those topics as a navigation map, then confirm behavior in source and tests. Keep adoption narrow and connect owned resources to the caller lifecycle.
+The exact 17-cell matrix compares serializer, Redisson, and Lettuce paths. Only retained optimized candidates can make
+an allocation claim; baselines, compatibility controls, fallback cells, and rolled-back serializer decode cells are
+claim-ineligible. The committed issue #757 report contains two canonical runs. It supports the accepted Lettuce
+heap/direct allocation result but does not prove zero-copy or a general throughput improvement.
 
 ## Integrations
 
@@ -72,7 +75,9 @@ Failure semantics are defined by the linked entry points and tests, not inferred
 
 ## Operations
 
-Record environment and raw results; compare only equivalent runs and watch variance and allocation. Keep capacity, timeout, retry, and shutdown settings next to the component that owns the resource; avoid process-wide defaults that hide which caller accepted the trade-off.
+Build one JMH JAR, pin its hash and file identity, run the canonical profile twice without rebuilding, and compare only
+equivalent environments. Publish only evidence accepted by the fail-closed runner and regenerate the report from its
+delivery manifest.
 
 ## Testing
 
@@ -96,3 +101,4 @@ This page documents the repository state represented by the linked source and te
 
 - [Module README](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/benchmark/protobuf-codec-benchmark/README.md)
 - [Module build](https://github.com/bluetape4k/bluetape4k-projects/blob/1.11.0/benchmark/protobuf-codec-benchmark/build.gradle.kts)
+- [Committed issue #757 report](../../../benchmarks/2026-07-18-protobuf-buffer-allocation.md)

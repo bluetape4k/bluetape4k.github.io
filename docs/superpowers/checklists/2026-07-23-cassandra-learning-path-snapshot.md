@@ -1,0 +1,84 @@
+# Cassandra 학습 경로 Site 스냅샷 체크리스트
+
+## 범위
+
+- 유형: Type E — `bluetape4k-projects` 1.11 수동 매뉴얼 스냅샷 갱신
+- source: `bluetape4k-projects` `develop`의 `3a97a3fc2f3525c3a3384d511a9adb8571b0b680`
+- release 기준: `1.11.0` (`68ab4203ce35fc7aa9831aa098ef53c8a8b63434`)
+- Site 작업 브랜치: `docs/cassandra-learning-path-snapshot` → `develop`
+- 제외: 런타임/API/의존성 변경, 다이어그램·자산 신규 제작, Site PR/merge (별도 권한)
+
+## 실행 항목
+
+- [x] **CG-01 — 권한과 실행 계약을 재확인한다**
+  - **Action:** 두 저장소의 `AGENTS.md`, Type E/Writer 계약, 상태와 승인된 2단계 계획을 읽는다.
+  - **Evidence:** `bluetape4k-projects` PR #1075 merge 뒤 Site 1.11 snapshot 갱신이 승인되었고, Site PR 생성은 별도 정확한 ref 권한이 필요하다.
+  - **Failure:** 권한이 모호하면 PR 생성 전에 중단한다.
+- [x] **CG-02 — 현재 GitHub 및 동기화 근거를 확인한다**
+  - **Action:** Site 기본 브랜치와 열려 있는 PR, Projects 병합 SHA와 1.11.0 release ref를 조회한다.
+  - **Evidence:** Site `origin/develop`=`d10e94a`; Projects authoring source=`3a97a3f`, release ref=`68ab420`.
+  - **Failure:** 오래되었거나 불일치한 source를 사용하지 않는다.
+- [x] **CG-03 — 사용자 작업과 worktree 경계를 보호한다**
+  - **Action:** 진행 중인 Site worktree를 보존하고 `origin/develop`에서 전용 worktree를 만든다.
+  - **Evidence:** 기존 `docs/timefold-workshop-persistence`, #198, #253 worktree는 미변경; 전용 worktree 경로는 `.worktrees/docs-cassandra-learning-path-snapshot`.
+  - **Failure:** 관련 없는 변경을 삭제·이동하지 않는다.
+- [x] **CG-04 — 공개 문서와 locale 경계를 적용한다**
+  - **Action:** source의 EN/KO manual 쌍을 동기화하고 정책/런타임 surface를 제외한다.
+  - **Evidence:** 변경 대상은 generated `src/content/docs/{manual,ko/manual}/bluetape4k-projects/1.11` 및 catalog data뿐이다.
+  - **Failure:** locale drift 또는 비문서 변경이 있으면 수정한다.
+- [x] **CG-05 — 기존 snapshot generator를 재사용한다**
+  - **Action:** 새 변환기를 만들지 않고 `scripts/manual/sync-manual.mjs`를 사용한다.
+  - **Evidence:** `npm run sync:manual -- --refresh 1.11.0 --repository bluetape4k-projects --source ...`.
+  - **Failure:** 수동 생성물 편집이나 새 의존성을 추가하지 않는다.
+- [x] **CG-06 — 공개 문서 계약을 반영한다**
+  - **Action:** Cassandra overview의 학습 경로와 legacy anchor, source manifest/catalog를 갱신한다.
+  - **Evidence:** EN/KO Cassandra overview, 5개 chapter route, generated manifest/snapshot/redirect catalog.
+  - **Failure:** route 또는 locale 짝이 누락되면 delivery를 차단한다.
+- [x] **CG-07 — generator와 Site 검증을 실행한다**
+  - **Action:** snapshot check, manual check, diff check, Site build 및 route 검증을 수행한다.
+  - **Evidence:** `git diff --check`, `npm run sync:manual -- --check` (8 repositories), `npm run check:manual` (8 repositories), `npm run build` (0 errors/warnings/hints), EN/KO Cassandra route/content check PASS.
+  - **Failure:** 실패하면 원인을 고치고 영향을 받은 검증을 재실행한다.
+- [x] **CG-08 — 무거운 검증 직렬화를 확인한다**
+  - **Action:** Testcontainers/native/benchmark 동시 실행 여부를 검토한다.
+  - **Evidence:** 문서 snapshot만 변경하므로 해당 검증은 N/A이며 실행하지 않았다.
+  - **Failure:** 해당 검증이 추가되면 단일 순서로 실행한다.
+- [x] **CG-09 — lesson gate를 평가한다**
+  - **Action:** recovery와 source-before-site 규칙을 중복 없이 확인한다.
+  - **Evidence:** Projects의 `docs/lessons/2026-07-23-cassandra-learning-path-recovery.md`가 source manual merge 후 Site snapshot을 갱신해야 한다는 재사용 가능한 교훈을 이미 기록한다.
+  - **Failure:** 새 교훈이 발견되면 Site에 중복하지 않고 적절한 source 저장소에 기록한다.
+- [x] **CG-10 — pre-PR 증거를 수렴한다**
+  - **Action:** 최종 diff를 review하고 P0/P1=0, 검증 결과, Lore commit SHA를 기록한다.
+  - **Evidence:** generator 변경 513 tracked + 3 new paths를 검토했다. 실제 본문 변경은 Cassandra, Lettuce/Protobuf, Protobuf benchmark의 EN/KO 쌍 및 generated catalog에 한정되고 나머지는 source commit 갱신이다. P0=0/P1=0; Lore commit SHA는 바로 뒤 commit에 기록된다.
+  - **Failure:** PR 생성 전에 수리한다.
+- [ ] **CG-11 — Site PR 생성 권한을 확인한다**
+  - **Action:** repository/base/head가 명시된 현재 권한을 확인한다.
+  - **Evidence:** 대기.
+  - **Failure:** 명시 권한 전에는 push/PR 생성하지 않는다.
+- [ ] **CG-12 — 정확한 head를 publish한다**
+  - **Action:** 승인된 branch를 push하고 local/remote SHA를 대조한다.
+  - **Evidence:** 대기.
+  - **Failure:** 불일치하면 PR 생성 전에 수리한다.
+- [ ] **CG-13 — PR metadata를 생성·검증한다**
+  - **Action:** 영어 PR body와 최종 `## DoD Status`를 생성하고 live read-back한다.
+  - **Evidence:** 대기.
+  - **Failure:** CI 대기 전에 metadata를 수리한다.
+- [ ] **CG-14 — exact-head CI와 현행 review를 통과한다**
+  - **Action:** green CI 후 reviews/threads를 재조회한다.
+  - **Evidence:** 대기.
+  - **Failure:** stale/failed 결과는 repair로 되돌린다.
+- [ ] **CG-15 — merge-ready를 보고한다**
+  - **Action:** 검증 count와 exact PR/head를 사용자에게 보고한다.
+  - **Evidence:** 대기.
+  - **Failure:** CG-16 전에 merge-ready를 주장하지 않는다.
+- [ ] **CG-16 — fresh merge 승인을 받는다**
+  - **Action:** CG-15 이후의 명시 승인을 받는다.
+  - **Evidence:** 대기.
+  - **Failure:** auto-merge를 사용하지 않는다.
+- [ ] **CG-17 — merge를 실행·검증한다**
+  - **Action:** 승인된 전략으로 merge하고 live SHA를 읽는다.
+  - **Evidence:** 대기.
+  - **Failure:** 실패 시 진단하고 다른 SHA를 대체하지 않는다.
+- [ ] **CG-18 — local sync와 cleanup을 수행한다**
+  - **Action:** 기본 checkout을 동기화하고 정책상 병합 worktree만 정리한다.
+  - **Evidence:** 대기.
+  - **Failure:** 모호한 branch/worktree는 보존한다.

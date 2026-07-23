@@ -11,7 +11,7 @@ manual:
   repository: "bluetape4k-projects"
   group: "data"
   kind: "library"
-  sourceCommit: "d6eb7f6e617535286959f850024052ad0ca96738"
+  sourceCommit: "3a97a3fc2f3525c3a3384d511a9adb8571b0b680"
   sourcePath: "docs/manual/en/modules/bluetape4k-cassandra.md"
   minorVersion: "1.11"
   releaseRef: "1.11.0"
@@ -22,9 +22,13 @@ manual:
 ---
 
 
-## What this library owns
+<span id="what-this-library-owns"></span>
 
-`bluetape4k-cassandra` adds Kotlin session factories, coroutine queries, and row and statement extensions to the Apache Cassandra Java Driver. It does not operate the Cassandra cluster or its schema. The application still chooses contact points, credentials, keyspaces, and when sessions end.
+## Features
+
+`bluetape4k-cassandra` adds Kotlin session factories, session-reuse boundaries, coroutine queries, row mapping, and statement extensions to the Apache Cassandra Java Driver. It removes repetitive application code from short-lived sessions through asynchronous multi-page reads and conversion of driver values into Kotlin types.
+
+The module does not operate the Cassandra cluster or its schema. The application still owns contact points, credentials, keyspaces, consistency, and session shutdown.
 
 ## Decisions before adopting it
 
@@ -78,11 +82,18 @@ val releaseVersion = cqlSessionOf(
 
 ## Learning path
 
-1. [CqlSession lifecycle and cache boundaries](/manual/bluetape4k-projects/1.11/modules/bluetape4k-cassandra/session-lifecycle/)
-2. [Coroutine queries](/manual/bluetape4k-projects/1.11/modules/bluetape4k-cassandra/coroutine-queries/)
-3. [Rows and data mapping](/manual/bluetape4k-projects/1.11/modules/bluetape4k-cassandra/rows-data-mapping/)
-4. [Statements and query builder](/manual/bluetape4k-projects/1.11/modules/bluetape4k-cassandra/statements-query-builder/)
-5. [Operations and testing](/manual/bluetape4k-projects/1.11/modules/bluetape4k-cassandra/operations-testing/)
+The five chapters below do more than list API names. Each chapter starts with the problem, then connects runnable examples, API selection rules, failure and operational boundaries, and the supporting 1.11.0 source and tests. Read them in order when adopting the module, or jump directly to the chapter that matches a problem in an existing application.
+
+1. **[CqlSession lifecycle and cache boundaries](/manual/bluetape4k-projects/1.11/modules/bluetape4k-cassandra/session-lifecycle/)**
+   Start with the smallest `use`-scoped session example, then move to shared-session reuse with `CqlSessionProvider` and `CqlSessionIdentity`. This chapter helps you decide session ownership, cache identity, and where 1.11.0 bootstrap settings belong.
+2. **[Coroutine queries](/manual/bluetape4k-projects/1.11/modules/bluetape4k-cassandra/coroutine-queries/)**
+   Follow single-result and multi-page examples built with `executeSuspending`, `prepareSuspending`, and `AsyncResultSet.asFlow()`. See how cancellation, mapper failures, and next-page fetch failures reach the caller.
+3. **[Rows and data mapping](/manual/bluetape4k-projects/1.11/modules/bluetape4k-cassandra/rows-data-mapping/)**
+   Map `Row`, collections, tuples, UDTs, and `CqlDuration` into Kotlin values and domain objects. Learn when a null may become a domain default and when absence must remain explicit.
+4. **[Statements and query builder](/manual/bluetape4k-projects/1.11/modules/bluetape4k-cassandra/statements-query-builder/)**
+   Compare raw CQL, prepared and bound statements, and QueryBuilder for the same work. Choose where bind markers, consistency, timeout, page size, and keyspace should remain visible.
+5. **[Operations and testing](/manual/bluetape4k-projects/1.11/modules/bluetape4k-cassandra/operations-testing/)**
+   Connect keyspace side effects, session shutdown, paging failures, and Testcontainers verification. Decide whether production DDL authority belongs to the application or deployment and diagnose representative failures.
 
 ## Recommended patterns
 
