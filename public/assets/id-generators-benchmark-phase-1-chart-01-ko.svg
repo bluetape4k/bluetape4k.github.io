@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1460" height="814" viewBox="0 0 1460 814">
+<defs><style>
+.canvas{fill:#F6F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
+.title{font-family:"goorm Sans","Comic Sans MS",cursive;font-size:40px;fill:#22344A;font-weight:400}
+.subtitle,.axis,.legend,.caption{font-family:"goorm Sans Code","goorm Sans","Comic Sans MS",sans-serif;font-size:16px;fill:#536476;font-weight:400}
+.label{font-family:"goorm Sans Code","goorm Sans","Comic Sans MS",sans-serif;font-size:14px;fill:#3F5269;font-weight:400}
+.value{font-family:"goorm Sans Code","goorm Sans","Comic Sans MS",sans-serif;font-size:13px;fill:#3F5269;font-weight:400}
+.winner{font-family:"goorm Sans Code","goorm Sans","Comic Sans MS",sans-serif;font-size:13px;fill:#22344A;font-weight:700}
+.section{font-family:"goorm Sans","Comic Sans MS",cursive;font-size:22px;fill:#22344A;font-weight:400}
+.grid{stroke:#D7E2EC;stroke-width:1;stroke-dasharray:4 8}
+.scope단일 실행{fill:#EEF6FF;stroke:#C9DDF6;stroke-width:1}
+.scope동시 실행{fill:#FFF3E3;stroke:#F2C88C;stroke-width:1}
+.section.single{fill:#2563EB}.section.concurrent{fill:#B45309}
+.scopeLegend{font-family:"goorm Sans Code","goorm Sans","Comic Sans MS",sans-serif;font-size:14px;fill:#536476;font-weight:400}
+</style></defs>
+<rect class="canvas" width="1460" height="814"/>
+<rect class="frame" x="34" y="28" width="1392" height="758" rx="24"/>
+<text class="title" x="730" y="82" text-anchor="middle">ID Generator Benchmark Phase 1</text>
+<text class="subtitle" x="730" y="118" text-anchor="middle">첫 Go 구현과 기존 Kotlin idgenerators 비교, ID당 normalized ns</text>
+<text class="axis" x="356" y="145">log scale, ns/id</text>
+<rect x="548" y="132" width="22" height="14" rx="4" fill="#3B82F6" stroke="#64748B"/>
+<text class="legend" x="578" y="144">Go</text>
+<rect x="656" y="132" width="22" height="14" rx="4" fill="#F59E0B" stroke="#64748B"/>
+<text class="legend" x="686" y="144">Kotlin</text>
+<rect x="810" y="129" width="88" height="20" rx="10" fill="#EEF6FF" stroke="#C9DDF6"/>
+<text class="scopeLegend" x="854" y="144" text-anchor="middle">단일 실행</text>
+<rect x="928" y="129" width="118" height="20" rx="10" fill="#FFF3E3" stroke="#F2C88C"/>
+<text class="scopeLegend" x="987" y="144" text-anchor="middle">동시 실행</text>
+<rect class="scope단일 실행" x="78" y="154" width="1294" height="276" rx="16"/>
+<rect class="scope동시 실행" x="78" y="418" width="1294" height="276" rx="16"/>
+<text class="section single" x="102" y="182">단일 실행</text>
+<text class="label" x="315" y="182" text-anchor="end">Snowflake</text>
+<rect x="356" y="167" width="33" height="16" rx="5" fill="#3B82F6" stroke="#64748B"/>
+<rect x="356" y="187" width="580" height="16" rx="5" fill="#F59E0B" stroke="#64748B"/>
+<text class="value" x="1140" y="180">11.98 / 244.06</text>
+<text class="winner" x="1320" y="180">Go*</text>
+<text class="label" x="315" y="226" text-anchor="end">ULID monotonic</text>
+<rect x="356" y="211" width="341" height="16" rx="5" fill="#3B82F6" stroke="#64748B"/>
+<rect x="356" y="231" width="238" height="16" rx="5" fill="#F59E0B" stroke="#64748B"/>
+<text class="value" x="1140" y="224">65.45 / 37.01</text>
+<text class="winner" x="1320" y="224">Kotlin</text>
+<text class="label" x="315" y="270" text-anchor="end">UUID v4 reused</text>
+<rect x="356" y="255" width="566" height="16" rx="5" fill="#3B82F6" stroke="#64748B"/>
+<rect x="356" y="275" width="409" height="16" rx="5" fill="#F59E0B" stroke="#64748B"/>
+<text class="value" x="1140" y="268">225.80 / 95.09</text>
+<text class="winner" x="1320" y="268">Kotlin</text>
+<text class="label" x="315" y="314" text-anchor="end">UUID v7 reused</text>
+<rect x="356" y="299" width="586" height="16" rx="5" fill="#3B82F6" stroke="#64748B"/>
+<rect x="356" y="319" width="156" height="16" rx="5" fill="#F59E0B" stroke="#64748B"/>
+<text class="value" x="1140" y="312">251.20 / 23.59</text>
+<text class="winner" x="1320" y="312">Kotlin</text>
+<text class="label" x="315" y="358" text-anchor="end">KSUID millis</text>
+<rect x="356" y="343" width="630" height="16" rx="5" fill="#3B82F6" stroke="#64748B"/>
+<rect x="356" y="363" width="512" height="16" rx="5" fill="#F59E0B" stroke="#64748B"/>
+<text class="value" x="1140" y="356">320.60 / 167.80</text>
+<text class="winner" x="1320" y="356">Kotlin</text>
+<text class="label" x="315" y="402" text-anchor="end">KSUID seconds</text>
+<rect x="356" y="387" width="665" height="16" rx="5" fill="#3B82F6" stroke="#64748B"/>
+<rect x="356" y="407" width="533" height="16" rx="5" fill="#F59E0B" stroke="#64748B"/>
+<text class="value" x="1140" y="400">389.70 / 187.93</text>
+<text class="winner" x="1320" y="400">Kotlin</text>
+<text class="section concurrent" x="102" y="446">동시 실행</text>
+<text class="label" x="315" y="446" text-anchor="end">Snowflake</text>
+<rect x="356" y="431" width="404" height="16" rx="5" fill="#3B82F6" stroke="#64748B"/>
+<rect x="356" y="451" width="658" height="16" rx="5" fill="#F59E0B" stroke="#64748B"/>
+<text class="value" x="1140" y="444">92.37 / 373.89</text>
+<text class="winner" x="1320" y="444">Go*</text>
+<text class="label" x="315" y="490" text-anchor="end">ULID monotonic</text>
+<rect x="356" y="475" width="535" height="16" rx="5" fill="#3B82F6" stroke="#64748B"/>
+<rect x="356" y="495" width="674" height="16" rx="5" fill="#F59E0B" stroke="#64748B"/>
+<text class="value" x="1140" y="488">190.50 / 408.56</text>
+<text class="winner" x="1320" y="488">Go</text>
+<text class="label" x="315" y="534" text-anchor="end">UUID v4 reused</text>
+<rect x="356" y="519" width="730" height="16" rx="5" fill="#3B82F6" stroke="#64748B"/>
+<rect x="356" y="539" width="635" height="16" rx="5" fill="#F59E0B" stroke="#64748B"/>
+<text class="value" x="1140" y="532">557.50 / 329.69</text>
+<text class="winner" x="1320" y="532">Kotlin</text>
+<text class="label" x="315" y="578" text-anchor="end">UUID v7 reused</text>
+<rect x="356" y="563" width="659" height="16" rx="5" fill="#3B82F6" stroke="#64748B"/>
+<rect x="356" y="583" width="444" height="16" rx="5" fill="#F59E0B" stroke="#64748B"/>
+<text class="value" x="1140" y="576">376.40 / 115.42</text>
+<text class="winner" x="1320" y="576">Kotlin</text>
+<text class="label" x="315" y="622" text-anchor="end">KSUID millis</text>
+<rect x="356" y="607" width="753" height="16" rx="5" fill="#3B82F6" stroke="#64748B"/>
+<rect x="356" y="627" width="668" height="16" rx="5" fill="#F59E0B" stroke="#64748B"/>
+<text class="value" x="1140" y="620">632.30 / 396.50</text>
+<text class="winner" x="1320" y="620">Kotlin</text>
+<text class="label" x="315" y="666" text-anchor="end">KSUID seconds</text>
+<rect x="356" y="651" width="760" height="16" rx="5" fill="#3B82F6" stroke="#64748B"/>
+<rect x="356" y="671" width="665" height="16" rx="5" fill="#F59E0B" stroke="#64748B"/>
+<text class="value" x="1140" y="664">656.30 / 388.70</text>
+<text class="winner" x="1320" y="664">Kotlin</text>
+<text class="axis" x="1140" y="145">Go / Kotlin</text>
+<text class="axis" x="1320" y="145">더 빠름</text>
+<rect x="88" y="730" width="1284" height="62" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
+<text class="caption" x="730" y="754" text-anchor="middle">Source: Issue #168 첫 비교. ns/id는 낮을수록 빠르며 Snowflake workload는 clock model이 다릅니다.</text>
+<text class="caption" x="730" y="778" text-anchor="middle">Phase 1에서는 Go가 자동으로 앞서지 않았습니다. 여러 string ID family에서는 Kotlin이 이미 앞섰습니다.</text>
+</svg>
