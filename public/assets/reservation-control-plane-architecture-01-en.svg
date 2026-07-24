@@ -73,14 +73,14 @@
   <g id="clients">
     <rect class="card card-blue" x="108" y="290" width="260" height="132" rx="18"/>
     <text class="cardTitle" x="238" y="335" text-anchor="middle">Clients</text>
-    <text class="detail" x="238" y="370" text-anchor="middle">Alice · Bob</text>
-    <text class="detail" x="238" y="397" text-anchor="middle">Idempotency-Key · Owner</text>
+    <text class="detail" x="238" y="370" text-anchor="middle">Alice / Bob</text>
+    <text class="detail" x="238" y="397" text-anchor="middle">Idempotency-Key / Owner</text>
   </g>
 
   <g id="http-api">
     <rect class="card card-blue" x="108" y="600" width="260" height="150" rx="18"/>
     <text class="cardTitle" x="238" y="647" text-anchor="middle">Reservation HTTP API</text>
-    <text class="detail" x="238" y="682" text-anchor="middle">hold · cancel · waitlist</text>
+    <text class="detail" x="238" y="682" text-anchor="middle">hold / cancel / waitlist</text>
     <text class="detail" x="238" y="710" text-anchor="middle">offer acceptance</text>
   </g>
 
@@ -108,7 +108,7 @@
   <g id="idempotency">
     <rect class="card card-green" x="978" y="290" width="470" height="124" rx="18"/>
     <text class="cardTitle" x="1213" y="335" text-anchor="middle">HTTP idempotency</text>
-    <text class="detail" x="1213" y="369" text-anchor="middle">New · Takeover · Replay · Conflict · InProgress</text>
+    <text class="detail" x="1213" y="369" text-anchor="middle">New / Takeover / Replay / Conflict / InProgress</text>
     <text class="detail" x="1213" y="395" text-anchor="middle">mutation and replayable body commit together</text>
   </g>
 
@@ -131,8 +131,8 @@
   <g id="audit-outbox">
     <rect class="card card-teal" x="978" y="700" width="470" height="140" rx="18"/>
     <text class="cardTitle" x="1213" y="746" text-anchor="middle">Audit + notification outbox</text>
-    <text class="detail" x="1213" y="781" text-anchor="middle">stable delivery id · worker claim lease</text>
-    <text class="detail" x="1213" y="809" text-anchor="middle">bounded retry · crash recovery intent</text>
+    <text class="detail" x="1213" y="781" text-anchor="middle">stable delivery id / worker claim lease</text>
+    <text class="detail" x="1213" y="809" text-anchor="middle">bounded retry / crash recovery intent</text>
   </g>
 
   <g id="expiry-sweeper">
@@ -147,7 +147,7 @@
     <rect class="card card-teal" x="1590" y="650" width="220" height="150" rx="18"/>
     <text class="cardTitle" x="1700" y="697" text-anchor="middle">Notification worker</text>
     <text class="detail" x="1700" y="732" text-anchor="middle">claim delivery</text>
-    <text class="detail" x="1700" y="760" text-anchor="middle">send · retry</text>
+    <text class="detail" x="1700" y="760" text-anchor="middle">send / retry</text>
     <text class="detail" x="1700" y="786" text-anchor="middle">recover after crash</text>
   </g>
 
