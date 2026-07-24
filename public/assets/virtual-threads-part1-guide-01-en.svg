@@ -2,7 +2,7 @@
   <title id="title">Virtual Threads guide flow</title>
   <desc id="desc">A Graphviz-derived flow showing request tasks, virtual-thread execution, blocking I/O, resource limits, diagnostics, and cleanup.</desc>
   <defs>
-    <marker id="arrow-vt1" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth">
+    <marker id="arrow-vt1" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="userSpaceOnUse">
       <path d="M1,1 L8,4.5 L1,8 Z" fill="#5c7d70"/>
     </marker>
   </defs>
@@ -39,11 +39,11 @@
   </g>
 
   <g fill="none" stroke="#5c7d70" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-vt1)">
-    <path d="M266 292 H324"/>
-    <path d="M514 292 H572"/>
-    <path d="M756 292 H814"/>
-    <path d="M917 344 V384 H780 V420"/>
-    <path d="M1020 292 H1060 V420"/>
+    <path class="connector" d="M266 292 H324"/>
+    <path class="connector" d="M514 292 H572"/>
+    <path class="connector" d="M756 292 H814"/>
+    <path class="connector" d="M917 344 V370 Q917 384 903 384 H794 Q780 384 780 398 V420"/>
+    <path class="connector" d="M1020 292 H1040 Q1060 292 1060 312 V420"/>
   </g>
 
   <g font-family="Comic Mono, monospace" font-size="16" fill="#25493d">

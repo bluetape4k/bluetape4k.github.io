@@ -2,7 +2,7 @@
   <title id="title">Virtual Threads SPI across Java 21 and Java 25</title>
   <desc id="desc">A Graphviz-derived ServiceLoader module layout with a common API, Java 25 and Java 21 providers, and platform fallback.</desc>
   <defs>
-    <marker id="arrow-vt3" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth">
+    <marker id="arrow-vt3" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="userSpaceOnUse">
       <path d="M1,1 L8,4.5 L1,8 Z" fill="#577789"/>
     </marker>
   </defs>
@@ -35,10 +35,10 @@
   </g>
 
   <g fill="none" stroke="#577789" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-vt3)">
-    <path d="M312 317 H388"/>
-    <path d="M646 317 H700 V231 H750"/>
-    <path d="M646 317 H700 V355 H750"/>
-    <path d="M646 317 H700 V479 H750"/>
+    <path class="connector" d="M312 317 H388"/>
+    <path class="connector" d="M646 285 H670 Q684 285 684 271 V245 Q684 231 698 231 H750"/>
+    <path class="connector" d="M646 317 H690 Q704 317 704 331 V341 Q704 355 718 355 H750"/>
+    <path class="connector" d="M646 349 H702 Q716 349 716 363 V465 Q716 479 730 479 H750"/>
   </g>
 
   <g font-family="Comic Mono, monospace" font-size="16" fill="#2b414d">

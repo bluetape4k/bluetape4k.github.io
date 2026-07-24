@@ -2,7 +2,7 @@
   <title id="title">Virtual Threads production rules</title>
   <desc id="desc">A Graphviz-derived flow of virtual thread usage rules from bluetape4k-workshop: blocking synchronous code, thread-per-task execution, semaphore limits, scoped values, and lock discipline.</desc>
   <defs>
-    <marker id="arrow-vt2" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth">
+    <marker id="arrow-vt2" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="userSpaceOnUse">
       <path d="M1,1 L8,4.5 L1,8 Z" fill="#5c7d70"/>
     </marker>
   </defs>
@@ -34,10 +34,10 @@
   </g>
 
   <g fill="none" stroke="#5c7d70" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-vt2)">
-    <path d="M278 302 H338"/>
-    <path d="M526 302 H586"/>
-    <path d="M774 302 H804 V262 H834"/>
-    <path d="M774 302 H804 V434 H834"/>
+    <path class="connector" d="M278 302 H338"/>
+    <path class="connector" d="M526 302 H586"/>
+    <path class="connector" d="M774 286 H796 Q810 286 810 272 V262 Q810 248 824 248 H834"/>
+    <path class="connector" d="M774 318 H796 Q810 318 810 332 V420 Q810 434 824 434 H834"/>
   </g>
 
   <g font-family="Comic Mono, monospace" font-size="17" fill="#25493d">
