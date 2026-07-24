@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="560" viewBox="0 0 1280 560" role="img">
+<title>Virtual Threads for JDBC Workloads</title>
+<desc>Representative measured improvements from the workshop benchmark note.</desc>
+<defs>
+  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#1D3148" flood-opacity="0.12"/></filter>
+  <style>
+    .bg{fill:#F7F9FC}.frame{fill:#FFFFFF;stroke:#D6E2ED;stroke-width:2}
+    .title{font-family:"Architects Daughter";font-size:42px;fill:#21334A;font-weight:700}
+    .subtitle,.body,.small,.tiny,.axisLabel{font-family:"Comic Mono";fill:#34465B}
+    .subtitle{font-size:16px}.body{font-size:14px}.small{font-size:12px;fill:#657386}.tiny{font-size:11px;fill:#657386}
+    .label{font-family:"Architects Daughter";font-size:23px;fill:#21334A;font-weight:700}
+    .card{filter:url(#shadow);stroke-width:2}
+    .axis{stroke:#B9C7D8;stroke-width:1.4}.grid{stroke:#CAD6E4;stroke-width:1;stroke-dasharray:4 6}
+  </style>
+</defs>
+<rect class="bg" width="1280" height="560"/>
+<rect class="frame" x="34" y="28" width="1212" height="504" rx="26"/>
+<text class="title" x="70" y="82">Virtual Threads for JDBC Workloads</text>
+<text class="subtitle" x="72" y="114">Representative measured improvements from the workshop benchmark note.</text>
+<g>
+  <line class="axis" x1="360" y1="488" x2="1140" y2="488"/>
+  <line class="grid" x1="360" y1="156" x2="360" y2="488"/>
+  <line class="grid" x1="750" y1="156" x2="750" y2="488"/>
+  <line class="grid" x1="1140" y1="156" x2="1140" y2="488"/>
+  <text class="body" x="92" y="184" dominant-baseline="middle">indexed SELECT</text>
+<rect x="360" y="166" width="780" height="36" rx="10" fill="#EEF4F9" stroke="#D7E2EC"/>
+<rect class="card" x="360" y="166" width="660.4" height="36" rx="10" fill="#75A9E8" stroke="#75A9E8"/>
+<text class="body" x="1034.4" y="184" dominant-baseline="middle">2.54x improvement</text>
+<text class="body" x="92" y="262" dominant-baseline="middle">complex UPDATE + GROUP BY</text>
+<rect x="360" y="244" width="780" height="36" rx="10" fill="#EEF4F9" stroke="#D7E2EC"/>
+<rect class="card" x="360" y="244" width="465.40000000000003" height="36" rx="10" fill="#69B888" stroke="#69B888"/>
+<text class="body" x="839.4000000000001" y="262" dominant-baseline="middle">1.79x improvement</text>
+<text class="body" x="92" y="340" dominant-baseline="middle">+10ms I/O latency</text>
+<rect x="360" y="322" width="780" height="36" rx="10" fill="#EEF4F9" stroke="#D7E2EC"/>
+<rect class="card" x="360" y="322" width="590.2" height="36" rx="10" fill="#D9AA4D" stroke="#D9AA4D"/>
+<text class="body" x="964.2" y="340" dominant-baseline="middle">2.27x improvement</text>
+<text class="body" x="92" y="418" dominant-baseline="middle">CPU bound work</text>
+<rect x="360" y="400" width="780" height="36" rx="10" fill="#EEF4F9" stroke="#D7E2EC"/>
+<rect class="card" x="360" y="400" width="267.8" height="36" rx="10" fill="#DB7890" stroke="#DB7890"/>
+<text class="body" x="641.8" y="418" dominant-baseline="middle">1.03x improvement</text>
+  <text class="tiny" x="360" y="514" text-anchor="middle">0</text>
+  <text class="tiny" x="750" y="514" text-anchor="middle">1.5</text>
+  <text class="tiny" x="1140" y="514" text-anchor="middle">3</text>
+</g>
+</svg>

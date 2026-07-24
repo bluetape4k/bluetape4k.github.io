@@ -29,7 +29,7 @@ Threads, then makes the workload choose.
 expensive resource while it waits. The difference is where each model solves that pressure.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part3-execution-models.png" alt="Request flow split between JDBC plus Virtual Threads and R2DBC plus Coroutines, then evaluated by batch CRUD and streaming reactive criteria" loading="lazy" />
+  <img src="/assets/bluetape4k-exposed-part3-execution-models-en.png" alt="Request flow split between JDBC plus Virtual Threads and R2DBC plus Coroutines, then evaluated by batch CRUD and streaming reactive criteria" loading="lazy" />
   <figcaption>Choose the execution model by streaming needs, driver maturity, and batch or CRUD workload, not by the label on the API.</figcaption>
 </figure>
 
@@ -112,7 +112,7 @@ Threads and R2DBC with Coroutines across H2, MySQL, and PostgreSQL using the sam
 For the large end-to-end batch job with `dataSize=100000` and `parallelism=8`, the result looked like this.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part3-batch-comparison-chart.png" alt="Large batch E2E benchmark comparing JDBC plus Virtual Threads and R2DBC ops per second by database and pool size" loading="lazy" />
+  <img src="/assets/bluetape4k-exposed-part3-batch-comparison-chart-en.png" alt="Large batch E2E benchmark comparing JDBC plus Virtual Threads and R2DBC ops per second by database and pool size" loading="lazy" />
   <figcaption>For this large batch E2E workload, comparing throughput side by side makes the tradeoff visible. MySQL and PostgreSQL both favored JDBC with Virtual Threads under this condition.</figcaption>
 </figure>
 

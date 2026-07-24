@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="600" viewBox="0 0 1240 600" role="img">
+<title>Exposed vs JPA 단건 Entity CRUD</title>
+<desc>PostgreSQL Testcontainers, JMH 평균 지연 시간입니다. 낮을수록 좋습니다.</desc>
+<defs>
+  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#1D3148" flood-opacity="0.12"/></filter>
+  <style>
+    .bg{fill:#F7F9FC}.frame{fill:#FFFFFF;stroke:#D6E2ED;stroke-width:2}
+    .title{font-family:"goorm Sans";font-size:42px;fill:#21334A;font-weight:700}
+    .subtitle,.body,.small,.tiny,.axisLabel{font-family:"goorm Sans Code","goorm Sans";fill:#34465B}
+    .subtitle{font-size:16px}.body{font-size:14px}.small{font-size:12px;fill:#657386}.tiny{font-size:11px;fill:#657386}
+    .label{font-family:"goorm Sans";font-size:23px;fill:#21334A;font-weight:700}
+    .card{filter:url(#shadow);stroke-width:2}
+    .axis{stroke:#B9C7D8;stroke-width:1.4}.grid{stroke:#CAD6E4;stroke-width:1;stroke-dasharray:4 6}
+  </style>
+</defs>
+<rect class="bg" width="1240" height="600"/>
+<rect class="frame" x="34" y="28" width="1172" height="544" rx="26"/>
+<text class="title" x="70" y="82">Exposed vs JPA 단건 Entity CRUD</text>
+<text class="subtitle" x="72" y="114">PostgreSQL Testcontainers, JMH 평균 지연 시간입니다. 낮을수록 좋습니다.</text>
+<g>
+  <line class="axis" x1="260" y1="486" x2="1040" y2="486"/>
+  <line class="grid" x1="260" y1="138" x2="260" y2="486"/>
+  <line class="grid" x1="650" y1="138" x2="650" y2="486"/>
+  <line class="grid" x1="1040" y1="138" x2="1040" y2="486"/>
+  <text class="body" x="260" y="142" fill="#75A9E8">Exposed</text>
+  <text class="body" x="390" y="142" fill="#DB7890">JPA</text>
+  <text class="body" x="90" y="182" dominant-baseline="middle">create</text>
+<rect x="260" y="150" width="780" height="28" rx="8" fill="#EEF4F9" stroke="#D7E2EC"/>
+<rect class="card" x="260" y="150" width="8" height="28" rx="8" fill="#75A9E8" stroke="#75A9E8"/>
+<text class="body" x="280" y="164" dominant-baseline="middle">1,196 us</text>
+<rect x="260" y="184" width="780" height="28" rx="8" fill="#EEF4F9" stroke="#D7E2EC"/>
+<rect class="card" x="260" y="184" width="8.385906976744186" height="28" rx="8" fill="#DB7890" stroke="#DB7890"/>
+<text class="body" x="280.3859069767442" y="198" dominant-baseline="middle">4,623 us</text>
+<text class="body" x="90" y="246" dominant-baseline="middle">read</text>
+<rect x="260" y="214" width="780" height="28" rx="8" fill="#EEF4F9" stroke="#D7E2EC"/>
+<rect class="card" x="260" y="214" width="8" height="28" rx="8" fill="#75A9E8" stroke="#75A9E8"/>
+<text class="body" x="280" y="228" dominant-baseline="middle">1,972 us</text>
+<rect x="260" y="248" width="780" height="28" rx="8" fill="#EEF4F9" stroke="#D7E2EC"/>
+<rect class="card" x="260" y="248" width="21.045488372093025" height="28" rx="8" fill="#DB7890" stroke="#DB7890"/>
+<text class="body" x="293.045488372093" y="262" dominant-baseline="middle">11,602 us</text>
+<text class="body" x="90" y="310" dominant-baseline="middle">update</text>
+<rect x="260" y="278" width="780" height="28" rx="8" fill="#EEF4F9" stroke="#D7E2EC"/>
+<rect class="card" x="260" y="278" width="8" height="28" rx="8" fill="#75A9E8" stroke="#75A9E8"/>
+<text class="body" x="280" y="292" dominant-baseline="middle">1,980 us</text>
+<rect x="260" y="312" width="780" height="28" rx="8" fill="#EEF4F9" stroke="#D7E2EC"/>
+<rect class="card" x="260" y="312" width="27.71358139534884" height="28" rx="8" fill="#DB7890" stroke="#DB7890"/>
+<text class="body" x="299.71358139534885" y="326" dominant-baseline="middle">15,278 us</text>
+<text class="body" x="90" y="374" dominant-baseline="middle">delete</text>
+<rect x="260" y="342" width="780" height="28" rx="8" fill="#EEF4F9" stroke="#D7E2EC"/>
+<rect class="card" x="260" y="342" width="8" height="28" rx="8" fill="#75A9E8" stroke="#75A9E8"/>
+<text class="body" x="280" y="356" dominant-baseline="middle">1,945 us</text>
+<rect x="260" y="376" width="780" height="28" rx="8" fill="#EEF4F9" stroke="#D7E2EC"/>
+<rect class="card" x="260" y="376" width="21.87446511627907" height="28" rx="8" fill="#DB7890" stroke="#DB7890"/>
+<text class="body" x="293.87446511627905" y="390" dominant-baseline="middle">12,059 us</text>
+<text class="body" x="90" y="438" dominant-baseline="middle">batchCreate(100)</text>
+<rect x="260" y="406" width="780" height="28" rx="8" fill="#EEF4F9" stroke="#D7E2EC"/>
+<rect class="card" x="260" y="406" width="92.87986046511628" height="28" rx="8" fill="#75A9E8" stroke="#75A9E8"/>
+<text class="body" x="364.8798604651163" y="420" dominant-baseline="middle">51,203 us</text>
+<rect x="260" y="440" width="780" height="28" rx="8" fill="#EEF4F9" stroke="#D7E2EC"/>
+<rect class="card" x="260" y="440" width="768.782511627907" height="28" rx="8" fill="#DB7890" stroke="#DB7890"/>
+<text class="body" x="1040.7825116279068" y="454" dominant-baseline="middle">423,816 us</text>
+  <text class="tiny" x="260" y="512" text-anchor="middle">0</text>
+  <text class="tiny" x="650" y="512" text-anchor="middle">215000</text>
+  <text class="tiny" x="1040" y="512" text-anchor="middle">430000 us</text>
+</g>
+</svg>

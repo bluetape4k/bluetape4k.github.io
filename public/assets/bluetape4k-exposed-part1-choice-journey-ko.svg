@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="760" viewBox="0 0 1500 760" role="img">
+<title>왜 Exposed가 기본 선택이 되었나</title>
+<desc>비동기 처리 압박에서 시작해 SQL 안전성, Kotlin 적합성, 운영성 기준으로 선택지를 좁힙니다.</desc>
+<defs>
+  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#1D3148" flood-opacity="0.12"/></filter>
+  <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M 1 1 L 7 4 L 1 7 Z" fill="#4D6F9F"/></marker>
+  <style>
+    .bg{fill:#F7F9FC}.frame{fill:#FFFFFF;stroke:#D6E2ED;stroke-width:2}
+    .title{font-family:"goorm Sans";font-size:42px;fill:#21334A;font-weight:700}
+    .subtitle,.body,.small,.tiny,.axisLabel{font-family:"goorm Sans Code","goorm Sans";fill:#34465B}
+    .subtitle{font-size:16px}.body{font-size:14px}.small{font-size:12px;fill:#657386}.tiny{font-size:11px;fill:#657386}
+    .label{font-family:"goorm Sans";font-size:23px;fill:#21334A;font-weight:700}
+    .card{filter:url(#shadow);stroke-width:2}.line{fill:none;stroke:#4D6F9F;stroke-width:2.8;marker-end:url(#arrow);stroke-linecap:round;stroke-linejoin:round}
+    .axis{stroke:#B9C7D8;stroke-width:1.4}.grid{stroke:#CAD6E4;stroke-width:1;stroke-dasharray:4 6}
+  </style>
+</defs>
+<rect class="bg" width="1500" height="760"/>
+<rect class="frame" x="34" y="28" width="1432" height="704" rx="26"/>
+<text class="title" x="70" y="82">왜 Exposed가 기본 선택이 되었나</text>
+<text class="subtitle" x="72" y="114">비동기 처리 압박에서 시작해 SQL 안전성, Kotlin 적합성, 운영성 기준으로 선택지를 좁힙니다.</text>
+<g transform="translate(72 170)">
+  <g>
+  <rect class="card" x="0" y="182" width="210" height="124" rx="16" fill="#F5F7FA" stroke="#8FA1B3"/>
+  <text class="label" x="105" y="226" text-anchor="middle" dominant-baseline="middle">트래픽 압박</text>
+  <text class="body" x="105" y="256" text-anchor="middle">요청 증가</text>
+<text class="body" x="105" y="276" text-anchor="middle">같은 데이터베이스</text>
+</g>
+  <g>
+  <rect class="card" x="300" y="46" width="238" height="118" rx="16" fill="#FCECEF" stroke="#DC6B82"/>
+  <text class="label" x="419" y="87" text-anchor="middle" dominant-baseline="middle">WebFlux + JDBC</text>
+  <text class="body" x="419" y="117" text-anchor="middle">이벤트 루프 대기</text>
+<text class="body" x="419" y="137" text-anchor="middle">Reactor 과부하 위험</text>
+</g>
+  <g>
+  <rect class="card" x="300" y="318" width="238" height="118" rx="16" fill="#FFF3D8" stroke="#D6A441"/>
+  <text class="label" x="419" y="359" text-anchor="middle" dominant-baseline="middle">NoSQL 우회</text>
+  <text class="body" x="419" y="389" text-anchor="middle">특정 영역에 유용</text>
+<text class="body" x="419" y="409" text-anchor="middle">스키마 변경 부담 유지</text>
+</g>
+  <g>
+  <rect class="card" x="620" y="0" width="252" height="118" rx="16" fill="#F1ECFF" stroke="#8A72D6"/>
+  <text class="label" x="746" y="41" text-anchor="middle" dominant-baseline="middle">R2DBC / Vert.x</text>
+  <text class="body" x="746" y="71" text-anchor="middle">진짜 non-blocking I/O</text>
+<text class="body" x="746" y="91" text-anchor="middle">문자열 SQL 또는 Reactor 비용</text>
+</g>
+  <g>
+  <rect class="card" x="620" y="182" width="252" height="118" rx="16" fill="#EAF7ED" stroke="#58A978"/>
+  <text class="label" x="746" y="223" text-anchor="middle" dominant-baseline="middle">Virtual Threads</text>
+  <text class="body" x="746" y="253" text-anchor="middle">JDBC 드라이버 유지</text>
+<text class="body" x="746" y="273" text-anchor="middle">단순한 호출 스택</text>
+</g>
+  <g>
+  <rect class="card" x="620" y="364" width="252" height="118" rx="16" fill="#E7F1FF" stroke="#5A85D6"/>
+  <text class="label" x="746" y="405" text-anchor="middle" dominant-baseline="middle">Exposed DSL</text>
+  <text class="body" x="746" y="435" text-anchor="middle">타입 안전 SQL</text>
+<text class="body" x="746" y="455" text-anchor="middle">Kotlin 우선 모델</text>
+</g>
+  <g>
+  <rect class="card" x="980" y="92" width="260" height="124" rx="16" fill="#E6F7F5" stroke="#38A69E"/>
+  <text class="label" x="1110" y="136" text-anchor="middle" dominant-baseline="middle">bluetape4k-exposed</text>
+  <text class="body" x="1110" y="166" text-anchor="middle">JDBC + R2DBC 저장소</text>
+<text class="body" x="1110" y="186" text-anchor="middle">cache, JSON, encryption</text>
+</g>
+  <g>
+  <rect class="card" x="980" y="314" width="260" height="124" rx="16" fill="#EAF7ED" stroke="#58A978"/>
+  <text class="label" x="1110" y="358" text-anchor="middle" dominant-baseline="middle">운영 경로</text>
+  <text class="body" x="1110" y="388" text-anchor="middle">워크숍 + 벤치마크</text>
+<text class="body" x="1110" y="408" text-anchor="middle">tenant/cache 예제</text>
+</g>
+  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M210 228 H250 Q260 228 260 218 V116 Q260 106 270 106 H300"/>
+  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M210 260 H250 Q260 260 260 270 V366 Q260 376 270 376 H300"/>
+  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M538 106 H620"/>
+  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M538 376 H572 Q582 376 582 386 V414 Q582 424 592 424 H620"/>
+  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M872 58 H920 Q930 58 930 68 V130 Q930 140 940 140 H980"/>
+  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M872 240 H920 Q930 240 930 230 V158 Q930 168 940 168 H980"/>
+  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M872 424 H920 Q930 424 930 414 V386 Q930 376 940 376 H980"/>
+  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M1240 154 H1290 Q1300 154 1300 164 V366 Q1300 376 1290 376 H1240"/>
+</g></svg>

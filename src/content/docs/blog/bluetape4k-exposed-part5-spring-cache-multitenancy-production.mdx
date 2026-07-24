@@ -29,7 +29,7 @@ goal is not to build a large framework around operational behavior, but to layer
 can be tested and benchmarked immediately.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part5-production-boundary.png" alt="Production boundary diagram from HTTP request through Spring Boot wiring, cache strategy, tenant context, outbox idempotency, repository layer, and observability to measured service" loading="lazy" />
+  <img src="/assets/bluetape4k-exposed-part5-production-boundary-en.png" alt="Production boundary diagram from HTTP request through Spring Boot wiring, cache strategy, tenant context, outbox idempotency, repository layer, and observability to measured service" loading="lazy" />
   <figcaption>Spring wiring, cache, tenant context, outbox, and observability are assembled around Exposed repository and transaction boundaries.</figcaption>
 </figure>
 
@@ -125,7 +125,7 @@ The benchmark follows the same distinction. `bluetape4k-workshop/spring-boot/cac
 profiles with H2 and Redis Testcontainers.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part5-cache-read-chart.png" alt="Cache read throughput chart showing Caffeine around 490000 ops per second and Near Cache around 465000 ops per second versus No Cache around 8200" loading="lazy" />
+  <img src="/assets/bluetape4k-exposed-part5-cache-read-chart-en.png" alt="Cache read throughput chart showing Caffeine around 490000 ops per second and Near Cache around 465000 ops per second versus No Cache around 8200" loading="lazy" />
   <figcaption>With warmed cache reads, Caffeine and Near Cache were roughly 57-60x higher than No Cache.</figcaption>
 </figure>
 
@@ -142,7 +142,7 @@ profiles with H2 and Redis Testcontainers.
 Writes need a separate view. The strategy that wins on reads is not automatically the right write strategy.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part5-cache-write-chart.png" alt="Cache write throughput chart showing Write Behind around 24000 ops per second versus No Cache around 8200 and Write Through around 5600" loading="lazy" />
+  <img src="/assets/bluetape4k-exposed-part5-cache-write-chart-en.png" alt="Cache write throughput chart showing Write Behind around 24000 ops per second versus No Cache around 8200 and Write Through around 5600" loading="lazy" />
   <figcaption>For writes, Write-Behind reached roughly 24,000 ops/s, but it only fits flows that can accept eventual consistency.</figcaption>
 </figure>
 

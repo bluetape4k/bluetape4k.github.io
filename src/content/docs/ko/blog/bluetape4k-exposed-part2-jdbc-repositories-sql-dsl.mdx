@@ -26,7 +26,7 @@ Part 1에서는 왜 Exposed를 선택했는지 봤습니다. 이제 JDBC 쪽 이
 `findPage`, soft-delete, mapper, virtual thread transaction 같은 주변 코드를 줄이는 층입니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part2-jdbc-repository-flow.png" alt="Service method에서 Exposed DSL, JdbcRepository, ResultRow mapper, virtual thread transaction을 거쳐 database로 가는 JDBC repository flow" loading="lazy" />
+  <img src="/assets/bluetape4k-exposed-part2-jdbc-repository-flow-ko.png" alt="Service method에서 Exposed DSL, JdbcRepository, ResultRow mapper, virtual thread transaction을 거쳐 database로 가는 JDBC repository flow" loading="lazy" />
   <figcaption>Service는 transaction 경계와 domain intent를 잡고, repository는 반복 query shape와 mapping을 줄입니다.</figcaption>
 </figure>
 

@@ -28,7 +28,7 @@ workload에 따라 선택하도록 했습니다.
 다루지만, 접근 방식이 다릅니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part3-execution-models.png" alt="Request가 JDBC plus Virtual Threads와 R2DBC plus Coroutines로 갈라지고 batch CRUD와 streaming reactive 기준으로 decision에 도달하는 실행 모델 다이어그램" loading="lazy" />
+  <img src="/assets/bluetape4k-exposed-part3-execution-models-ko.png" alt="Request가 JDBC plus Virtual Threads와 R2DBC plus Coroutines로 갈라지고 batch CRUD와 streaming reactive 기준으로 decision에 도달하는 실행 모델 다이어그램" loading="lazy" />
   <figcaption>실행 모델은 이름으로 고르지 말고, streaming 필요성, driver 성숙도, batch/CRUD workload로 고릅니다.</figcaption>
 </figure>
 
@@ -111,7 +111,7 @@ Virtual Threads와 R2DBC + Coroutines 방식을 같은 batch workload로 비교�
 대형 end-to-end batch job에서 `dataSize=100000`, `parallelism=8` 조건은 이렇게 나왔습니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part3-batch-comparison-chart.png" alt="Large batch E2E benchmark에서 JDBC plus Virtual Threads와 R2DBC ops per second를 DB와 pool size별 두 막대로 비교한 chart" loading="lazy" />
+  <img src="/assets/bluetape4k-exposed-part3-batch-comparison-chart-ko.png" alt="Large batch E2E benchmark에서 JDBC plus Virtual Threads와 R2DBC ops per second를 DB와 pool size별 두 막대로 비교한 chart" loading="lazy" />
   <figcaption>대형 batch E2E에서는 실제 처리량을 나란히 보면 차이가 더 잘 보입니다. MySQL과 PostgreSQL 모두 이 조건에서는 JDBC + Virtual Threads가 높았습니다.</figcaption>
 </figure>
 

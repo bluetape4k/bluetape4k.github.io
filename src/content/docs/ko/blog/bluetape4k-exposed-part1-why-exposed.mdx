@@ -37,7 +37,7 @@ R2DBC를 붙이면 non-blocking I/O는 얻지만 SQL DSL과 Kotlin 사용성이 
 양쪽을 workload에 맞게 선택할 수 있었기 때문입니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part1-choice-journey.png" alt="Async pressure에서 WebFlux JDBC, R2DBC Vert.x, Virtual Threads, Exposed DSL을 거쳐 bluetape4k-exposed 운영 경로로 이어지는 선택 흐름" loading="lazy" />
+  <img src="/assets/bluetape4k-exposed-part1-choice-journey-ko.png" alt="Async pressure에서 WebFlux JDBC, R2DBC Vert.x, Virtual Threads, Exposed DSL을 거쳐 bluetape4k-exposed 운영 경로로 이어지는 선택 흐름" loading="lazy" />
   <figcaption>선택의 핵심은 "무조건 reactive"가 아니라 SQL 안정성, Kotlin 적합성, 운영 경계까지 같이 보는 것입니다.</figcaption>
 </figure>
 
@@ -102,7 +102,7 @@ SQL DSL과 repository 경계를 더 앞에 둡니다.
 한눈에 보이도록 그린 것입니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-readme-overview.png" alt="bluetape4k-exposed 루트 README의 주요 기능 overview diagram" loading="lazy" />
+  <img src="/assets/bluetape4k-exposed-readme-overview-ko.png" alt="bluetape4k-exposed 루트 README의 주요 기능 overview diagram" loading="lazy" />
   <figcaption>Exposed는 SQL DSL과 transaction을 맡고, bluetape4k-exposed는 repository, cache, JSON, encryption, dialect, Spring Boot wiring 경계를 나눕니다.</figcaption>
 </figure>
 
@@ -139,7 +139,7 @@ dependencies {
 대표 수치를 이렇게 잡았습니다. 여기서는 절대값보다 배율을 먼저 보겠습니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part1-virtual-thread-chart.png" alt="Virtual Threads가 indexed SELECT 2.54배, 복잡 쿼리 1.79배, 10ms I/O 지연 2.27배, CPU bound 1.03배 개선한 벤치마크 차트" loading="lazy" />
+  <img src="/assets/bluetape4k-exposed-part1-virtual-thread-chart-ko.png" alt="Virtual Threads가 indexed SELECT 2.54배, 복잡 쿼리 1.79배, 10ms I/O 지연 2.27배, CPU bound 1.03배 개선한 벤치마크 차트" loading="lazy" />
   <figcaption>Virtual Threads는 CPU-bound 작업보다 I/O 대기가 있는 JDBC workload에서 의미가 커집니다.</figcaption>
 </figure>
 
@@ -158,7 +158,7 @@ blocking API를 유지하면서 대기 비용을 낮추는 선택이지, CPU 성
 Testcontainers, HikariCP max 24, JMH throughput 조건에서 단건 CRUD와 JOIN, batch insert를 측정합니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part1-jdbc-benchmark-chart.png" alt="Exposed JDBC benchmark throughput chart showing singleFindById 15000 ops/s, singleInsert 14400 ops/s, singleUpdate 14300 ops/s, joinQuery 1510 ops/s, batchInsert 217 ops/s" loading="lazy" />
+  <img src="/assets/bluetape4k-exposed-part1-jdbc-benchmark-chart-ko.png" alt="Exposed JDBC benchmark throughput chart showing singleFindById 15000 ops/s, singleInsert 14400 ops/s, singleUpdate 14300 ops/s, joinQuery 1510 ops/s, batchInsert 217 ops/s" loading="lazy" />
   <figcaption>Exposed JDBC 방식도 query 종류에 따라 처리량이 크게 다릅니다. 단건 CRUD와 JOIN/batch를 같은 기준으로 보면 안 됩니다.</figcaption>
 </figure>
 
@@ -179,7 +179,7 @@ Testcontainers, JMH 평균 지연 시간 조건으로 Person 단건 CRUD와 관�
 일부입니다. 지연 시간은 낮을수록 좋습니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part1-jpa-comparison-chart.png" alt="Exposed와 JPA 단건 CRUD 평균 지연 시간을 create, read, update, delete, batchCreate로 비교한 차트" loading="lazy" />
+  <img src="/assets/bluetape4k-exposed-part1-jpa-comparison-chart-ko.png" alt="Exposed와 JPA 단건 CRUD 평균 지연 시간을 create, read, update, delete, batchCreate로 비교한 차트" loading="lazy" />
   <figcaption>같은 PostgreSQL 조건에서 단건 CRUD는 Exposed가 JPA보다 3.9-8.3배 낮은 지연 시간을 보였습니다.</figcaption>
 </figure>
 
