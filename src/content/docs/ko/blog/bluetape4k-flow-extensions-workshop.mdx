@@ -111,7 +111,7 @@ val trailing = pipeline.dashboardSamples(highFrequencyCpuSamples(), 501.millisec
 예제의 핵심 흐름은 다음과 같습니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-flow-extensions-search-pipeline-marble-01.png" alt="bufferingDebounce, withLatestFrom, flatMapLatest, takeUntil이 입력 burst를 최신 검색 요청 하나로 바꾸는 marble diagram" loading="lazy" />
+  <img src="/assets/bluetape4k-flow-extensions-search-pipeline-marble-01-ko.png" alt="bufferingDebounce, withLatestFrom, flatMapLatest, takeUntil이 입력 burst를 최신 검색 요청 하나로 바꾸는 marble diagram" loading="lazy" />
   <figcaption>검색 pipeline은 입력 burst에서 마지막 query만 남기고, 그 순간의 설정 snapshot을 붙인 뒤, 오래된 검색을 취소합니다.</figcaption>
 </figure>
 
@@ -143,7 +143,7 @@ result를 합쳐야 합니다.
 `flow-extensions-race-fallback` 예제는 이 차이를 operator 선택으로 드러냅니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-flow-extensions-race-fallback-marble-01.png" alt="race, concat, merge가 latency 우선, priority 우선, partial merge를 서로 다르게 처리하는 marble diagram" loading="lazy" />
+  <img src="/assets/bluetape4k-flow-extensions-race-fallback-marble-01-ko.png" alt="race, concat, merge가 latency 우선, priority 우선, partial merge를 서로 다르게 처리하는 marble diagram" loading="lazy" />
   <figcaption>`race`/`amb`는 먼저 정상 값을 낸 source를 고르고 나머지를 취소합니다. `concat`은 우선순위를 지키고, `merge`는 여러 source의 partial result를 함께 씁니다.</figcaption>
 </figure>
 
@@ -168,7 +168,7 @@ partial contribution인가"를 코드 표면에서 읽히게 만들자는 이야
 Subject bridge 예제는 callback을 다섯 가지 stream 성격으로 나눕니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-flow-extensions-subject-bridge-marble-01.png" alt="PublishSubject, BehaviorSubject, ReplaySubject, UnicastWorkSubject가 늦은 subscriber에게 서로 다른 값을 전달하는 marble diagram" loading="lazy" />
+  <img src="/assets/bluetape4k-flow-extensions-subject-bridge-marble-01-ko.png" alt="PublishSubject, BehaviorSubject, ReplaySubject, UnicastWorkSubject가 늦은 subscriber에게 서로 다른 값을 전달하는 marble diagram" loading="lazy" />
   <figcaption>callback을 Flow로 바꾸는 것보다 중요한 것은 subscription 계약입니다. 늦게 붙은 subscriber가 과거 event, 최신 state, replay history, work item 중 무엇을 받는지가 달라집니다.</figcaption>
 </figure>
 
@@ -193,7 +193,7 @@ event aggregation 예제는 replay stream을 `chunked`, `windowed`, `groupBy`, `
 ### `chunked`: event를 concrete batch로 묶는다
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-flow-extensions-chunked-marble-01.png" alt="chunked operator가 다섯 개 입력 이벤트를 크기 2, 2, 1의 concrete batch로 내보내는 marble diagram" loading="lazy" />
+  <img src="/assets/bluetape4k-flow-extensions-chunked-marble-01-ko.png" alt="chunked operator가 다섯 개 입력 이벤트를 크기 2, 2, 1의 concrete batch로 내보내는 marble diagram" loading="lazy" />
   <figcaption>`chunked(2)`는 timeline을 두 개씩 잘라 `List` 같은 concrete batch를 내보냅니다. 마지막 partial batch를 허용하면 `[e5]`도 출력됩니다.</figcaption>
 </figure>
 
@@ -209,7 +209,7 @@ events
 ### `windowed`: 겹치는 window를 만든다
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-flow-extensions-windowed-marble-01.png" alt="windowed operator가 다섯 개 입력 이벤트에서 겹치는 window 세 개를 만드는 marble diagram" loading="lazy" />
+  <img src="/assets/bluetape4k-flow-extensions-windowed-marble-01-ko.png" alt="windowed operator가 다섯 개 입력 이벤트에서 겹치는 window 세 개를 만드는 marble diagram" loading="lazy" />
   <figcaption>`windowed(size = 3, step = 2)`는 겹치는 window를 만들 수 있습니다. 같은 event가 둘 이상의 window에 들어갈 수 있다는 점이 `chunked`와 다릅니다.</figcaption>
 </figure>
 
@@ -219,7 +219,7 @@ events
 ### `groupBy`: 시간이나 크기가 아니라 key로 stream을 나눈다
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-flow-extensions-groupby-marble-01.png" alt="groupBy operator가 orderId key로 입력 이벤트를 order-1과 order-2 stream으로 나누는 marble diagram" loading="lazy" />
+  <img src="/assets/bluetape4k-flow-extensions-groupby-marble-01-ko.png" alt="groupBy operator가 orderId key로 입력 이벤트를 order-1과 order-2 stream으로 나누는 marble diagram" loading="lazy" />
   <figcaption>`groupBy(orderId)`는 timeline을 자르지 않습니다. 같은 key를 가진 event가 자기 stream으로 흘러가도록 partition합니다.</figcaption>
 </figure>
 
@@ -230,7 +230,7 @@ stream이 됩니다. 그래서 `groupBy`는 "batch 몇 개가 나왔는가"보�
 ### `scanWith`: batch가 아니라 상태 snapshot을 누적한다
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-flow-extensions-scanwith-marble-01.png" alt="scanWith operator가 입력 이벤트를 read model state snapshot으로 누적하는 marble diagram" loading="lazy" />
+  <img src="/assets/bluetape4k-flow-extensions-scanwith-marble-01-ko.png" alt="scanWith operator가 입력 이벤트를 read model state snapshot으로 누적하는 marble diagram" loading="lazy" />
   <figcaption>`scanWith(seed, accumulator)`는 event를 묶지 않습니다. 이전 상태와 현재 event로 다음 read model snapshot을 만듭니다.</figcaption>
 </figure>
 
@@ -244,7 +244,7 @@ metrics
 ```
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-flow-extensions-metrics-sampling-marble-01.png" alt="throttleLeading이 각 window의 첫 값을, throttleTrailing이 각 window의 마지막 값을 내보내는 marble diagram" loading="lazy" />
+  <img src="/assets/bluetape4k-flow-extensions-metrics-sampling-marble-01-ko.png" alt="throttleLeading이 각 window의 첫 값을, throttleTrailing이 각 window의 마지막 값을 내보내는 marble diagram" loading="lazy" />
   <figcaption>`throttleLeading`은 window의 첫 값을 빠르게 내보내고, `throttleTrailing`은 window가 안정된 뒤 마지막 값을 내보냅니다.</figcaption>
 </figure>
 
@@ -262,7 +262,7 @@ collect 전에 실패해야 합니다. 로그용 `toString()`과 `Flow<T>.log()`
 다시 단일 stream으로 접습니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-flow-extensions-parallel-enrichment-marble-01.png" alt="parallel operator가 주문 enrichment를 customer, discount, inventory rail로 나누고 sequential로 다시 합치는 diagram" loading="lazy" />
+  <img src="/assets/bluetape4k-flow-extensions-parallel-enrichment-marble-01-ko.png" alt="parallel operator가 주문 enrichment를 customer, discount, inventory rail로 나누고 sequential로 다시 합치는 diagram" loading="lazy" />
   <figcaption>`parallel(3)`은 독립적인 enrichment를 rail로 나누고, `sequential()`은 결과를 다시 단일 output stream으로 접습니다.</figcaption>
 </figure>
 
