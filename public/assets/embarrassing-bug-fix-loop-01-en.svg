@@ -6,7 +6,7 @@
       .canvas{fill:#f6f9fc}.frame{fill:#fff;stroke:#d7e2ec;stroke-width:2}.title{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",cursive;font-size:44px;fill:#102033;font-weight:400}.subtitle,.small{font-family:"Comic Mono","SFMono-Regular",Menlo,Consolas,monospace;fill:#536273}.subtitle{font-size:17px}.small{font-size:14px}.card-title{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",cursive;font-size:28px;fill:#102033;font-weight:400}.card-text{font-family:"Comic Mono","SFMono-Regular",Menlo,Consolas,monospace;font-size:14px;fill:#334155}.arrow{stroke:#8091a7;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}.num{font-family:"Comic Mono","SFMono-Regular",Menlo,Consolas,monospace;font-size:14px;font-weight:700;fill:#102033}
     </style>
     <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#1e293b" flood-opacity="0.10"/></filter>
-    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M1,1 L9,5 L1,9 Z" fill="#8091a7"/></marker>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L9,5 L1,9 Z" fill="#8091a7"/></marker>
   </defs>
   <rect class="canvas" width="1200" height="630"/>
   <rect class="frame" x="28" y="24" width="1144" height="582" rx="22" filter="url(#shadow)"/>
