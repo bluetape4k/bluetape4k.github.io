@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1540" height="760" viewBox="0 0 1540 760" role="img">
+<title>Bluetape4k Projects Overview</title>
+<desc>The shared foundation keeps common Kotlin/JVM service decisions together.</desc>
+<defs>
+  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#1D3148" flood-opacity="0.12"/></filter>
+<marker id="arrow" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M 2 2 L 12 7 L 2 12 Z" fill="#4D6F9F"/></marker>
+  <style>
+    .bg{fill:#F7F9FC}.frame{fill:#fff;stroke:#D6E2ED;stroke-width:2}
+    .title{font-family:"Architects Daughter","Comic Sans MS",cursive;font-size:42px;fill:#21334A;font-weight:700}
+    .subtitle,.body,.small{font-family:"Comic Mono","Courier New",monospace;fill:#34465B}
+    .subtitle{font-size:17px}.body{font-size:14px}.small{font-size:12px;fill:#657386}
+    .label{font-family:"Architects Daughter","Comic Sans MS",cursive;font-size:22px;fill:#21334A;font-weight:700}
+    .card{filter:url(#shadow);stroke-width:2}.connector{fill:none;stroke:#4D6F9F;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    .bar-label{font-family:"Comic Mono","Courier New",monospace;font-size:15px;fill:#26384F}.axis{stroke:#B8C7D9;stroke-width:2}
+  </style>
+</defs>
+<rect class="bg" width="1540" height="760"/>
+<rect class="frame" x="34" y="28" width="1472" height="704" rx="24"/>
+<text class="title" x="70" y="82">Bluetape4k Projects Overview</text>
+<text class="subtitle" x="72" y="114">The shared foundation keeps common Kotlin/JVM service decisions together.</text>
+<g data-card="BOM">
+  <rect class="card" x="60" y="315" width="180" height="116" rx="14" fill="#FFF3D8" stroke="#D6A441"/>
+  <text class="label" x="150" y="349" text-anchor="middle"><tspan x="150" dy="0">BOM</tspan></text>
+  <text class="body" x="150" y="383" text-anchor="middle"><tspan x="150" dy="0">version alignment</tspan><tspan x="150" dy="20">pick modules selectively</tspan></text>
+</g>
+<g data-card="Foundation">
+  <rect class="card" x="300" y="315" width="260" height="116" rx="14" fill="#E8F1FF" stroke="#5A85D6"/>
+  <text class="label" x="430" y="349" text-anchor="middle"><tspan x="430" dy="0">Foundation</tspan></text>
+  <text class="body" x="430" y="383" text-anchor="middle"><tspan x="430" dy="0">core · coroutines · logging</tspan><tspan x="430" dy="20">I/O · serializers · time</tspan></text>
+</g>
+<g data-card="Runtime Adapters">
+  <rect class="card" x="620" y="315" width="260" height="116" rx="14" fill="#EAF7ED" stroke="#58A978"/>
+  <text class="label" x="750" y="349" text-anchor="middle"><tspan x="750" dy="0">Runtime Adapters</tspan></text>
+  <text class="body" x="750" y="383" text-anchor="middle"><tspan x="750" dy="0">data · cache · infra</tspan><tspan x="750" dy="20">Spring Boot · Ktor</tspan></text>
+</g>
+<g data-card="Applications">
+  <rect class="card" x="940" y="315" width="220" height="116" rx="14" fill="#E7F7F5" stroke="#3CA7A0"/>
+  <text class="label" x="1050" y="349" text-anchor="middle"><tspan x="1050" dy="0">Applications</tspan></text>
+  <text class="body" x="1050" y="383" text-anchor="middle"><tspan x="1050" dy="0">service code</tspan><tspan x="1050" dy="20">tests and examples</tspan></text>
+</g>
+<g data-card="Split Repositories">
+  <rect class="card" x="1220" y="315" width="260" height="116" rx="14" fill="#F1ECFF" stroke="#8A72D6"/>
+  <text class="label" x="1350" y="349" text-anchor="middle"><tspan x="1350" dy="0">Split Repositories</tspan></text>
+  <text class="body" x="1350" y="383" text-anchor="middle"><tspan x="1350" dy="0">AWS · Exposed · Image</tspan><tspan x="1350" dy="20">Text · Leader · JaVers</tspan></text>
+</g>
+<path class="connector" data-connector="bom-to-foundation" d="M240 373 H300"/>
+<path class="connector" data-connector="foundation-to-runtime-adapters" d="M560 373 H620"/>
+<path class="connector" data-connector="runtime-adapters-to-applications" d="M880 373 H940"/>
+<path class="connector" data-connector="applications-to-split-repositories" d="M1160 373 H1220"/>
+</svg>

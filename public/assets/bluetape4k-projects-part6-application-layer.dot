@@ -1,1 +1,0 @@
-digraph { rankdir=LR; foundation -> spring; foundation -> ktor; spring -> config; ktor -> tests; config -> service; tests -> service; }

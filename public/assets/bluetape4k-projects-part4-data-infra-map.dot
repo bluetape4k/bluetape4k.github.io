@@ -1,1 +1,0 @@
-digraph { rankdir=LR; service -> data; service -> redis; service -> infra; data -> coroutine; redis -> resilience; infra -> observability; coroutine -> external; resilience -> external; observability -> external; }
