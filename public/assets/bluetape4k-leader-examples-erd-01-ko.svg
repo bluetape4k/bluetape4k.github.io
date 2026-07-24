@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="860" viewBox="0 0 1400 860" role="img" aria-labelledby="title desc">
+  <title id="title">Leader 예제 persistence 계약</title><desc id="desc">예제 앱은 작업 식별자, lease ownership, 실행 이력을 분리해서 다룹니다.</desc><defs>
+    <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#28343b" flood-opacity="0.13"/></filter>
+    <marker id="arrow-blue" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#3f7d9c" stroke="#3f7d9c" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#6e8f4f" stroke="#6e8f4f" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#b98240" stroke="#b98240" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#b86868" stroke="#b86868" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
+    <marker id="arrow-slate" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#78909c" stroke="#78909c" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
+    <style>
+      .canvas{fill:#fbfcf8}.frame{fill:#fff;stroke:#41545d;stroke-width:2.2}
+      .title{font-family:"goorm Sans";font-size:38px;fill:#263238}
+      .subtitle,.detail,.labelText,.footer,.axis,.tick,.legend,.role{font-family:"goorm Sans";fill:#4e6069}
+      .subtitle{font-size:16px}.detail{font-size:14px}.footer{font-size:13px}.axis,.tick,.legend{font-size:13px}
+      .role{font-family:"goorm Sans Code";font-size:12.5px}
+      .bandTitle,.cardTitle,.participant{font-family:"goorm Sans";fill:#1f3138}
+      .bandTitle{font-size:23px}.cardTitle{font-size:22px}.participant{font-size:19px}
+      .mono,.code,.badgeText{font-family:"goorm Sans Code";fill:#33454e}
+      .band{fill:#f5f9fb;stroke:#c8d7df;stroke-width:1.6}.bandAlt{fill:#fbfdf8;stroke:#d7e0d0;stroke-width:1.6}
+      .card{filter:url(#shadow);stroke-width:2}.header{fill:#fff;stroke:#546e7a;stroke-width:2}
+      .edge,.call,.return,.skip,.state{fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+      .call{stroke:#3f7d9c;marker-end:url(#arrow-blue)}.state{stroke:#6e8f4f;marker-end:url(#arrow-green)}
+      .return{stroke:#9b7d54;marker-end:url(#arrow-amber);stroke-dasharray:8 7}.skip{stroke:#b86868;marker-end:url(#arrow-red)}
+      .pill,.label{fill:#fff;stroke-width:1.5}.labelText{font-size:12.5px}.badgeText{font-size:12px;font-weight:700}
+      .lifeline{stroke:#9aaab1;stroke-width:2;stroke-dasharray:7 8}.activation{fill:#e6f2ec;stroke:#5b7e67;stroke-width:1.7}
+      .branch{fill:none;stroke:#78909c;stroke-width:2.2;stroke-dasharray:12 8}.divider{stroke:#78909c;stroke-width:1.4;stroke-dasharray:8 7}
+    </style>
+  </defs>
+  <rect class="canvas" width="1400" height="860"/><rect class="frame" x="40" y="34" width="1320" height="792" rx="16"/>
+  <text x="700" y="90" class="title" text-anchor="middle">Leader 예제 persistence 계약</text><text x="700" y="122" class="subtitle" text-anchor="middle">예제 앱은 작업 식별자, lease ownership, 실행 이력을 분리해서 다룹니다.</text>
+  <g><rect x="96" y="220" width="280" height="174" rx="8" class="card" fill="#fff" stroke="#6f8791"/>
+  <rect x="96" y="220" width="280" height="46" rx="8" fill="#eaf2ff" stroke="#6f8791" stroke-width="2"/>
+  <text x="236" y="251" class="cardTitle" text-anchor="middle">작업 단위</text>
+  <text x="120" y="298" class="mono" >lockName</text><line x1="112" y1="310" x2="360" y2="310" stroke="#e0e8ee" stroke-width="1"/><text x="120" y="328" class="mono" >tenantId</text><line x1="112" y1="340" x2="360" y2="340" stroke="#e0e8ee" stroke-width="1"/><text x="120" y="358" class="mono" >payloadKey</text><line x1="112" y1="370" x2="360" y2="370" stroke="#e0e8ee" stroke-width="1"/></g>
+  <g><rect x="560" y="198" width="280" height="174" rx="8" class="card" fill="#fff" stroke="#6f8791"/>
+  <rect x="560" y="198" width="280" height="46" rx="8" fill="#eaf2ff" stroke="#6f8791" stroke-width="2"/>
+  <text x="700" y="229" class="cardTitle" text-anchor="middle">리더 락</text>
+  <text x="584" y="276" class="mono" >lockName PK</text><line x1="576" y1="288" x2="824" y2="288" stroke="#e0e8ee" stroke-width="1"/><text x="584" y="306" class="mono" >ownerId</text><line x1="576" y1="318" x2="824" y2="318" stroke="#e0e8ee" stroke-width="1"/><text x="584" y="336" class="mono" >leaseUntil</text><line x1="576" y1="348" x2="824" y2="348" stroke="#e0e8ee" stroke-width="1"/></g>
+  <g><rect x="1018" y="220" width="286" height="174" rx="8" class="card" fill="#fff" stroke="#6f8791"/>
+  <rect x="1018" y="220" width="286" height="46" rx="8" fill="#eaf2ff" stroke="#6f8791" stroke-width="2"/>
+  <text x="1161" y="251" class="cardTitle" text-anchor="middle">실행 이력</text>
+  <text x="1042" y="298" class="mono" >lockName FK</text><line x1="1034" y1="310" x2="1288" y2="310" stroke="#e0e8ee" stroke-width="1"/><text x="1042" y="328" class="mono" >result</text><line x1="1034" y1="340" x2="1288" y2="340" stroke="#e0e8ee" stroke-width="1"/><text x="1042" y="358" class="mono" >startedAt</text><line x1="1034" y1="370" x2="1288" y2="370" stroke="#e0e8ee" stroke-width="1"/></g>
+  <g><rect x="560" y="556" width="280" height="174" rx="8" class="card" fill="#fff" stroke="#6f8791"/>
+  <rect x="560" y="556" width="280" height="46" rx="8" fill="#eaf2ff" stroke="#6f8791" stroke-width="2"/>
+  <text x="700" y="587" class="cardTitle" text-anchor="middle">Metric 이벤트</text>
+  <text x="584" y="634" class="mono" >lockName</text><line x1="576" y1="646" x2="824" y2="646" stroke="#e0e8ee" stroke-width="1"/><text x="584" y="664" class="mono" >outcome</text><line x1="576" y1="676" x2="824" y2="676" stroke="#e0e8ee" stroke-width="1"/><text x="584" y="694" class="mono" >duration</text><line x1="576" y1="706" x2="824" y2="706" stroke="#e0e8ee" stroke-width="1"/></g>
+  <path d="M 376 300 L 560 300" class="call"/>
+  <path d="M 840 300 L 1018 300" class="state"/>
+  <path d="M 700 372 L 700 556" class="return"/>
+  <text x="456" y="284" class="mono" >1</text><text x="534" y="284" class="mono" >N</text><text x="902" y="284" class="mono" >1</text><text x="992" y="284" class="mono" >N</text>
+  <text x="720" y="486" class="detail" >outcome 기록</text>
+  </svg>

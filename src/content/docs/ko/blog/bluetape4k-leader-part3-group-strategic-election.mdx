@@ -44,7 +44,7 @@ migration처럼 진짜 한 번만 실행해야 하는 작업도 있지만, 200�
 가득 차면 호출자는 기다리거나 skip합니다. 이름은 leader지만, 동작 방식은 분산 세마포어에 가깝습니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-leader-group-semaphore-01.png" alt="LeaderGroupElector slot-token semaphore with maxLeaders, active slots, wait or skip path, release and expiry path" loading="lazy" />
+  <img src="/assets/bluetape4k-leader-group-semaphore-01-ko.png" alt="LeaderGroupElector slot-token semaphore with maxLeaders, active slots, wait or skip path, release and expiry path" loading="lazy" />
   <figcaption>`LeaderGroupElector`는 `lockName` 하나에 최대 `maxLeaders`개의 slot token을 붙입니다. token을 얻은 호출자만 action을 실행합니다.</figcaption>
 </figure>
 
@@ -122,7 +122,7 @@ Group election은 "몇 명까지 실행할 수 있는가"를 해결합니다. St
 선택된 노드만 action을 실행하고, 나머지 노드는 `null`을 바로 반환합니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-leader-strategic-election-flow-01.png" alt="Strategic election flow from CandidateInfo registration through candidate registry, strategy selection, selected-node execution, skipped nodes, and result update" loading="lazy" />
+  <img src="/assets/bluetape4k-leader-strategic-election-flow-01-ko.png" alt="Strategic election flow from CandidateInfo registration through candidate registry, strategy selection, selected-node execution, skipped nodes, and result update" loading="lazy" />
   <figcaption>Strategic election은 후보를 먼저 등록하고, 같은 후보 목록에 같은 전략을 적용해 실행 노드 하나를 계산합니다.</figcaption>
 </figure>
 

@@ -60,7 +60,7 @@ annotation은 이 boilerplate를 framework 경계로 옮깁니다.
 - - [LeaderElectionAutoConfiguration.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-spring-boot/src/main/kotlin/io/bluetape4k/leader/spring/LeaderElectionAutoConfiguration.kt)
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-leader-spring-aop-sequence-01.png" alt="Spring LeaderElectionAspect가 SpEL, factory cache, backend elector, body execution, metrics, failure mode를 거쳐 결과를 반환하는 sequence diagram" loading="lazy" />
+  <img src="/assets/bluetape4k-leader-spring-aop-sequence-01-ko.png" alt="Spring LeaderElectionAspect가 SpEL, factory cache, backend elector, body execution, metrics, failure mode를 거쳐 결과를 반환하는 sequence diagram" loading="lazy" />
   <figcaption>`@LeaderElection`은 작지만 실행 흐름은 작지 않습니다. advice는 lock name을 평가하고, option/factory 조합으로 elector를 고른 뒤, backend 결과와 메소드 실행 중 예외를 분리해 metrics와 failure mode branch로 보냅니다.</figcaption>
 </figure>
 

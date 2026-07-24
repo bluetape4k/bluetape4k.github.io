@@ -45,7 +45,7 @@ that cannot acquire a slot waits or skips. The name still says leader, but the m
 semaphore.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-leader-group-semaphore-01.png" alt="LeaderGroupElector slot-token semaphore with maxLeaders, active slots, wait or skip path, release and expiry path" loading="lazy" />
+  <img src="/assets/bluetape4k-leader-group-semaphore-01-en.png" alt="LeaderGroupElector slot-token semaphore with maxLeaders, active slots, wait or skip path, release and expiry path" loading="lazy" />
   <figcaption>`LeaderGroupElector` attaches up to `maxLeaders` slot tokens to one `lockName`; only callers with a token run the action.</figcaption>
 </figure>
 
@@ -123,7 +123,7 @@ now?"
 selected node runs the action; all other nodes immediately receive `null`.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-leader-strategic-election-flow-01.png" alt="Strategic election flow from CandidateInfo registration through candidate registry, strategy selection, selected-node execution, skipped nodes, and result update" loading="lazy" />
+  <img src="/assets/bluetape4k-leader-strategic-election-flow-01-en.png" alt="Strategic election flow from CandidateInfo registration through candidate registry, strategy selection, selected-node execution, skipped nodes, and result update" loading="lazy" />
   <figcaption>Strategic election registers candidates first, then applies the same strategy to the same candidate list to compute the single selected node.</figcaption>
 </figure>
 

@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
+  <title id="title">Bluetape4k Leader 저장소 지도</title><desc id="desc">서비스 코드는 작은 리더 계약을 호출하고, workload에 맞는 backend, framework 통합, 예제를 고릅니다.</desc><defs>
+    <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#28343b" flood-opacity="0.13"/></filter>
+    <marker id="arrow-blue" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#3f7d9c" stroke="#3f7d9c" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#6e8f4f" stroke="#6e8f4f" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#b98240" stroke="#b98240" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#b86868" stroke="#b86868" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
+    <marker id="arrow-slate" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#78909c" stroke="#78909c" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
+    <style>
+      .canvas{fill:#fbfcf8}.frame{fill:#fff;stroke:#41545d;stroke-width:2.2}
+      .title{font-family:"goorm Sans";font-size:38px;fill:#263238}
+      .subtitle,.detail,.labelText,.footer,.axis,.tick,.legend,.role{font-family:"goorm Sans";fill:#4e6069}
+      .subtitle{font-size:16px}.detail{font-size:14px}.footer{font-size:13px}.axis,.tick,.legend{font-size:13px}
+      .role{font-family:"goorm Sans Code";font-size:12.5px}
+      .bandTitle,.cardTitle,.participant{font-family:"goorm Sans";fill:#1f3138}
+      .bandTitle{font-size:23px}.cardTitle{font-size:22px}.participant{font-size:19px}
+      .mono,.code,.badgeText{font-family:"goorm Sans Code";fill:#33454e}
+      .band{fill:#f5f9fb;stroke:#c8d7df;stroke-width:1.6}.bandAlt{fill:#fbfdf8;stroke:#d7e0d0;stroke-width:1.6}
+      .card{filter:url(#shadow);stroke-width:2}.header{fill:#fff;stroke:#546e7a;stroke-width:2}
+      .edge,.call,.return,.skip,.state{fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+      .call{stroke:#3f7d9c;marker-end:url(#arrow-blue)}.state{stroke:#6e8f4f;marker-end:url(#arrow-green)}
+      .return{stroke:#9b7d54;marker-end:url(#arrow-amber);stroke-dasharray:8 7}.skip{stroke:#b86868;marker-end:url(#arrow-red)}
+      .pill,.label{fill:#fff;stroke-width:1.5}.labelText{font-size:12.5px}.badgeText{font-size:12px;font-weight:700}
+      .lifeline{stroke:#9aaab1;stroke-width:2;stroke-dasharray:7 8}.activation{fill:#e6f2ec;stroke:#5b7e67;stroke-width:1.7}
+      .branch{fill:none;stroke:#78909c;stroke-width:2.2;stroke-dasharray:12 8}.divider{stroke:#78909c;stroke-width:1.4;stroke-dasharray:8 7}
+    </style>
+  </defs>
+  <rect class="canvas" width="1400" height="900"/><rect class="frame" x="44" y="36" width="1312" height="828" rx="18"/>
+  <text x="700" y="92" class="title" text-anchor="middle">Bluetape4k Leader 저장소 지도</text><text x="700" y="124" class="subtitle" text-anchor="middle">서비스 코드는 작은 리더 계약을 호출하고, workload에 맞는 backend, framework 통합, 예제를 고릅니다.</text>
+  <rect x="92" y="162" width="1216" height="188" rx="14" class="band"/>
+  <text x="126" y="206" class="bandTitle" >Core 계약</text><text x="126" y="236" class="detail" >서비스가 직접 호출하는 작은 API 표면</text>
+  <g><rect x="500" y="184" width="292" height="58" rx="8" class="card" fill="#fff" stroke="#8faed8"/>
+    <text x="646" y="212" class="cardTitle" text-anchor="middle">Blocking</text>
+    <text x="646" y="232" class="detail" text-anchor="middle">LeaderElector</text></g><g><rect x="830" y="184" width="292" height="58" rx="8" class="card" fill="#fff" stroke="#8faed8"/>
+    <text x="976" y="212" class="cardTitle" text-anchor="middle">Coroutine</text>
+    <text x="976" y="232" class="detail" text-anchor="middle">SuspendLeaderElector</text></g><g><rect x="500" y="262" width="292" height="58" rx="8" class="card" fill="#fff" stroke="#8faed8"/>
+    <text x="646" y="290" class="cardTitle" text-anchor="middle">Group slots</text>
+    <text x="646" y="310" class="detail" text-anchor="middle">LeaderGroupElector</text></g><g><rect x="830" y="262" width="292" height="58" rx="8" class="card" fill="#fff" stroke="#8faed8"/>
+    <text x="976" y="290" class="cardTitle" text-anchor="middle">Strategic</text>
+    <text x="976" y="310" class="detail" text-anchor="middle">StrategicLeaderElector</text></g>
+  <path d="M 700 350 L 700 392" class="call"/>
+  <rect x="92" y="392" width="1216" height="186" rx="14" class="bandAlt"/>
+  <text x="126" y="436" class="bandTitle" >Backend adapter</text><text x="126" y="466" class="detail" >같은 계약 뒤의 ownership primitive</text>
+  <g><rect x="246" y="480" width="176" height="64" rx="8" class="card" fill="#fff" stroke="#8dc7b5"/>
+    <text x="334" y="514" class="cardTitle" text-anchor="middle">Redis</text>
+    <text x="334" y="540" class="detail" text-anchor="middle">Lettuce / Redisson</text></g><g><rect x="456" y="480" width="176" height="64" rx="8" class="card" fill="#fff" stroke="#8dc7b5"/>
+    <text x="544" y="514" class="cardTitle" text-anchor="middle">SQL / R2DBC</text>
+    <text x="544" y="540" class="detail" text-anchor="middle">Exposed adapters</text></g><g><rect x="666" y="480" width="176" height="64" rx="8" class="card" fill="#fff" stroke="#8dc7b5"/>
+    <text x="754" y="514" class="cardTitle" text-anchor="middle">Document</text>
+    <text x="754" y="540" class="detail" text-anchor="middle">MongoDB / DynamoDB</text></g><g><rect x="876" y="480" width="176" height="64" rx="8" class="card" fill="#fff" stroke="#8dc7b5"/>
+    <text x="964" y="514" class="cardTitle" text-anchor="middle">Control</text>
+    <text x="964" y="540" class="detail" text-anchor="middle">etcd / Consul / K8s</text></g><g><rect x="1086" y="480" width="176" height="64" rx="8" class="card" fill="#fff" stroke="#8dc7b5"/>
+    <text x="1174" y="514" class="cardTitle" text-anchor="middle">Cluster</text>
+    <text x="1174" y="540" class="detail" text-anchor="middle">Hazelcast / ZooKeeper</text></g>
+  <path d="M 386 578 L 386 622" class="state"/><path d="M 1014 578 L 1014 622" class="state"/>
+  <rect x="92" y="622" width="588" height="132" rx="14" fill="#fff7e8" stroke="#e7c988" stroke-width="2"/>
+  <text x="126" y="666" class="bandTitle" >Framework 통합</text><g><rect x="154" y="690" width="142" height="50" rx="8" class="card" fill="#fff" stroke="#d9b76e"/>
+    <text x="225" y="718" class="cardTitle" text-anchor="middle">Spring Boot</text>
+    <text x="225" y="730" class="detail" text-anchor="middle">adapter</text></g><g><rect x="324" y="690" width="142" height="50" rx="8" class="card" fill="#fff" stroke="#d9b76e"/>
+    <text x="395" y="718" class="cardTitle" text-anchor="middle">Ktor 3.x</text>
+    <text x="395" y="730" class="detail" text-anchor="middle">adapter</text></g><g><rect x="494" y="690" width="142" height="50" rx="8" class="card" fill="#fff" stroke="#d9b76e"/>
+    <text x="565" y="718" class="cardTitle" text-anchor="middle">Micrometer</text>
+    <text x="565" y="730" class="detail" text-anchor="middle">adapter</text></g>
+  <rect x="720" y="622" width="588" height="132" rx="14" fill="#f6efff" stroke="#c9b3ee" stroke-width="2"/>
+  <text x="754" y="666" class="bandTitle" >예제와 benchmark</text><g><rect x="790" y="690" width="142" height="50" rx="8" class="card" fill="#fff" stroke="#b99de0"/>
+    <text x="861" y="718" class="cardTitle" text-anchor="middle">examples/*</text>
+    <text x="861" y="730" class="detail" text-anchor="middle">scenarios</text></g><g><rect x="960" y="690" width="142" height="50" rx="8" class="card" fill="#fff" stroke="#b99de0"/>
+    <text x="1031" y="718" class="cardTitle" text-anchor="middle">benchmark</text>
+    <text x="1031" y="730" class="detail" text-anchor="middle">evidence</text></g><g><rect x="1130" y="690" width="142" height="50" rx="8" class="card" fill="#fff" stroke="#b99de0"/>
+    <text x="1201" y="718" class="cardTitle" text-anchor="middle">BOM</text>
+    <text x="1201" y="730" class="detail" text-anchor="middle">evidence</text></g>
+  <rect x="110" y="786" width="1180" height="54" rx="16" fill="#f8fbff" stroke="#d4deeb" stroke-width="2"/>
+  <text x="700" y="810" class="footer" text-anchor="middle">core vocabulary는 유지하고, workload에 맞는 lease 저장소를 고릅니다.</text><text x="700" y="832" class="footer" text-anchor="middle">github.com/bluetape4k/bluetape4k-leader</text>
+  </svg>
