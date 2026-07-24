@@ -1,0 +1,186 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1200" viewBox="0 0 1920 1200" role="img" aria-labelledby="title desc">
+  <title id="title">Reservation control plane authority map</title>
+  <desc id="desc">Clients enter through the reservation HTTP API and node-local bulkhead. Redis semaphore and suppression lock are advisory controls. PostgreSQL owns idempotency, capacity, holds, waitlist offers, audit, and notification outbox state. Expiry and notification workers operate against PostgreSQL.</desc>
+  <defs>
+    <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07101f"/>
+      <stop offset="0.58" stop-color="#0c1730"/>
+      <stop offset="1" stop-color="#10142a"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#15233a"/>
+      <stop offset="1" stop-color="#101a2d"/>
+    </linearGradient>
+    <filter id="shadow" x="-15%" y="-20%" width="130%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#020617" flood-opacity="0.5"/>
+    </filter>
+    <marker id="arrow-blue" markerWidth="14" markerHeight="14" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#5f9fc4" stroke="#5f9fc4" stroke-dasharray="none"/>
+    </marker>
+    <marker id="arrow-amber" markerWidth="10" markerHeight="10" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#c99a58" stroke="#c99a58" stroke-dasharray="none"/>
+    </marker>
+    <marker id="arrow-teal" markerWidth="10" markerHeight="10" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#5ab3aa" stroke="#5ab3aa" stroke-dasharray="none"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="10" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#88a86b" stroke="#88a86b" stroke-dasharray="none"/>
+    </marker>
+    <style>
+      .outer { fill: none; stroke: #2b4168; stroke-width: 2; }
+      .lane { fill: #0f172a; fill-opacity: 0.22; stroke: #435773; stroke-width: 2; }
+      .authority { fill: #122335; stroke: #88a86b; stroke-width: 3; filter: url(#shadow); }
+      .card { fill: url(#panel); stroke: #5b789d; stroke-width: 2.2; filter: url(#shadow); }
+      .card-blue { stroke: #5f9fc4; }
+      .card-purple { stroke: #9b83c9; }
+      .card-amber { stroke: #c99a58; }
+      .card-green { stroke: #88a86b; }
+      .card-teal { stroke: #5ab3aa; }
+      .title { font: 48px "Architects Daughter", "Comic Mono", cursive; fill: #f8fafc; }
+      .subtitle { font: 20px "Comic Mono", ui-monospace, monospace; fill: #a9b8d4; }
+      .laneTitle { font: 26px "Architects Daughter", "Comic Mono", cursive; fill: #e6edf7; }
+      .cardTitle { font: 22px "Architects Daughter", "Comic Mono", cursive; fill: #f8fafc; }
+      .detail { font: 15px "Comic Mono", ui-monospace, monospace; fill: #b7c5da; }
+      .small { font: 14px "Comic Mono", ui-monospace, monospace; fill: #cbd7e8; }
+      .legend { font: 15px "Comic Mono", ui-monospace, monospace; fill: #dce7f5; }
+      .required { fill: none; stroke: #5f9fc4; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-blue); }
+      .advisory { fill: none; stroke: #c99a58; stroke-width: 3; stroke-dasharray: 11 8; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-amber); }
+      .fallback { fill: none; stroke: #5ab3aa; stroke-width: 3; stroke-dasharray: 9 7; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-teal); }
+      .worker { fill: none; stroke: #88a86b; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-green); }
+      .labelPill { fill: #101b30; stroke-width: 1.5; }
+      .labelText { font: 14px "Comic Mono", ui-monospace, monospace; font-weight: 700; }
+    </style>
+  </defs>
+
+  <rect width="1920" height="1200" rx="34" fill="url(#canvas)"/>
+  <rect class="outer" x="28" y="26" width="1864" height="1148" rx="30"/>
+  <text class="title" x="960" y="82" text-anchor="middle">reservation correctness has one authority</text>
+  <text class="subtitle" x="960" y="120" text-anchor="middle">Redis reduces contention; PostgreSQL decides durable capacity, state, ownership, and replay</text>
+
+  <rect class="lane" x="68" y="170" width="340" height="780" rx="22"/>
+  <text class="laneTitle" x="98" y="215">Request edge</text>
+
+  <rect class="lane" x="458" y="170" width="420" height="780" rx="22"/>
+  <text class="laneTitle" x="488" y="215">Execution guards</text>
+
+  <rect class="authority" x="928" y="170" width="570" height="780" rx="24"/>
+  <text class="laneTitle" x="958" y="215">PostgreSQL authority</text>
+  <text class="detail" x="958" y="246">one transaction boundary for durable outcomes</text>
+
+  <rect class="lane" x="1548" y="170" width="304" height="780" rx="22"/>
+  <text class="laneTitle" x="1578" y="215">Background work</text>
+
+  <g id="clients">
+    <rect class="card card-blue" x="108" y="290" width="260" height="132" rx="18"/>
+    <text class="cardTitle" x="238" y="335" text-anchor="middle">Clients</text>
+    <text class="detail" x="238" y="370" text-anchor="middle">Alice · Bob</text>
+    <text class="detail" x="238" y="397" text-anchor="middle">Idempotency-Key · Owner</text>
+  </g>
+
+  <g id="http-api">
+    <rect class="card card-blue" x="108" y="600" width="260" height="150" rx="18"/>
+    <text class="cardTitle" x="238" y="647" text-anchor="middle">Reservation HTTP API</text>
+    <text class="detail" x="238" y="682" text-anchor="middle">hold · cancel · waitlist</text>
+    <text class="detail" x="238" y="710" text-anchor="middle">offer acceptance</text>
+  </g>
+
+  <g id="local-bulkhead">
+    <rect class="card card-purple" x="508" y="270" width="320" height="126" rx="18"/>
+    <text class="cardTitle" x="668" y="316" text-anchor="middle">Node-local bulkhead</text>
+    <text class="detail" x="668" y="351" text-anchor="middle">protect JDBC concurrency</text>
+    <text class="detail" x="668" y="378" text-anchor="middle">always evaluated first</text>
+  </g>
+
+  <g id="redis-semaphore">
+    <rect class="card card-amber" x="508" y="470" width="320" height="130" rx="18"/>
+    <text class="cardTitle" x="668" y="515" text-anchor="middle">Redis semaphore</text>
+    <text class="detail" x="668" y="550" text-anchor="middle">advisory admission</text>
+    <text class="detail" x="668" y="578" text-anchor="middle">shed load when healthy</text>
+  </g>
+
+  <g id="redis-suppression">
+    <rect class="card card-amber" x="508" y="680" width="320" height="130" rx="18"/>
+    <text class="cardTitle" x="668" y="725" text-anchor="middle">Redis suppression lock</text>
+    <text class="detail" x="668" y="760" text-anchor="middle">short in-flight lease</text>
+    <text class="detail" x="668" y="788" text-anchor="middle">never stores command outcome</text>
+  </g>
+
+  <g id="idempotency">
+    <rect class="card card-green" x="978" y="290" width="470" height="124" rx="18"/>
+    <text class="cardTitle" x="1213" y="335" text-anchor="middle">HTTP idempotency</text>
+    <text class="detail" x="1213" y="369" text-anchor="middle">New · Takeover · Replay · Conflict · InProgress</text>
+    <text class="detail" x="1213" y="395" text-anchor="middle">mutation and replayable body commit together</text>
+  </g>
+
+  <g id="capacity-holds">
+    <rect class="card card-green" x="978" y="475" width="220" height="150" rx="18"/>
+    <text class="cardTitle" x="1088" y="520" text-anchor="middle">Capacity + holds</text>
+    <text class="detail" x="1088" y="555" text-anchor="middle">state + revision CAS</text>
+    <text class="detail" x="1088" y="583" text-anchor="middle">occupied &lt; capacity</text>
+    <text class="detail" x="1088" y="609" text-anchor="middle">owner + expiry</text>
+  </g>
+
+  <g id="waitlist-offers">
+    <rect class="card card-green" x="1228" y="475" width="220" height="150" rx="18"/>
+    <text class="cardTitle" x="1338" y="520" text-anchor="middle">Waitlist + offers</text>
+    <text class="detail" x="1338" y="555" text-anchor="middle">FIFO sequence</text>
+    <text class="detail" x="1338" y="583" text-anchor="middle">owner + revision</text>
+    <text class="detail" x="1338" y="609" text-anchor="middle">ACTIVE + expiry</text>
+  </g>
+
+  <g id="audit-outbox">
+    <rect class="card card-teal" x="978" y="700" width="470" height="140" rx="18"/>
+    <text class="cardTitle" x="1213" y="746" text-anchor="middle">Audit + notification outbox</text>
+    <text class="detail" x="1213" y="781" text-anchor="middle">stable delivery id · worker claim lease</text>
+    <text class="detail" x="1213" y="809" text-anchor="middle">bounded retry · crash recovery intent</text>
+  </g>
+
+  <g id="expiry-sweeper">
+    <rect class="card card-amber" x="1590" y="350" width="220" height="150" rx="18"/>
+    <text class="cardTitle" x="1700" y="397" text-anchor="middle">Expiry sweeper</text>
+    <text class="detail" x="1700" y="432" text-anchor="middle">bounded batch</text>
+    <text class="detail" x="1700" y="460" text-anchor="middle">resource-first lock</text>
+    <text class="detail" x="1700" y="486" text-anchor="middle">hold / offer expiry</text>
+  </g>
+
+  <g id="notification-worker">
+    <rect class="card card-teal" x="1590" y="650" width="220" height="150" rx="18"/>
+    <text class="cardTitle" x="1700" y="697" text-anchor="middle">Notification worker</text>
+    <text class="detail" x="1700" y="732" text-anchor="middle">claim delivery</text>
+    <text class="detail" x="1700" y="760" text-anchor="middle">send · retry</text>
+    <text class="detail" x="1700" y="786" text-anchor="middle">recover after crash</text>
+  </g>
+
+  <path class="required" data-connector="clients-to-api" d="M 238 422 L 238 600"/>
+  <path class="required" data-connector="api-to-local" d="M 368 675 L 438 675 Q 448 675 448 665 L 448 343 Q 448 333 458 333 L 508 333"/>
+  <path class="required" data-connector="local-to-postgres" d="M 828 333 L 978 333"/>
+
+  <path class="advisory" data-connector="local-to-redis-semaphore" d="M 668 396 L 668 470"/>
+  <path class="advisory" data-connector="semaphore-to-suppression" d="M 668 600 L 668 680"/>
+  <path class="advisory" data-connector="suppression-to-idempotency" d="M 828 745 L 918 745 Q 928 745 928 735 L 928 413 Q 928 403 938 403 L 978 403"/>
+  <path class="fallback" data-connector="redis-fallback-to-postgres" d="M 828 535 L 878 535 Q 888 535 888 525 L 888 373 Q 888 363 898 363 L 978 363"/>
+
+  <path class="worker" data-connector="sweeper-to-capacity" d="M 1590 425 L 1530 425 Q 1520 425 1520 435 L 1520 550 Q 1520 560 1510 560 L 1448 560"/>
+  <path class="worker" data-connector="outbox-to-notification-worker" d="M 1448 770 L 1590 770"/>
+
+  <g data-relationship-label="required-path">
+    <rect class="labelPill" x="832" y="286" width="142" height="32" rx="16" stroke="#5f9fc4"/>
+    <text class="labelText" x="903" y="307" text-anchor="middle" fill="#a8d6ee">required path</text>
+  </g>
+  <g data-relationship-label="local-fallback">
+    <rect class="labelPill" x="840" y="495" width="132" height="32" rx="16" stroke="#5ab3aa"/>
+    <text class="labelText" x="906" y="516" text-anchor="middle" fill="#a9e4df">fail open</text>
+  </g>
+
+  <g id="legend">
+    <rect x="190" y="1000" width="1540" height="120" rx="20" fill="#141f32" stroke="#536377" stroke-width="2"/>
+    <text class="laneTitle" x="240" y="1044">Legend</text>
+    <path d="M 390 1037 H 500" class="required"/>
+    <text class="legend" x="525" y="1043">required request path</text>
+    <path d="M 790 1037 H 900" class="advisory"/>
+    <text class="legend" x="925" y="1043">advisory Redis path</text>
+    <path d="M 1210 1037 H 1320" class="fallback"/>
+    <text class="legend" x="1345" y="1043">Redis error keeps DB path</text>
+    <text class="small" x="960" y="1090" text-anchor="middle">Only a committed PostgreSQL transaction can change durable reservation capacity or replay state.</text>
+  </g>
+</svg>
