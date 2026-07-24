@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1680 680" width="1680" height="680">
   <style>
-    .title { font-family: 'Architects Daughter', 'Comic Sans MS', cursive; fill: #1e293b; font-size: 34px; }
-    .stage-title { font-family: 'Architects Daughter', 'Comic Sans MS', cursive; fill: #1e293b; font-size: 23px; }
-    .subtitle, .small, .step { font-family: 'Comic Mono', 'SFMono-Regular', Consolas, monospace; fill: #475569; }
+    .title { font-family: 'goorm Sans', sans-serif; fill: #1e293b; font-size: 34px; font-weight: 700; }
+    .stage-title { font-family: 'goorm Sans', sans-serif; fill: #1e293b; font-size: 23px; font-weight: 700; }
+    .subtitle, .small, .step { font-family: 'goorm Sans Code', monospace; fill: #475569; }
     .subtitle { font-size: 15px; }
     .small { font-size: 13px; }
     .step { font-size: 13px; font-weight: 700; }
@@ -23,8 +23,8 @@
   <rect width="1680" height="680" fill="#f8fafc"/>
   <rect x="24" y="24" width="1632" height="632" rx="28" fill="#ffffff" stroke="#dbe5f1" stroke-width="2"/>
 
-  <text x="56" y="76" class="title">Change the source, prove every handoff</text>
-  <text x="58" y="108" class="subtitle">A live edit is temporary; a portable skill change survives the entire source-first delivery path.</text>
+  <text x="56" y="76" class="title">소스를 고치고 모든 전달 단계를 증명하기</text>
+  <text x="58" y="108" class="subtitle">live 수정은 일시적이지만, 이식 가능한 skill 변경은 source-first 배포 경로 전체에 남습니다.</text>
 
   <path class="connector" d="M 380 235 H 450" marker-end="url(#arrow-blue-right)"/>
   <path class="connector" d="M 760 235 H 830" marker-end="url(#arrow-blue-right)"/>
@@ -66,29 +66,29 @@
     <text x="114" y="449">08</text>
   </g>
 
-  <text x="225" y="245" text-anchor="middle" class="stage-title">Managed Source</text>
-  <text x="225" y="273" text-anchor="middle" class="small">edit the durable authority</text>
+  <text x="225" y="245" text-anchor="middle" class="stage-title">관리 소스</text>
+  <text x="225" y="273" text-anchor="middle" class="small">영속 기준점 수정</text>
 
-  <text x="605" y="245" text-anchor="middle" class="stage-title">Targeted Apply</text>
-  <text x="605" y="273" text-anchor="middle" class="small">render only the approved scope</text>
+  <text x="605" y="245" text-anchor="middle" class="stage-title">대상별 적용</text>
+  <text x="605" y="273" text-anchor="middle" class="small">승인 범위만 rendering</text>
 
-  <text x="985" y="245" text-anchor="middle" class="stage-title">Source / Live Parity</text>
-  <text x="985" y="273" text-anchor="middle" class="small">prove the target matches</text>
+  <text x="985" y="245" text-anchor="middle" class="stage-title">Source / Live 일치</text>
+  <text x="985" y="273" text-anchor="middle" class="small">target 일치 증명</text>
 
   <text x="1365" y="245" text-anchor="middle" class="stage-title">sync-codex --status</text>
-  <text x="1365" y="273" text-anchor="middle" class="small">audit managed ownership</text>
+  <text x="1365" y="273" text-anchor="middle" class="small">관리 ownership 점검</text>
 
-  <text x="1365" y="485" text-anchor="middle" class="stage-title">Codex Self-Audit</text>
-  <text x="1365" y="513" text-anchor="middle" class="small">verify runtime health</text>
+  <text x="1365" y="485" text-anchor="middle" class="stage-title">Codex 자체 점검</text>
+  <text x="1365" y="513" text-anchor="middle" class="small">runtime 상태 검증</text>
 
   <text x="985" y="485" text-anchor="middle" class="stage-title">Commit &amp; Push</text>
-  <text x="985" y="513" text-anchor="middle" class="small">persist the source change</text>
+  <text x="985" y="513" text-anchor="middle" class="small">소스 변경 영속화</text>
 
-  <text x="605" y="485" text-anchor="middle" class="stage-title">Public Export</text>
-  <text x="605" y="513" text-anchor="middle" class="small">copy the canonical allowlist</text>
+  <text x="605" y="485" text-anchor="middle" class="stage-title">공개 Export</text>
+  <text x="605" y="513" text-anchor="middle" class="small">canonical 허용 목록 복사</text>
 
-  <text x="225" y="485" text-anchor="middle" class="stage-title">Bundle Validation</text>
-  <text x="225" y="513" text-anchor="middle" class="small">reject private or broken payloads</text>
+  <text x="225" y="485" text-anchor="middle" class="stage-title">Bundle 검증</text>
+  <text x="225" y="513" text-anchor="middle" class="small">개인/손상 payload 거부</text>
 
-  <text x="840" y="606" text-anchor="middle" class="small">Every handoff must pass before the portable bundle is ready.</text>
+  <text x="840" y="606" text-anchor="middle" class="small">모든 전달 단계가 통과해야 이식 가능한 bundle이 준비됩니다.</text>
 </svg>
