@@ -31,7 +31,7 @@ S3, SQS, DynamoDB, Exposed 예제가 있고, `bluetape4k-workshop/aws`에는 애
 어디까지 라이브러리에 맡기고 어디부터 애플리케이션이 결정해야 하는지를 살펴봅니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-part5-adoption-flow-01.png" alt="Adoption flow from example application through Spring Boot or Ktor path, bluetape4k AWS helpers, local verification, and AWS services" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-part5-adoption-flow-01-ko.png" alt="example app에서 Spring Boot path 또는 Ktor path, bluetape4k-aws helper, local verification, AWS services로 이어지는 adoption flow" loading="lazy" />
   <figcaption>실전 예제에는 프레임워크 코드, helper layer, local emulator 검증 경계가 함께 들어 있습니다.</figcaption>
 </figure>
 
@@ -45,7 +45,7 @@ Spring Boot 예제는 `S3Operations`를 주입받는 WebFlux controller로 시�
 endpoint override, path-style access, presigner 설정을 직접 알 필요가 없습니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-part5-spring-s3-example-flow-01.png" alt="Spring Boot S3 example flow from HTTP client through S3DocumentController, S3Operations, optional encryption routes, KmsOperations, and S3 endpoint" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-part5-spring-s3-example-flow-01-ko.png" alt="HTTP client와 S3DocumentController, S3Operations, optional encryption route, KmsOperations, S3 endpoint가 만나는 Spring Boot S3 example flow" loading="lazy" />
   <figcaption>Spring Boot S3 예제에서는 일반 object API와 선택적인 client-side encryption route가 같은 controller 안에서 분리됩니다.</figcaption>
 </figure>
 
@@ -192,7 +192,7 @@ loop, visibility timeout, delete 시점, retry, typed payload 변환, manual ack
 Spring Boot SQS 예제에서는 이 경계가 `@SqsListener`로 드러납니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-part5-sqs-sns-scenario-01.png" alt="Spring Boot SQS and SNS example flow from HTTP client through WebFlux API, SQS and SNS operations, fanout, LocalStack, SQS listener container, and ReceivedOrderStore" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-part5-sqs-sns-scenario-01-ko.png" alt="HTTP client, Spring WebFlux API, SQS/SNS operation, SNS fanout, LocalStack SQS/SNS, @SqsListener container, ReceivedOrderStore가 연결되는 Spring Boot SQS/SNS flow" loading="lazy" />
   <figcaption>SQS/SNS 예제는 REST 발행, SNS fanout, listener 처리, manual acknowledgement, retry, DLQ 설정을 하나의 실행 가능한 흐름으로 묶습니다.</figcaption>
 </figure>
 
@@ -250,7 +250,7 @@ S3/SQS/DynamoDB 예제와 같은 구조로 “설정 → helper → framework wi
 애플리케이션이 S3를 직접 알지 않습니다. `StorageService` 하나만 보고, Spring profile로 백엔드를 바꿉니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-part5-storage-profile-switch-01.png" alt="StorageService profile switch from application code to local, S3, and S3 presigned backend implementations" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-part5-storage-profile-switch-01-ko.png" alt="Application code가 StorageService contract만 사용하고 local, s3, s3-presigned profile이 backend implementation을 바꾸는 profile switch diagram" loading="lazy" />
   <figcaption>StorageService를 기준으로 애플리케이션 코드는 그대로 두고, profile만 바꿔 백엔드를 전환합니다.</figcaption>
 </figure>
 

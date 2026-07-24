@@ -35,7 +35,7 @@ Spring Boot 사용자에게 익숙한 기능과 Ktor 사용자에게 필요한 c
 같은 AWS helper 계층 위에서 제공하는 것이 이 프로젝트의 방향입니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-part4-comparison-map-01.png" alt="Comparison map between Spring Cloud AWS and bluetape4k AWS by ownership boundary" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-part4-comparison-map-01-ko.png" alt="Spring Cloud AWS와 bluetape4k-aws를 Spring-first fit, Kotlin/JVM fit, shared AWS responsibility ownership boundary로 비교한 map" loading="lazy" />
   <figcaption>두 라이브러리는 같은 AWS SDK 계열 위에 서 있지만, 반복 작업을 맡기는 위치가 다릅니다.</figcaption>
 </figure>
 
@@ -170,7 +170,7 @@ receive loop, ack, retry, visibility timeout을 책임지는지 흐려집니다.
 두 라이브러리가 동시에 소유하지 않도록 서비스 경계를 정하면 됩니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-part4-decision-guide-01.png" alt="Decision guide for choosing Spring Cloud AWS or bluetape4k AWS by workload shape" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-part4-decision-guide-01-ko.png" alt="workload shape, Spring Boot only, Kotlin coroutine service, Ktor runtime, CRT 기반 S3 transfer 조건에 따라 Spring Cloud AWS와 bluetape4k-aws를 고르는 guide" loading="lazy" />
   <figcaption>선택 기준은 프레임워크 선호가 아니라 반복되는 AWS 작업을 어디에 맡길지입니다.</figcaption>
 </figure>
 

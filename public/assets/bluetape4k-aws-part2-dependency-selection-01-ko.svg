@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="620" viewBox="0 0 1160 620" role="img" aria-label="bluetape4k AWS dependency selection">
+  <defs>
+    <style>
+      .title{font-family:'goorm Sans',cursive;font-size:34px;fill:#102033}
+      .subtitle,.caption,.body{font-family:'goorm Sans Code',monospace;fill:#334155}
+      .subtitle{font-size:15px}.label{font-family:'goorm Sans',cursive;font-size:22px;fill:#102033}.footerLabel{font-family:'goorm Sans',cursive;font-size:22px;fill:#ffffff}
+      .footerText{font-family:'goorm Sans Code',monospace;font-size:15px;fill:#e2e8f0}
+      .body{font-size:14px}.small{font-size:12px}.arrow{fill:none;stroke:#475569;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+      .panel{fill:#fff;stroke:#d7e2ef;stroke-width:1.4;rx:18}.chip{font-family:'goorm Sans Code',monospace;font-size:12px;fill:#334155}
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#475569"/></marker>
+  </defs>
+  <rect width="1160" height="620" fill="#ffffff"/>
+  <text class="title" x="54" y="70">의존성 선택은 애플리케이션이 담당합니다</text>
+  <text class="subtitle" x="56" y="104">핵심 모듈은 여러 AWS 서비스 SDK에 맞춰 컴파일하고, 각 서비스 애플리케이션은 필요한 실행 아티팩트만 선택합니다.</text>
+
+  <rect class="panel" x="54" y="138" width="1052" height="342"/>
+  <rect x="92" y="226" width="176" height="110" rx="14" fill="#e0f2fe" stroke="#38bdf8" stroke-width="1.6"/>
+  <text class="label" x="180" y="264" text-anchor="middle">BOM</text>
+  <text class="body" x="180" y="294" text-anchor="middle">버전 정렬</text>
+  <text class="body" x="180" y="317" text-anchor="middle">서비스 선택 없음</text>
+
+  <rect x="330" y="202" width="220" height="158" rx="14" fill="#dcfce7" stroke="#22c55e" stroke-width="1.6"/>
+  <text class="label" x="440" y="240" text-anchor="middle">핵심 래퍼</text>
+  <text class="body" x="440" y="271" text-anchor="middle">compileOnly SDK</text>
+  <text class="body" x="440" y="294" text-anchor="middle">도우미 API</text>
+  <text class="body" x="440" y="317" text-anchor="middle">넓은 소스 범위</text>
+
+  <rect x="612" y="202" width="220" height="158" rx="14" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.6"/>
+  <text class="label" x="722" y="240" text-anchor="middle">애플리케이션</text>
+  <text class="body" x="722" y="271" text-anchor="middle">S3, SQS 선언</text>
+  <text class="body" x="722" y="294" text-anchor="middle">또는 DynamoDB만</text>
+  <text class="body" x="722" y="317" text-anchor="middle">실행 클래스패스 소유</text>
+
+  <rect x="894" y="202" width="176" height="158" rx="14" fill="#fff7ed" stroke="#fb923c" stroke-width="1.6"/>
+  <text class="label" x="982" y="240" text-anchor="middle">실행 환경</text>
+  <text class="body" x="982" y="271" text-anchor="middle">작은 의존성 그래프</text>
+  <text class="body" x="982" y="294" text-anchor="middle">적은 클라이언트</text>
+  <text class="body" x="982" y="317" text-anchor="middle">명확한 책임</text>
+
+  <polyline class="arrow" points="268,281 330,281"/>
+  <polyline class="arrow" points="550,281 612,281"/>
+  <polyline class="arrow" points="832,281 894,281"/>
+
+  <rect x="90" y="396" width="250" height="42" rx="21" fill="#f8fafc" stroke="#94a3b8"/>
+  <text class="chip" x="215" y="422" text-anchor="middle">compileOnly: 래퍼 소스 접근</text>
+  <rect x="374" y="396" width="258" height="42" rx="21" fill="#f8fafc" stroke="#94a3b8"/>
+  <text class="chip" x="503" y="422" text-anchor="middle">implementation: service 선택</text>
+  <rect x="666" y="396" width="220" height="42" rx="21" fill="#f8fafc" stroke="#94a3b8"/>
+  <text class="chip" x="776" y="422" text-anchor="middle">BOM: 버전 정렬</text>
+
+  <rect x="54" y="510" width="1052" height="58" rx="8" fill="#0f253a"/>
+  <text class="footerLabel" x="75" y="543">결과</text>
+  <text class="footerText" x="160" y="543">많은 서비스를 지원하지만 각 애플리케이션은 사용하는 AWS 아티팩트만 포함합니다.</text>
+  <path class="connector" d="M2 2 L3 2" fill="none" stroke="transparent"/>
+</svg>

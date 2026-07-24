@@ -36,7 +36,7 @@ the Ktor integration will continue to grow. The goal is to offer Spring-friendly
 coroutine runtime support over the same AWS helper layer.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-part4-comparison-map-01.png" alt="Comparison map between Spring Cloud AWS and bluetape4k AWS by ownership boundary" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-part4-comparison-map-01-en.png" alt="Comparison map between Spring Cloud AWS and bluetape4k AWS by ownership boundary" loading="lazy" />
   <figcaption>Both libraries sit on the AWS SDK family, but they place repeated work at different boundaries.</figcaption>
 </figure>
 
@@ -168,7 +168,7 @@ The key is to avoid duplicate ownership. The same queue, bucket operation, or co
 be owned by both libraries at once.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-part4-decision-guide-01.png" alt="Decision guide for choosing Spring Cloud AWS or bluetape4k AWS by workload shape" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-part4-decision-guide-01-en.png" alt="Decision guide for choosing Spring Cloud AWS or bluetape4k AWS by workload shape" loading="lazy" />
   <figcaption>The decision point is not framework preference. It is where repeated AWS work should live.</figcaption>
 </figure>
 

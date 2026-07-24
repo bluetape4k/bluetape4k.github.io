@@ -37,7 +37,7 @@ wiring that feels native to those stacks. The central question is not "should bl
 SDK?" It is "how should service code use the SDKs without carrying every integration detail itself?"
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-module-map-01.png" alt="Bluetape4k AWS module map with application entry points, BOM, runtime modules, framework integrations, examples, local verification, and AWS services" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-module-map-01-en.png" alt="Bluetape4k AWS module map with application entry points, BOM, runtime modules, framework integrations, examples, local verification, and AWS services" loading="lazy" />
   <figcaption>`bluetape4k-aws` keeps the BOM, SDK wrappers, framework adapters, examples, and local verification model aligned.</figcaption>
 </figure>
 
@@ -63,7 +63,7 @@ owns Ktor 3 SigV4 signing, coroutine S3 REST clients, SQS consumer runtime, and 
 repository helpers. The core remains portable; the edge speaks the framework's language.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-request-flow-01.png" alt="AWS request flow from a Kotlin service through a framework adapter, bluetape4k AWS wrapper, AWS SDK client, then LocalStack or AWS services" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-request-flow-01-en.png" alt="AWS request flow from a Kotlin service through a framework adapter, bluetape4k AWS wrapper, AWS SDK client, then LocalStack or AWS services" loading="lazy" />
   <figcaption>Service code sees a Kotlin-first API; the runtime can route to emulator-backed tests or real AWS.</figcaption>
 </figure>
 

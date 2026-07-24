@@ -28,7 +28,7 @@ async client를 `suspend` 함수로 잇고, S3 대용량 전송에는 CRT 기반
 살리면서 CRT HTTP engine 기본값, `withXxxClient` lifecycle helper, 서비스별 DSL builder를 제공합니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-part2-api-layers-01.png" alt="Two AWS SDK approaches through bluetape4k aws-java and aws-kotlin toward AWS services" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-part2-api-layers-01-ko.png" alt="aws-java와 aws-kotlin이 각각 Java SDK v2와 Kotlin SDK를 거쳐 AWS services로 이어지는 두 API layer 선택지" loading="lazy" />
   <figcaption>두 SDK 사용 방식은 다르지만, 애플리케이션 코드가 원하는 것은 작고 일관된 서비스 API입니다.</figcaption>
 </figure>
 
@@ -153,7 +153,7 @@ DynamoDB, KMS, SES/SESv2, CloudWatch, CloudWatch Logs, Kinesis, STS까지 공통
 Spring Boot와 Ktor module은 이 core helper 위에 framework에서 바로 쓰는 진입점을 얹습니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-service-coverage-01.png" alt="AWS service coverage chart for aws-java, aws-kotlin, aws-spring-boot, aws-ktor, and examples" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-service-coverage-01-ko.png" alt="aws-java, aws-kotlin, aws-spring-boot, aws-ktor, examples의 AWS service 지원 범위를 비교한 chart" loading="lazy" />
   <figcaption>core module은 여러 AWS 서비스를 다루고, framework module은 자주 쓰는 진입점을 framework에 맞게 제공합니다.</figcaption>
 </figure>
 
@@ -185,7 +185,7 @@ BOM은 버전을 맞추고, 애플리케이션은 자기 서비스 경계에 필
 선택합니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-part2-dependency-selection-01.png" alt="Dependency selection diagram showing BOM, compileOnly wrapper modules, application-selected runtime dependencies" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-part2-dependency-selection-01-ko.png" alt="BOM, compileOnly wrapper module, application-selected runtime dependency의 소유 경계를 보여 주는 dependency selection diagram" loading="lazy" />
   <figcaption>`compileOnly`는 wrapper가 compile될 수 있게 하고, runtime 선택은 애플리케이션이 유지합니다.</figcaption>
 </figure>
 

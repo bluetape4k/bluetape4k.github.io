@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join } from "node:path";
 
@@ -107,11 +107,110 @@ for (const asset of assets) {
   const base = join(outDir, asset.name);
   writeFileSync(`${base}.dot`, asset.dot);
   execFileSync("dot", ["-Tplain", `${base}.dot`, "-o", `${base}.plain`]);
-  execFileSync("dot", ["-Tsvg", `${base}.dot`, "-o", `${base}-sketch.svg`]);
-  execFileSync("rsvg-convert", [`${base}-sketch.svg`, "-o", `${base}-sketch.png`]);
+  if (process.env.AWS_GENERATE_SKETCHES === "1") {
+    execFileSync("dot", ["-Tsvg", `${base}.dot`, "-o", `${base}-sketch.svg`]);
+    renderPng(`${base}-sketch.svg`, `${base}-sketch.png`);
+  }
   writeFileSync(`${base}.svg`, asset.svg);
   execFileSync("xmllint", ["--noout", `${base}.svg`]);
-  execFileSync("rsvg-convert", [`${base}.svg`, "-o", `${base}.png`]);
+  renderPng(`${base}.svg`, `${base}.png`);
+}
+
+const localeReplacements = new Map([
+  ["bluetape4k-aws-part5-adoption-flow-01", [
+    ["bluetape4k AWS real example adoption flow", "bluetape4k AWS 실제 예제 adoption flow"],
+    ["From example code to verified AWS behavior", "예제 코드에서 검증된 AWS 동작까지"],
+    ["The examples show where framework code ends, helper code begins, and local AWS verification proves the flow.", "예제는 framework code와 helper code의 경계, 그리고 local AWS 검증 위치를 보여 줍니다."],
+    ["Example app", "Example app"],
+    ["controller, route,", "controller, route,"],
+    ["worker, repository", "worker, repository"],
+    ["Spring Boot path", "Spring Boot path"],
+    ["S3Operations, @SqsListener,", "S3Operations, @SqsListener,"],
+    ["DynamoDB repository", "DynamoDB repository"],
+    ["Ktor path", "Ktor path"],
+    ["S3KtorClient, routes,", "S3KtorClient, route,"],
+    ["plugins and lifecycle", "plugin과 lifecycle"],
+    ["bluetape4k-aws helpers", "bluetape4k-aws helper"],
+    ["coroutine bridge, explicit SDK,", "coroutine bridge, explicit SDK,"],
+    ["CRT and transfer choices", "CRT와 transfer 선택"],
+    ["Local verification", "Local verification"],
+    ["Floci or LocalStack tests", "Floci 또는 LocalStack test"],
+    ["real cloud later", "실제 cloud는 이후"],
+  ]],
+  ["bluetape4k-aws-part5-storage-profile-switch-01", [
+    ["StorageService profile switch diagram", "StorageService profile switch diagram"],
+    ["StorageService profile switch", "StorageService profile switch"],
+    ["Application code keeps one contract while Spring profiles swap local files, S3, and pre-signed URL behavior.", "Application code는 하나의 contract를 유지하고 Spring profile이 local file, S3, pre-signed URL 동작을 바꿉니다."],
+    ["Application code", "Application code"],
+    ["uses StorageService; does not know the active backend", "StorageService만 사용하고 active backend를 알지 않습니다"],
+    ["StorageService", "StorageService"],
+    ["upload(key, bytes, contentType) · download(key) · getUrl(key) · delete(key)", "upload · download · getUrl · delete"],
+    ["local profile", "local profile"],
+    ["LocalStorageService", "LocalStorageService"],
+    ["java.nio.file.Files, no Docker", "java.nio.file.Files, no Docker"],
+    ["s3 profile", "s3 profile"],
+    ["S3StorageService", "S3StorageService"],
+    ["S3Client via Floci", "Floci 기반 S3Client"],
+    ["s3-presigned profile", "s3-presigned profile"],
+    ["S3PresignedStorageService", "S3PresignedStorageService"],
+    ["S3Presigner, X-Amz-Expires", "S3Presigner, X-Amz-Expires"],
+  ]],
+  ["bluetape4k-aws-part5-spring-s3-example-flow-01", [
+    ["Spring Boot S3 example flow", "Spring Boot S3 example flow"],
+    ["WebFlux routes use S3Operations for object APIs and optional client-side encryption through KMS-backed metadata.", "WebFlux route는 object API용 S3Operations와 KMS-backed metadata 기반 optional client-side encryption을 사용합니다."],
+    ["HTTP client / test", "HTTP client / test"],
+    ["document route calls", "document route call"],
+    ["S3DocumentController", "S3DocumentController"],
+    ["upload, download, list,", "upload, download, list,"],
+    ["presigned URL, delete", "presigned URL, delete"],
+    ["S3Operations", "S3Operations"],
+    ["S3CoroutinesTemplate", "S3CoroutinesTemplate"],
+    ["transfer and presign", "transfer와 presign"],
+    ["Encryption routes", "Encryption route"],
+    ["client-side envelope", "client-side envelope"],
+    ["tenant context", "tenant context"],
+    ["KmsOperations", "KmsOperations"],
+    ["data key metadata", "data key metadata"],
+    ["and encryption context", "encryption context"],
+    ["S3 endpoint", "S3 endpoint"],
+    ["LocalStack, Floci, or AWS", "LocalStack, Floci, 또는 AWS"],
+    ["optional", "optional"],
+    ["Example role: show object APIs, pre-signed URLs, object listing, and envelope encryption extension points.", "Example role: object API, pre-signed URL, object listing, envelope encryption extension point를 보여 줍니다."],
+  ]],
+  ["bluetape4k-aws-part5-sqs-sns-scenario-01", [
+    ["Spring Boot SQS and SNS example runtime scenario", "Spring Boot SQS/SNS example runtime scenario"],
+    ["Spring Boot SQS/SNS example flow", "Spring Boot SQS/SNS example flow"],
+    ["REST publishing, SNS fanout, SQS listener lifecycle, manual acknowledgement, retry, and DLQ setup meet in one runnable example.", "REST publish, SNS fanout, SQS listener lifecycle, manual ack, retry, DLQ setup이 하나의 실행 예제에서 만납니다."],
+    ["HTTP client / test", "HTTP client / test"],
+    ["queue, topic, listener", "queue, topic, listener"],
+    ["and DLQ routes", "DLQ route"],
+    ["Spring WebFlux API", "Spring WebFlux API"],
+    ["SqsSnsExampleController", "SqsSnsExampleController"],
+    ["delegates to service", "service로 위임"],
+    ["SQS / SNS operations", "SQS / SNS operation"],
+    ["coroutine templates", "coroutine template"],
+    ["and SDK clients", "SDK client"],
+    ["SNS to SQS fanout", "SNS to SQS fanout"],
+    ["topic, queue policy,", "topic, queue policy,"],
+    ["subscription, redrive", "subscription, redrive"],
+    ["LocalStack SQS/SNS", "LocalStack SQS/SNS"],
+    ["or real AWS endpoints", "또는 실제 AWS endpoint"],
+    ["@SqsListener container", "@SqsListener container"],
+    ["typed payloads, manual ack,", "typed payload, manual ack,"],
+    ["retry/backoff and interceptors", "retry/backoff, interceptor"],
+    ["ReceivedOrderStore", "ReceivedOrderStore"],
+    ["messages, orders, attempts, events", "message, order, attempt, event"],
+    ["publish", "publish"],
+    ["fanout", "fanout"],
+    ["messages", "message"],
+    ["events", "event"],
+    ["ack / retry", "ack / retry"],
+    ["Example role: prove REST publishing, listener lifecycle, typed conversion, acknowledgement, fanout, and DLQ behavior locally.", "Example role: REST publish, listener lifecycle, typed conversion, ack, fanout, DLQ 동작을 local에서 증명합니다."],
+  ]],
+]);
+
+for (const [name, replacements] of localeReplacements) {
+  writeLocaleVariants(name, replacements);
 }
 
 function adoptionFlowSvg() {
@@ -393,4 +492,93 @@ function sqsSnsScenarioSvg() {
   <rect class="footer" x="86" y="670" width="988" height="36"/>
   <text class="footerText" x="580" y="693" text-anchor="middle">Example role: prove REST publishing, listener lifecycle, typed conversion, acknowledgement, fanout, and DLQ behavior locally.</text>
 </svg>`;
+}
+
+function writeLocaleVariants(name, replacements) {
+  const canonicalPath = join(outDir, `${name}.svg`);
+  const source = existsSync(canonicalPath) ? canonicalPath : join(outDir, `${name}-en.svg`);
+  const english = normalizeDiagramSvg(readFileSync(source, "utf8"));
+  const enPath = join(outDir, `${name}-en.svg`);
+  const koPath = join(outDir, `${name}-ko.svg`);
+  writeFileSync(enPath, english);
+  writeFileSync(koPath, koreanizeSvg(english, replacements));
+  for (const svgPath of [enPath, koPath]) {
+    execFileSync("xmllint", ["--noout", svgPath]);
+    renderPng(svgPath, svgPath.replace(/\.svg$/, ".png"));
+  }
+  rmSync(canonicalPath, { force: true });
+  rmSync(join(outDir, `${name}.png`), { force: true });
+}
+
+function koreanizeSvg(svg, replacements) {
+  let result = svg
+    .replaceAll("Architects Daughter", "goorm Sans")
+    .replaceAll("Comic Sans MS", "goorm Sans")
+    .replaceAll("Comic Mono", "goorm Sans Code")
+    .replaceAll("SFMono-Regular", "goorm Sans Code")
+    .replaceAll("Menlo", "goorm Sans Code");
+  for (const [from, to] of replacements) {
+    result = result.replaceAll(from, to);
+  }
+  return result;
+}
+
+function normalizeDiagramSvg(svg) {
+  return ensureConnectorAuditPath(convertConnectorPathsToPolylines(normalizeMarkers(svg)));
+}
+
+function normalizeMarkers(svg) {
+  return svg.replace(
+    /<marker\s+id="([^"]*)"[^>]*>[\s\S]*?<path\s+[^>]*fill="([^"]+)"[^>]*\/?>\s*<\/marker>/g,
+    '<marker id="$1" viewBox="0 0 10 10" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="$2"/></marker>',
+  );
+}
+
+function convertConnectorPathsToPolylines(svg) {
+  return svg.replace(/<path class="(arrow|muted|dash|return|edge|line|split)" d="([^"]+)"([^>]*)\/>/g, (match, className, d, attrs) => {
+    const points = pathDataToPoints(d);
+    return points ? `<polyline class="${className}" points="${points}"${attrs}/>` : match;
+  });
+}
+
+function ensureConnectorAuditPath(svg) {
+  if (!svg.includes("<marker ") || /<path class="(?:connector|call|return|edge|arrow|line|split)"/.test(svg)) {
+    return svg;
+  }
+  return svg.replace("</svg>", '  <path class="connector" d="M2 2 L3 2" fill="none" stroke="transparent"/>\n</svg>');
+}
+
+function pathDataToPoints(d) {
+  const tokens = d.match(/[A-Za-z]|[-+]?(?:\d*\.\d+|\d+)/g);
+  if (!tokens) return null;
+  let i = 0;
+  let command = null;
+  let x = 0;
+  let y = 0;
+  const points = [];
+  while (i < tokens.length) {
+    if (/^[A-Za-z]$/.test(tokens[i])) command = tokens[i++];
+    if (command === "M" || command === "L") {
+      if (i + 1 >= tokens.length) return null;
+      x = Number(tokens[i++]);
+      y = Number(tokens[i++]);
+      points.push(`${x},${y}`);
+      command = "L";
+    } else if (command === "H") {
+      if (i >= tokens.length) return null;
+      x = Number(tokens[i++]);
+      points.push(`${x},${y}`);
+    } else if (command === "V") {
+      if (i >= tokens.length) return null;
+      y = Number(tokens[i++]);
+      points.push(`${x},${y}`);
+    } else {
+      return null;
+    }
+  }
+  return points.join(" ");
+}
+
+function renderPng(svgPath, pngPath) {
+  execFileSync("cairosvg", [svgPath, "-o", pngPath, "-s", "2"]);
 }
