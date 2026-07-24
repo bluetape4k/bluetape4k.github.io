@@ -53,7 +53,7 @@ fun hasRisk(text: String, keywords: List<String>): Boolean =
 `text-search`를 서비스 경계에 넣을 때는 아래처럼 흐름을 나누면 됩니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-text-part3-aho-corasick-flow-01.png" alt="Keyword dictionaries are compiled into an immutable automaton, user text is scanned once, and matches are used for masking, alerts, or highlighting" loading="lazy" />
+  <img src="/assets/bluetape4k-text-part3-aho-corasick-flow-01-ko.png" alt="키워드 사전을 불변 automaton으로 빌드하고 사용자 텍스트를 한 번 스캔해 마스킹, 알림, 강조에 활용하는 흐름" loading="lazy" />
   <figcaption>사전은 build 단계에서 automaton으로 만들고, 요청 처리에서는 입력을 한 번 훑어 결과만 사용합니다.</figcaption>
 </figure>
 

@@ -20,7 +20,7 @@
       .request-card { fill: #ffffff; stroke: #6ecba9; }
       .result-card { fill: #fffaf0; stroke: #e6b96f; }
       .title { font-family: "Architects Daughter", "Comic Mono", ui-sans-serif, system-ui, sans-serif; font-size: 28px; fill: #102033; font-weight: 700; }
-      .label { font-family: "Comic Mono", ui-monospace, monospace; font-size: 20px; fill: #102033; font-weight: 700; }
+      .label { font-family: "Architects Daughter", "Comic Mono", sans-serif; font-size: 20px; fill: #102033; font-weight: 700; }
       .body { font-family: "Comic Mono", ui-monospace, monospace; font-size: 16px; fill: #334155; }
       .tag { font-family: "Comic Mono", ui-monospace, monospace; font-size: 15px; fill: #0f3d66; font-weight: 700; }
       .connector-blue { fill: none; stroke: #2878d9; stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-blue); }

@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="640" viewBox="0 0 1440 640" role="img" aria-labelledby="title desc">
+  <title id="title">bluetape4k-text service input pipeline</title>
+  <desc id="desc">A pipeline from raw multilingual input through normalization, tokenization, language detection, keyword matching, service decision, and quality gates.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f8fbff"/>
+      <stop offset="55%" stop-color="#eef6ff"/>
+      <stop offset="100%" stop-color="#f6f0ff"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#2f405f" flood-opacity="0.16"/>
+    </filter>
+    <marker id="arrow-blue" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 0 L 14 7 L 0 14 Z" fill="#2f6fdb" stroke="#2f6fdb"/>
+    </marker>
+    <style>
+      .canvas { fill: url(#bg); }
+      .title { font-family: "goorm Sans", sans-serif; font-size: 34px; font-weight: 700; fill: #1f2a44; }
+      .subtitle { font-family: "goorm Sans Code", monospace; font-size: 17px; fill: #52627a; }
+      .card { filter: url(#shadow); }
+      .card-bg { stroke-width: 3; rx: 24; }
+      .card-title { font-family: "goorm Sans", sans-serif; font-size: 24px; font-weight: 700; fill: #18243a; }
+      .card-body { font-family: "goorm Sans Code", monospace; font-size: 15px; fill: #40506a; }
+      .tag { font-family: "goorm Sans Code", monospace; font-size: 13px; font-weight: 700; }
+      .arrow { fill: none; stroke: #2f6fdb; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-blue); }
+      .lane { fill: rgba(255,255,255,0.56); stroke: #d4e0f2; stroke-width: 2; rx: 28; }
+      .note-title { font-family: "goorm Sans", sans-serif; font-size: 22px; font-weight: 700; fill: #24334f; }
+      .note-text { font-family: "goorm Sans Code", monospace; font-size: 15px; fill: #4d5f78; }
+    </style>
+  </defs>
+
+  <rect class="canvas" width="1440" height="640"/>
+  <circle cx="120" cy="88" r="52" fill="#dcecff"/>
+  <circle cx="1320" cy="110" r="70" fill="#eadfff"/>
+  <circle cx="1290" cy="520" r="46" fill="#dff7ef"/>
+
+  <text x="80" y="70" class="title">bluetape4k-text 처리 파이프라인</text>
+  <text x="82" y="102" class="subtitle">입력은 일찍 정규화하고, 분류 기준과 배포 품질 근거를 명확히 남깁니다.</text>
+
+  <rect x="70" y="150" width="1300" height="280" class="lane"/>
+
+  <g class="card" transform="translate(95 205)">
+    <rect class="card-bg" width="190" height="150" fill="#ffffff" stroke="#9eb9e8"/>
+    <text x="24" y="44" class="card-title">원문 입력</text>
+    <text x="24" y="78" class="card-body">서비스 텍스트</text>
+    <text x="24" y="104" class="card-body">한국어/일본어</text>
+    <text x="24" y="130" class="card-body">영어 혼합</text>
+  </g>
+
+  <path class="arrow" d="M 296 280 L 352 280"/>
+
+  <g class="card" transform="translate(370 205)">
+    <rect class="card-bg" width="190" height="150" fill="#f7fbff" stroke="#73a3ef"/>
+    <text x="24" y="44" class="card-title">정규화</text>
+    <text x="24" y="78" class="card-body">NFC / 소문자화</text>
+    <text x="24" y="104" class="card-body">경계 공백 제거</text>
+    <text x="24" y="130" class="card-body">요청 크기 제한</text>
+  </g>
+
+  <path class="arrow" d="M 571 280 L 627 280"/>
+
+  <g class="card" transform="translate(645 175)">
+    <rect class="card-bg" width="220" height="210" fill="#fffefa" stroke="#e8c66d"/>
+    <text x="24" y="44" class="card-title">분석</text>
+    <text x="24" y="82" class="card-body">한국어 토크나이저</text>
+    <text x="24" y="110" class="card-body">일본어 토크나이저</text>
+    <text x="24" y="138" class="card-body">Lingua 언어 감지</text>
+    <text x="24" y="166" class="card-body">Aho-Corasick 검색</text>
+    <rect x="24" y="180" width="124" height="24" rx="12" fill="#fff3c2"/>
+    <text x="38" y="197" class="tag" fill="#866000">모듈 선택</text>
+  </g>
+
+  <path class="arrow" d="M 876 280 L 932 280"/>
+
+  <g class="card" transform="translate(950 205)">
+    <rect class="card-bg" width="190" height="150" fill="#f4fff7" stroke="#7dcc9c"/>
+    <text x="24" y="44" class="card-title">판단</text>
+    <text x="24" y="78" class="card-body">경로 선택</text>
+    <text x="24" y="104" class="card-body">필터링</text>
+    <text x="24" y="130" class="card-body">색인/검색 준비</text>
+  </g>
+
+  <path class="arrow" d="M 1151 280 L 1207 280"/>
+
+  <g class="card" transform="translate(1225 205)">
+    <rect class="card-bg" width="120" height="150" fill="#fff7fb" stroke="#d98bbb"/>
+    <text x="20" y="44" class="card-title">검증</text>
+    <text x="20" y="78" class="card-body">fixture</text>
+    <text x="20" y="104" class="card-body">413/400</text>
+    <text x="20" y="130" class="card-body">원문 미노출</text>
+  </g>
+
+  <g transform="translate(120 470)">
+    <rect width="380" height="110" rx="22" fill="#ffffff" stroke="#bfd2ed" stroke-width="2"/>
+    <text x="24" y="38" class="note-title">사용자 계약</text>
+    <text x="24" y="68" class="note-text">서비스 경계에 필요한</text>
+    <text x="24" y="92" class="note-text">최소 모듈만 선택합니다.</text>
+  </g>
+
+  <g transform="translate(530 470)">
+    <rect width="380" height="110" rx="22" fill="#ffffff" stroke="#bfd2ed" stroke-width="2"/>
+    <text x="24" y="38" class="note-title">품질 계약</text>
+    <text x="24" y="68" class="note-text">NLP 순위가 아니라 저장소의</text>
+    <text x="24" y="92" class="note-text">동작을 테스트로 고정합니다.</text>
+  </g>
+
+  <g transform="translate(940 470)">
+    <rect width="380" height="110" rx="22" fill="#ffffff" stroke="#bfd2ed" stroke-width="2"/>
+    <text x="24" y="38" class="note-title">서비스 계약</text>
+    <text x="24" y="68" class="note-text">처리기가 원문을 읽기 전에</text>
+    <text x="24" y="92" class="note-text">큰 요청을 거부합니다.</text>
+  </g>
+</svg>
