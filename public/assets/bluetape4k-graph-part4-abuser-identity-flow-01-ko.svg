@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="780" viewBox="0 0 1500 780">
+<defs>
+  <marker id="arrow" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+    <path d="M 0 0 L 14 7 L 0 14 Z" fill="#496A8F" stroke="#496A8F"/>
+  </marker>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#22344A" flood-opacity="0.12"/>
+  </filter>
+  <style>
+    .canvas{fill:#F6F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
+    .title{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:42px;fill:#22344A;font-weight:400}
+    .subtitle,.footer,.axis{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:17px;fill:#536476;font-weight:400}
+    .nodeTitle,.participant{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:24px;fill:#22344A;font-weight:400}
+    .nodeBody,.labelText,.num{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:16px;fill:#3F5269;font-weight:400}
+    .tableTitle{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:24px;fill:#22344A;font-weight:400}
+    .tableField,.edgeLabel{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:15px;fill:#3F5269;font-weight:400}
+    .edge{fill:none;stroke:#496A8F;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    .bus{fill:none;stroke:#496A8F;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+    .lifeline{stroke:#91A6BD;stroke-width:2;stroke-dasharray:8 8}
+    g[id]{filter:url(#shadow)}
+  </style>
+</defs>
+<rect class="canvas" width="1500" height="780"/>
+<rect class="frame" x="34" y="28" width="1432" height="724" rx="24"/>
+<text class="title" x="750" y="82" text-anchor="middle">Abuser Detection 식별자 흐름</text>
+<text class="subtitle" x="750" y="118" text-anchor="middle">한 user에서 시작해 shared identifier를 순회하고 의심 cluster를 ranking한다</text>
+<path class="edge" data-connector="seed-to-ids" d="M410 363 L427 363 Q444 363 444 345 L444 274 Q444 256 462 256 L490 256"/>
+<path class="edge" data-connector="ids-to-users" d="M830 256 L900 256"/>
+<path class="edge" data-connector="seed-to-paths" d="M410 399 L438 399 Q456 399 456 417 L456 508 Q456 526 473 526 L490 526"/>
+<path class="edge" data-connector="paths-to-rank" d="M830 526 L848 526 Q865 526 865 517 L865 517 Q865 508 883 508 L900 508"/>
+<path class="edge" data-connector="users-to-rank" d="M1070 327 L1070 373 Q1070 391 1079 391 L1079 391 Q1088 391 1088 409 L1088 455"/>
+<g id="seed">
+  <rect x="90" y="310" width="320" height="142" rx="12" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="250" y="367.5" text-anchor="middle">Seed User</text>
+  <text class="nodeBody" x="250" y="401.5" text-anchor="middle">login, order,</text>
+  <text class="nodeBody" x="250" y="424.5" text-anchor="middle">moderation event의 userId</text>
+</g>
+<g id="ids">
+  <rect x="490" y="185" width="340" height="142" rx="12" fill="#FFF4D9" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="660" y="242.5" text-anchor="middle">Shared Identifier</text>
+  <text class="nodeBody" x="660" y="276.5" text-anchor="middle">device, IP, phone hash</text>
+  <text class="nodeBody" x="660" y="299.5" text-anchor="middle">payment token, referral</text>
+</g>
+<g id="users">
+  <rect x="900" y="185" width="340" height="142" rx="12" fill="#EAF8EF" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="1070" y="242.5" text-anchor="middle">Related Users</text>
+  <text class="nodeBody" x="1070" y="276.5" text-anchor="middle">identifier에서 reverse traversal</text>
+  <text class="nodeBody" x="1070" y="299.5" text-anchor="middle">seed user 제외</text>
+</g>
+<g id="paths">
+  <rect x="490" y="455" width="340" height="142" rx="12" fill="#F3ECFF" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="660" y="512.5" text-anchor="middle">Suspicion Evidence</text>
+  <text class="nodeBody" x="660" y="546.5" text-anchor="middle">edge path 설명</text>
+  <text class="nodeBody" x="660" y="569.5" text-anchor="middle">cycle detection</text>
+</g>
+<g id="rank">
+  <rect x="900" y="455" width="340" height="142" rx="12" fill="#E9F7F5" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="1070" y="512.5" text-anchor="middle">Risk Ranking</text>
+  <text class="nodeBody" x="1070" y="546.5" text-anchor="middle">PageRank topK</text>
+  <text class="nodeBody" x="1070" y="569.5" text-anchor="middle">cluster review queue</text>
+</g>
+<rect x="88" y="684" width="1324" height="62" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
+<text class="footer" x="750" y="709" text-anchor="middle">workshop은 raw phone과 card data를 graph에 넣지 않고 hash와 PCI-safe payment token을 쓴다.</text>
+<text class="footer" x="750" y="733" text-anchor="middle">예제는 traversal shape를 먼저 가르치며 production에는 scoring과 operational guardrail이 더 필요하다.</text>
+</svg>

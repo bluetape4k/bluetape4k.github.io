@@ -146,7 +146,7 @@ val cf: CompletableFuture<String?> = future.toCompletableFuture()
 기존 Java async pipeline과 이어야 할 때는 `toCompletableFuture()`로 변환합니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-leader-runifleader-sequence-01.png" alt="runIfLeader 성공 및 skip 시퀀스 다이어그램" loading="lazy" />
+  <img src="/assets/bluetape4k-leader-runifleader-sequence-01-ko.png" alt="runIfLeader 성공 및 skip 시퀀스 다이어그램" loading="lazy" />
   <figcaption>리더 획득 시: action이 실행되고 결과가 반환됩니다. Lock 경합 시: 에러 없이 null이 반환됩니다.</figcaption>
 </figure>
 

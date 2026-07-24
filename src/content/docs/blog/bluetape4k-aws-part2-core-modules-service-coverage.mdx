@@ -29,7 +29,7 @@ keeps the native suspend model of the Kotlin SDK while adding CRT HTTP engine de
 helpers, and service-specific DSL builders.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-part2-api-layers-01.png" alt="Two AWS SDK approaches through bluetape4k aws-java and aws-kotlin toward AWS services" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-part2-api-layers-01-en.png" alt="Two AWS SDK approaches through bluetape4k aws-java and aws-kotlin toward AWS services" loading="lazy" />
   <figcaption>The two SDK approaches differ, but service code usually wants a small and consistent interface.</figcaption>
 </figure>
 
@@ -154,7 +154,7 @@ Kinesis, and STS all appear in the core SDK modules. Spring Boot and Ktor module
 framework entry points on top of that foundation.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-service-coverage-01.png" alt="AWS service coverage chart for aws-java, aws-kotlin, aws-spring-boot, aws-ktor, and examples" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-service-coverage-01-en.png" alt="AWS service coverage chart for aws-java, aws-kotlin, aws-spring-boot, aws-ktor, and examples" loading="lazy" />
   <figcaption>Core wrappers carry broad SDK coverage; framework modules expose the focused entry points applications use most often.</figcaption>
 </figure>
 
@@ -186,7 +186,7 @@ SES by accident. The BOM aligns versions; the application adds the AWS SDK artif
 uses as `implementation` dependencies.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-part2-dependency-selection-01.png" alt="Dependency selection diagram showing BOM, compileOnly wrapper modules, application-selected runtime dependencies" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-part2-dependency-selection-01-en.png" alt="Dependency selection diagram showing BOM, compileOnly wrapper modules, application-selected runtime dependencies" loading="lazy" />
   <figcaption>`compileOnly` lets wrappers compile; runtime service selection remains with the application.</figcaption>
 </figure>
 

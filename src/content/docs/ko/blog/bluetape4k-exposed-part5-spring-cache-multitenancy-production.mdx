@@ -29,7 +29,7 @@ Spring Boot에서는 설정을 줄이고, cache module에서는 read/write 전�
 벤치마크할 수 있게 만드는 것이 목표였습니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part5-production-boundary.png" alt="HTTP request에서 Spring Boot wiring, cache strategy, tenant context, outbox idempotency, repository layer, observability를 거쳐 measured service로 가는 production boundary diagram" loading="lazy" />
+  <img src="/assets/bluetape4k-exposed-part5-production-boundary-ko.png" alt="HTTP request에서 Spring Boot wiring, cache strategy, tenant context, outbox idempotency, repository layer, observability를 거쳐 measured service로 가는 production boundary diagram" loading="lazy" />
   <figcaption>Spring wiring, cache, tenant context, outbox, observability는 Exposed repository와 transaction 경계를 중심으로 조립됩니다.</figcaption>
 </figure>
 
@@ -126,7 +126,7 @@ when (config.writeMode) {
 Redis Testcontainers로 7가지 cache profile을 비교합니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part5-cache-read-chart.png" alt="Cache read throughput chart showing Caffeine about 490000 ops per second and Near Cache about 465000 ops per second versus No Cache about 8200" loading="lazy" />
+  <img src="/assets/bluetape4k-exposed-part5-cache-read-chart-ko.png" alt="Cache read throughput chart showing Caffeine about 490000 ops per second and Near Cache about 465000 ops per second versus No Cache about 8200" loading="lazy" />
   <figcaption>캐시가 warm된 읽기 흐름에서는 Caffeine과 Near Cache가 No Cache 대비 약 57-60배 높았습니다.</figcaption>
 </figure>
 
@@ -143,7 +143,7 @@ Redis Testcontainers로 7가지 cache profile을 비교합니다.
 쓰기 흐름은 따로 봐야 합니다. 읽기에서 빠른 전략이 쓰기에서도 항상 좋은 것은 아닙니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part5-cache-write-chart.png" alt="Cache write throughput chart showing Write Behind about 24000 ops per second versus No Cache about 8200 and Write Through about 5600" loading="lazy" />
+  <img src="/assets/bluetape4k-exposed-part5-cache-write-chart-ko.png" alt="Cache write throughput chart showing Write Behind about 24000 ops per second versus No Cache about 8200 and Write Through about 5600" loading="lazy" />
   <figcaption>쓰기에서는 Write-Behind가 약 24,000 ops/s로 가장 높지만, 최종 일관성을 받아들일 수 있어야 합니다.</figcaption>
 </figure>
 

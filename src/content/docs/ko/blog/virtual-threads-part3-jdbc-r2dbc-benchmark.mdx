@@ -61,7 +61,7 @@ batch만 보면 결론이 너무 좁아진다. 마음에 드는 숫자만 골라
 | 측정 설정 강화 후 최고점 | 45,431 ops/sec |
 
 <figure class="bt4k-architecture">
-  <img src="/assets/virtual-threads-part3-exposed-jdbc-01.png" alt="일반 Exposed JDBC benchmark의 baseline부터 tuning 이후까지 총 처리량 chart" loading="lazy" />
+  <img src="/assets/virtual-threads-part3-exposed-jdbc-01-ko.png" alt="일반 Exposed JDBC benchmark의 baseline부터 tuning 이후까지 총 처리량 chart" loading="lazy" />
   <figcaption>일반 Exposed JDBC 경로도 pool/thread 조정과 JOIN index 추가만으로 25.4k에서 45.4k ops/sec까지 올라갔다.</figcaption>
 </figure>
 
@@ -136,7 +136,7 @@ MySQL seed benchmark는 특히 차이가 컸다. `dataSize=100000`에서 JDBC는
 MySQL은 JDBC가 약 8.4-8.8배, PostgreSQL은 약 4.9-5.2배 높았다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/virtual-threads-part3-benchmark-01.png" alt="대형 end-to-end batch job의 JDBC vs R2DBC benchmark chart" loading="lazy" />
+  <img src="/assets/virtual-threads-part3-benchmark-01-ko.png" alt="대형 end-to-end batch job의 JDBC vs R2DBC benchmark chart" loading="lazy" />
   <figcaption>대형 end-to-end batch job에서는 JDBC + Virtual Threads가 MySQL에서 약 8.4-8.8배, PostgreSQL에서 약 4.9-5.2배 높았다.</figcaption>
 </figure>
 

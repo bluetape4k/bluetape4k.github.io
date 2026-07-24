@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1580" height="800" viewBox="0 0 1580 800" role="img">
+<title>Data and Infrastructure 지도</title>
+<desc>실행 모델, 운영 시스템, 실패 경계를 기준으로 adapter를 고릅니다.</desc>
+<defs>
+  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#1D3148" flood-opacity="0.12"/></filter>
+<marker id="arrow" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M 2 2 L 12 7 L 2 12 Z" fill="#4D6F9F"/></marker>
+  <style>
+    .bg{fill:#F7F9FC}.frame{fill:#fff;stroke:#D6E2ED;stroke-width:2}
+    .title{font-family:"goorm Sans","Noto Sans KR","Apple SD Gothic Neo",sans-serif;font-size:36px;fill:#21334A;font-weight:700}
+    .subtitle,.body,.small{font-family:"goorm Sans Code","goorm Sans","D2Coding",monospace;fill:#34465B}
+    .subtitle{font-size:16px}.body{font-size:15px}.small{font-size:12px;fill:#657386}
+    .label{font-family:"goorm Sans","Noto Sans KR","Apple SD Gothic Neo",sans-serif;font-size:20px;fill:#21334A;font-weight:700}
+    .card{filter:url(#shadow);stroke-width:2}.connector{fill:none;stroke:#4D6F9F;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    .bar-label{font-family:"goorm Sans Code","goorm Sans","D2Coding",monospace;font-size:15px;fill:#26384F}.axis{stroke:#B8C7D9;stroke-width:2}
+  </style>
+</defs>
+<rect class="bg" width="1580" height="800"/>
+<rect class="frame" x="34" y="28" width="1512" height="744" rx="24"/>
+<text class="title" x="70" y="82">Data and Infrastructure 지도</text>
+<text class="subtitle" x="72" y="114">실행 모델, 운영 시스템, 실패 경계를 기준으로 adapter를 고릅니다.</text>
+<g data-card="Service Code">
+  <rect class="card" x="60" y="170" width="210" height="116" rx="14" fill="#E8F1FF" stroke="#5A85D6"/>
+  <text class="label" x="165" y="204" text-anchor="middle"><tspan x="165" dy="0">Service Code</tspan></text>
+  <text class="body" x="165" y="238" text-anchor="middle"><tspan x="165" dy="0">sync · suspend · Flow</tspan></text>
+</g>
+<g data-card="Data">
+  <rect class="card" x="350" y="170" width="260" height="116" rx="14" fill="#EAF7ED" stroke="#58A978"/>
+  <text class="label" x="480" y="204" text-anchor="middle"><tspan x="480" dy="0">Data</tspan></text>
+  <text class="body" x="480" y="238" text-anchor="middle"><tspan x="480" dy="0">JDBC · R2DBC · Hibernate</tspan><tspan x="480" dy="20">MongoDB · Cassandra</tspan></text>
+</g>
+<g data-card="Coroutine Path">
+  <rect class="card" x="690" y="170" width="250" height="116" rx="14" fill="#E7F7F5" stroke="#3CA7A0"/>
+  <text class="label" x="815" y="204" text-anchor="middle"><tspan x="815" dy="0">Coroutine Path</tspan></text>
+  <text class="body" x="815" y="238" text-anchor="middle"><tspan x="815" dy="0">await · Flow · adapter</tspan></text>
+</g>
+<g data-card="External Systems">
+  <rect class="card" x="1020" y="170" width="250" height="116" rx="14" fill="#EAF7ED" stroke="#58A978"/>
+  <text class="label" x="1145" y="204" text-anchor="middle"><tspan x="1145" dy="0">External Systems</tspan></text>
+  <text class="body" x="1145" y="238" text-anchor="middle"><tspan x="1145" dy="0">DB · Redis · broker</tspan><tspan x="1145" dy="20">search · metrics</tspan></text>
+</g>
+<g data-card="Service Code">
+  <rect class="card" x="60" y="335" width="210" height="116" rx="14" fill="#E8F1FF" stroke="#5A85D6"/>
+  <text class="label" x="165" y="369" text-anchor="middle"><tspan x="165" dy="0">Service Code</tspan></text>
+  <text class="body" x="165" y="403" text-anchor="middle"><tspan x="165" dy="0">sync · suspend · Flow</tspan></text>
+</g>
+<g data-card="Redis / Cache">
+  <rect class="card" x="350" y="335" width="260" height="116" rx="14" fill="#FCECEF" stroke="#DC6B82"/>
+  <text class="label" x="480" y="369" text-anchor="middle"><tspan x="480" dy="0">Redis / Cache</tspan></text>
+  <text class="body" x="480" y="403" text-anchor="middle"><tspan x="480" dy="0">Lettuce · Redisson</tspan><tspan x="480" dy="20">local · near · distributed</tspan></text>
+</g>
+<g data-card="Resilience">
+  <rect class="card" x="690" y="335" width="250" height="116" rx="14" fill="#F1ECFF" stroke="#8A72D6"/>
+  <text class="label" x="815" y="369" text-anchor="middle"><tspan x="815" dy="0">Resilience</tspan></text>
+  <text class="body" x="815" y="403" text-anchor="middle"><tspan x="815" dy="0">retry · circuit breaker</tspan><tspan x="815" dy="20">timeout · rate limit</tspan></text>
+</g>
+<g data-card="External Systems">
+  <rect class="card" x="1020" y="335" width="250" height="116" rx="14" fill="#EAF7ED" stroke="#58A978"/>
+  <text class="label" x="1145" y="369" text-anchor="middle"><tspan x="1145" dy="0">External Systems</tspan></text>
+  <text class="body" x="1145" y="403" text-anchor="middle"><tspan x="1145" dy="0">DB · Redis · broker</tspan><tspan x="1145" dy="20">search · metrics</tspan></text>
+</g>
+<g data-card="Service Code">
+  <rect class="card" x="60" y="500" width="210" height="116" rx="14" fill="#E8F1FF" stroke="#5A85D6"/>
+  <text class="label" x="165" y="534" text-anchor="middle"><tspan x="165" dy="0">Service Code</tspan></text>
+  <text class="body" x="165" y="568" text-anchor="middle"><tspan x="165" dy="0">sync · suspend · Flow</tspan></text>
+</g>
+<g data-card="Messaging / Infra">
+  <rect class="card" x="350" y="500" width="260" height="116" rx="14" fill="#FFF3D8" stroke="#D6A441"/>
+  <text class="label" x="480" y="534" text-anchor="middle"><tspan x="480" dy="0">Messaging / Infra</tspan></text>
+  <text class="body" x="480" y="568" text-anchor="middle"><tspan x="480" dy="0">Kafka · NATS · Pulsar</tspan><tspan x="480" dy="20">ES · Bucket4j</tspan></text>
+</g>
+<g data-card="Observability">
+  <rect class="card" x="690" y="500" width="250" height="116" rx="14" fill="#F5F7FA" stroke="#8FA1B3"/>
+  <text class="label" x="815" y="534" text-anchor="middle"><tspan x="815" dy="0">Observability</tspan></text>
+  <text class="body" x="815" y="568" text-anchor="middle"><tspan x="815" dy="0">Micrometer · OpenTelemetry</tspan><tspan x="815" dy="20">log · trace</tspan></text>
+</g>
+<g data-card="External Systems">
+  <rect class="card" x="1020" y="500" width="250" height="116" rx="14" fill="#EAF7ED" stroke="#58A978"/>
+  <text class="label" x="1145" y="534" text-anchor="middle"><tspan x="1145" dy="0">External Systems</tspan></text>
+  <text class="body" x="1145" y="568" text-anchor="middle"><tspan x="1145" dy="0">DB · Redis · broker</tspan><tspan x="1145" dy="20">search · metrics</tspan></text>
+</g>
+<path class="connector" data-connector="service-to-data" d="M270 228 H350"/>
+<path class="connector" data-connector="data-to-coroutine-path" d="M610 228 H690"/>
+<path class="connector" data-connector="coroutine-path-to-external-systems" d="M940 228 H1020"/>
+<path class="connector" data-connector="service-to-redis-cache" d="M270 393 H350"/>
+<path class="connector" data-connector="redis-cache-to-resilience" d="M610 393 H690"/>
+<path class="connector" data-connector="resilience-to-external-systems" d="M940 393 H1020"/>
+<path class="connector" data-connector="service-to-messaging-infra" d="M270 558 H350"/>
+<path class="connector" data-connector="messaging-infra-to-observability" d="M610 558 H690"/>
+<path class="connector" data-connector="observability-to-external-systems" d="M940 558 H1020"/>
+</svg>

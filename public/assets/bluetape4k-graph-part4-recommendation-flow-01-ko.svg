@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="780" viewBox="0 0 1700 780">
+<defs>
+  <marker id="arrow" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+    <path d="M 0 0 L 14 7 L 0 14 Z" fill="#496A8F" stroke="#496A8F"/>
+  </marker>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#22344A" flood-opacity="0.12"/>
+  </filter>
+  <style>
+    .canvas{fill:#F6F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
+    .title{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:42px;fill:#22344A;font-weight:400}
+    .subtitle,.footer,.axis{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:17px;fill:#536476;font-weight:400}
+    .nodeTitle,.participant{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:24px;fill:#22344A;font-weight:400}
+    .nodeBody,.labelText,.num{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:16px;fill:#3F5269;font-weight:400}
+    .tableTitle{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:24px;fill:#22344A;font-weight:400}
+    .tableField,.edgeLabel{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:15px;fill:#3F5269;font-weight:400}
+    .edge{fill:none;stroke:#496A8F;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    .bus{fill:none;stroke:#496A8F;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+    .lifeline{stroke:#91A6BD;stroke-width:2;stroke-dasharray:8 8}
+    g[id]{filter:url(#shadow)}
+  </style>
+</defs>
+<rect class="canvas" width="1700" height="780"/>
+<rect class="frame" x="34" y="28" width="1632" height="724" rx="24"/>
+<text class="title" x="850" y="82" text-anchor="middle">Recommendation 예제 흐름</text>
+<text class="subtitle" x="850" y="118" text-anchor="middle">co-buyer와 friends-of-friends를 찾고 graph evidence로 candidate를 정렬한다</text>
+<path class="edge" data-connector="user-to-purchased" d="M390 346 L401 346 Q412 346 412 328 L412 264 Q412 246 429 246 L445 246"/>
+<path class="edge" data-connector="purchased-to-cobuyers" d="M765 246 L820 246"/>
+<path class="edge" data-connector="cobuyers-to-products" d="M1140 246 L1195 246"/>
+<path class="edge" data-connector="user-to-follows" d="M390 382 L407 382 Q424 382 424 400 L424 508 Q424 526 435 526 L445 526"/>
+<path class="edge" data-connector="follows-to-people" d="M765 526 L820 526"/>
+<g id="user">
+  <rect x="90" y="305" width="300" height="118" rx="12" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="240" y="361.5" text-anchor="middle">Seed User</text>
+  <text class="nodeBody" x="240" y="395.5" text-anchor="middle">Alice 또는 현재 viewer</text>
+</g>
+<g id="purchased">
+  <rect x="445" y="175" width="320" height="142" rx="12" fill="#EAF8EF" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="605" y="232.5" text-anchor="middle">Purchased Products</text>
+  <text class="nodeBody" x="605" y="266.5" text-anchor="middle">이미 구매한 product</text>
+  <text class="nodeBody" x="605" y="289.5" text-anchor="middle">candidate에서 제외</text>
+</g>
+<g id="cobuyers">
+  <rect x="820" y="175" width="320" height="142" rx="12" fill="#FFF4D9" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="980" y="232.5" text-anchor="middle">Co-buyers</text>
+  <text class="nodeBody" x="980" y="266.5" text-anchor="middle">seed product를 산</text>
+  <text class="nodeBody" x="980" y="289.5" text-anchor="middle">다른 user</text>
+</g>
+<g id="products">
+  <rect x="1195" y="175" width="320" height="142" rx="12" fill="#E9F7F5" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="1355" y="232.5" text-anchor="middle">Product Candidates</text>
+  <text class="nodeBody" x="1355" y="266.5" text-anchor="middle">distinct co-buyer로 score</text>
+  <text class="nodeBody" x="1355" y="289.5" text-anchor="middle">score desc 정렬</text>
+</g>
+<g id="follows">
+  <rect x="445" y="455" width="320" height="142" rx="12" fill="#F3ECFF" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="605" y="512.5" text-anchor="middle">Follow Graph</text>
+  <text class="nodeBody" x="605" y="546.5" text-anchor="middle">direct follow</text>
+  <text class="nodeBody" x="605" y="569.5" text-anchor="middle">2-hop candidate</text>
+</g>
+<g id="people">
+  <rect x="820" y="455" width="360" height="142" rx="12" fill="#FFF0E8" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="1000" y="512.5" text-anchor="middle">Follow Candidates</text>
+  <text class="nodeBody" x="1000" y="546.5" text-anchor="middle">mutual follow count</text>
+  <text class="nodeBody" x="1000" y="569.5" text-anchor="middle">self와 existing follow 제외</text>
+</g>
+<rect x="88" y="684" width="1524" height="62" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
+<text class="footer" x="850" y="709" text-anchor="middle">service code는 traversal을 읽고 테스트할 수 있도록 일부러 명시적으로 유지한다.</text>
+<text class="footer" x="850" y="733" text-anchor="middle">큰 graph에서는 N+1 traversal shape를 native Cypher나 Gremlin query로 바꾼다.</text>
+</svg>

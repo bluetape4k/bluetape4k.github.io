@@ -41,7 +41,7 @@ BigQuery 예제는 실제 분석 쿼리를 실행하지 않습니다. Exposed가
 `dryRun=true`와 옵션 매핑이 맞는지 확인합니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part6-bigquery-dry-run-flow.png" alt="BigQuery dry-run flow from Exposed query through dry-run request to mocked BigQuery REST response" loading="lazy" />
+  <img src="/assets/bluetape4k-exposed-part6-bigquery-dry-run-flow-ko.png" alt="BigQuery dry-run flow from Exposed query through dry-run request to mocked BigQuery REST response" loading="lazy" />
   <figcaption>BigQuery 예제는 비용이 드는 실행 전에 요청 형태와 옵션 계약을 검증합니다.</figcaption>
 </figure>
 
@@ -73,7 +73,7 @@ Trino 예제도 실제 coordinator에 연결하지 않습니다. 대신 애플�
 바꾸고, Exposed가 만든 쿼리를 `EXPLAIN` 요청으로 감쌉니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part6-trino-session-sequence.png" alt="Trino session options sequence showing validated workshop profile, Exposed SQL generation, and EXPLAIN request preparation" loading="lazy" />
+  <img src="/assets/bluetape4k-exposed-part6-trino-session-sequence-ko.png" alt="Trino session options sequence showing validated workshop profile, Exposed SQL generation, and EXPLAIN request preparation" loading="lazy" />
   <figcaption>Trino에서는 catalog, schema, source, tag, session property를 애플리케이션 설정으로 먼저 관리합니다.</figcaption>
 </figure>
 
@@ -112,7 +112,7 @@ Serializable 충돌이 나면 SQLSTATE `40001`과 `restart transaction` 계열 �
 `UPDATE`만 다시 실행하면 안 됩니다. 읽기, 검증, 갱신, ledger 저장을 포함한 전체 transaction을 다시 실행해야 합니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part6-cockroachdb-retry-sequence.png" alt="CockroachDB serializable retry sequence showing application service, retry helper, Exposed transaction attempt, CockroachDB, and ledger state" loading="lazy" />
+  <img src="/assets/bluetape4k-exposed-part6-cockroachdb-retry-sequence-ko.png" alt="CockroachDB serializable retry sequence showing application service, retry helper, Exposed transaction attempt, CockroachDB, and ledger state" loading="lazy" />
   <figcaption>CockroachDB 재시도 경계는 전체 Exposed transaction block을 다시 실행하는 쪽에 둡니다.</figcaption>
 </figure>
 
@@ -154,7 +154,7 @@ DuckDB는 앞의 세 예제와 결이 다릅니다. BigQuery와 Trino가 원격 
 transaction 경계를 다룬다면, DuckDB는 애플리케이션 프로세스 안에서 작은 분석 엔진을 여는 쪽입니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part6-duckdb-architecture.png" alt="DuckDB embedded analytics architecture with application event fixture, Exposed DSL, DuckDB analytics session, file-backed database, and coroutine Flow boundary" loading="lazy" />
+  <img src="/assets/bluetape4k-exposed-part6-duckdb-architecture-ko.png" alt="DuckDB embedded analytics architecture with application event fixture, Exposed DSL, DuckDB analytics session, file-backed database, and coroutine Flow boundary" loading="lazy" />
   <figcaption>DuckDB 예제는 별도 서버 없이 파일 기반 database에서 집계 SQL을 실행합니다.</figcaption>
 </figure>
 

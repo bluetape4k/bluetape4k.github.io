@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="820" viewBox="0 0 1800 820">
+<defs>
+  <marker id="arrow" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+    <path d="M 0 0 L 14 7 L 0 14 Z" fill="#496A8F" stroke="#496A8F"/>
+  </marker>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#22344A" flood-opacity="0.12"/>
+  </filter>
+  <style>
+    .canvas{fill:#F6F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
+    .title{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:42px;fill:#22344A;font-weight:400}
+    .subtitle,.footer,.axis{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:17px;fill:#536476;font-weight:400}
+    .nodeTitle,.participant{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:24px;fill:#22344A;font-weight:400}
+    .nodeBody,.labelText,.num{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:16px;fill:#3F5269;font-weight:400}
+    .tableTitle{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:24px;fill:#22344A;font-weight:400}
+    .tableField,.edgeLabel{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:15px;fill:#3F5269;font-weight:400}
+    .edge{fill:none;stroke:#496A8F;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    .bus{fill:none;stroke:#496A8F;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+    .lifeline{stroke:#91A6BD;stroke-width:2;stroke-dasharray:8 8}
+    g[id]{filter:url(#shadow)}
+  </style>
+</defs>
+<rect class="canvas" width="1800" height="820"/>
+<rect class="frame" x="34" y="28" width="1732" height="764" rx="24"/>
+<text class="title" x="900" y="82" text-anchor="middle">Graph I/O 파이프라인</text>
+<text class="subtitle" x="900" y="118" text-anchor="middle">service를 특정 file shape에 묶지 않고 format adapter로 graph data를 이동한다</text>
+<path class="edge" data-connector="graph-to-core" d="M410 301 L480 301"/>
+<path class="edge" data-connector="core-to-formats" d="M800 283 L815 283 Q829 283 829 292 L829 292 Q829 301 847 301 L870 301"/>
+<path class="edge" data-connector="formats-to-uses" d="M1210 283 L1300 283"/>
+<path class="edge" data-connector="core-to-bench" d="M659 372 L659 500"/>
+<path class="edge" data-connector="formats-to-decorators" d="M1058 372 L1058 424 Q1058 442 1049 442 L1049 442 Q1040 442 1040 460 L1040 500"/>
+<path class="edge" data-connector="decorators-to-uses" d="M1210 571 L1237 571 Q1255 571 1255 553 L1255 337 Q1255 319 1273 319 L1300 319"/>
+<g id="graph">
+  <rect x="90" y="230" width="320" height="142" rx="12" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="250" y="287.5" text-anchor="middle">GraphOperations</text>
+  <text class="nodeBody" x="250" y="321.5" text-anchor="middle">vertex와 edge 읽기</text>
+  <text class="nodeBody" x="250" y="344.5" text-anchor="middle">import batch 쓰기</text>
+</g>
+<g id="core">
+  <rect x="480" y="230" width="320" height="142" rx="12" fill="#EAF8EF" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="640" y="287.5" text-anchor="middle">graph-io-core</text>
+  <text class="nodeBody" x="640" y="321.5" text-anchor="middle">bulk contract</text>
+  <text class="nodeBody" x="640" y="344.5" text-anchor="middle">export/import option</text>
+</g>
+<g id="formats">
+  <rect x="870" y="230" width="340" height="142" rx="12" fill="#FFF4D9" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="1040" y="287.5" text-anchor="middle">Data Format</text>
+  <text class="nodeBody" x="1040" y="321.5" text-anchor="middle">CSV</text>
+  <text class="nodeBody" x="1040" y="344.5" text-anchor="middle">NDJSON, GraphML</text>
+</g>
+<g id="uses">
+  <rect x="1300" y="230" width="360" height="142" rx="12" fill="#F3ECFF" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="1480" y="287.5" text-anchor="middle">운영 활용</text>
+  <text class="nodeBody" x="1480" y="321.5" text-anchor="middle">migration, snapshot</text>
+  <text class="nodeBody" x="1480" y="344.5" text-anchor="middle">analytics, 재현 가능한 test</text>
+</g>
+<g id="bench">
+  <rect x="480" y="500" width="360" height="142" rx="12" fill="#E9F7F5" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="660" y="557.5" text-anchor="middle">Benchmark Gate</text>
+  <text class="nodeBody" x="660" y="591.5" text-anchor="middle">mean latency number</text>
+  <text class="nodeBody" x="660" y="614.5" text-anchor="middle">claim 전에 caveat 확인</text>
+</g>
+<g id="decorators">
+  <rect x="870" y="500" width="340" height="142" rx="12" fill="#FFF0E8" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="1040" y="557.5" text-anchor="middle">I/O Decorator</text>
+  <text class="nodeBody" x="1040" y="591.5" text-anchor="middle">OkIO, buffering</text>
+  <text class="nodeBody" x="1040" y="614.5" text-anchor="middle">compression, async path</text>
+</g>
+<rect x="88" y="724" width="1624" height="62" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
+<text class="footer" x="900" y="749" text-anchor="middle">CSV는 사람이 보기 쉽고, NDJSON은 service interchange에 맞으며, GraphML은 interoperability에 유용하다.</text>
+<text class="footer" x="900" y="773" text-anchor="middle">benchmark chart는 현재 파일의 요약이지 모든 graph shape에 대한 약속이 아니다.</text>
+</svg>

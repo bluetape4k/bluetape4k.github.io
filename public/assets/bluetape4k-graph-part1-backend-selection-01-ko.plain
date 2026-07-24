@@ -1,0 +1,13 @@
+graph 1 4.9653 5.2778
+node app 1.3715 2.6389 2.7431 0.5 "애플리케이션 Graph Workload" rounded box black lightgrey
+node neo4j 4.3542 5.0278 0.75 0.5 Neo4j rounded box black lightgrey
+node memgraph 4.3542 3.8333 1.066 0.5 Memgraph rounded box black lightgrey
+node age 4.3542 2.6389 1.2222 0.5 "Apache AGE" rounded box black lightgrey
+node tinker 4.3542 1.4444 1.191 0.5 TinkerGraph rounded box black lightgrey
+node falkor 4.3542 0.25 0.97222 0.5 FalkorDB rounded box black lightgrey
+edge app neo4j 7 0.90972 2.8945 0.90972 3.5108 0.90972 5.0278 0.90972 5.0278 0.90972 5.0278 3.8125 5.0278 3.8125 5.0278 solid black
+edge app memgraph 7 1.8264 2.8922 1.8264 3.2428 1.8264 3.8333 1.8264 3.8333 1.8264 3.8333 3.6582 3.8333 3.6582 3.8333 solid black
+edge app age 4 2.7493 2.6389 2.7493 2.6389 3.5782 2.6389 3.5782 2.6389 solid black
+edge app tinker 7 1.8264 2.3856 1.8264 2.035 1.8264 1.4444 1.8264 1.4444 1.8264 1.4444 3.5952 1.4444 3.5952 1.4444 solid black
+edge app falkor 7 0.90972 2.3832 0.90972 1.767 0.90972 0.25 0.90972 0.25 0.90972 0.25 3.7044 0.25 3.7044 0.25 solid black
+stop

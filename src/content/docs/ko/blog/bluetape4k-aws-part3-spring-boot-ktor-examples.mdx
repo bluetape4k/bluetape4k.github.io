@@ -28,7 +28,7 @@ Ktor는 `ApplicationPlugin`, lifecycle event, route helper, coroutine runtime으
 문제를 다루지만, 애플리케이션이 기대하는 사용 방식은 다릅니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-part3-framework-flow-01.png" alt="Framework adapters over shared AWS contracts for Spring Boot 4 and Ktor 3" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-part3-framework-flow-01-ko.png" alt="Spring Boot 4 adapter와 Ktor 3 adapter가 application code에서 shared AWS contracts, AWS SDK clients, local verification, AWS services로 이어지는 구조" loading="lazy" />
   <figcaption>Spring Boot와 Ktor adapter는 같은 공통 helper를 각 framework의 실행 모델에 맞춰 연결합니다.</figcaption>
 </figure>
 
@@ -64,7 +64,7 @@ Spring Boot 쪽의 출발점은 auto-configuration입니다. `bluetape4k.aws.ena
 | Configuration | S3 config, Secrets Manager, Parameter Store, Exposed database registry | remote property loading, secret binding, database pool wiring |
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-part3-spring-sequence-01.png" alt="Spring Boot 4 AWS integration sequence from properties and auto-configuration to application beans, AWS helpers, and AWS runtime" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-part3-spring-sequence-01-ko.png" alt="Spring Boot startup, auto-config, app bean, AWS helper, AWS runtime 사이의 property binding, bean creation, operation call, SDK delegation sequence" loading="lazy" />
   <figcaption>Spring Boot 방식에서는 시작 시 auto-configuration이 먼저 framework bean을 만들고, application code는 주입된 operations만 호출합니다.</figcaption>
 </figure>
 
@@ -163,7 +163,7 @@ credential provider, signing clock 같은 공통 기본값을 한 번 잡아 두
 `DynamoDbKtorPlugin`이 필요하면 그 값을 상속합니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-part3-ktor-sequence-01.png" alt="Ktor 3 AWS integration sequence from plugin installation and lifecycle events to route helpers, AWS helpers, and AWS runtime" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-part3-ktor-sequence-01-ko.png" alt="Ktor application, plugin runtime, route handler, AWS helper, AWS runtime 사이의 plugin install, lifecycle, helper call, request signing sequence" loading="lazy" />
   <figcaption>Ktor 방식에서는 plugin install과 lifecycle event가 runtime을 열고 닫으며, route code는 필요한 helper를 명시적으로 호출합니다.</figcaption>
 </figure>
 
@@ -285,7 +285,7 @@ Part 3에서 예제는 깊이 파고드는 것이 아니라 전체적인 개요�
 서비스가 실행 가능한 예제로 검증되는지 보는 데 집중합니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-part3-example-matrix-01.png" alt="Runnable examples by framework and AWS service for Spring Boot and Ktor" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-part3-example-matrix-01-ko.png" alt="Spring Boot와 Ktor 예제가 S3, SQS, DynamoDB, Exposed service별로 제공하는 실행 가능 sample matrix" loading="lazy" />
   <figcaption>예제는 framework별 wiring을 보여 주고, 자세한 적용 흐름은 Part 5에서 다룹니다.</figcaption>
 </figure>
 

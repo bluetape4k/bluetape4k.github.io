@@ -36,7 +36,7 @@ plain Kotlin 서비스는 framework 없이 쓸 수 있어야 하고, Spring Boot
 "SDK를 서비스 경계에서 어떻게 더 자연스럽게 쓸 것인가"입니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-module-map-01.png" alt="Bluetape4k AWS module map with application entry points, BOM, runtime modules, framework integrations, examples, local verification, and AWS services" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-module-map-01-ko.png" alt="Kotlin application surface, BOM, runtime module, framework integration, runnable example, local verification, AWS service surface를 연결한 bluetape4k AWS module map" loading="lazy" />
   <figcaption>`bluetape4k-aws`는 BOM, SDK wrapper, framework adapter, examples, local verification을 한 저장소 안에서 맞춥니다.</figcaption>
 </figure>
 
@@ -60,7 +60,7 @@ plugin, coroutine S3 REST client, SQS consumer runtime, DynamoDB server reposito
 맡습니다. core는 framework-neutral하게 두고, edge에서 framework 관례를 받아들이는 구조입니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-request-flow-01.png" alt="AWS request flow from Kotlin service through framework adapter, bluetape4k AWS wrapper, AWS SDK client, then LocalStack or AWS services" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-request-flow-01-ko.png" alt="Kotlin service 요청이 framework adapter, bluetape4k AWS wrapper, AWS SDK client를 지나 LocalStack, Floci 또는 AWS services로 이동하는 흐름" loading="lazy" />
   <figcaption>서비스 코드는 Kotlin-first API를 보고, 실행 경로는 emulator 테스트와 실제 AWS runtime으로 나뉩니다.</figcaption>
 </figure>
 

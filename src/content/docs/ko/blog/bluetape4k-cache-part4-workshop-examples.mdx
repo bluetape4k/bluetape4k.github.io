@@ -22,7 +22,7 @@ blog:
 목표는 "캐시가 좋다"를 반복하는 것이 아닙니다. 어떤 전략이 어떤 코드 모양을 만들고, 어떤 비용을 숨기고, 어떤 운영 계약을 요구하는지 보는 것입니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/cache-series-workshop-profile-01.png" alt="Workshop cache profiles comparing no cache, Caffeine, Redis, Near Cache, and benchmark path" loading="lazy" />
+  <img src="/assets/cache-series-workshop-profile-01-ko.png" alt="Workshop cache profiles comparing no cache, Caffeine, Redis, Near Cache, and benchmark path" loading="lazy" />
   <figcaption>같은 Product service도 cache profile에 따라 성능과 일관성 계약이 달라집니다.</figcaption>
 </figure>
 
@@ -134,7 +134,7 @@ interface ProductCacheService {
 반면 `ReadThroughService`는 DB 저장 후 cache update를 애플리케이션이 직접 관리하는 cache-aside 성격이 있고, `WriteBehindService`는 캐시 업데이트를 먼저 수행한 뒤 업데이트 DB 반영은 비동기로 넘기는 구성입니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/cache-series-workshop-strategy-01.png" alt="Workshop cache-benchmark strategies and their read/write contracts" loading="lazy" />
+  <img src="/assets/cache-series-workshop-strategy-01-ko.png" alt="Workshop cache-benchmark strategies and their read/write contracts" loading="lazy" />
   <figcaption>동일 인터페이스 아래에서 전략마다 쓰기 계약과 동기화 시점이 다릅니다. 운영에서 안전도를 먼저 가늠해야 할 지점입니다.</figcaption>
 </figure>
 
@@ -143,7 +143,7 @@ interface ProductCacheService {
 `cache-benchmark`는 7개 profile을 같은 `ProductCacheService` 계약으로 비교합니다. 읽기/쓰기 모두 `ops/s` 기준이고 높을수록 좋습니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/cache-series-workshop-benchmark-01.png" alt="Workshop cache benchmark profiles comparing read and write throughput" loading="lazy" />
+  <img src="/assets/cache-series-workshop-benchmark-01-ko.png" alt="Workshop cache benchmark profiles comparing read and write throughput" loading="lazy" />
   <figcaption>읽기에서는 Caffeine과 Near Cache가 압도적이고, 쓰기에서는 Write-Behind가 가장 빠릅니다. 대신 의미론은 더 신중해야 합니다.</figcaption>
 </figure>
 

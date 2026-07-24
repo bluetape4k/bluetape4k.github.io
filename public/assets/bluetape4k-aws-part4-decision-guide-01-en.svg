@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="700" viewBox="0 0 1160 700" role="img" aria-label="Decision guide for choosing Spring Cloud AWS or bluetape4k AWS">
+  <defs>
+    <style>
+      .title{font-family:'Architects Daughter',cursive;font-size:34px;fill:#102033}
+      .subtitle,.body,.small{font-family:'Comic Mono',monospace;fill:#334155}
+      .subtitle{font-size:15px}.label{font-family:'Architects Daughter',cursive;font-size:21px;fill:#102033}
+      .body{font-size:14px}.small{font-size:12px}
+      .panel{fill:#fff;stroke:#d7e2ef;stroke-width:1.4;rx:18}.card{stroke-width:1.6;rx:16}
+      .arrow{fill:none;stroke:#475569;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#475569"/></marker>
+  </defs>
+  <rect width="1160" height="700" fill="#ffffff"/>
+  <text class="title" x="54" y="70">Decision guide</text>
+  <text class="subtitle" x="56" y="104">Pick the library that should own the repeated AWS work for this service, not the library with the longer feature checklist.</text>
+  <rect class="panel" x="54" y="136" width="1052" height="492"/>
+
+  <rect class="card" x="84" y="314" width="190" height="108" fill="#f8fafc" stroke="#94a3b8"/>
+  <text class="label" x="179" y="350" text-anchor="middle">Workload shape</text>
+  <text class="body" x="179" y="380" text-anchor="middle">framework, async,</text>
+  <text class="body" x="179" y="402" text-anchor="middle">transfer, ownership</text>
+
+  <rect class="card" x="352" y="176" width="280" height="92" fill="#dcfce7" stroke="#22c55e"/>
+  <text class="label" x="492" y="212" text-anchor="middle">Spring Boot only</text>
+  <text class="body" x="492" y="240" text-anchor="middle">Spring Cloud idioms already fit</text>
+
+  <rect class="card" x="352" y="302" width="280" height="92" fill="#e0f2fe" stroke="#38bdf8"/>
+  <text class="label" x="492" y="338" text-anchor="middle">Kotlin coroutine service</text>
+  <text class="body" x="492" y="366" text-anchor="middle">SDK helpers and suspend APIs</text>
+
+  <rect class="card" x="352" y="428" width="280" height="92" fill="#f3e8ff" stroke="#a855f7"/>
+  <text class="label" x="492" y="464" text-anchor="middle">Ktor runtime</text>
+  <text class="body" x="492" y="492" text-anchor="middle">plugins, SigV4, SQS consumer</text>
+
+  <rect class="card" x="352" y="554" width="280" height="42" fill="#fef3c7" stroke="#f59e0b"/>
+  <text class="body" x="492" y="581" text-anchor="middle">S3 large transfer with CRT</text>
+
+  <rect class="card" x="748" y="192" width="274" height="110" fill="#f0fdf4" stroke="#16a34a"/>
+  <text class="label" x="885" y="232" text-anchor="middle">Prefer Spring Cloud AWS</text>
+  <text class="body" x="885" y="262" text-anchor="middle">Spring owns AWS integration</text>
+
+  <rect class="card" x="748" y="390" width="274" height="144" fill="#ecfeff" stroke="#06b6d4"/>
+  <text class="label" x="885" y="430" text-anchor="middle">Prefer bluetape4k-aws</text>
+  <text class="body" x="885" y="460" text-anchor="middle">Kotlin/JVM helpers own repeated work</text>
+  <text class="body" x="885" y="484" text-anchor="middle">Spring Boot 4 or Ktor 3 can use</text>
+  <text class="body" x="885" y="508" text-anchor="middle">the same AWS helper layer</text>
+
+  <polyline class="arrow" points="274,368 320,368 320,222 352,222"/>
+  <polyline class="arrow" points="274,368 352,368"/>
+  <polyline class="arrow" points="274,368 320,368 320,474 352,474"/>
+  <polyline class="arrow" points="274,368 320,368 320,575 352,575"/>
+  <polyline class="arrow" points="632,222 748,222"/>
+  <polyline class="arrow" points="632,348 690,348 690,432 748,432"/>
+  <polyline class="arrow" points="632,474 748,474"/>
+  <polyline class="arrow" points="632,575 690,575 690,502 748,502"/>
+  <path class="connector" d="M2 2 L3 2" fill="none" stroke="transparent"/>
+</svg>

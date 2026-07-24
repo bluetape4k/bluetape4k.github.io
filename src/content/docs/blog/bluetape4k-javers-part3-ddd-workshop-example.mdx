@@ -32,7 +32,7 @@ still. This post therefore starts with the small workshop example and then reads
 command side plus read side, instead of assuming the reader already lives inside a DDD framework.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-javers-part3-command-sequence-01.png" alt="Command handler flow through order aggregate, Exposed store, JaVers audit, event publisher, and read model" loading="lazy" />
+  <img src="/assets/bluetape4k-javers-part3-command-flow-01-en.png" alt="Command handler flow through order aggregate, Exposed store, JaVers audit, event publisher, and read model" loading="lazy" />
   <figcaption>The command side persists aggregate state, commits to JaVers, then publishes the domain event.</figcaption>
 </figure>
 
@@ -42,7 +42,7 @@ Manual audit tables are fine until every entity needs its own copy logic. The wo
 keeps the current product row in Exposed and lets JaVers own history and diffs.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-javers-part3-manual-vs-javers-01.png" alt="Comparison between manual audit table code and JaVers snapshot flow" loading="lazy" />
+  <img src="/assets/bluetape4k-javers-part3-manual-vs-javers-01-en.png" alt="Comparison between manual audit table code and JaVers snapshot flow" loading="lazy" />
   <figcaption>Exposed keeps the current row. JaVers owns change history and object diff semantics.</figcaption>
 </figure>
 
@@ -85,7 +85,7 @@ event and updates a Redis `OrderSummary`. Redis is not the audit log; it is the 
 queries and screens.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-javers-part3-example-sequence-01.png" alt="Sequence diagram from the javers-exposed-ddd README showing command handling, audit commit, event publishing, and Redis projection" loading="lazy" />
+  <img src="/assets/bluetape4k-javers-part3-example-sequence-01-en.png" alt="Sequence diagram from the javers-exposed-ddd README showing command handling, audit commit, event publishing, and Redis projection" loading="lazy" />
   <figcaption>The example README sequence shows command handling, audit commit, event publishing, and Redis projection in one flow.</figcaption>
 </figure>
 
@@ -131,7 +131,7 @@ a replacement for every read model. JaVers answers "how did this object change?"
 answers "what does the screen need now?" They can work together, but they should not be confused.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-javers-part3-example-cqrs-flow-01.png" alt="CQRS flow diagram from the javers-exposed-ddd README" loading="lazy" />
+  <img src="/assets/bluetape4k-javers-part3-example-cqrs-flow-01-en.png" alt="CQRS flow diagram from the javers-exposed-ddd README" loading="lazy" />
   <figcaption>The source-of-truth store, JaVers audit store, Kafka event stream, and Redis read model have separate responsibilities.</figcaption>
 </figure>
 

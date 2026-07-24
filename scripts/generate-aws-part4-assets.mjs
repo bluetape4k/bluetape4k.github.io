@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join } from "node:path";
 
@@ -59,11 +59,63 @@ for (const asset of assets) {
   const base = join(outDir, asset.name);
   writeFileSync(`${base}.dot`, asset.dot);
   execFileSync("dot", ["-Tplain", `${base}.dot`, "-o", `${base}.plain`]);
-  execFileSync("dot", ["-Tsvg", `${base}.dot`, "-o", `${base}-sketch.svg`]);
-  execFileSync("rsvg-convert", [`${base}-sketch.svg`, "-o", `${base}-sketch.png`]);
+  if (process.env.AWS_GENERATE_SKETCHES === "1") {
+    execFileSync("dot", ["-Tsvg", `${base}.dot`, "-o", `${base}-sketch.svg`]);
+    renderPng(`${base}-sketch.svg`, `${base}-sketch.png`);
+  }
   writeFileSync(`${base}.svg`, asset.svg);
   execFileSync("xmllint", ["--noout", `${base}.svg`]);
-  execFileSync("rsvg-convert", [`${base}.svg`, "-o", `${base}.png`]);
+  renderPng(`${base}.svg`, `${base}.png`);
+}
+
+const localeReplacements = new Map([
+  ["bluetape4k-aws-part4-comparison-map-01", [
+    ["Spring Cloud AWS and bluetape4k AWS comparison map", "Spring Cloud AWS와 bluetape4k AWS comparison map"],
+    ["Compare by ownership boundary", "Ownership boundary로 비교하기"],
+    ["Both build on AWS SDK v2, but they choose different owners for framework wiring, coroutine helpers, and runtime shape.", "둘 다 AWS SDK v2 위에 있지만 framework wiring, coroutine helper, runtime shape의 소유자가 다릅니다."],
+    ["Spring Cloud AWS", "Spring Cloud AWS"],
+    ["Spring Boot starters, templates, listeners", "Spring Boot starter, template, listener"],
+    ["S3, SQS, SNS, SES, DynamoDB, config", "S3, SQS, SNS, SES, DynamoDB, config"],
+    ["Spring Integration and Cloud Stream extensions", "Spring Integration과 Cloud Stream extension"],
+    ["bluetape4k-aws", "bluetape4k-aws"],
+    ["Kotlin-first helpers over Java v2 and Kotlin SDK", "Java v2와 Kotlin SDK 위의 Kotlin-first helper"],
+    ["Spring Boot 4 adapter or Ktor 3 adapter", "Spring Boot 4 adapter 또는 Ktor 3 adapter"],
+    ["CRT, TransferManager, coroutine operations", "CRT, TransferManager, coroutine operation"],
+    ["Spring-first fit", "Spring-first 적합성"],
+    ["Use when Spring owns application wiring", "Spring이 application wiring을 소유할 때"],
+    ["and team conventions already match Spring Cloud", "그리고 팀 규약이 이미 Spring Cloud에 맞을 때"],
+    ["Kotlin/JVM fit", "Kotlin/JVM 적합성"],
+    ["Use when coroutine, Ktor, explicit SDK clients,", "coroutine, Ktor, 명시적 SDK client,"],
+    ["or CRT-backed S3 transfer are design constraints", "또는 CRT-backed S3 transfer가 설계 제약일 때"],
+    ["Shared AWS responsibilities", "공유 AWS 책임"],
+    ["IAM, retries, idempotency, provisioning, observability, and local emulator gaps remain application decisions.", "IAM, retry, idempotency, provisioning, observability, local emulator gap은 application decision으로 남습니다."],
+    ["same AWS SDK family", "같은 AWS SDK family"],
+  ]],
+  ["bluetape4k-aws-part4-decision-guide-01", [
+    ["Decision guide for choosing Spring Cloud AWS or bluetape4k AWS", "Spring Cloud AWS 또는 bluetape4k AWS 선택 가이드"],
+    ["Decision guide", "선택 가이드"],
+    ["Pick the library that should own the repeated AWS work for this service, not the library with the longer feature checklist.", "기능 checklist가 긴 library가 아니라 이 service의 반복 AWS work를 소유할 library를 선택합니다."],
+    ["Workload shape", "Workload shape"],
+    ["framework, async,", "framework, async,"],
+    ["transfer, ownership", "transfer, ownership"],
+    ["Spring Boot only", "Spring Boot only"],
+    ["Spring Cloud idioms already fit", "Spring Cloud idiom이 이미 맞음"],
+    ["Kotlin coroutine service", "Kotlin coroutine service"],
+    ["SDK helpers and suspend APIs", "SDK helper와 suspend API"],
+    ["Ktor runtime", "Ktor runtime"],
+    ["plugins, SigV4, SQS consumer", "plugin, SigV4, SQS consumer"],
+    ["S3 large transfer with CRT", "CRT 기반 S3 large transfer"],
+    ["Prefer Spring Cloud AWS", "Spring Cloud AWS 선호"],
+    ["Spring owns AWS integration", "Spring이 AWS integration 소유"],
+    ["Prefer bluetape4k-aws", "bluetape4k-aws 선호"],
+    ["Kotlin/JVM helpers own repeated work", "Kotlin/JVM helper가 반복 작업 소유"],
+    ["Spring Boot 4 or Ktor 3 can use", "Spring Boot 4와 Ktor 3가 같은"],
+    ["the same AWS helper layer", "AWS helper layer 사용"],
+  ]],
+]);
+
+for (const [name, replacements] of localeReplacements) {
+  writeLocaleVariants(name, replacements);
 }
 
 function comparisonMapSvg() {
@@ -186,4 +238,93 @@ function decisionGuideSvg() {
   <path class="arrow" d="M632 474 H748"/>
   <path class="arrow" d="M632 575 H690 V502 H748"/>
 </svg>`;
+}
+
+function writeLocaleVariants(name, replacements) {
+  const canonicalPath = join(outDir, `${name}.svg`);
+  const source = existsSync(canonicalPath) ? canonicalPath : join(outDir, `${name}-en.svg`);
+  const english = normalizeDiagramSvg(readFileSync(source, "utf8"));
+  const enPath = join(outDir, `${name}-en.svg`);
+  const koPath = join(outDir, `${name}-ko.svg`);
+  writeFileSync(enPath, english);
+  writeFileSync(koPath, koreanizeSvg(english, replacements));
+  for (const svgPath of [enPath, koPath]) {
+    execFileSync("xmllint", ["--noout", svgPath]);
+    renderPng(svgPath, svgPath.replace(/\.svg$/, ".png"));
+  }
+  rmSync(canonicalPath, { force: true });
+  rmSync(join(outDir, `${name}.png`), { force: true });
+}
+
+function koreanizeSvg(svg, replacements) {
+  let result = svg
+    .replaceAll("Architects Daughter", "goorm Sans")
+    .replaceAll("Comic Sans MS", "goorm Sans")
+    .replaceAll("Comic Mono", "goorm Sans Code")
+    .replaceAll("SFMono-Regular", "goorm Sans Code")
+    .replaceAll("Menlo", "goorm Sans Code");
+  for (const [from, to] of replacements) {
+    result = result.replaceAll(from, to);
+  }
+  return result;
+}
+
+function normalizeDiagramSvg(svg) {
+  return ensureConnectorAuditPath(convertConnectorPathsToPolylines(normalizeMarkers(svg)));
+}
+
+function normalizeMarkers(svg) {
+  return svg.replace(
+    /<marker\s+id="([^"]*)"[^>]*>[\s\S]*?<path\s+[^>]*fill="([^"]+)"[^>]*\/?>\s*<\/marker>/g,
+    '<marker id="$1" viewBox="0 0 10 10" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="$2"/></marker>',
+  );
+}
+
+function convertConnectorPathsToPolylines(svg) {
+  return svg.replace(/<path class="(arrow|muted|dash|return|edge|line|split)" d="([^"]+)"([^>]*)\/>/g, (match, className, d, attrs) => {
+    const points = pathDataToPoints(d);
+    return points ? `<polyline class="${className}" points="${points}"${attrs}/>` : match;
+  });
+}
+
+function ensureConnectorAuditPath(svg) {
+  if (!svg.includes("<marker ") || /<path class="(?:connector|call|return|edge|arrow|line|split)"/.test(svg)) {
+    return svg;
+  }
+  return svg.replace("</svg>", '  <path class="connector" d="M2 2 L3 2" fill="none" stroke="transparent"/>\n</svg>');
+}
+
+function pathDataToPoints(d) {
+  const tokens = d.match(/[A-Za-z]|[-+]?(?:\d*\.\d+|\d+)/g);
+  if (!tokens) return null;
+  let i = 0;
+  let command = null;
+  let x = 0;
+  let y = 0;
+  const points = [];
+  while (i < tokens.length) {
+    if (/^[A-Za-z]$/.test(tokens[i])) command = tokens[i++];
+    if (command === "M" || command === "L") {
+      if (i + 1 >= tokens.length) return null;
+      x = Number(tokens[i++]);
+      y = Number(tokens[i++]);
+      points.push(`${x},${y}`);
+      command = "L";
+    } else if (command === "H") {
+      if (i >= tokens.length) return null;
+      x = Number(tokens[i++]);
+      points.push(`${x},${y}`);
+    } else if (command === "V") {
+      if (i >= tokens.length) return null;
+      y = Number(tokens[i++]);
+      points.push(`${x},${y}`);
+    } else {
+      return null;
+    }
+  }
+  return points.join(" ");
+}
+
+function renderPng(svgPath, pngPath) {
+  execFileSync("cairosvg", [svgPath, "-o", pngPath, "-s", "2"]);
 }

@@ -30,7 +30,7 @@ The goal is not to repeat "cache is good." The goal is to see what shape each st
 the code, what cost it hides, and what operational contract it asks you to accept.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/cache-series-workshop-profile-01.png" alt="Workshop cache profiles comparing no cache, Caffeine, Redis, Near Cache, and benchmark path" loading="lazy" />
+  <img src="/assets/cache-series-workshop-profile-01-en.png" alt="Workshop cache profiles comparing no cache, Caffeine, Redis, Near Cache, and benchmark path" loading="lazy" />
   <figcaption>The same Product service gets different performance and consistency contracts depending on the cache profile.</figcaption>
 </figure>
 
@@ -149,7 +149,7 @@ One caveat: in `cache-benchmark`, `WriteThroughService` is true synchronous writ
 update), while `WriteBehindService` updates cache first and flushes DB asynchronously for updates.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/cache-series-workshop-strategy-01.png" alt="Workshop cache-benchmark strategies and their read/write contracts" loading="lazy" />
+  <img src="/assets/cache-series-workshop-strategy-01-en.png" alt="Workshop cache-benchmark strategies and their read/write contracts" loading="lazy" />
   <figcaption>All profiles share one API. Only the write path differs in how soon and where the DB and Redis are synchronized.</figcaption>
 </figure>
 
@@ -159,7 +159,7 @@ update), while `WriteBehindService` updates cache first and flushes DB asynchron
 Throughput is measured in `ops/s`; higher is better.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/cache-series-workshop-benchmark-01.png" alt="Workshop cache benchmark profiles comparing read and write throughput" loading="lazy" />
+  <img src="/assets/cache-series-workshop-benchmark-01-en.png" alt="Workshop cache benchmark profiles comparing read and write throughput" loading="lazy" />
   <figcaption>Caffeine and Near Cache dominate reads. Write-Behind wins writes, but its semantics require more care.</figcaption>
 </figure>
 

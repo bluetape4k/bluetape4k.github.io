@@ -188,7 +188,7 @@ checklist가 필요 없다. 반대로 새 모듈이나 publish 작업을 가벼�
 실행 계약에 속하기 때문이다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape-skills-public-bundle-boundary-01.png" alt="Canonical Skills Source에서 SKILL.md, references, templates, scripts와 manifest를 Public Bundle로 배포하고 memory, rules와 hooks, config, plugin cache, secrets와 retired aliases는 Private Runtime에 남기는 경계" loading="lazy" />
+  <img src="/assets/bluetape-skills-public-bundle-boundary-01-ko.png" alt="Canonical Skills Source에서 SKILL.md, references, templates, scripts와 manifest를 공개 bundle로 배포하고 개인 runtime 항목은 제외하는 경계" loading="lazy" />
   <figcaption>공개 묶음은 skill 실행에 필요한 계약을 함께 배포하되, 개인 runtime과 호환용 alias는 경계 밖에 둔다.</figcaption>
 </figure>
 
@@ -209,7 +209,7 @@ Skill 개선 내용이 한 세션에서는 잘 동작하다가 다음 `chezmoi a
 지금은 사용자 범위의 skill을 바꿀 때 다음 흐름 전체를 하나의 작업으로 본다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape-skills-source-first-sync-01.png" alt="Managed Source 수정에서 Targeted Apply, Source와 Live Parity, sync-codex status, Codex Self-Audit, Commit과 Push, Public Export, Bundle Validation으로 이어지는 source-first 동기화 흐름" loading="lazy" />
+  <img src="/assets/bluetape-skills-source-first-sync-01-ko.png" alt="관리 소스 수정에서 대상별 적용, source와 live 일치, 자체 점검, commit과 push, 공개 export, bundle 검증으로 이어지는 source-first 동기화 흐름" loading="lazy" />
   <figcaption>Live 파일 하나의 성공이 아니라 managed source부터 공개 bundle 검증까지 이어지는 전체 경로를 동기화 단위로 본다.</figcaption>
 </figure>
 

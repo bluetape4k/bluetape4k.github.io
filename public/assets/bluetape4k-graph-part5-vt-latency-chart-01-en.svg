@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1580" height="900" viewBox="0 0 1580 900">
+<defs><style>
+    .canvas{fill:#F6F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
+    .title{font-family:"Architects Daughter","Comic Sans MS",cursive;font-size:42px;fill:#22344A;font-weight:400}
+    .subtitle,.footer,.axis{font-family:"Comic Mono","Comic Sans MS",sans-serif;font-size:17px;fill:#536476;font-weight:400}
+    .nodeTitle,.participant{font-family:"Architects Daughter","Comic Sans MS",cursive;font-size:24px;fill:#22344A;font-weight:400}
+    .nodeBody,.labelText,.num{font-family:"Comic Mono","Comic Sans MS",sans-serif;font-size:16px;fill:#3F5269;font-weight:400}
+    .tableTitle{font-family:"Architects Daughter","Comic Sans MS",cursive;font-size:24px;fill:#22344A;font-weight:400}
+    .tableField,.edgeLabel{font-family:"Comic Mono","Comic Sans MS",sans-serif;font-size:15px;fill:#3F5269;font-weight:400}
+    .edge{fill:none;stroke:#496A8F;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    .bus{fill:none;stroke:#496A8F;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+    .lifeline{stroke:#91A6BD;stroke-width:2;stroke-dasharray:8 8}
+    g[id]{filter:url(#shadow)}
+  </style></defs>
+<rect class="canvas" width="1580" height="900"/>
+<rect class="frame" x="34" y="28" width="1512" height="844" rx="24"/>
+<text class="title" x="790" y="82" text-anchor="middle">TinkerGraph: Sync vs Virtual Threads</text>
+<text class="subtitle" x="790" y="118" text-anchor="middle">JMH AverageTime, microseconds per operation, lower is faster</text>
+<text class="axis" x="350" y="145">TinkerGraph fixture, lower is faster</text>
+<g>
+  <text class="nodeBody" x="322" y="195" text-anchor="end">findVertexById Sync</text>
+  <rect x="350" y="170" width="260" height="36" rx="9" fill="#EAF4FF" stroke="#7B8CA3"/>
+  <text class="nodeBody" x="628" y="195">1.800 us/op</text>
+</g>
+<g>
+  <text class="nodeBody" x="322" y="258" text-anchor="end">findVertexById VT join</text>
+  <rect x="350" y="233" width="558" height="36" rx="9" fill="#FFF0F1" stroke="#7B8CA3"/>
+  <text class="nodeBody" x="926" y="258">8.100 us/op</text>
+</g>
+<g>
+  <text class="nodeBody" x="322" y="321" text-anchor="end">neighbors Sync</text>
+  <rect x="350" y="296" width="350" height="36" rx="9" fill="#EAF4FF" stroke="#7B8CA3"/>
+  <text class="nodeBody" x="718" y="321">3.000 us/op</text>
+</g>
+<g>
+  <text class="nodeBody" x="322" y="384" text-anchor="end">neighbors VT join</text>
+  <rect x="350" y="359" width="620" height="36" rx="9" fill="#FFF0F1" stroke="#7B8CA3"/>
+  <text class="nodeBody" x="988" y="384">10.6 us/op</text>
+</g>
+<g>
+  <text class="nodeBody" x="322" y="447" text-anchor="end">bfs Sync</text>
+  <rect x="350" y="422" width="417" height="36" rx="9" fill="#EAF4FF" stroke="#7B8CA3"/>
+  <text class="nodeBody" x="785" y="447">4.200 us/op</text>
+</g>
+<g>
+  <text class="nodeBody" x="322" y="510" text-anchor="end">bfs VT join</text>
+  <rect x="350" y="485" width="660" height="36" rx="9" fill="#FFF0F1" stroke="#7B8CA3"/>
+  <text class="nodeBody" x="1028" y="510">12.6 us/op</text>
+</g>
+<g>
+  <text class="nodeBody" x="322" y="573" text-anchor="end">pageRank Sync</text>
+  <rect x="350" y="548" width="535" height="36" rx="9" fill="#EAF4FF" stroke="#7B8CA3"/>
+  <text class="nodeBody" x="903" y="573">7.300 us/op</text>
+</g>
+<g>
+  <text class="nodeBody" x="322" y="636" text-anchor="end">pageRank VT join</text>
+  <rect x="350" y="611" width="706" height="36" rx="9" fill="#FFF0F1" stroke="#7B8CA3"/>
+  <text class="nodeBody" x="1074" y="636">15.3 us/op</text>
+</g>
+<g>
+  <text class="nodeBody" x="322" y="699" text-anchor="end">shortestPath Sync</text>
+  <rect x="350" y="674" width="793" height="36" rx="9" fill="#EAF4FF" stroke="#7B8CA3"/>
+  <text class="nodeBody" x="1161" y="699">22.0 us/op</text>
+</g>
+<g>
+  <text class="nodeBody" x="322" y="762" text-anchor="end">shortestPath VT join</text>
+  <rect x="350" y="737" width="880" height="36" rx="9" fill="#FFF0F1" stroke="#7B8CA3"/>
+  <text class="nodeBody" x="1248" y="762">31.5 us/op</text>
+</g>
+<rect x="88" y="804" width="1404" height="62" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
+<text class="footer" x="790" y="829" text-anchor="middle">Fixture: TinkerGraph in-memory. The chart exposes API wrapping cost, not network DB throughput.</text>
+<text class="footer" x="790" y="853" text-anchor="middle">Network-backed graph work can shift the tradeoff when blocking wait dominates the operation.</text>
+</svg>

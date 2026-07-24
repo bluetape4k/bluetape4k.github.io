@@ -77,7 +77,7 @@ core generation path. Kotlin was already strong on UUID v7, single-thread monoto
 KSUID seconds.
 
 <figure class="bt4k-chart">
-  <img src="/assets/id-generators-benchmark-phase-1-chart-01.png" alt="ID Generator Benchmark Phase 1 chart comparing the first Go implementation and the existing Kotlin implementation in ns/id" loading="lazy" />
+  <img src="/assets/id-generators-benchmark-phase-1-chart-01-en.png" alt="ID Generator Benchmark Phase 1 chart comparing the first Go implementation and the existing Kotlin implementation in ns/id" loading="lazy" />
   <figcaption>Phase 1 broke the simple assumption that Go would automatically lead. Snowflake favored Go, but Kotlin already led several string ID families.</figcaption>
 </figure>
 
@@ -118,7 +118,7 @@ After the Go improvement, the comparison changed. Go led UUID v4, KSUID millis, 
 ULID/KSUID workloads. Kotlin still led UUID v7 and single-thread monotonic ULID.
 
 <figure class="bt4k-chart">
-  <img src="/assets/id-generators-benchmark-phase-2-chart-01.png" alt="ID Generator Benchmark Phase 2 chart comparing Go after optimization and Kotlin in ns/id" loading="lazy" />
+  <img src="/assets/id-generators-benchmark-phase-2-chart-01-en.png" alt="ID Generator Benchmark Phase 2 chart comparing Go after optimization and Kotlin in ns/id" loading="lazy" />
   <figcaption>Phase 2 shows the entropy-buffering effect on the Go side. Go leads many more concurrent workloads after the optimization pass.</figcaption>
 </figure>
 
@@ -178,7 +178,7 @@ The final comparison used the current Go implementation and Kotlin candidate 3. 
 entries were normalized to `ns/id` with `1e9 / (ops/s * 65_536)`.
 
 <figure class="bt4k-chart">
-  <img src="/assets/id-generators-benchmark-phase-3-chart-01.png" alt="ID Generator Benchmark Phase 3 chart comparing optimized Go and Kotlin candidate 3 in ns/id" loading="lazy" />
+  <img src="/assets/id-generators-benchmark-phase-3-chart-01-en.png" alt="ID Generator Benchmark Phase 3 chart comparing optimized Go and Kotlin candidate 3 in ns/id" loading="lazy" />
   <figcaption>Phase 3 is not a one-runtime sweep. Snowflake has a clock-model caveat, and ULID/KSUID leadership changes by workload shape.</figcaption>
 </figure>
 

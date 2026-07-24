@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="330" viewBox="0 0 920 330" role="img" aria-labelledby="title desc">
+  <title id="title">scanWith Flow marble diagram</title>
+  <desc id="desc">A marble diagram showing events accumulated into read model 상태 스냅샷 instead of emitted as batches.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="14" markerHeight="14" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#9ed8ff" stroke="#9ed8ff"/>
+    </marker>
+    <linearGradient id="bgGradient" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#111827"/><stop offset="58%" stop-color="#182331"/><stop offset="100%" stop-color="#223047"/></linearGradient>
+    <linearGradient id="panelGradient" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1f2937"/><stop offset="100%" stop-color="#111827"/></linearGradient>
+    <linearGradient id="operatorGradient" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#26384f"/><stop offset="100%" stop-color="#172033"/></linearGradient>
+    <radialGradient id="marbleTeal" cx="32%" cy="28%" r="72%"><stop offset="0%" stop-color="#d5fff8"/><stop offset="34%" stop-color="#62d6cb"/><stop offset="100%" stop-color="#0b766f"/></radialGradient>
+    <radialGradient id="marbleAmber" cx="32%" cy="28%" r="72%"><stop offset="0%" stop-color="#fff0c2"/><stop offset="36%" stop-color="#dfac3f"/><stop offset="100%" stop-color="#9b6a12"/></radialGradient>
+    <radialGradient id="marbleGreen" cx="32%" cy="28%" r="72%"><stop offset="0%" stop-color="#dff8c7"/><stop offset="36%" stop-color="#83c95a"/><stop offset="100%" stop-color="#3f7b2a"/></radialGradient>
+    <radialGradient id="marbleOrange" cx="32%" cy="28%" r="72%"><stop offset="0%" stop-color="#ffd9bc"/><stop offset="36%" stop-color="#e28a46"/><stop offset="100%" stop-color="#9c4b1f"/></radialGradient>
+    <radialGradient id="marblePurple" cx="32%" cy="28%" r="72%"><stop offset="0%" stop-color="#f0e7ff"/><stop offset="36%" stop-color="#a98be9"/><stop offset="100%" stop-color="#6840a8"/></radialGradient>
+    <filter id="panelShadow" x="-8%" y="-12%" width="116%" height="124%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#020617" flood-opacity="0.32"/></filter>
+    <filter id="marbleShadow" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="3" stdDeviation="2" flood-color="#020617" flood-opacity="0.42"/></filter>
+    <filter id="laneGlow" x="-4%" y="-120%" width="108%" height="340%"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#67e8f9" flood-opacity="0.35"/></filter>
+    <style>
+      .bg { fill: url(#bgGradient); }
+      .panel { fill: url(#panelGradient); stroke: #536377; stroke-width: 2; rx: 18; filter: url(#panelShadow); }
+      .title { font: 24px "goorm Sans"; fill: #f8fafc; }
+      .sub { font: 14px "goorm Sans Code"; fill: #b6c4d6; }
+      .label { font: 15px "goorm Sans Code"; fill: #e5edf7; }
+      .small { font: 13px "goorm Sans Code"; fill: #b6c4d6; }
+      .tiny { font: 11px "goorm Sans Code"; fill: #f8fafc; text-anchor: middle; dominant-baseline: middle; font-weight: 700; }
+      .edge { stroke: #9ed8ff; stroke-width: 4; stroke-linecap: round; marker-end: url(#arrow); filter: url(#laneGlow); }
+      .event { stroke: #e8f7ff; stroke-width: 1.8; filter: url(#marbleShadow); }
+      .box { fill: #172033; stroke-width: 2.5; rx: 14; }
+      .op { fill: url(#operatorGradient); stroke: #7dd3fc; }
+      .teal { fill: url(#marbleTeal); }
+      .amber { fill: url(#marbleAmber); }
+      .green { fill: url(#marbleGreen); }
+      .orange { fill: url(#marbleOrange); }
+      .purple { fill: url(#marblePurple); }
+      .shape { stroke: #e8f7ff; stroke-width: 1.8; filter: url(#marbleShadow); }
+      .stateText { font: 10px "goorm Sans Code"; fill: #f8fafc; text-anchor: start; dominant-baseline: middle; font-weight: 700; }
+      .stateIndex { font: 10px "goorm Sans Code"; fill: #9fb3c8; text-anchor: middle; dominant-baseline: middle; }
+    </style>
+  </defs>
+  <rect class="bg" width="920" height="330"/>
+  <rect class="panel" x="24" y="22" width="872" height="286"/>
+  <text class="title" x="52" y="58">scanWith / 읽기 모델: 상태를 누적합니다</text>
+  <text class="sub" x="52" y="84">위: 이벤트 · 상자: 누산기 · 아래: 방출된 상태 스냅샷</text>
+
+  <text class="small" x="52" y="132">입력 Flow</text>
+  <path class="edge" d="M150 128 L806 128"/>
+  <circle class="shape teal" cx="220" cy="128" r="13"/><text class="tiny" x="220" y="128">C</text>
+  <rect class="shape amber" x="287" y="115" width="26" height="26" rx="7"/><text class="tiny" x="300" y="128">L</text>
+  <path class="shape green" d="M 380 111 L 397 128 L 380 145 L 363 128 Z"/><text class="tiny" x="380" y="128">P</text>
+  <circle class="shape purple" cx="460" cy="128" r="13"/><text class="tiny" x="460" y="128">C</text>
+  <path class="shape orange" d="M 540 112 L 556 141 L 524 141 Z"/><text class="tiny" x="540" y="132">S</text>
+  <path d="M 780 113 V 143" stroke="#334155" stroke-width="3" stroke-linecap="round"/>
+
+  <path d="M 220 142 V 214" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6 7"/>
+  <path d="M 300 142 V 214" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6 7"/>
+  <path d="M 380 142 V 214" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6 7"/>
+  <path d="M 460 142 V 214" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6 7"/>
+  <path d="M 540 142 V 214" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6 7"/>
+  <rect class="box op" x="330" y="170" width="190" height="44"/>
+  <text class="label" x="425" y="197" text-anchor="middle">scanWith(seed, accumulator)</text>
+
+  <text class="small" x="52" y="256">출력 Flow</text>
+  <path class="edge" d="M150 252 L806 252"/>
+  <rect class="box" x="156" y="230" width="64" height="44" stroke="#6c7b91"/>
+  <text class="stateIndex" x="168" y="243">0</text><text class="tiny" x="188" y="252">비어 있음</text>
+  <rect class="box" x="238" y="230" width="86" height="44" stroke="#159c92"/>
+  <circle class="shape teal" cx="255" cy="252" r="8"/><text class="tiny" x="255" y="252">C</text>
+  <text class="stateText" x="270" y="252">o1 CREATED</text>
+  <rect class="box" x="342" y="230" width="88" height="44" stroke="#c58b2a"/>
+  <rect class="shape amber" x="351" y="244" width="16" height="16" rx="4"/><text class="tiny" x="359" y="252">L</text>
+  <text class="stateText" x="374" y="252">o1 lines=1</text>
+  <rect class="box" x="448" y="230" width="84" height="44" stroke="#62984d"/>
+  <path class="shape green" d="M 465 243 L 476 252 L 465 261 L 454 252 Z"/><text class="tiny" x="465" y="252">P</text>
+  <text class="stateText" x="480" y="252">o1 PAID</text>
+  <rect class="box" x="550" y="230" width="88" height="44" stroke="#8b6bd6"/>
+  <circle class="shape purple" cx="567" cy="252" r="8"/><text class="tiny" x="567" y="252">C</text>
+  <text class="stateText" x="582" y="252">o2 CREATED</text>
+  <rect class="box" x="656" y="230" width="96" height="44" stroke="#c26b3d"/>
+  <path class="shape orange" d="M 673 243 L 683 261 L 663 261 Z"/><text class="tiny" x="673" y="255">S</text>
+  <text class="stateText" x="688" y="252">o2 SHIPPED</text>
+  <path d="M 780 237 V 267" stroke="#334155" stroke-width="3" stroke-linecap="round"/>
+  <text class="small" x="682" y="292">상태 스냅샷</text>
+</svg>

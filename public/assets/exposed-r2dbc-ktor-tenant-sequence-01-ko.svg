@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1040" viewBox="0 0 1680 1040" role="img" aria-labelledby="title desc">
+  <title id="title">Ktor + Exposed R2DBC tenant routing</title><desc id="desc">원본 header는 plugin에서 멈추고, database routing에는 검증된 값만 넘어갑니다.</desc><defs>
+    <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#28343b" flood-opacity="0.13"/></filter>
+    <marker id="arrow-blue" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#3f7d9c" stroke="#3f7d9c" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#608a55" stroke="#608a55" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#a27848" stroke="#a27848" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#b75f5f" stroke="#b75f5f" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
+    <style>
+      .canvas{fill:#fbfcf8}.frame{fill:#fff;stroke:#41545d;stroke-width:2.2}
+      .title{font-family:"goorm Sans";font-size:40px;fill:#263238;font-weight:700}
+      .subtitle,.detail,.body,.cellText,.labelText,.footer,.role{font-family:"goorm Sans";fill:#4e6069}
+      .subtitle{font-size:18px}.detail,.body{font-size:15px}.cellText{font-size:16px}.footer{font-size:14px}
+      .role{font-family:"goorm Sans Code";font-size:13px}.mono,.code,.badgeText{font-family:"goorm Sans Code";fill:#33454e}
+      .participant,.cardTitle,.bandTitle,.cellTitle{font-family:"goorm Sans";fill:#1f3138;font-weight:700}
+      .participant{font-size:21px}.cardTitle{font-size:25px}.bandTitle{font-size:23px}.cellTitle{font-size:18px}
+      .header{fill:#fff;stroke:#546e7a;stroke-width:2;filter:url(#shadow)}
+      .headerAlt{fill:#f4fbf6;stroke:#6f9b7a;stroke-width:2;filter:url(#shadow)}
+      .lifeline{stroke:#9aaab1;stroke-width:2;stroke-dasharray:7 8}.activation{fill:#e7f2ec;stroke:#5b7e67;stroke-width:1.7}
+      .call,.state,.return,.skip,.edge{fill:none;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round}
+      .call{stroke:#3f7d9c;marker-end:url(#arrow-blue)}.state{stroke:#608a55;marker-end:url(#arrow-green)}
+      .return{stroke:#a27848;marker-end:url(#arrow-amber);stroke-dasharray:8 7}.skip{stroke:#b75f5f;marker-end:url(#arrow-red)}
+      .pill,.label{fill:#fff;stroke:#78909c;stroke-width:1.4}.labelText{font-size:13px}
+      .badge{fill:#263238}.badgeText{font-size:12px;font-weight:700;fill:#fff}
+      .branch{fill:none;stroke:#78909c;stroke-width:2.2;stroke-dasharray:12 8}.divider{stroke:#78909c;stroke-width:1.4;stroke-dasharray:8 7}
+      .note{fill:#fff7e8;stroke:#d4a95f;stroke-width:2}
+      .problem{fill:#eef3ff;stroke:#95a7d8;stroke-width:2;filter:url(#shadow)}
+      .spring{fill:#fff8eb;stroke:#d2a96c;stroke-width:2;filter:url(#shadow)}
+      .ktor{fill:#eafafa;stroke:#62aeb3;stroke-width:2;filter:url(#shadow)}
+      .shared{fill:#f1f9ef;stroke:#82ad7a;stroke-width:2;filter:url(#shadow)}
+      .row{fill:#fff;stroke:#d7e2e8;stroke-width:1.4}.rowAlt{fill:#f8fbfc;stroke:#d7e2e8;stroke-width:1.4}
+      .chip{fill:#fff;stroke:#cad8de;stroke-width:1.4}.chipAlt{fill:#f8fbfc;stroke:#cad8de;stroke-width:1.4}
+    </style>
+  </defs>
+  <rect class="canvas" width="1680" height="1040"/><rect class="frame" x="38" y="32" width="1604" height="964" rx="8"/>
+  <text x="840" y="88" class="title" text-anchor="middle">Ktor + Exposed R2DBC tenant routing</text><text x="840" y="122" class="subtitle" text-anchor="middle">원본 header는 plugin에서 멈추고, database routing에는 검증된 값만 넘어갑니다.</text>
+  <g>
+    <rect x="72" y="158" width="196" height="86" rx="8" class="header"/>
+    <text x="170" y="192" class="participant" text-anchor="middle">Client</text>
+    <text x="170" y="220" class="role" text-anchor="middle">HTTP 요청</text>
+  </g>
+  <g>
+    <rect x="362" y="158" width="236" height="86" rx="8" class="header"/>
+    <text x="480" y="192" class="participant" text-anchor="middle">TenantPlugin</text>
+    <text x="480" y="220" class="role" text-anchor="middle">정규화 + 검증</text>
+  </g>
+  <g>
+    <rect x="680" y="158" width="240" height="86" rx="8" class="header"/>
+    <text x="800" y="192" class="participant" text-anchor="middle">Call attributes</text>
+    <text x="800" y="220" class="role" text-anchor="middle">Tenants.Tenant</text>
+  </g>
+  <g>
+    <rect x="988" y="158" width="284" height="86" rx="8" class="header"/>
+    <text x="1130" y="192" class="participant" text-anchor="middle">Tenant tx helper</text>
+    <text x="1130" y="220" class="role" text-anchor="middle">suspendTransactionWithTenant</text>
+  </g>
+  <g>
+    <rect x="1360" y="158" width="180" height="86" rx="8" class="headerAlt"/>
+    <text x="1450" y="192" class="participant" text-anchor="middle">R2DBC DB</text>
+    <text x="1450" y="220" class="role" text-anchor="middle">schema 상태</text>
+  </g>
+  <path d="M 170 244 L 170 914" class="lifeline"/><path d="M 480 244 L 480 914" class="lifeline"/><path d="M 800 244 L 800 914" class="lifeline"/><path d="M 1130 244 L 1130 914" class="lifeline"/><path d="M 1450 244 L 1450 914" class="lifeline"/>
+  <rect x="472" y="278" width="16" height="476" rx="5" class="activation"/><rect x="792" y="346" width="16" height="288" rx="5" class="activation"/><rect x="1122" y="556" width="16" height="224" rx="5" class="activation"/><rect x="1442" y="626" width="16" height="154" rx="5" class="activation"/>
+  <g>
+    <g>
+    <rect x="189" y="244" width="264" height="50" rx="8" class="pill label"/>
+    <circle cx="207" cy="260" r="11" class="badge"/>
+    <text x="207" y="264" class="badgeText" text-anchor="middle">1</text>
+    <text x="227" y="265" class="labelText" >GET /actors</text>
+    <text x="227" y="286" class="detail" >X-TENANT-ID: korean</text>
+  </g>
+    <path d="M 170 306 L 472 306" class="call"/>
+  </g>
+  <g>
+    <g>
+    <rect x="501" y="312" width="278" height="50" rx="8" class="pill label"/>
+    <circle cx="519" cy="328" r="11" class="badge"/>
+    <text x="519" y="332" class="badgeText" text-anchor="middle">2</text>
+    <text x="539" y="333" class="labelText" >Tenants.findById()</text>
+    <text x="539" y="354" class="detail" >blank / unknown 거부</text>
+  </g>
+    <path d="M 488 374 L 792 374" class="state"/>
+  </g>
+  <g>
+    <g>
+    <rect x="474" y="406" width="332" height="32" rx="8" class="pill label"/>
+    <circle cx="492" cy="422" r="11" class="badge"/>
+    <text x="492" y="426" class="badgeText" text-anchor="middle">3</text>
+    <text x="512" y="427" class="labelText" >attributes.put(Tenants.Tenant)</text>
+  </g>
+    <path d="M 792 452 L 488 452" class="return"/>
+  </g>
+  <g>
+    <g>
+    <rect x="485" y="486" width="310" height="32" rx="8" class="pill label"/>
+    <circle cx="503" cy="502" r="11" class="badge"/>
+    <text x="503" y="506" class="badgeText" text-anchor="middle">4</text>
+    <text x="523" y="507" class="labelText" >route가 currentTenant() 읽기</text>
+  </g>
+    <path d="M 488 532 L 792 532" class="call"/>
+  </g>
+  <g>
+    <g>
+    <rect x="794" y="558" width="342" height="32" rx="8" class="pill label"/>
+    <circle cx="812" cy="574" r="11" class="badge"/>
+    <text x="812" y="578" class="badgeText" text-anchor="middle">5</text>
+    <text x="832" y="579" class="labelText" >suspendTransactionWithTenant</text>
+  </g>
+    <path d="M 808 604 L 1122 604" class="state"/>
+  </g>
+  <g>
+    <g>
+    <rect x="1149" y="628" width="282" height="32" rx="8" class="pill label"/>
+    <circle cx="1167" cy="644" r="11" class="badge"/>
+    <text x="1167" y="648" class="badgeText" text-anchor="middle">6</text>
+    <text x="1187" y="649" class="labelText" >SET SCHEMA korean</text>
+  </g>
+    <path d="M 1138 674 L 1442 674" class="state"/>
+  </g>
+  <g>
+    <g>
+    <rect x="1184" y="700" width="212" height="32" rx="8" class="pill label"/>
+    <circle cx="1202" cy="716" r="11" class="badge"/>
+    <text x="1202" y="720" class="badgeText" text-anchor="middle">7</text>
+    <text x="1222" y="721" class="labelText" >actors 조회</text>
+  </g>
+    <path d="M 1138 746 L 1442 746" class="call"/>
+  </g>
+  <g>
+    <g>
+    <rect x="703" y="772" width="214" height="32" rx="8" class="pill label"/>
+    <circle cx="721" cy="788" r="11" class="badge"/>
+    <text x="721" y="792" class="badgeText" text-anchor="middle">8</text>
+    <text x="741" y="793" class="labelText" >Actor rows</text>
+  </g>
+    <path d="M 1442 820 L 178 820" class="return"/>
+  </g>
+  <rect x="92" y="852" width="1438" height="64" rx="8" class="branch" fill="none"/>
+  <text x="116" y="878" class="mono" >alt invalid header</text><text x="116" y="903" class="detail" >TenantPlugin이 database routing 전에 400 InvalidTenantException으로 응답합니다.</text>
+  <g>
+    <rect x="102" y="940" width="1476" height="38" rx="8" class="note"/>
+    <text x="128" y="965" class="cellTitle" >Boundary rule</text><text x="306" y="965" class="footer" >raw header string을 schema 선택으로 넘기지 않습니다. request state는 ApplicationCall.attributes에 두고, 검증된 값을 명시적으로 전달합니다.</text>
+  </g>
+  </svg>

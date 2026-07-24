@@ -34,7 +34,7 @@ Outbox와 idempotency를 같이 쓰는 이유는 간단합니다. 사용자 요�
 외부 전달은 commit 이후에 다시 시도할 수 있게 분리합니다.
 
 <figure class="bt4k-chart">
-  <img src="/assets/transactional-outbox-idempotency-flow-01.png" alt="Transactional outbox and idempotency flow diagram showing client, Spring or Ktor service, DB transaction, outbox, relay, API, and retry path" loading="lazy" />
+  <img src="/assets/transactional-outbox-idempotency-flow-01-ko.png" alt="Transactional outbox and idempotency flow diagram showing client, Spring or Ktor service, DB transaction, outbox, relay, API, and retry path" loading="lazy" />
   <figcaption>핵심은 domain row와 outbox row를 같이 쓰는 것입니다. commit 이후 전달은 실패해도 다시 시도할 수 있습니다.</figcaption>
 </figure>
 
@@ -123,7 +123,7 @@ private suspend fun <T> transactionIO(block: () -> T): T =
 아래 sequence는 이 글에서 다루는 세 가지 상황을 한 번에 묶습니다.
 
 <figure class="bt4k-chart">
-  <img src="/assets/transactional-outbox-idempotency-sequence-01.png" alt="Sequence diagram for first payment call, duplicate idempotency retry, and relay retry after commit" loading="lazy" />
+  <img src="/assets/transactional-outbox-idempotency-sequence-01-ko.png" alt="Sequence diagram for first payment call, duplicate idempotency retry, and relay retry after commit" loading="lazy" />
   <figcaption>duplicate key는 외부 API를 다시 호출하지 않고, relay 실패는 DB에 남은 row를 기준으로 다시 시도합니다.</figcaption>
 </figure>
 

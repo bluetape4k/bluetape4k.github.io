@@ -67,7 +67,7 @@ bug fix mixed with an unrelated feature becomes two workflows. Risk and required
 more than the label attached to the request.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape-workflow-type-router-01.png" alt="One user request entering bluetape-workflow and branching by risk and evidence scope into Full Feature, Fast Track, Bug Fix, Code Review, Maintenance, Publish, and Self Improve" loading="lazy" />
+  <img src="/assets/bluetape-workflow-type-router-01-en.png" alt="One user request entering bluetape-workflow and branching by risk and evidence scope into Full Feature, Fast Track, Bug Fix, Code Review, Maintenance, Publish, and Self Improve" loading="lazy" />
   <figcaption>The router chooses the lightest safe lane from the change risk and the evidence it requires.</figcaption>
 </figure>
 
@@ -253,7 +253,7 @@ enough. Revision and re-review continue until the latest integrated result reach
 | `6-R` · Pre-PR Review | Current branch diff, tests and diagnostics, docs, module changes, PR evidence | Latest integrated diff review has `P0=0`, `P1=0` |
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape-workflow-7-tier-review-01.png" alt="The 2-R Spec, 3-R Plan, and 6-R Pre-PR gates passing through six independent perspectives—Performance, Stability, Security, Operator and Ops, Developer and API, User and Caller—before main-session integration, with a repair loop until P0 and P1 reach zero" loading="lazy" />
+  <img src="/assets/bluetape-workflow-7-tier-review-01-en.png" alt="The 2-R Spec, 3-R Plan, and 6-R Pre-PR gates passing through six independent perspectives—Performance, Stability, Security, Operator and Ops, Developer and API, User and Caller—before main-session integration, with a repair loop until P0 and P1 reach zero" loading="lazy" />
   <figcaption>All three gates use the same 7-Tier engine. The next gate opens only when the main session's latest integration reaches P0=0 and P1=0.</figcaption>
 </figure>
 
@@ -280,7 +280,7 @@ An older zero-blocker result or later green CI does not prove the current artifa
 Classification selects more than a name. Each lane has its own sequence, evidence, and return point.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape-workflow-execution-lanes-01.png" alt="Seven workflow lanes comparing Full Feature design review, Fast Track bounded change, Bug Fix RED and GREEN, read-only Code Review, Maintenance source-first parity, Publish irreversible holds, and Self Improve benchmark feedback" loading="lazy" />
+  <img src="/assets/bluetape-workflow-execution-lanes-01-en.png" alt="Seven workflow lanes comparing Full Feature design review, Fast Track bounded change, Bug Fix RED and GREEN, read-only Code Review, Maintenance source-first parity, Publish irreversible holds, and Self Improve benchmark feedback" loading="lazy" />
   <figcaption>Every lane starts at the same router, but its ordering, evidence, and failure recovery are different.</figcaption>
 </figure>
 

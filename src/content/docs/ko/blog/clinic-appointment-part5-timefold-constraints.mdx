@@ -61,7 +61,7 @@ Solver가 배치하는 예약입니다. 계획 변수는 `doctorId`, `appointmen
   class="bt4k-architecture"
   data-diagram-title="병원 정책을 Timefold 점수로 바꾸는 모델"
 >
-  <img src="/assets/clinic-appointment-part5-timefold-model-01.png" alt="AppointmentPlanning의 의사와 날짜, 시작 시각을 계획 변수로 바꾸고 ScheduleSolution의 병원·의사·운영시간·휴진·장비 정보를 고정한 뒤 12개 필수 제약과 6개 선호 목표를 계산해 HardSoftScore와 SolverResult를 만드는 다이어그램" loading="lazy" />
+  <img src="/assets/clinic-appointment-part5-timefold-model-01-ko.png" alt="AppointmentPlanning의 의사와 날짜, 시작 시각을 계획 변수로 바꾸고 ScheduleSolution의 병원·의사·운영시간·휴진·장비 정보를 고정한 뒤 12개 필수 제약과 6개 선호 목표를 계산해 HardSoftScore와 SolverResult를 만드는 다이어그램" loading="lazy" />
   <figcaption>계획 대상과 고정된 문제 정보가 ConstraintProvider에서 만납니다. 필수 제약 점수로 실행 가능한 일정인지 먼저 판단하고, 선호 점수로 일정의 순위를 정한 뒤 배정 결과와 점수를 반환합니다.</figcaption>
 </figure>
 
@@ -195,7 +195,7 @@ Solver가 반환한 최종 점수 하나만 보여 주면 운영자는 왜 담�
   class="bt4k-chart"
   data-diagram-title="예약 수에 따른 Solver 실행 기준선"
 >
-  <img src="/assets/clinic-appointment-part5-benchmark-scale-02.png" alt="의사 2명과 예약 10개, 의사 5명과 예약 30개, 의사 10명과 예약 100개 시나리오에서 측정 실행 시간과 설정된 시간 제한을 비교하고 HardSoftScore, 초당 점수 계산 수, 탐색 공간 규모를 함께 보여 주는 차트" loading="lazy" />
+  <img src="/assets/clinic-appointment-part5-benchmark-scale-02-ko.png" alt="의사 2명과 예약 10개, 의사 5명과 예약 30개, 의사 10명과 예약 100개 시나리오에서 측정 실행 시간과 설정된 시간 제한을 비교하고 HardSoftScore, 초당 점수 계산 수, 탐색 공간 규모를 함께 보여 주는 차트" loading="lazy" />
   <figcaption>측정 시간은 모든 시나리오에서 설정한 제한 시간보다 짧았고, 결과 일정은 필수 제약을 지켰습니다. 이 수치는 로컬 환경의 회귀 기준선이며 운영 환경의 응답 시간을 보증하거나 최적해임을 보장하는 자료가 아닙니다.</figcaption>
 </figure>
 

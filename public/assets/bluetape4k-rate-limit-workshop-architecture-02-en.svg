@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="820" viewBox="0 0 1240 820" role="img" aria-labelledby="title desc">
+  <title id="title">Bucket4j rate-limit workshop architecture</title>
+  <desc id="desc">Client requests pass through proxy-aware caller identity selection, path-scoped WebFilters, Redis or Caffeine bucket storage, and response headers before reaching the application handler.</desc>
+  <defs>
+    <marker id="arrow-blue" markerWidth="14" markerHeight="14" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#8bd3ff" stroke="#8bd3ff" stroke-dasharray="none" style="stroke-dasharray:none"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="14" markerHeight="14" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#8dd46f" stroke="#8dd46f" stroke-dasharray="none" style="stroke-dasharray:none"/>
+    </marker>
+    <marker id="arrow-amber" markerWidth="14" markerHeight="14" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#f1b94e" stroke="#f1b94e" stroke-dasharray="none" style="stroke-dasharray:none"/>
+    </marker>
+    <marker id="arrow-red" markerWidth="14" markerHeight="14" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#fb7185" stroke="#fb7185" stroke-dasharray="none" style="stroke-dasharray:none"/>
+    </marker>
+    <linearGradient id="bgGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#101827"/>
+      <stop offset="58%" stop-color="#172536"/>
+      <stop offset="100%" stop-color="#263b57"/>
+    </linearGradient>
+    <linearGradient id="panelGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1f2937"/>
+      <stop offset="100%" stop-color="#111827"/>
+    </linearGradient>
+    <filter id="panelShadow" x="-8%" y="-12%" width="116%" height="124%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#020617" flood-opacity="0.32"/>
+    </filter>
+    <filter id="cardShadow" x="-12%" y="-22%" width="124%" height="144%">
+      <feDropShadow dx="0" dy="7" stdDeviation="8" flood-color="#020617" flood-opacity="0.28"/>
+    </filter>
+    <path id="redis-B" d="M45.536 38.764c-2.013 1.05-12.44 5.337-14.66 6.494s-3.453 1.146-5.207.308-12.85-5.32-14.85-6.276c-1-.478-1.524-.88-1.524-1.26v-3.813s14.447-3.145 16.78-3.982 3.14-.867 5.126-.14 13.853 2.868 15.814 3.587v3.76c0 .377-.452.8-1.477 1.324z"/>
+    <path id="redis-C" d="M45.536 28.733c-2.013 1.05-12.44 5.337-14.66 6.494s-3.453 1.146-5.207.308-12.85-5.32-14.85-6.276-2.04-1.613-.077-2.382l15.332-5.935c2.332-.837 3.14-.867 5.126-.14s12.35 4.853 14.312 5.57 2.037 1.31.024 2.36z"/>
+    <style>
+      .bg { fill: url(#bgGradient); }
+      .panel { fill: url(#panelGradient); stroke: #536377; stroke-width: 2; rx: 20; filter: url(#panelShadow); }
+      .lane { fill: #0f172a; fill-opacity: 0.2; stroke: #44546b; stroke-width: 2; rx: 18; }
+      .card { fill: #172033; stroke: #60718a; stroke-width: 2.5; rx: 16; filter: url(#cardShadow); }
+      .card-blue { stroke: #67b7ee; }
+      .card-green { stroke: #8dd46f; }
+      .card-amber { stroke: #f1b94e; }
+      .card-purple { stroke: #a98be9; }
+      .card-red { stroke: #fb7185; }
+      .icon-back { fill: #f8fafc; fill-opacity: 0.94; stroke: #dbeafe; stroke-width: 2; }
+      .title { font: 30px "Architects Daughter", "Comic Mono", system-ui, sans-serif; fill: #f8fafc; }
+      .subtitle { font: 15px "Comic Mono", ui-monospace, monospace; fill: #c1cad8; }
+      .label { font: 18px "Comic Mono", ui-monospace, monospace; fill: #f3f7fb; font-weight: 700; }
+      .small { font: 13px "Comic Mono", ui-monospace, monospace; fill: #c9d4e2; }
+      .tiny { font: 12px "Comic Mono", ui-monospace, monospace; fill: #dfe8f5; }
+      .pill { fill: #243249; stroke-width: 1.6; rx: 12; }
+      .line-blue { fill: none; stroke: #8bd3ff; stroke-width: 4.4; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-blue); }
+      .line-green { fill: none; stroke: #8dd46f; stroke-width: 4.2; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-green); }
+      .line-amber { fill: none; stroke: #f1b94e; stroke-width: 4.2; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-amber); }
+      .line-red { fill: none; stroke: #fb7185; stroke-width: 4.2; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-red); }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1240" height="820"/>
+  <rect class="panel" x="36" y="30" width="1168" height="752"/>
+  <text class="title" x="70" y="80">rate limiting starts with the caller identity, not the bucket</text>
+  <text class="subtitle" x="70" y="110">proxy trust decides the IP; filters decide the key shape; storage decides whether quota is local or shared</text>
+
+  <g id="request-source">
+    <rect class="lane" x="75" y="142" width="240" height="556"/>
+    <text class="label" x="99" y="180">Request source</text>
+    <rect class="card card-blue" x="109" y="252" width="172" height="126"/>
+    <text class="label" x="137" y="290">HTTP request</text>
+    <text class="small" x="133" y="318">remoteAddr</text>
+    <text class="small" x="133" y="342">X-Forwarded-For</text>
+    <text class="small" x="133" y="366">X-Real-IP</text>
+    <rect class="pill" x="99" y="442" width="192" height="36" stroke="#a98be9"/>
+    <text class="tiny" x="123" y="464">trust proxy explicitly</text>
+    <rect class="pill" x="99" y="500" width="192" height="36" stroke="#fb7185"/>
+    <text class="tiny" x="149" y="522">spoof risk</text>
+  </g>
+
+  <g id="identity-strategy">
+    <rect class="lane" x="375" y="142" width="292" height="556"/>
+    <text class="label" x="399" y="180">Caller identity</text>
+    <rect class="card card-purple" x="409" y="220" width="224" height="220"/>
+    <text class="label" x="453" y="258">Key resolver</text>
+    <text class="small" x="437" y="286">path-scoped key shape</text>
+    <rect class="pill" x="431" y="314" width="180" height="34" stroke="#67b7ee"/>
+    <text class="tiny" x="451" y="336">ip:&lt;address&gt;</text>
+    <rect class="pill" x="431" y="358" width="180" height="34" stroke="#8dd46f"/>
+    <text class="tiny" x="453" y="380">user:&lt;userId&gt;</text>
+    <rect class="pill" x="431" y="402" width="180" height="34" stroke="#f1b94e"/>
+    <text class="tiny" x="444" y="424">combined:ip:user</text>
+    <rect class="pill" x="415" y="520" width="212" height="36" stroke="#f1b94e"/>
+    <text class="tiny" x="435" y="542">missing identity -> 400/401</text>
+  </g>
+
+  <g id="bucket-handler">
+    <rect class="lane" x="727" y="142" width="438" height="556"/>
+    <text class="label" x="751" y="180">Bucket and handler</text>
+    <rect class="card card-purple" x="767" y="252" width="264" height="126"/>
+    <rect class="icon-back" x="789" y="286" width="56" height="56" rx="14"/>
+    <g data-bluetape4k-icon="generic-microservice" transform="translate(797 294) scale(0.3125)">
+      <rect x="10" y="12" width="108" height="104" rx="18" fill="#f8fafc" stroke="#334155" stroke-width="6"/>
+      <rect x="28" y="30" width="72" height="22" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="5"/>
+      <rect x="28" y="76" width="72" height="22" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="5"/>
+      <path d="M48 52v10c0 5 4 9 9 9h14c5 0 9-4 9-9V52" fill="none" stroke="#64748b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="42" cy="41" r="4" fill="#2563eb"/>
+      <circle cx="42" cy="87" r="4" fill="#16a34a"/>
+      <path d="M86 40h10M86 86h10" fill="none" stroke="#475569" stroke-width="5" stroke-linecap="round"/>
+    </g>
+    <text class="label" x="869" y="298">WebFilter</text>
+    <text class="small" x="869" y="324">consume 1 token</text>
+    <text class="small" x="869" y="348">write rate headers</text>
+    <rect class="card card-red" x="1067" y="275" width="76" height="80"/>
+    <text class="label" x="1085" y="311">429</text>
+    <text class="tiny" x="1077" y="335">Retry</text>
+    <rect class="card card-green" x="767" y="452" width="132" height="118"/>
+    <rect class="icon-back" x="800" y="472" width="66" height="58" rx="14"/>
+    <g data-bluetape4k-icon="redis" transform="translate(811 479) scale(1.06)">
+      <g transform="matrix(.848327 0 0 .848327 -7.883573 -9.449691)">
+        <use href="#redis-B" fill="#a41e11"/>
+        <path d="M45.536 34.95c-2.013 1.05-12.44 5.337-14.66 6.494s-3.453 1.146-5.207.308-12.85-5.32-14.85-6.276-2.04-1.613-.077-2.382l15.332-5.936c2.332-.836 3.14-.867 5.126-.14S43.55 31.87 45.51 32.6s2.037 1.31.024 2.36z" fill="#d82c20"/>
+        <use href="#redis-B" y="-6.218" fill="#a41e11"/>
+        <use href="#redis-C" fill="#d82c20"/>
+        <path d="M45.536 26.098c-2.013 1.05-12.44 5.337-14.66 6.495s-3.453 1.146-5.207.308-12.85-5.32-14.85-6.276c-1-.478-1.524-.88-1.524-1.26V21.55s14.447-3.145 16.78-3.982 3.14-.867 5.126-.14 13.853 2.868 15.814 3.587v3.76c0 .377-.452.8-1.477 1.324z" fill="#a41e11"/>
+        <use href="#redis-C" y="-6.449" fill="#d82c20"/>
+        <g fill="#fff">
+          <path d="M29.096 20.712l-1.182-1.965-3.774-.34 2.816-1.016-.845-1.56 2.636 1.03 2.486-.814-.672 1.612 2.534.95-3.268.34zM22.8 24.624l8.74-1.342-2.64 3.872z"/>
+          <ellipse cx="20.444" rx="4.672" ry="1.811" cy="21.402"/>
+        </g>
+        <path d="M42.132 21.138l-5.17 2.042-.004-4.087z" fill="#7a0c00"/>
+        <path d="M36.963 23.18l-.56.22-5.166-2.042 5.723-2.264z" fill="#ad2115"/>
+      </g>
+    </g>
+    <text class="small" x="793" y="550">Redis shared</text>
+    <rect class="card card-amber" x="927" y="452" width="132" height="118"/>
+    <rect class="icon-back" x="960" y="472" width="66" height="58" rx="14"/>
+    <g data-bluetape4k-icon="caffeine" transform="translate(971 479) scale(1.83)">
+      <path fill="#8B5A2B" d="M6.162 1.557c-.18.006-.263.137-.293.18L.05 11.82c-.07.142-.06.27-.004.356 1.942 3.36 3.882 6.723 5.822 10.085a.337.337 0 00.305.182h11.65c.138.003.26-.09.31-.182 1.94-3.36 3.878-6.721 5.82-10.08a.361.361 0 000-.358l-5.82-10.085c-.112-.193-.308-.181-.308-.181zm.804.719h9.513L10.136 5.94zm-.427.603l2.964 3.426L6.54 8.018zm10.3.018l-3.86 6.685L7.19 8.469zm1.341.357l4.756 8.246-4.756-.916zm-12.36.002v5.176l-4.48 2.587zm11.64 0v11.142l-3.857-4.457zM7.127 9.186l5.847 1.126 3.898 4.502-5.842-1.125zM5.82 9.26v3.425l-4.45-.855zm.72.341l3.856 4.457-3.857 6.685zm11.64 1.713l4.447.856-4.447 2.57zM1.062 12.5l4.76.916v7.33zm21.597.48l-4.479 7.763v-5.175zm-11.64 1.437l5.79 1.114-9.649 5.572zm6.44 1.565v5.138l-2.964-3.425zm-3.597 2.078l3.172 3.664H7.52z"/>
+    </g>
+    <text class="small" x="952" y="550">Caffeine local</text>
+    <rect class="card card-blue" x="767" y="618" width="264" height="62"/>
+    <text class="label" x="817" y="655">Handler runs</text>
+  </g>
+
+  <path class="connector line-blue" data-connector="request-to-identity" d="M 281 315 L 409 315"/>
+  <path class="connector line-blue" data-connector="identity-to-filter" d="M 633 315 L 767 315"/>
+  <path class="connector line-green" data-connector="filter-to-redis-storage" d="M 833 378 L 833 452"/>
+  <path class="connector line-amber" data-connector="filter-to-caffeine-storage" d="M 993 378 L 993 452"/>
+  <path class="connector line-blue" data-connector="filter-to-handler" d="M 913 378 L 913 618"/>
+  <path class="connector line-red" data-connector="filter-to-rate-limit-response" d="M 1031 315 L 1067 315"/>
+</svg>

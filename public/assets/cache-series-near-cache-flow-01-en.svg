@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1480" height="864" viewBox="0 0 1480 864" role="img" aria-labelledby="title desc">
+<title id="title">Near Cache Read and Invalidation Flow</title>
+<desc id="desc">Hot reads finish in the JVM L1 cache; misses and writes coordinate with Redis L2 and invalidation signals.</desc>
+<defs>
+  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="7" stdDeviation="8" flood-color="#203040" flood-opacity="0.10"/></filter>
+  <marker id="arrowBlue" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L14,7 L0,14 Z" fill="#4E7FC2"/></marker>
+  <marker id="arrowGreen" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L14,7 L0,14 Z" fill="#3C9B72"/></marker>
+  <marker id="arrowAmber" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L14,7 L0,14 Z" fill="#C98A22"/></marker>
+  <marker id="arrowRose" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L14,7 L0,14 Z" fill="#C85A73"/></marker>
+  <style>
+    .canvas{fill:#F7F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
+    .title{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:42px;fill:#22344A;font-weight:700}
+    .subtitle{font-family:"Comic Mono","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:16px;fill:#536476;font-weight:400}
+    .label{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:24px;fill:#22344A;font-weight:700}
+    .smallLabel{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:20px;fill:#22344A;font-weight:700}
+    .body{font-family:"Comic Mono","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:14px;fill:#34465B;font-weight:400}
+    .small{font-family:"Comic Mono","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:12px;fill:#627184;font-weight:400}
+    .num{font-family:"Comic Mono","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:16px;fill:#22344A;font-weight:700}
+    .card{filter:url(#shadow);stroke-width:2}.soft{stroke-width:1.6}
+    .lineBlue{fill:none;stroke:#4E7FC2;stroke-width:2.4;marker-end:url(#arrowBlue)}
+    .lineGreen{fill:none;stroke:#3C9B72;stroke-width:2.4;marker-end:url(#arrowGreen)}
+    .lineAmber{fill:none;stroke:#C98A22;stroke-width:2.4;marker-end:url(#arrowAmber)}
+    .lineRose{fill:none;stroke:#C85A73;stroke-width:2.4;marker-end:url(#arrowRose)}
+    .dashBlue{fill:none;stroke:#4E7FC2;stroke-width:2.2;stroke-dasharray:8 7;marker-end:url(#arrowBlue)}
+    .dashGreen{fill:none;stroke:#3C9B72;stroke-width:2.2;stroke-dasharray:8 7;marker-end:url(#arrowGreen)}
+    .pill{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:1.2}
+  </style>
+</defs>
+<rect class="canvas" width="1480" height="864"/>
+<rect class="frame" x="34" y="28" width="1412" height="808" rx="26"/>
+<text class="title" x="70" y="82">Near Cache Read and Invalidation Flow</text>
+<text class="subtitle" x="72" y="115">Hot reads finish in the JVM L1 cache; misses and writes coordinate with Redis L2 and invalidation signals.</text><g transform="translate(0 44)">
+<g>
+  <rect class="card" x="76" y="330" width="238" height="110" rx="16" fill="#E8F3FF" stroke="#5B8DEF"/>
+  <text class="smallLabel" x="195" y="371" text-anchor="middle" dominant-baseline="middle">Application</text>
+<text class="body" x="195" y="399" text-anchor="middle" dominant-baseline="middle">repository / service</text>
+</g>
+<g>
+  <rect class="card" x="420" y="260" width="282" height="132" rx="16" fill="#EAF7EF" stroke="#58A978"/>
+  <text class="smallLabel" x="561" y="303" text-anchor="middle" dominant-baseline="middle">L1 Front Cache</text>
+<text class="body" x="561" y="331" text-anchor="middle" dominant-baseline="middle">Caffeine in JVM</text>
+<text class="body" x="561" y="349" text-anchor="middle" dominant-baseline="middle">microsecond hot path</text>
+</g>
+<g>
+  <path class="card" d="M820,283 C820,259 1090,259 1090,283 L1090,377 C1090,401 820,401 820,377 Z" fill="#FDECEF" stroke="#DC6B82"/>
+  <ellipse class="soft" cx="955" cy="283" rx="135" ry="18" fill="#FFFFFF" opacity="0.50" stroke="#DC6B82"/>
+  <text class="smallLabel" x="955" y="324" text-anchor="middle" dominant-baseline="middle">L2 Remote Cache</text>
+<text class="body" x="955" y="352" text-anchor="middle" dominant-baseline="middle">Redis shared state</text>
+</g>
+<g>
+  <rect class="card" x="1190" y="198" width="226" height="106" rx="16" fill="#E9F7F6" stroke="#45A7A1"/>
+  <text class="smallLabel" x="1303" y="228" text-anchor="middle" dominant-baseline="middle">RESP3 Tracking</text>
+<text class="body" x="1303" y="256" text-anchor="middle" dominant-baseline="middle">server push</text>
+<text class="body" x="1303" y="274" text-anchor="middle" dominant-baseline="middle">key invalidation</text>
+</g>
+<g>
+  <rect class="card" x="1190" y="432" width="226" height="106" rx="16" fill="#FFF3D9" stroke="#D6A441"/>
+  <text class="smallLabel" x="1303" y="462" text-anchor="middle" dominant-baseline="middle">Pub/Sub Topic</text>
+<text class="body" x="1303" y="490" text-anchor="middle" dominant-baseline="middle">client-managed</text>
+<text class="body" x="1303" y="508" text-anchor="middle" dominant-baseline="middle">broadcast invalidation</text>
+</g>
+<g>
+  <rect class="card" x="458" y="525" width="210" height="92" rx="16" fill="#F1ECFF" stroke="#8A72D6"/>
+  <text class="smallLabel" x="563" y="557" text-anchor="middle" dominant-baseline="middle">Local Stats</text>
+<text class="body" x="563" y="585" text-anchor="middle" dominant-baseline="middle">hit · miss · invalidated</text>
+</g>
+<path class="connector lineBlue" d="M314 365 H420"/><rect class="pill" x="340" y="372" width="52" height="24" rx="12"/><text class="small" x="366" y="388" text-anchor="middle">get</text>
+<path class="connector lineGreen" d="M420 350 H314"/><rect class="pill" x="333" y="298" width="64" height="24" rx="12"/><text class="small" x="365" y="314" text-anchor="middle">L1 hit</text>
+<path class="connector lineBlue" d="M702 326 H820"/><rect class="pill" x="715" y="294" width="92" height="24" rx="12"/><text class="small" x="761" y="310" text-anchor="middle">miss load</text>
+<path class="connector lineGreen" d="M820 358 H702"/><rect class="pill" x="736" y="364" width="48" height="24" rx="12"/><text class="small" x="760" y="380" text-anchor="middle">fill</text>
+<path class="connector lineAmber" d="M194 440 V689 Q194 705 210 705 H939 Q955 705 955 689 V395"/><rect class="pill" x="514" y="674" width="112" height="24" rx="12"/><text class="small" x="570" y="690" text-anchor="middle">write-through</text>
+<path class="connector lineGreen" d="M1090 288 H1190"/><rect class="pill" x="1086" y="256" width="104" height="24" rx="12"/><text class="small" x="1138" y="272" text-anchor="middle">changed key</text>
+<path class="connector dashGreen" d="M1190 252 H702"/><rect class="pill" x="916" y="220" width="92" height="24" rx="12"/><text class="small" x="962" y="236" text-anchor="middle">invalidate</text>
+<path class="connector lineAmber" d="M1090 360 H1122 Q1138 360 1138 376 V469 Q1138 485 1154 485 H1190"/><rect class="pill" x="1104" y="405" width="70" height="24" rx="12"/><text class="small" x="1139" y="421" text-anchor="middle">publish</text>
+<path class="connector dashBlue" d="M1416 485 H1450 Q1462 485 1462 473 V178 Q1462 166 1450 166 H572 Q560 166 560 178 V260"/><rect class="pill" x="934" y="134" width="92" height="24" rx="12"/><text class="small" x="980" y="150" text-anchor="middle">invalidate</text>
+<path class="connector lineBlue" d="M560 392 V525"/><rect class="pill" x="574" y="440" width="64" height="24" rx="12"/><text class="small" x="606" y="456" text-anchor="middle">record</text>
+</g></svg>

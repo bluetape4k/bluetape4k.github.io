@@ -29,7 +29,7 @@ and coroutine runtimes. They solve the same AWS problems, but application code e
 points.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-part3-framework-flow-01.png" alt="Framework adapters over shared AWS contracts for Spring Boot 4 and Ktor 3" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-part3-framework-flow-01-en.png" alt="Framework adapters over shared AWS contracts for Spring Boot 4 and Ktor 3" loading="lazy" />
   <figcaption>Spring Boot and Ktor adapters connect the same shared helpers to each framework runtime model.</figcaption>
 </figure>
 
@@ -65,7 +65,7 @@ The main features fall into three groups.
 | Configuration | S3 config, Secrets Manager, Parameter Store, Exposed database registry | Remote property loading, secret binding, database pool wiring |
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-part3-spring-sequence-01.png" alt="Spring Boot 4 AWS integration sequence from properties and auto-configuration to application beans, AWS helpers, and AWS runtime" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-part3-spring-sequence-01-en.png" alt="Spring Boot 4 AWS integration sequence from properties and auto-configuration to application beans, AWS helpers, and AWS runtime" loading="lazy" />
   <figcaption>In Spring Boot, startup auto-configuration creates framework beans first, and application code calls injected operations.</figcaption>
 </figure>
 
@@ -164,7 +164,7 @@ such as region, endpoint, credential provider, and signing clock. `S3KtorClient`
 `DynamoDbKtorPlugin` inherit those defaults when needed.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-part3-ktor-sequence-01.png" alt="Ktor 3 AWS integration sequence from plugin installation and lifecycle events to route helpers, AWS helpers, and AWS runtime" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-part3-ktor-sequence-01-en.png" alt="Ktor 3 AWS integration sequence from plugin installation and lifecycle events to route helpers, AWS helpers, and AWS runtime" loading="lazy" />
   <figcaption>In Ktor, plugin installation and lifecycle events open and close runtime pieces while route code calls explicit helpers.</figcaption>
 </figure>
 
@@ -286,7 +286,7 @@ flow from `examples/` and `bluetape4k-workshop/aws` in more detail. Here, the us
 framework and service combinations are already verified as working examples.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-part3-example-matrix-01.png" alt="Runnable examples by framework and AWS service for Spring Boot and Ktor" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-part3-example-matrix-01-en.png" alt="Runnable examples by framework and AWS service for Spring Boot and Ktor" loading="lazy" />
   <figcaption>The examples show framework-specific wiring. Part 5 follows the application flow in detail.</figcaption>
 </figure>
 

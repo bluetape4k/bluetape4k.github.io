@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="780" viewBox="0 0 1500 780">
+<defs><style>
+    .canvas{fill:#F6F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
+    .title{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:42px;fill:#22344A;font-weight:400}
+    .subtitle,.footer,.axis{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:17px;fill:#536476;font-weight:400}
+    .nodeTitle,.participant{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:24px;fill:#22344A;font-weight:400}
+    .nodeBody,.labelText,.num{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:16px;fill:#3F5269;font-weight:400}
+    .tableTitle{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:24px;fill:#22344A;font-weight:400}
+    .tableField,.edgeLabel{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:15px;fill:#3F5269;font-weight:400}
+    .edge{fill:none;stroke:#496A8F;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    .bus{fill:none;stroke:#496A8F;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+    .lifeline{stroke:#91A6BD;stroke-width:2;stroke-dasharray:8 8}
+    g[id]{filter:url(#shadow)}
+  </style></defs>
+<rect class="canvas" width="1500" height="780"/>
+<rect class="frame" x="34" y="28" width="1432" height="724" rx="24"/>
+<text class="title" x="750" y="82" text-anchor="middle">API 모델 벤치마크 스냅샷</text>
+<text class="subtitle" x="750" y="118" text-anchor="middle">TinkerGraph BFS latency, operation당 microseconds, 낮을수록 좋다</text>
+<text class="axis" x="350" y="145">log scale, lower is better</text>
+<g>
+  <text class="nodeBody" x="322" y="195" text-anchor="end">BFS depth=5 Sync</text>
+  <rect x="350" y="170" width="272" height="36" rx="9" fill="#EAF4FF" stroke="#7B8CA3"/>
+  <text class="nodeBody" x="640" y="195">4.724 us/op</text>
+</g>
+<g>
+  <text class="nodeBody" x="322" y="265" text-anchor="end">BFS depth=5 VT</text>
+  <rect x="350" y="240" width="465" height="36" rx="9" fill="#EAF8EF" stroke="#7B8CA3"/>
+  <text class="nodeBody" x="833" y="265">18.7 us/op</text>
+</g>
+<g>
+  <text class="nodeBody" x="322" y="335" text-anchor="end">BFS depth=5 Coroutine</text>
+  <rect x="350" y="310" width="477" height="36" rx="9" fill="#FFF4D9" stroke="#7B8CA3"/>
+  <text class="nodeBody" x="845" y="335">20.2 us/op</text>
+</g>
+<g>
+  <text class="nodeBody" x="322" y="405" text-anchor="end">100-way launch Coroutine</text>
+  <rect x="350" y="380" width="302" height="36" rx="9" fill="#FFF0E8" stroke="#7B8CA3"/>
+  <text class="nodeBody" x="670" y="405">5.916 us/op</text>
+</g>
+<g>
+  <text class="nodeBody" x="322" y="475" text-anchor="end">100-way launch VT</text>
+  <rect x="350" y="450" width="617" height="36" rx="9" fill="#F3ECFF" stroke="#7B8CA3"/>
+  <text class="nodeBody" x="985" y="475">51.0 us/op</text>
+</g>
+<g>
+  <text class="nodeBody" x="322" y="545" text-anchor="end">BFS 100-way VT</text>
+  <rect x="350" y="520" width="857" height="36" rx="9" fill="#E9F7F5" stroke="#7B8CA3"/>
+  <text class="nodeBody" x="1225" y="545">240.9 us/op</text>
+</g>
+<g>
+  <text class="nodeBody" x="322" y="615" text-anchor="end">BFS 100-way Coroutine</text>
+  <rect x="350" y="590" width="880" height="36" rx="9" fill="#FFF0F1" stroke="#7B8CA3"/>
+  <text class="nodeBody" x="1248" y="615">279.8 us/op</text>
+</g>
+<rect x="88" y="684" width="1324" height="62" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
+<text class="footer" x="750" y="709" text-anchor="middle">Source: docs/benchmark/2026-05-21-api-model-results.md, TinkerGraph JMH smoke run.</text>
+<text class="footer" x="750" y="733" text-anchor="middle">release-grade ranking으로 쓰기 전에 article의 Error column을 같이 읽어야 한다.</text>
+</svg>

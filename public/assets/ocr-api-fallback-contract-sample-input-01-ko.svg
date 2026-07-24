@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Synthetic OCR sample document</title>
+  <desc id="desc">A clean synthetic document image used to explain OCR request and response examples.</desc>
+  <defs>
+    <filter id="paper-shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="14" stdDeviation="12" flood-color="#1f2937" flood-opacity="0.16"/>
+    </filter>
+    <style>
+      .bg { fill: #eef3f8; }
+      .paper { fill: #ffffff; stroke: #cbd5e1; stroke-width: 3; filter: url(#paper-shadow); }
+      .title { font: 800 54px 'goorm Sans Code'; fill: #1f2937; letter-spacing: 0; }
+      .subtitle { font: 700 30px 'goorm Sans Code'; fill: #334155; letter-spacing: 0; }
+      .mono { font: 26px 'goorm Sans Code'; fill: #475569; letter-spacing: 0; }
+      .stamp { fill: #e6fffb; stroke: #00a7a7; stroke-width: 3; }
+      .stamp-text { font: 800 28px 'goorm Sans Code'; fill: #007979; letter-spacing: 0; }
+      .line { stroke: #cbd5e1; stroke-width: 3; stroke-linecap: round; }
+      .code { fill: #f8fafc; stroke: #d8e2ef; stroke-width: 2; }
+    </style>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1200" height="760"/>
+  <rect class="paper" x="170" y="70" width="860" height="620" rx="28"/>
+  <text class="title" x="250" y="175">BLUETAPE OCR</text>
+  <rect class="stamp" x="760" y="122" width="190" height="64" rx="16"/>
+  <text class="stamp-text" x="794" y="164">샘플</text>
+  <line class="line" x1="250" y1="220" x2="950" y2="220"/>
+  <text class="subtitle" x="250" y="292">요청: ocr-sample-request</text>
+  <text class="mono" x="250" y="350">1행: 이미지 업로드</text>
+  <text class="mono" x="250" y="402">2행: 네이티브 OCR 검증</text>
+  <text class="mono" x="250" y="454">3행: fallback 안전 반환</text>
+  <rect class="code" x="250" y="510" width="700" height="108" rx="18"/>
+  <text class="mono" x="286" y="560">status = COMPLETED</text>
+  <text class="mono" x="286" y="602">language = eng</text>
+</svg>

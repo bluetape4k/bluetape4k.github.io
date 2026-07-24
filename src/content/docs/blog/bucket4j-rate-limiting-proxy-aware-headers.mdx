@@ -39,7 +39,7 @@ WebFlux module shows the library API. The operational problem, however, is usual
 ## Rate Limiting Architecture
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-rate-limit-workshop-architecture-02.png" alt="Bucket4j rate-limit architecture diagram showing client, proxy, identity strategy, WebFilter, Redis or Caffeine bucket storage, handler, and 429 response path" loading="lazy" />
+  <img src="/assets/bluetape4k-rate-limit-workshop-architecture-02-en.png" alt="Bucket4j rate-limit architecture diagram showing client, proxy, identity strategy, WebFilter, Redis or Caffeine bucket storage, handler, and 429 response path" loading="lazy" />
   <figcaption>IP, user, and combined keys are caller-identity contracts. Redis and Caffeine are where those contracts store token state.</figcaption>
 </figure>
 
@@ -63,7 +63,7 @@ creates one Redis proxy manager, then registers separate `BucketConfiguration`, 
 `DistributedSuspendRateLimiter` beans for the IP, user, and combined strategies.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-rate-limit-workshop-spring-classes-01.png" alt="Spring configuration class diagram showing relationships among RateLimitConfig, BucketConfiguration, AsyncBucketProxyProvider, DistributedSuspendRateLimiter, SuspendRateLimiter, IpRateLimitWebFilter, RequestUtils, and RateLimitResult" loading="lazy" />
+  <img src="/assets/bluetape4k-rate-limit-workshop-spring-classes-01-en.png" alt="Spring configuration class diagram showing relationships among RateLimitConfig, BucketConfiguration, AsyncBucketProxyProvider, DistributedSuspendRateLimiter, SuspendRateLimiter, IpRateLimitWebFilter, RequestUtils, and RateLimitResult" loading="lazy" />
   <figcaption>Spring configuration creates separate policy, provider, and limiter beans. The WebFilter makes HTTP decisions from `RateLimitResult`. Solid lines mean interface implementation; dashed lines mean creates, uses, or returns.</figcaption>
 </figure>
 

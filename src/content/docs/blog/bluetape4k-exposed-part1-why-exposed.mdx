@@ -36,7 +36,7 @@ Exposed sits in that middle ground. It keeps SQL visible, makes it safer through
 decide between JDBC and R2DBC.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part1-choice-journey.png" alt="Choice flow from async pressure through WebFlux JDBC, R2DBC Vert.x, Virtual Threads, Exposed DSL, and bluetape4k-exposed production boundaries" loading="lazy" />
+  <img src="/assets/bluetape4k-exposed-part1-choice-journey-en.png" alt="Choice flow from async pressure through WebFlux JDBC, R2DBC Vert.x, Virtual Threads, Exposed DSL, and bluetape4k-exposed production boundaries" loading="lazy" />
   <figcaption>The choice is not "reactive everywhere." It is SQL safety, Kotlin fit, and production boundaries together.</figcaption>
 </figure>
 
@@ -97,7 +97,7 @@ DSL and repository boundaries ahead of DAO.
 kept rebuilding in production services.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-readme-overview.png" alt="Overview diagram from the bluetape4k-exposed root README" loading="lazy" />
+  <img src="/assets/bluetape4k-exposed-readme-overview-en.png" alt="Overview diagram from the bluetape4k-exposed root README" loading="lazy" />
   <figcaption>Exposed owns SQL DSL and transactions. bluetape4k-exposed separates repositories, cache, JSON, encryption, dialects, and Spring Boot wiring.</figcaption>
 </figure>
 
@@ -134,7 +134,7 @@ That is why the examples and benchmarks live close to the docs. The Virtual Thre
 `exposed-workshop` show the representative ratios below. The ratio matters more than the absolute number here.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part1-virtual-thread-chart.png" alt="Virtual Threads benchmark chart showing 2.54x indexed SELECT, 1.79x complex query, 2.27x 10ms I/O delay, and 1.03x CPU-bound improvement" loading="lazy" />
+  <img src="/assets/bluetape4k-exposed-part1-virtual-thread-chart-en.png" alt="Virtual Threads benchmark chart showing 2.54x indexed SELECT, 1.79x complex query, 2.27x 10ms I/O delay, and 1.03x CPU-bound improvement" loading="lazy" />
   <figcaption>Virtual Threads matter more for JDBC workloads with I/O wait than for CPU-bound work.</figcaption>
 </figure>
 
@@ -153,7 +153,7 @@ while lowering waiting cost, not a free CPU-performance button.
 JOINs, and batch inserts with PostgreSQL Testcontainers, HikariCP max 24, and JMH throughput mode.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part1-jdbc-benchmark-chart.png" alt="Exposed JDBC benchmark throughput chart showing singleFindById 15000 ops/s, singleInsert 14400 ops/s, singleUpdate 14300 ops/s, joinQuery 1510 ops/s, batchInsert 217 ops/s" loading="lazy" />
+  <img src="/assets/bluetape4k-exposed-part1-jdbc-benchmark-chart-en.png" alt="Exposed JDBC benchmark throughput chart showing singleFindById 15000 ops/s, singleInsert 14400 ops/s, singleUpdate 14300 ops/s, joinQuery 1510 ops/s, batchInsert 217 ops/s" loading="lazy" />
   <figcaption>Exposed JDBC throughput changes a lot by query shape. Single-row CRUD, JOINs, and batch inserts should not be read as one profile.</figcaption>
 </figure>
 
@@ -173,7 +173,7 @@ I also kept a JPA comparison. In `exposed-workshop/11-high-performance/04-benchm
 operations with PostgreSQL Testcontainers and JMH average latency. Lower latency is better.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part1-jpa-comparison-chart.png" alt="Chart comparing Exposed and JPA average latency for create, read, update, delete, and batchCreate operations" loading="lazy" />
+  <img src="/assets/bluetape4k-exposed-part1-jpa-comparison-chart-en.png" alt="Chart comparing Exposed and JPA average latency for create, read, update, delete, and batchCreate operations" loading="lazy" />
   <figcaption>Under the same PostgreSQL setup, Exposed showed 3.9-8.3x lower latency than JPA for the sampled single-row CRUD operations.</figcaption>
 </figure>
 

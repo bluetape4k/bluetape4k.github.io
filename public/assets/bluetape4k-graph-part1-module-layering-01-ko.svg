@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1840" height="1000" viewBox="0 0 1840 1000">
+<defs>
+  <marker id="arrow" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+    <path d="M 0 0 L 14 7 L 0 14 Z" fill="#496A8F" stroke="#496A8F"/>
+  </marker>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#22344A" flood-opacity="0.12"/>
+  </filter>
+  <style>
+    .canvas{fill:#F6F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
+    .title{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:42px;fill:#22344A;font-weight:400}
+    .subtitle,.footer,.axis{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:17px;fill:#536476;font-weight:400}
+    .nodeTitle,.participant{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:24px;fill:#22344A;font-weight:400}
+    .nodeBody,.labelText,.num{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:16px;fill:#3F5269;font-weight:400}
+    .tableTitle{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:24px;fill:#22344A;font-weight:400}
+    .tableField,.edgeLabel{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:15px;fill:#3F5269;font-weight:400}
+    .edge{fill:none;stroke:#496A8F;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    .bus{fill:none;stroke:#496A8F;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+    .lifeline{stroke:#91A6BD;stroke-width:2;stroke-dasharray:8 8}
+    g[id]{filter:url(#shadow)}
+  </style>
+</defs>
+<rect class="canvas" width="1840" height="1000"/>
+<rect class="frame" x="34" y="28" width="1772" height="944" rx="24"/>
+<text class="title" x="920" y="82" text-anchor="middle">bluetape4k-graph 모듈 계층</text>
+<text class="subtitle" x="920" y="118" text-anchor="middle">작은 core contract를 중심으로 adapter, I/O, framework module을 조합한다</text>
+<path class="edge" data-connector="apps-to-framework" d="M500 291 L725 291"/>
+<path class="edge" data-connector="framework-to-core" d="M920 362 L920 401 Q920 419 911 419 L911 419 Q902 419 902 437 L902 475"/>
+<path class="edge" data-connector="io-to-core" d="M1340 291 L1246 291 Q1228 291 1228 309 L1228 546 Q1228 564 1210 564 L1115 564"/>
+<path class="edge" data-connector="core-to-storage" d="M920 617 L920 710"/>
+<g id="apps">
+  <rect x="110" y="220" width="390" height="142" rx="12" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="305" y="277.5" text-anchor="middle">앱과 Workshop 예제</text>
+  <text class="nodeBody" x="305" y="311.5" text-anchor="middle">abuser detection, recommendation</text>
+  <text class="nodeBody" x="305" y="334.5" text-anchor="middle">knowledge graph, social network</text>
+</g>
+<g id="framework">
+  <rect x="725" y="220" width="390" height="142" rx="12" fill="#EAF8EF" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="920" y="277.5" text-anchor="middle">Framework Adapter</text>
+  <text class="nodeBody" x="920" y="311.5" text-anchor="middle">Spring Boot 4 auto-configuration</text>
+  <text class="nodeBody" x="920" y="334.5" text-anchor="middle">Ktor plugin lifecycle</text>
+</g>
+<g id="io">
+  <rect x="1340" y="220" width="390" height="142" rx="12" fill="#FFF4D9" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="1535" y="277.5" text-anchor="middle">Graph I/O</text>
+  <text class="nodeBody" x="1535" y="311.5" text-anchor="middle">CSV, NDJSON, GraphML</text>
+  <text class="nodeBody" x="1535" y="334.5" text-anchor="middle">OkIO decorator path</text>
+</g>
+<g id="core">
+  <rect x="725" y="475" width="390" height="142" rx="12" fill="#F3ECFF" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="920" y="532.5" text-anchor="middle">graph-core</text>
+  <text class="nodeBody" x="920" y="566.5" text-anchor="middle">GraphOperations, schema DSL</text>
+  <text class="nodeBody" x="920" y="589.5" text-anchor="middle">merge, transaction, algorithm</text>
+</g>
+<g id="storage">
+  <rect x="725" y="710" width="390" height="142" rx="12" fill="#E9F7F5" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="920" y="767.5" text-anchor="middle">Graph Storage Adapter</text>
+  <text class="nodeBody" x="920" y="801.5" text-anchor="middle">AGE, Neo4j, Memgraph</text>
+  <text class="nodeBody" x="920" y="824.5" text-anchor="middle">TinkerPop, FalkorDB</text>
+</g>
+<rect x="88" y="904" width="1664" height="62" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
+<text class="footer" x="920" y="929" text-anchor="middle">공통 API가 중심이고 framework module과 I/O module은 integration helper다.</text>
+<text class="footer" x="920" y="953" text-anchor="middle">portable layer가 맞지 않는 query에서는 storage-native 기능을 그대로 쓸 수 있다.</text>
+</svg>

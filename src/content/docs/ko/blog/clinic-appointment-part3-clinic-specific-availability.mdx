@@ -101,7 +101,7 @@ val effectiveRanges = computeEffectiveRanges(
   class="bt4k-architecture"
   data-diagram-title="병원별 예약 가능 시간 계산 과정"
 >
-  <img src="/assets/clinic-appointment-part3-availability-pipeline-01.png" alt="공휴일과 전일 휴진 같은 하루 전체 조건을 먼저 확인하고, 병원과 의사의 시간 범위에서 휴식·부분 휴진·의사 부재를 뺀 뒤, 진료 소요시간과 동시 진료 수, 장비 조건으로 예약 후보를 거르는 과정" loading="lazy" />
+  <img src="/assets/clinic-appointment-part3-availability-pipeline-01-ko.png" alt="공휴일과 전일 휴진 같은 하루 전체 조건을 먼저 확인하고, 병원과 의사의 시간 범위에서 휴식·부분 휴진·의사 부재를 뺀 뒤, 진료 소요시간과 동시 진료 수, 장비 조건으로 예약 후보를 거르는 과정" loading="lazy" />
   <figcaption>예약 가능 시간은 한 번에 만들어지지 않습니다. 하루 전체 조건을 확인하고, 실제로 함께 일할 수 있는 시간 범위를 구한 뒤, 각 후보가 환자 수와 장비 조건을 만족하는지 검사합니다.</figcaption>
 </figure>
 
@@ -113,7 +113,7 @@ val effectiveRanges = computeEffectiveRanges(
   class="bt4k-architecture"
   data-diagram-title="예약 가능 시간 조회 시퀀스"
 >
-  <img src="/assets/clinic-appointment-part3-availability-sequence-02.png" alt="사용자가 예약 가능 시간을 조회하면 API와 계산 서비스가 병원·휴일 정보, 의사·진료 정보, 유효 시간 범위, 기존 예약과 장비 상태를 차례로 확인하고 가능한 시간 목록을 반환하는 시퀀스 다이어그램" loading="lazy" />
+  <img src="/assets/clinic-appointment-part3-availability-sequence-02-ko.png" alt="사용자가 예약 가능 시간을 조회하면 API와 계산 서비스가 병원·휴일 정보, 의사·진료 정보, 유효 시간 범위, 기존 예약과 장비 상태를 차례로 확인하고 가능한 시간 목록을 반환하는 시퀀스 다이어그램" loading="lazy" />
   <figcaption>하루 전체를 막는 조건은 즉시 빈 목록을 반환하고, 가능한 날에만 시간 범위를 계산한 뒤 예약 후보별 환자 수와 장비 상태를 확인합니다. 전체 일정 최적화는 별도의 Solver 경로가 담당합니다.</figcaption>
 </figure>
 

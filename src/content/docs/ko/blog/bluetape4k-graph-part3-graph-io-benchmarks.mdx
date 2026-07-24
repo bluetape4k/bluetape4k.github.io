@@ -23,7 +23,7 @@ fixture를 만들려면 vertex와 edge를 파일로 내보내고 다시 불러�
 `graph-io`는 이 작업을 포맷별 모듈과 I/O 조합 레이어로 나눕니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-graph-part3-io-pipeline-01.png" alt="Graph I/O pipeline from GraphOperations to graph-io-core, data formats, I/O decorators, operational uses, and benchmark gate" loading="lazy" />
+  <img src="/assets/bluetape4k-graph-part3-io-pipeline-01-ko.png" alt="Graph I/O pipeline from GraphOperations to graph-io-core, data formats, I/O decorators, operational uses, and benchmark gate" loading="lazy" />
   <figcaption>format adapter는 graph service 코드와 파일 형식을 분리하고, OkIO는 I/O 경로를 조합합니다.</figcaption>
 </figure>
 
@@ -97,7 +97,7 @@ quick-run 설정은 `@Fork(0)`, warmup 1×1초, measurement 2×1초입니다. �
 정밀 비교는 raw JSON을 남기는 긴 실행으로 따로 돌리는 편이 낫습니다.
 
 <figure class="bt4k-chart">
-  <img src="/assets/bluetape4k-graph-part3-benchmark-summary-01.png" alt="Graph I/O quick-run benchmark chart in milliseconds per operation" loading="lazy" />
+  <img src="/assets/bluetape4k-graph-part3-benchmark-summary-01-ko.png" alt="Graph I/O quick-run benchmark chart in milliseconds per operation" loading="lazy" />
   <figcaption>GraphML factory caching처럼 구현 세부가 결과를 크게 바꾸는 지점은 숫자와 측정 조건을 함께 봐야 합니다.</figcaption>
 </figure>
 

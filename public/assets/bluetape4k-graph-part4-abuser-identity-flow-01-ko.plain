@@ -1,0 +1,12 @@
+graph 1 8.4514 1.75
+node seed 0.49653 0.84722 0.99306 0.5 "Seed User" rounded box black lightgrey
+node ids 2.7396 1.5 1.4931 0.5 "Shared Identifier" rounded box black lightgrey
+node users 5.342 1.4722 1.2743 0.5 "Related Users" rounded box black lightgrey
+node paths 5.342 0.25 1.7118 0.5 "Suspicion Evidence" rounded box black lightgrey
+node rank 7.8247 0.84722 1.2535 0.5 "Risk Ranking" rounded box black lightgrey
+edge seed ids 7 0.49306 1.1015 0.49306 1.2848 0.49306 1.5 0.49306 1.5 0.49306 1.5 1.8316 1.5 1.8316 1.5 solid black
+edge seed paths 7 0.9985 0.72222 2.0917 0.72222 4.5903 0.72222 4.5903 0.72222 4.5903 0.72222 4.5903 0.66261 4.5903 0.66261 solid black
+edge ids users 4 3.4923 1.4861 3.4923 1.4861 4.5412 1.4861 4.5412 1.4861 solid black
+edge users rank 7 5.3403 1.2164 5.3403 1.0933 5.3403 0.97222 5.3403 0.97222 5.3403 0.97222 7.0314 0.97222 7.0314 0.97222 solid black
+edge paths rank 7 6.0903 0.50674 6.0903 0.66861 6.0903 0.84722 6.0903 0.84722 6.0903 0.84722 7.0337 0.84722 7.0337 0.84722 solid black
+stop

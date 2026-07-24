@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="980" viewBox="0 0 1600 980" role="img" aria-labelledby="title desc">
+  <title id="title">AI 협업 인프라 프로세스</title>
+  <desc id="desc">Codex와 Claude 협업에서 목표, 맥락 탐색, skill 분기, 실행, 검증, memory feedback이 이어지는 프로세스.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8fbff"/>
+      <stop offset="0.52" stop-color="#f3f7f2"/>
+      <stop offset="1" stop-color="#fff7ed"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-20%" width="120%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#1f2937" flood-opacity="0.16"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 14 14" refX="13" refY="7" markerWidth="14" markerHeight="14" markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M1 1 L13 7 L1 13 Z" fill="#334155"/>
+    </marker>
+    <style>
+      .title { font: 700 40px "goorm Sans", sans-serif; fill: #14213d; }
+      .subtitle { font: 500 20px "goorm Sans Code", monospace; fill: #52616f; }
+      .stage-title { font: 700 25px "goorm Sans", sans-serif; fill: #101828; }
+      .stage-body { font: 500 17px "goorm Sans Code", monospace; fill: #475467; }
+      .small { font: 700 15px "goorm Sans Code", monospace; fill: #344054; }
+      .label { font: 800 16px "goorm Sans Code", monospace; fill: #ffffff; }
+      .card { fill: #ffffff; stroke: #d0d5dd; stroke-width: 2; rx: 26; filter: url(#shadow); }
+      .lane { fill: rgba(255, 255, 255, 0.58); stroke: #d9e2ec; stroke-width: 2; rx: 28; }
+      .line { fill: none; stroke: #334155; stroke-width: 4; marker-end: url(#arrow); }
+      .loop { fill: none; stroke: #667085; stroke-width: 4; stroke-dasharray: 12 12; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect width="1600" height="980" fill="url(#bg)"/>
+  <circle cx="1355" cy="132" r="118" fill="#e0f2fe" opacity="0.55"/>
+  <circle cx="195" cy="828" r="150" fill="#ffedd5" opacity="0.55"/>
+  <circle cx="1090" cy="822" r="132" fill="#dcfce7" opacity="0.46"/>
+
+  <text x="90" y="92" class="title">AI 협업을 인프라로 만들기</text>
+  <text x="90" y="130" class="subtitle">규칙, 탐색, 실행, 검증, 메모리가 반복 가능한 운영 루프를 이룹니다.</text>
+
+  <rect x="90" y="184" width="330" height="250" class="card"/>
+  <rect x="122" y="216" width="76" height="34" rx="17" fill="#2563eb"/>
+  <text x="145" y="239" class="label">01</text>
+  <text x="122" y="290" class="stage-title">목표</text>
+  <text x="122" y="328" class="stage-body">원하는 결과와 제약,</text>
+  <text x="122" y="356" class="stage-body">성공 조건과 종료 지점을</text>
+  <text x="122" y="384" class="stage-body">먼저 밝힙니다.</text>
+
+  <rect x="470" y="184" width="330" height="250" class="card"/>
+  <rect x="502" y="216" width="76" height="34" rx="17" fill="#0891b2"/>
+  <text x="525" y="239" class="label">02</text>
+  <text x="502" y="290" class="stage-title">맥락</text>
+  <text x="502" y="328" class="stage-body">AGENTS.md, CLAUDE.md,</text>
+  <text x="502" y="356" class="stage-body">qmd, 저장소 문서와</text>
+  <text x="502" y="384" class="stage-body">코드를 읽습니다.</text>
+
+  <rect x="850" y="184" width="330" height="250" class="card"/>
+  <rect x="882" y="216" width="76" height="34" rx="17" fill="#16a34a"/>
+  <text x="905" y="239" class="label">03</text>
+  <text x="882" y="290" class="stage-title">분기</text>
+  <text x="882" y="328" class="stage-body">workflow lane과 skill을</text>
+  <text x="882" y="356" class="stage-body">고르고, 범위가 분명한</text>
+  <text x="882" y="384" class="stage-body">agent 작업을 나눕니다.</text>
+
+  <rect x="1230" y="184" width="280" height="250" class="card"/>
+  <rect x="1262" y="216" width="76" height="34" rx="17" fill="#ea580c"/>
+  <text x="1285" y="239" class="label">04</text>
+  <text x="1262" y="290" class="stage-title">실행</text>
+  <text x="1262" y="328" class="stage-body">편집하고 테스트하며</text>
+  <text x="1262" y="356" class="stage-body">리뷰와 소유 경계를</text>
+  <text x="1262" y="384" class="stage-body">분명하게 지킵니다.</text>
+
+  <path d="M420 309 H470" class="connector line"/>
+  <path d="M800 309 H850" class="connector line"/>
+  <path d="M1180 309 H1230" class="connector line"/>
+
+  <rect x="90" y="560" width="330" height="250" class="card"/>
+  <rect x="122" y="592" width="76" height="34" rx="17" fill="#7c3aed"/>
+  <text x="145" y="615" class="label">06</text>
+  <text x="122" y="666" class="stage-title">메모리</text>
+  <text x="122" y="704" class="stage-body">교훈, 명세, 계획과</text>
+  <text x="122" y="732" class="stage-body">결정을 지속되는</text>
+  <text x="122" y="760" class="stage-body">저장소 문서로 남깁니다.</text>
+
+  <rect x="1205" y="560" width="330" height="250" class="card"/>
+  <rect x="1237" y="592" width="76" height="34" rx="17" fill="#be123c"/>
+  <text x="1260" y="615" class="label">05</text>
+  <text x="1237" y="666" class="stage-title">검증</text>
+  <text x="1237" y="704" class="stage-body">진단, 빌드와</text>
+  <text x="1237" y="732" class="stage-body">목표 테스트, 리뷰,</text>
+  <text x="1237" y="760" class="stage-body">근거를 확인합니다.</text>
+
+  <path d="M1370 434 V560" class="connector line"/>
+  <path d="M1205 685 H420" class="connector line"/>
+  <path d="M255 560 V434" class="connector loop"/>
+
+  <rect x="110" y="872" width="1380" height="58" class="lane"/>
+  <text x="145" y="908" class="small">축적 규칙:</text>
+  <text x="242" y="908" class="stage-body">모든 수정은 config로, 반복 workflow는 skill로, 지속할 결정은 검색 가능한 memory로 남깁니다.</text>
+</svg>

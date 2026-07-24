@@ -27,7 +27,7 @@ blog:
 엔진과 query language는 그대로 두고, Kotlin/JVM 서비스에서 매번 반복되는 부분만 공통 API와 adapter로 묶었습니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-graph-part1-backend-selection-01.png" alt="Graph storage selection map for Neo4j, Memgraph, Apache AGE, TinkerGraph, and FalkorDB" loading="lazy" />
+  <img src="/assets/bluetape4k-graph-part1-backend-selection-01-ko.png" alt="Graph storage selection map for Neo4j, Memgraph, Apache AGE, TinkerGraph, and FalkorDB" loading="lazy" />
   <figcaption>먼저 테스트/운영/쓰기/읽기 성격을 나누고 graph db를 고르는 편이 시행착오가 적습니다.</figcaption>
 </figure>
 
@@ -72,7 +72,7 @@ RETURN friend.name
 ## 모듈은 이렇게 나뉩니다
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-graph-part1-module-layering-01.png" alt="bluetape4k-graph module layers from examples and framework adapters to graph-core, graph I/O, and graph storage adapters" loading="lazy" />
+  <img src="/assets/bluetape4k-graph-part1-module-layering-01-ko.png" alt="bluetape4k-graph module layers from examples and framework adapters to graph-core, graph I/O, and graph storage adapters" loading="lazy" />
   <figcaption>`graph-core`를 중심에 두고 graph storage adapter, graph I/O, Spring Boot/Ktor integration이 붙습니다.</figcaption>
 </figure>
 

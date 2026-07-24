@@ -1,0 +1,198 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1040" width="1600" height="1040">
+  <style>
+    .title { font-family: 'goorm Sans', 'Apple SD Gothic Neo', cursive; fill: #1e293b; font-size: 36px; }
+    .subtitle, .lane-label, .step, .legend { font-family: 'goorm Sans Code', 'SFMono-Regular', Consolas, monospace; }
+    .subtitle { fill: #475569; font-size: 15px; }
+    .lane-label { fill: #1e293b; font-size: 17px; font-weight: 700; }
+    .step { fill: #334155; font-size: 13px; }
+    .legend { fill: #475569; font-size: 12px; }
+  </style>
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#64748b" flood-opacity="0.13"/>
+    </filter>
+    <marker id="arrow-blue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 1 L 11 6 L 0 11 Z" fill="#4f7dc9"/>
+    </marker>
+    <marker id="arrow-purple" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 1 L 11 6 L 0 11 Z" fill="#8a6fd1"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="1040" fill="#f8fafc"/>
+  <rect x="24" y="24" width="1552" height="992" rx="28" fill="#ffffff" stroke="#dbe5f1" stroke-width="2"/>
+  <text x="58" y="78" class="title">일곱 작업 유형, 일곱 증거 경로</text>
+  <text x="60" y="110" class="subtitle">Router가 lane을 고르고, 각 lane은 고유한 순서, 증거, 종료 조건을 가진다.</text>
+
+  <!-- lane backgrounds -->
+  <g>
+    <rect x="48" y="142" width="1504" height="106" rx="18" fill="#f8fbff" stroke="#d7e7fb"/>
+    <rect x="48" y="260" width="1504" height="106" rx="18" fill="#f7fcf8" stroke="#d8efdf"/>
+    <rect x="48" y="378" width="1504" height="106" rx="18" fill="#fffaf4" stroke="#f2dfc5"/>
+    <rect x="48" y="496" width="1504" height="106" rx="18" fill="#fafbfc" stroke="#dfe4ea"/>
+    <rect x="48" y="614" width="1504" height="106" rx="18" fill="#f5fcfb" stroke="#d4efeb"/>
+    <rect x="48" y="732" width="1504" height="106" rx="18" fill="#fff7f7" stroke="#f2d7da"/>
+    <rect x="48" y="850" width="1504" height="106" rx="18" fill="#fbf8ff" stroke="#e6dcf6"/>
+  </g>
+
+  <!-- lane labels -->
+  <text x="78" y="184" class="lane-label">A / Full Feature</text>
+  <text x="78" y="210" class="legend">code 전에 design</text>
+  <text x="78" y="302" class="lane-label">B / Fast Track</text>
+  <text x="78" y="328" class="legend">좁은 추가 변경</text>
+  <text x="78" y="420" class="lane-label">C / Bug Fix</text>
+  <text x="78" y="446" class="legend">수정 전 재현</text>
+  <text x="78" y="538" class="lane-label">D / Code Review</text>
+  <text x="78" y="564" class="legend">읽기 전용 판정</text>
+  <text x="78" y="656" class="lane-label">E / Maintenance</text>
+  <text x="78" y="682" class="legend">ownership 보존</text>
+  <text x="78" y="774" class="lane-label">P / Publish</text>
+  <text x="78" y="800" class="legend">public state 증명</text>
+  <text x="78" y="892" class="lane-label">F / Self Improve</text>
+  <text x="78" y="918" class="legend">측정 기반 후보 반복</text>
+
+  <!-- Type A connectors -->
+  <g fill="none" stroke="#4f7dc9" stroke-width="2.3" marker-end="url(#arrow-blue)">
+    <path class="connector" d="M 426 196 H 440"/><path class="connector" d="M 548 196 H 562"/><path class="connector" d="M 670 196 H 684"/>
+    <path class="connector" d="M 792 196 H 806"/><path class="connector" d="M 914 196 H 928"/><path class="connector" d="M 1036 196 H 1050"/>
+    <path class="connector" d="M 1158 196 H 1172"/><path class="connector" d="M 1280 196 H 1294"/><path class="connector" d="M 1402 196 H 1416"/>
+  </g>
+  <!-- Type A cards -->
+  <g filter="url(#shadow)">
+    <rect x="318" y="164" width="108" height="64" rx="12" fill="#eef6ff" stroke="#7aa7e8"/>
+    <rect x="440" y="164" width="108" height="64" rx="12" fill="#eef6ff" stroke="#7aa7e8"/>
+    <rect x="562" y="164" width="108" height="64" rx="12" fill="#eef6ff" stroke="#7aa7e8"/>
+    <rect x="684" y="164" width="108" height="64" rx="12" fill="#faf5ff" stroke="#8a6fd1" stroke-width="2"/>
+    <rect x="806" y="164" width="108" height="64" rx="12" fill="#eef6ff" stroke="#7aa7e8"/>
+    <rect x="928" y="164" width="108" height="64" rx="12" fill="#faf5ff" stroke="#8a6fd1" stroke-width="2"/>
+    <rect x="1050" y="164" width="108" height="64" rx="12" fill="#f0fdf4" stroke="#45a66f"/>
+    <rect x="1172" y="164" width="108" height="64" rx="12" fill="#eef6ff" stroke="#7aa7e8"/>
+    <rect x="1294" y="164" width="108" height="64" rx="12" fill="#faf5ff" stroke="#8a6fd1" stroke-width="2"/>
+    <rect x="1416" y="164" width="108" height="64" rx="12" fill="#f0fdf4" stroke="#45a66f"/>
+  </g>
+  <text x="372" y="201" text-anchor="middle" class="step">요구사항</text>
+  <text x="494" y="201" text-anchor="middle" class="step">Research</text>
+  <text x="616" y="201" text-anchor="middle" class="step">Spec</text>
+  <text x="738" y="201" text-anchor="middle" class="step">2-R</text>
+  <text x="860" y="201" text-anchor="middle" class="step">Plan</text>
+  <text x="982" y="201" text-anchor="middle" class="step">3-R</text>
+  <text x="1104" y="201" text-anchor="middle" class="step">TDD</text>
+  <text x="1226" y="201" text-anchor="middle" class="step">검증</text>
+  <text x="1348" y="201" text-anchor="middle" class="step">6-R</text>
+  <text x="1470" y="192" text-anchor="middle" class="step">PR / CI</text>
+  <text x="1470" y="210" text-anchor="middle" class="legend">마감</text>
+
+  <!-- Type B -->
+  <g fill="none" stroke="#4f7dc9" stroke-width="2.3" marker-end="url(#arrow-blue)">
+    <path class="connector" d="M 506 314 H 526"/><path class="connector" d="M 706 314 H 726"/><path class="connector" d="M 906 314 H 926"/><path class="connector" d="M 1106 314 H 1126"/><path class="connector" d="M 1306 314 H 1326"/>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="326" y="282" width="180" height="64" rx="12" fill="#f0fdf4" stroke="#6db88a"/>
+    <rect x="526" y="282" width="180" height="64" rx="12" fill="#f0fdf4" stroke="#6db88a"/>
+    <rect x="726" y="282" width="180" height="64" rx="12" fill="#f0fdf4" stroke="#6db88a"/>
+    <rect x="926" y="282" width="180" height="64" rx="12" fill="#f0fdf4" stroke="#6db88a"/>
+    <rect x="1126" y="282" width="180" height="64" rx="12" fill="#f0fdf4" stroke="#6db88a"/>
+    <rect x="1326" y="282" width="180" height="64" rx="12" fill="#f0fdf4" stroke="#6db88a"/>
+  </g>
+  <text x="416" y="319" text-anchor="middle" class="step">경계</text>
+  <text x="616" y="310" text-anchor="middle" class="step">기존</text><text x="616" y="328" text-anchor="middle" class="step">Pattern</text>
+  <text x="816" y="310" text-anchor="middle" class="step">가벼운</text><text x="816" y="328" text-anchor="middle" class="step">Design</text>
+  <text x="1016" y="310" text-anchor="middle" class="step">좁은</text><text x="1016" y="328" text-anchor="middle" class="step">변경</text>
+  <text x="1216" y="310" text-anchor="middle" class="step">대상</text><text x="1216" y="328" text-anchor="middle" class="step">증거</text>
+  <text x="1416" y="319" text-anchor="middle" class="step">Review</text>
+
+  <!-- Type C -->
+  <g fill="none" stroke="#4f7dc9" stroke-width="2.3" marker-end="url(#arrow-blue)">
+    <path class="connector" d="M 546 432 H 566"/><path class="connector" d="M 786 432 H 806"/><path class="connector" d="M 1026 432 H 1046"/><path class="connector" d="M 1266 432 H 1286"/>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="326" y="400" width="220" height="64" rx="12" fill="#fff7ed" stroke="#d89132"/>
+    <rect x="566" y="400" width="220" height="64" rx="12" fill="#fff7ed" stroke="#d89132"/>
+    <rect x="806" y="400" width="220" height="64" rx="12" fill="#fef2f2" stroke="#d25b63" stroke-width="2"/>
+    <rect x="1046" y="400" width="220" height="64" rx="12" fill="#f0fdf4" stroke="#45a66f" stroke-width="2"/>
+    <rect x="1286" y="400" width="220" height="64" rx="12" fill="#fff7ed" stroke="#d89132"/>
+  </g>
+  <text x="436" y="437" text-anchor="middle" class="step">재현</text>
+  <text x="676" y="437" text-anchor="middle" class="step">Root Cause</text>
+  <text x="916" y="428" text-anchor="middle" class="step">Regression RED</text><text x="916" y="446" text-anchor="middle" class="legend">결함 증명</text>
+  <text x="1156" y="428" text-anchor="middle" class="step">최소 수정</text><text x="1156" y="446" text-anchor="middle" class="legend">GREEN</text>
+  <text x="1396" y="437" text-anchor="middle" class="step">Review / CI</text>
+
+  <!-- Type D -->
+  <g fill="none" stroke="#7b8798" stroke-width="2.3" marker-end="url(#arrow-blue)">
+    <path class="connector" d="M 596 550 H 626"/><path class="connector" d="M 896 550 H 926"/><path class="connector" d="M 1196 550 H 1226"/>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="326" y="518" width="270" height="64" rx="12" fill="#f8fafc" stroke="#7b8798"/>
+    <rect x="626" y="518" width="270" height="64" rx="12" fill="#f8fafc" stroke="#7b8798"/>
+    <rect x="926" y="518" width="270" height="64" rx="12" fill="#f8fafc" stroke="#7b8798"/>
+    <rect x="1226" y="518" width="280" height="64" rx="12" fill="#f8fafc" stroke="#7b8798"/>
+  </g>
+  <text x="461" y="555" text-anchor="middle" class="step">현재 Diff</text>
+  <text x="761" y="555" text-anchor="middle" class="step">Review 관점</text>
+  <text x="1061" y="555" text-anchor="middle" class="step">P0 / P1 / P2 / P3</text>
+  <text x="1366" y="546" text-anchor="middle" class="step">읽기 전용 판정</text><text x="1366" y="564" text-anchor="middle" class="legend">구현 없음</text>
+
+  <!-- Type E -->
+  <g fill="none" stroke="#2b9c93" stroke-width="2.3" marker-end="url(#arrow-blue)">
+    <path class="connector" d="M 546 668 H 566"/><path class="connector" d="M 786 668 H 806"/><path class="connector" d="M 1026 668 H 1046"/><path class="connector" d="M 1266 668 H 1286"/>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="326" y="636" width="220" height="64" rx="12" fill="#f0fdfa" stroke="#2b9c93"/>
+    <rect x="566" y="636" width="220" height="64" rx="12" fill="#f0fdfa" stroke="#2b9c93"/>
+    <rect x="806" y="636" width="220" height="64" rx="12" fill="#e6faf7" stroke="#16877e" stroke-width="2"/>
+    <rect x="1046" y="636" width="220" height="64" rx="12" fill="#e6faf7" stroke="#16877e" stroke-width="2"/>
+    <rect x="1286" y="636" width="220" height="64" rx="12" fill="#f0fdfa" stroke="#2b9c93"/>
+  </g>
+  <text x="436" y="659" text-anchor="middle" class="step">발견</text><text x="436" y="677" text-anchor="middle" class="step">Guidance</text>
+  <text x="676" y="659" text-anchor="middle" class="step">보존</text><text x="676" y="677" text-anchor="middle" class="step">Ownership</text>
+  <text x="916" y="659" text-anchor="middle" class="step">Source-first</text><text x="916" y="677" text-anchor="middle" class="step">변경</text>
+  <text x="1156" y="659" text-anchor="middle" class="step">Apply / Parity</text><text x="1156" y="677" text-anchor="middle" class="legend">render = live</text>
+  <text x="1396" y="673" text-anchor="middle" class="step">Self-audit</text>
+
+  <!-- Type P -->
+  <g fill="none" stroke="#d25b63" stroke-width="2.3" marker-end="url(#arrow-blue)">
+    <path class="connector" d="M 506 786 H 526"/><path class="connector" d="M 706 786 H 726"/><path class="connector" d="M 906 786 H 926"/><path class="connector" d="M 1106 786 H 1126"/><path class="connector" d="M 1306 786 H 1326"/>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="326" y="754" width="180" height="64" rx="12" fill="#fef2f2" stroke="#d25b63"/>
+    <rect x="526" y="754" width="180" height="64" rx="12" fill="#fef2f2" stroke="#d25b63"/>
+    <rect x="726" y="754" width="180" height="64" rx="12" fill="#fee2e2" stroke="#be3945" stroke-width="2"/>
+    <rect x="926" y="754" width="180" height="64" rx="12" fill="#fef2f2" stroke="#d25b63"/>
+    <rect x="1126" y="754" width="180" height="64" rx="12" fill="#fef2f2" stroke="#d25b63"/>
+    <rect x="1326" y="754" width="180" height="64" rx="12" fill="#fef2f2" stroke="#d25b63"/>
+  </g>
+  <text x="416" y="777" text-anchor="middle" class="step">Version 고정</text><text x="416" y="795" text-anchor="middle" class="legend">authority 포함</text>
+  <text x="616" y="791" text-anchor="middle" class="step">Preflight</text>
+  <text x="816" y="777" text-anchor="middle" class="step">되돌릴 수 없는</text><text x="816" y="795" text-anchor="middle" class="step">Hold</text>
+  <text x="1016" y="791" text-anchor="middle" class="step">Publish</text>
+  <text x="1216" y="777" text-anchor="middle" class="step">Public</text><text x="1216" y="795" text-anchor="middle" class="step">증거</text>
+  <text x="1416" y="777" text-anchor="middle" class="step">Consumer</text><text x="1416" y="795" text-anchor="middle" class="step">Sync</text>
+
+  <!-- Type F -->
+  <g fill="none" stroke="#8a6fd1" stroke-width="2.3" marker-end="url(#arrow-purple)">
+    <path class="connector" d="M 476 904 H 492"/><path class="connector" d="M 654 904 H 670"/><path class="connector" d="M 832 904 H 848"/><path class="connector" d="M 1010 904 H 1026"/><path class="connector" d="M 1188 904 H 1204"/><path class="connector" d="M 1366 904 H 1382"/>
+    <path class="connector" d="M 1445 936 V 958 Q 1445 970 1433 970 H 745 Q 733 970 733 958 V 938"/>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="314" y="872" width="162" height="64" rx="12" fill="#faf5ff" stroke="#8a6fd1"/>
+    <rect x="492" y="872" width="162" height="64" rx="12" fill="#faf5ff" stroke="#8a6fd1"/>
+    <rect x="670" y="872" width="162" height="64" rx="12" fill="#faf5ff" stroke="#8a6fd1"/>
+    <rect x="848" y="872" width="162" height="64" rx="12" fill="#faf5ff" stroke="#8a6fd1"/>
+    <rect x="1026" y="872" width="162" height="64" rx="12" fill="#faf5ff" stroke="#8a6fd1"/>
+    <rect x="1204" y="872" width="162" height="64" rx="12" fill="#faf5ff" stroke="#8a6fd1"/>
+    <rect x="1382" y="872" width="142" height="64" rx="12" fill="#faf5ff" stroke="#8a6fd1"/>
+  </g>
+  <text x="395" y="909" text-anchor="middle" class="step">Baseline</text>
+  <text x="573" y="909" text-anchor="middle" class="step">가설</text>
+  <text x="751" y="909" text-anchor="middle" class="step">후보</text>
+  <text x="929" y="909" text-anchor="middle" class="step">검증</text>
+  <text x="1107" y="909" text-anchor="middle" class="step">비교</text>
+  <text x="1285" y="900" text-anchor="middle" class="step">수락 /</text><text x="1285" y="918" text-anchor="middle" class="step">거절</text>
+  <text x="1453" y="900" text-anchor="middle" class="step">반복 /</text><text x="1453" y="918" text-anchor="middle" class="step">종료</text>
+  <text x="1086" y="991" text-anchor="middle" class="legend">거절 또는 다음 가설</text>
+
+  <!-- legend -->
+  <circle cx="66" cy="988" r="6" fill="#4f7dc9"/><text x="80" y="993" class="legend">일반 증거 흐름</text>
+  <circle cx="250" cy="988" r="6" fill="#8a6fd1"/><text x="264" y="993" class="legend">review 또는 feedback gate</text>
+</svg>

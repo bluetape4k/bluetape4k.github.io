@@ -75,7 +75,7 @@ clock으로 핵심 생성 경로를 재는 항목은 Go가 압도적으로 빠�
 single-thread monotonic ULID, KSUID seconds는 이미 꽤 강했다.
 
 <figure class="bt4k-chart">
-  <img src="/assets/id-generators-benchmark-phase-1-chart-01.png" alt="ID Generator Benchmark Phase 1에서 Go 첫 구현과 기존 Kotlin 구현의 ns/id를 비교한 chart" loading="lazy" />
+  <img src="/assets/id-generators-benchmark-phase-1-chart-01-ko.png" alt="ID Generator Benchmark Phase 1에서 Go 첫 구현과 기존 Kotlin 구현의 ns/id를 비교한 chart" loading="lazy" />
   <figcaption>Phase 1은 "Go가 당연히 이긴다"는 가정을 깨뜨렸다. Snowflake는 Go가 빠르지만, 문자열 ID 계열에서는 Kotlin이 이미 앞선 항목이 많았다.</figcaption>
 </figure>
 
@@ -116,7 +116,7 @@ Go 개선 뒤의 2차 비교에서는 양상이 달라졌다. Go는 UUID v4, KSU
 강해졌다. Kotlin은 UUID v7과 single-thread monotonic ULID에서 여전히 좋은 숫자를 냈다.
 
 <figure class="bt4k-chart">
-  <img src="/assets/id-generators-benchmark-phase-2-chart-01.png" alt="ID Generator Benchmark Phase 2에서 Go 개선 후 Go와 Kotlin의 ns/id를 비교한 chart" loading="lazy" />
+  <img src="/assets/id-generators-benchmark-phase-2-chart-01-ko.png" alt="ID Generator Benchmark Phase 2에서 Go 개선 후 Go와 Kotlin의 ns/id를 비교한 chart" loading="lazy" />
   <figcaption>Phase 2에서는 Go entropy buffering 효과가 보인다. 특히 concurrent 항목에서 Go가 앞서는 항목이 크게 늘었다.</figcaption>
 </figure>
 
@@ -174,7 +174,7 @@ benchmark noise로 남겼다. 성능 글에서 안 좋은 항목을 지우기 �
 65,536 기준 `1e9 / (ops/s * 65_536)`으로 `ns/id`로 정규화했다.
 
 <figure class="bt4k-chart">
-  <img src="/assets/id-generators-benchmark-phase-3-chart-01.png" alt="ID Generator Benchmark Phase 3에서 최종 Go와 Kotlin candidate 3의 ns/id를 비교한 chart" loading="lazy" />
+  <img src="/assets/id-generators-benchmark-phase-3-chart-01-ko.png" alt="ID Generator Benchmark Phase 3에서 최종 Go와 Kotlin candidate 3의 ns/id를 비교한 chart" loading="lazy" />
   <figcaption>3차 비교는 어느 한쪽의 완승이 아니다. Snowflake는 clock model caveat가 크고, ULID와 KSUID는 single/concurrent 항목이 갈린다.</figcaption>
 </figure>
 

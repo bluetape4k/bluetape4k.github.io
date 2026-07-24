@@ -31,7 +31,7 @@ The goal is not to skim a README catalog. The useful question is which example a
 which work the library owns, and which choices still belong to the application.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-part5-adoption-flow-01.png" alt="Adoption flow from example application through Spring Boot or Ktor path, bluetape4k AWS helpers, local verification, and AWS services" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-part5-adoption-flow-01-en.png" alt="Adoption flow from example application through Spring Boot or Ktor path, bluetape4k AWS helpers, local verification, and AWS services" loading="lazy" />
   <figcaption>The examples place framework code, helper code, and local-emulator verification in one visible flow.</figcaption>
 </figure>
 
@@ -47,7 +47,7 @@ not need to know how to build `S3Client`, set an endpoint override, enable path-
 presigner.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-part5-spring-s3-example-flow-01.png" alt="Spring Boot S3 example flow from HTTP client through S3DocumentController, S3Operations, optional encryption routes, KmsOperations, and S3 endpoint" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-part5-spring-s3-example-flow-01-en.png" alt="Spring Boot S3 example flow from HTTP client through S3DocumentController, S3Operations, optional encryption routes, KmsOperations, and S3 endpoint" loading="lazy" />
   <figcaption>The Spring Boot S3 example separates normal object APIs and optional client-side encryption routes inside the same controller.</figcaption>
 </figure>
 
@@ -191,7 +191,7 @@ visibility timeout, delete timing, retry, typed payload conversion, and manual a
 The Spring Boot SQS example exposes that boundary through `@SqsListener`.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-part5-sqs-sns-scenario-01.png" alt="Spring Boot SQS and SNS example flow from HTTP client through WebFlux API, SQS and SNS operations, fanout, LocalStack, SQS listener container, and ReceivedOrderStore" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-part5-sqs-sns-scenario-01-en.png" alt="Spring Boot SQS and SNS example flow from HTTP client through WebFlux API, SQS and SNS operations, fanout, LocalStack, SQS listener container, and ReceivedOrderStore" loading="lazy" />
   <figcaption>The SQS/SNS example connects REST publishing, SNS fanout, listener handling, manual acknowledgement, retry, and DLQ setup in one executable flow.</figcaption>
 </figure>
 
@@ -250,7 +250,7 @@ as another “configuration → helper → framework wiring → test” example 
 know S3 directly. It depends on `StorageService`, and Spring profiles switch the backend.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-aws-part5-storage-profile-switch-01.png" alt="StorageService profile switch from application code to local, S3, and S3 presigned backend implementations" loading="lazy" />
+  <img src="/assets/bluetape4k-aws-part5-storage-profile-switch-01-en.png" alt="StorageService profile switch from application code to local, S3, and S3 presigned backend implementations" loading="lazy" />
   <figcaption>Application code keeps the same StorageService contract while profiles switch the backend.</figcaption>
 </figure>
 

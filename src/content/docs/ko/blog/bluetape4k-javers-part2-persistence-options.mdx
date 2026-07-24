@@ -27,7 +27,7 @@ query repository가 아니라 snapshot event stream입니다. 이 구분을 놓�
 Redis를 감사 원장처럼 운영하는 식의 어색한 구조가 나오기 쉽습니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-javers-part2-backend-selection-01.png" alt="JaVers commit에서 Exposed, Redis, Kafka persistence 역할로 나뉘는 선택 지도" loading="lazy" />
+  <img src="/assets/bluetape4k-javers-part2-backend-selection-01-ko.png" alt="JaVers commit에서 Exposed, Redis, Kafka persistence 역할로 나뉘는 선택 지도" loading="lazy" />
   <figcaption>저장소 선택은 module 이름보다 읽기/쓰기 역할과 복구 모델로 결정하는 편이 안전합니다.</figcaption>
 </figure>
 
@@ -110,7 +110,7 @@ Exposed에는 query 가능한 durable history를 남기고, Kafka로는 같은 s
 서비스합니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-javers-part2-composition-map-01.png" alt="Exposed, Redis, Kafka persistence 조합과 향후 composite repository 방향을 설명하는 diagram" loading="lazy" />
+  <img src="/assets/bluetape4k-javers-part2-composition-map-01-ko.png" alt="Exposed, Redis, Kafka persistence 조합과 향후 composite repository 방향을 설명하는 diagram" loading="lazy" />
   <figcaption>현재 adapter들은 역할별로 제공됩니다. Exposed + Kafka 같은 fan-out 조합은 향후 composite repository로 제공할 예정입니다.</figcaption>
 </figure>
 

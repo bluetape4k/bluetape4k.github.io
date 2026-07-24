@@ -41,7 +41,7 @@ ReactorContext. Spring MVC/JDBC examples teach ThreadLocal or AOP boundaries. Th
 carriers. It uses the Ktor call as the request boundary.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/exposed-r2dbc-ktor-tenant-sequence-01.png" alt="Sequence diagram where a Ktor plugin validates X-TENANT-ID, stores a tenant enum in call attributes, and a tenant transaction helper switches the R2DBC schema" loading="lazy" />
+  <img src="/assets/exposed-r2dbc-ktor-tenant-sequence-01-en.png" alt="Sequence diagram where a Ktor plugin validates X-TENANT-ID, stores a tenant enum in call attributes, and a tenant transaction helper switches the R2DBC schema" loading="lazy" />
   <figcaption>Raw headers stop at the plugin. Schema selection receives a validated enum.</figcaption>
 </figure>
 
@@ -212,7 +212,7 @@ ThreadLocal, ReactorContext, and Ktor call attributes can solve similar problems
 Copy the invariant, not the carrier.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/exposed-r2dbc-ktor-routing-strategy-map-01.png" alt="Strategy map comparing how Spring JDBC and Ktor Exposed R2DBC solve tenant routing with different runtime boundaries" loading="lazy" />
+  <img src="/assets/exposed-r2dbc-ktor-routing-strategy-map-01-en.png" alt="Strategy map comparing how Spring JDBC and Ktor Exposed R2DBC solve tenant routing with different runtime boundaries" loading="lazy" />
   <figcaption>The carrier changes with the runtime. The invariant does not: validate, pass explicit values, and test isolation.</figcaption>
 </figure>
 

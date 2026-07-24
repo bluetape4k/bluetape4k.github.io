@@ -1,0 +1,204 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2240" height="1220" viewBox="0 0 2240 1220" role="img" aria-labelledby="title desc">
+  <title id="title">OCR 서비스 런타임 경계</title>
+  <desc id="desc">Vertical responsibility lanes for HTTP upload boundary, image preprocessing boundary, native OCR boundary, and response contract boundary.</desc>
+  <defs>
+    <marker id="arrow-blue" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto">
+      <path d="M 1 1 L 13 7 L 1 13 Z" fill="#3b6ea8" stroke="#3b6ea8" stroke-dasharray="none" style="stroke-dasharray:none"/>
+    </marker>
+    <marker id="arrow-teal" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto">
+      <path d="M 1 1 L 13 7 L 1 13 Z" fill="#26847f" stroke="#26847f" stroke-dasharray="none" style="stroke-dasharray:none"/>
+    </marker>
+    <marker id="arrow-amber" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto">
+      <path d="M 1 1 L 13 7 L 1 13 Z" fill="#a36b15" stroke="#a36b15" stroke-dasharray="none" style="stroke-dasharray:none"/>
+    </marker>
+    <marker id="arrow-red" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto">
+      <path d="M 1 1 L 13 7 L 1 13 Z" fill="#b34a47" stroke="#b34a47" stroke-dasharray="none" style="stroke-dasharray:none"/>
+    </marker>
+    <marker id="arrow-gray" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto">
+      <path d="M 1 1 L 13 7 L 1 13 Z" fill="#64748b" stroke="#64748b" stroke-dasharray="none" style="stroke-dasharray:none"/>
+    </marker>
+    <filter id="soft-shadow" x="-12%" y="-18%" width="124%" height="146%">
+      <feDropShadow dx="0" dy="9" stdDeviation="7" flood-color="#1f2f46" flood-opacity="0.13"/>
+    </filter>
+    <style>
+      .bg { fill: #f6f8fb; }
+      .title-text { font: 700 42px 'goorm Sans'; fill: #1f2937; }
+      .subtitle-text { font: 19px 'goorm Sans Code'; fill: #596579; }
+      .lane { stroke: #d4deea; stroke-width: 2; }
+      .lane-a { fill: #edf5ff; }
+      .lane-b { fill: #f1f8f4; }
+      .lane-c { fill: #fff7e6; }
+      .lane-d { fill: #f8f1f4; }
+      .lane-title { font: 700 29px 'goorm Sans'; fill: #253449; }
+      .lane-sub { font: 17px 'goorm Sans Code'; fill: #667085; }
+      .card { fill: #ffffff; stroke-width: 3; filter: url(#soft-shadow); }
+      .card-blue { stroke: #3b6ea8; }
+      .card-teal { stroke: #26847f; }
+      .card-amber { stroke: #a36b15; }
+      .card-red { stroke: #b34a47; }
+      .card-gray { stroke: #64748b; }
+      .card-title { font: 700 27px 'goorm Sans'; fill: #1f2937; }
+      .card-body { font: 18px 'goorm Sans Code'; fill: #4b5563; }
+      .dot-blue { fill: #3b6ea8; }
+      .dot-teal { fill: #26847f; }
+      .dot-amber { fill: #a36b15; }
+      .dot-red { fill: #b34a47; }
+      .dot-gray { fill: #64748b; }
+      .flow { fill: none; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+      .flow-blue { stroke: #3b6ea8; marker-end: url(#arrow-blue); }
+      .flow-teal { stroke: #26847f; marker-end: url(#arrow-teal); }
+      .flow-amber { stroke: #a36b15; marker-end: url(#arrow-amber); }
+      .flow-red { stroke: #b34a47; marker-end: url(#arrow-red); }
+      .flow-gray { stroke: #64748b; marker-end: url(#arrow-gray); }
+      .pill { fill: #ffffff; stroke-width: 2; }
+      .pill-blue { stroke: #a8c7e8; }
+      .pill-teal { stroke: #a8d7d2; }
+      .pill-amber { stroke: #e8c27a; }
+      .pill-red { stroke: #e5aaa7; }
+      .pill-gray { stroke: #cbd5e1; }
+      .pill-text { font: 700 17px 'goorm Sans Code'; fill: #344054; }
+      .legend-text { font: 16px 'goorm Sans Code'; fill: #53606f; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="2240" height="1220"/>
+  <text class="title-text" x="70" y="66">OCR 서비스 런타임 경계</text>
+  <text class="subtitle-text" x="70" y="98">잘못된 요청은 업로드 가드에서 멈추고, 유효한 이미지는 전처리와 네이티브 OCR을 거쳐 응답 상태로 이동합니다.</text>
+
+  <rect class="lane lane-a" x="50" y="130" width="430" height="950" rx="24"/>
+  <rect class="lane lane-b" x="620" y="130" width="430" height="950" rx="24"/>
+  <rect class="lane lane-c" x="1190" y="130" width="430" height="950" rx="24"/>
+  <rect class="lane lane-d" x="1760" y="130" width="430" height="950" rx="24"/>
+
+  <text class="lane-title" x="92" y="178">HTTP 업로드 경계</text>
+  <text class="lane-sub" x="92" y="206">어댑터 수준 요청 계약</text>
+  <text class="lane-title" x="662" y="178">이미지 전처리</text>
+  <text class="lane-sub" x="662" y="206">바이트, 헤더, 디코딩 픽셀</text>
+  <text class="lane-title" x="1232" y="178">네이티브 OCR 경계</text>
+  <text class="lane-sub" x="1232" y="206">호스트 런타임과 타임아웃 구간</text>
+  <text class="lane-title" x="1802" y="178">응답 계약</text>
+  <text class="lane-sub" x="1802" y="206">클라이언트가 읽을 수 있는 결과 형태</text>
+
+  <g id="card-client-upload" data-node="client-upload">
+    <rect class="card card-blue" id="rect-client-upload" x="100" y="235" width="330" height="130" rx="16"/>
+    <circle class="dot-blue" cx="134" cy="275" r="11"/>
+    <text class="card-title" x="158" y="279">클라이언트 업로드</text>
+    <text class="card-body" x="134" y="315">multipart 파일</text>
+    <text class="card-body" x="134" y="339">language=eng</text>
+  </g>
+
+  <g id="card-http-adapter" data-node="http-adapter">
+    <rect class="card card-blue" id="rect-http-adapter" x="100" y="455" width="330" height="130" rx="16"/>
+    <circle class="dot-blue" cx="134" cy="495" r="11"/>
+    <text class="card-title" x="158" y="499">HTTP 어댑터</text>
+    <text class="card-body" x="134" y="535">Spring 또는 Ktor</text>
+    <text class="card-body" x="134" y="559">서비스 요청 생성</text>
+  </g>
+
+  <g id="card-upload-guard" data-node="upload-guard">
+    <rect class="card card-blue" id="rect-upload-guard" x="670" y="235" width="330" height="130" rx="16"/>
+    <circle class="dot-blue" cx="704" cy="275" r="11"/>
+    <text class="card-title" x="728" y="279">업로드 가드</text>
+    <text class="card-body" x="704" y="315">빈 바이트, 최대 바이트</text>
+    <text class="card-body" x="704" y="339">유형 + 매직 바이트</text>
+  </g>
+
+  <g id="card-pixel-budget" data-node="pixel-budget">
+    <rect class="card card-blue" id="rect-pixel-budget" x="670" y="455" width="330" height="130" rx="16"/>
+    <circle class="dot-blue" cx="704" cy="495" r="11"/>
+    <text class="card-title" x="728" y="499">픽셀 예산</text>
+    <text class="card-body" x="704" y="535">너비 × 높이 제한</text>
+    <text class="card-body" x="704" y="559">범위 안에서만 디코딩</text>
+  </g>
+
+  <g id="card-preprocess" data-node="preprocess">
+    <rect class="card card-teal" id="rect-preprocess" x="670" y="675" width="330" height="130" rx="16"/>
+    <circle class="dot-teal" cx="704" cy="715" r="11"/>
+    <text class="card-title" x="728" y="719">전처리</text>
+    <text class="card-body" x="704" y="755">크기 조정 / 회색조</text>
+    <text class="card-body" x="704" y="779">OCR 비용 절감</text>
+  </g>
+
+  <g id="card-native-gate" data-node="native-gate">
+    <rect class="card card-amber" id="rect-native-gate" x="1240" y="455" width="330" height="130" rx="16"/>
+    <circle class="dot-amber" cx="1274" cy="495" r="11"/>
+    <text class="card-title" x="1298" y="499">네이티브 가드</text>
+    <text class="card-body" x="1274" y="535">활성화?</text>
+    <text class="card-body" x="1274" y="559">tessdata 준비?</text>
+  </g>
+
+  <g id="card-tesseract" data-node="tesseract">
+    <rect class="card card-teal" id="rect-tesseract" x="1240" y="675" width="330" height="130" rx="16"/>
+    <circle class="dot-teal" cx="1274" cy="715" r="11"/>
+    <text class="card-title" x="1298" y="719">Tesseract OCR</text>
+    <text class="card-body" x="1274" y="755">Semaphore(1)</text>
+    <text class="card-body" x="1274" y="779">withTimeout + IO</text>
+  </g>
+
+  <g id="card-bad-request" data-node="bad-request">
+    <rect class="card card-gray" id="rect-bad-request" x="1810" y="235" width="330" height="130" rx="16"/>
+    <circle class="dot-gray" cx="1844" cy="275" r="11"/>
+    <text class="card-title" x="1868" y="279">BAD_REQUEST</text>
+    <text class="card-body" x="1844" y="315">fallback 아님</text>
+    <text class="card-body" x="1844" y="339">잘못된 입력 거부</text>
+  </g>
+
+  <g id="card-unavailable" data-node="unavailable">
+    <rect class="card card-amber" id="rect-unavailable" x="1810" y="455" width="330" height="130" rx="16"/>
+    <circle class="dot-amber" cx="1844" cy="495" r="11"/>
+    <text class="card-title" x="1868" y="499">UNAVAILABLE</text>
+    <text class="card-body" x="1844" y="535">유효한 이미지</text>
+    <text class="card-body" x="1844" y="559">런타임 미준비</text>
+  </g>
+
+  <g id="card-completed" data-node="completed">
+    <rect class="card card-teal" id="rect-completed" x="1810" y="675" width="330" height="130" rx="16"/>
+    <circle class="dot-teal" cx="1844" cy="715" r="11"/>
+    <text class="card-title" x="1868" y="719">COMPLETED</text>
+    <text class="card-body" x="1844" y="755">텍스트 + 블록</text>
+    <text class="card-body" x="1844" y="779">동일한 응답 형태</text>
+  </g>
+
+  <g id="card-failed" data-node="failed">
+    <rect class="card card-red" id="rect-failed" x="1810" y="895" width="330" height="130" rx="16"/>
+    <circle class="dot-red" cx="1844" cy="935" r="11"/>
+    <text class="card-title" x="1868" y="939">FAILED</text>
+    <text class="card-body" x="1844" y="975">timeout</text>
+    <text class="card-body" x="1844" y="999">OCR 예외</text>
+  </g>
+
+  <path id="flow-upload-adapter" class="flow flow-blue" data-connector="upload-to-adapter" d="M 265 365 L 265 455"/>
+  <path id="flow-adapter-guard" class="flow flow-blue" data-connector="adapter-to-guard" d="M 430 520 L 670 520"/>
+  <path id="flow-guard-pixel" class="flow flow-blue" data-connector="guard-to-pixel" d="M 835 365 L 835 455"/>
+  <path id="flow-pixel-preprocess" class="flow flow-teal" data-connector="pixel-to-preprocess" d="M 835 585 L 835 675"/>
+  <path id="flow-guard-bad-request" class="flow flow-gray" data-connector="guard-to-bad-request" d="M 1000 300 L 1810 300"/>
+  <path id="flow-preprocess-native" class="flow flow-teal" data-connector="preprocess-to-native-gate" d="M 1000 740 L 1088 740 Q 1106 740 1106 722 L 1106 538 Q 1106 520 1124 520 L 1240 520"/>
+  <path id="flow-native-unavailable" class="flow flow-amber" data-connector="native-gate-to-unavailable" d="M 1570 520 L 1810 520"/>
+  <path id="flow-native-tesseract" class="flow flow-teal" data-connector="native-gate-to-tesseract" d="M 1405 585 L 1405 675"/>
+  <path id="flow-tesseract-completed" class="flow flow-teal" data-connector="tesseract-to-completed" d="M 1570 740 L 1810 740"/>
+  <path id="flow-tesseract-failed" class="flow flow-red" data-connector="tesseract-to-failed" d="M 1405 805 L 1405 858 Q 1405 876 1423 876 L 1708 876 Q 1726 876 1726 894 L 1726 942 Q 1726 960 1744 960 L 1810 960"/>
+
+  <rect class="pill pill-blue" x="468" y="472" width="168" height="36" rx="18"/>
+  <text class="pill-text" x="490" y="496">요청 바이트</text>
+  <rect class="pill pill-gray" x="1292" y="252" width="214" height="36" rx="18"/>
+  <text class="pill-text" x="1314" y="276">잘못된 입력에서 중단</text>
+  <rect class="pill pill-teal" x="1030" y="690" width="146" height="36" rx="18"/>
+  <text class="pill-text" x="1052" y="714">유효한 이미지</text>
+  <rect class="pill pill-amber" x="1608" y="472" width="154" height="36" rx="18"/>
+  <text class="pill-text" x="1630" y="496">런타임 공백</text>
+  <rect class="pill pill-red" x="1500" y="824" width="180" height="36" rx="18"/>
+  <text class="pill-text" x="1522" y="848">OCR 안전 실패</text>
+
+  <g id="legend">
+    <circle class="dot-blue" cx="90" cy="1168" r="8"/>
+    <text class="legend-text" x="108" y="1174">업로드 가드</text>
+    <circle class="dot-teal" cx="260" cy="1168" r="8"/>
+    <text class="legend-text" x="278" y="1174">유효한 OCR 경로</text>
+    <circle class="dot-amber" cx="475" cy="1168" r="8"/>
+    <text class="legend-text" x="493" y="1174">런타임 사용 불가</text>
+    <circle class="dot-red" cx="745" cy="1168" r="8"/>
+    <text class="legend-text" x="763" y="1174">런타임 실패</text>
+    <circle class="dot-gray" cx="970" cy="1168" r="8"/>
+    <text class="legend-text" x="988" y="1174">잘못된 요청, fallback 아님</text>
+  </g>
+</svg>

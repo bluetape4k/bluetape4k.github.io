@@ -1,0 +1,9 @@
+graph 1 6.7674 1.6944
+node document 0.50694 0.84722 1.0139 0.5 Document rounded box black lightgrey
+node entity 3.3681 0.84722 0.75 0.5 Entity rounded box black lightgrey
+node concept 6.3438 1.4444 0.84722 0.5 Concept rounded box black lightgrey
+node related 6.3438 0.25 0.75 0.5 Entity rounded box black lightgrey
+edge document entity 4 1.0185 0.84722 1.0185 0.84722 2.829 0.84722 2.829 0.84722 MENTIONS 2.0035 0.96181 solid black
+edge entity concept 7 3.3646 1.104 3.3646 1.2658 3.3646 1.4444 3.3646 1.4444 3.3646 1.4444 5.757 1.4444 5.757 1.4444 IS_A 4.8316 1.559 solid black
+edge entity related 7 3.744 0.84722 4.5429 0.84722 6.3368 0.84722 6.3368 0.84722 6.3368 0.84722 6.3368 0.66665 6.3368 0.66665 RELATED_TO 4.8316 0.36458 solid black
+stop

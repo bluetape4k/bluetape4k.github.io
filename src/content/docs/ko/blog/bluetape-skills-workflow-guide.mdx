@@ -63,7 +63,7 @@ bluetape4k-exposed의 README에 새 cache 사용 예제를 추가해 줘.
 기능 추가가 섞였다면 workflow를 둘로 나눈다. 작업에 붙인 이름이 아니라 위험도와 검증 범위가 분류 기준이다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape-workflow-type-router-01.png" alt="하나의 사용자 요청이 bluetape-workflow에서 위험과 증거 범위에 따라 Full Feature, Fast Track, Bug Fix, Code Review, Maintenance, Publish, Self Improve 일곱 유형으로 분기되는 구조" loading="lazy" />
+  <img src="/assets/bluetape-workflow-type-router-01-ko.png" alt="하나의 사용자 요청이 bluetape-workflow에서 위험과 증거 범위에 따라 Full Feature, Fast Track, Bug Fix, Code Review, Maintenance, Publish, Self Improve 일곱 유형으로 분기되는 구조" loading="lazy" />
   <figcaption>변경의 위험과 필요한 증거를 기준으로 가장 가벼우면서도 안전한 실행 경로를 고른다.</figcaption>
 </figure>
 
@@ -248,7 +248,7 @@ Type A Full Feature에서 특히 중요한 지점은 `2-R`, `3-R`, `6-R`이다. 
 | `6-R` · Pre-PR Review | 현재 branch diff, 테스트와 진단 결과, 문서, module별 변경과 PR evidence | 현재 diff의 최신 통합 review가 `P0=0`, `P1=0` |
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape-workflow-7-tier-review-01.png" alt="2-R Spec, 3-R Plan, 6-R Pre-PR gate가 Performance, Stability, Security, Operator와 Ops, Developer와 API, User와 Caller 여섯 독립 관점을 거쳐 main session에서 통합되고, P0와 P1이 0이 아니면 수정과 검증 및 영향받은 review를 반복하는 7-Tier review" loading="lazy" />
+  <img src="/assets/bluetape-workflow-7-tier-review-01-ko.png" alt="2-R Spec, 3-R Plan, 6-R Pre-PR gate가 Performance, Stability, Security, Operator와 Ops, Developer와 API, User와 Caller 여섯 독립 관점을 거쳐 main session에서 통합되고, P0와 P1이 0이 아니면 수정과 검증 및 영향받은 review를 반복하는 7-Tier review" loading="lazy" />
   <figcaption>2-R, 3-R, 6-R은 같은 7-Tier engine을 사용한다. Main session의 최신 통합 결과가 P0=0, P1=0일 때만 다음 gate가 열린다.</figcaption>
 </figure>
 
@@ -278,7 +278,7 @@ review 관점을 다시 열어 main session에서 재통합한다. Gate의 통�
 Router가 작업 유형을 골랐다고 실행 방법까지 같아지는 것은 아니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape-workflow-execution-lanes-01.png" alt="Full Feature, Fast Track, Bug Fix, Code Review, Maintenance, Publish, Self Improve 일곱 작업 유형이 각각 설계 review, 좁은 변경, RED와 GREEN, read-only 판정, source-first parity, irreversible hold, benchmark feedback loop로 진행되는 비교" loading="lazy" />
+  <img src="/assets/bluetape-workflow-execution-lanes-01-ko.png" alt="Full Feature, Fast Track, Bug Fix, Code Review, Maintenance, Publish, Self Improve 일곱 작업 유형이 각각 설계 review, 좁은 변경, RED와 GREEN, read-only 판정, source-first parity, irreversible hold, benchmark feedback loop로 진행되는 비교" loading="lazy" />
   <figcaption>같은 router에서 시작해도 유형마다 단계 순서, 강조하는 증거, 실패했을 때 되돌아가는 지점이 다르다.</figcaption>
 </figure>
 

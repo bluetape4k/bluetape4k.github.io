@@ -1,0 +1,10 @@
+graph 1 6.7986 1.6944
+node user 0.375 0.84722 0.75 0.5 User rounded box black lightgrey
+node product 3.2674 1.4444 0.80556 0.5 Product rounded box black lightgrey
+node followee 3.2674 0.25 0.75 0.5 User rounded box black lightgrey
+node candidate 6.3073 0.84722 0.98264 0.5 Candidate rounded box black lightgrey
+edge user product 7 0.36806 1.104 0.36806 1.2658 0.36806 1.4444 0.36806 1.4444 0.36806 1.4444 2.6982 1.4444 2.6982 1.4444 PURCHASED 1.8073 1.5035 solid black
+edge user followee 7 0.75631 0.84722 1.501 0.84722 3.0764 0.84722 3.0764 0.84722 3.0764 0.84722 3.0764 0.66665 3.0764 0.66665 FOLLOWS 1.8073 0.46181 solid black
+edge product candidate 7 3.4514 1.1917 3.4514 1.0795 3.4514 0.97222 3.4514 0.97222 3.4514 0.97222 5.6499 0.97222 5.6499 0.97222 "co-buyer score" 4.7431 1.5035 solid black
+edge followee candidate 7 3.2708 0.5027 3.2708 0.61497 3.2708 0.72222 3.2708 0.72222 3.2708 0.72222 5.6528 0.72222 5.6528 0.72222 "mutual follows" 4.7431 0.46181 solid black
+stop
