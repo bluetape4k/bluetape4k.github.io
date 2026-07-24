@@ -61,7 +61,7 @@ thread count, then added indexes for the JOIN target table.
 | Highest point after stronger measurement settings | 45,431 ops/sec |
 
 <figure class="bt4k-architecture">
-  <img src="/assets/virtual-threads-part3-exposed-jdbc-01.png" alt="General Exposed JDBC benchmark throughput chart from baseline to tuned settings" loading="lazy" />
+  <img src="/assets/virtual-threads-part3-exposed-jdbc-01-en.png" alt="General Exposed JDBC benchmark throughput chart from baseline to tuned settings" loading="lazy" />
   <figcaption>The ordinary Exposed JDBC path improved from 25.4k to 45.4k ops/sec after pool/thread tuning and JOIN indexes.</figcaption>
 </figure>
 
@@ -136,7 +136,7 @@ The MySQL seed benchmark was especially wide. At `dataSize=100000`, JDBC reached
 For the large end-to-end job, the result is easier to read.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/virtual-threads-part3-benchmark-01.png" alt="JDBC vs R2DBC batch benchmark chart for large end-to-end jobs" loading="lazy" />
+  <img src="/assets/virtual-threads-part3-benchmark-01-en.png" alt="JDBC vs R2DBC batch benchmark chart for large end-to-end jobs" loading="lazy" />
   <figcaption>Large end-to-end batch jobs favored JDBC + Virtual Threads by about 8.4-8.8x on MySQL and 4.9-5.2x on PostgreSQL.</figcaption>
 </figure>
 
