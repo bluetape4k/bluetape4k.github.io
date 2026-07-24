@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900">
+  <style>
+    .title { font-family: 'goorm Sans', 'Apple SD Gothic Neo', cursive; fill: #1e293b; font-size: 36px; }
+    .subtitle, .label, .small, .gate { font-family: 'goorm Sans Code', 'SFMono-Regular', Consolas, monospace; }
+    .subtitle { fill: #475569; font-size: 15px; }
+    .label { fill: #27364a; font-size: 15px; }
+    .small { fill: #526174; font-size: 12px; }
+    .gate { fill: #1e293b; font-size: 18px; font-weight: 700; }
+  </style>
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#64748b" flood-opacity="0.15"/>
+    </filter>
+    <marker id="arrow-blue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 1 L 11 6 L 0 11 Z" fill="#4f7dc9"/>
+    </marker>
+    <marker id="arrow-red" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 1 L 11 6 L 0 11 Z" fill="#d25b63"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 1 L 11 6 L 0 11 Z" fill="#45a66f"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="#f8fafc"/>
+  <rect x="24" y="24" width="1552" height="852" rx="28" fill="#ffffff" stroke="#dbe5f1" stroke-width="2"/>
+  <text x="58" y="78" class="title">하나의 7-Tier engine이 2-R, 3-R, 6-R을 지킨다</text>
+  <text x="60" y="110" class="subtitle">여섯 독립 관점이 서로 다른 실패를 찾고, main session이 통합해 gate를 책임진다.</text>
+
+  <!-- top gates -->
+  <g filter="url(#shadow)">
+    <rect x="150" y="140" width="330" height="74" rx="15" fill="#eef6ff" stroke="#4f7dc9" stroke-width="2"/>
+    <rect x="635" y="140" width="330" height="74" rx="15" fill="#eef6ff" stroke="#4f7dc9" stroke-width="2"/>
+    <rect x="1120" y="140" width="330" height="74" rx="15" fill="#eef6ff" stroke="#4f7dc9" stroke-width="2"/>
+  </g>
+  <text x="315" y="174" text-anchor="middle" class="gate">2-R / Spec</text>
+  <text x="315" y="197" text-anchor="middle" class="small">설계와 acceptance contract</text>
+  <text x="800" y="174" text-anchor="middle" class="gate">3-R / Plan</text>
+  <text x="800" y="197" text-anchor="middle" class="small">mapping, 순서, 증거, hazard</text>
+  <text x="1285" y="174" text-anchor="middle" class="gate">6-R / Pre-PR</text>
+  <text x="1285" y="197" text-anchor="middle" class="small">현재 diff와 fresh evidence</text>
+
+  <!-- gates to launch -->
+  <g fill="none" stroke="#4f7dc9" stroke-width="2.5" marker-end="url(#arrow-blue)">
+    <path class="connector" d="M 315 214 V 236 Q 315 248 327 248 H 708 Q 720 248 720 260 V 270"/>
+    <path class="connector" d="M 800 214 V 270"/>
+    <path class="connector" d="M 1285 214 V 236 Q 1285 248 1273 248 H 892 Q 880 248 880 260 V 270"/>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="620" y="270" width="360" height="64" rx="16" fill="#faf5ff" stroke="#8a6fd1" stroke-width="2"/>
+  </g>
+  <text x="800" y="297" text-anchor="middle" class="gate">여섯 독립 관점 실행</text>
+  <text x="800" y="319" text-anchor="middle" class="small">병렬 관점, 독립 findings</text>
+
+  <!-- fan-out bus -->
+  <g fill="none" stroke="#4f7dc9" stroke-width="2.2" marker-end="url(#arrow-blue)">
+    <path class="connector" d="M 710 334 V 344 Q 710 356 698 356 H 272 Q 260 356 260 368 V 390"/>
+    <path class="connector" d="M 746 334 V 352 Q 746 364 734 364 H 488 Q 476 364 476 376 V 390"/>
+    <path class="connector" d="M 782 334 V 360 Q 782 372 770 372 H 704 Q 692 372 692 384 V 390"/>
+    <path class="connector" d="M 818 334 V 360 Q 818 372 830 372 H 896 Q 908 372 908 384 V 390"/>
+    <path class="connector" d="M 854 334 V 352 Q 854 364 866 364 H 1112 Q 1124 364 1124 376 V 390"/>
+    <path class="connector" d="M 890 334 V 344 Q 890 356 902 356 H 1328 Q 1340 356 1340 368 V 390"/>
+  </g>
+
+  <!-- six lens cards -->
+  <g filter="url(#shadow)">
+    <rect x="160" y="390" width="200" height="84" rx="15" fill="#eef6ff" stroke="#7aa7e8"/>
+    <rect x="376" y="390" width="200" height="84" rx="15" fill="#f0fdf4" stroke="#6db88a"/>
+    <rect x="592" y="390" width="200" height="84" rx="15" fill="#fef2f2" stroke="#d25b63"/>
+    <rect x="808" y="390" width="200" height="84" rx="15" fill="#fff7ed" stroke="#d89132"/>
+    <rect x="1024" y="390" width="200" height="84" rx="15" fill="#f0fdfa" stroke="#2b9c93"/>
+    <rect x="1240" y="390" width="200" height="84" rx="15" fill="#faf5ff" stroke="#8a6fd1"/>
+  </g>
+  <text x="260" y="426" text-anchor="middle" class="gate">Performance</text><text x="260" y="451" text-anchor="middle" class="small">비용, scale, latency</text>
+  <text x="476" y="426" text-anchor="middle" class="gate">Stability</text><text x="476" y="451" text-anchor="middle" class="small">실패, concurrency</text>
+  <text x="692" y="426" text-anchor="middle" class="gate">Security</text><text x="692" y="451" text-anchor="middle" class="small">trust와 exposure</text>
+  <text x="908" y="426" text-anchor="middle" class="gate">Operator / Ops</text><text x="908" y="451" text-anchor="middle" class="small">배포와 관측</text>
+  <text x="1124" y="426" text-anchor="middle" class="gate">Developer / API</text><text x="1124" y="451" text-anchor="middle" class="small">contract와 오용</text>
+  <text x="1340" y="426" text-anchor="middle" class="gate">User / Caller</text><text x="1340" y="451" text-anchor="middle" class="small">결과와 명확성</text>
+
+  <!-- lenses to integration -->
+  <g fill="none" stroke="#4f7dc9" stroke-width="2.2" marker-end="url(#arrow-blue)">
+    <path class="connector" d="M 260 474 V 548 Q 260 560 272 560 H 585"/>
+    <path class="connector" d="M 476 474 V 518 Q 476 530 488 530 H 585"/>
+    <path class="connector" d="M 692 474 V 532"/>
+    <path class="connector" d="M 908 474 V 532"/>
+    <path class="connector" d="M 1124 474 V 518 Q 1124 530 1112 530 H 1015"/>
+    <path class="connector" d="M 1340 474 V 548 Q 1340 560 1328 560 H 1015"/>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="585" y="532" width="430" height="82" rx="16" fill="#e8f1ff" stroke="#4f7dc9" stroke-width="2.5"/>
+  </g>
+  <text x="800" y="565" text-anchor="middle" class="gate">Main-session 통합</text>
+  <text x="800" y="590" text-anchor="middle" class="small">중복 제거, 충돌 해결, P0 / P1 / P2 / P3 정규화</text>
+
+  <!-- decision and branches -->
+  <path class="connector" d="M 800 614 V 644" fill="none" stroke="#4f7dc9" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+  <g filter="url(#shadow)">
+    <rect x="625" y="644" width="350" height="70" rx="28" fill="#fffaf0" stroke="#d89132" stroke-width="2"/>
+  </g>
+  <text x="800" y="686" text-anchor="middle" class="gate">P0 = 0 그리고 P1 = 0?</text>
+
+  <!-- pass branch -->
+  <path class="connector" d="M 975 679 H 1090" fill="none" stroke="#45a66f" stroke-width="3" marker-end="url(#arrow-green)"/>
+  <text x="1032" y="666" text-anchor="middle" class="small">YES</text>
+  <g filter="url(#shadow)">
+    <rect x="1090" y="644" width="330" height="70" rx="16" fill="#f0fdf4" stroke="#45a66f" stroke-width="2"/>
+  </g>
+  <text x="1255" y="673" text-anchor="middle" class="gate">다음 gate 열기</text>
+  <text x="1255" y="696" text-anchor="middle" class="small">fresh P0 = 0, P1 = 0 기록</text>
+
+  <!-- blocker branch and feedback -->
+  <path class="connector" d="M 625 679 H 510" fill="none" stroke="#d25b63" stroke-width="3" marker-end="url(#arrow-red)"/>
+  <text x="567" y="666" text-anchor="middle" class="small">NO</text>
+  <g filter="url(#shadow)">
+    <rect x="180" y="644" width="330" height="70" rx="16" fill="#fef2f2" stroke="#d25b63" stroke-width="2"/>
+    <rect x="180" y="760" width="330" height="70" rx="16" fill="#fef2f2" stroke="#d25b63" stroke-width="2"/>
+    <rect x="635" y="760" width="330" height="70" rx="16" fill="#faf5ff" stroke="#8a6fd1" stroke-width="2"/>
+  </g>
+  <text x="345" y="673" text-anchor="middle" class="gate">blocker 수정</text>
+  <text x="345" y="696" text-anchor="middle" class="small">P0 / P1은 다음 작업을 막음</text>
+  <path class="connector" d="M 345 714 V 760" fill="none" stroke="#d25b63" stroke-width="3" marker-end="url(#arrow-red)"/>
+  <text x="345" y="789" text-anchor="middle" class="gate">검증 재실행</text>
+  <text x="345" y="812" text-anchor="middle" class="small">수정된 동작 증명</text>
+  <path class="connector" d="M 510 795 H 635" fill="none" stroke="#d25b63" stroke-width="3" marker-end="url(#arrow-red)"/>
+  <text x="800" y="789" text-anchor="middle" class="gate">영향받은 review lane</text>
+  <text x="800" y="812" text-anchor="middle" class="small">바뀐 전제를 모두 다시 열기</text>
+  <path class="connector" d="M 965 795 H 1498 Q 1510 795 1510 783 V 598 Q 1510 586 1498 586 H 1015" fill="none" stroke="#d25b63" stroke-width="3" marker-end="url(#arrow-red)"/>
+  <text x="1490" y="690" text-anchor="middle" class="small" transform="rotate(-90 1490 690)">영향 lane 뒤 재통합</text>
+
+  <!-- legend -->
+  <circle cx="1120" cy="838" r="7" fill="#4f7dc9"/><text x="1136" y="843" class="small">review 흐름</text>
+  <circle cx="1240" cy="838" r="7" fill="#d25b63"/><text x="1256" y="843" class="small">blocker 반복</text>
+  <circle cx="1372" cy="838" r="7" fill="#45a66f"/><text x="1388" y="843" class="small">gate 통과</text>
+  <text x="800" y="862" text-anchor="middle" class="small">통합이 일곱 번째 tier이며, 별도 reviewer가 아니라 main session이 책임진다.</text>
+</svg>

@@ -54,12 +54,12 @@
 
   <!-- fan-out bus -->
   <g fill="none" stroke="#4f7dc9" stroke-width="2.2" marker-end="url(#arrow-blue)">
-    <path class="connector" d="M 800 334 V 348 Q 800 360 788 360 H 272 Q 260 360 260 372 V 390"/>
-    <path class="connector" d="M 800 334 V 348 Q 800 360 788 360 H 488 Q 476 360 476 372 V 390"/>
-    <path class="connector" d="M 800 334 V 348 Q 800 360 788 360 H 704 Q 692 360 692 372 V 390"/>
-    <path class="connector" d="M 800 334 V 348 Q 800 360 812 360 H 896 Q 908 360 908 372 V 390"/>
-    <path class="connector" d="M 800 334 V 348 Q 800 360 812 360 H 1112 Q 1124 360 1124 372 V 390"/>
-    <path class="connector" d="M 800 334 V 348 Q 800 360 812 360 H 1328 Q 1340 360 1340 372 V 390"/>
+    <path class="connector" d="M 710 334 V 344 Q 710 356 698 356 H 272 Q 260 356 260 368 V 390"/>
+    <path class="connector" d="M 746 334 V 352 Q 746 364 734 364 H 488 Q 476 364 476 376 V 390"/>
+    <path class="connector" d="M 782 334 V 360 Q 782 372 770 372 H 704 Q 692 372 692 384 V 390"/>
+    <path class="connector" d="M 818 334 V 360 Q 818 372 830 372 H 896 Q 908 372 908 384 V 390"/>
+    <path class="connector" d="M 854 334 V 352 Q 854 364 866 364 H 1112 Q 1124 364 1124 376 V 390"/>
+    <path class="connector" d="M 890 334 V 344 Q 890 356 902 356 H 1328 Q 1340 356 1340 368 V 390"/>
   </g>
 
   <!-- six lens cards -->
@@ -80,12 +80,12 @@
 
   <!-- lenses to integration -->
   <g fill="none" stroke="#4f7dc9" stroke-width="2.2" marker-end="url(#arrow-blue)">
-    <path class="connector" d="M 260 474 V 494 Q 260 506 272 506 H 788 Q 800 506 800 518 V 532"/>
-    <path class="connector" d="M 476 474 V 494 Q 476 506 488 506 H 788 Q 800 506 800 518 V 532"/>
-    <path class="connector" d="M 692 474 V 494 Q 692 506 704 506 H 788 Q 800 506 800 518 V 532"/>
-    <path class="connector" d="M 908 474 V 494 Q 908 506 896 506 H 812 Q 800 506 800 518 V 532"/>
-    <path class="connector" d="M 1124 474 V 494 Q 1124 506 1112 506 H 812 Q 800 506 800 518 V 532"/>
-    <path class="connector" d="M 1340 474 V 494 Q 1340 506 1328 506 H 812 Q 800 506 800 518 V 532"/>
+    <path class="connector" d="M 260 474 V 548 Q 260 560 272 560 H 585"/>
+    <path class="connector" d="M 476 474 V 518 Q 476 530 488 530 H 585"/>
+    <path class="connector" d="M 692 474 V 532"/>
+    <path class="connector" d="M 908 474 V 532"/>
+    <path class="connector" d="M 1124 474 V 518 Q 1124 530 1112 530 H 1015"/>
+    <path class="connector" d="M 1340 474 V 548 Q 1340 560 1328 560 H 1015"/>
   </g>
   <g filter="url(#shadow)">
     <rect x="585" y="532" width="430" height="82" rx="16" fill="#e8f1ff" stroke="#4f7dc9" stroke-width="2.5"/>

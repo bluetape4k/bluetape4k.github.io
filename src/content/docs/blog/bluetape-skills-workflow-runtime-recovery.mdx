@@ -86,7 +86,7 @@ and collecting their proof. The right side follows one lane through normal execu
 replacement.
 
 <figure class="bt4k-architecture" data-diagram-title="Run and lane state and recovery model">
-  <img src="/assets/bluetape-skills-run-lane-model-01.png" alt="One run dividing work across write-ko, write-en, and verify-site lanes, then collecting required checks, component evidence, and main verification, while a stalled lane is replaced by a distinct lane with a new identity and recorded lineage" loading="lazy" />
+  <img src="/assets/bluetape-skills-run-lane-model-01-en.png" alt="One run dividing work across write-ko, write-en, and verify-site lanes, then collecting required checks, component evidence, and main verification, while a stalled lane is replaced by a distinct lane with a new identity and recorded lineage" loading="lazy" />
   <figcaption>A run owns the complete outcome, while each lane owns bounded work. Lanes may run in parallel or in dependency order, but a terminal lane state does not complete the run. Required checks, component evidence, and main verification must also be present. Replacement creates a new lane and agent identity with explicit parent lineage, and v1.1.0 permits at most one replacement per lane.</figcaption>
 </figure>
 
@@ -239,7 +239,7 @@ damaged.
 ## The Runtime Records; Codex Executes
 
 <figure class="bt4k-architecture" data-diagram-title="Responsibility boundary between Codex and the workflow runtime">
-  <img src="/assets/bluetape-skills-native-runtime-boundary-01.png" alt="Responsibility boundary in which the Codex main session directly runs native agent tools and uses the guarded evidence runtime to record intent and observed evidence in the manifest, receipt, and topology" loading="lazy" />
+  <img src="/assets/bluetape-skills-native-runtime-boundary-01-en.png" alt="Responsibility boundary in which the Codex main session directly runs native agent tools and uses the guarded evidence runtime to record intent and observed evidence in the manifest, receipt, and topology" loading="lazy" />
   <figcaption>The Codex main session performs native actions; the runtime records their intent and observed results as bounded evidence.</figcaption>
 </figure>
 

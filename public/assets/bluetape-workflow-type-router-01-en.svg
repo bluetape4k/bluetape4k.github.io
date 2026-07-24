@@ -24,13 +24,13 @@
 
   <!-- Primary route connectors -->
   <path d="M 600 186 V 228" fill="none" stroke="#4f7dc9" stroke-width="3" marker-end="url(#arrow-blue)"/>
-  <path class="connector" d="M 600 338 V 378 Q 600 390 588 390 H 130 Q 118 390 118 402 V 438" fill="none" stroke="#4f7dc9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
-  <path class="connector" d="M 600 338 V 378 Q 600 390 588 390 H 291 Q 279 390 279 402 V 438" fill="none" stroke="#4f7dc9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
-  <path class="connector" d="M 600 338 V 378 Q 600 390 588 390 H 452 Q 440 390 440 402 V 438" fill="none" stroke="#4f7dc9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <path class="connector" d="M 500 338 V 358 Q 500 370 488 370 H 130 Q 118 370 118 382 V 438" fill="none" stroke="#4f7dc9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <path class="connector" d="M 535 338 V 366 Q 535 378 523 378 H 291 Q 279 378 279 390 V 438" fill="none" stroke="#4f7dc9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <path class="connector" d="M 570 338 V 374 Q 570 386 558 386 H 452 Q 440 386 440 398 V 438" fill="none" stroke="#4f7dc9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
   <path class="connector" d="M 600 338 V 438" fill="none" stroke="#4f7dc9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
-  <path class="connector" d="M 600 338 V 378 Q 600 390 612 390 H 750 Q 762 390 762 402 V 438" fill="none" stroke="#4f7dc9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
-  <path class="connector" d="M 600 338 V 378 Q 600 390 612 390 H 911 Q 923 390 923 402 V 438" fill="none" stroke="#4f7dc9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
-  <path class="connector" d="M 600 338 V 378 Q 600 390 612 390 H 1070 Q 1082 390 1082 402 V 438" fill="none" stroke="#4f7dc9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <path class="connector" d="M 630 338 V 374 Q 630 386 642 386 H 750 Q 762 386 762 398 V 438" fill="none" stroke="#4f7dc9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <path class="connector" d="M 665 338 V 366 Q 665 378 677 378 H 911 Q 923 378 923 390 V 438" fill="none" stroke="#4f7dc9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+  <path class="connector" d="M 700 338 V 358 Q 700 370 712 370 H 1070 Q 1082 370 1082 382 V 438" fill="none" stroke="#4f7dc9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
 
   <!-- Request and router -->
   <g filter="url(#shadow)">
