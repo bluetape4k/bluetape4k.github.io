@@ -42,7 +42,7 @@ ReactorContext를 보여주고, Spring MVC/JDBC 예제는 ThreadLocal이나 AOP 
 그대로 복사하지 않습니다. Ktor에는 Ktor답게 call 단위 상태가 있습니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/exposed-r2dbc-ktor-tenant-sequence-01.png" alt="Ktor plugin이 X-TENANT-ID를 검증하고 call attributes에 tenant enum을 저장한 뒤 tenant transaction helper가 R2DBC schema를 전환하는 sequence diagram" loading="lazy" />
+  <img src="/assets/exposed-r2dbc-ktor-tenant-sequence-01-ko.png" alt="Ktor plugin이 X-TENANT-ID를 검증하고 call attributes에 Tenants.Tenant를 저장한 뒤 tenant transaction helper가 R2DBC schema를 전환하는 sequence diagram" loading="lazy" />
   <figcaption>raw header는 plugin에서 끝납니다. schema 선택에는 검증된 enum만 넘어갑니다.</figcaption>
 </figure>
 
@@ -218,7 +218,7 @@ ThreadLocal, ReactorContext, Ktor call attributes는 같은 역할을 할 수 �
 도구가 아니라 불변식입니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/exposed-r2dbc-ktor-routing-strategy-map-01.png" alt="Spring JDBC workshop과 Ktor Exposed R2DBC workshop이 tenant routing 문제를 서로 다른 runtime boundary로 푸는 전략 비교 map" loading="lazy" />
+  <img src="/assets/exposed-r2dbc-ktor-routing-strategy-map-01-ko.png" alt="Spring JDBC workshop과 Ktor Exposed R2DBC workshop이 tenant routing 문제를 서로 다른 runtime boundary로 푸는 전략 비교 map" loading="lazy" />
   <figcaption>carrier는 runtime에 맞게 바뀝니다. 불변식은 같습니다. 검증하고, 명시적으로 넘기고, 격리를 테스트합니다.</figcaption>
 </figure>
 
