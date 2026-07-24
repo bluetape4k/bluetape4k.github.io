@@ -90,7 +90,7 @@
   <g filter="url(#shadow)" aria-label="감사 이력 조회">
     <rect x="590" y="866" width="670" height="78" rx="20" fill="#17342f" stroke="#82b366" stroke-width="2" />
     <text class="card-title" x="925" y="900" text-anchor="middle">감사 이력 조회</text>
-    <text class="small" x="925" y="927" text-anchor="middle">metadata 결합 · 조건 pushdown · sequence 역순 정렬 · snapshot 복원</text>
+    <text class="small" x="925" y="927" text-anchor="middle">metadata 결합 · 조건 pushdown · commit 순서 역정렬 · snapshot 복원</text>
   </g>
 
   <circle cx="110" cy="920" r="7" fill="#58a6c9" />
