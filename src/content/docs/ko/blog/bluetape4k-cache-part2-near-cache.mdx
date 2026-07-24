@@ -24,7 +24,7 @@ Remote cache는 좋은 출발점입니다. 여러 JVM이 같은 값을 보고, T
 Near Cache는 이 차이를 인정하는 설계입니다. 자주 읽는 값은 JVM 안 L1에 두고, 공유 상태와 무효화는 Redis 같은 L2와 protocol에 맡깁니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/cache-series-near-cache-flow-01.png" alt="Near cache read, write, and invalidation flow with local L1 cache and Redis L2 cache" loading="lazy" />
+  <img src="/assets/cache-series-near-cache-flow-01-ko.png" alt="Near cache read, write, and invalidation flow with local L1 cache and Redis L2 cache" loading="lazy" />
   <figcaption>L1 hit는 JVM 안에서 끝나고, miss와 write만 L2로 갑니다. 핵심은 invalidation입니다.</figcaption>
 </figure>
 
@@ -99,7 +99,7 @@ RESP3 방식의 매력은 서버가 key tracking에 참여한다는 점입니다
 [Benchmark.ko.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/cache/cache-lettuce/Benchmark.ko.md)
 
 <figure class="bt4k-architecture">
-  <img src="/assets/cache-series-benchmark-chart-01.png" alt="Lettuce Near Cache benchmark summary showing L1 hit far above Redis-backed operations" loading="lazy" />
+  <img src="/assets/cache-series-benchmark-chart-01-ko.png" alt="Lettuce Near Cache benchmark summary showing L1 hit far above Redis-backed operations" loading="lazy" />
   <figcaption>L1 hit은 Redis-backed operation과 아예 다른 체급입니다.</figcaption>
 </figure>
 

@@ -34,7 +34,7 @@ Near Cache accepts that difference. Frequently read values stay in an in-JVM L1 
 shared state and invalidation stay with an L2 cache and its protocol.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/cache-series-near-cache-flow-01.png" alt="Near cache read, write, and invalidation flow with local L1 cache and Redis L2 cache" loading="lazy" />
+  <img src="/assets/cache-series-near-cache-flow-01-en.png" alt="Near cache read, write, and invalidation flow with local L1 cache and Redis L2 cache" loading="lazy" />
   <figcaption>L1 hits finish inside the JVM. Misses and writes go to L2. The hard part is invalidation.</figcaption>
 </figure>
 
@@ -115,7 +115,7 @@ Related source:
 [Benchmark.ko.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/cache/cache-lettuce/Benchmark.ko.md)
 
 <figure class="bt4k-architecture">
-  <img src="/assets/cache-series-benchmark-chart-01.png" alt="Lettuce Near Cache benchmark summary showing L1 hit far above Redis-backed operations" loading="lazy" />
+  <img src="/assets/cache-series-benchmark-chart-01-en.png" alt="Lettuce Near Cache benchmark summary showing L1 hit far above Redis-backed operations" loading="lazy" />
   <figcaption>L1 hits are in a different weight class from Redis-backed operations.</figcaption>
 </figure>
 

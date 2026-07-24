@@ -28,7 +28,7 @@ Exposed repository 앞에 캐시를 붙이는 일은 처음엔 간단해 보입�
 `bluetape4k-exposed`는 이 문제를 repository 계약과 cache strategy로 나눠 다룹니다. 캐시를 어디에 둘지, DB write와 어떤 순서로 묶을지, 실패를 어떻게 볼지 분리해서 선택하게 합니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/cache-series-exposed-strategies-01.png" alt="JdbcCacheRepository strategy map with Redisson map loader, map writer, and Exposed DB" loading="lazy" />
+  <img src="/assets/cache-series-exposed-strategies-01-ko.png" alt="JdbcCacheRepository strategy map with Redisson map loader, map writer, and Exposed DB" loading="lazy" />
   <figcaption>`JdbcCacheRepository`의 핵심은 Redisson map에 loader와 writer를 붙여 read/write 계약을 바꾸는 것입니다.</figcaption>
 </figure>
 
@@ -227,7 +227,7 @@ Write-behind는 쓰기 latency를 낮출 수 있습니다. 대신 설계해야 �
 `exposed-workshop` 11장의 `04-benchmark`는 cache strategy를 실제 수치로 비교합니다. `AverageTime` 기준이라 낮을수록 좋습니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/cache-series-exposed-benchmark-01.png" alt="Exposed cache benchmark chart comparing no cache, read-through, and write-through latency" loading="lazy" />
+  <img src="/assets/cache-series-exposed-benchmark-01-ko.png" alt="Exposed cache benchmark chart comparing no cache, read-through, and write-through latency" loading="lazy" />
   <figcaption>읽기 중심 워크로드에서는 cache strategy 차이가 큽니다. 쓰기 중심에서는 DB write 자체가 다시 주인공이 됩니다.</figcaption>
 </figure>
 

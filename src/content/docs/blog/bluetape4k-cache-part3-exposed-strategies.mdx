@@ -38,7 +38,7 @@ keeps separate choices for where the cache lives, how it is tied to database wri
 failure should mean.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/cache-series-exposed-strategies-01.png" alt="JdbcCacheRepository strategy map with Redisson map loader, map writer, and Exposed DB" loading="lazy" />
+  <img src="/assets/cache-series-exposed-strategies-01-en.png" alt="JdbcCacheRepository strategy map with Redisson map loader, map writer, and Exposed DB" loading="lazy" />
   <figcaption>The key idea in `JdbcCacheRepository` is attaching a loader and writer to a Redisson map so read/write contracts change at the map boundary.</figcaption>
 </figure>
 
@@ -255,7 +255,7 @@ write-through, or write-behind.
 uses `AverageTime`; lower is better.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/cache-series-exposed-benchmark-01.png" alt="Exposed cache benchmark chart comparing no cache, read-through, and write-through latency" loading="lazy" />
+  <img src="/assets/cache-series-exposed-benchmark-01-en.png" alt="Exposed cache benchmark chart comparing no cache, read-through, and write-through latency" loading="lazy" />
   <figcaption>Read-heavy workloads show large cache-strategy differences. In write-heavy workloads, the DB write becomes the main character again.</figcaption>
 </figure>
 

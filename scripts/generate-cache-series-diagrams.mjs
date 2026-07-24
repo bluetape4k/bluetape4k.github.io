@@ -27,10 +27,10 @@ function header(width, height, title, subtitle) {
 <desc id="desc">${esc(subtitle)}</desc>
 <defs>
   <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="7" stdDeviation="8" flood-color="#203040" flood-opacity="0.10"/></filter>
-  <marker id="arrowBlue" markerWidth="10" markerHeight="9" refX="8.5" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M1,1 L8.5,4.5 L1,8 Z" fill="#4E7FC2"/></marker>
-  <marker id="arrowGreen" markerWidth="10" markerHeight="9" refX="8.5" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M1,1 L8.5,4.5 L1,8 Z" fill="#3C9B72"/></marker>
-  <marker id="arrowAmber" markerWidth="10" markerHeight="9" refX="8.5" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M1,1 L8.5,4.5 L1,8 Z" fill="#C98A22"/></marker>
-  <marker id="arrowRose" markerWidth="10" markerHeight="9" refX="8.5" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M1,1 L8.5,4.5 L1,8 Z" fill="#C85A73"/></marker>
+  <marker id="arrowBlue" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L14,7 L0,14 Z" fill="#4E7FC2"/></marker>
+  <marker id="arrowGreen" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L14,7 L0,14 Z" fill="#3C9B72"/></marker>
+  <marker id="arrowAmber" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L14,7 L0,14 Z" fill="#C98A22"/></marker>
+  <marker id="arrowRose" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L14,7 L0,14 Z" fill="#C85A73"/></marker>
   <style>
     .canvas{fill:#F7F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
     .title{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:42px;fill:#22344A;font-weight:700}
@@ -56,8 +56,8 @@ function header(width, height, title, subtitle) {
 <text class="subtitle" x="72" y="115">${esc(subtitle)}</text>`;
 }
 
-function footer(note, width, y) {
-  return `${note ? `<text class="small" x="${width / 2}" y="${y}" text-anchor="middle">${esc(note)}</text>` : ''}</svg>\n`;
+function footer(_note, _width, _y) {
+  return `</svg>\n`;
 }
 
 function content(items, offsetY = 44) {
@@ -119,11 +119,142 @@ function path(d, cls = 'lineBlue', label = '', lx = 0, ly = 0, pillW = 0) {
   const labelSvg = label
     ? `<rect class="pill" x="${lx - pillW / 2}" y="${ly - 18}" width="${pillW}" height="24" rx="12"/><text class="small" x="${lx}" y="${ly - 2}" text-anchor="middle">${esc(label)}</text>`
     : '';
-  return `<path class="${cls}" d="${d}"/>${labelSvg}`;
+  return `<path class="connector ${cls}" d="${d}"/>${labelSvg}`;
+}
+
+const koReplacements = [
+  ['Bluetape4k Cache Module Map', 'Bluetape4k Cache 모듈 지도'],
+  ['cache-core defines the common language; provider modules plug in local and distributed behavior.', 'cache-core가 공통 언어를 정의하고 provider 모듈이 local/distributed 동작을 연결합니다.'],
+  ['Application Code', '애플리케이션 코드'],
+  ['Kotlin services', 'Kotlin 서비스'],
+  ['JCache helpers · SuspendCache', 'JCache helper · SuspendCache'],
+  ['Memoizer contracts · NearCache APIs', 'Memoizer 계약 · NearCache API'],
+  ['resilience decorators · statistics', 'resilience decorator · 통계'],
+  ['Local Providers', 'Local Provider'],
+  ['Memoizers', 'Memoizer'],
+  ['Distributed Store', 'Distributed Store'],
+  ['uses', '사용'],
+  ['Near Cache Read and Invalidation Flow', 'Near Cache 읽기와 무효화 흐름'],
+  ['Hot reads finish in the JVM L1 cache; misses and writes coordinate with Redis L2 and invalidation signals.', 'hot read는 JVM L1 cache에서 끝나고 miss/write는 Redis L2와 invalidation signal을 조율합니다.'],
+  ['Application', '애플리케이션'],
+  ['repository / service', 'repository / service'],
+  ['L1 Front Cache', 'L1 Front Cache'],
+  ['Caffeine in JVM', 'JVM의 Caffeine'],
+  ['microsecond hot path', '마이크로초 hot path'],
+  ['L2 Remote Cache', 'L2 Remote Cache'],
+  ['Redis shared state', 'Redis 공유 상태'],
+  ['RESP3 Tracking', 'RESP3 Tracking'],
+  ['server push', 'server push'],
+  ['key invalidation', 'key invalidation'],
+  ['Pub/Sub Topic', 'Pub/Sub Topic'],
+  ['client-managed', 'client 관리'],
+  ['broadcast invalidation', 'broadcast invalidation'],
+  ['Local Stats', 'Local 통계'],
+  ['hit · miss · invalidated', 'hit · miss · invalidated'],
+  ['miss load', 'miss load'],
+  ['write-through', 'write-through'],
+  ['changed key', '변경된 key'],
+  ['publish', '발행'],
+  ['record', '기록'],
+  ['Lettuce Near Cache Benchmark Summary', 'Lettuce Near Cache 벤치마크 요약'],
+  ['Throughput is ops/ms. Higher is better. L1 reads are intentionally shown on a separate scale.', 'throughput 단위는 ops/ms입니다. 높을수록 좋고 L1 read는 별도 scale로 표시합니다.'],
+  ['L1 hit', 'L1 hit'],
+  ['L2 hit / miss', 'L2 hit / miss'],
+  ['Practical Reading', '실전 해석'],
+  ['maximize L1 hit ratio', 'L1 hit ratio 극대화'],
+  ['watch write cost', 'write cost 관찰'],
+  ['split large payload batches', '큰 payload batch 분리'],
+  ['L1 memory path', 'L1 memory path'],
+  ['Redis RTT dominated', 'Redis RTT 지배'],
+  ['SET + tracking GET', 'SET + tracking GET'],
+  ['payload bandwidth', 'payload bandwidth'],
+  ['JdbcCacheRepository Strategy Map', 'JdbcCacheRepository 전략 지도'],
+  ['Redisson map loader handles read-through; map writer handles write-through or write-behind.', 'Redisson map loader는 read-through를, map writer는 write-through/write-behind를 담당합니다.'],
+  ['loader + optional writer', 'loader + optional writer'],
+  ['Near Cache when enabled', '활성화 시 Near Cache'],
+  ['EntityMapLoader', 'EntityMapLoader'],
+  ['ExposedEntityMapLoader', 'ExposedEntityMapLoader'],
+  ['cache miss -> DB read', 'cache miss -> DB read'],
+  ['EntityMapWriter', 'EntityMapWriter'],
+  ['ExposedEntityMapWriter', 'ExposedEntityMapWriter'],
+  ['put / putAll -> DB write', 'put / putAll -> DB write'],
+  ['Exposed DB', 'Exposed DB'],
+  ['transaction boundary', 'transaction boundary'],
+  ['loader only', 'loader only'],
+  ['loader + writer', 'loader + writer'],
+  ['write-behind queue', 'write-behind queue'],
+  ['read from DB', 'DB에서 읽기'],
+  ['write now / async', '즉시 쓰기 / async'],
+  ['Exposed Cache Benchmark Snapshot', 'Exposed Cache 벤치마크 스냅샷'],
+  ['Average latency from exposed-workshop chapter 11 benchmark. Lower is better.', 'exposed-workshop 11장 benchmark의 평균 latency입니다. 낮을수록 좋습니다.'],
+  ['strategy effect small', 'strategy 영향 작음'],
+  ['Reading', '해석'],
+  ['5.5x faster', '5.5x 빠름'],
+  ['9.9x faster', '9.9x 빠름'],
+  ['when reads dominate', 'read 중심일 때'],
+  ['write-heavy', 'write-heavy'],
+  ['Workshop Cache Profiles', 'Workshop Cache profile'],
+  ['The same ProductCacheService contract can compare no cache, local cache, remote cache, and near cache behavior.', '같은 ProductCacheService 계약으로 no cache, local cache, remote cache, near cache 동작을 비교합니다.'],
+  ['Spring Service', 'Spring Service'],
+  ['No Cache', 'No Cache'],
+  ['DB baseline', 'DB baseline'],
+  ['local JVM cache', 'local JVM cache'],
+  ['Redis', 'Redis'],
+  ['remote shared cache', 'remote shared cache'],
+  ['Near Cache', 'Near Cache'],
+  ['local + remote', 'local + remote'],
+  ['Product DB', 'Product DB'],
+  ['repository storage', 'repository storage'],
+  ['Benchmark', 'Benchmark'],
+  ['compare profiles', 'profile 비교'],
+  ['Resilience Example', 'Resilience 예제'],
+  ['Redis primary', 'Redis primary'],
+  ['Caffeine fallback', 'Caffeine fallback'],
+  ['fallback path', 'fallback path'],
+  ['remote read', 'remote read'],
+  ['measure', '측정'],
+  ['fallback state', 'fallback state'],
+  ['Workshop Cache Benchmark Profiles', 'Workshop Cache 벤치마크 profile'],
+  ['Read and write throughput from bluetape4k-workshop cache-benchmark. Higher is better.', 'bluetape4k-workshop cache-benchmark의 read/write throughput입니다. 높을수록 좋습니다.'],
+  ['read ~8.2k', 'read ~8.2k'],
+  ['write ~8.2k ops/s', 'write ~8.2k ops/s'],
+  ['read ~490k', 'read ~490k'],
+  ['write ~8.1k ops/s', 'write ~8.1k ops/s'],
+  ['read ~465k', 'read ~465k'],
+  ['write ~7.2k ops/s', 'write ~7.2k ops/s'],
+  ['Redis Cache', 'Redis Cache'],
+  ['read ~43k', 'read ~43k'],
+  ['write ~7.3k ops/s', 'write ~7.3k ops/s'],
+  ['Write-Through', 'Write-Through'],
+  ['read ~41k', 'read ~41k'],
+  ['write ~5.6k ops/s', 'write ~5.6k ops/s'],
+  ['Write-Behind', 'Write-Behind'],
+  ['read ~42k', 'read ~42k'],
+  ['write ~24k ops/s', 'write ~24k ops/s'],
+  ['Read throughput', 'Read throughput'],
+  ['Write throughput', 'Write throughput'],
+  ['60x read', '60x read'],
+  ['57x read', '57x read'],
+  ['5x read', '5x read'],
+  ['3x write', '3x write'],
+];
+
+function koreanize(svg) {
+  let localized = svg
+    .replaceAll('"Architects Daughter","Comic Sans MS","Comic Sans",Arial,sans-serif', '"goorm Sans","Apple SD Gothic Neo",Arial,sans-serif')
+    .replaceAll('"Comic Mono","Comic Sans MS","Comic Sans",Arial,sans-serif', '"goorm Sans Code","goorm Sans","Apple SD Gothic Neo",monospace')
+    .replaceAll('"Architects Daughter", "Comic Mono", ui-monospace, monospace', '"goorm Sans", "goorm Sans Code", "Apple SD Gothic Neo", sans-serif')
+    .replaceAll('"Comic Mono", ui-monospace, monospace', '"goorm Sans Code", "goorm Sans", "Apple SD Gothic Neo", monospace');
+  for (const [from, to] of koReplacements) {
+    localized = localized.split(esc(from)).join(esc(to));
+    localized = localized.split(from).join(to);
+  }
+  return localized;
 }
 
 function write(name, svg) {
-  writeFileSync(`${out}/${name}.svg`, svg);
+  writeFileSync(`${out}/${name}-en.svg`, svg);
+  writeFileSync(`${out}/${name}-ko.svg`, koreanize(svg));
 }
 
 write(
@@ -140,13 +271,13 @@ write(
       cylinder(732, 700, 210, 64, 'rose', 'Redis'),
       cylinder(1128, 700, 236, 64, 'neutral', 'Distributed Store'),
       path('M700 268 V330', 'lineBlue', 'uses', 735, 306, 58),
-      path('M498 410 H204 V560', 'lineGreen'),
+      path('M498 410 H220 Q204 410 204 426 V560', 'lineGreen'),
       path('M548 468 V560', 'lineAmber'),
       path('M710 468 V560', 'lineBlue'),
-      path('M794 468 C794 518 997 518 997 560', 'lineRose'),
-      path('M902 410 H1261 V560', 'lineBlue'),
+      path('M794 468 V502 Q794 518 810 518 H981 Q997 518 997 534 V560', 'lineRose'),
+      path('M902 410 H1245 Q1261 410 1261 426 V560', 'lineBlue'),
       path('M733 656 V700', 'lineBlue'),
-      path('M997 656 V682 H837 V700', 'lineRose'),
+      path('M997 656 V670 Q997 682 985 682 H849 Q837 682 837 694 V700', 'lineRose'),
       path('M1261 656 V700', 'lineBlue'),
     ]) +
     footer('Graphviz structure evidence: cache-series-module-map-01.dot / .plain / -sketch.svg', 1400, 830),
@@ -162,15 +293,15 @@ write(
       card(1190, 198, 226, 106, 'teal', 'RESP3 Tracking', ['server push', 'key invalidation']),
       card(1190, 432, 226, 106, 'amber', 'Pub/Sub Topic', ['client-managed', 'broadcast invalidation']),
       card(458, 525, 210, 92, 'purple', 'Local Stats', ['hit · miss · invalidated']),
-      path('M314 365 H420', 'lineBlue', 'get', 366, 352, 52),
-      path('M420 335 H314', 'lineGreen', 'L1 hit', 365, 322, 64),
+      path('M314 365 H420', 'lineBlue', 'get', 366, 390, 52),
+      path('M420 350 H314', 'lineGreen', 'L1 hit', 365, 316, 64),
       path('M702 326 H820', 'lineBlue', 'miss load', 761, 312, 92),
       path('M820 358 H702', 'lineGreen', 'fill', 760, 382, 48),
-      path('M194 440 V705 H955 V395', 'lineAmber', 'write-through', 570, 692, 112),
-      path('M1090 302 H1190', 'lineGreen', 'changed key', 1138, 288, 104),
+      path('M194 440 V689 Q194 705 210 705 H939 Q955 705 955 689 V395', 'lineAmber', 'write-through', 570, 692, 112),
+      path('M1090 288 H1190', 'lineGreen', 'changed key', 1138, 274, 104),
       path('M1190 252 H702', 'dashGreen', 'invalidate', 962, 238, 92),
-      path('M1090 360 C1130 405 1148 464 1190 485', 'lineAmber', 'publish', 1139, 423, 70),
-      path('M1190 485 H702 V392', 'dashBlue', 'invalidate', 946, 472, 92),
+      path('M1090 360 H1122 Q1138 360 1138 376 V469 Q1138 485 1154 485 H1190', 'lineAmber', 'publish', 1139, 423, 70),
+      path('M1416 485 H1450 Q1462 485 1462 473 V178 Q1462 166 1450 166 H572 Q560 166 560 178 V260', 'dashBlue', 'invalidate', 980, 152, 92),
       path('M560 392 V525', 'lineBlue', 'record', 606, 458, 64),
     ]) +
     footer('Graphviz structure evidence: cache-series-near-cache-flow-01.dot / .plain / -sketch.svg', 1480, 830),
@@ -189,10 +320,10 @@ write(
       '<g><rect x="402" y="447" width="180" height="56" rx="14" fill="#FFF3D9" stroke="#D6A441" stroke-width="2"/><rect x="402" y="447" width="56" height="56" rx="14" fill="#D6A441" opacity="0.28"/></g>',
       '<g><rect x="402" y="579" width="180" height="56" rx="14" fill="#FDECEF" stroke="#DC6B82" stroke-width="2"/><rect x="402" y="579" width="22" height="56" rx="11" fill="#DC6B82" opacity="0.32"/></g>',
       card(832, 386, 318, 128, 'purple', 'Practical Reading', ['maximize L1 hit ratio', 'watch write cost', 'split large payload batches']),
-      path('M1150 450 H1228 V212 H1162', 'lineGreen', 'L1 memory path', 1218, 218, 116),
-      path('M832 450 H760 V343 H582', 'lineBlue', 'Redis RTT dominated', 672, 329, 154),
-      path('M832 476 H728 V475 H582', 'lineAmber', 'SET + tracking GET', 678, 461, 150),
-      path('M832 502 H728 V607 H582', 'lineRose', 'payload bandwidth', 682, 593, 142),
+      path('M1150 450 H1212 Q1228 450 1228 434 V228 Q1228 212 1212 212 H1162', 'lineGreen', 'L1 memory path', 1218, 218, 116),
+      path('M832 450 H776 Q760 450 760 434 V359 Q760 343 744 343 H582', 'lineBlue', 'Redis RTT dominated', 672, 329, 154),
+      path('M832 476 H582', 'lineAmber', 'SET + tracking GET', 678, 461, 150),
+      path('M832 502 H744 Q728 502 728 518 V591 Q728 607 712 607 H582', 'lineRose', 'payload bandwidth', 682, 593, 142),
     ]) +
     footer('Source data: cache-lettuce/Benchmark.ko.md. Graphviz evidence: cache-series-benchmark-chart-01.dot / .plain / -sketch.svg', 1320, 770),
 );
@@ -211,11 +342,11 @@ write(
       card(894, 690, 344, 90, 'rose', 'WRITE_BEHIND', ['UserEvent', 'WITH_NEAR_CACHE · async flush']),
       path('M376 382 H514', 'lineBlue', 'get / put', 446, 368, 78),
       path('M514 418 H376', 'lineGreen', 'cache hit', 446, 444, 76),
-      path('M844 350 H900 V236 H944', 'lineBlue', 'cache miss', 886, 222, 92),
-      path('M1236 236 H1312 V330', 'lineBlue', 'read from DB', 1318, 288, 104),
-      path('M844 428 H902 V568 H944', 'lineAmber', 'put / putAll', 900, 494, 98),
-      path('M1236 568 H1312 V472', 'lineAmber', 'write now / async', 1320, 526, 130),
-      path('M276 610 V464 H514', 'dashGreen', 'loader only', 398, 594, 88),
+      path('M844 350 H884 Q900 350 900 334 V252 Q900 236 916 236 H944', 'lineBlue', 'cache miss', 886, 222, 92),
+      path('M1236 236 H1296 Q1312 236 1312 252 V330', 'lineBlue', 'read from DB', 1318, 288, 104),
+      path('M844 428 H886 Q902 428 902 444 V552 Q902 568 918 568 H944', 'lineAmber', 'put / putAll', 900, 494, 98),
+      path('M1236 568 H1296 Q1312 568 1312 552 V472', 'lineAmber', 'write now / async', 1320, 526, 130),
+      path('M276 610 V480 Q276 464 292 464 H544 Q560 464 560 480 V464', 'dashGreen', 'loader only', 398, 594, 88),
       path('M660 610 V464', 'dashBlue', 'loader + writer', 730, 594, 118),
       path('M1066 690 V628', 'dashBlue', 'write-behind queue', 1148, 674, 146),
     ]) +
@@ -255,15 +386,15 @@ write(
       cylinder(902, 334, 250, 128, 'purple', 'Product DB', ['repository storage']),
       card(1210, 334, 200, 116, 'amber', 'Benchmark', ['compare profiles']),
       card(876, 594, 298, 100, 'rose', 'Resilience Example', ['Redis primary', 'Caffeine fallback']),
-      path('M340 392 C396 392 408 212 486 212', 'lineBlue'),
-      path('M340 392 H486', 'lineGreen'),
-      path('M340 392 C396 392 408 500 486 500', 'lineRose'),
-      path('M340 392 C394 392 410 644 486 644', 'lineBlue'),
-      path('M718 212 H902 V334', 'lineBlue'),
+      path('M340 356 H388 Q404 356 404 340 V228 Q404 212 420 212 H486', 'lineBlue'),
+      path('M340 384 H486', 'lineGreen'),
+      path('M340 412 H388 Q404 412 404 428 V484 Q404 500 420 500 H486', 'lineRose'),
+      path('M340 440 H386 Q402 440 402 456 V628 Q402 644 418 644 H486', 'lineBlue'),
+      path('M718 212 H886 Q902 212 902 228 V334', 'lineBlue'),
       path('M718 356 H902', 'lineGreen'),
-      path('M718 500 H902 V462', 'lineRose'),
+      path('M718 500 H886 Q902 500 902 484 V462', 'lineRose'),
       path('M718 644 H876', 'lineBlue', 'fallback path', 798, 630, 106),
-      path('M718 644 C784 644 810 500 902 500 V462', 'lineRose', 'remote read', 820, 520, 100),
+      path('M650 594 V570 Q650 554 666 554 H1025 Q1041 554 1041 538 V462', 'lineRose', 'remote read', 870, 540, 100),
       path('M1152 398 H1210', 'lineAmber', 'measure', 1180, 384, 70),
       path('M1025 594 V462', 'lineRose', 'fallback state', 1088, 540, 112),
     ]) +
@@ -282,10 +413,10 @@ write(
       card(72, 728, 230, 86, 'amber', 'Write-Behind', ['read ~42k', 'write ~24k ops/s']),
       '<g><text class="smallLabel" x="395" y="132">Read throughput</text><rect x="395" y="166" width="12" height="28" rx="10" fill="#F5F7FB" stroke="#93A4B7"/><rect x="395" y="282" width="700" height="28" rx="10" fill="#EAF7EF" stroke="#58A978"/><rect x="395" y="398" width="664" height="28" rx="10" fill="#E9F7F6" stroke="#45A7A1"/><rect x="395" y="514" width="61" height="28" rx="10" fill="#FDECEF" stroke="#DC6B82"/><rect x="395" y="630" width="59" height="28" rx="10" fill="#E8F3FF" stroke="#5B8DEF"/><rect x="395" y="746" width="60" height="28" rx="10" fill="#FFF3D9" stroke="#D6A441"/></g>',
       '<g><text class="smallLabel" x="1142" y="132">Write throughput</text><rect x="1142" y="166" width="68" height="28" rx="10" fill="#F5F7FB" stroke="#93A4B7"/><rect x="1142" y="282" width="67" height="28" rx="10" fill="#EAF7EF" stroke="#58A978"/><rect x="1142" y="398" width="59" height="28" rx="10" fill="#E9F7F6" stroke="#45A7A1"/><rect x="1142" y="514" width="60" height="28" rx="10" fill="#FDECEF" stroke="#DC6B82"/><rect x="1142" y="630" width="46" height="28" rx="10" fill="#E8F3FF" stroke="#5B8DEF"/><rect x="1142" y="746" width="198" height="28" rx="10" fill="#FFF3D9" stroke="#D6A441"/></g>',
-      path('M302 307 H395', 'lineGreen', '60x read', 352, 293, 72),
-      path('M302 423 H395', 'lineGreen', '57x read', 352, 409, 72),
-      path('M302 771 H350 V760 H395', 'lineAmber', '5x read', 350, 746, 64),
-      path('M302 793 H1108 V760 H1142', 'lineAmber', '3x write', 720, 779, 72),
+      path('M302 296 H395', 'lineGreen', '60x read', 352, 282, 72),
+      path('M302 412 H395', 'lineGreen', '57x read', 352, 398, 72),
+      path('M302 760 H395', 'lineAmber', '5x read', 350, 746, 64),
+      path('M302 793 H1092 Q1108 793 1108 777 V776 Q1108 760 1124 760 H1142', 'lineAmber', '3x write', 720, 779, 72),
     ]) +
     footer('Source: bluetape4k-workshop spring-boot/cache-benchmark README. Graphviz evidence: cache-series-workshop-benchmark-01.dot / .plain / -sketch.svg', 1380, 950),
 );
