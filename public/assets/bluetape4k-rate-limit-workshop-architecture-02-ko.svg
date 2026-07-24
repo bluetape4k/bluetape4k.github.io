@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1240" height="820" viewBox="0 0 1240 820" role="img" aria-labelledby="title desc">
-  <title id="title">Bucket4j rate-limit workshop architecture</title>
-  <desc id="desc">Client requests pass through proxy-aware caller identity selection, path-scoped WebFilters, Redis or Caffeine bucket storage, and response headers before reaching the application handler.</desc>
+  <title id="title">Bucket4j rate-limit 워크숍 아키텍처</title>
+  <desc id="desc">클라이언트 요청은 프록시 인식 호출자 식별, 경로별 WebFilter, Redis 또는 Caffeine 버킷 저장소, 응답 헤더 처리를 거쳐 애플리케이션 핸들러로 전달됩니다.</desc>
   <defs>
     <marker id="arrow-blue" markerWidth="14" markerHeight="14" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" orient="auto">
       <path d="M 0 0 L 10 5 L 0 10 Z" fill="#8bd3ff" stroke="#8bd3ff" stroke-dasharray="none" style="stroke-dasharray:none"/>
@@ -42,11 +42,11 @@
       .card-purple { stroke: #a98be9; }
       .card-red { stroke: #fb7185; }
       .icon-back { fill: #f8fafc; fill-opacity: 0.94; stroke: #dbeafe; stroke-width: 2; }
-      .title { font: 30px "Architects Daughter", "Comic Mono", system-ui, sans-serif; fill: #f8fafc; }
-      .subtitle { font: 15px "Comic Mono", ui-monospace, monospace; fill: #c1cad8; }
-      .label { font: 18px "Comic Mono", ui-monospace, monospace; fill: #f3f7fb; font-weight: 700; }
-      .small { font: 13px "Comic Mono", ui-monospace, monospace; fill: #c9d4e2; }
-      .tiny { font: 12px "Comic Mono", ui-monospace, monospace; fill: #dfe8f5; }
+      .title { font: 30px "goorm Sans", "goorm Sans Code", system-ui, sans-serif; fill: #f8fafc; }
+      .subtitle { font: 15px "goorm Sans Code", ui-monospace, monospace; fill: #c1cad8; }
+      .label { font: 18px "goorm Sans Code", ui-monospace, monospace; fill: #f3f7fb; font-weight: 700; }
+      .small { font: 13px "goorm Sans Code", ui-monospace, monospace; fill: #c9d4e2; }
+      .tiny { font: 12px "goorm Sans Code", ui-monospace, monospace; fill: #dfe8f5; }
       .pill { fill: #243249; stroke-width: 1.6; rx: 12; }
       .line-blue { fill: none; stroke: #8bd3ff; stroke-width: 4.4; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-blue); }
       .line-green { fill: none; stroke: #8dd46f; stroke-width: 4.2; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-green); }
@@ -57,29 +57,29 @@
 
   <rect class="bg" width="1240" height="820"/>
   <rect class="panel" x="36" y="30" width="1168" height="752"/>
-  <text class="title" x="70" y="80">rate limiting starts with the caller identity, not the bucket</text>
-  <text class="subtitle" x="70" y="110">proxy trust decides the IP; filters decide the key shape; storage decides whether quota is local or shared</text>
+  <text class="title" x="70" y="80">rate limiting은 bucket이 아니라 caller identity에서 시작합니다</text>
+  <text class="subtitle" x="70" y="110">proxy 신뢰가 IP를 정하고, filter가 key 형태를 정하며, storage가 quota의 local/shared 여부를 정합니다</text>
 
   <g id="request-source">
     <rect class="lane" x="75" y="142" width="240" height="556"/>
-    <text class="label" x="99" y="180">Request source</text>
+    <text class="label" x="99" y="180">요청 출처</text>
     <rect class="card card-blue" x="109" y="252" width="172" height="126"/>
-    <text class="label" x="137" y="290">HTTP request</text>
+    <text class="label" x="137" y="290">HTTP 요청</text>
     <text class="small" x="133" y="318">remoteAddr</text>
     <text class="small" x="133" y="342">X-Forwarded-For</text>
     <text class="small" x="133" y="366">X-Real-IP</text>
     <rect class="pill" x="99" y="442" width="192" height="36" stroke="#a98be9"/>
-    <text class="tiny" x="123" y="464">trust proxy explicitly</text>
+    <text class="tiny" x="123" y="464">proxy 신뢰는 명시적으로</text>
     <rect class="pill" x="99" y="500" width="192" height="36" stroke="#fb7185"/>
-    <text class="tiny" x="149" y="522">spoof risk</text>
+    <text class="tiny" x="149" y="522">spoof 위험</text>
   </g>
 
   <g id="identity-strategy">
     <rect class="lane" x="375" y="142" width="292" height="556"/>
-    <text class="label" x="399" y="180">Caller identity</text>
+    <text class="label" x="399" y="180">호출자 식별</text>
     <rect class="card card-purple" x="409" y="220" width="224" height="220"/>
     <text class="label" x="453" y="258">Key resolver</text>
-    <text class="small" x="437" y="286">path-scoped key shape</text>
+    <text class="small" x="437" y="286">경로별 key 형태</text>
     <rect class="pill" x="431" y="314" width="180" height="34" stroke="#67b7ee"/>
     <text class="tiny" x="451" y="336">ip:&lt;address&gt;</text>
     <rect class="pill" x="431" y="358" width="180" height="34" stroke="#8dd46f"/>
@@ -87,12 +87,12 @@
     <rect class="pill" x="431" y="402" width="180" height="34" stroke="#f1b94e"/>
     <text class="tiny" x="444" y="424">combined:ip:user</text>
     <rect class="pill" x="415" y="520" width="212" height="36" stroke="#f1b94e"/>
-    <text class="tiny" x="435" y="542">missing identity -> 400/401</text>
+    <text class="tiny" x="435" y="542">identity 없음 → 400/401</text>
   </g>
 
   <g id="bucket-handler">
     <rect class="lane" x="727" y="142" width="438" height="556"/>
-    <text class="label" x="751" y="180">Bucket and handler</text>
+    <text class="label" x="751" y="180">Bucket과 handler</text>
     <rect class="card card-purple" x="767" y="252" width="264" height="126"/>
     <rect class="icon-back" x="789" y="286" width="56" height="56" rx="14"/>
     <g data-bluetape4k-icon="generic-microservice" transform="translate(797 294) scale(0.3125)">
@@ -105,8 +105,8 @@
       <path d="M86 40h10M86 86h10" fill="none" stroke="#475569" stroke-width="5" stroke-linecap="round"/>
     </g>
     <text class="label" x="869" y="298">WebFilter</text>
-    <text class="small" x="869" y="324">consume 1 token</text>
-    <text class="small" x="869" y="348">write rate headers</text>
+    <text class="small" x="869" y="324">token 1개 소비</text>
+    <text class="small" x="869" y="348">rate header 기록</text>
     <rect class="card card-red" x="1067" y="275" width="76" height="80"/>
     <text class="label" x="1085" y="311">429</text>
     <text class="tiny" x="1077" y="335">Retry</text>
@@ -136,13 +136,13 @@
     </g>
     <text class="small" x="952" y="550">Caffeine local</text>
     <rect class="card card-blue" x="767" y="618" width="264" height="62"/>
-    <text class="label" x="817" y="655">Handler runs</text>
+    <text class="label" x="817" y="655">Handler 실행</text>
   </g>
 
-  <path class="line-blue" data-connector="request-to-identity" d="M 281 315 L 409 315"/>
-  <path class="line-blue" data-connector="identity-to-filter" d="M 633 315 L 767 315"/>
-  <path class="line-green" data-connector="filter-to-redis-storage" d="M 833 378 L 833 452"/>
-  <path class="line-amber" data-connector="filter-to-caffeine-storage" d="M 993 378 L 993 452"/>
-  <path class="line-blue" data-connector="filter-to-handler" d="M 913 378 L 913 618"/>
-  <path class="line-red" data-connector="filter-to-rate-limit-response" d="M 1031 315 L 1067 315"/>
+  <path class="connector line-blue" data-connector="request-to-identity" d="M 281 315 L 409 315"/>
+  <path class="connector line-blue" data-connector="identity-to-filter" d="M 633 315 L 767 315"/>
+  <path class="connector line-green" data-connector="filter-to-redis-storage" d="M 833 378 L 833 452"/>
+  <path class="connector line-amber" data-connector="filter-to-caffeine-storage" d="M 993 378 L 993 452"/>
+  <path class="connector line-blue" data-connector="filter-to-handler" d="M 913 378 L 913 618"/>
+  <path class="connector line-red" data-connector="filter-to-rate-limit-response" d="M 1031 315 L 1067 315"/>
 </svg>

@@ -19,7 +19,7 @@
 <rect x="102" y="260" width="240" height="34" rx="17" class="label callLabel"/><text x="120" y="282" class="msg callText">GET readiness endpoint</text><path data-connector="probe-to-endpoint" d="M 151 318 L 417 318" class="call" marker-end="url(#arrowCall)"/>
 <rect x="450" y="348" width="250" height="34" rx="17" class="label stateLabel"/><text x="468" y="370" class="msg stateText">read example state first</text><path data-connector="endpoint-to-state" d="M 417 398 L 705 398" class="state" marker-end="url(#arrowState)"/>
 <rect x="488" y="438" width="230" height="34" rx="17" class="label returnLabel"/><text x="506" y="460" class="msg returnText">databaseAvailable=true</text><path data-connector="state-to-endpoint-ok" d="M 705 494 L 417 494" class="return" marker-end="url(#arrowReturn)"/>
-<rect x="92" y="526" width="1288" height="364" rx="14" class="alt"/>
+<rect x="92" y="526" width="1288" height="520" rx="14" class="alt"/>
 <rect x="118" y="544" width="300" height="30" rx="15" class="branchOk"/><text x="140" y="564" class="note">alt database is reachable</text>
 <rect x="720" y="594" width="246" height="34" rx="17" class="label stateLabel"/><text x="738" y="616" class="msg stateText">repository.ping()</text><path data-connector="endpoint-to-repository-ping" d="M 417 648 L 983 648" class="state" marker-end="url(#arrowState)"/>
 <rect x="1020" y="594" width="172" height="34" rx="17" class="label stateLabel"/><text x="1038" y="616" class="msg stateText">SELECT 1 / ping</text><path data-connector="repository-to-database-ping" d="M 983 682 L 1267 682" class="state" marker-end="url(#arrowState)"/>
@@ -31,4 +31,16 @@
 <rect x="96" y="1068" width="1288" height="44" rx="12" fill="#ffffff" stroke="#ccd7da" stroke-width="2"/>
 <text x="118" y="1096" class="note">Tests assert UP/DOWN responses, request-id echo/sanitize, and structured validation errors for Spring and Ktor examples.</text>
 <text x="750" y="1136" text-anchor="middle" class="footer">Sources: exposed-workshop 09-spring-observability-readiness and 10-ktor-observability-readiness</text>
+
+
+<g id="visible-message-numbers">
+  <text class="msg num" x="110" y="306">1</text>
+  <text class="msg num" x="456" y="392">2</text>
+  <text class="msg num" x="494" y="486">3</text>
+  <text class="msg num" x="728" y="640">4</text>
+  <text class="msg num" x="1028" y="640">5</text>
+  <text class="msg num" x="1018" y="756">6</text>
+  <text class="msg num" x="510" y="826">7</text>
+  <text class="msg num" x="484" y="1006">8</text>
+</g>
 </svg>

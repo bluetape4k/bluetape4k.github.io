@@ -34,7 +34,7 @@ Prometheus, Grafana, Zipkin, Actuator는 일을 시작하지 않습니다. 이�
 읽을 뿐입니다. 이 구분이 흐려지면 다이어그램도 틀리고 운영 판단도 틀어집니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/coroutine-observability-trace-flow-01.png" alt="Coroutine observability architecture diagram separating work-producing request path from observe-only scrape query and trace export path" loading="lazy" />
+  <img src="/assets/coroutine-observability-trace-flow-01-ko.png" alt="Coroutine observability architecture diagram separating work-producing request path from observe-only scrape query and trace export path" loading="lazy" />
   <figcaption>업무 요청은 handler, observation scope, suspend service, DB/HTTP client로 흐릅니다. Prometheus/Grafana/Zipkin은 그 뒤에 남은 신호를 관찰합니다.</figcaption>
 </figure>
 
@@ -187,7 +187,7 @@ coroutine dispatcher는 정상일 수 있다는 점이 중요합니다. process�
 Spring Boot와 Ktor 예제는 이 운영 계약을 다른 프레임워크 모양으로 표현합니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/coroutine-observability-readiness-sequence-01.png" alt="Sequence diagram for readiness probe checking endpoint state repository ping database reachability and UP or DOWN response branches" loading="lazy" />
+  <img src="/assets/coroutine-observability-readiness-sequence-01-ko.png" alt="Sequence diagram for readiness probe checking endpoint state repository ping database reachability and UP or DOWN response branches" loading="lazy" />
   <figcaption>readiness endpoint는 내부 상태와 DB ping을 함께 확인합니다. 실패하면 200이 아니라 503으로 내려가야 합니다.</figcaption>
 </figure>
 

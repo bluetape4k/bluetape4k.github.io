@@ -38,7 +38,7 @@ bucket 자료구조가 아니라 caller identity입니다. `remoteAddress`를 �
 ## Rate Limiting Architecture
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-rate-limit-workshop-architecture-02.png" alt="Client, proxy, identity strategy, WebFilter, Redis or Caffeine bucket storage, handler and 429 response path를 보여주는 Bucket4j rate-limit architecture diagram" loading="lazy" />
+  <img src="/assets/bluetape4k-rate-limit-workshop-architecture-02-ko.png" alt="Client, proxy, identity strategy, WebFilter, Redis or Caffeine bucket storage, handler and 429 response path를 보여주는 Bucket4j rate-limit architecture diagram" loading="lazy" />
   <figcaption>IP, user, combined key는 서로 다른 caller identity 계약입니다. Redis와 Caffeine은 그 계약을 저장하는 위치입니다.</figcaption>
 </figure>
 
@@ -61,7 +61,7 @@ Redis proxy manager를 하나 만들고, IP/user/combined 전략별로 `BucketCo
 `DistributedSuspendRateLimiter`를 따로 등록합니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-rate-limit-workshop-spring-classes-01.png" alt="RateLimitConfig, BucketConfiguration, AsyncBucketProxyProvider, DistributedSuspendRateLimiter, SuspendRateLimiter, IpRateLimitWebFilter, RequestUtils, RateLimitResult 관계를 보여주는 Spring configuration class diagram" loading="lazy" />
+  <img src="/assets/bluetape4k-rate-limit-workshop-spring-classes-01-ko.png" alt="RateLimitConfig, BucketConfiguration, AsyncBucketProxyProvider, DistributedSuspendRateLimiter, SuspendRateLimiter, IpRateLimitWebFilter, RequestUtils, RateLimitResult 관계를 보여주는 Spring configuration class diagram" loading="lazy" />
   <figcaption>Spring configuration은 policy, provider, limiter bean을 분리해서 만들고, WebFilter는 `RateLimitResult`만 보고 HTTP 응답을 결정합니다. Solid line은 interface 구현, dashed line은 생성·사용·반환 관계입니다.</figcaption>
 </figure>
 
