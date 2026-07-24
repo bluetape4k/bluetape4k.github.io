@@ -30,7 +30,7 @@ row를 하나 더 씁니다.
 row를 남깁니다. Kafka 전면 장애나 broker timeout이 길어지는 구간에서는 다시 outbox relay path로 내려갑니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/transactional-outbox-kafka-first-fallback-part2-architecture-01.png" alt="orders only transaction, direct Kafka publish, fallback event_publications row, relay, reconciler를 보여주는 architecture diagram" loading="lazy" />
+  <img src="/assets/transactional-outbox-kafka-first-fallback-part2-architecture-01-ko.png" alt="orders only transaction, direct Kafka publish, fallback event_publications row, relay, reconciler를 보여주는 architecture diagram" loading="lazy" />
   <figcaption>성공 경로는 orders row만 쓰고 끝납니다. 실패 경로에서만 event_publications row와 relay가 등장합니다.</figcaption>
 </figure>
 
@@ -102,7 +102,7 @@ fun placeOrder(request: OrderRequest): OrderResponse {
 `FALLBACK_STORE_FAILED` 같은 publication status가 함께 내려갑니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/transactional-outbox-kafka-first-fallback-part2-sequence-01.png" alt="Client, Order API, Order Tx, Publisher, Outbox DB, Relay/Reconciler 사이의 Kafka-first fallback sequence diagram" loading="lazy" />
+  <img src="/assets/transactional-outbox-kafka-first-fallback-part2-sequence-01-ko.png" alt="Client, Order API, Order Tx, Publisher, Outbox DB, Relay/Reconciler 사이의 Kafka-first fallback sequence diagram" loading="lazy" />
   <figcaption>직접 publish 성공 시에는 fallback table이 비어 있고, 실패 시에만 NOT_PUBLISHED row가 생성됩니다.</figcaption>
 </figure>
 

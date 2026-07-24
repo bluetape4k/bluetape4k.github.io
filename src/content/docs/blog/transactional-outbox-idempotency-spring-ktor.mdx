@@ -33,7 +33,7 @@ Outbox and idempotency work together because they separate durable user intent f
 records the intent first. Delivery happens after commit and can be retried from stored state.
 
 <figure class="bt4k-chart">
-  <img src="/assets/transactional-outbox-idempotency-flow-01.png" alt="Transactional outbox and idempotency flow diagram showing client, Spring or Ktor service, DB transaction, outbox, relay, API, and retry path" loading="lazy" />
+  <img src="/assets/transactional-outbox-idempotency-flow-01-en.png" alt="Transactional outbox and idempotency flow diagram showing client, Spring or Ktor service, DB transaction, outbox, relay, API, and retry path" loading="lazy" />
   <figcaption>The key move is writing the domain row and outbox row together. After commit, delivery can fail and still be retried.</figcaption>
 </figure>
 
@@ -122,7 +122,7 @@ without hiding blocking work or duplicate-request behavior.
 The sequence below collects the three common cases: first submit, same-key retry, and retryable delivery failure.
 
 <figure class="bt4k-chart">
-  <img src="/assets/transactional-outbox-idempotency-sequence-01.png" alt="Sequence diagram for first payment call, duplicate idempotency retry, and relay retry after commit" loading="lazy" />
+  <img src="/assets/transactional-outbox-idempotency-sequence-01-en.png" alt="Sequence diagram for first payment call, duplicate idempotency retry, and relay retry after commit" loading="lazy" />
   <figcaption>A duplicate key does not call the external API again. Relay failure is retried from the row that survived commit.</figcaption>
 </figure>
 

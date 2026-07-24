@@ -1,0 +1,169 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1360" viewBox="0 0 1600 1360" role="img" aria-labelledby="title desc">
+  <title id="title">Idempotency and relay retry sequence</title>
+  <desc id="desc">The 첫 호출 creates a durable payment and outbox row, the same idempotency key returns the existing result, and the relay retries failed delivery from database state.</desc>
+  <defs>
+    <style>
+      .title { font-family: "goorm Sans"; font-size: 40px; fill: #263238; }
+      .subtitle, .msg, .note, .footer, .role { font-family: "goorm Sans Code"; fill: #36464f; }
+      .subtitle { font-size: 18px; }
+      .participant { font-family: "goorm Sans"; font-size: 19px; fill: #1f3138; }
+      .role { font-size: 13px; fill: #546a73; }
+      .msg { font-size: 14px; }
+      .note { font-size: 13px; }
+      .footer { font-size: 14px; fill: #60727d; }
+      .frame { fill: #fbfcf8; stroke: #41545d; stroke-width: 3; }
+      .header { fill: #ffffff; stroke: #546e7a; stroke-width: 2; }
+      .lifeline { stroke: #9aaab1; stroke-width: 2; stroke-dasharray: 7 8; }
+      .activation { fill: #f3ecdf; stroke: #8f784e; stroke-width: 1.5; }
+      .call { fill: none; stroke: #3f7d9c; stroke-width: 3; marker-end: url(#arrowCall); }
+      .state { fill: none; stroke: #6e8f4f; stroke-width: 3; marker-end: url(#arrowState); }
+      .delivery { fill: none; stroke: #a2743d; stroke-width: 3; marker-end: url(#arrowDelivery); }
+      .return { fill: none; stroke: #9b7d54; stroke-width: 2.6; stroke-dasharray: 8 6; marker-end: url(#arrowReturn); }
+      .fail { fill: none; stroke: #b86868; stroke-width: 3; stroke-dasharray: 8 6; marker-end: url(#arrowFail); }
+      .alt { fill: none; stroke: #78909c; stroke-width: 3; stroke-dasharray: 12 7; }
+      .label { fill: #ffffff; stroke: #d7e0e4; stroke-width: 1.5; }
+      .callLabel { stroke: #9cc2d1; }
+      .stateLabel { stroke: #b6c9a4; }
+      .deliveryLabel { stroke: #d0b078; }
+      .returnLabel { stroke: #c8b38f; }
+      .failLabel { stroke: #d9abab; }
+      .branchOk { fill: #f8f1e6; stroke: #a2743d; stroke-width: 1.8; }
+      .branchSkip { fill: #fff5f5; stroke: #b86868; stroke-width: 1.8; }
+      .badge { stroke-width: 1.8; }
+      .callBadge { fill: #eaf4f8; stroke: #3f7d9c; }
+      .stateBadge { fill: #eef7f0; stroke: #6e8f4f; }
+      .deliveryBadge { fill: #fff4df; stroke: #a2743d; }
+      .returnBadge { fill: #fff7e8; stroke: #9b7d54; }
+      .failBadge { fill: #fff0f0; stroke: #b86868; }
+      .badgeText { font-family: "goorm Sans Code"; font-size: 12px; font-weight: 700; }
+      .callText, .badgeText.callText { fill: #2f6f8e; }
+      .stateText, .badgeText.stateText { fill: #55783f; }
+      .deliveryText, .badgeText.deliveryText { fill: #855a29; }
+      .returnText, .badgeText.returnText { fill: #7f6038; }
+      .failText, .badgeText.failText { fill: #9d4f4f; }
+    </style>
+    <marker id="arrowCall" markerWidth="16" markerHeight="16" viewBox="0 0 10 10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#3f7d9c" stroke="#3f7d9c" stroke-dasharray="none" style="stroke-dasharray:none"/>
+    </marker>
+    <marker id="arrowState" markerWidth="16" markerHeight="16" viewBox="0 0 10 10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#6e8f4f" stroke="#6e8f4f" stroke-dasharray="none" style="stroke-dasharray:none"/>
+    </marker>
+    <marker id="arrowDelivery" markerWidth="16" markerHeight="16" viewBox="0 0 10 10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#a2743d" stroke="#a2743d" stroke-dasharray="none" style="stroke-dasharray:none"/>
+    </marker>
+    <marker id="arrowReturn" markerWidth="16" markerHeight="16" viewBox="0 0 10 10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#9b7d54" stroke="#9b7d54" stroke-dasharray="none" style="stroke-dasharray:none"/>
+    </marker>
+    <marker id="arrowFail" markerWidth="16" markerHeight="16" viewBox="0 0 10 10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#b86868" stroke="#b86868" stroke-dasharray="none" style="stroke-dasharray:none"/>
+    </marker>
+  </defs>
+  <rect x="24" y="24" width="1552" height="1312" rx="20" class="frame"/>
+  <text x="800" y="78" text-anchor="middle" class="title">첫 호출, 동일 키 재시도, 릴레이 재시도</text>
+  <text x="800" y="108" text-anchor="middle" class="subtitle">멱등성은 요청 경로를, outbox는 커밋 후 전달을 보호합니다.</text>
+  <rect x="118" y="150" width="140" height="68" rx="10" class="header"/>
+  <text x="188" y="179" text-anchor="middle" class="participant">Client</text>
+  <text x="188" y="201" text-anchor="middle" class="role">호출자</text>
+  <rect x="318" y="150" width="170" height="68" rx="10" class="header"/>
+  <text x="403" y="179" text-anchor="middle" class="participant">Spring / Ktor</text>
+  <text x="403" y="201" text-anchor="middle" class="role">HTTP endpoint</text>
+  <rect x="572" y="150" width="178" height="68" rx="10" class="header"/>
+  <text x="661" y="179" text-anchor="middle" class="participant">Repository</text>
+  <text x="661" y="201" text-anchor="middle" class="role">Exposed TX</text>
+  <rect x="842" y="150" width="156" height="68" rx="10" class="header"/>
+  <text x="920" y="179" text-anchor="middle" class="participant">외부 API</text>
+  <text x="920" y="201" text-anchor="middle" class="role">charge</text>
+  <rect x="1112" y="150" width="150" height="68" rx="10" class="header"/>
+  <text x="1187" y="179" text-anchor="middle" class="participant">Relay</text>
+  <text x="1187" y="201" text-anchor="middle" class="role">커밋 후</text>
+  <rect x="1386" y="150" width="150" height="68" rx="10" class="header"/>
+  <text x="1461" y="179" text-anchor="middle" class="participant">Consumer</text>
+  <text x="1461" y="201" text-anchor="middle" class="role">Kafka / HTTP</text>
+  <line x1="188" y1="218" x2="188" y2="1286" class="lifeline"/>
+  <line x1="403" y1="218" x2="403" y2="1286" class="lifeline"/>
+  <line x1="661" y1="218" x2="661" y2="1286" class="lifeline"/>
+  <line x1="920" y1="218" x2="920" y2="1286" class="lifeline"/>
+  <line x1="1187" y1="218" x2="1187" y2="1286" class="lifeline"/>
+  <line x1="1461" y1="218" x2="1461" y2="1286" class="lifeline"/>
+  <rect x="397" y="318" width="14" height="548" rx="6" class="activation"/>
+  <rect x="654" y="398" width="14" height="888" rx="6" class="activation"/>
+  <rect x="913" y="520" width="14" height="76" rx="6" class="activation"/>
+  <rect x="1180" y="970" width="14" height="316" rx="6" class="activation"/>
+  <rect x="1454" y="1052" width="14" height="194" rx="6" class="activation"/>
+  <rect x="70" y="272" width="1030" height="360" rx="14" class="alt"/>
+  <rect x="96" y="292" width="178" height="30" rx="15" class="branchOk"/>
+  <text x="118" y="312" class="note">첫 호출</text>
+  <rect x="70" y="660" width="790" height="240" rx="14" class="alt"/>
+  <rect x="96" y="680" width="246" height="30" rx="15" class="branchOk"/>
+  <text x="118" y="700" class="note">동일 키 재시도</text>
+  <rect x="560" y="930" width="960" height="330" rx="14" class="alt"/>
+  <rect x="586" y="950" width="204" height="30" rx="15" class="branchSkip"/>
+  <text x="608" y="970" class="note">loop 릴레이 재시도</text>
+  <rect x="130" y="340" width="360" height="34" rx="17" class="label callLabel"/>
+  <circle cx="154" cy="357" r="13" class="badge callBadge"/>
+  <text x="154" y="362" text-anchor="middle" class="badgeText callText">1</text>
+  <text x="178" y="362" class="msg callText">POST /payments with Idempotency-Key</text>
+  <path d="M 188 390 L 403 390" class="call"/>
+  <rect x="420" y="420" width="330" height="34" rx="17" class="label stateLabel"/>
+  <circle cx="444" cy="437" r="13" class="badge stateBadge"/>
+  <text x="444" y="442" text-anchor="middle" class="badgeText stateText">2</text>
+  <text x="468" y="442" class="msg stateText">pending 명령 + outbox 행 저장</text>
+  <path d="M 403 470 L 661 470" class="state"/>
+  <rect x="646" y="512" width="310" height="34" rx="17" class="label callLabel"/>
+  <circle cx="670" cy="529" r="13" class="badge callBadge"/>
+  <text x="670" y="534" text-anchor="middle" class="badgeText callText">3</text>
+  <text x="694" y="534" class="msg callText">중복 경로 밖에서 한 번 결제</text>
+  <path d="M 403 566 L 920 566" class="call"/>
+  <rect x="536" y="574" width="392" height="34" rx="17" class="label stateLabel"/>
+  <circle cx="560" cy="591" r="13" class="badge stateBadge"/>
+  <text x="560" y="596" text-anchor="middle" class="badgeText stateText">4</text>
+  <text x="584" y="596" class="msg stateText">성공 표시, 응답 행 영속화</text>
+  <path d="M 403 614 L 661 614" class="state"/>
+  <rect x="130" y="724" width="292" height="34" rx="17" class="label callLabel"/>
+  <circle cx="154" cy="741" r="13" class="badge callBadge"/>
+  <text x="154" y="746" text-anchor="middle" class="badgeText callText">5</text>
+  <text x="178" y="746" class="msg callText">같은 키로 다시 POST</text>
+  <path d="M 188 774 L 403 774" class="call"/>
+  <rect x="430" y="784" width="324" height="34" rx="17" class="label stateLabel"/>
+  <circle cx="454" cy="801" r="13" class="badge stateBadge"/>
+  <text x="454" y="806" text-anchor="middle" class="badgeText stateText">6</text>
+  <text x="478" y="806" class="msg stateText">기존 행 조회, API 호출 없음</text>
+  <path d="M 403 834 L 661 834" class="state"/>
+  <rect x="126" y="842" width="336" height="34" rx="17" class="label returnLabel"/>
+  <circle cx="150" cy="859" r="13" class="badge returnBadge"/>
+  <text x="150" y="864" text-anchor="middle" class="badgeText returnText">7</text>
+  <text x="174" y="864" class="msg returnText">200 OK, 저장 결과 사용</text>
+  <path d="M 403 878 L 188 878" class="return"/>
+  <rect x="780" y="992" width="374" height="34" rx="17" class="label deliveryLabel"/>
+  <circle cx="804" cy="1009" r="13" class="badge deliveryBadge"/>
+  <text x="804" y="1014" text-anchor="middle" class="badgeText deliveryText">8</text>
+  <text x="828" y="1014" class="msg deliveryText">pending / retry 가능 행 폴링</text>
+  <path d="M 1187 1034 L 661 1034" class="delivery"/>
+  <rect x="1188" y="1048" width="270" height="34" rx="17" class="label deliveryLabel"/>
+  <circle cx="1212" cy="1065" r="13" class="badge deliveryBadge"/>
+  <text x="1212" y="1070" text-anchor="middle" class="badgeText deliveryText">9</text>
+  <text x="1236" y="1070" class="msg deliveryText">이벤트 발행</text>
+  <path d="M 1187 1092 L 1461 1092" class="delivery"/>
+  <rect x="1192" y="1112" width="238" height="34" rx="17" class="label failLabel"/>
+  <circle cx="1216" cy="1129" r="13" class="badge failBadge"/>
+  <text x="1216" y="1134" text-anchor="middle" class="badgeText failText">10</text>
+  <text x="1240" y="1134" class="msg failText">실패 응답</text>
+  <path d="M 1461 1150 L 1187 1150" class="fail"/>
+  <rect x="734" y="1134" width="400" height="34" rx="17" class="label failLabel"/>
+  <circle cx="758" cy="1151" r="13" class="badge failBadge"/>
+  <text x="758" y="1156" text-anchor="middle" class="badgeText failText">11</text>
+  <text x="782" y="1156" class="msg failText">attempts + 1, 재시도 또는 dead letter</text>
+  <path d="M 1187 1188 L 661 1188" class="fail"/>
+  <rect x="1164" y="1198" width="274" height="34" rx="17" class="label deliveryLabel"/>
+  <circle cx="1188" cy="1215" r="13" class="badge deliveryBadge"/>
+  <text x="1188" y="1220" text-anchor="middle" class="badgeText deliveryText">12</text>
+  <text x="1212" y="1220" class="msg deliveryText">재발행 성공</text>
+  <path d="M 1187 1232 L 1461 1232" class="delivery"/>
+  <rect x="782" y="1238" width="286" height="34" rx="17" class="label stateLabel"/>
+  <circle cx="806" cy="1255" r="13" class="badge stateBadge"/>
+  <text x="806" y="1260" text-anchor="middle" class="badgeText stateText">13</text>
+  <text x="830" y="1260" class="msg stateText">outbox에 발행 완료 표시</text>
+  <path d="M 1187 1276 L 661 1276" class="state"/>
+  <rect x="98" y="1286" width="1404" height="36" rx="12" fill="#ffffff" stroke="#ccd7da" stroke-width="2"/>
+  <text x="118" y="1310" class="note">동일 키 HTTP 재시도는 저장 상태를 재사용하고, 릴레이 재시도는 outbox의 attempts와 status를 따릅니다.</text>
+</svg>

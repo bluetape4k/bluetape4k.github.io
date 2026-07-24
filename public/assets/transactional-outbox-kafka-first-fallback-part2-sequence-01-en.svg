@@ -82,12 +82,12 @@
 <line x1="1127" y1="218" x2="1127" y2="1226" class="lifeline"/>
 <line x1="1353" y1="218" x2="1353" y2="1226" class="lifeline"/>
 <line x1="1515" y1="218" x2="1515" y2="1226" class="lifeline"/>
-<rect x="348" y="318" width="14" height="186" rx="6" class="activation"/>
-<rect x="605" y="382" width="14" height="70" rx="6" class="activation"/>
+<rect x="348" y="304" width="14" height="200" rx="6" class="activation"/>
+<rect x="605" y="368" width="14" height="84" rx="6" class="activation"/>
 <rect x="860" y="502" width="14" height="390" rx="6" class="activation"/>
 <rect x="1120" y="604" width="14" height="90" rx="6" class="activation"/>
 <rect x="1346" y="780" width="14" height="336" rx="6" class="activation"/>
-<rect x="1508" y="826" width="14" height="342" rx="6" class="activation"/>
+<rect x="1508" y="826" width="14" height="356" rx="6" class="activation"/>
 <rect x="70" y="260" width="330" height="34" rx="17" class="label callLabel"/>
 <circle cx="94" cy="277" r="13" class="badge callBadge"/>
 <text x="94" y="282" text-anchor="middle" class="badgeText callText">1</text>
