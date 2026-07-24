@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1120" viewBox="0 0 2400 1120" role="img" aria-labelledby="title desc">
+  <title id="title">Spring Modulith publication inside one application and external Outbox delivery boundaries</title>
+  <desc id="desc">The upper path records completion and failure resubmission of the fulfillment listener after order approval inside one application. The lower path is a separate Outbox boundary that delivers to a broker and external consumer.</desc>
+  <defs>
+    <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07101f" />
+      <stop offset="0.55" stop-color="#0c1730" />
+      <stop offset="1" stop-color="#14172d" />
+    </linearGradient>
+    <linearGradient id="localZone" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b2c43" stop-opacity="0.82" />
+      <stop offset="1" stop-color="#10213c" stop-opacity="0.62" />
+    </linearGradient>
+    <linearGradient id="externalZone" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2d2049" stop-opacity="0.74" />
+      <stop offset="1" stop-color="#201a3e" stop-opacity="0.62" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#020617" flood-opacity="0.56" />
+    </filter>
+    <marker id="arrowBlue" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 1 1 L 13 7 L 1 13 Z" fill="#58a6c9" />
+    </marker>
+    <marker id="arrowOrange" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 1 1 L 13 7 L 1 13 Z" fill="#f4a261" />
+    </marker>
+    <marker id="arrowPurple" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 1 1 L 13 7 L 1 13 Z" fill="#a78bfa" />
+    </marker>
+    <style>
+      .title { font-family: 'goorm Sans', 'Architects Daughter', sans-serif; font-size: 43px; font-weight: 700; fill: #f8fafc; }
+      .subtitle { font-family: 'goorm Sans Code', 'Comic Mono', monospace; font-size: 20px; fill: #a9b8d4; }
+      .zone-title { font-family: 'goorm Sans', 'Architects Daughter', sans-serif; font-size: 27px; font-weight: 700; fill: #f8fafc; }
+      .zone-subtitle { font-family: 'goorm Sans Code', 'Comic Mono', monospace; font-size: 16px; fill: #c7d3e7; }
+      .card-title { font-family: 'goorm Sans', 'Architects Daughter', sans-serif; font-size: 24px; font-weight: 700; fill: #f8fafc; }
+      .card-code { font-family: 'goorm Sans Code', 'Comic Mono', monospace; font-size: 17px; font-weight: 700; fill: #dcecff; }
+      .body { font-family: 'goorm Sans Code', 'Comic Mono', monospace; font-size: 16px; fill: #c7d3e7; }
+      .small { font-family: 'goorm Sans Code', 'Comic Mono', monospace; font-size: 14px; fill: #a9b8d4; }
+      .label { font-family: 'goorm Sans Code', 'Comic Mono', monospace; font-size: 15px; font-weight: 700; fill: #f8fafc; }
+      .connector { fill: none; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+      .local { stroke: #58a6c9; marker-end: url(#arrowBlue); }
+      .failure { stroke: #f4a261; marker-end: url(#arrowOrange); }
+      .external { stroke: #a78bfa; marker-end: url(#arrowPurple); }
+    </style>
+  </defs>
+
+  <rect width="2400" height="1120" rx="34" fill="url(#canvas)" />
+  <rect x="28" y="28" width="2344" height="1064" rx="30" fill="none" stroke="#263a5e" stroke-width="2" />
+  <text class="title" x="1200" y="78" text-anchor="middle">Local completion tracking and external delivery are different boundaries</text>
+  <text class="subtitle" x="1200" y="114" text-anchor="middle">Spring Modulith publications track local listeners; Outbox records work for external delivery.</text>
+
+  <rect x="60" y="158" width="2280" height="492" rx="30" fill="url(#localZone)" stroke="#2e6f94" stroke-width="2" />
+  <text class="zone-title" x="102" y="210">Inside one Spring Boot application</text>
+  <text class="zone-subtitle" x="102" y="240">Record local listener completion after commit and resend failed work.</text>
+
+  <path class="connector local" data-connector="orders-transaction" d="M 400 394 H 450" />
+  <path class="connector local" data-connector="transaction-event" d="M 750 394 H 800" />
+  <path class="connector local" data-connector="event-publication" d="M 1170 394 H 1220" />
+  <path class="connector local" data-connector="publication-listener" d="M 1640 394 H 1690" />
+  <path class="connector failure" data-connector="listener-failure" d="M 1915 494 V 522 Q 1915 538 1899 538 H 1816 Q 1800 538 1800 554 V 570" />
+  <path class="connector failure" data-connector="failure-resubmit" d="M 1840 630 H 1870" />
+  <path class="connector local" data-connector="resubmit-listener" d="M 2020 570 V 542 Q 2020 526 2036 526 H 2064 Q 2080 526 2080 510 V 494" />
+
+  <g filter="url(#shadow)" aria-label="Order approval">
+    <rect x="140" y="314" width="260" height="160" rx="22" fill="#14334b" stroke="#58a6c9" stroke-width="2" />
+    <text class="card-title" x="270" y="361" text-anchor="middle">Orders</text>
+    <text class="body" x="270" y="399" text-anchor="middle">Approve order</text>
+    <text class="small" x="270" y="431" text-anchor="middle">APPROVED</text>
+  </g>
+
+  <g filter="url(#shadow)" aria-label="Transaction">
+    <rect x="450" y="314" width="300" height="160" rx="22" fill="#14334b" stroke="#58a6c9" stroke-width="2" />
+    <text class="card-title" x="600" y="361" text-anchor="middle">Transaction</text>
+    <text class="body" x="600" y="399" text-anchor="middle">Persist order</text>
+    <text class="small" x="600" y="431" text-anchor="middle">same commit</text>
+  </g>
+
+  <g filter="url(#shadow)" aria-label="OrderApprovedEvent">
+    <rect x="800" y="314" width="370" height="160" rx="22" fill="#14334b" stroke="#58a6c9" stroke-width="2" />
+    <text class="card-code" x="985" y="361" text-anchor="middle">OrderApprovedEvent</text>
+    <text class="body" x="985" y="399" text-anchor="middle">publish application event</text>
+    <text class="small" x="985" y="431" text-anchor="middle">orderKey · customerId</text>
+  </g>
+
+  <g filter="url(#shadow)" aria-label="EVENT_PUBLICATION">
+    <rect x="1220" y="294" width="420" height="200" rx="24" fill="#183c55" stroke="#58a6c9" stroke-width="2" />
+    <text class="card-code" x="1430" y="345" text-anchor="middle">EVENT_PUBLICATION</text>
+    <text class="body" x="1430" y="385" text-anchor="middle">per-listener processing state</text>
+    <text class="small" x="1430" y="417" text-anchor="middle">listener id · status · attempts</text>
+    <text class="small" x="1430" y="447" text-anchor="middle">event type · serialized event</text>
+  </g>
+
+  <g filter="url(#shadow)" aria-label="Stock reservation listener">
+    <rect x="1690" y="294" width="450" height="200" rx="24" fill="#17372c" stroke="#82b366" stroke-width="2" />
+    <text class="card-code" x="1915" y="345" text-anchor="middle">fulfillment</text>
+    <text class="card-code" x="1915" y="376" text-anchor="middle">reserve-stock</text>
+    <text class="body" x="1915" y="417" text-anchor="middle">reserve stock</text>
+    <text class="small" x="1915" y="447" text-anchor="middle">complete on success</text>
+  </g>
+
+  <g filter="url(#shadow)" aria-label="Failed publication">
+    <rect x="1510" y="570" width="330" height="120" rx="20" fill="#4a2f24" stroke="#f4a261" stroke-width="2" />
+    <text class="card-title" x="1675" y="614" text-anchor="middle">Failed</text>
+    <text class="small" x="1675" y="650" text-anchor="middle">FAILED publication</text>
+  </g>
+
+  <g filter="url(#shadow)" aria-label="Resubmit">
+    <rect x="1870" y="570" width="300" height="120" rx="20" fill="#4a2f24" stroke="#f4a261" stroke-width="2" />
+    <text class="card-title" x="2020" y="614" text-anchor="middle">Resubmit</text>
+    <text class="small" x="2020" y="650" text-anchor="middle">resubmit</text>
+  </g>
+
+  <rect x="60" y="708" width="2280" height="332" rx="30" fill="url(#externalZone)" stroke="#7556a8" stroke-width="2" />
+  <text class="zone-title" x="102" y="760">Across an external delivery boundary</text>
+  <text class="zone-subtitle" x="102" y="790">Outbox and relay own events that must leave for another service, broker, or runtime.</text>
+
+  <path class="connector external" data-connector="external-orders-outbox" d="M 500 918 H 650" />
+  <path class="connector external" data-connector="outbox-broker" d="M 1150 918 H 1300" />
+  <path class="connector external" data-connector="broker-consumer" d="M 1650 918 H 1800" />
+
+  <g filter="url(#shadow)" aria-label="Order change">
+    <rect x="160" y="838" width="340" height="160" rx="22" fill="#2b2149" stroke="#a78bfa" stroke-width="2" />
+    <text class="card-title" x="330" y="886" text-anchor="middle">Orders</text>
+    <text class="body" x="330" y="924" text-anchor="middle">persist business change</text>
+    <text class="small" x="330" y="956" text-anchor="middle">create event to publish</text>
+  </g>
+
+  <g filter="url(#shadow)" aria-label="Outbox">
+    <rect x="650" y="838" width="500" height="160" rx="22" fill="#2b2149" stroke="#a78bfa" stroke-width="2" />
+    <text class="card-title" x="900" y="886" text-anchor="middle">Outbox</text>
+    <text class="body" x="900" y="924" text-anchor="middle">event intent for external delivery</text>
+    <text class="small" x="900" y="956" text-anchor="middle">relay reads it again</text>
+  </g>
+
+  <g filter="url(#shadow)" aria-label="Broker">
+    <rect x="1300" y="838" width="350" height="160" rx="22" fill="#2b2149" stroke="#a78bfa" stroke-width="2" />
+    <text class="card-title" x="1475" y="886" text-anchor="middle">Broker</text>
+    <text class="body" x="1475" y="924" text-anchor="middle">external delivery channel</text>
+    <text class="small" x="1475" y="956" text-anchor="middle">Kafka, etc.</text>
+  </g>
+
+  <g filter="url(#shadow)" aria-label="External consumer">
+    <rect x="1800" y="838" width="420" height="160" rx="22" fill="#2b2149" stroke="#a78bfa" stroke-width="2" />
+    <text class="card-title" x="2010" y="886" text-anchor="middle">External consumer</text>
+    <text class="body" x="2010" y="924" text-anchor="middle">another service</text>
+    <text class="small" x="2010" y="956" text-anchor="middle">another runtime</text>
+  </g>
+
+  <circle cx="920" cy="1074" r="7" fill="#58a6c9" />
+  <text class="small" x="938" y="1080">local completion · failure · resubmission</text>
+  <circle cx="1480" cy="1074" r="7" fill="#a78bfa" />
+  <text class="small" x="1498" y="1080">external delivery and integration recovery</text>
+</svg>

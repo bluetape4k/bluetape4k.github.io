@@ -1,0 +1,182 @@
+---
+title: "Event Delivery Inside One Application: Choosing Between Spring Modulith Publications and an Outbox"
+description: A workshop-based guide to Spring Modulith publication recovery inside one Spring Boot application and the external delivery boundary that still calls for a transactional outbox.
+sidebar:
+  order: -202607231100
+blog:
+  date: 2026-07-23T11:00:00+09:00
+  image: /assets/spring-modulith-publications-vs-outbox-hero.png
+  imageAlt: 3D miniature of robotic engineers arranging an approved order, event publication ledger, fulfillment reservation, and external delivery boundary
+  cardDescription: "Separate local listener recovery inside one application from event delivery across an external boundary."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/spring-modulith-publications-vs-outbox-hero.png" alt="3D miniature of robotic engineers arranging an approved order, event publication ledger, fulfillment reservation, and external delivery boundary" loading="eager" />
+  <figcaption>Leaving a row behind is not the key distinction. What matters is who reads it again, and across which execution boundary.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-07-23 · exposed-workshop / bluetape4k-exposed · issue #253</p>
+
+Consider approving an order and then reserving stock. If the order row becomes `APPROVED` and the stock reservation
+fails afterward, approving the order again is the wrong recovery step. A log line is not enough either: an operator
+still needs to know which order stopped and which handler should run again.
+
+It is tempting to conclude, "this is an event, so use an outbox." That is a sound conclusion when the consumer lives
+behind a broker or in another service. When the orders and fulfillment modules are inside the same Spring Boot
+application, the first question is different: **did the follow-up work between modules finish?**
+
+This post uses the Spring Modulith publication example in `exposed-workshop` to draw that boundary. A Spring Modulith
+publication is not a lighter transactional outbox. It is a local durability layer that records whether a listener in
+the same application finished after commit and what should be run again after failure.
+
+## The Order Was Approved, but Stock Reservation Failed
+
+The business flow has two steps:
+
+1. The orders module approves an order.
+2. The fulfillment module receives the approval event and reserves stock.
+
+Putting both steps near the same database transaction does not mean stock reservation can never fail. The listener can
+run after the order commits, and an exception can happen in between. The order is already approved at that point, so
+the system needs to recover the failed follow-up work instead of replaying the original command as a whole.
+
+Spring Modulith publications persist the questions that matter at this point:
+
+- Which event was published?
+- Which listener has not finished?
+- Has the failed work been sent again?
+
+That record does not mean an external message arrived. It records whether the stock-reservation handler finished inside
+the same application.
+
+## Start the Order and Event in One Transaction
+
+The example's `OrderApplicationService.approve` stores an `APPROVED` order and publishes `OrderApprovedEvent` inside a
+`TransactionTemplate`.
+
+```kotlin
+fun approve(command: ApproveOrderCommand): OrderSummary =
+    transactionTemplate.execute {
+        val approvedAt = Instant.now()
+        val id = WorkshopOrders.insertAndGetId { row ->
+            row[orderKey] = command.orderKey
+            row[customerId] = command.customerId
+            row[status] = "APPROVED"
+            row[WorkshopOrders.approvedAt] = approvedAt
+        }
+        val summary = WorkshopOrders.selectAll()
+            .where { WorkshopOrders.id eq id }
+            .single()
+            .toOrderSummary()
+
+        events.publishEvent(
+            OrderApprovedEvent(summary.orderKey, summary.customerId, summary.approvedAt ?: approvedAt)
+        )
+        summary
+    }
+```
+
+This code establishes the **starting point** for the order and its event. A rolled-back transaction leaves neither the
+approval nor the event. Once it commits, a later listener failure does not erase the fact that an approval event exists
+and still has work to finish.
+
+The example replaces Spring Modulith's `EventPublicationRepository` with an Exposed implementation. It participates in
+`springTransactionManager` and writes a listener id, event type, serialized event, status, completion attempts, and
+publication/completion timestamps to `EVENT_PUBLICATION`. The table is not a duplicate copy of the order. It records
+how far one listener has processed one event.
+
+## A Publication Completes Only When Its Handler Completes
+
+The fulfillment module is a local listener for `OrderApprovedEvent`.
+
+```kotlin
+@ApplicationModuleListener(id = "fulfillment.reserve-stock")
+fun reserveStock(event: OrderApprovedEvent) {
+    transactionTemplate.executeWithoutResult {
+        FulfillmentReservations.insert { row ->
+            row[orderKey] = event.orderKey
+            row[customerId] = event.customerId
+            row[reservedAt] = Instant.now()
+        }
+    }
+}
+```
+
+An `@ApplicationModuleListener` is a transactional, asynchronous listener. Spring Modulith captures the publication
+before running the listener and marks the row complete only after the listener finishes successfully. A failure between
+order commit and stock reservation therefore leaves an actionable publication rather than a question about whether the
+order should be rolled back.
+
+<figure class="bt4k-architecture" data-diagram-title="Local completion tracking and external delivery boundaries">
+  <img src="/assets/spring-modulith-publications-vs-outbox-interaction-01-en.png" alt="Diagram comparing Orders, Transaction, OrderApprovedEvent, EVENT_PUBLICATION, fulfillment reserve-stock completion and resubmission inside one Spring Boot application with a separate Outbox, broker, and external consumer delivery boundary" loading="lazy" />
+  <figcaption>The top path tracks listener completion inside one application. The lower path starts the work of delivering to a broker and an external consumer.</figcaption>
+</figure>
+
+The two lines in the diagram are not competing implementations. The upper path observes completion of the local
+`fulfillment.reserve-stock` handler. The lower path starts delivery to a broker and external consumer. They may use an
+event with the same name, but the recovery owner and execution environment differ.
+
+## A Failed Publication Is an Operational Item
+
+The example test makes stock reservation fail once and verifies that a `FAILED` publication remains. Calling
+`IncompleteEventPublications.resubmitIncompletePublications(...)` sends that publication again. After reservation
+succeeds, its completion attempts become `2`.
+
+Resubmission is not another call to the order-approval API. It finds failed listener work by its publication row and
+runs it again. Operational tools therefore need to show the following together.
+
+| What to inspect | Why it matters |
+| --- | --- |
+| Listener id | It identifies the module's follow-up work that stopped. |
+| Status and attempt count | It distinguishes the first failure from work that was already resubmitted. |
+| Event type and serialized event | It shows which business input will run the handler again. |
+| Publication and completion time | It helps judge processing delay and recovery time. |
+
+There is a more awkward case too. An old publication row can remain after a deployment removes an event class. The
+example does not hide that row from inspection. Accessing `publication.event`, however, raises
+`UnloadableEventPublicationException`. That is an operational signal to restore the event class or migrate/delete the
+row, not a reason to press retry blindly.
+
+## Inside One Application and Outside It Are Different Delivery Boundaries
+
+Both stores leave rows behind, so they can look similar at first. Their questions make the distinction clear.
+
+| Decision point | Spring Modulith publication | Transactional Outbox |
+| --- | --- | --- |
+| Consumer location | Another module in the same Spring Boot application | Another process, service, broker, or runtime |
+| Stored record | Listener completion, failure, and resubmission state | Intent to publish an event externally |
+| Primary failure | Local listener work after commit | Network delivery, broker, or external-consumer failure |
+| Operational question | Which listener has not finished? | Which event has not reached the outside yet? |
+| Recovery scope | Re-run a listener inside the same deployment unit | The integration path through relay, broker, and consumer |
+
+When the consumer remains in the same application and an `@ApplicationModuleListener` resubmission is enough, a
+publication store keeps the problem small. When an event must reach Kafka, another service, or a different runtime, an
+outbox and relay are needed. The publication store does not replace broker delivery, and an outbox does not by itself
+describe whether a local listener completed.
+
+## A Short Selection Sequence
+
+Use this sequence to decide from the boundary instead of from a pattern name.
+
+1. **Is the consumer inside the same application?** Start with module events and listener-failure recovery.
+2. **Is recovery inside the same deployment unit sufficient?** Design the operational flow for listing and resubmitting incomplete publications.
+3. **Must the event reach an external consumer, broker, or separate runtime?** Design an outbox boundary between the database change and external publication.
+
+One business flow can need both boundaries. Orders can notify fulfillment through a local publication while sending an
+event to a delivery-partner service through an outbox. Even then, the two rows should not be treated as interchangeable
+copies. Define the state and operations for local completion and external delivery separately.
+
+## Resources
+
+- [Spring Modulith publication store with Exposed workshop](https://github.com/bluetape4k/exposed-workshop/tree/develop/13-ecosystem-integrations/06-spring-modulith-publications)
+- [Order approval and `OrderApprovedEvent` publication](https://github.com/bluetape4k/exposed-workshop/blob/develop/13-ecosystem-integrations/06-spring-modulith-publications/src/main/kotlin/exposed/examples/spring/modulith/publications/orders/OrderModule.kt)
+- [`fulfillment.reserve-stock` listener](https://github.com/bluetape4k/exposed-workshop/blob/develop/13-ecosystem-integrations/06-spring-modulith-publications/src/main/kotlin/exposed/examples/spring/modulith/publications/fulfillment/FulfillmentModule.kt)
+- [Exposed-backed `EventPublicationRepository`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/spring-boot/spring-modulith/src/main/kotlin/io/bluetape4k/spring/modulith/exposed/ExposedEventPublicationRepository.kt)
+- [Transactional Outbox and Idempotency in Spring and Ktor Examples](/blog/transactional-outbox-idempotency-spring-ktor/)
+- [Transactional Outbox Part 2: Kafka-First Fallback to Reduce Hot Transactions](/blog/transactional-outbox-kafka-first-fallback-part2/)
+
+## Closing
+
+Leaving a row in a store does not make two designs the same. Spring Modulith publications track and rerun listeners
+inside one application. Transactional outboxes carry events across an external execution boundary and tolerate delivery
+failures there. Start by locating the consumer, and the state model and operating procedure follow from that boundary.
