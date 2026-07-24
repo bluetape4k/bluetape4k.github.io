@@ -25,7 +25,7 @@ as interchangeable storage engines. Exposed is durable SQL history, Redis is a f
 path, and Kafka is a write-only event stream.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-javers-part2-backend-selection-01.png" alt="Persistence role map from a JaVers commit to Exposed, Redis, and Kafka" loading="lazy" />
+  <img src="/assets/bluetape4k-javers-part2-backend-selection-01-en.png" alt="Persistence role map from a JaVers commit to Exposed, Redis, and Kafka" loading="lazy" />
   <figcaption>Choose by repository role, not by module name.</figcaption>
 </figure>
 
@@ -97,7 +97,7 @@ downstream consumers. Exposed + Redis is another common shape: SQL keeps durable
 Redis serves hot latest/history reads.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-javers-part2-composition-map-01.png" alt="Diagram showing current Exposed, Redis, and Kafka adapters and the planned composite repository direction" loading="lazy" />
+  <img src="/assets/bluetape4k-javers-part2-composition-map-01-en.png" alt="Diagram showing current Exposed, Redis, and Kafka adapters and the planned composite repository direction" loading="lazy" />
   <figcaption>The current adapters are role-specific. Exposed + Kafka fan-out is planned as a future composite repository.</figcaption>
 </figure>
 

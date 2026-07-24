@@ -46,7 +46,7 @@ JaVers starts from the application object and commit metadata. Use CDC when ever
 must be streamed outward. Use JaVers when readers need object history and human-readable diffs.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-javers-part1-snapshot-flow-01.png" alt="Flow from domain object to JaVers commit, snapshot repository, and query or diff reader" loading="lazy" />
+  <img src="/assets/bluetape4k-javers-part1-snapshot-flow-01-en.png" alt="Flow from domain object to JaVers commit, snapshot repository, and query or diff reader" loading="lazy" />
   <figcaption>The application commits aggregates, and readers query snapshot history or object diffs.</figcaption>
 </figure>
 
@@ -110,7 +110,7 @@ The workshop `ProductAuditService` shows the smallest useful shape. It commits t
 JaVers and upserts the current row through Exposed.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-javers-part1-product-audit-sequence-01.png" alt="Sequence diagram showing ProductAuditService committing to JaVers, persisting snapshots, and updating ProductTable" loading="lazy" />
+  <img src="/assets/bluetape4k-javers-part1-product-audit-sequence-01-en.png" alt="Sequence diagram showing ProductAuditService committing to JaVers, persisting snapshots, and updating ProductTable" loading="lazy" />
   <figcaption>Even the small example is easier to read when current state and audit history have separate responsibilities.</figcaption>
 </figure>
 

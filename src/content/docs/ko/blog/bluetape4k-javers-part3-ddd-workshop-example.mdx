@@ -36,7 +36,7 @@ handler, domain event, projection을 한 흐름으로 오래 운영해 본 경�
 감을 잡고, 그 다음 DDD 예제를 command side와 read side로 나누어 보겠습니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-javers-part3-command-sequence-01.png" alt="Command handler가 Order aggregate를 저장하고 JaVers audit와 event publisher, Redis read model로 이어지는 flow diagram" loading="lazy" />
+  <img src="/assets/bluetape4k-javers-part3-command-flow-01-ko.png" alt="Command handler가 Order aggregate를 저장하고 JaVers audit와 event publisher, Redis read model로 이어지는 flow diagram" loading="lazy" />
   <figcaption>command side에서는 aggregate 저장, JaVers commit, domain event 발행 순서가 명확해야 합니다.</figcaption>
 </figure>
 
@@ -47,7 +47,7 @@ handler, domain event, projection을 한 흐름으로 오래 운영해 본 경�
 제일 빠릅니다. 문제는 객체가 조금만 복잡해져도 같은 코드가 계속 늘어난다는 점입니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-javers-part3-manual-vs-javers-01.png" alt="Manual audit table 방식과 JaVers snapshot flow를 비교하는 diagram" loading="lazy" />
+  <img src="/assets/bluetape4k-javers-part3-manual-vs-javers-01-ko.png" alt="Manual audit table 방식과 JaVers snapshot flow를 비교하는 diagram" loading="lazy" />
   <figcaption>Exposed는 현재 row를 저장하고, JaVers는 변경 이력과 object diff semantics를 맡습니다.</figcaption>
 </figure>
 
@@ -95,7 +95,7 @@ side는 현재 주문 상태를 Exposed table에 저장하고, 같은 변경을 
 Redis는 audit history가 아니라 화면/조회용 read model입니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-javers-part3-example-sequence-01.png" alt="javers-exposed-ddd 예제의 command와 projection sequence diagram" loading="lazy" />
+  <img src="/assets/bluetape4k-javers-part3-example-sequence-01-ko.png" alt="javers-exposed-ddd 예제의 command와 projection sequence diagram" loading="lazy" />
   <figcaption>예제 README의 sequence diagram은 command 처리, audit commit, event publish, Redis projection의 순서를 한 번에 정리합니다.</figcaption>
 </figure>
 
@@ -139,7 +139,7 @@ DDD helper를 둔 이유도 여기에 있습니다. 매 command handler마다 �
 Kafka event consumer가 event를 받아 summary를 갱신하고, query service는 Redis에서 summary를 읽습니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-javers-part3-example-cqrs-flow-01.png" alt="javers-exposed-ddd 예제의 CQRS flow diagram" loading="lazy" />
+  <img src="/assets/bluetape4k-javers-part3-example-cqrs-flow-01-ko.png" alt="javers-exposed-ddd 예제의 CQRS flow diagram" loading="lazy" />
   <figcaption>Command side의 source of truth, JaVers audit store, Kafka event stream, Redis read model은 서로 다른 책임을 가집니다.</figcaption>
 </figure>
 

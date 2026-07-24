@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1500" height="760" viewBox="0 0 1500 760">
 <defs>
-  <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+  <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse">
     <path d="M 1 1 L 7 4 L 1 7 Z" fill="#496A8F"/>
   </marker>
   <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
@@ -8,10 +8,10 @@
   </filter>
   <style>
     .canvas{fill:#F6F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
-    .title{font-family:"Architects Daughter","Comic Sans MS",cursive;font-size:42px;fill:#22344A;font-weight:400}
-    .subtitle,.footer{font-family:"Comic Sans MS","Comic Sans",sans-serif;font-size:17px;fill:#536476;font-weight:400}
-    .nodeTitle{font-family:"Architects Daughter","Comic Sans MS",cursive;font-size:25px;fill:#22344A;font-weight:400}
-    .nodeBody,.edgeLabel{font-family:"Comic Sans MS","Comic Sans",sans-serif;font-size:16px;fill:#3F5269;font-weight:400}
+    .title{font-family:"Architects Daughter";font-size:42px;fill:#22344A;font-weight:400}
+    .subtitle,.footer{font-family:"Comic Mono";font-size:17px;fill:#536476;font-weight:400}
+    .nodeTitle{font-family:"Architects Daughter";font-size:25px;fill:#22344A;font-weight:400}
+    .nodeBody,.edgeLabel{font-family:"Comic Mono";font-size:16px;fill:#3F5269;font-weight:400}
     .edge{fill:none;stroke:#496A8F;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
     g[id]{filter:url(#shadow)}
   </style>
@@ -20,10 +20,10 @@
 <rect class="frame" x="34" y="28" width="1432" height="704" rx="24"/>
 <text class="title" x="750" y="82" text-anchor="middle">Persistence Composition Map</text>
 <text class="subtitle" x="750" y="116" text-anchor="middle">Current adapters are role-specific; composite fan-out is planned</text>
-<path class="edge" d="M415 344 H458 V229 H488"/>
-<path class="edge" d="M415 344 H458 V494 H488"/>
-<path class="edge" d="M840 229 H920 V344 H988"/>
-<path class="edge" d="M840 494 H920 V344 H988"/>
+<path class="edge" d="M255 285 V260 Q255 250 265 250 H488"/>
+<path class="edge" d="M415 344 H448 Q458 344 458 354 V484 Q458 494 468 494 H488"/>
+<path class="edge" d="M840 229 H1175 Q1185 229 1185 239 V273"/>
+<path class="edge" d="M840 494 H910 Q920 494 920 484 V354 Q920 344 930 344 H988"/>
 <g id="app">
   <rect x="95" y="285" width="320" height="142" rx="12" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
   <text class="nodeTitle" x="255" y="327" text-anchor="middle">Application Commit</text>

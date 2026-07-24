@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1290" height="680" viewBox="0 0 1290 680">
+<defs>
+  <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+    <path d="M 1 1 L 7 4 L 1 7 Z" fill="#496A8F"/>
+  </marker>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#22344A" flood-opacity="0.12"/>
+  </filter>
+  <style>
+    .canvas{fill:#F6F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
+    .title{font-family:"goorm Sans";font-size:42px;fill:#22344A;font-weight:400}
+    .subtitle,.footer{font-family:"goorm Sans Code";font-size:17px;fill:#536476;font-weight:400}
+    .nodeTitle{font-family:"goorm Sans";font-size:25px;fill:#22344A;font-weight:400}
+    .nodeBody,.edgeLabel{font-family:"goorm Sans Code";font-size:16px;fill:#3F5269;font-weight:400}
+    .edge{fill:none;stroke:#496A8F;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    g[id]{filter:url(#shadow)}
+  </style>
+</defs>
+<rect class="canvas" width="1290" height="680"/>
+<rect class="frame" x="34" y="28" width="1222" height="624" rx="24"/>
+<text class="title" x="645" y="82" text-anchor="middle">수동 감사와 JaVers 스냅샷 흐름 비교</text>
+<text class="subtitle" x="645" y="116" text-anchor="middle">반복되는 감사 테이블 코드를 객체 커밋과 차이 조회로 바꿉니다</text>
+<path class="edge" d="M480 239 H415 V239 H362"/>
+<path class="edge" d="M740 239 H805 V239 H858"/>
+<path class="edge" d="M1000 322 V381 H1000 V428"/>
+<g id="manual">
+  <rect x="90" y="180" width="260" height="142" rx="12" fill="#FFECEC" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="220" y="222" text-anchor="middle">수동 감사 테이블</text>
+  <text class="nodeBody" x="220" y="246" text-anchor="middle">엔티티마다 이력 스키마</text>
+  <text class="nodeBody" x="220" y="272" text-anchor="middle">컬럼을 직접 복사</text>
+  <text class="nodeBody" x="220" y="298" text-anchor="middle">중첩 객체 차이가 어려움</text>
+</g>
+<g id="service">
+  <rect x="480" y="180" width="260" height="118" rx="12" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="610" y="222" text-anchor="middle">애플리케이션 서비스</text>
+  <text class="nodeBody" x="610" y="255" text-anchor="middle">저장 / 갱신 / 삭제</text>
+</g>
+<g id="javers">
+  <rect x="870" y="180" width="260" height="142" rx="12" fill="#EAF8EF" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="1000" y="222" text-anchor="middle">JaVers 스냅샷 흐름</text>
+  <text class="nodeBody" x="1000" y="246" text-anchor="middle">commitShallowDelete</text>
+  <text class="nodeBody" x="1000" y="272" text-anchor="middle">INITIAL / UPDATE / TERMINAL</text>
+  <text class="nodeBody" x="1000" y="298" text-anchor="middle">compare(old, new)</text>
+</g>
+<g id="history">
+  <rect x="870" y="440" width="260" height="142" rx="12" fill="#F3ECFF" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="1000" y="482" text-anchor="middle">조회자</text>
+  <text class="nodeBody" x="1000" y="506" text-anchor="middle">최신 스냅샷</text>
+  <text class="nodeBody" x="1000" y="532" text-anchor="middle">상태 이력</text>
+  <text class="nodeBody" x="1000" y="558" text-anchor="middle">필드 수준 차이</text>
+</g>
+<rect x="88" y="590" width="1114" height="56" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
+<text class="footer" x="645" y="613" text-anchor="middle">워크숍은 상품 행을 계속 Exposed로 저장합니다.</text>
+<text class="footer" x="645" y="636" text-anchor="middle">JaVers는 변경 이력과 객체 차이 의미를 담당합니다.</text>
+</svg>
