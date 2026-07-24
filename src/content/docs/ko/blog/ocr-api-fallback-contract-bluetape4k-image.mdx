@@ -27,7 +27,7 @@ host에서 OCR을 수행할 수 없는 경우만 fallback 응답으로 돌려줍
 운영자도, 장애 알림도 같이 헷갈립니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/ocr-api-fallback-contract-workflow-01.png" alt="HTTP upload boundary, image preprocessing boundary, native OCR boundary, response contract boundary를 세로 lane으로 나누어 보여주는 OCR 서비스 workflow diagram" loading="lazy" />
+  <img src="/assets/ocr-api-fallback-contract-workflow-01-ko.png" alt="HTTP upload boundary, image preprocessing boundary, native OCR boundary, response contract boundary를 세로 lane으로 나누어 보여주는 OCR 서비스 workflow diagram" loading="lazy" />
   <figcaption>실전 OCR 서비스는 upload guard, image preprocessing, native OCR, response contract를 분리해서 봐야 합니다. `BAD_REQUEST`는 fallback이 아니라 입력 경계에서 끝나는 요청입니다.</figcaption>
 </figure>
 
@@ -36,7 +36,7 @@ host에서 OCR을 수행할 수 없는 경우만 fallback 응답으로 돌려줍
 글에서 사용할 예제 이미지는 아래처럼 읽기 쉬운 문서형 이미지라고 가정합니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/ocr-api-fallback-contract-sample-input-01.png" alt="BLUETAPE OCR이라는 제목과 세 줄의 문장이 들어 있는 OCR API 예제 입력 이미지" loading="lazy" />
+  <img src="/assets/ocr-api-fallback-contract-sample-input-01-ko.png" alt="BLUETAPE OCR이라는 제목과 세 줄의 문장이 들어 있는 OCR API 예제 입력 이미지" loading="lazy" />
   <figcaption>실제 OCR 결과는 font, 해상도, traineddata, preprocessing에 따라 달라집니다. 글의 JSON은 workshop contract를 설명하기 위한 source-backed 예시입니다.</figcaption>
 </figure>
 
@@ -208,7 +208,7 @@ OCR API에서 memory pressure는 Tesseract에 들어간 뒤에만 생기지 않�
 "OCR 전에 이미지 전처리 비용이 어느 정도인가"를 판단하는 데는 충분히 유용합니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/ocr-api-fallback-contract-benchmark-chart-01.png" alt="OCR document preprocessing benchmark chart comparing Scrimage and libvips latency and managed heap allocation" loading="lazy" />
+  <img src="/assets/ocr-api-fallback-contract-benchmark-chart-01-ko.png" alt="OCR document preprocessing benchmark chart comparing Scrimage and libvips latency and managed heap allocation" loading="lazy" />
   <figcaption>문서형 OCR 전처리 workload에서는 libvips Java 25 FFM 경로가 latency와 managed heap allocation 모두에서 훨씬 작았습니다. 이 숫자는 OCR 인식 시간이 아니라 decode/resize/grayscale/encode pipeline의 비용입니다.</figcaption>
 </figure>
 

@@ -28,7 +28,7 @@ cannot run OCR or because OCR failed at runtime. Mixing those two cases makes cl
 and alerts harder to reason about.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/ocr-api-fallback-contract-workflow-01.png" alt="OCR service workflow diagram with vertical lanes for HTTP upload boundary, image preprocessing boundary, native OCR boundary, and response contract boundary" loading="lazy" />
+  <img src="/assets/ocr-api-fallback-contract-workflow-01-en.png" alt="OCR service workflow diagram with vertical lanes for HTTP upload boundary, image preprocessing boundary, native OCR boundary, and response contract boundary" loading="lazy" />
   <figcaption>A practical OCR service splits upload guard, image preprocessing, native OCR, and response contract. `BAD_REQUEST` is not a fallback; it is an input-boundary rejection.</figcaption>
 </figure>
 
@@ -37,7 +37,7 @@ and alerts harder to reason about.
 The sample input in this post is a clean document-like image.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/ocr-api-fallback-contract-sample-input-01.png" alt="OCR API sample input image with the title BLUETAPE OCR and three document lines" loading="lazy" />
+  <img src="/assets/ocr-api-fallback-contract-sample-input-01-en.png" alt="OCR API sample input image with the title BLUETAPE OCR and three document lines" loading="lazy" />
   <figcaption>Actual OCR output depends on font, resolution, traineddata, and preprocessing. The JSON below is a source-backed illustration of the workshop contract.</figcaption>
 </figure>
 
@@ -210,7 +210,7 @@ This is not an OCR recognition benchmark. It is evidence for the image preproces
 happens before OCR.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/ocr-api-fallback-contract-benchmark-chart-01.png" alt="OCR document preprocessing benchmark chart comparing Scrimage and libvips latency and managed heap allocation" loading="lazy" />
+  <img src="/assets/ocr-api-fallback-contract-benchmark-chart-01-en.png" alt="OCR document preprocessing benchmark chart comparing Scrimage and libvips latency and managed heap allocation" loading="lazy" />
   <figcaption>In the document-like preprocessing workload, the libvips Java 25 FFM path used much less latency and managed heap allocation than the pure-JVM Scrimage path. These numbers measure decode/resize/grayscale/encode, not recognition time.</figcaption>
 </figure>
 
