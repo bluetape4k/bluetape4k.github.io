@@ -36,7 +36,7 @@ IP address, phone hash, payment token, or referral, then find other users sharin
 with relational joins, but the query grows awkward as identifier types multiply.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-graph-part4-abuser-identity-flow-01.png" alt="Abuser detection identity flow from seed user to shared identifiers, related users, suspicion evidence, and risk ranking" loading="lazy" />
+  <img src="/assets/bluetape4k-graph-part4-abuser-identity-flow-01-en.png" alt="Abuser detection identity flow from seed user to shared identifiers, related users, suspicion evidence, and risk ranking" loading="lazy" />
   <figcaption>Shared identifiers turn abuse investigation into a readable graph traversal.</figcaption>
 </figure>
 
@@ -46,7 +46,7 @@ edge paths for evidence, `detectReferralLoops()` uses cycle detection, and `rank
 review queue. Phone values should be hashes, and payment identifiers should be PCI-safe tokens.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-graph-part4-abuser-erd-01.png" alt="Abuser detection entity graph with User, Device, IpAddress, PhoneNumber, PaymentMethod, and referral user relationships" loading="lazy" />
+  <img src="/assets/bluetape4k-graph-part4-abuser-erd-01-en.png" alt="Abuser detection entity graph with User, Device, IpAddress, PhoneNumber, PaymentMethod, and referral user relationships" loading="lazy" />
   <figcaption>The important modeling choice is to keep identifiers as vertices. Shared identifiers become the cluster signal.</figcaption>
 </figure>
 
@@ -55,7 +55,7 @@ review queue. Phone values should be hashes, and payment identifiers should be P
 The recommendation example covers both product recommendations and follow recommendations.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-graph-part4-recommendation-flow-01.png" alt="Recommendation example flow for co-buyer product candidates and friends-of-friends follow candidates" loading="lazy" />
+  <img src="/assets/bluetape4k-graph-part4-recommendation-flow-01-en.png" alt="Recommendation example flow for co-buyer product candidates and friends-of-friends follow candidates" loading="lazy" />
   <figcaption>Separate candidate generation from scoring so the traversal is easy to read and test.</figcaption>
 </figure>
 
@@ -68,7 +68,7 @@ Cypher or Gremlin queries. The common API makes the starting point and tests sim
 until the bottleneck looks prettier.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-graph-part4-recommendation-erd-01.png" alt="Recommendation entity graph with User, Product, followee user, and scored candidates" loading="lazy" />
+  <img src="/assets/bluetape4k-graph-part4-recommendation-erd-01-en.png" alt="Recommendation entity graph with User, Product, followee user, and scored candidates" loading="lazy" />
   <figcaption>`PURCHASED` builds product candidates; `FOLLOWS` builds follow candidates. Candidate generation and scoring stay separate.</figcaption>
 </figure>
 
@@ -80,7 +80,7 @@ operations go beyond "search": `findMentionedEntities(documentId)`, `findRelated
 `findConceptsForEntity(entityId)`, and `inferRelationshipPaths(from, to)` explain why two things are connected.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-graph-part4-knowledge-erd-01.png" alt="Knowledge graph entity graph with Document, Entity, Concept, and related entity relationships" loading="lazy" />
+  <img src="/assets/bluetape4k-graph-part4-knowledge-erd-01-en.png" alt="Knowledge graph entity graph with Document, Entity, Concept, and related entity relationships" loading="lazy" />
   <figcaption>Search finds candidate documents; graph paths explain why entities are connected.</figcaption>
 </figure>
 
@@ -97,7 +97,7 @@ the unglamorous rules: exclude the seed user, exclude existing connections, cap 
 is directional.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-graph-part4-social-erd-01.png" alt="Social network entity graph with Person, Company, KNOWS, FOLLOWS, and WORKS_AT relationships" loading="lazy" />
+  <img src="/assets/bluetape4k-graph-part4-social-erd-01-en.png" alt="Social network entity graph with Person, Company, KNOWS, FOLLOWS, and WORKS_AT relationships" loading="lazy" />
   <figcaption>Direction and depth limits decide whether a path is a recommendation or an explanation.</figcaption>
 </figure>
 

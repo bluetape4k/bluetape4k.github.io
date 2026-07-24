@@ -1,0 +1,14 @@
+graph 1 10.622 1.6944
+node "graph" 0.75694 0.84722 1.5139 0.5 GraphOperations rounded box black lightgrey
+node core 3.1354 0.84722 1.2431 0.5 "graph-io-core" rounded box black lightgrey
+node formats 5.5087 1.4444 1.1806 0.5 "Data Format" rounded box black lightgrey
+node uses 10.078 1.4444 1.0868 0.5 "운영 활용" rounded box black lightgrey
+node bench 5.5087 0.25 1.5035 0.5 "Benchmark Gate" rounded box black lightgrey
+node decorators 7.8976 0.79167 1.2743 0.5 "I/O Decorator" rounded box black lightgrey
+edge "graph" core 4 1.516 0.84722 1.516 0.84722 2.3508 0.84722 2.3508 0.84722 solid black
+edge core formats 7 3.7603 0.93056 4.4046 0.93056 5.316 0.93056 5.316 0.93056 5.316 0.93056 5.316 1.0276 5.316 1.0276 solid black
+edge core bench 7 3.7618 0.81944 4.2494 0.81944 4.8438 0.81944 4.8438 0.81944 4.8438 0.81944 4.8438 0.66133 4.8438 0.66133 solid black
+edge formats uses 4 6.1014 1.4444 6.1014 1.4444 9.3694 1.4444 9.3694 1.4444 solid black
+edge formats decorators 7 5.7049 1.1911 5.7049 0.97819 5.7049 0.70833 5.7049 0.70833 5.7049 0.70833 7.0975 0.70833 7.0975 0.70833 solid black
+edge decorators uses 7 8.5405 0.79167 9.1842 0.79167 10.08 0.79167 10.08 0.79167 10.08 0.79167 10.08 1.0303 10.08 1.0303 solid black
+stop

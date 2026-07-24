@@ -35,7 +35,7 @@ graph calls easier to scale and reason about.
 sync work on a virtual thread and returns a `CompletableFuture<T>`.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-graph-part5-call-path-01.png" alt="Sync path and Virtual Thread path for the same graph backend operation" loading="lazy" />
+  <img src="/assets/bluetape4k-graph-part5-call-path-01-en.png" alt="Sync path and Virtual Thread path for the same graph backend operation" loading="lazy" />
   <figcaption>The virtual-thread path changes where the wait happens. It does not make the backend work disappear.</figcaption>
 </figure>
 
@@ -90,7 +90,7 @@ This setup intentionally removes network noise. It exposes API-model overhead, n
 On the TinkerGraph in-memory fixture, sync wins every single-call benchmark.
 
 <figure class="bt4k-chart">
-  <img src="/assets/bluetape4k-graph-part5-vt-latency-chart-01.png" alt="TinkerGraph benchmark chart comparing Sync and Virtual Threads latency in microseconds per operation" loading="lazy" />
+  <img src="/assets/bluetape4k-graph-part5-vt-latency-chart-01-en.png" alt="TinkerGraph benchmark chart comparing Sync and Virtual Threads latency in microseconds per operation" loading="lazy" />
   <figcaption>When the operation itself is only a few microseconds, virtual-thread wrapping cost is visible.</figcaption>
 </figure>
 

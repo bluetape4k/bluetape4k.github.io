@@ -1,0 +1,13 @@
+graph 1 9.0035 1.6944
+node syncCaller 0.62674 1.4444 1.2535 0.5 "Caller Thread" rounded box black lightgrey
+node syncMethod 3.2396 1.4444 1.2431 0.5 "Sync Method" rounded box black lightgrey
+node backend 5.9253 0.84722 1.3993 0.5 "Graph Backend" rounded box black lightgrey
+node vtCaller 0.62674 0.25 1.2535 0.5 "Caller Thread" rounded box black lightgrey
+node vtAdapter 3.2396 0.25 1.9722 0.5 "Virtual Thread Adapter" rounded box black lightgrey
+node wait 8.3142 0.84722 1.3785 0.5 "Wait Boundary" rounded box black lightgrey
+edge syncCaller syncMethod 4 1.2592 1.4444 1.2592 1.4444 2.453 1.4444 2.453 1.4444 solid black
+edge syncMethod backend 7 3.2396 1.1875 3.2396 1.059 3.2396 0.93056 3.2396 0.93056 3.2396 0.93056 5.0598 0.93056 5.0598 0.93056 solid black
+edge backend wait 4 6.6292 0.84722 6.6292 0.84722 7.4596 0.84722 7.4596 0.84722 solid black
+edge vtCaller vtAdapter 4 1.2592 0.25 1.2592 0.25 2.0911 0.25 2.0911 0.25 solid black
+edge vtAdapter backend 7 4.0451 0.50694 4.0451 0.63542 4.0451 0.76389 4.0451 0.76389 4.0451 0.76389 5.06 0.76389 5.06 0.76389 solid black
+stop

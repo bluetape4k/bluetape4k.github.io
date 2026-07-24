@@ -23,7 +23,7 @@ algorithms while graph storage adapters handle driver and query details. Without
 grows its own tiny graph framework. Most of those frameworks are loved only on the day they are born.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-graph-part2-core-api-flow-01.png" alt="Core API execution flow from domain service to GraphOperations, Schema DSL, execution models, and graph storage adapter" loading="lazy" />
+  <img src="/assets/bluetape4k-graph-part2-core-api-flow-01-en.png" alt="Core API execution flow from domain service to GraphOperations, Schema DSL, execution models, and graph storage adapter" loading="lazy" />
   <figcaption>Service code depends on graph concepts; execution and storage selection stay outside the domain flow.</figcaption>
 </figure>
 
@@ -72,7 +72,7 @@ constraint should fail during setup or tests, not after production traffic has t
 actual constraint behind it is the kind of surprise that gets expensive quickly.
 
 <figure class="bt4k-sequence">
-  <img src="/assets/bluetape4k-graph-part2-transaction-sequence-01.png" alt="Transaction and batch write sequence for GraphOperations" loading="lazy" />
+  <img src="/assets/bluetape4k-graph-part2-transaction-sequence-01-en.png" alt="Transaction and batch write sequence for GraphOperations" loading="lazy" />
   <figcaption>Transaction blocks expose CRUD work and leave lifecycle commands to storage-specific code.</figcaption>
 </figure>
 
@@ -90,7 +90,7 @@ vertices start showing up under concurrent traffic.
 | Coroutine | Ktor or coroutine-native service composition |
 
 <figure class="bt4k-chart">
-  <img src="/assets/bluetape4k-graph-part2-api-model-benchmark-01.png" alt="API model benchmark chart for BFS latency with sync, virtual thread, and coroutine models" loading="lazy" />
+  <img src="/assets/bluetape4k-graph-part2-api-model-benchmark-01-en.png" alt="API model benchmark chart for BFS latency with sync, virtual thread, and coroutine models" loading="lazy" />
   <figcaption>Single in-memory BFS favors sync; launch/create overhead favors coroutines. The workload decides.</figcaption>
 </figure>
 

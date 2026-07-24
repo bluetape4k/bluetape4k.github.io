@@ -24,7 +24,7 @@ driver/query 차이는 graph storage adapter가 맡게 하는 것입니다. 서�
 싶어 하지 않습니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-graph-part2-core-api-flow-01.png" alt="Core API execution flow from domain service to GraphOperations, Schema DSL, execution models, and graph storage adapter" loading="lazy" />
+  <img src="/assets/bluetape4k-graph-part2-core-api-flow-01-ko.png" alt="Core API execution flow from domain service to GraphOperations, Schema DSL, execution models, and graph storage adapter" loading="lazy" />
   <figcaption>서비스는 graph 용어로 코드를 쓰고, graph storage adapter는 실제 query와 driver 차이를 맡습니다.</figcaption>
 </figure>
 
@@ -94,7 +94,7 @@ transaction DSL은 CRUD 범위만 노출합니다. graph 생성/삭제 같은 li
 의미가 달라서 transaction block 안에 넣지 않습니다.
 
 <figure class="bt4k-sequence">
-  <img src="/assets/bluetape4k-graph-part2-transaction-sequence-01.png" alt="Transaction and batch write sequence for GraphOperations" loading="lazy" />
+  <img src="/assets/bluetape4k-graph-part2-transaction-sequence-01-ko.png" alt="Transaction and batch write sequence for GraphOperations" loading="lazy" />
   <figcaption>transaction block은 vertex/edge write를 묶고, adapter는 commit 또는 rollback을 책임집니다.</figcaption>
 </figure>
 
@@ -126,7 +126,7 @@ val alice = ops.mergeVertex(
 짧지만, 실행 모델의 성격을 이해하는 데는 충분합니다.
 
 <figure class="bt4k-chart">
-  <img src="/assets/bluetape4k-graph-part2-api-model-benchmark-01.png" alt="API model benchmark chart for BFS latency with sync, virtual thread, and coroutine models" loading="lazy" />
+  <img src="/assets/bluetape4k-graph-part2-api-model-benchmark-01-ko.png" alt="API model benchmark chart for BFS latency with sync, virtual thread, and coroutine models" loading="lazy" />
   <figcaption>단일 BFS는 sync가 빠르고, 100-way launch/create 비용은 coroutine이 작습니다. workload가 다르면 선택도 달라집니다.</figcaption>
 </figure>
 

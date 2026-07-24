@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="820" viewBox="0 0 1700 820">
+<defs>
+  <marker id="arrow" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+    <path d="M 0 0 L 14 7 L 0 14 Z" fill="#496A8F" stroke="#496A8F"/>
+  </marker>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#22344A" flood-opacity="0.12"/>
+  </filter>
+  <style>
+    .canvas{fill:#F6F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
+    .title{font-family:"Architects Daughter","Comic Sans MS",cursive;font-size:42px;fill:#22344A;font-weight:400}
+    .subtitle,.footer,.axis{font-family:"Comic Mono","Comic Sans MS",sans-serif;font-size:17px;fill:#536476;font-weight:400}
+    .nodeTitle,.participant{font-family:"Architects Daughter","Comic Sans MS",cursive;font-size:24px;fill:#22344A;font-weight:400}
+    .nodeBody,.labelText,.num{font-family:"Comic Mono","Comic Sans MS",sans-serif;font-size:16px;fill:#3F5269;font-weight:400}
+    .tableTitle{font-family:"Architects Daughter","Comic Sans MS",cursive;font-size:24px;fill:#22344A;font-weight:400}
+    .tableField,.edgeLabel{font-family:"Comic Mono","Comic Sans MS",sans-serif;font-size:15px;fill:#3F5269;font-weight:400}
+    .edge{fill:none;stroke:#496A8F;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    .bus{fill:none;stroke:#496A8F;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+    .lifeline{stroke:#91A6BD;stroke-width:2;stroke-dasharray:8 8}
+    g[id]{filter:url(#shadow)}
+  </style>
+</defs>
+<rect class="canvas" width="1700" height="820"/>
+<rect class="frame" x="34" y="28" width="1632" height="764" rx="24"/>
+<text class="title" x="850" y="82" text-anchor="middle">One Graph API, Two Execution Paths</text>
+<text class="subtitle" x="850" y="118" text-anchor="middle">The backend work is the same; only the call path and waiting model change</text>
+<path class="edge" data-connector="syncCaller-to-syncMethod" d="M400 301 L470 301"/>
+<path class="edge" data-connector="syncMethod-to-backend" d="M800 301 L827 301 Q845 301 845 319 L845 365 Q845 383 863 383 L890 383"/>
+<path class="edge" data-connector="vtCaller-to-vtAdapter" d="M400 571 L470 571"/>
+<path class="edge" data-connector="vtAdapter-to-backend" d="M800 571 L827 571 Q845 571 845 553 L845 437 Q845 419 863 419 L890 419"/>
+<path class="edge" data-connector="backend-to-wait" d="M1250 401 L1310 401"/>
+<g id="syncCaller">
+  <rect x="90" y="230" width="310" height="142" rx="12" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="245" y="287.5" text-anchor="middle">Caller Thread</text>
+  <text class="nodeBody" x="245" y="321.5" text-anchor="middle">calls GraphOperations</text>
+  <text class="nodeBody" x="245" y="344.5" text-anchor="middle">waits directly</text>
+</g>
+<g id="syncMethod">
+  <rect x="470" y="230" width="330" height="142" rx="12" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="635" y="287.5" text-anchor="middle">Sync Method</text>
+  <text class="nodeBody" x="635" y="321.5" text-anchor="middle">direct backend call</text>
+  <text class="nodeBody" x="635" y="344.5" text-anchor="middle">same repository contract</text>
+</g>
+<g id="backend">
+  <rect x="890" y="330" width="360" height="142" rx="12" fill="#EAF8EF" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="1070" y="387.5" text-anchor="middle">Graph Backend</text>
+  <text class="nodeBody" x="1070" y="421.5" text-anchor="middle">TinkerGraph or network DB</text>
+  <text class="nodeBody" x="1070" y="444.5" text-anchor="middle">same graph operation</text>
+</g>
+<g id="vtCaller">
+  <rect x="90" y="500" width="310" height="142" rx="12" fill="#FFF0F1" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="245" y="557.5" text-anchor="middle">Caller Thread</text>
+  <text class="nodeBody" x="245" y="591.5" text-anchor="middle">gets CompletableFuture</text>
+  <text class="nodeBody" x="245" y="614.5" text-anchor="middle">continues outside wait</text>
+</g>
+<g id="vtAdapter">
+  <rect x="470" y="500" width="330" height="142" rx="12" fill="#FFF0F1" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="635" y="557.5" text-anchor="middle">Virtual Thread Adapter</text>
+  <text class="nodeBody" x="635" y="591.5" text-anchor="middle">virtualFutureOf { ... }</text>
+  <text class="nodeBody" x="635" y="614.5" text-anchor="middle">wraps sync operation</text>
+</g>
+<g id="wait">
+  <rect x="1310" y="330" width="300" height="142" rx="12" fill="#FFF4D9" stroke="#7B8CA3" stroke-width="2"/>
+  <text class="nodeTitle" x="1460" y="387.5" text-anchor="middle">Wait Boundary</text>
+  <text class="nodeBody" x="1460" y="421.5" text-anchor="middle">sync caller pays</text>
+  <text class="nodeBody" x="1460" y="444.5" text-anchor="middle">VT absorbs blocking wait</text>
+</g>
+<rect x="88" y="724" width="1524" height="62" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
+<text class="footer" x="850" y="749" text-anchor="middle">For in-memory microsecond work, Sync usually wins because wrapping overhead is visible.</text>
+<text class="footer" x="850" y="773" text-anchor="middle">For blocking network I/O and many concurrent requests, Virtual Threads can simplify scaling.</text>
+</svg>

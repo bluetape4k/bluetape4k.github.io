@@ -1,0 +1,11 @@
+graph 1 9.6597 1.6944
+node apps 0.96007 1.4444 1.9201 0.5 "앱과 Workshop 예제" rounded box black lightgrey
+node framework 3.7917 1.4444 1.7431 0.5 "Framework Adapter" rounded box black lightgrey
+node io 3.7917 0.25 0.99306 0.5 "Graph I/O" rounded box black lightgrey
+node core 6.1806 0.84722 1.0347 0.5 "graph-core" rounded box black lightgrey
+node storage 8.6788 0.84722 1.9618 0.5 "Graph Storage Adapter" rounded box black lightgrey
+edge apps framework 4 1.9266 1.4444 1.9266 1.4444 2.7551 1.4444 2.7551 1.4444 solid black
+edge framework core 7 4.4792 1.1875 4.4792 1.059 4.4792 0.93056 4.4792 0.93056 4.4792 0.93056 5.5009 0.93056 5.5009 0.93056 solid black
+edge io core 7 3.7847 0.50694 3.7847 0.63542 3.7847 0.76389 3.7847 0.76389 3.7847 0.76389 5.5008 0.76389 5.5008 0.76389 solid black
+edge core storage 4 6.7043 0.84722 6.7043 0.84722 7.5316 0.84722 7.5316 0.84722 solid black
+stop
