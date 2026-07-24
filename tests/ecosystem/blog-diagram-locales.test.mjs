@@ -37,6 +37,17 @@ async function assertAssetPair(asset, file) {
     access(path.join(root, 'public/assets', svg)),
     `${file}: missing canonical SVG ${svg}`,
   );
+  const stem = asset.replace(/-(?:en|ko)\.png$/, '');
+  for (const locale of ['en', 'ko']) {
+    for (const extension of ['png', 'svg']) {
+      const counterpart = `${stem}-${locale}.${extension}`;
+      await assert.doesNotReject(
+        access(path.join(root, 'public/assets', counterpart)),
+        `${file}: missing locale counterpart ${counterpart}`,
+      );
+    }
+  }
+  return stem;
 }
 
 test('blog technical diagrams use explicit locale assets with matching SVG sources', async () => {
@@ -44,24 +55,20 @@ test('blog technical diagrams use explicit locale assets with matching SVG sourc
     ['en', path.join(root, 'src/content/docs/blog')],
     ['ko', path.join(root, 'src/content/docs/ko/blog')],
   ];
-  const localeCounts = new Map();
+  const stems = new Set();
 
   for (const [locale, directory] of localeRoots) {
     const files = (await filesUnder(directory)).filter((file) => file.endsWith('.mdx'));
-    let count = 0;
     for (const file of files) {
       const source = await readFile(file, 'utf8');
       for (const asset of technicalAssets(source, file)) {
         assert.match(asset, new RegExp(`-${locale}\\.png$`), `${file}: ${asset}`);
-        await assertAssetPair(asset, file);
-        count += 1;
+        stems.add(await assertAssetPair(asset, file));
       }
     }
-    localeCounts.set(locale, count);
   }
 
-  assert.equal(localeCounts.get('en'), 150);
-  assert.equal(localeCounts.get('ko'), 150);
+  assert.equal(stems.size, 150);
 });
 
 test('paired English and Korean posts reference the same technical diagram stems', async () => {
