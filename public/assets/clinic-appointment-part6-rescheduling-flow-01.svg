@@ -1,48 +1,49 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
-  <title id="title">Operational rescheduling after closures and equipment downtime</title>
-  <desc id="desc">Clinic closure automation and equipment conflict detection feed an explicit review and rescheduling boundary.</desc>
+  <title id="title">휴진과 장비 사용 불가 이후의 운영 재배정</title>
+  <desc id="desc">병원 휴진 자동화와 장비 충돌 탐지가 명시적인 검토 및 재배정 경계로 이어진다.</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#07111f"/><stop offset="1" stop-color="#101936"/></linearGradient>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#020617" flood-opacity="0.48"/></filter>
     <marker id="cyanArrow" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M 1 1 L 13 7 L 1 13 Z" fill="#67e8f9"/></marker>
     <marker id="amberArrow" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M 1 1 L 13 7 L 1 13 Z" fill="#fbbf24"/></marker>
     <style>
-      .title{font-family:"Architects Daughter",cursive;font-size:46px;font-weight:700;fill:#f8fafc}.subtitle{font-family:"Comic Mono",monospace;font-size:19px;fill:#9fb2cc}.label{font-family:"Architects Daughter",cursive;font-size:27px;font-weight:700;fill:#f8fafc}.body{font-family:"Comic Mono",monospace;font-size:18px;fill:#d7e3f3}.small{font-family:"Comic Mono",monospace;font-size:15px;fill:#aebed2}.card{filter:url(#shadow);stroke-width:2}
+      .title{font-family:"goorm Sans",sans-serif;font-size:46px;font-weight:700;fill:#f8fafc}.subtitle{font-family:"goorm Sans",sans-serif;font-size:19px;fill:#9fb2cc}.label{font-family:"goorm Sans",sans-serif;font-size:27px;font-weight:700;fill:#f8fafc}.body{font-family:"goorm Sans",sans-serif;font-size:18px;fill:#d7e3f3}.small{font-family:"goorm Sans",sans-serif;font-size:15px;fill:#aebed2}.tech{font-family:"goorm Sans Code",monospace}.card{filter:url(#shadow);stroke-width:2}
     </style>
   </defs>
   <rect width="1600" height="900" rx="34" fill="url(#bg)"/>
   <circle cx="1460" cy="110" r="200" fill="#7c3aed" opacity=".08"/><circle cx="120" cy="790" r="220" fill="#0891b2" opacity=".08"/>
-  <text x="80" y="78" class="title">Incidents create a workflow, not just a new date</text>
-  <text x="82" y="116" class="subtitle">Closure automation and equipment conflict detection meet at an explicit operational decision boundary.</text>
+  <text x="80" y="78" class="title">사건은 단순히 새 날짜가 아니라 워크플로를 만든다</text>
+  <text x="82" y="116" class="subtitle">휴진 자동화와 장비 충돌 탐지는 명시적인 운영 의사결정 경계에서 만난다.</text>
 
   <rect x="70" y="170" width="420" height="560" rx="28" fill="#12233d" stroke="#fb7185" stroke-width="2" filter="url(#shadow)"/>
-  <rect x="94" y="194" width="166" height="34" rx="17" fill="#9f1239"/><text x="177" y="217" text-anchor="middle" class="small" fill="#fff1f2">CLINIC CLOSURE</text>
-  <text x="104" y="274" class="label">Implemented reschedule path</text>
-  <rect x="105" y="316" width="350" height="78" rx="18" fill="#301c2a" stroke="#fb7185" class="card"/><text x="130" y="348" class="body">Active appointments</text><text x="130" y="375" class="small">REQUESTED · CONFIRMED · active states</text>
-  <rect x="105" y="430" width="350" height="90" rx="18" fill="#182b46" stroke="#38bdf8" class="card"/><text x="130" y="464" class="body">PENDING_RESCHEDULE + history</text><text x="130" y="493" class="small">Preserve why the original slot changed</text>
-  <rect x="105" y="556" width="350" height="110" rx="18" fill="#123447" stroke="#2dd4bf" class="card"/><text x="130" y="591" class="body">Persist ranked candidates</text><text x="130" y="620" class="small">SlotCalculationService · next 1–30 days</text><text x="130" y="646" class="small">Progress callback after DB transaction</text>
+  <rect x="94" y="194" width="166" height="34" rx="17" fill="#9f1239"/><text x="177" y="217" text-anchor="middle" class="small" fill="#fff1f2">병원 휴진</text>
+  <text x="104" y="274" class="label">구현된 재배정 경로</text>
+  <rect x="105" y="316" width="350" height="78" rx="18" fill="#301c2a" stroke="#fb7185" class="card"/><text x="130" y="348" class="body">활성 예약</text><text x="130" y="375" class="small"><tspan class="tech">REQUESTED · CONFIRMED</tspan> · 활성 상태</text>
+  <rect x="105" y="430" width="350" height="90" rx="18" fill="#182b46" stroke="#38bdf8" class="card"/><text x="130" y="464" class="body"><tspan class="tech">PENDING_RESCHEDULE</tspan> + 이력</text><text x="130" y="493" class="small">원래 시간대가 변경된 이유를 보존</text>
+  <rect x="105" y="556" width="350" height="110" rx="18" fill="#123447" stroke="#2dd4bf" class="card"/><text x="130" y="591" class="body">순위가 매겨진 후보 저장</text><text x="130" y="620" class="small"><tspan class="tech">SlotCalculationService</tspan> · 향후 1–30일</text><text x="130" y="646" class="small"><tspan class="tech">DB</tspan> 트랜잭션 이후 진행 콜백</text>
   <path d="M 280 394 V 430" fill="none" stroke="#67e8f9" stroke-width="4" marker-end="url(#cyanArrow)" data-connector="closure-state"/><path d="M 280 520 V 556" fill="none" stroke="#67e8f9" stroke-width="4" marker-end="url(#cyanArrow)" data-connector="state-candidates"/>
 
   <rect x="590" y="170" width="420" height="560" rx="28" fill="#19233c" stroke="#fbbf24" stroke-width="2" filter="url(#shadow)"/>
-  <rect x="614" y="194" width="202" height="34" rx="17" fill="#92400e"/><text x="715" y="217" text-anchor="middle" class="small" fill="#fffbeb">EQUIPMENT DOWNTIME</text>
-  <text x="624" y="274" class="label">Implemented detection path</text>
-  <rect x="625" y="316" width="350" height="90" rx="18" fill="#332817" stroke="#fbbf24" class="card"/><text x="650" y="350" class="body">Unavailability rule</text><text x="650" y="379" class="small">One-time · recurring · SKIP/RESCHEDULE</text>
-  <rect x="625" y="448" width="350" height="104" rx="18" fill="#202b43" stroke="#60a5fa" class="card"/><text x="650" y="482" class="body">Expand periods and find overlap</text><text x="650" y="511" class="small">Preview before save or detect after save</text><text x="650" y="537" class="small">Tenant-scoped equipment ownership guard</text>
-  <rect x="625" y="594" width="350" height="72" rx="18" fill="#31233c" stroke="#c084fc" class="card"/><text x="650" y="628" class="body">Return conflicting appointments</text><text x="650" y="653" class="small">No automatic reschedule in this service</text>
+  <rect x="614" y="194" width="202" height="34" rx="17" fill="#92400e"/><text x="715" y="217" text-anchor="middle" class="small" fill="#fffbeb">장비 사용 불가</text>
+  <text x="624" y="274" class="label">구현된 탐지 경로</text>
+  <rect x="625" y="316" width="350" height="90" rx="18" fill="#332817" stroke="#fbbf24" class="card"/><text x="650" y="350" class="body">사용 불가 규칙</text><text x="650" y="379" class="small">일회성 · 반복 · <tspan class="tech">SKIP/RESCHEDULE</tspan></text>
+  <rect x="625" y="448" width="350" height="104" rx="18" fill="#202b43" stroke="#60a5fa" class="card"/><text x="650" y="482" class="body">기간을 펼쳐 겹침 탐색</text><text x="650" y="511" class="small">저장 전 미리보기 또는 저장 후 탐지</text><text x="650" y="537" class="small"><tspan class="tech">tenant</tspan> 범위 장비 소유권 가드</text>
+  <rect x="625" y="594" width="350" height="72" rx="18" fill="#31233c" stroke="#c084fc" class="card"/><text x="650" y="628" class="body">충돌 예약 반환</text><text x="650" y="653" class="small">이 서비스는 자동 재배정하지 않음</text>
   <path d="M 800 406 V 448" fill="none" stroke="#fbbf24" stroke-width="4" marker-end="url(#amberArrow)" data-connector="equipment-expand"/><path d="M 800 552 V 594" fill="none" stroke="#fbbf24" stroke-width="4" marker-end="url(#amberArrow)" data-connector="equipment-conflicts"/>
 
   <rect x="1110" y="170" width="420" height="560" rx="28" fill="#112d3d" stroke="#2dd4bf" stroke-width="2" filter="url(#shadow)"/>
-  <rect x="1134" y="194" width="178" height="34" rx="17" fill="#0f766e"/><text x="1223" y="217" text-anchor="middle" class="small" fill="#ecfeff">DECISION BOUNDARY</text>
-  <text x="1144" y="274" class="label">Review, confirm, communicate</text>
-  <rect x="1145" y="316" width="350" height="88" rx="18" fill="#173649" stroke="#22d3ee" class="card"/><text x="1170" y="350" class="body">Choose the execution path</text><text x="1170" y="379" class="small">Ranked candidate or separate Solver run</text>
-  <rect x="1145" y="448" width="350" height="104" rx="18" fill="#173649" stroke="#22d3ee" class="card"/><text x="1170" y="482" class="body">Confirm with tenant guards</text><text x="1170" y="511" class="small">New CONFIRMED appointment</text><text x="1170" y="537" class="small">Original becomes RESCHEDULED · selected</text>
-  <rect x="1145" y="594" width="350" height="72" rx="18" fill="#251f43" stroke="#a78bfa" class="card"/><text x="1170" y="628" class="body">Publish and notify separately</text><text x="1170" y="653" class="small">Current closure service does not emit it</text>
+  <rect x="1134" y="194" width="178" height="34" rx="17" fill="#0f766e"/><text x="1223" y="217" text-anchor="middle" class="small" fill="#ecfeff">의사결정 경계</text>
+  <text x="1144" y="274" class="label">검토, 확정, 소통</text>
+  <rect x="1145" y="316" width="350" height="88" rx="18" fill="#173649" stroke="#22d3ee" class="card"/><text x="1170" y="350" class="body">실행 경로 선택</text><text x="1170" y="379" class="small">순위 후보 또는 별도 <tspan class="tech">Solver</tspan> 실행</text>
+  <rect x="1145" y="448" width="350" height="104" rx="18" fill="#173649" stroke="#22d3ee" class="card"/><text x="1170" y="482" class="body"><tspan class="tech">tenant</tspan> 가드로 확정</text><text x="1170" y="511" class="small">새 <tspan class="tech">CONFIRMED</tspan> 예약</text><text x="1170" y="537" class="small">원본은 <tspan class="tech">RESCHEDULED · selected</tspan></text>
+  <rect x="1145" y="594" width="350" height="72" rx="18" fill="#251f43" stroke="#a78bfa" class="card"/><text x="1170" y="628" class="body">발행과 알림을 분리</text><text x="1170" y="653" class="small">현재 휴진 서비스는 이를 발행하지 않음</text>
   <path d="M 1320 404 V 448" fill="none" stroke="#67e8f9" stroke-width="4" marker-end="url(#cyanArrow)" data-connector="decision-confirm"/><path d="M 1320 552 V 594" fill="none" stroke="#67e8f9" stroke-width="4" marker-end="url(#cyanArrow)" data-connector="confirm-notify"/>
 
   <path d="M 280 666 V 730 Q 280 750 300 750 H 1530 Q 1550 750 1550 730 V 160 Q 1550 140 1530 140 H 1340 Q 1320 140 1320 160 V 316" fill="none" stroke="#67e8f9" stroke-width="4" marker-end="url(#cyanArrow)" data-connector="candidates-decision"/>
   <path d="M 1010 630 H 1070 Q 1090 630 1090 610 V 408 Q 1090 388 1110 388 H 1145" fill="none" stroke="#fbbf24" stroke-width="4" marker-end="url(#amberArrow)" data-connector="conflicts-decision"/>
 
-  <rect x="70" y="784" width="1460" height="70" rx="20" fill="#0b1628" stroke="#26364e"/>
-  <text x="96" y="814" class="small">Operational invariant: commit state and candidate data before network progress; keep detection, approval, persistence, and notification as explicit boundaries.</text>
-  <text x="96" y="839" class="small">A Solver result is a proposal until another workflow validates and persists it.</text>
+  <rect x="70" y="778" width="1460" height="92" rx="20" fill="#0b1628" stroke="#26364e"/>
+  <text x="96" y="807" class="small">운영 불변조건: 네트워크 진행 전에 상태와 후보 데이터를 커밋하고,</text>
+  <text x="96" y="832" class="small">탐지·승인·영속화·알림을 명시적인 경계로 유지한다.</text>
+  <text x="96" y="857" class="small"><tspan class="tech">Solver</tspan> 결과는 다른 워크플로가 검증하고 영속화하기 전까지 제안일 뿐이다.</text>
 </svg>
