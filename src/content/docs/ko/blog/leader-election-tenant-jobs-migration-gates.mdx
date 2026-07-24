@@ -1,0 +1,291 @@
+---
+title: "여러 서버가 같은 작업을 실행하지 않게 만드는 방법"
+description: bluetape4k-leader의 tenant aggregator와 migration gate 예제로 coordination key, lease, 완료 마커, failover의 경계를 설명한다.
+sidebar:
+  order: -202607211300
+blog:
+  date: 2026-07-21T13:00:00+09:00
+  image: /assets/leader-election-practical-jobs-hero.png
+  imageAlt: 세 서비스 노드가 tenant별 작업과 하나의 migration gate를 중앙 coordination console로 조정하는 dark 3D miniature workbench
+  cardDescription: "tenant별 집계는 병렬성을 살리고 migration은 전역으로 막아야 합니다. 실제 예제로 leader election의 범위와 실패 경계를 정합니다."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/leader-election-practical-jobs-hero.png" alt="세 서비스 노드가 tenant별 작업과 하나의 migration gate를 중앙 coordination console로 조정하는 dark 3D miniature workbench" loading="eager" />
+  <figcaption>같은 서버가 여러 대라는 사실보다, 어떤 작업끼리 충돌하는지를 먼저 봐야 합니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-07-21 · bluetape4k-leader examples · issue #192</p>
+
+롤링 배포가 끝나자 세 서버가 동시에 scheduler를 시작했다고 해보겠습니다. 세 서버 모두 tenant별 통계를 집계하고,
+시작할 때 schema migration도 실행합니다. 단일 서버에서는 멀쩡했던 코드가 이제 같은 집계를 세 번 돌리고 같은 DDL을
+거의 동시에 실행합니다.
+
+`if (isPrimaryNode)` 같은 설정으로 한 서버만 고정하면 당장은 조용해집니다. 하지만 그 서버가 멈추면 작업도 멈춥니다.
+반대로 클러스터 전체에 leader 하나만 두면 migration은 안전해 보여도 서로 무관한 tenant 집계까지 한 줄로 서게 됩니다.
+
+이 글은 `bluetape4k-leader`의 [`tenant-aggregator`](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples/tenant-aggregator)와
+[`migration-gate`](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples/migration-gate) 예제를 중심으로,
+현실에서 부딪히는 두 작업을 어떻게 나눌지 살펴봅니다. 핵심은 "누가 leader인가"보다 먼저 "어떤 작업끼리 동시에
+실행되면 안 되는가"를 정하는 것입니다.
+
+## 먼저 동시에 실행되면 안 되는 작업을 key로 묶는다
+
+리더 선출은 같은 coordination key를 놓고 경쟁하는 호출자 가운데 한 소유자만 실행하도록 만듭니다. 따라서 key는
+서버 이름이 아니라 **충돌하는 작업의 범위**를 나타내야 합니다.
+
+- Tenant A 집계끼리는 겹치면 안 된다: `tenant-aggregator:metrics-tenant-A`
+- Tenant B 집계는 Tenant A와 동시에 돌아도 된다: `tenant-aggregator:metrics-tenant-B`
+- Schema migration은 클러스터 전체에서 하나만 진행해야 한다: `schema-v3`
+
+<figure class="bt4k-chart">
+  <img src="/assets/leader-election-coordination-scope-01-ko.png" alt="서비스 노드 A, B, C가 tenant A, tenant B, global migration coordination key를 거쳐 각각의 보호 상태를 실행하는 어두운 배경의 아키텍처 다이어그램" loading="lazy" />
+  <figcaption>같은 key는 직렬화하고 다른 key는 병렬로 실행합니다. 완료 마커는 lock 소유권이 아니라 durable state에 속합니다.</figcaption>
+</figure>
+
+모든 작업에 `global-leader` 하나를 쓰면 이해하기는 쉽습니다. 대신 Tenant A의 느린 집계가 Tenant B를 막고, migration을
+기다리는 동안 정기 작업도 멈춥니다. key를 지나치게 잘게 쪼개면 반대 문제가 생깁니다. 같은 데이터를 갱신하는 작업이
+서로 다른 key를 사용하면 선출에 성공한 두 작업이 동시에 들어옵니다. 좋은 key는 인스턴스 수가 늘어나도 같은
+업무상 충돌 범위를 가리킵니다.
+
+## tenant별 집계는 같은 tenant만 직렬화한다
+
+[`TenantAggregator`](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/examples/tenant-aggregator/src/main/kotlin/io/bluetape4k/leader/examples/tenant/TenantAggregator.kt)는
+각 tenant마다 child coroutine과 `SuspendLeaderElector`를 하나씩 만듭니다. 실제 lock name은 다음처럼 조립됩니다.
+
+```kotlin
+private suspend fun tenantLoop(tenantId: String) {
+    val lockName = "${options.lockNamePrefix}-$tenantId"
+    val elector = electorFactory(lockName, electionOptions)
+
+    while (currentCoroutineContext().isActive) {
+        elector.runIfLeader(lockName) {
+            runAggregate(tenantId)
+        }
+        delay(options.pollInterval)
+    }
+}
+```
+
+여기서 `LeaderGroupElector`로 leader 슬롯을 여러 개 두지 않은 이유도 범위와 관련이 있습니다. 슬롯 방식은 어느 tenant가
+어느 슬롯에 배정될지 제어하지 못합니다. 예제는 tenant마다 독립된 lock name을 사용해 "같은 tenant는 하나, 다른
+tenant는 병렬"이라는 규칙을 코드에 그대로 남깁니다.
+
+테스트도 이름만 보고 끝내지 않고 동시 실행 계약을 직접 셉니다. 세 aggregator를 시작하고, 각 tenant의 실행 구간에
+진입한 coroutine 수가 1을 넘는지 기록합니다. 모든 tenant가 한 번 이상 처리된 뒤에도 위반 횟수는 0이어야 합니다.
+
+```kotlin
+// arrange
+val aggregators = createAggregators(nodes = 3, tenants = DEFAULT_TENANTS)
+val concurrentRunners = trackConcurrentRunnersByTenant()
+
+// act
+aggregators.forEach { it.start(scope) }
+waitUntil { DEFAULT_TENANTS.all { aggregateCount(it) >= 1 } }.shouldBeTrue()
+delay(2.seconds) // 추가 cycle에서도 겹치는지 확인
+
+// assert
+concurrentRunners.violations.get() shouldBeEqualTo 0
+DEFAULT_TENANTS.forEach {
+    aggregateCount(it) shouldBeGreaterOrEqualTo 1
+}
+```
+
+집계 함수가 한 번 실패했다고 polling 전체를 끝내지도 않습니다. `aggregateFunction`의 일반 예외는 해당 cycle에서
+격리하고 다음 cycle을 계속합니다. 반면 `CancellationException`은 다시 던집니다. 종료 요청까지 삼켜 버리면
+`stopGracefully`가 worker를 멈추지 못하기 때문입니다. 한 tenant의 실패가 다른 tenant의 coroutine까지 취소하지 않도록
+root는 `supervisorScope`를 사용합니다.
+
+이 설계가 보장하는 것은 같은 tenant의 **동시 실행 방지**입니다. 처리 함수가 외부 시스템에 값을 쓴 직후 프로세스가
+죽었다면 다음 leader가 같은 입력을 다시 처리할 수 있습니다. 집계 기준 시점, checkpoint, upsert 같은 재실행 계약은
+별도로 필요합니다.
+
+## migration은 전역 lock과 완료 마커가 모두 필요하다
+
+Migration은 tenant별 집계와 충돌 범위가 다릅니다. 같은 schema를 바꾸는 세 인스턴스가 서로 다른 key를 가질 이유가
+없습니다. 모든 인스턴스가 `schema-v3` 같은 하나의 key를 두고 경쟁해야 합니다.
+
+하지만 global lock만으로는 부족합니다. Lock은 "지금 누가 실행 중인가"를 알려 줄 뿐, `schema-v3`가 지난 배포에서
+이미 끝났다는 사실을 영구 보존하지 않습니다. [`MigrationGate`](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/examples/migration-gate/src/main/kotlin/io/bluetape4k/leader/examples/migration/MigrationGate.kt)는
+완료 마커를 세 번 확인할 수 있는 순서로 이 빈틈을 줄입니다.
+
+```kotlin
+fun runMigration(id: String): Outcome {
+    if (isApplied(id)) return Outcome.AlreadyApplied(id)       // precheck
+
+    val outcome = elector.runIfLeader(options.lockName) {
+        if (isApplied(id)) return@runIfLeader Outcome.AlreadyApplied(id)
+        migration()                                           // marker 포함
+        Outcome.Migrated(id, elapsedMs())
+    }
+
+    if (outcome != null) return outcome
+    return if (isApplied(id)) Outcome.AlreadyApplied(id)       // post-skip
+    else Outcome.Skipped(id, "lock not acquired")
+}
+```
+
+Precheck는 이미 끝난 migration이 lock을 다시 기다리지 않게 합니다. Lock 안의 재확인은 precheck 직후 다른 인스턴스가
+완료한 경우를 잡습니다. Lock을 얻지 못한 인스턴스는 마지막으로 마커를 확인해 `AlreadyApplied`와 `Skipped`를
+구분합니다. 마커 조회 자체가 실패하면 "아직 적용되지 않음"으로 추정하지 않고 `Outcome.Failed`를 반환합니다. 상태를
+모르는 것과 미적용 상태는 다릅니다.
+
+세 인스턴스를 동시에 호출하는 테스트의 기대값도 이 순서와 맞습니다.
+
+```kotlin
+// arrange + act
+val outcomes = runConcurrently(instances = 3) {
+    gate.runMigration(
+        migrationId = migrationId,
+        isApplied = { markerExists(migrationId) },
+        migration = { migrateAndMarkApplied(migrationId) },
+    )
+}
+
+// assert
+migrationCalls.get() shouldBeEqualTo 1
+outcomes.count { it is Outcome.Migrated } shouldBeEqualTo 1
+outcomes.count { it is Outcome.AlreadyApplied } shouldBeEqualTo 2
+```
+
+여기에는 중요한 조건이 있습니다. 이 예제의 `ExposedJdbcLeaderElector`는 lease를 자동 연장하지 않습니다. Migration이
+`leaseTime`보다 오래 걸리면 다른 인스턴스가 같은 lock을 다시 얻을 수 있습니다. 그러므로 migration은 재실행해도
+안전해야 하며, 가능한 경우 schema/data 변경과 완료 마커 기록을 같은 transaction 안에 둬야 합니다. "leader가
+실행했으니 정확히 한 번"이라는 결론은 이 코드에서 나오지 않습니다.
+
+## lease가 끝나면 다음 후보가 이어받을 수 있다
+
+Lease가 있는 lock은 소유자가 명시적으로 release하지 못해도 영원히 남지 않습니다. Node A가 멈추면 Node B는 먼저
+`busy`를 받고, lease가 끝난 뒤 새 token으로 소유권을 얻습니다.
+
+<figure class="bt4k-chart">
+  <img src="/assets/leader-election-lease-failover-sequence-01-ko.png" alt="Node A가 lease를 얻어 작업하다 실패하고 Node B가 lease 만료 후 새 token으로 인계하는 어두운 배경의 시퀀스 다이어그램" loading="lazy" />
+  <figcaption>Lease 만료는 다음 후보의 진입을 허용합니다. 이전 실행의 side effect를 없애 주지는 않습니다.</figcaption>
+</figure>
+
+이 인계에는 세 가지 오해가 자주 따라옵니다.
+
+- **즉시 failover가 아니다.** 다음 후보는 release 또는 lease 만료를 기다립니다.
+- **exactly-once가 아니다.** Node A가 외부 write를 끝내고 결과를 기록하기 전에 죽으면 Node B가 같은 일을 다시 할 수 있습니다.
+- **긴 작업이 자동으로 안전해지지 않는다.** 작업 시간이 lease를 넘을 수 있다면 연장, fencing token, checkpoint, idempotency 가운데 필요한 장치를 더해야 합니다.
+
+`TenantAggregatorTest`는 node A가 실행을 시작한 뒤 node B를 대기시키고, A를 종료한 다음 B의 count가 증가하는지
+확인합니다. 이 테스트가 증명하는 것은 **후보가 이어받아 polling을 계속한다**는 계약입니다. 이미 발생한 side effect가
+한 번뿐이라는 계약까지 증명하지는 않습니다.
+
+## cache warm-up과 webhook polling은 또 다른 범위를 가진다
+
+같은 leader API를 써도 작업 상태를 어디에 두느냐에 따라 설계가 달라집니다.
+
+[`cache-warmer`](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples/cache-warmer)는 cache partition마다
+lock을 나눕니다. 한 partition의 warm-up이 실패해도 다른 partition은 계속할 수 있습니다. Tenant 집계와 마찬가지로
+병렬성이 필요하지만, key는 tenant가 아니라 cache partition입니다.
+
+[`webhook-poller`](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples/webhook-poller)는 poller leader를
+하나로 제한하는 데서 끝나지 않습니다. DB row를 atomic claim하고 claim lease가 지난 row를 다시 가져오며,
+`maxAttempts`에 도달하면 `FAILED`로 끝냅니다. Leader election은 poller가 겹치는 범위를 줄이고, durable row state는
+전송의 at-least-once retry를 책임집니다.
+
+정리하면 coordination key는 실행 입구를 보호합니다. 진행률과 완료 여부, 재시도 횟수, 실패 종결 상태는 작업에 맞는
+durable state가 맡아야 합니다.
+
+## provider는 장애가 났을 때 필요한 동작으로 고른다
+
+Provider를 고를 때 단순한 성능 순위를 만들면 중요한 조건이 빠집니다. 이미 운영 중인 인프라, consistency와 lease
+모델, 장애 복구 방식, 관측 가능성, 팀이 감당할 운영 비용을 함께 봐야 합니다.
+
+| 시나리오 | coordination key | 필요한 상태 | 고려할 provider 계열 | 주의점 |
+|---|---|---|---|---|
+| tenant 집계 | tenant ID별 key | checkpoint 또는 집계 기준 시점 | Redis, RDB/Exposed, etcd, Consul, Zookeeper, DynamoDB | tenant 수와 polling 주기가 backend 부하가 됨 |
+| schema/data migration | migration version별 global key | 적용 완료 마커 | RDB/Exposed, Kubernetes Lease, etcd, Consul, Zookeeper | 작업 시간이 lease를 넘는지 확인하고 migration을 idempotent하게 설계 |
+| cache warm-up | cache partition별 key | partition별 완료/실패 기록 | Redis, RDB/Exposed, Kubernetes Lease | 실패한 partition이 다른 partition을 막지 않게 격리 |
+| webhook polling | poller 또는 shard key | claim lease, attempts, terminal status | RDB/Exposed + 필요에 맞는 election provider | election과 row claim이 해결하는 문제가 다름 |
+| Kubernetes 안의 단일 job | namespace와 job을 포함한 key | 필요하면 별도 completion state | Kubernetes Lease | [`k8s-lease`](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples/k8s-lease)는 K3s로 동작을 보여 주는 example이며 별도 production backend 모듈을 뜻하지 않음 |
+
+Redis가 이미 핵심 인프라이고 짧은 lock을 많이 다룬다면 자연스러운 선택일 수 있습니다. 작업 데이터와 같은 데이터베이스에
+완료 상태를 남겨야 한다면 RDB가 이해하기 쉬운 경계를 줄 수 있습니다. Kubernetes 밖에서도 같은 coordination contract가
+필요한지, control plane 장애가 application job에 어떤 영향을 줄지에 따라 Kubernetes Lease의 적합성은 달라집니다.
+etcd, Consul, Zookeeper, DynamoDB도 "지원 목록에 있다"는 이유보다 현재 시스템의 장애 모델과 운영 역량으로 좁혀야
+합니다. Backend별 구현과 benchmark 조건은 [Part 5](/ko/blog/bluetape4k-leader-part5-backends-operations-benchmarks/)에서
+따로 다룹니다.
+
+## leader가 자주 바뀌는지도 운영 신호다
+
+정상일 때 한 노드가 실행된다는 사실만 확인해서는 부족합니다. 획득 시도가 계속되는데 성공이 없거나 backend error가
+늘어나는지, 실행 시간이 lease에 가까워지는지, active gauge가 예상 범위를 벗어나는지 봐야 합니다.
+
+[`prometheus-dashboard`](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples/prometheus-dashboard)는
+`/actuator/prometheus`에서 `leader_aop_attempts_total`, `leader_aop_acquired_total`, `leader_aop_active`, execution
+duration을 노출하고, acquisition 부재·backend error·task failure·긴 실행 시간을 alert 예제로 연결합니다.
+`leader_aop_active`는 JVM-local이므로 cluster dashboard에서는 `sum`보다
+`max by (lock_name) (leader_aop_active)`가 맞습니다.
+
+Lock name에는 tenant, user, URL처럼 민감하거나 cardinality가 큰 값이 들어갈 수 있습니다. 예제가 metric label을
+기본 `REDACT`로 두는 이유입니다. 필요한 상관관계만 bounded hash나 별도 low-cardinality tag로 드러내야 합니다.
+또한 현재 `LockExtender` 자체의 성공·실패 metric은 제공되지 않습니다. 실행 시간이 lease에 가까워졌다는 alert는
+연장 실패를 직접 관측한 값이 아니라 보수적인 징후입니다.
+
+## leader election만으로 막을 수 없는 여섯 가지 상황
+
+지금까지의 예제는 coordination key, lease, 완료 마커를 어디에 둘지 보여 줍니다. 하지만 여기서 설명한 규칙을 적용해도
+아래 상황까지 자동으로 안전해지지는 않습니다. 이는 leader election의 결함이라기보다 작업 자체에 별도의 계약이 필요한
+경우입니다.
+
+- **서로 다른 작업이 같은 데이터를 갱신한다.** 일일 집계는 `daily-aggregate`, 과거 데이터 backfill은
+  `aggregate-backfill`이라는 key를 쓴다고 해보겠습니다. 이름은 달라도 같은 요약 row를 갱신한다면 두 작업은 동시에
+  실행될 수 있습니다. Job 이름이 아니라 실제 쓰기 충돌을 기준으로 key를 공유하거나, DB constraint와 상태 전이로
+  충돌을 막아야 합니다.
+- **작업이 lease보다 오래 실행된다.** Lease가 30초인데 집계가 2분 걸리면 이전 owner가 아직 쓰는 동안 다음 owner가
+  진입할 수 있습니다. Lease 연장만 믿기보다 연장 실패를 포함해 fencing, checkpoint, idempotency를 조합해야 합니다.
+  Fencing token도 대상 저장소가 token을 검사할 때만 오래된 owner를 막을 수 있습니다.
+- **실행 중 tenant 목록이 바뀐다.** 현재 `TenantAggregator`는 `start()` 시점의 `options.tenants`마다 coroutine을
+  만듭니다. 시작 뒤 추가된 tenant에는 worker가 생기지 않고, 삭제된 tenant의 worker는 자동으로 정리되지 않습니다.
+  운영 환경에서는 원하는 tenant 목록과 실행 중인 worker를 주기적으로 맞추고 안전하게 추가·중지해야 합니다.
+- **여러 리전에 걸쳐 실행되거나 네트워크가 단절된다.** 이 글의 예제는 리전 간 지연이나 network partition에서 각
+  backend가 어떤 결과를 내는지 검증하지 않습니다. Backend 연결이 끊겼을 때 실행 중인 작업을 중단할지, 새로운 획득
+  시도를 실패로 처리할지, 복구 뒤 언제 다시 시도할지를 정하고 실제 장애 조건에서 확인해야 합니다.
+- **서로 다른 버전의 worker가 함께 실행된다.** Rolling deployment 중 v1과 v2가 같은 key를 사용해도 한 번에 한
+  owner만 선택될 뿐, 두 버전이 marker와 payload를 같은 의미로 해석한다는 보장은 없습니다. 그렇다고 버전마다 key를
+  나누면 두 버전이 동시에 실행될 수 있습니다. Schema 호환성, marker version, drain 순서를 배포 계약에 포함해야 합니다.
+- **외부 side effect가 fencing token을 받지 않는다.** 결제 API, 메일 서버, 외부 webhook은 보통 내부 leader token을
+  검증해 주지 않습니다. 이전 owner가 늦게 요청을 보내면 lease가 끝난 뒤에도 효과가 남을 수 있습니다. 이 경계에는
+  idempotency key, durable outbox, 결과 조회와 reconciliation이 필요합니다.
+
+배포 전에는 다음 질문을 확인하는 편이 좋습니다.
+
+- 이름이 다른 작업이 같은 상태를 갱신하지 않는가?
+- tenant나 shard 목록이 실행 중 바뀌는가?
+- GC pause와 네트워크 지연까지 포함한 최악 실행 시간이 lease보다 짧은가?
+- 중복 실행된 외부 호출의 결과를 식별하고 정합성을 복구할 수 있는가?
+- 구버전과 신버전이 key, marker, payload를 같은 의미로 해석하는가?
+- 선택한 backend의 지연, 연결 단절, 복구 조건을 실제로 시험했는가?
+
+운영에서 보고 싶은 것은 한 번의 선출 성공이 아닙니다. **획득 실패가 이어지는가, leader가 예상보다 자주 바뀌는가,
+작업 시간이 lease budget을 침범하는가, 인계 후 같은 side effect가 반복되는가**를 함께 봐야 합니다.
+
+Leader election은 여러 서버가 같은 순간에 소유권을 주장하는 문제를 줄여 줍니다. 그다음 안전성은 coordination key의
+범위, lease보다 긴 작업의 처리, durable marker, idempotency, 관측 지표가 함께 만듭니다. 구현을 시작할 때 provider
+목록부터 열기보다 "같이 실행되면 안 되는 작업은 무엇이고, 실패 뒤 무엇이 남아야 하는가"를 먼저 파악하면 설계가 훨씬
+구체적으로 좁혀집니다.
+
+이 글은 위 상황에서 확인해야 할 경계까지만 다룹니다. 후속 작업은
+[`bluetape4k-workshop` 이슈 #548](https://github.com/bluetape4k/bluetape4k-workshop/issues/548)에서 추적합니다.
+이 이슈에서는 작업 간 충돌, lease 만료 후 중복 실행, 동적인 tenant 변경, network partition, 혼합 버전 배포,
+외부 시스템의 중복 side effect를 실행 가능한 예제로 다룰 예정입니다.
+
+## Sources
+
+- [TenantAggregator.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/examples/tenant-aggregator/src/main/kotlin/io/bluetape4k/leader/examples/tenant/TenantAggregator.kt)
+- [TenantAggregatorTest.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/examples/tenant-aggregator/src/test/kotlin/io/bluetape4k/leader/examples/tenant/TenantAggregatorTest.kt)
+- [MigrationGate.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/examples/migration-gate/src/main/kotlin/io/bluetape4k/leader/examples/migration/MigrationGate.kt)
+- [MigrationGateTest.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/examples/migration-gate/src/test/kotlin/io/bluetape4k/leader/examples/migration/MigrationGateTest.kt)
+- [Cache warmer example](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples/cache-warmer)
+- [Webhook poller example](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples/webhook-poller)
+- [Kubernetes Lease example](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples/k8s-lease)
+- [Prometheus dashboard example](https://github.com/bluetape4k/bluetape4k-leader/tree/develop/examples/prometheus-dashboard)
+
+## Related reading
+
+- [리더 선출의 기본 모델](/ko/blog/bluetape4k-leader-part1-overview/)
+- [Core API와 실행 모델](/ko/blog/bluetape4k-leader-part2-core-apis/)
+- [Backend, 운영 기능, Benchmark](/ko/blog/bluetape4k-leader-part5-backends-operations-benchmarks/)

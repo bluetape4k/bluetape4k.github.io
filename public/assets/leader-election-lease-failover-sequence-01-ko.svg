@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Lease 만료와 리더 인계 순서</title>
+  <desc id="desc">Node A가 lease를 반납하지 못한 채 중단된다. Node B는 lease가 끝난 뒤 새 소유권을 얻고 작업을 멱등하게 재개한다.</desc>
+  <defs>
+    <style>
+      .ko-font { font-family: "goorm Sans", sans-serif; }
+      .mono-font { font-family: "goorm Sans Code", "goorm Sans", monospace; }
+    </style>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07111f"/>
+      <stop offset="1" stop-color="#0d1c30"/>
+    </linearGradient>
+    <linearGradient id="header" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#172a42"/>
+      <stop offset="1" stop-color="#0f1d30"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#020611" flood-opacity="0.55"/>
+    </filter>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" viewBox="0 0 10 10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#59b9ef"/>
+    </marker>
+    <marker id="arrow-teal" markerWidth="10" markerHeight="10" viewBox="0 0 10 10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#42d6c9"/>
+    </marker>
+    <marker id="arrow-purple" markerWidth="10" markerHeight="10" viewBox="0 0 10 10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#a78bfa"/>
+    </marker>
+    <marker id="arrow-amber" markerWidth="10" markerHeight="10" viewBox="0 0 10 10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#f6b84a"/>
+    </marker>
+    <marker id="arrow-red" markerWidth="10" markerHeight="10" viewBox="0 0 10 10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ef6f7b"/>
+    </marker>
+  </defs>
+
+  <rect class="frame" x="2" y="2" width="1596" height="996" rx="32" fill="url(#bg)" stroke="#2d4662" stroke-width="3"/>
+  <circle cx="1510" cy="40" r="240" fill="#16355b" opacity="0.17"/>
+  <circle cx="60" cy="940" r="250" fill="#2b1854" opacity="0.15"/>
+
+  <g class="ko-font">
+    <text class="title" x="800" y="64" text-anchor="middle" fill="#f4f7fb" font-size="38" font-weight="700">Lease가 만료돼도 이미 반영된 변경은 남는다</text>
+    <text class="subtitle" x="800" y="102" text-anchor="middle" fill="#91a8c1" font-size="20">중복 실행을 막으려면 fencing token, 멱등성 또는 영구 완료 마커가 필요합니다.</text>
+
+    <g filter="url(#shadow)" text-anchor="middle">
+      <g>
+        <rect class="header" x="70" y="140" width="220" height="84" rx="17" fill="url(#header)" stroke="#4c79a8" stroke-width="2"/>
+        <text class="participant" x="180" y="177" fill="#eaf3fc" font-size="24" font-weight="700">Node A</text>
+        <text class="role" x="180" y="205" fill="#7e9ab7" font-size="16">첫 실행자</text>
+      </g>
+      <g>
+        <rect class="header" x="455" y="140" width="290" height="84" rx="17" fill="url(#header)" stroke="#46b9b0" stroke-width="2"/>
+        <text class="participant" x="600" y="177" fill="#ddfffb" font-size="24" font-weight="700">조정 서비스</text>
+        <text class="role" x="600" y="205" fill="#77aaa7" font-size="16">lease 관리</text>
+      </g>
+      <g>
+        <rect class="header" x="865" y="140" width="270" height="84" rx="17" fill="url(#header)" stroke="#a78bfa" stroke-width="2"/>
+        <text class="participant" x="1000" y="177" fill="#eee5ff" font-size="24" font-weight="700">보호 대상 작업</text>
+        <text class="role" x="1000" y="205" fill="#a895c9" font-size="16">영구 상태</text>
+      </g>
+      <g>
+        <rect class="header" x="1310" y="140" width="220" height="84" rx="17" fill="url(#header)" stroke="#d39c3f" stroke-width="2"/>
+        <text class="participant" x="1420" y="177" fill="#fff0c9" font-size="24" font-weight="700">Node B</text>
+        <text class="role" x="1420" y="205" fill="#b99e6a" font-size="16">다음 실행자</text>
+      </g>
+    </g>
+
+    <g stroke="#66809b" stroke-width="2" stroke-dasharray="9 10" opacity="0.75">
+      <path class="lifeline" d="M180 224 V890"/>
+      <path class="lifeline" d="M600 224 V890"/>
+      <path class="lifeline" d="M1000 224 V890"/>
+      <path class="lifeline" d="M1420 224 V890"/>
+    </g>
+
+    <g>
+      <rect class="activation" x="590" y="252" width="20" height="572" rx="10" fill="#16423f" stroke="#42d6c9" stroke-width="2"/>
+      <rect class="activation" x="990" y="344" width="20" height="456" rx="10" fill="#2b2044" stroke="#a78bfa" stroke-width="2"/>
+      <rect class="activation" x="170" y="264" width="20" height="260" rx="10" fill="#17344b" stroke="#59b9ef" stroke-width="2"/>
+      <rect class="activation" x="1410" y="550" width="20" height="288" rx="10" fill="#3a2b14" stroke="#f6b84a" stroke-width="2"/>
+    </g>
+
+    <g fill="none" stroke-linecap="round" stroke-width="4">
+      <path class="callBlue" d="M190 276 H586" stroke="#59b9ef" marker-end="url(#arrow-blue)"/>
+      <path class="return" d="M590 326 H194" stroke="#42d6c9" stroke-dasharray="10 8" marker-end="url(#arrow-teal)"/>
+      <path class="call" d="M190 376 H986" stroke="#a78bfa" marker-end="url(#arrow-purple)"/>
+      <path class="callBlue" d="M190 426 H586" stroke="#59b9ef" marker-end="url(#arrow-blue)"/>
+    </g>
+
+    <g>
+      <rect class="alt" x="54" y="464" width="1492" height="418" rx="24" fill="#10192a" fill-opacity="0.12" stroke="#6d8197" stroke-width="3" stroke-dasharray="12 10"/>
+      <rect x="82" y="482" width="330" height="40" rx="20" fill="#241c38" stroke="#9c7ae0" stroke-width="2"/>
+      <text x="109" y="508" fill="#d6c8f6" font-size="18" font-weight="700">alt</text>
+      <text x="166" y="508" fill="#d6c8f6" font-size="18">실행자가 lease를 반납하기 전에 중단됨</text>
+    </g>
+
+    <g fill="none" stroke-linecap="round" stroke-width="4">
+      <path class="fail" d="M130 548 H230" stroke="#ef6f7b" marker-end="url(#arrow-red)"/>
+      <path class="callAmber" d="M1410 600 H614" stroke="#f6b84a" marker-end="url(#arrow-amber)"/>
+      <path class="fail" d="M550 664 H650" stroke="#ef6f7b" marker-end="url(#arrow-red)"/>
+      <path class="callAmber" d="M1410 724 H614" stroke="#f6b84a" marker-end="url(#arrow-amber)"/>
+      <path class="return" d="M610 768 H1406" stroke="#42d6c9" stroke-dasharray="10 8" marker-end="url(#arrow-teal)"/>
+      <path class="call" d="M1410 812 H1014" stroke="#a78bfa" marker-end="url(#arrow-purple)"/>
+      <path class="callAmber" d="M1410 856 H1014" stroke="#f6b84a" marker-end="url(#arrow-amber)"/>
+    </g>
+
+    <g font-size="17" font-weight="700">
+      <g><rect class="label" x="220" y="250" width="290" height="38" rx="19" fill="#10283b" stroke="#59b9ef"/><circle cx="244" cy="269" r="14" fill="#163d59" stroke="#59b9ef"/><text class="num" x="244" y="275" text-anchor="middle" fill="#dff5ff">1</text><text class="mono-font" x="270" y="275" fill="#bce8ff">acquire(key, token A)</text></g>
+      <g><rect class="label" x="252" y="300" width="350" height="38" rx="19" fill="#10302f" stroke="#42d6c9"/><circle cx="276" cy="319" r="14" fill="#154743" stroke="#42d6c9"/><text class="num" x="276" y="325" text-anchor="middle" fill="#ddfffb">2</text><text x="302" y="325" fill="#b7f5ef">t + lease 시점까지 소유권 유효</text></g>
+      <g><rect class="label" x="520" y="350" width="270" height="38" rx="19" fill="#241a3b" stroke="#a78bfa"/><circle cx="544" cy="369" r="14" fill="#352456" stroke="#a78bfa"/><text class="num" x="544" y="375" text-anchor="middle" fill="#f2eaff">3</text><text x="570" y="375" fill="#ddcdff">보호 대상 작업 실행</text></g>
+      <g><rect class="label" x="246" y="400" width="274" height="38" rx="19" fill="#10283b" stroke="#59b9ef"/><circle cx="270" cy="419" r="14" fill="#163d59" stroke="#59b9ef"/><text class="num" x="270" y="425" text-anchor="middle" fill="#dff5ff">4</text><text class="mono-font" x="296" y="425" fill="#bce8ff">renew(token A)</text></g>
+
+      <g><rect class="label" x="238" y="529" width="258" height="38" rx="19" fill="#3a1b25" stroke="#ef6f7b"/><circle cx="262" cy="548" r="14" fill="#57212d" stroke="#ef6f7b"/><text class="num" x="262" y="554" text-anchor="middle" fill="#ffe8eb">5</text><text x="288" y="554" fill="#ffc4ca">Node A 중단</text></g>
+      <g><rect class="label" x="862" y="574" width="346" height="38" rx="19" fill="#3a2a12" stroke="#f6b84a"/><circle cx="886" cy="593" r="14" fill="#5a3b10" stroke="#f6b84a"/><text class="num" x="886" y="599" text-anchor="middle" fill="#fff1c9">6</text><text class="mono-font" x="912" y="599" fill="#ffe0a0">acquire(key): 다른 실행자가 사용 중</text></g>
+      <g><rect class="label" x="670" y="645" width="280" height="38" rx="19" fill="#3a1b25" stroke="#ef6f7b"/><circle cx="694" cy="664" r="14" fill="#57212d" stroke="#ef6f7b"/><text class="num" x="694" y="670" text-anchor="middle" fill="#ffe8eb">7</text><text x="720" y="670" fill="#ffc4ca">lease 만료</text></g>
+      <g><rect class="label" x="860" y="698" width="350" height="38" rx="19" fill="#3a2a12" stroke="#f6b84a"/><circle cx="884" cy="717" r="14" fill="#5a3b10" stroke="#f6b84a"/><text class="num" x="884" y="723" text-anchor="middle" fill="#fff1c9">8</text><text class="mono-font" x="910" y="723" fill="#ffe0a0">acquire(key, token B)</text></g>
+      <text x="990" y="759" text-anchor="middle" fill="#8fe8df" font-size="16">새 token B로 소유권 부여</text>
+      <g><rect class="label" x="1118" y="786" width="270" height="38" rx="19" fill="#241a3b" stroke="#a78bfa"/><circle cx="1142" cy="805" r="14" fill="#352456" stroke="#a78bfa"/><text class="num" x="1142" y="811" text-anchor="middle" fill="#f2eaff">9</text><text x="1168" y="811" fill="#ddcdff">멱등하게 작업 재개</text></g>
+      <g><rect class="label" x="1096" y="830" width="292" height="38" rx="19" fill="#3a2a12" stroke="#f6b84a"/><circle cx="1122" cy="849" r="14" fill="#5a3b10" stroke="#f6b84a"/><text class="num" x="1122" y="855" text-anchor="middle" fill="#fff1c9">10</text><text x="1150" y="855" fill="#ffe0a0">완료 마커 저장</text></g>
+    </g>
+
+    <rect x="90" y="915" width="1420" height="54" rx="18" fill="#111e31" stroke="#2e4867" stroke-width="2"/>
+    <text x="800" y="949" text-anchor="middle" fill="#dbe8f5" font-size="20" font-weight="700">Lease 만료는 소유권 인계만 허용하며, 이미 반영된 변경의 중복 방지를 보증하지 않습니다.</text>
+  </g>
+</svg>
