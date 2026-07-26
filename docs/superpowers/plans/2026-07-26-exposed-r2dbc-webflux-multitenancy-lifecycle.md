@@ -41,10 +41,10 @@
 - `/Users/debop/work/bluetape4k/exposed-r2dbc-workshop/10-multi-tenant/04-connection-factory-per-tenant-spring-webflux/src/main/kotlin/exposed/r2dbc/multitenant/connectionfactory/tenant/TenantTransactionExecutor.kt`
 - `/Users/debop/work/bluetape4k/exposed-r2dbc-workshop/10-multi-tenant/05-spring-security-tenant-authorization-spring-webflux/src/main/kotlin/exposed/r2dbc/multitenant/security/security/AuthorizedTenantContextWebFilter.kt`
 - `/Users/debop/work/bluetape4k/exposed-r2dbc-workshop/10-multi-tenant/05-spring-security-tenant-authorization-spring-webflux/src/main/kotlin/exposed/r2dbc/multitenant/security/security/TenantAuthenticationResolver.kt`
-- `/Users/debop/work/bluetape4k/exposed-r2dbc-workshop/10-multi-tenant/06-tenant-onboarding-spring-webflux/src/main/kotlin/exposed/r2dbc/multitenant/onboarding/tenant/TenantProvisioner.kt`
-- `/Users/debop/work/bluetape4k/exposed-r2dbc-workshop/10-multi-tenant/06-tenant-onboarding-spring-webflux/src/main/kotlin/exposed/r2dbc/multitenant/onboarding/tenant/TenantRegistryRepository.kt`
-- `/Users/debop/work/bluetape4k/exposed-r2dbc-workshop/10-multi-tenant/06-tenant-onboarding-spring-webflux/src/main/kotlin/exposed/r2dbc/multitenant/onboarding/tenant/TenantConnectionFactoryRegistry.kt`
-- `/Users/debop/work/bluetape4k/exposed-r2dbc-workshop/10-multi-tenant/06-tenant-onboarding-spring-webflux/src/main/kotlin/exposed/r2dbc/multitenant/onboarding/tenant/TenantTypes.kt`
+- `/Users/debop/work/bluetape4k/exposed-r2dbc-workshop/10-multi-tenant/08-resilient-tenant-onboarding-spring-webflux/src/main/kotlin/exposed/r2dbc/multitenant/resilientonboarding/tenant/ResilientTenantProvisioner.kt`
+- `/Users/debop/work/bluetape4k/exposed-r2dbc-workshop/10-multi-tenant/08-resilient-tenant-onboarding-spring-webflux/src/main/kotlin/exposed/r2dbc/multitenant/resilientonboarding/tenant/TenantLifecycleRepository.kt`
+- `/Users/debop/work/bluetape4k/exposed-r2dbc-workshop/10-multi-tenant/08-resilient-tenant-onboarding-spring-webflux/src/main/kotlin/exposed/r2dbc/multitenant/resilientonboarding/tenant/TenantLifecycleReconciler.kt`
+- `/Users/debop/work/bluetape4k/exposed-r2dbc-workshop/10-multi-tenant/08-resilient-tenant-onboarding-spring-webflux/src/main/kotlin/exposed/r2dbc/multitenant/resilientonboarding/tenant/PostgreSqlSchemaTenantRuntimeResourceFactory.kt`
 
 ## Task 1: 근거와 중복 경계를 고정한다
 
@@ -62,8 +62,8 @@ rg -n -C 4 'determineCurrentLookupKey|TenantTransactionExecutor|TENANT_ID' \
 rg -n -C 4 'AuthorizedTenantContextWebFilter|TenantAuthenticationResolver|contextWrite|FORBIDDEN' \
   /Users/debop/work/bluetape4k/exposed-r2dbc-workshop/10-multi-tenant/05-spring-security-tenant-authorization-spring-webflux
 
-rg -n -C 4 'reserve|provision|register|cleanupAfterFailure|recoverStaleRows|TenantStatus|PROVISIONING|ACTIVE|FAILED' \
-  /Users/debop/work/bluetape4k/exposed-r2dbc-workshop/10-multi-tenant/06-tenant-onboarding-spring-webflux
+rg -n -C 4 'claim|renewLease|markActive|markFailed|publish|reconcile|PROVISIONING|ACTIVE|FAILED|RECOVERY' \
+  /Users/debop/work/bluetape4k/exposed-r2dbc-workshop/10-multi-tenant/08-resilient-tenant-onboarding-spring-webflux
 ```
 
 Expected: WebFlux context 저장·복원, 권한 확인 후 context 공개, tenant별 연결 선택, 온보딩 예약·pool 생성·registry 등록·즉시 실패 cleanup·재시작 stale-row 복구의 실제 클래스와 함수가 확인된다.
@@ -223,11 +223,13 @@ Use:
 준비와 공개 절차는 다음 축약 의사코드로 설명한다.
 
 ```kotlin
-suspend fun onboard(command: OnboardTenantCommand): TenantMetadata {
-    val reserved = registryRepository.reserve(command)       // PROVISIONING
-    val resources = provisioner.prepare(reserved)             // DB, pool, schema, seed
-    runtimeRegistry.register(reserved.tenantId, resources)     // routing 공개
-    return registryRepository.activate(reserved.tenantId)      // ACTIVE
+suspend fun onboard(request: TenantOnboardingRequest): TenantMetadata {
+    val reserved = registryRepository.reserve(...)             // PROVISIONING
+    val pool = createAndWarmPool(reserved.r2dbcUrl)
+    val database = R2dbcDatabase.connect(pool, ...)
+    createSchemaAndSeed(database, reserved.tenantId)
+    runtimeRegistry.register(reserved.tenantId, pool, database) // routing 공개
+    return registryRepository.markActive(reserved.tenantId)     // ACTIVE
 }
 ```
 
@@ -350,8 +352,8 @@ The approved visual language uses component header cards and numbered connection
 Use these components and messages:
 
 ```text
-1. Client → TenantFilter: X-TENANT-ID + credentials
-2. TenantFilter → Tenant resolver: normalize and validate
+1. Client → AuthorizedTenantContextWebFilter: X-TENANT-ID + credentials
+2. AuthorizedTenantContextWebFilter → Tenant resolver: normalize and validate
 3. Security context → Tenant authorization: authenticated tenant
 4. Tenant authorization: requested tenant matches authenticated tenant
 5. Tenant authorization → Reactor Context: publish authorized TenantId
@@ -423,45 +425,46 @@ Use these components:
 ```text
 운영자
 TenantOnboardingController
-TenantProvisioner
-TenantRegistryRepository
-Resource Provider
-TenantConnectionFactoryRegistry
+ResilientTenantProvisioner
+TenantLifecycleRepository
+TenantRuntimeResourceFactory
+TenantRuntimeRegistry
 ```
 
 Use these messages:
 
 ```text
 1. 운영자 → Controller: 온보딩 요청
-2. Controller → Provisioner: provision(command)
-3. Provisioner → RegistryRepository: reserve(PROVISIONING)
-4. Provisioner → Resource Provider: DB·pool 준비
-5. Provisioner → Resource Provider: schema·seed와 연결 검증
-6. Provisioner → Runtime Registry: register
-7. Provisioner → RegistryRepository: activate(ACTIVE)
+2. Controller → Provisioner: onboard(command)
+3. Provisioner → LifecycleRepository: claim(PROVISIONING + lease)
+4. Provisioner → ResourceFactory: schema와 준비 표식 생성
+5. Provisioner → ResourceFactory: probe
+6. Provisioner → LifecycleRepository: markActive(ACTIVE)
+7. Provisioner → RuntimeRegistry: publish
 8. Provisioner → 운영자: 사용 가능한 tenant 반환
 ```
 
 Immediate failure branch:
 
 ```text
-pool·schema·seed·register 실패
-→ runtime registry 제거
-→ schema/pool 정리
-→ 예약 metadata 삭제
+schema·probe·publish 실패 또는 요청 취소
+→ FAILED와 안정적인 실패 범주 기록
+→ runtime registry 해제
+→ 확보한 runtime 자원 정리
 ```
 
 Restart recovery branch:
 
 ```text
 애플리케이션 재시작
-→ stale PROVISIONING·ACTIVE 행을 FAILED로 전환
-→ 다음 reserve가 FAILED 행을 PROVISIONING으로 갱신
+→ 만료 PROVISIONING 행을 FAILED(RECOVERY)로 전환
+→ ACTIVE는 restore·probe가 성공할 때만 runtime registry에 다시 게시
+→ probe 실패 ACTIVE는 FAILED(RECOVERY), 다음 claim은 새 PROVISIONING 시도를 예약
 ```
 
 - [ ] **Step 2: SVG를 작성한다**
 
-Create `public/assets/exposed-r2dbc-tenant-onboarding-01-ko.svg` as a dark 1800×1500 interaction/lifecycle diagram. Use the same fonts, palette, card geometry, message numbering and 16×16 markers as Task 4. Make `PROVISIONING`, `ACTIVE`, `FAILED` visible as state badges attached to the metadata interaction rather than a detached state machine. `FAILED`는 즉시 실패 branch가 아니라 재시작 복구 branch에 배치한다.
+Create `public/assets/exposed-r2dbc-tenant-onboarding-01-ko.svg` as a dark interaction/lifecycle diagram. Use the same fonts, palette, card geometry, message numbering and fixed-size markers as Task 4. Make `PROVISIONING`, `ACTIVE`, `FAILED` visible as state badges attached to the metadata interaction rather than a detached state machine. `FAILED`는 같은 프로세스의 실패·취소와 재시작 복구 모두에서 영속 기록으로 나타낸다.
 
 - [ ] **Step 3: parse, normalize, render와 audits를 실행한다**
 

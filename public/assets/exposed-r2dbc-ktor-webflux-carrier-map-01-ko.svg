@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1240" viewBox="0 0 2000 1240" role="img" aria-labelledby="title desc">
+  <title id="title">Ktor와 Spring WebFlux의 tenant 전달 경계</title>
+  <desc id="desc">Ktor는 plugin과 ApplicationCall attributes를 사용하고, Spring WebFlux는 WebFilter와 Reactor Context, Coroutine bridge를 사용한다. 두 경로 모두 검증된 tenant만 transaction 또는 connection 선택에 전달한다.</desc>
+  <defs>
+    <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#07101f"/><stop offset=".58" stop-color="#0c1730"/><stop offset="1" stop-color="#10142a"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#020617" flood-opacity=".52"/></filter>
+    <marker id="arrow-blue" markerWidth="28" markerHeight="28" refX="18" refY="9" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L18 9 L0 18 Z" fill="#66a8cf"/></marker>
+    <marker id="arrow-green" markerWidth="28" markerHeight="28" refX="18" refY="9" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L18 9 L0 18 Z" fill="#8db475"/></marker>
+    <marker id="arrow-amber" markerWidth="28" markerHeight="28" refX="18" refY="9" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L18 9 L0 18 Z" fill="#d2a15e"/></marker>
+    <style>
+      .title{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:48px;font-weight:700;fill:#f8fafc}.subtitle{font-family:'goorm Sans Code','Comic Mono',monospace;font-size:18px;fill:#a9b8d4}.frame{fill:none;stroke:#2b4168;stroke-width:2.5}.lane{fill:#0f1b31;fill-opacity:.74;stroke:#344e75;stroke-width:2}.laneTitle{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:28px;font-weight:700;fill:#f8fafc}.laneHint{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:17px;fill:#b9c7db}.card{fill:#162740;stroke-width:2.5;filter:url(#shadow)}.blueCard{stroke:#66a8cf}.greenCard{stroke:#8db475}.amberCard{stroke:#d2a15e}.tealCard{stroke:#59b0aa}.eyebrow{font-family:'goorm Sans Code','Comic Mono',monospace;font-size:14px;font-weight:700;letter-spacing:1px;fill:#8ea4c3}.cardTitle{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:25px;font-weight:700;fill:#f8fafc}.cardBody{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:17px;fill:#b9c7db}.connector{fill:none;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}.blue{stroke:#66a8cf}.green{stroke:#8db475}.amber{stroke:#d2a15e}.legend{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:16px;font-weight:700}.footer{fill:#172a3e;stroke:#d2a15e;stroke-width:2.2}.footerTitle{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:27px;font-weight:700;fill:#f1d6a7}.footerBody{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:22px;fill:#d9e4f3}.chip{fill:#101b30;stroke:#6685aa;stroke-width:1.8}.chipText{font-family:'goorm Sans Code','Comic Mono',monospace;font-size:19px;font-weight:700;fill:#c9dda8}
+    </style>
+  </defs>
+  <rect width="2000" height="1240" rx="34" fill="url(#canvas)"/><rect class="frame" x="28" y="28" width="1944" height="1184" rx="30"/>
+  <text class="title" x="1000" y="88" text-anchor="middle">Ktor와 Spring WebFlux는 carrier가 다르고, 불변식은 같다</text>
+  <text class="subtitle" x="1000" y="124" text-anchor="middle">raw header는 요청 경계에서 끝내고, 검증된 tenant만 DB 선택까지 전달합니다.</text>
+  <path class="connector blue" d="M430 154 H500" marker-end="url(#arrow-blue)"/><text class="legend" x="520" y="160" fill="#a8d6ee">입력 검증</text>
+  <path class="connector green" d="M820 154 H890" marker-end="url(#arrow-green)"/><text class="legend" x="910" y="160" fill="#c9dda8">요청 범위 전달</text>
+  <path class="connector amber" d="M1270 154 H1340" marker-end="url(#arrow-amber)"/><text class="legend" x="1360" y="160" fill="#f1d6a7">DB 자원 선택</text>
+
+  <rect class="lane" x="70" y="200" width="1860" height="350" rx="26"/><text class="laneTitle" x="110" y="246">Ktor / Exposed R2DBC</text><text class="laneHint" x="1890" y="246" text-anchor="end">call 단위 상태를 명시적으로 넘기는 경로</text>
+  <g><rect class="card blueCard" x="110" y="300" width="350" height="150" rx="22"/><text class="eyebrow" x="140" y="336">REQUEST BOUNDARY</text><text class="cardTitle" x="140" y="376">Tenant Plugin</text><text class="cardBody" x="140" y="414">header 해석 · tenant 검증</text></g>
+  <g><rect class="card greenCard" x="570" y="300" width="350" height="150" rx="22"/><text class="eyebrow" x="600" y="336">REQUEST CARRIER</text><text class="cardTitle" x="600" y="376">Call attributes</text><text class="cardBody" x="600" y="414">Tenants.Tenant 저장</text></g>
+  <g><rect class="card tealCard" x="1030" y="300" width="350" height="150" rx="22"/><text class="eyebrow" x="1060" y="336">HANDLER</text><text class="cardTitle" x="1060" y="376">Route handler</text><text class="cardBody" x="1060" y="414">검증 tenant를 명시적으로 전달</text></g>
+  <g><rect class="card amberCard" x="1490" y="300" width="350" height="150" rx="22"/><text class="eyebrow" x="1520" y="336">TRANSACTION</text><text class="cardTitle" x="1520" y="376">Tenant transaction</text><text class="cardBody" x="1520" y="414">SET SCHEMA 또는 route 선택</text></g>
+  <path class="connector blue" d="M460 375 H570" marker-end="url(#arrow-blue)"/><path class="connector green" d="M920 375 H1030" marker-end="url(#arrow-green)"/><path class="connector amber" d="M1380 375 H1490" marker-end="url(#arrow-amber)"/>
+
+  <rect class="lane" x="70" y="590" width="1860" height="350" rx="26"/><text class="laneTitle" x="110" y="636">Spring Boot / WebFlux</text><text class="laneHint" x="1890" y="636" text-anchor="end">subscriber context를 coroutine까지 연결하는 경로</text>
+  <g><rect class="card blueCard" x="110" y="690" width="350" height="150" rx="22"/><text class="eyebrow" x="140" y="726">SECURITY BOUNDARY</text><text class="cardTitle" x="140" y="766">WebFilter</text><text class="cardBody" x="140" y="804">인증 · tenant 권한 확인</text></g>
+  <g><rect class="card greenCard" x="570" y="690" width="350" height="150" rx="22"/><text class="eyebrow" x="600" y="726">REQUEST CARRIER</text><text class="cardTitle" x="600" y="766">Reactor Context</text><text class="cardBody" x="600" y="804">검증된 TenantId 공개</text></g>
+  <g><rect class="card tealCard" x="1030" y="690" width="350" height="150" rx="22"/><text class="eyebrow" x="1060" y="726">COROUTINE BRIDGE</text><text class="cardTitle" x="1060" y="766">ReactorContext</text><text class="cardBody" x="1060" y="804">suspend service가 tenant 읽기</text></g>
+  <g><rect class="card amberCard" x="1490" y="690" width="350" height="150" rx="22"/><text class="eyebrow" x="1520" y="726">TRANSACTION</text><text class="cardTitle" x="1520" y="766">Tenant executor</text><text class="cardBody" x="1520" y="804">ConnectionFactory / schema 선택</text></g>
+  <path class="connector blue" d="M460 765 H570" marker-end="url(#arrow-blue)"/><path class="connector green" d="M920 765 H1030" marker-end="url(#arrow-green)"/><path class="connector amber" d="M1380 765 H1490" marker-end="url(#arrow-amber)"/>
+
+  <rect class="footer" x="150" y="990" width="1700" height="170" rx="24"/><text class="footerTitle" x="210" y="1044">공통 불변식</text><text class="footerBody" x="210" y="1082">carrier는 runtime에 맞게 바뀌어도, 권한 확인 전에는 공개하지 않고 준비되지 않은 자원은 routing 대상으로 삼지 않습니다.</text>
+  <rect class="chip" x="220" y="1103" width="430" height="40" rx="20"/><text class="chipText" x="435" y="1130" text-anchor="middle">raw header ≠ domain tenant</text>
+  <rect class="chip" x="785" y="1103" width="430" height="40" rx="20"/><text class="chipText" x="1000" y="1130" text-anchor="middle">authorize before publish</text>
+  <rect class="chip" x="1350" y="1103" width="430" height="40" rx="20"/><text class="chipText" x="1565" y="1130" text-anchor="middle">ready resource only</text>
+</svg>
