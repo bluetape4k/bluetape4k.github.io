@@ -1,0 +1,271 @@
+---
+title: "bluetape4k-dependencies 1.3.0 in Practice Part 2: Composing Services"
+description: "Example-driven guidance for choosing Exposed, AWS, Leader, Text, and Image modules after importing the BOM in Spring Boot worker, Ktor API, and image upload services."
+sidebar:
+  order: -202606281200
+blog:
+  date: 2026-06-28T12:00:00+09:00
+  image: /assets/bluetape4k-dependencies-1-3-0-hero.png
+  imageAlt: Small robotic workers inspect projects, exposed, aws, image, text, leader, graph, and javers module blocks beside a dependency BOM board in a 3D workbench illustration
+  cardDescription: "After importing the BOM, the next question is which modules belong together at each service boundary."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-dependencies-1-3-0-hero.png" alt="Small robotic workers inspect projects, exposed, aws, image, text, leader, graph, and javers module blocks beside a dependency BOM board in a 3D workbench illustration" loading="eager" />
+  <figcaption>The BOM is only the starting point. Real services still need clear choices around DB access, AWS clients, leader election, tokenizers, and image processing.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-28 · bluetape4k-dependencies 1.3.0 in Practice · Part 2</p>
+
+Importing `bluetape4k-dependencies` reduces version work, but it leaves a more practical question:
+
+> Which modules should this service actually use?
+
+Some services only need `Exposed`. Some also need `AWS`. Scheduled work may need `Leader`. User input can bring in
+`Text`, and file upload paths can bring in `Image`.
+
+## Import the BOM First
+
+Gradle imports the BOM with `platform`, and bluetape4k modules stay versionless.
+
+```kotlin
+dependencies {
+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.3.0"))
+
+    implementation("io.github.bluetape4k:bluetape4k-spring-boot-core")
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-spring-boot-jdbc")
+    implementation("io.github.bluetape4k.aws:bluetape4k-aws-spring-boot")
+}
+```
+
+The application chooses feature boundaries. The BOM chooses the compatible versions.
+
+```text
+application
+  -> bluetape4k-dependencies 1.3.0
+      -> projects 1.11.0
+      -> exposed 1.11.0
+      -> aws 0.4.0
+      -> image 0.3.0
+      -> text 0.2.1
+      -> leader 0.4.0
+```
+
+## Example 1: Spring Boot Worker Service
+
+Suppose a worker service:
+
+- reads pending jobs from a database
+- writes result files to S3
+- must not run the same job from several instances
+- preprocesses job names or input text with a tokenizer
+- wants write-behind cache state visible through health
+
+The dependency shape can start here:
+
+```kotlin
+dependencies {
+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.3.0"))
+
+    implementation("io.github.bluetape4k:bluetape4k-spring-boot-core")
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-spring-boot-jdbc")
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-cache")
+    implementation("io.github.bluetape4k.aws:bluetape4k-aws-spring-boot")
+    implementation("io.github.bluetape4k.leader:bluetape4k-leader-spring-boot")
+    implementation("io.github.bluetape4k.leader:bluetape4k-leader-redis-lettuce")
+    implementation("io.github.bluetape4k.leader:bluetape4k-leader-micrometer")
+    implementation("io.github.bluetape4k.text:tokenizer-korean")
+    implementation("io.github.bluetape4k.text:text-search")
+}
+```
+
+The code shape is service-specific, but the boundary is the important part.
+
+```kotlin
+@Scheduled(fixedDelayString = "PT30S")
+fun runPendingJobs() {
+    leader.runIfLeader("invoice-worker") {
+        transaction {
+            val jobs = jobRepository.findPending(limit = 100)
+
+            jobs.forEach { job ->
+                val tokens = koreanTokenizer.tokenize(job.title)
+                val result = processor.render(job, tokens)
+
+                s3Client.putObject(job.resultKey, result)
+                jobRepository.markDone(job.id)
+            }
+        }
+    }
+}
+```
+
+`Leader` is not decoration here. If three workers pick the same row, the deployment turns into an incident. The leader
+boundary makes the ownership rule visible in code.
+
+If Exposed cache is used, health should expose write-behind state.
+
+```json
+{
+  "status": "OUT_OF_SERVICE",
+  "components": {
+    "exposedCache": {
+      "status": "OUT_OF_SERVICE",
+      "details": {
+        "mode": "WRITE_BEHIND",
+        "queueDepth": 128,
+        "flushJobRunning": false,
+        "lastFlushError": "RedisConnectionFailureException"
+      }
+    }
+  }
+}
+```
+
+## Example 2: Ktor API Service
+
+A Ktor API has different lifecycle boundaries:
+
+- HTTP requests enter through Ktor
+- R2DBC or JDBC reads and writes data
+- CloudWatch receives metrics and logs
+- admin APIs or scheduled work may need leader election
+- text input goes through tokenizers or blockword checks
+
+```kotlin
+dependencies {
+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.3.0"))
+
+    implementation("io.github.bluetape4k:bluetape4k-ktor-core")
+    implementation("io.github.bluetape4k:bluetape4k-ktor-observability")
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-ktor")
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-r2dbc")
+    implementation("io.github.bluetape4k.aws:bluetape4k-aws-ktor")
+    implementation("io.github.bluetape4k.leader:bluetape4k-leader-ktor")
+    implementation("io.github.bluetape4k.leader:bluetape4k-leader-redis-lettuce")
+    implementation("io.github.bluetape4k.text:tokenizer-korean")
+    implementation("io.github.bluetape4k.text:text-search")
+}
+```
+
+The sensitive part in Ktor is lifecycle. AWS clients, metric namespace, log group names, and stream names should not be
+spread across random call sites.
+
+```kotlin
+fun Application.module() {
+    install(BluetapeAwsCloudWatch) {
+        namespace = "billing-api"
+        serviceName = "billing"
+    }
+
+    install(BluetapeAwsCloudWatchLogs) {
+        logGroupName = "/bluetape4k/billing-api"
+        logStreamName = environment.config.property("deployment.instanceId").getString()
+    }
+
+    routing {
+        post("/documents/search") {
+            val request = call.receive<SearchRequest>()
+            request.query.requireLength(max = 2_000)
+
+            val tokens = koreanTokenizer.tokenize(request.query)
+            call.respond(documentService.search(tokens))
+        }
+    }
+}
+```
+
+## Example 3: Image Upload API
+
+Image upload paths add another boundary: the point where a file becomes memory.
+
+```kotlin
+dependencies {
+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.3.0"))
+
+    implementation("io.github.bluetape4k.image:bluetape4k-images")
+    implementation("io.github.bluetape4k.image:bluetape4k-images-ocr")
+    implementation("io.github.bluetape4k.image:bluetape4k-images-vips-api")
+    implementation("io.github.bluetape4k.image:bluetape4k-images-spring-boot")
+}
+```
+
+This is convenient for small samples and risky for production files:
+
+```kotlin
+// Convenient for small samples. Dangerous for large files.
+val bytes = multipartFile.bytes
+val text = ocr.read(bytes)
+```
+
+The large-file path should care about streaming and limits before OCR options.
+
+```kotlin
+fun extractText(path: Path): OcrResult {
+    return fileSystem.source(path).buffer().use { source ->
+        imageReader
+            .read(source)
+            .resize(maxWidth = 2_000)
+            .normalizeForOcr()
+            .runOcr(language = "kor+eng")
+    }
+}
+```
+
+## Module Selection Rules
+
+| Service boundary | First module to inspect | Also check |
+|---|---|---|
+| Spring Boot foundation | `bluetape4k-spring-boot-core` | Spring Boot major line |
+| Ktor API | `bluetape4k-ktor-core`, `bluetape4k-ktor-observability` | Ktor major line, plugin lifecycle |
+| Exposed JDBC | `bluetape4k-exposed-spring-boot-jdbc`, `bluetape4k-exposed-jdbc` | transaction helper, datasource configuration |
+| Exposed R2DBC | `bluetape4k-exposed-spring-boot-r2dbc`, `bluetape4k-exposed-r2dbc` | coroutine boundary, connection lifecycle |
+| AWS integration | `bluetape4k-aws-spring-boot`, `bluetape4k-aws-ktor` | client lifecycle, emulator/runtime |
+| Distributed leader election | `bluetape4k-leader-spring-boot`, `bluetape4k-leader-ktor` | provider/storage choice, metrics |
+| Korean/Japanese text | `tokenizer-korean`, `tokenizer-japanese`, `text-search` | input length limit, error response |
+| Image/OCR | `bluetape4k-images`, `bluetape4k-images-ocr` | file size, memory, native runtime |
+
+The table is not a request to install everything. Pick the service boundary first, then add the modules required for
+that boundary. The BOM keeps the chosen modules on the intended version set.
+
+## Verify After Upgrade
+
+After moving to `dependencies 1.3.0`, check the runtime lines near the service boundary.
+
+```bash
+./gradlew compileTestKotlin
+./gradlew test
+./gradlew dependencyInsight --dependency exposed --configuration runtimeClasspath
+./gradlew dependencyInsight --dependency ktor --configuration runtimeClasspath
+./gradlew dependencyInsight --dependency aws --configuration runtimeClasspath
+```
+
+## Closing
+
+Importing the BOM reduces version-number work. It does not finish service design. The useful questions are still:
+
+- What database boundary does this service own?
+- Who owns AWS client and log/metric lifecycle?
+- May a scheduled job run on several instances at once?
+- Where is user input limited before tokenizers or blockword checks?
+- When does an image file enter memory?
+
+Let the BOM own versions. Let the service boundary decide modules.
+
+## Series
+
+If you want the first import path, start with the [usage guide](/blog/bluetape4k-dependencies-usage-guide/).
+
+- [bluetape4k-dependencies 1.3.0 in Practice Part 1: Features and Cleanup](/blog/bluetape4k-dependencies-1-3-0-library-stories/)
+- [bluetape4k-dependencies 1.3.0 in Practice Part 2: Composing Services](/blog/bluetape4k-dependencies-1-3-0-service-composition/)
+- [bluetape4k-dependencies 1.3.0 in Practice Part 3: Production Signals](/blog/bluetape4k-dependencies-1-3-0-production-signals/)
+- [bluetape4k-dependencies 1.3.0 in Practice Part 4: Input Boundaries](/blog/bluetape4k-dependencies-1-3-0-input-boundaries/)
+
+## Sources
+
+- [`bluetape4k-dependencies` libs.versions.toml](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/gradle/libs.versions.toml)
+- [`bluetape4k-exposed` repository](https://github.com/bluetape4k/bluetape4k-exposed)
+- [`bluetape4k-aws` repository](https://github.com/bluetape4k/bluetape4k-aws)
+- [`bluetape4k-leader` repository](https://github.com/bluetape4k/bluetape4k-leader)
+- [`bluetape4k-image` repository](https://github.com/bluetape4k/bluetape4k-image)
+- [`bluetape4k-text` repository](https://github.com/bluetape4k/bluetape4k-text)

@@ -1,0 +1,217 @@
+---
+title: "Building bluetape4k-dependencies Part 2: Making the 1.0.0 BOM a Public Contract"
+description: "How bluetape4k-dependencies 1.0.0 became a Maven Central-consumable BOM through java-platform, sub-BOM delegation, catalog boundaries, Spring Boot artifact naming, and POM metadata checks."
+sidebar:
+  order: -202606281600
+blog:
+  date: 2026-06-28T16:00:00+09:00
+  image: /assets/bluetape4k-dependencies-version-governance-hero.png
+  imageAlt: Small robotic workers align module blocks on a conveyor and central dependency BOM station in a 3D workbench illustration
+  cardDescription: "A BOM is not a version table. It is a public contract that changes dependency resolution in user projects."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-dependencies-version-governance-hero.png" alt="Small robotic workers align module blocks on a conveyor and central dependency BOM station in a 3D workbench illustration" loading="eager" />
+  <figcaption>A BOM is not a recommended list in a README. It is published to Maven Central and changes the dependency graph of user projects.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-28 · bluetape4k-dependencies build notes · Part 2</p>
+
+[Part 1](/blog/bluetape4k-dependencies-making-part1-why-bom/) covered why `bluetape4k-dependencies` was needed. Once
+repositories move independently, users ask which combination is safe.
+
+```text
+projects is 1.11.0,
+exposed is 1.11.0,
+aws is 0.4.0...
+Which combination should my application import?
+```
+
+This part is about turning that answer into a real public artifact.
+
+## A BOM Needs More Than the Name
+
+Calling something a BOM does not make it useful. A useful BOM must participate in dependency resolution.
+
+```text
+Weak contract:
+  README says "use these versions"
+
+Public contract:
+  Maven Central artifact imports those versions into dependency resolution
+```
+
+The first version had to answer where the source of truth lived. The central BOM should not duplicate every artifact
+already managed by repository-owned BOMs.
+
+```kotlin
+dependencies {
+    api(platform(libs.bluetape4k.bom))
+    api(platform(libs.bluetape4k.aws.bom))
+    api(platform(libs.bluetape4k.exposed.bom))
+    api(platform(libs.bluetape4k.image.bom))
+    api(platform(libs.bluetape4k.text.bom))
+    api(platform(libs.bluetape4k.graph.bom))
+    api(platform(libs.bluetape4k.leader.bom))
+    api(platform(libs.bluetape4k.javers.bom))
+}
+```
+
+Each repository keeps responsibility for its modules. The central BOM combines those repository BOMs and shared external
+dependency lines.
+
+## Build It with Gradle java-platform
+
+Gradle's `java-platform` plugin is the right shape for this artifact.
+
+```kotlin
+plugins {
+    `java-platform`
+    `maven-publish`
+    signing
+}
+
+javaPlatform {
+    allowDependencies()
+}
+```
+
+The `allowDependencies()` call matters because this platform imports other platforms. The central BOM delegates to
+sub-BOMs instead of restating every module constraint.
+
+External dependency families can still be constrained where the central line needs to keep the ecosystem coherent:
+
+```kotlin
+constraints {
+    api(libs.exposed.core)
+    api(libs.fabric8.kubernetes.client)
+    api(libs.ktor.bom)
+    api(libs.netty.bom)
+    api(libs.testcontainers.bom)
+}
+```
+
+## BOM and Catalog Have Different Readers
+
+`bluetape4k-dependencies` also has a Gradle Version Catalog, but the catalog is not the public BOM.
+
+| Item | Who uses it | What it affects |
+|---|---|---|
+| BOM | Applications and library users | dependency resolution |
+| Gradle Version Catalog | bluetape4k maintainers | build script aliases, plugin/library versions |
+
+An application imports:
+
+```kotlin
+implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.3.1"))
+```
+
+Maintainers may also pin a catalog:
+
+```toml
+[versions]
+kotlin = "2.2.0"
+
+[libraries]
+bluetape4k-core = { module = "io.github.bluetape4k:bluetape4k-core" }
+```
+
+Those two surfaces should not be described as the same artifact. The BOM is a Maven Central resolution contract. The
+catalog is a build-authoring contract for the repositories that produce and test the ecosystem.
+
+## Clean Up the Spring Boot Artifact Names First
+
+The public contract also had to avoid transitional names. If a Spring Boot 4 line is the public direction, the artifact
+names and dependency guidance should not preserve old temporary names that confuse users.
+
+```text
+Transitional naming leaks internal migration state.
+Public naming should describe the supported consumption path.
+```
+
+That cleanup belonged before the first public contract, not after users had already copied examples.
+
+## POM Metadata Is Also a Feature
+
+The published POM is what downstream tools read. License, SCM, developer metadata, dependency scopes, and empty versions
+all matter.
+
+```kotlin
+publishing {
+    publications.withType<MavenPublication>().configureEach {
+        pom {
+            name.set("bluetape4k-dependencies")
+            description.set("Dependency management BOM for the bluetape4k ecosystem")
+            url.set("https://github.com/bluetape4k/bluetape4k-dependencies")
+        }
+    }
+}
+```
+
+Before publishing, inspect the result locally.
+
+```bash
+./gradlew publishToMavenLocal
+```
+
+The check is not ceremony. It catches missing SCM entries, snapshot references, or an empty version before Maven Central
+makes the mistake permanent.
+
+## What Users See
+
+The final user-facing Gradle shape is intentionally small.
+
+```kotlin
+dependencies {
+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.3.1"))
+    implementation("io.github.bluetape4k:bluetape4k-core")
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-jdbc")
+}
+```
+
+Maven is equally explicit.
+
+```xml
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>io.github.bluetape4k</groupId>
+            <artifactId>bluetape4k-dependencies</artifactId>
+            <version>1.3.1</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+```
+
+## Applying This to Your Own Libraries
+
+| Question | Guideline |
+|---|---|
+| Does each repository already have a BOM? | Prefer importing sub-BOMs in the central BOM. |
+| Is the central BOM repeating every artifact? | Repetition increases missing and stale constraints. |
+| Are you explaining the catalog like a user artifact? | Catalog is build authoring; BOM is dependency resolution. |
+| Does the artifact name match the future direction? | Do not publish migration-era naming as the first public contract. |
+| Did you inspect the generated POM? | Catch license, SCM, snapshot, and empty-version errors before release. |
+
+## Read Next
+
+The next part covers release-train behavior through `1.3.0`: snapshot inputs, Maven Central visibility, transient 403s,
+POM metadata, and the `1.3.1` patch.
+
+## Series
+
+For the user-facing import path, start with the [usage guide](/blog/bluetape4k-dependencies-usage-guide/).
+
+- [Building bluetape4k-dependencies Part 1: Why the BOM Became Necessary](/blog/bluetape4k-dependencies-making-part1-why-bom/)
+- [Building bluetape4k-dependencies Part 2: Making the 1.0.0 BOM a Public Contract](/blog/bluetape4k-dependencies-making-part2-public-bom/)
+- [Building bluetape4k-dependencies Part 3: Maven Central Has No Rollback Button](/blog/bluetape4k-dependencies-making-part3-release-train/)
+
+## Sources
+
+- [`bluetape4k-dependencies` README.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/README.md)
+- [`bluetape4k-dependencies` CHANGELOG.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/CHANGELOG.md)
+- [`bluetape4k-dependencies` build.gradle.kts](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/build.gradle.kts)
+- [`bluetape4k-dependencies` libs.versions.toml](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/gradle/libs.versions.toml)
+- [`bluetape4k-dependencies` version-management.ko.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/docs/version-management.ko.md)

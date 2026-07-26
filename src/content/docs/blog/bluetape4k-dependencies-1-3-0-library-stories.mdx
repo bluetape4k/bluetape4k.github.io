@@ -1,0 +1,218 @@
+---
+title: "bluetape4k-dependencies 1.3.0 in Practice Part 1: Features and Cleanup"
+description: "A code-oriented tour of projects, exposed, aws, image, text, leader, graph, and javers improvements and fixes included in bluetape4k-dependencies 1.3.0."
+sidebar:
+  order: -202606281000
+blog:
+  date: 2026-06-28T10:00:00+09:00
+  image: /assets/bluetape4k-dependencies-1-3-0-hero.png
+  imageAlt: Small robotic workers inspect projects, exposed, aws, image, text, leader, graph, and javers module blocks beside a dependency BOM board in a 3D workbench illustration
+  cardDescription: "The version number is less interesting than which library boundaries became clearer and which old mistakes were removed."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-dependencies-1-3-0-hero.png" alt="Small robotic workers inspect projects, exposed, aws, image, text, leader, graph, and javers module blocks beside a dependency BOM board in a 3D workbench illustration" loading="eager" />
+  <figcaption>A single BOM upgrade moved connection-state restoration, cache health, CloudWatch plugins, large-file I/O, provider runtimes, and several smaller boundaries together.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-28 · bluetape4k-dependencies 1.3.0 in Practice · Part 1</p>
+
+`bluetape4k-dependencies` is a BOM for using several bluetape4k libraries on one coherent dependency line. Moving to
+`1.3.0` is not only a number change. It pulls in changes from `projects`, `exposed`, `aws`, `image`, `text`, `leader`,
+`graph`, and `javers`.
+
+This post looks at four questions:
+
+- What became usable?
+- Which bugs were fixed?
+- Why did those bugs happen?
+- Where should application code be careful?
+
+## Included Libraries
+
+| Library | Version | Main change |
+|---|---:|---|
+| `projects` | `1.11.0` | fixed `Connection` state restoration in JDBC transaction helpers |
+| `exposed` | `1.11.0` | cache health indicator, BigQuery dry-run, CockroachDB retry helpers |
+| `aws` | `0.4.0` | Ktor CloudWatch/Logs plugin and DynamoDB/DAX/IMDS/S3 improvements |
+| `image` | `0.3.0` | OCR examples and Okio-based large-file image I/O |
+| `text` | `0.2.1` | safer web-service examples for tokenizers and blockword APIs |
+| `leader` | `0.4.0` | backend examples, performance evidence, Kubernetes runtime conflict fix |
+| `graph` | `0.5.1` | stabilized `0.5.x` patch consumption |
+| `javers` | `0.2.1` | dependency boundary cleanup for JaVers/Exposed integration |
+
+## projects 1.11.0: Return the Connection You Borrowed
+
+The most concrete fix in `projects 1.11.0` is
+[`Connection.withTransaction`](https://github.com/bluetape4k/bluetape4k-projects/issues/817).
+
+The helper must not leave the caller's `Connection` in a different state after the transaction helper finishes. The fix
+restored more of the original state, including `autoCommit`, isolation, and `isReadOnly`, and widened failure handling
+beyond a narrow `Exception` path.
+
+```kotlin
+connection.withTransaction {
+    // work runs with transaction settings
+}
+
+// original connection state must be restored here
+```
+
+The regression matters because pooled connections are borrowed objects. If one borrower leaves `isReadOnly` or
+`autoCommit` wrong, the next borrower pays for it.
+
+Useful checks include:
+
+- a connection that already starts with `autoCommit=false`
+- a connection that already starts with `isReadOnly=true`
+- a failure that is not a plain `Exception`
+- rollback succeeds but restore fails
+- read-only transactions leave the original read-only state intact afterward
+
+## exposed 1.11.0: A Cache Should Look Sick When It Is Sick
+
+`exposed 1.11.0` added and refined several operational boundaries:
+
+- [`cache consistency health indicator`](https://github.com/bluetape4k/bluetape4k-exposed/issues/225)
+- BigQuery query dry-run before execution
+- CockroachDB transaction retry helpers
+- dialect options such as Trino session settings
+
+For a write-behind cache, the important question is not only whether `get()` returns quickly.
+
+- Is the write-behind queue backing up?
+- Did the flush job stop?
+- What was the last flush error?
+- Does health still say `UP` when consistency checks are failing?
+
+```json
+{
+  "status": "OUT_OF_SERVICE",
+  "details": {
+    "mode": "WRITE_BEHIND",
+    "queueDepth": 128,
+    "flushJobRunning": false,
+    "lastFlushError": "RedisConnectionFailureException"
+  }
+}
+```
+
+Cache health is not a dashboard extra. It decides whether operators can see delayed consistency before users report the
+symptom.
+
+## aws 0.4.0: A CloudWatch Plugin Should Not Own the Application
+
+`aws 0.4.0` added a
+[`Ktor CloudWatch/Logs plugin`](https://github.com/bluetape4k/bluetape4k-aws/issues/201) and improved DynamoDB, optional
+DAX, IMDS, S3 Access Grants, S3 Vectors, and Micrometer-facing observability paths.
+
+The lifecycle rules are the important part:
+
+- send nothing by default
+- do not close AWS clients supplied by the user
+- close only clients the plugin created
+- bound shutdown flush time
+- do not swallow cancellation
+- do not silently change global logging settings
+
+```kotlin
+install(BluetapeAwsCloudWatch) {
+    namespace = "billing-api"
+    serviceName = "billing"
+}
+```
+
+The plugin should make metric/log emission explicit without becoming the owner of the entire application lifecycle.
+
+## image 0.3.0: File Size Comes Before OCR Options
+
+`image 0.3.0` added
+[`images-ocr` examples](https://github.com/bluetape4k/bluetape4k-image/issues/171) and
+[`large-file image I/O`](https://github.com/bluetape4k/bluetape4k-image/issues/165) through Okio `Source`/`Sink`
+paths.
+
+OCR examples are useful only if the input path survives real files.
+
+```kotlin
+// Fine for small samples. Dangerous as the default upload path.
+val bytes = multipartFile.bytes
+val text = ocr.read(bytes)
+```
+
+The service should decide upload limits, temporary-file behavior, maximum pixels, native runtime failure handling, OCR
+timeouts, and empty-result behavior before spending time on OCR quality.
+
+## text 0.2.1: Tokenizer APIs Behind HTTP Need Input Policy
+
+`text 0.2.1` strengthened runnable `text-search` examples, Lingua detector reuse and threshold tests, and the
+[`tokenizer/blockword web-service safety example`](https://github.com/bluetape4k/bluetape4k-text/issues/99).
+
+The service boundary matters:
+
+```kotlin
+request.text.requireLength(max = 10_000)
+val normalized = normalizer.normalize(request.text)
+val tokens = koreanTokenizer.tokenize(normalized)
+```
+
+Tokenizers, language detectors, and blockword dictionaries are library APIs, but once they sit behind REST endpoints,
+input length, redaction, validation failures, and error responses become service contracts.
+
+## leader 0.4.0: Provider Choice Can Be the Hard Part
+
+`leader 0.4.0` organized Redis, SQL, Kubernetes, Consul, etcd, and DynamoDB backend examples, added more performance
+evidence, and fixed a
+[`Kubernetes K3s test runtime conflict`](https://github.com/bluetape4k/bluetape4k-leader/issues/480).
+
+Choosing a provider also chooses storage and runtime dependencies.
+
+```text
+Redis provider       -> Redis latency and failover behavior
+SQL/Exposed provider -> DB lock waits and transaction boundaries
+Kubernetes Lease     -> API server, Fabric8, service account permissions
+DynamoDB provider    -> IAM, capacity, region, conditional writes
+```
+
+When a backend brings a sensitive runtime line, inspect the classpath instead of guessing.
+
+```bash
+./gradlew dependencyInsight --dependency fabric8 --configuration runtimeClasspath
+```
+
+## graph and javers: Small Patch Lines Still Matter
+
+`graph 0.5.1` stabilizes the `0.5.x` patch line. `javers 0.2.1` is mostly about dependency boundary cleanup around
+JaVers and Exposed integration. These are not headline features, but they keep the combined dependency graph easier to
+consume.
+
+## Closing
+
+After moving to `dependencies 1.3.0`, check the boundaries that are easy to miss:
+
+- does a JDBC helper restore the original `Connection` state?
+- can cache health show queue depth, flush liveness, and last error?
+- does the CloudWatch/Logs plugin respect client and application lifecycle?
+- does OCR load an entire file into memory?
+- do tokenizer/blockword endpoints enforce length and redaction policy?
+- did leader provider choice bring a runtime dependency that needs inspection?
+- do smaller `graph` and `javers` patch lines keep the dependency graph stable?
+
+## Series
+
+If you want the first import path, start with the [usage guide](/blog/bluetape4k-dependencies-usage-guide/).
+
+- [bluetape4k-dependencies 1.3.0 in Practice Part 1: Features and Cleanup](/blog/bluetape4k-dependencies-1-3-0-library-stories/)
+- [bluetape4k-dependencies 1.3.0 in Practice Part 2: Composing Services](/blog/bluetape4k-dependencies-1-3-0-service-composition/)
+- [bluetape4k-dependencies 1.3.0 in Practice Part 3: Production Signals](/blog/bluetape4k-dependencies-1-3-0-production-signals/)
+- [bluetape4k-dependencies 1.3.0 in Practice Part 4: Input Boundaries](/blog/bluetape4k-dependencies-1-3-0-input-boundaries/)
+
+## Sources
+
+- [`bluetape4k-dependencies` CHANGELOG.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/CHANGELOG.md)
+- [`bluetape4k-projects` issue #817](https://github.com/bluetape4k/bluetape4k-projects/issues/817)
+- [`bluetape4k-exposed` issue #225](https://github.com/bluetape4k/bluetape4k-exposed/issues/225)
+- [`bluetape4k-aws` issue #201](https://github.com/bluetape4k/bluetape4k-aws/issues/201)
+- [`bluetape4k-image` issue #165](https://github.com/bluetape4k/bluetape4k-image/issues/165)
+- [`bluetape4k-image` issue #171](https://github.com/bluetape4k/bluetape4k-image/issues/171)
+- [`bluetape4k-text` issue #99](https://github.com/bluetape4k/bluetape4k-text/issues/99)
+- [`bluetape4k-leader` issue #480](https://github.com/bluetape4k/bluetape4k-leader/issues/480)
