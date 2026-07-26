@@ -1,7 +1,18 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { resolveBlogTaxonomy } from '../../src/lib/blogTaxonomy.mjs';
+
+function explicitBlogTags(source) {
+  const frontmatter = source.match(/^---\n([\s\S]*?)\n---/)?.[1] ?? '';
+  const tags = frontmatter.match(/^\s{2}tags:\s*\[([^\]]*)\]\s*$/m)?.[1];
+  if (tags === undefined) return undefined;
+
+  return tags
+    .split(',')
+    .map((tag) => tag.trim().replace(/^['"]|['"]$/g, ''))
+    .filter(Boolean);
+}
 
 test('blog taxonomy derives stable tags without substring false positives', () => {
   const dependencies = resolveBlogTaxonomy(
@@ -73,6 +84,17 @@ test('blog list renders query-addressable tag filters only', async () => {
   assert.match(source, /setAttribute\('aria-current',\s*'true'\)/);
 });
 
+test('blog list separates popular tags from an alphabetical full directory', async () => {
+  const source = await readFile('src/components/BlogPostList.astro', 'utf8');
+
+  assert.match(source, /const popularTags = tagsByPopularity\.slice\(0,\s*12\)/);
+  assert.match(source, /const allTags = \[\.\.\.tagsByPopularity\]\.sort/);
+  assert.match(source, /data-blog-popular-tags/);
+  assert.match(source, /data-blog-tag-directory/);
+  assert.match(source, /<details/);
+  assert.match(source, /directory\.open =/);
+});
+
 test('filtered blog cards remain hidden when card layout styles are applied', async () => {
   const source = await readFile('src/styles/custom.css', 'utf8');
 
@@ -136,6 +158,69 @@ test('blog taxonomy exposes expanded technical tags', () => {
 
   assert.ok(ddd.tags.some((tag) => tag.slug === 'ddd'));
   assert.equal(ddd.tags.find((tag) => tag.slug === 'ddd')?.label, 'DDD');
+});
+
+test('blog taxonomy exposes practical application and architecture concerns', () => {
+  const practical = resolveBlogTaxonomy(
+    {
+      slug: 'bluetape4k-exposed-part5-spring-cache-multitenancy-production',
+      title: 'Production Examples with Cache and Multi-Tenancy',
+      description: 'A hands-on Ktor service with metrics, Kafka messaging, transactions, tests, and tenant security.',
+    },
+    'ko',
+  );
+  const tags = new Map(practical.tags.map((tag) => [tag.slug, tag.label]));
+
+  assert.equal(tags.get('practical-example'), '실전 예제');
+  assert.equal(tags.get('multitenancy'), '멀티테넌시');
+  assert.equal(tags.get('ktor'), 'Ktor');
+  assert.equal(tags.get('observability'), '관측성');
+  assert.equal(tags.get('messaging'), '메시징');
+  assert.equal(tags.get('transactions'), '트랜잭션');
+  assert.equal(tags.get('testing'), '테스트');
+  assert.equal(tags.get('security'), '보안');
+
+  const comparison = resolveBlogTaxonomy(
+    {
+      slug: 'spring-modulith-publications-vs-outbox',
+      title: 'Spring Modulith Publications vs Transactional Outbox',
+      description: 'Compare failure recovery and retry trade-offs for resilient delivery.',
+    },
+    'en',
+  );
+  const comparisonTags = new Set(comparison.tags.map((tag) => tag.slug));
+
+  assert.ok(comparisonTags.has('comparison'));
+  assert.ok(comparisonTags.has('resilience'));
+});
+
+test('every bilingual blog pair has identical explicit tags', async () => {
+  const enDirectory = 'src/content/docs/blog';
+  const koDirectory = 'src/content/docs/ko/blog';
+  const isPost = (file) => file.endsWith('.mdx') && file !== 'index.mdx';
+  const enFiles = (await readdir(enDirectory)).filter(isPost).sort();
+  const koFiles = (await readdir(koDirectory)).filter(isPost).sort();
+
+  assert.equal(enFiles.length, 85);
+  assert.deepEqual(koFiles, enFiles);
+
+  const counts = new Map();
+  for (const file of enFiles) {
+    const [enSource, koSource] = await Promise.all([
+      readFile(`${enDirectory}/${file}`, 'utf8'),
+      readFile(`${koDirectory}/${file}`, 'utf8'),
+    ]);
+    const enTags = explicitBlogTags(enSource);
+    const koTags = explicitBlogTags(koSource);
+
+    assert.ok(enTags?.length, `${file} is missing English blog.tags`);
+    assert.deepEqual(koTags, enTags, `${file} has different Korean blog.tags`);
+    for (const tag of enTags) counts.set(tag, (counts.get(tag) ?? 0) + 1);
+  }
+
+  assert.ok((counts.get('practical-example') ?? 0) >= 25);
+  assert.ok((counts.get('comparison') ?? 0) >= 12);
+  assert.ok((counts.get('multitenancy') ?? 0) >= 4);
 });
 
 test('future non-kotlin posts can be classified by language tags', () => {

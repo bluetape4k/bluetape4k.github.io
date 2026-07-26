@@ -27,12 +27,16 @@ const copy =
   locale === 'ko'
     ? {
         tags: '태그',
+        popularTags: '인기 태그',
+        allTags: '전체 태그',
         all: '전체',
         count: (value: number) => `${value}개 글`,
         empty: '선택한 태그의 글이 없습니다.',
       }
     : {
         tags: 'Tags',
+        popularTags: 'Popular tags',
+        allTags: 'All tags',
         all: 'All',
         count: (value: number) => `${value} ${value === 1 ? 'post' : 'posts'}`,
         empty: 'No posts match the selected tag.',
@@ -80,12 +84,14 @@ const countBy = (values: string[]) =>
   }, {});
 
 const tagCounts = countBy(posts.flatMap((post) => post.taxonomy.tags.map((tag) => String(tag.slug))));
-const tags = Object.keys(tagCounts)
+const tagsByPopularity = Object.keys(tagCounts)
   .map((slug) => ({
     slug: String(slug),
     label: String(posts.flatMap((post) => post.taxonomy.tags).find((tag) => tag.slug === slug)?.label ?? slug),
   }))
   .sort((left, right) => tagCounts[right.slug] - tagCounts[left.slug] || left.label.localeCompare(right.label));
+const popularTags = tagsByPopularity.slice(0, 12);
+const allTags = [...tagsByPopularity].sort((left, right) => left.label.localeCompare(right.label, locale));
 const filterHref = (kind: 'tag', value: string) =>
   value === 'all' ? basePath : `${basePath}?${new URLSearchParams({ [kind]: value }).toString()}`;
 ---
@@ -95,11 +101,11 @@ const filterHref = (kind: 'tag', value: string) =>
     <div class="bt4k-blog-taxonomy-header">
       <span data-blog-count>{copy.count(posts.length)}</span>
     </div>
-    <div class="bt4k-blog-filter-row" data-blog-filter-row="tag">
-      <strong>{copy.tags}</strong>
+    <div class="bt4k-blog-filter-row" data-blog-filter-row="tag" data-blog-popular-tags>
+      <strong>{copy.popularTags}</strong>
       <a href={basePath} data-blog-filter="tag" data-filter-value="all" aria-current="true">{copy.all}</a>
       {
-        tags.map((tag) => (
+        popularTags.map((tag) => (
           <a href={filterHref('tag', tag.slug)} data-blog-filter="tag" data-filter-value={tag.slug}>
             {tag.label}
             <span>{tagCounts[tag.slug]}</span>
@@ -107,6 +113,19 @@ const filterHref = (kind: 'tag', value: string) =>
         ))
       }
     </div>
+    <details class="bt4k-blog-tag-directory" data-blog-tag-directory>
+      <summary>{copy.allTags}</summary>
+      <div class="bt4k-blog-filter-row" data-blog-filter-row="tag">
+        {
+          allTags.map((tag) => (
+            <a href={filterHref('tag', tag.slug)} data-blog-filter="tag" data-filter-value={tag.slug}>
+              {tag.label}
+              <span>{tagCounts[tag.slug]}</span>
+            </a>
+          ))
+        }
+      </div>
+    </details>
   </section>
 
   <div class="bt4k-blog-list">
@@ -143,6 +162,12 @@ const filterHref = (kind: 'tag', value: string) =>
     const locale = root.dataset.locale || 'en';
     const cards = [...root.querySelectorAll('[data-blog-card]')];
     const links = [...root.querySelectorAll('[data-blog-filter]')];
+    const directory = root.querySelector('[data-blog-tag-directory]');
+    const popularTags = new Set(
+      [...root.querySelectorAll('[data-blog-popular-tags] [data-filter-value]')]
+        .map((link) => link.dataset.filterValue)
+        .filter((value) => value && value !== 'all'),
+    );
     const count = root.querySelector('[data-blog-count]');
     const empty = root.querySelector('[data-blog-empty]');
     const countLabel = (value) => (locale === 'ko' ? `${value}개 글` : `${value} ${value === 1 ? 'post' : 'posts'}`);
@@ -176,6 +201,7 @@ const filterHref = (kind: 'tag', value: string) =>
 
       if (count) count.textContent = countLabel(visible);
       if (empty) empty.hidden = visible !== 0;
+      if (directory) directory.open = tag !== 'all' && !popularTags.has(tag);
     };
 
     root.addEventListener('click', (event) => {

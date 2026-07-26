@@ -253,6 +253,23 @@ header.header .site-title:hover span {
   gap: 0.35rem;
 }
 
+.bt4k-blog-tag-directory {
+  border-top: 1px solid var(--bt4k-card-border);
+  padding-top: 0.75rem;
+}
+
+.bt4k-blog-tag-directory summary {
+  width: fit-content;
+  color: var(--bt4k-card-title);
+  font-size: 0.92rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.bt4k-blog-tag-directory[open] summary {
+  margin-bottom: 0.75rem;
+}
+
 .bt4k-blog-filter-row a:hover,
 .bt4k-blog-filter-row a[aria-current='true'],
 .bt4k-blog-card-tags a:hover,

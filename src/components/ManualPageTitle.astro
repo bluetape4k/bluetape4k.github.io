@@ -73,7 +73,7 @@ const releaseLabel = locale === 'ko'
 <DefaultPageTitle />
 {blogTaxonomy && (
   <nav class="bt4k-page-taxonomy" aria-label={locale === 'ko' ? '블로그 글 태그' : 'Blog post tags'}>
-    {blogTaxonomy.tags.slice(0, 8).map((tag) => (
+    {blogTaxonomy.tags.map((tag) => (
       <a href={filterHref('tag', tag.slug)} data-blog-filter="tag" data-filter-value={tag.slug}>
         {tag.label}
       </a>
