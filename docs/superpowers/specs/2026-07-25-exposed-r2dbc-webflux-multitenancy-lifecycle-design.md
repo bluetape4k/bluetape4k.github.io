@@ -40,10 +40,11 @@ Spring WebFlux나 Reactor Context에 익숙하지 않은 독자도 따라올 수
 - 요청 tenant와 인증 주체의 접근 가능 tenant 비교
 - 권한 검증 이후의 schema 또는 `ConnectionFactory` 선택
 - 공유 DB·tenant별 schema와 tenant별 `ConnectionFactory` 전략 비교
-- 신규 tenant metadata 예약과 `PREPARING` 상태
-- schema, DB, connection pool, migration 준비와 검증
+- 신규 tenant metadata 예약과 `PROVISIONING` 상태
+- schema, DB, connection pool 준비와 schema·seed 검증
 - routing registry 공개와 `ACTIVE` 전환
-- 온보딩 실패 시 `FAILED` 기록, 부분 자원 정리와 안전한 재시도
+- 즉시 온보딩 실패 시 metadata와 부분 자원 정리
+- 재시작 시 남은 `PROVISIONING`·`ACTIVE` 행의 `FAILED` 복구와 안전한 재시도
 - 컨텍스트 전파, 동시 요청 격리, 권한, 비활성 tenant, 온보딩 실패 테스트
 - 기존 Ktor 글과 carrier 차이를 보여주는 짧은 비교
 
@@ -67,11 +68,11 @@ tenant 권한·온보딩 생명주기는 다루지 않는다.
 새 글은 다음 경계를 본문 주제로 삼아 중복을 피한다.
 
 ```text
-X-TENANT-ID
-→ WebFilter
-→ Reactor Context
-→ Coroutine
+X-TENANT-ID + 인증 정보
+→ 요청 tenant 확인
 → tenant 권한 검증
+→ Reactor Context 공개
+→ Coroutine
 → schema 또는 ConnectionFactory 선택
 → Repository
 ```
@@ -120,13 +121,16 @@ WebFilter
 
 `TenantId`가 `CoroutineContext.Element`를 구현한다는 사실과 Reactor Context 안에
 `TenantId`가 저장되는 방식을 구분하여, 두 context가 자동으로 같은 저장소가 된다는
-오해를 만들지 않는다.
+오해를 만들지 않는다. schema 예제의 `currentReactorTenant()`가
+`coroutineContext[ReactorContext]`를 직접 읽는 경로와, connection-factory 예제의
+`TenantTransactionExecutor`가 `Mono.deferContextual`에서 얻은 context를 새
+`mono` 블록에 다시 결합하는 경로도 구분한다.
 
 ### 4. tenant 식별과 접근 권한은 같은 문제가 아니다
 
 지원되는 tenant ID라도 현재 사용자가 접근할 수 없다면 거부해야 한다. 인증 주체의
-허용 tenant와 요청 tenant를 비교하고, DB 라우팅보다 권한 검증이 먼저 수행되어야
-하는 이유를 설명한다.
+허용 tenant와 요청 tenant를 비교하고, DB 라우팅뿐 아니라 tenant Reactor Context
+공개보다 권한 검증이 먼저 수행되어야 하는 이유를 설명한다.
 
 ### 5. 검증된 tenant가 DB 연결을 선택한다
 
@@ -151,21 +155,25 @@ tenant 수, 규제 수준, 장애 격리 요구와 운영 비용에 따라 선�
 
 ```text
 metadata 예약
-→ PREPARING 기록
+→ PROVISIONING 기록
 → schema 또는 DB·pool 구성
-→ migration·연결 검증
+→ schema·seed와 연결 검증
 → routing registry 등록
 → ACTIVE 전환
 ```
 
 `ACTIVE`가 되기 전에는 일반 요청에서 해당 tenant를 선택하지 못하도록 준비 단계와
-공개 단계를 분리한다.
+공개 단계를 분리한다. 현재 workshop은 runtime registry에 등록한 직후 metadata를
+`ACTIVE`로 바꾸므로, 두 단계 사이의 아주 짧은 실패 창도 함께 설명한다.
 
 ### 8. 온보딩 실패를 운영 가능한 상태로 남긴다
 
-pool 생성, migration, registry 공개 실패를 구분한다. 생성된 자원을 정리하고
-`FAILED` 상태와 실패 원인을 남기며, 같은 온보딩 요청이 재실행되어도 schema나 pool이
-중복 생성되지 않는 멱등성 기준을 설명한다.
+pool 생성, schema·seed, registry 공개 실패를 구분한다. 현재 구현은 즉시 실패하면
+runtime registry, schema, pool과 예약 metadata를 정리한다. 별도의 실패 원인 행을
+남기지는 않는다. 애플리케이션 재시작 시에는 메모리 pool이 사라졌다고 보고 남아 있는
+`PROVISIONING`과 `ACTIVE` metadata를 `FAILED`로 바꾸며, 다음 예약 요청은 그 행을
+`PROVISIONING`으로 갱신하여 다시 시도한다. 실패 원인 보존과 더 정교한 단계별 재개는
+운영 서비스가 추가할 개선점으로 명확히 구분한다.
 
 ### 9. 테스트는 정상 응답보다 경계를 증명해야 한다
 
@@ -174,9 +182,10 @@ pool 생성, migration, registry 공개 실패를 구분한다. 생성된 자원
 - Reactor Context의 tenant가 Coroutine 경계에서도 유지된다.
 - 동시에 처리되는 요청의 tenant 정보가 섞이지 않는다.
 - 권한 없는 tenant 접근은 DB 선택 전에 거부된다.
-- `PREPARING`과 `FAILED` tenant는 일반 요청에서 라우팅되지 않는다.
-- 온보딩 실패 후 부분 생성 자원이 정리된다.
-- 재시도가 중복 pool이나 schema를 만들지 않는다.
+- runtime registry에 없는 tenant는 일반 요청에서 라우팅되지 않는다.
+- 즉시 온보딩 실패 후 runtime registry, schema, pool과 metadata가 정리된다.
+- 재시작 시 stale `PROVISIONING`·`ACTIVE` 행이 `FAILED`로 복구된다.
+- `FAILED` metadata를 사용한 재시도가 새 `PROVISIONING` 시도로 전환된다.
 
 ### 10. Ktor와 비교하면 carrier만 다르다
 
@@ -199,17 +208,17 @@ tenant 식별부터 권한, DB 선택, 온보딩 상태까지 한 흐름으로 �
 HTTP 요청
 X-TENANT-ID + 인증 정보
         ↓
-TenantFilter
-헤더 정규화·tenant 확인
+Security / AuthorizedTenantContextWebFilter
+인증 정보·요청 tenant 확인
+        ↓
+TenantAuthorization
+인증 tenant와 요청 tenant 비교
         ↓
 Reactor Context
-TenantId 저장
+권한이 확인된 TenantId 공개
         ↓
 Coroutine Controller / Service
 ReactorContext에서 TenantId 복원
-        ↓
-TenantAuthorization
-사용자의 접근 권한 확인
         ↓
 TenantTransactionExecutor
 schema 또는 ConnectionFactory 선택
@@ -223,7 +232,7 @@ tenant 격리 영역에서 쿼리
 - 헤더 누락 또는 지원하지 않는 tenant: `400`
 - 인증되지 않은 사용자: `401`
 - tenant 접근 권한 없음: `403`
-- `PREPARING` 또는 `FAILED` tenant: 일반 요청에서 사용 불가
+- runtime registry에 없는 tenant: 일반 요청에서 사용 불가
 - DB 라우팅 실패: `5xx`, 다른 tenant로 fallback 금지
 
 ### 다이어그램 2: 신규 tenant 온보딩 생명주기
@@ -235,19 +244,20 @@ metadata의 상호작용을 카드와 연결선으로 표현한다.
 운영자
 → 온보딩 요청
 TenantOnboardingService
-→ metadata 예약: PREPARING
+→ metadata 예약: PROVISIONING
 ResourceProvisioner
 → schema 또는 DB·pool 생성
-→ migration·연결 검증
+→ schema·seed와 연결 검증
 RoutingRegistry
 → tenant 공개
 TenantMetadata
 → ACTIVE
 ```
 
-실패한 단계에서는 `FAILED` 기록과 함께 이미 만든 pool, schema, registry 항목을
-정리하는 보상 절차를 표시한다. 재시도는 기존 metadata와 준비된 자원을 확인한 뒤
-안전하게 이어서 수행하도록 표현한다.
+즉시 실패한 단계에서는 runtime registry, schema, pool과 예약 metadata를 정리하는
+보상 절차를 표시한다. 별도로 재시작 복구 경로에서는 stale `PROVISIONING`·`ACTIVE`
+행을 `FAILED`로 전환하고, 다음 예약이 해당 행을 새 `PROVISIONING` 시도로 갱신하는
+과정을 표현한다.
 
 ### 다이어그램 제작 규칙
 
@@ -287,10 +297,11 @@ TenantMetadata
 - 요청 header를 인증이나 권한의 증거로 취급하지 않는다.
 - 권한 검증 전에는 tenant별 DB 자원을 선택하거나 쿼리를 실행하지 않는다.
 - 누락되거나 알 수 없는 tenant를 기본 tenant로 조용히 fallback하지 않는다.
-- 비활성 tenant를 routing registry에서 일반 요청에 노출하지 않는다.
+- runtime registry에 등록되지 않은 tenant를 일반 요청에 노출하지 않는다.
 - DB 선택 실패 시 다른 tenant 연결을 대체 경로로 사용하지 않는다.
-- 온보딩의 준비와 공개를 분리하고, 부분 실패를 추적 가능한 상태로 남긴다.
-- 재시도와 중복 요청이 자원을 중복 생성하지 않도록 멱등성을 보장한다.
+- 온보딩의 준비와 공개를 분리하고, 즉시 실패 cleanup과 재시작 stale-row 복구를
+  서로 다른 경로로 설명한다.
+- 현재 구현이 실패 원인을 영속화하지 않는다는 한계를 숨기지 않는다.
 
 ## 검증
 
