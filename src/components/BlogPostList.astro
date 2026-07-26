@@ -99,7 +99,7 @@ const filterHref = (kind: 'tag', value: string) =>
 <div class="bt4k-blog-index" data-blog-index data-base-path={basePath} data-locale={locale}>
   <section class="bt4k-blog-taxonomy" aria-label={copy.tags}>
     <div class="bt4k-blog-taxonomy-header">
-      <span data-blog-count>{copy.count(posts.length)}</span>
+      <span data-blog-count aria-live="polite" aria-atomic="true">{copy.count(posts.length)}</span>
     </div>
     <div class="bt4k-blog-filter-row" data-blog-filter-row="tag" data-blog-popular-tags>
       <strong>{copy.popularTags}</strong>

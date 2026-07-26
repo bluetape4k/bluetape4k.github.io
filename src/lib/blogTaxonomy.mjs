@@ -129,7 +129,7 @@ export function resolveBlogTaxonomy(input, locale = 'en') {
     .replace(/[-_/]+/g, ' ');
   const inferredTags = TAG_RULES.filter(([pattern]) => pattern.test(text)).map(([, tag]) => tag);
   const explicitTags = Array.isArray(input.tags) ? input.tags.map(slugify) : [];
-  const tags = unique([...inferredTags, ...explicitTags]);
+  const tags = unique(explicitTags.length > 0 ? explicitTags : inferredTags);
   const normalizedTags = tags.length > 0 ? tags : ['architecture'];
 
   return {

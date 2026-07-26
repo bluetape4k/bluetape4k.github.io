@@ -63,6 +63,29 @@ test('blog taxonomy derives stable tags without substring false positives', () =
   assert.ok(virtualThreads.tags.some((tag) => tag.slug === 'virtual-threads'));
 });
 
+test('explicit tags are the canonical ordered taxonomy across locales', () => {
+  const input = {
+    slug: 'spring-cache-multitenancy-production',
+    title: 'Production Examples with Cache and Multi-Tenancy',
+    description: 'A hands-on service with transactions and tests.',
+    tags: ['kotlin', 'exposed', 'multitenancy', 'practical-example', 'performance'],
+  };
+  const expected = input.tags;
+
+  assert.deepEqual(resolveBlogTaxonomy(input, 'en').tags.map((tag) => tag.slug), expected);
+  assert.deepEqual(
+    resolveBlogTaxonomy(
+      {
+        ...input,
+        title: 'Spring Cache 멀티테넌시 실전 예제',
+        description: '트랜잭션과 테스트를 포함한 운영 서비스',
+      },
+      'ko',
+    ).tags.map((tag) => tag.slug),
+    expected,
+  );
+});
+
 test('frontmatter schema accepts explicit blog tags without category taxonomy', async () => {
   const source = await readFile('src/content.config.ts', 'utf8');
 
@@ -80,6 +103,7 @@ test('blog list renders query-addressable tag filters only', async () => {
   assert.doesNotMatch(source, /data-languages=/);
   assert.match(source, /data-tags=\{post\.taxonomy\.tags\.map/);
   assert.match(source, /post\.taxonomy\.tags\.slice\(0,\s*8\)\.map/);
+  assert.match(source, /data-blog-count[^>]*aria-live="polite"/);
   assert.match(source, /new URL\(link\.href\)/);
   assert.match(source, /setAttribute\('aria-current',\s*'true'\)/);
 });
@@ -215,6 +239,11 @@ test('every bilingual blog pair has identical explicit tags', async () => {
 
     assert.ok(enTags?.length, `${file} is missing English blog.tags`);
     assert.deepEqual(koTags, enTags, `${file} has different Korean blog.tags`);
+    assert.deepEqual(
+      resolveBlogTaxonomy({ slug: file, title: enSource, tags: enTags }, 'en').tags.map((tag) => tag.slug),
+      resolveBlogTaxonomy({ slug: file, title: koSource, tags: koTags }, 'ko').tags.map((tag) => tag.slug),
+      `${file} renders different tag order across locales`,
+    );
     for (const tag of enTags) counts.set(tag, (counts.get(tag) ?? 0) + 1);
   }
 
