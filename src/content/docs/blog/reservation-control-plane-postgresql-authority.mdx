@@ -1,0 +1,186 @@
+---
+title: "Keeping Reservation Capacity Correct Under Concurrent Requests"
+description: A reservation-control-plane walkthrough where PostgreSQL is the final authority for capacity while Redis stays an advisory load-shedding and duplicate-suppression layer.
+sidebar:
+  order: -202607202130
+blog:
+  date: 2026-07-20T21:30:00+09:00
+  image: /assets/reservation-control-plane-postgresql-authority-hero.png
+  imageAlt: 3D miniature workbench where reservation request queues and a Redis advisory gate flow into a PostgreSQL capacity counter
+  cardDescription: "Concurrent requests, retries, hold expiry, waitlists, and Redis outages still need one durable authority for reservation capacity."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/reservation-control-plane-postgresql-authority-hero.png" alt="3D miniature workbench where reservation request queues and a Redis advisory gate flow into a PostgreSQL capacity counter" loading="eager" />
+  <figcaption>Redis reduces contention at the front. PostgreSQL decides who actually gets the last available slot.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-07-20 · bluetape4k-workshop · Reservation control plane</p>
+
+One reservation slot remains. Two users open the screen at almost the same time and both see `available = 1`. One
+request may time out before the response and retry the same command. A hold may expire while the waitlist worker starts
+offering the slot to the next user. Redis may be unavailable at exactly the wrong time.
+
+The `commerce/reservation-control-plane` example in
+[`bluetape4k-workshop`](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/commerce/reservation-control-plane)
+draws the boundary this way:
+
+- PostgreSQL is the final authority for capacity, state transitions, ownership, and idempotent responses.
+- A node-local bulkhead prevents one instance from consuming too many JDBC connections.
+- Redis semaphores and locks reduce contention and duplicate in-flight work before requests reach PostgreSQL.
+- Redis failure never bypasses the PostgreSQL checks.
+
+## First See the Whole Flow
+
+The example is a control plane, not a Redis-only counter. Redis can reject some excess load early, but the mutation that
+changes capacity is still a PostgreSQL transaction. That keeps concurrency, retry, waitlist, and expiry rules under one
+durable authority.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/reservation-control-plane-architecture-01-en.png" alt="Dark architecture diagram showing the responsibility boundaries between clients, the Reservation HTTP API, node-local bulkheads, Redis advisory controls, PostgreSQL final authority, and background workers" loading="lazy" />
+  <figcaption>Redis reduces contention at the advisory boundary; PostgreSQL makes the final decision for capacity, state, ownership, and replayable responses.</figcaption>
+</figure>
+
+## Protect the Last Slot with One Conditional Update
+
+The final capacity decrement is a conditional database update. The command succeeds only if the resource is active,
+capacity remains, and the expected revision still matches.
+
+```kotlin
+val updated = CapacityResourceTable.update({
+    (CapacityResourceTable.id eq resourceId) and
+        (CapacityResourceTable.available greater 0) and
+        (CapacityResourceTable.revision eq expectedRevision)
+}) {
+    it[available] = available - 1
+    it[revision] = revision + 1
+}
+```
+
+If the update count is zero, the command did not win the last slot. The application should not "repair" that with a
+Redis value. PostgreSQL already made the authoritative decision.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/reservation-control-plane-last-seat-retry-sequence-02-en.png" alt="Dark sequence diagram showing Alice and Bob racing for the last slot, local fallback when Redis fails, a PostgreSQL conditional update, timeout, retry with the same idempotency key, and replay" loading="lazy" />
+  <figcaption>A timeout changes when the client learns the result; it does not undo the committed database result. Retrying with the same key replays the stored response without increasing capacity again.</figcaption>
+</figure>
+
+## Cancellation Does Not Always Release Capacity Immediately
+
+Cancellation is not a single boolean state. The control plane has several objects with different ownership checks.
+
+| Object | Role | Check on the next transition |
+|---|---|---|
+| hold | occupies capacity for a limited time | owner, state, revision, policy version, expiry |
+| waitlist entry | waits FIFO for a slot | owner, `WAITING` state, sequence |
+| offer | temporarily offers the slot to one waiter | owner, `ACTIVE` state, revision, expiry |
+
+[`WaitlistCommandService`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/main/kotlin/io/bluetape4k/workshop/commerce/reservation/application/WaitlistCommandService.kt)
+locks the resource row before reading waitlist and offer state. Knowing an offer URL is not enough to accept another
+user's slot; the owner digest, state, expiry, and revision still have to match.
+
+<figure class="bt4k-architecture">
+  <img src="/assets/reservation-control-plane-waitlist-handoff-sequence-03-en.png" alt="Dark sequence diagram showing Alice canceling a hold, resource row locking, FIFO offer creation for Bob, ownership validation, and conversion to a confirmed hold" loading="lazy" />
+  <figcaption>The occupied slot is handed from Alice to Bob instead of being released and reacquired. `occupiedCount` decreases only when no waiter is available.</figcaption>
+</figure>
+
+## Replay and Conflict Are Different Idempotency Results
+
+[`HttpIdempotencyRepository.acquire()`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/main/kotlin/io/bluetape4k/workshop/commerce/reservation/idempotency/HttpIdempotencyRepository.kt)
+separates retry outcomes.
+
+| Result | Meaning | HTTP boundary behavior |
+|---|---|---|
+| `New` | first command in this scope | execute the command and store the response |
+| `Takeover` | previous processing lease expired | CAS owner token and deadline, then run again |
+| `Replay` | response is already stored | replay the original status/body and return `Idempotency-Replayed: true` |
+| `FingerprintConflict` | same key with a different request | return `409 Conflict` |
+| `InProgress` | another owner is still processing | do not duplicate execution; return a retryable response |
+
+[`IdempotentReservationCommandService.execute()`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/main/kotlin/io/bluetape4k/workshop/commerce/reservation/application/IdempotentReservationCommandService.kt)
+stores the mutation and the replayable HTTP body in the same PostgreSQL transaction. That narrows the gap where a
+reservation exists but the retry response does not.
+
+## Redis Failure Does Not Remove the PostgreSQL Rule
+
+Redis is useful in front of PostgreSQL, but it is not the authority.
+
+| Boundary | Role | On failure |
+|---|---|---|
+| node-local bulkhead | limits concurrent JDBC work | reject when foreground permits are exhausted |
+| Redis semaphore | advisory distributed admission | fallback locally on Redis errors; reject early when no permit is available |
+| Redis lock | short duplicate in-flight suppression | fall back to PostgreSQL idempotency rows on Redis errors |
+| PostgreSQL | final authority for capacity, state, ownership, and response | fail the command; never mutate only in Redis |
+
+[`ReservationAdmissionGate`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/main/kotlin/io/bluetape4k/workshop/commerce/reservation/redis/ReservationAdmissionGate.kt)
+always passes through the local bulkhead first. If Redis throws, the result is `LOCAL_FALLBACK` and PostgreSQL work
+continues. That is different from a healthy Redis semaphore saying no permit is available.
+
+[`InFlightCommandSuppressor`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/main/kotlin/io/bluetape4k/workshop/commerce/reservation/redis/InFlightCommandSuppressor.kt)
+blocks short duplicate execution when Redis locks are available. If Redis is broken, it does not drop the command; it
+lets the PostgreSQL idempotency row decide.
+
+## What Tests Prove
+
+[`ReservationWebIntegrationTest`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/test/kotlin/io/bluetape4k/workshop/commerce/reservation/web/ReservationWebIntegrationTest.kt)
+starts a real PostgreSQL server and calls the running HTTP server with `WebTestClient`.
+
+### Only One Request Gets the Last Slot
+
+The concurrent request test proves that one request wins the final capacity update and the other request is rejected or
+moved into the non-winning path. The proof needs PostgreSQL, not mocks, because the conditional update and transaction
+isolation are the contract.
+
+### Same Command Replays, Different Command Conflicts
+
+The idempotency tests separate `New`, `Replay`, `FingerprintConflict`, `InProgress`, and `Takeover`. The important edge
+is that the same idempotency key cannot be reused for a different fingerprint.
+
+### Cancellation Can Promote the First Waiter
+
+When a hold is cancelled or expires and a waitlist entry exists, the resource transaction can create an offer for the
+first waiting owner instead of immediately returning capacity to the public pool.
+
+### The API Boots Without Redis
+
+[`RedisUnavailableBootIntegrationTest`](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/test/kotlin/io/bluetape4k/workshop/commerce/reservation/RedisUnavailableBootIntegrationTest.kt)
+starts the application with an unreachable Redis URI. PostgreSQL APIs still boot because Redis is advisory.
+
+### Expiry and Notifications Are Still Bounded Work
+
+`ReservationResourceTransactionServiceTest`, `ReservationExpirySweeperTest`, and `NotificationOutboxTest` cover expired
+holds/offers, leader-owned sweeper ranges, retryable notification delivery, and provider-level duplicate suppression.
+These tests keep background work from becoming an unbounded "try again somehow" loop.
+
+## What This Example Does Not Prove Yet
+
+- multi-region consistency under network partitions
+- long-duration throughput and tail latency
+- automatic detection and recovery of leaked Redis semaphore permits
+- backlog reduction after a leader sweeper has been stopped for a long time
+- takeover policy for `IN_PROGRESS` idempotent requests during PostgreSQL failover
+- SLOs, alert thresholds, and dashboards
+- binding `X-Reservation-Owner` to real user/service authentication
+- a dedicated worker for a real notification provider
+
+## Confirmation Happens Only After PostgreSQL Commit
+
+The example's rule is simple: Redis can help before the transaction, and workers can notify after it, but reservation
+confirmation is a PostgreSQL commit boundary. That is what keeps retries, waitlists, expiry, and Redis failure from
+turning capacity into an advisory guess.
+
+Related reading:
+
+- [Fast candidate lookup and global schedule optimization are different problems](/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
+- [Transactional Outbox and Idempotency in Spring and Ktor Examples](/blog/transactional-outbox-idempotency-spring-ktor/)
+- [Transactional Outbox Part 2: Reducing Hot Transactions with a Kafka-First Fallback](/blog/transactional-outbox-kafka-first-fallback-part2/)
+
+## Continue in Source
+
+- [reservation-control-plane README](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/README.md)
+- [CapacityResourceRepository.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/main/kotlin/io/bluetape4k/workshop/commerce/reservation/persistence/CapacityResourceRepository.kt)
+- [ReservationCommandService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/main/kotlin/io/bluetape4k/workshop/commerce/reservation/application/ReservationCommandService.kt)
+- [WaitlistCommandService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/main/kotlin/io/bluetape4k/workshop/commerce/reservation/application/WaitlistCommandService.kt)
+- [HttpIdempotencyRepository.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/main/kotlin/io/bluetape4k/workshop/commerce/reservation/idempotency/HttpIdempotencyRepository.kt)
+- [ReservationAdmissionGate.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/main/kotlin/io/bluetape4k/workshop/commerce/reservation/redis/ReservationAdmissionGate.kt)
+- [ReservationWebIntegrationTest.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/commerce/reservation-control-plane/src/test/kotlin/io/bluetape4k/workshop/commerce/reservation/web/ReservationWebIntegrationTest.kt)

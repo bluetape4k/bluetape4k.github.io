@@ -1,0 +1,176 @@
+---
+title: "Building bluetape4k-dependencies Part 3: Maven Central Has No Rollback Button"
+description: "Release-train lessons through bluetape4k-dependencies 1.3.0: snapshot refs, Central artifact visibility, transient 403s, POM metadata, and the 1.3.1 patch."
+sidebar:
+  order: -202606281700
+blog:
+  date: 2026-06-28T17:00:00+09:00
+  image: /assets/bluetape4k-dependencies-version-governance-hero.png
+  imageAlt: Small robotic workers align module blocks on a conveyor and central dependency BOM station in a 3D workbench illustration
+  cardDescription: "A multi-repository release train looks operational, and careless release order turns into very concrete cleanup work."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-dependencies-version-governance-hero.png" alt="Small robotic workers align module blocks on a conveyor and central dependency BOM station in a 3D workbench illustration" loading="eager" />
+  <figcaption>When several repositories feed one BOM, release order can be harder than feature work. Maven Central does not have a rollback button.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-28 · bluetape4k-dependencies build notes · Part 3</p>
+
+[Part 2](/blog/bluetape4k-dependencies-making-part2-public-bom/) covered the public BOM contract for `1.0.0`. After
+the structure exists, release operation starts.
+
+```text
+upstream repositories
+  -> stable BOM artifacts
+  -> central bluetape4k-dependencies BOM
+  -> downstream workshops/examples/applications
+```
+
+## Snapshot Matrix Is Not Release Matrix
+
+The next development line may already point at snapshots or unreleased refs. A stable BOM cannot use that as release
+input.
+
+| Upstream BOM | `1.2.0` input | `1.3.0` stable candidate |
+|---|---:|---:|
+| `bluetape4k-bom` | `1.10.0` | `1.11.0` |
+| `bluetape4k-aws-bom` | `0.3.1` | `0.4.0` |
+| `bluetape4k-exposed-bom` | `1.10.0` | `1.11.0` |
+| `bluetape4k-image-bom` | `0.2.0` | `0.3.0` |
+| `bluetape4k-text-bom` | `0.2.0` | `0.2.1` |
+| `bluetape4k-graph-bom` | `0.5.0` | `0.5.1` |
+| `bluetape4k-leader-bom` | `0.3.1` | `0.4.0` |
+| `bluetape4k-javers-bom` | `0.2.0` | `0.2.1` |
+
+The release checklist needs to pin the stable matrix separately from snapshot development work.
+
+## It Is Not Release Input Until Central Shows It
+
+The central BOM should not point at an upstream BOM until Maven Central can serve it.
+
+```text
+dependencies BOM points at aws 0.4.0
+aws 0.4.0 BOM is not visible on Central yet
+  -> user dependency resolution fails
+```
+
+That check is simple and necessary: verify every upstream artifact with an HTTP 200-level result before making it a
+stable input.
+
+## Snapshot 403 Is Different from a Test Failure
+
+Transient repository errors can be retried. Test failures, 404s, and binary incompatibilities should not be treated as
+the same class of failure.
+
+```bash
+./scripts/retry-snapshot-resolution.sh
+```
+
+The retry helper is useful only for the narrow class it owns.
+
+```text
+Retry:
+  transient snapshot 403
+
+Do not retry as if transient:
+  test failure
+  stable artifact 404
+  binary incompatibility
+  bad POM metadata
+```
+
+Conflating those cases creates noise and hides the real release blocker.
+
+## Catalog Is Not a Maven Central Artifact
+
+Another cleanup was wording. The catalog and BOM both carry versions, but they are not the same thing.
+
+```text
+BOM:
+  Maven Central artifact
+  imported by users
+  controls dependency resolution
+
+Catalog:
+  git-ref build contract
+  used by maintainers
+  controls aliases and build-authoring versions
+```
+
+Documentation should reflect that split. If users are told to think about the catalog first, the public import path is
+harder than it needs to be.
+
+## Maven Central Has No Rollback Button
+
+This is the release rule that matters most:
+
+```text
+Published release version
+  -> cannot be overwritten with the same version
+```
+
+If `1.3.0` has a metadata or dependency-combination problem, the repair is a patch version.
+
+```text
+1.3.0 is published
+problem found
+same 1.3.0 cannot be replaced
+  -> publish 1.3.1
+```
+
+That is why the release train needs missing-only publication behavior and pre-publication POM inspection.
+
+```bash
+./gradlew publishToMavenLocal
+```
+
+## The Central BOM Is Published Last
+
+The release train should flow in one direction.
+
+```text
+projects/exposed/aws/image/text/graph/leader/javers
+  -> verify stable upstream BOMs on Central
+  -> publish bluetape4k-dependencies
+  -> upgrade downstream consumers
+```
+
+Publishing the central BOM early only moves the failure to users. Publish it after the upstream artifacts are visible.
+
+## Applying This to Your Release Train
+
+| Question | Check |
+|---|---|
+| Are snapshot and release matrices separate? | Do not mistake the next development line for stable input. |
+| Are upstream artifacts visible on Central? | Check every upstream BOM before publishing the central BOM. |
+| Are you trying to republish an existing version? | Default to missing-only release and patch versions. |
+| Do you separate transient from real failures? | Retry snapshot 403s only; do not retry test failures as transient. |
+| Did you describe catalog and BOM as the same thing? | BOM is Maven Central; catalog is a git-ref build contract. |
+| Did you inspect the POM locally? | Check license, SCM, snapshot refs, and empty versions before release. |
+| Is there a downstream sync rule? | Workshops and examples move to the verified BOM version. |
+
+## Conclusion
+
+- Users import the BOM and omit module versions.
+- Each repository BOM owns its modules; the central BOM combines sub-BOMs.
+- The catalog is a maintainer build contract, not a Maven Central artifact.
+- A release BOM must not point at snapshots or invisible upstream artifacts.
+- A Maven Central release cannot be fixed by overwriting the same version.
+
+## Series
+
+For the user-facing import path, start with the [usage guide](/blog/bluetape4k-dependencies-usage-guide/).
+
+- [Building bluetape4k-dependencies Part 1: Why the BOM Became Necessary](/blog/bluetape4k-dependencies-making-part1-why-bom/)
+- [Building bluetape4k-dependencies Part 2: Making the 1.0.0 BOM a Public Contract](/blog/bluetape4k-dependencies-making-part2-public-bom/)
+- [Building bluetape4k-dependencies Part 3: Maven Central Has No Rollback Button](/blog/bluetape4k-dependencies-making-part3-release-train/)
+
+## Sources
+
+- [`bluetape4k-dependencies` CHANGELOG.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/CHANGELOG.md)
+- [`bluetape4k-dependencies` version-management.ko.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/docs/version-management.ko.md)
+- [`bluetape4k-dependencies` WIP.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/WIP.md)
+- [`bluetape4k-dependencies` retry-snapshot-resolution.sh](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/scripts/retry-snapshot-resolution.sh)
+- [`bluetape4k-dependencies` retry snapshot tests](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/tests/test_retry_snapshot_resolution.py)
+- [`bluetape4k-dependencies` 1.3.1 release checklist](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/docs/superpowers/plans/2026-06-28-dependencies-1-3-1-release-checklist.md)

@@ -1,0 +1,292 @@
+---
+title: "Building bluetape4k-dependencies Part 1: Why the BOM Became Necessary"
+description: "Why a central BOM became necessary as bluetape4k libraries started moving across independent repositories, using the Spring Boot dependencies model and the first 1.0.0 public contract as the reference point."
+sidebar:
+  order: -202606281500
+blog:
+  date: 2026-06-28T15:00:00+09:00
+  image: /assets/bluetape4k-dependencies-version-governance-hero.png
+  imageAlt: Small robotic workers align module blocks on a conveyor and central dependency BOM station in a 3D workbench illustration
+  cardDescription: "One library can live with one version. When several repositories move together, a BOM becomes an operating contract."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-dependencies-version-governance-hero.png" alt="Small robotic workers align module blocks on a conveyor and central dependency BOM station in a 3D workbench illustration" loading="eager" />
+  <figcaption>Several libraries can be released independently, but users still need one coherent combination. The BOM is the public contract that closes that gap.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-28 · bluetape4k-dependencies build notes · Part 1</p>
+
+Version management is simple when there is only one library.
+
+```kotlin
+implementation("io.github.bluetape4k:bluetape4k-core:1.11.0")
+```
+
+Release a new version, write the note, and let users choose that version. The problem starts when the library family is
+not one repository anymore.
+
+`bluetape4k` is split across `projects`, `exposed`, `aws`, `image`, `text`, `graph`, `leader`, and `javers`. Each
+repository has its own development pace and release version. That creates two different questions.
+
+```text
+Maintainer:
+  projects 1.11.0 is out,
+  exposed 1.11.0 is out,
+  aws 0.4.0 is out,
+  image 0.3.0 is out...
+
+User:
+  Which combination is safe to use together?
+```
+
+Once that question appears, version management is no longer one `build.gradle.kts` line. The maintainers need to publish
+the train, not just the individual cars. Otherwise every user project becomes a dependency puzzle.
+
+## The Familiar Model Is Spring Boot Dependencies
+
+JVM developers already use this model. A Spring Boot application usually does not choose every Spring, Jackson, Tomcat,
+Netty, and Micrometer version by hand.
+
+```kotlin
+dependencies {
+    implementation(platform("org.springframework.boot:spring-boot-dependencies:4.1.0"))
+
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+}
+```
+
+Maven imports the same contract through `dependencyManagement`.
+
+```xml
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-dependencies</artifactId>
+            <version>4.1.0</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+```
+
+The point is not that Spring Boot chooses every dependency in the world. The point is the published combination.
+
+```text
+spring-boot-dependencies 4.1.0
+  -> use the dependency version set expected by that Spring Boot line
+```
+
+`bluetape4k-dependencies` solves the same shape of problem at a smaller scale.
+
+## Split Repositories Scatter Versions
+
+Each repository can manage its own release line well enough inside its boundary.
+
+```text
+bluetape4k-projects  -> 1.11.0
+bluetape4k-exposed   -> 1.11.0
+bluetape4k-aws       -> 0.4.0
+bluetape4k-image     -> 0.3.0
+bluetape4k-text      -> 0.2.1
+bluetape4k-graph     -> 0.5.1
+bluetape4k-leader    -> 0.4.0
+bluetape4k-javers    -> 0.2.1
+```
+
+But a user application brings those repositories back onto one classpath.
+
+```kotlin
+dependencies {
+    implementation("io.github.bluetape4k:bluetape4k-core:1.11.0")
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-jdbc:1.10.0")
+    implementation("io.github.bluetape4k.aws:bluetape4k-aws-spring-boot:0.4.0")
+    implementation("io.github.bluetape4k.leader:bluetape4k-leader-spring-boot:0.3.1")
+}
+```
+
+This can compile. That is what makes it risky. Runtime failures from a mixed Spring Boot, Ktor, Netty, Fabric8, or
+storage-client line are much less pleasant than an immediate compile failure.
+
+## A BOM Publishes the Version Set
+
+The central BOM is the contract users import.
+
+```text
+upstream library repositories
+    -> each repository publishes its own BOM
+    -> bluetape4k-dependencies combines those sub-BOMs
+    -> users import one bluetape4k-dependencies BOM
+```
+
+<figure class="bt4k-architecture">
+  <img src="/assets/bluetape4k-dependencies-bom-flow-01-en.png" alt="Flow diagram where projects, exposed, aws, image, text, graph, leader, and javers BOMs plus external dependency lines feed into the central bluetape4k-dependencies BOM for applications, workshops, and library repositories" loading="lazy" />
+  <figcaption>Each repository owns its BOM. `bluetape4k-dependencies` publishes the combination, and user projects omit versions on individual modules.</figcaption>
+</figure>
+
+`bluetape4k-dependencies 1.3.0` means a combination like this:
+
+| Included BOM | Version |
+|---|---:|
+| `io.github.bluetape4k:bluetape4k-bom` | `1.11.0` |
+| `io.github.bluetape4k.exposed:bluetape4k-exposed-bom` | `1.11.0` |
+| `io.github.bluetape4k.aws:bluetape4k-aws-bom` | `0.4.0` |
+| `io.github.bluetape4k.image:bluetape4k-image-bom` | `0.3.0` |
+| `io.github.bluetape4k.text:bluetape4k-text-bom` | `0.2.1` |
+| `io.github.bluetape4k.graph:bluetape4k-graph-bom` | `0.5.1` |
+| `io.github.bluetape4k.leader:bluetape4k-leader-bom` | `0.4.0` |
+| `io.github.bluetape4k.javers:bluetape4k-javers-bom` | `0.2.1` |
+
+Users should not have to memorize that table. That is the job of the BOM.
+
+```kotlin
+dependencies {
+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.3.0"))
+
+    implementation("io.github.bluetape4k:bluetape4k-core")
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-jdbc")
+    implementation("io.github.bluetape4k.aws:bluetape4k-aws-spring-boot")
+    implementation("io.github.bluetape4k.leader:bluetape4k-leader-spring-boot")
+}
+```
+
+## The First 1.0.0 Contract
+
+The first decision for `bluetape4k-dependencies 1.0.0` was not automation. It was the public contract.
+
+| Item | Audience | Artifact |
+|---|---|---|
+| BOM | User dependency resolution | `io.github.bluetape4k:bluetape4k-dependencies` |
+| Gradle Version Catalog | bluetape4k repository build aliases and plugin/library versions | `gradle/libs.versions.toml` |
+
+Both matter, but they do not have the same reader. Application developers import the BOM. Maintainers coordinating
+several bluetape4k repositories also need the catalog because it is the build-authoring source of truth.
+
+```text
+BOM:
+  published to Maven Central
+  imported by applications and external users
+  directly affects dependency resolution
+
+Catalog:
+  used by bluetape4k repositories in build scripts
+  pinned by git ref
+  owns Gradle plugin/library aliases and shared version lines
+```
+
+Mixing those explanations makes both sides harder to understand.
+
+## Use java-platform for the BOM
+
+The implementation uses Gradle's `java-platform` plugin.
+
+```kotlin
+plugins {
+    `java-platform`
+    `maven-publish`
+    signing
+}
+
+javaPlatform {
+    allowDependencies()
+}
+
+dependencies {
+    api(platform(libs.bluetape4k.bom))
+    api(platform(libs.bluetape4k.aws.bom))
+    api(platform(libs.bluetape4k.image.bom))
+    api(platform(libs.bluetape4k.text.bom))
+    api(platform(libs.bluetape4k.graph.bom))
+    api(platform(libs.bluetape4k.leader.bom))
+    api(platform(libs.bluetape4k.exposed.bom))
+    api(platform(libs.bluetape4k.javers.bom))
+
+    constraints {
+        api(libs.exposed.core)
+        api(libs.fabric8.kubernetes.client)
+        api(libs.ktor.bom)
+        api(libs.netty.bom)
+        api(libs.testcontainers.bom)
+    }
+}
+```
+
+The central BOM should not repeat every artifact when each repository already publishes its own BOM.
+
+```text
+Weak direction:
+  list every bluetape4k artifact version again in the central BOM
+
+Better direction:
+  each repository BOM owns its modules
+  the central BOM combines sub-BOMs and common external dependency lines
+```
+
+## Maintainer Workflow Gets Stricter
+
+The BOM makes users' build files simpler, but it makes the release workflow less forgiving.
+
+```text
+1. Publish upstream repositories.
+2. Confirm upstream BOM artifacts are visible on Maven Central.
+3. Update bluetape4k-dependencies to those BOM versions.
+4. Validate the central BOM with build and publishToMavenLocal.
+5. Publish bluetape4k-dependencies last.
+6. Move workshops/examples/applications by changing the BOM version.
+```
+
+If `bluetape4k-dependencies` points at `aws 0.4.0` before the AWS BOM is visible on Maven Central, user dependency
+resolution fails. That is not a user code bug. It is a release-order bug.
+
+## Maven Central Has No Rollback Button
+
+Local builds and snapshots can be fixed and retried. A released Maven Central artifact cannot be overwritten with the
+same version.
+
+```text
+1.3.0 was released.
+The POM metadata or dependency combination is wrong.
+The same 1.3.0 cannot be uploaded again.
+  -> release a new version such as 1.3.1
+```
+
+That is why `1.3.1` followed `1.3.0` as a patch around metadata and release guidance. It was not glamorous feature
+work, but it made the next user's path cleaner.
+
+## Applying This to Another Library Family
+
+If you maintain several libraries that are meant to be used together, start with these questions.
+
+| Question | What to check |
+|---|---|
+| Do users need more than one library together? | Publish the combination as an artifact, not only as documentation. |
+| Does each repository have its own BOM? | Let the central BOM import sub-BOMs instead of repeating every artifact. |
+| Are the public contract and internal build aliases separate? | Separate BOM and catalog audiences. |
+| Is release order explicit? | Verify upstream artifacts before publishing the central BOM. |
+| Are you assuming a release can be overwritten? | Recover Maven Central releases with patch versions. |
+
+The point is not more automation first. The first decision is the version combination you are willing to promise.
+
+## Read Next
+
+This post covered why `bluetape4k-dependencies` exists and what public contract was set in 1.0.0. The next parts cover
+the 1.0.0 public BOM shape and the release-train mistakes that were removed by the 1.3.x line.
+
+## Series
+
+For the user-facing import path, start with the [usage guide](/blog/bluetape4k-dependencies-usage-guide/).
+
+- [Building bluetape4k-dependencies Part 1: Why the BOM Became Necessary](/blog/bluetape4k-dependencies-making-part1-why-bom/)
+- [Building bluetape4k-dependencies Part 2: Making the 1.0.0 BOM a Public Contract](/blog/bluetape4k-dependencies-making-part2-public-bom/)
+- [Building bluetape4k-dependencies Part 3: Maven Central Has No Rollback Button](/blog/bluetape4k-dependencies-making-part3-release-train/)
+
+## Sources
+
+- [`bluetape4k-dependencies` README.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/README.md)
+- [`bluetape4k-dependencies` CHANGELOG.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/CHANGELOG.md)
+- [`bluetape4k-dependencies` build.gradle.kts](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/build.gradle.kts)
+- [`bluetape4k-dependencies` libs.versions.toml](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/gradle/libs.versions.toml)
+- [`bluetape4k-dependencies` version-management.ko.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/docs/version-management.ko.md)

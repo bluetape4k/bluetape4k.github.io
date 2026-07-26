@@ -1,0 +1,156 @@
+---
+title: "bluetape4k-dependencies 1.3.0 in Practice Part 3: Production Signals"
+description: "How dependencies 1.3.0 makes operational problems easier to see through Exposed cache health, AWS CloudWatch/Logs boundaries, and Leader metrics and backend choices."
+sidebar:
+  order: -202606281300
+blog:
+  date: 2026-06-28T13:00:00+09:00
+  image: /assets/bluetape4k-dependencies-1-3-0-hero.png
+  imageAlt: Small robotic workers inspect projects, exposed, aws, image, text, leader, graph, and javers module blocks beside a dependency BOM board in a 3D workbench illustration
+  cardDescription: "The dangerous production problem is the one that looks quiet too long. 1.3.0 exposes more of the signal."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/bluetape4k-dependencies-1-3-0-hero.png" alt="Small robotic workers inspect projects, exposed, aws, image, text, leader, graph, and javers module blocks beside a dependency BOM board in a 3D workbench illustration" loading="eager" />
+  <figcaption>Production changes are often less about a new API name and more about signal. Operators need to see where failure started.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-06-28 · bluetape4k-dependencies 1.3.0 in Practice · Part 3</p>
+
+The hardest production issue is not always the one that fails immediately. A hard failure raises an alarm and gives the
+team a stack trace. The worse case is a system that keeps returning successful responses while a cache flush, metric
+name, or leader renewal is wrong underneath.
+
+`dependencies 1.3.0` improved several of those visibility boundaries:
+
+- `exposed 1.11.0` exposes cache state through health.
+- `aws 0.4.0` clarifies CloudWatch metric and log boundaries in Ktor and Spring.
+- `leader 0.4.0` makes provider/storage choices and metric checkpoints more explicit.
+
+## Exposed Cache: See Whether Flush Stopped
+
+A write-behind cache is useful because request handling does not wait on every backing write. The risk is the same
+property: the request can look successful while the background flush is stuck.
+
+```json
+{
+  "status": "OUT_OF_SERVICE",
+  "components": {
+    "exposedCache": {
+      "status": "OUT_OF_SERVICE",
+      "details": {
+        "mode": "WRITE_BEHIND",
+        "queueDepth": 128,
+        "flushJobRunning": false,
+        "lastFlushError": "RedisConnectionFailureException",
+        "lastFlushErrorAt": "2026-06-28T13:00:00Z"
+      }
+    }
+  }
+}
+```
+
+The important fields are operational, not decorative.
+
+| Value | Why it matters |
+|---|---|
+| `mode` | A write-through and write-behind failure mean different things. |
+| `queueDepth` | Shows whether flush work is backing up. |
+| `flushJobRunning` | Shows whether the background flush loop is alive. |
+| `lastFlushError` | Hints whether the problem is closer to DB, Redis, or serialization. |
+| `lastFlushErrorAt` | Separates a current failure from an already recovered one. |
+
+Without this, an operator sees only a slow service or inconsistent reads. With it, `/actuator/health` can show that the
+cache layer itself is no longer healthy.
+
+## AWS CloudWatch/Logs: Name Things Before You Need Them
+
+Metric and log plumbing is easy to treat as a side effect. That becomes painful when the service has several
+environments and instances.
+
+```kotlin
+install(BluetapeAwsCloudWatch) {
+    namespace = "billing-api"
+    serviceName = "billing"
+    environment = "prod"
+}
+
+install(BluetapeAwsCloudWatchLogs) {
+    logGroupName = "/bluetape4k/billing-api"
+    logStreamName = instanceId
+}
+```
+
+The key question is whether the names are searchable during an incident.
+
+```yaml
+metrics:
+  namespace: billing-api
+  dimensions:
+    service: billing
+    environment: prod
+logs:
+  group: /bluetape4k/billing-api
+  stream: ${instanceId}
+```
+
+If the namespace, dimensions, group, and stream are not chosen deliberately, production search becomes guesswork.
+
+## Leader: Provider Choice Brings Storage and Runtime
+
+Leader election is not just a boolean feature. Choosing a provider also chooses the storage, client runtime, failure
+mode, and metric surface.
+
+```text
+Need one scheduled worker?
+  -> choose provider/storage
+  -> verify runtime classpath
+  -> watch renewal, latency, and storage errors
+```
+
+| Provider/storage | First signal to watch | What to inspect on failure |
+|---|---|---|
+| Redis | lock renewal latency, Redis connection errors | Redis failover, network partition, TTL settings |
+| SQL/Exposed | lock row update latency, transaction errors | DB lock waits, isolation, connection pool |
+| Kubernetes Lease | lease renewal failures, API server latency | service account permissions, Fabric8/runtime line |
+| DynamoDB | conditional write failures, throttling | IAM, capacity, region, table key design |
+
+`leader 0.4.0` also fixed a Kubernetes K3s test runtime conflict. That kind of fix is a reminder that backend choice
+can bring a sensitive runtime line. It is worth checking what is actually on the classpath.
+
+```bash
+./gradlew dependencyInsight --dependency fabric8 --configuration runtimeClasspath
+./gradlew dependencyInsight --dependency kubernetes --configuration runtimeClasspath
+```
+
+## Production Checklist
+
+| Area | Question |
+|---|---|
+| Exposed cache | Can `/actuator/health` show cache mode, queue depth, and flush state? |
+| AWS metrics | Are namespace and dimension names aligned to service and environment? |
+| AWS logs | Can the service and instance be found from log group and stream names alone? |
+| Leader | Are metrics and failure signals separated by provider/storage? |
+| Runtime classpath | Did you inspect sensitive runtime lines such as Kubernetes, Ktor, and AWS SDK? |
+
+## Closing
+
+`dependencies 1.3.0` is not only a version table. It carries several production-facing boundaries: cache health,
+CloudWatch/Logs naming, leader backend selection, and runtime classpath checks. Those are the places that decide whether
+an incident is visible early or discovered after users notice the symptoms.
+
+## Series
+
+If you want the first import path, start with the [usage guide](/blog/bluetape4k-dependencies-usage-guide/).
+
+- [bluetape4k-dependencies 1.3.0 in Practice Part 1: Features and Cleanup](/blog/bluetape4k-dependencies-1-3-0-library-stories/)
+- [bluetape4k-dependencies 1.3.0 in Practice Part 2: Composing Services](/blog/bluetape4k-dependencies-1-3-0-service-composition/)
+- [bluetape4k-dependencies 1.3.0 in Practice Part 3: Production Signals](/blog/bluetape4k-dependencies-1-3-0-production-signals/)
+- [bluetape4k-dependencies 1.3.0 in Practice Part 4: Input Boundaries](/blog/bluetape4k-dependencies-1-3-0-input-boundaries/)
+
+## Sources
+
+- [`bluetape4k-exposed` CHANGELOG.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/CHANGELOG.md)
+- [`bluetape4k-aws` CHANGELOG.md](https://github.com/bluetape4k/bluetape4k-aws/blob/develop/CHANGELOG.md)
+- [`bluetape4k-leader` CHANGELOG.md](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/CHANGELOG.md)
+- [`bluetape4k-leader` issue #480](https://github.com/bluetape4k/bluetape4k-leader/issues/480)
