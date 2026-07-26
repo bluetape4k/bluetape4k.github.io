@@ -339,7 +339,7 @@ header.header .site-title:hover span {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
-  margin: -0.5rem 0 1.15rem;
+  margin: 0.75rem 0 1.15rem;
 }
 
 .bt4k-post-meta {

@@ -79,6 +79,12 @@ test('filtered blog cards remain hidden when card layout styles are applied', as
   assert.match(source, /\.bt4k-blog-card\[hidden\]\s*\{\s*display:\s*none;\s*\}/);
 });
 
+test('blog article tags keep positive space below the title', async () => {
+  const source = await readFile('src/styles/custom.css', 'utf8');
+
+  assert.match(source, /\.bt4k-page-taxonomy\s*\{[^}]*margin:\s*0\.75rem 0 1\.15rem;/s);
+});
+
 test('blog article title area renders taxonomy links back to the filtered index', async () => {
   const source = await readFile('src/components/ManualPageTitle.astro', 'utf8');
 
