@@ -1,4 +1,6 @@
 ---
+import { resolveBlogTaxonomy } from '../lib/blogTaxonomy.mjs';
+
 interface Props {
   locale?: 'en' | 'ko';
 }
@@ -11,6 +13,8 @@ interface BlogPostFrontmatter {
     image: string;
     imageAlt: string;
     cardDescription?: string;
+    category?: string;
+    tags?: string[];
   };
 }
 
@@ -19,6 +23,23 @@ interface BlogPostModule {
 }
 
 const { locale = 'en' } = Astro.props;
+const basePath = locale === 'ko' ? '/ko/blog/' : '/blog/';
+const copy =
+  locale === 'ko'
+    ? {
+        categories: '분류',
+        tags: '태그',
+        all: '전체',
+        count: (value: number) => `${value}개 글`,
+        empty: '선택한 주제의 글이 없습니다.',
+      }
+    : {
+        categories: 'Categories',
+        tags: 'Tags',
+        all: 'All',
+        count: (value: number) => `${value} ${value === 1 ? 'post' : 'posts'}`,
+        empty: 'No posts match the selected topic.',
+      };
 
 const modules =
   locale === 'ko'
@@ -29,32 +50,181 @@ const posts = Object.entries(modules)
   .filter(([path, module]) => !path.endsWith('/index.mdx') && module.frontmatter.blog)
   .map(([path, module]) => {
     const slug = path.split('/').pop()?.replace(/\.mdx$/, '') ?? '';
-    const href = locale === 'ko' ? `/ko/blog/${slug}/` : `/blog/${slug}/`;
+    const href = `${basePath}${slug}/`;
     const blog = module.frontmatter.blog!;
+    const description = blog.cardDescription ?? module.frontmatter.description ?? '';
+    const taxonomy = resolveBlogTaxonomy(
+      {
+        slug,
+        title: module.frontmatter.title,
+        description,
+        category: blog.category,
+        tags: blog.tags,
+      },
+      locale,
+    );
 
     return {
       href,
       title: module.frontmatter.title,
-      description: blog.cardDescription ?? module.frontmatter.description ?? '',
+      description,
       image: blog.image,
       imageAlt: blog.imageAlt,
       date: new Date(blog.date).getTime(),
       slug,
+      taxonomy,
     };
   })
   .sort((left, right) => right.date - left.date || left.slug.localeCompare(right.slug));
+
+const countBy = (values: string[]) =>
+  values.reduce<Record<string, number>>((counts, value) => {
+    counts[value] = (counts[value] ?? 0) + 1;
+    return counts;
+  }, {});
+
+const categoryCounts = countBy(posts.map((post) => String(post.taxonomy.category.slug)));
+const tagCounts = countBy(posts.flatMap((post) => post.taxonomy.tags.map((tag) => String(tag.slug))));
+const sortTerms = <T extends { slug: string; label: string }>(terms: T[], counts: Record<string, number>) =>
+  terms.sort((left, right) => counts[right.slug] - counts[left.slug] || left.label.localeCompare(right.label));
+const categories = sortTerms(
+  Object.keys(categoryCounts).map((slug) => ({
+    slug: String(slug),
+    label: posts.find((post) => post.taxonomy.category.slug === slug)?.taxonomy.category.label ?? slug,
+  })),
+  categoryCounts,
+);
+const tags = sortTerms(
+  Object.keys(tagCounts).map((slug) => ({
+    slug: String(slug),
+    label: String(posts.flatMap((post) => post.taxonomy.tags).find((tag) => tag.slug === slug)?.label ?? slug),
+  })),
+  tagCounts,
+);
+const filterHref = (kind: 'category' | 'tag', value: string) =>
+  value === 'all' ? basePath : `${basePath}?${new URLSearchParams({ [kind]: value }).toString()}`;
 ---
 
-<div class="bt4k-blog-list">
-  {
-    posts.map((post) => (
-      <a class="bt4k-blog-card" href={post.href}>
-        <img src={post.image} alt={post.imageAlt} loading="eager" />
-        <div>
-          <strong>{post.title}</strong>
-          <span>{post.description}</span>
-        </div>
-      </a>
-    ))
-  }
+<div class="bt4k-blog-index" data-blog-index data-base-path={basePath} data-locale={locale}>
+  <section class="bt4k-blog-taxonomy" aria-label={copy.categories}>
+    <div class="bt4k-blog-taxonomy-header">
+      <span data-blog-count>{copy.count(posts.length)}</span>
+    </div>
+    <div class="bt4k-blog-filter-row" data-blog-filter-row="category">
+      <strong>{copy.categories}</strong>
+      <a href={basePath} data-blog-filter="category" data-filter-value="all" aria-current="true">{copy.all}</a>
+      {
+        categories.map((category) => (
+          <a href={filterHref('category', category.slug)} data-blog-filter="category" data-filter-value={category.slug}>
+            {category.label}
+            <span>{categoryCounts[category.slug]}</span>
+          </a>
+        ))
+      }
+    </div>
+    <div class="bt4k-blog-filter-row" data-blog-filter-row="tag">
+      <strong>{copy.tags}</strong>
+      <a href={basePath} data-blog-filter="tag" data-filter-value="all" aria-current="true">{copy.all}</a>
+      {
+        tags.map((tag) => (
+          <a href={filterHref('tag', tag.slug)} data-blog-filter="tag" data-filter-value={tag.slug}>
+            {tag.label}
+            <span>{tagCounts[tag.slug]}</span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <div class="bt4k-blog-list">
+    {
+      posts.map((post) => (
+        <a
+          class="bt4k-blog-card"
+          href={post.href}
+          data-blog-card
+          data-category={post.taxonomy.category.slug}
+          data-tags={post.taxonomy.tags.map((tag) => tag.slug).join(' ')}
+        >
+          <img src={post.image} alt={post.imageAlt} loading="eager" />
+          <div class="bt4k-blog-card-body">
+            <span class="bt4k-blog-card-category">{post.taxonomy.category.label}</span>
+            <strong>{post.title}</strong>
+            <span class="bt4k-blog-card-description">{post.description}</span>
+            <span class="bt4k-blog-card-tags">
+              {post.taxonomy.tags.slice(0, 5).map((tag) => <span>{tag.label}</span>)}
+            </span>
+          </div>
+        </a>
+      ))
+    }
+  </div>
+  <p class="bt4k-blog-empty" data-blog-empty hidden>{copy.empty}</p>
 </div>
+
+<script is:inline>
+  (() => {
+    const root = document.currentScript?.previousElementSibling;
+    if (!root || !root.matches('[data-blog-index]')) return;
+
+    const basePath = root.dataset.basePath || window.location.pathname;
+    const locale = root.dataset.locale || 'en';
+    const cards = [...root.querySelectorAll('[data-blog-card]')];
+    const links = [...root.querySelectorAll('[data-blog-filter]')];
+    const count = root.querySelector('[data-blog-count]');
+    const empty = root.querySelector('[data-blog-empty]');
+    const countLabel = (value) => (locale === 'ko' ? `${value}개 글` : `${value} ${value === 1 ? 'post' : 'posts'}`);
+
+    const state = () => {
+      const params = new URLSearchParams(window.location.search);
+      return {
+        category: params.get('category') || 'all',
+        tag: params.get('tag') || 'all',
+      };
+    };
+
+    const render = () => {
+      const { category, tag } = state();
+      let visible = 0;
+
+      for (const card of cards) {
+        const cardTags = (card.dataset.tags || '').split(' ').filter(Boolean);
+        const matchesCategory = category === 'all' || card.dataset.category === category;
+        const matchesTag = tag === 'all' || cardTags.includes(tag);
+        const matches = matchesCategory && matchesTag;
+        card.hidden = !matches;
+        if (matches) visible += 1;
+      }
+
+      for (const link of links) {
+        const kind = link.dataset.blogFilter;
+        const value = link.dataset.filterValue || 'all';
+        const active = kind === 'category' ? category === value : tag === value;
+        link.toggleAttribute('aria-current', active);
+      }
+
+      if (count) count.textContent = countLabel(visible);
+      if (empty) empty.hidden = visible !== 0;
+    };
+
+    root.addEventListener('click', (event) => {
+      const link = event.target.closest('[data-blog-filter]');
+      if (!link) return;
+      event.preventDefault();
+      const kind = link.dataset.blogFilter;
+      const value = link.dataset.filterValue || 'all';
+      const params = new URLSearchParams(window.location.search);
+      if (value === 'all') {
+        params.delete(kind);
+      } else {
+        params.set(kind, value);
+      }
+      const query = params.toString();
+      history.pushState(null, '', query ? `${basePath}?${query}` : basePath);
+      render();
+    });
+
+    window.addEventListener('popstate', render);
+    render();
+  })();
+</script>

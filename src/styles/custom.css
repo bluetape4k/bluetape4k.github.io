@@ -201,6 +201,64 @@ header.header .site-title:hover span {
   margin: 1rem 0 2rem;
 }
 
+.bt4k-blog-taxonomy {
+  display: grid;
+  gap: 0.8rem;
+  margin: 1rem 0 1.25rem;
+  padding: 1rem;
+  border: 1px solid var(--bt4k-card-border);
+  border-radius: 8px;
+  background: var(--bt4k-card-bg);
+}
+
+.bt4k-blog-taxonomy-header {
+  display: flex;
+  justify-content: flex-end;
+  color: var(--bt4k-card-text);
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.bt4k-blog-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.bt4k-blog-filter-row strong {
+  min-width: 5.5rem;
+  color: var(--bt4k-card-title);
+  font-size: 0.92rem;
+}
+
+.bt4k-blog-filter-row a,
+.bt4k-blog-card-category,
+.bt4k-blog-card-tags span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.85rem;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--bt4k-card-border);
+  border-radius: 999px;
+  color: var(--bt4k-card-text);
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1;
+  text-decoration: none;
+  background: color-mix(in srgb, var(--bt4k-card-bg), var(--sl-color-bg) 42%);
+}
+
+.bt4k-blog-filter-row a {
+  gap: 0.35rem;
+}
+
+.bt4k-blog-filter-row a:hover,
+.bt4k-blog-filter-row a[aria-current='true'] {
+  border-color: var(--sl-color-accent);
+  color: var(--sl-color-accent);
+}
+
 .bt4k-blog-card {
   display: grid;
   grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);
@@ -226,17 +284,40 @@ header.header .site-title:hover span {
   background: var(--bt4k-card-bg);
 }
 
+.bt4k-blog-card-body {
+  display: grid;
+  align-content: start;
+  gap: 0.45rem;
+}
+
 .bt4k-blog-card strong {
   display: block;
   color: var(--bt4k-card-title);
   font-size: 1.05rem;
 }
 
-.bt4k-blog-card span {
+.bt4k-blog-card-description {
   display: block;
-  margin-top: 0.45rem;
   color: var(--bt4k-card-text);
   line-height: 1.55;
+}
+
+.bt4k-blog-card-category {
+  justify-self: start;
+  color: var(--sl-color-accent);
+}
+
+.bt4k-blog-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.15rem;
+}
+
+.bt4k-blog-empty {
+  margin: 1rem 0 2rem;
+  color: var(--bt4k-card-text);
+  font-weight: 800;
 }
 
 .bt4k-post-meta {
@@ -358,6 +439,18 @@ header.header .site-title:hover span {
 
   .bt4k-blog-card {
     grid-template-columns: 1fr;
+  }
+
+  .bt4k-blog-taxonomy-header {
+    justify-content: flex-start;
+  }
+
+  .bt4k-blog-filter-row {
+    align-items: flex-start;
+  }
+
+  .bt4k-blog-filter-row strong {
+    width: 100%;
   }
 
   .bt4k-workflow-comparison {
