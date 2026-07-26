@@ -1,0 +1,261 @@
+---
+title: "Spring WebFlux Multi-tenancy: From Reactor Context Propagation to Tenant Onboarding"
+description: Carry X-TENANT-ID through Reactor Context and Kotlin coroutines, authorize it before selecting tenant resources, and make new tenants available only after durable lifecycle checks and restart recovery.
+sidebar:
+  order: -202607261000
+blog:
+  date: 2026-07-26T10:00:00+09:00
+  image: /assets/exposed-r2dbc-webflux-multitenancy-hero.png
+  imageAlt: A dark 3D miniature scene where a WebFlux request token moves through Reactor Context and a coroutine workbench to tenant databases and an onboarding control panel
+  cardDescription: "Carry tenant identity safely into coroutines and DB selection, and use one operational contract for authorization, durable lifecycle state, and new-tenant onboarding."
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/exposed-r2dbc-webflux-multitenancy-hero.png" alt="A dark 3D miniature scene where a WebFlux request token moves through Reactor Context and a coroutine workbench to tenant databases and an onboarding control panel" loading="eager" />
+  <figcaption>Tenant context is not a header string. It is a contract connecting request authorization, data resources, and operational state.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-07-26 · exposed-r2dbc-workshop · Spring WebFlux multi-tenancy</p>
+
+Do not select a database simply because `X-TENANT-ID` has a valid shape. The caller may not be authorized for that tenant, and a just-created tenant may still be preparing its database and connection pool. Multi-tenancy is less about reading a header than deciding **when a validated tenant may enter the request path and the operational routing set**.
+
+This post follows the Spring WebFlux examples in `exposed-r2dbc-workshop` and joins two flows into one design.
+
+1. Identify and authorize a tenant for every request, carry it through Reactor Context and Kotlin coroutines, and select the right database connection.
+2. Persist preparation ownership and lifecycle state for a new tenant, verify its resources, and publish it safely to the set that live requests may route to.
+
+The previous [Ktor multi-tenant routing post](/blog/exposed-r2dbc-ktor-multitenant-routing-patterns/) covered `ApplicationCall.attributes` and explicit value passing. This post applies the same invariants to WebFlux's asynchronous request boundary and to the lifecycle before a tenant enters that boundary.
+
+## Multi-tenancy does not start with a header
+
+An HTTP header is client input. A tenant is a domain value that binds data isolation, access permission, database connection, and operational state. Treating them as the same thing lets a string such as `X-TENANT-ID: acme` flow through controllers, services, and repositories. Each layer then validates it differently—or forgets to validate it at all.
+
+The request path must answer four questions early.
+
+| Question | What goes wrong when it remains unresolved |
+|---|---|
+| Does the header identify exactly one valid tenant? | Blank, duplicate, or unknown values reach the database too late. |
+| May the authenticated user access that tenant? | A caller can name another customer's tenant and read its data. |
+| Can the current execution flow retrieve the tenant? | The tenant disappears after an asynchronous boundary. |
+| Are the tenant's DB resources ready? | Routing selects a connection that is still being prepared. |
+
+The header is only the starting point. After parsing it, use a validated `TenantId`, and publish it to request-scoped context only after authorization succeeds.
+
+## In WebFlux, a request is not a thread
+
+Traditional server code can make it tempting to assume that a request remains on one thread until it finishes. That assumption does not hold in WebFlux. A request can move through several asynchronous execution points, so hiding tenant state in a `ThreadLocal` is not a safe propagation mechanism.
+
+Project Reactor's `Context` is an immutable, subscriber-attached key/value carrier. Once a tenant is in that carrier, it stays available inside the request's reactive chain even when execution threads change. Entering a Kotlin `suspend` function is a separate boundary, however: the code must explicitly receive that context there.
+
+## Carry the tenant from Reactor Context into a coroutine
+
+The basic WebFlux workshop resolves the header to a `TenantId` in a filter and attaches it to the next chain's Reactor Context. This is the essential shape.
+
+```kotlin
+override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> = mono {
+    val tenant = resolveTenant(exchange.request.headers)
+
+    chain.filter(exchange)
+        .contextWrite { context ->
+            context.put(TenantId.TENANT_ID_KEY, TenantId(tenant))
+        }
+        .awaitSingleOrNull()
+}
+
+suspend fun currentReactorTenant(): Tenants.Tenant =
+    coroutineContext[ReactorContext]
+        ?.context
+        ?.get<TenantId>(TenantId.TENANT_ID_KEY)
+        ?.value
+        ?: error("Tenant context is required")
+```
+
+`ReactorContext` exposes Reactor context as a `CoroutineContext` element. A `suspend` controller or service can therefore read the same tenant from `coroutineContext[ReactorContext]`. Applying a quiet default tenant to an HTTP request with no tenant is not a safe fallback; fail the request at the boundary.
+
+The per-tenant connection-factory example has one more bridge. `TenantTransactionExecutor` obtains the current Reactor Context with `Mono.deferContextual`, attaches it again through `mono(bridgedContext)`, and then runs `suspendTransaction`. The transaction begins in coroutine code, so that point must reconnect the tenant rather than lose it.
+
+<figure class="bt4k-architecture" data-diagram-title="From Reactor Context to a tenant repository">
+  <img src="/assets/exposed-r2dbc-webflux-request-context-01-en.png" alt="A request interaction diagram from X-TENANT-ID and credentials through an authorization filter, Reactor Context, a coroutine service, a tenant transaction executor, and a repository" loading="lazy" />
+  <figcaption>The tenant header is only input. Publish a validated tenant to Reactor Context and select a DB connection only after its authorization matches the authenticated principal.</figcaption>
+</figure>
+
+## Tenant identification and tenant authorization are different problems
+
+Being able to resolve `tenant=acme` is not the same as proving that the current user may read `acme` data. Keeping those concerns separate in one filter makes the order explicit.
+
+```kotlin
+authenticate(request)
+requestedTenant = resolveTenant(request)
+authorize(principal, requestedTenant)
+publishTenantToReactorContext(requestedTenant)
+continueFilterChain()
+```
+
+`AuthorizedTenantContextWebFilter` obtains authentication, compares the requested tenant with the tenants allowed for that principal, and does not pass a mismatch to the next filter or controller. The required order is **authorize before publishing to Reactor Context**. Publishing an unauthenticated or unauthorized value gives downstream code something it might trust.
+
+The authorization model varies by service: a user may belong to one tenant, while an administrator may manage several. The request-boundary order does not vary. Identification → authentication → authorization → context publication lets the data layer assume it receives only a validated tenant.
+
+## A validated tenant selects the DB connection
+
+Tenant isolation has more than one implementation. The workshop shows both changing schemas and selecting a `ConnectionFactory` per tenant. The choice balances isolation strength against operational cost.
+
+| Strategy | Isolation unit | Benefit | Operational cost |
+|---|---|---|---|
+| Shared DB, schema per tenant | Schema | Shares one database resource | Connection reuse requires schema-setting and leak tests. |
+| `ConnectionFactory` per tenant | Pool, database | Isolates connection and failure scope more strongly | Manages a pool and lifecycle for each tenant. |
+
+In the second approach, `TenantRoutingConnectionFactory` works with a registry. The transaction executor reads a tenant from context, looks it up in the registry, and selects only that tenant's registered connection factory. Selecting another tenant as a default is not a recovery strategy. It can violate data isolation, so an unregistered or provisioning tenant must be rejected or reported as not ready.
+
+## How does a new tenant enter the routing set?
+
+Request routing is enough for tenants that already exist. A SaaS system must apply the same boundary when a customer signs up. Creating a row in a metadata table and preparing the connection factory a live request will use are different events.
+
+Ignoring that difference creates two partial tenants:
+
+- a tenant present in metadata but unable to serve requests because its pool or schema is not ready;
+- a tenant with a created pool but no registry entry, so requests cannot find it.
+
+Onboarding bridges those states. Operators must be able to tell whether a tenant is still preparing, can accept requests, or needs recovery.
+
+## Separate preparation from publication
+
+The recovery-oriented example's `ResilientTenantProvisioner` first reserves preparation ownership in metadata as `PROVISIONING`. While renewing a lease, it prepares the actual resources. Only after probing a readiness marker and recording `ACTIVE` does it publish to the runtime registry. This pseudocode focuses on names and order.
+
+```kotlin
+suspend fun onboard(command: TenantOnboardingCommand): TenantOnboardingResult {
+    val owner = lifecycleRepository.claim(...)                  // PROVISIONING + lease
+    val renewed = lifecycleRepository.renewLease(owner, ...)
+    val resources = resourceFactory.create(renewed.metadata)    // schema + readiness marker
+    resourceFactory.probe(resources)
+    val active = lifecycleRepository.markActive(renewed, ...)   // ACTIVE
+    runtimeRegistry.publish(resources)                           // publish for routing
+    return Created(active)
+}
+```
+
+`runtimeRegistry.publish()` is the in-process publication boundary. Before it runs, a tenant may exist in metadata but no ordinary request can select it. `ACTIVE` records that durable resources are ready; the runtime registry records that **this process can route to resources that passed a probe**. Separating preparation and publication makes it possible to reconcile the two again after a restart.
+
+<figure class="bt4k-architecture" data-diagram-title="New tenant preparation, publication, and restart recovery">
+  <img src="/assets/exposed-r2dbc-tenant-onboarding-01-en.png" alt="An interaction diagram from an operator request through lifecycle reservation and lease renewal, PostgreSQL schema creation and readiness probing, ACTIVE recording, runtime registry publication, failure cleanup, and restart recovery" loading="lazy" />
+  <figcaption>Regular requests look only at the runtime registry published by the current process. Onboarding verifies readiness, records ACTIVE, and only then adds a tenant to the routing set.</figcaption>
+</figure>
+
+## Leave onboarding failure in an operable state
+
+Failure handling has two distinct paths. Collapsing them into “store a failed state” hides the operational decision. The example stores stable failure categories in metadata, not raw exception messages or connection details.
+
+| Moment | Workshop behavior | Operational meaning |
+|---|---|---|
+| Onboarding fails or is cancelled in the same process | Record `FAILED` and a failure category, remove the registry entry, and close acquired resources | Keep a partial tenant out of the request path while retaining evidence for a retry. |
+| After a process restart | Turn expired `PROVISIONING` into `FAILED(RECOVERY)`; restore and probe `ACTIVE` before republishing | Reconcile a vanished in-memory registry with durable metadata. |
+| A recovery probe fails | Turn the `ACTIVE` row into `FAILED(RECOVERY)` and do not publish it | Do not route requests from an old `ACTIVE` record alone. |
+| Onboarding later retries | Update the `FAILED` row with a new `PROVISIONING` attempt | Bind retry count and ownership to the new attempt. |
+
+With the PostgreSQL profile, lifecycle metadata lives in `public.tenant_lifecycle`, while tenant business resources and readiness markers live in a `tenant_<tenant-id>` schema. A failed probe after schema creation does not automatically drop that schema. It remains for diagnosis and idempotent retry, while the lifecycle row becomes `FAILED` so ordinary requests cannot select it. An operational service can attach audit logs, alerts, and retry policy to that distinction.
+
+## Tests must prove boundaries, not only successful responses
+
+A multi-tenant test that merely finds an actor is incomplete. It must prove that values do not leak across tenants and that an unauthorized or unready tenant never reaches the data layer.
+
+| Boundary to prove | Expected result |
+|---|---|
+| Header and tenant resolution | Missing, blank, and unknown tenants are rejected early. |
+| Authenticated tenant and requested tenant | A mismatch is rejected before context publication. |
+| Reactor → coroutine propagation | The same tenant is read in a `suspend` service and transaction. |
+| Connection-factory selection | A tenant A request never uses tenant B's pool or database. |
+| Onboarding publication point | Only an `ACTIVE` tenant published in the current runtime registry is routable. |
+| Failure and cancellation | `FAILED` recording, registry removal, and resource cleanup finish in `NonCancellable` cleanup. |
+| Restart recovery | Expired `PROVISIONING` and probe-failed `ACTIVE` become `FAILED(RECOVERY)`; only healthy `ACTIVE` tenants are republished. |
+
+### Boundary 1: an unauthorized tenant is never published to context
+
+Checking only for `403` cannot show where the request stopped. This boundary says that **components after authorization must not be able to see the tenant**. The workshop's architecture test permits only `AuthorizedTenantContextWebFilter` to write the tenant into Reactor Context.
+
+```text
+given a principal without access to tenant-a
+
+when GET /actors with X-TENANT-ID = tenant-a
+
+then the response is FORBIDDEN
+and Reactor Context has no TENANT_ID
+and TenantTransactionExecutor is not called
+and tenant-a's ConnectionFactory is not selected
+```
+
+The pseudocode checks the HTTP status and the internal boundary together. An implementation that publishes the raw header first and authorizes later may pass the first `FORBIDDEN` assertion, but it fails this contract.
+
+### Boundary 2: concurrent requests do not mix at DB selection
+
+Tenant isolation cannot be proved with one request. Alternate tenant A and B under a deliberately small pool, where connection reuse is most frequent, to expose schema or connection-factory leaks.
+
+```text
+given connection pool size = 1
+and tenant-a and tenant-b have distinct actor markers
+
+when requests for A and B run repeatedly and concurrently
+
+then every A response contains only the A marker
+and every B response contains only the B marker
+and each request selects its own tenant resource
+and no request falls back to another tenant's default resource
+```
+
+The question is not whether both requests return `200`. Their response markers and selected resources must match the validated tenant all the way through. The unknown-tenant failure and disabled lenient fallback in `TenantRoutingConnectionFactory` serve the same purpose.
+
+### Boundary 3: provisioning and recovery-failed tenants are not routing targets
+
+An onboarding test that checks only the `ACTIVE` string is insufficient. Publication to the runtime registry is the real moment the request path can see a tenant, so test the probe and registry together.
+
+```text
+given tenant-x is PROVISIONING
+or tenant-x is ACTIVE but its readiness probe fails after restart
+
+when the application reconciles durable lifecycle records
+
+then tenant-x is absent from the runtime registry
+and no ConnectionFactory is selected for tenant-x
+and lifecycle is retained or changed to FAILED(RECOVERY)
+
+when tenant-y is ACTIVE and its readiness probe succeeds
+then tenant-y alone is published to the runtime registry
+```
+
+This proves more than the happy path where a tenant is visible after restart. It proves that incomplete resources cannot leak into ordinary requests. `TenantLifecycleReconciler` publishes only after probing, and the PostgreSQL restart integration tests lock that contract in place.
+
+Using a small pool and alternating tenant requests is useful for the same reason: connection reuse is frequent enough to reveal a mixed schema or connection-factory choice.
+
+## Ktor differs only in the carrier
+
+The Ktor post stores request-scoped state in `ApplicationCall.attributes` and passes validated values explicitly. In WebFlux, Reactor Context and `CoroutineContext` are the carriers. The invariants are the same.
+
+| Principle | Ktor | Spring WebFlux |
+|---|---|---|
+| Input validation | Parse the header in a plugin | Parse the tenant in a filter |
+| Request-scope propagation | `ApplicationCall.attributes` | Reactor Context → `ReactorContext` |
+| Authorization boundary | Before the route or in a plugin | Before context publication |
+| DB selection | Explicit route or tenant value | Validated tenant read from context |
+| New-tenant publication | The registry must be ready before selection | The registry must be ready before selection |
+
+The point is not to copy a carrier. It is to carry only validated values, publish them after authorization, and never select an unready resource—then express those invariants in the runtime's own tools.
+
+<figure class="bt4k-architecture" data-diagram-title="Ktor and Spring WebFlux tenant-carrier boundaries">
+  <img src="/assets/exposed-r2dbc-ktor-webflux-carrier-map-01-en.png" alt="A comparison diagram showing Ktor's Tenant Plugin, ApplicationCall attributes, route handler, and tenant transaction alongside Spring WebFlux's WebFilter, Reactor Context, coroutine bridge, and tenant executor" loading="lazy" />
+  <figcaption>Choose the carrier for the runtime, but create the raw-header-to-domain-tenant boundary and the DB-selection boundary only once.</figcaption>
+</figure>
+
+## Resources
+
+- [Project Reactor Context documentation](https://projectreactor.io/docs/core/release/reference/advancedFeatures/context.html): explains why subscriber-scoped context differs from thread storage.
+- [The `ReactorContext` API in kotlinx-coroutines-reactor](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-reactor/kotlinx.coroutines.reactor/-reactor-context/): documents the bridge that lets coroutine code read Reactor context.
+- [Spring WebFlux tenant-context workshop](https://github.com/bluetape4k/exposed-r2dbc-workshop/tree/develop/10-multi-tenant/03-multitenant-spring-webflux): shows the basic path from a header to `ReactorContext`.
+- [Per-tenant `ConnectionFactory` workshop](https://github.com/bluetape4k/exposed-r2dbc-workshop/tree/develop/10-multi-tenant/04-connection-factory-per-tenant-spring-webflux): shows the transaction context bridge and connection-factory selection.
+- [Spring Security tenant-authorization workshop](https://github.com/bluetape4k/exposed-r2dbc-workshop/tree/develop/10-multi-tenant/05-spring-security-tenant-authorization-spring-webflux): shows the filter that publishes tenant context after authorization.
+- [Recovery-oriented tenant-onboarding workshop](https://github.com/bluetape4k/exposed-r2dbc-workshop/tree/develop/10-multi-tenant/08-resilient-tenant-onboarding-spring-webflux): covers durable ownership, leases, `FAILED` retry, PostgreSQL schema isolation, and restart recovery.
+- [`ResilientTenantProvisioner`](https://github.com/bluetape4k/exposed-r2dbc-workshop/blob/develop/10-multi-tenant/08-resilient-tenant-onboarding-spring-webflux/src/main/kotlin/exposed/r2dbc/multitenant/resilientonboarding/tenant/ResilientTenantProvisioner.kt): the concrete order of preparation, validation, activation, runtime publication, and cancellation cleanup.
+- [`TenantLifecycleReconciler`](https://github.com/bluetape4k/exposed-r2dbc-workshop/blob/develop/10-multi-tenant/08-resilient-tenant-onboarding-spring-webflux/src/main/kotlin/exposed/r2dbc/multitenant/resilientonboarding/tenant/TenantLifecycleReconciler.kt): the restart boundary that rereads metadata and publishes only healthy tenants to the registry.
+
+## Closing
+
+The hard part of WebFlux multi-tenancy is not adding another asynchronous API. It is turning a tenant from input into trustworthy request context, preserving that context through coroutines and transactions to DB selection, and keeping a new tenant out of the request path until it is ready.
+
+The request path and onboarding path become easier to reason about when they share the same contract. Put only authorized tenants into context. Put only resources that were validated and published by this process into the registry. With those two publication points made explicit, data isolation and restart recovery can grow with the tenant count.
