@@ -273,6 +273,10 @@ header.header .site-title:hover span {
   background: var(--bt4k-card-bg);
 }
 
+.bt4k-blog-card[hidden] {
+  display: none;
+}
+
 .bt4k-blog-card:focus-within,
 .bt4k-blog-card:hover {
   border-color: var(--sl-color-accent);

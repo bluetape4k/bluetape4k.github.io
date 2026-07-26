@@ -73,6 +73,12 @@ test('blog list renders query-addressable tag filters only', async () => {
   assert.match(source, /setAttribute\('aria-current',\s*'true'\)/);
 });
 
+test('filtered blog cards remain hidden when card layout styles are applied', async () => {
+  const source = await readFile('src/styles/custom.css', 'utf8');
+
+  assert.match(source, /\.bt4k-blog-card\[hidden\]\s*\{\s*display:\s*none;\s*\}/);
+});
+
 test('blog article title area renders taxonomy links back to the filtered index', async () => {
   const source = await readFile('src/components/ManualPageTitle.astro', 'utf8');
 
