@@ -5,6 +5,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { validateVersionCatalog } from '../../scripts/manual/lib/catalog.mjs';
 import { loadRepositoryRegistry, repositoryBySlug } from '../../scripts/manual/lib/repositories.mjs';
+import { resolveBlogTaxonomy } from '../lib/blogTaxonomy.mjs';
 import '../styles/manual.css';
 
 const manualRepositories = loadRepositoryRegistry(pathToFileURL(path.join(process.cwd(), 'src/data/manual/repositories.json')));
@@ -17,6 +18,28 @@ type ManualRepository = {
 const { starlightRoute } = Astro.locals;
 const manual = starlightRoute.entry.data.manual;
 const locale = starlightRoute.lang === 'ko' ? 'ko' : 'en';
+const entryId = starlightRoute.entry.id;
+const isBlogPost =
+  (entryId.startsWith('blog/') || entryId.startsWith('ko/blog/')) &&
+  entryId !== 'blog/index' &&
+  entryId !== 'ko/blog/index' &&
+  Boolean(starlightRoute.entry.data.blog);
+const blogBasePath = locale === 'ko' ? '/ko/blog/' : '/blog/';
+const blogSlug = entryId.split('/').pop() ?? '';
+const blog = starlightRoute.entry.data.blog;
+const blogTaxonomy = isBlogPost
+  ? resolveBlogTaxonomy(
+      {
+        slug: blogSlug,
+        title: starlightRoute.entry.data.title,
+        description: blog?.cardDescription ?? starlightRoute.entry.data.description ?? '',
+        tags: blog?.tags,
+      },
+      locale,
+    )
+  : undefined;
+const filterHref = (kind: 'tag', value: string) =>
+  `${blogBasePath}?${new URLSearchParams({ [kind]: value }).toString()}`;
 let repository: ManualRepository | undefined;
 try { if (manual?.repository) repository = repositoryBySlug(manualRepositories, manual.repository); } catch { /* malformed metadata renders no provenance */ }
 let latestMinor;
@@ -48,6 +71,15 @@ const releaseLabel = locale === 'ko'
 ---
 
 <DefaultPageTitle />
+{blogTaxonomy && (
+  <nav class="bt4k-page-taxonomy" aria-label={locale === 'ko' ? '블로그 글 태그' : 'Blog post tags'}>
+    {blogTaxonomy.tags.slice(0, 8).map((tag) => (
+      <a href={filterHref('tag', tag.slug)} data-blog-filter="tag" data-filter-value={tag.slug}>
+        {tag.label}
+      </a>
+    ))}
+  </nav>
+)}
 {repository && manual?.minorVersion && releaseUrl && (
   <p class="bt4k-manual-provenance" aria-label={locale === 'ko' ? '매뉴얼 배포 기준' : 'Manual release provenance'}>
     <span class="bt4k-manual-provenance__state">{stateText}</span>

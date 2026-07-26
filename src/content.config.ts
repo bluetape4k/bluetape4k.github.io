@@ -39,7 +39,6 @@ export const collections = {
             image: z.string(),
             imageAlt: z.string(),
             cardDescription: z.string().optional(),
-            category: z.string().optional(),
             tags: z.array(z.string()).default([]),
           })
           .optional(),
