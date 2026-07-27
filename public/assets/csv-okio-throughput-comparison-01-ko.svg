@@ -3,30 +3,34 @@
   <desc id="desc">Grouped bar chart comparing existing reader and Okio fast path throughput in operations per second for small, medium, and large CSV workloads. Higher is better.</desc>
   <defs>
     <style>
-      .title { font-family: 'goorm Sans', 'Apple SD Gothic Neo', sans-serif; font-size: 38px; fill: #243447; }
-      .subtitle { font-family: 'goorm Sans Code', 'goorm Sans', monospace; font-size: 18px; fill: #5b677a; }
-      .label { font-family: 'goorm Sans Code', 'goorm Sans', monospace; font-size: 16px; fill: #344054; }
-      .small { font-family: 'goorm Sans Code', 'goorm Sans', monospace; font-size: 13px; fill: #667085; }
-      .panel-title { font-family: 'goorm Sans', 'Apple SD Gothic Neo', sans-serif; font-size: 24px; fill: #26364a; }
-      .row-title { font-family: 'goorm Sans', 'Apple SD Gothic Neo', sans-serif; font-size: 25px; fill: #26364a; }
-      .value { font-family: 'goorm Sans Code', 'goorm Sans', monospace; font-size: 15px; font-weight: 700; fill: #26364a; }
-      .speed { font-family: 'goorm Sans Code', 'goorm Sans', monospace; font-size: 15px; font-weight: 700; fill: #027a48; }
+      .title { font-family: 'goorm Sans', 'Apple SD Gothic Neo', sans-serif; font-size: 38px; fill: #f8fafc; }
+      .subtitle { font-family: 'goorm Sans Code', 'goorm Sans', monospace; font-size: 18px; fill: #b7c8e2; }
+      .label { font-family: 'goorm Sans Code', 'goorm Sans', monospace; font-size: 16px; fill: #dcecff; }
+      .small { font-family: 'goorm Sans Code', 'goorm Sans', monospace; font-size: 13px; fill: #b7c8e2; }
+      .panel-title { font-family: 'goorm Sans', 'Apple SD Gothic Neo', sans-serif; font-size: 24px; fill: #f8fafc; }
+      .row-title { font-family: 'goorm Sans', 'Apple SD Gothic Neo', sans-serif; font-size: 25px; fill: #f8fafc; }
+      .value { font-family: 'goorm Sans Code', 'goorm Sans', monospace; font-size: 15px; font-weight: 700; fill: #e7f0ff; }
+      .speed { font-family: 'goorm Sans Code', 'goorm Sans', monospace; font-size: 15px; font-weight: 700; fill: #60e6be; }
+      rect[fill="#fbfcff"]{fill:#0b1220} rect[fill="#ffffff"]{fill:#14213a}
+      rect[fill="#edf3fb"]{fill:#1e2c42} rect[fill="#eaf8f4"]{fill:#153a39}
+      rect[fill="#8aa9d6"]{fill:#5ca7df} rect[fill="#4cc1a5"]{fill:#54d0ad}
+      rect[stroke="#d8e1ef"],rect[stroke="#d7e2f0"],line[stroke="#d0d8e6"]{stroke:#355277}
     </style>
     <filter id="softShadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#98a2b3" flood-opacity="0.22"/></filter>
   </defs>
   <rect x="16" y="16" width="1288" height="868" rx="24" fill="#fbfcff" stroke="#d8e1ef"/>
-  <text x="44" y="70" class="title">CSV Parser 처리량: 기존 경로 vs Okio Fast Path</text>
-  <text x="46" y="106" class="subtitle">ops/s, 높을수록 좋음. workload별 scale을 따로 두어 medium/large 결과가 잘 보이게 했습니다.</text>
+  <text x="44" y="70" class="title">CSV 파서 처리량: 기존 경로와 Okio 고속 경로</text>
+  <text x="46" y="106" class="subtitle">ops/s, 높을수록 좋음. 작업 부하별 눈금을 따로 두어 중간·대규모 결과도 읽기 쉽게 했습니다.</text>
   <g transform="translate(48,134)">
     <rect x="0" y="0" width="18" height="18" rx="4" fill="#8aa9d6"/>
     <text x="28" y="15" class="label">기존 Reader/Lexer</text>
     <rect x="236" y="0" width="18" height="18" rx="4" fill="#4cc1a5"/>
     <text x="264" y="15" class="label">Okio BufferedSource + UnsafeCursor</text>
   </g>
-  <text x="58" y="194" class="row-title">Public reader 경로</text>
+  <text x="58" y="194" class="row-title">공개 Reader 경로</text>
   <g filter="url(#softShadow)"><rect x="58" y="214" width="388" height="216" rx="18" fill="#ffffff" stroke="#d7e2f0"/></g>
-  <text x="82" y="252" class="panel-title">Small workload</text>
-  <text x="352" y="252" class="speed">2.25x 빠름</text>
+  <text x="82" y="252" class="panel-title">소규모 작업 부하</text>
+  <text x="352" y="252" class="speed">2.25배 빠름</text>
   <text x="82" y="278" class="small">기존</text>
   <rect x="86" y="286" width="326" height="28" rx="9" fill="#edf3fb"/>
   <rect x="86" y="286" width="124.83" height="28" rx="9" fill="#8aa9d6"/>
@@ -39,8 +43,8 @@
   <text x="86" y="404" class="small">0</text>
   <text x="324" y="404" class="small">45,417+</text>
   <g filter="url(#softShadow)"><rect x="474" y="214" width="388" height="216" rx="18" fill="#ffffff" stroke="#d7e2f0"/></g>
-  <text x="498" y="252" class="panel-title">Medium workload</text>
-  <text x="768" y="252" class="speed">2.30x 빠름</text>
+  <text x="498" y="252" class="panel-title">중간 작업 부하</text>
+  <text x="768" y="252" class="speed">2.30배 빠름</text>
   <text x="498" y="278" class="small">기존</text>
   <rect x="502" y="286" width="326" height="28" rx="9" fill="#edf3fb"/>
   <rect x="502" y="286" width="122.11" height="28" rx="9" fill="#8aa9d6"/>
@@ -53,8 +57,8 @@
   <text x="502" y="404" class="small">0</text>
   <text x="740" y="404" class="small">683.4+</text>
   <g filter="url(#softShadow)"><rect x="890" y="214" width="388" height="216" rx="18" fill="#ffffff" stroke="#d7e2f0"/></g>
-  <text x="914" y="252" class="panel-title">Large workload</text>
-  <text x="1184" y="252" class="speed">2.32x 빠름</text>
+  <text x="914" y="252" class="panel-title">대규모 작업 부하</text>
+  <text x="1184" y="252" class="speed">2.32배 빠름</text>
   <text x="914" y="278" class="small">기존</text>
   <rect x="918" y="286" width="326" height="28" rx="9" fill="#edf3fb"/>
   <rect x="918" y="286" width="121.28" height="28" rx="9" fill="#8aa9d6"/>
@@ -66,10 +70,10 @@
   <line x1="918" y1="382" x2="1244" y2="382" stroke="#d0d8e6" stroke-width="1"/>
   <text x="918" y="404" class="small">0</text>
   <text x="1156" y="404" class="small">40.12+</text>
-  <text x="58" y="454" class="row-title">Direct lexer 경로</text>
+  <text x="58" y="454" class="row-title">직접 lexer 경로</text>
   <g filter="url(#softShadow)"><rect x="58" y="474" width="388" height="216" rx="18" fill="#ffffff" stroke="#d7e2f0"/></g>
-  <text x="82" y="512" class="panel-title">Small workload</text>
-  <text x="352" y="512" class="speed">2.14x 빠름</text>
+  <text x="82" y="512" class="panel-title">소규모 작업 부하</text>
+  <text x="352" y="512" class="speed">2.14배 빠름</text>
   <text x="82" y="538" class="small">기존</text>
   <rect x="86" y="546" width="326" height="28" rx="9" fill="#edf3fb"/>
   <rect x="86" y="546" width="131.24" height="28" rx="9" fill="#8aa9d6"/>
@@ -82,8 +86,8 @@
   <text x="86" y="664" class="small">0</text>
   <text x="324" y="664" class="small">45,063+</text>
   <g filter="url(#softShadow)"><rect x="474" y="474" width="388" height="216" rx="18" fill="#ffffff" stroke="#d7e2f0"/></g>
-  <text x="498" y="512" class="panel-title">Medium workload</text>
-  <text x="768" y="512" class="speed">2.32x 빠름</text>
+  <text x="498" y="512" class="panel-title">중간 작업 부하</text>
+  <text x="768" y="512" class="speed">2.32배 빠름</text>
   <text x="498" y="538" class="small">기존</text>
   <rect x="502" y="546" width="326" height="28" rx="9" fill="#edf3fb"/>
   <rect x="502" y="546" width="121.13" height="28" rx="9" fill="#8aa9d6"/>
@@ -96,8 +100,8 @@
   <text x="502" y="664" class="small">0</text>
   <text x="740" y="664" class="small">668.5+</text>
   <g filter="url(#softShadow)"><rect x="890" y="474" width="388" height="216" rx="18" fill="#ffffff" stroke="#d7e2f0"/></g>
-  <text x="914" y="512" class="panel-title">Large workload</text>
-  <text x="1184" y="512" class="speed">2.31x 빠름</text>
+  <text x="914" y="512" class="panel-title">대규모 작업 부하</text>
+  <text x="1184" y="512" class="speed">2.31배 빠름</text>
   <text x="914" y="538" class="small">기존</text>
   <rect x="918" y="546" width="326" height="28" rx="9" fill="#edf3fb"/>
   <rect x="918" y="546" width="121.91" height="28" rx="9" fill="#8aa9d6"/>

@@ -307,6 +307,50 @@ test('the GraphDB adoption post exposes localized chart titles without making it
   assert.doesNotMatch(en, /class="bt4k-blog-hero"[^>]*data-diagram-title/);
 });
 
+test('the image and CSV benchmark posts expose localized chart titles without making Heroes zoomable', async () => {
+  const koImage = await read('src/content/docs/ko/blog/from-pure-jvm-to-libvips-benchmarking-image-processing.mdx');
+  const enImage = await read('src/content/docs/blog/from-pure-jvm-to-libvips-benchmarking-image-processing.mdx');
+  const koCsv = await read('src/content/docs/ko/blog/reducing-csv-parser-allocations-with-okio.mdx');
+  const enCsv = await read('src/content/docs/blog/reducing-csv-parser-allocations-with-okio.mdx');
+
+  assert.match(
+    koImage,
+    /class="bt4k-chart"\s+data-diagram-title="자연 사진 처리에서 scrimage와 libvips의 처리 시간 비교"/,
+  );
+  assert.match(
+    enImage,
+    /class="bt4k-chart"\s+data-diagram-title="Natural-photo processing time comparison: scrimage and libvips"/,
+  );
+  assert.match(
+    koCsv,
+    /class="bt4k-chart"\s+data-diagram-title="CSV 파서의 기존 경로와 Okio 고속 경로 처리량 비교"/,
+  );
+  assert.match(
+    enCsv,
+    /class="bt4k-chart"\s+data-diagram-title="CSV parser throughput: existing path and Okio fast path"/,
+  );
+
+  for (const source of [koImage, enImage, koCsv, enCsv]) {
+    assert.doesNotMatch(source, /class="bt4k-blog-hero"[^>]*data-diagram-title/);
+  }
+});
+
+test('the ecosystem overview provides localized diagram titles without making the Hero zoomable', async () => {
+  const ko = await read('src/content/docs/ko/blog/introduction-bluetape4k-part1-ecosystem.mdx');
+  const en = await read('src/content/docs/blog/introduction-bluetape4k-part1-ecosystem.mdx');
+
+  assert.match(
+    ko,
+    /class="bt4k-architecture"\s+data-diagram-title="Bluetape4k 생태계의 계층과 선택 경계"/,
+  );
+  assert.match(
+    en,
+    /class="bt4k-architecture"\s+data-diagram-title="Bluetape4k ecosystem layers and selection boundaries"/,
+  );
+  assert.doesNotMatch(ko, /class="bt4k-blog-hero"[^>]*data-diagram-title/);
+  assert.doesNotMatch(en, /class="bt4k-blog-hero"[^>]*data-diagram-title/);
+});
+
 test('every blog image is explicitly classified as a technical diagram or an excluded visual', async () => {
   const allowedFigureClasses = new Set([
     'bt4k-architecture',

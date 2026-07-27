@@ -25,6 +25,11 @@ The core structure is simple. Spring Boot 4 or Ktor 3 owns the application bound
 the domain capability, data, infrastructure, and foundation layers underneath. A service does not
 pull in everything. It picks the modules that match the boundary it actually touches.
 
+<figure class="bt4k-architecture" data-diagram-title="Bluetape4k ecosystem layers and selection boundaries">
+  <img src="/assets/bluetape4k-ecosystem-overview-en.png" alt="A responsibility map where a Spring Boot 4 or Ktor 3 service owns its application boundary and composes only the Bluetape4k domain capability, data, infrastructure, and foundation layers it needs" loading="lazy" />
+  <figcaption>The application remains service-owned; choose Bluetape4k only where it matches the problems and boundaries the service actually touches.</figcaption>
+</figure>
+
 ## Overall Layer Map
 
 <table>

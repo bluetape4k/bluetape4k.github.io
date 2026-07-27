@@ -3,14 +3,18 @@
   <desc id="desc">Grouped bar chart comparing existing reader and Okio fast path throughput in operations per second for small, medium, and large CSV workloads. Higher is better.</desc>
   <defs>
     <style>
-      .title { font-family: 'Architects Daughter', 'Comic Sans MS', cursive; font-size: 38px; fill: #243447; }
-      .subtitle { font-family: 'Comic Mono', 'SFMono-Regular', Menlo, monospace; font-size: 18px; fill: #5b677a; }
-      .label { font-family: 'Comic Mono', 'SFMono-Regular', Menlo, monospace; font-size: 16px; fill: #344054; }
-      .small { font-family: 'Comic Mono', 'SFMono-Regular', Menlo, monospace; font-size: 13px; fill: #667085; }
-      .panel-title { font-family: 'Architects Daughter', 'Comic Sans MS', cursive; font-size: 24px; fill: #26364a; }
-      .row-title { font-family: 'Architects Daughter', 'Comic Sans MS', cursive; font-size: 25px; fill: #26364a; }
-      .value { font-family: 'Comic Mono', 'SFMono-Regular', Menlo, monospace; font-size: 15px; font-weight: 700; fill: #26364a; }
-      .speed { font-family: 'Comic Mono', 'SFMono-Regular', Menlo, monospace; font-size: 15px; font-weight: 700; fill: #027a48; }
+      .title { font-family: 'Architects Daughter', 'Comic Sans MS', cursive; font-size: 38px; fill: #f8fafc; }
+      .subtitle { font-family: 'Comic Mono', 'SFMono-Regular', Menlo, monospace; font-size: 18px; fill: #b7c8e2; }
+      .label { font-family: 'Comic Mono', 'SFMono-Regular', Menlo, monospace; font-size: 16px; fill: #dcecff; }
+      .small { font-family: 'Comic Mono', 'SFMono-Regular', Menlo, monospace; font-size: 13px; fill: #b7c8e2; }
+      .panel-title { font-family: 'Architects Daughter', 'Comic Sans MS', cursive; font-size: 24px; fill: #f8fafc; }
+      .row-title { font-family: 'Architects Daughter', 'Comic Sans MS', cursive; font-size: 25px; fill: #f8fafc; }
+      .value { font-family: 'Comic Mono', 'SFMono-Regular', Menlo, monospace; font-size: 15px; font-weight: 700; fill: #e7f0ff; }
+      .speed { font-family: 'Comic Mono', 'SFMono-Regular', Menlo, monospace; font-size: 15px; font-weight: 700; fill: #60e6be; }
+      rect[fill="#fbfcff"]{fill:#0b1220} rect[fill="#ffffff"]{fill:#14213a}
+      rect[fill="#edf3fb"]{fill:#1e2c42} rect[fill="#eaf8f4"]{fill:#153a39}
+      rect[fill="#8aa9d6"]{fill:#5ca7df} rect[fill="#4cc1a5"]{fill:#54d0ad}
+      rect[stroke="#d8e1ef"],rect[stroke="#d7e2f0"],line[stroke="#d0d8e6"]{stroke:#355277}
     </style>
     <filter id="softShadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#98a2b3" flood-opacity="0.22"/></filter>
   </defs>

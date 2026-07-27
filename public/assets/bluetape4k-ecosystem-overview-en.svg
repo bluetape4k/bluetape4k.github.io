@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1280" viewBox="0 0 1600 1280" role="img" aria-labelledby="title desc">
+  <title id="title">Bluetape4k ecosystem layers and selection boundaries</title>
+  <desc id="desc">A responsibility map where a Spring Boot 4 or Ktor 3 service owns its application boundary and composes only the Bluetape4k domain capability, data, infrastructure, and foundation layers it needs.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#0b1220"/>
+      <stop offset="1" stop-color="#172554"/>
+    </linearGradient>
+    <linearGradient id="service" x1="0" x2="1">
+      <stop offset="0" stop-color="#12395b"/>
+      <stop offset="1" stop-color="#172e58"/>
+    </linearGradient>
+    <style>
+      .title { font: 700 43px "Architects Daughter", "goorm Sans", sans-serif; fill: #f8fafc; }
+      .subtitle { font: 500 20px "Architects Daughter", "goorm Sans", sans-serif; fill: #b7c8e2; }
+      .eyebrow { font: 800 16px "Comic Mono", "goorm Sans Code", monospace; letter-spacing: 1.2px; }
+      .service-title { font: 700 31px "Architects Daughter", "goorm Sans", sans-serif; fill: #f8fafc; }
+      .service-body { font: 500 19px "Architects Daughter", "goorm Sans", sans-serif; fill: #c9dcf5; }
+      .layer-title { font: 700 27px "Architects Daughter", "goorm Sans", sans-serif; fill: #f8fafc; }
+      .layer-body { font: 500 18px "Architects Daughter", "goorm Sans", sans-serif; fill: #c9d8eb; }
+      .code { font: 600 17px "Comic Mono", "goorm Sans Code", monospace; fill: #d3ecff; }
+      .frame-title { font: 800 18px "Architects Daughter", "goorm Sans", sans-serif; fill: #a8c7e8; }
+      .note { font: 700 19px "Architects Daughter", "goorm Sans", sans-serif; fill: #dcecff; }
+      .small-note { font: 500 16px "Architects Daughter", "goorm Sans", sans-serif; fill: #a9bfdc; }
+      .badge-body { font: 500 16px "Architects Daughter", "goorm Sans", sans-serif; fill: #1d2940; }
+    .syntax-keyword{fill:#d8b4fe}.syntax-type{fill:#8de4d4}.syntax-operator{fill:#f9c98f}</style>
+  </defs>
+
+  <rect width="1600" height="1280" fill="url(#background)"/>
+  <circle cx="1495" cy="118" r="245" fill="#1d4d78" opacity="0.24"/>
+  <circle cx="100" cy="1215" r="260" fill="#3a236b" opacity="0.20"/>
+
+  <text x="90" y="95" class="title">Bluetape4k ecosystem layers and selection boundaries</text>
+  <text x="90" y="135" class="subtitle">A service composes only the responsibility layers it needs beneath its application boundary.</text>
+  <rect x="90" y="170" width="1420" height="2" fill="#355277"/>
+
+  <rect x="90" y="215" width="1420" height="186" rx="28" fill="url(#service)" stroke="#4f9ad1" stroke-width="3"/>
+  <rect x="132" y="251" width="245" height="34" rx="17" fill="#73d4ff"/>
+  <text x="156" y="274" class="eyebrow" fill="#07111f">SERVICE-OWNED BOUNDARY</text>
+  <text x="132" y="333" class="service-title">Spring Boot 4 / Ktor 3 application</text>
+  <text x="132" y="370" class="service-body">The application owns HTTP APIs, request handling, service composition, and operations.</text>
+  <rect x="1118" y="262" width="330" height="90" rx="18" fill="#102541" stroke="#3d79ad" stroke-width="2"/>
+  <text x="1150" y="300" class="code">spring-boot/*</text>
+  <text x="1150" y="331" class="code">*-ktor / examples</text>
+
+  <rect x="90" y="450" width="1420" height="730" rx="30" fill="#101c31" opacity="0.94" stroke="#314d72" stroke-width="3"/>
+  <text x="132" y="502" class="frame-title">Selectable Bluetape4k responsibility layers</text>
+  <rect x="1004" y="470" width="442" height="52" rx="18" fill="#1b3153" stroke="#416c98" stroke-width="2"/>
+  <text x="1034" y="503" class="note">Compose only what you need</text>
+
+  <rect x="132" y="546" width="1316" height="126" rx="22" fill="#1d2448" stroke="#7c6ee6" stroke-width="2"/>
+  <rect x="160" y="572" width="260" height="72" rx="18" fill="#bca7ff"/>
+  <text x="184" y="601" class="eyebrow" fill="#20173e">DOMAIN CAPABILITY</text>
+  <text x="184" y="628" class="badge-body">Service-near functions</text>
+  <text x="460" y="598" class="layer-title">Service-near capabilities</text>
+  <text x="460" y="631" class="layer-body">Leader election, audit trails, image and text processing, graph databases</text>
+  <text x="460" y="657" class="code">Leader / JaVers / Image / Text / Graph</text>
+
+  <rect x="132" y="696" width="1316" height="126" rx="22" fill="#123a43" stroke="#4dc6c8" stroke-width="2"/>
+  <rect x="160" y="722" width="260" height="72" rx="18" fill="#5eead4"/>
+  <text x="184" y="752" class="eyebrow" fill="#082f32">DATA</text>
+  <text x="184" y="779" class="badge-body">Persistence and access</text>
+  <text x="460" y="748" class="layer-title">Storage and access boundaries</text>
+  <text x="460" y="781" class="layer-body">JDBC and R2DBC, Exposed, document and wide-column databases, graph adapters</text>
+  <text x="460" y="807" class="code"><tspan class="syntax-type">Exposed</tspan> <tspan class="syntax-operator">/</tspan> <tspan class="syntax-keyword">data</tspan><tspan class="syntax-operator">/</tspan><tspan class="syntax-operator">*</tspan> <tspan class="syntax-operator">/</tspan> <tspan class="syntax-type">GraphDB</tspan> adapters</text>
+
+  <rect x="132" y="846" width="1316" height="126" rx="22" fill="#3b2d1f" stroke="#e8ab61" stroke-width="2"/>
+  <rect x="160" y="872" width="260" height="72" rx="18" fill="#fdba74"/>
+  <text x="184" y="902" class="eyebrow" fill="#422006">INFRASTRUCTURE</text>
+  <text x="184" y="929" class="badge-body">Operations and connectivity</text>
+  <text x="460" y="898" class="layer-title">Operational connections</text>
+  <text x="460" y="931" class="layer-body">Cloud, messaging, cache, observability, and resilience</text>
+  <text x="460" y="957" class="code">AWS / Kafka / NATS / Redis / Micrometer / OpenTelemetry</text>
+
+  <rect x="132" y="996" width="1316" height="126" rx="22" fill="#183b31" stroke="#74cb9b" stroke-width="2"/>
+  <rect x="160" y="1022" width="260" height="72" rx="18" fill="#86efac"/>
+  <text x="184" y="1052" class="eyebrow" fill="#123622">FOUNDATION</text>
+  <text x="184" y="1079" class="badge-body">Shared Kotlin/JVM base</text>
+  <text x="460" y="1048" class="layer-title">Shared building blocks</text>
+  <text x="460" y="1081" class="layer-body">Reusable language, concurrency, logging, testing, and dependency alignment</text>
+  <text x="460" y="1107" class="code">core / coroutines / logging / testing / BOM</text>
+
+  <text x="132" y="1153" class="small-note">This is a responsibility map for reading and selecting layers, not a dependency graph.</text>
+</svg>
