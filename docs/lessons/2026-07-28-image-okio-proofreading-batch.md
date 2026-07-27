@@ -20,6 +20,12 @@
 frontmatter, 캡션, 대체 텍스트, 차트 라벨에 남은 일반 영어와 오래된 소스 경로를
 별도 항목으로 점검하지 못했다.
 
+PR 생성 단계에서는 stacked PR 원칙도 한 번 놓쳤다. 이 교정 흐름은 여러 글을
+시간차를 두고 검토하되 마지막에 한 번에 머지·배포하기로 했으므로, 각 새 교정 PR은
+이전 교정 PR의 head 브랜치를 base로 삼아야 한다. #270은 처음에 `develop` 기준으로
+열렸기 때문에 실제 diff가 앞선 교정 PR까지 포함될 수 있었다. 이후 #270의 base를
+#269 head인 `docs/korean-proofreading-ecosystem-graphdb`로 바로잡았다.
+
 ## 결정
 
 교정 PR은 과거에 같은 글의 lessons 문서가 있더라도 새 lessons 문서를 추가한다.
@@ -64,3 +70,6 @@ frontmatter, 캡션, 대체 텍스트, 차트 라벨에 남은 일반 영어와 
 `bluetape-writer`의 한국어 자연스러움 체크리스트에는 교정 범위와 문맥별 용어 선택을
 명시한다. PR 단위 lessons 작성 책임은 `bluetape-workflow`의 lesson gate에 둔다.
 다음 교정 PR에서는 초안 작성 시작 전에 lessons 문서를 만들고, PR 생성 전 검증 증거를 채운다.
+또한 PR 생성 직전 live open PR 목록과 로컬 ancestry를 확인해, 새 브랜치가 이전 교정 PR
+head 위에 있으면 PR base도 반드시 그 이전 head 브랜치로 지정한다. 첫 번째 PR만
+`develop` 기준이고, 이후 PR은 stack 순서대로 이전 PR head를 기준으로 만든다.
