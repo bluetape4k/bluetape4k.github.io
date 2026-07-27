@@ -122,6 +122,36 @@ production ML detector runtime은 여전히 애플리케이션이 제공해야 �
 기존 입력 경계와 OCR 글을 선행 자료로 연결하고, 이번 글은 여러 처리 경로가
 공유하는 입력 자격과 메모리 경계에 집중한다.
 
+#### Part 2 작성 결과
+
+Part 2는 다음 한·영 경로로 작성했다.
+
+- 한국어: `/ko/blog/image-intelligence-part2-input-qualification-and-single-decode/`
+- 영어: `/blog/image-intelligence-part2-input-qualification-and-single-decode/`
+
+글은 `ImageUploadQualifier`, `ImageIntelligenceService`,
+`ImageUploadQualifierTest`를 근거로 다음 내용을 설명한다.
+
+- 선언한 MIME 형식, 실제 파일 시그니처, 보고된 크기와 실제 바이트 크기를
+  서로 다른 판정 근거로 사용한다.
+- 이미지의 한 변과 전체 픽셀 예산을 전체 디코딩 전에 확인한다.
+- 정상 입력은 전체 이미지를 정확히 한 번 디코딩하고, 거부 입력은 디코딩하지
+  않는 실행 경계를 테스트 호출 횟수로 검증한다.
+- 입력 오류와 분석 결과, 코루틴 취소를 서로 다른 계약으로 유지한다.
+- 단일 디코딩은 업로드 판정과 전체 이미지 디코딩의 반복을 막는 불변식이며,
+  네이티브 공급자 내부의 추가 변환이나 복사까지 없앤다는 뜻은 아니다.
+
+대표 이미지는 두 언어가 공유하고, 독자에게 보이는 문구가 있는 기술
+다이어그램은 언어별 SVG와 PNG로 분리했다.
+
+- `/assets/blog/image-intelligence/part2/image-intelligence-part2-hero.png`
+- `/assets/blog/image-intelligence/part2/image-intelligence-qualification-flow-01-{ko,en}.{svg,png}`
+- `/assets/blog/image-intelligence/part2/image-intelligence-single-decode-02-{ko,en}.{svg,png}`
+
+Part 1의 시리즈 탐색에는 실제 Part 2 링크를 연결했다. Part 2의 마지막 문단은
+자격 판정을 통과한 `ImmutableImage`를 OCR 공급자에 전달하고 네이티브 런타임,
+제한 시간, 빈 결과와 처리 실패를 보존하는 Part 3으로 이어진다.
+
 ### Part 3. OCR 처리 경로를 통합 응답에 연결하기
 
 기존 `OCR 서비스를 실전에서 운영하기` 글을 시리즈의 선행 자료로 재사용한다.
