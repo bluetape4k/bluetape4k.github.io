@@ -275,6 +275,22 @@ test('the clinic article provides localized diagram titles without making the He
   assert.doesNotMatch(en, /class="bt4k-blog-hero"[^>]*data-diagram-title/);
 });
 
+test('the AI collaboration environment provides localized diagram titles without making the Hero zoomable', async () => {
+  const ko = await read('src/content/docs/ko/blog/ai-collaboration-environment.mdx');
+  const en = await read('src/content/docs/blog/ai-collaboration-environment.mdx');
+
+  assert.match(
+    ko,
+    /class="bt4k-architecture"\s+data-diagram-title="AI 협업 환경의 반복 구조"/,
+  );
+  assert.match(
+    en,
+    /class="bt4k-architecture"\s+data-diagram-title="The recurring structure of an AI collaboration environment"/,
+  );
+  assert.doesNotMatch(ko, /class="bt4k-blog-hero"[^>]*data-diagram-title/);
+  assert.doesNotMatch(en, /class="bt4k-blog-hero"[^>]*data-diagram-title/);
+});
+
 test('every blog image is explicitly classified as a technical diagram or an excluded visual', async () => {
   const allowedFigureClasses = new Set([
     'bt4k-architecture',
