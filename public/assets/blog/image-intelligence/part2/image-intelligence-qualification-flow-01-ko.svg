@@ -43,7 +43,7 @@
   <rect width="1500" height="2440" rx="34" fill="url(#canvas)"/>
   <rect x="28" y="28" width="1444" height="2384" rx="28" fill="none" stroke="#2b4168" stroke-width="2"/>
   <text class="title" x="750" y="82" text-anchor="middle">분석을 시작하기 전에 입력부터 판정한다</text>
-  <text class="subtitle" x="750" y="126" text-anchor="middle">값싼 거절 → 한 번 읽기 → 픽셀 예산 → 한 번 디코딩 → QualifiedImage</text>
+  <text class="subtitle" x="750" y="126" text-anchor="middle">조기 거부 → 한 번 읽기 → 픽셀 예산 → 한 번 디코딩 → QualifiedImage</text>
 
   <g id="card-upload" data-node="upload">
     <rect class="card" x="205" y="180" width="790" height="150" rx="24" stroke="#6686b8"/>
