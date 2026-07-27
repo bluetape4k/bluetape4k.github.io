@@ -386,16 +386,16 @@ QR region: visitor:PASS-001, format=QR_CODE
 
 ```text
 OCR
-text · pages · blocks · provider
+status · provider · elapsedMillis · result.text · result.pageCount
 
 객체 검출
-label · category · confidence · region · detector
+status · provider · elapsedMillis · label · category · confidence · detector
 
 바코드·QR
-text · format · region · provider
+status · provider · elapsedMillis · text · format · provider
 
-방문증 정책
-action · reasons · aggregateStatus
+응답 조합과 방문증 정책
+aggregateStatus · action · reasons
 ```
 
 세 분석 card에서 정책 card로 향하는 connector를 사용하되, OCR·객체 검출·바코드
@@ -449,7 +449,6 @@ val qualified = qualifier.qualify(upload)
 
 val results = workflow.analyze(
     image = qualified.image, // 한 번 디코딩한 ImmutableImage
-    requestId = requestId,
 )
 ```
 
@@ -481,7 +480,7 @@ suspendParallelFlow("image-intelligence-analysis") {
 |---|---|---|
 | `COMPLETED` | 세 경로가 `Completed` 또는 `Empty` | 필요한 방문증 정보가 있으면 `ALLOW` |
 | `PARTIAL` | OCR `Failed`, 객체 검출·QR `Completed` | 성공 결과는 보존하고 `MANUAL_REVIEW` |
-| `FAILED` | 사용할 수 있는 결과가 하나도 없음 | 안전한 판단 근거가 없어 `REJECT` |
+| `FAILED` | 사용할 수 있는 결과가 하나도 없음 | 실패 사유를 보존하고 `MANUAL_REVIEW` |
 ```
 
 - [ ] **Step 4: 분석 사실과 정책 분리를 설명한다**
