@@ -102,7 +102,7 @@ test('cache strategy diagram follows the Exposed workshop loader and writer cont
       writeBehind: ['JdbcCacheRepository', 'write-behind queue', 'batch flush'],
     },
     ko: {
-      readThrough: ['JdbcCacheRepository', 'EntityMapLoader.load', '조회 entity 적재'],
+      readThrough: ['JdbcCacheRepository', 'EntityMapLoader.load', '조회 결과 반환'],
       writeThrough: ['JdbcCacheRepository', 'EntityMapWriter.write', '즉시 DB write'],
       writeBehind: ['JdbcCacheRepository', 'write-behind queue', 'batch flush'],
     },
@@ -120,9 +120,9 @@ test('cache strategy diagram follows the Exposed workshop loader and writer cont
     ];
 
     const [readThroughRow, writeThroughRow, writeBehindRow] = rows;
-    assert.ok(readThroughRow, `${locale}: missing ReadThroughService row`);
-    assert.ok(writeThroughRow, `${locale}: missing WriteThroughService row`);
-    assert.ok(writeBehindRow, `${locale}: missing WriteBehindService row`);
+    assert.ok(readThroughRow, `${locale}: missing read-through row`);
+    assert.ok(writeThroughRow, `${locale}: missing write-through row`);
+    assert.ok(writeBehindRow, `${locale}: missing write-behind row`);
     assert.doesNotMatch(readThroughRow, />persist</, `${locale}: read-through row shows a write path`);
     assert.ok(
       readThroughRow.indexOf('JdbcCacheRepository') < readThroughRow.indexOf('RMap / Near Cache')
@@ -140,5 +140,6 @@ test('cache strategy diagram follows the Exposed workshop loader and writer cont
     }
     assert.doesNotMatch(writeThroughRow, /dual-write|same request|같은 request/);
     assert.doesNotMatch(writeBehindRow, /proxy @Async|new entity/);
+    assert.match(writeBehindRow, />putAll</, `${locale}: write-behind call must match putAll(events)`);
   }
 });

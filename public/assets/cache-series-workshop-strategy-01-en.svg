@@ -99,7 +99,7 @@
   <text class="card-title" x="1090" y="1002">Exposed DB</text>
 
   <path class="arrow" d="M 442 868 H 565" />
-  <text class="label" x="500" y="846">put</text>
+  <text class="label" x="482" y="846">putAll</text>
   <path class="arrow-async" d="M 910 868 H 1023" />
   <text class="label" x="934" y="846">enqueue</text>
   <path class="arrow-async" d="M 1183 924 V 952" />
