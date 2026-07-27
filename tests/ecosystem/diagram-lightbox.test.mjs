@@ -415,6 +415,10 @@ test('the repaired blog diagrams expose localized titles while hero and screensh
   const enLeader = await read('src/content/docs/blog/bluetape4k-leader-part5-backends-operations-benchmarks.mdx');
   const koCio = await read('src/content/docs/ko/blog/when-cio-made-http-benchmarks-weird.mdx');
   const enCio = await read('src/content/docs/blog/when-cio-made-http-benchmarks-weird.mdx');
+  const koCsvWriter = await read('src/content/docs/ko/blog/csv-writer-okio-buffered-sink.mdx');
+  const enCsvWriter = await read('src/content/docs/blog/csv-writer-okio-buffered-sink.mdx');
+  const koBugFixes = await read('src/content/docs/ko/blog/embarrassing-bugs-that-made-better-guards.mdx');
+  const enBugFixes = await read('src/content/docs/blog/embarrassing-bugs-that-made-better-guards.mdx');
 
   assert.match(koRuntime, /class="bt4k-architecture"\s+data-diagram-title="Run과 lane의 상태·복구 모델"/);
   assert.match(enRuntime, /class="bt4k-architecture"\s+data-diagram-title="Run and lane state and recovery model"/);
@@ -428,4 +432,23 @@ test('the repaired blog diagrams expose localized titles while hero and screensh
   assert.match(enCio, /class="bt4k-chart"\s+data-diagram-title="HTTP client base throughput comparison"/);
   assert.match(koCio, /class="bt4k-chart"\s+data-diagram-title="지연 환경의 HTTP 클라이언트 처리량 비교"/);
   assert.match(enCio, /class="bt4k-chart"\s+data-diagram-title="HTTP client throughput under latency"/);
+  assert.match(koCsvWriter, /class="bt4k-chart"\s+data-diagram-title="CSV writer 처리량 비교"/);
+  assert.match(enCsvWriter, /class="bt4k-chart"\s+data-diagram-title="CSV writer throughput comparison"/);
+  assert.match(koBugFixes, /class="bt4k-architecture"\s+data-diagram-title="부끄러운 버그 수정의 반복 구조"/);
+  assert.match(enBugFixes, /class="bt4k-architecture"\s+data-diagram-title="The loop behind embarrassing bug fixes"/);
+
+  for (const source of [
+    koRuntime,
+    enRuntime,
+    koLeader,
+    enLeader,
+    koCio,
+    enCio,
+    koCsvWriter,
+    enCsvWriter,
+    koBugFixes,
+    enBugFixes,
+  ]) {
+    assert.doesNotMatch(source, /class="bt4k-blog-hero"[^>]*data-diagram-title/);
+  }
 });

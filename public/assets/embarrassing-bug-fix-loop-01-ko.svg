@@ -1,21 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
   <title id="title">Embarrassing bug fix loop</title>
-  <desc id="desc">Pastel flow showing mistake, signal, fix, evaluation, and guard for bluetape4k-projects bug stories.</desc>
+  <desc id="desc">bluetape4k-projects 버그 사례에서 실수, 신호, 수정, 보호 장치가 어떻게 반복되는지 보여주는 dark flow입니다.</desc>
   <defs>
     <style>
-      .canvas{fill:#f6f9fc}.frame{fill:#fff;stroke:#d7e2ec;stroke-width:2}.title{font-family:"goorm Sans";font-size:44px;fill:#102033;font-weight:400}.subtitle,.small{font-family:"goorm Sans Code";fill:#536273}.subtitle{font-size:17px}.small{font-size:14px}.card-title{font-family:"goorm Sans";font-size:28px;fill:#102033;font-weight:400}.card-text{font-family:"goorm Sans Code";font-size:14px;fill:#334155}.arrow{stroke:#8091a7;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}.num{font-family:"goorm Sans Code";font-size:14px;font-weight:700;fill:#102033}
+      .canvas{fill:#0b1220}.frame{fill:#12213a;stroke:#314868;stroke-width:2}.title{font-family:"goorm Sans";font-size:44px;fill:#e6edf7;font-weight:400}.subtitle,.small{font-family:"goorm Sans Code";fill:#9fb2cc}.subtitle{font-size:17px}.small{font-size:14px}.card-title{font-family:"goorm Sans";font-size:28px;fill:#e6edf7;font-weight:400}.card-text{font-family:"goorm Sans Code";font-size:14px;fill:#d7e2f0}.arrow{stroke:#8fb3d9;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}.num{font-family:"goorm Sans Code";font-size:14px;font-weight:700;fill:#e6edf7}
     </style>
-    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#1e293b" flood-opacity="0.10"/></filter>
-    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L9,5 L1,9 Z" fill="#8091a7"/></marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000814" flood-opacity="0.10"/></filter>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L13,7 L1,13 Z" fill="#8fb3d9"/></marker>
   </defs>
   <rect class="canvas" width="1200" height="630"/>
   <rect class="frame" x="28" y="24" width="1144" height="582" rx="22" filter="url(#shadow)"/>
-  <text class="title" x="70" y="92">부끄러운 실수 다섯 개가 더 나은 가드를 만들었습니다</text>
-  <text class="subtitle" x="72" y="126">bluetape4k-projects · 실수 → 신호 → 수정 → 평가 → 가드</text>
+  <text class="title" x="70" y="92">부끄러운 실수는 더 나은 보호 장치를 남깁니다</text>
+  <text class="subtitle" x="72" y="126">bluetape4k-projects · 실수 → 신호 → 수정 → 보호 장치</text>
 
   <g transform="translate(72,182)">
-    <rect x="0" y="0" width="188" height="250" rx="18" fill="#dbeafe" stroke="#93c5fd"/>
-    <circle cx="28" cy="30" r="14" fill="#bfdbfe" stroke="#60a5fa"/>
+    <rect x="0" y="0" width="188" height="250" rx="18" fill="#17375e" stroke="#6aa9ff"/>
+    <circle cx="28" cy="30" r="14" fill="#23486f" stroke="#6aa9ff"/>
     <text class="num" x="24" y="35">1</text>
     <text class="card-title" x="22" y="78">실수</text>
     <text class="card-text" x="22" y="112">작은 가정이</text>
@@ -26,8 +26,8 @@
   </g>
   <path class="arrow" marker-end="url(#arrow)" d="M274 306 H330"/>
   <g transform="translate(342,182)">
-    <rect x="0" y="0" width="188" height="250" rx="18" fill="#dcfce7" stroke="#86efac"/>
-    <circle cx="28" cy="30" r="14" fill="#bbf7d0" stroke="#4ade80"/>
+    <rect x="0" y="0" width="188" height="250" rx="18" fill="#173c37" stroke="#53d6b7"/>
+    <circle cx="28" cy="30" r="14" fill="#1f554c" stroke="#53d6b7"/>
     <text class="num" x="24" y="35">2</text>
     <text class="card-title" x="22" y="78">신호</text>
     <text class="card-text" x="22" y="112">왕복 변환 오차,</text>
@@ -38,8 +38,8 @@
   </g>
   <path class="arrow" marker-end="url(#arrow)" d="M544 306 H600"/>
   <g transform="translate(612,182)">
-    <rect x="0" y="0" width="188" height="250" rx="18" fill="#fef3c7" stroke="#fbbf24"/>
-    <circle cx="28" cy="30" r="14" fill="#fde68a" stroke="#f59e0b"/>
+    <rect x="0" y="0" width="188" height="250" rx="18" fill="#3f3217" stroke="#f5c15c"/>
+    <circle cx="28" cy="30" r="14" fill="#5b4317" stroke="#f5c15c"/>
     <text class="num" x="24" y="35">3</text>
     <text class="card-title" x="22" y="78">수정</text>
     <text class="card-text" x="22" y="112">작은 계약을</text>
@@ -50,10 +50,10 @@
   </g>
   <path class="arrow" marker-end="url(#arrow)" d="M814 306 H870"/>
   <g transform="translate(882,182)">
-    <rect x="0" y="0" width="188" height="250" rx="18" fill="#fce7f3" stroke="#f9a8d4"/>
-    <circle cx="28" cy="30" r="14" fill="#fbcfe8" stroke="#f472b6"/>
+    <rect x="0" y="0" width="188" height="250" rx="18" fill="#40202b" stroke="#ef7892"/>
+    <circle cx="28" cy="30" r="14" fill="#5a293a" stroke="#ef7892"/>
     <text class="num" x="24" y="35">4</text>
-    <text class="card-title" x="22" y="78">가드</text>
+    <text class="card-title" x="22" y="78">보호 장치</text>
     <text class="card-text" x="22" y="112">회귀 테스트,</text>
     <text class="card-text" x="22" y="134">릴리스 게이트,</text>
     <text class="card-text" x="22" y="156">교훈 기록이</text>
