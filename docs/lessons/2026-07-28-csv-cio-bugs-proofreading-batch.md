@@ -50,7 +50,9 @@ chart다. 이 분류가 틀리면 확대 보기, 테스트, 향후 일괄 점검
 - 기술 그림 8개 SVG의 XML을 검증했다.
 - SVG 8개를 CairoSVG로 PNG 재렌더링했다.
 - `diagram-svg-text-normalize.py`로 SVG text hazard와 code highlight 누락이 없음을 확인했다.
-- 버그 회고 다이어그램 2개는 connector/geometry/endpoint/mixed-corner audit를 추가로 확인했다.
+- 버그 회고 다이어그램 2개는 connector/geometry/endpoint/mixed-corner audit를 추가로 확인했다. 카드
+  rect에는 `card` class를 명시해 generic connector audit가 `cards=4`, `connectors=3`을 직접 집계하게
+  했다.
 - PNG 8개를 전체 크기로 열어 dark style 대비, 라벨 여백, 한·영문 분리, 카드·화살표 가독성을 확인했다.
 - `node --test tests/ecosystem/blog-diagram-locales.test.mjs tests/ecosystem/diagram-lightbox.test.mjs`가 21개 테스트를 통과했다.
 

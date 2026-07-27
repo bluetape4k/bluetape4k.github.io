@@ -14,7 +14,7 @@
   <text class="subtitle" x="72" y="126">bluetape4k-projects · 실수 → 신호 → 수정 → 보호 장치</text>
 
   <g transform="translate(72,182)">
-    <rect x="0" y="0" width="188" height="250" rx="18" fill="#17375e" stroke="#6aa9ff"/>
+    <rect class="card" x="0" y="0" width="188" height="250" rx="18" fill="#17375e" stroke="#6aa9ff"/>
     <circle cx="28" cy="30" r="14" fill="#23486f" stroke="#6aa9ff"/>
     <text class="num" x="24" y="35">1</text>
     <text class="card-title" x="22" y="78">실수</text>
@@ -26,7 +26,7 @@
   </g>
   <path class="arrow" marker-end="url(#arrow)" d="M274 306 H330"/>
   <g transform="translate(342,182)">
-    <rect x="0" y="0" width="188" height="250" rx="18" fill="#173c37" stroke="#53d6b7"/>
+    <rect class="card" x="0" y="0" width="188" height="250" rx="18" fill="#173c37" stroke="#53d6b7"/>
     <circle cx="28" cy="30" r="14" fill="#1f554c" stroke="#53d6b7"/>
     <text class="num" x="24" y="35">2</text>
     <text class="card-title" x="22" y="78">신호</text>
@@ -38,7 +38,7 @@
   </g>
   <path class="arrow" marker-end="url(#arrow)" d="M544 306 H600"/>
   <g transform="translate(612,182)">
-    <rect x="0" y="0" width="188" height="250" rx="18" fill="#3f3217" stroke="#f5c15c"/>
+    <rect class="card" x="0" y="0" width="188" height="250" rx="18" fill="#3f3217" stroke="#f5c15c"/>
     <circle cx="28" cy="30" r="14" fill="#5b4317" stroke="#f5c15c"/>
     <text class="num" x="24" y="35">3</text>
     <text class="card-title" x="22" y="78">수정</text>
@@ -50,7 +50,7 @@
   </g>
   <path class="arrow" marker-end="url(#arrow)" d="M814 306 H870"/>
   <g transform="translate(882,182)">
-    <rect x="0" y="0" width="188" height="250" rx="18" fill="#40202b" stroke="#ef7892"/>
+    <rect class="card" x="0" y="0" width="188" height="250" rx="18" fill="#40202b" stroke="#ef7892"/>
     <circle cx="28" cy="30" r="14" fill="#5a293a" stroke="#ef7892"/>
     <text class="num" x="24" y="35">4</text>
     <text class="card-title" x="22" y="78">보호 장치</text>
