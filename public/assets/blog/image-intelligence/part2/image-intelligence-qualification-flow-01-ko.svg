@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1500" height="2440" viewBox="0 0 1500 2440" role="img" aria-labelledby="title desc">
   <title id="title">업로드 이미지가 QualifiedImage가 되기까지</title>
-  <desc id="desc">multipart 이미지가 값싼 입력 검사부터 실제 바이트와 파일 형식, 이미지 크기와 픽셀 예산, 전체 디코딩을 차례로 통과해 QualifiedImage가 되는 수직 흐름이다.</desc>
+  <desc id="desc">multipart 이미지가 저비용 입력 검사부터 실제 바이트와 파일 형식, 이미지 크기와 픽셀 예산, 전체 디코딩을 차례로 통과해 QualifiedImage가 되는 수직 흐름이다.</desc>
   <defs>
     <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#07101f"/>
@@ -60,8 +60,8 @@
     <rect class="card" x="165" y="430" width="870" height="190" rx="24" stroke="#66aee8"/>
     <circle cx="235" cy="490" r="28" fill="#203e61" stroke="#66aee8" stroke-width="2"/>
     <text class="step" x="235" y="497" text-anchor="middle">2</text>
-    <text class="small" x="290" y="474">CHEAP DECLARED GUARDS</text>
-    <text class="cardTitle" x="290" y="520">읽기 전 빠른 판정</text>
+    <text class="small" x="290" y="474">LOW-COST DECLARED GUARDS</text>
+    <text class="cardTitle" x="290" y="520">읽기 전 저비용 판정</text>
     <text class="body" x="290" y="565">빈 입력 · 지원 MIME · 보고된 압축 크기</text>
     <text class="mono" x="290" y="598">PNG · JPEG · WebP / maxInputBytes</text>
   </g>
@@ -117,7 +117,7 @@
     <circle cx="275" cy="1350" r="28" fill="#4a3521" stroke="#f0ad5b" stroke-width="2"/>
     <text class="step" x="275" y="1357" text-anchor="middle">5</text>
     <text class="small" x="330" y="1333">DIMENSION PROBE</text>
-    <text class="cardTitle" x="330" y="1380">가로와 세로를 먼저 알아낸다</text>
+    <text class="cardTitle" x="330" y="1380">이미지 크기를 사전 확인한다</text>
     <text class="body" x="330" y="1420">전체 픽셀을 만들기 전에 이미지 크기 정보 탐색</text>
   </g>
 
