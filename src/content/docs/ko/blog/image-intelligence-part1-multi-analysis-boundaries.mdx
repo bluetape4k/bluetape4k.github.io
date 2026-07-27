@@ -7,7 +7,7 @@ blog:
   date: 2026-07-27T12:00:00+09:00
   image: /assets/blog/image-intelligence/part1/image-intelligence-part1-hero.png
   imageAlt: 방문증 이미지가 공통 검증을 거친 뒤 OCR, 객체 검출, QR 처리 작업대로 나뉘고 결과가 정책 판단으로 모이는 어두운 3D 작업대
-  cardDescription: "한 이미지에 섞인 텍스트, 객체 영역, QR 값을 각각 읽고 부분 실패를 보존한 뒤 업무 정책으로 연결하는 API 경계를 살펴봅니다."
+  cardDescription: "한 이미지에 포함된 텍스트, 객체 영역, QR 값을 각각 읽고 부분 실패를 보존한 뒤 업무 정책으로 연결하는 API 경계를 살펴봅니다."
   tags: ["architecture","concurrency","image","kotlin","practical-example","resilience","spring"]
 ---
 
@@ -26,7 +26,7 @@ blog:
 분리할지를 설명합니다.
 
 예제는 [`bluetape4k-image`의 Spring Boot 이미지 인텔리전스 API](https://github.com/bluetape4k/bluetape4k-image/tree/develop/examples/spring-boot-image-intelligence-api)를
-사용합니다. 방문증을 대표 시나리오로 삼지만, 목표는 방문증 전용 만능 서비스를 만드는 것이 아닙니다.
+사용합니다. 방문증을 대표 시나리오로 삼지만, 목표는 방문증 전용 종합 서비스를 만드는 것이 아닙니다.
 **검증·병렬 처리·부분 실패·정책 분리의 재사용 가능한 기본 구조**를 코드로 확인하는 데 초점을 맞춥니다.
 
 ## 한 이미지에 정보가 하나만 있는 것은 아니다
@@ -125,8 +125,8 @@ val results = workflow.analyze(
 
 입력 자격 판정이 끝나면
 [`ImageIntelligenceWorkflow`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageIntelligenceWorkflow.kt)가
-`bluetape4k-workflow`의 `suspendParallelFlow`로 세 작업을 실행합니다. 아래 코드는 실제 구조를 읽기 쉽게
-줄인 의사코드입니다.
+`bluetape4k-workflow`의 `suspendParallelFlow`로 세 작업을 실행합니다. 아래 의사코드는 실제 구현에서
+핵심 실행 흐름만 남긴 것입니다.
 
 ```kotlin
 suspendParallelFlow("image-intelligence-analysis") {
@@ -146,8 +146,8 @@ suspendParallelFlow("image-intelligence-analysis") {
 ```
 
 처리 경로마다 제한 시간과 `Semaphore`가 따로 있습니다. OCR 공급자가 느리다고 해서 QR 공급자의 동시 실행
-수까지 같은 값으로 묶을 이유가 없기 때문입니다. 이 설정은 빠르게 보이기 위한 장식이 아니라 네이티브 자원과
-CPU를 서로 다른 비용 구조로 보호하는 경계입니다.
+수까지 같은 값으로 묶을 이유가 없기 때문입니다. 이 설정은 표면적인 성능 개선을 위한 구성이 아니라
+서로 다른 비용 구조를 가진 네이티브 자원과 CPU를 보호하는 실행 경계입니다.
 
 `WorkReport.Success`의 의미는 특히 주의해야 합니다. 이것은 “세 분석이 모두 값을 만들었다”가 아니라
 “세 workflow 작업이 약속한 결과를 `WorkContext`에 기록했다”는 뜻입니다. OCR 경로가
@@ -190,8 +190,8 @@ HTTP 500이나 임의의 거부 응답으로 바꾸지 않고, 현재 정책은 
 
 외부 요청 취소는 또 다른 종류의 사건입니다.
 [`GuardedAnalysisRunner`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/GuardedAnalysisRunner.kt)는
-자신이 설정한 제한 시간만 경로별 `Failed(timeout)`으로 바꾸고, 상위 coroutine의 취소는 다시 던집니다.
-사용자가 요청을 취소했는데 세 경로가 모두 실패한 것처럼 포장하면 작업 수명주기와 업무 결과가 뒤섞이기
+자신이 설정한 제한 시간만 경로별 `Failed(timeout)`으로 바꾸고, 상위 코루틴의 취소는 다시 던집니다.
+사용자가 요청을 취소했는데 세 경로가 모두 실패한 것처럼 포장하면 작업 수명주기와 업무 결과의 의미가 혼재되기
 때문입니다.
 
 ## 검출한 사실과 업무 정책을 분리한다
@@ -201,7 +201,7 @@ HTTP 500이나 임의의 거부 응답으로 바꾸지 않고, 현재 정책은 
 
 [`VisitorPassPolicy`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/VisitorPassPolicy.kt)는
 민감 영역, QR 형식과 접두사, 얼굴 수, OCR 내용, 처리 경로의 실패 상태를 조합합니다. 정책을 분석 provider
-안에 넣지 않았기 때문에 배송 라벨이나 상품 라벨로 업무를 바꿀 때 OCR·검출·QR 조정 구조를 그대로 두고
+안에 넣지 않았기 때문에 배송 라벨이나 상품 라벨로 업무를 바꿀 때 OCR·검출·QR 실행 조정 구조를 그대로 두고
 결정 규칙만 교체할 수 있습니다.
 
 이 분리는 개인정보 처리에서도 유용합니다. 검출기는 얼굴의 존재와 위치를 결과로 만들고, API 미리보기에서
@@ -209,7 +209,7 @@ HTTP 500이나 임의의 거부 응답으로 바꾸지 않고, 현재 정책은 
 교체하는 일과 개인정보 정책을 바꾸는 일을 같은 배포 단위로 묶지 않아도 됩니다.
 
 다만 예제의 `demo` 프로필은 OCR과 객체 검출에 고정 결과를 반환하는 fixture를 사용합니다. QR 경로만 실제
-`ZxingBarcodeReader`를 실행합니다. 이 조합은 조정 구조와 실패 계약을 재현하지만, production ML
+`ZxingBarcodeReader`를 실행합니다. 이 조합은 실행 조정 구조와 실패 계약을 재현하지만, 운영용 ML
 검출기의 정확도나 처리 성능을 증명하지 않습니다. 실제 서비스는 `ImageDetector` 구현과 품질 측정, 모델
 버전 관리, 드리프트 감시를 별도로 준비해야 합니다.
 
@@ -224,7 +224,7 @@ HTTP 500이나 임의의 거부 응답으로 바꾸지 않고, 현재 정책은 
 | `Completed`·`Empty`·`Unavailable`·`Failed` 보존 | 재시도, circuit breaker, 프로세스 격리 |
 | 분석 사실과 방문증 정책 분리 | 암호화, 마스킹, 접근 통제, 감사 이력 |
 
-이미지 backend 선택도 이 구조와 별도의 결정입니다. pure JVM과 libvips의 처리 비용 차이는
+이미지 백엔드 선택도 이 구조와 별도의 결정입니다. Pure JVM과 libvips의 처리 비용 차이는
 [Pure JVM에서 libvips로](/ko/blog/from-pure-jvm-to-libvips-benchmarking-image-processing/)에서 측정값과
 운영 제약을 비교합니다. 통합 API가 세 분석기를 병렬로 실행한다고 해서 디코딩과 전처리 비용이 사라지는 것은
 아닙니다.
@@ -247,10 +247,11 @@ Part 2에서는 MIME 선언과 실제 시그니처가 다를 때, 압축 바이�
 
 ## 구현 코드와 자료 살펴보기
 
-전체 코드를 읽을 때는 README에서 시작해 입력, 조정, provider, 정책 순서로 내려가는 편이 이해하기 쉽습니다.
+전체 코드는 README에서 시작해 입력, 실행 조정, provider, 정책 순서로 살펴보면 각 경계의 책임을
+파악하기 수월합니다.
 
 - [Spring Boot 이미지 인텔리전스 API](https://github.com/bluetape4k/bluetape4k-image/tree/develop/examples/spring-boot-image-intelligence-api):
-  실행 방법, 응답 상태, 프로필과 운영 비목표를 한 번에 볼 수 있습니다.
+  실행 방법, 응답 상태, 프로필과 운영 범위에서 제외한 항목을 한 번에 확인할 수 있습니다.
 - [`ImageUploadQualifier.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageUploadQualifier.kt):
   미디어 타입, 바이트·픽셀 예산, 디코딩 경계를 구현합니다.
 - [`ImageIntelligenceWorkflow.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageIntelligenceWorkflow.kt):
@@ -262,6 +263,6 @@ Part 2에서는 MIME 선언과 실제 시그니처가 다를 때, 압축 바이�
 - [OCR 서비스를 실전에서 운영하기](/ko/blog/ocr-api-fallback-contract-bluetape4k-image/):
   큰 이미지 입력 제한, 네이티브 OCR과 실패 응답 계약을 자세히 설명합니다.
 - [Pure JVM에서 libvips로](/ko/blog/from-pure-jvm-to-libvips-benchmarking-image-processing/):
-  이미지 전처리 backend를 성능과 운영 조건으로 비교합니다.
+  이미지 전처리 백엔드를 성능과 운영 조건으로 비교합니다.
 - [Kotlin API 입력 경계](/ko/blog/bluetape4k-dependencies-1-3-0-input-boundaries/):
-  multipart, byte budget과 메모리 입력을 API 경계에서 다루는 방법을 설명합니다.
+  multipart, 바이트 예산과 메모리 입력을 API 경계에서 다루는 방법을 설명합니다.
