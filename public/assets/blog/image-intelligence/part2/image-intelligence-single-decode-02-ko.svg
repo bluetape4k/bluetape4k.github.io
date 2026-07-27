@@ -1,0 +1,172 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1480" viewBox="0 0 1800 1480" role="img" aria-labelledby="title desc">
+  <title id="title">분석기별 반복 디코딩과 공통 단일 디코딩 비교</title>
+  <desc id="desc">왼쪽은 OCR, 객체 검출, QR 분석기가 업로드를 각각 읽고 디코딩하는 구조이며, 오른쪽은 공통 입력 판정과 한 번의 디코딩으로 만든 QualifiedImage를 세 분석기가 공유하는 구조다.</desc>
+  <defs>
+    <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07101f"/>
+      <stop offset="0.58" stop-color="#0c1730"/>
+      <stop offset="1" stop-color="#11152c"/>
+    </linearGradient>
+    <filter id="shadow" x="-18%" y="-20%" width="136%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#020617" flood-opacity="0.55"/>
+    </filter>
+    <marker id="arrow-red" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1 1 L13 7 L1 13 Z" fill="#ef7d7d"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1 1 L13 7 L1 13 Z" fill="#66aee8"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1 1 L13 7 L1 13 Z" fill="#57c58a"/>
+    </marker>
+    <marker id="arrow-cyan" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1 1 L13 7 L1 13 Z" fill="#50c7d9"/>
+    </marker>
+    <marker id="arrow-amber" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1 1 L13 7 L1 13 Z" fill="#f0ad5b"/>
+    </marker>
+    <style>
+      .title{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:48px;font-weight:700;fill:#f8fafc}
+      .subtitle{font-family:'goorm Sans Code','Comic Mono','goorm Sans',monospace;font-size:21px;fill:#a9b8d4}
+      .panelTitle{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:32px;font-weight:700;fill:#f8fafc}
+      .panelSub{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:19px;fill:#b7c5da}
+      .cardTitle{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:26px;font-weight:700;fill:#f8fafc}
+      .body{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:19px;fill:#cbd7ea}
+      .mono{font-family:'goorm Sans Code','Comic Mono','goorm Sans',monospace;font-size:17px;fill:#b9c9e2}
+      .small{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:16px;fill:#9fb0ca}
+      .metric{font-family:'goorm Sans Code','Comic Mono','goorm Sans',monospace;font-size:23px;font-weight:700;fill:#f8fafc}
+      .card{fill:#14233a;stroke-width:2;filter:url(#shadow)}
+      .connector{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+      .panel{fill:#0c172a;fill-opacity:.55;stroke-width:2}
+      .pill{fill:#101c31;stroke-width:1.5}
+    </style>
+  </defs>
+
+  <rect width="1800" height="1480" rx="34" fill="url(#canvas)"/>
+  <rect x="28" y="28" width="1744" height="1424" rx="28" fill="none" stroke="#2b4168" stroke-width="2"/>
+  <text class="title" x="900" y="82" text-anchor="middle">입력은 하나인데 디코딩 경계는 몇 개인가?</text>
+  <text class="subtitle" x="900" y="126" text-anchor="middle">분석기별 반복 판정·디코딩과 공통 QualifiedImage 경계를 비교한다</text>
+
+  <rect class="panel" x="75" y="175" width="800" height="1160" rx="30" stroke="#8f485d"/>
+  <rect class="panel" x="925" y="175" width="800" height="1160" rx="30" stroke="#39775d"/>
+
+  <circle cx="130" cy="230" r="17" fill="#4a2230" stroke="#ef7d7d" stroke-width="2"/>
+  <path d="M122 222 L138 238 M138 222 L122 238" stroke="#ff9b9b" stroke-width="4" stroke-linecap="round"/>
+  <text class="panelTitle" x="165" y="242">분석기마다 다시 판정하고 디코딩</text>
+  <text class="panelSub" x="130" y="282">정책이 갈라지고 같은 바이트·픽셀 작업이 반복된다</text>
+
+  <circle cx="980" cy="230" r="17" fill="#183e32" stroke="#57c58a" stroke-width="2"/>
+  <path d="M971 231 L978 238 L990 222" fill="none" stroke="#8ce8b4" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text class="panelTitle" x="1015" y="242">공통 자격 판정 뒤 한 번만 디코딩</text>
+  <text class="panelSub" x="980" y="282">세 분석기가 같은 판정을 통과한 같은 이미지에서 시작한다</text>
+
+  <g id="left-upload" data-node="left-upload">
+    <rect class="card" x="255" y="335" width="440" height="115" rx="22" stroke="#8c6671"/>
+    <text class="small" x="475" y="372" text-anchor="middle">MULTIPART INPUT</text>
+    <text class="cardTitle" x="475" y="414" text-anchor="middle">업로드 이미지 한 장</text>
+  </g>
+
+  <path class="connector" data-connector="left-upload-to-split" d="M475 450 V520" stroke="#ef7d7d"/>
+  <circle cx="475" cy="520" r="8" fill="#ef7d7d"/>
+  <path class="connector" data-connector="left-split-to-ocr-decode" d="M475 520 H219 Q205 520 205 534 V585" stroke="#ef7d7d" marker-end="url(#arrow-red)"/>
+  <path class="connector" data-connector="left-split-to-detection-decode" d="M475 520 V585" stroke="#ef7d7d" marker-end="url(#arrow-red)"/>
+  <path class="connector" data-connector="left-split-to-qr-decode" d="M475 520 H731 Q745 520 745 534 V585" stroke="#ef7d7d" marker-end="url(#arrow-red)"/>
+
+  <g id="left-ocr-decode" data-node="left-ocr-decode">
+    <rect class="card" x="105" y="600" width="200" height="145" rx="20" stroke="#ef7d7d"/>
+    <text class="small" x="205" y="638" text-anchor="middle">OCR INPUT</text>
+    <text class="cardTitle" x="205" y="680" text-anchor="middle">읽기 + 디코딩</text>
+    <text class="metric" x="205" y="720" text-anchor="middle">1회</text>
+  </g>
+  <g id="left-detection-decode" data-node="left-detection-decode">
+    <rect class="card" x="375" y="600" width="200" height="145" rx="20" stroke="#ef7d7d"/>
+    <text class="small" x="475" y="638" text-anchor="middle">DETECTION INPUT</text>
+    <text class="cardTitle" x="475" y="680" text-anchor="middle">읽기 + 디코딩</text>
+    <text class="metric" x="475" y="720" text-anchor="middle">1회</text>
+  </g>
+  <g id="left-qr-decode" data-node="left-qr-decode">
+    <rect class="card" x="645" y="600" width="200" height="145" rx="20" stroke="#ef7d7d"/>
+    <text class="small" x="745" y="638" text-anchor="middle">QR INPUT</text>
+    <text class="cardTitle" x="745" y="680" text-anchor="middle">읽기 + 디코딩</text>
+    <text class="metric" x="745" y="720" text-anchor="middle">1회</text>
+  </g>
+
+  <path class="connector" data-connector="left-ocr-decode-to-analyzer" d="M205 745 V835" stroke="#50c7d9" marker-end="url(#arrow-cyan)"/>
+  <path class="connector" data-connector="left-detection-decode-to-analyzer" d="M475 745 V835" stroke="#f0ad5b" marker-end="url(#arrow-amber)"/>
+  <path class="connector" data-connector="left-qr-decode-to-analyzer" d="M745 745 V835" stroke="#57c58a" marker-end="url(#arrow-green)"/>
+
+  <g id="left-ocr" data-node="left-ocr">
+    <rect class="card" x="105" y="850" width="200" height="125" rx="20" stroke="#50c7d9"/>
+    <text class="cardTitle" x="205" y="904" text-anchor="middle">OCR</text>
+    <text class="mono" x="205" y="943" text-anchor="middle">text</text>
+  </g>
+  <g id="left-detection" data-node="left-detection">
+    <rect class="card" x="375" y="850" width="200" height="125" rx="20" stroke="#f0ad5b"/>
+    <text class="cardTitle" x="475" y="904" text-anchor="middle">객체 검출</text>
+    <text class="mono" x="475" y="943" text-anchor="middle">regions</text>
+  </g>
+  <g id="left-qr" data-node="left-qr">
+    <rect class="card" x="645" y="850" width="200" height="125" rx="20" stroke="#57c58a"/>
+    <text class="cardTitle" x="745" y="904" text-anchor="middle">QR</text>
+    <text class="mono" x="745" y="943" text-anchor="middle">value</text>
+  </g>
+
+  <rect class="pill" x="155" y="1050" width="640" height="190" rx="24" stroke="#8f485d"/>
+  <text class="metric" x="475" y="1105" text-anchor="middle">업로드 읽기 최대 3회 · 전체 디코딩 3회</text>
+  <text class="body" x="475" y="1152" text-anchor="middle">분석기마다 MIME·크기·오류 정책이 달라질 수 있음</text>
+  <text class="body" x="475" y="1194" text-anchor="middle">같은 요청에서 실행 여부가 서로 엇갈릴 수 있음</text>
+
+  <g id="right-upload" data-node="right-upload">
+    <rect class="card" x="1105" y="335" width="440" height="115" rx="22" stroke="#6686b8"/>
+    <text class="small" x="1325" y="372" text-anchor="middle">MULTIPART INPUT</text>
+    <text class="cardTitle" x="1325" y="414" text-anchor="middle">업로드 이미지 한 장</text>
+  </g>
+
+  <path class="connector" data-connector="right-upload-to-qualifier" d="M1325 450 V525" stroke="#66aee8" marker-end="url(#arrow-blue)"/>
+
+  <g id="right-qualifier" data-node="right-qualifier">
+    <rect class="card" x="1065" y="540" width="520" height="135" rx="22" stroke="#66aee8"/>
+    <text class="small" x="1325" y="578" text-anchor="middle">SHARED QUALIFICATION</text>
+    <text class="cardTitle" x="1325" y="619" text-anchor="middle">형식 · 바이트 · 픽셀 예산 판정</text>
+    <text class="mono" x="1325" y="652" text-anchor="middle">read bytes once</text>
+  </g>
+
+  <path class="connector" data-connector="right-qualifier-to-decode" d="M1325 675 V750" stroke="#66aee8" marker-end="url(#arrow-blue)"/>
+
+  <g id="right-decode" data-node="right-decode">
+    <rect class="card" x="1105" y="765" width="440" height="125" rx="22" stroke="#a78bfa"/>
+    <text class="small" x="1325" y="798" text-anchor="middle">ONE FULL DECODE</text>
+    <text class="cardTitle" x="1325" y="836" text-anchor="middle">ImmutableImage 생성</text>
+    <text class="metric" x="1325" y="874" text-anchor="middle">1회</text>
+  </g>
+
+  <path class="connector" data-connector="right-decode-to-qualified" d="M1325 890 V955" stroke="#57c58a" marker-end="url(#arrow-green)"/>
+
+  <g id="right-qualified" data-node="right-qualified">
+    <rect x="1070" y="970" width="510" height="120" rx="24" fill="#15372f" stroke="#57c58a" stroke-width="3" filter="url(#shadow)"/>
+    <text class="small" x="1325" y="1008" text-anchor="middle">SHARED IMMUTABLE INPUT</text>
+    <text class="cardTitle" x="1325" y="1054" text-anchor="middle">QualifiedImage</text>
+  </g>
+
+  <path class="connector" data-connector="qualified-to-split" d="M1325 1090 V1140" stroke="#57c58a"/>
+  <circle cx="1325" cy="1140" r="8" fill="#57c58a"/>
+  <path class="connector" data-connector="right-split-to-ocr" d="M1325 1140 H1069 Q1055 1140 1055 1154 V1205" stroke="#50c7d9" marker-end="url(#arrow-cyan)"/>
+  <path class="connector" data-connector="right-split-to-detection" d="M1325 1140 V1205" stroke="#f0ad5b" marker-end="url(#arrow-amber)"/>
+  <path class="connector" data-connector="right-split-to-qr" d="M1325 1140 H1581 Q1595 1140 1595 1154 V1205" stroke="#57c58a" marker-end="url(#arrow-green)"/>
+
+  <g id="right-ocr" data-node="right-ocr">
+    <rect class="card" x="955" y="1220" width="200" height="85" rx="20" stroke="#50c7d9"/>
+    <text class="cardTitle" x="1055" y="1274" text-anchor="middle">OCR</text>
+  </g>
+  <g id="right-detection" data-node="right-detection">
+    <rect class="card" x="1225" y="1220" width="200" height="85" rx="20" stroke="#f0ad5b"/>
+    <text class="cardTitle" x="1325" y="1274" text-anchor="middle">객체 검출</text>
+  </g>
+  <g id="right-qr" data-node="right-qr">
+    <rect class="card" x="1495" y="1220" width="200" height="85" rx="20" stroke="#57c58a"/>
+    <text class="cardTitle" x="1595" y="1274" text-anchor="middle">QR</text>
+  </g>
+
+  <rect class="pill" x="300" y="1380" width="1200" height="62" rx="20" stroke="#405777"/>
+  <text class="body" x="900" y="1420" text-anchor="middle">단일 디코딩은 성능 최적화이자 세 분석기의 입력 계약을 하나로 고정하는 경계다.</text>
+</svg>
