@@ -32,8 +32,8 @@ The practical question is not "is graph syntax convenient?" It is:
 The recent bluetape4k graph benchmark work tried to answer that question with measurements instead
 of guesses.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/graphdb-adoption-latency-chart-en.png" alt="Authorization inheritance benchmark chart comparing Neo4j, AGE, PostgreSQL recursive CTE, and PostgreSQL iterative traversal" loading="lazy" />
+<figure class="bt4k-chart" data-diagram-title="Authorization inheritance latency comparison for GraphDB adoption">
+  <img src="/assets/graphdb-adoption-latency-chart-en.png" alt="Large authorization inheritance benchmark chart comparing Neo4j Cypher, PostgreSQL CTE, and PostgreSQL iterative traversal for long-chain and deep-wide scenarios" loading="lazy" />
   <figcaption>GraphDB adoption only showed a positive signal for long, selective, path-shaped traversal. PostgreSQL remained very strong for several bounded relational traversal shapes.</figcaption>
 </figure>
 

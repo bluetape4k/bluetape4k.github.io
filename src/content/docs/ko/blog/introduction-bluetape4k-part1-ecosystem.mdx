@@ -1,13 +1,13 @@
 ---
 title: Bluetape4k 생태계 한눈에 보기
-description: Bluetape4k 소개 시리즈 Part 1. Application, Domain Capability, Data, Infrastructure, Foundation layer로 전체 구조를 짚어봅니다.
+description: Bluetape4k 소개 시리즈 Part 1. 애플리케이션, 도메인 기능, 데이터, 인프라, 기반 계층으로 전체 구조를 짚어봅니다.
 sidebar:
   order: -202605200000
 blog:
   date: 2026-05-20T00:00:00+09:00
   image: /assets/bluetape4k-ecosystem-hero.png
   imageAlt: bluetape4k backend 생태계를 연결된 building block으로 보여주는 소개용 일러스트
-  cardDescription: Spring Boot 4, Ktor 3, domain capability, data, infrastructure, foundation layer로 Bluetape4k 전체 구조를 정리합니다.
+  cardDescription: Spring Boot 4, Ktor 3, 도메인 기능, 데이터, 인프라, 기반 계층으로 Bluetape4k 전체 구조를 정리합니다.
   tags: ["ecosystem","kotlin","ktor","spring"]
 ---
 
@@ -20,153 +20,153 @@ Bluetape4k를 처음 보면 저장소가 많다. `projects`, `exposed`, `aws`, `
 `javers`, `graph`, `dependencies`가 따로 있고, 각 저장소 안에도 여러 module이 있다. 그래서 첫 글은
 "무엇을 어디서부터 읽어야 하는가"를 위한 지도에 가깝게 쓰는 편이 낫다.
 
-핵심 구조는 단순하다. Spring Boot 4나 Ktor 3가 application boundary를 맡고, Bluetape4k는 그 아래의
-domain capability, data, infrastructure, foundation layer를 채운다. 서비스가 모든 module을 가져오는
-방식이 아니라, 필요한 경계에 맞춰 작게 고르는 방식이다.
+핵심 구조는 단순하다. Spring Boot 4나 Ktor 3가 애플리케이션 경계를 맡고, Bluetape4k는 그 아래의 도메인 기능,
+데이터, 인프라, 기반 계층을 채운다. 모든 모듈을 가져오는 방식이 아니라, 필요한 경계에 맞춰 작은 조합을 고르는
+방식이다.
 
-## 전체 Layer Map
+## 전체 계층 구조
 
 <table>
   <thead>
     <tr>
-      <th>Layer</th>
+      <th>계층</th>
       <th>역할</th>
-      <th>대표 저장소와 module</th>
+      <th>대표 저장소와 모듈</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>Application</td>
-      <td>Spring Boot 4, Ktor 3 application boundary</td>
+      <td>애플리케이션</td>
+      <td>Spring Boot 4, Ktor 3 애플리케이션 경계</td>
       <td>`spring-boot/*`, `*-ktor`, examples</td>
     </tr>
     <tr>
-      <td>Domain Capability</td>
+      <td>도메인 기능</td>
       <td>서비스 도메인에 가까운 기능 묶음</td>
       <td>Leader, JaVers, Image, Text, Graph</td>
     </tr>
     <tr>
-      <td>Data</td>
-      <td>JDBC, R2DBC, Exposed, document/wide-column database helper</td>
+      <td>데이터</td>
+      <td>JDBC, R2DBC, Exposed, 문서형·와이드 컬럼 데이터베이스 도우미</td>
       <td>Exposed, `data/*`, GraphDB adapter</td>
     </tr>
     <tr>
-      <td>Infrastructure</td>
-      <td>cloud, messaging, cache, observability, resilience</td>
+      <td>인프라</td>
+      <td>클라우드, 메시징, 캐시, 관측성, 복원력</td>
       <td>AWS, Kafka, NATS, Redis, Micrometer, OpenTelemetry, Resilience4j</td>
     </tr>
     <tr>
-      <td>Foundation</td>
+      <td>기반</td>
       <td>Kotlin/JVM 공통 기반</td>
       <td>core, coroutines, logging, testing, BOM</td>
     </tr>
   </tbody>
 </table>
 
-이 표는 dependency graph라기보다 읽는 순서다. 처음에는 foundation을 보고, 서비스가 실제로 만나는
-boundary에 따라 data, infrastructure, domain capability를 고르면 된다.
+이 표는 의존성 그래프라기보다 읽는 순서다. 처음에는 기반 계층을 보고, 서비스가 실제로 만나는 경계에 따라
+데이터·인프라·도메인 기능을 고르면 된다.
 
-## Application Layer
+## 애플리케이션 계층
 
-Application layer는 Spring Boot 4나 Ktor 3가 담당한다. Bluetape4k는 application framework를 대체하려고
-하지 않는다. 대신 framework 안에서 반복되는 auto-configuration, coroutine data access, Redis/cache,
-cloud integration, 예제 구성을 제공한다.
+애플리케이션 계층은 Spring Boot 4나 Ktor 3가 담당한다. Bluetape4k는 애플리케이션 프레임워크를 대체하지
+않는다. 대신 프레임워크 안에서 반복되는 자동 구성, 코루틴 데이터 접근, Redis 캐시, 클라우드 통합, 예제 구성을
+제공한다.
 
 ### Spring Boot 4
 
-개발 목적은 Spring Boot 4 application에서 Bluetape4k data, cache, infrastructure, testing module을
-자연스럽게 연결하는 것이다.
+개발 목적은 Spring Boot 4 애플리케이션에서 Bluetape4k의 데이터·캐시·인프라·테스트 모듈을 자연스럽게 연결하는
+것이다.
 
 주요 module은 다음과 같다.
 
-- `spring-boot/core`: Spring Boot auto-configuration과 공통 property binding
-- `spring-boot/r2dbc`: R2DBC 기반 coroutine data access integration
-- `spring-boot/redis`: Redis/Lettuce 기반 application cache와 Redis integration
-- `spring-boot/mongodb`, `spring-boot/cassandra`: document/wide-column database integration
-- `spring-boot/hibernate-lettuce`: Hibernate second-level cache와 Lettuce cache integration
+- `spring-boot/core`: Spring Boot 자동 구성과 공통 속성 바인딩
+- `spring-boot/r2dbc`: R2DBC 기반 코루틴 데이터 접근 통합
+- `spring-boot/redis`: Redis/Lettuce 기반 애플리케이션 캐시와 Redis 통합
+- `spring-boot/mongodb`, `spring-boot/cassandra`: 문서형·와이드 컬럼 데이터베이스 통합
+- `spring-boot/hibernate-lettuce`: Hibernate 2차 캐시와 Lettuce 캐시 통합
 
-대표 기능은 coroutine, R2DBC, Redis, MongoDB, Cassandra 같은 service boundary를 Spring Boot 안에서
-일관되게 연결하는 것이다. application이 framework wiring을 반복해서 직접 쓰지 않도록 돕는다.
+대표 기능은 코루틴, R2DBC, Redis, MongoDB, Cassandra 같은 서비스 경계를 Spring Boot 안에서 일관되게 연결하는
+것이다. 애플리케이션이 프레임워크 연결 코드를 반복해서 직접 쓰지 않도록 돕는다.
 
 ### Ktor 3
 
-Ktor 쪽은 suspend API와 coroutine client를 중심으로 한 application boundary를 맡는다. Spring Boot보다
-가벼운 runtime을 원하는 서비스가 AWS, leader election, graph database 같은 기능을 붙일 때 쓴다.
+Ktor 쪽은 suspend API와 코루틴 클라이언트를 중심으로 한 애플리케이션 경계를 맡는다. Spring Boot보다 가벼운
+런타임을 원하는 서비스가 AWS, 리더 선출, 그래프 데이터베이스 같은 기능을 붙일 때 쓴다.
 
 주요 module은 다음과 같다.
 
-- `aws-ktor`: Ktor service에서 AWS SDK helper를 쓰기 위한 integration
-- `leader-ktor`: Ktor application에서 leader election을 연결하는 integration
-- `graph-ktor`: graph database 기능을 Ktor boundary에 연결하는 integration
-- `examples/aws-ktor-*`: AWS, leader election, graph database 기능을 함께 보여주는 예제
+- `aws-ktor`: Ktor 서비스에서 AWS SDK 도우미를 쓰기 위한 통합
+- `leader-ktor`: Ktor 애플리케이션에서 리더 선출을 연결하는 통합
+- `graph-ktor`: 그래프 데이터베이스 기능을 Ktor 경계에 연결하는 통합
+- `examples/aws-ktor-*`: AWS, 리더 선출, 그래프 데이터베이스 기능을 함께 보여주는 예제
 
-Ktor 3 module은 "framework를 새로 만든다"기보다, Ktor service 안에서 Bluetape4k module을 쓰는 adoption
-path를 제공한다.
+Ktor 3 모듈은 "프레임워크를 새로 만든다"기보다, Ktor 서비스 안에서 Bluetape4k 모듈을 쓰는 도입 경로를
+제공한다.
 
-## Domain Capability Layer
+## 도메인 기능 계층
 
-Domain capability layer는 서비스 도메인에 가까운 기능을 맡는다. leader election, audit trail, image
-processing, text processing, graph database처럼 foundation utility만으로 설명하기 어려운 영역이다.
+도메인 기능 계층은 서비스 도메인에 가까운 기능을 맡는다. 리더 선출, 감사 이력, 이미지 처리, 텍스트 처리,
+그래프 데이터베이스처럼 기반 유틸리티만으로 설명하기 어려운 영역이다.
 
 ### Leader
 
-Leader module의 목적은 분산 환경에서 batch, scheduler, polling worker, migration gate 같은 작업을
+Leader 모듈의 목적은 분산 환경에서 배치, 스케줄러, 폴링 작업자, 마이그레이션 게이트 같은 작업을
 안전하게 한 노드 또는 일부 노드에 맡기는 것이다.
 
-주요 module은 다음과 같다.
+주요 모듈은 다음과 같다.
 
-- `leader-core`: leader election API와 execution model
-- `leader-redis-lettuce`, `leader-redis-redisson`: Redis 기반 backend
-- `leader-hazelcast`, `leader-mongodb`, `leader-zookeeper`: 다양한 distributed backend
-- `leader-exposed-jdbc`, `leader-exposed-r2dbc`: database-backed backend
-- `leader-spring-boot`, `leader-ktor`: application framework integration
+- `leader-core`: 리더 선출 API와 실행 모델
+- `leader-redis-lettuce`, `leader-redis-redisson`: Redis 기반 백엔드
+- `leader-hazelcast`, `leader-mongodb`, `leader-zookeeper`: 여러 분산 백엔드
+- `leader-exposed-jdbc`, `leader-exposed-r2dbc`: 데이터베이스 기반 백엔드
+- `leader-spring-boot`, `leader-ktor`: 애플리케이션 프레임워크 통합
 
-대표 기능은 `runIfLeader()` API, blocking/`CompletableFuture`/coroutine/Virtual Threads 실행 모델,
-`LeaderGroupElector` 기반 multi-leader 처리다. 단일 leader만 필요한 작업부터 여러 worker를 제한적으로
-선발해야 하는 작업까지 다룬다.
+대표 기능은 `runIfLeader()` API, blocking/`CompletableFuture`/코루틴/Virtual Threads 실행 모델,
+`LeaderGroupElector` 기반 다중 리더 처리다. 단일 리더만 필요한 작업부터 여러 작업자를 제한적으로 선발해야 하는
+작업까지 다룬다.
 
 ### JaVers
 
-JaVers module은 aggregate와 domain object의 변경 이력을 저장하고 조회하는 audit trail 영역을 맡는다.
+JaVers 모듈은 애그리게이트와 도메인 객체의 변경 이력을 저장하고 조회하는 감사 이력 영역을 맡는다.
 
 주요 module은 다음과 같다.
 
-- `javers-core`: JaVers helper, codec, cache-backed repository support
-- `javers-persistence-redis`: Redis Lettuce/Redisson 기반 snapshot storage
-- `javers-persistence-kafka`: Kafka event-stream 기반 persistence
-- `bom`: JaVers 관련 dependency version alignment
+- `javers-core`: JaVers 도우미, 코덱, 캐시 기반 리포지터리 지원
+- `javers-persistence-redis`: Redis Lettuce/Redisson 기반 스냅샷 저장소
+- `javers-persistence-kafka`: Kafka 이벤트 스트림 기반 영속화
+- `bom`: JaVers 관련 의존성 버전 정렬
 
-대표 기능은 aggregate/domain object 단위 변경 이력, Redis 또는 Kafka 기반 audit trail 저장소, DDD 모델에서
-diff/snapshot/history를 조회하는 기능이다.
+대표 기능은 애그리게이트·도메인 객체 단위의 변경 이력, Redis 또는 Kafka 기반 감사 이력 저장소, DDD 모델에서
+차이·스냅샷·이력을 조회하는 기능이다.
 
 ### Image
 
-Image module은 일반적인 JVM image processing과 libvips 기반 대량 처리를 같은 생태계 안에서 선택할 수
+Image 모듈은 일반적인 JVM 이미지 처리와 libvips 기반 대량 처리를 같은 생태계 안에서 선택할 수
 있게 한다.
 
 주요 module은 다음과 같다.
 
 - `images`: Scrimage 기반 pure JVM image processing
 - `images-vips-api`: libvips abstraction과 공통 API
-- `images-vips-java21`: Java 21 JVips/JNI backend
-- `images-vips-java25`: Java 25 FFM/Panama backend
-- `images-spring-boot`, `images-benchmark`: Spring Boot integration과 benchmark
+- `images-vips-java21`: Java 21 JVips/JNI 백엔드
+- `images-vips-java25`: Java 25 FFM/Panama 백엔드
+- `images-spring-boot`, `images-benchmark`: Spring Boot 통합과 벤치마크
 
-대표 기능은 resize, crop, filter, encode, batch processing이다. 일반적인 image 작업은 pure JVM으로 시작하고,
-대량 thumbnail/resize pipeline은 libvips backend로 옮길 수 있다.
+대표 기능은 크기 조정, 자르기, 필터, 인코딩, 일괄 처리다. 일반적인 이미지 작업은 순수 JVM으로 시작하고,
+대량 썸네일·크기 조정 파이프라인은 libvips 백엔드로 옮길 수 있다.
 
 ### Text
 
-Text module은 한국어/일본어 중심 tokenizer, language detection, keyword search를 Kotlin service에서
+Text 모듈은 한국어·일본어 중심 토크나이저, 언어 감지, 키워드 검색을 Kotlin 서비스에서
 재사용할 수 있게 한다.
 
 주요 module은 다음과 같다.
 
-- `tokenizer-core`: tokenizer 공통 request/response model과 dictionary utility
-- `tokenizer-korean`: 한국어 normalization, POS tokenization, phrase extraction
-- `tokenizer-japanese`: Kuromoji IPAdic 기반 일본어 tokenization
-- `lingua`: Lingua 기반 language detection
-- `text-search`: Aho-Corasick search, replacement, word filtering
+- `tokenizer-core`: 토크나이저 공통 요청·응답 모델과 사전 유틸리티
+- `tokenizer-korean`: 한국어 정규화, 품사 토큰화, 구문 추출
+- `tokenizer-japanese`: Kuromoji IPAdic 기반 일본어 토큰화
+- `lingua`: Lingua 기반 언어 감지
+- `text-search`: Aho-Corasick 검색, 치환, 단어 필터링
 
 대표 기능은 한국어/일본어 텍스트 분석, 다국어 language detection, 금칙어/키워드 검색, replacement pipeline
 구성이다.

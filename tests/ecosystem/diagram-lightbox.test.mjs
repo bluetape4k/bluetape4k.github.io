@@ -291,6 +291,22 @@ test('the AI collaboration environment provides localized diagram titles without
   assert.doesNotMatch(en, /class="bt4k-blog-hero"[^>]*data-diagram-title/);
 });
 
+test('the GraphDB adoption post exposes localized chart titles without making its Hero zoomable', async () => {
+  const ko = await read('src/content/docs/ko/blog/when-to-adopt-graphdb.mdx');
+  const en = await read('src/content/docs/blog/when-to-adopt-graphdb.mdx');
+
+  assert.match(
+    ko,
+    /class="bt4k-chart"\s+data-diagram-title="GraphDB 도입 판단용 권한 상속 지연 시간 비교"/,
+  );
+  assert.match(
+    en,
+    /class="bt4k-chart"\s+data-diagram-title="Authorization inheritance latency comparison for GraphDB adoption"/,
+  );
+  assert.doesNotMatch(ko, /class="bt4k-blog-hero"[^>]*data-diagram-title/);
+  assert.doesNotMatch(en, /class="bt4k-blog-hero"[^>]*data-diagram-title/);
+});
+
 test('every blog image is explicitly classified as a technical diagram or an excluded visual', async () => {
   const allowedFigureClasses = new Set([
     'bt4k-architecture',
