@@ -1,0 +1,165 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="2610" viewBox="0 0 1800 2610" role="img" aria-labelledby="title desc">
+  <title id="title">End-to-End Processing Boundaries of the Image Intelligence API</title>
+  <desc id="desc">A vertical flow that qualifies an uploaded image, decodes it once, runs OCR, object detection, and barcode or QR analysis in parallel, and then combines partial results for visitor-pass policy.</desc>
+  <defs>
+    <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07101f"/>
+      <stop offset="0.58" stop-color="#0c1730"/>
+      <stop offset="1" stop-color="#10142a"/>
+    </linearGradient>
+    <filter id="shadow" x="-18%" y="-20%" width="136%" height="150%">
+      <feDropShadow dx="0" dy="9" stdDeviation="10" flood-color="#020617" flood-opacity="0.58"/>
+    </filter>
+    <marker id="arrow-blue" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1 1 L13 7 L1 13 Z" fill="#66aee8"/>
+    </marker>
+    <marker id="arrow-cyan" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1 1 L13 7 L1 13 Z" fill="#50c7d9"/>
+    </marker>
+    <marker id="arrow-amber" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1 1 L13 7 L1 13 Z" fill="#f0ad5b"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1 1 L13 7 L1 13 Z" fill="#57c58a"/>
+    </marker>
+    <marker id="arrow-purple" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1 1 L13 7 L1 13 Z" fill="#a78bfa"/>
+    </marker>
+    <style>
+      .title{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:46px;font-weight:700;fill:#f8fafc}
+      .subtitle{font-family:'goorm Sans Code','Comic Mono','goorm Sans',monospace;font-size:20px;fill:#a9b8d4}
+      .section{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:25px;font-weight:700;fill:#f8fafc}
+      .cardTitle{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:29px;font-weight:700;fill:#f8fafc}
+      .body{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:19px;fill:#cbd7ea}
+      .mono{font-family:'goorm Sans Code','Comic Mono','goorm Sans',monospace;font-size:18px;fill:#b9c9e2}
+      .small{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:17px;fill:#9fb0ca}
+      .step{font-family:'goorm Sans Code','Comic Mono','goorm Sans',monospace;font-size:20px;font-weight:700;fill:#f8fafc}
+      .card{fill:#14233a;stroke-width:2;filter:url(#shadow)}
+      .connector{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+      .pill{fill:#101c31;stroke-width:1.5}
+      .frame{fill:#0c172a;fill-opacity:.42;stroke:#344968;stroke-width:2}
+    </style>
+  </defs>
+
+  <rect width="1800" height="2610" rx="34" fill="url(#canvas)"/>
+  <rect x="28" y="28" width="1744" height="2554" rx="28" fill="none" stroke="#2b4168" stroke-width="2"/>
+  <text class="title" x="900" y="76" text-anchor="middle">Split One Image into Multiple Analysis Contracts</text>
+  <text class="subtitle" x="900" y="116" text-anchor="middle">Shared qualification → one decode → independent analysis → partial results → business policy</text>
+
+  <g id="card-upload" data-node="upload">
+    <rect class="card" x="570" y="170" width="660" height="160" rx="24" stroke="#6686b8"/>
+    <circle cx="630" cy="220" r="27" fill="#263b5c" stroke="#6686b8" stroke-width="2"/>
+    <text class="step" x="630" y="227" text-anchor="middle">1</text>
+    <text class="small" x="680" y="211">HTTP INPUT</text>
+    <text class="cardTitle" x="680" y="252">Image Upload</text>
+    <text class="mono" x="680" y="294">multipart file · PNG · JPEG · WebP</text>
+  </g>
+
+  <path class="connector" data-connector="upload-to-qualifier" d="M900 330 V420" stroke="#66aee8" marker-end="url(#arrow-blue)"/>
+
+  <g id="card-qualifier" data-node="qualifier">
+    <rect class="card" x="470" y="435" width="860" height="220" rx="24" stroke="#66aee8"/>
+    <circle cx="535" cy="490" r="27" fill="#203e61" stroke="#66aee8" stroke-width="2"/>
+    <text class="step" x="535" y="497" text-anchor="middle">2</text>
+    <text class="small" x="585" y="479">SHARED QUALIFICATION</text>
+    <text class="cardTitle" x="585" y="521">Input Qualification</text>
+    <text class="body" x="585" y="566">Media type · actual file signature · compressed bytes</text>
+    <text class="body" x="585" y="601">Dimensions · total pixels · decodability</text>
+  </g>
+
+  <path class="connector" data-connector="qualifier-to-image" d="M900 655 V745" stroke="#66aee8" marker-end="url(#arrow-blue)"/>
+
+  <g id="card-image" data-node="immutable-image">
+    <rect class="card" x="520" y="760" width="760" height="190" rx="24" stroke="#7e9fd0"/>
+    <circle cx="585" cy="815" r="27" fill="#283d5f" stroke="#7e9fd0" stroke-width="2"/>
+    <text class="step" x="585" y="822" text-anchor="middle">3</text>
+    <text class="small" x="635" y="804">ONE DECODE</text>
+    <text class="cardTitle" x="635" y="847">ImmutableImage</text>
+    <text class="body" x="635" y="892">One qualified immutable image is shared read-only across three paths</text>
+    <text class="small" x="635" y="925">The upload is not decoded again for each analyzer</text>
+  </g>
+
+  <path class="connector" data-connector="image-to-analysis" d="M900 950 V1025" stroke="#66aee8" marker-end="url(#arrow-blue)"/>
+
+  <g id="card-analysis-stage" data-node="analysis-stage">
+    <rect class="card" x="560" y="1040" width="680" height="120" rx="24" stroke="#6686b8"/>
+    <circle cx="625" cy="1100" r="27" fill="#263b5c" stroke="#6686b8" stroke-width="2"/>
+    <text class="step" x="625" y="1107" text-anchor="middle">4</text>
+    <text class="small" x="680" y="1087">PARALLEL ANALYSIS</text>
+    <text class="cardTitle" x="680" y="1132">Analyze the Same Input Independently</text>
+  </g>
+
+  <rect class="frame" x="95" y="1190" width="1610" height="520" rx="30"/>
+  <text class="small" x="520" y="1275">THREE INDEPENDENT LANES</text>
+
+  <path class="connector" data-connector="analysis-to-ocr" d="M760 1160 V1215 Q760 1229 746 1229 H330 Q316 1229 316 1243 V1315" stroke="#50c7d9" marker-end="url(#arrow-cyan)"/>
+  <path class="connector" data-connector="analysis-to-detection" d="M900 1160 V1315" stroke="#f0ad5b" marker-end="url(#arrow-amber)"/>
+  <path class="connector" data-connector="analysis-to-barcode" d="M1040 1160 V1215 Q1040 1229 1054 1229 H1470 Q1484 1229 1484 1243 V1315" stroke="#57c58a" marker-end="url(#arrow-green)"/>
+
+  <g id="card-ocr" data-node="ocr">
+    <rect class="card" x="140" y="1330" width="380" height="255" rx="24" stroke="#50c7d9"/>
+    <circle cx="195" cy="1383" r="25" fill="#173d4e" stroke="#50c7d9" stroke-width="2"/>
+    <text class="step" x="195" y="1390" text-anchor="middle">4A</text>
+    <text class="small" x="240" y="1373">ANALYSIS LANE</text>
+    <text class="cardTitle" x="240" y="1416">OCR</text>
+    <text class="mono" x="190" y="1468">text · pageCount</text>
+    <text class="body" x="190" y="1510">Completed · Empty</text>
+    <text class="body" x="190" y="1546">Unavailable · Failed</text>
+  </g>
+
+  <g id="card-detection" data-node="detection">
+    <rect class="card" x="710" y="1330" width="380" height="255" rx="24" stroke="#f0ad5b"/>
+    <circle cx="765" cy="1383" r="25" fill="#4a3521" stroke="#f0ad5b" stroke-width="2"/>
+    <text class="step" x="765" y="1390" text-anchor="middle">4B</text>
+    <text class="small" x="810" y="1373">ANALYSIS LANE</text>
+    <text class="cardTitle" x="810" y="1416">Object Detection</text>
+    <text class="mono" x="760" y="1468">label · category</text>
+    <text class="mono" x="760" y="1500">confidence · detector</text>
+    <text class="body" x="760" y="1535">Completed · Empty</text>
+    <text class="body" x="760" y="1567">Unavailable · Failed</text>
+  </g>
+
+  <g id="card-barcode" data-node="barcode">
+    <rect class="card" x="1280" y="1330" width="380" height="255" rx="24" stroke="#57c58a"/>
+    <circle cx="1335" cy="1383" r="25" fill="#183e32" stroke="#57c58a" stroke-width="2"/>
+    <text class="step" x="1335" y="1390" text-anchor="middle">4C</text>
+    <text class="small" x="1380" y="1373">ANALYSIS LANE</text>
+    <text class="cardTitle" x="1380" y="1416">Barcode · QR</text>
+    <text class="mono" x="1330" y="1468">text · format · provider</text>
+    <text class="body" x="1330" y="1510">Completed · Empty</text>
+    <text class="body" x="1330" y="1546">Unavailable · Failed</text>
+  </g>
+
+  <path class="connector" data-connector="ocr-to-aggregate" d="M330 1585 V1720 Q330 1734 344 1734 H760 Q774 1734 774 1748 V1825" stroke="#50c7d9" marker-end="url(#arrow-cyan)"/>
+  <path class="connector" data-connector="detection-to-aggregate" d="M900 1585 V1825" stroke="#f0ad5b" marker-end="url(#arrow-amber)"/>
+  <path class="connector" data-connector="barcode-to-aggregate" d="M1470 1585 V1720 Q1470 1734 1456 1734 H1040 Q1026 1734 1026 1748 V1825" stroke="#57c58a" marker-end="url(#arrow-green)"/>
+
+  <g id="card-aggregate" data-node="aggregate">
+    <rect class="card" x="450" y="1840" width="900" height="210" rx="26" stroke="#7d8ca8"/>
+    <circle cx="520" cy="1900" r="29" fill="#2a374d" stroke="#7d8ca8" stroke-width="2"/>
+    <text class="step" x="520" y="1907" text-anchor="middle">5</text>
+    <text class="small" x="575" y="1889">PARTIAL RESULT CONTRACT</text>
+    <text class="cardTitle" x="575" y="1933">Combine Partial Results</text>
+    <text class="mono" x="575" y="1980">COMPLETED · PARTIAL · FAILED</text>
+    <text class="body" x="575" y="2017">Keep successful results and failure reasons together</text>
+  </g>
+
+  <path class="connector" data-connector="aggregate-to-policy" d="M900 2050 V2185" stroke="#a78bfa" marker-end="url(#arrow-purple)"/>
+
+  <g id="card-policy" data-node="policy">
+    <rect class="card" x="400" y="2200" width="1000" height="180" rx="26" stroke="#a78bfa"/>
+    <circle cx="470" cy="2260" r="29" fill="#352b58" stroke="#a78bfa" stroke-width="2"/>
+    <text class="step" x="470" y="2267" text-anchor="middle">6</text>
+    <text class="small" x="525" y="2249">BUSINESS POLICY</text>
+    <text class="cardTitle" x="525" y="2293">Visitor Pass Policy</text>
+    <text class="mono" x="525" y="2339">ALLOW · MANUAL_REVIEW · REJECT · QUARANTINE</text>
+  </g>
+
+  <rect class="pill" x="120" y="2480" width="1560" height="82" rx="22" stroke="#405777"/>
+  <circle cx="170" cy="2509" r="7" fill="#66aee8"/>
+  <text class="body" x="195" y="2516">If input qualification fails, analysis does not start.</text>
+  <circle cx="860" cy="2509" r="7" fill="#57c58a"/>
+  <text class="body" x="885" y="2516">One failed path does not erase the other results.</text>
+  <circle cx="170" cy="2542" r="7" fill="#a78bfa"/>
+  <text class="body" x="195" y="2549">Request cancellation propagates upward instead of becoming partial success.</text>
+</svg>

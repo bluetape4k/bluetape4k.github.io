@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1080" viewBox="0 0 1800 1080" role="img" aria-labelledby="title desc">
+  <title id="title">Three Analysis Paths Reading Different Information from One Visitor Pass</title>
+  <desc id="desc">OCR text blocks, a face detection region, and a QR region are highlighted in different colors on one visitor-pass image, with each result contract explained separately.</desc>
+  <defs>
+    <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07101f"/>
+      <stop offset="0.58" stop-color="#0c1730"/>
+      <stop offset="1" stop-color="#10142a"/>
+    </linearGradient>
+    <linearGradient id="pass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e9eef6"/>
+      <stop offset="1" stop-color="#cad5e7"/>
+    </linearGradient>
+    <filter id="shadow" x="-18%" y="-20%" width="136%" height="150%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#020617" flood-opacity="0.62"/>
+    </filter>
+    <style>
+      .title{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:44px;font-weight:700;fill:#f8fafc}
+      .subtitle{font-family:'goorm Sans Code','Comic Mono','goorm Sans',monospace;font-size:19px;fill:#a9b8d4}
+      .passTitle{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:44px;font-weight:700;fill:#122038}
+      .passLabel{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:22px;font-weight:700;fill:#283a56}
+      .passBody{font-family:'goorm Sans Code','Comic Mono','goorm Sans',monospace;font-size:20px;fill:#40516b}
+      .legendTitle{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:28px;font-weight:700;fill:#f8fafc}
+      .legendBody{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:18px;fill:#c7d3e7}
+      .legendMono{font-family:'goorm Sans Code','Comic Mono','goorm Sans',monospace;font-size:17px;fill:#b9c9e2}
+      .note{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:17px;fill:#9fb0ca}
+      .legendCard{fill:#14233a;stroke-width:2}
+    </style>
+  </defs>
+
+  <rect width="1800" height="1080" rx="34" fill="url(#canvas)"/>
+  <rect x="28" y="28" width="1744" height="1024" rx="28" fill="none" stroke="#2b4168" stroke-width="2"/>
+  <text class="title" x="900" y="72" text-anchor="middle">Each Analyzer Sees Different Information in the Same Pass</text>
+  <text class="subtitle" x="900" y="110" text-anchor="middle">They share coordinates, but OCR, object detection, and QR results remain separate contracts.</text>
+
+  <g id="visitor-pass" data-node="visitor-pass" filter="url(#shadow)">
+    <rect x="90" y="165" width="1010" height="785" rx="36" fill="url(#pass)" stroke="#8da2c1" stroke-width="3"/>
+    <rect x="90" y="165" width="1010" height="105" rx="36" fill="#1b4a73"/>
+    <rect x="90" y="230" width="1010" height="40" fill="#1b4a73"/>
+    <text x="140" y="232" font-family="'goorm Sans','Architects Daughter',sans-serif" font-size="42" font-weight="700" fill="#f8fafc">VISITOR PASS</text>
+    <text x="1035" y="232" text-anchor="end" font-family="'goorm Sans Code','Comic Mono','goorm Sans',monospace" font-size="20" fill="#c8e4f5">PASS-001</text>
+
+    <rect x="145" y="330" width="315" height="350" rx="24" fill="#aebdd2" stroke="#7e91ae" stroke-width="2"/>
+    <circle cx="302" cy="445" r="88" fill="#7388a6"/>
+    <path d="M210 630 Q220 530 302 530 Q384 530 394 630 Z" fill="#7388a6"/>
+
+    <text class="passLabel" x="530" y="360">NAME</text>
+    <text class="passTitle" x="530" y="414">KIM BLUETAPE</text>
+    <text class="passLabel" x="530" y="480">COMPANY</text>
+    <text class="passBody" x="530" y="524">BLUETAPE LABS</text>
+    <text class="passLabel" x="530" y="590">ACCESS</text>
+    <text class="passBody" x="530" y="634">HALL A · 09:00–18:00</text>
+
+    <rect x="770" y="700" width="255" height="190" rx="16" fill="#ffffff" stroke="#8ca0ba" stroke-width="2"/>
+    <g fill="#18263b">
+      <rect x="796" y="726" width="52" height="52"/><rect x="805" y="735" width="34" height="34" fill="#fff"/><rect x="814" y="744" width="16" height="16"/>
+      <rect x="947" y="726" width="52" height="52"/><rect x="956" y="735" width="34" height="34" fill="#fff"/><rect x="965" y="744" width="16" height="16"/>
+      <rect x="796" y="812" width="52" height="52"/><rect x="805" y="821" width="34" height="34" fill="#fff"/><rect x="814" y="830" width="16" height="16"/>
+      <rect x="870" y="730" width="17" height="17"/><rect x="894" y="755" width="18" height="18"/><rect x="862" y="786" width="20" height="20"/>
+      <rect x="900" y="810" width="17" height="17"/><rect x="932" y="790" width="19" height="19"/><rect x="958" y="829" width="18" height="18"/>
+      <rect x="876" y="844" width="17" height="17"/><rect x="920" y="854" width="20" height="20"/>
+    </g>
+
+    <rect x="510" y="326" width="520" height="335" rx="18" fill="none" stroke="#50c7d9" stroke-width="5" stroke-dasharray="14 10"/>
+    <rect x="526" y="344" width="150" height="38" rx="12" fill="#123b50" stroke="#50c7d9"/>
+    <text x="601" y="370" text-anchor="middle" font-family="'goorm Sans Code','Comic Mono','goorm Sans',monospace" font-size="18" fill="#a7edf5">OCR BLOCKS</text>
+
+    <rect x="132" y="315" width="340" height="380" rx="28" fill="none" stroke="#f0ad5b" stroke-width="5"/>
+    <rect x="150" y="334" width="200" height="38" rx="12" fill="#51351a" stroke="#f0ad5b"/>
+    <text x="250" y="360" text-anchor="middle" font-family="'goorm Sans Code','Comic Mono','goorm Sans',monospace" font-size="18" fill="#ffe0ad">FACE · 0.99</text>
+
+    <rect x="750" y="680" width="295" height="230" rx="22" fill="none" stroke="#57c58a" stroke-width="5"/>
+    <rect x="768" y="694" width="246" height="38" rx="12" fill="#153e2d" stroke="#57c58a"/>
+    <text x="891" y="720" text-anchor="middle" font-family="'goorm Sans Code','Comic Mono','goorm Sans',monospace" font-size="17" fill="#baf3d3">QR REGION · EXAMPLE</text>
+  </g>
+
+  <g id="legend-ocr" data-node="legend-ocr">
+    <rect class="legendCard" x="1170" y="180" width="540" height="190" rx="24" stroke="#50c7d9"/>
+    <circle cx="1212" cy="222" r="10" fill="#50c7d9"/>
+    <text class="legendTitle" x="1240" y="232">OCR</text>
+    <text class="legendMono" x="1212" y="278">text · pages · blocks</text>
+    <text class="legendBody" x="1212" y="318">Reads text and document structure</text>
+    <text class="legendBody" x="1212" y="347">such as name, company, and access.</text>
+  </g>
+
+  <g id="legend-detection" data-node="legend-detection">
+    <rect class="legendCard" x="1170" y="405" width="540" height="190" rx="24" stroke="#f0ad5b"/>
+    <circle cx="1212" cy="447" r="10" fill="#f0ad5b"/>
+    <text class="legendTitle" x="1240" y="457">Object Detection</text>
+    <text class="legendMono" x="1212" y="503">label · category · confidence</text>
+    <text class="legendBody" x="1212" y="543">Finds classified objects such as</text>
+    <text class="legendBody" x="1212" y="572">faces or sensitive regions.</text>
+  </g>
+
+  <g id="legend-qr" data-node="legend-qr">
+    <rect class="legendCard" x="1170" y="630" width="540" height="190" rx="24" stroke="#57c58a"/>
+    <circle cx="1212" cy="672" r="10" fill="#57c58a"/>
+    <text class="legendTitle" x="1240" y="682">Barcode · QR</text>
+    <text class="legendMono" x="1212" y="728">text · format · provider</text>
+    <text class="legendBody" x="1212" y="768">Reads encoded identifiers</text>
+    <text class="legendBody" x="1212" y="797">and the code format.</text>
+  </g>
+
+  <rect x="1170" y="855" width="540" height="95" rx="22" fill="#101c31" stroke="#435a79" stroke-width="2"/>
+  <text class="note" x="1210" y="891">The QR pattern illustrates the region only;</text>
+  <text class="note" x="1210" y="922">it is not a decodable visitor-pass value.</text>
+
+  <rect x="130" y="985" width="1540" height="58" rx="20" fill="#101c31" stroke="#405777" stroke-width="1.5"/>
+  <text class="legendBody" x="900" y="1022" text-anchor="middle">Only the input image and coordinate system are shared. The three results are not collapsed into one common type.</text>
+</svg>
