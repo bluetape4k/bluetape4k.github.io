@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1100" viewBox="0 0 2000 1100" role="img" aria-labelledby="title desc">
+  <title id="title">OCR·객체 검출·QR 결과와 방문증 정책의 계약</title>
+  <desc id="desc">OCR, 객체 검출, 바코드와 QR 결과를 서로 다른 카드로 유지하고 집계 상태와 방문증 결정을 만드는 응답 조합 단계에 각각 전달한다.</desc>
+  <defs>
+    <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07101f"/>
+      <stop offset="0.58" stop-color="#0c1730"/>
+      <stop offset="1" stop-color="#10142a"/>
+    </linearGradient>
+    <filter id="shadow" x="-18%" y="-20%" width="136%" height="150%">
+      <feDropShadow dx="0" dy="9" stdDeviation="10" flood-color="#020617" flood-opacity="0.58"/>
+    </filter>
+    <marker id="arrow-cyan" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1 1 L13 7 L1 13 Z" fill="#50c7d9"/>
+    </marker>
+    <marker id="arrow-amber" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1 1 L13 7 L1 13 Z" fill="#f0ad5b"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1 1 L13 7 L1 13 Z" fill="#57c58a"/>
+    </marker>
+    <style>
+      .title{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:44px;font-weight:700;fill:#f8fafc}
+      .subtitle{font-family:'goorm Sans Code','Comic Mono','goorm Sans',monospace;font-size:19px;fill:#a9b8d4}
+      .card{fill:#14233a;stroke-width:2;filter:url(#shadow)}
+      .cardTitle{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:28px;font-weight:700;fill:#f8fafc}
+      .cardType{font-family:'goorm Sans Code','Comic Mono','goorm Sans',monospace;font-size:17px;fill:#9fb0ca}
+      .field{font-family:'goorm Sans Code','Comic Mono','goorm Sans',monospace;font-size:19px;fill:#c5d4e9}
+      .body{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:18px;fill:#c7d3e7}
+      .small{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:16px;fill:#9fb0ca}
+      .connector{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+      .label{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:17px;font-weight:700;fill:#e7eef9}
+      .labelBg{fill:#101c31;stroke-width:1.5}
+    </style>
+  </defs>
+
+  <rect width="2000" height="1100" rx="34" fill="url(#canvas)"/>
+  <rect x="28" y="28" width="1944" height="1044" rx="28" fill="none" stroke="#2b4168" stroke-width="2"/>
+  <text class="title" x="1000" y="72" text-anchor="middle">분석 결과를 합치지 말고, 결정할 때 조합한다</text>
+  <text class="subtitle" x="1000" y="110" text-anchor="middle">세 분석 계약은 독립적이며 집계 상태와 업무 결정도 서로 다른 책임입니다.</text>
+
+  <g id="card-ocr-contract" data-node="ocr-contract">
+    <rect class="card" x="90" y="165" width="520" height="225" rx="24" stroke="#50c7d9"/>
+    <text class="cardType" x="135" y="207">OcrAnalysisResponse</text>
+    <text class="cardTitle" x="135" y="252">OCR 결과</text>
+    <text class="field" x="135" y="298">status · provider · elapsedMillis</text>
+    <text class="field" x="135" y="335">result.text · result.pageCount</text>
+    <text class="small" x="135" y="368">문자열과 문서 페이지 수를 전달</text>
+  </g>
+
+  <g id="card-detection-contract" data-node="detection-contract">
+    <rect class="card" x="90" y="435" width="520" height="225" rx="24" stroke="#f0ad5b"/>
+    <text class="cardType" x="135" y="477">DetectionAnalysisResponse</text>
+    <text class="cardTitle" x="135" y="522">객체 검출 결과</text>
+    <text class="field" x="135" y="568">status · provider · elapsedMillis</text>
+    <text class="field" x="135" y="605">label · category · confidence · detector</text>
+    <text class="small" x="135" y="638">분류된 대상과 검출기 정보를 전달</text>
+  </g>
+
+  <g id="card-barcode-contract" data-node="barcode-contract">
+    <rect class="card" x="90" y="705" width="520" height="225" rx="24" stroke="#57c58a"/>
+    <text class="cardType" x="135" y="747">BarcodeAnalysisResponse</text>
+    <text class="cardTitle" x="135" y="792">바코드 · QR 결과</text>
+    <text class="field" x="135" y="838">status · provider · elapsedMillis</text>
+    <text class="field" x="135" y="875">text · format · provider</text>
+    <text class="small" x="135" y="908">판독한 값과 코드 형식을 전달</text>
+  </g>
+
+  <path class="connector" data-connector="ocr-to-response" d="M610 278 H870 Q884 278 884 292 V416 Q884 430 898 430 H1360" stroke="#50c7d9" marker-end="url(#arrow-cyan)"/>
+  <path class="connector" data-connector="detection-to-response" d="M610 548 H1360" stroke="#f0ad5b" marker-end="url(#arrow-amber)"/>
+  <path class="connector" data-connector="barcode-to-response" d="M610 818 H930 Q944 818 944 804 V704 Q944 690 958 690 H1360" stroke="#57c58a" marker-end="url(#arrow-green)"/>
+
+  <rect class="labelBg" x="735" y="205" width="220" height="42" rx="13" stroke="#50c7d9"/>
+  <text class="label" x="845" y="233" text-anchor="middle">OCR 분석 사실</text>
+  <rect class="labelBg" x="780" y="475" width="230" height="42" rx="13" stroke="#f0ad5b"/>
+  <text class="label" x="895" y="503" text-anchor="middle">객체 검출 사실</text>
+  <rect class="labelBg" x="700" y="865" width="220" height="42" rx="13" stroke="#57c58a"/>
+  <text class="label" x="810" y="893" text-anchor="middle">QR 판독 사실</text>
+
+  <g id="card-response-policy" data-node="response-policy">
+    <rect class="card" x="1370" y="300" width="540" height="510" rx="28" stroke="#a78bfa"/>
+    <text class="cardType" x="1415" y="345">ImageIntelligenceResponse</text>
+    <text class="cardTitle" x="1415" y="392">응답 조합과 방문증 정책</text>
+
+    <rect x="1415" y="430" width="450" height="130" rx="20" fill="#101c31" stroke="#7789a8" stroke-width="1.5"/>
+    <text class="small" x="1450" y="466">ImageIntelligenceAggregator</text>
+    <text class="field" x="1450" y="507">AggregateStatus</text>
+    <text class="body" x="1450" y="540">COMPLETED · PARTIAL · FAILED</text>
+
+    <rect x="1415" y="590" width="450" height="165" rx="20" fill="#171b37" stroke="#a78bfa" stroke-width="1.5"/>
+    <text class="small" x="1450" y="626">VisitorPassPolicy</text>
+    <text class="field" x="1450" y="667">action · reasons</text>
+    <text class="body" x="1450" y="704">ALLOW · MANUAL_REVIEW</text>
+    <text class="body" x="1450" y="736">REJECT · QUARANTINE</text>
+  </g>
+
+  <rect x="180" y="982" width="1640" height="65" rx="22" fill="#101c31" stroke="#405777" stroke-width="1.5"/>
+  <text class="body" x="1000" y="1011" text-anchor="middle">OCR·객체 검출·QR 사이에는 상속 관계가 없습니다.</text>
+  <text class="small" x="1000" y="1037" text-anchor="middle">집계 상태는 처리 가능성을, 방문증 결정은 업무 규칙을 설명합니다.</text>
+</svg>
