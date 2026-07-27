@@ -1,8 +1,10 @@
 # 이미지 인텔리전스 통합 예제와 블로그 시리즈 설계
 
 Date: 2026-07-27
-Repositories: `bluetape4k-workshop`, `bluetape4k.github.io`
+Repositories: `bluetape4k-image`, `bluetape4k.github.io`
 Blog issue: `bluetape4k.github.io#201`
+Implementation issue: `bluetape4k-image#299`
+Implementation PR: `bluetape4k-image#300`
 
 ## 문제
 
@@ -20,8 +22,10 @@ Blog issue: `bluetape4k.github.io#201`
 모든 결과를 하나의 추상 상태나 만능 이미지 API로 합치면 서로 다른 의미와 실패
 계약이 사라진다.
 
-따라서 먼저 `bluetape4k-workshop`에 실행 가능한 통합 예제를 만들고, 그 구현과
-검증 결과를 사실 기준으로 삼아 블로그 시리즈를 작성한다.
+통합 예제는 처음에 `bluetape4k-workshop` 후보로 검토했지만, OCR·객체 검출·바코드
+기능과 실행 예제를 한 저장소에서 함께 유지할 수 있도록
+`bluetape4k-image/examples/spring-boot-image-intelligence-api`에 구현했다. 이제 이
+예제의 코드와 테스트 결과를 사실 기준으로 삼아 블로그 시리즈를 작성한다.
 
 ## 독자에게 전달할 핵심
 
@@ -52,6 +56,26 @@ Blog issue: `bluetape4k.github.io#201`
 분리해야 할 이유도 명확하다. 배송 라벨과 상품 라벨은 같은 구조를 다른 정책과
 adapter로 확장할 수 있음을 보여주는 적용 사례로만 다룬다.
 
+## 구현 기준선
+
+`bluetape4k-image#300`에서 병합한 통합 예제는 다음 경계를 실행 가능한 코드로
+보여준다.
+
+- `ImageUploadQualifier`가 MIME type, magic bytes, byte 예산, 디코딩 가능 여부,
+  가로·세로와 pixel 예산을 확인하고 `ImmutableImage`를 한 번만 만든다.
+- `ImageIntelligenceWorkflow`가 `suspendParallelFlow`로 OCR, 객체 검출,
+  바코드·QR 작업을 독립적으로 실행한다.
+- 처리 경로는 `Completed`, `Empty`, `Unavailable`, `Failed`를 구분한다.
+- 응답 집계 상태는 `COMPLETED`, `PARTIAL`, `FAILED`를 사용한다.
+- `VisitorPassPolicy`가 분석 결과를 읽어 `ALLOW`, `MANUAL_REVIEW`,
+  `REJECT` 같은 업무 결정을 내린다.
+- 외부 요청 취소는 부분 성공으로 포장하지 않고 상위 coroutine으로 전파한다.
+
+기본 프로필은 OCR과 객체 검출 provider가 없다는 사실을 `UNAVAILABLE`로 드러낸다.
+`demo` 프로필은 결과가 고정된 OCR·객체 검출 provider와 실제 ZXing 판독을 조합해
+통합 흐름을 재현한다. `native-ocr` 프로필은 Tesseract를 선택할 수 있지만,
+production ML detector runtime은 여전히 애플리케이션이 제공해야 한다.
+
 ## 기존 공개 블로그와의 관계
 
 공개 블로그에서 이미 설명한 내용을 새 글로 반복하지 않는다.
@@ -81,21 +105,34 @@ adapter로 확장할 수 있음을 보여주는 적용 사례로만 다룬다.
 - OCR, 객체 검출, 바코드·QR 처리 경로의 차이
 - 독립 처리와 부분 실패
 - 검출 사실과 정책 결정의 분리
-- 전체 시리즈와 workshop 예제 안내
+- 전체 시리즈와 `bluetape4k-image` 통합 예제 안내
 
 업로드 제한과 OCR 실패 계약은 기존 글을 링크하고 반복 설명하지 않는다.
 
-### OCR. 기존 글 재사용 또는 제한적 보강
+### Part 2. 분석 작업 전에 입력 자격부터 판정하기
+
+새 글로 작성한다.
+
+- HTTP multipart 제한과 애플리케이션 검증의 역할 차이
+- MIME type과 magic bytes 교차 확인
+- byte, 가로·세로, 전체 pixel 예산
+- 디코딩 실패와 분석 결과 없음의 차이
+- `ImmutableImage` 단일 디코딩과 읽기 전용 공유
+
+기존 입력 경계와 OCR 글을 선행 자료로 연결하고, 이번 글은 여러 처리 경로가
+공유하는 입력 자격과 메모리 경계에 집중한다.
+
+### Part 3. OCR 처리 경로를 통합 응답에 연결하기
 
 기존 `OCR 서비스를 실전에서 운영하기` 글을 시리즈의 선행 자료로 재사용한다.
-새 글을 억지로 추가하지 않는다.
+새 글은 Tesseract 설치나 큰 이미지 전처리를 반복하지 않고 다음 차이에 집중한다.
 
-구조화된 OCR의 `page → block → line → word`, 좌표 정보, 검출 영역과의 조합이
-통합 예제를 이해하는 데 충분히 크고 독립적인 주제가 되면 기존 글에 해당 내용을
-보강하거나 별도 후속 글로 분리한다. 별도 글을 만들 때도 전처리와 실패 응답 계약은
-반복하지 않는다.
+- OCR provider 결과를 통합 처리 경로 결과로 변환하는 방법
+- 읽을 텍스트가 없는 `Empty`와 provider를 쓸 수 없는 `Unavailable`의 차이
+- 제한 시간이나 provider 예외를 `Failed`로 격리하는 방법
+- 텍스트·페이지·block 결과와 다른 처리 경로 결과를 함께 보존하는 응답
 
-### Part 2. 객체 검출 결과와 처리 정책을 분리하기
+### Part 4. 객체 검출 결과와 처리 정책을 분리하기
 
 새 글로 작성한다.
 
@@ -105,7 +142,7 @@ adapter로 확장할 수 있음을 보여주는 적용 사례로만 다룬다.
 - 검출 사실과 blur, mosaic, reject, quarantine, manual review의 분리
 - production ML runtime은 애플리케이션이 제공한다는 경계
 
-### Part 3. OCR과 다른 바코드·QR 추출 계약
+### Part 5. OCR과 다른 바코드·QR 추출 계약
 
 새 글로 작성한다.
 
@@ -115,58 +152,94 @@ adapter로 확장할 수 있음을 보여주는 적용 사례로만 다룬다.
 - 빈 결과와 처리 실패의 차이
 - 코드 값과 코드 영역을 응답에 표현하는 방법
 
-### Part 4. 방문증 이미지 처리 API 통합 예제
+### Part 6. 병렬 실행과 부분 실패를 응답 계약으로 만들기
 
-`bluetape4k-workshop` 구현이 완료된 뒤 새 글로 작성한다.
+새 글로 작성한다.
+
+- `suspendParallelFlow`로 독립 작업을 구성하는 방법
+- 한 처리 경로의 실패가 형제 처리 경로의 결과를 지우지 않게 하는 방법
+- 경로별 `Completed`, `Empty`, `Unavailable`, `Failed`
+- 집계 상태 `COMPLETED`, `PARTIAL`, `FAILED`
+- 외부 요청 취소 전파와 제한 시간·동시 실행 permit 복구
+- 로그에 이미지 payload와 민감 정보를 남기지 않는 경계
+
+### Part 7. 방문증 이미지 처리 API 통합 예제
+
+`bluetape4k-image`에 구현된 예제를 기준으로 새 글을 작성한다.
 
 - 공통 검증과 단일 디코딩
 - 세 처리 경로의 독립 실행
 - 경로별 성공, 빈 결과, 사용 불가, 실패
 - 부분 결과 집계와 warning
 - 검출 결과를 정책 계층에 전달하는 과정
+- 기본, `demo`, `native-ocr` 프로필의 책임 차이
 - 테스트가 증명해야 할 경계
 
 앞선 글의 기능 설명을 반복하지 않고 오케스트레이션과 실패 격리에 집중한다.
 
-## Workshop 통합 예제 방향
+## Part 1 글 설계
 
-새 모듈의 가칭은 다음과 같다.
+이번 작업에서 실제로 작성할 범위는 Part 1 한국어 글이다. 글은 기술 목록보다 독자의
+질문에서 시작한다.
 
-```text
-image-processing/image-intelligence-api
-```
+> 하나의 이미지에 다양한 정보가 있을 경우 어떻게 추출할 것인가?
 
-예제의 기본 흐름은 다음과 같다.
+본문 흐름은 다음과 같다.
 
-```text
-이미지 업로드
-→ 입력 적합성 검증
-→ ImmutableImage로 한 번 디코딩
-→ OCR / 객체 검출 / 바코드·QR 처리 경로 병렬 실행
-→ 처리 경로별 결과와 실패 수집
-→ 부분 결과 응답 조합
-→ 별도 정책 계층에서 서비스 결정
-```
+1. 방문증·배송 라벨·상품 라벨에는 서로 다른 정보가 한 이미지에 공존한다고
+   설명한다.
+2. 방문증을 대표 시나리오로 선택하고 OCR, 객체 검출, QR이 각각 무엇을 읽는지
+   보여준다.
+3. 입력 자격 판정, 단일 디코딩, 세 처리 경로, 부분 결과 조합, 정책 판단의 전체
+   흐름을 다이어그램으로 설명한다.
+4. OCR·객체 검출·바코드 결과 계약을 비교하고 하나의 공통 결과형으로 합치지 않은
+   이유를 설명한다.
+5. 정상 완료, 부분 실패, 전체 실패를 짧은 응답 예로 보여준다.
+6. 이 예제가 만능 이미지 분석 서비스가 아니라 검증·병렬 처리·부분 실패·정책
+   분리의 재사용 가능한 기본 구조임을 한정한다.
+7. 후속 글의 학습 순서와 실제 모듈·서비스 소스 링크를 제공한다.
 
-입력 적합성 검증에는 최소한 다음 경계를 포함한다.
+제목은 다음과 같이 정한다.
 
-- 비어 있지 않은 업로드
-- 허용된 MIME type과 magic bytes
-- 업로드 byte 제한
-- 실제 이미지 디코딩 가능 여부
-- 이미지 가로·세로와 전체 pixel budget
+> 이미지 한 장에서 여러 정보를 추출하는 API: OCR·객체 검출·QR 처리의 경계
 
-공통 검증은 모든 처리 경로가 실행될 수 있는 입력인지 판정한다. OCR 인식 가능성,
-객체 검출 confidence, 바코드 존재 여부처럼 처리 경로 고유의 결과까지 공통 검증에
-포함하지 않는다.
+게시 경로는 locale만 다르고 slug는 같게 유지한다.
 
-## 구현 원칙
+- 한국어: `/ko/blog/image-intelligence-part1-multi-analysis-boundaries/`
+- 영어: `/blog/image-intelligence-part1-multi-analysis-boundaries/`
+
+## Part 1 시각 자료
+
+Part 1에는 dark-style 기술 다이어그램을 사용한다. 대표 이미지는 별도 hero 이미지로
+취급하며, 기술 다이어그램을 대표 이미지 대신 사용하지 않는다.
+
+1. **대표 이미지**
+   - 한 장의 방문증이 OCR, 객체 검출, QR 처리 station으로 나뉘는 장면
+   - 기술 다이어그램보다 시각적이고 단순한 구도로 첫 화면의 주제를 전달
+2. **중심 다이어그램 — 전체 처리 흐름**
+   - 이미지 업로드
+   - 공통 입력 자격 판정과 단일 디코딩
+   - OCR·객체 검출·바코드 처리 경로
+   - 부분 결과 조합
+   - 별도 정책 판단
+3. **방문증 결과 중첩 그림**
+   - 한 방문증 위에 OCR block, 얼굴 영역, QR 영역을 함께 표시
+   - 같은 좌표계를 공유해도 결과 의미는 다르다는 점을 설명
+4. **결과 계약 비교**
+   - OCR, 객체 검출, 바코드, 정책의 대표 필드와 상태를 card로 비교
+
+다이어그램은 source SVG와 게시용 PNG를 함께 유지하고, PNG 변환 결과에서 화살촉,
+connector, label, 폰트, card 간격을 직접 검수한다. 블로그의 크게 보기 UI가 인식할
+수 있도록 기술 다이어그램으로 표시하고 제목을 제공한다.
+
+asset은 `/public/assets/blog/image-intelligence/part1/` 아래에 두고 한국어와 영어가
+같은 구도를 사용한다. 기술 다이어그램의 label은 locale별 asset으로 분리한다.
+
+## 설명 원칙
 
 - `bluetape4k-image`의 공개 OCR, detection, moderation, barcode 계약과 provider를
   재사용한다.
-- workshop의 기존 `ocr-api`, `profile-image-moderation`,
-  `advanced-workflow` 예제에서 검증된 패턴을 재사용하되 예제 모듈 사이의 런타임
-  의존성은 만들지 않는다.
+- 통합 예제에 구현된 클래스, profile, 상태와 테스트만 현재 기능으로 설명한다.
 - 객체 검출 adapter는 production ML 구현을 내장한 것처럼 설명하지 않는다.
   재현 가능한 fake 또는 예제용 adapter와 application-provided 경계를 구분한다.
 - OCR, 객체 검출, 바코드 결과를 하나의 공통 result type으로 축소하지 않는다.
@@ -176,17 +249,14 @@ image-processing/image-intelligence-api
 
 ## 작업 순서
 
-1. workshop 통합 예제의 API 계약, 상태 의미, 병렬 실행, 부분 실패, 정책 경계를
-   상세 설계한다.
-2. workshop용 GitHub issue를 만들고 Type A Full Feature 절차로 구현한다.
-3. 테스트와 문서로 예제의 동작을 검증하고 PR을 완료한다.
-4. 검증된 예제를 기준으로 Part 1을 작성한다.
-5. 기존 OCR 글의 재사용 또는 제한적 보강 여부를 실제 내용 차이로 최종 판단한다.
-6. 객체 검출·정책, 바코드·QR, 통합 예제 순서로 한국어 글을 작성한다.
-7. 한국어 검토 후 영어 글과 영문 다이어그램을 맞춘다.
-
-예제 구현 전에는 API 세부 코드를 단정하지 않고, 글 작성 전에는 아직 구현되지 않은
-기능을 현재 제공되는 기능처럼 표현하지 않는다.
+1. Issue #201과 이 설계를 현재 구현 기준선에 맞춘다.
+2. Part 1의 근거가 될 소스, 테스트, 기존 글과 매뉴얼을 claim ledger로 정리한다.
+3. 한국어 Part 1과 dark-style 기술 다이어그램을 작성한다.
+4. 사이트를 로컬에서 빌드하고 한국어 route, 이미지, 크게 보기 UI를 검증한다.
+5. 한국어 글을 사용자에게 먼저 검토받는다.
+6. 승인된 한국어 글을 기준으로 영문 글과 영문 다이어그램을 작성한다.
+7. locale parity와 전체 빌드를 검증한 뒤 PR을 만든다.
+8. PR까지만 완료하고 배포·병합은 별도 승인을 기다린다.
 
 ## 비목표
 
@@ -195,13 +265,17 @@ image-processing/image-intelligence-api
 - OCR, 객체 검출, 바코드의 서로 다른 실패 상태를 하나의 공유 상태로 강제
 - 방문증 도메인에 맞춘 완성형 개인정보보호 또는 출입 통제 제품 제공
 - 기존 공개 OCR·입력 경계·성능 글의 재작성
-- workshop 구현보다 앞선 블로그 코드 예제 작성
+- 통합 예제에 없는 기능을 현재 제공되는 기능처럼 설명
+- Part 1에서 후속 글의 세부 구현을 모두 반복
+- 이번 작업에서 Part 2부터 Part 7까지 한꺼번에 작성
 
 ## 완료 기준
 
 - 시리즈의 각 글이 독자에게 답할 고유한 질문을 가진다.
 - 기존 공개 글과 겹치는 내용은 링크와 짧은 요약으로 처리한다.
-- workshop 예제가 공통 검증, 단일 디코딩, 독립 처리, 부분 실패, 정책 분리를
+- `bluetape4k-image` 예제가 공통 검증, 단일 디코딩, 독립 처리, 부분 실패, 정책 분리를
   실행 가능한 코드와 테스트로 보여준다.
-- 글의 설명과 다이어그램은 검증된 workshop 및 `bluetape4k-image` 구현을 따른다.
+- Part 1은 방문증 시나리오와 전체 처리 경계를 설명하고 후속 글과 겹치는 세부
+  구현은 링크와 예고로 제한한다.
+- 글의 설명과 다이어그램은 병합된 `bluetape4k-image` 구현을 따른다.
 - 한국어와 영어 글·다이어그램이 같은 기술 계약을 설명한다.
