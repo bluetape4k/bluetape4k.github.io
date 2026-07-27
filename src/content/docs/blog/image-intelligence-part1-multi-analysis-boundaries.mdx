@@ -1,0 +1,266 @@
+---
+title: "Extracting Multiple Signals from One Image: Boundaries for OCR, Object Detection, and QR Processing"
+description: Using a visitor-pass image, this article explains upload qualification, one-time decoding, parallel OCR, object detection, and QR analysis, partial failure, and the separation between analysis facts and business policy.
+sidebar:
+  order: -202607271200
+blog:
+  date: 2026-07-27T12:00:00+09:00
+  image: /assets/blog/image-intelligence/part1/image-intelligence-part1-hero.png
+  imageAlt: A dark 3D workbench where a visitor-pass image passes shared qualification, splits into OCR, object detection, and QR stations, and then converges on a policy decision
+  cardDescription: "See how an API reads text, object regions, and QR values from one image, preserves partial failures, and passes analysis facts into business policy."
+  tags: ["architecture","concurrency","image","kotlin","practical-example","resilience","spring"]
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/blog/image-intelligence/part1/image-intelligence-part1-hero.png" alt="A dark 3D workbench where a visitor-pass image passes shared qualification, splits into OCR, object detection, and QR stations, and then converges on a policy decision" loading="eager" />
+  <figcaption>An image is uploaded once, but a service may need several kinds of information from it. Share input qualification and decoding while keeping each analysis result and failure meaning separate.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-07-27 · Image Intelligence API · Part 1</p>
+
+A single visitor pass can contain a name and company, a portrait, and an access QR code. The image is one input, but the
+service needs more than one answer.
+
+This article is not a feature list for OCR, object detection, and QR decoding. It explains where to qualify the input, how to
+preserve useful results when one path fails, and how to keep detected facts separate from business decisions when three
+independent analyzers read the same image.
+
+The example uses the
+[`bluetape4k-image` Spring Boot Image Intelligence API](https://github.com/bluetape4k/bluetape4k-image/tree/develop/examples/spring-boot-image-intelligence-api).
+A visitor pass is the representative scenario, but the goal is not an all-purpose visitor-pass product. The focus is an
+executable, reusable baseline for **qualification, parallel processing, partial failure, and policy separation**.
+
+## One image rarely contains only one kind of information
+
+When an image API starts from a single feature name, its response naturally narrows to that feature. An OCR API returns text,
+a barcode API returns a code value, and an object-detection API returns labels and confidence scores. Real business inputs,
+however, rarely arrive already separated by feature.
+
+| Scenario | What OCR reads | What object detection finds | What barcode or QR reads | Example policy |
+|---|---|---|---|---|
+| Visitor or access pass | Name, company, purpose | Face or sensitive regions | Access identifier | Allow, manual review, restrict public preview |
+| Shipping label | Recipient, address, item | Handling marks or document regions | Tracking number | Mask address, request another photo |
+| Product label | Product name, ingredients, expiry | Logo or product region | Product code | Review required labels, hold registration |
+
+All three scenarios lead to the same question: “How should a service extract different kinds of information from one image?”
+It is more natural for independent analyzers to read the same qualified image and combine their results later than for one
+feature to become an internal step of another.
+
+OCR accuracy, detector selection, and QR error correction remain separate concerns. Part 1 begins with the boundaries required
+to connect all three capabilities to one API rather than with the internals of each algorithm.
+
+## Fix the processing boundaries with a visitor-pass scenario
+
+The representative scenario is visitor-pass intake for an event venue. After a user uploads the pass, the service tries to
+obtain four things:
+
+1. Use OCR to determine whether readable text such as the visitor's name and company exists.
+2. Use object detection to determine whether there is one face and whether the image includes sensitive regions.
+3. Decode QR data and determine whether there is one access identifier beginning with `visitor:`.
+4. Pass the three results to visitor-pass policy and choose `ALLOW`, `MANUAL_REVIEW`, `REJECT`, or `QUARANTINE`.
+
+Steps 1 through 3 produce analysis facts from the image. Step 4 is a business decision made by the service. Reading
+`visitor:PASS-001` from a QR code is not enough to allow access. Policy must also consider the face count, OCR result,
+sensitive regions, and any processing failures.
+
+<figure
+  class="bt4k-architecture"
+  data-diagram-title="Three analysis paths reading different information from one visitor pass"
+>
+  <img src="/assets/blog/image-intelligence/part1/image-intelligence-visitor-pass-overlay-02-en.png" alt="A diagram that overlays OCR text blocks, a face detection region, and an access QR region in different colors on one visitor pass and explains each result" loading="lazy" />
+  <figcaption>The analyzers see the same image coordinate system but do not produce the same answer. OCR returns text, object detection returns classified objects, and QR decoding returns encoded values.</figcaption>
+</figure>
+
+## The processing paths share input, not answers
+
+An integrated API does not need to force all three results into one common type. What they share is a qualified input image
+and a request lifetime. Their result fields and the meaning of “nothing found” remain specific to each path.
+
+| Processing path | Representative result in the current API | Meaning of an empty result | Unavailable | Failed |
+|---|---|---|---|---|
+| OCR | `text`, `pageCount` | No readable text | OCR provider not configured | Timeout or provider exception |
+| Object detection | `label`, `category`, `confidence`, `detector` | No object found | Detector not configured | Detector execution failed |
+| Barcode or QR | `text`, `format`, `provider` | No code found | Reader not configured | Decoder execution failed |
+| Policy | `action`, `reasons` | Not applicable | Insufficient analysis evidence | Defer automatic decision to review |
+
+Lower-level `bluetape4k-image` results may include coordinate regions and richer structures. The current integrated example,
+however, exposes only the fields shown above in its HTTP response. Instead of copying every library value into the API
+contract, it selects the data its consumers need.
+
+<figure
+  class="bt4k-architecture"
+  data-diagram-title="Contracts for OCR, object detection, QR results, and visitor-pass policy"
+>
+  <img src="/assets/blog/image-intelligence/part1/image-intelligence-result-contracts-03-en.png" alt="Separate OCR, object detection, and barcode or QR result contract cards connect independently to a visitor-pass policy card, with no shared inheritance relationship" loading="lazy" />
+  <figcaption>The three analysis results remain separate contracts. Policy consumes these results; it is not a parent type for them.</figcaption>
+</figure>
+
+## Qualify the input first and decode it once
+
+Before running three analyzers in parallel, the service determines whether the uploaded image is eligible to begin analysis.
+[`ImageUploadQualifier`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageUploadQualifier.kt)
+checks for an empty file, declared media type, compressed byte size, actual file signature, decodability, dimensions, and
+total pixel count.
+
+It is equally important to define what this step does not decide. Whether OCR can read the text, whether the image contains a
+face, and whether it contains a QR code are analysis outcomes, not upload-qualification rules. Moving them into shared
+qualification would turn legitimate OCR or QR results into input errors.
+
+```kotlin
+val qualified = qualifier.qualify(upload)
+
+val results = workflow.analyze(
+    image = qualified.image, // ImmutableImage decoded once
+)
+```
+
+After qualification, the bytes are decoded once into an `ImmutableImage`. OCR, object detection, and QR processing read the
+same immutable image object. They do not reread the multipart upload or decode the same image independently.
+
+[Operating an OCR service in production](/blog/ocr-api-fallback-contract-bluetape4k-image/) explains why compressed bytes and
+decoded pixel size need separate limits, along with the operational constraints of native OCR engines such as Tesseract.
+For multipart and in-memory input boundaries from an API-design perspective, see
+[Kotlin API input boundaries](/blog/bluetape4k-dependencies-1-3-0-input-boundaries/).
+
+## Run independent work in parallel and retain each result
+
+After qualification,
+[`ImageIntelligenceWorkflow`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageIntelligenceWorkflow.kt)
+uses `suspendParallelFlow` from `bluetape4k-workflow` to run three tasks. The following pseudocode reduces the implementation
+to its essential structure:
+
+```kotlin
+suspendParallelFlow("image-intelligence-analysis") {
+    execute("ocr") {
+        context["analysis.ocr"] = runOcr(image)
+        WorkReport.success(context)
+    }
+    execute("detection") {
+        context["analysis.detection"] = runDetection(image)
+        WorkReport.success(context)
+    }
+    execute("barcode") {
+        context["analysis.barcode"] = runBarcode(image)
+        WorkReport.success(context)
+    }
+}
+```
+
+Each path has its own timeout and `Semaphore`. A slow OCR provider should not force the QR provider to use the same
+concurrency limit. These settings are more than performance decoration: they protect native resources and CPU workloads with
+different cost profiles.
+
+The meaning of `WorkReport.Success` deserves special attention. It does not mean “all three analyzers produced values.” It
+means “the workflow task recorded the promised result contract in `WorkContext`.” An OCR path can record
+`AnalysisResult.Failed` and still return `WorkReport.Success` because it successfully delivered that failure result.
+
+<figure
+  class="bt4k-architecture"
+  data-diagram-title="End-to-end processing boundaries of the Image Intelligence API"
+>
+  <img src="/assets/blog/image-intelligence/part1/image-intelligence-processing-flow-01-en.png" alt="A vertical flow that qualifies an image upload, decodes it once, runs independent OCR, object detection, and barcode or QR tasks, and passes partial results into visitor-pass policy" loading="lazy" />
+  <figcaption>The three paths read the same image but keep distinct results and failure meanings. Shared qualification decides only whether analysis may begin; policy makes the business decision after aggregation.</figcaption>
+</figure>
+
+## Do not disguise partial failure as normal success
+
+Each processing path distinguishes four outcomes:
+
+- `Completed`: The analyzer produced a value.
+- `Empty`: The provider ran successfully but found nothing.
+- `Unavailable`: The provider is not configured or cannot currently be used.
+- `Failed`: The provider ran but could not produce a result because of a timeout or execution error.
+
+If `Empty` and `Failed` both become an empty array, policy cannot distinguish “the image has no QR code” from “the service
+could not inspect the QR code.” Those cases can lead to different approval decisions, so the API preserves both states.
+
+[`ImageIntelligenceAggregator`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageIntelligenceAggregator.kt)
+aggregates the three results as follows:
+
+| Aggregate status | Example paths | Interpretation in the current visitor-pass policy |
+|---|---|---|
+| `COMPLETED` | All paths are `Completed` or `Empty` | `ALLOW` when all required visitor-pass information is valid |
+| `PARTIAL` | OCR `Failed`; object detection and QR `Completed` | Preserve successful results and return `MANUAL_REVIEW` |
+| `FAILED` | No usable result remains | Preserve failure reasons and return `MANUAL_REVIEW` |
+
+Aggregate status and business decision are not the same value. Even when every path runs normally and the aggregate status is
+`COMPLETED`, policy chooses `REJECT` if the QR value does not begin with `visitor:`. Conversely, an aggregate status of
+`FAILED` does not automatically become HTTP 500 or an arbitrary rejection. The current policy returns `MANUAL_REVIEW` with
+specific reasons so that a person can inspect the request.
+
+External request cancellation is another kind of event.
+[`GuardedAnalysisRunner`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/GuardedAnalysisRunner.kt)
+converts only its own timeout into a path-specific `Failed(timeout)` result and rethrows cancellation from the parent
+coroutine. Wrapping a cancelled request as three failed analyses would mix the work lifecycle with business results.
+
+## Separate detected facts from business policy
+
+Finding a face region is an analysis fact. Whether the service blurs the face, restricts access to the original, or routes the
+pass to manual review is a policy decision.
+
+[`VisitorPassPolicy`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/VisitorPassPolicy.kt)
+combines sensitive regions, QR format and prefix, face count, OCR content, and path failure states. Because policy is not
+embedded in an analysis provider, a shipping-label or product-label service can keep the same OCR, detection, and QR
+orchestration while replacing only its decision rules.
+
+The separation also helps with privacy controls. A detector can report the presence and location of a face, while policy and
+post-processing decide whether to blur it in an API preview or restrict the original behind separate authorization. Replacing
+an analysis model and changing a privacy policy do not have to become the same deployment unit.
+
+The example's `demo` profile uses deterministic fixtures for OCR and object detection. Only the QR path runs a real
+`ZxingBarcodeReader`. This combination reproduces orchestration and failure contracts; it does not prove the accuracy or
+throughput of a production ML detector. A real service still needs a production `ImageDetector`, quality measurement, model
+versioning, and drift monitoring.
+
+## What this example provides—and what it does not
+
+The example is not a finished product for a particular business. It is an executable baseline composed from four boundaries:
+
+| Reusable baseline | Decisions left to the service |
+|---|---|
+| Upload qualification and one-time decoding | Malware scanning, retention and deletion, per-tenant quotas |
+| Independent OCR, detection, and QR execution | Production OCR and ML providers, model quality thresholds |
+| Preservation of `Completed`, `Empty`, `Unavailable`, and `Failed` | Retries, circuit breakers, process isolation |
+| Separation of analysis facts and visitor-pass policy | Encryption, masking, access control, audit history |
+
+Choosing an image backend is a separate decision. [From pure JVM to libvips](/blog/from-pure-jvm-to-libvips-benchmarking-image-processing/)
+compares processing cost and operational constraints with measured results. Running three analyzers in parallel does not make
+decoding and preprocessing costs disappear.
+
+## Where the series goes next
+
+Part 1 established the overall processing boundaries. The remaining articles narrow each boundary to implementation and test
+behavior:
+
+- **Part 1: Extracting Multiple Signals from One Image**
+- Part 2: Qualify the Input Before Starting Analysis
+- Part 3: Connect the OCR Path to an Integrated Response
+- Part 4: Separate Object-Detection Results from Processing Policy
+- Part 5: Barcode and QR Extraction Contracts Differ from OCR
+- Part 6: Turn Parallel Execution and Partial Failure into an API Contract
+- Part 7: An Integrated Visitor-Pass Image Processing API
+
+Part 2 will examine how the input boundary distinguishes a declared MIME type from the actual signature, a small compressed
+file from an excessive decoded pixel count, and a readable image header from a full decode failure.
+
+## Implementation and related resources
+
+When reading the implementation, start with the README and then follow the input, orchestration, provider, and policy
+boundaries:
+
+- [Spring Boot Image Intelligence API](https://github.com/bluetape4k/bluetape4k-image/tree/develop/examples/spring-boot-image-intelligence-api):
+  Run instructions, response states, profiles, and operational non-goals.
+- [`ImageUploadQualifier.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageUploadQualifier.kt):
+  Media-type checks, byte and pixel budgets, and the decoding boundary.
+- [`ImageIntelligenceWorkflow.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageIntelligenceWorkflow.kt):
+  Parallel execution of the three analysis tasks and result-key collection.
+- [`ImageAnalysisProviders.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageAnalysisProviders.kt):
+  Fixture, Tesseract, object-detection, and ZXing provider boundaries.
+- [`VisitorPassPolicy.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/VisitorPassPolicy.kt):
+  Conversion from analysis facts into allow, review, reject, or quarantine decisions.
+- [Operating an OCR service in production](/blog/ocr-api-fallback-contract-bluetape4k-image/):
+  Large-image limits, native OCR, and failure response contracts.
+- [From pure JVM to libvips](/blog/from-pure-jvm-to-libvips-benchmarking-image-processing/):
+  A comparison of image-processing backends by performance and operational constraints.
+- [Kotlin API input boundaries](/blog/bluetape4k-dependencies-1-3-0-input-boundaries/):
+  Multipart, byte budgets, and in-memory input at API boundaries.
