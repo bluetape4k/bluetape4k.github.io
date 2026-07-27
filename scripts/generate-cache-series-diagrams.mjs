@@ -214,29 +214,6 @@ const koReplacements = [
   ['remote read', 'remote read'],
   ['measure', '측정'],
   ['fallback state', 'fallback state'],
-  ['Workshop Cache Benchmark Profiles', 'Workshop Cache 벤치마크 profile'],
-  ['Read and write throughput from bluetape4k-workshop cache-benchmark. Higher is better.', 'bluetape4k-workshop cache-benchmark의 read/write throughput입니다. 높을수록 좋습니다.'],
-  ['read ~8.2k', 'read ~8.2k'],
-  ['write ~8.2k ops/s', 'write ~8.2k ops/s'],
-  ['read ~490k', 'read ~490k'],
-  ['write ~8.1k ops/s', 'write ~8.1k ops/s'],
-  ['read ~465k', 'read ~465k'],
-  ['write ~7.2k ops/s', 'write ~7.2k ops/s'],
-  ['Redis Cache', 'Redis Cache'],
-  ['read ~43k', 'read ~43k'],
-  ['write ~7.3k ops/s', 'write ~7.3k ops/s'],
-  ['Write-Through', 'Write-Through'],
-  ['read ~41k', 'read ~41k'],
-  ['write ~5.6k ops/s', 'write ~5.6k ops/s'],
-  ['Write-Behind', 'Write-Behind'],
-  ['read ~42k', 'read ~42k'],
-  ['write ~24k ops/s', 'write ~24k ops/s'],
-  ['Read throughput', 'Read throughput'],
-  ['Write throughput', 'Write throughput'],
-  ['60x read', '60x read'],
-  ['57x read', '57x read'],
-  ['5x read', '5x read'],
-  ['3x write', '3x write'],
 ];
 
 function koreanize(svg) {
@@ -399,24 +376,4 @@ write(
       path('M1025 594 V462', 'lineRose', 'fallback state', 1088, 540, 112),
     ]) +
     footer('Graphviz structure evidence: cache-series-workshop-profile-01.dot / .plain / -sketch.svg', 1480, 830),
-);
-
-write(
-  'cache-series-workshop-benchmark-01',
-  header(1380, 984, 'Workshop Cache Benchmark Profiles', 'Read and write throughput from bluetape4k-workshop cache-benchmark. Higher is better.') +
-    content([
-      card(72, 148, 230, 86, 'neutral', 'No Cache', ['read ~8.2k', 'write ~8.2k ops/s']),
-      card(72, 264, 230, 86, 'green', 'Caffeine', ['read ~490k', 'write ~8.1k ops/s']),
-      card(72, 380, 230, 86, 'teal', 'Near Cache', ['read ~465k', 'write ~7.2k ops/s']),
-      card(72, 496, 230, 86, 'rose', 'Redis Cache', ['read ~43k', 'write ~7.3k ops/s']),
-      card(72, 612, 230, 86, 'blue', 'Write-Through', ['read ~41k', 'write ~5.6k ops/s']),
-      card(72, 728, 230, 86, 'amber', 'Write-Behind', ['read ~42k', 'write ~24k ops/s']),
-      '<g><text class="smallLabel" x="395" y="132">Read throughput</text><rect x="395" y="166" width="12" height="28" rx="10" fill="#F5F7FB" stroke="#93A4B7"/><rect x="395" y="282" width="700" height="28" rx="10" fill="#EAF7EF" stroke="#58A978"/><rect x="395" y="398" width="664" height="28" rx="10" fill="#E9F7F6" stroke="#45A7A1"/><rect x="395" y="514" width="61" height="28" rx="10" fill="#FDECEF" stroke="#DC6B82"/><rect x="395" y="630" width="59" height="28" rx="10" fill="#E8F3FF" stroke="#5B8DEF"/><rect x="395" y="746" width="60" height="28" rx="10" fill="#FFF3D9" stroke="#D6A441"/></g>',
-      '<g><text class="smallLabel" x="1142" y="132">Write throughput</text><rect x="1142" y="166" width="68" height="28" rx="10" fill="#F5F7FB" stroke="#93A4B7"/><rect x="1142" y="282" width="67" height="28" rx="10" fill="#EAF7EF" stroke="#58A978"/><rect x="1142" y="398" width="59" height="28" rx="10" fill="#E9F7F6" stroke="#45A7A1"/><rect x="1142" y="514" width="60" height="28" rx="10" fill="#FDECEF" stroke="#DC6B82"/><rect x="1142" y="630" width="46" height="28" rx="10" fill="#E8F3FF" stroke="#5B8DEF"/><rect x="1142" y="746" width="198" height="28" rx="10" fill="#FFF3D9" stroke="#D6A441"/></g>',
-      path('M302 296 H395', 'lineGreen', '60x read', 352, 282, 72),
-      path('M302 412 H395', 'lineGreen', '57x read', 352, 398, 72),
-      path('M302 760 H395', 'lineAmber', '5x read', 350, 746, 64),
-      path('M302 793 H1092 Q1108 793 1108 777 V776 Q1108 760 1124 760 H1142', 'lineAmber', '3x write', 720, 779, 72),
-    ]) +
-    footer('Source: bluetape4k-workshop spring-boot/cache-benchmark README. Graphviz evidence: cache-series-workshop-benchmark-01.dot / .plain / -sketch.svg', 1380, 950),
 );

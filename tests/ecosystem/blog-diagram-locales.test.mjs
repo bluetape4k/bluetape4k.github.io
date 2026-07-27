@@ -68,7 +68,7 @@ test('blog technical diagrams use explicit locale assets with matching SVG sourc
     }
   }
 
-  assert.equal(stems.size, 161);
+  assert.equal(stems.size, 160);
 });
 
 test('paired English and Korean posts reference the same technical diagram stems', async () => {
@@ -142,4 +142,44 @@ test('cache strategy diagram follows the Exposed workshop loader and writer cont
     assert.doesNotMatch(writeBehindRow, /proxy @Async|new entity/);
     assert.match(writeBehindRow, />putAll</, `${locale}: write-behind call must match putAll(events)`);
   }
+});
+
+test('cache workshop article does not present misnamed services as canonical benchmark evidence', async () => {
+  const articles = {
+    en: await readFile(
+      path.join(root, 'src/content/docs/blog/bluetape4k-cache-part4-workshop-examples.mdx'),
+      'utf8',
+    ),
+    ko: await readFile(
+      path.join(root, 'src/content/docs/ko/blog/bluetape4k-cache-part4-workshop-examples.mdx'),
+      'utf8',
+    ),
+  };
+
+  for (const [locale, source] of Object.entries(articles)) {
+    assert.doesNotMatch(source, /cache-series-workshop-benchmark-01/, `${locale}: stale benchmark diagram`);
+    assert.match(source, /AbstractJdbcRedissonRepository\.kt/, `${locale}: missing canonical repository reference`);
+    assert.match(source, /UserCacheRepositoryTest\.kt/, `${locale}: missing read\/write-through test reference`);
+    assert.match(source, /UserEventCacheRepositoryTest\.kt/, `${locale}: missing write-behind test reference`);
+    assert.match(source, /issues\/585/, `${locale}: missing contract-correction issue`);
+
+    const comparison = source.match(
+      locale === 'en'
+        ? /## What the Current Benchmark Can Compare[\s\S]*?## NearCacheService/
+        : /## 현재 구현에서 비교할 수 있는 범위[\s\S]*?## NearCacheService/,
+    )?.[0];
+    assert.ok(comparison, `${locale}: missing bounded benchmark comparison`);
+    for (const profile of ['No Cache', 'Caffeine', 'Redis Cache', 'Near Cache']) {
+      assert.match(comparison, new RegExp(`\\| ${profile} \\|`));
+    }
+    assert.doesNotMatch(comparison, /\| Read-Through \|/);
+    assert.doesNotMatch(comparison, /\| Write-Through \|/);
+    assert.doesNotMatch(comparison, /\| Write-Behind \|/);
+  }
+
+  const generator = await readFile(
+    path.join(root, 'scripts/generate-cache-series-diagrams.mjs'),
+    'utf8',
+  );
+  assert.doesNotMatch(generator, /cache-series-workshop-benchmark-01/);
 });
