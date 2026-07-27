@@ -68,7 +68,7 @@ test('blog technical diagrams use explicit locale assets with matching SVG sourc
     }
   }
 
-  assert.equal(stems.size, 160);
+  assert.equal(stems.size, 159);
 });
 
 test('paired English and Korean posts reference the same technical diagram stems', async () => {
@@ -144,7 +144,7 @@ test('cache strategy diagram follows the Exposed workshop loader and writer cont
   }
 });
 
-test('cache workshop article does not present misnamed services as canonical benchmark evidence', async () => {
+test('cache workshop article excludes the invalid benchmark and keeps canonical strategy evidence', async () => {
   const articles = {
     en: await readFile(
       path.join(root, 'src/content/docs/blog/bluetape4k-cache-part4-workshop-examples.mdx'),
@@ -157,29 +157,28 @@ test('cache workshop article does not present misnamed services as canonical ben
   };
 
   for (const [locale, source] of Object.entries(articles)) {
-    assert.doesNotMatch(source, /cache-series-workshop-benchmark-01/, `${locale}: stale benchmark diagram`);
+    assert.doesNotMatch(source, /cache-benchmark/i, `${locale}: invalid benchmark reference`);
+    assert.doesNotMatch(source, /ProductCacheService|NearCacheService/, `${locale}: invalid service reference`);
+    assert.doesNotMatch(source, /cache-series-workshop-profile-01/, `${locale}: stale profile diagram`);
+    assert.doesNotMatch(source, /issues\/585/, `${locale}: implementation issue leaked into article`);
     assert.match(source, /AbstractJdbcRedissonRepository\.kt/, `${locale}: missing canonical repository reference`);
     assert.match(source, /UserCacheRepositoryTest\.kt/, `${locale}: missing read\/write-through test reference`);
     assert.match(source, /UserEventCacheRepositoryTest\.kt/, `${locale}: missing write-behind test reference`);
-    assert.match(source, /issues\/585/, `${locale}: missing contract-correction issue`);
-
-    const comparison = source.match(
+    assert.match(
+      source,
       locale === 'en'
-        ? /## What the Current Benchmark Can Compare[\s\S]*?## NearCacheService/
-        : /## 현재 구현에서 비교할 수 있는 범위[\s\S]*?## NearCacheService/,
-    )?.[0];
-    assert.ok(comparison, `${locale}: missing bounded benchmark comparison`);
-    for (const profile of ['No Cache', 'Caffeine', 'Redis Cache', 'Near Cache']) {
-      assert.match(comparison, new RegExp(`\\| ${profile} \\|`));
+        ? /## Canonical Cache Strategies: Exposed Workshop Chapter 11/
+        : /## 정식 캐시 전략 예제: Exposed Workshop 11장/,
+      `${locale}: missing canonical strategy section`,
+    );
+    for (const example of ['cache-caffeine', 'cache-redis', 'cache-resilience']) {
+      assert.match(source, new RegExp(`/spring-boot/${example}`), `${locale}: missing ${example}`);
     }
-    assert.doesNotMatch(comparison, /\| Read-Through \|/);
-    assert.doesNotMatch(comparison, /\| Write-Through \|/);
-    assert.doesNotMatch(comparison, /\| Write-Behind \|/);
   }
 
   const generator = await readFile(
     path.join(root, 'scripts/generate-cache-series-diagrams.mjs'),
     'utf8',
   );
-  assert.doesNotMatch(generator, /cache-series-workshop-benchmark-01/);
+  assert.doesNotMatch(generator, /cache-series-workshop-profile-01|ProductCacheService/);
 });

@@ -193,27 +193,6 @@ const koReplacements = [
   ['9.9x faster', '9.9x 빠름'],
   ['when reads dominate', 'read 중심일 때'],
   ['write-heavy', 'write-heavy'],
-  ['Workshop Cache Profiles', 'Workshop Cache profile'],
-  ['The same ProductCacheService contract can compare no cache, local cache, remote cache, and near cache behavior.', '같은 ProductCacheService 계약으로 no cache, local cache, remote cache, near cache 동작을 비교합니다.'],
-  ['Spring Service', 'Spring Service'],
-  ['No Cache', 'No Cache'],
-  ['DB baseline', 'DB baseline'],
-  ['local JVM cache', 'local JVM cache'],
-  ['Redis', 'Redis'],
-  ['remote shared cache', 'remote shared cache'],
-  ['Near Cache', 'Near Cache'],
-  ['local + remote', 'local + remote'],
-  ['Product DB', 'Product DB'],
-  ['repository storage', 'repository storage'],
-  ['Benchmark', 'Benchmark'],
-  ['compare profiles', 'profile 비교'],
-  ['Resilience Example', 'Resilience 예제'],
-  ['Redis primary', 'Redis primary'],
-  ['Caffeine fallback', 'Caffeine fallback'],
-  ['fallback path', 'fallback path'],
-  ['remote read', 'remote read'],
-  ['measure', '측정'],
-  ['fallback state', 'fallback state'],
 ];
 
 function koreanize(svg) {
@@ -349,31 +328,4 @@ write(
       path('M334 606 H430', 'lineAmber', 'write-heavy', 382, 592, 92),
     ]) +
     footer('Source: exposed-workshop 11-high-performance/04-benchmark. Graphviz evidence: cache-series-exposed-benchmark-01.dot / .plain / -sketch.svg', 1320, 770),
-);
-
-write(
-  'cache-series-workshop-profile-01',
-  header(1480, 864, 'Workshop Cache Profiles', 'The same ProductCacheService contract can compare no cache, local cache, remote cache, and near cache behavior.') +
-    content([
-      card(86, 334, 254, 116, 'blue', 'Spring Service', ['ProductCacheService']),
-      card(486, 162, 232, 100, 'neutral', 'No Cache', ['DB baseline']),
-      card(486, 306, 232, 100, 'green', 'Caffeine', ['local JVM cache']),
-      card(486, 450, 232, 100, 'rose', 'Redis', ['remote shared cache']),
-      card(486, 594, 232, 100, 'teal', 'Near Cache', ['local + remote']),
-      cylinder(902, 334, 250, 128, 'purple', 'Product DB', ['repository storage']),
-      card(1210, 334, 200, 116, 'amber', 'Benchmark', ['compare profiles']),
-      card(876, 594, 298, 100, 'rose', 'Resilience Example', ['Redis primary', 'Caffeine fallback']),
-      path('M340 356 H388 Q404 356 404 340 V228 Q404 212 420 212 H486', 'lineBlue'),
-      path('M340 384 H486', 'lineGreen'),
-      path('M340 412 H388 Q404 412 404 428 V484 Q404 500 420 500 H486', 'lineRose'),
-      path('M340 440 H386 Q402 440 402 456 V628 Q402 644 418 644 H486', 'lineBlue'),
-      path('M718 212 H886 Q902 212 902 228 V334', 'lineBlue'),
-      path('M718 356 H902', 'lineGreen'),
-      path('M718 500 H886 Q902 500 902 484 V462', 'lineRose'),
-      path('M718 644 H876', 'lineBlue', 'fallback path', 798, 630, 106),
-      path('M650 594 V570 Q650 554 666 554 H1025 Q1041 554 1041 538 V462', 'lineRose', 'remote read', 870, 540, 100),
-      path('M1152 398 H1210', 'lineAmber', 'measure', 1180, 384, 70),
-      path('M1025 594 V462', 'lineRose', 'fallback state', 1088, 540, 112),
-    ]) +
-    footer('Graphviz structure evidence: cache-series-workshop-profile-01.dot / .plain / -sketch.svg', 1480, 830),
 );

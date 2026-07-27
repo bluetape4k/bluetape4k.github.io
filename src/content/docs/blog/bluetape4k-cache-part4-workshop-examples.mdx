@@ -1,18 +1,18 @@
 ---
 title: "Bluetape4k Cache Part 4: Getting a Feel for Cache Strategies with Workshop Examples"
-description: Connecting cache strategies to service code through bluetape4k-workshop examples for Caffeine, Redis, Near Cache, and resilience.
+description: Connecting cache strategies to service code through Caffeine, Redis, and resilience examples plus canonical Exposed Workshop strategies.
 sidebar:
   order: -202605291704
 blog:
   date: 2026-05-29T17:04:00+09:00
   image: /assets/cache-series-part4-hero.png
-  imageAlt: Spring Boot cache workshop workbench with robot workers, service blocks, Redis, local cache, and benchmark gauges
-  cardDescription: "Comparing Caffeine, Redis, Near Cache, and resilience through working examples."
+  imageAlt: Spring Boot cache workshop workbench with robot workers, service blocks, Redis, local cache, and monitoring gauges
+  cardDescription: "Exploring Caffeine, Redis, resilience, and Exposed loader/writer strategies through working examples."
   tags: ["cache","kotlin","practical-example","redis","resilience"]
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/cache-series-part4-hero.png" alt="Spring Boot cache workshop workbench with robot workers, service blocks, Redis, local cache, and benchmark gauges" loading="eager" />
+  <img src="/assets/cache-series-part4-hero.png" alt="Spring Boot cache workshop workbench with robot workers, service blocks, Redis, local cache, and monitoring gauges" loading="eager" />
   <figcaption>Docs explain cache strategies, examples test them, and production keeps them honest.</figcaption>
 </figure>
 
@@ -30,11 +30,6 @@ Spring Boot cache examples.
 The goal is not to repeat "cache is good." The goal is to see what shape each strategy gives
 the code, what cost it hides, and what operational contract it asks you to accept.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/cache-series-workshop-profile-01-en.png" alt="Workshop cache profiles comparing no cache, Caffeine, Redis, Near Cache, and benchmark path" loading="lazy" />
-  <figcaption>The same Product service gets different performance and consistency contracts depending on the cache profile.</figcaption>
-</figure>
-
 ## Example Locations
 
 The relevant examples are below.
@@ -43,7 +38,6 @@ The relevant examples are below.
 |---|---|
 | [cache-caffeine](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/spring-boot/cache-caffeine) | Spring Cache + Caffeine local cache |
 | [cache-redis](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/spring-boot/cache-redis) | Spring Data Redis + Lettuce |
-| [cache-benchmark](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/spring-boot/cache-benchmark) | Compare no cache, Caffeine, Redis, and Near Cache profiles |
 | [cache-resilience](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/spring-boot/cache-resilience) | Caffeine fallback when Redis is unavailable |
 
 ## Caffeine: The Closest Cache
@@ -96,55 +90,11 @@ Full source:
 Redis lets multiple instances see the same values. The cost is that every read has a remote hop.
 As Part 2 showed, if hot reads dominate, Near Cache becomes a candidate.
 
-## cache-benchmark: Separate Names from Implemented Behavior
+## Canonical Cache Strategies: Exposed Workshop Chapter 11
 
-`cache-benchmark` places several implementations behind the same `ProductCacheService` interface.
+Read-through, write-through, and write-behind do not mean that an application service manually sequences cache and DB access. The application uses the cache map, and the cache owns DB access through a loader or writer.
 
-```kotlin
-interface ProductCacheService {
-    fun findById(id: Long): Product?
-    fun save(product: Product): Product
-    fun evict(id: Long)
-    fun clearAll()
-}
-```
-
-Full source:
-[ProductCacheService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/ProductCacheService.kt)
-
-Implementing the same interface does not make their semantics equivalent. The current implementations need to be read as two groups.
-
-| Implementation | Actual behavior | Interpretation |
-|---|---|---|
-| `NoCacheService` | Uses only the DB | Baseline |
-| `CaffeineService` | Uses an in-JVM local cache | Local cache placement |
-| `RedisCacheService` | Uses a remote Redis cache | Distributed cache placement |
-| `NearCacheService` | Uses local + Redis near cache | L1/L2 cache placement |
-| `ReadThroughService` | Service detects Redis misses, falls back to DB, and populates the cache | Cache-aside despite its name |
-| `WriteThroughService` | Service saves DB and then updates Redis directly | Application dual-write despite its name |
-| `WriteBehindService` | Existing entities update Redis and invoke one `@Async` DB save; new entities save DB first | Not canonical write-behind where the cache owns a queue and batch flush |
-
-Related source:
-[NoCacheService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/NoCacheService.kt),
-[CaffeineService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/CaffeineService.kt),
-[RedisCacheService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/RedisCacheService.kt),
-[NearCacheService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/NearCacheService.kt),
-[ReadThroughService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/ReadThroughService.kt),
-[WriteThroughService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/WriteThroughService.kt),
-[WriteBehindService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/WriteBehindService.kt)
-
-The first four implementations can compare the throughput and code cost of different cache placements.
-
-- What is the baseline without cache?
-- Is local cache enough?
-- Do we need Redis sharing?
-- Does Near Cache reduce the read path enough?
-
-The last three results must not be interpreted as the performance of canonical read-through, write-through, and write-behind strategies. Their names do not match their contracts. In the canonical contract, the application calls the cache while the cache owns DB access through a loader or writer.
-
-The correct examples are in Exposed Workshop chapter 11, [`01-cache-strategies`](https://github.com/bluetape4k/exposed-workshop/tree/develop/11-high-performance/01-cache-strategies). [`UserCacheRepository`](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/main/kotlin/exposed/examples/cache/domain/repository/UserCacheRepository.kt) uses `READ_WRITE_THROUGH_WITH_NEAR_CACHE`, while [`UserEventCacheRepository`](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/main/kotlin/exposed/examples/cache/domain/repository/UserEventCacheRepository.kt) uses `WRITE_BEHIND_WITH_NEAR_CACHE`. [`EntityMapLoader`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/jdbc-redisson/src/main/kotlin/io/bluetape4k/exposed/redisson/map/EntityMapLoader.kt) and [`EntityMapWriter`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/jdbc-redisson/src/main/kotlin/io/bluetape4k/exposed/redisson/map/EntityMapWriter.kt) own the actual DB access.
-
-The `cache-benchmark` contract correction is tracked in [bluetape4k-workshop issue #585](https://github.com/bluetape4k/bluetape4k-workshop/issues/585).
+Exposed Workshop chapter 11, [`01-cache-strategies`](https://github.com/bluetape4k/exposed-workshop/tree/develop/11-high-performance/01-cache-strategies), implements that contract directly. [`UserCacheRepository`](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/main/kotlin/exposed/examples/cache/domain/repository/UserCacheRepository.kt) uses `READ_WRITE_THROUGH_WITH_NEAR_CACHE`, while [`UserEventCacheRepository`](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/main/kotlin/exposed/examples/cache/domain/repository/UserEventCacheRepository.kt) uses `WRITE_BEHIND_WITH_NEAR_CACHE`. [`EntityMapLoader`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/jdbc-redisson/src/main/kotlin/io/bluetape4k/exposed/redisson/map/EntityMapLoader.kt) and [`EntityMapWriter`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/jdbc-redisson/src/main/kotlin/io/bluetape4k/exposed/redisson/map/EntityMapWriter.kt) own the actual DB reads and writes.
 
 <figure class="bt4k-architecture">
   <img src="/assets/cache-series-workshop-strategy-01-en.png" alt="Exposed Workshop chapter 11 cache loader and writer contracts" loading="lazy" />
@@ -159,53 +109,6 @@ The `cache-benchmark` contract correction is tracked in [bluetape4k-workshop iss
 - [UserEventCacheRepository.kt](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/main/kotlin/exposed/examples/cache/domain/repository/UserEventCacheRepository.kt) and [UserEventCacheRepositoryTest.kt](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/test/kotlin/exposed/examples/cache/domain/repository/UserEventCacheRepositoryTest.kt)
 - [AbstractJdbcRedissonRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/jdbc-redisson/src/main/kotlin/io/bluetape4k/exposed/redisson/repository/AbstractJdbcRedissonRepository.kt)
 - [EntityMapLoader.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/jdbc-redisson/src/main/kotlin/io/bluetape4k/exposed/redisson/map/EntityMapLoader.kt) and [EntityMapWriter.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/jdbc-redisson/src/main/kotlin/io/bluetape4k/exposed/redisson/map/EntityMapWriter.kt)
-- [`cache-benchmark` contract correction issue #585](https://github.com/bluetape4k/bluetape4k-workshop/issues/585)
-
-## What the Current Benchmark Can Compare
-
-The values below were not reproduced for this article. They are the measurements currently recorded in the `cache-benchmark` README. Limiting the table to the four implementations whose names match their behavior gives a useful comparison of local, remote, and near-cache placement. Read and write throughput are in `ops/s`; higher is better.
-
-| Profile | Read ops/s | Write ops/s | Actual path |
-|---|---:|---:|---|
-| No Cache | ~8,200 | ~8,200 | DB only |
-| Caffeine | ~490,000 | ~8,100 | DB + local cache |
-| Redis Cache | ~43,000 | ~7,300 | DB + remote Redis |
-| Near Cache | ~465,000 | ~7,200 | DB + `RLocalCachedMap` |
-
-These values show that local hits can remove much of the remote-hop cost while the write path still pays for DB work. They do not rank read-through, write-through, and write-behind against one another. That comparison needs a rebuilt benchmark with the same loader/writer contract, consistency conditions, and flush policy.
-
-Measurements and benchmark setup:
-[cache-benchmark README.ko.md](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/README.ko.md),
-[AbstractCacheBenchmark.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/benchmark/kotlin/io/bluetape4k/workshop/cache/benchmark/benchmarks/AbstractCacheBenchmark.kt),
-[NoCacheBenchmark.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/benchmark/kotlin/io/bluetape4k/workshop/cache/benchmark/benchmarks/NoCacheBenchmark.kt),
-[CaffeineBenchmark.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/benchmark/kotlin/io/bluetape4k/workshop/cache/benchmark/benchmarks/CaffeineBenchmark.kt),
-[RedisCacheBenchmark.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/benchmark/kotlin/io/bluetape4k/workshop/cache/benchmark/benchmarks/RedisCacheBenchmark.kt), and
-[NearCacheBenchmark.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/benchmark/kotlin/io/bluetape4k/workshop/cache/benchmark/benchmarks/NearCacheBenchmark.kt).
-
-The README also contains the three names and measurements being corrected in issue #585. Those rows must not be used as performance evidence for the canonical cache strategies.
-
-## NearCacheService: Between Local and Remote
-
-The Near Cache example uses Redisson local cached map.
-
-```kotlin
-class NearCacheService(
-    private val productRepository: ProductRepository,
-    redissonClient: RedissonClient,
-) : ProductCacheService {
-    companion object : KLoggingChannel() {
-        const val CACHE_NAME = "products-near-cache"
-    }
-}
-```
-
-Full source:
-[NearCacheService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/NearCacheService.kt)
-
-The code looks short, but the meaning is large. Hot reads finish locally; the remote cache handles
-sharing and invalidation. The key question is not "did we use Near Cache?" but "is the L1 hit
-ratio high enough?" If it is not, you bought a desk drawer and still keep running to the
-warehouse.
 
 ## resilience: Do Not Let Cache Failure Become Service Failure
 
