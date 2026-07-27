@@ -109,9 +109,9 @@ interface ProductCacheService {
 | `CaffeineService` | local in-JVM cache |
 | `RedisCacheService` | remote distributed cache |
 | `NearCacheService` | local + Redis near cache |
-| `WriteThroughService` | 동기형 write-through: save 시 DB와 Redis를 같은 요청 경로에서 즉시 반영 |
-| `ReadThroughService` | cache miss 시 DB load |
-| `WriteBehindService` | 캐시는 즉시 갱신하고, update의 DB 반영은 비동기로 수행 |
+| `WriteThroughService` | service가 DB 저장 후 Redis를 직접 갱신하는 동기 dual-write |
+| `ReadThroughService` | service가 Redis miss 후 DB fallback과 cache 적재를 직접 수행하는 cache-aside |
+| `WriteBehindService` | 기존 entity update마다 Redis 갱신 후 `@Async` DB 저장. 신규 entity는 DB 먼저 저장 |
 
 관련 소스:
 [NoCacheService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/NoCacheService.kt),
@@ -130,13 +130,15 @@ interface ProductCacheService {
 - Near Cache가 read path를 충분히 줄이는가?
 - write-through 비용은 받아들일 수 있는가?
 
-단, `cache-benchmark`의 `WriteThroughService`는 동기 write-through입니다. `save()` 시 DB와 Redis 캐시를 같은 흐름에서 반영합니다.
+따라서 이 세 클래스는 이름과 달리 cache가 loader/writer를 소유하는 표준 read-through, write-through, write-behind 예제가 아닙니다.
 
-반면 `ReadThroughService`는 DB 저장 후 cache update를 애플리케이션이 직접 관리하는 cache-aside 성격이 있고, `WriteBehindService`는 캐시 업데이트를 먼저 수행한 뒤 업데이트 DB 반영은 비동기로 넘기는 구성입니다.
+제대로 된 예제는 `exposed-workshop` 11장의 [`01-cache-strategies`](https://github.com/bluetape4k/exposed-workshop/tree/develop/11-high-performance/01-cache-strategies)에 있습니다. [`UserCacheRepository`](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/main/kotlin/exposed/examples/cache/domain/repository/UserCacheRepository.kt)는 `READ_WRITE_THROUGH_WITH_NEAR_CACHE`, [`UserEventCacheRepository`](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/main/kotlin/exposed/examples/cache/domain/repository/UserEventCacheRepository.kt)는 `WRITE_BEHIND_WITH_NEAR_CACHE`를 사용합니다. 실제 DB 접근은 [`EntityMapLoader`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/jdbc-redisson/src/main/kotlin/io/bluetape4k/exposed/redisson/map/EntityMapLoader.kt)와 [`EntityMapWriter`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/jdbc-redisson/src/main/kotlin/io/bluetape4k/exposed/redisson/map/EntityMapWriter.kt)가 담당합니다.
+
+`cache-benchmark`의 계약 교정 작업은 [bluetape4k-workshop issue #585](https://github.com/bluetape4k/bluetape4k-workshop/issues/585)에서 추적합니다.
 
 <figure class="bt4k-architecture">
   <img src="/assets/cache-series-workshop-strategy-01-ko.png" alt="Workshop cache-benchmark strategies and their read/write contracts" loading="lazy" />
-  <figcaption>동일 인터페이스 아래에서 전략마다 쓰기 계약과 동기화 시점이 다릅니다. 운영에서 안전도를 먼저 가늠해야 할 지점입니다.</figcaption>
+  <figcaption>Exposed Workshop 11장은 repository가 map만 호출하고, EntityMapLoader와 EntityMapWriter가 DB load/write를 소유합니다.</figcaption>
 </figure>
 
 ## Benchmark 결과

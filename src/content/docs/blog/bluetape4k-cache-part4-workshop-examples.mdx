@@ -120,9 +120,9 @@ The implementations separate the strategies.
 | `CaffeineService` | Local in-JVM cache |
 | `RedisCacheService` | Remote distributed cache |
 | `NearCacheService` | Local + Redis near cache |
-| `WriteThroughService` | true write-through: save writes DB and Redis cache synchronously |
-| `ReadThroughService` | DB load on cache miss |
-| `WriteBehindService` | cache-first writes, DB flush asynchronously on updates |
+| `WriteThroughService` | Synchronous application dual-write: service saves DB, then updates Redis directly |
+| `ReadThroughService` | Cache-aside: service handles Redis misses, DB fallback, and cache population directly |
+| `WriteBehindService` | Existing updates change Redis then invoke one `@Async` DB save; new entities save DB first |
 
 Related source:
 [NoCacheService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/NoCacheService.kt),
@@ -143,15 +143,15 @@ by side.
 - Does Near Cache reduce the read path enough?
 - Can we accept the write-through cost?
 
-One caveat: in `cache-benchmark`, `WriteThroughService` is true synchronous write-through, so
-`save()` updates DB and Redis in the same request flow.
+Despite their names, these three classes are not canonical read-through, write-through, and write-behind examples where the cache owns loaders and writers.
 
-`ReadThroughService` keeps writes in an app-managed cache-aside pattern (DB save + explicit cache
-update), while `WriteBehindService` updates cache first and flushes DB asynchronously for updates.
+The correct examples are in Exposed Workshop chapter 11, [`01-cache-strategies`](https://github.com/bluetape4k/exposed-workshop/tree/develop/11-high-performance/01-cache-strategies). [`UserCacheRepository`](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/main/kotlin/exposed/examples/cache/domain/repository/UserCacheRepository.kt) uses `READ_WRITE_THROUGH_WITH_NEAR_CACHE`, while [`UserEventCacheRepository`](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/main/kotlin/exposed/examples/cache/domain/repository/UserEventCacheRepository.kt) uses `WRITE_BEHIND_WITH_NEAR_CACHE`. [`EntityMapLoader`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/jdbc-redisson/src/main/kotlin/io/bluetape4k/exposed/redisson/map/EntityMapLoader.kt) and [`EntityMapWriter`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/jdbc-redisson/src/main/kotlin/io/bluetape4k/exposed/redisson/map/EntityMapWriter.kt) own the actual DB access.
+
+The `cache-benchmark` contract correction is tracked in [bluetape4k-workshop issue #585](https://github.com/bluetape4k/bluetape4k-workshop/issues/585).
 
 <figure class="bt4k-architecture">
   <img src="/assets/cache-series-workshop-strategy-01-en.png" alt="Workshop cache-benchmark strategies and their read/write contracts" loading="lazy" />
-  <figcaption>All profiles share one API. Only the write path differs in how soon and where the DB and Redis are synchronized.</figcaption>
+  <figcaption>In Exposed Workshop chapter 11, the repository calls only the map while EntityMapLoader and EntityMapWriter own DB loading and writing.</figcaption>
 </figure>
 
 ## Benchmark Results

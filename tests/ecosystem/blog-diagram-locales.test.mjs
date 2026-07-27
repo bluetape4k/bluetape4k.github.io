@@ -93,3 +93,52 @@ test('paired English and Korean posts reference the same technical diagram stems
     assert.deepEqual(korean, english, relative);
   }
 });
+
+test('cache strategy diagram follows the Exposed workshop loader and writer contracts', async () => {
+  const expectations = {
+    en: {
+      readThrough: ['JdbcCacheRepository', 'EntityMapLoader.load', 'loaded entity'],
+      writeThrough: ['JdbcCacheRepository', 'EntityMapWriter.write', 'immediate DB write'],
+      writeBehind: ['JdbcCacheRepository', 'write-behind queue', 'batch flush'],
+    },
+    ko: {
+      readThrough: ['JdbcCacheRepository', 'EntityMapLoader.load', '조회 entity 적재'],
+      writeThrough: ['JdbcCacheRepository', 'EntityMapWriter.write', '즉시 DB write'],
+      writeBehind: ['JdbcCacheRepository', 'write-behind queue', 'batch flush'],
+    },
+  };
+
+  for (const [locale, labels] of Object.entries(expectations)) {
+    const source = await readFile(
+      path.join(root, 'public/assets', `cache-series-workshop-strategy-01-${locale}.svg`),
+      'utf8',
+    );
+    const rows = [
+      source.match(/<rect class="row"[^>]*>[\s\S]*?<rect class="row-alt"/)?.[0],
+      source.match(/<rect class="row-alt"[^>]*>[\s\S]*?<rect class="row"/)?.[0],
+      source.match(/<rect class="row"[^>]*y="750"[\s\S]*?<\/svg>/)?.[0],
+    ];
+
+    const [readThroughRow, writeThroughRow, writeBehindRow] = rows;
+    assert.ok(readThroughRow, `${locale}: missing ReadThroughService row`);
+    assert.ok(writeThroughRow, `${locale}: missing WriteThroughService row`);
+    assert.ok(writeBehindRow, `${locale}: missing WriteBehindService row`);
+    assert.doesNotMatch(readThroughRow, />persist</, `${locale}: read-through row shows a write path`);
+    assert.ok(
+      readThroughRow.indexOf('JdbcCacheRepository') < readThroughRow.indexOf('RMap / Near Cache')
+        && readThroughRow.indexOf('RMap / Near Cache') < readThroughRow.indexOf('Exposed DB'),
+      `${locale}: repository must access the map before EntityMapLoader accesses DB`,
+    );
+    for (const [row, expectedLabels] of [
+      [readThroughRow, labels.readThrough],
+      [writeThroughRow, labels.writeThrough],
+      [writeBehindRow, labels.writeBehind],
+    ]) {
+      for (const label of expectedLabels) {
+        assert.match(row, new RegExp(`>${label}<`), `${locale}: missing ${label}`);
+      }
+    }
+    assert.doesNotMatch(writeThroughRow, /dual-write|same request|같은 request/);
+    assert.doesNotMatch(writeBehindRow, /proxy @Async|new entity/);
+  }
+});
