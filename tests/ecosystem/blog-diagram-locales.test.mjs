@@ -68,7 +68,7 @@ test('blog technical diagrams use explicit locale assets with matching SVG sourc
     }
   }
 
-  assert.equal(stems.size, 161);
+  assert.equal(stems.size, 159);
 });
 
 test('paired English and Korean posts reference the same technical diagram stems', async () => {
@@ -92,4 +92,93 @@ test('paired English and Korean posts reference the same technical diagram stems
       .sort();
     assert.deepEqual(korean, english, relative);
   }
+});
+
+test('cache strategy diagram follows the Exposed workshop loader and writer contracts', async () => {
+  const expectations = {
+    en: {
+      readThrough: ['JdbcCacheRepository', 'EntityMapLoader.load', 'loaded entity'],
+      writeThrough: ['JdbcCacheRepository', 'EntityMapWriter.write', 'immediate DB write'],
+      writeBehind: ['JdbcCacheRepository', 'write-behind queue', 'batch flush'],
+    },
+    ko: {
+      readThrough: ['JdbcCacheRepository', 'EntityMapLoader.load', '조회 결과 반환'],
+      writeThrough: ['JdbcCacheRepository', 'EntityMapWriter.write', '즉시 DB write'],
+      writeBehind: ['JdbcCacheRepository', 'write-behind queue', 'batch flush'],
+    },
+  };
+
+  for (const [locale, labels] of Object.entries(expectations)) {
+    const source = await readFile(
+      path.join(root, 'public/assets', `cache-series-workshop-strategy-01-${locale}.svg`),
+      'utf8',
+    );
+    const rows = [
+      source.match(/<rect class="row"[^>]*>[\s\S]*?<rect class="row-alt"/)?.[0],
+      source.match(/<rect class="row-alt"[^>]*>[\s\S]*?<rect class="row"/)?.[0],
+      source.match(/<rect class="row"[^>]*y="750"[\s\S]*?<\/svg>/)?.[0],
+    ];
+
+    const [readThroughRow, writeThroughRow, writeBehindRow] = rows;
+    assert.ok(readThroughRow, `${locale}: missing read-through row`);
+    assert.ok(writeThroughRow, `${locale}: missing write-through row`);
+    assert.ok(writeBehindRow, `${locale}: missing write-behind row`);
+    assert.doesNotMatch(readThroughRow, />persist</, `${locale}: read-through row shows a write path`);
+    assert.ok(
+      readThroughRow.indexOf('JdbcCacheRepository') < readThroughRow.indexOf('RMap / Near Cache')
+        && readThroughRow.indexOf('RMap / Near Cache') < readThroughRow.indexOf('Exposed DB'),
+      `${locale}: repository must access the map before EntityMapLoader accesses DB`,
+    );
+    for (const [row, expectedLabels] of [
+      [readThroughRow, labels.readThrough],
+      [writeThroughRow, labels.writeThrough],
+      [writeBehindRow, labels.writeBehind],
+    ]) {
+      for (const label of expectedLabels) {
+        assert.match(row, new RegExp(`>${label}<`), `${locale}: missing ${label}`);
+      }
+    }
+    assert.doesNotMatch(writeThroughRow, /dual-write|same request|같은 request/);
+    assert.doesNotMatch(writeBehindRow, /proxy @Async|new entity/);
+    assert.match(writeBehindRow, />putAll</, `${locale}: write-behind call must match putAll(events)`);
+  }
+});
+
+test('cache workshop article excludes the invalid benchmark and keeps canonical strategy evidence', async () => {
+  const articles = {
+    en: await readFile(
+      path.join(root, 'src/content/docs/blog/bluetape4k-cache-part4-workshop-examples.mdx'),
+      'utf8',
+    ),
+    ko: await readFile(
+      path.join(root, 'src/content/docs/ko/blog/bluetape4k-cache-part4-workshop-examples.mdx'),
+      'utf8',
+    ),
+  };
+
+  for (const [locale, source] of Object.entries(articles)) {
+    assert.doesNotMatch(source, /cache-benchmark/i, `${locale}: invalid benchmark reference`);
+    assert.doesNotMatch(source, /ProductCacheService|NearCacheService/, `${locale}: invalid service reference`);
+    assert.doesNotMatch(source, /cache-series-workshop-profile-01/, `${locale}: stale profile diagram`);
+    assert.doesNotMatch(source, /issues\/585/, `${locale}: implementation issue leaked into article`);
+    assert.match(source, /AbstractJdbcRedissonRepository\.kt/, `${locale}: missing canonical repository reference`);
+    assert.match(source, /UserCacheRepositoryTest\.kt/, `${locale}: missing read\/write-through test reference`);
+    assert.match(source, /UserEventCacheRepositoryTest\.kt/, `${locale}: missing write-behind test reference`);
+    assert.match(
+      source,
+      locale === 'en'
+        ? /## Canonical Cache Strategies: Exposed Workshop Chapter 11/
+        : /## 정식 캐시 전략 예제: Exposed Workshop 11장/,
+      `${locale}: missing canonical strategy section`,
+    );
+    for (const example of ['cache-caffeine', 'cache-redis', 'cache-resilience']) {
+      assert.match(source, new RegExp(`/spring-boot/${example}`), `${locale}: missing ${example}`);
+    }
+  }
+
+  const generator = await readFile(
+    path.join(root, 'scripts/generate-cache-series-diagrams.mjs'),
+    'utf8',
+  );
+  assert.doesNotMatch(generator, /cache-series-workshop-profile-01|ProductCacheService/);
 });

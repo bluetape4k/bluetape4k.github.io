@@ -13,7 +13,6 @@ interface BlogPostFrontmatter {
     image: string;
     imageAlt: string;
     cardDescription?: string;
-    category?: string;
     tags?: string[];
   };
 }
@@ -27,18 +26,20 @@ const basePath = locale === 'ko' ? '/ko/blog/' : '/blog/';
 const copy =
   locale === 'ko'
     ? {
-        categories: '분류',
         tags: '태그',
+        popularTags: '인기 태그',
+        allTags: '전체 태그',
         all: '전체',
         count: (value: number) => `${value}개 글`,
-        empty: '선택한 주제의 글이 없습니다.',
+        empty: '선택한 태그의 글이 없습니다.',
       }
     : {
-        categories: 'Categories',
         tags: 'Tags',
+        popularTags: 'Popular tags',
+        allTags: 'All tags',
         all: 'All',
         count: (value: number) => `${value} ${value === 1 ? 'post' : 'posts'}`,
-        empty: 'No posts match the selected topic.',
+        empty: 'No posts match the selected tag.',
       };
 
 const modules =
@@ -58,7 +59,6 @@ const posts = Object.entries(modules)
         slug,
         title: module.frontmatter.title,
         description,
-        category: blog.category,
         tags: blog.tags,
       },
       locale,
@@ -83,50 +83,29 @@ const countBy = (values: string[]) =>
     return counts;
   }, {});
 
-const categoryCounts = countBy(posts.map((post) => String(post.taxonomy.category.slug)));
 const tagCounts = countBy(posts.flatMap((post) => post.taxonomy.tags.map((tag) => String(tag.slug))));
-const sortTerms = <T extends { slug: string; label: string }>(terms: T[], counts: Record<string, number>) =>
-  terms.sort((left, right) => counts[right.slug] - counts[left.slug] || left.label.localeCompare(right.label));
-const categories = sortTerms(
-  Object.keys(categoryCounts).map((slug) => ({
-    slug: String(slug),
-    label: posts.find((post) => post.taxonomy.category.slug === slug)?.taxonomy.category.label ?? slug,
-  })),
-  categoryCounts,
-);
-const tags = sortTerms(
-  Object.keys(tagCounts).map((slug) => ({
+const tagsByPopularity = Object.keys(tagCounts)
+  .map((slug) => ({
     slug: String(slug),
     label: String(posts.flatMap((post) => post.taxonomy.tags).find((tag) => tag.slug === slug)?.label ?? slug),
-  })),
-  tagCounts,
-);
-const filterHref = (kind: 'category' | 'tag', value: string) =>
+  }))
+  .sort((left, right) => tagCounts[right.slug] - tagCounts[left.slug] || left.label.localeCompare(right.label));
+const popularTags = tagsByPopularity.slice(0, 12);
+const allTags = [...tagsByPopularity].sort((left, right) => left.label.localeCompare(right.label, locale));
+const filterHref = (kind: 'tag', value: string) =>
   value === 'all' ? basePath : `${basePath}?${new URLSearchParams({ [kind]: value }).toString()}`;
 ---
 
 <div class="bt4k-blog-index" data-blog-index data-base-path={basePath} data-locale={locale}>
-  <section class="bt4k-blog-taxonomy" aria-label={copy.categories}>
+  <section class="bt4k-blog-taxonomy" aria-label={copy.tags}>
     <div class="bt4k-blog-taxonomy-header">
-      <span data-blog-count>{copy.count(posts.length)}</span>
+      <span data-blog-count aria-live="polite" aria-atomic="true">{copy.count(posts.length)}</span>
     </div>
-    <div class="bt4k-blog-filter-row" data-blog-filter-row="category">
-      <strong>{copy.categories}</strong>
-      <a href={basePath} data-blog-filter="category" data-filter-value="all" aria-current="true">{copy.all}</a>
-      {
-        categories.map((category) => (
-          <a href={filterHref('category', category.slug)} data-blog-filter="category" data-filter-value={category.slug}>
-            {category.label}
-            <span>{categoryCounts[category.slug]}</span>
-          </a>
-        ))
-      }
-    </div>
-    <div class="bt4k-blog-filter-row" data-blog-filter-row="tag">
-      <strong>{copy.tags}</strong>
+    <div class="bt4k-blog-filter-row" data-blog-filter-row="tag" data-blog-popular-tags>
+      <strong>{copy.popularTags}</strong>
       <a href={basePath} data-blog-filter="tag" data-filter-value="all" aria-current="true">{copy.all}</a>
       {
-        tags.map((tag) => (
+        popularTags.map((tag) => (
           <a href={filterHref('tag', tag.slug)} data-blog-filter="tag" data-filter-value={tag.slug}>
             {tag.label}
             <span>{tagCounts[tag.slug]}</span>
@@ -134,28 +113,40 @@ const filterHref = (kind: 'category' | 'tag', value: string) =>
         ))
       }
     </div>
+    <details class="bt4k-blog-tag-directory" data-blog-tag-directory>
+      <summary>{copy.allTags}</summary>
+      <div class="bt4k-blog-filter-row" data-blog-filter-row="tag">
+        {
+          allTags.map((tag) => (
+            <a href={filterHref('tag', tag.slug)} data-blog-filter="tag" data-filter-value={tag.slug}>
+              {tag.label}
+              <span>{tagCounts[tag.slug]}</span>
+            </a>
+          ))
+        }
+      </div>
+    </details>
   </section>
 
   <div class="bt4k-blog-list">
     {
       posts.map((post) => (
-        <a
-          class="bt4k-blog-card"
-          href={post.href}
-          data-blog-card
-          data-category={post.taxonomy.category.slug}
-          data-tags={post.taxonomy.tags.map((tag) => tag.slug).join(' ')}
-        >
-          <img src={post.image} alt={post.imageAlt} loading="eager" />
+        <article class="bt4k-blog-card" data-blog-card data-tags={post.taxonomy.tags.map((tag) => tag.slug).join(' ')}>
+          <a class="bt4k-blog-card-media" href={post.href}>
+            <img src={post.image} alt={post.imageAlt} loading="eager" />
+          </a>
           <div class="bt4k-blog-card-body">
-            <span class="bt4k-blog-card-category">{post.taxonomy.category.label}</span>
-            <strong>{post.title}</strong>
+            <a class="bt4k-blog-card-title" href={post.href}><strong>{post.title}</strong></a>
             <span class="bt4k-blog-card-description">{post.description}</span>
             <span class="bt4k-blog-card-tags">
-              {post.taxonomy.tags.slice(0, 5).map((tag) => <span>{tag.label}</span>)}
+              {post.taxonomy.tags.slice(0, 8).map((tag) => (
+                <a href={filterHref('tag', tag.slug)} data-blog-filter="tag" data-filter-value={tag.slug}>
+                  {tag.label}
+                </a>
+              ))}
             </span>
           </div>
-        </a>
+        </article>
       ))
     }
   </div>
@@ -171,6 +162,12 @@ const filterHref = (kind: 'category' | 'tag', value: string) =>
     const locale = root.dataset.locale || 'en';
     const cards = [...root.querySelectorAll('[data-blog-card]')];
     const links = [...root.querySelectorAll('[data-blog-filter]')];
+    const directory = root.querySelector('[data-blog-tag-directory]');
+    const popularTags = new Set(
+      [...root.querySelectorAll('[data-blog-popular-tags] [data-filter-value]')]
+        .map((link) => link.dataset.filterValue)
+        .filter((value) => value && value !== 'all'),
+    );
     const count = root.querySelector('[data-blog-count]');
     const empty = root.querySelector('[data-blog-empty]');
     const countLabel = (value) => (locale === 'ko' ? `${value}개 글` : `${value} ${value === 1 ? 'post' : 'posts'}`);
@@ -178,47 +175,41 @@ const filterHref = (kind: 'category' | 'tag', value: string) =>
     const state = () => {
       const params = new URLSearchParams(window.location.search);
       return {
-        category: params.get('category') || 'all',
         tag: params.get('tag') || 'all',
       };
     };
 
     const render = () => {
-      const { category, tag } = state();
+      const { tag } = state();
       let visible = 0;
 
       for (const card of cards) {
         const cardTags = (card.dataset.tags || '').split(' ').filter(Boolean);
-        const matchesCategory = category === 'all' || card.dataset.category === category;
-        const matchesTag = tag === 'all' || cardTags.includes(tag);
-        const matches = matchesCategory && matchesTag;
+        const matches = tag === 'all' || cardTags.includes(tag);
         card.hidden = !matches;
         if (matches) visible += 1;
       }
 
       for (const link of links) {
-        const kind = link.dataset.blogFilter;
         const value = link.dataset.filterValue || 'all';
-        const active = kind === 'category' ? category === value : tag === value;
-        link.toggleAttribute('aria-current', active);
+        if (tag === value) {
+          link.setAttribute('aria-current', 'true');
+        } else {
+          link.removeAttribute('aria-current');
+        }
       }
 
       if (count) count.textContent = countLabel(visible);
       if (empty) empty.hidden = visible !== 0;
+      if (directory) directory.open = tag !== 'all' && !popularTags.has(tag);
     };
 
     root.addEventListener('click', (event) => {
       const link = event.target.closest('[data-blog-filter]');
       if (!link) return;
       event.preventDefault();
-      const kind = link.dataset.blogFilter;
-      const value = link.dataset.filterValue || 'all';
-      const params = new URLSearchParams(window.location.search);
-      if (value === 'all') {
-        params.delete(kind);
-      } else {
-        params.set(kind, value);
-      }
+      const nextUrl = new URL(link.href);
+      const params = new URLSearchParams(nextUrl.search);
       const query = params.toString();
       history.pushState(null, '', query ? `${basePath}?${query}` : basePath);
       render();

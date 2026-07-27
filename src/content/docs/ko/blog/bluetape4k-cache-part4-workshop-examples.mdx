@@ -1,17 +1,18 @@
 ---
 title: "Bluetape4k Cache Part 4: Workshop 예제로 캐시 전략 감 잡기"
-description: bluetape4k-workshop의 Caffeine, Redis, Near Cache, resilience 예제로 캐시 전략을 실제 서비스 코드에 연결한다.
+description: bluetape4k-workshop의 Caffeine, Redis, resilience 예제와 Exposed Workshop의 정식 캐시 전략을 실제 서비스 코드에 연결한다.
 sidebar:
   order: -202605291704
 blog:
   date: 2026-05-29T17:04:00+09:00
   image: /assets/cache-series-part4-hero.png
-  imageAlt: Spring Boot cache workshop workbench with robot workers, service blocks, Redis, local cache, and benchmark gauges
-  cardDescription: "Caffeine, Redis, Near Cache, resilience를 예제로 비교하고 서비스 코드에 붙이는 방법."
+  imageAlt: Spring Boot cache workshop workbench with robot workers, service blocks, Redis, local cache, and monitoring gauges
+  cardDescription: "Caffeine, Redis, resilience와 Exposed loader/writer 전략을 예제로 살펴본다."
+  tags: ["cache","kotlin","practical-example","redis","resilience"]
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/cache-series-part4-hero.png" alt="Spring Boot cache workshop workbench with robot workers, service blocks, Redis, local cache, and benchmark gauges" loading="eager" />
+  <img src="/assets/cache-series-part4-hero.png" alt="Spring Boot cache workshop workbench with robot workers, service blocks, Redis, local cache, and monitoring gauges" loading="eager" />
   <figcaption>캐시 전략은 문서에서 이해하고, 예제에서 확인하고, 운영에서 다시 검증합니다.</figcaption>
 </figure>
 
@@ -21,11 +22,6 @@ blog:
 
 목표는 "캐시가 좋다"를 반복하는 것이 아닙니다. 어떤 전략이 어떤 코드 모양을 만들고, 어떤 비용을 숨기고, 어떤 운영 계약을 요구하는지 보는 것입니다.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/cache-series-workshop-profile-01-ko.png" alt="Workshop cache profiles comparing no cache, Caffeine, Redis, Near Cache, and benchmark path" loading="lazy" />
-  <figcaption>같은 Product service도 cache profile에 따라 성능과 일관성 계약이 달라집니다.</figcaption>
-</figure>
-
 ## 예제 위치
 
 관련 예제는 아래에 있습니다.
@@ -34,7 +30,6 @@ blog:
 |---|---|
 | [cache-caffeine](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/spring-boot/cache-caffeine) | Spring Cache + Caffeine local cache |
 | [cache-redis](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/spring-boot/cache-redis) | Spring Data Redis + Lettuce |
-| [cache-benchmark](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/spring-boot/cache-benchmark) | No cache, Caffeine, Redis, Near Cache profile 비교 |
 | [cache-resilience](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/spring-boot/cache-resilience) | Redis 장애 시 Caffeine fallback |
 
 ## Caffeine: 가장 가까운 캐시
@@ -84,119 +79,25 @@ fun redisCacheManager(connectionFactory: RedisConnectionFactory): CacheManager =
 
 Redis는 여러 인스턴스가 같은 값을 보게 해줍니다. 대신 read path마다 remote hop이 있습니다. 그래서 Part 2에서 본 것처럼 hot read가 많으면 Near Cache가 후보가 됩니다.
 
-## cache-benchmark: 같은 인터페이스, 다른 전략
+## 정식 캐시 전략 예제: Exposed Workshop 11장
 
-`cache-benchmark`는 `ProductCacheService`라는 같은 인터페이스 아래 여러 전략을 둡니다.
+Read-through, write-through, write-behind는 application service가 DB 접근 순서를 직접 조립하는 패턴이 아닙니다. application은 cache map을 사용하고, cache가 loader 또는 writer를 통해 DB 접근을 소유해야 합니다.
 
-```kotlin
-interface ProductCacheService {
-    fun findById(id: Long): Product?
-    fun save(product: Product): Product
-    fun evict(id: Long)
-    fun clearAll()
-}
-```
-
-전체 소스:
-[ProductCacheService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/ProductCacheService.kt)
-
-구현체는 전략을 분리합니다.
-
-| 구현체 | 의미 |
-|---|---|
-| `NoCacheService` | DB baseline |
-| `CaffeineService` | local in-JVM cache |
-| `RedisCacheService` | remote distributed cache |
-| `NearCacheService` | local + Redis near cache |
-| `WriteThroughService` | 동기형 write-through: save 시 DB와 Redis를 같은 요청 경로에서 즉시 반영 |
-| `ReadThroughService` | cache miss 시 DB load |
-| `WriteBehindService` | 캐시는 즉시 갱신하고, update의 DB 반영은 비동기로 수행 |
-
-관련 소스:
-[NoCacheService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/NoCacheService.kt),
-[CaffeineService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/CaffeineService.kt),
-[RedisCacheService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/RedisCacheService.kt),
-[NearCacheService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/NearCacheService.kt),
-[ReadThroughService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/ReadThroughService.kt),
-[WriteThroughService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/WriteThroughService.kt),
-[WriteBehindService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/WriteBehindService.kt)
-
-이 구조가 좋은 이유는 benchmark와 production code가 같은 질문을 공유한다는 점입니다. 같은 인터페이스 뒤에 전략을 바꿔 끼우면, 성능 숫자와 코드 복잡도를 나란히 볼 수 있습니다.
-
-- 캐시가 없으면 baseline은 얼마인가?
-- local cache만으로 충분한가?
-- Redis 공유가 필요한가?
-- Near Cache가 read path를 충분히 줄이는가?
-- write-through 비용은 받아들일 수 있는가?
-
-단, `cache-benchmark`의 `WriteThroughService`는 동기 write-through입니다. `save()` 시 DB와 Redis 캐시를 같은 흐름에서 반영합니다.
-
-반면 `ReadThroughService`는 DB 저장 후 cache update를 애플리케이션이 직접 관리하는 cache-aside 성격이 있고, `WriteBehindService`는 캐시 업데이트를 먼저 수행한 뒤 업데이트 DB 반영은 비동기로 넘기는 구성입니다.
+`exposed-workshop` 11장의 [`01-cache-strategies`](https://github.com/bluetape4k/exposed-workshop/tree/develop/11-high-performance/01-cache-strategies)는 이 계약을 그대로 구현합니다. [`UserCacheRepository`](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/main/kotlin/exposed/examples/cache/domain/repository/UserCacheRepository.kt)는 `READ_WRITE_THROUGH_WITH_NEAR_CACHE`, [`UserEventCacheRepository`](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/main/kotlin/exposed/examples/cache/domain/repository/UserEventCacheRepository.kt)는 `WRITE_BEHIND_WITH_NEAR_CACHE`를 사용합니다. 실제 DB 읽기와 쓰기는 [`EntityMapLoader`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/jdbc-redisson/src/main/kotlin/io/bluetape4k/exposed/redisson/map/EntityMapLoader.kt)와 [`EntityMapWriter`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/jdbc-redisson/src/main/kotlin/io/bluetape4k/exposed/redisson/map/EntityMapWriter.kt)가 담당합니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/cache-series-workshop-strategy-01-ko.png" alt="Workshop cache-benchmark strategies and their read/write contracts" loading="lazy" />
-  <figcaption>동일 인터페이스 아래에서 전략마다 쓰기 계약과 동기화 시점이 다릅니다. 운영에서 안전도를 먼저 가늠해야 할 지점입니다.</figcaption>
+  <img src="/assets/cache-series-workshop-strategy-01-ko.png" alt="Exposed Workshop 11장의 cache loader와 writer 계약" loading="lazy" />
+  <figcaption>Exposed Workshop 11장은 repository가 map만 호출하고, EntityMapLoader와 EntityMapWriter가 DB load/write를 소유합니다.</figcaption>
 </figure>
 
-## Benchmark 결과
+### 참고자료
 
-`cache-benchmark`는 7개 profile을 같은 `ProductCacheService` 계약으로 비교합니다. 읽기/쓰기 모두 `ops/s` 기준이고 높을수록 좋습니다.
-
-<figure class="bt4k-architecture">
-  <img src="/assets/cache-series-workshop-benchmark-01-ko.png" alt="Workshop cache benchmark profiles comparing read and write throughput" loading="lazy" />
-  <figcaption>읽기에서는 Caffeine과 Near Cache가 압도적이고, 쓰기에서는 Write-Behind가 가장 빠릅니다. 대신 의미론은 더 신중해야 합니다.</figcaption>
-</figure>
-
-관련 소스:
-[cache-benchmark README.ko.md](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/README.ko.md),
-[CaffeineBenchmark.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/benchmark/kotlin/io/bluetape4k/workshop/cache/benchmark/benchmarks/CaffeineBenchmark.kt),
-[NearCacheBenchmark.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/benchmark/kotlin/io/bluetape4k/workshop/cache/benchmark/benchmarks/NearCacheBenchmark.kt),
-[WriteBehindBenchmark.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/benchmark/kotlin/io/bluetape4k/workshop/cache/benchmark/benchmarks/WriteBehindBenchmark.kt)
-
-### 읽기 처리량
-
-| 프로파일 | 읽기 ops/s | No Cache 대비 |
-|---|---:|---:|
-| No Cache | ~8,200 | 1x |
-| Caffeine | ~490,000 | 60x |
-| Redis Cache | ~43,000 | 5x |
-| Near Cache | ~465,000 | 57x |
-| Read-Through | ~42,000 | 5x |
-| Write-Through | ~41,000 | 5x |
-| Write-Behind | ~42,000 | 5x |
-
-### 쓰기 처리량
-
-| 프로파일 | 쓰기 ops/s | 비고 |
-|---|---:|---|
-| No Cache | ~8,200 | DB만 |
-| Caffeine | ~8,100 | DB write + local cache |
-| Redis Cache | ~7,300 | DB write + Redis SET |
-| Near Cache | ~7,200 | DB write + `RLocalCachedMap` PUT |
-| Write-Through | ~5,600 | 동기 DB + Redis |
-| Write-Behind | ~24,000 | cache 우선, DB는 비동기 flush |
-
-이 표만 보면 Write-Behind가 왕처럼 보입니다. 하지만 왕관에는 약관이 붙습니다. 최종 일관성을 허용할 수 있고, flush 실패/재시도/종료 시 drain 정책을 정할 수 있을 때만 좋은 선택입니다.
-
-## NearCacheService: local과 remote 사이
-
-Near Cache 예제는 Redisson의 local cached map을 사용합니다.
-
-```kotlin
-class NearCacheService(
-    private val productRepository: ProductRepository,
-    redissonClient: RedissonClient,
-) : ProductCacheService {
-    companion object : KLoggingChannel() {
-        const val CACHE_NAME = "products-near-cache"
-    }
-}
-```
-
-전체 소스:
-[NearCacheService.kt](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/src/main/kotlin/io/bluetape4k/workshop/cache/benchmark/service/NearCacheService.kt)
-
-코드는 짧아 보이지만 의미는 큽니다. hot read는 local에서 끝내고, remote cache는 공유와 invalidation을 담당합니다. 여기서 중요한 것은 "Near Cache를 썼다"가 아니라 "L1 hit이 충분히 나온다"입니다. hit이 안 나오면 작업대 위 서랍을 샀는데 계속 창고에 뛰어가는 상황입니다.
+- [Exposed Workshop 11장 cache strategies 설명](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/README.ko.md)
+- [RedissonConfig.kt](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/main/kotlin/exposed/examples/cache/config/RedissonConfig.kt)
+- [UserCacheRepository.kt](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/main/kotlin/exposed/examples/cache/domain/repository/UserCacheRepository.kt)와 [UserCacheRepositoryTest.kt](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/test/kotlin/exposed/examples/cache/domain/repository/UserCacheRepositoryTest.kt)
+- [UserEventCacheRepository.kt](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/main/kotlin/exposed/examples/cache/domain/repository/UserEventCacheRepository.kt)와 [UserEventCacheRepositoryTest.kt](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/test/kotlin/exposed/examples/cache/domain/repository/UserEventCacheRepositoryTest.kt)
+- [AbstractJdbcRedissonRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/jdbc-redisson/src/main/kotlin/io/bluetape4k/exposed/redisson/repository/AbstractJdbcRedissonRepository.kt)
+- [EntityMapLoader.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/jdbc-redisson/src/main/kotlin/io/bluetape4k/exposed/redisson/map/EntityMapLoader.kt)와 [EntityMapWriter.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/jdbc-redisson/src/main/kotlin/io/bluetape4k/exposed/redisson/map/EntityMapWriter.kt)
 
 ## resilience: 캐시 장애를 서비스 장애로 키우지 않기
 
