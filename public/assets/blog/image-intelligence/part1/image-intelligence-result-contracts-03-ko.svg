@@ -36,7 +36,7 @@
 
   <rect width="2000" height="1100" rx="34" fill="url(#canvas)"/>
   <rect x="28" y="28" width="1944" height="1044" rx="28" fill="none" stroke="#2b4168" stroke-width="2"/>
-  <text class="title" x="1000" y="72" text-anchor="middle">분석 결과를 합치지 말고, 결정할 때 조합한다</text>
+  <text class="title" x="1000" y="72" text-anchor="middle">분석 결과는 독립적으로 보존하고, 결정 단계에서 조합한다</text>
   <text class="subtitle" x="1000" y="110" text-anchor="middle">세 분석 계약은 독립적이며 집계 상태와 업무 결정도 서로 다른 책임입니다.</text>
 
   <g id="card-ocr-contract" data-node="ocr-contract">
