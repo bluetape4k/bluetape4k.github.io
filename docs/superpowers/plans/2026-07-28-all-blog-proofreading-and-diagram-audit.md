@@ -38,18 +38,18 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 
 ## 현재 진행 상황
 
-기준 시점: 2026-07-29, stacked PR #267~#288, #290~#292
+기준 시점: 2026-07-29, stacked PR #267~#288, #290~#293
 
 | 구분 | 완료 | 전체 | 남음 | 상태 |
 | --- | ---: | ---: | ---: | --- |
-| 한국어 블로그 본문 교정 | 64 | 87 | 23 | 진행 중 |
-| 기술 다이어그램 변경·배치 검증 | 120 | 173 | 53 | 진행 중 |
-| stacked PR | 25 | 미정 | 미정 | #267~#288, #290~#292 open |
-| 현재 배치 | 3 | 3 | 0 | 텍스트 검색·사전·아웃박스 PR #292 |
+| 한국어 블로그 본문 교정 | 67 | 87 | 20 | 진행 중 |
+| 기술 다이어그램 변경·배치 검증 | 133 | 173 | 40 | 진행 중 |
+| stacked PR | 26 | 미정 | 미정 | #267~#288, #290~#293 open |
+| 현재 배치 | 3 | 3 | 0 | Kafka 우선 아웃박스·코루틴 관측성·Flow 확장 PR #293 |
 | 최종 전체 사이트 감사 | 0 | 1 | 1 | 대기 |
 | 최종 머지·배포·정리 | 0 | 1 | 1 | 대기 |
 
-현재 완료된 한국어 글 64편:
+현재 완료된 한국어 글 67편:
 
 - AI 협업 글 2편
 - Bluetape4k 생태계·GraphDB 글 2편
@@ -69,6 +69,26 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 - Dependencies 제작기 Part 3, Ktor 멀티테넌트 라우팅, 배치 벤치마크 방법론
 - Spring Boot 4 Jackson 3 전환, Text Part 1~2
 - Text Part 3~4, 트랜잭셔널 아웃박스와 멱등성
+- Kafka 우선 아웃박스 Part 2, 코루틴 관측성과 준비 상태
+- Bluetape4k Flow 확장
+
+## Kafka 우선 아웃박스·코루틴 관측성·Flow 확장 배치 DoD
+
+| 검사 | 결과 | 근거 |
+| --- | --- | --- |
+| 글 교정 | PASS | Kafka 우선 아웃박스 Part 2·코루틴 관측성과 준비 상태·Flow 확장 한국어 본문과 대응 영어 글 |
+| 날짜 보존 | PASS | base 대비 한영 `blog.date`와 `sidebar.order` 6/6 변경 없음 |
+| 사실 검증 | PASS | Kafka 직접 발행과 fallback 사이 유실 구간, liveness/readiness 역할, `bufferingDebounce` 중간 자료형 대조 |
+| 소스 링크 | PASS | 한영 글의 독자용 자료 링크 19/19 HTTP 2xx/3xx |
+| 한영 정합성 | PASS | 제목·주장·코드·자료 링크·다이어그램 구성 동기화 |
+| 다이어그램 정적 감사 | PASS | 한영 26/26, connector·endpoint·orthogonal geometry·mixed-corner 실패 0, sequence 4/4 |
+| 다이어그램 구조·PNG 검사 | PASS | 13개 stem, CairoSVG PNG 26/26 생성 및 원본 크기 육안 검사 |
+| writer 체크리스트 | PASS | dotfiles `9a42bfe`, chezmoi apply·source/live·self-audit·upstream 일치 |
+| 사이트 검사 | PASS | targeted 27/27, 전체 `npm test`, Astro 오류·경고 0, 기존 힌트 3개 |
+| 경로 검사 | PASS | 한영 글 6개 HTTP 200 |
+| stacked PR | PASS | #293, base `docs/korean-proofreading-text-outbox-batch`, head `docs/korean-proofreading-outbox-coroutines-batch` |
+
+현재 배치 필수 검사: **11/11 완료, N/A 0, Blocked 0**
 
 ## 텍스트 검색·사전·아웃박스 배치 DoD
 
