@@ -496,6 +496,8 @@ test('every blog image is explicitly classified as a technical diagram or an exc
 });
 
 test('the repaired blog diagrams expose localized titles while hero and screenshot visuals stay excluded', async () => {
+  const koWorkflowGuide = await read('src/content/docs/ko/blog/bluetape-skills-workflow-guide.mdx');
+  const enWorkflowGuide = await read('src/content/docs/blog/bluetape-skills-workflow-guide.mdx');
   const koRuntime = await read('src/content/docs/ko/blog/bluetape-skills-workflow-runtime-recovery.mdx');
   const enRuntime = await read('src/content/docs/blog/bluetape-skills-workflow-runtime-recovery.mdx');
   const koLeader = await read('src/content/docs/ko/blog/bluetape4k-leader-part5-backends-operations-benchmarks.mdx');
@@ -523,7 +525,15 @@ test('the repaired blog diagrams expose localized titles while hero and screensh
   const koBatchBenchmark = await read('src/content/docs/ko/blog/exposed-batch-kotlinx-benchmark-methodology.mdx');
   const enBatchBenchmark = await read('src/content/docs/blog/exposed-batch-kotlinx-benchmark-methodology.mdx');
 
-  assert.match(koRuntime, /class="bt4k-architecture"\s+data-diagram-title="Run과 lane의 상태·복구 모델"/);
+  for (const [source, titles] of [
+    [koWorkflowGuide, ['Bluetape 작업 유형 분류', '7단계 검토의 수렴 과정', '일곱 작업 유형의 실행 경로']],
+    [enWorkflowGuide, ['Bluetape workflow type router', 'Seven-tier review convergence', 'Seven workflow execution paths']],
+  ]) {
+    for (const title of titles) {
+      assert.match(source, new RegExp(`class="bt4k-architecture"\\s+data-diagram-title="${title}"`));
+    }
+  }
+  assert.match(koRuntime, /class="bt4k-architecture"\s+data-diagram-title="전체 작업과 실행 단위의 상태·복구 모델"/);
   assert.match(enRuntime, /class="bt4k-architecture"\s+data-diagram-title="Run and lane state and recovery model"/);
   assert.match(koLeader, /class="bt4k-architecture"\s+data-diagram-title="리더 선출 백엔드 선택 기준"/);
   assert.match(enLeader, /class="bt4k-architecture"\s+data-diagram-title="Leader election backend selection guide"/);

@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" width="1200" height="720">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" width="1200" height="720" role="img" aria-labelledby="title desc">
+  <title id="title">네이티브 런타임의 책임 경계</title>
+  <desc id="desc">Codex 주 세션은 네이티브 동작을 실행하고 보호된 런타임은 제한된 증거를 기록하는 구조도입니다.</desc>
   <style>
     .title { font-family: 'goorm Sans', 'Apple SD Gothic Neo', cursive; fill: #f2f7ff; font-size: 34px; }
     .region-title { font-family: 'goorm Sans', 'Apple SD Gothic Neo', cursive; fill: #f2f7ff; font-size: 21px; }
@@ -27,8 +29,8 @@
   <rect width="1200" height="720" fill="#07111f"/>
   <rect x="24" y="24" width="1152" height="672" rx="28" fill="#0a1728" stroke="#203a56" stroke-width="2"/>
 
-  <text x="50" y="70" class="title">Native action은 native에, 증거는 durable하게 둔다.</text>
-  <text x="52" y="103" class="subtitle">Main session이 Codex tool을 실행하고 제한된 intent, result, recovery evidence를 기록한다.</text>
+  <text x="50" y="70" class="title">네이티브 동작은 네이티브 도구에, 증거는 영속 저장소에 둡니다.</text>
+  <text x="52" y="103" class="subtitle">주 세션이 Codex 도구를 실행하고 제한된 의도, 결과, 복구 증거를 기록합니다.</text>
 
   <!-- Responsibility regions -->
   <g filter="url(#shadow)">
@@ -38,16 +40,16 @@
     <rect x="940" y="160" width="210" height="410" rx="24" fill="#10243a" stroke="#f5b942" stroke-width="2.5"/>
   </g>
 
-  <text x="165" y="202" text-anchor="middle" class="region-title">Main Session</text>
-  <text x="165" y="227" text-anchor="middle" class="small">orchestration 책임</text>
-  <text x="455" y="202" text-anchor="middle" class="region-title">Native Codex Tools</text>
-  <text x="455" y="227" text-anchor="middle" class="small">agent action 실행</text>
-  <text x="755" y="193" text-anchor="middle" class="region-title">Guarded Evidence</text>
-  <text x="755" y="217" text-anchor="middle" class="region-title">Runtime</text>
-  <text x="755" y="242" text-anchor="middle" class="small">기록만 하고 orchestrate하지 않음</text>
-  <text x="1045" y="193" text-anchor="middle" class="region-title">Manifest / Receipt</text>
-  <text x="1045" y="217" text-anchor="middle" class="region-title">/ Topology</text>
-  <text x="1045" y="242" text-anchor="middle" class="small">durable workflow state</text>
+  <text x="165" y="202" text-anchor="middle" class="region-title">주 세션</text>
+  <text x="165" y="227" text-anchor="middle" class="small">작업 조정 책임</text>
+  <text x="455" y="202" text-anchor="middle" class="region-title">Codex 네이티브 도구</text>
+  <text x="455" y="227" text-anchor="middle" class="small">에이전트 동작 실행</text>
+  <text x="755" y="193" text-anchor="middle" class="region-title">보호된 증거</text>
+  <text x="755" y="217" text-anchor="middle" class="region-title">런타임</text>
+  <text x="755" y="242" text-anchor="middle" class="small">기록만 하고 작업을 조정하지 않음</text>
+  <text x="1045" y="193" text-anchor="middle" class="region-title">매니페스트 / 작업 원장</text>
+  <text x="1045" y="217" text-anchor="middle" class="region-title">/ 구성</text>
+  <text x="1045" y="242" text-anchor="middle" class="small">영속 작업 흐름 상태</text>
 
   <!-- Main session cards -->
   <g filter="url(#shadow)">
@@ -55,12 +57,12 @@
     <rect x="76" y="366" width="178" height="74" rx="14" fill="#15304b" stroke="#3e7593" stroke-width="1.5"/>
     <rect x="76" y="469" width="178" height="74" rx="14" fill="#15304b" stroke="#3e7593" stroke-width="1.5"/>
   </g>
-  <text x="165" y="293" text-anchor="middle" class="label">다음 action 결정</text>
+  <text x="165" y="293" text-anchor="middle" class="label">다음 동작 결정</text>
   <text x="165" y="316" text-anchor="middle" class="small">lane + owner epoch</text>
-  <text x="165" y="396" text-anchor="middle" class="label">native tool 호출</text>
-  <text x="165" y="419" text-anchor="middle" class="small">main-session authority</text>
+  <text x="165" y="396" text-anchor="middle" class="label">네이티브 도구 호출</text>
+  <text x="165" y="419" text-anchor="middle" class="small">주 세션 권한</text>
   <text x="165" y="499" text-anchor="middle" class="label">완료 검증</text>
-  <text x="165" y="522" text-anchor="middle" class="small">weakest component</text>
+  <text x="165" y="522" text-anchor="middle" class="small">가장 약한 구성 요소</text>
 
   <!-- Native tool cards: these actions appear nowhere else -->
   <g filter="url(#shadow)">
@@ -80,12 +82,12 @@
     <rect x="658" y="366" width="194" height="68" rx="14" fill="#152b4c" stroke="#4f8cff" stroke-width="1.5"/>
     <rect x="658" y="457" width="194" height="68" rx="14" fill="#152b4c" stroke="#4f8cff" stroke-width="1.5"/>
   </g>
-  <text x="755" y="304" text-anchor="middle" class="label">intent</text>
-  <text x="755" y="326" text-anchor="middle" class="small">native action 전</text>
-  <text x="755" y="395" text-anchor="middle" class="label">observed evidence</text>
-  <text x="755" y="417" text-anchor="middle" class="small">native result 후</text>
-  <text x="755" y="486" text-anchor="middle" class="label">bounded receipt</text>
-  <text x="755" y="508" text-anchor="middle" class="small">guarded CLI write</text>
+  <text x="755" y="304" text-anchor="middle" class="label">의도</text>
+  <text x="755" y="326" text-anchor="middle" class="small">네이티브 동작 전</text>
+  <text x="755" y="395" text-anchor="middle" class="label">관찰 증거</text>
+  <text x="755" y="417" text-anchor="middle" class="small">네이티브 결과 후</text>
+  <text x="755" y="486" text-anchor="middle" class="label">제한된 작업 원장</text>
+  <text x="755" y="508" text-anchor="middle" class="small">보호된 CLI 기록</text>
 
   <!-- Durable state cards -->
   <g filter="url(#shadow)">
@@ -93,12 +95,12 @@
     <rect x="965" y="359" width="160" height="64" rx="14" fill="#253044" stroke="#f5b942" stroke-width="1.5"/>
     <rect x="965" y="443" width="160" height="82" rx="14" fill="#163a35" stroke="#4fd18b" stroke-width="2"/>
   </g>
-  <text x="1045" y="304" text-anchor="middle" class="label">run + lane state</text>
+  <text x="1045" y="304" text-anchor="middle" class="label">전체 작업 + 실행 단위 상태</text>
   <text x="1045" y="326" text-anchor="middle" class="small">owner epoch</text>
-  <text x="1045" y="388" text-anchor="middle" class="label">receipt chain</text>
-  <text x="1045" y="410" text-anchor="middle" class="small">replay + diagnose</text>
-  <text x="1045" y="476" text-anchor="middle" class="label">verified terminal</text>
-  <text x="1045" y="498" text-anchor="middle" class="small">필수 evidence 전체</text>
+  <text x="1045" y="388" text-anchor="middle" class="label">작업 원장 연결 구조</text>
+  <text x="1045" y="410" text-anchor="middle" class="small">재생 + 진단</text>
+  <text x="1045" y="476" text-anchor="middle" class="label">검증된 종료 상태</text>
+  <text x="1045" y="498" text-anchor="middle" class="small">필수 증거 전체</text>
 
   <!-- Responsibility-correct routes. No runtime-to-native connector exists. -->
   <path class="connector" d="M 280 286 H 340" stroke="#6ee7ff" marker-end="url(#arrow-cyan)"/>
@@ -119,15 +121,15 @@
   <!-- Compact legend and route key -->
   <g transform="translate(52 636)">
     <line x1="0" y1="0" x2="34" y2="0" stroke="#6ee7ff" stroke-width="3.5" stroke-linecap="round"/>
-    <text x="44" y="4" class="small">solid action / write</text>
+    <text x="44" y="4" class="small">실선: 동작 / 기록</text>
     <line x1="196" y1="0" x2="230" y2="0" stroke="#4f8cff" stroke-width="3.5" stroke-dasharray="8 6" stroke-linecap="round"/>
-    <text x="240" y="4" class="small">dashed observed / recovery</text>
+    <text x="240" y="4" class="small">점선: 관찰 / 복구</text>
     <rect x="470" y="-10" width="24" height="20" rx="6" fill="#163a35" stroke="#4fd18b" stroke-width="2"/>
     <text x="504" y="4" class="small">검증된 완료</text>
   </g>
-  <text x="52" y="677" class="route-label">1 native action 실행</text>
-  <text x="270" y="677" class="route-label">2 결과 관찰</text>
-  <text x="448" y="677" class="route-label">3 intent / evidence 기록</text>
-  <text x="688" y="677" class="route-label">4 guarded state write</text>
-  <text x="896" y="677" class="route-label">5 resume / recovery evidence</text>
+  <text x="52" y="677" class="route-label">1 네이티브 동작 실행</text>
+  <text x="270" y="677" class="route-label">2 실행 결과 관찰</text>
+  <text x="448" y="677" class="route-label">3 의도 / 증거 기록</text>
+  <text x="688" y="677" class="route-label">4 보호된 상태 기록</text>
+  <text x="896" y="677" class="route-label">5 재개 / 복구 증거</text>
 </svg>

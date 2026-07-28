@@ -1,38 +1,40 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1040" width="1600" height="1040">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1040" width="1600" height="1040" role="img" aria-labelledby="title desc">
+  <title id="title">Seven workflow execution paths</title>
+  <desc id="desc">Seven work types follow distinct evidence, review, recovery, and stop conditions.</desc>
   <style>
-    .title { font-family: 'Architects Daughter', 'Comic Sans MS', cursive; fill: #1e293b; font-size: 36px; }
+    .title { font-family: 'Architects Daughter', 'Comic Sans MS', cursive; fill: #f1f5f9; font-size: 36px; }
     .subtitle, .lane-label, .step, .legend { font-family: 'Comic Mono', 'SFMono-Regular', Consolas, monospace; }
-    .subtitle { fill: #475569; font-size: 15px; }
-    .lane-label { fill: #1e293b; font-size: 17px; font-weight: 700; }
-    .step { fill: #334155; font-size: 13px; }
-    .legend { fill: #475569; font-size: 12px; }
+    .subtitle { fill: #c2cede; font-size: 15px; }
+    .lane-label { fill: #f1f5f9; font-size: 17px; font-weight: 700; }
+    .step { fill: #e2e8f0; font-size: 13px; }
+    .legend { fill: #c2cede; font-size: 12px; }
   </style>
   <defs>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
-      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#64748b" flood-opacity="0.13"/>
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#94a3b8" flood-opacity="0.13"/>
     </filter>
     <marker id="arrow-blue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
-      <path d="M 0 1 L 11 6 L 0 11 Z" fill="#4f7dc9"/>
+      <path d="M 0 1 L 11 6 L 0 11 Z" fill="#60a5fa"/>
     </marker>
     <marker id="arrow-purple" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
-      <path d="M 0 1 L 11 6 L 0 11 Z" fill="#8a6fd1"/>
+      <path d="M 0 1 L 11 6 L 0 11 Z" fill="#c084fc"/>
     </marker>
   </defs>
 
-  <rect width="1600" height="1040" fill="#f8fafc"/>
-  <rect x="24" y="24" width="1552" height="992" rx="28" fill="#ffffff" stroke="#dbe5f1" stroke-width="2"/>
+  <rect width="1600" height="1040" fill="#0b1220"/>
+  <rect x="24" y="24" width="1552" height="992" rx="28" fill="#111c2e" stroke="#33475f" stroke-width="2"/>
   <text x="58" y="78" class="title">Seven work types, seven evidence paths</text>
   <text x="60" y="110" class="subtitle">The router selects a lane; every lane keeps its own ordering, proof, and stop condition.</text>
 
   <!-- lane backgrounds -->
   <g>
-    <rect x="48" y="142" width="1504" height="106" rx="18" fill="#f8fbff" stroke="#d7e7fb"/>
-    <rect x="48" y="260" width="1504" height="106" rx="18" fill="#f7fcf8" stroke="#d8efdf"/>
-    <rect x="48" y="378" width="1504" height="106" rx="18" fill="#fffaf4" stroke="#f2dfc5"/>
-    <rect x="48" y="496" width="1504" height="106" rx="18" fill="#fafbfc" stroke="#dfe4ea"/>
-    <rect x="48" y="614" width="1504" height="106" rx="18" fill="#f5fcfb" stroke="#d4efeb"/>
-    <rect x="48" y="732" width="1504" height="106" rx="18" fill="#fff7f7" stroke="#f2d7da"/>
-    <rect x="48" y="850" width="1504" height="106" rx="18" fill="#fbf8ff" stroke="#e6dcf6"/>
+    <rect x="48" y="142" width="1504" height="106" rx="18" fill="#14243a" stroke="#19304a"/>
+    <rect x="48" y="260" width="1504" height="106" rx="18" fill="#162b22" stroke="#183126"/>
+    <rect x="48" y="378" width="1504" height="106" rx="18" fill="#30231c" stroke="#352719"/>
+    <rect x="48" y="496" width="1504" height="106" rx="18" fill="#172236" stroke="#263445"/>
+    <rect x="48" y="614" width="1504" height="106" rx="18" fill="#142c29" stroke="#17312d"/>
+    <rect x="48" y="732" width="1504" height="106" rx="18" fill="#321d25" stroke="#3a2027"/>
+    <rect x="48" y="850" width="1504" height="106" rx="18" fill="#292039" stroke="#30264a"/>
   </g>
 
   <!-- lane labels -->
@@ -52,23 +54,23 @@
   <text x="78" y="918" class="legend">measured candidate loop</text>
 
   <!-- Type A connectors -->
-  <g fill="none" stroke="#4f7dc9" stroke-width="2.3" marker-end="url(#arrow-blue)">
+  <g fill="none" stroke="#60a5fa" stroke-width="2.3" marker-end="url(#arrow-blue)">
     <path class="connector" d="M 426 196 H 440"/><path class="connector" d="M 548 196 H 562"/><path class="connector" d="M 670 196 H 684"/>
     <path class="connector" d="M 792 196 H 806"/><path class="connector" d="M 914 196 H 928"/><path class="connector" d="M 1036 196 H 1050"/>
     <path class="connector" d="M 1158 196 H 1172"/><path class="connector" d="M 1280 196 H 1294"/><path class="connector" d="M 1402 196 H 1416"/>
   </g>
   <!-- Type A cards -->
   <g filter="url(#shadow)">
-    <rect x="318" y="164" width="108" height="64" rx="12" fill="#eef6ff" stroke="#7aa7e8"/>
-    <rect x="440" y="164" width="108" height="64" rx="12" fill="#eef6ff" stroke="#7aa7e8"/>
-    <rect x="562" y="164" width="108" height="64" rx="12" fill="#eef6ff" stroke="#7aa7e8"/>
-    <rect x="684" y="164" width="108" height="64" rx="12" fill="#faf5ff" stroke="#8a6fd1" stroke-width="2"/>
-    <rect x="806" y="164" width="108" height="64" rx="12" fill="#eef6ff" stroke="#7aa7e8"/>
-    <rect x="928" y="164" width="108" height="64" rx="12" fill="#faf5ff" stroke="#8a6fd1" stroke-width="2"/>
-    <rect x="1050" y="164" width="108" height="64" rx="12" fill="#f0fdf4" stroke="#45a66f"/>
-    <rect x="1172" y="164" width="108" height="64" rx="12" fill="#eef6ff" stroke="#7aa7e8"/>
-    <rect x="1294" y="164" width="108" height="64" rx="12" fill="#faf5ff" stroke="#8a6fd1" stroke-width="2"/>
-    <rect x="1416" y="164" width="108" height="64" rx="12" fill="#f0fdf4" stroke="#45a66f"/>
+    <rect x="318" y="164" width="108" height="64" rx="12" fill="#14243a" stroke="#7aa7e8"/>
+    <rect x="440" y="164" width="108" height="64" rx="12" fill="#14243a" stroke="#7aa7e8"/>
+    <rect x="562" y="164" width="108" height="64" rx="12" fill="#14243a" stroke="#7aa7e8"/>
+    <rect x="684" y="164" width="108" height="64" rx="12" fill="#291f3b" stroke="#c084fc" stroke-width="2"/>
+    <rect x="806" y="164" width="108" height="64" rx="12" fill="#14243a" stroke="#7aa7e8"/>
+    <rect x="928" y="164" width="108" height="64" rx="12" fill="#291f3b" stroke="#c084fc" stroke-width="2"/>
+    <rect x="1050" y="164" width="108" height="64" rx="12" fill="#142b22" stroke="#34d399"/>
+    <rect x="1172" y="164" width="108" height="64" rx="12" fill="#14243a" stroke="#7aa7e8"/>
+    <rect x="1294" y="164" width="108" height="64" rx="12" fill="#291f3b" stroke="#c084fc" stroke-width="2"/>
+    <rect x="1416" y="164" width="108" height="64" rx="12" fill="#142b22" stroke="#34d399"/>
   </g>
   <text x="372" y="201" text-anchor="middle" class="step">Requirements</text>
   <text x="494" y="201" text-anchor="middle" class="step">Research</text>
@@ -83,16 +85,16 @@
   <text x="1470" y="210" text-anchor="middle" class="legend">closeout</text>
 
   <!-- Type B -->
-  <g fill="none" stroke="#4f7dc9" stroke-width="2.3" marker-end="url(#arrow-blue)">
+  <g fill="none" stroke="#60a5fa" stroke-width="2.3" marker-end="url(#arrow-blue)">
     <path class="connector" d="M 506 314 H 526"/><path class="connector" d="M 706 314 H 726"/><path class="connector" d="M 906 314 H 926"/><path class="connector" d="M 1106 314 H 1126"/><path class="connector" d="M 1306 314 H 1326"/>
   </g>
   <g filter="url(#shadow)">
-    <rect x="326" y="282" width="180" height="64" rx="12" fill="#f0fdf4" stroke="#6db88a"/>
-    <rect x="526" y="282" width="180" height="64" rx="12" fill="#f0fdf4" stroke="#6db88a"/>
-    <rect x="726" y="282" width="180" height="64" rx="12" fill="#f0fdf4" stroke="#6db88a"/>
-    <rect x="926" y="282" width="180" height="64" rx="12" fill="#f0fdf4" stroke="#6db88a"/>
-    <rect x="1126" y="282" width="180" height="64" rx="12" fill="#f0fdf4" stroke="#6db88a"/>
-    <rect x="1326" y="282" width="180" height="64" rx="12" fill="#f0fdf4" stroke="#6db88a"/>
+    <rect x="326" y="282" width="180" height="64" rx="12" fill="#142b22" stroke="#6db88a"/>
+    <rect x="526" y="282" width="180" height="64" rx="12" fill="#142b22" stroke="#6db88a"/>
+    <rect x="726" y="282" width="180" height="64" rx="12" fill="#142b22" stroke="#6db88a"/>
+    <rect x="926" y="282" width="180" height="64" rx="12" fill="#142b22" stroke="#6db88a"/>
+    <rect x="1126" y="282" width="180" height="64" rx="12" fill="#142b22" stroke="#6db88a"/>
+    <rect x="1326" y="282" width="180" height="64" rx="12" fill="#142b22" stroke="#6db88a"/>
   </g>
   <text x="416" y="319" text-anchor="middle" class="step">Boundary</text>
   <text x="616" y="310" text-anchor="middle" class="step">Existing</text><text x="616" y="328" text-anchor="middle" class="step">Pattern</text>
@@ -102,15 +104,15 @@
   <text x="1416" y="319" text-anchor="middle" class="step">Review</text>
 
   <!-- Type C -->
-  <g fill="none" stroke="#4f7dc9" stroke-width="2.3" marker-end="url(#arrow-blue)">
+  <g fill="none" stroke="#60a5fa" stroke-width="2.3" marker-end="url(#arrow-blue)">
     <path class="connector" d="M 546 432 H 566"/><path class="connector" d="M 786 432 H 806"/><path class="connector" d="M 1026 432 H 1046"/><path class="connector" d="M 1266 432 H 1286"/>
   </g>
   <g filter="url(#shadow)">
-    <rect x="326" y="400" width="220" height="64" rx="12" fill="#fff7ed" stroke="#d89132"/>
-    <rect x="566" y="400" width="220" height="64" rx="12" fill="#fff7ed" stroke="#d89132"/>
-    <rect x="806" y="400" width="220" height="64" rx="12" fill="#fef2f2" stroke="#d25b63" stroke-width="2"/>
-    <rect x="1046" y="400" width="220" height="64" rx="12" fill="#f0fdf4" stroke="#45a66f" stroke-width="2"/>
-    <rect x="1286" y="400" width="220" height="64" rx="12" fill="#fff7ed" stroke="#d89132"/>
+    <rect x="326" y="400" width="220" height="64" rx="12" fill="#302317" stroke="#d89132"/>
+    <rect x="566" y="400" width="220" height="64" rx="12" fill="#302317" stroke="#d89132"/>
+    <rect x="806" y="400" width="220" height="64" rx="12" fill="#321c24" stroke="#fb7185" stroke-width="2"/>
+    <rect x="1046" y="400" width="220" height="64" rx="12" fill="#142b22" stroke="#34d399" stroke-width="2"/>
+    <rect x="1286" y="400" width="220" height="64" rx="12" fill="#302317" stroke="#d89132"/>
   </g>
   <text x="436" y="437" text-anchor="middle" class="step">Reproduce</text>
   <text x="676" y="437" text-anchor="middle" class="step">Root Cause</text>
@@ -119,14 +121,14 @@
   <text x="1396" y="437" text-anchor="middle" class="step">Review / CI</text>
 
   <!-- Type D -->
-  <g fill="none" stroke="#7b8798" stroke-width="2.3" marker-end="url(#arrow-blue)">
+  <g fill="none" stroke="#aebed2" stroke-width="2.3" marker-end="url(#arrow-blue)">
     <path class="connector" d="M 596 550 H 626"/><path class="connector" d="M 896 550 H 926"/><path class="connector" d="M 1196 550 H 1226"/>
   </g>
   <g filter="url(#shadow)">
-    <rect x="326" y="518" width="270" height="64" rx="12" fill="#f8fafc" stroke="#7b8798"/>
-    <rect x="626" y="518" width="270" height="64" rx="12" fill="#f8fafc" stroke="#7b8798"/>
-    <rect x="926" y="518" width="270" height="64" rx="12" fill="#f8fafc" stroke="#7b8798"/>
-    <rect x="1226" y="518" width="280" height="64" rx="12" fill="#f8fafc" stroke="#7b8798"/>
+    <rect x="326" y="518" width="270" height="64" rx="12" fill="#0b1220" stroke="#aebed2"/>
+    <rect x="626" y="518" width="270" height="64" rx="12" fill="#0b1220" stroke="#aebed2"/>
+    <rect x="926" y="518" width="270" height="64" rx="12" fill="#0b1220" stroke="#aebed2"/>
+    <rect x="1226" y="518" width="280" height="64" rx="12" fill="#0b1220" stroke="#aebed2"/>
   </g>
   <text x="461" y="555" text-anchor="middle" class="step">Current Diff</text>
   <text x="761" y="555" text-anchor="middle" class="step">Review Lenses</text>
@@ -138,11 +140,11 @@
     <path class="connector" d="M 546 668 H 566"/><path class="connector" d="M 786 668 H 806"/><path class="connector" d="M 1026 668 H 1046"/><path class="connector" d="M 1266 668 H 1286"/>
   </g>
   <g filter="url(#shadow)">
-    <rect x="326" y="636" width="220" height="64" rx="12" fill="#f0fdfa" stroke="#2b9c93"/>
-    <rect x="566" y="636" width="220" height="64" rx="12" fill="#f0fdfa" stroke="#2b9c93"/>
-    <rect x="806" y="636" width="220" height="64" rx="12" fill="#e6faf7" stroke="#16877e" stroke-width="2"/>
-    <rect x="1046" y="636" width="220" height="64" rx="12" fill="#e6faf7" stroke="#16877e" stroke-width="2"/>
-    <rect x="1286" y="636" width="220" height="64" rx="12" fill="#f0fdfa" stroke="#2b9c93"/>
+    <rect x="326" y="636" width="220" height="64" rx="12" fill="#122b29" stroke="#2b9c93"/>
+    <rect x="566" y="636" width="220" height="64" rx="12" fill="#122b29" stroke="#2b9c93"/>
+    <rect x="806" y="636" width="220" height="64" rx="12" fill="#15302c" stroke="#16877e" stroke-width="2"/>
+    <rect x="1046" y="636" width="220" height="64" rx="12" fill="#15302c" stroke="#16877e" stroke-width="2"/>
+    <rect x="1286" y="636" width="220" height="64" rx="12" fill="#122b29" stroke="#2b9c93"/>
   </g>
   <text x="436" y="659" text-anchor="middle" class="step">Discover</text><text x="436" y="677" text-anchor="middle" class="step">Guidance</text>
   <text x="676" y="659" text-anchor="middle" class="step">Preserve</text><text x="676" y="677" text-anchor="middle" class="step">Ownership</text>
@@ -151,16 +153,16 @@
   <text x="1396" y="673" text-anchor="middle" class="step">Self-audit</text>
 
   <!-- Type P -->
-  <g fill="none" stroke="#d25b63" stroke-width="2.3" marker-end="url(#arrow-blue)">
+  <g fill="none" stroke="#fb7185" stroke-width="2.3" marker-end="url(#arrow-blue)">
     <path class="connector" d="M 506 786 H 526"/><path class="connector" d="M 706 786 H 726"/><path class="connector" d="M 906 786 H 926"/><path class="connector" d="M 1106 786 H 1126"/><path class="connector" d="M 1306 786 H 1326"/>
   </g>
   <g filter="url(#shadow)">
-    <rect x="326" y="754" width="180" height="64" rx="12" fill="#fef2f2" stroke="#d25b63"/>
-    <rect x="526" y="754" width="180" height="64" rx="12" fill="#fef2f2" stroke="#d25b63"/>
-    <rect x="726" y="754" width="180" height="64" rx="12" fill="#fee2e2" stroke="#be3945" stroke-width="2"/>
-    <rect x="926" y="754" width="180" height="64" rx="12" fill="#fef2f2" stroke="#d25b63"/>
-    <rect x="1126" y="754" width="180" height="64" rx="12" fill="#fef2f2" stroke="#d25b63"/>
-    <rect x="1326" y="754" width="180" height="64" rx="12" fill="#fef2f2" stroke="#d25b63"/>
+    <rect x="326" y="754" width="180" height="64" rx="12" fill="#321c24" stroke="#fb7185"/>
+    <rect x="526" y="754" width="180" height="64" rx="12" fill="#321c24" stroke="#fb7185"/>
+    <rect x="726" y="754" width="180" height="64" rx="12" fill="#3a2027" stroke="#be3945" stroke-width="2"/>
+    <rect x="926" y="754" width="180" height="64" rx="12" fill="#321c24" stroke="#fb7185"/>
+    <rect x="1126" y="754" width="180" height="64" rx="12" fill="#321c24" stroke="#fb7185"/>
+    <rect x="1326" y="754" width="180" height="64" rx="12" fill="#321c24" stroke="#fb7185"/>
   </g>
   <text x="416" y="777" text-anchor="middle" class="step">Pin Version</text><text x="416" y="795" text-anchor="middle" class="legend">and authority</text>
   <text x="616" y="791" text-anchor="middle" class="step">Preflight</text>
@@ -170,18 +172,18 @@
   <text x="1416" y="777" text-anchor="middle" class="step">Consumer</text><text x="1416" y="795" text-anchor="middle" class="step">Sync</text>
 
   <!-- Type F -->
-  <g fill="none" stroke="#8a6fd1" stroke-width="2.3" marker-end="url(#arrow-purple)">
+  <g fill="none" stroke="#c084fc" stroke-width="2.3" marker-end="url(#arrow-purple)">
     <path class="connector" d="M 476 904 H 492"/><path class="connector" d="M 654 904 H 670"/><path class="connector" d="M 832 904 H 848"/><path class="connector" d="M 1010 904 H 1026"/><path class="connector" d="M 1188 904 H 1204"/><path class="connector" d="M 1366 904 H 1382"/>
     <path class="connector" d="M 1445 936 V 958 Q 1445 970 1433 970 H 745 Q 733 970 733 958 V 938"/>
   </g>
   <g filter="url(#shadow)">
-    <rect x="314" y="872" width="162" height="64" rx="12" fill="#faf5ff" stroke="#8a6fd1"/>
-    <rect x="492" y="872" width="162" height="64" rx="12" fill="#faf5ff" stroke="#8a6fd1"/>
-    <rect x="670" y="872" width="162" height="64" rx="12" fill="#faf5ff" stroke="#8a6fd1"/>
-    <rect x="848" y="872" width="162" height="64" rx="12" fill="#faf5ff" stroke="#8a6fd1"/>
-    <rect x="1026" y="872" width="162" height="64" rx="12" fill="#faf5ff" stroke="#8a6fd1"/>
-    <rect x="1204" y="872" width="162" height="64" rx="12" fill="#faf5ff" stroke="#8a6fd1"/>
-    <rect x="1382" y="872" width="142" height="64" rx="12" fill="#faf5ff" stroke="#8a6fd1"/>
+    <rect x="314" y="872" width="162" height="64" rx="12" fill="#291f3b" stroke="#c084fc"/>
+    <rect x="492" y="872" width="162" height="64" rx="12" fill="#291f3b" stroke="#c084fc"/>
+    <rect x="670" y="872" width="162" height="64" rx="12" fill="#291f3b" stroke="#c084fc"/>
+    <rect x="848" y="872" width="162" height="64" rx="12" fill="#291f3b" stroke="#c084fc"/>
+    <rect x="1026" y="872" width="162" height="64" rx="12" fill="#291f3b" stroke="#c084fc"/>
+    <rect x="1204" y="872" width="162" height="64" rx="12" fill="#291f3b" stroke="#c084fc"/>
+    <rect x="1382" y="872" width="142" height="64" rx="12" fill="#291f3b" stroke="#c084fc"/>
   </g>
   <text x="395" y="909" text-anchor="middle" class="step">Baseline</text>
   <text x="573" y="909" text-anchor="middle" class="step">Hypothesis</text>
@@ -193,6 +195,6 @@
   <text x="1086" y="991" text-anchor="middle" class="legend">rejected or next hypothesis</text>
 
   <!-- legend -->
-  <circle cx="66" cy="988" r="6" fill="#4f7dc9"/><text x="80" y="993" class="legend">normal evidence flow</text>
-  <circle cx="250" cy="988" r="6" fill="#8a6fd1"/><text x="264" y="993" class="legend">review or feedback gate</text>
+  <circle cx="66" cy="988" r="6" fill="#60a5fa"/><text x="80" y="993" class="legend">normal evidence flow</text>
+  <circle cx="250" cy="988" r="6" fill="#c084fc"/><text x="264" y="993" class="legend">review or feedback gate</text>
 </svg>

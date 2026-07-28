@@ -38,18 +38,18 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 
 ## 현재 진행 상황
 
-기준 시점: 2026-07-29, stacked PR #267~#288, #290~#294
+기준 시점: 2026-07-29, stacked PR #267~#288, #290~#294와 현재 배치 PR 예정
 
 | 구분 | 완료 | 전체 | 남음 | 상태 |
 | --- | ---: | ---: | ---: | --- |
-| 한국어 블로그 본문 교정 | 70 | 87 | 17 | 진행 중 |
-| 기술 다이어그램 변경·배치 검증 | 140 | 173 | 33 | 진행 중 |
-| stacked PR | 27 | 미정 | 미정 | #267~#288, #290~#294 open |
-| 현재 배치 | 3 | 3 | 0 | 요청 제한·OCR·Skills 공유 PR #294 |
+| 한국어 블로그 본문 교정 | 73 | 87 | 14 | 진행 중 |
+| 기술 다이어그램 변경·배치 검증 | 146 | 173 | 27 | 진행 중 |
+| stacked PR | 28 | 미정 | 미정 | #267~#288, #290~#294와 현재 배치 |
+| 현재 배치 | 3 | 3 | 0 | Bluetape Skills Part 2~3·병원 예약 Part 1 |
 | 최종 전체 사이트 감사 | 0 | 1 | 1 | 대기 |
 | 최종 머지·배포·정리 | 0 | 1 | 1 | 대기 |
 
-현재 완료된 한국어 글 70편:
+현재 완료된 한국어 글 73편:
 
 - AI 협업 글 2편
 - Bluetape4k 생태계·GraphDB 글 2편
@@ -72,6 +72,25 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 - Kafka 우선 아웃박스 Part 2, 코루틴 관측성과 준비 상태
 - Bluetape4k Flow 확장
 - Bucket4j 요청 제한, OCR 서비스 실패 응답, Bluetape Skills Part 1
+- Bluetape Skills Part 2~3, 병원 예약 Part 1
+
+## Workflow·런타임 복구·병원 예약 배치 DoD
+
+| 검사 | 결과 | 근거 |
+| --- | --- | --- |
+| 글 교정 | PASS | Bluetape Skills Part 2~3·병원 예약 Part 1 한국어 본문과 대응 영어 글 |
+| 날짜 보존 | PASS | base 대비 변경 글의 `blog.date`와 `sidebar.order` 5/5 변경 없음 |
+| 사실 검증 | PASS | 현재 CG-01~CG-18, v1.1.0 재현 절차와 v1.2.2 안정 설치, 병원 예약 도메인 구현 대조 |
+| 소스 링크 | PASS | 한영 글의 독자용 자료 링크 20/20 HTTP 200 |
+| 한영 정합성 | PASS | 제목·주장·식별자·자료 링크·다이어그램 구성 동기화 |
+| 다이어그램 정적 감사 | PASS | 한영 12/12, XML·connector·endpoint·orthogonal geometry·mixed-corner 실패 0 |
+| 다이어그램 구조·PNG 검사 | PASS | 6개 stem, 생성기 24/24 재현성, CairoSVG 2배 PNG 12/12와 원본 크기 육안 검사 |
+| writer 체크리스트 | PASS | dotfiles `b0fa058`, chezmoi apply·SHA-256 source/live·self-audit·upstream 일치 |
+| 사이트 검사 | PASS | Node 167/167, lightbox 23/23, Astro 오류·경고 0, 기존 힌트 3개, 1,303 pages build |
+| 경로 검사 | PASS | 한영 글 6개 HTTP 200, 로컬 프리뷰 `127.0.0.1:4340` |
+| stacked PR | PENDING | base `docs/korean-proofreading-rate-ocr-skills-batch`, head `docs/korean-proofreading-skills-clinic-batch` |
+
+현재 배치 필수 검사: **10/11 완료, N/A 0, Blocked 0**
 
 ## 요청 제한·OCR·Skills 공유 배치 DoD
 

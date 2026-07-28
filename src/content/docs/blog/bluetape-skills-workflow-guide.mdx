@@ -67,7 +67,7 @@ even when the diff is short. A review stays Type D unless the user also requests
 bug fix mixed with an unrelated feature becomes two workflows. Risk and required evidence matter
 more than the label attached to the request.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Bluetape workflow type router">
   <img src="/assets/bluetape-workflow-type-router-01-en.png" alt="One user request entering bluetape-workflow and branching by risk and evidence scope into Full Feature, Fast Track, Bug Fix, Code Review, Maintenance, Publish, and Self Improve" loading="lazy" />
   <figcaption>The router chooses the lightest safe lane from the change risk and the evidence it requires.</figcaption>
 </figure>
@@ -183,21 +183,20 @@ collected, and only then does execution resume.
 
 ## Common Gates Protect the Work Before and After the Leaf Skill
 
-Leaf skills own type-specific execution. The 17 common gates own repository-wide safety.
+Leaf skills own type-specific execution. The 18 common gates own repository-wide safety.
 
 | Range | What it checks |
 | --- | --- |
-| CG-01–03 | Guidance, status and diff, historical evidence, user work, and worktree boundaries |
-| CG-04–05 | Conversation/document/KDoc language and public contract documentation |
-| CG-06–08 | Ecosystem reuse, targeted proof, and serialization of heavyweight tests |
-| CG-09–12 | Issue/PR metadata, PR body and reviews, side-effect authority, post-merge local sync |
-| CG-13–15 | Chezmoi source-first changes, Codex self-audit, global policy and Claude boundaries |
-| CG-16–17 | Authoritative commands and line-by-line completion proof |
+| CG-01–03 | Applicable authority, historical and current evidence, user work, and worktree boundaries |
+| CG-04–06 | Policy, audience, and language boundaries; ecosystem reuse; public-contract documentation |
+| CG-07–10 | Targeted proof, serialized heavyweight tests, lesson evaluation, and pre-PR convergence |
+| CG-11–14 | PR authority, exact branch publication, live PR verification, CI, and review feedback |
+| CG-15–18 | Merge-ready reporting, fresh merge approval, verified merge, local synchronization, and cleanup |
 
 Not every task runs every operation. Blog work makes public API KDoc and Testcontainers `N/A`, while
 locale parity, site build, PR body, and post-merge sync remain required. User-scope skill changes
-activate CG-13 and CG-14: editing a live file alone cannot pass. The workflow must update the chezmoi
-source, apply it, prove parity, self-audit, commit, and push.
+also activate the separate chezmoi persistence gate: editing a live file alone cannot pass. The
+workflow must update the chezmoi source, apply it, prove parity, self-audit, commit, and push.
 
 The common gates absorbed recurring closeout failures too: creating issues and PRs without checking
 assignee, milestone, or labels; merging after green CI without rereading new review comments; and
@@ -253,7 +252,7 @@ enough. Revision and re-review continue until the latest integrated result reach
 | `3-R` · Plan Review | Spec-to-task mapping, dependency order, tests, docs, rollback, repository hazards | Latest integrated plan review has `P0=0`, `P1=0` |
 | `6-R` · Pre-PR Review | Current branch diff, tests and diagnostics, docs, module changes, PR evidence | Latest integrated diff review has `P0=0`, `P1=0` |
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Seven-tier review convergence">
   <img src="/assets/bluetape-workflow-7-tier-review-01-en.png" alt="The 2-R Spec, 3-R Plan, and 6-R Pre-PR gates passing through six independent perspectives—Performance, Stability, Security, Operator and Ops, Developer and API, User and Caller—before main-session integration, with a repair loop until P0 and P1 reach zero" loading="lazy" />
   <figcaption>All three gates use the same 7-Tier engine. The next gate opens only when the main session's latest integration reaches P0=0 and P1=0.</figcaption>
 </figure>
@@ -280,7 +279,7 @@ An older zero-blocker result or later green CI does not prove the current artifa
 
 Classification selects more than a name. Each lane has its own sequence, evidence, and return point.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Seven workflow execution paths">
   <img src="/assets/bluetape-workflow-execution-lanes-01-en.png" alt="Seven workflow lanes comparing Full Feature design review, Fast Track bounded change, Bug Fix RED and GREEN, read-only Code Review, Maintenance source-first parity, Publish irreversible holds, and Self Improve benchmark feedback" loading="lazy" />
   <figcaption>Every lane starts at the same router, but its ordering, evidence, and failure recovery are different.</figcaption>
 </figure>
