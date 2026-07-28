@@ -1,37 +1,37 @@
 ---
-title: "Bluetape4k Projects Part 5: utility와 adoption path"
-description: ID 생성기, geo/science, money, measured, probabilistic, rule engine, state/workflow, JWT, time utility를 어떤 순서로 서비스에 들여올지 정리한다.
+title: "Bluetape4k Projects Part 5: 유틸리티와 도입 경로"
+description: ID 생성기, geo/science, money, measured, probabilistic, rule engine, state/workflow, JWT, 시간 유틸리티를 어떤 순서로 서비스에 들여올지 정리한다.
 sidebar:
   order: -202605301634
 blog:
   date: 2026-05-30T16:34:00+09:00
   image: /assets/bluetape4k-projects-part5-hero.png
-  imageAlt: 작은 로봇 작업자들이 utility 모듈과 예제, workshop, benchmark 노트를 서비스 채택 경로로 연결하는 일러스트
-  cardDescription: "작은 utility 모듈을 필요한 만큼만 고르고 예제와 benchmark로 검증하는 채택 순서."
+  imageAlt: 작은 로봇 작업자들이 유틸리티 모듈과 예제, workshop, 벤치마크 노트를 서비스 채택 경로로 연결하는 일러스트
+  cardDescription: "작은 유틸리티 모듈을 필요한 만큼만 고르고 예제와 벤치마크로 검증하는 채택 순서."
   tags: ["ecosystem","kotlin","performance","practical-example"]
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/bluetape4k-projects-part5-hero.png" alt="작은 로봇 작업자들이 utility 모듈과 예제, workshop, benchmark 노트를 서비스 채택 경로로 연결하는 일러스트" loading="eager" />
+  <img src="/assets/bluetape4k-projects-part5-hero.png" alt="작은 로봇 작업자들이 유틸리티 모듈과 예제, workshop, 벤치마크 노트를 서비스 채택 경로로 연결하는 일러스트" loading="eager" />
   <figcaption>작은 공구는 작아서 좋습니다. 문제마다 공구함 전체를 끌고 오지만 않으면요.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-30 · bluetape4k-projects series · Part 5</p>
 
 이 글은 `bluetape4k-projects` 시리즈의 5편입니다. [Part 4](/ko/blog/bluetape4k-projects-part4-data-infrastructure/)에서는
-DB, Redis, messaging, observability 같은 운영 시스템 경계를 봤습니다. 이번에는 그보다 작은 모듈을 봅니다.
-ID를 만들고, 시간과 단위를 다루고, 돈과 지리 정보를 표현하고, rule/state/workflow를 조립하는 utility
+DB, Redis, 메시징, 관측성 같은 운영 시스템 경계를 봤습니다. 이번에는 그보다 작은 모듈을 봅니다.
+ID를 만들고, 시간과 단위를 다루고, 돈과 지리 정보를 표현하고, rule/state/workflow를 조립하는 유틸리티
 영역입니다.
 
-Utility 모듈은 domain repository와 성격이 다릅니다. `bluetape4k-exposed`, `bluetape4k-leader`,
+유틸리티 모듈은 도메인 저장소와 성격이 다릅니다. `bluetape4k-exposed`, `bluetape4k-leader`,
 `bluetape4k-text`처럼 독립 저장소로 커진 기능은 자체 생태계와 릴리스 리듬이 있습니다. 반면 `projects`의
-utility는 서비스 코드 여기저기에서 반복되는 작은 결정을 한곳에 모은 것입니다. 작지만 자주 쓰입니다.
+유틸리티는 서비스 코드 여기저기에서 반복되는 작은 결정을 한곳에 모은 것입니다. 작지만 자주 쓰입니다.
 그리고 자주 쓰이는 작은 코드는 생각보다 빨리 표준이 됩니다. 표준이 되기 전에 제멋대로 퍼지면, 나중에는
 표준화보다 정리가 더 어려워집니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-projects-part5-adoption-map-ko.png" alt="Identity, domain math, decision tools에서 minimal module, examples, workshops, benchmark notes, service adoption으로 이어지는 지도" loading="lazy" />
-  <figcaption>Utility는 필요한 문제에서 시작해 최소 모듈을 고르고, 예제와 benchmark로 채택 경계를 확인하는 편이 좋습니다.</figcaption>
+  <img src="/assets/bluetape4k-projects-part5-adoption-map-ko.png" alt="식별자, 도메인 계산, 의사결정 도구에서 최소 모듈, 예제, workshop, 벤치마크 노트, 서비스 도입으로 이어지는 지도" loading="lazy" />
+  <figcaption>유틸리티는 필요한 문제에서 시작해 최소 모듈을 고르고, 예제와 벤치마크로 채택 경계를 확인하는 편이 좋습니다.</figcaption>
 </figure>
 
 ## ID는 먼저 정책이다
@@ -55,14 +55,14 @@ val eventId = Ksuid.Millis.generate()
 val shardKey = Snowflakers.Default.nextId()
 ```
 
-ID는 나중에 바꾸기 어렵습니다. database index, URL, event payload, log correlation, 외부 API 계약에 다
-묻어납니다. 그래서 utility처럼 보여도 실제로는 architecture 결정입니다. "일단 random UUID"는 빠르지만,
+ID는 나중에 바꾸기 어렵습니다. 데이터베이스 인덱스, URL, event payload, log correlation, 외부 API 계약에 다
+묻어납니다. 그래서 유틸리티처럼 보여도 실제로는 아키텍처 결정입니다. "일단 random UUID"는 빠르지만,
 정렬과 저장 비용, URL 노출, shard 전략을 나중에 다시 물어봅니다. 보통은 그 질문이 migration ticket으로
 돌아옵니다.
 
-## domain value: 돈, 단위, 위치, 시간
+## 도메인 값: 돈, 단위, 위치, 시간
 
-`money`, `measured`, `geo`, `science`, `javatimes`는 domain value를 문자열과 숫자로 흘려보내지 않기 위한
+`money`, `measured`, `geo`, `science`, `javatimes`는 도메인 값을 문자열과 숫자로 흘려보내지 않기 위한
 도구입니다.
 
 `bluetape4k-measured`는 `Units`와 `Measure<T : Units>`로 단위를 표현합니다. 길이, 시간, 질량, 부피,
@@ -77,20 +77,20 @@ println(distance `as` Length.meters)
 ```
 
 돈과 단위는 primitive로 두면 처음에는 편합니다. `BigDecimal amount`, `String currency`, `Double distance`
-정도로 시작합니다. 그런데 환율, 반올림, 단위 변환, display format이 붙으면 primitive가 갑자기 말을
-너무 많이 해야 합니다. 그때부터는 type이 의미를 담게 하는 편이 낫습니다.
+정도로 시작합니다. 그런데 환율, 반올림, 단위 변환, 표시 형식이 붙으면 primitive가 갑자기 말을
+너무 많이 해야 합니다. 그때부터는 타입이 의미를 담게 하는 편이 낫습니다.
 
 `geo`와 `science`는 위치와 공간 데이터를 다룹니다. geocode/geohash/geoip2, 좌표계 변환, shapefile 읽기,
-JTS 기반 공간 연산, PostGIS 적재 pipeline이 포함됩니다. 이 영역은 domain이 맞는 서비스에서만 가져와야
+JTS 기반 공간 연산, PostGIS 적재 파이프라인이 포함됩니다. 이 영역은 도메인이 맞는 서비스에서만 가져와야
 합니다. 필요 없는 서비스에 붙이면 도메인과 관계없는 의존성만 늘어납니다.
 
 ## rule, state, workflow
 
-`rule-engine`, `states`, `workflow`, `probabilistic`은 decision과 흐름을 표현하는 utility입니다.
+`rule-engine`, `states`, `workflow`, `probabilistic`은 판단과 흐름을 표현하는 유틸리티입니다.
 
-`rule-engine`은 Kotlin DSL rule, annotation 기반 rule, coroutine rule, YAML/JSON/HOCON reader, MVEL2,
+`rule-engine`은 Kotlin DSL rule, annotation 기반 rule, 코루틴 rule, YAML/JSON/HOCON reader, MVEL2,
 SpEL, Kotlin Script, Janino, Groovy 기반 동적 rule을 제공합니다. 핵심 모델은 단순합니다. `Facts`를 보고
-condition을 평가하고, 만족하면 action을 실행합니다.
+조건을 평가하고, 만족하면 action을 실행합니다.
 
 ```kotlin
 val discountRule = rule {
@@ -104,39 +104,39 @@ ruleEngine { skipOnFirstAppliedRule = true }
     .fire(ruleSetOf(discountRule), Facts.of("amount" to 1500))
 ```
 
-`states`는 Kotlin DSL 기반 finite state machine입니다. guard 조건, coroutine FSM, `StateFlow` 상태 관찰이
-필요할 때 맞습니다. `workflow`는 sequential/parallel/conditional/repeat/retry 흐름을 조합합니다. 동기
-경로는 virtual thread, 비동기 경로는 coroutine/Flow 모델을 지원합니다.
+`states`는 Kotlin DSL 기반 유한 상태 머신입니다. guard 조건, 코루틴 FSM, `StateFlow` 상태 관찰이
+필요할 때 맞습니다. `workflow`는 순차/병렬/조건부/반복/재시도 흐름을 조합합니다. 동기
+경로는 가상 스레드, 비동기 경로는 코루틴/`Flow` 모델을 지원합니다.
 
 선택 기준은 간단합니다. 정책 계산이 많고 입력 fact에 따라 결과가 달라지면 rule-engine입니다. 객체가 몇
-개의 명확한 상태를 이동하면 states입니다. 여러 step을 실행하고 retry/partial success/cancel을 표현해야
+개의 명확한 상태를 이동하면 states입니다. 여러 단계를 실행하고 재시도/부분 성공/취소를 표현해야
 하면 workflow입니다. 이 셋을 한꺼번에 붙이면 작은 주문 처리도 필요보다 큰 프로세스처럼 보일 수 있습니다.
 그럴 때는 한 번 더 줄여 봐야 합니다.
 
 ## 예제와 workshop으로 채택 경로를 확인한다
 
-Utility를 채택할 때는 README만 읽고 끝내지 말고 예제를 같이 봐야 합니다. `projects/examples`에는
+유틸리티를 채택할 때는 README만 읽고 끝내지 말고 예제를 같이 봐야 합니다. `projects/examples`에는
 coroutines, JPA/Blaze Persistence, Querydsl, Redisson, virtual threads, idgenerator Spring Boot/Ktor demo가
-있습니다. `bluetape4k-workshop`은 cache, Redis, coroutines, virtual threads, observability, messaging,
-Spring Data 쪽 채택 경로를 더 application에 가깝게 보여줍니다.
+있습니다. `bluetape4k-workshop`은 캐시, Redis, coroutines, virtual threads, 관측성, 메시징,
+Spring Data 쪽 채택 경로를 더 애플리케이션에 가깝게 보여줍니다.
 
-| 서비스에서 보이는 필요 | 먼저 볼 utility/example | 이유 |
+| 서비스에서 보이는 필요 | 먼저 볼 유틸리티/예제 | 이유 |
 |---|---|---|
 | public ID와 batch ID endpoint가 필요함 | `idgenerators`, idgenerator Spring Boot/Ktor demo | generator 선택과 HTTP 노출 방식을 같이 확인 |
-| Redis lock/cache pattern이 필요함 | `redisson-demo`, cache series | primitive와 cache strategy를 분리해 볼 수 있음 |
-| coroutine 흐름을 팀에 설명해야 함 | `coroutines-demo`, workshop coroutines | 문법보다 cancellation/Flow/context 사용법을 확인 |
-| virtual thread 전환을 검토함 | `virtualthreads-demo`, virtual thread blog series | pooling 금지, semaphore, synchronized 위험을 먼저 점검 |
-| Spring Data coroutine helper가 필요함 | Spring Boot R2DBC/MongoDB README, workshop | repository 경계와 test fixture를 같이 확인 |
+| Redis lock/cache pattern이 필요함 | `redisson-demo`, 캐시 시리즈 | primitive와 캐시 전략을 분리해 볼 수 있음 |
+| 코루틴 흐름을 팀에 설명해야 함 | `coroutines-demo`, workshop coroutines | 문법보다 cancellation/Flow/context 사용법을 확인 |
+| 가상 스레드 전환을 검토함 | `virtualthreads-demo`, 가상 스레드 블로그 시리즈 | 풀링 금지, semaphore, synchronized 위험을 먼저 점검 |
+| Spring Data 코루틴 헬퍼가 필요함 | Spring Boot R2DBC/MongoDB README, workshop | repository 경계와 test fixture를 같이 확인 |
 
 채택 순서는 이렇게 잡으면 덜 위험합니다.
 
 1. BOM을 먼저 가져와 버전 줄을 맞춥니다.
-2. 지금 반복되는 문제 하나에 필요한 utility 모듈만 추가합니다.
+2. 지금 반복되는 문제 하나에 필요한 유틸리티 모듈만 추가합니다.
 3. README의 선택 기준과 예제를 같이 봅니다.
-4. benchmark가 있는 모듈은 숫자의 방향과 측정 조건을 확인합니다.
-5. service test에서 실패 경계와 serialization/ID/time 정책을 고정합니다.
+4. 벤치마크가 있는 모듈은 숫자의 방향과 측정 조건을 확인합니다.
+5. 서비스 테스트에서 실패 경계와 직렬화/ID/시간 정책을 고정합니다.
 
-이 순서를 지키면 `projects`는 큰 framework가 아니라 작은 공구함으로 남습니다. 공구함은 작을수록 좋습니다.
+이 순서를 지키면 `projects`는 큰 프레임워크가 아니라 작은 공구함으로 남습니다. 공구함은 작을수록 좋습니다.
 모듈을 추가할 때마다 사용법과 정책을 새로 설명해야 한다면, 이미 너무 많이 들여온 겁니다.
 
 ## 참고 링크
@@ -150,20 +150,20 @@ Spring Data 쪽 채택 경로를 더 application에 가깝게 보여줍니다.
 
 ## 마무리
 
-Utility 모듈은 작아서 도입하기 쉽지만, 그래서 더 조심해야 합니다. ID, 시간, 돈, 단위, rule, workflow는
-서비스 안쪽 깊숙이 들어갑니다. 처음에는 helper 하나였는데, 몇 달 뒤에는 데이터 계약이 됩니다.
+유틸리티 모듈은 작아서 도입하기 쉽지만, 그래서 더 조심해야 합니다. ID, 시간, 돈, 단위, rule, workflow는
+서비스 안쪽 깊숙이 들어갑니다. 처음에는 헬퍼 하나였는데, 몇 달 뒤에는 데이터 계약이 됩니다.
 
 좋은 채택 경로는 거창하지 않습니다. BOM으로 버전을 맞추고, 한 문제에 한 모듈만 들이고, 예제에서 실제
 사용 모양을 보고, 테스트로 정책을 고정합니다. 이 정도면 충분히 보수적이고, 충분히 빠릅니다.
 
-다음 글에서는 Spring Boot 4와 Ktor 3 application layer를 봅니다. 이제 작은 공구와 adapter를 실제
+다음 글에서는 Spring Boot 4와 Ktor 3 애플리케이션 계층을 봅니다. 이제 작은 공구와 어댑터를 실제
 애플리케이션 경계에 얹을 차례입니다.
 
 ## 시리즈 링크
 
 - [Part 1: 공유 Kotlin/JVM 기반](/ko/blog/bluetape4k-projects-part1-shared-foundation/)
-- [Part 2: core, coroutines, logging, tests](/ko/blog/bluetape4k-projects-part2-core-coroutines-tests/)
-- [Part 3: bytes가 지나가는 길](/ko/blog/bluetape4k-projects-part3-io-serialization-http-encryption/)
-- [Part 4: data와 infrastructure](/ko/blog/bluetape4k-projects-part4-data-infrastructure/)
-- [Part 5: utility와 adoption path](/ko/blog/bluetape4k-projects-part5-utilities-adoption-path/)
+- [Part 2: 공통 기반의 안쪽](/ko/blog/bluetape4k-projects-part2-core-coroutines-tests/)
+- [Part 3: 바이트가 지나가는 길](/ko/blog/bluetape4k-projects-part3-io-serialization-http-encryption/)
+- [Part 4: 데이터와 인프라](/ko/blog/bluetape4k-projects-part4-data-infrastructure/)
+- [Part 5: 유틸리티와 도입 경로](/ko/blog/bluetape4k-projects-part5-utilities-adoption-path/)
 - [Part 6: Spring Boot 4와 Ktor](/ko/blog/bluetape4k-projects-part6-spring-boot-ktor/)
