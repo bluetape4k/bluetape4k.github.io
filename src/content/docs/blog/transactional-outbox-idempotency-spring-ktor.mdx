@@ -16,7 +16,7 @@ blog:
   <figcaption>The outbox is not decoration around messaging. It records what was committed so delivery can fail and recover without guessing.</figcaption>
 </figure>
 
-<p class="bt4k-post-meta">2026-06-29 · bluetape4k-workshop / exposed-workshop · issue #184</p>
+<p class="bt4k-post-meta">2026-06-29 · bluetape4k-workshop / exposed-workshop</p>
 
 Suppose a service writes domain state and then calls another service, publishes an event, or returns a response that a
 client may retry. The code path looks simple: persist, call, respond.
@@ -33,7 +33,7 @@ practical question: what belongs in the database transaction, and what should be
 Outbox and idempotency work together because they separate durable user intent from best-effort delivery. The request
 records the intent first. Delivery happens after commit and can be retried from stored state.
 
-<figure class="bt4k-chart">
+<figure class="bt4k-architecture" data-diagram-title="Transactional outbox and idempotency failure boundaries">
   <img src="/assets/transactional-outbox-idempotency-flow-01-en.png" alt="Transactional outbox and idempotency flow diagram showing client, Spring or Ktor service, DB transaction, outbox, relay, API, and retry path" loading="lazy" />
   <figcaption>The key move is writing the domain row and outbox row together. After commit, delivery can fail and still be retried.</figcaption>
 </figure>
@@ -78,13 +78,18 @@ fun submit(request: CreatePaymentRequest): PaymentResponse {
 }
 ```
 
-The repository repeats that rule at the database boundary.
+The repository repeats that rule at the database boundary. The initial lookup is only a fast path: two concurrent
+requests can both observe that the key is absent. The unique index closes that race. When one insert loses the race,
+the repository catches the constraint failure and rereads the committed row as a duplicate result.
 
 ```kotlin
-transaction(database) {
-    findByIdempotencyKey(command.idempotencyKey)?.let {
-        CreatePaymentResult(it, inserted = false)
-    } ?: insertPending(command)
+try {
+    transaction(database) {
+        findByIdempotencyKey(command.idempotencyKey)?.asDuplicate()
+            ?: insertPending(command)
+    }
+} catch (e: ExposedSQLException) {
+    rereadDuplicate(command.idempotencyKey) ?: throw e
 }
 ```
 
@@ -122,7 +127,7 @@ without hiding blocking work or duplicate-request behavior.
 
 The sequence below collects the three common cases: first submit, same-key retry, and retryable delivery failure.
 
-<figure class="bt4k-chart">
+<figure class="bt4k-sequence" data-diagram-title="First call, same-key retry, and relay retry sequence">
   <img src="/assets/transactional-outbox-idempotency-sequence-01-en.png" alt="Sequence diagram for first payment call, duplicate idempotency retry, and relay retry after commit" loading="lazy" />
   <figcaption>A duplicate key does not call the external API again. Relay failure is retried from the row that survived commit.</figcaption>
 </figure>
@@ -200,7 +205,8 @@ val eventId = RealtimeOutbox.insertAndGetId {
 
 Successful delivery marks `PUBLISHED`; failed delivery marks `FAILED`. `replayAfter(eventId)` reads published rows after
 a cursor. For WebSocket or SSE style delivery, that means recovery can be based on database state instead of whatever was
-still in memory.
+still in memory. This boundary replays published rows; proving that an individual client received them still requires a
+separate acknowledgement or offset policy.
 
 ## Rules to Take from the Examples
 

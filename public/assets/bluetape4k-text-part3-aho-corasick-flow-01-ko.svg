@@ -1,102 +1,61 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="760" viewBox="0 0 1440 760" role="img" aria-labelledby="title desc">
-  <title id="title">Aho-Corasick build and search path</title>
-  <desc id="desc">Keyword dictionaries are compiled into an immutable automaton, then request text is scanned once and routed to masking, alerts, or highlighting.</desc>
-  <defs>
-    <filter id="shadow" x="-10%" y="-20%" width="120%" height="150%">
-      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#132238" flood-opacity="0.14"/>
-    </filter>
-    <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="14" markerHeight="14" orient="auto" markerUnits="userSpaceOnUse">
-      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2878d9" stroke="#2878d9" stroke-width="1" stroke-dasharray="none" style="stroke-dasharray:none"/>
-    </marker>
-    <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="14" markerHeight="14" orient="auto" markerUnits="userSpaceOnUse">
-      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#15956b" stroke="#15956b" stroke-width="1" stroke-dasharray="none" style="stroke-dasharray:none"/>
-    </marker>
-    <style>
-      .canvas { fill: #f8fbff; }
-      .band-build { fill: #eaf3ff; stroke: #9ac4f8; stroke-width: 2; }
-      .band-request { fill: #ebfbf5; stroke: #91d9bf; stroke-width: 2; }
-      .card { filter: url(#shadow); stroke-width: 2; rx: 22; }
-      .build-card { fill: #ffffff; stroke: #7eb6f2; }
-      .request-card { fill: #ffffff; stroke: #6ecba9; }
-      .result-card { fill: #fffaf0; stroke: #e6b96f; }
-      .title { font-family: "goorm Sans", sans-serif; font-size: 28px; fill: #102033; font-weight: 700; }
-      .label { font-family: "goorm Sans", sans-serif; font-size: 20px; fill: #102033; font-weight: 700; }
-      .body { font-family: "goorm Sans Code", monospace; font-size: 16px; fill: #334155; }
-      .tag { font-family: "goorm Sans Code", monospace; font-size: 15px; fill: #0f3d66; font-weight: 700; }
-      .connector-blue { fill: none; stroke: #2878d9; stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-blue); }
-      .connector-green { fill: none; stroke: #15956b; stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-green); }
-      .note { font-family: "goorm Sans Code", monospace; font-size: 17px; fill: #475569; }
-    </style>
-  </defs>
-
-  <rect class="canvas" x="0" y="0" width="1440" height="760"/>
-
-  <text class="title" x="72" y="70">Aho-Corasick: 한 번 빌드하고 한 번 스캔하기</text>
-
-  <rect class="band-build" x="56" y="108" width="1328" height="244" rx="30"/>
-  <text class="tag" x="90" y="146">빌드 / 다시 읽기</text>
-
-  <rect class="band-request" x="56" y="398" width="1328" height="266" rx="30"/>
-  <text class="tag" x="90" y="436">요청 처리</text>
-
-  <g>
-    <rect class="card build-card" x="96" y="176" width="300" height="122" rx="22"/>
-    <text class="label" x="126" y="218">키워드 사전</text>
-    <text class="body" x="126" y="250">금칙어</text>
-    <text class="body" x="126" y="276">위험 구문</text>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Aho-Corasick: 사전 준비와 요청 처리를 분리한다</title><desc id="desc">키워드 사전으로 불변 Aho-Corasick 자동 장치를 준비하고 사용자 입력을 한 번 검사해 서비스 판단으로 전달하는 두 경계</desc>
+  <defs><marker id="arrow0" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L14 7 L0 14 Z" fill="#60A5FA"/></marker><marker id="arrow1" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L14 7 L0 14 Z" fill="#5EEAD4"/></marker><marker id="arrow2" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L14 7 L0 14 Z" fill="#F4B860"/></marker><marker id="arrow3" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L14 7 L0 14 Z" fill="#E07A7A"/></marker><marker id="arrow4" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L14 7 L0 14 Z" fill="#B794F4"/></marker></defs><style>
+    .canvas{fill:#07111F}.frame{fill:#0D1B2D;stroke:#38506A;stroke-width:2}
+    .lane{fill:#0A1727;stroke:#38506A;stroke-width:2}.card{fill:#10243A;stroke-width:2}
+    .title{font:700 40px "goorm Sans","Apple SD Gothic Neo",sans-serif;fill:#E6F2FF}
+    .subtitle,.lane-title,.body,.footer{font-family:"goorm Sans Code","goorm Sans",monospace;fill:#A9BDD1}
+    .subtitle{font-size:19px}.lane-title{font-size:17px;fill:#36C5F0}
+    .card-title{font:700 22px "goorm Sans","Apple SD Gothic Neo",sans-serif;fill:#E6F2FF}
+    .body{font-size:16px}.footer{font-size:15px}
+    .connector{fill:none;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+  </style>
+  <rect width="1600" height="900" class="canvas"/><rect x="30" y="30" width="1540" height="840" rx="30" class="frame"/>
+  <text x="70" y="100" class="title">Aho-Corasick: 사전 준비와 요청 처리를 분리한다</text><text x="70" y="142" class="subtitle">사전 변경 때 불변 자동 장치를 만들고, 요청 경로에서는 입력 검증과 검색만 수행한다</text>
+  <rect x="60" y="190" width="1480" height="282" rx="26" class="lane"/><text x="90" y="222" class="lane-title">사전 준비 경계</text>
+  <rect x="40" y="520" width="1520" height="300" rx="26" class="lane"/><text x="70" y="552" class="lane-title">요청 처리 경계</text>
+  <g data-card="키워드 사전">
+    <rect x="90" y="238" width="380" height="190" rx="22" class="card" stroke="#60A5FA"/>
+    <circle cx="116" cy="268" r="7" fill="#60A5FA"/>
+    <text x="134" y="276" class="card-title">키워드 사전</text>
+    <text x="116" y="322" class="body" text-anchor="start"><tspan x="116" dy="0">금칙어·위험 구문</tspan><tspan x="116" dy="30">중복·공백 정규화</tspan></text>
+  </g><g data-card="자동 장치 생성">
+    <rect x="610" y="238" width="380" height="190" rx="22" class="card" stroke="#36C5F0"/>
+    <circle cx="636" cy="268" r="7" fill="#36C5F0"/>
+    <text x="654" y="276" class="card-title">자동 장치 생성</text>
+    <text x="636" y="322" class="body" text-anchor="start"><tspan x="636" dy="0">키워드 트라이</tspan><tspan x="636" dy="30">실패 전이 구성</tspan></text>
+  </g><g data-card="불변 인스턴스">
+    <rect x="1130" y="238" width="380" height="190" rx="22" class="card" stroke="#5EEAD4"/>
+    <circle cx="1156" cy="268" r="7" fill="#5EEAD4"/>
+    <text x="1174" y="276" class="card-title">불변 인스턴스</text>
+    <text x="1156" y="322" class="body" text-anchor="start"><tspan x="1156" dy="0">스레드 안전 공유</tspan><tspan x="1156" dy="30">버전 교체로 갱신</tspan></text>
+  </g><g data-card="사용자 텍스트">
+    <rect x="60" y="585" width="280" height="190" rx="22" class="card" stroke="#60A5FA"/>
+    <circle cx="86" cy="615" r="7" fill="#60A5FA"/>
+    <text x="104" y="623" class="card-title">사용자 텍스트</text>
+    <text x="86" y="669" class="body" text-anchor="start"><tspan x="86" dy="0">길이·공백 검사</tspan><tspan x="86" dy="30">원문 로그 금지</tspan></text>
+  </g><g data-card="한 번 검색">
+    <rect x="440" y="585" width="280" height="190" rx="22" class="card" stroke="#36C5F0"/>
+    <circle cx="466" cy="615" r="7" fill="#36C5F0"/>
+    <text x="484" y="623" class="card-title">한 번 검색</text>
+    <text x="466" y="669" class="body" text-anchor="start"><tspan x="466" dy="0">parseText</tspan><tspan x="466" dy="30">containsMatch</tspan></text>
+  </g><g data-card="일치 결과">
+    <rect x="820" y="585" width="300" height="190" rx="22" class="card" stroke="#F4B860"/>
+    <circle cx="846" cy="615" r="7" fill="#F4B860"/>
+    <text x="864" y="623" class="card-title">일치 결과</text>
+    <text x="846" y="669" class="body" text-anchor="start"><tspan x="846" dy="0">위치·키워드·값</tspan><tspan x="846" dy="30">중복·경계 정책 반영</tspan></text>
+  </g><g data-card="서비스 판단">
+    <rect x="1220" y="585" width="320" height="190" rx="22" class="card" stroke="#B794F4"/>
+    <circle cx="1246" cy="615" r="7" fill="#B794F4"/>
+    <text x="1264" y="623" class="card-title">서비스 판단</text>
+    <text x="1246" y="669" class="body" text-anchor="start"><tspan x="1246" dy="0">마스킹·알림</tspan><tspan x="1246" dy="30">강조·분류</tspan></text>
   </g>
-
-  <g>
-    <rect class="card build-card" x="570" y="176" width="300" height="122" rx="22"/>
-    <text class="label" x="600" y="218">Automaton 빌드</text>
-    <text class="body" x="600" y="250">trie node</text>
-    <text class="body" x="600" y="276">실패 전이</text>
-  </g>
-
-  <g>
-    <rect class="card build-card" x="1044" y="176" width="300" height="122" rx="22"/>
-    <text class="label" x="1074" y="218">불변 matcher</text>
-    <text class="body" x="1074" y="250">thread-safe 재사용</text>
-    <text class="body" x="1074" y="276">요청 사이 공유</text>
-  </g>
-
-  <path class="connector-blue" d="M 398 237 L 548 237"/>
-  <path class="connector-blue" d="M 872 237 L 1022 237"/>
-
-  <g>
-    <rect class="card request-card" x="96" y="482" width="260" height="118" rx="22"/>
-    <text class="label" x="126" y="522">사용자 텍스트</text>
-    <text class="body" x="126" y="554">길이 검증</text>
-    <text class="body" x="126" y="580">원문 미노출</text>
-  </g>
-
-  <g>
-    <rect class="card request-card" x="466" y="482" width="260" height="118" rx="22"/>
-    <text class="label" x="496" y="522">한 번 스캔</text>
-    <text class="body" x="496" y="554">parseText</text>
-    <text class="body" x="496" y="580">containsMatch</text>
-  </g>
-
-  <g>
-    <rect class="card result-card" x="836" y="482" width="260" height="118" rx="22"/>
-    <text class="label" x="866" y="522">일치 결과</text>
-    <text class="body" x="866" y="554">시작/끝 위치</text>
-    <text class="body" x="866" y="580">키워드 + 값</text>
-  </g>
-
-  <g>
-    <rect class="card result-card" x="1188" y="454" width="156" height="174" rx="22"/>
-    <text class="label" x="1214" y="496">판단</text>
-    <text class="body" x="1214" y="530">마스킹</text>
-    <text class="body" x="1214" y="560">알림</text>
-    <text class="body" x="1214" y="590">강조</text>
-  </g>
-
-  <path class="connector-green" d="M 358 541 L 444 541"/>
-  <path class="connector-green" d="M 728 541 L 814 541"/>
-  <path class="connector-green" d="M 1098 541 L 1166 541"/>
-
-  <path class="connector-blue" d="M 1194 300 L 1194 460" marker-end="url(#arrow-blue)"/>
-
-  <text class="note" x="94" y="706">존재 확인은 containsMatch, 위치는 parseText, 마스킹은 replaceAll, 알림 수집은 Flow + take(1)을 사용합니다.</text>
+  <path data-connector="dictionary-build" d="M470 333 H610" class="connector" stroke="#60A5FA" marker-end="url(#arrow0)"/>
+  <path data-connector="build-instance" d="M990 333 H1130" class="connector" stroke="#5EEAD4" marker-end="url(#arrow1)"/>
+  <path data-connector="instance-scan" d="M1320 428 V480 Q1320 500 1300 500 H590 Q570 500 570 520 V585" class="connector" stroke="#5EEAD4" marker-end="url(#arrow1)"/>
+  <path data-connector="input-scan" d="M340 680 H440" class="connector" stroke="#60A5FA" marker-end="url(#arrow0)"/>
+  <path data-connector="scan-matches" d="M720 680 H820" class="connector" stroke="#F4B860" marker-end="url(#arrow2)"/>
+  <path data-connector="matches-decision" d="M1120 680 H1220" class="connector" stroke="#B794F4" marker-end="url(#arrow4)"/>
+  <text x="800" y="850" text-anchor="middle" class="footer">기본 Flow 경로는 즉시 방출하지만, 겹침 제거나 단어 경계 후처리가 필요하면 전체 결과를 먼저 계산합니다.</text>
 </svg>

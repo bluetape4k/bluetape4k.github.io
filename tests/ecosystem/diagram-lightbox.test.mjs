@@ -644,3 +644,44 @@ test('Jackson and text-processing articles expose localized diagram titles and p
   assert.match(pairs[4][0], /전송 계층에서 먼저 검사해야 합니다/);
   assert.match(pairs[4][0], /라이브러리 API가 아니라 애플리케이션이 소유하는 의사코드/);
 });
+
+test('text-search, dictionary, and outbox articles expose localized diagrams and precise recovery boundaries', async () => {
+  const pairs = [
+    [
+      await read('src/content/docs/ko/blog/bluetape4k-text-part3-aho-corasick-workshop.mdx'),
+      ['Aho-Corasick 자동 장치의 준비와 요청 처리 경계'],
+    ],
+    [
+      await read('src/content/docs/blog/bluetape4k-text-part3-aho-corasick-workshop.mdx'),
+      ['Aho-Corasick preparation and request-processing boundaries'],
+    ],
+    [
+      await read('src/content/docs/ko/blog/bluetape4k-text-part4-dictionary-quality-gates.mdx'),
+      ['사전 변경의 품질 게이트'],
+    ],
+    [
+      await read('src/content/docs/blog/bluetape4k-text-part4-dictionary-quality-gates.mdx'),
+      ['Dictionary update quality gate'],
+    ],
+    [
+      await read('src/content/docs/ko/blog/transactional-outbox-idempotency-spring-ktor.mdx'),
+      ['트랜잭셔널 아웃박스와 멱등성의 실패 경계', '첫 요청·동일 키 재시도·릴레이 재시도 순서'],
+    ],
+    [
+      await read('src/content/docs/blog/transactional-outbox-idempotency-spring-ktor.mdx'),
+      ['Transactional outbox and idempotency failure boundaries', 'First call, same-key retry, and relay retry sequence'],
+    ],
+  ];
+
+  for (const [source, titles] of pairs) {
+    for (const title of titles) {
+      assert.match(source, new RegExp(`data-diagram-title="${title}"`));
+    }
+    assert.doesNotMatch(source, /class="bt4k-blog-hero"[^>]*data-diagram-title/);
+  }
+
+  assert.match(pairs[0][0], /Flow 반환형만 보고 항상 첫 항목에서 검색 비용이 끝난다고 가정해서는 안 됩니다/);
+  assert.match(pairs[2][0], /런타임에 추가한 단어는 해당 프로세스의 메모리 상태입니다/);
+  assert.match(pairs[4][0], /고유 인덱스가 최종 쓰기 경계를\s+보호하고/);
+  assert.match(pairs[4][0], /개별 클라이언트가 실제로 수신했다는 보장은 별도의 확인·오프셋 정책/);
+});
