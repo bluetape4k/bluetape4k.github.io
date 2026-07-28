@@ -28,8 +28,9 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
    원본 크기 육안 검사 순서로 검증한다.
 4. 한글 다이어그램은 출판용 기술 한국어로 교정하고, 영어 전용 자산은 별도
    `-ko` 자산을 만든다. 한영 자산은 동일한 구조를 유지한다.
-5. 배치마다 lessons 문서를 작성한다. 재사용할 교정 규칙이 생기면 chezmoi 원본의
-   `bluetape-writer` 체크리스트를 수정하고 apply·parity·push까지 완료한다.
+5. 글을 교정할 때마다 `bluetape-writer` 체크리스트를 다시 참조한다. 배치마다
+   확인한 재사용 가능한 용어·문장·사실 검증 규칙을 chezmoi 원본 체크리스트에
+   추가하고 apply·parity·push까지 완료하며, 별도 lessons 문서에도 근거를 남긴다.
 6. targeted test, 전체 사이트 build, 변경 경로와 이미지 노출을 검증한 뒤 stacked PR을 만든다.
 7. 87편과 165개 다이어그램을 다시 전수 집계한다. 누락이 0일 때만 전체 완료로 전환한다.
 8. 모든 stacked PR의 exact head·CI·review를 확인한 뒤 별도의 최종 머지 승인을 받아
@@ -37,18 +38,18 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 
 ## 현재 진행 상황
 
-기준 시점: 2026-07-28, stacked PR #267~#279
+기준 시점: 2026-07-28, stacked PR #267~#279와 Leader Part 4~5 로컬 완료분
 
 | 구분 | 완료 | 전체 | 남음 | 상태 |
 | --- | ---: | ---: | ---: | --- |
-| 한국어 블로그 본문 교정 | 32 | 87 | 55 | 진행 중 |
-| 기술 다이어그램 변경·배치 검증 | 58 | 165 | 107 | 진행 중 |
+| 한국어 블로그 본문 교정 | 34 | 87 | 53 | 진행 중 |
+| 기술 다이어그램 변경·배치 검증 | 59 | 165 | 106 | 진행 중 |
 | stacked PR | 13 | 미정 | 미정 | #267~#279 open |
-| 현재 배치 | 3 | 3 | 0 | Leader Part 1~3 PR #279 |
+| 현재 배치 | 2 | 2 | 0 | Leader Part 4~5, PR 생성 대기 |
 | 최종 전체 사이트 감사 | 0 | 1 | 1 | 대기 |
 | 최종 머지·배포·정리 | 0 | 1 | 1 | 대기 |
 
-현재 완료된 한국어 글 32편:
+현재 완료된 한국어 글 34편:
 
 - AI 협업 글 2편
 - Bluetape4k 생태계·GraphDB 글 2편
@@ -58,7 +59,7 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 - Cache Part 1~4
 - Projects Part 1~6
 - Exposed Part 1~6
-- Leader Part 1~3
+- Leader Part 1~5
 
 Exposed Part 4~6 배치에서는 본문 3편과 기술 다이어그램 8종을 다시 검증했다.
 Part 4~5의 4종은 앞선 40개 집계에 이미 포함되어 중복 계산하지 않았고,
@@ -77,6 +78,22 @@ Part 6의 새 다이어그램 4종만 전체 완료 수에 더했다.
 | PNG 시각 검사 | PASS | KO/EN Part 5 차트와 Part 6 다이어그램 원본 크기 확인 |
 | 사이트 검사 | PASS | Node 테스트 21/21, Astro 0 errors, 1,303 pages build |
 | 경로 검사 | PASS | 변경된 한영 경로 6/6 HTTP 200 |
+
+현재 배치 필수 검사: **9/9 완료, N/A 0, Blocked 0**
+
+## Leader Part 4~5 배치 DoD
+
+| 검사 | 결과 | 근거 |
+| --- | --- | --- |
+| 글 교정 | PASS | 한국어 Part 4~5, frontmatter·본문·표·캡션·대체 텍스트 |
+| 날짜 보존 | PASS | 한영 `blog.date`와 `sidebar.order` 변경 없음 |
+| 사실 검증 | PASS | 현재 Ktor 설정명, 예제 백엔드, 2026-07-02 Kubernetes 측정값 대조 |
+| 소스 링크 | PASS | 한영 글의 로컬 `develop` 대상 62/62 존재 |
+| 한영 정합성 | PASS | 제목·주장·수치·링크·다이어그램·시리즈 탐색 동기화 |
+| 다이어그램 정적 감사 | PASS | 한영 2/2, text hazards 0, geometry·endpoint·corner 실패 0 |
+| 다이어그램 구조·PNG 검사 | PASS | 각 SVG 주 카드 4·보조 카드 5·연결선 4, 3000×2160 원본 확인 |
+| writer 체크리스트 | PASS | dotfiles `53024e5`, chezmoi apply·source/live·upstream 일치 |
+| 사이트 검사 | PASS | Node 테스트 21/21, Astro 오류 0, 1,303 pages build, 한영 4개 경로 HTTP 200 |
 
 현재 배치 필수 검사: **9/9 완료, N/A 0, Blocked 0**
 
@@ -123,7 +140,7 @@ Part 6의 새 다이어그램 4종만 전체 완료 수에 더했다.
   - **Failure:** 생성 성공이나 SVG 검사만으로 완료 처리하지 않는다.
 
 - [ ] **ALL-05 — 배치별 전달 계약을 지킨다**
-  - **Action:** lessons, 필요 시 writer 체크리스트 chezmoi 동기화,
+  - **Action:** lessons, 글마다 writer 체크리스트 참조, 배치마다 체크리스트 보강과 chezmoi 동기화,
     Lore commit, stacked PR, exact-head CI를 배치마다 완료한다.
   - **Evidence:** 각 PR의 base/head/SHA/CI/마지막 `## DoD Status`.
   - **Failure:** 누락된 배치는 다음 배치 전에 보강한다.

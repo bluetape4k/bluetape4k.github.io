@@ -447,48 +447,68 @@ function writeAsset(stem, lang, svg) {
 }
 
 function backendPickerSvg(lang) {
-  const stem = "bluetape4k-leader-part5-backend-picker";
-  const canonical = path.join(outDir, `${stem}.svg`);
-  const source = fs.readFileSync(fs.existsSync(canonical) ? canonical : path.join(outDir, `${stem}-en.svg`), "utf8");
-  const normalized = source.replace(
-    /<marker id="arrowHead"[^>]*>/,
-    '<marker id="arrowHead" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">',
-  );
-  if (lang === "en") return normalized;
-  const translations = [
-    ["Choose the backend by operation shape", "작업 형태에 따라 backend를 선택하세요"],
-    ["The API stays similar; lease storage, TTL, failure mode, and observability change.", "API는 비슷하지만 lease 저장소, TTL, failure mode, observability는 달라집니다."],
-    ["Start from what you already run", "이미 운영 중인 기반에서 시작"],
-    ["Redis first", "Redis 우선"],
-    ["Lettuce: lean client path", "Lettuce: 경량 client"],
-    ["Redisson: familiar locks", "Redisson: 익숙한 lock"],
-    ["TTL + token ownership", "TTL + token 소유권"],
-    ["Default when Redis is shared ops.", "Redis 공통 운영 시 기본"],
-    ["etcd leases", "etcd lease"],
-    ["Native control-plane fit", "control plane에 적합"],
-    ["Lease + compare/write", "Lease + compare/write"],
-    ["Good reconciler model", "reconciler에 적합"],
-    ["Use when etcd owns control state.", "etcd 제어 상태에 사용"],
-    ["SQL rows", "SQL 행"],
-    ["Rows + conditional update", "행 + 조건부 갱신"],
-    ["Audit is easy to inspect", "감사 확인이 쉬움"],
-    ["Use when DB ops own the budget.", "DB 운영 시 사용"],
-    ["Kubernetes Lease", "Kubernetes Lease"],
-    ["Pod/operator lifecycle", "Pod / operator lifecycle"],
-    ["K3s benchmark target", "K3s benchmark"],
-    ["Best for K8s-native workloads.", "K8s workload에 적합"],
-    ["Remaining families are still first-class, but more situational", "나머지 계열도 일급 backend지만 상황에 따라 선택합니다"],
-    ["Compare distributed rows with distributed rows. Local/H2 rows are shape checks, not production ranking claims.", "분산 backend끼리 비교하세요. Local/H2 수치는 형태 검증용이며 운영 순위가 아닙니다."],
-    ["Operations layer", "운영 계층"],
-    ["benchmark caveats", "benchmark 주의사항"],
-  ];
-  let result = normalized
-    .replaceAll('"Architects Daughter", "Comic Sans MS", cursive', '"goorm Sans"')
-    .replaceAll('"Comic Mono", "Comic Sans MS", monospace', '"goorm Sans Code"');
-  for (const [from, to] of [...translations].sort((a, b) => b[0].length - a[0].length)) {
-    result = result.replaceAll(from, to);
-  }
-  return result;
+  const l = locale[lang];
+  const ko = lang === "ko";
+  const title = ko ? "작업 특성에 맞는 리더 선출 백엔드" : "Choose a Leader Backend by Workload";
+  const sub = ko
+    ? "API는 같아도 리스 저장소, TTL, 장애 대응, 관측 방식은 달라집니다."
+    : "The API stays stable while lease storage, TTL, failure handling, and observability change.";
+  const startTitle = ko ? "현재 운영 중인 인프라에서 시작" : "Start from infrastructure you already operate";
+  const startDetail = lang === "ko"
+    ? "Redis · etcd · SQL/R2DBC · Kubernetes"
+    : "Redis / etcd / SQL/R2DBC / Kubernetes";
+  const primary = ko
+    ? [
+        ["Redis 우선", ["Lettuce: 경량 클라이언트", "Redisson: 잠금 추상화", "TTL + 토큰 소유권", "Redis를 공통 운영할 때 적합"], "#ef8292"],
+        ["etcd 리스", ["컨트롤 플레인에 적합", "리스 + 비교 후 쓰기", "조정기 모델과 결합", "제어 상태를 etcd에 둘 때 적합"], "#6fb6e8"],
+        ["SQL 행", ["Exposed JDBC/R2DBC", "행 + 조건부 갱신", "감사 이력을 직접 조회", "DB 운영 조직에 적합"], "#80d99b"],
+        ["Kubernetes Lease", ["Pod·오퍼레이터 수명 주기", "coordination.k8s.io/v1", "K3s 벤치마크 대상", "Kubernetes 워크로드에 적합"], "#9b8cf2"],
+      ]
+    : [
+        ["Redis first", ["Lettuce: lean client", "Redisson: lock abstraction", "TTL + token ownership", "Fits shared Redis operations"], "#ef8292"],
+        ["etcd leases", ["Control-plane native", "Lease + compare-and-write", "Fits reconciler models", "Use when etcd owns control state"], "#6fb6e8"],
+        ["SQL rows", ["Exposed JDBC/R2DBC", "Row + conditional update", "Audit history is inspectable", "Fits database-owned operations"], "#80d99b"],
+        ["Kubernetes Lease", ["Pod and operator lifecycle", "coordination.k8s.io/v1", "K3s benchmark target", "Fits Kubernetes workloads"], "#9b8cf2"],
+      ];
+  const secondaryTitle = ko
+    ? "다른 백엔드도 같은 계약을 제공하지만 운영 조건에 따라 선택합니다"
+    : "Other backends share the contract but fit more specific operating conditions";
+  const secondary = ["MongoDB TTL", "DynamoDB item", "Consul KV", "Hazelcast map", "ZooKeeper / Curator"];
+  const caveat = ko
+    ? "분산 백엔드끼리 비교합니다. Local/H2 수치는 API 형태 검증용이며 운영 순위를 의미하지 않습니다."
+    : "Compare distributed backends with distributed backends. Local/H2 values validate API shape, not production rank.";
+  const ops = ko
+    ? "LockExtender · LockAssert · 실행 이력/감사 · Micrometer · 벤치마크 주의 사항"
+    : "LockExtender / LockAssert / history and audit / Micrometer / benchmark caveats";
+  const xs = [54, 416, 778, 1140];
+  const cardSvg = primary.map(([heading, lines, stroke], i) => {
+    const x = xs[i];
+    return `<g><rect x="${x}" y="390" width="306" height="250" rx="16" fill="#111d2f" stroke="${stroke}" stroke-width="2.4"/>
+      ${text(x + 153, 438, heading, "cardTitle", 'text-anchor="middle"')}
+      ${lines.map((line, index) => text(x + 24, 486 + index * 38, line, "detail")).join("")}</g>`;
+  }).join("");
+  const connectors = xs.map((x, i) => {
+    const target = x + 153;
+    const source = 515 + i * 156;
+    return `<path d="M ${source} 310 L ${source} 338 Q ${source} 358 ${target} 378 L ${target} 386" class="call"/>`;
+  }).join("");
+  const chips = secondary.map((value, i) => {
+    const x = 142 + i * 248;
+    return `<g><rect x="${x}" y="785" width="214" height="52" rx="18" fill="#12243a" stroke="#537a99" stroke-width="1.8"/>
+      ${text(x + 107, 818, value, "detail", 'text-anchor="middle"')}</g>`;
+  }).join("");
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1080" viewBox="0 0 1500 1080" role="img" aria-labelledby="title desc">
+  <title id="title">${esc(title)}</title><desc id="desc">${esc(sub)}</desc>${baseDefs(l)}
+  <rect class="canvas" width="1500" height="1080"/><rect class="frame" x="34" y="30" width="1432" height="1020" rx="18"/>
+  ${text(750, 90, title, "title", 'text-anchor="middle"')}${text(750, 124, sub, "subtitle", 'text-anchor="middle"')}
+  <rect x="320" y="172" width="860" height="138" rx="16" class="band"/>
+  ${text(750, 224, startTitle, "bandTitle", 'text-anchor="middle"')}${text(750, 270, startDetail, "mono", 'text-anchor="middle"')}
+  ${connectors}${cardSvg}
+  <rect x="76" y="710" width="1348" height="178" rx="16" class="bandAlt"/>
+  ${text(750, 754, secondaryTitle, "bandTitle", 'text-anchor="middle"')}${chips}${text(750, 866, caveat, "footer", 'text-anchor="middle"')}
+  <rect x="238" y="928" width="1024" height="84" rx="18" class="footerBar"/>
+  ${text(750, 966, ko ? "운영 계층" : "Operations layer", "bandTitle", 'text-anchor="middle"')}${text(750, 994, ops, "footer", 'text-anchor="middle"')}
+  </svg>`;
 }
 
 for (const lang of ["en", "ko"]) {
