@@ -16,7 +16,7 @@ blog:
   <figcaption>A tenant header is only the starting point. Do not let a raw string travel all the way to schema selection.</figcaption>
 </figure>
 
-<p class="bt4k-post-meta">2026-06-28 · exposed-r2dbc-workshop · issue #34</p>
+<p class="bt4k-post-meta">2026-06-28 · exposed-r2dbc-workshop</p>
 
 Multi-tenant examples look simple from a distance. A request has `X-TENANT-ID`, and the service should use the `korean`
 schema or the `english` schema. That can sound like one header read and one `SET SCHEMA`.
@@ -41,7 +41,7 @@ The Ktor example stores request-scoped tenant state in `ApplicationCall.attribut
 ReactorContext. Spring MVC/JDBC examples teach ThreadLocal or AOP boundaries. The Ktor version does not copy those
 carriers. It uses the Ktor call as the request boundary.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-sequence" data-diagram-title="Tenant schema selection across a Ktor request">
   <img src="/assets/exposed-r2dbc-ktor-tenant-sequence-01-en.png" alt="Sequence diagram where a Ktor plugin validates X-TENANT-ID, stores a tenant enum in call attributes, and a tenant transaction helper switches the R2DBC schema" loading="lazy" />
   <figcaption>Raw headers stop at the plugin. Schema selection receives a validated enum.</figcaption>
 </figure>
@@ -86,6 +86,10 @@ private fun normalizeTenantHeader(values: List<String>): String {
 ```
 
 Repeated equivalent values are accepted after trimming. Conflicting `korean` and `english` values return `400`.
+
+Input validation is not authorization. `TenantPlugin` verifies the header shape and resolves a known tenant, but it
+does not prove that the authenticated principal may access that tenant. A production service should enforce that
+relationship in its authorization layer and reject unprovisioned or suspended tenants before database routing.
 
 ## Switch Schema Inside The Transaction
 
@@ -212,7 +216,7 @@ When moving from Spring/JDBC examples to Ktor/R2DBC examples, the common mistake
 ThreadLocal, ReactorContext, and Ktor call attributes can solve similar problems, but they are not the same mechanism.
 Copy the invariant, not the carrier.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Tenant state carriers by runtime model">
   <img src="/assets/exposed-r2dbc-ktor-routing-strategy-map-01-en.png" alt="Strategy map comparing how Spring JDBC and Ktor Exposed R2DBC solve tenant routing with different runtime boundaries" loading="lazy" />
   <figcaption>The carrier changes with the runtime. The invariant does not: validate, pass explicit values, and test isolation.</figcaption>
 </figure>
@@ -253,7 +257,7 @@ curl -H 'X-Tenant-Id: acme' http://localhost:8080/routing/marker/readonly
 Those marker values are not decoration. The tests use them to prove that the request reached the intended database
 target.
 
-## Source Links
+## Resources
 
 - Ktor schema-per-tenant README: [10-multi-tenant/07-multitenant-ktor/README.md](https://github.com/bluetape4k/exposed-r2dbc-workshop/blob/develop/10-multi-tenant/07-multitenant-ktor/README.md)
 - `TenantPlugin.kt`: [source](https://github.com/bluetape4k/exposed-r2dbc-workshop/blob/develop/10-multi-tenant/07-multitenant-ktor/src/main/kotlin/exposed/r2dbc/multitenant/ktor/tenant/TenantPlugin.kt)

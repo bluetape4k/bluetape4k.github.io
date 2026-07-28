@@ -16,7 +16,7 @@ blog:
   <figcaption>For batch benchmarks, the measurement boundary and reproduction path matter before the number.</figcaption>
 </figure>
 
-<p class="bt4k-post-meta">2026-06-28 · bluetape4k-exposed batch benchmark · issue #35</p>
+<p class="bt4k-post-meta">2026-06-28 · bluetape4k-exposed batch benchmark</p>
 
 Batch code eventually makes you ask for performance numbers. Wrapping a block in `measureTimeMillis`
 gets a number quickly. That part is easy. The next question is harder.
@@ -285,7 +285,7 @@ time. Fewer variables make better benchmarks.
 The benchmark does not end at JSON. The `generateBenchmarkDocs` task reads JSON reports and refreshes
 the Markdown benchmark docs under `utils/batch/benchmark`.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Batch benchmark report generation path">
   <img src="/assets/exposed-batch-kotlinx-benchmark-map-01-en.png" alt="Structure diagram connecting utils batch benchmark Gradle profiles, DB and driver classes, JSON reports, Markdown docs, and charts" loading="lazy" />
   <figcaption>Benchmark execution, JSON reports, Markdown docs, and charts stay in one refresh path.</figcaption>
 </figure>
@@ -308,7 +308,9 @@ record instead of evidence.
 
 The values below come from the currently generated `utils/batch/benchmark/*.md` files, which were built
 from JSON benchmark reports. The full row set is larger, so this post uses representative large
-end-to-end profiles. `ops/sec` is higher-is-better; `avg ms` is lower-is-better.
+end-to-end profiles. Here, `ops/sec` counts completed batch-job invocations, not processed rows;
+each invocation processes the configured `dataSize`. Higher `ops/sec` is better, while `avg ms`
+is the mean duration of one full job and is lower-is-better.
 
 | DB | Driver | dataSize | poolSize | parallelism | ops/sec | avg ms |
 |---|---|---:|---:|---:|---:|---:|
@@ -321,7 +323,7 @@ JDBC is clearly ahead in those rows. The point of this post is not “JDBC alway
 important point is that the result can explain its own conditions: workload, database, driver, pool size,
 partition count, metric, and documentation source.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-chart" data-diagram-title="Seed job throughput by database">
   <img src="/assets/exposed-batch-kotlinx-benchmark-summary-01-en.png" alt="Database summary chart for the H2, PostgreSQL, and MySQL batch benchmarks" loading="lazy" />
   <figcaption>The summary chart shows the broad trend; the detailed Markdown tables keep each combination available.</figcaption>
 </figure>
@@ -329,7 +331,7 @@ partition count, metric, and documentation source.
 The PostgreSQL end-to-end chart makes the parallelism trend easier to scan for the
 `dataSize=10000`, `poolSize=30` profile.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-chart" data-diagram-title="PostgreSQL end-to-end job throughput by partition count">
   <img src="/assets/exposed-batch-kotlinx-benchmark-postgresql-e2e-01-en.png" alt="PostgreSQL end-to-end batch benchmark chart comparing JDBC and R2DBC throughput by parallelism" loading="lazy" />
   <figcaption>The PostgreSQL end-to-end chart shows throughput changes by parallelism under the same data size and pool size.</figcaption>
 </figure>
@@ -378,12 +380,12 @@ This is a practical starting order.
 This will not prevent every bad benchmark. It does make the cleanup easier because you can find where
 the mistake entered the measurement.
 
-## Source Links
+## Resources
 
-- [`utils/batch/build.gradle.kts`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/utils/batch/build.gradle.kts)
-- [`BenchmarkScenarioParams.kt`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/utils/batch/src/benchmark/kotlin/io/bluetape4k/batch/benchmark/support/BenchmarkScenarioParams.kt)
-- [`AbstractJdbcBatchBenchmark.kt`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/utils/batch/src/benchmark/kotlin/io/bluetape4k/batch/benchmark/jdbc/AbstractJdbcBatchBenchmark.kt)
-- [`AbstractR2dbcBatchBenchmark.kt`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/utils/batch/src/benchmark/kotlin/io/bluetape4k/batch/benchmark/r2dbc/AbstractR2dbcBatchBenchmark.kt)
-- [`BenchmarkMarkdownExporter.kt`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/utils/batch/src/benchmark/kotlin/io/bluetape4k/batch/benchmark/support/BenchmarkMarkdownExporter.kt)
-- [`utils/batch/benchmark/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/utils/batch/benchmark/README.md)
+- [`utils/batch/build.gradle.kts`](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.11.0/utils/batch/build.gradle.kts)
+- [`BenchmarkScenarioParams.kt`](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.11.0/utils/batch/src/benchmark/kotlin/io/bluetape4k/batch/benchmark/support/BenchmarkScenarioParams.kt)
+- [`AbstractJdbcBatchBenchmark.kt`](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.11.0/utils/batch/src/benchmark/kotlin/io/bluetape4k/batch/benchmark/jdbc/AbstractJdbcBatchBenchmark.kt)
+- [`AbstractR2dbcBatchBenchmark.kt`](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.11.0/utils/batch/src/benchmark/kotlin/io/bluetape4k/batch/benchmark/r2dbc/AbstractR2dbcBatchBenchmark.kt)
+- [`BenchmarkMarkdownExporter.kt`](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.11.0/utils/batch/src/benchmark/kotlin/io/bluetape4k/batch/benchmark/support/BenchmarkMarkdownExporter.kt)
+- [`utils/batch/benchmark/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.11.0/utils/batch/benchmark/README.md)
 - [`bluetape4k-image large streaming benchmark`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/benchmark/images-benchmark/docs/large-streaming-2026-06-05.md)

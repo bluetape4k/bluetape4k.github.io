@@ -516,6 +516,12 @@ test('the repaired blog diagrams expose localized titles while hero and screensh
   const enDependenciesComposition = await read('src/content/docs/blog/bluetape4k-dependencies-1-3-0-service-composition.mdx');
   const koDependenciesSignals = await read('src/content/docs/ko/blog/bluetape4k-dependencies-1-3-0-production-signals.mdx');
   const enDependenciesSignals = await read('src/content/docs/blog/bluetape4k-dependencies-1-3-0-production-signals.mdx');
+  const koReleaseTrain = await read('src/content/docs/ko/blog/bluetape4k-dependencies-making-part3-release-train.mdx');
+  const enReleaseTrain = await read('src/content/docs/blog/bluetape4k-dependencies-making-part3-release-train.mdx');
+  const koKtorTenant = await read('src/content/docs/ko/blog/exposed-r2dbc-ktor-multitenant-routing-patterns.mdx');
+  const enKtorTenant = await read('src/content/docs/blog/exposed-r2dbc-ktor-multitenant-routing-patterns.mdx');
+  const koBatchBenchmark = await read('src/content/docs/ko/blog/exposed-batch-kotlinx-benchmark-methodology.mdx');
+  const enBatchBenchmark = await read('src/content/docs/blog/exposed-batch-kotlinx-benchmark-methodology.mdx');
 
   assert.match(koRuntime, /class="bt4k-architecture"\s+data-diagram-title="Run과 lane의 상태·복구 모델"/);
   assert.match(enRuntime, /class="bt4k-architecture"\s+data-diagram-title="Run and lane state and recovery model"/);
@@ -544,6 +550,12 @@ test('the repaired blog diagrams expose localized titles while hero and screensh
     [enDependenciesComposition, ['Service Boundaries Determine Module Composition']],
     [koDependenciesSignals, ['운영 신호에서 진단 결정까지']],
     [enDependenciesSignals, ['From Operational Signals to Diagnostic Decisions']],
+    [koReleaseTrain, ['Maven Central 릴리스 트레인의 검증 순서']],
+    [enReleaseTrain, ['Verification order for a Maven Central release train']],
+    [koKtorTenant, ['Ktor 요청에서 테넌트 스키마를 선택하는 순서', '실행 환경에 따른 테넌트 상태 전달 방식 비교']],
+    [enKtorTenant, ['Tenant schema selection across a Ktor request', 'Tenant state carriers by runtime model']],
+    [koBatchBenchmark, ['배치 벤치마크 결과의 생성 경로', '데이터베이스별 시드 적재 작업 처리량', 'PostgreSQL 전체 배치 작업의 파티션별 처리량']],
+    [enBatchBenchmark, ['Batch benchmark report generation path', 'Seed job throughput by database', 'PostgreSQL end-to-end job throughput by partition count']],
   ]) {
     for (const title of titles) {
       assert.match(source, new RegExp(`data-diagram-title="${title}"`));
@@ -571,7 +583,25 @@ test('the repaired blog diagrams expose localized titles while hero and screensh
     enDependenciesComposition,
     koDependenciesSignals,
     enDependenciesSignals,
+    koReleaseTrain,
+    enReleaseTrain,
+    koKtorTenant,
+    enKtorTenant,
+    koBatchBenchmark,
+    enBatchBenchmark,
   ]) {
     assert.doesNotMatch(source, /class="bt4k-blog-hero"[^>]*data-diagram-title/);
   }
+});
+
+test('release, multitenancy, and benchmark articles preserve their reader-facing boundaries', async () => {
+  const release = await read('src/content/docs/ko/blog/bluetape4k-dependencies-making-part3-release-train.mdx');
+  const tenant = await read('src/content/docs/ko/blog/exposed-r2dbc-ktor-multitenant-routing-patterns.mdx');
+  const benchmark = await read('src/content/docs/ko/blog/exposed-batch-kotlinx-benchmark-methodology.mdx');
+
+  assert.match(release, /스냅샷 403만 제한적으로 재시도하고 테스트 실패, 404, 바이너리 비호환은 즉시 실패 처리한다/);
+  assert.match(tenant, /입력 검증과 권한 검증을 혼동하면 안 됩니다/);
+  assert.match(tenant, /인증 주체와\s+테넌트의 관계를 권한 계층에서 별도로 확인/);
+  assert.match(benchmark, /`ops\/sec`는 행 처리량이 아니라\s+`dataSize`만큼의 행을 처리하는 배치 작업 전체를 초당 몇 회 완료했는지/);
+  assert.match(benchmark, /`avg ms`는 배치 작업 1회의 평균 시간/);
 });
