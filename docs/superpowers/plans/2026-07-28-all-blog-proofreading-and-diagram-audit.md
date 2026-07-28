@@ -38,14 +38,14 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 
 ## 현재 진행 상황
 
-기준 시점: 2026-07-28, stacked PR #267~#280와 AWS Part 1~3 작업 브랜치
+기준 시점: 2026-07-28, stacked PR #267~#281
 
 | 구분 | 완료 | 전체 | 남음 | 상태 |
 | --- | ---: | ---: | ---: | --- |
 | 한국어 블로그 본문 교정 | 37 | 87 | 50 | 진행 중 |
 | 기술 다이어그램 변경·배치 검증 | 68 | 165 | 97 | 진행 중 |
-| stacked PR | 14 | 미정 | 미정 | #267~#280 open, AWS 배치 PR 준비 |
-| 현재 배치 | 3 | 3 | 0 | AWS Part 1~3 검증 완료 |
+| stacked PR | 15 | 미정 | 미정 | #267~#281 open |
+| 현재 배치 | 3 | 3 | 0 | AWS Part 1~3 PR #281 |
 | 최종 전체 사이트 감사 | 0 | 1 | 1 | 대기 |
 | 최종 머지·배포·정리 | 0 | 1 | 1 | 대기 |
 
@@ -111,6 +111,7 @@ Part 6의 새 다이어그램 4종만 전체 완료 수에 더했다.
 | 다이어그램 구조·PNG 검사 | PASS | 9개 stem 유형별 불변식과 2배 PNG 18개 원본 크기 확인 |
 | writer 체크리스트 | PASS | dotfiles `f7a5ec6`, chezmoi apply·source/live·upstream 일치 |
 | 사이트 검사 | PASS | Node 테스트 33/33, Astro 오류 0, 1,303 pages build, 한영 6개 경로 HTTP 200 |
+| stacked PR | PASS | #281, base `docs/korean-proofreading-leader-integrations-batch`, head `docs/korean-proofreading-aws-core-batch` |
 
 현재 배치 필수 검사: **9/9 완료, N/A 0, Blocked 0**
 
