@@ -99,7 +99,7 @@ commit `3d7e2db`를 upstream에 push했다. self-audit는 `PASS=7`,
 | 사이트 검사 | Astro check 오류·경고 0, 기존 힌트 3개, 정적 build 통과 |
 | 로컬 경로 | 한영 글 6개와 대표 PNG 3개 HTTP 200 |
 | writer 체크리스트 | dotfiles `3d7e2db`, chezmoi apply·source/live·upstream 일치 |
-| stacked PR | 생성 후 PR 번호와 exact head를 원장에 기록 |
+| stacked PR | #288, base `docs/korean-proofreading-dependencies-operations-batch` |
 
 ## 다음 작업에 적용할 지침
 
