@@ -17,13 +17,13 @@ writeFileSync(join(out, 'bluetape4k-exposed-readme-overview.svg'), readmeOvervie
 execFileSync('rsvg-convert', [join(out, 'bluetape4k-exposed-readme-overview.svg'), '-o', join(out, 'bluetape4k-exposed-readme-overview.png')]);
 
 const colors = {
-  blue: ['#E7F1FF', '#5A85D6'],
-  teal: ['#E6F7F5', '#38A69E'],
-  green: ['#EAF7ED', '#58A978'],
-  amber: ['#FFF3D8', '#D6A441'],
-  rose: ['#FCECEF', '#DC6B82'],
-  purple: ['#F1ECFF', '#8A72D6'],
-  neutral: ['#F5F7FA', '#8FA1B3'],
+  blue: ['#163761', '#5EA0FF'],
+  teal: ['#123F3C', '#35D0C5'],
+  green: ['#173D27', '#4BDB85'],
+  amber: ['#4B3212', '#F0B84D'],
+  rose: ['#4A1E2B', '#F07A9B'],
+  purple: ['#2D2359', '#A993FF'],
+  neutral: ['#1E293B', '#94A3B8'],
 };
 
 function esc(value) {
@@ -56,16 +56,16 @@ function base(width, height, title, subtitle) {
 <title>${esc(title)}</title>
 <desc>${esc(subtitle)}</desc>
 <defs>
-  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#1D3148" flood-opacity="0.12"/></filter>
-  <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M 1 1 L 7 4 L 1 7 Z" fill="#4D6F9F"/></marker>
+  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#020617" flood-opacity="0.42"/></filter>
+  <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 1 1 L 9 5 L 1 9 Z" fill="#78AFFF"/></marker>
   <style>
-    .bg{fill:#F7F9FC}.frame{fill:#FFFFFF;stroke:#D6E2ED;stroke-width:2}
-    .title{font-family:"Architects Daughter";font-size:42px;fill:#21334A;font-weight:700}
-    .subtitle,.body,.small,.tiny,.axisLabel{font-family:"Comic Mono";fill:#34465B}
-    .subtitle{font-size:16px}.body{font-size:14px}.small{font-size:12px;fill:#657386}.tiny{font-size:11px;fill:#657386}
-    .label{font-family:"Architects Daughter";font-size:23px;fill:#21334A;font-weight:700}
-    .card{filter:url(#shadow);stroke-width:2}.line{fill:none;stroke:#4D6F9F;stroke-width:2.8;marker-end:url(#arrow);stroke-linecap:round;stroke-linejoin:round}
-    .axis{stroke:#B9C7D8;stroke-width:1.4}.grid{stroke:#CAD6E4;stroke-width:1;stroke-dasharray:4 6}
+    .bg{fill:#0B1220}.frame{fill:#0F1E33;stroke:#284766;stroke-width:2}
+    .title{font-family:"Architects Daughter";font-size:42px;fill:#F5F9FF;font-weight:700}
+    .subtitle,.body,.small,.tiny,.axisLabel{font-family:"Comic Mono";fill:#D7E3F5}
+    .subtitle{font-size:16px}.body{font-size:14px}.small{font-size:12px;fill:#B8C7DD}.tiny{font-size:11px;fill:#B8C7DD}
+    .label{font-family:"Architects Daughter";font-size:23px;fill:#F5F9FF;font-weight:700}
+    .card{filter:url(#shadow);stroke-width:2}.line{fill:none;stroke:#78AFFF;stroke-width:3.2;marker-end:url(#arrow);stroke-linecap:round;stroke-linejoin:round}
+    .axis{stroke:#55718F;stroke-width:1.4}.grid{stroke:#2F4B67;stroke-width:1;stroke-dasharray:4 6}
   </style>
 </defs>
 <rect class="bg" width="${width}" height="${height}"/>
@@ -112,7 +112,7 @@ function withExplicitLineAttributes(body) {
     .replaceAll('d="M990 468 C1058 468 1040 316 1110 316"', 'd="M990 468 H1040 Q1050 468 1050 458 V326 Q1050 316 1060 316 H1110"');
   return orthogonal.replaceAll(
     '<path class="line" d=',
-    '<path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d=',
+    '<path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d=',
   );
 }
 
@@ -187,6 +187,59 @@ function normalizeLocaleFonts(svg, locale) {
     .replaceAll('markerUnits="strokeWidth"', 'markerUnits="userSpaceOnUse"');
 }
 
+function applyDarkTheme(svg) {
+  return svg
+    .replaceAll('#F6F9FC', '#0B1220')
+    .replaceAll('#F7F9FC', '#0B1220')
+    .replaceAll('#FFFFFF', '#0F1E33')
+    .replaceAll('#FBFDFF', '#101C2F')
+    .replaceAll('#F3F7FB', '#0D1A2B')
+    .replaceAll('#F5F7FA', '#1E293B')
+    .replaceAll('#F2F5F9', '#1E293B')
+    .replaceAll('#EEF4F9', '#16263A')
+    .replaceAll('#E8F3FF', colors.blue[0])
+    .replaceAll('#E7F1FF', colors.blue[0])
+    .replaceAll('#E9F7F6', colors.teal[0])
+    .replaceAll('#E6F7F5', colors.teal[0])
+    .replaceAll('#EAF7EF', colors.green[0])
+    .replaceAll('#EAF7ED', colors.green[0])
+    .replaceAll('#FFF3D9', colors.amber[0])
+    .replaceAll('#FFF3D8', colors.amber[0])
+    .replaceAll('#FDECEF', colors.rose[0])
+    .replaceAll('#FCECEF', colors.rose[0])
+    .replaceAll('#F1ECFF', colors.purple[0])
+    .replaceAll('#D6E2ED', '#284766')
+    .replaceAll('#D9E4EF', '#284766')
+    .replaceAll('#C7D7E7', '#284766')
+    .replaceAll('#D7E2EC', '#2D4968')
+    .replaceAll('#B9C7D8', '#55718F')
+    .replaceAll('#CAD6E4', '#2F4B67')
+    .replaceAll('#22344A', '#F5F9FF')
+    .replaceAll('#21334A', '#F5F9FF')
+    .replaceAll('#34465B', '#D7E3F5')
+    .replaceAll('#42556B', '#D7E3F5')
+    .replaceAll('#536476', '#B8C7DD')
+    .replaceAll('#657386', '#B8C7DD')
+    .replaceAll('#627184', '#B8C7DD')
+    .replaceAll('#536C85', '#78AFFF')
+    .replaceAll('#5A85D6', colors.blue[1])
+    .replaceAll('#5B8DEF', colors.blue[1])
+    .replaceAll('#38A69E', colors.teal[1])
+    .replaceAll('#45A7A1', colors.teal[1])
+    .replaceAll('#58A978', colors.green[1])
+    .replaceAll('#D6A441', colors.amber[1])
+    .replaceAll('#DC6B82', colors.rose[1])
+    .replaceAll('#8A72D6', colors.purple[1])
+    .replaceAll('#8FA1B3', colors.neutral[1])
+    .replaceAll('#9AA8B8', colors.neutral[1])
+    .replaceAll('#2E8F89', colors.teal[1])
+    .replaceAll('#3E9868', colors.green[1])
+    .replaceAll('#C94D68', colors.rose[1])
+    .replaceAll('#B9851B', colors.amber[1])
+    .replaceAll('flood-color="#203040" flood-opacity="0.10"', 'flood-color="#020617" flood-opacity="0.42"')
+    .replaceAll('flood-color="#1D3148" flood-opacity="0.12"', 'flood-color="#020617" flood-opacity="0.42"');
+}
+
 function translateSvg(svg, translations, name) {
   let localized = svg;
   for (const [from, to] of Object.entries(translations).sort((left, right) => right[0].length - left[0].length)) {
@@ -223,11 +276,11 @@ function writeLocalePair(name, translations) {
   const canonicalPath = join(out, `${name}.svg`);
   const sourcePath = existsSync(canonicalPath) ? canonicalPath : join(out, `${name}-en.svg`);
   const source = stripUnusedArrow(normalizeSequencePorts(name, readFileSync(sourcePath, 'utf8')));
-  writeFileSync(join(out, `${name}-en.svg`), normalizeLocaleFonts(source, 'en'));
+  writeFileSync(join(out, `${name}-en.svg`), applyDarkTheme(normalizeLocaleFonts(source, 'en')));
   renderCairo(`${name}-en`);
   writeFileSync(
     join(out, `${name}-ko.svg`),
-    adjustKoreanLayout(name, normalizeLocaleFonts(translateSvg(source, translations, name), 'ko')),
+    applyDarkTheme(adjustKoreanLayout(name, normalizeLocaleFonts(translateSvg(source, translations, name), 'ko'))),
   );
   renderCairo(`${name}-ko`);
 }
@@ -560,18 +613,19 @@ const localeTranslations = {
   'bluetape4k-exposed-readme-overview': {
     'Bluetape4k Exposed Repository Overview': 'Bluetape4k Exposed 저장소 개요',
     'Repository overview rebuilt from root README features, module table, and settings.gradle.kts project mapping.': '루트 README의 기능, 모듈 표, settings.gradle.kts 프로젝트 구성을 바탕으로 다시 만든 저장소 개요입니다.',
-    'A production-oriented Exposed toolkit grouped by repository runtime, cache strategy, column extensions, database dialects, and Spring Boot integration.': '저장소 실행 환경, 캐시 전략, 컬럼 확장, 데이터베이스 방언, Spring Boot 통합으로 구성한 운영 지향 Exposed 도구 모음입니다.',
+    'A production-oriented Exposed toolkit grouped by repository runtime, cache strategy, column extensions, database dialects, and Spring Boot integration.': '저장소 실행 환경, 캐시 전략, 컬럼 확장, 데이터베이스 다이얼렉트, Spring Boot 통합으로 구성한 운영 지향 Exposed 도구 모음입니다.',
     'Foundation and repository runtime': '기반 모듈과 저장소 실행 환경',
     'Cache decorators': '캐시 데코레이터',
     'Column and value extensions': '컬럼과 값 확장',
-    'Database dialect and analytics connectors': '데이터베이스 방언과 분석 커넥터',
+    'Database dialect and analytics connectors': '데이터베이스 다이얼렉트와 분석 커넥터',
     'Column types, DSL helpers': '컬럼 타입, DSL 도우미',
     'auditable tables, CTE, paging': '감사 테이블, CTE, 페이징',
     'DAO entity extensions': 'DAO 엔티티 확장',
     'audit lifecycle hooks': '감사 생명주기 훅',
     'blocking repository': '블로킹 저장소',
+    'Exposed transaction': 'Exposed 트랜잭션',
     'coroutine repository': '코루틴 저장소',
-    'suspend transaction': 'suspend transaction',
+    'suspend transaction': 'suspend 트랜잭션',
     'test fixtures': '테스트 픽스처',
     'JDBC and R2DBC test bases': 'JDBC와 R2DBC 테스트 기반',
     'container-backed verification': '컨테이너 기반 검증',
@@ -594,13 +648,13 @@ const localeTranslations = {
     'Timefold persistence': 'Timefold persistence',
     'solver score storage': '솔버 점수 저장',
     'Exposed persistence helpers': 'Exposed 영속성 도우미',
-    'SQL dialect modules': 'SQL 방언 모듈',
+    'SQL dialect modules': 'SQL 다이얼렉트 모듈',
     'analytics connectors': '분석 커넥터',
     'Spring Boot modules': 'Spring Boot 모듈',
     'Spring Modulith events': 'Spring Modulith 이벤트',
     'examples': '예제',
     'BigQuery dry run': 'BigQuery 모의 실행',
-    'Start with exposed-jdbc or exposed-r2dbc, then add cache, column codecs, dialect modules, or Spring Boot integration only where the data path needs them.': 'exposed-jdbc 또는 exposed-r2dbc에서 시작하고, 데이터 경로에 필요한 캐시, 컬럼 코덱, 방언 모듈, Spring Boot 통합만 추가합니다.',
+    'Start with exposed-jdbc or exposed-r2dbc, then add cache, column codecs, dialect modules, or Spring Boot integration only where the data path needs them.': 'exposed-jdbc 또는 exposed-r2dbc에서 시작하고, 데이터 경로에 필요한 캐시, 컬럼 코덱, 다이얼렉트 모듈, Spring Boot 통합만 추가합니다.',
     'BOM aligns dependency versions; it is not shown as a runtime component.': 'BOM은 의존성 버전을 정렬하므로 실행 구성 요소로 그리지 않습니다.',
   },
   'bluetape4k-exposed-part1-choice-journey': {
@@ -614,19 +668,21 @@ const localeTranslations = {
     'NoSQL Detour': 'NoSQL 우회',
     'useful in niches': '특정 영역에 유용',
     'schema changes still hurt': '스키마 변경 부담 유지',
-    'real non-blocking I/O': '진짜 non-blocking I/O',
+    'real non-blocking I/O': '실제 논블로킹 I/O',
     'SQL strings or Reactor cost': '문자열 SQL 또는 Reactor 비용',
     'keep JDBC drivers': 'JDBC 드라이버 유지',
     'simpler call stacks': '단순한 호출 스택',
+    'Virtual Threads': '가상 스레드',
     'type-safe SQL': '타입 안전 SQL',
     'Kotlin-first model': 'Kotlin 우선 모델',
     'JDBC + R2DBC repositories': 'JDBC + R2DBC 저장소',
+    'cache, JSON, encryption': '캐시, JSON, 암호화',
     'Production Path': '운영 경로',
     'workshops + benchmarks': '워크숍 + 벤치마크',
-    'tenant/cache examples': 'tenant/cache 예제',
+    'tenant/cache examples': '테넌트/캐시 예제',
   },
   'bluetape4k-exposed-part1-virtual-thread-chart': {
-    'Virtual Threads for JDBC Workloads': 'JDBC 작업에서 Virtual Threads의 효과',
+    'Virtual Threads for JDBC Workloads': 'JDBC 작업에서 가상 스레드의 효과',
     'Representative measured improvements from the workshop benchmark note.': '워크숍 벤치마크에서 측정한 대표 개선 수치를 요약합니다.',
     'complex UPDATE + GROUP BY': '복잡한 UPDATE + GROUP BY',
     'CPU bound work': 'CPU 중심 작업',
@@ -634,9 +690,10 @@ const localeTranslations = {
   },
   'bluetape4k-exposed-part1-jdbc-benchmark-chart': {
     'Exposed JDBC Benchmark Throughput': 'Exposed JDBC 벤치마크 처리량',
+    'PostgreSQL Testcontainers, HikariCP max 24, JMH throughput.': 'PostgreSQL Testcontainers, HikariCP 최대 24, JMH 처리량입니다.',
   },
   'bluetape4k-exposed-part1-jpa-comparison-chart': {
-    'Exposed vs JPA Single Entity CRUD': 'Exposed vs JPA 단건 Entity CRUD',
+    'Exposed vs JPA Single Entity CRUD': 'Exposed vs JPA 단건 엔티티 CRUD',
     'PostgreSQL Testcontainers, JMH average latency. Lower is better.': 'PostgreSQL Testcontainers, JMH 평균 지연 시간입니다. 낮을수록 좋습니다.',
   },
   'bluetape4k-exposed-part2-jdbc-repository-flow': {
@@ -644,15 +701,27 @@ const localeTranslations = {
     'Keep transaction boundaries explicit while repository helpers remove repeated paging and soft-delete code.': '트랜잭션 경계는 명시하고, 저장소 도우미가 반복되는 페이징과 논리 삭제 코드를 줄입니다.',
     'Service Method': '서비스 메서드',
     'ResultRow Mapper': 'ResultRow 매퍼',
-    'Virtual Thread Tx': 'Virtual Thread Tx',
-    'cheap waiting': '저렴한 대기',
+    'Virtual Thread Tx': '가상 스레드 Tx',
+    'transaction boundary': '트랜잭션 경계',
+    'domain intent': '도메인 의도',
+    'cheap waiting': '낮은 대기 비용',
     'typed columns': '타입 컬럼',
+    'domain record': '도메인 레코드',
+    'blocking JDBC': '블로킹 JDBC',
     'PostgreSQL · MySQL': 'PostgreSQL · MySQL',
     'H2 · testcontainers': 'H2 · Testcontainers',
   },
   'bluetape4k-exposed-part3-execution-models': {
     'Execution Models for Exposed': 'Exposed 실행 모델',
-    'Choose JDBC + Virtual Threads or R2DBC + Coroutines by workload, driver path, and streaming needs.': '작업 특성, 드라이버 경로, 스트리밍 요구에 따라 JDBC + Virtual Threads 또는 R2DBC + Coroutines를 고릅니다.',
+    'Choose JDBC + Virtual Threads or R2DBC + Coroutines by workload, driver path, and streaming needs.': '작업 특성, 드라이버 경로, 스트리밍 요구에 따라 JDBC + 가상 스레드 또는 R2DBC + 코루틴을 고릅니다.',
+    'JDBC + Virtual Threads': 'JDBC + 가상 스레드',
+    'R2DBC + Coroutines': 'R2DBC + 코루틴',
+    'Request': '요청',
+    'Batch / CRUD': '배치 / CRUD',
+    'Streaming / Reactive': '스트리밍 / 리액티브',
+    'Decision': '선택',
+    'row flow': 'row 흐름',
+    'backpressure path': '배압 경로',
     'mature driver path': '성숙한 드라이버 경로',
     'simple stack traces': '단순한 스택 추적',
     'measure round-trips': '왕복 비용 측정',
@@ -662,29 +731,34 @@ const localeTranslations = {
     'benchmark second': '벤치마크로 검증',
   },
   'bluetape4k-exposed-part3-batch-comparison-chart': {
-    'dataSize=100000, parallelism=8, ops/sec from batch benchmark notes. Higher is better.': 'dataSize=100000, parallelism=8 batch benchmark ops/sec. 높을수록 좋습니다.',
+    'Large Batch E2E: JDBC vs R2DBC': '대형 배치 E2E: JDBC vs R2DBC',
+    'dataSize=100000, parallelism=8, ops/sec from batch benchmark notes. Higher is better.': 'dataSize=100000, parallelism=8 배치 벤치마크 ops/sec입니다. 높을수록 좋습니다.',
   },
   'bluetape4k-exposed-part4-codec-dialect-map': {
-    'Columns and Dialects Map': '컬럼과 데이터베이스 방언 구성',
-    'Move repeated database-specific details into typed columns and small dialect modules.': '반복되는 DB별 세부사항을 타입 컬럼과 작은 방언 모듈로 옮깁니다.',
+    'Columns and Dialects Map': '컬럼과 데이터베이스 다이얼렉트 구성',
+    'Move repeated database-specific details into typed columns and small dialect modules.': '반복되는 DB별 세부사항을 타입 컬럼과 작은 다이얼렉트 모듈로 옮깁니다.',
     'Domain Model': '도메인 모델',
     'JSON Codecs': 'JSON 코덱',
     'Encrypted Columns': '암호화 컬럼',
     'Measured Columns': '측정값 컬럼',
     'range columns': '범위 컬럼',
-    'Analytics Dialects': '분석용 방언',
+    'Analytics Dialects': '분석용 다이얼렉트',
     'type checks': '타입 검사',
     'less string glue': '문자열 조합 감소',
   },
   'bluetape4k-exposed-part5-production-boundary': {
     'Production Boundary': '운영 경계',
     'Cache, tenancy, outbox, and Spring wiring must be designed and measured together.': '캐시, 멀티테넌시, 아웃박스, Spring 연결은 함께 설계하고 측정해야 합니다.',
+    'HTTP Request': 'HTTP 요청',
     'Spring Boot Wiring': 'Spring Boot 연결',
+    'repository scanning': '저장소 스캔',
     'Cache Strategy': '캐시 전략',
     'Tenant Context': '테넌트 컨텍스트',
     'Outbox / Idempotency': '아웃박스 / 멱등성',
     'pending record first': 'pending record 먼저',
     'Repository Layer': '저장소 계층',
+    'Exposed transaction': 'Exposed 트랜잭션',
+    'Observability': '관측성',
     'cache key includes tenant': '캐시 키에 테넌트 포함',
     'hit/miss counters': '적중/실패 횟수',
     'tenant leakage tests': '테넌트 누출 테스트',

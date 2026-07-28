@@ -1,21 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="560" viewBox="0 0 1280 560" role="img">
-<title>JDBC 작업에서 Virtual Threads의 효과</title>
+<title>JDBC 작업에서 가상 스레드의 효과</title>
 <desc>워크숍 벤치마크에서 측정한 대표 개선 수치를 요약합니다.</desc>
 <defs>
-  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#1D3148" flood-opacity="0.12"/></filter>
+  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#020617" flood-opacity="0.42"/></filter>
   <style>
-    .bg{fill:#F7F9FC}.frame{fill:#FFFFFF;stroke:#D6E2ED;stroke-width:2}
-    .title{font-family:"goorm Sans";font-size:42px;fill:#21334A;font-weight:700}
-    .subtitle,.body,.small,.tiny,.axisLabel{font-family:"goorm Sans Code","goorm Sans";fill:#34465B}
-    .subtitle{font-size:16px}.body{font-size:14px}.small{font-size:12px;fill:#657386}.tiny{font-size:11px;fill:#657386}
-    .label{font-family:"goorm Sans";font-size:23px;fill:#21334A;font-weight:700}
+    .bg{fill:#0B1220}.frame{fill:#0F1E33;stroke:#284766;stroke-width:2}
+    .title{font-family:"goorm Sans";font-size:42px;fill:#F5F9FF;font-weight:700}
+    .subtitle,.body,.small,.tiny,.axisLabel{font-family:"goorm Sans Code","goorm Sans";fill:#D7E3F5}
+    .subtitle{font-size:16px}.body{font-size:14px}.small{font-size:12px;fill:#B8C7DD}.tiny{font-size:11px;fill:#B8C7DD}
+    .label{font-family:"goorm Sans";font-size:23px;fill:#F5F9FF;font-weight:700}
     .card{filter:url(#shadow);stroke-width:2}
-    .axis{stroke:#B9C7D8;stroke-width:1.4}.grid{stroke:#CAD6E4;stroke-width:1;stroke-dasharray:4 6}
+    .axis{stroke:#55718F;stroke-width:1.4}.grid{stroke:#2F4B67;stroke-width:1;stroke-dasharray:4 6}
   </style>
 </defs>
 <rect class="bg" width="1280" height="560"/>
 <rect class="frame" x="34" y="28" width="1212" height="504" rx="26"/>
-<text class="title" x="70" y="82">JDBC 작업에서 Virtual Threads의 효과</text>
+<text class="title" x="70" y="82">JDBC 작업에서 가상 스레드의 효과</text>
 <text class="subtitle" x="72" y="114">워크숍 벤치마크에서 측정한 대표 개선 수치를 요약합니다.</text>
 <g>
   <line class="axis" x1="360" y1="488" x2="1140" y2="488"/>
@@ -23,19 +23,19 @@
   <line class="grid" x1="750" y1="156" x2="750" y2="488"/>
   <line class="grid" x1="1140" y1="156" x2="1140" y2="488"/>
   <text class="body" x="92" y="184" dominant-baseline="middle">indexed SELECT</text>
-<rect x="360" y="166" width="780" height="36" rx="10" fill="#EEF4F9" stroke="#D7E2EC"/>
+<rect x="360" y="166" width="780" height="36" rx="10" fill="#16263A" stroke="#2D4968"/>
 <rect class="card" x="360" y="166" width="660.4" height="36" rx="10" fill="#75A9E8" stroke="#75A9E8"/>
 <text class="body" x="1034.4" y="184" dominant-baseline="middle">2.54x 개선 배율</text>
 <text class="body" x="92" y="262" dominant-baseline="middle">복잡한 UPDATE + GROUP BY</text>
-<rect x="360" y="244" width="780" height="36" rx="10" fill="#EEF4F9" stroke="#D7E2EC"/>
+<rect x="360" y="244" width="780" height="36" rx="10" fill="#16263A" stroke="#2D4968"/>
 <rect class="card" x="360" y="244" width="465.40000000000003" height="36" rx="10" fill="#69B888" stroke="#69B888"/>
 <text class="body" x="839.4000000000001" y="262" dominant-baseline="middle">1.79x 개선 배율</text>
 <text class="body" x="92" y="340" dominant-baseline="middle">+10ms I/O latency</text>
-<rect x="360" y="322" width="780" height="36" rx="10" fill="#EEF4F9" stroke="#D7E2EC"/>
+<rect x="360" y="322" width="780" height="36" rx="10" fill="#16263A" stroke="#2D4968"/>
 <rect class="card" x="360" y="322" width="590.2" height="36" rx="10" fill="#D9AA4D" stroke="#D9AA4D"/>
 <text class="body" x="964.2" y="340" dominant-baseline="middle">2.27x 개선 배율</text>
 <text class="body" x="92" y="418" dominant-baseline="middle">CPU 중심 작업</text>
-<rect x="360" y="400" width="780" height="36" rx="10" fill="#EEF4F9" stroke="#D7E2EC"/>
+<rect x="360" y="400" width="780" height="36" rx="10" fill="#16263A" stroke="#2D4968"/>
 <rect class="card" x="360" y="400" width="267.8" height="36" rx="10" fill="#DB7890" stroke="#DB7890"/>
 <text class="body" x="641.8" y="418" dominant-baseline="middle">1.03x 개선 배율</text>
   <text class="tiny" x="360" y="514" text-anchor="middle">0</text>

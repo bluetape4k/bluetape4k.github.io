@@ -2,15 +2,15 @@
 <title>Exposed JDBC Benchmark Throughput</title>
 <desc>PostgreSQL Testcontainers, HikariCP max 24, JMH throughput.</desc>
 <defs>
-  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#1D3148" flood-opacity="0.12"/></filter>
+  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#020617" flood-opacity="0.42"/></filter>
   <style>
-    .bg{fill:#F7F9FC}.frame{fill:#FFFFFF;stroke:#D6E2ED;stroke-width:2}
-    .title{font-family:"Architects Daughter";font-size:42px;fill:#21334A;font-weight:700}
-    .subtitle,.body,.small,.tiny,.axisLabel{font-family:"Comic Mono";fill:#34465B}
-    .subtitle{font-size:16px}.body{font-size:14px}.small{font-size:12px;fill:#657386}.tiny{font-size:11px;fill:#657386}
-    .label{font-family:"Architects Daughter";font-size:23px;fill:#21334A;font-weight:700}
+    .bg{fill:#0B1220}.frame{fill:#0F1E33;stroke:#284766;stroke-width:2}
+    .title{font-family:"Architects Daughter";font-size:42px;fill:#F5F9FF;font-weight:700}
+    .subtitle,.body,.small,.tiny,.axisLabel{font-family:"Comic Mono";fill:#D7E3F5}
+    .subtitle{font-size:16px}.body{font-size:14px}.small{font-size:12px;fill:#B8C7DD}.tiny{font-size:11px;fill:#B8C7DD}
+    .label{font-family:"Architects Daughter";font-size:23px;fill:#F5F9FF;font-weight:700}
     .card{filter:url(#shadow);stroke-width:2}
-    .axis{stroke:#B9C7D8;stroke-width:1.4}.grid{stroke:#CAD6E4;stroke-width:1;stroke-dasharray:4 6}
+    .axis{stroke:#55718F;stroke-width:1.4}.grid{stroke:#2F4B67;stroke-width:1;stroke-dasharray:4 6}
   </style>
 </defs>
 <rect class="bg" width="1280" height="680"/>
@@ -23,23 +23,23 @@
   <line class="grid" x1="750" y1="156" x2="750" y2="566"/>
   <line class="grid" x1="1140" y1="156" x2="1140" y2="566"/>
   <text class="body" x="92" y="184" dominant-baseline="middle">singleFindById</text>
-<rect x="360" y="166" width="780" height="36" rx="10" fill="#EEF4F9" stroke="#D7E2EC"/>
+<rect x="360" y="166" width="780" height="36" rx="10" fill="#16263A" stroke="#2D4968"/>
 <rect class="card" x="360" y="166" width="731.25" height="36" rx="10" fill="#75A9E8" stroke="#75A9E8"/>
 <text class="body" x="1105.25" y="184" dominant-baseline="middle">15,000 ops/s</text>
 <text class="body" x="92" y="262" dominant-baseline="middle">singleInsert</text>
-<rect x="360" y="244" width="780" height="36" rx="10" fill="#EEF4F9" stroke="#D7E2EC"/>
+<rect x="360" y="244" width="780" height="36" rx="10" fill="#16263A" stroke="#2D4968"/>
 <rect class="card" x="360" y="244" width="702" height="36" rx="10" fill="#69B888" stroke="#69B888"/>
 <text class="body" x="1076" y="262" dominant-baseline="middle">14,400 ops/s</text>
 <text class="body" x="92" y="340" dominant-baseline="middle">singleUpdate</text>
-<rect x="360" y="322" width="780" height="36" rx="10" fill="#EEF4F9" stroke="#D7E2EC"/>
+<rect x="360" y="322" width="780" height="36" rx="10" fill="#16263A" stroke="#2D4968"/>
 <rect class="card" x="360" y="322" width="697.125" height="36" rx="10" fill="#D9AA4D" stroke="#D9AA4D"/>
 <text class="body" x="1071.125" y="340" dominant-baseline="middle">14,300 ops/s</text>
 <text class="body" x="92" y="418" dominant-baseline="middle">joinQuery</text>
-<rect x="360" y="400" width="780" height="36" rx="10" fill="#EEF4F9" stroke="#D7E2EC"/>
+<rect x="360" y="400" width="780" height="36" rx="10" fill="#16263A" stroke="#2D4968"/>
 <rect class="card" x="360" y="400" width="73.6125" height="36" rx="10" fill="#55B5AF" stroke="#55B5AF"/>
 <text class="body" x="447.6125" y="418" dominant-baseline="middle">1,510 ops/s</text>
 <text class="body" x="92" y="496" dominant-baseline="middle">batchInsert</text>
-<rect x="360" y="478" width="780" height="36" rx="10" fill="#EEF4F9" stroke="#D7E2EC"/>
+<rect x="360" y="478" width="780" height="36" rx="10" fill="#16263A" stroke="#2D4968"/>
 <rect class="card" x="360" y="478" width="20" height="36" rx="10" fill="#DB7890" stroke="#DB7890"/>
 <text class="body" x="394" y="496" dominant-baseline="middle">217 ops/s</text>
   <text class="tiny" x="360" y="592" text-anchor="middle">0</text>

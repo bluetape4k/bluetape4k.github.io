@@ -2,16 +2,16 @@
 <title>Columns and Dialects Map</title>
 <desc>Move repeated database-specific details into typed columns and small dialect modules.</desc>
 <defs>
-  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#1D3148" flood-opacity="0.12"/></filter>
-  <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M 1 1 L 7 4 L 1 7 Z" fill="#4D6F9F"/></marker>
+  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#020617" flood-opacity="0.42"/></filter>
+  <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 1 1 L 9 5 L 1 9 Z" fill="#78AFFF"/></marker>
   <style>
-    .bg{fill:#F7F9FC}.frame{fill:#FFFFFF;stroke:#D6E2ED;stroke-width:2}
-    .title{font-family:"Architects Daughter";font-size:42px;fill:#21334A;font-weight:700}
-    .subtitle,.body,.small,.tiny,.axisLabel{font-family:"Comic Mono";fill:#34465B}
-    .subtitle{font-size:16px}.body{font-size:14px}.small{font-size:12px;fill:#657386}.tiny{font-size:11px;fill:#657386}
-    .label{font-family:"Architects Daughter";font-size:23px;fill:#21334A;font-weight:700}
-    .card{filter:url(#shadow);stroke-width:2}.line{fill:none;stroke:#4D6F9F;stroke-width:2.8;marker-end:url(#arrow);stroke-linecap:round;stroke-linejoin:round}
-    .axis{stroke:#B9C7D8;stroke-width:1.4}.grid{stroke:#CAD6E4;stroke-width:1;stroke-dasharray:4 6}
+    .bg{fill:#0B1220}.frame{fill:#0F1E33;stroke:#284766;stroke-width:2}
+    .title{font-family:"Architects Daughter";font-size:42px;fill:#F5F9FF;font-weight:700}
+    .subtitle,.body,.small,.tiny,.axisLabel{font-family:"Comic Mono";fill:#D7E3F5}
+    .subtitle{font-size:16px}.body{font-size:14px}.small{font-size:12px;fill:#B8C7DD}.tiny{font-size:11px;fill:#B8C7DD}
+    .label{font-family:"Architects Daughter";font-size:23px;fill:#F5F9FF;font-weight:700}
+    .card{filter:url(#shadow);stroke-width:2}.line{fill:none;stroke:#78AFFF;stroke-width:3.2;marker-end:url(#arrow);stroke-linecap:round;stroke-linejoin:round}
+    .axis{stroke:#55718F;stroke-width:1.4}.grid{stroke:#2F4B67;stroke-width:1;stroke-dasharray:4 6}
   </style>
 </defs>
 <rect class="bg" width="1500" height="760"/>
@@ -20,60 +20,60 @@
 <text class="subtitle" x="72" y="114">Move repeated database-specific details into typed columns and small dialect modules.</text>
 <g transform="translate(80 170)">
   <g>
-  <rect class="card" x="0" y="236" width="230" height="112" rx="16" fill="#E7F1FF" stroke="#5A85D6"/>
+  <rect class="card" x="0" y="236" width="230" height="112" rx="16" fill="#163761" stroke="#5EA0FF"/>
   <text class="label" x="115" y="274" text-anchor="middle" dominant-baseline="middle">Domain Model</text>
   <text class="body" x="115" y="304" text-anchor="middle">settings · metadata</text>
 <text class="body" x="115" y="324" text-anchor="middle">secret · location</text>
 </g>
   <g>
-  <rect class="card" x="342" y="54" width="260" height="116" rx="16" fill="#EAF7ED" stroke="#58A978"/>
+  <rect class="card" x="342" y="54" width="260" height="116" rx="16" fill="#173D27" stroke="#4BDB85"/>
   <text class="label" x="472" y="94" text-anchor="middle" dominant-baseline="middle">JSON Codecs</text>
   <text class="body" x="472" y="124" text-anchor="middle">Jackson2/3</text>
 <text class="body" x="472" y="144" text-anchor="middle">Fastjson2</text>
 </g>
   <g>
-  <rect class="card" x="342" y="236" width="260" height="116" rx="16" fill="#FCECEF" stroke="#DC6B82"/>
+  <rect class="card" x="342" y="236" width="260" height="116" rx="16" fill="#4A1E2B" stroke="#F07A9B"/>
   <text class="label" x="472" y="276" text-anchor="middle" dominant-baseline="middle">Encrypted Columns</text>
   <text class="body" x="472" y="306" text-anchor="middle">Tink AEAD</text>
 <text class="body" x="472" y="326" text-anchor="middle">Deterministic AEAD</text>
 </g>
   <g>
-  <rect class="card" x="342" y="418" width="260" height="116" rx="16" fill="#F1ECFF" stroke="#8A72D6"/>
+  <rect class="card" x="342" y="418" width="260" height="116" rx="16" fill="#2D2359" stroke="#A993FF"/>
   <text class="label" x="472" y="458" text-anchor="middle" dominant-baseline="middle">Measured Columns</text>
   <text class="body" x="472" y="488" text-anchor="middle">quantity + unit</text>
 <text class="body" x="472" y="508" text-anchor="middle">typed value</text>
 </g>
   <g>
-  <rect class="card" x="742" y="54" width="260" height="116" rx="16" fill="#FFF3D8" stroke="#D6A441"/>
+  <rect class="card" x="742" y="54" width="260" height="116" rx="16" fill="#4B3212" stroke="#F0B84D"/>
   <text class="label" x="872" y="94" text-anchor="middle" dominant-baseline="middle">PostgreSQL</text>
   <text class="body" x="872" y="124" text-anchor="middle">PostGIS · pgvector</text>
 <text class="body" x="872" y="144" text-anchor="middle">range columns</text>
 </g>
   <g>
-  <rect class="card" x="742" y="236" width="260" height="116" rx="16" fill="#E6F7F5" stroke="#38A69E"/>
+  <rect class="card" x="742" y="236" width="260" height="116" rx="16" fill="#123F3C" stroke="#35D0C5"/>
   <text class="label" x="872" y="276" text-anchor="middle" dominant-baseline="middle">MySQL 8</text>
   <text class="body" x="872" y="306" text-anchor="middle">JTS geometry</text>
 <text class="body" x="872" y="326" text-anchor="middle">spatial predicates</text>
 </g>
   <g>
-  <rect class="card" x="742" y="418" width="260" height="116" rx="16" fill="#F5F7FA" stroke="#8FA1B3"/>
+  <rect class="card" x="742" y="418" width="260" height="116" rx="16" fill="#1E293B" stroke="#94A3B8"/>
   <text class="label" x="872" y="458" text-anchor="middle" dominant-baseline="middle">Analytics Dialects</text>
   <text class="body" x="872" y="488" text-anchor="middle">BigQuery · ClickHouse</text>
 <text class="body" x="872" y="508" text-anchor="middle">Trino · DuckDB</text>
 </g>
   <g>
-  <rect class="card" x="1120" y="236" width="230" height="112" rx="16" fill="#EAF7ED" stroke="#58A978"/>
+  <rect class="card" x="1120" y="236" width="230" height="112" rx="16" fill="#173D27" stroke="#4BDB85"/>
   <text class="label" x="1235" y="274" text-anchor="middle" dominant-baseline="middle">SQL DSL</text>
   <text class="body" x="1235" y="304" text-anchor="middle">type checks</text>
 <text class="body" x="1235" y="324" text-anchor="middle">less string glue</text>
 </g>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M230 272 H284 Q294 272 294 262 V122 Q294 112 304 112 H342"/>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M230 292 H342"/>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M230 312 H284 Q294 312 294 322 V466 Q294 476 304 476 H342"/>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M602 112 H742"/>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M602 292 H742"/>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M602 476 H742"/>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M1002 112 H1054 Q1064 112 1064 122 V266 Q1064 276 1074 276 H1120"/>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M1002 292 H1120"/>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M1002 476 H1054 Q1064 476 1064 466 V330 Q1064 320 1074 320 H1120"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M230 272 H284 Q294 272 294 262 V122 Q294 112 304 112 H342"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M230 292 H342"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M230 312 H284 Q294 312 294 322 V466 Q294 476 304 476 H342"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M602 112 H742"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M602 292 H742"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M602 476 H742"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M1002 112 H1054 Q1064 112 1064 122 V266 Q1064 276 1074 276 H1120"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M1002 292 H1120"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M1002 476 H1054 Q1064 476 1064 466 V330 Q1064 320 1074 320 H1120"/>
 </g></svg>

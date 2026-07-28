@@ -1,44 +1,44 @@
 ---
 title: "Bluetape4k Exposed Part 3: R2DBC, 코루틴, 가상 스레드"
-description: 왜 R2DBC와 JDBC + Virtual Threads를 둘 다 남겨두었는지 workload, driver 성숙도, streaming/backpressure 기준으로 설명한다.
+description: 왜 R2DBC와 JDBC + 가상 스레드를 둘 다 남겨두었는지 워크로드, 드라이버 성숙도, 스트리밍/배압 기준으로 설명한다.
 sidebar:
   order: -202605311103
 blog:
   date: 2026-05-31T11:03:00+09:00
   image: /assets/bluetape4k-exposed-part3-hero.png
-  imageAlt: R2DBC 파이프와 PostgreSQL 블록을 작은 로봇 작업자들이 연결하는 Exposed R2DBC workshop 3D diorama
-  cardDescription: "R2DBC는 streaming에 강하고, JDBC + Virtual Threads는 익숙한 driver 방식을 살린다. 숫자로 고르자."
+  imageAlt: R2DBC 파이프와 PostgreSQL 블록을 작은 로봇 작업자들이 연결하는 Exposed R2DBC 워크숍 3D diorama
+  cardDescription: "R2DBC는 스트리밍에 강하고, JDBC + 가상 스레드는 익숙한 드라이버 방식을 살린다. 숫자로 고르자."
   tags: ["coroutines","exposed","jdbc","kotlin","r2dbc","virtual-threads"]
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/bluetape4k-exposed-part3-hero.png" alt="R2DBC 파이프와 PostgreSQL 블록을 작은 로봇 작업자들이 연결하는 Exposed R2DBC workshop 3D diorama" loading="eager" />
-  <figcaption>비동기라는 단어가 붙었다고 항상 빠른 것은 아닙니다. 빠른지는 대개 workload가 말합니다.</figcaption>
+  <img src="/assets/bluetape4k-exposed-part3-hero.png" alt="R2DBC 파이프와 PostgreSQL 블록을 작은 로봇 작업자들이 연결하는 Exposed R2DBC 워크숍 3D diorama" loading="eager" />
+  <figcaption>비동기라는 단어가 붙었다고 항상 빠른 것은 아닙니다. 빠른지는 대개 워크로드가 말합니다.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-31 · bluetape4k-exposed series · Part 3</p>
 
-Part 2에서 JDBC repository를 봤습니다. 여기서 자연스럽게 다음 질문이 나옵니다. WebFlux나 Ktor처럼 비동기 runtime을
-쓰는 서비스라면 JDBC + Virtual Threads만으로 충분할까요? 아니면 R2DBC까지 가야 할까요?
+Part 2에서 JDBC 저장소를 봤습니다. 여기서 자연스럽게 다음 질문이 나옵니다. WebFlux나 Ktor처럼 비동기 런타임을
+쓰는 서비스라면 JDBC + 가상 스레드만으로 충분할까요? 아니면 R2DBC까지 가야 할까요?
 
-저는 둘 중 하나만 정답이라고 보지 않았습니다. 그래서 R2DBC + Coroutines와 JDBC + Virtual Threads를 둘 다 남겨두고,
-workload에 따라 선택하도록 했습니다.
+저는 둘 중 하나만 정답이라고 보지 않았습니다. 그래서 R2DBC + 코루틴과 JDBC + 가상 스레드를 둘 다 남겨두고,
+워크로드에 따라 선택하도록 했습니다.
 
-`exposed-r2dbc`는 Exposed의 R2DBC driver를 coroutine-first로 쓰려고 만든 R2DBC 쪽 확장입니다. 반대쪽에는
-`exposed-jdbc`와 Virtual Threads가 있습니다. 둘 다 "요청이 기다릴 때 비싼 자원을 붙잡지 않게 하자"는 문제를
+`exposed-r2dbc`는 Exposed의 R2DBC 드라이버를 코루틴 우선 방식으로 쓰려고 만든 R2DBC 쪽 확장입니다. 반대쪽에는
+`exposed-jdbc`와 가상 스레드가 있습니다. 둘 다 "요청이 기다릴 때 비싼 자원을 붙잡지 않게 하자"는 문제를
 다루지만, 접근 방식이 다릅니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part3-execution-models-ko.png" alt="Request가 JDBC plus Virtual Threads와 R2DBC plus Coroutines로 갈라지고 batch CRUD와 streaming reactive 기준으로 decision에 도달하는 실행 모델 다이어그램" loading="lazy" />
-  <figcaption>실행 모델은 이름으로 고르지 말고, streaming 필요성, driver 성숙도, batch/CRUD workload로 고릅니다.</figcaption>
+  <img src="/assets/bluetape4k-exposed-part3-execution-models-ko.png" alt="요청이 JDBC와 가상 스레드, R2DBC와 코루틴으로 갈라지고 배치 CRUD와 리액티브 스트리밍 기준으로 선택에 도달하는 실행 모델 다이어그램" loading="lazy" />
+  <figcaption>실행 모델은 이름으로 고르지 말고, 스트리밍 필요성, 드라이버 성숙도, 배치/CRUD 워크로드로 고릅니다.</figcaption>
 </figure>
 
 ## R2DBC 방식
 
-R2DBC를 넣은 이유는 분명합니다. event-loop 기반 runtime에서 DB I/O까지 blocking으로 남겨두면 구조가 반쪽짜리로
-남습니다. Spring WebFlux를 도입했는데 내부에서 JDBC가 event loop를 오래 붙잡는다면, 응답성 개선을 기대했던 구조가
-오히려 위험해집니다. R2DBC는 이 지점을 해결하기 위한 Reactive Streams 기반 non-blocking database access이고,
-`exposed-r2dbc`는 이를 Kotlin coroutine API로 감쌉니다.
+R2DBC를 넣은 이유는 분명합니다. 이벤트 루프 기반 런타임에서 DB I/O까지 블로킹으로 남겨두면 구조가 반쪽짜리로
+남습니다. Spring WebFlux를 도입했는데 내부에서 JDBC가 이벤트 루프를 오래 붙잡는다면, 응답성 개선을 기대했던 구조가
+오히려 위험해집니다. R2DBC는 이 지점을 해결하기 위한 Reactive Streams 기반 논블로킹 데이터베이스 접근이고,
+`exposed-r2dbc`는 이를 Kotlin 코루틴 API로 감쌉니다.
 
 ```kotlin
 suspend fun findById(id: Long): ResultRow? = suspendTransaction(database) {
@@ -49,7 +49,7 @@ suspend fun findById(id: Long): ResultRow? = suspendTransaction(database) {
 }
 ```
 
-Repository에서는 `suspend` 단건 연산과 `Flow` 조회를 씁니다.
+저장소에서는 `suspend` 단건 연산과 `Flow` 조회를 씁니다.
 
 ```kotlin
 interface UserRepository : ExposedR2dbcRepository<User, Long> {
@@ -60,22 +60,22 @@ interface UserRepository : ExposedR2dbcRepository<User, Long> {
 suspend fun processAllUsers() {
     userRepository.findAll()
         .collect { user ->
-            // streaming 처리
+            // 스트리밍 처리
         }
 }
 ```
 
 R2DBC를 선택하는 편이 좋은 경우는 다음과 같습니다.
 
-- WebFlux/Netty/Ktor처럼 event-loop 기반 runtime을 이미 쓰고 있다.
-- row stream과 backpressure가 실제 domain 요구사항이다.
+- WebFlux/Netty/Ktor처럼 이벤트 루프 기반 런타임을 이미 쓰고 있다.
+- row 스트림과 배압이 실제 도메인 요구사항이다.
 - 긴 결과를 한 번에 메모리에 올리지 않고 단계적으로 처리해야 한다.
-- Reactor/Coroutine context 전파와 observability가 팀에 익숙하다.
+- Reactor/코루틴 컨텍스트 전파와 관측성이 팀에 익숙하다.
 
-## JDBC + Virtual Threads 방식
+## JDBC + 가상 스레드 방식
 
-그렇다고 모든 서비스를 R2DBC로 밀어야 한다고 보지는 않습니다. JDBC는 blocking API지만, Virtual Threads를 쓰면
-blocking call이 platform thread를 오래 붙잡지 않도록 만들 수 있습니다.
+그렇다고 모든 서비스를 R2DBC로 밀어야 한다고 보지는 않습니다. JDBC는 블로킹 API지만, 가상 스레드를 쓰면
+블로킹 호출이 플랫폼 스레드를 오래 붙잡지 않도록 만들 수 있습니다.
 
 ```kotlin
 val count = newVirtualThreadJdbcTransaction {
@@ -83,40 +83,40 @@ val count = newVirtualThreadJdbcTransaction {
 }
 ```
 
-그래도 JDBC + Virtual Threads를 남겨둔 이유는 단순합니다.
+그래도 JDBC + 가상 스레드를 남겨둔 이유는 단순합니다.
 
 | 장점 | 설명 |
 |---|---|
-| driver maturity | JDBC driver의 batch 처리와 pooling 경험이 오래 쌓여 있습니다 |
-| call stack | stack trace와 profiler가 익숙한 모양입니다 |
-| migration cost | 기존 JDBC/transaction 코드를 크게 바꾸지 않아도 됩니다 |
+| 드라이버 성숙도 | JDBC 드라이버의 배치 처리와 풀링 경험이 오래 쌓여 있습니다 |
+| 호출 스택 | 스택 트레이스와 프로파일러가 익숙한 모양입니다 |
+| 마이그레이션 비용 | 기존 JDBC/트랜잭션 코드를 크게 바꾸지 않아도 됩니다 |
 | SQL DSL 유지 | Exposed DSL은 그대로 씁니다 |
 
-단점도 있습니다. non-blocking I/O가 아니므로 DB connection과 server capacity는 그대로 한계입니다. Virtual
-Threads는 스레드 대기 비용을 낮추는 기술이지, DB round-trip을 없애는 기술이 아닙니다. 이 점을 착각하면
+단점도 있습니다. 논블로킹 I/O가 아니므로 DB 커넥션과 서버 처리 용량은 그대로 한계입니다. 가상
+스레드는 스레드 대기 비용을 낮추는 기술이지, DB 왕복 시간을 없애는 기술이 아닙니다. 이 점을 착각하면
 "스레드는 싸졌는데 DB는 그대로 느린" 상태가 됩니다.
 
 ## 배치 벤치마크가 말한 것
 
 그래서 숫자를 따로 봤습니다. `bluetape4k-exposed/utils/batch/benchmark`에서는 H2, MySQL, PostgreSQL에서 JDBC +
-Virtual Threads와 R2DBC + Coroutines 방식을 같은 batch workload로 비교했습니다.
+가상 스레드와 R2DBC + 코루틴 방식을 같은 배치 워크로드로 비교했습니다.
 
 | 축 | 값 |
 |---|---|
 | DB | H2, PostgreSQL, MySQL |
-| JDBC 방식 | JDBC + Virtual Threads |
-| R2DBC 방식 | R2DBC + Coroutines |
+| JDBC 방식 | JDBC + 가상 스레드 |
+| R2DBC 방식 | R2DBC + 코루틴 |
 | 시나리오 | `seedBenchmark`, `endToEndBatchJobBenchmark` |
 | 파라미터 | `dataSize=1000/10000/100000`, `poolSize=10/30/60`, `parallelism=1/4/8` |
 
-대형 end-to-end batch job에서 `dataSize=100000`, `parallelism=8` 조건은 이렇게 나왔습니다.
+대형 엔드투엔드 배치 작업에서 `dataSize=100000`, `parallelism=8` 조건은 이렇게 나왔습니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part3-batch-comparison-chart-ko.png" alt="Large batch E2E benchmark에서 JDBC plus Virtual Threads와 R2DBC ops per second를 DB와 pool size별 두 막대로 비교한 chart" loading="lazy" />
-  <figcaption>대형 batch E2E에서는 실제 처리량을 나란히 보면 차이가 더 잘 보입니다. MySQL과 PostgreSQL 모두 이 조건에서는 JDBC + Virtual Threads가 높았습니다.</figcaption>
+  <img src="/assets/bluetape4k-exposed-part3-batch-comparison-chart-ko.png" alt="대형 배치 E2E 벤치마크에서 JDBC와 가상 스레드, R2DBC ops per second를 DB와 풀 크기별 두 막대로 비교한 차트" loading="lazy" />
+  <figcaption>대형 배치 E2E에서는 실제 처리량을 나란히 보면 차이가 더 잘 보입니다. MySQL과 PostgreSQL 모두 이 조건에서는 JDBC + 가상 스레드가 높았습니다.</figcaption>
 </figure>
 
-| DB | poolSize | JDBC ops/sec | R2DBC ops/sec | JDBC/R2DBC |
+| DB | 풀 크기 | JDBC ops/sec | R2DBC ops/sec | JDBC/R2DBC |
 |---|---:|---:|---:|---:|
 | MySQL | 10 | 1.596 | 0.181 | 8.8x |
 | MySQL | 30 | 1.561 | 0.182 | 8.6x |
@@ -125,64 +125,64 @@ Virtual Threads와 R2DBC + Coroutines 방식을 같은 batch workload로 비교�
 | PostgreSQL | 30 | 0.990 | 0.192 | 5.2x |
 | PostgreSQL | 60 | 0.951 | 0.193 | 4.9x |
 
-제가 이 결과에서 읽은 결론은 "JDBC가 항상 이긴다"가 아닙니다. 이 benchmark는 batch insert와 end-to-end batch job을
-측정한 결과입니다. streaming response나 backpressure가 핵심인 API라면 R2DBC의 가치가 달라집니다.
+제가 이 결과에서 읽은 결론은 "JDBC가 항상 이긴다"가 아닙니다. 이 벤치마크는 배치 삽입과 엔드투엔드 배치 작업을
+측정한 결과입니다. 스트리밍 응답이나 배압이 핵심인 API라면 R2DBC의 가치가 달라집니다.
 
-하지만 batch workload에서는 JDBC driver의 성숙한 처리 방식, 단순한 transaction 경계, Virtual Threads의
-대기 비용 절감이 강하게 작동했습니다. 이름은 blocking이어도 결과는 꽤 현실적입니다.
+하지만 배치 워크로드에서는 JDBC 드라이버의 성숙한 처리 방식, 단순한 트랜잭션 경계, 가상 스레드의
+대기 비용 절감이 강하게 작동했습니다. 이름은 블로킹이어도 결과는 꽤 현실적입니다.
 
 ## R2DBC 풀도 측정해야 한다
 
-R2DBC를 고르더라도 pool은 따로 봐야 합니다. non-blocking이라고 해서 DB connection이 무한히 생기는 것은 아닙니다.
+R2DBC를 고르더라도 풀은 따로 봐야 합니다. 논블로킹이라고 해서 DB 커넥션이 무한히 생기는 것은 아닙니다.
 그래서 예제에서는 `bluetape4k-r2dbc`의 `R2dbcPoolConfig.highThroughput()`을 기준 설정으로 두고 다음 지점을
 확인했습니다.
 
-- 순수 acquire/close 처리량은 driver마다 다릅니다.
-- 요청이 connection을 `1-5 ms` 점유하면 처리량은 점유 시간에 지배됩니다.
-- 동시 요청 수가 pool size를 넘는 64 threads contention benchmark에서는 `maxSize` 영향이 뚜렷합니다.
-- 과부하 보호가 필요하면 bounded pending acquire, warmup, finite timeout을 우선합니다.
+- 순수 획득/반납 처리량은 드라이버마다 다릅니다.
+- 요청이 커넥션을 `1-5 ms` 점유하면 처리량은 점유 시간에 지배됩니다.
+- 동시 요청 수가 풀 크기를 넘는 64스레드 경합 벤치마크에서는 `maxSize` 영향이 뚜렷합니다.
+- 과부하 보호가 필요하면 제한된 대기 획득, 준비 구간, 유한 시간 제한을 우선합니다.
 
-즉 R2DBC도 "non-blocking이니 pool 걱정 끝"이 아닙니다. DB connection은 여전히 제한된 자원입니다.
-이 부분을 잊으면 reactive pipeline이 아니라 예쁜 대기열을 만든 셈입니다.
+즉 R2DBC도 "논블로킹이니 풀 걱정 끝"이 아닙니다. DB 커넥션은 여전히 제한된 자원입니다.
+이 부분을 잊으면 리액티브 파이프라인이 아니라 예쁜 대기열을 만든 셈입니다.
 
 ## 선택 규칙
 
 | 상황 | 먼저 볼 방향 |
 |---|---|
-| 일반 CRUD, batch job, 기존 JDBC driver 성숙도가 중요 | JDBC + Virtual Threads |
-| streaming response, backpressure, event-loop runtime 일관성이 중요 | R2DBC + Coroutines |
-| Spring MVC 기반 서비스, blocking library가 많음 | JDBC + Virtual Threads |
-| WebFlux/Ktor coroutine-first 서비스 | R2DBC 또는 suspend JDBC 격리 |
-| driver별 batch 성능이 불확실 | 둘 다 benchmark |
+| 일반 CRUD, 배치 작업, 기존 JDBC 드라이버 성숙도가 중요 | JDBC + 가상 스레드 |
+| 스트리밍 응답, 배압, 이벤트 루프 런타임 일관성이 중요 | R2DBC + 코루틴 |
+| Spring MVC 기반 서비스, 블로킹 라이브러리가 많음 | JDBC + 가상 스레드 |
+| WebFlux/Ktor 코루틴 우선 서비스 | R2DBC 또는 suspend JDBC 격리 |
+| 드라이버별 배치 성능이 불확실 | 둘 다 벤치마크 |
 
-제가 선택 기준에 꼭 넣는 것은 팀의 관찰성 경험입니다. 장애가 났을 때 thread dump, JFR, JDBC pool metric으로 보는 팀이라면
-JDBC + Virtual Threads가 더 쉽게 운영될 수 있습니다. 반대로 Reactor/Coroutine context와 backpressure metric을
+제가 선택 기준에 꼭 넣는 것은 팀의 관찰성 경험입니다. 장애가 났을 때 스레드 덤프, JFR, JDBC 풀 지표로 보는 팀이라면
+JDBC + 가상 스레드가 더 쉽게 운영될 수 있습니다. 반대로 Reactor/코루틴 컨텍스트와 배압 지표를
 이미 잘 본다면 R2DBC 쪽이 더 편합니다.
 
 ## 맺음말
 
-R2DBC와 Virtual Threads는 서로 완전히 대체재가 아닙니다. 둘은 같은 문제를 다른 층에서 풉니다.
+R2DBC와 가상 스레드는 서로 완전히 대체재가 아닙니다. 둘은 같은 문제를 다른 층에서 풉니다.
 
-- R2DBC는 driver I/O 자체를 non-blocking으로 만듭니다.
-- Coroutines는 Kotlin에서 그 비동기 방식을 읽기 쉽게 만듭니다.
-- Virtual Threads는 blocking JDBC call의 대기 비용을 낮춥니다.
+- R2DBC는 드라이버 I/O 자체를 논블로킹으로 만듭니다.
+- 코루틴은 Kotlin에서 그 비동기 방식을 읽기 쉽게 만듭니다.
+- 가상 스레드는 블로킹 JDBC 호출의 대기 비용을 낮춥니다.
 - Exposed DSL은 두 방식 모두에서 SQL을 Kotlin 코드로 안전하게 유지합니다.
 
-다음 글에서는 JSON, 암호화, 측정 단위 컬럼, dialect 모듈을 보겠습니다. 제가 그 모듈들을 따로 둔 이유는 성능보다
+다음 글에서는 JSON, 암호화, 측정 단위 컬럼, 다이얼렉트 모듈을 보겠습니다. 제가 그 모듈들을 따로 둔 이유는 성능보다
 "DB별 지저분한 세부사항을 어디에 격리할 것인가"에 가깝습니다.
 
 ## 참고 링크
 
-- R2DBC README: [exposed/exposed-r2dbc/README.ko.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-r2dbc/README.ko.md)
-- Batch benchmark hub: [utils/batch/benchmark/README.ko.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/utils/batch/benchmark/README.ko.md)
-- MySQL benchmark details: [mysql.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/utils/batch/benchmark/mysql.md)
-- PostgreSQL benchmark details: [postgresql.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/utils/batch/benchmark/postgresql.md)
-- R2DBC workshop: [exposed-r2dbc-workshop](https://github.com/bluetape4k/exposed-r2dbc-workshop)
+- R2DBC README: [exposed/r2dbc/README.ko.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/r2dbc/README.ko.md)
+- 배치 벤치마크 허브: [utils/batch/benchmark/README.ko.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/utils/batch/benchmark/README.ko.md)
+- MySQL 벤치마크 상세: [mysql.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/utils/batch/benchmark/mysql.md)
+- PostgreSQL 벤치마크 상세: [postgresql.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/utils/batch/benchmark/postgresql.md)
+- R2DBC 워크숍: [exposed-r2dbc-workshop](https://github.com/bluetape4k/exposed-r2dbc-workshop)
 
 ## 시리즈 링크
 
 - [Part 1: 왜 Exposed인가](/ko/blog/bluetape4k-exposed-part1-why-exposed/)
-- [Part 2: JDBC repository와 SQL DSL](/ko/blog/bluetape4k-exposed-part2-jdbc-repositories-sql-dsl/)
+- [Part 2: JDBC 저장소와 SQL DSL](/ko/blog/bluetape4k-exposed-part2-jdbc-repositories-sql-dsl/)
 - [Part 3: R2DBC, 코루틴, 가상 스레드](/ko/blog/bluetape4k-exposed-part3-r2dbc-coroutines-virtual-threads/)
 - [Part 4: JSON, 암호화, 다이얼렉트](/ko/blog/bluetape4k-exposed-part4-json-encryption-dialects/)
 - [Part 5: 실전 예제 - 다양한 캐시 전략, 멀티테넌시](/ko/blog/bluetape4k-exposed-part5-spring-cache-multitenancy-production/)

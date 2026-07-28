@@ -2,16 +2,16 @@
 <title>Execution Models for Exposed</title>
 <desc>Choose JDBC + Virtual Threads or R2DBC + Coroutines by workload, driver path, and streaming needs.</desc>
 <defs>
-  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#1D3148" flood-opacity="0.12"/></filter>
-  <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M 1 1 L 7 4 L 1 7 Z" fill="#4D6F9F"/></marker>
+  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#020617" flood-opacity="0.42"/></filter>
+  <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 1 1 L 9 5 L 1 9 Z" fill="#78AFFF"/></marker>
   <style>
-    .bg{fill:#F7F9FC}.frame{fill:#FFFFFF;stroke:#D6E2ED;stroke-width:2}
-    .title{font-family:"Architects Daughter";font-size:42px;fill:#21334A;font-weight:700}
-    .subtitle,.body,.small,.tiny,.axisLabel{font-family:"Comic Mono";fill:#34465B}
-    .subtitle{font-size:16px}.body{font-size:14px}.small{font-size:12px;fill:#657386}.tiny{font-size:11px;fill:#657386}
-    .label{font-family:"Architects Daughter";font-size:23px;fill:#21334A;font-weight:700}
-    .card{filter:url(#shadow);stroke-width:2}.line{fill:none;stroke:#4D6F9F;stroke-width:2.8;marker-end:url(#arrow);stroke-linecap:round;stroke-linejoin:round}
-    .axis{stroke:#B9C7D8;stroke-width:1.4}.grid{stroke:#CAD6E4;stroke-width:1;stroke-dasharray:4 6}
+    .bg{fill:#0B1220}.frame{fill:#0F1E33;stroke:#284766;stroke-width:2}
+    .title{font-family:"Architects Daughter";font-size:42px;fill:#F5F9FF;font-weight:700}
+    .subtitle,.body,.small,.tiny,.axisLabel{font-family:"Comic Mono";fill:#D7E3F5}
+    .subtitle{font-size:16px}.body{font-size:14px}.small{font-size:12px;fill:#B8C7DD}.tiny{font-size:11px;fill:#B8C7DD}
+    .label{font-family:"Architects Daughter";font-size:23px;fill:#F5F9FF;font-weight:700}
+    .card{filter:url(#shadow);stroke-width:2}.line{fill:none;stroke:#78AFFF;stroke-width:3.2;marker-end:url(#arrow);stroke-linecap:round;stroke-linejoin:round}
+    .axis{stroke:#55718F;stroke-width:1.4}.grid{stroke:#2F4B67;stroke-width:1;stroke-dasharray:4 6}
   </style>
 </defs>
 <rect class="bg" width="1500" height="760"/>
@@ -20,44 +20,44 @@
 <text class="subtitle" x="72" y="114">Choose JDBC + Virtual Threads or R2DBC + Coroutines by workload, driver path, and streaming needs.</text>
 <g transform="translate(80 172)">
   <g>
-  <rect class="card" x="0" y="228" width="236" height="116" rx="16" fill="#F5F7FA" stroke="#8FA1B3"/>
+  <rect class="card" x="0" y="228" width="236" height="116" rx="16" fill="#1E293B" stroke="#94A3B8"/>
   <text class="label" x="118" y="268" text-anchor="middle" dominant-baseline="middle">Request</text>
   <text class="body" x="118" y="298" text-anchor="middle">MVC · WebFlux · Ktor</text>
 </g>
   <g>
-  <rect class="card" x="330" y="68" width="278" height="128" rx="16" fill="#EAF7ED" stroke="#58A978"/>
+  <rect class="card" x="330" y="68" width="278" height="128" rx="16" fill="#173D27" stroke="#4BDB85"/>
   <text class="label" x="469" y="114" text-anchor="middle" dominant-baseline="middle">JDBC + Virtual Threads</text>
   <text class="body" x="469" y="144" text-anchor="middle">mature driver path</text>
 <text class="body" x="469" y="164" text-anchor="middle">simple stack traces</text>
 </g>
   <g>
-  <rect class="card" x="330" y="388" width="278" height="128" rx="16" fill="#F1ECFF" stroke="#8A72D6"/>
+  <rect class="card" x="330" y="388" width="278" height="128" rx="16" fill="#2D2359" stroke="#A993FF"/>
   <text class="label" x="469" y="434" text-anchor="middle" dominant-baseline="middle">R2DBC + Coroutines</text>
   <text class="body" x="469" y="464" text-anchor="middle">suspend · Flow</text>
 <text class="body" x="469" y="484" text-anchor="middle">backpressure path</text>
 </g>
   <g>
-  <rect class="card" x="740" y="68" width="270" height="128" rx="16" fill="#FFF3D8" stroke="#D6A441"/>
+  <rect class="card" x="740" y="68" width="270" height="128" rx="16" fill="#4B3212" stroke="#F0B84D"/>
   <text class="label" x="875" y="114" text-anchor="middle" dominant-baseline="middle">Batch / CRUD</text>
   <text class="body" x="875" y="144" text-anchor="middle">measure round-trips</text>
 <text class="body" x="875" y="164" text-anchor="middle">pool and indexes matter</text>
 </g>
   <g>
-  <rect class="card" x="740" y="388" width="270" height="128" rx="16" fill="#E6F7F5" stroke="#38A69E"/>
+  <rect class="card" x="740" y="388" width="270" height="128" rx="16" fill="#123F3C" stroke="#35D0C5"/>
   <text class="label" x="875" y="434" text-anchor="middle" dominant-baseline="middle">Streaming / Reactive</text>
   <text class="body" x="875" y="464" text-anchor="middle">row flow</text>
 <text class="body" x="875" y="484" text-anchor="middle">event-loop friendly</text>
 </g>
   <g>
-  <rect class="card" x="1120" y="228" width="236" height="116" rx="16" fill="#E7F1FF" stroke="#5A85D6"/>
+  <rect class="card" x="1120" y="228" width="236" height="116" rx="16" fill="#163761" stroke="#5EA0FF"/>
   <text class="label" x="1238" y="268" text-anchor="middle" dominant-baseline="middle">Decision</text>
   <text class="body" x="1238" y="298" text-anchor="middle">workload first</text>
 <text class="body" x="1238" y="318" text-anchor="middle">benchmark second</text>
 </g>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M236 270 H278 Q288 270 288 260 V142 Q288 132 298 132 H330"/>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M236 302 H278 Q288 302 288 312 V442 Q288 452 298 452 H330"/>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M608 132 H740"/>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M608 452 H740"/>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M1010 132 H1054 Q1064 132 1064 142 V276 Q1064 286 1074 286 H1120"/>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M1010 452 H1054 Q1064 452 1064 442 V324 Q1064 314 1074 314 H1120"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M236 270 H278 Q288 270 288 260 V142 Q288 132 298 132 H330"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M236 302 H278 Q288 302 288 312 V442 Q288 452 298 452 H330"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M608 132 H740"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M608 452 H740"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M1010 132 H1054 Q1064 132 1064 142 V276 Q1064 286 1074 286 H1120"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M1010 452 H1054 Q1064 452 1064 442 V324 Q1064 314 1074 314 H1120"/>
 </g></svg>
