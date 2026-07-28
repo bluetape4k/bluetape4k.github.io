@@ -1,68 +1,69 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="804" viewBox="0 0 1320 804" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1420" height="900" viewBox="0 0 1420 900" role="img" aria-labelledby="title desc">
 <title id="title">Lettuce Near Cache 벤치마크 요약</title>
-<desc id="desc">throughput 단위는 ops/ms입니다. 높을수록 좋고 L1 read는 별도 scale로 표시합니다.</desc>
+<desc id="desc">처리량 단위는 ops/ms입니다. 높을수록 좋고, L1 read는 별도 scale로 표시했습니다.</desc>
 <defs>
-  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="7" stdDeviation="8" flood-color="#203040" flood-opacity="0.10"/></filter>
-  <marker id="arrowBlue" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L14,7 L0,14 Z" fill="#4E7FC2"/></marker>
-  <marker id="arrowGreen" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L14,7 L0,14 Z" fill="#3C9B72"/></marker>
-  <marker id="arrowAmber" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L14,7 L0,14 Z" fill="#C98A22"/></marker>
-  <marker id="arrowRose" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L14,7 L0,14 Z" fill="#C85A73"/></marker>
+  <filter id="shadow" x="-10%" y="-10%" width="120%" height="125%"><feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#020617" flood-opacity="0.35"/></filter>
+
   <style>
-    .canvas{fill:#F7F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
-    .title{font-family:"goorm Sans","Apple SD Gothic Neo",Arial,sans-serif;font-size:42px;fill:#22344A;font-weight:700}
-    .subtitle{font-family:"goorm Sans Code","goorm Sans","Apple SD Gothic Neo",monospace;font-size:16px;fill:#536476;font-weight:400}
-    .label{font-family:"goorm Sans","Apple SD Gothic Neo",Arial,sans-serif;font-size:24px;fill:#22344A;font-weight:700}
-    .smallLabel{font-family:"goorm Sans","Apple SD Gothic Neo",Arial,sans-serif;font-size:20px;fill:#22344A;font-weight:700}
-    .body{font-family:"goorm Sans Code","goorm Sans","Apple SD Gothic Neo",monospace;font-size:14px;fill:#34465B;font-weight:400}
-    .small{font-family:"goorm Sans Code","goorm Sans","Apple SD Gothic Neo",monospace;font-size:12px;fill:#627184;font-weight:400}
-    .num{font-family:"goorm Sans Code","goorm Sans","Apple SD Gothic Neo",monospace;font-size:16px;fill:#22344A;font-weight:700}
-    .card{filter:url(#shadow);stroke-width:2}.soft{stroke-width:1.6}
-    .lineBlue{fill:none;stroke:#4E7FC2;stroke-width:2.4;marker-end:url(#arrowBlue)}
-    .lineGreen{fill:none;stroke:#3C9B72;stroke-width:2.4;marker-end:url(#arrowGreen)}
-    .lineAmber{fill:none;stroke:#C98A22;stroke-width:2.4;marker-end:url(#arrowAmber)}
-    .lineRose{fill:none;stroke:#C85A73;stroke-width:2.4;marker-end:url(#arrowRose)}
-    .dashBlue{fill:none;stroke:#4E7FC2;stroke-width:2.2;stroke-dasharray:8 7;marker-end:url(#arrowBlue)}
-    .dashGreen{fill:none;stroke:#3C9B72;stroke-width:2.2;stroke-dasharray:8 7;marker-end:url(#arrowGreen)}
-    .pill{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:1.2}
+    .title{font-family:"goorm Sans","Apple SD Gothic Neo",Arial,sans-serif;font-size:44px;font-weight:700;fill:#f8fafc}
+    .subtitle{font-family:"goorm Sans","Apple SD Gothic Neo",Arial,sans-serif;font-size:18px;fill:#cbd5e1}
+    .lane-title{font-family:"goorm Sans","Apple SD Gothic Neo",Arial,sans-serif;font-size:24px;font-weight:700;fill:#f8fafc}
+    .card-title{font-family:"goorm Sans","Apple SD Gothic Neo",Arial,sans-serif;font-size:24px;font-weight:700;fill:#f8fafc}
+    .card-body{font-family:"goorm Sans","Apple SD Gothic Neo",Arial,sans-serif;font-size:16px;fill:#cbd5e1}
+    .small{font-family:"goorm Sans","Apple SD Gothic Neo",Arial,sans-serif;font-size:14px;fill:#94a3b8}
+    .code{font-family:"goorm Sans Code","goorm Sans","Apple SD Gothic Neo",monospace;font-size:15px;fill:#cbd5e1}
+    .panel{fill:#111827;stroke:#334155;stroke-width:2}
+    .card{filter:url(#shadow);stroke-width:2}
+
+    .label-bg{fill:#0f172a;stroke:#475569;stroke-width:1.5}
   </style>
 </defs>
-<rect class="canvas" width="1320" height="804"/>
-<rect class="frame" x="34" y="28" width="1252" height="748" rx="26"/>
-<text class="title" x="70" y="82">Lettuce Near Cache 벤치마크 요약</text>
-<text class="subtitle" x="72" y="115">throughput 단위는 ops/ms입니다. 높을수록 좋고 L1 read는 별도 scale로 표시합니다.</text><g transform="translate(0 44)">
+<rect width="1420" height="900" fill="#0b1220"/>
+<rect x="34" y="30" width="1352" height="840" rx="28" class="panel"/>
+<text x="70" y="86" class="title">Lettuce Near Cache 벤치마크 요약</text>
+<text x="72" y="122" class="subtitle">처리량 단위는 ops/ms입니다. 높을수록 좋고, L1 read는 별도 scale로 표시했습니다.</text>
 <g>
-  <rect class="card" x="84" y="164" width="234" height="96" rx="16" fill="#EAF7EF" stroke="#58A978"/>
-  <text class="smallLabel" x="201" y="198" text-anchor="middle" dominant-baseline="middle">L1 hit</text>
-<text class="body" x="201" y="226" text-anchor="middle" dominant-baseline="middle">~64,000 ops/ms</text>
+  <rect x="86" y="208" width="264" height="96" rx="18" fill="#14351f" stroke="#86efac" class="card"/>
+  <text x="218" y="239" text-anchor="middle" dominant-baseline="middle" class="small">L1 hit</text>
+<text x="218" y="273" text-anchor="middle" dominant-baseline="middle" class="small">~64,000 ops/ms</text>
 </g>
 <g>
-  <rect class="card" x="84" y="296" width="234" height="96" rx="16" fill="#E8F3FF" stroke="#5B8DEF"/>
-  <text class="smallLabel" x="201" y="330" text-anchor="middle" dominant-baseline="middle">L2 hit / miss</text>
-<text class="body" x="201" y="358" text-anchor="middle" dominant-baseline="middle">~4 ops/ms</text>
+  <rect x="86" y="344" width="264" height="96" rx="18" fill="#172554" stroke="#60a5fa" class="card"/>
+  <text x="218" y="375" text-anchor="middle" dominant-baseline="middle" class="small">L2 hit / miss</text>
+<text x="218" y="409" text-anchor="middle" dominant-baseline="middle" class="small">~4 ops/ms</text>
 </g>
 <g>
-  <rect class="card" x="84" y="428" width="234" height="96" rx="16" fill="#FFF3D9" stroke="#D6A441"/>
-  <text class="smallLabel" x="201" y="462" text-anchor="middle" dominant-baseline="middle">putSingle</text>
-<text class="body" x="201" y="490" text-anchor="middle" dominant-baseline="middle">~2 ops/ms</text>
+  <rect x="86" y="480" width="264" height="96" rx="18" fill="#3b2a08" stroke="#fbbf24" class="card"/>
+  <text x="218" y="511" text-anchor="middle" dominant-baseline="middle" class="small">putSingle</text>
+<text x="218" y="545" text-anchor="middle" dominant-baseline="middle" class="small">~2 ops/ms</text>
 </g>
 <g>
-  <rect class="card" x="84" y="560" width="234" height="96" rx="16" fill="#FDECEF" stroke="#DC6B82"/>
-  <text class="smallLabel" x="201" y="594" text-anchor="middle" dominant-baseline="middle">putAll 16KB</text>
-<text class="body" x="201" y="622" text-anchor="middle" dominant-baseline="middle">~0.4 ops/ms</text>
+  <rect x="86" y="616" width="264" height="96" rx="18" fill="#3b1217" stroke="#f87171" class="card"/>
+  <text x="218" y="647" text-anchor="middle" dominant-baseline="middle" class="small">putAll 16KB</text>
+<text x="218" y="681" text-anchor="middle" dominant-baseline="middle" class="small">~0.4 ops/ms</text>
 </g>
-<g><rect x="402" y="183" width="760" height="56" rx="14" fill="#EAF7EF" stroke="#58A978" stroke-width="2"/><rect x="402" y="183" width="730" height="56" rx="14" fill="#58A978" opacity="0.24"/></g>
-<g><rect x="402" y="315" width="180" height="56" rx="14" fill="#E8F3FF" stroke="#5B8DEF" stroke-width="2"/><rect x="402" y="315" width="92" height="56" rx="14" fill="#5B8DEF" opacity="0.25"/></g>
-<g><rect x="402" y="447" width="180" height="56" rx="14" fill="#FFF3D9" stroke="#D6A441" stroke-width="2"/><rect x="402" y="447" width="56" height="56" rx="14" fill="#D6A441" opacity="0.28"/></g>
-<g><rect x="402" y="579" width="180" height="56" rx="14" fill="#FDECEF" stroke="#DC6B82" stroke-width="2"/><rect x="402" y="579" width="22" height="56" rx="11" fill="#DC6B82" opacity="0.32"/></g>
 <g>
-  <rect class="card" x="832" y="386" width="318" height="128" rx="16" fill="#F1ECFF" stroke="#8A72D6"/>
-  <text class="smallLabel" x="991" y="418" text-anchor="middle" dominant-baseline="middle">실전 해석</text>
-<text class="body" x="991" y="446" text-anchor="middle" dominant-baseline="middle">L1 hit ratio 극대화</text>
-<text class="body" x="991" y="464" text-anchor="middle" dominant-baseline="middle">write cost 관찰</text>
-<text class="body" x="991" y="482" text-anchor="middle" dominant-baseline="middle">큰 payload batch 분리</text>
+  <rect x="434" y="230" width="742" height="56" rx="16" fill="#0f172a" stroke="#86efac" stroke-width="2"/>
+  <rect x="434" y="230" width="708" height="56" rx="16" fill="#14351f" stroke="none"/>
 </g>
-<path class="connector lineGreen" d="M1150 450 H1212 Q1228 450 1228 434 V228 Q1228 212 1212 212 H1162"/><rect class="pill" x="1160" y="200" width="116" height="24" rx="12"/><text class="small" x="1218" y="216" text-anchor="middle">L1 memory path</text>
-<path class="connector lineBlue" d="M832 450 H776 Q760 450 760 434 V359 Q760 343 744 343 H582"/><rect class="pill" x="595" y="311" width="154" height="24" rx="12"/><text class="small" x="672" y="327" text-anchor="middle">Redis RTT 지배</text>
-<path class="connector lineAmber" d="M832 476 H582"/><rect class="pill" x="603" y="443" width="150" height="24" rx="12"/><text class="small" x="678" y="459" text-anchor="middle">SET + tracking GET</text>
-<path class="connector lineRose" d="M832 502 H744 Q728 502 728 518 V591 Q728 607 712 607 H582"/><rect class="pill" x="611" y="575" width="142" height="24" rx="12"/><text class="small" x="682" y="591" text-anchor="middle">payload bandwidth</text>
-</g></svg>
+<g>
+  <rect x="434" y="366" width="230" height="56" rx="16" fill="#0f172a" stroke="#60a5fa" stroke-width="2"/>
+  <rect x="434" y="366" width="92" height="56" rx="16" fill="#172554" stroke="none"/>
+</g>
+<g>
+  <rect x="434" y="502" width="230" height="56" rx="16" fill="#0f172a" stroke="#fbbf24" stroke-width="2"/>
+  <rect x="434" y="502" width="52" height="56" rx="16" fill="#3b2a08" stroke="none"/>
+</g>
+<g>
+  <rect x="434" y="638" width="230" height="56" rx="16" fill="#0f172a" stroke="#f87171" stroke-width="2"/>
+  <rect x="434" y="638" width="22" height="56" rx="16" fill="#3b1217" stroke="none"/>
+</g>
+<g>
+  <rect x="820" y="428" width="350" height="132" rx="18" fill="#261943" stroke="#c4b5fd" class="card"/>
+  <text x="995" y="455" text-anchor="middle" dominant-baseline="middle" class="card-title">실전 해석</text>
+<text x="995" y="489" text-anchor="middle" dominant-baseline="middle" class="card-body">L1 hit ratio 극대화</text>
+<text x="995" y="511" text-anchor="middle" dominant-baseline="middle" class="card-body">write cost 관찰</text>
+<text x="995" y="533" text-anchor="middle" dominant-baseline="middle" class="card-body">큰 payload batch 분리</text>
+</g>
+<text x="710" y="806" text-anchor="middle" class="small">소스: cache-lettuce/Benchmark.ko.md · Apple M4 Pro, GraalVM 21, Redis 7 Testcontainers, JMH 1.37</text>
+</svg>

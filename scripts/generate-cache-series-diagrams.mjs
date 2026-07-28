@@ -236,7 +236,7 @@ write(
       path('M997 656 V670 Q997 682 985 682 H849 Q837 682 837 694 V700', 'lineRose'),
       path('M1261 656 V700', 'lineBlue'),
     ]) +
-    footer('Graphviz structure evidence: cache-series-module-map-01.dot / .plain / -sketch.svg', 1400, 830),
+    footer('Source: cache module contracts and provider implementations.', 1400, 830),
 );
 
 write(
@@ -260,7 +260,7 @@ write(
       path('M1416 485 H1450 Q1462 485 1462 473 V178 Q1462 166 1450 166 H572 Q560 166 560 178 V260', 'dashBlue', 'invalidate', 980, 152, 92),
       path('M560 392 V525', 'lineBlue', 'record', 606, 458, 64),
     ]) +
-    footer('Graphviz structure evidence: cache-series-near-cache-flow-01.dot / .plain / -sketch.svg', 1480, 830),
+    footer('Source: NearCache read, write, and invalidation contracts.', 1480, 830),
 );
 
 write(
@@ -281,7 +281,7 @@ write(
       path('M832 476 H582', 'lineAmber', 'SET + tracking GET', 678, 461, 150),
       path('M832 502 H744 Q728 502 728 518 V591 Q728 607 712 607 H582', 'lineRose', 'payload bandwidth', 682, 593, 142),
     ]) +
-    footer('Source data: cache-lettuce/Benchmark.ko.md. Graphviz evidence: cache-series-benchmark-chart-01.dot / .plain / -sketch.svg', 1320, 770),
+    footer('Source data: cache-lettuce/Benchmark.ko.md.', 1320, 770),
 );
 
 write(

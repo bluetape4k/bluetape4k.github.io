@@ -2,32 +2,32 @@
 title: "Bluetape4k Cache Part 1: 캐시 모듈은 왜 이렇게 생겼나"
 description: bluetape4k-cache-core, JCache, SuspendCache, Memoizer, NearCache 공통 API를 한 번에 훑어보는 시리즈 첫 글.
 sidebar:
-  order: -202605291701
+  order: -202605291850
 blog:
-  date: 2026-05-29T17:01:00+09:00
+  date: 2026-05-29T18:50:00+09:00
   image: /assets/cache-series-part1-hero.png
-  imageAlt: Bluetape4k cache module workbench with robot workers assembling cache blocks
+  imageAlt: 로봇 작업자들이 캐시 블록을 조립하는 Bluetape4k Cache 모듈 워크벤치
   cardDescription: "로컬 캐시, JCache, suspend API, memoizer, NearCache가 한 상자에 들어간 이유."
   tags: ["cache","coroutines","kotlin","practical-example"]
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/cache-series-part1-hero.png" alt="Bluetape4k cache module workbench with robot workers assembling cache blocks" loading="eager" />
+  <img src="/assets/cache-series-part1-hero.png" alt="로봇 작업자들이 캐시 블록을 조립하는 Bluetape4k Cache 모듈 워크벤치" loading="eager" />
   <figcaption>캐시는 빠른 서랍입니다. 문제는 서랍이 하나가 아니라는 점입니다.</figcaption>
 </figure>
 
-<p class="bt4k-post-meta">2026-05-29 · Bluetape4k Cache series · Part 1</p>
+<p class="bt4k-post-meta">2026-05-29 · Bluetape4k Cache 시리즈 · Part 1</p>
 
 `bluetape4k-cache`는 "Map 하나 감싸면 되지 않나?"라는 질문에서 출발합니다. 그리고 운영 환경을 만나는 순간, 그 질문이 생각보다 작지 않다는 사실을 다룹니다.
 
-로컬 캐시는 빠릅니다. Redis는 상태를 공유합니다. JCache에는 표준 API가 있습니다. Kotlin coroutine 코드에는 `suspend` 경로가 필요합니다. remote cache가 잠깐 불안정해지면 재시도와 fallback도 필요합니다.
+로컬 캐시는 빠릅니다. Redis는 상태를 공유합니다. JCache에는 표준 API가 있습니다. Kotlin coroutine 코드에는 `suspend` 경로가 필요합니다. remote cache가 잠깐 불안정해지면 재시도와 대체 경로도 필요합니다.
 
 이 조각들을 애플리케이션마다 손으로 붙이면, 어느 날 캐시 코드가 도메인 코드보다 더 많은 자리를 차지합니다. 그때부터 캐시는 성능 최적화가 아니라 운영 복잡도가 됩니다.
 
 그래서 bluetape4k의 Cache 모듈은 "캐시 구현체 모음"으로 시작하지 않습니다. 먼저 캐시를 다루는 공통 언어를 잡고, 그 위에 provider별 구현체를 붙입니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/cache-series-module-map-01-ko.png" alt="Bluetape4k cache module map from cache-core to local providers, memoizers, resilience, and distributed providers" loading="lazy" />
+  <img src="/assets/cache-series-module-map-01-ko.png" alt="cache-core에서 로컬 provider, memoizer, resilience, 분산 provider로 이어지는 Bluetape4k Cache 모듈 지도" loading="lazy" />
   <figcaption>`cache-core`가 공통 계약을 잡고, provider 모듈들이 같은 사용 경험을 공유합니다.</figcaption>
 </figure>
 
@@ -41,7 +41,7 @@ blog:
 | `SuspendCache` | coroutine 코드에서 자연스럽게 쓰는 suspend 캐시 계약 |
 | Memoizer | 함수 결과를 sync, async, suspend 방식으로 캐싱 |
 | NearCache interfaces | L1 local + L2 backing cache 구조를 공통 API로 표현 |
-| Resilient decorator | retry, fallback, 통계를 캐시 구현 바깥에서 붙임 |
+| Resilient decorator | retry, 대체 경로, 통계를 캐시 구현 바깥에서 붙임 |
 
 provider 모듈은 그 계약 뒤에서 실제 저장소와 통신합니다.
 
@@ -131,7 +131,7 @@ val name = cache.get("42")
 [NearCacheOperations.kt](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/cache/cache-core/src/main/kotlin/io/bluetape4k/cache/nearcache/NearCacheOperations.kt),
 [LettuceCaches.kt](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/cache/cache-lettuce/src/main/kotlin/io/bluetape4k/cache/LettuceCaches.kt)
 
-## Resilience는 장식이 아닙니다
+## Resilience는 부가 장식이 아닙니다
 
 캐시는 성능 기능처럼 보입니다. 하지만 remote cache를 붙이는 순간 장애 전파 경로도 됩니다. Redis가 잠깐 불안정해졌을 때 모든 요청이 같이 영향을 받으면 "캐시를 붙였더니 더 느려졌다"가 아닙니다. "캐시가 장애 증폭기가 됐다"에 가깝습니다.
 
@@ -159,7 +159,7 @@ Cache 모듈이 정리하려는 문제는 단순합니다.
 - NearCache는 두 세계를 연결합니다.
 - resilience는 운영 중 "잠깐만요"를 "전체 장애"로 키우지 않게 합니다.
 
-다음 글에서는 NearCache만 따로 꺼내 봅니다. remote cache만으로 부족한 이유, Redisson의 Pub/Sub 방식과 Lettuce의 RESP3 CLIENT TRACKING 방식, 그리고 benchmark 숫자를 같이 보겠습니다. 숫자는 가끔 냉정합니다. 그래서 좋습니다.
+다음 글에서는 NearCache만 따로 꺼내 봅니다. remote cache만으로 부족한 이유, Redisson의 Pub/Sub 방식과 Lettuce의 RESP3 CLIENT TRACKING 방식, 그리고 벤치마크 숫자를 같이 보겠습니다. 숫자는 가끔 냉정합니다. 그래서 좋습니다.
 
 ## 시리즈 링크
 

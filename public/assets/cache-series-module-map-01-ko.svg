@@ -1,90 +1,87 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="864" viewBox="0 0 1400 864" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1520" height="930" viewBox="0 0 1520 930" role="img" aria-labelledby="title desc">
 <title id="title">Bluetape4k Cache 모듈 지도</title>
-<desc id="desc">cache-core가 공통 언어를 정의하고 provider 모듈이 local/distributed 동작을 연결합니다.</desc>
+<desc id="desc">cache-core가 공통 계약을 정의하고, provider 모듈이 로컬·분산 캐시 동작을 연결합니다.</desc>
 <defs>
-  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="7" stdDeviation="8" flood-color="#203040" flood-opacity="0.10"/></filter>
-  <marker id="arrowBlue" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L14,7 L0,14 Z" fill="#4E7FC2"/></marker>
-  <marker id="arrowGreen" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L14,7 L0,14 Z" fill="#3C9B72"/></marker>
-  <marker id="arrowAmber" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L14,7 L0,14 Z" fill="#C98A22"/></marker>
-  <marker id="arrowRose" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L14,7 L0,14 Z" fill="#C85A73"/></marker>
+  <filter id="shadow" x="-10%" y="-10%" width="120%" height="125%"><feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#020617" flood-opacity="0.35"/></filter>
+
+  <marker id="arrow-blue" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L13,7 L1,13 Z" fill="#60a5fa"/></marker>
+  <marker id="arrow-green" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L13,7 L1,13 Z" fill="#86efac"/></marker>
+  <marker id="arrow-amber" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L13,7 L1,13 Z" fill="#fbbf24"/></marker>
+  <marker id="arrow-red" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L13,7 L1,13 Z" fill="#f87171"/></marker>
+  <marker id="arrow-purple" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L13,7 L1,13 Z" fill="#c4b5fd"/></marker>
+  <marker id="arrow-cyan" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L13,7 L1,13 Z" fill="#67e8f9"/></marker>
   <style>
-    .canvas{fill:#F7F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
-    .title{font-family:"goorm Sans","Apple SD Gothic Neo",Arial,sans-serif;font-size:42px;fill:#22344A;font-weight:700}
-    .subtitle{font-family:"goorm Sans Code","goorm Sans","Apple SD Gothic Neo",monospace;font-size:16px;fill:#536476;font-weight:400}
-    .label{font-family:"goorm Sans","Apple SD Gothic Neo",Arial,sans-serif;font-size:24px;fill:#22344A;font-weight:700}
-    .smallLabel{font-family:"goorm Sans","Apple SD Gothic Neo",Arial,sans-serif;font-size:20px;fill:#22344A;font-weight:700}
-    .body{font-family:"goorm Sans Code","goorm Sans","Apple SD Gothic Neo",monospace;font-size:14px;fill:#34465B;font-weight:400}
-    .small{font-family:"goorm Sans Code","goorm Sans","Apple SD Gothic Neo",monospace;font-size:12px;fill:#627184;font-weight:400}
-    .num{font-family:"goorm Sans Code","goorm Sans","Apple SD Gothic Neo",monospace;font-size:16px;fill:#22344A;font-weight:700}
-    .card{filter:url(#shadow);stroke-width:2}.soft{stroke-width:1.6}
-    .lineBlue{fill:none;stroke:#4E7FC2;stroke-width:2.4;marker-end:url(#arrowBlue)}
-    .lineGreen{fill:none;stroke:#3C9B72;stroke-width:2.4;marker-end:url(#arrowGreen)}
-    .lineAmber{fill:none;stroke:#C98A22;stroke-width:2.4;marker-end:url(#arrowAmber)}
-    .lineRose{fill:none;stroke:#C85A73;stroke-width:2.4;marker-end:url(#arrowRose)}
-    .dashBlue{fill:none;stroke:#4E7FC2;stroke-width:2.2;stroke-dasharray:8 7;marker-end:url(#arrowBlue)}
-    .dashGreen{fill:none;stroke:#3C9B72;stroke-width:2.2;stroke-dasharray:8 7;marker-end:url(#arrowGreen)}
-    .pill{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:1.2}
+    .title{font-family:"goorm Sans","Apple SD Gothic Neo",Arial,sans-serif;font-size:44px;font-weight:700;fill:#f8fafc}
+    .subtitle{font-family:"goorm Sans","Apple SD Gothic Neo",Arial,sans-serif;font-size:18px;fill:#cbd5e1}
+    .lane-title{font-family:"goorm Sans","Apple SD Gothic Neo",Arial,sans-serif;font-size:24px;font-weight:700;fill:#f8fafc}
+    .card-title{font-family:"goorm Sans","Apple SD Gothic Neo",Arial,sans-serif;font-size:24px;font-weight:700;fill:#f8fafc}
+    .card-body{font-family:"goorm Sans","Apple SD Gothic Neo",Arial,sans-serif;font-size:16px;fill:#cbd5e1}
+    .small{font-family:"goorm Sans","Apple SD Gothic Neo",Arial,sans-serif;font-size:14px;fill:#94a3b8}
+    .code{font-family:"goorm Sans Code","goorm Sans","Apple SD Gothic Neo",monospace;font-size:15px;fill:#cbd5e1}
+    .panel{fill:#111827;stroke:#334155;stroke-width:2}
+    .card{filter:url(#shadow);stroke-width:2}
+
+    .connector{fill:none;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
+    .line-blue{stroke:#60a5fa;marker-end:url(#arrow-blue)}
+    .line-green{stroke:#86efac;marker-end:url(#arrow-green)}
+    .line-amber{stroke:#fbbf24;marker-end:url(#arrow-amber)}
+    .line-red{stroke:#f87171;marker-end:url(#arrow-red)}
+    .line-purple{stroke:#c4b5fd;marker-end:url(#arrow-purple)}
+    .line-cyan{stroke:#67e8f9;marker-end:url(#arrow-cyan)}
+    .dash-blue{stroke:#60a5fa;stroke-dasharray:10 9;marker-end:url(#arrow-blue)}
+    .dash-green{stroke:#86efac;stroke-dasharray:10 9;marker-end:url(#arrow-green)}
+    .label-bg{fill:#0f172a;stroke:#475569;stroke-width:1.5}
   </style>
 </defs>
-<rect class="canvas" width="1400" height="864"/>
-<rect class="frame" x="34" y="28" width="1332" height="808" rx="26"/>
-<text class="title" x="70" y="82">Bluetape4k Cache 모듈 지도</text>
-<text class="subtitle" x="72" y="115">cache-core가 공통 언어를 정의하고 provider 모듈이 local/distributed 동작을 연결합니다.</text><g transform="translate(0 44)">
+<rect width="1520" height="930" fill="#0b1220"/>
+<rect x="34" y="30" width="1452" height="870" rx="28" class="panel"/>
+<text x="70" y="86" class="title">Bluetape4k Cache 모듈 지도</text>
+<text x="72" y="122" class="subtitle">cache-core가 공통 계약을 정의하고, provider 모듈이 로컬·분산 캐시 동작을 연결합니다.</text>
 <g>
-  <rect class="card" x="548" y="150" width="304" height="118" rx="16" fill="#E8F3FF" stroke="#5B8DEF"/>
-  <text class="smallLabel" x="700" y="186" text-anchor="middle" dominant-baseline="middle">애플리케이션 코드</text>
-<text class="body" x="700" y="214" text-anchor="middle" dominant-baseline="middle">Kotlin 서비스</text>
-<text class="body" x="700" y="232" text-anchor="middle" dominant-baseline="middle">Spring / Ktor / Exposed</text>
+  <rect x="72" y="170" width="1376" height="610" rx="24" fill="#172033" stroke="#26364f" stroke-width="2"/>
+  <text x="96" y="208" class="lane-title">공통 계약에서 provider 구현으로</text>
 </g>
 <g>
-  <rect class="card" x="498" y="330" width="404" height="138" rx="16" fill="#F1ECFF" stroke="#8A72D6"/>
-  <text class="smallLabel" x="700" y="367" text-anchor="middle" dominant-baseline="middle">cache-core</text>
-<text class="body" x="700" y="395" text-anchor="middle" dominant-baseline="middle">JCache helper · SuspendCache</text>
-<text class="body" x="700" y="413" text-anchor="middle" dominant-baseline="middle">Memoizer 계약 · NearCache API</text>
-<text class="body" x="700" y="431" text-anchor="middle" dominant-baseline="middle">resilience decorator · 통계</text>
+  <rect x="606" y="222" width="308" height="104" rx="18" fill="#172554" stroke="#60a5fa" class="card"/>
+  <text x="760" y="257" text-anchor="middle" dominant-baseline="middle" class="card-title">애플리케이션 코드</text>
+<text x="760" y="291" text-anchor="middle" dominant-baseline="middle" class="card-body">Spring · Ktor · Exposed</text>
 </g>
 <g>
-  <rect class="card" x="86" y="560" width="236" height="96" rx="16" fill="#EAF7EF" stroke="#58A978"/>
-  <text class="smallLabel" x="204" y="594" text-anchor="middle" dominant-baseline="middle">Local Provider</text>
-<text class="body" x="204" y="622" text-anchor="middle" dominant-baseline="middle">Caffeine · Cache2k · Ehcache</text>
+  <rect x="500" y="390" width="520" height="148" rx="18" fill="#261943" stroke="#c4b5fd" class="card"/>
+  <text x="760" y="436" text-anchor="middle" dominant-baseline="middle" class="small">cache-core</text>
+<text x="760" y="470" text-anchor="middle" dominant-baseline="middle" class="card-body">JCache helper · SuspendCache</text>
+<text x="760" y="492" text-anchor="middle" dominant-baseline="middle" class="card-body">Memoizer · NearCache · resilience</text>
 </g>
 <g>
-  <rect class="card" x="372" y="560" width="204" height="96" rx="16" fill="#FFF3D9" stroke="#D6A441"/>
-  <text class="smallLabel" x="474" y="594" text-anchor="middle" dominant-baseline="middle">Memoizer</text>
-<text class="body" x="474" y="622" text-anchor="middle" dominant-baseline="middle">sync · async · suspend</text>
+  <rect x="118" y="640" width="242" height="100" rx="18" fill="#14351f" stroke="#86efac" class="card"/>
+  <text x="239" y="673" text-anchor="middle" dominant-baseline="middle" class="card-title">Local provider</text>
+<text x="239" y="707" text-anchor="middle" dominant-baseline="middle" class="card-body">Caffeine · Cache2k · Ehcache</text>
 </g>
 <g>
-  <rect class="card" x="626" y="560" width="214" height="96" rx="16" fill="#E9F7F6" stroke="#45A7A1"/>
-  <text class="smallLabel" x="733" y="594" text-anchor="middle" dominant-baseline="middle">Lettuce</text>
-<text class="body" x="733" y="622" text-anchor="middle" dominant-baseline="middle">Redis RESP3 NearCache</text>
+  <rect x="414" y="640" width="224" height="100" rx="18" fill="#3b2a08" stroke="#fbbf24" class="card"/>
+  <text x="526" y="673" text-anchor="middle" dominant-baseline="middle" class="small">Memoizer</text>
+<text x="526" y="707" text-anchor="middle" dominant-baseline="middle" class="card-body">sync · async · suspend</text>
 </g>
 <g>
-  <rect class="card" x="890" y="560" width="214" height="96" rx="16" fill="#FDECEF" stroke="#DC6B82"/>
-  <text class="smallLabel" x="997" y="594" text-anchor="middle" dominant-baseline="middle">Redisson</text>
-<text class="body" x="997" y="622" text-anchor="middle" dominant-baseline="middle">RLocalCachedMap</text>
+  <rect x="692" y="640" width="224" height="100" rx="18" fill="#12333b" stroke="#67e8f9" class="card"/>
+  <text x="804" y="673" text-anchor="middle" dominant-baseline="middle" class="small">Lettuce</text>
+<text x="804" y="707" text-anchor="middle" dominant-baseline="middle" class="card-body">RESP3 NearCache</text>
 </g>
 <g>
-  <rect class="card" x="1154" y="560" width="214" height="96" rx="16" fill="#F5F7FB" stroke="#93A4B7"/>
-  <text class="smallLabel" x="1261" y="594" text-anchor="middle" dominant-baseline="middle">Hazelcast</text>
-<text class="body" x="1261" y="622" text-anchor="middle" dominant-baseline="middle">IMap NearCache</text>
+  <rect x="970" y="640" width="224" height="100" rx="18" fill="#3b1217" stroke="#f87171" class="card"/>
+  <text x="1082" y="673" text-anchor="middle" dominant-baseline="middle" class="small">Redisson</text>
+<text x="1082" y="707" text-anchor="middle" dominant-baseline="middle" class="card-body">RLocalCachedMap</text>
 </g>
 <g>
-  <path class="card" d="M732,718 C732,694 942,694 942,718 L942,746 C942,770 732,770 732,746 Z" fill="#FDECEF" stroke="#DC6B82"/>
-  <ellipse class="soft" cx="837" cy="718" rx="105" ry="18" fill="#FFFFFF" opacity="0.50" stroke="#DC6B82"/>
-  <text class="smallLabel" x="837" y="740" text-anchor="middle" dominant-baseline="middle">Redis</text>
+  <rect x="1248" y="640" width="166" height="100" rx="18" fill="#1e293b" stroke="#64748b" class="card"/>
+  <text x="1331" y="673" text-anchor="middle" dominant-baseline="middle" class="small">Hazelcast</text>
+<text x="1331" y="707" text-anchor="middle" dominant-baseline="middle" class="card-body">IMap</text>
 </g>
-<g>
-  <path class="card" d="M1128,718 C1128,694 1364,694 1364,718 L1364,746 C1364,770 1128,770 1128,746 Z" fill="#F5F7FB" stroke="#93A4B7"/>
-  <ellipse class="soft" cx="1246" cy="718" rx="118" ry="18" fill="#FFFFFF" opacity="0.50" stroke="#93A4B7"/>
-  <text class="smallLabel" x="1246" y="740" text-anchor="middle" dominant-baseline="middle">Distributed Store</text>
-</g>
-<path class="connector lineBlue" d="M700 268 V330"/><rect class="pill" x="706" y="288" width="58" height="24" rx="12"/><text class="small" x="735" y="304" text-anchor="middle">사용</text>
-<path class="connector lineGreen" d="M498 410 H220 Q204 410 204 426 V560"/>
-<path class="connector lineAmber" d="M548 468 V560"/>
-<path class="connector lineBlue" d="M710 468 V560"/>
-<path class="connector lineRose" d="M794 468 V502 Q794 518 810 518 H981 Q997 518 997 534 V560"/>
-<path class="connector lineBlue" d="M902 410 H1245 Q1261 410 1261 426 V560"/>
-<path class="connector lineBlue" d="M733 656 V700"/>
-<path class="connector lineRose" d="M997 656 V670 Q997 682 985 682 H849 Q837 682 837 694 V700"/>
-<path class="connector lineBlue" d="M1261 656 V700"/>
-</g></svg>
+<path class="connector line-blue" d="M760 326 V390"/><rect class="label-bg" x="766" y="343" width="64" height="30" rx="15"/><text class="small" x="798" y="362" text-anchor="middle">사용</text>
+<path class="connector line-green" d="M500 472 H244 Q224 472 224 492 V640"/>
+<path class="connector line-amber" d="M604 538 V640"/>
+<path class="connector line-cyan" d="M784 538 V640"/>
+<path class="connector line-red" d="M916 538 V590 Q916 610 936 610 H1082 Q1102 610 1102 630 V640"/>
+<path class="connector line-blue" d="M1020 472 H1331 Q1351 472 1351 492 V640"/>
+<text x="760" y="838" text-anchor="middle" class="small">핵심: 애플리케이션은 provider 차이를 직접 다루지 않고 공통 계약을 사용합니다.</text>
+</svg>

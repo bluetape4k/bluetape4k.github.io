@@ -1,22 +1,22 @@
 ---
 title: "Bluetape4k Cache Part 2: Near Cache, Redis 왕복을 줄이는 현실적인 방법"
-description: Remote Cache의 한계, Redisson Pub/Sub invalidation, Lettuce RESP3 CLIENT TRACKING, LettuceNearCache benchmark 결과를 설명한다.
+description: Remote Cache의 한계, Redisson Pub/Sub 무효화, Lettuce RESP3 CLIENT TRACKING, LettuceNearCache 벤치마크 결과를 설명한다.
 sidebar:
-  order: -202605291702
+  order: -202605291851
 blog:
-  date: 2026-05-29T17:02:00+09:00
+  date: 2026-05-29T18:50:01+09:00
   image: /assets/cache-series-part2-hero.png
-  imageAlt: Near cache workbench with robot workers connecting local and remote cache blocks
+  imageAlt: 로봇 작업자들이 로컬 캐시와 remote cache 블록을 연결하는 Near Cache 워크벤치
   cardDescription: "Remote cache는 공유되지만 멀다. Near Cache는 뜨거운 읽기를 JVM 가까이 둔다."
   tags: ["cache","kotlin","performance","practical-example","redis"]
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/cache-series-part2-hero.png" alt="Near cache workbench with robot workers connecting local and remote cache blocks" loading="eager" />
+  <img src="/assets/cache-series-part2-hero.png" alt="로봇 작업자들이 로컬 캐시와 remote cache 블록을 연결하는 Near Cache 워크벤치" loading="eager" />
   <figcaption>Remote cache는 창고입니다. Near Cache는 책상 위 작은 서랍입니다.</figcaption>
 </figure>
 
-<p class="bt4k-post-meta">2026-05-29 · Bluetape4k Cache series · Part 2</p>
+<p class="bt4k-post-meta">2026-05-29 · Bluetape4k Cache 시리즈 · Part 2</p>
 
 Remote cache는 좋은 출발점입니다. 여러 JVM이 같은 값을 보고, TTL을 줄 수 있고, Redis 같은 성숙한 시스템을 쓰면 운영 도구도 많습니다.
 
@@ -25,7 +25,7 @@ Remote cache는 좋은 출발점입니다. 여러 JVM이 같은 값을 보고, T
 Near Cache는 이 차이를 인정하는 설계입니다. 자주 읽는 값은 JVM 안 L1에 두고, 공유 상태와 무효화는 Redis 같은 L2와 protocol에 맡깁니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/cache-series-near-cache-flow-01-ko.png" alt="Near cache read, write, and invalidation flow with local L1 cache and Redis L2 cache" loading="lazy" />
+  <img src="/assets/cache-series-near-cache-flow-01-ko.png" alt="L1 로컬 캐시와 Redis L2 캐시를 사용하는 Near Cache 읽기, 쓰기, 무효화 흐름" loading="lazy" />
   <figcaption>L1 hit는 JVM 안에서 끝나고, miss와 write만 L2로 갑니다. 핵심은 invalidation입니다.</figcaption>
 </figure>
 
@@ -44,7 +44,7 @@ Remote cache의 장점은 분명합니다.
 | network RTT | localhost Redis도 JVM memory read보다 훨씬 멉니다 |
 | serialization | 값이 커질수록 encode/decode 비용이 보입니다 |
 | connection contention | 요청이 몰리면 Redis connection과 event loop도 바쁩니다 |
-| tail latency | 평균은 괜찮아도 P99에서 튀는 값이 사용자 눈에 보입니다 |
+| tail latency | 평균은 괜찮아도 P99에서 튀는 값이 사용자에게 보입니다 |
 
 Near Cache는 "전부 local에 넣자"가 아닙니다. "뜨거운 읽기는 local에서 끝내고, 공유 상태와 무효화는 remote cache와 protocol에 맡기자"에 가깝습니다.
 
@@ -62,7 +62,7 @@ Redisson의 `RLocalCachedMap`은 local cached map을 제공합니다. 각 JVM에
 [RedissonNearCache.kt](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/cache/cache-redisson/src/main/kotlin/io/bluetape4k/cache/nearcache/RedissonNearCache.kt),
 [LocalCachedMapOptionsExtensions.kt](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/infra/redisson/src/main/kotlin/io/bluetape4k/redis/redisson/options/LocalCachedMapOptionsExtensions.kt)
 
-주의점도 있습니다. Pub/Sub는 topic 기반 이벤트 전파입니다. 어떤 key를 누가 읽고 있는지 Redis 서버가 자동으로 아는 모델은 아닙니다. client와 library가 invalidation 체계를 함께 유지합니다. 그래서 설정은 간단해 보여도, 실제 의미는 "변경 이벤트를 받아 local entry를 제대로 지운다"입니다.
+주의점도 있습니다. Pub/Sub는 topic 기반 이벤트 전파입니다. 어떤 key를 누가 읽고 있는지 Redis 서버가 자동으로 아는 모델은 아닙니다. client와 라이브러리가 무효화 체계를 함께 유지합니다. 그래서 설정은 간단해 보여도, 실제 의미는 "변경 이벤트를 받아 local entry를 제대로 지운다"입니다.
 
 ## Lettuce RESP3 CLIENT TRACKING 방식
 
@@ -87,7 +87,7 @@ RESP3 방식의 매력은 서버가 key tracking에 참여한다는 점입니다
 
 ## Benchmark 결과
 
-`bluetape4k-cache-lettuce`에는 Near Cache benchmark가 있습니다.
+`bluetape4k-cache-lettuce`에는 Near Cache 벤치마크가 있습니다.
 
 실행:
 
@@ -100,7 +100,7 @@ RESP3 방식의 매력은 서버가 key tracking에 참여한다는 점입니다
 [Benchmark.ko.md](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/cache/cache-lettuce/Benchmark.ko.md)
 
 <figure class="bt4k-architecture">
-  <img src="/assets/cache-series-benchmark-chart-01-ko.png" alt="Lettuce Near Cache benchmark summary showing L1 hit far above Redis-backed operations" loading="lazy" />
+  <img src="/assets/cache-series-benchmark-chart-01-ko.png" alt="L1 hit이 Redis 기반 작업보다 훨씬 높은 Lettuce Near Cache 벤치마크 요약" loading="lazy" />
   <figcaption>L1 hit은 Redis-backed operation과 아예 다른 체급입니다.</figcaption>
 </figure>
 
@@ -121,7 +121,7 @@ RESP3 방식의 매력은 서버가 key tracking에 참여한다는 점입니다
 
 ## 해석
 
-Benchmark의 결론은 "Redis가 느리다"가 아닙니다. Redis는 빠릅니다. 다만 JVM 안 memory read와 remote operation은 같은 경주가 아닙니다.
+벤치마크의 결론은 "Redis가 느리다"가 아닙니다. Redis는 빠릅니다. 다만 JVM 안 memory read와 remote operation은 같은 경주가 아닙니다.
 
 실무에서는 이렇게 해석하는 편이 좋습니다.
 
@@ -129,7 +129,7 @@ Benchmark의 결론은 "Redis가 느리다"가 아닙니다. Redis는 빠릅니�
 - write-heavy 데이터는 invalidation 비용과 stale 허용 범위를 먼저 봅니다.
 - 큰 payload는 `putAll`에서 network bandwidth와 serialization 비용을 봅니다.
 - L1 hit ratio가 낮으면 NearCache는 예쁜 장식이 됩니다. 장식은 CPU를 줄이지 않습니다.
-- 장애 시 fallback 정책을 정하지 않으면 캐시가 장애 전파자가 됩니다.
+- 장애 시 대체 경로 정책을 정하지 않으면 캐시가 장애 전파자가 됩니다.
 
 ## 선택 기준
 
