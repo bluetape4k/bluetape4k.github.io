@@ -38,13 +38,13 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 
 ## 현재 진행 상황
 
-기준 시점: 2026-07-29, stacked PR #267~#288, #290~#294와 현재 배치 PR 예정
+기준 시점: 2026-07-29, stacked PR #267~#288, #290~#295
 
 | 구분 | 완료 | 전체 | 남음 | 상태 |
 | --- | ---: | ---: | ---: | --- |
 | 한국어 블로그 본문 교정 | 73 | 87 | 14 | 진행 중 |
 | 기술 다이어그램 변경·배치 검증 | 146 | 173 | 27 | 진행 중 |
-| stacked PR | 28 | 미정 | 미정 | #267~#288, #290~#294와 현재 배치 |
+| stacked PR | 28 | 미정 | 미정 | #267~#288, #290~#295 open |
 | 현재 배치 | 3 | 3 | 0 | Bluetape Skills Part 2~3·병원 예약 Part 1 |
 | 최종 전체 사이트 감사 | 0 | 1 | 1 | 대기 |
 | 최종 머지·배포·정리 | 0 | 1 | 1 | 대기 |
@@ -88,9 +88,9 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 | writer 체크리스트 | PASS | dotfiles `b0fa058`, chezmoi apply·SHA-256 source/live·self-audit·upstream 일치 |
 | 사이트 검사 | PASS | Node 167/167, lightbox 23/23, Astro 오류·경고 0, 기존 힌트 3개, 1,303 pages build |
 | 경로 검사 | PASS | 한영 글 6개 HTTP 200, 로컬 프리뷰 `127.0.0.1:4340` |
-| stacked PR | PENDING | base `docs/korean-proofreading-rate-ocr-skills-batch`, head `docs/korean-proofreading-skills-clinic-batch` |
+| stacked PR | PASS | #295, base `docs/korean-proofreading-rate-ocr-skills-batch`, head `docs/korean-proofreading-skills-clinic-batch` |
 
-현재 배치 필수 검사: **10/11 완료, N/A 0, Blocked 0**
+현재 배치 필수 검사: **11/11 완료, N/A 0, Blocked 0**
 
 ## 요청 제한·OCR·Skills 공유 배치 DoD
 
