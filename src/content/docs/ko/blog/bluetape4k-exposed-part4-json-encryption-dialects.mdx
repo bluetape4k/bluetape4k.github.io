@@ -1,40 +1,41 @@
 ---
 title: "Bluetape4k Exposed Part 4: JSON, 암호화, 다이얼렉트"
-description: 왜 JSON 컬럼, Tink 암호화 컬럼, 측정 단위 컬럼, PostgreSQL/MySQL8/분석용 DB 다이얼렉트를 따로 만들었는지 운영 경계 중심으로 설명한다.
+description: JSON 컬럼, Tink 암호화 컬럼, 측정 단위 컬럼과 PostgreSQL, MySQL 8, 분석용 데이터베이스 다이얼렉트를 분리한 이유를 운영 경계를 중심으로 설명한다.
 sidebar:
   order: -202605311104
 blog:
   date: 2026-05-31T11:04:00+09:00
   image: /assets/bluetape4k-exposed-part4-hero.png
-  imageAlt: 실험실 같은 작업대에서 작은 로봇 작업자들이 데이터 모듈, 계측 패널, 분석 장치를 다루는 3D diorama
-  cardDescription: "DB별 세부사항을 domain 코드에 흩뿌리지 않고 typed column과 dialect module로 격리한다."
+  imageAlt: 실험실 형태의 작업대에서 작은 로봇 작업자들이 데이터 모듈, 계측 패널, 분석 장치를 다루는 3차원 디오라마
+  cardDescription: "데이터베이스별 세부 사항을 도메인 코드에 분산하지 않고 사용자 정의 컬럼 타입과 다이얼렉트 모듈로 격리한다."
   tags: ["exposed","kotlin","persistence","postgresql"]
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/bluetape4k-exposed-part4-hero.png" alt="실험실 같은 작업대에서 작은 로봇 작업자들이 데이터 모듈, 계측 패널, 분석 장치를 다루는 3D diorama" loading="eager" />
-  <figcaption>컬럼 하나가 작아 보여도, 직렬화와 암호화와 dialect가 붙으면 금방 작은 프레임워크가 됩니다.</figcaption>
+  <img src="/assets/bluetape4k-exposed-part4-hero.png" alt="실험실 형태의 작업대에서 작은 로봇 작업자들이 데이터 모듈, 계측 패널, 분석 장치를 다루는 3차원 디오라마" loading="eager" />
+  <figcaption>컬럼 하나에도 직렬화, 암호화, 다이얼렉트 처리가 더해지면 독립된 설계 경계가 필요합니다.</figcaption>
 </figure>
 
-<p class="bt4k-post-meta">2026-05-31 · bluetape4k-exposed series · Part 4</p>
+<p class="bt4k-post-meta">2026-05-31 · bluetape4k-exposed 시리즈 · Part 4</p>
 
-Part 4는 repository보다 더 낮은 층을 다룹니다. 실제 서비스를 만들다 보면 테이블 정의 옆에서 해결해야 하는 작은 문제가
-계속 나옵니다. JSON 컬럼을 문자열로 들고 다닐 것인가, 암호화된 값은 검색할 수 있어야 하는가, 좌표와 vector 같은
-DB별 타입을 service 코드에서 직접 다룰 것인가 같은 문제입니다.
+Part 4는 저장소보다 낮은 계층을 다룹니다. 실제 서비스를 개발하면 테이블 정의와 함께 해결해야 할 문제가 계속 생깁니다.
+JSON 컬럼을 문자열로 다룰지, 암호화된 값을 검색할 수 있어야 하는지, 좌표와 벡터 같은 데이터베이스별 타입을 서비스
+코드에서 직접 다룰지 결정해야 합니다.
 
-제가 JSON 컬럼, 암호화 컬럼, 측정 단위 컬럼, DB별 spatial/vector function을 따로 둔 이유는 이 문제들을 service 코드에
-흩뿌리지 않기 위해서입니다. 이 조각들은 테이블 정의 옆에 있어야 읽히지만, 매번 손으로 쓰면 위험합니다.
+JSON 컬럼, 암호화 컬럼, 측정 단위 컬럼, 데이터베이스별 공간·벡터 함수를 분리한 이유는 관련 처리가 서비스 코드에
+분산되는 것을 막기 위해서입니다. 이러한 기능은 테이블 정의 가까이에 있어야 의도가 드러나지만, 매번 직접 구현하면
+일관성을 유지하기 어렵습니다.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part4-codec-dialect-map-ko.png" alt="Domain model에서 JSON codecs, encrypted columns, measured columns, PostgreSQL, MySQL8, 분석용 dialects를 거쳐 SQL DSL로 이어지는 columns and dialects map" loading="lazy" />
-  <figcaption>반복되는 직렬화/암호화/dialect 세부사항은 column type과 extension function으로 모읍니다.</figcaption>
+<figure class="bt4k-architecture" data-diagram-title="컬럼 코덱과 데이터베이스 다이얼렉트의 경계">
+  <img src="/assets/bluetape4k-exposed-part4-codec-dialect-map-ko.png" alt="도메인 모델에서 JSON 코덱, 암호화 컬럼, 측정 단위 컬럼, PostgreSQL, MySQL 8, 분석용 다이얼렉트를 거쳐 SQL DSL로 이어지는 구조" loading="lazy" />
+  <figcaption>반복되는 직렬화, 암호화, 다이얼렉트 세부 사항은 컬럼 타입과 확장 함수에 모읍니다.</figcaption>
 </figure>
 
 ## JSON 컬럼: 문자열이 아니라 타입으로
 
-JSON 컬럼을 넣은 이유는 JSON을 더 많이 쓰자는 뜻이 아닙니다. 이미 JSON/JSONB를 써야 하는 경우에 문자열을
-service 코드로 끌고 다니지 않기 위해서입니다. `exposed-jackson2`, `exposed-jackson3`, `exposed-fastjson2`는
-JSON/JSONB column을 Kotlin 타입으로 다루게 합니다.
+JSON 컬럼을 제공하는 목적은 JSON 사용을 장려하는 데 있지 않습니다. JSON이나 JSONB를 사용해야 할 때 문자열이
+서비스 코드까지 노출되지 않도록 경계를 정하는 데 있습니다. `exposed-jackson2`, `exposed-jackson3`,
+`exposed-fastjson2`는 JSON과 JSONB 컬럼을 Kotlin 타입으로 다루게 합니다.
 
 ```kotlin
 data class UserSettings(
@@ -49,8 +50,8 @@ object Users : IdTable<Long>("users") {
 }
 ```
 
-JSON을 `String`으로 들고 다니면 편해 보입니다. 하지만 그 순간부터 validation, migration, path query,
-serialization 설정이 service마다 흩어집니다. column type으로 올려두면 테이블 정의에서 의도를 볼 수 있습니다.
+JSON을 `String`으로 다루면 처음에는 간단해 보입니다. 그러나 검증, 마이그레이션, 경로 쿼리, 직렬화 설정이
+서비스마다 분산되기 쉽습니다. 컬럼 타입으로 정의하면 테이블 선언만으로도 데이터의 의도가 드러납니다.
 
 ```kotlin
 val theme = Users.settings.jsonPath<String>("$.theme")
@@ -60,40 +61,43 @@ val query = Users
     .where { Users.settings.jsonContains("theme", "dark") }
 ```
 
-이런 helper가 전부를 해결하지는 않습니다. JSON schema evolution은 여전히 설계 문제입니다. 다만 "어디서
-직렬화하고, 어디서 path query를 만들고, 어디서 읽을 때 타입으로 복원하는가"를 한곳에 묶을 수 있습니다.
+이러한 확장 함수가 모든 문제를 해결하지는 않습니다. JSON 스키마의 변경 관리는 여전히 별도로 설계해야 합니다.
+다만 직렬화, 경로 쿼리 생성, 조회 결과의 타입 복원 책임을 한곳에 모을 수 있습니다.
 
 ## Tink 암호화 컬럼
 
-민감 정보는 "나중에 encrypt 붙이면 되겠지"로 미루기 쉽습니다. 보통 그 "나중"은 운영 데이터가 이미 쌓인 뒤에
-옵니다. 그때부터는 migration이 아니라 데이터 이사입니다. 즐겁지 않습니다.
+민감 정보의 암호화는 후속 작업으로 미루기 쉽습니다. 그러나 운영 데이터가 쌓인 뒤 암호화를 도입하면 단순한 스키마
+마이그레이션을 넘어 기존 데이터를 안전하게 이전해야 합니다.
 
-그래서 `exposed-tink`에는 Google Tink 기반 AEAD/Deterministic AEAD column을 넣었습니다.
+`exposed-tink`는 이러한 경계를 Google Tink 기반 AEAD와 Deterministic AEAD 컬럼으로 제공합니다.
 
 ```kotlin
+val persistedAead = TinkAead(keysetHandleOf(loadSecret("users-aead-keyset-json")))
+val persistedDaead = TinkDeterministicAead(keysetHandleOf(loadSecret("users-daead-keyset-json")))
+
 object Users : IntIdTable("users") {
     val name = varchar("name", 100)
 
     // 검색 불필요: 매번 다른 암호문
-    val memo = tinkAeadVarChar("memo", 512).nullable()
+    val memo = tinkAeadVarChar("memo", 512, persistedAead).nullable()
 
-    // 검색 필요: 결정적 암호문, index 가능
-    val email = tinkDaeadVarChar("email", 512).index()
+    // 검색 필요: 결정적 암호문, 인덱스 사용 가능
+    val email = tinkDaeadVarChar("email", 512, persistedDaead).index()
 }
 ```
 
-여기서 먼저 정해야 하는 것은 AEAD와 DAEAD 중 무엇을 쓸 것인가입니다.
+먼저 요구사항에 따라 AEAD와 DAEAD 중 어떤 방식을 사용할지 정해야 합니다.
 
 | 모드 | 장점 | 제한 |
 |---|---|---|
 | AEAD | 동일 평문도 매번 다른 암호문, 패턴 노출 감소 | `WHERE col = value` 검색 불가 |
-| DAEAD | 동일 평문은 동일 암호문, equality 검색/index 가능 | 결정적이므로 패턴 분석 위험이 남음 |
+| DAEAD | 동일 평문은 동일 암호문, 동등 조건 검색과 컬럼 타입이 지원하는 인덱스 사용 가능 | 결정적이므로 패턴 분석 위험이 남음 |
 
-검색이 필요 없는 memo, note, token payload는 AEAD가 맞습니다. email, 주민번호처럼 equality lookup이 필요한 값은
-DAEAD를 검토합니다. 보안은 "암호화됨" 체크박스가 아니라 어떤 질의가 필요한지까지 포함합니다.
+검색할 필요가 없는 메모, 비고, 토큰 페이로드에는 AEAD가 적합합니다. 이메일이나 주민등록번호처럼 동등 조건 검색이
+필요한 값에는 DAEAD를 검토합니다. 암호화 방식을 정할 때는 데이터의 민감도뿐 아니라 필요한 쿼리도 함께 고려해야 합니다.
 
-코드에서는 차이가 더 분명합니다. DAEAD 컬럼은 결정적 암호화이므로 같은 평문이 같은 암호문이 되고, equality
-검색과 index를 그대로 씁니다.
+코드에서는 두 방식의 차이가 더 분명합니다. DAEAD 컬럼은 결정적 암호화를 사용하므로 같은 평문에서 같은 암호문이
+생성되고, 동등 조건 검색과 인덱스를 사용할 수 있습니다.
 
 ```kotlin
 transaction {
@@ -110,12 +114,12 @@ transaction {
 }
 ```
 
-반대로 AEAD 컬럼은 동일 평문도 매번 다른 암호문이 됩니다. 그래서 아래 방식은 의도한 검색 조건이 아닙니다.
+반대로 AEAD 컬럼은 동일한 평문에서도 매번 다른 암호문을 생성합니다. 따라서 다음 쿼리로는 의도한 결과를 얻을 수 없습니다.
 
 ```kotlin
 transaction {
     // memo는 tinkAeadVarChar로 선언된 비결정적 암호화 컬럼입니다.
-    // 새 nonce로 다시 암호화되므로 equality 검색 대상으로 쓰면 안 됩니다.
+    // 새 nonce로 다시 암호화되므로 동등 조건 검색 대상으로 쓰면 안 됩니다.
     val notReliable = Users
         .selectAll()
         .where { Users.memo eq "VIP 고객" }
@@ -125,23 +129,24 @@ transaction {
 
 ## 측정 단위 컬럼
 
-측정 단위 컬럼도 같은 이유로 만들었습니다. 금액, 길이, 무게, 시간 같은 값은 숫자만 보면 의미가 부족합니다.
-`10`이 10원인지 10달러인지, 10m인지 10cm인지 code review에서 매번 추리하면 피곤합니다.
+측정 단위 컬럼도 같은 원칙에서 출발합니다. 금액, 길이, 무게, 시간은 숫자만으로 의미를 확정할 수 없습니다.
+`10`이 10원인지 10달러인지, 10m인지 10cm인지 코드 리뷰 때마다 추론해서는 안 됩니다.
 
-measured column은 값과 단위를 함께 다루는 쪽으로 사고를 옮깁니다. DB column은 결국 숫자와 문자열일 수 있지만,
-domain 코드에서는 typed value로 읽히는 편이 안전합니다.
+측정 단위 컬럼은 값과 단위를 함께 다루게 합니다. 데이터베이스에는 기준 단위로 변환한 숫자를 저장하지만, 도메인
+코드에서는 `Measure<T>`, `Temperature`, `TemperatureDelta` 같은 타입으로 복원하므로 단위 해석을 컬럼 경계에
+고정할 수 있습니다.
 
-## PostgreSQL: PostGIS, pgvector, range
+## PostgreSQL: PostGIS, pgvector, 범위 타입
 
-PostgreSQL은 좋은 기능이 많지만, 그만큼 service 코드로 새어 나오기 쉬운 세부사항도 많습니다. PostGIS, pgvector, range를
-쓸 때마다 SQL literal과 JDBC type 처리를 직접 쓰기 시작하면 query 의도보다 glue code가 더 많이 보입니다.
-그래서 `exposed-postgresql`은 PostgreSQL 전용 기능을 작게 감쌉니다.
+PostgreSQL은 다양한 기능을 제공하지만, 구현 세부 사항이 서비스 코드에 노출되기 쉽습니다. PostGIS, pgvector,
+범위 타입을 사용할 때마다 SQL 리터럴과 JDBC 타입 처리를 직접 구현하면 쿼리의 의도보다 연동 코드가 더 많이
+드러납니다. `exposed-postgresql`은 PostgreSQL 전용 기능을 작은 확장으로 캡슐화합니다.
 
 | 기능 | 예 |
 |---|---|
 | PostGIS | `geoPoint`, `geoPolygon`, `stDistance`, `stWithin`, `stContains` |
-| pgvector | `vector("embedding", 384)`, cosine distance 검색 |
-| range | 시간 범위 column과 query helper |
+| pgvector | `vector("embedding", 384)`, 코사인 거리 검색 |
+| 범위 타입 | 시간 범위 컬럼과 쿼리 확장 함수 |
 
 ```kotlin
 object DocumentTable : Table("documents") {
@@ -174,13 +179,13 @@ transaction {
 }
 ```
 
-PostgreSQL 기능 자체가 문제가 아닙니다. SQL literal과 JDBC type 등록 같은 세부사항이 service 코드에 들어오면 금방
-지저분해집니다. 제가 dialect module을 둔 이유는 이런 세부사항을 query 의도보다 아래 계층에 격리하기 위해서입니다.
+SQL 리터럴과 JDBC 타입 등록 같은 세부 사항이 서비스 코드에 들어오면 데이터베이스 연동 책임과 비즈니스 로직의
+경계가 흐려집니다. 다이얼렉트 모듈은 이러한 처리를 쿼리를 작성하는 코드보다 낮은 계층에 격리합니다.
 
-## MySQL 8 spatial
+## MySQL 8 공간 데이터
 
-MySQL 8도 spatial을 제대로 쓰려면 규칙을 한곳에 모아야 합니다. `exposed-mysql8`에서는 MySQL 8.0+ spatial column과
-predicate를 JTS geometry 타입으로 다룹니다. 기본 좌표계는 WGS84(SRID 4326)입니다.
+MySQL 8에서 공간 데이터를 일관되게 처리하려면 관련 규칙을 한곳에 모아야 합니다. `exposed-mysql8`은 MySQL 8.0
+이상의 공간 컬럼과 공간 조건식을 JTS Geometry 타입으로 다룹니다. 기본 좌표계는 WGS84(SRID 4326)입니다.
 
 ```kotlin
 object Locations : LongIdTable("locations") {
@@ -195,27 +200,27 @@ Locations
     .toList()
 ```
 
-좌표 순서 같은 작은 규칙은 버그를 만들기 좋습니다. `longitude`와 `latitude` 순서를 helper로 고정해두는 이유가
-그겁니다. 지도 쪽 버그는 숫자가 맞아 보여서 더 얄밉습니다.
+좌표 순서처럼 사소해 보이는 규칙도 오류의 원인이 됩니다. `wgs84Point(lng, lat)` 같은 확장 함수는 경도와 위도의
+순서를 명시해 이러한 오류를 방지합니다.
 
-## 분석용 DB를 위한 Dialects
+## 분석용 데이터베이스 다이얼렉트
 
-BigQuery, ClickHouse, Trino, DuckDB 같은 분석용 DB는 OLTP DB와 다른 특성을 가집니다. connector, type,
-literal, pagination, function 차이가 service 코드로 들어오면 application logic과 분석 SQL glue가 섞입니다.
+BigQuery, ClickHouse, Trino, DuckDB 같은 분석용 데이터베이스는 OLTP 데이터베이스와 실행 방식이 다릅니다.
+커넥터, 타입, 리터럴, 페이징, 함수의 차이가 서비스 코드에 노출되면 애플리케이션 로직과 분석 SQL 연동 코드가 섞입니다.
 
-제가 `bluetape4k-exposed`의 dialect 쪽에서 택한 방향은 그런 차이를 "사용하는 곳 가까이" 두되, 반복 코드는 확장 안으로
-넣는 것입니다.
+`bluetape4k-exposed`의 다이얼렉트 모듈은 데이터베이스별 확장을 사용하는 코드 가까이에 두면서도, 반복되는 처리는
+모듈 내부에 캡슐화합니다.
 
 | 확장 | 코드에서 볼 것 |
 |---|---|
-| [`exposed-bigquery`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-bigquery/README.ko.md) | BigQuery REST API 실행, pageToken 기반 Flow 조회 |
-| [`exposed-clickhouse`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-clickhouse/README.ko.md) | ClickHouse connector/type 특성 |
-| [`exposed-trino`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-trino/README.ko.md) | federation query 경계 |
-| [`exposed-duckdb`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-duckdb/README.ko.md) | embedded analytics와 local test |
-| [`exposed-timefold-solver-persistence`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-timefold-solver-persistence/README.ko.md) | solver persistence 통합 |
+| [`exposed-bigquery`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/bigquery/README.ko.md) | BigQuery REST API 실행, `pageToken` 기반 `Flow` 조회 |
+| [`exposed-clickhouse`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/clickhouse/README.ko.md) | ClickHouse 커넥터와 타입 특성 |
+| [`exposed-trino`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/trino/README.ko.md) | 연합 쿼리 경계 |
+| [`exposed-duckdb`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/duckdb/README.ko.md) | 임베디드 분석과 로컬 테스트 |
+| [`exposed-timefold-solver-persistence`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/timefold-solver-persistence/README.ko.md) | 솔버 영속화 통합 |
 
-BigQuery는 JDBC transaction 의미론을 제공하는 확장이 아닙니다. Exposed DSL을 SQL 생성기로 재사용하고, 실제
-실행은 BigQuery REST API가 맡습니다.
+BigQuery 확장은 JDBC 트랜잭션 의미론을 제공하지 않습니다. Exposed DSL을 SQL 생성기로 재사용하고, 실제 실행은
+BigQuery REST API가 담당합니다.
 
 ```kotlin
 val context = BigQueryContext.create(
@@ -242,23 +247,23 @@ with(context) {
 
 ## 맺음말
 
-Part 4의 결론은 "DB 고급 기능을 쓰지 말자"가 아닙니다. 반대입니다. 쓸 거면 service 코드에 흩뿌리지 말고,
-테이블 정의와 query helper 근처에 모으자는 이야기입니다.
+Part 4의 결론은 데이터베이스의 고급 기능을 피하자는 것이 아닙니다. 필요한 기능을 사용하되, 구현 세부 사항을
+서비스 코드에 분산하지 말고 테이블 정의와 쿼리 확장 함수 근처에 모아야 합니다.
 
-- JSON은 문자열이 아니라 domain 타입으로 읽히게 둡니다.
-- encryption은 검색 가능 여부에 따라 AEAD/DAEAD를 분리합니다.
-- measured value는 단위 없는 숫자로 흩어뜨리지 않습니다.
-- PostgreSQL/MySQL/분석용 DB별 기능은 dialect module로 격리합니다.
+- JSON은 문자열이 아니라 도메인 타입으로 다룹니다.
+- 암호화 방식은 검색 필요 여부에 따라 AEAD와 DAEAD로 구분합니다.
+- 측정값은 단위 없는 숫자로 노출하지 않습니다.
+- PostgreSQL, MySQL, 분석용 데이터베이스별 기능은 다이얼렉트 모듈로 격리합니다.
 
-다음 글에서는 이 조각들을 Spring Boot, cache, multi-tenancy, 운영 예제와 묶겠습니다. 제가 예제를 따로 만든 이유도
-여기에 있습니다. 타입 안정성만으로는 부족하고, tenant leakage test와 성능 차트가 같이 필요합니다.
+다음 글에서는 이러한 기능을 Spring Boot, 캐시, 멀티테넌시 운영 예제와 결합합니다. 타입 안정성만으로는 운영 경계를
+검증할 수 없으므로 테넌트 간 데이터 누출 테스트와 성능 차트도 함께 살펴봅니다.
 
 ## 참고 링크
 
-- Jackson2 README: [exposed-jackson2/README.ko.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-jackson2/README.ko.md)
-- Tink README: [exposed-tink/README.ko.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-tink/README.ko.md)
-- PostgreSQL README: [exposed-postgresql/README.ko.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-postgresql/README.ko.md)
-- MySQL8 README: [exposed-mysql8/README.ko.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-mysql8/README.ko.md)
+- Jackson 2 모듈: [exposed/jackson2/README.ko.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/jackson2/README.ko.md)
+- Tink 암호화 모듈: [exposed/tink/README.ko.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/tink/README.ko.md)
+- PostgreSQL 확장 모듈: [exposed/postgresql/README.ko.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/postgresql/README.ko.md)
+- MySQL 8 확장 모듈: [exposed/mysql8/README.ko.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/mysql8/README.ko.md)
 
 ## 시리즈 링크
 
@@ -266,5 +271,5 @@ Part 4의 결론은 "DB 고급 기능을 쓰지 말자"가 아닙니다. 반대�
 - [Part 2: JDBC 저장소와 SQL DSL](/ko/blog/bluetape4k-exposed-part2-jdbc-repositories-sql-dsl/)
 - [Part 3: R2DBC, 코루틴, 가상 스레드](/ko/blog/bluetape4k-exposed-part3-r2dbc-coroutines-virtual-threads/)
 - [Part 4: JSON, 암호화, 다이얼렉트](/ko/blog/bluetape4k-exposed-part4-json-encryption-dialects/)
-- [Part 5: 실전 예제 - 다양한 캐시 전략, 멀티테넌시](/ko/blog/bluetape4k-exposed-part5-spring-cache-multitenancy-production/)
+- [Part 5: 실전 예제 - 캐시 전략과 멀티테넌시](/ko/blog/bluetape4k-exposed-part5-spring-cache-multitenancy-production/)
 - [Part 6: BigQuery, Trino, CockroachDB, DuckDB 통합 예제](/ko/blog/bluetape4k-exposed-part6-ecosystem-integrations/)

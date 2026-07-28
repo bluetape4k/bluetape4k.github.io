@@ -26,7 +26,7 @@ I added JSON columns, encrypted columns, measured columns, and database-specific
 details do not leak across service code. These pieces should stay close to the table definition, where the intent is
 visible. Writing them by hand every time is where the risk starts.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Typed columns and database dialect boundaries">
   <img src="/assets/bluetape4k-exposed-part4-codec-dialect-map-en.png" alt="Columns and dialects map from domain model through JSON codecs, encrypted columns, measured columns, PostgreSQL, MySQL8, and analytics dialects to SQL DSL" loading="lazy" />
   <figcaption>Repeated serialization, encryption, and dialect details belong in column types and extension functions.</figcaption>
 </figure>
@@ -214,11 +214,11 @@ repeated code into extensions.
 
 | Extension | What to inspect |
 |---|---|
-| [`exposed-bigquery`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-bigquery/README.md) | BigQuery REST API execution and pageToken-based Flow reads |
-| [`exposed-clickhouse`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-clickhouse/README.md) | ClickHouse connector and type behavior |
-| [`exposed-trino`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-trino/README.md) | Federation-query boundaries |
-| [`exposed-duckdb`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-duckdb/README.md) | Embedded analytics and local tests |
-| [`exposed-timefold-solver-persistence`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-timefold-solver-persistence/README.md) | Solver persistence integration |
+| [`exposed-bigquery`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/bigquery/README.md) | BigQuery REST API execution and pageToken-based Flow reads |
+| [`exposed-clickhouse`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/clickhouse/README.md) | ClickHouse connector and type behavior |
+| [`exposed-trino`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/trino/README.md) | Federation-query boundaries |
+| [`exposed-duckdb`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/duckdb/README.md) | Embedded analytics and local tests |
+| [`exposed-timefold-solver-persistence`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/timefold-solver-persistence/README.md) | Solver persistence integration |
 
 BigQuery is not an extension that provides JDBC transaction semantics. It reuses Exposed DSL as a SQL generator, while
 execution is handled by the BigQuery REST API.
@@ -262,10 +262,10 @@ code.
 
 ## Source Links
 
-- Jackson2 README: [exposed-jackson2/README.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-jackson2/README.md)
-- Tink README: [exposed-tink/README.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-tink/README.md)
-- PostgreSQL README: [exposed-postgresql/README.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-postgresql/README.md)
-- MySQL8 README: [exposed-mysql8/README.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-mysql8/README.md)
+- Jackson2 README: [exposed-jackson2/README.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/jackson2/README.md)
+- Tink README: [exposed-tink/README.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/tink/README.md)
+- PostgreSQL README: [exposed-postgresql/README.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/postgresql/README.md)
+- MySQL8 README: [exposed-mysql8/README.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/mysql8/README.md)
 
 ## Series Links
 

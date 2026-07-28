@@ -4,76 +4,76 @@
   <defs>
     <style>
       text { letter-spacing: 0; }
-      .title { font-family: "goorm Sans"; font-size: 40px; font-weight: 400; fill: #263238; }
-      .subtitle, .msg, .note, .footer, .role { font-family: "goorm Sans Code","goorm Sans"; fill: #36464f; }
+      .title { font-family: "goorm Sans"; font-size: 40px; font-weight: 400; fill: #F5F9FF; }
+      .subtitle, .msg, .note, .footer, .role { font-family: "goorm Sans Code","goorm Sans"; fill: #D7E3F5; }
       .subtitle { font-size: 18px; }
-      .participant { font-family: "goorm Sans"; font-size: 19px; font-weight: 400; fill: #1f3138; }
-      .role { font-size: 13px; fill: #546a73; }
+      .participant { font-family: "goorm Sans"; font-size: 19px; font-weight: 400; fill: #F5F9FF; }
+      .role { font-size: 13px; fill: #B8C7DD; }
       .msg { font-size: 14px; }
       .note { font-size: 13px; }
-      .footer { font-size: 14px; fill: #60727d; }
-      .frame { fill: #fbfcf8; stroke: #41545d; stroke-width: 3; }
-      .header { fill: #ffffff; stroke: #546e7a; stroke-width: 2; }
-      .lifeline { stroke: #9aaab1; stroke-width: 2; stroke-dasharray: 7 8; }
-      .activation { fill: #f3ecdf; stroke: #8f784e; stroke-width: 1.5; }
-      .call { fill: none; stroke: #3f7d9c; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowCall); }
-      .sql { fill: none; stroke: #a2743d; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowSql); }
-      .state { fill: none; stroke: #6e8f4f; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowState); }
-      .error { fill: none; stroke: #b55f5f; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowError); }
-      .return { fill: none; stroke: #9b7d54; stroke-width: 2.5; stroke-dasharray: 8 6; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowReturn); }
-      .alt { fill: none; stroke: #78909c; stroke-width: 3; stroke-dasharray: 12 7; }
-      .label { fill: #ffffff; stroke: #d7e0e4; stroke-width: 1.5; }
-      .label.callLabel { stroke: #9cc2d1; }
-      .label.sqlLabel { stroke: #d0b078; }
-      .label.stateLabel { stroke: #b6c9a4; }
-      .label.errorLabel { stroke: #d99a9a; }
-      .label.returnLabel { stroke: #c8b38f; }
+      .footer { font-size: 14px; fill: #8EA6C4; }
+      .frame { fill: #0B1220; stroke: #284766; stroke-width: 3; }
+      .header { fill: #0F1E33; stroke: #365979; stroke-width: 2; }
+      .lifeline { stroke: #55718F; stroke-width: 2; stroke-dasharray: 7 8; }
+      .activation { fill: #2D2415; stroke: #8f784e; stroke-width: 1.5; }
+      .call { fill: none; stroke: #78AFFF; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowCall); }
+      .sql { fill: none; stroke: #F2B84B; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowSql); }
+      .state { fill: none; stroke: #6FD28C; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowState); }
+      .error { fill: none; stroke: #FF7F95; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowError); }
+      .return { fill: none; stroke: #EFC46B; stroke-width: 2.5; stroke-dasharray: 8 6; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowReturn); }
+      .alt { fill: none; stroke: #78AFFF; stroke-width: 3; stroke-dasharray: 12 7; }
+      .label { fill: #0F1E33; stroke: #365979; stroke-width: 1.5; }
+      .label.callLabel { stroke: #4F83B0; }
+      .label.sqlLabel { stroke: #8F6F2C; }
+      .label.stateLabel { stroke: #4D7B5E; }
+      .label.errorLabel { stroke: #9F5365; }
+      .label.returnLabel { stroke: #8F6F2C; }
       .badge { stroke-width: 1.8; }
-      .badge.callBadge { fill: #eaf4f8; stroke: #3f7d9c; }
-      .badge.sqlBadge { fill: #fff4df; stroke: #a2743d; }
-      .badge.stateBadge { fill: #eef7f0; stroke: #6e8f4f; }
-      .badge.errorBadge { fill: #fff0f0; stroke: #b55f5f; }
-      .badge.returnBadge { fill: #fff7e8; stroke: #9b7d54; }
+      .badge.callBadge { fill: #102A43; stroke: #78AFFF; }
+      .badge.sqlBadge { fill: #332812; stroke: #F2B84B; }
+      .badge.stateBadge { fill: #142C22; stroke: #6FD28C; }
+      .badge.errorBadge { fill: #351923; stroke: #FF7F95; }
+      .badge.returnBadge { fill: #332812; stroke: #EFC46B; }
       .badgeText { font-family: "goorm Sans Code","goorm Sans"; font-size: 12px; font-weight: 700; }
-      .msg.callText, .badgeText.callText { fill: #2f6f8e; }
-      .msg.sqlText, .badgeText.sqlText { fill: #855a29; }
-      .msg.stateText, .badgeText.stateText { fill: #55783f; }
-      .msg.errorText, .badgeText.errorText { fill: #994b4b; }
-      .msg.returnText, .badgeText.returnText { fill: #7f6038; }
+      .msg.callText, .badgeText.callText { fill: #9DC7FF; }
+      .msg.sqlText, .badgeText.sqlText { fill: #F5C76A; }
+      .msg.stateText, .badgeText.stateText { fill: #8DE3A6; }
+      .msg.errorText, .badgeText.errorText { fill: #FF9BAD; }
+      .msg.returnText, .badgeText.returnText { fill: #F5CF7A; }
     </style>
     <marker id="arrowCall" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="16" viewBox="0 0 10 10" refX="9" refY="5" orient="auto">
-      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#3f7d9c" stroke="#3f7d9c" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/>
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#78AFFF" stroke="#78AFFF" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/>
     </marker>
     <marker id="arrowSql" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="16" viewBox="0 0 10 10" refX="9" refY="5" orient="auto">
-      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#a2743d" stroke="#a2743d" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/>
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#F2B84B" stroke="#F2B84B" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/>
     </marker>
     <marker id="arrowState" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="16" viewBox="0 0 10 10" refX="9" refY="5" orient="auto">
-      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#6e8f4f" stroke="#6e8f4f" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/>
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#6FD28C" stroke="#6FD28C" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/>
     </marker>
     <marker id="arrowError" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="16" viewBox="0 0 10 10" refX="9" refY="5" orient="auto">
-      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#b55f5f" stroke="#b55f5f" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/>
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#FF7F95" stroke="#FF7F95" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/>
     </marker>
     <marker id="arrowReturn" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="16" viewBox="0 0 10 10" refX="9" refY="5" orient="auto">
-      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#9b7d54" stroke="#9b7d54" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/>
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#EFC46B" stroke="#EFC46B" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/>
     </marker>
   </defs>
 
   <rect x="24" y="24" width="1552" height="1032" rx="20" class="frame"/>
-  <text x="800" y="78" text-anchor="middle" class="title">BigQuery dry-run query 검증</text>
-  <text x="800" y="108" text-anchor="middle" class="subtitle">Exposed SQL을 local에서 생성하고 dryRun=true로 매핑한 뒤 mocked BigQuery REST client로 검증합니다.</text>
+  <text x="800" y="78" text-anchor="middle" class="title">BigQuery 드라이런 쿼리 검증</text>
+  <text x="800" y="108" text-anchor="middle" class="subtitle">Exposed SQL을 로컬에서 생성하고 dryRun=true로 매핑한 뒤 모의 BigQuery REST 클라이언트로 검증합니다.</text>
 
   <g id="participants">
     <rect x="60" y="150" width="170" height="68" rx="10" class="header"/>
-    <text x="145" y="179" text-anchor="middle" class="participant">Workshop test</text>
+    <text x="145" y="179" text-anchor="middle" class="participant">워크숍 테스트</text>
     <text x="145" y="201" text-anchor="middle" class="role">JUnit + MockK</text>
 
     <rect x="300" y="150" width="190" height="68" rx="10" class="header"/>
-    <text x="395" y="179" text-anchor="middle" class="participant">Exposed query</text>
+    <text x="395" y="179" text-anchor="middle" class="participant">Exposed 쿼리</text>
     <text x="395" y="201" text-anchor="middle" class="role">read-model DSL</text>
 
     <rect x="560" y="150" width="170" height="68" rx="10" class="header"/>
-    <text x="645" y="179" text-anchor="middle" class="participant">H2 dialect</text>
-    <text x="645" y="201" text-anchor="middle" class="role">SQL generation</text>
+    <text x="645" y="179" text-anchor="middle" class="participant">H2 다이얼렉트</text>
+    <text x="645" y="201" text-anchor="middle" class="role">SQL 생성</text>
 
     <rect x="810" y="150" width="230" height="68" rx="10" class="header"/>
     <text x="925" y="179" text-anchor="middle" class="participant">BigQueryContext</text>
@@ -84,8 +84,8 @@
     <text x="1190" y="201" text-anchor="middle" class="role">Bigquery.Jobs</text>
 
     <rect x="1370" y="150" width="170" height="68" rx="10" class="header"/>
-    <text x="1455" y="179" text-anchor="middle" class="participant">Assertion</text>
-    <text x="1455" y="201" text-anchor="middle" class="role">request + error</text>
+    <text x="1455" y="179" text-anchor="middle" class="participant">검증</text>
+    <text x="1455" y="201" text-anchor="middle" class="role">요청과 오류</text>
   </g>
 
   <line x1="145" y1="218" x2="145" y2="928" class="lifeline"/>
@@ -113,12 +113,12 @@
 
   <rect x="662" y="426" width="372" height="34" rx="17" class="label sqlLabel"/>
   <circle cx="686" cy="443" r="13" class="badge sqlBadge"/><text x="686" y="448" text-anchor="middle" class="badgeText sqlText">3</text>
-  <text x="710" y="448" class="msg sqlText">Exposed query에서 SQL 준비</text>
+  <text x="710" y="448" class="msg sqlText">Exposed 쿼리에서 SQL 준비</text>
   <path d="M 918 490 L 652 490" class="sql"/>
 
   <rect x="584" y="520" width="318" height="34" rx="17" class="label returnLabel"/>
   <circle cx="608" cy="537" r="13" class="badge returnBadge"/><text x="608" y="542" text-anchor="middle" class="badgeText returnText">4</text>
-  <text x="632" y="542" class="msg returnText">standard SQL만 허용</text>
+  <text x="632" y="542" class="msg returnText">표준 SQL만 허용</text>
   <path d="M 652 570 L 918 570" class="return"/>
 
   <rect x="872" y="600" width="420" height="34" rx="17" class="label stateLabel"/>
@@ -127,20 +127,20 @@
   <path d="M 932 670 L 1183 670" class="state"/>
 
   <rect x="790" y="690" width="728" height="248" rx="14" class="alt"/>
-  <rect x="820" y="708" width="248" height="30" rx="15" fill="#f8f1e6" stroke="#a2743d" stroke-width="1.8"/>
-  <text x="842" y="728" class="note">alt mocked dry-run 결과</text>
+  <rect x="820" y="708" width="248" height="30" rx="15" fill="#2D2415" stroke="#F2B84B" stroke-width="1.8"/>
+  <text x="842" y="728" class="note">모의 드라이런 결과 분기</text>
 
   <rect x="958" y="754" width="388" height="34" rx="17" class="label errorLabel"/>
   <circle cx="982" cy="771" r="13" class="badge errorBadge"/><text x="982" y="776" text-anchor="middle" class="badgeText errorText">6</text>
-  <text x="1006" y="776" class="msg errorText">success response 또는 error</text>
+  <text x="1006" y="776" class="msg errorText">성공 응답 또는 오류</text>
   <path d="M 1183 804 L 932 804" class="error"/>
 
   <rect x="952" y="846" width="456" height="34" rx="17" class="label stateLabel"/>
   <circle cx="976" cy="863" r="13" class="badge stateBadge"/><text x="976" y="868" text-anchor="middle" class="badgeText stateText">7</text>
-  <text x="1000" y="868" class="msg stateText">request mapping과 exception path 검증</text>
+  <text x="1000" y="868" class="msg stateText">요청 매핑과 예외 경로 검증</text>
   <path d="M 932 900 H1190 Q1200 900 1200 910 H1448" class="state"/>
 
-  <rect x="98" y="972" width="1404" height="44" rx="12" fill="#ffffff" stroke="#ccd7da" stroke-width="2"/>
-  <text x="118" y="1000" class="note">Default path는 local에 머뭅니다. ADC, service-account file, token, endpoint override, network call, billable BigQuery 실행이 없습니다.</text>
+  <rect x="98" y="972" width="1404" height="44" rx="12" fill="#0F1E33" stroke="#284766" stroke-width="2"/>
+  <text x="118" y="1000" class="note">기본 경로는 로컬에 머뭅니다. ADC, 서비스 계정 파일, 토큰, 엔드포인트 재정의, 네트워크 호출, 과금되는 BigQuery 실행이 없습니다.</text>
   <text x="800" y="1032" text-anchor="middle" class="footer">github.com/bluetape4k/exposed-workshop - 13-ecosystem-integrations/01-bigquery-dry-run</text>
 </svg>

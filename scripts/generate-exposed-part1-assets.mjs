@@ -189,6 +189,51 @@ function normalizeLocaleFonts(svg, locale) {
 
 function applyDarkTheme(svg) {
   return svg
+    .replaceAll('#fbfcf8', '#0B1220')
+    .replaceAll('#ffffff', '#0F1E33')
+    .replaceAll('#f8f1e6', '#2D2415')
+    .replaceAll('#eef7f5', '#102B2D')
+    .replaceAll('#f3ecdf', '#2D2415')
+    .replaceAll('#eaf4f8', '#102A43')
+    .replaceAll('#fff4df', '#332812')
+    .replaceAll('#eef7f0', '#142C22')
+    .replaceAll('#fff0f0', '#351923')
+    .replaceAll('#fff7e8', '#332812')
+    .replaceAll('#263238', '#F5F9FF')
+    .replaceAll('#1f3138', '#F5F9FF')
+    .replaceAll('#223238', '#F5F9FF')
+    .replaceAll('#34454d', '#D7E3F5')
+    .replaceAll('#36464f', '#D7E3F5')
+    .replaceAll('#3b4d55', '#D7E3F5')
+    .replaceAll('#546a73', '#B8C7DD')
+    .replaceAll('#5a6b72', '#B8C7DD')
+    .replaceAll('#60727d', '#8EA6C4')
+    .replaceAll('#41545d', '#284766')
+    .replaceAll('#40545d', '#284766')
+    .replaceAll('#546e7a', '#365979')
+    .replaceAll('#9aaab1', '#55718F')
+    .replaceAll('#ccd7da', '#284766')
+    .replaceAll('#d7e0e4', '#365979')
+    .replaceAll('#9cc2d1', '#4F83B0')
+    .replaceAll('#d0b078', '#8F6F2C')
+    .replaceAll('#b6c9a4', '#4D7B5E')
+    .replaceAll('#d99a9a', '#9F5365')
+    .replaceAll('#c8b38f', '#8F6F2C')
+    .replaceAll('#3f7d9c', '#78AFFF')
+    .replaceAll('#a2743d', '#F2B84B')
+    .replaceAll('#6e8f4f', '#6FD28C')
+    .replaceAll('#b55f5f', '#FF7F95')
+    .replaceAll('#9b7d54', '#EFC46B')
+    .replaceAll('#78909c', '#78AFFF')
+    .replaceAll('#2f6f8e', '#9DC7FF')
+    .replaceAll('#855a29', '#F5C76A')
+    .replaceAll('#55783f', '#8DE3A6')
+    .replaceAll('#994b4b', '#FF9BAD')
+    .replaceAll('#7f6038', '#F5CF7A')
+    .replaceAll('#6c9f96', '#4ECBC4')
+    .replaceAll('#4f86c6', '#78AFFF')
+    .replaceAll('#5b8e51', '#6FD28C')
+    .replaceAll('#1A1A1A', '#F5F9FF')
     .replaceAll('#F6F9FC', '#0B1220')
     .replaceAll('#F7F9FC', '#0B1220')
     .replaceAll('#FFFFFF', '#0F1E33')
@@ -536,24 +581,21 @@ groupedBarChart('bluetape4k-exposed-part3-batch-comparison-chart', 'Large Batch 
   { label: 'PostgreSQL pool=60', values: [0.951, 0.193], displays: ['0.951 ops/s', '0.193 ops/s'] },
 ], 1.7, 'ops/s', 1260, 700, ['JDBC + VT', 'R2DBC']);
 
-barChart('bluetape4k-exposed-part5-cache-read-chart', 'Cache Read Throughput', 'Spring Boot cache benchmark, warmed findById, representative ops/sec.', [
-  { label: 'No Cache', value: 8200, display: '~8,200', color: '#8FA1B3' },
-  { label: 'Caffeine', value: 490000, display: '~490,000', color: '#75A9E8' },
-  { label: 'Redis Cache', value: 43000, display: '~43,000', color: '#69B888' },
-  { label: 'Near Cache', value: 465000, display: '~465,000', color: '#D9AA4D' },
-  { label: 'Read-Through', value: 42000, display: '~42,000', color: '#55B5AF' },
-  { label: 'Write-Through', value: 41000, display: '~41,000', color: '#8A72D6' },
-  { label: 'Write-Behind', value: 42000, display: '~42,000', color: '#DB7890' },
-], 500000, 'ops/s', 1280, 800);
+barChart('bluetape4k-exposed-part5-cache-read-chart', 'Cache Read Throughput', '2026-07-27 Spring Boot cache benchmark, warmed findById, ops/sec.', [
+  { label: 'No Cache', value: 320764.485, display: '320,764', color: '#8FA1B3' },
+  { label: 'Caffeine', value: 3058547.710, display: '3,058,548', color: '#75A9E8' },
+  { label: 'Redis Cache', value: 4030.965, display: '4,031', color: '#69B888' },
+  { label: 'Near Cache', value: 3287505.143, display: '3,287,505', color: '#D9AA4D' },
+  { label: 'Read-Through', value: 4090.132, display: '4,090', color: '#55B5AF' },
+  { label: 'Write-Through', value: 4099.116, display: '4,099', color: '#8A72D6' },
+  { label: 'Write-Behind', value: 4194.350, display: '4,194', color: '#DB7890' },
+], 3400000, 'ops/s', 1280, 800);
 
-barChart('bluetape4k-exposed-part5-cache-write-chart', 'Cache Write Throughput', 'Spring Boot cache benchmark, save path, representative ops/sec.', [
-  { label: 'No Cache', value: 8200, display: '~8,200', color: '#8FA1B3' },
-  { label: 'Caffeine', value: 8100, display: '~8,100', color: '#75A9E8' },
-  { label: 'Redis Cache', value: 7300, display: '~7,300', color: '#69B888' },
-  { label: 'Near Cache', value: 7200, display: '~7,200', color: '#D9AA4D' },
-  { label: 'Write-Through', value: 5600, display: '~5,600', color: '#8A72D6' },
-  { label: 'Write-Behind', value: 24000, display: '~24,000', color: '#DB7890' },
-], 25000, 'ops/s');
+barChart('bluetape4k-exposed-part5-cache-write-chart', 'Cache Write Completion Boundaries', '2026-07-27 benchmark. Compare only operations with the same completion boundary.', [
+  { label: 'Write-Behind accepted', value: 3551.936, display: '3,552', color: '#DB7890' },
+  { label: 'Write-Through persisted', value: 3034.323, display: '3,034', color: '#8A72D6' },
+  { label: 'Write-Behind drained', value: 0.988, display: '0.988', color: '#69B888' },
+], 3800, 'ops/s');
 
 dot('bluetape4k-exposed-part2-jdbc-repository-flow', `
 digraph {
@@ -767,86 +809,86 @@ const localeTranslations = {
   },
   'bluetape4k-exposed-part5-cache-read-chart': {
     'Cache Read Throughput': '캐시 읽기 처리량',
-    'Spring Boot cache benchmark, warmed findById, representative ops/sec.': 'Spring Boot 캐시 벤치마크에서 예열된 findById의 대표 ops/sec입니다.',
+    '2026-07-27 Spring Boot cache benchmark, warmed findById, ops/sec.': '2026-07-27 Spring Boot 캐시 벤치마크에서 예열된 findById의 ops/sec입니다.',
     'No Cache': '캐시 미사용',
     'Redis Cache': 'Redis 캐시',
     'Near Cache': '근접 캐시',
   },
   'bluetape4k-exposed-part5-cache-write-chart': {
-    'Cache Write Throughput': '캐시 쓰기 처리량',
-    'Spring Boot cache benchmark, save path, representative ops/sec.': 'Spring Boot 캐시 벤치마크에서 저장 경로의 대표 ops/sec입니다.',
-    'No Cache': '캐시 미사용',
-    'Redis Cache': 'Redis 캐시',
-    'Near Cache': '근접 캐시',
+    'Cache Write Completion Boundaries': '캐시 쓰기의 완료 경계',
+    '2026-07-27 benchmark. Compare only operations with the same completion boundary.': '2026-07-27 벤치마크입니다. 완료 경계가 같은 연산끼리만 비교해야 합니다.',
+    'Write-Behind accepted': 'Write-Behind 요청 수락',
+    'Write-Through persisted': 'Write-Through DB 반영',
+    'Write-Behind drained': 'Write-Behind 큐 비우기',
   },
   'bluetape4k-exposed-part6-bigquery-dry-run-flow': {
-    'BigQuery Dry-Run Query Validation': 'BigQuery dry-run query 검증',
-    'Exposed SQL is generated locally, mapped to dryRun=true, and verified through a mocked BigQuery REST client.': 'Exposed SQL을 local에서 생성하고 dryRun=true로 매핑한 뒤 mocked BigQuery REST client로 검증합니다.',
-    'Workshop Test': 'Workshop test',
-    'Exposed Query': 'Exposed query',
-    'H2 Dialect': 'H2 dialect',
-    'SQL generation': 'SQL generation',
-    'Assertions': 'Assertion',
-    'request + errors': 'request + error',
-    'prepare SQL from Exposed Query': 'Exposed Query에서 SQL 준비',
-    'standard SQL only': 'standard SQL만 허용',
-    'alt mocked dry-run result': 'alt mocked dry-run 결과',
-    'success response or errors': 'success response 또는 error',
-    'assert request mapping and exception path': 'request mapping과 exception path 검증',
-    'Default path stays local: no ADC, service-account files, tokens, endpoint overrides, network calls, or billable BigQuery execution.': 'Default path는 local에 머뭅니다. ADC, service-account file, token, endpoint override, network call, billable BigQuery 실행이 없습니다.',
+    'BigQuery Dry-Run Query Validation': 'BigQuery 드라이런 쿼리 검증',
+    'Exposed SQL is generated locally, mapped to dryRun=true, and verified through a mocked BigQuery REST client.': 'Exposed SQL을 로컬에서 생성하고 dryRun=true로 매핑한 뒤 모의 BigQuery REST 클라이언트로 검증합니다.',
+    'Workshop Test': '워크숍 테스트',
+    'Exposed Query': 'Exposed 쿼리',
+    'H2 Dialect': 'H2 다이얼렉트',
+    'SQL generation': 'SQL 생성',
+    'Assertions': '검증',
+    'request + errors': '요청과 오류',
+    'prepare SQL from Exposed Query': 'Exposed 쿼리에서 SQL 준비',
+    'standard SQL only': '표준 SQL만 허용',
+    'alt mocked dry-run result': '모의 드라이런 결과 분기',
+    'success response or errors': '성공 응답 또는 오류',
+    'assert request mapping and exception path': '요청 매핑과 예외 경로 검증',
+    'Default path stays local: no ADC, service-account files, tokens, endpoint overrides, network calls, or billable BigQuery execution.': '기본 경로는 로컬에 머뭅니다. ADC, 서비스 계정 파일, 토큰, 엔드포인트 재정의, 네트워크 호출, 과금되는 BigQuery 실행이 없습니다.',
   },
   'bluetape4k-exposed-part6-trino-session-sequence': {
-    'Trino Session Options and Pushdown Inspection': 'Trino session option과 pushdown 점검',
-    'Typed options are validated locally, SQL is generated with Exposed, and Trino EXPLAIN is prepared without network access.': 'Typed option을 local에서 검증하고 Exposed로 SQL을 만든 뒤 network 없이 Trino EXPLAIN 요청을 준비합니다.',
-    'Workshop Test': 'Workshop test',
-    'JUnit local path': 'JUnit local path',
-    'Trino Profile': 'Trino profile',
-    'validated inputs': 'validated input',
-    'Trino Options': 'Trino option',
-    'H2 Dialect': 'H2 dialect',
-    'SQL generation': 'SQL generation',
-    'request shape': 'request shape',
-    'validate catalog, schema, source, tags, session properties': 'catalog, schema, source, tag, session property 검증',
-    'prepareSQL in local H2 transaction': 'local H2 transaction에서 prepareSQL',
-    'SELECT with predicate, order, top-N': 'predicate, order, top-N이 있는 SELECT',
-    'request-shape only': 'request shape만 확인',
-    'Default path stays local: no Trino endpoint, credentials, network calls, live connector, or pushdown result assertion.': 'Default path는 local에 머뭅니다. Trino endpoint, credential, network call, live connector, pushdown result assertion이 없습니다.',
+    'Trino Session Options and Pushdown Inspection': 'Trino 세션 옵션과 푸시다운 점검',
+    'Typed options are validated locally, SQL is generated with Exposed, and Trino EXPLAIN is prepared without network access.': '타입이 있는 옵션을 로컬에서 검증하고 Exposed로 SQL을 만든 뒤 네트워크 없이 Trino EXPLAIN 요청을 준비합니다.',
+    'Workshop Test': '워크숍 테스트',
+    'JUnit local path': 'JUnit 로컬 경로',
+    'Trino Profile': 'Trino 프로필',
+    'validated inputs': '검증된 입력',
+    'Trino Options': 'Trino 옵션',
+    'H2 Dialect': 'H2 다이얼렉트',
+    'SQL generation': 'SQL 생성',
+    'request shape': '요청 형태',
+    'validate catalog, schema, source, tags, session properties': '카탈로그·스키마·소스·태그·세션 속성 검증',
+    'prepareSQL in local H2 transaction': '로컬 H2 트랜잭션에서 prepareSQL',
+    'SELECT with predicate, order, top-N': '조건식·정렬·top-N을 포함한 SELECT',
+    'request-shape only': '요청 형태만 확인',
+    'Default path stays local: no Trino endpoint, credentials, network calls, live connector, or pushdown result assertion.': '기본 경로는 로컬에 머뭅니다. Trino 엔드포인트, 인증 정보, 네트워크 호출, 실제 커넥터, 푸시다운 결과 검증이 없습니다.',
   },
   'bluetape4k-exposed-part6-cockroachdb-retry-sequence': {
-    'CockroachDB Serializable Retry': 'CockroachDB serializable retry',
-    'Whole inventory reservation transactions are retried only for CockroachDB restart-transaction errors.': 'CockroachDB restart-transaction error일 때만 전체 inventory reservation transaction을 재시도합니다.',
-    'Workshop Test': 'Workshop test',
-    'Inventory Service': 'Inventory service',
-    'application boundary': 'application boundary',
-    'Retry Helper': 'Retry helper',
-    'one attempt': 'one attempt',
-    'Database backed by PostgreSQL JDBC': 'PostgreSQL JDBC 기반 Database',
-    'bootstrap inventory and ledger schema': 'inventory와 ledger schema bootstrap',
-    'begin SERIALIZABLE attempt, maxAttempts=1': 'SERIALIZABLE attempt 시작, maxAttempts=1',
-    'read inventory, update stock, insert ledger': 'inventory 읽기, stock update, ledger insert',
-    'retryable conflict path': 'retryable conflict path',
-    'helper classifies CockroachDB retry signature': 'helper가 CockroachDB retry signature 분류',
-    'rerun the whole reservation transaction': '전체 reservation transaction 재실행',
-    'InventorySnapshot plus one committed ledger row': 'InventorySnapshot과 committed ledger row 1개',
-    'Non-retryable SQLSTATE values, cancellation, and interruption stay outside the retry boundary and are rethrown.': 'Non-retryable SQLSTATE, cancellation, interruption은 retry boundary 밖에서 그대로 rethrow됩니다.',
+    'CockroachDB Serializable Retry': 'CockroachDB 직렬화 충돌 재시도',
+    'Whole inventory reservation transactions are retried only for CockroachDB restart-transaction errors.': 'CockroachDB 트랜잭션 재시작 오류일 때만 전체 재고 예약 트랜잭션을 재시도합니다.',
+    'Workshop Test': '워크숍 테스트',
+    'Inventory Service': '재고 서비스',
+    'application boundary': '애플리케이션 경계',
+    'Retry Helper': '재시도 도우미',
+    'one attempt': '단일 시도',
+    'Database backed by PostgreSQL JDBC': 'PostgreSQL JDBC 기반 데이터베이스',
+    'bootstrap inventory and ledger schema': '재고·원장 스키마 초기화',
+    'begin SERIALIZABLE attempt, maxAttempts=1': 'SERIALIZABLE 시도 시작, maxAttempts=1',
+    'read inventory, update stock, insert ledger': '재고 조회·수량 갱신·원장 저장',
+    'retryable conflict path': '재시도 가능한 충돌 경로',
+    'helper classifies CockroachDB retry signature': '도우미가 CockroachDB 재시도 신호 분류',
+    'rerun the whole reservation transaction': '전체 예약 트랜잭션 재실행',
+    'InventorySnapshot plus one committed ledger row': 'InventorySnapshot과 커밋된 원장 행 1개',
+    'Non-retryable SQLSTATE values, cancellation, and interruption stay outside the retry boundary and are rethrown.': '재시도할 수 없는 SQLSTATE, 취소, 인터럽트는 재시도 경계 밖에서 그대로 다시 던집니다.',
   },
   'bluetape4k-exposed-part6-duckdb-architecture': {
-    'DuckDB Embedded Analytics': 'DuckDB embedded analytics',
-    'A kept-open DuckDB session gives Exposed duplicated connections for local analytical transactions.': '열어 둔 DuckDB session이 Exposed에 local analytical transaction용 duplicated connection을 제공합니다.',
-    'Runtime ownership boundary': 'Runtime ownership boundary',
-    'No warehouse endpoint, container, credential, or network hop sits on the default path.': 'Default path에는 warehouse endpoint, container, credential, network hop이 없습니다.',
-    'Application Code': 'Application code',
-    'Exposed table and query DSL': 'Exposed table과 query DSL',
-    'suspend functions for callers': 'caller용 suspend function',
-    'DuckDB Session': 'DuckDB session',
-    'duplicate tx connections': 'duplicate tx connection',
-    'DuckDB File': 'DuckDB file',
-    'embedded JDBC engine': 'embedded JDBC engine',
-    'Analytics Result': 'Analytics result',
-    'DailyCategorySales rows': 'DailyCategorySales row',
-    'Flow consumption boundary': 'Flow consumption boundary',
-    'aggregate rows': 'aggregate row',
-    'Default validation stays local: the file-backed DuckDB session preserves state across Exposed transactions without remote-service setup.': 'Default validation은 local에 머뭅니다. file-backed DuckDB session이 remote-service setup 없이 Exposed transaction 사이의 상태를 보존합니다.',
+    'DuckDB Embedded Analytics': 'DuckDB 내장 분석',
+    'A kept-open DuckDB session gives Exposed duplicated connections for local analytical transactions.': '열어 둔 DuckDB 세션이 Exposed에 로컬 분석 트랜잭션용 복제 연결을 제공합니다.',
+    'Runtime ownership boundary': '런타임 소유 경계',
+    'No warehouse endpoint, container, credential, or network hop sits on the default path.': '기본 경로에는 웨어하우스 엔드포인트, 컨테이너, 인증 정보, 네트워크 구간이 없습니다.',
+    'Application Code': '애플리케이션 코드',
+    'Exposed table and query DSL': 'Exposed 테이블과 쿼리 DSL',
+    'suspend functions for callers': '호출자용 suspend 함수',
+    'DuckDB Session': 'DuckDB 세션',
+    'duplicate tx connections': '트랜잭션별 복제 연결',
+    'DuckDB File': 'DuckDB 파일',
+    'embedded JDBC engine': '내장 JDBC 엔진',
+    'Analytics Result': '분석 결과',
+    'DailyCategorySales rows': 'DailyCategorySales 행',
+    'Flow consumption boundary': 'Flow 소비 경계',
+    'aggregate rows': '집계 결과 행',
+    'Default validation stays local: the file-backed DuckDB session preserves state across Exposed transactions without remote-service setup.': '기본 검증은 로컬에 머뭅니다. 파일 기반 DuckDB 세션이 원격 서비스 설정 없이 Exposed 트랜잭션 사이의 상태를 보존합니다.',
   },
 };
 

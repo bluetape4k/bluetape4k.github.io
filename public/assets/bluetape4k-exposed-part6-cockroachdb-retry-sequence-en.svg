@@ -4,54 +4,54 @@
   <defs>
     <style>
       text { letter-spacing: 0; }
-      .title { font-family: "Architects Daughter"; font-size: 40px; font-weight: 400; fill: #263238; }
-      .subtitle, .msg, .note, .footer, .role { font-family: "Comic Mono"; fill: #36464f; }
+      .title { font-family: "Architects Daughter"; font-size: 40px; font-weight: 400; fill: #F5F9FF; }
+      .subtitle, .msg, .note, .footer, .role { font-family: "Comic Mono"; fill: #D7E3F5; }
       .subtitle { font-size: 18px; }
-      .participant { font-family: "Architects Daughter"; font-size: 19px; font-weight: 400; fill: #1f3138; }
-      .role { font-size: 13px; fill: #546a73; }
+      .participant { font-family: "Architects Daughter"; font-size: 19px; font-weight: 400; fill: #F5F9FF; }
+      .role { font-size: 13px; fill: #B8C7DD; }
       .msg { font-size: 14px; }
       .note { font-size: 13px; }
-      .footer { font-size: 14px; fill: #60727d; }
-      .frame { fill: #fbfcf8; stroke: #41545d; stroke-width: 3; }
-      .header { fill: #ffffff; stroke: #546e7a; stroke-width: 2; }
-      .lifeline { stroke: #9aaab1; stroke-width: 2; stroke-dasharray: 7 8; }
-      .activation { fill: #f3ecdf; stroke: #8f784e; stroke-width: 1.5; }
-      .call { fill: none; stroke: #3f7d9c; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowCall); }
-      .sql { fill: none; stroke: #a2743d; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowSql); }
-      .state { fill: none; stroke: #6e8f4f; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowState); }
-      .return { fill: none; stroke: #9b7d54; stroke-width: 2.5; stroke-dasharray: 8 6; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowReturn); }
+      .footer { font-size: 14px; fill: #8EA6C4; }
+      .frame { fill: #0B1220; stroke: #284766; stroke-width: 3; }
+      .header { fill: #0F1E33; stroke: #365979; stroke-width: 2; }
+      .lifeline { stroke: #55718F; stroke-width: 2; stroke-dasharray: 7 8; }
+      .activation { fill: #2D2415; stroke: #8f784e; stroke-width: 1.5; }
+      .call { fill: none; stroke: #78AFFF; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowCall); }
+      .sql { fill: none; stroke: #F2B84B; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowSql); }
+      .state { fill: none; stroke: #6FD28C; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowState); }
+      .return { fill: none; stroke: #EFC46B; stroke-width: 2.5; stroke-dasharray: 8 6; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowReturn); }
       .error { fill: none; stroke: #b45b5b; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowError); }
-      .alt { fill: none; stroke: #78909c; stroke-width: 3; stroke-dasharray: 12 7; }
-      .label { fill: #ffffff; stroke: #d7e0e4; stroke-width: 1.5; }
-      .label.callLabel { stroke: #9cc2d1; }
-      .label.sqlLabel { stroke: #d0b078; }
-      .label.stateLabel { stroke: #b6c9a4; }
-      .label.returnLabel { stroke: #c8b38f; }
+      .alt { fill: none; stroke: #78AFFF; stroke-width: 3; stroke-dasharray: 12 7; }
+      .label { fill: #0F1E33; stroke: #365979; stroke-width: 1.5; }
+      .label.callLabel { stroke: #4F83B0; }
+      .label.sqlLabel { stroke: #8F6F2C; }
+      .label.stateLabel { stroke: #4D7B5E; }
+      .label.returnLabel { stroke: #8F6F2C; }
       .label.errorLabel { stroke: #d7a2a2; }
       .badge { stroke-width: 1.8; }
-      .badge.callBadge { fill: #eaf4f8; stroke: #3f7d9c; }
-      .badge.sqlBadge { fill: #fff4df; stroke: #a2743d; }
-      .badge.stateBadge { fill: #eef7f0; stroke: #6e8f4f; }
-      .badge.returnBadge { fill: #fff7e8; stroke: #9b7d54; }
-      .badge.errorBadge { fill: #fff0f0; stroke: #b45b5b; }
+      .badge.callBadge { fill: #102A43; stroke: #78AFFF; }
+      .badge.sqlBadge { fill: #332812; stroke: #F2B84B; }
+      .badge.stateBadge { fill: #142C22; stroke: #6FD28C; }
+      .badge.returnBadge { fill: #332812; stroke: #EFC46B; }
+      .badge.errorBadge { fill: #351923; stroke: #b45b5b; }
       .badgeText { font-family: "Comic Mono"; font-size: 12px; font-weight: 700; }
-      .msg.callText, .badgeText.callText { fill: #2f6f8e; }
-      .msg.sqlText, .badgeText.sqlText { fill: #855a29; }
-      .msg.stateText, .badgeText.stateText { fill: #55783f; }
-      .msg.returnText, .badgeText.returnText { fill: #7f6038; }
+      .msg.callText, .badgeText.callText { fill: #9DC7FF; }
+      .msg.sqlText, .badgeText.sqlText { fill: #F5C76A; }
+      .msg.stateText, .badgeText.stateText { fill: #8DE3A6; }
+      .msg.returnText, .badgeText.returnText { fill: #F5CF7A; }
       .msg.errorText, .badgeText.errorText { fill: #934545; }
     </style>
     <marker id="arrowCall" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="16" viewBox="0 0 10 10" refX="9" refY="5" orient="auto">
-      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#3f7d9c" stroke="#3f7d9c" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/>
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#78AFFF" stroke="#78AFFF" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/>
     </marker>
     <marker id="arrowSql" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="16" viewBox="0 0 10 10" refX="9" refY="5" orient="auto">
-      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#a2743d" stroke="#a2743d" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/>
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#F2B84B" stroke="#F2B84B" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/>
     </marker>
     <marker id="arrowState" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="16" viewBox="0 0 10 10" refX="9" refY="5" orient="auto">
-      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#6e8f4f" stroke="#6e8f4f" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/>
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#6FD28C" stroke="#6FD28C" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/>
     </marker>
     <marker id="arrowReturn" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="16" viewBox="0 0 10 10" refX="9" refY="5" orient="auto">
-      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#9b7d54" stroke="#9b7d54" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/>
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#EFC46B" stroke="#EFC46B" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/>
     </marker>
     <marker id="arrowError" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="16" viewBox="0 0 10 10" refX="9" refY="5" orient="auto">
       <path d="M 0 0 L 10 5 L 0 10 Z" fill="#b45b5b" stroke="#b45b5b" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/>
@@ -132,7 +132,7 @@
   <path d="M 1242 680 L 1453 680" class="sql" data-connector="connector"/>
 
   <rect x="910" y="718" width="588" height="134" rx="14" class="alt"/>
-  <rect x="936" y="724" width="268" height="30" rx="15" fill="#fff0f0" stroke="#b45b5b" stroke-width="1.8"/>
+  <rect x="936" y="724" width="268" height="30" rx="15" fill="#351923" stroke="#b45b5b" stroke-width="1.8"/>
   <text x="960" y="744" class="note">retryable conflict path</text>
 
   <rect x="1014" y="770" width="420" height="34" rx="17" class="label errorLabel"/>
@@ -156,7 +156,7 @@
   <path d="M 968 1092 L 696 1092" class="return" data-connector="connector"/>
   <path d="M 682 1162 L 145 1162" class="return" data-connector="connector"/>
 
-  <rect x="98" y="1230" width="1404" height="44" rx="12" fill="#ffffff" stroke="#ccd7da" stroke-width="2"/>
+  <rect x="98" y="1230" width="1404" height="44" rx="12" fill="#0F1E33" stroke="#284766" stroke-width="2"/>
   <text x="118" y="1258" class="note">Non-retryable SQLSTATE values, cancellation, and interruption stay outside the retry boundary and are rethrown.</text>
   <text x="800" y="1306" text-anchor="middle" class="footer">github.com/bluetape4k/exposed-workshop - 13-ecosystem-integrations/03-cockroachdb-retry</text>
 </svg>

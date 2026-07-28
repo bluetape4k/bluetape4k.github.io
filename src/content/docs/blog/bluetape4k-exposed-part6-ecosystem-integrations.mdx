@@ -40,7 +40,7 @@ should test the contract it owns.
 The BigQuery example does not execute a warehouse query. It turns an Exposed query into a BigQuery `jobs.query` request
 and checks that `dryRun=true` plus the query options are mapped correctly.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="BigQuery dry-run request validation flow">
   <img src="/assets/bluetape4k-exposed-part6-bigquery-dry-run-flow-en.png" alt="BigQuery dry-run flow from Exposed query through dry-run request to mocked BigQuery REST response" loading="lazy" />
   <figcaption>The BigQuery example verifies request shape and options before any billable execution.</figcaption>
 </figure>
@@ -72,7 +72,7 @@ real execution. Accidentally learning that lesson from a live warehouse bill is 
 The Trino example also avoids a live coordinator. Instead, it turns an application-facing profile into
 `TrinoConnectionOptions` and wraps generated SQL in an `EXPLAIN` request shape.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-sequence" data-diagram-title="Trino session options and EXPLAIN request preparation">
   <img src="/assets/bluetape4k-exposed-part6-trino-session-sequence-en.png" alt="Trino session options sequence showing validated workshop profile, Exposed SQL generation, and EXPLAIN request preparation" loading="lazy" />
   <figcaption>For Trino, catalog, schema, source, tags, and session properties are owned first as application configuration.</figcaption>
 </figure>
@@ -112,7 +112,7 @@ boundary. A serializable conflict can return SQLSTATE `40001` with a `restart tr
 rerunning only the last `UPDATE` is wrong. The read, validation, update, and ledger insert all need to be retried as one
 transaction.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-sequence" data-diagram-title="CockroachDB whole-transaction retry boundary">
   <img src="/assets/bluetape4k-exposed-part6-cockroachdb-retry-sequence-en.png" alt="CockroachDB serializable retry sequence showing application service, retry helper, Exposed transaction attempt, CockroachDB, and ledger state" loading="lazy" />
   <figcaption>The CockroachDB retry boundary wraps the whole Exposed transaction block.</figcaption>
 </figure>
@@ -154,7 +154,7 @@ retry unit belongs. Once every service starts making that judgment alone, the co
 DuckDB is different from the other three. BigQuery and Trino show remote platform boundaries, and CockroachDB shows a
 distributed SQL transaction boundary. DuckDB opens a small analytics engine inside the application process.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="DuckDB file-backed embedded analytics boundary">
   <img src="/assets/bluetape4k-exposed-part6-duckdb-architecture-en.png" alt="DuckDB embedded analytics architecture with application event fixture, Exposed DSL, DuckDB analytics session, file-backed database, and coroutine Flow boundary" loading="lazy" />
   <figcaption>The DuckDB example runs aggregate SQL against a file-backed database without a server process.</figcaption>
 </figure>
@@ -245,10 +245,10 @@ because small examples are where those boundaries are easiest to see.
 - CockroachDB retry: [03-cockroachdb-retry/README.md](https://github.com/bluetape4k/exposed-workshop/blob/develop/13-ecosystem-integrations/03-cockroachdb-retry/README.md)
 - DuckDB embedded analytics: [09-duckdb-embedded-analytics/README.md](https://github.com/bluetape4k/exposed-workshop/blob/develop/13-ecosystem-integrations/09-duckdb-embedded-analytics/README.md)
 - DuckDB workshop source: [DuckDbEmbeddedAnalyticsWorkshop.kt](https://github.com/bluetape4k/exposed-workshop/blob/develop/13-ecosystem-integrations/09-duckdb-embedded-analytics/src/main/kotlin/exposed/examples/duckdb/analytics/DuckDbEmbeddedAnalyticsWorkshop.kt)
-- BigQuery support: [bluetape4k-exposed/exposed-bigquery](https://github.com/bluetape4k/bluetape4k-exposed/tree/develop/exposed/exposed-bigquery)
-- Trino support: [bluetape4k-exposed/exposed-trino](https://github.com/bluetape4k/bluetape4k-exposed/tree/develop/exposed/exposed-trino)
-- CockroachDB support: [bluetape4k-exposed/exposed-cockroachdb](https://github.com/bluetape4k/bluetape4k-exposed/tree/develop/exposed/exposed-cockroachdb)
-- DuckDB support: [bluetape4k-exposed/exposed-duckdb](https://github.com/bluetape4k/bluetape4k-exposed/tree/develop/exposed/exposed-duckdb)
+- BigQuery support: [exposed/bigquery](https://github.com/bluetape4k/bluetape4k-exposed/tree/develop/exposed/bigquery)
+- Trino support: [exposed/trino](https://github.com/bluetape4k/bluetape4k-exposed/tree/develop/exposed/trino)
+- CockroachDB support: [exposed/cockroachdb](https://github.com/bluetape4k/bluetape4k-exposed/tree/develop/exposed/cockroachdb)
+- DuckDB support: [exposed/duckdb](https://github.com/bluetape4k/bluetape4k-exposed/tree/develop/exposed/duckdb)
 
 ## Series Links
 

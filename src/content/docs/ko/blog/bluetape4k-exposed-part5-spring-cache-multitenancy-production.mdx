@@ -1,53 +1,53 @@
 ---
-title: "Bluetape4k Exposed Part 5: 실전 예제 - 다양한 캐시 전략, 멀티테넌시"
-description: Exposed 위에서 캐시, 멀티테넌시, outbox/idempotency를 얇게 얹어 성능과 운영 기능을 끌어올리는 방법을 설명한다.
+title: "Bluetape4k Exposed Part 5: 실전 예제 - 캐시 전략과 멀티테넌시"
+description: Exposed의 저장소와 트랜잭션 경계에 캐시, 멀티테넌시, 아웃박스, 멱등성을 결합해 성능과 운영 기능을 구현하는 방법을 설명한다.
 sidebar:
   order: -202605311105
 blog:
   date: 2026-05-31T11:05:00+09:00
   image: /assets/bluetape4k-exposed-part5-hero.png
-  imageAlt: 운영 예제 작업대에서 작은 로봇 작업자들이 서비스, 캐시, 메트릭, 데이터 파이프를 연결하는 3D diorama
-  cardDescription: "Exposed repository와 transaction 경계 위에 성능 최적화와 멀티테넌시를 실전 기능으로 얹어 봅니다."
+  imageAlt: 운영 예제 작업대에서 작은 로봇 작업자들이 서비스, 캐시, 메트릭, 데이터 파이프를 연결하는 3D 디오라마
+  cardDescription: "Exposed 저장소와 트랜잭션 경계에 캐시, 멀티테넌시, 아웃박스, 멱등성을 결합하는 방법을 살펴봅니다."
   tags: ["architecture","cache","exposed","idempotency","kotlin","messaging","multitenancy","outbox","performance","persistence","practical-example","spring","transactions"]
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/bluetape4k-exposed-part5-hero.png" alt="운영 예제 작업대에서 작은 로봇 작업자들이 서비스, 캐시, 메트릭, 데이터 파이프를 연결하는 3D diorama" loading="eager" />
-  <figcaption>운영 예제의 목표는 Exposed의 SQL 제어력을 유지하면서 캐시, tenant, outbox를 애플리케이션 기능으로 바로 쓰게 만드는 것입니다.</figcaption>
+  <img src="/assets/bluetape4k-exposed-part5-hero.png" alt="운영 예제 작업대에서 작은 로봇 작업자들이 서비스, 캐시, 메트릭, 데이터 파이프를 연결하는 3D 디오라마" loading="eager" />
+  <figcaption>운영 예제의 목표는 Exposed의 SQL 제어력을 유지하면서 캐시, 테넌트 분리, 아웃박스를 애플리케이션 기능으로 활용하는 것입니다.</figcaption>
 </figure>
 
-<p class="bt4k-post-meta">2026-05-31 · bluetape4k-exposed series · Part 5</p>
+<p class="bt4k-post-meta">2026-05-31 · bluetape4k-exposed 시리즈 · Part 5</p>
 
-시리즈 마지막 글에서는 실전 예제를 보겠습니다. 제가 `bluetape4k-exposed`에서 가장 신경 쓴 부분은 Exposed의
-장점인 SQL DSL과 명시적인 transaction 제어를 유지하면서, 서비스 코드에서 반복되는 운영 기능을 쉽게 붙이는
-것이었습니다. 캐시 전략, 멀티테넌시, outbox/idempotency는 모두 직접 만들 수도 있습니다. 문제는 직접 만들기
-시작하면 repository, service, interceptor, scheduler, metric 코드가 금방 흩어진다는 점입니다.
+이번 글에서는 실전 예제를 살펴봅니다. `bluetape4k-exposed`가 중점을 둔 부분은 Exposed의 장점인 SQL DSL과
+명시적인 트랜잭션 제어를 유지하면서, 서비스 코드에서 반복되는 운영 기능을 쉽게 결합하는 것입니다. 캐시 전략,
+멀티테넌시, 아웃박스, 멱등성은 모두 직접 구현할 수 있습니다. 문제는 구현을 시작하면 저장소, 서비스, 인터셉터,
+스케줄러, 메트릭 코드가 여러 계층에 흩어지기 쉽다는 점입니다.
 
-그래서 저는 이 기능들을 "Exposed를 쓰는 애플리케이션에 자연스럽게 붙일 수 있는 확장"으로 정리했습니다.
-Spring Boot에서는 설정을 줄이고, cache module에서는 read/write 전략을 repository API로 바꾸며, 멀티테넌시
-예제에서는 tenant별 schema/database 전환을 transaction 진입점에 모았습니다. outbox/idempotency도 같은 맥락입니다.
-복잡한 운영 기능을 프레임워크처럼 크게 만들기보다, Exposed transaction 위에 얇게 얹어서 바로 테스트하고
+그래서 이 기능들을 Exposed 애플리케이션에 필요한 만큼 결합할 수 있는 확장으로 정리했습니다. Spring Boot에서는
+반복 설정을 줄이고, 캐시 모듈에서는 읽기/쓰기 전략을 저장소 API로 전환하며, 멀티테넌시 예제에서는 테넌트별
+스키마와 DB 전환을 트랜잭션 진입점에 모았습니다. 아웃박스와 멱등성도 같은 원칙을 따릅니다. 운영 기능을 처음부터
+거대한 프레임워크로 만들기보다 Exposed 트랜잭션에 필요한 기능만 결합해 곧바로 테스트하고
 벤치마크할 수 있게 만드는 것이 목표였습니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part5-production-boundary-ko.png" alt="HTTP request에서 Spring Boot wiring, cache strategy, tenant context, outbox idempotency, repository layer, observability를 거쳐 measured service로 가는 production boundary diagram" loading="lazy" />
-  <figcaption>Spring wiring, cache, tenant context, outbox, observability는 Exposed repository와 transaction 경계를 중심으로 조립됩니다.</figcaption>
+  <img src="/assets/bluetape4k-exposed-part5-production-boundary-ko.png" alt="HTTP 요청이 Spring Boot 구성, 캐시 전략, 테넌트 컨텍스트, 아웃박스와 멱등성, 저장소 계층, 관측성을 거쳐 측정 가능한 서비스로 이어지는 운영 경계 다이어그램" loading="lazy" data-diagram-title="Exposed 운영 기능의 조립 경계" />
+  <figcaption>Spring 구성, 캐시, 테넌트 컨텍스트, 아웃박스, 관측성은 Exposed 저장소와 트랜잭션 경계를 중심으로 조립됩니다.</figcaption>
 </figure>
 
-## Spring Boot 자동 설정
+## Spring Boot 자동 구성
 
-먼저 Spring Boot 자동 설정입니다. 실제 애플리케이션에서는 Exposed `Database`, transaction manager, repository scan,
-Entity wiring을 매번 손으로 맞추게 됩니다. 작은 예제에서는 괜찮지만, 서비스가 늘어나면 같은 설정 코드를 계속 복사하게
-됩니다. 제가 Spring Boot 자동 설정을 넣은 이유는 이 반복을 줄이기 위해서입니다.
+먼저 Spring Boot 자동 구성입니다. 실제 애플리케이션에서는 Exposed `Database`, 트랜잭션 관리자, 저장소 스캔,
+엔티티 연결 구성을 매번 맞춰야 합니다. 작은 예제에서는 문제가 없지만, 서비스가 늘어나면 같은 설정 코드가 반복됩니다.
+Spring Boot 자동 구성은 이 반복을 줄입니다.
 
-| 확장 | 역할 |
+| 모듈 | 역할 |
 |---|---|
-| `exposed-spring-boot-jdbc` | Exposed DAO Entity 기반 Spring Data JDBC repository |
-| `exposed-spring-boot-r2dbc` | Exposed R2DBC DSL 기반 coroutine repository |
+| `exposed-spring-boot-jdbc` | Exposed DAO 엔티티 기반 Spring Data JDBC 저장소 |
+| `exposed-spring-boot-r2dbc` | Exposed R2DBC DSL 기반 코루틴 저장소 |
 | `batch-exposed` | Spring Batch와 Exposed 연동 |
 | `exposed-spring-modulith` | Exposed 기반 Spring Modulith JDBC 이벤트 발행 |
 
-JDBC 쪽은 Spring Data 스타일 repository와 PartTree query를 사용할 수 있게 했습니다.
+JDBC 모듈은 Spring Data 방식의 저장소와 PartTree 쿼리를 지원합니다.
 
 ```kotlin
 interface UserRepository : ExposedJdbcRepository<User, Long> {
@@ -57,7 +57,7 @@ interface UserRepository : ExposedJdbcRepository<User, Long> {
 }
 ```
 
-R2DBC 쪽은 coroutine repository와 `Flow` streaming을 전면에 둔 형태로 만들었습니다.
+R2DBC 모듈은 코루틴 저장소와 `Flow` 스트리밍을 중심으로 구성했습니다.
 
 ```kotlin
 interface UserRepository : ExposedR2dbcRepository<User, Long> {
@@ -66,44 +66,44 @@ interface UserRepository : ExposedR2dbcRepository<User, Long> {
 }
 ```
 
-자동 설정의 목적은 Spring Data처럼 익숙한 사용성을 제공하되, Exposed DSL과 transaction 제어력을 잃지 않는
-것입니다. repository interface는 얇게 유지하고, 실제 쿼리와 transaction 선택은 Exposed의 방식으로 가져갑니다.
-이렇게 하면 service 코드는 Spring Boot 애플리케이션답게 단순해지고, 성능이 중요한 지점에서는 SQL DSL로 바로
+자동 구성의 목적은 Spring Data처럼 익숙한 사용성을 제공하면서 Exposed DSL과 트랜잭션 제어력을 유지하는 것입니다.
+저장소 인터페이스는 얇게 유지하고, 실제 쿼리와 트랜잭션 선택은 Exposed 방식으로 처리합니다. 이렇게 하면 서비스
+코드는 단순해지고, 성능이 중요한 지점에서는 SQL DSL로 바로
 내려갈 수 있습니다.
 
-## 캐시 전략: Cache Aside와 CacheWriteMode를 구분한다
+## 캐시 전략: 캐시 어사이드와 CacheWriteMode 구분
 
-캐시는 Exposed repository 위에 얹었을 때 효과가 가장 분명하게 보입니다. service 코드는 같은 repository API를
-호출하지만, 아래에서는 local cache, Redis, near cache, read-through, write-through, write-behind 전략을 바꿔볼 수
-있습니다. `exposed-cache`에는 Caffeine, Lettuce, Redisson 기반 캐시 repository가 같은 방식으로 동작하도록
+캐시는 Exposed 저장소에 결합했을 때 효과가 가장 분명하게 드러납니다. 서비스 코드는 같은 저장소 API를 호출하지만,
+하위 계층에서는 로컬 캐시, Redis, 니어 캐시, Read-Through, Write-Through, Write-Behind 전략을 선택할 수 있습니다.
+`exposed-cache`에는 Caffeine, Lettuce, Redisson 기반 캐시 저장소가 같은 방식으로 동작하도록
 공통 인터페이스와 설정을 두었습니다.
 
-이 방식의 장점은 단순합니다. 성능을 끌어올리려고 service마다 cache-aside 코드를 복사하지 않아도 됩니다.
-읽기 중심 서비스라면 near cache로 DB와 Redis 왕복을 줄이고, 쓰기 burst가 큰 서비스라면 write-behind로 요청
-처리 시간을 줄이는 식으로 workload에 맞춰 선택할 수 있습니다.
+서비스마다 캐시 어사이드 코드를 복사하지 않고도 캐시 전략을 바꿀 수 있다는 것이 이 방식의 장점입니다. 읽기 중심
+서비스라면 니어 캐시로 DB와 Redis 왕복을 줄이고, 쓰기 요청이 급증하는 서비스라면 Write-Behind로 요청 처리 시간을
+줄이는 식으로 워크로드에 맞는 전략을 선택할 수 있습니다.
 
 | CacheMode | 의미 |
 |---|---|
-| `LOCAL` | Caffeine 같은 인프로세스 캐시. 빠르지만 JVM 간 공유 없음 |
+| `LOCAL` | Caffeine 같은 프로세스 내부 캐시. 빠르지만 JVM 간에는 공유되지 않음 |
 | `REMOTE` | Redis 같은 원격 캐시. 인스턴스 간 공유 |
-| `NEAR_CACHE` | L1 local + L2 Redis. hot read에서 네트워크 왕복 감소 |
+| `NEAR_CACHE` | L1 로컬 캐시 + L2 Redis. 자주 조회하는 데이터의 네트워크 왕복 감소 |
 
-여기서 헷갈리기 쉬운 부분이 Cache Aside와 `CacheWriteMode`입니다. Cache Aside는 보통 service 코드가 DB와
-캐시를 둘 다 직접 다룹니다. 예를 들어 DB에 저장한 뒤 cache invalidate/put을 호출하거나, cache miss 때 service가
-DB를 읽고 cache에 채웁니다. 반면 제가 만든 `JdbcCacheRepository`/`R2dbcCacheRepository` 계열의
-`CacheWriteMode`는 repository API 안에서 DB 반영까지 맡습니다. 사용하는 쪽에서는 cache repository에 `put()`
-또는 `save()`를 호출하지만, 모드에 따라 뒷단 DB 작업이 같이 일어납니다.
+여기서 혼동하기 쉬운 개념이 캐시 어사이드와 `CacheWriteMode`입니다. 캐시 어사이드는 보통 서비스 코드가 DB와
+캐시를 직접 관리합니다. 예를 들어 DB에 저장한 뒤 캐시를 무효화하거나 갱신하고, 캐시 미스가 발생하면 서비스가
+DB에서 읽어 캐시에 저장합니다. 반면 `JdbcCacheRepository`와 `R2dbcCacheRepository` 계열의 `CacheWriteMode`는
+저장소 API 안에서 DB 반영까지 담당합니다. 호출자는 캐시 저장소의 `put()` 또는 `save()`를 사용하지만, 모드에 따라
+DB 작업도 함께 수행됩니다.
 
 그래서 쓰기 전략은 이렇게 읽어야 합니다.
 
 | CacheWriteMode | 읽기 | 쓰기 |
 |---|---|---|
-| `READ_ONLY` | miss 시 DB에서 읽고 캐싱 | cache만 갱신. DB persistence로 기대하면 안 됨 |
-| `WRITE_THROUGH` | read-through | cache에 쓰면 DB에도 동기 쓰기 |
-| `WRITE_BEHIND` | read-through | queue 수락 후 cache에 반영하고, DB는 비동기로 flush |
+| `READ_ONLY` | 미스가 발생하면 DB에서 읽어 캐싱 | 캐시만 갱신하며 DB에는 영속화하지 않음 |
+| `WRITE_THROUGH` | Read-Through | 캐시에 쓰면 DB에도 동기 방식으로 반영 |
+| `WRITE_BEHIND` | Read-Through | 큐가 요청을 수락하면 캐시에 반영하고 DB에는 비동기로 플러시 |
 
-구현도 이 모델을 그대로 따릅니다. 단순화하면 `WRITE_THROUGH`는 cache와 DB를 같은 호출에서 처리하고,
-`WRITE_BEHIND`는 DB 쓰기를 queue에 넣은 뒤 cache를 갱신합니다.
+구현도 이 모델을 그대로 따릅니다. 단순화하면 `WRITE_THROUGH`는 캐시와 DB 쓰기를 같은 호출에서 처리하고,
+`WRITE_BEHIND`는 DB 쓰기를 큐에 넣은 뒤 캐시를 갱신합니다.
 
 ```kotlin
 when (config.writeMode) {
@@ -119,172 +119,176 @@ when (config.writeMode) {
 }
 ```
 
-즉 `WRITE_THROUGH`는 "cache에만 썼으니 DB는 모른다"가 아닙니다. cache repository에 쓴다는 API 모양을
-사용하더라도, 그 repository가 persistence 작업을 같이 맡습니다. 이 점을 Cache Aside와 섞어 쓰면
-"DB 저장은 서비스가 따로 해야 하나?"라는 오해가 생기기 쉽습니다.
+즉 `WRITE_THROUGH`는 캐시에만 쓰는 전략이 아닙니다. 캐시 저장소에 쓰는 형태의 API를 사용하더라도 해당 저장소가
+DB 영속화까지 담당합니다. 이 동작을 캐시 어사이드와 혼동하면 DB 저장을 서비스가 별도로 수행해야 하는지 판단하기
+어렵습니다.
 
-그래서 벤치마크도 같은 기준으로 만들었습니다. `bluetape4k-workshop/spring-boot/cache-benchmark`에서는 H2와
-Redis Testcontainers로 7가지 cache profile을 비교합니다.
+벤치마크도 같은 기준으로 구성했습니다. `bluetape4k-workshop/spring-boot/cache-benchmark`에서는 H2와
+Redis Testcontainers를 사용해 일곱 가지 캐시 프로필을 비교합니다. 아래 값은 2026-07-27에 Apple M4 Pro,
+Java 21.0.12 환경에서 JMH 방식으로 다시 측정한 결과입니다.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part5-cache-read-chart-ko.png" alt="Cache read throughput chart showing Caffeine about 490000 ops per second and Near Cache about 465000 ops per second versus No Cache about 8200" loading="lazy" />
-  <figcaption>캐시가 warm된 읽기 흐름에서는 Caffeine과 Near Cache가 No Cache 대비 약 57-60배 높았습니다.</figcaption>
+<figure class="bt4k-chart">
+  <img src="/assets/bluetape4k-exposed-part5-cache-read-chart-ko.png" alt="Near Cache 3,287,505 ops/s, Caffeine 3,058,548 ops/s, No Cache 320,764 ops/s와 Redis 기반 프로필 약 4,000 ops/s를 비교한 캐시 읽기 처리량 차트" loading="lazy" data-diagram-title="캐시 전략별 읽기 처리량" />
+  <figcaption>예열된 읽기에서는 Near Cache와 Caffeine이 No Cache보다 약 10배 높은 처리량을 기록했습니다. 로컬 H2를 사용하는 이 측정에서는 네트워크 왕복이 필요한 Redis 기반 프로필이 더 느렸습니다.</figcaption>
 </figure>
 
 | 프로파일 | 읽기 ops/s | 기준 대비 |
 |---|---:|---:|
-| No Cache | ~8,200 | 1x |
-| Caffeine | ~490,000 | 60x |
-| Redis Cache | ~43,000 | 5x |
-| Near Cache | ~465,000 | 57x |
-| Read-Through | ~42,000 | 5x |
-| Write-Through | ~41,000 | 5x |
-| Write-Behind | ~42,000 | 5x |
+| No Cache | 320,764 | 1x |
+| Caffeine | 3,058,548 | 9.5x |
+| Redis Cache | 4,031 | 0.013x |
+| Near Cache | 3,287,505 | 10.3x |
+| Read-Through | 4,090 | 0.013x |
+| Write-Through | 4,099 | 0.013x |
+| Write-Behind | 4,194 | 0.013x |
 
-쓰기 흐름은 따로 봐야 합니다. 읽기에서 빠른 전략이 쓰기에서도 항상 좋은 것은 아닙니다.
+이 수치는 캐시 적중 자체의 비용뿐 아니라 로컬 H2와 Redis Testcontainers의 왕복 비용도 함께 반영합니다.
+따라서 운영 환경의 절대 처리량으로 해석해서는 안 되며, 실제 네트워크와 데이터베이스 조건에서 다시 측정해야 합니다.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part5-cache-write-chart-ko.png" alt="Cache write throughput chart showing Write Behind about 24000 ops per second versus No Cache about 8200 and Write Through about 5600" loading="lazy" />
-  <figcaption>쓰기에서는 Write-Behind가 약 24,000 ops/s로 가장 높지만, 최종 일관성을 받아들일 수 있어야 합니다.</figcaption>
+쓰기 흐름은 처리량만 비교하면 안 됩니다. Write-Behind의 요청 수락, Write-Through의 DB 반영 완료,
+Write-Behind의 큐 비우기 완료는 서로 다른 시점에 측정한 값입니다.
+
+<figure class="bt4k-chart">
+  <img src="/assets/bluetape4k-exposed-part5-cache-write-chart-ko.png" alt="Write-Behind 요청 수락 3,552 ops/s, Write-Through DB 반영 완료 3,034 ops/s, Write-Behind 큐 비우기 완료 0.988 ops/s를 구분한 차트" loading="lazy" data-diagram-title="캐시 쓰기의 완료 경계별 처리량" />
+  <figcaption>단위가 같더라도 완료 경계가 다른 값은 직접 비교할 수 없습니다. Write-Behind의 빠른 반환은 DB 반영 완료가 아니라 큐가 요청을 수락했다는 뜻입니다.</figcaption>
 </figure>
 
-| 프로파일 | 쓰기 ops/s | 해석 |
-|---|---:|---|
-| No Cache | ~8,200 | DB만 |
-| Caffeine | ~8,100 | DB 쓰기 + 로컬 캐시 |
-| Redis Cache | ~7,300 | DB 쓰기 + Redis SET |
-| Near Cache | ~7,200 | DB 쓰기 + near cache update |
-| Write-Through | ~5,600 | DB + Redis 동기 쓰기 |
-| Write-Behind | ~24,000 | cache에는 즉시 쓰고, DB에는 비동기로 flush |
+| 프로파일과 측정 지점 | 완료 경계 | 쓰기 ops/s |
+|---|---|---:|
+| Write-Behind 기존 ID 갱신 | 캐시가 요청을 수락하고 DB 쓰기는 큐에서 대기 | 3,551.936 |
+| Write-Through 기존 ID 갱신 | 반환 전에 DB 반영 완료 | 3,034.323 |
+| Write-Behind 갱신 후 대기 | 큐의 쓰기가 끝나고 DB 값 확인 | 0.988 |
 
-Write-Behind는 빠릅니다. 이 모드는 요청 경로에서 DB 쓰기 시간을 분리하기 때문에 throughput을 크게 올릴 수 있습니다.
-다만 선택 기준은 분명해야 합니다. 주문 확정처럼 즉시 영속성이 필요한 흐름보다는, 조회 캐시 warm-up이나 지연 저장을
-허용할 수 있는 흐름에 맞습니다. flush queue, shutdown drain, idempotency를 같이 설계하면 "빠르지만 불안한 캐시"가
-아니라 workload에 맞춘 쓰기 최적화가 됩니다.
+Write-Behind는 요청 경로에서 DB 쓰기를 분리하므로 호출자에게 빠르게 반환할 수 있습니다. 그러나 큐를 비우는
+측정에는 설정된 1초 지연도 포함되므로, 요청 수락 처리량을 완료된 DB 쓰기 처리량으로 표현하면 안 됩니다.
+주문 확정처럼 즉시 영속화해야 하는 흐름보다는 지연 저장을 허용할 수 있는 흐름에 적합하며, 플러시 큐 관측,
+종료 시 큐 비우기, 재시도, 멱등성을 함께 설계해야 합니다.
 
-## 멀티테넌시: header에서 schema까지
+## 멀티테넌시: 헤더에서 스키마까지
 
-멀티테넌시는 다른 ORM이나 plain JDBC로도 구현할 수 있습니다. 다만 실전에서는 tenant 식별, context 전파,
-schema/database 선택, cache key, 테스트가 서로 다른 계층에 흩어지기 쉽습니다. 저는 이 부분을 Exposed transaction
-진입점에 최대한 모으는 편이 낫다고 봅니다. `exposed-workshop/10-multi-tenant`에서는 schema 기반 tenant 분리,
-database-per-tenant, Spring MVC/Virtual Threads/WebFlux/Ktor 방식을 나란히 둡니다.
+멀티테넌시는 다른 ORM이나 일반 JDBC로도 구현할 수 있습니다. 다만 실전에서는 테넌트 식별, 컨텍스트 전파,
+스키마 또는 DB 선택, 캐시 키, 테스트가 서로 다른 계층에 흩어지기 쉽습니다. 이 책임은 Exposed 트랜잭션 진입점에
+최대한 모으는 편이 안전합니다. `exposed-workshop/10-multi-tenant`에서는 스키마 기반 테넌트 분리, 테넌트별 DB,
+Spring MVC, 가상 스레드, WebFlux, Ktor 방식을 나란히 비교합니다.
 
-기본 흐름은 같습니다. 구현 방식을 바꿔가며 이 흐름을 얼마나 적은 코드로 유지할 수 있는지 보면 됩니다.
+기본 흐름은 같습니다. 실행 환경이 달라져도 이 흐름을 얼마나 일관되게 유지하는지가 중요합니다.
 
-1. `X-TENANT-ID` 헤더에서 tenant를 식별합니다.
-2. request context에 tenant를 전파합니다.
-3. transaction 진입 시 schema 또는 datasource를 선택합니다.
-4. tenant A 요청에서 tenant B 데이터가 나오지 않는지 테스트합니다.
+1. `X-TENANT-ID` 헤더에서 테넌트를 식별합니다.
+2. 요청 컨텍스트에 테넌트 정보를 전파합니다.
+3. 트랜잭션 진입 시 스키마 또는 데이터 소스를 선택합니다.
+4. 테넌트 A 요청에서 테넌트 B 데이터가 조회되지 않는지 검증합니다.
 
 환경별 컨텍스트 전파 방식은 다릅니다.
 
 | 환경 | 컨텍스트 | 스키마 전환 |
 |---|---|---|
 | Spring MVC | `ThreadLocal` | AOP `@Before` |
-| Virtual Threads | `ScopedValue` | AOP `@Before` |
-| WebFlux + Coroutines | Reactor `Context` + `CoroutineContext.Element` | `newSuspendedTransactionWithTenant` |
-| Ktor | coroutine context/plugin | request plugin + transaction helper |
+| 가상 스레드 | `ScopedValue` | AOP `@Before` |
+| WebFlux + 코루틴 | Reactor `Context` + `CoroutineContext.Element` | `newSuspendedTransactionWithTenant` |
+| Ktor | 코루틴 컨텍스트/플러그인 | 요청 플러그인 + 트랜잭션 도우미 |
 
 여기에 캐시가 붙으면 규칙이 하나 더 생깁니다.
 
-> cache key에는 tenant 정보가 들어가야 합니다.
+> 캐시 키에는 테넌트 정보가 포함되어야 합니다.
 
-`user:42`는 단일 tenant 서비스에서는 괜찮을 수 있습니다. 멀티테넌트에서는 `tenant:korean:user:42`처럼 tenant가
-키의 일부여야 합니다. 이 규칙을 repository/cache helper에 모아두면 service 코드에서는 tenant별 캐시 키를 매번
-직접 조립하지 않아도 됩니다. Exposed transaction helper는 schema/database 선택을 맡고, cache helper는 tenant key
-규칙을 맡습니다. 역할을 이렇게 나누면 멀티테넌시가 애플리케이션 전체에 번지는 일을 줄일 수 있습니다.
+`user:42`는 단일 테넌트 서비스에서는 사용할 수 있습니다. 멀티테넌트 환경에서는
+`tenant:korean:user:42`처럼 테넌트 식별자가 키의 일부여야 합니다. 이 규칙을 저장소와 캐시 도우미에 모아두면 서비스
+코드에서 테넌트별 캐시 키를 매번 조립하지 않아도 됩니다. Exposed 트랜잭션 도우미는 스키마 또는 DB 선택을 맡고,
+캐시 도우미는 테넌트 키 규칙을 맡습니다. 역할을 나누면 멀티테넌시 관련 코드가 애플리케이션 전체로 퍼지는 것을
+줄일 수 있습니다.
 
-## 운영 통합: Outbox와 멱등성
+## 운영 통합: 아웃박스와 멱등성
 
-`12-production-integration`에서는 캐시보다 더 애플리케이션 기능에 가까운 예제를 만들었습니다. 대표적인 것이 HTTP
-client outbox와 idempotency입니다. 결제, 알림, 외부 API 연동은 대부분 "DB 상태 변경"과 "외부 시스템 호출"을 같이
-다뤄야 합니다. 이 둘을 service 코드에 흩어놓으면 retry, 중복 요청, 상태 전이가 금방 복잡해집니다.
+`12-production-integration`에서는 캐시보다 애플리케이션 기능에 가까운 예제를 다룹니다. 대표적인 기능은 HTTP
+클라이언트 아웃박스와 멱등성입니다. 결제, 알림, 외부 API 연동은 대부분 DB 상태 변경과 외부 시스템 호출을 함께
+처리해야 합니다. 이 두 책임이 서비스 코드에 흩어지면 재시도, 중복 요청, 상태 전이 처리가 복잡해집니다.
 
-Spring/Ktor 예제에서는 이 흐름을 Exposed transaction 중심으로 정리했습니다. 먼저 pending outbox record를 저장하고,
-`idempotencyKey`에는 unique constraint를 겁니다. 중복 요청이 오면 새 작업을 만들지 않고 기존 record를 반환합니다.
-그 다음 gateway를 호출하고 결과에 따라 `SUCCEEDED`, `RETRYABLE_FAILED`, `PERMANENT_FAILED`로 상태를 바꿉니다.
+Spring과 Ktor 예제에서는 이 흐름을 Exposed 트랜잭션 중심으로 정리했습니다. 먼저 `PENDING` 아웃박스 레코드를
+저장하고 `idempotencyKey`에 고유 제약 조건을 적용합니다. 중복 요청이 들어오면 새 작업을 만들지 않고 기존 레코드를
+반환합니다. 이후 게이트웨이를 호출하고 결과에 따라 상태를 `SUCCEEDED`, `RETRYABLE_FAILED`,
+`PERMANENT_FAILED`로 변경합니다.
 
 | 단계 | 코드에서 확인할 구현 |
 |---|---|
-| 요청 검증 | `orderId`, `amountCents`, `idempotencyKey` normalize/validation |
-| 의도 저장 | `spring_payment_outbox`에 `PENDING` row insert |
-| 중복 방지 | `idempotency_key` unique index, duplicate이면 기존 row 반환 |
-| 외부 호출 | fake gateway로 성공/재시도 가능 실패/영구 실패를 테스트 |
+| 요청 검증 | `orderId`, `amountCents`, `idempotencyKey` 정규화 및 검증 |
+| 의도 저장 | `spring_payment_outbox`에 `PENDING` 레코드 삽입 |
+| 중복 방지 | `idempotency_key` 고유 인덱스로 중복을 감지하고 기존 레코드 반환 |
+| 외부 호출 | 가짜 게이트웨이로 성공, 재시도 가능 실패, 영구 실패 검증 |
 | 상태 전이 | 성공은 `SUCCEEDED`, 재시도 가능 실패는 `RETRYABLE_FAILED` |
 
-여기서 중요한 것은 "outbox table이 있다"가 아닙니다. Exposed transaction 안에서 의도 저장, 중복 방지, 상태 전이를
-하나의 애플리케이션 패턴으로 만들 수 있다는 점입니다. JPA event listener나 별도 messaging framework로 크게
-시작하지 않아도, 필요한 지점부터 작게 붙일 수 있습니다.
+핵심은 아웃박스 테이블의 존재가 아니라 Exposed 트랜잭션 안에서 의도 저장, 중복 방지, 상태 전이를 하나의
+애플리케이션 패턴으로 구성하는 것입니다. JPA 이벤트 리스너나 별도 메시징 프레임워크를 먼저 도입하지 않고도 필요한
+지점부터 적용할 수 있습니다.
 
-리얼타임 outbox 예제도 같은 방식입니다. 알림 요청은 domain row와 outbox row를 같은 Exposed transaction에 저장하고,
-별도 publish 단계가 pending event를 SSE/WebSocket hub로 전달합니다. 전달 성공은 `PUBLISHED`, 실패는 `FAILED`로
-남깁니다. 예제 안에서는 작게 보이지만, 운영 코드에서는 이 지점에 재시도 worker, claim lease, attempt limit을
-붙이면 됩니다. 처음부터 거대한 event platform을 만들 필요는 없습니다.
+실시간 아웃박스 예제도 같은 방식을 사용합니다. 알림 요청의 도메인 레코드와 아웃박스 레코드를 같은 Exposed
+트랜잭션에 저장하고, 별도의 발행 단계에서 대기 중인 이벤트를 SSE/WebSocket 허브로 전달합니다. 전달에 성공하면
+`PUBLISHED`, 실패하면 `FAILED`로 기록합니다. 운영 코드에서는 이 지점에 재시도 작업자, 작업 선점 임대, 최대 시도
+횟수를 추가할 수 있습니다. 처음부터 대규모 이벤트 플랫폼을 만들 필요는 없습니다.
 
 ## 운영 예제에서 봐야 할 것
 
-이제 코드를 볼 때는 "기능이 몇 개 들어 있는가"보다 "Exposed 위에 운영 기능을 어느 정도까지 쉽게 얹을 수 있는가"를 보면 됩니다.
+코드를 검토할 때는 기능의 개수보다 Exposed 트랜잭션과 저장소 경계에 운영 기능을 얼마나 일관되게 결합했는지 확인해야 합니다.
 `exposed-workshop/11-high-performance`와 `12-production-integration`은 단순 CRUD 예제에서 한 단계 더 나가도록
 구성했습니다.
 
 | 예제 | 코드에서 볼 질문 |
 |---|---|
-| `01-cache-strategies` | read/write 전략을 repository API 교체 수준으로 바꿔 볼 수 있는가 |
-| `02-cache-strategies-coroutines` | suspend 흐름에서도 같은 cache 전략을 유지하는가 |
-| `04-benchmark` | cache hit/miss와 write mode별 처리량을 workload 기준으로 비교하는가 |
-| `05/06-cache-strategies-ktor` | Ktor에서도 controller/service 코드 과잉 없이 cache 전략을 쓰는가 |
-| `12-production-integration/03-04` | HTTP outbox와 idempotency를 Exposed transaction으로 묶는가 |
-| `12-production-integration/07-08` | realtime outbox를 domain row와 같이 저장하고 publish 단계로 넘기는가 |
-| `12-production-integration/09-10` | observability, readiness, structured error를 애플리케이션 예제 안에서 확인하는가 |
+| `01-cache-strategies` | 읽기/쓰기 전략을 저장소 API 교체만으로 전환할 수 있는가 |
+| `02-cache-strategies-coroutines` | `suspend` 흐름에서도 같은 캐시 전략을 유지하는가 |
+| `04-benchmark` | 캐시 히트·미스와 쓰기 모드별 처리량을 워크로드 기준으로 비교하는가 |
+| `05/06-cache-strategies-ktor` | Ktor에서도 컨트롤러와 서비스에 캐시 관리 코드를 흩뜨리지 않는가 |
+| `12-production-integration/03-04` | HTTP 아웃박스와 멱등성을 Exposed 트랜잭션으로 묶는가 |
+| `12-production-integration/07-08` | 실시간 아웃박스를 도메인 레코드와 함께 저장한 뒤 발행 단계로 넘기는가 |
+| `12-production-integration/09-10` | 관측성, 준비 상태, 구조화된 오류를 애플리케이션 예제에서 확인하는가 |
 
-`11-high-performance/04-benchmark`의 smoke 결과를 보면 READ_HEAVY workload에서는 `WRITE_THROUGH`가 NoCache 대비
-약 9.9배, `READ_THROUGH`가 약 5.5배 빠릅니다. WRITE_HEAVY에서는 개선이 약 1.1배로 줄어듭니다. 그래서 저는
-캐시 전략을 설명할 때 전략 이름보다 읽기/쓰기 비율을 먼저 봅니다.
+`11-high-performance/04-benchmark`의 스모크 테스트 결과에서 `READ_HEAVY` 워크로드의 `WRITE_THROUGH`는
+`NO_CACHE`보다 약 9.9배, `READ_THROUGH`는 약 5.5배 빠릅니다. `WRITE_HEAVY`에서는 개선 폭이 약 1.1배로
+줄어듭니다. 따라서 캐시 전략은 전략 이름보다 읽기/쓰기 비율을 먼저 확인하고 선택해야 합니다.
 
 ## 적용 체크리스트
 
-- 읽기 중심 workload에서는 Caffeine/Near Cache/Read-Through의 처리량을 실제 요청 비율로 비교하는가.
-- 쓰기 burst가 큰 workload에서는 Write-Behind를 쓸 수 있는 일관성 조건인지 먼저 확인하는가.
-- tenant id가 schema/database 선택, cache key, log, metric tag에 같은 규칙으로 들어가는가.
-- Spring MVC, Virtual Threads, WebFlux/Coroutines, Ktor 중 어떤 실행 모델을 쓸지 먼저 정했는가.
-- outbox/idempotency를 별도 framework로 키우기 전에 Exposed transaction 안에서 해결할 수 있는지 확인했는가.
-- cache miss, hit, invalidation, DB fallback metric을 benchmark와 운영 metric에서 같이 볼 수 있는가.
-- production 예제를 복사하기보다, service의 read/write 비율과 tenant 분리 방식에 맞춰 필요한 조합만 가져왔는가.
+- 읽기 중심 워크로드에서는 Caffeine, Near Cache, Read-Through의 처리량을 실제 요청 비율로 비교하는가.
+- 쓰기 요청이 급증하는 워크로드에서는 Write-Behind가 요구하는 일관성 조건을 수용할 수 있는가.
+- 테넌트 ID가 스키마 또는 DB 선택, 캐시 키, 로그, 메트릭 태그에 같은 규칙으로 반영되는가.
+- Spring MVC, 가상 스레드, WebFlux와 코루틴, Ktor 중 어떤 실행 모델을 사용할지 먼저 정했는가.
+- 아웃박스와 멱등성을 별도 프레임워크로 확장하기 전에 Exposed 트랜잭션 안에서 해결할 수 있는가.
+- 캐시 미스, 히트, 무효화, DB 대체 경로 메트릭을 벤치마크와 운영 메트릭에서 함께 확인할 수 있는가.
+- 운영 예제를 그대로 복사하지 않고 서비스의 읽기/쓰기 비율과 테넌트 분리 방식에 필요한 기능만 선택했는가.
 
 ## 맺음말
 
-`bluetape4k-exposed`의 운영 경로는 "Exposed를 Spring Boot에 붙였다"에서 끝나지 않습니다. 제가 이 예제들을
-나눠 만든 이유도 여기에 있습니다.
+`bluetape4k-exposed`의 운영 경로는 Exposed와 Spring Boot를 연결하는 데서 끝나지 않습니다. 각 예제는 다음 책임을
+분리해 보여줍니다.
 
-- Spring Boot 자동 설정은 익숙한 repository 사용성을 제공하면서 Exposed DSL 제어력을 남겨둡니다.
-- cache module은 read/write 전략을 repository API 안에서 바꿔 성능을 끌어올릴 수 있게 합니다.
-- multi-tenancy 예제는 tenant별 schema/database 전환을 transaction 진입점에 모아 구현 부담을 줄입니다.
-- production integration 예제는 outbox, idempotency, readiness를 작은 애플리케이션 패턴으로 붙일 수 있게 합니다.
-- benchmark는 전략 이름이 아니라 workload 기준으로 선택하게 해줍니다.
+- Spring Boot 자동 구성은 익숙한 저장소 사용성을 제공하면서 Exposed DSL 제어력을 유지합니다.
+- 캐시 모듈은 읽기/쓰기 전략을 저장소 API 안에서 전환할 수 있게 합니다.
+- 멀티테넌시 예제는 테넌트별 스키마 또는 DB 전환을 트랜잭션 진입점에 모읍니다.
+- 운영 통합 예제는 아웃박스, 멱등성, 준비 상태를 작은 애플리케이션 패턴으로 결합합니다.
+- 벤치마크는 전략 이름이 아니라 워크로드를 기준으로 선택하게 합니다.
 
-이 시리즈의 결론은 단순합니다. Exposed는 SQL을 Kotlin답게 다루는 좋은 출발점입니다. `bluetape4k-exposed`는 그
-출발점 위에 성능 최적화와 운영 기능을 얇게 얹기 위한 확장입니다.
+Exposed는 SQL을 Kotlin 코드로 명시적으로 다루는 출발점입니다. `bluetape4k-exposed`는 이 기반에 성능 최적화와
+운영 기능을 필요한 만큼 결합하는 확장입니다.
 
-"얇다"는 말은 기능이 적다는 뜻이 아닙니다. service 코드가 직접 cache-aside를 반복하거나, tenant routing을
-controller마다 붙이거나, outbox worker를 매번 새로 짜지 않아도 된다는 뜻입니다. 필요한 기능은 repository와
-transaction 경계에 모으고, 선택 기준은 benchmark와 예제로 확인합니다.
+기능을 필요한 만큼 결합한다는 것은 기능이 적다는 뜻이 아닙니다. 서비스 코드에서 캐시 어사이드를 반복하고,
+컨트롤러마다 테넌트 라우팅을 구현하며, 아웃박스 작업자를 매번 새로 작성하는 중복을 줄인다는 뜻입니다. 공통 책임은
+저장소와 트랜잭션 경계에 모으고, 선택 기준은 벤치마크와 예제로 검증합니다.
 
-저는 이 방식이 Exposed와 잘 맞는다고 봅니다. Exposed는 SQL을 숨기지 않고, transaction도 명시적으로 다룹니다.
-그 장점을 유지하면서 캐시, 멀티테넌시, outbox/idempotency처럼 직접 구현하기 번거로운 부분을 작게 붙이면,
-애플리케이션 코드는 단순해지고 성능을 조정할 수 있는 지점은 더 분명해집니다. 운영 기능을 크게 시작하지 않아도
-된다는 점이 Part 5에서 보여주고 싶은 핵심입니다.
+Exposed는 SQL을 숨기지 않고 트랜잭션도 명시적으로 다룹니다. 이 장점을 유지하면서 캐시, 멀티테넌시, 아웃박스,
+멱등성처럼 반복 구현하기 쉬운 기능을 저장소와 트랜잭션 경계에 모으면 애플리케이션 코드는 단순해지고 성능 조정
+지점도 분명해집니다. Part 5의 핵심은 운영 기능의 적용 범위를 작게 시작하고, 워크로드와 격리 요구에 따라 확장하는
+것입니다.
 
 ## 참고 링크
 
-- Spring Boot JDBC README: [spring-boot/exposed-jdbc/README.ko.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/spring-boot/exposed-jdbc/README.ko.md)
-- Spring Boot R2DBC README: [spring-boot/exposed-r2dbc/README.ko.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/spring-boot/exposed-r2dbc/README.ko.md)
-- Exposed cache README: [exposed-cache/README.ko.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/README.ko.md)
-- Cache benchmark: [spring-boot/cache-benchmark/README.ko.md](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/README.ko.md)
-- Multi-tenant workshop: [exposed-workshop/10-multi-tenant](https://github.com/bluetape4k/exposed-workshop/tree/develop/10-multi-tenant)
-- High performance workshop: [exposed-workshop/11-high-performance](https://github.com/bluetape4k/exposed-workshop/tree/develop/11-high-performance)
-- Production integration: [exposed-workshop/12-production-integration/README.ko.md](https://github.com/bluetape4k/exposed-workshop/blob/develop/12-production-integration/README.ko.md)
-- Spring HTTP outbox/idempotency: [12-production-integration/03-spring-http-outbox-idempotency/README.ko.md](https://github.com/bluetape4k/exposed-workshop/blob/develop/12-production-integration/03-spring-http-outbox-idempotency/README.ko.md)
-- Ktor HTTP outbox/idempotency: [12-production-integration/04-ktor-http-outbox-idempotency/README.ko.md](https://github.com/bluetape4k/exposed-workshop/blob/develop/12-production-integration/04-ktor-http-outbox-idempotency/README.ko.md)
+- Spring Boot JDBC 저장소: [spring-boot/jdbc/README.ko.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/spring-boot/jdbc/README.ko.md)
+- Spring Boot R2DBC 저장소: [spring-boot/r2dbc/README.ko.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/spring-boot/r2dbc/README.ko.md)
+- Exposed 캐시 모듈: [exposed/cache/README.ko.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/cache/README.ko.md)
+- 캐시 벤치마크: [spring-boot/cache-benchmark/README.ko.md](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/README.ko.md)
+- 멀티테넌트 워크숍: [exposed-workshop/10-multi-tenant](https://github.com/bluetape4k/exposed-workshop/tree/develop/10-multi-tenant)
+- 고성능 처리 워크숍: [exposed-workshop/11-high-performance](https://github.com/bluetape4k/exposed-workshop/tree/develop/11-high-performance)
+- 운영 통합 예제: [exposed-workshop/12-production-integration/README.ko.md](https://github.com/bluetape4k/exposed-workshop/blob/develop/12-production-integration/README.ko.md)
+- Spring HTTP 아웃박스와 멱등성: [12-production-integration/03-spring-http-outbox-idempotency/README.ko.md](https://github.com/bluetape4k/exposed-workshop/blob/develop/12-production-integration/03-spring-http-outbox-idempotency/README.ko.md)
+- Ktor HTTP 아웃박스와 멱등성: [12-production-integration/04-ktor-http-outbox-idempotency/README.ko.md](https://github.com/bluetape4k/exposed-workshop/blob/develop/12-production-integration/04-ktor-http-outbox-idempotency/README.ko.md)
 
 ## 시리즈 링크
 
@@ -292,5 +296,5 @@ transaction 경계에 모으고, 선택 기준은 benchmark와 예제로 확인�
 - [Part 2: JDBC 저장소와 SQL DSL](/ko/blog/bluetape4k-exposed-part2-jdbc-repositories-sql-dsl/)
 - [Part 3: R2DBC, 코루틴, 가상 스레드](/ko/blog/bluetape4k-exposed-part3-r2dbc-coroutines-virtual-threads/)
 - [Part 4: JSON, 암호화, 다이얼렉트](/ko/blog/bluetape4k-exposed-part4-json-encryption-dialects/)
-- [Part 5: 실전 예제 - 다양한 캐시 전략, 멀티테넌시](/ko/blog/bluetape4k-exposed-part5-spring-cache-multitenancy-production/)
+- [Part 5: 실전 예제 - 캐시 전략과 멀티테넌시](/ko/blog/bluetape4k-exposed-part5-spring-cache-multitenancy-production/)
 - [Part 6: BigQuery, Trino, CockroachDB, DuckDB 통합 예제](/ko/blog/bluetape4k-exposed-part6-ecosystem-integrations/)

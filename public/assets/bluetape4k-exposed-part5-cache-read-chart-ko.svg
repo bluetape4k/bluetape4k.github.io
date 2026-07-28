@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="800" viewBox="0 0 1280 800" role="img">
 <title>캐시 읽기 처리량</title>
-<desc>Spring Boot 캐시 벤치마크에서 예열된 findById의 대표 ops/sec입니다.</desc>
+<desc>2026-07-27 Spring Boot 캐시 벤치마크에서 예열된 findById의 ops/sec입니다.</desc>
 <defs>
   <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#020617" flood-opacity="0.42"/></filter>
   <style>
@@ -16,7 +16,7 @@
 <rect class="bg" width="1280" height="800"/>
 <rect class="frame" x="34" y="28" width="1212" height="744" rx="26"/>
 <text class="title" x="70" y="82">캐시 읽기 처리량</text>
-<text class="subtitle" x="72" y="114">Spring Boot 캐시 벤치마크에서 예열된 findById의 대표 ops/sec입니다.</text>
+<text class="subtitle" x="72" y="114">2026-07-27 Spring Boot 캐시 벤치마크에서 예열된 findById의 ops/sec입니다.</text>
 <g>
   <line class="axis" x1="360" y1="722" x2="1140" y2="722"/>
   <line class="grid" x1="360" y1="156" x2="360" y2="722"/>
@@ -24,34 +24,34 @@
   <line class="grid" x1="1140" y1="156" x2="1140" y2="722"/>
   <text class="body" x="92" y="184" dominant-baseline="middle">캐시 미사용</text>
 <rect x="360" y="166" width="780" height="36" rx="10" fill="#16263A" stroke="#2D4968"/>
-<rect class="card" x="360" y="166" width="20" height="36" rx="10" fill="#94A3B8" stroke="#94A3B8"/>
-<text class="body" x="394" y="184" dominant-baseline="middle">~8,200 ops/s</text>
+<rect class="card" x="360" y="166" width="73.58714655882353" height="36" rx="10" fill="#94A3B8" stroke="#94A3B8"/>
+<text class="body" x="447.5871465588235" y="184" dominant-baseline="middle">320,764 ops/s</text>
 <text class="body" x="92" y="262" dominant-baseline="middle">Caffeine</text>
 <rect x="360" y="244" width="780" height="36" rx="10" fill="#16263A" stroke="#2D4968"/>
-<rect class="card" x="360" y="244" width="764.4" height="36" rx="10" fill="#75A9E8" stroke="#75A9E8"/>
-<text class="body" x="1138.4" y="262" dominant-baseline="middle">~490,000 ops/s</text>
+<rect class="card" x="360" y="244" width="701.6668275882353" height="36" rx="10" fill="#75A9E8" stroke="#75A9E8"/>
+<text class="body" x="1075.6668275882353" y="262" dominant-baseline="middle">3,058,548 ops/s</text>
 <text class="body" x="92" y="340" dominant-baseline="middle">Redis 캐시</text>
 <rect x="360" y="322" width="780" height="36" rx="10" fill="#16263A" stroke="#2D4968"/>
-<rect class="card" x="360" y="322" width="67.08" height="36" rx="10" fill="#69B888" stroke="#69B888"/>
-<text class="body" x="441.08" y="340" dominant-baseline="middle">~43,000 ops/s</text>
+<rect class="card" x="360" y="322" width="20" height="36" rx="10" fill="#69B888" stroke="#69B888"/>
+<text class="body" x="394" y="340" dominant-baseline="middle">4,031 ops/s</text>
 <text class="body" x="92" y="418" dominant-baseline="middle">근접 캐시</text>
 <rect x="360" y="400" width="780" height="36" rx="10" fill="#16263A" stroke="#2D4968"/>
-<rect class="card" x="360" y="400" width="725.4000000000001" height="36" rx="10" fill="#D9AA4D" stroke="#D9AA4D"/>
-<text class="body" x="1099.4" y="418" dominant-baseline="middle">~465,000 ops/s</text>
+<rect class="card" x="360" y="400" width="754.1923563352941" height="36" rx="10" fill="#D9AA4D" stroke="#D9AA4D"/>
+<text class="body" x="1128.192356335294" y="418" dominant-baseline="middle">3,287,505 ops/s</text>
 <text class="body" x="92" y="496" dominant-baseline="middle">Read-Through</text>
 <rect x="360" y="478" width="780" height="36" rx="10" fill="#16263A" stroke="#2D4968"/>
-<rect class="card" x="360" y="478" width="65.52000000000001" height="36" rx="10" fill="#55B5AF" stroke="#55B5AF"/>
-<text class="body" x="439.52" y="496" dominant-baseline="middle">~42,000 ops/s</text>
+<rect class="card" x="360" y="478" width="20" height="36" rx="10" fill="#55B5AF" stroke="#55B5AF"/>
+<text class="body" x="394" y="496" dominant-baseline="middle">4,090 ops/s</text>
 <text class="body" x="92" y="574" dominant-baseline="middle">Write-Through</text>
 <rect x="360" y="556" width="780" height="36" rx="10" fill="#16263A" stroke="#2D4968"/>
-<rect class="card" x="360" y="556" width="63.96" height="36" rx="10" fill="#A993FF" stroke="#A993FF"/>
-<text class="body" x="437.96" y="574" dominant-baseline="middle">~41,000 ops/s</text>
+<rect class="card" x="360" y="556" width="20" height="36" rx="10" fill="#A993FF" stroke="#A993FF"/>
+<text class="body" x="394" y="574" dominant-baseline="middle">4,099 ops/s</text>
 <text class="body" x="92" y="652" dominant-baseline="middle">Write-Behind</text>
 <rect x="360" y="634" width="780" height="36" rx="10" fill="#16263A" stroke="#2D4968"/>
-<rect class="card" x="360" y="634" width="65.52000000000001" height="36" rx="10" fill="#DB7890" stroke="#DB7890"/>
-<text class="body" x="439.52" y="652" dominant-baseline="middle">~42,000 ops/s</text>
+<rect class="card" x="360" y="634" width="20" height="36" rx="10" fill="#DB7890" stroke="#DB7890"/>
+<text class="body" x="394" y="652" dominant-baseline="middle">4,194 ops/s</text>
   <text class="tiny" x="360" y="748" text-anchor="middle">0</text>
-  <text class="tiny" x="750" y="748" text-anchor="middle">250000</text>
-  <text class="tiny" x="1140" y="748" text-anchor="middle">500000</text>
+  <text class="tiny" x="750" y="748" text-anchor="middle">1700000</text>
+  <text class="tiny" x="1140" y="748" text-anchor="middle">3400000</text>
 </g>
 </svg>
