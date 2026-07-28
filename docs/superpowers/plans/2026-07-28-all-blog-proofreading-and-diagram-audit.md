@@ -38,18 +38,18 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 
 ## 현재 진행 상황
 
-기준 시점: 2026-07-29, stacked PR #267~#288, #290~#291
+기준 시점: 2026-07-29, stacked PR #267~#288, #290~#292
 
 | 구분 | 완료 | 전체 | 남음 | 상태 |
 | --- | ---: | ---: | ---: | --- |
-| 한국어 블로그 본문 교정 | 61 | 87 | 26 | 진행 중 |
-| 기술 다이어그램 변경·배치 검증 | 116 | 173 | 57 | 진행 중 |
-| stacked PR | 24 | 미정 | 미정 | #267~#288, #290~#291 open |
-| 현재 배치 | 3 | 3 | 0 | Jackson 3·텍스트 처리 PR #291 |
+| 한국어 블로그 본문 교정 | 64 | 87 | 23 | 진행 중 |
+| 기술 다이어그램 변경·배치 검증 | 120 | 173 | 53 | 진행 중 |
+| stacked PR | 25 | 미정 | 미정 | #267~#288, #290~#292 open |
+| 현재 배치 | 3 | 3 | 0 | 텍스트 검색·사전·아웃박스 PR #292 |
 | 최종 전체 사이트 감사 | 0 | 1 | 1 | 대기 |
 | 최종 머지·배포·정리 | 0 | 1 | 1 | 대기 |
 
-현재 완료된 한국어 글 61편:
+현재 완료된 한국어 글 64편:
 
 - AI 협업 글 2편
 - Bluetape4k 생태계·GraphDB 글 2편
@@ -68,6 +68,25 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 - Dependencies 1.3.0 활용기 Part 4와 제작기 Part 1~2
 - Dependencies 제작기 Part 3, Ktor 멀티테넌트 라우팅, 배치 벤치마크 방법론
 - Spring Boot 4 Jackson 3 전환, Text Part 1~2
+- Text Part 3~4, 트랜잭셔널 아웃박스와 멱등성
+
+## 텍스트 검색·사전·아웃박스 배치 DoD
+
+| 검사 | 결과 | 근거 |
+| --- | --- | --- |
+| 글 교정 | PASS | Text Part 3~4·트랜잭셔널 아웃박스 한국어 본문과 대응 영어 글 |
+| 날짜 보존 | PASS | base 대비 한영 `blog.date`와 `sidebar.order` 변경 없음 |
+| 사실 검증 | PASS | 현재 Aho-Corasick Flow, 런타임 사전, Spring/Ktor 멱등성·아웃박스 구현 대조 |
+| 소스 링크 | PASS | 한영 글의 독자용 자료 링크 30/30 HTTP 200 |
+| 한영 정합성 | PASS | 제목·주장·코드·자료 링크·다이어그램 구성 동기화 |
+| 다이어그램 정적 감사 | PASS | 한영 8/8, connector·endpoint·geometry·corner 실패 0, sequence 2/2 |
+| 다이어그램 구조·PNG 검사 | PASS | 4개 stem, `shared_segments=0`, CairoSVG 2배 PNG 8개 원본 확인 |
+| writer 체크리스트 | PASS | dotfiles `bd5fb27`, chezmoi apply·source/live·self-audit·upstream 일치 |
+| 사이트 검사 | PASS | Node 166/166, Astro 오류·경고 0, 기존 힌트 3개, 1,303 pages build |
+| 경로 검사 | PASS | 한영 글 6개 HTTP 200 |
+| stacked PR | PASS | #292, base `docs/korean-proofreading-jackson-text-batch`, head `docs/korean-proofreading-text-outbox-batch` |
+
+현재 배치 필수 검사: **11/11 완료, N/A 0, Blocked 0**
 
 ## Jackson 3·텍스트 처리 배치 DoD
 
