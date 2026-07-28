@@ -1,125 +1,127 @@
 ---
-title: "bluetape4k Flow extensions: 복잡한 stream 조립을 이름 있는 운영 계약으로 바꾸기"
-description: search pipeline, race/fallback, Subject bridge, event aggregation, parallel enrichment, metrics sampling 예제를 통해 bluetape4k-workshop의 Flow extensions 사용법을 정리한다.
+title: "bluetape4k Flow 확장 함수: 복잡한 흐름을 명시적인 운영 계약으로 바꾸기"
+description: 검색 파이프라인, 경쟁·대체 경로, Subject 브리지, 이벤트 집계, 병렬 보강과 메트릭 샘플링 예제로 Flow 확장 함수의 운영 계약을 살펴본다.
 sidebar:
   order: -202606301430
 blog:
   date: 2026-06-30T14:30:00+09:00
   image: /assets/bluetape4k-flow-extensions-workshop-hero.png
-  imageAlt: 여러 색상의 Kotlin Flow lane이 debounce, fallback, subject bridge, aggregation, parallel enrichment, metrics sampling 모듈로 이어지는 3D 작업대 일러스트
-  cardDescription: "여섯 개 workshop 예제로 Kotlin Flow extensions가 debounce, fallback, callback bridge, aggregation, parallel enrichment, sampling 계약을 어떻게 드러내는지 살펴봅니다."
+  imageAlt: 여러 색상의 Kotlin Flow 흐름이 입력 지연, 대체 경로, Subject 브리지, 집계, 병렬 보강과 메트릭 샘플링 모듈로 이어지는 3D 작업대 일러스트
+  cardDescription: "여섯 개 실전 예제로 Kotlin Flow 확장 함수가 취소, 대체 경로, 구독, 집계, 병렬 처리와 샘플링 계약을 어떻게 드러내는지 살펴봅니다."
   tags: ["concurrency","kotlin","observability","practical-example","search"]
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/bluetape4k-flow-extensions-workshop-hero.png" alt="여러 색상의 Kotlin Flow lane이 debounce, fallback, subject bridge, aggregation, parallel enrichment, metrics sampling 모듈로 이어지는 3D 작업대 일러스트" loading="eager" />
-  <figcaption>Flow operator는 짧은 코드가 목적이 아니라, stream의 운영 계약을 읽히게 만드는 이름입니다.</figcaption>
+  <img src="/assets/bluetape4k-flow-extensions-workshop-hero.png" alt="여러 색상의 Kotlin Flow 흐름이 입력 지연, 대체 경로, Subject 브리지, 집계, 병렬 보강과 메트릭 샘플링 모듈로 이어지는 3D 작업대 일러스트" loading="eager" />
+  <figcaption>Flow 연산자의 가치는 단순히 코드를 줄이는 데 있지 않습니다. 스트림의 운영 계약을 이름으로 드러내는 데 있습니다.</figcaption>
 </figure>
 
-<p class="bt4k-post-meta">2026-06-30 · bluetape4k-workshop · Kotlin Flow extensions</p>
+<p class="bt4k-post-meta">2026-06-30 · bluetape4k-workshop · Kotlin Flow 확장 함수</p>
 
-Kotlin Flow 코드는 처음에는 단순합니다. `MutableSharedFlow` 하나 만들고, `launch`로 모으고, 필요하면 `Job`을 취소합니다.
-그런데 검색 자동완성, fallback source, callback bridge, metric sampling처럼 조금만 현실적인 요구가 들어오면 코드가 금방
-"언제 누가 취소하는지", "마지막 값만 필요한지", "실패를 값으로 다룰지 예외로 다룰지"를 숨기기 시작합니다.
+Kotlin Flow 코드는 처음에는 단순합니다. `MutableSharedFlow`를 만들고, `launch`에서 수집하며, 필요하면 `Job`을 취소합니다.
+그러나 검색 자동 완성, 대체 데이터 원본, 콜백 브리지, 메트릭 샘플링 같은 현실적인 요구가 들어오면 코드가 빠르게
+"언제 누가 취소하는지", "마지막 값만 필요한지", "실패를 값으로 다룰지 종료 예외로 다룰지"를 숨기기 시작합니다.
 
-`bluetape4k-workshop`의 Flow extensions 예제는 이 숨은 결정을 operator 이름으로 끌어올립니다. 이번 글은 여섯 예제를
-하나씩 소개하되, API 목록이 아니라 어떤 문제를 어떤 계약으로 바꾸는지에 초점을 둡니다.
+`bluetape4k-workshop`의 Flow 확장 함수 예제는 이 숨은 결정을 연산자 이름으로 끌어올립니다. 이번 글은 여섯 예제를
+하나씩 소개하되, API 목록이 아니라 어떤 문제를 어떤 운영 계약으로 바꾸는지에 초점을 둡니다.
 
-| 예제 | 다루는 문제 | 핵심 Flow extensions |
+| 예제 | 다루는 문제 | 핵심 Flow 확장 함수 |
 |---|---|---|
-| [Search Pipeline](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/kotlin/flow-extensions-search-pipeline) | 빠른 입력, 설정 snapshot, 최신 검색만 유지 | `bufferingDebounce`, `withLatestFrom`, `flatMapLatest`, `takeUntil` |
-| [Race and Fallback](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/kotlin/flow-extensions-race-fallback) | 가장 빠른 정상 source, 순차 fallback, partial merge | `race`, `amb`, `concat`, `concatArrayEager`, `concatMapEager`, `merge` |
-| [Subject Bridge](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/kotlin/flow-extensions-subject-bridge) | callback을 event/state/history/work queue stream으로 변환 | `PublishSubject`, `BehaviorSubject`, `ReplaySubject`, `MulticastSubject`, `UnicastWorkSubject` |
-| [Event Aggregation](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/kotlin/flow-extensions-event-aggregation) | 주문 event replay, window, grouping, 누적 상태 | `chunked`, `windowed`, `groupBy`, `scanWith`, `bufferUntilChanged`, `zipWithNext` |
-| [Parallel Enrichment](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/kotlin/flow-extensions-parallel-enrichment) | 주문별 독립 enrichment를 parallel rail로 처리 | `parallel`, `sequential` |
-| [Metrics Sampling](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/kotlin/flow-extensions-metrics-sampling) | burst metric에서 빠른 preview와 안정된 dashboard 값을 분리 | `throttleLeading`, `throttleTrailing`, `pairwise`, `takeUntil`, `mapResultCatching` |
+| [Search Pipeline](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/kotlin/flow-extensions-search-pipeline) | 빠른 입력, 설정 시점의 값, 최신 검색만 유지 | `bufferingDebounce`, `withLatestFrom`, `flatMapLatest`, `takeUntil` |
+| [Race and Fallback](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/kotlin/flow-extensions-race-fallback) | 가장 빠른 정상 원본, 순차 대체 경로, 부분 병합 | `race`, `amb`, `concat`, `concatArrayEager`, `concatMapEager`, `merge` |
+| [Subject Bridge](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/kotlin/flow-extensions-subject-bridge) | 콜백을 이벤트·상태·이력·작업 큐 스트림으로 변환 | `PublishSubject`, `BehaviorSubject`, `ReplaySubject`, `MulticastSubject`, `UnicastWorkSubject` |
+| [Event Aggregation](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/kotlin/flow-extensions-event-aggregation) | 주문 이벤트 재생, 윈도우, 그룹화, 누적 상태 | `chunked`, `windowed`, `groupBy`, `scanWith`, `bufferUntilChanged`, `zipWithNext` |
+| [Parallel Enrichment](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/kotlin/flow-extensions-parallel-enrichment) | 주문별 독립 보강 작업을 병렬 레일로 처리 | `parallel`, `sequential` |
+| [Metrics Sampling](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/kotlin/flow-extensions-metrics-sampling) | 연속 메트릭에서 빠른 미리보기와 안정된 대시보드 값을 분리 | `throttleLeading`, `throttleTrailing`, `pairwise`, `takeUntil`, `mapResultCatching` |
 
 [ReactiveX operator 문서](https://reactivex.io/documentation/operators.html)는 `buffer`, `groupBy`, `scan`, `window`를
 서로 다른 변환 operator로 분류하고, Reactor의
 [Three Sorts of Batching](https://projectreactor.io/docs/core/release/reference/advancedFeatures/advanced-three-sorts-batching.html)
-문서는 `grouping`, `windowing`, `buffering`을 같이 비교합니다. 다만 출력 형태는 서로 다릅니다. `scan` 계열은 batching이
-아니라 이전 상태와 현재 event로 다음 상태를 만드는 accumulator 쪽으로 봐야 합니다.
+문서는 그룹화, 윈도잉, 버퍼링을 함께 비교합니다. 다만 출력 형태는 서로 다릅니다. `scan` 계열은 배치 처리가 아니라
+이전 상태와 현재 이벤트로 다음 상태를 만드는 누산 연산으로 봐야 합니다.
 
-아래 그림들은 RxJava 문서와 튜토리얼에서 자주 쓰는 marble diagram 문법을 따릅니다. 기본적으로 위쪽 timeline은 입력 Flow,
-가운데 box는 operator, 아래 timeline은 출력 Flow입니다. 병렬 rail처럼 timeline 하나로 설명하기 어려운 예제는 같은 visual
-language로 split/fold 지점을 드러냅니다.
+아래 그림은 RxJava 문서와 튜토리얼에서 자주 쓰는 마블 다이어그램 문법을 따릅니다. 기본적으로 위쪽 타임라인은 입력 Flow,
+가운데 상자는 연산자, 아래쪽 타임라인은 출력 Flow를 나타냅니다. 병렬 레일처럼 타임라인 하나로 설명하기 어려운 예제는
+같은 시각 언어로 분기·병합 지점을 드러냅니다.
 
 ## 입력값에서 출력값으로 먼저 보기
 
-아래 코드는 workshop 테스트가 고정하는 입출력을 글에서 읽기 쉽게 줄인 형태입니다. 실제 예제는 각 module의 README와 test에
+아래 코드는 workshop 테스트가 고정하는 입출력을 글에서 읽기 쉽게 줄인 형태입니다. 실제 예제는 각 모듈의 README와 테스트에
 더 많은 실패/취소/검증 케이스를 포함합니다.
 
 ```kotlin
-// 1. Search Pipeline
-// input: "r", "re", "red" in one typing burst
+// 1. 검색 파이프라인
+// 입력: 한 번의 연속 입력에서 "r", "re", "red"
 val results = pipeline.search(
     queries = flowOf("r", "re", "red"),
     settings = flowOf(settings(tenantId = "tenant-a")),
     sessionClosed = flowOf(),
     debounce = 100.milliseconds,
 ).toList()
-// output: one request, query == "red", tenantId == "tenant-a"
+// 출력: 요청 하나, query == "red", tenantId == "tenant-a"
 
-// 2. Race / Fallback
-// input: cache(200ms), replica(20ms), remote(120ms)
+// 2. 경쟁 / 대체 경로
+// 입력: cache(200ms), replica(20ms), remote(120ms)
 val winner = catalog.fastestHealthy(listOf(cache, replica, remote)).take(1).toList()
-// output: [CatalogSource.REPLICA], cache/remote collectors are cancelled
+// 출력: [CatalogSource.REPLICA], cache/remote 수집 작업은 취소
 
-// 3. Subject Bridge
-// input: early event before subscription, then active event after subscription
+// 3. Subject 브리지
+// 입력: 구독 전 이벤트 하나, 구독 뒤 활성 이벤트 하나
 bridge.publishEvent(DeviceEvent("event-01", "device-01", CONNECTED, "early"))
 val received = async { bridge.events.take(1).toList() }
 bridge.awaitEventSubscribers()
 bridge.publishEvent(DeviceEvent("event-02", "device-01", TELEMETRY, "temperature=22"))
-// output: only event-02 is received by PublishSubject subscribers
+// 출력: PublishSubject 구독자는 event-02만 수신
 
-// 4. Event Aggregation
-// input: sampleEvents() == five order events
+// 4. 이벤트 집계
+// 입력: sampleEvents() == 주문 이벤트 다섯 개
 val chunked = pipeline.chunkedActivity(sampleEvents().asFlow(), chunkSize = 2).toList()
-// output chunk sizes: [2, 2, 1]
+// 출력 청크 크기: [2, 2, 1]
 
 val windows = pipeline.rollingActivity(sampleEvents().asFlow(), size = 3, step = 2).toList()
-// output window sizes: [3, 3, 1]
+// 출력 윈도우 크기: [3, 3, 1]
 
 val groups = pipeline.groupedByOrder(sampleEvents().asFlow()).toList().associateBy { it.key }
-// output groups:
+// 출력 그룹:
 //   order-1 -> [OrderCreated, LineAdded, PaymentAuthorized]
 //   order-2 -> [OrderCreated, ShipmentStarted]
 
 val states = pipeline.readModels(sampleEvents().asFlow()).toList()
-// output: state snapshots; final order-1 == PAID, final order-2 == SHIPPED
+// 출력: 상태 스냅숏, 최종 order-1 == PAID, 최종 order-2 == SHIPPED
 
-// 5. Parallel Enrichment
-// input: O-1001 customer-1001, item suit-01 x2
+// 5. 병렬 보강
+// 입력: O-1001 customer-1001, item suit-01 x2
 val enriched = pipeline.enrichInParallel(flowOf(order), parallelism = 3) { dispatchers[it] }
     .toList()
-// output: O-1001 -> loyaltyGrade=GOLD, discountPercent=10, fulfillable=true
+// 출력: O-1001 -> loyaltyGrade=GOLD, discountPercent=10, fulfillable=true
 
-// 6. Metrics Sampling
-// input: cpu.usage values 10,20,30,...,100 every 200ms
+// 6. 메트릭 샘플링
+// 입력: 200ms마다 cpu.usage 값 10,20,30,...,100
 val leading = pipeline.leadingPreview(highFrequencyCpuSamples(), 501.milliseconds).toList()
 val trailing = pipeline.dashboardSamples(highFrequencyCpuSamples(), 501.milliseconds).toList()
-// output leading values:  [10.0, 40.0, 70.0, 100.0]
-// output trailing values: [30.0, 60.0, 90.0, 100.0]
+// 출력 선두 값: [10.0, 40.0, 70.0, 100.0]
+// 출력 후미 값: [30.0, 60.0, 90.0, 100.0]
 ```
 
-## Search pipeline: 입력 burst와 최신 조건을 분리한다
+## 검색 파이프라인: 연속 입력과 최신 조건을 분리한다
 
-검색 자동완성은 생각보다 많은 결정을 포함합니다. 빈 문자열은 버려야 하고, 사용자가 빠르게 타이핑하면 마지막 query만 의미가
-있으며, tenant 설정이나 feature flag는 검색이 실행되는 시점의 최신 값을 써야 합니다. 그리고 session이 끝나면 대기 중인
+검색 자동완성은 생각보다 많은 결정을 포함합니다. 빈 문자열은 버려야 하고, 사용자가 빠르게 입력하면 마지막 검색어만 의미가
+있으며, 테넌트 설정이나 기능 플래그는 검색 실행 시점의 최신 값을 사용해야 합니다. 세션이 끝나면 대기 중인
 검색도 멈춰야 합니다.
 
 예제의 핵심 흐름은 다음과 같습니다.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-flow-extensions-search-pipeline-marble-01-ko.png" alt="bufferingDebounce, withLatestFrom, flatMapLatest, takeUntil이 입력 burst를 최신 검색 요청 하나로 바꾸는 marble diagram" loading="lazy" />
-  <figcaption>검색 pipeline은 입력 burst에서 마지막 query만 남기고, 그 순간의 설정 snapshot을 붙인 뒤, 오래된 검색을 취소합니다.</figcaption>
+<figure class="bt4k-architecture" data-diagram-title="검색 입력에서 최신 요청까지">
+  <img src="/assets/bluetape4k-flow-extensions-search-pipeline-marble-01-ko.png" alt="bufferingDebounce, withLatestFrom, flatMapLatest, takeUntil이 연속 입력을 최신 검색 요청 하나로 바꾸는 흐름도" loading="lazy" />
+  <figcaption>검색 파이프라인은 연속 입력에서 마지막 검색어만 남기고, 해당 시점의 설정 스냅숏을 붙인 뒤 오래된 검색을 취소합니다.</figcaption>
 </figure>
 
 ```kotlin
 queries
+    .map(String::trim)
+    .filter(String::isNotBlank)
     .bufferingDebounce(debounce)
-    .filter { it.isNotBlank() }
+    .mapNotNull { burst -> burst.lastOrNull()?.let(::SearchQuery) }
     .withLatestFrom(settings) { query, latestSettings ->
         SearchRequest(query, latestSettings)
     }
@@ -127,75 +129,75 @@ queries
     .takeUntil(sessionClosed)
 ```
 
-`bufferingDebounce`는 "burst 안에서 마지막 query만 남긴다"는 계약입니다. `withLatestFrom`은 "검색 요청이 만들어지는
-순간의 설정을 snapshot으로 붙인다"는 계약입니다. `flatMapLatest`는 이전 검색이 아직 끝나지 않았더라도 더 최신 query가
-들어오면 이전 검색을 취소합니다.
+`bufferingDebounce`는 연속 입력을 `List<String>`으로 묶습니다. 따라서 `mapNotNull`에서 묶음의 마지막 검색어를
+`SearchQuery`로 바꾸는 단계가 필요합니다. `withLatestFrom`은 검색 요청을 만드는 순간의 최신 설정을 붙이고,
+`flatMapLatest`는 이전 검색이 아직 끝나지 않았더라도 더 최신 검색어가 들어오면 이전 검색을 취소합니다.
 
-여기서 중요한 것은 cancellation입니다. search adapter는 `CancellationException`을 삼키면 안 됩니다. 예제 테스트는
-cancellation이 정상적으로 밖으로 전파되는지 고정합니다. stream operator는 cancellation boundary를 숨기려고 쓰는 것이
-아니라, 어디서 취소되어야 하는지 더 잘 보이게 하려고 쓰는 것입니다.
+여기서 중요한 것은 취소입니다. 검색 어댑터는 `CancellationException`을 삼키면 안 됩니다. 예제 테스트는
+취소가 호출자에게 정상적으로 전파되는지 고정합니다. 스트림 연산자는 취소 경계를 숨기는 도구가 아니라, 어디에서
+취소되어야 하는지 명확히 드러내는 도구입니다.
 
-## Race/fallback: 빠른 source와 우선순위 source는 다르다
+## 경쟁과 대체 경로: 빠른 원본과 우선순위가 높은 원본은 다르다
 
-cache, local replica, remote API, backup endpoint가 있을 때 "먼저 오는 값"이 항상 정답은 아닙니다. 어떤 화면은 가장
-빠른 정상 응답 하나면 충분하고, 어떤 작업은 우선순위 순서대로 fallback해야 하며, 어떤 enrichment는 여러 source의 partial
-result를 합쳐야 합니다.
+캐시, 로컬 복제본, 원격 API, 예비 엔드포인트가 있을 때 "먼저 오는 값"이 항상 정답은 아닙니다. 어떤 화면은 가장
+빠른 정상 응답 하나면 충분하고, 어떤 작업은 우선순위에 따라 대체 경로를 선택해야 하며, 어떤 보강 작업은 여러 원본의
+부분 결과를 합쳐야 합니다.
 
-`flow-extensions-race-fallback` 예제는 이 차이를 operator 선택으로 드러냅니다.
+`flow-extensions-race-fallback` 예제는 이 차이를 연산자 선택으로 드러냅니다.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-flow-extensions-race-fallback-marble-01-ko.png" alt="race, concat, merge가 latency 우선, priority 우선, partial merge를 서로 다르게 처리하는 marble diagram" loading="lazy" />
-  <figcaption>`race`/`amb`는 먼저 정상 값을 낸 source를 고르고 나머지를 취소합니다. `concat`은 우선순위를 지키고, `merge`는 여러 source의 partial result를 함께 씁니다.</figcaption>
+<figure class="bt4k-architecture" data-diagram-title="경쟁·순차 대체·부분 병합 정책">
+  <img src="/assets/bluetape4k-flow-extensions-race-fallback-marble-01-ko.png" alt="race, concat, merge가 지연 시간 우선, 우선순위 우선, 부분 병합 정책을 서로 다르게 처리하는 흐름도" loading="lazy" />
+  <figcaption>`race`와 `amb`는 먼저 정상 값을 낸 원본을 고르고 나머지를 취소합니다. `concat`은 우선순위를 지키고, `merge`는 여러 원본의 부분 결과를 함께 사용합니다.</figcaption>
 </figure>
 
 | 선택 | 의미 |
 |---|---|
-| `race` / `amb` | 먼저 정상 값을 내는 source가 이기고, 나머지는 취소 |
-| `concat` | strict fallback 순서를 유지 |
-| `concatArrayEager` | source는 미리 시작하되 output 순서는 유지 |
-| `concatMapEager` | 동적 source를 eager하게 시작하고 outer order를 보존 |
-| `merge` | partial enrichment처럼 여러 source의 기여를 함께 사용 |
-| `materialize` / `dematerialize` | 실패를 값으로 관찰한 뒤 마지막에 terminal error로 변환 |
+| `race` / `amb` | 먼저 정상 값을 내는 원본을 선택하고 나머지는 취소 |
+| `concat` | 엄격한 대체 경로 순서를 유지 |
+| `concatArrayEager` | 원본은 미리 시작하되 출력 순서는 유지 |
+| `concatMapEager` | 동적 원본을 즉시 시작하고 외부 순서를 보존 |
+| `merge` | 부분 보강처럼 여러 원본의 기여를 함께 사용 |
+| `materialize` / `dematerialize` | 실패를 값으로 관찰한 뒤 마지막에 종료 오류로 변환 |
 
-이 예제는 manual `select`나 `async` 조립을 없애자는 이야기가 아닙니다. 더 정확히는 "latency 우선인가, priority 우선인가,
-partial contribution인가"를 코드 표면에서 읽히게 만들자는 이야기입니다.
+이 예제는 `select`나 `async`를 직접 조립하는 방식을 없애자는 이야기가 아닙니다. "지연 시간 우선인가, 원본 우선순위
+우선인가, 부분 결과 병합인가"라는 정책을 코드 표면에서 읽을 수 있게 만들자는 뜻입니다.
 
-## Subject bridge: callback stream도 종류가 있다
+## Subject 브리지: 콜백 스트림도 종류가 있다
 
-외부 SDK callback을 Flow로 바꿀 때 `callbackFlow` 하나로 모든 것을 처리하면 늦게 붙은 subscriber의 의미가 흐려집니다.
-과거 event를 받을 수 있는지, 최신 state 하나만 받으면 되는지, fan-out을 기다려야 하는지, work item이 한 번만 소비되어야
+외부 SDK 콜백을 Flow로 바꿀 때 `callbackFlow` 하나로 모든 것을 처리하면 늦게 참여한 구독자의 의미가 흐려집니다.
+과거 이벤트를 받을 수 있는지, 최신 상태 하나만 받으면 되는지, 분기 전달을 기다려야 하는지, 작업 항목을 한 번만 소비해야
 하는지가 서로 다르기 때문입니다.
 
-Subject bridge 예제는 callback을 다섯 가지 stream 성격으로 나눕니다.
+Subject 브리지 예제는 콜백을 다섯 가지 스트림 성격으로 나눕니다.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-flow-extensions-subject-bridge-marble-01-ko.png" alt="PublishSubject, BehaviorSubject, ReplaySubject, UnicastWorkSubject가 늦은 subscriber에게 서로 다른 값을 전달하는 marble diagram" loading="lazy" />
-  <figcaption>callback을 Flow로 바꾸는 것보다 중요한 것은 subscription 계약입니다. 늦게 붙은 subscriber가 과거 event, 최신 state, replay history, work item 중 무엇을 받는지가 달라집니다.</figcaption>
+<figure class="bt4k-architecture" data-diagram-title="Subject별 구독 계약">
+  <img src="/assets/bluetape4k-flow-extensions-subject-bridge-marble-01-ko.png" alt="PublishSubject, BehaviorSubject, ReplaySubject, UnicastWorkSubject가 늦게 참여한 구독자에게 서로 다른 값을 전달하는 흐름도" loading="lazy" />
+  <figcaption>콜백을 Flow로 바꾸는 것보다 중요한 것은 구독 계약입니다. 늦게 참여한 구독자가 과거 이벤트, 최신 상태, 재생 이력, 작업 항목 중 무엇을 받는지가 달라집니다.</figcaption>
 </figure>
 
 | Subject | 쓰임 |
 |---|---|
-| `PublishSubject` | 현재 붙어 있는 subscriber에게만 event 전달 |
-| `BehaviorSubject` | 늦게 붙은 subscriber에게 최신 state를 먼저 전달 |
-| `ReplaySubject` | 제한된 history를 replay |
-| `MulticastSubject` | 기대한 subscriber 수가 모일 때까지 fan-out을 조율 |
-| `UnicastWorkSubject` | work item을 단일 consumer queue처럼 한 번만 소비 |
+| `PublishSubject` | 현재 참여한 구독자에게만 이벤트 전달 |
+| `BehaviorSubject` | 늦게 참여한 구독자에게 최신 상태를 먼저 전달 |
+| `ReplaySubject` | 제한된 이력을 재생 |
+| `MulticastSubject` | 예상한 구독자 수가 모일 때까지 분기 전달을 조율 |
+| `UnicastWorkSubject` | 작업 항목을 단일 소비자 큐처럼 한 번만 소비 |
 
-이 구분은 테스트에서도 중요합니다. 예제는 late subscriber가 과거 event를 받는지, latest state를 받는지, work item이
-중복 소비되지 않는지를 따로 확인합니다. callback bridge의 핵심은 "Flow로 바꿨다"가 아니라 "어떤 구독 계약으로 바꿨는가"입니다.
+이 구분은 테스트에서도 중요합니다. 예제는 늦게 참여한 구독자가 과거 이벤트를 받는지, 최신 상태를 받는지, 작업 항목이
+중복 소비되지 않는지를 각각 확인합니다. 콜백 브리지의 핵심은 "Flow로 바꿨다"가 아니라 "어떤 구독 계약으로 바꿨는가"입니다.
 
-## Aggregation과 sampling: window는 메모리 계약이다
+## 집계와 샘플링: 윈도우는 메모리 계약이다
 
-event aggregation 예제는 replay stream을 `chunked`, `windowed`, `groupBy`, `scanWith`로 다룹니다. metric sampling
-예제는 burst metric을 `throttleLeading`과 `throttleTrailing`로 나눕니다.
+이벤트 집계 예제는 재생 스트림을 `chunked`, `windowed`, `groupBy`, `scanWith`로 다룹니다. 메트릭 샘플링
+예제는 연속 메트릭을 `throttleLeading`과 `throttleTrailing`로 나눕니다.
 
-둘의 공통점은 window가 단지 편의 API가 아니라 메모리와 지연 시간의 계약이라는 점입니다.
+둘의 공통점은 윈도우가 단순한 편의 API가 아니라 메모리와 지연 시간의 계약이라는 점입니다.
 
-### `chunked`: event를 concrete batch로 묶는다
+### `chunked`: 이벤트를 구체적인 배치로 묶는다
 
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-flow-extensions-chunked-marble-01-ko.png" alt="chunked operator가 다섯 개 입력 이벤트를 크기 2, 2, 1의 concrete batch로 내보내는 marble diagram" loading="lazy" />
-  <figcaption>`chunked(2)`는 timeline을 두 개씩 잘라 `List` 같은 concrete batch를 내보냅니다. 마지막 partial batch를 허용하면 `[e5]`도 출력됩니다.</figcaption>
+<figure class="bt4k-architecture" data-diagram-title="chunked 배치 흐름">
+  <img src="/assets/bluetape4k-flow-extensions-chunked-marble-01-ko.png" alt="chunked 연산자가 다섯 개 입력 이벤트를 크기 2, 2, 1의 구체적인 배치로 내보내는 흐름도" loading="lazy" />
+  <figcaption>`chunked(2)`는 타임라인을 두 개씩 잘라 `List` 형태의 배치를 내보냅니다. 마지막 부분 배치를 허용하면 `[e5]`도 출력됩니다.</figcaption>
 </figure>
 
 ```kotlin
@@ -204,38 +206,38 @@ events
     .map { chunk -> summarize(chunk) }
 ```
 
-위 예제 입력이 `e1, e2, e3, e4, e5`라면 출력 batch 크기는 `[2, 2, 1]`입니다. 이 operator를 고를 때는 batch 하나가
+위 예제 입력이 `e1, e2, e3, e4, e5`라면 출력 배치 크기는 `[2, 2, 1]`입니다. 이 연산자를 선택할 때는 배치 하나가
 메모리에 얼마나 쌓일 수 있는지 같이 설명해야 합니다.
 
-### `windowed`: 겹치는 window를 만든다
+### `windowed`: 겹치는 윈도우를 만든다
 
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-flow-extensions-windowed-marble-01-ko.png" alt="windowed operator가 다섯 개 입력 이벤트에서 겹치는 window 세 개를 만드는 marble diagram" loading="lazy" />
-  <figcaption>`windowed(size = 3, step = 2)`는 겹치는 window를 만들 수 있습니다. 같은 event가 둘 이상의 window에 들어갈 수 있다는 점이 `chunked`와 다릅니다.</figcaption>
+<figure class="bt4k-architecture" data-diagram-title="windowed 중첩 윈도우">
+  <img src="/assets/bluetape4k-flow-extensions-windowed-marble-01-ko.png" alt="windowed 연산자가 다섯 개 입력 이벤트에서 중첩 윈도우 세 개를 만드는 흐름도" loading="lazy" />
+  <figcaption>`windowed(size = 3, step = 2)`는 겹치는 윈도우를 만들 수 있습니다. 같은 이벤트가 둘 이상의 윈도우에 들어갈 수 있다는 점이 `chunked`와 다릅니다.</figcaption>
 </figure>
 
-`sampleEvents()` 기준으로 첫 window는 `[e1, e2, e3]`, 두 번째 window는 `[e3, e4, e5]`, 마지막 partial window는
-`[e5]`입니다. 출력 크기는 `[3, 3, 1]`이지만, 이는 batch size가 아니라 window size입니다.
+`sampleEvents()` 기준으로 첫 번째 윈도우는 `[e1, e2, e3]`, 두 번째 윈도우는 `[e3, e4, e5]`, 마지막 부분 윈도우는
+`[e5]`입니다. 출력 크기는 `[3, 3, 1]`이지만, 이는 배치 크기가 아니라 윈도우 크기입니다.
 
-### `groupBy`: 시간이나 크기가 아니라 key로 stream을 나눈다
+### `groupBy`: 시간이나 크기가 아니라 키로 스트림을 나눈다
 
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-flow-extensions-groupby-marble-01-ko.png" alt="groupBy operator가 orderId key로 입력 이벤트를 order-1과 order-2 stream으로 나누는 marble diagram" loading="lazy" />
-  <figcaption>`groupBy(orderId)`는 timeline을 자르지 않습니다. 같은 key를 가진 event가 자기 stream으로 흘러가도록 partition합니다.</figcaption>
+<figure class="bt4k-architecture" data-diagram-title="groupBy 키별 스트림 분기">
+  <img src="/assets/bluetape4k-flow-extensions-groupby-marble-01-ko.png" alt="groupBy 연산자가 orderId 키로 입력 이벤트를 order-1과 order-2 스트림으로 나누는 흐름도" loading="lazy" />
+  <figcaption>`groupBy(orderId)`는 타임라인을 자르지 않습니다. 같은 키를 가진 이벤트가 별도의 스트림으로 흐르도록 분할합니다.</figcaption>
 </figure>
 
-`order-1`은 `Created`, `LineAdded`, `PaymentAuthorized` stream이 되고, `order-2`는 `Created`, `ShipmentStarted`
-stream이 됩니다. 그래서 `groupBy`는 "batch 몇 개가 나왔는가"보다 "key별 stream lifecycle을 어떻게 닫을 것인가"가 더
+`order-1`은 `Created`, `LineAdded`, `PaymentAuthorized` 스트림이 되고, `order-2`는 `Created`, `ShipmentStarted`
+스트림이 됩니다. 따라서 `groupBy`는 "배치가 몇 개 생성되었는가"보다 "키별 스트림 생명주기를 어떻게 닫을 것인가"가 더
 중요합니다.
 
-### `scanWith`: batch가 아니라 상태 snapshot을 누적한다
+### `scanWith`: 배치가 아니라 상태 스냅숏을 누적한다
 
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-flow-extensions-scanwith-marble-01-ko.png" alt="scanWith operator가 입력 이벤트를 read model state snapshot으로 누적하는 marble diagram" loading="lazy" />
-  <figcaption>`scanWith(seed, accumulator)`는 event를 묶지 않습니다. 이전 상태와 현재 event로 다음 read model snapshot을 만듭니다.</figcaption>
+<figure class="bt4k-architecture" data-diagram-title="scanWith 상태 누적">
+  <img src="/assets/bluetape4k-flow-extensions-scanwith-marble-01-ko.png" alt="scanWith 연산자가 입력 이벤트를 읽기 모델의 상태 스냅샷으로 누적하는 흐름도" loading="lazy" />
+  <figcaption>`scanWith(seed, accumulator)`는 이벤트를 묶지 않습니다. 이전 상태와 현재 이벤트로 다음 읽기 모델 스냅숏을 만듭니다.</figcaption>
 </figure>
 
-`readModels(sampleEvents())`는 batch stream이 아니라 state snapshot stream입니다. 마지막 상태를 보면 `order-1`은
+`readModels(sampleEvents())`는 배치 스트림이 아니라 상태 스냅숏 스트림입니다. 마지막 상태를 보면 `order-1`은
 `PAID`, `order-2`는 `SHIPPED`가 됩니다.
 
 ```kotlin
@@ -244,27 +246,27 @@ metrics
     .filter { it.value >= alertThreshold }
 ```
 
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-flow-extensions-metrics-sampling-marble-01-ko.png" alt="throttleLeading이 각 window의 첫 값을, throttleTrailing이 각 window의 마지막 값을 내보내는 marble diagram" loading="lazy" />
+<figure class="bt4k-architecture" data-diagram-title="선두·후미 메트릭 샘플링">
+  <img src="/assets/bluetape4k-flow-extensions-metrics-sampling-marble-01-ko.png" alt="throttleLeading이 각 윈도우의 첫 값을, throttleTrailing이 마지막 값을 내보내는 흐름도" loading="lazy" />
   <figcaption>`throttleLeading`은 window의 첫 값을 빠르게 내보내고, `throttleTrailing`은 window가 안정된 뒤 마지막 값을 내보냅니다.</figcaption>
 </figure>
 
-`throttleLeading`은 alert preview에 어울립니다. window 안의 첫 값을 빨리 보여주기 때문입니다. 반대로 `throttleTrailing`은
-dashboard tile에 어울립니다. window가 안정된 뒤 마지막 값을 보여주기 때문입니다.
+`throttleLeading`은 경보 미리보기에 적합합니다. 윈도우 안의 첫 값을 빠르게 보여주기 때문입니다. 반대로
+`throttleTrailing`은 대시보드 타일에 적합합니다. 윈도우가 안정된 뒤 마지막 값을 보여주기 때문입니다.
 
-예제들은 입력 검증도 stream 바깥으로 밀어내지 않습니다. invalid id, 음수 금액, 제어 문자, non-finite metric 같은 값은
-collect 전에 실패해야 합니다. 로그용 `toString()`과 `Flow<T>.log()`도 민감한 값을 그대로 흘리지 않도록 redaction을
+예제는 입력 검증도 스트림 바깥으로 밀어내지 않습니다. 유효하지 않은 ID, 음수 금액, 제어 문자, 유한하지 않은 메트릭은
+수집 전에 실패해야 합니다. 로그용 `toString()`과 `Flow<T>.log()`도 민감한 값을 그대로 노출하지 않도록 정제를
 전제로 둡니다.
 
-## Parallel enrichment: 병렬 rail은 독립 작업에만 쓴다
+## 병렬 보강: 병렬 레일은 독립 작업에만 사용한다
 
-`flow-extensions-parallel-enrichment`는 주문별 customer lookup, inventory check, discount 계산을 parallel rail로
-나눕니다. 각 주문의 enrichment가 독립적이기 때문에 `Flow<T>.parallel(...)`로 rail을 나누고, 마지막에 `sequential()`로
-다시 단일 stream으로 접습니다.
+`flow-extensions-parallel-enrichment`는 주문별 고객 조회, 재고 확인, 할인 계산을 병렬 레일로
+나눕니다. 각 주문의 보강 작업이 독립적이기 때문에 `Flow<T>.parallel(...)`로 레일을 나누고, 마지막에 `sequential()`로
+다시 단일 스트림으로 병합합니다.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-flow-extensions-parallel-enrichment-marble-01-ko.png" alt="parallel operator가 주문 enrichment를 customer, discount, inventory rail로 나누고 sequential로 다시 합치는 diagram" loading="lazy" />
-  <figcaption>`parallel(3)`은 독립적인 enrichment를 rail로 나누고, `sequential()`은 결과를 다시 단일 output stream으로 접습니다.</figcaption>
+<figure class="bt4k-architecture" data-diagram-title="독립 작업의 병렬 보강">
+  <img src="/assets/bluetape4k-flow-extensions-parallel-enrichment-marble-01-ko.png" alt="parallel 연산자가 주문 보강을 고객, 할인, 재고 레일로 나누고 sequential로 다시 합치는 흐름도" loading="lazy" />
+  <figcaption>`parallel(3)`은 독립적인 보강 작업을 레일로 나누고, `sequential()`은 결과를 다시 단일 출력 스트림으로 병합합니다.</figcaption>
 </figure>
 
 ```kotlin
@@ -276,25 +278,25 @@ orders
     .sequential()
 ```
 
-여기서 병렬화의 기준은 "빨라질 것 같다"가 아닙니다. 각 rail이 공유 mutable state 없이 독립적으로 처리될 수 있고,
-마지막에 다시 순서를 접는 지점이 명확해야 합니다. 이 조건이 없으면 operator가 깔끔해 보여도 race condition을 감춘 코드가
+여기서 병렬화의 기준은 "빨라질 것 같다"가 아닙니다. 각 레일이 공유 가변 상태 없이 독립적으로 처리될 수 있고,
+마지막에 다시 순서를 합치는 지점이 명확해야 합니다. 이 조건이 없으면 연산자가 간결해 보여도 경쟁 상태를 감춘 코드가
 됩니다.
 
 ## 운영에서 조심할 점
 
-Flow extensions를 쓴다고 coroutine 운영 계약이 바뀌지는 않습니다. 오히려 더 분명히 드러나야 합니다.
+Flow 확장 함수를 사용한다고 코루틴 운영 계약이 바뀌지는 않습니다. 오히려 더 명확히 드러나야 합니다.
 
-- suspend call 주변에서 `CancellationException`을 삼키지 않는다.
-- lifecycle 종료 신호는 `takeUntil` 같은 명시적인 boundary로 둔다.
-- fallback과 race operator를 섞을 때 latency 우선, priority 우선, partial merge 중 무엇을 원하는지 먼저 정한다.
-- window/chunk/grouping은 메모리와 지연 시간의 상한을 함께 설명해야 한다.
-- 로그와 debug rendering은 secret, token, password, raw payload를 그대로 내보내지 않는다.
-- parallel rail은 독립성이 검증된 작업에만 적용하고, 다시 단일 stream으로 접는 위치를 명확히 둔다.
+- suspend 호출 주변에서 `CancellationException`을 삼키지 않는다.
+- 생명주기 종료 신호는 `takeUntil` 같은 명시적인 경계로 둔다.
+- 대체 경로와 경쟁 연산자를 함께 사용할 때 지연 시간, 원본 우선순위, 부분 병합 중 무엇을 우선할지 정한다.
+- 윈도우·청크·그룹화에는 메모리와 지연 시간의 상한을 함께 설명한다.
+- 로그와 디버그 출력에 비밀값, 토큰, 비밀번호, 원본 본문을 그대로 노출하지 않는다.
+- 병렬 레일은 독립성을 검증한 작업에만 적용하고, 다시 단일 스트림으로 병합하는 위치를 명확히 둔다.
 
-이 예제들이 좋은 이유는 Flow를 "더 멋진 chain"으로 보여주지 않는다는 점입니다. 각 operator가 어떤 failure, cancellation,
-subscriber, window, backpressure 계약을 담당하는지 테스트와 README에서 같이 드러냅니다.
+이 예제의 장점은 Flow를 단순히 "더 세련된 연산자 체인"으로 보여주지 않는다는 점입니다. 각 연산자가 실패, 취소,
+구독자, 윈도우, 배압 가운데 어떤 계약을 담당하는지 테스트와 README에서 함께 드러냅니다.
 
-## 소스에서 이어 읽기
+## 관련 자료
 
 - [flow-extensions-search-pipeline](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/kotlin/flow-extensions-search-pipeline)
 - [flow-extensions-race-fallback](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/kotlin/flow-extensions-race-fallback)

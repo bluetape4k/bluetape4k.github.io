@@ -3,18 +3,18 @@
 <desc id="desc">Sequence for orders-only transaction, direct Kafka publish, fallback row persistence, relay publish, and reconciliation signal.</desc>
 <defs>
 <style>
-  .title { font-family: "goorm Sans"; font-size: 40px; fill: #263238; }
-  .subtitle, .msg, .note, .footer { font-family: "goorm Sans Code"; fill: #36464f; }
+  .title { font-family: "goorm Sans"; font-size: 40px; fill: #f8fafc; }
+  .subtitle, .msg, .note, .footer { font-family: "goorm Sans Code"; fill: #d8e5f2; }
   .subtitle { font-size: 18px; }
-  .participant { font-family: "goorm Sans"; font-size: 19px; fill: #1f3138; }
-  .role { font-family: "goorm Sans Code"; font-size: 13px; fill: #546a73; }
+  .participant { font-family: "goorm Sans"; font-size: 19px; fill: #f8fafc; }
+  .role { font-family: "goorm Sans Code"; font-size: 13px; fill: #b6c4d6; }
   .msg { font-size: 14px; }
   .note { font-size: 13px; }
-  .footer { font-size: 14px; fill: #60727d; }
-  .frame { fill: #fbfcf8; stroke: #41545d; stroke-width: 3; }
-  .header { fill: #ffffff; stroke: #546e7a; stroke-width: 2; }
+  .footer { font-size: 14px; fill: #a9b8ca; }
+  .frame { fill: #08111f; stroke: #41545d; stroke-width: 3; }
+  .header { fill: #111827; stroke: #546e7a; stroke-width: 2; }
   .lifeline { stroke: #9aaab1; stroke-width: 2; stroke-dasharray: 7 8; }
-  .activation { fill: #f3ecdf; stroke: #8f784e; stroke-width: 1.5; }
+  .activation { fill: #2a2117; stroke: #8f784e; stroke-width: 1.5; }
   .call, .slot, .state, .skip { fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
   .call { stroke: #3f7d9c; }
   .slot { stroke: #a2743d; }
@@ -23,26 +23,26 @@
   .return { fill: none; stroke: #9b7d54; stroke-width: 2.5; stroke-dasharray: 8 6; stroke-linecap: round; stroke-linejoin: round; }
   .alt { fill: none; stroke: #78909c; stroke-width: 3; stroke-dasharray: 12 7; }
   .branchDivider { stroke: #78909c; stroke-width: 3; stroke-dasharray: 12 8; }
-  .label { fill: #ffffff; stroke: #d7e0e4; stroke-width: 1.5; }
+  .label { fill: #111827; stroke: #52627a; stroke-width: 1.5; }
   .label.callLabel { stroke: #9cc2d1; }
   .label.slotLabel { stroke: #d0b078; }
   .label.stateLabel { stroke: #b6c9a4; }
   .label.returnLabel { stroke: #c8b38f; }
   .label.skipLabel { stroke: #d9abab; }
-  .branchOk { fill: #f8f1e6; stroke: #a2743d; stroke-width: 1.8; }
-  .branchSkip { fill: #fff5f5; stroke: #b86868; stroke-width: 3; }
+  .branchOk { fill: #2a2117; stroke: #a2743d; stroke-width: 1.8; }
+  .branchSkip { fill: #321b24; stroke: #b86868; stroke-width: 3; }
   .badge { stroke-width: 1.8; }
-  .badge.callBadge { fill: #eaf4f8; stroke: #3f7d9c; }
-  .badge.slotBadge { fill: #fff4df; stroke: #a2743d; }
-  .badge.stateBadge { fill: #eef7f0; stroke: #6e8f4f; }
-  .badge.returnBadge { fill: #fff7e8; stroke: #9b7d54; }
-  .badge.skipBadge { fill: #fff0f0; stroke: #b86868; }
+  .badge.callBadge { fill: #102a43; stroke: #3f7d9c; }
+  .badge.slotBadge { fill: #332718; stroke: #a2743d; }
+  .badge.stateBadge { fill: #173522; stroke: #6e8f4f; }
+  .badge.returnBadge { fill: #342718; stroke: #9b7d54; }
+  .badge.skipBadge { fill: #321b24; stroke: #b86868; }
   .badgeText { font-family: "goorm Sans Code"; font-size: 12px; font-weight: 700; }
-  .msg.callText, .badgeText.callText { fill: #2f6f8e; }
-  .msg.slotText, .badgeText.slotText { fill: #855a29; }
-  .msg.stateText, .badgeText.stateText { fill: #55783f; }
-  .msg.returnText, .badgeText.returnText { fill: #7f6038; }
-  .msg.skipText, .badgeText.skipText { fill: #9d4f4f; }
+  .msg.callText, .badgeText.callText { fill: #7dd3fc; }
+  .msg.slotText, .badgeText.slotText { fill: #f5bd73; }
+  .msg.stateText, .badgeText.stateText { fill: #a3d977; }
+  .msg.returnText, .badgeText.returnText { fill: #e8c58f; }
+  .msg.skipText, .badgeText.skipText { fill: #fda4af; }
   text { letter-spacing: 0; }
 </style>
 <marker viewBox="0 0 10 10" markerUnits="userSpaceOnUse" id="arrowCall" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#3f7d9c" stroke="#3f7d9c" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
@@ -56,7 +56,7 @@
 <text x="800" y="108" text-anchor="middle" class="subtitle">주문 트랜잭션은 orders만 쓰고, 대체 행은 Kafka 직접 발행 실패 뒤에만 생성됩니다.</text>
 <rect x="60" y="150" width="140" height="68" rx="10" class="header"/>
 <text x="130.0" y="179" text-anchor="middle" class="participant">클라이언트</text>
-<text x="130.0" y="201" text-anchor="middle" class="role">HTTP 호출자</text>
+<text x="130.0" y="201" text-anchor="middle" class="role">HTTP 요청자</text>
 <rect x="260" y="150" width="190" height="68" rx="10" class="header"/>
 <text x="355.0" y="179" text-anchor="middle" class="participant">주문 API</text>
 <text x="355.0" y="201" text-anchor="middle" class="role">placeOrder</text>
@@ -101,14 +101,14 @@
 <rect x="490" y="392" width="292" height="34" rx="17" class="label returnLabel"/>
 <circle cx="514" cy="409" r="13" class="badge returnBadge"/>
 <text x="514" y="414" text-anchor="middle" class="badgeText returnText">3</text>
-<text x="538" y="414" class="msg returnText">orders 커밋, publication 행 없음</text>
+<text x="538" y="414" class="msg returnText">orders 커밋, 발행 행 없음</text>
 <path data-connector="order-tx-to-api" d="M 612 448 L 355 448" class="return" marker-end="url(#arrowReturn)"/>
 <rect x="70" y="482" width="1478" height="704" rx="14" class="alt"/>
 <rect x="96" y="500" width="318" height="30" rx="15" class="branchOk"/>
-<text x="118" y="520" text-anchor="start" class="note">alt Kafka 직접 발행 성공</text>
+<text x="118" y="520" text-anchor="start" class="note">조건: Kafka 직접 발행 성공</text>
 <line x1="70" y1="720" x2="1548" y2="720" class="branchDivider"/>
 <rect x="96" y="738" width="392" height="30" rx="15" class="branchSkip"/>
-<text x="118" y="758" text-anchor="start" class="note">else 3회 뒤 발행 실패 또는 timeout</text>
+<text x="118" y="758" text-anchor="start" class="note">그 외: 3회 시도 뒤 실패 또는 시간 초과</text>
 <rect x="600" y="514" width="364" height="34" rx="17" class="label callLabel"/>
 <circle cx="624" cy="531" r="13" class="badge callBadge"/>
 <text x="624" y="536" text-anchor="middle" class="badgeText callText">4</text>
@@ -117,7 +117,7 @@
 <rect x="900" y="604" width="290" height="34" rx="17" class="label stateLabel"/>
 <circle cx="924" cy="621" r="13" class="badge stateBadge"/>
 <text x="924" y="626" text-anchor="middle" class="badgeText stateText">5</text>
-<text x="948" y="626" class="msg stateText">Kafka topic으로 이벤트 전송</text>
+<text x="948" y="626" class="msg stateText">Kafka 토픽으로 이벤트 전송</text>
 <path data-connector="publisher-to-kafka" d="M 867 662 L 1127 662" class="state" marker-end="url(#arrowState)"/>
 <rect x="520" y="636" width="262" height="34" rx="17" class="label returnLabel"/>
 <circle cx="544" cy="653" r="13" class="badge returnBadge"/>
@@ -127,7 +127,7 @@
 <rect x="815" y="762" width="326" height="34" rx="17" class="label slotLabel"/>
 <circle cx="839" cy="779" r="13" class="badge slotBadge"/>
 <text x="839" y="784" text-anchor="middle" class="badgeText slotText">7</text>
-<text x="863" y="784" class="msg slotText">NOT_PUBLISHED 대체 행 upsert</text>
+<text x="863" y="784" class="msg slotText">NOT_PUBLISHED 대체 행 삽입 또는 갱신</text>
 <path data-connector="publisher-to-outbox-fallback" d="M 867 820 L 1353 820" class="slot" marker-end="url(#arrowSlot)"/>
 <rect x="480" y="842" width="324" height="34" rx="17" class="label returnLabel"/>
 <circle cx="504" cy="859" r="13" class="badge returnBadge"/>
@@ -136,7 +136,7 @@
 <path data-connector="publisher-to-api-fallback" d="M 867 884 L 355 884" class="return" marker-end="url(#arrowReturn)"/>
 <rect x="920" y="920" width="600" height="250" rx="14" class="alt"/>
 <rect x="944" y="938" width="262" height="30" rx="15" class="branchOk"/>
-<text x="966" y="958" text-anchor="start" class="note">loop 예약된 릴레이 선점</text>
+<text x="966" y="958" text-anchor="start" class="note">반복: 예약된 릴레이 선점</text>
 <rect x="1110" y="982" width="250" height="34" rx="17" class="label slotLabel"/>
 <circle cx="1134" cy="999" r="13" class="badge slotBadge"/>
 <text x="1134" y="1004" text-anchor="middle" class="badgeText slotText">9</text>
@@ -145,14 +145,14 @@
 <rect x="1020" y="1054" width="238" height="34" rx="17" class="label returnLabel"/>
 <circle cx="1044" cy="1071" r="13" class="badge returnBadge"/>
 <text x="1044" y="1076" text-anchor="middle" class="badgeText returnText">10</text>
-<text x="1068" y="1076" class="msg returnText">payload 배치</text>
+<text x="1068" y="1076" class="msg returnText">이벤트 본문 배치</text>
 <path data-connector="outbox-to-relay-payload" d="M 1353 1094 L 1515 1094" class="return" marker-end="url(#arrowReturn)"/>
 <rect x="1010" y="1126" width="320" height="34" rx="17" class="label stateLabel"/>
 <circle cx="1034" cy="1143" r="13" class="badge stateBadge"/>
 <text x="1034" y="1148" text-anchor="middle" class="badgeText stateText">11</text>
 <text x="1058" y="1148" class="msg stateText">Kafka 전송 후 PUBLISHED 표시</text>
 <path data-connector="relay-to-kafka-publish" d="M 1515 1168 L 1127 1168" class="state" marker-end="url(#arrowState)"/>
-<rect x="98" y="1220" width="1404" height="44" rx="12" fill="#ffffff" stroke="#ccd7da" stroke-width="2"/>
-<text x="118" y="1248" text-anchor="start" class="note">복구 작업자는 publication 행이 없는 오래된 주문을 찾아 복구 공백에만 결정적 대체 행을 만듭니다.</text>
-<text x="800" y="1288" text-anchor="middle" class="footer">출처: bluetape4k-workshop messaging/kafka-outbox-fallback, PR #349</text>
+<rect x="98" y="1220" width="1404" height="44" rx="12" fill="#111827" stroke="#ccd7da" stroke-width="2"/>
+<text x="118" y="1248" text-anchor="start" class="note">복구 작업자는 발행 행이 없는 오래된 주문을 찾아 유실 가능 구간에만 결정적 대체 행을 만듭니다.</text>
+<text x="800" y="1288" text-anchor="middle" class="footer">출처: bluetape4k-workshop messaging/kafka-outbox-fallback</text>
 </svg>

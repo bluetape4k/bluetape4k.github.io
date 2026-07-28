@@ -2,11 +2,12 @@ import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 
 const out = "public/assets";
+const selected = new Set(process.argv.slice(2));
 
 const translations = new Map([
   ["bluetape4k-flow-extensions-search-pipeline-marble-01", [
     ["search pipeline: burst -> latest request -> cancellable result", "검색 파이프라인: 연속 입력 → 최신 요청 → 취소 가능한 결과"],
-    ["debounce keeps the final query, withLatestFrom attaches settings, flatMapLatest cancels stale work", "debounce는 마지막 검색어를 남기고, withLatestFrom은 설정을 결합하며, flatMapLatest는 오래된 작업을 취소합니다"],
+    ["debounce emits a burst, lastOrNull selects its final query, withLatestFrom attaches settings", "debounce는 입력 묶음을 만들고, lastOrNull은 마지막 검색어를 고르며, withLatestFrom은 설정을 결합합니다"],
     ["typing burst", "연속 입력"],
     ["queries", "검색어"],
     ["settings", "설정"],
@@ -38,22 +39,22 @@ const translations = new Map([
   ["bluetape4k-flow-extensions-chunked-marble-01", [
     ["chunked / buffer: emit concrete batches", "chunked / buffer: 구체적인 배치를 방출합니다"],
     ["top: source events over time; box: chunked(2); bottom: emitted Lists", "위: 시간순 소스 이벤트 · 상자: chunked(2) · 아래: 방출된 List"],
-    ["input Flow", "입력 Flow"],
-    ["output Flow", "출력 Flow"],
+    ["input Flow", "입력 흐름"],
+    ["output Flow", "출력 흐름"],
     ["chunk sizes", "청크 크기"],
   ]],
   ["bluetape4k-flow-extensions-windowed-marble-01", [
     ["windowed / sliding: emit overlapping windows", "windowed / sliding: 겹치는 윈도우를 방출합니다"],
     ["top: source events; box: windowed(3, step 2); bottom: window objects", "위: 소스 이벤트 · 상자: windowed(3, step 2) · 아래: 윈도우 객체"],
-    ["input Flow", "입력 Flow"],
-    ["output Flow", "출력 Flow"],
+    ["input Flow", "입력 흐름"],
+    ["output Flow", "출력 흐름"],
     ["sizes", "크기"],
   ]],
   ["bluetape4k-flow-extensions-groupby-marble-01", [
     ["groupBy: partition by key, not by time or size", "groupBy: 시간이나 크기가 아니라 키로 나눕니다"],
     ["color = order key; shape = event type; bottom: one grouped Flow per key", "색상 = 주문 키 · 모양 = 이벤트 유형 · 아래 = 키마다 그룹화된 Flow 하나"],
-    ["input Flow", "입력 Flow"],
-    ["output Flows", "출력 Flow"],
+    ["input Flow", "입력 흐름"],
+    ["output Flows", "출력 흐름"],
     ["create", "생성"],
     ["line", "품목"],
     ["paid", "결제"],
@@ -62,8 +63,8 @@ const translations = new Map([
   ["bluetape4k-flow-extensions-scanwith-marble-01", [
     ["scanWith / read model: accumulate state", "scanWith / 읽기 모델: 상태를 누적합니다"],
     ["top: events; box: accumulator; bottom: emitted state snapshots", "위: 이벤트 · 상자: 누산기 · 아래: 방출된 상태 스냅샷"],
-    ["input Flow", "입력 Flow"],
-    ["output Flow", "출력 Flow"],
+    ["input Flow", "입력 흐름"],
+    ["output Flow", "출력 흐름"],
     ["empty", "비어 있음"],
     ["state snapshots", "상태 스냅샷"],
   ]],
@@ -114,10 +115,24 @@ function normalizeConnectors(source) {
     );
 }
 
+function normalizeSearchPipeline(name, source) {
+  if (name !== "bluetape4k-flow-extensions-search-pipeline-marble-01") return source;
+  return source
+    .replace(
+      "debounce keeps the final query, withLatestFrom attaches settings, flatMapLatest cancels stale work",
+      "debounce emits a burst, lastOrNull selects its final query, withLatestFrom attaches settings",
+    )
+    .replace(
+      '<text class="label" x="545" y="214" text-anchor="middle">withLatestFrom</text>',
+      '<text class="label" x="545" y="214" text-anchor="middle">lastOrNull + withLatestFrom</text>',
+    );
+}
+
 for (const [name, replacements] of translations) {
+  if (selected.size > 0 && !selected.has(name)) continue;
   const canonical = `${out}/${name}.svg`;
   const sourcePath = existsSync(canonical) ? canonical : `${out}/${name}-en.svg`;
-  const source = normalizeConnectors(readFileSync(sourcePath, "utf8"));
+  const source = normalizeSearchPipeline(name, normalizeConnectors(readFileSync(sourcePath, "utf8")));
   const enSvg = `${out}/${name}-en.svg`;
   const koSvg = `${out}/${name}-ko.svg`;
   writeFileSync(enSvg, normalizeFonts(source, "en"));

@@ -31,7 +31,7 @@ application publishes the event directly to Kafka. If Kafka publish fails or tim
 `event_publications`. During a Kafka outage or long broker timeout, the system degrades back to the familiar outbox relay
 path.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Kafka-first publication and durable fallback">
   <img src="/assets/transactional-outbox-kafka-first-fallback-part2-architecture-01-en.png" alt="Architecture diagram showing orders-only transaction, direct Kafka publish, fallback event_publications row, relay, and reconciler" loading="lazy" />
   <figcaption>The success path writes only the orders row. The fallback path introduces event_publications and relay work.</figcaption>
 </figure>
@@ -101,7 +101,7 @@ fun placeOrder(request: OrderRequest): OrderResponse {
 At this point, the order transaction is already over. That is why the API response carries a publication status such as
 `PUBLISHED_DIRECT`, `FALLBACK_STORED`, or `FALLBACK_STORE_FAILED`.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-sequence" data-diagram-title="Kafka-first success and fallback sequence">
   <img src="/assets/transactional-outbox-kafka-first-fallback-part2-sequence-01-en.png" alt="Sequence diagram between Client, Order API, Order Tx, Publisher, Outbox DB, and Relay/Reconciler for Kafka-first fallback" loading="lazy" />
   <figcaption>Direct publish success leaves the fallback table empty. Direct publish failure creates a NOT_PUBLISHED row.</figcaption>
 </figure>

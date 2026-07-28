@@ -3,18 +3,18 @@
 <desc id="desc">Sequence for orders-only transaction, direct Kafka publish, fallback row persistence, relay publish, and reconciliation signal.</desc>
 <defs>
 <style>
-  .title { font-family: "Architects Daughter"; font-size: 40px; fill: #263238; }
-  .subtitle, .msg, .note, .footer { font-family: "Comic Mono"; fill: #36464f; }
+  .title { font-family: "Architects Daughter"; font-size: 40px; fill: #f8fafc; }
+  .subtitle, .msg, .note, .footer { font-family: "Comic Mono"; fill: #d8e5f2; }
   .subtitle { font-size: 18px; }
-  .participant { font-family: "Architects Daughter"; font-size: 19px; fill: #1f3138; }
-  .role { font-family: "Comic Mono"; font-size: 13px; fill: #546a73; }
+  .participant { font-family: "Architects Daughter"; font-size: 19px; fill: #f8fafc; }
+  .role { font-family: "Comic Mono"; font-size: 13px; fill: #b6c4d6; }
   .msg { font-size: 14px; }
   .note { font-size: 13px; }
-  .footer { font-size: 14px; fill: #60727d; }
-  .frame { fill: #fbfcf8; stroke: #41545d; stroke-width: 3; }
-  .header { fill: #ffffff; stroke: #546e7a; stroke-width: 2; }
+  .footer { font-size: 14px; fill: #a9b8ca; }
+  .frame { fill: #08111f; stroke: #41545d; stroke-width: 3; }
+  .header { fill: #111827; stroke: #546e7a; stroke-width: 2; }
   .lifeline { stroke: #9aaab1; stroke-width: 2; stroke-dasharray: 7 8; }
-  .activation { fill: #f3ecdf; stroke: #8f784e; stroke-width: 1.5; }
+  .activation { fill: #2a2117; stroke: #8f784e; stroke-width: 1.5; }
   .call, .slot, .state, .skip { fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
   .call { stroke: #3f7d9c; }
   .slot { stroke: #a2743d; }
@@ -23,26 +23,26 @@
   .return { fill: none; stroke: #9b7d54; stroke-width: 2.5; stroke-dasharray: 8 6; stroke-linecap: round; stroke-linejoin: round; }
   .alt { fill: none; stroke: #78909c; stroke-width: 3; stroke-dasharray: 12 7; }
   .branchDivider { stroke: #78909c; stroke-width: 3; stroke-dasharray: 12 8; }
-  .label { fill: #ffffff; stroke: #d7e0e4; stroke-width: 1.5; }
+  .label { fill: #111827; stroke: #52627a; stroke-width: 1.5; }
   .label.callLabel { stroke: #9cc2d1; }
   .label.slotLabel { stroke: #d0b078; }
   .label.stateLabel { stroke: #b6c9a4; }
   .label.returnLabel { stroke: #c8b38f; }
   .label.skipLabel { stroke: #d9abab; }
-  .branchOk { fill: #f8f1e6; stroke: #a2743d; stroke-width: 1.8; }
-  .branchSkip { fill: #fff5f5; stroke: #b86868; stroke-width: 3; }
+  .branchOk { fill: #2a2117; stroke: #a2743d; stroke-width: 1.8; }
+  .branchSkip { fill: #321b24; stroke: #b86868; stroke-width: 3; }
   .badge { stroke-width: 1.8; }
-  .badge.callBadge { fill: #eaf4f8; stroke: #3f7d9c; }
-  .badge.slotBadge { fill: #fff4df; stroke: #a2743d; }
-  .badge.stateBadge { fill: #eef7f0; stroke: #6e8f4f; }
-  .badge.returnBadge { fill: #fff7e8; stroke: #9b7d54; }
-  .badge.skipBadge { fill: #fff0f0; stroke: #b86868; }
+  .badge.callBadge { fill: #102a43; stroke: #3f7d9c; }
+  .badge.slotBadge { fill: #332718; stroke: #a2743d; }
+  .badge.stateBadge { fill: #173522; stroke: #6e8f4f; }
+  .badge.returnBadge { fill: #342718; stroke: #9b7d54; }
+  .badge.skipBadge { fill: #321b24; stroke: #b86868; }
   .badgeText { font-family: "Comic Mono"; font-size: 12px; font-weight: 700; }
-  .msg.callText, .badgeText.callText { fill: #2f6f8e; }
-  .msg.slotText, .badgeText.slotText { fill: #855a29; }
-  .msg.stateText, .badgeText.stateText { fill: #55783f; }
-  .msg.returnText, .badgeText.returnText { fill: #7f6038; }
-  .msg.skipText, .badgeText.skipText { fill: #9d4f4f; }
+  .msg.callText, .badgeText.callText { fill: #7dd3fc; }
+  .msg.slotText, .badgeText.slotText { fill: #f5bd73; }
+  .msg.stateText, .badgeText.stateText { fill: #a3d977; }
+  .msg.returnText, .badgeText.returnText { fill: #e8c58f; }
+  .msg.skipText, .badgeText.skipText { fill: #fda4af; }
   text { letter-spacing: 0; }
 </style>
 <marker viewBox="0 0 10 10" markerUnits="userSpaceOnUse" id="arrowCall" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#3f7d9c" stroke="#3f7d9c" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
@@ -152,7 +152,7 @@
 <text x="1034" y="1148" text-anchor="middle" class="badgeText stateText">11</text>
 <text x="1058" y="1148" class="msg stateText">send to Kafka and mark PUBLISHED</text>
 <path data-connector="relay-to-kafka-publish" d="M 1515 1168 L 1127 1168" class="state" marker-end="url(#arrowState)"/>
-<rect x="98" y="1220" width="1404" height="44" rx="12" fill="#ffffff" stroke="#ccd7da" stroke-width="2"/>
+<rect x="98" y="1220" width="1404" height="44" rx="12" fill="#111827" stroke="#ccd7da" stroke-width="2"/>
 <text x="118" y="1248" text-anchor="start" class="note">Reconciler scans old orders without publication rows and rebuilds deterministic fallback rows only for the repair gap.</text>
-<text x="800" y="1288" text-anchor="middle" class="footer">Source: bluetape4k-workshop messaging/kafka-outbox-fallback, PR #349</text>
+<text x="800" y="1288" text-anchor="middle" class="footer">Source: bluetape4k-workshop messaging/kafka-outbox-fallback</text>
 </svg>

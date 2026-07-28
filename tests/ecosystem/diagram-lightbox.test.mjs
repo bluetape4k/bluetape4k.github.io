@@ -685,3 +685,44 @@ test('text-search, dictionary, and outbox articles expose localized diagrams and
   assert.match(pairs[4][0], /고유 인덱스가 최종 쓰기 경계를\s+보호하고/);
   assert.match(pairs[4][0], /개별 클라이언트가 실제로 수신했다는 보장은 별도의 확인·오프셋 정책/);
 });
+
+test('Kafka-first, coroutine observability, and Flow articles expose localized diagrams and implementation-accurate boundaries', async () => {
+  const pairs = [
+    [
+      await read('src/content/docs/ko/blog/transactional-outbox-kafka-first-fallback-part2.mdx'),
+      ['Kafka 우선 발행과 영속 대체 경로', 'Kafka 우선 발행의 성공·실패 시퀀스'],
+    ],
+    [
+      await read('src/content/docs/blog/transactional-outbox-kafka-first-fallback-part2.mdx'),
+      ['Kafka-first publication and durable fallback', 'Kafka-first success and fallback sequence'],
+    ],
+    [
+      await read('src/content/docs/ko/blog/coroutine-observability-micrometer-readiness.mdx'),
+      ['코루틴 업무 경로와 관찰 경로', '준비 상태 점검의 성공·실패 시퀀스'],
+    ],
+    [
+      await read('src/content/docs/blog/coroutine-observability-micrometer-readiness.mdx'),
+      ['Coroutine work path and observation path', 'Readiness probe contract'],
+    ],
+    [
+      await read('src/content/docs/ko/blog/bluetape4k-flow-extensions-workshop.mdx'),
+      ['검색 입력에서 최신 요청까지', '경쟁·순차 대체·부분 병합 정책', '독립 작업의 병렬 보강'],
+    ],
+    [
+      await read('src/content/docs/blog/bluetape4k-flow-extensions-workshop.mdx'),
+      ['Search input to latest request', 'Race, ordered fallback, and partial merge', 'Parallel enrichment of independent work'],
+    ],
+  ];
+
+  for (const [source, titles] of pairs) {
+    for (const title of titles) {
+      assert.match(source, new RegExp(`data-diagram-title="${title}"`));
+    }
+    assert.doesNotMatch(source, /class="bt4k-blog-hero"[^>]*data-diagram-title/);
+  }
+
+  assert.match(pairs[0][0], /이벤트 직접 발행 실패와 대체 행 저장 사이에 유실 공백/);
+  assert.match(pairs[2][0], /`ThreadLocal`에만 의존하면 span 트리의 부모·자식 관계가 끊길 수 있습니다/);
+  assert.match(pairs[4][0], /`bufferingDebounce`는 연속 입력을 `List<String>`으로 묶습니다/);
+  assert.match(pairs[5][0], /`bufferingDebounce` emits each burst as a `List<String>`/);
+});

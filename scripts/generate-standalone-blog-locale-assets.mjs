@@ -2,6 +2,7 @@ import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 
 const out = "public/assets";
+const selected = new Set(process.argv.slice(2));
 
 const translations = new Map([
   [
@@ -66,97 +67,97 @@ const translations = new Map([
   [
     "coroutine-observability-trace-flow-01",
     [
-      ["Coroutine observability signal map", "Coroutine observability signal map"],
+      ["Coroutine observability signal map", "코루틴 관측성 신호 지도"],
       [
         "Architecture diagram separating the coroutine request path from metrics scraping, dashboard querying, and trace export.",
-        "Coroutine request path와 metrics scraping, dashboard query, trace export 경로를 분리해 보여주는 architecture diagram입니다.",
+        "코루틴 요청 경로와 메트릭 수집, 대시보드 조회, 추적 정보 전송 경로를 분리한 구조도입니다.",
       ],
-      ["Coroutine Observability: Work Path vs Observe Path", "Coroutine Observability: Work Path vs Observe Path"],
+      ["Coroutine Observability: Work Path vs Observe Path", "코루틴 관측성: 업무 경로와 관찰 경로"],
       [
         "Coroutine spans stay with suspend work; metrics and dashboards observe after the work is recorded.",
-        "Coroutine span은 suspend 작업과 함께 흐르고, metrics와 dashboard는 기록된 뒤의 신호만 관찰합니다.",
+        "코루틴 span은 일시 중단 작업과 함께 흐르고, 메트릭과 대시보드는 기록된 신호만 관찰합니다.",
       ],
-      ["Work-producing request path", "업무를 수행하는 request path"],
-      ["Observe-only path", "관찰 전용 path"],
-      ["HTTP Client", "HTTP Client"],
+      ["Work-producing request path", "업무를 수행하는 요청 경로"],
+      ["Observe-only path", "관찰 전용 경로"],
+      ["HTTP Client", "HTTP 클라이언트"],
       ["business request", "업무 요청"],
-      ["traceparent optional", "traceparent optional"],
+      ["traceparent optional", "traceparent 선택 사항"],
       ["Spring / Ktor", "Spring / Ktor"],
-      ["suspend handler", "suspend handler"],
-      ["server span", "server span"],
-      ["Observation Scope", "Observation Scope"],
-      ["current span", "current span"],
-      ["coroutine context", "coroutine context"],
-      ["Suspend Service", "Suspend Service"],
-      ["child spans", "child spans"],
-      ["no runCatching", "no runCatching"],
-      ["DB / HTTP Client", "DB / HTTP Client"],
+      ["suspend handler", "suspend 핸들러"],
+      ["server span", "서버 span"],
+      ["Observation Scope", "관찰 범위"],
+      ["current span", "현재 span"],
+      ["coroutine context", "코루틴 문맥"],
+      ["Suspend Service", "suspend 서비스"],
+      ["child spans", "자식 span"],
+      ["no runCatching", "runCatching 사용 금지"],
+      ["DB / HTTP Client", "DB / HTTP 클라이언트"],
       ["db.find / cache.get", "db.find / cache.get"],
       ["http.client.requests", "http.client.requests"],
-      ["Zipkin Collector", "Zipkin Collector"],
-      ["trace export", "trace export"],
-      ["span tree query", "span tree query"],
-      ["Actuator / Registry", "Actuator / Registry"],
-      ["meters exposed", "meter 노출"],
+      ["Zipkin Collector", "Zipkin 수집기"],
+      ["trace export", "추적 정보 전송"],
+      ["span tree query", "span 트리 조회"],
+      ["Actuator / Registry", "Actuator / 레지스트리"],
+      ["meters exposed", "메트릭 노출"],
       ["/actuator/metrics", "/actuator/metrics"],
       ["Prometheus", "Prometheus"],
-      ["scrape metrics", "metrics scrape"],
-      ["store series", "series 저장"],
+      ["scrape metrics", "메트릭 수집"],
+      ["store series", "시계열 저장"],
       ["Grafana", "Grafana"],
-      ["query Prometheus", "Prometheus query"],
-      ["dashboards only", "dashboard only"],
-      ["record meters", "meter 기록"],
-      ["export spans", "span export"],
+      ["query Prometheus", "Prometheus 조회"],
+      ["dashboards only", "대시보드 전용"],
+      ["record meters", "메트릭 기록"],
+      ["export spans", "span 전송"],
       ["scrape", "scrape"],
-      ["query", "query"],
-      ["Source-backed contract", "Source-backed contract"],
+      ["query", "조회"],
+      ["Source-backed contract", "구현 근거로 확인한 계약"],
       [
         "Prometheus, Grafana, Zipkin, Actuator, and registries observe recorded signals. They do not trigger business work.",
-        "Prometheus, Grafana, Zipkin, Actuator, registry는 기록된 signal을 관찰할 뿐 업무 작업을 실행하지 않습니다.",
+        "Prometheus, Grafana, Zipkin, Actuator와 registry는 기록된 신호를 관찰할 뿐 업무 작업을 실행하지 않습니다.",
       ],
-      ["Sources: micrometer-tracing-coroutines, observability-basic, observability-advanced", "Sources: micrometer-tracing-coroutines, observability-basic, observability-advanced"],
+      ["Sources: micrometer-tracing-coroutines, observability-basic, observability-advanced", "출처: micrometer-tracing-coroutines, observability-basic, observability-advanced"],
     ],
   ],
   [
     "coroutine-observability-readiness-sequence-01",
     [
-      ["Readiness contract sequence", "Readiness contract sequence"],
+      ["Readiness contract sequence", "준비 상태 계약 시퀀스"],
       [
         "Sequence diagram showing readiness probes, Spring Actuator or Ktor readyz endpoint, readiness state, repository ping, and database response branches.",
         "Readiness probe, Spring Actuator 또는 Ktor readyz endpoint, readiness state, repository ping, database response branch를 보여주는 sequence diagram입니다.",
       ],
-      ["Readiness Probe Is an Operational Contract", "Readiness Probe는 운영 계약입니다"],
+      ["Readiness Probe Is an Operational Contract", "준비 상태 점검은 운영 계약입니다"],
       [
         "Spring uses Actuator readiness; Ktor exposes /readyz, but both must prove database reachability.",
-        "Spring은 Actuator readiness를 쓰고 Ktor는 /readyz를 노출하지만, 둘 다 database reachability를 증명해야 합니다.",
+        "Spring은 Actuator 준비 상태를 사용하고 Ktor는 /readyz를 노출하지만, 둘 다 DB 접근 가능성을 증명해야 합니다.",
       ],
-      ["Probe", "Probe"],
+      ["Probe", "점검 요청"],
       ["Kubernetes", "Kubernetes"],
-      ["Readiness Endpoint", "Readiness Endpoint"],
+      ["Readiness Endpoint", "준비 상태 엔드포인트"],
       ["Actuator or /readyz", "Actuator 또는 /readyz"],
       ["ReadinessState", "ReadinessState"],
-      ["degrade switch", "degrade switch"],
-      ["Repository", "Repository"],
-      ["ping / record", "ping / record"],
-      ["Database", "Database"],
+      ["degrade switch", "장애 모의 상태"],
+      ["Repository", "저장소"],
+      ["ping / record", "연결 확인 / 조회"],
+      ["Database", "데이터베이스"],
       ["Exposed JDBC", "Exposed JDBC"],
-      ["GET readiness endpoint", "GET readiness endpoint"],
-      ["read example state first", "example state 먼저 확인"],
+      ["GET readiness endpoint", "준비 상태 엔드포인트 GET"],
+      ["read example state first", "모의 상태 먼저 확인"],
       ["databaseAvailable=true", "databaseAvailable=true"],
-      ["alt database is reachable", "alt database reachable"],
+      ["alt database is reachable", "조건: DB 접근 가능"],
       ["repository.ping()", "repository.ping()"],
       ["SELECT 1 / ping", "SELECT 1 / ping"],
-      ["reachable", "reachable"],
+      ["reachable", "접근 가능"],
       ["HTTP 200, status UP", "HTTP 200, status UP"],
-      ["else example state or DB ping is degraded", "else example state 또는 DB ping degraded"],
+      ["else example state or DB ping is degraded", "그 외: 모의 상태 또는 DB 연결 확인 실패"],
       ["HTTP 503, status DOWN", "HTTP 503, status DOWN"],
       [
         "Tests assert UP/DOWN responses, request-id echo/sanitize, and structured validation errors for Spring and Ktor examples.",
-        "Tests는 Spring과 Ktor examples의 UP/DOWN response, request-id echo/sanitize, structured validation error를 검증합니다.",
+        "테스트는 Spring과 Ktor 예제의 UP/DOWN 응답, 요청 ID 정제·반환, 구조화된 검증 오류를 확인합니다.",
       ],
       [
         "Sources: exposed-workshop 09-spring-observability-readiness and 10-ktor-observability-readiness",
-        "Sources: exposed-workshop 09-spring-observability-readiness and 10-ktor-observability-readiness",
+        "출처: exposed-workshop 09-spring-observability-readiness, 10-ktor-observability-readiness",
       ],
     ],
   ],
@@ -206,6 +207,47 @@ function normalizeConnectors(source) {
     .replace(/(<path id="[^"]+" class=")(dep|assoc|inherit|return)(" data-edge=)/g, "$1connector $2$3");
 }
 
+function darken(source) {
+  const colors = new Map([
+    ["#fbfcf8", "#08111f"],
+    ["#fbfaf7", "#08111f"],
+    ["#ffffff", "#111827"],
+    ["#f3ecdf", "#2a2117"],
+    ["#f8f1e6", "#2a2117"],
+    ["#fff5f5", "#321b24"],
+    ["#ccd7da", "#52627a"],
+    ["#d7e0e4", "#52627a"],
+    ["#263238", "#f8fafc"],
+    ["#36464f", "#d8e5f2"],
+    ["#1f3138", "#f8fafc"],
+    ["#546a73", "#b6c4d6"],
+    ["#60727d", "#a9b8ca"],
+    ["#ede9fe", "#2b2147"],
+    ["#dcfce7", "#123524"],
+    ["#5b21b6", "#c4b5fd"],
+    ["#166534", "#86efac"],
+    ["#1f2937", "#f8fafc"],
+    ["#475569", "#a9b8ca"],
+    ["#64748b", "#b6c4d6"],
+    ["#eef6ff", "#10243a"],
+    ["#f5f3ff", "#241b3b"],
+    ["#f7f4ff", "#241b3b"],
+    ["#d8ccff", "#6847a8"],
+    ["#f1f5f9", "#172033"],
+    ["#fffef7", "#172033"],
+    ["#cbd5e1", "#52627a"],
+    ["#e0f2fe", "#102a43"],
+    ["#b9d7ff", "#315f8f"],
+    ["#2f6f8e", "#7dd3fc"],
+    ["#55783f", "#a3d977"],
+    ["#7f6038", "#e8c58f"],
+    ["#9d4f4f", "#fda4af"],
+  ]);
+  let result = source;
+  for (const [from, to] of colors) result = result.replaceAll(from, to);
+  return result;
+}
+
 function normalizeSequence(source) {
   let result = source
     .replace(/<g id="visible-message-numbers">[\s\S]*?<\/g>\s*/, "")
@@ -233,7 +275,7 @@ function normalizeSpringClasses(source) {
 }
 
 function prepare(source, name, replacements, locale) {
-  let result = normalizeConnectors(source);
+  let result = darken(normalizeConnectors(source));
   if (name.includes("spring-classes")) result = normalizeSpringClasses(result);
   if (name.includes("readiness-sequence")) result = normalizeSequence(result);
   if (locale === "ko") result = localize(result, replacements);
@@ -241,6 +283,7 @@ function prepare(source, name, replacements, locale) {
 }
 
 for (const [name, replacements] of translations) {
+  if (selected.size > 0 && !selected.has(name)) continue;
   const source = readFileSync(sourcePathFor(name), "utf8");
   const enSvg = `${out}/${name}-en.svg`;
   const koSvg = `${out}/${name}-ko.svg`;

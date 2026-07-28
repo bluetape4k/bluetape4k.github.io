@@ -37,7 +37,7 @@
   <text class="title" x="52" y="58">groupBy: 시간이나 크기가 아니라 키로 나눕니다</text>
   <text class="sub" x="52" y="84">색상 = 주문 키 · 모양 = 이벤트 유형 · 아래 = 키마다 그룹화된 Flow 하나</text>
 
-  <text class="small" x="52" y="132">입력 Flow</text>
+  <text class="small" x="52" y="132">입력 흐름</text>
   <path class="edge" d="M150 128 L806 128"/>
   <circle class="shape teal" cx="220" cy="128" r="13"/><text class="tiny" x="220" y="128">C</text>
   <circle class="shape purple" cx="300" cy="128" r="13"/><text class="tiny" x="300" y="128">C</text>
@@ -55,7 +55,7 @@
   <rect class="box op" x="334" y="166" width="182" height="44"/>
   <text class="label" x="425" y="193" text-anchor="middle">groupBy(orderId)</text>
 
-  <text class="small" x="52" y="240">출력 Flow</text>
+  <text class="small" x="52" y="240">출력 흐름</text>
   <text class="small" x="142" y="226">order-1</text>
   <path class="edge" d="M220 220 L806 220"/>
   <circle class="shape teal" cx="260" cy="220" r="11"/><text class="tiny" x="260" y="220">C</text>
