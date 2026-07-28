@@ -77,6 +77,7 @@ commit `e5dd2b6`을 upstream에 push했다. 별도로 존재하던 live-owned
 | 전체 테스트 | Node 테스트 162/162 통과 |
 | 사이트 검사 | Astro 오류·경고 0, 기존 코드 힌트 3개, 1,303 pages build |
 | 로컬 경로 | 한영 글 4개와 대표 PNG 2개 HTTP 200 |
+| stacked PR | #286, base `docs/korean-proofreading-graph-integrations-batch` |
 
 ## 다음 작업에 적용할 지침
 

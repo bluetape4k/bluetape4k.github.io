@@ -38,14 +38,14 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 
 ## 현재 진행 상황
 
-기준 시점: 2026-07-28, stacked PR #267~#285
+기준 시점: 2026-07-28, stacked PR #267~#286
 
 | 구분 | 완료 | 전체 | 남음 | 상태 |
 | --- | ---: | ---: | ---: | --- |
 | 한국어 블로그 본문 교정 | 49 | 87 | 38 | 진행 중 |
 | 기술 다이어그램 변경·배치 검증 | 101 | 166 | 65 | 진행 중 |
-| stacked PR | 19 | 미정 | 미정 | #267~#285 open |
-| 현재 배치 | 2 | 2 | 0 | ID 생성기·Dependencies 검증 완료, PR 준비 |
+| stacked PR | 20 | 미정 | 미정 | #267~#286 open |
+| 현재 배치 | 2 | 2 | 0 | ID 생성기·Dependencies PR #286 |
 | 최종 전체 사이트 감사 | 0 | 1 | 1 | 대기 |
 | 최종 머지·배포·정리 | 0 | 1 | 1 | 대기 |
 
@@ -79,9 +79,9 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 | writer 체크리스트 | PASS | dotfiles `e5dd2b6`, chezmoi apply·source/live·upstream 일치 |
 | 사이트 검사 | PASS | Node 테스트 162/162, Astro 오류·경고 0, 기존 힌트 3개, 1,303 pages build |
 | 경로 검사 | PASS | 한영 글 4개와 대표 PNG 2개 HTTP 200 |
-| stacked PR | PENDING | base `docs/korean-proofreading-graph-integrations-batch` |
+| stacked PR | PASS | #286, base `docs/korean-proofreading-graph-integrations-batch`, head `docs/korean-proofreading-id-dependencies-batch` |
 
-현재 배치 필수 검사: **9/10 완료, PENDING 1, Blocked 0**
+현재 배치 필수 검사: **10/10 완료, N/A 0, Blocked 0**
 
 ## Graph Part 1~3 배치 DoD
 
