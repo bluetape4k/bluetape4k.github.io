@@ -38,14 +38,14 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 
 ## 현재 진행 상황
 
-기준 시점: 2026-07-29, stacked PR #267~#288, #290~#296
+기준 시점: 2026-07-29, stacked PR #267~#288, #290~#297
 
 | 구분 | 완료 | 전체 | 남음 | 상태 |
 | --- | ---: | ---: | ---: | --- |
-| 한국어 블로그 본문 교정 | 76 | 87 | 11 | 진행 중 |
-| 기술 다이어그램 변경·배치 검증 | 151 | 173 | 22 | 진행 중 |
-| stacked PR | 29 | 미정 | 미정 | #267~#288, #290~#296 open |
-| 현재 배치 | 3 | 3 | 0 | 병원 예약 Part 2~4 |
+| 한국어 블로그 본문 교정 | 79 | 87 | 8 | 진행 중 |
+| 기술 다이어그램 변경·배치 검증 | 158 | 173 | 15 | 진행 중 |
+| stacked PR | 30 | 미정 | 미정 | #267~#288, #290~#297 open |
+| 현재 배치 | 3 | 3 | 0 | 병원 예약 Part 5·예약 제어 영역·테넌트 작업 조정 |
 | 최종 전체 사이트 감사 | 0 | 1 | 1 | 대기 |
 | 최종 머지·배포·정리 | 0 | 1 | 1 | 대기 |
 
@@ -74,6 +74,25 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 - Bucket4j 요청 제한, OCR 서비스 실패 응답, Bluetape Skills Part 1
 - Bluetape Skills Part 2~3, 병원 예약 Part 1
 - 병원 예약 Part 2~4
+- 병원 예약 Part 5, 예약 제어 영역, 테넌트 작업·마이그레이션 게이트
+
+## 병원 예약 운영 경계 배치 DoD
+
+| 검사 | 결과 | 근거 |
+| --- | --- | --- |
+| 글 교정 | PASS | 병원 예약 Part 5·예약 제어 영역·테넌트 작업 조정 한국어 본문과 의미가 달라진 대응 영어 글 |
+| 날짜 보존 | PASS | base 대비 한영 `blog.date`와 `sidebar.order` 6/6 변경 없음 |
+| 사실 검증 | PASS | Solver 입력 적재, PostgreSQL 최종 권한, 리스 장애 인계, Issue #548 상태와 현재 구현 대조 |
+| 소스 링크 | PASS | 한영 글의 독자용 외부 자료 링크 39개 중 수정 전 404 1개를 현재 경로로 교정한 뒤 39/39 HTTP 200 |
+| 한영 정합성 | PASS | 주장·식별자·자료 링크·다이어그램 구성과 운영 보장 범위 동기화 |
+| 다이어그램 정적 감사 | PASS | 한영 14/14 XML, architecture/chart 8/8, sequence 6/6, 정적 감사 실패 0 |
+| 다이어그램 구조·PNG 검사 | PASS | 7개 stem, 생성기 2회 체크섬 일치, CairoSVG 2배 PNG 14/14 원본 확인 |
+| writer 체크리스트 | PASS | dotfiles `5c4ab65`, chezmoi apply·SHA-256 source/live·self-audit `PASS 7/WARN 0/FAIL 0`·upstream 일치 |
+| 사이트 검사 | PASS | Node 테스트 167/167, Astro 오류·경고 0, 기존 힌트 3개, 1,303 pages build |
+| 경로 검사 | PASS | 한영 글 6개 정적 산출물 생성, 로컬 프리뷰 `127.0.0.1:4342`에서 6/6 HTTP 200 |
+| stacked PR | PASS | #297, base `docs/korean-proofreading-clinic-core-batch`, head `docs/korean-proofreading-clinic-operations-batch` |
+
+현재 배치 필수 검사: **11/11 완료, N/A 0, Blocked 0**
 
 ## 병원 예약 Part 2~4 배치 DoD
 
