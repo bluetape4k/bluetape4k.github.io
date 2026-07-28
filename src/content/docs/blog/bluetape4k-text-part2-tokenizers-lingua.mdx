@@ -33,9 +33,9 @@ The working rule for Part 2 is small:
 
 A service usually reads best when the path is drawn like this.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Validation and Processing Boundaries for Multilingual Text">
   <img src="/assets/bluetape4k-text-part2-language-branches-01-en.png" alt="Raw input is validated, passed through Lingua language detection, and routed to Korean tokenizer, Japanese tokenizer, or generic fallback path" loading="lazy" />
-  <figcaption>Language detection is a routing decision. Tokenization is the language-specific analysis step.</figcaption>
+  <figcaption>Transport body limits, string validation, language detection, and language-specific analysis are separate responsibilities.</figcaption>
 </figure>
 
 Lingua does not replace a tokenizer. It helps decide where the text should go. Korean and Japanese tokenization happen after that decision. If a service detects the language and then still sends every input through the same tokenizer path, the detector is mostly decorative. Decorative code is fun only until someone has to maintain it.
@@ -184,7 +184,7 @@ detector.detectAllLanguagesOf("🔥🎉🧪")
 
 Treat the empty set as an explicit fallback condition. A search query may go through generic normalization only. A report flow may store "language unresolved" for later review. The important part is not pretending that detection succeeded.
 
-The detector should be reused. Model construction is expensive. The workshop `LanguageDetectionService` keeps a detector field and shares it across calls.
+The detector should be reused because model construction is expensive. The workshop `LanguageDetectionService` keeps a detector field and shares it across calls.
 
 ```kotlin
 class LanguageDetectionService {
@@ -214,12 +214,16 @@ val top = values.keys.firstOrNull()
 
 Production code should not make every decision from `detectLanguage` alone. Short one-word input can be uncertain. Use confidence, input length, and service policy together, then route uncertain input to a visible fallback path.
 
-## A Service Shape
+Detector reuse does not automatically make concurrent access safe. The workshop
+`CoroutineLanguageDetectionService` runs detection on a caller-provided dispatcher and uses a `Mutex` to serialize access to the shared detector. Construction cost and concurrency policy need to be designed together.
 
-This is the level of shape that is useful in application code.
+## Compose the Boundaries with Application Policy
+
+The following code is application-owned pseudocode, not a library API. Check the HTTP body size and `Content-Type` at the transport boundary first. Only after bounded decoding has materialized a `String` can the application check blank input and the `MAX_TOKENIZE_TEXT_LENGTH` limit of 100,000 characters. The library throws `IllegalArgumentException` for oversized strings; mapping that failure to HTTP `413` belongs to the application.
 
 ```kotlin
 fun analyzeText(text: String): TextAnalysis {
+    // Application policy: the transport caps the body before this String exists.
     if (text.isBlank()) return TextAnalysis.rejected(400)
     if (text.length > MAX_TOKENIZE_TEXT_LENGTH) return TextAnalysis.rejected(413)
 
@@ -246,7 +250,7 @@ fun analyzeText(text: String): TextAnalysis {
 }
 ```
 
-Real services will add policy. If Korean and Japanese are both detected, should the service run both tokenizers or pick a primary language? For abuse filtering, running both is often safer. For search query normalization, latency and cost may push the service toward one path. The important part is that validation, detection, and tokenizer selection are visible and testable.
+This pseudocode chooses the Korean path first when both Korean and Japanese are detected. A language set does not choose the service policy. Abuse filtering may run both processors, while search query normalization may choose one primary language to control latency and cost. Keeping validation, detection, and processor selection explicit makes each policy independently testable.
 
 ## Selection Table
 
@@ -277,6 +281,7 @@ Part 3 moves to `text-search` and the workshop abuse-word filtering example. Tha
 - [LanguageDetectorExtensionsTest](https://github.com/bluetape4k/bluetape4k-text/blob/develop/lingua/src/test/kotlin/io/bluetape4k/lingua/LanguageDetectorExtensionsTest.kt)
 - [kotlin/text-processing workshop](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/kotlin/text-processing)
 - [LanguageDetectionService](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/kotlin/text-processing/src/main/kotlin/io/bluetape4k/workshop/text/detection/LanguageDetectionService.kt)
+- [CoroutineLanguageDetectionService](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/kotlin/text-processing/src/main/kotlin/io/bluetape4k/workshop/text/detection/CoroutineLanguageDetectionService.kt)
 - [TextNormalizer](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/kotlin/text-processing/src/main/kotlin/io/bluetape4k/workshop/text/normalize/TextNormalizer.kt)
 
 ## Series

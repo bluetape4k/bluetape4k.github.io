@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="900" viewBox="0 0 1280 900" role="img" aria-label="Jackson 3 compatibility boundaries for Spring Boot 4 examples">
+  <defs>
+    <style>
+      .title{font-family:'Architects Daughter', cursive;font-size:31px;font-weight:700;fill:#f8fafc}
+      .subtitle,.body,.small{font-family:'Comic Mono', monospace;fill:#cbd5e1}
+      .subtitle{font-size:16px}.body{font-size:16px}.small{font-size:14px}
+      .heading{font-family:'Architects Daughter', cursive;font-size:20px;font-weight:700;fill:#f8fafc}
+      .baseline-label{font-family:'Architects Daughter', cursive;font-size:18px;font-weight:700;fill:#7dd3fc}
+      .baseline-value{font-family:'Comic Mono', monospace;font-size:20px;font-weight:700;fill:#f8fafc}
+      .panel{fill:#111827;stroke:#334155;stroke-width:1.5}
+      .card{stroke-width:2}
+      .connector{fill:none;stroke:#94a3b8;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    </style>
+    <marker id="arrow" viewBox="0 0 16 16" markerWidth="16" markerHeight="16" refX="15" refY="8" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0 L16 8 L0 16 Z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+  <rect width="1280" height="900" fill="#0b1220"/>
+  <text class="title" x="64" y="72">Jackson 3 Compatibility Boundaries for Spring Boot 4 Examples</text>
+  <text class="subtitle" x="66" y="108">Dependencies, code APIs, configuration, and verification must point to the same baseline.</text>
+
+  <rect class="panel" x="54" y="142" width="1172" height="680" rx="22"/>
+
+  <rect x="390" y="178" width="500" height="94" rx="18" fill="#12344a" stroke="#38bdf8" stroke-width="2"/>
+  <text class="baseline-label" x="640" y="213" text-anchor="middle">Example baseline</text>
+  <text class="baseline-value" x="640" y="246" text-anchor="middle">Spring Boot 4 + Jackson 3</text>
+
+  <path class="connector" d="M480 272 V294 Q480 306 468 306 H258 Q246 306 246 318 V344"/>
+  <path class="connector" d="M640 272 V344"/>
+  <path class="connector" d="M800 272 V294 Q800 306 812 306 H1022 Q1034 306 1034 318 V344"/>
+
+  <rect class="card" x="86" y="344" width="320" height="246" rx="18" fill="#163a2d" stroke="#4ade80"/>
+  <text class="heading" x="246" y="390" text-anchor="middle">Dependency boundary</text>
+  <line x1="118" y1="416" x2="374" y2="416" stroke="#2f6b50" stroke-width="1.5"/>
+  <text class="body" x="126" y="460">Spring Boot 4 BOM</text>
+  <text class="body" x="126" y="503">tools.jackson:jackson-bom</text>
+  <text class="body" x="126" y="546">bluetape4k-jackson3</text>
+
+  <rect class="card" x="480" y="344" width="320" height="246" rx="18" fill="#312e58" stroke="#a78bfa"/>
+  <text class="heading" x="640" y="390" text-anchor="middle">Code API boundary</text>
+  <line x1="512" y1="416" x2="768" y2="416" stroke="#59518e" stroke-width="1.5"/>
+  <text class="body" x="520" y="460">tools.jackson.*</text>
+  <text class="body" x="520" y="503">JsonMapper</text>
+  <text class="body" x="520" y="546">Jackson.defaultJsonMapper</text>
+
+  <rect class="card" x="874" y="344" width="320" height="246" rx="18" fill="#453511" stroke="#fbbf24"/>
+  <text class="heading" x="1034" y="390" text-anchor="middle">Configuration and verification</text>
+  <line x1="906" y1="416" x2="1162" y2="416" stroke="#7a5c1a" stroke-width="1.5"/>
+  <text class="body" x="914" y="460">Re-check spring.jackson.*</text>
+  <text class="body" x="914" y="503">Run testClasses or test</text>
+  <text class="body" x="914" y="546">Confirm client conflicts</text>
+
+  <rect x="166" y="646" width="948" height="104" rx="18" fill="#2b2437" stroke="#f472b6" stroke-width="2"/>
+  <text class="heading" x="640" y="685" text-anchor="middle">Allowed exceptions are documented as boundaries, not hidden.</text>
+  <text class="small" x="640" y="720" text-anchor="middle">com.fasterxml.jackson.annotation.* | upstream Jackson 2 APIs | disabled conflict tests</text>
+
+  <text class="small" x="640" y="794" text-anchor="middle">When all three boundaries align, readers can focus on the example instead of classpath failures.</text>
+</svg>

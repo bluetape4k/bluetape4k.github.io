@@ -605,3 +605,42 @@ test('release, multitenancy, and benchmark articles preserve their reader-facing
   assert.match(benchmark, /`ops\/sec`는 행 처리량이 아니라\s+`dataSize`만큼의 행을 처리하는 배치 작업 전체를 초당 몇 회 완료했는지/);
   assert.match(benchmark, /`avg ms`는 배치 작업 1회의 평균 시간/);
 });
+
+test('Jackson and text-processing articles expose localized diagram titles and preserve input boundaries', async () => {
+  const pairs = [
+    [
+      await read('src/content/docs/ko/blog/spring-boot4-jackson3-workshop-migration.mdx'),
+      'Spring Boot 4 예제의 Jackson 3 호환성 경계',
+    ],
+    [
+      await read('src/content/docs/blog/spring-boot4-jackson3-workshop-migration.mdx'),
+      'Jackson 3 compatibility boundaries for Spring Boot 4 examples',
+    ],
+    [
+      await read('src/content/docs/ko/blog/bluetape4k-text-part1-overview-quality.mdx'),
+      '서비스 텍스트 처리 경계와 품질 검증 흐름',
+    ],
+    [
+      await read('src/content/docs/blog/bluetape4k-text-part1-overview-quality.mdx'),
+      'Service text-processing boundaries and quality evidence',
+    ],
+    [
+      await read('src/content/docs/ko/blog/bluetape4k-text-part2-tokenizers-lingua.mdx'),
+      '다국어 텍스트 입력의 검증과 처리 경계',
+    ],
+    [
+      await read('src/content/docs/blog/bluetape4k-text-part2-tokenizers-lingua.mdx'),
+      'Validation and Processing Boundaries for Multilingual Text',
+    ],
+  ];
+
+  for (const [source, title] of pairs) {
+    assert.match(source, new RegExp(`data-diagram-title="${title}"`));
+    assert.doesNotMatch(source, /class="bt4k-blog-hero"[^>]*data-diagram-title/);
+  }
+
+  assert.match(pairs[0][0], /`spring\.jackson\.use-jackson2-defaults=true`는 Jackson 2를 활성화하는 설정이 아닙니다/);
+  assert.match(pairs[2][0], /이미 메모리에 만들어진 `String`을 대상으로 합니다/);
+  assert.match(pairs[4][0], /전송 계층에서 먼저 검사해야 합니다/);
+  assert.match(pairs[4][0], /라이브러리 API가 아니라 애플리케이션이 소유하는 의사코드/);
+});
