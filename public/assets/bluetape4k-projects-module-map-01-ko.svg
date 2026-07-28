@@ -2,86 +2,86 @@
 <title>Projects 모듈 지도</title>
 <desc>서비스가 실제로 만나는 경계를 기준으로 모듈을 고릅니다.</desc>
 <defs>
-  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#1D3148" flood-opacity="0.12"/></filter>
-<marker id="arrow" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M 2 2 L 12 7 L 2 12 Z" fill="#4D6F9F"/></marker>
+  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#020712" flood-opacity="0.45"/></filter>
+<marker id="arrow" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M 2 2 L 12 7 L 2 12 Z" fill="#78AFFF"/></marker>
   <style>
-    .bg{fill:#F7F9FC}.frame{fill:#fff;stroke:#D6E2ED;stroke-width:2}
-    .title{font-family:"goorm Sans","Noto Sans KR","Apple SD Gothic Neo",sans-serif;font-size:36px;fill:#21334A;font-weight:700}
-    .subtitle,.body,.small{font-family:"goorm Sans Code","goorm Sans","D2Coding",monospace;fill:#34465B}
-    .subtitle{font-size:16px}.body{font-size:15px}.small{font-size:12px;fill:#657386}
-    .label{font-family:"goorm Sans","Noto Sans KR","Apple SD Gothic Neo",sans-serif;font-size:20px;fill:#21334A;font-weight:700}
-    .card{filter:url(#shadow);stroke-width:2}.connector{fill:none;stroke:#4D6F9F;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
-    .bar-label{font-family:"goorm Sans Code","goorm Sans","D2Coding",monospace;font-size:15px;fill:#26384F}.axis{stroke:#B8C7D9;stroke-width:2}
+    .bg{fill:#07111F}.frame{fill:#0D1B2D;stroke:#213B5E;stroke-width:2}
+    .title{font-family:"goorm Sans","Noto Sans KR","Apple SD Gothic Neo",sans-serif;font-size:36px;fill:#F7FAFF;font-weight:700}
+    .subtitle,.body,.small{font-family:"goorm Sans Code","goorm Sans","D2Coding",monospace;fill:#C9D6E8}
+    .subtitle{font-size:16px}.body{font-size:15px}.small{font-size:12px;fill:#8DA2BC}
+    .label{font-family:"goorm Sans","Noto Sans KR","Apple SD Gothic Neo",sans-serif;font-size:20px;fill:#F7FAFF;font-weight:700}
+    .card{filter:url(#shadow);stroke-width:2}.connector{fill:none;stroke:#78AFFF;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    .bar-label{font-family:"goorm Sans Code","goorm Sans","D2Coding",monospace;font-size:15px;fill:#F7FAFF}.axis{stroke:#47627F;stroke-width:2}
   </style>
 </defs>
 <rect class="bg" width="1580" height="840"/>
 <rect class="frame" x="34" y="28" width="1512" height="784" rx="24"/>
 <text class="title" x="70" y="82">Projects 모듈 지도</text>
 <text class="subtitle" x="72" y="114">서비스가 실제로 만나는 경계를 기준으로 모듈을 고릅니다.</text>
-<g data-card="Foundation">
-  <rect class="card" x="80" y="185" width="240" height="98" rx="14" fill="#E8F1FF" stroke="#5A85D6"/>
-  <text class="label" x="200" y="219" text-anchor="middle"><tspan x="200" dy="0">Foundation</tspan></text>
+<g data-card="공유 기반">
+  <rect class="card" x="80" y="185" width="240" height="98" rx="14" fill="#132D55" stroke="#68A7FF"/>
+  <text class="label" x="200" y="219" text-anchor="middle"><tspan x="200" dy="0">공유 기반</tspan></text>
   <text class="body" x="200" y="253" text-anchor="middle"></text>
 </g>
-<g data-card="Representative modules">
-  <rect class="card" x="430" y="185" width="470" height="98" rx="14" fill="#F5F7FA" stroke="#8FA1B3"/>
-  <text class="label" x="665" y="219" text-anchor="middle"><tspan x="665" dy="0">Representative modules</tspan></text>
+<g data-card="대표 모듈">
+  <rect class="card" x="430" y="185" width="470" height="98" rx="14" fill="#253245" stroke="#8FA8C4"/>
+  <text class="label" x="665" y="219" text-anchor="middle"><tspan x="665" dy="0">대표 모듈</tspan></text>
   <text class="body" x="665" y="253" text-anchor="middle"><tspan x="665" dy="0">core · coroutines · logging · bom</tspan></text>
 </g>
-<g data-card="Adoption trigger">
-  <rect class="card" x="1010" y="185" width="430" height="98" rx="14" fill="#FFF3D8" stroke="#D6A441"/>
-  <text class="label" x="1225" y="219" text-anchor="middle"><tspan x="1225" dy="0">Adoption trigger</tspan></text>
+<g data-card="도입 기준">
+  <rect class="card" x="1010" y="185" width="430" height="98" rx="14" fill="#443215" stroke="#F6C55F"/>
+  <text class="label" x="1225" y="219" text-anchor="middle"><tspan x="1225" dy="0">도입 기준</tspan></text>
   <text class="body" x="1225" y="253" text-anchor="middle"><tspan x="1225" dy="0">Kotlin 스타일, 실행 모델, 의존성 정렬</tspan></text>
 </g>
 <path class="connector" data-connector="module-row-1-to-modules" d="M320 234 H430"/>
 <path class="connector" data-connector="module-row-1-to-trigger" d="M900 234 H1010"/>
-<g data-card="I/O and Wire">
-  <rect class="card" x="80" y="330" width="240" height="98" rx="14" fill="#E7F7F5" stroke="#3CA7A0"/>
-  <text class="label" x="200" y="364" text-anchor="middle"><tspan x="200" dy="0">I/O and Wire</tspan></text>
+<g data-card="I/O와 전송">
+  <rect class="card" x="80" y="330" width="240" height="98" rx="14" fill="#123D43" stroke="#4ED7C7"/>
+  <text class="label" x="200" y="364" text-anchor="middle"><tspan x="200" dy="0">I/O와 전송</tspan></text>
   <text class="body" x="200" y="398" text-anchor="middle"></text>
 </g>
-<g data-card="Representative modules">
-  <rect class="card" x="430" y="330" width="470" height="98" rx="14" fill="#F5F7FA" stroke="#8FA1B3"/>
-  <text class="label" x="665" y="364" text-anchor="middle"><tspan x="665" dy="0">Representative modules</tspan></text>
+<g data-card="대표 모듈">
+  <rect class="card" x="430" y="330" width="470" height="98" rx="14" fill="#253245" stroke="#8FA8C4"/>
+  <text class="label" x="665" y="364" text-anchor="middle"><tspan x="665" dy="0">대표 모듈</tspan></text>
   <text class="body" x="665" y="398" text-anchor="middle"><tspan x="665" dy="0">io · okio · csv · protobuf · jackson · http · grpc</tspan></text>
 </g>
-<g data-card="Adoption trigger">
-  <rect class="card" x="1010" y="330" width="430" height="98" rx="14" fill="#FFF3D8" stroke="#D6A441"/>
-  <text class="label" x="1225" y="364" text-anchor="middle"><tspan x="1225" dy="0">Adoption trigger</tspan></text>
+<g data-card="도입 기준">
+  <rect class="card" x="1010" y="330" width="430" height="98" rx="14" fill="#443215" stroke="#F6C55F"/>
+  <text class="label" x="1225" y="364" text-anchor="middle"><tspan x="1225" dy="0">도입 기준</tspan></text>
   <text class="body" x="1225" y="398" text-anchor="middle"><tspan x="1225" dy="0">byte, serializer, HTTP, RPC 경계</tspan></text>
 </g>
 <path class="connector" data-connector="module-row-2-to-modules" d="M320 379 H430"/>
 <path class="connector" data-connector="module-row-2-to-trigger" d="M900 379 H1010"/>
-<g data-card="Data and Infra">
-  <rect class="card" x="80" y="475" width="240" height="98" rx="14" fill="#EAF7ED" stroke="#58A978"/>
-  <text class="label" x="200" y="509" text-anchor="middle"><tspan x="200" dy="0">Data and Infra</tspan></text>
+<g data-card="Data와 Infra">
+  <rect class="card" x="80" y="475" width="240" height="98" rx="14" fill="#173B2A" stroke="#66D58D"/>
+  <text class="label" x="200" y="509" text-anchor="middle"><tspan x="200" dy="0">Data와 Infra</tspan></text>
   <text class="body" x="200" y="543" text-anchor="middle"></text>
 </g>
-<g data-card="Representative modules">
-  <rect class="card" x="430" y="475" width="470" height="98" rx="14" fill="#F5F7FA" stroke="#8FA1B3"/>
-  <text class="label" x="665" y="509" text-anchor="middle"><tspan x="665" dy="0">Representative modules</tspan></text>
+<g data-card="대표 모듈">
+  <rect class="card" x="430" y="475" width="470" height="98" rx="14" fill="#253245" stroke="#8FA8C4"/>
+  <text class="label" x="665" y="509" text-anchor="middle"><tspan x="665" dy="0">대표 모듈</tspan></text>
   <text class="body" x="665" y="543" text-anchor="middle"><tspan x="665" dy="0">jdbc · r2dbc · hibernate · redis · kafka · nats</tspan></text>
 </g>
-<g data-card="Adoption trigger">
-  <rect class="card" x="1010" y="475" width="430" height="98" rx="14" fill="#FFF3D8" stroke="#D6A441"/>
-  <text class="label" x="1225" y="509" text-anchor="middle"><tspan x="1225" dy="0">Adoption trigger</tspan></text>
+<g data-card="도입 기준">
+  <rect class="card" x="1010" y="475" width="430" height="98" rx="14" fill="#443215" stroke="#F6C55F"/>
+  <text class="label" x="1225" y="509" text-anchor="middle"><tspan x="1225" dy="0">도입 기준</tspan></text>
   <text class="body" x="1225" y="543" text-anchor="middle"><tspan x="1225" dy="0">영속성과 운영 시스템 경계</tspan></text>
 </g>
 <path class="connector" data-connector="module-row-3-to-modules" d="M320 524 H430"/>
 <path class="connector" data-connector="module-row-3-to-trigger" d="M900 524 H1010"/>
-<g data-card="Application and Tests">
-  <rect class="card" x="80" y="620" width="240" height="98" rx="14" fill="#F1ECFF" stroke="#8A72D6"/>
-  <text class="label" x="200" y="654" text-anchor="middle"><tspan x="200" dy="0">Application and Tests</tspan></text>
+<g data-card="앱과 테스트">
+  <rect class="card" x="80" y="620" width="240" height="98" rx="14" fill="#2D255C" stroke="#B29DFF"/>
+  <text class="label" x="200" y="654" text-anchor="middle"><tspan x="200" dy="0">앱과 테스트</tspan></text>
   <text class="body" x="200" y="688" text-anchor="middle"></text>
 </g>
-<g data-card="Representative modules">
-  <rect class="card" x="430" y="620" width="470" height="98" rx="14" fill="#F5F7FA" stroke="#8FA1B3"/>
-  <text class="label" x="665" y="654" text-anchor="middle"><tspan x="665" dy="0">Representative modules</tspan></text>
+<g data-card="대표 모듈">
+  <rect class="card" x="430" y="620" width="470" height="98" rx="14" fill="#253245" stroke="#8FA8C4"/>
+  <text class="label" x="665" y="654" text-anchor="middle"><tspan x="665" dy="0">대표 모듈</tspan></text>
   <text class="body" x="665" y="688" text-anchor="middle"><tspan x="665" dy="0">spring-boot/* · ktor/* · assertions · junit5</tspan></text>
 </g>
-<g data-card="Adoption trigger">
-  <rect class="card" x="1010" y="620" width="430" height="98" rx="14" fill="#FFF3D8" stroke="#D6A441"/>
-  <text class="label" x="1225" y="654" text-anchor="middle"><tspan x="1225" dy="0">Adoption trigger</tspan></text>
+<g data-card="도입 기준">
+  <rect class="card" x="1010" y="620" width="430" height="98" rx="14" fill="#443215" stroke="#F6C55F"/>
+  <text class="label" x="1225" y="654" text-anchor="middle"><tspan x="1225" dy="0">도입 기준</tspan></text>
   <text class="body" x="1225" y="688" text-anchor="middle"><tspan x="1225" dy="0">서비스 진입점과 반복 가능한 검증</tspan></text>
 </g>
 <path class="connector" data-connector="module-row-4-to-modules" d="M320 669 H430"/>

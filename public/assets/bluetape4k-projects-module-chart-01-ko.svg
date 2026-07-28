@@ -2,16 +2,16 @@
 <title>모듈 구성 스냅샷</title>
 <desc>넓은 저장소일수록 큰 경계 그룹부터 보고 필요한 영역만 고릅니다.</desc>
 <defs>
-  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#1D3148" flood-opacity="0.12"/></filter>
+  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#020712" flood-opacity="0.45"/></filter>
 
   <style>
-    .bg{fill:#F7F9FC}.frame{fill:#fff;stroke:#D6E2ED;stroke-width:2}
-    .title{font-family:"goorm Sans","Noto Sans KR","Apple SD Gothic Neo",sans-serif;font-size:36px;fill:#21334A;font-weight:700}
-    .subtitle,.body,.small{font-family:"goorm Sans Code","goorm Sans","D2Coding",monospace;fill:#34465B}
-    .subtitle{font-size:16px}.body{font-size:15px}.small{font-size:12px;fill:#657386}
-    .label{font-family:"goorm Sans","Noto Sans KR","Apple SD Gothic Neo",sans-serif;font-size:20px;fill:#21334A;font-weight:700}
-    .card{filter:url(#shadow);stroke-width:2}.connector{fill:none;stroke:#4D6F9F;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
-    .bar-label{font-family:"goorm Sans Code","goorm Sans","D2Coding",monospace;font-size:15px;fill:#26384F}.axis{stroke:#B8C7D9;stroke-width:2}
+    .bg{fill:#07111F}.frame{fill:#0D1B2D;stroke:#213B5E;stroke-width:2}
+    .title{font-family:"goorm Sans","Noto Sans KR","Apple SD Gothic Neo",sans-serif;font-size:36px;fill:#F7FAFF;font-weight:700}
+    .subtitle,.body,.small{font-family:"goorm Sans Code","goorm Sans","D2Coding",monospace;fill:#C9D6E8}
+    .subtitle{font-size:16px}.body{font-size:15px}.small{font-size:12px;fill:#8DA2BC}
+    .label{font-family:"goorm Sans","Noto Sans KR","Apple SD Gothic Neo",sans-serif;font-size:20px;fill:#F7FAFF;font-weight:700}
+    .card{filter:url(#shadow);stroke-width:2}.connector{fill:none;stroke:#78AFFF;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    .bar-label{font-family:"goorm Sans Code","goorm Sans","D2Coding",monospace;font-size:15px;fill:#F7FAFF}.axis{stroke:#47627F;stroke-width:2}
   </style>
 </defs>
 <rect class="bg" width="1480" height="760"/>
@@ -20,28 +20,28 @@
 <text class="subtitle" x="72" y="114">넓은 저장소일수록 큰 경계 그룹부터 보고 필요한 영역만 고릅니다.</text>
 <line class="axis" x1="180" y1="620" x2="1280" y2="620"/>
 <g>
-  <rect x="190" y="190" width="1040" height="34" rx="8" fill="#E8F1FF" stroke="#5A85D6" stroke-width="2"/>
-  <text class="bar-label" x="204" y="213">Foundation and test support</text>
+  <rect x="190" y="190" width="1040" height="34" rx="8" fill="#132D55" stroke="#68A7FF" stroke-width="2"/>
+  <text class="bar-label" x="204" y="213">공유 기반과 테스트 지원</text>
   <text class="bar-label" x="1216" y="213" text-anchor="end">core · coroutines · logging · junit5</text>
 </g>
 <g>
-  <rect x="190" y="268" width="930" height="34" rx="8" fill="#E7F7F5" stroke="#3CA7A0" stroke-width="2"/>
-  <text class="bar-label" x="204" y="291">I/O, serialization, HTTP, RPC</text>
+  <rect x="190" y="268" width="930" height="34" rx="8" fill="#123D43" stroke="#4ED7C7" stroke-width="2"/>
+  <text class="bar-label" x="204" y="291">I/O, 직렬화, HTTP, RPC</text>
   <text class="bar-label" x="1106" y="291" text-anchor="end">io · okio · csv · protobuf · json · grpc</text>
 </g>
 <g>
-  <rect x="190" y="346" width="1110" height="34" rx="8" fill="#EAF7ED" stroke="#58A978" stroke-width="2"/>
-  <text class="bar-label" x="204" y="369">Data, cache, and infrastructure</text>
+  <rect x="190" y="346" width="1110" height="34" rx="8" fill="#173B2A" stroke="#66D58D" stroke-width="2"/>
+  <text class="bar-label" x="204" y="369">Data, cache, infrastructure</text>
   <text class="bar-label" x="1286" y="369" text-anchor="end">jdbc · r2dbc · hibernate · Redis · Kafka</text>
 </g>
 <g>
-  <rect x="190" y="424" width="760" height="34" rx="8" fill="#F1ECFF" stroke="#8A72D6" stroke-width="2"/>
-  <text class="bar-label" x="204" y="447">Application frameworks</text>
+  <rect x="190" y="424" width="760" height="34" rx="8" fill="#2D255C" stroke="#B29DFF" stroke-width="2"/>
+  <text class="bar-label" x="204" y="447">애플리케이션 프레임워크</text>
   <text class="bar-label" x="936" y="447" text-anchor="end">Spring Boot 4 · Ktor 3 · examples</text>
 </g>
 <g>
-  <rect x="190" y="502" width="860" height="34" rx="8" fill="#FFF3D8" stroke="#D6A441" stroke-width="2"/>
-  <text class="bar-label" x="204" y="525">Focused utilities</text>
+  <rect x="190" y="502" width="860" height="34" rx="8" fill="#443215" stroke="#F6C55F" stroke-width="2"/>
+  <text class="bar-label" x="204" y="525">전용 유틸리티</text>
   <text class="bar-label" x="1036" y="525" text-anchor="end">IDs · money · measured · workflow · states</text>
 </g>
 <text class="small" x="190" y="660">값은 정확한 모듈 수가 아니라 README가 보여주는 영역의 상대적 폭입니다.</text>

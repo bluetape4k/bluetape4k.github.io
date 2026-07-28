@@ -1,46 +1,46 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1540" height="760" viewBox="0 0 1540 760" role="img">
 <title>Bluetape4k Projects 개요</title>
-<desc>공통 Kotlin/JVM 서비스 결정을 한 foundation 안에서 정렬합니다.</desc>
+<desc>공통 Kotlin/JVM 서비스 결정을 공유 기반 안에서 정렬합니다.</desc>
 <defs>
-  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#1D3148" flood-opacity="0.12"/></filter>
-<marker id="arrow" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M 2 2 L 12 7 L 2 12 Z" fill="#4D6F9F"/></marker>
+  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#020712" flood-opacity="0.45"/></filter>
+<marker id="arrow" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M 2 2 L 12 7 L 2 12 Z" fill="#78AFFF"/></marker>
   <style>
-    .bg{fill:#F7F9FC}.frame{fill:#fff;stroke:#D6E2ED;stroke-width:2}
-    .title{font-family:"goorm Sans","Noto Sans KR","Apple SD Gothic Neo",sans-serif;font-size:36px;fill:#21334A;font-weight:700}
-    .subtitle,.body,.small{font-family:"goorm Sans Code","goorm Sans","D2Coding",monospace;fill:#34465B}
-    .subtitle{font-size:16px}.body{font-size:15px}.small{font-size:12px;fill:#657386}
-    .label{font-family:"goorm Sans","Noto Sans KR","Apple SD Gothic Neo",sans-serif;font-size:20px;fill:#21334A;font-weight:700}
-    .card{filter:url(#shadow);stroke-width:2}.connector{fill:none;stroke:#4D6F9F;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
-    .bar-label{font-family:"goorm Sans Code","goorm Sans","D2Coding",monospace;font-size:15px;fill:#26384F}.axis{stroke:#B8C7D9;stroke-width:2}
+    .bg{fill:#07111F}.frame{fill:#0D1B2D;stroke:#213B5E;stroke-width:2}
+    .title{font-family:"goorm Sans","Noto Sans KR","Apple SD Gothic Neo",sans-serif;font-size:36px;fill:#F7FAFF;font-weight:700}
+    .subtitle,.body,.small{font-family:"goorm Sans Code","goorm Sans","D2Coding",monospace;fill:#C9D6E8}
+    .subtitle{font-size:16px}.body{font-size:15px}.small{font-size:12px;fill:#8DA2BC}
+    .label{font-family:"goorm Sans","Noto Sans KR","Apple SD Gothic Neo",sans-serif;font-size:20px;fill:#F7FAFF;font-weight:700}
+    .card{filter:url(#shadow);stroke-width:2}.connector{fill:none;stroke:#78AFFF;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    .bar-label{font-family:"goorm Sans Code","goorm Sans","D2Coding",monospace;font-size:15px;fill:#F7FAFF}.axis{stroke:#47627F;stroke-width:2}
   </style>
 </defs>
 <rect class="bg" width="1540" height="760"/>
 <rect class="frame" x="34" y="28" width="1472" height="704" rx="24"/>
 <text class="title" x="70" y="82">Bluetape4k Projects 개요</text>
-<text class="subtitle" x="72" y="114">공통 Kotlin/JVM 서비스 결정을 한 foundation 안에서 정렬합니다.</text>
+<text class="subtitle" x="72" y="114">공통 Kotlin/JVM 서비스 결정을 공유 기반 안에서 정렬합니다.</text>
 <g data-card="BOM">
-  <rect class="card" x="60" y="315" width="180" height="116" rx="14" fill="#FFF3D8" stroke="#D6A441"/>
+  <rect class="card" x="60" y="315" width="180" height="116" rx="14" fill="#443215" stroke="#F6C55F"/>
   <text class="label" x="150" y="349" text-anchor="middle"><tspan x="150" dy="0">BOM</tspan></text>
   <text class="body" x="150" y="383" text-anchor="middle"><tspan x="150" dy="0">버전 정렬</tspan><tspan x="150" dy="20">필요한 모듈만 선택</tspan></text>
 </g>
-<g data-card="Foundation">
-  <rect class="card" x="300" y="315" width="260" height="116" rx="14" fill="#E8F1FF" stroke="#5A85D6"/>
-  <text class="label" x="430" y="349" text-anchor="middle"><tspan x="430" dy="0">Foundation</tspan></text>
-  <text class="body" x="430" y="383" text-anchor="middle"><tspan x="430" dy="0">core · coroutines · logging</tspan><tspan x="430" dy="20">I/O · serializers · time</tspan></text>
+<g data-card="공유 기반">
+  <rect class="card" x="300" y="315" width="260" height="116" rx="14" fill="#132D55" stroke="#68A7FF"/>
+  <text class="label" x="430" y="349" text-anchor="middle"><tspan x="430" dy="0">공유 기반</tspan></text>
+  <text class="body" x="430" y="383" text-anchor="middle"><tspan x="430" dy="0">core · coroutines · logging</tspan><tspan x="430" dy="20">I/O · serializer · time</tspan></text>
 </g>
-<g data-card="Runtime Adapters">
-  <rect class="card" x="620" y="315" width="260" height="116" rx="14" fill="#EAF7ED" stroke="#58A978"/>
-  <text class="label" x="750" y="349" text-anchor="middle"><tspan x="750" dy="0">Runtime Adapters</tspan></text>
+<g data-card="런타임 어댑터">
+  <rect class="card" x="620" y="315" width="260" height="116" rx="14" fill="#173B2A" stroke="#66D58D"/>
+  <text class="label" x="750" y="349" text-anchor="middle"><tspan x="750" dy="0">런타임 어댑터</tspan></text>
   <text class="body" x="750" y="383" text-anchor="middle"><tspan x="750" dy="0">data · cache · infra</tspan><tspan x="750" dy="20">Spring Boot · Ktor</tspan></text>
 </g>
-<g data-card="Applications">
-  <rect class="card" x="940" y="315" width="220" height="116" rx="14" fill="#E7F7F5" stroke="#3CA7A0"/>
-  <text class="label" x="1050" y="349" text-anchor="middle"><tspan x="1050" dy="0">Applications</tspan></text>
+<g data-card="애플리케이션">
+  <rect class="card" x="940" y="315" width="220" height="116" rx="14" fill="#123D43" stroke="#4ED7C7"/>
+  <text class="label" x="1050" y="349" text-anchor="middle"><tspan x="1050" dy="0">애플리케이션</tspan></text>
   <text class="body" x="1050" y="383" text-anchor="middle"><tspan x="1050" dy="0">서비스 코드</tspan><tspan x="1050" dy="20">테스트와 예제</tspan></text>
 </g>
-<g data-card="Split Repositories">
-  <rect class="card" x="1220" y="315" width="260" height="116" rx="14" fill="#F1ECFF" stroke="#8A72D6"/>
-  <text class="label" x="1350" y="349" text-anchor="middle"><tspan x="1350" dy="0">Split Repositories</tspan></text>
+<g data-card="분리 저장소">
+  <rect class="card" x="1220" y="315" width="260" height="116" rx="14" fill="#2D255C" stroke="#B29DFF"/>
+  <text class="label" x="1350" y="349" text-anchor="middle"><tspan x="1350" dy="0">분리 저장소</tspan></text>
   <text class="body" x="1350" y="383" text-anchor="middle"><tspan x="1350" dy="0">AWS · Exposed · Image</tspan><tspan x="1350" dy="20">Text · Leader · JaVers</tspan></text>
 </g>
 <path class="connector" data-connector="bom-to-foundation" d="M240 373 H300"/>

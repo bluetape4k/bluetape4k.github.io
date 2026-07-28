@@ -1,81 +1,81 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1580" height="800" viewBox="0 0 1580 800" role="img">
-<title>Utilities and Adoption Path</title>
-<desc>필요한 utility 하나를 고르고, 예제에서 같은 패턴을 검증합니다.</desc>
+<title>유틸리티와 도입 경로</title>
+<desc>필요한 유틸리티 하나를 고르고, 예제에서 같은 패턴을 검증합니다.</desc>
 <defs>
-  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#1D3148" flood-opacity="0.12"/></filter>
-<marker id="arrow" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M 2 2 L 12 7 L 2 12 Z" fill="#4D6F9F"/></marker>
+  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#020712" flood-opacity="0.45"/></filter>
+<marker id="arrow" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M 2 2 L 12 7 L 2 12 Z" fill="#78AFFF"/></marker>
   <style>
-    .bg{fill:#F7F9FC}.frame{fill:#fff;stroke:#D6E2ED;stroke-width:2}
-    .title{font-family:"goorm Sans","Noto Sans KR","Apple SD Gothic Neo",sans-serif;font-size:36px;fill:#21334A;font-weight:700}
-    .subtitle,.body,.small{font-family:"goorm Sans Code","goorm Sans","D2Coding",monospace;fill:#34465B}
-    .subtitle{font-size:16px}.body{font-size:15px}.small{font-size:12px;fill:#657386}
-    .label{font-family:"goorm Sans","Noto Sans KR","Apple SD Gothic Neo",sans-serif;font-size:20px;fill:#21334A;font-weight:700}
-    .card{filter:url(#shadow);stroke-width:2}.connector{fill:none;stroke:#4D6F9F;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
-    .bar-label{font-family:"goorm Sans Code","goorm Sans","D2Coding",monospace;font-size:15px;fill:#26384F}.axis{stroke:#B8C7D9;stroke-width:2}
+    .bg{fill:#07111F}.frame{fill:#0D1B2D;stroke:#213B5E;stroke-width:2}
+    .title{font-family:"goorm Sans","Noto Sans KR","Apple SD Gothic Neo",sans-serif;font-size:36px;fill:#F7FAFF;font-weight:700}
+    .subtitle,.body,.small{font-family:"goorm Sans Code","goorm Sans","D2Coding",monospace;fill:#C9D6E8}
+    .subtitle{font-size:16px}.body{font-size:15px}.small{font-size:12px;fill:#8DA2BC}
+    .label{font-family:"goorm Sans","Noto Sans KR","Apple SD Gothic Neo",sans-serif;font-size:20px;fill:#F7FAFF;font-weight:700}
+    .card{filter:url(#shadow);stroke-width:2}.connector{fill:none;stroke:#78AFFF;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    .bar-label{font-family:"goorm Sans Code","goorm Sans","D2Coding",monospace;font-size:15px;fill:#F7FAFF}.axis{stroke:#47627F;stroke-width:2}
   </style>
 </defs>
 <rect class="bg" width="1580" height="800"/>
 <rect class="frame" x="34" y="28" width="1512" height="744" rx="24"/>
-<text class="title" x="70" y="82">Utilities and Adoption Path</text>
-<text class="subtitle" x="72" y="114">필요한 utility 하나를 고르고, 예제에서 같은 패턴을 검증합니다.</text>
-<g data-card="Identity">
-  <rect class="card" x="60" y="170" width="250" height="116" rx="14" fill="#FFF3D8" stroke="#D6A441"/>
-  <text class="label" x="185" y="204" text-anchor="middle"><tspan x="185" dy="0">Identity</tspan></text>
+<text class="title" x="70" y="82">유틸리티와 도입 경로</text>
+<text class="subtitle" x="72" y="114">필요한 유틸리티 하나를 고르고, 예제에서 같은 패턴을 검증합니다.</text>
+<g data-card="식별자">
+  <rect class="card" x="60" y="170" width="250" height="116" rx="14" fill="#443215" stroke="#F6C55F"/>
+  <text class="label" x="185" y="204" text-anchor="middle"><tspan x="185" dy="0">식별자</tspan></text>
   <text class="body" x="185" y="238" text-anchor="middle"><tspan x="185" dy="0">UUID v7 · ULID · KSUID</tspan><tspan x="185" dy="20">Snowflake · Hashids</tspan></text>
 </g>
-<g data-card="Minimal Module">
-  <rect class="card" x="390" y="170" width="260" height="116" rx="14" fill="#E8F1FF" stroke="#5A85D6"/>
-  <text class="label" x="520" y="204" text-anchor="middle"><tspan x="520" dy="0">Minimal Module</tspan></text>
+<g data-card="최소 모듈">
+  <rect class="card" x="390" y="170" width="260" height="116" rx="14" fill="#132D55" stroke="#68A7FF"/>
+  <text class="label" x="520" y="204" text-anchor="middle"><tspan x="520" dy="0">최소 모듈</tspan></text>
   <text class="body" x="520" y="238" text-anchor="middle"><tspan x="520" dy="0">BOM 우선</tspan><tspan x="520" dy="20">dependency는 하나씩</tspan></text>
 </g>
-<g data-card="Examples">
-  <rect class="card" x="730" y="170" width="260" height="116" rx="14" fill="#E7F7F5" stroke="#3CA7A0"/>
-  <text class="label" x="860" y="204" text-anchor="middle"><tspan x="860" dy="0">Examples</tspan></text>
+<g data-card="예제">
+  <rect class="card" x="730" y="170" width="260" height="116" rx="14" fill="#123D43" stroke="#4ED7C7"/>
+  <text class="label" x="860" y="204" text-anchor="middle"><tspan x="860" dy="0">예제</tspan></text>
   <text class="body" x="860" y="238" text-anchor="middle"><tspan x="860" dy="0">coroutines · redisson</tspan><tspan x="860" dy="20">virtual threads</tspan></text>
 </g>
-<g data-card="Service Adoption">
-  <rect class="card" x="1070" y="170" width="250" height="116" rx="14" fill="#EAF7ED" stroke="#58A978"/>
-  <text class="label" x="1195" y="204" text-anchor="middle"><tspan x="1195" dy="0">Service Adoption</tspan></text>
+<g data-card="서비스 도입">
+  <rect class="card" x="1070" y="170" width="250" height="116" rx="14" fill="#173B2A" stroke="#66D58D"/>
+  <text class="label" x="1195" y="204" text-anchor="middle"><tspan x="1195" dy="0">서비스 도입</tspan></text>
   <text class="body" x="1195" y="238" text-anchor="middle"><tspan x="1195" dy="0">작은 표면</tspan><tspan x="1195" dy="20">검증된 동작</tspan></text>
 </g>
-<g data-card="Domain Math">
-  <rect class="card" x="60" y="335" width="250" height="116" rx="14" fill="#EAF7ED" stroke="#58A978"/>
-  <text class="label" x="185" y="369" text-anchor="middle"><tspan x="185" dy="0">Domain Math</tspan></text>
+<g data-card="도메인 계산">
+  <rect class="card" x="60" y="335" width="250" height="116" rx="14" fill="#173B2A" stroke="#66D58D"/>
+  <text class="label" x="185" y="369" text-anchor="middle"><tspan x="185" dy="0">도메인 계산</tspan></text>
   <text class="body" x="185" y="403" text-anchor="middle"><tspan x="185" dy="0">money · measured</tspan><tspan x="185" dy="20">geo · science</tspan></text>
 </g>
-<g data-card="Minimal Module">
-  <rect class="card" x="390" y="335" width="260" height="116" rx="14" fill="#E8F1FF" stroke="#5A85D6"/>
-  <text class="label" x="520" y="369" text-anchor="middle"><tspan x="520" dy="0">Minimal Module</tspan></text>
+<g data-card="최소 모듈">
+  <rect class="card" x="390" y="335" width="260" height="116" rx="14" fill="#132D55" stroke="#68A7FF"/>
+  <text class="label" x="520" y="369" text-anchor="middle"><tspan x="520" dy="0">최소 모듈</tspan></text>
   <text class="body" x="520" y="403" text-anchor="middle"><tspan x="520" dy="0">BOM 우선</tspan><tspan x="520" dy="20">dependency는 하나씩</tspan></text>
 </g>
-<g data-card="Workshops">
-  <rect class="card" x="730" y="335" width="260" height="116" rx="14" fill="#FCECEF" stroke="#DC6B82"/>
-  <text class="label" x="860" y="369" text-anchor="middle"><tspan x="860" dy="0">Workshops</tspan></text>
+<g data-card="Workshop">
+  <rect class="card" x="730" y="335" width="260" height="116" rx="14" fill="#4B1F32" stroke="#F285A8"/>
+  <text class="label" x="860" y="369" text-anchor="middle"><tspan x="860" dy="0">Workshop</tspan></text>
   <text class="body" x="860" y="403" text-anchor="middle"><tspan x="860" dy="0">cache · Redis · messaging</tspan><tspan x="860" dy="20">Spring Data pattern</tspan></text>
 </g>
-<g data-card="Service Adoption">
-  <rect class="card" x="1070" y="335" width="250" height="116" rx="14" fill="#EAF7ED" stroke="#58A978"/>
-  <text class="label" x="1195" y="369" text-anchor="middle"><tspan x="1195" dy="0">Service Adoption</tspan></text>
+<g data-card="서비스 도입">
+  <rect class="card" x="1070" y="335" width="250" height="116" rx="14" fill="#173B2A" stroke="#66D58D"/>
+  <text class="label" x="1195" y="369" text-anchor="middle"><tspan x="1195" dy="0">서비스 도입</tspan></text>
   <text class="body" x="1195" y="403" text-anchor="middle"><tspan x="1195" dy="0">작은 표면</tspan><tspan x="1195" dy="20">검증된 동작</tspan></text>
 </g>
-<g data-card="Decision Tools">
-  <rect class="card" x="60" y="500" width="250" height="116" rx="14" fill="#F1ECFF" stroke="#8A72D6"/>
-  <text class="label" x="185" y="534" text-anchor="middle"><tspan x="185" dy="0">Decision Tools</tspan></text>
+<g data-card="의사결정 도구">
+  <rect class="card" x="60" y="500" width="250" height="116" rx="14" fill="#2D255C" stroke="#B29DFF"/>
+  <text class="label" x="185" y="534" text-anchor="middle"><tspan x="185" dy="0">의사결정 도구</tspan></text>
   <text class="body" x="185" y="568" text-anchor="middle"><tspan x="185" dy="0">rule engine · FSM</tspan><tspan x="185" dy="20">workflow · probabilistic</tspan></text>
 </g>
-<g data-card="Minimal Module">
-  <rect class="card" x="390" y="500" width="260" height="116" rx="14" fill="#E8F1FF" stroke="#5A85D6"/>
-  <text class="label" x="520" y="534" text-anchor="middle"><tspan x="520" dy="0">Minimal Module</tspan></text>
+<g data-card="최소 모듈">
+  <rect class="card" x="390" y="500" width="260" height="116" rx="14" fill="#132D55" stroke="#68A7FF"/>
+  <text class="label" x="520" y="534" text-anchor="middle"><tspan x="520" dy="0">최소 모듈</tspan></text>
   <text class="body" x="520" y="568" text-anchor="middle"><tspan x="520" dy="0">BOM 우선</tspan><tspan x="520" dy="20">dependency는 하나씩</tspan></text>
 </g>
-<g data-card="Benchmark Notes">
-  <rect class="card" x="730" y="500" width="260" height="116" rx="14" fill="#F5F7FA" stroke="#8FA1B3"/>
-  <text class="label" x="860" y="534" text-anchor="middle"><tspan x="860" dy="0">Benchmark Notes</tspan></text>
+<g data-card="벤치마크 노트">
+  <rect class="card" x="730" y="500" width="260" height="116" rx="14" fill="#253245" stroke="#8FA8C4"/>
+  <text class="label" x="860" y="534" text-anchor="middle"><tspan x="860" dy="0">벤치마크 노트</tspan></text>
   <text class="body" x="860" y="568" text-anchor="middle"><tspan x="860" dy="0">속도 주장 전에 읽기</tspan><tspan x="860" dy="20">내 workload에서 재측정</tspan></text>
 </g>
-<g data-card="Service Adoption">
-  <rect class="card" x="1070" y="500" width="250" height="116" rx="14" fill="#EAF7ED" stroke="#58A978"/>
-  <text class="label" x="1195" y="534" text-anchor="middle"><tspan x="1195" dy="0">Service Adoption</tspan></text>
+<g data-card="서비스 도입">
+  <rect class="card" x="1070" y="500" width="250" height="116" rx="14" fill="#173B2A" stroke="#66D58D"/>
+  <text class="label" x="1195" y="534" text-anchor="middle"><tspan x="1195" dy="0">서비스 도입</tspan></text>
   <text class="body" x="1195" y="568" text-anchor="middle"><tspan x="1195" dy="0">작은 표면</tspan><tspan x="1195" dy="20">검증된 동작</tspan></text>
 </g>
 <path class="connector" data-connector="identity-to-minimal-module" d="M310 228 H390"/>
