@@ -1,0 +1,29 @@
+---
+title: 병원 예약 시각 자료
+description: 승인된 병원 예약 설계와 그 이력을 이해하기 쉽게 보여주는 대화형 영문·한글 시각 자료입니다.
+---
+
+이 시각 자료는 병원 예약 서비스의 복잡한 업무 규칙을 더 쉽게 살펴보도록 돕습니다. 규범 문서인 Markdown 설계를 대체하지는 않습니다.
+
+현재 두 자료는 모두 `hybrid` 표현 방식을 사용합니다.
+
+- 기본 화면인 `simulation`은 승인된 설계가 어떻게 작동하는지 설명합니다.
+- `history`는 설계가 현재 모습에 이른 이유와 근거 변경을 보여줍니다.
+
+게시된 파일은 clinic commit [`85a09e4`](https://github.com/bluetape4k/clinic-appointment/commit/85a09e4ba16644219c15e91d94c5a4ccb7619a64)에 고정된 offline snapshot입니다. 모든 Pages build에서 파일 byte를 검증합니다.
+
+## 예약 계획과 수용량
+
+서비스 소유권, 계획·예약 상태, 수용량 계산, 정책 snapshot, 복구 경계를 살펴봅니다.
+
+- [대화형 시각 자료 열기](/ko/visual-companions/clinic-appointment/appointment-plan-and-capacity/)
+- [규범 Markdown 설계 읽기](https://github.com/bluetape4k/clinic-appointment/blob/85a09e4ba16644219c15e91d94c5a4ccb7619a64/docs/superpowers/specs/2026-07-26-appointment-plan-and-capacity-design.md)
+
+## Scheduling Policy 기반
+
+정책 authority, 유효 기간, 불변 snapshot, slot 생성, foundation 규칙에서 최적화로 이어지는 흐름을 살펴봅니다.
+
+- [대화형 시각 자료 열기](/ko/visual-companions/clinic-appointment/scheduling-policy-foundation/)
+- [규범 Markdown 설계 읽기](https://github.com/bluetape4k/clinic-appointment/blob/85a09e4ba16644219c15e91d94c5a4ccb7619a64/docs/superpowers/specs/2026-07-27-scheduling-policy-foundation-design.md)
+
+원본 저장소의 Markdown이 최종 authority입니다. 시각 자료 안의 클릭은 문서 탐색일 뿐 업무 승인이나 production 명령이 아닙니다.
