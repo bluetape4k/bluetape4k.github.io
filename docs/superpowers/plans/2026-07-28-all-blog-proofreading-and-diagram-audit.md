@@ -38,14 +38,14 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 
 ## 현재 진행 상황
 
-기준 시점: 2026-07-28, stacked PR #267~#289
+기준 시점: 2026-07-28, stacked PR #267~#288, #290
 
 | 구분 | 완료 | 전체 | 남음 | 상태 |
 | --- | ---: | ---: | ---: | --- |
 | 한국어 블로그 본문 교정 | 58 | 87 | 29 | 진행 중 |
 | 기술 다이어그램 변경·배치 검증 | 113 | 172 | 59 | 진행 중 |
-| stacked PR | 23 | 미정 | 미정 | #267~#289 open |
-| 현재 배치 | 3 | 3 | 0 | 릴리스·멀티테넌트·벤치마크 PR #289 |
+| stacked PR | 23 | 미정 | 미정 | #267~#288, #290 open |
+| 현재 배치 | 3 | 3 | 0 | 릴리스·멀티테넌트·벤치마크 PR #290 |
 | 최종 전체 사이트 감사 | 0 | 1 | 1 | 대기 |
 | 최종 머지·배포·정리 | 0 | 1 | 1 | 대기 |
 
@@ -81,9 +81,9 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 | writer 체크리스트 | PASS | dotfiles `86bc658`, chezmoi apply·source/live·upstream 일치 |
 | 사이트 검사 | PASS | Node 164/164, Astro 오류 0, 1,303 pages build |
 | 경로 검사 | PASS | 한영 글 6개와 대표 PNG 6개 HTTP 200 |
-| stacked PR | PENDING | base `docs/korean-proofreading-dependencies-making-batch`, head `docs/korean-proofreading-release-multitenancy-batch` |
+| stacked PR | PASS | #290, base `docs/korean-proofreading-dependencies-making-batch`, head `docs/korean-proofreading-release-multitenancy-batch` |
 
-현재 배치 필수 검사: **9/10 완료, N/A 0, Blocked 0**
+현재 배치 필수 검사: **10/10 완료, N/A 0, Blocked 0**
 
 ## Dependencies 입력·BOM 제작기 배치 DoD
 
