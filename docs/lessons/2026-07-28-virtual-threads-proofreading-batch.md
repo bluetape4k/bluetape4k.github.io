@@ -45,6 +45,12 @@ description, cardDescription, hero caption, figure caption, image alt, diagram/c
 반복 교정어 중 범용성이 있는 항목은 `bluetape-writer`의 한국어 자연스러움 체크리스트에도 추가했다.
 원본은 chezmoi source에 반영했고, live skill 파일과 parity를 확인한 뒤 dotfiles에 push했다.
 
+`blog.date`는 교정 PR의 날짜가 아니라 최초 공개 시점에 맞춘다. Virtual Threads 세 편은 PR 연결 없이
+`docs: publish virtual threads series` commit이 `develop`에 push되었고, GitHub Actions의
+`Deploy Website` run `26614179807`이 `2026-05-29T02:23:57Z`에 성공했다. 따라서 한국 시간 기준
+`2026-05-29 11:23:57 +09:00`을 최초 공개 근거로 삼았다. 세 편이 같은 deploy에서 동시에 공개됐지만
+목록 정렬 안정성을 위해 Part 1/2/3에 1초 간격을 두었다.
+
 ## 다이어그램 검증 메모
 
 Part 1/2는 컴포넌트를 연결하는 선이 있는 technical diagram이다. XML과 text hazard를 확인한 뒤
@@ -65,6 +71,7 @@ Part 3의 두 자산은 연결선 기반 diagram이 아니라 chart다. 그래�
 - `diagram-svg-text-normalize.py`로 text hazard와 code highlight 누락이 없음을 확인했다.
 - Part 1/2 한·영문 diagram 4개는 connector/geometry/endpoint/mixed-corner audit를 통과했다.
 - Part 3 한·영문 chart 4개는 chart 수치와 PNG 전체 크기 시각 검토를 통과했다.
+- `blog.date`는 최초 deploy 완료 시각과 GitHub Actions run URL을 대조했다.
 - `bluetape-writer` 체크리스트 변경은 chezmoi source와 live skill parity를 확인하고 dotfiles `cac4244`로 push했다.
 
 ## 후속 규칙
