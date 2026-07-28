@@ -1,6 +1,6 @@
 ---
 title: "Bluetape4k JaVers Part 3: DDD and Workshop Audit Example"
-description: How the workshop javers-audit and javers-exposed-ddd examples connect command handlers, repositories, JaVers commits, domain events, and read models.
+description: How the workshop javers-audit and javers-exposed-ddd examples separate command state, JaVers audit history, domain events, and read models—and where their failure boundaries remain.
 sidebar:
   order: -202606041440
 blog:
@@ -27,14 +27,13 @@ side example.
 | `bluetape4k-workshop/exposed/javers-audit` | Product row persistence with JaVers history and diff queries |
 | `examples/javers-exposed-ddd` | Order aggregate, Exposed source of truth, JaVers audit, domain events, Redis read model |
 
-Most Java/Kotlin developers have heard of DDD, but fewer have run aggregate roots, command
-handlers, domain events, and projections together in production. JaVers in that flow is rarer
-still. This post therefore starts with the small workshop example and then reads the DDD example as
-command side plus read side, instead of assuming the reader already lives inside a DDD framework.
+This post is an application map rather than an exhaustive API guide. It starts with the small
+workshop example, then reads the DDD example as command side plus read side. Neither example claims
+to provide distributed transactions or production recovery by itself.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="DDD command and audit boundaries">
   <img src="/assets/bluetape4k-javers-part3-command-flow-01-en.png" alt="Command handler flow through order aggregate, Exposed store, JaVers audit, event publisher, and read model" loading="lazy" />
-  <figcaption>The command side persists aggregate state, commits to JaVers, then publishes the domain event.</figcaption>
+  <figcaption>The command side persists aggregate state, commits to JaVers, then publishes the domain event. Each step has a separate failure boundary.</figcaption>
 </figure>
 
 ## From Manual Audit to JaVers
@@ -42,7 +41,7 @@ command side plus read side, instead of assuming the reader already lives inside
 Manual audit tables are fine until every entity needs its own copy logic. The workshop example
 keeps the current product row in Exposed and lets JaVers own history and diffs.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Manual audit tables versus JaVers">
   <img src="/assets/bluetape4k-javers-part3-manual-vs-javers-01-en.png" alt="Comparison between manual audit table code and JaVers snapshot flow" loading="lazy" />
   <figcaption>Exposed keeps the current row. JaVers owns change history and object diff semantics.</figcaption>
 </figure>
@@ -74,6 +73,11 @@ fun getHistory(productId: Long): List<CdoSnapshot> {
 
 The tests verify initial, update, terminal snapshots, latest snapshot lookup, and value changes.
 
+The small example does not make the two writes atomic. `save` commits to JaVers before a separate
+Exposed transaction upserts the row. `delete` likewise records the terminal snapshot before
+deleting the row. The module proves responsibility separation and happy-path ordering, not
+recovery when only one write succeeds.
+
 ## DDD Command Flow
 
 The DDD example starts with an `OrderCommandHandler`. It loads or creates the aggregate, applies one
@@ -85,9 +89,9 @@ snapshot, and publishes an `OrderPlaced` or `OrderMarkedPaid` event. The query s
 event and updates a Redis `OrderSummary`. Redis is not the audit log; it is the read model for
 queries and screens.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Order command to Redis projection">
   <img src="/assets/bluetape4k-javers-part3-example-sequence-01-en.png" alt="Sequence diagram from the javers-exposed-ddd README showing command handling, audit commit, event publishing, and Redis projection" loading="lazy" />
-  <figcaption>The example README sequence shows command handling, audit commit, event publishing, and Redis projection in one flow.</figcaption>
+  <figcaption>Command handling, audit commit, event publishing, and Redis projection run in order, but not as one atomic operation.</figcaption>
 </figure>
 
 ```kotlin
@@ -108,21 +112,25 @@ fun handle(command: MarkOrderPaidCommand): Order {
 }
 ```
 
-`OrderRepository` extends `AggregateRepository`. The source of truth is still `OrdersTable`; the
-base repository commits the saved aggregate to JaVers and publishes events afterward.
+`OrderRepository` extends `AggregateRepository`. The source of truth is still `OrdersTable`.
+`OrderRepository.saveAuditBoundary` runs source persistence and the Exposed-backed JaVers commit
+inside the database transaction, while event publication happens after that boundary.
 
 ```kotlin
 fun save(aggregate: T, author: String, events: Collection<DomainEvent>): T {
-    val saved = persist(aggregate)
-    javers.commit(author, saved, events.toJaversProperties())
+    val saved = saveAuditBoundary {
+        val persisted = persist(aggregate)
+        javers.commit(author, persisted, events.toJaversProperties())
+        persisted
+    }
     eventPublisher.publishAll(events)
     return saved
 }
 ```
 
 The ordering matters: persist the aggregate first, commit the saved state to JaVers, then publish
-the domain event. If those steps are reversed, current state, history, and projections can tell
-different stories.
+the domain event. It is not an outbox. If Kafka publication fails, the current order and audit
+history may remain without a projection event.
 
 ## Read Model Is Not Audit History
 
@@ -131,10 +139,14 @@ the audit log itself. When that line gets blurry, teams are likely to try using 
 a replacement for every read model. JaVers answers "how did this object change?" The read model
 answers "what does the screen need now?" They can work together, but they should not be confused.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="CQRS store responsibilities">
   <img src="/assets/bluetape4k-javers-part3-example-cqrs-flow-01-en.png" alt="CQRS flow diagram from the javers-exposed-ddd README" loading="lazy" />
   <figcaption>The source-of-truth store, JaVers audit store, Kafka event stream, and Redis read model have separate responsibilities.</figcaption>
 </figure>
+
+The current projection assumes that `OrderPlaced` has already created the summary.
+`OrderMarkedPaid` fails when the summary is missing. The example also does not implement duplicate
+handling, out-of-order repair, production offset management, or restart recovery.
 
 ## CDC, Envers, and JaVers
 
@@ -146,43 +158,23 @@ CDC, Hibernate Envers, and JaVers all sit near audit history, but they start fro
 | Hibernate Envers | JPA entity revision | Fast entity-level revision tables in a JPA application |
 | JaVers | Domain object commit | Object diffs, commit metadata, and DDD command/event audit flow |
 
-The original example benchmark should also be stated plainly. The following table is from the
-documented H2 benchmark for `examples/javers-exposed-ddd`:
+An early documentation benchmark reported a large JaVers + Exposed audit-query outlier. A later
+run did not reproduce it, so the old number should not be treated as a stable comparison.
+[Part 4](/blog/bluetape4k-javers-part4-audit-cost/) documents the current benchmark paths,
+completion boundaries, environments, and audit-scope choices.
 
-| Scenario | Hibernate Envers ms/op | JaVers + Exposed ms/op |
-|---|---:|---:|
-| insert | 1.049 | 3.627 |
-| update | 1.383 | 2.848 |
-| audit-query | 8.010 | 105.339 |
+## What the Example Proves
 
-This is a narrow persistence benchmark, not a reason to dismiss JaVers. The JaVers + Exposed
-example is valuable when explicit aggregate commits, commit metadata, domain events, and CQRS
-projection are part of the design. But the latency gap is real. The audit-query path especially
-needs follow-up work around repository queries, snapshot materialization, codec overhead, and index
-design.
-
-A separate benchmark module and PostgreSQL path were added later. [Part 4](/blog/bluetape4k-javers-part4-audit-cost/)
-reads the currently committed result and connects it to audit-scope and index choices. Results from
-the two environments should not be joined into one performance trend.
-
-## Next Steps
-
-`bluetape4k-javers` is not finished. The examples in this post make the next improvement areas
-clear, and I plan to evolve the library in these directions.
-
-| Plan | Expected benefit |
+| Verified by the example | Still required for production |
 |---|---|
-| Analyze JaVers + Exposed latency and move benchmarks into a benchmark module | Make the Envers gap explicit and identify query, codec, and index work |
-| Push common Exposed JQL filters down to SQL | Reduce audit-query cost when many snapshots exist |
-| Add an Exposed + Kafka composite repository | Keep queryable history in SQL while streaming the same snapshot events to Kafka |
-| Add Kafka snapshot publishing and pluggable event pipeline adapters | Make Spring events, NATS, and other event paths easier to attach |
-| Design a read-capable Kafka audit projection path | Extend Kafka from a write-only stream into a projection-backed read flow |
-| Clarify Redis repository parity and Redisson near-cache strategy | Make Lettuce/Redisson selection clearer and lower hot snapshot read latency |
-| Evaluate R2DBC persistence | Support coroutine/R2DBC services without blocking JDBC as the only SQL path |
-| Add Spring Boot auto-configuration | Start JaVers repository wiring with less application setup |
-| Make Exposed schema mapping configurable | Fit production naming rules, schema separation, and multi-tenant layouts |
-| Strengthen codec compatibility and security checks | Manage snapshot format compatibility and reduce JDK serialization risk |
-| Add Spring transaction coverage for DDD event publishing | Make aggregate persistence, JaVers commit, and event publishing boundaries safer |
+| Happy-path command state and JaVers snapshots | Schema, locking, and isolation checks on the actual PostgreSQL deployment |
+| Kafka publication keyed by order ID and Redis projection | Transactional outbox or equivalent durable recovery record |
+| Normal `OrderPlaced` then `OrderMarkedPaid` ordering | Event IDs, idempotency, retries, quarantine, and offset policy |
+| Latest `OrderSummary` reads from Redis | Projection rebuild and consistency-check procedures |
+
+The tests use H2 in PostgreSQL compatibility mode plus Kafka and Redis Testcontainers. They do not
+prove actual PostgreSQL behavior, process restart recovery, broker failure handling, concurrent
+commands, duplicate or reordered events, or projection rebuilds.
 
 ## Adoption Checklist
 
@@ -193,7 +185,8 @@ clear, and I plan to evolve the library in these directions.
 | Commit point | Where the command flow commits the saved aggregate |
 | Metadata | Author, event type, aggregate id, and event attributes |
 | Persistence | Exposed, Redis, and Kafka roles split by history/query/stream |
-| Tests | INITIAL/UPDATE/TERMINAL, diff, latest snapshot, projection flow |
+| Failure contract | Recovery when database save, audit commit, or event publication fails |
+| Tests | INITIAL/UPDATE/TERMINAL, diff, latest snapshot, projection flow, and failure boundaries |
 
 ## Source Links
 
@@ -202,12 +195,17 @@ clear, and I plan to evolve the library in these directions.
 - DDD example: [examples/javers-exposed-ddd](https://github.com/bluetape4k/bluetape4k-javers/tree/develop/examples/javers-exposed-ddd)
 - Command handler: [`OrderCommandHandler.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/service/OrderCommandHandler.kt)
 - Aggregate repository: [`AggregateRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/AggregateRepository.kt)
+- Exposed audit boundary: [Audit history with JaVers](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/docs/manual/en/guides/audit-with-javers.md)
 
 ## Closing
 
 The point is not to delete every audit table. The point is to separate responsibilities. Exposed
 stores current aggregate state, JaVers stores object history and diffs, and event publishers plus
 read models serve query-side consumers.
+
+That separation explains the happy path. Production use must also verify transaction participation
+for the database and audit store, durable recovery for event publication, and idempotent,
+rebuildable projections.
 
 ## Series Links
 

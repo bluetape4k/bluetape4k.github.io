@@ -1,17 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1290" height="680" viewBox="0 0 1290 680">
 <defs>
-  <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">
-    <path d="M 0 0 L 10 5 L 0 10 Z" fill="#496A8F"/>
+  <marker id="arrow" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">
+    <path d="M 0 0 L 10 5 L 0 10 Z" fill="#60A5FA"/>
   </marker>
   <style>
-    .canvas{fill:#F6F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
-    .title{font-family:"Architects Daughter";font-size:42px;fill:#22344A;font-weight:400}
-    .subtitle,.footer{font-family:"Comic Mono";font-size:17px;fill:#536476;font-weight:400}
-    .participant{font-family:"Architects Daughter";font-size:21px;fill:#22344A;font-weight:400}
-    .detail,.num{font-family:"Comic Mono";font-size:16px;fill:#3F5269;font-weight:400}
+    .canvas{fill:#07111F}.frame{fill:#0F172A;stroke:#334155;stroke-width:2}
+    .title{font-family:"Architects Daughter";font-size:42px;fill:#F8FAFC;font-weight:400}
+    .subtitle,.footer{font-family:"Comic Mono";font-size:17px;fill:#CBD5E1;font-weight:400}
+    .participant{font-family:"Architects Daughter";font-size:21px;fill:#F8FAFC;font-weight:400}
+    .detail,.num{font-family:"Comic Mono";font-size:16px;fill:#CBD5E1;font-weight:400}
     .num{font-weight:700}
-    .call{fill:none;stroke:#496A8F;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
-    .lifeline{stroke:#91A6BD;stroke-width:2;stroke-dasharray:8 8}
+    .call{fill:none;stroke:#60A5FA;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    .lifeline{stroke:#64748B;stroke-width:2;stroke-dasharray:8 8}
   </style>
 </defs>
 <rect class="canvas" width="1290" height="680"/>
@@ -19,62 +19,62 @@
 <text class="title" x="645" y="82" text-anchor="middle">Small Product Audit Sequence</text>
 <text class="subtitle" x="645" y="116" text-anchor="middle">The workshop example commits audit history before updating the current row</text>
 <g>
-  <rect class="header" x="45" y="135" width="210" height="64" rx="10" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
+  <rect class="header" x="45" y="135" width="210" height="64" rx="10" fill="#0C4A6E" stroke="#64748B" stroke-width="2"/>
   <text class="participant" x="150" y="175" text-anchor="middle">Caller</text>
   <line class="lifeline" x1="150" y1="218" x2="150" y2="545"/>
 </g>
 <g>
-  <rect class="header" x="315" y="135" width="210" height="64" rx="10" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
+  <rect class="header" x="315" y="135" width="210" height="64" rx="10" fill="#0C4A6E" stroke="#64748B" stroke-width="2"/>
   <text class="participant" x="420" y="175" text-anchor="middle">Audit Service</text>
   <line class="lifeline" x1="420" y1="218" x2="420" y2="545"/>
 </g>
 <g>
-  <rect class="header" x="555" y="135" width="210" height="64" rx="10" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
+  <rect class="header" x="555" y="135" width="210" height="64" rx="10" fill="#0C4A6E" stroke="#64748B" stroke-width="2"/>
   <text class="participant" x="660" y="175" text-anchor="middle">JaVers</text>
   <line class="lifeline" x1="660" y1="218" x2="660" y2="545"/>
 </g>
 <g>
-  <rect class="header" x="825" y="135" width="210" height="64" rx="10" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
+  <rect class="header" x="825" y="135" width="210" height="64" rx="10" fill="#0C4A6E" stroke="#64748B" stroke-width="2"/>
   <text class="participant" x="930" y="175" text-anchor="middle">Snapshot Repo</text>
   <line class="lifeline" x1="930" y1="218" x2="930" y2="545"/>
 </g>
 <g>
-  <rect class="header" x="1035" y="135" width="210" height="64" rx="10" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
+  <rect class="header" x="1035" y="135" width="210" height="64" rx="10" fill="#0C4A6E" stroke="#64748B" stroke-width="2"/>
   <text class="participant" x="1140" y="175" text-anchor="middle">ProductTable</text>
   <line class="lifeline" x1="1140" y1="218" x2="1140" y2="545"/>
 </g>
-<rect class="activation" x="412" y="245" width="16" height="300" rx="6" fill="#EAF4FF" stroke="#75A9E8"/>
+<rect class="activation" x="412" y="245" width="16" height="300" rx="6" fill="#0C4A6E" stroke="#75A9E8"/>
 <g>
-  <rect class="label" x="167" y="205" width="236" height="30" rx="9" fill="#EAF4FF" stroke="#D7E2EC"/>
+  <rect class="label" x="167" y="205" width="236" height="30" rx="9" fill="#0C4A6E" stroke="#334155"/>
   <text class="num" x="187" y="225" text-anchor="middle">1</text>
   <text class="detail" x="295" y="225" text-anchor="middle">save(author, product)</text>
   <path class="call" d="M188 245 H382"/>
 </g>
 <g>
-  <rect class="label" x="410" y="270" width="260" height="30" rx="9" fill="#FFF4D9" stroke="#D7E2EC"/>
+  <rect class="label" x="410" y="270" width="260" height="30" rx="9" fill="#78350F" stroke="#334155"/>
   <text class="num" x="430" y="290" text-anchor="middle">2</text>
   <text class="detail" x="550" y="290" text-anchor="middle">commit author and object</text>
   <path class="call" d="M458 310 H622"/>
 </g>
 <g>
-  <rect class="label" x="680" y="335" width="230" height="30" rx="9" fill="#EAF8EF" stroke="#D7E2EC"/>
+  <rect class="label" x="680" y="335" width="230" height="30" rx="9" fill="#14532D" stroke="#334155"/>
   <text class="num" x="700" y="355" text-anchor="middle">3</text>
   <text class="detail" x="805" y="355" text-anchor="middle">persist CDO snapshot</text>
   <path class="call" d="M698 375 H892"/>
 </g>
 <g>
-  <rect class="label" x="665" y="400" width="230" height="30" rx="9" fill="#F3ECFF" stroke="#D7E2EC"/>
+  <rect class="label" x="665" y="400" width="230" height="30" rx="9" fill="#4C1D95" stroke="#334155"/>
   <text class="num" x="685" y="420" text-anchor="middle">4</text>
   <text class="detail" x="790" y="420" text-anchor="middle">upsert current row</text>
   <path class="call" d="M458 440 H1102"/>
 </g>
 <g>
-  <rect class="label" x="139" y="465" width="292" height="30" rx="9" fill="#FFF0E8" stroke="#D7E2EC"/>
+  <rect class="label" x="139" y="465" width="292" height="30" rx="9" fill="#7C2D12" stroke="#334155"/>
   <text class="num" x="159" y="485" text-anchor="middle">5</text>
   <text class="detail" x="295" y="485" text-anchor="middle">later: history or diff query</text>
   <path class="call" d="M188 505 H382"/>
 </g>
-<rect x="88" y="590" width="1114" height="56" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
+<rect x="88" y="590" width="1114" height="56" rx="12" fill="#111827" stroke="#334155"/>
 <text class="footer" x="645" y="613" text-anchor="middle">The current row and the audit history have different responsibilities.</text>
 <text class="footer" x="645" y="636" text-anchor="middle">A small example is enough to see why commit order matters.</text>
 </svg>

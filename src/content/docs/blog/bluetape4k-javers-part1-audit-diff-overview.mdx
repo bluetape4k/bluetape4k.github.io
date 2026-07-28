@@ -46,7 +46,7 @@ This is also different from CDC. Debezium-style CDC turns database log changes i
 JaVers starts from the application object and commit metadata. Use CDC when every database change
 must be streamed outward. Use JaVers when readers need object history and human-readable diffs.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="JaVers snapshot persistence and query flow">
   <img src="/assets/bluetape4k-javers-part1-snapshot-flow-01-en.png" alt="Flow from domain object to JaVers commit, snapshot repository, and query or diff reader" loading="lazy" />
   <figcaption>The application commits aggregates, and readers query snapshot history or object diffs.</figcaption>
 </figure>
@@ -91,9 +91,11 @@ Kotlin/JVM services in the bluetape4k stack keep needing.
 | `javers-ddd` | Aggregate, domain event, repository, and publisher helpers |
 | `examples/javers-exposed-ddd` | Exposed + JaVers + event projection example |
 
-The shared base is `AbstractCdoSnapshotRepository`. It handles snapshot encode/decode, commit head
-state, sequence handling, and query filtering. Concrete repositories implement storage-specific
-operations such as `saveSnapshot`, `loadSnapshots`, and `getKeys`.
+The shared base is `AbstractCdoSnapshotRepository`. It handles snapshot encoding and decoding,
+commit-head and sequence state, and query filtering. Concrete repositories implement
+storage-specific operations including `saveSnapshot`, `loadSnapshots`, `getKeys`, key existence,
+commit sequence, and snapshot count. A durable repository can override `persistCommit` when its
+backend supports atomic commit-level writes.
 
 ```kotlin
 abstract class AbstractCdoSnapshotRepository<T : Any>(
@@ -110,10 +112,16 @@ abstract class AbstractCdoSnapshotRepository<T : Any>(
 The workshop `ProductAuditService` shows the smallest useful shape. It commits the product to
 JaVers and upserts the current row through Exposed.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Product persistence and audit sequence">
   <img src="/assets/bluetape4k-javers-part1-product-audit-sequence-01-en.png" alt="Sequence diagram showing ProductAuditService committing to JaVers, persisting snapshots, and updating ProductTable" loading="lazy" />
   <figcaption>Even the small example is easier to read when current state and audit history have separate responsibilities.</figcaption>
 </figure>
+
+The example uses JaVers' default in-memory repository, and its JaVers commit and Exposed write do
+not share one atomic transaction. A failure between the two writes can leave current state and
+audit history inconsistent. A production service therefore needs an explicit transaction,
+outbox, or recovery policy. This example is intentionally limited to demonstrating the separation
+of storage responsibilities.
 
 ```kotlin
 fun save(author: String, product: Product) {
@@ -139,7 +147,8 @@ val diff = javers.compare(
 ```
 
 The tests check `INITIAL`, `UPDATE`, and `TERMINAL` snapshots, latest snapshot lookup, and
-property-level value changes.
+property-level value changes. The delete path reloads the current database row before recording
+the `TERMINAL` snapshot.
 
 ## When It Fits
 

@@ -1,9 +1,0 @@
-graph 1 8.8368 0.5
-node domain 0.69444 0.25 1.3889 0.5 "Domain Object" rounded box black lightgrey
-node commit 3.0885 0.25 1.3993 0.5 "JaVers Commit" rounded box black lightgrey
-node repo 5.6806 0.25 1.7847 0.5 "Snapshot Repository" rounded box black lightgrey
-node query 8.2049 0.25 1.2639 0.5 "Query & Diff" rounded box black lightgrey
-edge domain commit 4 1.3934 0.25 1.3934 0.25 2.2247 0.25 2.2247 0.25 solid black
-edge commit repo 4 3.79 0.25 3.79 0.25 4.6233 0.25 4.6233 0.25 solid black
-edge repo query 4 6.5776 0.25 6.5776 0.25 7.4083 0.25 7.4083 0.25 solid black
-stop

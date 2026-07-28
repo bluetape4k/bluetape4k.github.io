@@ -42,14 +42,14 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 
 | 구분 | 완료 | 전체 | 남음 | 상태 |
 | --- | ---: | ---: | ---: | --- |
-| 한국어 블로그 본문 교정 | 39 | 87 | 48 | 진행 중 |
-| 기술 다이어그램 변경·배치 검증 | 74 | 165 | 91 | 진행 중 |
+| 한국어 블로그 본문 교정 | 42 | 87 | 45 | 진행 중 |
+| 기술 다이어그램 변경·배치 검증 | 82 | 165 | 83 | 진행 중 |
 | stacked PR | 16 | 미정 | 미정 | #267~#282 open |
-| 현재 배치 | 2 | 2 | 0 | AWS Part 4~5 PR #282 |
+| 현재 배치 | 3 | 3 | 0 | JaVers Part 1~3 로컬 검증 완료 |
 | 최종 전체 사이트 감사 | 0 | 1 | 1 | 대기 |
 | 최종 머지·배포·정리 | 0 | 1 | 1 | 대기 |
 
-현재 완료된 한국어 글 39편:
+현재 완료된 한국어 글 42편:
 
 - AI 협업 글 2편
 - Bluetape4k 생태계·GraphDB 글 2편
@@ -61,6 +61,7 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 - Exposed Part 1~6
 - Leader Part 1~5
 - AWS Part 1~5
+- JaVers Part 1~3
 
 Exposed Part 4~6 배치에서는 본문 3편과 기술 다이어그램 8종을 다시 검증했다.
 Part 4~5의 4종은 앞선 40개 집계에 이미 포함되어 중복 계산하지 않았고,
@@ -97,6 +98,23 @@ Part 6의 새 다이어그램 4종만 전체 완료 수에 더했다.
 | 사이트 검사 | PASS | Node 테스트 21/21, Astro 오류 0, 1,303 pages build, 한영 4개 경로 HTTP 200 |
 
 현재 배치 필수 검사: **9/9 완료, N/A 0, Blocked 0**
+
+## JaVers Part 1~3 배치 DoD
+
+| 검사 | 결과 | 근거 |
+| --- | --- | --- |
+| 글 교정 | PASS | 한국어 Part 1~3, frontmatter·본문·표·캡션·대체 텍스트 |
+| 날짜 보존 | PASS | base 대비 한영 `blog.date`와 `sidebar.order` 변경 없음 |
+| 사실 검증 | PASS | 현재 JaVers·워크숍 구현의 저장소 계약, 쓰기 순서, 실패 경계 대조 |
+| 소스 링크 | PASS | 한영 글의 로컬 `develop` 대상 32/32 존재 |
+| 한영 정합성 | PASS | 제목·주장·코드·링크·다이어그램·시리즈 탐색 동기화 |
+| 다이어그램 정적 감사 | PASS | 한영 16/16, text hazards 0, sequence 4/4, geometry·endpoint·corner 실패 0 |
+| 다이어그램 구조·PNG 검사 | PASS | 8개 stem, 연결선 78개, 14×14 marker, 2배 PNG 16개 원본 확인 |
+| writer 체크리스트 | PASS | dotfiles `fb20568`, chezmoi apply·source/live·upstream 일치 |
+| 사이트 검사 | PASS | Node 테스트 35/35, Astro 오류·경고 0, 1,303 pages build, 한영 6개 경로 HTTP 200 |
+| stacked PR | PENDING | branch `docs/korean-proofreading-javers-core-batch` |
+
+현재 배치 필수 검사: **9/10 완료, N/A 0, Blocked 0**
 
 ## AWS Part 1~3 배치 DoD
 

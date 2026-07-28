@@ -1,18 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1290" height="680" viewBox="0 0 1290 680">
 <defs>
-  <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse">
-    <path d="M 1 1 L 7 4 L 1 7 Z" fill="#496A8F"/>
+  <marker id="arrow" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">
+    <path d="M 0 0 L 10 5 L 0 10 Z" fill="#60A5FA"/>
   </marker>
   <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-    <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#22344A" flood-opacity="0.12"/>
+    <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#F8FAFC" flood-opacity="0.12"/>
   </filter>
   <style>
-    .canvas{fill:#F6F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
-    .title{font-family:"Architects Daughter";font-size:42px;fill:#22344A;font-weight:400}
-    .subtitle,.footer{font-family:"Comic Mono";font-size:17px;fill:#536476;font-weight:400}
-    .nodeTitle{font-family:"Architects Daughter";font-size:25px;fill:#22344A;font-weight:400}
-    .nodeBody,.edgeLabel{font-family:"Comic Mono";font-size:16px;fill:#3F5269;font-weight:400}
-    .edge{fill:none;stroke:#496A8F;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    .canvas{fill:#07111F}.frame{fill:#0F172A;stroke:#334155;stroke-width:2}
+    .title{font-family:"Architects Daughter";font-size:42px;fill:#F8FAFC;font-weight:400}
+    .subtitle,.footer{font-family:"Comic Mono";font-size:17px;fill:#CBD5E1;font-weight:400}
+    .nodeTitle{font-family:"Architects Daughter";font-size:25px;fill:#F8FAFC;font-weight:400}
+    .nodeBody,.edgeLabel{font-family:"Comic Mono";font-size:16px;fill:#CBD5E1;font-weight:400}
+    .edge{fill:none;stroke:#60A5FA;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
     g[id]{filter:url(#shadow)}
   </style>
 </defs>
@@ -20,36 +20,36 @@
 <rect class="frame" x="34" y="28" width="1222" height="624" rx="24"/>
 <text class="title" x="645" y="82" text-anchor="middle">Manual Audit vs JaVers Snapshot Flow</text>
 <text class="subtitle" x="645" y="116" text-anchor="middle">Replace repeated audit-table code with object commits and diff queries</text>
-<path class="edge" d="M480 239 H415 V239 H362"/>
-<path class="edge" d="M740 239 H805 V239 H858"/>
-<path class="edge" d="M1000 322 V381 H1000 V428"/>
+<path class="edge" d="M480 239 H362"/>
+<path class="edge" d="M740 239 H858"/>
+<path class="edge" d="M1000 322 V428"/>
 <g id="manual">
-  <rect x="90" y="180" width="260" height="142" rx="12" fill="#FFECEC" stroke="#7B8CA3" stroke-width="2"/>
+  <rect x="90" y="180" width="260" height="142" rx="12" fill="#7F1D1D" stroke="#64748B" stroke-width="2"/>
   <text class="nodeTitle" x="220" y="222" text-anchor="middle">Manual Audit Table</text>
   <text class="nodeBody" x="220" y="246" text-anchor="middle">one history schema per entity</text>
   <text class="nodeBody" x="220" y="272" text-anchor="middle">copy columns by hand</text>
   <text class="nodeBody" x="220" y="298" text-anchor="middle">harder nested-object diff</text>
 </g>
 <g id="service">
-  <rect x="480" y="180" width="260" height="118" rx="12" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
+  <rect x="480" y="180" width="260" height="118" rx="12" fill="#0C4A6E" stroke="#64748B" stroke-width="2"/>
   <text class="nodeTitle" x="610" y="222" text-anchor="middle">Application Service</text>
   <text class="nodeBody" x="610" y="255" text-anchor="middle">save / update / delete</text>
 </g>
 <g id="javers">
-  <rect x="870" y="180" width="260" height="142" rx="12" fill="#EAF8EF" stroke="#7B8CA3" stroke-width="2"/>
+  <rect x="870" y="180" width="260" height="142" rx="12" fill="#14532D" stroke="#64748B" stroke-width="2"/>
   <text class="nodeTitle" x="1000" y="222" text-anchor="middle">JaVers Snapshot Flow</text>
   <text class="nodeBody" x="1000" y="246" text-anchor="middle">commitShallowDelete</text>
   <text class="nodeBody" x="1000" y="272" text-anchor="middle">INITIAL / UPDATE / TERMINAL</text>
   <text class="nodeBody" x="1000" y="298" text-anchor="middle">compare(old, new)</text>
 </g>
 <g id="history">
-  <rect x="870" y="440" width="260" height="142" rx="12" fill="#F3ECFF" stroke="#7B8CA3" stroke-width="2"/>
+  <rect x="870" y="440" width="260" height="142" rx="12" fill="#4C1D95" stroke="#64748B" stroke-width="2"/>
   <text class="nodeTitle" x="1000" y="482" text-anchor="middle">Reader</text>
   <text class="nodeBody" x="1000" y="506" text-anchor="middle">latest snapshot</text>
   <text class="nodeBody" x="1000" y="532" text-anchor="middle">state history</text>
   <text class="nodeBody" x="1000" y="558" text-anchor="middle">field-level diff</text>
 </g>
-<rect x="88" y="590" width="1114" height="56" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
+<rect x="88" y="590" width="1114" height="56" rx="12" fill="#111827" stroke="#334155"/>
 <text class="footer" x="645" y="613" text-anchor="middle">The workshop still persists the product row with Exposed.</text>
 <text class="footer" x="645" y="636" text-anchor="middle">JaVers owns change history and object diff semantics.</text>
 </svg>

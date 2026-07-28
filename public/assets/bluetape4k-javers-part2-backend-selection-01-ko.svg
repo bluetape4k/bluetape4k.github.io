@@ -1,18 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1290" height="680" viewBox="0 0 1290 680">
 <defs>
-  <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse">
-    <path d="M 1 1 L 7 4 L 1 7 Z" fill="#496A8F"/>
+  <marker id="arrow" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">
+    <path d="M 0 0 L 10 5 L 0 10 Z" fill="#60A5FA"/>
   </marker>
   <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-    <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#22344A" flood-opacity="0.12"/>
+    <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#F8FAFC" flood-opacity="0.12"/>
   </filter>
   <style>
-    .canvas{fill:#F6F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
-    .title{font-family:"goorm Sans";font-size:42px;fill:#22344A;font-weight:400}
-    .subtitle,.footer{font-family:"goorm Sans Code";font-size:17px;fill:#536476;font-weight:400}
-    .nodeTitle{font-family:"goorm Sans";font-size:25px;fill:#22344A;font-weight:400}
-    .nodeBody,.edgeLabel{font-family:"goorm Sans Code";font-size:16px;fill:#3F5269;font-weight:400}
-    .edge{fill:none;stroke:#496A8F;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    .canvas{fill:#07111F}.frame{fill:#0F172A;stroke:#334155;stroke-width:2}
+    .title{font-family:"goorm Sans";font-size:42px;fill:#F8FAFC;font-weight:400}
+    .subtitle,.footer{font-family:"goorm Sans Code";font-size:17px;fill:#CBD5E1;font-weight:400}
+    .nodeTitle{font-family:"goorm Sans";font-size:25px;fill:#F8FAFC;font-weight:400}
+    .nodeBody,.edgeLabel{font-family:"goorm Sans Code";font-size:16px;fill:#CBD5E1;font-weight:400}
+    .edge{fill:none;stroke:#60A5FA;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
     g[id]{filter:url(#shadow)}
   </style>
 </defs>
@@ -20,36 +20,36 @@
 <rect class="frame" x="34" y="28" width="1222" height="624" rx="24"/>
 <text class="title" x="645" y="82" text-anchor="middle">영속성 역할 구성</text>
 <text class="subtitle" x="645" y="116" text-anchor="middle">모듈 이름이 아니라 읽기/쓰기 역할에 따라 저장소를 고릅니다</text>
-<path class="edge" d="M480 179 H420 Q410 179 410 189 V379 Q410 389 400 389 H352"/>
-<path class="edge" d="M610 238 V284 H610 V318"/>
-<path class="edge" d="M740 179 H800 Q810 179 810 189 V379 Q810 389 820 389 H868"/>
+<path class="edge" d="M480 179 H434 Q416 179 416 197 V371 Q416 389 398 389 H352"/>
+<path class="edge" d="M610 238 V318"/>
+<path class="edge" d="M740 179 H786 Q804 179 804 197 V371 Q804 389 822 389 H868"/>
 <g id="javers">
-  <rect x="480" y="120" width="260" height="118" rx="12" fill="#FFF4D9" stroke="#7B8CA3" stroke-width="2"/>
+  <rect x="480" y="120" width="260" height="118" rx="12" fill="#78350F" stroke="#64748B" stroke-width="2"/>
   <text class="nodeTitle" x="610" y="162" text-anchor="middle">JaVers 커밋</text>
   <text class="nodeBody" x="610" y="195" text-anchor="middle">하나의 감사 경계</text>
 </g>
 <g id="exposed">
-  <rect x="80" y="330" width="260" height="142" rx="12" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
+  <rect x="80" y="330" width="260" height="142" rx="12" fill="#0C4A6E" stroke="#64748B" stroke-width="2"/>
   <text class="nodeTitle" x="210" y="372" text-anchor="middle">Exposed JDBC</text>
-  <text class="nodeBody" x="210" y="396" text-anchor="middle">내구성 있는 SQL 스냅샷</text>
+  <text class="nodeBody" x="210" y="396" text-anchor="middle">내구성 있는 SQL 스냅숏</text>
   <text class="nodeBody" x="210" y="422" text-anchor="middle">트랜잭션 연계</text>
   <text class="nodeBody" x="210" y="448" text-anchor="middle">조회 가능한 이력</text>
 </g>
 <g id="redis">
-  <rect x="480" y="330" width="260" height="142" rx="12" fill="#EAF8EF" stroke="#7B8CA3" stroke-width="2"/>
+  <rect x="480" y="330" width="260" height="142" rx="12" fill="#14532D" stroke="#64748B" stroke-width="2"/>
   <text class="nodeTitle" x="610" y="372" text-anchor="middle">Redis</text>
   <text class="nodeBody" x="610" y="396" text-anchor="middle">캐시 친화적 읽기</text>
   <text class="nodeBody" x="610" y="422" text-anchor="middle">LIST / multimap 저장</text>
   <text class="nodeBody" x="610" y="448" text-anchor="middle">빠른 최신 상태 조회</text>
 </g>
 <g id="kafka">
-  <rect x="880" y="330" width="260" height="142" rx="12" fill="#FFF0E8" stroke="#7B8CA3" stroke-width="2"/>
+  <rect x="880" y="330" width="260" height="142" rx="12" fill="#7C2D12" stroke="#64748B" stroke-width="2"/>
   <text class="nodeTitle" x="1010" y="372" text-anchor="middle">Kafka</text>
   <text class="nodeBody" x="1010" y="396" text-anchor="middle">쓰기 전용 스트림</text>
-  <text class="nodeBody" x="1010" y="422" text-anchor="middle">스냅샷 이벤트 전송</text>
+  <text class="nodeBody" x="1010" y="422" text-anchor="middle">스냅숏 이벤트 전송</text>
   <text class="nodeBody" x="1010" y="448" text-anchor="middle">읽기 메서드는 빈 결과 반환</text>
 </g>
-<rect x="88" y="590" width="1114" height="56" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
+<rect x="88" y="590" width="1114" height="56" rx="12" fill="#111827" stroke="#334155"/>
 <text class="footer" x="645" y="613" text-anchor="middle">Kafka는 의도적으로 조회 저장소가 아닙니다.</text>
 <text class="footer" x="645" y="636" text-anchor="middle">읽는 쪽에 이력이 필요하면 스트림을 Exposed 또는 Redis와 조합합니다.</text>
 </svg>

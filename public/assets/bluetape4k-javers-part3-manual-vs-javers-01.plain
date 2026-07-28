@@ -1,9 +1,0 @@
-graph 1 6.3646 1.6944
-node manual 3.6667 1.4444 1.7431 0.5 "Manual Audit Table" rounded box black lightgrey
-node service 0.86111 0.84722 1.7222 0.5 "Application Service" rounded box black lightgrey
-node javers 3.6667 0.25 1.8889 0.5 "JaVers Snapshot Flow" rounded box black lightgrey
-node history 5.9878 0.25 0.75347 0.5 Reader rounded box black lightgrey
-edge service manual 7 1.7268 0.84722 2.5522 0.84722 3.6701 0.84722 3.6701 0.84722 3.6701 0.84722 3.6701 1.0278 3.6701 1.0278 solid black
-edge service javers 7 0.86458 0.59048 0.86458 0.42861 0.86458 0.25 0.86458 0.25 0.86458 0.25 2.5581 0.25 2.5581 0.25 solid black
-edge javers history 4 4.6175 0.25 4.6175 0.25 5.449 0.25 5.449 0.25 solid black
-stop
