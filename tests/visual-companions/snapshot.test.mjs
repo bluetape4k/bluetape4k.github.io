@@ -223,12 +223,8 @@ test('visual companion snapshot validation detects digest drift and stale assets
 
   const staleSetup = await fixture();
   await syncVisualCompanionSnapshot({ ...staleSetup, repository });
-  await mkdir(
-    path.join(staleSetup.siteRoot, 'public/ko/visual-companions/clinic-appointment/stale'),
-    { recursive: true },
-  );
   await writeFile(
-    path.join(staleSetup.siteRoot, 'public/ko/visual-companions/clinic-appointment/stale/index.html'),
+    path.join(staleSetup.siteRoot, 'public/ko/visual-companions/clinic-appointment/stale.txt'),
     'stale',
   );
   await assert.rejects(

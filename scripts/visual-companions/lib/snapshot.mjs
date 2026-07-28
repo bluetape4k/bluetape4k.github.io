@@ -138,7 +138,7 @@ function snapshotFile(siteRoot, repository) {
   );
 }
 
-async function collectIndexFiles(root) {
+async function collectFiles(root) {
   const found = [];
   async function visit(directory) {
     let entries;
@@ -152,7 +152,7 @@ async function collectIndexFiles(root) {
       const absolute = path.join(directory, entry.name);
       if (entry.isSymbolicLink()) fail('VISUAL_DESTINATION_SYMLINK', absolute);
       if (entry.isDirectory()) await visit(absolute);
-      else if (entry.isFile() && entry.name === 'index.html') found.push(absolute);
+      else if (entry.isFile()) found.push(absolute);
     }
   }
   await visit(root);
@@ -317,8 +317,8 @@ export async function validateVisualCompanionSnapshot({ siteRoot, repository }) 
 
   const slug = repositorySlug(repository);
   const actual = [
-    ...await collectIndexFiles(path.join(siteRoot, 'public/visual-companions', slug)),
-    ...await collectIndexFiles(path.join(siteRoot, 'public/ko/visual-companions', slug)),
+    ...await collectFiles(path.join(siteRoot, 'public/visual-companions', slug)),
+    ...await collectFiles(path.join(siteRoot, 'public/ko/visual-companions', slug)),
   ];
   const stale = actual.filter((file) => !expected.has(file));
   const missing = [...expected].filter((file) => !actual.includes(file));
