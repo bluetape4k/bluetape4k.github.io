@@ -49,7 +49,7 @@
     <rect class="card" x="205" y="180" width="790" height="150" rx="24" stroke="#6686b8"/>
     <circle cx="275" cy="235" r="28" fill="#263b5c" stroke="#6686b8" stroke-width="2"/>
     <text class="step" x="275" y="242" text-anchor="middle">1</text>
-    <text class="small" x="330" y="220">HTTP INPUT</text>
+    <text class="small" x="330" y="220">HTTP 입력</text>
     <text class="cardTitle" x="330" y="265">multipart 이미지 업로드</text>
     <text class="mono" x="330" y="302">filename · Content-Type · reported size</text>
   </g>
@@ -60,7 +60,7 @@
     <rect class="card" x="165" y="430" width="870" height="190" rx="24" stroke="#66aee8"/>
     <circle cx="235" cy="490" r="28" fill="#203e61" stroke="#66aee8" stroke-width="2"/>
     <text class="step" x="235" y="497" text-anchor="middle">2</text>
-    <text class="small" x="290" y="474">LOW-COST DECLARED GUARDS</text>
+    <text class="small" x="290" y="474">저비용 선언 정보 판정</text>
     <text class="cardTitle" x="290" y="520">읽기 전 저비용 판정</text>
     <text class="body" x="290" y="565">빈 입력 · 지원 MIME · 보고된 압축 크기</text>
     <text class="mono" x="290" y="598">PNG · JPEG · WebP / maxInputBytes</text>
@@ -83,7 +83,7 @@
     <rect class="card" x="205" y="720" width="790" height="160" rx="24" stroke="#7e9fd0"/>
     <circle cx="275" cy="780" r="28" fill="#283d5f" stroke="#7e9fd0" stroke-width="2"/>
     <text class="step" x="275" y="787" text-anchor="middle">3</text>
-    <text class="small" x="330" y="763">READ ONCE</text>
+    <text class="small" x="330" y="763">한 번 읽기</text>
     <text class="cardTitle" x="330" y="810">업로드 바이트를 한 번 읽는다</text>
     <text class="body" x="330" y="850">이후 모든 판정과 디코딩에서 같은 ByteArray 재사용</text>
   </g>
@@ -94,7 +94,7 @@
     <rect class="card" x="165" y="980" width="870" height="210" rx="24" stroke="#50c7d9"/>
     <circle cx="235" cy="1040" r="28" fill="#173d4e" stroke="#50c7d9" stroke-width="2"/>
     <text class="step" x="235" y="1047" text-anchor="middle">4</text>
-    <text class="small" x="290" y="1024">ACTUAL CONTENT GUARDS</text>
+    <text class="small" x="290" y="1024">실제 내용 판정</text>
     <text class="cardTitle" x="290" y="1070">실제 바이트와 파일 형식 확인</text>
     <text class="body" x="290" y="1115">실제 크기 · PNG/JPEG/WebP 시그니처</text>
     <text class="body" x="290" y="1152">선언 MIME과 실제 시그니처 일치 여부</text>
@@ -116,7 +116,7 @@
     <rect class="card" x="205" y="1290" width="790" height="160" rx="24" stroke="#f0ad5b"/>
     <circle cx="275" cy="1350" r="28" fill="#4a3521" stroke="#f0ad5b" stroke-width="2"/>
     <text class="step" x="275" y="1357" text-anchor="middle">5</text>
-    <text class="small" x="330" y="1333">DIMENSION PROBE</text>
+    <text class="small" x="330" y="1333">이미지 크기 탐색</text>
     <text class="cardTitle" x="330" y="1380">이미지 크기를 사전 확인한다</text>
     <text class="body" x="330" y="1420">전체 픽셀을 만들기 전에 이미지 크기 정보 탐색</text>
   </g>
@@ -127,7 +127,7 @@
     <rect class="card" x="165" y="1550" width="870" height="200" rx="24" stroke="#f0ad5b"/>
     <circle cx="235" cy="1610" r="28" fill="#4a3521" stroke="#f0ad5b" stroke-width="2"/>
     <text class="step" x="235" y="1617" text-anchor="middle">6</text>
-    <text class="small" x="290" y="1594">DECODED BUDGET</text>
+    <text class="small" x="290" y="1594">디코딩 예산</text>
     <text class="cardTitle" x="290" y="1640">한 변과 전체 픽셀 예산 확인</text>
     <text class="mono" x="290" y="1685">maxInputSide = 8,192</text>
     <text class="mono" x="290" y="1720">maxInputPixels = 16,777,216</text>
@@ -149,7 +149,7 @@
     <rect class="card" x="205" y="1860" width="790" height="170" rx="24" stroke="#a78bfa"/>
     <circle cx="275" cy="1920" r="28" fill="#352b58" stroke="#a78bfa" stroke-width="2"/>
     <text class="step" x="275" y="1927" text-anchor="middle">7</text>
-    <text class="small" x="330" y="1903">ONE FULL DECODE</text>
+    <text class="small" x="330" y="1903">단일 전체 디코딩</text>
     <text class="cardTitle" x="330" y="1950">전체 이미지를 한 번 디코딩</text>
     <text class="body" x="330" y="1993">손상된 본문은 image_not_decodable로 정규화</text>
   </g>
@@ -161,7 +161,7 @@
     <rect x="135" y="2140" width="930" height="180" rx="28" fill="url(#qualified)" stroke="#57c58a" stroke-width="3" filter="url(#shadow)"/>
     <circle cx="215" cy="2202" r="31" fill="#183e32" stroke="#57c58a" stroke-width="2"/>
     <path d="M200 2203 L211 2214 L232 2189" fill="none" stroke="#8ce8b4" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-    <text class="small" x="275" y="2188">QUALIFIED INPUT</text>
+    <text class="small" x="275" y="2188">자격 판정 통과</text>
     <text class="cardTitle" x="275" y="2235">QualifiedImage</text>
     <text class="mono" x="275" y="2276">mediaType · dimensions · ImmutableImage</text>
   </g>

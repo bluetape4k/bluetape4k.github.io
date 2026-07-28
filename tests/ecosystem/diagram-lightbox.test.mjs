@@ -736,3 +736,50 @@ test('Kafka-first, coroutine observability, and Flow articles expose localized d
   assert.match(pairs[4][0], /`bufferingDebounce`는 연속 입력을 `List<String>`으로 묶습니다/);
   assert.match(pairs[5][0], /`bufferingDebounce` emits each burst as a `List<String>`/);
 });
+
+test('image-intelligence articles expose localized diagrams and preserve qualification boundaries', async () => {
+  const pairs = [
+    [
+      await read('src/content/docs/ko/blog/image-intelligence-part1-multi-analysis-boundaries.mdx'),
+      [
+        '방문증 한 장에서 서로 다른 정보를 읽는 세 처리 경로',
+        'OCR·객체 검출·QR 결과와 방문증 정책의 계약',
+        '이미지 인텔리전스 API의 전체 처리 경계',
+      ],
+    ],
+    [
+      await read('src/content/docs/blog/image-intelligence-part1-multi-analysis-boundaries.mdx'),
+      [
+        'Three analysis paths reading different information from one visitor pass',
+        'Contracts for OCR, object detection, QR results, and visitor-pass policy',
+        'End-to-end processing boundaries of the Image Intelligence API',
+      ],
+    ],
+    [
+      await read('src/content/docs/ko/blog/image-intelligence-part2-input-qualification-and-single-decode.mdx'),
+      [
+        '업로드 이미지가 QualifiedImage가 되기까지',
+        '분석기별 반복 디코딩과 공통 단일 디코딩 비교',
+      ],
+    ],
+    [
+      await read('src/content/docs/blog/image-intelligence-part2-input-qualification-and-single-decode.mdx'),
+      [
+        'From uploaded image to QualifiedImage',
+        'Per-analyzer decoding versus a shared single decode',
+      ],
+    ],
+  ];
+
+  for (const [source, titles] of pairs) {
+    for (const title of titles) {
+      assert.match(source, new RegExp(`data-diagram-title="${title}"`));
+    }
+    assert.doesNotMatch(source, /class="bt4k-blog-hero"[^>]*data-diagram-title/);
+  }
+
+  assert.match(pairs[0][0], /입력 자격 판정·병렬 처리·부분 실패·정책 분리/);
+  assert.match(pairs[2][0], /거부 입력은 반대 경계를 검증합니다/);
+  assert.match(pairs[2][0], /정상 PNG \| 1 \| 합격한 입력을 정확히 한 번 디코딩/);
+  assert.doesNotMatch(pairs[0][0], /OCR provider|분석 provider|fixture|circuit breaker/);
+});

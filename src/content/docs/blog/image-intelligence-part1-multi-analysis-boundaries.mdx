@@ -102,7 +102,7 @@ Before running three analyzers in parallel, the service determines whether the u
 checks for an empty file, declared media type, compressed byte size, actual file signature, decodability, dimensions, and
 total pixel count.
 
-It is equally important to define what this step does not decide. Whether OCR can read the text, whether the image contains a
+The boundary must also state what this step does not decide. Whether OCR can read the text, whether the image contains a
 face, and whether it contains a QR code are analysis outcomes, not upload-qualification rules. Moving them into shared
 qualification would turn legitimate OCR or QR results into input errors.
 

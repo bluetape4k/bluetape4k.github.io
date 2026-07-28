@@ -62,7 +62,7 @@
 
   <g id="left-upload" data-node="left-upload">
     <rect class="card" x="255" y="335" width="440" height="115" rx="22" stroke="#8c6671"/>
-    <text class="small" x="475" y="372" text-anchor="middle">MULTIPART INPUT</text>
+    <text class="small" x="475" y="372" text-anchor="middle">멀티파트 입력</text>
     <text class="cardTitle" x="475" y="414" text-anchor="middle">업로드 이미지 한 장</text>
   </g>
 
@@ -74,19 +74,19 @@
 
   <g id="left-ocr-decode" data-node="left-ocr-decode">
     <rect class="card" x="105" y="600" width="200" height="145" rx="20" stroke="#ef7d7d"/>
-    <text class="small" x="205" y="638" text-anchor="middle">OCR INPUT</text>
+    <text class="small" x="205" y="638" text-anchor="middle">OCR 입력</text>
     <text class="cardTitle" x="205" y="680" text-anchor="middle">읽기 + 디코딩</text>
     <text class="metric" x="205" y="720" text-anchor="middle">1회</text>
   </g>
   <g id="left-detection-decode" data-node="left-detection-decode">
     <rect class="card" x="375" y="600" width="200" height="145" rx="20" stroke="#ef7d7d"/>
-    <text class="small" x="475" y="638" text-anchor="middle">DETECTION INPUT</text>
+    <text class="small" x="475" y="638" text-anchor="middle">객체 검출 입력</text>
     <text class="cardTitle" x="475" y="680" text-anchor="middle">읽기 + 디코딩</text>
     <text class="metric" x="475" y="720" text-anchor="middle">1회</text>
   </g>
   <g id="left-qr-decode" data-node="left-qr-decode">
     <rect class="card" x="645" y="600" width="200" height="145" rx="20" stroke="#ef7d7d"/>
-    <text class="small" x="745" y="638" text-anchor="middle">QR INPUT</text>
+    <text class="small" x="745" y="638" text-anchor="middle">QR 입력</text>
     <text class="cardTitle" x="745" y="680" text-anchor="middle">읽기 + 디코딩</text>
     <text class="metric" x="745" y="720" text-anchor="middle">1회</text>
   </g>
@@ -118,7 +118,7 @@
 
   <g id="right-upload" data-node="right-upload">
     <rect class="card" x="1105" y="335" width="440" height="115" rx="22" stroke="#6686b8"/>
-    <text class="small" x="1325" y="372" text-anchor="middle">MULTIPART INPUT</text>
+    <text class="small" x="1325" y="372" text-anchor="middle">멀티파트 입력</text>
     <text class="cardTitle" x="1325" y="414" text-anchor="middle">업로드 이미지 한 장</text>
   </g>
 
@@ -126,7 +126,7 @@
 
   <g id="right-qualifier" data-node="right-qualifier">
     <rect class="card" x="1065" y="540" width="520" height="135" rx="22" stroke="#66aee8"/>
-    <text class="small" x="1325" y="578" text-anchor="middle">SHARED QUALIFICATION</text>
+    <text class="small" x="1325" y="578" text-anchor="middle">공통 입력 자격 판정</text>
     <text class="cardTitle" x="1325" y="619" text-anchor="middle">형식 · 바이트 · 픽셀 예산 판정</text>
     <text class="mono" x="1325" y="652" text-anchor="middle">read bytes once</text>
   </g>
@@ -135,7 +135,7 @@
 
   <g id="right-decode" data-node="right-decode">
     <rect class="card" x="1105" y="765" width="440" height="125" rx="22" stroke="#a78bfa"/>
-    <text class="small" x="1325" y="798" text-anchor="middle">ONE FULL DECODE</text>
+    <text class="small" x="1325" y="798" text-anchor="middle">단일 전체 디코딩</text>
     <text class="cardTitle" x="1325" y="836" text-anchor="middle">ImmutableImage 생성</text>
     <text class="metric" x="1325" y="874" text-anchor="middle">1회</text>
   </g>
@@ -144,7 +144,7 @@
 
   <g id="right-qualified" data-node="right-qualified">
     <rect x="1070" y="970" width="510" height="120" rx="24" fill="#15372f" stroke="#57c58a" stroke-width="3" filter="url(#shadow)"/>
-    <text class="small" x="1325" y="1008" text-anchor="middle">SHARED IMMUTABLE INPUT</text>
+    <text class="small" x="1325" y="1008" text-anchor="middle">공유 불변 입력</text>
     <text class="cardTitle" x="1325" y="1054" text-anchor="middle">QualifiedImage</text>
   </g>
 

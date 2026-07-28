@@ -88,7 +88,7 @@ suspend fun qualify(file: MultipartFile): QualifiedImage {
 }
 ```
 
-The function names and details are simplified for explanation. The important parts are the **order of checks and the number of
+The function names and details are simplified for explanation. The design depends on the **order of checks and the number of
 times each operation runs**:
 
 1. Reject an empty upload.
