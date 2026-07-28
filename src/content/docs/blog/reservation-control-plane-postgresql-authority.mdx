@@ -37,7 +37,7 @@ The example is a control plane, not a Redis-only counter. Redis can reject some 
 changes capacity is still a PostgreSQL transaction. That keeps concurrency, retry, waitlist, and expiry rules under one
 durable authority.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="PostgreSQL as the final reservation authority">
   <img src="/assets/reservation-control-plane-architecture-01-en.png" alt="Dark architecture diagram showing the responsibility boundaries between clients, the Reservation HTTP API, node-local bulkheads, Redis advisory controls, PostgreSQL final authority, and background workers" loading="lazy" />
   <figcaption>Redis reduces contention at the advisory boundary; PostgreSQL makes the final decision for capacity, state, ownership, and replayable responses.</figcaption>
 </figure>
@@ -61,7 +61,7 @@ val updated = CapacityResourceTable.update({
 If the update count is zero, the command did not win the last slot. The application should not "repair" that with a
 Redis value. PostgreSQL already made the authoritative decision.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Last-seat race and idempotent retry">
   <img src="/assets/reservation-control-plane-last-seat-retry-sequence-02-en.png" alt="Dark sequence diagram showing Alice and Bob racing for the last slot, local fallback when Redis fails, a PostgreSQL conditional update, timeout, retry with the same idempotency key, and replay" loading="lazy" />
   <figcaption>A timeout changes when the client learns the result; it does not undo the committed database result. Retrying with the same key replays the stored response without increasing capacity again.</figcaption>
 </figure>
@@ -80,7 +80,7 @@ Cancellation is not a single boolean state. The control plane has several object
 locks the resource row before reading waitlist and offer state. Knowing an offer URL is not enough to accept another
 user's slot; the owner digest, state, expiry, and revision still have to match.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="FIFO handoff of occupied capacity">
   <img src="/assets/reservation-control-plane-waitlist-handoff-sequence-03-en.png" alt="Dark sequence diagram showing Alice canceling a hold, resource row locking, FIFO offer creation for Bob, ownership validation, and conversion to a confirmed hold" loading="lazy" />
   <figcaption>The occupied slot is handed from Alice to Bob instead of being released and reacquired. `occupiedCount` decreases only when no waiter is available.</figcaption>
 </figure>

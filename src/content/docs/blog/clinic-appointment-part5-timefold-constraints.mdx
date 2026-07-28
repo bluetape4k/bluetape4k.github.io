@@ -54,9 +54,14 @@ is the planning entity. Timefold may change `doctorId`, `appointmentDate`, and `
 or in-progress appointments fixed through the `pinned` property.
 
 [ScheduleSolution](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-solver/src/main/kotlin/io/bluetape4k/clinic/appointment/solver/domain/ScheduleSolution.kt)
-provides appointments plus the clinic, doctors, treatments, equipment, hours, breaks, absences, closures, holidays,
+can hold appointments plus the clinic, doctors, treatments, equipment, hours, breaks, absences, closures, holidays,
 treatment-equipment mappings, and equipment downtime. These are problem facts: they evaluate candidate schedules but
 do not move during solving.
+
+The model's capacity is broader than the facts loaded by the current service path. `SolverService.loadSolution()` reads
+clinic, doctor, treatment, operating-calendar, and equipment data, but it does not query equipment downtime and pass
+those facts into `ScheduleSolution`. H11 is therefore defined and testable when downtime facts are supplied, while the
+current optimization service cannot enforce downtime it never loads.
 
 <figure
   class="bt4k-architecture"
@@ -104,7 +109,7 @@ absence, closures and holidays, concurrent-patient policy, equipment capacity an
 | H8 | `equipmentAvailability` | Concurrent use does not exceed equipment quantity. |
 | H9 | `providerTypeMatch` | The doctor's provider type matches the treatment requirement. |
 | H10 | `doctorBelongsToClinic` | The assigned doctor belongs to the appointment's clinic. |
-| H11 | `equipmentUnavailabilityConflict` | The appointment avoids maintenance and failure intervals. |
+| H11 | `equipmentUnavailabilityConflict` | When downtime facts are supplied, the appointment avoids maintenance and failure intervals. |
 
 Constraint Streams connect appointments to problem facts using `join`, `ifExists`, and `ifNotExists`. H3, for example,
 finds an absence for the same doctor and date, then penalizes a full-day absence or an overlapping interval.
@@ -185,7 +190,8 @@ counting and tests rather than assuming the requirement table already matches th
 ## Read the Benchmark as a Local Baseline
 
 The repository's [solver benchmark report](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/solver-benchmark-report.md)
-records a 2026-04-19 run on Apple M4 Pro and JDK 25. Every scenario returned a feasible solution with a hard score of zero.
+records a 2026-04-19 run on Apple M4 Pro and JDK 25. Every scenario returned a solution with a hard score of zero for
+the problem facts supplied to that run.
 
 <figure
   class="bt4k-chart"
@@ -200,6 +206,9 @@ records a 2026-04-19 run on Apple M4 Pro and JDK 25. Every scenario returned a f
 | Small | 10 | 5,030ms / 10,000ms | `0hard/0soft` | 133,758 |
 | Medium | 30 | 8,270ms / 15,000ms | `0hard/-500soft` | 100,613 |
 | Large | 100 | 16,163ms / 30,000ms | `0hard/-2000soft` | 116,135 |
+
+`0hard` means the solver found no hard violation among the facts actually supplied to that scenario. It does not prove
+equipment-downtime safety while the service path omits those facts.
 
 The reported search space grows from `3.57 × 10²²` to `3.37 × 10³²⁵`, making exhaustive enumeration impractical.
 The current configuration builds an initial solution with `FIRST_FIT_DECREASING` Construction Heuristic and improves it
@@ -232,7 +241,7 @@ to `PENDING_RESCHEDULE` and connect candidate generation, global optimization, a
 - [Hard constraints](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-solver/src/main/kotlin/io/bluetape4k/clinic/appointment/solver/constraint/HardConstraints.kt): Evaluates time, absence, closure, capacity, equipment, and provider rules.
 - [Soft constraints](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-solver/src/main/kotlin/io/bluetape4k/clinic/appointment/solver/constraint/SoftConstraints.kt): Defines load, gap, doctor, date, and equipment preferences.
 - [Constraint tests](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-solver/src/test/kotlin/io/bluetape4k/clinic/appointment/solver/constraint/ConstraintVerifierTest.kt): Verifies selected constraints with small inputs.
-- [Solver configuration](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-solver/src/main/kotlin/io/bluetape4k/clinic/appointment/solver/config/SolverConfig.kt): Configures construction heuristic, local search, and termination.
+- [Solver configuration](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-solver/src/main/kotlin/io/bluetape4k/clinic/appointment/solver/service/SolverConfig.kt): Configures construction heuristic, local search, and termination.
 - [Solver benchmark report](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/solver-benchmark-report.md): Local baselines for three input sizes.
 - [Modeling planning problems](https://docs.timefold.ai/timefold-solver/latest/domain-modeling/modeling-planning-problems): Official Timefold guide to entities, variables, facts, and solutions.
 - [Score calculation and Constraint Streams](https://docs.timefold.ai/timefold-solver/latest/constraints-and-score/score-calculation): Official guide to hard/soft scores, Constraint Streams, and ConstraintVerifier.
