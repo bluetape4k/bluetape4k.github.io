@@ -351,6 +351,42 @@ test('the ecosystem overview provides localized diagram titles without making th
   assert.doesNotMatch(en, /class="bt4k-blog-hero"[^>]*data-diagram-title/);
 });
 
+test('the Graph core series provides localized titles for every technical figure', async () => {
+  const posts = [
+    [
+      await read('src/content/docs/ko/blog/bluetape4k-graph-part1-overview-database-selection.mdx'),
+      ['그래프 데이터베이스 선택 기준', 'bluetape4k-graph 모듈 구성'],
+    ],
+    [
+      await read('src/content/docs/blog/bluetape4k-graph-part1-overview-database-selection.mdx'),
+      ['Graph database selection criteria', 'bluetape4k-graph module structure'],
+    ],
+    [
+      await read('src/content/docs/ko/blog/bluetape4k-graph-part2-core-api-schema-execution.mdx'),
+      ['그래프 핵심 API의 실행 경계', '그래프 트랜잭션과 일괄 쓰기 순서', '그래프 API 실행 모델 벤치마크'],
+    ],
+    [
+      await read('src/content/docs/blog/bluetape4k-graph-part2-core-api-schema-execution.mdx'),
+      ['Graph core API execution boundaries', 'Graph transaction and batch-write sequence', 'Graph API execution-model benchmark'],
+    ],
+    [
+      await read('src/content/docs/ko/blog/bluetape4k-graph-part3-graph-io-benchmarks.mdx'),
+      ['그래프 입출력 파이프라인', '그래프 입출력 동기 실행 평균 지연 시간'],
+    ],
+    [
+      await read('src/content/docs/blog/bluetape4k-graph-part3-graph-io-benchmarks.mdx'),
+      ['Graph I/O pipeline', 'Mean graph I/O latency for synchronous execution'],
+    ],
+  ];
+
+  for (const [source, titles] of posts) {
+    for (const title of titles) {
+      assert.match(source, new RegExp(`data-diagram-title="${title}"`));
+    }
+    assert.doesNotMatch(source, /class="bt4k-blog-hero"[^>]*data-diagram-title/);
+  }
+});
+
 test('every blog image is explicitly classified as a technical diagram or an excluded visual', async () => {
   const allowedFigureClasses = new Set([
     'bt4k-architecture',

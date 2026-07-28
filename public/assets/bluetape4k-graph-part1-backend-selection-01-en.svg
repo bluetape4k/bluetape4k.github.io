@@ -1,22 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="2280" height="840" viewBox="0 0 2280 840">
 <defs>
-  <marker id="arrow" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse">
-    <path d="M 0 0 L 14 7 L 0 14 Z" fill="#496A8F" stroke="#496A8F"/>
+  <marker id="arrow" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">
+    <path d="M 0 0 L 10 5 L 0 10 Z" fill="#60A5FA"/>
   </marker>
   <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
     <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#22344A" flood-opacity="0.12"/>
   </filter>
   <style>
-    .canvas{fill:#F6F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
-    .title{font-family:"Architects Daughter","Comic Sans MS",cursive;font-size:42px;fill:#22344A;font-weight:400}
-    .subtitle,.footer,.axis{font-family:"Comic Mono","Comic Sans MS",sans-serif;font-size:17px;fill:#536476;font-weight:400}
-    .nodeTitle,.participant{font-family:"Architects Daughter","Comic Sans MS",cursive;font-size:24px;fill:#22344A;font-weight:400}
-    .nodeBody,.labelText,.num{font-family:"Comic Mono","Comic Sans MS",sans-serif;font-size:16px;fill:#3F5269;font-weight:400}
-    .tableTitle{font-family:"Architects Daughter","Comic Sans MS",cursive;font-size:24px;fill:#22344A;font-weight:400}
-    .tableField,.edgeLabel{font-family:"Comic Mono","Comic Sans MS",sans-serif;font-size:15px;fill:#3F5269;font-weight:400}
-    .edge{fill:none;stroke:#496A8F;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
-    .bus{fill:none;stroke:#496A8F;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
-    .lifeline{stroke:#91A6BD;stroke-width:2;stroke-dasharray:8 8}
+    .canvas{fill:#07111F}.frame{fill:#0F172A;stroke:#334155;stroke-width:2}
+    .title{font-family:"Architects Daughter","Comic Sans MS",cursive;font-size:42px;fill:#F8FAFC;font-weight:400}
+    .subtitle,.footer,.axis{font-family:"Comic Mono","Comic Sans MS",sans-serif;font-size:17px;fill:#CBD5E1;font-weight:400}
+    .nodeTitle,.participant{font-family:"Architects Daughter","Comic Sans MS",cursive;font-size:24px;fill:#F8FAFC;font-weight:400}
+    .nodeBody,.labelText,.num{font-family:"Comic Mono","Comic Sans MS",sans-serif;font-size:16px;fill:#E2E8F0;font-weight:400}
+    .tableTitle{font-family:"Architects Daughter","Comic Sans MS",cursive;font-size:24px;fill:#F8FAFC;font-weight:400}
+    .tableField,.edgeLabel{font-family:"Comic Mono","Comic Sans MS",sans-serif;font-size:15px;fill:#E2E8F0;font-weight:400}
+    .edge{fill:none;stroke:#60A5FA;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    .bus{fill:none;stroke:#60A5FA;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+    .lifeline{stroke:#64748B;stroke-width:2;stroke-dasharray:8 8}
     g[id]{filter:url(#shadow)}
   </style>
 </defs>
@@ -32,47 +32,47 @@
 <path class="edge" d="M1505 365 V457"/>
 <path class="edge" d="M1915 365 V457"/>
 <g id="app">
-  <rect x="910" y="165" width="460" height="142" rx="12" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
+  <rect x="910" y="165" width="460" height="142" rx="12" fill="#0C4A6E" stroke="#64748B" stroke-width="2"/>
   <text class="nodeTitle" x="1140" y="222.5" text-anchor="middle">Application Graph Workload</text>
   <text class="nodeBody" x="1140" y="256.5" text-anchor="middle">paths, neighbors, rankings</text>
   <text class="nodeBody" x="1140" y="279.5" text-anchor="middle">bulk writes or test fixtures</text>
 </g>
 <g id="neo4j">
-  <rect x="110" y="465" width="330" height="142" rx="12" fill="#EAF8EF" stroke="#7B8CA3" stroke-width="2"/>
+  <rect x="110" y="465" width="330" height="142" rx="12" fill="#14532D" stroke="#64748B" stroke-width="2"/>
   <text class="nodeTitle" x="275" y="511.5" text-anchor="middle">Neo4j</text>
   <text class="nodeBody" x="275" y="545.5" text-anchor="middle">default production choice</text>
   <text class="nodeBody" x="275" y="568.5" text-anchor="middle">mature operations</text>
   <text class="nodeBody" x="275" y="591.5" text-anchor="middle">Cypher driver</text>
 </g>
 <g id="memgraph">
-  <rect x="520" y="465" width="330" height="142" rx="12" fill="#E9F7F5" stroke="#7B8CA3" stroke-width="2"/>
+  <rect x="520" y="465" width="330" height="142" rx="12" fill="#134E4A" stroke="#64748B" stroke-width="2"/>
   <text class="nodeTitle" x="685" y="511.5" text-anchor="middle">Memgraph</text>
   <text class="nodeBody" x="685" y="545.5" text-anchor="middle">low-latency local graph</text>
   <text class="nodeBody" x="685" y="568.5" text-anchor="middle">write-heavy candidates</text>
   <text class="nodeBody" x="685" y="591.5" text-anchor="middle">Neo4j protocol</text>
 </g>
 <g id="age">
-  <rect x="930" y="465" width="330" height="142" rx="12" fill="#FFF4D9" stroke="#7B8CA3" stroke-width="2"/>
+  <rect x="930" y="465" width="330" height="142" rx="12" fill="#78350F" stroke="#64748B" stroke-width="2"/>
   <text class="nodeTitle" x="1095" y="511.5" text-anchor="middle">Apache AGE</text>
   <text class="nodeBody" x="1095" y="545.5" text-anchor="middle">PostgreSQL-centered teams</text>
   <text class="nodeBody" x="1095" y="568.5" text-anchor="middle">Cypher over SQL</text>
   <text class="nodeBody" x="1095" y="591.5" text-anchor="middle">consolidation over speed</text>
 </g>
 <g id="tinker">
-  <rect x="1340" y="465" width="330" height="142" rx="12" fill="#F3ECFF" stroke="#7B8CA3" stroke-width="2"/>
+  <rect x="1340" y="465" width="330" height="142" rx="12" fill="#4C1D95" stroke="#64748B" stroke-width="2"/>
   <text class="nodeTitle" x="1505" y="511.5" text-anchor="middle">TinkerGraph</text>
   <text class="nodeBody" x="1505" y="545.5" text-anchor="middle">unit tests and examples</text>
   <text class="nodeBody" x="1505" y="568.5" text-anchor="middle">in-memory fixtures</text>
   <text class="nodeBody" x="1505" y="591.5" text-anchor="middle">no Docker required</text>
 </g>
 <g id="falkor">
-  <rect x="1750" y="465" width="330" height="142" rx="12" fill="#FFF0E8" stroke="#7B8CA3" stroke-width="2"/>
+  <rect x="1750" y="465" width="330" height="142" rx="12" fill="#7C2D12" stroke="#64748B" stroke-width="2"/>
   <text class="nodeTitle" x="1915" y="511.5" text-anchor="middle">FalkorDB</text>
   <text class="nodeBody" x="1915" y="545.5" text-anchor="middle">Redis-aligned graph service</text>
   <text class="nodeBody" x="1915" y="568.5" text-anchor="middle">simple read-mostly workloads</text>
   <text class="nodeBody" x="1915" y="591.5" text-anchor="middle">validate write cost</text>
 </g>
-<rect x="88" y="744" width="2104" height="62" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
+<rect x="88" y="744" width="2104" height="62" rx="12" fill="#111827" stroke="#334155"/>
 <text class="footer" x="1140" y="769" text-anchor="middle">bluetape4k-graph keeps one Kotlin API while preserving graph-storage tradeoffs.</text>
 <text class="footer" x="1140" y="793" text-anchor="middle">Start with TinkerGraph for tests, then measure Neo4j, Memgraph, AGE, or FalkorDB with your workload.</text>
 </svg>
