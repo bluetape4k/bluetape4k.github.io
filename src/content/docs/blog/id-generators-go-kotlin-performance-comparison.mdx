@@ -56,14 +56,23 @@ different reason, and every optimization made the next bottleneck easier to see.
 - KSUID includes the regular seconds-based variant plus a millisecond variant aligned with the JVM implementation.
 - Snowflake exposes a 64-bit integer ID entrypoint.
 
-The API shape keeps direct string entrypoints for application code and 64-bit integer entrypoints for workloads
-where the benchmark should not mix string allocation into ID generation.
+The current API returns errors from generator construction and ID generation.
+The example below follows the current `develop` branch; the performance numbers
+later in the article remain historical results from the revisions measured on
+June 10–11, 2026.
 
 ```go
-id.NewULIDMonotonicGenerator().NextString()
-id.NewKSUIDGenerator().NextString()
-id.NewKSUIDMillisGenerator().NextString()
-id.NewSnowflakeGenerator(...).NextInt64()
+ulidGenerator, err := id.NewMonotonicULIDGenerator()
+if err != nil {
+    return err
+}
+ulid, err := ulidGenerator.NextString()
+
+snowflakeGenerator, err := id.NewSnowflakeGenerator(1)
+if err != nil {
+    return err
+}
+snowflake, err := snowflakeGenerator.NextInt64()
 ```
 
 The code lives in [`bluetape-go/id`](https://github.com/bluetape4k/bluetape-go/tree/develop/id)
@@ -77,7 +86,7 @@ The first benchmark did not give Go every workload. Go was much faster on the Sn
 core generation path. Kotlin was already strong on UUID v7, single-thread monotonic ULID, and
 KSUID seconds.
 
-<figure class="bt4k-chart">
+<figure class="bt4k-chart" data-diagram-title="Global Unique ID Generator Benchmark · Phase 1">
   <img src="/assets/id-generators-benchmark-phase-1-chart-01-en.png" alt="ID Generator Benchmark Phase 1 chart comparing the first Go implementation and the existing Kotlin implementation in ns/id" loading="lazy" />
   <figcaption>Phase 1 broke the simple assumption that Go would automatically lead. Snowflake favored Go, but Kotlin already led several string ID families.</figcaption>
 </figure>
@@ -118,7 +127,7 @@ The full Go optimization report is
 After the Go improvement, the comparison changed. Go led UUID v4, KSUID millis, and the concurrent
 ULID/KSUID workloads. Kotlin still led UUID v7 and single-thread monotonic ULID.
 
-<figure class="bt4k-chart">
+<figure class="bt4k-chart" data-diagram-title="Global Unique ID Generator Benchmark · Phase 2">
   <img src="/assets/id-generators-benchmark-phase-2-chart-01-en.png" alt="ID Generator Benchmark Phase 2 chart comparing Go after optimization and Kotlin in ns/id" loading="lazy" />
   <figcaption>Phase 2 shows the entropy-buffering effect on the Go side. Go leads many more concurrent workloads after the optimization pass.</figcaption>
 </figure>
@@ -178,7 +187,7 @@ benchmark and starts being a brochure.
 The final comparison used the current Go implementation and Kotlin candidate 3. Kotlin throughput
 entries were normalized to `ns/id` with `1e9 / (ops/s * 65_536)`.
 
-<figure class="bt4k-chart">
+<figure class="bt4k-chart" data-diagram-title="Global Unique ID Generator Benchmark · Phase 3">
   <img src="/assets/id-generators-benchmark-phase-3-chart-01-en.png" alt="ID Generator Benchmark Phase 3 chart comparing optimized Go and Kotlin candidate 3 in ns/id" loading="lazy" />
   <figcaption>Phase 3 is not a one-runtime sweep. Snowflake has a clock-model caveat, and ULID/KSUID leadership changes by workload shape.</figcaption>
 </figure>
@@ -215,13 +224,13 @@ uniqueness checks, and batch size all pull the result in different directions. T
 this work is not one fast workload. It is knowing where to look first the next time an ID generator
 number looks suspicious.
 
-## Source Notes
+## Resources
 
-- Go implementation: [`bluetape-go/id`](https://github.com/bluetape4k/bluetape-go/tree/develop/id)
-- Go benchmark source: [`id_benchmark_test.go`](https://github.com/bluetape4k/bluetape-go/blob/develop/id/id_benchmark_test.go)
-- First comparison report: [`Issue #168 ID generator benchmark`](https://github.com/bluetape4k/bluetape-go/blob/develop/docs/research/2026-06-10-issue-168-id-generator-benchmark.md)
-- Go optimization report: [`Issue #192 ID generator performance optimization`](https://github.com/bluetape4k/bluetape-go/blob/develop/docs/research/2026-06-11-issue-192-id-generator-performance.md)
-- Kotlin optimization report: [`ID Generators Self-Improve Benchmark`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/docs/benchmarks/2026-06-11-idgenerators-self-improve-benchmark.md)
-- Kotlin raw artifacts: [`docs/benchmarks/raw/issue-738`](https://github.com/bluetape4k/bluetape4k-projects/tree/develop/docs/benchmarks/raw/issue-738)
-- Third comparison report: [`Issue #192 ID generator third comparison`](https://github.com/bluetape4k/bluetape-go/blob/develop/docs/research/2026-06-11-issue-192-id-generator-third-comparison.md)
-- Third comparison raw artifacts: [`docs/research/outputs/issue-192`](https://github.com/bluetape4k/bluetape-go/tree/develop/docs/research/outputs/issue-192)
+- Go implementation and benchmark:
+  [`bluetape-go/id`](https://github.com/bluetape4k/bluetape-go/tree/develop/id),
+  [`id_benchmark_test.go`](https://github.com/bluetape4k/bluetape-go/blob/develop/id/id_benchmark_test.go)
+- Comparison conditions and interpretation:
+  [`ID generator benchmark`](https://github.com/bluetape4k/bluetape-go/blob/develop/docs/research/2026-06-10-issue-168-id-generator-benchmark.md),
+  [`third comparison`](https://github.com/bluetape4k/bluetape-go/blob/develop/docs/research/2026-06-11-issue-192-id-generator-third-comparison.md)
+- Kotlin optimization results:
+  [`ID Generators Self-Improve Benchmark`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/docs/benchmarks/2026-06-11-idgenerators-self-improve-benchmark.md)

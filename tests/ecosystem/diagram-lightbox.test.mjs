@@ -471,6 +471,10 @@ test('the repaired blog diagrams expose localized titles while hero and screensh
   const enCsvWriter = await read('src/content/docs/blog/csv-writer-okio-buffered-sink.mdx');
   const koBugFixes = await read('src/content/docs/ko/blog/embarrassing-bugs-that-made-better-guards.mdx');
   const enBugFixes = await read('src/content/docs/blog/embarrassing-bugs-that-made-better-guards.mdx');
+  const koIds = await read('src/content/docs/ko/blog/id-generators-go-kotlin-performance-comparison.mdx');
+  const enIds = await read('src/content/docs/blog/id-generators-go-kotlin-performance-comparison.mdx');
+  const koDependencies = await read('src/content/docs/ko/blog/bluetape4k-dependencies-1-3-0-library-stories.mdx');
+  const enDependencies = await read('src/content/docs/blog/bluetape4k-dependencies-1-3-0-library-stories.mdx');
 
   assert.match(koRuntime, /class="bt4k-architecture"\s+data-diagram-title="Run과 lane의 상태·복구 모델"/);
   assert.match(enRuntime, /class="bt4k-architecture"\s+data-diagram-title="Run and lane state and recovery model"/);
@@ -488,6 +492,16 @@ test('the repaired blog diagrams expose localized titles while hero and screensh
   assert.match(enCsvWriter, /class="bt4k-chart"\s+data-diagram-title="CSV writer throughput comparison"/);
   assert.match(koBugFixes, /class="bt4k-architecture"\s+data-diagram-title="부끄러운 버그 수정의 반복 구조"/);
   assert.match(enBugFixes, /class="bt4k-architecture"\s+data-diagram-title="The loop behind embarrassing bug fixes"/);
+  for (const [source, titles] of [
+    [koIds, ['전역 고유 ID 생성기 1차 벤치마크', '전역 고유 ID 생성기 2차 벤치마크', '전역 고유 ID 생성기 3차 벤치마크']],
+    [enIds, ['Global Unique ID Generator Benchmark · Phase 1', 'Global Unique ID Generator Benchmark · Phase 2', 'Global Unique ID Generator Benchmark · Phase 3']],
+    [koDependencies, ['bluetape4k-dependencies 1.3.0이 정렬한 라이브러리 경계']],
+    [enDependencies, ['Library Boundaries Aligned by bluetape4k-dependencies 1.3.0']],
+  ]) {
+    for (const title of titles) {
+      assert.match(source, new RegExp(`data-diagram-title="${title}"`));
+    }
+  }
 
   for (const source of [
     koRuntime,
@@ -500,6 +514,10 @@ test('the repaired blog diagrams expose localized titles while hero and screensh
     enCsvWriter,
     koBugFixes,
     enBugFixes,
+    koIds,
+    enIds,
+    koDependencies,
+    enDependencies,
   ]) {
     assert.doesNotMatch(source, /class="bt4k-blog-hero"[^>]*data-diagram-title/);
   }

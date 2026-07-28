@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">bluetape4k-dependencies 1.3.0 · 라이브러리 경계</title>
+  <desc id="desc">BOM이 함께 검증한 버전 조합과 각 라이브러리의 대표 설계 경계</desc>
+  <style>
+    .canvas{fill:#07111F}.frame{fill:#0D1B2D;stroke:#29445F;stroke-width:2}
+    .bom{fill:#0C3044;stroke:#5EEAD4;stroke-width:2}.card{fill:#10243A;stroke:#29445F;stroke-width:2}
+    .version{fill:#173B52}.title{font:700 40px "goorm Sans","Apple SD Gothic Neo",sans-serif;fill:#E6F2FF}
+    .subtitle{font:500 20px "goorm Sans Code","goorm Sans",monospace;fill:#9CB4CC}
+    .bom-title{font:700 26px "goorm Sans","Apple SD Gothic Neo",sans-serif;fill:#5EEAD4}
+    .module{font:700 25px "goorm Sans Code","goorm Sans",monospace;fill:#E6F2FF}
+    .version-text{font:700 15px "goorm Sans Code","goorm Sans",monospace;fill:#5EEAD4;dominant-baseline:middle}
+    .boundary-text{font:600 18px "goorm Sans Code","goorm Sans",monospace;fill:#9CB4CC}
+    .footer{font:500 18px "goorm Sans Code","goorm Sans",monospace;fill:#9CB4CC}
+  </style>
+  <rect width="1600" height="900" class="canvas"/>
+  <rect x="32" y="32" width="1536" height="836" rx="32" class="frame"/>
+  <text x="80" y="96" class="title">bluetape4k-dependencies 1.3.0 · 라이브러리 경계</text>
+  <text x="80" y="134" class="subtitle">BOM이 함께 검증한 버전 조합과 각 라이브러리의 대표 설계 경계</text>
+  <rect x="80" y="180" width="1440" height="82" rx="22" class="bom"/>
+  <text x="800" y="230" text-anchor="middle" class="bom-title">검증된 BOM 경계 · 1.3.0</text>
+  <g>
+        <rect x="92" y="308" width="332" height="174" rx="22" class="card"/>
+        <rect x="114" y="330" width="96" height="32" rx="16" class="version"/>
+        <text x="162" y="352" text-anchor="middle" class="version-text">1.11.0</text>
+        <text x="116" y="402" class="module">projects</text>
+        <text x="116" y="440" class="boundary-text">JDBC 상태 복원</text>
+      </g>
+<g>
+        <rect x="464" y="308" width="332" height="174" rx="22" class="card"/>
+        <rect x="486" y="330" width="96" height="32" rx="16" class="version"/>
+        <text x="534" y="352" text-anchor="middle" class="version-text">1.11.0</text>
+        <text x="488" y="402" class="module">exposed</text>
+        <text x="488" y="440" class="boundary-text">캐시 상태 · DB 안전성</text>
+      </g>
+<g>
+        <rect x="836" y="308" width="332" height="174" rx="22" class="card"/>
+        <rect x="858" y="330" width="96" height="32" rx="16" class="version"/>
+        <text x="906" y="352" text-anchor="middle" class="version-text">0.4.0</text>
+        <text x="860" y="402" class="module">aws</text>
+        <text x="860" y="440" class="boundary-text">플러그인 수명 주기</text>
+      </g>
+<g>
+        <rect x="1208" y="308" width="332" height="174" rx="22" class="card"/>
+        <rect x="1230" y="330" width="96" height="32" rx="16" class="version"/>
+        <text x="1278" y="352" text-anchor="middle" class="version-text">0.3.0</text>
+        <text x="1232" y="402" class="module">image</text>
+        <text x="1232" y="440" class="boundary-text">대용량 파일 I/O</text>
+      </g>
+<g>
+        <rect x="92" y="538" width="332" height="174" rx="22" class="card"/>
+        <rect x="114" y="560" width="96" height="32" rx="16" class="version"/>
+        <text x="162" y="582" text-anchor="middle" class="version-text">0.2.1</text>
+        <text x="116" y="632" class="module">text</text>
+        <text x="116" y="670" class="boundary-text">입력 검증</text>
+      </g>
+<g>
+        <rect x="464" y="538" width="332" height="174" rx="22" class="card"/>
+        <rect x="486" y="560" width="96" height="32" rx="16" class="version"/>
+        <text x="534" y="582" text-anchor="middle" class="version-text">0.4.0</text>
+        <text x="488" y="632" class="module">leader</text>
+        <text x="488" y="670" class="boundary-text">공급자·런타임 호환성</text>
+      </g>
+<g>
+        <rect x="836" y="538" width="332" height="174" rx="22" class="card"/>
+        <rect x="858" y="560" width="96" height="32" rx="16" class="version"/>
+        <text x="906" y="582" text-anchor="middle" class="version-text">0.5.1</text>
+        <text x="860" y="632" class="module">graph</text>
+        <text x="860" y="670" class="boundary-text">패치 라인 안정성</text>
+      </g>
+<g>
+        <rect x="1208" y="538" width="332" height="174" rx="22" class="card"/>
+        <rect x="1230" y="560" width="96" height="32" rx="16" class="version"/>
+        <text x="1278" y="582" text-anchor="middle" class="version-text">0.2.1</text>
+        <text x="1232" y="632" class="module">javers</text>
+        <text x="1232" y="670" class="boundary-text">의존성 노출 경계</text>
+      </g>
+  <line x1="80" y1="798" x2="1520" y2="798" stroke="#29445F" stroke-width="2"/>
+  <text x="800" y="836" text-anchor="middle" class="footer">버전 정렬의 목적은 최신 버전 수집이 아니라 호환 가능한 경계를 재현하는 것입니다.</text>
+</svg>

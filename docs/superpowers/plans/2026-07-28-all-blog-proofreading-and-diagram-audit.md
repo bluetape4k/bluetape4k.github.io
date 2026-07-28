@@ -3,7 +3,7 @@
 ## 목표
 
 한국어 블로그 글 87편을 모두 출판용 기술 한국어로 교정하고, 블로그에 포함된
-기술 다이어그램 165종을 dark style·한영 분리·PNG 육안 검사 기준으로 검증한다.
+기술 다이어그램 166종을 dark style·한영 분리·PNG 육안 검사 기준으로 검증한다.
 대표 이미지와 일반 스크린샷은 다이어그램 확대·교정 대상에서 제외한다.
 
 교정 작업은 오래된 글부터 2~3편씩 진행한다. 각 배치는 이전 교정 브랜치를
@@ -15,7 +15,7 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 - 영어 글: 한국어 글과 제목·주장·수치·소스 링크·시리즈 탐색·다이어그램 구성을 맞춘다.
   영어 본문 전체 문체 교정은 한국어 교정으로 의미가 달라진 부분에 한정한다.
 - 기술 다이어그램: `bt4k-architecture`, `bt4k-chart`, `bt4k-sequence`로 분류된
-  165개 stem
+  166개 stem
 - 제외: `bt4k-blog-hero`, `bt4k-post-hero`, `bt4k-screenshot`
 - 날짜: 교정 PR 날짜가 아니라 최초 공개 시점을 유지한다.
 - 공개 GitHub PR: 제목과 본문은 영어로 작성하고 마지막 H2는 `## DoD Status`로 둔다.
@@ -32,7 +32,7 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
    확인한 재사용 가능한 용어·문장·사실 검증 규칙을 chezmoi 원본 체크리스트에
    추가하고 apply·parity·push까지 완료하며, 별도 lessons 문서에도 근거를 남긴다.
 6. targeted test, 전체 사이트 build, 변경 경로와 이미지 노출을 검증한 뒤 stacked PR을 만든다.
-7. 87편과 165개 다이어그램을 다시 전수 집계한다. 누락이 0일 때만 전체 완료로 전환한다.
+7. 87편과 166개 다이어그램을 다시 전수 집계한다. 누락이 0일 때만 전체 완료로 전환한다.
 8. 모든 stacked PR의 exact head·CI·review를 확인한 뒤 별도의 최종 머지 승인을 받아
    순서대로 머지·배포하고 로컬을 정리한다.
 
@@ -42,14 +42,14 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 
 | 구분 | 완료 | 전체 | 남음 | 상태 |
 | --- | ---: | ---: | ---: | --- |
-| 한국어 블로그 본문 교정 | 47 | 87 | 40 | 진행 중 |
-| 기술 다이어그램 변경·배치 검증 | 97 | 165 | 68 | 진행 중 |
+| 한국어 블로그 본문 교정 | 49 | 87 | 38 | 진행 중 |
+| 기술 다이어그램 변경·배치 검증 | 101 | 166 | 65 | 진행 중 |
 | stacked PR | 19 | 미정 | 미정 | #267~#285 open |
-| 현재 배치 | 2 | 2 | 0 | Graph Part 4~5 PR #285 |
+| 현재 배치 | 2 | 2 | 0 | ID 생성기·Dependencies 검증 완료, PR 준비 |
 | 최종 전체 사이트 감사 | 0 | 1 | 1 | 대기 |
 | 최종 머지·배포·정리 | 0 | 1 | 1 | 대기 |
 
-현재 완료된 한국어 글 45편:
+현재 완료된 한국어 글 49편:
 
 - AI 협업 글 2편
 - Bluetape4k 생태계·GraphDB 글 2편
@@ -63,6 +63,25 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 - AWS Part 1~5
 - JaVers Part 1~3
 - Graph Part 1~5
+- 전역 고유 ID 생성기 성능 비교
+- Dependencies 1.3.0 활용기 Part 1
+
+## ID 생성기·Dependencies 배치 DoD
+
+| 검사 | 결과 | 근거 |
+| --- | --- | --- |
+| 글 교정 | PASS | ID 생성기 비교·Dependencies Part 1 한국어 본문과 대응 영어 글 |
+| 날짜 보존 | PASS | base 대비 한영 `blog.date`와 `sidebar.order` 변경 없음 |
+| 사실 검증 | PASS | 현재 Go API, 2026-06-10~11 벤치마크 리비전, BOM 1.3.0 버전 집합 대조 |
+| 한영 정합성 | PASS | 제목·주장·코드·자료·다이어그램 구성 동기화 |
+| 다이어그램 정적 감사 | PASS | 한영 8/8 XML·텍스트·캔버스·구조 불변식 통과 |
+| 다이어그램 구조·PNG 검사 | PASS | 4개 stem, CairoSVG 2배 PNG 8개와 한영 원본 크기 확인 |
+| writer 체크리스트 | PASS | dotfiles `e5dd2b6`, chezmoi apply·source/live·upstream 일치 |
+| 사이트 검사 | PASS | Node 테스트 162/162, Astro 오류·경고 0, 기존 힌트 3개, 1,303 pages build |
+| 경로 검사 | PASS | 한영 글 4개와 대표 PNG 2개 HTTP 200 |
+| stacked PR | PENDING | base `docs/korean-proofreading-graph-integrations-batch` |
+
+현재 배치 필수 검사: **9/10 완료, PENDING 1, Blocked 0**
 
 ## Graph Part 1~3 배치 DoD
 
@@ -206,7 +225,7 @@ Part 6의 새 다이어그램 4종만 전체 완료 수에 더했다.
 
 - [x] **ALL-01 — 전체 대상 수를 고정한다**
   - **Action:** 한국어 글과 기술 다이어그램을 저장소 기준으로 집계한다.
-  - **Evidence:** 한국어 글 87편, 기술 다이어그램 stem 165개,
+  - **Evidence:** 한국어 글 87편, 기술 다이어그램 stem 166개,
     `blog-diagram-locales.test.mjs`의 기술 figure 분류.
   - **Failure:** 분모가 달라지면 이 문서와 모든 진행률을 다시 계산한다.
 
@@ -222,10 +241,10 @@ Part 6의 새 다이어그램 4종만 전체 완료 수에 더했다.
   - **Evidence:** 87/87, 미완료 0, 글별 배치 PR과 lessons.
   - **Failure:** 한 편이라도 근거가 없으면 전체 완료를 선언하지 않는다.
 
-- [ ] **ALL-04 — 기술 다이어그램 165개를 모두 검증한다**
+- [ ] **ALL-04 — 기술 다이어그램 166개를 모두 검증한다**
   - **Action:** 각 stem에 `DIA-01~08`, 한영 자산, CairoSVG PNG,
     정적 감사와 원본 크기 육안 검사를 적용한다.
-  - **Evidence:** 165/165, 미검증 0, 자산별 검증 원장.
+  - **Evidence:** 166/166, 미검증 0, 자산별 검증 원장.
   - **Failure:** 생성 성공이나 SVG 검사만으로 완료 처리하지 않는다.
 
 - [ ] **ALL-05 — 배치별 전달 계약을 지킨다**
@@ -237,7 +256,7 @@ Part 6의 새 다이어그램 4종만 전체 완료 수에 더했다.
 - [ ] **ALL-06 — 전체 사이트를 최종 재검증한다**
   - **Action:** locale parity, diagram tests, lightbox tests, 전체 build,
     모든 변경 route와 자산 노출을 검사한다.
-  - **Evidence:** 테스트·build 성공, 87개 한영 route, 165개 stem parity,
+  - **Evidence:** 테스트·build 성공, 87개 한영 route, 166개 stem parity,
     누락·깨진 링크·잘린 텍스트 0.
   - **Failure:** 실패한 글·자산 배치로 돌아가 수정한다.
 

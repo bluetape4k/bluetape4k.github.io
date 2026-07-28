@@ -1,78 +1,77 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1460" height="638" viewBox="0 0 1460 638">
-<defs><style>
-.canvas{fill:#F6F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
-.title{font-family:"Architects Daughter","Comic Sans MS",cursive;font-size:40px;fill:#22344A;font-weight:400}
-.subtitle,.axis,.legend,.caption{font-family:"Comic Mono","Comic Sans MS",sans-serif;font-size:16px;fill:#536476;font-weight:400}
-.label{font-family:"Comic Mono","Comic Sans MS",sans-serif;font-size:14px;fill:#3F5269;font-weight:400}
-.value{font-family:"Comic Mono","Comic Sans MS",sans-serif;font-size:13px;fill:#3F5269;font-weight:400}
-.winner{font-family:"Comic Mono","Comic Sans MS",sans-serif;font-size:13px;fill:#22344A;font-weight:700}
-.section{font-family:"Architects Daughter","Comic Sans MS",cursive;font-size:22px;fill:#22344A;font-weight:400}
-.grid{stroke:#D7E2EC;stroke-width:1;stroke-dasharray:4 8}
-.scopeSingle{fill:#EEF6FF;stroke:#C9DDF6;stroke-width:1}
-.scopeConcurrent{fill:#FFF3E3;stroke:#F2C88C;stroke-width:1}
-.section.single{fill:#2563EB}.section.concurrent{fill:#B45309}
-.scopeLegend{font-family:"Comic Mono","Comic Sans MS",sans-serif;font-size:14px;fill:#536476;font-weight:400}
-</style></defs>
-<rect class="canvas" width="1460" height="638"/>
-<rect class="frame" x="34" y="28" width="1392" height="582" rx="24"/>
-<text class="title" x="730" y="82" text-anchor="middle">ID Generator Benchmark Phase 3</text>
-<text class="subtitle" x="730" y="118" text-anchor="middle">Optimized Go vs Kotlin candidate 3, normalized nanoseconds per ID</text>
-<text class="axis" x="356" y="145">log scale, ns/id</text>
-<rect x="548" y="132" width="22" height="14" rx="4" fill="#3B82F6" stroke="#64748B"/>
-<text class="legend" x="578" y="144">Go</text>
-<rect x="656" y="132" width="22" height="14" rx="4" fill="#F59E0B" stroke="#64748B"/>
-<text class="legend" x="686" y="144">Kotlin</text>
-<rect x="810" y="129" width="88" height="20" rx="10" fill="#EEF6FF" stroke="#C9DDF6"/>
-<text class="scopeLegend" x="854" y="144" text-anchor="middle">Single</text>
-<rect x="928" y="129" width="118" height="20" rx="10" fill="#FFF3E3" stroke="#F2C88C"/>
-<text class="scopeLegend" x="987" y="144" text-anchor="middle">Concurrent</text>
-<rect class="scopeSingle" x="78" y="154" width="1294" height="188" rx="16"/>
-<rect class="scopeConcurrent" x="78" y="330" width="1294" height="188" rx="16"/>
-<text class="section single" x="102" y="182">Single</text>
-<text class="label" x="315" y="182" text-anchor="end">Snowflake</text>
-<rect x="356" y="167" width="39" height="16" rx="5" fill="#3B82F6" stroke="#64748B"/>
-<rect x="356" y="187" width="691" height="16" rx="5" fill="#F59E0B" stroke="#64748B"/>
-<text class="value" x="1140" y="180">11.98 / 244.02</text>
-<text class="winner" x="1320" y="180">Go*</text>
-<text class="label" x="315" y="226" text-anchor="end">ULID monotonic</text>
-<rect x="356" y="211" width="405" height="16" rx="5" fill="#3B82F6" stroke="#64748B"/>
-<rect x="356" y="231" width="209" height="16" rx="5" fill="#F59E0B" stroke="#64748B"/>
-<text class="value" x="1140" y="224">64.96 / 26.28</text>
-<text class="winner" x="1320" y="224">Kotlin</text>
-<text class="label" x="315" y="270" text-anchor="end">KSUID seconds</text>
-<rect x="356" y="255" width="664" height="16" rx="5" fill="#3B82F6" stroke="#64748B"/>
-<rect x="356" y="275" width="620" height="16" rx="5" fill="#F59E0B" stroke="#64748B"/>
-<text class="value" x="1140" y="268">215.60 / 175.86</text>
-<text class="winner" x="1320" y="268">Kotlin</text>
-<text class="label" x="315" y="314" text-anchor="end">KSUID millis</text>
-<rect x="356" y="299" width="544" height="16" rx="5" fill="#3B82F6" stroke="#64748B"/>
-<rect x="356" y="319" width="609" height="16" rx="5" fill="#F59E0B" stroke="#64748B"/>
-<text class="value" x="1140" y="312">123.50 / 167.07</text>
-<text class="winner" x="1320" y="312">Go</text>
-<text class="section concurrent" x="102" y="358">Concurrent</text>
-<text class="label" x="315" y="358" text-anchor="end">Snowflake</text>
-<rect x="356" y="343" width="475" height="16" rx="5" fill="#3B82F6" stroke="#64748B"/>
-<rect x="356" y="363" width="691" height="16" rx="5" fill="#F59E0B" stroke="#64748B"/>
-<text class="value" x="1140" y="356">90.01 / 243.65</text>
-<text class="winner" x="1320" y="356">Go*</text>
-<text class="label" x="315" y="402" text-anchor="end">ULID monotonic</text>
-<rect x="356" y="387" width="642" height="16" rx="5" fill="#3B82F6" stroke="#64748B"/>
-<rect x="356" y="407" width="760" height="16" rx="5" fill="#F59E0B" stroke="#64748B"/>
-<text class="value" x="1140" y="400">194.80 / 336.00</text>
-<text class="winner" x="1320" y="400">Go</text>
-<text class="label" x="315" y="446" text-anchor="end">KSUID seconds</text>
-<rect x="356" y="431" width="702" height="16" rx="5" fill="#3B82F6" stroke="#64748B"/>
-<rect x="356" y="451" width="689" height="16" rx="5" fill="#F59E0B" stroke="#64748B"/>
-<text class="value" x="1140" y="444">256.40 / 242.50</text>
-<text class="winner" x="1320" y="444">Kotlin</text>
-<text class="label" x="315" y="490" text-anchor="end">KSUID millis</text>
-<rect x="356" y="475" width="664" height="16" rx="5" fill="#3B82F6" stroke="#64748B"/>
-<rect x="356" y="495" width="664" height="16" rx="5" fill="#F59E0B" stroke="#64748B"/>
-<text class="value" x="1140" y="488">215.90 / 215.81</text>
-<text class="winner" x="1320" y="488">Tie</text>
-<text class="axis" x="1140" y="145">Go / Kotlin</text>
-<text class="axis" x="1320" y="145">faster</text>
-<rect x="88" y="554" width="1284" height="62" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
-<text class="caption" x="730" y="578" text-anchor="middle">Source: Issue #192 third comparison. Lower ns/id is faster; Snowflake workloads are not production-equivalent.</text>
-<text class="caption" x="730" y="602" text-anchor="middle">Phase 3 split by family: Kotlin led ULID single and KSUID seconds; Go led ULID concurrent and KSUID millis single.</text>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1100" viewBox="0 0 1600 1100" role="img" aria-labelledby="title desc">
+  <title id="title">Global Unique ID Generators · Phase 3</title>
+  <desc id="desc">Benchmark chart comparing Go and Kotlin ID generation latency under single-thread and concurrent workloads</desc>
+  <style>
+    .canvas{fill:#07111F}.frame{fill:#10243A;stroke:#29445F;stroke-width:2}
+    .panel{fill:#0D1B2D;stroke:#29445F;stroke-width:2}
+    .title{font:700 42px "Architects Daughter","Comic Sans MS",cursive;fill:#E6F2FF}
+    .subtitle{font:500 20px "Comic Mono","SFMono-Regular",Menlo,monospace;fill:#9CB4CC}
+    .panel-title{font:700 25px "Architects Daughter","Comic Sans MS",cursive;fill:#E6F2FF}
+    .unit,.scale,.legend,.note{font:500 16px "Comic Mono","SFMono-Regular",Menlo,monospace;fill:#9CB4CC}
+    .row-label{font:600 18px "Comic Mono","SFMono-Regular",Menlo,monospace;fill:#E6F2FF}
+    .value{font:700 15px "Comic Mono","SFMono-Regular",Menlo,monospace;fill:#E6F2FF;dominant-baseline:middle}
+    .bar-go{fill:#36C5F0}.bar-kotlin{fill:#B794F4}
+  </style>
+  <rect width="1600" height="1100" class="canvas"/>
+  <rect x="32" y="32" width="1536" height="1036" rx="32" class="frame"/>
+  <text x="80" y="98" class="title">Global Unique ID Generators · Phase 3</text>
+  <text x="80" y="136" class="subtitle">Optimized Go vs Kotlin candidate 3 · ns/id, lower is better</text>
+  <g class="legend">
+    <rect x="1260" y="158" width="22" height="16" rx="8" class="bar-go"/>
+    <text x="1292" y="171">Go</text>
+    <rect x="1400" y="158" width="22" height="16" rx="8" class="bar-kotlin"/>
+    <text x="1432" y="171">Kotlin</text>
+  </g>
+  <rect x="64" y="200" width="724" height="690" rx="24" class="panel"/>
+<text x="98" y="250" class="panel-title">Single thread</text>
+<text x="754" y="250" text-anchor="end" class="unit">ns/id ↓</text>
+<text x="98" y="304" class="row-label">Snowflake*</text>
+<rect x="300" y="284" width="82.4" height="22" rx="11" class="bar-go"/>
+<rect x="300" y="316" width="288.7" height="22" rx="11" class="bar-kotlin"/>
+<text x="392.3678047684917" y="300" class="value">11.98</text>
+<text x="598.7114795839822" y="332" class="value">244.02</text>
+<text x="98" y="424" class="row-label">ULID monotonic</text>
+<rect x="300" y="404" width="198.1" height="22" rx="11" class="bar-go"/>
+<rect x="300" y="436" width="136.1" height="22" rx="11" class="bar-kotlin"/>
+<text x="508.10419188599707" y="420" class="value">64.96</text>
+<text x="446.1490571264594" y="452" class="value">26.28</text>
+<text x="98" y="544" class="row-label">KSUID seconds</text>
+<rect x="300" y="524" width="280.2" height="22" rx="11" class="bar-go"/>
+<rect x="300" y="556" width="266.3" height="22" rx="11" class="bar-kotlin"/>
+<text x="590.2342136678501" y="540" class="value">215.60</text>
+<text x="576.286104808456" y="572" class="value">175.86</text>
+<text x="98" y="664" class="row-label">KSUID millis</text>
+<rect x="300" y="644" width="242.1" height="22" rx="11" class="bar-go"/>
+<rect x="300" y="676" width="262.8" height="22" rx="11" class="bar-kotlin"/>
+<text x="552.0885977632395" y="660" class="value">123.50</text>
+<text x="572.7757196404079" y="692" class="value">167.07</text>
+<text x="98" y="854" class="scale">Bar length uses a log scale; labels show actual ns/id.</text>
+  <rect x="812" y="200" width="724" height="690" rx="24" class="panel"/>
+<text x="846" y="250" class="panel-title">Concurrent</text>
+<text x="1502" y="250" text-anchor="end" class="unit">ns/id ↓</text>
+<text x="846" y="304" class="row-label">Snowflake*</text>
+<rect x="1048" y="284" width="220.4" height="22" rx="11" class="bar-go"/>
+<rect x="1048" y="316" width="288.6" height="22" rx="11" class="bar-kotlin"/>
+<text x="1278.4328384191904" y="300" class="value">90.01</text>
+<text x="1346.6075947847207" y="332" class="value">243.65</text>
+<text x="846" y="424" class="row-label">ULID monotonic</text>
+<rect x="1048" y="404" width="273.3" height="22" rx="11" class="bar-go"/>
+<rect x="1048" y="436" width="310.6" height="22" rx="11" class="bar-kotlin"/>
+<text x="1331.2886980684939" y="420" class="value">194.80</text>
+<text x="1368.6096329373895" y="452" class="value">336.00</text>
+<text x="846" y="544" class="row-label">KSUID seconds</text>
+<rect x="1048" y="524" width="292.1" height="22" rx="11" class="bar-go"/>
+<rect x="1048" y="556" width="288.3" height="22" rx="11" class="bar-kotlin"/>
+<text x="1350.0995376693259" y="540" class="value">256.40</text>
+<text x="1346.2836995207433" y="572" class="value">242.50</text>
+<text x="846" y="664" class="row-label">KSUID millis</text>
+<rect x="1048" y="644" width="280.3" height="22" rx="11" class="bar-go"/>
+<rect x="1048" y="676" width="280.3" height="22" rx="11" class="bar-kotlin"/>
+<text x="1338.3294092429921" y="660" class="value">215.90</text>
+<text x="1338.300864466649" y="692" class="value">215.81</text>
+<text x="846" y="854" class="scale">Bar length uses a log scale; labels show actual ns/id.</text>
+  <rect x="64" y="930" width="1472" height="88" rx="18" fill="#122B3D" stroke="#5EEAD4" stroke-width="1.5"/>
+  <circle cx="94" cy="974" r="8" fill="#FBBF24"/>
+  <text x="116" y="980" class="note">Single-thread and concurrent leaders differ, so the chart does not establish a universal language ranking.</text>
 </svg>
