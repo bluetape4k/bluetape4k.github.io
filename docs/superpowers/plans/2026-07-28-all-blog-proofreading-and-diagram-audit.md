@@ -38,14 +38,14 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 
 ## 현재 진행 상황
 
-기준 시점: 2026-07-28, stacked PR #267~#284와 Graph Part 4~5 로컬 완료
+기준 시점: 2026-07-28, stacked PR #267~#285
 
 | 구분 | 완료 | 전체 | 남음 | 상태 |
 | --- | ---: | ---: | ---: | --- |
 | 한국어 블로그 본문 교정 | 47 | 87 | 40 | 진행 중 |
 | 기술 다이어그램 변경·배치 검증 | 97 | 165 | 68 | 진행 중 |
-| stacked PR | 18 | 미정 | 미정 | #267~#284 open, 다음 PR 준비 중 |
-| 현재 배치 | 2 | 2 | 0 | Graph Part 4~5 로컬 검증 완료 |
+| stacked PR | 19 | 미정 | 미정 | #267~#285 open |
+| 현재 배치 | 2 | 2 | 0 | Graph Part 4~5 PR #285 |
 | 최종 전체 사이트 감사 | 0 | 1 | 1 | 대기 |
 | 최종 머지·배포·정리 | 0 | 1 | 1 | 대기 |
 
@@ -95,9 +95,9 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 | writer 체크리스트 | PASS | dotfiles `02c6573`, chezmoi apply·source/live·upstream 일치 |
 | 외부 근거 보존 | PASS | JEP 444 연구 노트, wiki `57c8ffd`, GNO update·embed·search 통과 |
 | 사이트 검사 | PASS | Node 테스트 18/18, Astro 오류·경고 0, 전체 build, 한영 4개 경로 HTTP 200 |
-| stacked PR | PENDING | Graph Part 1~3 PR #284를 base로 생성 예정 |
+| stacked PR | PASS | #285, base `docs/korean-proofreading-graph-core-batch`, head `docs/korean-proofreading-graph-integrations-batch` |
 
-현재 배치 필수 검사: **10/11 완료, Pending 1, N/A 0, Blocked 0**
+현재 배치 필수 검사: **11/11 완료, N/A 0, Blocked 0**
 
 Exposed Part 4~6 배치에서는 본문 3편과 기술 다이어그램 8종을 다시 검증했다.
 Part 4~5의 4종은 앞선 40개 집계에 이미 포함되어 중복 계산하지 않았고,

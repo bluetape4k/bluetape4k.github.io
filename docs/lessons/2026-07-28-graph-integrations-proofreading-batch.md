@@ -80,6 +80,7 @@ commit `57c8ffd`을 upstream에 push했다.
 | 대상 테스트 | diagram lightbox Node 테스트 18/18 통과 |
 | 사이트 검사 | Astro 오류·경고 0, 전체 정적 사이트 build |
 | 로컬 경로 | 한영 Part 4~5 4개 경로 HTTP 200 |
+| stacked PR | #285, base `docs/korean-proofreading-graph-core-batch` |
 
 ## 다음 작업에 적용할 지침
 
