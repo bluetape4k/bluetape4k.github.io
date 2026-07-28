@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "repositories": [
+    {
+      "repository": "bluetape4k/clinic-appointment",
+      "sourceRef": "85a09e4ba16644219c15e91d94c5a4ccb7619a64",
+      "manifestPath": "docs/visual-companions/manifest.json"
+    }
+  ]
+}

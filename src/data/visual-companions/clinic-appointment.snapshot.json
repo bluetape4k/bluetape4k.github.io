@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "repository": "bluetape4k/clinic-appointment",
+  "sourceRef": "85a09e4ba16644219c15e91d94c5a4ccb7619a64",
+  "manifestPath": "docs/visual-companions/manifest.json",
+  "documents": [
+    {
+      "id": "appointment-plan-and-capacity",
+      "source": "docs/superpowers/specs/2026-07-26-appointment-plan-and-capacity-design.md",
+      "status": "approved",
+      "presentation": {
+        "mode": "hybrid",
+        "defaultView": "simulation",
+        "views": [
+          "simulation",
+          "history"
+        ]
+      },
+      "locales": {
+        "en": {
+          "title": "Appointment Plan and Capacity",
+          "sourcePath": "docs/superpowers/specs/2026-07-26-appointment-plan-and-capacity-design.en.html",
+          "route": "/visual-companions/clinic-appointment/appointment-plan-and-capacity/",
+          "sourceSha256": "270cd0b7275678a6d8a148215b510e81699873c21dc4b4e9c0224fa0de8009af",
+          "sha256": "e547b8c2add3d6cfdaec4f6a86442042096dad7ad6121a229febbc351d2ad3fd"
+        },
+        "ko": {
+          "title": "예약 계획과 수용량",
+          "sourcePath": "docs/superpowers/specs/2026-07-26-appointment-plan-and-capacity-design.html",
+          "route": "/ko/visual-companions/clinic-appointment/appointment-plan-and-capacity/",
+          "sourceSha256": "a5cce1feb2e82e03779a983ce932aed1832a09da734fc74790a5d05ed90e9860",
+          "sha256": "0eb20c989c63673e528349476c4f5cb5167f80dabb52a0063a4183212f01a4f5"
+        }
+      }
+    },
+    {
+      "id": "scheduling-policy-foundation",
+      "source": "docs/superpowers/specs/2026-07-27-scheduling-policy-foundation-design.md",
+      "status": "approved",
+      "presentation": {
+        "mode": "hybrid",
+        "defaultView": "simulation",
+        "views": [
+          "simulation",
+          "history"
+        ]
+      },
+      "locales": {
+        "en": {
+          "title": "Scheduling Policy Foundation",
+          "sourcePath": "docs/superpowers/specs/2026-07-27-scheduling-policy-foundation-design.en.html",
+          "route": "/visual-companions/clinic-appointment/scheduling-policy-foundation/",
+          "sourceSha256": "81546135edac14065effef2275baf59d6e2fba9f246642f2af9ab1947ef04932",
+          "sha256": "fa115b39af0026f605c826641a496a7dc5766c263c8b6b0d8393a6df603d445f"
+        },
+        "ko": {
+          "title": "Scheduling Policy 기반",
+          "sourcePath": "docs/superpowers/specs/2026-07-27-scheduling-policy-foundation-design.html",
+          "route": "/ko/visual-companions/clinic-appointment/scheduling-policy-foundation/",
+          "sourceSha256": "b90a560b65267e9e63a8278182e75e8e75d4e5d914dc042dcce6cc1414cbe886",
+          "sha256": "8b643d75559de6cc21520008ed8f942f51bae8a9d2f8e19a49c460d6a9c1c7c5"
+        }
+      }
+    }
+  ],
+  "snapshotDigest": "ef237b9df4393bd8a6aaa5a2630813ba7c73a33d502c67b53d165db0f8af5e29"
+}

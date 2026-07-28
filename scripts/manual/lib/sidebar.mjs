@@ -34,6 +34,17 @@ export function buildStaticSidebar(registry) {
       ],
     },
     {
+      label: 'Visual Companions',
+      translations: { ko: '시각 자료' },
+      items: [
+        {
+          label: 'Clinic Appointment',
+          translations: { ko: '병원 예약' },
+          slug: 'visual-companions/clinic-appointment',
+        },
+      ],
+    },
+    {
       label: 'Blog',
       translations: { ko: '블로그' },
       items: [
