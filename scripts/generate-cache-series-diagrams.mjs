@@ -306,7 +306,7 @@ write(
       path('M660 610 V464', 'dashBlue', 'loader + writer', 730, 594, 118),
       path('M1066 690 V628', 'dashBlue', 'write-behind queue', 1148, 674, 146),
     ]) +
-    footer('Graphviz structure evidence: cache-series-exposed-strategies-01.dot / .plain / -sketch.svg', 1500, 870),
+    footer('Source: exposed cache repository loader and writer contracts.', 1500, 870),
 );
 
 write(
@@ -327,5 +327,5 @@ write(
       path('M334 474 H430', 'lineBlue', '9.9x faster', 382, 460, 96),
       path('M334 606 H430', 'lineAmber', 'write-heavy', 382, 592, 92),
     ]) +
-    footer('Source: exposed-workshop 11-high-performance/04-benchmark. Graphviz evidence: cache-series-exposed-benchmark-01.dot / .plain / -sketch.svg', 1320, 770),
+    footer('Source: exposed-workshop 11-high-performance/04-benchmark.', 1320, 770),
 );

@@ -2,21 +2,21 @@
 title: "Bluetape4k Cache Part 3: Near Cache와 Exposed로 캐싱 전략 만들기"
 description: bluetape4k-exposed와 exposed-workshop 11장의 read-through, write-through, write-behind 전략을 Near Cache 관점에서 정리한다.
 sidebar:
-  order: -202605291703
+  order: -202605291852
 blog:
-  date: 2026-05-29T17:03:00+09:00
+  date: 2026-05-29T18:50:02+09:00
   image: /assets/cache-series-part3-hero.png
-  imageAlt: Exposed repository cache strategy workbench with robot workers and cache pipelines
+  imageAlt: Exposed 저장소의 캐시 전략 작업대와 로봇 작업자, 캐시 파이프라인
   cardDescription: "Read-through, write-through, write-behind. 이름은 비슷하지만 사고 방식은 꽤 다르다."
   tags: ["cache","exposed","kotlin","practical-example"]
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/cache-series-part3-hero.png" alt="Exposed repository cache strategy workbench with robot workers and cache pipelines" loading="eager" />
+  <img src="/assets/cache-series-part3-hero.png" alt="Exposed 저장소의 캐시 전략 작업대와 로봇 작업자, 캐시 파이프라인" loading="eager" />
   <figcaption>DB 앞에 캐시를 놓는 순간, 성능 문제와 일관성 문제는 같은 설계 안으로 들어옵니다.</figcaption>
 </figure>
 
-<p class="bt4k-post-meta">2026-05-29 · Bluetape4k Cache series · Part 3</p>
+<p class="bt4k-post-meta">2026-05-29 · Bluetape4k Cache 시리즈 · Part 3</p>
 
 Exposed repository 앞에 캐시를 붙이는 일은 처음엔 간단해 보입니다.
 
@@ -26,10 +26,10 @@ Exposed repository 앞에 캐시를 붙이는 일은 처음엔 간단해 보입�
 
 여기까지는 모두가 평화롭습니다. 그런데 "쓰기 실패는?", "삭제는?", "다른 인스턴스 local cache는?", "batch update는?", "읽기 모델과 쓰기 모델이 다르면?" 같은 질문이 나오면 분위기가 바뀝니다. 평화롭던 회의실에 갑자기 화이트보드가 하나 더 필요해집니다.
 
-`bluetape4k-exposed`는 이 문제를 repository 계약과 cache strategy로 나눠 다룹니다. 캐시를 어디에 둘지, DB write와 어떤 순서로 묶을지, 실패를 어떻게 볼지 분리해서 선택하게 합니다.
+`bluetape4k-exposed`는 이 문제를 repository 계약과 캐시 전략으로 나눠 다룹니다. 캐시를 어디에 둘지, DB 쓰기와 어떤 순서로 묶을지, 실패를 어떻게 볼지 분리해서 선택하게 합니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/cache-series-exposed-strategies-01-ko.png" alt="JdbcCacheRepository strategy map with Redisson map loader, map writer, and Exposed DB" loading="lazy" />
+  <img src="/assets/cache-series-exposed-strategies-01-ko.png" alt="Redisson map loader, map writer, Exposed DB로 구성한 JdbcCacheRepository 캐시 전략 지도" loading="lazy" />
   <figcaption>`JdbcCacheRepository`의 핵심은 Redisson map에 loader와 writer를 붙여 read/write 계약을 바꾸는 것입니다.</figcaption>
 </figure>
 
@@ -61,8 +61,8 @@ interface JdbcCacheRepository<ID: Any, E: Serializable>: Closeable {
 ```
 
 관련 소스:
-[JdbcCacheRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/JdbcCacheRepository.kt),
-[R2dbcCacheRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/R2dbcCacheRepository.kt)
+[JdbcCacheRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/cache/src/main/kotlin/io/bluetape4k/exposed/cache/JdbcCacheRepository.kt),
+[R2dbcCacheRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/cache/src/main/kotlin/io/bluetape4k/exposed/cache/R2dbcCacheRepository.kt)
 
 여기서 중요한 점은 `get`과 `put`이 단순한 map operation이 아니라는 것입니다. 둘 다 repository 정책을 따릅니다. 이 정책을 어떻게 잡느냐에 따라 성능, 일관성, 장애 시 동작이 달라집니다.
 
@@ -95,10 +95,10 @@ protected val mapWriter: EntityMapWriter<ID, E>? by lazy {
 ```
 
 전체 소스:
-[JdbcCacheRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/JdbcCacheRepository.kt),
-[AbstractJdbcRedissonRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-jdbc-redisson/src/main/kotlin/io/bluetape4k/exposed/redisson/repository/AbstractJdbcRedissonRepository.kt)
+[JdbcCacheRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/cache/src/main/kotlin/io/bluetape4k/exposed/cache/JdbcCacheRepository.kt),
+[AbstractJdbcRedissonRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/jdbc-redisson/src/main/kotlin/io/bluetape4k/exposed/redisson/repository/AbstractJdbcRedissonRepository.kt)
 
-그래서 `get`은 map lookup처럼 보이지만, cache miss에서는 loader가 DB에서 읽어 cache를 채웁니다. `put`도 cache put처럼 보이지만, write mode가 `WRITE_THROUGH`이면 writer가 DB에 즉시 반영하고, `WRITE_BEHIND`이면 writer queue가 비동기로 반영합니다. 이게 cache-aside와 다른 지점입니다. 애플리케이션 코드가 `DB 저장 후 cache.put` 순서를 직접 조립하지 않습니다.
+그래서 `get`은 map 조회처럼 보이지만, cache miss에서는 loader가 DB에서 읽어 캐시를 채웁니다. `put`도 캐시 쓰기처럼 보이지만, write mode가 `WRITE_THROUGH`이면 writer가 DB에 즉시 반영하고, `WRITE_BEHIND`이면 writer queue가 비동기로 반영합니다. 이게 cache-aside와 다른 지점입니다. 애플리케이션 코드가 `DB 저장 후 cache.put` 순서를 직접 조립하지 않습니다.
 
 ## Read-through
 
@@ -209,27 +209,27 @@ Write-behind는 쓰기 latency를 낮출 수 있습니다. 대신 설계해야 �
 `bluetape4k-exposed`는 local/remote/near cache와 write strategy를 분리해서 표현합니다.
 
 관련 소스:
-[CacheMode.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/CacheMode.kt),
-[CacheWriteMode.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/CacheWriteMode.kt),
-[LocalCacheConfig.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/LocalCacheConfig.kt)
+[CacheMode.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/cache/src/main/kotlin/io/bluetape4k/exposed/cache/CacheMode.kt),
+[CacheWriteMode.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/cache/src/main/kotlin/io/bluetape4k/exposed/cache/CacheWriteMode.kt),
+[LocalCacheConfig.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/cache/src/main/kotlin/io/bluetape4k/exposed/cache/LocalCacheConfig.kt)
 
 이 분리는 꼭 필요합니다. "어디에 캐시할 것인가"와 "언제 쓸 것인가"는 다른 질문입니다. 같은 Redis를 쓰더라도 read-through, write-through, write-behind는 운영 의미가 다릅니다.
 
 | 질문 | 예 |
 |---|---|
-| cache location | local Caffeine, remote Redis, near cache |
-| cache read path | read-through loader |
+| 캐시 위치 | local Caffeine, remote Redis, Near Cache |
+| 캐시 읽기 경로 | read-through loader |
 | write mode | `READ_ONLY`, `WRITE_THROUGH`, `WRITE_BEHIND` |
 | API shape | JDBC, suspended JDBC, R2DBC |
-| consistency target | 상대적으로 강한 일관성, eventual consistency, best effort fallback |
+| 일관성 목표 | 상대적으로 강한 일관성, eventual consistency, best effort 대체 경로 |
 
-## Benchmark 결과
+## 벤치마크 결과
 
-`exposed-workshop` 11장의 `04-benchmark`는 cache strategy를 실제 수치로 비교합니다. `AverageTime` 기준이라 낮을수록 좋습니다.
+`exposed-workshop` 11장의 `04-benchmark`는 캐시 전략을 실제 수치로 비교합니다. `AverageTime` 기준이라 낮을수록 좋습니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/cache-series-exposed-benchmark-01-ko.png" alt="Exposed cache benchmark chart comparing no cache, read-through, and write-through latency" loading="lazy" />
-  <figcaption>읽기 중심 워크로드에서는 cache strategy 차이가 큽니다. 쓰기 중심에서는 DB write 자체가 다시 주인공이 됩니다.</figcaption>
+  <img src="/assets/cache-series-exposed-benchmark-01-ko.png" alt="캐시 없음, read-through, write-through 지연 시간을 비교한 Exposed 캐시 벤치마크 차트" loading="lazy" />
+  <figcaption>읽기 중심 워크로드에서는 캐시 전략 차이가 큽니다. 쓰기 중심에서는 DB 쓰기 자체가 다시 주인공이 됩니다.</figcaption>
 </figure>
 
 관련 소스:
@@ -246,7 +246,7 @@ Write-behind는 쓰기 latency를 낮출 수 있습니다. 대신 설계해야 �
 | `READ_THROUGH` | `WRITE_HEAVY` | 256B | 468.735 us/op |
 | `WRITE_THROUGH` | `WRITE_HEAVY` | 256B | 445.363 us/op |
 
-Read-heavy에서는 `READ_THROUGH`가 baseline보다 약 5.5배, `WRITE_THROUGH`가 약 9.9배 빠릅니다. 반대로 write-heavy에서는 차이가 1.1배 수준으로 줄어듭니다. 캐시는 read path에서 돈을 벌고, write path에서 영수증을 받습니다.
+Read-heavy에서는 `READ_THROUGH`가 기준선보다 약 5.5배, `WRITE_THROUGH`가 약 9.9배 빠릅니다. 반대로 write-heavy에서는 차이가 1.1배 수준으로 줄어듭니다. 캐시는 읽기 경로에서 돈을 벌고, 쓰기 경로에서 영수증을 받습니다.
 
 Read-through 단건 benchmark도 같이 봐야 합니다.
 
@@ -263,7 +263,7 @@ hit은 싸고, miss는 invalidate와 reload 때문에 훨씬 비쌉니다. 그�
 | 전략 | 잘 맞는 경우 | 조심할 점 |
 |---|---|---|
 | Read-through | 읽기가 많고 write가 적음 | write 후 invalidate 누락 |
-| Write-through | 쓰기 직후 읽기 최신성이 중요 | write latency 증가 |
+| Write-through | 쓰기 직후 읽기 최신성이 중요 | 쓰기 지연 시간 증가 |
 | Write-behind | write burst를 흡수해야 함 | queue, retry, flush, stale read |
 | NearCache + read-through | hot read가 명확함 | L1 hit ratio와 invalidation |
 | NearCache + write-behind | local 반응성을 크게 원함 | 장애 시 의미론을 문서화해야 함 |

@@ -1,72 +1,76 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="804" viewBox="0 0 1320 804" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1420" height="900" viewBox="0 0 1420 900" role="img" aria-labelledby="title desc">
 <title id="title">Exposed Cache Benchmark Snapshot</title>
 <desc id="desc">Average latency from exposed-workshop chapter 11 benchmark. Lower is better.</desc>
 <defs>
-  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="7" stdDeviation="8" flood-color="#203040" flood-opacity="0.10"/></filter>
-  <marker id="arrowBlue" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L14,7 L0,14 Z" fill="#4E7FC2"/></marker>
-  <marker id="arrowGreen" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L14,7 L0,14 Z" fill="#3C9B72"/></marker>
-  <marker id="arrowAmber" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L14,7 L0,14 Z" fill="#C98A22"/></marker>
-  <marker id="arrowRose" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L14,7 L0,14 Z" fill="#C85A73"/></marker>
+  <filter id="shadow" x="-10%" y="-10%" width="120%" height="125%"><feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#020617" flood-opacity="0.35"/></filter>
+
   <style>
-    .canvas{fill:#F7F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
-    .title{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:42px;fill:#22344A;font-weight:700}
-    .subtitle{font-family:"Comic Mono","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:16px;fill:#536476;font-weight:400}
-    .label{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:24px;fill:#22344A;font-weight:700}
-    .smallLabel{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:20px;fill:#22344A;font-weight:700}
-    .body{font-family:"Comic Mono","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:14px;fill:#34465B;font-weight:400}
-    .small{font-family:"Comic Mono","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:12px;fill:#627184;font-weight:400}
-    .num{font-family:"Comic Mono","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:16px;fill:#22344A;font-weight:700}
-    .card{filter:url(#shadow);stroke-width:2}.soft{stroke-width:1.6}
-    .lineBlue{fill:none;stroke:#4E7FC2;stroke-width:2.4;marker-end:url(#arrowBlue)}
-    .lineGreen{fill:none;stroke:#3C9B72;stroke-width:2.4;marker-end:url(#arrowGreen)}
-    .lineAmber{fill:none;stroke:#C98A22;stroke-width:2.4;marker-end:url(#arrowAmber)}
-    .lineRose{fill:none;stroke:#C85A73;stroke-width:2.4;marker-end:url(#arrowRose)}
-    .dashBlue{fill:none;stroke:#4E7FC2;stroke-width:2.2;stroke-dasharray:8 7;marker-end:url(#arrowBlue)}
-    .dashGreen{fill:none;stroke:#3C9B72;stroke-width:2.2;stroke-dasharray:8 7;marker-end:url(#arrowGreen)}
-    .pill{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:1.2}
+    .title{font-family:"Architects Daughter","Comic Sans MS",Arial,sans-serif;font-size:44px;font-weight:700;fill:#f8fafc}
+    .subtitle{font-family:"Comic Mono","Comic Sans MS",Arial,sans-serif;font-size:18px;fill:#cbd5e1}
+    .lane-title{font-family:"Architects Daughter","Comic Sans MS",Arial,sans-serif;font-size:24px;font-weight:700;fill:#f8fafc}
+    .card-title{font-family:"Architects Daughter","Comic Sans MS",Arial,sans-serif;font-size:24px;font-weight:700;fill:#f8fafc}
+    .card-body{font-family:"Comic Mono","Comic Sans MS",Arial,sans-serif;font-size:16px;fill:#cbd5e1}
+    .small{font-family:"Comic Mono","Comic Sans MS",Arial,sans-serif;font-size:14px;fill:#94a3b8}
+    .mono{font-family:"Comic Mono","Comic Sans MS",Arial,sans-serif;font-size:15px;fill:#cbd5e1}
+    .panel{fill:#111827;stroke:#334155;stroke-width:2}
+    .row{fill:#0f172a;stroke:#334155;stroke-width:2}
+    .row-alt{fill:#111c2f;stroke:#334155;stroke-width:2}
+    .card{filter:url(#shadow);stroke-width:2}
+
+    .label-bg{fill:#0f172a;stroke:#475569;stroke-width:1.5}
   </style>
 </defs>
-<rect class="canvas" width="1320" height="804"/>
-<rect class="frame" x="34" y="28" width="1252" height="748" rx="26"/>
-<text class="title" x="70" y="82">Exposed Cache Benchmark Snapshot</text>
-<text class="subtitle" x="72" y="115">Average latency from exposed-workshop chapter 11 benchmark. Lower is better.</text><g transform="translate(0 44)">
+<rect width="1420" height="900" fill="#0b1220"/>
+<rect x="34" y="30" width="1352" height="840" rx="28" class="panel"/>
+<text x="70" y="86" class="title">Exposed Cache Benchmark Snapshot</text>
+<text x="72" y="122" class="subtitle">Average latency from exposed-workshop chapter 11 benchmark. Lower is better.</text>
 <g>
-  <rect class="card" x="84" y="164" width="250" height="92" rx="16" fill="#F5F7FB" stroke="#93A4B7"/>
-  <text class="smallLabel" x="209" y="187" text-anchor="middle" dominant-baseline="middle">NO_CACHE</text>
-<text class="body" x="209" y="215" text-anchor="middle" dominant-baseline="middle">READ_HEAVY</text>
-<text class="body" x="209" y="233" text-anchor="middle" dominant-baseline="middle">517.5 us/op</text>
+  <rect x="92" y="190" width="292" height="112" rx="18" fill="#1e293b" stroke="#64748b" class="card"/>
+  <text x="238" y="218" text-anchor="middle" dominant-baseline="middle" class="mono">NO_CACHE</text>
+<text x="238" y="252" text-anchor="middle" dominant-baseline="middle" class="mono">READ_HEAVY</text>
+<text x="238" y="274" text-anchor="middle" dominant-baseline="middle" class="mono">517.5 us/op</text>
 </g>
 <g>
-  <rect class="card" x="84" y="296" width="250" height="92" rx="16" fill="#EAF7EF" stroke="#58A978"/>
-  <text class="smallLabel" x="209" y="319" text-anchor="middle" dominant-baseline="middle">READ_THROUGH</text>
-<text class="body" x="209" y="347" text-anchor="middle" dominant-baseline="middle">READ_HEAVY</text>
-<text class="body" x="209" y="365" text-anchor="middle" dominant-baseline="middle">94.3 us/op</text>
+  <rect x="92" y="334" width="292" height="112" rx="18" fill="#14351f" stroke="#86efac" class="card"/>
+  <text x="238" y="362" text-anchor="middle" dominant-baseline="middle" class="mono">READ_THROUGH</text>
+<text x="238" y="396" text-anchor="middle" dominant-baseline="middle" class="mono">READ_HEAVY</text>
+<text x="238" y="418" text-anchor="middle" dominant-baseline="middle" class="mono">94.3 us/op</text>
 </g>
 <g>
-  <rect class="card" x="84" y="428" width="250" height="92" rx="16" fill="#E8F3FF" stroke="#5B8DEF"/>
-  <text class="smallLabel" x="209" y="451" text-anchor="middle" dominant-baseline="middle">WRITE_THROUGH</text>
-<text class="body" x="209" y="479" text-anchor="middle" dominant-baseline="middle">READ_HEAVY</text>
-<text class="body" x="209" y="497" text-anchor="middle" dominant-baseline="middle">52.1 us/op</text>
+  <rect x="92" y="478" width="292" height="112" rx="18" fill="#172554" stroke="#60a5fa" class="card"/>
+  <text x="238" y="506" text-anchor="middle" dominant-baseline="middle" class="mono">WRITE_THROUGH</text>
+<text x="238" y="540" text-anchor="middle" dominant-baseline="middle" class="mono">READ_HEAVY</text>
+<text x="238" y="562" text-anchor="middle" dominant-baseline="middle" class="mono">52.1 us/op</text>
 </g>
 <g>
-  <rect class="card" x="84" y="560" width="250" height="92" rx="16" fill="#FFF3D9" stroke="#D6A441"/>
-  <text class="smallLabel" x="209" y="583" text-anchor="middle" dominant-baseline="middle">WRITE_HEAVY</text>
-<text class="body" x="209" y="611" text-anchor="middle" dominant-baseline="middle">445-508 us/op</text>
-<text class="body" x="209" y="629" text-anchor="middle" dominant-baseline="middle">strategy effect small</text>
+  <rect x="92" y="622" width="292" height="112" rx="18" fill="#3b2a08" stroke="#fbbf24" class="card"/>
+  <text x="238" y="650" text-anchor="middle" dominant-baseline="middle" class="mono">WRITE_HEAVY</text>
+<text x="238" y="684" text-anchor="middle" dominant-baseline="middle" class="mono">445-508 us/op</text>
+<text x="238" y="706" text-anchor="middle" dominant-baseline="middle" class="mono">strategy effect small</text>
 </g>
-<g><rect x="430" y="190" width="720" height="42" rx="12" fill="#F5F7FB" stroke="#93A4B7" stroke-width="2"/><rect x="430" y="190" width="720" height="42" rx="12" fill="#93A4B7" opacity="0.24"/></g>
-<g><rect x="430" y="322" width="720" height="42" rx="12" fill="#EAF7EF" stroke="#58A978" stroke-width="2"/><rect x="430" y="322" width="131" height="42" rx="12" fill="#58A978" opacity="0.28"/></g>
-<g><rect x="430" y="454" width="720" height="42" rx="12" fill="#E8F3FF" stroke="#5B8DEF" stroke-width="2"/><rect x="430" y="454" width="72" height="42" rx="12" fill="#5B8DEF" opacity="0.30"/></g>
-<g><rect x="430" y="586" width="720" height="42" rx="12" fill="#FFF3D9" stroke="#D6A441" stroke-width="2"/><rect x="430" y="586" width="620" height="42" rx="12" fill="#D6A441" opacity="0.24"/></g>
 <g>
-  <rect class="card" x="830" y="326" width="320" height="116" rx="16" fill="#F1ECFF" stroke="#8A72D6"/>
-  <text class="smallLabel" x="990" y="352" text-anchor="middle" dominant-baseline="middle">Reading</text>
-<text class="body" x="990" y="380" text-anchor="middle" dominant-baseline="middle">READ_THROUGH 5.5x faster</text>
-<text class="body" x="990" y="398" text-anchor="middle" dominant-baseline="middle">WRITE_THROUGH 9.9x faster</text>
-<text class="body" x="990" y="416" text-anchor="middle" dominant-baseline="middle">when reads dominate</text>
+  <rect x="468" y="218" width="540" height="52" rx="16" fill="#0f172a" stroke="#64748b" stroke-width="2"/>
+  <rect x="468" y="218" width="540" height="52" rx="16" fill="#1e293b" stroke="none"/>
 </g>
-<path class="connector lineBlue" d="M334 210 H430"/>
-<path class="connector lineGreen" d="M334 342 H430"/><rect class="pill" x="334" y="310" width="96" height="24" rx="12"/><text class="small" x="382" y="326" text-anchor="middle">5.5x faster</text>
-<path class="connector lineBlue" d="M334 474 H430"/><rect class="pill" x="334" y="442" width="96" height="24" rx="12"/><text class="small" x="382" y="458" text-anchor="middle">9.9x faster</text>
-<path class="connector lineAmber" d="M334 606 H430"/><rect class="pill" x="336" y="574" width="92" height="24" rx="12"/><text class="small" x="382" y="590" text-anchor="middle">write-heavy</text>
-</g></svg>
+<g>
+  <rect x="468" y="362" width="540" height="52" rx="16" fill="#0f172a" stroke="#86efac" stroke-width="2"/>
+  <rect x="468" y="362" width="98" height="52" rx="16" fill="#14351f" stroke="none"/>
+</g>
+<g>
+  <rect x="468" y="506" width="540" height="52" rx="16" fill="#0f172a" stroke="#60a5fa" stroke-width="2"/>
+  <rect x="468" y="506" width="55" height="52" rx="16" fill="#172554" stroke="none"/>
+</g>
+<g>
+  <rect x="468" y="650" width="540" height="52" rx="16" fill="#0f172a" stroke="#fbbf24" stroke-width="2"/>
+  <rect x="468" y="650" width="468" height="52" rx="16" fill="#3b2a08" stroke="none"/>
+</g>
+<g>
+  <rect x="1050" y="370" width="288" height="166" rx="18" fill="#261943" stroke="#c4b5fd" class="card"/>
+  <text x="1194" y="414" text-anchor="middle" dominant-baseline="middle" class="card-title">Reading</text>
+<text x="1194" y="448" text-anchor="middle" dominant-baseline="middle" class="mono">READ_THROUGH: 5.5x faster</text>
+<text x="1194" y="470" text-anchor="middle" dominant-baseline="middle" class="mono">WRITE_THROUGH: 9.9x faster</text>
+<text x="1194" y="492" text-anchor="middle" dominant-baseline="middle" class="mono">when reads dominate</text>
+</g>
+<text x="468" y="790" class="small">Source: exposed-workshop 11-high-performance/04-benchmark · AverageTime, us/op</text>
+<text x="1208" y="790" text-anchor="end" class="small">Shorter bars are faster.</text>
+</svg>
