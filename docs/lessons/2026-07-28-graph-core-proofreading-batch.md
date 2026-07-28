@@ -69,6 +69,7 @@ commit `aadba43`을 `origin/main`에 push했다. 별도로 존재하던 live-own
 | 대상 테스트 | Node 테스트 22/22 통과 |
 | 사이트 검사 | Astro 오류·경고 0, 1,303 pages build |
 | 로컬 경로 | 한영 Part 1~3 6개 경로 HTTP 200 |
+| stacked PR | #284, base `docs/korean-proofreading-javers-core-batch` |
 
 ## 다음 작업에 적용할 지침
 
