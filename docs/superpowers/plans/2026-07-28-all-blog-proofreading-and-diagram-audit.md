@@ -38,14 +38,14 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 
 ## 현재 진행 상황
 
-기준 시점: 2026-07-29, stacked PR #267~#288, #290
+기준 시점: 2026-07-29, stacked PR #267~#288, #290~#291
 
 | 구분 | 완료 | 전체 | 남음 | 상태 |
 | --- | ---: | ---: | ---: | --- |
 | 한국어 블로그 본문 교정 | 61 | 87 | 26 | 진행 중 |
 | 기술 다이어그램 변경·배치 검증 | 116 | 173 | 57 | 진행 중 |
-| stacked PR | 23 | 미정 | 미정 | #267~#288, #290 open |
-| 현재 배치 | 3 | 3 | 0 | Jackson 3·텍스트 처리, PR 생성 대기 |
+| stacked PR | 24 | 미정 | 미정 | #267~#288, #290~#291 open |
+| 현재 배치 | 3 | 3 | 0 | Jackson 3·텍스트 처리 PR #291 |
 | 최종 전체 사이트 감사 | 0 | 1 | 1 | 대기 |
 | 최종 머지·배포·정리 | 0 | 1 | 1 | 대기 |
 
@@ -82,9 +82,9 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 | 다이어그램 구조·PNG 검사 | PASS | 3개 stem, `shared_segments=0`, CairoSVG 2배 PNG 6개 원본 확인 |
 | writer 체크리스트 | PASS | dotfiles `fd2575d`, chezmoi apply·source/live·self-audit·upstream 일치 |
 | 사이트 검사 | PASS | Node 165/165, Astro 오류·경고 0, 기존 힌트 3개, 전체 build |
-| stacked PR | 대기 | base `docs/korean-proofreading-release-multitenancy-batch`, head `docs/korean-proofreading-jackson-text-batch` |
+| stacked PR | PASS | #291, base `docs/korean-proofreading-release-multitenancy-batch`, head `docs/korean-proofreading-jackson-text-batch` |
 
-현재 배치 필수 검사: **9/10 완료, N/A 0, Blocked 0**
+현재 배치 필수 검사: **10/10 완료, N/A 0, Blocked 0**
 
 ## 릴리스·멀티테넌트·벤치마크 배치 DoD
 
