@@ -1,33 +1,33 @@
 ---
-title: "같은 애플리케이션 안의 이벤트 전달: Spring Modulith publication과 Outbox를 나누는 기준"
-description: Spring Modulith publication 저장소가 같은 Spring Boot 애플리케이션 안의 리스너 실패를 어떻게 기록·복구하는지, 그리고 Transactional Outbox가 필요한 외부 전달 경계를 워크숍 예제로 구분한다.
+title: "같은 애플리케이션 안의 이벤트 전달: Spring Modulith 발행 기록과 아웃박스를 나누는 기준"
+description: Spring Modulith 발행 기록 저장소가 같은 Spring Boot 애플리케이션 안의 리스너 실패를 어떻게 기록·복구하는지, 그리고 트랜잭셔널 아웃박스가 필요한 외부 전달 경계를 워크숍 예제로 구분한다.
 sidebar:
   order: -202607231100
 blog:
   date: 2026-07-23T11:00:00+09:00
   image: /assets/spring-modulith-publications-vs-outbox-hero.png
-  imageAlt: 주문과 재고 예약, 이벤트 publication 저장소, 외부 전달 경계를 조립하는 로봇 작업자 3D 미니어처
-  cardDescription: "같은 애플리케이션 안의 리스너 복구와 외부 이벤트 전달을 같은 Outbox 문제로 섞지 않는 기준을 정리합니다."
+  imageAlt: 주문과 재고 예약, 이벤트 발행 기록 저장소, 외부 전달 경계를 조립하는 로봇 작업자 3D 미니어처
+  cardDescription: "같은 애플리케이션 안의 리스너 복구와 외부 이벤트 전달을 같은 아웃박스 문제로 섞지 않는 기준을 정리합니다."
   tags: ["comparison","kotlin","messaging","outbox","practical-example","resilience","spring","transactions"]
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/spring-modulith-publications-vs-outbox-hero.png" alt="주문과 재고 예약, 이벤트 publication 저장소, 외부 전달 경계를 조립하는 로봇 작업자 3D 미니어처" loading="eager" />
+  <img src="/assets/spring-modulith-publications-vs-outbox-hero.png" alt="주문과 재고 예약, 이벤트 발행 기록 저장소, 외부 전달 경계를 조립하는 로봇 작업자 3D 미니어처" loading="eager" />
   <figcaption>행을 남긴다는 사실보다, 그 행을 누가 어느 실행 경계에서 다시 읽는지가 더 중요합니다.</figcaption>
 </figure>
 
-<p class="bt4k-post-meta">2026-07-23 · exposed-workshop / bluetape4k-exposed · issue #253</p>
+<p class="bt4k-post-meta">2026-07-23 · exposed-workshop / bluetape4k-exposed</p>
 
 주문을 승인한 뒤 재고를 예약한다고 해보겠습니다. 주문 행이 `APPROVED`가 된 뒤 재고 예약이 실패하면,
 주문을 다시 승인하면 안 됩니다. 그렇다고 실패를 로그 한 줄로만 남기면 운영자는 어느 주문이 멈췄는지,
 어느 처리기를 다시 실행해야 하는지 알기 어렵습니다.
 
-여기서 흔히 "이벤트니까 Outbox를 쓰면 되겠네"라고 결론을 내립니다. 그 판단은 소비자가 다른 서비스나
+여기서 흔히 "이벤트니까 아웃박스를 쓰면 되겠네"라고 결론을 내립니다. 그 판단은 소비자가 다른 서비스나
 브로커 너머에 있을 때는 맞습니다. 하지만 주문 모듈과 재고 모듈이 같은 Spring Boot 애플리케이션 안에 있다면
 먼저 봐야 할 것은 외부 전달이 아니라 **모듈 사이의 후속 작업이 끝났는지**입니다.
 
-이 글은 `exposed-workshop`의 Spring Modulith publication 예제로 그 경계를 살펴봅니다. Spring Modulith
-publication은 Transactional Outbox를 더 가볍게 만든 것이 아닙니다. 같은 애플리케이션 안의 리스너가
+이 글은 `exposed-workshop`의 Spring Modulith 발행 기록 예제로 그 경계를 살펴봅니다. Spring Modulith
+발행 기록은 트랜잭셔널 아웃박스를 더 가볍게 만든 것이 아닙니다. 같은 애플리케이션 안의 리스너가
 커밋 뒤에 끝났는지, 실패했다면 무엇을 다시 실행할지를 기록하는 로컬 내구성 계층입니다.
 
 ## 주문은 승인됐는데 재고 예약이 실패했다
@@ -41,16 +41,16 @@ publication은 Transactional Outbox를 더 가볍게 만든 것이 아닙니다.
 실행될 수 있고, 그 사이에 예외가 날 수 있습니다. 이때 주문은 이미 승인됐으므로 원래 명령을 통째로 재시도하는 대신,
 후속 작업의 실패를 독립적으로 다뤄야 합니다.
 
-Spring Modulith의 publication은 이 지점의 질문을 저장합니다.
+Spring Modulith의 발행 기록은 이 지점의 질문을 저장합니다.
 
 - 어떤 이벤트를 발행했는가
 - 어떤 리스너가 아직 끝나지 않았는가
-- 실패한 작업을 다시 보냈는가
+- 실패한 작업을 다시 실행했는가
 
 이 기록은 "메시지가 외부에 도착했는가"를 뜻하지 않습니다. 재고 예약 처리기가 같은 애플리케이션 안에서
 정상적으로 끝났는지를 추적하는 기록입니다.
 
-## 같은 트랜잭션에서 주문과 이벤트의 출발점을 만든다
+## 같은 트랜잭션에서 주문과 이벤트 처리의 출발점을 만든다
 
 예제의 `OrderApplicationService.approve`는 `TransactionTemplate` 안에서 주문을 `APPROVED`로 저장하고
 `OrderApprovedEvent`를 발행합니다.
@@ -77,16 +77,16 @@ fun approve(command: ApproveOrderCommand): OrderSummary =
     }
 ```
 
-이 코드가 보장하는 것은 주문과 이벤트의 **출발점**입니다. 트랜잭션이 rollback되면 주문 승인도 이벤트 발행도
-남지 않습니다. 반대로 커밋됐다면, 뒤따르는 리스너가 실패해도 "승인 이벤트가 있었고 아직 처리할 일이 있다"는
-사실을 publication 저장소에서 확인할 수 있습니다.
+이 코드가 보장하는 것은 주문과 이벤트 처리의 **출발점**입니다. 트랜잭션이 롤백되면 주문과 리스너별 발행 기록이
+함께 커밋되지 않습니다. 반대로 커밋됐다면, 뒤따르는 리스너가 실패해도 "승인 이벤트가 있었고 아직 처리할 일이 있다"는
+사실을 발행 기록 저장소에서 확인할 수 있습니다.
 
 예제는 Spring Modulith의 `EventPublicationRepository`를 Exposed 구현으로 교체합니다. 이 저장소 구현은
-`springTransactionManager`에 묶여 있고, `EVENT_PUBLICATION`에 리스너 id, 이벤트 타입, 직렬화한 이벤트,
+`springTransactionManager`에 묶여 있고, `EVENT_PUBLICATION`에 리스너 ID, 이벤트 유형, 직렬화한 이벤트,
 상태, 완료 시도 횟수, 발행·완료 시각을 남깁니다. 따라서 이 표는 업무 주문의 복제본이 아니라,
 **특정 리스너가 특정 이벤트를 어디까지 처리했는지**를 기록하는 표입니다.
 
-## 처리기가 끝나야 publication도 끝난다
+## 처리기가 끝나야 발행 기록도 완료된다
 
 fulfillment 모듈은 `OrderApprovedEvent`를 듣는 로컬 리스너입니다.
 
@@ -104,36 +104,36 @@ fun reserveStock(event: OrderApprovedEvent) {
 ```
 
 `@ApplicationModuleListener`가 붙은 처리기는 트랜잭션을 가진 비동기 리스너입니다. Spring Modulith는
-리스너를 실행하기 전에 publication을 기록하고, 리스너가 성공적으로 끝난 뒤에만 행을 완료 상태로 바꿉니다.
-그래서 주문 커밋과 재고 예약 완료 사이에 실패가 나도, 주문을 되돌려야 할지 추측하는 대신 처리할 publication을
+원래 트랜잭션 안에서 리스너별 발행 기록을 저장하고, 커밋 뒤 리스너가 성공적으로 끝난 경우에만 행을 완료 상태로 바꿉니다.
+그래서 주문 커밋과 재고 예약 완료 사이에 실패가 나도, 주문을 되돌려야 할지 추측하는 대신 처리할 발행 기록을
 찾을 수 있습니다.
 
-<figure class="bt4k-architecture" data-diagram-title="같은 앱 안의 완료 추적과 앱 밖 전달 경계">
-  <img src="/assets/spring-modulith-publications-vs-outbox-interaction-01-ko.png" alt="같은 Spring Boot 애플리케이션 안의 orders, transaction, OrderApprovedEvent, EVENT_PUBLICATION, fulfillment reserve-stock 처리와 실패 재전송 경로, 그리고 외부 Outbox 전달 경계를 나란히 보이는 다이어그램" loading="lazy" />
+<figure class="bt4k-architecture" data-diagram-title="같은 애플리케이션 안의 완료 추적과 외부 전달 경계">
+  <img src="/assets/spring-modulith-publications-vs-outbox-interaction-01-ko.png" alt="같은 Spring Boot 애플리케이션 안의 주문, 트랜잭션, OrderApprovedEvent, EVENT_PUBLICATION, fulfillment.reserve-stock 처리와 실패 재실행 경로, 그리고 외부 아웃박스 전달 경계를 나란히 보이는 다이어그램" loading="lazy" />
   <figcaption>위쪽은 같은 애플리케이션 안에서 리스너 완료를 추적하는 경로이고, 아래쪽은 브로커와 외부 소비자까지 보내야 할 때의 전달 경계입니다.</figcaption>
 </figure>
 
-다이어그램의 두 줄은 경쟁하는 구현이 아닙니다. 위쪽은 `fulfillment.reserve-stock`이라는 로컬 처리기의
+다이어그램의 두 흐름은 경쟁하는 구현이 아닙니다. 위쪽은 `fulfillment.reserve-stock`이라는 로컬 처리기의
 완료를 확인합니다. 아래쪽은 이벤트를 브로커와 외부 소비자에게 보내는 일을 시작합니다. 같은 이름의
 이벤트를 쓸 수는 있어도, 실패를 복구하는 주체와 실행 환경은 다릅니다.
 
-## 실패한 publication은 운영 대상이다
+## 실패한 발행 기록은 운영 대상이다
 
-예제 테스트는 재고 예약을 한 번 실패시킨 뒤 `FAILED` publication이 남는지 확인합니다. 이 상태에서
-`IncompleteEventPublications.resubmitIncompletePublications(...)`를 호출하면 해당 publication을 다시 보내고,
+예제 테스트는 재고 예약을 한 번 실패시킨 뒤 `FAILED` 발행 기록이 남는지 확인합니다. 이 상태에서
+`IncompleteEventPublications.resubmitIncompletePublications(...)`를 호출하면 해당 발행 기록의 리스너를 다시 실행하고,
 재고 예약이 성공한 뒤 완료 시도 횟수는 `2`가 됩니다.
 
-여기서 재전송은 주문 승인 API를 다시 호출하는 작업이 아닙니다. 실패한 리스너 작업을 publication 행으로
+여기서 재실행은 주문 승인 API를 다시 호출하는 작업이 아닙니다. 실패한 리스너 작업을 발행 기록 행으로
 찾아 다시 수행하는 작업입니다. 그래서 운영 화면이나 도구에서는 다음 정보를 같이 봐야 합니다.
 
 | 확인할 것 | 이유 |
 | --- | --- |
-| 리스너 id | 어느 모듈의 후속 작업이 멈췄는지 알아야 한다. |
-| 상태와 시도 횟수 | 첫 실패인지, 이미 재전송했는지 구분해야 한다. |
+| 리스너 ID | 어느 모듈의 후속 작업이 멈췄는지 알아야 한다. |
+| 상태와 시도 횟수 | 첫 실패인지, 이미 재실행했는지 구분해야 한다. |
 | 이벤트 타입과 직렬화한 이벤트 | 어떤 업무 입력으로 처리기를 다시 실행하는지 확인해야 한다. |
 | 발행·완료 시각 | 처리 지연과 복구 시점을 판단해야 한다. |
 
-조금 더 까다로운 경우도 있습니다. 배포 뒤 이벤트 클래스의 이름을 없앴는데, 예전 publication 행은 남아 있을 수
+조금 더 까다로운 경우도 있습니다. 배포 뒤 이벤트 클래스의 이름을 없앴는데, 예전 발행 기록 행은 남아 있을 수
 있습니다. 예제는 이 행을 목록에서 숨기지 않습니다. 다만 `publication.event`로 객체를 꺼내는 순간
 `UnloadableEventPublicationException`을 발생시킵니다. 이는 재시도 버튼을 무작정 누르기보다 이벤트 클래스를
 되살리거나 행을 이관·정리해야 한다는 운영 신호입니다.
@@ -142,17 +142,17 @@ fun reserveStock(event: OrderApprovedEvent) {
 
 두 저장소 모두 행을 남기므로 비슷해 보입니다. 하지만 질문을 나눠 보면 용도가 선명해집니다.
 
-| 판단 지점 | Spring Modulith publication | Transactional Outbox |
+| 판단 지점 | Spring Modulith 발행 기록 | 트랜잭셔널 아웃박스 |
 | --- | --- | --- |
 | 소비자 위치 | 같은 Spring Boot 애플리케이션의 다른 모듈 | 다른 프로세스·서비스·브로커·실행 환경 |
-| 남기는 기록 | 리스너의 완료·실패·재전송 상태 | 외부로 보낼 이벤트 발행 의도 |
+| 남기는 기록 | 리스너의 완료·실패·재실행 상태 | 외부로 보낼 이벤트 발행 의도 |
 | 주된 실패 | 커밋 뒤 로컬 리스너 작업 실패 | 네트워크 전달·브로커·외부 소비자 실패 |
 | 운영 질문 | 어떤 리스너가 끝나지 않았는가 | 어느 이벤트를 외부에 아직 전달하지 못했는가 |
-| 복구 범위 | 같은 배포 단위 안의 리스너 재실행 | relay, 브로커, 소비자까지 포함한 통합 흐름 |
+| 복구 범위 | 같은 배포 단위 안의 리스너 재실행 | 릴레이, 브로커, 소비자까지 포함한 통합 흐름 |
 
-소비자가 같은 애플리케이션 안에 있고 `@ApplicationModuleListener` 재전송으로 충분하다면 publication store가
-문제를 작게 유지합니다. 반대로 Kafka, 다른 서비스, 다른 언어 실행 환경까지 이벤트를 보낸다면 Outbox와 relay가
-필요합니다. publication store가 브로커 전달을 대신해 주지는 않고, Outbox가 로컬 리스너의 완료 이력을
+소비자가 같은 애플리케이션 안에 있고 `@ApplicationModuleListener` 재실행으로 충분하다면 발행 기록 저장소가
+문제를 작게 유지합니다. 반대로 Kafka, 다른 서비스, 다른 언어 실행 환경까지 이벤트를 보낸다면 아웃박스와 릴레이가
+필요합니다. 발행 기록 저장소가 브로커 전달을 대신해 주지는 않고, 아웃박스가 로컬 리스너의 완료 이력을
 자동으로 설명해 주지도 않습니다.
 
 ## 어떤 저장소를 선택할지 정하는 순서
@@ -160,25 +160,25 @@ fun reserveStock(event: OrderApprovedEvent) {
 다음 순서로 판단하면 패턴 이름보다 경계를 먼저 볼 수 있습니다.
 
 1. **소비자가 같은 애플리케이션 안에 있는가?** 그렇다면 먼저 모듈 이벤트와 리스너의 실패 복구를 본다.
-2. **재전송도 같은 배포 단위에서 하면 충분한가?** 그렇다면 미완료 publication을 조회하고 재전송하는 운영 흐름을 설계한다.
-3. **외부 소비자, 브로커, 별도 실행 환경까지 전달해야 하는가?** 그렇다면 DB 변경과 외부 발행을 잇는 Outbox 경계를 설계한다.
+2. **재실행도 같은 배포 단위에서 하면 충분한가?** 그렇다면 미완료 발행 기록을 조회하고 다시 실행하는 운영 흐름을 설계한다.
+3. **외부 소비자, 브로커, 별도 실행 환경까지 전달해야 하는가?** 그렇다면 DB 변경과 외부 발행을 잇는 아웃박스 경계를 설계한다.
 
-하나의 업무에서 두 경계가 모두 필요할 수도 있습니다. 예를 들어 orders가 fulfillment에는 로컬 publication으로
-알리고, 배송 파트너 서비스에는 Outbox로 이벤트를 보낼 수 있습니다. 그때도 두 행을 같은 용도의 복제본처럼
+하나의 업무에서 두 경계가 모두 필요할 수도 있습니다. 예를 들어 주문 모듈이 재고 모듈에는 로컬 발행 기록으로
+알리고, 배송 파트너 서비스에는 아웃박스로 이벤트를 보낼 수 있습니다. 그때도 두 행을 같은 용도의 복제본처럼
 취급하지 말고, 로컬 완료와 외부 전달을 각각 어떤 상태로 운영할지 분리해야 합니다.
 
 ## 자료
 
-- [Spring Modulith publication store with Exposed workshop](https://github.com/bluetape4k/exposed-workshop/tree/develop/13-ecosystem-integrations/06-spring-modulith-publications)
+- [Exposed를 사용한 Spring Modulith 발행 기록 저장소 워크숍](https://github.com/bluetape4k/exposed-workshop/tree/develop/13-ecosystem-integrations/06-spring-modulith-publications)
 - [주문 승인과 `OrderApprovedEvent` 발행](https://github.com/bluetape4k/exposed-workshop/blob/develop/13-ecosystem-integrations/06-spring-modulith-publications/src/main/kotlin/exposed/examples/spring/modulith/publications/orders/OrderModule.kt)
 - [`fulfillment.reserve-stock` 리스너](https://github.com/bluetape4k/exposed-workshop/blob/develop/13-ecosystem-integrations/06-spring-modulith-publications/src/main/kotlin/exposed/examples/spring/modulith/publications/fulfillment/FulfillmentModule.kt)
 - [Exposed 기반 `EventPublicationRepository`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/spring-boot/spring-modulith/src/main/kotlin/io/bluetape4k/spring/modulith/exposed/ExposedEventPublicationRepository.kt)
-- [Transactional Outbox와 Idempotency: Spring, Ktor 예제로 보는 실패 경계](/ko/blog/transactional-outbox-idempotency-spring-ktor/)
-- [Transactional Outbox Part 2: Kafka 우선 fallback으로 hot transaction 줄이기](/ko/blog/transactional-outbox-kafka-first-fallback-part2/)
+- [트랜잭셔널 아웃박스와 멱등성: Spring, Ktor 예제로 보는 실패 경계](/ko/blog/transactional-outbox-idempotency-spring-ktor/)
+- [트랜잭셔널 아웃박스 Part 2: Kafka 우선 대체 경로로 고빈도 트랜잭션 줄이기](/ko/blog/transactional-outbox-kafka-first-fallback-part2/)
 
 ## 마무리
 
 저장소에 행을 남긴다는 사실만으로 설계가 같아지지는 않습니다. 같은 애플리케이션 안에서 리스너가 끝났는지
-확인하고 다시 실행하는 일은 Spring Modulith publication의 역할입니다. 이벤트를 외부 실행 환경으로 보내고
-전달 실패를 견디는 일은 Transactional Outbox의 역할입니다. 먼저 소비자가 어디에 있는지 정하면,
+확인하고 다시 실행하는 일은 Spring Modulith 발행 기록의 역할입니다. 이벤트를 외부 실행 환경으로 보내고
+전달 실패를 견디는 일은 트랜잭셔널 아웃박스의 역할입니다. 먼저 소비자가 어디에 있는지 정하면,
 필요한 상태와 운영 절차도 함께 정리됩니다.

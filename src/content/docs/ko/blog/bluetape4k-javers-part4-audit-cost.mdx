@@ -1,69 +1,69 @@
 ---
 title: "Bluetape4k JaVers Part 4: 감사 로그는 공짜가 아니다"
-description: JaVers와 Exposed로 감사 이력을 저장할 때 생기는 쓰기·조회 비용을 벤치마크로 읽고, 감사 범위와 commit metadata 인덱스를 선택하는 기준을 정리한다.
+description: JaVers와 Exposed로 감사 이력을 저장할 때 생기는 쓰기·조회 비용을 벤치마크로 읽고, 감사 범위와 커밋 메타데이터 인덱스를 선택하는 기준을 정리한다.
 sidebar:
   order: -202607221700
 blog:
   date: 2026-07-22T17:00:00+09:00
   image: /assets/bluetape4k-javers-part4-hero.png
-  imageAlt: 작은 로봇 작업자들이 JaVers commit과 snapshot 보관함을 분류하며 비용 계기판을 확인하는 3D 작업대 일러스트
-  cardDescription: "감사 범위, snapshot 저장 비용, commit metadata 인덱스를 커밋된 benchmark 근거로 판단한다."
+  imageAlt: 작은 로봇 작업자들이 JaVers 커밋과 스냅숏 보관함을 분류하며 비용 계기판을 확인하는 3D 작업대 일러스트
+  cardDescription: "감사 범위, 스냅숏 저장 비용, 커밋 메타데이터 인덱스를 커밋된 벤치마크 근거로 판단한다."
   tags: ["exposed","javers","kotlin","performance","persistence"]
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/bluetape4k-javers-part4-hero.png" alt="작은 로봇 작업자들이 JaVers commit과 snapshot 보관함을 분류하며 비용 계기판을 확인하는 3D 작업대 일러스트" loading="eager" />
+  <img src="/assets/bluetape4k-javers-part4-hero.png" alt="작은 로봇 작업자들이 JaVers 커밋과 스냅숏 보관함을 분류하며 비용 계기판을 확인하는 3D 작업대 일러스트" loading="eager" />
   <figcaption>감사 이력은 신뢰를 높이지만, 저장 범위와 조회 경로를 정하지 않으면 운영 비용도 함께 커집니다.</figcaption>
 </figure>
 
-<p class="bt4k-post-meta">2026-07-22 · bluetape4k-javers series · Part 4</p>
+<p class="bt4k-post-meta">2026-07-22 · bluetape4k-javers 시리즈 · Part 4</p>
 
-Part 3에서는 업무 객체를 저장하고 JaVers에 commit한 뒤 domain event를 발행하는 흐름을 살펴봤습니다. 이 구조가
+Part 3에서는 업무 객체를 저장하고 JaVers에 커밋한 뒤 도메인 이벤트를 발행하는 흐름을 살펴봤습니다. 이 구조가
 동작하기 시작하면 곧 다음 질문이 생깁니다.
 
 > 모든 변경을 감사 이력으로 남겨도 괜찮을까?
 
-처음에는 "가능하면 많이 남기자"가 안전해 보입니다. 그러나 감사 대상이 늘면 변경할 때마다 snapshot과 commit
-metadata를 기록하고, 이력이 쌓일수록 조회할 데이터도 많아집니다. 조회가 느려졌다고 곧바로 인덱스를 추가하면 쓰기
+처음에는 "가능하면 많이 남기자"가 안전해 보입니다. 그러나 감사 대상이 늘면 변경할 때마다 스냅숏과 커밋
+메타데이터를 기록하고, 이력이 쌓일수록 조회할 데이터도 많아집니다. 조회가 느려졌다고 곧바로 인덱스를 추가하면 쓰기
 비용과 저장 공간이 다시 늘어납니다. 감사 로그는 공짜가 아닙니다.
 
-이 글에서는 `bluetape4k-javers`에 커밋된 두 benchmark 결과를 바탕으로 비용을 읽어 보겠습니다. 수치를 제품 간
-순위표로 쓰지 않고, 각 측정 경로가 어떤 일을 포함하는지부터 나눕니다. 그런 다음 감사 범위와 commit metadata
+이 글에서는 `bluetape4k-javers`에 커밋된 두 벤치마크 결과를 바탕으로 비용을 읽어 보겠습니다. 수치를 제품 간
+순위표로 쓰지 않고, 각 측정 경로가 어떤 일을 포함하는지부터 나눕니다. 그런 다음 감사 범위와 커밋 메타데이터
 인덱스를 언제 선택해야 하는지 운영 기준으로 연결하겠습니다.
 
 ## 모든 변경을 남기는 순간 비용 모델이 바뀐다
 
 감사 이력을 도입하기 전에는 현재 상태를 저장하고 읽는 비용만 생각하면 됩니다. 도입한 뒤에는 한 번의 업무 변경이
-현재 상태 저장, JaVers commit 생성, snapshot 직렬화와 저장으로 이어집니다. 삭제도 단순한 row 삭제가 아니라
-terminal snapshot을 남기는 정책이 필요할 수 있습니다.
+현재 상태 저장, JaVers 커밋 생성, 스냅숏 직렬화와 저장으로 이어집니다. 삭제도 단순한 행 삭제가 아니라
+종료 스냅숏을 남기는 정책이 필요할 수 있습니다.
 
-읽기 경로도 둘로 갈라집니다. 현재 상태 조회는 원본 table을 읽지만, 변경 이력 조회는 snapshot과 commit metadata를
-함께 읽습니다. "누가 바꿨는가", "이 기간에 무엇이 바뀌었는가"처럼 조건이 붙으면 commit table과 snapshot table의
+읽기 경로도 둘로 갈라집니다. 현재 상태 조회는 원본 테이블을 읽지만, 변경 이력 조회는 스냅숏과 커밋 메타데이터를
+함께 읽습니다. "누가 바꿨는가", "이 기간에 무엇이 바뀌었는가"처럼 조건이 붙으면 커밋 테이블과 스냅숏 테이블의
 결합과 정렬까지 고려해야 합니다.
 
-이 때문에 감사 기능의 비용은 단순히 row 하나가 늘어나는 정도가 아닙니다.
+이 때문에 감사 기능의 비용은 단순히 행 하나가 늘어나는 정도가 아닙니다.
 
 | 비용이 생기는 지점 | 확인할 질문 |
 |---|---|
-| 쓰기 | 업무 저장과 JaVers commit이 같은 요청의 응답 시간을 얼마나 늘리는가 |
-| 저장 공간 | 객체 전체 상태, 변경 속성, commit metadata를 얼마나 오래 보관할 것인가 |
-| 조회 | global id, 작성자, 기간 조건을 SQL에서 얼마나 좁힐 수 있는가 |
-| 운영 | 보존 기간, 삭제 요청, schema와 codec 호환성을 누가 관리하는가 |
+| 쓰기 | 업무 저장과 JaVers 커밋이 같은 요청의 응답 시간을 얼마나 늘리는가 |
+| 저장 공간 | 객체 전체 상태, 변경 속성, 커밋 메타데이터를 얼마나 오래 보관할 것인가 |
+| 조회 | 전역 ID, 작성자, 기간 조건을 SQL에서 얼마나 좁힐 수 있는가 |
+| 운영 | 보존 기간, 삭제 요청, 스키마와 코덱 호환성을 누가 관리하는가 |
 
 ## 한 번의 변경에서 무엇이 저장되는가
 
-`ExposedCdoSnapshotRepository`는 JaVers가 만든 snapshot을 두 종류의 table에 나누어 저장합니다. commit table에는
-작성자, commit 시각, properties, sequence가 들어갑니다. snapshot table에는 global id, version, snapshot type,
-직렬화한 전체 상태, 변경 속성, managed type이 들어갑니다.
+`ExposedCdoSnapshotRepository`는 JaVers가 만든 스냅숏을 두 종류의 테이블에 나누어 저장합니다. 커밋 테이블에는
+작성자, 커밋 시각, 속성, 순서가 들어갑니다. 스냅숏 테이블에는 전역 ID, 버전, 스냅숏 유형,
+직렬화한 전체 상태, 변경 속성, 관리 유형이 들어갑니다.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-javers-part4-audit-cost-map-01-ko.png" alt="업무 변경이 원본 상태 저장과 JaVers commit, commit metadata, snapshot 저장 및 감사 조회로 이어지는 비용 지도" loading="lazy" />
-  <figcaption>감사 비용은 commit 한 줄만이 아니라 원본 저장, snapshot 직렬화·보관, metadata 결합 조회 전체에서 생깁니다.</figcaption>
+<figure class="bt4k-architecture" data-diagram-title="감사 이력 비용이 발생하는 지점">
+  <img src="/assets/bluetape4k-javers-part4-audit-cost-map-01-ko.png" alt="업무 변경이 원본 상태 저장과 JaVers 커밋, 커밋 메타데이터, 스냅숏 저장 및 감사 조회로 이어지는 비용 지도" loading="lazy" />
+  <figcaption>감사 비용은 커밋 한 줄만이 아니라 원본 저장, 스냅숏 직렬화·보관, 메타데이터 결합 조회 전체에서 생깁니다.</figcaption>
 </figure>
 
-현재 구현의 snapshot state는 전체 객체 상태를 인코딩한 text입니다. 객체가 커지거나 변경이 잦으면 보관량도 함께
-커집니다. 반대로 audit query에서는 commit id로 두 table을 결합하고 sequence 역순으로 결과를 읽습니다. commit id,
-snapshot type, managed type처럼 기본 schema에 이미 있는 인덱스도 있지만, 작성자와 commit 시각 인덱스는 기본값으로
+현재 구현의 스냅숏 상태는 전체 객체 상태를 인코딩한 텍스트입니다. 객체가 커지거나 변경이 잦으면 보관량도 함께
+커집니다. 반대로 감사 조회에서는 커밋 ID로 두 테이블을 결합하고 순서의 역순으로 결과를 읽습니다. 커밋 ID,
+스냅숏 유형, 관리 유형처럼 기본 스키마에 이미 있는 인덱스도 있지만, 작성자와 커밋 시각 인덱스는 기본값으로
 강제하지 않습니다.
 
 이 선택은 일부러 남겨 둔 여지입니다. 모든 서비스가 작성자와 기간으로 이력을 조회하는 것은 아니기 때문입니다.
@@ -71,156 +71,156 @@ snapshot type, managed type처럼 기본 schema에 이미 있는 인덱스도 �
 
 ## 비교 전에 측정 경로부터 나눈다
 
-benchmark 이름에 `Envers`, `JaVers`, `Exposed`가 함께 나오면 라이브러리 순위를 매기고 싶어집니다. 하지만 현재
+벤치마크 이름에 `Envers`, `JaVers`, `Exposed`가 함께 나오면 라이브러리 순위를 매기고 싶어집니다. 하지만 현재
 비교 항목은 수행하는 일이 서로 다릅니다.
 
 | 측정 경로 | 포함하는 일 |
 |---|---|
-| Hibernate Envers | JPA entity 저장과 revision 기록, revision 조회 |
-| JaVers in-memory | 데이터베이스 없이 JaVers core의 commit과 snapshot 조회 |
-| JaVers + Exposed repository | JaVers snapshot과 commit metadata를 PostgreSQL에 저장하고 조회 |
-| JaVers + Exposed DDD path | 업무 원본 table 저장, JaVers audit, repository orchestration을 함께 수행 |
+| Hibernate Envers | JPA 엔티티 저장과 리비전 기록, 리비전 조회 |
+| JaVers 인메모리 | 데이터베이스 없이 JaVers 코어의 커밋과 스냅숏 조회 |
+| JaVers + Exposed 저장소 | JaVers 스냅숏과 커밋 메타데이터를 PostgreSQL에 저장하고 조회 |
+| JaVers + Exposed DDD 경로 | 업무 원본 테이블 저장, JaVers 감사, 저장소 조정을 함께 수행 |
 
-in-memory 결과는 JaVers 자체 비용을 보는 데 가깝고, Exposed repository 결과는 SQL 저장 비용을 포함합니다. DDD
-경로는 원본 상태와 감사 이력을 함께 다룹니다. 같은 `insert`라는 이름이어도 완료한 일이 다르므로, 숫자만 떼어
+인메모리 결과는 JaVers 자체 비용을 보는 데 가깝고, Exposed 저장소 결과는 SQL 저장 비용을 포함합니다. DDD
+경로는 원본 상태와 감사 이력을 함께 다룹니다. 같은 `삽입`이라는 이름이어도 완료한 일이 다르므로, 숫자만 떼어
 "어느 도구가 몇 배 빠르다"고 결론 내리면 안 됩니다.
 
-## 숫자보다 먼저 benchmark가 포함한 일을 본다
+## 숫자보다 먼저 벤치마크가 포함한 일을 본다
 
-아래 결과는 JDK 21.0.11, macOS aarch64, PostgreSQL 18 Testcontainers 환경에서 저장소에 커밋해 둔 측정값입니다.
+아래 결과는 JDK 21.0.11, macOS aarch64, PostgreSQL 18 Testcontainers 환경에서 측정해 프로젝트에 커밋한 값입니다.
 각 항목은 5회 예열 뒤 40회 측정한 평균 `ms/op`이며, 낮을수록 빠릅니다. 현재 운영 환경의 p95나 p99 응답 시간,
 동시 사용자 처리량을 보장하는 수치는 아닙니다.
 
-<figure class="bt4k-chart">
-  <img src="/assets/bluetape4k-javers-part4-benchmark-paths-01-ko.png" alt="Hibernate Envers와 JaVers in-memory, Exposed repository, Exposed DDD 경로의 insert update audit query 평균 처리 시간을 비교한 차트" loading="lazy" />
+<figure class="bt4k-chart" data-diagram-title="감사 저장 경로별 평균 처리 시간">
+  <img src="/assets/bluetape4k-javers-part4-benchmark-paths-01-ko.png" alt="Hibernate Envers와 JaVers 인메모리, Exposed 저장소, Exposed DDD 경로의 삽입·갱신·감사 조회 평균 처리 시간을 비교한 차트" loading="lazy" />
   <figcaption>네 경로는 포함하는 작업이 다릅니다. 막대의 길이보다 먼저 측정 경로의 경계를 함께 읽어야 합니다.</figcaption>
 </figure>
 
-| 측정 경로 | insert | update | audit query |
+| 측정 경로 | 삽입 | 갱신 | 감사 조회 |
 |---|---:|---:|---:|
 | Hibernate Envers | 4.486 ms | 6.917 ms | 12.483 ms |
-| JaVers in-memory | 0.510 ms | 0.978 ms | 12.559 ms |
-| JaVers + Exposed repository | 8.499 ms | 5.945 ms | 0.763 ms |
-| JaVers + Exposed DDD path | 6.397 ms | 7.257 ms | 0.704 ms |
+| JaVers 인메모리 | 0.510 ms | 0.978 ms | 12.559 ms |
+| JaVers + Exposed 저장소 | 8.499 ms | 5.945 ms | 0.763 ms |
+| JaVers + Exposed DDD 경로 | 6.397 ms | 7.257 ms | 0.704 ms |
 
-이 표에서 읽을 수 있는 것은 제한적이지만 유용합니다. PostgreSQL에 snapshot을 남기는 경로에는 눈에 보이는 쓰기
-비용이 있습니다. 한편 이 corpus에서 Exposed audit query는 빠르게 나왔습니다. 이것은 현재 query pushdown과
+이 표에서 읽을 수 있는 것은 제한적이지만 유용합니다. PostgreSQL에 스냅숏을 남기는 경로에는 눈에 보이는 쓰기
+비용이 있습니다. 한편 이 측정에서 Exposed 감사 조회는 빠르게 나왔습니다. 이것은 현재 쿼리 푸시다운과
 인덱스가 해당 데이터 형태에 잘 맞았다는 신호이지, 이력이 수억 건으로 늘어도 같은 응답 시간을 보장한다는 뜻은
 아닙니다.
 
 운영 결정을 하려면 실제 객체 크기, 변경 빈도, 이력 보존 기간, 조회 조건을 넣어 다시 측정해야 합니다. 특히 평균값만
-보지 말고 p95·p99 지연, 처리량, DB CPU와 I/O, table과 index 크기를 함께 봐야 합니다.
+보지 말고 p95·p99 지연, 처리량, DB CPU와 I/O, 테이블과 인덱스 크기를 함께 봐야 합니다.
 
 ## DB에 저장할 때 JaVers 경로가 더 무거워질 수 있는 이유
 
-표의 `JaVers + Exposed repository`가 Envers보다 느리게 나온 insert 값을 보고 JaVers 자체가 항상 느리다고 결론 내리면
+표의 `JaVers + Exposed 저장소`가 Envers보다 느리게 나온 삽입 값을 보고 JaVers 자체가 항상 느리다고 결론 내리면
 안 됩니다. 두 경로 모두 변경을 감사하지만, DB에 남기는 모델과 측정 안에 들어간 작업이 다릅니다. 이 경로는 원본
-`OrdersTable`을 저장하지 않고 JaVers commit과 snapshot만 PostgreSQL에 기록합니다. 원본 상태 저장까지 포함한 것은
-별도의 `JaVers + Exposed DDD path`입니다.
+`OrdersTable`을 저장하지 않고 JaVers 커밋과 스냅숏만 PostgreSQL에 기록합니다. 원본 상태 저장까지 포함한 것은
+별도의 `JaVers + Exposed DDD path` 경로입니다.
 
-Hibernate Envers의 예제 경로는 JPA entity를 저장한 뒤, flush에서 변경을 감지해 revision과 entity audit row를
+Hibernate Envers의 예제 경로는 JPA 엔티티를 저장한 뒤, 플러시에서 변경을 감지해 리비전과 엔티티 감사 행을
 기록합니다.
 
 ```text
 Hibernate Envers
 
-begin transaction
-  persist current entity row
-  flush detects the change
-  write revision and entity audit rows
-commit transaction
+트랜잭션 시작
+  현재 엔티티 행 저장
+  플러시에서 변경 감지
+  리비전 행과 엔티티 감사 행 기록
+트랜잭션 커밋
 ```
 
-JaVers + Exposed repository는 JaVers가 aggregate에서 commit과 snapshot을 만든 다음, repository가 그 snapshot을
+JaVers + Exposed 저장소는 JaVers가 애그리거트에서 커밋과 스냅숏을 만든 다음, 저장소가 그 스냅숏을
 저장합니다.
 
 ```text
-JaVers + Exposed repository
+JaVers + Exposed 저장소
 
-build JaVers commit from the aggregate
-encode the full snapshot state
+애그리거트에서 JaVers 커밋 생성
+전체 스냅숏 상태 인코딩
 
-begin transaction
-  check whether commit metadata exists
-  insert commit metadata when it is absent
-  insert snapshot row with state and changed properties
-commit transaction
+트랜잭션 시작
+  커밋 메타데이터 존재 여부 확인
+  없으면 커밋 메타데이터 삽입
+  상태와 변경 속성을 포함한 스냅숏 행 삽입
+트랜잭션 커밋
 ```
 
-`ExposedCdoSnapshotRepository.saveSnapshot()`은 snapshot 전체를 text로 인코딩하고, 같은 commit metadata가 이미 있는지
-확인한 뒤 없으면 commit row를 넣습니다. 이어서 global id, version, type, 전체 state, changed properties를 담은
-snapshot row를 추가합니다. 그래서 객체를 snapshot으로 만드는 비용, JSON/text payload 크기, metadata 확인, 추가 SQL과
-JDBC 처리 시간이 한 요청에 함께 들어갈 수 있습니다. 이 설명은 repository-only 경계에만 해당합니다. DDD path는 여기에
-원본 aggregate 저장과 repository orchestration까지 더합니다.
+`ExposedCdoSnapshotRepository.saveSnapshot()`은 스냅숏 전체를 텍스트로 인코딩하고, 같은 커밋 메타데이터가 이미 있는지
+확인한 뒤 없으면 커밋 행을 넣습니다. 이어서 전역 ID, 버전, 유형, 전체 상태, 변경 속성을 담은
+스냅숏 행을 추가합니다. 그래서 객체를 스냅숏으로 만드는 비용, JSON/텍스트 페이로드 크기, 메타데이터 확인, 추가 SQL과
+JDBC 처리 시간이 한 요청에 함께 들어갈 수 있습니다. 이 설명은 저장소만 측정한 경계에 해당합니다. DDD 경로는 여기에
+원본 애그리거트 저장과 저장소 조정까지 더합니다.
 
 | 비용이 커지는 조건 | DB 쓰기 경로에서 늘어나는 일 |
 |---|---|
-| aggregate 상태가 큼 | 전체 snapshot의 직렬화와 text payload가 커짐 |
-| 변경이 잦음 | commit·snapshot 행과 index 갱신이 빠르게 누적됨 |
-| commit metadata가 많음 | metadata payload와 조회·인덱스 판단 범위가 넓어짐 |
-| 동기 감사 경계를 유지함 | 업무 저장 요청이 audit write 완료를 함께 기다림 |
+| 애그리거트 상태가 큼 | 전체 스냅숏의 직렬화와 텍스트 페이로드가 커짐 |
+| 변경이 잦음 | 커밋·스냅숏 행과 인덱스 갱신이 빠르게 누적됨 |
+| 커밋 메타데이터가 많음 | 메타데이터 페이로드와 조회·인덱스 판단 범위가 넓어짐 |
+| 동기 감사 경계를 유지함 | 업무 저장 요청이 감사 쓰기 완료를 함께 기다림 |
 
-그래서 이 benchmark는 "JaVers가 더 느리다"는 판정이 아니라, 감사 이력을 어떤 형태로 얼마나 동기적으로 남길지
+그래서 이 벤치마크는 "JaVers가 더 느리다"는 판정이 아니라, 감사 이력을 어떤 형태로 얼마나 동기적으로 남길지
 결정하기 위한 출발점입니다. 객체 크기와 변경 빈도, 조회 요구를 넣어 다시 측정해야 저장 경로를 고를 수 있습니다.
 
 ## 성능만으로 감사 방식을 고르지 않는 이유
 
-JaVers를 고르는 이유는 history table 하나를 더 만들기 위해서가 아닙니다. 한 aggregate가 어떻게 바뀌었는지 객체
-단위 diff로 읽어야 하거나, 누가 어떤 command와 event로 변경했는지 commit metadata를 함께 남겨야 할 때 의미가
-있습니다. 현재 상태 저장, JaVers commit, domain event 발행의 순서를 command 흐름에서 드러내고 싶을 때도 같은
+JaVers를 고르는 이유는 이력 테이블 하나를 더 만들기 위해서가 아닙니다. 한 애그리거트가 어떻게 바뀌었는지 객체
+단위 변경 차이(diff)로 읽어야 하거나, 누가 어떤 명령과 이벤트로 변경했는지 커밋 메타데이터를 함께 남겨야 할 때 의미가
+있습니다. 현재 상태 저장, JaVers 커밋, 도메인 이벤트 발행의 순서를 명령 처리 흐름에서 드러내고 싶을 때도 같은
 경계가 도움이 됩니다.
 
-반대로 JPA entity revision만 필요하면 Envers가 더 직접적일 수 있습니다. DB 변경을 다른 시스템에 빠짐없이 전달하는
-일이 우선이면 CDC가 출발점에 더 가깝습니다. benchmark의 쓰기 비용은 이 요구사항을 지우지 않습니다. 어떤 이력을
+반대로 JPA 엔티티 리비전만 필요하면 Envers가 더 직접적일 수 있습니다. DB 변경을 다른 시스템에 빠짐없이 전달하는
+일이 우선이면 CDC가 출발점에 더 가깝습니다. 벤치마크의 쓰기 비용은 이 요구사항을 지우지 않습니다. 어떤 이력을
 설명해야 하는지와 그 이력을 어디서 조회할지를 먼저 정한 뒤 비용을 재는 편이 안전합니다.
 
-| 경로 | command 경로에서 다루는 일 | Kafka와 조회의 역할 | 잘 맞는 경우 |
+| 경로 | 명령 경로에서 다루는 일 | Kafka와 조회의 역할 | 잘 맞는 경우 |
 |---|---|---|---|
-| 원본 상태 + JaVers audit | 현재 상태 저장과 query 가능한 audit를 같은 command 흐름에서 다룬다 | Kafka는 선택적인 downstream event다 | 즉시 감사 조회와 객체 diff가 모두 필요하다 |
-| 원본 상태 + JaVers audit + Kafka projection | audit를 남긴 뒤 downstream event로 read model 갱신을 이어 간다 | Kafka는 화면·검색·외부 소비를 분리한다 | 빠른 조회 모델이나 다른 시스템 전달이 필요하다 |
-| Kafka snapshot stream + projection 저장소 | Kafka publish acknowledgement까지 확인한다 | Kafka repository는 write-only이고, 조회는 projector의 대상 저장소가 맡는다 | replay 가능한 이벤트 흐름을 별도로 운영할 수 있다 |
+| 원본 상태 + JaVers 감사 | 현재 상태 저장과 조회 가능한 감사를 같은 명령 흐름에서 다룬다 | Kafka는 선택적인 후속 이벤트다 | 즉시 감사 조회와 객체 변경 차이가 모두 필요하다 |
+| 원본 상태 + JaVers 감사 + Kafka 프로젝션 | 감사를 남긴 뒤 후속 이벤트로 조회 모델 갱신을 이어 간다 | Kafka는 화면·검색·외부 소비를 분리한다 | 빠른 조회 모델이나 다른 시스템 전달이 필요하다 |
+| Kafka 스냅숏 스트림 + 프로젝션 저장소 | Kafka 발행 확인 응답까지 기다린다 | Kafka 저장소는 쓰기 전용이고, 조회는 프로젝터의 대상 저장소가 맡는다 | 재생 가능한 이벤트 흐름을 별도로 운영할 수 있다 |
 
-앞의 두 경로에서는 JaVers audit store가 변경 이력을 조회하는 곳입니다. Kafka를 붙여도 그 역할이 바뀌지는 않습니다.
-Kafka consumer는 Redis나 RDBMS 같은 read model을 비동기로 갱신할 수 있지만, snapshot event만 보관한 Kafka
-repository는 audit query에 답할 수 없습니다. `KafkaCdoSnapshotProjector`처럼 별도 저장소에 projection해야 나중에
+앞의 두 경로에서는 JaVers 감사 저장소가 변경 이력을 조회하는 곳입니다. Kafka를 붙여도 그 역할이 바뀌지는 않습니다.
+Kafka 소비자는 Redis나 RDBMS 같은 조회 모델을 비동기로 갱신할 수 있지만, 스냅숏 이벤트만 보관한 Kafka
+저장소는 감사 조회에 답할 수 없습니다. `KafkaCdoSnapshotProjector`처럼 별도 저장소에 프로젝션해야 나중에
 이력을 조회할 수 있습니다.
 
-Kafka를 쓴다고 command 경로가 자동으로 비동기가 되는 것도 아닙니다. 현재 `KafkaCdoSnapshotRepository`는 기본
-최대 30초 동안 broker acknowledgement를 기다리고, timeout이나 publish 실패를 `RuntimeException`으로 전파합니다.
-따라서 consumer와 projection은 비동기로 처리해도, 현재 publish는 fire-and-forget이 아닙니다. 응답 경로를 실제로
-분리하려면 DB transaction과 Kafka 전달 사이의 유실·중복·재처리를 어떻게 다룰지 정해야 합니다. outbox, retry queue,
-fail-fast 또는 best-effort 정책은 이 글의 구현 완료 기능이 아니라, 서비스가 전달 보장을 설계할 때 선택해야 할 다음
+Kafka를 쓴다고 명령 경로가 자동으로 비동기가 되는 것도 아닙니다. 현재 `KafkaCdoSnapshotRepository`는 기본
+최대 30초 동안 브로커의 발행 확인 응답을 기다리고, 타임아웃이나 발행 실패를 `RuntimeException`으로 전파합니다.
+따라서 소비자와 프로젝션은 비동기로 처리해도, 현재 발행은 비동기 위임 후 즉시 반환하는 방식이 아닙니다. 응답 경로를 실제로
+분리하려면 DB 트랜잭션과 Kafka 전달 사이의 유실·중복·재처리를 어떻게 다룰지 정해야 합니다. 아웃박스, 재시도 큐,
+즉시 실패 또는 최선 노력 정책은 이 글의 구현 완료 기능이 아니라, 서비스가 전달 보장을 설계할 때 선택해야 할 다음
 문제입니다.
 
 ## 조회가 느리다고 인덱스부터 추가하지 않는다
 
-두 번째 benchmark는 commit metadata의 `author`와 `commit_date` 인덱스를 후보로 두고 비교합니다. baseline,
-author index, commit date index, 두 인덱스를 모두 둔 경우를 각각 임시 table에서 측정했습니다.
+두 번째 벤치마크는 커밋 메타데이터의 `author`와 `commit_date` 인덱스를 후보로 두고 비교합니다. 기준 구성,
+작성자 인덱스, 커밋 시각 인덱스, 두 인덱스를 모두 둔 경우를 각각 임시 테이블에서 측정했습니다.
 
-<figure class="bt4k-chart">
-  <img src="/assets/bluetape4k-javers-part4-metadata-indexes-01-ko.png" alt="commit metadata의 author와 commit date 인덱스 조합에 따른 작성자 조회와 기간 조회 처리량을 비교한 차트" loading="lazy" />
-  <figcaption>인덱스의 이득은 조회 조건에 따라 달라집니다. 이 smoke benchmark만으로 운영 DDL을 정해서는 안 됩니다.</figcaption>
+<figure class="bt4k-chart" data-diagram-title="커밋 메타데이터 인덱스별 처리량">
+  <img src="/assets/bluetape4k-javers-part4-metadata-indexes-01-ko.png" alt="커밋 메타데이터의 작성자와 커밋 시각 인덱스 조합에 따른 작성자 조회와 기간 조회 처리량을 비교한 차트" loading="lazy" />
+  <figcaption>인덱스의 이득은 조회 조건에 따라 달라집니다. 이 탐색용 벤치마크만으로 운영 DDL을 정해서는 안 됩니다.</figcaption>
 </figure>
 
-| 인덱스 구성 | 작성자 조회 | 기간 조회 | insert |
+| 인덱스 구성 | 작성자 조회 | 기간 조회 | 삽입 |
 |---|---:|---:|---:|
 | 없음 | 917.5 ops/s | 916.5 ops/s | 481.4 ops/s |
-| author | 907.1 ops/s | 904.7 ops/s | 488.6 ops/s |
-| commit date | 931.2 ops/s | 923.2 ops/s | 499.3 ops/s |
-| author + commit date | 945.9 ops/s | 873.8 ops/s | 518.6 ops/s |
+| 작성자 | 907.1 ops/s | 904.7 ops/s | 488.6 ops/s |
+| 커밋 시각 | 931.2 ops/s | 923.2 ops/s | 499.3 ops/s |
+| 작성자 + 커밋 시각 | 945.9 ops/s | 873.8 ops/s | 518.6 ops/s |
 
-두 인덱스를 함께 둔 구성은 작성자 조회에서는 가장 높은 처리량을 보였지만, 기간 조회에서는 baseline보다 낮았습니다.
-insert 결과도 예상과 달리 인덱스를 둔 구성이 더 높게 나왔습니다. 이 측정은 예열 1회, 측정 1회뿐이라 결과를
-일반화할 수 없습니다. 후보를 빠르게 비교하는 smoke benchmark이지 운영 DDL의 근거가 아닙니다.
+두 인덱스를 함께 둔 구성은 작성자 조회에서는 가장 높은 처리량을 보였지만, 기간 조회에서는 기준 구성보다 낮았습니다.
+삽입 결과도 예상과 달리 인덱스를 둔 구성이 더 높게 나왔습니다. 이 측정은 예열 1회, 측정 1회뿐이라 결과를
+일반화할 수 없습니다. 후보를 빠르게 비교하는 탐색용 벤치마크이지 운영 DDL의 근거가 아닙니다.
 
 인덱스를 추가하기 전에는 다음 순서가 안전합니다.
 
-1. 실제 느린 query와 호출 빈도를 확인합니다.
+1. 실제 느린 쿼리와 호출 빈도를 확인합니다.
 2. 운영 데이터와 비슷한 분포에서 실행 계획을 봅니다.
-3. 조회 지연뿐 아니라 쓰기 지연과 index 크기를 함께 측정합니다.
-4. 필요한 환경에만 migration으로 인덱스를 적용하고, 변경 전후 지표를 비교합니다.
+3. 조회 지연뿐 아니라 쓰기 지연과 인덱스 크기를 함께 측정합니다.
+4. 필요한 환경에만 마이그레이션으로 인덱스를 적용하고, 변경 전후 지표를 비교합니다.
 
-`bluetape4k-javers`가 author와 commit date 인덱스를 기본 schema에 넣지 않은 이유도 여기에 있습니다. 라이브러리가
+`bluetape4k-javers`가 작성자와 커밋 시각 인덱스를 기본 스키마에 넣지 않은 이유도 여기에 있습니다. 라이브러리가
 모든 사용자의 조회 패턴을 대신 결정하기보다, 서비스가 재현한 병목에 맞춰 선택하는 편이 낫습니다.
 
 ## 감사 범위를 결정하는 세 가지 선택지
@@ -230,11 +230,11 @@ insert 결과도 예상과 달리 인덱스를 둔 구성이 더 높게 나왔�
 
 | 선택 | 잘 맞는 상황 | 주의할 점 |
 |---|---|---|
-| 핵심 aggregate만 감사 | 결제, 계약, 권한처럼 설명 책임이 큰 업무 | 제외한 객체의 변경 근거는 다른 로그에서 찾아야 함 |
-| 중요한 상태 전이만 감사 | 중간 계산보다 승인·취소 같은 결정이 중요함 | commit 지점을 명확히 하고 누락을 테스트해야 함 |
+| 핵심 애그리거트만 감사 | 결제, 계약, 권한처럼 설명 책임이 큰 업무 | 제외한 객체의 변경 근거는 다른 로그에서 찾아야 함 |
+| 중요한 상태 전이만 감사 | 중간 계산보다 승인·취소 같은 결정이 중요함 | 커밋 지점을 명확히 하고 누락을 테스트해야 함 |
 | 모든 변경을 감사 | 규제나 내부 통제상 완전한 추적이 필요함 | 용량, 보존·삭제 정책, 민감 정보 마스킹을 먼저 설계해야 함 |
 
-많이 남긴다고 늘 더 안전한 것은 아닙니다. 개인정보나 비밀 값까지 snapshot에 들어가면 열람 권한과 삭제 정책의
+많이 남긴다고 늘 더 안전한 것은 아닙니다. 개인정보나 비밀 값까지 스냅숏에 들어가면 열람 권한과 삭제 정책의
 설계가 복잡해집니다. 반대로 감사 범위를 너무 줄이면 장애나 분쟁이 생겼을 때 판단 근거가 없습니다.
 
 좋은 기준은 "나중에 누가 어떤 결정을 설명해야 하는가"입니다. 그 질문에 필요한 업무 객체와 상태 전이를 먼저
@@ -244,42 +244,42 @@ insert 결과도 예상과 달리 인덱스를 둔 구성이 더 높게 나왔�
 
 | 항목 | 확인할 내용 |
 |---|---|
-| 감사 대상 | aggregate와 상태 전이의 포함·제외 기준이 문서화됐는가 |
-| transaction | 원본 저장과 JaVers commit 실패가 서로 다른 사실을 만들지 않는가 |
-| 보존 정책 | 보존 기간, archive, 삭제와 개인정보 처리 기준이 있는가 |
-| 조회 경로 | global id, 작성자, 기간 중 실제로 쓰는 조건을 알고 있는가 |
-| benchmark | 운영과 비슷한 DB, 데이터 분포, 객체 크기로 p95·p99를 측정했는가 |
-| 관측 | write latency, query latency, table/index 크기와 실패율을 볼 수 있는가 |
-| 호환성 | snapshot codec과 schema 변경 뒤 과거 이력을 읽는 테스트가 있는가 |
+| 감사 대상 | 애그리거트와 상태 전이의 포함·제외 기준이 문서화됐는가 |
+| 트랜잭션 | 원본 저장과 JaVers 커밋 실패가 서로 다른 사실을 만들지 않는가 |
+| 보존 정책 | 보존 기간, 장기 보관, 삭제와 개인정보 처리 기준이 있는가 |
+| 조회 경로 | 전역 ID, 작성자, 기간 중 실제로 쓰는 조건을 알고 있는가 |
+| 벤치마크 | 운영과 비슷한 DB, 데이터 분포, 객체 크기로 p95·p99를 측정했는가 |
+| 관측 | 쓰기 지연, 조회 지연, 테이블·인덱스 크기와 실패율을 볼 수 있는가 |
+| 호환성 | 스냅숏 코덱과 스키마 변경 뒤 과거 이력을 읽는 테스트가 있는가 |
 
-benchmark와 운영 관측은 함께 봐야 합니다. benchmark는 후보 설계를 비교하는 도구이고, 운영 지표는 실제
+벤치마크와 운영 관측은 함께 봐야 합니다. 벤치마크는 후보 설계를 비교하는 도구이고, 운영 지표는 실제
 트래픽에서 가정이 맞았는지 확인하는 도구입니다. 둘 중 하나만으로 감사 비용을 판단하면 놓치는 부분이 생깁니다.
 
 ## 자료
 
-- Benchmark module: [`benchmark/javers-exposed-benchmark`](https://github.com/bluetape4k/bluetape4k-javers/tree/develop/benchmark/javers-exposed-benchmark)
-- Persistence path benchmark: [`EnversComparisonBenchmark.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/benchmark/javers-exposed-benchmark/src/main/kotlin/io/bluetape4k/javers/benchmark/exposed/EnversComparisonBenchmark.kt)
-- Commit metadata index benchmark: [`ExposedCommitMetadataIndexBenchmark.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/benchmark/javers-exposed-benchmark/src/main/kotlin/io/bluetape4k/javers/benchmark/exposed/ExposedCommitMetadataIndexBenchmark.kt)
-- Exposed snapshot repository: [`ExposedCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-exposed/src/main/kotlin/io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepository.kt)
-- DDD audit boundary: [`AggregateRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/AggregateRepository.kt)
-- Kafka snapshot repository: [`KafkaCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/repository/KafkaCdoSnapshotRepository.kt)
-- Kafka snapshot projector: [`KafkaCdoSnapshotProjector.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjector.kt)
+- 벤치마크 모듈: [`benchmark/javers-exposed-benchmark`](https://github.com/bluetape4k/bluetape4k-javers/tree/develop/benchmark/javers-exposed-benchmark)
+- 저장 경로 벤치마크: [`EnversComparisonBenchmark.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/benchmark/javers-exposed-benchmark/src/main/kotlin/io/bluetape4k/javers/benchmark/exposed/EnversComparisonBenchmark.kt)
+- 커밋 메타데이터 인덱스 벤치마크: [`ExposedCommitMetadataIndexBenchmark.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/benchmark/javers-exposed-benchmark/src/main/kotlin/io/bluetape4k/javers/benchmark/exposed/ExposedCommitMetadataIndexBenchmark.kt)
+- Exposed 스냅숏 저장소: [`ExposedCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-exposed/src/main/kotlin/io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepository.kt)
+- DDD 감사 경계: [`AggregateRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/AggregateRepository.kt)
+- Kafka 스냅숏 저장소: [`KafkaCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/repository/KafkaCdoSnapshotRepository.kt)
+- Kafka 스냅숏 프로젝터: [`KafkaCdoSnapshotProjector.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjector.kt)
 
 ## 마무리
 
 | 순서 | 결정 | 확인할 근거 |
 |---|---|---|
-| 1 | 설명 책임이 있는 aggregate와 상태 전이를 고른다 | 장애·분쟁·규제 상황에서 누가 어떤 결정을 설명해야 하는가 |
-| 2 | 감사 조회와 화면 조회를 나눈다 | object diff가 필요한지, 별도 read model이 필요한지 |
-| 3 | 전달 경계를 정한다 | 동기 audit, Kafka projection, acknowledgement 대기, outbox/retry 설계 여부 |
-| 4 | 운영 조건으로 다시 측정한다 | p95·p99, 저장량, 보존 기간, query predicate, index 크기 |
+| 1 | 설명 책임이 있는 애그리거트와 상태 전이를 고른다 | 장애·분쟁·규제 상황에서 누가 어떤 결정을 설명해야 하는가 |
+| 2 | 감사 조회와 화면 조회를 나눈다 | 객체 변경 차이가 필요한지, 별도 조회 모델이 필요한지 |
+| 3 | 전달 경계를 정한다 | 동기 감사, Kafka 프로젝션, 발행 확인 응답 대기, 아웃박스·재시도 설계 여부 |
+| 4 | 운영 조건으로 다시 측정한다 | p95·p99, 저장량, 보존 기간, 쿼리 조건, 인덱스 크기 |
 
-이 선택지는 실제 workload로 검증해야 합니다. benchmark는 정답표가 아니며, Kafka를 붙였다고 audit query나 전달
+이 선택지는 실제 워크로드로 검증해야 합니다. 벤치마크는 정답표가 아니며, Kafka를 붙였다고 감사 조회나 전달
 보장 책임이 저절로 정리되지는 않습니다.
 
 ## 시리즈 링크
 
-- [Part 1: audit와 diff의 기본 모델](/ko/blog/bluetape4k-javers-part1-audit-diff-overview/)
-- [Part 2: Exposed, Redis, Kafka persistence 선택](/ko/blog/bluetape4k-javers-part2-persistence-options/)
-- [Part 3: DDD와 workshop audit 예제](/ko/blog/bluetape4k-javers-part3-ddd-workshop-example/)
+- [Part 1: 감사와 변경 차이의 기본 모델](/ko/blog/bluetape4k-javers-part1-audit-diff-overview/)
+- [Part 2: Exposed, Redis, Kafka 영속화 선택](/ko/blog/bluetape4k-javers-part2-persistence-options/)
+- [Part 3: DDD와 워크숍 감사 예제](/ko/blog/bluetape4k-javers-part3-ddd-workshop-example/)
 - [Part 4: 감사 로그는 공짜가 아니다](/ko/blog/bluetape4k-javers-part4-audit-cost/)

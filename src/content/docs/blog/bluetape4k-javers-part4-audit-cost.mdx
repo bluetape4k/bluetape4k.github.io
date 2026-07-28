@@ -56,7 +56,7 @@ The cost is therefore more than one extra row.
 author, commit time, properties, and sequence. The snapshot table stores the global id, version,
 snapshot type, encoded full state, changed properties, and managed type.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Where audit-history cost occurs">
   <img src="/assets/bluetape4k-javers-part4-audit-cost-map-01-en.png" alt="Cost map from a business change through current-state persistence, JaVers commit metadata and snapshot storage, and audit history queries" loading="lazy" />
   <figcaption>Audit cost spans the business write, snapshot encoding and retention, metadata joins, and snapshot reconstruction.</figcaption>
 </figure>
@@ -93,7 +93,7 @@ The following result is a committed measurement from JDK 21.0.11 on macOS aarch6
 better. It is not a production p95 or p99 latency result, and it does not establish concurrent-user
 capacity.
 
-<figure class="bt4k-chart">
+<figure class="bt4k-chart" data-diagram-title="Mean operation time by audit path">
   <img src="/assets/bluetape4k-javers-part4-benchmark-paths-01-en.png" alt="Chart comparing mean insert, update, and audit query time across Hibernate Envers, JaVers in-memory, Exposed repository, and Exposed DDD paths" loading="lazy" />
   <figcaption>The four paths complete different work. Read the path boundary before comparing bar lengths.</figcaption>
 </figure>
@@ -205,7 +205,7 @@ that design, not features this repository already implements.
 The second benchmark treats indexes on commit metadata `author` and `commit_date` as candidates. It
 compares a baseline, an author index, a commit-date index, and both indexes in temporary tables.
 
-<figure class="bt4k-chart">
+<figure class="bt4k-chart" data-diagram-title="Commit-metadata throughput by index configuration">
   <img src="/assets/bluetape4k-javers-part4-metadata-indexes-01-en.png" alt="Chart comparing author-query, date-range-query, and insert throughput for four commit metadata index configurations" loading="lazy" />
   <figcaption>Index effects vary by query shape. This smoke benchmark is not evidence for production DDL.</figcaption>
 </figure>
