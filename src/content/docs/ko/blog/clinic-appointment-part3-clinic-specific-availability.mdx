@@ -168,6 +168,16 @@ for (range in effectiveRanges) {
 장비, 남은 동시 진료 여유도 함께 담습니다. 다음 단계에서 예약을 확정할 때 어떤 자원을 선택할지 판단할 수
 있게 하기 위해서입니다.
 
+다만 현재 구현이 완성한 범위는 **한 종류의 필수 장비를 확인하는 경우**입니다. 진료 유형에는 여러 장비를
+연결할 수 있지만, `SlotCalculationService`는 연결된 장비 중 하나라도 수량이 남으면 후보를 유지합니다.
+반대로 사용 불가 시간은 연결된 장비 중 하나와만 겹쳐도 후보 전체를 제외합니다. 여러 장비가 모두 필요한지,
+서로 대체할 수 있는 장비 중 하나만 고르면 되는지에 따라 두 판단의 의미가 달라집니다.
+
+따라서 여러 장비를 지원하려면 먼저 요구 관계를 `모두 필요(AND)`와 `대체 가능(OR)` 중 하나로 정의하고,
+필요 수량까지 모델에 포함해야 합니다. 그런 다음 가용 장비 집합과 사용 불가 시간 검사를 같은 의미로 맞추고,
+두 종류 이상의 장비가 동시에 걸린 테스트를 추가해야 합니다. 현재의 단일 장비 테스트만으로 복수 장비
+요구사항까지 충족했다고 볼 수는 없습니다.
+
 ## 테스트: 조건 하나보다 조건이 겹치는 장면을 검증한다
 
 예약 계산은 정상적인 한 가지 예만으로 검증하기 어렵습니다. 각 규칙이 독립적으로 맞아도 여러 규칙이 겹치는
@@ -201,8 +211,14 @@ for (range in effectiveRanges) {
 이 요구사항은 저장할 정보만 추가한다고 끝나지 않았습니다. 장비 사용 불가 시간을 조회하는
 [EquipmentUnavailabilityService](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/EquipmentUnavailabilityService.kt)를
 예약 가능 시간 계산에 연결하고, 해당 시간과 겹치는 후보를 제외했습니다. 테스트에는 장비 중단 시간이 후보의
-일부와 겹치는 경우를 추가했습니다. 전체 일정을 다루는 최적화에서도 같은 정보를 이해해야 하므로 Timefold
-Solver의 제약 조건과 입력 데이터도 함께 보강해야 합니다.
+일부와 겹치는 경우를 추가했습니다.
+
+전체 일정 최적화에는 연결이 하나 더 남아 있습니다. Solver 도메인에는
+`EquipmentUnavailabilityFact`와 H11 제약이 있지만, 현재
+[SolverService](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-solver/src/main/kotlin/io/bluetape4k/clinic/appointment/solver/service/SolverService.kt)의
+`loadSolution()`은 장비 사용 불가 정보를 읽어 `ScheduleSolution`에 넣지 않습니다. 따라서 이 서비스로
+실행한 전체 최적화는 장비 점검·고장 시간을 아직 적용하지 않습니다. 제약 조건을 작성하는 것과 실제 실행
+입력에 문제 정보를 공급하는 것까지 확인해야 요구사항이 완성됩니다.
 
 이 과정은 추가 요구사항을 다루는 방법을 보여줍니다. 새 테이블을 만드는 것으로 완료하지 않고, 그 정보가
 어떤 계산과 API, 테스트, 최적화 정책에 전달되어야 하는지 끝까지 추적해야 합니다.

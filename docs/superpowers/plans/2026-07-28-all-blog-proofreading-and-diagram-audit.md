@@ -38,18 +38,18 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 
 ## 현재 진행 상황
 
-기준 시점: 2026-07-29, stacked PR #267~#288, #290~#295
+기준 시점: 2026-07-29, stacked PR #267~#288, #290~#295와 현재 준비 중인 배치
 
 | 구분 | 완료 | 전체 | 남음 | 상태 |
 | --- | ---: | ---: | ---: | --- |
-| 한국어 블로그 본문 교정 | 73 | 87 | 14 | 진행 중 |
-| 기술 다이어그램 변경·배치 검증 | 146 | 173 | 27 | 진행 중 |
+| 한국어 블로그 본문 교정 | 76 | 87 | 11 | 진행 중 |
+| 기술 다이어그램 변경·배치 검증 | 151 | 173 | 22 | 진행 중 |
 | stacked PR | 28 | 미정 | 미정 | #267~#288, #290~#295 open |
-| 현재 배치 | 3 | 3 | 0 | Bluetape Skills Part 2~3·병원 예약 Part 1 |
+| 현재 배치 | 3 | 3 | 0 | 병원 예약 Part 2~4 |
 | 최종 전체 사이트 감사 | 0 | 1 | 1 | 대기 |
 | 최종 머지·배포·정리 | 0 | 1 | 1 | 대기 |
 
-현재 완료된 한국어 글 73편:
+현재 완료된 한국어 글 76편:
 
 - AI 협업 글 2편
 - Bluetape4k 생태계·GraphDB 글 2편
@@ -73,6 +73,25 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 - Bluetape4k Flow 확장
 - Bucket4j 요청 제한, OCR 서비스 실패 응답, Bluetape Skills Part 1
 - Bluetape Skills Part 2~3, 병원 예약 Part 1
+- 병원 예약 Part 2~4
+
+## 병원 예약 Part 2~4 배치 DoD
+
+| 검사 | 결과 | 근거 |
+| --- | --- | --- |
+| 글 교정 | PASS | 병원 예약 Part 2~4 한국어 본문과 의미가 달라진 대응 영어 글 |
+| 날짜 보존 | PASS | base 대비 한영 `blog.date`와 `sidebar.order` 6/6 변경 없음 |
+| 사실 검증 | PASS | 현재 상태 변경 트랜잭션·이벤트 발행, 장비 가용성, Solver 입력 적재 경로 대조 |
+| 소스 링크 | PASS | 한영 글의 독자용 자료 링크 23/23 HTTP 200 |
+| 한영 정합성 | PASS | 주장·식별자·자료 링크·다이어그램 구성과 구현 범위 동기화 |
+| 다이어그램 정적 감사 | PASS | 한영 10/10 XML, architecture 6/6, sequence 4/4, 정적 감사 실패 0 |
+| 다이어그램 구조·PNG 검사 | PASS | 5개 stem, 생성기 2회 체크섬 일치, CairoSVG 2배 PNG 10/10 원본 확인 |
+| writer 체크리스트 | PASS | dotfiles `5e263d4`, chezmoi apply·SHA-256 source/live·self-audit·upstream 일치 |
+| 사이트 검사 | PASS | Node 테스트, Astro 오류 0, 기존 힌트 3개, 1,303 pages build |
+| 경로 검사 | PASS | 한영 글 6개 HTTP 200, 로컬 프리뷰 `127.0.0.1:4341` |
+| stacked PR | PENDING | 현재 브랜치 검증 후 생성 |
+
+현재 배치 필수 검사: **10/11 완료, N/A 0, Blocked 0**
 
 ## Workflow·런타임 복구·병원 예약 배치 DoD
 
