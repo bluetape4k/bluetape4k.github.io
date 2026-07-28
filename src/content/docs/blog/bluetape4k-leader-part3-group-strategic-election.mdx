@@ -46,7 +46,7 @@ that cannot acquire a slot waits or skips. The name still says leader, but the m
 semaphore.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-leader-group-semaphore-01-en.png" alt="LeaderGroupElector slot-token semaphore with maxLeaders, active slots, wait or skip path, release and expiry path" loading="lazy" />
+  <img src="/assets/bluetape4k-leader-group-semaphore-01-en.png" alt="LeaderGroupElector slot-token semaphore with maxLeaders, active slots, wait or skip path, release and expiry path" loading="lazy" data-diagram-title="LeaderGroupElector slot semaphore" />
   <figcaption>`LeaderGroupElector` attaches up to `maxLeaders` slot tokens to one `lockName`; only callers with a token run the action.</figcaption>
 </figure>
 
@@ -103,7 +103,7 @@ when (val result = groupElection.runIfLeaderResult("tenant-aggregation") { drain
 There is one important operational boundary. Extending a single leader's lease is different from extending a group slot.
 Each slot carries its own owner, TTL, release, and expiry semantics. The README draws this boundary explicitly: single-leader
 `autoExtend` is opt-in, but `@LeaderGroupElection` does not support auto-extension yet. Streaming `Flux<T>` / `Flow<T>`
-returns are also outside the 0.3.1 scope because group lease extension has no per-slot stream contract yet.
+returns are also outside the 0.4.0 scope because group lease extension has no per-slot stream contract yet.
 
 For group election, choose a `leaseTime` that comfortably covers the action and split long or irregular work into smaller
 chunks where possible. TTL is a model of expected work time, not a free pass to hold slots forever.
@@ -124,7 +124,7 @@ now?"
 selected node runs the action; all other nodes immediately receive `null`.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-leader-strategic-election-flow-01-en.png" alt="Strategic election flow from CandidateInfo registration through candidate registry, strategy selection, selected-node execution, skipped nodes, and result update" loading="lazy" />
+  <img src="/assets/bluetape4k-leader-strategic-election-flow-01-en.png" alt="Strategic election flow from CandidateInfo registration through candidate registry, strategy selection, selected-node execution, skipped nodes, and result update" loading="lazy" data-diagram-title="Strategic election flow" />
   <figcaption>Strategic election registers candidates first, then applies the same strategy to the same candidate list to compute the single selected node.</figcaption>
 </figure>
 

@@ -1,28 +1,30 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
   <title id="title">Bluetape4k Leader Repository Map</title><desc id="desc">Application code calls compact leader contracts, then selects backend, framework integration, and scenario examples.</desc><defs>
-    <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#28343b" flood-opacity="0.13"/></filter>
-    <marker id="arrow-blue" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#3f7d9c" stroke="#3f7d9c" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
-    <marker id="arrow-green" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#6e8f4f" stroke="#6e8f4f" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
-    <marker id="arrow-amber" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#b98240" stroke="#b98240" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
-    <marker id="arrow-red" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#b86868" stroke="#b86868" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
-    <marker id="arrow-slate" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#78909c" stroke="#78909c" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
+    <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#02050a" flood-opacity="0.42"/></filter>
+    <marker id="arrow-blue" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#6fb6e8" stroke="#6fb6e8" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#80d99b" stroke="#80d99b" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#e2b35c" stroke="#e2b35c" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#ef8292" stroke="#ef8292" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
+    <marker id="arrow-slate" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#87a8c2" stroke="#87a8c2" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
     <style>
-      .canvas{fill:#fbfcf8}.frame{fill:#fff;stroke:#41545d;stroke-width:2.2}
-      .title{font-family:"Architects Daughter";font-size:38px;fill:#263238}
-      .subtitle,.detail,.labelText,.footer,.axis,.tick,.legend,.role{font-family:"Comic Mono";fill:#4e6069}
+      .canvas{fill:#050914}.frame{fill:#0c1628;stroke:#315a7a;stroke-width:2.2}
+      .title{font-family:"Architects Daughter";font-size:38px;fill:#f0f5ff}
+      .subtitle,.detail,.labelText,.footer,.axis,.tick,.legend,.role{font-family:"Comic Mono";fill:#b4c5d8}
       .subtitle{font-size:16px}.detail{font-size:14px}.footer{font-size:13px}.axis,.tick,.legend{font-size:13px}
       .role{font-family:"Comic Mono";font-size:12.5px}
-      .bandTitle,.cardTitle,.participant{font-family:"Architects Daughter";fill:#1f3138}
+      .bandTitle,.cardTitle,.participant{font-family:"Architects Daughter";fill:#edf4ff}
       .bandTitle{font-size:23px}.cardTitle{font-size:22px}.participant{font-size:19px}
-      .mono,.code,.badgeText{font-family:"Comic Mono";fill:#33454e}
-      .band{fill:#f5f9fb;stroke:#c8d7df;stroke-width:1.6}.bandAlt{fill:#fbfdf8;stroke:#d7e0d0;stroke-width:1.6}
-      .card{filter:url(#shadow);stroke-width:2}.header{fill:#fff;stroke:#546e7a;stroke-width:2}
+      .mono,.code,.badgeText{font-family:"Comic Mono";fill:#d7e3f2}
+      .band{fill:#101d30;stroke:#294c69;stroke-width:1.6}.bandAlt{fill:#10231f;stroke:#2f6257;stroke-width:1.6}
+      .card{filter:url(#shadow);fill:#111d2f!important;stroke-width:2}.header{fill:#111d2f;stroke:#537a99;stroke-width:2}
+      .surfaceWarm{fill:#211c16;stroke:#8b6a34;stroke-width:2}.surfacePurple{fill:#1c1930;stroke:#7058a2;stroke-width:2}
+      .footerBar{fill:#0e1b2e;stroke:#294c69;stroke-width:2}.tableHeader{fill:#142b46;stroke:#537a99;stroke-width:2}
       .edge,.call,.return,.skip,.state{fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
-      .call{stroke:#3f7d9c;marker-end:url(#arrow-blue)}.state{stroke:#6e8f4f;marker-end:url(#arrow-green)}
-      .return{stroke:#9b7d54;marker-end:url(#arrow-amber);stroke-dasharray:8 7}.skip{stroke:#b86868;marker-end:url(#arrow-red)}
-      .pill,.label{fill:#fff;stroke-width:1.5}.labelText{font-size:12.5px}.badgeText{font-size:12px;font-weight:700}
-      .lifeline{stroke:#9aaab1;stroke-width:2;stroke-dasharray:7 8}.activation{fill:#e6f2ec;stroke:#5b7e67;stroke-width:1.7}
-      .branch{fill:none;stroke:#78909c;stroke-width:2.2;stroke-dasharray:12 8}.divider{stroke:#78909c;stroke-width:1.4;stroke-dasharray:8 7}
+      .call{stroke:#6fb6e8;marker-end:url(#arrow-blue)}.state{stroke:#80d99b;marker-end:url(#arrow-green)}
+      .return{stroke:#e2b35c;marker-end:url(#arrow-amber);stroke-dasharray:8 7}.skip{stroke:#ef8292;marker-end:url(#arrow-red)}
+      .pill,.label{fill:#0e1a2b;stroke-width:1.5}.badgeCircle{fill:#0e1a2b}.labelText{font-size:12.5px}.badgeText{font-size:12px;font-weight:700}
+      .lifeline{stroke:#52718a;stroke-width:2;stroke-dasharray:7 8}.activation{fill:#193c32;stroke:#71bf8b;stroke-width:1.7}
+      .branch{fill:none;stroke:#7194ae;stroke-width:2.2;stroke-dasharray:12 8}.divider{stroke:#7194ae;stroke-width:1.4;stroke-dasharray:8 7}
     </style>
   </defs>
   <rect class="canvas" width="1400" height="900"/><rect class="frame" x="44" y="36" width="1312" height="828" rx="18"/>
@@ -53,7 +55,7 @@
     <text x="1174" y="514" class="cardTitle" text-anchor="middle">Cluster</text>
     <text x="1174" y="540" class="detail" text-anchor="middle">Hazelcast / ZooKeeper</text></g>
   <path d="M 386 578 L 386 622" class="state"/><path d="M 1014 578 L 1014 622" class="state"/>
-  <rect x="92" y="622" width="588" height="132" rx="14" fill="#fff7e8" stroke="#e7c988" stroke-width="2"/>
+  <rect x="92" y="622" width="588" height="132" rx="14" class="surfaceWarm"/>
   <text x="126" y="666" class="bandTitle" >Framework integrations</text><g><rect x="154" y="690" width="142" height="50" rx="8" class="card" fill="#fff" stroke="#d9b76e"/>
     <text x="225" y="718" class="cardTitle" text-anchor="middle">Spring Boot</text>
     <text x="225" y="730" class="detail" text-anchor="middle">adapter</text></g><g><rect x="324" y="690" width="142" height="50" rx="8" class="card" fill="#fff" stroke="#d9b76e"/>
@@ -61,7 +63,7 @@
     <text x="395" y="730" class="detail" text-anchor="middle">adapter</text></g><g><rect x="494" y="690" width="142" height="50" rx="8" class="card" fill="#fff" stroke="#d9b76e"/>
     <text x="565" y="718" class="cardTitle" text-anchor="middle">Micrometer</text>
     <text x="565" y="730" class="detail" text-anchor="middle">adapter</text></g>
-  <rect x="720" y="622" width="588" height="132" rx="14" fill="#f6efff" stroke="#c9b3ee" stroke-width="2"/>
+  <rect x="720" y="622" width="588" height="132" rx="14" class="surfacePurple"/>
   <text x="754" y="666" class="bandTitle" >Examples and benchmark</text><g><rect x="790" y="690" width="142" height="50" rx="8" class="card" fill="#fff" stroke="#b99de0"/>
     <text x="861" y="718" class="cardTitle" text-anchor="middle">examples/*</text>
     <text x="861" y="730" class="detail" text-anchor="middle">scenarios</text></g><g><rect x="960" y="690" width="142" height="50" rx="8" class="card" fill="#fff" stroke="#b99de0"/>
@@ -69,6 +71,6 @@
     <text x="1031" y="730" class="detail" text-anchor="middle">evidence</text></g><g><rect x="1130" y="690" width="142" height="50" rx="8" class="card" fill="#fff" stroke="#b99de0"/>
     <text x="1201" y="718" class="cardTitle" text-anchor="middle">BOM</text>
     <text x="1201" y="730" class="detail" text-anchor="middle">evidence</text></g>
-  <rect x="110" y="786" width="1180" height="54" rx="16" fill="#f8fbff" stroke="#d4deeb" stroke-width="2"/>
+  <rect x="110" y="786" width="1180" height="54" rx="16" class="footerBar"/>
   <text x="700" y="810" class="footer" text-anchor="middle">Keep the core vocabulary stable; choose the lease store that matches the workload.</text><text x="700" y="832" class="footer" text-anchor="middle">github.com/bluetape4k/bluetape4k-leader</text>
   </svg>

@@ -37,18 +37,18 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 
 ## 현재 진행 상황
 
-기준 시점: 2026-07-28, stacked PR #267~#278
+기준 시점: 2026-07-28, stacked PR #267~#278와 Leader Part 1~3 로컬 완료분
 
 | 구분 | 완료 | 전체 | 남음 | 상태 |
 | --- | ---: | ---: | ---: | --- |
-| 한국어 블로그 본문 교정 | 29 | 87 | 58 | 진행 중 |
-| 기술 다이어그램 변경·배치 검증 | 44 | 165 | 121 | 진행 중 |
-| stacked PR | 12 | 미정 | 미정 | #267~#278 open |
-| 현재 배치 | 3 | 3 | 0 | Exposed Part 4~6 PR #278 |
+| 한국어 블로그 본문 교정 | 32 | 87 | 55 | 진행 중 |
+| 기술 다이어그램 변경·배치 검증 | 58 | 165 | 107 | 진행 중 |
+| stacked PR | 12 | 미정 | 미정 | #267~#278 open, Leader 배치 PR 준비 중 |
+| 현재 배치 | 3 | 3 | 0 | Leader Part 1~3 로컬 검증 완료 |
 | 최종 전체 사이트 감사 | 0 | 1 | 1 | 대기 |
 | 최종 머지·배포·정리 | 0 | 1 | 1 | 대기 |
 
-현재 완료된 한국어 글 29편:
+현재 완료된 한국어 글 32편:
 
 - AI 협업 글 2편
 - Bluetape4k 생태계·GraphDB 글 2편
@@ -58,6 +58,7 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 - Cache Part 1~4
 - Projects Part 1~6
 - Exposed Part 1~6
+- Leader Part 1~3
 
 Exposed Part 4~6 배치에서는 본문 3편과 기술 다이어그램 8종을 다시 검증했다.
 Part 4~5의 4종은 앞선 40개 집계에 이미 포함되어 중복 계산하지 않았고,
@@ -76,6 +77,22 @@ Part 6의 새 다이어그램 4종만 전체 완료 수에 더했다.
 | PNG 시각 검사 | PASS | KO/EN Part 5 차트와 Part 6 다이어그램 원본 크기 확인 |
 | 사이트 검사 | PASS | Node 테스트 21/21, Astro 0 errors, 1,303 pages build |
 | 경로 검사 | PASS | 변경된 한영 경로 6/6 HTTP 200 |
+
+현재 배치 필수 검사: **9/9 완료, N/A 0, Blocked 0**
+
+## Leader Part 1~3 배치 DoD
+
+| 검사 | 결과 | 근거 |
+| --- | --- | --- |
+| 글 교정 | PASS | 한국어 Part 1~3, frontmatter·본문·표·캡션·대체 텍스트 |
+| 날짜 보존 | PASS | 한영 `blog.date`와 `sidebar.order` 변경 없음 |
+| 사실 검증 | PASS | 현재 `bluetape4k-leader/develop`의 API·예제·README 대조 |
+| 소스 링크 | PASS | 한영 글의 로컬 원천 대상 91/91 존재 |
+| 한영 정합성 | PASS | 제목·주장·링크·다이어그램·시리즈 탐색 동기화 |
+| 다이어그램 정적 감사 | PASS | 텍스트 28/28, sequence 4/4, architecture 20/20 |
+| PNG 시각 검사 | PASS | 변경된 한영 14개 stem 원본 크기 확인 |
+| writer 체크리스트 | PASS | dotfiles `59efe31`, chezmoi apply·source/live·upstream 일치 |
+| 사이트 검사 | PASS | Node 테스트 21/21, Astro 0 errors, 전체 build, 한영 6개 경로 HTTP 200 |
 
 현재 배치 필수 검사: **9/9 완료, N/A 0, Blocked 0**
 

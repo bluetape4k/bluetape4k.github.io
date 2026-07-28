@@ -1,39 +1,38 @@
 ---
 title: "Bluetape4k Leader Part 1: 리더 선출의 기본 모델"
-description: bluetape4k-leader가 왜 별도 저장소로 분리됐는지, 어떤 실행 모델과 백엔드를 제공하는지, ShedLock과 어디가 다른지 정리합니다.
+description: bluetape4k-leader를 독립 저장소로 분리한 이유와 지원하는 실행 모델·백엔드, ShedLock과의 차이를 설명합니다.
 sidebar:
   order: -202605312130
 blog:
   date: 2026-05-31T21:30:00+09:00
   image: /assets/bluetape4k-leader-part1-hero.png
   imageAlt: 로봇 작업자들이 여러 서비스 노드 사이에서 하나의 리더를 선출하는 작업대 일러스트
-  cardDescription: "scheduled job, migration, poller, cache warmer가 모든 replica에서 동시에 실행되지 않게 하는 방법."
+  cardDescription: "스케줄 작업, 마이그레이션, 폴러, 캐시 워머가 모든 레플리카에서 중복 실행되지 않도록 제어하는 방법."
   tags: ["cache","kotlin","leader","persistence","migration"]
 ---
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/bluetape4k-leader-part1-hero.png" alt="로봇 작업자들이 여러 서비스 노드 사이에서 하나의 리더를 선출하는 작업대 일러스트" loading="eager" />
-  <figcaption>Replica는 많아도, 어떤 일은 한 번만 실행되어야 합니다. 안 그러면 운영팀이 두 번 웁니다.</figcaption>
+  <figcaption>레플리카 수와 관계없이 일부 작업은 한 번만 실행되어야 합니다.</figcaption>
 </figure>
 
-<p class="bt4k-post-meta">2026-05-31 · bluetape4k-leader series · Part 1</p>
+<p class="bt4k-post-meta">2026-05-31 · bluetape4k-leader 시리즈 · Part 1</p>
 
-이 글은 `bluetape4k-leader` 시리즈의 1편입니다. 전체 시리즈는 저장소의 큰 그림부터 시작해
-core API, multi-leader/전략 선출, Spring Boot/Ktor 통합, backend와 운영 기능으로 이어집니다.
+이 글은 `bluetape4k-leader` 시리즈의 첫 편입니다. 저장소의 전체 구조를 살펴본 뒤 핵심 API, 복수 리더와
+전략 선출, Spring Boot·Ktor 통합, 백엔드와 운영 기능을 차례로 다룹니다.
 
-분산 리더 선출은 이름만 보면 거창합니다. 운영에서는 꽤 생활형 문제입니다. 서버를 3대 띄웠는데
-야간 정산 job도 3번 돌고, schema migration도 3번 시도하고, webhook poller도 3개가 같은 이벤트를
-잡으려고 달려듭니다. 서비스가 수평 확장된 순간, "한 번만 해야 하는 일"은 자동으로 한 번만 되지
-않습니다. 어느 한 노드만 실행하도록 정해야 합니다.
+분산 리더 선출이 해결하는 문제는 구체적입니다. 서버를 3대로 늘리면 야간 정산 작업과 스키마 마이그레이션도
+3번 실행될 수 있고, 웹훅 폴러 3개가 같은 이벤트를 선점하려고 경쟁할 수 있습니다. 서비스를 수평 확장해도
+"한 번만 실행해야 하는 작업"이 자동으로 단일 실행되는 것은 아닙니다. 작업을 수행할 노드 하나를 정해야 합니다.
 
-`bluetape4k-leader`는 그 결정을 Kotlin/JVM 서비스 코드 어디서나 일관된 API로 다루게 해주는 독립 라이브러리입니다.
-Redis, Exposed JDBC/R2DBC, MongoDB, DynamoDB, etcd, Kubernetes Lease, Hazelcast, ZooKeeper 같은 backend를 제공하고,
-blocking, `CompletableFuture`, coroutine, virtual thread API를 나란히 제공합니다.
+`bluetape4k-leader`는 이러한 결정을 Kotlin/JVM 서비스에서 일관된 API로 처리하는 독립 라이브러리입니다.
+Redis, Exposed JDBC/R2DBC, MongoDB, DynamoDB, etcd, Kubernetes Lease, Hazelcast, ZooKeeper 백엔드를 지원하며,
+블로킹, `CompletableFuture`, 코루틴, 가상 스레드 API를 제공합니다.
 
-## 문제: replica는 여러 개인데 작업은 한 번만
+## 문제: 레플리카는 여러 개지만 작업은 한 번만
 
-가장 흔한 예는 scheduled job입니다. `@Scheduled`는 각 JVM에서 잘 동작합니다. 문제는 너무 잘 동작한다는 점입니다.
-pod가 3개면 tick도 3개입니다.
+대표적인 사례는 스케줄 작업입니다. `@Scheduled`는 각 JVM에서 독립적으로 실행되므로 Pod가 3개면 동일한
+스케줄 신호도 3번 처리됩니다.
 
 ```kotlin
 val result = leaderElector.runIfLeader("nightly-settlement") {
@@ -41,29 +40,29 @@ val result = leaderElector.runIfLeader("nightly-settlement") {
 }
 
 if (result == null) {
-    log.info { "다른 인스턴스가 실행 중이므로 skip" }
+    log.info { "다른 인스턴스가 실행 중이므로 건너뜁니다" }
 }
 ```
 
-핵심은 `null`입니다. 리더가 아니면 예외를 던지지 않고 건너뜁니다. ShedLock을 써 본 사람에게 익숙한
-"경합 시 건너뛰기" 동작입니다. 락 경합에서 밀린 것이지 실패가 아닙니다. 이런 경합을 전부 error log로 쌓으면 다음 진짜 장애 때
-신호가 노이즈 속에 묻힙니다.
+핵심은 `null` 반환입니다. 리더로 선출되지 않은 호출은 예외를 던지지 않고 작업을 건너뜁니다. ShedLock의
+"경합 시 건너뛰기"와 같은 동작입니다. 잠금 경합에서 밀린 호출은 실패가 아니므로 모두 오류 로그로 기록하면
+실제 장애 신호를 식별하기 어려워집니다.
 
 `runIfLeader`의 기본 계약은 단순합니다.
 
-- lock을 얻은 호출만 action을 실행합니다.
-- lock을 얻지 못하면 `null`을 반환합니다.
-- action이 예외를 던지면 호출자에게 전파합니다.
-- 실행이 끝나거나 lease가 끝나면 backend 정책에 따라 leadership을 해제하거나 만료시킵니다.
+- 잠금을 획득한 호출만 `action`을 실행합니다.
+- 잠금을 획득하지 못하면 `null`을 반환합니다.
+- `action`에서 발생한 예외는 호출자에게 전파합니다.
+- 실행이 끝나거나 리스가 만료되면 백엔드 정책에 따라 리더 권한을 해제하거나 만료 처리합니다.
 
-정확한 결과 구분이 필요하면 `LeaderRunResult`를 씁니다. action이 `null`을 반환할 수 있는 코드라면
-단순 `T?`로는 "락 미획득"과 "action이 null 반환"을 구분할 수 없습니다.
+실행 결과를 명시적으로 구분해야 한다면 `LeaderRunResult`를 사용합니다. `action`이 `null`을 반환할 수 있으면
+단순한 `T?`만으로는 "잠금 미획득"과 "`action`이 `null`을 반환한 경우"를 구분할 수 없습니다.
 
 ```kotlin
 when (val result = leaderElector.runIfLeaderResult("daily-job") { runJob() }) {
-    is LeaderRunResult.Elected -> log.info { "executed=${result.value}" }
-    LeaderRunResult.Skipped -> log.info { "another node is leader" }
-    is LeaderRunResult.ActionFailed -> log.warn(result.cause) { "leader action failed" }
+    is LeaderRunResult.Elected -> log.info { "실행 완료=${result.value}" }
+    LeaderRunResult.Skipped -> log.info { "다른 노드가 리더입니다" }
+    is LeaderRunResult.ActionFailed -> log.warn(result.cause) { "리더 작업 실패" }
 }
 ```
 
@@ -73,44 +72,43 @@ when (val result = leaderElector.runIfLeaderResult("daily-job") { runJob() }) {
 
 ## 저장소 구조
 
-`bluetape4k-leader`가 `bluetape4k-projects` 안에 머무르지 않고 독립 저장소가 된 이유는 다루는 범위가 넓기
-때문입니다. core API만 보면 단순하지만, 실제 운영에서는 backend 간 동작 일관성, lease semantics,
-Spring/Ktor 통합, metrics, examples, benchmark가 같이 따라옵니다.
+`bluetape4k-leader`를 `bluetape4k-projects`에서 독립 저장소로 분리한 이유는 관리 범위가 넓기 때문입니다.
+핵심 API 자체는 작지만 운영 환경에서는 백엔드 간 동작 일관성, 리스 의미론, Spring·Ktor 통합, 메트릭,
+예제, 벤치마크를 함께 관리해야 합니다.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-leader-overview-01-ko.png" alt="Bluetape4k Leader module map with BOM, core APIs, backend modules, integrations, examples, and preview backends" loading="lazy" />
-  <figcaption>core API는 작게 유지하고, backend와 framework integration은 독립 모듈로 분리합니다.</figcaption>
+<figure class="bt4k-architecture" data-diagram-title="모듈 구성과 지원 백엔드">
+  <img src="/assets/bluetape4k-leader-overview-01-ko.png" alt="BOM, 핵심 API, 백엔드 모듈, 프레임워크 통합, 예제, 프리뷰 백엔드로 구성된 Bluetape4k Leader 모듈 지도" loading="lazy" />
+  <figcaption>핵심 API는 작게 유지하고 백엔드와 프레임워크 통합은 독립 모듈로 분리합니다.</figcaption>
 </figure>
 
 | 영역 | 대표 모듈 | 읽어야 하는 순간 |
 |---|---|---|
-| Core API | `leader-core` | `LeaderElector`, `SuspendLeaderElector`, group election, result type을 파악할 때 |
-| Redis | `leader-redis-lettuce`, `leader-redis-redisson` | 가장 빠르게 분산 lock/lease를 붙이고 싶을 때 |
-| SQL/Coroutine | `leader-exposed-jdbc`, `leader-exposed-r2dbc` | 이미 RDB를 운영 중이고 row 기반 lease가 자연스러울 때 |
-| Infra-native | `leader-etcd`, `leader-k8s`, `leader-consul` | platform의 lease/session 기능을 직접 쓰고 싶을 때 |
-| Framework | `leader-spring-boot`, `leader-ktor`, `leader-micrometer` | annotation, scheduler, actuator/metrics와 연결할 때 |
-| Examples/Benchmark | `examples/*`, `benchmark` | 운영 시나리오와 backend 비용을 같이 볼 때 |
+| 핵심 API | `leader-core` | `LeaderElector`, `SuspendLeaderElector`, 그룹 선출, 결과 타입을 파악할 때 |
+| Redis | `leader-redis-lettuce`, `leader-redis-redisson` | Redis로 분산 잠금과 리스를 구성할 때 |
+| SQL·코루틴 | `leader-exposed-jdbc`, `leader-exposed-r2dbc` | 기존 관계형 데이터베이스에 행 기반 리스를 저장할 때 |
+| 인프라 네이티브 | `leader-etcd`, `leader-k8s`, `leader-consul` | 플랫폼의 리스·세션 기능을 직접 사용할 때 |
+| 프레임워크 | `leader-spring-boot`, `leader-ktor`, `leader-micrometer` | 애너테이션, 스케줄러, Actuator, 메트릭과 연동할 때 |
+| 예제·벤치마크 | `examples/*`, `benchmark` | 운영 시나리오와 백엔드 비용을 함께 비교할 때 |
 
-현재 README 기준으로 안정화된 backend에는 Redis Lettuce/Redisson, Exposed JDBC/R2DBC, MongoDB, Hazelcast,
-ZooKeeper가 있고, DynamoDB, etcd, Consul, Kubernetes Lease는 preview로 분류되어 있습니다.
+현재 README에서 Redis Lettuce/Redisson, Exposed JDBC/R2DBC, MongoDB, Hazelcast, ZooKeeper는 안정 백엔드로,
+DynamoDB, etcd, Consul, Kubernetes Lease는 프리뷰 백엔드로 분류합니다.
 
 ## 실행 모델이 중요한 이유
 
-ShedLock 스타일의 annotation과 "경합 시 건너뛰기"만 필요하면 선택지는 많습니다. `bluetape4k-leader`가 더 신경 쓰는
-부분은 "서비스 코드의 실행 모델을 억지로 바꾸지 않는 것"입니다.
+ShedLock 형태의 애너테이션과 "경합 시 건너뛰기"만 필요하다면 여러 선택지가 있습니다. `bluetape4k-leader`는
+서비스 코드가 리더 선출 때문에 기존 실행 모델을 바꾸지 않도록 각 실행 방식에 대응하는 API를 제공합니다.
 
-Kotlin 서비스에서는 같은 leader election이라도 호출 지점이 다릅니다.
+같은 리더 선출이라도 Kotlin/JVM 서비스의 호출 지점에 따라 실행 방식이 달라집니다.
 
 | 실행 모델 | API | 어울리는 코드 |
 |---|---|---|
-| Blocking | `LeaderElector` | 기존 MVC, batch, plain JVM job |
-| Async | `AsyncLeaderElector` | `CompletableFuture` 기반 adapter |
-| Coroutine | `SuspendLeaderElector` | suspend service, R2DBC, Ktor handler |
-| Virtual thread | `VirtualThreadLeaderElector` | Java 21 virtual-thread 실행 경계 |
+| 블로킹 | `LeaderElector` | 기존 MVC, 배치, 일반 JVM 작업 |
+| 비동기 | `AsyncLeaderElector` | `CompletableFuture` 기반 어댑터 |
+| 코루틴 | `SuspendLeaderElector` | `suspend` 서비스, R2DBC, Ktor 핸들러 |
+| 가상 스레드 | `VirtualThreadLeaderElector` | Java 21 가상 스레드 실행 경계 |
 
-Coroutine API는 action이 `suspend`입니다. 취소가 오면 `CancellationException`을 감추지 않고 다시 던져야
-합니다. 작은 구현 디테일처럼 보이지만 long-running worker에서는 생명줄입니다. 취소를 삼킨 리더는
-서비스가 종료 중인데도 일을 계속 붙잡고 있습니다.
+코루틴 API의 `action`은 `suspend` 함수입니다. 취소 요청을 받으면 `CancellationException`을 감추지 않고
+다시 던져야 합니다. 장기 실행 작업에서 취소 예외를 삼키면 서비스가 종료되는 동안에도 리더 작업이 계속 실행될 수 있습니다.
 
 ```kotlin
 val result = suspendLeaderElector.runIfLeader("tenant-aggregator") {
@@ -124,63 +122,68 @@ val result = suspendLeaderElector.runIfLeader("tenant-aggregator") {
 
 ## ShedLock과 비교하면
 
-ShedLock은 scheduled job 중복 실행을 막는 실전적인 도구입니다. `bluetape4k-leader`도 핵심 동작을 공유합니다.
-락을 못 얻으면 조용히 skip — 일부러 익숙하게 뒀습니다. 다만 목표가 "Spring scheduled method 보호"에서
-멈추지 않습니다.
+ShedLock은 스케줄 작업의 중복 실행을 막는 도구입니다. `bluetape4k-leader`도 잠금을 획득하지 못하면 작업을
+건너뛰는 핵심 동작을 공유합니다. 그러나 지원 범위는 Spring 스케줄 메서드 보호에 한정되지 않습니다.
 
 | 항목 | ShedLock 방식 | bluetape4k-leader 방식 |
 |---|---|---|
-| 경합 처리 | lock 미획득 시 skip | `runIfLeader`가 `null`, result API는 `Skipped` |
-| Spring annotation | 주 사용 경로 | 지원하지만 core API와 분리 |
-| Coroutine | 별도 적응 필요 | `SuspendLeaderElector` 제공 |
-| Async | 제한적/adapter 필요 | `AsyncLeaderElector` 제공 |
-| Virtual thread | 일반 blocking 코드로 가능 | 별도 virtual-thread elector 계층 제공 |
-| Multi-leader | 주 목적 아님 | `LeaderGroupElector`로 N개 동시 리더 |
-| Strategy election | 주 목적 아님 | FIFO, random, scored, weighted 전략 선출 |
-| Backend 폭 | 여러 lock provider | Redis, SQL/R2DBC, MongoDB, DynamoDB, etcd, Kubernetes, Hazelcast, ZooKeeper |
+| 경합 처리 | 잠금 미획득 시 건너뜀 | `runIfLeader`는 `null`, 결과 API는 `Skipped` 반환 |
+| Spring 애너테이션 | 주 사용 경로 | 지원하지만 핵심 API와 분리 |
+| 코루틴 | 별도 어댑터 필요 | `SuspendLeaderElector` 제공 |
+| 비동기 | 별도 어댑터 필요 | `AsyncLeaderElector` 제공 |
+| 가상 스레드 | 일반 블로킹 코드로 사용 | 전용 `VirtualThreadLeaderElector` 제공 |
+| 복수 리더 | 주 목적 아님 | `LeaderGroupElector`로 N개 동시 리더 허용 |
+| 전략 선출 | 주 목적 아님 | FIFO, 무작위, 점수, 가중치 기반 선출 |
+| 지원 백엔드 | 여러 잠금 공급자 | Redis, SQL/R2DBC, MongoDB, DynamoDB, etcd, Kubernetes, Hazelcast, ZooKeeper |
 
-"Spring scheduled job 하나만 막으면 된다"면 ShedLock과 문제의식이 거의 겹칩니다. coroutine worker,
-테넌트별 poller, N개 슬롯을 나눠 쓰는 작업, Kubernetes Lease 기반 operator, Ktor scheduler까지 한 가지
-API로 묶고 싶을 때 `bluetape4k-leader`가 더 넓게 커버합니다.
+Spring 스케줄 메서드 하나의 중복 실행만 막는다면 ShedLock과 해결 범위가 겹칩니다. 코루틴 작업자,
+테넌트별 폴러, N개 슬롯을 공유하는 작업, Kubernetes Lease 기반 오퍼레이터, Ktor 스케줄러까지 하나의
+API로 다뤄야 한다면 `bluetape4k-leader`가 더 넓은 실행 모델을 제공합니다.
 
 ## 예제에서 보는 실제 사용처
 
-예제 6개는 각각 하나의 운영 실패 시나리오를 다룹니다. "이 라이브러리가 왜 필요한가"를 코드로 보여줍니다.
+다음 6개 예제는 각각 하나의 운영 실패 시나리오와 이를 방지하는 실행 경계를 보여줍니다.
 
-**Batch Scheduler** — 야간 정산 job이 replica 수만큼 실행되는 문제. Lettuce Redis lock으로 한 노드만 실행합니다.
+**배치 스케줄러** — 야간 정산 작업이 레플리카 수만큼 실행되는 문제를 다룹니다. Lettuce Redis 잠금으로
+한 노드만 작업을 수행합니다.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/examples-batch-scheduler-architecture-01-ko.png" alt="Batch Scheduler Architecture: three scheduler instances share one Redis leader lock" loading="lazy" />
+<figure class="bt4k-architecture" data-diagram-title="배치 스케줄러의 단일 실행 경계">
+  <img src="/assets/examples-batch-scheduler-architecture-01-ko.png" alt="스케줄러 인스턴스 3개가 하나의 Redis 리더 잠금을 공유하는 배치 스케줄러 구조" loading="lazy" />
 </figure>
 
-**Migration Gate** — 부팅 시 schema migration을 여러 pod가 동시에 시도하는 문제. Exposed JDBC lock으로 한 pod만 실행하고, 나머지는 완료 여부를 확인합니다.
+**마이그레이션 게이트** — 여러 Pod가 시작할 때 스키마 마이그레이션을 동시에 시도하는 문제를 다룹니다.
+Exposed JDBC 잠금으로 한 Pod만 마이그레이션을 실행하고 나머지는 완료 여부를 확인합니다.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/examples-migration-gate-architecture-01-ko.png" alt="Migration Gate Architecture: rolling deploy pods check migration markers before and after the Exposed JDBC leader lock" loading="lazy" />
+<figure class="bt4k-architecture" data-diagram-title="스키마 마이그레이션 게이트">
+  <img src="/assets/examples-migration-gate-architecture-01-ko.png" alt="롤링 배포 중인 Pod가 Exposed JDBC 리더 잠금 전후로 마이그레이션 완료 표식을 확인하는 구조" loading="lazy" />
 </figure>
 
-**Webhook Poller** — 여러 poller가 같은 webhook event를 중복 claim하는 문제. MongoDB 기반 `SuspendLeaderElector`로 한 poller만 event를 가져가게 합니다.
+**웹훅 폴러** — 여러 폴러가 같은 웹훅 이벤트를 중복 선점하는 문제를 다룹니다. MongoDB 기반
+`SuspendLeaderElector`로 한 폴러만 이벤트를 가져가게 합니다.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/examples-webhook-poller-architecture-01-ko.png" alt="Webhook Poller Architecture: one elected poller claims MongoDB events atomically" loading="lazy" />
+<figure class="bt4k-architecture" data-diagram-title="웹훅 폴러의 단일 이벤트 선점">
+  <img src="/assets/examples-webhook-poller-architecture-01-ko.png" alt="선출된 폴러 하나가 MongoDB 이벤트를 원자적으로 선점하는 웹훅 폴러 구조" loading="lazy" />
 </figure>
 
-**Cache Warmer** — 파티션별 cache warming이 여러 노드에서 중복 실행되는 문제. 파티션마다 독립 lock을 두어 분산 warming을 안전하게 합니다.
+**캐시 워머** — 파티션별 캐시 워밍이 여러 노드에서 중복 실행되는 문제를 다룹니다. 파티션마다 독립된 잠금을
+사용해 캐시 워밍을 분산 실행합니다.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/examples-cache-warmer-architecture-01-ko.png" alt="Cache Warmer Architecture: every cache partition gets its own leader lock" loading="lazy" />
+<figure class="bt4k-architecture" data-diagram-title="파티션별 캐시 워밍">
+  <img src="/assets/examples-cache-warmer-architecture-01-ko.png" alt="각 캐시 파티션이 독립된 리더 잠금을 사용하는 캐시 워머 구조" loading="lazy" />
 </figure>
 
-**Tenant Aggregator** — 테넌트별 coroutine polling이 여러 노드에서 동시에 도는 문제. `forTenant()`로 테넌트별 독립 lock을 만들고 `SuspendLeaderElector`로 실행을 제어합니다.
+**테넌트 집계기** — 테넌트별 코루틴 폴링이 여러 노드에서 동시에 실행되는 문제를 다룹니다.
+`lockNamePrefix`와 테넌트 ID로 독립된 잠금 이름을 만들고 `SuspendLeaderElector`로 실행을 제어합니다.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/examples-tenant-aggregator-architecture-01-ko.png" alt="Tenant Aggregator Architecture: each tenant has a long-running coroutine and an independent leader lock" loading="lazy" />
+<figure class="bt4k-architecture" data-diagram-title="테넌트별 코루틴 집계">
+  <img src="/assets/examples-tenant-aggregator-architecture-01-ko.png" alt="각 테넌트가 장기 실행 코루틴과 독립된 리더 잠금을 사용하는 테넌트 집계 구조" loading="lazy" />
 </figure>
 
-**K8s Operator** — operator replica 여러 개가 같은 reconcile loop를 동시에 실행하는 문제. Kubernetes Lease API를 직접 쓰는 `KubernetesLeaseLeaderElector`로 제어합니다.
+**Kubernetes 오퍼레이터** — 여러 오퍼레이터 레플리카가 같은 `reconcile` 루프를 동시에 실행하는 문제를
+다룹니다. Kubernetes Lease API를 직접 사용하는 `KubernetesLeaseLeaderElector`로 실행을 제어합니다.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/examples-k8s-operator-architecture-01-ko.png" alt="K8s Operator Architecture: three Spring Boot operator pods share one Kubernetes Lease before reconciling" loading="lazy" />
+<figure class="bt4k-architecture" data-diagram-title="Kubernetes 오퍼레이터 리더 선출">
+  <img src="/assets/examples-k8s-operator-architecture-01-ko.png" alt="Spring Boot 오퍼레이터 Pod 3개가 reconcile 작업 전에 하나의 Kubernetes Lease를 공유하는 구조" loading="lazy" />
 </figure>
 
 관련 소스:
@@ -190,36 +193,36 @@ API로 묶고 싶을 때 `bluetape4k-leader`가 더 넓게 커버합니다.
 
 ## 선택 기준
 
-처음부터 모든 backend를 비교하면 금방 지칩니다. Part 5에서 자세히 다루고, 여기서는 첫 선택 기준만 잡습니다.
+백엔드 선택에는 운영 중인 인프라와 작업의 동시 실행 한도를 먼저 반영해야 합니다. 자세한 비교는 Part 5에서 다루며,
+여기서는 초기 선택 기준을 정리합니다.
 
-- Redis를 이미 운영하고 있으면 Lettuce/Redisson이 가장 빠른 시작점입니다.
+- Redis를 이미 운영하고 있다면 Lettuce나 Redisson으로 시작할 수 있습니다.
 - RDB만 있는 서비스라면 Exposed JDBC/R2DBC가 운영 부담을 줄입니다.
-- Kubernetes operator나 platform-native controller라면 Kubernetes Lease가 자연스럽습니다.
-- etcd/Consul/ZooKeeper를 이미 control plane으로 쓰고 있다면 해당 session/lease 모델을 검토할 만합니다.
-- 같은 작업을 N개까지 허용해야 하면 단일 leader가 아니라 `LeaderGroupElector`를 봅니다.
-- "가장 오래 쉰 노드", "가중치가 높은 후보"처럼 선택 규칙이 필요하면 strategic election을 봅니다.
+- Kubernetes 오퍼레이터나 플랫폼 네이티브 컨트롤러라면 Kubernetes Lease를 검토합니다.
+- etcd, Consul, ZooKeeper를 이미 컨트롤 플레인으로 사용한다면 해당 세션·리스 모델을 활용할 수 있습니다.
+- 같은 작업을 최대 N개 노드에서 실행해야 한다면 단일 리더 대신 `LeaderGroupElector`를 사용합니다.
+- 가장 오래 유휴 상태였던 노드나 가중치가 높은 후보를 선출해야 한다면 전략 선출을 사용합니다.
 
 ## 참고 링크
 
-- Repository: [bluetape4k-leader](https://github.com/bluetape4k/bluetape4k-leader)
-- README: [README.md](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/README.md)
-- Korean README: [README.ko.md](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/README.ko.md)
-- BOM README: [bluetape4k-leader-bom/README.md](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/bluetape4k-leader-bom/README.md)
+- 저장소: [bluetape4k-leader](https://github.com/bluetape4k/bluetape4k-leader)
+- 영문 안내서: [README.md](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/README.md)
+- 한국어 안내서: [README.ko.md](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/README.ko.md)
+- BOM 안내서: [bluetape4k-leader-bom/README.md](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/bluetape4k-leader-bom/README.md)
 
 ## 마무리
 
-리더 선출은 "분산 시스템" 이론보다 "한 번만 해야 하는 일을 진짜 한 번만 실행하기" 쪽에 가깝습니다.
-scheduled job, migration, poller, cache warmer, operator reconcile loop가 모두 같은 질문을 던집니다.
-지금 이 replica가 실행해도 되는가?
+리더 선출의 목적은 한 번만 실행해야 하는 작업을 실제로 단일 실행하는 데 있습니다. 스케줄 작업, 마이그레이션,
+폴러, 캐시 워머, 오퍼레이터의 `reconcile` 루프는 모두 현재 레플리카가 작업을 실행해도 되는지 판단해야 합니다.
 
-`bluetape4k-leader`는 그 질문에 backend마다 다른 API가 아니라 공통 실행 모델로 답합니다. Part 2에서는
-`LeaderElector`, `SuspendLeaderElector`, `LeaderElectionOptions`, `LeaderRunResult`를 직접 봅니다.
-중요한 구분은 "어느 노드가 실행했는가"와 "나머지 노드는 무엇을 했는가"입니다.
+`bluetape4k-leader`는 백엔드별 API 대신 공통 실행 모델로 이 판단을 처리합니다. Part 2에서는
+`LeaderElector`, `SuspendLeaderElector`, `LeaderElectionOptions`, `LeaderRunResult`의 계약을 살펴봅니다.
+핵심은 작업을 실행한 노드와 경합에서 건너뛴 노드의 결과를 구분하는 것입니다.
 
 ## 시리즈 링크
 
 - [Part 1: 리더 선출의 기본 모델](/ko/blog/bluetape4k-leader-part1-overview/)
-- [Part 2: Core API와 실행 모델](/ko/blog/bluetape4k-leader-part2-core-apis/)
-- [Part 3: Multi-leader와 전략 선출](/ko/blog/bluetape4k-leader-part3-group-strategic-election/)
+- [Part 2: 핵심 API와 실행 모델](/ko/blog/bluetape4k-leader-part2-core-apis/)
+- [Part 3: 복수 리더와 전략 선출](/ko/blog/bluetape4k-leader-part3-group-strategic-election/)
 - [Part 4: Spring Boot와 Ktor 통합](/ko/blog/bluetape4k-leader-part4-spring-ktor-management/)
-- [Part 5: Backend, 운영 기능, Benchmark](/ko/blog/bluetape4k-leader-part5-backends-operations-benchmarks/)
+- [Part 5: 백엔드, 운영 기능, 벤치마크](/ko/blog/bluetape4k-leader-part5-backends-operations-benchmarks/)

@@ -79,7 +79,7 @@ Source:
 The core API is compact, but production use brings backend parity, lease semantics, Spring/Ktor
 integration, metrics, examples, and benchmarks.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Module boundaries and supported backends">
   <img src="/assets/bluetape4k-leader-overview-01-en.png" alt="Bluetape4k Leader module map with BOM, core APIs, backend modules, integrations, examples, and preview backends" loading="lazy" />
   <figcaption>The core API stays small while backends and framework integrations live in separate modules.</figcaption>
 </figure>
@@ -154,42 +154,43 @@ what the library actually protects against.
 **Batch Scheduler** — A nightly settlement job running once per replica instead of once per cluster.
 A Lettuce Redis lock lets only one node execute.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Single-execution boundary for batch scheduling">
   <img src="/assets/examples-batch-scheduler-architecture-01-en.png" alt="Batch Scheduler Architecture: three scheduler instances share one Redis leader lock" loading="lazy" />
 </figure>
 
 **Migration Gate** — Multiple pods attempting boot-time schema migration simultaneously during a rolling
 deploy. An Exposed JDBC lock serializes the migration; others wait and confirm completion.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Schema migration gate">
   <img src="/assets/examples-migration-gate-architecture-01-en.png" alt="Migration Gate Architecture: rolling deploy pods check migration markers before and after the Exposed JDBC leader lock" loading="lazy" />
 </figure>
 
 **Webhook Poller** — Several pollers claiming the same webhook event. A MongoDB-backed
 `SuspendLeaderElector` ensures only one poller picks up each event.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Single-event claim for webhook polling">
   <img src="/assets/examples-webhook-poller-architecture-01-en.png" alt="Webhook Poller Architecture: one elected poller claims MongoDB events atomically" loading="lazy" />
 </figure>
 
 **Cache Warmer** — Per-partition cache warming running on multiple nodes at once. Each partition gets
 its own leader lock so warming is distributed safely.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Per-partition cache warming">
   <img src="/assets/examples-cache-warmer-architecture-01-en.png" alt="Cache Warmer Architecture: every cache partition gets its own leader lock" loading="lazy" />
 </figure>
 
 **Tenant Aggregator** — Per-tenant coroutine polling loops running on multiple nodes simultaneously.
-`forTenant()` creates an independent lock per tenant; `SuspendLeaderElector` controls execution.
+`lockNamePrefix` and the tenant ID form an independent lock name for each tenant;
+`SuspendLeaderElector` controls execution.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Per-tenant coroutine aggregation">
   <img src="/assets/examples-tenant-aggregator-architecture-01-en.png" alt="Tenant Aggregator Architecture: each tenant has a long-running coroutine and an independent leader lock" loading="lazy" />
 </figure>
 
 **K8s Operator** — Several operator replicas running the same reconcile loop. A
 `KubernetesLeaseLeaderElector` uses the Kubernetes Lease API directly to elect one active reconciler.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Kubernetes operator leader election">
   <img src="/assets/examples-k8s-operator-architecture-01-en.png" alt="K8s Operator Architecture: three Spring Boot operator pods share one Kubernetes Lease before reconciling" loading="lazy" />
 </figure>
 

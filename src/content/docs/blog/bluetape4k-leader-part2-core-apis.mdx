@@ -152,8 +152,8 @@ val cf: CompletableFuture<String?> = future.toCompletableFuture()
 `VirtualFuture.await()` parks the calling virtual thread without blocking a platform thread. Use
 `toCompletableFuture()` when the result needs to integrate with an existing Java async pipeline.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-leader-runifleader-sequence-01-en.png" alt="runIfLeader success and skip sequence diagram" loading="lazy" />
+<figure class="bt4k-sequence">
+  <img src="/assets/bluetape4k-leader-runifleader-sequence-01-en.png" alt="runIfLeader success and skip sequence diagram" loading="lazy" data-diagram-title="runIfLeader execution and skip flow" />
   <figcaption>Leader acquired: action runs and result is returned. Lock contention: null is returned without an error.</figcaption>
 </figure>
 
@@ -170,7 +170,7 @@ execution models.
 | Property | Default | Meaning |
 |---|---|---|
 | `waitTime` | 5s | How long to wait attempting to acquire the lock before giving up |
-| `leaseTime` | 60s | How long the lock is held after the action completes |
+| `leaseTime` | 60s | Lease TTL for holding leadership |
 | `nodeId` | JVM process id | Stable identifier for the node holding the lock |
 | `minLeaseTime` | 0s | Minimum time the lock is held even if action completes early |
 | `autoExtend` | `false` | Automatically extend the lease while a long-running action is executing |
@@ -187,13 +187,13 @@ val options = LeaderElectionOptions(
 ```
 
 **`waitTime` vs `leaseTime`** — `waitTime` controls acquisition. If the lock is held by another node and
-`waitTime` expires, `runIfLeader` returns `null`. `leaseTime` controls how long the lock persists in the
-backend store after the action finishes. It prevents a dead node from blocking others indefinitely if it
-never released the lock.
+`waitTime` expires, `runIfLeader` returns `null`. `leaseTime` is the TTL of each leadership lease. If a
+node dies without releasing the lock, lease expiry eventually allows another node to acquire it. With
+`autoExtend = true`, supported single-leader backends renew that lease while the action is still running.
 
 **`minLeaseTime`** — guarantees the lock is held for at least N seconds even when the action completes
-in milliseconds. The backend enforces this via TTL. The calling thread is not parked for that duration;
-the lock simply remains visible to competing nodes in the store.
+in milliseconds. Local electors wait before releasing; supported distributed backends delegate the
+remaining minimum lease to storage TTL so the caller can return immediately.
 
 **`autoExtend`** — relevant for actions that run longer than `leaseTime`. When `true`, a background
 mechanism renews the lease at intervals while the action is running. Use this for long batch jobs where
