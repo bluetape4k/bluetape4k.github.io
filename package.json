@@ -9,9 +9,11 @@
     "build": "node scripts/draft-mode.mjs clean && astro check && astro build",
     "build:draft": "node scripts/draft-mode.mjs sync && astro check && astro build",
     "build:publish": "node scripts/draft-mode.mjs clean && astro check && astro build",
-    "test": "node --test tests/manual/*.test.mjs tests/ecosystem/*.test.mjs",
+    "test": "node --test tests/manual/*.test.mjs tests/ecosystem/*.test.mjs tests/visual-companions/*.test.mjs",
     "sync:manual": "node scripts/manual/sync-manual.mjs",
     "check:manual": "node scripts/manual/validate-snapshot.mjs",
+    "sync:visual-companions": "node scripts/visual-companions/sync.mjs",
+    "check:visual-companions": "node scripts/visual-companions/validate-snapshot.mjs",
     "preview": "astro preview",
     "preview:draft": "npm run build:draft && astro preview"
   },

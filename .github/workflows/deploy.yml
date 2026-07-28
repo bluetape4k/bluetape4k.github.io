@@ -32,6 +32,8 @@ jobs:
         run: npm test
       - name: Validate manual snapshot
         run: npm run check:manual -- --report "$RUNNER_TEMP/manual-validation.json"
+      - name: Validate visual companion snapshot
+        run: npm run check:visual-companions
       - name: Build site
         run: npm run build
       - name: Publish manual validation summary
