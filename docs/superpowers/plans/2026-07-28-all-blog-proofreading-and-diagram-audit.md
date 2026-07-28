@@ -38,14 +38,14 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 
 ## 현재 진행 상황
 
-기준 시점: 2026-07-28, stacked PR #267~#282
+기준 시점: 2026-07-28, stacked PR #267~#283
 
 | 구분 | 완료 | 전체 | 남음 | 상태 |
 | --- | ---: | ---: | ---: | --- |
 | 한국어 블로그 본문 교정 | 42 | 87 | 45 | 진행 중 |
 | 기술 다이어그램 변경·배치 검증 | 82 | 165 | 83 | 진행 중 |
-| stacked PR | 16 | 미정 | 미정 | #267~#282 open |
-| 현재 배치 | 3 | 3 | 0 | JaVers Part 1~3 로컬 검증 완료 |
+| stacked PR | 17 | 미정 | 미정 | #267~#283 open |
+| 현재 배치 | 3 | 3 | 0 | JaVers Part 1~3 PR #283 |
 | 최종 전체 사이트 감사 | 0 | 1 | 1 | 대기 |
 | 최종 머지·배포·정리 | 0 | 1 | 1 | 대기 |
 
@@ -112,9 +112,9 @@ Part 6의 새 다이어그램 4종만 전체 완료 수에 더했다.
 | 다이어그램 구조·PNG 검사 | PASS | 8개 stem, 연결선 78개, 14×14 marker, 2배 PNG 16개 원본 확인 |
 | writer 체크리스트 | PASS | dotfiles `fb20568`, chezmoi apply·source/live·upstream 일치 |
 | 사이트 검사 | PASS | Node 테스트 35/35, Astro 오류·경고 0, 1,303 pages build, 한영 6개 경로 HTTP 200 |
-| stacked PR | PENDING | branch `docs/korean-proofreading-javers-core-batch` |
+| stacked PR | PASS | #283, base `docs/korean-proofreading-aws-integrations-batch`, head `docs/korean-proofreading-javers-core-batch` |
 
-현재 배치 필수 검사: **9/10 완료, N/A 0, Blocked 0**
+현재 배치 필수 검사: **10/10 완료, N/A 0, Blocked 0**
 
 ## AWS Part 1~3 배치 DoD
 
