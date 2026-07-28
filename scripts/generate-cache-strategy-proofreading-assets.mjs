@@ -171,28 +171,28 @@ writePair("cache-series-exposed-strategies-01", (locale) => {
   const ko = locale === "ko";
   const title = ko ? "JdbcCacheRepository 캐시 전략 지도" : "JdbcCacheRepository Cache Strategy Map";
   const desc = ko
-    ? "Redisson map loader는 read-through를, map writer는 write-through/write-behind를 담당합니다."
+    ? "Redisson 맵 로더는 read-through를, 맵 라이터는 write-through와 write-behind를 담당합니다."
     : "Redisson map loader handles read-through; map writer handles write-through or write-behind.";
   return `${svgStart({ width: 1600, height: 1000, title, desc, locale })}
-${lane(72, 172, 1456, 690, ko ? "Repository 호출은 같지만 loader/writer 계약이 동작을 바꿉니다" : "The repository call shape stays stable; loader and writer contracts change behavior")}
+${lane(72, 172, 1456, 690, ko ? "저장소 호출은 같지만 로더와 라이터 계약이 동작을 바꿉니다" : "The repository call shape stays stable; loader and writer contracts change behavior")}
 ${rect(110, 400, 296, 132, "blue", "JdbcCacheRepository", ["get · getAll", "put · putAll", "invalidate · clear"], locale, { monoTitle: true, monoBody: true })}
-${rect(548, 360, 350, 164, "green", ["RMap", "RLocalCachedMap"], [ko ? "loader + optional writer" : "loader + optional writer", ko ? "Near Cache 활성화 가능" : "Near Cache when enabled"], locale, { monoTitle: true, monoBody: true })}
-${rect(1000, 242, 300, 124, "cyan", "EntityMapLoader", ["ExposedEntityMapLoader", ko ? "cache miss -> DB read" : "cache miss -> DB read"], locale, { monoTitle: true, monoBody: true })}
-${rect(1000, 574, 300, 124, "amber", "EntityMapWriter", ["ExposedEntityMapWriter", ko ? "put / putAll -> DB write" : "put / putAll -> DB write"], locale, { monoTitle: true, monoBody: true })}
-${rect(1304, 392, 204, 168, "purple", "Exposed DB", ["IdTable", ko ? "transaction boundary" : "transaction boundary"], locale, { monoTitle: true, monoBody: true })}
-${rect(128, 696, 308, 104, "slate", "READ_ONLY", ["UserCredentials", "WITH_NEAR_CACHE · loader only"], locale, { monoTitle: true, monoBody: true })}
-${rect(520, 696, 368, 104, "blue", "READ_WRITE_THROUGH", ["User", "WITH_NEAR_CACHE · loader + writer"], locale, { monoTitle: true, monoBody: true })}
-${rect(958, 758, 358, 104, "red", "WRITE_BEHIND", ["UserEvent", "WITH_NEAR_CACHE · async flush"], locale, { monoTitle: true, monoBody: true })}
+${rect(548, 360, 350, 164, "green", ["RMap", "RLocalCachedMap"], [ko ? "로더 + 선택적 라이터" : "loader + optional writer", ko ? "Near Cache 활성화 가능" : "Near Cache when enabled"], locale, { monoTitle: true, monoBody: true })}
+${rect(1000, 242, 300, 124, "cyan", "EntityMapLoader", ["ExposedEntityMapLoader", ko ? "캐시 미스 -> DB 읽기" : "cache miss -> DB read"], locale, { monoTitle: true, monoBody: true })}
+${rect(1000, 574, 300, 124, "amber", "EntityMapWriter", ["ExposedEntityMapWriter", ko ? "put / putAll -> DB 쓰기" : "put / putAll -> DB write"], locale, { monoTitle: true, monoBody: true })}
+${rect(1304, 392, 204, 168, "purple", "Exposed DB", ["IdTable", ko ? "트랜잭션 경계" : "transaction boundary"], locale, { monoTitle: true, monoBody: true })}
+${rect(128, 696, 308, 104, "slate", "READ_ONLY", ["UserCredentials", ko ? "WITH_NEAR_CACHE · 로더 전용" : "WITH_NEAR_CACHE · loader only"], locale, { monoTitle: true, monoBody: true })}
+${rect(520, 696, 368, 104, "blue", "READ_WRITE_THROUGH", ["User", ko ? "WITH_NEAR_CACHE · 로더 + 라이터" : "WITH_NEAR_CACHE · loader + writer"], locale, { monoTitle: true, monoBody: true })}
+${rect(958, 758, 358, 104, "red", "WRITE_BEHIND", ["UserEvent", ko ? "WITH_NEAR_CACHE · 비동기 반영" : "WITH_NEAR_CACHE · async flush"], locale, { monoTitle: true, monoBody: true })}
 ${line("M406 464 H548", "line-blue", "get / put", 478, 444, 86, "repository-to-map")}
-${line("M548 492 H406", "line-green", "cache hit", 478, 518, 84, "map-to-repository-hit")}
-${line("M898 412 H940 Q960 412 960 392 V304 Q960 284 980 284 H1000", "line-blue", "cache miss", 952, 270, 104, "map-to-loader")}
+${line("M548 492 H406", "line-green", ko ? "캐시 히트" : "cache hit", 478, 518, 84, "map-to-repository-hit")}
+${line("M898 412 H940 Q960 412 960 392 V304 Q960 284 980 284 H1000", "line-blue", ko ? "캐시 미스" : "cache miss", 952, 270, 104, "map-to-loader")}
 ${line("M1300 304 H1366 Q1386 304 1386 324 V392", "line-cyan", ko ? "DB에서 읽기" : "read from DB", 1394, 354, 110, "loader-to-db")}
 ${line("M898 472 H942 Q962 472 962 492 V636 Q962 656 982 656 H1000", "line-amber", "put / putAll", 962, 552, 108, "map-to-writer")}
-${line("M1300 636 H1366 Q1386 636 1386 616 V560", "line-amber", ko ? "즉시 쓰기 / async" : "write now / async", 1398, 598, 136, "writer-to-db")}
-${line("M282 696 V552 Q282 532 302 532 H588 Q608 532 608 524", "dash-green", "loader only", 448, 680, 98, "readonly-to-map")}
-${line("M704 696 V524", "dash-blue", "loader + writer", 780, 680, 128, "readwrite-to-map")}
-${line("M1137 758 V698", "dash-purple", "write-behind queue", 1224, 742, 158, "writebehind-to-writer")}
-<text x="800" y="924" text-anchor="middle" class="small">${esc(ko ? "핵심: 캐시는 빠른 Map이 아니라 read/write 실패 정책을 가진 repository 계약입니다." : "Key point: cache is not just a fast Map; it is a repository contract with read/write failure policy.")}</text>
+${line("M1300 636 H1366 Q1386 636 1386 616 V560", "line-amber", ko ? "즉시 쓰기 / 비동기" : "write now / async", 1398, 598, 136, "writer-to-db")}
+${line("M282 696 V572 Q282 552 302 552 H588 Q608 552 608 532 V524", "dash-green", ko ? "로더 전용" : "loader only", 448, 680, 98, "readonly-to-map")}
+${line("M704 696 V524", "dash-blue", ko ? "로더 + 라이터" : "loader + writer", 780, 680, 128, "readwrite-to-map")}
+${line("M1137 758 V698", "dash-purple", ko ? "지연 쓰기 큐" : "write-behind queue", 1224, 742, 158, "writebehind-to-writer")}
+<text x="800" y="924" text-anchor="middle" class="small">${esc(ko ? "핵심: 캐시는 단순히 빠른 맵이 아니라 읽기/쓰기 실패 정책을 가진 저장소 계약입니다." : "Key point: cache is not just a fast Map; it is a repository contract with read/write failure policy.")}</text>
 </svg>`;
 });
 

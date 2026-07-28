@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
 <title id="title">JdbcCacheRepository 캐시 전략 지도</title>
-<desc id="desc">Redisson map loader는 read-through를, map writer는 write-through/write-behind를 담당합니다.</desc>
+<desc id="desc">Redisson 맵 로더는 read-through를, 맵 라이터는 write-through와 write-behind를 담당합니다.</desc>
 <defs>
   <filter id="shadow" x="-10%" y="-10%" width="120%" height="125%"><feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#020617" flood-opacity="0.35"/></filter>
 
@@ -39,10 +39,10 @@
 <rect width="1600" height="1000" fill="#0b1220"/>
 <rect x="34" y="30" width="1532" height="940" rx="28" class="panel"/>
 <text x="70" y="86" class="title">JdbcCacheRepository 캐시 전략 지도</text>
-<text x="72" y="122" class="subtitle">Redisson map loader는 read-through를, map writer는 write-through/write-behind를 담당합니다.</text>
+<text x="72" y="122" class="subtitle">Redisson 맵 로더는 read-through를, 맵 라이터는 write-through와 write-behind를 담당합니다.</text>
 <g>
   <rect x="72" y="172" width="1456" height="690" rx="24" fill="#172033" stroke="#26364f" stroke-width="2"/>
-  <text x="96" y="210" class="lane-title">Repository 호출은 같지만 loader/writer 계약이 동작을 바꿉니다</text>
+  <text x="96" y="210" class="lane-title">저장소 호출은 같지만 로더와 라이터 계약이 동작을 바꿉니다</text>
 </g>
 <g>
   <rect x="110" y="400" width="296" height="132" rx="18" fill="#172554" stroke="#60a5fa" class="card"/>
@@ -55,53 +55,53 @@
   <rect x="548" y="360" width="350" height="164" rx="18" fill="#14351f" stroke="#86efac" class="card"/>
   <text x="723" y="400" text-anchor="middle" dominant-baseline="middle" class="mono">RMap</text>
 <text x="723" y="428" text-anchor="middle" dominant-baseline="middle" class="mono">RLocalCachedMap</text>
-<text x="723" y="462" text-anchor="middle" dominant-baseline="middle" class="mono">loader + optional writer</text>
+<text x="723" y="462" text-anchor="middle" dominant-baseline="middle" class="mono">로더 + 선택적 라이터</text>
 <text x="723" y="484" text-anchor="middle" dominant-baseline="middle" class="mono">Near Cache 활성화 가능</text>
 </g>
 <g>
   <rect x="1000" y="242" width="300" height="124" rx="18" fill="#12333b" stroke="#67e8f9" class="card"/>
   <text x="1150" y="276" text-anchor="middle" dominant-baseline="middle" class="mono">EntityMapLoader</text>
 <text x="1150" y="310" text-anchor="middle" dominant-baseline="middle" class="mono">ExposedEntityMapLoader</text>
-<text x="1150" y="332" text-anchor="middle" dominant-baseline="middle" class="mono">cache miss -&gt; DB read</text>
+<text x="1150" y="332" text-anchor="middle" dominant-baseline="middle" class="mono">캐시 미스 -&gt; DB 읽기</text>
 </g>
 <g>
   <rect x="1000" y="574" width="300" height="124" rx="18" fill="#3b2a08" stroke="#fbbf24" class="card"/>
   <text x="1150" y="608" text-anchor="middle" dominant-baseline="middle" class="mono">EntityMapWriter</text>
 <text x="1150" y="642" text-anchor="middle" dominant-baseline="middle" class="mono">ExposedEntityMapWriter</text>
-<text x="1150" y="664" text-anchor="middle" dominant-baseline="middle" class="mono">put / putAll -&gt; DB write</text>
+<text x="1150" y="664" text-anchor="middle" dominant-baseline="middle" class="mono">put / putAll -&gt; DB 쓰기</text>
 </g>
 <g>
   <rect x="1304" y="392" width="204" height="168" rx="18" fill="#261943" stroke="#c4b5fd" class="card"/>
   <text x="1406" y="448" text-anchor="middle" dominant-baseline="middle" class="mono">Exposed DB</text>
 <text x="1406" y="482" text-anchor="middle" dominant-baseline="middle" class="mono">IdTable</text>
-<text x="1406" y="504" text-anchor="middle" dominant-baseline="middle" class="mono">transaction boundary</text>
+<text x="1406" y="504" text-anchor="middle" dominant-baseline="middle" class="mono">트랜잭션 경계</text>
 </g>
 <g>
   <rect x="128" y="696" width="308" height="104" rx="18" fill="#1e293b" stroke="#64748b" class="card"/>
   <text x="282" y="720" text-anchor="middle" dominant-baseline="middle" class="mono">READ_ONLY</text>
 <text x="282" y="754" text-anchor="middle" dominant-baseline="middle" class="mono">UserCredentials</text>
-<text x="282" y="776" text-anchor="middle" dominant-baseline="middle" class="mono">WITH_NEAR_CACHE · loader only</text>
+<text x="282" y="776" text-anchor="middle" dominant-baseline="middle" class="mono">WITH_NEAR_CACHE · 로더 전용</text>
 </g>
 <g>
   <rect x="520" y="696" width="368" height="104" rx="18" fill="#172554" stroke="#60a5fa" class="card"/>
   <text x="704" y="720" text-anchor="middle" dominant-baseline="middle" class="mono">READ_WRITE_THROUGH</text>
 <text x="704" y="754" text-anchor="middle" dominant-baseline="middle" class="mono">User</text>
-<text x="704" y="776" text-anchor="middle" dominant-baseline="middle" class="mono">WITH_NEAR_CACHE · loader + writer</text>
+<text x="704" y="776" text-anchor="middle" dominant-baseline="middle" class="mono">WITH_NEAR_CACHE · 로더 + 라이터</text>
 </g>
 <g>
   <rect x="958" y="758" width="358" height="104" rx="18" fill="#3b1217" stroke="#f87171" class="card"/>
   <text x="1137" y="782" text-anchor="middle" dominant-baseline="middle" class="mono">WRITE_BEHIND</text>
 <text x="1137" y="816" text-anchor="middle" dominant-baseline="middle" class="mono">UserEvent</text>
-<text x="1137" y="838" text-anchor="middle" dominant-baseline="middle" class="mono">WITH_NEAR_CACHE · async flush</text>
+<text x="1137" y="838" text-anchor="middle" dominant-baseline="middle" class="mono">WITH_NEAR_CACHE · 비동기 반영</text>
 </g>
 <path class="connector line-blue" data-connector="repository-to-map" d="M406 464 H548"/><rect class="label-bg" x="435" y="427" width="86" height="30" rx="15"/><text class="small" x="478" y="446" text-anchor="middle">get / put</text>
-<path class="connector line-green" data-connector="map-to-repository-hit" d="M548 492 H406"/><rect class="label-bg" x="436" y="501" width="84" height="30" rx="15"/><text class="small" x="478" y="520" text-anchor="middle">cache hit</text>
-<path class="connector line-blue" data-connector="map-to-loader" d="M898 412 H940 Q960 412 960 392 V304 Q960 284 980 284 H1000"/><rect class="label-bg" x="900" y="253" width="104" height="30" rx="15"/><text class="small" x="952" y="272" text-anchor="middle">cache miss</text>
+<path class="connector line-green" data-connector="map-to-repository-hit" d="M548 492 H406"/><rect class="label-bg" x="436" y="501" width="84" height="30" rx="15"/><text class="small" x="478" y="520" text-anchor="middle">캐시 히트</text>
+<path class="connector line-blue" data-connector="map-to-loader" d="M898 412 H940 Q960 412 960 392 V304 Q960 284 980 284 H1000"/><rect class="label-bg" x="900" y="253" width="104" height="30" rx="15"/><text class="small" x="952" y="272" text-anchor="middle">캐시 미스</text>
 <path class="connector line-cyan" data-connector="loader-to-db" d="M1300 304 H1366 Q1386 304 1386 324 V392"/><rect class="label-bg" x="1339" y="337" width="110" height="30" rx="15"/><text class="small" x="1394" y="356" text-anchor="middle">DB에서 읽기</text>
 <path class="connector line-amber" data-connector="map-to-writer" d="M898 472 H942 Q962 472 962 492 V636 Q962 656 982 656 H1000"/><rect class="label-bg" x="908" y="535" width="108" height="30" rx="15"/><text class="small" x="962" y="554" text-anchor="middle">put / putAll</text>
-<path class="connector line-amber" data-connector="writer-to-db" d="M1300 636 H1366 Q1386 636 1386 616 V560"/><rect class="label-bg" x="1330" y="581" width="136" height="30" rx="15"/><text class="small" x="1398" y="600" text-anchor="middle">즉시 쓰기 / async</text>
-<path class="connector dash-green" data-connector="readonly-to-map" d="M282 696 V552 Q282 532 302 532 H588 Q608 532 608 524"/><rect class="label-bg" x="399" y="663" width="98" height="30" rx="15"/><text class="small" x="448" y="682" text-anchor="middle">loader only</text>
-<path class="connector dash-blue" data-connector="readwrite-to-map" d="M704 696 V524"/><rect class="label-bg" x="716" y="663" width="128" height="30" rx="15"/><text class="small" x="780" y="682" text-anchor="middle">loader + writer</text>
-<path class="connector dash-purple" data-connector="writebehind-to-writer" d="M1137 758 V698"/><rect class="label-bg" x="1145" y="725" width="158" height="30" rx="15"/><text class="small" x="1224" y="744" text-anchor="middle">write-behind queue</text>
-<text x="800" y="924" text-anchor="middle" class="small">핵심: 캐시는 빠른 Map이 아니라 read/write 실패 정책을 가진 repository 계약입니다.</text>
+<path class="connector line-amber" data-connector="writer-to-db" d="M1300 636 H1366 Q1386 636 1386 616 V560"/><rect class="label-bg" x="1330" y="581" width="136" height="30" rx="15"/><text class="small" x="1398" y="600" text-anchor="middle">즉시 쓰기 / 비동기</text>
+<path class="connector dash-green" data-connector="readonly-to-map" d="M282 696 V572 Q282 552 302 552 H588 Q608 552 608 532 V524"/><rect class="label-bg" x="399" y="663" width="98" height="30" rx="15"/><text class="small" x="448" y="682" text-anchor="middle">로더 전용</text>
+<path class="connector dash-blue" data-connector="readwrite-to-map" d="M704 696 V524"/><rect class="label-bg" x="716" y="663" width="128" height="30" rx="15"/><text class="small" x="780" y="682" text-anchor="middle">로더 + 라이터</text>
+<path class="connector dash-purple" data-connector="writebehind-to-writer" d="M1137 758 V698"/><rect class="label-bg" x="1145" y="725" width="158" height="30" rx="15"/><text class="small" x="1224" y="744" text-anchor="middle">지연 쓰기 큐</text>
+<text x="800" y="924" text-anchor="middle" class="small">핵심: 캐시는 단순히 빠른 맵이 아니라 읽기/쓰기 실패 정책을 가진 저장소 계약입니다.</text>
 </svg>
