@@ -1,38 +1,39 @@
 ---
-title: "bluetape4k-dependencies 1.3.0 활용기 Part 2: 서비스 조합하기"
-description: "BOM을 가져온 뒤 Spring Boot worker나 Ktor API에서 Exposed, AWS, Leader, Text, Image 모듈을 어떻게 고르면 좋은지 예제로 정리한다."
+title: "bluetape4k-dependencies 1.3.0 활용기 Part 2: 서비스 경계에 맞는 모듈 조합"
+description: "BOM을 적용한 뒤 Spring Boot 워커와 Ktor API에서 Exposed, AWS, Leader, Text, Image 모듈을 서비스 경계에 맞게 선택하는 방법을 설명한다."
 sidebar:
   order: -202606281200
 blog:
   date: 2026-06-28T12:00:00+09:00
   image: /assets/bluetape4k-dependencies-1-3-0-hero.png
-  imageAlt: 작은 로봇 작업자들이 projects, exposed, aws, image, text, leader, graph, javers 모듈 블록과 dependency BOM 보드를 점검하는 3D 작업대 일러스트
-  cardDescription: "BOM을 가져왔다면 다음 질문은 어떤 모듈을 함께 고를지다. 서비스 조합 예제로 1.3.0 사용 경로를 살펴본다."
+  imageAlt: 작은 로봇 작업자들이 projects, exposed, aws, image, text, leader, graph, javers 모듈 블록과 의존성 BOM 보드를 점검하는 3D 작업대 일러스트
+  cardDescription: "BOM을 적용한 뒤에는 서비스가 책임지는 경계에 따라 필요한 모듈 조합을 선택한다."
   tags: ["aws","bom","comparison","dependencies","exposed","image","kotlin","ktor","leader","practical-example","spring","text"]
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/bluetape4k-dependencies-1-3-0-hero.png" alt="작은 로봇 작업자들이 projects, exposed, aws, image, text, leader, graph, javers 모듈 블록과 dependency BOM 보드를 점검하는 3D 작업대 일러스트" loading="eager" />
-  <figcaption>BOM은 시작점입니다. 실제 서비스에서는 DB, AWS, leader election, tokenizer, image processing을 어떤 조합으로 가져갈지가 더 중요합니다.</figcaption>
+  <img src="/assets/bluetape4k-dependencies-1-3-0-hero.png" alt="작은 로봇 작업자들이 projects, exposed, aws, image, text, leader, graph, javers 모듈 블록과 의존성 BOM 보드를 점검하는 3D 작업대 일러스트" loading="eager" />
+  <figcaption>BOM은 시작점입니다. 실제 서비스에서는 데이터베이스, AWS, 리더 선출, 토크나이저, 이미지 처리 경계에 필요한 모듈을 선택해야 합니다.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-06-28 · bluetape4k-dependencies 1.3.0 활용기 Part 2</p>
 
-`bluetape4k-dependencies`를 가져오면 버전 관리는 한결 단순해집니다. 하지만 그다음 질문이 남습니다.
+`bluetape4k-dependencies`를 적용하면 버전 관리는 단순해집니다. 그러나 서비스 경계에 맞는 모듈은
+애플리케이션이 선택해야 합니다.
 
-> 내 서비스에는 어떤 모듈을 넣어야 하지?
+> 서비스가 책임지는 경계에는 어떤 모듈이 필요한가?
 
-이 질문은 생각보다 실전적입니다. `Exposed`만 쓰는 서비스도 있고, `AWS`와 같이 묶이는 서비스도 있습니다. 일정 작업을
-한 인스턴스에서만 실행해야 하면 `Leader`가 필요하고, 사용자 입력을 분석해야 하면 `Text`가 따라옵니다. 이미지 파일을
-받는 서비스라면 `Image`까지 들어옵니다.
+서비스에 따라 `Exposed`만 사용하거나 `AWS`까지 함께 사용할 수 있습니다. 정기 작업을 한 인스턴스에서만
+실행해야 한다면 `Leader`가 필요하고, 사용자 입력을 분석한다면 `Text`가 필요합니다. 이미지 파일을
+처리하는 서비스에는 `Image` 모듈을 추가합니다.
 
 `dependencies 1.3.0`을 가져온 뒤에는 실제 서비스에서 어떤 모듈을 함께 고를지가 더 중요합니다.
-여기서는 사용하는 쪽의 선택만 봅니다. 핵심은 "버전을 어디에 적느냐"가 아니라 "어떤 기능
-경계에 어떤 모듈을 붙이느냐"입니다.
+여기서는 사용 측의 선택에 집중합니다. 핵심은 버전을 선언하는 위치가 아니라 기능 경계에 맞는
+모듈을 선택하는 방법입니다.
 
-## 먼저 BOM을 가져온다
+## 먼저 BOM을 적용한다
 
-Gradle에서는 BOM을 `platform`으로 가져오고, bluetape4k 모듈에는 버전을 적지 않습니다.
+Gradle에서는 BOM을 `platform`으로 적용하고, bluetape4k 모듈에는 버전을 선언하지 않습니다.
 
 ```kotlin
 dependencies {
@@ -44,8 +45,8 @@ dependencies {
 }
 ```
 
-여기서 핵심은 `1.3.0`을 세 번 적지 않는다는 점입니다. `projects`, `exposed`, `aws`가 각자 다른 릴리즈 번호를
-갖고 있어도, 애플리케이션은 BOM 하나를 기준으로 같은 조합을 가져옵니다.
+핵심은 `1.3.0`을 여러 모듈에 반복해서 선언하지 않는다는 점입니다. `projects`, `exposed`, `aws`의
+릴리스 번호가 서로 달라도 애플리케이션은 BOM이 검증한 조합을 사용합니다.
 
 ```text
 application
@@ -58,22 +59,27 @@ application
       -> leader 0.4.0
 ```
 
-이 그림에서 개발자가 직접 고르는 것은 오른쪽 버전 숫자가 아니라 왼쪽 기능 경계입니다. DB를 쓰는가, AWS를 쓰는가,
-분산 작업을 한 번만 실행해야 하는가, 입력 텍스트를 다뤄야 하는가. 그 질문에 따라 모듈을 고르면 됩니다.
+개발자가 직접 선택할 대상은 개별 버전이 아니라 기능 경계입니다. 데이터베이스와 AWS 사용 여부,
+분산 작업의 단일 실행 요구사항, 입력 텍스트 처리 여부에 따라 모듈을 선택합니다.
 
-## 예제 1: Spring Boot worker 서비스
+<figure class="bt4k-architecture" data-diagram-title="서비스 경계가 모듈 조합을 결정한다">
+  <img src="/assets/bluetape4k-dependencies-service-composition-01-ko.png" alt="하나의 bluetape4k-dependencies BOM 아래에서 Spring Boot 워커, Ktor 검색 API, 이미지 업로드 API가 각 서비스 경계에 맞는 모듈을 선택하는 구조도" loading="lazy" />
+  <figcaption>세 서비스는 같은 BOM을 사용하지만 데이터베이스 작업, HTTP 입력 검증, 이미지 스트리밍처럼 서로 다른 책임과 자원 수명 주기에 맞춰 모듈을 선택합니다.</figcaption>
+</figure>
 
-첫 번째 예제는 Spring Boot 기반 worker입니다.
+## 예제 1: Spring Boot 워커 서비스
 
-상황을 이렇게 잡아보겠습니다.
+첫 번째 예제는 Spring Boot 기반 워커입니다.
+
+요구사항은 다음과 같습니다.
 
 - DB에 쌓인 작업을 읽는다.
 - S3에 결과 파일을 쓴다.
-- 같은 작업이 여러 인스턴스에서 동시에 실행되면 안 된다.
-- 작업 이름이나 입력 텍스트를 tokenizer로 전처리한다.
-- write-behind cache를 쓴다면 health에서 상태를 확인하고 싶다.
+- 같은 작업을 여러 인스턴스에서 동시에 실행하지 않는다.
+- 작업 이름이나 입력 텍스트를 토크나이저로 전처리한다.
+- write-behind 캐시의 상태를 상태 점검 엔드포인트에서 확인한다.
 
-이 경우 의존성은 대략 이렇게 시작할 수 있습니다.
+이 경우 의존성은 다음과 같이 구성할 수 있습니다.
 
 ```kotlin
 dependencies {
@@ -95,8 +101,8 @@ dependencies {
 }
 ```
 
-코드의 모양은 이런 식이 됩니다. 실제 API 이름은 프로젝트에 맞게 달라질 수 있으니, 아래 코드는 조합을 설명하기 위한
-의사코드입니다.
+다음 코드는 모듈 조합과 처리 경계를 설명하는 의사코드입니다. 실제 저장소 API로 오해하지 않도록
+애플리케이션 고유 이름을 사용했습니다.
 
 ```kotlin
 @Scheduled(fixedDelayString = "PT30S")
@@ -117,11 +123,11 @@ fun runPendingJobs() {
 }
 ```
 
-이 예제에서 `Leader`는 장식이 아닙니다. worker가 세 대 떠 있는데 세 대가 같은 row를 집어가면, 그날의 배포는
-기술 블로그가 아니라 반성문 소재가 됩니다. `Leader`를 쓰면 "이 작업은 지금 누가 대표로 실행하는가"를 코드 경계에
-드러낼 수 있습니다.
+여러 워커 인스턴스가 같은 행을 동시에 처리하면 중복 실행이 발생합니다. `Leader`를 사용하면 현재
+대표 인스턴스만 작업을 실행한다는 경계를 코드에 드러낼 수 있습니다.
 
-`Exposed cache`를 같이 쓴다면 health도 같이 봅니다.
+Exposed write-behind 캐시를 사용한다면 상태 점검 응답도 함께 확인합니다. 다음 구조는
+`exposed 1.11.0` 릴리스의 JDBC 상태 표시기가 제공한 `reports` 배열을 반영합니다.
 
 ```json
 {
@@ -130,19 +136,24 @@ fun runPendingJobs() {
     "exposedCache": {
       "status": "OUT_OF_SERVICE",
       "details": {
-        "mode": "WRITE_BEHIND",
-        "queueDepth": 128,
-        "flushJobRunning": false,
-        "lastFlushError": "RedisConnectionFailureException"
+        "repositoryCount": 1,
+        "reports": [
+          {
+            "mode": "WRITE_BEHIND",
+            "queueDepth": 128,
+            "flushJobRunning": false,
+            "lastFlushError": "Redis connection failed"
+          }
+        ]
       }
     }
   }
 }
 ```
 
-write-behind cache는 실패를 늦게 알수록 위험합니다. 겉으로는 요청이 성공한 것처럼 지나가는데, 뒤에서 flush가
-멈추면 데이터 일관성이 깨질 수 있습니다. 아무 일도 없는 것처럼 보이는 상태가 오히려 더 위험할 때가 있습니다.
-health에 이 정보가 나오면 운영자는 cache 장애를 애플리케이션 증상으로만 추리하지 않아도 됩니다.
+write-behind 캐시는 실패를 늦게 발견할수록 데이터 일관성 위험이 커집니다. 요청이 성공한 뒤 백그라운드
+flush가 중단될 수 있기 때문입니다. 상태 응답에 이 정보가 있으면 운영자는 애플리케이션 증상만으로
+캐시 장애를 추정하지 않아도 됩니다.
 
 ## 예제 2: Ktor API 서비스
 
@@ -152,9 +163,9 @@ Ktor API는 worker와 확인할 경계가 다릅니다.
 
 - HTTP API가 사용자 요청을 받는다.
 - R2DBC나 JDBC로 데이터를 읽고 쓴다.
-- AWS CloudWatch에 metric과 log를 보낸다.
-- 관리 API나 scheduled task에서 leader election이 필요하다.
-- 입력 텍스트를 tokenizer나 blockword 검사에 통과시킨다.
+- AWS CloudWatch에 메트릭과 로그를 보낸다.
+- 관리 API나 예약 작업에 리더 선출이 필요하다.
+- 입력 텍스트에 토크나이저나 금칙어 검사를 적용한다.
 
 의존성은 다음처럼 잡을 수 있습니다.
 
@@ -178,27 +189,29 @@ dependencies {
 }
 ```
 
-Ktor 쪽에서 특히 조심할 부분은 lifecycle입니다. AWS client를 만들고 닫는 책임이 애플리케이션 곳곳에 흩어지면,
-테스트에서는 티가 덜 나도 운영에서는 connection pool이나 background thread가 남을 수 있습니다.
+Ktor에서 특히 주의할 부분은 수명 주기입니다. AWS 클라이언트의 생성·종료 책임이 여러 위치에 흩어지면
+운영 환경에 커넥션 풀이나 백그라운드 스레드가 남을 수 있습니다.
 
-의사코드로 보면 원하는 구조는 이쪽입니다.
+다음 예제는 `aws 0.4.0`에 공개된 실제 플러그인 이름과 설정 속성을 사용합니다.
 
 ```kotlin
 fun Application.module() {
-    install(BluetapeAwsCloudWatch) {
+    install(CloudWatchKtorPlugin) {
         namespace = "billing-api"
-        serviceName = "billing"
     }
 
-    install(BluetapeAwsCloudWatchLogs) {
+    install(CloudWatchLogsKtorPlugin) {
         logGroupName = "/bluetape4k/billing-api"
         logStreamName = environment.config.property("deployment.instanceId").getString()
+        flushInterval = Duration.ofSeconds(5)
+        shutdownFlushTimeout = Duration.ofSeconds(5)
     }
 
     routing {
         post("/documents/search") {
             val request = call.receive<SearchRequest>()
 
+            // 애플리케이션이 소유하는 입력 길이 검증 경계
             request.query.requireLength(max = 2_000)
 
             val tokens = koreanTokenizer.tokenize(request.query)
@@ -210,9 +223,10 @@ fun Application.module() {
 }
 ```
 
-여기서 중요한 점은 CloudWatch를 "log를 한 줄 더 보내는 코드"로 보지 않는 것입니다. metric namespace, log group,
-stream 이름, client lifecycle이 애플리케이션 경계 안에 들어옵니다. 이 부분을 plugin으로 모으면 장애가 났을 때
-"어떤 인스턴스가 어떤 이름으로 metric을 냈는지"를 따라가기 쉬워집니다.
+CloudWatch 연동에는 메트릭 네임스페이스, 로그 그룹·스트림 이름, 클라이언트 수명 주기가 포함됩니다.
+이 결정을 플러그인 설정에 모으면 어떤 인스턴스가 어떤 이름으로 데이터를 전송했는지 추적하기
+쉬워집니다. 플러그인을 설치하는 것만으로 메트릭이나 로그가 자동 전송되는 것은 아니며, 애플리케이션이
+명시적으로 게시하거나 버퍼에 추가해야 합니다.
 
 ## 예제 3: 이미지 업로드 API
 
@@ -229,18 +243,19 @@ dependencies {
 }
 ```
 
-이미지 쪽에서 흔한 실수는 파일을 너무 빨리 `ByteArray`로 바꾸는 것입니다.
+이미지 처리에서 흔한 실수는 입력 파일 전체를 이른 시점에 `ByteArray`로 변환하는 것입니다.
 
 ```kotlin
-// 작은 샘플에서는 편하다. 큰 파일에서는 위험하다.
+// 작은 예제에는 편리하지만 대용량 입력에는 적합하지 않다.
 val bytes = multipartFile.bytes
 val text = ocr.read(bytes)
 ```
 
-업로드 크기가 작을 때는 아무 일도 일어나지 않습니다. 그래서 더 위험합니다. 샘플 파일 몇 개로 테스트하면 멀쩡한데,
-운영에서 80MB짜리 TIFF가 들어오는 순간 메모리 사용량이 갑자기 튑니다.
+작은 샘플 파일만으로는 문제가 드러나지 않지만, 운영 환경에서 80MB TIFF를 처리하면 메모리 사용량이
+급증할 수 있습니다.
 
-1.3.0 라인에서는 Okio 기반 large-file I/O와 OCR 사용 경로를 같이 봐야 합니다. 의사코드로는 이런 식입니다.
+1.3.0 호환선에서는 Okio 기반 대용량 파일 I/O와 OCR 처리 경계를 함께 확인해야 합니다. 다음은
+스트리밍 경계를 설명하는 애플리케이션 의사코드입니다.
 
 ```kotlin
 fun extractText(path: Path): OcrResult {
@@ -254,30 +269,30 @@ fun extractText(path: Path): OcrResult {
 }
 ```
 
-핵심은 OCR option보다 파일이 메모리에 올라오는 지점입니다. OCR 품질을 올리는 것도 중요하지만, 큰 파일 하나 때문에
-서버가 메모리 압박이나 timeout에 걸리면 클라이언트 요청에 OCR 결과를 돌려줄 수 없습니다.
+핵심은 OCR 옵션보다 파일이 메모리에 적재되는 지점입니다. 대용량 파일로 서버가 메모리 압박이나
+타임아웃에 이르면 OCR 품질과 무관하게 요청을 완료할 수 없습니다.
 
 ## 모듈 선택 기준
 
-모듈을 고를 때는 저장소 이름보다 서비스 경계를 먼저 보면 편합니다.
+모듈은 저장소 이름보다 서비스 경계를 기준으로 선택합니다.
 
-| 서비스 경계 | 먼저 볼 모듈 | 같이 확인할 것 |
+| 서비스 경계 | 우선 검토할 모듈 | 함께 확인할 항목 |
 |---|---|---|
-| Spring Boot 공통 기반 | `bluetape4k-spring-boot-core` | Spring Boot major line |
-| Ktor 기반 API | `bluetape4k-ktor-core`, `bluetape4k-ktor-observability` | Ktor major line, plugin lifecycle |
-| Exposed JDBC | `bluetape4k-exposed-spring-boot-jdbc`, `bluetape4k-exposed-jdbc` | transaction helper, datasource 설정 |
-| Exposed R2DBC | `bluetape4k-exposed-spring-boot-r2dbc`, `bluetape4k-exposed-r2dbc` | coroutine 경계, connection lifecycle |
-| AWS 연동 | `bluetape4k-aws-spring-boot`, `bluetape4k-aws-ktor` | client lifecycle, emulator/runtime |
-| 분산 작업 대표 선출 | `bluetape4k-leader-spring-boot`, `bluetape4k-leader-ktor` | provider/storage 선택, metric |
-| 한국어/일본어 텍스트 | `tokenizer-korean`, `tokenizer-japanese`, `text-search` | 입력 길이 제한, error response |
-| 이미지/OCR | `bluetape4k-images`, `bluetape4k-images-ocr` | 파일 크기, memory, native runtime |
+| Spring Boot 공통 기반 | `bluetape4k-spring-boot-core` | Spring Boot 주 버전 호환선 |
+| Ktor 기반 API | `bluetape4k-ktor-core`, `bluetape4k-ktor-observability` | Ktor 주 버전, 플러그인 수명 주기 |
+| Exposed JDBC | `bluetape4k-exposed-spring-boot-jdbc`, `bluetape4k-exposed-jdbc` | 트랜잭션 도우미, 데이터소스 설정 |
+| Exposed R2DBC | `bluetape4k-exposed-spring-boot-r2dbc`, `bluetape4k-exposed-r2dbc` | 코루틴 경계, 커넥션 수명 주기 |
+| AWS 연동 | `bluetape4k-aws-spring-boot`, `bluetape4k-aws-ktor` | 클라이언트 수명 주기, 에뮬레이터·런타임 |
+| 분산 작업 대표 선출 | `bluetape4k-leader-spring-boot`, `bluetape4k-leader-ktor` | 공급자·저장소 선택, 메트릭 |
+| 한국어/일본어 텍스트 | `tokenizer-korean`, `tokenizer-japanese`, `text-search` | 입력 길이 제한, 오류 응답 |
+| 이미지/OCR | `bluetape4k-images`, `bluetape4k-images-ocr` | 파일 크기, 메모리, 네이티브 런타임 |
 
-이 표는 "무조건 다 넣으라"는 뜻이 아닙니다. 오히려 반대입니다. 서비스가 책임지는 경계를 먼저 고르고, 그 경계에 필요한
-모듈만 가져오면 됩니다. BOM은 그 모듈들이 같은 버전 조합으로 맞물리도록 돕는 장치입니다.
+서비스가 책임지는 경계를 먼저 선택하고 그 경계에 필요한 모듈만 추가합니다. BOM은 선택한 모듈이
+검증된 버전 조합을 사용하도록 제어합니다.
 
 ## 업그레이드 후 확인할 것
 
-`dependencies 1.3.0`으로 올렸다면 최소한 다음 정도는 확인해 두는 편이 좋습니다.
+`dependencies 1.3.0`으로 업그레이드했다면 다음 항목을 확인합니다.
 
 ```bash
 ./gradlew compileTestKotlin
@@ -287,40 +302,43 @@ fun extractText(path: Path): OcrResult {
 ./gradlew dependencyInsight --dependency aws --configuration runtimeClasspath
 ```
 
-모든 프로젝트에서 `dependencyInsight`를 다 볼 필요는 없습니다. 하지만 DB, AWS SDK, Ktor, Spring Boot처럼
-서비스 경계에 가까운 dependency가 움직였을 때는 한 번 확인할 가치가 있습니다. 문제가 생겼을 때 "BOM을 올린 뒤
-실제로 어떤 runtime classpath가 되었는지"를 바로 볼 수 있기 때문입니다.
+모든 프로젝트에서 모든 의존성을 조회할 필요는 없습니다. 그러나 데이터베이스, AWS SDK, Ktor,
+Spring Boot처럼 서비스 경계에 가까운 의존성이 변경되었다면 실제 런타임 클래스패스를 확인해야
+합니다.
 
 ## 마무리
 
 BOM을 가져왔다는 것은 버전 숫자 고민을 줄였다는 뜻입니다. 하지만 서비스 설계가 자동으로 끝났다는 뜻은 아닙니다.
 
-`dependencies 1.3.0`에서는 Exposed, AWS, Leader, Image, Text 쪽 조합이 실제 서비스에서 쓰기 좋게 정리되었습니다.
-좋은 출발점은 이 질문입니다.
+`dependencies 1.3.0`은 Exposed, AWS, Leader, Image, Text 조합을 하나의 BOM 호환선으로 제공합니다.
+모듈 선택 전 다음 질문에 답해야 합니다.
 
-- 내 서비스는 어떤 DB 경계를 갖고 있나?
-- AWS client와 log/metric lifecycle은 누가 관리하나?
-- scheduled job은 여러 인스턴스에서 동시에 돌아도 되나?
-- 사용자 입력은 tokenizer나 blockword 검사 전에 어디서 제한하나?
-- 이미지 파일은 어느 순간 메모리에 올라오나?
+- 서비스의 데이터베이스 경계는 무엇인가?
+- AWS 클라이언트와 로그·메트릭 수명 주기는 누가 관리하는가?
+- 예약 작업을 여러 인스턴스에서 동시에 실행해도 되는가?
+- 사용자 입력은 토크나이저나 금칙어 검사 전에 어디에서 제한하는가?
+- 이미지 파일은 어느 시점에 메모리에 적재되는가?
 
-이 질문에 답하면 필요한 모듈이 꽤 자연스럽게 정해집니다. 버전은 BOM에 맡기고, 사람은 서비스 경계를 보면 됩니다.
+이 질문에 답하면 필요한 모듈을 결정할 수 있습니다. 버전 조합은 BOM에 맡기고 서비스 경계는
+애플리케이션이 명시적으로 설계합니다.
 
 ## 시리즈 글
 
-처음 `bluetape4k-dependencies`를 가져오는 방법부터 보고 싶다면
+처음 `bluetape4k-dependencies`를 적용하는 방법부터 확인하려면
 [사용 가이드](/ko/blog/bluetape4k-dependencies-usage-guide/)를 먼저 읽으면 됩니다.
 
 - [bluetape4k-dependencies 1.3.0 활용기 Part 1: 기능 보강과 경계 정리](/ko/blog/bluetape4k-dependencies-1-3-0-library-stories/)
-- [bluetape4k-dependencies 1.3.0 활용기 Part 2: 서비스 조합하기](/ko/blog/bluetape4k-dependencies-1-3-0-service-composition/)
-- [bluetape4k-dependencies 1.3.0 활용기 Part 3: 운영에서 티 나는 변화](/ko/blog/bluetape4k-dependencies-1-3-0-production-signals/)
-- [bluetape4k-dependencies 1.3.0 활용기 Part 4: 입력 경계에서 치운 똥들](/ko/blog/bluetape4k-dependencies-1-3-0-input-boundaries/)
+- [bluetape4k-dependencies 1.3.0 활용기 Part 2: 서비스 경계에 맞는 모듈 조합](/ko/blog/bluetape4k-dependencies-1-3-0-service-composition/)
+- [bluetape4k-dependencies 1.3.0 활용기 Part 3: 운영에서 드러나는 신호](/ko/blog/bluetape4k-dependencies-1-3-0-production-signals/)
+- [bluetape4k-dependencies 1.3.0 활용기 Part 4: 입력 경계와 자원 안전성](/ko/blog/bluetape4k-dependencies-1-3-0-input-boundaries/)
 
-## 참고한 소스
+## 자료
 
 - [`bluetape4k-dependencies` libs.versions.toml](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/gradle/libs.versions.toml)
 - [`bluetape4k-exposed` repository](https://github.com/bluetape4k/bluetape4k-exposed)
 - [`bluetape4k-aws` repository](https://github.com/bluetape4k/bluetape4k-aws)
+- [`CloudWatchKtorPluginConfig` 0.4.0](https://github.com/bluetape4k/bluetape4k-aws/blob/0.4.0/aws-ktor/src/main/kotlin/io/bluetape4k/aws/ktor/cloudwatch/CloudWatchKtorPluginConfig.kt)
+- [`CloudWatchLogsKtorPluginConfig` 0.4.0](https://github.com/bluetape4k/bluetape4k-aws/blob/0.4.0/aws-ktor/src/main/kotlin/io/bluetape4k/aws/ktor/cloudwatch/CloudWatchLogsKtorPluginConfig.kt)
 - [`bluetape4k-leader` repository](https://github.com/bluetape4k/bluetape4k-leader)
 - [`bluetape4k-image` repository](https://github.com/bluetape4k/bluetape4k-image)
 - [`bluetape4k-text` repository](https://github.com/bluetape4k/bluetape4k-text)

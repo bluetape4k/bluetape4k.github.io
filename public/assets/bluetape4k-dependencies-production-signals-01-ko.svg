@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="940" viewBox="0 0 1600 940" role="img" aria-labelledby="title desc">
+  <title id="title">운영 신호에서 진단 결정까지</title>
+  <desc id="desc">설치 여부가 아니라 어떤 신호를 누가 발행하고 운영자가 어떻게 해석하는지가 운영 계약입니다.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="16" markerHeight="16" refX="13" refY="8" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1,1 L15,8 L1,15 Z" fill="#36C5F0"/>
+    </marker>
+  </defs>
+  <style>
+    .canvas{fill:#07111F}.frame{fill:#0D1B2D;stroke:#36536F;stroke-width:2}
+    .card{fill:#10243A;stroke:#36536F;stroke-width:2}.focus{fill:#0C3044;stroke:#5EEAD4;stroke-width:2.5}
+    .warn{fill:#332B18;stroke:#FBBF24;stroke-width:2}.title{font:700 40px "goorm Sans","Apple SD Gothic Neo",sans-serif;fill:#E6F2FF}
+    .subtitle{font:500 20px "goorm Sans Code","goorm Sans",monospace;fill:#9CB4CC}.card-title{font:700 25px "goorm Sans","Apple SD Gothic Neo",sans-serif;fill:#E6F2FF}
+    .body{font:600 18px "goorm Sans Code","goorm Sans",monospace;fill:#9CB4CC}.chip{font:700 16px "goorm Sans Code","goorm Sans",monospace;fill:#5EEAD4}
+    .label{font:700 16px "goorm Sans Code","goorm Sans",monospace;fill:#36C5F0}.connector{fill:none;stroke:#36C5F0;stroke-width:4;marker-end:url(#arrow)}
+    .divider{stroke:#36536F;stroke-width:2}.footer{font:600 18px "goorm Sans Code","goorm Sans",monospace;fill:#9CB4CC}
+  </style>
+  <rect width="1600" height="940" class="canvas"/>
+  <rect x="32" y="32" width="1536" height="876" rx="32" class="frame"/>
+  <text x="80" y="98" class="title">운영 신호에서 진단 결정까지</text>
+  <text x="80" y="138" class="subtitle">통합 기능은 데이터를 자동으로 설명하지 않습니다. 발행·관측·판단 경계를 연결해야 합니다.</text>
+  
+      
+        <rect x="80" y="225" width="340" height="112" rx="22" class="card"/>
+        <text x="106" y="269" class="card-title">Exposed 캐시</text>
+        <text x="106" y="307" class="body">대기열 · flush 오류</text>
+        <path d="M420 281 H555" class="connector"/>
+
+        <rect x="80" y="375" width="340" height="112" rx="22" class="card"/>
+        <text x="106" y="419" class="card-title">AWS CloudWatch</text>
+        <text x="106" y="457" class="body">메트릭 · 로그 이름</text>
+        <path d="M420 431 H555" class="connector"/>
+
+        <rect x="80" y="525" width="340" height="112" rx="22" class="card"/>
+        <text x="106" y="569" class="card-title">Leader 공급자</text>
+        <text x="106" y="607" class="body">갱신 · 저장소 오류</text>
+        <path d="M420 581 H555" class="connector"/>
+      <rect x="575" y="225" width="360" height="412" rx="26" class="focus"/>
+      <text x="755" y="395" text-anchor="middle" class="card-title">명시적 발행·상태 노출</text>
+      <text x="755" y="472" text-anchor="middle" class="body">상태·이벤트</text>
+      <path d="M935 415 H1050" class="connector"/>
+      <rect x="1075" y="225" width="445" height="190" rx="24" class="card"/>
+      <text x="1298" y="300" text-anchor="middle" class="card-title">관측 가능한 운영 신호</text>
+      <text x="1298" y="350" text-anchor="middle" class="body">검색·경보</text>
+      <path d="M1298 415 V510" class="connector"/>
+      <rect x="1075" y="535" width="445" height="165" rx="24" class="warn"/>
+      <text x="1298" y="620" text-anchor="middle" class="card-title">진단 순서와 복구 결정</text>
+      
+      <line x1="80" y1="790" x2="1520" y2="790" class="divider"/>
+      <text x="800" y="836" text-anchor="middle" class="footer">설치 여부가 아니라 어떤 신호를 누가 발행하고 운영자가 어떻게 해석하는지가 운영 계약입니다.</text>
+</svg>

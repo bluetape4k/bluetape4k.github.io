@@ -1,45 +1,49 @@
 ---
-title: "bluetape4k-dependencies 1.3.0 활용기 Part 3: 운영에서 티 나는 변화"
-description: "Exposed cache health, AWS CloudWatch/Logs, Leader metric과 backend 선택처럼 운영 중 문제를 더 빨리 확인하게 해 주는 dependencies 1.3.0 변화를 정리한다."
+title: "bluetape4k-dependencies 1.3.0 활용기 Part 3: 운영에서 드러나는 신호"
+description: "Exposed 캐시 상태, AWS CloudWatch/Logs, Leader 메트릭과 백엔드 선택처럼 운영 문제를 조기에 발견하게 하는 dependencies 1.3.0의 변화를 설명한다."
 sidebar:
   order: -202606281300
 blog:
   date: 2026-06-28T13:00:00+09:00
   image: /assets/bluetape4k-dependencies-1-3-0-hero.png
-  imageAlt: 작은 로봇 작업자들이 projects, exposed, aws, image, text, leader, graph, javers 모듈 블록과 dependency BOM 보드를 점검하는 3D 작업대 일러스트
-  cardDescription: "운영에서 무서운 문제는 티가 늦게 나는 문제다. 1.3.0에서 어떤 신호를 더 볼 수 있게 되었는지 살펴본다."
+  imageAlt: 작은 로봇 작업자들이 projects, exposed, aws, image, text, leader, graph, javers 모듈 블록과 의존성 BOM 보드를 점검하는 3D 작업대 일러스트
+  cardDescription: "운영 문제를 조기에 발견하려면 캐시, AWS, 리더 선출 경계의 상태와 오류 신호를 관측해야 한다."
   tags: ["aws","cache","dependencies","exposed","kotlin","leader","observability","practical-example"]
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/bluetape4k-dependencies-1-3-0-hero.png" alt="작은 로봇 작업자들이 projects, exposed, aws, image, text, leader, graph, javers 모듈 블록과 dependency BOM 보드를 점검하는 3D 작업대 일러스트" loading="eager" />
-  <figcaption>운영에서 중요한 변경은 새 API 이름보다 신호입니다. 실패가 어디에서 시작됐는지 빨리 볼 수 있어야 합니다.</figcaption>
+  <img src="/assets/bluetape4k-dependencies-1-3-0-hero.png" alt="작은 로봇 작업자들이 projects, exposed, aws, image, text, leader, graph, javers 모듈 블록과 의존성 BOM 보드를 점검하는 3D 작업대 일러스트" loading="eager" />
+  <figcaption>운영에서 중요한 변경은 새로운 API보다 관측 가능한 신호입니다. 실패가 시작된 경계를 조기에 확인할 수 있어야 합니다.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-06-28 · bluetape4k-dependencies 1.3.0 활용기 Part 3</p>
 
-운영에서 가장 까다로운 문제는 바로 터지는 문제가 아닙니다. 바로 터지는 문제는 차라리 다루기 쉽습니다. 알람이 울리고,
-stack trace가 나오고, 담당자가 커피를 내려놓고 달려갑니다.
+운영에서 가장 까다로운 문제는 즉시 실패하지 않는 문제입니다. 즉시 실패하면 경보와 스택 추적을
+근거로 원인을 조사할 수 있습니다.
 
-진짜 문제는 겉으로는 평화로운데 안쪽에서 데이터가 어긋나는 경우입니다. 요청은 성공한 것처럼 끝났고,
-사용자도 당장은 모릅니다. 그런데 cache flush가 멈췄거나, metric이 엉뚱한 이름으로 나가거나, leader가 바뀌었는데
-그 흔적을 찾기 어렵다면 나중에 훨씬 큰 비용으로 돌아옵니다.
+반면 요청은 성공했지만 내부 데이터가 어긋날 수 있습니다. 캐시 flush가 중단되거나 메트릭이 잘못된
+이름으로 전송되거나 리더가 변경된 흔적을 찾기 어렵다면 장애 발견과 복구가 지연됩니다.
 
-`dependencies 1.3.0`에서 운영자가 바로 체감할 수 있는 변화는 이런 신호 쪽에 있습니다.
+`dependencies 1.3.0`에서 운영자가 확인할 수 있는 변화는 다음 신호에 있습니다.
 
-- `exposed 1.11.0`: cache 상태를 health로 드러낸다.
-- `aws 0.4.0`: Ktor/Spring에서 CloudWatch metric과 log 경계를 잡는다.
-- `leader 0.4.0`: provider/storage 선택과 metric 확인 지점을 더 분명하게 만든다.
+- `exposed 1.11.0`: 캐시 상태를 상태 점검 응답에 노출한다.
+- `aws 0.4.0`: Ktor/Spring에서 CloudWatch 메트릭과 로그 경계를 정의한다.
+- `leader 0.4.0`: 공급자·저장소 선택과 메트릭 확인 지점을 명확히 한다.
 
-새 기능 목록만 다시 읽어서는 운영에서 어디를 봐야 할지 알기 어렵습니다. 여기서는 어떤 값을 보면 좋은지, 어떤 실패를
-더 빨리 알아차릴 수 있는지에 초점을 맞춥니다.
+여기서는 새로운 기능 목록보다 확인할 값과 조기에 발견할 수 있는 실패 유형에 초점을 맞춥니다.
 
-## Exposed cache: flush가 멈췄는지 health에서 본다
+<figure class="bt4k-architecture" data-diagram-title="운영 신호에서 진단 결정까지">
+  <img src="/assets/bluetape4k-dependencies-production-signals-01-ko.png" alt="Exposed 캐시, AWS CloudWatch, Leader 공급자의 상태와 이벤트를 명시적으로 발행해 관측 가능한 운영 신호와 진단·복구 결정으로 연결하는 흐름도" loading="lazy" />
+  <figcaption>플러그인 설치만으로 운영 신호가 완성되지는 않습니다. 애플리케이션이 상태와 이벤트를 명시적으로 노출하고, 운영자가 검색·경보를 진단 순서와 복구 결정으로 연결해야 합니다.</figcaption>
+</figure>
 
-write-behind cache는 성능을 위해 쓰지만, 실패했을 때 위험도도 같이 가져옵니다. DB에 바로 쓰지 않고 뒤에서
-flush한다는 것은, 그 뒤쪽 작업이 멈췄을 때 애플리케이션이 한동안 정상처럼 보일 수 있다는 뜻입니다.
+## Exposed 캐시: flush 중단을 상태 응답에서 확인한다
 
-1.3.0 라인에서 `exposed` 쪽 변화 중 중요한 부분은 cache health입니다. 확인하고 싶은 값은 대략 이렇습니다.
+write-behind 캐시는 쓰기 지연을 줄이지만 백그라운드 flush 실패 위험을 수반합니다. flush 작업이
+중단되어도 애플리케이션이 일정 시간 정상처럼 보일 수 있습니다.
+
+`exposed 1.11.0`의 주요 변경 중 하나는 캐시 상태 표시기입니다. 다음 응답은 해당 릴리스의 JDBC
+상태 표시기 구조를 반영합니다.
 
 ```json
 {
@@ -53,10 +57,8 @@ flush한다는 것은, 그 뒤쪽 작업이 멈췄을 때 애플리케이션이 
             "name": "invoice-cache",
             "mode": "WRITE_BEHIND",
             "queueDepth": 384,
-            "maxQueueDepth": 1000,
             "flushJobRunning": false,
-            "lastFlushError": "RedisConnectionFailureException",
-            "lastFlushErrorAt": "2026-06-28T03:20:14Z"
+            "lastFlushError": "Redis connection failed"
           }
         ]
       }
@@ -72,52 +74,53 @@ flush한다는 것은, 그 뒤쪽 작업이 멈췄을 때 애플리케이션이 
 | `mode` | write-through인지 write-behind인지에 따라 장애 의미가 달라진다. |
 | `queueDepth` | flush가 밀리고 있는지 확인한다. |
 | `flushJobRunning` | 뒤에서 실제 flush 작업이 돌고 있는지 확인한다. |
-| `lastFlushError` | cache 문제가 DB, Redis, serializer 중 어디에 가까운지 힌트를 준다. |
-| `lastFlushErrorAt` | 지금 문제인지, 이미 지나간 문제인지 구분한다. |
+| `lastFlushError` | 캐시 문제가 데이터베이스, Redis, 직렬화 중 어느 경계에 가까운지 단서를 제공한다. |
 
-이 값이 없으면 운영자는 애플리케이션 로그를 뒤지며 추리를 해야 합니다.
+이 값이 없으면 운영자는 애플리케이션 로그와 데이터베이스 상태를 함께 조사해야 합니다.
 
 ```text
 사용자는 방금 저장했다고 말한다
-  -> API log는 200이다
+  -> API 로그에는 200 응답이 기록되었다
   -> DB에는 없다
-  -> cache queue는 봤나?
-  -> flush job은 돌고 있나?
-  -> Redis 연결은 살아 있나?
+  -> 캐시 대기열 깊이는 얼마인가?
+  -> flush 작업은 실행 중인가?
+  -> Redis 연결은 정상인가?
 ```
 
-health에 cache 상태가 나오면 추리 시간이 줄어듭니다. 장애가 사라지는 것은 아니지만, 적어도 어디서부터 볼지 정할 수
-있습니다. 운영에서 이 차이는 큽니다. 삽을 들고 운동장을 전부 파는 일과, 누가 "여기부터 파세요"라고 표시해 둔 일의
-차이입니다.
+상태 응답에 캐시 정보가 포함되면 조사 시작점을 정할 수 있습니다. 상태 표시는 장애를 제거하지
+않지만 캐시 대기열, flush 작업, Redis 연결 순서로 진단 범위를 좁혀 줍니다.
 
-## AWS CloudWatch/Logs: 이름을 정하지 않으면 나중에 못 찾는다
+## AWS CloudWatch/Logs: 검색 가능한 이름 규칙을 정의한다
 
-CloudWatch metric과 log는 "보내기만 하면 끝"이 아닙니다. namespace, log group, stream 이름이 엉키면 나중에
-검색이 어려워집니다. 특히 여러 환경과 여러 서비스가 같은 AWS 계정에 올라가면 이름 규칙이 운영 문서가 됩니다.
+CloudWatch 메트릭과 로그는 전송만으로 충분하지 않습니다. 네임스페이스, 로그 그룹, 스트림 이름이
+일관되지 않으면 여러 환경과 서비스가 같은 AWS 계정을 사용할 때 검색과 경보 구성이 어려워집니다.
 
-`aws 0.4.0`에서는 Ktor/Spring에서 CloudWatch와 CloudWatch Logs를 붙이는 경로가 보강되었습니다. 원하는 방향은
-애플리케이션 시작 지점에서 이름과 lifecycle을 모으는 것입니다.
+`aws 0.4.0`에서는 Ktor/Spring에서 CloudWatch와 CloudWatch Logs를 연동하는 경로를 보강했습니다.
+Ktor에서는 애플리케이션 시작 지점에 이름과 수명 주기 설정을 모을 수 있습니다.
 
-의사코드로 보면 이런 형태입니다.
+다음 예제는 `aws 0.4.0`의 실제 플러그인 이름과 설정 속성을 사용합니다.
 
 ```kotlin
 fun Application.module() {
-    install(BluetapeCloudWatchMetrics) {
+    install(CloudWatchKtorPlugin) {
         namespace = "bluetape4k/billing"
-        dimensions = mapOf(
-            "service" to "billing-api",
-            "environment" to deployment.environment,
-        )
     }
 
-    install(BluetapeCloudWatchLogs) {
+    install(CloudWatchLogsKtorPlugin) {
         logGroupName = "/bluetape4k/billing-api"
         logStreamName = "${deployment.environment}/${deployment.instanceId}"
+        flushInterval = Duration.ofSeconds(5)
+        shutdownFlushTimeout = Duration.ofSeconds(5)
     }
 }
 ```
 
-Spring Boot라면 설정 파일에서 같은 결정을 드러낼 수 있습니다.
+메트릭 차원은 플러그인 설치 설정이 아니라 게시할 `MetricDatum`에 명시합니다. 또한 플러그인 설치만으로
+메트릭이나 로그가 자동 전송되지는 않습니다. 애플리케이션이 명시적으로 게시하거나 로그 이벤트를
+버퍼에 추가해야 합니다.
+
+Spring Boot에서도 애플리케이션이 소유하는 설정에 같은 이름 규칙을 명시할 수 있습니다. 다음 YAML은
+라이브러리가 제공하는 자동 구성 속성이 아니라 애플리케이션의 이름 정책을 설명하는 예시입니다.
 
 ```yaml
 bluetape4k:
@@ -132,7 +135,7 @@ bluetape4k:
       log-stream-name: prod/${HOSTNAME}
 ```
 
-예시 값은 단순하지만, 운영에서는 이런 이름이 중요합니다.
+운영에서는 다음 이름을 일관되게 유지해야 합니다.
 
 ```text
 metric namespace: bluetape4k/billing
@@ -142,66 +145,64 @@ log group: /bluetape4k/billing-worker
 log stream: prod/ip-10-0-12-34
 ```
 
-이름을 정하지 않으면 알람을 만들 때도, dashboard를 만들 때도, 장애 후 log를 찾을 때도 계속 비용을 냅니다.
-CloudWatch integration은 단순한 전송 코드가 아니라 "운영자가 무엇으로 검색할 것인가"를 정하는 코드입니다.
+일관된 이름은 경보와 대시보드 구성, 장애 후 로그 검색의 기준이 됩니다. CloudWatch 연동은 전송
+코드뿐 아니라 운영자가 사용할 검색 키를 정의하는 경계입니다.
 
-## Leader: provider를 고르면 storage와 runtime도 같이 따라온다
+## Leader: 공급자 선택에는 저장소와 런타임이 포함된다
 
-`leader 0.4.0`에서 다시 확인한 교훈은 단순합니다. leader provider 하나를 고르는 일은 실제로는 storage와 runtime을
-같이 고르는 일입니다.
+`leader 0.4.0`에서 리더 공급자를 선택하는 일은 저장소와 런타임을 함께 선택하는 일입니다.
 
-예를 들어 Redis backend를 고르면 Redis 장애 감지와 metric을 봐야 합니다. Kubernetes Lease를 고르면 Kubernetes
-client runtime이 따라옵니다. DynamoDB를 고르면 AWS 권한, table capacity, latency가 같이 따라옵니다.
+Redis 백엔드를 선택하면 Redis 장애 감지와 메트릭을 확인해야 합니다. Kubernetes Lease를 선택하면
+Kubernetes 클라이언트 런타임이, DynamoDB를 선택하면 AWS 권한·테이블 용량·지연 시간이 함께
+운영 경계에 들어옵니다.
 
 ```text
-leader election
-  -> provider 선택
-      -> storage 선택
-          -> client/runtime 선택
-              -> metric/log/alert 선택
+리더 선출
+  -> 공급자 선택
+      -> 저장소 선택
+          -> 클라이언트·런타임 선택
+              -> 메트릭·로그·경보 선택
 ```
 
-`Kubernetes K3s test runtime 충돌` 사례도 이 흐름에서 나왔습니다. Fabric8 Kubernetes client가 기대하는 Vert.x
-runtime line과 test runtime classpath가 맞지 않으면, leader election 로직을 검증하기도 전에 method mismatch가
-터질 수 있습니다.
+Kubernetes K3s 테스트 런타임 충돌도 이 경계에서 발생했습니다. Fabric8 Kubernetes 클라이언트가
+요구하는 Vert.x 호환선과 테스트 런타임 클래스패스가 다르면 리더 선출 로직을 검증하기 전에 메서드
+불일치가 발생할 수 있습니다.
 
-운영에서는 provider별로 봐야 할 값이 다릅니다.
+운영에서는 공급자별로 확인할 값이 다릅니다.
 
-| provider/storage | 먼저 볼 신호 | 장애 때 확인할 것 |
+| 공급자·저장소 | 우선 확인할 신호 | 장애 시 확인할 항목 |
 |---|---|---|
-| Redis | lock 갱신 latency, Redis connection error | Redis failover, network partition, TTL 설정 |
-| SQL/Exposed | lock row update latency, transaction error | DB lock wait, isolation, connection pool |
-| Kubernetes Lease | lease renew 실패, API server latency | service account 권한, Fabric8/runtime line |
-| DynamoDB | conditional write 실패, throttling | IAM, capacity, region, table key 설계 |
+| Redis | 잠금 갱신 지연 시간, Redis 연결 오류 | Redis 장애 조치, 네트워크 분할, TTL 설정 |
+| SQL/Exposed | 잠금 행 갱신 지연 시간, 트랜잭션 오류 | 데이터베이스 잠금 대기, 격리 수준, 커넥션 풀 |
+| Kubernetes Lease | lease 갱신 실패, API 서버 지연 시간 | 서비스 계정 권한, Fabric8·런타임 호환선 |
+| DynamoDB | 조건부 쓰기 실패, 스로틀링 | IAM, 용량, 리전, 테이블 키 설계 |
 
-여기서 "분산 leader election을 쓴다"는 말은 너무 넓습니다. 실제 서비스에는 "Redis에 lock을 잡는 leader",
-"Kubernetes Lease를 갱신하는 leader", "DynamoDB conditional write로 대표를 정하는 leader"가 들어갑니다.
-각 방식마다 장애 신호도 다릅니다.
+리더 선출의 운영 계약은 선택한 저장소에 따라 달라집니다. Redis 잠금, Kubernetes Lease 갱신,
+DynamoDB 조건부 쓰기는 서로 다른 장애 신호와 복구 절차를 가집니다.
 
-metric 이름은 프로젝트마다 달라질 수 있지만, 운영자가 보고 싶은 질문은 거의 같습니다.
+메트릭 이름은 프로젝트마다 달라도 운영자가 확인할 질문은 유사합니다.
 
 ```text
-현재 leader는 누구인가?
-마지막 renew는 언제 성공했나?
-renew 실패가 몇 번 연속 발생했나?
-leader 전환이 너무 자주 일어나지는 않나?
-backend latency가 평소보다 늘었나?
+현재 리더는 누구인가?
+마지막 갱신은 언제 성공했는가?
+갱신 실패가 몇 번 연속 발생했는가?
+리더 전환이 과도하게 자주 발생하는가?
+백엔드 지연 시간이 평소보다 증가했는가?
 ```
 
-이 질문에 답할 수 없다면 leader election이 있어도 운영하기 어렵습니다. "대표는 뽑힌다"와 "대표가 왜 바뀌었는지
-알 수 있다"는 다른 문제입니다.
+리더 선출의 성공 여부와 리더 전환 원인을 설명할 수 있는지는 서로 다른 운영 요구사항입니다.
 
-## production checklist
+## 운영 점검표
 
 `dependencies 1.3.0`으로 올린 뒤 운영 관점에서 확인할 항목을 간단히 정리하면 다음과 같습니다.
 
 | 영역 | 확인할 질문 |
 |---|---|
-| Exposed cache | `/actuator/health`에서 cache mode, queue depth, flush 상태를 볼 수 있는가? |
-| AWS metrics | namespace와 dimension 이름이 service/environment 기준으로 정리되어 있는가? |
-| AWS logs | log group과 stream 이름만 보고 서비스와 인스턴스를 찾을 수 있는가? |
-| Leader | provider/storage별 metric과 장애 신호를 구분해서 보고 있는가? |
-| Runtime classpath | Kubernetes, Ktor, AWS SDK처럼 runtime line이 민감한 dependency를 `dependencyInsight`로 확인했는가? |
+| Exposed 캐시 | `/actuator/health`에서 캐시 모드, 대기열 깊이, flush 상태를 확인할 수 있는가? |
+| AWS 메트릭 | 네임스페이스와 차원 이름을 서비스·환경 기준으로 정리했는가? |
+| AWS 로그 | 로그 그룹과 스트림 이름만으로 서비스와 인스턴스를 찾을 수 있는가? |
+| Leader | 공급자·저장소별 메트릭과 장애 신호를 구분하는가? |
+| 런타임 클래스패스 | Kubernetes, Ktor, AWS SDK처럼 호환선에 민감한 의존성을 `dependencyInsight`로 확인했는가? |
 
 확인 명령은 상황에 맞게 좁혀서 쓰면 됩니다.
 
@@ -219,26 +220,26 @@ curl -s http://localhost:8080/actuator/health | jq '.components.exposedCache'
 
 ## 마무리
 
-운영에서 좋은 변경은 꼭 화려하지 않습니다. `queueDepth`가 보이고, `flushJobRunning`이 보이고, metric namespace가
-정리되고, provider별 runtime 충돌을 빨리 확인할 수 있으면 실제 장애 대응 시간이 줄어듭니다.
+`queueDepth`, `flushJobRunning`, 메트릭 네임스페이스, 공급자별 런타임 호환성을 관측할 수 있으면
+장애 대응 시간을 줄일 수 있습니다.
 
-버그는 사라지지 않습니다. 대신 빨리 티 나게 만들 수는 있습니다. `dependencies 1.3.0`에서 운영 쪽으로 가져갈
-핵심은 그 부분입니다. 문제가 터졌을 때 "어디부터 봐야 하지?"라는 시간을 줄이는 것. 그게 새 기능보다 더 고마운
-날이 있습니다.
+`dependencies 1.3.0`의 운영상 가치는 결함을 제거하는 데만 있지 않습니다. 문제가 발생한 경계를
+조기에 드러내고 조사 순서를 정할 수 있게 하는 데 있습니다.
 
 ## 시리즈 글
 
-처음 `bluetape4k-dependencies`를 가져오는 방법부터 보고 싶다면
+처음 `bluetape4k-dependencies`를 적용하는 방법부터 확인하려면
 [사용 가이드](/ko/blog/bluetape4k-dependencies-usage-guide/)를 먼저 읽으면 됩니다.
 
 - [bluetape4k-dependencies 1.3.0 활용기 Part 1: 기능 보강과 경계 정리](/ko/blog/bluetape4k-dependencies-1-3-0-library-stories/)
-- [bluetape4k-dependencies 1.3.0 활용기 Part 2: 서비스 조합하기](/ko/blog/bluetape4k-dependencies-1-3-0-service-composition/)
-- [bluetape4k-dependencies 1.3.0 활용기 Part 3: 운영에서 티 나는 변화](/ko/blog/bluetape4k-dependencies-1-3-0-production-signals/)
-- [bluetape4k-dependencies 1.3.0 활용기 Part 4: 입력 경계에서 치운 똥들](/ko/blog/bluetape4k-dependencies-1-3-0-input-boundaries/)
+- [bluetape4k-dependencies 1.3.0 활용기 Part 2: 서비스 경계에 맞는 모듈 조합](/ko/blog/bluetape4k-dependencies-1-3-0-service-composition/)
+- [bluetape4k-dependencies 1.3.0 활용기 Part 3: 운영에서 드러나는 신호](/ko/blog/bluetape4k-dependencies-1-3-0-production-signals/)
+- [bluetape4k-dependencies 1.3.0 활용기 Part 4: 입력 경계와 자원 안전성](/ko/blog/bluetape4k-dependencies-1-3-0-input-boundaries/)
 
-## 참고한 소스
+## 자료
 
-- [`bluetape4k-exposed` CHANGELOG.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/CHANGELOG.md)
-- [`bluetape4k-aws` CHANGELOG.md](https://github.com/bluetape4k/bluetape4k-aws/blob/develop/CHANGELOG.md)
+- [`Exposed JDBC 캐시 상태 표시기 1.11.0`](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.11.0/spring-boot/jdbc/src/main/kotlin/io/bluetape4k/spring/data/exposed/jdbc/config/ExposedJdbcCacheHealthAutoConfiguration.kt)
+- [`CloudWatchKtorPluginConfig` 0.4.0](https://github.com/bluetape4k/bluetape4k-aws/blob/0.4.0/aws-ktor/src/main/kotlin/io/bluetape4k/aws/ktor/cloudwatch/CloudWatchKtorPluginConfig.kt)
+- [`CloudWatchLogsKtorPluginConfig` 0.4.0](https://github.com/bluetape4k/bluetape4k-aws/blob/0.4.0/aws-ktor/src/main/kotlin/io/bluetape4k/aws/ktor/cloudwatch/CloudWatchLogsKtorPluginConfig.kt)
 - [`bluetape4k-leader` CHANGELOG.md](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/CHANGELOG.md)
 - [`bluetape4k-leader` issue #480](https://github.com/bluetape4k/bluetape4k-leader/issues/480)

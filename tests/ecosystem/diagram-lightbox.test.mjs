@@ -475,6 +475,12 @@ test('the repaired blog diagrams expose localized titles while hero and screensh
   const enIds = await read('src/content/docs/blog/id-generators-go-kotlin-performance-comparison.mdx');
   const koDependencies = await read('src/content/docs/ko/blog/bluetape4k-dependencies-1-3-0-library-stories.mdx');
   const enDependencies = await read('src/content/docs/blog/bluetape4k-dependencies-1-3-0-library-stories.mdx');
+  const koDependenciesUsage = await read('src/content/docs/ko/blog/bluetape4k-dependencies-usage-guide.mdx');
+  const enDependenciesUsage = await read('src/content/docs/blog/bluetape4k-dependencies-usage-guide.mdx');
+  const koDependenciesComposition = await read('src/content/docs/ko/blog/bluetape4k-dependencies-1-3-0-service-composition.mdx');
+  const enDependenciesComposition = await read('src/content/docs/blog/bluetape4k-dependencies-1-3-0-service-composition.mdx');
+  const koDependenciesSignals = await read('src/content/docs/ko/blog/bluetape4k-dependencies-1-3-0-production-signals.mdx');
+  const enDependenciesSignals = await read('src/content/docs/blog/bluetape4k-dependencies-1-3-0-production-signals.mdx');
 
   assert.match(koRuntime, /class="bt4k-architecture"\s+data-diagram-title="Run과 lane의 상태·복구 모델"/);
   assert.match(enRuntime, /class="bt4k-architecture"\s+data-diagram-title="Run and lane state and recovery model"/);
@@ -497,6 +503,12 @@ test('the repaired blog diagrams expose localized titles while hero and screensh
     [enIds, ['Global Unique ID Generator Benchmark · Phase 1', 'Global Unique ID Generator Benchmark · Phase 2', 'Global Unique ID Generator Benchmark · Phase 3']],
     [koDependencies, ['bluetape4k-dependencies 1.3.0이 정렬한 라이브러리 경계']],
     [enDependencies, ['Library Boundaries Aligned by bluetape4k-dependencies 1.3.0']],
+    [koDependenciesUsage, ['BOM을 기준으로 관리하는 버전 경계']],
+    [enDependenciesUsage, ['Version Boundaries Governed by the BOM']],
+    [koDependenciesComposition, ['서비스 경계가 모듈 조합을 결정한다']],
+    [enDependenciesComposition, ['Service Boundaries Determine Module Composition']],
+    [koDependenciesSignals, ['운영 신호에서 진단 결정까지']],
+    [enDependenciesSignals, ['From Operational Signals to Diagnostic Decisions']],
   ]) {
     for (const title of titles) {
       assert.match(source, new RegExp(`data-diagram-title="${title}"`));
@@ -518,6 +530,12 @@ test('the repaired blog diagrams expose localized titles while hero and screensh
     enIds,
     koDependencies,
     enDependencies,
+    koDependenciesUsage,
+    enDependenciesUsage,
+    koDependenciesComposition,
+    enDependenciesComposition,
+    koDependenciesSignals,
+    enDependenciesSignals,
   ]) {
     assert.doesNotMatch(source, /class="bt4k-blog-hero"[^>]*data-diagram-title/);
   }

@@ -28,10 +28,17 @@ name, or leader renewal is wrong underneath.
 - `aws 0.4.0` clarifies CloudWatch metric and log boundaries in Ktor and Spring.
 - `leader 0.4.0` makes provider/storage choices and metric checkpoints more explicit.
 
+<figure class="bt4k-architecture" data-diagram-title="From Operational Signals to Diagnostic Decisions">
+  <img src="/assets/bluetape4k-dependencies-production-signals-01-en.png" alt="Flow diagram connecting Exposed cache, AWS CloudWatch, and Leader provider state through explicit publishing to observable signals and diagnostic recovery decisions" loading="lazy" />
+  <figcaption>Installing an integration does not complete the operational contract. The application must expose state and events explicitly, and operators must connect searchable signals and alerts to diagnostic and recovery decisions.</figcaption>
+</figure>
+
 ## Exposed Cache: See Whether Flush Stopped
 
 A write-behind cache is useful because request handling does not wait on every backing write. The risk is the same
 property: the request can look successful while the background flush is stuck.
+
+The following payload reflects the JDBC health indicator shipped in `exposed 1.11.0`.
 
 ```json
 {
@@ -40,11 +47,15 @@ property: the request can look successful while the background flush is stuck.
     "exposedCache": {
       "status": "OUT_OF_SERVICE",
       "details": {
-        "mode": "WRITE_BEHIND",
-        "queueDepth": 128,
-        "flushJobRunning": false,
-        "lastFlushError": "RedisConnectionFailureException",
-        "lastFlushErrorAt": "2026-06-28T13:00:00Z"
+        "reports": [
+          {
+            "name": "invoice-cache",
+            "mode": "WRITE_BEHIND",
+            "queueDepth": 128,
+            "flushJobRunning": false,
+            "lastFlushError": "Redis connection failed"
+          }
+        ]
       }
     }
   }
@@ -59,7 +70,6 @@ The important fields are operational, not decorative.
 | `queueDepth` | Shows whether flush work is backing up. |
 | `flushJobRunning` | Shows whether the background flush loop is alive. |
 | `lastFlushError` | Hints whether the problem is closer to DB, Redis, or serialization. |
-| `lastFlushErrorAt` | Separates a current failure from an already recovered one. |
 
 Without this, an operator sees only a slow service or inconsistent reads. With it, `/actuator/health` can show that the
 cache layer itself is no longer healthy.
@@ -70,32 +80,35 @@ Metric and log plumbing is easy to treat as a side effect. That becomes painful 
 environments and instances.
 
 ```kotlin
-install(BluetapeAwsCloudWatch) {
-    namespace = "billing-api"
-    serviceName = "billing"
-    environment = "prod"
+install(CloudWatchKtorPlugin) {
+    namespace = "bluetape4k/billing"
 }
 
-install(BluetapeAwsCloudWatchLogs) {
+install(CloudWatchLogsKtorPlugin) {
     logGroupName = "/bluetape4k/billing-api"
     logStreamName = instanceId
+    flushInterval = Duration.ofSeconds(5)
+    shutdownFlushTimeout = Duration.ofSeconds(5)
 }
 ```
 
-The key question is whether the names are searchable during an incident.
+Metric dimensions belong to each published `MetricDatum`, not to plugin installation. Installing either plugin also
+does not publish data automatically: the application must explicitly publish metrics or append buffered log events.
 
 ```yaml
-metrics:
-  namespace: billing-api
-  dimensions:
-    service: billing
-    environment: prod
-logs:
-  group: /bluetape4k/billing-api
-  stream: ${instanceId}
+observability:
+  cloudwatch:
+    namespace: bluetape4k/billing
+    dimensions:
+      service: billing
+      environment: prod
+  cloudwatch-logs:
+    group: /bluetape4k/billing-api
+    stream: ${instanceId}
 ```
 
-If the namespace, dimensions, group, and stream are not chosen deliberately, production search becomes guesswork.
+This YAML is an application-owned naming policy, not a library auto-configuration contract. If the namespace,
+dimensions, group, and stream are not chosen deliberately, production search becomes guesswork.
 
 ## Leader: Provider Choice Brings Storage and Runtime
 
@@ -145,13 +158,14 @@ an incident is visible early or discovered after users notice the symptoms.
 If you want the first import path, start with the [usage guide](/blog/bluetape4k-dependencies-usage-guide/).
 
 - [bluetape4k-dependencies 1.3.0 in Practice Part 1: Features and Cleanup](/blog/bluetape4k-dependencies-1-3-0-library-stories/)
-- [bluetape4k-dependencies 1.3.0 in Practice Part 2: Composing Services](/blog/bluetape4k-dependencies-1-3-0-service-composition/)
+- [bluetape4k-dependencies 1.3.0 in Practice Part 2: Selecting Modules by Service Boundary](/blog/bluetape4k-dependencies-1-3-0-service-composition/)
 - [bluetape4k-dependencies 1.3.0 in Practice Part 3: Production Signals](/blog/bluetape4k-dependencies-1-3-0-production-signals/)
 - [bluetape4k-dependencies 1.3.0 in Practice Part 4: Input Boundaries](/blog/bluetape4k-dependencies-1-3-0-input-boundaries/)
 
 ## Sources
 
-- [`bluetape4k-exposed` CHANGELOG.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/CHANGELOG.md)
-- [`bluetape4k-aws` CHANGELOG.md](https://github.com/bluetape4k/bluetape4k-aws/blob/develop/CHANGELOG.md)
+- [`Exposed JDBC cache health indicator` 1.11.0](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.11.0/spring-boot/jdbc/src/main/kotlin/io/bluetape4k/spring/data/exposed/jdbc/config/ExposedJdbcCacheHealthAutoConfiguration.kt)
+- [`CloudWatchKtorPluginConfig` 0.4.0](https://github.com/bluetape4k/bluetape4k-aws/blob/0.4.0/aws-ktor/src/main/kotlin/io/bluetape4k/aws/ktor/cloudwatch/CloudWatchKtorPluginConfig.kt)
+- [`CloudWatchLogsKtorPluginConfig` 0.4.0](https://github.com/bluetape4k/bluetape4k-aws/blob/0.4.0/aws-ktor/src/main/kotlin/io/bluetape4k/aws/ktor/cloudwatch/CloudWatchLogsKtorPluginConfig.kt)
 - [`bluetape4k-leader` CHANGELOG.md](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/CHANGELOG.md)
 - [`bluetape4k-leader` issue #480](https://github.com/bluetape4k/bluetape4k-leader/issues/480)

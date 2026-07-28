@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="940" viewBox="0 0 1600 940" role="img" aria-labelledby="title desc">
+  <title id="title">Service Boundaries Determine Module Composition</title>
+  <desc id="desc">The BOM aligns versions; the application designs service boundaries and resource ownership.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="16" markerHeight="16" refX="13" refY="8" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1,1 L15,8 L1,15 Z" fill="#36C5F0"/>
+    </marker>
+  </defs>
+  <style>
+    .canvas{fill:#07111F}.frame{fill:#0D1B2D;stroke:#36536F;stroke-width:2}
+    .card{fill:#10243A;stroke:#36536F;stroke-width:2}.focus{fill:#0C3044;stroke:#5EEAD4;stroke-width:2.5}
+    .warn{fill:#332B18;stroke:#FBBF24;stroke-width:2}.title{font:700 40px "Architects Daughter","Comic Sans MS",cursive;fill:#E6F2FF}
+    .subtitle{font:500 20px "Comic Mono","SFMono-Regular",Menlo,monospace;fill:#9CB4CC}.card-title{font:700 25px "Architects Daughter","Comic Sans MS",cursive;fill:#E6F2FF}
+    .body{font:600 18px "Comic Mono","SFMono-Regular",Menlo,monospace;fill:#9CB4CC}.chip{font:700 16px "Comic Mono","SFMono-Regular",Menlo,monospace;fill:#5EEAD4}
+    .label{font:700 16px "Comic Mono","SFMono-Regular",Menlo,monospace;fill:#36C5F0}.connector{fill:none;stroke:#36C5F0;stroke-width:4;marker-end:url(#arrow)}
+    .divider{stroke:#36536F;stroke-width:2}.footer{font:600 18px "Comic Mono","SFMono-Regular",Menlo,monospace;fill:#9CB4CC}
+  </style>
+  <rect width="1600" height="940" class="canvas"/>
+  <rect x="32" y="32" width="1536" height="876" rx="32" class="frame"/>
+  <text x="80" y="98" class="title">Service Boundaries Determine Module Composition</text>
+  <text x="80" y="138" class="subtitle">Services share one BOM but select different modules according to responsibility and lifecycle.</text>
+  
+      <rect x="80" y="200" width="1440" height="80" rx="22" class="focus"/>
+      <text x="800" y="250" text-anchor="middle" class="card-title">Shared version boundary / bluetape4k-dependencies 1.3.0</text>
+      
+        <path d="M300 280 V348" class="connector"/>
+        <rect x="80" y="370" width="440" height="330" rx="26" class="card"/>
+        <text x="110" y="430" class="card-title">Spring Boot worker</text>
+        <line x1="110" y1="458" x2="490" y2="458" class="divider"/>
+        <text x="110" y="510" class="body">DB work / S3 output</text>
+        <text x="110" y="554" class="body">Single execution / health</text>
+        <rect x="108" y="610" width="384" height="58" rx="16" fill="#12364A"/>
+        <text x="300" y="646" text-anchor="middle" class="chip">Exposed / AWS / Leader</text>
+
+        <path d="M810 280 V348" class="connector"/>
+        <rect x="590" y="370" width="440" height="330" rx="26" class="card"/>
+        <text x="620" y="430" class="card-title">Ktor search API</text>
+        <line x1="620" y1="458" x2="1000" y2="458" class="divider"/>
+        <text x="620" y="510" class="body">HTTP / input validation</text>
+        <text x="620" y="554" class="body">Observability / client lifecycle</text>
+        <rect x="618" y="610" width="384" height="58" rx="16" fill="#12364A"/>
+        <text x="810" y="646" text-anchor="middle" class="chip">Ktor / Text / AWS</text>
+
+        <path d="M1320 280 V348" class="connector"/>
+        <rect x="1100" y="370" width="440" height="330" rx="26" class="card"/>
+        <text x="1130" y="430" class="card-title">Image upload API</text>
+        <line x1="1130" y1="458" x2="1510" y2="458" class="divider"/>
+        <text x="1130" y="510" class="body">Size limit / streaming</text>
+        <text x="1130" y="554" class="body">Decode / OCR</text>
+        <rect x="1128" y="610" width="384" height="58" rx="16" fill="#12364A"/>
+        <text x="1320" y="646" text-anchor="middle" class="chip">Image / OCR / Okio</text>
+      <line x1="80" y1="790" x2="1520" y2="790" class="divider"/>
+      <text x="800" y="836" text-anchor="middle" class="footer">The BOM aligns versions; the application designs service boundaries and resource ownership.</text>
+</svg>

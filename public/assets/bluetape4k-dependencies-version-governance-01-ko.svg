@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="940" viewBox="0 0 1600 940" role="img" aria-labelledby="title desc">
+  <title id="title">BOM을 기준으로 관리하는 버전 경계</title>
+  <desc id="desc">기본 경로는 중앙 정렬이며, 개별 버전 고정은 추적 가능한 임시 예외입니다.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="16" markerHeight="16" refX="13" refY="8" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1,1 L15,8 L1,15 Z" fill="#36C5F0"/>
+    </marker>
+  </defs>
+  <style>
+    .canvas{fill:#07111F}.frame{fill:#0D1B2D;stroke:#36536F;stroke-width:2}
+    .card{fill:#10243A;stroke:#36536F;stroke-width:2}.focus{fill:#0C3044;stroke:#5EEAD4;stroke-width:2.5}
+    .warn{fill:#332B18;stroke:#FBBF24;stroke-width:2}.title{font:700 40px "goorm Sans","Apple SD Gothic Neo",sans-serif;fill:#E6F2FF}
+    .subtitle{font:500 20px "goorm Sans Code","goorm Sans",monospace;fill:#9CB4CC}.card-title{font:700 25px "goorm Sans","Apple SD Gothic Neo",sans-serif;fill:#E6F2FF}
+    .body{font:600 18px "goorm Sans Code","goorm Sans",monospace;fill:#9CB4CC}.chip{font:700 16px "goorm Sans Code","goorm Sans",monospace;fill:#5EEAD4}
+    .label{font:700 16px "goorm Sans Code","goorm Sans",monospace;fill:#36C5F0}.connector{fill:none;stroke:#36C5F0;stroke-width:4;marker-end:url(#arrow)}
+    .divider{stroke:#36536F;stroke-width:2}.footer{font:600 18px "goorm Sans Code","goorm Sans",monospace;fill:#9CB4CC}
+  </style>
+  <rect width="1600" height="940" class="canvas"/>
+  <rect x="32" y="32" width="1536" height="876" rx="32" class="frame"/>
+  <text x="80" y="98" class="title">BOM을 기준으로 관리하는 버전 경계</text>
+  <text x="80" y="138" class="subtitle">애플리케이션은 BOM 버전을 선택하고 개별 모듈 버전은 예외로만 관리합니다.</text>
+  
+      
+    <rect x="80" y="240" width="380" height="190" rx="24" class="card"/>
+    <text x="108" y="294" class="card-title">애플리케이션</text>
+    <text x="108" y="344" class="body">BOM 버전 1개 선택</text>
+    <text x="108" y="380" class="body">필요한 모듈만 선언</text>
+      
+    <rect x="610" y="240" width="380" height="190" rx="24" class="focus"/>
+    <text x="638" y="294" class="card-title">bluetape4k-dependencies</text>
+    <text x="638" y="344" class="body">검증된 모듈 조합</text>
+    <text x="638" y="380" class="body">전이 의존성 호환선</text>
+      
+    <rect x="1140" y="240" width="380" height="190" rx="24" class="card"/>
+    <text x="1168" y="294" class="card-title">선택한 기능 모듈</text>
+    <text x="1168" y="344" class="body">projects · exposed · aws</text>
+    <text x="1168" y="380" class="body">image · text · leader</text>
+      <path d="M460 335 H590" class="connector"/>
+      <text x="525" y="310" text-anchor="middle" class="label">BOM 적용</text>
+      <path d="M990 335 H1120" class="connector"/>
+      <text x="1055" y="310" text-anchor="middle" class="label">버전 정렬</text>
+      
+    <rect x="610" y="540" width="380" height="190" rx="24" class="warn"/>
+    <text x="638" y="594" class="card-title">임시 버전 예외</text>
+    <text x="638" y="644" class="body">사유 · 제거 조건 기록</text>
+    <text x="638" y="680" class="body">검증 후 BOM으로 복귀</text>
+      <path d="M800 430 V520" class="connector"/>
+      <text x="828" y="482" class="label">문서화된 예외만 허용</text>
+      <line x1="80" y1="790" x2="1520" y2="790" class="divider"/>
+      <text x="800" y="836" text-anchor="middle" class="footer">기본 경로는 중앙 정렬이며, 개별 버전 고정은 추적 가능한 임시 예외입니다.</text>
+</svg>
