@@ -66,6 +66,39 @@ function destinationRelative(route) {
   return relative;
 }
 
+function githubSourceUrl(repository, sourceRef, sourcePath) {
+  const encoded = sourcePath.split('/').map(encodeURIComponent).join('/');
+  return `https://github.com/${repository}/blob/${sourceRef}/${encoded}`;
+}
+
+function rewritePublishedLinks(content, {
+  repository,
+  sourceRef,
+  sourcePath,
+  localeRoutes,
+}) {
+  return content.replace(/href=(["'])([^"']+)\1/g, (match, quote, href) => {
+    if (
+      href.startsWith('#')
+      || href.startsWith('/')
+      || href.startsWith('//')
+      || /^[a-z][a-z\d+.-]*:/i.test(href)
+    ) {
+      return match;
+    }
+    const suffixIndex = href.search(/[?#]/);
+    const relative = suffixIndex === -1 ? href : href.slice(0, suffixIndex);
+    const suffix = suffixIndex === -1 ? '' : href.slice(suffixIndex);
+    const resolved = safeSourcePath(path.posix.normalize(path.posix.join(
+      path.posix.dirname(sourcePath),
+      relative,
+    )));
+    const destination = localeRoutes.get(resolved)
+      ?? githubSourceUrl(repository, sourceRef, resolved);
+    return `href=${quote}${destination}${suffix}${quote}`;
+  });
+}
+
 async function resolveSourceFile(sourceRoot, relativePath) {
   const safe = safeSourcePath(relativePath);
   const rootStatus = await lstat(sourceRoot);
@@ -161,12 +194,24 @@ export async function syncVisualCompanionSnapshot({
   );
   const copied = [];
   const documents = [];
+  const localeRoutes = new Map(manifest.documents.flatMap((document) =>
+    ['en', 'ko'].map((locale) => [
+      document.locales[locale].html,
+      publicRouteFor(locale, repository, document.id),
+    ]),
+  ));
   for (const document of manifest.documents) {
     const locales = {};
     for (const locale of ['en', 'ko']) {
       const sourcePath = document.locales[locale].html;
       const sourceAbsolute = await resolveSourceFile(sourceRoot, sourcePath);
-      const content = await readFile(sourceAbsolute);
+      const sourceContent = await readFile(sourceAbsolute);
+      const content = Buffer.from(rewritePublishedLinks(sourceContent.toString('utf8'), {
+        repository,
+        sourceRef: descriptor.sourceRef,
+        sourcePath,
+        localeRoutes,
+      }));
       const route = publicRouteFor(locale, repository, document.id);
       const destination = destinationRelative(route);
       copied.push({ destination, content });
@@ -174,6 +219,7 @@ export async function syncVisualCompanionSnapshot({
         title: document.locales[locale].title,
         sourcePath,
         route,
+        sourceSha256: sha256(sourceContent),
         sha256: sha256(content),
       };
     }
@@ -250,7 +296,12 @@ export async function validateVisualCompanionSnapshot({ siteRoot, repository }) 
     for (const locale of ['en', 'ko']) {
       const asset = document.locales?.[locale];
       const expectedRoute = publicRouteFor(locale, repository, document.id);
-      if (!asset || asset.route !== expectedRoute || !SHA256.test(asset.sha256)) {
+      if (
+        !asset
+        || asset.route !== expectedRoute
+        || !SHA256.test(asset.sourceSha256)
+        || !SHA256.test(asset.sha256)
+      ) {
         fail('VISUAL_ASSET_CONTRACT', `${document.id}:${locale}`);
       }
       const relative = destinationRelative(asset.route);

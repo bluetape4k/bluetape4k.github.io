@@ -79,8 +79,8 @@ async function fixture() {
     ignoredSourceMetadata: true,
   });
   for (const [name, content] of [
-    ['plan.en.html', '<!doctype html><html lang="en"><body id="simulation">plan en</body></html>'],
-    ['plan.html', '<!doctype html><html lang="ko"><body id="history">plan ko</body></html>'],
+    ['plan.en.html', '<!doctype html><html lang="en"><body id="simulation"><a href="plan.md">source</a><a href="plan.html">한국어</a></body></html>'],
+    ['plan.html', '<!doctype html><html lang="ko"><body id="history"><a href="plan.md">원문</a><a href="plan.en.html">English</a></body></html>'],
     ['policy.en.html', '<!doctype html><html lang="en"><body id="simulation">policy en</body></html>'],
     ['policy.html', '<!doctype html><html lang="ko"><body id="history">policy ko</body></html>'],
     ['private.en.html', '<!doctype html><html lang="en"><body>private en</body></html>'],
@@ -123,6 +123,7 @@ test('visual companion snapshot copies only public manifest locale assets to fix
   ]);
   assert.equal('ignoredSourceMetadata' in result.snapshot, false);
   assert.equal('sourceOnlyMetadata' in result.snapshot.documents[0], false);
+  assert.match(result.snapshot.documents[0].locales.en.sourceSha256, /^[0-9a-f]{64}$/);
   assert.deepEqual(
     result.snapshot.documents.flatMap(({ locales }) => Object.values(locales).map(({ route }) => route)),
     [
@@ -138,6 +139,19 @@ test('visual companion snapshot copies only public manifest locale assets to fix
   await assert.rejects(
     access(path.join(setup.siteRoot, 'public/visual-companions/clinic-appointment/outside/index.html')),
   );
+  const english = await readFile(
+    path.join(setup.siteRoot, 'public/visual-companions/clinic-appointment/appointment-plan-and-capacity/index.html'),
+    'utf8',
+  );
+  assert.match(
+    english,
+    new RegExp(`https://github.com/bluetape4k/clinic-appointment/blob/${setup.sourceRef}/docs/specs/plan.md`),
+  );
+  assert.match(
+    english,
+    /href="\/ko\/visual-companions\/clinic-appointment\/appointment-plan-and-capacity\/"/,
+  );
+  assert.doesNotMatch(english, /href="plan\.(?:md|html)"/);
   assert.equal((await validateVisualCompanionSnapshot({ siteRoot: setup.siteRoot, repository })).assetCount, 4);
 });
 

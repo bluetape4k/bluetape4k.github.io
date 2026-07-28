@@ -21,13 +21,15 @@
           "title": "Appointment Plan and Capacity",
           "sourcePath": "docs/superpowers/specs/2026-07-26-appointment-plan-and-capacity-design.en.html",
           "route": "/visual-companions/clinic-appointment/appointment-plan-and-capacity/",
-          "sha256": "270cd0b7275678a6d8a148215b510e81699873c21dc4b4e9c0224fa0de8009af"
+          "sourceSha256": "270cd0b7275678a6d8a148215b510e81699873c21dc4b4e9c0224fa0de8009af",
+          "sha256": "e547b8c2add3d6cfdaec4f6a86442042096dad7ad6121a229febbc351d2ad3fd"
         },
         "ko": {
           "title": "예약 계획과 수용량",
           "sourcePath": "docs/superpowers/specs/2026-07-26-appointment-plan-and-capacity-design.html",
           "route": "/ko/visual-companions/clinic-appointment/appointment-plan-and-capacity/",
-          "sha256": "a5cce1feb2e82e03779a983ce932aed1832a09da734fc74790a5d05ed90e9860"
+          "sourceSha256": "a5cce1feb2e82e03779a983ce932aed1832a09da734fc74790a5d05ed90e9860",
+          "sha256": "0eb20c989c63673e528349476c4f5cb5167f80dabb52a0063a4183212f01a4f5"
         }
       }
     },
@@ -48,16 +50,18 @@
           "title": "Scheduling Policy Foundation",
           "sourcePath": "docs/superpowers/specs/2026-07-27-scheduling-policy-foundation-design.en.html",
           "route": "/visual-companions/clinic-appointment/scheduling-policy-foundation/",
-          "sha256": "81546135edac14065effef2275baf59d6e2fba9f246642f2af9ab1947ef04932"
+          "sourceSha256": "81546135edac14065effef2275baf59d6e2fba9f246642f2af9ab1947ef04932",
+          "sha256": "fa115b39af0026f605c826641a496a7dc5766c263c8b6b0d8393a6df603d445f"
         },
         "ko": {
           "title": "Scheduling Policy 기반",
           "sourcePath": "docs/superpowers/specs/2026-07-27-scheduling-policy-foundation-design.html",
           "route": "/ko/visual-companions/clinic-appointment/scheduling-policy-foundation/",
-          "sha256": "b90a560b65267e9e63a8278182e75e8e75d4e5d914dc042dcce6cc1414cbe886"
+          "sourceSha256": "b90a560b65267e9e63a8278182e75e8e75d4e5d914dc042dcce6cc1414cbe886",
+          "sha256": "8b643d75559de6cc21520008ed8f942f51bae8a9d2f8e19a49c460d6a9c1c7c5"
         }
       }
     }
   ],
-  "snapshotDigest": "0ba2873fb33d800b7c0b6ce53f432ca65ac4b1772f62b8372bb84422bc220ab0"
+  "snapshotDigest": "ef237b9df4393bd8a6aaa5a2630813ba7c73a33d502c67b53d165db0f8af5e29"
 }
