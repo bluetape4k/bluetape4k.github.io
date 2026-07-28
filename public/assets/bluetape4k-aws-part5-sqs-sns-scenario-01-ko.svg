@@ -1,84 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="760" viewBox="0 0 1160 760" role="img" aria-label="Spring Boot SQS/SNS example runtime scenario">
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="760" viewBox="0 0 1160 760" role="img" aria-label="Spring Boot SQS/SNS 예제 실행 구조">
   <defs>
     <style>
-      .title{font-family:'goorm Sans',cursive;font-size:34px;fill:#102033}
-      .subtitle,.body,.small{font-family:'goorm Sans Code',monospace;fill:#334155}
-      .subtitle{font-size:15px}.label{font-family:'goorm Sans',cursive;font-size:22px;fill:#102033}
+      .title{font-family:'goorm Sans',cursive;font-size:34px;fill:#f8fafc}
+      .subtitle,.body,.small{font-family:'goorm Sans Code',monospace;fill:#cbd5e1}
+      .subtitle{font-size:15px}.label{font-family:'goorm Sans',cursive;font-size:22px;fill:#f8fafc}
       .body{font-size:14px}.small{font-size:12px}
-      .panel{fill:#fff;stroke:#d7e2ef;stroke-width:1.4;rx:18}.card{stroke-width:1.6;rx:16}
-      .arrow{fill:none;stroke:#475569;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+      .panel{fill:#111827;stroke:#334155;stroke-width:1.4;rx:18}.card{stroke-width:1.6;rx:16}
+      .arrow{fill:none;stroke:#94a3b8;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
       .return{fill:none;stroke:#64748b;stroke-width:1.9;stroke-dasharray:8 7;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrowMuted)}
-      .chip{fill:#ffffff;stroke:#d7e2ef;stroke-width:1;rx:10}.footer{fill:#102033;stroke:#102033;stroke-width:1.2;rx:10}
+      .chip{fill:#111827;stroke:#94a3b8;stroke-width:1;rx:10}.footer{fill:#0f172a;stroke:#102033;stroke-width:1.2;rx:10}
       .footerText{font-family:'goorm Sans Code',monospace;font-size:12px;fill:#ffffff}
     </style>
-    <marker id="arrow" viewBox="0 0 10 10" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#475569"/></marker>
-    <marker id="arrowMuted" viewBox="0 0 10 10" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#64748b"/></marker>
+    <marker id="arrow" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 14 7 L 0 14 Z" fill="#94a3b8"/></marker>
+    <marker id="arrowMuted" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 14 7 L 0 14 Z" fill="#64748b"/></marker>
   </defs>
-  <rect width="1160" height="760" fill="#ffffff"/>
-  <text class="title" x="54" y="70">Spring Boot SQS/SNS example flow</text>
-  <text class="subtitle" x="56" y="104">REST publish, SNS fanout, SQS listener lifecycle, manual ack, retry, DLQ setup이 하나의 실행 예제에서 만납니다.</text>
+  <rect width="1160" height="760" fill="#0b1220"/>
+  <text class="title" x="54" y="70">Spring Boot SQS/SNS 예제 흐름</text>
+  <text class="subtitle" x="56" y="104">REST 게시, SNS 팬아웃, SQS 리스너 생명주기, 수동 승인, 재시도, DLQ 설정을 하나의 실행 예제로 검증합니다.</text>
   <rect class="panel" x="54" y="136" width="1052" height="560"/>
 
-  <rect class="card" x="86" y="214" width="214" height="100" fill="#ecfeff" stroke="#06b6d4"/>
-  <text class="label" x="193" y="250" text-anchor="middle">HTTP client / test</text>
-  <text class="body" x="193" y="278" text-anchor="middle">queue, topic, listener</text>
-  <text class="body" x="193" y="300" text-anchor="middle">DLQ route</text>
+  <rect class="card" x="86" y="214" width="214" height="100" fill="#123a43" stroke="#22d3ee"/>
+  <text class="label" x="193" y="250" text-anchor="middle">HTTP 클라이언트 / 테스트</text>
+  <text class="body" x="193" y="278" text-anchor="middle">큐, 토픽, 리스너</text>
+  <text class="body" x="193" y="300" text-anchor="middle">DLQ 경로</text>
 
-  <rect class="card" x="388" y="184" width="260" height="112" fill="#dcfce7" stroke="#22c55e"/>
+  <rect class="card" x="388" y="184" width="260" height="112" fill="#163a2d" stroke="#4ade80"/>
   <text class="label" x="518" y="224" text-anchor="middle">Spring WebFlux API</text>
   <text class="body" x="518" y="252" text-anchor="middle">SqsSnsExampleController</text>
-  <text class="body" x="518" y="274" text-anchor="middle">service로 위임</text>
+  <text class="body" x="518" y="274" text-anchor="middle">서비스로 위임</text>
 
-  <rect class="card" x="760" y="184" width="254" height="112" fill="#fef3c7" stroke="#f59e0b"/>
-  <text class="label" x="887" y="224" text-anchor="middle">SQS / SNS operation</text>
-  <text class="body" x="887" y="252" text-anchor="middle">coroutine template</text>
-  <text class="body" x="887" y="274" text-anchor="middle">SDK client</text>
+  <rect class="card" x="760" y="184" width="254" height="112" fill="#453511" stroke="#fbbf24"/>
+  <text class="label" x="887" y="224" text-anchor="middle">SQS / SNS 작업</text>
+  <text class="body" x="887" y="252" text-anchor="middle">코루틴 템플릿</text>
+  <text class="body" x="887" y="274" text-anchor="middle">SDK 클라이언트</text>
 
-  <rect class="card" x="760" y="374" width="254" height="108" fill="#ffe4e6" stroke="#fb7185"/>
-  <text class="label" x="887" y="412" text-anchor="middle">SNS to SQS fanout</text>
-  <text class="body" x="887" y="440" text-anchor="middle">topic, queue policy,</text>
-  <text class="body" x="887" y="462" text-anchor="middle">subscription, redrive</text>
+  <rect class="card" x="760" y="374" width="254" height="108" fill="#4a2430" stroke="#fb7185"/>
+  <text class="label" x="887" y="412" text-anchor="middle">SNS에서 SQS로 팬아웃</text>
+  <text class="body" x="887" y="440" text-anchor="middle">토픽, 큐 정책,</text>
+  <text class="body" x="887" y="462" text-anchor="middle">구독, 재처리</text>
 
-  <rect class="card" x="456" y="514" width="254" height="104" fill="#fff7ed" stroke="#fb923c"/>
+  <rect class="card" x="456" y="514" width="254" height="104" fill="#4a2d18" stroke="#fb923c"/>
   <text class="label" x="583" y="552" text-anchor="middle">LocalStack SQS/SNS</text>
-  <text class="body" x="583" y="580" text-anchor="middle">또는 실제 AWS endpoint</text>
+  <text class="body" x="583" y="580" text-anchor="middle">또는 실제 AWS 엔드포인트</text>
 
-  <rect class="card" x="134" y="424" width="268" height="110" fill="#f3e8ff" stroke="#a855f7"/>
-  <text class="label" x="268" y="462" text-anchor="middle">@SqsListener container</text>
-  <text class="body" x="268" y="490" text-anchor="middle">typed payload, manual ack,</text>
-  <text class="body" x="268" y="512" text-anchor="middle">retry/backoff, interceptor</text>
+  <rect class="card" x="134" y="424" width="268" height="110" fill="#35234d" stroke="#c084fc"/>
+  <text class="label" x="268" y="462" text-anchor="middle">@SqsListener 컨테이너</text>
+  <text class="body" x="268" y="490" text-anchor="middle">형식 지정 페이로드, 수동 승인,</text>
+  <text class="body" x="268" y="512" text-anchor="middle">재시도/백오프, 인터셉터</text>
 
-  <rect class="card" x="92" y="594" width="310" height="62" fill="#e0f2fe" stroke="#38bdf8"/>
+  <rect class="card" x="92" y="594" width="310" height="62" fill="#12344a" stroke="#38bdf8"/>
   <text class="label" x="247" y="622" text-anchor="middle">ReceivedOrderStore</text>
-  <text class="body" x="247" y="645" text-anchor="middle">message, order, attempt, event</text>
+  <text class="body" x="247" y="645" text-anchor="middle">메시지, 주문, 시도, 이벤트</text>
 
   <polyline class="arrow" points="300,264 344,264 344,240 388,240"/>
   <polyline class="arrow" points="648,240 760,240"/>
   <rect class="chip" x="670" y="204" width="68" height="24"/>
-  <text class="small" x="704" y="221" text-anchor="middle">publish</text>
+  <text class="small" x="704" y="221" text-anchor="middle">게시</text>
 
   <polyline class="arrow" points="887,296 887,374"/>
   <rect class="chip" x="908" y="324" width="66" height="24"/>
-  <text class="small" x="941" y="341" text-anchor="middle">fanout</text>
+  <text class="small" x="941" y="341" text-anchor="middle">팬아웃</text>
 
   <polyline class="arrow" points="887,482 887,566 710,566"/>
   <polyline class="arrow" points="1014,240 1046,240 1046,566 710,566"/>
   <polyline class="arrow" points="456,566 268,566 268,534"/>
   <rect class="chip" x="324" y="548" width="78" height="24"/>
-  <text class="small" x="363" y="565" text-anchor="middle">message</text>
+  <text class="small" x="363" y="565" text-anchor="middle">메시지</text>
 
   <polyline class="return" points="268,424 268,356 518,356 518,296"/>
   <rect class="chip" x="432" y="326" width="64" height="24"/>
-  <text class="small" x="464" y="343" text-anchor="middle">event</text>
+  <text class="small" x="464" y="343" text-anchor="middle">이벤트</text>
 
   <polyline class="return" points="402,478 583,478 583,514"/>
   <rect class="chip" x="442" y="446" width="92" height="24"/>
-  <text class="small" x="488" y="463" text-anchor="middle">ack / retry</text>
+  <text class="small" x="488" y="463" text-anchor="middle">승인 / 재시도</text>
 
   <polyline class="arrow" points="268,534 268,594"/>
 
   <rect class="footer" x="86" y="670" width="988" height="36"/>
-  <text class="footerText" x="580" y="693" text-anchor="middle">Example role: REST publish, listener lifecycle, typed conversion, ack, fanout, DLQ 동작을 local에서 증명합니다.</text>
+  <text class="footerText" x="580" y="693" text-anchor="middle">예제 역할: REST 게시, 리스너 생명주기, 형식 변환, 승인, 팬아웃, DLQ 동작을 로컬에서 검증합니다.</text>
   <path class="connector" d="M2 2 L3 2" fill="none" stroke="transparent"/>
 </svg>

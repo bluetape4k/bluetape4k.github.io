@@ -105,11 +105,8 @@ const assets = [
 
 for (const asset of assets) {
   const base = join(outDir, asset.name);
-  writeFileSync(`${base}.dot`, asset.dot);
-  execFileSync("dot", ["-Tplain", `${base}.dot`, "-o", `${base}.plain`]);
-  if (process.env.AWS_GENERATE_SKETCHES === "1") {
-    execFileSync("dot", ["-Tsvg", `${base}.dot`, "-o", `${base}-sketch.svg`]);
-    renderPng(`${base}-sketch.svg`, `${base}-sketch.png`);
+  for (const stale of [".dot", ".plain", "-sketch.svg", "-sketch.png"]) {
+    rmSync(`${base}${stale}`, { force: true });
   }
   writeFileSync(`${base}.svg`, asset.svg);
   execFileSync("xmllint", ["--noout", `${base}.svg`]);
@@ -118,94 +115,95 @@ for (const asset of assets) {
 
 const localeReplacements = new Map([
   ["bluetape4k-aws-part5-adoption-flow-01", [
-    ["bluetape4k AWS real example adoption flow", "bluetape4k AWS 실제 예제 adoption flow"],
+    ["bluetape4k AWS real example adoption flow", "bluetape4k AWS 실제 예제 도입 흐름"],
     ["From example code to verified AWS behavior", "예제 코드에서 검증된 AWS 동작까지"],
-    ["The examples show where framework code ends, helper code begins, and local AWS verification proves the flow.", "예제는 framework code와 helper code의 경계, 그리고 local AWS 검증 위치를 보여 줍니다."],
-    ["Example app", "Example app"],
-    ["controller, route,", "controller, route,"],
-    ["worker, repository", "worker, repository"],
-    ["Spring Boot path", "Spring Boot path"],
+    ["The examples show where framework code ends, helper code begins, and local AWS verification proves the flow.", "예제는 프레임워크 코드와 도우미 코드의 경계, 로컬 AWS 검증 지점을 보여 줍니다."],
+    ["Example app", "예제 애플리케이션"],
+    ["controller, route,", "컨트롤러, 경로,"],
+    ["worker, repository", "작업자, 저장소"],
+    ["Spring Boot path", "Spring Boot 경로"],
     ["S3Operations, @SqsListener,", "S3Operations, @SqsListener,"],
-    ["DynamoDB repository", "DynamoDB repository"],
-    ["Ktor path", "Ktor path"],
-    ["S3KtorClient, routes,", "S3KtorClient, route,"],
-    ["plugins and lifecycle", "plugin과 lifecycle"],
-    ["bluetape4k-aws helpers", "bluetape4k-aws helper"],
-    ["coroutine bridge, explicit SDK,", "coroutine bridge, explicit SDK,"],
-    ["CRT and transfer choices", "CRT와 transfer 선택"],
-    ["Local verification", "Local verification"],
-    ["Floci or LocalStack tests", "Floci 또는 LocalStack test"],
-    ["real cloud later", "실제 cloud는 이후"],
+    ["DynamoDB repository", "DynamoDB 저장소"],
+    ["Ktor path", "Ktor 경로"],
+    ["S3KtorClient, routes,", "S3KtorClient, 경로,"],
+    ["plugins and lifecycle", "플러그인과 생명주기"],
+    ["bluetape4k-aws helpers", "bluetape4k-aws 도우미"],
+    ["coroutine bridge, explicit SDK,", "코루틴 연결, 명시적 SDK,"],
+    ["CRT and transfer choices", "CRT와 전송 방식 선택"],
+    ["Local verification", "로컬 검증"],
+    ["Floci or LocalStack tests", "Floci 또는 LocalStack 테스트"],
+    ["real cloud later", "실제 클라우드는 이후"],
   ]],
   ["bluetape4k-aws-part5-storage-profile-switch-01", [
-    ["StorageService profile switch diagram", "StorageService profile switch diagram"],
-    ["StorageService profile switch", "StorageService profile switch"],
-    ["Application code keeps one contract while Spring profiles swap local files, S3, and pre-signed URL behavior.", "Application code는 하나의 contract를 유지하고 Spring profile이 local file, S3, pre-signed URL 동작을 바꿉니다."],
-    ["Application code", "Application code"],
-    ["uses StorageService; does not know the active backend", "StorageService만 사용하고 active backend를 알지 않습니다"],
+    ["StorageService profile switch diagram", "StorageService 프로필 전환 구조"],
+    ["StorageService profile switch", "StorageService 프로필 전환"],
+    ["Application code keeps one contract while Spring profiles swap local files, S3, and pre-signed URL behavior.", "애플리케이션 코드는 하나의 계약을 유지하고 Spring 프로필이 로컬 파일, S3, 사전 서명 URL 동작을 전환합니다."],
+    ["Application code", "애플리케이션 코드"],
+    ["uses StorageService; does not know the active backend", "StorageService만 사용하며 활성 백엔드를 알지 못함"],
     ["StorageService", "StorageService"],
-    ["upload(key, bytes, contentType) · download(key) · getUrl(key) · delete(key)", "upload · download · getUrl · delete"],
-    ["local profile", "local profile"],
+    ["upload(key, bytes, contentType) / download(key) / getUrl(key) / delete(key)", "upload / download / getUrl / delete"],
+    ["local profile", "local 프로필"],
     ["LocalStorageService", "LocalStorageService"],
-    ["java.nio.file.Files, no Docker", "java.nio.file.Files, no Docker"],
-    ["s3 profile", "s3 profile"],
+    ["java.nio.file.Files, no Docker", "java.nio.file.Files, Docker 불필요"],
+    ["s3 profile", "s3 프로필"],
     ["S3StorageService", "S3StorageService"],
     ["S3Client via Floci", "Floci 기반 S3Client"],
-    ["s3-presigned profile", "s3-presigned profile"],
+    ["s3-presigned profile", "s3-presigned 프로필"],
     ["S3PresignedStorageService", "S3PresignedStorageService"],
     ["S3Presigner, X-Amz-Expires", "S3Presigner, X-Amz-Expires"],
   ]],
   ["bluetape4k-aws-part5-spring-s3-example-flow-01", [
-    ["Spring Boot S3 example flow", "Spring Boot S3 example flow"],
-    ["WebFlux routes use S3Operations for object APIs and optional client-side encryption through KMS-backed metadata.", "WebFlux route는 object API용 S3Operations와 KMS-backed metadata 기반 optional client-side encryption을 사용합니다."],
-    ["HTTP client / test", "HTTP client / test"],
-    ["document route calls", "document route call"],
+    ["Spring Boot S3 example flow", "Spring Boot S3 예제 흐름"],
+    ["WebFlux routes use S3Operations for object APIs and optional client-side encryption through KMS-backed metadata.", "WebFlux 경로는 객체 API용 S3Operations와 KMS 메타데이터 기반 선택적 클라이언트 측 암호화를 사용합니다."],
+    ["HTTP client / test", "HTTP 클라이언트 / 테스트"],
+    ["document route calls", "문서 경로 호출"],
     ["S3DocumentController", "S3DocumentController"],
-    ["upload, download, list,", "upload, download, list,"],
-    ["presigned URL, delete", "presigned URL, delete"],
+    ["upload, download, list,", "업로드, 다운로드, 목록 조회,"],
+    ["presigned URL, delete", "사전 서명 URL, 삭제"],
     ["S3Operations", "S3Operations"],
     ["S3CoroutinesTemplate", "S3CoroutinesTemplate"],
-    ["transfer and presign", "transfer와 presign"],
-    ["Encryption routes", "Encryption route"],
-    ["client-side envelope", "client-side envelope"],
-    ["tenant context", "tenant context"],
+    ["transfer and presign", "전송과 사전 서명"],
+    ["Encryption routes", "암호화 경로"],
+    ["client-side envelope", "클라이언트 측 봉투 암호화"],
+    ["tenant context", "테넌트 컨텍스트"],
     ["KmsOperations", "KmsOperations"],
-    ["data key metadata", "data key metadata"],
-    ["and encryption context", "encryption context"],
-    ["S3 endpoint", "S3 endpoint"],
+    ["data key metadata", "데이터 키 메타데이터"],
+    ["and encryption context", "암호화 컨텍스트"],
+    ["S3 endpoint", "S3 엔드포인트"],
     ["LocalStack, Floci, or AWS", "LocalStack, Floci, 또는 AWS"],
-    ["optional", "optional"],
-    ["Example role: show object APIs, pre-signed URLs, object listing, and envelope encryption extension points.", "Example role: object API, pre-signed URL, object listing, envelope encryption extension point를 보여 줍니다."],
+    ["optional", "선택 경로"],
+    ["Example role: show object APIs, pre-signed URLs, object listing, and envelope encryption extension points.", "예제 역할: 객체 API, 사전 서명 URL, 객체 목록, 봉투 암호화 확장 지점을 보여 줍니다."],
+    [">object<", ">객체<"],
   ]],
   ["bluetape4k-aws-part5-sqs-sns-scenario-01", [
-    ["Spring Boot SQS and SNS example runtime scenario", "Spring Boot SQS/SNS example runtime scenario"],
-    ["Spring Boot SQS/SNS example flow", "Spring Boot SQS/SNS example flow"],
-    ["REST publishing, SNS fanout, SQS listener lifecycle, manual acknowledgement, retry, and DLQ setup meet in one runnable example.", "REST publish, SNS fanout, SQS listener lifecycle, manual ack, retry, DLQ setup이 하나의 실행 예제에서 만납니다."],
-    ["HTTP client / test", "HTTP client / test"],
-    ["queue, topic, listener", "queue, topic, listener"],
-    ["and DLQ routes", "DLQ route"],
+    ["Spring Boot SQS and SNS example runtime scenario", "Spring Boot SQS/SNS 예제 실행 구조"],
+    ["Spring Boot SQS/SNS example flow", "Spring Boot SQS/SNS 예제 흐름"],
+    ["REST publishing, SNS fanout, SQS listener lifecycle, manual acknowledgement, retry, and DLQ setup meet in one runnable example.", "REST 게시, SNS 팬아웃, SQS 리스너 생명주기, 수동 승인, 재시도, DLQ 설정을 하나의 실행 예제로 검증합니다."],
+    ["HTTP client / test", "HTTP 클라이언트 / 테스트"],
+    ["queue, topic, listener", "큐, 토픽, 리스너"],
+    ["and DLQ routes", "DLQ 경로"],
     ["Spring WebFlux API", "Spring WebFlux API"],
     ["SqsSnsExampleController", "SqsSnsExampleController"],
-    ["delegates to service", "service로 위임"],
-    ["SQS / SNS operations", "SQS / SNS operation"],
-    ["coroutine templates", "coroutine template"],
-    ["and SDK clients", "SDK client"],
-    ["SNS to SQS fanout", "SNS to SQS fanout"],
-    ["topic, queue policy,", "topic, queue policy,"],
-    ["subscription, redrive", "subscription, redrive"],
+    ["delegates to service", "서비스로 위임"],
+    ["SQS / SNS operations", "SQS / SNS 작업"],
+    ["coroutine templates", "코루틴 템플릿"],
+    ["and SDK clients", "SDK 클라이언트"],
+    ["SNS to SQS fanout", "SNS에서 SQS로 팬아웃"],
+    ["topic, queue policy,", "토픽, 큐 정책,"],
+    ["subscription, redrive", "구독, 재처리"],
     ["LocalStack SQS/SNS", "LocalStack SQS/SNS"],
-    ["or real AWS endpoints", "또는 실제 AWS endpoint"],
-    ["@SqsListener container", "@SqsListener container"],
-    ["typed payloads, manual ack,", "typed payload, manual ack,"],
-    ["retry/backoff and interceptors", "retry/backoff, interceptor"],
+    ["or real AWS endpoints", "또는 실제 AWS 엔드포인트"],
+    ["@SqsListener container", "@SqsListener 컨테이너"],
+    ["typed payloads, manual ack,", "형식 지정 페이로드, 수동 승인,"],
+    ["retry/backoff and interceptors", "재시도/백오프, 인터셉터"],
     ["ReceivedOrderStore", "ReceivedOrderStore"],
-    ["messages, orders, attempts, events", "message, order, attempt, event"],
-    ["publish", "publish"],
-    ["fanout", "fanout"],
-    ["messages", "message"],
-    ["events", "event"],
-    ["ack / retry", "ack / retry"],
-    ["Example role: prove REST publishing, listener lifecycle, typed conversion, acknowledgement, fanout, and DLQ behavior locally.", "Example role: REST publish, listener lifecycle, typed conversion, ack, fanout, DLQ 동작을 local에서 증명합니다."],
+    ["messages, orders, attempts, events", "메시지, 주문, 시도, 이벤트"],
+    ["publish", "게시"],
+    ["fanout", "팬아웃"],
+    ["messages", "메시지"],
+    ["events", "이벤트"],
+    ["ack / retry", "승인 / 재시도"],
+    ["Example role: prove REST publishing, listener lifecycle, typed conversion, acknowledgement, fanout, and DLQ behavior locally.", "예제 역할: REST 게시, 리스너 생명주기, 형식 변환, 승인, 팬아웃, DLQ 동작을 로컬에서 검증합니다."],
   ]],
 ]);
 
@@ -262,16 +260,16 @@ function adoptionFlowSvg() {
   <text class="label" x="766" y="568" text-anchor="middle">Local verification</text>
   <text class="body" x="766" y="594" text-anchor="middle">Floci or LocalStack tests</text>
 
-  <rect class="card" x="922" y="536" width="136" height="82" fill="#fff7ed" stroke="#fb923c"/>
-  <text class="label" x="990" y="568" text-anchor="middle">AWS</text>
-  <text class="body" x="990" y="594" text-anchor="middle">S3, SQS, DynamoDB</text>
+  <rect class="card" x="900" y="536" width="170" height="82" fill="#fff7ed" stroke="#fb923c"/>
+  <text class="label" x="985" y="568" text-anchor="middle">AWS</text>
+  <text class="body" x="985" y="594" text-anchor="middle">S3, SQS, DynamoDB</text>
 
   <path class="arrow" d="M310 361 H350 V258 H390"/>
   <path class="arrow" d="M310 361 H350 V468 H390"/>
   <path class="arrow" d="M642 258 H680 V361 H720"/>
   <path class="arrow" d="M642 468 H680 V361 H720"/>
   <path class="arrow" d="M855 420 V478 H766 V536"/>
-  <path class="muted" d="M990 420 V536"/>
+  <path class="muted" d="M985 420 V536"/>
   <text class="small" x="948" y="476" text-anchor="middle">real cloud later</text>
 </svg>`;
 }
@@ -303,7 +301,7 @@ function storageProfileSvg() {
 
   <rect class="card" x="260" y="318" width="640" height="92" fill="#fef3c7" stroke="#f59e0b"/>
   <text class="label" x="580" y="352" text-anchor="middle">StorageService</text>
-  <text class="body" x="580" y="379" text-anchor="middle">upload(key, bytes, contentType) · download(key) · getUrl(key) · delete(key)</text>
+  <text class="body" x="580" y="379" text-anchor="middle">upload(key, bytes, contentType) / download(key) / getUrl(key) / delete(key)</text>
 
   <rect class="card" x="108" y="500" width="260" height="96" fill="#f8fafc" stroke="#94a3b8"/>
   <text class="label" x="238" y="536" text-anchor="middle">local profile</text>
@@ -517,20 +515,42 @@ function koreanizeSvg(svg, replacements) {
     .replaceAll("Comic Mono", "goorm Sans Code")
     .replaceAll("SFMono-Regular", "goorm Sans Code")
     .replaceAll("Menlo", "goorm Sans Code");
-  for (const [from, to] of replacements) {
+  for (const [from, to] of [...replacements].sort(([left], [right]) => right.length - left.length)) {
     result = result.replaceAll(from, to);
   }
   return result;
 }
 
 function normalizeDiagramSvg(svg) {
-  return ensureConnectorAuditPath(convertConnectorPathsToPolylines(normalizeMarkers(svg)));
+  return ensureConnectorAuditPath(convertConnectorPathsToPolylines(normalizeMarkers(darkenDiagramSvg(svg))));
+}
+
+function darkenDiagramSvg(svg) {
+  return svg
+    .replaceAll("fill:#102033", "fill:#f8fafc")
+    .replaceAll("fill:#334155", "fill:#cbd5e1")
+    .replaceAll(".footer{fill:#f8fafc", ".footer{fill:#0f172a")
+    .replaceAll(".panel{fill:#fff;stroke:#d7e2ef", ".panel{fill:#111827;stroke:#334155")
+    .replaceAll(".chip{fill:#ffffff;stroke:#d7e2ef", ".chip{fill:#111827;stroke:#475569")
+    .replaceAll('<rect width="1160" height="720" fill="#ffffff"/>', '<rect width="1160" height="720" fill="#0b1220"/>')
+    .replaceAll('<rect width="1160" height="760" fill="#ffffff"/>', '<rect width="1160" height="760" fill="#0b1220"/>')
+    .replaceAll('fill="#f8fafc" stroke="#94a3b8"', 'fill="#1f2937" stroke="#64748b"')
+    .replaceAll('fill="#dcfce7" stroke="#22c55e"', 'fill="#163a2d" stroke="#4ade80"')
+    .replaceAll('fill="#f0fdf4" stroke="#16a34a"', 'fill="#18392d" stroke="#34d399"')
+    .replaceAll('fill="#e0f2fe" stroke="#38bdf8"', 'fill="#12344a" stroke="#38bdf8"')
+    .replaceAll('fill="#ecfeff" stroke="#06b6d4"', 'fill="#123a43" stroke="#22d3ee"')
+    .replaceAll('fill="#fef3c7" stroke="#f59e0b"', 'fill="#453511" stroke="#fbbf24"')
+    .replaceAll('fill="#f3e8ff" stroke="#a855f7"', 'fill="#35234d" stroke="#c084fc"')
+    .replaceAll('fill="#ffe4e6" stroke="#fb7185"', 'fill="#4a2430" stroke="#fb7185"')
+    .replaceAll('fill="#fff7ed" stroke="#fb923c"', 'fill="#4a2d18" stroke="#fb923c"')
+    .replaceAll('stroke:#475569', 'stroke:#94a3b8')
+    .replaceAll('fill="#475569"', 'fill="#94a3b8"');
 }
 
 function normalizeMarkers(svg) {
   return svg.replace(
     /<marker\s+id="([^"]*)"[^>]*>[\s\S]*?<path\s+[^>]*fill="([^"]+)"[^>]*\/?>\s*<\/marker>/g,
-    '<marker id="$1" viewBox="0 0 10 10" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="$2"/></marker>',
+    '<marker id="$1" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 14 7 L 0 14 Z" fill="$2"/></marker>',
   );
 }
 

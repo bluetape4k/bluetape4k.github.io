@@ -57,11 +57,8 @@ const assets = [
 
 for (const asset of assets) {
   const base = join(outDir, asset.name);
-  writeFileSync(`${base}.dot`, asset.dot);
-  execFileSync("dot", ["-Tplain", `${base}.dot`, "-o", `${base}.plain`]);
-  if (process.env.AWS_GENERATE_SKETCHES === "1") {
-    execFileSync("dot", ["-Tsvg", `${base}.dot`, "-o", `${base}-sketch.svg`]);
-    renderPng(`${base}-sketch.svg`, `${base}-sketch.png`);
+  for (const stale of [".dot", ".plain", "-sketch.svg", "-sketch.png"]) {
+    rmSync(`${base}${stale}`, { force: true });
   }
   writeFileSync(`${base}.svg`, asset.svg);
   execFileSync("xmllint", ["--noout", `${base}.svg`]);
@@ -70,47 +67,47 @@ for (const asset of assets) {
 
 const localeReplacements = new Map([
   ["bluetape4k-aws-part4-comparison-map-01", [
-    ["Spring Cloud AWS and bluetape4k AWS comparison map", "Spring Cloud AWS와 bluetape4k AWS comparison map"],
-    ["Compare by ownership boundary", "Ownership boundary로 비교하기"],
-    ["Both build on AWS SDK v2, but they choose different owners for framework wiring, coroutine helpers, and runtime shape.", "둘 다 AWS SDK v2 위에 있지만 framework wiring, coroutine helper, runtime shape의 소유자가 다릅니다."],
+    ["Spring Cloud AWS and bluetape4k AWS comparison map", "Spring Cloud AWS와 bluetape4k AWS 비교"],
+    ["Compare by ownership boundary", "통합 책임의 소유권으로 비교하기"],
+    ["Both build on AWS SDK v2, but they choose different owners for framework wiring, coroutine helpers, and runtime shape.", "둘 다 AWS SDK v2를 사용하지만 프레임워크 구성, 코루틴 도우미, 런타임의 소유권은 다릅니다."],
     ["Spring Cloud AWS", "Spring Cloud AWS"],
-    ["Spring Boot starters, templates, listeners", "Spring Boot starter, template, listener"],
-    ["S3, SQS, SNS, SES, DynamoDB, config", "S3, SQS, SNS, SES, DynamoDB, config"],
-    ["Spring Integration and Cloud Stream extensions", "Spring Integration과 Cloud Stream extension"],
+    ["Spring Boot starters, templates, listeners", "Spring Boot 스타터, 템플릿, 리스너"],
+    ["S3, SQS, SNS, SES, DynamoDB, config", "S3, SQS, SNS, SES, DynamoDB 설정"],
+    ["Spring Integration and Cloud Stream extensions", "Spring Integration과 Cloud Stream 확장"],
     ["bluetape4k-aws", "bluetape4k-aws"],
-    ["Kotlin-first helpers over Java v2 and Kotlin SDK", "Java v2와 Kotlin SDK 위의 Kotlin-first helper"],
-    ["Spring Boot 4 adapter or Ktor 3 adapter", "Spring Boot 4 adapter 또는 Ktor 3 adapter"],
-    ["CRT, TransferManager, coroutine operations", "CRT, TransferManager, coroutine operation"],
-    ["Spring-first fit", "Spring-first 적합성"],
-    ["Use when Spring owns application wiring", "Spring이 application wiring을 소유할 때"],
-    ["and team conventions already match Spring Cloud", "그리고 팀 규약이 이미 Spring Cloud에 맞을 때"],
+    ["Kotlin-first helpers over Java v2 and Kotlin SDK", "Java v2와 Kotlin SDK를 위한 Kotlin 우선 도우미"],
+    ["Spring Boot 4 adapter or Ktor 3 adapter", "Spring Boot 4 또는 Ktor 3 어댑터"],
+    ["CRT, TransferManager, coroutine operations", "CRT, TransferManager, 코루틴 작업"],
+    ["Spring-first fit", "Spring 우선 환경"],
+    ["Use when Spring owns application wiring", "Spring이 애플리케이션 구성을 소유하고"],
+    ["and team conventions already match Spring Cloud", "팀 규약이 이미 Spring Cloud에 맞을 때"],
     ["Kotlin/JVM fit", "Kotlin/JVM 적합성"],
-    ["Use when coroutine, Ktor, explicit SDK clients,", "coroutine, Ktor, 명시적 SDK client,"],
-    ["or CRT-backed S3 transfer are design constraints", "또는 CRT-backed S3 transfer가 설계 제약일 때"],
-    ["Shared AWS responsibilities", "공유 AWS 책임"],
-    ["IAM, retries, idempotency, provisioning, observability, and local emulator gaps remain application decisions.", "IAM, retry, idempotency, provisioning, observability, local emulator gap은 application decision으로 남습니다."],
-    ["same AWS SDK family", "같은 AWS SDK family"],
+    ["Use when coroutine, Ktor, explicit SDK clients,", "코루틴, Ktor, 명시적 SDK 클라이언트,"],
+    ["or CRT-backed S3 transfer are design constraints", "CRT 기반 S3 전송이 설계 제약일 때"],
+    ["Shared AWS responsibilities", "공통으로 남는 AWS 책임"],
+    ["IAM, retries, idempotency, provisioning, observability, and local emulator gaps remain application decisions.", "IAM, 재시도, 멱등성, 프로비저닝, 관측성, 로컬 에뮬레이터 차이는 애플리케이션이 결정합니다."],
+    ["same AWS SDK family", "같은 AWS SDK 계열"],
   ]],
   ["bluetape4k-aws-part4-decision-guide-01", [
     ["Decision guide for choosing Spring Cloud AWS or bluetape4k AWS", "Spring Cloud AWS 또는 bluetape4k AWS 선택 가이드"],
     ["Decision guide", "선택 가이드"],
-    ["Pick the library that should own the repeated AWS work for this service, not the library with the longer feature checklist.", "기능 checklist가 긴 library가 아니라 이 service의 반복 AWS work를 소유할 library를 선택합니다."],
-    ["Workload shape", "Workload shape"],
-    ["framework, async,", "framework, async,"],
-    ["transfer, ownership", "transfer, ownership"],
-    ["Spring Boot only", "Spring Boot only"],
-    ["Spring Cloud idioms already fit", "Spring Cloud idiom이 이미 맞음"],
-    ["Kotlin coroutine service", "Kotlin coroutine service"],
-    ["SDK helpers and suspend APIs", "SDK helper와 suspend API"],
-    ["Ktor runtime", "Ktor runtime"],
-    ["plugins, SigV4, SQS consumer", "plugin, SigV4, SQS consumer"],
-    ["S3 large transfer with CRT", "CRT 기반 S3 large transfer"],
+    ["Pick the library that should own the repeated AWS work for this service, not the library with the longer feature checklist.", "기능 목록이 아니라 이 서비스의 반복 AWS 작업을 맡을 라이브러리를 선택합니다."],
+    ["Workload shape", "워크로드 특성"],
+    ["framework, async,", "프레임워크, 비동기,"],
+    ["transfer, ownership", "전송, 소유권"],
+    ["Spring Boot only", "Spring Boot 전용"],
+    ["Spring Cloud idioms already fit", "Spring Cloud 사용 방식이 이미 적합"],
+    ["Kotlin coroutine service", "Kotlin 코루틴 서비스"],
+    ["SDK helpers and suspend APIs", "SDK 도우미와 suspend API"],
+    ["Ktor runtime", "Ktor 런타임"],
+    ["plugins, SigV4, SQS consumer", "플러그인, SigV4, SQS 소비자"],
+    ["S3 large transfer with CRT", "CRT 기반 S3 대용량 전송"],
     ["Prefer Spring Cloud AWS", "Spring Cloud AWS 선호"],
-    ["Spring owns AWS integration", "Spring이 AWS integration 소유"],
+    ["Spring owns AWS integration", "Spring이 AWS 통합을 소유"],
     ["Prefer bluetape4k-aws", "bluetape4k-aws 선호"],
-    ["Kotlin/JVM helpers own repeated work", "Kotlin/JVM helper가 반복 작업 소유"],
+    ["Kotlin/JVM helpers own repeated work", "Kotlin/JVM 도우미가 반복 작업을 소유"],
     ["Spring Boot 4 or Ktor 3 can use", "Spring Boot 4와 Ktor 3가 같은"],
-    ["the same AWS helper layer", "AWS helper layer 사용"],
+    ["the same AWS helper layer", "AWS 도우미 계층을 사용"],
   ]],
 ]);
 
@@ -263,20 +260,42 @@ function koreanizeSvg(svg, replacements) {
     .replaceAll("Comic Mono", "goorm Sans Code")
     .replaceAll("SFMono-Regular", "goorm Sans Code")
     .replaceAll("Menlo", "goorm Sans Code");
-  for (const [from, to] of replacements) {
+  for (const [from, to] of [...replacements].sort(([left], [right]) => right.length - left.length)) {
     result = result.replaceAll(from, to);
   }
   return result;
 }
 
 function normalizeDiagramSvg(svg) {
-  return ensureConnectorAuditPath(convertConnectorPathsToPolylines(normalizeMarkers(svg)));
+  return ensureConnectorAuditPath(convertConnectorPathsToPolylines(normalizeMarkers(darkenDiagramSvg(svg))));
+}
+
+function darkenDiagramSvg(svg) {
+  return svg
+    .replaceAll("fill:#102033", "fill:#f8fafc")
+    .replaceAll("fill:#334155", "fill:#cbd5e1")
+    .replaceAll(".panel{fill:#fff;stroke:#d7e2ef", ".panel{fill:#111827;stroke:#334155")
+    .replaceAll(".chip{fill:#ffffff;stroke:#d7e2ef", ".chip{fill:#111827;stroke:#475569")
+    .replaceAll('<rect width="1160" height="760" fill="#ffffff"/>', '<rect width="1160" height="760" fill="#0b1220"/>')
+    .replaceAll('<rect width="1160" height="700" fill="#ffffff"/>', '<rect width="1160" height="700" fill="#0b1220"/>')
+    .replaceAll('fill="#f8fafc" stroke="#94a3b8"', 'fill="#1f2937" stroke="#64748b"')
+    .replaceAll('fill="#dcfce7" stroke="#22c55e"', 'fill="#163a2d" stroke="#4ade80"')
+    .replaceAll('fill="#f0fdf4" stroke="#16a34a"', 'fill="#18392d" stroke="#34d399"')
+    .replaceAll('fill="#e0f2fe" stroke="#38bdf8"', 'fill="#12344a" stroke="#38bdf8"')
+    .replaceAll('fill="#ecfeff" stroke="#06b6d4"', 'fill="#123a43" stroke="#22d3ee"')
+    .replaceAll('fill="#fef3c7" stroke="#f59e0b"', 'fill="#453511" stroke="#fbbf24"')
+    .replaceAll('fill="#f3e8ff" stroke="#a855f7"', 'fill="#35234d" stroke="#c084fc"')
+    .replaceAll('fill="#ffe4e6" stroke="#fb7185"', 'fill="#4a2430" stroke="#fb7185"')
+    .replaceAll('fill="#fff7ed" stroke="#fb923c"', 'fill="#4a2d18" stroke="#fb923c"')
+    .replaceAll('stroke:#475569', 'stroke:#94a3b8')
+    .replaceAll('stroke:#64748b', 'stroke:#64748b')
+    .replaceAll('fill="#475569"', 'fill="#94a3b8"');
 }
 
 function normalizeMarkers(svg) {
   return svg.replace(
     /<marker\s+id="([^"]*)"[^>]*>[\s\S]*?<path\s+[^>]*fill="([^"]+)"[^>]*\/?>\s*<\/marker>/g,
-    '<marker id="$1" viewBox="0 0 10 10" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="$2"/></marker>',
+    '<marker id="$1" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 14 7 L 0 14 Z" fill="$2"/></marker>',
   );
 }
 

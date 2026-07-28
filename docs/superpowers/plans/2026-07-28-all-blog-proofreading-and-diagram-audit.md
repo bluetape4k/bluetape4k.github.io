@@ -38,18 +38,18 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 
 ## 현재 진행 상황
 
-기준 시점: 2026-07-28, stacked PR #267~#281
+기준 시점: 2026-07-28, stacked PR #267~#281과 AWS Part 4~5 준비 배치
 
 | 구분 | 완료 | 전체 | 남음 | 상태 |
 | --- | ---: | ---: | ---: | --- |
-| 한국어 블로그 본문 교정 | 37 | 87 | 50 | 진행 중 |
-| 기술 다이어그램 변경·배치 검증 | 68 | 165 | 97 | 진행 중 |
+| 한국어 블로그 본문 교정 | 39 | 87 | 48 | 진행 중 |
+| 기술 다이어그램 변경·배치 검증 | 74 | 165 | 91 | 진행 중 |
 | stacked PR | 15 | 미정 | 미정 | #267~#281 open |
-| 현재 배치 | 3 | 3 | 0 | AWS Part 1~3 PR #281 |
+| 현재 배치 | 2 | 2 | 0 | AWS Part 4~5 PR 준비 |
 | 최종 전체 사이트 감사 | 0 | 1 | 1 | 대기 |
 | 최종 머지·배포·정리 | 0 | 1 | 1 | 대기 |
 
-현재 완료된 한국어 글 37편:
+현재 완료된 한국어 글 39편:
 
 - AI 협업 글 2편
 - Bluetape4k 생태계·GraphDB 글 2편
@@ -60,7 +60,7 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 - Projects Part 1~6
 - Exposed Part 1~6
 - Leader Part 1~5
-- AWS Part 1~3
+- AWS Part 1~5
 
 Exposed Part 4~6 배치에서는 본문 3편과 기술 다이어그램 8종을 다시 검증했다.
 Part 4~5의 4종은 앞선 40개 집계에 이미 포함되어 중복 계산하지 않았고,
@@ -112,6 +112,22 @@ Part 6의 새 다이어그램 4종만 전체 완료 수에 더했다.
 | writer 체크리스트 | PASS | dotfiles `f7a5ec6`, chezmoi apply·source/live·upstream 일치 |
 | 사이트 검사 | PASS | Node 테스트 33/33, Astro 오류 0, 1,303 pages build, 한영 6개 경로 HTTP 200 |
 | stacked PR | PASS | #281, base `docs/korean-proofreading-leader-integrations-batch`, head `docs/korean-proofreading-aws-core-batch` |
+
+현재 배치 필수 검사: **9/9 완료, N/A 0, Blocked 0**
+
+## AWS Part 4~5 배치 DoD
+
+| 검사 | 결과 | 근거 |
+| --- | --- | --- |
+| 글 교정 | PASS | 한국어 Part 4~5, frontmatter·본문·표·캡션·대체 텍스트 |
+| 날짜 보존 | PASS | base 대비 한영 `blog.date`와 `sidebar.order` 변경 없음 |
+| 사실 검증 | PASS | Spring Cloud AWS 4.0.2 공식 문서와 현재 AWS 모듈·예제 구현 대조 |
+| 소스 링크 | PASS | 한영 글의 로컬 `develop` 대상 28/28 존재 |
+| 한영 정합성 | PASS | 제목·주장·코드·링크·다이어그램·시리즈 탐색 동기화 |
+| 다이어그램 정적 감사 | PASS | 한영 12/12, text hazards 0, geometry·endpoint·corner 실패 0 |
+| 다이어그램 구조·PNG 검사 | PASS | 직교 연결선 78개, 14×14 marker, 2배 PNG 12개 원본 확인 |
+| writer 체크리스트 | PASS | dotfiles `bbd6d53`, chezmoi apply·source/live·upstream 일치 |
+| 사이트 검사 | PASS | Node 테스트 33/33, Astro 오류 0, 1,303 pages build, 한영 4개 경로 HTTP 200 |
 
 현재 배치 필수 검사: **9/9 완료, N/A 0, Blocked 0**
 
