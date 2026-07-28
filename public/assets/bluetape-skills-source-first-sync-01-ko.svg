@@ -1,30 +1,32 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1680 680" width="1680" height="680">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1680 680" width="1680" height="680" role="img" aria-labelledby="title desc">
+  <title id="title">원본 우선 스킬 동기화</title>
+  <desc id="desc">관리 원본에서 검증된 공개 스킬 묶음까지 여덟 전달 단계를 차례로 검증합니다.</desc>
   <style>
-    .title { font-family: 'goorm Sans', sans-serif; fill: #1e293b; font-size: 34px; font-weight: 700; }
-    .stage-title { font-family: 'goorm Sans', sans-serif; fill: #1e293b; font-size: 23px; font-weight: 700; }
-    .subtitle, .small, .step { font-family: 'goorm Sans Code', monospace; fill: #475569; }
+    .title { font-family: 'goorm Sans'; fill: #f1f5f9; font-size: 34px; }
+    .stage-title { font-family: 'goorm Sans'; fill: #f1f5f9; font-size: 23px; }
+    .subtitle, .small, .step { font-family: 'goorm Sans Code'; fill: #c2cede; }
     .subtitle { font-size: 15px; }
-    .small { font-size: 13px; }
-    .step { font-size: 13px; font-weight: 700; }
-    .connector { fill: none; stroke: #4f7dc9; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+    .small { font-size: 14px; }
+    .step { font-size: 14px; font-weight: 700; }
+    .connector { fill: none; stroke: #60a5fa; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
   </style>
   <defs>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
-      <feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="#64748b" flood-opacity="0.16"/>
+      <feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="#94a3b8" flood-opacity="0.16"/>
     </filter>
     <marker id="arrow-blue-right" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
-      <path d="M 0 1 L 13 7 L 0 13 Z" fill="#4f7dc9"/>
+      <path d="M 0 1 L 13 7 L 0 13 Z" fill="#60a5fa"/>
     </marker>
     <marker id="arrow-blue-left" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
-      <path d="M 0 1 L 13 7 L 0 13 Z" fill="#4f7dc9"/>
+      <path d="M 0 1 L 13 7 L 0 13 Z" fill="#60a5fa"/>
     </marker>
   </defs>
 
-  <rect width="1680" height="680" fill="#f8fafc"/>
-  <rect x="24" y="24" width="1632" height="632" rx="28" fill="#ffffff" stroke="#dbe5f1" stroke-width="2"/>
+  <rect width="1680" height="680" fill="#0b1220"/>
+  <rect x="24" y="24" width="1632" height="632" rx="28" fill="#111c2e" stroke="#33475f" stroke-width="2"/>
 
-  <text x="56" y="76" class="title">소스를 고치고 모든 전달 단계를 증명하기</text>
-  <text x="58" y="108" class="subtitle">live 수정은 일시적이지만, 이식 가능한 skill 변경은 source-first 배포 경로 전체에 남습니다.</text>
+  <text x="56" y="76" class="title">원본을 수정하고 모든 전달 단계를 검증하기</text>
+  <text x="58" y="108" class="subtitle">실제 파일만 수정하면 다음 적용에서 사라질 수 있습니다. 이식 가능한 스킬 변경은 원본 우선 배포 경로 전체에 남아야 합니다.</text>
 
   <path class="connector" d="M 380 235 H 450" marker-end="url(#arrow-blue-right)"/>
   <path class="connector" d="M 760 235 H 830" marker-end="url(#arrow-blue-right)"/>
@@ -35,27 +37,27 @@
   <path class="connector" d="M 450 475 H 380" marker-end="url(#arrow-blue-left)"/>
 
   <g filter="url(#shadow)">
-    <rect class="card" x="70" y="170" width="310" height="130" rx="20" fill="#f3effb" stroke="#8a6fd1" stroke-width="2.5"/>
-    <rect class="card" x="450" y="170" width="310" height="130" rx="20" fill="#e8f1ff" stroke="#4f7dc9" stroke-width="2.5"/>
-    <rect class="card" x="830" y="170" width="310" height="130" rx="20" fill="#eef9f2" stroke="#45a66f" stroke-width="2.5"/>
-    <rect class="card" x="1210" y="170" width="310" height="130" rx="20" fill="#fff7e8" stroke="#c28b3c" stroke-width="2.5"/>
-    <rect class="card" x="1210" y="410" width="310" height="130" rx="20" fill="#fff7e8" stroke="#c28b3c" stroke-width="2.5"/>
-    <rect class="card" x="830" y="410" width="310" height="130" rx="20" fill="#eef9f2" stroke="#45a66f" stroke-width="2.5"/>
-    <rect class="card" x="450" y="410" width="310" height="130" rx="20" fill="#e8f1ff" stroke="#4f7dc9" stroke-width="2.5"/>
-    <rect class="card" x="70" y="410" width="310" height="130" rx="20" fill="#f3effb" stroke="#8a6fd1" stroke-width="2.5"/>
+    <rect class="card" x="70" y="170" width="310" height="130" rx="20" fill="#241d3b" stroke="#c084fc" stroke-width="2.5"/>
+    <rect class="card" x="450" y="170" width="310" height="130" rx="20" fill="#132945" stroke="#60a5fa" stroke-width="2.5"/>
+    <rect class="card" x="830" y="170" width="310" height="130" rx="20" fill="#142d25" stroke="#34d399" stroke-width="2.5"/>
+    <rect class="card" x="1210" y="170" width="310" height="130" rx="20" fill="#302719" stroke="#fbbf24" stroke-width="2.5"/>
+    <rect class="card" x="1210" y="410" width="310" height="130" rx="20" fill="#302719" stroke="#fbbf24" stroke-width="2.5"/>
+    <rect class="card" x="830" y="410" width="310" height="130" rx="20" fill="#142d25" stroke="#34d399" stroke-width="2.5"/>
+    <rect class="card" x="450" y="410" width="310" height="130" rx="20" fill="#132945" stroke="#60a5fa" stroke-width="2.5"/>
+    <rect class="card" x="70" y="410" width="310" height="130" rx="20" fill="#241d3b" stroke="#c084fc" stroke-width="2.5"/>
   </g>
 
   <g>
-    <rect x="92" y="190" width="44" height="28" rx="14" fill="#8a6fd1"/>
-    <rect x="472" y="190" width="44" height="28" rx="14" fill="#4f7dc9"/>
-    <rect x="852" y="190" width="44" height="28" rx="14" fill="#45a66f"/>
-    <rect x="1232" y="190" width="44" height="28" rx="14" fill="#c28b3c"/>
-    <rect x="1232" y="430" width="44" height="28" rx="14" fill="#c28b3c"/>
-    <rect x="852" y="430" width="44" height="28" rx="14" fill="#45a66f"/>
-    <rect x="472" y="430" width="44" height="28" rx="14" fill="#4f7dc9"/>
-    <rect x="92" y="430" width="44" height="28" rx="14" fill="#8a6fd1"/>
+    <rect x="92" y="190" width="44" height="28" rx="14" fill="#c084fc"/>
+    <rect x="472" y="190" width="44" height="28" rx="14" fill="#60a5fa"/>
+    <rect x="852" y="190" width="44" height="28" rx="14" fill="#34d399"/>
+    <rect x="1232" y="190" width="44" height="28" rx="14" fill="#fbbf24"/>
+    <rect x="1232" y="430" width="44" height="28" rx="14" fill="#fbbf24"/>
+    <rect x="852" y="430" width="44" height="28" rx="14" fill="#34d399"/>
+    <rect x="472" y="430" width="44" height="28" rx="14" fill="#60a5fa"/>
+    <rect x="92" y="430" width="44" height="28" rx="14" fill="#c084fc"/>
   </g>
-  <g font-family="'Comic Mono', 'SFMono-Regular', Consolas, monospace" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">
+  <g font-family="'goorm Sans Code'" font-size="13" font-weight="700" fill="#111c2e" text-anchor="middle">
     <text x="114" y="209">01</text>
     <text x="494" y="209">02</text>
     <text x="874" y="209">03</text>
@@ -66,29 +68,29 @@
     <text x="114" y="449">08</text>
   </g>
 
-  <text x="225" y="245" text-anchor="middle" class="stage-title">관리 소스</text>
+  <text x="225" y="245" text-anchor="middle" class="stage-title">관리 원본</text>
   <text x="225" y="273" text-anchor="middle" class="small">영속 기준점 수정</text>
 
   <text x="605" y="245" text-anchor="middle" class="stage-title">대상별 적용</text>
-  <text x="605" y="273" text-anchor="middle" class="small">승인 범위만 rendering</text>
+  <text x="605" y="273" text-anchor="middle" class="small">승인 범위만 적용</text>
 
-  <text x="985" y="245" text-anchor="middle" class="stage-title">Source / Live 일치</text>
-  <text x="985" y="273" text-anchor="middle" class="small">target 일치 증명</text>
+  <text x="985" y="245" text-anchor="middle" class="stage-title">원본 / 실제 파일 일치</text>
+  <text x="985" y="273" text-anchor="middle" class="small">적용 대상 일치 검증</text>
 
   <text x="1365" y="245" text-anchor="middle" class="stage-title">sync-codex --status</text>
-  <text x="1365" y="273" text-anchor="middle" class="small">관리 ownership 점검</text>
+  <text x="1365" y="273" text-anchor="middle" class="small">관리 소유권 점검</text>
 
   <text x="1365" y="485" text-anchor="middle" class="stage-title">Codex 자체 점검</text>
-  <text x="1365" y="513" text-anchor="middle" class="small">runtime 상태 검증</text>
+  <text x="1365" y="513" text-anchor="middle" class="small">런타임 상태 검증</text>
 
-  <text x="985" y="485" text-anchor="middle" class="stage-title">Commit &amp; Push</text>
-  <text x="985" y="513" text-anchor="middle" class="small">소스 변경 영속화</text>
+  <text x="985" y="485" text-anchor="middle" class="stage-title">커밋과 푸시</text>
+  <text x="985" y="513" text-anchor="middle" class="small">원본 변경 영속화</text>
 
-  <text x="605" y="485" text-anchor="middle" class="stage-title">공개 Export</text>
-  <text x="605" y="513" text-anchor="middle" class="small">canonical 허용 목록 복사</text>
+  <text x="605" y="485" text-anchor="middle" class="stage-title">공개 내보내기</text>
+  <text x="605" y="513" text-anchor="middle" class="small">정식 허용 목록 복사</text>
 
-  <text x="225" y="485" text-anchor="middle" class="stage-title">Bundle 검증</text>
-  <text x="225" y="513" text-anchor="middle" class="small">개인/손상 payload 거부</text>
+  <text x="225" y="485" text-anchor="middle" class="stage-title">묶음 검증</text>
+  <text x="225" y="513" text-anchor="middle" class="small">개인 정보·손상 항목 거부</text>
 
-  <text x="840" y="606" text-anchor="middle" class="small">모든 전달 단계가 통과해야 이식 가능한 bundle이 준비됩니다.</text>
+  <text x="840" y="606" text-anchor="middle" class="small">모든 전달 단계가 통과해야 이식 가능한 묶음이 준비됩니다.</text>
 </svg>

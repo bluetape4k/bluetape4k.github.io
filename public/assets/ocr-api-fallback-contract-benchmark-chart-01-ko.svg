@@ -1,26 +1,26 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="940" viewBox="0 0 1600 940" role="img" aria-labelledby="title desc">
-  <title id="title">OCR document preprocessing benchmark chart</title>
-  <desc id="desc">Latency and managed heap allocation for representative Scrimage and libvips OCR document preprocessing rows.</desc>
+  <title id="title">OCR 문서 전처리 벤치마크 차트</title>
+  <desc id="desc">Scrimage와 libvips OCR 문서 전처리의 지연 시간과 관리 힙 할당량을 비교합니다.</desc>
   <defs>
     <filter id="soft-shadow" x="-10%" y="-14%" width="120%" height="138%">
-      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#1f2937" flood-opacity="0.12"/>
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#020617" flood-opacity="0.12"/>
     </filter>
     <style>
-      .bg { fill: #f8fafc; }
-      .title { font: 700 38px 'goorm Sans'; fill: #1f2937; }
-      .subtitle { font: 18px 'goorm Sans Code'; fill: #667085; }
-      .panel { fill: #ffffff; stroke: #d8e2ef; stroke-width: 2; filter: url(#soft-shadow); }
-      .panel-title { font: 700 27px 'goorm Sans'; fill: #26364d; }
-      .axis { stroke: #d0d8e4; stroke-width: 2; }
-      .grid { stroke: #e8edf5; stroke-width: 1; }
-      .label { font: 17px 'goorm Sans Code'; fill: #344054; }
-      .value { font: 700 17px 'goorm Sans Code'; fill: #1f2937; }
-      .note { font: 15px 'goorm Sans Code'; fill: #667085; }
-      .scrimage { fill: #4f86c6; }
-      .vips { fill: #2f9d82; }
-      .alloc-scrimage { fill: #8a6fb5; }
-      .alloc-vips { fill: #c58b3d; }
-      .legend { font: 16px 'goorm Sans Code'; fill: #53606f; }
+      .bg { fill: #0b1220; }
+      .title { font: 700 38px 'goorm Sans'; fill: #f1f5f9; }
+      .subtitle { font: 18px 'goorm Sans Code'; fill: #a8b5c6; }
+      .panel { fill: #111c2e; stroke: #33475f; stroke-width: 2; filter: url(#soft-shadow); }
+      .panel-title { font: 700 27px 'goorm Sans'; fill: #e6edf7; }
+      .axis { stroke: #33475f; stroke-width: 2; }
+      .grid { stroke: #26384f; stroke-width: 1; }
+      .label { font: 17px 'goorm Sans Code'; fill: #d7e1ee; }
+      .value { font: 700 17px 'goorm Sans Code'; fill: #f1f5f9; }
+      .note { font: 15px 'goorm Sans Code'; fill: #a8b5c6; }
+      .scrimage { fill: #60a5fa; }
+      .vips { fill: #2dd4bf; }
+      .alloc-scrimage { fill: #c084fc; }
+      .alloc-vips { fill: #fbbf24; }
+      .legend { font: 16px 'goorm Sans Code'; fill: #b9c7d8; }
     </style>
   </defs>
 

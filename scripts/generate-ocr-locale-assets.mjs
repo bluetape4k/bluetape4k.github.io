@@ -2,6 +2,7 @@ import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 
 const out = "public/assets";
+const selected = new Set(process.argv.slice(2));
 
 const translations = new Map([
   ["ocr-api-fallback-contract-workflow-01", [
@@ -34,7 +35,7 @@ const translations = new Map([
     ["tessdata ready?", "tessdata 준비?"],
     ["Semaphore(1)", "Semaphore(1)"],
     ["withTimeout + IO", "withTimeout + IO"],
-    ["not a fallback", "fallback 아님"],
+    ["not a fallback", "대체 응답 아님"],
     ["reject invalid input", "잘못된 입력 거부"],
     ["valid image", "유효한 이미지"],
     ["runtime not ready", "런타임 미준비"],
@@ -49,16 +50,20 @@ const translations = new Map([
     ["valid OCR path", "유효한 OCR 경로"],
     ["runtime unavailable", "런타임 사용 불가"],
     ["runtime failure", "런타임 실패"],
-    ["bad request, not fallback", "잘못된 요청, fallback 아님"],
+    ["bad request, not fallback", "잘못된 요청, 대체 응답 아님"],
   ]],
   ["ocr-api-fallback-contract-sample-input-01", [
+    ["Synthetic OCR sample document", "OCR 합성 예제 문서"],
+    ["A clean synthetic document image used to explain OCR request and response examples.", "OCR 요청과 응답 예제를 설명하기 위한 합성 문서 이미지입니다."],
     ["SAMPLE", "샘플"],
     ["Request: ocr-sample-request", "요청: ocr-sample-request"],
     ["Line 1: Upload image", "1행: 이미지 업로드"],
     ["Line 2: Validate native OCR", "2행: 네이티브 OCR 검증"],
-    ["Line 3: Return fallback safely", "3행: fallback 안전 반환"],
+    ["Line 3: Return fallback safely", "3행: 대체 응답 안전 반환"],
   ]],
   ["ocr-api-fallback-contract-benchmark-chart-01", [
+    ["OCR document preprocessing benchmark chart", "OCR 문서 전처리 벤치마크 차트"],
+    ["Latency and managed heap allocation for representative Scrimage and libvips OCR document preprocessing rows.", "Scrimage와 libvips OCR 문서 전처리의 지연 시간과 관리 힙 할당량을 비교합니다."],
     ["OCR document preprocessing: lower is better", "OCR 문서 전처리: 낮을수록 좋음"],
     ["2480x3508 input -> 1240x1754 grayscale JPEG, macOS arm64, GraalVM Java 25.0.3", "2480×3508 입력 → 1240×1754 회색조 JPEG · macOS arm64 · GraalVM Java 25.0.3"],
     ["Latency, ms/op", "지연 시간, ms/op"],
@@ -88,10 +93,54 @@ function localize(source, replacements) {
   return result;
 }
 
+function darken(source) {
+  const colors = new Map([
+    ["#f6f8fb", "#0b1220"],
+    ["#f8fafc", "#0b1220"],
+    ["#eef3f8", "#0b1220"],
+    ["#ffffff", "#111c2e"],
+    ["#edf5ff", "#101f35"],
+    ["#f1f8f4", "#102b2a"],
+    ["#fff7e6", "#2b2415"],
+    ["#f8f1f4", "#2a1b28"],
+    ["#e6fffb", "#12363a"],
+    ["#d8e2ef", "#33475f"],
+    ["#d4deea", "#33475f"],
+    ["#d0d8e4", "#33475f"],
+    ["#e8edf5", "#26384f"],
+    ["#cbd5e1", "#42566e"],
+    ["#1f2937", "#f1f5f9"],
+    ["#253449", "#e6edf7"],
+    ["#26364d", "#e6edf7"],
+    ["#344054", "#d7e1ee"],
+    ["#334155", "#d7e1ee"],
+    ["#475569", "#c2cede"],
+    ["#4b5563", "#c2cede"],
+    ["#53606f", "#b9c7d8"],
+    ["#596579", "#b9c7d8"],
+    ["#64748b", "#94a3b8"],
+    ["#667085", "#a8b5c6"],
+    ["#3b6ea8", "#60a5fa"],
+    ["#26847f", "#2dd4bf"],
+    ["#a36b15", "#fbbf24"],
+    ["#b34a47", "#fb7185"],
+    ["#4f86c6", "#60a5fa"],
+    ["#2f9d82", "#2dd4bf"],
+    ["#8a6fb5", "#c084fc"],
+    ["#c58b3d", "#fbbf24"],
+    ["#007979", "#5eead4"],
+    ["#00a7a7", "#2dd4bf"],
+  ]);
+  let result = source;
+  for (const [from, to] of colors) result = result.replaceAll(from, to);
+  return result.replaceAll('flood-color="#f1f5f9"', 'flood-color="#020617"');
+}
+
 for (const [name, replacements] of translations) {
+  if (selected.size > 0 && !selected.has(name)) continue;
   const canonical = `${out}/${name}.svg`;
   const sourcePath = existsSync(canonical) ? canonical : `${out}/${name}-en.svg`;
-  const source = readFileSync(sourcePath, "utf8");
+  const source = darken(readFileSync(sourcePath, "utf8"));
   const enSvg = `${out}/${name}-en.svg`;
   const koSvg = `${out}/${name}-ko.svg`;
   writeFileSync(enSvg, fonts(source, "en"));

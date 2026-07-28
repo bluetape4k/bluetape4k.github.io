@@ -3,18 +3,18 @@
   <desc id="desc">A clean synthetic document image used to explain OCR request and response examples.</desc>
   <defs>
     <filter id="paper-shadow" x="-10%" y="-10%" width="120%" height="130%">
-      <feDropShadow dx="0" dy="14" stdDeviation="12" flood-color="#1f2937" flood-opacity="0.16"/>
+      <feDropShadow dx="0" dy="14" stdDeviation="12" flood-color="#020617" flood-opacity="0.16"/>
     </filter>
     <style>
-      .bg { fill: #eef3f8; }
-      .paper { fill: #ffffff; stroke: #cbd5e1; stroke-width: 3; filter: url(#paper-shadow); }
-      .title { font: 800 54px 'Comic Mono', 'SFMono-Regular', monospace; fill: #1f2937; letter-spacing: 0; }
-      .subtitle { font: 700 30px 'Comic Mono', 'SFMono-Regular', monospace; fill: #334155; letter-spacing: 0; }
-      .mono { font: 26px 'Comic Mono', 'SFMono-Regular', monospace; fill: #475569; letter-spacing: 0; }
-      .stamp { fill: #e6fffb; stroke: #00a7a7; stroke-width: 3; }
-      .stamp-text { font: 800 28px 'Comic Mono', 'SFMono-Regular', monospace; fill: #007979; letter-spacing: 0; }
-      .line { stroke: #cbd5e1; stroke-width: 3; stroke-linecap: round; }
-      .code { fill: #f8fafc; stroke: #d8e2ef; stroke-width: 2; }
+      .bg { fill: #0b1220; }
+      .paper { fill: #111c2e; stroke: #42566e; stroke-width: 3; filter: url(#paper-shadow); }
+      .title { font: 800 54px 'Comic Mono', 'SFMono-Regular', monospace; fill: #f1f5f9; letter-spacing: 0; }
+      .subtitle { font: 700 30px 'Comic Mono', 'SFMono-Regular', monospace; fill: #d7e1ee; letter-spacing: 0; }
+      .mono { font: 26px 'Comic Mono', 'SFMono-Regular', monospace; fill: #c2cede; letter-spacing: 0; }
+      .stamp { fill: #12363a; stroke: #2dd4bf; stroke-width: 3; }
+      .stamp-text { font: 800 28px 'Comic Mono', 'SFMono-Regular', monospace; fill: #5eead4; letter-spacing: 0; }
+      .line { stroke: #42566e; stroke-width: 3; stroke-linecap: round; }
+      .code { fill: #0b1220; stroke: #33475f; stroke-width: 2; }
     </style>
   </defs>
   <rect class="bg" x="0" y="0" width="1200" height="760"/>

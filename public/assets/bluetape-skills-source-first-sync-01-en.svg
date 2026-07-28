@@ -1,27 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1680 680" width="1680" height="680">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1680 680" width="1680" height="680" role="img" aria-labelledby="title desc">
+  <title id="title">Source-first skill synchronization</title>
+  <desc id="desc">Eight verified handoffs connect the managed source to a validated public skill bundle.</desc>
   <style>
-    .title { font-family: 'Architects Daughter', 'Comic Mono', cursive; fill: #1e293b; font-size: 34px; }
-    .stage-title { font-family: 'Architects Daughter', 'Comic Mono', cursive; fill: #1e293b; font-size: 23px; }
-    .subtitle, .small, .step { font-family: 'Comic Mono', 'SFMono-Regular', Consolas, monospace; fill: #475569; }
+    .title { font-family: 'Architects Daughter', 'Comic Mono', cursive; fill: #f1f5f9; font-size: 34px; }
+    .stage-title { font-family: 'Architects Daughter', 'Comic Mono', cursive; fill: #f1f5f9; font-size: 23px; }
+    .subtitle, .small, .step { font-family: 'Comic Mono', 'SFMono-Regular', Consolas, monospace; fill: #c2cede; }
     .subtitle { font-size: 15px; }
-    .small { font-size: 13px; }
-    .step { font-size: 13px; font-weight: 700; }
-    .connector { fill: none; stroke: #4f7dc9; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+    .small { font-size: 14px; }
+    .step { font-size: 14px; font-weight: 700; }
+    .connector { fill: none; stroke: #60a5fa; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
   </style>
   <defs>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
-      <feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="#64748b" flood-opacity="0.16"/>
+      <feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="#94a3b8" flood-opacity="0.16"/>
     </filter>
     <marker id="arrow-blue-right" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
-      <path d="M 0 1 L 13 7 L 0 13 Z" fill="#4f7dc9"/>
+      <path d="M 0 1 L 13 7 L 0 13 Z" fill="#60a5fa"/>
     </marker>
     <marker id="arrow-blue-left" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
-      <path d="M 0 1 L 13 7 L 0 13 Z" fill="#4f7dc9"/>
+      <path d="M 0 1 L 13 7 L 0 13 Z" fill="#60a5fa"/>
     </marker>
   </defs>
 
-  <rect width="1680" height="680" fill="#f8fafc"/>
-  <rect x="24" y="24" width="1632" height="632" rx="28" fill="#ffffff" stroke="#dbe5f1" stroke-width="2"/>
+  <rect width="1680" height="680" fill="#0b1220"/>
+  <rect x="24" y="24" width="1632" height="632" rx="28" fill="#111c2e" stroke="#33475f" stroke-width="2"/>
 
   <text x="56" y="76" class="title">Change the source, prove every handoff</text>
   <text x="58" y="108" class="subtitle">A live edit is temporary; a portable skill change survives the entire source-first delivery path.</text>
@@ -35,27 +37,27 @@
   <path class="connector" d="M 450 475 H 380" marker-end="url(#arrow-blue-left)"/>
 
   <g filter="url(#shadow)">
-    <rect class="card" x="70" y="170" width="310" height="130" rx="20" fill="#f3effb" stroke="#8a6fd1" stroke-width="2.5"/>
-    <rect class="card" x="450" y="170" width="310" height="130" rx="20" fill="#e8f1ff" stroke="#4f7dc9" stroke-width="2.5"/>
-    <rect class="card" x="830" y="170" width="310" height="130" rx="20" fill="#eef9f2" stroke="#45a66f" stroke-width="2.5"/>
-    <rect class="card" x="1210" y="170" width="310" height="130" rx="20" fill="#fff7e8" stroke="#c28b3c" stroke-width="2.5"/>
-    <rect class="card" x="1210" y="410" width="310" height="130" rx="20" fill="#fff7e8" stroke="#c28b3c" stroke-width="2.5"/>
-    <rect class="card" x="830" y="410" width="310" height="130" rx="20" fill="#eef9f2" stroke="#45a66f" stroke-width="2.5"/>
-    <rect class="card" x="450" y="410" width="310" height="130" rx="20" fill="#e8f1ff" stroke="#4f7dc9" stroke-width="2.5"/>
-    <rect class="card" x="70" y="410" width="310" height="130" rx="20" fill="#f3effb" stroke="#8a6fd1" stroke-width="2.5"/>
+    <rect class="card" x="70" y="170" width="310" height="130" rx="20" fill="#241d3b" stroke="#c084fc" stroke-width="2.5"/>
+    <rect class="card" x="450" y="170" width="310" height="130" rx="20" fill="#132945" stroke="#60a5fa" stroke-width="2.5"/>
+    <rect class="card" x="830" y="170" width="310" height="130" rx="20" fill="#142d25" stroke="#34d399" stroke-width="2.5"/>
+    <rect class="card" x="1210" y="170" width="310" height="130" rx="20" fill="#302719" stroke="#fbbf24" stroke-width="2.5"/>
+    <rect class="card" x="1210" y="410" width="310" height="130" rx="20" fill="#302719" stroke="#fbbf24" stroke-width="2.5"/>
+    <rect class="card" x="830" y="410" width="310" height="130" rx="20" fill="#142d25" stroke="#34d399" stroke-width="2.5"/>
+    <rect class="card" x="450" y="410" width="310" height="130" rx="20" fill="#132945" stroke="#60a5fa" stroke-width="2.5"/>
+    <rect class="card" x="70" y="410" width="310" height="130" rx="20" fill="#241d3b" stroke="#c084fc" stroke-width="2.5"/>
   </g>
 
   <g>
-    <rect x="92" y="190" width="44" height="28" rx="14" fill="#8a6fd1"/>
-    <rect x="472" y="190" width="44" height="28" rx="14" fill="#4f7dc9"/>
-    <rect x="852" y="190" width="44" height="28" rx="14" fill="#45a66f"/>
-    <rect x="1232" y="190" width="44" height="28" rx="14" fill="#c28b3c"/>
-    <rect x="1232" y="430" width="44" height="28" rx="14" fill="#c28b3c"/>
-    <rect x="852" y="430" width="44" height="28" rx="14" fill="#45a66f"/>
-    <rect x="472" y="430" width="44" height="28" rx="14" fill="#4f7dc9"/>
-    <rect x="92" y="430" width="44" height="28" rx="14" fill="#8a6fd1"/>
+    <rect x="92" y="190" width="44" height="28" rx="14" fill="#c084fc"/>
+    <rect x="472" y="190" width="44" height="28" rx="14" fill="#60a5fa"/>
+    <rect x="852" y="190" width="44" height="28" rx="14" fill="#34d399"/>
+    <rect x="1232" y="190" width="44" height="28" rx="14" fill="#fbbf24"/>
+    <rect x="1232" y="430" width="44" height="28" rx="14" fill="#fbbf24"/>
+    <rect x="852" y="430" width="44" height="28" rx="14" fill="#34d399"/>
+    <rect x="472" y="430" width="44" height="28" rx="14" fill="#60a5fa"/>
+    <rect x="92" y="430" width="44" height="28" rx="14" fill="#c084fc"/>
   </g>
-  <g font-family="'Comic Mono', 'SFMono-Regular', Consolas, monospace" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">
+  <g font-family="'Comic Mono', 'SFMono-Regular', Consolas, monospace" font-size="13" font-weight="700" fill="#111c2e" text-anchor="middle">
     <text x="114" y="209">01</text>
     <text x="494" y="209">02</text>
     <text x="874" y="209">03</text>

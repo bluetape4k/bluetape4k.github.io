@@ -8,60 +8,60 @@ const translations = new Map([
   [
     "bluetape4k-rate-limit-workshop-architecture-02",
     [
-      ["Bucket4j rate-limit workshop architecture", "Bucket4j rate-limit 워크숍 아키텍처"],
+      ["Bucket4j rate-limit workshop architecture", "Bucket4j 요청 제한 워크숍 아키텍처"],
       [
         "Client requests pass through proxy-aware caller identity selection, path-scoped WebFilters, Redis or Caffeine bucket storage, and response headers before reaching the application handler.",
         "클라이언트 요청은 프록시 인식 호출자 식별, 경로별 WebFilter, Redis 또는 Caffeine 버킷 저장소, 응답 헤더 처리를 거쳐 애플리케이션 핸들러로 전달됩니다.",
       ],
-      ["rate limiting starts with the caller identity, not the bucket", "rate limiting은 bucket이 아니라 caller identity에서 시작합니다"],
+      ["rate limiting starts with the caller identity, not the bucket", "요청 제한은 버킷이 아니라 호출자 식별에서 시작합니다"],
       [
         "proxy trust decides the IP; filters decide the key shape; storage decides whether quota is local or shared",
-        "proxy 신뢰가 IP를 정하고, filter가 key 형태를 정하며, storage가 quota의 local/shared 여부를 정합니다",
+        "프록시 신뢰가 IP를 정하고, 필터가 키 형태를 정하며, 저장소가 할당량의 로컬·공유 범위를 정합니다",
       ],
       ["Request source", "요청 출처"],
       ["HTTP request", "HTTP 요청"],
-      ["trust proxy explicitly", "proxy 신뢰는 명시적으로"],
-      ["spoof risk", "spoof 위험"],
+      ["trust proxy explicitly", "프록시 신뢰는 명시적으로"],
+      ["spoof risk", "위조 위험"],
       ["Caller identity", "호출자 식별"],
-      ["Key resolver", "Key resolver"],
-      ["path-scoped key shape", "경로별 key 형태"],
-      ["missing identity -> 400/401", "identity 없음 → 400/401"],
-      ["Bucket and handler", "Bucket과 handler"],
-      ["consume 1 token", "token 1개 소비"],
-      ["write rate headers", "rate header 기록"],
-      ["Retry", "Retry"],
-      ["Redis shared", "Redis shared"],
-      ["Caffeine local", "Caffeine local"],
-      ["Handler runs", "Handler 실행"],
+      ["Key resolver", "키 결정기"],
+      ["path-scoped key shape", "경로별 키 형태"],
+      ["missing identity -> 400/401", "식별자 없음 → 400/401"],
+      ["Bucket and handler", "버킷과 핸들러"],
+      ["consume 1 token", "토큰 1개 소비"],
+      ["write rate headers", "요청 제한 헤더 기록"],
+      ["Retry", "재시도"],
+      ["Redis shared", "Redis 공유"],
+      ["Caffeine local", "Caffeine 로컬"],
+      ["Handler runs", "핸들러 실행"],
     ],
   ],
   [
     "bluetape4k-rate-limit-workshop-spring-classes-01",
     [
-      ["Spring configuration classes for Bucket4j rate limiting", "Bucket4j rate limiting을 위한 Spring configuration classes"],
+      ["Spring configuration classes for Bucket4j rate limiting", "Bucket4j 요청 제한을 위한 Spring 설정 클래스"],
       [
         "Class diagram showing RateLimitConfig bean wiring, bluetape4k SuspendRateLimiter and DistributedSuspendRateLimiter, AsyncBucketProxyProvider, RequestUtils, RateLimitResult, and the WebFlux filter.",
-        "RateLimitConfig bean wiring, bluetape4k SuspendRateLimiter와 DistributedSuspendRateLimiter, AsyncBucketProxyProvider, RequestUtils, RateLimitResult, WebFlux filter의 관계를 보여주는 class diagram입니다.",
+        "RateLimitConfig 빈 조립, bluetape4k SuspendRateLimiter와 DistributedSuspendRateLimiter, AsyncBucketProxyProvider, RequestUtils, RateLimitResult, WebFlux 필터의 관계를 보여주는 클래스 다이어그램입니다.",
       ],
-      ["Spring configuration wires policies, providers, and limiters", "Spring configuration은 policy, provider, limiter를 연결합니다"],
+      ["Spring configuration wires policies, providers, and limiters", "Spring 설정은 정책·공급자·제한기를 연결합니다"],
       [
         "RateLimitConfig creates strategy-specific beans; WebFilter consumes through bluetape4k's stable result boundary",
-        "RateLimitConfig는 strategy별 bean을 만들고, WebFilter는 bluetape4k의 안정적인 result boundary를 통해 소비합니다",
+        "RateLimitConfig는 전략별 빈을 만들고, WebFilter는 bluetape4k의 안정적인 결과 경계를 사용합니다",
       ],
-      ["Workshop Spring layer", "Workshop Spring layer"],
-      ["Policy and helper beans", "Policy와 helper beans"],
-      ["bluetape4k limiter API", "bluetape4k limiter API"],
-      ["capacity + refill rules", "capacity + refill rules"],
-      ["one policy per strategy", "strategy마다 policy 하나"],
-      ["user/combined variants", "user/combined variants"],
-      ["policy", "policy"],
-      ["provider", "provider"],
-      ["limiter", "limiter"],
-      ["implements", "implements"],
-      ["uses", "uses"],
-      ["returns", "returns"],
-      ["solid = implements", "실선 = implements"],
-      ["dashed = creates / uses / returns", "점선 = creates / uses / returns"],
+      ["Workshop Spring layer", "워크숍 Spring 계층"],
+      ["Policy and helper beans", "정책과 보조 빈"],
+      ["bluetape4k limiter API", "bluetape4k 제한기 API"],
+      ["capacity + refill rules", "용량 + 보충 규칙"],
+      ["one policy per strategy", "전략마다 정책 하나"],
+      ["user/combined variants", "사용자·복합 변형"],
+      ["policy", "정책"],
+      ["provider", "공급자"],
+      ["limiter", "제한기"],
+      ["implements", "구현"],
+      ["uses", "사용"],
+      ["returns", "반환"],
+      ["solid = implements", "실선 = 구현"],
+      ["dashed = creates / uses / returns", "점선 = 생성 / 사용 / 반환"],
     ],
   ],
   [
@@ -208,6 +208,9 @@ function normalizeConnectors(source) {
 }
 
 function darken(source) {
+  if (source.includes('stop-color="#101827"')) {
+    return source.replaceAll('stop-color="#f8fafc"', 'stop-color="#172033"');
+  }
   const colors = new Map([
     ["#fbfcf8", "#08111f"],
     ["#fbfaf7", "#08111f"],
@@ -245,7 +248,7 @@ function darken(source) {
   ]);
   let result = source;
   for (const [from, to] of colors) result = result.replaceAll(from, to);
-  return result;
+  return result.replaceAll('stop-color="#f8fafc"', 'stop-color="#172033"');
 }
 
 function normalizeSequence(source) {
@@ -258,7 +261,7 @@ function normalizeSequence(source) {
 function normalizeSpringClasses(source) {
   return source
     .replace('<rect class="class-card spring" x="90" y="670" width="290" height="190"/>', '<rect class="class-card spring" x="90" y="670" width="290" height="205"/>')
-    .replace('.class-name { font: 18px', '.class-name { font: 14px')
+    .replace(/\.class-name \{ font: [\d.]+px/, ".class-name { font: 14px")
     .replace('.member { font: 12.5px', '.member { font: 10.8px')
     .replace(
       '<text class="member" x="502" y="812">+ extractIp(exchange, trustProxy)</text>',
@@ -271,7 +274,9 @@ function normalizeSpringClasses(source) {
     .replace(
       '<text class="member" x="877" y="812">status: CONSUMED | REJECTED | ERROR</text>',
       '<text class="member" x="877" y="806">status: CONSUMED | REJECTED</text>\n    <text class="member" x="897" y="828">| ERROR</text>',
-    );
+    )
+    .replace(".legend { font: 12px \"Comic Mono\", ui-monospace, monospace; fill: #52627a; }", ".legend { font: 12px \"Comic Mono\", ui-monospace, monospace; fill: #b6c4d6; }")
+    .replace('x="866" y="895"', 'x="866" y="884"');
 }
 
 function prepare(source, name, replacements, locale) {
