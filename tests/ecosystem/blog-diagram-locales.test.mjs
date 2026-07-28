@@ -68,7 +68,7 @@ test('blog technical diagrams use explicit locale assets with matching SVG sourc
     }
   }
 
-  assert.equal(stems.size, 169);
+  assert.equal(stems.size, 171);
 });
 
 test('paired English and Korean posts reference the same technical diagram stems', async () => {

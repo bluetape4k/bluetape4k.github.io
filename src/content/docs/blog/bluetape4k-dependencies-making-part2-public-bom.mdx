@@ -120,6 +120,11 @@ bluetape4k-core = { module = "io.github.bluetape4k:bluetape4k-core" }
 Those two surfaces should not be described as the same artifact. The BOM is a Maven Central resolution contract. The
 catalog is a build-authoring contract for the repositories that produce and test the ecosystem.
 
+<figure class="bt4k-architecture" data-diagram-title="Internal Build Contract and Public BOM Contract">
+  <img src="/assets/bluetape4k-dependencies-public-bom-contract-01-en.png" alt="Public BOM contract flow from the Gradle version catalog through java-platform and the published Maven POM to consumer dependency resolution" loading="lazy" />
+  <figcaption>The catalog supports maintainer build authoring; the published Maven POM is the contract that consumers resolve.</figcaption>
+</figure>
+
 ## Clean Up the Spring Boot Artifact Names First
 
 The public contract also had to avoid transitional names. If a Spring Boot 4 line is the public direction, the artifact
@@ -209,10 +214,10 @@ For the user-facing import path, start with the [usage guide](/blog/bluetape4k-d
 - [Building bluetape4k-dependencies Part 2: Making the 1.0.0 BOM a Public Contract](/blog/bluetape4k-dependencies-making-part2-public-bom/)
 - [Building bluetape4k-dependencies Part 3: Maven Central Has No Rollback Button](/blog/bluetape4k-dependencies-making-part3-release-train/)
 
-## Sources
+## Resources
 
-- [`bluetape4k-dependencies` README.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/README.md)
-- [`bluetape4k-dependencies` CHANGELOG.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/CHANGELOG.md)
-- [`bluetape4k-dependencies` build.gradle.kts](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/build.gradle.kts)
-- [`bluetape4k-dependencies` libs.versions.toml](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/gradle/libs.versions.toml)
-- [`bluetape4k-dependencies` version-management.ko.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/docs/version-management.ko.md)
+- [`bluetape4k-dependencies 1.0.0` README.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/1.0.0/README.md)
+- [`bluetape4k-dependencies 1.0.0` CHANGELOG.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/1.0.0/CHANGELOG.md)
+- [`bluetape4k-dependencies 1.0.0` build.gradle.kts](https://github.com/bluetape4k/bluetape4k-dependencies/blob/1.0.0/build.gradle.kts)
+- [`bluetape4k-dependencies 1.0.0` libs.versions.toml](https://github.com/bluetape4k/bluetape4k-dependencies/blob/1.0.0/gradle/libs.versions.toml)
+- [`bluetape4k-dependencies 1.0.0` version-management.ko.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/1.0.0/docs/version-management.ko.md)

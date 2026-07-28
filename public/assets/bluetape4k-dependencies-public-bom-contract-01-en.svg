@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="980" viewBox="0 0 1600 980" role="img" aria-labelledby="title desc">
+  <title id="title">Separate the Internal Build Contract from the Public BOM</title><desc id="desc">Do not present the catalog as a consumer artifact; verify the public contract in the published POM.</desc>
+  <defs><marker id="arrow" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L13,7 L1,13 Z" fill="#36C5F0"/></marker></defs>
+  <style>
+    .canvas{fill:#07111F}.frame{fill:#0D1B2D;stroke:#36536F;stroke-width:2}.card{fill:#10243A;stroke:#36536F;stroke-width:2}
+    .focus{fill:#0C3044;stroke:#5EEAD4;stroke-width:2.5}.warn{fill:#332B18;stroke:#FBBF24;stroke-width:2}
+    .title{font:700 40px "Architects Daughter","Comic Sans MS",cursive;fill:#E6F2FF}.subtitle{font:500 20px "Comic Mono","SFMono-Regular",Menlo,monospace;fill:#9CB4CC}
+    .card-title{font:700 24px "Architects Daughter","Comic Sans MS",cursive;fill:#E6F2FF}.body{font:600 18px "Comic Mono","SFMono-Regular",Menlo,monospace;fill:#9CB4CC}
+    .chip{font:700 16px "Comic Mono","SFMono-Regular",Menlo,monospace;fill:#5EEAD4}.label{font:700 16px "Comic Mono","SFMono-Regular",Menlo,monospace;fill:#36C5F0}
+    .connector{fill:none;stroke:#36C5F0;stroke-width:4;marker-end:url(#arrow)}.divider{stroke:#36536F;stroke-width:2}
+    .footer{font:600 18px "Comic Mono","SFMono-Regular",Menlo,monospace;fill:#9CB4CC}
+  </style>
+  <rect width="1600" height="980" class="canvas"/><rect x="32" y="32" width="1536" height="916" rx="32" class="frame"/>
+  <text x="80" y="98" class="title">Separate the Internal Build Contract from the Public BOM</text><text x="80" y="138" class="subtitle">The version catalog supports maintainer authoring; the published POM participates in consumer resolution.</text>
+
+    <rect x="70" y="270" width="320" height="230" rx="24" class="card"/>
+  <text x="98" y="322" class="card-title">Gradle version catalog</text>
+  <text x="98" y="368" class="body">Internal build aliases</text>
+<text x="98" y="406" class="body">Plugin / library versions</text>
+    <rect x="470" y="240" width="320" height="290" rx="24" class="focus"/>
+  <text x="498" y="292" class="card-title">java-platform</text>
+  <text x="498" y="338" class="body">Import sub-BOMs</text>
+<text x="498" y="376" class="body">Declare individual constraints</text>
+    <rect x="870" y="240" width="320" height="290" rx="24" class="focus"/>
+  <text x="898" y="292" class="card-title">Published Maven POM</text>
+  <text x="898" y="338" class="body">dependencyManagement</text>
+<text x="898" y="376" class="body">License / SCM metadata</text>
+    <rect x="1270" y="270" width="260" height="230" rx="24" class="card"/>
+  <text x="1298" y="322" class="card-title">Consumer resolution</text>
+  <text x="1298" y="368" class="body">Apply central BOM</text>
+<text x="1298" y="406" class="body">Omit module versions</text>
+    <path d="M390 385 H450" class="connector"/><text x="420" y="350" text-anchor="middle" class="label">build input</text>
+    <path d="M790 385 H850" class="connector"/><text x="820" y="350" text-anchor="middle" class="label">publish</text>
+    <path d="M1190 385 H1250" class="connector"/><text x="1220" y="350" text-anchor="middle" class="label">resolve</text>
+    <rect x="470" y="610" width="720" height="92" rx="20" class="card"/>
+    <text x="830" y="650" text-anchor="middle" class="chip">publishToMavenLocal</text>
+    <text x="830" y="682" text-anchor="middle" class="body">Verify POM structure and metadata before release</text><line x1="80" y1="830" x2="1520" y2="830" class="divider"/>
+  <text x="800" y="884" text-anchor="middle" class="footer">Do not present the catalog as a consumer artifact; verify the public contract in the published POM.</text>
+</svg>

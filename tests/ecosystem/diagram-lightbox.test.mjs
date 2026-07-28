@@ -51,6 +51,41 @@ test('blog and manual target selection use separate selectors', () => {
   );
 });
 
+test('dependencies input and BOM articles expose localized diagram titles', async () => {
+  const pairs = [
+    [
+      'src/content/docs/ko/blog/bluetape4k-dependencies-1-3-0-input-boundaries.mdx',
+      '입력 경계와 자원 제한',
+    ],
+    [
+      'src/content/docs/blog/bluetape4k-dependencies-1-3-0-input-boundaries.mdx',
+      'Input Boundaries and Resource Limits',
+    ],
+    [
+      'src/content/docs/ko/blog/bluetape4k-dependencies-making-part1-why-bom.mdx',
+      '중앙 BOM의 호환 버전 조합',
+    ],
+    [
+      'src/content/docs/blog/bluetape4k-dependencies-making-part1-why-bom.mdx',
+      'Compatible Version Set Published by the Central BOM',
+    ],
+    [
+      'src/content/docs/ko/blog/bluetape4k-dependencies-making-part2-public-bom.mdx',
+      '내부 빌드 계약과 공개 BOM 계약',
+    ],
+    [
+      'src/content/docs/blog/bluetape4k-dependencies-making-part2-public-bom.mdx',
+      'Internal Build Contract and Public BOM Contract',
+    ],
+  ];
+
+  for (const [path, title] of pairs) {
+    const source = await read(path);
+    assert.match(source, new RegExp(`data-diagram-title="${title}"`));
+    assert.doesNotMatch(source, /class="bt4k-blog-hero"[^>]*data-diagram-title/);
+  }
+});
+
 test('explicit titles win while only manuals fall back to alt text', () => {
   assert.equal(
     resolveDiagramTitle({
