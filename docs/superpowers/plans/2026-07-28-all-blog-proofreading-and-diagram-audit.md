@@ -38,18 +38,18 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 
 ## 현재 진행 상황
 
-기준 시점: 2026-07-28, stacked PR #267~#286
+기준 시점: 2026-07-28, stacked PR #267~#287
 
 | 구분 | 완료 | 전체 | 남음 | 상태 |
 | --- | ---: | ---: | ---: | --- |
-| 한국어 블로그 본문 교정 | 49 | 87 | 38 | 진행 중 |
-| 기술 다이어그램 변경·배치 검증 | 101 | 166 | 65 | 진행 중 |
-| stacked PR | 20 | 미정 | 미정 | #267~#286 open |
-| 현재 배치 | 2 | 2 | 0 | ID 생성기·Dependencies PR #286 |
+| 한국어 블로그 본문 교정 | 52 | 87 | 35 | 진행 중 |
+| 기술 다이어그램 변경·배치 검증 | 104 | 169 | 65 | 진행 중 |
+| stacked PR | 21 | 미정 | 미정 | #267~#287 open |
+| 현재 배치 | 3 | 3 | 0 | Dependencies 사용·서비스·운영 PR #287 |
 | 최종 전체 사이트 감사 | 0 | 1 | 1 | 대기 |
 | 최종 머지·배포·정리 | 0 | 1 | 1 | 대기 |
 
-현재 완료된 한국어 글 49편:
+현재 완료된 한국어 글 52편:
 
 - AI 협업 글 2편
 - Bluetape4k 생태계·GraphDB 글 2편
@@ -64,7 +64,24 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 - JaVers Part 1~3
 - Graph Part 1~5
 - 전역 고유 ID 생성기 성능 비교
-- Dependencies 1.3.0 활용기 Part 1
+- Dependencies 사용 가이드와 1.3.0 활용기 Part 1~3
+
+## Dependencies 사용·서비스·운영 배치 DoD
+
+| 검사 | 결과 | 근거 |
+| --- | --- | --- |
+| 글 교정 | PASS | 사용 가이드·Part 2·Part 3 한국어 본문과 대응 영어 글 |
+| 날짜 보존 | PASS | base 대비 한영 `blog.date`와 `sidebar.order` 변경 없음 |
+| 사실 검증 | PASS | Exposed 1.11.0 상태 표시기와 AWS 0.4.0 Ktor 플러그인 태그 소스 대조 |
+| 한영 정합성 | PASS | 제목·주장·코드·자료·다이어그램 구성 동기화 |
+| 다이어그램 정적 감사 | PASS | 한영 6/6 connector·endpoint·geometry·corner 실패 0 |
+| 다이어그램 구조·PNG 검사 | PASS | 3개 stem, CairoSVG 2배 PNG 6개와 한영 원본 크기 확인 |
+| writer 체크리스트 | PASS | dotfiles `f25b110`, chezmoi apply·source/live·upstream 일치 |
+| 사이트 검사 | PASS | Node 테스트, Astro check·build |
+| 경로 검사 | PASS | 한영 글 6개와 대표 PNG 3개 HTTP 200 |
+| stacked PR | PASS | #287, base `docs/korean-proofreading-id-dependencies-batch`, head `docs/korean-proofreading-dependencies-operations-batch` |
+
+현재 배치 필수 검사: **10/10 완료, N/A 0, Blocked 0**
 
 ## ID 생성기·Dependencies 배치 DoD
 

@@ -73,7 +73,7 @@ commit `f25b110`을 upstream에 push했다. self-audit는 `PASS=7`,
 | 사이트 검사 | Astro check·build 통과 |
 | 로컬 경로 | 한영 글 6개와 대표 PNG 3개 HTTP 200 |
 | writer 체크리스트 | dotfiles `f25b110`, chezmoi apply·source/live·upstream 일치 |
-| stacked PR | 생성 후 기록 |
+| stacked PR | #287, base `docs/korean-proofreading-id-dependencies-batch` |
 
 ## 다음 작업에 적용할 지침
 
