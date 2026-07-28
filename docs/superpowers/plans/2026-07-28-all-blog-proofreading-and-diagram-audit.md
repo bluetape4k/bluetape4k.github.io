@@ -38,18 +38,18 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 
 ## 현재 진행 상황
 
-기준 시점: 2026-07-28, stacked PR #267~#280
+기준 시점: 2026-07-28, stacked PR #267~#280와 AWS Part 1~3 작업 브랜치
 
 | 구분 | 완료 | 전체 | 남음 | 상태 |
 | --- | ---: | ---: | ---: | --- |
-| 한국어 블로그 본문 교정 | 34 | 87 | 53 | 진행 중 |
-| 기술 다이어그램 변경·배치 검증 | 59 | 165 | 106 | 진행 중 |
-| stacked PR | 14 | 미정 | 미정 | #267~#280 open |
-| 현재 배치 | 2 | 2 | 0 | Leader Part 4~5 PR #280 |
+| 한국어 블로그 본문 교정 | 37 | 87 | 50 | 진행 중 |
+| 기술 다이어그램 변경·배치 검증 | 68 | 165 | 97 | 진행 중 |
+| stacked PR | 14 | 미정 | 미정 | #267~#280 open, AWS 배치 PR 준비 |
+| 현재 배치 | 3 | 3 | 0 | AWS Part 1~3 검증 완료 |
 | 최종 전체 사이트 감사 | 0 | 1 | 1 | 대기 |
 | 최종 머지·배포·정리 | 0 | 1 | 1 | 대기 |
 
-현재 완료된 한국어 글 34편:
+현재 완료된 한국어 글 37편:
 
 - AI 협업 글 2편
 - Bluetape4k 생태계·GraphDB 글 2편
@@ -60,6 +60,7 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 - Projects Part 1~6
 - Exposed Part 1~6
 - Leader Part 1~5
+- AWS Part 1~3
 
 Exposed Part 4~6 배치에서는 본문 3편과 기술 다이어그램 8종을 다시 검증했다.
 Part 4~5의 4종은 앞선 40개 집계에 이미 포함되어 중복 계산하지 않았고,
@@ -94,6 +95,22 @@ Part 6의 새 다이어그램 4종만 전체 완료 수에 더했다.
 | 다이어그램 구조·PNG 검사 | PASS | 각 SVG 주 카드 4·보조 카드 5·연결선 4, 3000×2160 원본 확인 |
 | writer 체크리스트 | PASS | dotfiles `53024e5`, chezmoi apply·source/live·upstream 일치 |
 | 사이트 검사 | PASS | Node 테스트 21/21, Astro 오류 0, 1,303 pages build, 한영 4개 경로 HTTP 200 |
+
+현재 배치 필수 검사: **9/9 완료, N/A 0, Blocked 0**
+
+## AWS Part 1~3 배치 DoD
+
+| 검사 | 결과 | 근거 |
+| --- | --- | --- |
+| 글 교정 | PASS | 한국어 Part 1~3, frontmatter·본문·표·캡션·대체 텍스트 |
+| 날짜 보존 | PASS | 한영 `blog.date`와 `sidebar.order` 변경 없음 |
+| 사실 검증 | PASS | 현재 `bluetape4k-aws/develop`의 README·빌드·대표 구현·호출 경로 대조 |
+| 소스 링크 | PASS | 한영 글의 로컬 `develop` 대상 47/47 존재 |
+| 한영 정합성 | PASS | 제목·주장·수치·링크·다이어그램·시리즈 탐색 동기화 |
+| 다이어그램 정적 감사 | PASS | 한영 18/18, text hazards 0, sequence 4/4, geometry·endpoint·corner 실패 0 |
+| 다이어그램 구조·PNG 검사 | PASS | 9개 stem 유형별 불변식과 2배 PNG 18개 원본 크기 확인 |
+| writer 체크리스트 | PASS | dotfiles `f7a5ec6`, chezmoi apply·source/live·upstream 일치 |
+| 사이트 검사 | PASS | Node 테스트 33/33, Astro 오류 0, 1,303 pages build, 한영 6개 경로 HTTP 200 |
 
 현재 배치 필수 검사: **9/9 완료, N/A 0, Blocked 0**
 

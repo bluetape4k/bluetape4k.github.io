@@ -26,10 +26,10 @@ application code.
 The goal is not to reimplement the AWS SDKs. The official AWS Java SDK v2 and AWS Kotlin SDK remain
 the foundation. `bluetape4k-aws-java` connects Java SDK v2 async clients to Kotlin coroutine code
 and makes the S3 CRT/TransferManager path easier to use for large files. `bluetape4k-aws-kotlin`
-keeps the native suspend model of the Kotlin SDK while adding CRT HTTP engine defaults, lifecycle
-helpers, and service-specific DSL builders.
+keeps the native suspend model of the Kotlin SDK while adding explicit shared HTTP-engine options,
+lifecycle helpers, and service-specific DSL builders.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Java SDK v2 and Kotlin SDK API layers">
   <img src="/assets/bluetape4k-aws-part2-api-layers-01-en.png" alt="Two AWS SDK approaches through bluetape4k aws-java and aws-kotlin toward AWS services" loading="lazy" />
   <figcaption>The two SDK approaches differ, but service code usually wants a small and consistent interface.</figcaption>
 </figure>
@@ -102,10 +102,10 @@ while making it less awkward in coroutine-heavy Kotlin services.
 creation, HTTP engine selection, request builders, and lifecycle handling easier to repeat
 correctly.
 
-The Kotlin module defaults its HTTP engine to CRT. `HttpClientEngineProvider.defaultHttpEngine`
-returns `Crt.httpEngine`, while `HttpClientEngineProvider.OkHttp.httpEngine` remains available when
-a service needs OkHttp explicitly. So the Kotlin SDK approach also has a CRT-first default with a clear
-escape hatch.
+`HttpClientEngineProvider.defaultHttpEngine` returns a shared CRT engine, while
+`HttpClientEngineProvider.OkHttp.httpEngine` provides a shared OkHttp engine. These engines are
+externally managed singletons for clients that intentionally share a transport. For a single client,
+omit `httpClient` and let the AWS Kotlin SDK own the engine lifecycle, or use a `withXxxClient` helper.
 
 ```kotlin
 import aws.smithy.kotlin.runtime.net.url.Url
@@ -150,11 +150,13 @@ suspend fun consumeShard(client: aws.sdk.kotlin.services.kinesis.KinesisClient) 
 ## AWS Service Coverage
 
 The core modules are useful because the pattern is repeated across many AWS services, not because
-there is one nice S3 helper. S3, SQS, SNS, DynamoDB, KMS, SES/SESv2, CloudWatch, CloudWatch Logs,
-Kinesis, and STS all appear in the core SDK modules. Spring Boot and Ktor modules then add
-framework entry points on top of that foundation.
+there is one nice S3 helper. Alongside S3, SQS, SNS, DynamoDB, KMS, SES/SESv2, CloudWatch,
+CloudWatch Logs, Kinesis, and STS, the current core modules cover EventBridge, EventBridge
+Scheduler, Bedrock Runtime, Secrets Manager, and Parameter Store. The Java module also provides
+S3 Vectors and RDS IAM token helpers. Spring Boot and Ktor modules add framework entry points on
+top of that foundation.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-chart" data-diagram-title="AWS service coverage by module">
   <img src="/assets/bluetape4k-aws-service-coverage-01-en.png" alt="AWS service coverage chart for aws-java, aws-kotlin, aws-spring-boot, aws-ktor, and examples" loading="lazy" />
   <figcaption>Core wrappers carry broad SDK coverage; framework modules expose the focused entry points applications use most often.</figcaption>
 </figure>
@@ -162,6 +164,7 @@ framework entry points on top of that foundation.
 | Service | Java SDK v2 | Kotlin SDK | Convenience features |
 |---|---|---|---|
 | S3 | sync/async/coroutine, CRT async, TransferManager | suspend client, file/string/byte helpers | large transfers, file upload/download, object listing |
+| S3 Vectors | optional coroutine facade | not supported | vector bucket/index discovery and vector put/get/list/query |
 | DynamoDB | Enhanced Client, async table, coroutine/Flow | table/item/batch helpers, model DSL | item conversion, batch write, scan/query |
 | SQS | async/coroutine queue operations | suspend send/receive/batch helpers | queue-URL-oriented send/receive/delete |
 | SNS | topic publish, SMS, push | suspend publish/subscription helpers | topic creation, publish, subscription |
@@ -169,7 +172,11 @@ framework entry points on top of that foundation.
 | KMS | sync/async client builders, request DSL | encrypt/decrypt/data key helpers | key operation DSL |
 | CloudWatch/Logs | metric/log coroutine extensions | metricDatum/inputLogEvent DSL | metric publish, log event publish |
 | Kinesis | put/get record coroutine extensions | `recordFlow`, putRecord helpers | shard polling, retry/backoff |
+| EventBridge/Scheduler | event publishing and schedule helpers | event publishing and schedule helpers | request and schedule model DSLs |
+| Bedrock Runtime | sync/async/coroutine helpers | native suspend helpers | model invocation requests and responses |
+| Secrets Manager/Parameter Store | async/coroutine lookup helpers | native suspend lookup helpers | secret/parameter lookup and request DSLs |
 | STS | assumeRole, caller identity, session token | suspend STS helpers | identity checks, temporary credentials |
+| RDS IAM | authentication token helper | not supported | Java SDK-backed RDS IAM authentication tokens |
 
 This table does not mean every application should carry every AWS service artifact. The library
 offers helpers for many services; the application chooses the service dependencies it actually runs.
@@ -177,16 +184,17 @@ offers helpers for many services; the application chooses the service dependenci
 ## Dependency Model
 
 The `aws-java` and `aws-kotlin` Gradle files keep most service SDK dependencies as `compileOnly`.
-For Java SDK v2 that includes S3, S3 Transfer Manager, DynamoDB Enhanced, SES/SESv2, SNS, SQS, KMS,
-CloudWatch, CloudWatch Logs, Kinesis, and STS. The Kotlin module follows the same idea for its
-Kotlin SDK service artifacts.
+For Java SDK v2 that includes Bedrock Runtime, DynamoDB Enhanced, S3, S3 Vectors, S3 Transfer
+Manager, SES/SESv2, Secrets Manager, SNS, SQS, Parameter Store, KMS, CloudWatch, CloudWatch Logs,
+Kinesis, EventBridge, Scheduler, RDS, and STS. The Kotlin module follows the same idea for the
+corresponding Kotlin SDK service artifacts except S3 Vectors and RDS.
 
 That lets the core modules compile helper code for broad service coverage while the runtime
 classpath stays application-owned. A service that only uses S3 and SQS should not carry Kinesis and
 SES by accident. The BOM aligns versions; the application adds the AWS SDK artifacts it really
 uses as `implementation` dependencies.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="AWS service runtime dependency ownership">
   <img src="/assets/bluetape4k-aws-part2-dependency-selection-01-en.png" alt="Dependency selection diagram showing BOM, compileOnly wrapper modules, application-selected runtime dependencies" loading="lazy" />
   <figcaption>`compileOnly` lets wrappers compile; runtime service selection remains with the application.</figcaption>
 </figure>
@@ -199,8 +207,8 @@ Threads. This is especially useful where direct SDK use would otherwise require 
 client, async client, executor, and coroutine bridge in every service.
 
 Use `bluetape4k-aws-kotlin` when new code wants to use the AWS Kotlin SDK and keep native
-`suspend` operations. Its advantages are the CRT default engine, OkHttp escape hatch, `withXxxClient`
-lifecycle helpers, and service-specific request DSLs.
+`suspend` operations. It separates SDK-owned engines from explicitly shared CRT or OkHttp engines
+and adds `withXxxClient` lifecycle helpers plus service-specific request DSLs.
 
 If the problem is Spring Boot 4 or Ktor 3 wiring, that belongs to Part 3. The core modules sit below
 those framework adapters. They reduce repeated SDK boundary code while keeping runtime dependency
@@ -224,7 +232,7 @@ selection explicit.
 `bluetape4k-aws-java` and `bluetape4k-aws-kotlin` solve the same integration problem from different
 SDK choices. The Java approach keeps AWS Java SDK v2 coverage, adds coroutine bridges, and makes the S3
 CRT/TransferManager/Virtual Threads route easier to adopt. The Kotlin approach keeps the AWS Kotlin
-SDK's native suspend model and adds CRT defaults, OkHttp choice, lifecycle helpers, and request DSLs.
+SDK's native suspend model and adds explicit shared-engine choices, lifecycle helpers, and request DSLs.
 
 Next, we will move up to the framework layer: Spring Boot 4 auto-configuration, SQS listeners, Ktor
 SigV4 plugins, and working examples.

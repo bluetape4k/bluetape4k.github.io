@@ -2,17 +2,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1160" height="720" viewBox="0 0 1160 720" role="img" aria-label="bluetape4k AWS Part 3 framework integration flow">
   <defs>
     <style>
-      .title{font-family:'goorm Sans',cursive;font-size:34px;fill:#102033}
-      .subtitle,.body{font-family:'goorm Sans Code',monospace;fill:#334155}
-      .subtitle{font-size:15px}.label{font-family:'goorm Sans',cursive;font-size:22px;fill:#102033}
-      .footerLabel{font-family:'goorm Sans',cursive;font-size:22px;fill:#ffffff}.footerText{font-family:'goorm Sans Code',monospace;font-size:15px;fill:#e2e8f0}
-      .body{font-size:14px}.small{font-family:'goorm Sans Code',monospace;font-size:12px;fill:#334155}
-      .arrow{fill:none;stroke:#475569;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
-      .panel{fill:#fff;stroke:#d7e2ef;stroke-width:1.4;rx:18}.band{fill:#f8fafc;stroke:#d7e2ef;stroke-width:1.2;rx:14}
+      .title{font-family:'goorm Sans',cursive;font-size:34px;fill:#e8eefc}
+      .subtitle,.body{font-family:'goorm Sans Code',monospace;fill:#b8c7dc}
+      .subtitle{font-size:15px}.label{font-family:'goorm Sans',cursive;font-size:22px;fill:#e8eefc}
+      .footerLabel{font-family:'goorm Sans',cursive;font-size:22px;fill:#ffffff}.footerText{font-family:'goorm Sans Code',monospace;font-size:15px;fill:#d8e4f5}
+      .body{font-size:14px}.small{font-family:'goorm Sans Code',monospace;font-size:12px;fill:#b8c7dc}
+      .arrow{fill:none;stroke:#6fb6e8;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+      .panel{fill:#111d2f;stroke:#315270;stroke-width:1.4;rx:18}.band{fill:#12243a;stroke:#315270;stroke-width:1.2;rx:14}
     </style>
-    <marker id="arrow" viewBox="0 0 10 10" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#475569"/></marker>
+    <marker id="arrow" viewBox="0 0 10 10" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#6fb6e8" stroke="#6fb6e8" stroke-width="0" stroke-dasharray="none"/></marker>
   </defs>
-  <rect width="1160" height="720" fill="#ffffff"/>
+  <rect width="1160" height="720" fill="#0b1220"/>
   <text class="title" x="54" y="70">공유 AWS 계약 위의 프레임워크 어댑터</text>
   <text class="subtitle" x="56" y="104">Spring Boot는 자동 설정을, Ktor는 플러그인과 생명주기를 담당합니다. 둘 다 같은 핵심 AWS 도우미로 이어집니다.</text>
 
@@ -21,19 +21,19 @@
   <text class="label" x="580" y="210" text-anchor="middle">애플리케이션 코드</text>
   <text class="body" x="580" y="237" text-anchor="middle">컨트롤러, 라우트, 예약 작업, 큐 처리기</text>
 
-  <rect x="112" y="318" width="420" height="132" rx="14" fill="#e0f2fe" stroke="#38bdf8" stroke-width="1.6"/>
+  <rect x="112" y="318" width="420" height="132" rx="14" fill="#11283f" stroke="#38bdf8" stroke-width="1.6"/>
   <text class="label" x="322" y="356" text-anchor="middle">Spring Boot 4 어댑터</text>
   <text class="body" x="322" y="386" text-anchor="middle">자동 설정된 클라이언트와 템플릿</text>
   <text class="body" x="322" y="409" text-anchor="middle">@SqsListener, 환경 설정 소스</text>
   <text class="body" x="322" y="432" text-anchor="middle">S3, SNS, SES, DynamoDB, KMS, Exposed</text>
 
-  <rect x="628" y="318" width="420" height="132" rx="14" fill="#dcfce7" stroke="#22c55e" stroke-width="1.6"/>
+  <rect x="628" y="318" width="420" height="132" rx="14" fill="#102a24" stroke="#22c55e" stroke-width="1.6"/>
   <text class="label" x="838" y="356" text-anchor="middle">Ktor 3 어댑터</text>
   <text class="body" x="838" y="386" text-anchor="middle">애플리케이션 플러그인과 생명주기 실행 환경</text>
   <text class="body" x="838" y="409" text-anchor="middle">SigV4 클라이언트, SQS 소비자, DynamoDB 플러그인</text>
   <text class="body" x="838" y="432" text-anchor="middle">S3 REST 클라이언트, AwsExposedPlugin</text>
 
-  <rect x="250" y="500" width="660" height="70" rx="14" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.6"/>
+  <rect x="250" y="500" width="660" height="70" rx="14" fill="#2a2615" stroke="#f59e0b" stroke-width="1.6"/>
   <text class="label" x="580" y="528" text-anchor="middle">공유 AWS 계약</text>
   <text class="body" x="580" y="554" text-anchor="middle">aws-java, aws-kotlin, aws-exposed, BOM, 명시적 실행 의존성</text>
 
@@ -42,11 +42,11 @@
   <polyline class="arrow" points="322,450 322,475 510,475 510,500"/>
   <polyline class="arrow" points="838,450 838,475 650,475 650,500"/>
 
-  <rect x="96" y="632" width="210" height="46" rx="23" fill="#f8fafc" stroke="#94a3b8"/>
+  <rect x="96" y="632" width="210" height="46" rx="23" fill="#12243a" stroke="#6d87a8"/>
   <text class="small" x="201" y="660" text-anchor="middle">AWS SDK 클라이언트</text>
-  <rect x="380" y="632" width="230" height="46" rx="23" fill="#f8fafc" stroke="#94a3b8"/>
+  <rect x="380" y="632" width="230" height="46" rx="23" fill="#12243a" stroke="#6d87a8"/>
   <text class="small" x="495" y="660" text-anchor="middle">Floci / LocalStack 테스트</text>
-  <rect x="684" y="632" width="210" height="46" rx="23" fill="#f8fafc" stroke="#94a3b8"/>
+  <rect x="684" y="632" width="210" height="46" rx="23" fill="#12243a" stroke="#6d87a8"/>
   <text class="small" x="789" y="660" text-anchor="middle">AWS 서비스</text>
   <polyline class="arrow" points="320,570 320,606 201,606 201,632"/>
   <polyline class="arrow" points="495,570 495,632"/>

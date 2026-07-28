@@ -2,36 +2,36 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1160" height="740" viewBox="0 0 1160 740" role="img" aria-label="Ktor 3 AWS integration sequence">
   <defs>
     <style>
-      .title{font-family:'Architects Daughter',cursive;font-size:34px;fill:#102033}
-      .subtitle,.body,.small{font-family:'Comic Mono',monospace;fill:#334155}
-      .subtitle{font-size:15px}.participant{font-family:'Architects Daughter',cursive;font-size:19px;fill:#102033}
-      .body{font-size:13px}.small{font-size:12px}.label,.detail,.num{font-family:'Comic Mono',monospace;font-size:12px;fill:#334155}
-      .num{font-weight:700}.frame{fill:#fff;stroke:#d7e2ef;stroke-width:1.4;rx:18}.header{stroke-width:1.5;rx:10}
-      .lifeline{stroke:#94a3b8;stroke-width:1.4;stroke-dasharray:7 7}.call{fill:none;stroke:#475569;stroke-width:2;marker-end:url(#arrow)}
-      .return{fill:none;stroke:#64748b;stroke-width:1.6;stroke-dasharray:7 6;marker-end:url(#arrowMuted)}
-      .labelPill{fill:#ffffff;stroke:#d7e2ef;stroke-width:1.1;rx:8}.activation{fill:#dbeafe;stroke:#60a5fa;stroke-width:1.1;rx:5}
+      .title{font-family:'Architects Daughter',cursive;font-size:34px;fill:#e8eefc}
+      .subtitle,.body,.small{font-family:'Comic Mono',monospace;fill:#b8c7dc}
+      .subtitle{font-size:15px}.participant{font-family:'Architects Daughter',cursive;font-size:17px;fill:#e8eefc}
+      .body{font-size:13px}.small{font-size:12px}.label,.detail,.num{font-family:'Comic Mono',monospace;font-size:12px;fill:#b8c7dc}
+      .num{font-weight:700}.frame{fill:#0e1a2b;stroke:#315270;stroke-width:1.4;rx:18}.header{stroke-width:1.5;rx:10}
+      .lifeline{stroke:#6d87a8;stroke-width:1.4;stroke-dasharray:7 7}.call{fill:none;stroke:#6fb6e8;stroke-width:2;marker-end:url(#arrow)}
+      .return{fill:none;stroke:#86a2c2;stroke-width:1.6;stroke-dasharray:7 6;marker-end:url(#arrowMuted)}
+      .labelPill{fill:#12243a;stroke:#315270;stroke-width:1.1;rx:8}.activation{fill:#17345b;stroke:#60a5fa;stroke-width:1.1;rx:5}
     </style>
-    <marker id="arrow" viewBox="0 0 10 10" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#475569"/></marker>
-    <marker id="arrowMuted" viewBox="0 0 10 10" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#64748b"/></marker>
+    <marker id="arrow" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#6fb6e8" stroke="#6fb6e8" stroke-width="0" stroke-dasharray="none"/></marker>
+    <marker id="arrowMuted" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#86a2c2" stroke="#86a2c2" stroke-width="0" stroke-dasharray="none"/></marker>
   </defs>
-  <rect width="1160" height="740" fill="#ffffff"/>
+  <rect width="1160" height="740" fill="#111d2f"/>
   <text class="title" x="54" y="70">Ktor 3 sequence</text>
   <text class="subtitle" x="56" y="104">Plugins install explicit runtimes; route code calls helpers while lifecycle events start and stop owned clients.</text>
   <rect class="frame" x="54" y="136" width="1052" height="548"/>
 
-  <rect class="header" x="86" y="170" width="150" height="64" fill="#dcfce7" stroke="#22c55e"/>
+  <rect class="header" x="86" y="170" width="150" height="64" fill="#102a24" stroke="#22c55e"/>
   <text class="participant" x="161" y="198" text-anchor="middle">Application</text>
   <text class="small" x="161" y="218" text-anchor="middle">install plugins</text>
-  <rect class="header" x="292" y="170" width="150" height="64" fill="#e0f2fe" stroke="#38bdf8"/>
+  <rect class="header" x="292" y="170" width="150" height="64" fill="#11283f" stroke="#38bdf8"/>
   <text class="participant" x="367" y="198" text-anchor="middle">Plugin runtime</text>
   <text class="small" x="367" y="218" text-anchor="middle">lifecycle</text>
-  <rect class="header" x="498" y="170" width="150" height="64" fill="#fef3c7" stroke="#f59e0b"/>
+  <rect class="header" x="498" y="170" width="150" height="64" fill="#2a2615" stroke="#f59e0b"/>
   <text class="participant" x="573" y="198" text-anchor="middle">Route handler</text>
   <text class="small" x="573" y="218" text-anchor="middle">call helpers</text>
-  <rect class="header" x="704" y="170" width="150" height="64" fill="#fff7ed" stroke="#fb923c"/>
+  <rect class="header" x="704" y="170" width="150" height="64" fill="#2b2117" stroke="#fb923c"/>
   <text class="participant" x="779" y="198" text-anchor="middle">AWS helper</text>
   <text class="small" x="779" y="218" text-anchor="middle">SigV4/SQS/DDB</text>
-  <rect class="header" x="910" y="170" width="150" height="64" fill="#f3e8ff" stroke="#a855f7"/>
+  <rect class="header" x="910" y="170" width="150" height="64" fill="#211b36" stroke="#a855f7"/>
   <text class="participant" x="985" y="198" text-anchor="middle">AWS runtime</text>
   <text class="small" x="985" y="218" text-anchor="middle">client/service</text>
 
@@ -42,23 +42,23 @@
   <rect class="activation" x="977" y="338" width="16" height="182"/>
 
 
-  <rect class="labelPill" x="126" y="244" width="276" height="24"/>
-  <text class="num" x="144" y="260" text-anchor="middle">1</text>
+  <rect class="labelPill" x="96.6" y="244" width="334.8" height="24"/>
+  <text class="num" x="114.6" y="260" text-anchor="middle">1</text>
   <text class="detail" x="274" y="260" text-anchor="middle">install AwsKtorCore and service plugins</text>
   <path class="call" d="M173 278 H355"/>
 
-  <rect class="labelPill" x="466" y="316" width="420" height="24"/>
-  <text class="num" x="484" y="332" text-anchor="middle">2</text>
+  <rect class="labelPill" x="416" y="316" width="520" height="24"/>
+  <text class="num" x="434" y="332" text-anchor="middle">2</text>
   <text class="detail" x="686" y="332" text-anchor="middle">ApplicationStarted opens plugin-owned clients</text>
   <path class="call" d="M379 350 H973"/>
 
-  <rect class="labelPill" x="538" y="388" width="276" height="24"/>
-  <text class="num" x="556" y="404" text-anchor="middle">3</text>
+  <rect class="labelPill" x="512.2" y="388" width="327.6" height="24"/>
+  <text class="num" x="530.2" y="404" text-anchor="middle">3</text>
   <text class="detail" x="686" y="404" text-anchor="middle">route calls S3KtorClient or repository</text>
   <path class="call" d="M585 422 H767"/>
 
-  <rect class="labelPill" x="744" y="460" width="276" height="24"/>
-  <text class="num" x="762" y="476" text-anchor="middle">4</text>
+  <rect class="labelPill" x="729" y="460" width="306" height="24"/>
+  <text class="num" x="747" y="476" text-anchor="middle">4</text>
   <text class="detail" x="892" y="476" text-anchor="middle">sign request, poll SQS, or call SDK</text>
   <path class="call" d="M791 494 H973"/>
 
@@ -67,6 +67,6 @@
   <text class="detail" x="686" y="548" text-anchor="middle">ApplicationStopping drains and closes owned runtime</text>
   <path class="return" d="M973 566 H379"/>
 
-  <rect x="86" y="646" width="974" height="36" rx="18" fill="#f8fafc" stroke="#94a3b8"/>
+  <rect x="86" y="646" width="974" height="36" rx="18" fill="#12243a" stroke="#6d87a8"/>
   <text class="small" x="573" y="669" text-anchor="middle">Ktor keeps startup, shutdown, route helpers, and application-owned clients explicit.</text>
 </svg>

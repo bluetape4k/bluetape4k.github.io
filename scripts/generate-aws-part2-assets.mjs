@@ -361,20 +361,98 @@ function koreanizeSvg(svg, replacements) {
     .replaceAll("Comic Mono", "goorm Sans Code")
     .replaceAll("SFMono-Regular", "goorm Sans Code")
     .replaceAll("Menlo", "goorm Sans Code");
-  for (const [from, to] of replacements) {
-    result = result.replaceAll(from, to);
+  const replacementMap = new Map(replacements);
+  const pattern = [...replacementMap.keys()]
+    .sort((left, right) => right.length - left.length)
+    .map((value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+    .join("|");
+  if (pattern) {
+    result = result.replace(new RegExp(pattern, "g"), (match) => replacementMap.get(match));
   }
   return result;
 }
 
 function normalizeDiagramSvg(svg) {
-  return ensureConnectorAuditPath(convertConnectorPathsToPolylines(normalizeMarkers(svg)));
+  return ensureConnectorAuditPath(convertConnectorPathsToPolylines(normalizeMarkers(darkenDiagramSvg(svg), 14)));
 }
 
-function normalizeMarkers(svg) {
+function darkenDiagramSvg(svg) {
+  return svg
+    .replaceAll("background:#F5F7FA", "background:#08111f")
+    .replaceAll("fill:#FFFFFF;stroke:#D9E2EC", "fill:#0e1a2b;stroke:#315270")
+    .replaceAll("flood-color=\"#AAB7C6\"", "flood-color=\"#020617\"")
+    .replaceAll("#66758A", "#6fb6e8")
+    .replaceAll("#D9E2EC", "#315270")
+    .replaceAll("#EAF7EF", "#102a24")
+    .replaceAll("#E8F3FF", "#11283f")
+    .replaceAll("#FFF3D9", "#2a2615")
+    .replaceAll("#F4F7FA", "#12243a")
+    .replaceAll("#F1ECFF", "#211b36")
+    .replaceAll("#E9F7F6", "#10283c")
+    .replaceAll("#FFF0E3", "#2b2117")
+    .replaceAll("#526274", "#b8c7dc")
+    .replaceAll("#243447", "#d8e4f5")
+    .replaceAll("#344456", "#c5d2e5")
+    .replace(/(<rect\b[^>]*\bwidth="(?:1160|1200)"[^>]*\bheight="(?:680|720|760)"[^>]*\bfill=")#ffffff("[^>]*\/>)/, "$1#0b1220$2")
+    .replaceAll(".panel{fill:#fff;", ".panel{fill:#111d2f;")
+    .replaceAll(".band{fill:#f8fafc;", ".band{fill:#12243a;")
+    .replaceAll(".frame{fill:#fff;", ".frame{fill:#0e1a2b;")
+    .replaceAll(".labelPill{fill:#ffffff;", ".labelPill{fill:#12243a;")
+    .replaceAll(".activation{fill:#dbeafe;", ".activation{fill:#17345b;")
+    .replaceAll('fill="#ffffff"', 'fill="#111d2f"')
+    .replaceAll('fill="#fff"', 'fill="#111d2f"')
+    .replaceAll('fill="#f8fafc"', 'fill="#12243a"')
+    .replaceAll('fill="#f1f5f9"', 'fill="#12243a"')
+    .replaceAll('fill="#ecfeff"', 'fill="#10283c"')
+    .replaceAll('fill="#ecfdf5"', 'fill="#102a24"')
+    .replaceAll('fill="#e0f2fe"', 'fill="#11283f"')
+    .replaceAll('fill="#eff6ff"', 'fill="#11283f"')
+    .replaceAll('fill="#dcfce7"', 'fill="#102a24"')
+    .replaceAll('fill="#fff7ed"', 'fill="#2b2117"')
+    .replaceAll('fill="#fef3c7"', 'fill="#2a2615"')
+    .replaceAll('fill="#fefce8"', 'fill="#2a2615"')
+    .replaceAll('fill="#f3e8ff"', 'fill="#211b36"')
+    .replaceAll("fill:#102033", "fill:#e8eefc")
+    .replaceAll("fill: #102033", "fill: #e8eefc")
+    .replaceAll(".canvas{fill:#f8fafc}", ".canvas{fill:#08111f}")
+    .replaceAll(".frame{fill:#ffffff;stroke:#8aa6cf", ".frame{fill:#0e1a2b;stroke:#315270")
+    .replaceAll(".title{font-family:\"Architects Daughter\";font-size:48px;fill:#17233a}", ".title{font-family:\"Architects Daughter\";font-size:48px;fill:#e8eefc}")
+    .replaceAll(".matrix{fill:#ffffff;stroke:#cbd5e1", ".matrix{fill:#0e1a2b;stroke:#315270")
+    .replaceAll(".head{fill:#eff6ff;stroke:#cbd5e1", ".head{fill:#12243a;stroke:#315270")
+    .replaceAll(".rowA{fill:#ffffff}", ".rowA{fill:#0e1a2b}")
+    .replaceAll(".rowB{fill:#fbfdff}", ".rowB{fill:#111d2f}")
+    .replaceAll(".line{stroke:#e2e8f0", ".line{stroke:#20334a")
+    .replaceAll(".strongLine{stroke:#cbd5e1", ".strongLine{stroke:#315270")
+    .replaceAll("fill:#17233a", "fill:#e8eefc")
+    .replaceAll("fill:#64748b", "fill:#9fb0c8")
+    .replaceAll(".stable{fill:#dcfce7;stroke:#16a34a", ".stable{fill:#102a24;stroke:#58a978")
+    .replaceAll(".optional{fill:#ffedd5;stroke:#f97316", ".optional{fill:#2b2117;stroke:#e79b45")
+    .replaceAll(".example{fill:#ede9fe;stroke:#8b5cf6", ".example{fill:#211b36;stroke:#9b83e8")
+    .replaceAll(".empty{fill:#fbfdff;stroke:#dbe4ef", ".empty{fill:#12243a;stroke:#315270")
+    .replaceAll(".planned{fill:#eef2ff;stroke:#6366f1", ".planned{fill:#11283f;stroke:#6d87ff")
+    .replaceAll(".footer{fill:#f8fafc;stroke:#cbd5e1", ".footer{fill:#12243a;stroke:#315270")
+    .replaceAll('fill="#17233a"', 'fill="#e8eefc"')
+    .replaceAll('fill="#94a3b8"', 'fill="#9fb0c8"')
+    .replaceAll("fill:#334155", "fill:#b8c7dc")
+    .replaceAll("fill:#475569", "fill:#6fb6e8")
+    .replaceAll("stroke:#475569", "stroke:#6fb6e8")
+    .replaceAll('stroke="#475569"', 'stroke="#6fb6e8"')
+    .replaceAll('fill="#475569"', 'fill="#6fb6e8"')
+    .replaceAll("stroke:#64748b", "stroke:#86a2c2")
+    .replaceAll('stroke="#64748b"', 'stroke="#86a2c2"')
+    .replaceAll('fill="#64748b"', 'fill="#86a2c2"')
+    .replaceAll("stroke:#94a3b8", "stroke:#6d87a8")
+    .replaceAll('stroke="#94a3b8"', 'stroke="#6d87a8"')
+    .replaceAll("stroke:#d7e2ef", "stroke:#315270")
+    .replaceAll('stroke="#d7e2ef"', 'stroke="#315270"')
+    .replaceAll('stroke="#d8e0ea"', 'stroke="#315270"')
+    .replaceAll("fill:#e2e8f0", "fill:#d8e4f5");
+}
+
+function normalizeMarkers(svg, markerSize) {
   return svg.replace(
     /<marker\s+id="([^"]*)"[^>]*>[\s\S]*?<path\s+[^>]*fill="([^"]+)"[^>]*\/?>\s*<\/marker>/g,
-    '<marker id="$1" viewBox="0 0 10 10" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="$2"/></marker>',
+    `<marker id="$1" viewBox="0 0 10 10" markerWidth="${markerSize}" markerHeight="${markerSize}" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="$2" stroke="$2" stroke-width="0" stroke-dasharray="none"/></marker>`,
   );
 }
 
