@@ -18,10 +18,9 @@ blog:
 
 <p class="bt4k-post-meta">2026-06-04 · bluetape4k-graph series · Part 4</p>
 
-This part maps the working `bluetape4k-workshop` graph examples. It is an overview, not a deep guide. The
-goal is to help you recognize whether your own service has the same shape of problem. If an article only lists example
-names and sends the reader back to the source tree, that is not documentation; it is homework distribution. So each
-example below explains the relationship model and the decision it helps validate.
+This part maps the working `bluetape4k-workshop` graph examples. The goal is to help you recognize whether your service
+has the same relationship shape, not to present production-ready algorithms. Each example explains its relationship
+model, query path, and the boundary that still requires production validation.
 
 | Example | Graph pattern | Takeaway |
 |---|---|---|
@@ -36,17 +35,18 @@ Abuser detection is one of the most natural fits for a graph. Start from one use
 IP address, phone hash, payment token, or referral, then find other users sharing those identifiers. You can build this
 with relational joins, but the query grows awkward as identifier types multiply.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Abuser Detection Identity Flow">
   <img src="/assets/bluetape4k-graph-part4-abuser-identity-flow-01-en.png" alt="Abuser detection identity flow from seed user to shared identifiers, related users, suspicion evidence, and risk ranking" loading="lazy" />
   <figcaption>Shared identifiers turn abuse investigation into a readable graph traversal.</figcaption>
 </figure>
 
-`AbuserDetectionService.findAbuseCluster()` starts from a seed user, follows outgoing identifier edges, then traverses
-back from those identifiers to related users. It excludes the seed user from the result. `explainSuspicion()` collects
-edge paths for evidence, `detectReferralLoops()` uses cycle detection, and `rankSuspiciousUsers()` uses PageRank for the
-review queue. Phone values should be hashes, and payment identifiers should be PCI-safe tokens.
+`AbuserDetectionService.findAbuseCluster()` returns an empty cluster when the seed user is missing. Otherwise, it follows
+outgoing identifier edges, traverses back from those identifiers to related users, and excludes the seed user.
+`explainSuspicion()` collects edge paths for evidence, `detectReferralLoops()` uses cycle detection, and
+`rankSuspiciousUsers()` uses PageRank for the review queue. Phone values must be SHA-256 hashes of E.164 values, and
+payment identifiers must be PCI-safe processor tokens.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Abuser Detection Entity Graph">
   <img src="/assets/bluetape4k-graph-part4-abuser-erd-01-en.png" alt="Abuser detection entity graph with User, Device, IpAddress, PhoneNumber, PaymentMethod, and referral user relationships" loading="lazy" />
   <figcaption>The important modeling choice is to keep identifiers as vertices. Shared identifiers become the cluster signal.</figcaption>
 </figure>
@@ -55,7 +55,7 @@ review queue. Phone values should be hashes, and payment identifiers should be P
 
 The recommendation example covers both product recommendations and follow recommendations.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Recommendation Candidate Flow">
   <img src="/assets/bluetape4k-graph-part4-recommendation-flow-01-en.png" alt="Recommendation example flow for co-buyer product candidates and friends-of-friends follow candidates" loading="lazy" />
   <figcaption>Separate candidate generation from scoring so the traversal is easy to read and test.</figcaption>
 </figure>
@@ -64,11 +64,12 @@ The recommendation example covers both product recommendations and follow recomm
 then recommends other products bought by those co-buyers. Already purchased products are excluded, and candidates are
 scored by distinct co-buyer count. `recommendFollows()` creates 2-hop follow candidates, excludes the seed user and
 existing follows, then sorts by mutual follow count. This is not a complete recommendation engine. It is a small skeleton
-for separating candidate generation from scoring. For large graphs, replace this explicit traversal shape with native
-Cypher or Gremlin queries. The common API makes the starting point and tests simpler; it should not wrap a heavy query
-until the bottleneck looks prettier.
+for separating candidate generation from scoring. The implementation performs repeated neighbor lookups, so a large
+graph can expose an N+1 traversal problem. Its `limit` bounds the returned candidates, not the number of graph calls.
+Replace this explicit traversal with a native Cypher or Gremlin query for production-scale workloads. The common API
+remains useful for contract tests and small traversals; it does not make the repeated calls efficient.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Recommendation Entity Graph">
   <img src="/assets/bluetape4k-graph-part4-recommendation-erd-01-en.png" alt="Recommendation entity graph with User, Product, followee user, and scored candidates" loading="lazy" />
   <figcaption>`PURCHASED` builds product candidates; `FOLLOWS` builds follow candidates. Candidate generation and scoring stay separate.</figcaption>
 </figure>
@@ -80,7 +81,7 @@ entities, `RELATED_TO` connects entities to other entities, and `IS_A` connects 
 operations go beyond "search": `findMentionedEntities(documentId)`, `findRelatedEntities(entityId, depth)`,
 `findConceptsForEntity(entityId)`, and `inferRelationshipPaths(from, to)` explain why two things are connected.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Knowledge Graph Entity Relationships">
   <img src="/assets/bluetape4k-graph-part4-knowledge-erd-01-en.png" alt="Knowledge graph entity graph with Document, Entity, Concept, and related entity relationships" loading="lazy" />
   <figcaption>Search finds candidate documents; graph paths explain why entities are connected.</figcaption>
 </figure>
@@ -97,19 +98,20 @@ colleagues, shortest paths, all paths, and mutual connections. The example looks
 the unglamorous rules: exclude the seed user, exclude existing connections, cap depth, and decide whether a relationship
 is directional.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Social Network Entity Relationships">
   <img src="/assets/bluetape4k-graph-part4-social-erd-01-en.png" alt="Social network entity graph with Person, Company, KNOWS, FOLLOWS, and WORKS_AT relationships" loading="lazy" />
   <figcaption>Direction and depth limits decide whether a path is a recommendation or an explanation.</figcaption>
 </figure>
 
-The important details are direction, depth, and exclusion rules. `FOLLOWS` is directional, `KNOWS` may be treated as
-bidirectional by service policy, and recommendation queries should exclude the seed user plus existing connections.
+The important details are direction, depth, and exclusion rules. `FOLLOWS` is directional. The current
+`SocialNetworkService.connect()` stores `KNOWS` as two directed edges, so callers must not add the same pair again with
+reversed arguments. Recommendation queries should exclude the seed user plus existing connections.
 
 ## Spring Boot and Ktor integration
 
-Spring Boot 4 users get `GraphOperations`, `GraphSuspendOperations`, and `GraphVirtualThreadOperations` beans from
-`graph-spring-boot`. TinkerGraph is the default when `bluetape4k.graph.backend` is missing, which makes local tests and
-small examples cheap.
+Spring Boot 4 users get a `GraphOperations` bean from `graph-spring-boot`. The suspend and virtual-thread beans are also
+registered when their `register-*` properties are enabled. TinkerGraph is the default when
+`bluetape4k.graph.backend` is missing, which keeps local tests and small examples self-contained.
 
 ```yaml
 bluetape4k:
@@ -117,21 +119,28 @@ bluetape4k:
     backend: tinkergraph
 ```
 
-Service code then uses normal bean injection.
+Service code injects the operations and a graph name. Call `initialize()` once during application startup because the
+workshop service contract requires the named graph to exist before other operations.
 
 ```kotlin
 @Service
 class AbuseReviewService(
     private val graph: GraphOperations,
+    @Value("\${app.graph-name:abuse-review}") private val graphName: String,
 ) {
-    fun cluster(seedUserId: GraphElementId): AbuseCluster {
-        val service = AbuserDetectionService(graph)
-        return service.findAbuseCluster(seedUserId)
-    }
+    private val service = AbuserDetectionService(graph, graphName)
+
+    @PostConstruct
+    fun initialize() = service.initialize()
+
+    fun cluster(seedUserId: GraphElementId): AbuseCluster =
+        service.findAbuseCluster(seedUserId)
 }
 ```
 
-For Neo4j, keep the service code and change the storage properties.
+For Neo4j, keep the common service contract and change the storage properties. This does not make query planning,
+transactions, failure behavior, or performance equivalent. Verify the selected backend with integration tests and the
+real workload.
 
 ```yaml
 bluetape4k:
@@ -145,8 +154,9 @@ bluetape4k:
       register-virtual-thread: true
 ```
 
-Ktor 3 users install `GraphPlugin` in the application module. The plugin stores the resolved state in application
-attributes and closes plugin-owned resources on application stop.
+Ktor 3 users install `GraphPlugin` in the application module. `tinkerGraph()` creates synchronous and coroutine
+operations over one delegate and closes that delegate once on application stop. Route handlers should prefer
+`GraphSuspendOperations` over blocking operations.
 
 ```kotlin
 fun Application.module() {
@@ -156,8 +166,9 @@ fun Application.module() {
 
     routing {
         get("/users/{id}/cluster") {
-            val graph = graphPluginState().graphOperations
-            val service = AbuserDetectionService(graph)
+            val graph = call.graphSuspendOperations()
+            val service = AbuserDetectionSuspendService(graph, "abuse-review")
+            service.initialize()
             val cluster = service.findAbuseCluster(GraphElementId.of(call.parameters["id"]!!))
             call.respond(cluster)
         }
@@ -165,9 +176,13 @@ fun Application.module() {
 }
 ```
 
+The compact example initializes the named graph inside the request so every required step is visible. Production code
+should initialize it during application startup and reuse the service. The current `graphExists → createGraph` sequence
+is not atomic, so multi-instance startup requires a backend upsert or an external lock.
+
 If DI or bootstrap code already created the operations pair, pass it directly. Keep the default caller-owned lifecycle,
-or set `closeOnStop = true` when the plugin should close the objects. Resource ownership should be explicit; shutdown is
-a poor time to discover that nobody knows who owns the driver.
+or set `closeOnStop = true` only when the plugin should close both objects. When they share a delegate, the caller must
+also ensure that closing is idempotent.
 
 ```kotlin
 install(GraphPlugin) {
@@ -176,17 +191,25 @@ install(GraphPlugin) {
 ```
 
 Spring Boot integration is property-plus-bean injection. Ktor integration is plugin-plus-application lifecycle. Pick the
-one that matches the service runtime.
+one that matches the service runtime. In either case, make the repository creator, initialization point, and shutdown
+owner explicit.
+
+## Starting from a relational-database-centered service
 
 If you are starting from a relational-only service, do not move everything into a graph at once. Find the feature where
 variable-depth traversal, shortest path, shared identity, or recommendation candidate generation is making relational
 queries hard to read. Move that feature first, keep the relational database as source of truth when it already owns the
-business data, start tests with TinkerGraph, and measure the production candidates with your workload.
+business data, start contract tests with TinkerGraph, and verify Neo4j, Memgraph, AGE, or FalkorDB with backend-specific
+integration tests and the actual workload.
+
+Choose a graph when relationships themselves are central to the work. `bluetape4k-graph` makes graph selection and
+service integration repeatable on Kotlin/JVM, but it does not erase backend-specific operational behavior.
 
 ## Sources
 
-- [AbuserDetectionService](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/graph/abuser-detection/src/main/kotlin/io/bluetape4k/workshop/graph/abuser/AbuserDetectionService.kt)
-- [RecommendationService](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/graph/recommendation/src/main/kotlin/io/bluetape4k/workshop/graph/recommendation/RecommendationService.kt)
+- [AbuserDetectionService](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/graph/abuser-detection/src/main/kotlin/io/bluetape4k/workshop/graph/abuser/service/AbuserDetectionService.kt)
+- [AbuserDetectionSuspendService](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/graph/abuser-detection/src/main/kotlin/io/bluetape4k/workshop/graph/abuser/service/AbuserDetectionSuspendService.kt)
+- [RecommendationService](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/graph/recommendation/src/main/kotlin/io/bluetape4k/workshop/graph/recommendation/service/RecommendationService.kt)
 - [knowledge graph workshop](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/graph/knowledge-graph)
 - [social network workshop](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/graph/social-network)
 - [Spring Boot graph auto-configuration](https://github.com/bluetape4k/bluetape4k-graph/tree/develop/spring-boot/graph-spring-boot)
@@ -196,8 +219,8 @@ business data, start tests with TinkerGraph, and measure the production candidat
 
 ## Series
 
-- Part 1: [Database Selection Map](/blog/bluetape4k-graph-part1-overview-database-selection/)
+- Part 1: [Graph Database Selection Criteria](/blog/bluetape4k-graph-part1-overview-database-selection/)
 - Part 2: [Core API and Execution Models](/blog/bluetape4k-graph-part2-core-api-schema-execution/)
-- Part 3: [Graph I/O and Benchmarks](/blog/bluetape4k-graph-part3-graph-io-benchmarks/)
+- Part 3: [Graph I/O and Benchmark Interpretation](/blog/bluetape4k-graph-part3-graph-io-benchmarks/)
 - Part 4: [Workshop Scenarios and Service Integration](/blog/bluetape4k-graph-part4-workshop-service-integration/)
 - Part 5: [Reading the Virtual Threads Benchmark](/blog/bluetape4k-graph-part5-virtual-threads-benchmark/)

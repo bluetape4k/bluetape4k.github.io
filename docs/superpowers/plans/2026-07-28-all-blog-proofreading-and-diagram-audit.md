@@ -38,14 +38,14 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 
 ## 현재 진행 상황
 
-기준 시점: 2026-07-28, stacked PR #267~#284
+기준 시점: 2026-07-28, stacked PR #267~#284와 Graph Part 4~5 로컬 완료
 
 | 구분 | 완료 | 전체 | 남음 | 상태 |
 | --- | ---: | ---: | ---: | --- |
-| 한국어 블로그 본문 교정 | 45 | 87 | 42 | 진행 중 |
-| 기술 다이어그램 변경·배치 검증 | 89 | 165 | 76 | 진행 중 |
-| stacked PR | 18 | 미정 | 미정 | #267~#284 open |
-| 현재 배치 | 3 | 3 | 0 | Graph Part 1~3 PR #284 |
+| 한국어 블로그 본문 교정 | 47 | 87 | 40 | 진행 중 |
+| 기술 다이어그램 변경·배치 검증 | 97 | 165 | 68 | 진행 중 |
+| stacked PR | 18 | 미정 | 미정 | #267~#284 open, 다음 PR 준비 중 |
+| 현재 배치 | 2 | 2 | 0 | Graph Part 4~5 로컬 검증 완료 |
 | 최종 전체 사이트 감사 | 0 | 1 | 1 | 대기 |
 | 최종 머지·배포·정리 | 0 | 1 | 1 | 대기 |
 
@@ -62,7 +62,7 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 - Leader Part 1~5
 - AWS Part 1~5
 - JaVers Part 1~3
-- Graph Part 1~3
+- Graph Part 1~5
 
 ## Graph Part 1~3 배치 DoD
 
@@ -80,6 +80,24 @@ base로 하는 stacked PR로 만들고, 모든 배치가 완료된 뒤 한 번�
 | stacked PR | PASS | #284, base `docs/korean-proofreading-javers-core-batch`, head `docs/korean-proofreading-graph-core-batch` |
 
 현재 배치 필수 검사: **10/10 완료, N/A 0, Blocked 0**
+
+## Graph Part 4~5 배치 DoD
+
+| 검사 | 결과 | 근거 |
+| --- | --- | --- |
+| 글 교정 | PASS | 한국어 Part 4~5, frontmatter·본문·표·캡션·대체 텍스트 |
+| 날짜 보존 | PASS | base 대비 한영 `blog.date`와 `sidebar.order` 변경 없음 |
+| 사실 검증 | PASS | 현재 Graph·Workshop 구현과 2026-04-17 JMH 실행 조건 대조 |
+| 소스 링크 | PASS | 한영 글의 로컬 `develop` 대상 40/40 존재 |
+| 한영 정합성 | PASS | 제목·주장·코드·링크·다이어그램·시리즈 탐색 동기화 |
+| 다이어그램 정적 감사 | PASS | 한영 16/16, connector·endpoint·geometry·corner 실패 0 |
+| 다이어그램 구조·PNG 검사 | PASS | 8개 stem, 14×14 marker, 2배 PNG 16개와 대표 자산 원본 확인 |
+| writer 체크리스트 | PASS | dotfiles `02c6573`, chezmoi apply·source/live·upstream 일치 |
+| 외부 근거 보존 | PASS | JEP 444 연구 노트, wiki `57c8ffd`, GNO update·embed·search 통과 |
+| 사이트 검사 | PASS | Node 테스트 18/18, Astro 오류·경고 0, 전체 build, 한영 4개 경로 HTTP 200 |
+| stacked PR | PENDING | Graph Part 1~3 PR #284를 base로 생성 예정 |
+
+현재 배치 필수 검사: **10/11 완료, Pending 1, N/A 0, Blocked 0**
 
 Exposed Part 4~6 배치에서는 본문 3편과 기술 다이어그램 8종을 다시 검증했다.
 Part 4~5의 4종은 앞선 40개 집계에 이미 포함되어 중복 계산하지 않았고,

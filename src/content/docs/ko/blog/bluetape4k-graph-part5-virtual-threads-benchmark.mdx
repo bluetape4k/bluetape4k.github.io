@@ -1,47 +1,47 @@
 ---
-title: "Bluetape4k Graph Part 5: Virtual Threads benchmark 읽기"
-description: TinkerGraph benchmark로 sync와 virtual-thread API의 차이를 보고, graph 작업에서 Virtual Threads를 언제 써야 하는지 정리한다.
+title: "Bluetape4k Graph Part 5: 가상 스레드 벤치마크 해석"
+description: TinkerGraph 벤치마크의 측정 범위를 바탕으로 동기 API와 가상 스레드 API를 비교하고, 그래프 작업에 적용할 기준을 정리한다.
 sidebar:
   order: -202606282158
 blog:
   date: 2026-06-28T21:58:00+09:00
   image: /assets/bluetape4k-graph-part5-hero.png
-  imageAlt: 로봇 작업자들이 Sync와 Virtual Threads 실행 경로를 나눠 graph benchmark 작업대를 살펴보는 3D 일러스트
-  cardDescription: "Virtual Threads는 더 빠른 graph 호출이 아니라, 기다리는 graph 호출을 더 단순한 코드로 많이 처리하기 위한 선택지입니다."
+  imageAlt: 로봇 작업자들이 동기와 가상 스레드 실행 경로를 나눠 그래프 벤치마크 작업대를 살펴보는 3D 일러스트
+  cardDescription: "가상 스레드는 단일 그래프 호출의 속도가 아니라, 대기 작업의 동시 처리량을 위한 선택지입니다."
   tags: ["comparison","graph","kotlin","performance","virtual-threads"]
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/bluetape4k-graph-part5-hero.png" alt="로봇 작업자들이 Sync와 Virtual Threads 실행 경로를 나눠 graph benchmark 작업대를 살펴보는 3D 일러스트" loading="eager" />
-  <figcaption>Virtual Threads의 장점은 계산이 빠른 코드보다 기다리는 코드에서 더 잘 드러납니다.</figcaption>
+  <img src="/assets/bluetape4k-graph-part5-hero.png" alt="로봇 작업자들이 동기와 가상 스레드 실행 경로를 나눠 그래프 벤치마크 작업대를 살펴보는 3D 일러스트" loading="eager" />
+  <figcaption>가상 스레드의 이점은 짧은 계산보다 대기 시간이 긴 동시 작업에서 드러납니다.</figcaption>
 </figure>
 
-<p class="bt4k-post-meta">2026-06-28 · bluetape4k-graph series · Part 5 · issue #33</p>
+<p class="bt4k-post-meta">2026-06-28 · bluetape4k-graph 시리즈 · 5부 · 이슈 #33</p>
 
-`bluetape4k-graph`에는 sync API와 virtual-thread API가 같이 있습니다. API를 둘 다 제공하면 질문이 바로 따라옵니다.
+`bluetape4k-graph`는 동기 API와 가상 스레드 API를 함께 제공합니다. 따라서 다음 질문에 답할 기준이 필요합니다.
 
-> graph database 호출은 I/O-bound처럼 보이는데, 그럼 Virtual Threads를 기본으로 쓰면 되나?
+> 그래프 데이터베이스 호출이 I/O 중심이라면 가상 스레드를 기본으로 사용해야 하는가?
 
-결론부터 말하면, 아닙니다. TinkerGraph처럼 in-memory에서 몇 µs 안에 끝나는 작업은 sync가 더 빠릅니다. Virtual
-Thread로 감싸는 순간 `CompletableFuture` 생성, virtual thread scheduling, `join()` 대기 비용이 붙습니다. 작은 작업에는
-그 비용이 그대로 드러납니다. 반대로 Neo4j, Memgraph, AGE처럼 network I/O와 server wait가 들어가는 backend에서는 판단이
-달라집니다. 그때는 몇 µs의 wrapping 비용보다 blocking wait를 어떻게 처리하느냐가 더 중요해집니다.
+그렇지 않습니다. TinkerGraph처럼 메모리에서 수 µs 안에 끝나는 작업은 동기 호출이 더 빠릅니다. 가상 스레드로
+감싸면 `CompletableFuture` 생성, 작업 제출, 스케줄링, `join()` 비용이 추가되기 때문입니다. 반면 Neo4j, Memgraph,
+AGE처럼 네트워크와 서버 대기가 포함된 백엔드에서는 단일 호출 지연 시간보다 많은 대기 작업을 어떻게 수용하는지가
+중요해질 수 있습니다.
 
-이 글은 “Virtual Threads가 빠르다”는 홍보가 아닙니다. “언제 굳이 감싸면 손해고, 언제 감싸는 편이 코드와 운영을
-단순하게 만드는가”를 benchmark 숫자로 읽어보는 글입니다. 성능 이야기는 늘 그렇습니다. 숫자 하나만 들고 뛰면 금방
-발목을 잡힙니다.
+가상 스레드는 코드를 더 빠르게 실행하는 기능이 아니라, 대기 작업이 많은 요청당 스레드 서비스의 처리량을
+높이기 위한 실행 모델입니다. 이 글은 보존된 TinkerGraph 측정 결과의 범위를 먼저 확인하고, 그 결과를 운영 백엔드에
+과도하게 일반화하지 않는 방법을 설명합니다.
 
-## 같은 graph 작업, 다른 실행 경로
+## 같은 그래프 작업, 다른 실행 경로
 
-`GraphOperations`는 동기 API입니다. virtual-thread facade는 backend를 새로 구현하지 않습니다. 같은 동기 작업을
-Virtual Thread 위에서 실행하고 `CompletableFuture<T>`로 돌려줍니다.
+`GraphOperations`는 동기 API입니다. 가상 스레드 퍼사드는 별도의 백엔드를 구현하지 않고 같은 동기 작업을 공유
+가상 스레드 실행기에 제출한 뒤 `CompletableFuture<T>`를 반환합니다.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-graph-part5-call-path-01-ko.png" alt="Sync path and Virtual Thread path for the same graph backend operation" loading="lazy" />
-  <figcaption>Virtual Thread 경로는 backend 작업을 바꾸지 않습니다. 기다리는 위치와 비용이 달라집니다.</figcaption>
+<figure class="bt4k-architecture" data-diagram-title="동기와 가상 스레드 실행 경로">
+  <img src="/assets/bluetape4k-graph-part5-call-path-01-ko.png" alt="같은 그래프 백엔드 작업을 실행하는 동기 경로와 가상 스레드 경로" loading="lazy" />
+  <figcaption>가상 스레드 경로는 백엔드 작업을 바꾸지 않으며, 작업 제출과 대기 경계만 추가합니다.</figcaption>
 </figure>
 
-실제 adapter도 구조는 단순합니다.
+어댑터의 핵심도 동기 위임 호출을 `virtualFutureOfNullable`로 감싸는 것입니다.
 
 ```kotlin
 class VirtualThreadVertexAdapter(
@@ -58,24 +58,24 @@ class VirtualThreadVertexAdapter(
 }
 ```
 
-여기서 봐야 할 부분은 `delegate.findVertexById()` 자체가 동기 호출이라는 사실입니다. Virtual Thread는 이 동기 호출을
-다른 실행 경로에 올립니다. 그러니 실제 backend가 TinkerGraph in-memory인지, network DB인지에 따라 결과가 달라집니다.
-도구가 같아도 작업장이 다르면 삽질 포인트도 달라집니다.
+`delegate.findVertexById()` 자체는 여전히 동기 호출입니다. 따라서 결과는 위임 객체가 메모리 연산을 수행하는지,
+네트워크·JDBC·서버 대기를 포함하는지에 따라 달라집니다.
 
-## Benchmark 조건부터 읽어야 합니다
+## 벤치마크 조건부터 확인해야 합니다
 
-이번 benchmark는 `graph-benchmark` 모듈의 TinkerGraph fixture를 사용합니다.
+아래 수치는 2026-04-17에 기록한 `graph-benchmark` 모듈의 TinkerGraph 픽스처 결과입니다. 현재 소스의 동일
+애너테이션과 일치하지만 이번 교정에서 다시 측정한 값은 아닙니다.
 
 | 항목 | 값 |
 |---|---|
-| Backend | TinkerGraph in-memory |
+| 백엔드 | TinkerGraph 메모리 내 실행 |
 | JVM | Java 25 |
 | 측정 | JMH `AverageTime`, µs/op |
-| Warmup / measurement | 3 × 2초 / 5 × 3초 |
-| 비교 | sync 호출 vs virtual-thread adapter + `CompletableFuture.join()` |
+| 워밍업 / 측정 | 3 × 2초 / 5 × 3초 |
+| 비교 | 동기 호출과 가상 스레드 어댑터 + `CompletableFuture.join()` |
 
-fixture는 `GraphBenchmarkState`에서 `Person` vertex 4개와 `KNOWS`/`FOLLOWS` edge를 만들고, 같은 graph 위에서 sync와
-virtual-thread 호출을 비교합니다.
+픽스처는 `GraphBenchmarkState`에서 `Person` 정점 4개와 `KNOWS`·`FOLLOWS` 간선을 만들고, 같은 그래프에서 동기
+호출과 가상 스레드 호출을 비교합니다.
 
 ```kotlin
 @Benchmark
@@ -87,63 +87,62 @@ fun vtFindVertexById(): Boolean =
     vtOps.findVertexByIdAsync("Person", aliceId).join() != null
 ```
 
-이 조건은 일부러 network noise를 뺀 조건입니다. 그래서 결과는 “실제 Neo4j 운영 latency”가 아니라 “API model을 감쌌을
-때 생기는 비용”을 보여줍니다. benchmark를 읽을 때 이 구분을 놓치면 결론이 엉뚱한 데로 갑니다. TinkerGraph 숫자로
-“Virtual Threads는 느리다”라고 말하면 너무 성급하고, network DB 이야기를 하면서 이 overhead를 아예 무시해도 곤란합니다.
+이 조건은 의도적으로 네트워크 변동을 제외합니다. 따라서 결과는 실제 Neo4j 운영 지연 시간이 아니라, 짧은 메모리
+연산에 가상 스레드 경로를 추가했을 때의 종단 간 비용을 보여줍니다. 각 벤치마크는 `CompletableFuture`를 만든 직후 `join()`하므로
+다수 요청의 동시 처리량도 측정하지 않습니다.
 
-## 숫자는 꽤 정직합니다
+## 결과가 보여주는 범위
 
-TinkerGraph in-memory 기준에서는 sync가 모든 단일 호출에서 앞섭니다.
+TinkerGraph 메모리 내 실행에서는 동기 경로가 모든 단일 호출 벤치마크에서 앞섭니다.
 
-<figure class="bt4k-chart">
-  <img src="/assets/bluetape4k-graph-part5-vt-latency-chart-01-ko.png" alt="TinkerGraph benchmark chart comparing Sync and Virtual Threads latency in microseconds per operation" loading="lazy" />
-  <figcaption>작업 자체가 µs 단위로 끝나면 virtual-thread wrapping 비용이 결과에 크게 드러납니다.</figcaption>
+<figure class="bt4k-chart" data-diagram-title="TinkerGraph 동기·가상 스레드 지연 시간">
+  <img src="/assets/bluetape4k-graph-part5-vt-latency-chart-01-ko.png" alt="TinkerGraph의 동기 호출과 가상 스레드 호출 지연 시간을 연산당 마이크로초로 비교한 차트" loading="lazy" />
+  <figcaption>연산 자체가 µs 단위로 끝나면 가상 스레드 경로의 추가 비용이 결과에 크게 나타납니다.</figcaption>
 </figure>
 
 대표 수치는 이렇습니다. `AverageTime`이므로 낮을수록 빠릅니다.
 
-| Benchmark | Sync µs/op | Virtual Thread µs/op | 해석 |
+| 벤치마크 | 동기 µs/op | 가상 스레드 µs/op | 해석 |
 |---|---:|---:|---|
-| `findVertexById` | 1.758 | 8.055 | 단건 lookup에서는 wrapping 비용이 더 큼 |
-| `findVerticesByLabel` | 2.485 | 8.679 | query 자체가 작아서 sync 우세 |
-| `neighbors` | 2.985 | 10.595 | traversal이 작으면 VT 비용이 그대로 보임 |
-| `bfs` | 4.216 | 12.588 | 알고리즘 호출도 fixture가 작으면 sync 우세 |
-| `pageRank` | 7.270 | 15.257 | 작업이 조금 커져도 overhead가 남음 |
+| `findVertexById` | 1.758 | 8.055 | 단건 조회보다 실행 경로 추가 비용이 큼 |
+| `findVerticesByLabel` | 2.485 | 8.679 | 질의 자체가 작아 동기 경로가 우세 |
+| `neighbors` | 2.985 | 10.595 | 작은 탐색에서는 가상 스레드 비용이 그대로 나타남 |
+| `bfs` | 4.216 | 12.588 | 작은 픽스처의 알고리즘 호출도 동기 경로가 우세 |
+| `pageRank` | 7.270 | 15.257 | 작업이 커져도 추가 비용이 남음 |
 | `shortestPath` | 22.031 | 31.540 | 작업이 커질수록 배율 차이는 줄어듦 |
 
-이 숫자에서 볼 부분은 “VT가 몇 배 느리다”가 아닙니다. 더 중요한 것은 절대 overhead입니다. benchmark 문서에서는
-Virtual Thread 경로의 추가 비용을 대략 6-8µs 수준으로 봅니다. `findVertexById`가 1.8µs면 6-8µs는 큽니다. 하지만
-실제 graph DB가 network를 타고 수 ms, 수십 ms를 기다린다면 이야기가 바뀝니다. 8µs 때문에 뚜껑이 열릴 일은 별로
-없고, connection pool과 server wait, query plan이 먼저 사람을 괴롭힐 가능성이 큽니다.
+이 결과에서는 배율보다 절대 차이를 봐야 합니다. 기록 문서는 가상 스레드 경로의 추가 비용을 약 6~8µs로
+요약합니다. 다만 이는 해당 JVM·픽스처·어댑터·즉시 `join()` 조건에서 관측한 값이지 고정 상수가 아닙니다. 실제
+그래프 데이터베이스가 수 ms 이상 대기한다면 이 차이의 상대적 비중은 작아질 수 있지만, 커넥션 풀, 서버 처리량,
+질의 계획을 포함한 동시성 벤치마크로 다시 확인해야 합니다.
 
-## 그럼 언제 Sync를 쓰나
+## 동기 API가 적합한 경우
 
-다음 조건이면 sync가 더 자연스럽습니다.
-
-| 상황 | 이유 |
-|---|---|
-| TinkerGraph 같은 in-memory graph | 호출 자체가 매우 짧아 wrapping 비용이 크게 보임 |
-| 단발성 단순 lookup | `CompletableFuture`까지 만들 이유가 적음 |
-| 이미 호출량이 낮고 thread blocking 문제가 없음 | 실행 모델을 늘려도 얻는 것이 작음 |
-| benchmark fixture나 unit test | 가장 작은 비용으로 결과를 확인하는 편이 좋음 |
-
-테스트나 작은 in-memory graph에서는 sync를 쓰는 편이 단순합니다. 빠르고, stack trace도 바로 보이고, 불필요한
-`join()`도 없습니다. 작은 못 하나 박는데 공구함 전체를 펼치면 작업보다 정리가 더 오래 걸립니다.
-
-## 그럼 언제 Virtual Threads를 쓰나
-
-다음 조건이면 virtual-thread API가 의미를 갖습니다.
+다음 조건에서는 동기 API가 더 단순합니다.
 
 | 상황 | 이유 |
 |---|---|
-| Neo4j, Memgraph, AGE처럼 network I/O가 있는 backend | blocking wait가 platform thread를 오래 붙잡지 않음 |
-| Spring MVC나 기존 blocking service code | `suspend` 전파 없이 concurrency를 늘릴 수 있음 |
-| 여러 graph request를 동시에 처리 | 요청별 blocking을 virtual thread로 격리하기 쉬움 |
-| Java 소비자가 `CompletableFuture` pipeline을 원함 | coroutine 없이 async 조합 가능 |
+| TinkerGraph 같은 메모리 내 그래프 | 호출 자체가 매우 짧아 실행 경로 추가 비용이 크게 나타남 |
+| 단발성 단순 조회 | `CompletableFuture`를 조합할 필요가 없음 |
+| 호출량이 낮고 스레드 블로킹이 병목이 아님 | 실행 모델을 추가해도 얻는 이점이 작음 |
+| 벤치마크 픽스처나 단위 테스트 | 가장 단순한 실행 경로가 결과 해석에 유리함 |
 
-여기서도 “무조건 Virtual Threads”는 아닙니다. Graph DB server가 버틸 수 있는 connection 수, query plan, transaction
-범위가 먼저입니다. Virtual Threads는 DB를 빠르게 만들어주지 않습니다. 기다리는 동안 비싼 platform thread를 덜 붙잡게
-해주는 쪽에 가깝습니다.
+테스트와 작은 메모리 내 그래프에서는 동기 호출이 빠르고 스택 추적도 직접적이며 불필요한 `join()`도 없습니다.
+
+## 가상 스레드를 검토할 경우
+
+다음 조건에서는 가상 스레드 API를 동시성 후보로 검토할 수 있습니다.
+
+| 상황 | 이유 |
+|---|---|
+| Neo4j, Memgraph, AGE처럼 네트워크·JDBC 대기가 있는 백엔드 | 호환되는 블로킹 I/O에서 캐리어 스레드 점유 시간을 줄일 수 있음 |
+| Spring MVC나 기존 블로킹 서비스 코드 | `suspend`를 전파하지 않고 요청당 스레드 구조를 유지할 수 있음 |
+| 많은 그래프 요청을 동시에 처리 | 대기 작업마다 가벼운 스레드를 할당할 수 있음 |
+| Java 소비자가 `CompletableFuture` 조합을 사용함 | 코루틴 없이 비동기 단계를 조합할 수 있음 |
+
+가상 스레드는 데이터베이스를 더 빠르게 만들지 않습니다. 연결 수, 질의 계획, 트랜잭션 범위, 백엔드 처리량이
+먼저 한계를 만들 수 있습니다. 따라서 단일 호출 지연 시간이 아니라 목표 동시성에서의 처리량·오류율·커넥션 풀
+대기를 함께 측정해야 합니다.
 
 ```kotlin
 val vtOps = graphOperations.asVirtualThread()
@@ -153,44 +152,43 @@ val friends = vtOps
     .thenApply { vertices -> vertices.map { it.id } }
 ```
 
-이런 코드는 Java나 Spring MVC 쪽에서 특히 다루기 쉽습니다. 기존 동기 repository를 크게 바꾸지 않고도 기다리는 작업을
-분리할 수 있습니다. 다만 `join()`을 바로 호출하면 결국 현재 흐름에서 기다립니다. 여러 작업을 조합할 때는
-`CompletableFuture.allOf(...)`, `thenCompose`, `thenApply` 같은 조합으로 대기 지점을 뒤로 미루는 편이 낫습니다.
+기존 동기 저장소를 유지하면서 Java나 Spring MVC에서 비동기 결과를 조합할 수 있습니다. 다만 `CompletableFuture`를 만든 직후
+`join()`하면 호출 흐름은 해당 결과가 끝날 때까지 기다립니다. 독립 작업을 먼저 제출한 뒤
+`CompletableFuture.allOf(...)`로 합치거나, 의존 단계는 `thenCompose`와 `thenApply`로 표현해야 조합의 목적이
+분명해집니다.
 
-## graph database 선택 가이드와 연결하면
+## 그래프 데이터베이스 선택 기준과 연결하기
 
-Part 1에서 본 graph database 선택 기준과도 이어집니다.
+Part 1의 그래프 데이터베이스 선택 기준과 함께 보면 실행 모델의 검증 범위가 명확해집니다.
 
-| Backend | 실행 모델을 읽는 법 |
+| 백엔드 | 실행 모델 검토 기준 |
 |---|---|
-| TinkerGraph | in-memory fixture, prototype, test에는 sync가 보통 충분 |
-| Neo4j | network I/O와 ACID transaction이 있으므로 VT가 service concurrency에 도움 |
-| Memgraph | low-latency backend라도 network wait가 있으면 VT 검토 가치 있음 |
-| Apache AGE | PostgreSQL JDBC 경로를 타므로 blocking call을 VT로 감싸기 좋음 |
+| TinkerGraph | 메모리 내 픽스처·프로토타입·테스트에는 동기 API가 일반적으로 충분 |
+| Neo4j | 네트워크 대기가 크고 동시 요청이 많을 때 가상 스레드 후보를 실제 드라이버와 함께 측정 |
+| Memgraph | 지연 시간이 짧더라도 네트워크 대기와 목표 동시성을 포함해 비교 |
+| Apache AGE | PostgreSQL JDBC 경로의 대기와 커넥션 풀 한계를 함께 측정 |
 
-벤치마크가 알려주는 것은 API의 순위표가 아닙니다. “내 backend의 대기 시간이 wrapping 비용보다 충분히 큰가?”라는 질문을
-먼저 하라는 신호입니다. 이 질문을 건너뛰면 나중에 “왜 좋아질 줄 알았는데 더 느리지?”라는 대화를 하게 됩니다. 보통
-그 대화는 회의실 공기를 빠르게 차갑게 만듭니다.
+이 표는 백엔드별 가상 스레드 효과를 보장하지 않습니다. “현재 대기 시간이 추가 실행 경로 비용보다 충분히 큰가?”와
+“목표 동시성에서 처리량이 실제로 개선되는가?”를 측정 항목으로 바꾸기 위한 기준입니다.
 
 ## 정리
 
-`bluetape4k-graph`의 virtual-thread API는 sync API를 대체하려고 만든 것이 아닙니다. 같은 graph abstraction 위에서
-서비스 실행 모델을 고를 수 있게 만든 선택지입니다.
+`bluetape4k-graph`의 가상 스레드 API는 동기 API를 대체하지 않습니다. 같은 그래프 추상화에서 서비스의 실행 모델을
+선택할 수 있게 하는 어댑터입니다.
 
-- in-memory, µs 단위, 단건 호출이면 sync가 가장 단순하고 빠릅니다.
-- network graph DB, blocking I/O, 높은 동시성이면 Virtual Threads가 의미를 갖습니다.
-- benchmark 숫자는 backend latency와 harness 조건을 같이 읽어야 합니다.
-- `join()`을 바로 때리는 코드와 future를 조합하는 코드는 같은 virtual-thread API라도 성격이 다릅니다.
+- 메모리 내 µs 단위 단건 호출에서는 동기 API가 가장 단순하고 빠릅니다.
+- 네트워크·JDBC 대기와 높은 동시성이 함께 있을 때 가상 스레드를 후보로 검토합니다.
+- 보존된 TinkerGraph 수치는 어댑터 추가 비용을 보여주며 운영 백엔드의 처리량을 입증하지 않습니다.
+- 즉시 `join()`하는 단건 벤치마크와 여러 `CompletableFuture`를 조합하는 동시 처리량 벤치마크는 서로 다른 질문에 답합니다.
 
-성능 선택은 멋진 이름으로 하는 일이 아닙니다. “어디서 기다리는가”를 찾고, 그 기다림을 어떤 실행 모델이 가장 덜
-지저분하게 다루는지 고르는 일입니다.
+실행 모델은 API 이름이 아니라 대기 지점, 목표 동시성, 백엔드 자원 한계를 함께 측정해 선택해야 합니다.
 
 ## 참고한 소스
 
-- [Virtual Thread vs Sync benchmark result](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/docs/benchmark/2026-04-17-vt-benchmark-results.md)
-- [Graph DB tradeoffs](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/docs/graphdb-tradeoffs.md)
-- [Virtual Threads expansion design](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/docs/superpowers/specs/2026-04-17-virtual-threads-expansion-and-benchmark-design.md)
-- [Virtual Threads expansion plan](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/docs/superpowers/plans/2026-04-17-virtual-threads-expansion-and-benchmark-plan.md)
+- [동기·가상 스레드 벤치마크 결과](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/docs/benchmark/2026-04-17-vt-benchmark-results.md)
+- [그래프 데이터베이스 선택 기준](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/docs/graphdb-tradeoffs.md)
+- [가상 스레드 확장 설계](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/docs/superpowers/specs/2026-04-17-virtual-threads-expansion-and-benchmark-design.md)
+- [가상 스레드 확장 계획](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/docs/superpowers/plans/2026-04-17-virtual-threads-expansion-and-benchmark-plan.md)
 - [GraphBenchmarkState](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/benchmark/graph-benchmark/src/main/kotlin/io/bluetape4k/graph/benchmark/GraphBenchmarkState.kt)
 - [VertexOperationsBenchmark](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/benchmark/graph-benchmark/src/main/kotlin/io/bluetape4k/graph/benchmark/VertexOperationsBenchmark.kt)
 - [TraversalBenchmark](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/benchmark/graph-benchmark/src/main/kotlin/io/bluetape4k/graph/benchmark/TraversalBenchmark.kt)
@@ -198,11 +196,12 @@ Part 1에서 본 graph database 선택 기준과도 이어집니다.
 - [ApiModelBenchmark](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/benchmark/graph-benchmark/src/main/kotlin/io/bluetape4k/graph/benchmark/ApiModelBenchmark.kt)
 - [VirtualThreadVertexAdapter](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/graph/graph-core/src/main/kotlin/io/bluetape4k/graph/vt/VirtualThreadVertexAdapter.kt)
 - [VirtualThreadOperationsAdapter](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/graph/graph-core/src/main/kotlin/io/bluetape4k/graph/vt/VirtualThreadOperationsAdapter.kt)
+- [OpenJDK JEP 444: 가상 스레드](https://openjdk.org/jeps/444)
 
 ## 시리즈
 
-- Part 1: [그래프 데이터베이스 선택 지도](/ko/blog/bluetape4k-graph-part1-overview-database-selection/)
-- Part 2: [core API와 실행 모델](/ko/blog/bluetape4k-graph-part2-core-api-schema-execution/)
-- Part 3: [graph I/O와 benchmark 읽기](/ko/blog/bluetape4k-graph-part3-graph-io-benchmarks/)
-- Part 4: [workshop 시나리오와 서비스 통합](/ko/blog/bluetape4k-graph-part4-workshop-service-integration/)
-- Part 5: [Virtual Threads benchmark 읽기](/ko/blog/bluetape4k-graph-part5-virtual-threads-benchmark/)
+- Part 1: [그래프 데이터베이스 선택 기준](/ko/blog/bluetape4k-graph-part1-overview-database-selection/)
+- Part 2: [핵심 API와 실행 모델](/ko/blog/bluetape4k-graph-part2-core-api-schema-execution/)
+- Part 3: [그래프 입출력과 벤치마크 해석](/ko/blog/bluetape4k-graph-part3-graph-io-benchmarks/)
+- Part 4: [워크숍 시나리오와 서비스 통합](/ko/blog/bluetape4k-graph-part4-workshop-service-integration/)
+- Part 5: [가상 스레드 벤치마크 해석](/ko/blog/bluetape4k-graph-part5-virtual-threads-benchmark/)

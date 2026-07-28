@@ -1,6 +1,6 @@
 ---
 title: "Bluetape4k Graph Part 5: Reading the Virtual Threads Benchmark"
-description: A source-backed look at sync versus virtual-thread graph APIs, using the TinkerGraph benchmark to decide when each model makes sense.
+description: A source-backed interpretation of the TinkerGraph sync versus virtual-thread benchmark and the evidence needed before applying it to a network graph database.
 sidebar:
   order: -202606282158
 blog:
@@ -24,18 +24,19 @@ blog:
 
 No. For TinkerGraph in-memory operations that finish in a few microseconds, sync is faster. Wrapping the call adds
 `CompletableFuture` creation, virtual-thread scheduling, and `join()` cost. For tiny operations, that cost is visible.
-For Neo4j, Memgraph, or AGE over a real network connection, the decision changes: the blocking wait can be much larger
-than the wrapping cost.
+For Neo4j, Memgraph, or AGE over a real network connection, the decision may change: blocking wait can be much larger
+than the wrapping cost, but the effect still requires a concurrent workload measurement.
 
-This article is not “Virtual Threads are faster.” It is about when wrapping is wasted work, and when it makes blocking
-graph calls easier to scale and reason about.
+Virtual Threads improve scale rather than the speed of an individual task. This article explains when wrapping is wasted
+work, which conclusions the preserved TinkerGraph result supports, and what a production-backend benchmark must still
+measure.
 
 ## Same graph work, different execution path
 
 `GraphOperations` is synchronous. The virtual-thread facade does not implement a different backend. It runs the same
 sync work on a virtual thread and returns a `CompletableFuture<T>`.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Synchronous and Virtual Thread Call Paths">
   <img src="/assets/bluetape4k-graph-part5-call-path-01-en.png" alt="Sync path and Virtual Thread path for the same graph backend operation" loading="lazy" />
   <figcaption>The virtual-thread path changes where the wait happens. It does not make the backend work disappear.</figcaption>
 </figure>
@@ -61,7 +62,8 @@ The delegated `findVertexById()` call is still synchronous. Whether that is chea
 
 ## Read the benchmark setup first
 
-The benchmark uses the `graph-benchmark` module and a TinkerGraph fixture.
+The numbers below are the preserved 2026-04-17 results from the `graph-benchmark` module and its TinkerGraph fixture.
+The current source retains the same annotations, but this proofreading pass did not rerun the benchmark.
 
 | Item | Value |
 |---|---|
@@ -84,13 +86,14 @@ fun vtFindVertexById(): Boolean =
     vtOps.findVertexByIdAsync("Person", aliceId).join() != null
 ```
 
-This setup intentionally removes network noise. It exposes API-model overhead, not production Neo4j latency.
+This setup intentionally removes network noise. It exposes end-to-end adapter overhead, not production Neo4j latency.
+Each benchmark creates the future and immediately calls `join()`, so it does not measure concurrent request throughput.
 
 ## The numbers are direct
 
 On the TinkerGraph in-memory fixture, sync wins every single-call benchmark.
 
-<figure class="bt4k-chart">
+<figure class="bt4k-chart" data-diagram-title="TinkerGraph Synchronous and Virtual Threads Latency">
   <img src="/assets/bluetape4k-graph-part5-vt-latency-chart-01-en.png" alt="TinkerGraph benchmark chart comparing Sync and Virtual Threads latency in microseconds per operation" loading="lazy" />
   <figcaption>When the operation itself is only a few microseconds, virtual-thread wrapping cost is visible.</figcaption>
 </figure>
@@ -106,9 +109,10 @@ Representative `AverageTime` results:
 | `pageRank` | 7.270 | 15.257 | More work reduces the ratio but not the overhead |
 | `shortestPath` | 22.031 | 31.540 | Larger work narrows the relative gap |
 
-The useful observation is the absolute overhead. The benchmark note estimates the virtual-thread path adds roughly
-6-8µs. If a lookup takes 1.8µs, that is large. If a real graph DB call waits several milliseconds, it is no longer the
-first cost to worry about.
+The useful observation is the absolute difference. The preserved note summarizes the virtual-thread path as roughly
+6-8µs more expensive under this JVM, fixture, adapter, and immediate-`join()` shape. That number is not a universal
+constant. If a real graph call waits several milliseconds, its relative weight may shrink, but connection-pool wait,
+server capacity, query planning, error rate, and concurrent throughput still require measurement.
 
 ## When sync is the better default
 
@@ -129,9 +133,9 @@ The virtual-thread API makes sense when waiting dominates.
 
 | Situation | Why |
 |---|---|
-| Neo4j, Memgraph, or AGE over a network | Blocking wait no longer pins an expensive platform thread |
-| Spring MVC or existing blocking service code | You can add concurrency without spreading `suspend` |
-| Many concurrent graph requests | Each blocking call can wait in its own virtual thread |
+| Neo4j, Memgraph, or AGE over a network | Compatible blocking I/O can release the carrier thread while the virtual thread waits |
+| Spring MVC or existing blocking service code | You can retain a thread-per-request model without spreading `suspend` |
+| Many concurrent graph requests | Each waiting task can use a lightweight virtual thread |
 | Java callers that want `CompletableFuture` | Async composition works without coroutines |
 
 ```kotlin
@@ -142,8 +146,9 @@ val friends = vtOps
     .thenApply { vertices -> vertices.map { it.id } }
 ```
 
-Calling `join()` immediately still waits in the current flow. For multiple operations, compose futures with
-`CompletableFuture.allOf(...)`, `thenCompose`, or `thenApply` so the wait happens at the right boundary.
+Calling `join()` immediately still waits in the current flow. Submit independent work before combining it with
+`CompletableFuture.allOf(...)`; express dependent stages with `thenCompose` or `thenApply`. The graph server,
+connection pool, and target concurrency remain the limiting resources to measure.
 
 ## Connect it to backend choice
 
@@ -152,12 +157,12 @@ This benchmark also sharpens the graph DB selection guide.
 | Backend | How to read the execution model |
 |---|---|
 | TinkerGraph | Usually sync for fixtures, prototypes, and tests |
-| Neo4j | Network I/O and ACID transactions make VT useful for service concurrency |
-| Memgraph | Even low-latency graph DB calls still include network wait |
-| Apache AGE | PostgreSQL JDBC calls are a natural fit for VT wrapping |
+| Neo4j | Measure the real driver under target concurrency when network wait is material |
+| Memgraph | Include network wait and target concurrency even when single-call latency is low |
+| Apache AGE | Measure PostgreSQL JDBC wait together with connection-pool limits |
 
-The benchmark is not a leaderboard. It is a prompt to ask whether backend wait time is meaningfully larger than API
-wrapping cost.
+The benchmark is not a leaderboard or proof that network backends benefit. It turns two questions into measurements:
+whether backend wait is meaningfully larger than adapter overhead, and whether throughput improves at target concurrency.
 
 ## Takeaway
 
@@ -165,8 +170,8 @@ The virtual-thread API in `bluetape4k-graph` is not a replacement for sync. It i
 graph abstraction.
 
 - For in-memory, microsecond-scale, one-off calls, sync is simpler and faster.
-- For blocking network graph DB calls under concurrency, Virtual Threads can simplify scaling.
-- Benchmark numbers must be read with backend latency and harness shape.
+- For blocking network graph calls under concurrency, Virtual Threads are a candidate that must be measured.
+- The preserved TinkerGraph numbers show adapter overhead, not production-backend throughput.
 - A future that is immediately joined is different from a future that is composed.
 
 Performance choices are not made by API names. They are made by finding where the code waits.
@@ -184,11 +189,12 @@ Performance choices are not made by API names. They are made by finding where th
 - [ApiModelBenchmark](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/benchmark/graph-benchmark/src/main/kotlin/io/bluetape4k/graph/benchmark/ApiModelBenchmark.kt)
 - [VirtualThreadVertexAdapter](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/graph/graph-core/src/main/kotlin/io/bluetape4k/graph/vt/VirtualThreadVertexAdapter.kt)
 - [VirtualThreadOperationsAdapter](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/graph/graph-core/src/main/kotlin/io/bluetape4k/graph/vt/VirtualThreadOperationsAdapter.kt)
+- [OpenJDK JEP 444: Virtual Threads](https://openjdk.org/jeps/444)
 
 ## Series
 
-- Part 1: [Database Selection Map](/blog/bluetape4k-graph-part1-overview-database-selection/)
+- Part 1: [Graph Database Selection Criteria](/blog/bluetape4k-graph-part1-overview-database-selection/)
 - Part 2: [Core API and Execution Models](/blog/bluetape4k-graph-part2-core-api-schema-execution/)
-- Part 3: [Graph I/O and Benchmarks](/blog/bluetape4k-graph-part3-graph-io-benchmarks/)
+- Part 3: [Graph I/O and Benchmark Interpretation](/blog/bluetape4k-graph-part3-graph-io-benchmarks/)
 - Part 4: [Workshop Scenarios and Service Integration](/blog/bluetape4k-graph-part4-workshop-service-integration/)
 - Part 5: [Reading the Virtual Threads Benchmark](/blog/bluetape4k-graph-part5-virtual-threads-benchmark/)

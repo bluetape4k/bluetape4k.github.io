@@ -205,7 +205,7 @@ const diagrams = [
     ],
     relations: [
       ["user", "device", "USES_DEVICE"],
-      ["user", "phone", "HAS_PHONE"],
+      ["user", "phone", "HAS_PHONE", { via: "top", y: 205 }],
       ["user", "referral", "REFERRED_BY"],
       ["user", "payment", "USES_PAYMENT"],
       ["user", "ip", "USES_IP"],
@@ -340,27 +340,32 @@ const diagrams = [
   {
     name: "bluetape4k-graph-part5-call-path-01",
     title: "One Graph API, Two Execution Paths",
-    subtitle: "The backend work is the same; only the call path and waiting model change",
-    width: 1700,
-    height: 820,
+    subtitle: "The delegate operation stays synchronous; submission and waiting boundaries change",
+    width: 2050,
+    height: 920,
     nodes: [
-      ["syncCaller", "Caller Thread", "calls GraphOperations\nwaits directly", 90, 230, colors.blue, 310],
-      ["syncMethod", "Sync Method", "direct backend call\nsame repository contract", 470, 230, colors.blue, 330],
-      ["backend", "Graph Backend", "TinkerGraph or network DB\nsame graph operation", 890, 330, colors.green, 360],
-      ["vtCaller", "Caller Thread", "gets CompletableFuture\ncontinues outside wait", 90, 500, colors.pink, 310],
-      ["vtAdapter", "Virtual Thread Adapter", "virtualFutureOf { ... }\nwraps sync operation", 470, 500, colors.pink, 330],
-      ["wait", "Wait Boundary", "sync caller pays\nVT absorbs blocking wait", 1310, 330, colors.amber, 300],
+      ["syncCaller", "Caller Thread", "calls GraphOperations\nwaits for the return value", 70, 235, colors.blue, 320],
+      ["syncMethod", "GraphOperations", "invokes the synchronous\ndelegate method", 450, 235, colors.blue, 320],
+      ["syncBackend", "Graph Backend", "executes the graph operation\nin memory or over I/O", 830, 235, colors.green, 340],
+      ["syncResult", "Direct Result", "returns to the caller\non the same call path", 1230, 235, colors.teal, 320],
+      ["vtCaller", "Caller Thread", "requests an async operation\nreceives CompletableFuture", 70, 525, colors.pink, 320],
+      ["vtAdapter", "Virtual Thread Adapter", "submits virtualFutureOf { ... }\nwithout changing the delegate", 450, 525, colors.pink, 340],
+      ["virtualThread", "Virtual Thread", "runs the same synchronous\ndelegate method", 850, 525, colors.lavender, 320],
+      ["vtBackend", "Graph Backend", "executes the same operation\nand may block on I/O", 1230, 525, colors.green, 340],
+      ["futureResult", "Completion Boundary", "future completes\ncaller composes or joins", 1630, 525, colors.amber, 330],
     ],
     edges: [
       ["syncCaller", "syncMethod"],
-      ["syncMethod", "backend"],
+      ["syncMethod", "syncBackend"],
+      ["syncBackend", "syncResult"],
       ["vtCaller", "vtAdapter"],
-      ["vtAdapter", "backend"],
-      ["backend", "wait"],
+      ["vtAdapter", "virtualThread"],
+      ["virtualThread", "vtBackend"],
+      ["vtBackend", "futureResult"],
     ],
     footer: [
-      "For in-memory microsecond work, Sync usually wins because wrapping overhead is visible.",
-      "For blocking network I/O and many concurrent requests, Virtual Threads can simplify scaling.",
+      "Immediate join measures one operation end to end; it does not prove concurrent throughput.",
+      "Measure the real backend, connection pool, and target concurrency before choosing the execution path.",
     ],
   },
   {
@@ -385,8 +390,8 @@ const diagrams = [
       ["shortestPath VT join", 31.5, colors.pink],
     ],
     footer: [
-      "Fixture: TinkerGraph in-memory. The chart exposes API wrapping cost, not network DB throughput.",
-      "Network-backed graph work can shift the tradeoff when blocking wait dominates the operation.",
+      "Preserved 2026-04-17 TinkerGraph fixture: this chart shows adapter cost, not network DB throughput.",
+      "A production decision needs a separate backend benchmark at the target concurrency.",
     ],
   },
 ];
@@ -502,117 +507,128 @@ const koLabels = {
     direction: "로그 눈금, 낮을수록 좋음",
   },
   "bluetape4k-graph-part4-abuser-erd-01": {
-    title: "Abuser Detection 엔터티 그래프",
-    subtitle: "사용자는 identifier와 연결되고 공유 identifier가 review evidence가 된다",
+    title: "어뷰저 탐지 엔터티 그래프",
+    subtitle: "사용자와 식별자를 연결하고 공유 관계를 검토 근거로 사용한다",
     tables: {
-      user: ["User", ["userId", "email", "risk field"]],
-      device: ["Device", ["deviceId", "fingerprint"]],
-      ip: ["IpAddress", ["address", "network"]],
-      phone: ["PhoneNumber", ["phoneHash"]],
-      payment: ["PaymentMethod", ["paymentToken", "provider"]],
-      referral: ["User", ["referrer user"]],
+      user: ["사용자", ["userId", "email", "위험 속성"]],
+      device: ["기기", ["deviceId", "fingerprint"]],
+      ip: ["IP 주소", ["address", "network"]],
+      phone: ["전화번호", ["phoneHash"]],
+      payment: ["결제 수단", ["paymentToken", "provider"]],
+      referral: ["추천 사용자", ["referrer user"]],
     },
     footer: [
-      "graph에는 raw phone number나 card data가 아니라 hash와 safe token만 저장한다.",
-      "같은 identifier vertex가 여러 user로 되돌아갈 때 cluster signal이 생긴다.",
+      "그래프에는 원문 전화번호나 카드 정보가 아니라 해시와 안전한 토큰만 저장한다.",
+      "같은 식별자 정점이 여러 사용자와 연결되면 탐지 클러스터의 근거가 된다.",
     ],
   },
   "bluetape4k-graph-part4-recommendation-erd-01": {
-    title: "Recommendation 엔터티 그래프",
-    subtitle: "product 후보와 follow 후보는 두 단순한 edge family에서 나온다",
+    title: "추천 엔터티 그래프",
+    subtitle: "구매 관계와 팔로우 관계에서 두 종류의 추천 후보를 생성한다",
     tables: {
-      user: ["User", ["userId", "name"]],
-      product: ["Product", ["productId", "name", "category"]],
-      followee: ["User", ["followee user"]],
-      candidate: ["Candidate", ["score", "reason"]],
+      user: ["사용자", ["userId", "name"]],
+      product: ["상품", ["productId", "name", "category"]],
+      followee: ["팔로우 대상", ["followee user"]],
+      candidate: ["추천 후보", ["score", "reason"]],
+    },
+    relations: {
+      "co-buyer score": "공동 구매자 점수",
+      "mutual follows": "공통 팔로우 수",
     },
     footer: [
-      "예제는 candidate generation과 scoring을 분리해서 service rule을 읽기 쉽게 둔다.",
-      "큰 production graph에서는 반복 traversal을 native Cypher나 Gremlin으로 바꿔야 한다.",
+      "후보 생성과 점수 계산을 분리해 서비스 규칙을 명확하게 표현한다.",
+      "큰 운영 그래프에서는 반복 탐색을 네이티브 Cypher나 Gremlin 질의로 대체한다.",
     ],
   },
   "bluetape4k-graph-part4-knowledge-erd-01": {
-    title: "Knowledge Graph 엔터티 그래프",
-    subtitle: "document는 entity를 mention하고 entity는 concept 및 다른 entity와 연결된다",
+    title: "지식 그래프 엔터티 관계",
+    subtitle: "문서는 엔터티를 언급하고 엔터티는 개념과 다른 엔터티에 연결된다",
     tables: {
-      document: ["Document", ["documentId", "title", "source"]],
-      entity: ["Entity", ["entityId", "name", "type"]],
-      concept: ["Concept", ["conceptId", "name"]],
-      related: ["Entity", ["related entity"]],
+      document: ["문서", ["documentId", "title", "source"]],
+      entity: ["엔터티", ["entityId", "name", "type"]],
+      concept: ["개념", ["conceptId", "name"]],
+      related: ["관련 엔터티", ["related entity"]],
     },
     footer: [
-      "full-text 또는 vector search로 candidate를 찾고 graph path로 연결 이유를 설명한다.",
-      "depth limit은 semantic traversal이 unbounded crawl로 변하지 않게 막아 준다.",
+      "전문 검색이나 벡터 검색으로 후보를 찾고 그래프 경로로 연결 이유를 설명한다.",
+      "탐색 깊이를 제한해 의미 관계 조회가 무제한 순회로 확장되지 않게 한다.",
     ],
   },
   "bluetape4k-graph-part4-social-erd-01": {
-    title: "Social Network 엔터티 그래프",
-    subtitle: "person은 방향성이 있는 관계로 person과 company에 연결된다",
+    title: "소셜 네트워크 엔터티 관계",
+    subtitle: "사람은 방향성이 있는 관계로 다른 사람과 회사에 연결된다",
     tables: {
-      person: ["Person", ["personId", "name", "location"]],
-      friend: ["Person", ["known person"]],
-      follow: ["Person", ["followee"]],
-      company: ["Company", ["companyId", "name"]],
+      person: ["사람", ["personId", "name", "location"]],
+      friend: ["지인", ["known person"]],
+      follow: ["팔로우 대상", ["followee"]],
+      company: ["회사", ["companyId", "name"]],
+    },
+    relations: {
+      "colleague path": "동료 탐색 경로",
     },
     footer: [
-      "direction과 depth가 path를 recommendation으로 볼지 explanation으로만 볼지 결정한다.",
-      "traversal result를 candidate로 바꾸기 전에 self와 이미 연결된 person을 제외한다.",
+      "방향과 깊이에 따라 경로를 추천 후보로 사용할지 설명 근거로만 사용할지 결정한다.",
+      "탐색 결과에서 자기 자신과 이미 연결된 사람을 제외한 뒤 추천 후보로 사용한다.",
     ],
   },
   "bluetape4k-graph-part4-abuser-identity-flow-01": {
-    title: "Abuser Detection 식별자 흐름",
-    subtitle: "한 user에서 시작해 shared identifier를 순회하고 의심 cluster를 ranking한다",
+    title: "어뷰저 탐지 식별자 흐름",
+    subtitle: "기준 사용자에서 공유 식별자를 순회하고 의심 클러스터의 순위를 계산한다",
     nodes: {
-      seed: ["Seed User", "login, order,\nmoderation event의 userId"],
-      ids: ["Shared Identifier", "device, IP, phone hash\npayment token, referral"],
-      users: ["Related Users", "identifier에서 reverse traversal\nseed user 제외"],
-      paths: ["Suspicion Evidence", "edge path 설명\ncycle detection"],
-      rank: ["Risk Ranking", "PageRank topK\ncluster review queue"],
+      seed: ["기준 사용자", "로그인·주문·검토 이벤트의\nuserId"],
+      ids: ["공유 식별자", "기기·IP·전화번호 해시\n결제 토큰·추천인"],
+      users: ["관련 사용자", "식별자에서 역방향 탐색\n기준 사용자 제외"],
+      paths: ["의심 근거", "간선 경로 설명\n순환 탐지"],
+      rank: ["위험 순위", "PageRank 상위 K개\n클러스터 검토 대기열"],
     },
     footer: [
-      "workshop은 raw phone과 card data를 graph에 넣지 않고 hash와 PCI-safe payment token을 쓴다.",
-      "예제는 traversal shape를 먼저 가르치며 production에는 scoring과 operational guardrail이 더 필요하다.",
+      "워크숍은 원문 전화번호와 카드 정보를 저장하지 않고 해시와 PCI 안전 결제 토큰을 사용한다.",
+      "예제는 탐색 구조를 보여주며 운영 환경에는 점수 정책과 운영 안전장치가 추가로 필요하다.",
     ],
   },
   "bluetape4k-graph-part4-recommendation-flow-01": {
-    title: "Recommendation 예제 흐름",
-    subtitle: "co-buyer와 friends-of-friends를 찾고 graph evidence로 candidate를 정렬한다",
+    title: "추천 후보 생성 흐름",
+    subtitle: "공동 구매자와 2단계 연결을 찾고 그래프 근거로 후보를 정렬한다",
     nodes: {
-      user: ["Seed User", "Alice 또는 현재 viewer"],
-      purchased: ["Purchased Products", "이미 구매한 product\ncandidate에서 제외"],
-      cobuyers: ["Co-buyers", "seed product를 산\n다른 user"],
-      products: ["Product Candidates", "distinct co-buyer로 score\nscore desc 정렬"],
-      follows: ["Follow Graph", "direct follow\n2-hop candidate"],
-      people: ["Follow Candidates", "mutual follow count\nself와 existing follow 제외"],
+      user: ["기준 사용자", "현재 추천을 조회하는 사용자"],
+      purchased: ["구매 상품", "이미 구매한 상품\n후보에서 제외"],
+      cobuyers: ["공동 구매자", "기준 상품을 구매한\n다른 사용자"],
+      products: ["상품 후보", "서로 다른 공동 구매자 수\n점수 내림차순 정렬"],
+      follows: ["팔로우 그래프", "직접 팔로우\n2단계 후보"],
+      people: ["팔로우 후보", "공통 팔로우 수\n자기 자신·기존 팔로우 제외"],
     },
     footer: [
-      "service code는 traversal을 읽고 테스트할 수 있도록 일부러 명시적으로 유지한다.",
-      "큰 graph에서는 N+1 traversal shape를 native Cypher나 Gremlin query로 바꾼다.",
+      "서비스 코드는 탐색 순서를 읽고 테스트할 수 있도록 각 단계를 명시한다.",
+      "큰 그래프에서는 N+1 탐색을 네이티브 Cypher나 Gremlin 질의로 대체한다.",
     ],
   },
   "bluetape4k-graph-part5-call-path-01": {
-    title: "하나의 Graph API, 두 실행 경로",
-    subtitle: "backend work는 같고 call path와 waiting model만 달라진다",
+    title: "하나의 그래프 API, 두 실행 경로",
+    subtitle: "위임 연산은 동기 방식으로 유지되고 작업 제출과 대기 경계가 달라진다",
     nodes: {
-      syncCaller: ["Caller Thread", "GraphOperations 호출\n직접 대기"],
-      syncMethod: ["Sync Method", "직접 backend call\n같은 repository contract"],
-      backend: ["Graph Backend", "TinkerGraph 또는 network DB\n같은 graph operation"],
-      vtCaller: ["Caller Thread", "CompletableFuture 수신\nwait 바깥에서 계속 진행"],
-      vtAdapter: ["Virtual Thread Adapter", "virtualFutureOf { ... }\nsync operation wrapping"],
-      wait: ["Wait Boundary", "sync caller가 비용 지불\nVT가 blocking wait 흡수"],
+      syncCaller: ["호출 스레드", "GraphOperations 호출\n반환 값까지 직접 대기"],
+      syncMethod: ["GraphOperations", "동기 위임 메서드\n직접 호출"],
+      syncBackend: ["그래프 백엔드", "메모리 또는 I/O에서\n그래프 연산 실행"],
+      syncResult: ["직접 반환", "같은 호출 경로로\n호출자에게 결과 반환"],
+      vtCaller: ["호출 스레드", "비동기 연산 요청\nCompletableFuture 수신"],
+      vtAdapter: ["가상 스레드 어댑터", "위임 객체를 바꾸지 않고\nvirtualFutureOf { ... } 제출"],
+      virtualThread: ["가상 스레드", "같은 동기 위임\n메서드 실행"],
+      vtBackend: ["그래프 백엔드", "같은 연산을 실행하고\nI/O에서 대기할 수 있음"],
+      futureResult: ["완료 경계", "Future 완료\n호출자가 조합하거나 join"],
     },
     footer: [
-      "in-memory microsecond work에서는 wrapping overhead가 보여서 Sync가 보통 이긴다.",
-      "blocking network I/O와 많은 concurrent request에서는 Virtual Threads가 scaling을 단순하게 만든다.",
+      "즉시 join하는 측정은 단일 연산의 종단 간 비용이며 동시 처리량을 입증하지 않는다.",
+      "실제 백엔드·커넥션 풀·목표 동시성을 측정한 뒤 실행 경로를 선택한다.",
     ],
   },
   "bluetape4k-graph-part5-vt-latency-chart-01": {
-    title: "TinkerGraph: Sync와 Virtual Threads",
-    subtitle: "JMH AverageTime, operation당 microseconds, 낮을수록 빠르다",
-    bars: ["findVertexById Sync", "findVertexById VT join", "neighbors Sync", "neighbors VT join", "bfs Sync", "bfs VT join", "pageRank Sync", "pageRank VT join", "shortestPath Sync", "shortestPath VT join"],
+    title: "TinkerGraph: 동기와 가상 스레드",
+    subtitle: "JMH AverageTime, 연산당 마이크로초, 낮을수록 빠르다",
+    direction: "TinkerGraph 픽스처, 낮을수록 빠름",
+    bars: ["findVertexById 동기", "findVertexById 가상 스레드 join", "neighbors 동기", "neighbors 가상 스레드 join", "bfs 동기", "bfs 가상 스레드 join", "pageRank 동기", "pageRank 가상 스레드 join", "shortestPath 동기", "shortestPath 가상 스레드 join"],
     footer: [
-      "Fixture: TinkerGraph in-memory. 이 chart는 network DB throughput이 아니라 API wrapping cost를 보여준다.",
-      "network-backed graph work에서는 blocking wait가 operation을 지배하면 tradeoff가 달라질 수 있다.",
+      "2026-04-17 TinkerGraph 픽스처 결과이며 네트워크 DB 처리량이 아니라 어댑터 비용을 보여준다.",
+      "운영 판단에는 목표 동시성에서 별도의 백엔드 벤치마크가 필요하다.",
     ],
   },
 };
@@ -637,6 +653,14 @@ function localize(diagram, locale) {
       const translated = labels.tables[tableItem[0]];
       return translated ? [tableItem[0], translated[0], translated[1], ...tableItem.slice(3)] : tableItem;
     });
+  }
+  if (copy.relations && labels.relations) {
+    copy.relations = copy.relations.map((relationItem) => [
+      relationItem[0],
+      relationItem[1],
+      labels.relations[relationItem[2]] ?? relationItem[2],
+      ...relationItem.slice(3),
+    ]);
   }
   if (copy.participants && labels.participants) {
     copy.participants = copy.participants.map((item) => [item[0], labels.participants[item[0]] ?? item[1], item[2]]);
@@ -894,7 +918,7 @@ function table(table) {
 </g>`;
 }
 
-function relation(from, to, label, tables, index = 0, relations = []) {
+function relation(from, to, label, tables, index = 0, relations = [], route = undefined) {
   const src = tables.find((n) => n[0] === from);
   const dst = tables.find((n) => n[0] === to);
   const sw = src[6] ?? 280;
@@ -915,7 +939,23 @@ function relation(from, to, label, tables, index = 0, relations = []) {
   let labelY;
   const sourceOffset = portOffset(from, relations, index, 0);
   const targetOffset = portOffset(to, relations, index, 1);
-  if (horizontal) {
+  if (route?.via === "top") {
+    const x1 = Math.round(scx + sourceOffset);
+    const y1 = sy;
+    const x2 = scx <= dcx ? dx : dx + dw;
+    const yEnd = Math.round(dcy + targetOffset);
+    const targetTurnX = scx <= dcx ? x2 - 55 : x2 + 55;
+    const viaY = route.y;
+    path = roundedPath([
+      [x1, y1],
+      [x1, viaY],
+      [targetTurnX, viaY],
+      [targetTurnX, yEnd],
+      [x2, yEnd],
+    ]);
+    labelX = Math.round((x1 + targetTurnX) / 2);
+    labelY = viaY - 10;
+  } else if (horizontal) {
     const x1 = scx <= dcx ? sx + sw : sx;
     const x2 = scx <= dcx ? dx : dx + dw;
     const yStart = Math.round(scy + sourceOffset);
@@ -961,7 +1001,7 @@ function erdSvg(diagram, locale) {
 <rect class="frame" x="34" y="28" width="${width - 68}" height="${height - 56}" rx="24"/>
 <text class="title" x="${width / 2}" y="82" text-anchor="middle">${esc(diagram.title)}</text>
 <text class="subtitle" x="${width / 2}" y="118" text-anchor="middle">${esc(diagram.subtitle)}</text>
-${diagram.relations.map(([from, to, label], index) => relation(from, to, label, tables, index, diagram.relations)).join("\n")}
+${diagram.relations.map(([from, to, label, route], index) => relation(from, to, label, tables, index, diagram.relations, route)).join("\n")}
 ${tables.map(table).join("\n")}
 <rect x="88" y="${footerY}" width="${width - 176}" height="62" rx="12" fill="#111827" stroke="#334155"/>
 <text class="footer" x="${width / 2}" y="${footerY + 25}" text-anchor="middle">${esc(diagram.footer[0])}</text>

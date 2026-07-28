@@ -351,7 +351,7 @@ test('the ecosystem overview provides localized diagram titles without making th
   assert.doesNotMatch(en, /class="bt4k-blog-hero"[^>]*data-diagram-title/);
 });
 
-test('the Graph core series provides localized titles for every technical figure', async () => {
+test('the Graph series provides localized titles for every technical figure', async () => {
   const posts = [
     [
       await read('src/content/docs/ko/blog/bluetape4k-graph-part1-overview-database-selection.mdx'),
@@ -376,6 +376,22 @@ test('the Graph core series provides localized titles for every technical figure
     [
       await read('src/content/docs/blog/bluetape4k-graph-part3-graph-io-benchmarks.mdx'),
       ['Graph I/O pipeline', 'Mean graph I/O latency for synchronous execution'],
+    ],
+    [
+      await read('src/content/docs/ko/blog/bluetape4k-graph-part4-workshop-service-integration.mdx'),
+      ['어뷰저 탐지 식별자 흐름', '어뷰저 탐지 엔터티 그래프', '추천 후보 생성 흐름', '추천 엔터티 그래프', '지식 그래프 엔터티 관계', '소셜 네트워크 엔터티 관계'],
+    ],
+    [
+      await read('src/content/docs/blog/bluetape4k-graph-part4-workshop-service-integration.mdx'),
+      ['Abuser Detection Identity Flow', 'Abuser Detection Entity Graph', 'Recommendation Candidate Flow', 'Recommendation Entity Graph', 'Knowledge Graph Entity Relationships', 'Social Network Entity Relationships'],
+    ],
+    [
+      await read('src/content/docs/ko/blog/bluetape4k-graph-part5-virtual-threads-benchmark.mdx'),
+      ['동기와 가상 스레드 실행 경로', 'TinkerGraph 동기·가상 스레드 지연 시간'],
+    ],
+    [
+      await read('src/content/docs/blog/bluetape4k-graph-part5-virtual-threads-benchmark.mdx'),
+      ['Synchronous and Virtual Thread Call Paths', 'TinkerGraph Synchronous and Virtual Threads Latency'],
     ],
   ];
 
