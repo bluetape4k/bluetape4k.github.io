@@ -227,16 +227,18 @@ They do not implement repositories for an entire `Timetable` or `BedPlan`, durab
 versions, or approval records. **Score persistence support** must not be expanded into a claim that the examples provide
 **PlanningSolution persistence**.
 
-## What a Production Service Still Needs to Store
+## Reference Design for What a Production Service Still Needs to Store
 
 <figure
   class="bt4k-architecture"
-  data-diagram-title="Interactions Across Optimization, Persistence, and Approval Boundaries"
+  data-diagram-title="Reference Design for Optimization, Persistence, and Approval Boundaries"
 >
-  <img src="/assets/timefold-workshop-solver-persistence-sequence-02-en.png" alt="An interaction map connecting operator, optimization API, job service, SolverManager, Solver, candidate solution store, job store, approval service, and business data with request, persistence, callback, approval, and version-conflict paths" loading="lazy" />
-  <figcaption>Solver execution belongs to the optimization runtime, candidate solutions and job snapshots belong to separate Exposed stores, and approval plus source-of-truth updates belong to the business service.</figcaption>
+  <img src="/assets/timefold-workshop-solver-persistence-sequence-02-en.png" alt="A reference design, not the current workshop implementation, connecting operator, optimization API, job service, SolverManager, Solver, candidate solution store, job store, approval service, and business data" loading="lazy" />
+  <figcaption>This is an application reference design, not a set of services currently implemented in the workshop. It separates Solver execution, candidate and job persistence, approval, and source-of-truth updates.</figcaption>
 </figure>
 
+The current `timefold-workshop` does not implement the `OptimizationJobService` or the two Exposed stores shown here.
+This reference design makes the missing application boundary between the quickstarts and Score-column tests concrete.
 A production service should keep at least the following records distinct:
 
 | Record | Why it is needed |

@@ -12,20 +12,20 @@
   </defs>
   <rect width="1600" height="900" rx="34" fill="url(#bg)"/>
   <circle cx="1450" cy="110" r="200" fill="#7c3aed" opacity=".08"/><circle cx="130" cy="780" r="220" fill="#0891b2" opacity=".08"/>
-  <text x="80" y="78" class="title">완료는 살아 움직이는 개발 루프의 체크포인트다</text>
+  <text x="80" y="78" class="title">완료는 지속되는 개발 주기의 한 점검 지점이다</text>
   <text x="82" y="116" class="subtitle">리뷰 결과와 운영 환경을 닮은 증거는 다음의 작고 검증 가능한 요구사항이 된다.</text>
 
   <rect x="50" y="180" width="470" height="160" rx="24" fill="#153247" stroke="#22d3ee" class="card"/>
-  <text x="80" y="226" class="small" fill="#67e8f9">01 · 요구사항</text><text x="80" y="272" class="label">관찰 가능한 필요를 설명</text><text x="80" y="307" class="body">동작 · 경계 · 인수 증거</text>
+  <text x="80" y="226" class="small" fill="#67e8f9">01 · 요구사항</text><text x="80" y="272" class="label">관찰 가능한 필요를 설명</text><text x="80" y="307" class="body">동작 · 경계 · 검증 근거</text>
   <rect x="565" y="180" width="470" height="160" rx="24" fill="#202a4a" stroke="#818cf8" class="card"/>
   <text x="595" y="226" class="small" fill="#a5b4fc">02 · 설계 / 계획</text><text x="595" y="272" class="label">가장 작고 안전한 변경 선택</text><text x="595" y="307" class="body">데이터 · <tspan class="tech">API</tspan> · 마이그레이션 · 검증</text>
   <rect x="1080" y="180" width="470" height="160" rx="24" fill="#27213f" stroke="#c084fc" class="card"/>
-  <text x="1110" y="226" class="small" fill="#d8b4fe">03 · 구현</text><text x="1110" y="272" class="label">경계를 명시적으로 유지</text><text x="1110" y="307" class="body"><tspan class="tech">tenant</tspan> · 트랜잭션 · 이벤트 · 의존성</text>
+  <text x="1110" y="226" class="small" fill="#d8b4fe">03 · 구현</text><text x="1110" y="272" class="label">경계를 명시적으로 유지</text><text x="1110" y="307" class="body">테넌트 · 트랜잭션 · 이벤트 · 의존성</text>
 
   <rect x="1080" y="580" width="470" height="160" rx="24" fill="#26213f" stroke="#c084fc" class="card"/>
   <text x="1110" y="626" class="small" fill="#d8b4fe">04 · 테스트 / 리뷰</text><text x="1110" y="672" class="label">발견 사항을 증거로 전환</text><text x="1110" y="707" class="body">실패 경로 · 호환성 · <tspan class="tech">P0/P1</tspan></text>
   <rect x="565" y="580" width="470" height="160" rx="24" fill="#15364a" stroke="#2dd4bf" class="card"/>
-  <text x="595" y="626" class="small" fill="#5eead4">05 · 교훈</text><text x="595" y="672" class="label">수정 이유를 기록</text><text x="595" y="707" class="body">결정 · 거부한 경로 · 향후 가드</text>
+  <text x="595" y="626" class="small" fill="#5eead4">05 · 교훈</text><text x="595" y="672" class="label">수정 이유를 기록</text><text x="595" y="707" class="body">결정 · 거부한 경로 · 향후 방지 장치</text>
   <rect x="50" y="580" width="470" height="160" rx="24" fill="#183248" stroke="#38bdf8" class="card"/>
   <text x="80" y="626" class="small" fill="#7dd3fc">06 · 새 요구사항</text><text x="80" y="672" class="label">배운 내용을 다시 반영</text><text x="80" y="707" class="body">리뷰 공백 하나를 계약 하나로 전환</text>
 
@@ -38,7 +38,7 @@
 
   <rect x="470" y="394" width="660" height="116" rx="24" fill="#0c1c31" stroke="#52657d" stroke-width="2" filter="url(#shadow)"/>
   <text x="800" y="430" text-anchor="middle" class="small" fill="#fbbf24">운영 입력</text>
-  <rect x="490" y="452" width="130" height="34" rx="17" fill="#123b4d"/><text x="555" y="475" text-anchor="middle" class="small"><tspan class="tech">tenant</tspan> 격리</text>
+  <rect x="490" y="452" width="130" height="34" rx="17" fill="#123b4d"/><text x="555" y="475" text-anchor="middle" class="small">테넌트 격리</text>
   <rect x="635" y="452" width="100" height="34" rx="17" fill="#31244b"/><text x="685" y="475" text-anchor="middle" class="small">알림</text>
   <rect x="750" y="452" width="180" height="34" rx="17" fill="#18364a"/><text x="840" y="475" text-anchor="middle" class="small">데이터베이스 호환성</text>
   <rect x="945" y="452" width="150" height="34" rx="17" fill="#332817"/><text x="1020" y="475" text-anchor="middle" class="small">성능 / <tspan class="tech">SDK</tspan></text>

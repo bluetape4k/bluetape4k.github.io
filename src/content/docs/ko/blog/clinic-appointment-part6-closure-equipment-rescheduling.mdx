@@ -19,7 +19,7 @@ blog:
 <p class="bt4k-post-meta">2026-07-21 · 병원 예약 서비스 개발기 · Part 6</p>
 
 [Part 5](/ko/blog/clinic-appointment-part5-timefold-constraints/)에서는 휴진과 장비 사용 불가를 Solver가 반드시
-피해야 하는 Hard Constraint로 표현했습니다. 이 제약은 앞으로 만들 일정이 운영 불가능한 시간에 들어가지
+지켜야 하는 필수 제약으로 표현했습니다. 이 제약은 앞으로 만들 일정이 운영 불가능한 시간에 들어가지
 않도록 막습니다. 하지만 이미 확정된 예약이 있는 날 갑자기 휴진하거나, 검사 장비가 고장 나면 제약만으로는
 업무가 끝나지 않습니다.
 
@@ -42,7 +42,7 @@ blog:
 | 확정 | 선택 후보, 새 예약 ID, 원본 예약 ID | 이전 약속과 새 약속의 연결을 보존한다 |
 | 완료 이력 | 원본 예약의 `RESCHEDULED`, 사유 | 누가 보더라도 변경 결과를 추적할 수 있게 한다 |
 
-`PENDING_RESCHEDULE`는 단순한 중간 enum이 아닙니다. “이 예약은 더 이상 원래 시간에 이행할 수 없지만,
+`PENDING_RESCHEDULE`는 단순한 중간 열거형(enum)이 아닙니다. “이 예약은 더 이상 원래 시간에 이행할 수 없지만,
 대체 약속은 아직 확정되지 않았다”는 운영 상태입니다. 이 상태가 있어야 후보가 없는 경우, 환자 확인을 기다리는
 경우, 관리자가 수동으로 조정하는 경우를 확정 완료와 구분할 수 있습니다.
 
@@ -109,7 +109,7 @@ for (appointment in affected) {
 `RESCHEDULE` 예외를 펼쳐 실제 사용 불가 구간을 계산합니다.
 
 새 규칙을 저장하기 전에는 `previewConflicts()`로 충돌 예약을 미리 볼 수 있습니다. 저장한 뒤에는
-`detectConflictsByTenant()`가 장비 사용 불가 구간과 겹치는 예약을 반환합니다. 요청 URL의 tenant, 병원,
+`detectConflictsByTenant()`가 장비 사용 불가 구간과 겹치는 예약을 반환합니다. 요청 URL의 테넌트, 병원,
 장비가 같은 소유 경계에 있는지도 확인합니다.
 
 그러나 이 서비스는 충돌 예약을 `PENDING_RESCHEDULE`로 옮기거나 후보를 만들지 않습니다. 장비 충돌 목록을
@@ -134,8 +134,8 @@ for (appointment in affected) {
 
 ## 확정: 원본을 지우지 않고 새 예약을 연결한다
 
-관리자가 후보를 고르면 `confirmReschedule()`은 후보가 해당 원본 예약에 속하는지 검증합니다. tenant가 있는
-API 경로에서는 원본 예약과 후보 의사가 같은 tenant에 속하고, 후보 의사가 원본 예약의 병원 소속인지도
+관리자가 후보를 고르면 `confirmReschedule()`은 후보가 해당 원본 예약에 속하는지 검증합니다. 테넌트가 있는
+API 경로에서는 원본 예약과 후보 의사가 같은 테넌트에 속하고, 후보 의사가 원본 예약의 병원 소속인지도
 확인합니다. 그 뒤 후보의 날짜와 시간으로 새 `CONFIRMED` 예약을 만들고 `rescheduleFromId`에 원본 예약 ID를
 저장합니다.
 
@@ -166,9 +166,9 @@ API 경로에서는 원본 예약과 후보 의사가 같은 tenant에 속하고
 
 완전한 재배정 유스케이스라면 다음 순서를 명시해야 합니다.
 
-1. 현재 상태와 tenant 소유권을 다시 검증한다.
+1. 현재 상태와 테넌트 소유권을 다시 검증한다.
 2. 원본 상태 변경, 새 예약, 이력과 후보 선택을 원자적으로 저장한다.
-3. 커밋 이후 재배정 이벤트를 발행하거나 신뢰할 수 있는 outbox에 기록한다.
+3. 커밋 이후 재배정 이벤트를 발행하거나 신뢰할 수 있는 아웃박스에 기록한다.
 4. 알림 채널이 실패해도 예약 트랜잭션을 되돌리지 않고 재시도·실패 이력을 남긴다.
 5. 환자 통지 여부와 운영자의 후속 조치를 조회할 수 있게 한다.
 
@@ -185,16 +185,16 @@ API 경로에서는 원본 예약과 후보 의사가 같은 tenant에 속하고
 - 이벤트 발행과 환자 알림의 성공·실패를 별도로 관찰할 수 있는가
 - 같은 사건을 다시 실행해도 상태와 후보가 중복되지 않는가
 
-현재 구현은 휴진 재배정의 핵심 상태와 후보, 장비 사용 불가의 충돌 탐지, tenant 소유권 검증을 제공합니다.
+현재 구현은 휴진 재배정의 핵심 상태와 후보, 장비 사용 불가의 충돌 탐지, 테넌트 소유권 검증을 제공합니다.
 동시에 장비 충돌의 자동 재배정, Solver 결과 저장, 재배정 이벤트 발행과 멱등한 재실행은 다음 운영 요구사항으로
 남아 있습니다. 구현된 범위와 필요한 범위를 구분해 두는 것이 사고 대응 자동화의 출발점입니다.
 
 ## 구현 코드와 자료 살펴보기
 
 - [휴진 재배정 서비스](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/ClosureRescheduleService.kt): 재배정 대기 상태, 후보 생성, 수동·자동 확정과 원본-신규 예약 연결을 구현합니다.
-- [휴진 재배정 테스트](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/test/kotlin/io/bluetape4k/clinic/appointment/service/ClosureRescheduleServiceTest.kt): 후보 생성, 확정, 후보 없음, 잘못된 후보와 tenant 교차 접근을 검증합니다.
+- [휴진 재배정 테스트](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/test/kotlin/io/bluetape4k/clinic/appointment/service/ClosureRescheduleServiceTest.kt): 후보 생성, 확정, 후보 없음, 잘못된 후보와 테넌트 교차 접근을 검증합니다.
 - [장비 사용 불가 서비스](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/EquipmentUnavailabilityService.kt): 사용 불가 규칙과 예외를 펼치고 충돌 예약을 미리 보거나 조회합니다.
-- [장비 사용 불가 API](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/controller/EquipmentUnavailabilityController.kt): tenant·병원·장비 경계를 확인한 뒤 충돌 탐지와 미리보기를 제공합니다.
+- [장비 사용 불가 API](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/controller/EquipmentUnavailabilityController.kt): 테넌트·병원·장비 경계를 확인한 뒤 충돌 탐지와 미리보기를 제공합니다.
 - [SSE 배치 트랜잭션 회고](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/lessons/2026-05-19-sse-batch-stream-transaction-pattern.md): 네트워크 진행률 전송을 DB 트랜잭션 밖으로 옮긴 이유와 테스트 포인트를 기록합니다.
 - [알림 이벤트 리스너](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-notification/src/main/kotlin/io/bluetape4k/clinic/appointment/notification/NotificationEventListener.kt): 생성, 확정, 취소, 재배정 이벤트를 현재 프로세스 안에서 알림 채널로 연결합니다.
 
@@ -204,6 +204,6 @@ API 경로에서는 원본 예약과 후보 의사가 같은 tenant에 속하고
 - [Part 2: 예약 상태는 enum이 아니다](/ko/blog/clinic-appointment-part2-state-machine-and-history/)
 - [Part 3: 병원마다 다른 업무시간과 자원으로 예약 가능 시간을 계산하기](/ko/blog/clinic-appointment-part3-clinic-specific-availability/)
 - [Part 4: 한 건의 예약 가능 시간 조회와 전체 일정 최적화는 다르다](/ko/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
-- [Part 5: 병원 업무 규칙을 Timefold Constraint로 번역하기](/ko/blog/clinic-appointment-part5-timefold-constraints/)
+- [Part 5: 병원 업무 규칙을 Timefold 제약으로 번역하기](/ko/blog/clinic-appointment-part5-timefold-constraints/)
 - **Part 6: 휴진과 장비 고장은 예약 설계를 어떻게 바꾸는가**
 - [Part 7: 완성 뒤가 진짜 시작이다](/ko/blog/clinic-appointment-part7-review-and-operational-evolution/)

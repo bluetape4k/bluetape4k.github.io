@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="3200" height="1650" viewBox="0 0 3200 1650" role="img" aria-labelledby="title desc">
-  <title id="title">최적화 실행, 영속화, 승인 경계의 상호작용</title>
-  <desc id="desc">운영자, 최적화 API, 작업 서비스, SolverManager, Solver, 후보 해답 저장소, 작업 저장소, 승인 서비스, 업무 데이터를 카드로 배치하고 요청, 영속화, 비동기 콜백, 승인 반영 관계를 교차 없는 연결선으로 보여 준다.</desc>
+  <title id="title">최적화 실행, 영속화, 승인 경계의 참조 설계</title>
+  <desc id="desc">현재 workshop 구현이 아닌 참조 설계로 운영자, 최적화 API, 작업 서비스, SolverManager, Solver, 후보 해답 저장소, 작업 저장소, 승인 서비스, 업무 데이터를 카드와 연결선으로 보여 준다.</desc>
   <defs>
     <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#07101f"/>
@@ -48,49 +48,49 @@
 
   <rect width="3200" height="1650" rx="34" fill="url(#canvas)"/>
   <rect class="frame" x="28" y="28" width="3144" height="1594" rx="30"/>
-  <text class="title" x="1600" y="86" text-anchor="middle">최적화 서비스는 실행·저장·승인 경계를 연결한다</text>
-  <text class="subtitle" x="1600" y="124" text-anchor="middle">컴포넌트를 연결하는 선은 책임 경계를 오가는 요청, 데이터, 콜백을 나타냅니다.</text>
+  <text class="title" x="1600" y="86" text-anchor="middle">최적화 서비스의 실행·저장·승인 참조 설계</text>
+  <text class="subtitle" x="1600" y="124" text-anchor="middle">현재 workshop 구현이 아닌 애플리케이션 참조 구조이며, 연결선은 책임 경계를 오가는 요청·데이터·콜백을 나타냅니다.</text>
 
   <rect class="zone" x="70" y="165" width="3060" height="410" rx="26"/>
   <text class="zoneTitle" x="105" y="204">요청과 최적화 실행</text>
-  <text class="zoneHint" x="3090" y="204" text-anchor="end">application boundary · asynchronous solving runtime</text>
+  <text class="zoneHint" x="3090" y="204" text-anchor="end">애플리케이션 경계 · 비동기 탐색 런타임</text>
 
   <rect class="zone" x="70" y="620" width="3060" height="360" rx="26"/>
   <text class="zoneTitle" x="105" y="659">영속화 경계</text>
-  <text class="zoneHint" x="3090" y="659" text-anchor="end">Exposed persistence · reproducible optimization job</text>
+  <text class="zoneHint" x="3090" y="659" text-anchor="end">Exposed 영속화 · 재현 가능한 최적화 작업</text>
 
   <rect class="zone" x="70" y="1020" width="3060" height="360" rx="26"/>
   <text class="zoneTitle" x="105" y="1059">승인과 업무 반영</text>
-  <text class="zoneHint" x="3090" y="1059" text-anchor="end">snapshot version check · transactional apply</text>
+  <text class="zoneHint" x="3090" y="1059" text-anchor="end">스냅숏 버전 검증 · 트랜잭션 반영</text>
 
   <!-- 요청과 실행 카드 -->
   <g id="client-card">
     <rect class="card cardBlue" x="100" y="260" width="390" height="180" rx="22"/>
-    <text class="cardEyebrow" x="135" y="302">CLIENT</text>
+    <text class="cardEyebrow" x="135" y="302">사용자</text>
     <text class="cardTitle" x="135" y="348">운영자 · API 사용자</text>
     <text class="cardBody" x="135" y="392">제출 · 조회 · 승인</text>
   </g>
   <g id="api-card">
     <rect class="card cardBlue" x="650" y="260" width="400" height="180" rx="22"/>
-    <text class="cardEyebrow" x="685" y="302">APPLICATION BOUNDARY</text>
+    <text class="cardEyebrow" x="685" y="302">애플리케이션 경계</text>
     <text class="cardTitle" x="685" y="348">최적화 API</text>
-    <text class="code" x="685" y="392">submit · query · approve</text>
+    <text class="code" x="685" y="392">제출 · 조회 · 승인</text>
   </g>
   <g id="job-service-card">
     <rect class="card cardTeal" x="1210" y="260" width="580" height="180" rx="22"/>
-    <text class="cardEyebrow" x="1245" y="302">OPTIMIZATION APPLICATION</text>
+    <text class="cardEyebrow" x="1245" y="302">최적화 애플리케이션</text>
     <text class="cardTitle" x="1245" y="348">OptimizationJobService</text>
     <text class="cardBody" x="1245" y="392">작업 상태 · 저장 · Solver 콜백 조정</text>
   </g>
   <g id="solver-manager-card">
     <rect class="card cardBlue" x="1960" y="260" width="500" height="180" rx="22"/>
-    <text class="cardEyebrow" x="1995" y="302">TIMEFOLD RUNTIME</text>
+    <text class="cardEyebrow" x="1995" y="302">TIMEFOLD 런타임</text>
     <text class="cardTitle" x="1995" y="348">SolverManager</text>
     <text class="cardBody" x="1995" y="392">비동기 작업 수명주기</text>
   </g>
   <g id="solver-card">
     <rect class="card cardAmber" x="2680" y="260" width="420" height="180" rx="22"/>
-    <text class="cardEyebrow" x="2715" y="302">CONSTRAINT SOLVER</text>
+    <text class="cardEyebrow" x="2715" y="302">제약 해석기</text>
     <text class="cardTitle" x="2715" y="348">Solver</text>
     <text class="cardBody" x="2715" y="392">제약 평가 · 해답 탐색</text>
   </g>
@@ -98,27 +98,27 @@
   <!-- 영속화 카드 -->
   <g id="candidate-store-card">
     <rect class="card cardGreen" x="920" y="720" width="600" height="180" rx="22"/>
-    <text class="cardEyebrow" x="955" y="762">EXPOSED CANDIDATE STORE</text>
+    <text class="cardEyebrow" x="955" y="762">EXPOSED 후보 저장소</text>
     <text class="cardTitle" x="955" y="808">후보 해답 저장소</text>
     <text class="cardBody" x="955" y="852">가장 좋은 해답 · Score · 생성 시각</text>
   </g>
   <g id="job-store-card">
     <rect class="card cardGreen" x="1770" y="720" width="600" height="180" rx="22"/>
-    <text class="cardEyebrow" x="1805" y="762">EXPOSED JOB STORE</text>
+    <text class="cardEyebrow" x="1805" y="762">EXPOSED 작업 저장소</text>
     <text class="cardTitle" x="1805" y="808">작업 저장소</text>
-    <text class="cardBody" x="1805" y="852">문제 스냅샷 · 작업 상태 · 기준 버전</text>
+    <text class="cardBody" x="1805" y="852">문제 스냅숏 · 작업 상태 · 기준 버전</text>
   </g>
 
   <!-- 승인과 업무 카드 -->
   <g id="approval-card">
     <rect class="card cardAmber" x="1360" y="1120" width="650" height="180" rx="22"/>
-    <text class="cardEyebrow" x="1395" y="1162">BUSINESS SERVICE</text>
+    <text class="cardEyebrow" x="1395" y="1162">업무 서비스</text>
     <text class="cardTitle" x="1395" y="1208">승인 서비스</text>
     <text class="cardBody" x="1395" y="1252">기준 버전 검증 · 후보 해답의 업무 반영</text>
   </g>
   <g id="business-data-card">
     <rect class="card cardTeal" x="2420" y="1120" width="560" height="180" rx="22"/>
-    <text class="cardEyebrow" x="2455" y="1162">SOURCE OF TRUTH</text>
+    <text class="cardEyebrow" x="2455" y="1162">최종 데이터 원본</text>
     <text class="cardTitle" x="2455" y="1208">업무 데이터</text>
     <text class="cardBody" x="2455" y="1252">예약 · 병상 · 시간표 · 현재 버전</text>
   </g>
@@ -194,7 +194,7 @@
     <path data-connector="job-service-to-job-store" class="connector persist" d="M1600 440 V660 Q1600 680 1620 680 H1780 Q1800 680 1800 700 V720" marker-end="url(#arrow-green)"/>
     <g class="relationshipLabel">
       <rect class="labelBg" x="1625" y="610" width="250" height="34" rx="17" stroke="#8db475"/>
-      <text class="label" x="1750" y="633" text-anchor="middle" fill="#c9dda8">문제 스냅샷 · 작업 상태</text>
+      <text class="label" x="1750" y="633" text-anchor="middle" fill="#c9dda8">문제 스냅숏 · 작업 상태</text>
     </g>
   </g>
 

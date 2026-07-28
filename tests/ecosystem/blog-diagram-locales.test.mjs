@@ -182,3 +182,35 @@ test('cache workshop article excludes the invalid benchmark and keeps canonical 
   );
   assert.doesNotMatch(generator, /cache-series-workshop-profile-01|ProductCacheService/);
 });
+
+test('clinic completion articles separate implemented boundaries from reference designs', async () => {
+  const clinic = {
+    en: await readFile(
+      path.join(root, 'src/content/docs/blog/clinic-appointment-part7-review-and-operational-evolution.mdx'),
+      'utf8',
+    ),
+    ko: await readFile(
+      path.join(root, 'src/content/docs/ko/blog/clinic-appointment-part7-review-and-operational-evolution.mdx'),
+      'utf8',
+    ),
+  };
+  assert.match(clinic.en, /Network-retry idempotency is therefore an implemented boundary/);
+  assert.match(clinic.en, /Capacity integrity remains separate/);
+  assert.match(clinic.ko, /요청 멱등성은 현재 구현된\s+경계/);
+  assert.match(clinic.ko, /수용 인원 무결성은 여전히 남은 경계/);
+
+  const timefold = {
+    en: await readFile(
+      path.join(root, 'src/content/docs/blog/timefold-workshop-quickstarts-exposed-persistence.mdx'),
+      'utf8',
+    ),
+    ko: await readFile(
+      path.join(root, 'src/content/docs/ko/blog/timefold-workshop-quickstarts-exposed-persistence.mdx'),
+      'utf8',
+    ),
+  };
+  assert.match(timefold.en, /application reference design, not a set of services currently implemented/);
+  assert.match(timefold.en, /does not implement the `OptimizationJobService`/);
+  assert.match(timefold.ko, /애플리케이션이 채울 수 있는 참조 설계/);
+  assert.match(timefold.ko, /현재 `timefold-workshop`에는 이 그림의 `OptimizationJobService`/);
+});

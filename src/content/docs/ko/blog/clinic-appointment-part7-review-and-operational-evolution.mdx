@@ -1,18 +1,18 @@
 ---
 title: "병원 예약 SaaS 개발기 Part 7: 완성 뒤가 진짜 시작이다"
-description: 코드 리뷰와 운영 요구가 상태 이력 API, tenant 격리, 알림 복원력, 다중 DB 검증과 의존성 마이그레이션으로 이어지는 개발 피드백 루프를 돌아봅니다.
+description: 코드 리뷰와 운영 요구가 상태 이력 API, 테넌트 격리, 알림 복원력, 다중 DB 검증과 의존성 마이그레이션으로 이어지는 개발 피드백 주기를 돌아봅니다.
 sidebar:
   order: -202607221400
 blog:
   date: 2026-07-22T14:00:00+09:00
   image: /assets/clinic-appointment-part7-hero.png
-  imageAlt: 작은 로봇 개발자들이 요구사항과 설계, 구현, 테스트와 리뷰, 교훈 카드를 원형 작업대로 돌리고 주변의 tenant 보안, 알림, 데이터베이스와 성능 신호를 다음 개발 주기에 연결하는 어두운 미니어처 장면
+  imageAlt: 작은 로봇 개발자들이 요구사항과 설계, 구현, 테스트와 리뷰, 교훈 카드를 원형 작업대로 돌리고 주변의 테넌트 보안, 알림, 데이터베이스와 성능 신호를 다음 개발 주기에 연결하는 어두운 미니어처 장면
   cardDescription: "리뷰 지적과 운영 증거를 다음 요구사항으로 되돌려 보내며 예약 SaaS를 계속 진화시키는 방법을 정리합니다."
   tags: ["architecture","dependencies","migration","persistence","resilience","testing"]
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/clinic-appointment-part7-hero.png" alt="작은 로봇 개발자들이 요구사항과 설계, 구현, 테스트와 리뷰, 교훈 카드를 원형 작업대로 돌리고 주변의 tenant 보안, 알림, 데이터베이스와 성능 신호를 다음 개발 주기에 연결하는 어두운 미니어처 장면" loading="eager" />
+  <img src="/assets/clinic-appointment-part7-hero.png" alt="작은 로봇 개발자들이 요구사항과 설계, 구현, 테스트와 리뷰, 교훈 카드를 원형 작업대로 돌리고 주변의 테넌트 보안, 알림, 데이터베이스와 성능 신호를 다음 개발 주기에 연결하는 어두운 미니어처 장면" loading="eager" />
   <figcaption>기능이 동작하는 순간은 결승선이 아니라 다음 관찰을 시작할 수 있는 기준점입니다. 리뷰와 운영에서 얻은 증거를 작은 요구사항으로 되돌려 보내야 시스템이 오래 갑니다.</figcaption>
 </figure>
 
@@ -51,13 +51,13 @@ blog:
 ## 단일 병원 가정이 깨지면 모든 ID의 의미가 달라진다
 
 여러 병원 그룹이 같은 SaaS를 사용하면서 가장 큰 변화는 테이블에 `tenant_group_id`를 추가한 일이 아니었습니다.
-URL에 있는 tenant와 JWT가 허용하는 tenant, 경로의 병원 ID, 본문이나 하위 경로의 의사·진료 유형·장비 ID를
+URL에 있는 테넌트와 JWT가 허용하는 테넌트, 경로의 병원 ID, 본문이나 하위 경로의 의사·진료 유형·장비 ID를
 하나의 소유 경계로 묶어야 했습니다.
 
 현재 API는 `/api/{tenantCode}/...` 경로를 사용합니다.
 [TenantAuthorizationManager](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/security/TenantAuthorizationManager.kt)는
-URL의 `tenantCode`가 JWT `allowedTenants`에 들어 있는지 확인합니다. 인증되지 않은 요청은 tenant 조회를 하지
-않고 401 경로로 보내며, 인증된 요청에서 모르는 tenant는 404, 허용되지 않은 tenant는 403으로 구분합니다.
+URL의 `tenantCode`가 JWT `allowedTenants`에 들어 있는지 확인합니다. 인증되지 않은 요청은 테넌트 조회를 하지
+않고 401 경로로 보내며, 인증된 요청에서 모르는 테넌트는 404, 허용되지 않은 테넌트는 403으로 구분합니다.
 
 ```kotlin
 val tenantCode = context.variables["tenantCode"]
@@ -69,11 +69,11 @@ return AuthorizationDecision(tenantCode in principal.allowedTenants)
 
 인가가 통과했다고 해서 임의의 `doctorId`나 `equipmentId`를 믿을 수는 없습니다.
 `TenantClinicAccessChecker.verifySchedulingResources()`는 병원, 의사, 진료 유형과 선택 장비가 모두 같은
-tenant와 같은 병원에 속하는지 확인합니다. Repository의 `findByIdAndTenant()`는 JOIN 가드로 다른 tenant의
+테넌트와 같은 병원에 속하는지 확인합니다. 저장소의 `findByIdAndTenant()`는 JOIN 조건으로 다른 테넌트의
 자원 ID를 `null`로 만들고, API는 이를 일반적인 404로 반환해 존재 여부 노출을 줄입니다.
 
 또 하나의 결정은 `TenantContext`를 서비스 내부의 암묵적 전역 상태로 퍼뜨리지 않는 것이었습니다. 컨트롤러
-경계에서 tenant를 해석한 뒤 suspend 서비스와 Repository에는 `tenantGroupId`를 명시적으로 넘깁니다. 비동기
+경계에서 테넌트를 해석한 뒤 suspend 서비스와 저장소에는 `tenantGroupId`를 명시적으로 넘깁니다. 비동기
 실행과 코루틴 컨텍스트 전환이 늘어날수록 암묵적 ThreadLocal보다 함수 인자가 추적과 테스트에 안전합니다.
 
 ## 알림은 이벤트 분리, 중복 방지, 장애 격리를 함께 본다
@@ -83,8 +83,8 @@ tenant와 같은 병원에 속하는지 확인합니다. Repository의 `findById
 `ApplicationEventPublisher`로 도메인 이벤트를 발행하고, `NotificationEventListener`가 같은 프로세스 안에서
 이벤트를 받아 채널을 호출합니다.
 
-여기서 “이벤트 기반”을 메시지 브로커나 outbox가 구현된 것처럼 확대해석하면 안 됩니다. 현재 리스너는
-`@EventListener` 기반의 in-process 경계입니다. 프로세스가 커밋 직후 종료돼도 반드시 전달된다는 보장은
+여기서 “이벤트 기반”을 메시지 브로커나 아웃박스가 구현된 것처럼 확대해석하면 안 됩니다. 현재 리스너는
+`@EventListener` 기반의 프로세스 내부 경계입니다. 프로세스가 커밋 직후 종료돼도 반드시 전달된다는 보장은
 별도 신뢰성 설계가 필요합니다.
 
 리마인더는 또 다른 문제를 만납니다. 애플리케이션 인스턴스가 세 대라면 세 스케줄러가 같은 환자에게 메시지를
@@ -99,11 +99,11 @@ tenant와 같은 병원에 속하는지 확인합니다. Repository의 `findById
 
 ## 데이터베이스 호환성은 실행 증거로만 증명된다
 
-개발 중 H2가 편리하다고 해서 H2 마이그레이션 성공이 운영 DB의 안전을 증명하지는 않습니다. tenant 기능은
+개발 중 H2가 편리하다고 해서 H2 마이그레이션 성공이 운영 DB의 안전을 증명하지는 않습니다. 테넌트 기능은
 기존 unique constraint와 index를 바꾸면서 DB별 DDL 차이를 드러냈습니다. H2는 테이블을 재생성해야 했고,
 MySQL과 PostgreSQL은 서로 다른 제약·인덱스 제거 문법과 이름을 처리해야 했습니다.
 
-그래서 V3부터 V6까지 tenant 마이그레이션을 `h2`, `mysql`, `postgresql` 디렉터리로 나눴습니다. 테스트도
+그래서 V3부터 V6까지 테넌트 마이그레이션을 `h2`, `mysql`, `postgresql` 디렉터리로 나눴습니다. 테스트도
 `FlywayMigrationTest`, `FlywayMySQLMigrationTest`, `FlywayPostgreSQLMigrationTest`로 분리해 각 엔진에서 실제로
 적용합니다. “SQL이 비슷해 보인다”보다 빈 스키마와 기존 스키마에 마이그레이션을 실행한 결과가 증거입니다.
 
@@ -128,13 +128,13 @@ ConstraintVerifier 테스트와 solver 테스트를 다시 실행하고, 로컬 
 
 <figure
   class="bt4k-architecture"
-  data-diagram-title="리뷰와 운영 증거가 다음 요구사항이 되는 개발 루프"
+  data-diagram-title="리뷰와 운영 증거가 다음 요구사항이 되는 개발 주기"
 >
-  <img src="/assets/clinic-appointment-part7-development-loop-01-ko.png" alt="요구사항, 설계와 계획, 구현, 테스트와 리뷰, 교훈, 새 요구사항이 순환하고 tenant 격리, 알림, 데이터베이스 호환성, 성능과 SDK 변화가 운영 입력으로 들어오는 개발 루프 다이어그램" loading="lazy" />
-  <figcaption>리뷰 결과는 수정 목록에서 끝나지 않고 다음 계약과 회귀 테스트가 됩니다. 운영에서 드러난 tenant, 알림, DB, 성능과 의존성 변화도 같은 루프를 통해 설계와 문서에 반영합니다.</figcaption>
+  <img src="/assets/clinic-appointment-part7-development-loop-01-ko.png" alt="요구사항, 설계와 계획, 구현, 테스트와 리뷰, 교훈, 새 요구사항이 순환하고 테넌트 격리, 알림, 데이터베이스 호환성, 성능과 SDK 변화가 운영 입력으로 들어오는 개발 주기 다이어그램" loading="lazy" />
+  <figcaption>리뷰 결과는 수정 목록에서 끝나지 않고 다음 계약과 회귀 테스트가 됩니다. 운영에서 드러난 테넌트, 알림, DB, 성능과 의존성 변화도 같은 주기를 통해 설계와 문서에 반영합니다.</figcaption>
 </figure>
 
-## 문서가 살아 있으려면 코드와 같은 피드백 루프에 있어야 한다
+## 문서가 살아 있으려면 코드와 같은 피드백 주기에 있어야 한다
 
 이 프로젝트는 `docs/requirements`에 현재 요구사항을, `docs/superpowers/specs`와 `plans`에 설계와 실행 계획을,
 `docs/lessons`에 구현 중 발견한 교훈을 남겼습니다. 세 문서의 역할은 다릅니다.
@@ -143,48 +143,52 @@ ConstraintVerifier 테스트와 solver 테스트를 다시 실행하고, 로컬 
 - **Spec / Plan**: 변경 전에 합의한 설계, 작업 순서와 검증 방법
 - **Lessons**: 실제 구현과 리뷰에서 달라진 점, 다시 밟지 말아야 할 실패 경로
 
-문서가 많다고 살아 있는 문서는 아닙니다. 경로가 tenant 방식으로 바뀌었는데 README가 예전 `/api/...`를
+문서가 많다고 살아 있는 문서는 아닙니다. 경로가 테넌트 방식으로 바뀌었는데 README가 예전 `/api/...`를
 가리키거나, Solver 제약 수가 늘었는데 요구사항 표가 그대로라면 문서는 오히려 위험합니다. 구현 변경과 함께
 현재 문서를 갱신하고, 역사적 설계 문서는 당시 결정 기록으로 분명히 구분해야 합니다.
 
-좋은 회고는 “어려웠다”로 끝나지 않습니다. 근본 원인, 선택한 해결책, 거절한 대안, 검증 명령과 앞으로 지킬
-가드를 남깁니다. 그러면 다음 개발자는 같은 문제를 처음부터 추측하지 않고 현재 코드와 테스트에서 출발할 수
+좋은 회고는 “어려웠다”로 끝나지 않습니다. 근본 원인, 선택한 해결책, 거절한 대안, 검증 명령과 재발 방지 기준을
+남깁니다. 그러면 다음 개발자는 같은 문제를 처음부터 추측하지 않고 현재 코드와 테스트에서 출발할 수
 있습니다.
 
 ## 아직 다루지 못한 것들: 다음 주기는 무결성에서 시작한다
 
 이 시리즈가 예약 업무의 모든 문제를 해결한 것은 아닙니다. 지금까지는 상태 전이, 가용 시간 계산, 재배정,
-tenant 격리와 알림 장애 격리에 집중했습니다. 실제 서비스를 오래 운영하려면 기능을 더 붙이기 전에 다음 경계를
+테넌트 격리와 알림 장애 격리에 집중했습니다. 실제 서비스를 오래 운영하려면 기능을 더 붙이기 전에 다음 경계를
 먼저 단단하게 만들어야 합니다.
 
 | 우선순위 | 아직 부족한 경계 | 다음 단계 |
 |---|---|---|
-| 1. 예약 무결성 | 슬롯 조회와 예약 생성 사이의 경쟁 조건, 동일 요청의 재전송 | 가용성 확인과 저장을 하나의 원자적 경계로 묶고, DB 잠금·제약 전략과 idempotency key를 함께 설계한다 |
-| 2. 이벤트 전달 | in-process 이벤트는 프로세스 종료와 DB 커밋 이후의 전달을 보장하지 않는다 | transactional outbox, event ID·schema version, 소비자 중복 제거, 재시도·dead-letter·대사 작업을 설계한다 |
-| 3. 운영 관찰 | 로그만으로는 환자 요청부터 알림 공급자까지 한 흐름을 복원하기 어렵다 | 예약 충돌률, 알림 성공률·지연, leader 전환, Solver 시간·점수에 SLO와 trace/correlation ID를 연결한다 |
-| 4. 환자 업무 | 관리자 중심 흐름만으로는 자가 예약 이후의 실제 경험을 다루기 어렵다 | 환자 인증·포털, 대기 명단, no-show 회복, 알림 동의, 접근성·다국어와 개인정보 보존 정책을 정의한다 |
-| 5. 최적화 통제 | 좋은 score가 환자와 운영자에게 납득 가능한 배정이라는 보장은 없다 | 제약 버전과 추천 이유를 기록하고, 공정성 지표·수동 override·shadow 실행으로 정책 변화를 검증한다 |
+| 1. 예약 무결성 | 슬롯 조회와 예약 생성 사이의 수용 인원 경쟁 조건 | 가용성 확인과 저장을 하나의 원자적 경계로 묶고, DB 잠금 또는 제약 전략으로 동시 쓰기를 직렬화한다 |
+| 2. 이벤트 전달 | 프로세스 내부 이벤트는 프로세스 종료와 DB 커밋 이후의 전달을 보장하지 않는다 | 트랜잭셔널 아웃박스, 이벤트 ID·스키마 버전, 소비자 중복 제거, 재시도·배달 불능·대사 작업을 설계한다 |
+| 3. 운영 관찰 | 로그만으로는 환자 요청부터 알림 공급자까지 한 흐름을 복원하기 어렵다 | 예약 충돌률, 알림 성공률·지연, 리더 전환, Solver 시간·점수에 SLO와 추적·상관관계 ID를 연결한다 |
+| 4. 환자 업무 | 관리자 중심 흐름만으로는 자가 예약 이후의 실제 경험을 다루기 어렵다 | 환자 인증·포털, 대기 명단, 미방문 후속 처리, 알림 동의, 접근성·다국어와 개인정보 보존 정책을 정의한다 |
+| 5. 최적화 통제 | 좋은 점수가 환자와 운영자에게 납득 가능한 배정이라는 보장은 없다 | 제약 버전과 추천 이유를 기록하고, 공정성 지표·수동 조정·섀도 실행으로 정책 변화를 검증한다 |
 
 첫 번째 항목은 특히 기능 추가보다 앞섭니다. 현재
 [AppointmentService.create()](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/service/AppointmentService.kt)는
-요청을 `AppointmentRecord`로 만들어 저장합니다. 별도의 슬롯 조회에서 “남은 자리 1”을 본 두 요청이 동시에
-들어오면, 조회 결과만으로 어느 요청이 자리를 차지했는지 결정할 수 없습니다. `resolveMaxConcurrent()`처럼 허용
+동일한 `Idempotency-Key`와 요청 본문을 다시 보내면 처음 만든 예약을 반환하고, 같은 키에 다른 요청을 보내면
+충돌로 거부합니다. 예약과 멱등성 레코드는 같은 트랜잭션에 저장하며, 동시 요청의 고유 키 충돌도 커밋된
+레코드를 다시 읽어 같은 결과로 수렴시킵니다. 따라서 네트워크 재시도에 대한 **요청 멱등성은 현재 구현된
+경계**입니다.
+
+그러나 별도의 슬롯 조회에서 “남은 자리 1”을 본 서로 다른 두 요청이 동시에 들어오면, 조회 결과만으로 어느 요청이
+자리를 차지했는지 결정할 수 없습니다. `resolveMaxConcurrent()`처럼 허용
 수량을 계산하는 규칙과 실제 동시 쓰기를 직렬화하는 장치는 다른 문제입니다. 서버가 가용성 재검증과 저장을 같은
-트랜잭션에서 수행하고, 충돌을 일관된 409 응답으로 바꾸며, 네트워크 재시도에는 같은 결과를 돌려주는 계약이
-필요합니다.
+트랜잭션에서 수행하고 충돌을 일관된 409 응답으로 바꾸는 **수용 인원 무결성은 여전히 남은 경계**입니다.
 
 메시지 브로커를 추가하는 것만으로 두 번째 항목도 해결되지 않습니다. 예약 커밋은 성공했지만 이벤트 발행이
-실패하는 dual-write를 막으려면 이벤트를 같은 DB 트랜잭션의 outbox에 기록하고, 발행자와 소비자가 중복 전달을
+실패하는 이중 쓰기 문제를 막으려면 이벤트를 같은 DB 트랜잭션의 아웃박스에 기록하고, 발행자와 소비자가 중복 전달을
 견디도록 만들어야 합니다. 그래도 최종 전달이 누락될 수 있으므로 알림 이력과 예약 상태를 비교해 복구하는 대사
 작업까지 있어야 운영자가 “재시도하면 된다”보다 구체적인 복구 절차를 가질 수 있습니다.
 
 그다음부터는 무엇을 측정할지 결정해야 합니다. 평균 응답 시간만으로는 예약 서비스의 건강을 설명하기 어렵습니다.
-중복 예약 차단률, 알림 전달 지연, 재배정 승인까지 걸린 시간, tenant별 오류율, Solver가 제안한 일정의 수동 수정률
+중복 예약 차단률, 알림 전달 지연, 재배정 승인까지 걸린 시간, 테넌트별 오류율, Solver가 제안한 일정의 수동 수정률
 같은 업무 지표가 기술 지표와 연결돼야 합니다. 백업 복구, Redis 장애, 알림 공급자 장애와 DB 마이그레이션 실패를
 연습하는 운영 훈련도 같은 수준의 요구사항으로 다뤄야 합니다.
 
 마지막으로 최적화는 자동화 범위를 넓힐수록 설명 책임이 커집니다. 응급도나 환자 선호, 의사 업무 부하처럼 서로
-충돌하는 기준을 어떤 순서와 가중치로 적용했는지 남기고, 새 제약은 기존 일정에 바로 적용하기 전에 shadow
+충돌하는 기준을 어떤 순서와 가중치로 적용했는지 남기고, 새 제약은 기존 일정에 바로 적용하기 전에 섀도
 실행으로 비교하는 편이 안전합니다. Solver의 답은 결정을 돕는 제안이며, 운영자가 이유를 확인하고 수정한 기록도
 다음 제약을 개선하는 입력이 돼야 합니다.
 
@@ -197,7 +201,7 @@ tenant 격리와 알림 장애 격리에 집중했습니다. 실제 서비스를
 3. 한 건의 빠른 후보 조회와 여러 예약의 전체 최적화는 서로 다른 유스케이스다.
 4. Solver 제약은 알고리즘 설정이 아니라 설명하고 테스트해야 하는 운영 정책이다.
 5. 휴진과 장비 고장은 원본, 후보, 승인, 알림을 잇는 업무 흐름을 요구한다.
-6. tenant, 트랜잭션, 이벤트와 외부 채널 경계는 ID와 함수 호출마다 다시 검증한다.
+6. 테넌트, 트랜잭션, 이벤트와 외부 채널 경계는 ID와 함수 호출마다 다시 검증한다.
 7. 리뷰와 운영 증거를 작은 요구사항과 회귀 테스트로 되돌려 보내야 시스템이 진화한다.
 
 “완성”은 더 이상 코드를 바꾸지 않는 상태가 아닙니다. 현재 계약이 무엇인지 설명할 수 있고, 대표 실패 경로를
@@ -208,11 +212,11 @@ tenant 격리와 알림 장애 격리에 집중했습니다. 실제 서비스를
 
 - [상태 이력 API 회고](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/lessons/2026-05-18-issue-95-state-history-endpoint.md): 응답 DTO, 단일 트랜잭션과 결정적 정렬을 정리합니다.
 - [취소 사유 회고](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/lessons/2026-05-18-issue-96-cancel-reason.md): 하나의 실제 사유를 상태 머신, 이력과 이벤트에 전달합니다.
-- [Multitenancy 회고](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/lessons/2026-05-19-multitenancy.md): URL과 JWT 이중 가드, 자식 리소스 소유권, DB별 마이그레이션을 설명합니다.
-- [Tenant 접근 검사기](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/tenant/TenantClinicAccessChecker.kt): tenant와 병원, 의사, 진료 유형, 장비 ID를 한 경계로 검증합니다.
+- [다중 테넌시 회고](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/lessons/2026-05-19-multitenancy.md): URL과 JWT 이중 검증, 하위 자원 소유권, DB별 마이그레이션을 설명합니다.
+- [테넌트 접근 검사기](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/tenant/TenantClinicAccessChecker.kt): 테넌트와 병원, 의사, 진료 유형, 장비 ID를 한 경계로 검증합니다.
 - [리마인더 스케줄러](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-notification/src/main/kotlin/io/bluetape4k/clinic/appointment/notification/AppointmentReminderScheduler.kt): Redis 리더 선출과 알림 이력으로 중복 실행을 줄입니다.
 - [복원력 알림 채널](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-notification/src/main/kotlin/io/bluetape4k/clinic/appointment/notification/ResilientNotificationChannel.kt): CircuitBreaker, Retry, Bulkhead로 외부 채널 호출을 격리합니다.
-- [예약 생성 서비스](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/service/AppointmentService.kt): 현재 저장과 이벤트 발행 경계를 확인하고 다음 무결성·outbox 설계의 출발점으로 삼습니다.
+- [예약 생성 서비스](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/service/AppointmentService.kt): 멱등 요청 저장과 동시 재시도 복구, 아직 남은 수용 인원 경쟁 조건을 확인할 수 있습니다.
 - [프로젝트 백로그](https://github.com/bluetape4k/clinic-appointment/blob/develop/TODO.md): 환자 포털과 비동기 메시징을 포함한 후속 기능 후보를 추적합니다.
 - [Timefold Solver 2 마이그레이션 회고](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/lessons/2026-05-20-timefold-solver-2-consumer.md): API 변화 속에서 기존 solver 의미를 보존한 검증을 기록합니다.
 - [Solver 벤치마크 보고서](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/solver-benchmark-report.md): 실행 환경, 입력 규모, 점수와 시간 기준선을 함께 제공합니다.
