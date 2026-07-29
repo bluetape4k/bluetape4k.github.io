@@ -1,14 +1,22 @@
 #!/usr/bin/env node
 import { fileURLToPath } from 'node:url';
 import { validateVisualCompanionSnapshot } from './lib/snapshot.mjs';
+import { loadVisualCompanionRepositories } from './lib/repositories.mjs';
 
 const siteRoot = fileURLToPath(new URL('../../', import.meta.url));
-const repository = 'bluetape4k/clinic-appointment';
+const registry = loadVisualCompanionRepositories(
+  new URL('../../src/data/visual-companions/repositories.json', import.meta.url),
+);
 
 try {
-  const result = await validateVisualCompanionSnapshot({ siteRoot, repository });
+  const results = [];
+  for (const { repository } of registry.repositories) {
+    results.push(await validateVisualCompanionSnapshot({ siteRoot, repository }));
+  }
+  const documentCount = results.reduce((sum, result) => sum + result.documentCount, 0);
+  const assetCount = results.reduce((sum, result) => sum + result.assetCount, 0);
   process.stdout.write(
-    `Validated ${result.documentCount} documents / ${result.assetCount} locale assets; snapshot ${result.snapshotDigest}\n`,
+    `Validated ${results.length} repositories / ${documentCount} documents / ${assetCount} locale assets\n`,
   );
 } catch (error) {
   process.stderr.write(`${error.message}\n`);

@@ -16,23 +16,28 @@ const koreanPage = await readFile(new URL('../../src/content/docs/ko/manual/inde
   .catch(() => '');
 const { buildStaticSidebar } = await import('../../scripts/manual/lib/sidebar.mjs').catch(() => ({}));
 
-test('global sidebar keeps manuals and visual companions between Ecosystem and Blog', () => {
+test('global sidebar keeps visual companions inside Ecosystem navigation', () => {
   assert.equal(typeof buildStaticSidebar, 'function', 'buildStaticSidebar must be implemented');
 
   const sidebar = buildStaticSidebar(registry);
   assert.deepEqual(
     sidebar.map(({ label }) => label),
-    ['Start', 'Ecosystem', 'Manuals', 'Visual Companions', 'Blog'],
+    ['Start', 'Ecosystem', 'Manuals', 'Blog'],
   );
   assert.deepEqual(
     sidebar.map(({ translations }) => translations.ko),
-    ['시작', '생태계', '매뉴얼', '시각 자료', '블로그'],
+    ['시작', '생태계', '매뉴얼', '블로그'],
   );
+  assert.deepEqual(sidebar[1].items[3], {
+    label: 'Visual Companions',
+    translations: { ko: '시각 자료' },
+    slug: 'visual-companions',
+  });
 
   const ecosystem = sidebar.find(({ label }) => label === 'Ecosystem');
   assert.deepEqual(
     ecosystem.items.map(({ label }) => label),
-    ['Repositories', 'Ecosystem Atlas', 'Examples', 'Version Governance'],
+    ['Repositories', 'Ecosystem Atlas', 'Examples', 'Visual Companions', 'Version Governance'],
   );
 
   const manuals = sidebar.find(({ label }) => label === 'Manuals');

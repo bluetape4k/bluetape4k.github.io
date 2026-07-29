@@ -1,0 +1,249 @@
+---
+import catalog from '../data/visual-companions/catalog.json';
+import { validateVisualCompanionCatalog } from '../../scripts/visual-companions/lib/catalog.mjs';
+
+interface Props {
+  locale: 'en' | 'ko';
+  featuredOnly?: boolean;
+}
+
+interface SnapshotDocument {
+  id: string;
+  locales: Record<'en' | 'ko', { route: string; title: string }>;
+}
+
+interface Snapshot {
+  repository: string;
+  documents: SnapshotDocument[];
+}
+
+interface LocalizedText {
+  en: string;
+  ko: string;
+}
+
+interface CatalogDocument {
+  id: string;
+  featured: boolean;
+  summary: LocalizedText;
+}
+
+interface CatalogRepository {
+  repository: string;
+  label: LocalizedText;
+  description: LocalizedText;
+  documents: CatalogDocument[];
+}
+
+interface Catalog {
+  schemaVersion: 1;
+  repositories: CatalogRepository[];
+}
+
+const { locale, featuredOnly = false } = Astro.props;
+const snapshotModules = import.meta.glob<{ default: Snapshot }>(
+  '../data/visual-companions/*.snapshot.json',
+  { eager: true },
+);
+const snapshots = new Map<string, Snapshot>(
+  Object.values(snapshotModules).map(({ default: snapshot }) => [snapshot.repository, snapshot]),
+);
+
+const copy = locale === 'ko'
+  ? {
+      open: '시각 자료 열기',
+      repository: '저장소',
+      empty: '등록된 시각 자료가 없습니다.',
+    }
+  : {
+      open: 'Open visual companion',
+      repository: 'Repository',
+      empty: 'No visual companions are registered.',
+    };
+
+const normalizedCatalog = validateVisualCompanionCatalog(catalog) as Catalog;
+const repositories = normalizedCatalog.repositories.map((repository) => {
+  const snapshot = snapshots.get(repository.repository);
+  if (!snapshot) throw new Error(`VISUAL_CATALOG_SNAPSHOT_MISSING: ${repository.repository}`);
+  const documentsById = new Map(snapshot.documents.map((document) => [document.id, document]));
+  const documents = repository.documents
+    .filter((document) => !featuredOnly || document.featured)
+    .map((document) => {
+      const published = documentsById.get(document.id);
+      if (!published) {
+        throw new Error(`VISUAL_CATALOG_DOCUMENT_MISSING: ${repository.repository}:${document.id}`);
+      }
+      return {
+        id: document.id,
+        summary: document.summary[locale],
+        title: published.locales[locale].title,
+        route: published.locales[locale].route,
+      };
+    });
+  return {
+    ...repository,
+    documents,
+    repositoryUrl: `https://github.com/${repository.repository}`,
+  };
+}).filter(({ documents }) => documents.length > 0);
+---
+
+<div class="bt4k-visual-catalog" data-featured={featuredOnly ? 'true' : 'false'}>
+  {repositories.length === 0 && <p>{copy.empty}</p>}
+  {repositories.map((repository) => (
+    <section class="bt4k-visual-catalog__repository">
+      <header>
+        <div>
+          <p>{repository.label[locale]}</p>
+          {featuredOnly
+            ? <h3>{repository.repository.split('/')[1]}</h3>
+            : <h2>{repository.repository.split('/')[1]}</h2>}
+        </div>
+        <a href={repository.repositoryUrl}>{copy.repository}<span aria-hidden="true"> ↗</span></a>
+      </header>
+      <p class="bt4k-visual-catalog__description">{repository.description[locale]}</p>
+      <div class="bt4k-visual-catalog__documents">
+        {repository.documents.map((document) => (
+          <a class="bt4k-visual-catalog__document" href={document.route}>
+            <span>{repository.label[locale]}</span>
+            <strong>{document.title}</strong>
+            <p>{document.summary}</p>
+            <small>{copy.open}<span aria-hidden="true"> →</span></small>
+          </a>
+        ))}
+      </div>
+    </section>
+  ))}
+</div>
+
+<style>
+  .bt4k-visual-catalog {
+    --visual-accent: #087c70;
+    --visual-accent-soft: #d9efea;
+    --visual-line: #cdd4cc;
+    --visual-surface: #fff;
+    --visual-surface-soft: #f4f6f2;
+    --visual-text: #18201f;
+    --visual-muted: #596563;
+    display: grid;
+    gap: 2.5rem;
+    margin-block: 1.5rem 2.5rem;
+  }
+
+  :global(:root[data-theme='dark']) .bt4k-visual-catalog {
+    --visual-accent: #55d6e6;
+    --visual-accent-soft: #102b35;
+    --visual-line: rgb(154 184 220 / 28%);
+    --visual-surface: #0d1c30;
+    --visual-surface-soft: #0a1728;
+    --visual-text: #edf5ff;
+    --visual-muted: #9db0c7;
+  }
+
+  .bt4k-visual-catalog__repository {
+    margin: 0;
+    padding: 0;
+  }
+
+  .bt4k-visual-catalog__repository > header {
+    display: flex;
+    gap: 1rem;
+    align-items: end;
+    justify-content: space-between;
+    padding-bottom: .8rem;
+    border-bottom: 1px solid var(--visual-line);
+  }
+
+  .bt4k-visual-catalog__repository > header p,
+  .bt4k-visual-catalog__repository > header h2,
+  .bt4k-visual-catalog__description,
+  .bt4k-visual-catalog__document p {
+    margin: 0;
+  }
+
+  .bt4k-visual-catalog__repository > header p {
+    color: var(--visual-accent);
+    font-size: .72rem;
+    font-weight: 800;
+  }
+
+  .bt4k-visual-catalog__repository > header :is(h2, h3) {
+    margin-top: .15rem;
+    color: var(--visual-text);
+    font-size: 1.35rem;
+    letter-spacing: 0;
+  }
+
+  .bt4k-visual-catalog__repository > header a {
+    color: var(--visual-accent);
+    font-size: .76rem;
+    font-weight: 750;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .bt4k-visual-catalog__description {
+    max-width: 52rem;
+    padding-block: .85rem 1rem;
+    color: var(--visual-muted);
+    font-size: .88rem;
+    line-height: 1.65;
+  }
+
+  .bt4k-visual-catalog__documents {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .8rem;
+  }
+
+  .bt4k-visual-catalog__document {
+    display: grid;
+    min-width: 0;
+    min-height: 12rem;
+    padding: 1rem;
+    border: 1px solid var(--visual-line);
+    border-radius: .45rem;
+    color: var(--visual-text);
+    background: var(--visual-surface);
+    text-decoration: none;
+    transition: border-color 150ms ease, transform 150ms ease, background 150ms ease;
+  }
+
+  .bt4k-visual-catalog__document:hover {
+    border-color: var(--visual-accent);
+    background: var(--visual-surface-soft);
+    transform: translateY(-2px);
+  }
+
+  .bt4k-visual-catalog__document > span {
+    color: var(--visual-accent);
+    font-size: .68rem;
+    font-weight: 800;
+  }
+
+  .bt4k-visual-catalog__document strong {
+    margin-top: .45rem;
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+
+  .bt4k-visual-catalog__document p {
+    margin-top: .65rem;
+    color: var(--visual-muted);
+    font-size: .78rem;
+    line-height: 1.6;
+  }
+
+  .bt4k-visual-catalog__document small {
+    align-self: end;
+    margin-top: 1rem;
+    color: var(--visual-accent);
+    font-size: .7rem;
+    font-weight: 750;
+  }
+
+  @media (max-width: 44rem) {
+    .bt4k-visual-catalog__documents { grid-template-columns: minmax(0, 1fr); }
+    .bt4k-visual-catalog__repository > header { align-items: start; }
+  }
+</style>
