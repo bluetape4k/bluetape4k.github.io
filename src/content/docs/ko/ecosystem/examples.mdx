@@ -1,46 +1,54 @@
 ---
 title: 예제
-description: 작동하는 코드로 bluetape4k를 익히기 위한 workshop과 application 리포지토리.
+description: 실행 가능한 코드로 bluetape4k를 익히기 위한 워크숍과 애플리케이션 저장소.
 ---
 
-## 워크숍 리포지토리
+import VisualCompanionCatalog from '../../../../components/VisualCompanionCatalog.astro';
+
+## 워크숍 저장소
 
 <div class="bt4k-example-grid">
   <a class="bt4k-example" href="https://github.com/bluetape4k/bluetape4k-workshop">
-    <small>Backend 예제</small>
+    <small>백엔드 예제</small>
     <strong>bluetape4k-workshop</strong>
-    <span>Spring, Kotlin pattern, virtual thread, observability, Gatling, production-style application flow를 포함한 일반 backend 예제입니다.</span>
+    <span>Spring, Kotlin 패턴, 가상 스레드, 관측성, Gatling, 실제 서비스에 가까운 처리 흐름을 포함한 백엔드 예제입니다.</span>
   </a>
   <a class="bt4k-example" href="https://github.com/bluetape4k/exposed-workshop">
     <small>Exposed JDBC 예제</small>
     <strong>exposed-workshop</strong>
-    <span>JetBrains Exposed ORM 학습 자료입니다. SQL DSL, DAO, Spring Boot, Ktor, transaction, migration, repository pattern, 단계별 workshop chapter를 다룹니다.</span>
+    <span>JetBrains Exposed ORM 학습 자료입니다. SQL DSL, DAO, Spring Boot, Ktor, 트랜잭션, 마이그레이션, 저장소 패턴, 단계별 워크숍 예제를 다룹니다.</span>
   </a>
   <a class="bt4k-example" href="https://github.com/bluetape4k/exposed-r2dbc-workshop">
     <small>Exposed R2DBC 예제</small>
     <strong>exposed-r2dbc-workshop</strong>
-    <span>H2, PostgreSQL, MySQL, MariaDB, repository, Spring WebFlux, Gatling, migration sample을 포함한 reactive/coroutine-oriented Exposed R2DBC 예제입니다.</span>
+    <span>H2, PostgreSQL, MySQL, MariaDB, 저장소, Spring WebFlux, Gatling, 마이그레이션 예제를 포함한 리액티브·코루틴 기반 Exposed R2DBC 예제입니다.</span>
   </a>
   <a class="bt4k-example" href="https://github.com/bluetape4k/timefold-workshop">
-    <small>Optimization 예제</small>
+    <small>최적화 예제</small>
     <strong>timefold-workshop</strong>
-    <span>Planning, scheduling, optimization 문제를 위한 Timefold Solver workshop 예제입니다. Solver-driven backend workflow를 이해하는 데 유용합니다.</span>
+    <span>계획, 일정, 최적화 문제를 다루는 Timefold Solver 워크숍 예제입니다. Solver가 계산한 결과를 백엔드 처리 흐름에 적용하는 방법을 보여 줍니다.</span>
   </a>
   <a class="bt4k-example" href="https://github.com/bluetape4k/clinic-appointment">
-    <small>Reference application</small>
+    <small>참조 애플리케이션</small>
     <strong>clinic-appointment</strong>
-    <span>Kotlin, Spring Boot 4, Exposed ORM, Flyway, Timefold, frontend integration, 현실적인 application boundary를 갖춘 병원 예약 scheduling system입니다.</span>
+    <span>Kotlin, Spring Boot 4, Exposed ORM, Flyway, Timefold, 프런트엔드 통합을 조합한 진료 예약 시스템입니다.</span>
   </a>
 </div>
+
+## 대표 설계
+
+여러 업무 규칙, 일관성 보장 범위, 장애 복구 절차가 연결된 예제는 시각 자료로 먼저 살펴볼 수 있습니다. 각 자료는 예제 시나리오와 설계 결정을 실제 구현 구조와 실행 과정에 연결합니다.
+
+<VisualCompanionCatalog locale="ko" featuredOnly />
 
 ## 관심 분야별 선택
 
 | 관심 분야 | 먼저 볼 곳 | 비교할 곳 |
 | --- | --- | --- |
-| 일반 backend service 구조 | [bluetape4k-workshop](https://github.com/bluetape4k/bluetape4k-workshop) | [clinic-appointment](https://github.com/bluetape4k/clinic-appointment) |
-| Spring Boot service 예제 | [bluetape4k-workshop](https://github.com/bluetape4k/bluetape4k-workshop) | [exposed-workshop](https://github.com/bluetape4k/exposed-workshop) |
-| Ktor service 예제 | [exposed-workshop](https://github.com/bluetape4k/exposed-workshop) | [exposed-r2dbc-workshop](https://github.com/bluetape4k/exposed-r2dbc-workshop) |
-| Exposed JDBC persistence | [exposed-workshop](https://github.com/bluetape4k/exposed-workshop) | [clinic-appointment](https://github.com/bluetape4k/clinic-appointment) |
-| Exposed R2DBC와 reactive persistence | [exposed-r2dbc-workshop](https://github.com/bluetape4k/exposed-r2dbc-workshop) | [bluetape4k-workshop](https://github.com/bluetape4k/bluetape4k-workshop) |
-| Scheduling과 optimization | [timefold-workshop](https://github.com/bluetape4k/timefold-workshop) | [clinic-appointment](https://github.com/bluetape4k/clinic-appointment) |
-| 전체 reference application boundary | [clinic-appointment](https://github.com/bluetape4k/clinic-appointment) | [bluetape4k-workshop](https://github.com/bluetape4k/bluetape4k-workshop) |
+| 일반 백엔드 서비스 구조 | [bluetape4k-workshop](https://github.com/bluetape4k/bluetape4k-workshop) | [clinic-appointment](https://github.com/bluetape4k/clinic-appointment) |
+| Spring Boot 서비스 예제 | [bluetape4k-workshop](https://github.com/bluetape4k/bluetape4k-workshop) | [exposed-workshop](https://github.com/bluetape4k/exposed-workshop) |
+| Ktor 서비스 예제 | [exposed-workshop](https://github.com/bluetape4k/exposed-workshop) | [exposed-r2dbc-workshop](https://github.com/bluetape4k/exposed-r2dbc-workshop) |
+| Exposed JDBC 영속성 | [exposed-workshop](https://github.com/bluetape4k/exposed-workshop) | [clinic-appointment](https://github.com/bluetape4k/clinic-appointment) |
+| Exposed R2DBC와 리액티브 영속성 | [exposed-r2dbc-workshop](https://github.com/bluetape4k/exposed-r2dbc-workshop) | [bluetape4k-workshop](https://github.com/bluetape4k/bluetape4k-workshop) |
+| 일정과 최적화 | [timefold-workshop](https://github.com/bluetape4k/timefold-workshop) | [clinic-appointment](https://github.com/bluetape4k/clinic-appointment) |
+| 전체 참조 애플리케이션의 구성 | [clinic-appointment](https://github.com/bluetape4k/clinic-appointment) | [bluetape4k-workshop](https://github.com/bluetape4k/bluetape4k-workshop) |

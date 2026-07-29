@@ -3,7 +3,12 @@
   "repositories": [
     {
       "repository": "bluetape4k/clinic-appointment",
-      "sourceRef": "85a09e4ba16644219c15e91d94c5a4ccb7619a64",
+      "sourceRef": "6967e385bf92a40619a9bbe17f96da182ac8bd50",
+      "manifestPath": "docs/visual-companions/manifest.json"
+    },
+    {
+      "repository": "bluetape4k/bluetape4k-workshop",
+      "sourceRef": "3adb97656a33fd935b8fa122c05a25490a1096cf",
       "manifestPath": "docs/visual-companions/manifest.json"
     }
   ]

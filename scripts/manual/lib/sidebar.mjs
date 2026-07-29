@@ -18,6 +18,7 @@ export function buildStaticSidebar(registry) {
         { label: 'Repositories', translations: { ko: '리포지토리' }, slug: 'ecosystem/repositories' },
         { label: 'Ecosystem Atlas', translations: { ko: '생태계 지도' }, slug: 'ecosystem/atlas' },
         { label: 'Examples', translations: { ko: '예제' }, slug: 'ecosystem/examples' },
+        { label: 'Visual Companions', translations: { ko: '시각 자료' }, slug: 'visual-companions' },
         { label: 'Version Governance', translations: { ko: '버전 거버넌스' }, slug: 'ecosystem/version-governance' },
       ],
     },
@@ -31,17 +32,6 @@ export function buildStaticSidebar(registry) {
           translations: { ko: repository.label.ko },
           link: repository.route.en,
         })),
-      ],
-    },
-    {
-      label: 'Visual Companions',
-      translations: { ko: '시각 자료' },
-      items: [
-        {
-          label: 'Clinic Appointment',
-          translations: { ko: '병원 예약' },
-          slug: 'visual-companions/clinic-appointment',
-        },
       ],
     },
     {

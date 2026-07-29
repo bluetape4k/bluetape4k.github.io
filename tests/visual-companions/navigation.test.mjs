@@ -2,36 +2,88 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { buildStaticSidebar } from '../../scripts/manual/lib/sidebar.mjs';
+import { validateVisualCompanionCatalog } from '../../scripts/visual-companions/lib/catalog.mjs';
 
 const root = new URL('../../', import.meta.url);
 const registry = JSON.parse(
   await readFile(new URL('src/data/manual/repositories.json', root), 'utf8'),
 );
+const visualCatalog = JSON.parse(
+  await readFile(new URL('src/data/visual-companions/catalog.json', root), 'utf8'),
+);
+const visualRegistry = JSON.parse(
+  await readFile(new URL('src/data/visual-companions/repositories.json', root), 'utf8'),
+);
 
-test('visual companion navigation stays between manuals and blog in both locales', () => {
+test('visual companion catalog is part of ecosystem navigation in both locales', () => {
   const sidebar = buildStaticSidebar(registry);
   assert.deepEqual(sidebar.map(({ label }) => label), [
     'Start',
     'Ecosystem',
     'Manuals',
-    'Visual Companions',
     'Blog',
   ]);
   assert.deepEqual(sidebar.map(({ translations }) => translations.ko), [
     '시작',
     '생태계',
     '매뉴얼',
-    '시각 자료',
     '블로그',
   ]);
-  assert.deepEqual(sidebar[3].items, [{
-    label: 'Clinic Appointment',
-    translations: { ko: '병원 예약' },
-    slug: 'visual-companions/clinic-appointment',
-  }]);
+  assert.deepEqual(sidebar[1].items[3], {
+    label: 'Visual Companions',
+    translations: { ko: '시각 자료' },
+    slug: 'visual-companions',
+  });
+});
+
+test('visual companion catalog maps every listed document to a published snapshot', async () => {
+  const catalog = validateVisualCompanionCatalog(visualCatalog);
+
+  for (const repository of catalog.repositories) {
+    const slug = repository.repository.split('/')[1];
+    const snapshot = JSON.parse(await readFile(
+      new URL(`src/data/visual-companions/${slug}.snapshot.json`, root),
+      'utf8',
+    ));
+    assert.equal(snapshot.repository, repository.repository);
+    const published = new Set(snapshot.documents.map(({ id }) => id));
+    assert.ok(repository.documents.some(({ featured }) => featured));
+    for (const document of repository.documents) {
+      assert.ok(published.has(document.id), `${repository.repository}:${document.id}`);
+      assert.ok(document.summary.en.length > 0);
+      assert.ok(document.summary.ko.length > 0);
+    }
+  }
+});
+
+test('visual companion catalog rejects duplicate and incomplete navigation entries', () => {
+  const duplicate = structuredClone(visualCatalog);
+  duplicate.repositories.push(structuredClone(duplicate.repositories[0]));
+  assert.throws(
+    () => validateVisualCompanionCatalog(duplicate),
+    /VISUAL_CATALOG_REPOSITORY_DUPLICATE/,
+  );
+
+  const incomplete = structuredClone(visualCatalog);
+  delete incomplete.repositories[0].documents[0].summary.ko;
+  assert.throws(
+    () => validateVisualCompanionCatalog(incomplete),
+    /VISUAL_CATALOG_SUMMARY_KEYS/,
+  );
+});
+
+test('example introductions expose the shared visual companion catalog', async () => {
+  const english = await readFile(new URL('src/content/docs/ecosystem/examples.mdx', root), 'utf8');
+  const korean = await readFile(new URL('src/content/docs/ko/ecosystem/examples.mdx', root), 'utf8');
+  assert.match(english, /<VisualCompanionCatalog locale="en" featuredOnly \/>/);
+  assert.match(korean, /<VisualCompanionCatalog locale="ko" featuredOnly \/>/);
 });
 
 test('visual companion landing pages are source-equivalent and link locale routes', async () => {
+  const clinicSourceRef = visualRegistry.repositories.find(
+    ({ repository }) => repository === 'bluetape4k/clinic-appointment',
+  )?.sourceRef;
+  assert.ok(clinicSourceRef);
   const english = await readFile(
     new URL('src/content/docs/visual-companions/clinic-appointment.mdx', root),
     'utf8',
@@ -46,7 +98,7 @@ test('visual companion landing pages are source-equivalent and link locale route
     assert.match(source, /scheduling-policy-foundation/);
     assert.match(source, /hybrid/);
     assert.match(source, /simulation/);
-    assert.match(source, /85a09e4ba16644219c15e91d94c5a4ccb7619a64/);
+    assert.match(source, new RegExp(clinicSourceRef));
     assert.match(source, /github\.com\/bluetape4k\/clinic-appointment\/blob\//);
   }
   assert.match(

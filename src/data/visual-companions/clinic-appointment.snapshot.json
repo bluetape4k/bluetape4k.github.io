@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "repository": "bluetape4k/clinic-appointment",
-  "sourceRef": "85a09e4ba16644219c15e91d94c5a4ccb7619a64",
+  "sourceRef": "6967e385bf92a40619a9bbe17f96da182ac8bd50",
   "manifestPath": "docs/visual-companions/manifest.json",
   "documents": [
     {
@@ -21,15 +21,15 @@
           "title": "Appointment Plan and Capacity",
           "sourcePath": "docs/superpowers/specs/2026-07-26-appointment-plan-and-capacity-design.en.html",
           "route": "/visual-companions/clinic-appointment/appointment-plan-and-capacity/",
-          "sourceSha256": "270cd0b7275678a6d8a148215b510e81699873c21dc4b4e9c0224fa0de8009af",
-          "sha256": "e547b8c2add3d6cfdaec4f6a86442042096dad7ad6121a229febbc351d2ad3fd"
+          "sourceSha256": "dcbfaf809efabaa1d165fb1e2f69768030f646a69b5470114b78dbbfd095caba",
+          "sha256": "23aed5e1442e7ae9aeda0be92439b51f04b8d5fa1b8accc074d7499ad02361dc"
         },
         "ko": {
           "title": "예약 계획과 수용량",
           "sourcePath": "docs/superpowers/specs/2026-07-26-appointment-plan-and-capacity-design.html",
           "route": "/ko/visual-companions/clinic-appointment/appointment-plan-and-capacity/",
-          "sourceSha256": "a5cce1feb2e82e03779a983ce932aed1832a09da734fc74790a5d05ed90e9860",
-          "sha256": "0eb20c989c63673e528349476c4f5cb5167f80dabb52a0063a4183212f01a4f5"
+          "sourceSha256": "90211c54a3816c2d271a47c8fa9ee2724d1a50e7dc2438a81b7f5ba6e9ebb712",
+          "sha256": "2bbfecdab25eeb51112e6fea44c1898d60c431737a9092bb93fdaf51308cfa51"
         }
       }
     },
@@ -50,18 +50,18 @@
           "title": "Scheduling Policy Foundation",
           "sourcePath": "docs/superpowers/specs/2026-07-27-scheduling-policy-foundation-design.en.html",
           "route": "/visual-companions/clinic-appointment/scheduling-policy-foundation/",
-          "sourceSha256": "81546135edac14065effef2275baf59d6e2fba9f246642f2af9ab1947ef04932",
-          "sha256": "fa115b39af0026f605c826641a496a7dc5766c263c8b6b0d8393a6df603d445f"
+          "sourceSha256": "711f1e084b14c5b19d49098a62f74c0ba62d2500021e6f286b718e24cbc071e2",
+          "sha256": "0aedf7af59a8e39642228e35c37fab3698d321107cfc438ebefa0224f69b4faa"
         },
         "ko": {
-          "title": "Scheduling Policy 기반",
+          "title": "예약 정책의 기준 규칙",
           "sourcePath": "docs/superpowers/specs/2026-07-27-scheduling-policy-foundation-design.html",
           "route": "/ko/visual-companions/clinic-appointment/scheduling-policy-foundation/",
-          "sourceSha256": "b90a560b65267e9e63a8278182e75e8e75d4e5d914dc042dcce6cc1414cbe886",
-          "sha256": "8b643d75559de6cc21520008ed8f942f51bae8a9d2f8e19a49c460d6a9c1c7c5"
+          "sourceSha256": "3ebb5378350a547ac7f1f47f7382517de844b3d0e09830d60f149ef7da078c0b",
+          "sha256": "ff892c273f72bc8ccba6d99d49fd80f562559f2971c816bed7eb8ad8a3a878e8"
         }
       }
     }
   ],
-  "snapshotDigest": "ef237b9df4393bd8a6aaa5a2630813ba7c73a33d502c67b53d165db0f8af5e29"
+  "snapshotDigest": "8c6b3d955c29e5b3b096a92de576f2da9ae3700c004f75053e330af54206f6bc"
 }

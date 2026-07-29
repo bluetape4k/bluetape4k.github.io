@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "repositories": [
+    {
+      "repository": "bluetape4k/clinic-appointment",
+      "label": {
+        "en": "Clinic appointment",
+        "ko": "진료 예약 서비스"
+      },
+      "description": {
+        "en": "Reference application designs for scheduling policies, appointment plans, and capacity management.",
+        "ko": "예약 정책, 진료 계획, 수용량 관리처럼 서로 연결된 업무 규칙을 구현한 참조 애플리케이션입니다."
+      },
+      "documents": [
+        {
+          "id": "appointment-plan-and-capacity",
+          "featured": true,
+          "summary": {
+            "en": "See how appointment plans, slot generation, capacity changes, and booking decisions remain consistent.",
+            "ko": "진료 계획, 예약 가능 시간 생성, 수용량 변경, 예약 판정이 일관된 결과로 이어지는 과정을 보여 줍니다."
+          }
+        },
+        {
+          "id": "scheduling-policy-foundation",
+          "featured": true,
+          "summary": {
+            "en": "Follow the scheduling policy model from source rules to validation, conflicts, and operational changes.",
+            "ko": "예약 정책의 기준 규칙이 검증, 충돌 판정, 운영 중 정책 변경에 적용되는 과정을 보여 줍니다."
+          }
+        }
+      ]
+    },
+    {
+      "repository": "bluetape4k/bluetape4k-workshop",
+      "label": {
+        "en": "bluetape4k workshop",
+        "ko": "bluetape4k 워크숍"
+      },
+      "description": {
+        "en": "Complex example applications that connect domain decisions with event sourcing, concurrency control, payment, inventory, and recovery.",
+        "ko": "이벤트 소싱, 동시성 제어, 결제, 재고, 장애 복구를 업무 규칙과 연결해 구현한 복합 예제입니다."
+      },
+      "documents": [
+        {
+          "id": "event-sourced-promotion-voucher",
+          "featured": true,
+          "summary": {
+            "en": "Trace voucher issuance and redemption through commands, immutable events, projections, and recovery.",
+            "ko": "바우처 발급과 사용이 명령, 수정불가한 이벤트 이력, 프로젝션, 장애 복구로 이어지는 과정을 보여 줍니다."
+          }
+        },
+        {
+          "id": "concert-ticket-flash-sale",
+          "featured": true,
+          "summary": {
+            "en": "Follow inventory, payment, refund, and ticket processing until the purchase reaches a consistent outcome.",
+            "ko": "재고, 결제, 환불, 티켓 처리 결과가 서로 모순되지 않는 상태에 도달할 때까지의 구매 처리 과정을 보여 줍니다."
+          }
+        }
+      ]
+    }
+  ]
+}
