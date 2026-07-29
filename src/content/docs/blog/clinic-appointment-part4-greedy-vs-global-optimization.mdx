@@ -98,6 +98,12 @@ combines appointments with the clinic, doctor, treatment, equipment, operating-h
 holiday facts needed to score them. Timefold compares scores while searching. It executes the priorities encoded by
 the application; it does not decide those priorities for the clinic.
 
+“The model can hold a fact” and “the execution path supplies that fact” are separate claims. `ScheduleSolution` can
+hold equipment-downtime facts and H11 defines the corresponding constraint, but `SolverService.loadSolution()` does not
+currently load those facts. The `isFeasible` result from this entry point is valid only for the problem facts actually
+supplied; it does not prove that the schedule avoids maintenance and failure windows. A defined constraint is not
+evidence that an operational rule is active.
+
 ## Keep the Service Boundaries Separate
 
 The project gives real-time lookup and global optimization separate entry points.
@@ -179,7 +185,8 @@ pinned count so an operator can understand the problem scope as well as the prop
 
 The current service is an independent execution path. Patient availability APIs do not invoke it, and closure
 rescheduling does not automatically persist its output. When optimization runs, who reviews it, and how results become
-stored appointments belong to an application workflow outside the solver itself.
+stored appointments belong to an application workflow outside the solver itself. The same boundary must verify that
+all required problem facts, including equipment downtime, were loaded before the run.
 
 ## Clinic Closure Exposes the Two Paths
 

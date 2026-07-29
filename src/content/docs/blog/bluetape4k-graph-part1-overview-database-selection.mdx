@@ -1,97 +1,154 @@
 ---
-title: "Bluetape4k Graph Part 1: Database Selection Map"
-description: A practical map for choosing Neo4j, Memgraph, Apache AGE, TinkerGraph, or FalkorDB with bluetape4k-graph.
+title: "Bluetape4k Graph Part 1: Graph Database Selection Criteria"
+description: A practical guide to the roles and selection criteria of Neo4j, Memgraph, Apache AGE, TinkerGraph, and FalkorDB in bluetape4k-graph.
 sidebar:
   order: -202606041530
 blog:
   date: 2026-06-04T15:30:00+09:00
   image: /assets/bluetape4k-graph-part1-hero.png
   imageAlt: A robotic engineer comparing Neo4j, Memgraph, AGE, TinkerGraph, and FalkorDB graph database blocks on a 3D workbench
-  cardDescription: "After deciding to use a graph database, the next question is which graph storage to start with."
+  cardDescription: "After deciding to use a graph database, choose a store that fits the workload and operating environment."
   tags: ["comparison","graph","kotlin","persistence","practical-example"]
 ---
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/bluetape4k-graph-part1-hero.png" alt="A robotic engineer comparing Neo4j, Memgraph, AGE, TinkerGraph, and FalkorDB graph database blocks on a 3D workbench" loading="eager" />
-  <figcaption>Graph database selection is a workload decision, not a taste contest.</figcaption>
+  <figcaption>Choose a graph database by workload and operating constraints, not preference.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-06-04 · bluetape4k-graph series · Part 1</p>
 
-The earlier post [When should we adopt GraphDB?](/blog/when-to-adopt-graphdb/) answered the first question:
-use a graph database when relationships are the workload. This series starts at the next problem, the one that tends to
-last longer in real projects: once graph is the right shape, do we start with Neo4j, measure Memgraph, keep PostgreSQL
-with AGE, or run tests on something lighter?
+The earlier post [When should we adopt GraphDB?](/blog/when-to-adopt-graphdb/) established the first criterion: consider
+a graph database when relationships are central to the workload. This article addresses the next decision. It explains
+how to choose between Neo4j and Memgraph as production candidates, when Apache AGE fits a PostgreSQL-centered
+environment, and which store to use for tests.
 
-`bluetape4k-graph` does not reimplement graph databases. It keeps Neo4j, Memgraph, Apache AGE, TinkerGraph, and
-FalkorDB in their own strengths and gives Kotlin/JVM services a common place for the repetitive work: CRUD wrappers,
-batch writes, traversal helpers, bulk I/O, and framework integration. Rebuilding a graph database would be a very
-creative way to accidentally start a small database company. That is not the goal here.
+`bluetape4k-graph` does not reimplement graph databases. It retains the storage engines and query languages of Neo4j,
+Memgraph, Apache AGE, TinkerGraph, and FalkorDB, while defining common contracts for repetitive Kotlin/JVM service work:
+vertex and edge CRUD, batch writes, traversal, bulk I/O, and framework integration.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-graph-part1-backend-selection-01-en.png" alt="Graph storage selection map for Neo4j, Memgraph, Apache AGE, TinkerGraph, and FalkorDB" loading="lazy" />
-  <figcaption>Separate testing, operations, read shape, and write shape before choosing graph storage.</figcaption>
+<figure class="bt4k-architecture" data-diagram-title="Graph database selection criteria">
+  <img src="/assets/bluetape4k-graph-part1-backend-selection-01-en.png" alt="Criteria for selecting Neo4j, Memgraph, Apache AGE, TinkerGraph, or FalkorDB by workload and operating constraints" loading="lazy" />
+  <figcaption>Separate test strategy, operating environment, and read and write characteristics before choosing a graph database.</figcaption>
 </figure>
 
-| Graph DB | API shape | Good fit |
+## Supported graph databases
+
+The project currently supports the following graph stores.
+
+| Graph database | Query model | Best fit |
 |---|---|---|
-| Neo4j | Cypher over the Neo4j Java Driver | Default production choice when maturity matters |
-| Memgraph | Neo4j-compatible Cypher protocol | Low-latency and write-heavy candidates |
-| Apache AGE | Cypher-over-SQL on PostgreSQL | PostgreSQL-centered operations |
-| TinkerGraph | In-memory TinkerPop/Gremlin | Unit tests, examples, local fixtures |
-| FalkorDB | Redis module with openCypher subset | Redis-aligned lightweight graph services |
+| Neo4j | Cypher through the Neo4j Java Driver | Production graph services that need mature tooling, indexes, and transaction support |
+| Memgraph | Cypher through a Neo4j-compatible protocol | Candidate for latency-sensitive Cypher workloads |
+| Apache AGE | Cypher-over-SQL through PostgreSQL/JDBC | PostgreSQL-centered deployments that do not want a separate graph server |
+| TinkerGraph | In-memory JVM TinkerPop/Gremlin | Unit and integration tests, examples, and local demos |
+| FalkorDB | An openCypher subset over a Redis module | Redis-backed graph workloads and lightweight graph services |
 
-The table is not trying to crown a single winner. Tests can start with TinkerGraph, production candidates can be
-measured with Neo4j or Memgraph, AGE can make sense in PostgreSQL-centered operations, and FalkorDB is worth checking
-when Redis is already the operational center. For edge-heavy writes, measure first. Benchmarks are very good at humbling
-architecture opinions.
+This table is not a product ranking. It is a starting point for selecting candidates that fit the operating environment
+and actual workload. For example, a team that standardizes on PostgreSQL can use Apache AGE to avoid adding a separate
+graph server. FalkorDB becomes a candidate when the service must fit a Redis-centered operating model. Claims about
+Memgraph latency or any store's write performance still need measurements with the application's data scale and query
+patterns.
 
-## Cypher in one paragraph
+TinkerGraph starts quickly without an external server, which makes it suitable for tests. However, passing a common
+contract test on TinkerGraph does not prove that Neo4j, Memgraph, Apache AGE, and FalkorDB have the same query planner,
+index behavior, or transaction semantics. Revalidate each production candidate with backend-specific integration tests,
+including its Testcontainers environment.
 
-Cypher is a graph query language. SQL asks questions through tables and rows; Cypher asks by drawing a relationship
-pattern. The following query starts at a `Person`, follows a `KNOWS` edge, and returns connected people.
+## What is Cypher?
+
+Cypher appears when evaluating Neo4j, Memgraph, Apache AGE, and FalkorDB. It is a query language for describing graph
+relationship patterns. SQL queries tables and rows; Cypher describes patterns formed by vertices and edges.
 
 ```cypher
 MATCH (alice:Person {email: $email})-[:KNOWS]->(friend:Person)
 RETURN friend.name
 ```
 
-The common `GraphOperations` API does not replace Cypher. Trying to do that would mostly produce a worse Cypher with a
-friendlier Kotlin wrapper. `GraphOperations` gives service code a portable starting point for CRUD, batch writes,
-traversal, and tests. When a production query needs planner control, projections, or storage-specific tuning, use the
-native Cypher path offered by Neo4j, Memgraph, Apache AGE, or FalkorDB.
+This query starts at a `Person` vertex, follows a `KNOWS` edge, and returns the connected person's name. Instead of
+assembling complex joins and recursive traversal in application code, the query sends the relationship shape to the
+database.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-graph-part1-module-layering-01-en.png" alt="bluetape4k-graph module layers from examples and framework adapters to graph-core, graph I/O, and graph storage adapters" loading="lazy" />
-  <figcaption>`graph-core` sits in the middle; graph storage adapters, graph I/O, Spring Boot, and Ktor compose around it.</figcaption>
+The common `bluetape4k-graph` API does not replace Cypher. Service code can start with `GraphOperations` for basic CRUD,
+batch writes, traversal, and tests. Work that requires store-specific control over query planning, indexes, or
+projections should use the selected backend's driver and native query API. The common API reduces repetitive service
+code; it does not make the query semantics of different stores identical.
+
+## Module structure
+
+<figure class="bt4k-architecture" data-diagram-title="bluetape4k-graph module structure">
+  <img src="/assets/bluetape4k-graph-part1-module-layering-01-en.png" alt="Module structure with graph-core surrounded by storage adapters, graph I/O, Spring Boot and Ktor integration, and executable examples" loading="lazy" />
+  <figcaption>Storage adapters, bulk I/O, and framework integration compose around the common contracts in `graph-core`.</figcaption>
 </figure>
 
-The common API is useful, but it should not erase graph storage semantics. Query planners, indexes, traversal behavior,
-and transaction semantics differ enough that a quiet no-op is worse than an early failure. Start with TinkerGraph for
-fast tests, then measure Neo4j, Memgraph, AGE, or FalkorDB with the workload you actually have.
+| Module | Responsibility |
+|---|---|
+| `graph-core` | Common contracts for `GraphOperations`, schema DSL, traversal, algorithms, and optional merge and transaction capabilities |
+| `graph-age`, `graph-neo4j`, `graph-memgraph`, `graph-tinkerpop`, `graph-falkordb` | Store-specific implementations |
+| `graph-io/*` | CSV, NDJSON, and GraphML bulk I/O plus OkIO streaming, compression, and encryption composition |
+| `spring-boot/graph-spring-boot` | Spring Boot 4 auto-configuration |
+| `ktor/graph-ktor` | Ktor 3 `ApplicationPlugin` integration |
+| `examples/*` | Executable scenarios for code dependencies, fraud detection, IAM, recommendations, supply chains, and other graph workloads |
+
+`GraphOperations` combines `GraphSession`, vertex and edge repositories, traversal, and algorithm repository contracts.
+Schema management, merge, and transaction DSLs are optional capabilities implemented by backends that can provide
+stronger guarantees. A common interface therefore does not imply that every backend processes every capability in the
+same way. Check the backend capability matrix and integration tests for unsupported operations and failure semantics.
+
+## A minimal starting point
+
+Tests and documentation examples can start with TinkerGraph. The following code creates a graph without Docker, adds
+vertices and an edge, and retrieves neighboring vertices.
 
 ```kotlin
 val ops: GraphOperations = TinkerGraphOperations()
 
 ops.createGraph("demo")
+
 val alice = ops.createVertex("Person", mapOf("name" to "Alice"))
 val bob = ops.createVertex("Person", mapOf("name" to "Bob"))
 ops.createEdge(alice.id, bob.id, "KNOWS", mapOf("since" to 2026))
+
+val neighbors = ops.neighbors(alice.id, NeighborOptions(edgeLabel = "KNOWS"))
+
+ops.close()
 ```
 
-My default split is simple: Neo4j for production, TinkerGraph for tests. Add Memgraph when low-latency writes matter,
-AGE when PostgreSQL consolidation matters, and FalkorDB when Redis is already the operational center.
+This example explains the basic `GraphOperations` contract. It does not prove the production-store decision. Run the
+same domain scenario against Neo4j, Memgraph, Apache AGE, and FalkorDB integration tests, then measure query latency and
+write throughput at production data scale.
+
+## Selection criteria
+
+The following order is a practical way to build an initial candidate list.
+
+| Constraint | First candidate | Additional validation |
+|---|---|---|
+| Mature graph-specific operations and Cypher support | Neo4j | Query plans, indexes, and operating cost |
+| Latency-sensitive Cypher workload | Memgraph | Benchmarks with actual data and write patterns |
+| PostgreSQL-centered operations | Apache AGE | Cypher-over-SQL constraints and PostgreSQL resource contention |
+| Tests and examples without an external server | TinkerGraph | Backend-specific integration tests for semantic differences |
+| Redis-backed graph service | FalkorDB | openCypher subset and actual read and write performance |
+
+If a default pairing is useful, Neo4j can be the first production candidate and TinkerGraph the fast test store. This
+is not a universal answer. PostgreSQL consolidation, a Redis-centered operating model, or strict latency requirements
+may put another backend first. Measure the candidate that best matches the dominant constraint.
+
+The next article examines the `graph-core` API, schema DSL, transaction and merge capabilities, and synchronous,
+virtual-thread, and coroutine execution models.
 
 ## Sources
 
 - [bluetape4k-graph README](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/README.md)
-- [benchmark guide](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/benchmark/README.md)
+- [Korean README](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/README.ko.md)
+- [Benchmark guide](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/benchmark/README.md)
 - [GraphOperations](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/graph/graph-core/src/main/kotlin/io/bluetape4k/graph/repository/GraphOperations.kt)
+- [TinkerGraphOperations](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/graph/graph-tinkerpop/src/main/kotlin/io/bluetape4k/graph/tinkerpop/TinkerGraphOperations.kt)
 
 ## Series
 
-- Part 1: [Database Selection Map](/blog/bluetape4k-graph-part1-overview-database-selection/)
+- Part 1: [Graph Database Selection Criteria](/blog/bluetape4k-graph-part1-overview-database-selection/)
 - Part 2: [Core API and Execution Models](/blog/bluetape4k-graph-part2-core-api-schema-execution/)
-- Part 3: [Graph I/O and Benchmarks](/blog/bluetape4k-graph-part3-graph-io-benchmarks/)
+- Part 3: [Graph I/O and Benchmark Interpretation](/blog/bluetape4k-graph-part3-graph-io-benchmarks/)
 - Part 4: [Workshop Scenarios and Service Integration](/blog/bluetape4k-graph-part4-workshop-service-integration/)
 - Part 5: [Reading the Virtual Threads Benchmark](/blog/bluetape4k-graph-part5-virtual-threads-benchmark/)

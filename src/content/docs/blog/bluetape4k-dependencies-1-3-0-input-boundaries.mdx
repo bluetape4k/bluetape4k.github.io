@@ -1,6 +1,6 @@
 ---
-title: "bluetape4k-dependencies 1.3.0 in Practice Part 4: Input Boundaries"
-description: "Input-boundary problems in dependencies 1.3.0: Image OCR, large-file I/O, Text tokenizer limits, and blockword API behavior."
+title: "bluetape4k-dependencies 1.3.0 in Practice Part 4: Input Boundaries and Resource Safety"
+description: "How to bound input size, memory allocation, processing time, and failure responses across Image OCR, large-file I/O, tokenizers, and blockword APIs."
 sidebar:
   order: -202606281400
 blog:
@@ -53,6 +53,11 @@ fun extractText(path: Path): OcrResult {
 ```
 
 The request path needs limits at every stage.
+
+<figure class="bt4k-architecture" data-diagram-title="Input Boundaries and Resource Limits">
+  <img src="/assets/bluetape4k-dependencies-input-boundary-01-en.png" alt="Input boundary flow from request receipt through low-cost checks, bounded decode, OCR or text processing, and a safe result, with invalid input rejected early" loading="lazy" />
+  <figcaption>The boundary begins when the request arrives, not after decode. Check size and format first, then admit only bounded work.</figcaption>
+</figure>
 
 | Stage | Limit to apply |
 |---|---|
@@ -159,10 +164,10 @@ If you want the first import path, start with the [usage guide](/blog/bluetape4k
 - [bluetape4k-dependencies 1.3.0 in Practice Part 3: Production Signals](/blog/bluetape4k-dependencies-1-3-0-production-signals/)
 - [bluetape4k-dependencies 1.3.0 in Practice Part 4: Input Boundaries](/blog/bluetape4k-dependencies-1-3-0-input-boundaries/)
 
-## Sources
+## Resources
 
-- [`bluetape4k-image` CHANGELOG.md](https://github.com/bluetape4k/bluetape4k-image/blob/develop/CHANGELOG.md)
+- [`bluetape4k-image 0.3.0` CHANGELOG.md](https://github.com/bluetape4k/bluetape4k-image/blob/0.3.0/CHANGELOG.md)
 - [`bluetape4k-image` issue #165](https://github.com/bluetape4k/bluetape4k-image/issues/165)
 - [`bluetape4k-image` issue #171](https://github.com/bluetape4k/bluetape4k-image/issues/171)
-- [`bluetape4k-text` CHANGELOG.md](https://github.com/bluetape4k/bluetape4k-text/blob/develop/CHANGELOG.md)
+- [`bluetape4k-text 0.2.1` CHANGELOG.md](https://github.com/bluetape4k/bluetape4k-text/blob/0.2.1/CHANGELOG.md)
 - [`bluetape4k-text` issue #99](https://github.com/bluetape4k/bluetape4k-text/issues/99)

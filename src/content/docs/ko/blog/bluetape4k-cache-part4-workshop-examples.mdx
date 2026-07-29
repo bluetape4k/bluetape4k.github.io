@@ -2,21 +2,21 @@
 title: "Bluetape4k Cache Part 4: Workshop 예제로 캐시 전략 감 잡기"
 description: bluetape4k-workshop의 Caffeine, Redis, resilience 예제와 Exposed Workshop의 정식 캐시 전략을 실제 서비스 코드에 연결한다.
 sidebar:
-  order: -202605291704
+  order: -202605291853
 blog:
-  date: 2026-05-29T17:04:00+09:00
+  date: 2026-05-29T18:50:03+09:00
   image: /assets/cache-series-part4-hero.png
-  imageAlt: Spring Boot cache workshop workbench with robot workers, service blocks, Redis, local cache, and monitoring gauges
+  imageAlt: Spring Boot 캐시 워크숍 작업대와 로봇 작업자, 서비스 블록, Redis, 로컬 캐시, 관측 지표
   cardDescription: "Caffeine, Redis, resilience와 Exposed loader/writer 전략을 예제로 살펴본다."
   tags: ["cache","kotlin","practical-example","redis","resilience"]
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/cache-series-part4-hero.png" alt="Spring Boot cache workshop workbench with robot workers, service blocks, Redis, local cache, and monitoring gauges" loading="eager" />
+  <img src="/assets/cache-series-part4-hero.png" alt="Spring Boot 캐시 워크숍 작업대와 로봇 작업자, 서비스 블록, Redis, 로컬 캐시, 관측 지표" loading="eager" />
   <figcaption>캐시 전략은 문서에서 이해하고, 예제에서 확인하고, 운영에서 다시 검증합니다.</figcaption>
 </figure>
 
-<p class="bt4k-post-meta">2026-05-29 · Bluetape4k Cache series · Part 4</p>
+<p class="bt4k-post-meta">2026-05-29 · Bluetape4k Cache 시리즈 · Part 4</p>
 
 이번 글은 실제로 실행해 볼 수 있는 예제 이야기입니다. `bluetape4k-workshop`에는 Spring Boot 기반 캐시 예제가 여러 개 있습니다.
 
@@ -28,9 +28,9 @@ blog:
 
 | 예제 | 역할 |
 |---|---|
-| [cache-caffeine](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/spring-boot/cache-caffeine) | Spring Cache + Caffeine local cache |
+| [cache-caffeine](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/spring-boot/cache-caffeine) | Spring Cache + Caffeine 로컬 캐시 |
 | [cache-redis](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/spring-boot/cache-redis) | Spring Data Redis + Lettuce |
-| [cache-resilience](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/spring-boot/cache-resilience) | Redis 장애 시 Caffeine fallback |
+| [cache-resilience](https://github.com/bluetape4k/bluetape4k-workshop/tree/develop/spring-boot/cache-resilience) | Redis 장애 시 Caffeine 대체 경로 |
 
 ## Caffeine: 가장 가까운 캐시
 
@@ -86,7 +86,7 @@ Read-through, write-through, write-behind는 application service가 DB 접근 �
 `exposed-workshop` 11장의 [`01-cache-strategies`](https://github.com/bluetape4k/exposed-workshop/tree/develop/11-high-performance/01-cache-strategies)는 이 계약을 그대로 구현합니다. [`UserCacheRepository`](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/main/kotlin/exposed/examples/cache/domain/repository/UserCacheRepository.kt)는 `READ_WRITE_THROUGH_WITH_NEAR_CACHE`, [`UserEventCacheRepository`](https://github.com/bluetape4k/exposed-workshop/blob/develop/11-high-performance/01-cache-strategies/src/main/kotlin/exposed/examples/cache/domain/repository/UserEventCacheRepository.kt)는 `WRITE_BEHIND_WITH_NEAR_CACHE`를 사용합니다. 실제 DB 읽기와 쓰기는 [`EntityMapLoader`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/jdbc-redisson/src/main/kotlin/io/bluetape4k/exposed/redisson/map/EntityMapLoader.kt)와 [`EntityMapWriter`](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/jdbc-redisson/src/main/kotlin/io/bluetape4k/exposed/redisson/map/EntityMapWriter.kt)가 담당합니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/cache-series-workshop-strategy-01-ko.png" alt="Exposed Workshop 11장의 cache loader와 writer 계약" loading="lazy" />
+  <img src="/assets/cache-series-workshop-strategy-01-ko.png" alt="Exposed Workshop 11장의 캐시 loader와 writer 계약" loading="lazy" />
   <figcaption>Exposed Workshop 11장은 repository가 map만 호출하고, EntityMapLoader와 EntityMapWriter가 DB load/write를 소유합니다.</figcaption>
 </figure>
 
@@ -101,7 +101,7 @@ Read-through, write-through, write-behind는 application service가 DB 접근 �
 
 ## resilience: 캐시 장애를 서비스 장애로 키우지 않기
 
-`cache-resilience`는 Redis를 primary cache로 쓰고 Caffeine을 fallback으로 둡니다.
+`cache-resilience`는 Redis를 기본 캐시로 쓰고 Caffeine을 대체 경로로 둡니다.
 
 ```kotlin
 suspend fun getProduct(id: String): String? {
@@ -127,12 +127,12 @@ suspend fun getProduct(id: String): String? {
 
 | 질문 | 답해야 하는 이유 |
 |---|---|
-| baseline latency는? | 캐시가 실제로 개선하는지 알아야 함 |
+| 기준 지연 시간은? | 캐시가 실제로 개선하는지 알아야 함 |
 | hit ratio 목표는? | hit이 낮으면 비용만 늘 수 있음 |
 | stale 허용 시간은? | Near Cache와 write-behind의 핵심 계약 |
-| write 실패 정책은? | throw, retry, queue, best effort 중 선택 |
+| 쓰기 실패 정책은? | throw, retry, queue, best effort 중 선택 |
 | invalidate 범위는? | 단일 key, bulk, prefix, 전체 clear 구분 |
-| 장애 시 fallback은? | Redis 장애가 서비스 장애가 되지 않게 함 |
+| 장애 시 대체 경로는? | Redis 장애가 서비스 장애가 되지 않게 함 |
 | 관측 지표는? | hit/miss, latency, queue depth, circuit state |
 
 ## 마무리

@@ -31,7 +31,7 @@ show how application code can hide a storage backend behind one service contract
 The goal is not to skim a README catalog. The useful question is which example a team should read first,
 which work the library owns, and which choices still belong to the application.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="AWS example adoption flow">
   <img src="/assets/bluetape4k-aws-part5-adoption-flow-01-en.png" alt="Adoption flow from example application through Spring Boot or Ktor path, bluetape4k AWS helpers, local verification, and AWS services" loading="lazy" />
   <figcaption>The examples place framework code, helper code, and local-emulator verification in one visible flow.</figcaption>
 </figure>
@@ -47,7 +47,7 @@ The Spring Boot example starts with a WebFlux controller that injects `S3Operati
 not need to know how to build `S3Client`, set an endpoint override, enable path-style access, or create a
 presigner.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Spring Boot S3 example flow">
   <img src="/assets/bluetape4k-aws-part5-spring-s3-example-flow-01-en.png" alt="Spring Boot S3 example flow from HTTP client through S3DocumentController, S3Operations, optional encryption routes, KmsOperations, and S3 endpoint" loading="lazy" />
   <figcaption>The Spring Boot S3 example separates normal object APIs and optional client-side encryption routes inside the same controller.</figcaption>
 </figure>
@@ -191,7 +191,7 @@ visibility timeout, delete timing, retry, typed payload conversion, and manual a
 
 The Spring Boot SQS example exposes that boundary through `@SqsListener`.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="SQS and SNS publishing and consumption flow">
   <img src="/assets/bluetape4k-aws-part5-sqs-sns-scenario-01-en.png" alt="Spring Boot SQS and SNS example flow from HTTP client through WebFlux API, SQS and SNS operations, fanout, LocalStack, SQS listener container, and ReceivedOrderStore" loading="lazy" />
   <figcaption>The SQS/SNS example connects REST publishing, SNS fanout, listener handling, manual acknowledgement, retry, and DLQ setup in one executable flow.</figcaption>
 </figure>
@@ -250,7 +250,7 @@ as another “configuration → helper → framework wiring → test” example 
 `bluetape4k-workshop/aws/storage-abstraction` is the most service-shaped example. The application does not
 know S3 directly. It depends on `StorageService`, and Spring profiles switch the backend.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="StorageService implementation selection by profile">
   <img src="/assets/bluetape4k-aws-part5-storage-profile-switch-01-en.png" alt="StorageService profile switch from application code to local, S3, and S3 presigned backend implementations" loading="lazy" />
   <figcaption>Application code keeps the same StorageService contract while profiles switch the backend.</figcaption>
 </figure>
@@ -272,10 +272,9 @@ There are three profiles:
 | `s3` | `S3StorageService` | Store data through `S3Client` in an S3-compatible backend. |
 | `s3-presigned` | `S3PresignedStorageService` | Store data in S3 and return pre-signed GET URLs from `getUrl()`. |
 
-The module depends on `bluetape4k-aws-spring-boot`, but it does not hand every decision to
-auto-configuration. It first defines the application boundary as `StorageService`; then `S3Config` creates
-profile-specific `S3Client` and `S3Presigner` beans. The domain contract stays stable while local files,
-S3, and pre-signed URLs move into infrastructure implementations.
+The module uses `bluetape4k-aws` and the AWS SDK for S3. It first defines the application boundary as
+`StorageService`; then `S3Config` creates profile-specific `S3Client` and `S3Presigner` beans. The domain
+contract stays stable while local files, S3, and pre-signed URLs move into infrastructure implementations.
 
 `S3Config` uses `FlociServer.Launcher.floci` for tests and local runs:
 

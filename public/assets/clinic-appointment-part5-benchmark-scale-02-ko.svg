@@ -30,7 +30,7 @@
   <circle cx="80" cy="870" r="220" fill="#0891b2" opacity="0.08"/>
 
   <text x="90" y="78" class="title">즉시 조회가 아니라 제한 시간을 둔 탐색이다</text>
-  <text x="92" y="116" class="subtitle">모든 기준 시나리오에서 필수 제약을 지키며 설정한 제한 시간의 절반 안팎으로 탐색을 마쳤습니다.</text>
+  <text x="92" y="116" class="subtitle">각 기준 시나리오에 입력된 문제 정보에서 필수 제약을 지키며 제한 시간 안에 탐색을 마쳤습니다.</text>
 
   <rect x="1090" y="54" width="170" height="34" rx="17" fill="#18334f" stroke="#2dd4bf"/>
   <rect x="1106" y="65" width="42" height="12" rx="6" fill="url(#actual)"/>

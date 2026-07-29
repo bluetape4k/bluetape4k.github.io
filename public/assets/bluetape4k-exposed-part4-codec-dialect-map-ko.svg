@@ -1,79 +1,79 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1500" height="760" viewBox="0 0 1500 760" role="img">
-<title>컬럼과 데이터베이스 방언 구성</title>
-<desc>반복되는 DB별 세부사항을 타입 컬럼과 작은 방언 모듈로 옮깁니다.</desc>
+<title>컬럼과 데이터베이스 다이얼렉트 구성</title>
+<desc>반복되는 DB별 세부사항을 타입 컬럼과 작은 다이얼렉트 모듈로 옮깁니다.</desc>
 <defs>
-  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#1D3148" flood-opacity="0.12"/></filter>
-  <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M 1 1 L 7 4 L 1 7 Z" fill="#4D6F9F"/></marker>
+  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#020617" flood-opacity="0.42"/></filter>
+  <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 1 1 L 9 5 L 1 9 Z" fill="#78AFFF"/></marker>
   <style>
-    .bg{fill:#F7F9FC}.frame{fill:#FFFFFF;stroke:#D6E2ED;stroke-width:2}
-    .title{font-family:"goorm Sans";font-size:42px;fill:#21334A;font-weight:700}
-    .subtitle,.body,.small,.tiny,.axisLabel{font-family:"goorm Sans Code","goorm Sans";fill:#34465B}
-    .subtitle{font-size:16px}.body{font-size:14px}.small{font-size:12px;fill:#657386}.tiny{font-size:11px;fill:#657386}
-    .label{font-family:"goorm Sans";font-size:23px;fill:#21334A;font-weight:700}
-    .card{filter:url(#shadow);stroke-width:2}.line{fill:none;stroke:#4D6F9F;stroke-width:2.8;marker-end:url(#arrow);stroke-linecap:round;stroke-linejoin:round}
-    .axis{stroke:#B9C7D8;stroke-width:1.4}.grid{stroke:#CAD6E4;stroke-width:1;stroke-dasharray:4 6}
+    .bg{fill:#0B1220}.frame{fill:#0F1E33;stroke:#284766;stroke-width:2}
+    .title{font-family:"goorm Sans";font-size:42px;fill:#F5F9FF;font-weight:700}
+    .subtitle,.body,.small,.tiny,.axisLabel{font-family:"goorm Sans Code","goorm Sans";fill:#D7E3F5}
+    .subtitle{font-size:16px}.body{font-size:14px}.small{font-size:12px;fill:#B8C7DD}.tiny{font-size:11px;fill:#B8C7DD}
+    .label{font-family:"goorm Sans";font-size:23px;fill:#F5F9FF;font-weight:700}
+    .card{filter:url(#shadow);stroke-width:2}.line{fill:none;stroke:#78AFFF;stroke-width:3.2;marker-end:url(#arrow);stroke-linecap:round;stroke-linejoin:round}
+    .axis{stroke:#55718F;stroke-width:1.4}.grid{stroke:#2F4B67;stroke-width:1;stroke-dasharray:4 6}
   </style>
 </defs>
 <rect class="bg" width="1500" height="760"/>
 <rect class="frame" x="34" y="28" width="1432" height="704" rx="26"/>
-<text class="title" x="70" y="82">컬럼과 데이터베이스 방언 구성</text>
-<text class="subtitle" x="72" y="114">반복되는 DB별 세부사항을 타입 컬럼과 작은 방언 모듈로 옮깁니다.</text>
+<text class="title" x="70" y="82">컬럼과 데이터베이스 다이얼렉트 구성</text>
+<text class="subtitle" x="72" y="114">반복되는 DB별 세부사항을 타입 컬럼과 작은 다이얼렉트 모듈로 옮깁니다.</text>
 <g transform="translate(80 170)">
   <g>
-  <rect class="card" x="0" y="236" width="230" height="112" rx="16" fill="#E7F1FF" stroke="#5A85D6"/>
+  <rect class="card" x="0" y="236" width="230" height="112" rx="16" fill="#163761" stroke="#5EA0FF"/>
   <text class="label" x="115" y="274" text-anchor="middle" dominant-baseline="middle">도메인 모델</text>
   <text class="body" x="115" y="304" text-anchor="middle">settings · metadata</text>
 <text class="body" x="115" y="324" text-anchor="middle">secret · location</text>
 </g>
   <g>
-  <rect class="card" x="342" y="54" width="260" height="116" rx="16" fill="#EAF7ED" stroke="#58A978"/>
+  <rect class="card" x="342" y="54" width="260" height="116" rx="16" fill="#173D27" stroke="#4BDB85"/>
   <text class="label" x="472" y="94" text-anchor="middle" dominant-baseline="middle">JSON 코덱</text>
   <text class="body" x="472" y="124" text-anchor="middle">Jackson2/3</text>
 <text class="body" x="472" y="144" text-anchor="middle">Fastjson2</text>
 </g>
   <g>
-  <rect class="card" x="342" y="236" width="260" height="116" rx="16" fill="#FCECEF" stroke="#DC6B82"/>
+  <rect class="card" x="342" y="236" width="260" height="116" rx="16" fill="#4A1E2B" stroke="#F07A9B"/>
   <text class="label" x="472" y="276" text-anchor="middle" dominant-baseline="middle">암호화 컬럼</text>
   <text class="body" x="472" y="306" text-anchor="middle">Tink AEAD</text>
 <text class="body" x="472" y="326" text-anchor="middle">Deterministic AEAD</text>
 </g>
   <g>
-  <rect class="card" x="342" y="418" width="260" height="116" rx="16" fill="#F1ECFF" stroke="#8A72D6"/>
+  <rect class="card" x="342" y="418" width="260" height="116" rx="16" fill="#2D2359" stroke="#A993FF"/>
   <text class="label" x="472" y="458" text-anchor="middle" dominant-baseline="middle">측정값 컬럼</text>
   <text class="body" x="472" y="488" text-anchor="middle">quantity + unit</text>
 <text class="body" x="472" y="508" text-anchor="middle">typed value</text>
 </g>
   <g>
-  <rect class="card" x="742" y="54" width="260" height="116" rx="16" fill="#FFF3D8" stroke="#D6A441"/>
+  <rect class="card" x="742" y="54" width="260" height="116" rx="16" fill="#4B3212" stroke="#F0B84D"/>
   <text class="label" x="872" y="94" text-anchor="middle" dominant-baseline="middle">PostgreSQL</text>
   <text class="body" x="872" y="124" text-anchor="middle">PostGIS · pgvector</text>
 <text class="body" x="872" y="144" text-anchor="middle">범위 컬럼</text>
 </g>
   <g>
-  <rect class="card" x="742" y="236" width="260" height="116" rx="16" fill="#E6F7F5" stroke="#38A69E"/>
+  <rect class="card" x="742" y="236" width="260" height="116" rx="16" fill="#123F3C" stroke="#35D0C5"/>
   <text class="label" x="872" y="276" text-anchor="middle" dominant-baseline="middle">MySQL 8</text>
   <text class="body" x="872" y="306" text-anchor="middle">JTS geometry</text>
 <text class="body" x="872" y="326" text-anchor="middle">spatial predicates</text>
 </g>
   <g>
-  <rect class="card" x="742" y="418" width="260" height="116" rx="16" fill="#F5F7FA" stroke="#8FA1B3"/>
-  <text class="label" x="872" y="458" text-anchor="middle" dominant-baseline="middle">분석용 방언</text>
+  <rect class="card" x="742" y="418" width="260" height="116" rx="16" fill="#1E293B" stroke="#94A3B8"/>
+  <text class="label" x="872" y="458" text-anchor="middle" dominant-baseline="middle">분석용 다이얼렉트</text>
   <text class="body" x="872" y="488" text-anchor="middle">BigQuery · ClickHouse</text>
 <text class="body" x="872" y="508" text-anchor="middle">Trino · DuckDB</text>
 </g>
   <g>
-  <rect class="card" x="1120" y="236" width="230" height="112" rx="16" fill="#EAF7ED" stroke="#58A978"/>
+  <rect class="card" x="1120" y="236" width="230" height="112" rx="16" fill="#173D27" stroke="#4BDB85"/>
   <text class="label" x="1235" y="274" text-anchor="middle" dominant-baseline="middle">SQL DSL</text>
   <text class="body" x="1235" y="304" text-anchor="middle">타입 검사</text>
 <text class="body" x="1235" y="324" text-anchor="middle">문자열 조합 감소</text>
 </g>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M230 272 H284 Q294 272 294 262 V122 Q294 112 304 112 H342"/>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M230 292 H342"/>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M230 312 H284 Q294 312 294 322 V466 Q294 476 304 476 H342"/>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M602 112 H742"/>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M602 292 H742"/>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M602 476 H742"/>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M1002 112 H1054 Q1064 112 1064 122 V266 Q1064 276 1074 276 H1120"/>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M1002 292 H1120"/>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M1002 476 H1054 Q1064 476 1064 466 V330 Q1064 320 1074 320 H1120"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M230 272 H284 Q294 272 294 262 V122 Q294 112 304 112 H342"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M230 292 H342"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M230 312 H284 Q294 312 294 322 V466 Q294 476 304 476 H342"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M602 112 H742"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M602 292 H742"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M602 476 H742"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M1002 112 H1054 Q1064 112 1064 122 V266 Q1064 276 1074 276 H1120"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M1002 292 H1120"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M1002 476 H1054 Q1064 476 1064 466 V330 Q1064 320 1074 320 H1120"/>
 </g></svg>

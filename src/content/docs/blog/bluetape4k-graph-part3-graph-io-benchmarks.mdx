@@ -1,6 +1,6 @@
 ---
-title: "Bluetape4k Graph Part 3: Graph I/O and Benchmarks"
-description: CSV, NDJSON, GraphML import/export modules, plus how to read current benchmark results.
+title: "Bluetape4k Graph Part 3: Graph I/O and Benchmark Interpretation"
+description: CSV, NDJSON, and GraphML import/export modules, plus how to interpret committed benchmark results.
 sidebar:
   order: -202606041532
 blog:
@@ -20,9 +20,9 @@ blog:
 
 Graph data often needs to leave the database: migration, snapshots, analytics, and reproducible test fixtures all need
 export and import paths. At some point a team asks, “Can we dump this graph and reproduce the case locally?” That is
-where console copy-paste stops being cute. `graph-io` splits the work into file formats and I/O decorators.
+where ad hoc console copying stops being reliable. `graph-io` splits the work into file formats and I/O decorators.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Graph I/O pipeline">
   <img src="/assets/bluetape4k-graph-part3-io-pipeline-01-en.png" alt="Graph I/O pipeline from GraphOperations to graph-io-core, data formats, I/O decorators, operational uses, and benchmark gate" loading="lazy" />
   <figcaption>Format adapters separate graph operations from file shape; OkIO composes the I/O path.</figcaption>
 </figure>
@@ -35,48 +35,102 @@ where console copy-paste stops being cute. `graph-io` splits the work into file 
 | GraphML | Interoperability with graph tools |
 
 OkIO is not a format. `bluetape4k-io` and `bluetape4k-okio` provide buffering, compression, encryption, and async I/O
-paths as decorators around CSV, NDJSON, or GraphML. Fastjson2 would fit the NDJSON family as a future serializer path,
-but the current graph-io source provides Jackson2 and Jackson3 modules. Keeping file format and I/O path separate pays
-off when a later requirement adds compression or encryption without changing the graph format itself.
+paths around the existing formats. High-level encryption helpers directly support the single-stream NDJSON and GraphML
+formats. CSV keeps vertices and edges in separate files, so its high-level encrypted helper is rejected; encrypted CSV
+requires a custom paired-file layout built from lower-level path wrappers. Keeping file format and I/O path separate
+pays off when a later requirement adds compression or atomic file writes without changing the graph format itself.
+
+The shared contracts live in `graph-io-core`, and each format provides synchronous, virtual-thread, and coroutine
+`suspend` variants. The execution model should be selected from the file I/O, parser, graph-store write cost, and graph
+size rather than from a blanket preference for one concurrency model.
 
 ## Benchmark implementation
 
-The quick-run benchmark comes from `BulkGraphIoBenchmark` and `BulkGraphIoBenchmarkState`. The state creates a temporary
-directory and a TinkerGraph in-memory graph. The small dataset has 1,000 `Person` vertices and 2,000 `KNOWS` edges with a
-fixed random seed. Benchmark methods export that graph to CSV/NDJSON/GraphML files or import the files back into
-TinkerGraph.
+The values in this article come from the committed quick run dated April 18, 2026. The benchmark remains implemented in
+`BulkGraphIoBenchmark` and `BulkGraphIoBenchmarkState`, but its current execution settings differ from that historical
+run.
 
-The run used Mac mini Pro M4, 48GB memory, and Java 25. This Graph I/O quick-run itself does not start a graph DB Docker
+```kotlin
+@State(Scope.Benchmark)
+open class BulkGraphIoBenchmarkState {
+    @Param("small", "medium")
+    var sizeName: String = "small"
+
+    lateinit var ops: GraphOperations
+    lateinit var tempDir: Path
+}
+```
+
+The state creates a temporary directory and a TinkerGraph in-memory graph. The small dataset has 1,000 `Person` vertices
+and 2,000 `KNOWS` edges with a fixed random seed. Benchmark methods export that graph to CSV, NDJSON, or GraphML files or
+import the files back into TinkerGraph.
+
+```kotlin
+@Benchmark
+fun csvSyncExport(s: BulkGraphIoBenchmarkState) {
+    val sink = CsvGraphExportSink(
+        GraphExportSink.PathSink(s.tempDir.resolve("v.csv")),
+        GraphExportSink.PathSink(s.tempDir.resolve("e.csv")),
+    )
+    CsvGraphBulkExporter().exportGraph(sink, s.ops, exportOpts)
+}
+```
+
+The committed run used Mac mini Pro M4, 48GB memory, and Java 25. This Graph I/O quick run does not start a graph DB Docker
 container because it uses TinkerGraph and temporary files. Graph DB comparison benchmarks and integration tests use
 Docker/Testcontainers.
 
 ```bash
+# Current full JMH run
+./gradlew :graph-io-benchmark:benchmark
+
+# CI wiring and report-generation check
 ./gradlew :graph-io-benchmark:smokeBenchmark
 ```
 
 ## Benchmark results
 
-The current quick-run uses `@Fork(0)`, one warmup, and two measurements. It is useful for development decisions, not as a
-precise published performance claim. JMH mode is `AverageTime`, unit is `ms/op`, and lower is better. This smoke pass
-uses mean values; run a longer raw-JSON benchmark when variance matters. If the numbers look too tidy, that is usually a
-good reason to run them again.
+The April 18 record used `@Fork(0)`, one one-second warmup, and two one-second measurements. It is evidence for a quick
+regression check, not a precise performance claim. Current source uses `@Fork(1)`, three three-second warmups, and five
+three-second measurements. The current `smokeBenchmark` task verifies representative CSV, Jackson3 OkIO, and GraphML
+OkIO round trips and report generation with a `smoke` dataset; its output must not be interpreted as a format
+performance comparison.
 
-<figure class="bt4k-chart">
+The chart below summarizes the historical quick run for 1,000 vertices and 2,000 edges. JMH mode is `AverageTime`, the
+unit is `ms/op`, and lower is better. When variance matters, rerun the current full benchmark and retain its raw JSON.
+
+<figure class="bt4k-chart" data-diagram-title="Mean graph I/O latency for synchronous execution">
   <img src="/assets/bluetape4k-graph-part3-benchmark-summary-01-en.png" alt="Graph I/O quick-run benchmark chart in milliseconds per operation" loading="lazy" />
   <figcaption>GraphML factory caching changed results by two orders of magnitude, so benchmark context matters.</figcaption>
 </figure>
 
-Representative sync means: CSV export 1.017 ms/op, Jackson2 NDJSON export 1.194 ms/op, Jackson3 NDJSON export 1.275
-ms/op, GraphML export 2.582 ms/op, CSV import 17.854 ms/op, Jackson2 NDJSON import 18.831 ms/op, Jackson3 NDJSON import
-19.852 ms/op, and GraphML import 21.111 ms/op.
+| Operation | Mean latency (ms/op) |
+|---|---:|
+| CSV export | 1.017 |
+| Jackson2 NDJSON export | 1.194 |
+| Jackson3 NDJSON export | 1.275 |
+| GraphML export | 2.582 |
+| CSV import | 17.854 |
+| Jackson2 NDJSON import | 18.831 |
+| Jackson3 NDJSON import | 19.852 |
+| GraphML import | 21.111 |
 
-GraphML was especially sensitive to factory caching and buffered streams: before the fix, export could hit roughly
-413 ms; after the fix, it dropped to roughly 2.5 ms. That is why the harness matters as much as the chart. Sometimes the
-villain is not the format; it is a very ordinary factory allocation sitting in the hot path.
+The same historical report measured GraphML export at roughly 413 ms before factory reuse and buffered streams, and
+roughly 2.5 ms after those changes. The current implementation still reuses singleton `XMLInputFactory` and
+`XMLOutputFactory` instances and buffers I/O. This comparison shows that the execution path can matter more than the
+format name, but it does not establish the same improvement ratio for every current environment.
+
+The historical run also measured Jackson2 and Jackson3 coroutine `suspend` imports at 151.415 ms and 155.279 ms. Its
+report suggested that `Dispatchers.IO` initialization inside `runBlocking` may have contributed to the outliers. That
+is a hypothesis about the benchmark harness, not proof of coroutine performance in a production service.
 
 For fixtures, start with CSV or NDJSON. CSV is easy when a human needs to open the file and inspect vertices and edges.
 NDJSON is a better fit for service interchange and snapshot replay. GraphML is the interoperability option when graph
 tools need a standard XML format.
+
+For larger files, the I/O path may matter more than the data format. OkIO adapters can compose buffering, compression,
+decompression guards, atomic writes, and virtual-thread or coroutine paths. Treat encryption separately: the
+single-stream helpers cover NDJSON and GraphML, while CSV requires an explicit paired-file design.
 
 ## Sources
 
@@ -85,15 +139,15 @@ tools need a standard XML format.
 - [Jackson2 graph I/O](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/graph-io/jackson2/README.md)
 - [Jackson3 graph I/O](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/graph-io/jackson3/README.md)
 - [GraphML graph I/O](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/graph-io/graphml/README.md)
-- [OkIO graph I/O](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/graph-io/okio/README.ko.md)
-- [BulkGraphIoBenchmark](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/benchmark/graph-io-benchmark/src/main/kotlin/io/bluetape4k/graph/io/benchmark/BulkGraphIoBenchmark.kt)
-- [BulkGraphIoBenchmarkState](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/benchmark/graph-io-benchmark/src/main/kotlin/io/bluetape4k/graph/io/benchmark/BulkGraphIoBenchmarkState.kt)
+- [OkIO graph I/O](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/graph-io/okio/README.md)
+- [BulkGraphIoBenchmark](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/benchmark/graph-io-benchmark/src/main/kotlin/io/bluetape4k/graph/benchmark/io/BulkGraphIoBenchmark.kt)
+- [BulkGraphIoBenchmarkState](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/benchmark/graph-io-benchmark/src/main/kotlin/io/bluetape4k/graph/benchmark/io/BulkGraphIoBenchmarkState.kt)
 - [Graph I/O benchmark result](https://github.com/bluetape4k/bluetape4k-graph/blob/develop/docs/benchmark/2026-04-18-graph-io-bulk-results.md)
 
 ## Series
 
-- Part 1: [Database Selection Map](/blog/bluetape4k-graph-part1-overview-database-selection/)
+- Part 1: [Graph Database Selection Criteria](/blog/bluetape4k-graph-part1-overview-database-selection/)
 - Part 2: [Core API and Execution Models](/blog/bluetape4k-graph-part2-core-api-schema-execution/)
-- Part 3: [Graph I/O and Benchmarks](/blog/bluetape4k-graph-part3-graph-io-benchmarks/)
+- Part 3: [Graph I/O and Benchmark Interpretation](/blog/bluetape4k-graph-part3-graph-io-benchmarks/)
 - Part 4: [Workshop Scenarios and Service Integration](/blog/bluetape4k-graph-part4-workshop-service-integration/)
 - Part 5: [Reading the Virtual Threads Benchmark](/blog/bluetape4k-graph-part5-virtual-threads-benchmark/)

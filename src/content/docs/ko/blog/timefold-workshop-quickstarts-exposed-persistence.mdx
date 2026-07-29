@@ -1,13 +1,13 @@
 ---
 title: "Timefold Server 실전 적용: 계획 모델에서 Exposed 영속화 경계까지"
-description: 병상 배정과 학교 시간표 quickstart를 비교해 계획 대상·선택값·점수 구조를 읽고, SolverManager의 비동기 실행과 Exposed Score 저장 예제 사이에 실제 서비스가 채워야 할 경계를 설명합니다.
+description: 병상 배정과 학교 시간표 빠른 시작 예제를 비교해 계획 대상·선택값·점수 구조를 읽고, SolverManager의 비동기 실행과 Exposed Score 저장 예제 사이에 실제 서비스가 채워야 할 경계를 설명합니다.
 sidebar:
   order: -202607221000
 blog:
   date: 2026-07-22T10:00:00+09:00
   image: /assets/timefold-workshop-persistence-hero.png
   imageAlt: 병상 배정 보드와 학교 시간표 보드에서 나온 결과가 중앙의 최적화 기계를 지나 데이터베이스 저장소로 이동하는 어두운 3D 미니어처 작업대
-  cardDescription: "병상 배정과 학교 시간표는 같은 Timefold를 쓰지만 계획 변수와 점수 구조가 다릅니다. quickstart의 Solver 실행을 실제 서비스의 저장·승인·업무 반영으로 확장할 때 필요한 경계를 살펴봅니다."
+  cardDescription: "병상 배정과 학교 시간표는 같은 Timefold를 쓰지만 계획 변수와 점수 구조가 다릅니다. 빠른 시작 예제의 Solver 실행을 실제 서비스의 저장·승인·업무 반영으로 확장할 때 필요한 경계를 살펴봅니다."
   tags: ["comparison","exposed","kotlin","optimization","performance","persistence","practical-example","timefold"]
 ---
 
@@ -16,9 +16,9 @@ blog:
   <figcaption>최적화 문제를 푸는 것과 그 결과를 서비스의 데이터로 안전하게 받아들이는 것은 서로 다른 설계 문제입니다.</figcaption>
 </figure>
 
-<p class="bt4k-post-meta">2026-07-22 · Timefold Workshop · Quickstarts와 영속화</p>
+<p class="bt4k-post-meta">2026-07-22 · Timefold Workshop · 빠른 시작 예제와 영속화</p>
 
-## quickstart가 끝난 자리에서 애플리케이션 설계가 시작된다
+## 빠른 시작 예제가 끝난 자리에서 애플리케이션 설계가 시작된다
 
 최적화 예제를 따라 하면 계획 대상을 정의하고, Solver가 바꿀 값을 지정하고, 제약 조건으로 해답의 점수를
 계산하는 흐름을 빠르게 익힐 수 있습니다. 여기까지 실행되면 알고리즘은 동작합니다. 하지만 실제 서비스에
@@ -33,13 +33,13 @@ blog:
 가지고 있습니다. `bed-allocation`과 `school-timetabling`은 서로 다른 계획 문제를 보여 주고, Exposed JDBC와
 R2DBC 예제는 Timefold의 `Score`를 데이터베이스 컬럼에 저장하는 방법을 검증합니다.
 
-다만 두 예제가 곧바로 하나의 완성된 영속화 애플리케이션을 이루는 것은 아닙니다. quickstart는 계획과 실행을,
-Exposed 예제는 Score 값의 저장과 조회를 각각 증명합니다. 그 사이의 작업 상태, 문제 스냅샷, 해답, 승인,
+다만 두 예제가 곧바로 하나의 완성된 영속화 애플리케이션을 이루는 것은 아닙니다. 빠른 시작 예제는 계획과 실행을,
+Exposed 예제는 Score 값의 저장과 조회를 각각 증명합니다. 그 사이의 작업 상태, 문제 스냅숏, 해답, 승인,
 업무 반영은 서비스가 채워야 할 영역입니다.
 
 ## 병상 배정: 입원 기간 전체에 하나의 병상을 고른다
 
-병상 배정 quickstart에서 Solver가 바꾸는 계획 대상은
+병상 배정 빠른 시작 예제에서 Solver가 바꾸는 계획 대상은
 [`Stay`](https://github.com/bluetape4k/timefold-workshop/blob/develop/01-quickstarts/bed-allocation/src/main/kotlin/timefold/workshop/bed/allocation/domain/Stay.kt)입니다.
 환자와 입·퇴원일, 필요한 장비와 진료과는 이미 정해져 있고, `bed`만 계획 변수로 둡니다. 한 입원 일정에는
 입원 기간 전체에 사용할 병상 하나가 배정됩니다.
@@ -62,16 +62,17 @@ class Stay {
 [`BedPlan`](https://github.com/bluetape4k/timefold-workshop/blob/develop/01-quickstarts/bed-allocation/src/main/kotlin/timefold/workshop/bed/allocation/domain/BedPlan.kt)은
 진료과에서 병실과 병상 목록을 만들고, 입원 일정 목록과 `HardMediumSoftScore`를 한 계획 문제로 묶습니다.
 [`BedAllocationConstraintProvider`](https://github.com/bluetape4k/timefold-workshop/blob/develop/01-quickstarts/bed-allocation/src/main/kotlin/timefold/workshop/bed/allocation/solver/BedAllocationConstraintProvider.kt)는
-같은 밤의 병상 중복, 병실의 성별 제한, 진료과 연령 범위, 필수 장비를 Hard 제약으로 다룹니다. 병상을 배정하지
-못한 기간은 Medium에서 감점하고, 병실 정원과 진료과 우선순위 같은 선호는 Soft에서 비교합니다.
+같은 밤의 병상 중복, 병실의 성별 제한, 진료과 연령 범위, 필수 장비를 필수(Hard) 제약으로 다룹니다. 병상을
+배정하지 못한 기간은 중간(Medium) 계층에서 감점하고, 병실 정원과 진료과 우선순위 같은 선호는 선호(Soft)
+계층에서 비교합니다.
 
-여기에는 리뷰가 필요한 작은 불일치도 있습니다. `preferredPatientEquipment()`는 Soft 구역에 놓여 있지만 현재
-코드는 `HardMediumSoftScore.ofHard(50)`으로 감점합니다. 이름과 배치만 보고 “선호 장비는 Soft”라고 문서화하면
+여기에는 리뷰가 필요한 작은 불일치도 있습니다. `preferredPatientEquipment()`는 선호 제약 구역에 놓여 있지만
+현재 코드는 `HardMediumSoftScore.ofHard(50)`으로 감점합니다. 이름과 배치만 보고 “선호 장비는 선호 계층”이라고 문서화하면
 실제 실행 결과와 달라집니다. 제약의 이름, 주석, 점수 계층을 함께 검토해야 하는 이유입니다.
 
 ## 학교 시간표: 수업마다 시간과 교실을 함께 고른다
 
-학교 시간표 quickstart의 계획 대상은
+학교 시간표 빠른 시작 예제의 계획 대상은
 [`Lesson`](https://github.com/bluetape4k/timefold-workshop/blob/develop/01-quickstarts/school-timetabling/src/main/kotlin/timefold/workshop/school/timetabling/domain/Lesson.kt)입니다.
 과목, 교사, 학생 그룹은 고정된 정보이고, Solver는 각 수업의 `timeslot`과 `room`을 함께 바꿉니다.
 
@@ -93,9 +94,9 @@ data class Lesson(
 [`Timetable`](https://github.com/bluetape4k/timefold-workshop/blob/develop/01-quickstarts/school-timetabling/src/main/kotlin/timefold/workshop/school/timetabling/domain/Timetable.kt)은
 선택 가능한 시간과 교실을 문제 정보로 제공하고, 수업 목록과 `HardSoftScore`를 보관합니다.
 [`TimetableConstraintProvider`](https://github.com/bluetape4k/timefold-workshop/blob/develop/01-quickstarts/school-timetabling/src/main/kotlin/timefold/workshop/school/timetabling/solver/TimetableConstraintProvider.kt)는
-한 시간에 같은 교실·교사·학생 그룹을 겹치지 않게 하는 규칙을 Hard로 둡니다. 같은 교사가 자주 교실을
+한 시간에 같은 교실·교사·학생 그룹을 겹치지 않게 하는 규칙을 필수 제약으로 둡니다. 같은 교사가 자주 교실을
 옮기지 않도록 하고, 수업 사이의 빈 시간을 줄이며, 학생 그룹의 하루 과목 구성을 다양하게 만드는 목표는
-Soft에서 비교합니다.
+선호 계층에서 비교합니다.
 
 병상 배정과 달리 한 계획 대상에서 두 값을 함께 골라야 합니다. 수업 시간이 달라지면 가능한 교실 조합도
 달라집니다. 계획 변수의 수만 늘어난 것이 아니라 탐색해야 할 조합의 모양이 달라진 셈입니다.
@@ -112,8 +113,8 @@ Soft에서 비교합니다.
 
 `HardSoftScore`와 `HardMediumSoftScore`의 차이는 더 정교해 보이는 형식을 고르는 문제가 아닙니다. 점수 계층은
 상위 계층을 먼저 비교하는 업무 우선순위입니다. 병상 배정에서는 “조건을 만족하는 병상을 최대한 많은 환자에게
-배정한다”는 목표를 단순 선호보다 앞세우기 위해 Medium 계층을 따로 둡니다. 학교 시간표는 충돌이 없는가를
-Hard로 판단한 뒤 나머지 품질 목표를 Soft에서 비교합니다.
+배정한다”는 목표를 단순 선호보다 앞세우기 위해 중간 계층을 따로 둡니다. 학교 시간표는 충돌이 없는가를
+필수 계층에서 판단한 뒤 나머지 품질 목표를 선호 계층에서 비교합니다.
 
 Timefold는 어느 해답이 업무에 더 좋은지 스스로 알지 못합니다. 개발자가 계획 모델과 점수 계산으로 그 기준을
 표현해야 합니다. 공식 문서의 [계획 문제 모델링](https://docs.timefold.ai/timefold-solver/latest/using-timefold-solver/modeling-planning-problems)과
@@ -144,10 +145,9 @@ solverManager.solveBuilder()
 해답은 프로세스 안의 `ConcurrentHashMap`에 들어갑니다. 서버를 재시작하면 사라지고, 소스의 주석대로 TTL이
 없어 오래 실행하면 맵이 계속 커질 수 있습니다. 여러 서버 인스턴스가 같은 작업을 조회하는 구조도 아닙니다.
 
-즉, quickstart의 맵을 데이터베이스로 바꾸기만 하면 끝나는 것이 아닙니다. 작업 ID의 유일성, 상태 전이,
-재시도와 취소, 문제 스냅샷의 버전, 중간 해답 보관 정책까지 정해야 합니다. `SolverManager`의 실행 모델은 공식
+즉, 빠른 시작 예제의 맵을 데이터베이스로 바꾸기만 하면 끝나는 것이 아닙니다. 작업 ID의 유일성, 상태 전이,
+재시도와 취소, 문제 스냅숏의 버전, 중간 해답 보관 정책까지 정해야 합니다. `SolverManager`의 실행 모델은 공식
 문서의 [라이브러리 통합](https://docs.timefold.ai/timefold-solver/latest/running-timefold-solver/library/library-integration)에서
-더 자세히 볼 수 있습니다.
 
 ## Solver가 끝났다고 최적화에 성공한 것은 아니다
 
@@ -162,19 +162,19 @@ solverManager.solveBuilder()
 
 | 결과 | 의미 | 서비스의 대응 |
 |---|---|---|
-| 실행 가능 해 없음 | 가장 좋은 해답에도 Hard 제약 위반이 남아 있다 | 위반 제약과 부족한 자원을 보여 주고, 입력·자원·모델을 검토한다 |
-| 실행 가능하지만 최적성 미확인 | Hard 제약은 만족하지만 더 좋은 해답이 존재하지 않는다고 증명하지 못했다 | 업무별 최소 품질 기준과 실행 시간 한도를 보고 승인하거나 다시 실행한다 |
+| 실행 가능 해 없음 | 가장 좋은 해답에도 필수 제약 위반이 남아 있다 | 위반 제약과 부족한 자원을 보여 주고, 입력·자원·모델을 검토한다 |
+| 실행 가능하지만 최적성 미확인 | 필수 제약은 만족하지만 더 좋은 해답이 존재하지 않는다고 증명하지 못했다 | 업무별 최소 품질 기준과 실행 시간 한도를 보고 승인하거나 다시 실행한다 |
 | 실행 실패 | 문제 조회, Score 계산, Solver 실행 또는 결과 처리 중 예외가 발생했다 | 실패 단계와 원인을 저장하고 재시도 가능 여부를 판정한다 |
 | 취소 | 운영자나 시스템이 탐색을 중단했다 | 마지막 후보가 있더라도 자동 반영하지 않고 승인 가능 여부를 다시 확인한다 |
 
-여기서 "최적 해를 찾지 못했다"는 표현은 두 경우를 가리킬 수 있습니다. Hard 제약을 만족하는 해답 자체가
+여기서 "최적 해를 찾지 못했다"는 표현은 두 경우를 가리킬 수 있습니다. 필수 제약을 만족하는 해답 자체가
 없을 수도 있고, 실행 가능 해는 찾았지만 그것이 최적인지 알 수 없을 수도 있습니다. 전자는 자원 부족이나
 모델 충돌을 해결해야 하는 문제이고, 후자는 시간과 품질 사이의 운영 정책 문제입니다. 실제 필수 규칙보다
-Hard 제약을 넓게 잡았거나, 계획 값의 범위가 너무 좁거나, 자원 자체가 부족하면 실행 가능 해를 찾기
-어려워집니다. 병상 배정 예제처럼 미배정을 허용하고 Medium 점수로 드러내는 overconstrained planning은
+필수 제약을 넓게 잡았거나, 계획 값의 범위가 너무 좁거나, 자원 자체가 부족하면 실행 가능 해를 찾기
+어려워집니다. 병상 배정 예제처럼 미배정을 허용하고 중간 점수로 드러내는 과잉 제약 계획(overconstrained planning)은
 자원이 부족할 때도 비교 가능한 후보를 남기는 한 가지 방법입니다.
 
-학교 시간표 quickstart는 실행 중 예외도 숨기지 않습니다. `withExceptionHandler`에서 오류를 작업에 저장하고,
+학교 시간표 빠른 시작 예제는 실행 중 예외도 숨기지 않습니다. `withExceptionHandler`에서 오류를 작업에 저장하고,
 이후 조회 요청이 들어오면 `TimetableSolverException`으로 전달합니다.
 
 ```kotlin
@@ -218,28 +218,30 @@ R2DBC의 [`HardSoftScoreTest`](https://github.com/bluetape4k/timefold-workshop/b
 반면 `Timetable`이나 `BedPlan` 전체, 작업 상태, 가장 좋은 해답의 여러 버전, 승인 정보까지 저장하는 저장소는
 현재 예제에 없습니다. **Score 영속화 지원**을 **PlanningSolution 영속화 구현**으로 확대 해석하면 안 됩니다.
 
-## 실제 서비스에서는 무엇을 더 저장해야 할까
+## 실제 서비스의 참조 설계에서는 무엇을 더 저장해야 할까
 
 <figure
   class="bt4k-architecture"
-  data-diagram-title="최적화 실행·영속화·승인 경계의 상호작용"
+  data-diagram-title="최적화 실행·영속화·승인 경계의 참조 설계"
 >
-  <img src="/assets/timefold-workshop-solver-persistence-sequence-02-ko.png" alt="운영자, 최적화 API, 작업 서비스, SolverManager, Solver, 후보 해답 저장소, 작업 저장소, 승인 서비스, 업무 데이터를 카드로 배치하고 요청, 영속화, 비동기 콜백, 승인 반영 관계를 연결선으로 나타낸 상호작용 다이어그램" loading="lazy" />
-  <figcaption>Solver 실행은 최적화 런타임에, 후보 해답과 작업 스냅샷은 서로 다른 Exposed 저장소에, 승인과 원본 반영은 업무 서비스에 둡니다. 연결선은 각 경계를 오가는 요청·콜백·데이터를 보여 줍니다.</figcaption>
+  <img src="/assets/timefold-workshop-solver-persistence-sequence-02-ko.png" alt="현재 workshop 구현이 아닌 참조 설계로서 운영자, 최적화 API, 작업 서비스, SolverManager, Solver, 후보 해답 저장소, 작업 저장소, 승인 서비스, 업무 데이터를 카드와 연결선으로 나타낸 상호작용 다이어그램" loading="lazy" />
+  <figcaption>이 그림은 현재 workshop에 구현된 서비스 구성이 아니라 애플리케이션이 채울 수 있는 참조 설계입니다. Solver 실행, 후보·작업 저장, 승인과 원본 반영의 책임을 분리해 보여 줍니다.</figcaption>
 </figure>
 
+현재 `timefold-workshop`에는 이 그림의 `OptimizationJobService`나 두 Exposed 저장소가 구현되어 있지 않습니다.
+다음 구성은 빠른 시작 예제와 Score 컬럼 검증 사이의 빈 경계를 구체화한 **애플리케이션 참조 설계**입니다.
 실제 서비스에서는 적어도 다음 데이터를 서로 구분해 저장하는 편이 좋습니다.
 
 | 저장 대상 | 필요한 이유 |
 |---|---|
-| 문제 스냅샷 | 어떤 업무 데이터와 제약 설정으로 실행했는지 재현한다 |
+| 문제 스냅숏 | 어떤 업무 데이터와 제약 설정으로 실행했는지 재현한다 |
 | 작업 상태 | 대기·실행·완료·실패·취소 상태와 시간을 조회한다 |
 | 후보 해답과 Score | 결과를 비교하고, 왜 선택했는지 설명한다 |
 | 승인 정보 | 누가 어떤 결과를 언제 받아들였는지 남긴다 |
 | 업무 반영 이력 | 후보 해답과 실제 변경된 원본 데이터를 연결한다 |
 
 여기서 가장 중요한 경계는 **Solver 결과가 곧 업무 원본은 아니라는 것**입니다. Solver가 탐색하는 동안 예약,
-병상, 교실 같은 원본 데이터가 바뀔 수 있습니다. 결과를 반영하기 전에는 스냅샷의 버전과 현재 데이터를
+병상, 교실 같은 원본 데이터가 바뀔 수 있습니다. 결과를 반영하기 전에는 스냅숏의 버전과 현재 데이터를
 비교하고, 필요한 충돌 검사를 다시 해야 합니다. 승인된 해답만 트랜잭션 안에서 업무 데이터에 적용하고,
 실패하면 부분 반영을 남기지 않아야 합니다.
 
@@ -261,7 +263,7 @@ R2DBC의 [`HardSoftScoreTest`](https://github.com/bluetape4k/timefold-workshop/b
 - 서버 재시작 뒤에도 완료된 작업과 해답을 조회할 수 있는가
 - 같은 작업 ID로 중복 실행하지 않는가
 - 취소와 실패가 명확한 상태와 원인을 남기는가
-- 오래된 스냅샷의 해답이 현재 업무 데이터를 덮어쓰지 않는가
+- 오래된 스냅숏의 해답이 현재 업무 데이터를 덮어쓰지 않는가
 - 승인과 업무 반영이 한 번만 실행되는가
 
 제약 테스트가 “이 해답의 점수가 맞는가?”를 묻는다면, 경계 테스트는 “이 후보를 안전하게 보관하고 업무에
@@ -269,27 +271,27 @@ R2DBC의 [`HardSoftScoreTest`](https://github.com/bluetape4k/timefold-workshop/b
 
 ## 데모를 애플리케이션 기능으로 옮기는 체크리스트
 
-quickstart를 실제 기능으로 확장할 때는 다음 순서가 실용적입니다.
+빠른 시작 예제를 실제 기능으로 확장할 때는 다음 순서가 실용적입니다.
 
 1. **업무 질문을 한 문장으로 고정한다.** Solver가 무엇을 바꿔 어떤 결과를 더 좋다고 판단해야 하는지 정합니다.
-2. **계획 대상과 문제 정보를 분리한다.** 실행 중 바뀌는 값만 계획 변수로 두고, 나머지는 스냅샷으로 묶습니다.
-3. **점수 계층을 업무 용어로 합의한다.** Hard·Medium·Soft가 각각 어떤 운영 결정을 뜻하는지 문서와 테스트에 남깁니다.
+2. **계획 대상과 문제 정보를 분리한다.** 실행 중 바뀌는 값만 계획 변수로 두고, 나머지는 스냅숏으로 묶습니다.
+3. **점수 계층을 업무 용어로 합의한다.** 필수·중간·선호 계층이 각각 어떤 운영 결정을 뜻하는지 문서와 테스트에 남깁니다.
 4. **API 요청과 Solver 실행을 분리한다.** 작업 ID와 상태 조회 계약을 먼저 만들고 실행 시간 제한과 취소를 정합니다.
-5. **저장 단위를 구분한다.** Score 컬럼, 후보 해답, 문제 스냅샷, 작업 상태, 승인, 업무 반영 이력을 한 덩어리로 보지 않습니다.
+5. **저장 단위를 구분한다.** Score 컬럼, 후보 해답, 문제 스냅숏, 작업 상태, 승인, 업무 반영 이력을 한 덩어리로 보지 않습니다.
 6. **승인 전에는 원본을 바꾸지 않는다.** 결과를 후보로 저장하고 현재 데이터와의 충돌을 다시 확인합니다.
 7. **JDBC와 R2DBC는 접근 방식으로 선택한다.** Solver의 모델과 Score 의미는 같게 유지하고 서비스의 트랜잭션·동시성 모델에 맞춥니다.
 8. **재시작과 중복 실행을 테스트한다.** 정상 실행만큼 실패·취소·재시도·오래된 결과 반영을 중요하게 다룹니다.
 
 Timefold는 조합이 많은 계획 문제를 탐색하고 점수로 해답을 비교하는 역할을 맡습니다. Exposed의 Score 컬럼은
 그 결과의 중요한 일부를 저장합니다. 하지만 두 도구 사이에서 작업과 해답의 수명주기를 설계하고, 후보를
-업무 데이터로 받아들이는 책임은 애플리케이션에 남습니다. 이 경계를 먼저 그려 두면 quickstart의 코드를
+업무 데이터로 받아들이는 책임은 애플리케이션에 남습니다. 이 경계를 먼저 그려 두면 빠른 시작 예제의 코드를
 그대로 키우지 않고도 실제 서비스에 필요한 다음 작업을 구체적으로 정할 수 있습니다.
 
 ## 구현 코드와 자료 살펴보기
 
 - [`timefold-workshop` 저장소와 모듈 구성](https://github.com/bluetape4k/timefold-workshop)
-- [병상 배정 quickstart](https://github.com/bluetape4k/timefold-workshop/tree/develop/01-quickstarts/bed-allocation)
-- [학교 시간표 quickstart](https://github.com/bluetape4k/timefold-workshop/tree/develop/01-quickstarts/school-timetabling)
+- [병상 배정 빠른 시작 예제](https://github.com/bluetape4k/timefold-workshop/tree/develop/01-quickstarts/bed-allocation)
+- [학교 시간표 빠른 시작 예제](https://github.com/bluetape4k/timefold-workshop/tree/develop/01-quickstarts/school-timetabling)
 - [Exposed JDBC Score 예제](https://github.com/bluetape4k/timefold-workshop/tree/develop/exposed/jdbc-examples)
 - [Exposed R2DBC Score 예제](https://github.com/bluetape4k/timefold-workshop/tree/develop/exposed/r2dbc-examples)
 - [Timefold 공식 문서: 계획 문제 모델링](https://docs.timefold.ai/timefold-solver/latest/using-timefold-solver/modeling-planning-problems)

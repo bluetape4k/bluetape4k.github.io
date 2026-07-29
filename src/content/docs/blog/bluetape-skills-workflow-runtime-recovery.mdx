@@ -263,10 +263,10 @@ does not need a copy of every native-tool conversation. It needs only the bounde
 can validate the next state transition. This keeps the receipt a workflow state ledger rather than
 a duplicate session transcript.
 
-## Installing and Validating 1.1.0
+## Reproducing 1.1.0 and Installing the Current Release
 
-When upgrading an existing installation to `1.1.0`, validating a shallow clone of the tag in a
-separate directory is safer than overwriting the current checkout.
+The runtime described in this article first shipped in `1.1.0`. To reproduce that historical release,
+validate a shallow clone of its tag in a separate directory instead of overwriting the current checkout.
 
 ```bash
 git clone --branch v1.1.0 --depth 1 https://github.com/bluetape4k/bluetape-skills.git bluetape-skills-v1.1.0
@@ -281,14 +281,23 @@ existing canonical skill directory to a timestamped backup before installing the
 you have edited skills locally, inspect those changes with `git log` and `git diff` before forcing a
 replacement.
 
-Restart Codex after installation so it can load the new skills. `code-review` and `self-audit` are
-external companion skills outside the public canonical bundle. Install them separately if you use
-the Code Review path or the harness self-audit gate.
+For a current installation, use the latest stable tag. As of July 28, 2026, that release is `v1.2.2`:
+
+```bash
+git clone --branch v1.2.2 --depth 1 https://github.com/bluetape4k/bluetape-skills.git bluetape-skills-v1.2.2
+cd bluetape-skills-v1.2.2
+./scripts/validate.sh
+./scripts/install.sh --force
+```
+
+Do not close the current Codex task first. Launch a separate Codex process in the same workspace,
+verify that it loads the new skills and passes self-audit, and only then retire the previous process.
+`code-review` and `self-audit` are external companion skills outside the public canonical bundle.
+Install them separately if you use the Code Review path or the harness self-audit gate.
 
 At publication, the `v1.1.0` release candidate recorded passing validation for 14 canonical skills,
-133 tests and 151 subtests, and source/bundle parity across 83 files. These are release-time results,
-not fresh measurements from rerunning the full suite and archive installation while writing this
-article.
+133 tests and 151 subtests, and source/bundle parity across 83 files. These historical results must
+not be read as current `v1.2.2` validation counts.
 
 ## When to Use the Runtime
 
@@ -321,6 +330,5 @@ clear boundaries, finish with the checklist alone.
 
 - [bluetape4k/bluetape-skills repository](https://github.com/bluetape4k/bluetape-skills)
 - [Bluetape Skills v1.1.0 release](https://github.com/bluetape4k/bluetape-skills/releases/tag/v1.1.0)
-- [Phase 2 native workflow runtime tracking issue #5](https://github.com/bluetape4k/bluetape-skills/issues/5)
-- [v1.1.0 release candidate PR #6](https://github.com/bluetape4k/bluetape-skills/pull/6)
+- [Bluetape Skills v1.2.2 release](https://github.com/bluetape4k/bluetape-skills/releases/tag/v1.2.2)
 - [v1.0.0...v1.1.0 change comparison](https://github.com/bluetape4k/bluetape-skills/compare/v1.0.0...v1.1.0)

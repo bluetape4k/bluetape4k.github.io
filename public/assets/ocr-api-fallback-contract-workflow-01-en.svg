@@ -3,61 +3,61 @@
   <desc id="desc">Vertical responsibility lanes for HTTP upload boundary, image preprocessing boundary, native OCR boundary, and response contract boundary.</desc>
   <defs>
     <marker id="arrow-blue" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto">
-      <path d="M 1 1 L 13 7 L 1 13 Z" fill="#3b6ea8" stroke="#3b6ea8" stroke-dasharray="none" style="stroke-dasharray:none"/>
+      <path d="M 1 1 L 13 7 L 1 13 Z" fill="#60a5fa" stroke="#60a5fa" stroke-dasharray="none" style="stroke-dasharray:none"/>
     </marker>
     <marker id="arrow-teal" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto">
-      <path d="M 1 1 L 13 7 L 1 13 Z" fill="#26847f" stroke="#26847f" stroke-dasharray="none" style="stroke-dasharray:none"/>
+      <path d="M 1 1 L 13 7 L 1 13 Z" fill="#2dd4bf" stroke="#2dd4bf" stroke-dasharray="none" style="stroke-dasharray:none"/>
     </marker>
     <marker id="arrow-amber" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto">
-      <path d="M 1 1 L 13 7 L 1 13 Z" fill="#a36b15" stroke="#a36b15" stroke-dasharray="none" style="stroke-dasharray:none"/>
+      <path d="M 1 1 L 13 7 L 1 13 Z" fill="#fbbf24" stroke="#fbbf24" stroke-dasharray="none" style="stroke-dasharray:none"/>
     </marker>
     <marker id="arrow-red" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto">
-      <path d="M 1 1 L 13 7 L 1 13 Z" fill="#b34a47" stroke="#b34a47" stroke-dasharray="none" style="stroke-dasharray:none"/>
+      <path d="M 1 1 L 13 7 L 1 13 Z" fill="#fb7185" stroke="#fb7185" stroke-dasharray="none" style="stroke-dasharray:none"/>
     </marker>
     <marker id="arrow-gray" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto">
-      <path d="M 1 1 L 13 7 L 1 13 Z" fill="#64748b" stroke="#64748b" stroke-dasharray="none" style="stroke-dasharray:none"/>
+      <path d="M 1 1 L 13 7 L 1 13 Z" fill="#94a3b8" stroke="#94a3b8" stroke-dasharray="none" style="stroke-dasharray:none"/>
     </marker>
     <filter id="soft-shadow" x="-12%" y="-18%" width="124%" height="146%">
       <feDropShadow dx="0" dy="9" stdDeviation="7" flood-color="#1f2f46" flood-opacity="0.13"/>
     </filter>
     <style>
-      .bg { fill: #f6f8fb; }
-      .title-text { font: 700 42px 'Architects Daughter', 'Comic Mono', 'Comic Sans MS', cursive; fill: #1f2937; }
-      .subtitle-text { font: 19px 'Comic Mono', 'SFMono-Regular', monospace; fill: #596579; }
-      .lane { stroke: #d4deea; stroke-width: 2; }
-      .lane-a { fill: #edf5ff; }
-      .lane-b { fill: #f1f8f4; }
-      .lane-c { fill: #fff7e6; }
-      .lane-d { fill: #f8f1f4; }
-      .lane-title { font: 700 29px 'Architects Daughter', 'Comic Mono', 'Comic Sans MS', cursive; fill: #253449; }
-      .lane-sub { font: 17px 'Comic Mono', 'SFMono-Regular', monospace; fill: #667085; }
-      .card { fill: #ffffff; stroke-width: 3; filter: url(#soft-shadow); }
-      .card-blue { stroke: #3b6ea8; }
-      .card-teal { stroke: #26847f; }
-      .card-amber { stroke: #a36b15; }
-      .card-red { stroke: #b34a47; }
-      .card-gray { stroke: #64748b; }
-      .card-title { font: 700 27px 'Architects Daughter', 'Comic Mono', 'Comic Sans MS', cursive; fill: #1f2937; }
-      .card-body { font: 18px 'Comic Mono', 'SFMono-Regular', monospace; fill: #4b5563; }
-      .dot-blue { fill: #3b6ea8; }
-      .dot-teal { fill: #26847f; }
-      .dot-amber { fill: #a36b15; }
-      .dot-red { fill: #b34a47; }
-      .dot-gray { fill: #64748b; }
+      .bg { fill: #0b1220; }
+      .title-text { font: 700 42px 'Architects Daughter', 'Comic Mono', 'Comic Sans MS', cursive; fill: #f1f5f9; }
+      .subtitle-text { font: 19px 'Comic Mono', 'SFMono-Regular', monospace; fill: #b9c7d8; }
+      .lane { stroke: #33475f; stroke-width: 2; }
+      .lane-a { fill: #101f35; }
+      .lane-b { fill: #102b2a; }
+      .lane-c { fill: #2b2415; }
+      .lane-d { fill: #2a1b28; }
+      .lane-title { font: 700 29px 'Architects Daughter', 'Comic Mono', 'Comic Sans MS', cursive; fill: #e6edf7; }
+      .lane-sub { font: 17px 'Comic Mono', 'SFMono-Regular', monospace; fill: #a8b5c6; }
+      .card { fill: #111c2e; stroke-width: 3; filter: url(#soft-shadow); }
+      .card-blue { stroke: #60a5fa; }
+      .card-teal { stroke: #2dd4bf; }
+      .card-amber { stroke: #fbbf24; }
+      .card-red { stroke: #fb7185; }
+      .card-gray { stroke: #94a3b8; }
+      .card-title { font: 700 27px 'Architects Daughter', 'Comic Mono', 'Comic Sans MS', cursive; fill: #f1f5f9; }
+      .card-body { font: 18px 'Comic Mono', 'SFMono-Regular', monospace; fill: #c2cede; }
+      .dot-blue { fill: #60a5fa; }
+      .dot-teal { fill: #2dd4bf; }
+      .dot-amber { fill: #fbbf24; }
+      .dot-red { fill: #fb7185; }
+      .dot-gray { fill: #94a3b8; }
       .flow { fill: none; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
-      .flow-blue { stroke: #3b6ea8; marker-end: url(#arrow-blue); }
-      .flow-teal { stroke: #26847f; marker-end: url(#arrow-teal); }
-      .flow-amber { stroke: #a36b15; marker-end: url(#arrow-amber); }
-      .flow-red { stroke: #b34a47; marker-end: url(#arrow-red); }
-      .flow-gray { stroke: #64748b; marker-end: url(#arrow-gray); }
-      .pill { fill: #ffffff; stroke-width: 2; }
+      .flow-blue { stroke: #60a5fa; marker-end: url(#arrow-blue); }
+      .flow-teal { stroke: #2dd4bf; marker-end: url(#arrow-teal); }
+      .flow-amber { stroke: #fbbf24; marker-end: url(#arrow-amber); }
+      .flow-red { stroke: #fb7185; marker-end: url(#arrow-red); }
+      .flow-gray { stroke: #94a3b8; marker-end: url(#arrow-gray); }
+      .pill { fill: #111c2e; stroke-width: 2; }
       .pill-blue { stroke: #a8c7e8; }
       .pill-teal { stroke: #a8d7d2; }
       .pill-amber { stroke: #e8c27a; }
       .pill-red { stroke: #e5aaa7; }
-      .pill-gray { stroke: #cbd5e1; }
-      .pill-text { font: 700 17px 'Comic Mono', 'SFMono-Regular', monospace; fill: #344054; }
-      .legend-text { font: 16px 'Comic Mono', 'SFMono-Regular', monospace; fill: #53606f; }
+      .pill-gray { stroke: #42566e; }
+      .pill-text { font: 700 17px 'Comic Mono', 'SFMono-Regular', monospace; fill: #d7e1ee; }
+      .legend-text { font: 16px 'Comic Mono', 'SFMono-Regular', monospace; fill: #b9c7d8; }
     </style>
   </defs>
 

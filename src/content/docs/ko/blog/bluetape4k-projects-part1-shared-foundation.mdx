@@ -7,7 +7,7 @@ blog:
   date: 2026-05-30T16:30:00+09:00
   image: /assets/bluetape4k-projects-part1-hero.png
   imageAlt: 작은 로봇 작업자들이 Kotlin JVM 백엔드 모듈 블록을 공통 기반 위에 조립하는 일러스트
-  cardDescription: "core, coroutines, I/O, data, infra, Spring Boot, Ktor, testing이 한 저장소에 모인 이유."
+  cardDescription: "core, coroutines, I/O, data, infra, Spring Boot, Ktor, 테스트 기반이 한 저장소에 모인 이유."
   tags: ["bom","coroutines","ecosystem","kotlin","ktor","persistence","spring","testing"]
 ---
 
@@ -21,21 +21,21 @@ blog:
 이 글은 `bluetape4k-projects` 시리즈의 1편입니다. 전체 시리즈는
 [Part 1: 공유 기반](/ko/blog/bluetape4k-projects-part1-shared-foundation/)에서 시작합니다.
 이후 Part 2에서는 core, coroutines, logging, tests를 보고, Part 3에서는 I/O, serialization, HTTP,
-encryption을 다룹니다. Part 4는 data와 infrastructure, Part 5는 utility와 adoption path,
+encryption을 다룹니다. Part 4는 data와 infrastructure, Part 5는 utility와 도입 경로,
 Part 6은 Spring Boot 4와 Ktor로 이어집니다.
 
 `bluetape4k-projects`는 bluetape4k 생태계에서 가장 넓게 깔리는 공통 기반입니다. Spring Boot나 Ktor
-애플리케이션을 만들다 보면 매번 다시 꺼내게 되는 Kotlin/JVM 유틸리티, coroutine helper, I/O wrapper,
-data/infra adapter, testing 기반, BOM을 한곳에 모아 둔 저장소입니다.
+애플리케이션을 만들다 보면 매번 다시 꺼내게 되는 Kotlin/JVM 유틸리티, coroutine helper, I/O 래퍼,
+data/infra 어댑터, 테스트 기반, BOM을 한곳에 모아 둔 저장소입니다.
 
 그렇다고 모든 기능을 이 저장소에 계속 쌓는 구조는 아닙니다. AWS, Exposed, Image, Text, Leader,
 JaVers 같은 큰 도메인은 독립 저장소로 분리했습니다. `projects`는 서비스 코드가 가장 먼저 기대는
-공통 기반과 여러 저장소가 같이 쓰는 runtime 구성 요소를 맡습니다. 앞에서 보이는 기능이라기보다
+공통 기반과 여러 저장소가 같이 쓰는 런타임 구성 요소를 맡습니다. 앞에서 보이는 기능이라기보다
 공유 인프라에 가깝습니다. 잘 돌아가면 조용하고, 멈추면 모두가 동시에 쳐다봅니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-projects-overview-01-ko.png" alt="BOM, foundation, runtime adapters, applications, split repositories로 이어지는 bluetape4k-projects 개요 다이어그램" loading="lazy" />
-  <figcaption>`projects`는 BOM과 foundation에서 시작해 runtime adapter와 application support까지 이어지는 공통 층입니다.</figcaption>
+  <img src="/assets/bluetape4k-projects-overview-01-ko.png" alt="BOM, 공유 기반, 런타임 어댑터, 애플리케이션, 분리 저장소로 이어지는 bluetape4k-projects 개요 다이어그램" loading="lazy" />
+  <figcaption>`projects`는 BOM과 공유 기반에서 시작해 런타임 어댑터와 애플리케이션 지원까지 이어지는 공통 층입니다.</figcaption>
 </figure>
 
 ## 왜 이 저장소가 필요한가
@@ -45,8 +45,8 @@ Kotlin/JVM 백엔드 개발은 대개 검증된 Java 라이브러리 위에서 �
 
 - Java API는 Kotlin null-safety와 DSL 감각에 맞지 않는 경우가 많습니다.
 - callback, `Future`, blocking API가 coroutine 코드와 어색하게 만납니다.
-- 테스트에서는 Redis, Kafka, database, 시간, 동시성 fixture를 계속 다시 준비하게 됩니다.
-- 서비스마다 비슷한 codec, serializer, timeout, retry, logging 관례를 다시 만듭니다.
+- 테스트에서는 Redis, Kafka, 데이터베이스, 시간, 동시성 픽스처를 계속 다시 준비하게 됩니다.
+- 서비스마다 비슷한 코덱, 직렬화기, 타임아웃, 재시도, 로그 관례를 다시 만듭니다.
 
 `bluetape4k-projects`의 역할은 이 반복을 줄이는 것입니다. 새로운 거대한 프레임워크를 만들자는 뜻은
 아닙니다. 이미 쓰는 라이브러리를 Kotlin 서비스에서 덜 까끌까끌하게 쓰도록, 자주 걸리는 모서리를 조금
@@ -59,8 +59,8 @@ implementation("io.github.bluetape4k:bluetape4k-coroutines")
 implementation("io.github.bluetape4k:bluetape4k-junit5")
 ```
 
-루트 README도 같은 방향을 잡고 있습니다. 이 저장소는 idiomatic Kotlin helper, Java library wrapper,
-coroutine integration, testing infrastructure, Redis/cache/infra 기반 기능을 제공하고, 덩치가 커져
+루트 README도 같은 방향을 잡고 있습니다. 이 저장소는 Kotlin다운 helper, Java 라이브러리 래퍼,
+coroutine integration, 테스트 인프라, Redis/cache/infra 기반 기능을 제공하고, 덩치가 커져
 자기 릴리스 리듬이 필요한 도메인 기능은 별도 저장소로 나눕니다.
 
 ## 모듈 지도
@@ -68,18 +68,18 @@ coroutine integration, testing infrastructure, Redis/cache/infra 기반 기능�
 현재 `README.md`의 모듈 구조를 보면 이 저장소가 어디까지 맡는지 대략 보입니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-projects-module-map-01-ko.png" alt="core, I/O, data, infra, cache, Spring Boot, Ktor, utilities, testing, examples로 묶은 bluetape4k-projects 모듈 구조 다이어그램" loading="lazy" />
-  <figcaption>루트 README의 모듈 구조를 보면 `projects`가 공통 기반과 runtime adapter를 함께 관리한다는 점이 보입니다.</figcaption>
+  <img src="/assets/bluetape4k-projects-module-map-01-ko.png" alt="core, I/O, data, infra, cache, Spring Boot, Ktor, 유틸리티, 테스트, 예제로 묶은 bluetape4k-projects 모듈 구조 다이어그램" loading="lazy" />
+  <figcaption>루트 README의 모듈 구조를 보면 `projects`가 공통 기반과 런타임 어댑터를 함께 관리한다는 점이 보입니다.</figcaption>
 </figure>
 
 | 영역 | 대표 모듈 | 손이 가는 순간 |
 |---|---|---|
-| Foundation | `core`, `coroutines`, `logging`, `bom` | Kotlin 코드 스타일, 실행 모델, dependency alignment를 맞출 때 |
-| I/O | `io`, `okio`, `csv`, `protobuf`, `jackson2/3`, `http`, `grpc` | byte, file, serializer, HTTP/RPC 접점을 다룰 때 |
-| Data | `jdbc`, `r2dbc`, `hibernate`, `mongodb`, `cassandra` | persistence helper와 coroutine data access가 필요할 때 |
-| Infrastructure | `lettuce`, `redisson`, `kafka`, `nats`, `opentelemetry`, `resilience4j` | 운영 시스템과 붙는 adapter가 필요할 때 |
-| Application | `spring-boot/*`, `ktor/*`, `examples/*` | 서비스 entrypoint와 실행 가능한 예제가 필요할 때 |
-| Testing | `assertions`, `junit5`, `testcontainers` | 반복되는 통합 테스트 fixture를 줄일 때 |
+| 공유 기반 | `core`, `coroutines`, `logging`, `bom` | Kotlin 코드 스타일, 실행 모델, 의존성 정렬을 맞출 때 |
+| I/O | `io`, `okio`, `csv`, `protobuf`, `jackson2/3`, `http`, `grpc` | 바이트, 파일, 직렬화기, HTTP/RPC 접점을 다룰 때 |
+| Data | `jdbc`, `r2dbc`, `hibernate`, `mongodb`, `cassandra` | 영속화 helper와 coroutine data access가 필요할 때 |
+| Infrastructure | `lettuce`, `redisson`, `kafka`, `nats`, `opentelemetry`, `resilience4j` | 운영 시스템과 붙는 어댑터가 필요할 때 |
+| Application | `spring-boot/*`, `ktor/*`, `examples/*` | 서비스 진입점과 실행 가능한 예제가 필요할 때 |
+| Testing | `assertions`, `junit5`, `testcontainers` | 반복되는 통합 테스트 픽스처를 줄일 때 |
 
 이 표에서 중요한 점은 "한 모듈을 쓰면 생태계 전체가 우르르 따라온다"가 아니라는 점입니다. 필요한
 조각만 가져가면 됩니다. BOM은 버전 줄을 맞추고, 각 모듈은 필요한 순간에 따로 집어 들 수 있습니다.
@@ -134,12 +134,12 @@ Gradle Kotlin DSL에서는 `dependencyManagement { imports }`보다 `implementat
 1. `README.md`에서 전체 모듈 지도를 봅니다.
 2. `core`, `coroutines`, `logging`, `junit5`, `testcontainers`를 먼저 훑습니다.
 3. 지금 서비스가 만나는 접점에 따라 I/O, data, infra 모듈을 고릅니다.
-4. Spring Boot 또는 Ktor 예제로 실제 application wiring을 확인합니다.
+4. Spring Boot 또는 Ktor 예제로 실제 애플리케이션 연결 방식을 확인합니다.
 5. cache, virtual threads, CSV/Okio 같은 주제별 블로그를 필요한 만큼 따라갑니다.
 
 블로그는 이야기로 들어가는 입구이고, 저장소가 소유한 매뉴얼은 실행 가능한 기준 문서입니다.
 [`bluetape4k-projects` 매뉴얼](/ko/manual/bluetape4k-projects/)에서 저장소 → 그룹 → 모듈의 3단 지도를 본 뒤,
-필요한 모듈로 내려가면 선택표, 실패 계약, representative test, immutable source link를 확인할 수 있습니다.
+필요한 모듈로 내려가면 선택표, 실패 계약, 대표 테스트, 고정 source link를 확인할 수 있습니다.
 매뉴얼은 `docs/manual`에서 동기화되며, 이 글은 의도적으로 더 짧은 설명 글로 유지합니다.
 
 <figure class="bt4k-architecture">
@@ -160,7 +160,7 @@ Gradle Kotlin DSL에서는 `dependencyManagement { imports }`보다 `implementat
 
 `bluetape4k-projects`를 한 문장으로 줄이면 "Kotlin/JVM 백엔드에서 매번 다시 만들기 싫은 공통 기반"입니다.
 화려한 도메인 기능은 독립 저장소로 나누고, 이 저장소는 core utility, coroutine, I/O, data, infra,
-application support, testing, BOM을 안정적으로 맞춥니다.
+애플리케이션 지원, 테스트 기반, BOM을 안정적으로 맞춥니다.
 
 다음 글에서는 이 기반의 가장 안쪽인 `core`, `coroutines`, `logging`, testing 모듈을 꺼내 보겠습니다.
 서비스가 커지기 전에 이런 작은 기반이 먼저 정리되어 있어야, 나중에 장애 회고가 기술 문서로 끝납니다.
@@ -170,7 +170,7 @@ application support, testing, BOM을 안정적으로 맞춥니다.
 
 - [Part 1: 공유 Kotlin/JVM 기반](/ko/blog/bluetape4k-projects-part1-shared-foundation/)
 - [Part 2: core, coroutines, logging, tests](/ko/blog/bluetape4k-projects-part2-core-coroutines-tests/)
-- [Part 3: bytes가 지나가는 길](/ko/blog/bluetape4k-projects-part3-io-serialization-http-encryption/)
+- [Part 3: 바이트가 지나가는 길](/ko/blog/bluetape4k-projects-part3-io-serialization-http-encryption/)
 - [Part 4: data와 infrastructure](/ko/blog/bluetape4k-projects-part4-data-infrastructure/)
-- [Part 5: utility와 adoption path](/ko/blog/bluetape4k-projects-part5-utilities-adoption-path/)
+- [Part 5: utility와 도입 경로](/ko/blog/bluetape4k-projects-part5-utilities-adoption-path/)
 - [Part 6: Spring Boot 4와 Ktor](/ko/blog/bluetape4k-projects-part6-spring-boot-ktor/)

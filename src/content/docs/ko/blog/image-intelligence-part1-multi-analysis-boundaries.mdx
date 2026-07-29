@@ -6,13 +6,13 @@ sidebar:
 blog:
   date: 2026-07-27T12:00:00+09:00
   image: /assets/blog/image-intelligence/part1/image-intelligence-part1-hero.png
-  imageAlt: 방문증 이미지가 공통 검증을 거친 뒤 OCR, 객체 검출, QR 처리 작업대로 나뉘고 결과가 정책 판단으로 모이는 어두운 3D 작업대
+  imageAlt: 방문증 이미지가 공통 입력 자격 판정을 거친 뒤 OCR, 객체 검출, QR 처리 작업대로 나뉘고 결과가 정책 판단으로 모이는 어두운 3D 작업대
   cardDescription: "한 이미지에 포함된 텍스트, 객체 영역, QR 값을 각각 읽고 부분 실패를 보존한 뒤 업무 정책으로 연결하는 API 경계를 살펴봅니다."
   tags: ["architecture","concurrency","image","kotlin","practical-example","resilience","spring"]
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/blog/image-intelligence/part1/image-intelligence-part1-hero.png" alt="방문증 이미지가 공통 검증을 거친 뒤 OCR, 객체 검출, QR 처리 작업대로 나뉘고 결과가 정책 판단으로 모이는 어두운 3D 작업대" loading="eager" />
+  <img src="/assets/blog/image-intelligence/part1/image-intelligence-part1-hero.png" alt="방문증 이미지가 공통 입력 자격 판정을 거친 뒤 OCR, 객체 검출, QR 처리 작업대로 나뉘고 결과가 정책 판단으로 모이는 어두운 3D 작업대" loading="eager" />
   <figcaption>이미지는 한 번 받아도 필요한 정보는 여러 종류입니다. 입력과 디코딩은 공유하되 분석 결과와 실패 의미는 처리 경로마다 분리해야 합니다.</figcaption>
 </figure>
 
@@ -22,12 +22,12 @@ blog:
 이미지는 하나지만 필요한 답은 하나가 아닙니다.
 
 이 글은 OCR, 객체 검출, QR 판독 기능을 소개하는 목록이 아닙니다. 같은 이미지를 세 처리 경로가 읽을 때
-입력을 어디서 검증하고, 한 작업이 실패해도 다른 결과를 어떻게 보존하며, 검출한 사실을 업무 결정과 어떻게
+입력 자격을 어디서 판정하고, 한 작업이 실패해도 다른 결과를 어떻게 보존하며, 검출한 사실을 업무 결정과 어떻게
 분리할지를 설명합니다.
 
 예제는 [`bluetape4k-image`의 Spring Boot 이미지 인텔리전스 API](https://github.com/bluetape4k/bluetape4k-image/tree/develop/examples/spring-boot-image-intelligence-api)를
 사용합니다. 방문증을 대표 시나리오로 삼지만, 목표는 방문증 전용 종합 서비스를 만드는 것이 아닙니다.
-**검증·병렬 처리·부분 실패·정책 분리의 재사용 가능한 기본 구조**를 코드로 확인하는 데 초점을 맞춥니다.
+**입력 자격 판정·병렬 처리·부분 실패·정책 분리의 재사용 가능한 기본 구조**를 코드로 확인하는 데 초점을 맞춥니다.
 
 ## 한 이미지에 정보가 하나만 있는 것은 아니다
 
@@ -42,7 +42,7 @@ blog:
 | 상품 라벨 | 상품명, 성분, 유통기한 | 로고나 상품 영역 | 상품 코드 | 필수 표시 검토, 등록 보류 |
 
 세 사례는 모두 “하나의 이미지에 여러 정보가 있을 경우 어떻게 추출할 것인가?”라는 질문으로 모입니다.
-한 기능이 다른 기능의 부속 단계가 되는 구조보다, 같은 검증된 이미지를 서로 다른 분석기가 읽고 결과를
+한 기능이 다른 기능의 부속 단계가 되는 구조보다, 같은 자격 판정을 통과한 이미지를 서로 다른 분석기가 읽고 결과를
 나중에 조합하는 구조가 자연스럽습니다.
 
 이 구조에서도 OCR 정확도, 검출 모델 선택, QR 오류 복원 능력은 각각 별도의 문제입니다. Part 1에서는
@@ -72,14 +72,14 @@ blog:
 
 ## 처리 경로는 입력만 같고 답은 다르다
 
-통합 API라고 해서 세 결과를 억지로 하나의 공통 결과형에 넣을 필요는 없습니다. 공통인 것은 검증된 입력
+통합 API라고 해서 세 결과를 억지로 하나의 공통 결과형에 넣을 필요는 없습니다. 공통인 것은 자격 판정을 통과한 입력
 이미지와 요청 수명입니다. 결과 필드와 “아무것도 찾지 못했다”는 의미는 처리 경로마다 다릅니다.
 
 | 처리 경로 | 현재 API의 대표 결과 | 빈 결과의 의미 | 사용할 수 없음 | 처리 실패 |
 |---|---|---|---|---|
-| OCR | `text`, `pageCount` | 읽을 텍스트가 없음 | OCR provider 미설정 | 제한 시간 또는 provider 예외 |
-| 객체 검출 | `label`, `category`, `confidence`, `detector` | 찾은 대상이 없음 | detector 미설정 | detector 실행 실패 |
-| 바코드·QR | `text`, `format`, `provider` | 코드가 없음 | reader 미설정 | 디코더 실행 실패 |
+| OCR | `text`, `pageCount` | 읽을 텍스트가 없음 | OCR 공급자 미설정 | 제한 시간 또는 공급자 예외 |
+| 객체 검출 | `label`, `category`, `confidence`, `detector` | 찾은 대상이 없음 | 검출기 미설정 | 검출기 실행 실패 |
+| 바코드·QR | `text`, `format`, `provider` | 코드가 없음 | 판독기 미설정 | 디코더 실행 실패 |
 | 정책 | `action`, `reasons` | 해당 없음 | 필요한 분석 근거 부족 | 자동 결정을 내리지 않고 검토로 전환 |
 
 `bluetape4k-image`의 하위 라이브러리 결과는 좌표 영역이나 더 자세한 구조를 제공할 수 있습니다. 하지만 현재
@@ -102,7 +102,7 @@ blog:
 픽셀 수를 확인합니다.
 
 이 단계가 판정하지 않는 것도 분명히 해야 합니다. OCR이 글자를 잘 읽을 수 있는지, 얼굴이 있는지, QR 코드가
-포함됐는지는 입력 자격 판정의 대상이 아닙니다. 그것까지 공통 검증에 넣으면 OCR이나 QR의 업무 결과가
+포함됐는지는 입력 자격 판정의 대상이 아닙니다. 그것까지 공통 자격 판정에 넣으면 OCR이나 QR의 업무 결과가
 입력 오류로 바뀝니다.
 
 ```kotlin
@@ -114,11 +114,11 @@ val results = workflow.analyze(
 ```
 
 자격 판정을 통과한 바이트는 `ImmutableImage`로 한 번 디코딩됩니다. OCR, 객체 검출, QR 처리 경로는 같은
-불변 이미지 객체를 읽습니다. 각 경로가 multipart를 다시 읽고 같은 이미지를 반복해서 디코딩하지 않습니다.
+불변 이미지 객체를 읽습니다. 각 경로가 멀티파트 입력을 다시 읽고 같은 이미지를 반복해서 디코딩하지 않습니다.
 
 업로드 바이트와 디코딩된 픽셀 크기를 함께 제한해야 하는 이유, Tesseract 같은 네이티브 OCR의 운영 조건은
 [OCR 서비스를 실전에서 운영하기](/ko/blog/ocr-api-fallback-contract-bluetape4k-image/)에서 더 자세히
-다룹니다. multipart와 메모리 입력 경계를 API 설계 관점에서 보고 싶다면
+다룹니다. 멀티파트와 메모리 입력 경계를 API 설계 관점에서 보고 싶다면
 [Kotlin API 입력 경계](/ko/blog/bluetape4k-dependencies-1-3-0-input-boundaries/)도 함께 볼 수 있습니다.
 
 ## 독립 작업은 병렬로 실행하고 결과는 따로 남긴다
@@ -150,7 +150,7 @@ suspendParallelFlow("image-intelligence-analysis") {
 서로 다른 비용 구조를 가진 네이티브 자원과 CPU를 보호하는 실행 경계입니다.
 
 `WorkReport.Success`의 의미는 특히 주의해야 합니다. 이것은 “세 분석이 모두 값을 만들었다”가 아니라
-“세 workflow 작업이 약속한 결과를 `WorkContext`에 기록했다”는 뜻입니다. OCR 경로가
+“세 워크플로 작업이 약속한 결과를 `WorkContext`에 기록했다”는 뜻입니다. OCR 경로가
 `AnalysisResult.Failed`를 기록해도 작업 자체는 그 실패 결과를 정상적으로 전달했으므로
 `WorkReport.Success`를 반환할 수 있습니다.
 
@@ -162,7 +162,7 @@ suspendParallelFlow("image-intelligence-analysis") {
   <figcaption>같은 이미지를 읽더라도 세 처리 경로의 결과와 실패 의미는 다릅니다. 공통 경계는 입력 자격만 판정하고, 업무 결정은 결과 조합 뒤의 정책이 맡습니다.</figcaption>
 </figure>
 
-## 부분 실패를 정상 성공처럼 숨기지 않는다
+## 부분 실패를 완료 결과로 숨기지 않는다
 
 각 처리 경로는 네 가지 결과를 구분합니다.
 
@@ -200,7 +200,7 @@ HTTP 500이나 임의의 거부 응답으로 바꾸지 않고, 현재 정책은 
 방문증 접수를 수동 검토로 보낼지는 서비스 정책입니다.
 
 [`VisitorPassPolicy`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/VisitorPassPolicy.kt)는
-민감 영역, QR 형식과 접두사, 얼굴 수, OCR 내용, 처리 경로의 실패 상태를 조합합니다. 정책을 분석 provider
+민감 영역, QR 형식과 접두사, 얼굴 수, OCR 내용, 처리 경로의 실패 상태를 조합합니다. 정책을 분석 공급자
 안에 넣지 않았기 때문에 배송 라벨이나 상품 라벨로 업무를 바꿀 때 OCR·검출·QR 실행 조정 구조를 그대로 두고
 결정 규칙만 교체할 수 있습니다.
 
@@ -208,7 +208,7 @@ HTTP 500이나 임의의 거부 응답으로 바꾸지 않고, 현재 정책은 
 얼굴을 흐리게 할지 또는 원본을 별도 권한으로 제한할지는 정책과 후처리 단계가 맡을 수 있습니다. 분석 모델을
 교체하는 일과 개인정보 정책을 바꾸는 일을 같은 배포 단위로 묶지 않아도 됩니다.
 
-다만 예제의 `demo` 프로필은 OCR과 객체 검출에 고정 결과를 반환하는 fixture를 사용합니다. QR 경로만 실제
+다만 예제의 `demo` 프로필은 OCR과 객체 검출에 고정 결과를 반환하는 픽스처를 사용합니다. QR 경로만 실제
 `ZxingBarcodeReader`를 실행합니다. 이 조합은 실행 조정 구조와 실패 계약을 재현하지만, 운영용 ML
 검출기의 정확도나 처리 성능을 증명하지 않습니다. 실제 서비스는 `ImageDetector` 구현과 품질 측정, 모델
 버전 관리, 드리프트 감시를 별도로 준비해야 합니다.
@@ -220,12 +220,12 @@ HTTP 500이나 임의의 거부 응답으로 바꾸지 않고, 현재 정책은 
 | 제공하는 기본 구조 | 서비스가 추가로 결정할 영역 |
 |---|---|
 | 업로드 자격 판정과 단일 디코딩 | 악성 파일 검사, 저장·삭제, 테넌트별 할당량 |
-| OCR·검출·QR 독립 실행 | 실제 OCR·ML provider와 모델 품질 기준 |
-| `Completed`·`Empty`·`Unavailable`·`Failed` 보존 | 재시도, circuit breaker, 프로세스 격리 |
+| OCR·검출·QR 독립 실행 | 실제 OCR·ML 공급자와 모델 품질 기준 |
+| `Completed`·`Empty`·`Unavailable`·`Failed` 보존 | 재시도, 회로 차단기, 프로세스 격리 |
 | 분석 사실과 방문증 정책 분리 | 암호화, 마스킹, 접근 통제, 감사 이력 |
 
-이미지 백엔드 선택도 이 구조와 별도의 결정입니다. Pure JVM과 libvips의 처리 비용 차이는
-[Pure JVM에서 libvips로](/ko/blog/from-pure-jvm-to-libvips-benchmarking-image-processing/)에서 측정값과
+이미지 백엔드 선택도 이 구조와 별도의 결정입니다. 순수 JVM과 libvips의 처리 비용 차이는
+[순수 JVM에서 libvips로](/ko/blog/from-pure-jvm-to-libvips-benchmarking-image-processing/)에서 측정값과
 운영 제약을 비교합니다. 통합 API가 세 분석기를 병렬로 실행한다고 해서 디코딩과 전처리 비용이 사라지는 것은
 아닙니다.
 
@@ -247,7 +247,7 @@ Part 2에서는 MIME 선언과 실제 시그니처가 다를 때, 압축 바이�
 
 ## 구현 코드와 자료 살펴보기
 
-전체 코드는 README에서 시작해 입력, 실행 조정, provider, 정책 순서로 살펴보면 각 경계의 책임을
+전체 코드는 README에서 시작해 입력, 실행 조정, 공급자, 정책 순서로 살펴보면 각 경계의 책임을
 파악하기 수월합니다.
 
 - [Spring Boot 이미지 인텔리전스 API](https://github.com/bluetape4k/bluetape4k-image/tree/develop/examples/spring-boot-image-intelligence-api):
@@ -257,12 +257,12 @@ Part 2에서는 MIME 선언과 실제 시그니처가 다를 때, 압축 바이�
 - [`ImageIntelligenceWorkflow.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageIntelligenceWorkflow.kt):
   세 분석 작업을 병렬 실행하고 결과 키를 수집합니다.
 - [`ImageAnalysisProviders.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageAnalysisProviders.kt):
-  fixture, Tesseract, 객체 검출, ZXing provider 경계를 보여 줍니다.
+  픽스처, Tesseract, 객체 검출, ZXing 공급자 경계를 보여 줍니다.
 - [`VisitorPassPolicy.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/VisitorPassPolicy.kt):
   분석 결과를 방문증의 허용·검토·거부·격리 결정으로 바꿉니다.
 - [OCR 서비스를 실전에서 운영하기](/ko/blog/ocr-api-fallback-contract-bluetape4k-image/):
   큰 이미지 입력 제한, 네이티브 OCR과 실패 응답 계약을 자세히 설명합니다.
-- [Pure JVM에서 libvips로](/ko/blog/from-pure-jvm-to-libvips-benchmarking-image-processing/):
+- [순수 JVM에서 libvips로](/ko/blog/from-pure-jvm-to-libvips-benchmarking-image-processing/):
   이미지 전처리 백엔드를 성능과 운영 조건으로 비교합니다.
 - [Kotlin API 입력 경계](/ko/blog/bluetape4k-dependencies-1-3-0-input-boundaries/):
-  multipart, 바이트 예산과 메모리 입력을 API 경계에서 다루는 방법을 설명합니다.
+  멀티파트, 바이트 예산과 메모리 입력을 API 경계에서 다루는 방법을 설명합니다.

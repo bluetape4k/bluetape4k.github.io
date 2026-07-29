@@ -1,102 +1,52 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="820" viewBox="0 0 1200 820" role="img" aria-labelledby="title desc">
-  <title id="title">Backend picker for bluetape4k-leader</title>
-  <desc id="desc">Decision-oriented map for choosing Redis, etcd, SQL, Kubernetes, and other leader election storage backends.</desc>
-  <defs>
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1080" viewBox="0 0 1500 1080" role="img" aria-labelledby="title desc">
+  <title id="title">작업 특성에 맞는 리더 선출 백엔드</title><desc id="desc">API는 같아도 리스 저장소, TTL, 장애 대응, 관측 방식은 달라집니다.</desc><defs>
+    <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#02050a" flood-opacity="0.42"/></filter>
+    <marker id="arrow-blue" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#6fb6e8" stroke="#6fb6e8" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#80d99b" stroke="#80d99b" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#e2b35c" stroke="#e2b35c" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#ef8292" stroke="#ef8292" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
+    <marker id="arrow-slate" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#87a8c2" stroke="#87a8c2" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
     <style>
-      .title { font-family: "goorm Sans"; font-size: 42px; fill: #1f2937; }
-      .subtitle { font-family: "goorm Sans Code"; font-size: 17px; fill: #4b5563; }
-      .cardTitle { font-family: "goorm Sans"; font-size: 25px; fill: #111827; }
-      .cardText { font-family: "goorm Sans Code"; font-size: 15px; fill: #374151; }
-      .small { font-family: "goorm Sans Code"; font-size: 13px; fill: #4b5563; }
-      .pill { font-family: "goorm Sans Code"; font-size: 14px; fill: #111827; }
-      .arrow { stroke: #64748b; stroke-width: 3; fill: none; marker-end: url(#arrowHead); }
-      .softLine { stroke: #cbd5e1; stroke-width: 2; fill: none; }
+      .canvas{fill:#050914}.frame{fill:#0c1628;stroke:#315a7a;stroke-width:2.2}
+      .title{font-family:"goorm Sans";font-size:38px;fill:#f0f5ff}
+      .subtitle,.detail,.labelText,.footer,.axis,.tick,.legend,.role{font-family:"goorm Sans";fill:#b4c5d8}
+      .subtitle{font-size:16px}.detail{font-size:14px}.footer{font-size:13px}.axis,.tick,.legend{font-size:13px}
+      .role{font-family:"goorm Sans Code";font-size:12.5px}
+      .bandTitle,.cardTitle,.participant{font-family:"goorm Sans";fill:#edf4ff}
+      .bandTitle{font-size:23px}.cardTitle{font-size:22px}.participant{font-size:19px}
+      .mono,.code,.badgeText{font-family:"goorm Sans Code";fill:#d7e3f2}
+      .band{fill:#101d30;stroke:#294c69;stroke-width:1.6}.bandAlt{fill:#10231f;stroke:#2f6257;stroke-width:1.6}
+      .card{filter:url(#shadow);fill:#111d2f!important;stroke-width:2}.header{fill:#111d2f;stroke:#537a99;stroke-width:2}
+      .surfaceWarm{fill:#211c16;stroke:#8b6a34;stroke-width:2}.surfacePurple{fill:#1c1930;stroke:#7058a2;stroke-width:2}
+      .footerBar{fill:#0e1b2e;stroke:#294c69;stroke-width:2}.tableHeader{fill:#142b46;stroke:#537a99;stroke-width:2}
+      .edge,.call,.return,.skip,.state{fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+      .call{stroke:#6fb6e8;marker-end:url(#arrow-blue)}.state{stroke:#80d99b;marker-end:url(#arrow-green)}
+      .return{stroke:#e2b35c;marker-end:url(#arrow-amber);stroke-dasharray:8 7}.skip{stroke:#ef8292;marker-end:url(#arrow-red)}
+      .pill,.label{fill:#0e1a2b;stroke-width:1.5}.badgeCircle{fill:#0e1a2b}.labelText{font-size:12.5px}.badgeText{font-size:12px;font-weight:700}
+      .lifeline{stroke:#52718a;stroke-width:2;stroke-dasharray:7 8}.activation{fill:#193c32;stroke:#71bf8b;stroke-width:1.7}
+      .branch{fill:none;stroke:#7194ae;stroke-width:2.2;stroke-dasharray:12 8}.divider{stroke:#7194ae;stroke-width:1.4;stroke-dasharray:8 7}
     </style>
-    <marker id="arrowHead" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-      <path d="M 0 0 L 8 4 L 0 8 z" fill="#64748b"/>
-    </marker>
-    <filter id="shadow" x="-12%" y="-12%" width="124%" height="130%">
-      <feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#0f172a" flood-opacity="0.13"/>
-    </filter>
   </defs>
-
-  <rect width="1200" height="820" fill="#fbfaf7"/>
-  <circle cx="112" cy="124" r="54" fill="#dbeafe" opacity="0.9"/>
-  <circle cx="1086" cy="154" r="72" fill="#dcfce7" opacity="0.7"/>
-  <circle cx="1014" cy="720" r="80" fill="#fde68a" opacity="0.45"/>
-
-  <text x="600" y="70" text-anchor="middle" class="title">작업 형태에 따라 backend를 선택하세요</text>
-  <text x="600" y="104" text-anchor="middle" class="subtitle">API는 비슷하지만 lease 저장소, TTL, failure mode, observability는 달라집니다.</text>
-
-  <rect x="360" y="136" width="480" height="96" rx="14" fill="#ffffff" stroke="#94a3b8" stroke-width="2" filter="url(#shadow)"/>
-  <text x="600" y="172" text-anchor="middle" class="cardTitle">이미 운영 중인 기반에서 시작</text>
-  <text x="600" y="202" text-anchor="middle" class="cardText">Redis • etcd • SQL 행 • Kubernetes</text>
-
-  <path class="arrow" d="M 510 236 L 248 284"/>
-  <path class="arrow" d="M 570 236 L 462 284"/>
-  <path class="arrow" d="M 630 236 L 738 284"/>
-  <path class="arrow" d="M 690 236 L 952 284"/>
-
-  <g filter="url(#shadow)">
-    <rect x="60" y="292" width="244" height="170" rx="12" fill="#fee2e2" stroke="#fca5a5" stroke-width="2"/>
-    <text x="182" y="330" text-anchor="middle" class="cardTitle">Redis 우선</text>
-    <text x="84" y="366" class="cardText">Lettuce: 경량 client</text>
-    <text x="84" y="394" class="cardText">Redisson: 익숙한 lock</text>
-    <text x="84" y="422" class="cardText">TTL + token 소유권</text>
-    <text x="84" y="450" class="small">Redis 공통 운영 시 기본</text>
-  </g>
-
-  <g filter="url(#shadow)">
-    <rect x="340" y="292" width="244" height="170" rx="12" fill="#dbeafe" stroke="#93c5fd" stroke-width="2"/>
-    <text x="462" y="330" text-anchor="middle" class="cardTitle">etcd lease</text>
-    <text x="364" y="366" class="cardText">control plane에 적합</text>
-    <text x="364" y="394" class="cardText">Lease + compare/write</text>
-    <text x="364" y="422" class="cardText">reconciler에 적합</text>
-    <text x="364" y="450" class="small">etcd 제어 상태에 사용</text>
-  </g>
-
-  <g filter="url(#shadow)">
-    <rect x="620" y="292" width="244" height="170" rx="12" fill="#dcfce7" stroke="#86efac" stroke-width="2"/>
-    <text x="742" y="330" text-anchor="middle" class="cardTitle">SQL 행</text>
-    <text x="644" y="366" class="cardText">Exposed JDBC/R2DBC</text>
-    <text x="644" y="394" class="cardText">행 + 조건부 갱신</text>
-    <text x="644" y="422" class="cardText">감사 확인이 쉬움</text>
-    <text x="644" y="450" class="small">DB 운영 시 사용</text>
-  </g>
-
-  <g filter="url(#shadow)">
-    <rect x="900" y="292" width="244" height="170" rx="12" fill="#e0e7ff" stroke="#a5b4fc" stroke-width="2"/>
-    <text x="1022" y="330" text-anchor="middle" class="cardTitle">Kubernetes Lease</text>
-    <text x="924" y="366" class="cardText">coordination.k8s.io/v1</text>
-    <text x="924" y="394" class="cardText">Pod / operator lifecycle</text>
-    <text x="924" y="422" class="cardText">K3s benchmark</text>
-    <text x="924" y="450" class="small">K8s workload에 적합</text>
-  </g>
-
-  <path class="softLine" d="M 182 478 L 182 522"/>
-  <path class="softLine" d="M 462 478 L 462 522"/>
-  <path class="softLine" d="M 742 478 L 742 522"/>
-  <path class="softLine" d="M 1022 478 L 1022 522"/>
-
-  <g filter="url(#shadow)">
-    <rect x="90" y="526" width="1020" height="150" rx="14" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
-    <text x="600" y="563" text-anchor="middle" class="cardTitle">나머지 계열도 일급 backend지만 상황에 따라 선택합니다</text>
-    <rect x="128" y="594" width="148" height="42" rx="10" fill="#fef3c7" stroke="#f59e0b"/>
-    <text x="202" y="620" text-anchor="middle" class="pill">MongoDB TTL</text>
-    <rect x="300" y="594" width="156" height="42" rx="10" fill="#fce7f3" stroke="#f472b6"/>
-    <text x="378" y="620" text-anchor="middle" class="pill">DynamoDB item</text>
-    <rect x="480" y="594" width="132" height="42" rx="10" fill="#ecfccb" stroke="#84cc16"/>
-    <text x="546" y="620" text-anchor="middle" class="pill">Consul KV</text>
-    <rect x="636" y="594" width="156" height="42" rx="10" fill="#f3e8ff" stroke="#c084fc"/>
-    <text x="714" y="620" text-anchor="middle" class="pill">Hazelcast map</text>
-    <rect x="816" y="594" width="158" height="42" rx="10" fill="#cffafe" stroke="#22d3ee"/>
-    <text x="895" y="620" text-anchor="middle" class="pill">ZooKeeper/Curator</text>
-    <text x="600" y="654" text-anchor="middle" class="small">분산 backend끼리 비교하세요. Local/H2 수치는 형태 검증용이며 운영 순위가 아닙니다.</text>
-  </g>
-
-  <g filter="url(#shadow)">
-    <rect x="190" y="706" width="820" height="70" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
-    <text x="600" y="735" text-anchor="middle" class="cardTitle">운영 계층</text>
-    <text x="600" y="762" text-anchor="middle" class="cardText">LockExtender • LockAssert • history/audit • Micrometer • benchmark 주의사항</text>
-  </g>
-</svg>
+  <rect class="canvas" width="1500" height="1080"/><rect class="frame" x="34" y="30" width="1432" height="1020" rx="18"/>
+  <text x="750" y="90" class="title" text-anchor="middle">작업 특성에 맞는 리더 선출 백엔드</text><text x="750" y="124" class="subtitle" text-anchor="middle">API는 같아도 리스 저장소, TTL, 장애 대응, 관측 방식은 달라집니다.</text>
+  <rect x="320" y="172" width="860" height="138" rx="16" class="band"/>
+  <text x="750" y="224" class="bandTitle" text-anchor="middle">현재 운영 중인 인프라에서 시작</text><text x="750" y="270" class="mono" text-anchor="middle">Redis · etcd · SQL/R2DBC · Kubernetes</text>
+  <path d="M 515 310 L 515 338 Q 515 358 207 378 L 207 386" class="call"/><path d="M 671 310 L 671 338 Q 671 358 569 378 L 569 386" class="call"/><path d="M 827 310 L 827 338 Q 827 358 931 378 L 931 386" class="call"/><path d="M 983 310 L 983 338 Q 983 358 1293 378 L 1293 386" class="call"/><g><rect x="54" y="390" width="306" height="250" rx="16" fill="#111d2f" stroke="#ef8292" stroke-width="2.4"/>
+      <text x="207" y="438" class="cardTitle" text-anchor="middle">Redis 우선</text>
+      <text x="78" y="486" class="detail" >Lettuce: 경량 클라이언트</text><text x="78" y="524" class="detail" >Redisson: 잠금 추상화</text><text x="78" y="562" class="detail" >TTL + 토큰 소유권</text><text x="78" y="600" class="detail" >Redis를 공통 운영할 때 적합</text></g><g><rect x="416" y="390" width="306" height="250" rx="16" fill="#111d2f" stroke="#6fb6e8" stroke-width="2.4"/>
+      <text x="569" y="438" class="cardTitle" text-anchor="middle">etcd 리스</text>
+      <text x="440" y="486" class="detail" >컨트롤 플레인에 적합</text><text x="440" y="524" class="detail" >리스 + 비교 후 쓰기</text><text x="440" y="562" class="detail" >조정기 모델과 결합</text><text x="440" y="600" class="detail" >제어 상태를 etcd에 둘 때 적합</text></g><g><rect x="778" y="390" width="306" height="250" rx="16" fill="#111d2f" stroke="#80d99b" stroke-width="2.4"/>
+      <text x="931" y="438" class="cardTitle" text-anchor="middle">SQL 행</text>
+      <text x="802" y="486" class="detail" >Exposed JDBC/R2DBC</text><text x="802" y="524" class="detail" >행 + 조건부 갱신</text><text x="802" y="562" class="detail" >감사 이력을 직접 조회</text><text x="802" y="600" class="detail" >DB 운영 조직에 적합</text></g><g><rect x="1140" y="390" width="306" height="250" rx="16" fill="#111d2f" stroke="#9b8cf2" stroke-width="2.4"/>
+      <text x="1293" y="438" class="cardTitle" text-anchor="middle">Kubernetes Lease</text>
+      <text x="1164" y="486" class="detail" >Pod·오퍼레이터 수명 주기</text><text x="1164" y="524" class="detail" >coordination.k8s.io/v1</text><text x="1164" y="562" class="detail" >K3s 벤치마크 대상</text><text x="1164" y="600" class="detail" >Kubernetes 워크로드에 적합</text></g>
+  <rect x="76" y="710" width="1348" height="178" rx="16" class="bandAlt"/>
+  <text x="750" y="754" class="bandTitle" text-anchor="middle">다른 백엔드도 같은 계약을 제공하지만 운영 조건에 따라 선택합니다</text><g><rect x="142" y="785" width="214" height="52" rx="18" fill="#12243a" stroke="#537a99" stroke-width="1.8"/>
+      <text x="249" y="818" class="detail" text-anchor="middle">MongoDB TTL</text></g><g><rect x="390" y="785" width="214" height="52" rx="18" fill="#12243a" stroke="#537a99" stroke-width="1.8"/>
+      <text x="497" y="818" class="detail" text-anchor="middle">DynamoDB item</text></g><g><rect x="638" y="785" width="214" height="52" rx="18" fill="#12243a" stroke="#537a99" stroke-width="1.8"/>
+      <text x="745" y="818" class="detail" text-anchor="middle">Consul KV</text></g><g><rect x="886" y="785" width="214" height="52" rx="18" fill="#12243a" stroke="#537a99" stroke-width="1.8"/>
+      <text x="993" y="818" class="detail" text-anchor="middle">Hazelcast map</text></g><g><rect x="1134" y="785" width="214" height="52" rx="18" fill="#12243a" stroke="#537a99" stroke-width="1.8"/>
+      <text x="1241" y="818" class="detail" text-anchor="middle">ZooKeeper / Curator</text></g><text x="750" y="866" class="footer" text-anchor="middle">분산 백엔드끼리 비교합니다. Local/H2 수치는 API 형태 검증용이며 운영 순위를 의미하지 않습니다.</text>
+  <rect x="238" y="928" width="1024" height="84" rx="18" class="footerBar"/>
+  <text x="750" y="966" class="bandTitle" text-anchor="middle">운영 계층</text><text x="750" y="994" class="footer" text-anchor="middle">LockExtender · LockAssert · 실행 이력/감사 · Micrometer · 벤치마크 주의 사항</text>
+  </svg>

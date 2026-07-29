@@ -113,15 +113,17 @@ formed. When the session closes, waiting work should stop.
 
 The example centers the pipeline on that shape:
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Search input to latest request">
   <img src="/assets/bluetape4k-flow-extensions-search-pipeline-marble-01-en.png" alt="Marble diagram showing bufferingDebounce, withLatestFrom, flatMapLatest, and takeUntil turning an input burst into one current search request" loading="lazy" />
   <figcaption>The search pipeline keeps the final query in a burst, attaches the settings snapshot from that moment, and cancels stale search work.</figcaption>
 </figure>
 
 ```kotlin
 queries
+    .map(String::trim)
+    .filter(String::isNotBlank)
     .bufferingDebounce(debounce)
-    .filter { it.isNotBlank() }
+    .mapNotNull { burst -> burst.lastOrNull()?.let(::SearchQuery) }
     .withLatestFrom(settings) { query, latestSettings ->
         SearchRequest(query, latestSettings)
     }
@@ -129,8 +131,9 @@ queries
     .takeUntil(sessionClosed)
 ```
 
-`bufferingDebounce` means "keep the last query in a burst." `withLatestFrom` means "attach the latest settings snapshot
-when the request is built." `flatMapLatest` means an older search is cancelled when a newer query arrives.
+`bufferingDebounce` emits each burst as a `List<String>`, so `mapNotNull` must select the final item and wrap it as a
+`SearchQuery`. `withLatestFrom` then attaches the latest settings snapshot when the request is built, and
+`flatMapLatest` cancels an older search when a newer query arrives.
 
 Cancellation is part of the contract. The search adapter must rethrow `CancellationException`; otherwise the operator
 chain looks clean while the runtime keeps stale work alive. The tests pin that behavior down explicitly.
@@ -143,7 +146,7 @@ fallback order. Some enrichment flows should accept partial contribution from mu
 
 The race/fallback example makes that choice visible:
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Race, ordered fallback, and partial merge">
   <img src="/assets/bluetape4k-flow-extensions-race-fallback-marble-01-en.png" alt="Marble diagram showing race, concat, and merge handling latency-first, priority-first, and partial-merge policies differently" loading="lazy" />
   <figcaption>`race`/`amb` chooses the first normally emitting source and cancels losers. `concat` preserves source priority, while `merge` keeps partial contributions.</figcaption>
 </figure>
@@ -168,7 +171,7 @@ consumed once by a single worker.
 
 The Subject bridge example names those cases:
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Subscription contracts by Subject">
   <img src="/assets/bluetape4k-flow-extensions-subject-bridge-marble-01-en.png" alt="Marble diagram showing PublishSubject, BehaviorSubject, ReplaySubject, and UnicastWorkSubject delivering different values to late subscribers" loading="lazy" />
   <figcaption>Converting a callback to Flow is not the contract by itself. The contract is whether late subscribers receive old events, the latest state, replay history, or a single-consumer work item.</figcaption>
 </figure>
@@ -194,7 +197,7 @@ Both examples treat windows as memory and latency contracts, not convenience wra
 
 ### `chunked`: Repackage Events into Concrete Batches
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="chunked batch flow">
   <img src="/assets/bluetape4k-flow-extensions-chunked-marble-01-en.png" alt="Marble diagram showing chunked emitting five input events as concrete batches with sizes two, two, and one" loading="lazy" />
   <figcaption>`chunked(2)` slices the timeline into concrete `List`-like batches. With partial windows enabled, the trailing `[e5]` is emitted too.</figcaption>
 </figure>
@@ -210,7 +213,7 @@ also means naming the maximum batch memory the stream can hold.
 
 ### `windowed`: Emit Overlapping Windows
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="windowed overlapping windows">
   <img src="/assets/bluetape4k-flow-extensions-windowed-marble-01-en.png" alt="Marble diagram showing windowed creating three overlapping windows from five input events" loading="lazy" />
   <figcaption>`windowed(size = 3, step = 2)` can overlap. One input event can appear in more than one output window.</figcaption>
 </figure>
@@ -220,7 +223,7 @@ is `[e5]`. The output sizes are `[3, 3, 1]`, but those are window sizes, not bat
 
 ### `groupBy`: Partition by Key, Not by Time or Size
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="groupBy keyed streams">
   <img src="/assets/bluetape4k-flow-extensions-groupby-marble-01-en.png" alt="Marble diagram showing groupBy splitting input events into order-1 and order-2 streams by orderId" loading="lazy" />
   <figcaption>`groupBy(orderId)` does not cut the timeline. It routes each event into the grouped stream for its key.</figcaption>
 </figure>
@@ -231,7 +234,7 @@ lifecycles close."
 
 ### `scanWith`: Accumulate State Snapshots
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="scanWith state accumulation">
   <img src="/assets/bluetape4k-flow-extensions-scanwith-marble-01-en.png" alt="Marble diagram showing scanWith accumulating input events into read-model state snapshots" loading="lazy" />
   <figcaption>`scanWith(seed, accumulator)` does not group events into batches. It combines the previous state and the current event to emit the next read-model snapshot.</figcaption>
 </figure>
@@ -245,7 +248,7 @@ metrics
     .filter { it.value >= alertThreshold }
 ```
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Leading and trailing metric sampling">
   <img src="/assets/bluetape4k-flow-extensions-metrics-sampling-marble-01-en.png" alt="Marble diagram showing throttleLeading emitting the first value in each window and throttleTrailing emitting the last value" loading="lazy" />
   <figcaption>`throttleLeading` emits the first value in each window quickly. `throttleTrailing` waits for the window to settle and emits the final value.</figcaption>
 </figure>
@@ -263,7 +266,7 @@ written with redaction in mind so raw secrets and payloads do not leak through l
 discount calculation. Each order can be enriched independently, then the rails are folded back into one stream with
 `sequential()`.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Parallel enrichment of independent work">
   <img src="/assets/bluetape4k-flow-extensions-parallel-enrichment-marble-01-en.png" alt="Diagram showing parallel splitting order enrichment into customer, discount, and inventory rails and sequential folding them back into one output stream" loading="lazy" />
   <figcaption>`parallel(3)` splits independent enrichment into rails, and `sequential()` folds the enriched result back into a single output stream.</figcaption>
 </figure>

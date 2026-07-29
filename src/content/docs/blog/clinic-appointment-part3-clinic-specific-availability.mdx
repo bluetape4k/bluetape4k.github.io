@@ -161,6 +161,15 @@ Owning three devices does not mean three are always usable. If one is under main
 appointment can be accepted. A successful result includes start and end time plus available equipment and remaining
 concurrent capacity so the booking step can choose actual resources.
 
+The current implementation completes the **single required equipment type** case. A treatment may be linked to several
+equipment records, but `SlotCalculationService` keeps a candidate when any linked record has remaining quantity. In the
+other direction, one linked record that overlaps downtime rejects the whole candidate. Those two decisions mean
+different things depending on whether the treatment needs every device (AND) or may choose one alternative (OR).
+
+Supporting multiple equipment types therefore requires an explicit relationship and required quantity. The
+availability-set and downtime checks must implement the same meaning, and tests must cover two or more linked equipment
+types together. The current single-equipment tests do not prove that broader contract.
+
 ## Test Intersections, Not Just Individual Rules
 
 One happy-path test is not enough. Every rule may work independently while their boundaries still expose invalid slots.
@@ -191,8 +200,13 @@ The requirement became:
 The implementation connected
 [EquipmentUnavailabilityService](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/EquipmentUnavailabilityService.kt)
 to slot calculation and excluded overlapping candidates. Tests cover downtime that intersects only part of a candidate.
-Because global optimization must understand the same fact, Timefold's problem data and constraints also needed the
-equipment-unavailability rule.
+
+One connection remains open in global optimization. The solver domain contains `EquipmentUnavailabilityFact` and the
+H11 constraint, but
+[SolverService](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-solver/src/main/kotlin/io/bluetape4k/clinic/appointment/solver/service/SolverService.kt)
+does not load downtime facts into `ScheduleSolution`. A global run through this service therefore does not yet enforce
+equipment maintenance or failure windows. Writing a constraint and supplying its problem facts at the execution entry
+point are separate completion criteria.
 
 This is the important path for follow-up requirements: adding a table is not completion. Trace the new fact through
 calculations, APIs, tests, and optimization policy.

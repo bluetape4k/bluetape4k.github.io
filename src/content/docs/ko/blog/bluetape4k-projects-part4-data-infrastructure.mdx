@@ -1,13 +1,13 @@
 ---
-title: "Bluetape4k Projects Part 4: data와 infrastructure"
-description: JDBC, R2DBC, Hibernate, MongoDB, Redis, Kafka, NATS, Pulsar, observability, resilience 모듈이 서비스와 운영 시스템 사이를 어떻게 정리하는지 살펴본다.
+title: "Bluetape4k Projects Part 4: 데이터와 인프라"
+description: JDBC, R2DBC, Hibernate, MongoDB, Redis, Kafka, NATS, Pulsar, 관측성, 회복성 모듈이 서비스와 운영 시스템 사이를 어떻게 정리하는지 살펴본다.
 sidebar:
   order: -202605301633
 blog:
   date: 2026-05-30T16:33:00+09:00
   image: /assets/bluetape4k-projects-part4-hero.png
   imageAlt: 작은 로봇 작업자들이 서비스 코드와 데이터베이스, Redis, 메시징, 관측성 모듈 사이를 연결하는 일러스트
-  cardDescription: "DB, Redis, messaging, observability, resilience 경계를 Kotlin 서비스에서 덜 거칠게 쓰는 방법."
+  cardDescription: "DB, Redis, 메시징, 관측성, 회복성 경계를 Kotlin 서비스에서 덜 거칠게 쓰는 방법."
   tags: ["ecosystem","jdbc","kafka","kotlin","messaging","observability","practical-example","r2dbc","redis","resilience"]
 ---
 
@@ -19,27 +19,27 @@ blog:
 <p class="bt4k-post-meta">2026-05-30 · bluetape4k-projects series · Part 4</p>
 
 이 글은 `bluetape4k-projects` 시리즈의 4편입니다. [Part 3](/ko/blog/bluetape4k-projects-part3-io-serialization-http-encryption/)에서는
-byte, serializer, HTTP/RPC, encryption 경계를 봤습니다. 이번에는 byte가 목적지에 도착한 뒤의 이야기를
-다룹니다. DB에서 읽고, Redis에 저장하고, broker로 보내고, metric과 trace로 남기고, 실패를 resilience
+바이트, 직렬화기, HTTP/RPC, 암호화 경계를 봤습니다. 이번에는 바이트가 목적지에 도착한 뒤의 이야기를
+다룹니다. DB에서 읽고, Redis에 저장하고, 브로커로 보내고, 메트릭과 추적으로 남기고, 실패를 회복성
 정책으로 제어하는 구간입니다.
 
 이 영역의 공통점은 외부 시스템과 직접 붙는다는 점입니다. 코드 안에서는 `await`, `Flow`, `transaction`,
-`cache.get`, `send`처럼 보이지만 실제로는 connection pool, timeout, retry, codec, backpressure, broker
-partition, observability backend가 같이 움직입니다. 그래서 모듈 선택은 "어떤 라이브러리를 선호하나"보다
+`cache.get`, `send`처럼 보이지만 실제로는 커넥션 풀, 타임아웃, 재시도, 코덱, 배압, 브로커
+파티션, 관측성 백엔드가 같이 움직입니다. 그래서 모듈 선택은 "어떤 라이브러리를 선호하나"보다
 "어떤 실행 모델과 실패 경계를 서비스 코드에 노출할 것인가"에 가깝습니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-projects-part4-data-infra-map-ko.png" alt="Service code가 data, Redis/cache, messaging/infra, coroutine path, resilience, observability, external systems에 연결되는 지도" loading="lazy" />
-  <figcaption>Part 4의 모듈은 service code와 외부 시스템 사이에서 실행 모델, codec, 실패 정책, 관측성을 맞춥니다.</figcaption>
+  <img src="/assets/bluetape4k-projects-part4-data-infra-map-ko.png" alt="서비스 코드가 데이터, Redis/캐시, 메시징/인프라, 코루틴 경로, 회복성, 관측성, 외부 시스템에 연결되는 지도" loading="lazy" />
+  <figcaption>Part 4의 모듈은 서비스 코드와 외부 시스템 사이에서 실행 모델, 코덱, 실패 정책, 관측성을 맞춥니다.</figcaption>
 </figure>
 
-## Data: JDBC부터 R2DBC까지
+## 데이터: JDBC부터 R2DBC까지
 
-`data/` 아래의 모듈은 persistence 기술을 새로 추상화하려는 층이 아닙니다. JDBC, R2DBC, Hibernate,
+`data/` 아래의 모듈은 영속화 기술을 새로 추상화하려는 층이 아닙니다. JDBC, R2DBC, Hibernate,
 Hibernate Reactive, MongoDB, Cassandra를 Kotlin 코드에서 덜 반복적으로 쓰게 하는 얇은 보조 층입니다.
 
-`bluetape4k-jdbc`는 `DataSource`와 `Connection` 사용, `ResultSet` nullable getter, row mapping,
-batch/update helper를 제공합니다. 동기 DB 접근을 명확히 유지해야 할 때 유용합니다. transaction 경계를
+`bluetape4k-jdbc`는 `DataSource`와 `Connection` 사용, `ResultSet` nullable getter, 행 매핑,
+배치/갱신 헬퍼를 제공합니다. 동기 DB 접근을 명확히 유지해야 할 때 유용합니다. 트랜잭션 경계를
 보여주는 코드가 그대로 JDBC라서 디버깅도 직선적입니다.
 
 ```kotlin
@@ -50,10 +50,10 @@ val users = dataSource.runQuery("SELECT id, name FROM users WHERE active = ?", t
 }
 ```
 
-`bluetape4k-r2dbc`는 반응형 DB 접근을 coroutine/Flow 코드에서 다루기 쉽게 만듭니다. `DatabaseClient`
-확장, binding helper, `awaitSingle`, `flow` 계열 helper가 핵심입니다. 특히 `R2dbcPoolConfig`는 high-throughput
-프리셋, bounded pending acquire, acquire timeout 같은 운영 옵션을 README에서 실측 benchmark와 함께 다룹니다.
-풀은 "크면 좋다"가 아니라 DB 연결 한도와 connection hold time으로 계산해야 합니다.
+`bluetape4k-r2dbc`는 반응형 DB 접근을 코루틴/`Flow` 코드에서 다루기 쉽게 만듭니다. `DatabaseClient`
+확장, 바인딩 헬퍼, `awaitSingle`, `flow` 계열 헬퍼가 핵심입니다. 특히 `R2dbcPoolConfig`는 높은 처리량
+프리셋, 제한된 pending acquire, acquire 타임아웃 같은 운영 옵션을 README에서 실측 벤치마크와 함께 다룹니다.
+풀은 "크면 좋다"가 아니라 DB 연결 한도와 커넥션 점유 시간으로 계산해야 합니다.
 
 ```kotlin
 val posts = databaseClient
@@ -64,71 +64,71 @@ val posts = databaseClient
 ```
 
 Hibernate 계열은 ORM을 Kotlin 서비스에서 덜 장황하게 쓰기 위한 확장입니다. `EntityManager.save`,
-`findAs`, `countAll`, entity base class, converter, Querydsl helper가 들어 있습니다. Spring Boot 4
+`findAs`, `countAll`, 엔티티 기반 클래스, 컨버터, Querydsl 헬퍼가 들어 있습니다. Spring Boot 4
 마이그레이션에서는 `TestEntityManager` shim 같은 테스트 경계도 제공합니다. ORM은 생산성을 주지만,
-transaction과 lazy loading 경계를 흐리기 쉽습니다. 이 모듈은 그 경계를 숨기기보다 반복 코드를 줄이는
+트랜잭션과 지연 로딩 경계를 흐리기 쉽습니다. 이 모듈은 그 경계를 숨기기보다 반복 코드를 줄이는
 쪽에 가깝습니다.
 
-MongoDB와 Cassandra는 reactive/coroutine access pattern을 맞추는 방향입니다. MongoDB 모듈은 coroutine
-driver 확장, `mongoClient {}` DSL, `findFirst`, `exists`, `upsert`, `findAsFlow`, `documentOf {}`와
-aggregation DSL을 제공합니다. Cassandra는 driver 사용을 Kotlin 쪽에서 정돈합니다.
+MongoDB와 Cassandra는 반응형/코루틴 접근 패턴을 맞추는 방향입니다. MongoDB 모듈은 코루틴
+드라이버 확장, `mongoClient {}` DSL, `findFirst`, `exists`, `upsert`, `findAsFlow`, `documentOf {}`와
+aggregation DSL을 제공합니다. Cassandra는 드라이버 사용을 Kotlin 쪽에서 정돈합니다.
 
-## Redis와 cache: codec, coroutine, Near Cache
+## Redis와 캐시: 코덱, 코루틴, Near Cache
 
 Redis 계열은 `infra/redis` umbrella에서 시작하되 실제 선택지는 Lettuce와 Redisson입니다. 둘을 모두
 가져올 수도 있지만, 보통은 서비스가 원하는 모델에 맞춰 하나를 고릅니다.
 
-Lettuce는 async command와 coroutine adapter가 강점입니다. `RedisFuture.awaitSuspending()`, batch flush를
-위한 `withPipeline {}`, `Collection<RedisFuture>.awaitAll()`이 대표적입니다. Codec도 빼놓을 수 없습니다.
+Lettuce는 비동기 명령과 코루틴 어댑터가 강점입니다. `RedisFuture.awaitSuspending()`, 배치 flush를
+위한 `withPipeline {}`, `Collection<RedisFuture>.awaitAll()`이 대표적입니다. 코덱도 빼놓을 수 없습니다.
 `LettuceBinaryCodecs`는 JDK/Kryo/Fory 직렬화와 GZip/LZ4/Snappy/Zstd 압축 조합을 제공합니다. 사람이
-읽어야 하는 값은 JSON codec, 내부 캐시 값은 Fory/LZ4 같은 profile을 선택할 수 있습니다.
+읽어야 하는 값은 JSON 코덱, 내부 캐시 값은 Fory/LZ4 같은 profile을 선택할 수 있습니다.
 
 Redisson은 분산 객체와 coordination primitive가 강점입니다. `RMap`, `RLocalCachedMap`, lock, semaphore,
-batch/transaction DSL, memorizer, Near Cache가 필요할 때 자연스럽습니다. 다만 FastFory 계열 codec은
-wire format 호환 경고가 있습니다. 휘발성 cache처럼 경계가 분명한 곳에 써야지, 장기 저장소처럼 다루면
+배치/트랜잭션 DSL, memorizer, Near Cache가 필요할 때 자연스럽습니다. 다만 FastFory 계열 코덱은
+전송 형식 호환 경고가 있습니다. 휘발성 캐시처럼 경계가 분명한 곳에 써야지, 장기 저장소처럼 다루면
 나중에 디버깅하기 어려운 함정을 남기게 됩니다.
 
-Cache 모듈은 별도 cache 시리즈에서 깊게 다뤘으니 여기서는 위치만 잡겠습니다. `cache-core`가 JCache,
+Cache 모듈은 별도 캐시 시리즈에서 깊게 다뤘으니 여기서는 위치만 잡겠습니다. `cache-core`가 JCache,
 `SuspendCache`, `NearCache`, memoizer 계약을 정의하고, Hazelcast/Redisson/Lettuce provider가 붙습니다.
-cache abstraction, local/distributed cache, Near Cache 흐름을 더 자세히 보려면
-[Bluetape4k Cache Part 1: cache module](/ko/blog/bluetape4k-cache-part1-cache-module/)에서 시작하면 됩니다.
+캐시 추상화, 로컬/분산 캐시, Near Cache 흐름을 더 자세히 보려면
+[Bluetape4k Cache Part 1: 캐시 모듈](/ko/blog/bluetape4k-cache-part1-cache-module/)에서 시작하면 됩니다.
 Hibernate second-level cache는 `hibernate-cache-lettuce`가 Caffeine L1 + Redis L2 구조를 제공합니다.
 
-## Messaging, search, observability
+## 메시징, 검색, 관측성
 
-인프라 모듈은 "외부 시스템별 adapter"에 가깝습니다.
+인프라 모듈은 "외부 시스템별 어댑터"에 가깝습니다.
 
 | 영역 | 모듈 | 역할 |
 |---|---|---|
-| Messaging | `kafka`, `kafka4`, `nats`, `pulsar` | client DSL, coroutine/schema helper, Spring Kafka 4.x 라인 분리 |
-| Search | `elasticsearch` | Elasticsearch Java API client DSL과 coroutine 지원 |
+| Messaging | `kafka`, `kafka4`, `nats`, `pulsar` | 클라이언트 DSL, 코루틴/schema 헬퍼, Spring Kafka 4.x 라인 분리 |
+| Search | `elasticsearch` | Elasticsearch Java API 클라이언트 DSL과 코루틴 지원 |
 | Rate limit | `bucket4j` | token bucket 기반 rate limiting |
-| Metrics | `micrometer` | metric instrumentation helper |
-| Tracing | `opentelemetry` | distributed tracing helper |
-| Resilience | `resilience4j` | coroutine retry, circuit breaker, rate limiter, timeout, coroutine cache |
+| Metrics | `micrometer` | 메트릭 계측 헬퍼 |
+| Tracing | `opentelemetry` | 분산 추적 헬퍼 |
+| Resilience | `resilience4j` | 코루틴 재시도, circuit breaker, rate limiter, 타임아웃, 코루틴 캐시 |
 
 여기서 중요한 것은 "모듈을 많이 붙이면 안정적이다"가 아닙니다. 오히려 반대입니다. 실패가 전파되는
-경로마다 필요한 것만 붙여야 합니다. HTTP client timeout과 Resilience4j timeout과 database timeout이 서로
+경로마다 필요한 것만 붙여야 합니다. HTTP 클라이언트 타임아웃과 Resilience4j 타임아웃과 데이터베이스 타임아웃이 서로
 다른 시간표로 움직이면 장애가 완화되는 것이 아니라 설명하기 어려워집니다. 운영에서 가장 난감한 장애는
 실패 자체보다 실패를 설명하는 로그가 서로 다른 이야기를 할 때입니다.
 
 ## 실행 모델을 먼저 고른다
 
-Part 4 모듈을 고를 때는 backend 종류보다 실행 모델을 먼저 봐야 합니다.
+Part 4 모듈을 고를 때는 백엔드 종류보다 실행 모델을 먼저 봐야 합니다.
 
 | 서비스 경계 | 먼저 볼 모듈 | 선택 기준 |
 |---|---|---|
-| 단순 동기 SQL, 기존 JDBC driver | `bluetape4k-jdbc` | transaction이 동기 코드에서 분명하고 blocking을 허용하는 경로 |
-| reactive DB, coroutine service | `bluetape4k-r2dbc` | `Flow`, suspend query, bounded pool pressure를 다뤄야 하는 경로 |
-| JPA/ORM domain model | `bluetape4k-hibernate` | entity lifecycle, converter, query helper, Spring Boot 4 테스트 shim이 필요한 경로 |
-| Redis command 중심 | `bluetape4k-lettuce` | async command, coroutine adapter, pipeline, codec 선택이 중요한 경로 |
+| 단순 동기 SQL, 기존 JDBC driver | `bluetape4k-jdbc` | 트랜잭션이 동기 코드에서 분명하고 블로킹을 허용하는 경로 |
+| 반응형 DB, 코루틴 서비스 | `bluetape4k-r2dbc` | `Flow`, suspend query, 제한된 풀 압력을 다뤄야 하는 경로 |
+| JPA/ORM 도메인 모델 | `bluetape4k-hibernate` | 엔티티 생명주기, 컨버터, query 헬퍼, Spring Boot 4 테스트 shim이 필요한 경로 |
+| Redis command 중심 | `bluetape4k-lettuce` | 비동기 명령, 코루틴 어댑터, 파이프라인, 코덱 선택이 중요한 경로 |
 | Redis 분산 객체/lock/cache | `bluetape4k-redisson` | lock, semaphore, local cached map, memorizer가 필요한 경로 |
-| local/distributed cache abstraction | `cache-*` | provider 교체, Near Cache, suspend cache 계약이 필요한 경로 |
-| messaging/search/observability | `infra/*` | broker/search/metric/tracing backend와 붙는 adapter 경로 |
+| 로컬/분산 캐시 추상화 | `cache-*` | provider 교체, Near Cache, suspend cache 계약이 필요한 경로 |
+| 메시징/검색/관측성 | `infra/*` | 브로커/검색/메트릭/추적 백엔드와 붙는 어댑터 경로 |
 
 선택 기준은 단순합니다. 서비스 코드가 동기 API를 노출하는지, suspend API를 노출하는지, `Flow`를 흘리는지
-먼저 정합니다. 그다음 외부 시스템을 고르고, 마지막으로 retry, timeout, metric, trace를 붙입니다. 순서를
-반대로 하면 infrastructure가 service design을 끌고 다닙니다. 그때부터 서비스 코드는 도메인 코드보다
+먼저 정합니다. 그다음 외부 시스템을 고르고, 마지막으로 재시도, 타임아웃, 메트릭, 추적을 붙입니다. 순서를
+반대로 하면 인프라가 서비스 설계를 끌고 다닙니다. 그때부터 서비스 코드는 도메인 코드보다
 설정 코드에 가까워집니다.
 
 ## 참고 링크
@@ -143,21 +143,21 @@ Part 4 모듈을 고를 때는 backend 종류보다 실행 모델을 먼저 봐�
 
 ## 마무리
 
-Data와 infrastructure 모듈은 service code가 외부 시스템과 만나는 구간을 정리합니다. DB, Redis, broker,
-metric, trace, retry는 모두 좋은 도구지만, 동시에 모두 자기 방식으로 실패합니다. 이 모듈들의 목적은
+데이터와 인프라 모듈은 서비스 코드가 외부 시스템과 만나는 구간을 정리합니다. DB, Redis, 브로커,
+메트릭, 추적, 재시도는 모두 좋은 도구지만, 동시에 모두 자기 방식으로 실패합니다. 이 모듈들의 목적은
 실패를 없애는 것이 아니라 실패 경계를 비슷한 모양으로 만드는 것입니다.
 
-비슷한 모양의 실패는 테스트하기 쉽고, dashboard로 보기 쉽고, 다음 서비스에 설명하기 쉽습니다. 운영에서는
+비슷한 모양의 실패는 테스트하기 쉽고, 대시보드로 보기 쉽고, 다음 서비스에 설명하기 쉽습니다. 운영에서는
 그 차이가 큽니다. 특히 새벽에 장애를 볼 때는 더 그렇습니다.
 
-다음 글에서는 utility 모듈과 adoption path를 봅니다. 거대한 adapter보다 작은 공구가 먼저 문제를 해결할
+다음 글에서는 유틸리티 모듈과 도입 경로를 봅니다. 거대한 어댑터보다 작은 공구가 먼저 문제를 해결할
 때가 많습니다.
 
 ## 시리즈 링크
 
 - [Part 1: 공유 Kotlin/JVM 기반](/ko/blog/bluetape4k-projects-part1-shared-foundation/)
-- [Part 2: core, coroutines, logging, tests](/ko/blog/bluetape4k-projects-part2-core-coroutines-tests/)
-- [Part 3: bytes가 지나가는 길](/ko/blog/bluetape4k-projects-part3-io-serialization-http-encryption/)
-- [Part 4: data와 infrastructure](/ko/blog/bluetape4k-projects-part4-data-infrastructure/)
-- [Part 5: utility와 adoption path](/ko/blog/bluetape4k-projects-part5-utilities-adoption-path/)
+- [Part 2: 공통 기반의 안쪽](/ko/blog/bluetape4k-projects-part2-core-coroutines-tests/)
+- [Part 3: 바이트가 지나가는 길](/ko/blog/bluetape4k-projects-part3-io-serialization-http-encryption/)
+- [Part 4: 데이터와 인프라](/ko/blog/bluetape4k-projects-part4-data-infrastructure/)
+- [Part 5: 유틸리티와 도입 경로](/ko/blog/bluetape4k-projects-part5-utilities-adoption-path/)
 - [Part 6: Spring Boot 4와 Ktor](/ko/blog/bluetape4k-projects-part6-spring-boot-ktor/)

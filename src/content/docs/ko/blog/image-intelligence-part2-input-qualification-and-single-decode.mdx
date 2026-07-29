@@ -1,5 +1,5 @@
 ---
-title: "이미지 분석 전에 입력부터 판정하라: 공통 검증과 단일 디코딩"
+title: "이미지 분석 전에 입력부터 판정하라: 공통 자격 판정과 단일 디코딩"
 description: 방문증 이미지 분석 API를 예로 들어 MIME 선언과 실제 시그니처, 압축 크기와 픽셀 예산, 단일 디코딩 경계를 설명합니다.
 sidebar:
   order: -202607271300
@@ -53,14 +53,14 @@ blog:
 ## 세 분석기 앞에 하나의 관문을 둔다
 
 [`ImageUploadQualifier`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageUploadQualifier.kt)는
-multipart 파일을 받으면 저비용 검사부터 수행합니다. 앞 단계가 실패하면 이후의 고비용 검사와
+멀티파트 파일을 받으면 저비용 검사부터 수행합니다. 앞 단계가 실패하면 이후의 고비용 검사와
 세 분석기는 실행하지 않습니다.
 
 <figure
   class="bt4k-architecture"
   data-diagram-title="업로드 이미지가 QualifiedImage가 되기까지"
 >
-  <img src="/assets/blog/image-intelligence/part2/image-intelligence-qualification-flow-01-ko.png" alt="multipart 이미지가 빈 입력, 선언된 형식, 보고된 크기, 실제 바이트, 파일 시그니처, 이미지 크기와 픽셀 예산, 전체 디코딩 검사를 수직으로 통과해 QualifiedImage가 되는 흐름" loading="lazy" />
+  <img src="/assets/blog/image-intelligence/part2/image-intelligence-qualification-flow-01-ko.png" alt="멀티파트 이미지가 빈 입력, 선언된 형식, 보고된 크기, 실제 바이트, 파일 시그니처, 이미지 크기와 픽셀 예산, 전체 디코딩 검사를 수직으로 통과해 QualifiedImage가 되는 흐름" loading="lazy" />
   <figcaption>위에서 아래로 갈수록 더 많은 바이트를 읽고 연산 비용도 커집니다. 거부할 수 있는 입력은 전체 디코딩 전에 처리합니다.</figcaption>
 </figure>
 
@@ -92,7 +92,7 @@ suspend fun qualify(file: MultipartFile): QualifiedImage {
 
 1. 빈 입력인지 확인합니다.
 2. 클라이언트가 선언한 MIME 형식이 PNG, JPEG, WebP 중 하나인지 확인합니다.
-3. multipart가 보고한 압축 크기가 제한 안에 있는지 확인합니다.
+3. 멀티파트 어댑터가 보고한 압축 크기가 제한 안에 있는지 확인합니다.
 4. 업로드 바이트를 한 번 읽습니다.
 5. 실제로 읽은 바이트 크기도 같은 제한으로 확인합니다.
 6. 파일 시그니처로 실제 이미지 형식을 확인하고 선언한 MIME 형식과 비교합니다.
@@ -186,7 +186,7 @@ val results = workflow.analyze(
 
 `QualifiedImage`에는 실제 미디어 형식, 가로·세로, 디코딩된 불변 이미지가 들어 있습니다.
 `ImageIntelligenceWorkflow`는 이 이미지 객체를 OCR, 객체 검출, 바코드·QR 공급자에 전달합니다. 각
-공급자는 서로 다른 결과를 만들지만 multipart와 원본 바이트를 다시 읽지 않습니다.
+공급자는 서로 다른 결과를 만들지만 멀티파트 입력과 원본 바이트를 다시 읽지 않습니다.
 
 단일 디코딩을 “항상 복사가 전혀 없다”는 뜻으로 확대해서는 안 됩니다. 네이티브 OCR이나 특정 이미지
 라이브러리는 자신의 입력 형식으로 바꾸는 과정에서 추가 변환이나 복사를 할 수 있습니다. 여기서 보장하는
@@ -309,6 +309,6 @@ Part 3에서는 자격 판정을 통과한 `ImmutableImage`를 OCR 공급자에 
 - [OCR 서비스를 실전에서 운영하기](/ko/blog/ocr-api-fallback-contract-bluetape4k-image/):
   큰 이미지 입력 제한, 네이티브 OCR과 실패 응답 계약을 자세히 설명합니다.
 - [Kotlin API 입력 경계](/ko/blog/bluetape4k-dependencies-1-3-0-input-boundaries/):
-  multipart와 메모리 입력 예산을 일반적인 API 경계에서 다룹니다.
-- [Pure JVM에서 libvips로](/ko/blog/from-pure-jvm-to-libvips-benchmarking-image-processing/):
+  멀티파트와 메모리 입력 예산을 일반적인 API 경계에서 다룹니다.
+- [순수 JVM에서 libvips로](/ko/blog/from-pure-jvm-to-libvips-benchmarking-image-processing/):
   이미지 백엔드의 처리 비용과 운영 조건을 측정값으로 비교합니다.

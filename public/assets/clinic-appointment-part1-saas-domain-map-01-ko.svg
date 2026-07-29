@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1080" viewBox="0 0 1600 1080" role="img" aria-labelledby="title desc">
-  <title id="title">Clinic Appointment SaaS의 병원별 예약 규칙</title>
-  <desc id="desc">TenantGroup은 여러 병원을 소유하며, 각 병원의 일정과 의사, 진료, 장비 규칙에 따라 예약 가능 여부가 달라진다. 다섯 백엔드 모듈은 이 판단에 필요한 책임을 나누어 맡는다.</desc>
+  <title id="title">병원 예약 SaaS의 업무 영역</title>
+  <desc id="desc">하나의 테넌트에 속한 병원마다 서로 다른 일정과 의료 자원으로 예약 가능 여부를 판단하는 구조도입니다.</desc>
   <defs>
     <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#07101f" />
@@ -25,11 +25,11 @@
       <path d="M 1 1 L 11 6 L 1 11 Z" fill="#a78bfa" />
     </marker>
     <style>
-      .title { font-family: 'goorm Sans', sans-serif; font-size: 46px; font-weight: 700; fill: #f8fafc; }
+      .title { font-family: 'goorm Sans', sans-serif; font-size: 46px; font-weight: 700; fill: #f1f5f9; }
       .subtitle { font-family: 'goorm Sans', sans-serif; font-size: 21px; fill: #a9b8d4; }
-      .lane-title { font-family: 'goorm Sans', sans-serif; font-size: 27px; font-weight: 700; fill: #f8fafc; }
-      .card-title { font-family: 'goorm Sans', sans-serif; font-size: 25px; font-weight: 700; fill: #f8fafc; }
-      .code-title { font-family: 'goorm Sans Code', 'goorm Sans', monospace; font-size: 25px; font-weight: 700; fill: #f8fafc; }
+      .lane-title { font-family: 'goorm Sans', sans-serif; font-size: 27px; font-weight: 700; fill: #f1f5f9; }
+      .card-title { font-family: 'goorm Sans', sans-serif; font-size: 25px; font-weight: 700; fill: #f1f5f9; }
+      .code-title { font-family: 'goorm Sans Code', 'goorm Sans', monospace; font-size: 25px; font-weight: 700; fill: #f1f5f9; }
       .label { font-family: 'goorm Sans', sans-serif; font-size: 18px; fill: #d7e2f4; }
       .small { font-family: 'goorm Sans', sans-serif; font-size: 16px; fill: #9eb0cc; }
       .module { font-family: 'goorm Sans Code', 'goorm Sans', monospace; font-size: 17px; font-weight: 700; fill: #f1f5f9; }
@@ -142,7 +142,7 @@
   <g filter="url(#shadow)">
     <rect class="card" id="appointment-card" x="400" y="728" width="800" height="136" rx="24" fill="url(#appointmentFill)" stroke="#a78bfa" stroke-width="3" />
     <text class="card-title" x="800" y="770" text-anchor="middle">병원별 예약 판단</text>
-    <text class="label" x="800" y="802" text-anchor="middle">doctor + treatment + equipment + date/time + state</text>
+    <text class="label" x="800" y="802" text-anchor="middle">의사 + 진료 + 장비 + 날짜·시간 + 상태</text>
     <text class="small" x="800" y="828" text-anchor="middle">같은 요청도 병원에 따라 예약 가능 여부가 달라집니다.</text>
   </g>
 

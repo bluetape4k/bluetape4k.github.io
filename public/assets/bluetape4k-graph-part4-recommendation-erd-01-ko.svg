@@ -1,90 +1,90 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="780" viewBox="0 0 1600 780">
 <defs>
-  <marker id="arrow" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse">
-    <path d="M 0 0 L 14 7 L 0 14 Z" fill="#496A8F" stroke="#496A8F"/>
+  <marker id="arrow" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">
+    <path d="M 0 0 L 10 5 L 0 10 Z" fill="#60A5FA"/>
   </marker>
   <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
     <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#22344A" flood-opacity="0.12"/>
   </filter>
   <style>
-    .canvas{fill:#F6F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
-    .title{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:42px;fill:#22344A;font-weight:400}
-    .subtitle,.footer,.axis{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:17px;fill:#536476;font-weight:400}
-    .nodeTitle,.participant{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:24px;fill:#22344A;font-weight:400}
-    .nodeBody,.labelText,.num{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:16px;fill:#3F5269;font-weight:400}
-    .tableTitle{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:24px;fill:#22344A;font-weight:400}
-    .tableField,.edgeLabel{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:15px;fill:#3F5269;font-weight:400}
-    .edge{fill:none;stroke:#496A8F;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
-    .bus{fill:none;stroke:#496A8F;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
-    .lifeline{stroke:#91A6BD;stroke-width:2;stroke-dasharray:8 8}
+    .canvas{fill:#07111F}.frame{fill:#0F172A;stroke:#334155;stroke-width:2}
+    .title{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:42px;fill:#F8FAFC;font-weight:400}
+    .subtitle,.footer,.axis{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:17px;fill:#CBD5E1;font-weight:400}
+    .nodeTitle,.participant{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:24px;fill:#F8FAFC;font-weight:400}
+    .nodeBody,.labelText,.num{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:16px;fill:#E2E8F0;font-weight:400}
+    .tableTitle{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:24px;fill:#F8FAFC;font-weight:400}
+    .tableField,.edgeLabel{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:15px;fill:#E2E8F0;font-weight:400}
+    .edge{fill:none;stroke:#60A5FA;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    .bus{fill:none;stroke:#60A5FA;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+    .lifeline{stroke:#64748B;stroke-width:2;stroke-dasharray:8 8}
     g[id]{filter:url(#shadow)}
   </style>
 </defs>
 <rect class="canvas" width="1600" height="780"/>
 <rect class="frame" x="34" y="28" width="1532" height="724" rx="24"/>
-<text class="title" x="800" y="82" text-anchor="middle">Recommendation 엔터티 그래프</text>
-<text class="subtitle" x="800" y="118" text-anchor="middle">product 후보와 follow 후보는 두 단순한 edge family에서 나온다</text>
+<text class="title" x="800" y="82" text-anchor="middle">추천 엔터티 그래프</text>
+<text class="subtitle" x="800" y="118" text-anchor="middle">구매 관계와 팔로우 관계에서 두 종류의 추천 후보를 생성한다</text>
 <g>
   <path class="edge" data-connector="user-to-product" d="M430 384 L521 384 Q539 384 539 366 L539 335 Q539 317 557 317 L660 317"/>
-  <rect x="479" y="324" width="120" height="28" rx="8" fill="#FFFFFF" stroke="#D7E2EC"/>
+  <rect x="479" y="324" width="120" height="28" rx="8" fill="#0F172A" stroke="#334155"/>
   <text class="edgeLabel" x="539" y="343" text-anchor="middle">PURCHASED</text>
 </g>
 <g>
   <path class="edge" data-connector="user-to-followee" d="M430 420 L533 420 Q551 420 551 438 L551 529 Q551 547 569 547 L660 547"/>
-  <rect x="491" y="457" width="120" height="28" rx="8" fill="#FFFFFF" stroke="#D7E2EC"/>
+  <rect x="491" y="457" width="120" height="28" rx="8" fill="#0F172A" stroke="#334155"/>
   <text class="edgeLabel" x="551" y="476" text-anchor="middle">FOLLOWS</text>
 </g>
 <g>
   <path class="edge" data-connector="product-to-candidate" d="M940 317 L1022 317 Q1040 317 1040 335 L1040 396 Q1040 414 1058 414 L1140 414"/>
-  <rect x="967" y="339" width="146" height="28" rx="8" fill="#FFFFFF" stroke="#D7E2EC"/>
-  <text class="edgeLabel" x="1040" y="358" text-anchor="middle">co-buyer score</text>
+  <rect x="980" y="339" width="120" height="28" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text class="edgeLabel" x="1040" y="358" text-anchor="middle">공동 구매자 점수</text>
 </g>
 <g>
   <path class="edge" data-connector="followee-to-candidate" d="M940 547 L1022 547 Q1040 547 1040 529 L1040 468 Q1040 450 1058 450 L1140 450"/>
-  <rect x="967" y="472" width="146" height="28" rx="8" fill="#FFFFFF" stroke="#D7E2EC"/>
-  <text class="edgeLabel" x="1040" y="491" text-anchor="middle">mutual follows</text>
+  <rect x="980" y="472" width="120" height="28" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text class="edgeLabel" x="1040" y="491" text-anchor="middle">공통 팔로우 수</text>
 </g>
 <g id="user">
-  <rect x="150" y="329" width="280" height="146" rx="8" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
-  <rect x="150" y="329" width="280" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
-  <line x1="150" y1="377" x2="430" y2="377" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="tableTitle" x="290" y="360" text-anchor="middle">User</text>
-  <line x1="150" y1="377" x2="430" y2="377" stroke="#D7E2EC"/>
+  <rect x="150" y="329" width="280" height="146" rx="8" fill="#0C4A6E" stroke="#64748B" stroke-width="2"/>
+  <rect x="150" y="329" width="280" height="48" rx="8" fill="#0F172A" fill-opacity="0.58" stroke="#64748B" stroke-width="2"/>
+  <line x1="150" y1="377" x2="430" y2="377" stroke="#64748B" stroke-width="2"/>
+  <text class="tableTitle" x="290" y="360" text-anchor="middle">사용자</text>
+  <line x1="150" y1="377" x2="430" y2="377" stroke="#334155"/>
   <text class="tableField" x="168" y="398">userId</text>
-  <line x1="150" y1="407" x2="430" y2="407" stroke="#D7E2EC"/>
+  <line x1="150" y1="407" x2="430" y2="407" stroke="#334155"/>
   <text class="tableField" x="168" y="428">name</text>
 </g>
 <g id="product">
-  <rect x="660" y="229" width="280" height="176" rx="8" fill="#EAF8EF" stroke="#7B8CA3" stroke-width="2"/>
-  <rect x="660" y="229" width="280" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
-  <line x1="660" y1="277" x2="940" y2="277" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="tableTitle" x="800" y="260" text-anchor="middle">Product</text>
-  <line x1="660" y1="277" x2="940" y2="277" stroke="#D7E2EC"/>
+  <rect x="660" y="229" width="280" height="176" rx="8" fill="#14532D" stroke="#64748B" stroke-width="2"/>
+  <rect x="660" y="229" width="280" height="48" rx="8" fill="#0F172A" fill-opacity="0.58" stroke="#64748B" stroke-width="2"/>
+  <line x1="660" y1="277" x2="940" y2="277" stroke="#64748B" stroke-width="2"/>
+  <text class="tableTitle" x="800" y="260" text-anchor="middle">상품</text>
+  <line x1="660" y1="277" x2="940" y2="277" stroke="#334155"/>
   <text class="tableField" x="678" y="298">productId</text>
-  <line x1="660" y1="307" x2="940" y2="307" stroke="#D7E2EC"/>
+  <line x1="660" y1="307" x2="940" y2="307" stroke="#334155"/>
   <text class="tableField" x="678" y="328">name</text>
-  <line x1="660" y1="337" x2="940" y2="337" stroke="#D7E2EC"/>
+  <line x1="660" y1="337" x2="940" y2="337" stroke="#334155"/>
   <text class="tableField" x="678" y="358">category</text>
 </g>
 <g id="followee">
-  <rect x="660" y="489" width="280" height="116" rx="8" fill="#F3ECFF" stroke="#7B8CA3" stroke-width="2"/>
-  <rect x="660" y="489" width="280" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
-  <line x1="660" y1="537" x2="940" y2="537" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="tableTitle" x="800" y="520" text-anchor="middle">User</text>
-  <line x1="660" y1="537" x2="940" y2="537" stroke="#D7E2EC"/>
+  <rect x="660" y="489" width="280" height="116" rx="8" fill="#4C1D95" stroke="#64748B" stroke-width="2"/>
+  <rect x="660" y="489" width="280" height="48" rx="8" fill="#0F172A" fill-opacity="0.58" stroke="#64748B" stroke-width="2"/>
+  <line x1="660" y1="537" x2="940" y2="537" stroke="#64748B" stroke-width="2"/>
+  <text class="tableTitle" x="800" y="520" text-anchor="middle">팔로우 대상</text>
+  <line x1="660" y1="537" x2="940" y2="537" stroke="#334155"/>
   <text class="tableField" x="678" y="558">followee user</text>
 </g>
 <g id="candidate">
-  <rect x="1140" y="359" width="280" height="146" rx="8" fill="#FFF4D9" stroke="#7B8CA3" stroke-width="2"/>
-  <rect x="1140" y="359" width="280" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
-  <line x1="1140" y1="407" x2="1420" y2="407" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="tableTitle" x="1280" y="390" text-anchor="middle">Candidate</text>
-  <line x1="1140" y1="407" x2="1420" y2="407" stroke="#D7E2EC"/>
+  <rect x="1140" y="359" width="280" height="146" rx="8" fill="#78350F" stroke="#64748B" stroke-width="2"/>
+  <rect x="1140" y="359" width="280" height="48" rx="8" fill="#0F172A" fill-opacity="0.58" stroke="#64748B" stroke-width="2"/>
+  <line x1="1140" y1="407" x2="1420" y2="407" stroke="#64748B" stroke-width="2"/>
+  <text class="tableTitle" x="1280" y="390" text-anchor="middle">추천 후보</text>
+  <line x1="1140" y1="407" x2="1420" y2="407" stroke="#334155"/>
   <text class="tableField" x="1158" y="428">score</text>
-  <line x1="1140" y1="437" x2="1420" y2="437" stroke="#D7E2EC"/>
+  <line x1="1140" y1="437" x2="1420" y2="437" stroke="#334155"/>
   <text class="tableField" x="1158" y="458">reason</text>
 </g>
-<rect x="88" y="684" width="1424" height="62" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
-<text class="footer" x="800" y="709" text-anchor="middle">예제는 candidate generation과 scoring을 분리해서 service rule을 읽기 쉽게 둔다.</text>
-<text class="footer" x="800" y="733" text-anchor="middle">큰 production graph에서는 반복 traversal을 native Cypher나 Gremlin으로 바꿔야 한다.</text>
+<rect x="88" y="684" width="1424" height="62" rx="12" fill="#111827" stroke="#334155"/>
+<text class="footer" x="800" y="709" text-anchor="middle">후보 생성과 점수 계산을 분리해 서비스 규칙을 명확하게 표현한다.</text>
+<text class="footer" x="800" y="733" text-anchor="middle">큰 운영 그래프에서는 반복 탐색을 네이티브 Cypher나 Gremlin 질의로 대체한다.</text>
 </svg>

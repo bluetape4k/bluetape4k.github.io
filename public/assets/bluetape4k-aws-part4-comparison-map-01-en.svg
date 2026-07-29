@@ -2,45 +2,45 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1160" height="760" viewBox="0 0 1160 760" role="img" aria-label="Spring Cloud AWS and bluetape4k AWS comparison map">
   <defs>
     <style>
-      .title{font-family:'Architects Daughter',cursive;font-size:34px;fill:#102033}
-      .subtitle,.body,.small{font-family:'Comic Mono',monospace;fill:#334155}
-      .subtitle{font-size:15px}.label{font-family:'Architects Daughter',cursive;font-size:22px;fill:#102033}
+      .title{font-family:'Architects Daughter',cursive;font-size:34px;fill:#f8fafc}
+      .subtitle,.body,.small{font-family:'Comic Mono',monospace;fill:#cbd5e1}
+      .subtitle{font-size:15px}.label{font-family:'Architects Daughter',cursive;font-size:22px;fill:#f8fafc}
       .body{font-size:14px}.small{font-size:12px}
-      .panel{fill:#fff;stroke:#d7e2ef;stroke-width:1.4;rx:18}.card{stroke-width:1.6;rx:16}
-      .arrow{fill:none;stroke:#475569;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+      .panel{fill:#111827;stroke:#334155;stroke-width:1.4;rx:18}.card{stroke-width:1.6;rx:16}
+      .arrow{fill:none;stroke:#94a3b8;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
       .dash{fill:none;stroke:#64748b;stroke-width:1.8;stroke-dasharray:8 7;stroke-linecap:round;marker-end:url(#arrowMuted)}
     </style>
-    <marker id="arrow" viewBox="0 0 10 10" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#475569"/></marker>
-    <marker id="arrowMuted" viewBox="0 0 10 10" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#64748b"/></marker>
+    <marker id="arrow" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 14 7 L 0 14 Z" fill="#94a3b8"/></marker>
+    <marker id="arrowMuted" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 14 7 L 0 14 Z" fill="#64748b"/></marker>
   </defs>
-  <rect width="1160" height="760" fill="#ffffff"/>
+  <rect width="1160" height="760" fill="#0b1220"/>
   <text class="title" x="54" y="70">Compare by ownership boundary</text>
   <text class="subtitle" x="56" y="104">Both build on AWS SDK v2, but they choose different owners for framework wiring, coroutine helpers, and runtime shape.</text>
   <rect class="panel" x="54" y="136" width="1052" height="552"/>
 
-  <rect class="card" x="108" y="176" width="410" height="142" fill="#dcfce7" stroke="#22c55e"/>
+  <rect class="card" x="108" y="176" width="410" height="142" fill="#163a2d" stroke="#4ade80"/>
   <text class="label" x="313" y="214" text-anchor="middle">Spring Cloud AWS</text>
   <text class="body" x="313" y="246" text-anchor="middle">Spring Boot starters, templates, listeners</text>
   <text class="body" x="313" y="270" text-anchor="middle">S3, SQS, SNS, SES, DynamoDB, config</text>
   <text class="body" x="313" y="294" text-anchor="middle">Spring Integration and Cloud Stream extensions</text>
 
-  <rect class="card" x="642" y="176" width="410" height="142" fill="#e0f2fe" stroke="#38bdf8"/>
+  <rect class="card" x="642" y="176" width="410" height="142" fill="#12344a" stroke="#38bdf8"/>
   <text class="label" x="847" y="214" text-anchor="middle">bluetape4k-aws</text>
   <text class="body" x="847" y="246" text-anchor="middle">Kotlin-first helpers over Java v2 and Kotlin SDK</text>
   <text class="body" x="847" y="270" text-anchor="middle">Spring Boot 4 adapter or Ktor 3 adapter</text>
   <text class="body" x="847" y="294" text-anchor="middle">CRT, TransferManager, coroutine operations</text>
 
-  <rect class="card" x="108" y="386" width="410" height="132" fill="#f0fdf4" stroke="#16a34a"/>
+  <rect class="card" x="108" y="386" width="410" height="132" fill="#18392d" stroke="#34d399"/>
   <text class="label" x="313" y="424" text-anchor="middle">Spring-first fit</text>
   <text class="body" x="313" y="456" text-anchor="middle">Use when Spring owns application wiring</text>
   <text class="body" x="313" y="480" text-anchor="middle">and team conventions already match Spring Cloud</text>
 
-  <rect class="card" x="642" y="386" width="410" height="132" fill="#ecfeff" stroke="#06b6d4"/>
+  <rect class="card" x="642" y="386" width="410" height="132" fill="#123a43" stroke="#22d3ee"/>
   <text class="label" x="847" y="424" text-anchor="middle">Kotlin/JVM fit</text>
   <text class="body" x="847" y="456" text-anchor="middle">Use when coroutine, Ktor, explicit SDK clients,</text>
   <text class="body" x="847" y="480" text-anchor="middle">or CRT-backed S3 transfer are design constraints</text>
 
-  <rect class="card" x="244" y="578" width="672" height="74" fill="#fef3c7" stroke="#f59e0b"/>
+  <rect class="card" x="244" y="578" width="672" height="74" fill="#453511" stroke="#fbbf24"/>
   <text class="label" x="580" y="608" text-anchor="middle">Shared AWS responsibilities</text>
   <text class="body" x="580" y="634" text-anchor="middle">IAM, retries, idempotency, provisioning, observability, and local emulator gaps remain application decisions.</text>
 

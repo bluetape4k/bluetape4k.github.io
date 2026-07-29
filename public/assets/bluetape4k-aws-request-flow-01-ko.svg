@@ -5,41 +5,41 @@
     <filter id="shadow" x="-20%" y="-25%" width="140%" height="160%">
       <feDropShadow dx="0" dy="8" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.14" />
     </filter>
-    <marker id="arrow" viewBox="0 0 10 10" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#526274"/></marker>
+    <marker id="arrow" viewBox="0 0 10 10" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#b8c7dc" stroke="#b8c7dc" stroke-width="0" stroke-dasharray="none"/></marker>
     <style>
-      .title { font-family: "goorm Sans", "goorm Sans", cursive; font-size: 34px; fill: #102033; }
-      .subtitle { font-family: "goorm Sans Code", "goorm Sans Code", goorm Sans Code, monospace; font-size: 13px; fill: #526274; }
-      .card-title { font-family: "goorm Sans", "goorm Sans", cursive; font-size: 21px; fill: #102033; }
-      .card-detail { font-family: "goorm Sans Code", "goorm Sans Code", goorm Sans Code, monospace; font-size: 12px; fill: #344456; }
-      .pill { font-family: "goorm Sans Code", "goorm Sans Code", goorm Sans Code, monospace; font-size: 10px; fill: #243447; }
-      .line { fill: none; stroke: #526274; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
-      .split { fill: none; stroke: #526274; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
-      .label { font-family: "goorm Sans Code", "goorm Sans Code", goorm Sans Code, monospace; font-size: 11px; fill: #526274; }
+      .title { font-family: "goorm Sans", "goorm Sans", cursive; font-size: 34px; fill: #e8eefc; }
+      .subtitle { font-family: "goorm Sans Code", "goorm Sans Code", goorm Sans Code, monospace; font-size: 13px; fill: #b8c7dc; }
+      .card-title { font-family: "goorm Sans", "goorm Sans", cursive; font-size: 21px; fill: #e8eefc; }
+      .card-detail { font-family: "goorm Sans Code", "goorm Sans Code", goorm Sans Code, monospace; font-size: 12px; fill: #c5d2e5; }
+      .pill { font-family: "goorm Sans Code", "goorm Sans Code", goorm Sans Code, monospace; font-size: 10px; fill: #d8e4f5; }
+      .line { fill: none; stroke: #b8c7dc; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+      .split { fill: none; stroke: #b8c7dc; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+      .label { font-family: "goorm Sans Code", "goorm Sans Code", goorm Sans Code, monospace; font-size: 11px; fill: #b8c7dc; }
       .footer-title { font-family: "goorm Sans", "goorm Sans", cursive; font-size: 18px; fill: #ffffff; }
       .footer-detail { font-family: "goorm Sans Code", "goorm Sans Code", goorm Sans Code, monospace; font-size: 11px; fill: #dbeafe; }
     </style>
   </defs>
 
-  <rect x="20" y="20" width="1060" height="520" rx="10" fill="#ffffff" stroke="#d8e0ea" stroke-width="2" />
+  <rect x="20" y="20" width="1060" height="520" rx="10" fill="#111d2f" stroke="#315270" stroke-width="2" />
   <text class="title" x="54" y="70">AWS 요청 흐름</text>
   <text class="subtitle" x="56" y="101">서비스 코드는 Kotlin 우선 인터페이스를 유지하고 실행 환경은 로컬 에뮬레이터 또는 실제 AWS를 선택합니다.</text>
 
   <g filter="url(#shadow)">
-    <rect x="60" y="176" width="185" height="120" rx="10" fill="#e0f2fe" stroke="#38bdf8" stroke-width="2" />
+    <rect x="60" y="176" width="185" height="120" rx="10" fill="#11283f" stroke="#38bdf8" stroke-width="2" />
     <text class="card-title" x="94" y="220">Kotlin 서비스</text>
     <text class="card-detail" x="88" y="249">일반 서비스</text>
     <text class="card-detail" x="84" y="270">Spring Boot 4 / Ktor 3</text>
   </g>
 
   <g filter="url(#shadow)">
-    <rect x="300" y="176" width="220" height="120" rx="10" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" />
+    <rect x="300" y="176" width="220" height="120" rx="10" fill="#2a2615" stroke="#f59e0b" stroke-width="2" />
     <text class="card-title" x="410" y="218" text-anchor="middle">프레임워크 어댑터</text>
     <text class="card-detail" x="410" y="248" text-anchor="middle">설정</text>
     <text class="card-detail" x="410" y="269" text-anchor="middle">클라이언트와 리스너</text>
   </g>
 
   <g filter="url(#shadow)">
-    <rect x="565" y="166" width="220" height="140" rx="10" fill="#dcfce7" stroke="#22c55e" stroke-width="2" />
+    <rect x="565" y="166" width="220" height="140" rx="10" fill="#102a24" stroke="#22c55e" stroke-width="2" />
     <text class="card-title" x="606" y="211">bluetape4k AWS</text>
     <text class="card-detail" x="610" y="242">suspend 도우미</text>
     <text class="card-detail" x="595" y="264">코루틴 연결</text>
@@ -47,7 +47,7 @@
   </g>
 
   <g filter="url(#shadow)">
-    <rect x="850" y="176" width="185" height="120" rx="10" fill="#f1f5f9" stroke="#64748b" stroke-width="2" />
+    <rect x="850" y="176" width="185" height="120" rx="10" fill="#12243a" stroke="#86a2c2" stroke-width="2" />
     <text class="card-title" x="899" y="214">AWS SDK</text>
     <text class="card-title" x="910" y="239">클라이언트</text>
     <text class="card-detail" x="887" y="266">Java SDK v2 async</text>
@@ -64,13 +64,13 @@
   <text class="label" x="944" y="392">실행 환경</text>
 
   <g filter="url(#shadow)">
-    <rect x="385" y="338" width="250" height="100" rx="48" fill="#fefce8" stroke="#eab308" stroke-width="2" />
+    <rect x="385" y="338" width="250" height="100" rx="48" fill="#2a2615" stroke="#eab308" stroke-width="2" />
     <text class="card-title" x="436" y="379">LocalStack / Floci</text>
     <text class="card-detail" x="438" y="407">Testcontainers 검증</text>
   </g>
 
   <g filter="url(#shadow)">
-    <rect x="705" y="398" width="215" height="100" rx="48" fill="#fff7ed" stroke="#f97316" stroke-width="2" />
+    <rect x="705" y="398" width="215" height="100" rx="48" fill="#2b2117" stroke="#f97316" stroke-width="2" />
     <text class="card-title" x="760" y="438">AWS 서비스</text>
     <text class="card-detail" x="735" y="466">S3, SQS, SNS, DynamoDB</text>
     <text class="card-detail" x="757" y="486">KMS, SES, CloudWatch</text>
@@ -84,11 +84,11 @@
   </g>
 
   <g>
-    <rect x="764" y="54" width="76" height="24" rx="12" fill="#fff7ed" stroke="#f59e0b" />
+    <rect x="764" y="54" width="76" height="24" rx="12" fill="#2b2117" stroke="#f59e0b" />
     <text class="pill" x="785" y="70">Ktor 3</text>
-    <rect x="852" y="54" width="112" height="24" rx="12" fill="#eff6ff" stroke="#60a5fa" />
+    <rect x="852" y="54" width="112" height="24" rx="12" fill="#11283f" stroke="#60a5fa" />
     <text class="pill" x="877" y="70">Spring Boot 4</text>
-    <rect x="976" y="54" width="68" height="24" rx="12" fill="#ecfdf5" stroke="#34d399" />
+    <rect x="976" y="54" width="68" height="24" rx="12" fill="#102a24" stroke="#34d399" />
     <text class="pill" x="998" y="70">Kotlin</text>
   </g>
   <path class="connector" d="M2 2 L3 2" fill="none" stroke="transparent"/>

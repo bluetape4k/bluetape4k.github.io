@@ -2,6 +2,7 @@ import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 
 const out = "public/assets";
+const selected = new Set(process.argv.slice(2));
 
 const translations = new Map([
   ["transactional-outbox-idempotency-flow-01", [
@@ -71,18 +72,18 @@ const translations = new Map([
   ]],
   ["transactional-outbox-kafka-first-fallback-part2-architecture-01", [
     ["Transactional Outbox Part 2: Kafka-first fallback", "트랜잭셔널 아웃박스 2부: Kafka 우선, 영속 대체 경로"],
-    ["The DB transaction persists orders only; direct publish uses topic retry/DLQ before durable fallback rows.", "DB 트랜잭션은 주문만 저장하고, 직접 발행은 영속 대체 행보다 topic 재시도/DLQ를 먼저 사용합니다."],
-    ["Hot request path", "빠른 요청 경로"],
+    ["The DB transaction persists orders only; direct publish uses topic retry/DLQ before durable fallback rows.", "DB 트랜잭션은 주문만 저장하고, 직접 발행은 영속 대체 행보다 토픽 재시도와 배달 불가 큐를 먼저 사용합니다."],
+    ["Hot request path", "핵심 요청 경로"],
     ["Fallback path", "대체 발행 경로"],
     ["Repair gap", "복구 공백"],
     ["validate request", "요청 검증"],
     ["return status", "상태 반환"],
-    ["Order Tx", "주문 TX"],
+    ["Order Tx", "주문 트랜잭션"],
     ["insert orders row", "orders 행 저장"],
-    ["no publication row", "publication 행 없음"],
+    ["no publication row", "발행 행 없음"],
     ["Direct Kafka", "Kafka 직접 발행"],
-    ["3 retries -> DLQ", "3회 재시도 → DLQ"],
-    ["fallback if no ack", "ack 없으면 대체 경로"],
+    ["3 retries -> DLQ", "3회 재시도 → 배달 불가 큐"],
+    ["fallback if no ack", "수신 확인 없으면 대체 경로"],
     ["API Response", "API 응답"],
     ["or fallback status", "또는 대체 발행 상태"],
     ["domain source", "도메인 원본"],
@@ -96,15 +97,16 @@ const translations = new Map([
     ["rebuild missing event rows", "누락 이벤트 행 복구"],
     ["orders only", "orders만 존재"],
     ["unconfirmed fallback", "확인되지 않은 대체 발행"],
-    ["topic / DLQ covered", "topic / DLQ가 처리"],
+    ["topic / DLQ covered", "토픽 / 배달 불가 큐가 처리"],
     ["claim batch + TTL", "배치 선점 + TTL"],
-    ["FALLBACK_STORE_FAILED repair", "FALLBACK_STORE_FAILED 복구"],
+    ["FALLBACK_STORE_FAILED repair", "FALLBACK_STORE_FAILED 항목 복구"],
+    ["bluetape4k-workshop messaging/kafka-outbox-fallback, PR #349", "bluetape4k-workshop messaging/kafka-outbox-fallback"],
     ["Source:", "출처:"],
   ]],
   ["transactional-outbox-kafka-first-fallback-part2-sequence-01", [
     ["Kafka-first Fallback Publication Flow", "Kafka 우선 발행과 영속 대체 흐름"],
     ["The order transaction writes only orders; fallback rows exist only after direct Kafka publish fails.", "주문 트랜잭션은 orders만 쓰고, 대체 행은 Kafka 직접 발행 실패 뒤에만 생성됩니다."],
-    ["HTTP caller", "HTTP 호출자"],
+    ["HTTP caller", "HTTP 요청자"],
     ["Client", "클라이언트"],
     ["Order API", "주문 API"],
     ["Order Tx", "주문 트랜잭션"],
@@ -118,18 +120,19 @@ const translations = new Map([
     ["fallback rows", "대체 발행 행"],
     ["scheduled", "스케줄 실행"],
     ["save order inside TransactionalOrderWriter", "TransactionalOrderWriter에서 주문 저장"],
-    ["orders row committed; no publication row", "orders 커밋, publication 행 없음"],
-    ["alt direct Kafka publish succeeds", "alt Kafka 직접 발행 성공"],
-    ["else publish fails or times out after 3 attempts", "else 3회 뒤 발행 실패 또는 timeout"],
-    ["send event to Kafka topic", "Kafka topic으로 이벤트 전송"],
+    ["orders row committed; no publication row", "orders 커밋, 발행 행 없음"],
+    ["alt direct Kafka publish succeeds", "조건: Kafka 직접 발행 성공"],
+    ["else publish fails or times out after 3 attempts", "그 외: 3회 시도 뒤 실패 또는 시간 초과"],
+    ["send event to Kafka topic", "Kafka 토픽으로 이벤트 전송"],
     ["PUBLISHED_DIRECT response", "PUBLISHED_DIRECT 응답"],
-    ["upsert NOT_PUBLISHED fallback row", "NOT_PUBLISHED 대체 행 upsert"],
+    ["upsert NOT_PUBLISHED fallback row", "NOT_PUBLISHED 대체 행 삽입 또는 갱신"],
     ["FALLBACK_STORED response", "FALLBACK_STORED 응답"],
-    ["loop scheduled relay claim", "loop 예약된 릴레이 선점"],
+    ["loop scheduled relay claim", "반복: 예약된 릴레이 선점"],
     ["claim eligible rows", "대상 행 선점"],
-    ["payload batch", "payload 배치"],
+    ["payload batch", "이벤트 본문 배치"],
     ["send to Kafka and mark PUBLISHED", "Kafka 전송 후 PUBLISHED 표시"],
-    ["Reconciler scans old orders without publication rows and rebuilds deterministic fallback rows only for the repair gap.", "복구 작업자는 publication 행이 없는 오래된 주문을 찾아 복구 공백에만 결정적 대체 행을 만듭니다."],
+    ["Reconciler scans old orders without publication rows and rebuilds deterministic fallback rows only for the repair gap.", "복구 작업자는 발행 행이 없는 오래된 주문을 찾아 유실 가능 구간에만 결정적 대체 행을 만듭니다."],
+    ["bluetape4k-workshop messaging/kafka-outbox-fallback, PR #349", "bluetape4k-workshop messaging/kafka-outbox-fallback"],
     ["Source:", "출처:"],
   ]],
 ]);
@@ -163,10 +166,59 @@ function normalizeStructure(name, source) {
     .replace('<rect x="1508" y="826" width="14" height="342" rx="6" class="activation"/>', '<rect x="1508" y="826" width="14" height="356" rx="6" class="activation"/>');
 }
 
+function darken(source) {
+  const colors = new Map([
+    ["#fbfaf7", "#08111f"],
+    ["#fbfcf8", "#08111f"],
+    ["#ffffff", "#111827"],
+    ["#fffef7", "#172033"],
+    ["#eef6ff", "#10243a"],
+    ["#fff7ed", "#2a2117"],
+    ["#f1f5f9", "#172033"],
+    ["#f8f1e6", "#2a2117"],
+    ["#cbd5e1", "#52627a"],
+    ["#b9d7ff", "#315f8f"],
+    ["#fed7aa", "#8b5a2b"],
+    ["#1f2937", "#f8fafc"],
+    ["#475569", "#a9b8ca"],
+    ["#64748b", "#b6c4d6"],
+    ["#e0f2fe", "#102a43"],
+    ["#dcfce7", "#123524"],
+    ["#ede9fe", "#2b2147"],
+    ["#92400e", "#f5bd73"],
+    ["#1d4ed8", "#93c5fd"],
+    ["#166534", "#86efac"],
+    ["#5b21b6", "#c4b5fd"],
+    ["#263238", "#f8fafc"],
+    ["#36464f", "#d8e5f2"],
+    ["#1f3138", "#f8fafc"],
+    ["#546a73", "#b6c4d6"],
+    ["#60727d", "#a9b8ca"],
+    ["#f3ecdf", "#2a2117"],
+    ["#d7e0e4", "#52627a"],
+    ["#fff5f5", "#321b24"],
+    ["#eaf4f8", "#102a43"],
+    ["#fff4df", "#332718"],
+    ["#eef7f0", "#173522"],
+    ["#fff7e8", "#342718"],
+    ["#fff0f0", "#321b24"],
+    ["#2f6f8e", "#7dd3fc"],
+    ["#855a29", "#f5bd73"],
+    ["#55783f", "#a3d977"],
+    ["#7f6038", "#e8c58f"],
+    ["#9d4f4f", "#fda4af"],
+  ]);
+  let result = source;
+  for (const [from, to] of colors) result = result.replaceAll(from, to);
+  return result;
+}
+
 for (const [name, replacements] of translations) {
+  if (selected.size > 0 && !selected.has(name)) continue;
   const canonical = `${out}/${name}.svg`;
   const sourcePath = existsSync(canonical) ? canonical : `${out}/${name}-en.svg`;
-  const source = normalizeStructure(name, readFileSync(sourcePath, "utf8"));
+  const source = darken(normalizeStructure(name, readFileSync(sourcePath, "utf8")))
+    .replaceAll(", PR #349", "");
   const enSvg = `${out}/${name}-en.svg`;
   const koSvg = `${out}/${name}-ko.svg`;
   writeFileSync(enSvg, fonts(source, "en"));

@@ -50,7 +50,7 @@
     <rect class="card" x="570" y="170" width="660" height="160" rx="24" stroke="#6686b8"/>
     <circle cx="630" cy="220" r="27" fill="#263b5c" stroke="#6686b8" stroke-width="2"/>
     <text class="step" x="630" y="227" text-anchor="middle">1</text>
-    <text class="small" x="680" y="211">HTTP INPUT</text>
+    <text class="small" x="680" y="211">HTTP 입력</text>
     <text class="cardTitle" x="680" y="252">이미지 업로드</text>
     <text class="mono" x="680" y="294">multipart file · PNG · JPEG · WebP</text>
   </g>
@@ -61,7 +61,7 @@
     <rect class="card" x="470" y="435" width="860" height="220" rx="24" stroke="#66aee8"/>
     <circle cx="535" cy="490" r="27" fill="#203e61" stroke="#66aee8" stroke-width="2"/>
     <text class="step" x="535" y="497" text-anchor="middle">2</text>
-    <text class="small" x="585" y="479">SHARED QUALIFICATION</text>
+    <text class="small" x="585" y="479">공통 입력 자격 판정</text>
     <text class="cardTitle" x="585" y="521">입력 자격 판정</text>
     <text class="body" x="585" y="566">미디어 타입 · 실제 파일 시그니처 · 압축 바이트</text>
     <text class="body" x="585" y="601">가로/세로 · 전체 픽셀 · 디코딩 가능 여부</text>
@@ -73,7 +73,7 @@
     <rect class="card" x="520" y="760" width="760" height="190" rx="24" stroke="#7e9fd0"/>
     <circle cx="585" cy="815" r="27" fill="#283d5f" stroke="#7e9fd0" stroke-width="2"/>
     <text class="step" x="585" y="822" text-anchor="middle">3</text>
-    <text class="small" x="635" y="804">ONE DECODE</text>
+    <text class="small" x="635" y="804">단일 디코딩</text>
     <text class="cardTitle" x="635" y="847">ImmutableImage</text>
     <text class="body" x="635" y="892">검증된 이미지 객체 하나를 세 처리 경로가 읽기 전용으로 공유</text>
     <text class="small" x="635" y="925">원본 업로드 바이트를 처리 경로마다 다시 디코딩하지 않음</text>
@@ -85,12 +85,12 @@
     <rect class="card" x="560" y="1040" width="680" height="120" rx="24" stroke="#6686b8"/>
     <circle cx="625" cy="1100" r="27" fill="#263b5c" stroke="#6686b8" stroke-width="2"/>
     <text class="step" x="625" y="1107" text-anchor="middle">4</text>
-    <text class="small" x="680" y="1087">PARALLEL ANALYSIS</text>
+    <text class="small" x="680" y="1087">병렬 분석</text>
     <text class="cardTitle" x="680" y="1132">같은 입력을 독립적으로 분석</text>
   </g>
 
   <rect class="frame" x="95" y="1190" width="1610" height="520" rx="30"/>
-  <text class="small" x="520" y="1275">THREE INDEPENDENT LANES</text>
+  <text class="small" x="520" y="1275">독립 처리 경로 3개</text>
 
   <path class="connector" data-connector="analysis-to-ocr" d="M760 1160 V1215 Q760 1229 746 1229 H330 Q316 1229 316 1243 V1315" stroke="#50c7d9" marker-end="url(#arrow-cyan)"/>
   <path class="connector" data-connector="analysis-to-detection" d="M900 1160 V1315" stroke="#f0ad5b" marker-end="url(#arrow-amber)"/>
@@ -100,7 +100,7 @@
     <rect class="card" x="140" y="1330" width="380" height="255" rx="24" stroke="#50c7d9"/>
     <circle cx="195" cy="1383" r="25" fill="#173d4e" stroke="#50c7d9" stroke-width="2"/>
     <text class="step" x="195" y="1390" text-anchor="middle">4A</text>
-    <text class="small" x="240" y="1373">ANALYSIS LANE</text>
+    <text class="small" x="240" y="1373">분석 경로</text>
     <text class="cardTitle" x="240" y="1416">OCR</text>
     <text class="mono" x="190" y="1468">text · pageCount</text>
     <text class="body" x="190" y="1510">Completed · Empty</text>
@@ -111,7 +111,7 @@
     <rect class="card" x="710" y="1330" width="380" height="255" rx="24" stroke="#f0ad5b"/>
     <circle cx="765" cy="1383" r="25" fill="#4a3521" stroke="#f0ad5b" stroke-width="2"/>
     <text class="step" x="765" y="1390" text-anchor="middle">4B</text>
-    <text class="small" x="810" y="1373">ANALYSIS LANE</text>
+    <text class="small" x="810" y="1373">분석 경로</text>
     <text class="cardTitle" x="810" y="1416">객체 검출</text>
     <text class="mono" x="760" y="1468">label · category</text>
     <text class="mono" x="760" y="1500">confidence · detector</text>
@@ -123,7 +123,7 @@
     <rect class="card" x="1280" y="1330" width="380" height="255" rx="24" stroke="#57c58a"/>
     <circle cx="1335" cy="1383" r="25" fill="#183e32" stroke="#57c58a" stroke-width="2"/>
     <text class="step" x="1335" y="1390" text-anchor="middle">4C</text>
-    <text class="small" x="1380" y="1373">ANALYSIS LANE</text>
+    <text class="small" x="1380" y="1373">분석 경로</text>
     <text class="cardTitle" x="1380" y="1416">바코드 · QR</text>
     <text class="mono" x="1330" y="1468">text · format · provider</text>
     <text class="body" x="1330" y="1510">Completed · Empty</text>
@@ -138,7 +138,7 @@
     <rect class="card" x="450" y="1840" width="900" height="210" rx="26" stroke="#7d8ca8"/>
     <circle cx="520" cy="1900" r="29" fill="#2a374d" stroke="#7d8ca8" stroke-width="2"/>
     <text class="step" x="520" y="1907" text-anchor="middle">5</text>
-    <text class="small" x="575" y="1889">PARTIAL RESULT CONTRACT</text>
+    <text class="small" x="575" y="1889">부분 결과 계약</text>
     <text class="cardTitle" x="575" y="1933">부분 결과 조합</text>
     <text class="mono" x="575" y="1980">COMPLETED · PARTIAL · FAILED</text>
     <text class="body" x="575" y="2017">성공한 결과와 실패 사유를 함께 보존</text>
@@ -150,7 +150,7 @@
     <rect class="card" x="400" y="2200" width="1000" height="180" rx="26" stroke="#a78bfa"/>
     <circle cx="470" cy="2260" r="29" fill="#352b58" stroke="#a78bfa" stroke-width="2"/>
     <text class="step" x="470" y="2267" text-anchor="middle">6</text>
-    <text class="small" x="525" y="2249">BUSINESS POLICY</text>
+    <text class="small" x="525" y="2249">업무 정책</text>
     <text class="cardTitle" x="525" y="2293">방문증 정책</text>
     <text class="mono" x="525" y="2339">ALLOW · MANUAL_REVIEW · REJECT · QUARANTINE</text>
   </g>

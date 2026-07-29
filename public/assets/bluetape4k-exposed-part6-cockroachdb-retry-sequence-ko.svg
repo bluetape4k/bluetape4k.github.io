@@ -4,54 +4,54 @@
   <defs>
     <style>
       text { letter-spacing: 0; }
-      .title { font-family: "goorm Sans"; font-size: 40px; font-weight: 400; fill: #263238; }
-      .subtitle, .msg, .note, .footer, .role { font-family: "goorm Sans Code","goorm Sans"; fill: #36464f; }
+      .title { font-family: "goorm Sans"; font-size: 40px; font-weight: 400; fill: #F5F9FF; }
+      .subtitle, .msg, .note, .footer, .role { font-family: "goorm Sans Code","goorm Sans"; fill: #D7E3F5; }
       .subtitle { font-size: 18px; }
-      .participant { font-family: "goorm Sans"; font-size: 19px; font-weight: 400; fill: #1f3138; }
-      .role { font-size: 13px; fill: #546a73; }
+      .participant { font-family: "goorm Sans"; font-size: 19px; font-weight: 400; fill: #F5F9FF; }
+      .role { font-size: 13px; fill: #B8C7DD; }
       .msg { font-size: 14px; }
       .note { font-size: 13px; }
-      .footer { font-size: 14px; fill: #60727d; }
-      .frame { fill: #fbfcf8; stroke: #41545d; stroke-width: 3; }
-      .header { fill: #ffffff; stroke: #546e7a; stroke-width: 2; }
-      .lifeline { stroke: #9aaab1; stroke-width: 2; stroke-dasharray: 7 8; }
-      .activation { fill: #f3ecdf; stroke: #8f784e; stroke-width: 1.5; }
-      .call { fill: none; stroke: #3f7d9c; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowCall); }
-      .sql { fill: none; stroke: #a2743d; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowSql); }
-      .state { fill: none; stroke: #6e8f4f; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowState); }
-      .return { fill: none; stroke: #9b7d54; stroke-width: 2.5; stroke-dasharray: 8 6; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowReturn); }
+      .footer { font-size: 14px; fill: #8EA6C4; }
+      .frame { fill: #0B1220; stroke: #284766; stroke-width: 3; }
+      .header { fill: #0F1E33; stroke: #365979; stroke-width: 2; }
+      .lifeline { stroke: #55718F; stroke-width: 2; stroke-dasharray: 7 8; }
+      .activation { fill: #2D2415; stroke: #8f784e; stroke-width: 1.5; }
+      .call { fill: none; stroke: #78AFFF; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowCall); }
+      .sql { fill: none; stroke: #F2B84B; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowSql); }
+      .state { fill: none; stroke: #6FD28C; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowState); }
+      .return { fill: none; stroke: #EFC46B; stroke-width: 2.5; stroke-dasharray: 8 6; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowReturn); }
       .error { fill: none; stroke: #b45b5b; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowError); }
-      .alt { fill: none; stroke: #78909c; stroke-width: 3; stroke-dasharray: 12 7; }
-      .label { fill: #ffffff; stroke: #d7e0e4; stroke-width: 1.5; }
-      .label.callLabel { stroke: #9cc2d1; }
-      .label.sqlLabel { stroke: #d0b078; }
-      .label.stateLabel { stroke: #b6c9a4; }
-      .label.returnLabel { stroke: #c8b38f; }
+      .alt { fill: none; stroke: #78AFFF; stroke-width: 3; stroke-dasharray: 12 7; }
+      .label { fill: #0F1E33; stroke: #365979; stroke-width: 1.5; }
+      .label.callLabel { stroke: #4F83B0; }
+      .label.sqlLabel { stroke: #8F6F2C; }
+      .label.stateLabel { stroke: #4D7B5E; }
+      .label.returnLabel { stroke: #8F6F2C; }
       .label.errorLabel { stroke: #d7a2a2; }
       .badge { stroke-width: 1.8; }
-      .badge.callBadge { fill: #eaf4f8; stroke: #3f7d9c; }
-      .badge.sqlBadge { fill: #fff4df; stroke: #a2743d; }
-      .badge.stateBadge { fill: #eef7f0; stroke: #6e8f4f; }
-      .badge.returnBadge { fill: #fff7e8; stroke: #9b7d54; }
-      .badge.errorBadge { fill: #fff0f0; stroke: #b45b5b; }
+      .badge.callBadge { fill: #102A43; stroke: #78AFFF; }
+      .badge.sqlBadge { fill: #332812; stroke: #F2B84B; }
+      .badge.stateBadge { fill: #142C22; stroke: #6FD28C; }
+      .badge.returnBadge { fill: #332812; stroke: #EFC46B; }
+      .badge.errorBadge { fill: #351923; stroke: #b45b5b; }
       .badgeText { font-family: "goorm Sans Code","goorm Sans"; font-size: 12px; font-weight: 700; }
-      .msg.callText, .badgeText.callText { fill: #2f6f8e; }
-      .msg.sqlText, .badgeText.sqlText { fill: #855a29; }
-      .msg.stateText, .badgeText.stateText { fill: #55783f; }
-      .msg.returnText, .badgeText.returnText { fill: #7f6038; }
+      .msg.callText, .badgeText.callText { fill: #9DC7FF; }
+      .msg.sqlText, .badgeText.sqlText { fill: #F5C76A; }
+      .msg.stateText, .badgeText.stateText { fill: #8DE3A6; }
+      .msg.returnText, .badgeText.returnText { fill: #F5CF7A; }
       .msg.errorText, .badgeText.errorText { fill: #934545; }
     </style>
     <marker id="arrowCall" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="16" viewBox="0 0 10 10" refX="9" refY="5" orient="auto">
-      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#3f7d9c" stroke="#3f7d9c" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/>
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#78AFFF" stroke="#78AFFF" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/>
     </marker>
     <marker id="arrowSql" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="16" viewBox="0 0 10 10" refX="9" refY="5" orient="auto">
-      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#a2743d" stroke="#a2743d" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/>
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#F2B84B" stroke="#F2B84B" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/>
     </marker>
     <marker id="arrowState" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="16" viewBox="0 0 10 10" refX="9" refY="5" orient="auto">
-      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#6e8f4f" stroke="#6e8f4f" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/>
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#6FD28C" stroke="#6FD28C" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/>
     </marker>
     <marker id="arrowReturn" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="16" viewBox="0 0 10 10" refX="9" refY="5" orient="auto">
-      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#9b7d54" stroke="#9b7d54" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/>
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#EFC46B" stroke="#EFC46B" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/>
     </marker>
     <marker id="arrowError" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="16" viewBox="0 0 10 10" refX="9" refY="5" orient="auto">
       <path d="M 0 0 L 10 5 L 0 10 Z" fill="#b45b5b" stroke="#b45b5b" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/>
@@ -59,12 +59,12 @@
   </defs>
 
   <rect x="24" y="24" width="1552" height="1312" rx="20" class="frame"/>
-  <text x="800" y="78" text-anchor="middle" class="title">CockroachDB serializable retry</text>
-  <text x="800" y="108" text-anchor="middle" class="subtitle">CockroachDB restart-transaction error일 때만 전체 inventory reservation transaction을 재시도합니다.</text>
+  <text x="800" y="78" text-anchor="middle" class="title">CockroachDB 직렬화 충돌 재시도</text>
+  <text x="800" y="108" text-anchor="middle" class="subtitle">CockroachDB 트랜잭션 재시작 오류일 때만 전체 재고 예약 트랜잭션을 재시도합니다.</text>
 
   <g id="participants">
     <rect x="60" y="150" width="170" height="68" rx="10" class="header"/>
-    <text x="145" y="179" text-anchor="middle" class="participant">Workshop test</text>
+    <text x="145" y="179" text-anchor="middle" class="participant">워크숍 테스트</text>
     <text x="145" y="201" text-anchor="middle" class="role">JUnit + container</text>
 
     <rect x="292" y="150" width="216" height="68" rx="10" class="header"/>
@@ -72,16 +72,16 @@
     <text x="400" y="201" text-anchor="middle" class="role">PostgreSQL wire</text>
 
     <rect x="578" y="150" width="222" height="68" rx="10" class="header"/>
-    <text x="689" y="179" text-anchor="middle" class="participant">Inventory service</text>
-    <text x="689" y="201" text-anchor="middle" class="role">application boundary</text>
+    <text x="689" y="179" text-anchor="middle" class="participant">재고 서비스</text>
+    <text x="689" y="201" text-anchor="middle" class="role">애플리케이션 경계</text>
 
     <rect x="870" y="150" width="210" height="68" rx="10" class="header"/>
-    <text x="975" y="179" text-anchor="middle" class="participant">Retry helper</text>
+    <text x="975" y="179" text-anchor="middle" class="participant">재시도 도우미</text>
     <text x="975" y="201" text-anchor="middle" class="role">withCockroachTransaction</text>
 
     <rect x="1150" y="150" width="170" height="68" rx="10" class="header"/>
     <text x="1235" y="179" text-anchor="middle" class="participant">Exposed JDBC</text>
-    <text x="1235" y="201" text-anchor="middle" class="role">one attempt</text>
+    <text x="1235" y="201" text-anchor="middle" class="role">단일 시도</text>
 
     <rect x="1380" y="150" width="160" height="68" rx="10" class="header"/>
     <text x="1460" y="179" text-anchor="middle" class="participant">CockroachDB</text>
@@ -108,12 +108,12 @@
 
   <rect x="202" y="330" width="430" height="34" rx="17" class="label returnLabel"/>
   <circle cx="226" cy="347" r="13" class="badge returnBadge"/><text x="226" y="352" text-anchor="middle" class="badgeText returnText">2</text>
-  <text x="250" y="352" class="msg returnText">PostgreSQL JDBC 기반 Database</text>
+  <text x="250" y="352" class="msg returnText">PostgreSQL JDBC 기반 데이터베이스</text>
   <path d="M 393 372 L 145 372" class="return" data-connector="connector"/>
 
   <rect x="80" y="406" width="462" height="34" rx="17" class="label stateLabel"/>
   <circle cx="104" cy="423" r="13" class="badge stateBadge"/><text x="104" y="428" text-anchor="middle" class="badgeText stateText">3</text>
-  <text x="128" y="428" class="msg stateText">inventory와 ledger schema bootstrap</text>
+  <text x="128" y="428" class="msg stateText">재고·원장 스키마 초기화</text>
   <path d="M 145 448 L 682 448" class="state" data-connector="connector"/>
 
   <rect x="736" y="478" width="440" height="34" rx="17" class="label callLabel"/>
@@ -123,17 +123,17 @@
 
   <rect x="1034" y="562" width="402" height="34" rx="17" class="label sqlLabel"/>
   <circle cx="1058" cy="579" r="13" class="badge sqlBadge"/><text x="1058" y="584" text-anchor="middle" class="badgeText sqlText">5</text>
-  <text x="1082" y="584" class="msg sqlText">SERIALIZABLE attempt 시작, maxAttempts=1</text>
+  <text x="1082" y="584" class="msg sqlText">SERIALIZABLE 시도 시작, maxAttempts=1</text>
   <path d="M 982 604 L 1228 604" class="sql" data-connector="connector"/>
 
   <rect x="1090" y="638" width="408" height="34" rx="17" class="label sqlLabel"/>
   <circle cx="1114" cy="655" r="13" class="badge sqlBadge"/><text x="1114" y="660" text-anchor="middle" class="badgeText sqlText">6</text>
-  <text x="1138" y="660" class="msg sqlText">inventory 읽기, stock update, ledger insert</text>
+  <text x="1138" y="660" class="msg sqlText">재고 조회·수량 갱신·원장 저장</text>
   <path d="M 1242 680 L 1453 680" class="sql" data-connector="connector"/>
 
   <rect x="910" y="718" width="588" height="134" rx="14" class="alt"/>
-  <rect x="936" y="724" width="268" height="30" rx="15" fill="#fff0f0" stroke="#b45b5b" stroke-width="1.8"/>
-  <text x="960" y="744" class="note">retryable conflict path</text>
+  <rect x="936" y="724" width="268" height="30" rx="15" fill="#351923" stroke="#b45b5b" stroke-width="1.8"/>
+  <text x="960" y="744" class="note">재시도 가능한 충돌 경로</text>
 
   <rect x="1014" y="770" width="420" height="34" rx="17" class="label errorLabel"/>
   <circle cx="1038" cy="787" r="13" class="badge errorBadge"/><text x="1038" y="792" text-anchor="middle" class="badgeText errorText">7</text>
@@ -142,21 +142,21 @@
 
   <rect x="724" y="870" width="510" height="34" rx="17" class="label stateLabel"/>
   <circle cx="748" cy="887" r="13" class="badge stateBadge"/><text x="748" y="892" text-anchor="middle" class="badgeText stateText">8</text>
-  <text x="772" y="892" class="msg stateText">helper가 CockroachDB retry signature 분류</text>
+  <text x="772" y="892" class="msg stateText">도우미가 CockroachDB 재시도 신호 분류</text>
   <path d="M 982 916 L 1100 916 Q 1112 916 1112 928 L 1112 946 Q 1112 958 1100 958 L 982 958" class="state" data-connector="connector"/>
 
   <rect x="790" y="978" width="456" height="34" rx="17" class="label callLabel"/>
   <circle cx="814" cy="995" r="13" class="badge callBadge"/><text x="814" y="1000" text-anchor="middle" class="badgeText callText">9</text>
-  <text x="838" y="1000" class="msg callText">전체 reservation transaction 재실행</text>
+  <text x="838" y="1000" class="msg callText">전체 예약 트랜잭션 재실행</text>
   <path d="M 982 1020 L 1228 1020" class="call" data-connector="connector"/>
 
   <rect x="742" y="1050" width="502" height="34" rx="17" class="label returnLabel"/>
   <circle cx="766" cy="1067" r="13" class="badge returnBadge"/><text x="766" y="1072" text-anchor="middle" class="badgeText returnText">10</text>
-  <text x="790" y="1072" class="msg returnText">InventorySnapshot과 committed ledger row 1개</text>
+  <text x="790" y="1072" class="msg returnText">InventorySnapshot과 커밋된 원장 행 1개</text>
   <path d="M 968 1092 L 696 1092" class="return" data-connector="connector"/>
   <path d="M 682 1162 L 145 1162" class="return" data-connector="connector"/>
 
-  <rect x="98" y="1230" width="1404" height="44" rx="12" fill="#ffffff" stroke="#ccd7da" stroke-width="2"/>
-  <text x="118" y="1258" class="note">Non-retryable SQLSTATE, cancellation, interruption은 retry boundary 밖에서 그대로 rethrow됩니다.</text>
+  <rect x="98" y="1230" width="1404" height="44" rx="12" fill="#0F1E33" stroke="#284766" stroke-width="2"/>
+  <text x="118" y="1258" class="note">재시도할 수 없는 SQLSTATE, 취소, 인터럽트는 재시도 경계 밖에서 그대로 다시 던집니다.</text>
   <text x="800" y="1306" text-anchor="middle" class="footer">github.com/bluetape4k/exposed-workshop - 13-ecosystem-integrations/03-cockroachdb-retry</text>
 </svg>

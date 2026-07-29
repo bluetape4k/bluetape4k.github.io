@@ -1,37 +1,38 @@
 ---
-title: "Bluetape4k Leader Part 2: Core API와 실행 모델"
-description: LeaderElector, SuspendLeaderElector, VirtualThreadLeaderElector, AsyncLeaderElector의 차이, LeaderElectionOptions가 제어하는 것, 그리고 nullable runIfLeader 반환값 대신 LeaderRunResult를 써야 할 때.
+title: "Bluetape4k Leader Part 2: 핵심 API와 실행 모델"
+description: LeaderElector, SuspendLeaderElector, VirtualThreadLeaderElector, AsyncLeaderElector의 차이와 LeaderElectionOptions의 제어 범위, null을 허용하는 runIfLeader 반환값 대신 LeaderRunResult를 사용해야 하는 경우를 설명합니다.
 sidebar:
   order: -202606011900
 blog:
   date: 2026-06-01T19:00:00+09:00
   image: /assets/bluetape4k-leader-part2-hero.png
   imageAlt: 로봇 심사위원들이 Kotlin JVM 작업대 위에서 실행 모델 후보들을 비교하는 일러스트
-  cardDescription: "같은 job을 위한 네 가지 실행 모델: blocking, CompletableFuture, coroutine, virtual thread."
+  cardDescription: "하나의 작업을 블로킹, CompletableFuture, 코루틴, 가상 스레드 실행 모델에 맞춰 처리하는 방법."
   tags: ["coroutines","kotlin","leader","virtual-threads"]
 ---
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/bluetape4k-leader-part2-hero.png" alt="로봇 심사위원들이 Kotlin JVM 작업대 위에서 실행 모델 후보들을 비교하는 일러스트" loading="eager" />
-  <figcaption>실행 모델은 caller에 맞아야 합니다. 그 반대가 아니라.</figcaption>
+  <figcaption>리더 선출 API의 실행 모델은 호출자의 동시성 모델에 맞아야 합니다.</figcaption>
 </figure>
 
-<p class="bt4k-post-meta">2026-06-01 · bluetape4k-leader series · Part 2</p>
+<p class="bt4k-post-meta">2026-06-01 · bluetape4k-leader 시리즈 · Part 2</p>
 
 이 글은 `bluetape4k-leader` 시리즈의 2편입니다. [Part 1](/ko/blog/bluetape4k-leader-part1-overview/)에서
-저장소 구조와 기본 모델을 봤다면, 이번에는 실제 코드로 들어갑니다. 네 가지 elector 인터페이스,
-`LeaderElectionOptions`, `LeaderRunResult`, 테넌트 네임스페이스, state 스냅샷까지 `leader-core`의 전체 API를 봅니다.
+저장소 구조와 기본 모델을 살펴봤다면, 이번에는 실제 API를 다룹니다. 네 가지 선출자 인터페이스와
+`LeaderElectionOptions`, `LeaderRunResult`, 테넌트 네임스페이스, 상태 스냅샷까지 `leader-core`의 핵심 API를
+살펴봅니다.
 
 ## `runIfLeader` 계약
 
-`leader-core`의 모든 elector는 `runIfLeader`라는 메서드를 공유합니다. 계약은 짧습니다.
+`leader-core`의 모든 선출자는 `runIfLeader` 메서드를 공유합니다. 계약은 다음과 같습니다.
 
-- lock을 얻은 노드만 action을 실행합니다.
-- lock을 얻지 못하면 action 없이 `null`을 반환합니다.
-- action이 예외를 던지면 호출자에게 그대로 전파됩니다.
-- lock은 action이 끝나면 해제되거나, lease time에 따라 만료됩니다.
+- 잠금을 획득한 노드만 작업을 실행합니다.
+- 잠금을 획득하지 못하면 작업을 실행하지 않고 `null`을 반환합니다.
+- 작업이 던진 예외는 호출자에게 그대로 전파됩니다.
+- 잠금은 작업이 끝나면 해제되고, 정상적으로 해제하지 못하면 리스가 만료될 때 사라집니다.
 
-blocking 인터페이스 기준으로 보면:
+블로킹 인터페이스는 다음과 같습니다.
 
 ```kotlin
 interface LeaderElector {
@@ -42,18 +43,18 @@ interface LeaderElector {
 }
 ```
 
-반환 타입은 `T?`입니다. `null`이면 lock 경합으로 action이 실행되지 않은 것입니다.
-ShedLock처럼 "락을 얻지 못하면 건너뛰는" 의미입니다. 경합은 에러가 아니라 예상된 결과입니다.
+반환 타입은 `T?`입니다. `null`이면 잠금 경합으로 작업이 실행되지 않았다는 뜻입니다. ShedLock처럼 잠금을 획득하지
+못하면 건너뜁니다. 경합은 오류가 아니라 예상된 실행 결과입니다.
 
 관련 소스:
 [LeaderElector.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LeaderElector.kt)
 
 ## `null`이 모호할 때: `LeaderRunResult`
 
-action 자체가 `null`을 반환할 수 있는 코드에서는 문제가 생깁니다. "락을 못 얻어서 null"인지
-"리더로 실행됐는데 action이 null을 돌려준 것"인지 구분할 방법이 없습니다.
+작업 자체가 `null`을 반환할 수 있으면 의미가 모호해집니다. 잠금을 획득하지 못한 것인지, 리더로 실행한 작업이
+`null`을 반환한 것인지 구분할 수 없습니다.
 
-`LeaderRunResult`는 이 모호함을 sealed interface로 풀어냅니다:
+`LeaderRunResult`는 이 두 결과를 sealed interface로 구분합니다.
 
 ```kotlin
 sealed interface LeaderRunResult<out T> {
@@ -68,34 +69,34 @@ sealed interface LeaderRunResult<out T> {
 }
 ```
 
-구분이 필요하면 `runIfLeaderResult`를 씁니다:
+구분이 필요하면 `runIfLeaderResult`를 사용합니다.
 
 ```kotlin
 when (val result = leaderElector.runIfLeaderResult("batch-job") { processBatch() }) {
     is LeaderRunResult.Elected      -> log.info { "리더로 실행됨, value=${result.value}" }
-    LeaderRunResult.Skipped         -> log.debug { "다른 노드가 lock 보유 중, skip" }
-    is LeaderRunResult.ActionFailed -> log.error(result.cause) { "action 실행 중 예외 발생" }
+    LeaderRunResult.Skipped         -> log.debug { "다른 노드가 잠금 보유 중, 건너뜀" }
+    is LeaderRunResult.ActionFailed -> log.error(result.cause) { "작업 실행 중 예외 발생" }
 }
 ```
 
-`CancellationException`은 `ActionFailed`로 감싸지 않습니다. 그대로 전파되어야 coroutine의 structured
-concurrency가 정상적으로 동작합니다.
+`CancellationException`은 `ActionFailed`로 감싸지 않고 그대로 전파합니다. 그래야 코루틴의 구조화된 동시성이
+취소 신호를 정상적으로 처리할 수 있습니다.
 
 관련 소스:
 [LeaderRunResult.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LeaderRunResult.kt)
 
 ## 실행 모델별 선택 기준
 
-같은 서비스 안에서도 호출 지점은 다릅니다. 리더 선출 때문에 실행 모델을 바꾸고 싶지는 않습니다.
+같은 서비스에서도 호출 지점마다 동시성 모델이 다릅니다. 리더 선출 때문에 호출자의 실행 모델을 바꿀 필요는 없습니다.
 
-| 모델 | 인터페이스 | Action 타입 | 반환 타입 | 적합한 상황 |
+| 모델 | 인터페이스 | 작업 타입 | 반환 타입 | 적합한 상황 |
 |---|---|---|---|---|
-| Blocking | `LeaderElector` | `() -> T` | `T?` | MVC, batch, 일반 JVM |
-| CompletableFuture | `AsyncLeaderElector` | `() -> CompletableFuture<T>` | `CompletableFuture<T?>` | Java async adapter |
-| Coroutine | `SuspendLeaderElector` | `suspend () -> T` | `T?` | Ktor, R2DBC, WebFlux |
-| Virtual thread | `VirtualThreadLeaderElector` | `() -> T` | `VirtualFuture<T?>` | Java 21 virtual thread |
+| 블로킹 | `LeaderElector` | `() -> T` | `T?` | MVC, 배치, 일반 JVM |
+| CompletableFuture | `AsyncLeaderElector` | `() -> CompletableFuture<T>` | `CompletableFuture<T?>` | Java 비동기 어댑터 |
+| 코루틴 | `SuspendLeaderElector` | `suspend () -> T` | `T?` | Ktor, R2DBC, WebFlux |
+| 가상 스레드 | `VirtualThreadLeaderElector` | `() -> T` | `VirtualFuture<T?>` | Java 21 가상 스레드 |
 
-### Blocking
+### 블로킹
 
 ```kotlin
 val result: String? = leaderElector.runIfLeader("report-job") {
@@ -103,7 +104,8 @@ val result: String? = leaderElector.runIfLeader("report-job") {
 }
 ```
 
-호출 스레드를 막아도 되는 곳에서 씁니다. Spring MVC controller, Quartz job, `@Scheduled` 메서드가 대표적입니다.
+호출 스레드를 블로킹해도 되는 곳에서 사용합니다. Spring MVC 컨트롤러, Quartz 작업, `@Scheduled` 메서드가
+대표적입니다.
 
 ### CompletableFuture
 
@@ -114,10 +116,10 @@ val future: CompletableFuture<String?> = asyncLeaderElector.runAsyncIfLeader("re
 future.thenAccept { result -> log.info { "result=$result" } }
 ```
 
-`AsyncLeaderElector`는 future 완료와 lock 해제를 묶습니다. future가 끝나기 전에 lock이 먼저 해제되는
-상황을 피할 수 있습니다.
+`AsyncLeaderElector`는 `CompletableFuture` 완료 시점과 잠금 생명주기를 연결합니다. 반환한 `CompletableFuture`가
+완료될 때까지 잠금을 유지하므로 비동기 작업이 리더 선출 경계에서 분리되지 않습니다.
 
-### Coroutine
+### 코루틴
 
 ```kotlin
 val result: String? = suspendLeaderElector.runIfLeader("report-job") {
@@ -125,30 +127,30 @@ val result: String? = suspendLeaderElector.runIfLeader("report-job") {
 }
 ```
 
-`SuspendLeaderElector`는 `suspend` 람다를 그대로 받습니다. wrapper도 `runBlocking`도 없습니다.
-lock을 들고 있는 동안 coroutine이 취소되면 `CancellationException`이 즉시 전파되고 lock이 풀립니다.
-취소를 삼킨 리더가 작업을 계속 붙잡고 있으면 graceful shutdown이 아니라 shutdown을 방해하는 작업이 됩니다.
+`SuspendLeaderElector`는 `suspend` 람다를 그대로 받으므로 래퍼나 `runBlocking`이 필요하지 않습니다. 잠금을 보유한
+코루틴이 취소되면 `CancellationException`이 즉시 전파되고 잠금이 해제됩니다. 작업 코드에서 취소 예외를 삼키면
+정상 종료가 지연되므로 취소 신호를 그대로 전파해야 합니다.
 
-### Virtual thread
+### 가상 스레드
 
 ```kotlin
 val future: VirtualFuture<String?> = virtualThreadLeaderElector.runAsyncIfLeader("report-job") {
     generateReport()
 }
 
-// 현재 virtual thread를 block
+// 현재 가상 스레드가 완료를 기다림
 val result = future.await()
 
 // 또는 Java API와 연동
 val cf: CompletableFuture<String?> = future.toCompletableFuture()
 ```
 
-`VirtualFuture.await()`는 platform thread를 잡지 않고 virtual thread를 park합니다.
-기존 Java async pipeline과 이어야 할 때는 `toCompletableFuture()`로 변환합니다.
+`VirtualFuture.await()`는 플랫폼 스레드를 점유하지 않고 호출한 가상 스레드를 대기 상태로 전환합니다. 기존 Java
+비동기 파이프라인과 연동할 때는 `toCompletableFuture()`로 변환합니다.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-leader-runifleader-sequence-01-ko.png" alt="runIfLeader 성공 및 skip 시퀀스 다이어그램" loading="lazy" />
-  <figcaption>리더 획득 시: action이 실행되고 결과가 반환됩니다. Lock 경합 시: 에러 없이 null이 반환됩니다.</figcaption>
+<figure class="bt4k-sequence">
+  <img src="/assets/bluetape4k-leader-runifleader-sequence-01-ko.png" alt="runIfLeader가 리더 선출 성공과 잠금 경합 시 건너뛰기를 처리하는 시퀀스 다이어그램" loading="lazy" data-diagram-title="runIfLeader 실행 및 건너뛰기 흐름" />
+  <figcaption>리더로 선출되면 작업을 실행해 결과를 반환하고, 잠금 경합이 발생하면 오류 없이 `null`을 반환합니다.</figcaption>
 </figure>
 
 관련 소스:
@@ -162,12 +164,12 @@ val cf: CompletableFuture<String?> = future.toCompletableFuture()
 
 | 프로퍼티 | 기본값 | 의미 |
 |---|---|---|
-| `waitTime` | 5s | lock 획득을 포기하기 전 대기하는 최대 시간 |
-| `leaseTime` | 60s | action 완료 후 lock을 보유하는 시간 |
-| `nodeId` | JVM process id | lock을 보유한 노드의 식별자 |
-| `minLeaseTime` | 0s | action이 일찍 완료돼도 lock을 보유하는 최소 시간 |
-| `autoExtend` | `false` | 장시간 실행 중인 action의 lease를 자동으로 갱신할지 여부 |
-| `useDbTime` | `false` | application 노드 clock 대신 database 서버 clock 사용 |
+| `waitTime` | 5s | 잠금 획득을 포기하기 전까지 기다리는 최대 시간 |
+| `leaseTime` | 60s | 한 번 부여되는 리더십 리스의 TTL |
+| `nodeId` | JVM 프로세스 ID | 잠금을 보유한 노드의 식별자 |
+| `minLeaseTime` | 0s | 작업이 일찍 끝나도 잠금을 유지하는 최소 시간 |
+| `autoExtend` | `false` | 장시간 실행하는 작업의 리스를 자동 갱신할지 여부 |
+| `useDbTime` | `false` | 애플리케이션 노드 대신 DB 서버 시계를 사용할지 여부 |
 
 ```kotlin
 val options = LeaderElectionOptions(
@@ -179,27 +181,26 @@ val options = LeaderElectionOptions(
 )
 ```
 
-**`waitTime` vs `leaseTime`** — 두 값은 다른 시점을 제어합니다. `waitTime`은 획득 대기 시간입니다.
-다른 노드가 lock을 들고 있고 `waitTime`이 지나면 `runIfLeader`는 `null`을 반환합니다. `leaseTime`은
-action이 끝난 후 backend에서 lock이 남아 있는 시간입니다. 노드가 죽어서 lock을 못 풀었을 때도
-다른 노드가 결국 획득할 수 있도록 상한선을 잡습니다.
+**`waitTime`과 `leaseTime`** — 두 값은 서로 다른 경계를 제어합니다. `waitTime`은 잠금 획득을 기다리는 최대
+시간입니다. 다른 노드가 잠금을 보유한 채 `waitTime`이 지나면 `runIfLeader`는 `null`을 반환합니다. `leaseTime`은
+한 번 부여되는 리더십 리스의 TTL입니다. 노드가 종료되어 잠금을 해제하지 못하더라도 리스가 만료되면 다른 노드가
+잠금을 획득할 수 있고, `autoExtend = true`이면 지원되는 단일 리더 백엔드가 작업 실행 중 리스를 갱신합니다.
 
-**`minLeaseTime`** — action이 순식간에 끝나도 lock을 최소 N초 유지합니다. backend TTL로 강제되고,
-그 시간 동안 호출 스레드가 대기하는 게 아닙니다. lock이 저장소에서 경쟁 노드에게 보이는 상태로
-남아 있을 뿐입니다.
+**`minLeaseTime`** — 작업이 빨리 끝나도 잠금을 최소 N초 동안 유지합니다. 로컬 선출자는 해제 전에 기다리고,
+지원되는 분산 백엔드는 남은 최소 리스 시간을 저장소 TTL에 위임하므로 호출자가 즉시 반환될 수 있습니다.
 
-**`autoExtend`** — `leaseTime`보다 오래 걸리는 job에서 필요합니다. `true`면 background에서 주기적으로
-lease를 갱신합니다. 정산 batch, 마이그레이션처럼 실행 시간이 가변적인 job에 씁니다.
+**`autoExtend`** — 작업이 `leaseTime`보다 오래 걸릴 수 있을 때 사용합니다. `true`이면 백그라운드에서 리스를
+주기적으로 갱신합니다. 정산 배치나 마이그레이션처럼 실행 시간이 가변적인 작업에 적합합니다.
 
-**`useDbTime`** — database-backed 구현에서 노드 간 clock skew가 걱정될 때 씁니다. `true`면
-lock 타임스탬프를 DB 서버 clock으로 비교해 노드별 편차를 없앱니다.
+**`useDbTime`** — DB 기반 구현에서 노드 간 시계 편차를 피할 때 사용합니다. `true`이면 잠금 타임스탬프를 DB 서버
+시계로 비교합니다.
 
 ## 테넌트 네임스페이스
 
-`forTenant()`는 elector를 감싸서 모든 `lockName`에 자동으로 테넌트 prefix를 붙입니다.
-반환된 elector는 원래와 똑같은 인터페이스를 씁니다.
+`forTenant()`는 선출자를 감싸 모든 `lockName`에 테넌트 접두사를 자동으로 붙입니다. 반환된 선출자는 원본과 같은
+인터페이스를 제공합니다.
 
-backend에 저장되는 키 형식은 `tenant:{tenantId}:{lockName}`입니다:
+백엔드에 저장되는 키 형식은 `tenant:{tenantId}:{lockName}`입니다.
 
 ```
 tenant:acme:report-job
@@ -213,14 +214,15 @@ val result = acmeElector.runIfLeader("report-job") {
 }
 ```
 
-두 테넌트가 같은 `"report-job"` 이름을 써도 backend 키가 달라서 서로 경합하지 않습니다.
+두 테넌트가 같은 `"report-job"` 이름을 사용해도 백엔드 키가 다르므로 서로 경합하지 않습니다.
 
-제약 두 가지: 콜론(`:`)은 separator라 tenant id나 lock name에 쓸 수 없고, 전체 키 이름이 255자를
-넘으면 안 됩니다. SaaS 서비스에서 테넌트마다 같은 정산 job을 독립적으로 돌릴 때 쓰는 패턴입니다.
+콜론(`:`)은 구분자이므로 테넌트 ID나 잠금 이름에 사용할 수 없으며, 접두사를 포함한 전체 이름은 일반적인 백엔드 키
+제한에 맞춰 255자를 넘지 않아야 합니다. SaaS 서비스에서 테넌트마다 같은 정산 작업을 독립적으로 실행할 때 사용할
+수 있습니다.
 
-## State 스냅샷
+## 상태 스냅샷
 
-`LeaderElectionState.state(lockName)`은 현재 선출 상태의 스냅샷을 돌려줍니다:
+`LeaderElectionState.state(lockName)`은 현재 선출 상태의 스냅샷을 반환합니다.
 
 ```kotlin
 val s = leaderElector.state("batch-lock")
@@ -229,14 +231,13 @@ if (s.isOccupied) {
 }
 ```
 
-`LeaderState`는 `lockName`, `status` (`Empty` / `Occupied`), lock holder 정보를 담습니다.
+`LeaderState`는 `lockName`, `status`(`Empty` 또는 `Occupied`), 잠금 보유자 정보를 담습니다.
 
-중요한 제약: **state는 best-effort 스냅샷입니다**. 이 값을 보고 action 실행 여부를 결정하면 안 됩니다.
-읽는 순간과 실행하려는 순간 사이에 이미 바뀌어 있을 수 있습니다. 실행 결정은 항상 `runIfLeader`의 atomic
-acquire 경로를 거쳐야 합니다.
+중요한 제약은 **상태가 최선 노력 방식의 스냅샷**이라는 점입니다. 이 값으로 작업 실행 여부를 결정하면 안 됩니다.
+조회한 직후에도 상태가 바뀔 수 있습니다. 실행 결정은 항상 `runIfLeader`의 원자적 잠금 획득 경로를 거쳐야 합니다.
 
-스냅샷이 제 역할을 하는 곳은 "지금 누가 리더인지 보여주는" 쪽입니다 — 모니터링 대시보드, admin API,
-`/actuator/leader` 같은 진단 엔드포인트. 동시성 제어가 아닌 관찰이 목적일 때입니다.
+스냅샷은 현재 리더를 보여주는 모니터링 대시보드, 관리 API, `/actuator/leader` 같은 진단 엔드포인트에 적합합니다.
+동시성 제어가 아니라 상태 관찰이 목적일 때 사용해야 합니다.
 
 ## ShedLock과의 비교 (Kotlin 관점)
 
@@ -244,21 +245,20 @@ Part 1에서 전체 그림을 비교했습니다. 여기서는 Kotlin 코드 레
 
 | 항목 | ShedLock | bluetape4k-leader |
 |---|---|---|
-| Suspend function action | wrapper나 adapter 필요 | `SuspendLeaderElector`가 `suspend` action을 직접 받음 |
-| `CompletableFuture` action | future 완료까지 lock 유지에 수동 처리 필요 | `AsyncLeaderElector`가 future 완료와 lock lifecycle을 연결 |
-| Virtual thread action | 보통 callsite에서 일반 blocking code | `VirtualThreadLeaderElector`가 `VirtualFuture` 반환 |
-| 취소 / `CancellationException` | 외부 coroutine scope가 처리 | 취소 시 lock 해제; `CancellationException` 재전파 |
-| Nullable action 반환값 | `true`/`false` 결과나 custom wrapper 필요 | `LeaderRunResult.Elected` vs `Skipped`가 구분을 제공 |
-| Skip semantics | `@SchedulerLock` skip-on-lock-fail | `runIfLeader`는 `null` 반환; result API는 `Skipped` 반환 |
+| `suspend` 함수 작업 | 래퍼나 어댑터 필요 | `SuspendLeaderElector`가 `suspend` 작업을 직접 받음 |
+| `CompletableFuture` 작업 | `CompletableFuture` 완료까지 잠금을 유지하도록 직접 처리 | `AsyncLeaderElector`가 `CompletableFuture` 완료와 잠금 생명주기를 연결 |
+| 가상 스레드 작업 | 보통 호출 지점에서 일반 블로킹 코드 사용 | `VirtualThreadLeaderElector`가 `VirtualFuture` 반환 |
+| 취소 / `CancellationException` | 외부 코루틴 범위가 처리 | 취소 시 잠금 해제 후 `CancellationException` 재전파 |
+| null 허용 작업 반환값 | `true`/`false` 결과나 사용자 정의 래퍼 필요 | `LeaderRunResult.Elected`와 `Skipped`로 구분 |
+| 건너뛰기 의미 | `@SchedulerLock`은 잠금 획득 실패 시 건너뜀 | `runIfLeader`는 `null`, 결과 API는 `Skipped` 반환 |
 
-`@Scheduled` 메서드 하나만 보호하는 게 목적이라면 ShedLock이 더 단순한 선택입니다. 서비스에 coroutine
-worker, 테넌트별 poller, `CompletableFuture` 체인, virtual thread job이 섞여 있다면 실행 모델마다
-다른 API를 쓰는 대신 하나로 통일하고 싶어집니다. 그때 bluetape4k-leader가 공통 options 타입, 공통
-result 타입, 일관된 lease semantics를 제공합니다.
+Spring MVC 애플리케이션의 `@Scheduled` 메서드 하나만 보호한다면 ShedLock이 더 단순한 선택입니다. 반면 서비스에
+코루틴 작업자, 테넌트별 폴러, `CompletableFuture` 체인, 가상 스레드 작업이 함께 있다면 bluetape4k-leader로 공통
+옵션 타입과 결과 타입, 일관된 리스 의미를 사용할 수 있습니다.
 
 ## 참고자료
 
-- Repository: [bluetape4k-leader](https://github.com/bluetape4k/bluetape4k-leader)
+- 저장소: [bluetape4k-leader](https://github.com/bluetape4k/bluetape4k-leader)
 - [`LeaderElector.kt`](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LeaderElector.kt)
 - [`AsyncLeaderElector.kt`](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/AsyncLeaderElector.kt)
 - [`SuspendLeaderElector.kt`](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/coroutines/SuspendLeaderElector.kt)
@@ -269,16 +269,16 @@ result 타입, 일관된 lease semantics를 제공합니다.
 
 ## 마무리
 
-실행 모델 선택은 호출 지점을 보면 대부분 자명합니다. blocking 서비스는 `LeaderElector`, coroutine
-서비스는 `SuspendLeaderElector`. options와 result 타입은 어느 모델을 쓰든 동일합니다.
+실행 모델은 호출 지점의 동시성 모델에 맞춰 선택합니다. 블로킹 서비스는 `LeaderElector`, 코루틴 서비스는
+`SuspendLeaderElector`를 사용하며 옵션과 결과 타입은 네 실행 모델에서 동일합니다.
 
 Part 3에서는 `LeaderGroupElector`를 다룹니다. 리더 하나가 아니라 N개 노드가 동시에 특정 역할을 맡아야
-할 때, 그리고 단순 lock 경합 대신 순위나 가중치로 선출 노드를 고르고 싶을 때입니다.
+할 때, 그리고 단순 잠금 경합 대신 순위나 가중치로 실행 노드를 선택해야 할 때 사용하는 API입니다.
 
 ## 시리즈 링크
 
 - [Part 1: 리더 선출의 기본 모델](/ko/blog/bluetape4k-leader-part1-overview/)
-- [Part 2: Core API와 실행 모델](/ko/blog/bluetape4k-leader-part2-core-apis/) — 현재 글
-- [Part 3: Multi-leader와 전략 선출](/ko/blog/bluetape4k-leader-part3-group-strategic-election/)
+- [Part 2: 핵심 API와 실행 모델](/ko/blog/bluetape4k-leader-part2-core-apis/) — 현재 글
+- [Part 3: 복수 리더와 전략 선출](/ko/blog/bluetape4k-leader-part3-group-strategic-election/)
 - [Part 4: Spring Boot와 Ktor 통합](/ko/blog/bluetape4k-leader-part4-spring-ktor-management/)
-- [Part 5: Backend, 운영 기능, Benchmark](/ko/blog/bluetape4k-leader-part5-backends-operations-benchmarks/)
+- [Part 5: 백엔드, 운영 기능, 벤치마크](/ko/blog/bluetape4k-leader-part5-backends-operations-benchmarks/)

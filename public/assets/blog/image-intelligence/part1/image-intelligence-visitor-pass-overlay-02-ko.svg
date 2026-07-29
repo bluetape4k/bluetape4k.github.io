@@ -37,18 +37,18 @@
     <rect x="90" y="165" width="1010" height="785" rx="36" fill="url(#pass)" stroke="#8da2c1" stroke-width="3"/>
     <rect x="90" y="165" width="1010" height="105" rx="36" fill="#1b4a73"/>
     <rect x="90" y="230" width="1010" height="40" fill="#1b4a73"/>
-    <text x="140" y="232" font-family="'goorm Sans','Architects Daughter',sans-serif" font-size="42" font-weight="700" fill="#f8fafc">VISITOR PASS</text>
+    <text x="140" y="232" font-family="'goorm Sans','Architects Daughter',sans-serif" font-size="42" font-weight="700" fill="#f8fafc">방문증</text>
     <text x="1035" y="232" text-anchor="end" font-family="'goorm Sans Code','Comic Mono','goorm Sans',monospace" font-size="20" fill="#c8e4f5">PASS-001</text>
 
     <rect x="145" y="330" width="315" height="350" rx="24" fill="#aebdd2" stroke="#7e91ae" stroke-width="2"/>
     <circle cx="302" cy="445" r="88" fill="#7388a6"/>
     <path d="M210 630 Q220 530 302 530 Q384 530 394 630 Z" fill="#7388a6"/>
 
-    <text class="passLabel" x="530" y="360">NAME</text>
+    <text class="passLabel" x="530" y="360">이름</text>
     <text class="passTitle" x="530" y="414">KIM BLUETAPE</text>
-    <text class="passLabel" x="530" y="480">COMPANY</text>
+    <text class="passLabel" x="530" y="480">소속</text>
     <text class="passBody" x="530" y="524">BLUETAPE LABS</text>
-    <text class="passLabel" x="530" y="590">ACCESS</text>
+    <text class="passLabel" x="530" y="590">출입</text>
     <text class="passBody" x="530" y="634">HALL A · 09:00–18:00</text>
 
     <rect x="770" y="700" width="255" height="190" rx="16" fill="#ffffff" stroke="#8ca0ba" stroke-width="2"/>
@@ -63,15 +63,15 @@
 
     <rect x="510" y="326" width="520" height="335" rx="18" fill="none" stroke="#50c7d9" stroke-width="5" stroke-dasharray="14 10"/>
     <rect x="526" y="344" width="150" height="38" rx="12" fill="#123b50" stroke="#50c7d9"/>
-    <text x="601" y="370" text-anchor="middle" font-family="'goorm Sans Code','Comic Mono','goorm Sans',monospace" font-size="18" fill="#a7edf5">OCR BLOCKS</text>
+    <text x="601" y="370" text-anchor="middle" font-family="'goorm Sans Code','Comic Mono','goorm Sans',monospace" font-size="18" fill="#a7edf5">OCR 영역</text>
 
     <rect x="132" y="315" width="340" height="380" rx="28" fill="none" stroke="#f0ad5b" stroke-width="5"/>
     <rect x="150" y="334" width="200" height="38" rx="12" fill="#51351a" stroke="#f0ad5b"/>
-    <text x="250" y="360" text-anchor="middle" font-family="'goorm Sans Code','Comic Mono','goorm Sans',monospace" font-size="18" fill="#ffe0ad">FACE · 0.99</text>
+    <text x="250" y="360" text-anchor="middle" font-family="'goorm Sans Code','Comic Mono','goorm Sans',monospace" font-size="18" fill="#ffe0ad">얼굴 · 0.99</text>
 
     <rect x="750" y="680" width="295" height="230" rx="22" fill="none" stroke="#57c58a" stroke-width="5"/>
     <rect x="768" y="694" width="246" height="38" rx="12" fill="#153e2d" stroke="#57c58a"/>
-    <text x="891" y="720" text-anchor="middle" font-family="'goorm Sans Code','Comic Mono','goorm Sans',monospace" font-size="17" fill="#baf3d3">QR REGION · EXAMPLE</text>
+    <text x="891" y="720" text-anchor="middle" font-family="'goorm Sans Code','Comic Mono','goorm Sans',monospace" font-size="17" fill="#baf3d3">QR 영역 · 예시</text>
   </g>
 
   <g id="legend-ocr" data-node="legend-ocr">

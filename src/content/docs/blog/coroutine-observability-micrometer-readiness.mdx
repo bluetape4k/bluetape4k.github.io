@@ -34,7 +34,7 @@ The contract is small:
 Prometheus, Grafana, Zipkin, Actuator, and registries do not trigger business work. They read the meters and spans left
 behind by the request path. If that boundary is unclear, both diagrams and operational decisions drift.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Coroutine work path and observation path">
   <img src="/assets/coroutine-observability-trace-flow-01-en.png" alt="Coroutine observability architecture diagram separating work-producing request path from observe-only scrape query and trace export path" loading="lazy" />
   <figcaption>The business request moves through the handler, observation scope, suspend service, and downstream clients. Prometheus, Grafana, and Zipkin observe the signals after that work is recorded.</figcaption>
 </figure>
@@ -188,7 +188,7 @@ alive," and "this service can use the database" collapse into one overloaded sen
 
 The Spring Boot and Ktor examples express this operational contract with different framework shapes.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-sequence" data-diagram-title="Readiness probe contract">
   <img src="/assets/coroutine-observability-readiness-sequence-01-en.png" alt="Sequence diagram for readiness probe checking endpoint state repository ping database reachability and UP or DOWN response branches" loading="lazy" />
   <figcaption>The readiness endpoint checks both example state and repository/database reachability. A degraded dependency must return 503, not a misleading 200.</figcaption>
 </figure>

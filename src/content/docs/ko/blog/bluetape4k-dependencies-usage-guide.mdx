@@ -1,41 +1,47 @@
 ---
-title: "bluetape4k-dependencies 사용 가이드: 여러 라이브러리 같이 쓰기"
-description: "bluetape4k ecosystem의 여러 라이브러리를 한 애플리케이션에서 함께 쓸 때 BOM을 어떻게 가져오고, 모듈 버전은 왜 빼야 하는지 예제로 정리한다."
+title: "bluetape4k-dependencies 사용 가이드: 여러 라이브러리 함께 사용하기"
+description: "bluetape4k 생태계의 여러 라이브러리를 한 애플리케이션에서 사용할 때 BOM을 적용하고 모듈 버전을 생략하는 이유를 예제로 설명한다."
 sidebar:
   order: -202606281100
 blog:
   date: 2026-06-28T11:00:00+09:00
   image: /assets/bluetape4k-dependencies-version-governance-hero.png
-  imageAlt: 작은 로봇 작업자들이 모듈 블록을 컨베이어와 중앙 정렬 장치로 모아 dependency BOM을 맞추는 3D 작업대 일러스트
-  cardDescription: "여러 bluetape4k 라이브러리를 같이 쓸 때는 각 모듈 버전을 외우는 대신 BOM을 먼저 가져오면 된다."
+  imageAlt: 작은 로봇 작업자들이 모듈 블록을 컨베이어와 중앙 정렬 장치로 모아 의존성 BOM을 맞추는 3D 작업대 일러스트
+  cardDescription: "여러 bluetape4k 라이브러리를 함께 사용할 때는 각 모듈 버전을 개별 관리하지 않고 BOM을 먼저 적용한다."
   tags: ["bom","dependencies","ecosystem","kotlin"]
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/bluetape4k-dependencies-version-governance-hero.png" alt="작은 로봇 작업자들이 모듈 블록을 컨베이어와 중앙 정렬 장치로 모아 dependency BOM을 맞추는 3D 작업대 일러스트" loading="eager" />
-  <figcaption>애플리케이션은 `projects`, `exposed`, `aws`, `image`, `text`, `graph`, `leader`, `javers`의 버전을 따로 외우지 않아도 됩니다. 먼저 BOM을 가져오고, 필요한 모듈만 고르면 됩니다.</figcaption>
+  <img src="/assets/bluetape4k-dependencies-version-governance-hero.png" alt="작은 로봇 작업자들이 모듈 블록을 컨베이어와 중앙 정렬 장치로 모아 의존성 BOM을 맞추는 3D 작업대 일러스트" loading="eager" />
+  <figcaption>애플리케이션은 `projects`, `exposed`, `aws`, `image`, `text`, `graph`, `leader`, `javers`의 버전을 개별 관리하지 않아도 됩니다. BOM을 적용한 뒤 필요한 모듈만 선택합니다.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-06-28 · bluetape4k dependencies 사용 가이드</p>
 
-`bluetape4k`를 하나만 쓸 때는 고민이 많지 않습니다. `bluetape4k-core` 하나 넣고 끝낼 수도 있습니다.
-그런데 실제 서비스에서는 보통 그렇게 끝나지 않습니다.
+`bluetape4k` 라이브러리 하나만 사용한다면 의존성 구성은 단순합니다. 그러나 실제 서비스는 여러
+기능 모듈을 함께 사용하는 경우가 많습니다.
 
-예를 들어 이런 조합이 자연스럽습니다.
+예를 들어 다음과 같이 구성할 수 있습니다.
 
-- 공통 Kotlin/JVM helper는 `projects`에서 가져옵니다.
-- DB 접근은 `exposed`를 씁니다.
-- AWS 연동은 `aws`를 붙입니다.
-- batch나 scheduler는 `leader`로 한 노드만 실행하게 만듭니다.
-- 검색어 처리나 금칙어 처리는 `text`를 씁니다.
+- 공통 Kotlin/JVM 도우미는 `projects`에서 가져옵니다.
+- 데이터베이스 접근에는 `exposed`를 사용합니다.
+- AWS 연동에는 `aws`를 사용합니다.
+- 배치나 스케줄러는 `leader`로 한 노드에서만 실행하도록 제어합니다.
+- 검색어와 금칙어 처리에는 `text`를 사용합니다.
 
 이때 개발자의 질문은 훨씬 현실적입니다.
 
-> 내 `build.gradle.kts`에 뭘 적어야 하고, 어디까지 버전을 직접 관리해야 하나?
+> `build.gradle.kts`에는 무엇을 선언하며, 버전은 어느 범위까지 직접 관리해야 하는가?
 
-답은 간단합니다. `bluetape4k-dependencies` BOM을 먼저 가져오고, 그다음부터 bluetape4k 모듈에는 버전을 적지 않습니다.
+`bluetape4k-dependencies` BOM을 먼저 적용하고, 개별 bluetape4k 모듈에는 버전을 선언하지 않는 것이
+기본 원칙입니다.
 
-## Gradle에서는 이렇게 시작한다
+<figure class="bt4k-architecture" data-diagram-title="BOM을 기준으로 관리하는 버전 경계">
+  <img src="/assets/bluetape4k-dependencies-version-governance-01-ko.png" alt="애플리케이션이 bluetape4k-dependencies BOM을 적용해 기능 모듈 버전을 정렬하고 임시 버전 예외는 사유와 제거 조건을 기록하는 구조도" loading="lazy" />
+  <figcaption>애플리케이션은 중앙 BOM으로 기본 버전 경계를 관리합니다. 개별 모듈 버전 고정은 사유와 제거 조건을 남긴 임시 예외로 제한합니다.</figcaption>
+</figure>
+
+## Gradle에서는 BOM부터 적용한다
 
 Kotlin DSL에서는 `platform(...)`으로 BOM을 가져옵니다.
 
@@ -57,19 +63,20 @@ dependencies {
 implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.3.1"))
 ```
 
-이 줄이 들어가면 아래 모듈들은 버전 없이 선언합니다. 버전을 다시 적으면 BOM을 쓰는 이유가 줄어듭니다.
+이 줄을 추가하면 아래 모듈은 버전 없이 선언합니다. 개별 버전을 다시 지정하면 BOM이 제공하는
+버전 정렬 효과가 줄어듭니다.
 
 ```kotlin
-// 이렇게 쓰지 않는 편이 좋습니다.
+// 개별 버전이 꼭 필요한 경우가 아니라면 피한다.
 implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-jdbc:1.11.0")
 implementation("io.github.bluetape4k.aws:bluetape4k-aws-java:0.4.0")
 ```
 
 `dependencies 1.3.1`은 내부적으로 `projects 1.11.0`, `exposed 1.11.0`, `aws 0.4.0`, `image 0.3.0`,
-`text 0.2.1`, `graph 0.5.1`, `leader 0.4.0`, `javers 0.2.1` 같은 조합을 관리합니다. 애플리케이션은 이 숫자를
-각각 외울 필요가 없습니다. BOM 버전 하나만 고르면 됩니다.
+`text 0.2.1`, `graph 0.5.1`, `leader 0.4.0`, `javers 0.2.1` 조합을 관리합니다. 애플리케이션은
+개별 버전 대신 BOM 버전 하나를 선택합니다.
 
-## Maven에서는 dependencyManagement로 가져온다
+## Maven에서는 dependencyManagement로 적용한다
 
 Maven을 쓴다면 `dependencyManagement`에 BOM을 import합니다.
 
@@ -87,7 +94,7 @@ Maven을 쓴다면 `dependencyManagement`에 BOM을 import합니다.
 </dependencyManagement>
 ```
 
-그다음 dependency에는 버전을 쓰지 않습니다.
+이후 개별 의존성에는 버전을 선언하지 않습니다.
 
 ```xml
 <dependencies>
@@ -121,9 +128,9 @@ dependencies {
 }
 ```
 
-하지만 이렇게 되면 버전 조합을 애플리케이션이 직접 책임지게 됩니다. `core`는 새 버전인데 `exposed`는 이전 버전이고,
-`aws`는 다른 Spring Boot/Ktor 라인을 기대할 수 있습니다. 운이 좋으면 그냥 지나갑니다. 운이 나쁘면 compile 때
-깨지고, 더 운이 나쁘면 실행 중 classpath에서 터집니다.
+그러나 이 방식에서는 애플리케이션이 버전 조합을 직접 책임져야 합니다. `core`는 새 버전이지만
+`exposed`는 이전 버전일 수 있고, `aws`가 다른 Spring Boot/Ktor 호환선을 요구할 수도 있습니다.
+불일치는 컴파일 단계에서 드러나기도 하지만, 실행 중 클래스패스 오류로 나타날 수도 있습니다.
 
 실제로 이런 종류의 문제는 겉으로는 단순합니다.
 
@@ -134,17 +141,17 @@ BeanCreationException
 dependency resolution failed
 ```
 
-하지만 원인을 찾기 시작하면 재미가 없어집니다. "내 코드가 틀렸나?", "Exposed 쪽 버전이 낮나?", "Spring Boot
-라인이 다른가?", "transitive dependency가 덮였나?"를 하나씩 봐야 합니다. 이때부터는 개발이 아니라 똥 치우기입니다.
+원인을 분석하려면 애플리케이션 코드, Exposed 버전, Spring Boot 호환선, 전이 의존성 선택 결과를
+차례로 확인해야 합니다.
 
-BOM을 쓰면 최소한 bluetape4k 모듈끼리의 조합은 BOM이 관리합니다. 애플리케이션은 자기 코드와 자기 서비스 dependency에
-더 집중할 수 있습니다.
+BOM을 사용하면 최소한 bluetape4k 모듈 간 조합은 BOM이 관리합니다. 애플리케이션은 자체 코드와
+서비스 고유 의존성에 집중할 수 있습니다.
 
-## 조합별로 보면 더 쉽다
+## 기능 조합을 기준으로 모듈을 선택한다
 
 실제 서비스에서는 필요한 기능을 기준으로 모듈을 고르는 편이 좋습니다.
 
-| 하고 싶은 일 | 예시 dependency |
+| 필요한 기능 | 예시 의존성 |
 |---|---|
 | 공통 Kotlin/JVM 기반 | `io.github.bluetape4k:bluetape4k-core`, `bluetape4k-coroutines`, `bluetape4k-logging` |
 | Exposed JDBC/R2DBC 사용 | `io.github.bluetape4k.exposed:bluetape4k-exposed-jdbc`, `bluetape4k-exposed-r2dbc` |
@@ -159,7 +166,7 @@ BOM을 쓰면 최소한 bluetape4k 모듈끼리의 조합은 BOM이 관리합니
 
 이 표에서 버전을 찾지 않아도 됩니다. 먼저 BOM을 가져왔기 때문입니다.
 
-예를 들어 Spring Boot 서비스에서 Exposed, AWS, leader election을 같이 쓴다면 이런 식입니다.
+예를 들어 Spring Boot 서비스에서 Exposed, AWS, 리더 선출을 함께 사용한다면 다음과 같이 구성합니다.
 
 ```kotlin
 dependencies {
@@ -208,13 +215,13 @@ dependencies {
 ```
 
 모든 프로젝트에서 `dependencyInsight`를 매번 볼 필요는 없습니다. 다만 Exposed, Spring Boot, Ktor, Jackson,
-AWS SDK처럼 서비스 경계에 가까운 dependency가 같이 움직였을 때는 한 번 확인해 두는 편이 좋습니다. 문제가 생겼을 때
-"BOM을 올린 뒤 어떤 dependency graph가 되었는지"를 바로 볼 수 있습니다.
+AWS SDK처럼 서비스 경계에 가까운 의존성이 함께 변경되었다면 확인해야 합니다. 문제가 발생했을 때
+"BOM을 올린 뒤 어떤 의존성 그래프가 되었는지"를 즉시 확인할 수 있습니다.
 
-## 개별 버전 override는 예외로 둔다
+## 개별 버전 override는 예외로 관리한다
 
-가끔은 특정 모듈 버전을 임시로 고정해야 할 수 있습니다. 보안 패치, upstream regression 회피, 아직 BOM에 반영되지
-않은 긴급 수정 같은 경우입니다.
+특정 모듈 버전을 임시로 고정해야 하는 경우도 있습니다. 보안 패치, 업스트림 회귀 회피, 아직 BOM에
+반영되지 않은 긴급 수정이 대표적입니다.
 
 그럴 때도 override는 예외로 두는 편이 좋습니다.
 
@@ -229,32 +236,31 @@ dependencies {
 }
 ```
 
-주석 없이 남은 override는 나중에 누가 봐도 애매합니다. 실수인지, 의도인지, 지우면 되는지 알 수 없습니다.
-몇 달 뒤에 다시 보면 의도가 흐려집니다. 그러니 override를 한다면 이유와 제거 조건을 같이 남기는 게 좋습니다.
+주석 없는 override는 실수인지 의도된 예외인지 판단하기 어렵습니다. override를 추가한다면 이유와
+제거 조건을 함께 기록해야 합니다.
 
-## 일반 사용자는 catalog를 몰라도 된다
+## 일반 사용자는 버전 카탈로그를 알 필요가 없다
 
-Gradle Version Catalog는 bluetape4k 내부 저장소나 workshop을 관리할 때 유용합니다. alias를 맞추고, 여러 repo의
-build script를 비슷한 형태로 유지하는 데 도움이 됩니다.
+Gradle Version Catalog는 bluetape4k 내부 저장소나 워크숍을 관리할 때 유용합니다. 별칭을 정렬하고 여러
+저장소의 빌드 스크립트를 비슷한 형태로 유지하는 데 도움이 됩니다.
 
-하지만 일반 애플리케이션 개발자가 `bluetape4k-dependencies`를 사용할 때 catalog 구조를 알 필요는 없습니다.
+그러나 일반 애플리케이션 개발자가 `bluetape4k-dependencies`를 사용할 때 버전 카탈로그 구조를 알 필요는 없습니다.
 먼저 알아야 할 것은 이 네 가지입니다.
 
-1. `io.github.bluetape4k:bluetape4k-dependencies` BOM을 가져온다.
-2. bluetape4k 모듈 dependency에는 버전을 적지 않는다.
-3. 여러 bluetape4k 라이브러리를 같이 쓸수록 BOM을 쓰는 이득이 커진다.
+1. `io.github.bluetape4k:bluetape4k-dependencies` BOM을 적용한다.
+2. bluetape4k 모듈 의존성에는 버전을 선언하지 않는다.
+3. 여러 bluetape4k 라이브러리를 함께 사용할수록 BOM의 이점이 커진다.
 4. 예외적으로 개별 버전을 override하면 이유와 제거 조건을 남긴다.
 
-이 정도면 충분합니다. catalog는 `bluetape4k`를 만드는 쪽에서 버전과 alias를 관리하기 위한 도구에 가깝습니다.
-사용하는 쪽에서는 BOM을 가져오고 필요한 모듈을 고르는 일이 먼저입니다.
+버전 카탈로그는 `bluetape4k`를 개발하는 측에서 버전과 별칭을 관리하기 위한 도구입니다. 사용하는
+측에서는 BOM을 적용하고 필요한 모듈을 선택하는 일이 먼저입니다.
 
-## Maven Central에 올라간 버전은 덮어쓸 수 없다
+## Maven Central에 공개한 버전은 덮어쓸 수 없다
 
-사용자 입장에서 알아두면 좋은 배경도 하나 있습니다. Maven Central에 한 번 올라간 release artifact는 같은 버전으로
-다시 덮어쓸 수 없습니다.
+Maven Central에 공개한 릴리스 아티팩트는 같은 버전으로 다시 덮어쓸 수 없습니다.
 
-그래서 어떤 BOM 버전에 문제가 있으면 보통 같은 번호를 고쳐서 다시 올리지 않습니다. `1.3.0`에 문제가 있으면
-`1.3.1` 같은 새 버전으로 고칩니다. 개발자는 이 점만 기억하면 됩니다.
+따라서 특정 BOM 버전에 문제가 있으면 같은 번호를 수정해 다시 게시하지 않습니다. `1.3.0`에 문제가
+있다면 `1.3.1`과 같은 새 패치 버전으로 수정합니다.
 
 ```text
 이미 공개된 BOM 버전이 이상하다
@@ -262,20 +268,20 @@ build script를 비슷한 형태로 유지하는 데 도움이 됩니다.
   -> 패치 BOM 버전이 나오는지 확인한다
 ```
 
-운영 절차를 전부 알 필요는 없습니다. 다만 "왜 그냥 1.3.0을 다시 올리지 않지?"라는 질문에는 이 배경이 답이 됩니다.
-Maven Central에는 롤백 버튼이 없습니다.
+전체 배포 절차를 알 필요는 없지만, 같은 버전을 다시 게시하지 못한다는 불변식은 업그레이드 판단에
+필요합니다.
 
 ## 다음에 읽을 글
 
 여기까지가 `bluetape4k-dependencies`를 사용하는 개발자 관점의 기본 사용법입니다. `1.2.0`에서 `1.3.x`로 올렸을 때
-각 라이브러리에서 실제로 무엇이 좋아졌는지, 어떤 버그와 기술부채를 치웠는지는 아래 글에서 이어서 볼 수 있습니다.
+각 라이브러리에서 보강된 기능과 수정된 결함은 다음 글에서 확인할 수 있습니다.
 
-- [bluetape4k-dependencies 1.3.0 활용기 Part 1: 새 기능도 넣고 똥도 치우고](/ko/blog/bluetape4k-dependencies-1-3-0-library-stories/)
-- [bluetape4k-dependencies 1.3.0 활용기 Part 2: 서비스 조합하기](/ko/blog/bluetape4k-dependencies-1-3-0-service-composition/)
-- [bluetape4k-dependencies 1.3.0 활용기 Part 3: 운영에서 티 나는 변화](/ko/blog/bluetape4k-dependencies-1-3-0-production-signals/)
-- [bluetape4k-dependencies 1.3.0 활용기 Part 4: 입력 경계에서 치운 똥들](/ko/blog/bluetape4k-dependencies-1-3-0-input-boundaries/)
+- [bluetape4k-dependencies 1.3.0 활용기 Part 1: 기능 보강과 경계 정리](/ko/blog/bluetape4k-dependencies-1-3-0-library-stories/)
+- [bluetape4k-dependencies 1.3.0 활용기 Part 2: 서비스 경계에 맞는 모듈 조합](/ko/blog/bluetape4k-dependencies-1-3-0-service-composition/)
+- [bluetape4k-dependencies 1.3.0 활용기 Part 3: 운영에서 드러나는 신호](/ko/blog/bluetape4k-dependencies-1-3-0-production-signals/)
+- [bluetape4k-dependencies 1.3.0 활용기 Part 4: 입력 경계와 자원 안전성](/ko/blog/bluetape4k-dependencies-1-3-0-input-boundaries/)
 
-## 참고한 소스
+## 자료
 
 - [`bluetape4k-dependencies` README.ko.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/README.ko.md)
 - [`bluetape4k-dependencies` CHANGELOG.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/CHANGELOG.md)

@@ -1,99 +1,99 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1500" height="760" viewBox="0 0 1500 760">
 <defs>
   <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">
-    <path d="M 0 0 L 10 5 L 0 10 Z" fill="#496A8F" stroke="#496A8F"/>
+    <path d="M 0 0 L 10 5 L 0 10 Z" fill="#60A5FA"/>
   </marker>
   <style>
-    .canvas{fill:#F6F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
-    .title{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:42px;fill:#22344A;font-weight:400}
-    .subtitle,.footer,.axis{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:17px;fill:#536476;font-weight:400}
-    .nodeTitle,.participant{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:24px;fill:#22344A;font-weight:400}
-    .nodeBody,.labelText,.num{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:16px;fill:#3F5269;font-weight:400}
-    .tableTitle{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:24px;fill:#22344A;font-weight:400}
-    .tableField,.edgeLabel{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:15px;fill:#3F5269;font-weight:400}
-    .edge{fill:none;stroke:#496A8F;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
-    .bus{fill:none;stroke:#496A8F;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
-    .lifeline{stroke:#91A6BD;stroke-width:2;stroke-dasharray:8 8}
+    .canvas{fill:#07111F}.frame{fill:#0F172A;stroke:#334155;stroke-width:2}
+    .title{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:42px;fill:#F8FAFC;font-weight:400}
+    .subtitle,.footer,.axis{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:17px;fill:#CBD5E1;font-weight:400}
+    .nodeTitle,.participant{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:24px;fill:#F8FAFC;font-weight:400}
+    .nodeBody,.labelText,.num{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:16px;fill:#E2E8F0;font-weight:400}
+    .tableTitle{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:24px;fill:#F8FAFC;font-weight:400}
+    .tableField,.edgeLabel{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:15px;fill:#E2E8F0;font-weight:400}
+    .edge{fill:none;stroke:#60A5FA;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    .bus{fill:none;stroke:#60A5FA;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+    .lifeline{stroke:#64748B;stroke-width:2;stroke-dasharray:8 8}
     g[id]{filter:url(#shadow)}
   </style>
 </defs>
 <rect class="canvas" width="1500" height="760"/>
 <rect class="frame" x="34" y="28" width="1432" height="704" rx="24"/>
-<text class="title" x="750" y="82" text-anchor="middle">트랜잭션 + 배치 쓰기 시퀀스</text>
-<text class="subtitle" x="750" y="118" text-anchor="middle">service가 vertex와 edge를 만들고 하나의 facade로 graph 관계를 조회한다</text>
+<text class="title" x="750" y="82" text-anchor="middle">트랜잭션과 일괄 쓰기 시퀀스</text>
+<text class="subtitle" x="750" y="118" text-anchor="middle">서비스가 정점과 간선을 만들고 하나의 파사드로 그래프 관계를 조회한다</text>
 <g>
-  <rect class="header" x="40" y="136" width="210" height="64" rx="10" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="participant" x="145" y="176" text-anchor="middle">Service</text>
+  <rect class="header" x="40" y="136" width="210" height="64" rx="10" fill="#0C4A6E" stroke="#64748B" stroke-width="2"/>
+  <text class="participant" x="145" y="176" text-anchor="middle">서비스</text>
   <line class="lifeline" x1="145" y1="218" x2="145" y2="610"/>
-  <rect class="activation" x="139" y="236" width="12" height="360" rx="5" fill="#F8FBFE" stroke="#91A6BD"/>
+  <rect class="activation" x="139" y="236" width="12" height="360" rx="5" fill="#111827" stroke="#64748B"/>
 </g>
 <g>
-  <rect class="header" x="315" y="136" width="210" height="64" rx="10" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
+  <rect class="header" x="315" y="136" width="210" height="64" rx="10" fill="#0C4A6E" stroke="#64748B" stroke-width="2"/>
   <text class="participant" x="420" y="176" text-anchor="middle">GraphOperations</text>
   <line class="lifeline" x1="420" y1="218" x2="420" y2="610"/>
-  <rect class="activation" x="414" y="236" width="12" height="360" rx="5" fill="#F8FBFE" stroke="#91A6BD"/>
+  <rect class="activation" x="414" y="236" width="12" height="360" rx="5" fill="#111827" stroke="#64748B"/>
 </g>
 <g>
-  <rect class="header" x="595" y="136" width="210" height="64" rx="10" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="participant" x="700" y="176" text-anchor="middle">Transaction Scope</text>
+  <rect class="header" x="595" y="136" width="210" height="64" rx="10" fill="#0C4A6E" stroke="#64748B" stroke-width="2"/>
+  <text class="participant" x="700" y="176" text-anchor="middle">트랜잭션 범위</text>
   <line class="lifeline" x1="700" y1="218" x2="700" y2="610"/>
-  <rect class="activation" x="694" y="236" width="12" height="360" rx="5" fill="#F8FBFE" stroke="#91A6BD"/>
+  <rect class="activation" x="694" y="236" width="12" height="360" rx="5" fill="#111827" stroke="#64748B"/>
 </g>
 <g>
-  <rect class="header" x="880" y="136" width="210" height="64" rx="10" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="participant" x="985" y="176" text-anchor="middle">Storage Adapter</text>
+  <rect class="header" x="880" y="136" width="210" height="64" rx="10" fill="#0C4A6E" stroke="#64748B" stroke-width="2"/>
+  <text class="participant" x="985" y="176" text-anchor="middle">저장소 어댑터</text>
   <line class="lifeline" x1="985" y1="218" x2="985" y2="610"/>
-  <rect class="activation" x="979" y="236" width="12" height="360" rx="5" fill="#F8FBFE" stroke="#91A6BD"/>
+  <rect class="activation" x="979" y="236" width="12" height="360" rx="5" fill="#111827" stroke="#64748B"/>
 </g>
 <g>
-  <rect class="header" x="1130" y="136" width="210" height="64" rx="10" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="participant" x="1235" y="176" text-anchor="middle">Graph DB</text>
+  <rect class="header" x="1130" y="136" width="210" height="64" rx="10" fill="#0C4A6E" stroke="#64748B" stroke-width="2"/>
+  <text class="participant" x="1235" y="176" text-anchor="middle">그래프 DB</text>
   <line class="lifeline" x1="1235" y1="218" x2="1235" y2="610"/>
-  <rect class="activation" x="1229" y="236" width="12" height="360" rx="5" fill="#F8FBFE" stroke="#91A6BD"/>
+  <rect class="activation" x="1229" y="236" width="12" height="360" rx="5" fill="#111827" stroke="#64748B"/>
 </g>
 <g>
-  <rect class="label" x="133" y="208" width="300" height="31" rx="9" fill="#EAF4FF" stroke="#D7E2EC"/>
-  <circle cx="153" cy="223.5" r="12" fill="#FFFFFF" stroke="#7B8CA3"/>
+  <rect class="label" x="133" y="208" width="300" height="31" rx="9" fill="#0C4A6E" stroke="#334155"/>
+  <circle cx="153" cy="223.5" r="12" fill="#0F172A" stroke="#64748B"/>
   <text class="num" x="153" y="228" text-anchor="middle">1</text>
   <text class="labelText" x="307" y="229" text-anchor="middle">transaction { ... }</text>
   <path class="edge" data-connector="service-to-ops" d="M183 250 H382"/>
 </g>
 <g>
-  <rect class="label" x="410" y="273" width="300" height="31" rx="9" fill="#EAF8EF" stroke="#D7E2EC"/>
-  <circle cx="430" cy="288.5" r="12" fill="#FFFFFF" stroke="#7B8CA3"/>
+  <rect class="label" x="410" y="273" width="300" height="31" rx="9" fill="#14532D" stroke="#334155"/>
+  <circle cx="430" cy="288.5" r="12" fill="#0F172A" stroke="#64748B"/>
   <text class="num" x="430" y="293" text-anchor="middle">2</text>
-  <text class="labelText" x="584" y="294" text-anchor="middle">CRUD-only scope 노출</text>
+  <text class="labelText" x="584" y="294" text-anchor="middle">CRUD 전용 범위 제공</text>
   <path class="edge" data-connector="ops-to-tx" d="M458 315 H662"/>
 </g>
 <g>
-  <rect class="label" x="693" y="338" width="300" height="31" rx="9" fill="#FFF4D9" stroke="#D7E2EC"/>
-  <circle cx="713" cy="353.5" r="12" fill="#FFFFFF" stroke="#7B8CA3"/>
+  <rect class="label" x="693" y="338" width="300" height="31" rx="9" fill="#78350F" stroke="#334155"/>
+  <circle cx="713" cy="353.5" r="12" fill="#0F172A" stroke="#64748B"/>
   <text class="num" x="713" y="358" text-anchor="middle">3</text>
-  <text class="labelText" x="867" y="359" text-anchor="middle">createVertices batch</text>
+  <text class="labelText" x="867" y="359" text-anchor="middle">createVertices 일괄 실행</text>
   <path class="edge" data-connector="tx-to-adapter" d="M738 380 H947"/>
 </g>
 <g>
-  <rect class="label" x="693" y="403" width="300" height="31" rx="9" fill="#F3ECFF" stroke="#D7E2EC"/>
-  <circle cx="713" cy="418.5" r="12" fill="#FFFFFF" stroke="#7B8CA3"/>
+  <rect class="label" x="693" y="403" width="300" height="31" rx="9" fill="#4C1D95" stroke="#334155"/>
+  <circle cx="713" cy="418.5" r="12" fill="#0F172A" stroke="#64748B"/>
   <text class="num" x="713" y="423" text-anchor="middle">4</text>
-  <text class="labelText" x="867" y="424" text-anchor="middle">createEdges batch</text>
+  <text class="labelText" x="867" y="424" text-anchor="middle">createEdges 일괄 실행</text>
   <path class="edge" data-connector="tx-to-adapter" d="M738 445 H947"/>
 </g>
 <g>
-  <rect class="label" x="960" y="468" width="300" height="31" rx="9" fill="#E9F7F5" stroke="#D7E2EC"/>
-  <circle cx="980" cy="483.5" r="12" fill="#FFFFFF" stroke="#7B8CA3"/>
+  <rect class="label" x="960" y="468" width="300" height="31" rx="9" fill="#134E4A" stroke="#334155"/>
+  <circle cx="980" cy="483.5" r="12" fill="#0F172A" stroke="#64748B"/>
   <text class="num" x="980" y="488" text-anchor="middle">5</text>
-  <text class="labelText" x="1134" y="489" text-anchor="middle">commit 또는 rollback</text>
+  <text class="labelText" x="1134" y="489" text-anchor="middle">커밋 또는 롤백</text>
   <path class="edge" data-connector="adapter-to-db" d="M1023 510 H1197"/>
 </g>
 <g>
-  <rect class="label" x="126.5" y="533" width="313" height="31" rx="9" fill="#FFF0E8" stroke="#D7E2EC"/>
-  <circle cx="146.5" cy="548.5" r="12" fill="#FFFFFF" stroke="#7B8CA3"/>
+  <rect class="label" x="126.5" y="533" width="313" height="31" rx="9" fill="#7C2D12" stroke="#334155"/>
+  <circle cx="146.5" cy="548.5" r="12" fill="#0F172A" stroke="#64748B"/>
   <text class="num" x="146.5" y="553" text-anchor="middle">6</text>
   <text class="labelText" x="307" y="554" text-anchor="middle">neighbors / shortestPath</text>
   <path class="edge" data-connector="service-to-ops" d="M183 575 H382"/>
 </g>
-<rect x="88" y="655" width="1324" height="62" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
-<text class="footer" x="750" y="680" text-anchor="middle">transaction block은 lifecycle command를 피해서 DDL과 auto-commit rule을 storage-specific으로 둔다.</text>
-<text class="footer" x="750" y="704" text-anchor="middle">batch default는 portable하게 두고 adapter는 native all-or-fail 동작으로 override할 수 있다.</text>
+<rect x="88" y="655" width="1324" height="62" rx="12" fill="#111827" stroke="#334155"/>
+<text class="footer" x="750" y="680" text-anchor="middle">트랜잭션 블록은 생명주기 명령을 제외하여 DDL과 자동 커밋 규칙을 저장소별로 유지한다.</text>
+<text class="footer" x="750" y="704" text-anchor="middle">일괄 처리 기본값은 공통 계약을 따르고 어댑터는 저장소 고유의 원자적 동작으로 재정의할 수 있다.</text>
 </svg>

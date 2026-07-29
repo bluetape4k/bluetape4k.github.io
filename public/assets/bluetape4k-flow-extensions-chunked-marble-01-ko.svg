@@ -80,7 +80,7 @@
   <text class="title" x="52" y="58">chunked / buffer: 구체적인 배치를 방출합니다</text>
   <text class="sub" x="52" y="84">위: 시간순 소스 이벤트 · 상자: chunked(2) · 아래: 방출된 List</text>
 
-  <text class="small" x="52" y="132">입력 Flow</text>
+  <text class="small" x="52" y="132">입력 흐름</text>
   <path class="edge" d="M150 128 L806 128"/>
   <circle class="shape teal" cx="220" cy="128" r="13"/><text class="tiny" x="220" y="128">e1</text>
   <path class="shape blue" d="M 300 111 L 317 128 L 300 145 L 283 128 Z"/><text class="tiny" x="300" y="128">e2</text>
@@ -98,7 +98,7 @@
   <rect class="box op" x="340" y="164" width="170" height="44"/>
   <text class="label" x="425" y="191" text-anchor="middle" data-code-snippet="kotlin"><tspan class="syntax-function">chunked</tspan>(size <tspan class="syntax-operator">=</tspan> <tspan class="syntax-number">2</tspan>)</text>
 
-  <text class="small" x="52" y="248">출력 Flow</text>
+  <text class="small" x="52" y="248">출력 흐름</text>
   <path class="edge" d="M150 244 L806 244"/>
   <rect class="box" x="204" y="222" width="112" height="44" stroke="#159c92"/>
   <circle class="shape teal" cx="238" cy="244" r="11"/><text class="tiny" x="238" y="244">e1</text>

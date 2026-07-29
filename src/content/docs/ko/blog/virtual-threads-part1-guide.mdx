@@ -1,35 +1,35 @@
 ---
-title: "Virtual Threads 1편: 싸지만 마법은 아닌 스레드"
+title: "Virtual Threads 1편: 저비용이지만 마법은 아닌 스레드"
 description: Java Virtual Threads를 실제 Kotlin/JVM 서비스에 넣기 전에 알아야 할 사용처와 운영상 주의점을 정리한다.
 sidebar:
   order: -202605291100
 blog:
-  date: 2026-05-29T11:00:00+09:00
+  date: 2026-05-29T11:23:57+09:00
   image: /assets/virtual-threads-part1-hero.png
   imageAlt: 명시적 한계 안에서 많은 가벼운 실행 경로를 다루는 소개용 일러스트
-  cardDescription: "Blocking code를 다시 꺼내도 된다는 반가운 소식. 단, timeout과 resource limit까지 같이 챙길 때만."
+  cardDescription: "블로킹 코드를 다시 활용할 수 있다는 반가운 소식. 단, timeout과 자원 한도를 함께 설계할 때만."
   tags: ["kotlin","practical-example","virtual-threads"]
 ---
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/virtual-threads-part1-hero.png" alt="명시적 한계 안에서 많은 가벼운 실행 경로를 다루는 소개용 일러스트" loading="eager" />
-  <figcaption>Virtual thread는 값싼 thread지만, blocking을 무제한으로 써도 된다는 뜻은 아니다.</figcaption>
+  <figcaption>Virtual Thread는 저비용 스레드지만, 블로킹을 무제한으로 써도 된다는 뜻은 아니다.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-29 · Virtual Threads series · Part 1</p>
 
 이 글은 Virtual Threads 시리즈의 1편이다. 전체 시리즈는 [Part 1: 소개와 주의점](/ko/blog/virtual-threads-part1-guide/),
-[Part 2: workshop rules](/ko/blog/virtual-threads-part2-workshop-rules/),
-[Part 3: JDBC + Virtual Threads benchmark](/ko/blog/virtual-threads-part3-jdbc-r2dbc-benchmark/),
+[Part 2: 워크숍 규칙](/ko/blog/virtual-threads-part2-workshop-rules/),
+[Part 3: JDBC + Virtual Threads 벤치마크](/ko/blog/virtual-threads-part3-jdbc-r2dbc-benchmark/),
 [Part 4: Java 21/25 SPI 설계](/ko/blog/virtual-threads-part4-java21-java25-spi/)로 이어진다.
 
-Virtual Threads를 처음 들으면 살짝 의심부터 든다. "이제 blocking code를 그대로 써도 됩니다"라니,
+Virtual Threads를 처음 들으면 살짝 의심부터 든다. "이제 블로킹 코드를 그대로 써도 됩니다"라니,
 이렇게 좋은 말에는 보통 조건이 붙는다. 여기에도 조건이 있다. Virtual Threads는 마법이 아니라, Java가
 thread-per-request 스타일을 훨씬 낮은 비용으로 다시 쓸 수 있게 해 주는 기술이다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/virtual-threads-part1-guide-01-ko.png" alt="Practical map for using virtual threads with blocking IO, backpressure, diagnostics, and cleanup" loading="lazy" />
-  <figcaption>Blocking code를 다시 꺼내도 된다는 반가운 소식. 단, timeout과 resource limit까지 같이 챙길 때만.</figcaption>
+  <img src="/assets/virtual-threads-part1-guide-01-ko.png" alt="블로킹 IO, backpressure, 진단, cleanup을 함께 고려한 Virtual Thread 활용 지도" loading="lazy" />
+  <figcaption>블로킹 코드를 다시 활용할 수 있다는 반가운 소식. 단, timeout과 자원 한도를 함께 설계할 때만.</figcaption>
 </figure>
 
 ## Virtual Threads가 해결하는 문제
@@ -45,8 +45,8 @@ fun handle(request: Request): Response {
 }
 ```
 
-문제는 이 단순함의 비용을 platform thread가 치른다는 점이었다. 요청이 DB, HTTP, filesystem 같은 I/O를
-기다리는 동안 OS thread도 같이 묶인다. 요청 수가 많아지면 application은 CPU보다 thread 수에서 먼저 막힌다.
+문제는 이 단순함의 비용을 platform thread가 치른다는 점이었다. 요청이 DB, HTTP, 파일시스템 같은 I/O를
+기다리는 동안 OS thread도 함께 묶인다. 요청 수가 많아지면 application은 CPU보다 thread 수에서 먼저 막힌다.
 
 [JEP 444](https://openjdk.org/jeps/444)는 Java 21에서 Virtual Threads를 정식 기능으로 만들었다.
 Virtual Thread는 `java.lang.Thread`이지만 OS thread와 1:1로 묶이지 않는다. blocking I/O에서 멈추면
@@ -66,10 +66,10 @@ Executors.newVirtualThreadPerTaskExecutor().use { executor ->
 ```
 
 이 구조를 그림으로 보면 더 단순하다. task는 virtual thread에 맡기고, 제한은 thread가 아니라 뒤쪽
-resource에 둔다.
+자원에 둔다.
 
 중요한 단서가 있다. Virtual Thread는 "더 빠른 thread"가 아니다. CPU-bound 작업을 더 빨리 계산하지
-않는다. 효과는 많은 작업이 대부분의 시간을 기다리는 I/O-heavy service에서 난다.
+않는다. 효과는 많은 작업이 대부분의 시간을 기다리는 I/O-heavy 서비스에서 난다.
 
 ## Pooling하지 않는다
 
@@ -82,7 +82,7 @@ val executor = Executors.newFixedThreadPool(200, Thread.ofVirtual().factory())
 ```
 
 Virtual Thread는 비싼 자원이 아니므로 pooling 대상이 아니다. 제한해야 하는 것은 thread 수가 아니라
-뒤쪽 자원이다. DB connection, remote API concurrency, file descriptor, queue depth 같은 것들이다.
+뒤쪽 자원이다. DB connection, 원격 API 동시 호출 수, file descriptor, queue depth 같은 것들이다.
 
 ```kotlin
 private val permits = Semaphore(32)
@@ -100,7 +100,7 @@ fun <T> withRemoteLimit(block: () -> T): T {
 Virtual Thread는 많이 만들어도 된다. DB connection은 아니다. 이 차이를 놓치면 "Virtual Threads로
 바꿨더니 성능이 좋아졌다"가 아니라 "Virtual Threads로 바꿨더니 병목이 DB로 옮겨 갔다"가 된다.
 
-## Blocking code가 좋아지는 곳
+## 블로킹 코드가 좋아지는 곳
 
 Virtual Threads가 특히 잘 맞는 곳은 다음과 같다.
 
@@ -116,7 +116,7 @@ Virtual Threads가 특히 잘 맞는 곳은 다음과 같다.
 | 조심할 작업 | 이유 |
 |---|---|
 | CPU-bound loop | thread 수를 늘려도 core 수를 넘는 계산량은 빨라지지 않는다 |
-| unbounded fan-out | Virtual Thread는 싸지만 downstream은 싸지 않다 |
+| unbounded fan-out | Virtual Thread는 저비용이지만 downstream은 그렇지 않다 |
 | blocking inside global lock | Java 21에서는 pinning 문제가 커질 수 있다 |
 | ThreadLocal-heavy code | thread 수가 많아지면 memory footprint가 커질 수 있다 |
 
@@ -147,7 +147,7 @@ Java 21의 Virtual Thread는 ThreadLocal을 지원한다. 기존 library migrati
 
 request마다 Virtual Thread를 만들면 request-scope ThreadLocal은 thread 종료와 함께 사라진다. 이건
 platform thread pool보다 오히려 안전한 면도 있다. 하지만 Virtual Thread 수가 매우 많아지면 각 thread에
-큰 object를 넣는 방식은 memory cost로 돌아온다.
+큰 object를 넣는 방식은 메모리 비용으로 돌아온다.
 
 Java 25에서는 [JEP 506](https://openjdk.org/jeps/506)으로 Scoped Values가 정식 기능이 됐다. request
 context처럼 "부모 scope에서 읽기 전용으로 내려보내고, scope가 끝나면 사라지는 값"에는 ThreadLocal보다
@@ -173,15 +173,15 @@ Virtual Threads를 production에 넣기 전에 최소한 이 정도는 확인한
 
 | 항목 | 확인할 것 |
 |---|---|
-| concurrency limit | thread가 아니라 downstream resource를 제한하는가 |
+| concurrency limit | thread가 아니라 downstream 자원을 제한하는가 |
 | timeout | `Future.get`, DB query, HTTP call, batch partition에 timeout이 있는가 |
 | cancellation | interrupt를 삼키지 않는가 |
 | diagnostics | JFR/thread dump/metrics에서 virtual thread 상태를 볼 수 있는가 |
 | lock scope | blocking I/O가 긴 lock 안에 있지 않은가 |
 | ThreadLocal | 큰 object나 connection을 thread-local로 들고 있지 않은가 |
 
-Part 1의 결론은 이렇다. Virtual Threads는 "비동기 코드를 안 배워도 된다"가 아니라 "기존 blocking
-code를 최소한의 변경으로 다시 쓸 수 있다"에 가깝다. 대신 그만큼 기본기는 더 중요해진다. resource limit,
+Part 1의 결론은 이렇다. Virtual Threads는 "비동기 코드를 안 배워도 된다"가 아니라 "기존 블로킹
+코드를 최소한의 변경으로 다시 쓸 수 있다"에 가깝다. 대신 그만큼 기본기는 더 중요해진다. 자원 한도,
 timeout, cleanup, 관찰성을 같이 챙겨야 한다.
 
 Part 2에서는 `bluetape4k-workshop/virtualthreads/rules`의 예제를 바탕으로 pooling, semaphore,

@@ -1,111 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="1040" viewBox="0 0 1700 1040" role="img" aria-labelledby="title desc">
-  <title id="title">같은 routing 문제, 다른 runtime boundary</title><desc id="desc">한 번 검증하고, 명시적인 값으로 넘긴 뒤, 격리를 테스트합니다.</desc><defs>
-    <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#28343b" flood-opacity="0.13"/></filter>
-    <marker id="arrow-blue" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#3f7d9c" stroke="#3f7d9c" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
-    <marker id="arrow-green" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#608a55" stroke="#608a55" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
-    <marker id="arrow-amber" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#a27848" stroke="#a27848" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
-    <marker id="arrow-red" viewBox="0 0 10 10" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#b75f5f" stroke="#b75f5f" stroke-width="0" stroke-dasharray="none" style="stroke-dasharray:none!important"/></marker>
-    <style>
-      .canvas{fill:#fbfcf8}.frame{fill:#fff;stroke:#41545d;stroke-width:2.2}
-      .title{font-family:"goorm Sans";font-size:40px;fill:#263238;font-weight:700}
-      .subtitle,.detail,.body,.cellText,.labelText,.footer,.role{font-family:"goorm Sans";fill:#4e6069}
-      .subtitle{font-size:18px}.detail,.body{font-size:15px}.cellText{font-size:16px}.footer{font-size:14px}
-      .role{font-family:"goorm Sans Code";font-size:13px}.mono,.code,.badgeText{font-family:"goorm Sans Code";fill:#33454e}
-      .participant,.cardTitle,.bandTitle,.cellTitle{font-family:"goorm Sans";fill:#1f3138;font-weight:700}
-      .participant{font-size:21px}.cardTitle{font-size:25px}.bandTitle{font-size:23px}.cellTitle{font-size:18px}
-      .header{fill:#fff;stroke:#546e7a;stroke-width:2;filter:url(#shadow)}
-      .headerAlt{fill:#f4fbf6;stroke:#6f9b7a;stroke-width:2;filter:url(#shadow)}
-      .lifeline{stroke:#9aaab1;stroke-width:2;stroke-dasharray:7 8}.activation{fill:#e7f2ec;stroke:#5b7e67;stroke-width:1.7}
-      .call,.state,.return,.skip,.edge{fill:none;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round}
-      .call{stroke:#3f7d9c;marker-end:url(#arrow-blue)}.state{stroke:#608a55;marker-end:url(#arrow-green)}
-      .return{stroke:#a27848;marker-end:url(#arrow-amber);stroke-dasharray:8 7}.skip{stroke:#b75f5f;marker-end:url(#arrow-red)}
-      .pill,.label{fill:#fff;stroke:#78909c;stroke-width:1.4}.labelText{font-size:13px}
-      .badge{fill:#263238}.badgeText{font-size:12px;font-weight:700;fill:#fff}
-      .branch{fill:none;stroke:#78909c;stroke-width:2.2;stroke-dasharray:12 8}.divider{stroke:#78909c;stroke-width:1.4;stroke-dasharray:8 7}
-      .note{fill:#fff7e8;stroke:#d4a95f;stroke-width:2}
-      .problem{fill:#eef3ff;stroke:#95a7d8;stroke-width:2;filter:url(#shadow)}
-      .spring{fill:#fff8eb;stroke:#d2a96c;stroke-width:2;filter:url(#shadow)}
-      .ktor{fill:#eafafa;stroke:#62aeb3;stroke-width:2;filter:url(#shadow)}
-      .shared{fill:#f1f9ef;stroke:#82ad7a;stroke-width:2;filter:url(#shadow)}
-      .row{fill:#fff;stroke:#d7e2e8;stroke-width:1.4}.rowAlt{fill:#f8fbfc;stroke:#d7e2e8;stroke-width:1.4}
-      .chip{fill:#fff;stroke:#cad8de;stroke-width:1.4}.chipAlt{fill:#f8fbfc;stroke:#cad8de;stroke-width:1.4}
-    </style>
-  </defs>
-  <rect class="canvas" width="1700" height="1040"/><rect class="frame" x="42" y="34" width="1616" height="962" rx="8"/>
-  <text x="850" y="90" class="title" text-anchor="middle">같은 routing 문제, 다른 runtime boundary</text><text x="850" y="124" class="subtitle" text-anchor="middle">한 번 검증하고, 명시적인 값으로 넘긴 뒤, 격리를 테스트합니다.</text>
-  <g>
-    <rect x="380" y="162" width="940" height="116" rx="8" class="problem"/>
-    <text x="850" y="206" class="cardTitle" text-anchor="middle">Reader problem</text>
-    <text x="850" y="238" class="body" text-anchor="middle">알맞은 tenant schema 또는 R2DBC target을 고릅니다.</text>
-    <text x="850" y="260" class="body" text-anchor="middle">다음 request로 state가 새지 않게 처리합니다.</text>
-  </g>
-  <path d="M 500 278 L 500 346" class="call"/><path d="M 1200 278 L 1200 346" class="state"/>
-  <text x="500" y="325" class="labelText" text-anchor="middle">blocking path</text><text x="1200" y="325" class="labelText" text-anchor="middle">coroutine path</text>
-  <g>
-    <rect x="110" y="350" width="650" height="452" rx="8" class="spring"/>
-    <text x="435" y="397" class="cardTitle" text-anchor="middle">Spring / JDBC workshop</text>
-    <g>
-    <rect x="150" y="430" width="570" height="78" rx="8" class="row"/>
-    <text x="174" y="459" class="cellTitle" >상태 전달자</text>
-    <text x="174" y="483" class="cellText" >ThreadLocal, ScopedValue, ReactorContext</text>
-    <text x="174" y="502" class="cellText" >runtime model에 맞춰 선택</text>
-  </g>
-    <g>
-    <rect x="150" y="516" width="570" height="78" rx="8" class="rowAlt"/>
-    <text x="174" y="545" class="cellTitle" >Boundary</text>
-    <text x="174" y="569" class="cellText" >filter / AOP / transaction template</text>
-    <text x="174" y="588" class="cellText" >JDBC 작업 전에 state binding</text>
-  </g>
-    <g>
-    <rect x="150" y="602" width="570" height="78" rx="8" class="row"/>
-    <text x="174" y="631" class="cellTitle" >대상 선택</text>
-    <text x="174" y="655" class="cellText" >schema 또는 DataSource 선택</text>
-    <text x="174" y="674" class="cellText" >JDBC transaction 안에서 결정</text>
-  </g>
-    <g>
-    <rect x="150" y="688" width="570" height="78" rx="8" class="rowAlt"/>
-    <text x="174" y="717" class="cellTitle" >주의</text>
-    <text x="174" y="741" class="cellText" >Thread affinity와 cleanup rule</text>
-    <text x="174" y="760" class="cellText" >correctness rule로 다룹니다</text>
-  </g>
-  </g>
-  <g>
-    <rect x="940" y="350" width="650" height="452" rx="8" class="ktor"/>
-    <text x="1265" y="397" class="cardTitle" text-anchor="middle">Ktor / Exposed R2DBC workshop</text>
-    <g>
-    <rect x="980" y="430" width="570" height="78" rx="8" class="row"/>
-    <text x="1004" y="459" class="cellTitle" >상태 전달자</text>
-    <text x="1004" y="483" class="cellText" >ApplicationCall.attributes</text>
-    <text x="1004" y="502" class="cellText" >RoutingRequest 또는 enum 저장</text>
-  </g>
-    <g>
-    <rect x="980" y="516" width="570" height="78" rx="8" class="rowAlt"/>
-    <text x="1004" y="545" class="cellTitle" >Boundary</text>
-    <text x="1004" y="569" class="cellText" >plugin이 header를 해석</text>
-    <text x="1004" y="588" class="cellText" >repository는 explicit route 수신</text>
-  </g>
-    <g>
-    <rect x="980" y="602" width="570" height="78" rx="8" class="row"/>
-    <text x="1004" y="631" class="cellTitle" >대상 선택</text>
-    <text x="1004" y="655" class="cellText" >tenant별 SET SCHEMA</text>
-    <text x="1004" y="674" class="cellText" >registry.database(route.key)</text>
-  </g>
-    <g>
-    <rect x="980" y="688" width="570" height="78" rx="8" class="rowAlt"/>
-    <text x="1004" y="717" class="cellTitle" >주의</text>
-    <text x="1004" y="741" class="cellText" >Header는 routing hint</text>
-    <text x="1004" y="760" class="cellText" >authentication/policy가 아닙니다</text>
-  </g>
-  </g>
-  <path d="M 760 578 L 940 578" class="edge"/>
-  <g>
-    <rect x="250" y="840" width="1200" height="116" rx="8" class="shared"/>
-    <text x="292" y="880" class="cardTitle" >공통 불변식</text>
-    <text x="292" y="912" class="body" >테스트는 격리, invalid input rejection, write target 분리,</text>
-    <text x="292" y="936" class="body" >concurrent request state isolation을 증명해야 합니다.</text>
-    <rect x="1060" y="864" width="300" height="30" rx="8" class="chip"/>
-    <text x="1080" y="885" class="mono" >korean != english</text>
-    <rect x="1060" y="906" width="300" height="30" rx="8" class="chipAlt"/>
-    <text x="1080" y="927" class="mono" >acme:rw != acme:ro</text>
-  </g>
-  </svg>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+<title id="title">실행 환경에 따른 테넌트 상태 전달 방식</title><desc id="desc">헤더는 라우팅 입력일 뿐 인증·권한 정책이 아닙니다. korean ≠ english, acme:rw ≠ acme:ro를 실제 데이터로 검증합니다.</desc><defs><marker id="arrow-cyan" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#36C5F0"/></marker><marker id="arrow-mint" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#5EEAD4"/></marker><marker id="arrow-amber" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#FBBF24"/></marker><marker id="arrow-red" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#FB7185"/></marker><marker id="arrow-violet" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#A78BFA"/></marker></defs>
+  <style>
+  .bg{fill:#07111F}.panel{fill:#0D1B2D;stroke:#36536F;stroke-width:2}.card{fill:#10243A;stroke:#36536F;stroke-width:2}.card2{fill:#132B43;stroke:#36536F;stroke-width:2}
+  .title{font:700 42px "goorm Sans","Apple SD Gothic Neo",sans-serif;fill:#E6F2FF}.sub{font:600 19px "goorm Sans Code","goorm Sans",monospace;fill:#9CB4CC}.h{font:700 24px "goorm Sans","Apple SD Gothic Neo",sans-serif;fill:#E6F2FF}
+  .body{font:600 17px "goorm Sans Code","goorm Sans",monospace;fill:#9CB4CC}.mono{font:700 16px "goorm Sans Code","goorm Sans",monospace;fill:#E6F2FF}.small{font:600 14px "goorm Sans Code","goorm Sans",monospace;fill:#9CB4CC}
+  .life{stroke:#36536F;stroke-width:2;stroke-dasharray:8 9}.act{fill:#123252;stroke:#36C5F0;stroke-width:2}
+  .call{fill:none;stroke:#36C5F0;stroke-width:4;marker-end:url(#arrow-cyan)}.ok{fill:none;stroke:#5EEAD4;stroke-width:4;marker-end:url(#arrow-mint)}
+  .warn{fill:none;stroke:#FBBF24;stroke-width:4;marker-end:url(#arrow-amber)}.err{fill:none;stroke:#FB7185;stroke-width:4;marker-end:url(#arrow-red)}
+  .violet{fill:none;stroke:#A78BFA;stroke-width:4;marker-end:url(#arrow-violet)}.return{stroke-dasharray:10 8}
+  .pill{fill:#10243A;stroke:#36536F;stroke-width:2}.frame{fill:none;stroke:#FB7185;stroke-width:2;stroke-dasharray:10 8}
+  .axis{stroke:#36536F;stroke-width:2}.grid{stroke:#233B54;stroke-width:1}.footer{fill:#0B2238;stroke:#36536F;stroke-width:2}
+  </style>
+<rect width="1600" height="1000" class="bg"/><rect x="32" y="32" width="1536" height="936" rx="30" class="panel frame"/>
+<text x="78" y="98" class="title">실행 환경에 따른 테넌트 상태 전달 방식</text><text x="80" y="138" class="sub subtitle">전달 수단은 달라도 입력 검증, 명시적 전달, 트랜잭션 내부 선택, 격리 검증은 동일합니다.</text><rect x="100" y="220" width="620" height="370" rx="20" class="card"/>
+<text x="124" y="264" class="h">Spring / JDBC</text><text x="124" y="302" class="body">Filter·Interceptor</text><text x="124" y="332" class="body">ThreadLocal·ScopedValue</text><text x="124" y="362" class="body">JDBC 트랜잭션</text><text x="124" y="392" class="body">정리 규칙 필수</text><rect x="880" y="220" width="620" height="370" rx="20" class="card2"/>
+<text x="904" y="264" class="h">Ktor / R2DBC</text><text x="904" y="302" class="body">Application Plugin</text><text x="904" y="332" class="body">ApplicationCall.attributes</text><text x="904" y="362" class="body">suspendTransaction</text><text x="904" y="392" class="body">명시적 값 전달</text><rect x="150" y="700" width="250" height="92" rx="20" class="card"/><text x="275" y="754" text-anchor="middle" class="mono">1. 식별 정보 추출</text><path d="M400 746 H438" class="call"/><rect x="440" y="700" width="250" height="92" rx="20" class="card2"/><text x="565" y="754" text-anchor="middle" class="mono">2. 권한·준비 상태 확인</text><path d="M690 746 H728" class="call"/><rect x="730" y="700" width="250" height="92" rx="20" class="card"/><text x="855" y="754" text-anchor="middle" class="mono">3. 라우팅 값 전달</text><path d="M980 746 H1018" class="call"/><rect x="1020" y="700" width="250" height="92" rx="20" class="card"/><text x="1145" y="754" text-anchor="middle" class="mono">4. 스키마·대상 선택</text><path d="M1270 746 H1308" class="call"/><rect x="1310" y="700" width="250" height="92" rx="20" class="card"/><text x="1435" y="754" text-anchor="middle" class="mono">5. 격리 테스트</text><rect x="130" y="870" width="1340" height="76" rx="20" class="footer"/><text x="800" y="916" text-anchor="middle" class="body">헤더는 라우팅 입력일 뿐 인증·권한 정책이 아닙니다. korean ≠ english, acme:rw ≠ acme:ro를 실제 데이터로 검증합니다.</text></svg>

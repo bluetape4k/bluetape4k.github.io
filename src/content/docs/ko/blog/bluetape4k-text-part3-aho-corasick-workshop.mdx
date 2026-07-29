@@ -1,32 +1,32 @@
 ---
-title: "Bluetape4k Text Part 3: Aho-Corasick 검색과 workshop 시나리오"
-description: 키워드 사전이 커질 때 contains 반복 대신 Aho-Corasick automaton을 어떻게 서비스 경계에 놓고, workshop AbuseWordFilter로 어떻게 쓰는지 정리한다.
+title: "Bluetape4k Text Part 3: Aho-Corasick 검색과 워크숍 시나리오"
+description: 키워드 사전이 커질 때 반복적인 contains 검사 대신 Aho-Corasick 자동 장치를 서비스 경계에 두고 워크숍의 AbuseWordFilter에 적용하는 방법을 설명한다.
 sidebar:
   order: -202606290252
 blog:
   date: 2026-06-29T02:52:00+09:00
   image: /assets/bluetape4k-text-part3-hero.png
-  imageAlt: 로봇 작업자들이 키워드 카드, trie 형태의 automaton, 텍스트 스캐너, match 결과함을 조립하는 3D 작업대 일러스트
-  cardDescription: "금칙어와 위험 키워드가 늘어나면 contains 반복은 금방 관리하기 어려워집니다. Aho-Corasick automaton을 한 번 만들고 입력을 한 번 훑는 구조로 바꿔봅니다."
+  imageAlt: 로봇 작업자들이 키워드 카드, 트라이 형태의 자동 장치, 텍스트 스캐너, 일치 결과함을 조립하는 3D 작업대 일러스트
+  cardDescription: "금칙어와 위험 키워드가 늘어나면 반복적인 contains 검사를 관리하기 어려워집니다. Aho-Corasick 자동 장치를 한 번 만들고 입력을 한 번 훑는 구조로 전환합니다."
   tags: ["kotlin","practical-example","search","text"]
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/bluetape4k-text-part3-hero.png" alt="로봇 작업자들이 키워드 카드, trie 형태의 automaton, 텍스트 스캐너, match 결과함을 조립하는 3D 작업대 일러스트" loading="eager" />
+  <img src="/assets/bluetape4k-text-part3-hero.png" alt="로봇 작업자들이 키워드 카드, 트라이 형태의 자동 장치, 텍스트 스캐너, 일치 결과함을 조립하는 3D 작업대 일러스트" loading="eager" />
   <figcaption>키워드가 많아질수록 핵심은 단순합니다. 사전은 한 번 만들고, 입력은 한 번 훑습니다.</figcaption>
 </figure>
 
-<p class="bt4k-post-meta">2026-06-29 · bluetape4k-text series · Part 3</p>
+<p class="bt4k-post-meta">2026-06-29 · bluetape4k-text 시리즈 · Part 3</p>
 
-Part 2에서는 tokenizer와 언어 감지로 입력을 나누는 방법을 봤습니다. 이번에는 그 다음 단계입니다. 입력을 어느 경로로 보낼지
-정했다면, 이제 위험 키워드나 금칙어 사전을 빠르게 찾아야 합니다.
+Part 2에서는 토크나이저와 언어 감지로 입력을 나누는 방법을 살펴봤습니다. 입력을 어느 경로로 보낼지
+정했다면, 다음에는 위험 키워드나 금칙어 사전을 빠르게 찾아야 합니다.
 
 처음에는 `keywords.any { text.contains(it) }`로 충분합니다. 키워드가 열 개쯤이고 입력도 짧다면 굳이 복잡한 구조를 넣을
-이유가 없습니다. 문제는 사전이 수백 개, 수천 개로 늘어날 때입니다. 금칙어, 브랜드명, 보안 이벤트, URL scheme, 코드
-keyword가 섞이기 시작하면 `contains()` 반복은 금방 똥 치우기 후보가 됩니다.
+이유가 없습니다. 문제는 사전이 수백 개, 수천 개로 늘어날 때입니다. 금칙어, 브랜드명, 보안 이벤트, URL 스킴, 코드
+키워드가 섞이면 반복적인 `contains()` 검사의 비용과 관리 복잡도가 빠르게 증가합니다.
 
-`text-search` 모듈은 이 지점에 Aho-Corasick automaton을 둡니다. 키워드 사전으로 automaton을 한 번 만들고, 이후 입력은
-한 번만 훑습니다. 매치가 있으면 위치와 keyword, 연결된 value를 돌려줍니다.
+`text-search` 모듈은 이 지점에 Aho-Corasick 자동 장치를 둡니다. 키워드 사전으로 자동 장치를 한 번 만들고, 이후 입력은
+한 번만 훑습니다. 일치 항목이 있으면 위치와 키워드, 연결된 값을 반환합니다.
 
 ## 왜 `contains()` 반복을 바꾸나
 
@@ -43,7 +43,7 @@ fun hasRisk(text: String, keywords: List<String>): Boolean =
 | 방식 | 사전 처리 | 입력 처리 | 적합한 상황 |
 |---|---|---|---|
 | `contains()` 반복 | 없음 | 키워드 수만큼 입력 반복 검사 | 키워드가 작고, 호출 빈도가 낮은 내부 도구 |
-| Aho-Corasick | keyword trie와 failure transition을 미리 구성 | 입력을 한 번 훑으며 match emit | 사전이 크고, 요청마다 같은 사전을 반복 사용하는 서비스 |
+| Aho-Corasick | 키워드 트라이와 실패 전이를 미리 구성 | 입력을 한 번 훑으며 일치 항목 방출 | 사전이 크고, 요청마다 같은 사전을 반복 사용하는 서비스 |
 
 `contains()` 반복은 매 요청마다 키워드 줄 세우기를 다시 하는 방식에 가깝습니다. Aho-Corasick은 사전을 먼저 기계처럼 조립해두고,
 요청이 오면 텍스트만 통과시킵니다. 첫 방식은 편하지만 커질수록 비용이 누적됩니다. 두 번째 방식은 처음 만들 때 비용이 있지만,
@@ -53,22 +53,22 @@ fun hasRisk(text: String, keywords: List<String>): Boolean =
 
 `text-search`를 서비스 경계에 넣을 때는 아래처럼 흐름을 나누면 됩니다.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-text-part3-aho-corasick-flow-01-ko.png" alt="키워드 사전을 불변 automaton으로 빌드하고 사용자 텍스트를 한 번 스캔해 마스킹, 알림, 강조에 활용하는 흐름" loading="lazy" />
-  <figcaption>사전은 build 단계에서 automaton으로 만들고, 요청 처리에서는 입력을 한 번 훑어 결과만 사용합니다.</figcaption>
+<figure class="bt4k-architecture" data-diagram-title="Aho-Corasick 자동 장치의 준비와 요청 처리 경계">
+  <img src="/assets/bluetape4k-text-part3-aho-corasick-flow-01-ko.png" alt="키워드 사전을 불변 자동 장치로 만들고 사용자 텍스트를 한 번 스캔해 마스킹, 알림, 강조에 활용하는 흐름" loading="lazy" />
+  <figcaption>사전 변경 시 자동 장치를 새로 만들고, 요청 처리에서는 재사용하면서 입력만 검사합니다.</figcaption>
 </figure>
 
-가장 흔한 실수는 automaton을 요청마다 다시 만드는 일입니다. build 단계에서는 keyword trie와 failure transition을
-구성합니다. 요청마다 반복할 작업이 아닙니다. 서비스 시작 시점, 설정 reload 시점, 또는 사전 version이 바뀌는 시점에 만들고
+가장 흔한 실수는 자동 장치를 요청마다 다시 만드는 일입니다. 준비 단계에서는 키워드 트라이와 실패 전이를
+구성합니다. 요청마다 반복할 작업이 아닙니다. 서비스 시작 시점, 설정 재적재 시점, 또는 사전 버전이 바뀌는 시점에 만들고
 재사용하는 편이 맞습니다.
 
-`AhoCorasickAutomaton`은 build가 끝난 뒤 immutable이고 thread-safe입니다. 따라서 여러 요청이 같은 instance를 공유합니다.
-이 경계를 지키면 service method 안에서는 `parseText`, `containsMatch`, `replaceAll`, `matchesAsFlow` 중 필요한
+`AhoCorasickAutomaton`은 생성이 끝나면 불변이며 스레드 안전합니다. 따라서 여러 요청이 같은 인스턴스를 공유할 수 있습니다.
+이 경계를 지키면 서비스 메서드 안에서는 `parseText`, `containsMatch`, `replaceAll`, `matchesAsFlow` 중 필요한
 API만 고르면 됩니다.
 
-## builder와 DSL
+## 빌더와 DSL
 
-Builder는 아래처럼 시작합니다.
+빌더는 아래처럼 시작합니다.
 
 ```kotlin
 val automaton = AhoCorasickAutomaton.builder<String>()
@@ -103,7 +103,7 @@ val automaton = ahoCorasick<String> {
 }
 ```
 
-여기서 value를 문자열로만 둘 필요는 없습니다. 운영 코드에서는 enum이나 data class를 연결하는 편이 낫습니다.
+여기서 값을 문자열로만 둘 필요는 없습니다. 운영 코드에서는 열거형이나 데이터 클래스를 연결하는 편이 낫습니다.
 
 ```kotlin
 enum class RiskType {
@@ -119,13 +119,13 @@ val automaton = ahoCorasick<RiskType> {
 }
 ```
 
-이렇게 하면 뒤쪽 코드가 문자열 비교 대신 type-safe한 분기를 사용합니다. 문자열 상수는 편하지만, 나중에 한 글자
-틀리면 꽤 허무한 디버깅이 기다립니다.
+이렇게 하면 후속 코드가 문자열 비교 대신 타입 안전한 분기를 사용합니다. 문자열 상수의 오타 때문에 발생하는
+불필요한 디버깅도 줄일 수 있습니다.
 
-## 금칙어 필터: workshop 예제
+## 금칙어 필터: 워크숍 예제
 
 `bluetape4k-workshop`의 `kotlin/text-processing` 모듈에는 `AbuseWordFilter`가 있습니다. 이 예제는 `text-search`를 서비스
-helper로 감쌀 때의 기본 모양을 보여줍니다.
+도우미로 감싸는 기본 구조를 보여줍니다.
 
 ```kotlin
 class AbuseWordFilter(abuseWords: Collection<String>) {
@@ -154,9 +154,9 @@ class AbuseWordFilter(abuseWords: Collection<String>) {
 
 | 메서드 | 내부 API | 서비스 의미 |
 |---|---|---|
-| `containsAbuse` | `containsMatch` | 존재 여부만 필요하면 첫 match에서 끝낸다 |
-| `filterText` | `replaceAll` | match span을 같은 길이의 `*`로 바꾼다 |
-| `findMatches` | `parseText` | 위치, keyword, value까지 모두 확인한다 |
+| `containsAbuse` | `containsMatch` | 존재 여부만 필요하면 첫 일치 항목에서 끝낸다 |
+| `filterText` | `replaceAll` | 일치 구간을 같은 길이의 `*`로 바꾼다 |
+| `findMatches` | `parseText` | 위치, 키워드, 값까지 모두 확인한다 |
 
 테스트도 이 계약을 바로 검증합니다.
 
@@ -173,8 +173,8 @@ filter.findMatches("spam and abuse are badword").size
 // 3
 ```
 
-금칙어 필터는 “찾았다/못 찾았다”에서 끝나지 않습니다. 화면에 보여줄 텍스트를 masking할지, 신고 점수를 올릴지, moderator queue에
-넣을지 정책이 뒤따릅니다. 그래서 automaton value에 category나 severity를 넣어두면 service policy와 연결하기 쉽습니다.
+금칙어 필터는 “찾았다/못 찾았다”에서 끝나지 않습니다. 화면에 보여줄 텍스트를 마스킹할지, 신고 점수를 올릴지, 검토 대기열에
+넣을지 정책이 뒤따릅니다. 따라서 자동 장치의 값에 분류나 심각도를 넣어두면 서비스 정책과 연결하기 쉽습니다.
 
 ## 경계 옵션을 먼저 고른다
 
@@ -182,14 +182,14 @@ filter.findMatches("spam and abuse are badword").size
 
 | 옵션 | 쓸 때 | 주의할 점 |
 |---|---|---|
-| `ignoreCase` | 대소문자 차이를 무시해야 하는 영어 keyword | keyword도 같은 pipeline으로 정규화된다 |
-| `allowOverlaps` | 겹치는 match를 모두 볼지, 긴 keyword를 우선할지 선택 | masking/치환은 겹치지 않는 결과로 처리된다 |
-| `wordBoundary` | 부분 문자열 match를 막아야 할 때 | 한글/CJK에는 `LATIN_ALPHA`보다 `WHITESPACE_SEPARATED`가 낫다 |
-| `normalization` | 자모 분리, fullwidth 문자, 호환 문자 처리 | `NFKC`는 비용이 크므로 필요한 경로에만 쓴다 |
-| `stopOnFirstMatch` | blocking API에서 존재 여부가 핵심일 때 | Flow에서는 `take(1)`로 끊는다 |
+| `ignoreCase` | 영어 키워드의 대소문자 차이를 무시해야 할 때 | 키워드도 같은 처리 과정으로 정규화된다 |
+| `allowOverlaps` | 겹치는 일치 항목을 모두 볼지, 긴 키워드를 우선할지 선택 | 마스킹과 치환은 겹치지 않는 결과로 처리된다 |
+| `wordBoundary` | 부분 문자열 일치를 막아야 할 때 | 한글/CJK에는 `LATIN_ALPHA`보다 `WHITESPACE_SEPARATED`가 낫다 |
+| `normalization` | 자모 분리, 전각 문자, 호환 문자 처리 | `NFKC`는 비용이 크므로 필요한 경로에만 쓴다 |
+| `stopOnFirstMatch` | 블로킹 API에서 존재 여부가 핵심일 때 | Flow에서는 `take(1)`로 끊는다 |
 
-한글에서는 특히 word boundary를 조심해야 합니다. `LATIN_ALPHA`는 `Character.isAlphabetic`을 기준으로 보는데, 한글과 CJK도
-alphabetic으로 분류됩니다. 따라서 한글 단어 경계에는 보통 `WHITESPACE_SEPARATED`가 더 안전합니다.
+한글에서는 특히 단어 경계를 조심해야 합니다. `LATIN_ALPHA`는 `Character.isAlphabetic`을 기준으로 보는데, 한글과 CJK도
+알파벳 문자로 분류됩니다. 따라서 한글 단어 경계에는 보통 `WHITESPACE_SEPARATED`가 더 안전합니다.
 
 ```kotlin
 val automaton = ahoCorasick<String> {
@@ -203,7 +203,7 @@ automaton.parseText("오늘 사과 와 바나나 를 먹었다").map { it.value 
 // ["APPLE", "BANANA"]
 ```
 
-정규화도 마찬가지입니다. 입력이 자모 분리 형태로 들어오거나, `㈜` 같은 호환 문자가 섞이면 normalization이 필요한 경우가 있습니다.
+정규화도 마찬가지입니다. 입력이 자모 분리 형태로 들어오거나, `㈜` 같은 호환 문자가 섞이면 정규화가 필요한 경우가 있습니다.
 하지만 정규화는 공짜가 아닙니다. 모든 경로에 `NFKC`를 켜기보다, 실제 입력에서 필요한지 확인한 뒤 적용하는 편이 낫습니다.
 
 ```kotlin
@@ -216,9 +216,9 @@ automaton.parseText("회사명: ㈜블루테이프").first().value
 // "CORP"
 ```
 
-## Flow는 streaming 경계에서 쓴다
+## Flow는 스트리밍 경계에서 쓴다
 
-`matchesAsFlow`는 match를 `Flow`로 emit합니다. 예제에서는 로그성 입력에서 첫 번째 alert만 가져오는 모양으로 씁니다.
+`matchesAsFlow`는 일치 항목을 `Flow`로 방출합니다. 예제에서는 로그성 입력에서 첫 번째 경고만 가져옵니다.
 
 ```kotlin
 val automaton = ahoCorasick {
@@ -235,16 +235,15 @@ firstAlert?.value
 // "ACCOUNT_TAKEOVER"
 ```
 
-여기서 `stopOnFirstMatch` 옵션을 기대하면 안 됩니다. Flow에서는 `take(1)`로 collector 쪽에서 끊는 방식이 더 명확합니다.
-기본 옵션에서는 trie traversal 중 match가 나오는 대로 emit하고, `take(N)`이 producer를 협력 취소합니다.
+여기서 `stopOnFirstMatch` 옵션을 기대하면 안 됩니다. Flow에서는 `take(1)`로 수집 측에서 끊는 방식이 더 명확합니다.
+기본 옵션에서는 트라이 순회 중 일치 항목이 나오는 대로 방출하고, `take(N)`이 생산자를 협력 취소합니다.
 
-다만 `allowOverlaps = false`이거나 `wordBoundary`가 들어가면 전체 결과를 한 번 post-processing해야 합니다. 이때는 Flow라도
-완전히 streaming처럼 동작하지 않습니다. 이 차이를 모르면 “Flow니까 항상 한 건만 보고 바로 끝나겠지”라고 착각하기 쉽습니다.
-그런 착각은 운영에서 나중에 비용으로 돌아옵니다.
+다만 `allowOverlaps = false`이거나 `wordBoundary`가 들어가면 전체 결과를 한 번 후처리해야 합니다. 이때는 Flow라도
+완전한 스트리밍으로 동작하지 않습니다. 따라서 Flow 반환형만 보고 항상 첫 항목에서 검색 비용이 끝난다고 가정해서는 안 됩니다.
 
-## benchmark는 방향만 보자
+## 벤치마크는 경향만 확인한다
 
-저장소에는 JMH benchmark가 있습니다. 숫자는 production 순위표가 아니라, 같은 환경에서 같은 명령으로 비교하기 위한 snapshot입니다.
+저장소에는 JMH 벤치마크가 있습니다. 숫자는 운영 환경의 순위표가 아니라, 같은 환경과 명령에서 비교한 스냅숏입니다.
 
 실행은 아래 조건에서 수행했습니다.
 
@@ -256,16 +255,16 @@ firstAlert?.value
 
 | 항목 | Ops/s | 해석 |
 |---|---:|---|
-| `parseTextNoMatch` | 12,209.23 | 5,000-keyword automaton에서 match가 없을 때 |
-| `parseTextDenseMatches` | 3,566.90 | 겹치는 match가 많은 입력 |
-| `parseTextLargeDictionary` | 3,116.99 | 5,000 keyword, 2,000 match token |
+| `parseTextNoMatch` | 12,209.23 | 키워드 5,000개로 만든 자동 장치에서 일치 항목이 없을 때 |
+| `parseTextDenseMatches` | 3,566.90 | 겹치는 일치 항목이 많은 입력 |
+| `parseTextLargeDictionary` | 3,116.99 | 키워드 5,000개, 일치 토큰 2,000개 |
 | `matchesAsFlowLargeDictionaryCollect` | 712.62 | 큰 사전 결과를 Flow로 모두 수집 |
-| `naiveContainsSmallDictionary` | 248.39 | 1,000 keyword를 순차 `String.contains`로 검사 |
+| `naiveContainsSmallDictionary` | 248.39 | 키워드 1,000개를 순차 `String.contains`로 검사 |
 | `parseTextNfkcNormalization` | 3.68 | NFKC + ignore-case 정규화 경로 |
 
-여기서 확인할 내용은 “항상 Aho-Corasick이 몇 배 빠르다”가 아닙니다. benchmark setup이 다르고, 정규화처럼 비용이 큰 경로도 섞여
+여기서 확인할 내용은 “항상 Aho-Corasick이 몇 배 빠르다”가 아닙니다. 벤치마크 조건이 다르고, 정규화처럼 비용이 큰 경로도 섞여
 있습니다. 대신 방향은 분명합니다. 키워드 사전이 커지고 같은 사전을 반복 사용한다면, 매번 `contains()`를 돌리는 방식보다
-automaton을 재사용하는 구조가 맞습니다.
+자동 장치를 재사용하는 구조가 맞습니다.
 
 특히 `parseTextNfkcNormalization` 수치를 보면 정규화 비용이 큽니다. 이 결과를 보고 모든 입력에
 무조건 NFKC를 켜면 안 됩니다. 필요한 입력 경로에만 적용해야 합니다. 성능 문제는 대개 이런 “편한 옵션을 전부 켠”
@@ -301,10 +300,10 @@ class RiskKeywordService(
 }
 ```
 
-사전 reload가 필요하면 새 automaton을 만든 뒤 reference를 교체하는 식으로 처리하는 편이 낫습니다. 기존 automaton을 mutable하게
-고치려고 하면 요청 중간에 사전 상태가 바뀌는 문제가 생깁니다. 그런 코드는 테스트에서도 설명하기 어렵고, 운영에서는 더 어렵습니다.
+사전을 다시 적재해야 한다면 새 자동 장치를 만든 뒤 참조를 교체하는 편이 낫습니다. 기존 자동 장치를 가변 상태로
+고치면 요청 처리 중에 사전 상태가 달라질 수 있습니다. 이 방식은 테스트와 운영에서 일관된 결과를 설명하기 어렵습니다.
 
-입력 경계도 여기서 같이 봐야 합니다. 너무 긴 입력은 automaton에 넣기 전에 거부합니다. 원문을 에러 메시지나 로그에 그대로 남기지
+입력 경계도 여기서 같이 봐야 합니다. 너무 긴 입력은 자동 장치에 넣기 전에 거부합니다. 원문을 오류 메시지나 로그에 그대로 남기지
 않는 것도 Part 1에서 본 것과 같은 안전 경계입니다.
 
 ## 언제 쓰지 말까
@@ -313,20 +312,20 @@ Aho-Corasick이 항상 정답은 아닙니다.
 
 | 상황 | 더 단순한 선택 |
 |---|---|
-| keyword가 3~5개이고 호출 빈도가 낮다 | `contains()` 반복 |
-| regex 문법 자체가 필요하다 | 정규식 또는 parser |
-| 문맥/의미 기반 분류가 필요하다 | tokenizer, rule engine, ML classifier |
-| 사전이 요청마다 완전히 달라진다 | automaton build 비용까지 포함해 다시 측정 |
+| 키워드가 3~5개이고 호출 빈도가 낮다 | `contains()` 반복 |
+| 정규식 문법 자체가 필요하다 | 정규식 또는 파서 |
+| 문맥·의미 기반 분류가 필요하다 | 토크나이저, 규칙 엔진, ML 분류기 |
+| 사전이 요청마다 완전히 달라진다 | 자동 장치 생성 비용까지 포함해 다시 측정 |
 | 입력이 너무 짧고 사전도 작다 | 단순 코드가 유지보수에 낫다 |
 
-반대로 금칙어, 보안 이벤트, 브랜드/상품명, URL scheme, 코드 keyword처럼 사전이 반복 사용되고 match 위치가 필요한 작업이라면
-`text-search`가 잘 맞습니다. 특히 `replaceAll`과 `tokenize`가 있으면 masking과 highlighting까지 같은 match 결과로 이어갈 수
+반대로 금칙어, 보안 이벤트, 브랜드·상품명, URL 스킴, 코드 키워드처럼 사전이 반복 사용되고 일치 위치가 필요한 작업이라면
+`text-search`가 잘 맞습니다. 특히 `replaceAll`과 `tokenize`가 있으면 마스킹과 강조 표시까지 같은 일치 결과로 이어갈 수
 있습니다.
 
-Part 3의 결론은 간단합니다. 키워드가 적으면 단순한 코드가 이깁니다. 키워드가 많아지고 같은 사전을 계속 쓴다면 automaton을
-만들어 재사용하세요. 그리고 옵션은 “편해 보이는 것”을 전부 켜지 말고, 입력 특성과 테스트 fixture로 고르세요.
+Part 3의 결론은 간단합니다. 키워드가 적으면 단순한 코드가 유리합니다. 키워드가 많아지고 같은 사전을 계속 쓴다면 자동 장치를
+만들어 재사용해야 합니다. 옵션은 편의만 보고 모두 활성화하지 말고, 입력 특성과 테스트 데이터로 선택해야 합니다.
 
-## 참고한 소스
+## 자료
 
 - [text-search README](https://github.com/bluetape4k/bluetape4k-text/blob/develop/text-search/README.md)
 - [AhoCorasickAutomaton](https://github.com/bluetape4k/bluetape4k-text/blob/develop/text-search/src/main/kotlin/io/bluetape4k/text/search/AhoCorasickAutomaton.kt)
@@ -336,7 +335,7 @@ Part 3의 결론은 간단합니다. 키워드가 적으면 단순한 코드가 
 - [AhoCorasickKoreanTest](https://github.com/bluetape4k/bluetape4k-text/blob/develop/text-search/src/test/kotlin/io/bluetape4k/text/search/AhoCorasickKoreanTest.kt)
 - [AhoCorasickFlowTest](https://github.com/bluetape4k/bluetape4k-text/blob/develop/text-search/src/test/kotlin/io/bluetape4k/text/search/flow/AhoCorasickFlowTest.kt)
 - [AhoCorasickBenchmark](https://github.com/bluetape4k/bluetape4k-text/blob/develop/text-search/src/benchmark/kotlin/io/bluetape4k/text/search/benchmark/AhoCorasickBenchmark.kt)
-- [Aho-Corasick benchmark baseline](https://github.com/bluetape4k/bluetape4k-text/blob/develop/docs/benchmark/2026-06-04-issue-97-ahocorasick-baselines.json)
+- [Aho-Corasick 벤치마크 기준값](https://github.com/bluetape4k/bluetape4k-text/blob/develop/docs/benchmark/2026-06-04-issue-97-ahocorasick-baselines.json)
 - [TextSearchExamples](https://github.com/bluetape4k/bluetape4k-text/blob/develop/examples/text-search-examples/src/main/kotlin/io/bluetape4k/text/examples/search/TextSearchExamples.kt)
 - [AbuseWordFilter](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/kotlin/text-processing/src/main/kotlin/io/bluetape4k/workshop/text/filter/AbuseWordFilter.kt)
 - [AbuseWordFilterTest](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/kotlin/text-processing/src/test/kotlin/io/bluetape4k/workshop/text/filter/AbuseWordFilterTest.kt)
@@ -344,6 +343,6 @@ Part 3의 결론은 간단합니다. 키워드가 적으면 단순한 코드가 
 ## 시리즈
 
 - Part 1: [텍스트 처리의 시작점과 품질 기준](/ko/blog/bluetape4k-text-part1-overview-quality/)
-- Part 2: [tokenizer와 언어 감지로 입력을 라우팅하기](/ko/blog/bluetape4k-text-part2-tokenizers-lingua/)
-- Part 3: [Aho-Corasick 검색과 workshop 시나리오](/ko/blog/bluetape4k-text-part3-aho-corasick-workshop/)
+- Part 2: [토크나이저와 언어 감지로 입력을 라우팅하기](/ko/blog/bluetape4k-text-part2-tokenizers-lingua/)
+- Part 3: [Aho-Corasick 검색과 워크숍 시나리오](/ko/blog/bluetape4k-text-part3-aho-corasick-workshop/)
 - Part 4: [사전과 금칙어 변경을 테스트로 다루기](/ko/blog/bluetape4k-text-part4-dictionary-quality-gates/)

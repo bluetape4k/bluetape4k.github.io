@@ -1,71 +1,91 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="820" viewBox="0 0 1700 820">
+<svg xmlns="http://www.w3.org/2000/svg" width="2050" height="920" viewBox="0 0 2050 920">
 <defs>
-  <marker id="arrow" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse">
-    <path d="M 0 0 L 14 7 L 0 14 Z" fill="#496A8F" stroke="#496A8F"/>
+  <marker id="arrow" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">
+    <path d="M 0 0 L 10 5 L 0 10 Z" fill="#60A5FA"/>
   </marker>
   <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
     <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#22344A" flood-opacity="0.12"/>
   </filter>
   <style>
-    .canvas{fill:#F6F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
-    .title{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:42px;fill:#22344A;font-weight:400}
-    .subtitle,.footer,.axis{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:17px;fill:#536476;font-weight:400}
-    .nodeTitle,.participant{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:24px;fill:#22344A;font-weight:400}
-    .nodeBody,.labelText,.num{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:16px;fill:#3F5269;font-weight:400}
-    .tableTitle{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:24px;fill:#22344A;font-weight:400}
-    .tableField,.edgeLabel{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:15px;fill:#3F5269;font-weight:400}
-    .edge{fill:none;stroke:#496A8F;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
-    .bus{fill:none;stroke:#496A8F;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
-    .lifeline{stroke:#91A6BD;stroke-width:2;stroke-dasharray:8 8}
+    .canvas{fill:#07111F}.frame{fill:#0F172A;stroke:#334155;stroke-width:2}
+    .title{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:42px;fill:#F8FAFC;font-weight:400}
+    .subtitle,.footer,.axis{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:17px;fill:#CBD5E1;font-weight:400}
+    .nodeTitle,.participant{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:24px;fill:#F8FAFC;font-weight:400}
+    .nodeBody,.labelText,.num{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:16px;fill:#E2E8F0;font-weight:400}
+    .tableTitle{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:24px;fill:#F8FAFC;font-weight:400}
+    .tableField,.edgeLabel{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:15px;fill:#E2E8F0;font-weight:400}
+    .edge{fill:none;stroke:#60A5FA;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    .bus{fill:none;stroke:#60A5FA;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+    .lifeline{stroke:#64748B;stroke-width:2;stroke-dasharray:8 8}
     g[id]{filter:url(#shadow)}
   </style>
 </defs>
-<rect class="canvas" width="1700" height="820"/>
-<rect class="frame" x="34" y="28" width="1632" height="764" rx="24"/>
-<text class="title" x="850" y="82" text-anchor="middle">하나의 Graph API, 두 실행 경로</text>
-<text class="subtitle" x="850" y="118" text-anchor="middle">backend work는 같고 call path와 waiting model만 달라진다</text>
-<path class="edge" data-connector="syncCaller-to-syncMethod" d="M400 301 L470 301"/>
-<path class="edge" data-connector="syncMethod-to-backend" d="M800 301 L827 301 Q845 301 845 319 L845 365 Q845 383 863 383 L890 383"/>
-<path class="edge" data-connector="vtCaller-to-vtAdapter" d="M400 571 L470 571"/>
-<path class="edge" data-connector="vtAdapter-to-backend" d="M800 571 L827 571 Q845 571 845 553 L845 437 Q845 419 863 419 L890 419"/>
-<path class="edge" data-connector="backend-to-wait" d="M1250 401 L1310 401"/>
+<rect class="canvas" width="2050" height="920"/>
+<rect class="frame" x="34" y="28" width="1982" height="864" rx="24"/>
+<text class="title" x="1025" y="82" text-anchor="middle">하나의 그래프 API, 두 실행 경로</text>
+<text class="subtitle" x="1025" y="118" text-anchor="middle">위임 연산은 동기 방식으로 유지되고 작업 제출과 대기 경계가 달라진다</text>
+<path class="edge" data-connector="syncCaller-to-syncMethod" d="M390 306 L450 306"/>
+<path class="edge" data-connector="syncMethod-to-syncBackend" d="M770 306 L830 306"/>
+<path class="edge" data-connector="syncBackend-to-syncResult" d="M1170 306 L1230 306"/>
+<path class="edge" data-connector="vtCaller-to-vtAdapter" d="M390 596 L450 596"/>
+<path class="edge" data-connector="vtAdapter-to-virtualThread" d="M790 596 L850 596"/>
+<path class="edge" data-connector="virtualThread-to-vtBackend" d="M1170 596 L1230 596"/>
+<path class="edge" data-connector="vtBackend-to-futureResult" d="M1570 596 L1630 596"/>
 <g id="syncCaller">
-  <rect x="90" y="230" width="310" height="142" rx="12" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="nodeTitle" x="245" y="287.5" text-anchor="middle">Caller Thread</text>
-  <text class="nodeBody" x="245" y="321.5" text-anchor="middle">GraphOperations 호출</text>
-  <text class="nodeBody" x="245" y="344.5" text-anchor="middle">직접 대기</text>
+  <rect x="70" y="235" width="320" height="142" rx="12" fill="#0C4A6E" stroke="#64748B" stroke-width="2"/>
+  <text class="nodeTitle" x="230" y="292.5" text-anchor="middle">호출 스레드</text>
+  <text class="nodeBody" x="230" y="326.5" text-anchor="middle">GraphOperations 호출</text>
+  <text class="nodeBody" x="230" y="349.5" text-anchor="middle">반환 값까지 직접 대기</text>
 </g>
 <g id="syncMethod">
-  <rect x="470" y="230" width="330" height="142" rx="12" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="nodeTitle" x="635" y="287.5" text-anchor="middle">Sync Method</text>
-  <text class="nodeBody" x="635" y="321.5" text-anchor="middle">직접 backend call</text>
-  <text class="nodeBody" x="635" y="344.5" text-anchor="middle">같은 repository contract</text>
+  <rect x="450" y="235" width="320" height="142" rx="12" fill="#0C4A6E" stroke="#64748B" stroke-width="2"/>
+  <text class="nodeTitle" x="610" y="292.5" text-anchor="middle">GraphOperations</text>
+  <text class="nodeBody" x="610" y="326.5" text-anchor="middle">동기 위임 메서드</text>
+  <text class="nodeBody" x="610" y="349.5" text-anchor="middle">직접 호출</text>
 </g>
-<g id="backend">
-  <rect x="890" y="330" width="360" height="142" rx="12" fill="#EAF8EF" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="nodeTitle" x="1070" y="387.5" text-anchor="middle">Graph Backend</text>
-  <text class="nodeBody" x="1070" y="421.5" text-anchor="middle">TinkerGraph 또는 network DB</text>
-  <text class="nodeBody" x="1070" y="444.5" text-anchor="middle">같은 graph operation</text>
+<g id="syncBackend">
+  <rect x="830" y="235" width="340" height="142" rx="12" fill="#14532D" stroke="#64748B" stroke-width="2"/>
+  <text class="nodeTitle" x="1000" y="292.5" text-anchor="middle">그래프 백엔드</text>
+  <text class="nodeBody" x="1000" y="326.5" text-anchor="middle">메모리 또는 I/O에서</text>
+  <text class="nodeBody" x="1000" y="349.5" text-anchor="middle">그래프 연산 실행</text>
+</g>
+<g id="syncResult">
+  <rect x="1230" y="235" width="320" height="142" rx="12" fill="#134E4A" stroke="#64748B" stroke-width="2"/>
+  <text class="nodeTitle" x="1390" y="292.5" text-anchor="middle">직접 반환</text>
+  <text class="nodeBody" x="1390" y="326.5" text-anchor="middle">같은 호출 경로로</text>
+  <text class="nodeBody" x="1390" y="349.5" text-anchor="middle">호출자에게 결과 반환</text>
 </g>
 <g id="vtCaller">
-  <rect x="90" y="500" width="310" height="142" rx="12" fill="#FFF0F1" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="nodeTitle" x="245" y="557.5" text-anchor="middle">Caller Thread</text>
-  <text class="nodeBody" x="245" y="591.5" text-anchor="middle">CompletableFuture 수신</text>
-  <text class="nodeBody" x="245" y="614.5" text-anchor="middle">wait 바깥에서 계속 진행</text>
+  <rect x="70" y="525" width="320" height="142" rx="12" fill="#831843" stroke="#64748B" stroke-width="2"/>
+  <text class="nodeTitle" x="230" y="582.5" text-anchor="middle">호출 스레드</text>
+  <text class="nodeBody" x="230" y="616.5" text-anchor="middle">비동기 연산 요청</text>
+  <text class="nodeBody" x="230" y="639.5" text-anchor="middle">CompletableFuture 수신</text>
 </g>
 <g id="vtAdapter">
-  <rect x="470" y="500" width="330" height="142" rx="12" fill="#FFF0F1" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="nodeTitle" x="635" y="557.5" text-anchor="middle">Virtual Thread Adapter</text>
-  <text class="nodeBody" x="635" y="591.5" text-anchor="middle">virtualFutureOf { ... }</text>
-  <text class="nodeBody" x="635" y="614.5" text-anchor="middle">sync operation wrapping</text>
+  <rect x="450" y="525" width="340" height="142" rx="12" fill="#831843" stroke="#64748B" stroke-width="2"/>
+  <text class="nodeTitle" x="620" y="582.5" text-anchor="middle">가상 스레드 어댑터</text>
+  <text class="nodeBody" x="620" y="616.5" text-anchor="middle">위임 객체를 바꾸지 않고</text>
+  <text class="nodeBody" x="620" y="639.5" text-anchor="middle">virtualFutureOf { ... } 제출</text>
 </g>
-<g id="wait">
-  <rect x="1310" y="330" width="300" height="142" rx="12" fill="#FFF4D9" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="nodeTitle" x="1460" y="387.5" text-anchor="middle">Wait Boundary</text>
-  <text class="nodeBody" x="1460" y="421.5" text-anchor="middle">sync caller가 비용 지불</text>
-  <text class="nodeBody" x="1460" y="444.5" text-anchor="middle">VT가 blocking wait 흡수</text>
+<g id="virtualThread">
+  <rect x="850" y="525" width="320" height="142" rx="12" fill="#4C1D95" stroke="#64748B" stroke-width="2"/>
+  <text class="nodeTitle" x="1010" y="582.5" text-anchor="middle">가상 스레드</text>
+  <text class="nodeBody" x="1010" y="616.5" text-anchor="middle">같은 동기 위임</text>
+  <text class="nodeBody" x="1010" y="639.5" text-anchor="middle">메서드 실행</text>
 </g>
-<rect x="88" y="724" width="1524" height="62" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
-<text class="footer" x="850" y="749" text-anchor="middle">in-memory microsecond work에서는 wrapping overhead가 보여서 Sync가 보통 이긴다.</text>
-<text class="footer" x="850" y="773" text-anchor="middle">blocking network I/O와 많은 concurrent request에서는 Virtual Threads가 scaling을 단순하게 만든다.</text>
+<g id="vtBackend">
+  <rect x="1230" y="525" width="340" height="142" rx="12" fill="#14532D" stroke="#64748B" stroke-width="2"/>
+  <text class="nodeTitle" x="1400" y="582.5" text-anchor="middle">그래프 백엔드</text>
+  <text class="nodeBody" x="1400" y="616.5" text-anchor="middle">같은 연산을 실행하고</text>
+  <text class="nodeBody" x="1400" y="639.5" text-anchor="middle">I/O에서 대기할 수 있음</text>
+</g>
+<g id="futureResult">
+  <rect x="1630" y="525" width="330" height="142" rx="12" fill="#78350F" stroke="#64748B" stroke-width="2"/>
+  <text class="nodeTitle" x="1795" y="582.5" text-anchor="middle">완료 경계</text>
+  <text class="nodeBody" x="1795" y="616.5" text-anchor="middle">Future 완료</text>
+  <text class="nodeBody" x="1795" y="639.5" text-anchor="middle">호출자가 조합하거나 join</text>
+</g>
+<rect x="88" y="824" width="1874" height="62" rx="12" fill="#111827" stroke="#334155"/>
+<text class="footer" x="1025" y="849" text-anchor="middle">즉시 join하는 측정은 단일 연산의 종단 간 비용이며 동시 처리량을 입증하지 않는다.</text>
+<text class="footer" x="1025" y="873" text-anchor="middle">실제 백엔드·커넥션 풀·목표 동시성을 측정한 뒤 실행 경로를 선택한다.</text>
 </svg>

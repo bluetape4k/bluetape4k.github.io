@@ -34,7 +34,7 @@
 
   <g class="ko-font">
     <text x="90" y="74" fill="#f4f7fb" font-size="38" font-weight="700">함께 실행하면 안 되는 작업부터 정한다</text>
-    <text x="90" y="112" fill="#8fa6c1" font-size="21">그 범위를 조정 키로 나눈 뒤, 요구사항에 맞는 Backend를 고릅니다.</text>
+    <text x="90" y="112" fill="#8fa6c1" font-size="21">그 범위를 조정 키로 나눈 뒤, 요구사항에 맞는 백엔드를 고릅니다.</text>
 
     <g filter="url(#shadow)">
       <rect x="70" y="150" width="1460" height="190" rx="24" fill="url(#panel)" stroke="#29415f" stroke-width="2"/>
@@ -94,16 +94,16 @@
 
     <g text-anchor="middle">
       <rect x="105" y="650" width="450" height="125" rx="20" fill="#0b2830" stroke="#2aa99f" stroke-width="2"/>
-      <text x="330" y="702" fill="#d8fffb" font-size="26" font-weight="700">Tenant A 집계 작업</text>
-      <text x="330" y="740" fill="#82bcb7" font-size="19">Tenant B와 동시에 실행 가능</text>
+      <text x="330" y="702" fill="#d8fffb" font-size="26" font-weight="700">테넌트 A 집계 작업</text>
+      <text x="330" y="740" fill="#82bcb7" font-size="19">테넌트 B와 동시에 실행 가능</text>
 
       <rect x="1045" y="650" width="450" height="125" rx="20" fill="#302514" stroke="#d69a34" stroke-width="2"/>
-      <text x="1270" y="702" fill="#fff0ca" font-size="25" font-weight="700">Migration + 완료 마커</text>
+      <text x="1270" y="702" fill="#fff0ca" font-size="25" font-weight="700">마이그레이션 + 완료 마커</text>
       <text x="1270" y="740" fill="#c8aa71" font-size="19">결과와 완료 마커를 같은 트랜잭션에 저장</text>
 
       <rect x="575" y="650" width="450" height="125" rx="20" fill="#201733" stroke="#805fc8" stroke-width="2"/>
-      <text x="800" y="702" fill="#eadfff" font-size="26" font-weight="700">Tenant B 집계 작업</text>
-      <text x="800" y="740" fill="#ac98d2" font-size="19">Tenant A와 독립적으로 실행 가능</text>
+      <text x="800" y="702" fill="#eadfff" font-size="26" font-weight="700">테넌트 B 집계 작업</text>
+      <text x="800" y="740" fill="#ac98d2" font-size="19">테넌트 A와 독립적으로 실행 가능</text>
     </g>
 
     <g font-size="17" text-anchor="middle" font-weight="700">

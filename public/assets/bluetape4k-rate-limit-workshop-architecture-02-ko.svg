@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1240" height="820" viewBox="0 0 1240 820" role="img" aria-labelledby="title desc">
-  <title id="title">Bucket4j rate-limit 워크숍 아키텍처</title>
+  <title id="title">Bucket4j 요청 제한 워크숍 아키텍처</title>
   <desc id="desc">클라이언트 요청은 프록시 인식 호출자 식별, 경로별 WebFilter, Redis 또는 Caffeine 버킷 저장소, 응답 헤더 처리를 거쳐 애플리케이션 핸들러로 전달됩니다.</desc>
   <defs>
     <marker id="arrow-blue" markerWidth="14" markerHeight="14" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" orient="auto">
@@ -20,7 +20,7 @@
       <stop offset="100%" stop-color="#263b57"/>
     </linearGradient>
     <linearGradient id="panelGradient" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#1f2937"/>
+      <stop offset="0%" stop-color="#172033"/>
       <stop offset="100%" stop-color="#111827"/>
     </linearGradient>
     <filter id="panelShadow" x="-8%" y="-12%" width="116%" height="124%">
@@ -57,8 +57,8 @@
 
   <rect class="bg" width="1240" height="820"/>
   <rect class="panel" x="36" y="30" width="1168" height="752"/>
-  <text class="title" x="70" y="80">rate limiting은 bucket이 아니라 caller identity에서 시작합니다</text>
-  <text class="subtitle" x="70" y="110">proxy 신뢰가 IP를 정하고, filter가 key 형태를 정하며, storage가 quota의 local/shared 여부를 정합니다</text>
+  <text class="title" x="70" y="80">요청 제한은 버킷이 아니라 호출자 식별에서 시작합니다</text>
+  <text class="subtitle" x="70" y="110">프록시 신뢰가 IP를 정하고, 필터가 키 형태를 정하며, 저장소가 할당량의 로컬·공유 범위를 정합니다</text>
 
   <g id="request-source">
     <rect class="lane" x="75" y="142" width="240" height="556"/>
@@ -69,17 +69,17 @@
     <text class="small" x="133" y="342">X-Forwarded-For</text>
     <text class="small" x="133" y="366">X-Real-IP</text>
     <rect class="pill" x="99" y="442" width="192" height="36" stroke="#a98be9"/>
-    <text class="tiny" x="123" y="464">proxy 신뢰는 명시적으로</text>
+    <text class="tiny" x="123" y="464">프록시 신뢰는 명시적으로</text>
     <rect class="pill" x="99" y="500" width="192" height="36" stroke="#fb7185"/>
-    <text class="tiny" x="149" y="522">spoof 위험</text>
+    <text class="tiny" x="149" y="522">위조 위험</text>
   </g>
 
   <g id="identity-strategy">
     <rect class="lane" x="375" y="142" width="292" height="556"/>
     <text class="label" x="399" y="180">호출자 식별</text>
     <rect class="card card-purple" x="409" y="220" width="224" height="220"/>
-    <text class="label" x="453" y="258">Key resolver</text>
-    <text class="small" x="437" y="286">경로별 key 형태</text>
+    <text class="label" x="453" y="258">키 결정기</text>
+    <text class="small" x="437" y="286">경로별 키 형태</text>
     <rect class="pill" x="431" y="314" width="180" height="34" stroke="#67b7ee"/>
     <text class="tiny" x="451" y="336">ip:&lt;address&gt;</text>
     <rect class="pill" x="431" y="358" width="180" height="34" stroke="#8dd46f"/>
@@ -87,29 +87,29 @@
     <rect class="pill" x="431" y="402" width="180" height="34" stroke="#f1b94e"/>
     <text class="tiny" x="444" y="424">combined:ip:user</text>
     <rect class="pill" x="415" y="520" width="212" height="36" stroke="#f1b94e"/>
-    <text class="tiny" x="435" y="542">identity 없음 → 400/401</text>
+    <text class="tiny" x="435" y="542">식별자 없음 → 400/401</text>
   </g>
 
   <g id="bucket-handler">
     <rect class="lane" x="727" y="142" width="438" height="556"/>
-    <text class="label" x="751" y="180">Bucket과 handler</text>
+    <text class="label" x="751" y="180">버킷과 핸들러</text>
     <rect class="card card-purple" x="767" y="252" width="264" height="126"/>
     <rect class="icon-back" x="789" y="286" width="56" height="56" rx="14"/>
     <g data-bluetape4k-icon="generic-microservice" transform="translate(797 294) scale(0.3125)">
       <rect x="10" y="12" width="108" height="104" rx="18" fill="#f8fafc" stroke="#334155" stroke-width="6"/>
       <rect x="28" y="30" width="72" height="22" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="5"/>
-      <rect x="28" y="76" width="72" height="22" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="5"/>
-      <path d="M48 52v10c0 5 4 9 9 9h14c5 0 9-4 9-9V52" fill="none" stroke="#64748b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="28" y="76" width="72" height="22" rx="8" fill="#123524" stroke="#16a34a" stroke-width="5"/>
+      <path d="M48 52v10c0 5 4 9 9 9h14c5 0 9-4 9-9V52" fill="none" stroke="#b6c4d6" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
       <circle cx="42" cy="41" r="4" fill="#2563eb"/>
       <circle cx="42" cy="87" r="4" fill="#16a34a"/>
-      <path d="M86 40h10M86 86h10" fill="none" stroke="#475569" stroke-width="5" stroke-linecap="round"/>
+      <path d="M86 40h10M86 86h10" fill="none" stroke="#a9b8ca" stroke-width="5" stroke-linecap="round"/>
     </g>
     <text class="label" x="869" y="298">WebFilter</text>
-    <text class="small" x="869" y="324">token 1개 소비</text>
-    <text class="small" x="869" y="348">rate header 기록</text>
+    <text class="small" x="869" y="324">토큰 1개 소비</text>
+    <text class="small" x="869" y="348">요청 제한 헤더 기록</text>
     <rect class="card card-red" x="1067" y="275" width="76" height="80"/>
     <text class="label" x="1085" y="311">429</text>
-    <text class="tiny" x="1077" y="335">Retry</text>
+    <text class="tiny" x="1077" y="335">재시도</text>
     <rect class="card card-green" x="767" y="452" width="132" height="118"/>
     <rect class="icon-back" x="800" y="472" width="66" height="58" rx="14"/>
     <g data-bluetape4k-icon="redis" transform="translate(811 479) scale(1.06)">
@@ -128,15 +128,15 @@
         <path d="M36.963 23.18l-.56.22-5.166-2.042 5.723-2.264z" fill="#ad2115"/>
       </g>
     </g>
-    <text class="small" x="793" y="550">Redis shared</text>
+    <text class="small" x="793" y="550">Redis 공유</text>
     <rect class="card card-amber" x="927" y="452" width="132" height="118"/>
     <rect class="icon-back" x="960" y="472" width="66" height="58" rx="14"/>
     <g data-bluetape4k-icon="caffeine" transform="translate(971 479) scale(1.83)">
       <path fill="#8B5A2B" d="M6.162 1.557c-.18.006-.263.137-.293.18L.05 11.82c-.07.142-.06.27-.004.356 1.942 3.36 3.882 6.723 5.822 10.085a.337.337 0 00.305.182h11.65c.138.003.26-.09.31-.182 1.94-3.36 3.878-6.721 5.82-10.08a.361.361 0 000-.358l-5.82-10.085c-.112-.193-.308-.181-.308-.181zm.804.719h9.513L10.136 5.94zm-.427.603l2.964 3.426L6.54 8.018zm10.3.018l-3.86 6.685L7.19 8.469zm1.341.357l4.756 8.246-4.756-.916zm-12.36.002v5.176l-4.48 2.587zm11.64 0v11.142l-3.857-4.457zM7.127 9.186l5.847 1.126 3.898 4.502-5.842-1.125zM5.82 9.26v3.425l-4.45-.855zm.72.341l3.856 4.457-3.857 6.685zm11.64 1.713l4.447.856-4.447 2.57zM1.062 12.5l4.76.916v7.33zm21.597.48l-4.479 7.763v-5.175zm-11.64 1.437l5.79 1.114-9.649 5.572zm6.44 1.565v5.138l-2.964-3.425zm-3.597 2.078l3.172 3.664H7.52z"/>
     </g>
-    <text class="small" x="952" y="550">Caffeine local</text>
+    <text class="small" x="952" y="550">Caffeine 로컬</text>
     <rect class="card card-blue" x="767" y="618" width="264" height="62"/>
-    <text class="label" x="817" y="655">Handler 실행</text>
+    <text class="label" x="817" y="655">핸들러 실행</text>
   </g>
 
   <path class="connector line-blue" data-connector="request-to-identity" d="M 281 315 L 409 315"/>

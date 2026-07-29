@@ -57,11 +57,11 @@ The code is shorter, but the execution boundary matters more.
 
 Sources:
 
-- - [LeaderElection.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/annotation/LeaderElection.kt)
-- - [LeaderElectionAspect.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-spring-boot/src/main/kotlin/io/bluetape4k/leader/spring/aop/LeaderElectionAspect.kt)
-- - [LeaderElectionAutoConfiguration.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-spring-boot/src/main/kotlin/io/bluetape4k/leader/spring/LeaderElectionAutoConfiguration.kt)
+- [LeaderElection.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/annotation/LeaderElection.kt)
+- [LeaderElectionAspect.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-spring-boot/src/main/kotlin/io/bluetape4k/leader/spring/aop/LeaderElectionAspect.kt)
+- [LeaderElectionAutoConfiguration.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-spring-boot/src/main/kotlin/io/bluetape4k/leader/spring/LeaderElectionAutoConfiguration.kt)
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-sequence" data-diagram-title="Spring AOP leader-election execution flow">
   <img src="/assets/bluetape4k-leader-spring-aop-sequence-01-en.png" alt="Sequence diagram showing Spring LeaderElectionAspect resolving SpEL, selecting a factory cache entry, calling the backend elector, executing the method body, recording metrics, and applying failure mode handling" loading="lazy" />
   <figcaption>`@LeaderElection` is small, but its runtime path is not. The advice resolves the lock name, selects an elector by factory/options, separates backend results from body exceptions, and sends outcomes through metrics and failure-mode branches.</figcaption>
 </figure>
@@ -222,7 +222,7 @@ fun Application.module() {
 
     install(LeaderElectionPlugin) {
         leaderElection = elector
-        enableManagementRoute = true
+        managementRouteEnabled = true
     }
 
     leaderScheduled("hourly-stats-aggregation", period = 1.hours) {
@@ -233,7 +233,7 @@ fun Application.module() {
 
 `leaderScheduled` runs a loop in an application coroutine.
 Each cycle calls `SuspendLeaderElector.runIfLeader(lockName) { ... }`.
-The job is cancelled when `ApplicationStopped` fires.
+Because the job runs in the application coroutine scope, it is cancelled as the application shuts down.
 `CancellationException` is rethrown; ordinary exceptions are logged and the next cycle continues.
 That behavior is a good fit for batch-style background jobs.
 A failed cycle does not tear down the whole application, but shutdown cancellation is not swallowed.
@@ -257,8 +257,8 @@ The route walks registered lock names, calls `state(lockName)`, and returns a JS
 ```kotlin
 install(LeaderElectionPlugin) {
     leaderElection = elector
-    enableManagementRoute = true
-    managementPath = "/management/leaderElection"
+    managementRouteEnabled = true
+    managementRoutePath = "/management/leaderElection"
 }
 ```
 
@@ -268,6 +268,7 @@ It is not an execution-decision API.
 Execution decisions must stay on the atomic `runIfLeader` path.
 Checking state and then running the body manually writes a TOCTOU race by hand.
 Those races are especially annoying because they often pass the first local test.
+The route does not add authentication or authorization on its own, so expose it only behind a trusted management boundary such as an internal port, network policy, or authentication layer.
 
 Source:
 

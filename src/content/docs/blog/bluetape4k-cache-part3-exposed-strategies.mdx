@@ -2,9 +2,9 @@
 title: "Bluetape4k Cache Part 3: Building Caching Strategies with Near Cache and Exposed"
 description: Read-through, write-through, and write-behind strategies from bluetape4k-exposed and exposed-workshop chapter 11, viewed through Near Cache.
 sidebar:
-  order: -202605291703
+  order: -202605291852
 blog:
-  date: 2026-05-29T17:03:00+09:00
+  date: 2026-05-29T18:50:02+09:00
   image: /assets/cache-series-part3-hero.png
   imageAlt: Exposed repository cache strategy workbench with robot workers and cache pipelines
   cardDescription: "Read-through, write-through, and write-behind sound similar. Their tradeoffs are not."
@@ -73,8 +73,8 @@ interface JdbcCacheRepository<ID: Any, E: Serializable>: Closeable {
 ```
 
 Related source:
-[JdbcCacheRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/JdbcCacheRepository.kt),
-[R2dbcCacheRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/R2dbcCacheRepository.kt)
+[JdbcCacheRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/cache/src/main/kotlin/io/bluetape4k/exposed/cache/JdbcCacheRepository.kt),
+[R2dbcCacheRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/cache/src/main/kotlin/io/bluetape4k/exposed/cache/R2dbcCacheRepository.kt)
 
 The important detail is that `get` and `put` are not plain map operations. They follow repository
 policy, and that policy changes performance, consistency, and behavior during failures.
@@ -109,8 +109,8 @@ protected val mapWriter: EntityMapWriter<ID, E>? by lazy {
 ```
 
 Full source:
-[JdbcCacheRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/JdbcCacheRepository.kt),
-[AbstractJdbcRedissonRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-jdbc-redisson/src/main/kotlin/io/bluetape4k/exposed/redisson/repository/AbstractJdbcRedissonRepository.kt)
+[JdbcCacheRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/cache/src/main/kotlin/io/bluetape4k/exposed/cache/JdbcCacheRepository.kt),
+[AbstractJdbcRedissonRepository.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/jdbc-redisson/src/main/kotlin/io/bluetape4k/exposed/redisson/repository/AbstractJdbcRedissonRepository.kt)
 
 That is why `get` can look like a map lookup while a cache miss loads from the database through
 the loader. Likewise, `put` can look like a cache write while `WRITE_THROUGH` persists through
@@ -234,9 +234,9 @@ distributed systems should fail small. If they fail big, only the name was small
 `bluetape4k-exposed` separates cache location from write strategy.
 
 Related source:
-[CacheMode.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/CacheMode.kt),
-[CacheWriteMode.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/CacheWriteMode.kt),
-[LocalCacheConfig.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/src/main/kotlin/io/bluetape4k/exposed/cache/LocalCacheConfig.kt)
+[CacheMode.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/cache/src/main/kotlin/io/bluetape4k/exposed/cache/CacheMode.kt),
+[CacheWriteMode.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/cache/src/main/kotlin/io/bluetape4k/exposed/cache/CacheWriteMode.kt),
+[LocalCacheConfig.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/cache/src/main/kotlin/io/bluetape4k/exposed/cache/LocalCacheConfig.kt)
 
 That separation matters. "Where do we cache?" and "When do we write?" are different questions.
 The same Redis backend can mean very different operational behavior under read-through,

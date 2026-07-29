@@ -1,16 +1,16 @@
 import { execFileSync } from "node:child_process";
-import { writeFileSync } from "node:fs";
+import { rmSync, writeFileSync } from "node:fs";
 
 const out = "public/assets";
 
 const colors = {
-  blue: "#EAF4FF",
-  green: "#EAF8EF",
-  amber: "#FFF4D9",
-  pink: "#FFF0F1",
-  teal: "#E9F7F5",
-  lavender: "#F3ECFF",
-  orange: "#FFF0E8",
+  blue: "#0C4A6E",
+  green: "#14532D",
+  amber: "#78350F",
+  pink: "#831843",
+  teal: "#134E4A",
+  lavender: "#4C1D95",
+  orange: "#7C2D12",
 };
 
 const diagrams = [
@@ -205,7 +205,7 @@ const diagrams = [
     ],
     relations: [
       ["user", "device", "USES_DEVICE"],
-      ["user", "phone", "HAS_PHONE"],
+      ["user", "phone", "HAS_PHONE", { via: "top", y: 205 }],
       ["user", "referral", "REFERRED_BY"],
       ["user", "payment", "USES_PAYMENT"],
       ["user", "ip", "USES_IP"],
@@ -340,27 +340,32 @@ const diagrams = [
   {
     name: "bluetape4k-graph-part5-call-path-01",
     title: "One Graph API, Two Execution Paths",
-    subtitle: "The backend work is the same; only the call path and waiting model change",
-    width: 1700,
-    height: 820,
+    subtitle: "The delegate operation stays synchronous; submission and waiting boundaries change",
+    width: 2050,
+    height: 920,
     nodes: [
-      ["syncCaller", "Caller Thread", "calls GraphOperations\nwaits directly", 90, 230, colors.blue, 310],
-      ["syncMethod", "Sync Method", "direct backend call\nsame repository contract", 470, 230, colors.blue, 330],
-      ["backend", "Graph Backend", "TinkerGraph or network DB\nsame graph operation", 890, 330, colors.green, 360],
-      ["vtCaller", "Caller Thread", "gets CompletableFuture\ncontinues outside wait", 90, 500, colors.pink, 310],
-      ["vtAdapter", "Virtual Thread Adapter", "virtualFutureOf { ... }\nwraps sync operation", 470, 500, colors.pink, 330],
-      ["wait", "Wait Boundary", "sync caller pays\nVT absorbs blocking wait", 1310, 330, colors.amber, 300],
+      ["syncCaller", "Caller Thread", "calls GraphOperations\nwaits for the return value", 70, 235, colors.blue, 320],
+      ["syncMethod", "GraphOperations", "invokes the synchronous\ndelegate method", 450, 235, colors.blue, 320],
+      ["syncBackend", "Graph Backend", "executes the graph operation\nin memory or over I/O", 830, 235, colors.green, 340],
+      ["syncResult", "Direct Result", "returns to the caller\non the same call path", 1230, 235, colors.teal, 320],
+      ["vtCaller", "Caller Thread", "requests an async operation\nreceives CompletableFuture", 70, 525, colors.pink, 320],
+      ["vtAdapter", "Virtual Thread Adapter", "submits virtualFutureOf { ... }\nwithout changing the delegate", 450, 525, colors.pink, 340],
+      ["virtualThread", "Virtual Thread", "runs the same synchronous\ndelegate method", 850, 525, colors.lavender, 320],
+      ["vtBackend", "Graph Backend", "executes the same operation\nand may block on I/O", 1230, 525, colors.green, 340],
+      ["futureResult", "Completion Boundary", "future completes\ncaller composes or joins", 1630, 525, colors.amber, 330],
     ],
     edges: [
       ["syncCaller", "syncMethod"],
-      ["syncMethod", "backend"],
+      ["syncMethod", "syncBackend"],
+      ["syncBackend", "syncResult"],
       ["vtCaller", "vtAdapter"],
-      ["vtAdapter", "backend"],
-      ["backend", "wait"],
+      ["vtAdapter", "virtualThread"],
+      ["virtualThread", "vtBackend"],
+      ["vtBackend", "futureResult"],
     ],
     footer: [
-      "For in-memory microsecond work, Sync usually wins because wrapping overhead is visible.",
-      "For blocking network I/O and many concurrent requests, Virtual Threads can simplify scaling.",
+      "Immediate join measures one operation end to end; it does not prove concurrent throughput.",
+      "Measure the real backend, connection pool, and target concurrency before choosing the execution path.",
     ],
   },
   {
@@ -385,8 +390,8 @@ const diagrams = [
       ["shortestPath VT join", 31.5, colors.pink],
     ],
     footer: [
-      "Fixture: TinkerGraph in-memory. The chart exposes API wrapping cost, not network DB throughput.",
-      "Network-backed graph work can shift the tradeoff when blocking wait dominates the operation.",
+      "Preserved 2026-04-17 TinkerGraph fixture: this chart shows adapter cost, not network DB throughput.",
+      "A production decision needs a separate backend benchmark at the target concurrency.",
     ],
   },
 ];
@@ -398,219 +403,232 @@ const locales = ["en", "ko"];
 const koLabels = {
   "bluetape4k-graph-part1-backend-selection-01": {
     title: "그래프 저장소 선택 지도",
-    subtitle: "workload 모양, operation 적합성, 테스트 전략으로 graph storage를 고른다",
+    subtitle: "작업 부하의 특성, 연산 적합성, 테스트 전략에 따라 그래프 저장소를 선택한다",
     nodes: {
-      app: ["애플리케이션 Graph Workload", "path, neighbor, ranking\nbulk write 또는 test fixture"],
-      neo4j: ["Neo4j", "운영 기본 후보\n성숙한 운영 기능\nCypher driver"],
-      memgraph: ["Memgraph", "낮은 latency 로컬 graph\nwrite-heavy 후보\nNeo4j protocol"],
-      age: ["Apache AGE", "PostgreSQL 중심 팀\nSQL 위의 Cypher\n속도보다 통합 우선"],
-      tinker: ["TinkerGraph", "unit test와 예제\nin-memory fixture\nDocker 불필요"],
-      falkor: ["FalkorDB", "Redis 계열 graph service\n단순 read-mostly workload\n쓰기 비용 검증 필요"],
+      app: ["애플리케이션 그래프 작업 부하", "경로, 이웃, 순위 계산\n일괄 쓰기 또는 테스트 데이터"],
+      neo4j: ["Neo4j", "운영 환경의 기본 후보\n성숙한 운영 기능\nCypher 드라이버"],
+      memgraph: ["Memgraph", "짧은 지연 시간의 로컬 그래프\n쓰기 중심 작업 후보\nNeo4j 프로토콜"],
+      age: ["Apache AGE", "PostgreSQL 중심 팀\nSQL 위에서 Cypher 사용\n속도보다 통합 우선"],
+      tinker: ["TinkerGraph", "단위 테스트와 예제\n메모리 내 테스트 데이터\nDocker 불필요"],
+      falkor: ["FalkorDB", "Redis 계열 그래프 서비스\n단순한 읽기 중심 작업\n쓰기 비용 검증 필요"],
     },
     footer: [
-      "bluetape4k-graph는 하나의 Kotlin API를 유지하면서 graph storage tradeoff를 보존한다.",
-      "테스트는 TinkerGraph로 시작하고 운영 후보는 Neo4j, Memgraph, AGE, FalkorDB로 측정한다.",
+      "bluetape4k-graph는 하나의 Kotlin API를 유지하면서 그래프 저장소별 장단점을 보존한다.",
+      "테스트는 TinkerGraph로 시작하고 운영 후보는 실제 작업 부하로 측정한다.",
     ],
   },
   "bluetape4k-graph-part1-module-layering-01": {
     title: "bluetape4k-graph 모듈 계층",
-    subtitle: "작은 core contract를 중심으로 adapter, I/O, framework module을 조합한다",
+    subtitle: "작은 핵심 계약을 중심으로 어댑터, I/O, 프레임워크 모듈을 조합한다",
     nodes: {
-      apps: ["앱과 Workshop 예제", "abuser detection, recommendation\nknowledge graph, social network"],
-      framework: ["Framework Adapter", "Spring Boot 4 auto-configuration\nKtor plugin lifecycle"],
-      io: ["Graph I/O", "CSV, NDJSON, GraphML\nOkIO decorator path"],
-      core: ["graph-core", "GraphOperations, schema DSL\nmerge, transaction, algorithm"],
-      storage: ["Graph Storage Adapter", "AGE, Neo4j, Memgraph\nTinkerPop, FalkorDB"],
+      apps: ["애플리케이션과 실전 예제", "부정 사용자 탐지, 추천\n지식 그래프, 소셜 네트워크"],
+      framework: ["프레임워크 어댑터", "Spring Boot 4 자동 구성\nKtor 플러그인 생명주기"],
+      io: ["그래프 I/O", "CSV, NDJSON, GraphML\nOkIO 확장 경로"],
+      core: ["graph-core", "GraphOperations, 스키마 DSL\n병합, 트랜잭션, 알고리즘"],
+      storage: ["그래프 저장소 어댑터", "AGE, Neo4j, Memgraph\nTinkerPop, FalkorDB"],
     },
     footer: [
-      "공통 API가 중심이고 framework module과 I/O module은 integration helper다.",
-      "portable layer가 맞지 않는 query에서는 storage-native 기능을 그대로 쓸 수 있다.",
+      "공통 API가 중심이며 프레임워크 모듈과 I/O 모듈은 통합을 보조한다.",
+      "공통 계층에 맞지 않는 질의에서는 저장소 고유 기능을 그대로 사용할 수 있다.",
     ],
   },
   "bluetape4k-graph-part2-core-api-flow-01": {
-    title: "Core API 실행 흐름",
-    subtitle: "service는 graph-core에 의존하고 sync, virtual-thread, suspend 실행을 선택한다",
+    title: "핵심 API 실행 흐름",
+    subtitle: "서비스는 graph-core에 의존하고 동기, 가상 스레드, suspend 실행 모델을 선택한다",
     nodes: {
-      service: ["Domain Service", "service code에는 graph 용어 사용\nstorage 선택은 바깥으로 분리"],
-      ops: ["GraphOperations", "session + vertex + edge\ntraversal + algorithm"],
-      schema: ["Schema DSL", "VertexLabel / EdgeLabel\nproperty와 constraint"],
-      execution: ["Execution Model", "sync API\nvirtual-thread facade\nsuspend API"],
-      adapter: ["Graph Storage Adapter", "Neo4j, Memgraph, AGE\nTinkerGraph, FalkorDB"],
+      service: ["도메인 서비스", "서비스 코드는 그래프 용어 사용\n저장소 선택은 외부로 분리"],
+      ops: ["GraphOperations", "세션 + 정점 + 간선\n순회 + 알고리즘"],
+      schema: ["스키마 DSL", "VertexLabel / EdgeLabel\n속성과 제약 조건"],
+      execution: ["실행 모델", "동기 API\n가상 스레드 파사드\nsuspend API"],
+      adapter: ["그래프 저장소 어댑터", "Neo4j, Memgraph, AGE\nTinkerGraph, FalkorDB"],
     },
     footer: [
-      "schema, merge, transaction 기능은 선택한 graph storage가 contract를 지킬 때만 열린다.",
-      "지원하지 않는 operation은 약한 semantic을 감추지 않고 빠르게 실패한다.",
+      "스키마, 병합, 트랜잭션 기능은 선택한 저장소가 계약을 지킬 때만 제공된다.",
+      "지원하지 않는 연산은 더 약한 의미를 감추지 않고 즉시 실패한다.",
     ],
   },
   "bluetape4k-graph-part2-api-model-benchmark-01": {
-    title: "API 모델 벤치마크 스냅샷",
-    subtitle: "TinkerGraph BFS latency, operation당 microseconds, 낮을수록 좋다",
+    title: "API 모델 벤치마크 결과",
+    subtitle: "TinkerGraph BFS 지연 시간, 연산당 마이크로초, 낮을수록 좋다",
     bars: ["BFS depth=5 Sync", "BFS depth=5 VT", "BFS depth=5 Coroutine", "100-way launch Coroutine", "100-way launch VT", "BFS 100-way VT", "BFS 100-way Coroutine"],
     footer: [
-      "Source: docs/benchmark/2026-05-21-api-model-results.md, TinkerGraph JMH smoke run.",
-      "release-grade ranking으로 쓰기 전에 article의 Error column을 같이 읽어야 한다.",
+      "출처: docs/benchmark/2026-05-21-api-model-results.md, TinkerGraph JMH 단기 실행.",
+      "제품 수준의 순위로 해석하기 전에 본문의 오차 범위와 측정 조건을 함께 확인한다.",
     ],
+    direction: "로그 눈금, 낮을수록 좋음",
   },
   "bluetape4k-graph-part2-transaction-sequence-01": {
-    title: "트랜잭션 + 배치 쓰기 시퀀스",
-    subtitle: "service가 vertex와 edge를 만들고 하나의 facade로 graph 관계를 조회한다",
+    title: "트랜잭션과 일괄 쓰기 시퀀스",
+    subtitle: "서비스가 정점과 간선을 만들고 하나의 파사드로 그래프 관계를 조회한다",
     participants: {
-      service: "Service",
+      service: "서비스",
       ops: "GraphOperations",
-      tx: "Transaction Scope",
-      adapter: "Storage Adapter",
-      db: "Graph DB",
+      tx: "트랜잭션 범위",
+      adapter: "저장소 어댑터",
+      db: "그래프 DB",
     },
     messages: [
       "1. transaction { ... }",
-      "2. CRUD-only scope 노출",
-      "3. createVertices batch",
-      "4. createEdges batch",
-      "5. commit 또는 rollback",
+      "2. CRUD 전용 범위 제공",
+      "3. createVertices 일괄 실행",
+      "4. createEdges 일괄 실행",
+      "5. 커밋 또는 롤백",
       "6. neighbors / shortestPath",
     ],
     footer: [
-      "transaction block은 lifecycle command를 피해서 DDL과 auto-commit rule을 storage-specific으로 둔다.",
-      "batch default는 portable하게 두고 adapter는 native all-or-fail 동작으로 override할 수 있다.",
+      "트랜잭션 블록은 생명주기 명령을 제외하여 DDL과 자동 커밋 규칙을 저장소별로 유지한다.",
+      "일괄 처리 기본값은 공통 계약을 따르고 어댑터는 저장소 고유의 원자적 동작으로 재정의할 수 있다.",
     ],
   },
   "bluetape4k-graph-part3-io-pipeline-01": {
-    title: "Graph I/O 파이프라인",
-    subtitle: "service를 특정 file shape에 묶지 않고 format adapter로 graph data를 이동한다",
+    title: "그래프 I/O 파이프라인",
+    subtitle: "서비스를 특정 파일 형식에 결합하지 않고 형식 어댑터로 그래프 데이터를 이동한다",
     nodes: {
-      graph: ["GraphOperations", "vertex와 edge 읽기\nimport batch 쓰기"],
-      core: ["graph-io-core", "bulk contract\nexport/import option"],
-      formats: ["Data Format", "CSV\nNDJSON, GraphML"],
-      uses: ["운영 활용", "migration, snapshot\nanalytics, 재현 가능한 test"],
-      bench: ["Benchmark Gate", "mean latency number\nclaim 전에 caveat 확인"],
-      decorators: ["I/O Decorator", "OkIO, buffering\ncompression, async path"],
+      graph: ["GraphOperations", "정점과 간선 읽기\n가져오기 일괄 쓰기"],
+      core: ["graph-io-core", "일괄 처리 계약\n내보내기·가져오기 옵션"],
+      formats: ["데이터 형식", "CSV\nNDJSON, GraphML"],
+      uses: ["운영 활용", "마이그레이션, 스냅숏\n분석, 재현 가능한 테스트"],
+      bench: ["벤치마크 검증", "평균 지연 시간\n주장 전에 제약 조건 확인"],
+      decorators: ["I/O 확장", "OkIO, 버퍼링\n압축, 비동기 경로"],
     },
     footer: [
-      "CSV는 사람이 보기 쉽고, NDJSON은 service interchange에 맞으며, GraphML은 interoperability에 유용하다.",
-      "benchmark chart는 현재 파일의 요약이지 모든 graph shape에 대한 약속이 아니다.",
+      "CSV는 사람이 확인하기 쉽고, NDJSON은 서비스 간 교환에 적합하며, GraphML은 상호 운용에 유용하다.",
+      "벤치마크 차트는 현재 측정 결과의 요약이며 모든 그래프 형태에 대한 성능 보장이 아니다.",
     ],
   },
   "bluetape4k-graph-part3-benchmark-summary-01": {
-    title: "Graph I/O Quick-Run 지연 시간",
-    subtitle: "small graph export/import benchmark, operation당 milliseconds, 낮을수록 좋다",
+    title: "그래프 I/O 단기 실행 지연 시간",
+    subtitle: "소규모 그래프 내보내기·가져오기, 연산당 밀리초, 낮을수록 좋다",
     bars: ["CSV export", "Jackson3 export", "GraphML export", "CSV import", "Jackson3 import", "GraphML import", "GraphML caching 전"],
     footer: [
-      "Source: docs/benchmark/2026-04-18-graph-io-bulk-results.md, quick-run @Fork(0).",
-      "regression check에는 smoke result를 쓰고 variance 판단에는 raw-JSON benchmark를 더 길게 돌린다.",
+      "출처: docs/benchmark/2026-04-18-graph-io-bulk-results.md, 단기 실행 @Fork(0).",
+      "회귀 확인에는 단기 결과를 사용하고 분산 판단에는 원시 JSON 벤치마크를 더 길게 실행한다.",
     ],
+    direction: "로그 눈금, 낮을수록 좋음",
   },
   "bluetape4k-graph-part4-abuser-erd-01": {
-    title: "Abuser Detection 엔터티 그래프",
-    subtitle: "사용자는 identifier와 연결되고 공유 identifier가 review evidence가 된다",
+    title: "어뷰저 탐지 엔터티 그래프",
+    subtitle: "사용자와 식별자를 연결하고 공유 관계를 검토 근거로 사용한다",
     tables: {
-      user: ["User", ["userId", "email", "risk field"]],
-      device: ["Device", ["deviceId", "fingerprint"]],
-      ip: ["IpAddress", ["address", "network"]],
-      phone: ["PhoneNumber", ["phoneHash"]],
-      payment: ["PaymentMethod", ["paymentToken", "provider"]],
-      referral: ["User", ["referrer user"]],
+      user: ["사용자", ["userId", "email", "위험 속성"]],
+      device: ["기기", ["deviceId", "fingerprint"]],
+      ip: ["IP 주소", ["address", "network"]],
+      phone: ["전화번호", ["phoneHash"]],
+      payment: ["결제 수단", ["paymentToken", "provider"]],
+      referral: ["추천 사용자", ["referrer user"]],
     },
     footer: [
-      "graph에는 raw phone number나 card data가 아니라 hash와 safe token만 저장한다.",
-      "같은 identifier vertex가 여러 user로 되돌아갈 때 cluster signal이 생긴다.",
+      "그래프에는 원문 전화번호나 카드 정보가 아니라 해시와 안전한 토큰만 저장한다.",
+      "같은 식별자 정점이 여러 사용자와 연결되면 탐지 클러스터의 근거가 된다.",
     ],
   },
   "bluetape4k-graph-part4-recommendation-erd-01": {
-    title: "Recommendation 엔터티 그래프",
-    subtitle: "product 후보와 follow 후보는 두 단순한 edge family에서 나온다",
+    title: "추천 엔터티 그래프",
+    subtitle: "구매 관계와 팔로우 관계에서 두 종류의 추천 후보를 생성한다",
     tables: {
-      user: ["User", ["userId", "name"]],
-      product: ["Product", ["productId", "name", "category"]],
-      followee: ["User", ["followee user"]],
-      candidate: ["Candidate", ["score", "reason"]],
+      user: ["사용자", ["userId", "name"]],
+      product: ["상품", ["productId", "name", "category"]],
+      followee: ["팔로우 대상", ["followee user"]],
+      candidate: ["추천 후보", ["score", "reason"]],
+    },
+    relations: {
+      "co-buyer score": "공동 구매자 점수",
+      "mutual follows": "공통 팔로우 수",
     },
     footer: [
-      "예제는 candidate generation과 scoring을 분리해서 service rule을 읽기 쉽게 둔다.",
-      "큰 production graph에서는 반복 traversal을 native Cypher나 Gremlin으로 바꿔야 한다.",
+      "후보 생성과 점수 계산을 분리해 서비스 규칙을 명확하게 표현한다.",
+      "큰 운영 그래프에서는 반복 탐색을 네이티브 Cypher나 Gremlin 질의로 대체한다.",
     ],
   },
   "bluetape4k-graph-part4-knowledge-erd-01": {
-    title: "Knowledge Graph 엔터티 그래프",
-    subtitle: "document는 entity를 mention하고 entity는 concept 및 다른 entity와 연결된다",
+    title: "지식 그래프 엔터티 관계",
+    subtitle: "문서는 엔터티를 언급하고 엔터티는 개념과 다른 엔터티에 연결된다",
     tables: {
-      document: ["Document", ["documentId", "title", "source"]],
-      entity: ["Entity", ["entityId", "name", "type"]],
-      concept: ["Concept", ["conceptId", "name"]],
-      related: ["Entity", ["related entity"]],
+      document: ["문서", ["documentId", "title", "source"]],
+      entity: ["엔터티", ["entityId", "name", "type"]],
+      concept: ["개념", ["conceptId", "name"]],
+      related: ["관련 엔터티", ["related entity"]],
     },
     footer: [
-      "full-text 또는 vector search로 candidate를 찾고 graph path로 연결 이유를 설명한다.",
-      "depth limit은 semantic traversal이 unbounded crawl로 변하지 않게 막아 준다.",
+      "전문 검색이나 벡터 검색으로 후보를 찾고 그래프 경로로 연결 이유를 설명한다.",
+      "탐색 깊이를 제한해 의미 관계 조회가 무제한 순회로 확장되지 않게 한다.",
     ],
   },
   "bluetape4k-graph-part4-social-erd-01": {
-    title: "Social Network 엔터티 그래프",
-    subtitle: "person은 방향성이 있는 관계로 person과 company에 연결된다",
+    title: "소셜 네트워크 엔터티 관계",
+    subtitle: "사람은 방향성이 있는 관계로 다른 사람과 회사에 연결된다",
     tables: {
-      person: ["Person", ["personId", "name", "location"]],
-      friend: ["Person", ["known person"]],
-      follow: ["Person", ["followee"]],
-      company: ["Company", ["companyId", "name"]],
+      person: ["사람", ["personId", "name", "location"]],
+      friend: ["지인", ["known person"]],
+      follow: ["팔로우 대상", ["followee"]],
+      company: ["회사", ["companyId", "name"]],
+    },
+    relations: {
+      "colleague path": "동료 탐색 경로",
     },
     footer: [
-      "direction과 depth가 path를 recommendation으로 볼지 explanation으로만 볼지 결정한다.",
-      "traversal result를 candidate로 바꾸기 전에 self와 이미 연결된 person을 제외한다.",
+      "방향과 깊이에 따라 경로를 추천 후보로 사용할지 설명 근거로만 사용할지 결정한다.",
+      "탐색 결과에서 자기 자신과 이미 연결된 사람을 제외한 뒤 추천 후보로 사용한다.",
     ],
   },
   "bluetape4k-graph-part4-abuser-identity-flow-01": {
-    title: "Abuser Detection 식별자 흐름",
-    subtitle: "한 user에서 시작해 shared identifier를 순회하고 의심 cluster를 ranking한다",
+    title: "어뷰저 탐지 식별자 흐름",
+    subtitle: "기준 사용자에서 공유 식별자를 순회하고 의심 클러스터의 순위를 계산한다",
     nodes: {
-      seed: ["Seed User", "login, order,\nmoderation event의 userId"],
-      ids: ["Shared Identifier", "device, IP, phone hash\npayment token, referral"],
-      users: ["Related Users", "identifier에서 reverse traversal\nseed user 제외"],
-      paths: ["Suspicion Evidence", "edge path 설명\ncycle detection"],
-      rank: ["Risk Ranking", "PageRank topK\ncluster review queue"],
+      seed: ["기준 사용자", "로그인·주문·검토 이벤트의\nuserId"],
+      ids: ["공유 식별자", "기기·IP·전화번호 해시\n결제 토큰·추천인"],
+      users: ["관련 사용자", "식별자에서 역방향 탐색\n기준 사용자 제외"],
+      paths: ["의심 근거", "간선 경로 설명\n순환 탐지"],
+      rank: ["위험 순위", "PageRank 상위 K개\n클러스터 검토 대기열"],
     },
     footer: [
-      "workshop은 raw phone과 card data를 graph에 넣지 않고 hash와 PCI-safe payment token을 쓴다.",
-      "예제는 traversal shape를 먼저 가르치며 production에는 scoring과 operational guardrail이 더 필요하다.",
+      "워크숍은 원문 전화번호와 카드 정보를 저장하지 않고 해시와 PCI 안전 결제 토큰을 사용한다.",
+      "예제는 탐색 구조를 보여주며 운영 환경에는 점수 정책과 운영 안전장치가 추가로 필요하다.",
     ],
   },
   "bluetape4k-graph-part4-recommendation-flow-01": {
-    title: "Recommendation 예제 흐름",
-    subtitle: "co-buyer와 friends-of-friends를 찾고 graph evidence로 candidate를 정렬한다",
+    title: "추천 후보 생성 흐름",
+    subtitle: "공동 구매자와 2단계 연결을 찾고 그래프 근거로 후보를 정렬한다",
     nodes: {
-      user: ["Seed User", "Alice 또는 현재 viewer"],
-      purchased: ["Purchased Products", "이미 구매한 product\ncandidate에서 제외"],
-      cobuyers: ["Co-buyers", "seed product를 산\n다른 user"],
-      products: ["Product Candidates", "distinct co-buyer로 score\nscore desc 정렬"],
-      follows: ["Follow Graph", "direct follow\n2-hop candidate"],
-      people: ["Follow Candidates", "mutual follow count\nself와 existing follow 제외"],
+      user: ["기준 사용자", "현재 추천을 조회하는 사용자"],
+      purchased: ["구매 상품", "이미 구매한 상품\n후보에서 제외"],
+      cobuyers: ["공동 구매자", "기준 상품을 구매한\n다른 사용자"],
+      products: ["상품 후보", "서로 다른 공동 구매자 수\n점수 내림차순 정렬"],
+      follows: ["팔로우 그래프", "직접 팔로우\n2단계 후보"],
+      people: ["팔로우 후보", "공통 팔로우 수\n자기 자신·기존 팔로우 제외"],
     },
     footer: [
-      "service code는 traversal을 읽고 테스트할 수 있도록 일부러 명시적으로 유지한다.",
-      "큰 graph에서는 N+1 traversal shape를 native Cypher나 Gremlin query로 바꾼다.",
+      "서비스 코드는 탐색 순서를 읽고 테스트할 수 있도록 각 단계를 명시한다.",
+      "큰 그래프에서는 N+1 탐색을 네이티브 Cypher나 Gremlin 질의로 대체한다.",
     ],
   },
   "bluetape4k-graph-part5-call-path-01": {
-    title: "하나의 Graph API, 두 실행 경로",
-    subtitle: "backend work는 같고 call path와 waiting model만 달라진다",
+    title: "하나의 그래프 API, 두 실행 경로",
+    subtitle: "위임 연산은 동기 방식으로 유지되고 작업 제출과 대기 경계가 달라진다",
     nodes: {
-      syncCaller: ["Caller Thread", "GraphOperations 호출\n직접 대기"],
-      syncMethod: ["Sync Method", "직접 backend call\n같은 repository contract"],
-      backend: ["Graph Backend", "TinkerGraph 또는 network DB\n같은 graph operation"],
-      vtCaller: ["Caller Thread", "CompletableFuture 수신\nwait 바깥에서 계속 진행"],
-      vtAdapter: ["Virtual Thread Adapter", "virtualFutureOf { ... }\nsync operation wrapping"],
-      wait: ["Wait Boundary", "sync caller가 비용 지불\nVT가 blocking wait 흡수"],
+      syncCaller: ["호출 스레드", "GraphOperations 호출\n반환 값까지 직접 대기"],
+      syncMethod: ["GraphOperations", "동기 위임 메서드\n직접 호출"],
+      syncBackend: ["그래프 백엔드", "메모리 또는 I/O에서\n그래프 연산 실행"],
+      syncResult: ["직접 반환", "같은 호출 경로로\n호출자에게 결과 반환"],
+      vtCaller: ["호출 스레드", "비동기 연산 요청\nCompletableFuture 수신"],
+      vtAdapter: ["가상 스레드 어댑터", "위임 객체를 바꾸지 않고\nvirtualFutureOf { ... } 제출"],
+      virtualThread: ["가상 스레드", "같은 동기 위임\n메서드 실행"],
+      vtBackend: ["그래프 백엔드", "같은 연산을 실행하고\nI/O에서 대기할 수 있음"],
+      futureResult: ["완료 경계", "Future 완료\n호출자가 조합하거나 join"],
     },
     footer: [
-      "in-memory microsecond work에서는 wrapping overhead가 보여서 Sync가 보통 이긴다.",
-      "blocking network I/O와 많은 concurrent request에서는 Virtual Threads가 scaling을 단순하게 만든다.",
+      "즉시 join하는 측정은 단일 연산의 종단 간 비용이며 동시 처리량을 입증하지 않는다.",
+      "실제 백엔드·커넥션 풀·목표 동시성을 측정한 뒤 실행 경로를 선택한다.",
     ],
   },
   "bluetape4k-graph-part5-vt-latency-chart-01": {
-    title: "TinkerGraph: Sync와 Virtual Threads",
-    subtitle: "JMH AverageTime, operation당 microseconds, 낮을수록 빠르다",
-    bars: ["findVertexById Sync", "findVertexById VT join", "neighbors Sync", "neighbors VT join", "bfs Sync", "bfs VT join", "pageRank Sync", "pageRank VT join", "shortestPath Sync", "shortestPath VT join"],
+    title: "TinkerGraph: 동기와 가상 스레드",
+    subtitle: "JMH AverageTime, 연산당 마이크로초, 낮을수록 빠르다",
+    direction: "TinkerGraph 픽스처, 낮을수록 빠름",
+    bars: ["findVertexById 동기", "findVertexById 가상 스레드 join", "neighbors 동기", "neighbors 가상 스레드 join", "bfs 동기", "bfs 가상 스레드 join", "pageRank 동기", "pageRank 가상 스레드 join", "shortestPath 동기", "shortestPath 가상 스레드 join"],
     footer: [
-      "Fixture: TinkerGraph in-memory. 이 chart는 network DB throughput이 아니라 API wrapping cost를 보여준다.",
-      "network-backed graph work에서는 blocking wait가 operation을 지배하면 tradeoff가 달라질 수 있다.",
+      "2026-04-17 TinkerGraph 픽스처 결과이며 네트워크 DB 처리량이 아니라 어댑터 비용을 보여준다.",
+      "운영 판단에는 목표 동시성에서 별도의 백엔드 벤치마크가 필요하다.",
     ],
   },
 };
@@ -623,6 +641,7 @@ function localize(diagram, locale) {
   copy.title = labels.title ?? copy.title;
   copy.subtitle = labels.subtitle ?? copy.subtitle;
   copy.footer = labels.footer ?? copy.footer;
+  copy.direction = labels.direction ?? copy.direction;
   if (copy.nodes && labels.nodes) {
     copy.nodes = copy.nodes.map((nodeItem) => {
       const translated = labels.nodes[nodeItem[0]];
@@ -635,6 +654,14 @@ function localize(diagram, locale) {
       return translated ? [tableItem[0], translated[0], translated[1], ...tableItem.slice(3)] : tableItem;
     });
   }
+  if (copy.relations && labels.relations) {
+    copy.relations = copy.relations.map((relationItem) => [
+      relationItem[0],
+      relationItem[1],
+      labels.relations[relationItem[2]] ?? relationItem[2],
+      ...relationItem.slice(3),
+    ]);
+  }
   if (copy.participants && labels.participants) {
     copy.participants = copy.participants.map((item) => [item[0], labels.participants[item[0]] ?? item[1], item[2]]);
   }
@@ -645,32 +672,6 @@ function localize(diagram, locale) {
     copy.bars = copy.bars.map((bar, index) => [labels.bars[index] ?? bar[0], ...bar.slice(1)]);
   }
   return copy;
-}
-
-function dot(diagram) {
-  const lines = [
-    "digraph G {",
-    "  graph [rankdir=LR, splines=ortho, nodesep=0.7, ranksep=1.0];",
-    "  node [shape=box, style=rounded];",
-  ];
-  const items = diagram.kind === "sequence"
-    ? diagram.participants
-    : diagram.kind === "erd"
-      ? diagram.tables
-      : diagram.nodes ?? [];
-  for (const [id, label] of items) {
-    lines.push(`  "${id}" [label="${label}"];`);
-  }
-  const edges = diagram.kind === "sequence"
-    ? diagram.messages
-    : diagram.kind === "erd"
-      ? diagram.relations
-      : diagram.edges ?? [];
-  for (const [from, to, label] of edges) {
-    lines.push(`  "${from}" -> "${to}"${label ? ` [label="${label}"]` : ""};`);
-  }
-  lines.push("}");
-  return lines.join("\n") + "\n";
 }
 
 function esc(value) {
@@ -698,7 +699,7 @@ function node(item) {
   const totalTextHeight = 31 + lines.length * 22;
   const startY = y + h / 2 - totalTextHeight / 2 + 24;
   return `<g id="${id}">
-  <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="12" fill="${fill}" stroke="#7B8CA3" stroke-width="2"/>
+  <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="12" fill="${fill}" stroke="#64748B" stroke-width="2"/>
   <text class="nodeTitle" x="${x + w / 2}" y="${startY}" text-anchor="middle">${esc(title)}</text>
   ${lines.map((line, index) => `<text class="nodeBody" x="${x + w / 2}" y="${startY + 34 + index * 23}" text-anchor="middle">${esc(line)}</text>`).join("\n  ")}
 </g>`;
@@ -817,8 +818,8 @@ function svg(diagram, locale) {
   const footerY = height - 96;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
 <defs>
-  <marker id="arrow" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse">
-    <path d="M 0 0 L 14 7 L 0 14 Z" fill="#496A8F" stroke="#496A8F"/>
+  <marker id="arrow" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">
+    <path d="M 0 0 L 10 5 L 0 10 Z" fill="#60A5FA"/>
   </marker>
   <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
     <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#22344A" flood-opacity="0.12"/>
@@ -831,7 +832,7 @@ function svg(diagram, locale) {
 <text class="subtitle" x="${width / 2}" y="118" text-anchor="middle">${esc(diagram.subtitle)}</text>
 ${diagram.edges.map(([from, to], index) => edge(from, to, diagram.nodes, index, diagram.edges)).join("\n")}
 ${diagram.nodes.map(node).join("\n")}
-<rect x="88" y="${footerY}" width="${width - 176}" height="62" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
+<rect x="88" y="${footerY}" width="${width - 176}" height="62" rx="12" fill="#111827" stroke="#334155"/>
 <text class="footer" x="${width / 2}" y="${footerY + 25}" text-anchor="middle">${esc(diagram.footer[0])}</text>
 <text class="footer" x="${width / 2}" y="${footerY + 49}" text-anchor="middle">${esc(diagram.footer[1])}</text>
 </svg>
@@ -856,8 +857,8 @@ function selectionSvg(diagram, locale) {
   }).join("\n");
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
 <defs>
-  <marker id="arrow" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse">
-    <path d="M 0 0 L 14 7 L 0 14 Z" fill="#496A8F" stroke="#496A8F"/>
+  <marker id="arrow" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">
+    <path d="M 0 0 L 10 5 L 0 10 Z" fill="#60A5FA"/>
   </marker>
   <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
     <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#22344A" flood-opacity="0.12"/>
@@ -872,7 +873,7 @@ function selectionSvg(diagram, locale) {
 <path class="bus" d="M${firstCenterX} ${busY} H${lastCenterX}"/>
 ${targetLines}
 ${diagram.nodes.map(node).join("\n")}
-<rect x="88" y="${footerY}" width="${width - 176}" height="62" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
+<rect x="88" y="${footerY}" width="${width - 176}" height="62" rx="12" fill="#111827" stroke="#334155"/>
 <text class="footer" x="${width / 2}" y="${footerY + 25}" text-anchor="middle">${esc(diagram.footer[0])}</text>
 <text class="footer" x="${width / 2}" y="${footerY + 49}" text-anchor="middle">${esc(diagram.footer[1])}</text>
 </svg>
@@ -905,19 +906,19 @@ function table(table) {
   const headerHeight = 48;
   const rows = fields.map((field, index) => {
     const rowY = y + headerHeight + index * 30;
-    return `<line x1="${x}" y1="${rowY}" x2="${x + width}" y2="${rowY}" stroke="#D7E2EC"/>
+    return `<line x1="${x}" y1="${rowY}" x2="${x + width}" y2="${rowY}" stroke="#334155"/>
   <text class="tableField" x="${x + 18}" y="${rowY + 21}">${esc(field)}</text>`;
   }).join("\n  ");
   return `<g id="${id}">
-  <rect x="${x}" y="${y}" width="${width}" height="${height}" rx="8" fill="${fill}" stroke="#7B8CA3" stroke-width="2"/>
-  <rect x="${x}" y="${y}" width="${width}" height="${headerHeight}" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
-  <line x1="${x}" y1="${y + headerHeight}" x2="${x + width}" y2="${y + headerHeight}" stroke="#7B8CA3" stroke-width="2"/>
+  <rect x="${x}" y="${y}" width="${width}" height="${height}" rx="8" fill="${fill}" stroke="#64748B" stroke-width="2"/>
+  <rect x="${x}" y="${y}" width="${width}" height="${headerHeight}" rx="8" fill="#0F172A" fill-opacity="0.58" stroke="#64748B" stroke-width="2"/>
+  <line x1="${x}" y1="${y + headerHeight}" x2="${x + width}" y2="${y + headerHeight}" stroke="#64748B" stroke-width="2"/>
   <text class="tableTitle" x="${x + width / 2}" y="${y + 31}" text-anchor="middle">${esc(title)}</text>
   ${rows}
 </g>`;
 }
 
-function relation(from, to, label, tables, index = 0, relations = []) {
+function relation(from, to, label, tables, index = 0, relations = [], route = undefined) {
   const src = tables.find((n) => n[0] === from);
   const dst = tables.find((n) => n[0] === to);
   const sw = src[6] ?? 280;
@@ -938,7 +939,23 @@ function relation(from, to, label, tables, index = 0, relations = []) {
   let labelY;
   const sourceOffset = portOffset(from, relations, index, 0);
   const targetOffset = portOffset(to, relations, index, 1);
-  if (horizontal) {
+  if (route?.via === "top") {
+    const x1 = Math.round(scx + sourceOffset);
+    const y1 = sy;
+    const x2 = scx <= dcx ? dx : dx + dw;
+    const yEnd = Math.round(dcy + targetOffset);
+    const targetTurnX = scx <= dcx ? x2 - 55 : x2 + 55;
+    const viaY = route.y;
+    path = roundedPath([
+      [x1, y1],
+      [x1, viaY],
+      [targetTurnX, viaY],
+      [targetTurnX, yEnd],
+      [x2, yEnd],
+    ]);
+    labelX = Math.round((x1 + targetTurnX) / 2);
+    labelY = viaY - 10;
+  } else if (horizontal) {
     const x1 = scx <= dcx ? sx + sw : sx;
     const x2 = scx <= dcx ? dx : dx + dw;
     const yStart = Math.round(scy + sourceOffset);
@@ -960,7 +977,7 @@ function relation(from, to, label, tables, index = 0, relations = []) {
   const labelWidth = Math.max(120, Math.min(230, label.length * 8 + 34));
   return `<g>
   <path class="edge" data-connector="${from}-to-${to}" d="${path}"/>
-  <rect x="${labelX - labelWidth / 2}" y="${labelY - 17}" width="${labelWidth}" height="28" rx="8" fill="#FFFFFF" stroke="#D7E2EC"/>
+  <rect x="${labelX - labelWidth / 2}" y="${labelY - 17}" width="${labelWidth}" height="28" rx="8" fill="#0F172A" stroke="#334155"/>
   <text class="edgeLabel" x="${labelX}" y="${labelY + 2}" text-anchor="middle">${esc(label)}</text>
 </g>`;
 }
@@ -972,8 +989,8 @@ function erdSvg(diagram, locale) {
   const tables = layoutErdTables(diagram);
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
 <defs>
-  <marker id="arrow" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse">
-    <path d="M 0 0 L 14 7 L 0 14 Z" fill="#496A8F" stroke="#496A8F"/>
+  <marker id="arrow" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">
+    <path d="M 0 0 L 10 5 L 0 10 Z" fill="#60A5FA"/>
   </marker>
   <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
     <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#22344A" flood-opacity="0.12"/>
@@ -984,9 +1001,9 @@ function erdSvg(diagram, locale) {
 <rect class="frame" x="34" y="28" width="${width - 68}" height="${height - 56}" rx="24"/>
 <text class="title" x="${width / 2}" y="82" text-anchor="middle">${esc(diagram.title)}</text>
 <text class="subtitle" x="${width / 2}" y="118" text-anchor="middle">${esc(diagram.subtitle)}</text>
-${diagram.relations.map(([from, to, label], index) => relation(from, to, label, tables, index, diagram.relations)).join("\n")}
+${diagram.relations.map(([from, to, label, route], index) => relation(from, to, label, tables, index, diagram.relations, route)).join("\n")}
 ${tables.map(table).join("\n")}
-<rect x="88" y="${footerY}" width="${width - 176}" height="62" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
+<rect x="88" y="${footerY}" width="${width - 176}" height="62" rx="12" fill="#111827" stroke="#334155"/>
 <text class="footer" x="${width / 2}" y="${footerY + 25}" text-anchor="middle">${esc(diagram.footer[0])}</text>
 <text class="footer" x="${width / 2}" y="${footerY + 49}" text-anchor="middle">${esc(diagram.footer[1])}</text>
 </svg>
@@ -1002,10 +1019,10 @@ function sequenceSvg(diagram, locale) {
   const participantHeight = 64;
   const participantMap = new Map(diagram.participants.map(([id, label, x]) => [id, { label, x }]));
   const participants = diagram.participants.map(([, label, x]) => `<g>
-  <rect class="header" x="${x - participantWidth / 2}" y="136" width="${participantWidth}" height="${participantHeight}" rx="10" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
+  <rect class="header" x="${x - participantWidth / 2}" y="136" width="${participantWidth}" height="${participantHeight}" rx="10" fill="#0C4A6E" stroke="#64748B" stroke-width="2"/>
   <text class="participant" x="${x}" y="176" text-anchor="middle">${esc(label)}</text>
   <line class="lifeline" x1="${x}" y1="${lifelineTop + 28}" x2="${x}" y2="${lifelineBottom}"/>
-  <rect class="activation" x="${x - 6}" y="236" width="12" height="360" rx="5" fill="#F8FBFE" stroke="#91A6BD"/>
+  <rect class="activation" x="${x - 6}" y="236" width="12" height="360" rx="5" fill="#111827" stroke="#64748B"/>
 </g>`).join("\n");
   const messages = diagram.messages.map(([from, to, label, y, fill], index) => {
     const src = participantMap.get(from);
@@ -1019,8 +1036,8 @@ function sequenceSvg(diagram, locale) {
     const number = label.match(/^\d+/)?.[0] ?? String(index + 1);
     const labelText = label.replace(/^\d+\.\s*/, "");
     return `<g>
-  <rect class="label" x="${labelX - labelWidth / 2}" y="${labelY}" width="${labelWidth}" height="31" rx="9" fill="${fill}" stroke="#D7E2EC"/>
-  <circle cx="${labelX - labelWidth / 2 + 20}" cy="${labelY + 15.5}" r="12" fill="#FFFFFF" stroke="#7B8CA3"/>
+  <rect class="label" x="${labelX - labelWidth / 2}" y="${labelY}" width="${labelWidth}" height="31" rx="9" fill="${fill}" stroke="#334155"/>
+  <circle cx="${labelX - labelWidth / 2 + 20}" cy="${labelY + 15.5}" r="12" fill="#0F172A" stroke="#64748B"/>
   <text class="num" x="${labelX - labelWidth / 2 + 20}" y="${labelY + 20}" text-anchor="middle">${esc(number)}</text>
   <text class="labelText" x="${labelX + 24}" y="${labelY + 21}" text-anchor="middle">${esc(labelText)}</text>
   <path class="edge" data-connector="${from}-to-${to}" d="M${x1} ${y} H${x2}"/>
@@ -1029,7 +1046,7 @@ function sequenceSvg(diagram, locale) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
 <defs>
   <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">
-    <path d="M 0 0 L 10 5 L 0 10 Z" fill="#496A8F" stroke="#496A8F"/>
+    <path d="M 0 0 L 10 5 L 0 10 Z" fill="#60A5FA"/>
   </marker>
   ${style(locale)}
 </defs>
@@ -1039,7 +1056,7 @@ function sequenceSvg(diagram, locale) {
 <text class="subtitle" x="${width / 2}" y="118" text-anchor="middle">${esc(diagram.subtitle)}</text>
 ${participants}
 ${messages}
-<rect x="88" y="655" width="${width - 176}" height="62" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
+<rect x="88" y="655" width="${width - 176}" height="62" rx="12" fill="#111827" stroke="#334155"/>
 <text class="footer" x="${width / 2}" y="680" text-anchor="middle">${esc(diagram.footer[0])}</text>
 <text class="footer" x="${width / 2}" y="704" text-anchor="middle">${esc(diagram.footer[1])}</text>
 </svg>
@@ -1062,7 +1079,7 @@ function chartSvg(diagram, locale) {
     const barWidth = Math.max(10, Math.round((Math.log10(value + 1) / max) * barMaxWidth));
     return `<g>
   <text class="nodeBody" x="${left - 28}" y="${y + 25}" text-anchor="end">${esc(label)}</text>
-  <rect x="${left}" y="${y}" width="${barWidth}" height="36" rx="9" fill="${fill}" stroke="#7B8CA3"/>
+  <rect x="${left}" y="${y}" width="${barWidth}" height="36" rx="9" fill="${fill}" stroke="#64748B"/>
   <text class="nodeBody" x="${left + barWidth + 18}" y="${y + 25}">${value.toFixed(value < 10 ? 3 : 1)} ${unit}</text>
 </g>`;
   }).join("\n");
@@ -1074,7 +1091,7 @@ function chartSvg(diagram, locale) {
 <text class="subtitle" x="${width / 2}" y="118" text-anchor="middle">${esc(diagram.subtitle)}</text>
 <text class="axis" x="${left}" y="145">${esc(direction)}</text>
 ${bars}
-<rect x="88" y="${footerY}" width="${width - 176}" height="62" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
+<rect x="88" y="${footerY}" width="${width - 176}" height="62" rx="12" fill="#111827" stroke="#334155"/>
 <text class="footer" x="${width / 2}" y="${footerY + 25}" text-anchor="middle">${esc(diagram.footer[0])}</text>
 <text class="footer" x="${width / 2}" y="${footerY + 49}" text-anchor="middle">${esc(diagram.footer[1])}</text>
 </svg>
@@ -1089,30 +1106,35 @@ function style(locale) {
     ? '"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace'
     : '"Comic Mono","Comic Sans MS",sans-serif';
   return `<style>
-    .canvas{fill:#F6F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
-    .title{font-family:${titleFont};font-size:42px;fill:#22344A;font-weight:400}
-    .subtitle,.footer,.axis{font-family:${bodyFont};font-size:17px;fill:#536476;font-weight:400}
-    .nodeTitle,.participant{font-family:${titleFont};font-size:24px;fill:#22344A;font-weight:400}
-    .nodeBody,.labelText,.num{font-family:${bodyFont};font-size:16px;fill:#3F5269;font-weight:400}
-    .tableTitle{font-family:${titleFont};font-size:24px;fill:#22344A;font-weight:400}
-    .tableField,.edgeLabel{font-family:${bodyFont};font-size:15px;fill:#3F5269;font-weight:400}
-    .edge{fill:none;stroke:#496A8F;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
-    .bus{fill:none;stroke:#496A8F;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
-    .lifeline{stroke:#91A6BD;stroke-width:2;stroke-dasharray:8 8}
+    .canvas{fill:#07111F}.frame{fill:#0F172A;stroke:#334155;stroke-width:2}
+    .title{font-family:${titleFont};font-size:42px;fill:#F8FAFC;font-weight:400}
+    .subtitle,.footer,.axis{font-family:${bodyFont};font-size:17px;fill:#CBD5E1;font-weight:400}
+    .nodeTitle,.participant{font-family:${titleFont};font-size:24px;fill:#F8FAFC;font-weight:400}
+    .nodeBody,.labelText,.num{font-family:${bodyFont};font-size:16px;fill:#E2E8F0;font-weight:400}
+    .tableTitle{font-family:${titleFont};font-size:24px;fill:#F8FAFC;font-weight:400}
+    .tableField,.edgeLabel{font-family:${bodyFont};font-size:15px;fill:#E2E8F0;font-weight:400}
+    .edge{fill:none;stroke:#60A5FA;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    .bus{fill:none;stroke:#60A5FA;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+    .lifeline{stroke:#64748B;stroke-width:2;stroke-dasharray:8 8}
     g[id]{filter:url(#shadow)}
   </style>`;
 }
 
-for (const diagram of diagrams) {
+const requestedParts = new Set(process.argv.slice(2));
+const selectedDiagrams = requestedParts.size === 0
+  ? diagrams
+  : diagrams.filter((diagram) => [...requestedParts].some((part) => diagram.name.startsWith(`bluetape4k-graph-${part}-`)));
+
+for (const diagram of selectedDiagrams) {
   for (const locale of locales) {
     const localized = localize(diagram, locale);
     const basePath = `${out}/${diagram.name}-${locale}`;
-    const dotPath = `${basePath}.dot`;
     const svgPath = `${basePath}.svg`;
     const pngPath = `${basePath}.png`;
-    writeFileSync(dotPath, dot(localized));
     writeFileSync(svgPath, svg(localized, locale));
-    writeFileSync(`${basePath}.plain`, execFileSync("dot", ["-Tplain", dotPath], { encoding: "utf8" }));
+    execFileSync("xmllint", ["--noout", svgPath]);
     execFileSync("cairosvg", [svgPath, "-o", pngPath, "-s", "2"]);
+    rmSync(`${basePath}.dot`, { force: true });
+    rmSync(`${basePath}.plain`, { force: true });
   }
 }

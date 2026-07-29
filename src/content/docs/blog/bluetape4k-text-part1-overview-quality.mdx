@@ -48,14 +48,15 @@ Language detection does not require bringing in the tokenizer modules.
 
 In real services, these pieces usually form one input pipeline.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-text-part1-pipeline-01-en.png" alt="Raw input moves through normalization, tokenizer and language detection modules, service decisions, and quality gates" loading="lazy" />
-  <figcaption>Start by defending the input boundary, then attach only the analysis modules the service decision needs.</figcaption>
+<figure class="bt4k-architecture" data-diagram-title="Service text-processing boundaries and quality evidence">
+  <img src="/assets/bluetape4k-text-part1-pipeline-01-en.png" alt="HTTP body limits lead to service input validation, normalization and routing, text analysis, service decisions, and quality gates" loading="lazy" />
+  <figcaption>Limit the body at the transport boundary, validate the materialized string, and then attach only the analysis modules the service decision needs.</figcaption>
 </figure>
 
-Suppose a service needs to accept user text, prepare search/index terms, or filter abuse words. First check blank and oversized
-input. Then normalize the text. Detect language if routing depends on it. Use tokenizers for Korean or Japanese text when
-search-friendly terms matter. Use `text-search` when a keyword dictionary needs to be matched in one pass.
+Suppose a service needs to accept user text, prepare search/index terms, or filter abuse words. First cap the HTTP request body
+before it becomes a `String`. Once materialized, validate blank input and character count. Then normalize the text and detect its
+language when routing depends on it. Use tokenizers for Korean or Japanese text when search-friendly terms matter. Use
+`text-search` when a keyword dictionary needs to be matched in one pass.
 
 If this is delayed, string handling spreads quickly. A controller calls `String.contains`, a service lowercases the text again,
 and another layer repeats normalization before indexing. The same input can pass in one path and fail in another.
@@ -138,7 +139,7 @@ val matches = automaton.parseText("user requested password reset before card dec
 ## Input Boundary First
 
 One easy mistake is to attach a tokenizer or language detector before validating the input. Those processors can be expensive,
-so blank and oversized input should be rejected before processor work starts.
+so the service should validate an already materialized string before processor work starts.
 
 `tokenizer-safety-examples` shows the boundary in a small form.
 
@@ -153,6 +154,9 @@ private fun validate(text: String, maxLength: Int): SafetyResponse? {
     return null
 }
 ```
+
+This validation does not cap allocation while an HTTP body is being decoded into a `String`; that limit belongs at the transport
+boundary. The request models and service handler then provide a second guard for character count and blank input.
 
 The response also avoids echoing raw text. Search queries, reports, and chat messages can contain sensitive content. Error
 responses should carry metadata such as actual length and maximum length, not the submitted body.
@@ -214,7 +218,7 @@ incidental file edits.
 | Japanese search preprocessing | `tokenizer-japanese` |
 | multilingual routing | `lingua` |
 | abuse-word filtering | `text-search` or tokenizer blockword APIs |
-| API input defense | `tokenizer-core` request models and safety examples |
+| API input defense | transport body limits, `tokenizer-core` request models, and safety examples |
 | multiple text artifacts on one version | `bluetape4k-text-bom` |
 
 `String.contains` and `split` are not wrong by default. They are often enough for small internal tools. Once the same code

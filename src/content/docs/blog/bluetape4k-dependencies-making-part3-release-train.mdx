@@ -21,6 +21,11 @@ blog:
 [Part 2](/blog/bluetape4k-dependencies-making-part2-public-bom/) covered the public BOM contract for `1.0.0`. After
 the structure exists, release operation starts.
 
+<figure class="bt4k-architecture" data-diagram-title="Verification order for a Maven Central release train">
+  <img src="/assets/bluetape4k-dependencies-release-train-01-en.png" alt="Release train that freezes the development snapshot matrix into stable versions, verifies each upstream BOM on Maven Central, then publishes the central BOM and upgrades downstream consumers" loading="lazy" />
+  <figcaption>Publish the central BOM only after every upstream artifact resolves. A post-publication defect requires a new patch version rather than replacing the published version.</figcaption>
+</figure>
+
 ```text
 upstream repositories
   -> stable BOM artifacts
@@ -167,11 +172,10 @@ For the user-facing import path, start with the [usage guide](/blog/bluetape4k-d
 - [Building bluetape4k-dependencies Part 2: Making the 1.0.0 BOM a Public Contract](/blog/bluetape4k-dependencies-making-part2-public-bom/)
 - [Building bluetape4k-dependencies Part 3: Maven Central Has No Rollback Button](/blog/bluetape4k-dependencies-making-part3-release-train/)
 
-## Sources
+## Resources
 
-- [`bluetape4k-dependencies` CHANGELOG.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/CHANGELOG.md)
-- [`bluetape4k-dependencies` version-management.ko.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/docs/version-management.ko.md)
-- [`bluetape4k-dependencies` WIP.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/WIP.md)
-- [`bluetape4k-dependencies` retry-snapshot-resolution.sh](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/scripts/retry-snapshot-resolution.sh)
-- [`bluetape4k-dependencies` retry snapshot tests](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/tests/test_retry_snapshot_resolution.py)
-- [`bluetape4k-dependencies` 1.3.1 release checklist](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/docs/superpowers/plans/2026-06-28-dependencies-1-3-1-release-checklist.md)
+- [Version change history](https://github.com/bluetape4k/bluetape4k-dependencies/blob/1.3.1/CHANGELOG.md)
+- [Version-management guide](https://github.com/bluetape4k/bluetape4k-dependencies/blob/1.3.1/docs/version-management.ko.md)
+- [Snapshot-resolution retry helper](https://github.com/bluetape4k/bluetape4k-dependencies/blob/1.3.1/scripts/retry-snapshot-resolution.sh)
+- [Snapshot retry boundary tests](https://github.com/bluetape4k/bluetape4k-dependencies/blob/1.3.1/tests/test_retry_snapshot_resolution.py)
+- [1.3.1 release checklist](https://github.com/bluetape4k/bluetape4k-dependencies/blob/1.3.1/docs/superpowers/plans/2026-06-28-dependencies-1-3-1-release-checklist.md)

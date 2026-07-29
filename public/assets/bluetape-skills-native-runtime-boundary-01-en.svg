@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" width="1200" height="720">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" width="1200" height="720" role="img" aria-labelledby="title desc">
+  <title id="title">Native runtime responsibility boundary</title>
+  <desc id="desc">The Codex main session executes native actions while a guarded runtime records bounded evidence.</desc>
   <style>
     .title { font-family: 'Architects Daughter', 'Comic Sans MS', cursive; fill: #f2f7ff; font-size: 34px; }
     .region-title { font-family: 'Architects Daughter', 'Comic Sans MS', cursive; fill: #f2f7ff; font-size: 21px; }

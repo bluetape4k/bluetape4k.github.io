@@ -146,6 +146,12 @@ After persistence, the service publishes `AppointmentDomainEvent.StatusChanged` 
 supports fast reads, history explains the past, and domain events let other modules react. They carry related facts but
 serve different purposes.
 
+That publication has another transaction boundary. The current code commits state and history **before** calling
+Spring's `ApplicationEventPublisher`. A listener failure does not roll back the committed database records. This is
+useful for in-process reactions, but it is not durable delivery. If notifications must recover together with the state
+change, the application needs a transactional outbox, retry, and replay policy. Passing the same reason through every
+step is not the same guarantee as committing every step atomically.
+
 ## A Stored History Still Needs a Read Path
 
 The first implementation appended every transition to history. That seemed to satisfy the requirement until a staff

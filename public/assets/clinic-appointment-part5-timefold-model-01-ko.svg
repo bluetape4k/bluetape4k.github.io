@@ -63,7 +63,7 @@
   <text x="100" y="607" class="body">병원 · 의사 · 진료</text>
   <text x="100" y="640" class="body">운영시간 · 휴식 · 부재</text>
   <text x="100" y="673" class="body">휴진 · 공휴일</text>
-  <text x="100" y="706" class="body">장비 · 사용 불가 시간</text>
+  <text x="100" y="706" class="body">장비 · 사용 불가 시간(모델)</text>
 
   <rect x="555" y="180" width="480" height="550" rx="30" fill="#0b1428" stroke="#53657f" class="card"/>
   <text x="595" y="234" class="code-label">AppointmentConstraintProvider</text>
@@ -103,5 +103,5 @@
   <path d="M 1340 456 V 510" fill="none" stroke="#65d8e8" stroke-width="4" marker-end="url(#arrow)" data-connector="score-to-result"/>
 
   <rect x="70" y="792" width="1450" height="60" rx="20" fill="#0b1628" stroke="#26364e"/>
-  <text x="95" y="829" class="small">H4는 H4a 요일별 휴식과 H4b 병원 기본 휴식으로 나뉘므로, H1–H11은 실제로 12개 필수 Constraint Stream이 됩니다.</text>
+  <text x="95" y="829" class="small">H11은 모델과 제약에 정의돼 있지만, 현재 SolverService는 장비 사용 불가 정보를 적재하지 않습니다.</text>
 </svg>

@@ -12,7 +12,7 @@
   </defs>
   <rect width="1600" height="900" rx="34" fill="url(#bg)"/>
   <circle cx="1460" cy="110" r="200" fill="#7c3aed" opacity=".08"/><circle cx="120" cy="790" r="220" fill="#0891b2" opacity=".08"/>
-  <text x="80" y="78" class="title">사건은 단순히 새 날짜가 아니라 워크플로를 만든다</text>
+  <text x="80" y="78" class="title">운영 중단은 새 날짜가 아니라 재배정 업무 흐름을 만든다</text>
   <text x="82" y="116" class="subtitle">휴진 자동화와 장비 충돌 탐지는 명시적인 운영 의사결정 경계에서 만난다.</text>
 
   <rect x="70" y="170" width="420" height="560" rx="28" fill="#12233d" stroke="#fb7185" stroke-width="2" filter="url(#shadow)"/>
@@ -27,7 +27,7 @@
   <rect x="614" y="194" width="202" height="34" rx="17" fill="#92400e"/><text x="715" y="217" text-anchor="middle" class="small" fill="#fffbeb">장비 사용 불가</text>
   <text x="624" y="274" class="label">구현된 탐지 경로</text>
   <rect x="625" y="316" width="350" height="90" rx="18" fill="#332817" stroke="#fbbf24" class="card"/><text x="650" y="350" class="body">사용 불가 규칙</text><text x="650" y="379" class="small">일회성 · 반복 · <tspan class="tech">SKIP/RESCHEDULE</tspan></text>
-  <rect x="625" y="448" width="350" height="104" rx="18" fill="#202b43" stroke="#60a5fa" class="card"/><text x="650" y="482" class="body">기간을 펼쳐 겹침 탐색</text><text x="650" y="511" class="small">저장 전 미리보기 또는 저장 후 탐지</text><text x="650" y="537" class="small"><tspan class="tech">tenant</tspan> 범위 장비 소유권 가드</text>
+  <rect x="625" y="448" width="350" height="104" rx="18" fill="#202b43" stroke="#60a5fa" class="card"/><text x="650" y="482" class="body">기간을 펼쳐 겹침 탐색</text><text x="650" y="511" class="small">저장 전 미리보기 또는 저장 후 탐지</text><text x="650" y="537" class="small">테넌트 범위 장비 소유권 검증</text>
   <rect x="625" y="594" width="350" height="72" rx="18" fill="#31233c" stroke="#c084fc" class="card"/><text x="650" y="628" class="body">충돌 예약 반환</text><text x="650" y="653" class="small">이 서비스는 자동 재배정하지 않음</text>
   <path d="M 800 406 V 448" fill="none" stroke="#fbbf24" stroke-width="4" marker-end="url(#amberArrow)" data-connector="equipment-expand"/><path d="M 800 552 V 594" fill="none" stroke="#fbbf24" stroke-width="4" marker-end="url(#amberArrow)" data-connector="equipment-conflicts"/>
 
@@ -35,7 +35,7 @@
   <rect x="1134" y="194" width="178" height="34" rx="17" fill="#0f766e"/><text x="1223" y="217" text-anchor="middle" class="small" fill="#ecfeff">의사결정 경계</text>
   <text x="1144" y="274" class="label">검토, 확정, 소통</text>
   <rect x="1145" y="316" width="350" height="88" rx="18" fill="#173649" stroke="#22d3ee" class="card"/><text x="1170" y="350" class="body">실행 경로 선택</text><text x="1170" y="379" class="small">순위 후보 또는 별도 <tspan class="tech">Solver</tspan> 실행</text>
-  <rect x="1145" y="448" width="350" height="104" rx="18" fill="#173649" stroke="#22d3ee" class="card"/><text x="1170" y="482" class="body"><tspan class="tech">tenant</tspan> 가드로 확정</text><text x="1170" y="511" class="small">새 <tspan class="tech">CONFIRMED</tspan> 예약</text><text x="1170" y="537" class="small">원본은 <tspan class="tech">RESCHEDULED · selected</tspan></text>
+  <rect x="1145" y="448" width="350" height="104" rx="18" fill="#173649" stroke="#22d3ee" class="card"/><text x="1170" y="482" class="body">테넌트 소유권 검증 후 확정</text><text x="1170" y="511" class="small">새 <tspan class="tech">CONFIRMED</tspan> 예약</text><text x="1170" y="537" class="small">원본은 <tspan class="tech">RESCHEDULED</tspan> · 후보 선택됨</text>
   <rect x="1145" y="594" width="350" height="72" rx="18" fill="#251f43" stroke="#a78bfa" class="card"/><text x="1170" y="628" class="body">발행과 알림을 분리</text><text x="1170" y="653" class="small">현재 휴진 서비스는 이를 발행하지 않음</text>
   <path d="M 1320 404 V 448" fill="none" stroke="#67e8f9" stroke-width="4" marker-end="url(#cyanArrow)" data-connector="decision-confirm"/><path d="M 1320 552 V 594" fill="none" stroke="#67e8f9" stroke-width="4" marker-end="url(#cyanArrow)" data-connector="confirm-notify"/>
 
@@ -45,5 +45,5 @@
   <rect x="70" y="778" width="1460" height="92" rx="20" fill="#0b1628" stroke="#26364e"/>
   <text x="96" y="807" class="small">운영 불변조건: 네트워크 진행 전에 상태와 후보 데이터를 커밋하고,</text>
   <text x="96" y="832" class="small">탐지·승인·영속화·알림을 명시적인 경계로 유지한다.</text>
-  <text x="96" y="857" class="small"><tspan class="tech">Solver</tspan> 결과는 다른 워크플로가 검증하고 영속화하기 전까지 제안일 뿐이다.</text>
+  <text x="96" y="857" class="small"><tspan class="tech">Solver</tspan> 결과는 별도 업무 흐름에서 검증하고 영속화하기 전까지 제안일 뿐이다.</text>
 </svg>

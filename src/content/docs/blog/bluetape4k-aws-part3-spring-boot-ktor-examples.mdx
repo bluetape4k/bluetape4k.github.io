@@ -29,7 +29,7 @@ and annotation listeners. Ktor integrates through `ApplicationPlugin`, lifecycle
 and coroutine runtimes. They solve the same AWS problems, but application code expects different entry
 points.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Spring Boot and Ktor AWS Integration">
   <img src="/assets/bluetape4k-aws-part3-framework-flow-01-en.png" alt="Framework adapters over shared AWS contracts for Spring Boot 4 and Ktor 3" loading="lazy" />
   <figcaption>Spring Boot and Ktor adapters connect the same shared helpers to each framework runtime model.</figcaption>
 </figure>
@@ -65,7 +65,7 @@ The main features fall into three groups.
 | Listener/runtime | `@SqsListener`, listener containers, retry/visibility/ack settings | Receive loops, delete-on-success, failure visibility handling |
 | Configuration | S3 config, Secrets Manager, Parameter Store, Exposed database registry | Remote property loading, secret binding, database pool wiring |
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-sequence" data-diagram-title="Spring Boot AWS Auto-configuration Sequence">
   <img src="/assets/bluetape4k-aws-part3-spring-sequence-01-en.png" alt="Spring Boot 4 AWS integration sequence from properties and auto-configuration to application beans, AWS helpers, and AWS runtime" loading="lazy" />
   <figcaption>In Spring Boot, startup auto-configuration creates framework beans first, and application code calls injected operations.</figcaption>
 </figure>
@@ -78,20 +78,25 @@ upload, download, list, and presigned URL operations as `suspend` functions or `
 @RequestMapping("/s3/documents")
 class S3DocumentController(
     private val s3: S3Operations,
+    private val encryptedS3Provider: ObjectProvider<S3ClientSideEncryptionOperations>,
 ) {
     @PutMapping(consumes = [MediaType.APPLICATION_OCTET_STREAM_VALUE])
     suspend fun upload(
         @RequestParam bucket: String,
         @RequestParam key: String,
         @RequestBody bytes: ByteArray,
+        @RequestHeader(HttpHeaders.CONTENT_TYPE, required = false) contentType: String?,
     ): S3DocumentUploadResponse {
-        val response = s3.upload(bucket = bucket, key = key, bytes = bytes)
+        val response = s3.upload(bucket = bucket, key = key, bytes = bytes, contentType = contentType)
         return S3DocumentUploadResponse(bucket, key, response.eTag())
     }
 
     @GetMapping("/objects")
-    fun listObjects(@RequestParam bucket: String): Flow<S3DocumentObjectResponse> =
-        s3.listFlow(bucket = bucket)
+    fun listObjects(
+        @RequestParam bucket: String,
+        @RequestParam(required = false) prefix: String?,
+    ): Flow<S3DocumentObjectResponse> =
+        s3.listFlow(bucket = bucket, prefix = prefix)
             .map { S3DocumentObjectResponse(key = it.key(), size = it.size()) }
 }
 ```
@@ -145,6 +150,9 @@ class OrderRepository(
 
     override fun keyFromId(id: String): Key =
         Key.builder().partitionValue(id).build()
+
+    override fun keyFromItem(item: Order): Key =
+        Key.builder().partitionValue(item.id).build()
 }
 ```
 
@@ -164,7 +172,7 @@ The Ktor module does not imitate Spring Boot auto-configuration. It uses the Kto
 such as region, endpoint, credential provider, and signing clock. `S3KtorClient`, `SqsConsumer`, and
 `DynamoDbKtorPlugin` inherit those defaults when needed.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-sequence" data-diagram-title="Ktor AWS Plugin Lifecycle Sequence">
   <img src="/assets/bluetape4k-aws-part3-ktor-sequence-01-en.png" alt="Ktor 3 AWS integration sequence from plugin installation and lifecycle events to route helpers, AWS helpers, and AWS runtime" loading="lazy" />
   <figcaption>In Ktor, plugin installation and lifecycle events open and close runtime pieces while route code calls explicit helpers.</figcaption>
 </figure>
@@ -179,7 +187,7 @@ fun Route.s3DocumentRoutes(
     bucket: String,
 ) {
     put("/s3/objects/{key...}") {
-        val key = call.parameters.getAll("key").orEmpty().joinToString("/")
+        val key = call.s3KeyParameter()
         val bytes = call.receive<ByteArray>()
         val response = s3.putObject(
             bucket = bucket,
@@ -187,13 +195,18 @@ fun Route.s3DocumentRoutes(
             bytes = bytes,
             contentType = call.request.headers["Content-Type"],
         )
-        call.respondText("""{"bucket":"$bucket","key":"$key","eTag":"${response.eTag}"}""")
+        call.respondText(
+            text = """{"bucket":${bucket.jsonString()},"key":${key.jsonString()},"eTag":${response.eTag.jsonOrNull()}}""",
+            contentType = ContentType.Application.Json,
+        )
     }
 
     get("/s3/presigned-get/{key...}") {
-        val key = call.parameters.getAll("key").orEmpty().joinToString("/")
-        val presigned = s3.presignGetObject(bucket, key, Duration.ofMinutes(15))
-        call.respondText("""{"method":"${presigned.method}","url":"${presigned.url}"}""")
+        val presigned = s3.presignGetObject(bucket, call.s3KeyParameter(), Duration.ofMinutes(15))
+        call.respondText(
+            text = """{"method":"${presigned.method}","url":${presigned.url.toString().jsonString()}}""",
+            contentType = ContentType.Application.Json,
+        )
     }
 }
 ```
@@ -254,9 +267,10 @@ fun Application.dynamoDbExampleModule(
 ```
 
 Exposed follows the same rule. `AwsExposedPlugin` binds the `bluetape4k-aws-exposed` registry to the Ktor
-lifecycle, and routes run Exposed JDBC work through `call.awsExposedTransaction { ... }`. Unlike the Spring
-Boot adapter, it does not duplicate Secrets Manager or Parameter Store loaders. Instead, it opens an
-`AwsDatabaseSettingsResolver` hook so the application can choose when and how to read remote configuration.
+lifecycle, and routes run Exposed JDBC work through `call.awsExposedTransaction { ... }`. The plugin
+preserves remote config source descriptors and delegates the final JDBC value resolution to
+`AwsDatabaseSettingsResolver`. This lets a Ktor application explicitly choose how local properties and
+AWS config sources are resolved.
 
 ```kotlin
 fun Application.exposedExampleModule(database: ExampleDatabaseConfig) {
@@ -286,7 +300,7 @@ Part 3 is not a deep guide to every example. It is a map. Part 5 will cover the 
 flow from `examples/` and `bluetape4k-workshop/aws` in more detail. Here, the useful question is which
 framework and service combinations are already verified as working examples.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Spring Boot and Ktor AWS Example Matrix">
   <img src="/assets/bluetape4k-aws-part3-example-matrix-01-en.png" alt="Runnable examples by framework and AWS service for Spring Boot and Ktor" loading="lazy" />
   <figcaption>The examples show framework-specific wiring. Part 5 follows the application flow in detail.</figcaption>
 </figure>

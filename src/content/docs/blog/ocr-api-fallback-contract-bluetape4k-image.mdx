@@ -264,6 +264,7 @@ a native OCR call as cheap just because it is wrapped by a suspend function. Bou
 work with concurrency and timeout controls, then return `COMPLETED`, `UNAVAILABLE`, and `FAILED`
 inside the same response shape.
 
-Image detection will need a similar failure response contract, but the result shape is different:
-object bounding boxes, labels, and scores instead of line-based text. A separate example will cover
-that path.
+The follow-up article,
+[“Extracting Multiple Signals from One Image”](/blog/image-intelligence-part1-multi-analysis-boundaries/),
+shows how OCR and object detection can share validation, parallel execution, and partial-failure boundaries while
+keeping their result shapes and policies separate.

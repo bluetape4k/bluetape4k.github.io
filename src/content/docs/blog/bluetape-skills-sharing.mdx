@@ -135,7 +135,8 @@ passed."
 Another developer can install the bundle with these commands.
 
 ```bash
-git clone https://github.com/bluetape4k/bluetape-skills.git
+git clone --branch v1.2.1 --depth 1 \
+  https://github.com/bluetape4k/bluetape-skills.git
 cd bluetape-skills
 ./scripts/validate.sh
 ./scripts/install.sh
@@ -155,15 +156,19 @@ existing skill with the same name. Use `--force` only when replacement is intent
 The installer first moves the old directory into a timestamped backup. That is the minimum rollback
 path needed when testing a new version.
 
-Updates use the same order.
+For a stable upgrade, clone the new immutable tag into a fresh directory, validate it, and then
+replace the installed skills.
 
 ```bash
-git pull --ff-only
+git clone --branch v1.2.1 --depth 1 \
+  https://github.com/bluetape4k/bluetape-skills.git bluetape-skills-v1.2.1
+cd bluetape-skills-v1.2.1
 ./scripts/validate.sh
 ./scripts/install.sh --force
 ```
 
-Restart Codex after installing or updating so that it reloads the skills.
+Verify discovery in a fresh Codex runtime after installation. The current task does not need to be
+closed first; a separate Codex process can validate the new runtime state in the same workspace.
 
 ## Start With One Router
 

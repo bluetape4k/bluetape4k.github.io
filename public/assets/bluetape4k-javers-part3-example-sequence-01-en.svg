@@ -2,17 +2,17 @@
   <title id="title">javers-exposed-ddd command and projection sequence</title>
   <desc id="desc">Sequence diagram replacing the README Mermaid source with an SVG and PNG asset.</desc>
   <defs>
-    <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#203040" flood-opacity="0.10"/></filter>
-    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#56708C"/></marker>
+    <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#020617" flood-opacity="0.10"/></filter>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#60A5FA"/></marker>
     <style>
-      .canvas{fill:#F7FAFC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
-      .title{font-family:"Architects Daughter";font-size:43px;fill:#22344A;font-weight:400}
-      .subtitle,.note{font-family:"Comic Mono";font-size:15px;fill:#536476;font-weight:400}
-      .participant{font-family:"Architects Daughter";font-size:21px;fill:#22344A;font-weight:400}
-      .msg{font-family:"Comic Mono";font-size:13px;fill:#34465B;font-weight:400}
-      .header{filter:url(#shadow);stroke-width:2}.life{stroke:#C9D5E2;stroke-width:2;stroke-dasharray:6 7}
-      .call{fill:none;stroke:#56708C;stroke-width:2.2;marker-end:url(#arrow)}.return{fill:none;stroke:#56708C;stroke-width:2.2;stroke-dasharray:7 6;marker-end:url(#arrow)}
-      .label{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:1}
+      .canvas{fill:#07111F}.frame{fill:#0F172A;stroke:#334155;stroke-width:2}
+      .title{font-family:"Architects Daughter";font-size:43px;fill:#F8FAFC;font-weight:400}
+      .subtitle,.note{font-family:"Comic Mono";font-size:15px;fill:#CBD5E1;font-weight:400}
+      .participant{font-family:"Architects Daughter";font-size:21px;fill:#F8FAFC;font-weight:400}
+      .msg{font-family:"Comic Mono";font-size:13px;fill:#CBD5E1;font-weight:400}
+      .header{filter:url(#shadow);stroke-width:2}.life{stroke:#475569;stroke-width:2;stroke-dasharray:6 7}
+      .call{fill:none;stroke:#60A5FA;stroke-width:2.2;marker-end:url(#arrow)}.return{fill:none;stroke:#60A5FA;stroke-width:2.2;stroke-dasharray:7 6;marker-end:url(#arrow)}
+      .label{fill:#0F172A;stroke:#334155;stroke-width:1}
     </style>
   </defs>
   <rect class="canvas" width="1600" height="760"/>
@@ -20,16 +20,16 @@
   <text class="title" x="72" y="84">javers-exposed-ddd command and projection sequence</text>
   <text class="subtitle" x="76" y="116">Preserves the README Mermaid flow: command persistence, JaVers commit, Kafka event, Redis projection, and read lookup.</text>
   <g transform="translate(70,152)">
-    <g transform="translate(0,0)"><rect class="header" width="140" height="58" rx="12" fill="#E8F3FF" stroke="#75A9E8"/><text class="participant" x="70" y="35" text-anchor="middle">Client</text></g>
-    <g transform="translate(180,0)"><rect class="header" width="190" height="58" rx="12" fill="#EAF7EF" stroke="#69B888"/><text class="participant" x="95" y="35" text-anchor="middle">OrderCommandHandler</text></g>
-    <g transform="translate(420,0)"><rect class="header" width="170" height="58" rx="12" fill="#FFFFFF" stroke="#DB7890"/><text class="participant" x="85" y="26" text-anchor="middle">Exposed</text><text class="msg" x="85" y="45" text-anchor="middle">order table</text></g>
-    <g transform="translate(640,0)"><rect class="header" width="210" height="58" rx="12" fill="#FCE7F3" stroke="#DB7890"/><text class="participant" x="105" y="26" text-anchor="middle">ExposedCdo</text><text class="msg" x="105" y="45" text-anchor="middle">SnapshotRepository</text></g>
-    <g transform="translate(900,0)"><rect class="header" width="150" height="58" rx="12" fill="#FFF3D9" stroke="#D9AA4D"/><text class="participant" x="75" y="35" text-anchor="middle">Kafka topic</text></g>
-    <g transform="translate(1090,0)"><rect class="header" width="210" height="58" rx="12" fill="#E9F7F6" stroke="#45A7A1"/><text class="participant" x="105" y="26" text-anchor="middle">Projection</text><text class="msg" x="105" y="45" text-anchor="middle">event consumer</text></g>
-    <g transform="translate(1340,0)"><rect class="header" width="120" height="58" rx="12" fill="#F1ECFF" stroke="#8A72D6"/><text class="participant" x="60" y="26" text-anchor="middle">Redis</text><text class="msg" x="60" y="45" text-anchor="middle">summary</text></g>
+    <g transform="translate(0,0)"><rect class="header" width="140" height="58" rx="12" fill="#0C4A6E" stroke="#75A9E8"/><text class="participant" x="70" y="35" text-anchor="middle">Client</text></g>
+    <g transform="translate(180,0)"><rect class="header" width="190" height="58" rx="12" fill="#14532D" stroke="#69B888"/><text class="participant" x="95" y="35" text-anchor="middle">OrderCommandHandler</text></g>
+    <g transform="translate(420,0)"><rect class="header" width="170" height="58" rx="12" fill="#0F172A" stroke="#DB7890"/><text class="participant" x="85" y="26" text-anchor="middle">Exposed</text><text class="msg" x="85" y="45" text-anchor="middle">order table</text></g>
+    <g transform="translate(640,0)"><rect class="header" width="210" height="58" rx="12" fill="#831843" stroke="#DB7890"/><text class="participant" x="105" y="26" text-anchor="middle">ExposedCdo</text><text class="msg" x="105" y="45" text-anchor="middle">SnapshotRepository</text></g>
+    <g transform="translate(900,0)"><rect class="header" width="150" height="58" rx="12" fill="#78350F" stroke="#D9AA4D"/><text class="participant" x="75" y="35" text-anchor="middle">Kafka topic</text></g>
+    <g transform="translate(1090,0)"><rect class="header" width="210" height="58" rx="12" fill="#134E4A" stroke="#45A7A1"/><text class="participant" x="105" y="26" text-anchor="middle">Projection</text><text class="msg" x="105" y="45" text-anchor="middle">event consumer</text></g>
+    <g transform="translate(1340,0)"><rect class="header" width="120" height="58" rx="12" fill="#4C1D95" stroke="#8A72D6"/><text class="participant" x="60" y="26" text-anchor="middle">Redis</text><text class="msg" x="60" y="45" text-anchor="middle">summary</text></g>
   </g>
   <g>
-    <rect class="activation" x="337" y="265" width="16" height="345" rx="6" fill="#EAF4FF" stroke="#75A9E8"/><path class="life" d="M140 210 V675"/><path class="life" d="M345 210 V675"/><path class="life" d="M575 210 V675"/><path class="life" d="M815 210 V675"/><path class="life" d="M1045 210 V675"/><path class="life" d="M1265 210 V675"/><path class="life" d="M1470 210 V675"/>
+    <rect class="activation" x="337" y="265" width="16" height="345" rx="6" fill="#0C4A6E" stroke="#75A9E8"/><path class="life" d="M140 210 V675"/><path class="life" d="M345 210 V675"/><path class="life" d="M575 210 V675"/><path class="life" d="M815 210 V675"/><path class="life" d="M1045 210 V675"/><path class="life" d="M1265 210 V675"/><path class="life" d="M1470 210 V675"/>
     <path class="call" d="M140 250 H345"/><rect class="label" x="168" y="230" width="168" height="24" rx="8"/><text class="num" x="186" y="247" text-anchor="middle">1</text><text class="msg" x="260" y="247" text-anchor="middle">PlaceOrderCommand</text>
     <path class="call" d="M345 310 H575"/><rect class="label" x="382" y="290" width="180" height="24" rx="8"/><text class="num" x="400" y="307" text-anchor="middle">2</text><text class="msg" x="480" y="307" text-anchor="middle">insert/update Order</text>
     <path class="call" d="M345 370 H815"/><rect class="label" x="510" y="350" width="140" height="24" rx="8"/><text class="num" x="528" y="367" text-anchor="middle">3</text><text class="msg" x="588" y="367" text-anchor="middle">JaVers commit</text>

@@ -16,11 +16,11 @@ blog:
   <figcaption>같은 SaaS를 쓰더라도 병원마다 시간표와 의사, 진료, 장비는 다릅니다. 예약은 병원마다 다른 조건을 모두 만족해야 유효합니다.</figcaption>
 </figure>
 
-<p class="bt4k-post-meta">2026-07-18 · clinic-appointment series · Part 1</p>
+<p class="bt4k-post-meta">2026-07-18 · clinic-appointment 시리즈 · Part 1</p>
 
 병원 예약 서비스를 처음 설계하면 화면부터 떠올리기 쉽습니다. 달력에서 날짜를 고르고, 진료 항목을 고르고, 원하는 의사를 선택하고,
 저장 버튼을 누릅니다. 데이터베이스에는 `appointments` 행 하나가 추가됩니다. 여기까지만 보면 전형적인
-CRUD입니다.
+CRUD로 보입니다.
 
 하지만 병원 직원에게 물어보면 확인할 조건이 곧바로 늘어납니다.
 
@@ -39,7 +39,7 @@ CRUD입니다.
 
 요구사항 문서에는 세 종류의 사용자가 등장합니다. 환자는 가능한 시간을 조회하고 예약합니다. 직원은
 예약을 확정하고 체크인과 진료 완료를 처리합니다. 관리자는 휴진과 장비 사용불가를 등록하고 영향을 받은
-예약을 재배정합니다.
+예약을 다시 배정합니다.
 
 세 사람이 보는 화면은 다르지만 같은 예약을 다룹니다. 환자에게는 “오후 2시 예약”이고, 직원에게는
 `REQUESTED`에서 `CONFIRMED`로 바꿔야 할 업무입니다. 관리자에게는 휴진이나 장비 고장이 생겼을 때 그대로
@@ -63,7 +63,7 @@ object Appointments : LongIdTable("scheduling_appointments") {
 }
 ```
 
-외래 키가 많다는 얘기가 아닙니다. 예약 하나가 유효하려면 여러 업무 규칙을 모두 만족해야 한다는 뜻입니다.
+단순히 외래 키가 많다는 뜻은 아닙니다. 예약 하나가 유효하려면 여러 업무 규칙을 모두 만족해야 합니다.
 [Appointments.kt](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/tables/Appointments.kt)의
 인덱스도 이 특성을 보여줍니다. 의사·날짜 조합은 예약 중복 검사와 가능한 시간 조회에, 병원·날짜·상태
 조합은 활성 예약 조회와 일괄 상태 변경에, 장비·날짜 조합은 장비 사용량 검사에 쓰입니다.
@@ -115,7 +115,7 @@ B 병원에서는 불가능할 수 있습니다.
 | `appointment-notification` | 알림과 고가용성 발송 | API가 없어도 독립 프로세스로 실행할 수 있게 합니다. |
 | 프런트엔드 | 직원이 예약과 기준 정보를 관리하는 UI | Node/Angular 빌드와 Kotlin 빌드의 경계를 유지합니다. |
 
-특히 [architecture ADR-4](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/requirements/architecture.md#adr-4-slotcalculationservice-vs-solverservice-역할-분리)는
+특히 [아키텍처 ADR-4](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/requirements/architecture.md#adr-4-slotcalculationservice-vs-solverservice-역할-분리)는
 `SlotCalculationService`와 `SolverService`를 합치지 않기로 결정했습니다. 환자가 예약 가능 시간을 한 건
 조회할 때는 빠르게 응답해야 하고, 관리자가 여러 예약을 재배치할 때는 개별 응답 속도보다 전체 조합의 품질이
 중요하기 때문입니다.
@@ -128,7 +128,7 @@ B 병원에서는 불가능할 수 있습니다.
 ## 기능만큼 문서의 역할도 설계했다
 
 `clinic-appointment`는 기능뿐 아니라 문서마다 맡을 역할도 정했습니다.
-2026년 3월의 [Living Documentation 설계](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-03-30-living-docs-design.md)는
+2026년 3월의 [지속적으로 갱신하는 문서 설계](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-03-30-living-docs-design.md)는
 다음 역할을 나눴습니다.
 
 | 자료 | 답해야 하는 질문 |
@@ -152,8 +152,8 @@ B 병원에서는 불가능할 수 있습니다.
 3. 현재 동작은 소스 코드와 테스트로 다시 확인합니다.
 4. 차이가 생긴 이유는 리뷰와 회고 문서에서 찾고 다음 요구사항으로 연결합니다.
 
-문서가 코드와 달라졌다는 사실 자체가 실패는 아닙니다. 차이를 발견하고도 방치하는 것이 문제입니다. Living
-documentation은 언제나 맞는 문서 한 장을 만드는 일이 아닙니다. 어떤 판단에 어떤 자료를 써야 하는지, 언제
+문서가 코드와 달라졌다는 사실 자체가 실패는 아닙니다. 차이를 발견하고도 방치하는 것이 문제입니다. 지속적으로
+갱신하는 문서 체계는 언제나 맞는 문서 한 장을 만드는 일이 아닙니다. 어떤 판단에 어떤 자료를 써야 하는지, 언제
 소스와 다시 대조해야 하는지를 정하는 방식입니다.
 
 ## 구현하고 나면 다음 요구사항이 보인다
@@ -183,9 +183,9 @@ documentation은 언제나 맞는 문서 한 장을 만드는 일이 아닙니�
 ## 시리즈 링크
 
 - **Part 1: 병원 예약은 CRUD로 끝나지 않는다**
-- [Part 2: 예약 상태는 enum이 아니다](/ko/blog/clinic-appointment-part2-state-machine-and-history/)
+- [Part 2: 예약 상태는 단순한 열거형이 아니다](/ko/blog/clinic-appointment-part2-state-machine-and-history/)
 - [Part 3: 병원마다 다른 업무시간과 자원으로 예약 가능 시간을 계산하기](/ko/blog/clinic-appointment-part3-clinic-specific-availability/)
 - [Part 4: 한 건의 예약 가능 시간 조회와 전체 일정 최적화는 다르다](/ko/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
-- [Part 5: 병원 업무 규칙을 Timefold Constraint로 번역하기](/ko/blog/clinic-appointment-part5-timefold-constraints/)
+- [Part 5: 병원 업무 규칙을 Timefold 제약 조건으로 옮기기](/ko/blog/clinic-appointment-part5-timefold-constraints/)
 - [Part 6: 휴진과 장비 고장은 예약 설계를 어떻게 바꾸는가](/ko/blog/clinic-appointment-part6-closure-equipment-rescheduling/)
 - [Part 7: 완성 뒤가 진짜 시작이다](/ko/blog/clinic-appointment-part7-review-and-operational-evolution/)

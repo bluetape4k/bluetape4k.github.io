@@ -1,48 +1,96 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
-  <title id="title">Java 21과 Java 25의 Virtual Threads SPI</title>
-  <desc id="desc">공통 API, Java 25와 Java 21 provider, platform fallback을 ServiceLoader로 선택하는 module 구성.</desc>
-  <defs>
-    <marker id="arrow-vt3" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="userSpaceOnUse">
-      <path d="M1,1 L8,4.5 L1,8 Z" fill="#577789"/>
-    </marker>
-  </defs>
-  <rect width="1200" height="630" fill="#f8fbfd"/>
-  <rect x="64" y="62" width="1072" height="506" rx="24" fill="#ffffff" stroke="#c7d6df" stroke-width="2"/>
-  <text x="96" y="122" font-family="goorm Sans, sans-serif" font-size="40" font-weight="700" fill="#18303f">Virtual Threads SPI/API</text>
-  <text x="98" y="162" font-family="goorm Sans Code, monospace" font-size="22" fill="#526875">API 하나, JDK별 runtime module</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="820" viewBox="0 0 1440 820" role="img" aria-labelledby="title desc">
+<title id="title">Virtual Threads SPI 경계</title>
+<desc id="desc">애플리케이션은 공통 API만 보고, ServiceLoader가 실행 JDK에 맞는 provider를 선택합니다.</desc>
+<defs>
+  <filter id="shadow" x="-10%" y="-10%" width="120%" height="125%"><feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#020617" flood-opacity="0.35"/></filter>
 
-  <g font-family="goorm Sans Code, monospace" font-size="18" fill="#18303f">
-    <rect x="98" y="258" width="214" height="118" rx="16" fill="#ffffff" stroke="#b6ccd8" stroke-width="2"/>
-    <text x="205" y="302" text-anchor="middle" font-family="goorm Sans, sans-serif" font-size="24" font-weight="700">Application</text>
-    <text x="205" y="336" text-anchor="middle">API dependency만 사용</text>
+  <marker id="arrow-blue" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L13,7 L1,13 Z" fill="#60a5fa"/></marker>
+  <marker id="arrow-green" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L13,7 L1,13 Z" fill="#86efac"/></marker>
+  <marker id="arrow-amber" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L13,7 L1,13 Z" fill="#fbbf24"/></marker>
+  <marker id="arrow-red" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L13,7 L1,13 Z" fill="#f87171"/></marker>
+  <marker id="arrow-purple" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L13,7 L1,13 Z" fill="#c4b5fd"/></marker>
+  <marker id="arrow-cyan" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L13,7 L1,13 Z" fill="#67e8f9"/></marker>
+  <style>
+    .title{font-family:"goorm Sans","Apple SD Gothic Neo",Arial,sans-serif;font-size:44px;font-weight:700;fill:#f8fafc}
+    .subtitle{font-family:"goorm Sans","Apple SD Gothic Neo",Arial,sans-serif;font-size:18px;fill:#cbd5e1}
+    .lane-title{font-family:"goorm Sans","Apple SD Gothic Neo",Arial,sans-serif;font-size:24px;font-weight:700;fill:#f8fafc}
+    .card-title{font-family:"goorm Sans","Apple SD Gothic Neo",Arial,sans-serif;font-size:24px;font-weight:700;fill:#f8fafc}
+    .card-body{font-family:"goorm Sans","Apple SD Gothic Neo",Arial,sans-serif;font-size:16px;fill:#cbd5e1}
+    .small{font-family:"goorm Sans","Apple SD Gothic Neo",Arial,sans-serif;font-size:14px;fill:#94a3b8}
+    .code{font-family:"goorm Sans Code","goorm Sans","Apple SD Gothic Neo",monospace;font-size:15px;fill:#cbd5e1}
+    .panel{fill:#111827;stroke:#334155;stroke-width:2}
+    .card{filter:url(#shadow);stroke-width:2}
 
-    <rect x="388" y="238" width="258" height="158" rx="18" fill="#eaf4ff" stroke="#b9cde0" stroke-width="2"/>
-    <text x="517" y="286" text-anchor="middle" font-family="goorm Sans, sans-serif" font-size="24" font-weight="700">VirtualThreads API</text>
-    <text x="517" y="322" text-anchor="middle">ServiceLoader selector</text>
-    <text x="517" y="352" text-anchor="middle">지원 runtime을 정렬</text>
-
-    <rect x="750" y="186" width="260" height="90" rx="16" fill="#e9f6ef" stroke="#b5d6c2"/>
-    <text x="880" y="222" text-anchor="middle" font-family="goorm Sans, sans-serif" font-size="23" font-weight="700">JDK 25 provider</text>
-    <text x="880" y="252" text-anchor="middle">우선순위 25</text>
-
-    <rect x="750" y="310" width="260" height="90" rx="16" fill="#fff0df" stroke="#dfc6a6"/>
-    <text x="880" y="346" text-anchor="middle" font-family="goorm Sans, sans-serif" font-size="23" font-weight="700">JDK 21 provider</text>
-    <text x="880" y="376" text-anchor="middle">우선순위 21</text>
-
-    <rect x="750" y="434" width="260" height="90" rx="16" fill="#f4f0ff" stroke="#c9bee6"/>
-    <text x="880" y="470" text-anchor="middle" font-family="goorm Sans, sans-serif" font-size="23" font-weight="700">Platform fallback</text>
-    <text x="880" y="500" text-anchor="middle">cached platform thread</text>
-  </g>
-
-  <g fill="none" stroke="#577789" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-vt3)">
-    <path class="connector" d="M312 317 H388"/>
-    <path class="connector" d="M646 285 H670 Q684 285 684 271 V245 Q684 231 698 231 H750"/>
-    <path class="connector" d="M646 317 H690 Q704 317 704 331 V341 Q704 355 718 355 H750"/>
-    <path class="connector" d="M646 349 H702 Q716 349 716 363 V465 Q716 479 730 479 H750"/>
-  </g>
-
-  <g font-family="goorm Sans Code, monospace" font-size="16" fill="#2b414d">
-    <rect x="116" y="448" width="486" height="56" rx="14" fill="#f8fbfa" stroke="#d4dee5"/>
-    <text x="359" y="482" text-anchor="middle">Application code는 공통 API만 가져옵니다.</text>
-  </g>
+    .connector{fill:none;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
+    .line-blue{stroke:#60a5fa;marker-end:url(#arrow-blue)}
+    .line-green{stroke:#86efac;marker-end:url(#arrow-green)}
+    .line-amber{stroke:#fbbf24;marker-end:url(#arrow-amber)}
+    .line-red{stroke:#f87171;marker-end:url(#arrow-red)}
+    .line-purple{stroke:#c4b5fd;marker-end:url(#arrow-purple)}
+    .line-cyan{stroke:#67e8f9;marker-end:url(#arrow-cyan)}
+    .dash-blue{stroke:#60a5fa;stroke-dasharray:10 9;marker-end:url(#arrow-blue)}
+    .dash-green{stroke:#86efac;stroke-dasharray:10 9;marker-end:url(#arrow-green)}
+    .label-bg{fill:#0f172a;stroke:#475569;stroke-width:1.5}
+  </style>
+</defs>
+<rect width="1440" height="820" fill="#0b1220"/>
+<rect x="34" y="30" width="1372" height="760" rx="28" class="panel"/>
+<text x="70" y="86" class="title">Virtual Threads SPI 경계</text>
+<text x="72" y="122" class="subtitle">애플리케이션은 공통 API만 보고, ServiceLoader가 실행 JDK에 맞는 provider를 선택합니다.</text>
+<g>
+  <rect x="72" y="170" width="326" height="520" rx="24" fill="#172033" stroke="#26364f" stroke-width="2"/>
+  <text x="96" y="208" class="lane-title">호출자</text>
+</g>
+<g>
+  <rect x="446" y="170" width="452" height="520" rx="24" fill="#172033" stroke="#26364f" stroke-width="2"/>
+  <text x="470" y="208" class="lane-title">공통 API</text>
+</g>
+<g>
+  <rect x="946" y="170" width="422" height="600" rx="24" fill="#172033" stroke="#26364f" stroke-width="2"/>
+  <text x="970" y="208" class="lane-title">런타임 provider</text>
+</g>
+<g>
+  <rect x="116" y="300" width="238" height="112" rx="18" fill="#172554" stroke="#60a5fa" class="card"/>
+  <text x="235" y="339" text-anchor="middle" dominant-baseline="middle" class="card-title">애플리케이션 코드</text>
+<text x="235" y="373" text-anchor="middle" dominant-baseline="middle" class="card-body">JDK 분기를 알지 않음</text>
+</g>
+<g>
+  <rect x="500" y="230" width="344" height="118" rx="18" fill="#261943" stroke="#c4b5fd" class="card"/>
+  <text x="672" y="272" text-anchor="middle" dominant-baseline="middle" class="small">VirtualThreads</text>
+<text x="672" y="306" text-anchor="middle" dominant-baseline="middle" class="card-body">facade · runtimeName()</text>
+</g>
+<g>
+  <rect x="500" y="445" width="344" height="126" rx="18" fill="#12333b" stroke="#67e8f9" class="card"/>
+  <text x="672" y="491" text-anchor="middle" dominant-baseline="middle" class="small">VirtualThreadRuntime</text>
+<text x="672" y="525" text-anchor="middle" dominant-baseline="middle" class="small">threadFactory · executorService</text>
+</g>
+<g>
+  <rect x="932" y="370" width="156" height="300" rx="18" fill="#261943" stroke="#c4b5fd" class="card"/>
+  <text x="1010" y="503" text-anchor="middle" dominant-baseline="middle" class="small">ServiceLoader</text>
+<text x="1010" y="537" text-anchor="middle" dominant-baseline="middle" class="small">priority 순서</text>
+</g>
+<g>
+  <rect x="1160" y="330" width="178" height="78" rx="18" fill="#14351f" stroke="#86efac" class="card"/>
+  <text x="1249" y="338" text-anchor="middle" dominant-baseline="middle" class="small">Jdk25</text>
+<text x="1249" y="366" text-anchor="middle" dominant-baseline="middle" class="small">provider</text>
+<text x="1249" y="400" text-anchor="middle" dominant-baseline="middle" class="small">priority = 25</text>
+</g>
+<g>
+  <rect x="1160" y="475" width="178" height="78" rx="18" fill="#3b2a08" stroke="#fbbf24" class="card"/>
+  <text x="1249" y="483" text-anchor="middle" dominant-baseline="middle" class="small">Jdk21</text>
+<text x="1249" y="511" text-anchor="middle" dominant-baseline="middle" class="small">provider</text>
+<text x="1249" y="545" text-anchor="middle" dominant-baseline="middle" class="small">priority = 21</text>
+</g>
+<g>
+  <rect x="1160" y="620" width="178" height="78" rx="18" fill="#1e293b" stroke="#64748b" class="card"/>
+  <text x="1249" y="642" text-anchor="middle" dominant-baseline="middle" class="card-title">Fallback</text>
+<text x="1249" y="676" text-anchor="middle" dominant-baseline="middle" class="card-body">provider 없음</text>
+</g>
+<path class="connector line-blue" d="M354 356 H500"/><rect class="label-bg" x="365" y="320" width="126" height="30" rx="15"/><text class="small" x="428" y="339" text-anchor="middle">공통 API 호출</text>
+<path class="connector line-cyan" d="M672 348 V445"/><rect class="label-bg" x="680" y="381" width="124" height="30" rx="15"/><text class="small" x="742" y="400" text-anchor="middle">ServiceLoader</text>
+<path class="connector line-cyan" d="M844 508 H932"/><rect class="label-bg" x="850" y="471" width="76" height="30" rx="15"/><text class="small" x="888" y="490" text-anchor="middle">탐색</text>
+<path class="connector line-green" d="M1088 369 H1160"/><rect class="label-bg" x="1087" y="331" width="74" height="30" rx="15"/><text class="small" x="1124" y="350" text-anchor="middle">1순위</text>
+<path class="connector line-amber" d="M1088 514 H1160"/><rect class="label-bg" x="1083" y="476" width="82" height="30" rx="15"/><text class="small" x="1124" y="495" text-anchor="middle">2순위</text>
+<path class="connector dash-blue" d="M1088 659 H1160"/><rect class="label-bg" x="1083" y="621" width="82" height="30" rx="15"/><text class="small" x="1124" y="640" text-anchor="middle">대체</text>
+<text x="720" y="738" text-anchor="middle" class="small">소스: virtualthread/api, virtualthread/jdk21, virtualthread/jdk25</text>
 </svg>

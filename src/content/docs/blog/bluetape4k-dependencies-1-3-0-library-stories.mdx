@@ -42,6 +42,11 @@ This post looks at four questions:
 | `graph` | `0.5.1` | stabilized `0.5.x` patch consumption |
 | `javers` | `0.2.1` | dependency boundary cleanup for JaVers/Exposed integration |
 
+<figure class="bt4k-architecture" data-diagram-title="Library Boundaries Aligned by bluetape4k-dependencies 1.3.0">
+  <img src="/assets/bluetape4k-dependencies-1-3-0-boundaries-01-en.png" alt="Architecture diagram showing the bluetape4k-dependencies 1.3.0 BOM aligning eight library versions and their representative design boundaries" loading="lazy" />
+  <figcaption>The BOM aligns more than version numbers. It combines state restoration, operational health, lifecycle, I/O, input policy, runtime, and dependency boundaries into one tested release line.</figcaption>
+</figure>
+
 ## projects 1.11.0: Return the Connection You Borrowed
 
 The most concrete fix in `projects 1.11.0` is
@@ -203,17 +208,19 @@ After moving to `dependencies 1.3.0`, check the boundaries that are easy to miss
 If you want the first import path, start with the [usage guide](/blog/bluetape4k-dependencies-usage-guide/).
 
 - [bluetape4k-dependencies 1.3.0 in Practice Part 1: Features and Cleanup](/blog/bluetape4k-dependencies-1-3-0-library-stories/)
-- [bluetape4k-dependencies 1.3.0 in Practice Part 2: Composing Services](/blog/bluetape4k-dependencies-1-3-0-service-composition/)
+- [bluetape4k-dependencies 1.3.0 in Practice Part 2: Selecting Modules by Service Boundary](/blog/bluetape4k-dependencies-1-3-0-service-composition/)
 - [bluetape4k-dependencies 1.3.0 in Practice Part 3: Production Signals](/blog/bluetape4k-dependencies-1-3-0-production-signals/)
 - [bluetape4k-dependencies 1.3.0 in Practice Part 4: Input Boundaries](/blog/bluetape4k-dependencies-1-3-0-input-boundaries/)
 
-## Sources
+## Resources
 
-- [`bluetape4k-dependencies` CHANGELOG.md](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/CHANGELOG.md)
-- [`bluetape4k-projects` issue #817](https://github.com/bluetape4k/bluetape4k-projects/issues/817)
-- [`bluetape4k-exposed` issue #225](https://github.com/bluetape4k/bluetape4k-exposed/issues/225)
-- [`bluetape4k-aws` issue #201](https://github.com/bluetape4k/bluetape4k-aws/issues/201)
-- [`bluetape4k-image` issue #165](https://github.com/bluetape4k/bluetape4k-image/issues/165)
-- [`bluetape4k-image` issue #171](https://github.com/bluetape4k/bluetape4k-image/issues/171)
-- [`bluetape4k-text` issue #99](https://github.com/bluetape4k/bluetape4k-text/issues/99)
-- [`bluetape4k-leader` issue #480](https://github.com/bluetape4k/bluetape4k-leader/issues/480)
+- Release line and version matrix:
+  [`bluetape4k-dependencies` CHANGELOG](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/CHANGELOG.md)
+- Representative implementations:
+  [`bluetape4k-projects`](https://github.com/bluetape4k/bluetape4k-projects),
+  [`bluetape4k-exposed`](https://github.com/bluetape4k/bluetape4k-exposed),
+  [`bluetape4k-aws`](https://github.com/bluetape4k/bluetape4k-aws)
+- I/O, text, and leader-election examples:
+  [`bluetape4k-image`](https://github.com/bluetape4k/bluetape4k-image),
+  [`bluetape4k-text`](https://github.com/bluetape4k/bluetape4k-text),
+  [`bluetape4k-leader`](https://github.com/bluetape4k/bluetape4k-leader)

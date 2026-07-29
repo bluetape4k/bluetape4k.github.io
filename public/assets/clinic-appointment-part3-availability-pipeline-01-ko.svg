@@ -86,7 +86,7 @@
       <text class="body" x="1537" y="387" text-anchor="middle">장비 수량</text>
       <rect x="1668" y="356" width="210" height="48" rx="13" fill="#223c45" stroke="#8da66b" />
       <text class="body" x="1773" y="387" text-anchor="middle">점검 · 고장 시간</text>
-      <text class="small" x="1655" y="438" text-anchor="middle">모든 조건을 통과한 시간만 반환</text>
+      <text class="small" x="1655" y="438" text-anchor="middle">현재 구현의 조건을 통과한 시간만 반환</text>
     </g>
   </g>
 

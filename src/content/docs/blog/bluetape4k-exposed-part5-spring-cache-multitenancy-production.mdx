@@ -29,7 +29,7 @@ collect schema or database switching at transaction entry points. Outbox and ide
 goal is not to build a large framework around operational behavior, but to layer it thinly on Exposed transactions so it
 can be tested and benchmarked immediately.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="Production integration boundaries around Exposed">
   <img src="/assets/bluetape4k-exposed-part5-production-boundary-en.png" alt="Production boundary diagram from HTTP request through Spring Boot wiring, cache strategy, tenant context, outbox idempotency, repository layer, and observability to measured service" loading="lazy" />
   <figcaption>Spring wiring, cache, tenant context, outbox, and observability are assembled around Exposed repository and transaction boundaries.</figcaption>
 </figure>
@@ -123,43 +123,45 @@ repository also owns persistence. Mixing this up with Cache Aside easily creates
 save to DB separately from the service?"
 
 The benchmark follows the same distinction. `bluetape4k-workshop/spring-boot/cache-benchmark` compares seven cache
-profiles with H2 and Redis Testcontainers.
+profiles with H2 and Redis Testcontainers. The values below were remeasured on 2026-07-27 with Apple M4 Pro and
+Java 21.0.12 using a JMH-style benchmark.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part5-cache-read-chart-en.png" alt="Cache read throughput chart showing Caffeine around 490000 ops per second and Near Cache around 465000 ops per second versus No Cache around 8200" loading="lazy" />
-  <figcaption>With warmed cache reads, Caffeine and Near Cache were roughly 57-60x higher than No Cache.</figcaption>
+<figure class="bt4k-chart" data-diagram-title="Cache read throughput comparison">
+  <img src="/assets/bluetape4k-exposed-part5-cache-read-chart-en.png" alt="Cache read throughput chart comparing Near Cache at 3287505 ops per second, Caffeine at 3058548, No Cache at 320764, and Redis-backed profiles around 4000" loading="lazy" />
+  <figcaption>For warmed reads, Near Cache and Caffeine delivered roughly ten times the No Cache throughput. Redis-backed profiles were slower in this local-H2 benchmark because they added a network round trip.</figcaption>
 </figure>
 
 | Profile | Read ops/s | vs baseline |
 |---|---:|---:|
-| No Cache | ~8,200 | 1x |
-| Caffeine | ~490,000 | 60x |
-| Redis Cache | ~43,000 | 5x |
-| Near Cache | ~465,000 | 57x |
-| Read-Through | ~42,000 | 5x |
-| Write-Through | ~41,000 | 5x |
-| Write-Behind | ~42,000 | 5x |
+| No Cache | 320,764 | 1x |
+| Caffeine | 3,058,548 | 9.5x |
+| Redis Cache | 4,031 | 0.013x |
+| Near Cache | 3,287,505 | 10.3x |
+| Read-Through | 4,090 | 0.013x |
+| Write-Through | 4,099 | 0.013x |
+| Write-Behind | 4,194 | 0.013x |
 
-Writes need a separate view. The strategy that wins on reads is not automatically the right write strategy.
+These values include both cache-hit cost and the local H2 or Redis Testcontainers round trip. They do not represent
+production capacity; measure again with the network and database used by the service.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part5-cache-write-chart-en.png" alt="Cache write throughput chart showing Write Behind around 24000 ops per second versus No Cache around 8200 and Write Through around 5600" loading="lazy" />
-  <figcaption>For writes, Write-Behind reached roughly 24,000 ops/s, but it only fits flows that can accept eventual consistency.</figcaption>
+Writes require completion boundaries, not a single ranking. A Write-Behind request accepted into the queue, a
+Write-Through call persisted to the DB, and a Write-Behind queue fully drained do not finish the same amount of work.
+
+<figure class="bt4k-chart" data-diagram-title="Cache write throughput by completion boundary">
+  <img src="/assets/bluetape4k-exposed-part5-cache-write-chart-en.png" alt="Chart separating Write-Behind request acceptance at 3552 ops per second, Write-Through database persistence at 3034, and Write-Behind queue drain completion at 0.988" loading="lazy" />
+  <figcaption>The unit is the same, but the values are not direct competitors. A fast Write-Behind return means the queue accepted the request, not that the DB write completed.</figcaption>
 </figure>
 
-| Profile | Write ops/s | Interpretation |
-|---|---:|---|
-| No Cache | ~8,200 | DB only |
-| Caffeine | ~8,100 | DB write + local cache |
-| Redis Cache | ~7,300 | DB write + Redis SET |
-| Near Cache | ~7,200 | DB write + near cache update |
-| Write-Through | ~5,600 | DB + Redis synchronous write |
-| Write-Behind | ~24,000 | Writes to cache immediately, then flushes DB asynchronously |
+| Profile and measurement point | Completion boundary | Write ops/s |
+|---|---|---:|
+| Write-Behind existing-ID update | Cache accepted; DB write remains queued | 3,551.936 |
+| Write-Through existing-ID update | DB persistence completed before return | 3,034.323 |
+| Write-Behind update and wait | Queue drained and DB value observed | 0.988 |
 
-Write-Behind is fast because it separates DB write time from the request path. The selection rule still has to be clear.
-It is a better fit for cache warm-up or delayed persistence flows than for order confirmation or other paths that require
-immediate durable persistence. With a flush queue, shutdown drain, and idempotency, it becomes a workload-specific write
-optimization instead of a fast but shaky cache shortcut.
+Write-Behind returns quickly because it separates DB work from the request path. The drain measurement also includes the
+configured one-second delay, so request-acceptance throughput must not be reported as completed database throughput.
+This strategy fits delayed-persistence flows better than order confirmation or another path that requires immediate
+durability. Queue observation, shutdown drain, retry, and idempotency remain part of the design.
 
 ## Multi-Tenancy: From Header to Schema
 
@@ -278,9 +280,9 @@ points become clearer. The core message of Part 5 is that production behavior ca
 
 ## Source Links
 
-- Spring Boot JDBC README: [spring-boot/exposed-jdbc/README.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/spring-boot/exposed-jdbc/README.md)
-- Spring Boot R2DBC README: [spring-boot/exposed-r2dbc/README.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/spring-boot/exposed-r2dbc/README.md)
-- Exposed cache README: [exposed-cache/README.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-cache/README.md)
+- Spring Boot JDBC README: [spring-boot/jdbc/README.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/spring-boot/jdbc/README.md)
+- Spring Boot R2DBC README: [spring-boot/r2dbc/README.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/spring-boot/r2dbc/README.md)
+- Exposed cache README: [exposed/cache/README.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/cache/README.md)
 - Cache benchmark: [spring-boot/cache-benchmark/README.md](https://github.com/bluetape4k/bluetape4k-workshop/blob/develop/spring-boot/cache-benchmark/README.md)
 - Multi-tenant workshop: [exposed-workshop/10-multi-tenant](https://github.com/bluetape4k/exposed-workshop/tree/develop/10-multi-tenant)
 - High performance workshop: [exposed-workshop/11-high-performance](https://github.com/bluetape4k/exposed-workshop/tree/develop/11-high-performance)

@@ -2,49 +2,49 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1160" height="700" viewBox="0 0 1160 700" role="img" aria-label="Spring Cloud AWS 또는 bluetape4k AWS 선택 가이드">
   <defs>
     <style>
-      .title{font-family:'goorm Sans',cursive;font-size:34px;fill:#102033}
-      .subtitle,.body,.small{font-family:'goorm Sans Code',monospace;fill:#334155}
-      .subtitle{font-size:15px}.label{font-family:'goorm Sans',cursive;font-size:21px;fill:#102033}
+      .title{font-family:'goorm Sans',cursive;font-size:34px;fill:#f8fafc}
+      .subtitle,.body,.small{font-family:'goorm Sans Code',monospace;fill:#cbd5e1}
+      .subtitle{font-size:15px}.label{font-family:'goorm Sans',cursive;font-size:21px;fill:#f8fafc}
       .body{font-size:14px}.small{font-size:12px}
-      .panel{fill:#fff;stroke:#d7e2ef;stroke-width:1.4;rx:18}.card{stroke-width:1.6;rx:16}
-      .arrow{fill:none;stroke:#475569;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+      .panel{fill:#111827;stroke:#334155;stroke-width:1.4;rx:18}.card{stroke-width:1.6;rx:16}
+      .arrow{fill:none;stroke:#94a3b8;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
     </style>
-    <marker id="arrow" viewBox="0 0 10 10" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#475569"/></marker>
+    <marker id="arrow" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 14 7 L 0 14 Z" fill="#94a3b8"/></marker>
   </defs>
-  <rect width="1160" height="700" fill="#ffffff"/>
+  <rect width="1160" height="700" fill="#0b1220"/>
   <text class="title" x="54" y="70">선택 가이드</text>
-  <text class="subtitle" x="56" y="104">기능 checklist가 긴 library가 아니라 이 service의 반복 AWS work를 소유할 library를 선택합니다.</text>
+  <text class="subtitle" x="56" y="104">기능 목록이 아니라 이 서비스의 반복 AWS 작업을 맡을 라이브러리를 선택합니다.</text>
   <rect class="panel" x="54" y="136" width="1052" height="492"/>
 
-  <rect class="card" x="84" y="314" width="190" height="108" fill="#f8fafc" stroke="#94a3b8"/>
-  <text class="label" x="179" y="350" text-anchor="middle">Workload shape</text>
-  <text class="body" x="179" y="380" text-anchor="middle">framework, async,</text>
-  <text class="body" x="179" y="402" text-anchor="middle">transfer, ownership</text>
+  <rect class="card" x="84" y="314" width="190" height="108" fill="#1f2937" stroke="#64748b"/>
+  <text class="label" x="179" y="350" text-anchor="middle">워크로드 특성</text>
+  <text class="body" x="179" y="380" text-anchor="middle">프레임워크, 비동기,</text>
+  <text class="body" x="179" y="402" text-anchor="middle">전송, 소유권</text>
 
-  <rect class="card" x="352" y="176" width="280" height="92" fill="#dcfce7" stroke="#22c55e"/>
-  <text class="label" x="492" y="212" text-anchor="middle">Spring Boot only</text>
-  <text class="body" x="492" y="240" text-anchor="middle">Spring Cloud idiom이 이미 맞음</text>
+  <rect class="card" x="352" y="176" width="280" height="92" fill="#163a2d" stroke="#4ade80"/>
+  <text class="label" x="492" y="212" text-anchor="middle">Spring Boot 전용</text>
+  <text class="body" x="492" y="240" text-anchor="middle">Spring Cloud 사용 방식이 이미 적합</text>
 
-  <rect class="card" x="352" y="302" width="280" height="92" fill="#e0f2fe" stroke="#38bdf8"/>
-  <text class="label" x="492" y="338" text-anchor="middle">Kotlin coroutine service</text>
-  <text class="body" x="492" y="366" text-anchor="middle">SDK helper와 suspend API</text>
+  <rect class="card" x="352" y="302" width="280" height="92" fill="#12344a" stroke="#38bdf8"/>
+  <text class="label" x="492" y="338" text-anchor="middle">Kotlin 코루틴 서비스</text>
+  <text class="body" x="492" y="366" text-anchor="middle">SDK 도우미와 suspend API</text>
 
-  <rect class="card" x="352" y="428" width="280" height="92" fill="#f3e8ff" stroke="#a855f7"/>
-  <text class="label" x="492" y="464" text-anchor="middle">Ktor runtime</text>
-  <text class="body" x="492" y="492" text-anchor="middle">plugin, SigV4, SQS consumer</text>
+  <rect class="card" x="352" y="428" width="280" height="92" fill="#35234d" stroke="#c084fc"/>
+  <text class="label" x="492" y="464" text-anchor="middle">Ktor 런타임</text>
+  <text class="body" x="492" y="492" text-anchor="middle">플러그인, SigV4, SQS 소비자</text>
 
-  <rect class="card" x="352" y="554" width="280" height="42" fill="#fef3c7" stroke="#f59e0b"/>
-  <text class="body" x="492" y="581" text-anchor="middle">CRT 기반 S3 large transfer</text>
+  <rect class="card" x="352" y="554" width="280" height="42" fill="#453511" stroke="#fbbf24"/>
+  <text class="body" x="492" y="581" text-anchor="middle">CRT 기반 S3 대용량 전송</text>
 
-  <rect class="card" x="748" y="192" width="274" height="110" fill="#f0fdf4" stroke="#16a34a"/>
+  <rect class="card" x="748" y="192" width="274" height="110" fill="#18392d" stroke="#34d399"/>
   <text class="label" x="885" y="232" text-anchor="middle">Spring Cloud AWS 선호</text>
-  <text class="body" x="885" y="262" text-anchor="middle">Spring이 AWS integration 소유</text>
+  <text class="body" x="885" y="262" text-anchor="middle">Spring이 AWS 통합을 소유</text>
 
-  <rect class="card" x="748" y="390" width="274" height="144" fill="#ecfeff" stroke="#06b6d4"/>
+  <rect class="card" x="748" y="390" width="274" height="144" fill="#123a43" stroke="#22d3ee"/>
   <text class="label" x="885" y="430" text-anchor="middle">bluetape4k-aws 선호</text>
-  <text class="body" x="885" y="460" text-anchor="middle">Kotlin/JVM helper가 반복 작업 소유</text>
+  <text class="body" x="885" y="460" text-anchor="middle">Kotlin/JVM 도우미가 반복 작업을 소유</text>
   <text class="body" x="885" y="484" text-anchor="middle">Spring Boot 4와 Ktor 3가 같은</text>
-  <text class="body" x="885" y="508" text-anchor="middle">AWS helper layer 사용</text>
+  <text class="body" x="885" y="508" text-anchor="middle">AWS 도우미 계층을 사용</text>
 
   <polyline class="arrow" points="274,368 320,368 320,222 352,222"/>
   <polyline class="arrow" points="274,368 352,368"/>

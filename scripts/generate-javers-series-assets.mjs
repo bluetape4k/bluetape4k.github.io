@@ -62,22 +62,21 @@ const diagrams = [
   {
     name: "bluetape4k-javers-part2-composition-map-01",
     title: "Persistence Composition Map",
-    subtitle: "Current adapters are role-specific; composite fan-out is planned",
+    subtitle: "One composite repository reads from a primary and fans out writes to ordered secondaries",
     width: 1500,
     height: 760,
     nodes: [
-      ["app", "Application Commit", "current API\nregister one repository", 95, 285, "#EAF4FF", 320],
-      ["primary", "Primary Store", "Exposed or Redis\nquery snapshots and diffs", 500, 170, "#EAF8EF", 340],
-      ["stream", "Event Stream", "Kafka\nwrite-only snapshot events", 500, 435, "#FFF0E8", 340],
-      ["future", "Planned Composite", "read from primary store\nfan out writes to streams", 1000, 285, "#FFF4D9", 370],
+      ["app", "Application Commit", "register one repository", 95, 285, "#EAF4FF", 320],
+      ["composite", "Composite Repository", "primary-first write\nread from primary", 560, 285, "#FFF4D9", 370],
+      ["primary", "Primary Store", "Exposed or Redis\nread/query source of truth", 1080, 170, "#EAF8EF", 340],
+      ["secondary", "Secondary Targets", "Kafka or Redis\nordered write fan-out", 1080, 435, "#FFF0E8", 340],
     ],
     edges: [
-      ["app", "primary", "current query store"],
-      ["app", "stream", "current stream store"],
-      ["primary", "future", "planned read delegate"],
-      ["stream", "future", "planned write fan-out"],
+      ["app", "composite", "register"],
+      ["composite", "primary", "read and primary write", { sourceYOffset: -26 }],
+      ["composite", "secondary", "secondary fan-out", { sourceYOffset: 26 }],
     ],
-    footer: ["Exposed + Kafka is a useful production shape, but not a first-class adapter yet.", "Until then, keep the article honest: planned capability, not current API."],
+    footer: ["Reads delegate to the primary; writes persist there first and then fan out in order.", "This is not a distributed transaction: a secondary can fail after the primary succeeds."],
   },
   {
     name: "bluetape4k-javers-part3-command-flow-01",
@@ -121,32 +120,6 @@ const diagrams = [
 
 const NODE_WIDTH = 260;
 
-function dot(diagram) {
-  const lines = [
-    "digraph G {",
-    "  graph [rankdir=LR, splines=ortho, nodesep=0.7, ranksep=1.0];",
-    "  node [shape=box, style=rounded];",
-  ];
-  if (diagram.kind === "sequence") {
-    for (const [id, label] of diagram.participants) {
-      lines.push(`  ${id} [label="${label}"];`);
-    }
-    for (const [from, to, label] of diagram.messages) {
-      lines.push(`  ${from} -> ${to} [label="${label}"];`);
-    }
-    lines.push("}");
-    return lines.join("\n") + "\n";
-  }
-  for (const [id, label] of diagram.nodes) {
-    lines.push(`  ${id} [label="${label}"];`);
-  }
-  for (const [from, to] of diagram.edges) {
-    lines.push(`  ${from} -> ${to};`);
-  }
-  lines.push("}");
-  return lines.join("\n") + "\n";
-}
-
 function esc(value) {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -172,37 +145,69 @@ function nodeWidth(item) {
   return item[6] ?? NODE_WIDTH;
 }
 
-function edge(from, to, nodes) {
+function roundedHorizontalPath(x1, y1, x2, y2) {
+  if (y1 === y2) {
+    return `M${x1} ${y1} H${x2}`;
+  }
+  const middleX = Math.round((x1 + x2) / 2);
+  const xDirection = Math.sign(x2 - x1);
+  const yDirection = Math.sign(y2 - y1);
+  const radius = Math.min(18, Math.floor(Math.abs(middleX - x1) / 2), Math.floor(Math.abs(y2 - y1) / 2));
+  return [
+    `M${x1} ${y1}`,
+    `H${middleX - xDirection * radius}`,
+    `Q${middleX} ${y1} ${middleX} ${y1 + yDirection * radius}`,
+    `V${y2 - yDirection * radius}`,
+    `Q${middleX} ${y2} ${middleX + xDirection * radius} ${y2}`,
+    `H${x2}`,
+  ].join(" ");
+}
+
+function roundedVerticalPath(x1, y1, x2, y2) {
+  if (x1 === x2) {
+    return `M${x1} ${y1} V${y2}`;
+  }
+  const middleY = Math.round((y1 + y2) / 2);
+  const xDirection = Math.sign(x2 - x1);
+  const yDirection = Math.sign(y2 - y1);
+  const radius = Math.min(18, Math.floor(Math.abs(x2 - x1) / 2), Math.floor(Math.abs(middleY - y1) / 2));
+  return [
+    `M${x1} ${y1}`,
+    `V${middleY - yDirection * radius}`,
+    `Q${x1} ${middleY} ${x1 + xDirection * radius} ${middleY}`,
+    `H${x2 - xDirection * radius}`,
+    `Q${x2} ${middleY} ${x2} ${middleY + yDirection * radius}`,
+    `V${y2}`,
+  ].join(" ");
+}
+
+function edge(from, to, nodes, options = {}) {
   const src = nodes.find((n) => n[0] === from);
   const dst = nodes.find((n) => n[0] === to);
   const srcWidth = nodeWidth(src);
   const dstWidth = nodeWidth(dst);
   const [sx, sy] = [src[3], src[4]];
   const [dx, dy] = [dst[3], dst[4]];
-  const [scx, scy] = [sx + srcWidth / 2, sy + 59];
-  const [dcx, dcy] = [dx + dstWidth / 2, dy + 59];
+  const [scx, scy] = [sx + srcWidth / 2, sy + 59 + (options.sourceYOffset ?? 0)];
+  const [dcx, dcy] = [dx + dstWidth / 2, dy + 59 + (options.targetYOffset ?? 0)];
   if (Math.abs(scx - dcx) >= Math.abs(scy - dcy)) {
     if (scx < dcx) {
       const x1 = sx + srcWidth;
       const x2 = dx;
-      const mid = Math.round((x1 + x2) / 2);
-      return `<path class="edge" d="M${x1} ${scy} H${mid} V${dcy} H${x2 - 12}"/>`;
+      return `<path class="edge" d="${roundedHorizontalPath(x1, scy, x2 - 12, dcy)}"/>`;
     }
     const x1 = sx;
     const x2 = dx + dstWidth;
-    const mid = Math.round((x1 + x2) / 2);
-    return `<path class="edge" d="M${x1} ${scy} H${mid} V${dcy} H${x2 + 12}"/>`;
+    return `<path class="edge" d="${roundedHorizontalPath(x1, scy, x2 + 12, dcy)}"/>`;
   }
   if (scy < dcy) {
     const y1 = sy + (src[2].split("\n").length > 1 ? 142 : 118);
     const y2 = dy;
-    const mid = Math.round((y1 + y2) / 2);
-    return `<path class="edge" d="M${scx} ${y1} V${mid} H${dcx} V${y2 - 12}"/>`;
+    return `<path class="edge" d="${roundedVerticalPath(scx, y1, dcx, y2 - 12)}"/>`;
   }
   const y1 = sy;
   const y2 = dy + (dst[2].split("\n").length > 1 ? 142 : 118);
-  const mid = Math.round((y1 + y2) / 2);
-  return `<path class="edge" d="M${scx} ${y1} V${mid} H${dcx} V${y2 + 12}"/>`;
+  return `<path class="edge" d="${roundedVerticalPath(scx, y1, dcx, y2 + 12)}"/>`;
 }
 
 function svg(diagram) {
@@ -214,8 +219,8 @@ function svg(diagram) {
   const footerY = height - 90;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
 <defs>
-  <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
-    <path d="M 1 1 L 7 4 L 1 7 Z" fill="#496A8F"/>
+  <marker id="arrow" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">
+    <path d="M 0 0 L 10 5 L 0 10 Z" fill="#496A8F"/>
   </marker>
   <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
     <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#22344A" flood-opacity="0.12"/>
@@ -234,7 +239,7 @@ function svg(diagram) {
 <rect class="frame" x="34" y="28" width="${width - 68}" height="${height - 56}" rx="24"/>
 <text class="title" x="${width / 2}" y="82" text-anchor="middle">${esc(diagram.title)}</text>
 <text class="subtitle" x="${width / 2}" y="116" text-anchor="middle">${esc(diagram.subtitle)}</text>
-${diagram.edges.map(([from, to]) => edge(from, to, diagram.nodes)).join("\n")}
+${diagram.edges.map(([from, to, , options]) => edge(from, to, diagram.nodes, options)).join("\n")}
 ${diagram.nodes.map(node).join("\n")}
 <rect x="88" y="${footerY}" width="${width - 176}" height="56" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
 <text class="footer" x="${width / 2}" y="${footerY + 23}" text-anchor="middle">${esc(diagram.footer[0])}</text>
@@ -277,7 +282,7 @@ function sequenceSvg(diagram) {
   }).join("\n");
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
 <defs>
-  <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">
+  <marker id="arrow" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">
     <path d="M 0 0 L 10 5 L 0 10 Z" fill="#496A8F"/>
   </marker>
   <style>
@@ -307,16 +312,16 @@ ${messages}
 
 const localeTranslations = new Map([
   ["bluetape4k-javers-part1-snapshot-flow-01", [
-    ["JaVers Snapshot Flow", "JaVers 스냅샷 흐름"],
-    ["Domain changes become commits, snapshots, and readable diffs", "도메인 변경이 커밋, 스냅샷, 읽기 쉬운 차이로 이어집니다"],
+    ["JaVers Snapshot Flow", "JaVers 스냅숏 흐름"],
+    ["Domain changes become commits, snapshots, and readable diffs", "도메인 변경이 커밋, 스냅숏, 읽기 쉬운 차이로 이어집니다"],
     ["Domain Object", "도메인 객체"],
     ["Order / Product aggregate", "Order / Product 애그리거트"],
     ["JaVers Commit", "JaVers 커밋"],
     ["author, commit id, properties", "작성자, 커밋 ID, 속성"],
-    ["Snapshot Repository", "스냅샷 저장소"],
+    ["Snapshot Repository", "스냅숏 저장소"],
     ["Exposed / Redis / Kafka adapter", "Exposed / Redis / Kafka 어댑터"],
     ["Query &amp; Diff", "조회와 차이"],
-    ["history, latest snapshot, compare", "이력, 최신 스냅샷, 비교"],
+    ["history, latest snapshot, compare", "이력, 최신 스냅숏, 비교"],
     ["bluetape4k-javers adds Kotlin-friendly helpers around the JaVers audit model.", "bluetape4k-javers는 JaVers 감사 모델에 Kotlin 친화 도우미를 더합니다."],
     ["Use it when object-level history matters more than a hand-written audit table.", "직접 만든 감사 테이블보다 객체 수준 이력이 중요할 때 사용합니다."],
   ]],
@@ -325,15 +330,15 @@ const localeTranslations = new Map([
     ["The workshop example commits audit history before updating the current row", "워크숍 예제는 현재 행을 갱신하기 전에 감사 이력을 커밋합니다"],
     ["Caller", "호출자"],
     ["Audit Service", "감사 서비스"],
-    ["Snapshot Repo", "스냅샷 저장소"],
+    ["Snapshot Repo", "스냅숏 저장소"],
     ["ProductTable", "상품 테이블"],
     ["1. save(author, product)", "1. save(author, product)"],
     ["2. commit author and object", "2. 작성자와 객체 커밋"],
-    ["3. persist CDO snapshot", "3. CDO 스냅샷 저장"],
+    ["3. persist CDO snapshot", "3. CDO 스냅숏 저장"],
     ["4. upsert current row", "4. 현재 행 저장 또는 갱신"],
     ["5. later: history or diff query", "5. 이후 이력 또는 차이 조회"],
     ["commit author and object", "작성자와 객체 커밋"],
-    ["persist CDO snapshot", "CDO 스냅샷 저장"],
+    ["persist CDO snapshot", "CDO 스냅숏 저장"],
     ["upsert current row", "현재 행 저장 또는 갱신"],
     ["later: history or diff query", "이후 이력 또는 차이 조회"],
     ["The current row and the audit history have different responsibilities.", "현재 행과 감사 이력은 서로 다른 책임을 가집니다."],
@@ -344,34 +349,34 @@ const localeTranslations = new Map([
     ["Choose the repository by read/write role, not by module name", "모듈 이름이 아니라 읽기/쓰기 역할에 따라 저장소를 고릅니다"],
     ["JaVers Commit", "JaVers 커밋"],
     ["one audit boundary", "하나의 감사 경계"],
-    ["durable SQL snapshots", "내구성 있는 SQL 스냅샷"],
+    ["durable SQL snapshots", "내구성 있는 SQL 스냅숏"],
     ["transaction fit", "트랜잭션 연계"],
     ["queryable history", "조회 가능한 이력"],
     ["cache-friendly reads", "캐시 친화적 읽기"],
     ["LIST / multimap storage", "LIST / multimap 저장"],
     ["fast latest-state lookup", "빠른 최신 상태 조회"],
     ["write-only stream", "쓰기 전용 스트림"],
-    ["send snapshot events", "스냅샷 이벤트 전송"],
+    ["send snapshot events", "스냅숏 이벤트 전송"],
     ["read methods return empty", "읽기 메서드는 빈 결과 반환"],
     ["Kafka is intentionally not a query repository.", "Kafka는 의도적으로 조회 저장소가 아닙니다."],
     ["Pair a stream with Exposed or Redis when readers need history.", "읽는 쪽에 이력이 필요하면 스트림을 Exposed 또는 Redis와 조합합니다."],
   ]],
   ["bluetape4k-javers-part2-composition-map-01", [
     ["Persistence Composition Map", "영속성 조합 구성"],
-    ["Current adapters are role-specific; composite fan-out is planned", "현재 어댑터는 역할별이며 복합 팬아웃은 계획 단계입니다"],
+    ["One composite repository reads from a primary and fans out writes to ordered secondaries", "복합 저장소 하나가 주 저장소에서 읽고 보조 저장소에 순서대로 쓰기를 전파합니다"],
     ["Application Commit", "애플리케이션 커밋"],
-    ["current API", "현재 API"],
     ["register one repository", "저장소 하나 등록"],
+    ["Composite Repository", "복합 저장소"],
+    ["primary-first write", "주 저장소 우선 쓰기"],
+    ["read from primary", "주 저장소에서 읽기"],
     ["Primary Store", "주 저장소"],
     ["Exposed or Redis", "Exposed 또는 Redis"],
-    ["query snapshots and diffs", "스냅샷과 차이 조회"],
-    ["Event Stream", "이벤트 스트림"],
-    ["write-only snapshot events", "쓰기 전용 스냅샷 이벤트"],
-    ["Planned Composite", "계획된 복합 저장소"],
-    ["read from primary store", "주 저장소에서 읽기"],
-    ["fan out writes to streams", "스트림으로 쓰기 팬아웃"],
-    ["Exposed + Kafka is a useful production shape, but not a first-class adapter yet.", "Exposed + Kafka는 유용한 운영 구성이지만 아직 일급 어댑터는 아닙니다."],
-    ["Until then, keep the article honest: planned capability, not current API.", "그전까지는 현재 API가 아니라 계획된 기능임을 분명히 합니다."],
+    ["read/query source of truth", "읽기·조회 데이터 기준점"],
+    ["Secondary Targets", "보조 저장소"],
+    ["Kafka or Redis", "Kafka 또는 Redis"],
+    ["ordered write fan-out", "순차 쓰기 전파"],
+    ["Reads delegate to the primary; writes persist there first and then fan out in order.", "읽기는 주 저장소에 위임하고 쓰기는 주 저장소에 먼저 반영한 뒤 순서대로 전파합니다."],
+    ["This is not a distributed transaction: a secondary can fail after the primary succeeds.", "분산 트랜잭션이 아니므로 주 저장소 반영 후 보조 저장소가 실패할 수 있습니다."],
   ]],
   ["bluetape4k-javers-part3-command-flow-01", [
     ["DDD Command Audit Flow", "DDD 명령 감사 흐름"],
@@ -382,15 +387,15 @@ const localeTranslations = new Map([
     ["Exposed Store", "Exposed 저장소"],
     ["source of truth", "데이터 기준점"],
     ["JaVers Audit", "JaVers 감사"],
-    ["snapshot + commit metadata", "스냅샷 + 커밋 메타데이터"],
+    ["snapshot + commit metadata", "스냅숏 + 커밋 메타데이터"],
     ["Event Publisher", "이벤트 발행기"],
     ["Read Model", "읽기 모델"],
     ["Redis order summary", "Redis 주문 요약"],
     ["AggregateRepository.save() orders the command-side work.", "AggregateRepository.save()가 명령 측 작업 순서를 정합니다."],
-    ["History queries come from JaVers snapshots; read models come from projected events.", "이력 조회는 JaVers 스냅샷에서, 읽기 모델은 투영된 이벤트에서 가져옵니다."],
+    ["History queries come from JaVers snapshots; read models come from projected events.", "이력 조회는 JaVers 스냅숏에서, 읽기 모델은 투영된 이벤트에서 가져옵니다."],
   ]],
   ["bluetape4k-javers-part3-manual-vs-javers-01", [
-    ["Manual Audit vs JaVers Snapshot Flow", "수동 감사와 JaVers 스냅샷 흐름 비교"],
+    ["Manual Audit vs JaVers Snapshot Flow", "수동 감사와 JaVers 스냅숏 흐름 비교"],
     ["Replace repeated audit-table code with object commits and diff queries", "반복되는 감사 테이블 코드를 객체 커밋과 차이 조회로 바꿉니다"],
     ["Manual Audit Table", "수동 감사 테이블"],
     ["one history schema per entity", "엔티티마다 이력 스키마"],
@@ -398,9 +403,9 @@ const localeTranslations = new Map([
     ["harder nested-object diff", "중첩 객체 차이가 어려움"],
     ["Application Service", "애플리케이션 서비스"],
     ["save / update / delete", "저장 / 갱신 / 삭제"],
-    ["JaVers Snapshot Flow", "JaVers 스냅샷 흐름"],
+    ["JaVers Snapshot Flow", "JaVers 스냅숏 흐름"],
     ["Reader", "조회자"],
-    ["latest snapshot", "최신 스냅샷"],
+    ["latest snapshot", "최신 스냅숏"],
     ["state history", "상태 이력"],
     ["field-level diff", "필드 수준 차이"],
     ["The workshop still persists the product row with Exposed.", "워크숍은 상품 행을 계속 Exposed로 저장합니다."],
@@ -408,11 +413,11 @@ const localeTranslations = new Map([
   ]],
   ["bluetape4k-javers-part3-example-cqrs-flow-01", [
     ["javers-exposed-ddd CQRS flow", "javers-exposed-ddd CQRS 흐름"],
-    ["Command writes to SQL snapshots, Kafka events, and the Redis projection.", "명령이 SQL 스냅샷, Kafka 이벤트, Redis 투영을 기록합니다."],
+    ["Command writes to SQL snapshots, Kafka events, and the Redis projection.", "명령이 SQL 스냅숏, Kafka 이벤트, Redis 투영을 기록합니다."],
     ["Command side", "명령 측"],
     ["Exposed order table", "Exposed 주문 테이블"],
     ["source of truth", "데이터 기준점"],
-    ["JaVers snapshots", "JaVers 스냅샷"],
+    ["JaVers snapshots", "JaVers 스냅숏"],
     ["audit history", "감사 이력"],
     ["Kafka order events", "Kafka 주문 이벤트"],
     ["domain event stream", "도메인 이벤트 스트림"],
@@ -459,18 +464,58 @@ function normalizeFonts(source, locale) {
     .replaceAll("markerUnits=\"strokeWidth\"", "markerUnits=\"userSpaceOnUse\"");
 }
 
+const darkThemeReplacements = [
+  ["#F6F9FC", "#07111F"],
+  ["#F7FAFC", "#07111F"],
+  ["#FFFFFF", "#0F172A"],
+  ["#F8FBFE", "#111827"],
+  ["#EAF4FF", "#0C4A6E"],
+  ["#E8F3FF", "#0C4A6E"],
+  ["#FFF4D9", "#78350F"],
+  ["#FFF3D9", "#78350F"],
+  ["#EAF8EF", "#14532D"],
+  ["#EAF7EF", "#14532D"],
+  ["#F3ECFF", "#4C1D95"],
+  ["#F1ECFF", "#4C1D95"],
+  ["#FFF0E8", "#7C2D12"],
+  ["#FFECEC", "#7F1D1D"],
+  ["#FCE7F3", "#831843"],
+  ["#E9F7F5", "#134E4A"],
+  ["#E9F7F6", "#134E4A"],
+  ["#D7E2EC", "#334155"],
+  ["#C9D5E2", "#475569"],
+  ["#7B8CA3", "#64748B"],
+  ["#91A6BD", "#64748B"],
+  ["#536476", "#CBD5E1"],
+  ["#3F5269", "#CBD5E1"],
+  ["#34465B", "#CBD5E1"],
+  ["#22344A", "#F8FAFC"],
+  ["#203040", "#020617"],
+  ["#496A8F", "#60A5FA"],
+  ["#56708C", "#60A5FA"],
+];
+
+function applyDarkTheme(source) {
+  let result = source;
+  for (const [from, to] of darkThemeReplacements) {
+    result = result.replaceAll(from, to);
+  }
+  result = result
+    .replace(
+      /<marker id="([^"]+)"[^>]*>/g,
+      '<marker id="$1" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">',
+    )
+    .replaceAll("M 1 1 L 7 4 L 1 7 Z", "M 0 0 L 10 5 L 0 10 Z")
+    .replaceAll("M1,1 L8,4.5 L1,8 Z", "M 0 0 L 10 5 L 0 10 Z")
+    .replaceAll("M 0 0 L 14 7 L 0 14 Z", "M 0 0 L 10 5 L 0 10 Z");
+  return result;
+}
+
 function normalizeStructure(name, source) {
   if (name === "bluetape4k-javers-part2-backend-selection-01") {
     return source
       .replace('d="M480 179 H410 V389 H352"', 'd="M480 179 H420 Q410 179 410 189 V379 Q410 389 400 389 H352"')
       .replace('d="M740 179 H810 V389 H868"', 'd="M740 179 H800 Q810 179 810 189 V379 Q810 389 820 389 H868"');
-  }
-  if (name === "bluetape4k-javers-part2-composition-map-01") {
-    return source
-      .replace('d="M415 344 H458 V229 H488"', 'd="M255 285 V260 Q255 250 265 250 H488"')
-      .replace('d="M415 344 H458 V494 H488"', 'd="M415 344 H448 Q458 344 458 354 V484 Q458 494 468 494 H488"')
-      .replace('d="M840 229 H920 V344 H988"', 'd="M840 229 H1175 Q1185 229 1185 239 V273"')
-      .replace('d="M840 494 H920 V344 H988"', 'd="M840 494 H910 Q920 494 920 484 V354 Q920 344 930 344 H988"');
   }
   if (name === "bluetape4k-javers-part3-example-cqrs-flow-01") {
     return source
@@ -490,7 +535,7 @@ function normalizeStructure(name, source) {
     let result = source
       .replace(
         /<marker id="arrow"[^>]*><path[^>]*><\/marker>/,
-        '<marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#56708C"/></marker>',
+        '<marker id="arrow" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#56708C"/></marker>',
       )
       .replace('.line{', '.call{')
       .replace('.dash{', '.return{')
@@ -527,7 +572,7 @@ function addSequenceNumbers(source) {
   let number = 0;
   return source.replace(
     /(<rect class="label" x="([0-9.]+)" y="([0-9.]+)" width="[^"]+" height="[^"]+" rx="[^"]+"\/>)/g,
-    (match, rect, x, y) => {
+    (_match, rect, x, y) => {
       number += 1;
       return `${rect}<text class="num" x="${Number(x) + 16}" y="${Number(y) + 17}" text-anchor="middle">${number}</text>`;
     },
@@ -548,7 +593,7 @@ function widenSequenceLabels(name, source) {
   ]);
   return source.replace(
     /<rect class="label" x="[^"]+" y="([^"]+)" width="[^"]+" height="24" rx="8"\/><text class="num" x="[^"]+" y="([^"]+)" text-anchor="middle">(\d+)<\/text><text class="msg" x="[^"]+" y="[^"]+" text-anchor="middle">([^<]*)<\/text>/g,
-    (match, rectY, textY, number, message) => {
+    (_match, rectY, textY, number, message) => {
       const [x, width] = layouts.get(number);
       return `<rect class="label" x="${x}" y="${rectY}" width="${width}" height="24" rx="8"/><text class="num" x="${x + 18}" y="${textY}" text-anchor="middle">${number}</text><text class="msg" x="${x + width / 2 + 8}" y="${textY}" text-anchor="middle">${message}</text>`;
     },
@@ -564,11 +609,11 @@ function localize(source, translations) {
 }
 
 for (const diagram of diagrams) {
-  const dotPath = `${out}/${diagram.name}.dot`;
   const svgPath = `${out}/${diagram.name}.svg`;
-  writeFileSync(dotPath, dot(diagram));
   writeFileSync(svgPath, svg(diagram));
-  writeFileSync(`${out}/${diagram.name}.plain`, execFileSync("dot", ["-Tplain", dotPath], { encoding: "utf8" }));
+  for (const stale of [".dot", ".plain", "-sketch.svg", "-sketch.png"]) {
+    rmSync(`${out}/${diagram.name}${stale}`, { force: true });
+  }
 }
 
 for (const [name, translations] of localeTranslations) {
@@ -577,12 +622,15 @@ for (const [name, translations] of localeTranslations) {
   const source = widenSequenceLabels(name, addSequenceNumbers(normalizeStructure(name, readFileSync(sourcePath, "utf8"))));
   const enPath = `${out}/${name}-en.svg`;
   const koPath = `${out}/${name}-ko.svg`;
-  writeFileSync(enPath, normalizeFonts(source, "en"));
-  writeFileSync(koPath, normalizeFonts(localize(source, translations), "ko"));
+  writeFileSync(enPath, normalizeFonts(applyDarkTheme(source), "en"));
+  writeFileSync(koPath, normalizeFonts(applyDarkTheme(localize(source, translations)), "ko"));
   for (const svgPath of [enPath, koPath]) {
     execFileSync("xmllint", ["--noout", svgPath]);
     execFileSync("cairosvg", [svgPath, "-o", svgPath.replace(/\.svg$/, ".png"), "-s", "2"]);
   }
   rmSync(canonicalPath, { force: true });
   rmSync(`${out}/${name}.png`, { force: true });
+  for (const stale of [".dot", ".plain", "-sketch.svg", "-sketch.png"]) {
+    rmSync(`${out}/${name}${stale}`, { force: true });
+  }
 }

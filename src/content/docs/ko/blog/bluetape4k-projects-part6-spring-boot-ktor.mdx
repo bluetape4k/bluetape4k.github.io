@@ -1,13 +1,13 @@
 ---
 title: "Bluetape4k Projects Part 6: Spring Boot 4와 Ktor"
-description: Spring Boot 4와 Ktor 3 모듈이 공유 기반, I/O, data, infra, utility를 application boundary로 올리는 방식을 정리한다.
+description: Spring Boot 4와 Ktor 3 모듈이 공유 기반, I/O, 데이터, 인프라, 유틸리티를 애플리케이션 경계로 올리는 방식을 정리한다.
 sidebar:
   order: -202605301635
 blog:
   date: 2026-05-30T16:35:00+09:00
   image: /assets/bluetape4k-projects-part6-hero.png
   imageAlt: 작은 로봇 작업자들이 Spring Boot 4와 Ktor 3 애플리케이션 경계를 공통 foundation 위에 조립하는 일러스트
-  cardDescription: "Spring Boot 4와 Ktor 3에서 coroutine, data, Redis, observability, testing 경계를 잡는 방법."
+  cardDescription: "Spring Boot 4와 Ktor 3에서 코루틴, 데이터, Redis, 관측성, 테스트 경계를 잡는 방법."
   tags: ["coroutines","ecosystem","kotlin","ktor","observability","redis","spring","testing"]
 ---
 
@@ -18,23 +18,23 @@ blog:
 
 <p class="bt4k-post-meta">2026-05-30 · bluetape4k-projects series · Part 6</p>
 
-이 글은 `bluetape4k-projects` 시리즈의 마지막 편입니다. 앞에서는 foundation, coroutine/testing, I/O,
-data/infra, utility를 차례로 봤습니다. 이제 그 조각들이 실제 application boundary에서 어떻게 보이는지
+이 글은 `bluetape4k-projects` 시리즈의 마지막 편입니다. 앞에서는 공유 기반, 코루틴/테스트, I/O,
+데이터/인프라, 유틸리티를 차례로 봤습니다. 이제 그 조각들이 실제 애플리케이션 경계에서 어떻게 보이는지
 봅니다. Spring Boot 4와 Ktor 3 모듈입니다.
 
-`projects`의 application 모듈은 framework를 대체하려 하지 않습니다. Spring Boot는 Spring Boot답게,
-Ktor는 Ktor답게 둡니다. 대신 공통 JSON, coroutine helper, Redis serializer, R2DBC/MongoDB coroutine
-extension, observability, resilience, testing helper를 service entrypoint 가까이에 정리합니다. 목표는
+`projects`의 애플리케이션 모듈은 프레임워크를 대체하려 하지 않습니다. Spring Boot는 Spring Boot답게,
+Ktor는 Ktor답게 둡니다. 대신 공통 JSON, 코루틴 헬퍼, Redis 직렬화기, R2DBC/MongoDB 코루틴
+확장, 관측성, 회복성, 테스트 헬퍼를 서비스 진입점 가까이에 정리합니다. 목표는
 "숨겨진 마법"이 아니라 "반복 wiring을 줄이고 경계를 명시하기"입니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-projects-part6-application-layer-ko.png" alt="Shared foundation이 Spring Boot 4, Ktor 3, configuration, tests, running service로 이어지는 application layer 다이어그램" loading="lazy" />
-  <figcaption>Spring Boot와 Ktor 모듈은 공통 foundation 위에서 configuration, test, runtime boundary를 application에 맞게 얹습니다.</figcaption>
+  <img src="/assets/bluetape4k-projects-part6-application-layer-ko.png" alt="공유 기반이 Spring Boot 4, Ktor 3, 설정, 테스트, 실행 중인 서비스로 이어지는 애플리케이션 계층 다이어그램" loading="lazy" />
+  <figcaption>Spring Boot와 Ktor 모듈은 공통 기반 위에서 설정, 테스트, 런타임 경계를 애플리케이션에 맞게 얹습니다.</figcaption>
 </figure>
 
-## Spring Boot 4: versionless 표준 경로
+## Spring Boot 4: 버전 없는 표준 경로
 
-현재 `spring-boot/*` 모듈은 Spring Boot 4.x 기준입니다. README도 versionless `spring-boot/*` artifact가
+현재 `spring-boot/*` 모듈은 Spring Boot 4.x 기준입니다. README도 버전 없는 `spring-boot/*` artifact가
 Spring Boot 4 구현으로 게시된다고 명시합니다. 중요한 운영 규칙도 있습니다. Spring Boot BOM은
 `dependencyManagement { imports }` 대신 Gradle `implementation(platform(...))` 방식으로 적용해야 Kotlin
 Gradle Plugin 2.3.x 충돌을 피할 수 있습니다.
@@ -48,10 +48,10 @@ dependencies {
 ```
 
 `bluetape4k-spring-boot-core`는 WebFlux + coroutines, `RestClient` suspend DSL, `WebClient` extension,
-Jackson 2 customizer, Retrofit2 integration, `WebTestClient` test helper를 제공합니다. Spring Boot 4가
+Jackson 2 customizer, Retrofit2 통합, `WebTestClient` 테스트 헬퍼를 제공합니다. Spring Boot 4가
 내부적으로 Jackson 2를 쓰므로 이 모듈도 Jackson 2 경계가 기본입니다. Jackson 3은 Part 3의 I/O 계열에서
-별도로 다룰 수 있지만, Spring Boot 4 application boundary에서는 Jackson 2라는 현실을 받아들이는 편이
-낫습니다. 그래야 application boundary와 framework 내부 경계가 같은 방향을 봅니다.
+별도로 다룰 수 있지만, Spring Boot 4 애플리케이션 경계에서는 Jackson 2라는 현실을 받아들이는 편이
+낫습니다. 그래야 애플리케이션 경계와 프레임워크 내부 경계가 같은 방향을 봅니다.
 
 ```kotlin
 val restClient = RestClient.create("https://api.example.com")
@@ -62,15 +62,15 @@ val created: User = restClient.suspendPost("/users", newUser, MediaType.APPLICAT
 
 Spring Data 계열은 더 좁은 모듈로 나뉩니다. `spring-boot/redis`는 `RedisTemplate`과
 `ReactiveRedisTemplate`용 `RedisBinarySerializer`, `RedisCompressSerializer`, `redisSerializationContext {}`
-DSL을 제공합니다. `spring-boot/r2dbc`는 `R2dbcEntityOperations` coroutine CRUD helper를 제공합니다.
+DSL을 제공합니다. `spring-boot/r2dbc`는 `R2dbcEntityOperations` 코루틴 CRUD 헬퍼를 제공합니다.
 MongoDB와 Cassandra도 Spring Data reactive/coroutine 경계를 정리합니다. Hibernate Lettuce는 Hibernate
-second-level cache와 Lettuce Near Cache auto-configuration을 application boundary로 올립니다.
+second-level cache와 Lettuce Near Cache auto-configuration을 애플리케이션 경계로 올립니다.
 
-## Ktor 3: 명시적인 plugin 조립
+## Ktor 3: 명시적인 플러그인 조립
 
 Ktor 모듈은 Spring Boot와 다르게 "명시적 설치"를 기본 태도로 둡니다. `ktor/core`는 JSON 기본값,
 `installBluetape4kKtorCore()`, JSON 오류 응답, `/healthz`, `/readyz`, query/path parameter helper를
-제공합니다. 애플리케이션이 plugin 소유권을 직접 가져야 하면 config로 각 기능을 끌 수 있습니다.
+제공합니다. 애플리케이션이 플러그인 소유권을 직접 가져야 하면 설정으로 각 기능을 끌 수 있습니다.
 
 ```kotlin
 fun Application.module() {
@@ -86,49 +86,49 @@ fun Application.module() {
 }
 ```
 
-`ktor/observability`는 sanitized correlation ID, call logging MDC, Micrometer metrics, Prometheus scrape route
-helper를 제공합니다. OpenTelemetry tracing은 기본 설치하지 않습니다. exporter 정책은 애플리케이션이
-소유해야 하기 때문입니다. 이 선을 지켜야 합니다. library가 observability backend까지 몰래 정하면 운영자는
+`ktor/observability`는 정제된 correlation ID, call logging MDC, Micrometer metrics, Prometheus scrape route
+헬퍼를 제공합니다. OpenTelemetry tracing은 기본 설치하지 않습니다. exporter 정책은 애플리케이션이
+소유해야 하기 때문입니다. 이 선을 지켜야 합니다. 라이브러리가 관측성 백엔드까지 몰래 정하면 운영자는
 나중에 exporter 소유권을 다시 추적해야 합니다.
 
-`ktor/resilience4j`는 route-scoped helper입니다. caller가 소유한 retry, circuit breaker, rate limiter,
+`ktor/resilience4j`는 route-scoped helper입니다. 호출자가 소유한 retry, circuit breaker, rate limiter,
 time limiter를 `KtorResiliencePolicies`로 전달하고, `resilientGet`, `resilientPost`, `withKtorResilience`
 로 suspend block을 보호합니다. `CancellationException`은 circuit breaker 실패로 삼키지 않고 다시 던집니다.
-coroutine cancellation을 resilience 실패로 기록하면 metric이 실제 실패를 왜곡합니다.
+코루틴 cancellation을 회복성 실패로 기록하면 메트릭이 실제 실패를 왜곡합니다.
 
 ## 언제 Spring Boot, 언제 Ktor인가
 
-둘 중 하나가 항상 우월하지 않습니다. application boundary가 무엇을 더 필요로 하는지 봐야 합니다.
+둘 중 하나가 항상 우월하지 않습니다. 애플리케이션 경계가 무엇을 더 필요로 하는지 봐야 합니다.
 
 | 필요 | Spring Boot 4 쪽 | Ktor 3 쪽 |
 |---|---|---|
 | Spring Data, auto-configuration, enterprise integration | 자연스러운 기본 선택 | 직접 wiring이 많아질 수 있음 |
 | WebFlux coroutine controller와 `WebTestClient` | `spring-boot/core`가 바로 맞음 | 필요하면 Ktor로 작게 구성 |
-| Redis serializer, R2DBC/MongoDB coroutine extension | Spring Data 모듈과 잘 맞음 | infra 모듈을 직접 조립 |
-| 작은 HTTP API, 명시적 plugin, 얇은 runtime | 다소 무거울 수 있음 | `ktor/core`가 잘 맞음 |
-| route 단위 resilience/observability | Spring ecosystem 설정과 결합 | `ktor/observability`, `ktor/resilience4j`가 명시적 |
+| Redis 직렬화기, R2DBC/MongoDB 코루틴 확장 | Spring Data 모듈과 잘 맞음 | infra 모듈을 직접 조립 |
+| 작은 HTTP API, 명시적 플러그인, 얇은 런타임 | 다소 무거울 수 있음 | `ktor/core`가 잘 맞음 |
+| route 단위 회복성/관측성 | Spring ecosystem 설정과 결합 | `ktor/observability`, `ktor/resilience4j`가 명시적 |
 | 테스트 스타일 | Spring context + slice/integration test | `testApplication` 중심의 빠른 route test |
 
-Spring Boot는 ecosystem integration이 강합니다. 이미 Spring Data, auto-configuration, actuator, enterprise
-library가 많은 서비스라면 억지로 Ktor로 줄일 필요가 없습니다. Ktor는 작은 HTTP API, 명시적 plugin,
-가벼운 runtime boundary가 중요한 서비스에서 좋습니다. 둘을 비교할 때 "취향"만 이야기하면 결론이 잘 안
-납니다. configuration 소유권, test 속도, data access 모양, observability 정책을 놓고 보면 대개 답이
+Spring Boot는 생태계 통합이 강합니다. 이미 Spring Data, auto-configuration, actuator, enterprise
+library가 많은 서비스라면 억지로 Ktor로 줄일 필요가 없습니다. Ktor는 작은 HTTP API, 명시적 플러그인,
+가벼운 런타임 경계가 중요한 서비스에서 좋습니다. 둘을 비교할 때 "취향"만 이야기하면 결론이 잘 안
+납니다. 설정 소유권, 테스트 속도, 데이터 접근 모양, 관측성 정책을 놓고 보면 대개 답이
 나옵니다.
 
 ## wiring checklist
 
-새 backend service에 `projects`를 적용한다면 순서를 이렇게 잡는 편이 안전합니다.
+새 백엔드 서비스에 `projects`를 적용한다면 순서를 이렇게 잡는 편이 안전합니다.
 
-1. `bluetape4k-bom`과 framework BOM을 `platform(...)`으로 가져옵니다.
-2. Spring Boot 또는 Ktor 중 application boundary를 먼저 고릅니다.
-3. HTTP 경계의 JSON/error/health/readiness policy를 고정합니다.
+1. `bluetape4k-bom`과 프레임워크 BOM을 `platform(...)`으로 가져옵니다.
+2. Spring Boot 또는 Ktor 중 애플리케이션 경계를 먼저 고릅니다.
+3. HTTP 경계의 JSON/error/health/readiness 정책을 고정합니다.
 4. data/Redis/messaging 모듈은 실제 외부 시스템 하나씩 붙입니다.
-5. observability는 correlation ID, metric, trace 소유권을 명확히 나눕니다.
-6. resilience는 timeout, retry, circuit breaker가 같은 이야기를 하도록 한 경로부터 적용합니다.
-7. 예제와 workshop에서 가장 가까운 application 모양을 찾아 test fixture까지 확인합니다.
+5. 관측성은 correlation ID, 메트릭, 추적 소유권을 명확히 나눕니다.
+6. 회복성은 타임아웃, 재시도, circuit breaker가 같은 이야기를 하도록 한 경로부터 적용합니다.
+7. 예제와 workshop에서 가장 가까운 애플리케이션 모양을 찾아 test fixture까지 확인합니다.
 
-이 순서를 지키면 application module은 얇게 남습니다. 순서를 건너뛰면 controller가 serializer와 retry와
-pool과 metric까지 모두 떠안습니다. 그런 코드는 변경에 약합니다.
+이 순서를 지키면 애플리케이션 모듈은 얇게 남습니다. 순서를 건너뛰면 controller가 serializer와 retry와
+pool과 메트릭까지 모두 떠안습니다. 그런 코드는 변경에 약합니다.
 
 ## 참고 링크
 
@@ -142,13 +142,13 @@ pool과 metric까지 모두 떠안습니다. 그런 코드는 변경에 약합�
 
 ## 마무리
 
-`bluetape4k-projects` 시리즈는 공통 foundation에서 시작해 application boundary까지 올라왔습니다. 이
-저장소의 역할은 모든 문제를 대신 해결하는 거대한 framework가 아닙니다. Kotlin/JVM backend에서 반복되는
+`bluetape4k-projects` 시리즈는 공통 기반에서 시작해 애플리케이션 경계까지 올라왔습니다. 이
+저장소의 역할은 모든 문제를 대신 해결하는 거대한 프레임워크가 아닙니다. Kotlin/JVM 백엔드에서 반복되는
 작은 경계들을 같은 방식으로 다루게 해 주는 공통 기반입니다.
 
-Spring Boot 4와 Ktor 3 모듈은 그 기반을 service entrypoint에 올리는 마지막 층입니다. 하나는 ecosystem
-integration을, 다른 하나는 명시적이고 얇은 runtime을 더 잘 보여줍니다. 중요한 것은 둘 중 무엇을 고르든
-BOM, module selection, configuration ownership, observability, resilience, test fixture를 같은 기준으로
+Spring Boot 4와 Ktor 3 모듈은 그 기반을 서비스 진입점에 올리는 마지막 층입니다. 하나는 생태계
+통합을, 다른 하나는 명시적이고 얇은 런타임을 더 잘 보여줍니다. 중요한 것은 둘 중 무엇을 고르든
+BOM, 모듈 선택, 설정 소유권, 관측성, 회복성, 테스트 픽스처를 같은 기준으로
 검증하는 것입니다.
 
 시리즈의 결론은 단순합니다. 필요한 조각만 가져오고, 경계를 숨기지 말고, 예제로 사용 모양을 확인하고,
@@ -159,8 +159,8 @@ BOM, module selection, configuration ownership, observability, resilience, test 
 ## 시리즈 링크
 
 - [Part 1: 공유 Kotlin/JVM 기반](/ko/blog/bluetape4k-projects-part1-shared-foundation/)
-- [Part 2: core, coroutines, logging, tests](/ko/blog/bluetape4k-projects-part2-core-coroutines-tests/)
-- [Part 3: bytes가 지나가는 길](/ko/blog/bluetape4k-projects-part3-io-serialization-http-encryption/)
-- [Part 4: data와 infrastructure](/ko/blog/bluetape4k-projects-part4-data-infrastructure/)
-- [Part 5: utility와 adoption path](/ko/blog/bluetape4k-projects-part5-utilities-adoption-path/)
+- [Part 2: 공통 기반의 안쪽](/ko/blog/bluetape4k-projects-part2-core-coroutines-tests/)
+- [Part 3: 바이트가 지나가는 길](/ko/blog/bluetape4k-projects-part3-io-serialization-http-encryption/)
+- [Part 4: 데이터와 인프라](/ko/blog/bluetape4k-projects-part4-data-infrastructure/)
+- [Part 5: 유틸리티와 도입 경로](/ko/blog/bluetape4k-projects-part5-utilities-adoption-path/)
 - [Part 6: Spring Boot 4와 Ktor](/ko/blog/bluetape4k-projects-part6-spring-boot-ktor/)

@@ -1,37 +1,37 @@
 ---
 title: "Bluetape Skills Part 1: 팀과 공유하고 설치하는 방법"
-description: 개인 Codex 지침을 팀이 설치하고 업데이트할 수 있는 Bluetape Skills 묶음으로 정리한 기준과 실제 설치 방법을 소개합니다.
+description: 개인 Codex 지침을 팀이 설치하고 갱신할 수 있는 Bluetape Skills 묶음으로 분리한 기준과 안정 버전 설치 방법을 설명합니다.
 sidebar:
   order: -202607111700
 blog:
   date: 2026-07-11T17:00:00+09:00
   image: /assets/bluetape-skills-sharing-hero-v2.png
-  imageAlt: 작은 로봇 개발자들이 skill, reference, 검사 도구를 완전한 묶음으로 포장하고 검증하는 3D 작업대 일러스트
-  cardDescription: canonical skill과 reference, 설치 검증, private runtime 경계를 갖춘 Bluetape Skills 배포 방식을 정리합니다.
+  imageAlt: 작은 로봇 개발자들이 스킬, 참조 자료, 검사 도구를 완전한 묶음으로 포장하고 검증하는 3D 작업대 일러스트
+  cardDescription: 정식 스킬과 참조 자료, 설치 검증, 개인 런타임 경계를 갖춘 Bluetape Skills 배포 방식을 정리합니다.
   tags: ["ai"]
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/bluetape-skills-sharing-hero-v2.png" alt="작은 로봇 개발자들이 skill, reference, 검사 도구를 완전한 묶음으로 포장하고 검증하는 3D 작업대 일러스트" loading="eager" />
-  <figcaption>공개 묶음에는 실행에 필요한 guidance를 함께 넣고, 개인 런타임 상태는 밖에 둔다.</figcaption>
+  <img src="/assets/bluetape-skills-sharing-hero-v2.png" alt="작은 로봇 개발자들이 스킬, 참조 자료, 검사 도구를 완전한 묶음으로 포장하고 검증하는 3D 작업대 일러스트" loading="eager" />
+  <figcaption>공개 묶음에는 실행에 필요한 지침을 함께 넣고, 개인 런타임 상태는 제외합니다.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-07-11 · Bluetape Skills Part 1</p>
 
 이 글은 [「AI와 일하는 환경을 인프라로 만들기」](/ko/blog/ai-collaboration-environment/)의 후속 작업이다.
-선행 글에서는 `AGENTS.md`, skills, 검색, memory, hooks가 어떻게 하나의 협업 환경을 이루는지 설명했다.
-이번 시리즈에서는 그 환경을 실제로 운영하면서 발견한 문제와 다른 개발자, 여러 머신에서도 재사용할 수
-있도록 skill 체계를 고친 과정을 다룬다.
+선행 글에서는 `AGENTS.md`, 스킬, 검색, 메모리, 훅이 어떻게 하나의 협업 환경을 이루는지 설명했다.
+이번 시리즈에서는 그 환경을 실제로 운영하면서 발견한 문제와 다른 개발자, 여러 환경에서도 재사용할 수
+있도록 스킬 체계를 고친 과정을 다룬다.
 
-Codex skill은 `SKILL.md` 한 장으로 끝나지 않는다. 실제 작업 품질을 좌우하는 것은 그 파일에서 이어지는
-reference와 template, 검사 script, 그리고 확인 순서를 적어 둔 checklist다. 이 중 하나라도 빠진 상태로
+Codex 스킬은 `SKILL.md` 한 장으로 끝나지 않는다. 실제 작업 품질을 좌우하는 것은 그 파일에서 이어지는
+참조 자료와 템플릿, 검사 스크립트, 그리고 확인 순서를 적은 체크리스트다. 이 중 하나라도 빠진 상태로
 다른 개발자에게 전달하면 실행 절차가 아니라 제목과 요약만 건네는 셈이다.
 
-그래서 Bluetape skill을 개인 머신 설정에서 분리해 설치 가능한 공개 묶음으로 정리했다.
+그래서 Bluetape 스킬을 개인 환경 설정에서 분리해 설치 가능한 공개 묶음으로 정리했다.
 
 - 저장소: [bluetape4k/bluetape-skills](https://github.com/bluetape4k/bluetape-skills)
-- 대상: Codex에서 사용하는 canonical Bluetape skill 14개
-- 제외: 개인 memory, local rule, hook, config, plugin cache, secret, retired alias
+- 대상: Codex에서 사용하는 정식 Bluetape 스킬 14개
+- 제외: 개인 메모리, 로컬 규칙, 훅, 설정, 플러그인 캐시, 비밀 정보, 폐기된 별칭
 
 이 글은 단순한 복사 방법보다, 무엇을 함께 배포해야 하고 무엇을 빼야 하는지에 초점을 둔다.
 
@@ -42,13 +42,13 @@ reference와 template, 검사 script, 그리고 확인 순서를 적어 둔 chec
 
 | 반복된 문제 | 개선한 방식 | 새로 추가한 장치 |
 | --- | --- | --- |
-| 긴 지침 중 일부를 agent가 건너뛰거나 완료 증거 없이 체크했다 | 실행 항목을 차단 가능한 checklist로 바꿨다 | `Action`, `Evidence`, `Failure`, dependency order, repair gate |
-| `bluetape4k-*` 이름이 Kotlin 전용처럼 보이고 다른 언어 skill의 범위가 모호했다 | workflow와 언어 이름을 분리했다 | `bluetape-*`, `bluetape-kotlin-patterns`, `bluetape-publish-jvm` |
-| blog 이름 때문에 README와 일반 문서 작업이 별도 영역처럼 보였다 | 작성 대상보다 역할을 이름에 반영했다 | `bluetape-writer` |
-| `SKILL.md`만 옮기고 reference나 검사 script를 빠뜨릴 수 있었다 | skill 디렉터리 전체를 배포 단위로 고정했다 | canonical 14개 allowlist와 `manifest.json` |
-| live `~/.codex/skills`만 고친 내용이 다음 apply에서 사라졌다 | chezmoi managed source를 먼저 고치게 했다 | targeted apply, source/live parity, self-audit |
-| 이름 변경 뒤 과거 문서와 GNO index가 이전 이름을 계속 반환했다 | 과거 기록을 억지로 다시 쓰지 않고 해석 계층을 뒀다 | retired alias와 migration mapping table |
-| 공개 export에 개인 경로나 runtime 파일이 섞일 수 있었다 | 공개 가능한 항목을 allowlist로 export하고 fail-closed 검증을 넣었다 | `validate.sh`, portable path, private/runtime exclusion |
+| 긴 지침 중 일부를 에이전트가 건너뛰거나 완료 증거 없이 확인했다 | 실행 항목을 다음 단계를 차단할 수 있는 체크리스트로 바꿨다 | `Action`, `Evidence`, `Failure`, 의존 순서, 복구 절차 |
+| `bluetape4k-*` 이름이 Kotlin 전용처럼 보이고 다른 언어 스킬의 범위가 모호했다 | 처리 흐름과 언어 이름을 분리했다 | `bluetape-*`, `bluetape-kotlin-patterns`, `bluetape-publish-jvm` |
+| `blog` 이름 때문에 README와 일반 문서 작업이 별도 영역처럼 보였다 | 작성 대상보다 역할을 이름에 반영했다 | `bluetape-writer` |
+| `SKILL.md`만 옮기고 참조 자료나 검사 스크립트를 빠뜨릴 수 있었다 | 스킬 디렉터리 전체를 배포 단위로 고정했다 | 정식 14개 허용 목록과 `manifest.json` |
+| 실제 `~/.codex/skills`만 고친 내용이 다음 적용에서 사라졌다 | chezmoi 관리 원본을 먼저 고치게 했다 | 대상별 적용, 원본과 실제 파일 일치, 자체 점검 |
+| 이름 변경 뒤 과거 문서와 GNO 색인이 이전 이름을 계속 반환했다 | 과거 기록을 다시 쓰지 않고 해석 계층을 뒀다 | 폐기된 별칭과 이전 이름 대응표 |
+| 공개 내보내기에 개인 경로나 런타임 파일이 섞일 수 있었다 | 공개 가능한 항목만 허용 목록으로 내보내고 실패 시 차단했다 | `validate.sh`, 이식 가능한 경로, 개인·런타임 항목 제외 |
 
 각 문제는 달라 보이지만 원인은 비슷했다. 사람은 "당연히 같이 옮길 것", "앞에서 이미 확인했을 것",
 "다음 apply에도 남을 것"이라고 생각한다. 하지만 자동화에서는 이런 암묵적인 전제가 가장 먼저 빠진다.
@@ -56,54 +56,54 @@ reference와 template, 검사 script, 그리고 확인 순서를 적어 둔 chec
 
 ## 지침을 길게 쓰는 것만으로는 누락을 막지 못했다
 
-초기 skill에도 해야 할 일은 적혀 있었다. 문제는 실행 항목이 설명문 안에 섞여 있으면 agent가 뒤 단계의
-성공을 앞 단계의 증거로 오해하기 쉽다는 점이었다. Build가 통과했다는 이유로 계획 승인, 영향 범위 확인,
-locale parity까지 모두 끝난 것처럼 보고하는 식이다.
+초기 스킬에도 해야 할 일은 적혀 있었다. 문제는 실행 항목이 설명문 안에 섞여 있으면 에이전트가 뒤 단계의
+성공을 앞 단계의 증거로 오해하기 쉽다는 점이었다. 빌드가 통과했다는 이유로 계획 승인, 영향 범위 확인,
+언어별 문서 일치까지 모두 끝난 것처럼 보고하는 식이다.
 
-그래서 checklist 항목마다 세 가지를 강제했다.
+그래서 체크리스트 항목마다 세 가지를 강제했다.
 
 ```text
 Action   -> 지금 실행할 한 가지 작업
-Evidence -> 통과를 증명할 command, file, URL, count
+Evidence -> 통과를 증명할 명령, 파일, URL, 개수
 Failure  -> 증거가 없거나 실패했을 때 멈추고 복구할 방법
 ```
 
 체크되지 않은 항목은 뒤따르는 단계를 막는다. `UNKNOWN`은 PASS가 아니며, `SKIPPED`도 허용하지 않는다.
 적용되지 않는 항목은 `N/A`라고만 쓰지 않고, 왜 적용되지 않는지 범위를 증명하는 근거를 남긴다. 이미 순서를
-건너뛰었다면 뒤 단계의 성공으로 덮지 않는다. 누락된 gate부터 복구한 뒤 영향을 받은 검증을 다시 실행한다.
+건너뛰었다면 뒤 단계의 성공으로 덮지 않는다. 누락된 검사부터 복구한 뒤 영향을 받은 검증을 다시 실행한다.
 
-이 checklist contract가 `$bluetape-workflow`와 각 세부 skill의 공통 기반이 됐다. Part 2에서 실제 실행
+이 체크리스트 계약이 `$bluetape-workflow`와 각 세부 스킬의 공통 기반이 됐다. Part 2에서 실제 실행
 순서를 더 자세히 설명한다.
 
-## 이름부터 canonical 기준으로 정리했다
+## 이름부터 정식 기준으로 정리했다
 
 처음에는 `bluetape4k-*`라는 이름이 많았다. 하지만 Kotlin/JVM이 아닌 Go, Python, Rust 작업에도 같은
-접두사가 붙으면 skill의 범위가 실제보다 좁아 보인다. 그래서 canonical 이름은 `bluetape-*`로 정리했다.
+접두사가 붙으면 스킬의 범위가 실제보다 좁아 보인다. 그래서 정식 이름은 `bluetape-*`로 정리했다.
 
 예를 들면 다음과 같다.
 
-| 이전 이름 | canonical 이름 | 역할 |
+| 이전 이름 | 정식 이름 | 역할 |
 | --- | --- | --- |
 | `bluetape4k-code-patterns` | `bluetape-kotlin-patterns` | Kotlin/JVM 구현과 검토 |
 | `bluetape4k-blog` | `bluetape-writer` | README, 블로그, 문서 현지화 |
-| `bluetape4k-publish` | `bluetape-publish-jvm` | JVM 라이브러리 publish |
-| `bluetape4k-workflow` | `bluetape-workflow` | 작업 분류와 workflow routing |
+| `bluetape4k-publish` | `bluetape-publish-jvm` | JVM 라이브러리 배포 |
+| `bluetape4k-workflow` | `bluetape-workflow` | 작업 분류와 처리 흐름 라우팅 |
 
-기존 이름은 개인 환경에 호환용 alias로만 남길 수 있다. 공개 묶음에는 새 이름만 넣었다. 새 문서나 자동화가
-retired 이름을 다시 퍼뜨리지 않도록 한 선택이다.
+기존 이름은 개인 환경에 호환용 별칭으로만 남길 수 있다. 공개 묶음에는 새 이름만 넣었다. 새 문서나 자동화가
+폐기된 이름을 다시 퍼뜨리지 않도록 한 선택이다.
 
-이전 이름을 한 번에 삭제하지 않은 데에도 이유가 있다. 이미 GNO에 index된 과거 plan, lesson, issue, PR,
-rollout log에는 당시 이름이 남아 있다. 이런 기록을 모두 다시 쓰면 실제 작성 시점의 역사까지 바뀐다. 대신
-매핑 표로 이전 이름과 canonical 이름을 연결하고, retired skill은 정확한 새 이름만 알려 주는 얇은
-forwarding alias로 남겼다.
+이전 이름을 한 번에 삭제하지 않은 데에도 이유가 있다. 이미 GNO에 색인된 과거 계획, 교훈, 이슈, PR,
+실행 기록에는 당시 이름이 남아 있다. 이런 기록을 모두 다시 쓰면 실제 작성 시점의 역사까지 바뀐다. 대신
+대응표로 이전 이름과 정식 이름을 연결하고, 폐기한 스킬은 정확한 새 이름만 알려 주는 얇은
+전달 별칭으로 남겼다.
 
-Alias에는 실제 reference를 복제하지 않았다. 같은 규칙이 canonical skill과 alias에서 서로 다르게 바뀌는
-일을 막기 위해서다. 현재 사용하는 지침은 새 이름으로 바꾸고, 과거 기록은 매핑 표로 해석한다. 모든 사용
-머신에 migration을 적용하고 일정 기간 이전 이름 호출이 없을 때 alias를 제거할 수 있다.
+별칭에는 실제 참조 자료를 복제하지 않았다. 같은 규칙이 정식 스킬과 별칭에서 서로 다르게 바뀌는 일을
+막기 위해서다. 현재 사용하는 지침은 새 이름으로 바꾸고, 과거 기록은 대응표로 해석한다. 모든 사용 환경에
+이전 작업을 적용하고 일정 기간 이전 이름 호출이 없을 때 별칭을 제거할 수 있다.
 
-## 배포 단위는 skill 디렉터리 전체다
+## 배포 단위는 스킬 디렉터리 전체다
 
-공개 저장소의 `skills/` 아래에는 canonical skill 14개가 있다. 각 디렉터리를 통째로 설치해야 한다.
+공개 저장소의 `skills/` 아래에는 정식 스킬 14개가 있다. 각 디렉터리를 통째로 설치해야 한다.
 
 ```text
 skills/
@@ -119,10 +119,10 @@ skills/
 
 이 구조는 두 가지 누락을 막는다.
 
-첫째는 `SKILL.md`가 가리키는 reference가 사라지는 문제다. Workflow gate나 writer의 한국어 문체
-checklist는 `SKILL.md`만 복사해서는 온전히 작동하지 않는다.
+첫째는 `SKILL.md`가 가리키는 참조 자료가 사라지는 문제다. 처리 흐름의 단계별 검사나 작성 스킬의 한국어 문체
+체크리스트는 `SKILL.md`만 복사해서는 온전히 작동하지 않는다.
 
-둘째는 실행 가능한 검사 도구가 빠지는 문제다. Diagram skill의 SVG audit처럼 규칙과 검증 script가 한 쌍인
+둘째는 실행 가능한 검사 도구가 빠지는 문제다. 다이어그램 스킬의 SVG 검사처럼 규칙과 검증 스크립트가 한 쌍인
 경우에는 둘 다 있어야 "다이어그램을 만들었다"에서 그치지 않고 "PNG까지 확인했다"고 말할 수 있다.
 
 ## 설치는 검증부터 시작한다
@@ -130,16 +130,17 @@ checklist는 `SKILL.md`만 복사해서는 온전히 작동하지 않는다.
 다른 개발자는 다음 명령으로 설치할 수 있다.
 
 ```bash
-git clone https://github.com/bluetape4k/bluetape-skills.git
+git clone --branch v1.2.1 --depth 1 \
+  https://github.com/bluetape4k/bluetape-skills.git
 cd bluetape-skills
 ./scripts/validate.sh
 ./scripts/install.sh
 ```
 
-`validate.sh`는 canonical skill 14개의 inventory와 front matter를 확인한다. memory, rules, hooks, `.system`,
-secret-like file, macOS metadata처럼 공개하면 안 되는 payload가 들어오면 실패한다.
+`validate.sh`는 정식 스킬 14개의 목록과 프런트매터를 확인한다. 메모리, 규칙, 훅, `.system`,
+비밀 정보로 보이는 파일, macOS 메타데이터처럼 공개하면 안 되는 항목이 들어오면 실패한다.
 
-`install.sh`는 기본적으로 `${CODEX_HOME:-~/.codex}/skills`에 설치한다. 이미 같은 이름의 skill이 있으면
+`install.sh`는 기본적으로 `${CODEX_HOME:-~/.codex}/skills`에 설치한다. 이미 같은 이름의 스킬이 있으면
 조용히 덮어쓰지 않는다. 실제 교체가 필요할 때만 다음처럼 쓴다.
 
 ```bash
@@ -147,22 +148,25 @@ secret-like file, macOS metadata처럼 공개하면 안 되는 payload가 들어
 ```
 
 기존 디렉터리는 타임스탬프가 붙은 백업 디렉터리로 먼저 옮긴다. 새 버전을 시험하다 문제가 생겨도 원래
-skill로 돌아갈 수 있게 하는 최소한의 안전장치다.
+스킬로 돌아갈 수 있게 하는 최소한의 안전장치다.
 
-업데이트도 같은 순서다.
+안정 버전을 갱신할 때는 새 태그를 별도 디렉터리에 받은 뒤 검증하고 교체한다.
 
 ```bash
-git pull --ff-only
+git clone --branch v1.2.1 --depth 1 \
+  https://github.com/bluetape4k/bluetape-skills.git bluetape-skills-v1.2.1
+cd bluetape-skills-v1.2.1
 ./scripts/validate.sh
 ./scripts/install.sh --force
 ```
 
-설치하거나 업데이트한 뒤에는 Codex를 다시 시작해야 새 skill을 인식한다.
+설치한 스킬은 새 Codex 런타임에서 인식되는지 확인한다. 기존 작업을 먼저 종료할 필요는 없으며,
+같은 작업 공간에서 별도 Codex 프로세스를 실행해 새 구성을 확인할 수 있다.
 
-## 사용할 때는 router 하나로 시작한다
+## 사용할 때는 라우터 하나로 시작한다
 
-여러 skill의 이름을 모두 외울 필요는 없다. Bluetape 생태계 작업이라면 `$bluetape-workflow`부터 호출한다.
-이 skill이 작업을 bugfix, fast track, full feature, maintenance처럼 분류하고 다음에 필요한 skill을 고른다.
+여러 스킬의 이름을 모두 외울 필요는 없다. Bluetape 생태계 작업이라면 `$bluetape-workflow`부터 호출한다.
+이 스킬이 작업을 버그 수정, 제한된 변경, 전체 기능, 유지보수로 분류하고 다음에 필요한 스킬을 고른다.
 
 ```text
 reproducible defect  -> $bluetape-bugfix
@@ -172,70 +176,70 @@ Kotlin/JVM work -> $bluetape-kotlin-patterns
 documentation -> $bluetape-writer
 ```
 
-이 routing은 모든 작업에 가장 무거운 절차를 적용하지 않도록 해 준다. README 문구 수정에는 release
-checklist가 필요 없다. 반대로 새 모듈이나 publish 작업을 가벼운 확인만으로 끝내서는 안 된다. Skill의 가치는
+이 라우팅은 모든 작업에 가장 무거운 절차를 적용하지 않도록 해 준다. README 문구 수정에는 릴리스
+체크리스트가 필요 없다. 반대로 새 모듈이나 배포 작업을 가벼운 확인만으로 끝내서는 안 된다. Skill의 가치는
 지침을 많이 적는 데 있지 않다. 작업 규모에 맞는 확인을 빠뜨리지 않게 하는 데 있다.
 
 ## 공개 묶음과 개인 설정의 경계
 
-개인 Codex 환경에는 업무 이력과 선호하는 도구, 로컬 hook, 다른 프로젝트의 규칙이 섞여 있다. 이를 그대로
+개인 Codex 환경에는 업무 이력과 선호하는 도구, 로컬 훅, 다른 프로젝트의 규칙이 섞여 있다. 이를 그대로
 공개하면 설치자에게 불필요한 정책까지 전달된다. 개인 정보나 운영 설정이 노출될 위험도 있다.
 
-그래서 공개 묶음에는 재사용할 수 있는 guidance만 담는다. 개인 memory와 hook은 설치하지 않고,
-`bluetape4k-*` alias도 포함하지 않는다. Alias는 기존 환경을 안전하게 옮기기 위한 장치이지, 새 환경에서
+그래서 공개 묶음에는 재사용할 수 있는 지침만 담는다. 개인 메모리와 훅은 설치하지 않고,
+`bluetape4k-*` 별칭도 포함하지 않는다. 별칭은 기존 환경을 안전하게 옮기기 위한 장치이지, 새 환경에서
 사용할 API가 아니다.
 
-반대로 canonical skill 안의 reference와 template은 함께 배포한다. 특정 사용자의 정보가 아니라 skill의
+반대로 정식 스킬 안의 참조 자료와 템플릿은 함께 배포한다. 특정 사용자의 정보가 아니라 스킬의
 실행 계약에 속하기 때문이다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape-skills-public-bundle-boundary-01-ko.png" alt="Canonical Skills Source에서 SKILL.md, references, templates, scripts와 manifest를 공개 bundle로 배포하고 개인 runtime 항목은 제외하는 경계" loading="lazy" />
-  <figcaption>공개 묶음은 skill 실행에 필요한 계약을 함께 배포하되, 개인 runtime과 호환용 alias는 경계 밖에 둔다.</figcaption>
+  <img src="/assets/bluetape-skills-public-bundle-boundary-01-ko.png" alt="정식 스킬 원본에서 SKILL.md, 참조 자료, 템플릿, 스크립트와 manifest를 공개 묶음으로 배포하고 개인 런타임 항목은 제외하는 경계" loading="lazy" />
+  <figcaption>공개 묶음은 스킬 실행에 필요한 계약을 함께 배포하되 개인 런타임과 호환용 별칭은 제외합니다.</figcaption>
 </figure>
 
-공개 export를 처음 검증할 때는 이식성을 해치는 문제가 두 가지 드러났다. macOS가 만든 `.DS_Store`가 skill
-디렉터리에 딸려 들어왔고, diagram reference 일부에는 특정 사용자의 `/Users/...` 절대 경로가 남아 있었다.
-Export 단계에서 `.DS_Store`를 제외하는 데서 끝내지 않고 validator에도 차단 규칙을 넣었다. 절대 경로는
+공개 내보내기를 처음 검증할 때는 이식성을 해치는 문제가 두 가지 드러났다. macOS가 만든 `.DS_Store`가 스킬
+디렉터리에 딸려 들어왔고, 다이어그램 참조 자료 일부에는 특정 사용자의 `/Users/...` 절대 경로가 남아 있었다.
+내보내기 단계에서 `.DS_Store`를 제외하는 데서 끝내지 않고 검증 도구에도 차단 규칙을 넣었다. 절대 경로는
 `CODEX_HOME`이나 `PATH`에서 찾을 수 있는 명령으로 바꿨다.
 
-이 경험 이후 "현재 머신에서 실행된다"와 "다른 개발자에게 배포할 수 있다"를 서로 다른 검증으로 보기
-시작했다. 공개 묶음은 canonical inventory, front matter, private/runtime directory, secret-like file,
-OS metadata를 따로 검사한다.
+이 경험 이후 "현재 환경에서 실행된다"와 "다른 개발자에게 배포할 수 있다"를 서로 다른 검증으로 보기
+시작했다. 공개 묶음은 정식 목록, 프런트매터, 개인·런타임 디렉터리, 비밀 정보로 보이는 파일,
+운영체제 메타데이터를 따로 검사한다.
 
-## Live 파일 수정에서 source-first 관리로 바꿨다
+## 실제 파일 수정에서 원본 우선 관리로 바꿨다
 
-Skill 개선 내용이 한 세션에서는 잘 동작하다가 다음 `chezmoi apply` 뒤에 사라지는 일이 있었다. 원인은
-단순했다. `~/.codex/skills`의 live 파일만 고치고 managed source에는 반영하지 않았기 때문이다.
+스킬 개선 내용이 한 세션에서는 잘 동작하다가 다음 `chezmoi apply` 뒤에 사라지는 일이 있었다. 원인은
+단순했다. `~/.codex/skills`의 실제 파일만 고치고 관리 원본에는 반영하지 않았기 때문이다.
 
-지금은 사용자 범위의 skill을 바꿀 때 다음 흐름 전체를 하나의 작업으로 본다.
+지금은 사용자 범위의 스킬을 바꿀 때 다음 흐름 전체를 하나의 작업으로 본다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape-skills-source-first-sync-01-ko.png" alt="관리 소스 수정에서 대상별 적용, source와 live 일치, 자체 점검, commit과 push, 공개 export, bundle 검증으로 이어지는 source-first 동기화 흐름" loading="lazy" />
-  <figcaption>Live 파일 하나의 성공이 아니라 managed source부터 공개 bundle 검증까지 이어지는 전체 경로를 동기화 단위로 본다.</figcaption>
+  <img src="/assets/bluetape-skills-source-first-sync-01-ko.png" alt="관리 원본 수정에서 대상별 적용, 원본과 실제 파일 일치, 자체 점검, 커밋과 푸시, 공개 내보내기, 묶음 검증으로 이어지는 동기화 흐름" loading="lazy" />
+  <figcaption>실제 파일 하나의 성공이 아니라 관리 원본부터 공개 묶음 검증까지 이어지는 전체 경로를 동기화 단위로 봅니다.</figcaption>
 </figure>
 
 여기서 `chezmoi apply` 한 번만으로 전체 동기화가 증명되지는 않는다. `config.toml`, hooks, `.system`
-skill처럼 소유권이 따로 있는 live 영역이 있기 때문이다. 변경 대상의 source와 target을 먼저 확인하고,
-실제로 바꾼 범위가 서로 일치하는지 증명한다.
+skill처럼 소유권이 따로 있는 실제 영역이 있기 때문이다. 변경 대상의 원본과 적용 대상을 먼저 확인하고,
+실제로 바꾼 범위가 서로 일치하는지 검증한다.
 
-공개 배포를 위해 `export-bluetape-skills`도 추가했다. 이 script는 `~/.codex` 전체를 무작정 복사하지 않는다.
-canonical 디렉터리 14개만 복사하고 retired alias, memory, rules, hooks, config, plugin cache는 export
+공개 배포를 위해 `export-bluetape-skills`도 추가했다. 이 스크립트는 `~/.codex` 전체를 무작정 복사하지 않는다.
+정식 디렉터리 14개만 복사하고 폐기된 별칭, 메모리, 규칙, 훅, 설정, 플러그인 캐시는 내보내기
 대상에서 뺀다.
 
 ## 다음 변경을 안전하게 공유하려면
 
-Skill을 수정할 때는 canonical source를 먼저 고치고, 공개 묶음으로 export한 뒤 검증한다. 공개 저장소의
-`skills/manifest.json`은 배포 대상 목록을 기계가 읽을 수 있는 형태로 제공한다. 이름을 바꾸거나 reference를
+스킬을 수정할 때는 정식 원본을 먼저 고치고, 공개 묶음으로 내보낸 뒤 검증한다. 공개 저장소의
+`skills/manifest.json`은 배포 대상 목록을 기계가 읽을 수 있는 형태로 제공한다. 이름을 바꾸거나 참조 자료를
 추가했다면 manifest와 installer, 두 README, 검증 결과를 함께 확인해야 한다.
 
-이 흐름은 조금 더디게 보일 수 있다. 하지만 다른 개발자가 설치한 뒤 reference 누락이나 개인 경로 때문에
-작업을 멈추는 것보다는 훨씬 비용이 적다. 공유 가능한 skill은 문장만 잘 쓴 지침이 아니다. 다른 머신에서도
+이 흐름에는 추가 검증 단계가 필요하다. 그러나 다른 개발자가 설치한 뒤 참조 자료 누락이나 개인 경로 때문에
+작업을 멈추는 비용을 줄일 수 있다. 공유 가능한 스킬은 문장만 잘 쓴 지침이 아니다. 다른 환경에서도
 같은 구조로 설치하고 검증하며 업데이트할 수 있는 지침이다.
 
 ## 다음 글
 
 설치 다음에는 실제 사용이 남는다. Part 2에서는 `$bluetape-workflow`가 요청을 어떻게 분류하는지 설명한다.
-첫 계획 승인 전에는 왜 파일을 고치지 않는지, Action·Evidence·Failure checklist가 다음 단계를 어떻게
+첫 계획 승인 전에는 왜 파일을 고치지 않는지, Action·Evidence·Failure 체크리스트가 다음 단계를 어떻게
 막거나 여는지도 살펴본다.
 
 ## 시리즈 글
@@ -245,6 +249,6 @@ Skill을 수정할 때는 canonical source를 먼저 고치고, 공개 묶음으
 - [Bluetape Skills Part 2: bluetape-workflow로 작업을 시작하는 방법](/ko/blog/bluetape-skills-workflow-guide/)
 - [Bluetape Skills Part 3: 중단된 workflow를 이어서 복구하는 방법](/ko/blog/bluetape-skills-workflow-runtime-recovery/)
 
-## Repository
+## 저장소
 
 - [bluetape4k/bluetape-skills](https://github.com/bluetape4k/bluetape-skills)

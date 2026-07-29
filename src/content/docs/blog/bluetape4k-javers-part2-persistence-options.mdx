@@ -1,6 +1,6 @@
 ---
 title: "Bluetape4k JaVers Part 2: Exposed, Redis, and Kafka Persistence"
-description: How to choose between the Exposed, Redis, and Kafka JaVers repositories in bluetape4k-javers.
+description: How to choose and compose the Exposed, Redis, and Kafka JaVers repositories in bluetape4k-javers.
 sidebar:
   order: -202606041430
 blog:
@@ -25,7 +25,7 @@ should those snapshots live?
 as interchangeable storage engines. Exposed is durable SQL history, Redis is a fast snapshot read
 path, and Kafka is a write-only event stream.
 
-<figure class="bt4k-architecture">
+<figure class="bt4k-architecture" data-diagram-title="JaVers persistence repository selection">
   <img src="/assets/bluetape4k-javers-part2-backend-selection-01-en.png" alt="Persistence role map from a JaVers commit to Exposed, Redis, and Kafka" loading="lazy" />
   <figcaption>Choose by repository role, not by module name.</figcaption>
 </figure>
@@ -39,7 +39,8 @@ Expecting one repository to do all three jobs usually makes the design blurry.
 
 `ExposedCdoSnapshotRepository` stores commit metadata and CDO snapshots through Exposed tables.
 It creates `CommitTable` and `CdoSnapshotTable`, then stores global id, commit id, version, type,
-encoded state, changed properties, and managed type.
+encoded state, changed properties, and managed type. Set `createSchemaOnEnsure = false` when an
+external migration tool owns schema creation.
 
 ```kotlin
 val snapshotRepository = ExposedCdoSnapshotRepository(database)
@@ -51,8 +52,10 @@ val javers = JaversBuilder.javers()
     .build()
 ```
 
-This is the natural choice when audit history should live with SQL operations, backups, and
-transaction boundaries.
+This is a good choice when audit history should use the same SQL backup and recovery system.
+Repository operations run inside Exposed `transaction {}` blocks. Application data changes and
+JaVers commits do not automatically become one distributed transaction, so the calling layer must
+still define the required transaction boundary.
 
 ## Redis
 
@@ -68,14 +71,21 @@ val javers = JaversBuilder.javers()
     .build()
 ```
 
-Redis works best as a fast snapshot read path. If durable history is elsewhere and readers need
-short history or latest-state lookup, Redis is a good fit.
+Redis is a good fit for short history and latest-state lookups. It can be the primary repository,
+but its AOF/RDB, replication, backup, and recovery objectives must satisfy the audit-retention
+requirements. Keeping SQL as the source of truth and Redis as an explicit projection or cache often
+makes operational ownership clearer.
+
+The Lettuce implementation groups snapshot writes, indexes, and commit sequence updates with
+`MULTI/EXEC`. It uses a dedicated write connection and a lock to prevent transaction commands from
+interleaving. The Redisson implementation can leave partial data across its data structures, so use
+Lettuce when commit-level atomicity inside Redis is required.
 
 ## Kafka
 
-`KafkaCdoSnapshotRepository` is intentionally write-only. `saveSnapshot` publishes the encoded
-snapshot to Kafka with the global id as the key. Read methods return empty, false, or zero, and the
-first read-path call logs a warning.
+`KafkaCdoSnapshotRepository` is intentionally write-only. `saveSnapshot` publishes a snapshot event
+to an explicitly configured topic or the `KafkaTemplate` default topic, using the global id as the
+record key. Read methods return empty, false, or zero, and the first read-path call logs a warning.
 
 ```kotlin
 val repo = KafkaCdoSnapshotRepository(kafkaTemplate)
@@ -88,42 +98,56 @@ javers.commit("system", order)
 
 That contract matters. Kafka is useful for downstream consumers, projections, and audit pipelines.
 It is not the repository that answers "give me the latest snapshot for this object." Pair it with
-Exposed or Redis when query reads are required.
+Exposed or Redis when query reads are required. Use `KafkaCdoSnapshotProjector` when Kafka records
+must be replayed into a read-capable repository.
 
 ## Combining Persistence Roles
 
-Production systems often need a combination rather than a single adapter. Exposed + Kafka is the
-obvious shape: keep queryable durable history in SQL and publish the same snapshot event to
-downstream consumers. Exposed + Redis is another common shape: SQL keeps durable history, while
-Redis serves hot latest/history reads.
+Production systems often need several roles. `CompositeCdoSnapshotRepository` accepts one primary
+repository as the read source of truth and an ordered list of secondary write targets. With Exposed
+as primary and Kafka as secondary, SQL remains queryable while the same commit is published as an
+event. Redis and Kafka can both be secondary targets when the service needs a read projection and
+an event stream.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-javers-part2-composition-map-01-en.png" alt="Diagram showing current Exposed, Redis, and Kafka adapters and the planned composite repository direction" loading="lazy" />
-  <figcaption>The current adapters are role-specific. Exposed + Kafka fan-out is planned as a future composite repository.</figcaption>
+<figure class="bt4k-architecture" data-diagram-title="Composite repository read and write paths">
+  <img src="/assets/bluetape4k-javers-part2-composition-map-01-en.png" alt="Composite repository delegating reads to the primary and forwarding writes to the primary and ordered secondaries" loading="lazy" />
+  <figcaption>Reads stay on the primary, while writes reach the primary before ordered secondary fan-out.</figcaption>
 </figure>
 
-Today `bluetape4k-javers` does not provide a first-class `CompositeCdoSnapshotRepository` that
-writes to Exposed and also fans out to Kafka. The design is feasible: delegate reads to a primary
-repository such as Exposed or Redis, then fan out writes to secondary repositories such as Kafka.
-The hard part is making the failure policy explicit. A Kafka publish failure might fail the whole
-commit, become a best-effort secondary write, or move into a retry path.
+```kotlin
+val repository = CompositeCdoSnapshotRepository(
+    primary = exposedRepository,
+    secondaryRepositories = listOf(
+        redisProjectionRepository,
+        kafkaRepository,
+    ),
+    options = CompositeCdoSnapshotRepositoryOptions(
+        writeFailurePolicy = CompositeCdoSnapshotFailurePolicy.FAIL_FAST,
+    ),
+)
+```
 
-So the article should keep current and planned behavior separate. Exposed, Redis, and Kafka are
-available today as individual adapters. Treat Exposed + Kafka as a planned capability until the
-composite repository is implemented.
+Reads delegate to the primary. Writes update the primary first, then invoke secondaries in order.
+The default `FAIL_FAST` policy stops at the first secondary failure. `BEST_EFFORT` attempts every
+secondary and then throws an aggregate exception. It does not ignore failures or provide retries.
+
+This is not a distributed transaction. A primary commit can already be visible when a secondary
+fails. Retry, duplicate-event handling, alerting, and recovery remain application responsibilities.
 
 ## Selection Table
 
 | Criterion | Exposed JDBC | Redis | Kafka |
 |---|---|---|---|
-| Main role | Durable snapshot history | Cache-friendly snapshot read | Snapshot event stream |
+| Main role | Durable snapshot history | Fast snapshot reads and projections | Snapshot event stream |
 | Reads | JaVers queries | Fast latest/history reads | Empty/false/zero |
 | Writes | Exposed transaction path | LIST/multimap plus indexes | Kafka publish acknowledgement |
 | Recovery | Database backup/restore | Redis persistence or rebuild policy | Consumer replay/projection policy |
+| Operational work | Database schema and capacity | Key, TTL, and persistence policy | Topics, consumers, and replay |
 | Best fit | Audit history with SQL operations | Read-heavy history/projection | Downstream audit/event pipeline |
 
-The easiest mistake is to use Kafka alone because it also says persistence. In this repository,
-Kafka is a stream adapter. It deliberately does not pretend to be a query store.
+Do not choose Kafka alone merely because the module sits under persistence. Kafka is a stream
+adapter, not a query store. Pair it with a read repository or use `KafkaCdoSnapshotProjector` to
+apply events to one.
 
 ## Source Links
 
@@ -132,12 +156,15 @@ Kafka is a stream adapter. It deliberately does not pretend to be a query store.
 - Lettuce repository: [`LettuceCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/LettuceCdoSnapshotRepository.kt)
 - Redisson repository: [`RedissonCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/RedissonCdoSnapshotRepository.kt)
 - Kafka repository: [`KafkaCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/repository/KafkaCdoSnapshotRepository.kt)
+- Composite repository: [`CompositeCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-core/src/main/kotlin/io/bluetape4k/javers/repository/composite/CompositeCdoSnapshotRepository.kt)
+- Kafka projector: [`KafkaCdoSnapshotProjector.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjector.kt)
 
 ## Closing
 
-Persistence choice in `bluetape4k-javers` is about role. Exposed keeps durable history near SQL,
-Redis serves fast snapshot reads, and Kafka streams snapshot events to other consumers. Choose the
-adapter by the question the application needs to answer.
+Persistence choice in `bluetape4k-javers` is about read, write, and recovery responsibilities.
+Exposed keeps durable history near SQL, Redis serves fast snapshot reads, and Kafka streams
+snapshot events to other consumers. When a service needs several roles, compose an explicit
+primary and ordered secondaries, then define recovery for partial secondary failure.
 
 ## Series Links
 

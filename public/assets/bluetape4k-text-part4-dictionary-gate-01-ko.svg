@@ -1,74 +1,43 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="680" viewBox="0 0 1600 680" role="img" aria-labelledby="title desc">
-  <title id="title">Dictionary update quality gate</title>
-  <desc id="desc">A horizontal flow from resource dictionary files through normalization and focused tests to release notes and application rollout.</desc>
-  <defs>
-    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#f8fafc"/>
-      <stop offset="1" stop-color="#e0f2fe"/>
-    </linearGradient>
-    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#2563eb"/>
-      <stop offset="1" stop-color="#0d9488"/>
-    </linearGradient>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#0f172a" flood-opacity="0.18"/>
-    </filter>
-    <style>
-      .title { font-family: "goorm Sans", sans-serif; font-size: 38px; fill: #0f172a; }
-      .body { font-family: "goorm Sans", sans-serif; font-size: 24px; fill: #334155; }
-      .small { font-family: "goorm Sans Code", monospace; font-size: 20px; fill: #475569; }
-      .light { font-family: "goorm Sans Code", monospace; font-size: 20px; fill: #f8fafc; }
-      .panel { fill: url(#panel); stroke: #0f172a; stroke-width: 4; }
-      .arrow { stroke: #2563eb; stroke-width: 7; stroke-linecap: round; }
-    </style>
-  </defs>
-  <rect width="1600" height="680" rx="0" fill="#f8fafc"/>
-  <rect x="70" y="60" width="1460" height="560" rx="36" fill="#dbeafe" opacity="0.42"/>
-  <text class="title" x="110" y="115">사전 업데이트 품질 게이트</text>
-  <text class="body" x="110" y="158">사전 파일 변경은 단순한 텍스트 수정이 아니라 동작 변경으로 다룹니다.</text>
-
-  <g transform="translate(110 235)" filter="url(#shadow)">
-    <rect class="panel" x="0" y="0" width="260" height="210" rx="28"/>
-    <rect x="34" y="38" width="70" height="82" rx="10" fill="#bfdbfe" stroke="#0f172a" stroke-width="4"/>
-    <rect x="80" y="52" width="70" height="82" rx="10" fill="#dbeafe" stroke="#0f172a" stroke-width="4"/>
-    <rect x="126" y="66" width="70" height="82" rx="10" fill="#f8fafc" stroke="#0f172a" stroke-width="4"/>
-    <text class="body" x="32" y="169">사전 리소스</text>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="760" viewBox="0 0 1600 760" role="img" aria-labelledby="title desc">
+  <title id="title">사전 변경을 동작 변경으로 검증한다</title><desc id="desc">사전 변경을 정규화하고 영향 범위 테스트로 검증한 뒤 릴리스 기록과 운영 반영 정책으로 이어지는 품질 게이트</desc>
+  <defs><marker id="arrow0" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L14 7 L0 14 Z" fill="#60A5FA"/></marker><marker id="arrow1" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L14 7 L0 14 Z" fill="#5EEAD4"/></marker><marker id="arrow2" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L14 7 L0 14 Z" fill="#F4B860"/></marker><marker id="arrow3" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L14 7 L0 14 Z" fill="#E07A7A"/></marker><marker id="arrow4" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L14 7 L0 14 Z" fill="#B794F4"/></marker></defs><style>
+    .canvas{fill:#07111F}.frame{fill:#0D1B2D;stroke:#38506A;stroke-width:2}
+    .lane{fill:#0A1727;stroke:#38506A;stroke-width:2}.card{fill:#10243A;stroke-width:2}
+    .title{font:700 42px "goorm Sans","Apple SD Gothic Neo",sans-serif;fill:#E6F2FF}
+    .subtitle,.lane-title,.body,.footer{font-family:"goorm Sans Code","goorm Sans",monospace;fill:#A9BDD1}
+    .subtitle{font-size:19px}.lane-title{font-size:17px;fill:#36C5F0}
+    .card-title{font:700 22px "goorm Sans","Apple SD Gothic Neo",sans-serif;fill:#E6F2FF}
+    .body{font-size:16px}.footer{font-size:15px}
+    .connector{fill:none;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+  </style>
+  <rect width="1600" height="760" class="canvas"/><rect x="30" y="30" width="1540" height="700" rx="30" class="frame"/>
+  <text x="70" y="104" class="title">사전 변경을 동작 변경으로 검증한다</text><text x="70" y="148" class="subtitle">정규화, 영향 범위 테스트, 재현 가능한 기록을 하나의 품질 게이트로 묶는다</text>
+  <rect x="50" y="205" width="1500" height="370" rx="28" class="lane"/>
+  <g data-card="사전 변경">
+    <rect x="70" y="255" width="300" height="265" rx="22" class="card" stroke="#60A5FA"/>
+    <circle cx="96" cy="285" r="7" fill="#60A5FA"/>
+    <text x="114" y="293" class="card-title">사전 변경</text>
+    <text x="96" y="339" class="body" text-anchor="start"><tspan x="96" dy="0">UTF-8 리소스</tspan><tspan x="96" dy="30">추가·삭제 항목 확인</tspan></text>
+  </g><g data-card="입력 정규화">
+    <rect x="455" y="255" width="300" height="265" rx="22" class="card" stroke="#36C5F0"/>
+    <circle cx="481" cy="285" r="7" fill="#36C5F0"/>
+    <text x="499" y="293" class="card-title">입력 정규화</text>
+    <text x="481" y="339" class="body" text-anchor="start"><tspan x="481" dy="0">공백·빈 줄 제거</tspan><tspan x="481" dy="30">중복 제거</tspan><tspan x="481" dy="30">의미가 없을 때만 정렬</tspan></text>
+  </g><g data-card="영향 범위 테스트">
+    <rect x="840" y="255" width="300" height="265" rx="22" class="card" stroke="#5EEAD4"/>
+    <circle cx="866" cy="285" r="7" fill="#5EEAD4"/>
+    <text x="884" y="293" class="card-title">영향 범위 테스트</text>
+    <text x="866" y="339" class="body" text-anchor="start"><tspan x="866" dy="0">공통 로더</tspan><tspan x="866" dy="30">한국어·일본어 사전</tspan><tspan x="866" dy="30">입력 안전 경계</tspan></text>
+  </g><g data-card="변경 기록">
+    <rect x="1225" y="255" width="305" height="265" rx="22" class="card" stroke="#F4B860"/>
+    <circle cx="1251" cy="285" r="7" fill="#F4B860"/>
+    <text x="1269" y="293" class="card-title">변경 기록</text>
+    <text x="1251" y="339" class="body" text-anchor="start"><tspan x="1251" dy="0">검증 명령</tspan><tspan x="1251" dy="30">릴리스 노트</tspan><tspan x="1251" dy="30">다중 인스턴스 반영 정책</tspan></text>
   </g>
-
-  <line class="arrow" x1="385" y1="340" x2="500" y2="340"/>
-  <path d="M500 340 l-26 -20 M500 340 l-26 20" fill="none" class="arrow"/>
-
-  <g transform="translate(520 235)" filter="url(#shadow)">
-    <rect class="panel" x="0" y="0" width="300" height="210" rx="28"/>
-    <circle cx="70" cy="74" r="28" fill="#22c55e" stroke="#0f172a" stroke-width="4"/>
-    <path d="M55 74 l12 12 l28 -31" fill="none" stroke="#052e16" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-    <text class="small" x="120" y="61">공백 제거</text>
-    <text class="small" x="120" y="91">중복 제거</text>
-    <text class="small" x="120" y="121">안전할 때 정렬</text>
-    <text class="body" x="38" y="169">입력 정규화</text>
-  </g>
-
-  <line class="arrow" x1="835" y1="340" x2="950" y2="340"/>
-  <path d="M950 340 l-26 -20 M950 340 l-26 20" fill="none" class="arrow"/>
-
-  <g transform="translate(970 235)" filter="url(#shadow)">
-    <rect class="panel" x="0" y="0" width="300" height="210" rx="28"/>
-    <rect x="42" y="42" width="216" height="86" rx="18" fill="#0f172a"/>
-    <text class="small" x="64" y="80" fill="#93c5fd">./gradlew test</text>
-    <text class="small" x="64" y="111" fill="#93c5fd">fixture 통과</text>
-    <text class="body" x="48" y="169">집중 테스트</text>
-  </g>
-
-  <line class="arrow" x1="1285" y1="340" x2="1365" y2="340"/>
-  <path d="M1365 340 l-26 -20 M1365 340 l-26 20" fill="none" class="arrow"/>
-
-  <g transform="translate(1385 235)" filter="url(#shadow)">
-    <rect class="panel" x="0" y="0" width="125" height="210" rx="28"/>
-    <circle cx="62" cy="76" r="34" fill="#dcfce7" stroke="#0f172a" stroke-width="4"/>
-    <path d="M47 75 l14 14 l32 -38" fill="none" stroke="#166534" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-    <text class="small" x="21" y="151">기록</text>
-    <text class="small" x="29" y="181">배포</text>
-  </g>
-
-  <text class="small" x="112" y="565">Core loader: DictionaryProvider | 한국어: KoreanDictionaryProvider | 일본어: JapaneseDictionaryProvider</text>
+  <path data-connector="change-normalize" d="M370 388 H455" class="connector" stroke="#60A5FA" marker-end="url(#arrow0)"/>
+  <path data-connector="normalize-test" d="M755 388 H840" class="connector" stroke="#5EEAD4" marker-end="url(#arrow1)"/>
+  <path data-connector="test-record" d="M1140 388 H1225" class="connector" stroke="#F4B860" marker-end="url(#arrow2)"/>
+  <rect x="90" y="614" width="1420" height="72" rx="18" fill="#0A1727" stroke="#B794F4" stroke-width="2"/>
+  <text x="800" y="657" text-anchor="middle" class="footer">런타임 추가 API는 현재 프로세스의 메모리만 바꿉니다. 영속화, 재시작 복구, 다중 인스턴스 전파는 서비스가 소유합니다.</text>
 </svg>

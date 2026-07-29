@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 900" width="1800" height="900">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 900" width="1800" height="900" role="img" aria-labelledby="title desc">
+  <title id="title">Run and lane recovery model</title>
+  <desc id="desc">A run owns the overall result while bounded lanes provide evidence, recovery, and replacement lineage.</desc>
   <style>
     .title { font-family: 'Architects Daughter', 'Comic Sans MS', cursive; fill: #f2f7ff; font-size: 38px; }
     .panel-title { font-family: 'Architects Daughter', 'Comic Sans MS', cursive; fill: #f2f7ff; font-size: 23px; }

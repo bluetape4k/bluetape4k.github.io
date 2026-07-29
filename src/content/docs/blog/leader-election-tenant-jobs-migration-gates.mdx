@@ -40,7 +40,7 @@ the conflicting work, not the server that happens to run it.
 - Tenant B may run beside Tenant A: `tenant-aggregator:metrics-tenant-B`
 - One schema migration must guard the whole cluster: `schema-v3`
 
-<figure class="bt4k-chart">
+<figure class="bt4k-chart" data-diagram-title="Coordination keys matched to work conflicts">
   <img src="/assets/leader-election-coordination-scope-01-en.png" alt="dark architecture diagram where Service Nodes A, B, and C use tenant A, tenant B, and global migration coordination keys to reach separate guarded state" loading="lazy" />
   <figcaption>The same key serializes work; different keys allow concurrency. A completion marker belongs to durable state, not lock ownership.</figcaption>
 </figure>
@@ -152,7 +152,7 @@ outcomes.count { it is Outcome.Migrated } shouldBeEqualTo 1
 outcomes.count { it is Outcome.AlreadyApplied } shouldBeEqualTo 2
 ```
 
-There is an important limit. The example's `ExposedJdbcLeaderElector` does not auto-extend its lease. If a migration runs
+There is an important limit. The example's `MigrationGate` does not enable `autoExtend`, so it does not auto-extend its lease. If a migration runs
 longer than `leaseTime`, another instance can acquire the same lock. The migration should therefore be idempotent, and the
 schema or data change should be committed with its completion marker in one transaction whenever possible. “A leader ran
 it” is not proof of exactly-once execution.
@@ -162,7 +162,7 @@ it” is not proof of exactly-once execution.
 A leased lock does not survive forever when its owner cannot release it. If Node A stops, Node B first receives a busy
 result. It can obtain ownership with a new token after the lease expires.
 
-<figure class="bt4k-chart">
+<figure class="bt4k-chart" data-diagram-title="Ownership takeover after lease expiry">
   <img src="/assets/leader-election-lease-failover-sequence-01-en.png" alt="dark sequence diagram where Node A owns a lease and fails before Node B takes over with a new token after expiry" loading="lazy" />
   <figcaption>Lease expiry opens the door for a successor. It does not remove side effects created by the previous owner.</figcaption>
 </figure>
@@ -271,10 +271,11 @@ key, handling for work longer than the lease, durable markers, idempotency, and 
 matrix, write down which jobs must not overlap and what must remain durable after a failure. The implementation choices then
 become much more concrete.
 
-This article stops at identifying those boundaries. Follow-up work is tracked in
-[`bluetape4k-workshop` issue #548](https://github.com/bluetape4k/bluetape4k-workshop/issues/548). The issue will turn
-cross-job collisions, lease-overrun duplication, dynamic tenant membership, network partitions, mixed-version rollouts,
-and duplicate external side effects into executable examples.
+This article stops at identifying those boundaries. The follow-up requirements were recorded in
+[`bluetape4k-workshop` issue #548](https://github.com/bluetape4k/bluetape4k-workshop/issues/548). That issue is now
+closed, and the proposed integration lab is not present in the repository. Cross-job collisions, lease-overrun
+duplication, dynamic tenant membership, network partitions, mixed-version rollouts, and duplicate external side effects
+therefore remain boundaries that require separate validation.
 
 ## Sources
 

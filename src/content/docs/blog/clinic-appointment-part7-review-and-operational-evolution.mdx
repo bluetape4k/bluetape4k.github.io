@@ -156,7 +156,7 @@ boundaries in several areas.
 
 | Priority | Incomplete boundary | Next step |
 |---|---|---|
-| 1. Booking integrity | Races between slot lookup and creation, plus replayed requests | Make availability validation and persistence atomic; design the database lock or constraint strategy together with an idempotency key |
+| 1. Booking integrity | Capacity races between slot lookup and creation | Make availability validation and persistence atomic; serialize concurrent writes with a database lock or constraint strategy |
 | 2. Event delivery | In-process events do not survive every process failure after a database commit | Add a transactional outbox, event IDs and schema versions, consumer deduplication, retries, dead letters, and reconciliation |
 | 3. Operability | Logs alone cannot reconstruct one flow from patient request to notification provider | Connect SLOs and trace/correlation IDs to conflict rate, delivery success and latency, leader changes, and solver duration and score |
 | 4. Patient workflow | An administrator-oriented flow does not cover the real experience after self-service booking | Define patient authentication and portal, waitlists, no-show recovery, notification consent, accessibility, localization, and data-retention policy |
@@ -164,11 +164,14 @@ boundaries in several areas.
 
 The first item comes before feature growth. The current
 [AppointmentService.create()](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/service/AppointmentService.kt)
-constructs an `AppointmentRecord` from the request and saves it. If two clients have both observed “one slot remaining,”
+now returns the original appointment when the same `Idempotency-Key` and request body are replayed, and rejects a different
+request that reuses the key. It stores the appointment and idempotency record in one transaction, then recovers concurrent
+unique-key conflicts by rereading the committed record. Network-retry idempotency is therefore an implemented boundary.
+
+Capacity integrity remains separate. If two distinct requests have both observed “one slot remaining,”
 the earlier lookup cannot decide which concurrent write owns that capacity. A rule such as `resolveMaxConcurrent()` chooses
 the allowed quantity; it does not serialize competing writes. The server needs to revalidate availability and persist in
-one transaction, translate conflicts into a consistent 409 response, and return the same outcome when a network retry
-replays the same request.
+one transaction and translate conflicts into a consistent 409 response.
 
 Adding a broker alone does not solve event delivery either. A database commit can succeed while event publication fails,
 creating a dual-write gap. Writing an outbox record in the appointment transaction and making publishers and consumers
@@ -209,7 +212,7 @@ closes here; the next cycle has already begun with real operational evidence.
 - [Tenant access checker](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/tenant/TenantClinicAccessChecker.kt): Validates tenant, clinic, doctor, treatment, and equipment as one boundary.
 - [Reminder scheduler](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-notification/src/main/kotlin/io/bluetape4k/clinic/appointment/notification/AppointmentReminderScheduler.kt): Uses Redis leader election and notification history to reduce duplicates.
 - [Resilient notification channel](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-notification/src/main/kotlin/io/bluetape4k/clinic/appointment/notification/ResilientNotificationChannel.kt): Isolates external calls with CircuitBreaker, Retry, and Bulkhead.
-- [Appointment creation service](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/service/AppointmentService.kt): Shows the current persistence and event-publication boundaries that future integrity and outbox work must strengthen.
+- [Appointment creation service](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/service/AppointmentService.kt): Shows implemented idempotent request persistence and recovery alongside the remaining capacity race.
 - [Project backlog](https://github.com/bluetape4k/clinic-appointment/blob/develop/TODO.md): Tracks follow-up candidates including the patient portal and asynchronous messaging.
 - [Timefold Solver 2 migration lesson](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/lessons/2026-05-20-timefold-solver-2-consumer.md): Records verification used to preserve solver meaning across API changes.
 - [Solver benchmark report](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/solver-benchmark-report.md): Keeps environment, input scale, score, and time together as a local baseline.

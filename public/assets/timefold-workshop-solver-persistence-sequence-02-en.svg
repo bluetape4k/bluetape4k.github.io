@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="3200" height="1650" viewBox="0 0 3200 1650" role="img" aria-labelledby="title desc">
-  <title id="title">Interactions across optimization execution, persistence, and approval boundaries</title>
-  <desc id="desc">A card-and-connector map of an operator, optimization API, job service, SolverManager, Solver, candidate solution store, job store, approval service, and business data.</desc>
+  <title id="title">Reference design for optimization execution, persistence, and approval boundaries</title>
+  <desc id="desc">An application reference design, not the current workshop implementation, connecting an operator, optimization API, job service, SolverManager, Solver, candidate solution store, job store, approval service, and business data.</desc>
   <defs>
     <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#07101f"/>
@@ -48,8 +48,8 @@
 
   <rect width="3200" height="1650" rx="34" fill="url(#canvas)"/>
   <rect class="frame" x="28" y="28" width="3144" height="1594" rx="30"/>
-  <text class="title" x="1600" y="86" text-anchor="middle">An Optimization Service Connects Execution, Persistence, and Approval</text>
-  <text class="subtitle" x="1600" y="124" text-anchor="middle">Connectors show requests, data, and callbacks crossing component responsibility boundaries.</text>
+  <text class="title" x="1600" y="86" text-anchor="middle">Reference Design for Optimization Execution, Persistence, and Approval</text>
+  <text class="subtitle" x="1600" y="124" text-anchor="middle">This is not the current workshop implementation; connectors show requests, data, and callbacks crossing responsibility boundaries.</text>
 
   <rect class="zone" x="70" y="165" width="3060" height="410" rx="26"/>
   <text class="zoneTitle" x="105" y="204">REQUEST AND OPTIMIZATION EXECUTION</text>

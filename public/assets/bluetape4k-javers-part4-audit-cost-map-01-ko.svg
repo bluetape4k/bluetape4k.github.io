@@ -36,7 +36,7 @@
   <rect width="1600" height="980" rx="32" fill="url(#canvas)" />
   <rect x="28" y="28" width="1544" height="924" rx="28" fill="none" stroke="#263a5e" stroke-width="2" />
   <text class="title" x="800" y="78" text-anchor="middle">감사 이력은 어디에서 비용을 만드는가</text>
-  <text class="subtitle" x="800" y="114" text-anchor="middle">원본 저장 · commit metadata · snapshot · 결합 조회를 하나의 비용 경계로 봅니다.</text>
+  <text class="subtitle" x="800" y="114" text-anchor="middle">원본 저장 · 커밋 메타데이터 · 스냅숏 · 결합 조회를 하나의 비용 경계로 봅니다.</text>
 
   <path class="connector cyan" data-connector="change-source" d="M 700 260 V 300 Q 700 316 684 316 H 370 Q 350 316 350 336 V 360" />
   <path class="connector purple" data-connector="change-commit" d="M 900 260 V 300 Q 900 316 916 316 H 1230 Q 1250 316 1250 336 V 360" />
@@ -54,43 +54,43 @@
   <g filter="url(#shadow)" aria-label="원본 상태 저장">
     <rect x="90" y="360" width="520" height="200" rx="24" fill="#102b3e" stroke="#58a6c9" stroke-width="2" />
     <text class="card-title" x="130" y="405">원본 상태 저장</text>
-    <text class="body" x="130" y="445">업무 table에 현재 aggregate를 저장</text>
-    <text class="body" x="130" y="477">source of truth의 transaction을 책임</text>
+    <text class="body" x="130" y="445">업무 테이블에 현재 애그리거트를 저장</text>
+    <text class="body" x="130" y="477">원본 데이터의 트랜잭션을 책임</text>
     <rect x="130" y="505" width="160" height="34" rx="12" fill="#153f55" stroke="#58a6c9" />
     <text class="chip" x="210" y="528" text-anchor="middle">쓰기 지연</text>
     <rect x="310" y="505" width="200" height="34" rx="12" fill="#153f55" stroke="#58a6c9" />
-    <text class="chip" x="410" y="528" text-anchor="middle">transaction 경계</text>
+    <text class="chip" x="410" y="528" text-anchor="middle">트랜잭션 경계</text>
   </g>
 
-  <g filter="url(#shadow)" aria-label="JaVers commit">
+  <g filter="url(#shadow)" aria-label="JaVers 커밋">
     <rect x="990" y="360" width="520" height="200" rx="24" fill="#241d45" stroke="#a78bfa" stroke-width="2" />
-    <text class="card-title" x="1030" y="405">JaVers commit</text>
-    <text class="body" x="1030" y="445">객체 diff를 계산하고 감사 commit을 생성</text>
-    <text class="body" x="1030" y="477">commit metadata와 snapshot 저장을 요청</text>
+    <text class="card-title" x="1030" y="405">JaVers 커밋</text>
+    <text class="body" x="1030" y="445">객체 변경 차이를 계산하고 감사 커밋을 생성</text>
+    <text class="body" x="1030" y="477">커밋 메타데이터와 스냅숏 저장을 요청</text>
     <rect x="1030" y="505" width="170" height="34" rx="12" fill="#34275d" stroke="#a78bfa" />
-    <text class="chip" x="1115" y="528" text-anchor="middle">diff 계산</text>
+    <text class="chip" x="1115" y="528" text-anchor="middle">변경 차이 계산</text>
     <rect x="1220" y="505" width="220" height="34" rx="12" fill="#34275d" stroke="#a78bfa" />
     <text class="chip" x="1330" y="528" text-anchor="middle">직렬화와 저장</text>
   </g>
 
-  <g filter="url(#shadow)" aria-label="commit metadata">
+  <g filter="url(#shadow)" aria-label="커밋 메타데이터">
     <rect x="770" y="640" width="380" height="150" rx="22" fill="#252143" stroke="#a78bfa" stroke-width="2" />
-    <text class="card-title" x="810" y="682">commit metadata</text>
-    <text class="body" x="810" y="720">author · commit date · properties</text>
-    <text class="small" x="810" y="752">작성자·기간 조회와 index 선택</text>
+    <text class="card-title" x="810" y="682">커밋 메타데이터</text>
+    <text class="body" x="810" y="720">작성자 · 커밋 시각 · 속성</text>
+    <text class="small" x="810" y="752">작성자·기간 조회와 인덱스 선택</text>
   </g>
 
-  <g filter="url(#shadow)" aria-label="snapshot">
+  <g filter="url(#shadow)" aria-label="스냅숏">
     <rect x="1260" y="640" width="290" height="150" rx="22" fill="#252143" stroke="#a78bfa" stroke-width="2" />
-    <text class="card-title" x="1300" y="682">snapshot</text>
-    <text class="body" x="1300" y="720">전체 state · version · type</text>
+    <text class="card-title" x="1300" y="682">스냅숏</text>
+    <text class="body" x="1300" y="720">전체 상태 · 버전 · 유형</text>
     <text class="small" x="1300" y="752">변경 빈도와 보존량</text>
   </g>
 
   <g filter="url(#shadow)" aria-label="감사 이력 조회">
     <rect x="590" y="866" width="670" height="78" rx="20" fill="#17342f" stroke="#82b366" stroke-width="2" />
     <text class="card-title" x="925" y="900" text-anchor="middle">감사 이력 조회</text>
-    <text class="small" x="925" y="927" text-anchor="middle">metadata 결합 · 조건 pushdown · commit 순서 역정렬 · snapshot 복원</text>
+    <text class="small" x="925" y="927" text-anchor="middle">메타데이터 결합 · 조건 푸시다운 · 커밋 역순 정렬 · 스냅숏 복원</text>
   </g>
 
   <circle cx="110" cy="920" r="7" fill="#58a6c9" />

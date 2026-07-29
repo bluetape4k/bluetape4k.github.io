@@ -1,40 +1,40 @@
 ---
-title: "Bluetape4k Exposed Part 2: JDBC repository와 SQL DSL"
-description: Exposed JDBC를 쓰면서 왜 repository 경계를 만들었고, SQL DSL은 어디까지 그대로 보이게 두었는지 설명한다.
+title: "Bluetape4k Exposed Part 2: JDBC 저장소와 SQL DSL"
+description: Exposed JDBC를 쓰면서 왜 저장소 경계를 만들었고, SQL DSL은 어디까지 그대로 보이게 두었는지 설명한다.
 sidebar:
   order: -202605311102
 blog:
   date: 2026-05-31T11:02:00+09:00
   image: /assets/bluetape4k-exposed-part2-hero.png
-  imageAlt: Exposed workshop 작업대에서 작은 로봇 작업자들이 PostgreSQL, SQL DSL, repository 블록을 다루는 3D diorama
-  cardDescription: "SQL DSL은 숨기지 말고, 반복되는 repository 경계만 줄인다."
+  imageAlt: Exposed 워크숍 작업대에서 작은 로봇 작업자들이 PostgreSQL, SQL DSL, 저장소 블록을 다루는 3D diorama
+  cardDescription: "SQL DSL은 숨기지 말고, 반복되는 저장소 경계만 줄인다."
   tags: ["exposed","jdbc","kotlin","persistence"]
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/bluetape4k-exposed-part2-hero.png" alt="Exposed workshop 작업대에서 작은 로봇 작업자들이 PostgreSQL, SQL DSL, repository 블록을 다루는 3D diorama" loading="eager" />
+  <img src="/assets/bluetape4k-exposed-part2-hero.png" alt="Exposed 워크숍 작업대에서 작은 로봇 작업자들이 PostgreSQL, SQL DSL, 저장소 블록을 다루는 3D diorama" loading="eager" />
   <figcaption>SQL을 없애려 하지 말고, 문자열 SQL이 만들던 실수를 줄이는 쪽이 더 오래 갑니다.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-31 · bluetape4k-exposed series · Part 2</p>
 
-Part 1에서는 왜 Exposed를 선택했는지 봤습니다. 이제 JDBC 쪽 이야기를 보겠습니다. Exposed DSL만으로도 query는
-충분히 작성할 수 있습니다. 그런데 실제 서비스에서는 단건 조회, paging, soft-delete, audit update 같은 코드가
+Part 1에서는 왜 Exposed를 선택했는지 봤습니다. 이제 JDBC 쪽 이야기를 보겠습니다. Exposed DSL만으로도 쿼리는
+충분히 작성할 수 있습니다. 그런데 실제 서비스에서는 단건 조회, 페이징, 소프트 삭제, 감사 갱신 같은 코드가
 테이블마다 반복됩니다.
 
 `exposed-jdbc`를 만든 이유는 SQL DSL을 감추기 위해서가 아닙니다. Exposed의 장점은 SQL을 Kotlin 코드로 명시적으로
 작성할 수 있다는 점입니다. `JdbcRepository`는 그 장점을 없애는 층이 아니라, 제가 서비스마다 반복해서 만들던 `findById`,
-`findPage`, soft-delete, mapper, virtual thread transaction 같은 주변 코드를 줄이는 층입니다.
+`findPage`, 소프트 삭제, 매퍼, 가상 스레드 트랜잭션 같은 주변 코드를 줄이는 층입니다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/bluetape4k-exposed-part2-jdbc-repository-flow-ko.png" alt="Service method에서 Exposed DSL, JdbcRepository, ResultRow mapper, virtual thread transaction을 거쳐 database로 가는 JDBC repository flow" loading="lazy" />
-  <figcaption>Service는 transaction 경계와 domain intent를 잡고, repository는 반복 query shape와 mapping을 줄입니다.</figcaption>
+  <img src="/assets/bluetape4k-exposed-part2-jdbc-repository-flow-ko.png" alt="서비스 메서드에서 Exposed DSL, JdbcRepository, ResultRow 매퍼, 가상 스레드 트랜잭션을 거쳐 데이터베이스로 가는 JDBC 저장소 흐름" loading="lazy" />
+  <figcaption>서비스는 트랜잭션 경계와 도메인 의도를 잡고, 저장소는 반복되는 쿼리 형태와 매핑을 줄입니다.</figcaption>
 </figure>
 
 ## SQL DSL은 그대로 보이게 둔다
 
 제가 Exposed JDBC에서 가장 중요하게 보는 지점은 SQL 모양이 코드에 남는다는 점입니다. SQL을 문자열로 쓰면 오탈자나
-parameter 순서 실수를 실행할 때야 알게 됩니다. Exposed DSL은 같은 SQL을 Kotlin 타입 시스템 안에서 조립합니다.
+매개변수 순서 실수를 실행할 때야 알게 됩니다. Exposed DSL은 같은 SQL을 Kotlin 타입 시스템 안에서 조립합니다.
 
 ```kotlin
 val rows = Users
@@ -48,18 +48,18 @@ val rows = Users
 ```
 
 이 코드는 SQL을 모르는 척하지 않습니다. `join`, `select`, `where`, `orderBy`가 그대로 보입니다.
-대신 컬럼과 타입이 코드로 남습니다. MyBatis XML이나 문자열 SQL에서 흔히 보던 오탈자, 컬럼명 drift,
-parameter 순서 실수는 줄어듭니다.
+대신 컬럼과 타입이 코드로 남습니다. MyBatis XML이나 문자열 SQL에서 흔히 보던 오탈자, 컬럼명 불일치,
+매개변수 순서 실수는 줄어듭니다.
 
-그래서 저는 모든 query를 repository method로 숨기지 않습니다. 복잡한 query는 SQL 모양이 보이는 편이 낫습니다.
-repository는 반복되는 작은 query와 일관된 paging/soft-delete 규칙을 맡는 정도가 좋습니다. 이 선을 넘기 시작하면
-repository가 어느 순간 또 하나의 query language가 됩니다.
+그래서 저는 모든 쿼리를 저장소 메서드로 숨기지 않습니다. 복잡한 쿼리는 SQL 모양이 보이는 편이 낫습니다.
+저장소는 반복되는 작은 쿼리와 일관된 페이징/소프트 삭제 규칙을 맡는 정도가 좋습니다. 이 선을 넘기 시작하면
+저장소가 어느 순간 또 하나의 쿼리 언어가 됩니다.
 
 ## JdbcRepository가 줄이는 반복
 
-제가 repository에 넣고 싶었던 것은 거창한 domain abstraction이 아닙니다. 기본 형태는 단순합니다.
+제가 저장소에 넣고 싶었던 것은 거창한 도메인 추상화가 아닙니다. 기본 형태는 단순합니다.
 `LongJdbcRepository<UserTable, UserRecord>`를 구현하고, 테이블과 `ResultRow.toEntity()`만 제공합니다.
-이렇게 하면 단건 조회와 paging helper를 바로 씁니다.
+이렇게 하면 단건 조회와 페이징 보조 기능을 바로 씁니다.
 
 ```kotlin
 data class UserRecord(
@@ -84,22 +84,22 @@ class UserRepository : LongJdbcRepository<UserTable, UserRecord> {
 }
 ```
 
-이 정도 abstraction이면 충분히 얇습니다. SQL DSL을 못 보게 만드는 repository가 아니라, 같은 mapping과 paging 코드를
+이 정도 추상화면 충분히 얇습니다. SQL DSL을 못 보게 만드는 저장소가 아니라, 같은 매핑과 페이징 코드를
 반복하지 않게 하려는 장치입니다. 제가 필요하다고 느낀 것도 바로 이 정도였습니다.
 
-| 기능 | 왜 repository에 둘 만한가 |
+| 기능 | 왜 저장소에 둘 만한가 |
 |---|---|
-| `findById` | primary key 단건 조회는 거의 모든 table에서 반복됩니다 |
-| `findPage` | page number, page size, total count 계산이 반복됩니다 |
-| soft delete | `isDeleted=false` 조건을 빠뜨리면 운영 사고가 됩니다 |
-| audit update | `updatedAt`, `updatedBy` 같은 column은 규칙으로 묶는 편이 안전합니다 |
-| batch insert/upsert | DB별 차이가 query마다 흩어지는 것을 막습니다 |
+| `findById` | 기본 키 단건 조회는 거의 모든 테이블에서 반복됩니다 |
+| `findPage` | 페이지 번호, 페이지 크기, 전체 개수 계산이 반복됩니다 |
+| 소프트 삭제 | `isDeleted=false` 조건을 빠뜨리면 운영 사고가 됩니다 |
+| 감사 갱신 | `updatedAt`, `updatedBy` 같은 컬럼은 규칙으로 묶는 편이 안전합니다 |
+| 배치 삽입/upsert | DB별 차이가 쿼리마다 흩어지는 것을 막습니다 |
 
 ## 트랜잭션 경계는 숨기지 않는다
 
-JDBC를 쓸 때 제가 가장 조심하는 부분은 transaction 경계입니다. Repository는 보통 애플리케이션 시작 시 만들거나
-DI container가 주입합니다. 매 transaction 안에서 새로 만들 필요는 없습니다. Exposed는 `transaction { ... }`
-블록 안에서 query를 실행합니다.
+JDBC를 쓸 때 제가 가장 조심하는 부분은 트랜잭션 경계입니다. 저장소는 보통 애플리케이션 시작 시 만들거나
+DI 컨테이너가 주입합니다. 매 트랜잭션 안에서 새로 만들 필요는 없습니다. Exposed는 `transaction { ... }`
+블록 안에서 쿼리를 실행합니다.
 
 ```kotlin
 val repo = UserRepository()
@@ -112,14 +112,14 @@ transaction {
 }
 ```
 
-Spring `@Transactional`을 쓰는 서비스라면 Spring transaction 경계와 Exposed `Database` 연결이 어떻게 묶이는지
-명확해야 합니다. transaction이 어디서 시작되고, 어떤 connection을 잡고, schema/routing이 언제 결정되는지
-모르면 멀티테넌시나 read/write routing에서 바로 흔들립니다.
+Spring `@Transactional`을 쓰는 서비스라면 Spring 트랜잭션 경계와 Exposed `Database` 연결이 어떻게 묶이는지
+명확해야 합니다. 트랜잭션이 어디서 시작되고, 어떤 커넥션을 잡고, 스키마/라우팅이 언제 결정되는지
+모르면 멀티테넌시나 읽기/쓰기 라우팅에서 바로 흔들립니다.
 
-## Virtual Thread 트랜잭션
+## 가상 스레드 트랜잭션
 
-blocking JDBC를 계속 쓰려면 대기 비용도 봐야 합니다. 그래서 `exposed-jdbc`에는 JDK 21+ Virtual Thread 기반
-transaction helper를 넣었습니다.
+블로킹 JDBC를 계속 쓰려면 대기 비용도 봐야 합니다. 그래서 `exposed-jdbc`에는 JDK 21+ 가상 스레드 기반
+트랜잭션 보조 기능을 넣었습니다.
 
 ```kotlin
 val count = newVirtualThreadJdbcTransaction {
@@ -135,17 +135,17 @@ val futures = List(10) { index ->
 val results = futures.awaitAll()
 ```
 
-이 패턴은 JDBC driver를 그대로 씁니다. blocking 호출은 남아 있지만, 대기하는 작업이 비싼 platform thread를
-오래 붙잡지 않게 합니다. Part 1에서 본 벤치마크처럼, I/O 대기가 많은 JDBC workload에서 효과가 큽니다.
+이 패턴은 JDBC 드라이버를 그대로 씁니다. 블로킹 호출은 남아 있지만, 대기하는 작업이 비싼 플랫폼 스레드를
+오래 붙잡지 않게 합니다. Part 1에서 본 벤치마크처럼, I/O 대기가 많은 JDBC 워크로드에서 효과가 큽니다.
 
-단, Virtual Threads가 transaction 설계를 대신해 주지는 않습니다. connection pool 크기, DB server capacity,
-index, lock 경합은 그대로 봐야 합니다. 실제 병목은 오히려 이쪽에서 더 자주 나옵니다. 스레드가 싸졌다고 DB 처리량이
+단, 가상 스레드가 트랜잭션 설계를 대신해 주지는 않습니다. 커넥션 풀 크기, DB 서버 처리 용량,
+인덱스, 잠금 경합은 그대로 봐야 합니다. 실제 병목은 오히려 이쪽에서 더 자주 나옵니다. 스레드가 싸졌다고 DB 처리량이
 자동으로 늘어나는 것은 아닙니다.
 
 ## JdbcRepository 예제를 조금 더 보면
 
-제가 실제 서비스 코드에서 더 자주 필요했던 것은 CTE보다 단건 조회, 페이징, 배치 저장, soft-delete, audit helper였습니다.
-아래 예제처럼 repository는 transaction 안에서 사용하고, repository 객체 자체는 바깥에서 준비해 둡니다.
+제가 실제 서비스 코드에서 더 자주 필요했던 것은 CTE보다 단건 조회, 페이징, 배치 저장, 소프트 삭제, 감사 보조 기능이었습니다.
+아래 예제처럼 저장소는 트랜잭션 안에서 사용하고, 저장소 객체 자체는 바깥에서 준비해 둡니다.
 
 ```kotlin
 val repo = UserRepository()
@@ -167,7 +167,7 @@ transaction {
 }
 ```
 
-soft-delete repository에서는 삭제를 `DELETE`가 아니라 상태 전환으로 처리합니다.
+소프트 삭제 저장소에서는 삭제를 `DELETE`가 아니라 상태 전환으로 처리합니다.
 
 ```kotlin
 val repo = PostRepository()
@@ -182,7 +182,7 @@ transaction {
 }
 ```
 
-audit repository는 수정 시점과 수정자를 쿼리마다 직접 넣지 않게 해줍니다.
+감사 저장소는 수정 시점과 수정자를 쿼리마다 직접 넣지 않게 해줍니다.
 
 ```kotlin
 val repo = ArticleRepository()
@@ -197,46 +197,46 @@ transaction {
 ```
 
 물론 `exposed-jdbc`에는 PostgreSQL/MySQL `WITH`, `WITH RECURSIVE`를 위한 `withCte()`도 넣었습니다. 다만
-일반 서비스 코드에서는 CTE를 repository method명으로 숨기기보다 SQL DSL을 그대로 보여주는 편이 낫습니다.
-복잡한 query 이름이 설명문처럼 길어지는 순간, repository는 SQL을 다시 발명하고 있는 중입니다.
+일반 서비스 코드에서는 CTE를 저장소 메서드명으로 숨기기보다 SQL DSL을 그대로 보여주는 편이 낫습니다.
+복잡한 쿼리 이름이 설명문처럼 길어지는 순간, 저장소는 SQL을 다시 발명하고 있는 중입니다.
 
 ## 워크숍 코드를 볼 때
 
-JDBC repository는 작은 예제로 보면 너무 쉬워 보입니다. 제가 워크숍에 여러 실행 모델을 둔 이유는 repository가
-Spring transaction, Virtual Threads, cache, routing과 만났을 때 어디까지 경계를 지키는지 보려는 것입니다.
+JDBC 저장소는 작은 예제로 보면 너무 쉬워 보입니다. 제가 워크숍에 여러 실행 모델을 둔 이유는 저장소가
+Spring 트랜잭션, 가상 스레드, 캐시, 라우팅과 만났을 때 어디까지 경계를 지키는지 보려는 것입니다.
 
 | 예제 | 코드에서 볼 것 |
 |---|---|
-| `exposed-workshop/03-exposed-basic` | DSL, DAO, transaction 기본 모양 |
-| `exposed-workshop/08-coroutines/02-virtualthreads-basic` | JDBC + Virtual Threads 실행 모델 |
-| `exposed-workshop/09-spring` | Spring transaction과 repository wiring |
-| `exposed-workshop/10-multi-tenant` | schema 전환과 transaction connection 경계 |
-| `exposed-workshop/11-high-performance/03-routing-datasource` | read/write/tenant routing key 계산 |
+| `exposed-workshop/03-exposed-basic` | DSL, DAO, 트랜잭션 기본 모양 |
+| `exposed-workshop/08-coroutines/02-virtualthreads-basic` | JDBC + 가상 스레드 실행 모델 |
+| `exposed-workshop/09-spring` | Spring 트랜잭션과 저장소 연결 |
+| `exposed-workshop/10-multi-tenant` | 스키마 전환과 트랜잭션 커넥션 경계 |
+| `exposed-workshop/11-high-performance/03-routing-datasource` | 읽기/쓰기/테넌트 라우팅 키 계산 |
 
 ## 맺음말
 
 JDBC 방식을 고를 때 저는 이렇게 봅니다.
 
-- query 모양을 명시적으로 보고 싶다.
+- 쿼리 모양을 명시적으로 보고 싶다.
 - 문자열 SQL보다 Kotlin DSL의 타입 안전성이 필요하다.
-- JPA의 큰 ORM 기능보다 transaction/query 제어가 중요하다.
-- blocking JDBC를 쓰되 Virtual Threads로 대기 비용을 낮추고 싶다.
-- 반복 repository 코드는 줄이되 SQL DSL까지 숨기고 싶지는 않다.
+- JPA의 큰 ORM 기능보다 트랜잭션/쿼리 제어가 중요하다.
+- 블로킹 JDBC를 쓰되 가상 스레드로 대기 비용을 낮추고 싶다.
+- 반복 저장소 코드는 줄이되 SQL DSL까지 숨기고 싶지는 않다.
 
-다음 글에서는 R2DBC, Coroutines, Virtual Threads를 같이 보겠습니다. 제가 이 둘을 나눠 둔 이유는 이름이 더
-현대적으로 보이는 쪽을 고르기 위해서가 아니라, workload에 따라 실제로 유리한 방식이 달라졌기 때문입니다.
+다음 글에서는 R2DBC, 코루틴, 가상 스레드를 같이 보겠습니다. 제가 이 둘을 나눠 둔 이유는 이름이 더
+현대적으로 보이는 쪽을 고르기 위해서가 아니라, 워크로드에 따라 실제로 유리한 방식이 달라졌기 때문입니다.
 
 ## 참고 링크
 
-- JDBC README: [exposed/exposed-jdbc/README.ko.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-jdbc/README.ko.md)
-- JDBC benchmark source: [ExposedJdbcBenchmark.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/exposed-jdbc/src/test/kotlin/io/bluetape4k/exposed/jdbc/benchmark/ExposedJdbcBenchmark.kt)
-- Exposed workshop: [exposed-workshop](https://github.com/bluetape4k/exposed-workshop)
+- JDBC README: [exposed/jdbc/README.ko.md](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/jdbc/README.ko.md)
+- JDBC 벤치마크 소스: [ExposedJdbcBenchmark.kt](https://github.com/bluetape4k/bluetape4k-exposed/blob/develop/exposed/jdbc/src/test/kotlin/io/bluetape4k/exposed/jdbc/benchmark/ExposedJdbcBenchmark.kt)
+- Exposed 워크숍: [exposed-workshop](https://github.com/bluetape4k/exposed-workshop)
 
 ## 시리즈 링크
 
 - [Part 1: 왜 Exposed인가](/ko/blog/bluetape4k-exposed-part1-why-exposed/)
-- [Part 2: JDBC repository와 SQL DSL](/ko/blog/bluetape4k-exposed-part2-jdbc-repositories-sql-dsl/)
+- [Part 2: JDBC 저장소와 SQL DSL](/ko/blog/bluetape4k-exposed-part2-jdbc-repositories-sql-dsl/)
 - [Part 3: R2DBC, 코루틴, 가상 스레드](/ko/blog/bluetape4k-exposed-part3-r2dbc-coroutines-virtual-threads/)
 - [Part 4: JSON, 암호화, 다이얼렉트](/ko/blog/bluetape4k-exposed-part4-json-encryption-dialects/)
-- [Part 5: 실전 예제 - 다양한 캐시 전략, 멀티테넌시](/ko/blog/bluetape4k-exposed-part5-spring-cache-multitenancy-production/)
+- [Part 5: 실전 예제 - 캐시 전략과 멀티테넌시](/ko/blog/bluetape4k-exposed-part5-spring-cache-multitenancy-production/)
 - [Part 6: BigQuery, Trino, CockroachDB, DuckDB 통합 예제](/ko/blog/bluetape4k-exposed-part6-ecosystem-integrations/)

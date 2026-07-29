@@ -111,7 +111,7 @@ Micrometer records attempts, acquisition, not-acquired reasons, execution durati
 
 ## Benchmarks: direction plus caveat
 
-The benchmark README starts with a boundary: these are comparable `kotlinx-benchmark` suites for same-machine before/after comparison, not release-grade performance claims. The 2026-05-21 baseline used one fork, one thread, two warmup iterations, and three one-second measurement iterations. PostgreSQL/MySQL rows were added on 2026-05-29, and focused Redis lease-extension rows were added on 2026-06-01.
+The benchmark README starts with a boundary: these are comparable `kotlinx-benchmark` suites for same-machine before/after comparison, not release-grade performance claims. The 2026-05-21 baseline used one fork, one thread, two warmup iterations, and three one-second measurement iterations. The cross-backend table below includes PostgreSQL/MySQL rows added on 2026-05-29, while the lease-renewal discussion uses the focused Redis rows from 2026-06-01.
 
 <figure class="bt4k-chart" data-diagram-title="Distributed backend throughput comparison">
   <img src="/assets/bluetape4k-leader-part5-distributed-throughput-chart-01-en.png" alt="Distributed backend throughput chart for bluetape4k-leader" loading="lazy" />
@@ -123,7 +123,7 @@ The benchmark README starts with a boundary: these are comparable `kotlinx-bench
   <figcaption>Distributed backend average time. Lower is better. PostgreSQL/MySQL exposed rows are much slower in this same-machine benchmark shape.</figcaption>
 </figure>
 
-Representative rows:
+Representative rows from the 2026-05-29 cross-backend run:
 
 | Row | Throughput ops/s | Average time us/op | Reading |
 |---|---:|---:|---|
@@ -136,7 +136,7 @@ Representative rows:
 | etcd suspend | 467.5 | 2,239.4 | Control-plane fit can matter more than raw rank. |
 | PostgreSQL/MySQL exposed rows | 50-80 range | 13,000-17,000 range | Distributed SQL rows are slower here. Do not compare them with local/H2 structure checks. |
 
-Kubernetes Lease runs in a separate benchmark source set with K3s Testcontainers. README representative rows are 171.5 ops/s for blocking and 164.7 ops/s for suspend. That separate target matters because the Fabric8 client runtime differs from the default etcd/Vert.x runtime.
+Kubernetes Lease runs in a separate source set because the Fabric8 client uses Vert.x 4 and Netty 4.1 while the default etcd target uses Vert.x 5. In the current README's 2026-07-02 K3s scenario run, the public fresh-acquire-and-release path measured 82.297 ops/s for blocking and 90.055 ops/s for suspend. The active-holder skip path, which reads and returns without writing, measured 661.149 ops/s and 465.583 ops/s respectively. Those completion paths should not be ranked as if they measured the same operation.
 
 The Redis lease-extension benchmark answers a narrower question. Normal `runIfLeader` and `autoExtend` rows are within the JMH error range. `runIfLeaderWithRenewalWindow` uses a 90 ms lease and 45 ms action dwell to force the extension path. If a row reads `50,000 us/op`, treat it as `50 ms/op`, not 50 microseconds, and do not read that row as the everyday cost of leader election.
 
@@ -146,10 +146,10 @@ If you want to jump to code, start with examples.
 
 | Example | Backend | What to inspect |
 |---|---|---|
-| `examples/batch-scheduler` | Redis/Spring | Cluster-wide scheduled batch |
+| `examples/batch-scheduler` | Lettuce Redis/Spring | Cluster-wide scheduled batch |
 | `examples/migration-gate` | Exposed JDBC | Run schema/data migration on one node |
-| `examples/webhook-poller` | Redis | Avoid duplicate polling |
-| `examples/cache-warmer` | Redis | Coordinate cache warming |
+| `examples/webhook-poller` | MongoDB | Avoid duplicate polling |
+| `examples/cache-warmer` | Hazelcast | Coordinate per-partition cache warming |
 | `examples/tenant-aggregator` | Exposed R2DBC | Independent leader per tenant |
 | `examples/ktor-app` | Ktor + Lettuce | `LeaderElectionPlugin` and `leaderScheduled` |
 | `examples/prometheus-dashboard` | Spring + Lettuce | AOP metrics, Prometheus, Grafana |
@@ -166,6 +166,8 @@ If you want to jump to code, start with examples.
 - [bluetape4k-leader benchmark README](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/benchmark/README.md)
 - [2026-05-21 cross-backend baseline](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/docs/benchmarks/2026-05-21-leader-cross-backend-baseline.md)
 - [2026-05-29 RDB backend throughput JSON](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/docs/benchmarks/2026-05-29-issue-405-rdb-backend-throughput.json)
+- [2026-06-01 Redis lease-extension benchmark](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/docs/benchmarks/2026-06-01-issue-422-redis-lease-extension.md)
+- [2026-07-02 Kubernetes Lease scenario benchmark](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/docs/benchmarks/2026-07-02-issue-524-kubernetes-lease-scenarios.md)
 - [LockExtender.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LockExtender.kt)
 - [LockAssert.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LockAssert.kt)
 - [LeaderLeaseAutoExtender.kt](https://github.com/bluetape4k/bluetape4k-leader/blob/develop/leader-core/src/main/kotlin/io/bluetape4k/leader/LeaderLeaseAutoExtender.kt)

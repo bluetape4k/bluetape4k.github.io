@@ -1,6 +1,6 @@
 ---
-title: "bluetape4k-dependencies 1.3.0 in Practice Part 2: Composing Services"
-description: "Example-driven guidance for choosing Exposed, AWS, Leader, Text, and Image modules after importing the BOM in Spring Boot worker, Ktor API, and image upload services."
+title: "bluetape4k-dependencies 1.3.0 in Practice Part 2: Selecting Modules by Service Boundary"
+description: "Example-driven guidance for choosing Exposed, AWS, Leader, Text, and Image modules after applying the BOM to Spring Boot workers, Ktor APIs, and image upload services."
 sidebar:
   order: -202606281200
 blog:
@@ -51,6 +51,11 @@ application
       -> text 0.2.1
       -> leader 0.4.0
 ```
+
+<figure class="bt4k-architecture" data-diagram-title="Service Boundaries Determine Module Composition">
+  <img src="/assets/bluetape4k-dependencies-service-composition-01-en.png" alt="Architecture diagram showing a Spring Boot worker, Ktor search API, and image upload API selecting different modules under one bluetape4k-dependencies BOM" loading="lazy" />
+  <figcaption>The three services share one BOM but select modules according to different responsibilities and resource lifecycles: database work, HTTP input validation, and image streaming.</figcaption>
+</figure>
 
 ## Example 1: Spring Boot Worker Service
 
@@ -113,10 +118,15 @@ If Exposed cache is used, health should expose write-behind state.
     "exposedCache": {
       "status": "OUT_OF_SERVICE",
       "details": {
-        "mode": "WRITE_BEHIND",
-        "queueDepth": 128,
-        "flushJobRunning": false,
-        "lastFlushError": "RedisConnectionFailureException"
+        "reports": [
+          {
+            "name": "invoice-cache",
+            "mode": "WRITE_BEHIND",
+            "queueDepth": 128,
+            "flushJobRunning": false,
+            "lastFlushError": "Redis connection failed"
+          }
+        ]
       }
     }
   }
@@ -154,19 +164,21 @@ spread across random call sites.
 
 ```kotlin
 fun Application.module() {
-    install(BluetapeAwsCloudWatch) {
+    install(CloudWatchKtorPlugin) {
         namespace = "billing-api"
-        serviceName = "billing"
     }
 
-    install(BluetapeAwsCloudWatchLogs) {
+    install(CloudWatchLogsKtorPlugin) {
         logGroupName = "/bluetape4k/billing-api"
         logStreamName = environment.config.property("deployment.instanceId").getString()
+        flushInterval = Duration.ofSeconds(5)
+        shutdownFlushTimeout = Duration.ofSeconds(5)
     }
 
     routing {
         post("/documents/search") {
             val request = call.receive<SearchRequest>()
+            // Application-owned input validation boundary
             request.query.requireLength(max = 2_000)
 
             val tokens = koreanTokenizer.tokenize(request.query)
@@ -175,6 +187,9 @@ fun Application.module() {
     }
 }
 ```
+
+The plugins register the CloudWatch integration and its lifecycle. They do not automatically publish metrics or log
+events; the application must submit each datum or append each buffered log event explicitly.
 
 ## Example 3: Image Upload API
 
@@ -258,7 +273,7 @@ Let the BOM own versions. Let the service boundary decide modules.
 If you want the first import path, start with the [usage guide](/blog/bluetape4k-dependencies-usage-guide/).
 
 - [bluetape4k-dependencies 1.3.0 in Practice Part 1: Features and Cleanup](/blog/bluetape4k-dependencies-1-3-0-library-stories/)
-- [bluetape4k-dependencies 1.3.0 in Practice Part 2: Composing Services](/blog/bluetape4k-dependencies-1-3-0-service-composition/)
+- [bluetape4k-dependencies 1.3.0 in Practice Part 2: Selecting Modules by Service Boundary](/blog/bluetape4k-dependencies-1-3-0-service-composition/)
 - [bluetape4k-dependencies 1.3.0 in Practice Part 3: Production Signals](/blog/bluetape4k-dependencies-1-3-0-production-signals/)
 - [bluetape4k-dependencies 1.3.0 in Practice Part 4: Input Boundaries](/blog/bluetape4k-dependencies-1-3-0-input-boundaries/)
 
@@ -267,6 +282,8 @@ If you want the first import path, start with the [usage guide](/blog/bluetape4k
 - [`bluetape4k-dependencies` libs.versions.toml](https://github.com/bluetape4k/bluetape4k-dependencies/blob/develop/gradle/libs.versions.toml)
 - [`bluetape4k-exposed` repository](https://github.com/bluetape4k/bluetape4k-exposed)
 - [`bluetape4k-aws` repository](https://github.com/bluetape4k/bluetape4k-aws)
+- [`CloudWatchKtorPluginConfig` 0.4.0](https://github.com/bluetape4k/bluetape4k-aws/blob/0.4.0/aws-ktor/src/main/kotlin/io/bluetape4k/aws/ktor/cloudwatch/CloudWatchKtorPluginConfig.kt)
+- [`CloudWatchLogsKtorPluginConfig` 0.4.0](https://github.com/bluetape4k/bluetape4k-aws/blob/0.4.0/aws-ktor/src/main/kotlin/io/bluetape4k/aws/ktor/cloudwatch/CloudWatchLogsKtorPluginConfig.kt)
 - [`bluetape4k-leader` repository](https://github.com/bluetape4k/bluetape4k-leader)
 - [`bluetape4k-image` repository](https://github.com/bluetape4k/bluetape4k-image)
 - [`bluetape4k-text` repository](https://github.com/bluetape4k/bluetape4k-text)

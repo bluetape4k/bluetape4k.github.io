@@ -41,44 +41,64 @@ const locale = {
     suspend: "Suspend API",
     higherBetter: "Higher is better",
     lowerBetter: "Lower is better",
+    request: "Request",
+    protectedWork: "Protected work",
+    observers: "Observers",
+    candidate: "candidate",
+    lease: "lease",
+    execute: "execute",
+    outcome: "outcome",
+    adapter: "adapter",
+    scenarios: "scenarios",
+    evidence: "evidence",
   },
   ko: {
     titleFont: "goorm Sans",
     bodyFont: "goorm Sans",
     monoFont: "goorm Sans Code",
     overviewTitle: "Bluetape4k Leader 저장소 지도",
-    overviewSub: "서비스 코드는 작은 리더 계약을 호출하고, workload에 맞는 backend, framework 통합, 예제를 고릅니다.",
-    core: "Core 계약",
-    coreHint: "서비스가 직접 호출하는 작은 API 표면",
-    backends: "Backend adapter",
-    backendHint: "같은 계약 뒤의 ownership primitive",
-    integrations: "Framework 통합",
-    examples: "예제와 benchmark",
-    footer: "core vocabulary는 유지하고, workload에 맞는 lease 저장소를 고릅니다.",
-    erdTitle: "Leader 예제 persistence 계약",
-    erdSub: "예제 앱은 작업 식별자, lease ownership, 실행 이력을 분리해서 다룹니다.",
+    overviewSub: "서비스 코드는 간결한 리더 선출 계약을 호출하고, 워크로드에 맞는 백엔드·프레임워크 통합·예제를 선택합니다.",
+    core: "핵심 계약",
+    coreHint: "서비스가 직접 호출하는 간결한 API",
+    backends: "백엔드 어댑터",
+    backendHint: "공통 계약 뒤에서 소유권을 관리하는 구현",
+    integrations: "프레임워크 통합",
+    examples: "예제와 벤치마크",
+    footer: "핵심 용어는 유지하고, 워크로드에 맞는 리스 저장소를 선택합니다.",
+    erdTitle: "Leader 예제의 영속화 계약",
+    erdSub: "예제 애플리케이션은 작업 식별자, 리스 소유권, 실행 이력을 분리합니다.",
     job: "작업 단위",
     lock: "리더 락",
     history: "실행 이력",
-    metric: "Metric 이벤트",
+    metric: "메트릭 이벤트",
     examplesTitle: "시나리오 예제 묶음",
-    examplesSub: "실행 가능한 6개 예제가 중복 실행 failure mode를 각각 보여줍니다.",
+    examplesSub: "실행 가능한 예제 6개가 중복 실행 실패 유형을 각각 보여줍니다.",
     groupTitle: "LeaderGroupElector 슬롯 토큰",
-    groupSub: "maxLeaders는 하나의 lockName을 갱신 가능한 슬롯 묶음으로 바꿉니다.",
+    groupSub: "maxLeaders는 하나의 lockName을 갱신 가능한 슬롯 집합으로 바꿉니다.",
     strategicTitle: "StrategicLeaderElector 결정 흐름",
-    strategicSub: "모든 후보를 먼저 같은 목록으로 보고, strategy가 실행할 노드를 고릅니다.",
+    strategicSub: "모든 후보가 같은 목록을 조회한 뒤, 전략이 실행할 노드를 선택합니다.",
     runTitle: "runIfLeader 실행 시퀀스",
-    runSub: "한 경로는 body를 실행하고, 경합 경로는 side effect 없이 skip합니다.",
+    runSub: "선출된 경로는 작업을 실행하고, 경합에서 밀린 경로는 부수 효과 없이 건너뜁니다.",
     springTitle: "Spring @LeaderElection AOP 시퀀스",
-    springSub: "advice가 metadata를 해석하고 elector를 선택한 뒤 method body와 outcome 기록을 처리합니다.",
-    throughputTitle: "분산 backend 처리량",
-    throughputSub: "runIfLeader hot path, ops/s. 높을수록 좋으며 local과 H2는 제외했습니다.",
-    latencyTitle: "분산 backend 지연 시간",
-    latencySub: "runIfLeader 평균 시간, us/op. 낮을수록 좋으며 local과 H2는 제외했습니다.",
-    blocking: "Blocking API",
-    suspend: "Suspend API",
+    springSub: "어드바이스가 메타데이터를 해석하고 elector를 선택한 뒤, 메서드 본문 실행과 결과 기록을 처리합니다.",
+    throughputTitle: "분산 백엔드 처리량",
+    throughputSub: "runIfLeader 주요 경로의 ops/s입니다. 높을수록 좋으며 로컬과 H2는 제외했습니다.",
+    latencyTitle: "분산 백엔드 지연 시간",
+    latencySub: "runIfLeader 평균 지연 시간(us/op)입니다. 낮을수록 좋으며 로컬과 H2는 제외했습니다.",
+    blocking: "블로킹 API",
+    suspend: "일시 중단 API",
     higherBetter: "높을수록 좋음",
     lowerBetter: "낮을수록 좋음",
+    request: "요청",
+    protectedWork: "보호 대상 작업",
+    observers: "관측",
+    candidate: "후보",
+    lease: "리스",
+    execute: "실행",
+    outcome: "결과",
+    adapter: "어댑터",
+    scenarios: "시나리오",
+    evidence: "근거",
   },
 };
 
@@ -125,9 +145,9 @@ function marker(id, color, size = 14) {
 
 function chartDefs(l) {
   return `<defs><style>
-    .canvas{fill:#fbfcf8}.frame{fill:#fff;stroke:#41545d;stroke-width:2.2}
-    .title{font-family:"${l.titleFont}";font-size:38px;fill:#263238}
-    .subtitle,.footer,.axis,.tick,.legend{font-family:"${l.bodyFont}";fill:#4e6069}
+    .canvas{fill:#050914}.frame{fill:#0c1628;stroke:#315a7a;stroke-width:2.2}
+    .title{font-family:"${l.titleFont}";font-size:38px;fill:#f0f5ff}
+    .subtitle,.footer,.axis,.tick,.legend{font-family:"${l.bodyFont}";fill:#b4c5d8}
     .subtitle{font-size:16px}.footer{font-size:13px}.axis,.tick,.legend{font-size:13px}
   </style></defs>`;
 }
@@ -135,29 +155,31 @@ function chartDefs(l) {
 function baseDefs(l, extra = "") {
   const extraStyle = extra ? `\n      ${extra}` : "";
   return `<defs>
-    <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#28343b" flood-opacity="0.13"/></filter>
-    ${marker("arrow-blue", "#3f7d9c")}
-    ${marker("arrow-green", "#6e8f4f")}
-    ${marker("arrow-amber", "#b98240")}
-    ${marker("arrow-red", "#b86868")}
-    ${marker("arrow-slate", "#78909c")}
+    <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#02050a" flood-opacity="0.42"/></filter>
+    ${marker("arrow-blue", "#6fb6e8")}
+    ${marker("arrow-green", "#80d99b")}
+    ${marker("arrow-amber", "#e2b35c")}
+    ${marker("arrow-red", "#ef8292")}
+    ${marker("arrow-slate", "#87a8c2")}
     <style>
-      .canvas{fill:#fbfcf8}.frame{fill:#fff;stroke:#41545d;stroke-width:2.2}
-      .title{font-family:"${l.titleFont}";font-size:38px;fill:#263238}
-      .subtitle,.detail,.labelText,.footer,.axis,.tick,.legend,.role{font-family:"${l.bodyFont}";fill:#4e6069}
+      .canvas{fill:#050914}.frame{fill:#0c1628;stroke:#315a7a;stroke-width:2.2}
+      .title{font-family:"${l.titleFont}";font-size:38px;fill:#f0f5ff}
+      .subtitle,.detail,.labelText,.footer,.axis,.tick,.legend,.role{font-family:"${l.bodyFont}";fill:#b4c5d8}
       .subtitle{font-size:16px}.detail{font-size:14px}.footer{font-size:13px}.axis,.tick,.legend{font-size:13px}
       .role{font-family:"${l.monoFont}";font-size:12.5px}
-      .bandTitle,.cardTitle,.participant{font-family:"${l.titleFont}";fill:#1f3138}
+      .bandTitle,.cardTitle,.participant{font-family:"${l.titleFont}";fill:#edf4ff}
       .bandTitle{font-size:23px}.cardTitle{font-size:22px}.participant{font-size:19px}
-      .mono,.code,.badgeText{font-family:"${l.monoFont}";fill:#33454e}
-      .band{fill:#f5f9fb;stroke:#c8d7df;stroke-width:1.6}.bandAlt{fill:#fbfdf8;stroke:#d7e0d0;stroke-width:1.6}
-      .card{filter:url(#shadow);stroke-width:2}.header{fill:#fff;stroke:#546e7a;stroke-width:2}
+      .mono,.code,.badgeText{font-family:"${l.monoFont}";fill:#d7e3f2}
+      .band{fill:#101d30;stroke:#294c69;stroke-width:1.6}.bandAlt{fill:#10231f;stroke:#2f6257;stroke-width:1.6}
+      .card{filter:url(#shadow);fill:#111d2f!important;stroke-width:2}.header{fill:#111d2f;stroke:#537a99;stroke-width:2}
+      .surfaceWarm{fill:#211c16;stroke:#8b6a34;stroke-width:2}.surfacePurple{fill:#1c1930;stroke:#7058a2;stroke-width:2}
+      .footerBar{fill:#0e1b2e;stroke:#294c69;stroke-width:2}.tableHeader{fill:#142b46;stroke:#537a99;stroke-width:2}
       .edge,.call,.return,.skip,.state{fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
-      .call{stroke:#3f7d9c;marker-end:url(#arrow-blue)}.state{stroke:#6e8f4f;marker-end:url(#arrow-green)}
-      .return{stroke:#9b7d54;marker-end:url(#arrow-amber);stroke-dasharray:8 7}.skip{stroke:#b86868;marker-end:url(#arrow-red)}
-      .pill,.label{fill:#fff;stroke-width:1.5}.labelText{font-size:12.5px}.badgeText{font-size:12px;font-weight:700}
-      .lifeline{stroke:#9aaab1;stroke-width:2;stroke-dasharray:7 8}.activation{fill:#e6f2ec;stroke:#5b7e67;stroke-width:1.7}
-      .branch{fill:none;stroke:#78909c;stroke-width:2.2;stroke-dasharray:12 8}.divider{stroke:#78909c;stroke-width:1.4;stroke-dasharray:8 7}${extraStyle}
+      .call{stroke:#6fb6e8;marker-end:url(#arrow-blue)}.state{stroke:#80d99b;marker-end:url(#arrow-green)}
+      .return{stroke:#e2b35c;marker-end:url(#arrow-amber);stroke-dasharray:8 7}.skip{stroke:#ef8292;marker-end:url(#arrow-red)}
+      .pill,.label{fill:#0e1a2b;stroke-width:1.5}.badgeCircle{fill:#0e1a2b}.labelText{font-size:12.5px}.badgeText{font-size:12px;font-weight:700}
+      .lifeline{stroke:#52718a;stroke-width:2;stroke-dasharray:7 8}.activation{fill:#193c32;stroke:#71bf8b;stroke-width:1.7}
+      .branch{fill:none;stroke:#7194ae;stroke-width:2.2;stroke-dasharray:12 8}.divider{stroke:#7194ae;stroke-width:1.4;stroke-dasharray:8 7}${extraStyle}
     </style>
   </defs>`;
 }
@@ -172,19 +194,34 @@ function card(x, y, w, h, title, detail, fill = "#fff", stroke = "#78909c") {
 
 function overviewSvg(lang) {
   const l = locale[lang];
-  const chips = [
-    ["Blocking", "LeaderElector"],
-    ["Coroutine", "SuspendLeaderElector"],
-    ["Group slots", "LeaderGroupElector"],
-    ["Strategic", "StrategicLeaderElector"],
-  ];
-  const backends = [
-    ["Redis", "Lettuce / Redisson"],
-    ["SQL / R2DBC", "Exposed adapters"],
-    ["Document", "MongoDB / DynamoDB"],
-    ["Control", "etcd / Consul / K8s"],
-    ["Cluster", "Hazelcast / ZooKeeper"],
-  ];
+  const chips = lang === "ko"
+    ? [
+        ["블로킹", "LeaderElector"],
+        ["코루틴", "SuspendLeaderElector"],
+        ["그룹 슬롯", "LeaderGroupElector"],
+        ["전략 선출", "StrategicLeaderElector"],
+      ]
+    : [
+        ["Blocking", "LeaderElector"],
+        ["Coroutine", "SuspendLeaderElector"],
+        ["Group slots", "LeaderGroupElector"],
+        ["Strategic", "StrategicLeaderElector"],
+      ];
+  const backends = lang === "ko"
+    ? [
+        ["Redis", "Lettuce / Redisson"],
+        ["SQL / R2DBC", "Exposed 어댑터"],
+        ["문서형 저장소", "MongoDB / DynamoDB"],
+        ["제어 저장소", "etcd / Consul / K8s"],
+        ["클러스터", "Hazelcast / ZooKeeper"],
+      ]
+    : [
+        ["Redis", "Lettuce / Redisson"],
+        ["SQL / R2DBC", "Exposed adapters"],
+        ["Document", "MongoDB / DynamoDB"],
+        ["Control", "etcd / Consul / K8s"],
+        ["Cluster", "Hazelcast / ZooKeeper"],
+      ];
   return `<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
   <title id="title">${esc(l.overviewTitle)}</title><desc id="desc">${esc(l.overviewSub)}</desc>${baseDefs(l)}
   <rect class="canvas" width="1400" height="900"/><rect class="frame" x="44" y="36" width="1312" height="828" rx="18"/>
@@ -197,11 +234,11 @@ function overviewSvg(lang) {
   ${text(126, 436, l.backends, "bandTitle")}${text(126, 466, l.backendHint, "detail")}
   ${backends.map(([a,b], i) => card(246 + i * 210, 480, 176, 64, a, b, "#fff", "#8dc7b5")).join("")}
   <path d="M 386 578 L 386 622" class="state"/><path d="M 1014 578 L 1014 622" class="state"/>
-  <rect x="92" y="622" width="588" height="132" rx="14" fill="#fff7e8" stroke="#e7c988" stroke-width="2"/>
-  ${text(126, 666, l.integrations, "bandTitle")}${["Spring Boot", "Ktor 3.x", "Micrometer"].map((v,i)=>card(154+i*170,690,142,50,v,"adapter","#fff","#d9b76e")).join("")}
-  <rect x="720" y="622" width="588" height="132" rx="14" fill="#f6efff" stroke="#c9b3ee" stroke-width="2"/>
-  ${text(754, 666, l.examples, "bandTitle")}${["examples/*", "benchmark", "BOM"].map((v,i)=>card(790+i*170,690,142,50,v,i===0?"scenarios":"evidence","#fff","#b99de0")).join("")}
-  <rect x="110" y="786" width="1180" height="54" rx="16" fill="#f8fbff" stroke="#d4deeb" stroke-width="2"/>
+  <rect x="92" y="622" width="588" height="132" rx="14" class="surfaceWarm"/>
+  ${text(126, 666, l.integrations, "bandTitle")}${["Spring Boot", "Ktor 3.x", "Micrometer"].map((v,i)=>card(154+i*170,690,142,50,v,l.adapter,"#fff","#d9b76e")).join("")}
+  <rect x="720" y="622" width="588" height="132" rx="14" class="surfacePurple"/>
+  ${text(754, 666, l.examples, "bandTitle")}${["examples/*", "benchmark", "BOM"].map((v,i)=>card(790+i*170,690,142,50,v,i===0?l.scenarios:l.evidence,"#fff","#b99de0")).join("")}
+  <rect x="110" y="786" width="1180" height="54" rx="16" class="footerBar"/>
   ${text(700, 810, l.footer, "footer", 'text-anchor="middle"')}${text(700, 832, "github.com/bluetape4k/bluetape4k-leader", "footer", 'text-anchor="middle"')}
   </svg>`;
 }
@@ -220,28 +257,50 @@ function erdSvg(lang) {
   <path d="M 840 300 L 1018 300" class="state"/>
   <path d="M 700 372 L 700 556" class="return"/>
   ${text(456, 284, "1", "mono")}${text(534, 284, "N", "mono")}${text(902, 284, "1", "mono")}${text(992, 284, "N", "mono")}
-  ${text(720, 486, lang === "ko" ? "outcome 기록" : "records outcome", "detail")}
+  ${text(720, 486, lang === "ko" ? "결과 기록" : "records outcome", "detail")}
   </svg>`;
 }
 
 function table(x, y, w, title, rows) {
   return `<g><rect x="${x}" y="${y}" width="${w}" height="${174}" rx="8" class="card" fill="#fff" stroke="#6f8791"/>
-  <rect x="${x}" y="${y}" width="${w}" height="46" rx="8" fill="#eaf2ff" stroke="#6f8791" stroke-width="2"/>
+  <rect x="${x}" y="${y}" width="${w}" height="46" rx="8" class="tableHeader"/>
   ${text(x + w / 2, y + 31, title, "cardTitle", 'text-anchor="middle"')}
-  ${rows.map((r,i)=>`${text(x+24,y+78+i*30,r,"mono")}<line x1="${x+16}" y1="${y+90+i*30}" x2="${x+w-16}" y2="${y+90+i*30}" stroke="#e0e8ee" stroke-width="1"/>`).join("")}</g>`;
+  ${rows.map((r,i)=>`${text(x+24,y+78+i*30,r,"mono")}<line x1="${x+16}" y1="${y+90+i*30}" x2="${x+w-16}" y2="${y+90+i*30}" stroke="#294c69" stroke-width="1"/>`).join("")}</g>`;
 }
 
 function exampleSvg(lang, data) {
   const l = locale[lang];
   const [, enTitle, koTitle, trigger, storeTitle, storeDetail, work] = data;
   const title = lang === "ko" ? `${koTitle} 아키텍처` : `${enTitle} Architecture`;
-  const sub = lang === "ko" ? `${koTitle}는 같은 lockName으로 하나의 worker만 side effect를 실행하게 합니다.` : `${enTitle} uses one elected worker while peers observe skipped or failed outcomes.`;
+  const sub = lang === "ko" ? `${koTitle}는 같은 lockName에서 선출된 작업자 하나만 부수 효과를 실행하게 합니다.` : `${enTitle} uses one elected worker while peers observe skipped or failed outcomes.`;
+  const koTerms = {
+    "batch trigger": "배치 시작",
+    "startup pod": "시작 중인 Pod",
+    "remote event": "원격 이벤트",
+    "partition key": "파티션 키",
+    "tenant loop": "테넌트 반복 작업",
+    "reconcile tick": "조정 주기",
+    "Redis lock": "Redis 잠금",
+    "JDBC lock": "JDBC 잠금",
+    "MongoDB lease": "MongoDB 리스",
+    "tenant lock": "테넌트 잠금",
+    "K8s Lease": "Kubernetes Lease",
+    "lease ownership": "리스 소유권",
+    "Exposed JDBC lock": "Exposed JDBC 잠금",
+    "settlement job": "정산 작업",
+    "schema migration": "스키마 마이그레이션",
+    "event claim": "이벤트 선점",
+    "warm partition": "파티션 예열",
+    "aggregate snapshot": "집계 스냅샷",
+    "active reconciler": "활성 조정기",
+  };
+  const localized = (value) => lang === "ko" ? (koTerms[value] ?? value) : value;
   return archSvg(l, title, sub, [
-    [lang === "ko" ? "요청" : "Request", trigger],
+    [l.request, localized(trigger)],
     ["Leader API", "runIfLeaderResult"],
-    [storeTitle, storeDetail],
-    [lang === "ko" ? "보호된 작업" : "Protected work", work],
-    [lang === "ko" ? "관찰" : "Observers", lang === "ko" ? "metrics / logs" : "metrics / logs"],
+    [localized(storeTitle), localized(storeDetail)],
+    [l.protectedWork, localized(work)],
+    [l.observers, lang === "ko" ? "메트릭 / 로그" : "metrics / logs"],
   ]);
 }
 
@@ -257,23 +316,23 @@ function archSvg(l, title, sub, nodes) {
   <path d="M 770 306 L 830 306" class="state"/>
   <path d="M 1020 306 L 1080 306" class="return"/>
   <path d="M 925 352 L 925 430 Q 925 452 947 452 L 1175 452 Q 1198 452 1198 430 L 1198 352" class="skip"/>
-  ${label(286, 218, "1", "candidate")}${label(536, 218, "2", "lease")}${label(786, 218, "3", "execute")}${label(1036, 218, "4", "outcome")}
+  ${label(286, 218, "1", l.candidate)}${label(536, 218, "2", l.lease)}${label(786, 218, "3", l.execute)}${label(1036, 218, "4", l.outcome)}
   ${text(640, 520, "LeaderRunResult: Elected | Skipped | ActionFailed", "footer", 'text-anchor="middle"')}
   </svg>`;
 }
 
 function label(x, y, n, value) {
-  return `<g><rect x="${x}" y="${y}" width="132" height="30" rx="15" class="pill" stroke="#78909c"/><circle cx="${x+18}" cy="${y+15}" r="11" fill="#fff" stroke="#78909c" stroke-width="1.4"/><text x="${x+18}" y="${y+19}" text-anchor="middle" class="badgeText">${n}</text><text x="${x+36}" y="${y+20}" class="labelText">${esc(value)}</text></g>`;
+  return `<g><rect x="${x}" y="${y}" width="132" height="30" rx="15" class="pill" stroke="#78909c"/><circle cx="${x+18}" cy="${y+15}" r="11" class="badgeCircle" stroke="#78909c" stroke-width="1.4"/><text x="${x+18}" y="${y+19}" text-anchor="middle" class="badgeText">${n}</text><text x="${x+36}" y="${y+20}" class="labelText">${esc(value)}</text></g>`;
 }
 
 function groupSvg(lang) {
   const l = locale[lang];
   return archSvg(l, l.groupTitle, l.groupSub, [
     ["node-a", 'runIfLeader("job")'],
-    ["Group elector", "LeaderGroupElector"],
-    ["Slot semaphore", "maxLeaders = 3"],
+    [lang === "ko" ? "그룹 선출기" : "Group elector", "LeaderGroupElector"],
+    [lang === "ko" ? "슬롯 세마포어" : "Slot semaphore", "maxLeaders = 3"],
     [lang === "ko" ? "실행 중" : "Leader work", "activeCount = 3"],
-    [lang === "ko" ? "대기 또는 skip" : "Wait or skip", "no token left"],
+    [lang === "ko" ? "대기 또는 건너뛰기" : "Wait or skip", lang === "ko" ? "남은 토큰 없음" : "no token left"],
   ]);
 }
 
@@ -281,10 +340,10 @@ function strategicSvg(lang) {
   const l = locale[lang];
   return archSvg(l, l.strategicTitle, l.strategicSub, [
     ["CandidateInfo", "nodeId + metadata"],
-    ["Registry", "candidate registry"],
+    [lang === "ko" ? "후보 레지스트리" : "Registry", lang === "ko" ? "후보 목록" : "candidate registry"],
     ["ElectionStrategy", "FIFO / Random / Scored"],
-    [lang === "ko" ? "선택된 노드" : "Selected node", "run action"],
-    [lang === "ko" ? "결과 기록" : "Result update", "success / failure"],
+    [lang === "ko" ? "선택된 노드" : "Selected node", lang === "ko" ? "작업 실행" : "run action"],
+    [lang === "ko" ? "결과 기록" : "Result update", lang === "ko" ? "성공 / 실패" : "success / failure"],
   ]);
 }
 
@@ -296,19 +355,54 @@ function sequenceSvg(lang, kind) {
   const parts = spring
     ? [["Caller", "requester"], ["Spring Proxy", "runtime"], ["Leader Aspect", "LeaderElectionAspect"], ["Backend Elector", "runtime"], ["Body", "work"]]
     : [["Caller", "requester"], ["LeaderElector", "runtime"], ["Backend Lock", "runtime"], ["Action", "work"]];
+  const localizedParts = lang === "ko"
+    ? parts.map(([name, role]) => [
+        {
+          Caller: "호출자",
+          "Spring Proxy": "Spring 프록시",
+          "Leader Aspect": "리더 선출 애스펙트",
+          "Backend Elector": "백엔드 선출기",
+          Body: "메서드 본문",
+          "Backend Lock": "백엔드 잠금",
+          Action: "실행 작업",
+        }[name] ?? name,
+        {
+          requester: "요청자",
+          runtime: "런타임",
+          work: "작업",
+        }[role] ?? role,
+      ])
+    : parts;
   const x0 = spring ? [110, 365, 620, 875, 1130] : [150, 420, 690, 960];
   const steps = spring
     ? [["1", "annotated method call", 110, 365, "call"], ["2", "around advice + SpEL", 365, 620, "call"], ["3", "runIfLeaderResult(lockName)", 620, 875, "state"], ["4", "elected: invoke body", 875, 1130, "state"], ["5", "value or body error", 1130, 875, "return"], ["6", "Elected / Skipped / ActionFailed", 875, 620, "return"]]
     : [["1", 'runIfLeader("job")', 150, 420, "call"], ["2", "tryAcquire(lock, wait)", 420, 690, "call"], ["3", "lock acquired", 690, 420, "return"], ["4", "action()", 420, 960, "state"], ["5", "release + result", 420, 150, "return"], ["6", "contention returns null", 690, 150, "skip"]];
+  const localizedSteps = lang === "ko"
+    ? steps.map(([n, value, from, to, cls]) => [
+        n,
+        {
+          "annotated method call": "애너테이션 메서드 호출",
+          "around advice + SpEL": "Around 어드바이스 + SpEL",
+          "elected: invoke body": "선출: 메서드 본문 호출",
+          "value or body error": "반환값 또는 본문 오류",
+          "lock acquired": "잠금 획득",
+          "release + result": "잠금 해제 + 결과",
+          "contention returns null": "경합 시 null 반환",
+        }[value] ?? value,
+        from,
+        to,
+        cls,
+      ])
+    : steps;
   const w = spring ? 1280 : 1100;
   const h = spring ? 860 : 780;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-labelledby="title desc">
   <title id="title">${esc(title)}</title><desc id="desc">${esc(sub)}</desc>${baseDefs(l)}
   <rect class="canvas" width="${w}" height="${h}"/><rect class="frame" x="28" y="26" width="${w-56}" height="${h-52}" rx="14"/>
   ${text(w/2, 80, title, "title", 'text-anchor="middle"')}${text(w/2, 112, sub, "subtitle", 'text-anchor="middle"')}
-  ${parts.map(([name, role],i)=>`<rect class="header" x="${x0[i]-82}" y="152" width="164" height="54" rx="8"/>${text(x0[i],180,name,"participant",'text-anchor="middle"')}${text(x0[i],200,role,"role",'text-anchor="middle"')}<line class="lifeline" x1="${x0[i]}" y1="206" x2="${x0[i]}" y2="${h-90}"/><rect class="activation" x="${x0[i]-8}" y="250" width="16" height="${h-390}" rx="5"/>`).join("")}
-  <rect x="70" y="${h-218}" width="${w-140}" height="94" rx="8" class="branch"/><line x1="70" y1="${h-170}" x2="${w-70}" y2="${h-170}" class="divider"/>${text(90,h-196,spring?"alt backend failure":"alt not elected","labelText")}${text(90,h-148,spring?"FAIL_OPEN_RUN / SKIP / RETHROW":"skip branch returns null","labelText")}
-  ${steps.map((s,i)=>messageRow(268+i*64, s[0], s[1], s[2], s[3], s[4])).join("")}
+  ${localizedParts.map(([name, role],i)=>`<rect class="header" x="${x0[i]-82}" y="152" width="164" height="54" rx="8"/>${text(x0[i],180,name,"participant",'text-anchor="middle"')}${text(x0[i],200,role,"role",'text-anchor="middle"')}<line class="lifeline" x1="${x0[i]}" y1="206" x2="${x0[i]}" y2="${h-90}"/><rect class="activation" x="${x0[i]-8}" y="250" width="16" height="${h-390}" rx="5"/>`).join("")}
+  <rect x="70" y="${h-218}" width="${w-140}" height="94" rx="8" class="branch"/><line x1="70" y1="${h-170}" x2="${w-70}" y2="${h-170}" class="divider"/>${text(90,h-196,lang === "ko" ? (spring ? "alt 백엔드 실패" : "alt 미선출") : (spring ? "alt backend failure" : "alt not elected"),"labelText")}${text(90,h-148,lang === "ko" ? (spring ? "FAIL_OPEN_RUN / SKIP / RETHROW" : "건너뛰기 경로는 null 반환") : (spring ? "FAIL_OPEN_RUN / SKIP / RETHROW" : "skip branch returns null"),"labelText")}
+  ${localizedSteps.map((s,i)=>messageRow(268+i*64, s[0], s[1], s[2], s[3], s[4])).join("")}
   </svg>`;
 }
 
@@ -316,7 +410,7 @@ function messageRow(y, n, labelText, from, to, cls) {
   const left = Math.min(from, to), right = Math.max(from, to);
   const labelX = left + (right - left) / 2 - 82;
   const pathD = from < to ? `M ${from} ${y} L ${to-12} ${y}` : `M ${from} ${y} L ${to+12} ${y}`;
-  return `<g><rect class="label" x="${labelX}" y="${y-28}" width="164" height="28" rx="14" stroke="#78909c"/><circle cx="${labelX+18}" cy="${y-14}" r="10.5" fill="#fff" stroke="#78909c" stroke-width="1.3"/><text x="${labelX+18}" y="${y-10}" text-anchor="middle" class="badgeText">${n}</text><text x="${labelX+36}" y="${y-9}" class="labelText">${esc(labelText)}</text><path d="${pathD}" class="${cls}"/></g>`;
+  return `<g><rect class="label" x="${labelX}" y="${y-28}" width="164" height="28" rx="14" stroke="#78909c"/><circle cx="${labelX+18}" cy="${y-14}" r="10.5" class="badgeCircle" stroke="#78909c" stroke-width="1.3"/><text x="${labelX+18}" y="${y-10}" text-anchor="middle" class="badgeText">${n}</text><text x="${labelX+36}" y="${y-9}" class="labelText">${esc(labelText)}</text><path d="${pathD}" class="${cls}"/></g>`;
 }
 
 function chartSvg(lang, type) {
@@ -331,17 +425,17 @@ function chartSvg(lang, type) {
   <title id="title">${esc(title)}</title><desc id="desc">${esc(sub)}</desc>${chartDefs(l)}
   <rect class="canvas" width="1500" height="1040"/><rect class="frame" x="36" y="32" width="1428" height="970" rx="16"/>
   ${text(750, 92, title, "title", 'text-anchor="middle"')}${text(750, 124, sub, "subtitle", 'text-anchor="middle"')}
-  <line x1="380" y1="850" x2="1200" y2="850" stroke="#8aa0a8" stroke-width="2"/><line x1="380" y1="210" x2="380" y2="850" stroke="#8aa0a8" stroke-width="2"/>
-  ${[0,0.25,0.5,0.75,1].map(t=>`<line x1="${380+820*t}" y1="210" x2="${380+820*t}" y2="850" stroke="#e4ebef"/><text x="${380+820*t}" y="882" class="tick" text-anchor="middle">${Math.round(max*t).toLocaleString()} ${unit}</text>`).join("")}
-  <rect x="1040" y="154" width="18" height="18" fill="#3f7d9c"/><text x="1068" y="168" class="legend">${esc(l.blocking)}</text><rect x="1040" y="184" width="18" height="18" fill="#6e8f4f"/><text x="1068" y="198" class="legend">${esc(l.suspend)}</text>
+  <line x1="380" y1="850" x2="1200" y2="850" stroke="#52718a" stroke-width="2"/><line x1="380" y1="210" x2="380" y2="850" stroke="#52718a" stroke-width="2"/>
+  ${[0,0.25,0.5,0.75,1].map(t=>`<line x1="${380+820*t}" y1="210" x2="${380+820*t}" y2="850" stroke="#203b55"/><text x="${380+820*t}" y="882" class="tick" text-anchor="middle">${Math.round(max*t).toLocaleString()} ${unit}</text>`).join("")}
+  <rect x="1040" y="154" width="18" height="18" fill="#6fb6e8"/><text x="1068" y="168" class="legend">${esc(l.blocking)}</text><rect x="1040" y="184" width="18" height="18" fill="#80d99b"/><text x="1068" y="198" class="legend">${esc(l.suspend)}</text>
   ${data.map((row,i)=>barRow(row, i, scale)).join("")}
-  ${text(750, 950, `${type === "throughput" ? l.higherBetter : l.lowerBetter} · source: BackendLeaderElectorBenchmark / SuspendBackendLeaderElectorBenchmark`, "footer", 'text-anchor="middle"')}
+  ${text(750, 950, `${type === "throughput" ? l.higherBetter : l.lowerBetter} · ${lang === "ko" ? "출처" : "source"}: BackendLeaderElectorBenchmark / SuspendBackendLeaderElectorBenchmark`, "footer", 'text-anchor="middle"')}
   </svg>`;
 }
 
 function barRow([name, blocking, suspend], i, scale) {
   const y = 230 + i * 82;
-  return `${text(350, y+28, name, "axis", 'text-anchor="end"')}<rect x="380" y="${y}" width="${blocking*scale}" height="26" rx="5" fill="#3f7d9c"/><text x="${390+blocking*scale}" y="${y+20}" class="tick">${blocking.toLocaleString()}</text><rect x="380" y="${y+34}" width="${suspend*scale}" height="26" rx="5" fill="#6e8f4f"/><text x="${390+suspend*scale}" y="${y+54}" class="tick">${suspend.toLocaleString()}</text>`;
+  return `${text(350, y+28, name, "axis", 'text-anchor="end"')}<rect x="380" y="${y}" width="${blocking*scale}" height="26" rx="5" fill="#6fb6e8"/><text x="${390+blocking*scale}" y="${y+20}" class="tick">${blocking.toLocaleString()}</text><rect x="380" y="${y+34}" width="${suspend*scale}" height="26" rx="5" fill="#80d99b"/><text x="${390+suspend*scale}" y="${y+54}" class="tick">${suspend.toLocaleString()}</text>`;
 }
 
 function writeAsset(stem, lang, svg) {
@@ -353,48 +447,68 @@ function writeAsset(stem, lang, svg) {
 }
 
 function backendPickerSvg(lang) {
-  const stem = "bluetape4k-leader-part5-backend-picker";
-  const canonical = path.join(outDir, `${stem}.svg`);
-  const source = fs.readFileSync(fs.existsSync(canonical) ? canonical : path.join(outDir, `${stem}-en.svg`), "utf8");
-  const normalized = source.replace(
-    /<marker id="arrowHead"[^>]*>/,
-    '<marker id="arrowHead" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">',
-  );
-  if (lang === "en") return normalized;
-  const translations = [
-    ["Choose the backend by operation shape", "작업 형태에 따라 backend를 선택하세요"],
-    ["The API stays similar; lease storage, TTL, failure mode, and observability change.", "API는 비슷하지만 lease 저장소, TTL, failure mode, observability는 달라집니다."],
-    ["Start from what you already run", "이미 운영 중인 기반에서 시작"],
-    ["Redis first", "Redis 우선"],
-    ["Lettuce: lean client path", "Lettuce: 경량 client"],
-    ["Redisson: familiar locks", "Redisson: 익숙한 lock"],
-    ["TTL + token ownership", "TTL + token 소유권"],
-    ["Default when Redis is shared ops.", "Redis 공통 운영 시 기본"],
-    ["etcd leases", "etcd lease"],
-    ["Native control-plane fit", "control plane에 적합"],
-    ["Lease + compare/write", "Lease + compare/write"],
-    ["Good reconciler model", "reconciler에 적합"],
-    ["Use when etcd owns control state.", "etcd 제어 상태에 사용"],
-    ["SQL rows", "SQL 행"],
-    ["Rows + conditional update", "행 + 조건부 갱신"],
-    ["Audit is easy to inspect", "감사 확인이 쉬움"],
-    ["Use when DB ops own the budget.", "DB 운영 시 사용"],
-    ["Kubernetes Lease", "Kubernetes Lease"],
-    ["Pod/operator lifecycle", "Pod / operator lifecycle"],
-    ["K3s benchmark target", "K3s benchmark"],
-    ["Best for K8s-native workloads.", "K8s workload에 적합"],
-    ["Remaining families are still first-class, but more situational", "나머지 계열도 일급 backend지만 상황에 따라 선택합니다"],
-    ["Compare distributed rows with distributed rows. Local/H2 rows are shape checks, not production ranking claims.", "분산 backend끼리 비교하세요. Local/H2 수치는 형태 검증용이며 운영 순위가 아닙니다."],
-    ["Operations layer", "운영 계층"],
-    ["benchmark caveats", "benchmark 주의사항"],
-  ];
-  let result = normalized
-    .replaceAll('"Architects Daughter", "Comic Sans MS", cursive', '"goorm Sans"')
-    .replaceAll('"Comic Mono", "Comic Sans MS", monospace', '"goorm Sans Code"');
-  for (const [from, to] of [...translations].sort((a, b) => b[0].length - a[0].length)) {
-    result = result.replaceAll(from, to);
-  }
-  return result;
+  const l = locale[lang];
+  const ko = lang === "ko";
+  const title = ko ? "작업 특성에 맞는 리더 선출 백엔드" : "Choose a Leader Backend by Workload";
+  const sub = ko
+    ? "API는 같아도 리스 저장소, TTL, 장애 대응, 관측 방식은 달라집니다."
+    : "The API stays stable while lease storage, TTL, failure handling, and observability change.";
+  const startTitle = ko ? "현재 운영 중인 인프라에서 시작" : "Start from infrastructure you already operate";
+  const startDetail = lang === "ko"
+    ? "Redis · etcd · SQL/R2DBC · Kubernetes"
+    : "Redis / etcd / SQL/R2DBC / Kubernetes";
+  const primary = ko
+    ? [
+        ["Redis 우선", ["Lettuce: 경량 클라이언트", "Redisson: 잠금 추상화", "TTL + 토큰 소유권", "Redis를 공통 운영할 때 적합"], "#ef8292"],
+        ["etcd 리스", ["컨트롤 플레인에 적합", "리스 + 비교 후 쓰기", "조정기 모델과 결합", "제어 상태를 etcd에 둘 때 적합"], "#6fb6e8"],
+        ["SQL 행", ["Exposed JDBC/R2DBC", "행 + 조건부 갱신", "감사 이력을 직접 조회", "DB 운영 조직에 적합"], "#80d99b"],
+        ["Kubernetes Lease", ["Pod·오퍼레이터 수명 주기", "coordination.k8s.io/v1", "K3s 벤치마크 대상", "Kubernetes 워크로드에 적합"], "#9b8cf2"],
+      ]
+    : [
+        ["Redis first", ["Lettuce: lean client", "Redisson: lock abstraction", "TTL + token ownership", "Fits shared Redis operations"], "#ef8292"],
+        ["etcd leases", ["Control-plane native", "Lease + compare-and-write", "Fits reconciler models", "Use when etcd owns control state"], "#6fb6e8"],
+        ["SQL rows", ["Exposed JDBC/R2DBC", "Row + conditional update", "Audit history is inspectable", "Fits database-owned operations"], "#80d99b"],
+        ["Kubernetes Lease", ["Pod and operator lifecycle", "coordination.k8s.io/v1", "K3s benchmark target", "Fits Kubernetes workloads"], "#9b8cf2"],
+      ];
+  const secondaryTitle = ko
+    ? "다른 백엔드도 같은 계약을 제공하지만 운영 조건에 따라 선택합니다"
+    : "Other backends share the contract but fit more specific operating conditions";
+  const secondary = ["MongoDB TTL", "DynamoDB item", "Consul KV", "Hazelcast map", "ZooKeeper / Curator"];
+  const caveat = ko
+    ? "분산 백엔드끼리 비교합니다. Local/H2 수치는 API 형태 검증용이며 운영 순위를 의미하지 않습니다."
+    : "Compare distributed backends with distributed backends. Local/H2 values validate API shape, not production rank.";
+  const ops = ko
+    ? "LockExtender · LockAssert · 실행 이력/감사 · Micrometer · 벤치마크 주의 사항"
+    : "LockExtender / LockAssert / history and audit / Micrometer / benchmark caveats";
+  const xs = [54, 416, 778, 1140];
+  const cardSvg = primary.map(([heading, lines, stroke], i) => {
+    const x = xs[i];
+    return `<g><rect x="${x}" y="390" width="306" height="250" rx="16" fill="#111d2f" stroke="${stroke}" stroke-width="2.4"/>
+      ${text(x + 153, 438, heading, "cardTitle", 'text-anchor="middle"')}
+      ${lines.map((line, index) => text(x + 24, 486 + index * 38, line, "detail")).join("")}</g>`;
+  }).join("");
+  const connectors = xs.map((x, i) => {
+    const target = x + 153;
+    const source = 515 + i * 156;
+    return `<path d="M ${source} 310 L ${source} 338 Q ${source} 358 ${target} 378 L ${target} 386" class="call"/>`;
+  }).join("");
+  const chips = secondary.map((value, i) => {
+    const x = 142 + i * 248;
+    return `<g><rect x="${x}" y="785" width="214" height="52" rx="18" fill="#12243a" stroke="#537a99" stroke-width="1.8"/>
+      ${text(x + 107, 818, value, "detail", 'text-anchor="middle"')}</g>`;
+  }).join("");
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1080" viewBox="0 0 1500 1080" role="img" aria-labelledby="title desc">
+  <title id="title">${esc(title)}</title><desc id="desc">${esc(sub)}</desc>${baseDefs(l)}
+  <rect class="canvas" width="1500" height="1080"/><rect class="frame" x="34" y="30" width="1432" height="1020" rx="18"/>
+  ${text(750, 90, title, "title", 'text-anchor="middle"')}${text(750, 124, sub, "subtitle", 'text-anchor="middle"')}
+  <rect x="320" y="172" width="860" height="138" rx="16" class="band"/>
+  ${text(750, 224, startTitle, "bandTitle", 'text-anchor="middle"')}${text(750, 270, startDetail, "mono", 'text-anchor="middle"')}
+  ${connectors}${cardSvg}
+  <rect x="76" y="710" width="1348" height="178" rx="16" class="bandAlt"/>
+  ${text(750, 754, secondaryTitle, "bandTitle", 'text-anchor="middle"')}${chips}${text(750, 866, caveat, "footer", 'text-anchor="middle"')}
+  <rect x="238" y="928" width="1024" height="84" rx="18" class="footerBar"/>
+  ${text(750, 966, ko ? "운영 계층" : "Operations layer", "bandTitle", 'text-anchor="middle"')}${text(750, 994, ops, "footer", 'text-anchor="middle"')}
+  </svg>`;
 }
 
 for (const lang of ["en", "ko"]) {

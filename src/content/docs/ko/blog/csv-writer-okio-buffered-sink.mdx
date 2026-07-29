@@ -1,19 +1,19 @@
 ---
-title: "CSV Writer가 모래주머니를 벗었을 때"
-description: bluetape4k-csv의 Flow 기반 UTF-8 파일 writer를 Okio BufferedSink 경로로 바꿔 큰 CSV export를 약 3.25배 빠르게 만든 과정입니다.
+title: "CSV Writer가 불필요한 우회 경로를 걷어냈을 때"
+description: bluetape4k-csv의 Flow 기반 UTF-8 파일 writer를 Okio BufferedSink 경로로 바꿔 큰 CSV 내보내기를 약 3.25배 빠르게 만든 과정을 정리합니다.
 sidebar:
   order: -202605290827
 blog:
   date: 2026-05-29T08:27:00+09:00
   image: /assets/csv-writer-hero.png
-  imageAlt: CSV writer pipeline이 row를 buffered byte sink로 보내는 소개용 일러스트
-  cardDescription: "Okio CSV writer 후속 작업. Flow row pipeline, UTF-8 sink, CSV semantics 보호, 그리고 large export 3.25배 개선을 정리합니다."
+  imageAlt: CSV writer 파이프라인이 row를 buffered byte sink로 보내는 소개용 일러스트
+  cardDescription: "Okio CSV writer 후속 작업. Flow row 파이프라인, UTF-8 sink, CSV 의미 보존, 그리고 large export 3.25배 개선을 정리합니다."
   tags: ["kotlin"]
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/csv-writer-hero.png" alt="CSV writer pipeline이 row를 buffered byte sink로 보내는 소개용 일러스트" loading="eager" />
-  <figcaption>CSV row는 character buffer를 돌아가지 않을 때 훨씬 가볍게 흘러간다.</figcaption>
+  <img src="/assets/csv-writer-hero.png" alt="CSV writer 파이프라인이 row를 buffered byte sink로 보내는 소개용 일러스트" loading="eager" />
+  <figcaption>CSV row는 character buffer를 돌아가지 않을 때 더 가볍게 흘러간다.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-29 · bluetape4k csv performance note</p>
@@ -22,7 +22,7 @@ blog:
 않고 Okio segment를 직접 스캔하면서 allocation을 줄였다.
 
 그러면 자연스럽게 다음 질문이 나온다. 읽기는 byte와 segment를 존중해서 빨라졌는데, 쓰기는 왜 아직도
-파일 export 전체를 `OutputStreamWriter`에게 공손하게 맡기고 있을까?
+파일 내보내기 전체를 `OutputStreamWriter`에게 맡기고 있을까?
 
 이번 writer 최적화는 그 찝찝한 부분을 정리한 작업이다. 다행히 public API는 이미 좋은 모양이었다.
 
@@ -37,17 +37,17 @@ suspend fun writeFile(
 ): Long
 ```
 
-맞다. `FlowCsvWriter`는 coroutine 기반 API다. 이게 중요하다. writer가 export 전체를 메모리에 모을
-필요가 없다. `Flow`에서 row 하나를 받고, 그 row를 쓰고, cancellation을 확인한 뒤 다음 row로 가면 된다.
+맞다. `FlowCsvWriter`는 coroutine 기반 API다. 이 점이 중요하다. writer가 export 전체를 메모리에 모을
+필요가 없다. `Flow`에서 row 하나를 받고, 그 row를 쓰고, cancellation을 확인한 뒤 다음 row로 넘어가면 된다.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/csv-okio-writer-throughput-01-ko.png" alt="CSV writer throughput comparison chart showing existing Writer and Okio BufferedSink ops per second" loading="lazy" />
-  <figcaption>Okio CSV writer 후속 작업. Flow row pipeline, UTF-8 sink, CSV semantics 보호, 그리고 large export 3.25배 개선을 정리합니다.</figcaption>
+<figure class="bt4k-chart" data-diagram-title="CSV writer 처리량 비교">
+  <img src="/assets/csv-okio-writer-throughput-01-ko.png" alt="small, medium, large CSV writer workload에서 기존 Writer 경로와 Okio BufferedSink 경로의 ops/s를 비교한 차트" loading="lazy" />
+  <figcaption>Okio CSV writer 후속 작업. Flow row 파이프라인, UTF-8 sink, CSV 의미 보존, 그리고 large export 3.25배 개선을 정리합니다.</figcaption>
 </figure>
 
 ## 수상한 부분은 Flow가 아니었다
 
-streaming 모양은 이미 있었다. 비싼 냄새는 그 아래에서 났다.
+streaming 형태는 이미 있었다. 고비용 처리는 그 아래에 있었다.
 
 ```kotlin
 OutputStreamWriter(FileOutputStream(path.toFile(), append), encoding).use { fw ->
@@ -60,8 +60,8 @@ OutputStreamWriter(FileOutputStream(path.toFile(), append), encoding).use { fw -
 }
 ```
 
-이 코드는 나쁜 코드가 아니다. 정확하고, portable하고, charset fallback도 단순하다. 다만 가장 흔한
-UTF-8 파일 export에서도 delimiter, quote, line separator, payload text가 모두 character writer를
+이 코드는 나쁜 코드가 아니다. 정확하고, 이식성이 좋고, charset fallback도 단순하다. 다만 가장 흔한
+UTF-8 파일 export에서도 delimiter, quote, line separator, 필드 본문이 모두 character writer를
 거쳐 간다. 목적지는 결국 byte인데 말이다.
 
 그래서 새 규칙은 단순하게 잡았다.
@@ -71,11 +71,11 @@ UTF-8 파일 export에서도 delimiter, quote, line separator, payload text가 �
 | UTF-8 | Okio `BufferedSink` fast path |
 | Non-UTF-8 | 기존 `Writer` fallback |
 
-API는 그대로 둔다. UTF-8 lane만 지름길을 탄다.
+API는 그대로 둔다. UTF-8 경로만 더 짧은 처리 경로를 탄다.
 
-## Fast Path
+## 고속 경로
 
-coroutine boundary는 여전히 파일 export를 감싼다. 바뀐 것은 그 안의 sink다.
+coroutine 경계는 여전히 파일 export를 감싼다. 바뀐 것은 그 안의 sink다.
 
 ```kotlin
 private suspend fun writeUtf8FileWithOkio(
@@ -102,7 +102,7 @@ private suspend fun writeUtf8FileWithOkio(
 ```
 
 중요한 줄은 Okio import 자체가 아니다. 주변 구조가 중요하다. `rows.collect`, `ensureActive()`,
-그리고 row 하나를 buffered sink로 밀어 넣는 구조다. 이렇게 하면 export pipeline은 cancellation에
+그리고 row 하나를 buffered sink로 밀어 넣는 구조다. 이렇게 하면 export 파이프라인은 cancellation에
 반응하면서도 UTF-8 파일 경로에서는 `Writer.write(...)` 우회를 피한다.
 
 ## CSV는 그렇게 순하지 않다
@@ -136,9 +136,9 @@ private fun writeQuoted(s: String) {
 작은 요령은 chunked write다. 대부분의 field text는 slice 단위로 sink에 들어간다. quote 문자만
 doubled quote byte로 바뀐다. 정상 문자를 하나씩 작은 호출로 보내지 않는다.
 
-동작은 테스트로 잠갔다.
+동작은 테스트로 검증했다.
 
-| Case | Expected behavior |
+| 사례 | 기대 동작 |
 |---|---|
 | `null` | 인용 없는 빈 field |
 | `""` | quoted empty string |
@@ -149,9 +149,9 @@ doubled quote byte로 바뀐다. 정상 문자를 하나씩 작은 호출로 보
 | `quoteAll` | non-null field는 모두 quoted |
 | TSV mode | tab delimiter 유지 |
 
-## Benchmark Result
+## 벤치마크 결과
 
-benchmark command:
+벤치마크 명령:
 
 ```bash
 ./gradlew :bluetape4k-csv:testBenchmark
@@ -165,7 +165,7 @@ writer workload 결과는 다음과 같다.
 | `writerBaseline_medium` vs `okioWriter_medium` | 676.110 ops/s | 2,068.696 ops/s | 3.06x |
 | `writerBaseline_large` vs `okioWriter_large` | 83.802 ops/s | 272.157 ops/s | 3.25x |
 
-small workload도 빨라졌지만 setup과 coroutine collection overhead가 아직 보인다. 진짜 이야기는 medium,
+small workload도 빨라졌지만 setup과 coroutine collection overhead가 아직 보인다. 실제 차이는 medium,
 large에서 나온다. row가 계속 흘러 들어오면 character-layer write와 작은 호출을 줄인 효과가 눈에 띈다.
 
 ## Reader에서 배운 것을 Writer에 다시 썼다
@@ -173,26 +173,26 @@ large에서 나온다. row가 계속 흘러 들어오면 character-layer write�
 reader 최적화에서는 `BufferedSource`와 `UnsafeCursor`가 핵심이었다. writer에는 `UnsafeCursor`가
 필요 없다. 이미 있는 segment를 뒤지는 일이 아니라 byte를 만들어 내는 일이기 때문이다.
 
-그래서 재사용된 교훈은 "항상 가장 날카로운 Okio API를 쓰자"가 아니었다. 더 좁고 실용적이었다.
+그래서 재사용된 교훈은 "항상 가장 낮은 수준의 Okio API를 쓰자"가 아니었다. 더 좁고 실용적이었다.
 
-| Direction | Useful Okio layer |
+| 방향 | 유용한 Okio 계층 |
 |---|---|
 | Read | `BufferedSource`, `Buffer`, read-only `UnsafeCursor`로 structural byte scanning |
 | Write | `BufferedSink`로 UTF-8 row를 바로 출력 |
 
 양쪽 모두 같은 설계 원칙을 따른다. public API는 유지하고, 지원하지 않는 경로에는 fallback을 남기고,
-까다로운 CSV 데이터를 포함한 테스트로 semantics를 잠근다.
+까다로운 CSV 데이터를 포함한 테스트로 의미를 검증한다.
 
-## Source Links
+## 자료
 
-- Writer implementation: [`OkioDelimitedWriter`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/main/kotlin/io/bluetape4k/csv/internal/OkioDelimitedWriter.kt)
-- Flow writer integration: [`FlowCsvWriterImpl`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/main/kotlin/io/bluetape4k/csv/v2/FlowCsvWriterImpl.kt)
-- Benchmarks: [`CsvParserBenchmark`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/test/kotlin/io/bluetape4k/csv/benchmark/CsvParserBenchmark.kt)
-- Tests: [`FlowCsvWriterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/test/kotlin/io/bluetape4k/csv/v2/FlowCsvWriterTest.kt)
-- Previous article: [Okio Segment로 CSV 파서 Allocation 줄이기](/ko/blog/reducing-csv-parser-allocations-with-okio/)
+- 구현: [`OkioDelimitedWriter`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/main/kotlin/io/bluetape4k/csv/internal/OkioDelimitedWriter.kt)
+- Flow writer 통합: [`FlowCsvWriterImpl`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/main/kotlin/io/bluetape4k/csv/v2/FlowCsvWriterImpl.kt)
+- 벤치마크: [`CsvParserBenchmark`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/test/kotlin/io/bluetape4k/csv/benchmark/CsvParserBenchmark.kt)
+- 테스트: [`FlowCsvWriterTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/test/kotlin/io/bluetape4k/csv/v2/FlowCsvWriterTest.kt)
+- 이전 글: [Okio Segment로 CSV 파서 Allocation 줄이기](/ko/blog/reducing-csv-parser-allocations-with-okio/)
 
-## Closing
+## 마무리
 
 좋은 최적화는 사용자가 외워야 할 개념을 늘리지 않는다. 새 public API도 없고, CSV를 쓰는 새 방법도
-없다. `FlowCsvWriter`는 이미 streaming pipeline을 약속하고 있었다. 이번 패치는 UTF-8 파일 경로에서
-그 pipeline에 달려 있던 모래주머니 하나를 빼낸 것이다.
+없다. `FlowCsvWriter`는 이미 streaming 파이프라인을 약속하고 있었다. 이번 패치는 UTF-8 파일 경로에서
+그 파이프라인에 남아 있던 불필요한 우회를 걷어낸 것이다.

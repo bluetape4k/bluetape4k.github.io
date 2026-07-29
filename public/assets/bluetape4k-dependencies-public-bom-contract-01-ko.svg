@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="980" viewBox="0 0 1600 980" role="img" aria-labelledby="title desc">
+  <title id="title">내부 빌드 계약과 공개 BOM 계약의 분리</title><desc id="desc">카탈로그를 사용자 아티팩트로 설명하지 않고, 공개 계약은 게시된 POM으로 검증합니다.</desc>
+  <defs><marker id="arrow" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L13,7 L1,13 Z" fill="#36C5F0"/></marker></defs>
+  <style>
+    .canvas{fill:#07111F}.frame{fill:#0D1B2D;stroke:#36536F;stroke-width:2}.card{fill:#10243A;stroke:#36536F;stroke-width:2}
+    .focus{fill:#0C3044;stroke:#5EEAD4;stroke-width:2.5}.warn{fill:#332B18;stroke:#FBBF24;stroke-width:2}
+    .title{font:700 40px "goorm Sans","Apple SD Gothic Neo",sans-serif;fill:#E6F2FF}.subtitle{font:500 20px "goorm Sans Code","goorm Sans",monospace;fill:#9CB4CC}
+    .card-title{font:700 24px "goorm Sans","Apple SD Gothic Neo",sans-serif;fill:#E6F2FF}.body{font:600 18px "goorm Sans Code","goorm Sans",monospace;fill:#9CB4CC}
+    .chip{font:700 16px "goorm Sans Code","goorm Sans",monospace;fill:#5EEAD4}.label{font:700 16px "goorm Sans Code","goorm Sans",monospace;fill:#36C5F0}
+    .connector{fill:none;stroke:#36C5F0;stroke-width:4;marker-end:url(#arrow)}.divider{stroke:#36536F;stroke-width:2}
+    .footer{font:600 18px "goorm Sans Code","goorm Sans",monospace;fill:#9CB4CC}
+  </style>
+  <rect width="1600" height="980" class="canvas"/><rect x="32" y="32" width="1536" height="916" rx="32" class="frame"/>
+  <text x="80" y="98" class="title">내부 빌드 계약과 공개 BOM 계약의 분리</text><text x="80" y="138" class="subtitle">버전 카탈로그는 공급자의 빌드 작성을 돕고, 게시된 POM은 소비자의 의존성 해석에 참여합니다.</text>
+
+    <rect x="70" y="270" width="320" height="230" rx="24" class="card"/>
+  <text x="98" y="322" class="card-title">Gradle 버전 카탈로그</text>
+  <text x="98" y="368" class="body">내부 빌드 별칭</text>
+<text x="98" y="406" class="body">플러그인 / 라이브러리 버전</text>
+    <rect x="470" y="240" width="320" height="290" rx="24" class="focus"/>
+  <text x="498" y="292" class="card-title">java-platform</text>
+  <text x="498" y="338" class="body">하위 BOM 가져오기</text>
+<text x="498" y="376" class="body">개별 제약 조건</text>
+    <rect x="870" y="240" width="320" height="290" rx="24" class="focus"/>
+  <text x="898" y="292" class="card-title">게시된 Maven POM</text>
+  <text x="898" y="338" class="body">dependencyManagement</text>
+<text x="898" y="376" class="body">라이선스 / SCM 메타데이터</text>
+    <rect x="1270" y="270" width="260" height="230" rx="24" class="card"/>
+  <text x="1298" y="322" class="card-title">소비자 의존성 해석</text>
+  <text x="1298" y="368" class="body">중앙 BOM 적용</text>
+<text x="1298" y="406" class="body">모듈 버전 생략</text>
+    <path d="M390 385 H450" class="connector"/><text x="420" y="350" text-anchor="middle" class="label">빌드 입력</text>
+    <path d="M790 385 H850" class="connector"/><text x="820" y="350" text-anchor="middle" class="label">게시</text>
+    <path d="M1190 385 H1250" class="connector"/><text x="1220" y="350" text-anchor="middle" class="label">해석</text>
+    <rect x="470" y="610" width="720" height="92" rx="20" class="card"/>
+    <text x="830" y="650" text-anchor="middle" class="chip">publishToMavenLocal</text>
+    <text x="830" y="682" text-anchor="middle" class="body">게시 전 POM 구조와 메타데이터 검증</text><line x1="80" y1="830" x2="1520" y2="830" class="divider"/>
+  <text x="800" y="884" text-anchor="middle" class="footer">카탈로그를 사용자 아티팩트로 설명하지 않고, 공개 계약은 게시된 POM으로 검증합니다.</text>
+</svg>

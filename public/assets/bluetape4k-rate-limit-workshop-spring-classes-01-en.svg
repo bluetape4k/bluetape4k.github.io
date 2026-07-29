@@ -8,7 +8,7 @@
       <stop offset="100%" stop-color="#263b57"/>
     </linearGradient>
     <linearGradient id="panelGradient" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#1f2937"/>
+      <stop offset="0%" stop-color="#172033"/>
       <stop offset="100%" stop-color="#111827"/>
     </linearGradient>
     <filter id="panelShadow" x="-8%" y="-12%" width="116%" height="124%">
@@ -30,11 +30,11 @@
       .title { font: 30px "Architects Daughter", "Comic Mono", system-ui, sans-serif; fill: #f8fafc; }
       .subtitle { font: 15px "Comic Mono", ui-monospace, monospace; fill: #c1cad8; }
       .lane-title { font: 17px "Comic Mono", ui-monospace, monospace; fill: #f3f7fb; font-weight: 700; }
-      .class-name { font: 15.5px "Comic Mono", ui-monospace, monospace; fill: #f8fafc; font-weight: 700; }
+      .class-name { font: 14px "Comic Mono", ui-monospace, monospace; fill: #f8fafc; font-weight: 700; }
       .stereo { font: 12px "Comic Mono", ui-monospace, monospace; fill: #bfd0e7; }
       .member { font: 11.2px "Comic Mono", ui-monospace, monospace; fill: #d8e3f2; }
       .note { font: 12px "Comic Mono", ui-monospace, monospace; fill: #dbe7f7; }
-      .legend { font: 12px "Comic Mono", ui-monospace, monospace; fill: #cbd5e1; }
+      .legend { font: 12px "Comic Mono", ui-monospace, monospace; fill: #b6c4d6; }
       .dep { fill: none; stroke: #d6deeb; stroke-width: 3.2; stroke-dasharray: 9 7; stroke-linecap: round; stroke-linejoin: round; }
       .assoc { fill: none; stroke: #8dd46f; stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round; }
       .inherit { fill: none; stroke: #8bd3ff; stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round; }
@@ -197,6 +197,6 @@
     <text class="legend" x="944" y="871">solid = implements</text>
     <path class="dep" d="M 1065 867 L 1110 867"/>
     <polyline class="head head-dep" points="1120,867 1106,859 1106,875"/>
-    <text class="legend" x="866" y="895">dashed = creates / uses / returns</text>
+    <text class="legend" x="866" y="884">dashed = creates / uses / returns</text>
   </g>
 </svg>

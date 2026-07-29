@@ -1,26 +1,26 @@
 ---
 title: "Virtual Threads 2편: 실전에서 바로 걸리는 규칙들"
-description: bluetape4k-workshop 예제로 blocking code, thread-per-task executor, semaphore, ScopedValue, lock 사용 규칙을 정리한다.
+description: bluetape4k-workshop 예제로 블로킹 코드, thread-per-task executor, semaphore, ScopedValue, lock 사용 규칙을 정리한다.
 sidebar:
   order: -202605291101
 blog:
-  date: 2026-05-29T11:01:00+09:00
+  date: 2026-05-29T11:23:58+09:00
   image: /assets/virtual-threads-part2-hero.png
   imageAlt: 실전 virtual thread 규칙이 checklist로 정리되는 소개용 일러스트
-  cardDescription: "Virtual Threads를 켰다고 끝이 아니다. pool, semaphore, context, lock에서 바로 차이가 나는 실전 규칙들."
+  cardDescription: "Virtual Threads를 켰다고 끝이 아니다. pool, semaphore, context, lock 경계에서 바로 차이가 나는 실전 규칙들."
   tags: ["kotlin","practical-example","virtual-threads","concurrency"]
 ---
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/virtual-threads-part2-hero.png" alt="실전 virtual thread 규칙이 checklist로 정리되는 소개용 일러스트" loading="eager" />
-  <figcaption>쓸모 있는 rule은 JDBC pool, lock, shutdown path와 부딪혀도 버티는 rule이다.</figcaption>
+  <figcaption>실전에서 쓸 수 있는 규칙은 JDBC pool, lock, shutdown path와 부딪혀도 유지되는 규칙이다.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-29 · Virtual Threads series · Part 2</p>
 
 이 글은 Virtual Threads 시리즈의 2편이다. 전체 시리즈는 [Part 1: 소개와 주의점](/ko/blog/virtual-threads-part1-guide/),
-[Part 2: workshop rules](/ko/blog/virtual-threads-part2-workshop-rules/),
-[Part 3: JDBC + Virtual Threads benchmark](/ko/blog/virtual-threads-part3-jdbc-r2dbc-benchmark/),
+[Part 2: 워크숍 규칙](/ko/blog/virtual-threads-part2-workshop-rules/),
+[Part 3: JDBC + Virtual Threads 벤치마크](/ko/blog/virtual-threads-part3-jdbc-r2dbc-benchmark/),
 [Part 4: Java 21/25 SPI 설계](/ko/blog/virtual-threads-part4-java21-java25-spi/)로 이어진다.
 
 Part 1은 큰 그림이었다. 이번 글은 조금 더 손에 잡히는 규칙을 다룬다. 근거는
@@ -28,11 +28,11 @@ Part 1은 큰 그림이었다. 이번 글은 조금 더 손에 잡히는 규칙�
 끝나지 않는다. "이렇게 쓰면 기대만큼 효과가 나지 않는다"까지 같이 보여준다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/virtual-threads-part2-rules-01-ko.png" alt="Practical virtual thread rules from bluetape4k-workshop" loading="lazy" />
-  <figcaption>Virtual Threads를 켰다고 끝이 아니다. pool, semaphore, context, lock에서 바로 차이가 나는 실전 규칙들.</figcaption>
+  <img src="/assets/virtual-threads-part2-rules-01-ko.png" alt="bluetape4k-workshop의 실전 Virtual Thread 규칙 요약" loading="lazy" />
+  <figcaption>Virtual Threads를 켰다고 끝이 아니다. pool, semaphore, context, lock 경계에서 바로 차이가 나는 실전 규칙들.</figcaption>
 </figure>
 
-## 규칙 1. I/O 대기가 대부분이면 blocking synchronous code를 그대로 살릴 수 있다
+## 규칙 1. I/O 대기가 대부분이면 블로킹 동기 코드를 그대로 살릴 수 있다
 
 `Rule2WriteBlockingSynchronousCode`는 같은 흐름을 세 가지 방식으로 보여준다. `CompletableFuture`,
 Virtual Thread, Coroutines다. 여기서 Virtual Thread 예제의 장점은 control flow가 거의 그대로 읽힌다는
@@ -51,7 +51,7 @@ Executors.newVirtualThreadPerTaskExecutor().use { executor ->
 }
 ```
 
-이 코드는 non-blocking처럼 보이려고 꾸미지 않는다. blocking function을 그대로 task로 나누고, 필요한
+이 코드는 non-blocking처럼 보이려고 꾸미지 않는다. 블로킹 함수를 그대로 task로 나누고, 필요한
 지점에서 `get()`으로 결과를 모은다. I/O wait가 대부분인 request-response 작업에서는 이 단순함이 큰 장점이다.
 
 다만 CPU-bound 작업까지 이런 식으로 늘리면 안 된다. Virtual Thread가 CPU core를 새로 만들어주지는
@@ -80,7 +80,7 @@ Executors.newVirtualThreadPerTaskExecutor().use { executor ->
 }
 ```
 
-Virtual Thread 생성은 싸다. 제한해야 할 것은 thread 수가 아니라 뒤쪽 자원이다.
+Virtual Thread 생성 비용은 낮다. 제한해야 할 것은 thread 수가 아니라 뒤쪽 자원이다.
 
 ## 규칙 3. 동시성 제한은 FixedThreadPool이 아니라 Semaphore로 한다
 
@@ -169,7 +169,7 @@ virtualFuture {
 ```
 
 Java 25에서는 JEP 491 덕분에 `synchronized` pinning 부담이 줄었다. 그래도 이 규칙은 여전히 의미가 있다.
-pinning이 줄어도 긴 critical section은 병목이다. lock 안에서 오래 blocking하는 코드는 나중에 profiler를
+pinning이 줄어도 긴 critical section은 병목이다. lock 안에서 오래 블로킹하는 코드는 나중에 profiler를
 열었을 때 "왜 여기서 다 기다리고 있지?"라는 질문을 만들기 쉽다.
 
 ## 규칙을 하나로 묶으면
@@ -179,11 +179,11 @@ pinning이 줄어도 긴 critical section은 병목이다. lock 안에서 오래
 | 하지 말 것 | 대신 할 것 |
 |---|---|
 | Virtual Thread를 pool에 넣기 | `newVirtualThreadPerTaskExecutor()` |
-| FixedThreadPool로 동시성 제한 | `Semaphore`로 downstream resource 제한 |
+| FixedThreadPool로 동시성 제한 | `Semaphore`로 downstream 자원 제한 |
 | ThreadLocal에 큰 context 저장 | `ScopedValue` 또는 명시적 context 전달 |
 | 긴 lock 안에서 blocking | lock scope 축소, 필요하면 `ReentrantLock` |
 | CPU-bound 작업까지 virtual thread로 밀어넣기 | CPU-bound는 core 수와 executor 전략을 별도 설계 |
 
-Virtual Threads는 기존 blocking code를 최소한의 변경으로 다시 쓸 수 있게 해준다. 하지만 제한, context,
+Virtual Threads는 기존 블로킹 코드를 최소한의 변경으로 다시 쓸 수 있게 해준다. 하지만 제한, context,
 lock을 대충 처리해도 된다는 뜻은 아니다. 쉬워진 만큼 잘못 쓰기도 쉬워진다. Part 3에서는 이 규칙을 실제
-database benchmark에 대입해 본다.
+database 벤치마크에 대입해 본다.

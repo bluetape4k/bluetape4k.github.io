@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="940" viewBox="0 0 1600 940" role="img" aria-labelledby="title desc">
+  <title id="title">Version Boundaries Governed by the BOM</title>
+  <desc id="desc">The normal path is centrally aligned; an override is a traceable temporary exception.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="16" markerHeight="16" refX="13" refY="8" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1,1 L15,8 L1,15 Z" fill="#36C5F0"/>
+    </marker>
+  </defs>
+  <style>
+    .canvas{fill:#07111F}.frame{fill:#0D1B2D;stroke:#36536F;stroke-width:2}
+    .card{fill:#10243A;stroke:#36536F;stroke-width:2}.focus{fill:#0C3044;stroke:#5EEAD4;stroke-width:2.5}
+    .warn{fill:#332B18;stroke:#FBBF24;stroke-width:2}.title{font:700 40px "Architects Daughter","Comic Sans MS",cursive;fill:#E6F2FF}
+    .subtitle{font:500 20px "Comic Mono","SFMono-Regular",Menlo,monospace;fill:#9CB4CC}.card-title{font:700 25px "Architects Daughter","Comic Sans MS",cursive;fill:#E6F2FF}
+    .body{font:600 18px "Comic Mono","SFMono-Regular",Menlo,monospace;fill:#9CB4CC}.chip{font:700 16px "Comic Mono","SFMono-Regular",Menlo,monospace;fill:#5EEAD4}
+    .label{font:700 16px "Comic Mono","SFMono-Regular",Menlo,monospace;fill:#36C5F0}.connector{fill:none;stroke:#36C5F0;stroke-width:4;marker-end:url(#arrow)}
+    .divider{stroke:#36536F;stroke-width:2}.footer{font:600 18px "Comic Mono","SFMono-Regular",Menlo,monospace;fill:#9CB4CC}
+  </style>
+  <rect width="1600" height="940" class="canvas"/>
+  <rect x="32" y="32" width="1536" height="876" rx="32" class="frame"/>
+  <text x="80" y="98" class="title">Version Boundaries Governed by the BOM</text>
+  <text x="80" y="138" class="subtitle">Applications choose one BOM version and treat per-module versions as documented exceptions.</text>
+  
+      
+    <rect x="80" y="240" width="380" height="190" rx="24" class="card"/>
+    <text x="108" y="294" class="card-title">Application</text>
+    <text x="108" y="344" class="body">Choose one BOM version</text>
+    <text x="108" y="380" class="body">Declare only needed modules</text>
+      
+    <rect x="610" y="240" width="380" height="190" rx="24" class="focus"/>
+    <text x="638" y="294" class="card-title">bluetape4k-dependencies</text>
+    <text x="638" y="344" class="body">Tested module combination</text>
+    <text x="638" y="380" class="body">Transitive compatibility line</text>
+      
+    <rect x="1140" y="240" width="380" height="190" rx="24" class="card"/>
+    <text x="1168" y="294" class="card-title">Selected feature modules</text>
+    <text x="1168" y="344" class="body">projects / exposed / aws</text>
+    <text x="1168" y="380" class="body">image / text / leader</text>
+      <path d="M460 335 H590" class="connector"/>
+      <text x="525" y="310" text-anchor="middle" class="label">apply BOM</text>
+      <path d="M990 335 H1120" class="connector"/>
+      <text x="1055" y="310" text-anchor="middle" class="label">align versions</text>
+      
+    <rect x="610" y="540" width="380" height="190" rx="24" class="warn"/>
+    <text x="638" y="594" class="card-title">Temporary version override</text>
+    <text x="638" y="644" class="body">Record reason and exit</text>
+    <text x="638" y="680" class="body">Return to BOM after proof</text>
+      <path d="M800 430 V520" class="connector"/>
+      <text x="828" y="482" class="label">documented exception only</text>
+      <line x1="80" y1="790" x2="1520" y2="790" class="divider"/>
+      <text x="800" y="836" text-anchor="middle" class="footer">The normal path is centrally aligned; an override is a traceable temporary exception.</text>
+</svg>

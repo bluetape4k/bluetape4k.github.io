@@ -149,7 +149,7 @@ when {
 |---|---|---|
 | `CONSUMED` | The token was consumed | Continue to the handler |
 | `REJECTED` | The bucket had insufficient tokens | Return `429` with `Retry-After` |
-| `ERROR` | Provider or Redis processing failed | Choose fail-open or fail-closed |
+| `ERROR` | Provider or Redis processing failed | Supplies failure detail to the caller |
 
 The distributed coroutine implementation,
 [`DistributedSuspendRateLimiter`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/infra/bucket4j/src/main/kotlin/io/bluetape4k/bucket4j/ratelimit/distributed/DistributedSuspendRateLimiter.kt),
@@ -162,8 +162,10 @@ val probe = bucketProxy.tryConsumeAndReturnRemaining(numToken).await()
 return toRateLimitResult(probe, numToken)
 ```
 
-That is the useful boundary for the workshop. The HTTP layer does not need to know Bucket4j probe internals. It only
-needs to map `RateLimitResult` to "continue", "429", or the chosen provider-failure policy.
+That is the useful boundary for the workshop. The HTTP layer does not need to know Bucket4j probe internals. The current
+`bucket4j-advanced` filters return `429` when a consumption result is not successful, while an exception thrown by
+`consume` is caught by the outer filter and handled with an explicit fail-open path. Result states and thrown failures
+therefore have distinct operational boundaries.
 
 ## The Identity from extractIp Becomes the Permit Key
 
@@ -196,10 +198,10 @@ if (result.isConsumed) {
 }
 ```
 
-The permit decision is `result.isConsumed`. If one token was consumed, the request reaches the handler. If
-`result.isRejected`, the filter returns `429 Too Many Requests` with `Retry-After` and never calls the handler. Because
-`DistributedSuspendRateLimiter` converts provider failures into `RateLimitResult.error`, the filter can make the
-fail-open or fail-closed decision explicitly at the HTTP boundary.
+The permit decision is `result.isConsumed`. If one token was consumed, the request reaches the handler. If consumption
+does not succeed, the filter returns `429 Too Many Requests` with `Retry-After` and never calls the handler. If the
+`consume` call itself throws, the surrounding `catch` logs the failure and lets the request continue. That exception
+path is the fail-open policy implemented by the current example.
 
 The identity extraction in front of that decision changes with proxy trust:
 

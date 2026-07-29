@@ -2,41 +2,41 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1160" height="680" viewBox="0 0 1160 680" role="img" aria-label="bluetape4k AWS Part 2 API layers">
   <defs>
     <style>
-      .title{font-family:'goorm Sans',cursive;font-size:34px;fill:#102033}
-      .subtitle,.caption,.body{font-family:'goorm Sans Code',monospace;fill:#334155}
-      .subtitle{font-size:15px}.label{font-family:'goorm Sans',cursive;font-size:22px;fill:#102033}.footerLabel{font-family:'goorm Sans',cursive;font-size:22px;fill:#ffffff}
-      .footerText{font-family:'goorm Sans Code',monospace;font-size:15px;fill:#e2e8f0}
-      .body{font-size:14px}.small{font-size:12px}.arrow{fill:none;stroke:#475569;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
-      .thin{fill:none;stroke:#94a3b8;stroke-width:1.4;stroke-dasharray:7 7}.panel{fill:#fff;stroke:#d7e2ef;stroke-width:1.4;rx:18}
+      .title{font-family:'goorm Sans',cursive;font-size:34px;fill:#e8eefc}
+      .subtitle,.caption,.body{font-family:'goorm Sans Code',monospace;fill:#b8c7dc}
+      .subtitle{font-size:15px}.label{font-family:'goorm Sans',cursive;font-size:22px;fill:#e8eefc}.footerLabel{font-family:'goorm Sans',cursive;font-size:22px;fill:#ffffff}
+      .footerText{font-family:'goorm Sans Code',monospace;font-size:15px;fill:#d8e4f5}
+      .body{font-size:14px}.small{font-size:12px}.arrow{fill:none;stroke:#6fb6e8;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+      .thin{fill:none;stroke:#6d87a8;stroke-width:1.4;stroke-dasharray:7 7}.panel{fill:#111d2f;stroke:#315270;stroke-width:1.4;rx:18}
     </style>
-    <marker id="arrow" viewBox="0 0 10 10" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#475569"/></marker>
+    <marker id="arrow" viewBox="0 0 10 10" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#6fb6e8" stroke="#6fb6e8" stroke-width="0" stroke-dasharray="none"/></marker>
   </defs>
-  <rect width="1160" height="680" fill="#ffffff"/>
+  <rect width="1160" height="680" fill="#0b1220"/>
   <text class="title" x="54" y="70">두 SDK 접근, 하나의 서비스 형태</text>
   <text class="subtitle" x="56" y="104">Java SDK v2는 넓은 범위를, Kotlin SDK는 네이티브 suspend 호출을 담당합니다. bluetape4k는 서비스 경계를 정리합니다.</text>
 
   <rect class="panel" x="54" y="138" width="1052" height="410"/>
-  <rect x="85" y="252" width="170" height="118" rx="14" fill="#ecfeff" stroke="#06b6d4" stroke-width="1.6"/>
+  <rect x="85" y="252" width="170" height="118" rx="14" fill="#10283c" stroke="#06b6d4" stroke-width="1.6"/>
   <text class="label" x="170" y="292" text-anchor="middle">Kotlin 서비스</text>
   <text class="body" x="170" y="323" text-anchor="middle">Spring Boot 4</text>
   <text class="body" x="170" y="346" text-anchor="middle">Ktor 3 / 워커</text>
 
-  <rect x="330" y="170" width="218" height="128" rx="14" fill="#e0f2fe" stroke="#38bdf8" stroke-width="1.6"/>
+  <rect x="330" y="170" width="218" height="128" rx="14" fill="#11283f" stroke="#38bdf8" stroke-width="1.6"/>
   <text class="label" x="439" y="210" text-anchor="middle">aws-java</text>
   <text class="body" x="439" y="241" text-anchor="middle">동기 / 비동기 클라이언트</text>
   <text class="body" x="439" y="264" text-anchor="middle">suspend 어댑터</text>
 
-  <rect x="330" y="358" width="218" height="128" rx="14" fill="#dcfce7" stroke="#22c55e" stroke-width="1.6"/>
+  <rect x="330" y="358" width="218" height="128" rx="14" fill="#102a24" stroke="#22c55e" stroke-width="1.6"/>
   <text class="label" x="439" y="398" text-anchor="middle">aws-kotlin</text>
   <text class="body" x="439" y="429" text-anchor="middle">네이티브 suspend API</text>
   <text class="body" x="439" y="452" text-anchor="middle">DSL과 생명주기 도우미</text>
 
-  <rect x="630" y="170" width="218" height="128" rx="14" fill="#fff7ed" stroke="#fb923c" stroke-width="1.6"/>
+  <rect x="630" y="170" width="218" height="128" rx="14" fill="#2b2117" stroke="#fb923c" stroke-width="1.6"/>
   <text class="label" x="739" y="210" text-anchor="middle">Java SDK v2</text>
   <text class="body" x="739" y="241" text-anchor="middle">CompletableFuture async</text>
   <text class="body" x="739" y="264" text-anchor="middle">CRT S3 전송 경로</text>
 
-  <rect x="630" y="358" width="218" height="128" rx="14" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.6"/>
+  <rect x="630" y="358" width="218" height="128" rx="14" fill="#2a2615" stroke="#f59e0b" stroke-width="1.6"/>
   <text class="label" x="739" y="398" text-anchor="middle">Kotlin SDK</text>
   <text class="body" x="739" y="429" text-anchor="middle">suspend 작업</text>
   <text class="body" x="739" y="452" text-anchor="middle">CRT 기본 엔진</text>
@@ -48,7 +48,7 @@
   <polyline class="arrow" points="848,234 880,234 880,322 910,322"/>
   <polyline class="arrow" points="848,422 880,422 880,362 910,362"/>
 
-  <rect x="910" y="278" width="162" height="128" rx="14" fill="#f8fafc" stroke="#64748b" stroke-width="1.6"/>
+  <rect x="910" y="278" width="162" height="128" rx="14" fill="#12243a" stroke="#86a2c2" stroke-width="1.6"/>
   <text class="label" x="991" y="318" text-anchor="middle">AWS 서비스</text>
   <text class="body" x="991" y="349" text-anchor="middle">S3, SQS, DynamoDB</text>
   <text class="body" x="991" y="372" text-anchor="middle">Kinesis, KMS, SES</text>

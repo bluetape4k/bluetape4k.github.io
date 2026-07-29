@@ -1,113 +1,113 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1900" height="860" viewBox="0 0 1900 860">
 <defs>
-  <marker id="arrow" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse">
-    <path d="M 0 0 L 14 7 L 0 14 Z" fill="#496A8F" stroke="#496A8F"/>
+  <marker id="arrow" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">
+    <path d="M 0 0 L 10 5 L 0 10 Z" fill="#60A5FA"/>
   </marker>
   <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
     <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#22344A" flood-opacity="0.12"/>
   </filter>
   <style>
-    .canvas{fill:#F6F9FC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
-    .title{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:42px;fill:#22344A;font-weight:400}
-    .subtitle,.footer,.axis{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:17px;fill:#536476;font-weight:400}
-    .nodeTitle,.participant{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:24px;fill:#22344A;font-weight:400}
-    .nodeBody,.labelText,.num{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:16px;fill:#3F5269;font-weight:400}
-    .tableTitle{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:24px;fill:#22344A;font-weight:400}
-    .tableField,.edgeLabel{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:15px;fill:#3F5269;font-weight:400}
-    .edge{fill:none;stroke:#496A8F;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
-    .bus{fill:none;stroke:#496A8F;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
-    .lifeline{stroke:#91A6BD;stroke-width:2;stroke-dasharray:8 8}
+    .canvas{fill:#07111F}.frame{fill:#0F172A;stroke:#334155;stroke-width:2}
+    .title{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:42px;fill:#F8FAFC;font-weight:400}
+    .subtitle,.footer,.axis{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:17px;fill:#CBD5E1;font-weight:400}
+    .nodeTitle,.participant{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:24px;fill:#F8FAFC;font-weight:400}
+    .nodeBody,.labelText,.num{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:16px;fill:#E2E8F0;font-weight:400}
+    .tableTitle{font-family:"goorm Sans","Architects Daughter","Comic Sans MS",sans-serif;font-size:24px;fill:#F8FAFC;font-weight:400}
+    .tableField,.edgeLabel{font-family:"goorm Sans Code","goorm Sans","Comic Mono","Comic Sans MS",monospace;font-size:15px;fill:#E2E8F0;font-weight:400}
+    .edge{fill:none;stroke:#60A5FA;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    .bus{fill:none;stroke:#60A5FA;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+    .lifeline{stroke:#64748B;stroke-width:2;stroke-dasharray:8 8}
     g[id]{filter:url(#shadow)}
   </style>
 </defs>
 <rect class="canvas" width="1900" height="860"/>
 <rect class="frame" x="34" y="28" width="1832" height="804" rx="24"/>
-<text class="title" x="950" y="82" text-anchor="middle">Abuser Detection 엔터티 그래프</text>
-<text class="subtitle" x="950" y="118" text-anchor="middle">사용자는 identifier와 연결되고 공유 identifier가 review evidence가 된다</text>
+<text class="title" x="950" y="82" text-anchor="middle">어뷰저 탐지 엔터티 그래프</text>
+<text class="subtitle" x="950" y="118" text-anchor="middle">사용자와 식별자를 연결하고 공유 관계를 검토 근거로 사용한다</text>
 <g>
   <path class="edge" data-connector="user-to-device" d="M400 355 L438 355 Q456 355 456 339 L456 339 Q456 322 474 322 L560 322"/>
-  <rect x="395" y="312" width="122" height="28" rx="8" fill="#FFFFFF" stroke="#D7E2EC"/>
+  <rect x="395" y="312" width="122" height="28" rx="8" fill="#0F172A" stroke="#334155"/>
   <text class="edgeLabel" x="456" y="331" text-anchor="middle">USES_DEVICE</text>
 </g>
 <g>
-  <path class="edge" data-connector="user-to-phone" d="M400 391 L670 391 Q688 391 688 373 L688 325 Q688 307 706 307 L1000 307"/>
-  <rect x="628" y="322" width="120" height="28" rx="8" fill="#FFFFFF" stroke="#D7E2EC"/>
-  <text class="edgeLabel" x="688" y="341" text-anchor="middle">HAS_PHONE</text>
+  <path class="edge" data-connector="user-to-phone" d="M229 339 L229 223 Q229 205 247 205 L927 205 Q945 205 945 223 L945 289 Q945 307 963 307 L1000 307"/>
+  <rect x="527" y="178" width="120" height="28" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text class="edgeLabel" x="587" y="197" text-anchor="middle">HAS_PHONE</text>
 </g>
 <g>
   <path class="edge" data-connector="user-to-referral" d="M400 432 L1450 432"/>
-  <rect x="864" y="405" width="122" height="28" rx="8" fill="#FFFFFF" stroke="#D7E2EC"/>
+  <rect x="864" y="405" width="122" height="28" rx="8" fill="#0F172A" stroke="#334155"/>
   <text class="edgeLabel" x="925" y="424" text-anchor="middle">REFERRED_BY</text>
 </g>
 <g>
   <path class="edge" data-connector="user-to-payment" d="M400 463 L694 463 Q712 463 712 481 L712 574 Q712 592 730 592 L1000 592"/>
-  <rect x="647" y="501" width="130" height="28" rx="8" fill="#FFFFFF" stroke="#D7E2EC"/>
+  <rect x="647" y="501" width="130" height="28" rx="8" fill="#0F172A" stroke="#334155"/>
   <text class="edgeLabel" x="712" y="520" text-anchor="middle">USES_PAYMENT</text>
 </g>
 <g>
   <path class="edge" data-connector="user-to-ip" d="M400 499 L486 499 Q504 499 504 517 L504 574 Q504 592 522 592 L560 592"/>
-  <rect x="444" y="519" width="120" height="28" rx="8" fill="#FFFFFF" stroke="#D7E2EC"/>
+  <rect x="444" y="519" width="120" height="28" rx="8" fill="#0F172A" stroke="#334155"/>
   <text class="edgeLabel" x="504" y="538" text-anchor="middle">USES_IP</text>
 </g>
 <g id="user">
-  <rect x="130" y="339" width="270" height="176" rx="8" fill="#EAF4FF" stroke="#7B8CA3" stroke-width="2"/>
-  <rect x="130" y="339" width="270" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
-  <line x1="130" y1="387" x2="400" y2="387" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="tableTitle" x="265" y="370" text-anchor="middle">User</text>
-  <line x1="130" y1="387" x2="400" y2="387" stroke="#D7E2EC"/>
+  <rect x="130" y="339" width="270" height="176" rx="8" fill="#0C4A6E" stroke="#64748B" stroke-width="2"/>
+  <rect x="130" y="339" width="270" height="48" rx="8" fill="#0F172A" fill-opacity="0.58" stroke="#64748B" stroke-width="2"/>
+  <line x1="130" y1="387" x2="400" y2="387" stroke="#64748B" stroke-width="2"/>
+  <text class="tableTitle" x="265" y="370" text-anchor="middle">사용자</text>
+  <line x1="130" y1="387" x2="400" y2="387" stroke="#334155"/>
   <text class="tableField" x="148" y="408">userId</text>
-  <line x1="130" y1="417" x2="400" y2="417" stroke="#D7E2EC"/>
+  <line x1="130" y1="417" x2="400" y2="417" stroke="#334155"/>
   <text class="tableField" x="148" y="438">email</text>
-  <line x1="130" y1="447" x2="400" y2="447" stroke="#D7E2EC"/>
-  <text class="tableField" x="148" y="468">risk field</text>
+  <line x1="130" y1="447" x2="400" y2="447" stroke="#334155"/>
+  <text class="tableField" x="148" y="468">위험 속성</text>
 </g>
 <g id="device">
-  <rect x="560" y="249" width="270" height="146" rx="8" fill="#FFF4D9" stroke="#7B8CA3" stroke-width="2"/>
-  <rect x="560" y="249" width="270" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
-  <line x1="560" y1="297" x2="830" y2="297" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="tableTitle" x="695" y="280" text-anchor="middle">Device</text>
-  <line x1="560" y1="297" x2="830" y2="297" stroke="#D7E2EC"/>
+  <rect x="560" y="249" width="270" height="146" rx="8" fill="#78350F" stroke="#64748B" stroke-width="2"/>
+  <rect x="560" y="249" width="270" height="48" rx="8" fill="#0F172A" fill-opacity="0.58" stroke="#64748B" stroke-width="2"/>
+  <line x1="560" y1="297" x2="830" y2="297" stroke="#64748B" stroke-width="2"/>
+  <text class="tableTitle" x="695" y="280" text-anchor="middle">기기</text>
+  <line x1="560" y1="297" x2="830" y2="297" stroke="#334155"/>
   <text class="tableField" x="578" y="318">deviceId</text>
-  <line x1="560" y1="327" x2="830" y2="327" stroke="#D7E2EC"/>
+  <line x1="560" y1="327" x2="830" y2="327" stroke="#334155"/>
   <text class="tableField" x="578" y="348">fingerprint</text>
 </g>
 <g id="ip">
-  <rect x="560" y="519" width="270" height="146" rx="8" fill="#EAF8EF" stroke="#7B8CA3" stroke-width="2"/>
-  <rect x="560" y="519" width="270" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
-  <line x1="560" y1="567" x2="830" y2="567" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="tableTitle" x="695" y="550" text-anchor="middle">IpAddress</text>
-  <line x1="560" y1="567" x2="830" y2="567" stroke="#D7E2EC"/>
+  <rect x="560" y="519" width="270" height="146" rx="8" fill="#14532D" stroke="#64748B" stroke-width="2"/>
+  <rect x="560" y="519" width="270" height="48" rx="8" fill="#0F172A" fill-opacity="0.58" stroke="#64748B" stroke-width="2"/>
+  <line x1="560" y1="567" x2="830" y2="567" stroke="#64748B" stroke-width="2"/>
+  <text class="tableTitle" x="695" y="550" text-anchor="middle">IP 주소</text>
+  <line x1="560" y1="567" x2="830" y2="567" stroke="#334155"/>
   <text class="tableField" x="578" y="588">address</text>
-  <line x1="560" y1="597" x2="830" y2="597" stroke="#D7E2EC"/>
+  <line x1="560" y1="597" x2="830" y2="597" stroke="#334155"/>
   <text class="tableField" x="578" y="618">network</text>
 </g>
 <g id="phone">
-  <rect x="1000" y="249" width="270" height="116" rx="8" fill="#F3ECFF" stroke="#7B8CA3" stroke-width="2"/>
-  <rect x="1000" y="249" width="270" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
-  <line x1="1000" y1="297" x2="1270" y2="297" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="tableTitle" x="1135" y="280" text-anchor="middle">PhoneNumber</text>
-  <line x1="1000" y1="297" x2="1270" y2="297" stroke="#D7E2EC"/>
+  <rect x="1000" y="249" width="270" height="116" rx="8" fill="#4C1D95" stroke="#64748B" stroke-width="2"/>
+  <rect x="1000" y="249" width="270" height="48" rx="8" fill="#0F172A" fill-opacity="0.58" stroke="#64748B" stroke-width="2"/>
+  <line x1="1000" y1="297" x2="1270" y2="297" stroke="#64748B" stroke-width="2"/>
+  <text class="tableTitle" x="1135" y="280" text-anchor="middle">전화번호</text>
+  <line x1="1000" y1="297" x2="1270" y2="297" stroke="#334155"/>
   <text class="tableField" x="1018" y="318">phoneHash</text>
 </g>
 <g id="payment">
-  <rect x="1000" y="519" width="270" height="146" rx="8" fill="#FFF0E8" stroke="#7B8CA3" stroke-width="2"/>
-  <rect x="1000" y="519" width="270" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
-  <line x1="1000" y1="567" x2="1270" y2="567" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="tableTitle" x="1135" y="550" text-anchor="middle">PaymentMethod</text>
-  <line x1="1000" y1="567" x2="1270" y2="567" stroke="#D7E2EC"/>
+  <rect x="1000" y="519" width="270" height="146" rx="8" fill="#7C2D12" stroke="#64748B" stroke-width="2"/>
+  <rect x="1000" y="519" width="270" height="48" rx="8" fill="#0F172A" fill-opacity="0.58" stroke="#64748B" stroke-width="2"/>
+  <line x1="1000" y1="567" x2="1270" y2="567" stroke="#64748B" stroke-width="2"/>
+  <text class="tableTitle" x="1135" y="550" text-anchor="middle">결제 수단</text>
+  <line x1="1000" y1="567" x2="1270" y2="567" stroke="#334155"/>
   <text class="tableField" x="1018" y="588">paymentToken</text>
-  <line x1="1000" y1="597" x2="1270" y2="597" stroke="#D7E2EC"/>
+  <line x1="1000" y1="597" x2="1270" y2="597" stroke="#334155"/>
   <text class="tableField" x="1018" y="618">provider</text>
 </g>
 <g id="referral">
-  <rect x="1450" y="379" width="270" height="116" rx="8" fill="#E9F7F5" stroke="#7B8CA3" stroke-width="2"/>
-  <rect x="1450" y="379" width="270" height="48" rx="8" fill="#FFFFFF" fill-opacity="0.45" stroke="#7B8CA3" stroke-width="2"/>
-  <line x1="1450" y1="427" x2="1720" y2="427" stroke="#7B8CA3" stroke-width="2"/>
-  <text class="tableTitle" x="1585" y="410" text-anchor="middle">User</text>
-  <line x1="1450" y1="427" x2="1720" y2="427" stroke="#D7E2EC"/>
+  <rect x="1450" y="379" width="270" height="116" rx="8" fill="#134E4A" stroke="#64748B" stroke-width="2"/>
+  <rect x="1450" y="379" width="270" height="48" rx="8" fill="#0F172A" fill-opacity="0.58" stroke="#64748B" stroke-width="2"/>
+  <line x1="1450" y1="427" x2="1720" y2="427" stroke="#64748B" stroke-width="2"/>
+  <text class="tableTitle" x="1585" y="410" text-anchor="middle">추천 사용자</text>
+  <line x1="1450" y1="427" x2="1720" y2="427" stroke="#334155"/>
   <text class="tableField" x="1468" y="448">referrer user</text>
 </g>
-<rect x="88" y="764" width="1724" height="62" rx="12" fill="#F8FBFE" stroke="#D7E2EC"/>
-<text class="footer" x="950" y="789" text-anchor="middle">graph에는 raw phone number나 card data가 아니라 hash와 safe token만 저장한다.</text>
-<text class="footer" x="950" y="813" text-anchor="middle">같은 identifier vertex가 여러 user로 되돌아갈 때 cluster signal이 생긴다.</text>
+<rect x="88" y="764" width="1724" height="62" rx="12" fill="#111827" stroke="#334155"/>
+<text class="footer" x="950" y="789" text-anchor="middle">그래프에는 원문 전화번호나 카드 정보가 아니라 해시와 안전한 토큰만 저장한다.</text>
+<text class="footer" x="950" y="813" text-anchor="middle">같은 식별자 정점이 여러 사용자와 연결되면 탐지 클러스터의 근거가 된다.</text>
 </svg>

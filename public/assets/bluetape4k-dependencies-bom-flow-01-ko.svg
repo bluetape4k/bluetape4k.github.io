@@ -1,143 +1,35 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760" role="img" aria-labelledby="title desc">
-  <title id="title">Bluetape4k Dependencies BOM 흐름</title>
-  <desc id="desc">각 저장소의 BOM과 외부 dependency line을 bluetape4k-dependencies 중앙 BOM으로 모아 사용자가 하나의 platform dependency로 가져가는 흐름.</desc>
-  <defs>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
-      <feDropShadow dx="0" dy="14" stdDeviation="12" flood-color="#1f2937" flood-opacity="0.14"/>
-    </filter>
-    <marker id="arrow-blue" markerWidth="14" markerHeight="14" viewBox="0 0 10 10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse">
-      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb" stroke="#2563eb" stroke-width="1" stroke-dasharray="none" style="stroke-dasharray:none"/>
-    </marker>
-    <marker id="arrow-green" markerWidth="14" markerHeight="14" viewBox="0 0 10 10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse">
-      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#16a34a" stroke="#16a34a" stroke-width="1" stroke-dasharray="none" style="stroke-dasharray:none"/>
-    </marker>
-    <marker id="arrow-purple" markerWidth="14" markerHeight="14" viewBox="0 0 10 10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse">
-      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed" stroke="#7c3aed" stroke-width="1" stroke-dasharray="none" style="stroke-dasharray:none"/>
-    </marker>
-  </defs>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="980" viewBox="0 0 1600 980" role="img" aria-labelledby="title desc">
+  <title id="title">중앙 BOM이 공개하는 호환 버전 조합</title><desc id="desc">저장소별 BOM은 모듈 목록을, 중앙 BOM은 함께 사용할 버전 조합을 책임집니다.</desc>
+  <defs><marker id="arrow" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L13,7 L1,13 Z" fill="#36C5F0"/></marker></defs>
   <style>
-    text {
-      font-family: "goorm Sans Code", "D2Coding", monospace;
-      fill: #24364f;
-    }
-    .title {
-      font-family: "goorm Sans", sans-serif;
-      font-size: 42px;
-      fill: #17253f;
-    }
-    .subtitle {
-      font-size: 18px;
-      fill: #5d6f88;
-    }
-    .lane-title {
-      font-family: "goorm Sans", sans-serif;
-      font-size: 24px;
-      fill: #24364f;
-    }
-    .card-title {
-      font-size: 18px;
-      font-weight: 700;
-      fill: #17253f;
-    }
-    .card-subtitle {
-      font-size: 14px;
-      fill: #5d6f88;
-    }
-    .small {
-      font-size: 13px;
-      fill: #5d6f88;
-    }
-    .chip {
-      font-size: 14px;
-      font-weight: 700;
-      fill: #24364f;
-    }
-    .flow-label {
-      font-size: 15px;
-      font-weight: 700;
-      fill: #2563eb;
-    }
-    .footer {
-      font-family: "goorm Sans", sans-serif;
-      font-size: 20px;
-      fill: #334155;
-    }
+    .canvas{fill:#07111F}.frame{fill:#0D1B2D;stroke:#36536F;stroke-width:2}.card{fill:#10243A;stroke:#36536F;stroke-width:2}
+    .focus{fill:#0C3044;stroke:#5EEAD4;stroke-width:2.5}.warn{fill:#332B18;stroke:#FBBF24;stroke-width:2}
+    .title{font:700 40px "goorm Sans","Apple SD Gothic Neo",sans-serif;fill:#E6F2FF}.subtitle{font:500 20px "goorm Sans Code","goorm Sans",monospace;fill:#9CB4CC}
+    .card-title{font:700 24px "goorm Sans","Apple SD Gothic Neo",sans-serif;fill:#E6F2FF}.body{font:600 18px "goorm Sans Code","goorm Sans",monospace;fill:#9CB4CC}
+    .chip{font:700 16px "goorm Sans Code","goorm Sans",monospace;fill:#5EEAD4}.label{font:700 16px "goorm Sans Code","goorm Sans",monospace;fill:#36C5F0}
+    .connector{fill:none;stroke:#36C5F0;stroke-width:4;marker-end:url(#arrow)}.divider{stroke:#36536F;stroke-width:2}
+    .footer{font:600 18px "goorm Sans Code","goorm Sans",monospace;fill:#9CB4CC}
   </style>
+  <rect width="1600" height="980" class="canvas"/><rect x="32" y="32" width="1536" height="916" rx="32" class="frame"/>
+  <text x="80" y="98" class="title">중앙 BOM이 공개하는 호환 버전 조합</text><text x="80" y="138" class="subtitle">각 저장소의 BOM과 외부 호환선을 중앙 BOM이 조합하고, 소비자는 버전 없는 모듈 의존성을 선언합니다.</text>
 
-  <rect x="0" y="0" width="1400" height="760" fill="#f6f9fc"/>
-  <rect x="34" y="28" width="1332" height="704" rx="26" fill="#ffffff" stroke="#cbdbea" stroke-width="2"/>
-
-  <text class="title" x="72" y="86">Bluetape4k Dependencies BOM 흐름</text>
-  <text class="subtitle" x="74" y="124">저장소별 BOM을 먼저 배포한 뒤, 사용자가 모듈 버전 없이 가져갈 중앙 BOM을 배포합니다.</text>
-
-  <rect x="76" y="166" width="430" height="452" rx="18" fill="#eef6ff" stroke="#93c5fd" stroke-width="2" filter="url(#shadow)"/>
-  <text class="lane-title" x="106" y="210">저장소별 BOM</text>
-  <text class="small" x="108" y="236">각 저장소가 자기 모듈 계열을 책임집니다.</text>
-
-  <g>
-    <rect x="108" y="270" width="168" height="48" rx="12" fill="#ffffff" stroke="#bfdbfe" stroke-width="1.5"/>
-    <text class="chip" x="192" y="300" text-anchor="middle">projects BOM</text>
-    <rect x="306" y="270" width="168" height="48" rx="12" fill="#ffffff" stroke="#bfdbfe" stroke-width="1.5"/>
-    <text class="chip" x="390" y="300" text-anchor="middle">exposed BOM</text>
-
-    <rect x="108" y="338" width="168" height="48" rx="12" fill="#ffffff" stroke="#bfdbfe" stroke-width="1.5"/>
-    <text class="chip" x="192" y="368" text-anchor="middle">aws BOM</text>
-    <rect x="306" y="338" width="168" height="48" rx="12" fill="#ffffff" stroke="#bfdbfe" stroke-width="1.5"/>
-    <text class="chip" x="390" y="368" text-anchor="middle">image BOM</text>
-
-    <rect x="108" y="406" width="168" height="48" rx="12" fill="#ffffff" stroke="#bfdbfe" stroke-width="1.5"/>
-    <text class="chip" x="192" y="436" text-anchor="middle">text BOM</text>
-    <rect x="306" y="406" width="168" height="48" rx="12" fill="#ffffff" stroke="#bfdbfe" stroke-width="1.5"/>
-    <text class="chip" x="390" y="436" text-anchor="middle">graph BOM</text>
-
-    <rect x="108" y="474" width="168" height="48" rx="12" fill="#ffffff" stroke="#bfdbfe" stroke-width="1.5"/>
-    <text class="chip" x="192" y="504" text-anchor="middle">leader BOM</text>
-    <rect x="306" y="474" width="168" height="48" rx="12" fill="#ffffff" stroke="#bfdbfe" stroke-width="1.5"/>
-    <text class="chip" x="390" y="504" text-anchor="middle">javers BOM</text>
-  </g>
-
-  <rect x="558" y="166" width="332" height="452" rx="20" fill="#f0fdf4" stroke="#86efac" stroke-width="2" filter="url(#shadow)"/>
-  <rect x="600" y="272" width="248" height="172" rx="18" fill="#ffffff" stroke="#86efac" stroke-width="2"/>
-  <text class="card-title" x="724" y="318" text-anchor="middle">bluetape4k-dependencies</text>
-  <text class="card-subtitle" x="724" y="346" text-anchor="middle">Maven Central BOM</text>
-  <text class="small" x="724" y="382" text-anchor="middle">하위 BOM을 가져오고</text>
-  <text class="small" x="724" y="408" text-anchor="middle">외부 버전을 정렬</text>
-
-  <rect x="600" y="484" width="248" height="74" rx="14" fill="#ecfdf5" stroke="#bbf7d0" stroke-width="1.5"/>
-  <text class="card-title" x="724" y="514" text-anchor="middle">BOM 버전 하나</text>
-  <text class="card-subtitle" x="724" y="540" text-anchor="middle">사용자는 모듈 버전을 생략</text>
-
-  <rect x="582" y="138" width="284" height="56" rx="14" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5"/>
-  <text class="card-title" x="724" y="164" text-anchor="middle">외부 dependency 계열</text>
-  <text class="card-subtitle" x="724" y="185" text-anchor="middle">Spring Boot, Ktor, Netty, AWS SDK</text>
-
-  <rect x="942" y="166" width="382" height="452" rx="18" fill="#fff7ed" stroke="#fdba74" stroke-width="2" filter="url(#shadow)"/>
-  <text class="lane-title" x="976" y="210">사용자</text>
-  <text class="small" x="978" y="236">platform dependency 하나만 가져옵니다.</text>
-
-  <rect x="992" y="286" width="282" height="70" rx="14" fill="#ffffff" stroke="#fed7aa" stroke-width="1.5"/>
-  <text class="card-title" x="1133" y="316" text-anchor="middle">애플리케이션</text>
-  <text class="card-subtitle" x="1133" y="340" text-anchor="middle">버전 없는 bluetape4k 모듈</text>
-
-  <rect x="992" y="386" width="282" height="70" rx="14" fill="#ffffff" stroke="#fed7aa" stroke-width="1.5"/>
-  <text class="card-title" x="1133" y="416" text-anchor="middle">워크숍 / 예제</text>
-  <text class="card-subtitle" x="1133" y="440" text-anchor="middle">문서와 같은 dependency graph</text>
-
-  <rect x="992" y="486" width="282" height="70" rx="14" fill="#ffffff" stroke="#fed7aa" stroke-width="1.5"/>
-  <text class="card-title" x="1133" y="516" text-anchor="middle">라이브러리 저장소</text>
-  <text class="card-subtitle" x="1133" y="540" text-anchor="middle">공통 정책으로 관리하는 버전</text>
-
-  <path d="M 506 392 H 600" fill="none" stroke="#2563eb" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
-  <text class="flow-label" x="528" y="374">조합</text>
-
-  <path d="M 724 194 V 258" fill="none" stroke="#7c3aed" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow-purple)"/>
-  <text class="small" x="742" y="238">관리 대상</text>
-
-  <path d="M 848 321 H 992" fill="none" stroke="#16a34a" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-green)"/>
-  <path d="M 848 421 H 992" fill="none" stroke="#16a34a" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-green)"/>
-  <path d="M 848 521 H 992" fill="none" stroke="#16a34a" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-green)"/>
-  <text class="flow-label" x="876" y="302" fill="#16a34a">platform 가져오기</text>
-
-  <rect x="86" y="656" width="1228" height="42" rx="14" fill="#f8fafc" stroke="#dbeafe" stroke-width="1.5"/>
-  <text class="footer" x="700" y="684" text-anchor="middle">사용자는 BOM 버전 하나만 고르고, bluetape4k 모듈 dependency에는 버전을 적지 않습니다.</text>
+    <rect x="80" y="270" width="400" height="220" rx="24" class="card"/>
+  <text x="108" y="322" class="card-title">저장소별 BOM</text>
+  <text x="108" y="368" class="body">projects / exposed / aws / image</text>
+<text x="108" y="406" class="body">text / graph / leader / javers</text>
+    <rect x="600" y="240" width="400" height="280" rx="24" class="focus"/>
+  <text x="628" y="292" class="card-title">bluetape4k-dependencies</text>
+  <text x="628" y="338" class="body">하위 BOM 조합</text>
+<text x="628" y="376" class="body">외부 의존성 호환선</text>
+    <rect x="1120" y="270" width="400" height="220" rx="24" class="card"/>
+  <text x="1148" y="322" class="card-title">소비자 프로젝트</text>
+  <text x="1148" y="368" class="body">애플리케이션 / 워크숍</text>
+<text x="1148" y="406" class="body">필요한 모듈만 선언</text>
+    <path d="M480 380 H580" class="connector"/><text x="530" y="350" text-anchor="middle" class="label">배포된 BOM 가져오기</text>
+    <path d="M1000 380 H1100" class="connector"/><text x="1050" y="350" text-anchor="middle" class="label">중앙 BOM 적용</text>
+    <rect x="600" y="600" width="400" height="94" rx="20" class="card"/>
+    <text x="800" y="640" text-anchor="middle" class="chip">api(platform(...))</text>
+    <text x="800" y="674" text-anchor="middle" class="body">Maven POM dependencyManagement</text><line x1="80" y1="830" x2="1520" y2="830" class="divider"/>
+  <text x="800" y="884" text-anchor="middle" class="footer">저장소별 BOM은 모듈 목록을, 중앙 BOM은 함께 사용할 버전 조합을 책임집니다.</text>
 </svg>

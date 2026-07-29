@@ -68,7 +68,7 @@ test('blog technical diagrams use explicit locale assets with matching SVG sourc
     }
   }
 
-  assert.equal(stems.size, 164);
+  assert.equal(stems.size, 173);
 });
 
 test('paired English and Korean posts reference the same technical diagram stems', async () => {
@@ -181,4 +181,86 @@ test('cache workshop article excludes the invalid benchmark and keeps canonical 
     'utf8',
   );
   assert.doesNotMatch(generator, /cache-series-workshop-profile-01|ProductCacheService/);
+});
+
+test('clinic completion articles separate implemented boundaries from reference designs', async () => {
+  const clinic = {
+    en: await readFile(
+      path.join(root, 'src/content/docs/blog/clinic-appointment-part7-review-and-operational-evolution.mdx'),
+      'utf8',
+    ),
+    ko: await readFile(
+      path.join(root, 'src/content/docs/ko/blog/clinic-appointment-part7-review-and-operational-evolution.mdx'),
+      'utf8',
+    ),
+  };
+  assert.match(clinic.en, /Network-retry idempotency is therefore an implemented boundary/);
+  assert.match(clinic.en, /Capacity integrity remains separate/);
+  assert.match(clinic.ko, /요청 멱등성은 현재 구현된\s+경계/);
+  assert.match(clinic.ko, /수용 인원 무결성은 여전히 남은 경계/);
+
+  const timefold = {
+    en: await readFile(
+      path.join(root, 'src/content/docs/blog/timefold-workshop-quickstarts-exposed-persistence.mdx'),
+      'utf8',
+    ),
+    ko: await readFile(
+      path.join(root, 'src/content/docs/ko/blog/timefold-workshop-quickstarts-exposed-persistence.mdx'),
+      'utf8',
+    ),
+  };
+  assert.match(timefold.en, /application reference design, not a set of services currently implemented/);
+  assert.match(timefold.en, /does not implement the `OptimizationJobService`/);
+  assert.match(timefold.ko, /애플리케이션이 채울 수 있는 참조 설계/);
+  assert.match(timefold.ko, /현재 `timefold-workshop`에는 이 그림의 `OptimizationJobService`/);
+});
+
+test('architecture boundary articles keep localized diagram titles and precise recovery semantics', async () => {
+  const articles = {
+    javers: {
+      en: await readFile(
+        path.join(root, 'src/content/docs/blog/bluetape4k-javers-part4-audit-cost.mdx'),
+        'utf8',
+      ),
+      ko: await readFile(
+        path.join(root, 'src/content/docs/ko/blog/bluetape4k-javers-part4-audit-cost.mdx'),
+        'utf8',
+      ),
+    },
+    modulith: {
+      ko: await readFile(
+        path.join(root, 'src/content/docs/ko/blog/spring-modulith-publications-vs-outbox.mdx'),
+        'utf8',
+      ),
+    },
+    multitenancy: {
+      ko: await readFile(
+        path.join(root, 'src/content/docs/ko/blog/exposed-r2dbc-webflux-multitenancy-lifecycle.mdx'),
+        'utf8',
+      ),
+    },
+  };
+
+  for (const title of [
+    '감사 이력 비용이 발생하는 지점',
+    '감사 저장 경로별 평균 처리 시간',
+    '커밋 메타데이터 인덱스별 처리량',
+  ]) {
+    assert.match(articles.javers.ko, new RegExp(`data-diagram-title="${title}"`));
+  }
+  for (const title of [
+    'Where audit-history cost occurs',
+    'Mean operation time by audit path',
+    'Commit-metadata throughput by index configuration',
+  ]) {
+    assert.match(articles.javers.en, new RegExp(`data-diagram-title="${title}"`));
+  }
+
+  assert.match(articles.modulith.ko, /원래 트랜잭션 안에서 리스너별 발행 기록을 저장/);
+  assert.match(articles.modulith.ko, /커밋 뒤 리스너가 성공적으로 끝난 경우에만 행을 완료 상태로/);
+  assert.doesNotMatch(articles.modulith.ko, /가벼운 아웃박스|경량 아웃박스/);
+
+  assert.match(articles.multitenancy.ko, /권한 확인이 Reactor Context 공개보다 앞선다/);
+  assert.match(articles.multitenancy.ko, /생명주기 행은 `FAILED`/);
+  assert.doesNotMatch(articles.multitenancy.ko, /수명주기 행/);
 });

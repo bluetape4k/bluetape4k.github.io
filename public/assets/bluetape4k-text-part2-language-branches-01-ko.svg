@@ -1,101 +1,82 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="760" viewBox="0 0 1440 760" role="img" aria-labelledby="title desc">
-  <title id="title">Language-specific tokenizer branches</title>
-  <desc id="desc">Raw service text is validated, routed by language detection, and then sent to Korean tokenizer, Japanese tokenizer, or generic normalization paths.</desc>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="980" viewBox="0 0 1600 980" role="img" aria-labelledby="title desc">
+  <title id="title">다국어 텍스트 입력의 검증과 처리 경계</title>
+  <desc id="desc">HTTP 본문 제한, 문자열 검증, Lingua 언어 감지, 한국어와 일본어 및 일반 처리 경로, 애플리케이션 정책의 책임을 구분한 흐름</desc>
   <defs>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
-      <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#15314d" flood-opacity="0.16"/>
-    </filter>
-    <marker id="arrow-blue" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
-      <path d="M 0 0 L 14 7 L 0 14 Z" fill="#2f6eea" stroke="#2f6eea"/>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 0 L 14 7 L 0 14 Z" fill="#60A5FA"/>
     </marker>
-    <marker id="arrow-green" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
-      <path d="M 0 0 L 14 7 L 0 14 Z" fill="#20a66a" stroke="#20a66a"/>
-    </marker>
-    <marker id="arrow-purple" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
-      <path d="M 0 0 L 14 7 L 0 14 Z" fill="#7a52d8" stroke="#7a52d8"/>
-    </marker>
-    <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#f7fbff"/>
-      <stop offset="58%" stop-color="#eef7f3"/>
-      <stop offset="100%" stop-color="#fff7ec"/>
-    </linearGradient>
-    <style>
-      .canvas { fill: url(#canvas); }
-      .title { font-family: "goorm Sans", sans-serif; fill: #18314f; font-size: 38px; font-weight: 700; letter-spacing: 0; }
-      .subtitle { font-family: "goorm Sans Code", monospace; fill: #4e647e; font-size: 18px; letter-spacing: 0; }
-      .card { filter: url(#shadow); }
-      .card-bg { stroke-width: 2.5; rx: 22; }
-      .card-title { font-family: "goorm Sans", sans-serif; fill: #16263c; font-size: 25px; font-weight: 700; letter-spacing: 0; }
-      .card-sub { font-family: "goorm Sans Code", monospace; fill: #344b66; font-size: 16px; letter-spacing: 0; }
-      .tag { font-family: "goorm Sans Code", monospace; fill: #1d3a59; font-size: 14px; letter-spacing: 0; }
-      .small { font-family: "goorm Sans Code", monospace; fill: #536a83; font-size: 13px; letter-spacing: 0; }
-      .connector-blue { fill: none; stroke: #2f6eea; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-blue); }
-      .connector-green { fill: none; stroke: #20a66a; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-green); }
-      .connector-purple { fill: none; stroke: #7a52d8; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-purple); }
-      .guide { fill: #ffffff; stroke: #d9e5ef; stroke-width: 2; rx: 18; }
-    </style>
   </defs>
-
-  <rect class="canvas" width="1440" height="760"/>
-  <text class="title" x="72" y="70">언어별 토크나이저 분기</text>
-  <text class="subtitle" x="74" y="106">입력을 먼저 검증하고 언어는 한 번만 감지한 뒤, 필요한 최소 처리 경로를 고릅니다.</text>
-
-  <g class="card" transform="translate(70 282)">
-    <rect class="card-bg" width="190" height="120" fill="#ffffff" stroke="#bfd2ea"/>
-    <text class="card-title" x="28" y="42">원문 입력</text>
-    <text class="card-sub" x="28" y="72">사용자 텍스트</text>
-    <text class="small" x="28" y="96">검색, 보고서, 대화</text>
+  <style>
+    .canvas{fill:#07111F}.frame{fill:#0D1B2D;stroke:#38506A;stroke-width:2}
+    .card{fill:#10243A;stroke:#38506A;stroke-width:2}
+    .title{font:700 42px "goorm Sans","Apple SD Gothic Neo",sans-serif;fill:#E6F2FF}
+    .subtitle{font:500 19px "goorm Sans Code","goorm Sans",monospace;fill:#A9BDD1}
+    .card-title{font:700 25px "goorm Sans","Apple SD Gothic Neo",sans-serif;fill:#E6F2FF}
+    .branch-title{font:700 23px "goorm Sans","Apple SD Gothic Neo",sans-serif;fill:#E6F2FF}
+    .body{font:500 17px "goorm Sans Code","goorm Sans",monospace;fill:#A9BDD1}
+    .connector{fill:none;stroke:#60A5FA;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+    .branch{stroke:#36C5F0}
+    .policy-title{font:700 23px "goorm Sans","Apple SD Gothic Neo",sans-serif;fill:#E6F2FF}
+    .policy{font:500 16px "goorm Sans Code","goorm Sans",monospace;fill:#A9BDD1}
+  </style>
+  <rect width="1600" height="980" class="canvas"/>
+  <rect x="32" y="32" width="1536" height="916" rx="32" class="frame"/>
+  <text x="80" y="104" class="title">다국어 텍스트 입력의 검증과 처리 경계</text>
+  <text x="80" y="148" class="subtitle">전송 계층에서 본문을 제한하고, 문자열 검증과 언어 감지 뒤에 애플리케이션 정책으로 처리 경로를 선택한다</text>
+  <rect x="64" y="196" width="1472" height="574" rx="28" fill="#0A1727" stroke="#38506A" stroke-width="2"/>
+  <path data-connector="top-1" d="M 400 325 H 460" class="connector" marker-end="url(#arrow)"/>
+<path data-connector="top-2" d="M 780 325 H 840" class="connector" marker-end="url(#arrow)"/>
+<path data-connector="top-3" d="M 1160 325 H 1220" class="connector" marker-end="url(#arrow)"/>
+  <path data-connector="branch-1" d="M 1300 420 V 439 Q 1300 455 1284 455 H 316 Q 300 455 300 471 V 548" class="connector branch" marker-end="url(#arrow)"/>
+<path data-connector="branch-2" d="M 1380 420 V 469 Q 1380 485 1364 485 H 816 Q 800 485 800 501 V 548" class="connector branch" marker-end="url(#arrow)"/>
+<path data-connector="branch-3" d="M 1460 420 V 499 Q 1460 515 1444 515 H 1316 Q 1300 515 1300 531 V 548" class="connector branch" marker-end="url(#arrow)"/>
+  <g data-card="stage-1">
+      <rect x="80" y="230" width="320" height="190" rx="22" class="card"/>
+      <rect x="80" y="230" width="320" height="7" rx="3" fill="#60A5FA"/>
+      <text x="104" y="285" class="card-title">HTTP 본문</text>
+      <text x="104" y="336" class="body"><tspan x="104" dy="0">바이트 스트림</tspan><tspan x="104" dy="32">Content-Type</tspan></text>
+    </g>
+<g data-card="stage-2">
+      <rect x="460" y="230" width="320" height="190" rx="22" class="card"/>
+      <rect x="460" y="230" width="320" height="7" rx="3" fill="#36C5F0"/>
+      <text x="484" y="285" class="card-title">전송 계층</text>
+      <text x="484" y="336" class="body"><tspan x="484" dy="0">본문 크기 제한</tspan><tspan x="484" dy="32">제한된 String 변환</tspan></text>
+    </g>
+<g data-card="stage-3">
+      <rect x="840" y="230" width="320" height="190" rx="22" class="card"/>
+      <rect x="840" y="230" width="320" height="7" rx="3" fill="#5EEAD4"/>
+      <text x="864" y="285" class="card-title">입력 검증</text>
+      <text x="864" y="336" class="body"><tspan x="864" dy="0">공백 여부</tspan><tspan x="864" dy="32">최대 100,000자</tspan></text>
+    </g>
+<g data-card="stage-4">
+      <rect x="1220" y="230" width="320" height="190" rx="22" class="card"/>
+      <rect x="1220" y="230" width="320" height="7" rx="3" fill="#B794F4"/>
+      <text x="1244" y="285" class="card-title">Lingua 감지</text>
+      <text x="1244" y="336" class="body"><tspan x="1244" dy="0">공유 감지기</tspan><tspan x="1244" dy="32">Set&lt;Language&gt;</tspan></text>
+    </g>
+  <g data-card="branch-1">
+      <rect x="120" y="560" width="360" height="180" rx="22" class="card"/>
+      <circle cx="148" cy="594" r="8" fill="#36C5F0"/>
+      <text x="170" y="603" class="branch-title">한국어 처리</text>
+      <text x="148" y="656" class="body"><tspan x="148" dy="0">normalize · tokenize</tspan><tspan x="148" dy="31">토큰 · 구문 · 어간</tspan></text>
+    </g>
+<g data-card="branch-2">
+      <rect x="620" y="560" width="360" height="180" rx="22" class="card"/>
+      <circle cx="648" cy="594" r="8" fill="#B794F4"/>
+      <text x="670" y="603" class="branch-title">일본어 처리</text>
+      <text x="648" y="656" class="body"><tspan x="648" dy="0">tokenize · filterNoun</tspan><tspan x="648" dy="31">명사 · 금칙어 결과</tspan></text>
+    </g>
+<g data-card="branch-3">
+      <rect x="1120" y="560" width="360" height="180" rx="22" class="card"/>
+      <circle cx="1148" cy="594" r="8" fill="#FBBF24"/>
+      <text x="1170" y="603" class="branch-title">일반 처리</text>
+      <text x="1148" y="656" class="body"><tspan x="1148" dy="0">TextNormalizer</tspan><tspan x="1148" dy="31">키워드 · 미확정 상태</tspan></text>
+    </g>
+  <g data-card="policy">
+    <rect x="80" y="790" width="1440" height="144" rx="22" fill="#0A1727" stroke="#FBBF24" stroke-width="2"/>
+    <circle cx="112" cy="824" r="8" fill="#FBBF24"/>
+    <text x="134" y="832" class="policy-title">처리 정책은 애플리케이션이 결정한다</text>
+    <text x="112" y="866" class="policy"><tspan x="112" dy="0">혼합 언어 입력은 목적에 따라 한 경로 또는 여러 경로로 보낸다.</tspan><tspan x="112" dy="22">라이브러리의 길이 예외와 HTTP 4xx 응답 사이의 변환도 애플리케이션 책임이다.</tspan><tspan x="112" dy="22">감지기는 재사용하되, 코루틴 예제는 Mutex로 공유 접근을 보호한다.</tspan></text>
   </g>
-
-  <g class="card" transform="translate(316 260)">
-    <rect class="card-bg" width="210" height="164" fill="#fff6e7" stroke="#e3b96f"/>
-    <text class="card-title" x="26" y="42">입력 경계</text>
-    <text class="card-sub" x="26" y="72">공백 / 크기 검증</text>
-    <rect class="guide" x="24" y="96" width="162" height="38"/>
-    <text class="tag" x="42" y="120">400 or 413</text>
-  </g>
-
-  <g class="card" transform="translate(590 260)">
-    <rect class="card-bg" width="230" height="164" fill="#edf7ff" stroke="#8fb7e9"/>
-    <text class="card-title" x="28" y="42">Lingua 감지기</text>
-    <text class="card-sub" x="28" y="72">공유 인스턴스</text>
-    <rect class="guide" x="26" y="96" width="178" height="38"/>
-    <text class="tag" x="43" y="120">Set&lt;Language&gt;</text>
-  </g>
-
-  <g class="card" transform="translate(928 96)">
-    <rect class="card-bg" width="360" height="138" fill="#eefaf2" stroke="#8ed3a9"/>
-    <text class="card-title" x="28" y="42">한국어 토크나이저</text>
-    <text class="card-sub" x="28" y="72">정규화, 토큰화, 어간 추출</text>
-    <text class="small" x="28" y="104">구문, 문장, 금칙어 마스킹</text>
-  </g>
-
-  <g class="card" transform="translate(928 282)">
-    <rect class="card-bg" width="360" height="138" fill="#f1edff" stroke="#baa7ee"/>
-    <text class="card-title" x="28" y="42">일본어 토크나이저</text>
-    <text class="card-sub" x="28" y="72">Kuromoji IPAdic</text>
-    <text class="small" x="28" y="104">명사 필터, 금칙어 마스킹</text>
-  </g>
-
-  <g class="card" transform="translate(928 468)">
-    <rect class="card-bg" width="360" height="138" fill="#fff7eb" stroke="#e2bd7a"/>
-    <text class="card-title" x="28" y="42">일반 처리 경로</text>
-    <text class="card-sub" x="28" y="72">정규화, 분기, fallback</text>
-    <text class="small" x="28" y="104">미확인 입력을 명시적으로 유지</text>
-  </g>
-
-  <g transform="translate(910 650)">
-    <rect width="448" height="54" fill="#ffffff" stroke="#cdd9e8" stroke-width="2" rx="18"/>
-    <text class="small" x="28" y="33">출력 계약: token, 명사, 언어 집합, fallback을 명확히 구분합니다.</text>
-  </g>
-
-  <path class="connector connector-blue" d="M 260 342 H 304"/>
-  <path class="connector connector-blue" d="M 526 342 H 578"/>
-  <path class="connector connector-green" d="M 820 310 H 866 Q 888 310 888 288 V 187 Q 888 165 910 165 H 916"/>
-  <path class="connector connector-purple" d="M 820 342 H 916"/>
-  <path class="connector connector-green" d="M 820 374 H 866 Q 888 374 888 396 V 515 Q 888 537 910 537 H 916"/>
-
-  <text class="small" x="852" y="305">한국어</text>
-  <text class="small" x="842" y="333">일본어</text>
-  <text class="small" x="852" y="391">미확인</text>
 </svg>

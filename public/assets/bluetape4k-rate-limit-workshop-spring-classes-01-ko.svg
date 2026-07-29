@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1240" height="940" viewBox="0 0 1240 940" role="img" aria-labelledby="title desc">
-  <title id="title">Bucket4j rate limiting을 위한 Spring configuration classes</title>
-  <desc id="desc">RateLimitConfig bean wiring, bluetape4k SuspendRateLimiter와 DistributedSuspendRateLimiter, AsyncBucketProxyProvider, RequestUtils, RateLimitResult, WebFlux filter의 관계를 보여주는 class diagram입니다.</desc>
+  <title id="title">Bucket4j 요청 제한을 위한 Spring 설정 클래스</title>
+  <desc id="desc">RateLimitConfig 빈 조립, bluetape4k SuspendRateLimiter와 DistributedSuspendRateLimiter, AsyncBucketProxyProvider, RequestUtils, RateLimitResult, WebFlux 필터의 관계를 보여주는 클래스 다이어그램입니다.</desc>
   <defs>
     <linearGradient id="bgGradient" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#101827"/>
@@ -8,7 +8,7 @@
       <stop offset="100%" stop-color="#263b57"/>
     </linearGradient>
     <linearGradient id="panelGradient" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#1f2937"/>
+      <stop offset="0%" stop-color="#172033"/>
       <stop offset="100%" stop-color="#111827"/>
     </linearGradient>
     <filter id="panelShadow" x="-8%" y="-12%" width="116%" height="124%">
@@ -30,11 +30,11 @@
       .title { font: 30px "goorm Sans", "goorm Sans Code", system-ui, sans-serif; fill: #f8fafc; }
       .subtitle { font: 15px "goorm Sans Code", ui-monospace, monospace; fill: #c1cad8; }
       .lane-title { font: 17px "goorm Sans Code", ui-monospace, monospace; fill: #f3f7fb; font-weight: 700; }
-      .class-name { font: 15.5px "goorm Sans Code", ui-monospace, monospace; fill: #f8fafc; font-weight: 700; }
+      .class-name { font: 14px "goorm Sans Code", ui-monospace, monospace; fill: #f8fafc; font-weight: 700; }
       .stereo { font: 12px "goorm Sans Code", ui-monospace, monospace; fill: #bfd0e7; }
       .member { font: 11.2px "goorm Sans Code", ui-monospace, monospace; fill: #d8e3f2; }
       .note { font: 12px "goorm Sans Code", ui-monospace, monospace; fill: #dbe7f7; }
-      .legend { font: 12px "goorm Sans Code", ui-monospace, monospace; fill: #cbd5e1; }
+      .legend { font: 12px "goorm Sans Code", ui-monospace, monospace; fill: #b6c4d6; }
       .dep { fill: none; stroke: #d6deeb; stroke-width: 3.2; stroke-dasharray: 9 7; stroke-linecap: round; stroke-linejoin: round; }
       .assoc { fill: none; stroke: #8dd46f; stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round; }
       .inherit { fill: none; stroke: #8bd3ff; stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round; }
@@ -50,15 +50,15 @@
 
   <rect class="bg" width="1240" height="940"/>
   <rect class="panel" x="36" y="30" width="1168" height="872"/>
-  <text class="title" x="70" y="80">Spring configuration은 policy, provider, limiter를 연결합니다</text>
-  <text class="subtitle" x="70" y="110">RateLimitConfig는 strategy별 bean을 만들고, WebFilter는 bluetape4k의 안정적인 result boundary를 통해 소비합니다</text>
+  <text class="title" x="70" y="80">Spring 설정은 정책·공급자·제한기를 연결합니다</text>
+  <text class="subtitle" x="70" y="110">RateLimitConfig는 전략별 빈을 만들고, WebFilter는 bluetape4k의 안정적인 결과 경계를 사용합니다</text>
 
   <rect class="lane" x="70" y="132" width="330" height="748"/>
-  <text class="lane-title" x="96" y="166">Workshop Spring layer</text>
+  <text class="lane-title" x="96" y="166">워크숍 Spring 계층</text>
   <rect class="lane" x="455" y="132" width="315" height="748"/>
-  <text class="lane-title" x="481" y="166">Policy와 helper beans</text>
+  <text class="lane-title" x="481" y="166">정책과 보조 빈</text>
   <rect class="lane" x="830" y="132" width="340" height="748"/>
-  <text class="lane-title" x="856" y="166">bluetape4k limiter API</text>
+  <text class="lane-title" x="856" y="166">bluetape4k 제한기 API</text>
 
   <g id="rate-limit-config" data-node="RateLimitConfig">
     <rect class="class-card spring" x="90" y="190" width="290" height="225"/>
@@ -70,20 +70,20 @@
     <text class="member" x="112" y="320">+ ipBucketConfiguration()</text>
     <text class="member" x="112" y="346">+ ipBucketProxyProvider()</text>
     <text class="member" x="112" y="372">+ ipRateLimiter()</text>
-    <text class="member" x="112" y="398">+ user/combined variants</text>
+    <text class="member" x="112" y="398">+ 사용자·복합 변형</text>
   </g>
 
   <g id="bucket-configuration" data-node="BucketConfiguration">
     <rect class="class-card bucket" x="480" y="190" width="265" height="155"/>
     <rect class="name-band" x="494" y="204" width="237" height="48"/>
-    <text class="stereo" x="545" y="224">&lt;&lt;Bucket4j policy&gt;&gt;</text>
+    <text class="stereo" x="545" y="224">&lt;&lt;Bucket4j 정책&gt;&gt;</text>
     <text class="class-name" x="518" y="246">BucketConfiguration</text>
     <line x1="480" y1="266" x2="745" y2="266" stroke="#526176" stroke-width="1.4"/>
-    <text class="member" x="502" y="294">capacity + refill rules</text>
-    <text class="member" x="502" y="320">strategy마다 policy 하나</text>
+    <text class="member" x="502" y="294">용량 + 보충 규칙</text>
+    <text class="member" x="502" y="320">전략마다 정책 하나</text>
   </g>
 
-  <g id="provider" data-node="AsyncBucketProxyProvider">
+  <g id="공급자" data-node="AsyncBucketProxyProvider">
     <rect class="class-card bucket" x="480" y="430" width="265" height="190"/>
     <rect class="name-band" x="494" y="444" width="237" height="48"/>
     <text class="stereo" x="558" y="464">&lt;&lt;bluetape4k&gt;&gt;</text>
@@ -105,7 +105,7 @@
     <text class="member" x="522" y="830">trustProxy)</text>
   </g>
 
-  <g id="suspend-rate-limiter" data-node="SuspendRateLimiter">
+  <g id="suspend-rate-제한기" data-node="SuspendRateLimiter">
     <rect class="class-card api" x="855" y="190" width="285" height="130"/>
     <rect class="name-band" x="869" y="204" width="257" height="48"/>
     <text class="stereo" x="955" y="224">&lt;&lt;interface&gt;&gt;</text>
@@ -115,7 +115,7 @@
     <text class="member" x="877" y="314">  : RateLimitResult</text>
   </g>
 
-  <g id="distributed-limiter" data-node="DistributedSuspendRateLimiter">
+  <g id="distributed-제한기" data-node="DistributedSuspendRateLimiter">
     <rect class="class-card api" x="855" y="430" width="285" height="205"/>
     <rect class="name-band" x="869" y="444" width="257" height="50"/>
     <text class="stereo" x="943" y="464">&lt;&lt;distributed&gt;&gt;</text>
@@ -150,42 +150,42 @@
     <text class="member" x="132" y="858">: Mono&lt;Void&gt;</text>
   </g>
 
-  <path id="config-to-policy" class="connector dep" data-edge="creates" d="M 380 236 L 480 236"/>
+  <path id="config-to-정책" class="connector dep" data-edge="creates" d="M 380 236 L 480 236"/>
   <polyline class="head head-dep" points="480,236 466,228 466,244"/>
   <rect class="label-box" x="401" y="208" width="58" height="24"/>
-  <text class="label-text" x="414" y="225">policy</text>
+  <text class="label-text" x="414" y="225">정책</text>
 
-  <path id="config-to-provider" class="connector dep" data-edge="creates" d="M 235 415 L 235 495 Q 235 510 250 510 L 480 510"/>
+  <path id="config-to-공급자" class="connector dep" data-edge="creates" d="M 235 415 L 235 495 Q 235 510 250 510 L 480 510"/>
   <polyline class="head head-dep" points="480,510 466,502 466,518"/>
   <rect class="label-box" x="278" y="476" width="74" height="24"/>
-  <text class="label-text" x="291" y="493">provider</text>
+  <text class="label-text" x="291" y="493">공급자</text>
 
-  <path id="config-to-limiter" class="connector dep" data-edge="creates" d="M 380 382 L 790 382 Q 805 382 805 397 L 805 505 Q 805 520 820 520 L 855 520"/>
+  <path id="config-to-제한기" class="connector dep" data-edge="creates" d="M 380 382 L 790 382 Q 805 382 805 397 L 805 505 Q 805 520 820 520 L 855 520"/>
   <polyline class="head head-dep" points="855,520 841,512 841,528"/>
   <rect class="label-box" x="710" y="331" width="76" height="24"/>
-  <text class="label-text" x="722" y="348">limiter</text>
+  <text class="label-text" x="722" y="348">제한기</text>
 
-  <path id="impl-to-interface" class="connector inherit" data-edge="implements" d="M 998 430 L 998 337"/>
+  <path id="impl-to-interface" class="connector inherit" data-edge="구현" d="M 998 430 L 998 337"/>
   <polygon class="hollow" points="998,320 983,337 1013,337"/>
   <rect class="label-box" x="1018" y="367" width="86" height="24"/>
-  <text class="label-text" x="1030" y="384">implements</text>
+  <text class="label-text" x="1030" y="384">구현</text>
 
-  <path id="limiter-to-provider" class="connector dep" data-edge="uses" d="M 855 548 L 745 548"/>
+  <path id="제한기-to-공급자" class="connector dep" data-edge="사용" d="M 855 548 L 745 548"/>
   <polyline class="head head-dep" points="745,548 759,540 759,556"/>
   <rect class="label-box" x="770" y="509" width="48" height="24"/>
-  <text class="label-text" x="782" y="526">uses</text>
+  <text class="label-text" x="782" y="526">사용</text>
 
-  <path id="limiter-to-result" class="connector return" data-edge="returns" d="M 998 635 L 998 710"/>
+  <path id="제한기-to-result" class="connector return" data-edge="반환" d="M 998 635 L 998 710"/>
   <polyline class="head head-return" points="998,710 990,696 1006,696"/>
   <rect class="label-box" x="1017" y="664" width="66" height="24"/>
-  <text class="label-text" x="1029" y="681">returns</text>
+  <text class="label-text" x="1029" y="681">반환</text>
 
-  <path id="filter-to-limiter" class="connector assoc" data-edge="injects" d="M 380 718 L 420 718 Q 435 718 435 703 L 435 656 Q 435 641 450 641 L 810 641 Q 825 641 825 626 L 825 585 Q 825 570 840 570 L 855 570"/>
+  <path id="filter-to-제한기" class="connector assoc" data-edge="injects" d="M 380 718 L 420 718 Q 435 718 435 703 L 435 656 Q 435 641 450 641 L 810 641 Q 825 641 825 626 L 825 585 Q 825 570 840 570 L 855 570"/>
   <polyline class="head head-dep" points="855,570 841,562 841,578"/>
   <rect class="label-box" x="650" y="606" width="86" height="24"/>
   <text class="label-text" x="662" y="623">@Qualifier</text>
 
-  <path id="filter-to-request-utils" class="connector dep" data-edge="uses" d="M 380 800 L 480 800"/>
+  <path id="filter-to-request-utils" class="connector dep" data-edge="사용" d="M 380 800 L 480 800"/>
   <polyline class="head head-dep" points="480,800 466,792 466,808"/>
   <rect class="label-box" x="403" y="814" width="74" height="24"/>
   <text class="label-text" x="414" y="831">extractIp</text>
@@ -194,9 +194,9 @@
     <rect class="label-box" x="845" y="850" width="300" height="34"/>
     <path class="inherit" d="M 866 867 L 910 867"/>
     <polygon class="hollow" points="925,867 910,858 910,876"/>
-    <text class="legend" x="944" y="871">실선 = implements</text>
+    <text class="legend" x="944" y="871">실선 = 구현</text>
     <path class="dep" d="M 1065 867 L 1110 867"/>
     <polyline class="head head-dep" points="1120,867 1106,859 1106,875"/>
-    <text class="legend" x="866" y="895">점선 = creates / uses / returns</text>
+    <text class="legend" x="866" y="884">점선 = 생성 / 사용 / 반환</text>
   </g>
 </svg>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="940" viewBox="0 0 1600 940" role="img" aria-labelledby="title desc">
+  <title id="title">From Operational Signals to Diagnostic Decisions</title>
+  <desc id="desc">The contract is who publishes each signal and how operators interpret it, not whether a plugin is installed.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="16" markerHeight="16" refX="13" refY="8" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1,1 L15,8 L1,15 Z" fill="#36C5F0"/>
+    </marker>
+  </defs>
+  <style>
+    .canvas{fill:#07111F}.frame{fill:#0D1B2D;stroke:#36536F;stroke-width:2}
+    .card{fill:#10243A;stroke:#36536F;stroke-width:2}.focus{fill:#0C3044;stroke:#5EEAD4;stroke-width:2.5}
+    .warn{fill:#332B18;stroke:#FBBF24;stroke-width:2}.title{font:700 40px "Architects Daughter","Comic Sans MS",cursive;fill:#E6F2FF}
+    .subtitle{font:500 20px "Comic Mono","SFMono-Regular",Menlo,monospace;fill:#9CB4CC}.card-title{font:700 25px "Architects Daughter","Comic Sans MS",cursive;fill:#E6F2FF}
+    .body{font:600 18px "Comic Mono","SFMono-Regular",Menlo,monospace;fill:#9CB4CC}.chip{font:700 16px "Comic Mono","SFMono-Regular",Menlo,monospace;fill:#5EEAD4}
+    .label{font:700 16px "Comic Mono","SFMono-Regular",Menlo,monospace;fill:#36C5F0}.connector{fill:none;stroke:#36C5F0;stroke-width:4;marker-end:url(#arrow)}
+    .divider{stroke:#36536F;stroke-width:2}.footer{font:600 18px "Comic Mono","SFMono-Regular",Menlo,monospace;fill:#9CB4CC}
+  </style>
+  <rect width="1600" height="940" class="canvas"/>
+  <rect x="32" y="32" width="1536" height="876" rx="32" class="frame"/>
+  <text x="80" y="98" class="title">From Operational Signals to Diagnostic Decisions</text>
+  <text x="80" y="138" class="subtitle">Integrations do not explain data automatically. Publishing, observation, and decisions need explicit boundaries.</text>
+  
+      
+        <rect x="80" y="225" width="340" height="112" rx="22" class="card"/>
+        <text x="106" y="269" class="card-title">Exposed cache</text>
+        <text x="106" y="307" class="body">Queue / flush errors</text>
+        <path d="M420 281 H555" class="connector"/>
+
+        <rect x="80" y="375" width="340" height="112" rx="22" class="card"/>
+        <text x="106" y="419" class="card-title">AWS CloudWatch</text>
+        <text x="106" y="457" class="body">Metric / log names</text>
+        <path d="M420 431 H555" class="connector"/>
+
+        <rect x="80" y="525" width="340" height="112" rx="22" class="card"/>
+        <text x="106" y="569" class="card-title">Leader provider</text>
+        <text x="106" y="607" class="body">Renewal / storage errors</text>
+        <path d="M420 581 H555" class="connector"/>
+      <rect x="575" y="225" width="360" height="412" rx="26" class="focus"/>
+      <text x="755" y="378" text-anchor="middle" class="card-title">Explicit publish</text>
+      <text x="755" y="416" text-anchor="middle" class="card-title">and health exposure</text>
+      <text x="755" y="472" text-anchor="middle" class="body">state and events</text>
+      <path d="M935 415 H1050" class="connector"/>
+      <rect x="1075" y="225" width="445" height="190" rx="24" class="card"/>
+      <text x="1298" y="300" text-anchor="middle" class="card-title">Observable operational signals</text>
+      <text x="1298" y="350" text-anchor="middle" class="body">search and alerts</text>
+      <path d="M1298 415 V510" class="connector"/>
+      <rect x="1075" y="535" width="445" height="165" rx="24" class="warn"/>
+      <text x="1298" y="602" text-anchor="middle" class="card-title">Diagnostic order</text>
+      <text x="1298" y="640" text-anchor="middle" class="card-title">and recovery decision</text>
+      <line x1="80" y1="790" x2="1520" y2="790" class="divider"/>
+      <text x="800" y="836" text-anchor="middle" class="footer">The contract is who publishes each signal and how operators interpret it, not whether a plugin is installed.</text>
+</svg>

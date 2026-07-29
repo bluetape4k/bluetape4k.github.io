@@ -2,16 +2,16 @@
 <title>JDBC Repository Flow</title>
 <desc>Keep transaction boundaries explicit while repository helpers remove repeated paging and soft-delete code.</desc>
 <defs>
-  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#1D3148" flood-opacity="0.12"/></filter>
-  <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M 1 1 L 7 4 L 1 7 Z" fill="#4D6F9F"/></marker>
+  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#020617" flood-opacity="0.42"/></filter>
+  <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 1 1 L 9 5 L 1 9 Z" fill="#78AFFF"/></marker>
   <style>
-    .bg{fill:#F7F9FC}.frame{fill:#FFFFFF;stroke:#D6E2ED;stroke-width:2}
-    .title{font-family:"Architects Daughter";font-size:42px;fill:#21334A;font-weight:700}
-    .subtitle,.body,.small,.tiny,.axisLabel{font-family:"Comic Mono";fill:#34465B}
-    .subtitle{font-size:16px}.body{font-size:14px}.small{font-size:12px;fill:#657386}.tiny{font-size:11px;fill:#657386}
-    .label{font-family:"Architects Daughter";font-size:23px;fill:#21334A;font-weight:700}
-    .card{filter:url(#shadow);stroke-width:2}.line{fill:none;stroke:#4D6F9F;stroke-width:2.8;marker-end:url(#arrow);stroke-linecap:round;stroke-linejoin:round}
-    .axis{stroke:#B9C7D8;stroke-width:1.4}.grid{stroke:#CAD6E4;stroke-width:1;stroke-dasharray:4 6}
+    .bg{fill:#0B1220}.frame{fill:#0F1E33;stroke:#284766;stroke-width:2}
+    .title{font-family:"Architects Daughter";font-size:42px;fill:#F5F9FF;font-weight:700}
+    .subtitle,.body,.small,.tiny,.axisLabel{font-family:"Comic Mono";fill:#D7E3F5}
+    .subtitle{font-size:16px}.body{font-size:14px}.small{font-size:12px;fill:#B8C7DD}.tiny{font-size:11px;fill:#B8C7DD}
+    .label{font-family:"Architects Daughter";font-size:23px;fill:#F5F9FF;font-weight:700}
+    .card{filter:url(#shadow);stroke-width:2}.line{fill:none;stroke:#78AFFF;stroke-width:3.2;marker-end:url(#arrow);stroke-linecap:round;stroke-linejoin:round}
+    .axis{stroke:#55718F;stroke-width:1.4}.grid{stroke:#2F4B67;stroke-width:1;stroke-dasharray:4 6}
   </style>
 </defs>
 <rect class="bg" width="1500" height="760"/>
@@ -20,45 +20,45 @@
 <text class="subtitle" x="72" y="114">Keep transaction boundaries explicit while repository helpers remove repeated paging and soft-delete code.</text>
 <g transform="translate(80 174)">
   <g>
-  <rect class="card" x="0" y="218" width="236" height="118" rx="16" fill="#E7F1FF" stroke="#5A85D6"/>
+  <rect class="card" x="0" y="218" width="236" height="118" rx="16" fill="#163761" stroke="#5EA0FF"/>
   <text class="label" x="118" y="259" text-anchor="middle" dominant-baseline="middle">Service Method</text>
   <text class="body" x="118" y="289" text-anchor="middle">transaction boundary</text>
 <text class="body" x="118" y="309" text-anchor="middle">domain intent</text>
 </g>
   <g>
-  <rect class="card" x="344" y="64" width="270" height="118" rx="16" fill="#EAF7ED" stroke="#58A978"/>
+  <rect class="card" x="344" y="64" width="270" height="118" rx="16" fill="#173D27" stroke="#4BDB85"/>
   <text class="label" x="479" y="105" text-anchor="middle" dominant-baseline="middle">Exposed DSL</text>
   <text class="body" x="479" y="135" text-anchor="middle">select · insert · update</text>
 <text class="body" x="479" y="155" text-anchor="middle">where · join · CTE</text>
 </g>
   <g>
-  <rect class="card" x="344" y="354" width="270" height="118" rx="16" fill="#F1ECFF" stroke="#8A72D6"/>
+  <rect class="card" x="344" y="354" width="270" height="118" rx="16" fill="#2D2359" stroke="#A993FF"/>
   <text class="label" x="479" y="395" text-anchor="middle" dominant-baseline="middle">JdbcRepository</text>
   <text class="body" x="479" y="425" text-anchor="middle">findById · findPage</text>
 <text class="body" x="479" y="445" text-anchor="middle">soft delete · audit</text>
 </g>
   <g>
-  <rect class="card" x="738" y="64" width="270" height="118" rx="16" fill="#FFF3D8" stroke="#D6A441"/>
+  <rect class="card" x="738" y="64" width="270" height="118" rx="16" fill="#4B3212" stroke="#F0B84D"/>
   <text class="label" x="873" y="105" text-anchor="middle" dominant-baseline="middle">ResultRow Mapper</text>
   <text class="body" x="873" y="135" text-anchor="middle">typed columns</text>
 <text class="body" x="873" y="155" text-anchor="middle">domain record</text>
 </g>
   <g>
-  <rect class="card" x="738" y="354" width="270" height="118" rx="16" fill="#FCECEF" stroke="#DC6B82"/>
+  <rect class="card" x="738" y="354" width="270" height="118" rx="16" fill="#4A1E2B" stroke="#F07A9B"/>
   <text class="label" x="873" y="395" text-anchor="middle" dominant-baseline="middle">Virtual Thread Tx</text>
   <text class="body" x="873" y="425" text-anchor="middle">blocking JDBC</text>
 <text class="body" x="873" y="445" text-anchor="middle">cheap waiting</text>
 </g>
   <g>
-  <rect class="card" x="1116" y="218" width="236" height="118" rx="16" fill="#E6F7F5" stroke="#38A69E"/>
+  <rect class="card" x="1116" y="218" width="236" height="118" rx="16" fill="#123F3C" stroke="#35D0C5"/>
   <text class="label" x="1234" y="259" text-anchor="middle" dominant-baseline="middle">Database</text>
   <text class="body" x="1234" y="289" text-anchor="middle">PostgreSQL · MySQL</text>
 <text class="body" x="1234" y="309" text-anchor="middle">H2 · testcontainers</text>
 </g>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M236 260 H288 Q298 260 298 250 V132 Q298 122 308 122 H344"/>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M236 292 H288 Q298 292 298 302 V402 Q298 412 308 412 H344"/>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M614 122 H738"/>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M614 412 H738"/>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M1008 122 H1052 Q1062 122 1062 132 V266 Q1062 276 1072 276 H1116"/>
-  <path class="line" fill="none" stroke="#4D6F9F" stroke-width="2.8" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M1008 412 H1052 Q1062 412 1062 402 V314 Q1062 304 1072 304 H1116"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M236 260 H288 Q298 260 298 250 V132 Q298 122 308 122 H344"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M236 292 H288 Q298 292 298 302 V402 Q298 412 308 412 H344"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M614 122 H738"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M614 412 H738"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M1008 122 H1052 Q1062 122 1062 132 V266 Q1062 276 1072 276 H1116"/>
+  <path class="line" fill="none" stroke="#78AFFF" stroke-width="3.2" marker-end="url(#arrow)" stroke-linecap="round" stroke-linejoin="round" d="M1008 412 H1052 Q1062 412 1062 402 V314 Q1062 304 1072 304 H1116"/>
 </g></svg>

@@ -147,9 +147,9 @@ const localeReplacements = new Map([
     ["Operations", "작업 API"],
     ["AWS runtime", "AWS 실행 환경"],
     ["SDK + service", "SDK + 서비스"],
-    ["bind bluetape4k.aws.* 속성", "bluetape4k.aws.* 속성 바인딩"],
+    ["bind bluetape4k.aws.* properties", "bluetape4k.aws.* 속성 바인딩"],
     ["create S3/SQS/DynamoDB/KMS beans", "S3/SQS/DynamoDB/KMS 빈 생성"],
-    ["call S3작업 API or @SqsListener", "S3Operations 또는 @SqsListener 호출"],
+    ["call S3Operations or @SqsListener", "S3Operations 또는 @SqsListener 호출"],
     ["delegate to AWS SDK v2 client", "AWS SDK v2 클라이언트로 위임"],
     ["suspend result, Flow, ack/nack outcome", "suspend 결과, Flow, ack/nack 처리 결과"],
     ["Spring owns bean creation and listener containers; application code keeps controller and handler logic small.", "Spring은 빈 생성과 리스너 컨테이너를 담당하고, 애플리케이션 코드는 컨트롤러와 처리 로직을 작게 유지합니다."],
@@ -169,10 +169,10 @@ const localeReplacements = new Map([
     ["AWS runtime", "AWS 실행 환경"],
     ["client/service", "클라이언트/서비스"],
     ["install AwsKtorCore and service plugins", "AwsKtorCore와 서비스 플러그인 설치"],
-    ["애플리케이션Started opens plugin-owned clients", "ApplicationStarted가 플러그인 소유 클라이언트 시작"],
+    ["ApplicationStarted opens plugin-owned clients", "ApplicationStarted가 플러그인 소유 클라이언트를 시작"],
     ["route calls S3KtorClient or repository", "라우트가 S3KtorClient 또는 저장소 호출"],
     ["sign request, poll SQS, or call SDK", "요청 서명, SQS 폴링 또는 SDK 호출"],
-    ["애플리케이션Stopping drains and closes owned runtime", "ApplicationStopping이 실행 환경을 비우고 종료"],
+    ["ApplicationStopping drains and closes owned runtime", "ApplicationStopping이 소유한 실행 환경을 비우고 종료"],
     ["Ktor keeps startup, shutdown, route helpers, and application-owned clients explicit.", "Ktor는 시작, 종료, 라우트 도우미, 애플리케이션 소유 클라이언트를 명시적으로 유지합니다."],
   ]],
   ["bluetape4k-aws-part3-example-matrix-01", [
@@ -195,7 +195,7 @@ const localeReplacements = new Map([
     ["DataSource alias", "DataSource 별칭"],
     ["remote secrets", "원격 비밀값"],
     ["S3KtorClient", "S3KtorClient"],
-    ["stream/config", "stream/config"],
+    ["stream/config", "스트림/설정"],
     ["SqsConsumer", "SqsConsumer"],
     ["ack/nack", "ack/nack"],
     ["lifecycle hooks", "생명주기 훅"],
@@ -203,6 +203,7 @@ const localeReplacements = new Map([
     ["auto-create", "자동 생성"],
     ["AwsExposed", "AwsExposed"],
     ["transaction", "트랜잭션"],
+    ["repository", "저장소"],
     ["resolver hook", "리졸버 훅"],
     ["All examples are wired for local emulator testing with Floci, LocalStack, or Testcontainers depending on the module.", "모든 예제는 모듈에 따라 Floci, LocalStack, Testcontainers 기반 로컬 에뮬레이터 테스트에 연결됩니다."],
   ]],
@@ -394,7 +395,8 @@ function seqCall(fromX, toX, y, label) {
   const detail = match?.[2] ?? label;
   const left = Math.min(fromX, toX);
   const width = Math.abs(toX - fromX);
-  const labelWidth = Math.max(230, Math.min(width + 70, 420));
+  const estimatedTextWidth = detail.length * 7.2 + 54;
+  const labelWidth = Math.max(230, Math.min(Math.max(width + 70, estimatedTextWidth), 520));
   const labelX = left + width / 2 - labelWidth / 2;
   const arrowStart = fromX < toX ? fromX + 12 : fromX - 12;
   const arrowEnd = fromX < toX ? toX - 12 : toX + 12;
@@ -502,21 +504,81 @@ function koreanizeSvg(svg, replacements) {
     .replaceAll("Comic Mono", "goorm Sans Code")
     .replaceAll("SFMono-Regular", "goorm Sans Code")
     .replaceAll("Menlo", "goorm Sans Code");
-  for (const [from, to] of replacements) {
-    result = result.replaceAll(from, to);
+  const replacementMap = new Map(replacements);
+  const pattern = [...replacementMap.keys()]
+    .sort((left, right) => right.length - left.length)
+    .map((value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+    .join("|");
+  if (pattern) {
+    result = result.replace(new RegExp(pattern, "g"), (match) => replacementMap.get(match));
   }
   return result;
 }
 
 function normalizeDiagramSvg(svg, isSequence) {
-  const normalized = normalizeMarkers(svg);
+  const normalized = normalizeMarkers(darkenDiagramSvg(svg), isSequence ? 16 : 14);
   return isSequence ? normalized : ensureConnectorAuditPath(convertConnectorPathsToPolylines(normalized));
 }
 
-function normalizeMarkers(svg) {
+function darkenDiagramSvg(svg) {
+  return svg
+    .replaceAll("background:#F5F7FA", "background:#08111f")
+    .replaceAll("fill:#FFFFFF;stroke:#D9E2EC", "fill:#0e1a2b;stroke:#315270")
+    .replaceAll("flood-color=\"#AAB7C6\"", "flood-color=\"#020617\"")
+    .replaceAll("#66758A", "#6fb6e8")
+    .replaceAll("#D9E2EC", "#315270")
+    .replaceAll("#EAF7EF", "#102a24")
+    .replaceAll("#E8F3FF", "#11283f")
+    .replaceAll("#FFF3D9", "#2a2615")
+    .replaceAll("#F4F7FA", "#12243a")
+    .replaceAll("#F1ECFF", "#211b36")
+    .replaceAll("#E9F7F6", "#10283c")
+    .replaceAll("#FFF0E3", "#2b2117")
+    .replaceAll("#526274", "#b8c7dc")
+    .replaceAll("#243447", "#d8e4f5")
+    .replaceAll("#344456", "#c5d2e5")
+    .replace(/(<rect\b[^>]*\bwidth="(?:1160|1200)"[^>]*\bheight="(?:680|720|760)"[^>]*\bfill=")#ffffff("[^>]*\/>)/, "$1#0b1220$2")
+    .replaceAll(".panel{fill:#fff;", ".panel{fill:#111d2f;")
+    .replaceAll(".band{fill:#f8fafc;", ".band{fill:#12243a;")
+    .replaceAll(".frame{fill:#fff;", ".frame{fill:#0e1a2b;")
+    .replaceAll(".labelPill{fill:#ffffff;", ".labelPill{fill:#12243a;")
+    .replaceAll(".activation{fill:#dbeafe;", ".activation{fill:#17345b;")
+    .replaceAll("font-size:19px;fill:#102033", "font-size:17px;fill:#102033")
+    .replaceAll('fill="#ffffff"', 'fill="#111d2f"')
+    .replaceAll('fill="#fff"', 'fill="#111d2f"')
+    .replaceAll('fill="#f8fafc"', 'fill="#12243a"')
+    .replaceAll('fill="#f1f5f9"', 'fill="#12243a"')
+    .replaceAll('fill="#ecfeff"', 'fill="#10283c"')
+    .replaceAll('fill="#ecfdf5"', 'fill="#102a24"')
+    .replaceAll('fill="#e0f2fe"', 'fill="#11283f"')
+    .replaceAll('fill="#eff6ff"', 'fill="#11283f"')
+    .replaceAll('fill="#dcfce7"', 'fill="#102a24"')
+    .replaceAll('fill="#fff7ed"', 'fill="#2b2117"')
+    .replaceAll('fill="#fef3c7"', 'fill="#2a2615"')
+    .replaceAll('fill="#fefce8"', 'fill="#2a2615"')
+    .replaceAll('fill="#f3e8ff"', 'fill="#211b36"')
+    .replaceAll("fill:#102033", "fill:#e8eefc")
+    .replaceAll("fill: #102033", "fill: #e8eefc")
+    .replaceAll("fill:#334155", "fill:#b8c7dc")
+    .replaceAll("fill:#475569", "fill:#6fb6e8")
+    .replaceAll("stroke:#475569", "stroke:#6fb6e8")
+    .replaceAll('stroke="#475569"', 'stroke="#6fb6e8"')
+    .replaceAll('fill="#475569"', 'fill="#6fb6e8"')
+    .replaceAll("stroke:#64748b", "stroke:#86a2c2")
+    .replaceAll('stroke="#64748b"', 'stroke="#86a2c2"')
+    .replaceAll('fill="#64748b"', 'fill="#86a2c2"')
+    .replaceAll("stroke:#94a3b8", "stroke:#6d87a8")
+    .replaceAll('stroke="#94a3b8"', 'stroke="#6d87a8"')
+    .replaceAll("stroke:#d7e2ef", "stroke:#315270")
+    .replaceAll('stroke="#d7e2ef"', 'stroke="#315270"')
+    .replaceAll('stroke="#d8e0ea"', 'stroke="#315270"')
+    .replaceAll("fill:#e2e8f0", "fill:#d8e4f5");
+}
+
+function normalizeMarkers(svg, markerSize) {
   return svg.replace(
     /<marker\s+id="([^"]*)"[^>]*>[\s\S]*?<path\s+[^>]*fill="([^"]+)"[^>]*\/?>\s*<\/marker>/g,
-    '<marker id="$1" viewBox="0 0 10 10" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="$2"/></marker>',
+    `<marker id="$1" viewBox="0 0 10 10" markerWidth="${markerSize}" markerHeight="${markerSize}" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="$2" stroke="$2" stroke-width="0" stroke-dasharray="none"/></marker>`,
   );
 }
 

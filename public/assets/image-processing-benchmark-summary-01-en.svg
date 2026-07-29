@@ -4,13 +4,15 @@
       <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#1f2937" flood-opacity="0.10"/>
     </filter>
     <style>
-      .canvas{fill:#f7f9fc}.frame{fill:#fff;stroke:#d8e0ea;stroke-width:1.5}
-      .title{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",cursive;font-size:40px;font-weight:400;fill:#102033}
-      .subtitle,.axis,.note{font-family:"Comic Mono","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:15px;font-weight:400;fill:#536273}
-      .label{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",cursive;font-size:22px;font-weight:400;fill:#102033}
-      .value{font-family:"Comic Mono","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:14px;font-weight:700;fill:#102033}
-      .small{font-family:"Comic Mono","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:13px;font-weight:400;fill:#536273}
-      .na{font-family:"Comic Mono","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:13px;font-weight:700;fill:#8a4b20}
+      .canvas{fill:#0b1220}.frame{fill:#111c31;stroke:#355277;stroke-width:1.5}
+      .title{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",cursive;font-size:40px;font-weight:400;fill:#f8fafc}
+      .subtitle,.axis,.note{font-family:"Comic Mono","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:15px;font-weight:400;fill:#b7c8e2}
+      .label{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",cursive;font-size:22px;font-weight:400;fill:#f8fafc}
+      .value{font-family:"Comic Mono","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:14px;font-weight:700;fill:#e7f0ff}
+      .small{font-family:"Comic Mono","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:13px;font-weight:400;fill:#c9dcf5}
+      .na{font-family:"Comic Mono","Comic Sans MS","Comic Sans",Arial,sans-serif;font-size:13px;font-weight:700;fill:#f9c98f}
+      rect[fill="#fff"]{fill:#14213a} rect[stroke="#e2e8f0"]{stroke:#355277}
+      line[stroke="#d8e0ea"]{stroke:#355277} rect[fill="#8fc5f3"]{fill:#5ca7df} rect[fill="#7cc7a2"]{fill:#54d0ad}
       .panel{filter:url(#shadow)}
     </style>
   </defs>

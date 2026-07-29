@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="980" viewBox="0 0 1600 980" role="img" aria-labelledby="title desc">
+  <title id="title">The Input Boundary Starts Before Memory Allocation</title><desc id="desc">Treat input size, memory allocation, processing time, and error responses as one boundary contract.</desc>
+  <defs><marker id="arrow" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L13,7 L1,13 Z" fill="#36C5F0"/></marker></defs>
+  <style>
+    .canvas{fill:#07111F}.frame{fill:#0D1B2D;stroke:#36536F;stroke-width:2}.card{fill:#10243A;stroke:#36536F;stroke-width:2}
+    .focus{fill:#0C3044;stroke:#5EEAD4;stroke-width:2.5}.warn{fill:#332B18;stroke:#FBBF24;stroke-width:2}
+    .title{font:700 40px "Architects Daughter","Comic Sans MS",cursive;fill:#E6F2FF}.subtitle{font:500 20px "Comic Mono","SFMono-Regular",Menlo,monospace;fill:#9CB4CC}
+    .card-title{font:700 24px "Architects Daughter","Comic Sans MS",cursive;fill:#E6F2FF}.body{font:600 18px "Comic Mono","SFMono-Regular",Menlo,monospace;fill:#9CB4CC}
+    .chip{font:700 16px "Comic Mono","SFMono-Regular",Menlo,monospace;fill:#5EEAD4}.label{font:700 16px "Comic Mono","SFMono-Regular",Menlo,monospace;fill:#36C5F0}
+    .connector{fill:none;stroke:#36C5F0;stroke-width:4;marker-end:url(#arrow)}.divider{stroke:#36536F;stroke-width:2}
+    .footer{font:600 18px "Comic Mono","SFMono-Regular",Menlo,monospace;fill:#9CB4CC}
+  </style>
+  <rect width="1600" height="980" class="canvas"/><rect x="32" y="32" width="1536" height="916" rx="32" class="frame"/>
+  <text x="80" y="98" class="title">The Input Boundary Starts Before Memory Allocation</text><text x="80" y="138" class="subtitle">Run low-cost checks first, then keep decode and expensive processing within explicit resource limits.</text>
+  <rect x="60" y="245" width="250" height="210" rx="24" class="card"/>
+  <text x="88" y="297" class="card-title">Receive request</text>
+  <text x="88" y="343" class="body">Stream / temporary file</text>
+<text x="88" y="381" class="body">Assign request ID</text>
+<rect x="365" y="245" width="250" height="210" rx="24" class="card"/>
+  <text x="393" y="297" class="card-title">Low-cost checks</text>
+  <text x="393" y="343" class="body">Size / content type</text>
+<text x="393" y="381" class="body">Allowed format</text>
+<rect x="670" y="245" width="250" height="210" rx="24" class="focus"/>
+  <text x="698" y="297" class="card-title">Bounded decode</text>
+  <text x="698" y="343" class="body">Pixel / text limit</text>
+<text x="698" y="381" class="body">Timeout</text>
+<rect x="975" y="245" width="250" height="210" rx="24" class="card"/>
+  <text x="1003" y="297" class="card-title">Processing</text>
+  <text x="1003" y="343" class="body">OCR / tokens / blockwords</text>
+<text x="1003" y="381" class="body">Normalize</text>
+<rect x="1280" y="245" width="250" height="210" rx="24" class="card"/>
+  <text x="1308" y="297" class="card-title">Safe result</text>
+  <text x="1308" y="343" class="body">Structured response</text>
+<text x="1308" y="381" class="body">Raw input excluded</text><path d="M310 350 H345" class="connector"/><text x="327.5" y="320" text-anchor="middle" class="label">validate</text>
+<path d="M615 350 H650" class="connector"/><text x="632.5" y="320" text-anchor="middle" class="label">admit</text>
+<path d="M920 350 H955" class="connector"/><text x="937.5" y="320" text-anchor="middle" class="label">process</text>
+<path d="M1225 350 H1260" class="connector"/><text x="1242.5" y="320" text-anchor="middle" class="label">respond</text>
+    <rect x="655" y="590" width="280" height="150" rx="24" class="warn"/>
+  <text x="683" y="642" class="card-title">Early rejection</text>
+  <text x="683" y="688" class="body">413 / 415</text>
+<text x="683" y="726" class="body">No sensitive input</text>
+    <path d="M795 455 V570" class="connector"/><text x="823" y="520" class="label">Early rejection</text><line x1="80" y1="830" x2="1520" y2="830" class="divider"/>
+  <text x="800" y="884" text-anchor="middle" class="footer">Treat input size, memory allocation, processing time, and error responses as one boundary contract.</text>
+</svg>
