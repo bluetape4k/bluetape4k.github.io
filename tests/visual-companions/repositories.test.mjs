@@ -46,6 +46,21 @@ test('visual companion repository registry includes the reviewed exposed-worksho
   assert.equal(exposed.manifestPath, 'docs/visual-companions/manifest.json');
 });
 
+test('visual companion repository registry pins the approved Exposed publication merge', async () => {
+  const visualRegistry = JSON.parse(
+    await readFile(new URL('src/data/visual-companions/repositories.json', root), 'utf8'),
+  );
+  const exposed = visualRegistry.repositories.find(
+    ({ repository }) => repository === 'bluetape4k/bluetape4k-exposed',
+  );
+
+  assert.deepEqual(exposed, {
+    repository: 'bluetape4k/bluetape4k-exposed',
+    sourceRef: '9a6f4a2133a3c4d64cd5da8af49e5a9ff2d38bd3',
+    manifestPath: 'docs/visual-companions/manifest.json',
+  });
+});
+
 test('visual companion repository registry requires an immutable lowercase Git SHA', () => {
   for (const sourceRef of [
     'develop',

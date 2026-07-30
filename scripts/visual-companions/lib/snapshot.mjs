@@ -77,7 +77,11 @@ function rewritePublishedLinks(content, {
   sourcePath,
   localeRoutes,
 }) {
-  return content.replace(/href=(["'])([^"']+)\1/g, (match, quote, href) => {
+  const rewritten = content.replace(/href=(["'])([^"']+)\1/g, (match, quote, href) => {
+    const mutableSourcePrefix = `https://github.com/${repository}/blob/develop/`;
+    if (href.startsWith(mutableSourcePrefix)) {
+      return `href=${quote}https://github.com/${repository}/blob/${sourceRef}/${href.slice(mutableSourcePrefix.length)}${quote}`;
+    }
     if (
       href.startsWith('#')
       || href.startsWith('/')
@@ -97,6 +101,7 @@ function rewritePublishedLinks(content, {
       ?? githubSourceUrl(repository, sourceRef, resolved);
     return `href=${quote}${destination}${suffix}${quote}`;
   });
+  return rewritten.replace(/[ \t]+$/gm, '');
 }
 
 async function resolveSourceFile(sourceRoot, relativePath) {

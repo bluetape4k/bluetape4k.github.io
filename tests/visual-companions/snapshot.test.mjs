@@ -62,7 +62,14 @@ async function fixture() {
       'docs/specs/plan.md',
       'docs/specs/plan.en.html',
       'docs/specs/plan.html',
-      { sourceOnlyMetadata: 'must not be projected' },
+      {
+        sourceOnlyMetadata: 'must not be projected',
+        presentation: {
+          mode: 'comparison',
+          defaultView: 'jdbc',
+          views: ['jdbc', 'r2dbc', 'multi-call'],
+        },
+      },
     ),
     document(
       'scheduling-policy-foundation',
@@ -70,7 +77,20 @@ async function fixture() {
       'docs/specs/policy.en.html',
       'docs/specs/policy.html',
     ),
-    { ...document('private-draft', 'docs/specs/private.md', 'docs/specs/private.en.html', 'docs/specs/private.html'), public: false },
+    {
+      ...document(
+        'private-draft',
+        'docs/specs/private.md',
+        'docs/specs/private.en.html',
+        'docs/specs/private.html',
+      ),
+      public: false,
+      presentation: {
+        mode: 'condition-explorer',
+        defaultView: 'conditions',
+        views: ['conditions'],
+      },
+    },
   ];
   await writeJson(path.join(sourceRoot, 'docs/visual-companions/manifest.json'), {
     schemaVersion: 1,
@@ -79,7 +99,10 @@ async function fixture() {
     ignoredSourceMetadata: true,
   });
   for (const [name, content] of [
-    ['plan.en.html', '<!doctype html><html lang="en"><body id="simulation"><a href="plan.md">source</a><a href="plan.html">한국어</a></body></html>'],
+    [
+      'plan.en.html',
+      '<!doctype html><html lang="en"><body id="simulation"><a href="plan.md">source</a><a href="https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/specs/plan.md">develop source</a><a href="plan.html">한국어</a></body></html>\n  \n',
+    ],
     ['plan.html', '<!doctype html><html lang="ko"><body id="history"><a href="plan.md">원문</a><a href="plan.en.html">English</a></body></html>'],
     ['policy.en.html', '<!doctype html><html lang="en"><body id="simulation">policy en</body></html>'],
     ['policy.html', '<!doctype html><html lang="ko"><body id="history">policy ko</body></html>'],
@@ -147,11 +170,13 @@ test('visual companion snapshot copies only public manifest locale assets to fix
     english,
     new RegExp(`https://github.com/bluetape4k/clinic-appointment/blob/${setup.sourceRef}/docs/specs/plan.md`),
   );
+  assert.doesNotMatch(english, /github\.com\/bluetape4k\/clinic-appointment\/blob\/develop\//);
   assert.match(
     english,
     /href="\/ko\/visual-companions\/clinic-appointment\/appointment-plan-and-capacity\/"/,
   );
   assert.doesNotMatch(english, /href="plan\.(?:md|html)"/);
+  assert.doesNotMatch(english, /[ \t]+$/m);
   assert.equal((await validateVisualCompanionSnapshot({ siteRoot: setup.siteRoot, repository })).assetCount, 4);
 });
 

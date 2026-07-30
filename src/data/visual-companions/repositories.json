@@ -20,6 +20,11 @@
       "repository": "bluetape4k/bluetape4k-leader",
       "sourceRef": "bc427d31f2c2653b70e7acce1d107fec8add7c97",
       "manifestPath": "docs/visual-companions/manifest.json"
+    },
+    {
+      "repository": "bluetape4k/bluetape4k-exposed",
+      "sourceRef": "9a6f4a2133a3c4d64cd5da8af49e5a9ff2d38bd3",
+      "manifestPath": "docs/visual-companions/manifest.json"
     }
   ]
 }

@@ -132,6 +132,27 @@
           }
         }
       ]
+    },
+    {
+      "repository": "bluetape4k/bluetape4k-exposed",
+      "label": {
+        "en": "bluetape4k Exposed",
+        "ko": "bluetape4k Exposed"
+      },
+      "description": {
+        "en": "JetBrains Exposed extensions that make JDBC and R2DBC transaction ownership, repository boundaries, and framework integration explicit.",
+        "ko": "JDBC와 R2DBC의 트랜잭션 소유권, 저장소 경계, 프레임워크 연계를 명시적으로 다루는 JetBrains Exposed 확장 라이브러리입니다."
+      },
+      "documents": [
+        {
+          "id": "jdbc-r2dbc-transaction-boundaries",
+          "featured": true,
+          "summary": {
+            "en": "Compare JPA/Hibernate with Exposed, then trace caller-owned JDBC and coroutine R2DBC transaction boundaries across single- and multi-repository flows.",
+            "ko": "JPA/Hibernate와 Exposed를 비교한 뒤 단일·다중 저장소 흐름에서 호출자가 소유하는 JDBC 및 코루틴 R2DBC 트랜잭션 경계를 추적합니다."
+          }
+        }
+      ]
     }
   ]
 }
