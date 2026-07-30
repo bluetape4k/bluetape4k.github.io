@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "repository": "bluetape4k/exposed-workshop",
+  "sourceRef": "b82fac05ae4e829110d40459cde2716325850b59",
+  "manifestPath": "docs/visual-companions/manifest.json",
+  "documents": [
+    {
+      "id": "exposed-redis-cache-strategies",
+      "source": "docs/superpowers/specs/2026-07-30-exposed-workshop-visual-companions-design.md",
+      "status": "approved",
+      "presentation": {
+        "mode": "simulation",
+        "defaultView": "simulation",
+        "views": [
+          "simulation"
+        ]
+      },
+      "locales": {
+        "en": {
+          "title": "Exposed and Redis Cache Strategies",
+          "sourcePath": "docs/superpowers/specs/2026-07-30-exposed-redis-cache-strategies-visual-companion.en.html",
+          "route": "/visual-companions/exposed-workshop/exposed-redis-cache-strategies/",
+          "sourceSha256": "65368df8db00c160b76b4b7e5fdef5a10c3253a21f1dc49c9414265a7eb707a6",
+          "sha256": "334efdf8ee4af9e46c17e93b3b25bfe45d85f49f10c7e7116baa933fac9094cc"
+        },
+        "ko": {
+          "title": "Exposed와 Redis 캐시 전략",
+          "sourcePath": "docs/superpowers/specs/2026-07-30-exposed-redis-cache-strategies-visual-companion.html",
+          "route": "/ko/visual-companions/exposed-workshop/exposed-redis-cache-strategies/",
+          "sourceSha256": "c2d602f45996790abbf99e6603166b34e9c1b5b40c77cce2529f685512ac7e18",
+          "sha256": "e616d5fa2ee21be1c054d01c89a01d4cb0aefde00e456837181fd51b089d18d4"
+        }
+      }
+    },
+    {
+      "id": "ddd-modulith-boundaries",
+      "source": "docs/superpowers/specs/2026-07-30-exposed-workshop-visual-companions-design.md",
+      "status": "approved",
+      "presentation": {
+        "mode": "simulation",
+        "defaultView": "simulation",
+        "views": [
+          "simulation"
+        ]
+      },
+      "locales": {
+        "en": {
+          "title": "DDD Modulith Boundaries",
+          "sourcePath": "docs/superpowers/specs/2026-07-30-ddd-modulith-boundaries-visual-companion.en.html",
+          "route": "/visual-companions/exposed-workshop/ddd-modulith-boundaries/",
+          "sourceSha256": "35ee8d0d10bda126f3cd06b9874ce5e3eb1a5fd424abe5b82ffc69c9dcc83c8e",
+          "sha256": "758d746cb643115cde0d8aea7611e6480dfe2593c78e6625fd45e33ce537e066"
+        },
+        "ko": {
+          "title": "DDD Modulith 경계",
+          "sourcePath": "docs/superpowers/specs/2026-07-30-ddd-modulith-boundaries-visual-companion.html",
+          "route": "/ko/visual-companions/exposed-workshop/ddd-modulith-boundaries/",
+          "sourceSha256": "4e7a4116a9a96f3ebc516c5581b7624d7474acbcd725b663cdeea130ec80ed43",
+          "sha256": "fc10184d8b81df72d0a89f4920c5b723ede78a19a920b09721adf2610b43f7c7"
+        }
+      }
+    }
+  ],
+  "snapshotDigest": "44d23839e0df3871a96731c704e756448b80f0a35e4016d5b2114a555af6bb45"
+}

@@ -56,6 +56,19 @@ test('visual companion catalog maps every listed document to a published snapsho
   }
 });
 
+test('visual companion catalog features both exposed-workshop documents', () => {
+  const exposedCatalog = visualCatalog.repositories.find(
+    ({ repository }) => repository === 'bluetape4k/exposed-workshop',
+  );
+
+  assert.ok(exposedCatalog);
+  assert.deepEqual(
+    exposedCatalog.documents.map(({ id }) => id),
+    ['exposed-redis-cache-strategies', 'ddd-modulith-boundaries'],
+  );
+  assert.ok(exposedCatalog.documents.every(({ featured }) => featured));
+});
+
 test('visual companion catalog rejects duplicate and incomplete navigation entries', () => {
   const duplicate = structuredClone(visualCatalog);
   duplicate.repositories.push(structuredClone(duplicate.repositories[0]));
