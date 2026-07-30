@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "repository": "bluetape4k/bluetape4k-workshop",
-  "sourceRef": "3adb97656a33fd935b8fa122c05a25490a1096cf",
+  "sourceRef": "a6180d427b2dbb3586efdebdf33a3ef9ad0fd2e4",
   "manifestPath": "docs/visual-companions/manifest.json",
   "documents": [
     {
@@ -21,14 +21,14 @@
           "sourcePath": "docs/superpowers/specs/2026-07-29-event-sourced-promotion-voucher-visual-companion.en.html",
           "route": "/visual-companions/bluetape4k-workshop/event-sourced-promotion-voucher/",
           "sourceSha256": "d1d0fc09d7eb2512544d0dd09ad5661d330d13b020ea0264731ec76077426bcc",
-          "sha256": "b294a12f2af91701358ebea0321204e9942a71e4d3e9b02a760213a9633a35e3"
+          "sha256": "c46b061e6a1aca103a1fb2719a566e471fdaff923fab1da7f7ff93651cfaa083"
         },
         "ko": {
           "title": "이벤트 소싱 프로모션 바우처 캠페인",
           "sourcePath": "docs/superpowers/specs/2026-07-29-event-sourced-promotion-voucher-visual-companion.html",
           "route": "/ko/visual-companions/bluetape4k-workshop/event-sourced-promotion-voucher/",
           "sourceSha256": "5ae976c3cbfd9bab15ca59d469050b4fb62459794693facddad5c0badfd98420",
-          "sha256": "81c7d6e6756ee1bbb9c8c24980a9c24b41a8b72c8baf96ab878c18d201280689"
+          "sha256": "ff29252353ad118851cbf497592d593997c8619c69dbab1729c3fbd433e3be1e"
         }
       }
     },
@@ -49,17 +49,45 @@
           "sourcePath": "docs/superpowers/specs/2026-07-30-concert-ticket-flash-sale-visual-companion.en.html",
           "route": "/visual-companions/bluetape4k-workshop/concert-ticket-flash-sale/",
           "sourceSha256": "ca062f7c743632b31ab838b90b392ffe76afb6f7dd5f1cf226c67847a9efbbda",
-          "sha256": "fb744746762424218c093423f04d2603772c2045511be6866769480ff39466dd"
+          "sha256": "553a9461ee4f4c856115b2f1309dc3a95d3ae30734e5bb94c5a36ac78cf0039f"
         },
         "ko": {
           "title": "콘서트 티켓 Flash Sale",
           "sourcePath": "docs/superpowers/specs/2026-07-30-concert-ticket-flash-sale-visual-companion.html",
           "route": "/ko/visual-companions/bluetape4k-workshop/concert-ticket-flash-sale/",
           "sourceSha256": "2e3c69687bbb984f1ea8c3e796c7c7e3f503e68415f31844196e656b81e9e62e",
-          "sha256": "84ed74e951456b70a9265c2fb4ec42fda7ceaedf0e2d3f50f19cd5eb5cdb61f9"
+          "sha256": "f5326fe75437640834c337c942a75592092e90d307d2f2e11bf032fbf0bfbbec"
+        }
+      }
+    },
+    {
+      "id": "kafka-outbox-fallback",
+      "source": "docs/superpowers/specs/2026-07-30-kafka-outbox-fallback-visual-companion-design.md",
+      "status": "approved",
+      "presentation": {
+        "mode": "simulation",
+        "defaultView": "simulation",
+        "views": [
+          "simulation"
+        ]
+      },
+      "locales": {
+        "en": {
+          "title": "Kafka Outbox Fallback",
+          "sourcePath": "docs/superpowers/specs/2026-07-30-kafka-outbox-fallback-visual-companion.en.html",
+          "route": "/visual-companions/bluetape4k-workshop/kafka-outbox-fallback/",
+          "sourceSha256": "6ed78f51f28461c8504f4e14c1319df6667c64c6e06b29848d929cc2089da413",
+          "sha256": "a82d9f8544b081be47fb9503dd88e514b359b1b96d9632e3d327c44907541a3e"
+        },
+        "ko": {
+          "title": "Kafka Outbox Fallback",
+          "sourcePath": "docs/superpowers/specs/2026-07-30-kafka-outbox-fallback-visual-companion.html",
+          "route": "/ko/visual-companions/bluetape4k-workshop/kafka-outbox-fallback/",
+          "sourceSha256": "4770e739e481698d92d30c2e946e04b064a5a61d8956f6834afa9babd8f47d01",
+          "sha256": "0a856dc1626c488344b98dfa6e1ddb56c44c39462ae6fbf40ed74ecc559ffa9b"
         }
       }
     }
   ],
-  "snapshotDigest": "9a9e4fb4395cc0bd26fd06f1bdb866e40b7af07d37467fcb3743a560eb2698a2"
+  "snapshotDigest": "1fa045c4d9fea0d77239a627885d9006747fe4c965ce749a390c75ed858500ad"
 }
