@@ -81,6 +81,7 @@ test('visual companion catalog features all published bluetape4k-workshop docume
       'event-sourced-promotion-voucher',
       'concert-ticket-flash-sale',
       'kafka-outbox-fallback',
+      'leader-job-safety-lab',
     ],
   );
   assert.ok(workshopCatalog.documents.every(({ featured }) => featured));

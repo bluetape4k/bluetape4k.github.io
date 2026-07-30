@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "repository": "bluetape4k/bluetape4k-workshop",
-  "sourceRef": "a6180d427b2dbb3586efdebdf33a3ef9ad0fd2e4",
+  "sourceRef": "150c3ae2b8bbb80cc0fe8ef17068655c337e1bc4",
   "manifestPath": "docs/visual-companions/manifest.json",
   "documents": [
     {
@@ -21,14 +21,14 @@
           "sourcePath": "docs/superpowers/specs/2026-07-29-event-sourced-promotion-voucher-visual-companion.en.html",
           "route": "/visual-companions/bluetape4k-workshop/event-sourced-promotion-voucher/",
           "sourceSha256": "d1d0fc09d7eb2512544d0dd09ad5661d330d13b020ea0264731ec76077426bcc",
-          "sha256": "c46b061e6a1aca103a1fb2719a566e471fdaff923fab1da7f7ff93651cfaa083"
+          "sha256": "3f8bb3b4bef3f4b38b4e632ceb55bfb8079fc952477adb864fdf8c824699805d"
         },
         "ko": {
           "title": "이벤트 소싱 프로모션 바우처 캠페인",
           "sourcePath": "docs/superpowers/specs/2026-07-29-event-sourced-promotion-voucher-visual-companion.html",
           "route": "/ko/visual-companions/bluetape4k-workshop/event-sourced-promotion-voucher/",
           "sourceSha256": "5ae976c3cbfd9bab15ca59d469050b4fb62459794693facddad5c0badfd98420",
-          "sha256": "ff29252353ad118851cbf497592d593997c8619c69dbab1729c3fbd433e3be1e"
+          "sha256": "ac41c1c29aa98f3ea7710c99ec2bb0c48330a6985808677ecfbac276ae88693d"
         }
       }
     },
@@ -49,14 +49,14 @@
           "sourcePath": "docs/superpowers/specs/2026-07-30-concert-ticket-flash-sale-visual-companion.en.html",
           "route": "/visual-companions/bluetape4k-workshop/concert-ticket-flash-sale/",
           "sourceSha256": "ca062f7c743632b31ab838b90b392ffe76afb6f7dd5f1cf226c67847a9efbbda",
-          "sha256": "553a9461ee4f4c856115b2f1309dc3a95d3ae30734e5bb94c5a36ac78cf0039f"
+          "sha256": "9366fb49ad261400cf288b58bbbc6636f295693768b202c91f5d97115c049e52"
         },
         "ko": {
           "title": "콘서트 티켓 Flash Sale",
           "sourcePath": "docs/superpowers/specs/2026-07-30-concert-ticket-flash-sale-visual-companion.html",
           "route": "/ko/visual-companions/bluetape4k-workshop/concert-ticket-flash-sale/",
           "sourceSha256": "2e3c69687bbb984f1ea8c3e796c7c7e3f503e68415f31844196e656b81e9e62e",
-          "sha256": "f5326fe75437640834c337c942a75592092e90d307d2f2e11bf032fbf0bfbbec"
+          "sha256": "a06bcd2d1c2cf95cdfe09899a82b5b38ca1a60ec61ce4b8fb5bb510528f938ae"
         }
       }
     },
@@ -76,18 +76,46 @@
           "title": "Kafka Outbox Fallback",
           "sourcePath": "docs/superpowers/specs/2026-07-30-kafka-outbox-fallback-visual-companion.en.html",
           "route": "/visual-companions/bluetape4k-workshop/kafka-outbox-fallback/",
-          "sourceSha256": "6ed78f51f28461c8504f4e14c1319df6667c64c6e06b29848d929cc2089da413",
-          "sha256": "a82d9f8544b081be47fb9503dd88e514b359b1b96d9632e3d327c44907541a3e"
+          "sourceSha256": "cfa742d8ab763899d4b2fd307020909fc9e8b5b8126eb57a48d6e67f4d775a5a",
+          "sha256": "65117cdd223f586244a647bde8cfb00b5e508bf84f45c4735aec959dabe27a28"
         },
         "ko": {
           "title": "Kafka Outbox Fallback",
           "sourcePath": "docs/superpowers/specs/2026-07-30-kafka-outbox-fallback-visual-companion.html",
           "route": "/ko/visual-companions/bluetape4k-workshop/kafka-outbox-fallback/",
-          "sourceSha256": "4770e739e481698d92d30c2e946e04b064a5a61d8956f6834afa9babd8f47d01",
-          "sha256": "0a856dc1626c488344b98dfa6e1ddb56c44c39462ae6fbf40ed74ecc559ffa9b"
+          "sourceSha256": "ec6a19727d216593c6e5b175926558d953fa10e72cd948b2c0abfa4271bc8992",
+          "sha256": "bebc600ed334b0a4539f7fd328f8b36f4b79ea064e363e5d2677b92721638304"
+        }
+      }
+    },
+    {
+      "id": "leader-job-safety-lab",
+      "source": "docs/superpowers/specs/2026-07-22-issue-548-job-safety-lab-design.md",
+      "status": "approved",
+      "presentation": {
+        "mode": "simulation",
+        "defaultView": "simulation",
+        "views": [
+          "simulation"
+        ]
+      },
+      "locales": {
+        "en": {
+          "title": "Leader Job Safety Lab",
+          "sourcePath": "docs/superpowers/specs/2026-07-30-leader-job-safety-lab-visual-companion.en.html",
+          "route": "/visual-companions/bluetape4k-workshop/leader-job-safety-lab/",
+          "sourceSha256": "d15bf13de8750b43f1c15c637cc3ad7fead96234d4e4408827a02ab55fef3562",
+          "sha256": "5e0f8114369fc2af22a6e758b09b011ba3cf849324f65e0dd5be468277da653c"
+        },
+        "ko": {
+          "title": "Leader Job Safety Lab",
+          "sourcePath": "docs/superpowers/specs/2026-07-30-leader-job-safety-lab-visual-companion.html",
+          "route": "/ko/visual-companions/bluetape4k-workshop/leader-job-safety-lab/",
+          "sourceSha256": "1f4151ea790f7ff197e117d681f28a5ec22ea5585138c0f5bb9081f6da2e8209",
+          "sha256": "dea25f9607d7569c4a1106e9e2295f070e1949a0526c29987d961966606d7459"
         }
       }
     }
   ],
-  "snapshotDigest": "1fa045c4d9fea0d77239a627885d9006747fe4c965ce749a390c75ed858500ad"
+  "snapshotDigest": "a9e88f570b25606bec9a7ed04b76b50425e316a212f8fe6ad02a4fbaff725cf7"
 }

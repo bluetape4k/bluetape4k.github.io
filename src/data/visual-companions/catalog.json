@@ -37,8 +37,8 @@
         "ko": "bluetape4k 워크숍"
       },
       "description": {
-        "en": "Complex example applications that connect domain decisions with event sourcing, concurrency control, payment, inventory, and recovery.",
-        "ko": "이벤트 소싱, 동시성 제어, 결제, 재고, 장애 복구를 업무 규칙과 연결해 구현한 복합 예제입니다."
+        "en": "Complex example applications that connect domain decisions with event sourcing, concurrency control, payment, inventory, leader election, and recovery.",
+        "ko": "이벤트 소싱, 동시성 제어, 결제, 재고, 리더 선출, 장애 복구를 업무 규칙과 연결해 구현한 복합 예제입니다."
       },
       "documents": [
         {
@@ -63,6 +63,14 @@
           "summary": {
             "en": "Compare how direct Kafka publication, timeout ambiguity, fallback persistence, relay recovery, and dead-letter handling change API, database, and event states.",
             "ko": "Kafka 직접 발행, Timeout으로 결과를 확정할 수 없는 경우, 복구 데이터 저장, Relay 재발행, Dead Letter 전환이 API, DB, 이벤트 상태에 미치는 영향을 비교합니다."
+          }
+        },
+        {
+          "id": "leader-job-safety-lab",
+          "featured": true,
+          "summary": {
+            "en": "Compare lease overruns, network partitions, mixed-version rollouts, and non-fenceable effects to see where fencing tokens and idempotency stop stale work.",
+            "ko": "Lease 초과, 네트워크 분리, 버전 혼재, Fencing을 적용할 수 없는 외부 작업을 비교해 Fencing Token과 멱등 처리가 지연된 작업을 차단하는 범위를 보여 줍니다."
           }
         }
       ]
