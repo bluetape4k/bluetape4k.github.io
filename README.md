@@ -22,7 +22,10 @@ npm run dev
 ## Analytics
 
 The site includes Cloudflare Web Analytics for privacy-friendly page-level
-traffic, including blog paths under `/blog/` and `/ko/blog/`.
+traffic, including blog paths under `/blog/` and `/ko/blog/` and standalone
+Visual Companion paths under `/visual-companions/` and
+`/ko/visual-companions/`. Astro injects the beacon into Starlight pages, while
+the production build adds the same beacon to standalone Visual Companion HTML.
 
 Defaults:
 

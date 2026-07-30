@@ -69,6 +69,23 @@ test('visual companion catalog features both exposed-workshop documents', () => 
   assert.ok(exposedCatalog.documents.every(({ featured }) => featured));
 });
 
+test('visual companion catalog features all published bluetape4k-workshop documents', () => {
+  const workshopCatalog = visualCatalog.repositories.find(
+    ({ repository }) => repository === 'bluetape4k/bluetape4k-workshop',
+  );
+
+  assert.ok(workshopCatalog);
+  assert.deepEqual(
+    workshopCatalog.documents.map(({ id }) => id),
+    [
+      'event-sourced-promotion-voucher',
+      'concert-ticket-flash-sale',
+      'kafka-outbox-fallback',
+    ],
+  );
+  assert.ok(workshopCatalog.documents.every(({ featured }) => featured));
+});
+
 test('visual companion catalog rejects duplicate and incomplete navigation entries', () => {
   const duplicate = structuredClone(visualCatalog);
   duplicate.repositories.push(structuredClone(duplicate.repositories[0]));

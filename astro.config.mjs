@@ -3,6 +3,7 @@ import starlight from '@astrojs/starlight';
 import { loadRedirectCatalog } from './scripts/manual/lib/catalog.mjs';
 import { loadRepositoryRegistry } from './scripts/manual/lib/repositories.mjs';
 import { buildStaticSidebar } from './scripts/manual/lib/sidebar.mjs';
+import { resolveCloudflareAnalytics } from './scripts/site/cloudflare-analytics.mjs';
 
 const manualRepositories = loadRepositoryRegistry(new URL('./src/data/manual/repositories.json', import.meta.url));
 const staticSidebar = buildStaticSidebar(manualRepositories);
@@ -20,19 +21,17 @@ for (const repository of manualRepositories.repositories) {
   }
 }
 
-const cloudflareBeaconToken =
-  process.env.PUBLIC_CLOUDFLARE_BEACON_TOKEN ??
-  (process.env.NODE_ENV === 'production' ? 'a9408513fe144222b89e86151b26e70f' : '');
-const cloudflareBeaconScriptUrl =
-  process.env.PUBLIC_CLOUDFLARE_BEACON_SCRIPT_URL ?? 'https://static.cloudflareinsights.com/beacon.min.js';
-const cloudflareAnalyticsHead = cloudflareBeaconToken
+const cloudflareAnalytics = resolveCloudflareAnalytics({
+  production: process.env.NODE_ENV === 'production',
+});
+const cloudflareAnalyticsHead = cloudflareAnalytics
   ? [
       {
         tag: 'script',
         attrs: {
           defer: true,
-          'data-cf-beacon': JSON.stringify({ token: cloudflareBeaconToken }),
-          src: cloudflareBeaconScriptUrl,
+          'data-cf-beacon': JSON.stringify({ token: cloudflareAnalytics.token }),
+          src: cloudflareAnalytics.scriptUrl,
         },
       },
     ]
