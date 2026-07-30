@@ -100,6 +100,20 @@ test('visual companion catalog features both bluetape4k-leader documents', () =>
   assert.ok(leaderCatalog.documents.every(({ featured }) => featured));
 });
 
+test('visual companion catalog features only the approved Exposed transaction guide', () => {
+  const exposedCatalog = visualCatalog.repositories.find(
+    ({ repository }) => repository === 'bluetape4k/bluetape4k-exposed',
+  );
+
+  assert.ok(exposedCatalog);
+  assert.deepEqual(
+    exposedCatalog.documents.map(({ id }) => id),
+    ['jdbc-r2dbc-transaction-boundaries'],
+  );
+  assert.ok(exposedCatalog.documents.every(({ featured }) => featured));
+  assert.doesNotMatch(JSON.stringify(exposedCatalog), /spring-boot-exposed-activation/);
+});
+
 test('visual companion catalog rejects duplicate and incomplete navigation entries', () => {
   const duplicate = structuredClone(visualCatalog);
   duplicate.repositories.push(structuredClone(duplicate.repositories[0]));

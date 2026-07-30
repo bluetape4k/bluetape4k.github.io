@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "repository": "bluetape4k/bluetape4k-exposed",
+  "sourceRef": "9a6f4a2133a3c4d64cd5da8af49e5a9ff2d38bd3",
+  "manifestPath": "docs/visual-companions/manifest.json",
+  "documents": [
+    {
+      "id": "jdbc-r2dbc-transaction-boundaries",
+      "source": "docs/superpowers/specs/2026-07-30-issue-410-exposed-visual-companions-design.md",
+      "status": "approved",
+      "presentation": {
+        "mode": "comparison",
+        "defaultView": "jdbc",
+        "views": [
+          "jdbc",
+          "r2dbc",
+          "multi-call"
+        ]
+      },
+      "locales": {
+        "en": {
+          "title": "JPA to Exposed: Make Transaction Ownership Visible",
+          "sourcePath": "docs/visual-companions/en/jdbc-r2dbc-transaction-boundaries.html",
+          "route": "/visual-companions/bluetape4k-exposed/jdbc-r2dbc-transaction-boundaries/",
+          "sourceSha256": "b37d5f1c92f5616d1a50f6076f83b1c5d9228b514f997271116136168a3aef81",
+          "sha256": "71abff64e820f9f65f2a91252a6e75c01a5907db8f75c62ee4e0575f5edcc697"
+        },
+        "ko": {
+          "title": "JPA에서 Exposed로: 트랜잭션 소유권을 드러내기",
+          "sourcePath": "docs/visual-companions/ko/jdbc-r2dbc-transaction-boundaries.html",
+          "route": "/ko/visual-companions/bluetape4k-exposed/jdbc-r2dbc-transaction-boundaries/",
+          "sourceSha256": "1008d3e45aeca79af9346429893c85dbda381e741dcf1d04fa3a0445dd486930",
+          "sha256": "87046af35f1bc9a3fdf44626fc2bf9023c549eddfd515fca944b0a0a8328472c"
+        }
+      }
+    }
+  ],
+  "snapshotDigest": "d93f12eafc4f77082196da78ea15ec61f295ecb4d13e71dbd4086b7f088c792f"
+}

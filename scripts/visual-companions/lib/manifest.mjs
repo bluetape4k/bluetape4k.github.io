@@ -1,8 +1,8 @@
 import path from 'node:path';
 
 const DOCUMENT_ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-const MODES = new Set(['history', 'simulation', 'hybrid']);
-const VIEWS = new Set(['history', 'simulation']);
+const MODES = new Set(['history', 'simulation', 'hybrid', 'comparison']);
+const VIEWS = new Set(['history', 'simulation', 'jdbc', 'r2dbc', 'multi-call']);
 
 export class VisualCompanionManifestError extends Error {
   constructor(code, actual) {
@@ -61,6 +61,15 @@ function presentation(value) {
     (mode === 'history' && (views.length !== 1 || views[0] !== 'history'))
     || (mode === 'simulation' && (views.length !== 1 || views[0] !== 'simulation'))
     || (mode === 'hybrid' && (views.length !== 2 || !views.includes('history') || !views.includes('simulation')))
+    || (
+      mode === 'comparison'
+      && (
+        views.length !== 3
+        || !views.includes('jdbc')
+        || !views.includes('r2dbc')
+        || !views.includes('multi-call')
+      )
+    )
   ) {
     fail('VISUAL_PRESENTATION_VIEWS', `${mode}:${views.join(',')}`);
   }
