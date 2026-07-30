@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "repository": "bluetape4k/bluetape4k-leader",
+  "sourceRef": "bc427d31f2c2653b70e7acce1d107fec8add7c97",
+  "manifestPath": "docs/visual-companions/manifest.json",
+  "documents": [
+    {
+      "id": "leader-elector",
+      "source": "docs/superpowers/specs/2026-07-30-leader-election-visual-companions-design.md",
+      "status": "approved",
+      "presentation": {
+        "mode": "simulation",
+        "defaultView": "simulation",
+        "views": [
+          "simulation"
+        ]
+      },
+      "locales": {
+        "en": {
+          "title": "LeaderElector Lock and Lease",
+          "sourcePath": "docs/superpowers/specs/2026-07-30-leader-elector-visual-companion.html",
+          "route": "/visual-companions/bluetape4k-leader/leader-elector/",
+          "sourceSha256": "d0a91b2451f459723a2f319bd888f49d2724bdc9740a5dee0bbda6a59bb1a6b2",
+          "sha256": "c83433ed540f3a44e034bd0f2cbd09bbe99d0f32e1b53d863ab048591f065267"
+        },
+        "ko": {
+          "title": "LeaderElector 락과 리스",
+          "sourcePath": "docs/superpowers/specs/2026-07-30-leader-elector-visual-companion.ko.html",
+          "route": "/ko/visual-companions/bluetape4k-leader/leader-elector/",
+          "sourceSha256": "eb5040d59c150733530d44a4f9badc314118dc9d93cc18c9cd52ce2e949c87e4",
+          "sha256": "d9ca1bad8447f7f1020259e9c4173ec8eee11219fe19a27bcb31e7526f91f76a"
+        }
+      }
+    },
+    {
+      "id": "leader-group-elector",
+      "source": "docs/superpowers/specs/2026-07-30-leader-election-visual-companions-design.md",
+      "status": "approved",
+      "presentation": {
+        "mode": "simulation",
+        "defaultView": "simulation",
+        "views": [
+          "simulation"
+        ]
+      },
+      "locales": {
+        "en": {
+          "title": "LeaderGroupElector Slot Capacity",
+          "sourcePath": "docs/superpowers/specs/2026-07-30-leader-group-elector-visual-companion.html",
+          "route": "/visual-companions/bluetape4k-leader/leader-group-elector/",
+          "sourceSha256": "b51eefe88b2b9212609cff0314a7f9f77162bd16b95d19f6f991860f67f7f6f0",
+          "sha256": "c78f0a2d96a894fbd99ad6061d52b7abf44db917cea72cdbb9e3315da73f6be5"
+        },
+        "ko": {
+          "title": "LeaderGroupElector 슬롯 수용량",
+          "sourcePath": "docs/superpowers/specs/2026-07-30-leader-group-elector-visual-companion.ko.html",
+          "route": "/ko/visual-companions/bluetape4k-leader/leader-group-elector/",
+          "sourceSha256": "62abc535dcf19b1f912285c5be62884e670be655d725f7684e187057b0a56fba",
+          "sha256": "04f0dccb7150b6a085d431ced7652f42912cd8bbf4b6e011afe86f5de305422d"
+        }
+      }
+    }
+  ],
+  "snapshotDigest": "68dbcb4c607f59a25fb3651ec314f6fb97386d6dbc9cb9f66ee48178d6aa615c"
+}

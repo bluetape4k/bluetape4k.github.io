@@ -15,6 +15,11 @@
       "repository": "bluetape4k/exposed-workshop",
       "sourceRef": "b82fac05ae4e829110d40459cde2716325850b59",
       "manifestPath": "docs/visual-companions/manifest.json"
+    },
+    {
+      "repository": "bluetape4k/bluetape4k-leader",
+      "sourceRef": "bc427d31f2c2653b70e7acce1d107fec8add7c97",
+      "manifestPath": "docs/visual-companions/manifest.json"
     }
   ]
 }
