@@ -95,6 +95,35 @@
           }
         }
       ]
+    },
+    {
+      "repository": "bluetape4k/bluetape4k-leader",
+      "label": {
+        "en": "bluetape4k leader",
+        "ko": "bluetape4k 리더 선출"
+      },
+      "description": {
+        "en": "Distributed leader election with Redis/Lettuce locks, leases, takeover, bounded group capacity, and Spring Boot integration.",
+        "ko": "Redis/Lettuce 락과 리스, 장애 인계, 제한된 그룹 수용량, Spring Boot 연계를 설명하는 분산 리더 선출 라이브러리입니다."
+      },
+      "documents": [
+        {
+          "id": "leader-elector",
+          "featured": true,
+          "summary": {
+            "en": "Follow one Redis-backed leader through lock acquisition, token ownership, lease expiry, takeover, auto-extension, and Spring interception.",
+            "ko": "Redis 기반 단일 리더가 락 획득, 토큰 소유권, 리스 만료, 장애 인계, 자동 연장, Spring 인터셉션을 거치는 과정을 보여 줍니다."
+          }
+        },
+        {
+          "id": "leader-group-elector",
+          "featured": true,
+          "summary": {
+            "en": "See how single-leader election expands to N lease-backed slots, including capacity, saturation, expiry, and later admission.",
+            "ko": "단일 리더 선출이 N개의 리스 기반 슬롯으로 확장될 때 수용량, 포화, 만료, 후속 진입이 어떻게 달라지는지 보여 줍니다."
+          }
+        }
+      ]
     }
   ]
 }
