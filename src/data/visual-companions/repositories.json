@@ -10,6 +10,11 @@
       "repository": "bluetape4k/bluetape4k-workshop",
       "sourceRef": "3adb97656a33fd935b8fa122c05a25490a1096cf",
       "manifestPath": "docs/visual-companions/manifest.json"
+    },
+    {
+      "repository": "bluetape4k/exposed-workshop",
+      "sourceRef": "b82fac05ae4e829110d40459cde2716325850b59",
+      "manifestPath": "docs/visual-companions/manifest.json"
     }
   ]
 }

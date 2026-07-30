@@ -58,6 +58,35 @@
           }
         }
       ]
+    },
+    {
+      "repository": "bluetape4k/exposed-workshop",
+      "label": {
+        "en": "Exposed workshop",
+        "ko": "Exposed 워크숍"
+      },
+      "description": {
+        "en": "Runnable examples of cache strategies built with Exposed and Redis, plus DDD boundaries verified with Spring Modulith.",
+        "ko": "Exposed와 Redis로 구현한 캐시 전략과 Spring Modulith로 검증하는 DDD 경계를 실행 가능한 예제로 설명합니다."
+      },
+      "documents": [
+        {
+          "id": "exposed-redis-cache-strategies",
+          "featured": true,
+          "summary": {
+            "en": "Compare cache reads, updates, invalidation, and deferred database persistence across the local cache, Redis, and Exposed.",
+            "ko": "로컬 캐시, Redis, Exposed에서 조회, 갱신, 무효화, 지연된 DB 반영이 어떻게 달라지는지 비교합니다."
+          }
+        },
+        {
+          "id": "ddd-modulith-boundaries",
+          "featured": true,
+          "summary": {
+            "en": "See how orders and shipping own separate persistence and communicate only through a published event contract.",
+            "ko": "주문과 배송 모듈이 각각 데이터 저장을 담당하고 공개된 이벤트 계약으로만 통신하는 구조를 보여 줍니다."
+          }
+        }
+      ]
     }
   ]
 }

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdtemp, writeFile } from 'node:fs/promises';
+import { mkdtemp, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
@@ -9,6 +9,7 @@ import {
   validateVisualCompanionRepositories,
 } from '../../scripts/visual-companions/lib/repositories.mjs';
 
+const root = new URL('../../', import.meta.url);
 const clinic = {
   repository: 'bluetape4k/clinic-appointment',
   sourceRef: '85a09e4ba16644219c15e91d94c5a4ccb7619a64',
@@ -30,6 +31,19 @@ test('visual companion repository registry accepts the reviewed clinic revision'
     () => repositoryByFullName(normalized, 'bluetape4k/missing'),
     /VISUAL_REPOSITORY_UNKNOWN/,
   );
+});
+
+test('visual companion repository registry includes the reviewed exposed-workshop revision', async () => {
+  const visualRegistry = JSON.parse(
+    await readFile(new URL('src/data/visual-companions/repositories.json', root), 'utf8'),
+  );
+  const exposed = visualRegistry.repositories.find(
+    ({ repository }) => repository === 'bluetape4k/exposed-workshop',
+  );
+
+  assert.ok(exposed);
+  assert.match(exposed.sourceRef, /^[0-9a-f]{40}$/);
+  assert.equal(exposed.manifestPath, 'docs/visual-companions/manifest.json');
 });
 
 test('visual companion repository registry requires an immutable lowercase Git SHA', () => {
