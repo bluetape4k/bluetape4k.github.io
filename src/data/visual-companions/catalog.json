@@ -151,6 +151,14 @@
             "en": "Compare JPA/Hibernate with Exposed, then trace caller-owned JDBC and coroutine R2DBC transaction boundaries across single- and multi-repository flows.",
             "ko": "JPA/Hibernate와 Exposed를 비교한 뒤 단일·다중 저장소 흐름에서 호출자가 소유하는 JDBC 및 코루틴 R2DBC 트랜잭션 경계를 추적합니다."
           }
+        },
+        {
+          "id": "spring-boot-exposed-activation",
+          "featured": true,
+          "summary": {
+            "en": "Explore the Spring Boot conditions that activate JDBC and R2DBC Exposed mappings, and the application-owned resources each path still requires.",
+            "ko": "JDBC와 R2DBC Exposed 매핑을 활성화하는 Spring Boot 조건과 각 경로에서 애플리케이션이 계속 소유해야 하는 리소스를 살펴봅니다."
+          }
         }
       ]
     }
