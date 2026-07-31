@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "repository": "bluetape4k/bluetape4k-exposed",
-  "sourceRef": "9a6f4a2133a3c4d64cd5da8af49e5a9ff2d38bd3",
+  "sourceRef": "3a64ebac7d4c436fdde98bb1c538e306b01fa527",
   "manifestPath": "docs/visual-companions/manifest.json",
   "documents": [
     {
@@ -22,18 +22,46 @@
           "title": "JPA to Exposed: Make Transaction Ownership Visible",
           "sourcePath": "docs/visual-companions/en/jdbc-r2dbc-transaction-boundaries.html",
           "route": "/visual-companions/bluetape4k-exposed/jdbc-r2dbc-transaction-boundaries/",
-          "sourceSha256": "b37d5f1c92f5616d1a50f6076f83b1c5d9228b514f997271116136168a3aef81",
-          "sha256": "71abff64e820f9f65f2a91252a6e75c01a5907db8f75c62ee4e0575f5edcc697"
+          "sourceSha256": "c6bfb07f48fe881cd435b437012ab186d22c9fd97f2471f1d6694c820dbab05c",
+          "sha256": "29dd62dcba7dfc19b60f1327190d25b0812673f3ec364929fadaed2e92249a12"
         },
         "ko": {
           "title": "JPA에서 Exposed로: 트랜잭션 소유권을 드러내기",
           "sourcePath": "docs/visual-companions/ko/jdbc-r2dbc-transaction-boundaries.html",
           "route": "/ko/visual-companions/bluetape4k-exposed/jdbc-r2dbc-transaction-boundaries/",
-          "sourceSha256": "1008d3e45aeca79af9346429893c85dbda381e741dcf1d04fa3a0445dd486930",
-          "sha256": "87046af35f1bc9a3fdf44626fc2bf9023c549eddfd515fca944b0a0a8328472c"
+          "sourceSha256": "f67e547313bed8df90802e6b31ad3cc074a8e9fa7ed63f299d8b2b5a089bee8a",
+          "sha256": "1df9119bdf8a6d4a5aae9d2e971b4a730a7d1c4c8b277c7833430e566c9cde72"
+        }
+      }
+    },
+    {
+      "id": "spring-boot-exposed-activation",
+      "source": "docs/superpowers/specs/2026-07-30-issue-410-exposed-visual-companions-design.md",
+      "status": "approved",
+      "presentation": {
+        "mode": "condition-explorer",
+        "defaultView": "conditions",
+        "views": [
+          "conditions"
+        ]
+      },
+      "locales": {
+        "en": {
+          "title": "Spring Boot Exposed Activation",
+          "sourcePath": "docs/visual-companions/en/spring-boot-exposed-activation.html",
+          "route": "/visual-companions/bluetape4k-exposed/spring-boot-exposed-activation/",
+          "sourceSha256": "b224bf8235cf581fd86b78e8976877079beaddccfedad5312803e826b2ecf542",
+          "sha256": "1991f1a5584c4efbfa601d615cf97d06928bfea85652bbdeb5ec5221494c5962"
+        },
+        "ko": {
+          "title": "Spring Boot Exposed 활성화",
+          "sourcePath": "docs/visual-companions/ko/spring-boot-exposed-activation.html",
+          "route": "/ko/visual-companions/bluetape4k-exposed/spring-boot-exposed-activation/",
+          "sourceSha256": "fe36046eb029e3e5185cfed3e18c1af113c022261dc0f6a2f202005adf2cafcd",
+          "sha256": "2e2b9f60678a97046ecde53ac8a6728b74bdef8e22649c512f745c0c8ed4aef9"
         }
       }
     }
   ],
-  "snapshotDigest": "d93f12eafc4f77082196da78ea15ec61f295ecb4d13e71dbd4086b7f088c792f"
+  "snapshotDigest": "0979fe5c28529f3a57956a9d095a345941d06b5130b0b27ea8fe452e2d547abe"
 }

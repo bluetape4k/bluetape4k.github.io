@@ -1,8 +1,8 @@
 import path from 'node:path';
 
 const DOCUMENT_ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-const MODES = new Set(['history', 'simulation', 'hybrid', 'comparison']);
-const VIEWS = new Set(['history', 'simulation', 'jdbc', 'r2dbc', 'multi-call']);
+const MODES = new Set(['history', 'simulation', 'hybrid', 'comparison', 'condition-explorer']);
+const VIEWS = new Set(['history', 'simulation', 'jdbc', 'r2dbc', 'multi-call', 'conditions']);
 
 export class VisualCompanionManifestError extends Error {
   constructor(code, actual) {
