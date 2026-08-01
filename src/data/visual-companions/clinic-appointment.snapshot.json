@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "repository": "bluetape4k/clinic-appointment",
-  "sourceRef": "6967e385bf92a40619a9bbe17f96da182ac8bd50",
+  "sourceRef": "e9743337cdc1bf499af68e4e94a9f06b2833d838",
   "manifestPath": "docs/visual-companions/manifest.json",
   "documents": [
     {
@@ -22,14 +22,14 @@
           "sourcePath": "docs/superpowers/specs/2026-07-26-appointment-plan-and-capacity-design.en.html",
           "route": "/visual-companions/clinic-appointment/appointment-plan-and-capacity/",
           "sourceSha256": "dcbfaf809efabaa1d165fb1e2f69768030f646a69b5470114b78dbbfd095caba",
-          "sha256": "23aed5e1442e7ae9aeda0be92439b51f04b8d5fa1b8accc074d7499ad02361dc"
+          "sha256": "189f9dd9e5c7949aaac965c14e3ca32699c49f7bd93cca22e568f64e4c22ce74"
         },
         "ko": {
           "title": "예약 계획과 수용량",
           "sourcePath": "docs/superpowers/specs/2026-07-26-appointment-plan-and-capacity-design.html",
           "route": "/ko/visual-companions/clinic-appointment/appointment-plan-and-capacity/",
-          "sourceSha256": "90211c54a3816c2d271a47c8fa9ee2724d1a50e7dc2438a81b7f5ba6e9ebb712",
-          "sha256": "2bbfecdab25eeb51112e6fea44c1898d60c431737a9092bb93fdaf51308cfa51"
+          "sourceSha256": "e8da7e986f3668b55d7541617173d45465a67bb2ad7be9f3d15e552cdf53523e",
+          "sha256": "7f307f8d66369f3679c9ceb6c8e5febce5f5417de5f56a779a4e8a6c6b876aa1"
         }
       }
     },
@@ -51,17 +51,129 @@
           "sourcePath": "docs/superpowers/specs/2026-07-27-scheduling-policy-foundation-design.en.html",
           "route": "/visual-companions/clinic-appointment/scheduling-policy-foundation/",
           "sourceSha256": "711f1e084b14c5b19d49098a62f74c0ba62d2500021e6f286b718e24cbc071e2",
-          "sha256": "0aedf7af59a8e39642228e35c37fab3698d321107cfc438ebefa0224f69b4faa"
+          "sha256": "b1ec4cfed1d29a65951ed63264999e00e91006e09f05249640930e662777f3ee"
         },
         "ko": {
           "title": "예약 정책의 기준 규칙",
           "sourcePath": "docs/superpowers/specs/2026-07-27-scheduling-policy-foundation-design.html",
           "route": "/ko/visual-companions/clinic-appointment/scheduling-policy-foundation/",
-          "sourceSha256": "3ebb5378350a547ac7f1f47f7382517de844b3d0e09830d60f149ef7da078c0b",
-          "sha256": "ff892c273f72bc8ccba6d99d49fd80f562559f2971c816bed7eb8ad8a3a878e8"
+          "sourceSha256": "99b29d998104e66a2eadb4b7d71efb2c4740dd4194ceaec79146a2bfe2dc5bbb",
+          "sha256": "010ce81612291a2b11e1691f041a58888841f762dcc79a6f5409132be2075acd"
+        }
+      }
+    },
+    {
+      "id": "profile-change-reservation-reevaluation",
+      "source": "docs/superpowers/specs/2026-07-30-profile-change-reservation-reevaluation-design.md",
+      "status": "approved",
+      "presentation": {
+        "mode": "simulation",
+        "defaultView": "simulation",
+        "views": [
+          "simulation"
+        ]
+      },
+      "locales": {
+        "en": {
+          "title": "Profile Change Reservation Reevaluation",
+          "sourcePath": "docs/superpowers/specs/2026-07-30-profile-change-reservation-reevaluation.html",
+          "route": "/visual-companions/clinic-appointment/profile-change-reservation-reevaluation/",
+          "sourceSha256": "f5da53d341af1757751aade94277d0f4863e707dfde032c2f3148d0c265323c0",
+          "sha256": "3922818aa85009f2c353b86eec443d82c0263f9e3f59ad0aac310494e919f124"
+        },
+        "ko": {
+          "title": "프로필 변경 예약 재평가",
+          "sourcePath": "docs/superpowers/specs/2026-07-30-profile-change-reservation-reevaluation.ko.html",
+          "route": "/ko/visual-companions/clinic-appointment/profile-change-reservation-reevaluation/",
+          "sourceSha256": "1ccafe41ccd32980a5b0e26b072aab6d8124af31797e7e2081a099c9d1eda155",
+          "sha256": "a4883c66d9b5cb502dd0524e9bd5ce98c8d86db161c2badbae53327a03cdb536"
+        }
+      }
+    },
+    {
+      "id": "product-scheduling-classification",
+      "source": "docs/superpowers/specs/2026-07-29-issue-184-visit-commitment-design.md",
+      "status": "approved",
+      "presentation": {
+        "mode": "simulation",
+        "defaultView": "simulation",
+        "views": [
+          "simulation"
+        ]
+      },
+      "locales": {
+        "en": {
+          "title": "Product Scheduling Classification",
+          "sourcePath": "docs/superpowers/specs/2026-07-29-issue-184-product-scheduling-classification.en.html",
+          "route": "/visual-companions/clinic-appointment/product-scheduling-classification/",
+          "sourceSha256": "8510896a306eddbe339181a4531d81597e7bbe2145915e034080831545af8488",
+          "sha256": "e8b944d758764a917c68171c34f513506c326e2c611f01a3f6f762d11b2a580f"
+        },
+        "ko": {
+          "title": "상품 예약 운영 특성 분류",
+          "sourcePath": "docs/superpowers/specs/2026-07-29-issue-184-product-scheduling-classification.html",
+          "route": "/ko/visual-companions/clinic-appointment/product-scheduling-classification/",
+          "sourceSha256": "d00c0a3df350ddf619a64098546ebefcc3b9b532f3fd0611784326007342a8f8",
+          "sha256": "16eabb7dea7ac354ada95bfad20b5ef2c6fecce049d5a8204c065ca0ce9781a5"
+        }
+      }
+    },
+    {
+      "id": "package-product-composition",
+      "source": "docs/superpowers/specs/2026-07-29-issue-184-visit-commitment-design.md",
+      "status": "approved",
+      "presentation": {
+        "mode": "simulation",
+        "defaultView": "simulation",
+        "views": [
+          "simulation"
+        ]
+      },
+      "locales": {
+        "en": {
+          "title": "Package Product Composition",
+          "sourcePath": "docs/superpowers/specs/2026-07-29-issue-184-package-product-composition.en.html",
+          "route": "/visual-companions/clinic-appointment/package-product-composition/",
+          "sourceSha256": "9e80727e1c997eec6367813e2d6c513cc4cd4c68ded59a79cadf4ecaaf406d79",
+          "sha256": "397c286dfd4cee41342c58bb1e6dbd99e0c3a197afdb2c81147b508729bb33c3"
+        },
+        "ko": {
+          "title": "패키지 상품 구성",
+          "sourcePath": "docs/superpowers/specs/2026-07-29-issue-184-package-product-composition.html",
+          "route": "/ko/visual-companions/clinic-appointment/package-product-composition/",
+          "sourceSha256": "1f11d4cc46785b29054dd3b86cdbe0cfdf92349482561da31317d3463959daf0",
+          "sha256": "3dec21af4a75f29fc912736f7bc1889440aec3cdbf7b8c5dd8403b96a231ef6a"
+        }
+      }
+    },
+    {
+      "id": "product-bom-to-appointment-flow",
+      "source": "docs/superpowers/specs/2026-07-29-issue-184-visit-commitment-design.md",
+      "status": "approved",
+      "presentation": {
+        "mode": "simulation",
+        "defaultView": "simulation",
+        "views": [
+          "simulation"
+        ]
+      },
+      "locales": {
+        "en": {
+          "title": "Execution BOM to Appointment Flow",
+          "sourcePath": "docs/superpowers/specs/2026-07-29-issue-184-product-bom-to-appointment-flow.en.html",
+          "route": "/visual-companions/clinic-appointment/product-bom-to-appointment-flow/",
+          "sourceSha256": "088ba85c5457516ca0ebde7c21122141b394134c9d7e093c26a91f2fb939ed89",
+          "sha256": "4ee8a2ba4105acb8028859946ac3f8694e5ee483c1caaa08590aacbee0081852"
+        },
+        "ko": {
+          "title": "상품 실행 BOM의 예약 전개 흐름",
+          "sourcePath": "docs/superpowers/specs/2026-07-29-issue-184-product-bom-to-appointment-flow.html",
+          "route": "/ko/visual-companions/clinic-appointment/product-bom-to-appointment-flow/",
+          "sourceSha256": "2f17240eccbde6c2144637ed0bffe205f8f65ad551eaeb042c1bef0e255d572e",
+          "sha256": "3ac0323f0abd8f01281789bf93737137b49d9500c8051d0ab76d2f09358e86c7"
         }
       }
     }
   ],
-  "snapshotDigest": "8c6b3d955c29e5b3b096a92de576f2da9ae3700c004f75053e330af54206f6bc"
+  "snapshotDigest": "14e9691a3507a8697892b99b89ed79405c863cc3900d823fe5472ad0552e4e8a"
 }
