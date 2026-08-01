@@ -8,8 +8,8 @@
         "ko": "진료 예약 서비스"
       },
       "description": {
-        "en": "Reference application designs for scheduling policies, appointment plans, and capacity management.",
-        "ko": "예약 정책, 진료 계획, 수용량 관리처럼 서로 연결된 업무 규칙을 구현한 참조 애플리케이션입니다."
+        "en": "Reference application designs for product composition, scheduling policies, appointment plans, and capacity management.",
+        "ko": "상품 구성, 예약 정책, 진료 계획, 수용량 관리처럼 서로 연결된 업무 규칙을 구현한 참조 애플리케이션입니다."
       },
       "documents": [
         {
@@ -26,6 +26,38 @@
           "summary": {
             "en": "Follow the scheduling policy model from source rules to validation, conflicts, and operational changes.",
             "ko": "예약 정책의 기준 규칙이 검증, 충돌 판정, 운영 중 정책 변경에 적용되는 과정을 보여 줍니다."
+          }
+        },
+        {
+          "id": "profile-change-reservation-reevaluation",
+          "featured": true,
+          "summary": {
+            "en": "Trace a minimal profile-change event through fair dispatch, state decisions, and privacy-safe recovery for in-progress reservations.",
+            "ko": "최소 프로필 변경 이벤트가 공정한 분배, 진행 중 예약 상태 판단, 개인정보를 남기지 않는 복구로 이어지는 과정을 보여 줍니다."
+          }
+        },
+        {
+          "id": "product-scheduling-classification",
+          "featured": true,
+          "summary": {
+            "en": "Classify product traits, separate product duration from clinic capacity, and inspect the validated booking contract.",
+            "ko": "상품 운영 특성을 분류하고 상품 소요시간과 병원 수용량을 분리해 검증된 예약 계약을 확인합니다."
+          }
+        },
+        {
+          "id": "package-product-composition",
+          "featured": true,
+          "summary": {
+            "en": "Compare repeated, composite, and choose-M-of-N packages while preserving item-level time, resources, and dependencies.",
+            "ko": "반복형, 복합형, N개 중 M개 선택형 패키지를 비교하고 항목별 시간, 자원, 의존성을 보존합니다."
+          }
+        },
+        {
+          "id": "product-bom-to-appointment-flow",
+          "featured": true,
+          "summary": {
+            "en": "Follow an immutable execution BOM through plan revisions, visit candidates, proposals, consent, and confirmed resource allocation.",
+            "ko": "불변 실행 BOM이 계획 revision, 방문 후보, 제안, 동의, 확정 자원 점유로 전개되는 흐름을 살펴봅니다."
           }
         }
       ]
