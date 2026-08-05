@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "repository": "bluetape4k/bluetape4k-workshop",
-  "sourceRef": "150c3ae2b8bbb80cc0fe8ef17068655c337e1bc4",
+  "sourceRef": "da9e205f04dd3fbe9281a30f5af2394de624f98c",
   "manifestPath": "docs/visual-companions/manifest.json",
   "documents": [
     {
@@ -21,14 +21,14 @@
           "sourcePath": "docs/superpowers/specs/2026-07-29-event-sourced-promotion-voucher-visual-companion.en.html",
           "route": "/visual-companions/bluetape4k-workshop/event-sourced-promotion-voucher/",
           "sourceSha256": "d1d0fc09d7eb2512544d0dd09ad5661d330d13b020ea0264731ec76077426bcc",
-          "sha256": "3f8bb3b4bef3f4b38b4e632ceb55bfb8079fc952477adb864fdf8c824699805d"
+          "sha256": "cecf1d45bdb665209931b125a6a8aaa9c22ff7e12f01c54ad6cf391782774a51"
         },
         "ko": {
           "title": "이벤트 소싱 프로모션 바우처 캠페인",
           "sourcePath": "docs/superpowers/specs/2026-07-29-event-sourced-promotion-voucher-visual-companion.html",
           "route": "/ko/visual-companions/bluetape4k-workshop/event-sourced-promotion-voucher/",
           "sourceSha256": "5ae976c3cbfd9bab15ca59d469050b4fb62459794693facddad5c0badfd98420",
-          "sha256": "ac41c1c29aa98f3ea7710c99ec2bb0c48330a6985808677ecfbac276ae88693d"
+          "sha256": "0b67cce8ba7e218bc9fafcb8524cfc8ef28ebdd2d2f3f56dea9291c6c2c2a5c8"
         }
       }
     },
@@ -49,14 +49,14 @@
           "sourcePath": "docs/superpowers/specs/2026-07-30-concert-ticket-flash-sale-visual-companion.en.html",
           "route": "/visual-companions/bluetape4k-workshop/concert-ticket-flash-sale/",
           "sourceSha256": "ca062f7c743632b31ab838b90b392ffe76afb6f7dd5f1cf226c67847a9efbbda",
-          "sha256": "9366fb49ad261400cf288b58bbbc6636f295693768b202c91f5d97115c049e52"
+          "sha256": "e77cf6ec94cfb37514133a0328cc8cc5a5165e47568ab895de315aa5de52428f"
         },
         "ko": {
           "title": "콘서트 티켓 Flash Sale",
           "sourcePath": "docs/superpowers/specs/2026-07-30-concert-ticket-flash-sale-visual-companion.html",
           "route": "/ko/visual-companions/bluetape4k-workshop/concert-ticket-flash-sale/",
           "sourceSha256": "2e3c69687bbb984f1ea8c3e796c7c7e3f503e68415f31844196e656b81e9e62e",
-          "sha256": "a06bcd2d1c2cf95cdfe09899a82b5b38ca1a60ec61ce4b8fb5bb510528f938ae"
+          "sha256": "a60925c08f20e84eacfbc3b3923e39317ca87a61669c4e1e3bf2393d92d2f40e"
         }
       }
     },
@@ -77,14 +77,14 @@
           "sourcePath": "docs/superpowers/specs/2026-07-30-kafka-outbox-fallback-visual-companion.en.html",
           "route": "/visual-companions/bluetape4k-workshop/kafka-outbox-fallback/",
           "sourceSha256": "cfa742d8ab763899d4b2fd307020909fc9e8b5b8126eb57a48d6e67f4d775a5a",
-          "sha256": "65117cdd223f586244a647bde8cfb00b5e508bf84f45c4735aec959dabe27a28"
+          "sha256": "479ef28b4596586095d70cf8ad1d4e8208fddf38760331f61a90431948e6342a"
         },
         "ko": {
           "title": "Kafka Outbox Fallback",
           "sourcePath": "docs/superpowers/specs/2026-07-30-kafka-outbox-fallback-visual-companion.html",
           "route": "/ko/visual-companions/bluetape4k-workshop/kafka-outbox-fallback/",
           "sourceSha256": "ec6a19727d216593c6e5b175926558d953fa10e72cd948b2c0abfa4271bc8992",
-          "sha256": "bebc600ed334b0a4539f7fd328f8b36f4b79ea064e363e5d2677b92721638304"
+          "sha256": "4e88f50ce59f60223910bc85b5a8173e8ad76184a0959126c64b2ee9424f4585"
         }
       }
     },
@@ -105,17 +105,45 @@
           "sourcePath": "docs/superpowers/specs/2026-07-30-leader-job-safety-lab-visual-companion.en.html",
           "route": "/visual-companions/bluetape4k-workshop/leader-job-safety-lab/",
           "sourceSha256": "d15bf13de8750b43f1c15c637cc3ad7fead96234d4e4408827a02ab55fef3562",
-          "sha256": "5e0f8114369fc2af22a6e758b09b011ba3cf849324f65e0dd5be468277da653c"
+          "sha256": "a51470869696e99839152922a3fb915c5ad8429cf60966811ce268ed85076645"
         },
         "ko": {
           "title": "Leader Job Safety Lab",
           "sourcePath": "docs/superpowers/specs/2026-07-30-leader-job-safety-lab-visual-companion.html",
           "route": "/ko/visual-companions/bluetape4k-workshop/leader-job-safety-lab/",
           "sourceSha256": "1f4151ea790f7ff197e117d681f28a5ec22ea5585138c0f5bb9081f6da2e8209",
-          "sha256": "dea25f9607d7569c4a1106e9e2295f070e1949a0526c29987d961966606d7459"
+          "sha256": "69dc9373d59322955b3b0c331b325768cb90dc4d8cc1449a87dd4c77e3ee3be1"
+        }
+      }
+    },
+    {
+      "id": "usage-billing-evolution",
+      "source": "docs/superpowers/specs/2026-08-05-usage-billing-series-visualization-design.md",
+      "status": "approved",
+      "presentation": {
+        "mode": "simulation",
+        "defaultView": "simulation",
+        "views": [
+          "simulation"
+        ]
+      },
+      "locales": {
+        "en": {
+          "title": "Usage Billing Evolution",
+          "sourcePath": "docs/visual-companions/en/usage-billing-evolution.html",
+          "route": "/visual-companions/bluetape4k-workshop/usage-billing-evolution/",
+          "sourceSha256": "a7cfcdeefec92256123ff6ec30563b0abe1ca1244d0e3ba4b1ab1abe5604f3b4",
+          "sha256": "373047f983fb1e68a6565649cf52bdbc41cd81f7515d234f241cb647db9e5723"
+        },
+        "ko": {
+          "title": "SaaS 사용량 과금의 발전 단계",
+          "sourcePath": "docs/visual-companions/ko/usage-billing-evolution.html",
+          "route": "/ko/visual-companions/bluetape4k-workshop/usage-billing-evolution/",
+          "sourceSha256": "97986e38e918a52da72fb014555bd649dbb8827fd015943c6dd4342957477556",
+          "sha256": "c8fa9414c5b025ef94761c08610b19b324b62952a13e811166b1e40424c484f8"
         }
       }
     }
   ],
-  "snapshotDigest": "a9e88f570b25606bec9a7ed04b76b50425e316a212f8fe6ad02a4fbaff725cf7"
+  "snapshotDigest": "7a678bd26b7a6c68ca4639f771b09448dd1fc7447183ce8cddc517abd038605e"
 }
