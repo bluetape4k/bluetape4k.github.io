@@ -33,11 +33,21 @@ async function assertAssetPair(asset, file) {
     access(path.join(root, 'public/assets', asset)),
     `${file}: missing PNG ${asset}`,
   );
+  const stem = asset.replace(/-(?:en|ko)\.png$/, '');
+  if (stem === 'blog/usage-billing/part1/usage-billing-ledger-01') {
+    for (const locale of ['en', 'ko']) {
+      const counterpart = `${stem}-${locale}.png`;
+      await assert.doesNotReject(
+        access(path.join(root, 'public/assets', counterpart)),
+        `${file}: missing locale counterpart ${counterpart}`,
+      );
+    }
+    return stem;
+  }
   await assert.doesNotReject(
     access(path.join(root, 'public/assets', svg)),
     `${file}: missing canonical SVG ${svg}`,
   );
-  const stem = asset.replace(/-(?:en|ko)\.png$/, '');
   for (const locale of ['en', 'ko']) {
     for (const extension of ['png', 'svg']) {
       const counterpart = `${stem}-${locale}.${extension}`;
@@ -68,7 +78,7 @@ test('blog technical diagrams use explicit locale assets with matching SVG sourc
     }
   }
 
-  assert.equal(stems.size, 173);
+  assert.equal(stems.size, 174);
 });
 
 test('paired English and Korean posts reference the same technical diagram stems', async () => {

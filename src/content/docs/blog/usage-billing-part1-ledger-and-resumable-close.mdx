@@ -1,0 +1,199 @@
+---
+title: "Usage Billing Is More Than Summation: From Duplicate Ingestion to Resumable Closing"
+description: Learn how to deduplicate usage, price it by occurrence time, resume an interrupted billing close, and correct finalized financial results through an append-only ledger.
+sidebar:
+  order: -202608051200
+blog:
+  date: 2026-08-05T12:00:00+09:00
+  image: /assets/blog/usage-billing/part1/usage-billing-part1-hero.png
+  imageAlt: A dark 3D workbench where usage events pass through a pricing timeline and resumable billing close into a ledger and sealed invoice archive
+  cardDescription: "See how one PostgreSQL authority handles duplicate usage, changing prices, resumable closing, and late adjustments."
+  tags: ["architecture","billing","event-driven","kotlin","postgresql","resilience","spring"]
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/blog/usage-billing/part1/usage-billing-part1-hero.png" alt="A dark 3D workbench where usage events pass through a pricing timeline and resumable billing close into a ledger and sealed invoice archive" loading="eager" />
+  <figcaption>The hard part of usage billing is not multiplication. It is duplicate delivery, time, restartability, and correction after finalization.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-05 · Usage Billing · Part 1</p>
+
+Multiplying API calls by a unit price appears sufficient to calculate a monthly charge. The formula is simple; production
+behavior is not.
+
+The same usage event may arrive more than once, prices may change during the month, and a close worker may stop halfway
+through its run. Usage that arrives after finalization must not disappear either. Continually updating one aggregate table
+makes it difficult to answer which price was applied to each event and whether a restart duplicated money.
+
+This article uses the
+[`bluetape4k-workshop` usage metering and billing ledger example](https://github.com/bluetape4k/bluetape4k-workshop/tree/da9e205f04dd3fbe9281a30f5af2394de624f98c/commerce/usage-metering-billing-ledger)
+to connect duplicate-safe ingestion, occurrence-time pricing, resumable closing, an immutable ledger, and adjustments.
+
+## Define the billing correctness boundary first
+
+The representative scenario is a multi-tenant SaaS that bills API calls monthly. An ingestion endpoint accepts ten calls of
+usage, a price timeline changes the unit price at a known instant, and the monthly close records eligible usage in a ledger
+before finalizing an invoice.
+
+The example covers four boundaries:
+
+- It deduplicates the same HTTP command and the same producer event by different identities.
+- It selects the price effective when usage occurred.
+- It resumes interrupted closing from a fixed cutoff and keyset checkpoint.
+- It corrects finalized results with new ledger entries instead of rewriting them.
+
+It does not implement taxes, payment collection, foreign exchange, combined discounts, or tiered pricing. Nor is it a
+general-purpose billing platform. Its purpose is to make the first set of correctness boundaries executable through code and
+PostgreSQL constraints.
+
+## Three times answer three different questions
+
+One `timestamp` is not enough for usage billing.
+
+| Time | Authority | Question answered |
+|---|---|---|
+| `occurredAt` | Reported by the producer and bounded by service validation | When did usage occur, and which price version applies? |
+| `receivedAt` | Set by the ingestion service's `Clock` | Had the server received this usage before the close cutoff? |
+| Posting period | Selected by the ledger | In which accounting period should the amount be posted? |
+
+Usage may occur on June 30 and arrive on July 2. Pricing still uses its June `occurredAt`, but an event received after the June
+cutoff does not reopen the finalized June ledger. It becomes an adjustment in the currently open posting period. Each time has
+one responsibility and must not silently substitute for another.
+
+## HTTP retries and producer duplicates are different problems
+
+A client retrying because it missed a response and an upstream system delivering the same usage event through another
+request have different identities. The example layers two boundaries:
+
+```kotlin
+receipt = commandReceipts.acquire(tenant, operation, keyDigest, fingerprint)
+
+when (receipt) {
+    is Replay -> return receipt.savedResponse
+    is Conflict -> throw IdempotencyConflict()
+    is InProgress -> throw RetryLater(receipt.retryAfter)
+    is Acquired -> {
+        usage = usageEvents.appendIfAbsent(sourceSystem, sourceEventId, payloadDigest)
+        commandReceipts.complete(receipt.ownerToken, responseFor(usage))
+        return responseFor(usage)
+    }
+}
+```
+
+| Boundary | Identity | Problem prevented | Meaning of conflict |
+|---|---|---|---|
+| HTTP command receipt | Tenant, operation, and `Idempotency-Key` digest | Re-execution of the same command | A different request fingerprint uses the same key |
+| Producer event unique key | Tenant, source system, and source event ID | Duplicate storage through another HTTP request | A different payload digest uses the same source event ID |
+
+The command receipt replays a terminal response and permits takeover with a new owner token after an abandoned lease expires.
+The producer event is stored once through a database unique constraint. Together they preserve transport behavior and business
+event identity without pretending they are one problem.
+
+## Select a price from the occurrence-time half-open interval
+
+Price versions use half-open intervals `[effectiveFrom, effectiveTo)`.
+
+```text
+v1: [2026-01-01T00:00Z, 2026-03-01T00:00Z)  USD 0.10
+v2: [2026-03-01T00:00Z, ∞)                  USD 0.12
+```
+
+Usage occurring exactly at `2026-03-01T00:00Z` selects v2, with no overlap between the end of v1 and the start of v2. Price
+selection uses `occurredAt`; close eligibility uses `receivedAt <= cutoffReceivedAt`. Selecting the current price at close
+time would make a historical amount depend on when the close is rerun.
+
+<figure
+  class="bt4k-architecture"
+  data-diagram-title="From duplicate-safe ingestion to resumable closing and ledger adjustments"
+>
+  <img src="/assets/blog/usage-billing/part1/usage-billing-ledger-01-en.png" alt="The flow from usage ingestion and occurrence-time pricing through resumable close, ledger, invoice, and adjustment" loading="lazy" />
+  <figcaption>Ingestion, pricing, close, ledger, and invoice each protect a different invariant inside one PostgreSQL authority.</figcaption>
+</figure>
+
+[Explore the ledger workflow interactively](/visual-companions/bluetape4k-workshop/usage-billing-evolution/#ledger)
+
+## Closing is a resumable process, not a one-shot job
+
+Starting a close moves the billing period from `OPEN` to `CLOSING` and fixes `cutoffReceivedAt` once. The worker then reads a
+default batch of 200 rows after the `(occurredAt, usageEventId)` keyset checkpoint.
+
+```kotlin
+transaction {
+    batch = usageEvents.findAfter(
+        checkpoint = run.checkpoint,
+        cutoff = run.cutoffReceivedAt,
+        limit = 200,
+    )
+
+    for (usage in batch) {
+        price = prices.findAt(usage.occurredAt) ?: markUnpriced(usage)
+        ledger.appendChargeOnce(usage, price)
+    }
+
+    closeRuns.advanceCheckpoint(run.id, batch.lastKey)
+}
+```
+
+`appendChargeOnce()` and checkpoint advancement commit in the same transaction. A process exit before commit rolls both back.
+An exit immediately after commit may cause the next run to inspect the same range again, but the ledger's source unique key
+prevents duplicate money. Work may repeat; the amount may not.
+
+The close run reaches `READY_TO_FINALIZE` only when no eligible rows remain and the unpriced count is zero. A missing price
+interval stops the run in `FAILED_VALIDATION`. After an operator explicitly repairs the gap, the run starts again with the same
+fixed cutoff instead of hiding a partial bill.
+
+## Finalization seals both the invoice and its provenance
+
+Finalization groups posting-period ledger entries by meter, price version, and entry type. It also records which entries belong
+to each invoice line. The transaction checks this equality:
+
+```text
+sum(invoice lines) == invoice total == sum(linked ledger entries)
+```
+
+It then finalizes the invoice, lines, provenance links, billing period, and close run together. Append-only repository contracts
+reject generic updates and deletes, preserving both the financial result and the evidence behind it.
+
+## Late usage does not reopen a finalized period
+
+Usage received after the close cutoff is still priced by its original `occurredAt`. It does not mutate the finalized service
+period, however. The service appends a positive `DEBIT_ADJUSTMENT` to the one open posting period containing the server's
+current time.
+
+Credits also store a positive amount and use `CREDIT_ADJUSTMENT` for direction, linking back through
+`relatedOriginalEntryId`. This keeps amount sign and business meaning from being interpreted differently across layers.
+
+## When this structure fits
+
+| Condition | Benefit | Decision still required |
+|---|---|---|
+| Commands and events can be delivered more than once | Separate response replay from business-event uniqueness | Receipt retention and lease policy |
+| Prices change over time | Reproduce the price effective at occurrence | Discount, tiering, and currency rules |
+| Closing cannot finish in one transaction | Resume from a fixed cutoff and checkpoint | Operational SLA, retries, and alerts |
+| Finalized results require an audit trail | Preserve ledger, invoice, and provenance | Tax, collection, and accounting integration |
+
+This design does not solve every billing problem. It is a baseline for deciding which invariants must appear first when a
+simple aggregate encounters duplicate delivery, temporal pricing, process restarts, and post-finalization corrections.
+
+## Where the series goes next
+
+- **Part 1: Duplicate ingestion, resumable closing, and the ledger**
+- Part 2: Extend the same billing rules with Event Sourcing and replayable state
+- Part 3: Extract ledger ownership into microservices with Outbox and Inbox
+- [Integrated interactive visualization](/visual-companions/bluetape4k-workshop/usage-billing-evolution/#ledger)
+
+Part 2 will examine what is gained—and what operational cost is added—when the ledger model moves from current state to domain
+events, aggregate replay, snapshots, and projection rebuilding.
+
+## Implementation and related resources
+
+- [Usage metering and billing ledger README](https://github.com/bluetape4k/bluetape4k-workshop/blob/da9e205f04dd3fbe9281a30f5af2394de624f98c/commerce/usage-metering-billing-ledger/README.md):
+  The complete state model plus execution and validation instructions.
+- [`BillingCloseService.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/da9e205f04dd3fbe9281a30f5af2394de624f98c/commerce/usage-metering-billing-ledger/src/main/kotlin/io/bluetape4k/workshop/commerce/metering/application/BillingCloseService.kt):
+  Fixed cutoff, keyset batching, ledger append, and checkpoint advancement.
+- [`InvoiceService.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/da9e205f04dd3fbe9281a30f5af2394de624f98c/commerce/usage-metering-billing-ledger/src/main/kotlin/io/bluetape4k/workshop/commerce/metering/application/InvoiceService.kt):
+  Invoice lines, provenance links, and amount invariants.
+- [`MeteringEndToEndIntegrationTest.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/da9e205f04dd3fbe9281a30f5af2394de624f98c/commerce/usage-metering-billing-ledger/src/test/kotlin/io/bluetape4k/workshop/commerce/metering/MeteringEndToEndIntegrationTest.kt):
+  Duplicate ingestion, close, invoice finalization, late usage, and explicit price-gap repair in one lifecycle.
+- [Interactive usage-billing evolution](/visual-companions/bluetape4k-workshop/usage-billing-evolution/#ledger):
+  Compare the ledger, Event Sourcing, and microservice architectures through the same scenario.
