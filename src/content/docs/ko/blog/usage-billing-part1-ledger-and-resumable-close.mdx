@@ -1,5 +1,5 @@
 ---
-title: "사용량 과금은 합계 계산이 아니다: 중복 수집부터 재시작 가능한 마감까지"
+title: "사용량 과금 Part 1: 중복 수집부터 재시작 가능한 마감과 원장까지"
 description: 반복 전달되는 사용량을 발생 시점의 가격으로 평가하고, 중단된 월 마감을 재개하며, 확정된 청구 결과를 원장을 통해 보정하는 방법을 설명합니다.
 sidebar:
   order: -202608051200
@@ -203,9 +203,9 @@ Receipt 상태를 임의로 완료 처리하거나, Checkpoint를 앞으로 이�
 
 ## 시리즈에서 이어서 볼 내용
 
-- **Part 1: 중복 수집부터 재시작 가능한 마감과 원장까지**
-- [Part 2: Event Sourcing, Replay와 Projection 운영](/ko/blog/usage-billing-part2-event-sourcing-and-projections/)
-- Part 3: 원장 경계를 마이크로서비스와 Outbox·Inbox로 분리하기
+- **사용량 과금 Part 1: 중복 수집부터 재시작 가능한 마감과 원장까지**
+- [사용량 과금 Part 2: Event Sourcing, Replay와 Projection 운영](/ko/blog/usage-billing-part2-event-sourcing-and-projections/)
+- 사용량 과금 Part 3: 마이크로서비스, Outbox와 Inbox
 - [통합 대화형 시각 자료](/ko/visual-companions/bluetape4k-workshop/usage-billing-evolution/#ledger)
 
 Part 2에서는 현재 상태만 저장하는 원장형 모델에서 Domain Event, Aggregate Replay, Snapshot과 Projection

@@ -1,5 +1,5 @@
 ---
-title: "과금 원장을 Event Sourcing으로 바꾸면 무엇을 얻고 무엇을 운영해야 하는가"
+title: "사용량 과금 Part 2: Event Sourcing, Replay와 Projection 운영"
 description: 사용량 과금의 사실을 이벤트로 보존하고, 안전한 재생과 무중단 프로젝션 재구축을 운영하려면 어떤 계약이 필요한지 설명합니다.
 sidebar:
   order: -202608061200
@@ -258,9 +258,9 @@ Event Sourcing이 과금의 상위 단계라는 뜻은 아닙니다. 다음 질�
 
 ## 시리즈에서 이어서 볼 내용
 
-- [Part 1: 중복 수집부터 재시작 가능한 마감과 원장까지](/ko/blog/usage-billing-part1-ledger-and-resumable-close/)
-- **Part 2: Event Sourcing, Replay와 Projection 운영**
-- Part 3: 원장 경계를 마이크로서비스와 Outbox·Inbox로 분리하기
+- [사용량 과금 Part 1: 중복 수집부터 재시작 가능한 마감과 원장까지](/ko/blog/usage-billing-part1-ledger-and-resumable-close/)
+- **사용량 과금 Part 2: Event Sourcing, Replay와 Projection 운영**
+- 사용량 과금 Part 3: 마이크로서비스, Outbox와 Inbox
 - [통합 대화형 시각 자료](/ko/visual-companions/bluetape4k-workshop/usage-billing-evolution/#event-sourcing)
 
 Part 3에서는 Event Store를 하나의 애플리케이션 안에서 운영하는 경계를 넘어, Meter·Usage·Billing·Invoice
@@ -268,7 +268,7 @@ Part 3에서는 Event Store를 하나의 애플리케이션 안에서 운영하�
 
 ## 구현 코드와 자료 살펴보기
 
-- [Part 1: 중복 수집부터 재시작 가능한 마감과 원장까지](/ko/blog/usage-billing-part1-ledger-and-resumable-close/):
+- [사용량 과금 Part 1: 중복 수집부터 재시작 가능한 마감과 원장까지](/ko/blog/usage-billing-part1-ledger-and-resumable-close/):
   Event Sourcing을 도입하기 전에도 유지해야 하는 멱등성, 발생 시점 가격, 불변 원장, 재시작 가능한 마감과
   보정 계약을 자세히 설명합니다.
 - [Event Sourcing 기반 사용량 과금 예제 README](https://github.com/bluetape4k/bluetape4k-workshop/blob/da9e205f04dd3fbe9281a30f5af2394de624f98c/commerce/usage-metering-billing-event-sourcing/README.ko.md):

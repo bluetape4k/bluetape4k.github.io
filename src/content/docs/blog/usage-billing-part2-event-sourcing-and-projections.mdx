@@ -1,5 +1,5 @@
 ---
-title: "What Event Sourcing Adds to a Billing Ledger—and What You Must Operate"
+title: "Usage Billing Part 2: Event Sourcing, Replay, and Projection Operations"
 description: Learn the contracts required to preserve usage-billing facts as events, replay them safely, and rebuild projections without interrupting reads.
 sidebar:
   order: -202608061200
@@ -254,9 +254,9 @@ not incidental complexity.
 
 ## Where the series goes next
 
-- [Part 1: Duplicate ingestion, resumable closing, and the ledger](/blog/usage-billing-part1-ledger-and-resumable-close/)
-- **Part 2: Event Sourcing, replay, and projection operations**
-- Part 3: Extract ledger ownership into microservices with Outbox and Inbox
+- [Usage Billing Part 1: Duplicate Ingestion, Resumable Closing, and the Ledger](/blog/usage-billing-part1-ledger-and-resumable-close/)
+- **Usage Billing Part 2: Event Sourcing, Replay, and Projection Operations**
+- Usage Billing Part 3: Microservices, Outbox, and Inbox
 - [Integrated interactive visualization](/visual-companions/bluetape4k-workshop/usage-billing-evolution/#event-sourcing)
 
 Part 3 will cross the boundary of one application and examine how Meter, Usage, Billing, and Invoice services divide delivery
@@ -264,7 +264,7 @@ and deduplication responsibilities with Outbox, Kafka, and Inbox while owning se
 
 ## Implementation and related resources
 
-- [Part 1: Duplicate ingestion, resumable closing, and the ledger](/blog/usage-billing-part1-ledger-and-resumable-close/):
+- [Usage Billing Part 1: Duplicate Ingestion, Resumable Closing, and the Ledger](/blog/usage-billing-part1-ledger-and-resumable-close/):
   The idempotency, occurrence-time pricing, immutable ledger, resumable close, and adjustment contracts that remain valid
   before and after Event Sourcing.
 - [Event-sourced usage-billing README](https://github.com/bluetape4k/bluetape4k-workshop/blob/da9e205f04dd3fbe9281a30f5af2394de624f98c/commerce/usage-metering-billing-event-sourcing/README.md):
