@@ -36,6 +36,19 @@ duplicates and partial failure.
 
 Each service owns its PostgreSQL database and integration decoder. No service reads another service's tables.
 
+Start with the deployment view. All five services run independently on Spring Boot 4 and a Java 25 runtime, and each uses an
+Exposed repository to modify only its own PostgreSQL database. Kafka transports published events to downstream services, but
+it does not own financial records. When delivery stops, each service can still decide processing state from its local Inbox,
+Outbox, and business records.
+
+<figure
+  class="bt4k-architecture"
+  data-diagram-title="Service, database, and Kafka boundaries in the Usage Billing architecture"
+>
+  <img src="/assets/blog/usage-billing/part3/usage-billing-service-boundaries-01-en.png" alt="Meter, Usage, Billing, Invoice, and Query each own PostgreSQL and exchange events through Kafka topics" loading="lazy" />
+  <figcaption>The five services share neither an application nor a database. Solid lines publish from local Outboxes, dashed lines deliver to local Inboxes, and the guardrails name the durable records needed after a failure.</figcaption>
+</figure>
+
 | Service | Durable system of record | Input | Published fact |
 |---|---|---|---|
 | Meter | Immutable price versions and command receipts | `ActivatePriceCommand` | `PriceActivated` |
@@ -53,7 +66,7 @@ billing operation, while adding responsibility for delayed or missing replicas.
   data-diagram-title="Data ownership and delivery boundaries across five billing services"
 >
   <img src="/assets/blog/usage-billing/part3/usage-billing-microservices-01-en.png" alt="Meter, Usage, Billing, Invoice, and Query services each own PostgreSQL and exchange events through Kafka" loading="lazy" />
-  <figcaption>The services do not share databases. Each decides delivery outcomes from its local durable evidence when Kafka is delayed or repeats a record.</figcaption>
+  <figcaption>Zooming into each service reveals who owns the Inbox decision, business records, Outbox, and isolation records. Each service uses that durable local evidence when Kafka is delayed or repeats a record.</figcaption>
 </figure>
 
 [Explore the microservice stage in the interactive visualization](/visual-companions/bluetape4k-workshop/usage-billing-evolution/#microservices)
@@ -181,6 +194,8 @@ isolate, when to replay, rebuild, or adjust, and which evidence permits traffic 
 
 - [Usage-billing microservice composition README](https://github.com/bluetape4k/bluetape4k-workshop/blob/abbf420cb6f873e6195b261a778dbf96cd5c412b/commerce/usage-billing-microservices-composition-tests/README.md):
   Service ownership, staged extraction, executable failure scenarios, and their operational meaning.
+- [Original service-boundaries diagram](https://github.com/bluetape4k/bluetape4k-workshop/blob/abbf420cb6f873e6195b261a778dbf96cd5c412b/docs/images/readme-diagrams/usage-billing-service-boundaries-01.svg):
+  The service, database, and Kafka boundaries preserved by this article's dark overview.
 - [`MeterCommandService.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/abbf420cb6f873e6195b261a778dbf96cd5c412b/commerce/usage-billing-meter-service/src/main/kotlin/io/bluetape4k/workshop/commerce/usagebilling/meter/application/MeterCommandService.kt):
   Commits price version, command receipt, and Outbox in one local transaction.
 - [`BillingInboxService.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/abbf420cb6f873e6195b261a778dbf96cd5c412b/commerce/usage-billing-billing-service/src/main/kotlin/io/bluetape4k/workshop/commerce/usagebilling/billing/application/BillingInboxService.kt):
@@ -191,4 +206,3 @@ isolate, when to replay, rebuild, or adjust, and which evidence permits traffic 
   Cuts the single-broker TCP path with Toxiproxy and verifies delivery of the same Outbox row after recovery.
 - [`PoisonIntegrationTest.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/abbf420cb6f873e6195b261a778dbf96cd5c412b/commerce/usage-billing-microservices-composition-tests/src/test/kotlin/io/bluetape4k/workshop/commerce/usagebilling/composition/PoisonIntegrationTest.kt):
   Verifies permanent-error isolation, continued healthy processing, and redrive auditing.
-
