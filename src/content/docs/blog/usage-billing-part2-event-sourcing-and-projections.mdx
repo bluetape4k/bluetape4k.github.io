@@ -1,0 +1,285 @@
+---
+title: "What Event Sourcing Adds to a Billing Ledger—and What You Must Operate"
+description: Learn the contracts required to preserve usage-billing facts as events, replay them safely, and rebuild projections without interrupting reads.
+sidebar:
+  order: -202608061200
+blog:
+  date: 2026-08-06T12:00:00+09:00
+  image: /assets/blog/usage-billing/part2/usage-billing-part2-hero.png
+  imageAlt: A dark 3D workbench where an immutable event stream passes through a snapshot into two projection generations while one failed event is quarantined
+  cardDescription: "See how replay, schema evolution, projection generations, and failure isolation change when the Event Store becomes billing authority."
+  tags: ["architecture","billing","event-driven","kotlin","postgresql","resilience","spring"]
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/blog/usage-billing/part2/usage-billing-part2-hero.png" alt="A dark 3D workbench where an immutable event stream passes through a snapshot into two projection generations while one failed event is quarantined" loading="eager" />
+  <figcaption>Event Sourcing does not merely add history. It redefines billing authority and its recovery procedures.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-06 · Usage Billing · Part 2</p>
+
+[Part 1](/blog/usage-billing-part1-ledger-and-resumable-close/) used an immutable ledger to handle duplicate usage,
+occurrence-time pricing, resumable closing, and post-finalization corrections. That design is enough for many SaaS billing
+systems.
+
+New requirements change the trade-off: reproduce the aggregate immediately before last month's close, build another read
+model from the same facts, or replace a query model without interrupting service. A current-state model can support these
+requests, but each one needs additional history and restoration logic. Event Sourcing makes replay the primary model while
+adding permanent responsibility for event contracts, projections, and their failures.
+
+This article uses the
+[`bluetape4k-workshop` event-sourced usage-billing example](https://github.com/bluetape4k/bluetape4k-workshop/tree/da9e205f04dd3fbe9281a30f5af2394de624f98c/commerce/usage-metering-billing-event-sourcing)
+to define what is authoritative, what can be rebuilt, and where processing must stop when evidence is incomplete.
+
+## Preserve the ledger invariants first
+
+Changing persistence does not change the billing rules. The same producer usage must be accepted once, pricing still uses the
+version effective at `occurredAt`, and finalized amounts are corrected by appending adjustments rather than rewriting them.
+
+To make this article readable on its own, here is the complete ledger workflow from Part 1. This is not merely a recap; it is
+the baseline that must remain valid after adopting Event Sourcing.
+
+1. **Ingest usage.** Receive the tenant, subject, metric, quantity, occurrence time in `occurredAt`, and producer event ID.
+2. **Accept one fact once.** Use the producer event ID and request fingerprint to identify retries. Return the saved result for
+   the same request, but reject a different payload under the same ID.
+3. **Select occurrence-time pricing.** Calculate the charge with the price version effective at `occurredAt`, not ingestion or
+   processing time, so late-arriving usage still follows the contract that applied when it occurred.
+4. **Append the rated result to an immutable ledger.** Preserve the usage, price-selection evidence, and calculated amount.
+   Updating only a running total cannot later explain how that amount was produced.
+5. **Close a billing period in resumable stages.** Freeze the closing scope and persist the batch cursor so work resumes after
+   interruption without rerunning the entire close or issuing duplicate charges.
+6. **Do not overwrite finalized money.** When a post-close error or retroactive change appears, append an `Adjustment` and keep
+   both the original fact and the correction evidence.
+7. **Verify the ledger and execution state.** Check deduplication, price version, closing cursor, and adjustment relationships,
+   rather than treating a matching total as sufficient proof.
+
+[Part 1: Duplicate ingestion, resumable closing, and the ledger](/blog/usage-billing-part1-ledger-and-resumable-close/)
+explains these invariants and the resumable close in detail. This article repeats that baseline before moving final authority
+from normalized rows to domain events.
+
+What changes is the unit that records those rules.
+
+| Question | Ledger model | Event Sourcing model |
+|---|---|---|
+| Final authority | Normalized business rows and immutable ledger | Ordered domain events |
+| Current state | Query authoritative tables directly | Replay events or query the ACTIVE projection |
+| Historical state | Separate audit query and restoration logic | Replay through a selected stream version |
+| Read-model change | Schema and data migration | Rebuild a new projection generation, then switch |
+| Operational responsibility | Close, ledger, and correction | Everything on the left plus event contracts, replay, lag, and poison events |
+
+Event Sourcing does not remove the ledger's meaning. Financial facts such as `UsageRated`, `InvoiceIssued`, and
+`AdjustmentPosted` express that ledger as events, while the ledger-oriented query view becomes a projection of those facts.
+
+## Make the Event Store the only write authority
+
+The example's event envelope preserves tenant and stream identity, `streamVersion`, a monotonically increasing
+`globalPosition`, event type and schema version, canonical payload and metadata, occurrence and recording time, and the
+previous and current hashes.
+
+Its two ordering fields solve different problems:
+
+- `streamVersion` protects aggregate transitions and optimistic concurrency inside one stream.
+- `globalPosition` gives projections a cursor across multiple streams.
+
+A command replays its stream and appends new events with the expected version. If another command has advanced that stream,
+the append fails. The caller must replay the latest state and make the business decision again.
+
+```kotlin
+transaction {
+    receipt = commandReceipts.acquire(idempotencyKey, requestFingerprint)
+    if (receipt is Replay) return receipt.savedResponse
+
+    current = replay(eventStore.load(stream))
+    newEvents = decide(current.state, command)
+
+    appended = eventStore.append(
+        stream = stream,
+        expectedVersion = current.streamVersion,
+        events = newEvents,
+    )
+
+    commandReceipts.complete(receipt.ownerToken, responseFor(appended))
+}
+```
+
+Keeping the command receipt and domain append in one transaction prevents a retry after a lost response from creating a
+second fact. A different request fingerprint under the same idempotency key is rejected at the transport boundary. A command
+that loses the race for a stream version is rejected at the business-state boundary. The two safeguards do not pretend these
+are the same failure.
+
+<figure
+  class="bt4k-architecture"
+  data-diagram-title="From a billing command to the Event Store, replay, and projection"
+>
+  <img src="/assets/blog/usage-billing/part2/usage-billing-event-sourcing-01-en.png" alt="A billing command is appended optimistically to the Event Store, then read through a snapshot, replay, and projection" loading="lazy" />
+  <figcaption>The Event Store is the final authority; snapshots and projections are derived artifacts that can be validated or rebuilt.</figcaption>
+</figure>
+
+[Explore the Event Sourcing flow interactively](/visual-companions/bluetape4k-workshop/usage-billing-evolution/#event-sourcing)
+
+## Replay is more than iterating over events
+
+If replay reconstructs billable state, it cannot silently accept damaged history or a stale snapshot. The example fixes the
+following validation procedure:
+
+1. **Load the latest snapshot.** If none exists, begin with the initial state and stream version `0`.
+2. **Validate whether the snapshot is usable.** Its reducer version must match the current code, and the event hash at its
+   stream version must equal `lastEventHash`.
+3. **Discard a snapshot that fails validation.** Do not patch selected fields or continue from it. Return to the initial state
+   and replay the complete stream.
+4. **Read later events in order.** Start after the valid snapshot's `streamVersion`, or at the beginning when no snapshot was
+   accepted.
+5. **Verify the hash chain before applying each event.** The current event's `previousHash` must connect to the preceding event
+   hash. Stop immediately on a mismatch.
+6. **Convert to the current schema and calculate state.** Apply the ordered upcasters, decoder, and pure reducer.
+7. **Advance the verification baseline.** Update the state, `streamVersion`, and final event hash. After replay, these values
+   become the input for snapshots and reconciliation.
+
+The following pseudocode shows where snapshot acceptance and per-event verification occur in that procedure:
+
+```kotlin
+snapshot = snapshotStore.latest(stream)
+seed = snapshot.takeIf {
+    it.reducerVersion == currentReducerVersion &&
+        eventStore.hashAt(stream, it.streamVersion) == it.lastEventHash
+}
+
+state = seed?.state ?: initialState
+version = seed?.streamVersion ?: 0
+previousHash = seed?.lastEventHash
+
+for (stored in eventStore.load(stream, afterVersion = version)) {
+    verifyHashChain(stored, previousHash)
+    currentEvent = eventCodecs.upcastAndDecode(stored)
+    state = reducer.evolve(state, currentEvent)
+    version = stored.streamVersion
+    previousHash = stored.eventHash
+}
+```
+
+A snapshot is an optional replay optimization, not authority. If its reducer version or last event hash does not match, the
+system discards it and replays from genesis. The same event sequence must always produce the same state, version, and final
+hash.
+
+The hash chain detects later changes to payload, metadata, or ordering. It is not a signature or an independent trust anchor,
+however. Defending against an actor who can rewrite both the database and its hashes requires a separate security design such
+as key management, signatures, or external retention.
+
+## Event contracts must keep old history readable
+
+A conventional migration can rewrite old rows into a new schema. Event Sourcing preserves the original fact, so today's code
+must still understand yesterday's schema version.
+
+The example's `EventCodecRegistry` registers one latest decoder per event type and a chain of single-version upcasters. A move
+from `UsageAccepted` v1 to v3 therefore requires both `v1 → v2` and `v2 → v3`. Startup validation detects a missing link, and
+replay fails instead of skipping an unknown version.
+
+This produces four operating rules:
+
+1. Do not bulk-rewrite stored event payloads into the latest schema.
+2. An upcaster adapts an old payload to today's decoder input without inventing new business meaning.
+3. Before deploying a reducer, replay representative streams and old snapshots in tests.
+4. A broken upcast chain or hash mismatch stops processing instead of producing a partial bill.
+
+## A projection is persistent derived data that can be verified repeatedly
+
+Replaying every event on every billing-summary request makes latency proportional to stream length. Queries therefore use a
+projection built by applying events in order. The projection is not authority: when it disagrees with the Event Store, rebuild
+the projection rather than altering events to match the view.
+
+An online rebuild must not empty the table that serves current traffic. The example preserves the `ACTIVE` generation and
+builds a new generation under a separate key space.
+
+```text
+1. Capture the Event Store high watermark.
+2. Create generation N+1 in BUILDING state.
+3. Apply events in global-position batches.
+4. Verify that the checkpoint reached the high watermark.
+5. Revalidate the current lease owner and fencing token.
+6. Conditionally switch the ACTIVE alias from N to N+1.
+7. Keep N as RETIRED while monitoring lag and reconciliation.
+```
+
+Each applied event is unique by `(projectionName, generation, eventId)`, and only the current lease owner may advance the
+checkpoint. The switch also checks that the expected ACTIVE generation has not changed. Fencing prevents a stale worker from
+overwriting a checkpoint or alias after its ownership has expired.
+
+## Isolate an unprocessable event from the healthy read path
+
+If a decoder, upcaster, or handler cannot process an event, skipping it is unsafe. The resulting projection may answer quickly
+while omitting money.
+
+The worker records the failed event ID, type, global position, and failure digest, then moves the generation it was building to
+`FAILED`. A failed shadow generation does not replace the existing `ACTIVE` generation or its query alias.
+
+| Failure | Detection signal | Protective behavior | Operator action |
+|---|---|---|---|
+| Invalid snapshot | Reducer version or last event hash mismatch | Discard the snapshot and replay from the beginning | Investigate snapshot creation and compare it with replay |
+| Event hash mismatch | Hash-chain validation error | Stop replay immediately | Investigate Event Store integrity and mutation paths |
+| Broken upcast path | Unknown schema version | Fail processing | Add the missing single-version upcaster and regression test |
+| Projection handler error | Failed event and failure digest recorded | Quarantine the event and mark the generation `FAILED` | Fix the cause and rebuild a new generation |
+| Growing projection lag | Gap between checkpoint and high watermark; bounded read-your-write returns `409` | Do not present stale data as current | Inspect lease, checkpoint, and capacity; catch up at a bounded rate |
+| No ACTIVE generation | The query alias has no valid target | Keep an incomplete `BUILDING` generation hidden | Restore a verified `RETIRED` generation temporarily or rebuild from the beginning |
+| Failed switch condition | Expected ACTIVE generation or fencing token mismatch | Preserve the ACTIVE alias | Revalidate the high watermark and current lease ownership |
+
+Forcing a `FAILED` generation to `ACTIVE` or deleting the problematic event is not recovery. Repair the contract, build a new
+generation from the beginning, reconcile its totals with authoritative replay, and switch only after those checks pass.
+
+A running worker is not sufficient evidence of recovery. Verify these conditions in order:
+
+1. Fix the Event Store high watermark and create a new `BUILDING` generation.
+2. Repair the cause of every quarantined event without deleting or overwriting the original Event Store record.
+3. Replay the new generation from the beginning and verify that its checkpoint reaches the high watermark.
+4. Reconcile aggregate replay, ledger totals, and projection totals.
+5. Switch the ACTIVE alias conditionally with the current lease owner and fencing token.
+6. After the switch, observe lag and bounded read-your-write failures and close the quarantine record.
+
+Do not edit a `FAILED` state or remove the existing ACTIVE generation before all six conditions pass. A verified `RETIRED`
+generation may preserve the read path while a new generation is built, but responses and telemetry must expose the gap between
+that generation's position and the current high watermark.
+
+## When not to choose Event Sourcing
+
+Event Sourcing is not a higher maturity level for billing. If most answers below are “no,” the immutable ledger from Part 1 is
+the better model.
+
+- Must the system reproduce aggregate state at a specific historical version?
+- Must it repeatedly create different read models from the same source facts?
+- Must event causality be retained as evidence for audits or disputes?
+- Can the team operate projection lag, rebuilds, upcasters, and poison-event runbooks?
+
+Normalized tables are simpler when the system needs current-state queries plus an auditable ledger. When replay and multiple
+projections are core requirements, the cost of Event Sourcing becomes the operational cost of satisfying those requirements,
+not incidental complexity.
+
+## Where the series goes next
+
+- [Part 1: Duplicate ingestion, resumable closing, and the ledger](/blog/usage-billing-part1-ledger-and-resumable-close/)
+- **Part 2: Event Sourcing, replay, and projection operations**
+- Part 3: Extract ledger ownership into microservices with Outbox and Inbox
+- [Integrated interactive visualization](/visual-companions/bluetape4k-workshop/usage-billing-evolution/#event-sourcing)
+
+Part 3 will cross the boundary of one application and examine how Meter, Usage, Billing, and Invoice services divide delivery
+and deduplication responsibilities with Outbox, Kafka, and Inbox while owning separate data.
+
+## Implementation and related resources
+
+- [Part 1: Duplicate ingestion, resumable closing, and the ledger](/blog/usage-billing-part1-ledger-and-resumable-close/):
+  The idempotency, occurrence-time pricing, immutable ledger, resumable close, and adjustment contracts that remain valid
+  before and after Event Sourcing.
+- [Event-sourced usage-billing README](https://github.com/bluetape4k/bluetape4k-workshop/blob/da9e205f04dd3fbe9281a30f5af2394de624f98c/commerce/usage-metering-billing-event-sourcing/README.md):
+  The complete authority model, execution guide, and failure runbook.
+- [`AggregateReplayer.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/da9e205f04dd3fbe9281a30f5af2394de624f98c/commerce/usage-metering-billing-event-sourcing/src/main/kotlin/io/bluetape4k/workshop/commerce/metering/eventsourcing/eventstore/AggregateReplayer.kt):
+  Snapshot validation, hash-chain verification, upcast and decode, and pure reducer application.
+- [`EventSourcingControllers.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/da9e205f04dd3fbe9281a30f5af2394de624f98c/commerce/usage-metering-billing-event-sourcing/src/main/kotlin/io/bluetape4k/workshop/commerce/metering/eventsourcing/web/EventSourcingControllers.kt):
+  The transaction boundary around command receipts and event append, plus projection position and bounded read-your-write waits.
+- [`ProjectionWorker.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/da9e205f04dd3fbe9281a30f5af2394de624f98c/commerce/usage-metering-billing-event-sourcing/src/main/kotlin/io/bluetape4k/workshop/commerce/metering/eventsourcing/worker/ProjectionWorker.kt):
+  Batched application, leases, checkpoints, and failed-event quarantine.
+- [`ProjectionRecoveryPostgresIntegrationTest.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/da9e205f04dd3fbe9281a30f5af2394de624f98c/commerce/usage-metering-billing-event-sourcing/src/test/kotlin/io/bluetape4k/workshop/commerce/metering/eventsourcing/projection/ProjectionRecoveryPostgresIntegrationTest.kt):
+  PostgreSQL evidence that a failed generation is isolated while the healthy ACTIVE read path remains available.
+- [Interactive usage-billing evolution](/visual-companions/bluetape4k-workshop/usage-billing-evolution/#event-sourcing):
+  Compare the ledger, Event Sourcing, and microservice structures through the same billing scenario.
+- [Martin Fowler's Event Sourcing overview](https://martinfowler.com/eaaDev/EventSourcing.html):
+  The foundational model of retaining event sequences as the record and reconstructing state through replay.
+- [Microsoft Azure Architecture Center: Event Sourcing pattern](https://learn.microsoft.com/en-us/azure/architecture/patterns/event-sourcing):
+  A practical summary of event stores, optimistic concurrency, materialized views, event versioning, and adoption trade-offs.

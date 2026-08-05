@@ -163,6 +163,31 @@ current time.
 Credits also store a positive amount and use `CREDIT_ADJUSTMENT` for direction, linking back through
 `relatedOriginalEntryId`. This keeps amount sign and business meaning from being interpreted differently across layers.
 
+## Recover from the durable evidence that remains
+
+Restarting every step from the beginning is unsafe after a failure. This example retains completed receipts, accepted usage,
+ledger entries, the close cutoff, and the checkpoint as durable evidence, then chooses a recovery boundary from the point at
+which processing stopped.
+
+| Failure boundary | Detection signal | Automatic protection | Operator recovery | Recovery gate |
+|---|---|---|---|---|
+| Lost response or abandoned command owner | Receipt remains `IN_PROGRESS` after its lease expires | Only a new owner token may take over | Retry with the same `Idempotency-Key` and fingerprint | The stored response replays and exactly one business result exists |
+| Same producer event ID with different content | Payload digest conflict | Unique constraint and digest comparison reject the write | Investigate upstream ID reuse or payload mutation | The source event ID maps to one verified payload |
+| Missing occurrence-time price interval | Close run enters `FAILED_VALIDATION`; unpriced count grows | Partial invoice finalization is blocked | Add the explicit price interval and resume with the same cutoff | Unpriced count is zero and the run is `READY_TO_FINALIZE` |
+| Worker stops around a batch commit | Checkpoint stalls or the lease expires | Transaction rollback and the ledger source unique key | Resume after the last durable checkpoint | The checkpoint reaches the final candidate with no duplicate ledger entry |
+| Incorrect amount found after finalization | Reconciliation finding or customer dispute | Finalized ledger entries and invoices reject mutation | Append a linked `DEBIT_ADJUSTMENT` or `CREDIT_ADJUSTMENT` | Ledger, invoice, and provenance totals match and the finding is closed |
+
+Use the following recovery order:
+
+1. Identify the affected tenant, period, command, or close run.
+2. Determine which receipt, usage event, ledger entry, cutoff, and checkpoint values committed.
+3. Preserve that evidence and select only takeover, resume, or append-only adjustment.
+4. Recheck deduplication constraints, price versions, checkpoints, and monetary totals.
+5. Declare recovery complete only when no reconciliation finding remains unresolved.
+
+Do not mark a receipt complete by hand, advance a checkpoint past unprocessed work, or update or delete a finalized ledger
+entry. Those actions remove the evidence needed to distinguish a duplicate from a missing charge.
+
 ## When this structure fits
 
 | Condition | Benefit | Decision still required |
@@ -178,7 +203,7 @@ simple aggregate encounters duplicate delivery, temporal pricing, process restar
 ## Where the series goes next
 
 - **Part 1: Duplicate ingestion, resumable closing, and the ledger**
-- Part 2: Extend the same billing rules with Event Sourcing and replayable state
+- [Part 2: Event Sourcing, replay, and projection operations](/blog/usage-billing-part2-event-sourcing-and-projections/)
 - Part 3: Extract ledger ownership into microservices with Outbox and Inbox
 - [Integrated interactive visualization](/visual-companions/bluetape4k-workshop/usage-billing-evolution/#ledger)
 

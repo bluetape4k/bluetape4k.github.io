@@ -7,7 +7,7 @@ blog:
   date: 2026-08-05T12:00:00+09:00
   image: /assets/blog/usage-billing/part1/usage-billing-part1-hero.png
   imageAlt: 사용량 이벤트가 가격 타임라인과 재시작 가능한 마감 작업을 거쳐 원장과 봉인된 청구서로 이어지는 어두운 3D 작업대
-  cardDescription: "중복 사용량, 가격 변경, 마감 재시작, 늦은 사용량을 하나의 PostgreSQL 권위 모델에서 다루는 방법을 살펴봅니다."
+  cardDescription: "중복 사용량, 가격 변경, 마감 재시작, 늦은 사용량을 하나의 PostgreSQL 기준 데이터 모델에서 다루는 방법을 살펴봅니다."
   tags: ["architecture","billing","event-driven","kotlin","postgresql","resilience","spring"]
 ---
 
@@ -105,7 +105,7 @@ v2: [2026-03-01T00:00Z, ∞)                  USD 0.12
   data-diagram-title="중복 없는 수집부터 재시작 가능한 마감과 원장 보정까지"
 >
   <img src="/assets/blog/usage-billing/part1/usage-billing-ledger-01-ko.png" alt="사용량 수집, 발생 시점 가격 선택, 재시작 가능한 마감, 원장, 청구서와 조정 항목의 흐름" loading="lazy" />
-  <figcaption>수집, 가격, 마감, 원장, 청구서가 하나의 PostgreSQL 권위 안에서 각기 다른 불변식을 담당합니다.</figcaption>
+  <figcaption>수집, 가격, 마감, 원장, 청구서가 하나의 PostgreSQL 트랜잭션 경계에서 각기 다른 불변식을 담당합니다.</figcaption>
 </figure>
 
 [대화형 시각 자료에서 원장형 과금 흐름 살펴보기](/ko/visual-companions/bluetape4k-workshop/usage-billing-evolution/#ledger)
@@ -164,6 +164,31 @@ Service Period를 수정하지 않고, 서버의 현재 시각을 포함하는 �
 표현하며, `relatedOriginalEntryId`로 원본 원장 항목을 연결합니다. 금액 부호와 업무 의미를 여러 계층에서
 다르게 해석하지 않도록 Entry Type을 명시적으로 사용한 것입니다.
 
+## 장애 복구는 남아 있는 기준 데이터에서 시작한다
+
+장애가 발생했을 때 모든 과정을 처음부터 다시 실행하는 방식은 안전하지 않습니다. 이 예제는 완료된 Receipt,
+수집된 사용량, 원장 항목, 마감 Cutoff와 Checkpoint를 기준 데이터로 남기고, 실패 지점에 따라 재개 범위를
+결정합니다.
+
+| 실패 경계 | 탐지 신호 | 자동 보호 | 운영자의 복구 | 복구 완료 조건 |
+|---|---|---|---|---|
+| 응답 유실 또는 처리 중 소유자 중단 | Receipt가 `IN_PROGRESS`이고 Lease 만료 | 새 Owner Token만 takeover 허용 | 같은 `Idempotency-Key`와 Fingerprint로 재시도 | 저장된 응답이 재생되고 업무 결과가 한 건만 존재 |
+| 같은 생산자 Event ID에 다른 내용 도착 | Payload Digest 충돌 | 고유 제약과 Digest 비교로 저장 거부 | 상류 시스템의 ID 재사용 또는 Payload 변경 조사 | 원본 Event ID와 Payload의 대응 관계 확인 |
+| 발생 시점의 가격 구간 누락 | Close Run이 `FAILED_VALIDATION`, unpriced count 증가 | 일부 청구서 확정 차단 | 누락된 가격 구간을 명시적으로 추가하고 같은 Cutoff로 재개 | unpriced count가 0이고 Run이 `READY_TO_FINALIZE` |
+| Batch Commit 전후 Worker 중단 | Checkpoint 정체 또는 Lease 만료 | 트랜잭션 Rollback과 원장 Source 고유 키 | 마지막 Checkpoint 이후부터 다시 실행 | Checkpoint가 마지막 대상까지 도달하고 원장 중복이 없음 |
+| 확정 이후 금액 오류 발견 | Reconciliation Finding 또는 고객 이의 | 확정 원장·청구서 수정 차단 | 원본과 연결된 `DEBIT_ADJUSTMENT` 또는 `CREDIT_ADJUSTMENT` 추가 | 원장·청구서·Provenance 합계가 다시 일치하고 Finding 종료 |
+
+복구 순서는 다음과 같이 고정합니다.
+
+1. 실패한 테넌트, 기간, 명령 또는 Close Run을 식별합니다.
+2. Receipt, 사용량 Event, 원장, Cutoff와 Checkpoint 중 어디까지 Commit됐는지 확인합니다.
+3. 남아 있는 기준 데이터를 수정하지 않고 허용된 takeover, 재시작 또는 Adjustment를 선택합니다.
+4. 중복 방지 제약, 가격 Version, Checkpoint와 금액 합계를 다시 검증합니다.
+5. 미해결 Reconciliation Finding이 없을 때만 복구 완료를 선언합니다.
+
+Receipt 상태를 임의로 완료 처리하거나, Checkpoint를 앞으로 이동하거나, 확정된 원장 항목을 수정·삭제해서는 안
+됩니다. 이러한 조치는 처리 재개처럼 보이지만, 중복과 누락을 판별할 근거를 제거합니다.
+
 ## 언제 이 구조를 선택할 것인가
 
 | 조건 | 이 구조가 주는 이점 | 추가로 필요한 결정 |
@@ -179,7 +204,7 @@ Service Period를 수정하지 않고, 서버의 현재 시각을 포함하는 �
 ## 시리즈에서 이어서 볼 내용
 
 - **Part 1: 중복 수집부터 재시작 가능한 마감과 원장까지**
-- Part 2: 같은 과금 규칙을 Event Sourcing과 재생 가능한 상태로 확장하기
+- [Part 2: Event Sourcing, Replay와 Projection 운영](/ko/blog/usage-billing-part2-event-sourcing-and-projections/)
 - Part 3: 원장 경계를 마이크로서비스와 Outbox·Inbox로 분리하기
 - [통합 대화형 시각 자료](/ko/visual-companions/bluetape4k-workshop/usage-billing-evolution/#ledger)
 

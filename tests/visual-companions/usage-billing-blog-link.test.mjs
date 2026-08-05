@@ -6,16 +6,22 @@ import { fileURLToPath } from 'node:url';
 
 const repositoryRoot = resolve(fileURLToPath(new URL('../..', import.meta.url)));
 
-test('usage billing part 1 links each locale to the ledger visualization', async () => {
-  const ko = await read('src/content/docs/ko/blog/usage-billing-part1-ledger-and-resumable-close.mdx');
-  const en = await read('src/content/docs/blog/usage-billing-part1-ledger-and-resumable-close.mdx');
+test('usage billing articles link each locale to the matching visualization stage', async () => {
+  const part1Ko = await read('src/content/docs/ko/blog/usage-billing-part1-ledger-and-resumable-close.mdx');
+  const part1En = await read('src/content/docs/blog/usage-billing-part1-ledger-and-resumable-close.mdx');
+  const part2Ko = await read('src/content/docs/ko/blog/usage-billing-part2-event-sourcing-and-projections.mdx');
+  const part2En = await read('src/content/docs/blog/usage-billing-part2-event-sourcing-and-projections.mdx');
 
-  assert.match(ko, /\/ko\/visual-companions\/bluetape4k-workshop\/usage-billing-evolution\/#ledger/);
-  assert.match(en, /\/visual-companions\/bluetape4k-workshop\/usage-billing-evolution\/#ledger/);
-  assert.match(ko, /usage-billing-ledger-01-ko\.png/);
-  assert.match(en, /usage-billing-ledger-01-en\.png/);
-  assert.doesNotMatch(ko, /usage-billing-ledger-01-en\.png/);
-  assert.doesNotMatch(en, /usage-billing-ledger-01-ko\.png/);
+  assert.match(part1Ko, /\/ko\/visual-companions\/bluetape4k-workshop\/usage-billing-evolution\/#ledger/);
+  assert.match(part1En, /\/visual-companions\/bluetape4k-workshop\/usage-billing-evolution\/#ledger/);
+  assert.match(part1Ko, /\/ko\/blog\/usage-billing-part2-event-sourcing-and-projections\//);
+  assert.match(part1En, /\/blog\/usage-billing-part2-event-sourcing-and-projections\//);
+  assert.match(part2Ko, /\/ko\/visual-companions\/bluetape4k-workshop\/usage-billing-evolution\/#event-sourcing/);
+  assert.match(part2En, /\/visual-companions\/bluetape4k-workshop\/usage-billing-evolution\/#event-sourcing/);
+  assert.match(part2Ko, /usage-billing-event-sourcing-01-ko\.png/);
+  assert.match(part2En, /usage-billing-event-sourcing-01-en\.png/);
+  assert.doesNotMatch(part2Ko, /usage-billing-event-sourcing-01-en\.png/);
+  assert.doesNotMatch(part2En, /usage-billing-event-sourcing-01-ko\.png/);
 });
 
 test('usage billing publication contains every locale and theme fallback', async () => {
@@ -35,6 +41,9 @@ test('usage billing publication contains every locale and theme fallback', async
   await Promise.all([
     exists('public/assets/blog/usage-billing/part1/usage-billing-ledger-01-en.png'),
     exists('public/assets/blog/usage-billing/part1/usage-billing-ledger-01-ko.png'),
+    exists('public/assets/blog/usage-billing/part2/usage-billing-event-sourcing-01-en.png'),
+    exists('public/assets/blog/usage-billing/part2/usage-billing-event-sourcing-01-ko.png'),
+    exists('public/assets/blog/usage-billing/part2/usage-billing-part2-hero.png'),
     exists('public/visual-companions/bluetape4k-workshop/usage-billing-evolution/index.html'),
     exists('public/ko/visual-companions/bluetape4k-workshop/usage-billing-evolution/index.html'),
   ]);

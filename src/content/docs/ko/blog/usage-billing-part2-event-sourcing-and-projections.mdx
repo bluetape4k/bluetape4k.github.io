@@ -1,0 +1,289 @@
+---
+title: "과금 원장을 Event Sourcing으로 바꾸면 무엇을 얻고 무엇을 운영해야 하는가"
+description: 사용량 과금의 사실을 이벤트로 보존하고, 안전한 재생과 무중단 프로젝션 재구축을 운영하려면 어떤 계약이 필요한지 설명합니다.
+sidebar:
+  order: -202608061200
+blog:
+  date: 2026-08-06T12:00:00+09:00
+  image: /assets/blog/usage-billing/part2/usage-billing-part2-hero.png
+  imageAlt: 불변 이벤트 스트림과 스냅샷을 지나 두 세대의 프로젝션으로 분기하고 실패 이벤트를 격리하는 어두운 3D 작업대
+  cardDescription: "Event Store를 과금의 기준 데이터로 삼을 때 필요한 재생, 스키마 진화, 프로젝션 세대 전환과 실패 격리를 살펴봅니다."
+  tags: ["architecture","billing","event-driven","kotlin","postgresql","resilience","spring"]
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/blog/usage-billing/part2/usage-billing-part2-hero.png" alt="불변 이벤트 스트림과 스냅샷을 지나 두 세대의 프로젝션으로 분기하고 실패 이벤트를 격리하는 어두운 3D 작업대" loading="eager" />
+  <figcaption>Event Sourcing은 이력을 추가하는 기능이 아니라, 과금의 기준 데이터와 복구 절차를 다시 정의하는 선택입니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-06 · Usage Billing · Part 2</p>
+
+[Part 1](/ko/blog/usage-billing-part1-ledger-and-resumable-close/)에서는 중복 사용량, 발생 시점 가격, 재시작
+가능한 마감과 확정 이후의 보정을 불변 원장으로 다뤘습니다. 이 구조만으로도 많은 SaaS 과금 요구사항을
+충족할 수 있습니다.
+
+그런데 “지난달 마감 직전의 상태를 다시 보고 싶다”, “같은 원본 사실로 새로운 분석 화면을 만들고 싶다”,
+“조회 모델을 바꾸되 서비스는 중단하지 않아야 한다”는 요구가 생기면 현재 상태와 원장 항목만으로는 복원
+규칙을 별도로 만들어야 합니다. Event Sourcing은 이 문제를 해결하는 대신, 이벤트 계약과 재생·프로젝션을
+지속해서 운영할 책임을 추가합니다.
+
+이 글은 [`bluetape4k-workshop`의 Event Sourcing 기반 사용량 과금 예제](https://github.com/bluetape4k/bluetape4k-workshop/tree/da9e205f04dd3fbe9281a30f5af2394de624f98c/commerce/usage-metering-billing-event-sourcing)를
+바탕으로 무엇이 기준 데이터이고, 무엇을 다시 만들 수 있으며, 실패했을 때 어디서 멈춰야 하는지를 설명합니다.
+
+## 원장형 모델에서 그대로 지켜야 할 불변식
+
+저장 방식을 바꾼다고 과금 규칙이 바뀌지는 않습니다. 같은 생산자 Event는 한 번만 수락하고, 가격은
+`occurredAt`에 맞는 Version을 선택하며, 확정된 금액은 수정하지 않고 Adjustment를 추가해야 합니다.
+
+이 글만 읽는 독자도 이후 설계를 이해할 수 있도록, Part 1에서 만든 원장형 과금 흐름을 다시 정리하겠습니다.
+다음 내용은 단순한 전편 요약이 아니라 Event Sourcing으로 바꾼 뒤에도 유지해야 할 기준선입니다.
+
+1. **사용량을 수집합니다.** 테넌트와 사용 주체, 측정 항목, 사용량, 발생 시각인 `occurredAt`, 생산자 Event
+   ID를 함께 받습니다.
+2. **같은 사실을 두 번 받지 않습니다.** 생산자 Event ID와 요청 Fingerprint로 재시도를 식별합니다. 같은
+   ID에 같은 내용이 들어오면 이전 결과를 반환하고, 다른 내용이 들어오면 충돌로 거부합니다.
+3. **발생 시점의 가격을 선택합니다.** 수집 시각이나 처리 시각이 아니라 `occurredAt`에 유효했던 가격표
+   Version으로 금액을 계산합니다. 늦게 도착한 사용량도 당시 계약에 따라 계산해야 하기 때문입니다.
+4. **계산 결과를 불변 원장에 추가합니다.** 사용량과 가격 선택 근거, 계산 결과를 함께 기록합니다. 현재
+   합계만 갱신하면 나중에 왜 그 금액이 나왔는지 설명할 수 없습니다.
+5. **청구 기간을 단계적으로 마감합니다.** 마감 대상을 고정하고, Batch별 진행 위치를 저장해 중단된
+   지점부터 다시 시작합니다. 재시작이 전체 재실행이나 중복 청구로 이어져서는 안 됩니다.
+6. **확정된 금액은 덮어쓰지 않습니다.** 마감 이후 오류나 소급 변경을 발견하면 기존 항목을 수정하는 대신
+   `Adjustment`를 추가해 원래 사실과 보정 근거를 모두 남깁니다.
+7. **원장과 실행 상태를 함께 검증합니다.** 합계만 맞는지 확인하지 않고, 중복 차단·가격 Version·마감
+   Cursor·보정 연결 관계가 각자의 불변식을 지키는지 검사합니다.
+
+이 일곱 단계의 상세 설계와 재시작 가능한 마감 절차는
+[Part 1: 중복 수집부터 재시작 가능한 마감과 원장까지](/ko/blog/usage-billing-part1-ledger-and-resumable-close/)에서
+다룹니다. 이 글에서는 같은 기준선을 반복해서 설명한 뒤, 과금 기록의 기준을 Row에서 Domain Event로 옮겼을
+때 무엇이 달라지는지 살펴봅니다.
+
+달라지는 것은 그 규칙을 기록하는 단위입니다.
+
+| 질문 | 원장형 모델 | Event Sourcing 모델 |
+|---|---|---|
+| 기준 데이터 | 정규화된 업무 Row와 불변 원장 | 순서가 고정된 Domain Event |
+| 현재 상태 | 기준 업무 테이블에서 직접 조회 | Event Replay 또는 ACTIVE Projection |
+| 과거 상태 | 별도 감사 질의와 복원 로직 | 특정 Stream Version까지 Replay |
+| 조회 모델 변경 | Schema·Data Migration | 새 Projection Generation을 재구축한 뒤 전환 |
+| 운영 책임 | 마감·원장·보정 | 마감·원장·보정과 Event 계약·Replay·Lag·Poison Event 운영 |
+
+Event Sourcing을 선택해도 원장이 불필요해지는 것은 아닙니다. `UsageRated`, `InvoiceIssued`,
+`AdjustmentPosted` 같은 재무 사실이 원장의 의미를 Event로 표현하고, 조회용 원장 화면은 이 사실에서 만든
+Projection이 됩니다.
+
+## Event Store를 유일한 과금 기록 기준으로 삼는다
+
+예제의 Event Envelope는 테넌트와 Stream 식별자, `streamVersion`, 단조 증가하는 `globalPosition`, Event
+Type·Schema Version, Payload·Metadata, 발생·기록 시각, 이전 Hash와 현재 Hash를 보존합니다.
+
+이 가운데 두 순서가 서로 다른 역할을 맡습니다.
+
+- `streamVersion`은 한 Aggregate 안의 낙관적 동시성 제어와 상태 전이 순서를 보장합니다.
+- `globalPosition`은 여러 Stream의 Event를 Projection이 일관된 순서로 따라가기 위한 Cursor입니다.
+
+명령 처리는 현재 Stream을 Replay한 뒤 예상 Version을 포함해 Event를 추가합니다. 같은 Stream을 먼저 갱신한
+명령이 있다면 추가가 실패하고, 호출자는 최신 상태를 다시 Replay한 뒤 업무 판단을 다시 수행해야 합니다.
+
+```kotlin
+transaction {
+    receipt = commandReceipts.acquire(idempotencyKey, requestFingerprint)
+    if (receipt is Replay) return receipt.savedResponse
+
+    current = replay(eventStore.load(stream))
+    newEvents = decide(current.state, command)
+
+    appended = eventStore.append(
+        stream = stream,
+        expectedVersion = current.streamVersion,
+        events = newEvents,
+    )
+
+    commandReceipts.complete(receipt.ownerToken, responseFor(appended))
+}
+```
+
+Command Receipt와 Domain Event 추가를 같은 트랜잭션에 두면 응답을 받지 못한 재시도가 두 번째 사실을 만들지
+않습니다. 같은 멱등성 Key에 다른 요청 Fingerprint가 들어오면 충돌로 거부하고, 다른 명령이 같은 Stream
+Version을 선점하면 낙관적 동시성 충돌로 거부합니다. 전송 재시도와 업무 상태 경쟁을 서로 다른 경계에서
+막는 것입니다.
+
+<figure
+  class="bt4k-architecture"
+  data-diagram-title="과금 명령부터 Event Store, Replay와 Projection까지"
+>
+  <img src="/assets/blog/usage-billing/part2/usage-billing-event-sourcing-01-ko.png" alt="과금 명령이 Event Store에 낙관적으로 추가되고 Snapshot과 Replay를 거쳐 Projection으로 조회되는 흐름" loading="lazy" />
+  <figcaption>Event Store가 최종 기록 기준이 되고, Snapshot과 Projection은 검증하거나 다시 만들 수 있는 파생 데이터입니다.</figcaption>
+</figure>
+
+[대화형 시각 자료에서 Event Sourcing 흐름 살펴보기](/ko/visual-companions/bluetape4k-workshop/usage-billing-evolution/#event-sourcing)
+
+## Replay는 단순한 Event 반복 조회가 아니다
+
+Replay가 과금 상태를 다시 만드는 절차라면, 손상된 이력이나 오래된 Snapshot을 조용히 받아들여서는 안 됩니다.
+예제는 다음 검증 절차를 순서대로 수행합니다.
+
+1. **가장 최근 Snapshot을 읽습니다.** Snapshot이 없으면 초기 상태와 Stream Version `0`에서 시작합니다.
+2. **Snapshot의 사용 가능 여부를 검증합니다.** Snapshot의 Reducer Version이 현재 코드와 같은지 확인하고,
+   Snapshot이 가리키는 Stream Version의 Event Hash가 `lastEventHash`와 일치하는지 검사합니다.
+3. **검증에 실패한 Snapshot을 폐기합니다.** 일부 필드만 보정하거나 그대로 사용하지 않습니다. 초기 상태로
+   돌아가 전체 Event를 Replay합니다.
+4. **Snapshot 이후의 Event를 순서대로 읽습니다.** 유효한 Snapshot이 있다면 해당 `streamVersion` 다음부터,
+   없다면 Stream의 처음부터 읽습니다.
+5. **각 Event의 Hash Chain을 검증합니다.** 현재 Event의 `previousHash`가 직전 Event Hash와 이어지는지 먼저
+   확인합니다. 불일치하면 상태를 더 만들지 않고 즉시 중단합니다.
+6. **현재 Schema로 변환하고 상태를 계산합니다.** 단계별 Upcaster로 과거 Payload를 현재 Schema로 바꾸고,
+   Decoder와 순수 Reducer를 차례로 적용합니다.
+7. **다음 검증을 위한 기준을 갱신합니다.** 계산된 상태와 함께 `streamVersion`, 마지막 Event Hash를 갱신합니다.
+   전체 Replay가 끝나면 이 세 값을 이후 Snapshot과 Reconciliation의 기준으로 사용합니다.
+
+다음 의사코드는 이 절차에서 Snapshot 채택과 Event별 검증이 어디에서 수행되는지 보여 줍니다.
+
+```kotlin
+snapshot = snapshotStore.latest(stream)
+seed = snapshot.takeIf {
+    it.reducerVersion == currentReducerVersion &&
+        eventStore.hashAt(stream, it.streamVersion) == it.lastEventHash
+}
+
+state = seed?.state ?: initialState
+version = seed?.streamVersion ?: 0
+previousHash = seed?.lastEventHash
+
+for (stored in eventStore.load(stream, afterVersion = version)) {
+    verifyHashChain(stored, previousHash)
+    currentEvent = eventCodecs.upcastAndDecode(stored)
+    state = reducer.evolve(state, currentEvent)
+    version = stored.streamVersion
+    previousHash = stored.eventHash
+}
+```
+
+Snapshot은 Replay 비용을 줄이는 선택적 최적화일 뿐 기준 데이터가 아닙니다. Reducer Version이나 마지막 Event Hash가
+맞지 않으면 Snapshot을 억지로 고치지 않고 처음부터 Replay합니다. 같은 Event Sequence는 언제 실행해도 같은
+상태, Version과 마지막 Hash를 만들어야 합니다.
+
+Hash Chain은 Payload·Metadata·순서의 사후 변경을 탐지하는 무결성 장치입니다. 그러나 서명이나 외부 원장처럼
+독립된 신뢰 근거를 제공하지는 않습니다. 데이터베이스와 Hash를 함께 바꿀 수 있는 공격에 대응하려면 Key 관리,
+서명, 외부 보관 같은 별도 보안 설계가 필요합니다.
+
+## Event 계약은 과거까지 읽을 수 있어야 한다
+
+일반 테이블은 Migration으로 과거 Row를 새 형태로 바꿀 수 있지만, Event Sourcing은 과거 사실을 그대로
+보존합니다. 따라서 오늘의 코드는 이전 Schema Version도 해석해야 합니다.
+
+예제의 `EventCodecRegistry`는 Event Type별 최신 Decoder와 한 단계씩 연결된 Upcaster를 등록합니다. 예를 들어
+`UsageAccepted` v1에서 v3으로 이동했다면 `v1 → v2`, `v2 → v3` 경로가 모두 있어야 합니다. 시작 시점의
+`validate()`가 중간 경로 누락을 검출하고, Replay 중 알 수 없는 Version을 만나면 임의로 건너뛰지 않고
+실패합니다.
+
+운영 규칙은 다음과 같이 정리할 수 있습니다.
+
+1. 이미 저장한 Event Payload를 새 Schema에 맞춰 일괄 수정하지 않습니다.
+2. Upcaster는 과거 Payload를 현재 Decoder 입력으로 바꾸되 업무 의미를 새로 만들지 않습니다.
+3. 새 Reducer를 배포하기 전에 대표 Stream과 오래된 Snapshot을 포함한 Replay Test를 실행합니다.
+4. Upcast 단절이나 Hash 불일치는 과금 결과를 일부만 만든 채 계속하지 않고 즉시 드러냅니다.
+
+## Projection은 휘발성 데이터가 아니라 반복 검증할 수 있는 파생 데이터다
+
+과금 요약 API가 매 요청마다 모든 Event를 Replay하면 응답 시간이 Stream 길이에 비례합니다. 따라서 조회는
+Event를 순서대로 적용해 만든 Projection을 사용합니다. 다만 Projection Row는 기준 원장 데이터가 아니므로 Event
+Store와 다를 때 Event를 고치는 것이 아니라 Projection을 다시 만듭니다.
+
+프로젝션 재구축은 같은 테이블을 비우고 다시 채우는 작업이 아닙니다. 서비스가 읽고 있는 `ACTIVE` 세대를
+유지한 채 새 `BUILDING` 세대를 별도 Key 공간에 만듭니다.
+
+```text
+1. Event Store의 High Watermark를 기록한다.
+2. Generation N+1을 BUILDING으로 생성한다.
+3. Global Position 순서로 Event를 Batch 처리한다.
+4. Checkpoint가 High Watermark 이상인지 확인한다.
+5. 현재 Lease Owner와 Fencing Token을 다시 검증한다.
+6. ACTIVE Alias를 N에서 N+1로 조건부 전환한다.
+7. 이전 N은 RETIRED로 보존하고 Lag와 Reconciliation을 관찰한다.
+```
+
+각 Event 적용 기록은 `(projectionName, generation, eventId)`로 중복을 차단하고, Checkpoint 갱신은 현재 Lease
+Owner만 수행합니다. 전환 시점에는 예상 ACTIVE 세대가 그대로인지도 확인합니다. 오래된 작업자가 늦게 도착해
+새 세대의 Checkpoint나 Alias를 덮어쓰지 못하도록 Fencing하는 것입니다.
+
+## 처리할 수 없는 Event는 건강한 조회 경로와 분리한다
+
+Decoder, Upcaster 또는 Handler가 특정 Event를 처리하지 못하면 해당 Event를 건너뛰고 다음으로 진행해서는 안
+됩니다. 그렇게 만든 과금 Projection은 빠르게 응답하더라도 일부 금액이 빠진 결과입니다.
+
+예제의 Worker는 실패한 Event ID·Type·Global Position과 Failure Digest를 기록하고, 작업 중이던 세대를
+`FAILED`로 전이합니다. 재구축 중인 세대가 실패해도 기존 `ACTIVE` 세대와 조회 Alias는 유지됩니다.
+
+| 실패 | 탐지 신호 | 보호 동작 | 운영자의 다음 조치 |
+|---|---|---|---|
+| Snapshot 검증 실패 | Reducer Version 또는 마지막 Event Hash 불일치 | Snapshot을 사용하지 않고 전체 Replay | Snapshot 생성 경로를 조사하고 Replay 결과와 비교 |
+| Event Hash 불일치 | Hash Chain 검증 오류 | Replay 즉시 중단 | Event Store 무결성과 변경 경로 조사 |
+| Upcast 경로 단절 | 알 수 없는 Schema Version | 처리 실패 | 누락된 단계별 Upcaster와 회귀 Test 추가 |
+| Projection Handler 오류 | 실패 Event와 Failure Digest 기록 | Event 격리, Generation을 `FAILED`로 전이 | 원인 수정 후 새 Generation 재구축 |
+| Projection Lag 증가 | Checkpoint와 High Watermark 차이, bounded read-your-write의 `409` | 낡은 결과를 최신 결과처럼 응답하지 않음 | Lease·Checkpoint·처리량을 확인하고 제한된 속도로 따라잡기 |
+| ACTIVE Generation 부재 | 조회 Alias가 가리킬 세대 없음 | 불완전한 `BUILDING` 세대 공개 차단 | 검증된 `RETIRED` 세대를 임시 복구하거나 새 세대를 전체 재구축 |
+| 전환 조건 불충족 | 예상 ACTIVE 세대 또는 Fencing Token 불일치 | ACTIVE Alias 유지 | High Watermark와 현재 Lease 소유권을 다시 검증 |
+
+`FAILED` 세대를 억지로 `ACTIVE`로 바꾸거나 문제 Event를 삭제하는 것은 복구가 아닙니다. 코드와 계약을 고친
+뒤 새 세대를 처음부터 재구축하고, Event Replay 결과와 Projection 합계를 Reconciliation한 뒤 전환해야
+합니다.
+
+복구 완료는 Worker가 다시 실행됐다는 사실만으로 판단하지 않습니다. 다음 조건을 순서대로 확인합니다.
+
+1. Event Store의 High Watermark를 고정하고 새 Generation을 `BUILDING`으로 만듭니다.
+2. 격리된 Event의 원인을 수정하되 Event Store의 원본 Event는 삭제하거나 덮어쓰지 않습니다.
+3. 새 Generation을 처음부터 Replay하고 Checkpoint가 High Watermark에 도달했는지 확인합니다.
+4. Aggregate Replay 결과, 원장 합계와 Projection 합계를 Reconciliation합니다.
+5. 현재 Lease Owner와 Fencing Token으로만 ACTIVE Alias를 조건부 전환합니다.
+6. 전환 뒤 Lag와 bounded read-your-write 실패율을 관찰하고, 격리 기록이 종료됐는지 확인합니다.
+
+이 여섯 조건이 통과되기 전에는 `FAILED` 상태를 직접 변경하거나 기존 ACTIVE 세대를 제거해서는 안 됩니다.
+검증된 `RETIRED` 세대가 있다면 새 세대가 준비될 때까지 조회 경로를 유지하는 복구 수단으로 사용할 수 있지만,
+그 세대의 기준 위치와 현재 High Watermark 차이는 응답과 운영 지표에 함께 드러내야 합니다.
+
+## Event Sourcing을 선택하지 않아야 할 때
+
+Event Sourcing이 과금의 상위 단계라는 뜻은 아닙니다. 다음 질문에 대부분 “아니요”라면 Part 1의 불변 원장형
+모델이 더 적합합니다.
+
+- 특정 시점의 Aggregate 상태를 실제로 재현해야 하는가?
+- 같은 원본 사실에서 서로 다른 조회 모델을 반복해서 만들어야 하는가?
+- 과거 Event의 인과관계를 규제·분쟁 대응 근거로 보존해야 하는가?
+- 프로젝션 Lag, 재구축, Upcast와 Poison Event Runbook을 운영할 팀이 있는가?
+
+현재 상태 조회와 감사 가능한 원장만 필요하다면 정규화된 테이블이 더 단순하고 직접적입니다. 반대로 재생과
+다중 Projection이 핵심 요구사항이라면 Event Sourcing의 비용은 우발적 복잡도가 아니라 요구사항을 지키기
+위한 운영 비용이 됩니다.
+
+## 시리즈에서 이어서 볼 내용
+
+- [Part 1: 중복 수집부터 재시작 가능한 마감과 원장까지](/ko/blog/usage-billing-part1-ledger-and-resumable-close/)
+- **Part 2: Event Sourcing, Replay와 Projection 운영**
+- Part 3: 원장 경계를 마이크로서비스와 Outbox·Inbox로 분리하기
+- [통합 대화형 시각 자료](/ko/visual-companions/bluetape4k-workshop/usage-billing-evolution/#event-sourcing)
+
+Part 3에서는 Event Store를 하나의 애플리케이션 안에서 운영하는 경계를 넘어, Meter·Usage·Billing·Invoice
+서비스가 각자 데이터를 소유할 때 Outbox·Kafka·Inbox로 전달과 중복 처리 책임을 어떻게 나누는지 살펴봅니다.
+
+## 구현 코드와 자료 살펴보기
+
+- [Part 1: 중복 수집부터 재시작 가능한 마감과 원장까지](/ko/blog/usage-billing-part1-ledger-and-resumable-close/):
+  Event Sourcing을 도입하기 전에도 유지해야 하는 멱등성, 발생 시점 가격, 불변 원장, 재시작 가능한 마감과
+  보정 계약을 자세히 설명합니다.
+- [Event Sourcing 기반 사용량 과금 예제 README](https://github.com/bluetape4k/bluetape4k-workshop/blob/da9e205f04dd3fbe9281a30f5af2394de624f98c/commerce/usage-metering-billing-event-sourcing/README.ko.md):
+  전체 기준 데이터 모델, 실행 방법과 장애 Runbook을 설명합니다.
+- [`AggregateReplayer.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/da9e205f04dd3fbe9281a30f5af2394de624f98c/commerce/usage-metering-billing-event-sourcing/src/main/kotlin/io/bluetape4k/workshop/commerce/metering/eventsourcing/eventstore/AggregateReplayer.kt):
+  Snapshot 검증, Hash Chain 확인, Upcast·Decode와 순수 Reducer 적용 순서를 구현합니다.
+- [`EventSourcingControllers.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/da9e205f04dd3fbe9281a30f5af2394de624f98c/commerce/usage-metering-billing-event-sourcing/src/main/kotlin/io/bluetape4k/workshop/commerce/metering/eventsourcing/web/EventSourcingControllers.kt):
+  Command Receipt와 Event 추가의 트랜잭션 경계, Projection 위치와 제한된 Read-your-write 대기를 보여 줍니다.
+- [`ProjectionWorker.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/da9e205f04dd3fbe9281a30f5af2394de624f98c/commerce/usage-metering-billing-event-sourcing/src/main/kotlin/io/bluetape4k/workshop/commerce/metering/eventsourcing/worker/ProjectionWorker.kt):
+  Batch 적용, Lease·Checkpoint와 처리 실패 Event 격리를 구현합니다.
+- [`ProjectionRecoveryPostgresIntegrationTest.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/da9e205f04dd3fbe9281a30f5af2394de624f98c/commerce/usage-metering-billing-event-sourcing/src/test/kotlin/io/bluetape4k/workshop/commerce/metering/eventsourcing/projection/ProjectionRecoveryPostgresIntegrationTest.kt):
+  실패 세대 격리와 건강한 ACTIVE 조회 경로 보존을 PostgreSQL에서 검증합니다.
+- [사용량 과금 구조의 발전 단계 시각 자료](/ko/visual-companions/bluetape4k-workshop/usage-billing-evolution/#event-sourcing):
+  원장형, Event Sourcing, 마이크로서비스 구조를 같은 과금 시나리오로 비교합니다.
+- [Martin Fowler의 Event Sourcing 설명](https://martinfowler.com/eaaDev/EventSourcing.html):
+  Event Sequence를 기준 데이터로 보존하고 Replay로 상태를 복원하는 기본 개념과 여러 활용 방식을 설명합니다.
+- [Microsoft Azure Architecture Center의 Event Sourcing Pattern](https://learn.microsoft.com/en-us/azure/architecture/patterns/event-sourcing):
+  Event Store, 낙관적 동시성, Materialized View, Event Versioning과 도입하지 않아야 할 조건을 함께 정리합니다.
