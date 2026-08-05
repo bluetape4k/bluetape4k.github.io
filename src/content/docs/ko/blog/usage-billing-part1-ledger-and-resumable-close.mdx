@@ -175,13 +175,13 @@ Service Period를 수정하지 않고, 서버의 현재 시각을 포함하는 �
 | 응답 유실 또는 처리 중 소유자 중단 | Receipt가 `IN_PROGRESS`이고 Lease 만료 | 새 Owner Token만 takeover 허용 | 같은 `Idempotency-Key`와 Fingerprint로 재시도 | 저장된 응답이 재생되고 업무 결과가 한 건만 존재 |
 | 같은 생산자 Event ID에 다른 내용 도착 | Payload Digest 충돌 | 고유 제약과 Digest 비교로 저장 거부 | 상류 시스템의 ID 재사용 또는 Payload 변경 조사 | 원본 Event ID와 Payload의 대응 관계 확인 |
 | 발생 시점의 가격 구간 누락 | Close Run이 `FAILED_VALIDATION`, unpriced count 증가 | 일부 청구서 확정 차단 | 누락된 가격 구간을 명시적으로 추가하고 같은 Cutoff로 재개 | unpriced count가 0이고 Run이 `READY_TO_FINALIZE` |
-| Batch Commit 전후 Worker 중단 | Checkpoint 정체 또는 Lease 만료 | 트랜잭션 Rollback과 원장 Source 고유 키 | 마지막 Checkpoint 이후부터 다시 실행 | Checkpoint가 마지막 대상까지 도달하고 원장 중복이 없음 |
+| Batch 커밋 전후 Worker 중단 | Checkpoint 정체 또는 Lease 만료 | 트랜잭션 Rollback과 원장 원본 고유 키 | 마지막 Checkpoint 이후부터 다시 실행 | Checkpoint가 마지막 대상까지 도달하고 원장 중복이 없음 |
 | 확정 이후 금액 오류 발견 | Reconciliation Finding 또는 고객 이의 | 확정 원장·청구서 수정 차단 | 원본과 연결된 `DEBIT_ADJUSTMENT` 또는 `CREDIT_ADJUSTMENT` 추가 | 원장·청구서·Provenance 합계가 다시 일치하고 Finding 종료 |
 
 복구 순서는 다음과 같이 고정합니다.
 
 1. 실패한 테넌트, 기간, 명령 또는 Close Run을 식별합니다.
-2. Receipt, 사용량 Event, 원장, Cutoff와 Checkpoint 중 어디까지 Commit됐는지 확인합니다.
+2. Receipt, 사용량 Event, 원장, Cutoff와 Checkpoint 중 어디까지 커밋됐는지 확인합니다.
 3. 남아 있는 기준 데이터를 수정하지 않고 허용된 takeover, 재시작 또는 Adjustment를 선택합니다.
 4. 중복 방지 제약, 가격 Version, Checkpoint와 금액 합계를 다시 검증합니다.
 5. 미해결 Reconciliation Finding이 없을 때만 복구 완료를 선언합니다.
@@ -206,6 +206,7 @@ Receipt 상태를 임의로 완료 처리하거나, Checkpoint를 앞으로 이�
 - **사용량 과금 Part 1: 중복 수집부터 재시작 가능한 마감과 원장까지**
 - [사용량 과금 Part 2: Event Sourcing, Replay와 Projection 운영](/ko/blog/usage-billing-part2-event-sourcing-and-projections/)
 - [사용량 과금 Part 3: 마이크로서비스, Outbox와 Inbox](/ko/blog/usage-billing-part3-microservices-outbox-inbox/)
+- [사용량 과금 Part 4: 장애 탐지, 격리, 재처리와 정합성 검증](/ko/blog/usage-billing-part4-failure-recovery-and-reconciliation/)
 - [통합 대화형 시각 자료](/ko/visual-companions/bluetape4k-workshop/usage-billing-evolution/#ledger)
 
 Part 2에서는 현재 상태만 저장하는 원장형 모델에서 Domain Event, Aggregate Replay, Snapshot과 Projection

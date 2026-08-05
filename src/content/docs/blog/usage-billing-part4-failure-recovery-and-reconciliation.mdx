@@ -1,0 +1,254 @@
+---
+title: "Recovering Usage Billing: Detection, Isolation, Reprocessing, and Reconciliation"
+description: Learn how to scope a billing incident, choose retry, replay, rebuild, or adjustment, and approve recovery only after reconciling ledger, event, projection, and service boundaries.
+sidebar:
+  order: -202608081200
+blog:
+  date: 2026-08-08T12:00:00+09:00
+  image: /assets/blog/usage-billing/part4/usage-billing-part4-hero.png
+  imageAlt: A dark 3D operations bench where a failed billing event is detected and isolated before three recovery paths converge at a reconciliation gate
+  cardDescription: "Turn detection, incident scoping, failure classification, isolation, reprocessing, and reconciliation into one evidence-based billing recovery runbook."
+  tags: ["architecture","billing","event-driven","kotlin","microservices","operations","postgresql","resilience","spring"]
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/blog/usage-billing/part4/usage-billing-part4-hero.png" alt="A dark 3D operations bench where a failed billing event is detected and isolated before three recovery paths converge at a reconciliation gate" loading="eager" />
+  <figcaption>Recovery does not end when failed work runs again. Preserve the system of record, reconcile money and progress, and only then approve traffic restoration.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-08 · Usage Billing · Part 4</p>
+
+[Part 1](/blog/usage-billing-part1-ledger-and-resumable-close/) covered duplicate ingestion and resumable close in a
+single PostgreSQL ledger. [Part 2](/blog/usage-billing-part2-event-sourcing-and-projections/) rebuilt projections from
+an Event Store. [Part 3](/blog/usage-billing-part3-microservices-outbox-inbox/) split billing into five services and
+used Outbox and Inbox records to survive partial failure.
+
+The storage models differ, but operators must answer the same questions. How far did processing get? Which durable facts
+remain? Which reprocessing method is safe? What evidence proves the system is healthy again?
+
+This article turns the failure paths exercised by those three examples into one operations runbook. It does not propose a
+universal monitoring product or recovery framework. It organizes recovery as **detect → identify scope → classify →
+isolate and recover → reconcile → approve resume**.
+
+## Define healthy billing with invariants, not throughput
+
+A normal HTTP success rate and low Kafka lag do not prove that billing is correct. Define health through business
+invariants.
+
+| Boundary | Healthy condition | Failure signal |
+|---|---|---|
+| Ingestion | One producer event affects money once | Same ID with another digest, a receipt held too long |
+| Pricing | Evidence exists for the price active at occurrence time | Missing or overlapping intervals, unapproved version |
+| Close | Every fact before the cursor is aggregated once | Failed batch, stale lease, stalled cursor |
+| Event Store | Stream versions and the hash chain are continuous | Version gap, hash mismatch, failed upcast |
+| Projection | A verified ACTIVE generation reaches the target position | `FAILED` generation, growing lag, amount mismatch |
+| Service delivery | An Outbox event passes an Inbox decision before one effect | Old `RETRY_WAIT`, `DEFERRED`, or quarantine growth |
+| Financial result | Usage, charge, invoice, and projection amounts trace to source events | Unexplained amount, edited line, reconciliation difference |
+
+Build alerts around these invariants. Signals such as `oldestRetryAge`, `projectionLag`, `quarantineCount`, and
+`reconciliationDifference` are more useful to recovery decisions than a generic error-log count.
+
+## 1. Record the signal and the affected scope together
+
+Reprocessing everything after the first alert also touches healthy tenants and periods. Pin the recovery unit first.
+
+```text
+RecoveryScope = {
+  incidentId,
+  detectedAt,
+  design: LEDGER | EVENT_SOURCED | MICROSERVICES,
+  tenantIds,
+  billingPeriods,
+  producerEventIds,
+  aggregateKeys,
+  streamVersionRange,
+  projectionGeneration,
+  topicPartitionsAndOffsets,
+  observedHighWatermark
+}
+```
+
+When the scope is uncertain, widen observation rather than mutation. Trace source event IDs into usage facts, charges,
+invoice lines, and projection rows. Locate the last verified cursor, stream version, or checkpoint. Those values define
+where recovery starts and the high watermark it must reach.
+
+## 2. Classify the failure into three operational paths
+
+Retry count is not a sufficient classifier. The same exception can require a different response depending on which durable
+facts remain.
+
+| Class | Examples | Durable evidence | Allowed recovery |
+|---|---|---|---|
+| Transient failure | Database connection, broker path, worker crash | Receipt, Outbox, Inbox, checkpoint, lease | Take over the same work, redeliver the same envelope, resume at the checkpoint |
+| Permanent contract error | Unsupported schema, missing field, same ID with another digest | Immutable source event, reason, quarantine, redrive audit | Isolate from healthy flow, fix the contract, redrive the same source |
+| Consistency mismatch | Projection difference, invalid snapshot, incorrect finalized amount | Event Store, ledger links, previous generation, reconciliation finding | Replay, rebuild, append-only adjustment |
+
+Quarantining every transient failure creates unnecessary operator work. Retrying a permanent contract error forever blocks
+healthy events. Redelivering a consistency mismatch leaves already-created bad money in place. Persist the classification
+as an input to the recovery command.
+
+<figure
+  class="bt4k-architecture"
+  data-diagram-title="Six stages of usage-billing failure recovery"
+>
+  <img src="/assets/blog/usage-billing/part4/usage-billing-recovery-01-en.png" alt="A vertical recovery flow that detects and scopes a failure, branches by three failure classes, and converges at reconciliation and resume approval" loading="lazy" />
+  <figcaption>Each failure class uses a different recovery mechanism, but every path must pass the same gate for position, quarantine, amounts, and current ownership.</figcaption>
+</figure>
+
+[Compare the three billing designs in the interactive companion](/visual-companions/bluetape4k-workshop/usage-billing-evolution/)
+
+## 3. Isolate the failed scope while healthy work continues
+
+Isolation is not deletion. It separates failed work from healthy flow while retaining the evidence needed for diagnosis and
+reprocessing.
+
+- Keep a failed batch as `FAILED` with its last cursor so another owner can take it over.
+- Mark a corrupt or non-upcastable projection generation `FAILED` while the previous ACTIVE generation remains visible.
+- Record tenant, event ID, digest, schema version, and reason for a poison event in quarantine.
+- Keep an out-of-order event `DEFERRED` and create no business effect until the expected version arrives.
+- Persist a reconciliation difference as a finding and distinguish automated correction from operator approval.
+
+An isolation record should point to the immutable source with an identifier and digest. Do not treat an editable copy of the
+payload as the source. This evidence proves that a later redrive used the same original after the contract was fixed.
+
+## 4. Choose recovery from the durable evidence that remains
+
+### Transient failure: take over existing work instead of creating new work
+
+```kotlin
+val work = repository.claimExpiredOrPending(scope, ownerToken)
+
+when (work.state) {
+    PENDING, RETRY_WAIT, CLAIMED_WITH_EXPIRED_LEASE -> {
+        executeFrom(work.checkpoint)
+        repository.complete(work.id, ownerToken)
+    }
+    COMPLETED -> return work.savedResult
+    else -> keepIsolated(work)
+}
+```
+
+Owner and fencing tokens prevent a late former worker from completing the current owner's work. A broker retry sends the
+existing Outbox envelope instead of creating another event. A lost HTTP response reuses the stored result for the same
+idempotency key and fingerprint.
+
+### Permanent contract error: fix the contract, then redrive the immutable source
+
+```text
+1. Inspect the quarantine reason and original digest.
+2. Fix the decoder, upcaster, or producer contract and pass regression tests.
+3. Read the same original envelope from the external retained source.
+4. Record a redrive audit with operator, reason, and incident ID.
+5. Deliver it again so Inbox links the old quarantine to the new decision.
+6. Confirm that the error does not recur and healthy events keep advancing.
+```
+
+Editing a quarantined payload before processing breaks the link between source and recovery result. Issuing an arbitrary new
+event ID also bypasses the original deduplication and audit trail.
+
+### Consistency mismatch: distinguish replay, rebuild, and adjustment
+
+| Mechanism | Use when | Changes | Must preserve |
+|---|---|---|---|
+| Replay | The Event Store is valid and only aggregate state must be recomputed | In-memory state or a new snapshot | Source event order and hashes |
+| Projection rebuild | A read model is corrupt or its handler changed | A new projection generation | Previous ACTIVE generation, checkpoints, failed generation |
+| Append-only adjustment | A finalized charge or invoice amount must be corrected | A new adjustment and correction line | Original amount, source links, correction reason |
+
+Stop replay if an Event Store hash is invalid. First restore the history or establish a trusted backup boundary. When the
+Event Store is valid but a projection differs, do not edit source events. Build a new generation, verify it, and switch
+ACTIVE atomically.
+
+## 5. Reconciliation is the approval condition, not cleanup after recovery
+
+A successful recovery command only says the command ran. Resume approval requires evidence that independent storage
+boundaries explain the same business facts.
+
+```kotlin
+val evidence = RecoveryEvidence(
+    sourceHighWatermark = source.highWatermark(scope),
+    processedCursor = consumers.minimumCursor(scope),
+    unresolvedQuarantine = quarantine.countOpen(scope),
+    ledgerAmount = ledger.sum(scope),
+    projectionAmount = projection.sum(scope),
+    invoiceAmount = invoices.sum(scope),
+    currentFencingToken = leases.currentToken(scope),
+    observedLag = consumers.maxLag(scope),
+)
+
+require(evidence.processedCursor >= evidence.sourceHighWatermark)
+require(evidence.unresolvedQuarantine == 0L)
+require(evidence.ledgerAmount == evidence.projectionAmount)
+require(evidence.ledgerAmount == evidence.invoiceAmount)
+require(evidence.currentFencingToken == recoveryCommand.fencingToken)
+require(evidence.observedLag <= recoverySlo.maxLag)
+```
+
+Reconcile by source event ID and price version before comparing period totals. Equal totals can hide two offsetting errors.
+First prove the `usage fact → charge → invoice line → projection` chain, and then aggregate the verified records.
+
+## 6. Restore traffic in stages
+
+Passing the recovery gate does not require opening all traffic immediately.
+
+1. Resume the affected tenant or partition at a limited rate.
+2. Confirm that new `FAILED`, `DEFERRED`, quarantine, and reconciliation findings do not increase.
+3. Confirm that cursors advance and lag converges within its normal range.
+4. Reconcile once more and attach before-and-after evidence to the incident.
+5. Expand the scope gradually and record final resume time.
+
+This may look slower than restarting a service. In billing, however, preventing silent propagation of incorrect money is more
+important than a fast but unverified resume.
+
+## Actions a recovery tool must forbid
+
+| Forbidden action | Why it looks attractive | Long-term risk |
+|---|---|---|
+| Delete Outbox or quarantine rows | Backlog and error counts fall | Delivery loss and destroyed evidence |
+| Advance a checkpoint or cursor manually | Lag approaches zero immediately | Unprocessed events are skipped permanently |
+| Force failed work to `COMPLETED` | The worker moves forward | Status no longer matches the business result |
+| Edit an existing charge or invoice line | The current total appears correct | Original decision and correction cannot be explained |
+| Skip snapshot validation | Replay starts faster | Corrupt or stale state becomes the baseline |
+| Republish a poison event with a new ID | Inbox deduplication no longer blocks it | Source-to-redrive audit linkage is lost |
+
+Operations tooling should not bypass these rules. Separate inspection from mutation, and require incident ID, operator,
+reason, target scope, and fencing token for every recovery command.
+
+## Recovery cost remains in every architecture
+
+| Design | Simpler recovery boundary | Additional operational boundary |
+|---|---|---|
+| Single PostgreSQL ledger | One transaction and an explicit cursor | Long-running batches, receipt takeover, period reconciliation |
+| Event Sourcing | Rebuild state and projections from immutable events | Snapshot validation, upcasters, generation switch, replay cost |
+| Microservices | Independent deployment and fault isolation | Outbox, Inbox, lag, schema contracts, quarantine, cross-service reconciliation |
+
+The ability to reprocess does not by itself make a system recoverable. The input must be immutable, repeated effects must be
+contained, progress must be restartable, and results must be independently reconcilable.
+
+## Series conclusion
+
+- [Part 1: From Duplicate Ingestion to Resumable Close and an Immutable Ledger](/blog/usage-billing-part1-ledger-and-resumable-close/)
+- [Part 2: Event Sourcing, Replay, and Projection Operations](/blog/usage-billing-part2-event-sourcing-and-projections/)
+- [Part 3: Microservices, Outbox, and Inbox](/blog/usage-billing-part3-microservices-outbox-inbox/)
+- **Part 4: Detection, Isolation, Reprocessing, and Reconciliation**
+- [Interactive companion for the complete evolution](/visual-companions/bluetape4k-workshop/usage-billing-evolution/)
+
+The shared rule across all four parts is simple: do not rewrite source facts, resume from durable processing evidence, and
+declare completion only through independent reconciliation. The implementation changes, but this rule lets an operator
+recover from evidence instead of guessing.
+
+## Code and resources
+
+- [Ledger-based usage billing example](https://github.com/bluetape4k/bluetape4k-workshop/blob/abbf420cb6f873e6195b261a778dbf96cd5c412b/commerce/usage-metering-billing-ledger/README.md):
+  Explains receipts, price versions, close cursors, and append-only corrections.
+- [Event-sourced usage billing example](https://github.com/bluetape4k/bluetape4k-workshop/blob/abbf420cb6f873e6195b261a778dbf96cd5c412b/commerce/usage-metering-billing-event-sourcing/README.md):
+  Explains event hashes, snapshots, projection generations, and replay boundaries.
+- [Microservices composition example](https://github.com/bluetape4k/bluetape4k-workshop/blob/abbf420cb6f873e6195b261a778dbf96cd5c412b/commerce/usage-billing-microservices-composition-tests/README.md):
+  Explains Outbox, Inbox, poison events, process restart, and broker-path recovery across five services.
+- [`ReconciliationPostgresIntegrationTest.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/abbf420cb6f873e6195b261a778dbf96cd5c412b/commerce/usage-metering-billing-ledger/src/test/kotlin/io/bluetape4k/workshop/commerce/metering/application/ReconciliationPostgresIntegrationTest.kt):
+  Verifies that differences between the ledger and derived results remain explicit findings.
+- [`ProjectionRecoveryPostgresIntegrationTest.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/abbf420cb6f873e6195b261a778dbf96cd5c412b/commerce/usage-metering-billing-event-sourcing/src/test/kotlin/io/bluetape4k/workshop/commerce/metering/eventsourcing/projection/ProjectionRecoveryPostgresIntegrationTest.kt):
+  Verifies that a failed generation is never exposed and only a verified generation becomes ACTIVE.
+- [`RestartIntegrationTest.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/abbf420cb6f873e6195b261a778dbf96cd5c412b/commerce/usage-billing-microservices-composition-tests/src/test/kotlin/io/bluetape4k/workshop/commerce/usagebilling/composition/RestartIntegrationTest.kt):
+  Verifies restart from PostgreSQL Inbox, Outbox, and checkpoint state.
+- [`PoisonIntegrationTest.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/abbf420cb6f873e6195b261a778dbf96cd5c412b/commerce/usage-billing-microservices-composition-tests/src/test/kotlin/io/bluetape4k/workshop/commerce/usagebilling/composition/PoisonIntegrationTest.kt):
+  Verifies permanent contract-error isolation, healthy-event progress, and redrive auditing.
