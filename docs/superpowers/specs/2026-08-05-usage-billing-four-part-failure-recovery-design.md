@@ -82,8 +82,12 @@ Part 4는 새로운 범용 과금 Framework를 주장하지 않는다. 앞선 �
 7. Poison Event 격리, Redrive Audit과 외부 Retained Source 책임을 설명한다.
 8. 단계적 서비스 추출과 Rollback 조건을 설명한다.
 
-Part 3는 기존 통합 Visualization의 `#microservices` 화면과 연결한다. 블로그용 다크 다이어그램은 한국어·영문
-자산을 분리하고, 대표 이미지는 글자가 없는 동일 자산을 공유한다.
+Part 3는 기존 통합 Visualization의 `#microservices` 화면과 연결한다. 전체 MSA 구조는 Workshop의
+`usage-billing-service-boundaries-01`을 기준 자료로 삼아 다크 스타일의 한국어·영문 자산으로 다시 제작한다.
+이 다이어그램은 다섯 독립 서비스, 서비스별 PostgreSQL, Kafka Topic과 운영 보호선을 한 화면에서 설명한다.
+서비스 소유권 표 뒤에는 기존 Outbox·Inbox 상세 다이어그램을 유지해 로컬 기준 데이터와 전달 판정 구조를
+확대해서 보여 준다. 두 그림은 각각 `전체 실행·저장·메시징 경계`와 `서비스 내부 전달 계약`을 담당한다.
+대표 이미지는 글자가 없는 동일 자산을 공유한다.
 
 ### Part 4 — 장애 복구와 운영 검증
 
