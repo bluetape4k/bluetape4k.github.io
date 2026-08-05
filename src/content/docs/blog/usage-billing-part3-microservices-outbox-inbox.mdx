@@ -1,5 +1,5 @@
 ---
-title: "What Outbox and Inbox Must Guarantee When Usage Billing Becomes Five Services"
+title: "Usage Billing Part 3: Microservices, Outbox, and Inbox"
 description: Split usage billing ownership across Meter, Usage, Billing, Invoice, and Query services while handling duplicate delivery and partial failure with Outbox, Inbox, and quarantine.
 sidebar:
   order: -202608071200
@@ -175,10 +175,10 @@ deploys, and recovers those data boundaries independently.
 
 ## Continue the series
 
-- [Part 1: Duplicate ingestion, resumable closing, and the ledger](/blog/usage-billing-part1-ledger-and-resumable-close/)
-- [Part 2: Event Sourcing, replay, and projection operations](/blog/usage-billing-part2-event-sourcing-and-projections/)
-- **Part 3: Microservices, Outbox, and Inbox**
-- Part 4: Detection, isolation, reprocessing, and reconciliation
+- [Usage Billing Part 1: Duplicate Ingestion, Resumable Closing, and the Ledger](/blog/usage-billing-part1-ledger-and-resumable-close/)
+- [Usage Billing Part 2: Event Sourcing, Replay, and Projection Operations](/blog/usage-billing-part2-event-sourcing-and-projections/)
+- **Usage Billing Part 3: Microservices, Outbox, and Inbox**
+- Usage Billing Part 4: Detection, Isolation, Reprocessing, and Reconciliation
 - [Integrated interactive visualization](/visual-companions/bluetape4k-workshop/usage-billing-evolution/#microservices)
 
 Part 4 will combine the failure handling from all three architectures into one operational runbook: what to retry, what to
