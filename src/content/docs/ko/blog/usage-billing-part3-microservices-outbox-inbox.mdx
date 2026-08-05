@@ -23,7 +23,7 @@ blog:
 Event Store를 기준 데이터로 삼고 Replay와 Projection 재구축을 운영하는 방법을 설명했습니다.
 
 이제 가격, 사용량, 금액 산정, 청구서와 조회를 독립적으로 배포해야 한다고 가정하겠습니다. 데이터베이스를 다섯
-개로 나누는 것만으로는 충분하지 않습니다. 이전에는 한 트랜잭션 안에서 함께 Commit하던 업무 결과와 다음
+개로 나누는 것만으로는 충분하지 않습니다. 이전에는 한 트랜잭션 안에서 함께 커밋하던 업무 결과와 다음
 단계 전달을 더 이상 원자적으로 처리할 수 없기 때문입니다.
 
 이 글은 [`bluetape4k-workshop`의 사용량 과금 마이크로서비스 예제](https://github.com/bluetape4k/bluetape4k-workshop/tree/abbf420cb6f873e6195b261a778dbf96cd5c412b/commerce/usage-billing-microservices-composition-tests)를
@@ -65,7 +65,7 @@ Meter가 가격의 원본을 소유하지만 Billing은 산정할 때 Meter 데�
 서비스 내부의 Inbox·Outbox 상태와 장애 복구 절차는
 [대화형 시각 자료에서 단계별로 확인할 수 있습니다](/ko/visual-companions/bluetape4k-workshop/usage-billing-evolution/#microservices).
 
-## 업무 결과와 Outbox는 한 트랜잭션으로 Commit한다
+## 업무 결과와 Outbox는 한 트랜잭션으로 커밋한다
 
 서비스가 로컬 업무 결과를 저장한 다음 Kafka 전송에 실패하면 “업무는 성공했지만 다음 서비스는 모르는” 상태가
 됩니다. 반대로 Kafka를 먼저 전송한 다음 로컬 트랜잭션이 Rollback되면 존재하지 않는 업무 결과가 외부로
@@ -121,7 +121,7 @@ transaction {
 
 | Inbox 결과 | 의미 | 후속 처리 |
 |---|---|---|
-| `APPLIED` | 처음 본 유효 Event이며 필요한 선행 근거가 있음 | 로컬 효과와 다음 Outbox Event를 함께 Commit |
+| `APPLIED` | 처음 본 유효 Event이며 필요한 선행 근거가 있음 | 로컬 효과와 다음 Outbox Event를 함께 커밋 |
 | `DUPLICATE` | 같은 ID·같은 Digest 또는 이미 반영한 이전 Version | 새 금액을 만들지 않고 정상 종료 |
 | `DEFERRED` | 가격 근거나 이전 Aggregate Version이 아직 없음 | 누락된 선행 Event 이후 재시도 |
 | `QUARANTINED` | 같은 ID·다른 Digest 또는 영구 계약 오류 | 건강한 흐름과 분리하고 운영자 조사 대상으로 기록 |
@@ -186,7 +186,7 @@ Reconciliation을 지속해서 운영해야 합니다. 이 비용은 분산 시�
 - [사용량 과금 Part 1: 중복 수집부터 재시작 가능한 마감과 원장까지](/ko/blog/usage-billing-part1-ledger-and-resumable-close/)
 - [사용량 과금 Part 2: Event Sourcing, Replay와 Projection 운영](/ko/blog/usage-billing-part2-event-sourcing-and-projections/)
 - **사용량 과금 Part 3: 마이크로서비스, Outbox와 Inbox**
-- 사용량 과금 Part 4: 장애 탐지, 격리, 재처리와 정합성 검증
+- [사용량 과금 Part 4: 장애 탐지, 격리, 재처리와 정합성 검증](/ko/blog/usage-billing-part4-failure-recovery-and-reconciliation/)
 - [통합 대화형 시각 자료](/ko/visual-companions/bluetape4k-workshop/usage-billing-evolution/#microservices)
 
 Part 4에서는 세 구조의 장애 대응을 하나의 운영 Runbook으로 묶습니다. 어떤 장애를 자동 재시도하고, 무엇을
