@@ -34,7 +34,11 @@ async function assertAssetPair(asset, file) {
     `${file}: missing PNG ${asset}`,
   );
   const stem = asset.replace(/-(?:en|ko)\.png$/, '');
-  if (stem === 'blog/usage-billing/part1/usage-billing-ledger-01') {
+  const visualCompanionFallbacks = new Set([
+    'blog/usage-billing/part1/usage-billing-ledger-01',
+    'blog/usage-billing/part2/usage-billing-event-sourcing-01',
+  ]);
+  if (visualCompanionFallbacks.has(stem)) {
     for (const locale of ['en', 'ko']) {
       const counterpart = `${stem}-${locale}.png`;
       await assert.doesNotReject(
@@ -78,7 +82,7 @@ test('blog technical diagrams use explicit locale assets with matching SVG sourc
     }
   }
 
-  assert.equal(stems.size, 174);
+  assert.equal(stems.size, 175);
 });
 
 test('paired English and Korean posts reference the same technical diagram stems', async () => {
