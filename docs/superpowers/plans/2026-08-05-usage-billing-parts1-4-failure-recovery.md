@@ -88,24 +88,37 @@
 
 **Files:**
 - Create: `public/assets/blog/usage-billing/part3/usage-billing-part3-hero.png`
+- Create: `public/assets/blog/usage-billing/part3/usage-billing-service-boundaries-01-ko.svg`
+- Create: `public/assets/blog/usage-billing/part3/usage-billing-service-boundaries-01-ko.png`
+- Create: `public/assets/blog/usage-billing/part3/usage-billing-service-boundaries-01-en.svg`
+- Create: `public/assets/blog/usage-billing/part3/usage-billing-service-boundaries-01-en.png`
 - Create: `public/assets/blog/usage-billing/part3/usage-billing-microservices-01-ko.png`
 - Create: `public/assets/blog/usage-billing/part3/usage-billing-microservices-01-en.png`
 
-- [ ] **Step 1: 로케일별 기존 마이크로서비스 다크 자산을 독립 경로로 복사한다**
+- [ ] **Step 1: Workshop 서비스 경계도를 전체 MSA 다이어그램으로 다시 제작한다**
 
-  한국어와 영문 PNG를 각각 배치하고 MDX의 `data-diagram-title`, `alt`, `figcaption`을 로케일에 맞게 작성한다.
+  `docs/images/readme-diagrams/usage-billing-service-boundaries-01`의 서비스·데이터베이스·Topic·운영 보호선 구조를
+  유지하되, 블로그의 다크 스타일과 로케일별 기술 문구를 적용한다. 한국어에서는 `권위` 같은 번역체를
+  `기준 데이터`로 바로잡는다. SVG 원본과 CairoSVG로 렌더링한 PNG를 함께 제공한다.
 
-- [ ] **Step 2: Part 3 대표 이미지를 글자 없는 다크 시각 언어로 생성한다**
+- [ ] **Step 2: 기존 마이크로서비스 상세 다이어그램을 서비스 내부 전달 계약으로 유지한다**
+
+  전체 MSA 다이어그램은 서비스 소유권 표 앞에, 기존 Outbox·Inbox 다이어그램은 표 뒤에 배치한다. 두 그림의
+  `data-diagram-title`, `alt`, `figcaption`은 서로 다른 질문에 답하도록 로케일에 맞게 작성한다.
+
+- [ ] **Step 3: Part 3 대표 이미지를 글자 없는 다크 시각 언어로 생성한다**
 
   다섯 서비스, 메시지 전달, 격리된 실패 Event를 상징하되 본문 다이어그램을 복제하지 않는다.
 
-- [ ] **Step 3: 대화형 시각 자료의 `#microservices` 화면으로 연결한다**
+- [ ] **Step 4: 대화형 시각 자료의 `#microservices` 화면으로 연결한다**
 
   한국어는 `/ko/visual-companions/.../#microservices`, 영어는 `/visual-companions/.../#microservices`를 사용한다.
 
-- [ ] **Step 4: Part 3 전달 단위를 검증하고 커밋한다**
+- [ ] **Step 5: Part 3 전달 단위를 검증하고 커밋한다**
 
-  대상 테스트, 전체 `npm test`, `npm run build`, `git diff --check`를 실행한 뒤 `docs/usage-billing-part3` 브랜치에 Lore 형식으로 커밋한다.
+  로케일별 SVG에 XML, 글꼴, Connector, Geometry, Endpoint, Mixed-corner 검사를 적용하고 PNG를 원본 크기로
+  확인한다. 이어서 대상 테스트, 전체 `npm test`, `npm run build`, `git diff --check`를 실행한 뒤
+  `docs/usage-billing-part3` 브랜치에 Lore 형식으로 커밋한다.
 
 ### Task 4: Part 4 장애 복구 종합 글 작성
 
@@ -222,4 +235,3 @@
 - [ ] **Step 6: Part 4 전달 단위를 커밋하고 배포 대기 상태를 기록한다**
 
   `docs/usage-billing-part4`에 Lore 형식으로 커밋하되 PR 생성, 병합, 배포는 수행하지 않는다. Part 2·3·4의 권장 공개 순서와 최소 하루 간격을 DoD에 기록한다.
-
