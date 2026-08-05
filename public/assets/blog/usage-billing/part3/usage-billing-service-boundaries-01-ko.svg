@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 920" width="1400" height="920" role="img" aria-labelledby="title desc">
+  <title id="title">Usage Billing 서비스 경계</title>
+  <desc id="desc">Meter, Usage, Billing, Invoice, Query 서비스가 각자 PostgreSQL을 소유하고 Kafka Topic으로 Event를 전달하는 구조와 운영 보호선</desc>
+  <defs>
+    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#17324a" stroke-width="1" opacity="0.42"/></pattern>
+    <marker id="arrow-publish" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1L13 7L1 13Z" fill="#34d399"/></marker>
+    <marker id="arrow-deliver" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1L13 7L1 13Z" fill="#38bdf8"/></marker>
+    <filter id="shadow" x="-15%" y="-15%" width="130%" height="145%"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#020617" flood-opacity="0.55"/></filter>
+    <style>
+      .title{font-family:'goorm Sans';font-size:36px;font-weight:700;fill:#f8fafc}.subtitle{font-family:'goorm Sans Code';font-size:16px;fill:#94a3b8}.service{font-family:'goorm Sans';font-size:24px;font-weight:700;fill:#f8fafc}.body{font-family:'goorm Sans';font-size:15px;fill:#cbd5e1}.small{font-family:'goorm Sans';font-size:13px;fill:#94a3b8}.code{font-family:'goorm Sans Code';font-size:13px;fill:#e2e8f0}.topic{font-family:'goorm Sans Code';font-size:13px;font-weight:700;fill:#ddd6fe}.band{font-family:'goorm Sans';font-size:22px;font-weight:700;fill:#f8fafc}.legend{font-family:'goorm Sans';font-size:14px;fill:#cbd5e1}.foot{font-family:'goorm Sans';font-size:14px;fill:#94a3b8}.card{fill:#111f34;stroke:#476581;stroke-width:1.8}.query{fill:#152642;stroke:#38bdf8}.db{fill:#0b1728;stroke:#334155}.guard{fill:#0c1a2c;stroke:#334155}.connector{fill:none;stroke-width:3}.publish{stroke:#34d399}.deliver{stroke:#38bdf8;stroke-dasharray:9 7}
+    </style>
+  </defs>
+  <rect width="1400" height="920" fill="#071423"/><rect width="1400" height="920" fill="url(#grid)"/>
+  <text x="700" y="54" text-anchor="middle" class="title">Usage Billing 서비스 경계</text>
+  <text x="700" y="84" text-anchor="middle" class="subtitle">서비스별 기준 데이터 + Outbox/Inbox + Kafka at-least-once 전달</text>
+
+  <g filter="url(#shadow)">
+    <rect class="card" data-node-id="meter" x="40" y="135" width="220" height="215" rx="16"/>
+    <rect class="card" data-node-id="usage" x="310" y="135" width="220" height="215" rx="16"/>
+    <rect class="card" data-node-id="billing" x="580" y="135" width="220" height="215" rx="16"/>
+    <rect class="card" data-node-id="invoice" x="850" y="135" width="220" height="215" rx="16"/>
+    <rect class="card query" data-node-id="query" x="1120" y="135" width="220" height="215" rx="16"/>
+  </g>
+  <text x="150" y="174" text-anchor="middle" class="service">Meter</text><text x="62" y="204" class="body">가격 기준 데이터</text>
+  <rect class="db" x="62" y="221" width="176" height="40" rx="9"/><text x="150" y="246" text-anchor="middle" class="code">PostgreSQL</text>
+  <text x="62" y="290" class="small">outbox</text><text x="62" y="313" class="code">meter.events.v1</text><text x="62" y="335" class="small">inbox: —</text>
+  <text x="420" y="174" text-anchor="middle" class="service">Usage</text><text x="332" y="204" class="body">접수한 사용량</text>
+  <rect class="db" x="332" y="221" width="176" height="40" rx="9"/><text x="420" y="246" text-anchor="middle" class="code">PostgreSQL</text>
+  <text x="332" y="290" class="small">inbox: 가격 근거</text><text x="332" y="313" class="small">outbox</text><text x="332" y="335" class="code">usage.events.v1</text>
+  <text x="690" y="174" text-anchor="middle" class="service">Billing</text><text x="602" y="204" class="body">산정한 청구 금액</text>
+  <rect class="db" x="602" y="221" width="176" height="40" rx="9"/><text x="690" y="246" text-anchor="middle" class="code">PostgreSQL</text>
+  <text x="602" y="290" class="small">inbox: meter + usage</text><text x="602" y="313" class="small">outbox</text><text x="602" y="335" class="code">billing.events.v1</text>
+  <text x="960" y="174" text-anchor="middle" class="service">Invoice</text><text x="872" y="204" class="body">추가 전용 청구 항목</text>
+  <rect class="db" x="872" y="221" width="176" height="40" rx="9"/><text x="960" y="246" text-anchor="middle" class="code">PostgreSQL</text>
+  <text x="872" y="290" class="small">inbox: billing</text><text x="872" y="313" class="small">outbox</text><text x="872" y="335" class="code">invoice.events.v1</text>
+  <text x="1230" y="174" text-anchor="middle" class="service">Query</text><text x="1142" y="204" class="body">조회 모델 + 복구</text>
+  <rect class="db" x="1142" y="221" width="176" height="40" rx="9"/><text x="1230" y="246" text-anchor="middle" class="code">PostgreSQL</text>
+  <text x="1142" y="290" class="small">inbox: 모든 공개 Topic</text><text x="1142" y="313" class="small">checkpoint + quarantine</text><text x="1142" y="335" class="small">조회 API + 운영자 redrive</text>
+
+  <rect class="card" data-node-id="kafka" x="30" y="430" width="1340" height="112" rx="18"/>
+  <text x="700" y="463" text-anchor="middle" class="band">Kafka Event 경계</text>
+  <g class="code"><rect x="55" y="484" width="300" height="36" rx="18" fill="#241f45" stroke="#7c3aed"/><rect x="375" y="484" width="300" height="36" rx="18" fill="#241f45" stroke="#7c3aed"/><rect x="695" y="484" width="300" height="36" rx="18" fill="#241f45" stroke="#7c3aed"/><rect x="1015" y="484" width="300" height="36" rx="18" fill="#241f45" stroke="#7c3aed"/>
+  <text x="205" y="507" text-anchor="middle" class="topic">meter.events.v1</text><text x="525" y="507" text-anchor="middle" class="topic">usage.events.v1</text><text x="845" y="507" text-anchor="middle" class="topic">billing.events.v1</text><text x="1165" y="507" text-anchor="middle" class="topic">invoice.events.v1</text></g>
+  <path data-connector="meter-publish" class="connector publish" d="M105 350V430" marker-end="url(#arrow-publish)"/><path data-connector="usage-publish" class="connector publish" d="M375 350V430" marker-end="url(#arrow-publish)"/><path data-connector="billing-publish" class="connector publish" d="M645 350V430" marker-end="url(#arrow-publish)"/><path data-connector="invoice-publish" class="connector publish" d="M915 350V430" marker-end="url(#arrow-publish)"/>
+  <path data-connector="usage-deliver" class="connector deliver" d="M465 430V350" marker-end="url(#arrow-deliver)"/><path data-connector="billing-deliver" class="connector deliver" d="M735 430V350" marker-end="url(#arrow-deliver)"/><path data-connector="invoice-deliver" class="connector deliver" d="M1005 430V350" marker-end="url(#arrow-deliver)"/><path data-connector="query-deliver" class="connector deliver" d="M1275 430V350" marker-end="url(#arrow-deliver)"/>
+
+  <rect class="card" x="30" y="590" width="1340" height="205" rx="18"/><text x="700" y="628" text-anchor="middle" class="band">운영 보호선</text>
+  <rect class="guard" x="60" y="652" width="390" height="96" rx="13"/><rect class="guard" x="505" y="652" width="390" height="96" rx="13"/><rect class="guard" x="950" y="652" width="390" height="96" rx="13"/>
+  <text x="82" y="683" class="service" font-size="20">로컬 트랜잭션</text><text x="82" y="712" class="body">업무 결과 + Outbox를 함께 커밋</text><text x="82" y="736" class="small">공유 데이터베이스와 XA 없음</text>
+  <text x="527" y="683" class="service" font-size="20">At-least-once 전달</text><text x="527" y="712" class="body">Lease · 재시도 대기 · 중복 Inbox</text><text x="527" y="736" class="small">Digest 충돌은 Quarantine</text>
+  <text x="972" y="683" class="service" font-size="20">Query 경계</text><text x="972" y="712" class="body">Projection · Checkpoint · Audit</text><text x="972" y="736" class="small">테넌트 조회 · 운영자 복구</text>
+  <line x1="60" y1="842" x2="106" y2="842" class="connector publish" marker-end="url(#arrow-publish)"/><text x="120" y="848" class="legend">로컬 Outbox에서 발행</text>
+  <line x1="360" y1="842" x2="406" y2="842" class="connector deliver" marker-end="url(#arrow-deliver)"/><text x="420" y="848" class="legend">로컬 Inbox로 전달</text>
+  <text x="700" y="888" text-anchor="middle" class="foot">다섯 PostgreSQL이 서비스별 기준 데이터를 소유하며, Kafka는 전달 수단일 뿐 재무 기준 데이터가 아닙니다.</text>
+</svg>

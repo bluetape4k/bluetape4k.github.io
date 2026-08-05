@@ -34,8 +34,12 @@ test('usage billing articles link each locale to the matching visualization stag
   assert.match(part3En, /\/visual-companions\/bluetape4k-workshop\/usage-billing-evolution\/#microservices/);
   assert.match(part3Ko, /usage-billing-microservices-01-ko\.png/);
   assert.match(part3En, /usage-billing-microservices-01-en\.png/);
+  assert.match(part3Ko, /usage-billing-service-boundaries-01-ko\.png/);
+  assert.match(part3En, /usage-billing-service-boundaries-01-en\.png/);
   assert.doesNotMatch(part3Ko, /usage-billing-microservices-01-en\.png/);
   assert.doesNotMatch(part3En, /usage-billing-microservices-01-ko\.png/);
+  assert.doesNotMatch(part3Ko, /usage-billing-service-boundaries-01-en\.png/);
+  assert.doesNotMatch(part3En, /usage-billing-service-boundaries-01-ko\.png/);
 });
 
 test('usage billing publication contains every locale and theme fallback', async () => {
@@ -60,6 +64,10 @@ test('usage billing publication contains every locale and theme fallback', async
     exists('public/assets/blog/usage-billing/part2/usage-billing-part2-hero.png'),
     exists('public/assets/blog/usage-billing/part3/usage-billing-microservices-01-en.png'),
     exists('public/assets/blog/usage-billing/part3/usage-billing-microservices-01-ko.png'),
+    exists('public/assets/blog/usage-billing/part3/usage-billing-service-boundaries-01-en.svg'),
+    exists('public/assets/blog/usage-billing/part3/usage-billing-service-boundaries-01-en.png'),
+    exists('public/assets/blog/usage-billing/part3/usage-billing-service-boundaries-01-ko.svg'),
+    exists('public/assets/blog/usage-billing/part3/usage-billing-service-boundaries-01-ko.png'),
     exists('public/assets/blog/usage-billing/part3/usage-billing-part3-hero.png'),
     exists('public/visual-companions/bluetape4k-workshop/usage-billing-evolution/index.html'),
     exists('public/ko/visual-companions/bluetape4k-workshop/usage-billing-evolution/index.html'),
