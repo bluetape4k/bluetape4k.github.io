@@ -1,0 +1,194 @@
+---
+title: "What Outbox and Inbox Must Guarantee When Usage Billing Becomes Five Services"
+description: Split usage billing ownership across Meter, Usage, Billing, Invoice, and Query services while handling duplicate delivery and partial failure with Outbox, Inbox, and quarantine.
+sidebar:
+  order: -202608071200
+blog:
+  date: 2026-08-07T12:00:00+09:00
+  image: /assets/blog/usage-billing/part3/usage-billing-part3-hero.png
+  imageAlt: A dark 3D workbench where five services own separate data stores, duplicate messages are absorbed, and malformed messages are diverted into isolation
+  cardDescription: "Follow service-owned data, local transactions with Outbox, Inbox decisions, version gaps, and poison-event recovery through one billing flow."
+  tags: ["architecture","billing","event-driven","kafka","kotlin","microservices","postgresql","resilience","spring"]
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/blog/usage-billing/part3/usage-billing-part3-hero.png" alt="A dark 3D workbench where five services own separate data stores, duplicate messages are absorbed, and malformed messages are diverted into isolation" loading="eager" />
+  <figcaption>Splitting a transaction across services turns delivery and deduplication into explicit operational contracts.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-07 · Usage Billing · Part 3</p>
+
+[Part 1](/blog/usage-billing-part1-ledger-and-resumable-close/) kept idempotency, occurrence-time pricing, resumable close,
+and the immutable ledger in one PostgreSQL database. [Part 2](/blog/usage-billing-part2-event-sourcing-and-projections/)
+made the Event Store the system of record and explained replay and projection rebuilding.
+
+Now assume pricing, usage acceptance, rating, invoicing, and queries must deploy independently. Five databases alone do not
+solve the problem. A business effect and the notification that triggers the next service can no longer share one database
+transaction.
+
+This article uses the
+[`bluetape4k-workshop` usage-billing microservice composition](https://github.com/bluetape4k/bluetape4k-workshop/tree/abbf420cb6f873e6195b261a778dbf96cd5c412b/commerce/usage-billing-microservices-composition-tests)
+to explain service ownership, Outbox and Inbox, at-least-once delivery, reordered versions, and poison-event recovery. It does
+not claim end-to-end exactly once. It ensures that each service retains enough durable evidence to detect and recover from
+duplicates and partial failure.
+
+## Split by data ownership, not by feature count
+
+Each service owns its PostgreSQL database and integration decoder. No service reads another service's tables.
+
+| Service | Durable system of record | Input | Published fact |
+|---|---|---|---|
+| Meter | Immutable price versions and command receipts | `ActivatePriceCommand` | `PriceActivated` |
+| Usage | Usage facts and accepted price evidence | `PriceActivated`, `AcceptUsageCommand` | `UsageAccepted` |
+| Billing | Replicated price evidence and immutable charges | `PriceActivated`, `UsageAccepted` | `ChargeRated`, `AdjustmentPosted`, `BillingPeriodClosed` |
+| Invoice | Immutable invoice lines and source-event links | `ChargeRated`, `AdjustmentPosted` | `InvoiceIssued`, `InvoiceCorrectionIssued` |
+| Query | Inbox, projections, checkpoints, quarantine, redrive audit | Public events from the other services | Tenant summaries and recovery diagnostics |
+
+Meter owns original prices, but Billing does not query Meter synchronously while rating usage. It consumes `PriceActivated`,
+stores local evidence, and rates only from that evidence. This prevents a temporary network fault from enclosing the entire
+billing operation, while adding responsibility for delayed or missing replicas.
+
+<figure
+  class="bt4k-architecture"
+  data-diagram-title="Data ownership and delivery boundaries across five billing services"
+>
+  <img src="/assets/blog/usage-billing/part3/usage-billing-microservices-01-en.png" alt="Meter, Usage, Billing, Invoice, and Query services each own PostgreSQL and exchange events through Kafka" loading="lazy" />
+  <figcaption>The services do not share databases. Each decides delivery outcomes from its local durable evidence when Kafka is delayed or repeats a record.</figcaption>
+</figure>
+
+[Explore the microservice stage in the interactive visualization](/visual-companions/bluetape4k-workshop/usage-billing-evolution/#microservices)
+
+## Commit the local effect and Outbox together
+
+Writing local state and then failing to send to Kafka leaves the next service unaware of a successful operation. Sending first
+and then rolling back local state publishes a fact that never existed. The Outbox closes this gap by committing the business
+effect and its event in one local transaction.
+
+```kotlin
+transaction {
+    receipt = commandReceipts.acquire(command.idempotencyKey, command.fingerprint)
+    if (receipt is Replay) return receipt.savedResult
+
+    priceVersion = prices.append(command)
+    envelope = PriceActivated.from(priceVersion)
+    outbox.append(envelope, state = PENDING)
+    commandReceipts.complete(receipt.ownerToken, resultFor(priceVersion))
+}
+```
+
+The publisher claims a `PENDING` row with a lease and owner token, sends it, and records `PUBLISHED` only with that token. A
+transport failure moves it to `RETRY_WAIT`. If Kafka accepts the event immediately before the process stops, the local row may
+remain `CLAIMED`; its lease expires and the same event is sent again. Duplicate delivery is the normal recovery path.
+
+## Inbox distinguishes a duplicate from a conflict
+
+A consumer decides `(tenantId, eventId, payloadDigest)` before changing business data.
+
+```kotlin
+transaction {
+    decision = inbox.decide(
+        tenantId = envelope.tenantId,
+        eventId = envelope.eventId,
+        payloadDigest = envelope.payloadDigest,
+        aggregateVersion = envelope.aggregateVersion,
+    )
+
+    when (decision) {
+        APPLIED -> {
+            localEffect.apply(envelope)
+            outbox.append(nextEvent(envelope))
+        }
+        DUPLICATE -> Unit
+        DEFERRED -> scheduleAfterMissingVersion(envelope)
+        QUARANTINED -> recordPermanentFailure(envelope)
+    }
+}
+```
+
+The same ID and digest is `DUPLICATE`; it can complete successfully without applying money twice. The same ID with a different
+digest is a correctness conflict: either the producer reused an identity for different content or the payload changed in
+transit. It must be `QUARANTINED`.
+
+| Inbox result | Meaning | Next action |
+|---|---|---|
+| `APPLIED` | First valid event with all prerequisites | Commit the local effect and next Outbox event together |
+| `DUPLICATE` | Same ID and digest, or an already applied older version | Finish without creating new money |
+| `DEFERRED` | Price evidence or a prior aggregate version is missing | Retry after the prerequisite arrives |
+| `QUARANTINED` | Same ID with another digest, or a permanent contract error | Isolate it from healthy traffic and record an operator case |
+
+## Wait for reordered versions instead of guessing
+
+Kafka can preserve order for a key within a partition, but it cannot prove ordering across every redrive, topic migration, and
+operator action. When aggregate version 2 reaches Billing before version 1, the example returns `DEFERRED`; it does not rate
+with guessed state.
+
+After the missing version arrives, the same Inbox record can be decided again. Skipping a version or rating with the current
+price removes the evidence needed to determine which amount is correct later. Observe aggregate key, expected version, received
+version, and gap age together.
+
+## Route transient faults and permanent contract errors differently
+
+If every exception is retried through Kafka, one unprocessable event can block a partition forever. If every exception is
+quarantined, a temporary database outage becomes a manual incident.
+
+| Failure | Classification | Automatic protection | Recovery |
+|---|---|---|---|
+| Kafka send failure or temporary database error | Transient | Preserve Outbox as `RETRY_WAIT` or propagate for redelivery | Retry the same event from local durable state |
+| Service process restart | Transient | Preserve Inbox, Outbox, pricing evidence, and checkpoint in PostgreSQL | Resume after lease expiry from persisted state |
+| Aggregate version gap | Ordering wait | Block rating as `DEFERRED` | Re-evaluate after the prior version arrives |
+| Unsupported event type or schema, missing required field | Permanent contract error | Quarantine the event while unrelated valid records continue | Repair decoder, upcaster, or producer contract, then redrive |
+| Same event ID with another digest | Consistency conflict | Isolate before applying the business effect | Compare the producer record with an external retained source |
+
+Query's redrive API does not edit or recreate the source event. It records the operator, correlation ID, and requested action.
+An external retained source must provide the immutable original envelope for actual replay. This prevents a “recovery” from
+rewriting a financial fact.
+
+## Delivery success is not the recovery gate
+
+An empty Outbox after broker connectivity returns is insufficient. Verify the complete boundary:
+
+1. Identify the affected topics, tenants, aggregate keys, and event IDs.
+2. Inspect each service's Outbox backlog, oldest retry, Inbox result, and quarantine reason.
+3. Retry transient faults with the existing Outbox row and envelope; isolate permanent faults from healthy events.
+4. Verify that every deferred version gap closes and checkpoints reach the target position.
+5. Reconcile Usage facts, Billing charges, Invoice lines, and Query totals by source event ID.
+6. Declare recovery complete only after quarantine and redrive audit are closed and new lag remains within its target.
+
+Do not delete Outbox rows to make the backlog zero, edit Inbox state to `APPLIED`, or mutate charges and invoice lines. When
+money needs correction, append `AdjustmentPosted` and a new invoice correction line linked to the original event.
+
+## Microservices are close to the last option
+
+If independent deployment, ownership, and scaling boundaries are not required, Part 1's single PostgreSQL ledger is simpler.
+If historical replay and multiple projections matter without service separation, Part 2 may be the better fit.
+
+Five services require the team to operate topics, lag, schema compatibility, Outbox, Inbox, quarantine, redrive, and
+cross-service reconciliation. Distribution does not justify that cost by itself. Choose it when the organization truly owns,
+deploys, and recovers those data boundaries independently.
+
+## Continue the series
+
+- [Part 1: Duplicate ingestion, resumable closing, and the ledger](/blog/usage-billing-part1-ledger-and-resumable-close/)
+- [Part 2: Event Sourcing, replay, and projection operations](/blog/usage-billing-part2-event-sourcing-and-projections/)
+- **Part 3: Microservices, Outbox, and Inbox**
+- Part 4: Detection, isolation, reprocessing, and reconciliation
+- [Integrated interactive visualization](/visual-companions/bluetape4k-workshop/usage-billing-evolution/#microservices)
+
+Part 4 will combine the failure handling from all three architectures into one operational runbook: what to retry, what to
+isolate, when to replay, rebuild, or adjust, and which evidence permits traffic to resume.
+
+## Implementation and related resources
+
+- [Usage-billing microservice composition README](https://github.com/bluetape4k/bluetape4k-workshop/blob/abbf420cb6f873e6195b261a778dbf96cd5c412b/commerce/usage-billing-microservices-composition-tests/README.md):
+  Service ownership, staged extraction, executable failure scenarios, and their operational meaning.
+- [`MeterCommandService.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/abbf420cb6f873e6195b261a778dbf96cd5c412b/commerce/usage-billing-meter-service/src/main/kotlin/io/bluetape4k/workshop/commerce/usagebilling/meter/application/MeterCommandService.kt):
+  Commits price version, command receipt, and Outbox in one local transaction.
+- [`BillingInboxService.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/abbf420cb6f873e6195b261a778dbf96cd5c412b/commerce/usage-billing-billing-service/src/main/kotlin/io/bluetape4k/workshop/commerce/usagebilling/billing/application/BillingInboxService.kt):
+  Decides duplicates, digest conflicts, version gaps, and local charge creation.
+- [`QueryRecoveryService.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/abbf420cb6f873e6195b261a778dbf96cd5c412b/commerce/usage-billing-query-service/src/main/kotlin/io/bluetape4k/workshop/commerce/usagebilling/query/application/QueryRecoveryService.kt):
+  Shows the audited redrive request boundary without mutating source events.
+- [`BrokerPathRecoveryIntegrationTest.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/abbf420cb6f873e6195b261a778dbf96cd5c412b/commerce/usage-billing-microservices-composition-tests/src/test/kotlin/io/bluetape4k/workshop/commerce/usagebilling/composition/BrokerPathRecoveryIntegrationTest.kt):
+  Cuts the single-broker TCP path with Toxiproxy and verifies delivery of the same Outbox row after recovery.
+- [`PoisonIntegrationTest.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/abbf420cb6f873e6195b261a778dbf96cd5c412b/commerce/usage-billing-microservices-composition-tests/src/test/kotlin/io/bluetape4k/workshop/commerce/usagebilling/composition/PoisonIntegrationTest.kt):
+  Verifies permanent-error isolation, continued healthy processing, and redrive auditing.
+
