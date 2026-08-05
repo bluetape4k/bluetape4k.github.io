@@ -1,5 +1,5 @@
 ---
-title: "Recovering Usage Billing: Detection, Isolation, Reprocessing, and Reconciliation"
+title: "Usage Billing Part 4: Detection, Isolation, Reprocessing, and Reconciliation"
 description: Learn how to scope a billing incident, choose retry, replay, rebuild, or adjustment, and approve recovery only after reconciling ledger, event, projection, and service boundaries.
 sidebar:
   order: -202608081200
@@ -226,10 +226,10 @@ contained, progress must be restartable, and results must be independently recon
 
 ## Series conclusion
 
-- [Part 1: From Duplicate Ingestion to Resumable Close and an Immutable Ledger](/blog/usage-billing-part1-ledger-and-resumable-close/)
-- [Part 2: Event Sourcing, Replay, and Projection Operations](/blog/usage-billing-part2-event-sourcing-and-projections/)
-- [Part 3: Microservices, Outbox, and Inbox](/blog/usage-billing-part3-microservices-outbox-inbox/)
-- **Part 4: Detection, Isolation, Reprocessing, and Reconciliation**
+- [Usage Billing Part 1: Duplicate Ingestion, Resumable Closing, and the Ledger](/blog/usage-billing-part1-ledger-and-resumable-close/)
+- [Usage Billing Part 2: Event Sourcing, Replay, and Projection Operations](/blog/usage-billing-part2-event-sourcing-and-projections/)
+- [Usage Billing Part 3: Microservices, Outbox, and Inbox](/blog/usage-billing-part3-microservices-outbox-inbox/)
+- **Usage Billing Part 4: Detection, Isolation, Reprocessing, and Reconciliation**
 - [Interactive companion for the complete evolution](/visual-companions/bluetape4k-workshop/usage-billing-evolution/)
 
 The shared rule across all four parts is simple: do not rewrite source facts, resume from durable processing evidence, and
