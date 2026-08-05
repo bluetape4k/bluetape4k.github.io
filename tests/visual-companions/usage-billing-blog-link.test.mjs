@@ -22,6 +22,33 @@ test('usage billing articles link each locale to the matching visualization stag
   assert.match(part2En, /title: "Usage Billing Part 2: Event Sourcing, Replay, and Projection Operations"/);
   assert.match(part3Ko, /title: "사용량 과금 Part 3: 마이크로서비스, Outbox와 Inbox"/);
   assert.match(part3En, /title: "Usage Billing Part 3: Microservices, Outbox, and Inbox"/);
+  assert.match(part4Ko, /title: "사용량 과금 Part 4: 장애 탐지, 격리, 재처리와 정합성 검증"/);
+  assert.match(part4En, /title: "Usage Billing Part 4: Detection, Isolation, Reprocessing, and Reconciliation"/);
+
+  const koreanSeriesTitles = [
+    '사용량 과금 Part 1: 중복 수집부터 재시작 가능한 마감과 원장까지',
+    '사용량 과금 Part 2: Event Sourcing, Replay와 Projection 운영',
+    '사용량 과금 Part 3: 마이크로서비스, Outbox와 Inbox',
+    '사용량 과금 Part 4: 장애 탐지, 격리, 재처리와 정합성 검증',
+  ];
+  const englishSeriesTitles = [
+    'Usage Billing Part 1: Duplicate Ingestion, Resumable Closing, and the Ledger',
+    'Usage Billing Part 2: Event Sourcing, Replay, and Projection Operations',
+    'Usage Billing Part 3: Microservices, Outbox, and Inbox',
+    'Usage Billing Part 4: Detection, Isolation, Reprocessing, and Reconciliation',
+  ];
+
+  for (const article of [part1Ko, part2Ko, part3Ko, part4Ko]) {
+    for (const title of koreanSeriesTitles) {
+      assert.ok(article.includes(title), `Korean series navigation is missing: ${title}`);
+    }
+  }
+  for (const article of [part1En, part2En, part3En, part4En]) {
+    for (const title of englishSeriesTitles) {
+      assert.ok(article.includes(title), `English series navigation is missing: ${title}`);
+    }
+  }
+
   assert.match(part1Ko, /\/ko\/visual-companions\/bluetape4k-workshop\/usage-billing-evolution\/#ledger/);
   assert.match(part1En, /\/visual-companions\/bluetape4k-workshop\/usage-billing-evolution\/#ledger/);
   assert.match(part1Ko, /\/ko\/blog\/usage-billing-part2-event-sourcing-and-projections\//);

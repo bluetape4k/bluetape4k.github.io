@@ -1,5 +1,5 @@
 ---
-title: "사용량 과금 장애 복구: 탐지, 격리, 재처리와 정합성 검증"
+title: "사용량 과금 Part 4: 장애 탐지, 격리, 재처리와 정합성 검증"
 description: 원장형, Event Sourcing, 마이크로서비스 과금에서 장애 범위를 식별하고 재시도·Replay·Rebuild·보정을 선택한 뒤 정합성 검증으로 재개를 승인하는 운영 절차를 설명합니다.
 sidebar:
   order: -202608081200
@@ -20,7 +20,7 @@ blog:
 
 [Part 1](/ko/blog/usage-billing-part1-ledger-and-resumable-close/)은 단일 PostgreSQL 원장에서 중복 수집과 재시작 가능한
 마감을 다뤘습니다. [Part 2](/ko/blog/usage-billing-part2-event-sourcing-and-projections/)는 Event Store에서
-Projection을 다시 만드는 방법을, [Part 3](/ko/blog/usage-billing-part3-microservices-outbox-inbox/)는 다섯
+Projection을 다시 만드는 방법을, [Part 3](/ko/blog/usage-billing-part3-microservices-outbox-inbox/)는 다섯 개
 서비스가 Outbox와 Inbox로 부분 실패를 다루는 방법을 설명했습니다.
 
 세 설계의 저장 구조는 다르지만 운영자가 답해야 할 질문은 같습니다. 어디까지 처리되었는가, 무엇이 기준
@@ -227,10 +227,10 @@ require(evidence.observedLag <= recoverySlo.maxLag)
 
 ## 시리즈 마무리
 
-- [Part 1: 중복 수집부터 재시작 가능한 마감과 원장까지](/ko/blog/usage-billing-part1-ledger-and-resumable-close/)
-- [Part 2: Event Sourcing, Replay와 Projection 운영](/ko/blog/usage-billing-part2-event-sourcing-and-projections/)
-- [Part 3: 마이크로서비스, Outbox와 Inbox](/ko/blog/usage-billing-part3-microservices-outbox-inbox/)
-- **Part 4: 장애 탐지, 격리, 재처리와 정합성 검증**
+- [사용량 과금 Part 1: 중복 수집부터 재시작 가능한 마감과 원장까지](/ko/blog/usage-billing-part1-ledger-and-resumable-close/)
+- [사용량 과금 Part 2: Event Sourcing, Replay와 Projection 운영](/ko/blog/usage-billing-part2-event-sourcing-and-projections/)
+- [사용량 과금 Part 3: 마이크로서비스, Outbox와 Inbox](/ko/blog/usage-billing-part3-microservices-outbox-inbox/)
+- **사용량 과금 Part 4: 장애 탐지, 격리, 재처리와 정합성 검증**
 - [통합 대화형 시각 자료](/ko/visual-companions/bluetape4k-workshop/usage-billing-evolution/)
 
 네 편의 공통 원칙은 간단합니다. 과금의 원본 사실을 변경하지 않고, 각 처리 단계가 남긴 기준 데이터에서 작업을
@@ -244,7 +244,7 @@ require(evidence.observedLag <= recoverySlo.maxLag)
 - [Event Sourcing 사용량 과금 예제](https://github.com/bluetape4k/bluetape4k-workshop/blob/abbf420cb6f873e6195b261a778dbf96cd5c412b/commerce/usage-metering-billing-event-sourcing/README.ko.md):
   Event Hash, Snapshot, Projection Generation과 Replay 복구 경계를 설명합니다.
 - [마이크로서비스 통합 예제](https://github.com/bluetape4k/bluetape4k-workshop/blob/abbf420cb6f873e6195b261a778dbf96cd5c412b/commerce/usage-billing-microservices-composition-tests/README.ko.md):
-  다섯 서비스의 Outbox·Inbox, Poison Event, 재시작과 Broker 경로 복구를 설명합니다.
+  다섯 개 서비스의 Outbox·Inbox, Poison Event, 재시작과 Broker 경로 복구를 설명합니다.
 - [`ReconciliationPostgresIntegrationTest.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/abbf420cb6f873e6195b261a778dbf96cd5c412b/commerce/usage-metering-billing-ledger/src/test/kotlin/io/bluetape4k/workshop/commerce/metering/application/ReconciliationPostgresIntegrationTest.kt):
   원장과 파생 결과의 차이를 Finding으로 남기는 경계를 검증합니다.
 - [`ProjectionRecoveryPostgresIntegrationTest.kt`](https://github.com/bluetape4k/bluetape4k-workshop/blob/abbf420cb6f873e6195b261a778dbf96cd5c412b/commerce/usage-metering-billing-event-sourcing/src/test/kotlin/io/bluetape4k/workshop/commerce/metering/eventsourcing/projection/ProjectionRecoveryPostgresIntegrationTest.kt):
