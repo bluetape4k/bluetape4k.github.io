@@ -12,6 +12,10 @@ test('usage billing articles link each locale to the matching visualization stag
   const part2Ko = await read('src/content/docs/ko/blog/usage-billing-part2-event-sourcing-and-projections.mdx');
   const part2En = await read('src/content/docs/blog/usage-billing-part2-event-sourcing-and-projections.mdx');
 
+  assert.match(part1Ko, /title: "사용량 과금 Part 1: 중복 수집부터 재시작 가능한 마감과 원장까지"/);
+  assert.match(part1En, /title: "Usage Billing Part 1: Duplicate Ingestion, Resumable Closing, and the Ledger"/);
+  assert.match(part2Ko, /title: "사용량 과금 Part 2: Event Sourcing, Replay와 Projection 운영"/);
+  assert.match(part2En, /title: "Usage Billing Part 2: Event Sourcing, Replay, and Projection Operations"/);
   assert.match(part1Ko, /\/ko\/visual-companions\/bluetape4k-workshop\/usage-billing-evolution\/#ledger/);
   assert.match(part1En, /\/visual-companions\/bluetape4k-workshop\/usage-billing-evolution\/#ledger/);
   assert.match(part1Ko, /\/ko\/blog\/usage-billing-part2-event-sourcing-and-projections\//);
