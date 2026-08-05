@@ -61,15 +61,9 @@ Meter owns original prices, but Billing does not query Meter synchronously while
 stores local evidence, and rates only from that evidence. This prevents a temporary network fault from enclosing the entire
 billing operation, while adding responsibility for delayed or missing replicas.
 
-<figure
-  class="bt4k-architecture"
-  data-diagram-title="Data ownership and delivery boundaries across five billing services"
->
-  <img src="/assets/blog/usage-billing/part3/usage-billing-microservices-01-en.png" alt="Meter, Usage, Billing, Invoice, and Query services each own PostgreSQL and exchange events through Kafka" loading="lazy" />
-  <figcaption>Zooming into each service reveals who owns the Inbox decision, business records, Outbox, and isolation records. Each service uses that durable local evidence when Kafka is delayed or repeats a record.</figcaption>
-</figure>
-
-[Explore the microservice stage in the interactive visualization](/visual-companions/bluetape4k-workshop/usage-billing-evolution/#microservices)
+The
+[interactive visualization shows each service's Inbox, Outbox, and recovery steps](/visual-companions/bluetape4k-workshop/usage-billing-evolution/#microservices)
+in more detail.
 
 ## Commit the local effect and Outbox together
 

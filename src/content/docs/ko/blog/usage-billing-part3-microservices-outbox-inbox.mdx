@@ -62,15 +62,8 @@ Meter가 가격의 원본을 소유하지만 Billing은 산정할 때 Meter 데�
 일시적인 네트워크 장애가 전체 과금 트랜잭션을 묶지 않게 하지만, 복제 근거의 지연과 누락을 관찰할 책임을
 추가합니다.
 
-<figure
-  class="bt4k-architecture"
-  data-diagram-title="다섯 과금 서비스의 데이터 소유권과 전달 경계"
->
-  <img src="/assets/blog/usage-billing/part3/usage-billing-microservices-01-ko.png" alt="각자 PostgreSQL을 소유하는 Meter, Usage, Billing, Invoice, Query 서비스와 Kafka를 통한 이벤트 전달 경계" loading="lazy" />
-  <figcaption>전체 배치 구조를 서비스 내부로 확대하면 Inbox, 업무 기록, Outbox와 격리 기록의 소유권이 드러납니다. Kafka 전달이 늦거나 반복되더라도 각 서비스는 이 로컬 기준 데이터로 처리 결과를 판정합니다.</figcaption>
-</figure>
-
-[대화형 시각 자료에서 마이크로서비스 단계 살펴보기](/ko/visual-companions/bluetape4k-workshop/usage-billing-evolution/#microservices)
+서비스 내부의 Inbox·Outbox 상태와 장애 복구 절차는
+[대화형 시각 자료에서 단계별로 확인할 수 있습니다](/ko/visual-companions/bluetape4k-workshop/usage-billing-evolution/#microservices).
 
 ## 업무 결과와 Outbox는 한 트랜잭션으로 Commit한다
 
