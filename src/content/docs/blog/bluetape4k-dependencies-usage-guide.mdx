@@ -46,7 +46,7 @@ With the Kotlin DSL, import the BOM with `platform(...)`.
 
 ```kotlin
 dependencies {
-    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.3.1"))
+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.4.0"))
 
     implementation("io.github.bluetape4k:bluetape4k-core")
     implementation("io.github.bluetape4k:bluetape4k-coroutines")
@@ -59,7 +59,7 @@ dependencies {
 The important line is the first one:
 
 ```kotlin
-implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.3.1"))
+implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.4.0"))
 ```
 
 After that, declare the modules without versions. Adding versions again makes the BOM less useful.
@@ -70,8 +70,8 @@ implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-jdbc:1.11.0")
 implementation("io.github.bluetape4k.aws:bluetape4k-aws-java:0.4.0")
 ```
 
-`dependencies 1.3.1` manages a tested combination such as `projects 1.11.0`, `exposed 1.11.0`, `aws 0.4.0`,
-`image 0.3.0`, `text 0.2.1`, `graph 0.5.1`, `leader 0.4.0`, and `javers 0.2.1`. The application only chooses the BOM
+`dependencies 1.4.0` manages a tested combination such as `projects 1.12.1`, `exposed 1.12.1`, `aws 0.5.0`,
+`image 0.4.0`, `text 0.3.0`, `graph 0.6.0`, `leader 0.5.0`, and `javers 0.3.0`. The application only chooses the BOM
 version.
 
 ## Import It with dependencyManagement in Maven
@@ -84,7 +84,7 @@ In Maven, import the BOM under `dependencyManagement`.
         <dependency>
             <groupId>io.github.bluetape4k</groupId>
             <artifactId>bluetape4k-dependencies</artifactId>
-            <version>1.3.1</version>
+            <version>1.4.0</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -169,7 +169,7 @@ For example, a Spring Boot service using Exposed, AWS, and leader election can s
 
 ```kotlin
 dependencies {
-    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.3.1"))
+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.4.0"))
 
     implementation("io.github.bluetape4k:bluetape4k-spring-boot-core")
     implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-spring-boot-jdbc")
@@ -182,7 +182,7 @@ A Ktor service that adds AWS and text processing can start with this:
 
 ```kotlin
 dependencies {
-    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.3.1"))
+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.4.0"))
 
     implementation("io.github.bluetape4k.aws:bluetape4k-aws-ktor")
     implementation("io.github.bluetape4k.text:tokenizer-korean")
@@ -197,7 +197,7 @@ If an existing application uses `1.2.0`, start by changing only the BOM version.
 ```diff
  dependencies {
 -    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.2.0"))
-+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.3.1"))
++    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.4.0"))
 
      implementation("io.github.bluetape4k:bluetape4k-core")
      implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-jdbc")
@@ -226,7 +226,7 @@ That override should stay explicit and temporary.
 
 ```kotlin
 dependencies {
-    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.3.1"))
+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.4.0"))
 
     implementation("io.github.bluetape4k:bluetape4k-core")
 

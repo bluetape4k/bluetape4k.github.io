@@ -47,7 +47,7 @@ Kotlin DSL에서는 `platform(...)`으로 BOM을 가져옵니다.
 
 ```kotlin
 dependencies {
-    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.3.1"))
+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.4.0"))
 
     implementation("io.github.bluetape4k:bluetape4k-core")
     implementation("io.github.bluetape4k:bluetape4k-coroutines")
@@ -60,7 +60,7 @@ dependencies {
 여기서 중요한 줄은 첫 줄입니다.
 
 ```kotlin
-implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.3.1"))
+implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.4.0"))
 ```
 
 이 줄을 추가하면 아래 모듈은 버전 없이 선언합니다. 개별 버전을 다시 지정하면 BOM이 제공하는
@@ -72,8 +72,8 @@ implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-jdbc:1.11.0")
 implementation("io.github.bluetape4k.aws:bluetape4k-aws-java:0.4.0")
 ```
 
-`dependencies 1.3.1`은 내부적으로 `projects 1.11.0`, `exposed 1.11.0`, `aws 0.4.0`, `image 0.3.0`,
-`text 0.2.1`, `graph 0.5.1`, `leader 0.4.0`, `javers 0.2.1` 조합을 관리합니다. 애플리케이션은
+`dependencies 1.4.0`은 내부적으로 `projects 1.12.1`, `exposed 1.12.1`, `aws 0.5.0`, `image 0.4.0`,
+`text 0.3.0`, `graph 0.6.0`, `leader 0.5.0`, `javers 0.3.0` 조합을 관리합니다. 애플리케이션은
 개별 버전 대신 BOM 버전 하나를 선택합니다.
 
 ## Maven에서는 dependencyManagement로 적용한다
@@ -86,7 +86,7 @@ Maven을 쓴다면 `dependencyManagement`에 BOM을 import합니다.
         <dependency>
             <groupId>io.github.bluetape4k</groupId>
             <artifactId>bluetape4k-dependencies</artifactId>
-            <version>1.3.1</version>
+            <version>1.4.0</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -170,7 +170,7 @@ BOM을 사용하면 최소한 bluetape4k 모듈 간 조합은 BOM이 관리합�
 
 ```kotlin
 dependencies {
-    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.3.1"))
+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.4.0"))
 
     implementation("io.github.bluetape4k:bluetape4k-spring-boot-core")
     implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-spring-boot-jdbc")
@@ -183,7 +183,7 @@ Ktor 서비스에서 AWS와 text processing을 붙인다면 이렇게 시작할 
 
 ```kotlin
 dependencies {
-    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.3.1"))
+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.4.0"))
 
     implementation("io.github.bluetape4k.aws:bluetape4k-aws-ktor")
     implementation("io.github.bluetape4k.text:tokenizer-korean")
@@ -198,7 +198,7 @@ dependencies {
 ```diff
  dependencies {
 -    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.2.0"))
-+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.3.1"))
++    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.4.0"))
 
      implementation("io.github.bluetape4k:bluetape4k-core")
      implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-jdbc")
@@ -227,7 +227,7 @@ AWS SDK처럼 서비스 경계에 가까운 의존성이 함께 변경되었다�
 
 ```kotlin
 dependencies {
-    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.3.1"))
+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:1.4.0"))
 
     implementation("io.github.bluetape4k:bluetape4k-core")
 
