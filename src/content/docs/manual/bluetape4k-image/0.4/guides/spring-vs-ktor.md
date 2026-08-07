@@ -1,0 +1,45 @@
+---
+slug: "manual/bluetape4k-image/0.4/guides/spring-vs-ktor"
+manualId: "spring-vs-ktor"
+title: "Spring Boot or Ktor"
+locale: "en"
+releaseRef: "0.4.0"
+manual:
+  id: "guides/spring-vs-ktor"
+  repository: "bluetape4k-image"
+  group: "overview"
+  kind: "guide"
+  sourceCommit: "e56fea655ad3168527b5f663d114df722ad55d3f"
+  sourcePath: "docs/manual/en/guides/spring-vs-ktor.md"
+  minorVersion: "0.4"
+  releaseRef: "0.4.0"
+  releaseCommit: "ea5175b083babf8880f53cf80c9a264a0c61777e"
+  sourceDir: "docs/manual"
+  layer: "build"
+---
+
+
+Choose the integration that already owns application configuration and lifecycle. Do not add a second framework just to obtain image helpers.
+
+## Choose Ktor
+
+[Ktor integration](/manual/bluetape4k-image/0.4/integrations/ktor/) is focused: it supplies thumbnail and CAPTCHA route helpers on top of the image and CAPTCHA modules. The application installs its own JSON serialization, authentication, error handling, request-size policy, and persistence. Use the [Ktor image API workshop](/manual/bluetape4k-image/0.4/modules/ktor-image-api/) to see challenge issuance, verification, and thumbnails together.
+
+Ktor OCR is assembled directly in the [Ktor OCR workshop](/manual/bluetape4k-image/0.4/modules/ktor-ocr-api/); the OCR library itself is framework-neutral.
+
+## Choose Spring Boot
+
+[Spring Boot integration](/manual/bluetape4k-image/0.4/integrations/spring-boot/) is broader. It auto-configures local or S3 storage, optional CloudFront URL signing, health, and metrics. Choose it when Boot already owns configuration properties, bean lifecycle, Actuator, and Micrometer. Follow the [Spring Boot image API workshop](/manual/bluetape4k-image/0.4/modules/spring-boot-image-api/).
+
+The [Spring Boot OCR workshop](/manual/bluetape4k-image/0.4/modules/spring-boot-ocr-api/) wires the framework-neutral OCR engine into a web controller and keeps host Tesseract as an explicit runtime prerequisite.
+
+## Use the libraries directly
+
+For batch jobs, command-line tools, or another framework, use <code>bluetape4k-images</code>, CAPTCHA, OCR, or Vips directly. Framework modules are adapters, not prerequisites for core processing.
+
+Whichever path you choose, the application owns upload limits, authentication, storage credentials, response caching, and shutdown behavior.
+
+## Sources
+
+- [Ktor release module](https://github.com/bluetape4k/bluetape4k-image/tree/ea5175b083babf8880f53cf80c9a264a0c61777e/images-ktor)
+- [Spring Boot release module](https://github.com/bluetape4k/bluetape4k-image/tree/ea5175b083babf8880f53cf80c9a264a0c61777e/images-spring-boot)

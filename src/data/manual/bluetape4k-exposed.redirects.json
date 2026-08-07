@@ -2,499 +2,515 @@
   "redirects": [
     {
       "source": "/ko/manual/bluetape4k-exposed/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/architecture/repository-map/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/architecture/repository-map/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/architecture/repository-map/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/getting-started/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/getting-started/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/getting-started/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/guides/audit-with-javers/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/guides/audit-with-javers/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/guides/audit-with-javers/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/guides/cache-selection/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/guides/cache-selection/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/guides/cache-selection/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/guides/database-adapter-matrix/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/guides/database-adapter-matrix/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/guides/database-adapter-matrix/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/guides/hibernate-vs-exposed/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/guides/hibernate-vs-exposed/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/guides/hibernate-vs-exposed/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/guides/jdbc-vs-r2dbc/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/guides/jdbc-vs-r2dbc/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/guides/jdbc-vs-r2dbc/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/guides/learning-path/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/guides/learning-path/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/guides/learning-path/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/guides/oltp-vs-olap/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/guides/oltp-vs-olap/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/guides/oltp-vs-olap/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/guides/serialization-and-encryption/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/guides/serialization-and-encryption/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/guides/serialization-and-encryption/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/guides/spring-and-ktor/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/guides/spring-and-ktor/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/guides/spring-and-ktor/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/guides/testing-and-operations/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/guides/testing-and-operations/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/guides/testing-and-operations/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/guides/transaction-boundaries/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/guides/transaction-boundaries/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/guides/transaction-boundaries/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/benchmark-exposed-benchmark/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/benchmark-exposed-benchmark/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/benchmark-exposed-benchmark/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-batch/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-batch/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-batch/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-bigquery/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-bigquery/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-bigquery/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-bom/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-bom/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-bom/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-cache/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-cache/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-cache/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-clickhouse/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-clickhouse/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-clickhouse/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-cockroachdb/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-cockroachdb/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-cockroachdb/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-core/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-core/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-core/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-core/entity-id-model/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-core/entity-id-model/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-core/entity-id-model/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-core/mapping-conventions/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-core/mapping-conventions/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-core/mapping-conventions/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-dao/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-dao/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-dao/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-druid/",
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-druid/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-duckdb/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-duckdb/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-duckdb/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-fastjson2/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-fastjson2/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-fastjson2/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-jackson2/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jackson2/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-jackson2/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-jackson3/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jackson3/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-jackson3/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-jdbc-caffeine/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc-caffeine/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-jdbc-caffeine/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-jdbc-lettuce/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc-lettuce/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-jdbc-lettuce/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-jdbc-redisson/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc-redisson/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-jdbc-redisson/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-jdbc-tests/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc-tests/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-jdbc-tests/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-jdbc/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-jdbc/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-jdbc/operations-testing/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc/operations-testing/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-jdbc/operations-testing/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-jdbc/repository-patterns/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc/repository-patterns/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-jdbc/repository-patterns/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-jdbc/transaction-ownership/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc/transaction-ownership/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-jdbc/transaction-ownership/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-ktor/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-ktor/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-ktor/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-measured/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-measured/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-measured/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-mysql8/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-mysql8/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-mysql8/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-postgresql/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-postgresql/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-postgresql/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-r2dbc-caffeine/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc-caffeine/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-r2dbc-caffeine/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-r2dbc-lettuce/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc-lettuce/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-r2dbc-lettuce/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-r2dbc-redisson/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc-redisson/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-r2dbc-redisson/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-r2dbc-tests/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc-tests/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-r2dbc-tests/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-r2dbc/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-r2dbc/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-r2dbc/cancellation-and-testing/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc/cancellation-and-testing/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-r2dbc/cancellation-and-testing/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-r2dbc/coroutine-transactions/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc/coroutine-transactions/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-r2dbc/coroutine-transactions/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-r2dbc/repository-patterns/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc/repository-patterns/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-r2dbc/repository-patterns/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-spring-boot-batch/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-spring-boot-batch/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-spring-boot-batch/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-spring-boot-jdbc/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-spring-boot-jdbc/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-spring-boot-jdbc/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-spring-boot-r2dbc/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-spring-boot-r2dbc/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-spring-boot-r2dbc/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-spring-modulith/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-spring-modulith/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-spring-modulith/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-starrocks/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-starrocks/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-starrocks/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-timefold-solver-persistence/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-timefold-solver-persistence/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-timefold-solver-persistence/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-tink/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-tink/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-tink/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/bluetape4k-exposed-trino/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-trino/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-trino/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-exposed/modules/examples-ddd-spring-modulith-demo/",
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/examples-ddd-spring-modulith-demo/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/examples-exposed-bigquery-dry-run/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/examples-exposed-bigquery-dry-run/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/examples-exposed-bigquery-dry-run/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/examples-exposed-clickhouse-oltp-olap/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/examples-exposed-clickhouse-oltp-olap/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/examples-exposed-clickhouse-oltp-olap/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/examples-ktor-exposed-demo/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/examples-ktor-exposed-demo/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/examples-ktor-exposed-demo/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/exposed-spring-boot-jdbc-demo/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/exposed-spring-boot-jdbc-demo/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/exposed-spring-boot-jdbc-demo/"
     },
     {
       "source": "/ko/manual/bluetape4k-exposed/modules/exposed-spring-boot-r2dbc-demo/",
-      "target": "/ko/manual/bluetape4k-exposed/1.11/modules/exposed-spring-boot-r2dbc-demo/"
+      "target": "/ko/manual/bluetape4k-exposed/1.12/modules/exposed-spring-boot-r2dbc-demo/"
     },
     {
       "source": "/manual/bluetape4k-exposed/",
-      "target": "/manual/bluetape4k-exposed/1.11/"
+      "target": "/manual/bluetape4k-exposed/1.12/"
     },
     {
       "source": "/manual/bluetape4k-exposed/architecture/repository-map/",
-      "target": "/manual/bluetape4k-exposed/1.11/architecture/repository-map/"
+      "target": "/manual/bluetape4k-exposed/1.12/architecture/repository-map/"
     },
     {
       "source": "/manual/bluetape4k-exposed/getting-started/",
-      "target": "/manual/bluetape4k-exposed/1.11/getting-started/"
+      "target": "/manual/bluetape4k-exposed/1.12/getting-started/"
     },
     {
       "source": "/manual/bluetape4k-exposed/guides/audit-with-javers/",
-      "target": "/manual/bluetape4k-exposed/1.11/guides/audit-with-javers/"
+      "target": "/manual/bluetape4k-exposed/1.12/guides/audit-with-javers/"
     },
     {
       "source": "/manual/bluetape4k-exposed/guides/cache-selection/",
-      "target": "/manual/bluetape4k-exposed/1.11/guides/cache-selection/"
+      "target": "/manual/bluetape4k-exposed/1.12/guides/cache-selection/"
     },
     {
       "source": "/manual/bluetape4k-exposed/guides/database-adapter-matrix/",
-      "target": "/manual/bluetape4k-exposed/1.11/guides/database-adapter-matrix/"
+      "target": "/manual/bluetape4k-exposed/1.12/guides/database-adapter-matrix/"
     },
     {
       "source": "/manual/bluetape4k-exposed/guides/hibernate-vs-exposed/",
-      "target": "/manual/bluetape4k-exposed/1.11/guides/hibernate-vs-exposed/"
+      "target": "/manual/bluetape4k-exposed/1.12/guides/hibernate-vs-exposed/"
     },
     {
       "source": "/manual/bluetape4k-exposed/guides/jdbc-vs-r2dbc/",
-      "target": "/manual/bluetape4k-exposed/1.11/guides/jdbc-vs-r2dbc/"
+      "target": "/manual/bluetape4k-exposed/1.12/guides/jdbc-vs-r2dbc/"
     },
     {
       "source": "/manual/bluetape4k-exposed/guides/learning-path/",
-      "target": "/manual/bluetape4k-exposed/1.11/guides/learning-path/"
+      "target": "/manual/bluetape4k-exposed/1.12/guides/learning-path/"
     },
     {
       "source": "/manual/bluetape4k-exposed/guides/oltp-vs-olap/",
-      "target": "/manual/bluetape4k-exposed/1.11/guides/oltp-vs-olap/"
+      "target": "/manual/bluetape4k-exposed/1.12/guides/oltp-vs-olap/"
     },
     {
       "source": "/manual/bluetape4k-exposed/guides/serialization-and-encryption/",
-      "target": "/manual/bluetape4k-exposed/1.11/guides/serialization-and-encryption/"
+      "target": "/manual/bluetape4k-exposed/1.12/guides/serialization-and-encryption/"
     },
     {
       "source": "/manual/bluetape4k-exposed/guides/spring-and-ktor/",
-      "target": "/manual/bluetape4k-exposed/1.11/guides/spring-and-ktor/"
+      "target": "/manual/bluetape4k-exposed/1.12/guides/spring-and-ktor/"
     },
     {
       "source": "/manual/bluetape4k-exposed/guides/testing-and-operations/",
-      "target": "/manual/bluetape4k-exposed/1.11/guides/testing-and-operations/"
+      "target": "/manual/bluetape4k-exposed/1.12/guides/testing-and-operations/"
     },
     {
       "source": "/manual/bluetape4k-exposed/guides/transaction-boundaries/",
-      "target": "/manual/bluetape4k-exposed/1.11/guides/transaction-boundaries/"
+      "target": "/manual/bluetape4k-exposed/1.12/guides/transaction-boundaries/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/benchmark-exposed-benchmark/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/benchmark-exposed-benchmark/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/benchmark-exposed-benchmark/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-batch/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-batch/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-batch/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-bigquery/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-bigquery/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-bigquery/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-bom/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-bom/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-bom/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-cache/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-cache/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-cache/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-clickhouse/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-clickhouse/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-clickhouse/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-cockroachdb/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-cockroachdb/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-cockroachdb/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-core/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-core/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-core/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-core/entity-id-model/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-core/entity-id-model/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-core/entity-id-model/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-core/mapping-conventions/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-core/mapping-conventions/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-core/mapping-conventions/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-dao/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-dao/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-dao/"
+    },
+    {
+      "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-druid/",
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-druid/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-duckdb/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-duckdb/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-duckdb/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-fastjson2/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-fastjson2/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-fastjson2/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-jackson2/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jackson2/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-jackson2/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-jackson3/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jackson3/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-jackson3/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-jdbc-caffeine/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc-caffeine/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-jdbc-caffeine/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-jdbc-lettuce/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc-lettuce/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-jdbc-lettuce/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-jdbc-redisson/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc-redisson/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-jdbc-redisson/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-jdbc-tests/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc-tests/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-jdbc-tests/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-jdbc/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-jdbc/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-jdbc/operations-testing/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc/operations-testing/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-jdbc/operations-testing/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-jdbc/repository-patterns/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc/repository-patterns/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-jdbc/repository-patterns/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-jdbc/transaction-ownership/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc/transaction-ownership/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-jdbc/transaction-ownership/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-ktor/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-ktor/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-ktor/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-measured/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-measured/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-measured/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-mysql8/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-mysql8/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-mysql8/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-postgresql/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-postgresql/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-postgresql/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-r2dbc-caffeine/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc-caffeine/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-r2dbc-caffeine/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-r2dbc-lettuce/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc-lettuce/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-r2dbc-lettuce/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-r2dbc-redisson/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc-redisson/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-r2dbc-redisson/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-r2dbc-tests/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc-tests/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-r2dbc-tests/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-r2dbc/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-r2dbc/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-r2dbc/cancellation-and-testing/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc/cancellation-and-testing/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-r2dbc/cancellation-and-testing/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-r2dbc/coroutine-transactions/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc/coroutine-transactions/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-r2dbc/coroutine-transactions/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-r2dbc/repository-patterns/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-r2dbc/repository-patterns/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-r2dbc/repository-patterns/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-spring-boot-batch/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-spring-boot-batch/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-spring-boot-batch/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-spring-boot-jdbc/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-spring-boot-jdbc/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-spring-boot-jdbc/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-spring-boot-r2dbc/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-spring-boot-r2dbc/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-spring-boot-r2dbc/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-spring-modulith/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-spring-modulith/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-spring-modulith/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-starrocks/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-starrocks/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-starrocks/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-timefold-solver-persistence/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-timefold-solver-persistence/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-timefold-solver-persistence/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-tink/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-tink/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-tink/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/bluetape4k-exposed-trino/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-trino/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/bluetape4k-exposed-trino/"
+    },
+    {
+      "source": "/manual/bluetape4k-exposed/modules/examples-ddd-spring-modulith-demo/",
+      "target": "/manual/bluetape4k-exposed/1.12/modules/examples-ddd-spring-modulith-demo/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/examples-exposed-bigquery-dry-run/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/examples-exposed-bigquery-dry-run/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/examples-exposed-bigquery-dry-run/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/examples-exposed-clickhouse-oltp-olap/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/examples-exposed-clickhouse-oltp-olap/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/examples-exposed-clickhouse-oltp-olap/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/examples-ktor-exposed-demo/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/examples-ktor-exposed-demo/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/examples-ktor-exposed-demo/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/exposed-spring-boot-jdbc-demo/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/exposed-spring-boot-jdbc-demo/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/exposed-spring-boot-jdbc-demo/"
     },
     {
       "source": "/manual/bluetape4k-exposed/modules/exposed-spring-boot-r2dbc-demo/",
-      "target": "/manual/bluetape4k-exposed/1.11/modules/exposed-spring-boot-r2dbc-demo/"
+      "target": "/manual/bluetape4k-exposed/1.12/modules/exposed-spring-boot-r2dbc-demo/"
     }
   ],
   "repository": "bluetape4k/bluetape4k-exposed",

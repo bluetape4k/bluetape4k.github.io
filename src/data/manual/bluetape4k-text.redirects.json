@@ -2,195 +2,195 @@
   "redirects": [
     {
       "source": "/ko/manual/bluetape4k-text/",
-      "target": "/ko/manual/bluetape4k-text/0.2/"
+      "target": "/ko/manual/bluetape4k-text/0.3/"
     },
     {
       "source": "/ko/manual/bluetape4k-text/architecture/processing-model/",
-      "target": "/ko/manual/bluetape4k-text/0.2/architecture/processing-model/"
+      "target": "/ko/manual/bluetape4k-text/0.3/architecture/processing-model/"
     },
     {
       "source": "/ko/manual/bluetape4k-text/architecture/repository-map/",
-      "target": "/ko/manual/bluetape4k-text/0.2/architecture/repository-map/"
+      "target": "/ko/manual/bluetape4k-text/0.3/architecture/repository-map/"
     },
     {
       "source": "/ko/manual/bluetape4k-text/architecture/runtime-boundaries/",
-      "target": "/ko/manual/bluetape4k-text/0.2/architecture/runtime-boundaries/"
+      "target": "/ko/manual/bluetape4k-text/0.3/architecture/runtime-boundaries/"
     },
     {
       "source": "/ko/manual/bluetape4k-text/examples/lingua-examples/",
-      "target": "/ko/manual/bluetape4k-text/0.2/examples/lingua-examples/"
+      "target": "/ko/manual/bluetape4k-text/0.3/examples/lingua-examples/"
     },
     {
       "source": "/ko/manual/bluetape4k-text/examples/text-search-examples/",
-      "target": "/ko/manual/bluetape4k-text/0.2/examples/text-search-examples/"
+      "target": "/ko/manual/bluetape4k-text/0.3/examples/text-search-examples/"
     },
     {
       "source": "/ko/manual/bluetape4k-text/examples/tokenizer-safety-examples/",
-      "target": "/ko/manual/bluetape4k-text/0.2/examples/tokenizer-safety-examples/"
+      "target": "/ko/manual/bluetape4k-text/0.3/examples/tokenizer-safety-examples/"
     },
     {
       "source": "/ko/manual/bluetape4k-text/getting-started/",
-      "target": "/ko/manual/bluetape4k-text/0.2/getting-started/"
+      "target": "/ko/manual/bluetape4k-text/0.3/getting-started/"
     },
     {
       "source": "/ko/manual/bluetape4k-text/guides/capability-selection/",
-      "target": "/ko/manual/bluetape4k-text/0.2/guides/capability-selection/"
+      "target": "/ko/manual/bluetape4k-text/0.3/guides/capability-selection/"
     },
     {
       "source": "/ko/manual/bluetape4k-text/guides/dictionaries-and-blockwords/",
-      "target": "/ko/manual/bluetape4k-text/0.2/guides/dictionaries-and-blockwords/"
+      "target": "/ko/manual/bluetape4k-text/0.3/guides/dictionaries-and-blockwords/"
     },
     {
       "source": "/ko/manual/bluetape4k-text/guides/input-safety/",
-      "target": "/ko/manual/bluetape4k-text/0.2/guides/input-safety/"
+      "target": "/ko/manual/bluetape4k-text/0.3/guides/input-safety/"
     },
     {
       "source": "/ko/manual/bluetape4k-text/guides/learning-path/",
-      "target": "/ko/manual/bluetape4k-text/0.2/guides/learning-path/"
+      "target": "/ko/manual/bluetape4k-text/0.3/guides/learning-path/"
     },
     {
       "source": "/ko/manual/bluetape4k-text/guides/mixed-language-processing/",
-      "target": "/ko/manual/bluetape4k-text/0.2/guides/mixed-language-processing/"
+      "target": "/ko/manual/bluetape4k-text/0.3/guides/mixed-language-processing/"
     },
     {
       "source": "/ko/manual/bluetape4k-text/guides/testing/",
-      "target": "/ko/manual/bluetape4k-text/0.2/guides/testing/"
+      "target": "/ko/manual/bluetape4k-text/0.3/guides/testing/"
     },
     {
       "source": "/ko/manual/bluetape4k-text/modules/bluetape4k-text-bom/",
-      "target": "/ko/manual/bluetape4k-text/0.2/modules/bluetape4k-text-bom/"
+      "target": "/ko/manual/bluetape4k-text/0.3/modules/bluetape4k-text-bom/"
     },
     {
       "source": "/ko/manual/bluetape4k-text/modules/lingua/",
-      "target": "/ko/manual/bluetape4k-text/0.2/modules/lingua/"
+      "target": "/ko/manual/bluetape4k-text/0.3/modules/lingua/"
     },
     {
       "source": "/ko/manual/bluetape4k-text/modules/text-search/",
-      "target": "/ko/manual/bluetape4k-text/0.2/modules/text-search/"
+      "target": "/ko/manual/bluetape4k-text/0.3/modules/text-search/"
     },
     {
       "source": "/ko/manual/bluetape4k-text/modules/tokenizer-core/",
-      "target": "/ko/manual/bluetape4k-text/0.2/modules/tokenizer-core/"
+      "target": "/ko/manual/bluetape4k-text/0.3/modules/tokenizer-core/"
     },
     {
       "source": "/ko/manual/bluetape4k-text/modules/tokenizer-japanese/",
-      "target": "/ko/manual/bluetape4k-text/0.2/modules/tokenizer-japanese/"
+      "target": "/ko/manual/bluetape4k-text/0.3/modules/tokenizer-japanese/"
     },
     {
       "source": "/ko/manual/bluetape4k-text/modules/tokenizer-korean/",
-      "target": "/ko/manual/bluetape4k-text/0.2/modules/tokenizer-korean/"
+      "target": "/ko/manual/bluetape4k-text/0.3/modules/tokenizer-korean/"
     },
     {
       "source": "/ko/manual/bluetape4k-text/operations/failure-contracts/",
-      "target": "/ko/manual/bluetape4k-text/0.2/operations/failure-contracts/"
+      "target": "/ko/manual/bluetape4k-text/0.3/operations/failure-contracts/"
     },
     {
       "source": "/ko/manual/bluetape4k-text/operations/startup-and-memory/",
-      "target": "/ko/manual/bluetape4k-text/0.2/operations/startup-and-memory/"
+      "target": "/ko/manual/bluetape4k-text/0.3/operations/startup-and-memory/"
     },
     {
       "source": "/ko/manual/bluetape4k-text/quality/aho-corasick-benchmarks/",
-      "target": "/ko/manual/bluetape4k-text/0.2/quality/aho-corasick-benchmarks/"
+      "target": "/ko/manual/bluetape4k-text/0.3/quality/aho-corasick-benchmarks/"
     },
     {
       "source": "/ko/manual/bluetape4k-text/quality/quality-gates/",
-      "target": "/ko/manual/bluetape4k-text/0.2/quality/quality-gates/"
+      "target": "/ko/manual/bluetape4k-text/0.3/quality/quality-gates/"
     },
     {
       "source": "/manual/bluetape4k-text/",
-      "target": "/manual/bluetape4k-text/0.2/"
+      "target": "/manual/bluetape4k-text/0.3/"
     },
     {
       "source": "/manual/bluetape4k-text/architecture/processing-model/",
-      "target": "/manual/bluetape4k-text/0.2/architecture/processing-model/"
+      "target": "/manual/bluetape4k-text/0.3/architecture/processing-model/"
     },
     {
       "source": "/manual/bluetape4k-text/architecture/repository-map/",
-      "target": "/manual/bluetape4k-text/0.2/architecture/repository-map/"
+      "target": "/manual/bluetape4k-text/0.3/architecture/repository-map/"
     },
     {
       "source": "/manual/bluetape4k-text/architecture/runtime-boundaries/",
-      "target": "/manual/bluetape4k-text/0.2/architecture/runtime-boundaries/"
+      "target": "/manual/bluetape4k-text/0.3/architecture/runtime-boundaries/"
     },
     {
       "source": "/manual/bluetape4k-text/examples/lingua-examples/",
-      "target": "/manual/bluetape4k-text/0.2/examples/lingua-examples/"
+      "target": "/manual/bluetape4k-text/0.3/examples/lingua-examples/"
     },
     {
       "source": "/manual/bluetape4k-text/examples/text-search-examples/",
-      "target": "/manual/bluetape4k-text/0.2/examples/text-search-examples/"
+      "target": "/manual/bluetape4k-text/0.3/examples/text-search-examples/"
     },
     {
       "source": "/manual/bluetape4k-text/examples/tokenizer-safety-examples/",
-      "target": "/manual/bluetape4k-text/0.2/examples/tokenizer-safety-examples/"
+      "target": "/manual/bluetape4k-text/0.3/examples/tokenizer-safety-examples/"
     },
     {
       "source": "/manual/bluetape4k-text/getting-started/",
-      "target": "/manual/bluetape4k-text/0.2/getting-started/"
+      "target": "/manual/bluetape4k-text/0.3/getting-started/"
     },
     {
       "source": "/manual/bluetape4k-text/guides/capability-selection/",
-      "target": "/manual/bluetape4k-text/0.2/guides/capability-selection/"
+      "target": "/manual/bluetape4k-text/0.3/guides/capability-selection/"
     },
     {
       "source": "/manual/bluetape4k-text/guides/dictionaries-and-blockwords/",
-      "target": "/manual/bluetape4k-text/0.2/guides/dictionaries-and-blockwords/"
+      "target": "/manual/bluetape4k-text/0.3/guides/dictionaries-and-blockwords/"
     },
     {
       "source": "/manual/bluetape4k-text/guides/input-safety/",
-      "target": "/manual/bluetape4k-text/0.2/guides/input-safety/"
+      "target": "/manual/bluetape4k-text/0.3/guides/input-safety/"
     },
     {
       "source": "/manual/bluetape4k-text/guides/learning-path/",
-      "target": "/manual/bluetape4k-text/0.2/guides/learning-path/"
+      "target": "/manual/bluetape4k-text/0.3/guides/learning-path/"
     },
     {
       "source": "/manual/bluetape4k-text/guides/mixed-language-processing/",
-      "target": "/manual/bluetape4k-text/0.2/guides/mixed-language-processing/"
+      "target": "/manual/bluetape4k-text/0.3/guides/mixed-language-processing/"
     },
     {
       "source": "/manual/bluetape4k-text/guides/testing/",
-      "target": "/manual/bluetape4k-text/0.2/guides/testing/"
+      "target": "/manual/bluetape4k-text/0.3/guides/testing/"
     },
     {
       "source": "/manual/bluetape4k-text/modules/bluetape4k-text-bom/",
-      "target": "/manual/bluetape4k-text/0.2/modules/bluetape4k-text-bom/"
+      "target": "/manual/bluetape4k-text/0.3/modules/bluetape4k-text-bom/"
     },
     {
       "source": "/manual/bluetape4k-text/modules/lingua/",
-      "target": "/manual/bluetape4k-text/0.2/modules/lingua/"
+      "target": "/manual/bluetape4k-text/0.3/modules/lingua/"
     },
     {
       "source": "/manual/bluetape4k-text/modules/text-search/",
-      "target": "/manual/bluetape4k-text/0.2/modules/text-search/"
+      "target": "/manual/bluetape4k-text/0.3/modules/text-search/"
     },
     {
       "source": "/manual/bluetape4k-text/modules/tokenizer-core/",
-      "target": "/manual/bluetape4k-text/0.2/modules/tokenizer-core/"
+      "target": "/manual/bluetape4k-text/0.3/modules/tokenizer-core/"
     },
     {
       "source": "/manual/bluetape4k-text/modules/tokenizer-japanese/",
-      "target": "/manual/bluetape4k-text/0.2/modules/tokenizer-japanese/"
+      "target": "/manual/bluetape4k-text/0.3/modules/tokenizer-japanese/"
     },
     {
       "source": "/manual/bluetape4k-text/modules/tokenizer-korean/",
-      "target": "/manual/bluetape4k-text/0.2/modules/tokenizer-korean/"
+      "target": "/manual/bluetape4k-text/0.3/modules/tokenizer-korean/"
     },
     {
       "source": "/manual/bluetape4k-text/operations/failure-contracts/",
-      "target": "/manual/bluetape4k-text/0.2/operations/failure-contracts/"
+      "target": "/manual/bluetape4k-text/0.3/operations/failure-contracts/"
     },
     {
       "source": "/manual/bluetape4k-text/operations/startup-and-memory/",
-      "target": "/manual/bluetape4k-text/0.2/operations/startup-and-memory/"
+      "target": "/manual/bluetape4k-text/0.3/operations/startup-and-memory/"
     },
     {
       "source": "/manual/bluetape4k-text/quality/aho-corasick-benchmarks/",
-      "target": "/manual/bluetape4k-text/0.2/quality/aho-corasick-benchmarks/"
+      "target": "/manual/bluetape4k-text/0.3/quality/aho-corasick-benchmarks/"
     },
     {
       "source": "/manual/bluetape4k-text/quality/quality-gates/",
-      "target": "/manual/bluetape4k-text/0.2/quality/quality-gates/"
+      "target": "/manual/bluetape4k-text/0.3/quality/quality-gates/"
     }
   ],
   "repository": "bluetape4k/bluetape4k-text",

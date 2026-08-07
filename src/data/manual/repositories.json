@@ -8,7 +8,7 @@
         "en": "Bluetape4k docs",
         "ko": "Bluetape4k 문서"
       },
-      "latestMinor": "1.11",
+      "latestMinor": "1.12",
       "route": {
         "en": "/manual/bluetape4k-projects/",
         "ko": "/ko/manual/bluetape4k-projects/"
@@ -21,7 +21,7 @@
         "en": "Exposed docs",
         "ko": "Exposed 문서"
       },
-      "latestMinor": "1.11",
+      "latestMinor": "1.12",
       "route": {
         "en": "/manual/bluetape4k-exposed/",
         "ko": "/ko/manual/bluetape4k-exposed/"
@@ -34,7 +34,7 @@
         "en": "AWS docs",
         "ko": "AWS 문서"
       },
-      "latestMinor": "0.4",
+      "latestMinor": "0.5",
       "route": {
         "en": "/manual/bluetape4k-aws/",
         "ko": "/ko/manual/bluetape4k-aws/"
@@ -47,7 +47,7 @@
         "en": "Leader docs",
         "ko": "Leader 문서"
       },
-      "latestMinor": "0.4",
+      "latestMinor": "0.5",
       "route": {
         "en": "/manual/bluetape4k-leader/",
         "ko": "/ko/manual/bluetape4k-leader/"
@@ -60,7 +60,7 @@
         "en": "Image docs",
         "ko": "Image 문서"
       },
-      "latestMinor": "0.3",
+      "latestMinor": "0.4",
       "route": {
         "en": "/manual/bluetape4k-image/",
         "ko": "/ko/manual/bluetape4k-image/"
@@ -73,7 +73,7 @@
         "en": "Graph docs",
         "ko": "Graph 문서"
       },
-      "latestMinor": "0.5",
+      "latestMinor": "0.6",
       "route": {
         "en": "/manual/bluetape4k-graph/",
         "ko": "/ko/manual/bluetape4k-graph/"
@@ -86,7 +86,7 @@
         "en": "Javers docs",
         "ko": "Javers 문서"
       },
-      "latestMinor": "0.2",
+      "latestMinor": "0.3",
       "route": {
         "en": "/manual/bluetape4k-javers/",
         "ko": "/ko/manual/bluetape4k-javers/"
@@ -99,7 +99,7 @@
         "en": "Text docs",
         "ko": "Text 문서"
       },
-      "latestMinor": "0.2",
+      "latestMinor": "0.3",
       "route": {
         "en": "/manual/bluetape4k-text/",
         "ko": "/ko/manual/bluetape4k-text/"

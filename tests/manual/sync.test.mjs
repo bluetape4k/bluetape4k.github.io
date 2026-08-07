@@ -376,13 +376,14 @@ test('check mode is source-free, offline, read-only, and validates committed art
   await syncManual({ ...input, mode: 'release', targetRoot }, dependenciesFor(input));
   const before = await treeDigest(targetRoot);
   const result = await syncManual({ mode: 'check', repository: SLUG, targetRoot }, {
+    repositoryRegistry: TEST_REGISTRY,
     fetchImpl: async () => { throw new Error('network forbidden'); },
     buildSnapshotImpl: async () => { throw new Error('build forbidden'); },
   });
   assert.equal(result.mutated, false);
   assert.equal(result.latest, '1.11');
   assert.equal(await treeDigest(targetRoot), before);
-  await validateCommittedSite({ targetRoot, repository: SLUG });
+  await validateCommittedSite({ targetRoot, repository: SLUG, registry: TEST_REGISTRY });
   await assert.rejects(
     validateCommittedRepository({ targetRoot, repository: { ...PROJECTS, latestMinor: '1.12' } }),
     /REPOSITORY_LATEST_MINOR/,
@@ -400,7 +401,7 @@ test('check mode is source-free, offline, read-only, and validates committed art
       tampered[field] = value;
       await writeFile(artifactPath, `${JSON.stringify(tampered, null, 2)}\n`);
       await assert.rejects(
-        validateCommittedSite({ targetRoot, repository: SLUG }),
+        validateCommittedSite({ targetRoot, repository: SLUG, registry: TEST_REGISTRY }),
         /SNAPSHOT_PROVENANCE/,
         `${artifact}.${field}`,
       );
@@ -415,7 +416,7 @@ test('check mode is source-free, offline, read-only, and validates committed art
     marker[field] = (field === 'generationId' ? 'e' : 'f').repeat(64);
     await writeFile(markerPath, `${JSON.stringify(marker, null, 2)}\n`);
     await assert.rejects(
-      validateCommittedSite({ targetRoot, repository: SLUG }),
+      validateCommittedSite({ targetRoot, repository: SLUG, registry: TEST_REGISTRY }),
       /PUBLICATION_MARKER/,
       field,
     );
@@ -485,7 +486,7 @@ test('offline validation rejects a symlink target root and matching external art
   const rootLink = path.join(external, 'site-link');
   await symlink(targetRoot, rootLink);
   await assert.rejects(
-    validateCommittedSite({ targetRoot: rootLink, repository: SLUG }),
+    validateCommittedSite({ targetRoot: rootLink, repository: SLUG, registry: TEST_REGISTRY }),
     /PATH_SYMLINK/,
   );
 
@@ -501,7 +502,7 @@ test('offline validation rejects a symlink target root and matching external art
     await rm(artifact);
     await symlink(externalArtifact, artifact);
     await assert.rejects(
-      validateCommittedSite({ targetRoot, repository: SLUG }),
+      validateCommittedSite({ targetRoot, repository: SLUG, registry: TEST_REGISTRY }),
       /PATH_SYMLINK/,
       name,
     );
