@@ -2,331 +2,355 @@
   "redirects": [
     {
       "source": "/ko/manual/bluetape4k-image/",
-      "target": "/ko/manual/bluetape4k-image/0.3/"
+      "target": "/ko/manual/bluetape4k-image/0.4/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/architecture/repository-map/",
-      "target": "/ko/manual/bluetape4k-image/0.3/architecture/repository-map/"
+      "target": "/ko/manual/bluetape4k-image/0.4/architecture/repository-map/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/architecture/runtime-boundaries/",
-      "target": "/ko/manual/bluetape4k-image/0.3/architecture/runtime-boundaries/"
+      "target": "/ko/manual/bluetape4k-image/0.4/architecture/runtime-boundaries/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/benchmarks/interpreting-results/",
-      "target": "/ko/manual/bluetape4k-image/0.3/benchmarks/interpreting-results/"
+      "target": "/ko/manual/bluetape4k-image/0.4/benchmarks/interpreting-results/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/core/analysis-and-similarity/",
-      "target": "/ko/manual/bluetape4k-image/0.3/core/analysis-and-similarity/"
+      "target": "/ko/manual/bluetape4k-image/0.4/core/analysis-and-similarity/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/core/immutable-image-model/",
-      "target": "/ko/manual/bluetape4k-image/0.3/core/immutable-image-model/"
+      "target": "/ko/manual/bluetape4k-image/0.4/core/immutable-image-model/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/core/loading-and-writing/",
-      "target": "/ko/manual/bluetape4k-image/0.3/core/loading-and-writing/"
+      "target": "/ko/manual/bluetape4k-image/0.4/core/loading-and-writing/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/core/transforms-and-filters/",
-      "target": "/ko/manual/bluetape4k-image/0.3/core/transforms-and-filters/"
+      "target": "/ko/manual/bluetape4k-image/0.4/core/transforms-and-filters/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/getting-started/",
-      "target": "/ko/manual/bluetape4k-image/0.3/getting-started/"
+      "target": "/ko/manual/bluetape4k-image/0.4/getting-started/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/guides/backend-selection/",
-      "target": "/ko/manual/bluetape4k-image/0.3/guides/backend-selection/"
+      "target": "/ko/manual/bluetape4k-image/0.4/guides/backend-selection/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/guides/codec-and-format-selection/",
-      "target": "/ko/manual/bluetape4k-image/0.3/guides/codec-and-format-selection/"
+      "target": "/ko/manual/bluetape4k-image/0.4/guides/codec-and-format-selection/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/guides/failure-diagnosis/",
-      "target": "/ko/manual/bluetape4k-image/0.3/guides/failure-diagnosis/"
+      "target": "/ko/manual/bluetape4k-image/0.4/guides/failure-diagnosis/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/guides/learning-path/",
-      "target": "/ko/manual/bluetape4k-image/0.3/guides/learning-path/"
+      "target": "/ko/manual/bluetape4k-image/0.4/guides/learning-path/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/guides/native-resource-lifecycle/",
-      "target": "/ko/manual/bluetape4k-image/0.3/guides/native-resource-lifecycle/"
+      "target": "/ko/manual/bluetape4k-image/0.4/guides/native-resource-lifecycle/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/guides/ocr-setup/",
-      "target": "/ko/manual/bluetape4k-image/0.3/guides/ocr-setup/"
+      "target": "/ko/manual/bluetape4k-image/0.4/guides/ocr-setup/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/guides/performance-selection/",
-      "target": "/ko/manual/bluetape4k-image/0.3/guides/performance-selection/"
+      "target": "/ko/manual/bluetape4k-image/0.4/guides/performance-selection/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/guides/spring-vs-ktor/",
-      "target": "/ko/manual/bluetape4k-image/0.3/guides/spring-vs-ktor/"
+      "target": "/ko/manual/bluetape4k-image/0.4/guides/spring-vs-ktor/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/guides/testing-and-operations/",
-      "target": "/ko/manual/bluetape4k-image/0.3/guides/testing-and-operations/"
+      "target": "/ko/manual/bluetape4k-image/0.4/guides/testing-and-operations/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/integrations/captcha/",
-      "target": "/ko/manual/bluetape4k-image/0.3/integrations/captcha/"
+      "target": "/ko/manual/bluetape4k-image/0.4/integrations/captcha/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/integrations/ktor/",
-      "target": "/ko/manual/bluetape4k-image/0.3/integrations/ktor/"
+      "target": "/ko/manual/bluetape4k-image/0.4/integrations/ktor/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/integrations/ocr/",
-      "target": "/ko/manual/bluetape4k-image/0.3/integrations/ocr/"
+      "target": "/ko/manual/bluetape4k-image/0.4/integrations/ocr/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/integrations/spring-boot/",
-      "target": "/ko/manual/bluetape4k-image/0.3/integrations/spring-boot/"
+      "target": "/ko/manual/bluetape4k-image/0.4/integrations/spring-boot/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/integrations/storage-and-cdn/",
-      "target": "/ko/manual/bluetape4k-image/0.3/integrations/storage-and-cdn/"
+      "target": "/ko/manual/bluetape4k-image/0.4/integrations/storage-and-cdn/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/modules/basic-processing/",
-      "target": "/ko/manual/bluetape4k-image/0.3/modules/basic-processing/"
+      "target": "/ko/manual/bluetape4k-image/0.4/modules/basic-processing/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/modules/bluetape4k-image-bom/",
-      "target": "/ko/manual/bluetape4k-image/0.3/modules/bluetape4k-image-bom/"
+      "target": "/ko/manual/bluetape4k-image/0.4/modules/bluetape4k-image-bom/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-image/modules/bluetape4k-images-barcode-api/",
+      "target": "/ko/manual/bluetape4k-image/0.4/modules/bluetape4k-images-barcode-api/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-image/modules/bluetape4k-images-barcode-zxing/",
+      "target": "/ko/manual/bluetape4k-image/0.4/modules/bluetape4k-images-barcode-zxing/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/modules/bluetape4k-images-benchmark/",
-      "target": "/ko/manual/bluetape4k-image/0.3/modules/bluetape4k-images-benchmark/"
+      "target": "/ko/manual/bluetape4k-image/0.4/modules/bluetape4k-images-benchmark/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/modules/bluetape4k-images-captcha/",
-      "target": "/ko/manual/bluetape4k-image/0.3/modules/bluetape4k-images-captcha/"
+      "target": "/ko/manual/bluetape4k-image/0.4/modules/bluetape4k-images-captcha/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/modules/bluetape4k-images-ktor/",
-      "target": "/ko/manual/bluetape4k-image/0.3/modules/bluetape4k-images-ktor/"
+      "target": "/ko/manual/bluetape4k-image/0.4/modules/bluetape4k-images-ktor/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/modules/bluetape4k-images-ocr/",
-      "target": "/ko/manual/bluetape4k-image/0.3/modules/bluetape4k-images-ocr/"
+      "target": "/ko/manual/bluetape4k-image/0.4/modules/bluetape4k-images-ocr/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/modules/bluetape4k-images-spring-boot/",
-      "target": "/ko/manual/bluetape4k-image/0.3/modules/bluetape4k-images-spring-boot/"
+      "target": "/ko/manual/bluetape4k-image/0.4/modules/bluetape4k-images-spring-boot/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/modules/bluetape4k-images-vips-api/",
-      "target": "/ko/manual/bluetape4k-image/0.3/modules/bluetape4k-images-vips-api/"
+      "target": "/ko/manual/bluetape4k-image/0.4/modules/bluetape4k-images-vips-api/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/modules/bluetape4k-images-vips-java21/",
-      "target": "/ko/manual/bluetape4k-image/0.3/modules/bluetape4k-images-vips-java21/"
+      "target": "/ko/manual/bluetape4k-image/0.4/modules/bluetape4k-images-vips-java21/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/modules/bluetape4k-images-vips-java25/",
-      "target": "/ko/manual/bluetape4k-image/0.3/modules/bluetape4k-images-vips-java25/"
+      "target": "/ko/manual/bluetape4k-image/0.4/modules/bluetape4k-images-vips-java25/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/modules/bluetape4k-images/",
-      "target": "/ko/manual/bluetape4k-image/0.3/modules/bluetape4k-images/"
+      "target": "/ko/manual/bluetape4k-image/0.4/modules/bluetape4k-images/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/modules/ktor-image-api/",
-      "target": "/ko/manual/bluetape4k-image/0.3/modules/ktor-image-api/"
+      "target": "/ko/manual/bluetape4k-image/0.4/modules/ktor-image-api/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/modules/ktor-ocr-api/",
-      "target": "/ko/manual/bluetape4k-image/0.3/modules/ktor-ocr-api/"
+      "target": "/ko/manual/bluetape4k-image/0.4/modules/ktor-ocr-api/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-image/modules/spring-boot-barcode-api/",
+      "target": "/ko/manual/bluetape4k-image/0.4/modules/spring-boot-barcode-api/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/modules/spring-boot-image-api/",
-      "target": "/ko/manual/bluetape4k-image/0.3/modules/spring-boot-image-api/"
+      "target": "/ko/manual/bluetape4k-image/0.4/modules/spring-boot-image-api/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/modules/spring-boot-ocr-api/",
-      "target": "/ko/manual/bluetape4k-image/0.3/modules/spring-boot-ocr-api/"
+      "target": "/ko/manual/bluetape4k-image/0.4/modules/spring-boot-ocr-api/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/native/java21-jni/",
-      "target": "/ko/manual/bluetape4k-image/0.3/native/java21-jni/"
+      "target": "/ko/manual/bluetape4k-image/0.4/native/java21-jni/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/native/java25-ffm/",
-      "target": "/ko/manual/bluetape4k-image/0.3/native/java25-ffm/"
+      "target": "/ko/manual/bluetape4k-image/0.4/native/java25-ffm/"
     },
     {
       "source": "/ko/manual/bluetape4k-image/native/vips-api/",
-      "target": "/ko/manual/bluetape4k-image/0.3/native/vips-api/"
+      "target": "/ko/manual/bluetape4k-image/0.4/native/vips-api/"
     },
     {
       "source": "/manual/bluetape4k-image/",
-      "target": "/manual/bluetape4k-image/0.3/"
+      "target": "/manual/bluetape4k-image/0.4/"
     },
     {
       "source": "/manual/bluetape4k-image/architecture/repository-map/",
-      "target": "/manual/bluetape4k-image/0.3/architecture/repository-map/"
+      "target": "/manual/bluetape4k-image/0.4/architecture/repository-map/"
     },
     {
       "source": "/manual/bluetape4k-image/architecture/runtime-boundaries/",
-      "target": "/manual/bluetape4k-image/0.3/architecture/runtime-boundaries/"
+      "target": "/manual/bluetape4k-image/0.4/architecture/runtime-boundaries/"
     },
     {
       "source": "/manual/bluetape4k-image/benchmarks/interpreting-results/",
-      "target": "/manual/bluetape4k-image/0.3/benchmarks/interpreting-results/"
+      "target": "/manual/bluetape4k-image/0.4/benchmarks/interpreting-results/"
     },
     {
       "source": "/manual/bluetape4k-image/core/analysis-and-similarity/",
-      "target": "/manual/bluetape4k-image/0.3/core/analysis-and-similarity/"
+      "target": "/manual/bluetape4k-image/0.4/core/analysis-and-similarity/"
     },
     {
       "source": "/manual/bluetape4k-image/core/immutable-image-model/",
-      "target": "/manual/bluetape4k-image/0.3/core/immutable-image-model/"
+      "target": "/manual/bluetape4k-image/0.4/core/immutable-image-model/"
     },
     {
       "source": "/manual/bluetape4k-image/core/loading-and-writing/",
-      "target": "/manual/bluetape4k-image/0.3/core/loading-and-writing/"
+      "target": "/manual/bluetape4k-image/0.4/core/loading-and-writing/"
     },
     {
       "source": "/manual/bluetape4k-image/core/transforms-and-filters/",
-      "target": "/manual/bluetape4k-image/0.3/core/transforms-and-filters/"
+      "target": "/manual/bluetape4k-image/0.4/core/transforms-and-filters/"
     },
     {
       "source": "/manual/bluetape4k-image/getting-started/",
-      "target": "/manual/bluetape4k-image/0.3/getting-started/"
+      "target": "/manual/bluetape4k-image/0.4/getting-started/"
     },
     {
       "source": "/manual/bluetape4k-image/guides/backend-selection/",
-      "target": "/manual/bluetape4k-image/0.3/guides/backend-selection/"
+      "target": "/manual/bluetape4k-image/0.4/guides/backend-selection/"
     },
     {
       "source": "/manual/bluetape4k-image/guides/codec-and-format-selection/",
-      "target": "/manual/bluetape4k-image/0.3/guides/codec-and-format-selection/"
+      "target": "/manual/bluetape4k-image/0.4/guides/codec-and-format-selection/"
     },
     {
       "source": "/manual/bluetape4k-image/guides/failure-diagnosis/",
-      "target": "/manual/bluetape4k-image/0.3/guides/failure-diagnosis/"
+      "target": "/manual/bluetape4k-image/0.4/guides/failure-diagnosis/"
     },
     {
       "source": "/manual/bluetape4k-image/guides/learning-path/",
-      "target": "/manual/bluetape4k-image/0.3/guides/learning-path/"
+      "target": "/manual/bluetape4k-image/0.4/guides/learning-path/"
     },
     {
       "source": "/manual/bluetape4k-image/guides/native-resource-lifecycle/",
-      "target": "/manual/bluetape4k-image/0.3/guides/native-resource-lifecycle/"
+      "target": "/manual/bluetape4k-image/0.4/guides/native-resource-lifecycle/"
     },
     {
       "source": "/manual/bluetape4k-image/guides/ocr-setup/",
-      "target": "/manual/bluetape4k-image/0.3/guides/ocr-setup/"
+      "target": "/manual/bluetape4k-image/0.4/guides/ocr-setup/"
     },
     {
       "source": "/manual/bluetape4k-image/guides/performance-selection/",
-      "target": "/manual/bluetape4k-image/0.3/guides/performance-selection/"
+      "target": "/manual/bluetape4k-image/0.4/guides/performance-selection/"
     },
     {
       "source": "/manual/bluetape4k-image/guides/spring-vs-ktor/",
-      "target": "/manual/bluetape4k-image/0.3/guides/spring-vs-ktor/"
+      "target": "/manual/bluetape4k-image/0.4/guides/spring-vs-ktor/"
     },
     {
       "source": "/manual/bluetape4k-image/guides/testing-and-operations/",
-      "target": "/manual/bluetape4k-image/0.3/guides/testing-and-operations/"
+      "target": "/manual/bluetape4k-image/0.4/guides/testing-and-operations/"
     },
     {
       "source": "/manual/bluetape4k-image/integrations/captcha/",
-      "target": "/manual/bluetape4k-image/0.3/integrations/captcha/"
+      "target": "/manual/bluetape4k-image/0.4/integrations/captcha/"
     },
     {
       "source": "/manual/bluetape4k-image/integrations/ktor/",
-      "target": "/manual/bluetape4k-image/0.3/integrations/ktor/"
+      "target": "/manual/bluetape4k-image/0.4/integrations/ktor/"
     },
     {
       "source": "/manual/bluetape4k-image/integrations/ocr/",
-      "target": "/manual/bluetape4k-image/0.3/integrations/ocr/"
+      "target": "/manual/bluetape4k-image/0.4/integrations/ocr/"
     },
     {
       "source": "/manual/bluetape4k-image/integrations/spring-boot/",
-      "target": "/manual/bluetape4k-image/0.3/integrations/spring-boot/"
+      "target": "/manual/bluetape4k-image/0.4/integrations/spring-boot/"
     },
     {
       "source": "/manual/bluetape4k-image/integrations/storage-and-cdn/",
-      "target": "/manual/bluetape4k-image/0.3/integrations/storage-and-cdn/"
+      "target": "/manual/bluetape4k-image/0.4/integrations/storage-and-cdn/"
     },
     {
       "source": "/manual/bluetape4k-image/modules/basic-processing/",
-      "target": "/manual/bluetape4k-image/0.3/modules/basic-processing/"
+      "target": "/manual/bluetape4k-image/0.4/modules/basic-processing/"
     },
     {
       "source": "/manual/bluetape4k-image/modules/bluetape4k-image-bom/",
-      "target": "/manual/bluetape4k-image/0.3/modules/bluetape4k-image-bom/"
+      "target": "/manual/bluetape4k-image/0.4/modules/bluetape4k-image-bom/"
+    },
+    {
+      "source": "/manual/bluetape4k-image/modules/bluetape4k-images-barcode-api/",
+      "target": "/manual/bluetape4k-image/0.4/modules/bluetape4k-images-barcode-api/"
+    },
+    {
+      "source": "/manual/bluetape4k-image/modules/bluetape4k-images-barcode-zxing/",
+      "target": "/manual/bluetape4k-image/0.4/modules/bluetape4k-images-barcode-zxing/"
     },
     {
       "source": "/manual/bluetape4k-image/modules/bluetape4k-images-benchmark/",
-      "target": "/manual/bluetape4k-image/0.3/modules/bluetape4k-images-benchmark/"
+      "target": "/manual/bluetape4k-image/0.4/modules/bluetape4k-images-benchmark/"
     },
     {
       "source": "/manual/bluetape4k-image/modules/bluetape4k-images-captcha/",
-      "target": "/manual/bluetape4k-image/0.3/modules/bluetape4k-images-captcha/"
+      "target": "/manual/bluetape4k-image/0.4/modules/bluetape4k-images-captcha/"
     },
     {
       "source": "/manual/bluetape4k-image/modules/bluetape4k-images-ktor/",
-      "target": "/manual/bluetape4k-image/0.3/modules/bluetape4k-images-ktor/"
+      "target": "/manual/bluetape4k-image/0.4/modules/bluetape4k-images-ktor/"
     },
     {
       "source": "/manual/bluetape4k-image/modules/bluetape4k-images-ocr/",
-      "target": "/manual/bluetape4k-image/0.3/modules/bluetape4k-images-ocr/"
+      "target": "/manual/bluetape4k-image/0.4/modules/bluetape4k-images-ocr/"
     },
     {
       "source": "/manual/bluetape4k-image/modules/bluetape4k-images-spring-boot/",
-      "target": "/manual/bluetape4k-image/0.3/modules/bluetape4k-images-spring-boot/"
+      "target": "/manual/bluetape4k-image/0.4/modules/bluetape4k-images-spring-boot/"
     },
     {
       "source": "/manual/bluetape4k-image/modules/bluetape4k-images-vips-api/",
-      "target": "/manual/bluetape4k-image/0.3/modules/bluetape4k-images-vips-api/"
+      "target": "/manual/bluetape4k-image/0.4/modules/bluetape4k-images-vips-api/"
     },
     {
       "source": "/manual/bluetape4k-image/modules/bluetape4k-images-vips-java21/",
-      "target": "/manual/bluetape4k-image/0.3/modules/bluetape4k-images-vips-java21/"
+      "target": "/manual/bluetape4k-image/0.4/modules/bluetape4k-images-vips-java21/"
     },
     {
       "source": "/manual/bluetape4k-image/modules/bluetape4k-images-vips-java25/",
-      "target": "/manual/bluetape4k-image/0.3/modules/bluetape4k-images-vips-java25/"
+      "target": "/manual/bluetape4k-image/0.4/modules/bluetape4k-images-vips-java25/"
     },
     {
       "source": "/manual/bluetape4k-image/modules/bluetape4k-images/",
-      "target": "/manual/bluetape4k-image/0.3/modules/bluetape4k-images/"
+      "target": "/manual/bluetape4k-image/0.4/modules/bluetape4k-images/"
     },
     {
       "source": "/manual/bluetape4k-image/modules/ktor-image-api/",
-      "target": "/manual/bluetape4k-image/0.3/modules/ktor-image-api/"
+      "target": "/manual/bluetape4k-image/0.4/modules/ktor-image-api/"
     },
     {
       "source": "/manual/bluetape4k-image/modules/ktor-ocr-api/",
-      "target": "/manual/bluetape4k-image/0.3/modules/ktor-ocr-api/"
+      "target": "/manual/bluetape4k-image/0.4/modules/ktor-ocr-api/"
+    },
+    {
+      "source": "/manual/bluetape4k-image/modules/spring-boot-barcode-api/",
+      "target": "/manual/bluetape4k-image/0.4/modules/spring-boot-barcode-api/"
     },
     {
       "source": "/manual/bluetape4k-image/modules/spring-boot-image-api/",
-      "target": "/manual/bluetape4k-image/0.3/modules/spring-boot-image-api/"
+      "target": "/manual/bluetape4k-image/0.4/modules/spring-boot-image-api/"
     },
     {
       "source": "/manual/bluetape4k-image/modules/spring-boot-ocr-api/",
-      "target": "/manual/bluetape4k-image/0.3/modules/spring-boot-ocr-api/"
+      "target": "/manual/bluetape4k-image/0.4/modules/spring-boot-ocr-api/"
     },
     {
       "source": "/manual/bluetape4k-image/native/java21-jni/",
-      "target": "/manual/bluetape4k-image/0.3/native/java21-jni/"
+      "target": "/manual/bluetape4k-image/0.4/native/java21-jni/"
     },
     {
       "source": "/manual/bluetape4k-image/native/java25-ffm/",
-      "target": "/manual/bluetape4k-image/0.3/native/java25-ffm/"
+      "target": "/manual/bluetape4k-image/0.4/native/java25-ffm/"
     },
     {
       "source": "/manual/bluetape4k-image/native/vips-api/",
-      "target": "/manual/bluetape4k-image/0.3/native/vips-api/"
+      "target": "/manual/bluetape4k-image/0.4/native/vips-api/"
     }
   ],
   "repository": "bluetape4k/bluetape4k-image",
