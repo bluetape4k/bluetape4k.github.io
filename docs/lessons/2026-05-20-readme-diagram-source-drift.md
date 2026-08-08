@@ -1,27 +1,27 @@
-# README diagram source drift rule
+# README 다이어그램 소스 드리프트 규칙
 
-## Context
-Generated README diagrams can look good while preserving stale Mermaid content, including deprecated or renamed APIs.
+## 배경
 
-## Decision
-The style guide now makes current source code authoritative over recovered Mermaid history for class/API diagrams.
+생성된 README 다이어그램은 보기 좋지만 deprecated 또는 이름이 바뀐 API를 포함한 오래된 Mermaid 내용을 그대로 보존할 수 있다.
 
-## Outcome
-The guide requires source drift checks for deprecated APIs, removed classes, stale field names, and relationship directions before accepting generated SVG/PNG assets.
+## 결정
 
-## Verification
-Reviewed the updated guide text and aligned it with the exposed `HasIdentifier` correction.
+스타일 가이드는 class/API 다이어그램에서 복원된 Mermaid history보다 현재 소스 코드를 우선 기준으로 삼는다.
 
-## Next time
-Reject visually polished diagrams when their source model no longer matches the current public API.
+## 결과
 
-## 2026-05-20 Class and ERD routing rule
+생성된 SVG/PNG 자산을 승인하기 전에 deprecated API, 삭제된 클래스, 오래된 필드명, 관계 방향의 source drift를 확인하도록 가이드에 규칙을 추가했다.
 
-Class diagrams and ERDs need layout freedom beyond a uniform grid. The style
-guide now requires free placement, orthogonal relationship lanes, and rejection
-of connector paths that cross through class or table interiors.
+## 검증
 
-Use shared lanes for repeated dependencies such as `clinicId` or a common
-interface implementation target. This keeps diagrams reusable for README,
-slides, and blog posts because the viewer can read relationship clusters without
-decoding a dense arrow bundle.
+갱신된 가이드 문구를 검토하고 Exposed `HasIdentifier` correction과 맞췄다.
+
+## 다음 작업
+
+소스 모델이 현재 public API와 더 이상 일치하지 않으면 시각적으로 정교한 다이어그램도 거부한다.
+
+## 2026-05-20 Class 및 ERD 배치 규칙
+
+Class diagram과 ERD는 균일한 grid 이상의 배치 자유도가 필요하다. 이제 스타일 가이드는 자유 배치, 직교 관계 lane, 클래스나 테이블 내부를 가로지르는 connector path 거부를 요구한다.
+
+`clinicId` 같은 반복 dependency나 공통 interface 구현 대상을 공유 lane으로 배치한다. 그러면 관계 묶음을 복잡한 화살표 다발로 해석하지 않아도 되므로 README, slides, blog에서 다이어그램을 재사용하기 쉽다.

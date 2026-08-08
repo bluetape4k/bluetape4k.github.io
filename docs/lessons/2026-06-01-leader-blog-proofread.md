@@ -1,22 +1,22 @@
-# Leader blog proofread pass
+# Leader 블로그 교정 작업
 
-## Context
+## 배경
 
-Leader Part 1-3 Korean and English posts needed a small naturalness pass after publishing.
+게시 후 Leader Part 1-3의 한국어·영어 글에 작은 자연스러움 교정이 필요했다.
 
-## Decision
+## 결정
 
-Keep the article structure and technical claims unchanged. Limit the edits to awkward Korean phrasing, literal English localization, and ambiguous technical wording such as caller, store, skip-on-fail, release, and chunk.
+글 구조와 기술 주장은 변경하지 않는다. 어색한 한국어 표현, 직역투 영어 localization, caller·store·skip-on-fail·release·chunk처럼 의미가 모호한 기술 용어만 제한적으로 수정한다.
 
-## Outcome
+## 결과
 
-The six bilingual Leader posts were proofread as one documentation PR. Unrelated untracked `.omc/` state was left untouched.
+bilingual Leader 글 여섯 편을 하나의 documentation PR로 교정했다. 관련 없는 untracked `.omc/` state는 건드리지 않았다.
 
-## Verification
+## 검증
 
 - `git diff --check`
 - `npm run build`
 
-## Future guidance
+## 향후 가이드
 
-For future blog proofreading, process posts in chronological order and report after each post or post pair so the user can review tone before the next batch.
+앞으로 블로그 교정은 시간순으로 처리하고, 다음 batch 전에 사용자가 문체를 검토할 수 있도록 글 하나 또는 pair 단위로 결과를 보고한다.

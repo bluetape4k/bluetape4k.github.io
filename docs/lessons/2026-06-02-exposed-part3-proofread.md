@@ -1,20 +1,17 @@
-# 2026-06-02 Exposed Part 3 proofread
+# 2026-06-02 Exposed Part 3 교정
 
-## Context
+## 배경
 
-After Exposed Part 2 was merged, the next article was the Korean-only Part 3 post covering R2DBC, Coroutines, and Virtual
-Threads.
+Exposed Part 2가 merge된 뒤 다음 글은 R2DBC, Coroutines, Virtual Threads를 다루는 한국어 전용 Part 3이었다.
 
-## Decision
+## 결정
 
-Keep the Korean article's workload-first selection rule intact, make small naturalness edits, and add an English
-counterpart with the same benchmark numbers, execution-model diagram, source links, and locale-local series links.
+workload-first selection rule을 유지하고 자연스러움만 작게 다듬는다. 동일한 benchmark 수치, execution-model diagram, source link, locale-local series link를 가진 영어 대응 글을 추가한다.
 
-## Outcome
+## 결과
 
-Added the English Part 3 article, updated the English Part 2 series links to include Part 3, and lightly proofread the
-Korean Part 3 article without changing benchmark claims.
+영어 Part 3 글을 추가하고 영어 Part 2 series link에 Part 3을 포함했으며 benchmark claim을 바꾸지 않고 한국어 Part 3을 가볍게 교정했다.
 
-## Verification
+## 검증
 
-Run `git diff --check` and `npm run build` before opening the PR.
+stacked PR을 열기 전에 `git diff --check`와 `npm run build`를 실행한다.

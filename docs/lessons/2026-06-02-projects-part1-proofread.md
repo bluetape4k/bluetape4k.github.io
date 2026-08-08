@@ -1,29 +1,22 @@
-# Projects Part 1 Proofread
+# Projects Part 1 교정
 
-## Context
+## 배경
 
-The proofreading stack continued from the Cache series to the
-`bluetape4k-projects` series overview.
+교정 stack이 Cache series에서 `bluetape4k-projects` series overview로 이어졌다.
 
-## Decision
+## 결정
 
-Preserve module boundaries, repository split criteria, source links, and series
-navigation. Tighten phrasing around the shared foundation role and avoid overly
-theatrical metaphors.
+module boundary, repository split 기준, source link, series navigation을 유지한다. shared foundation 역할을 더 명확히 표현하고 과도하게 연극적인 metaphor는 피한다.
 
-## Outcome
+## 결과
 
-The Korean and English posts now describe `projects` as shared infrastructure
-more directly, while keeping the same explanation of BOM, module adoption, and
-standalone repository boundaries.
+한국어·영어 글이 `projects`를 shared infrastructure로 더 직접적으로 설명하면서 BOM, module adoption, standalone repository boundary에 관한 설명은 유지한다.
 
-## Verification
+## 검증
 
 - `git diff --check`
 - `npm run build`
 
-## Future Guidance
+## 향후 가이드
 
-For `bluetape4k-projects` overview posts, proofreading should make module
-ownership clearer. Do not blur which capabilities stay in `projects` and which
-belong to standalone repositories.
+`bluetape4k-projects` overview 글에서는 module ownership을 더 명확하게 만든다. 어떤 capability가 `projects`에 남고 어떤 capability가 독립 저장소에 속하는지 섞지 않는다.

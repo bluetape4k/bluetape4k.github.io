@@ -1,39 +1,29 @@
-# Blog hero figure separation
+# 블로그 hero figure 분리
 
-## Context
+## 배경
 
-Several blog posts used the first benchmark chart or explanatory diagram as
-`bt4k-blog-hero`. That satisfied the presence check but did not match the visual
-contract established by the AI collaboration article, where the hero is an
-introductory image before the article body.
+여러 블로그 글이 첫 benchmark chart나 설명 다이어그램을 `bt4k-blog-hero`로 사용했다. 존재 여부 검사는 통과했지만, 본문 앞에 도입용 이미지를 두는 AI 협업 글의 시각 계약과는 맞지 않았다.
 
-## Decision
+## 결정
 
-Keep `bt4k-blog-hero` for article-opening editorial imagery only. Benchmark
-charts, architecture diagrams, and measurement summaries belong in body figures
-such as `bt4k-architecture`, even when they are the most important evidence in
-the article.
+`bt4k-blog-hero`는 글을 여는 editorial image에만 사용한다. benchmark chart, architecture diagram, measurement summary는 글에서 근거를 설명하는 위치의 `bt4k-architecture` 같은 본문 figure에 둔다. 글에서 가장 중요한 근거인 경우에도 동일하다.
 
-## Outcome
+## 결과
 
-The English and Korean posts now share the same structure:
+영어·한국어 글이 다음 구조를 공유한다.
 
-1. Frontmatter.
-2. Editorial hero figure.
-3. Post metadata.
-4. Intro copy.
-5. Body chart or diagram at the relevant evidence point.
+1. Frontmatter
+2. Editorial hero figure
+3. Post metadata
+4. Intro copy
+5. 관련 근거 위치의 본문 chart 또는 diagram
 
-## Verification
+## 검증
 
 - `npm run build`
 - `git diff --check`
-- Local rendered route check for all English and Korean blog posts confirmed
-  that `bt4k-blog-hero` does not point at chart, benchmark, throughput, or
-  summary assets.
+- 영어·한국어 전체 블로그 글의 로컬 렌더 route를 확인했다. `bt4k-blog-hero`가 chart, benchmark, throughput, summary asset을 가리키지 않음을 검증했다.
 
-## Future guard
+## 향후 guard
 
-When adding or translating posts, do not pass a "hero exists" check by moving a
-body chart to the top. Create or reuse a dedicated editorial hero image, then
-leave data visuals in the body.
+글을 추가하거나 번역할 때 본문 chart를 맨 위로 옮겨 "hero가 있다" 검사를 통과시키지 않는다. 전용 editorial hero image를 만들거나 재사용하고, 데이터 시각화는 본문에 둔다.

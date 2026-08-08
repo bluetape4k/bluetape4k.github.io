@@ -1,125 +1,208 @@
 ---
-title: Building a Large Kotlin Library Ecosystem with AI in Three Months
-description: What Claude Code and Codex helped with while expanding the bluetape4k library ecosystem, and how workflow, memory, reviews, and lessons made that collaboration stable.
+title: AI와 3개월 동안 키운 대규모 Kotlin 라이브러리 생태계
+description: Claude Code와 Codex로 bluetape4k 라이브러리 생태계를 확장하며 얻은 도움, 시행착오, 그리고 AI 협업을 안정화한 방식.
 sidebar:
   order: -202605180100
 blog:
   date: 2026-05-18T01:00:00+09:00
   image: /assets/ai-assisted-library-development.png
-  imageAlt: AI-assisted Kotlin library ecosystem development
-  cardDescription: How Claude Code and Codex helped with automation, documentation, tests, research, examples, cross-repository consistency, and workflow discipline.
+  imageAlt: AI와 함께 Kotlin 라이브러리 생태계를 개발하는 모습
+  cardDescription: Claude Code와 Codex로 자동화, 문서화, 테스트, 연구, 예제, 대규모 repo 작업을 안정화한 과정과 배운 점입니다.
 ---
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/ai-assisted-library-development.png" alt="AI coding agents, automation pipelines, documentation, tests, and repository maps supporting a Kotlin library ecosystem" loading="eager" />
-  <figcaption>For large library work, AI was most valuable as a collaboration system for research, automation, review, documentation, and repeated cross-repository work.</figcaption>
+  <figcaption>대규모 라이브러리 작업에서 AI는 단순 코드 생성기보다 연구, 자동화, 리뷰, 문서화, 반복 작업을 이어 주는 협업 도구에 가까웠습니다.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-18 · bluetape4k engineering note</p>
 
 
-Over the last three months, I used Claude Code and Codex heavily while expanding the bluetape4k ecosystem. The work was not a single application. It spanned multiple library repositories, BOMs, Spring Boot 3/4 integrations, Ktor examples, Exposed JDBC/R2DBC, AWS, graph, image processing, leader election, text processing, and workshop documentation.
+지난 3개월 동안 bluetape4k 생태계를 크게 확장하며 Claude Code와 Codex를 거의 매일 활용했다.
+작업 범위는 단일 애플리케이션에 그치지 않았다. 여러 라이브러리 저장소, BOM, Spring Boot 3/4 통합,
+Ktor 예제, Exposed JDBC/R2DBC, AWS, graph, image, leader election, text processing, workshop 문서까지
+이어졌다.
 
-At first, I expected AI to help mostly by writing code faster. In practice, the biggest gains did not come from generating one or two files quickly. The real gains came from automating repeated work, documenting the process, improving tests, and keeping many repositories aligned to the same standards. Without a disciplined collaboration process, AI productivity was easy to lose.
+처음에는 AI가 코드 작성 속도를 높여 줄 것이라 기대했다. 실제로 더 큰 효과는 다른 곳에서 나타났다. 코드 한두 파일을 빠르게
+만드는 일보다 반복 작업을 자동화하고, 작업 과정을 문서화하고, 테스트를 보강하며, 여러 저장소에서
+같은 기준을 유지하는 데서 차이가 컸다. 반대로 AI와 함께 일하는 절차가 없으면 생산성은 쉽게
+흔들렸다.
 
-## What AI Helped With
+## AI가 실제로 도와준 일
 
-The first visible benefit was automation. GitHub Actions maintenance, applying the same setting across many repositories, checking Dependabot and dependency governance, release preparation, and build verification are repetitive and easy to miss when done manually. AI helped split that work, inspect repository-specific differences, and narrow failures quickly.
+먼저 체감한 효과는 자동화였다. GitHub Actions 워크플로 정비, 여러 저장소에 같은 설정을 적용하는
+작업, Dependabot과 의존성 거버넌스 점검, 릴리스와 빌드 검증은 사람이 직접 반복할수록 피로가 쌓인다.
+AI는 이런 작업을 작은 단위로 나누고, 저장소별 차이를 확인하며, 실패 지점을 다시 좁혀 가는 데
+유용했다.
 
-Documentation also improved. KDoc, README updates, English/Korean README translation, example descriptions, migration notes, and GitHub issue/PR text all matter for library quality, but they take time. With AI, I could produce strong drafts quickly and then adjust the final meaning, tone, and direction myself.
+문서 작업도 달라졌다. KDoc 보강, README 작성과 영·한 번역, 예제 설명, 마이그레이션 노트, GitHub
+issue와 PR 설명은 라이브러리 품질에 직접 영향을 주지만 시간이 많이 든다. AI를 활용한 뒤에는 초안을
+빠르게 만들고, 사람이 최종 의미와 방향을 조정하는 방식으로 바뀌었다.
 
-Test coverage improved as well. I used AI to find empty test surfaces, lock public API contracts with tests, suggest edge cases, and analyze failing test output. It was especially useful for extending patterns across modules: if one module needed a certain kind of test, similar modules often needed the same treatment.
+테스트 범위를 넓히는 데도 효과가 있었다. 기존 모듈에서 비어 있는 테스트 영역을 찾고, 공개 API 계약을
+테스트로 고정하고, 경계 사례를 제안하며, 실패한 테스트를 분석하는 데 AI를 썼다. 특히 여러 모듈에 흩어진
+유사 패턴을 비교해 "여기에도 같은 종류의 테스트가 필요하다"는 식으로 확장할 때 도움이 됐다.
 
-For new features, AI was useful in research and pilot work. When evaluating libvips for image processing, shaping Spring Boot 4 and Ktor 3 examples, or organizing Exposed R2DBC usage patterns, AI helped collect official documentation, local code context, and tradeoffs quickly enough to make better decisions sooner.
+신규 기능을 검토할 때는 조사와 시범 구현이 특히 유용했다. 이미지 처리에서 libvips를 검토하거나,
+Spring Boot 4와 Ktor 3 기반 예제를 구성하거나, Exposed R2DBC 사용 패턴을 정리할 때 AI는 공식 문서,
+기존 코드, 대안의 장단점을 빠르게 모았다. 덕분에 사람은 선택지의 품질과 프로젝트 적합성에 더 집중할
+수 있었다.
 
-AI was also strong at proposing example scenarios. It helped frame what users might want to learn first, how Spring Boot and Ktor examples should be separated, and how workshop chapters could grow over time. Those ideas could then become issues and implementation plans.
+예제 시나리오를 구성할 때도 AI가 유용했다. 사용자가 어떤 흐름으로 배우면 좋은지, Spring Boot 예제와
+Ktor 예제를 어떻게 나눌지, workshop chapter를 어떤 순서로 확장할지 아이디어를 얻었다. 이를
+issue와 구현 계획으로 구체화할 수 있었다.
 
-## The First Two Months Were Rough
+## 처음 2개월은 협업 자체가 어려웠다
 
-The first two months did not translate directly into productivity. There were too many repeated instructions. Previously stated rules were missed. Sometimes instructions were ignored. Every task needed careful human checking.
+처음 두 달은 AI를 쓴 시간이 그대로 생산성으로 이어지지 않았다. 반복 지시가 많았고, 이전에 전달한
+규칙이 누락되거나 지시를 잘못 해석해 매 작업마다 사람이 다시 점검해야 하는 경우가 많았다.
 
-The largest problem was inconsistent work style from session to session. In one session, tests were thorough. In another, they were weak. In one session, AI found and reused existing bluetape4k utilities. In another, it tried to rebuild something the workspace already had. Problems solved in one module were rediscovered from scratch in a later task.
+문제는 작업 스타일이 매 세션마다 달라지는 것이었다. 어떤 세션에서는 테스트를 충분히 작성했지만,
+다른 세션에서는 테스트가 약했다. 어떤 세션에서는 bluetape4k 작업 영역에 이미 있는 기능을 잘 찾아
+쓰지만, 다른 세션에서는 같은 기능을 새로 만들려고 했다. 한 모듈에서 이미 해결한 문제를 다른 작업에서
+다시 파는 일도 있었다.
 
-Code style also drifted. Instead of using bluetape4k helpers, assertions, Testcontainers launchers, and coroutine patterns, AI sometimes imported generic examples or external-library style into the codebase. In a large library ecosystem, "working code" is not enough. The code also has to work in the same style as the ecosystem. AI needed guardrails for that.
+코드 스타일도 흔들렸다. bluetape4k가 이미 제공하는 helper, assertion, Testcontainers launcher,
+코루틴 패턴을 쓰기보다 외부 라이브러리나 일반적인 예제 스타일을 가져오려는 경우가 있었다.
+대규모 라이브러리 생태계에서는 "동작하는 코드"만으로 부족하다. "기존 생태계와 같은 방식으로 동작하는
+코드"여야 한다. AI에게 이 차이를 계속 알려 주는 장치가 필요했다.
 
-Token usage was another cost. Repeating the same background, repository structure, rules, and validation steps in every session was inefficient. If AI cannot keep memory reliably across sessions, the memory has to live outside the session and be easy to reload.
+또 하나의 비용은 토큰 소모였다. 매번 같은 배경, 규칙, 저장소 구조와 검증 절차를 다시
+설명하는 일은 비효율적이었다. AI가 기억을 유지하지 못한다면, 기억을 외부화해 다시 불러올 수 있는
+구조가 필요했다.
 
-## Collaboration Stabilized In The Third Month
+## 3개월째부터 협업 방식이 안정화됐다
 
-The turning point was accumulating memory, wiki notes, lessons, and custom skills. Work no longer ended with just "done." Each task recorded what went wrong, what decision was made, and what the next agent should avoid. Repeated decisions were promoted into skills.
+전환점은 memory, wiki, lessons, skill을 축적하기 시작하면서 찾아왔다. 작업이 끝날 때마다 "완료"로만 끝내지
+않았다. 무엇이 문제였고, 어떤 결정을 했고, 다음 작업자는 무엇을 피해야 하는지 lessons에 남겼다.
+반복되는 결정은 skill로 승격했다.
 
-The most important skills were `bluetape4k-workflow`, `bluetape4k-full-feature`, and `bluetape4k-code-patterns`. They encode bluetape4k working rules as enforceable checklists: when design is required, when fast track is enough, which Kotlin validation and test styles to use, and how GitHub issues and PRs should be written. AI no longer had to guess the process from scratch each time.
+대표적으로 `bluetape4k-workflow`, `bluetape4k-full-feature`, `bluetape4k-code-patterns` 같은 개인용 skill을
+만들었다. 이 skill들은 bluetape4k의 운영 규칙을 다음 단계를 차단할 수 있는 체크리스트로 표현한다. 어떤 작업은
+설계부터 해야 하는지, 어떤 작업은 fast track으로 충분한지, Kotlin 코드에서 어떤 검증과 테스트 스타일을
+써야 하는지, GitHub issue와 PR은 어떤 기준으로 작성해야 하는지를 AI가 매번 다시 추측하지 않게 했다.
 
-`bluetape4k-workflow` became the first router for each task. It classifies work as Type A Full Feature, B Fast Track, C Bug Fix, D Code Review, E Maintenance, P Publish, or F Self Improve. Small documentation edits should not pay the cost of a full design process, but an untriggered gate is `N/A` only when concrete scope evidence proves it inapplicable. New modules and public APIs, on the other hand, must go through brainstorming, spec, plan, review, tests, and lessons. That classification alone reduced token usage and repeated instructions.
+그중 `bluetape4k-workflow`는 작업을 시작할 때 먼저 적용하는 분류기 역할을 했다. 작업을 Type A Full Feature,
+B Fast Track, C Bug Fix, D Code Review, E Maintenance, P Publish, F Self Improve로 나눈다. 작은 문서 수정에는
+과도한 설계 절차를 붙이지 않지만, 적용되지 않는 gate도 구체적인 범위 근거가 있을 때만 `N/A`로 처리한다.
+반대로 새 모듈이나 공개 API처럼 되돌리기 어려운 작업에는 brainstorming, spec, plan, review, test,
+lessons까지 강하게 요구한다. 이 구분만으로도 토큰 소모와 반복 지시가 크게 줄었다.
 
-## `bluetape4k-workflow` Is A Stage Gatekeeper
+## `bluetape4k-workflow`는 단계별 통과 여부를 판정한다
 
-The most important feature of `bluetape4k-workflow` is that it acts as a stage-by-stage gatekeeper. It is not only a procedure list that says what to do next. Each stage checks whether the work is allowed to move forward. If a stage has not passed, the workflow stops the task from jumping ahead and forces missing design, tests, documentation, or review work to be completed first.
+`bluetape4k-workflow`의 핵심은 "다음에 무엇을 할지 알려 주는 절차표"가 아니라는 점이다. 각 단계가
+다음 단계로 넘어가도 되는지 판정하는 장치에 가깝다. AI가 바로 구현으로 뛰어들려고 해도,
+작업 흐름은 먼저 작업 종류를 분류하고 필요한 산출물과 검증 조건을 확인한다. 어떤 단계가 통과되지
+않으면 다음 단계로 넘어가지 않으며, 누락된 설계·테스트·문서·리뷰를 먼저 채우게 한다.
 
-That mattered because different work sizes need different procedures.
+이 방식은 작업 규모에 따라 절차를 다르게 적용할 때 특히 효과적이었다.
 
 <div class="bt4k-workflow-comparison">
   <section>
-    <strong>Small documentation or configuration change</strong>
+    <strong>작은 문서/설정 변경</strong>
     <ol>
-      <li>Classify as Maintenance</li>
-      <li>Confirm change scope</li>
-      <li>Verify docs/API names</li>
-      <li>Run Astro build or actionlint</li>
-      <li>Commit and deploy</li>
+      <li>Maintenance 분류</li>
+      <li>변경 범위 확인</li>
+      <li>문서/API 이름 검증</li>
+      <li>Astro 빌드 또는 actionlint</li>
+      <li>커밋/배포</li>
     </ol>
-    <p>The gatekeeper prevents wasting tokens on unnecessary specs, plans, and advisor reviews. It still keeps the checks that matter: links, paths, and build validation.</p>
+    <p>작은 작업에 spec, plan, 자문 리뷰를 과도하게 붙여 토큰을 낭비하는 일을 막는다. 대신 실제로 필요한 링크, 경로, 빌드 검증은 빠뜨리지 않는다.</p>
   </section>
   <section>
-    <strong>New module, public API, or cross-repo change</strong>
+    <strong>새 모듈, 공개 API, 저장소 간 변경</strong>
     <ol>
-      <li>Classify as Full Feature</li>
-      <li>Create brainstorming, spec, and plan</li>
-      <li>Run multi-perspective spec/plan review</li>
-      <li>Run Claude Code/Codex cross-review</li>
-      <li>Implement, test, and benchmark</li>
-      <li>Run 6-Tier review, CI gate, and lessons capture</li>
+      <li>Full Feature 분류</li>
+      <li>brainstorming, spec, plan 작성</li>
+      <li>spec/plan 다관점 리뷰</li>
+      <li>Claude Code/Codex 상호 리뷰</li>
+      <li>구현, 테스트, benchmark</li>
+      <li>6-Tier 코드 리뷰, CI gate, lessons 기록</li>
     </ol>
-    <p>The gatekeeper blocks implementation without design, drift from existing bluetape4k patterns, and late discovery of missing tests, docs, CI, or lessons.</p>
+    <p>설계 없이 구현부터 시작하거나 기존 bluetape4k 패턴을 무시하고, 테스트·문서·CI·lessons가 뒤늦게 누락되는 일을 막는다.</p>
   </section>
 </div>
 
-For example, a small blog text change is classified as Maintenance. The workflow marks untriggered design gates `N/A` with scope evidence instead of silently skipping them. It still checks that the site builds, the live page reflects the change, and any repeatable lesson is captured. Small work stays fast, but leaves evidence.
+예를 들어 단순한 블로그 문구 수정은 Maintenance로 분류된다. 이 경우 작업 흐름은 설계 gate를 조용히
+건너뛰지 않고, 적용되지 않는 이유를 범위 증거와 함께 `N/A`로 남긴다. 그래도 빌드가 깨지지 않는지,
+배포 페이지에 문구가 반영되는지, 관련 lessons에 반복 가능한 규칙을 남길 필요가 있는지는 확인한다. 작은
+작업은 빠르게 끝내되 검증은 남기는 방식이다.
 
-By contrast, a new Ktor module or Spring Boot auto-configuration change must pass the Full Feature gate. Brainstorming explores options, the spec fixes the scope, and the plan breaks down implementation order and tests. Then Claude Code and Codex review the spec and plan from different angles. After implementation, the change must pass 6-Tier code review and CI. This looks slower, but it reduces the cost of moving quickly in the wrong direction.
+반대로 새 Ktor 모듈이나 Spring Boot auto-configuration처럼 구조를 바꾸는 작업은 Full Feature gate를
+통과해야 한다. brainstorming에서 대안을 넓히고, spec에서 범위를 고정하고, plan에서 구현 순서와 테스트
+전략을 쪼갠다. 그 다음 Claude Code와 Codex가 서로 다른 관점으로 spec/plan을 리뷰하고, 구현 후에는
+6-Tier 코드 리뷰와 CI gate를 통과해야 한다. 느려 보이지만, 큰 작업에서 잘못된 방향으로 빠르게 가는
+비용을 줄여 줬다.
 
-For large work, I used the `superpowers` style of brainstorming, spec, and plan before implementation. Brainstorming widened the alternatives and risks before coding. The spec locked down what would and would not be built. The plan split implementation order, test strategy, documentation updates, and CI impact into concrete work items. Instead of asking AI to "just build it," I made it produce artifacts a human could review.
+큰 작업에서는 `superpowers` 방식으로 brainstorming, spec, plan을 먼저 만들었다. brainstorming은 문제를
+바로 구현으로 옮기기 전에 대안과 위험을 넓게 보게 했고, spec은 만들 것과 만들지 않을 것을
+고정했다. plan은 구현 순서, 테스트 전략, 문서 업데이트, CI 영향 범위를 작업 단위로 나눴다. AI에게
+"잘 만들어 줘"라고 맡기는 대신, 사람이 검토할 수 있는 설계 문서와 실행 계획을 먼저 만드는 방식이었다.
 
-Specs and plans were not written once and accepted blindly. They were reread from architecture, testing, performance, security, public API, and documentation perspectives. Claude Code and Codex reviewed each other's output. Claude Code CLI found gaps in specs and plans, while Codex applied those findings to the actual repository shape and testability. This cross-review reduced designs that looked plausible but did not fit the project.
+spec과 plan은 한 번 작성하고 끝내지 않았다. 아키텍처, 테스트, 성능, 보안, 공개 API, 문서 관점에서
+다시 읽게 했고, Claude Code와 Codex가 서로의 결과를 비판하게 했다. Claude Code CLI가 spec/plan의 빈틈을
+찾으면, Codex가 그 지적을 현재 저장소 구조와 테스트 가능성에 맞게 반영하는 식이었다. 이 상호 리뷰는
+특히 대규모 변경에서 "그럴듯하지만 프로젝트에 맞지 않는 설계"를 줄이는 데 도움이 됐다.
 
-The same structure helped code review. Instead of reading a diff once, I split the review by concern: API contracts, coroutine cancellation, Exposed and Spring Boot auto-configuration rules, README accuracy, and missing failure-path tests. Claude Code and Codex cross-review often caught naming drift, missing guards, stale documentation, and cross-repository consistency issues that one model missed.
+코드 리뷰에서도 같은 구조를 사용했다. 단순히 diff를 훑는 대신 관점을 나누어 봤다. API 계약이 깨지지
+않았는지, 코루틴 취소를 삼키지 않는지, Exposed나 Spring Boot auto-configuration 규칙을
+어기지 않는지, README와 실제 코드가 일치하는지, 테스트가 실패 경로까지 잠그는지 확인했다. 여기에
+Claude Code와 Codex 상호 리뷰를 더하면 한쪽 모델이 놓친 명명 불일치, 누락된 보호 장치, 오래된 문서,
+저장소 간 일관성 문제를 다른 쪽이 잡아내는 경우가 많았다.
 
-Another benefit of `bluetape4k-workflow` was that it made the end of work explicit. A task was not done just because code was written. It had to state which tests passed, which reviews ran, which lessons were captured, and which checks could not be performed. That made the next AI session easier to continue from existing specs, plans, lessons, and PR records instead of guessing context again.
+`bluetape4k-workflow`의 또 다른 장점은 "작업의 끝"을 명확히 만든다는 점이었다. 구현이 끝났다는 느낌이
+아니라, 어떤 테스트를 통과했고, 어떤 리뷰를 거쳤고, 어떤 lessons를 남겼고, 어떤 검증은 못 했는지를
+기록하게 했다. 이 덕분에 다음 세션의 AI는 이전 작업의 맥락을 다시 추측하지 않고, 남겨진 spec, plan,
+lessons, PR 기록을 근거로 이어서 작업할 수 있었다.
 
-Before and after implementation, cross-review mattered. I used Claude Code CLI and Codex CLI to review each other's plans and patches. For larger changes, that helped catch design problems before implementation and missing tests, broken contracts, awkward documentation, and repository-specific drift after implementation.
+작업 전후 리뷰도 중요했다. Claude Code CLI와 Codex CLI를 서로 리뷰에 사용하면서 한쪽 AI가 만든 계획이나
+구현을 다른 쪽이 비판하게 했다. 특히 큰 변경에서는 구현 전에 설계 문제를 찾고, 구현 후에는 누락된
+테스트, 깨진 계약, 어색한 문서, 저장소별 차이를 점검하는 방식이 효과적이었다.
 
-After that, AI became more stable. The human still had to decide direction and make final calls, but the work no longer felt like it restarted from zero every session. Lessons and skills started making the next task better than the previous one.
+이후 AI의 작업 방식은 덜 흔들렸다. 여전히 사람이 방향을 정하고 마지막 판단을 해야 하지만, AI가 매번 처음부터 출발한다는 느낌은 줄었다. 경험이 lessons와 skill에 쌓이면서 다음 작업의 품질이 이전 작업의 결과를 반영하기 시작했다.
 
-## Effects
+## 효과
 
-Existing libraries became more complete. I could improve stability and performance, fix older bugs, increase test coverage, and bring KDoc and README files up to date more often. This work is less flashy than a new feature, but it directly improves the user experience of a library.
+기존 라이브러리의 완성도가 올라갔다. 안정성과 성능을 점검하고, 오래된 버그를 수정하며, 테스트 범위를
+보강하고, KDoc과 README를 최신 상태로 맞추는 작업을 더 자주 할 수 있었다. 이런 작업은 신규 기능보다
+덜 화려하지만, 라이브러리 사용자에게는 훨씬 직접적인 품질 차이를 만든다.
 
-New feature development became faster. Research and pilots narrowed the alternatives before implementation. Design and test direction were clearer. AI helped not only with production code and tests, but also with code review and documentation.
+신규 기능 개발 속도도 빨라졌다. 조사와 시범 구현으로 대안을 먼저 좁히고, 설계와 테스트 방향을 잡은 뒤
+구현에 들어가니 시행착오가 줄었다. AI는 메인 코드와 테스트 구현뿐 아니라 코드 리뷰와 문서화까지 연결해서
+도와줬다.
 
-Benchmarks became easier to create and use. I could implement the same problem in multiple ways and compare throughput, latency, allocation, coroutine versus virtual-thread behavior, cache strategies, and serialization approaches. AI helped build benchmark fixtures, repeated measurement code, and interpretation angles. The result was not just "this is faster." It became user-facing guidance on which approach to choose under which conditions.
+벤치마크를 더 자주 만들 수 있었던 것도 효과였다. 같은 문제를 여러 방식으로 구현해 보고 처리량, 지연 시간,
+할당량, coroutine/virtual thread 차이, cache 전략, 직렬화 방식 같은 기준으로 비교했다. AI는 benchmark
+fixture와 반복 측정 코드를 빠르게 구성하고 결과를 해석할 관점을 제안했다. 덕분에 "어떤 방식이 더 빠르다"에서
+끝나지 않고, 어떤 조건에서 어떤 방식을 선택해야 하는지 사용자에게 안내할 수 있었다.
 
-Examples became more varied. Instead of only showing API calls, the examples could show learning paths: which repository to start with, how to compare Spring Boot and Ktor examples, and how to learn Exposed JDBC and R2DBC in a useful order.
+예제도 더 다양해졌다. 단순히 API 사용법만 보여주는 예제가 아니라 사용자의 관심사에 따라 어떤 저장소를
+보면 좋은지, Spring Boot와 Ktor 예제를 어떻게 비교하면 좋은지, Exposed JDBC와 R2DBC를 어떤 순서로
+익히면 좋은지 같은 학습 경로를 만들 수 있었다.
 
-Most importantly, work became consistent across many repositories. In a large ecosystem, consistency matters as much as feature count. If BOMs, dependency management, README structure, test style, CI workflows, and issue/PR conventions drift, maintenance cost rises quickly. AI was most useful when it helped enforce that consistency.
+무엇보다 여러 저장소에서 일관되게 작업할 수 있게 됐다. 대규모 생태계에서 일관성은 기능 수만큼
+중요하다. BOM, 의존성 관리, README 구조, 테스트 스타일, CI 워크플로, issue와 PR 작성 기준이
+흔들리면 유지보수 비용이 커진다. AI는 이 일관성을 강제하는 도구로 쓸 때 가장 효과적이었다.
 
-## Recommendations
+## 제언
 
-AI can absolutely improve productivity when used well. The key is not to hand everything to AI. The human should focus on the problem, the WHAT. The implementation approach, the HOW, can often be delegated to AI, as long as guardrails keep it inside the project's philosophy and existing structure.
+AI를 잘 쓰면 생산성은 분명히 높아진다. 다만 핵심은 AI에게 모든 것을 맡기는 것이 아니다. 사람이
+해결해야 할 문제, 즉 WHAT을 명확히 정의해야 한다. 해결 방식, 즉 HOW는 AI에게 맡길 수 있다. 단, 그
+HOW가 프로젝트의 철학과 기존 구조를 벗어나지 않도록 보호 장치가 필요하다.
 
-Research, design, and planning matter most. Jumping straight to implementation looks fast, but large work can move quickly in the wrong direction. It was more reliable to have AI research first, compare options, define test strategy, and then implement.
+조사, 설계, 계획이 먼저다. 바로 구현을 시키면 빨라 보이지만, 큰 작업에서는 잘못된 방향으로 빠르게
+가는 비용이 더 크다. AI에게 먼저 조사하게 하고, 대안을 비교하게 하고, 테스트 전략을 정하게 한 뒤
+구현으로 들어가는 쪽이 더 안정적이었다.
 
-AI memory resets often. That means the team needs external memory infrastructure. Lessons, qmd, wiki pages, repo-local docs, and skills need to exist and be used. If a lesson cannot affect the next task, AI collaboration returns to beginner mode every time.
+AI는 매번 기억이 초기화된다. 그래서 경험을 누적할 인프라가 필요하다. lessons, qmd, wiki, 저장소별 문서,
+skill 같은 외부 기억 장치를 만들고, 실제 작업에서 계속 사용해야 한다. 한 번 배운 것을 다음 작업에 반영하지
+못하면 AI 협업은 매번 초보 상태로 돌아간다.
 
-Finally, experience should be promoted into skills. Lessons record what happened. Skills turn repeatable lessons into execution rules. When issue, PR, review, failed build, and missing-test patterns are added back into skills, AI gradually becomes more project-aware.
+마지막으로, 경험은 skill에 보강해야 한다. lessons는 사건의 기록이고, skill은 다음 작업의 실행 규칙이다.
+issue, PR, 리뷰, 실패한 빌드, 누락된 테스트에서 얻은 반복 가능한 교훈을 skill에 반영하면 AI는 점점 더
+프로젝트에 맞는 동료가 된다.
 
-The three months of bluetape4k work were not a story about AI replacing a developer. It was closer to the opposite. To make AI work well, the developer had to define problems more clearly, build a better work system, and verify results more rigorously. When that system is in place, AI becomes a strong amplifier for moving a large library ecosystem forward.
+bluetape4k에서의 3개월은 "AI가 개발자를 대체한다"는 이야기와는 거리가 멀었다. 오히려 반대에 가까웠다.
+AI가 잘 일하게 만들려면 개발자가 문제를 더 명확히 정의하고, 작업 시스템을 더 정교하게 만들고, 결과를
+더 엄격하게 검증해야 했다. 그 과정을 감수할 때 AI는 대규모 라이브러리 생태계를 꾸준히 밀고 나가는
+증폭기가 된다.

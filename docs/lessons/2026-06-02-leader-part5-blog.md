@@ -1,21 +1,21 @@
-# Leader Part 5 blog
+# Leader Part 5 블로그
 
-## Context
+## 배경
 
-Part 5 of the bluetape4k-leader blog series needed bilingual publishable posts covering storage backends, operational features, benchmark interpretation, and examples. The user specifically wanted source links as bullets and prior series navigation fixed.
+bluetape4k-leader blog series Part 5에 storage backend, operational feature, benchmark interpretation, example을 다루는 bilingual 게시 가능 글이 필요했다. 사용자는 source link를 bullet로 정리하고 이전 series navigation을 수정하길 원했다.
 
-## Decision
+## 결정
 
-Use the publishable site paths, not `docs/drafts`. Keep Korean and English posts structurally parallel. Use a hand-authored SVG/PNG backend-picker plus copied benchmark chart SVG/PNG assets from the leader repository.
+`docs/drafts`가 아니라 게시 가능한 site path를 사용한다. 한국어·영어 글을 구조적으로 맞춘다. 직접 작성한 SVG/PNG backend-picker와 leader repository에서 복사한 benchmark chart SVG/PNG asset을 사용한다.
 
-## Outcome
+## 결과
 
-Added Part 5 Korean and English posts, backend-picker assets, distributed throughput/latency chart assets, and updated the existing Part 1-4 series links to point at Part 5.
+Part 5 한국어·영어 글, backend-picker asset, distributed throughput/latency chart asset을 추가하고 기존 Part 1-4 series link가 Part 5를 가리키도록 갱신했다.
 
-## Verification
+## 검증
 
-Run `xmllint` on the new SVG, inspect rendered PNGs for label/connector overlap, run `git diff --check`, and build the Astro site.
+새 SVG는 `xmllint`로 검사하고, label/connector overlap이 없는지 rendered PNG를 확인하며, `git diff --check`와 Astro site build를 실행한다.
 
-## Future note
+## 향후 참고
 
-For future leader series posts, verify benchmark claims against `bluetape4k-leader/benchmark/README.md` and keep benchmark caveats visible near the chart, not only in source links.
+앞으로 Leader series 글은 `bluetape4k-leader/benchmark/README.md`와 benchmark claim을 대조하고, benchmark caveat를 source link에만 두지 말고 chart 가까이에 표시한다.

@@ -1,40 +1,37 @@
 ---
-title: "Reducing CSV Parser Allocations with Okio Segments"
-description: How bluetape4k-csv moved supported UTF-8 parsing to an Okio segment-backed fast path and improved CsvRecordReader throughput by about 2.3x.
+title: "Okio 세그먼트로 CSV 파서 할당 줄이기"
+description: bluetape4k-csv에서 지원하는 UTF-8 CSV 파싱을 Okio 세그먼트 기반 고속 경로로 옮겨 CsvRecordReader 처리량을 약 2.3배 높인 과정입니다.
 sidebar:
   order: -202605290032
 blog:
   date: 2026-05-29T00:32:00+09:00
   image: /assets/csv-parser-okio-hero.png
-  imageAlt: Editorial illustration of a CSV parser reading byte segments without unnecessary copies
-  cardDescription: A benchmark-backed walkthrough of the #651 CSV parser optimization, from Reader parsing to Okio UnsafeCursor segment scanning.
+  imageAlt: CSV 파서가 불필요한 복사 없이 바이트 세그먼트를 읽는 모습을 보여 주는 일러스트
+  cardDescription: CSV 파서 최적화 작업을 Reader 기반 파싱부터 Okio UnsafeCursor 세그먼트 탐색까지 벤치마크와 함께 정리합니다.
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/csv-parser-okio-hero.png" alt="Editorial illustration of a CSV parser reading byte segments without unnecessary copies" loading="eager" />
-  <figcaption>A byte-first parser can remove a surprising amount of waste before any clever algorithm appears.</figcaption>
+  <img src="/assets/csv-parser-okio-hero.png" alt="CSV 파서가 불필요한 복사 없이 바이트 세그먼트를 읽는 모습을 보여 주는 일러스트" loading="eager" />
+  <figcaption>바이트 우선 파서는 특별한 알고리즘보다 먼저 불필요한 복사를 줄입니다.</figcaption>
 </figure>
 
-<p class="bt4k-post-meta">2026-05-29 · bluetape4k csv performance note</p>
+<p class="bt4k-post-meta">2026-05-29 · bluetape4k CSV 성능 노트</p>
 
-`bluetape4k-csv` originally parsed CSV through a `Reader`. That path was simple and
-correct, but it decoded every character before appending field data to a `StringBuilder`.
-For large UTF-8 CSV streams, the hot path was doing more allocation and decode work than
-necessary.
+`bluetape4k-projects`의 `bluetape4k-csv` 모듈은 원래 `Reader` 기반 CSV lexer를 사용했습니다. 구조는
+단순하고 정확했지만, 큰 CSV를 읽을 때는 모든 문자를 `Reader`에서 디코딩한 뒤 `StringBuilder`에
+누적하고 다시 필드 문자열로 만드는 흐름이 반복됐습니다.
 
-Issue [#651](https://github.com/bluetape4k/bluetape4k-projects/issues/651) targeted that
-path. The final PR keeps the public API unchanged, adds an internal Okio-backed lexer for
-supported UTF-8 CSV settings, and falls back to the existing reader lexer when the settings
-are outside the fast path.
+이번 최적화의 목표는 할당을 줄이고, 특히 큰 CSV 작업 부하에서 처리량을 높이는 것이었습니다. 결론부터 말하면
+Okio 세그먼트와 읽기 전용 `UnsafeCursor`를 사용한 UTF-8 고속 경로가 가장 효과적이었습니다.
 
-<figure class="bt4k-architecture">
-  <img src="/assets/csv-okio-throughput-comparison-01.png" alt="CSV parser throughput comparison chart showing existing and Okio ops per second" loading="lazy" />
-  <figcaption>A benchmark-backed walkthrough of the #651 CSV parser optimization, from Reader parsing to Okio UnsafeCursor segment scanning.</figcaption>
+<figure class="bt4k-chart" data-diagram-title="CSV 파서의 기존 경로와 Okio 고속 경로 처리량 비교">
+  <img src="/assets/csv-okio-throughput-comparison-01-ko.png" alt="CSV 파서의 기존 Reader와 Okio 고속 경로를 소규모·중간·대규모 작업 부하별 초당 처리 횟수로 비교한 차트" loading="lazy" />
+  <figcaption>CSV 파서 최적화 작업을 Reader 기반 파싱부터 Okio `UnsafeCursor` 세그먼트 탐색까지 벤치마크와 함께 정리합니다.</figcaption>
 </figure>
 
-## What Changed
+## 출발점
 
-The public entrypoint remains the same:
+기존 공개 진입점은 그대로 유지했습니다.
 
 ```kotlin
 CsvRecordReader()
@@ -42,33 +39,33 @@ CsvRecordReader()
     .count()
 ```
 
-Internally, supported UTF-8 reads now go through `OkioCsvLexer`:
+내부 구현은 `CsvLexer`가 `Reader`를 받고, CSV 상태 기계가 한 문자씩 읽으면서 필드를 만듭니다.
+이 방식은 문자 집합 처리와 대체 처리에는 적합하지만, UTF-8 CSV가 대부분인 대량 처리 경로에서는 불리합니다.
+
+이번 작업의 경계는 명확했습니다.
+
+- 공개 API는 바꾸지 않습니다.
+- UTF-8, ASCII 구분자·인용 부호, 이중 인용 부호 이스케이프만 고속 경로로 처리합니다.
+- 그 밖의 문자 집합이나 설정은 기존 `CsvLexer`로 처리합니다.
+- 전체 파일을 한 번에 메모리화하지 않습니다.
+
+## 구현 경로
+
+첫 번째 아이디어는 `InputStream`을 Okio `BufferedSource`로 감싸고, 필드 본문을 Okio `Buffer`에
+쌓은 다음 필드가 끝날 때 한 번만 UTF-8 문자열로 디코딩하는 것이었습니다.
 
 ```kotlin
-if (encoding == UTF_8 && OkioCsvLexer.isSupported(settings)) {
-    OkioCsvLexer(input.source().buffer(), settings, skipHeaders).use { lexer ->
-        while (lexer.hasNext()) {
-            yield(transform(lexer.next()))
-        }
-    }
-    return@sequence
-}
+OkioCsvLexer(input.source().buffer(), settings, skipHeaders)
 ```
 
-The fast path is deliberately narrow:
+이것만으로도 "문자 단위 디코딩 후 append" 경로는 피할 수 있습니다. 하지만 단순 바이트 루프는 정확성은
+좋았어도 성능 개선 폭이 작았습니다. `nativeLexer_large` 기준으로는 약 22% 개선에 그쳤습니다.
 
-| Condition | Fast path behavior |
-|---|---|
-| UTF-8 input | Use `OkioCsvLexer` |
-| ASCII delimiter and quote | Scan structural bytes directly |
-| doubled-quote escaping | Preserve current CSV semantics |
-| unsupported charset or settings | Fall back to `CsvLexer` |
+두 번째 실험은 Okio의 세그먼트 구조를 더 직접 활용하는 것이었습니다. `Buffer.UnsafeCursor`는 내부 세그먼트
+바이트 배열을 읽기 전용으로 순회할 수 있습니다. 이름 그대로 주의해서 써야 하지만, 이번 경우에는
+구조 바이트인 구분자, 인용 부호, CR, LF만 찾으면 되므로 잘 맞았습니다.
 
-## Why UnsafeCursor
-
-Wrapping the stream in Okio was not enough. A simple byte loop was correct, but the large
-lexer benchmark only moved from about 17.5 to 21.3 ops/s. The useful gain came from scanning
-Okio segments directly with a read-only `Buffer.UnsafeCursor`.
+최종 구현은 다음과 같습니다.
 
 ```kotlin
 private fun findTerminatorOffset(terminators: ByteString): Long {
@@ -88,11 +85,9 @@ private fun findTerminatorOffset(terminators: ByteString): Long {
 }
 ```
 
-The cursor is read-only. It only finds delimiter, quote, CR, and LF bytes. Payload bytes are
-moved into an Okio `Buffer`, then decoded once when the field is complete.
-
-As a reusable pattern, a read-only helper for finding the first of several target bytes in an
-Okio `Buffer` looks like this:
+조금 더 일반화하면, Okio `Buffer` 안에서 여러 구분자 후보 중 첫 위치를 찾는 도우미 함수는 다음처럼
+쓸 수 있습니다. 핵심은 `readUnsafe()`로 얻은 cursor를 `use`로 닫고, `cursor.start until cursor.end`
+범위만 읽는 것입니다. `cursor.data`는 세그먼트 내부 배열이므로 수정하지 않습니다.
 
 ```kotlin
 private fun Buffer.indexOfAnyByteUnsafe(targets: ByteArray): Long {
@@ -112,59 +107,95 @@ private fun Buffer.indexOfAnyByteUnsafe(targets: ByteArray): Long {
 }
 ```
 
-The important constraints are to close the cursor with `use`, read only
-`cursor.start until cursor.end`, and never mutate `cursor.data` in this scan.
+중요한 점은 cursor를 쓰기 용도로 사용하지 않았다는 것입니다. 소스 버퍼의 세그먼트는 읽기만 하고,
+종료 구분 바이트 앞의 필드 본문은 `fieldBuffer.write(source.buffer, offset)`로 옮깁니다. 그래서 탐색은 세그먼트
+위에서 끝내고, 필드 디코딩은 필드가 끝난 뒤 한 번만 수행합니다.
 
-## Guardrails
+## 동작을 지키는 안전장치
 
-`UnsafeCursor` needs behavior locks. The PR compares the Okio lexer against the existing
-reader lexer on RFC 4180 examples and on the real `extra_words.csv` fixture.
+`UnsafeCursor`는 성능 도구이지 파서 의미론을 바꿔도 되는 면허가 아닙니다. 그래서 기존
+`CsvLexer`와 결과가 같은지를 직접 검증했습니다.
 
 ```kotlin
 parseWithOkio(csv) shouldBeEqualTo parseWithReader(csv)
 ```
 
-It also keeps `maxCharsPerColumn` checks. The implementation drains scanned source segments
-into the field buffer and checks the byte bound before final UTF-8 decoding, then checks the
-decoded character length as well.
+특히 `extra_words.csv`처럼 실제 픽스처에 가까운 큰 CSV 파일을 통째로 비교했습니다. 이 픽스처는 세그먼트
+경계 근처의 인용 부호, `null` 필드, 긴 한국어 본문을 함께 검증합니다. 단순한 정상 경로 CSV만 통과하는
+최적화는 여기서 걸러집니다.
 
-## Public Reader Result
+추가로 `maxCharsPerColumn`도 확인했습니다. 고속 탐색이 terminator를 찾으려고 무한정 읽어 버리면
+큰 필드를 막는 제한 검사가 약해지므로, 탐색한 세그먼트를 필드 버퍼로 옮길 때 바이트 상한을 검사하고
+최종 디코딩 뒤 문자 길이도 다시 검사합니다.
 
-`./gradlew :bluetape4k-csv:testBenchmark`
+## 벤치마크 설정
 
-| Benchmark | Reader baseline | Okio fast path | Speedup |
+벤치마크는 `bluetape4k-csv`의 `CsvParserBenchmark`에서 실행했습니다.
+
+```bash
+./gradlew :bluetape4k-csv:testBenchmark
+```
+
+작업 부하는 세 가지입니다.
+
+| 작업 부하 | 입력 |
+|---|---|
+| 소규모 | `product_type.csv`의 첫 10 KiB |
+| 중간 | `product_type.csv` 전체 |
+| 대규모 | `product_type.csv`를 16회 반복 결합 |
+
+측정 단위는 JMH 처리량 `ops/s`이며, 높을수록 좋습니다.
+
+## 공개 Reader 경로 결과
+
+가장 중요한 값은 공개 API인 `CsvRecordReader.read(...)` 경로입니다. UTF-8 CSV와 기본 설정에서는 새
+Okio 고속 경로를 사용합니다.
+
+| 벤치마크 | Reader 기준선 | Okio 고속 경로 | 상대 속도 |
 |---|---:|---:|---:|
-| `nativeCsvRead_small` | 20,173.731 ops/s | 45,417.110 ops/s | 2.25x |
-| `nativeCsvRead_medium` | 296.944 ops/s | 683.434 ops/s | 2.30x |
-| `nativeCsvRead_large` | 17.312 ops/s | 40.115 ops/s | 2.32x |
+| `nativeCsvRead_small` | 20,173.731 ops/s | 45,417.110 ops/s | 2.25배 |
+| `nativeCsvRead_medium` | 296.944 ops/s | 683.434 ops/s | 2.30배 |
+| `nativeCsvRead_large` | 17.312 ops/s | 40.115 ops/s | 2.32배 |
 
-## Lexer-Level Comparison
+소규모, 중간, 대규모 작업 부하 모두 2.25~2.32배 범위로 개선됐습니다. 소규모 작업 부하에서도 빨라진 이유는
+문자 단위 디코딩과 `StringBuilder` append를 피하고, 구조 바이트 탐색을 세그먼트 바이트 배열 위에서
+끝내기 때문입니다.
 
-| Benchmark | Existing `CsvLexer` | `OkioCsvLexer` | Speedup |
+## Lexer 수준 비교
+
+공개 Reader 결과가 우연인지 확인하려면 내부 lexer끼리도 비교해야 합니다. 같은 입력을 기존
+`CsvLexer`와 새 `OkioCsvLexer`로 각각 직접 읽었습니다.
+
+| 벤치마크 | 기존 `CsvLexer` | `OkioCsvLexer` | 상대 속도 |
 |---|---:|---:|---:|
-| `nativeLexer_small` | 21,043.679 ops/s | 45,062.565 ops/s | 2.14x |
-| `nativeLexer_medium` | 288.105 ops/s | 668.457 ops/s | 2.32x |
-| `nativeLexer_large` | 17.996 ops/s | 41.484 ops/s | 2.31x |
+| `nativeLexer_small` | 21,043.679 ops/s | 45,062.565 ops/s | 2.14배 |
+| `nativeLexer_medium` | 288.105 ops/s | 668.457 ops/s | 2.32배 |
+| `nativeLexer_large` | 17.996 ops/s | 41.484 ops/s | 2.31배 |
 
-The public reader and direct lexer measurements point in the same direction. The improvement
-comes from the lexer input path, not from wrapper noise.
+두 표가 같은 방향을 가리킵니다. 개선은 `CsvRecordReader` 래퍼에서 생긴 착시가 아니라 lexer 자체의
+입력 처리 방식에서 나옵니다.
 
-## What Did Not Ship
+## 채택하지 않은 선택지
 
-`BufferedSource.indexOfElement()` was attractive because it is compact and safe, but the
-experiment did not give the control needed for this parser path. A simple Okio byte loop was
-correct but too small a win. The read-only `UnsafeCursor` scan gave the expected segment-level
-benefit while preserving the existing parser behavior.
+`BufferedSource.indexOfElement()`도 후보였습니다. API는 안전하고 코드도 짧습니다. 하지만 `BufferedSource`
+수준의 탐색은 필요 이상으로 상위 입력 스트림을 읽을 수 있고, 실험 중 큰 픽스처의 동등성 검증을 깨뜨리는
+경로가 있었습니다. 이 변경에서는 채택하지 않았습니다.
 
-## Next Candidate: Okio CSV Writer
+단순 Okio 바이트 루프도 제외했습니다. 정확성은 좋았지만 `nativeLexer_large`가 17.481 → 21.290 ops/s 정도였고,
+Okio 세그먼트의 장점을 충분히 활용하지 못했습니다.
 
-The next natural candidate is the pipeline that saves large data streams as CSV.
-`bluetape4k-csv` already has a streaming-shaped API:
-`FlowCsvWriter.writeFile(rows: Flow<Iterable<*>>)`. The current implementation still writes
-through `OutputStreamWriter` and `Writer.write(...)`.
+최종 선택은 읽기 전용 `UnsafeCursor`였습니다. 위험한 API를 쓰되, 사용 범위를 구조 바이트 탐색으로
+좁히고 큰 픽스처 동등성 테스트로 잠그는 쪽이 가장 낫다고 판단했습니다.
 
-For UTF-8 file output, a `BufferedSink` fast path could write delimiter, quote, and line
-separator bytes directly, then write field payloads to the sink only when needed.
+## 다음 후보: Okio CSV Writer
+
+읽기 최적화 뒤의 다음 후보는 대량 데이터를 CSV로 저장하는 파이프라인입니다.
+`bluetape4k-csv`에는 이미 `FlowCsvWriter.writeFile(rows: Flow<Iterable<*>>)` 형태가 있어 API는
+스트리밍에 가깝습니다. 다만 내부는 `OutputStreamWriter`와 `Writer.write(...)` 중심입니다.
+
+UTF-8 파일 저장 경로라면 `BufferedSink` 기반 고속 경로를 둘 수 있습니다. 행 단위로 큰 `String`을
+만들지 않고 구분자·인용 부호·줄 구분자를 바이트로 쓰며, 필드 본문만 필요한 시점에 UTF-8로
+sink에 쓰는 방식입니다.
 
 ```kotlin
 suspend fun writeCsvFileWithOkio(
@@ -198,26 +229,30 @@ suspend fun writeCsvFileWithOkio(
 }
 ```
 
-This is a blog sketch, not the exact production patch. A real implementation must preserve the
-existing `DelimitedWriter` contracts: null and empty-string roundtrip, `quoteAll`, TSV delimiter
-behavior, charset fallback, and close/flush semantics. The direction is still clear. The read
-path reduced allocations with `BufferedSource` and `UnsafeCursor`; the write path can likely use
-`BufferedSink` to reduce intermediate row strings and many small `Writer.write` calls.
+이 코드는 개념을 설명하기 위한 예시입니다. 실제 구현은 기존 `DelimitedWriter`의 `null`/빈 문자열 왕복,
+`quoteAll`, TSV 구분자, 문자 집합 대체 처리, 종료 및 flush 동작을 그대로 지켜야 합니다. 읽기에서는
+`BufferedSource`와 `UnsafeCursor`가 할당을 줄였고, 쓰기에서는 `BufferedSink`가 행 파이프라인의 중간
+`String`과 작은 `Writer.write` 호출을 줄일 가능성이 있습니다.
 
-## Source Links
+## 참고 링크
 
-- Issue: [#651 perf(csv): reduce large CSV parsing allocations](https://github.com/bluetape4k/bluetape4k-projects/issues/651)
-- PR: [#673 perf(csv): scan UTF-8 fields with Okio segments](https://github.com/bluetape4k/bluetape4k-projects/pull/673)
-- Follow-up: [#674 perf(csv): add Okio BufferedSink fast path for writer pipelines](https://github.com/bluetape4k/bluetape4k-projects/issues/674)
-- Follow-up article: [When the CSV Writer Took Off Its Ankle Weights](/blog/csv-writer-okio-buffered-sink/)
-- Main implementation: [`OkioCsvLexer`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/main/kotlin/io/bluetape4k/csv/internal/OkioCsvLexer.kt)
-- Benchmarks: [`CsvParserBenchmark`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/test/kotlin/io/bluetape4k/csv/benchmark/CsvParserBenchmark.kt)
-- Behavior tests: [`OkioCsvLexerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/test/kotlin/io/bluetape4k/csv/internal/OkioCsvLexerTest.kt)
-- Tests: `./gradlew :bluetape4k-csv:test` -> 268 passing
-- Benchmark: `./gradlew :bluetape4k-csv:testBenchmark`
+- 후속 글: [CSV Writer가 모래주머니를 벗었을 때](/ko/blog/csv-writer-okio-buffered-sink/)
+- 주요 구현: [`OkioCsvLexer`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/main/kotlin/io/bluetape4k/csv/internal/OkioCsvLexer.kt)
+- 벤치마크: [`CsvParserBenchmark`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/test/kotlin/io/bluetape4k/csv/benchmark/CsvParserBenchmark.kt)
+- 동작 검증: [`OkioCsvLexerTest`](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/io/csv/src/test/kotlin/io/bluetape4k/csv/internal/OkioCsvLexerTest.kt)
+- 테스트: `./gradlew :bluetape4k-csv:test` → 268개 통과
+- 벤치마크 실행: `./gradlew :bluetape4k-csv:testBenchmark`
 
-## Closing
+## 마무리
 
-The useful lesson is not just “use Okio.” The useful lesson is to use the right layer of Okio.
-`BufferedSource` gave a clean stream boundary, `Buffer` avoided early string materialization,
-and read-only `UnsafeCursor` made segment scanning fast enough to matter.
+이번 작업의 핵심은 "Okio를 쓴다"가 아니라 "Okio의 세그먼트 모델을 어디까지 안전하게 활용할 수
+있는가"였습니다. 단순 래퍼만으로는 부족했고, 무제한 탐색은 조심해야 했습니다. 읽기 전용
+`UnsafeCursor`는 부담이 있는 선택이지만, 픽스처 동등성 검증과 크기 제한 검사를 함께 두면 CSV 구조
+탐색에는 충분히 실용적인 도구가 됩니다.
+
+
+## 관련 issue와 series link
+
+최적화의 source는 [issue #651](https://github.com/bluetape4k/bluetape4k-projects/issues/651), [PR #673](https://github.com/bluetape4k/bluetape4k-projects/pull/673), [issue #674](https://github.com/bluetape4k/bluetape4k-projects/issues/674)에서 확인한다. 다음 글은 [CSV writer Okio 후속 글](/blog/csv-writer-okio-buffered-sink/)로 이어진다.
+
+![CSV parser 처리량 비교](/assets/csv-okio-throughput-comparison-01.png)
