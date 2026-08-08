@@ -1,79 +1,77 @@
 ---
-title: "Virtual Threads Part 3: Why JDBC Beat R2DBC More Often Than Expected"
-description: A practical benchmark story from bluetape4k-exposed showing when JDBC with virtual threads can beat R2DBC with coroutines.
+title: "Virtual Threads 3편: JDBC가 R2DBC를 생각보다 자주 이긴 이유"
+description: bluetape4k-exposed 벤치마크를 바탕으로 JDBC + Virtual Threads가 R2DBC + Coroutines를 앞설 수 있는 조건을 정리한다.
 sidebar:
   order: -202605291102
 blog:
   date: 2026-05-29T11:02:00+09:00
   image: /assets/virtual-threads-part3-hero.png
-  imageAlt: Editorial illustration of JDBC work running on virtual threads beside reactive database work
-  cardDescription: "R2DBC looked like the obvious winner, but the benchmark results disagreed. A practical look at JDBC + Virtual Threads."
+  imageAlt: JDBC 작업이 virtual thread 위에서 reactive database 작업과 나란히 실행되는 소개용 일러스트
+  cardDescription: "R2DBC가 당연히 이길 줄 알았는데, 벤치마크 결과는 꽤 달랐다. JDBC + Virtual Threads의 반격."
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/virtual-threads-part3-hero.png" alt="Editorial illustration of JDBC work running on virtual threads beside reactive database work" loading="eager" />
-  <figcaption>Database performance is often decided at the connection, transaction, and backpressure boundaries.</figcaption>
+  <img src="/assets/virtual-threads-part3-hero.png" alt="JDBC 작업이 virtual thread 위에서 reactive database 작업과 나란히 실행되는 소개용 일러스트" loading="eager" />
+  <figcaption>Database 성능은 connection, transaction, backpressure 경계에서 자주 갈린다.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-29 · Virtual Threads series · Part 3</p>
 
-This is Part 3 of the Virtual Threads series. The full series continues with
-[Part 1: introduction and cautions](/blog/virtual-threads-part1-guide/),
-[Part 2: workshop rules](/blog/virtual-threads-part2-workshop-rules/),
-[Part 3: JDBC + Virtual Threads benchmark](/blog/virtual-threads-part3-jdbc-r2dbc-benchmark/), and
-[Part 4: Java 21/25 SPI design](/blog/virtual-threads-part4-java21-java25-spi/).
+이 글은 Virtual Threads 시리즈의 3편이다. 전체 시리즈는 [Part 1: 소개와 주의점](/blog/virtual-threads-part1-guide/),
+[Part 2: 워크숍 규칙](/blog/virtual-threads-part2-workshop-rules/),
+[Part 3: JDBC + Virtual Threads 벤치마크](/blog/virtual-threads-part3-jdbc-r2dbc-benchmark/),
+[Part 4: Java 21/25 SPI 설계](/blog/virtual-threads-part4-java21-java25-spi/)로 이어진다.
 
-Part 1 framed Virtual Threads as "threads that make waiting-heavy work easier to express," not
-as "faster threads." Now we can ask a more practical question.
+Part 1에서는 Virtual Threads가 "더 빠른 thread"가 아니라 "대기 시간이 긴 작업을 단순한 코드 구조로
+많이 처리할 수 있게 해주는 thread"라고 정리했다. 이번에는 더 현실적인 질문으로 간다. 기대와 실제 결과가
+살짝 엇갈릴 수 있는 질문이다.
 
-> If we already have R2DBC + Coroutines, can JDBC + Virtual Threads really win?
+> R2DBC + Coroutines가 있는데, JDBC + Virtual Threads가 정말 이길 수 있나?
 
-In the `bluetape4k-exposed` benchmarks, the answer leaned in one direction. I expected R2DBC to
-look stronger: it is non-blocking, and Coroutines make the API pleasant. The measurements were
-less sentimental. General CRUD/JOIN benchmarks improved substantially when the JDBC path was
-tuned around pool size and indexes, and batch benchmarks often favored JDBC + Virtual Threads
-over R2DBC + Coroutines for the same workload.
+`bluetape4k-exposed`의 벤치마크를 보면 답이 한 방향으로 기울었다. 나도 처음에는 R2DBC 쪽이 더
+그럴듯해 보였다. 이름부터 non-blocking이고, Coroutines까지 붙으니 더 현대적인 선택처럼 보인다. 그런데
+측정 결과는 달랐다. 일반 CRUD/JOIN 벤치마크에서는 JDBC 경로를 pool과 index 중심으로 튜닝했을 때
+처리량이 크게 올라갔고, batch 벤치마크에서는 같은 workload에서 JDBC + Virtual Threads가 R2DBC +
+Coroutines보다 더 빠른 경우가 많았다.
 
+## 먼저, 일반 Exposed JDBC 벤치마크
 
-## First, the General Exposed JDBC Benchmark
+batch만 보면 결론이 너무 좁아진다. 마음에 드는 숫자만 골라 오면 벤치마크가 아니라 홍보 자료가 된다.
+`bluetape4k-exposed`에는 일반적인 CRUD/JOIN 성능을 보는
+`ExposedJdbcBenchmark`도 있다. 위치는 `exposed/exposed-jdbc/src/test/kotlin/.../ExposedJdbcBenchmark.kt`다.
 
-Looking only at batch results would make the conclusion too narrow. `bluetape4k-exposed` also
-has a general CRUD/JOIN benchmark, `ExposedJdbcBenchmark`, under
-`exposed/exposed-jdbc/src/test/kotlin/.../ExposedJdbcBenchmark.kt`.
+이 벤치마크는 PostgreSQL Testcontainers 위에서 다음 5개 method를 `kotlinx-benchmark`/JMH로 측정한다.
 
-It measures five methods on PostgreSQL Testcontainers through `kotlinx-benchmark`/JMH.
-
-| Method | Meaning |
+| Method | 의미 |
 |---|---|
-| `singleInsert` | Single-row INSERT |
-| `singleFindById` | Primary-key SELECT |
-| `singleUpdate` | Single-row UPDATE |
+| `singleInsert` | 단건 INSERT |
+| `singleFindById` | primary key 기반 단건 SELECT |
+| `singleUpdate` | 단건 UPDATE |
 | `joinQuery` | users/orders JOIN query |
 | `batchInsert` | 100-row batch INSERT |
 
-The initial total was `25,400.673 ops/sec`. A self-improve loop adjusted HikariCP and benchmark
-thread count, then added indexes for the JOIN target table.
+초기 기록은 총 `25,400.673 ops/sec`였다. 이후 self-improve loop에서 HikariCP pool과 benchmark thread를
+조정하고, JOIN 대상 table에 index를 추가했다.
 
-| Step | Total throughput |
+| 단계 | 총 처리량 |
 |---|---:|
 | Baseline | 25,400 ops/sec |
 | HikariCP max=24, minIdle=8, `@Threads(14)` | 43,487 ops/sec |
-| Add orders-table index | 44,161 ops/sec |
-| Highest point after stronger measurement settings | 45,431 ops/sec |
+| orders table index 추가 | 44,161 ops/sec |
+| 측정 설정 강화 후 최고점 | 45,431 ops/sec |
 
 <figure class="bt4k-architecture">
-  <img src="/assets/virtual-threads-part3-exposed-jdbc-01.png" alt="General Exposed JDBC benchmark throughput chart from baseline to tuned settings" loading="lazy" />
-  <figcaption>The ordinary Exposed JDBC path improved from 25.4k to 45.4k ops/sec after pool/thread tuning and JOIN indexes.</figcaption>
+  <img src="/assets/virtual-threads-part3-exposed-jdbc-01.png" alt="일반 Exposed JDBC 벤치마크의 baseline부터 tuning 이후까지 총 처리량 차트" loading="lazy" />
+  <figcaption>일반 Exposed JDBC 경로도 pool/thread 조정과 JOIN index 추가만으로 25.4k에서 45.4k ops/sec까지 올라갔다.</figcaption>
 </figure>
 
-This is not a direct JDBC-vs-R2DBC comparison. It is evidence that the ordinary Exposed JDBC
-path is sensitive to pool size, thread concurrency, and index design. In other words: measure
-the basic path before assuming Virtual Threads will rescue anything. A more aggressive
-`synchronous_commit=off` style tuning was rejected because it improved some inserts while
-hurting SELECTs badly. A good benchmark cannot make one number pretty while damaging the whole
-workload.
+이 결과는 JDBC와 R2DBC의 직접 비교는 아니다. 대신 "일반적인 Exposed JDBC 경로도 pool size, thread
+concurrency, index 설계에 민감하고, Virtual Threads를 쓰기 전에 먼저 이 기본 경로를 측정해야 한다"는
+근거다. 실제로 `synchronous_commit=off` 같은 무리한 튜닝은 INSERT 일부를 올리는 대신 SELECT를 크게
+떨어뜨려 거부됐다. 좋은 벤치마크는 평균 점수만 올리는 것이 아니라 workload 전체를 망가뜨리지 않아야
+한다. 한쪽 숫자만 예쁘게 만드는 튜닝은 운영에서 오래 버티기 어렵다.
 
-The benchmark method is intentionally ordinary.
+핵심 benchmark method는 이런 형태다.
 
 ```kotlin
 @Benchmark
@@ -90,11 +88,11 @@ open fun singleFindById(): Int {
 }
 ```
 
-## JDBC vs R2DBC Batch Comparison
+## JDBC vs R2DBC batch 비교
 
-The direct comparison lives in `bluetape4k-exposed/utils/batch/benchmark`.
+직접 비교 벤치마크는 `bluetape4k-exposed/utils/batch/benchmark`에 정리되어 있다.
 
-| Axis | Value |
+| 축 | 값 |
 |---|---|
 | Databases | H2, MySQL, PostgreSQL |
 | JDBC path | JDBC + Virtual Threads |
@@ -102,7 +100,7 @@ The direct comparison lives in `bluetape4k-exposed/utils/batch/benchmark`.
 | Scenarios | `seedBenchmark`, `endToEndBatchJobBenchmark` |
 | Parameters | `dataSize = 1000/10000/100000`, `poolSize = 10/30/60`, `parallelism = 1/4/8` |
 
-Entrypoints look like this.
+실행 entrypoint는 이런 모양이다.
 
 ```bash
 ./gradlew :exposed-batch:mysqlJdbcBenchmark
@@ -112,33 +110,34 @@ Entrypoints look like this.
 ./gradlew :exposed-batch:postgresR2dbcBenchmark
 ```
 
-The meaning is not "JDBC is always better." It is narrower and more useful.
+여기서 중요한 것은 "JDBC가 항상 더 좋다"가 아니다. 벤치마크의 의미는 더 좁다.
 
-- The workload is batch insert and batch job oriented.
-- The comparison includes actual Exposed/JDBC and Exposed/R2DBC implementation cost.
-- It is not a coroutine microbenchmark.
-- Driver maturity and DB-specific protocol paths are part of the result.
+- batch insert와 batch job처럼 DB round-trip과 driver path의 비중이 큰 작업이다.
+- Exposed/JDBC path와 Exposed/R2DBC path의 실제 구현 비용까지 포함한다.
+- Coroutine 자체의 비용만 재는 microbenchmark가 아니다.
+- R2DBC driver와 DB별 protocol path의 성숙도 차이가 결과에 반영된다.
 
-That makes it an application-facing end-to-end comparison.
+즉 application이 체감하는 end-to-end 비교다. 그래서 더 실용적이다.
 
-## Result Summary
+## 결과 요약
 
-By `ops/sec`, JDBC won this many combinations.
+전체 조합의 `ops/sec` 기준 승패는 다음과 같았다.
 
-| DB | Comparisons | JDBC wins | R2DBC wins | Large batch E2E parallelism=8 |
+| DB | 비교 조합 수 | JDBC wins | R2DBC wins | 큰 batch E2E parallelism=8 |
 |---|---:|---:|---:|---|
-| MySQL | 36 | 36 | 0 | JDBC about 8.4-8.8x |
-| PostgreSQL | 36 | 33 | 3 | JDBC about 4.9-5.2x |
-| H2 | 36 | 36 | 0 | JDBC strongly ahead, but in-memory caveat applies |
+| MySQL | 36 | 36 | 0 | JDBC가 약 8.4-8.8x |
+| PostgreSQL | 36 | 33 | 3 | JDBC가 약 4.9-5.2x |
+| H2 | 36 | 36 | 0 | JDBC가 매우 크게 우세, 단 in-memory 특성 주의 |
 
-The MySQL seed benchmark was especially wide. At `dataSize=100000`, JDBC reached about
-`1.455 ops/sec`; R2DBC was about `0.050 ops/sec`, roughly a 29x difference.
+MySQL seed 벤치마크는 특히 차이가 컸다. `dataSize=100000`에서 JDBC는 약 `1.455 ops/sec`, R2DBC는
+약 `0.050 ops/sec`였다. 단순 비율로는 29배 정도다.
 
-For the large end-to-end job, the result is easier to read.
+대형 end-to-end job만 따로 보면 차이가 더 직관적이다. `dataSize=100000`, `parallelism=8` 조건에서
+MySQL은 JDBC가 약 8.4-8.8배, PostgreSQL은 약 4.9-5.2배 높았다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/virtual-threads-part3-benchmark-01.png" alt="JDBC vs R2DBC batch benchmark chart for large end-to-end jobs" loading="lazy" />
-  <figcaption>Large end-to-end batch jobs favored JDBC + Virtual Threads by about 8.4-8.8x on MySQL and 4.9-5.2x on PostgreSQL.</figcaption>
+  <img src="/assets/virtual-threads-part3-benchmark-01.png" alt="대형 end-to-end batch job의 JDBC vs R2DBC 벤치마크 차트" loading="lazy" />
+  <figcaption>대형 end-to-end batch job에서는 JDBC + Virtual Threads가 MySQL에서 약 8.4-8.8배, PostgreSQL에서 약 4.9-5.2배 높았다.</figcaption>
 </figure>
 
 | DB | poolSize | JDBC ops/sec | R2DBC ops/sec | JDBC/R2DBC |
@@ -150,29 +149,31 @@ For the large end-to-end job, the result is easier to read.
 | PostgreSQL | 30 | 0.990 | 0.192 | 5.2x |
 | PostgreSQL | 60 | 0.951 | 0.193 | 4.9x |
 
-PostgreSQL pointed the same way. JDBC won 33 of 36 combinations, and in the large end-to-end
-job with `parallelism=8` it was about 5x higher than R2DBC.
+PostgreSQL도 같은 방향이었다. 전체 36개 조합 중 33개에서 JDBC가 이겼고, 대형 end-to-end job의
+`parallelism=8` 조건에서는 JDBC가 R2DBC보다 약 5배 높았다.
 
-H2 was even more extreme, but H2 is in-memory and should not be treated as a direct network DB
-lesson. It is better read as a supporting signal: when JDBC overhead is low, Virtual Threads can
-drive a simple path very effectively.
+H2 결과는 더 극단적이지만, in-memory DB 특성이 강해서 network DB 결론으로 그대로 옮기면 안 된다.
+H2는 "JDBC path의 overhead가 작을 때 Virtual Threads가 얼마나 단순한 구조로 처리량을 낼 수 있는지"를
+보는 보조 지표에 가깝다.
 
-## Why Did This Happen?
+## 왜 이런 결과가 나왔나
 
-R2DBC + Coroutines looks more modern on paper. It wraps callbacks in suspend APIs, uses fewer
-threads, and multiplexes more work through non-blocking I/O. That is real. It is also not the
-only cost in a batch workload.
+R2DBC + Coroutines가 이론적으로 더 현대적으로 보인다. callback을 suspend로 감싸고, thread를 덜 쓰고,
+non-blocking I/O로 더 많은 작업을 multiplexing한다. 맞는 이야기다. 설명만 들으면 꽤 설득력 있다.
 
-| Cost | Explanation |
+하지만 batch workload에서는 다른 비용이 더 크게 보인다.
+
+| 비용 | 설명 |
 |---|---|
-| driver maturity | JDBC batch paths have been tuned for a long time |
-| protocol round-trip | non-blocking does not remove round-trips |
-| mapping overhead | reactive stream/suspend bridge cost is part of end-to-end time |
-| backpressure granularity | row-level backpressure can be excessive for batch jobs |
-| connection pool behavior | DB concurrency is still bounded by connections and server capacity |
+| driver maturity | JDBC driver는 batch path가 오래 다듬어져 있다 |
+| protocol round-trip | non-blocking이어도 round-trip이 사라지지는 않는다 |
+| mapping overhead | reactive stream/suspend bridge 비용이 end-to-end에 들어간다 |
+| backpressure granularity | batch job에서는 row 단위 backpressure가 오히려 과할 수 있다 |
+| connection pool behavior | DB가 받아들이는 동시성은 결국 connection과 server capacity가 정한다 |
 
-Virtual Threads help because the JDBC call may block, but it does not block an expensive
-platform thread. That lets us keep the fast JDBC batch path and still raise concurrency.
+Virtual Threads의 장점은 여기서 분명해진다. JDBC call은 blocking이지만, 블로킹하는 주체가 비싼
+platform thread가 아니다. 그러면 기존 JDBC driver의 빠른 batch path를 유지하면서 concurrency를 올릴 수
+있다.
 
 ```kotlin
 Executors.newVirtualThreadPerTaskExecutor().use { executor ->
@@ -186,56 +187,56 @@ Executors.newVirtualThreadPerTaskExecutor().use { executor ->
 }
 ```
 
-The code does not look special. That is a feature. Transaction boundaries, exceptions, stack
-traces, and profilers still look familiar.
+이 코드는 특별해 보이지 않는다. 그게 장점이다. 장애를 볼 때는 특별한 코드보다 읽히는 코드가 더 반갑다.
+transaction boundary, exception, stack trace, profiler가 익숙한 모양을 유지한다.
 
-## Similar Direction to Coroutine Performance Gains
+## Coroutines와 비슷한 방향의 성능 향상
 
-Virtual Threads and Coroutines solve a related problem: work that is waiting should not tie up
-expensive carrier resources for too long. That is why they can both improve I/O-heavy workloads.
+Virtual Threads와 Coroutines는 둘 다 "기다리는 작업이 carrier resource를 오래 붙잡지 않게 한다"는
+문제를 푼다. 그래서 I/O-heavy workload에서는 성능이 좋아지는 방향이 비슷하게 보일 수 있다.
 
-The implementation tradeoffs differ.
+하지만 구현 방식은 다르다.
 
-| Aspect | Coroutines | Virtual Threads |
+| 관점 | Coroutines | Virtual Threads |
 |---|---|---|
-| API shape | `suspend` propagates through the API | Blocking APIs can stay |
-| DB access | Fits async drivers such as R2DBC | Fits blocking drivers such as JDBC |
-| tooling | Coroutine debugger/context matters | Thread dumps/JFR/thread stacks remain familiar |
-| migration | API surface changes | Call stacks change less |
+| API shape | `suspend` 전파가 필요하다 | 기존 블로킹 API를 유지한다 |
+| DB access | R2DBC 같은 async driver와 잘 맞는다 | JDBC 같은 blocking driver와 잘 맞는다 |
+| tooling | coroutine debugger/context가 필요하다 | thread dump/JFR/thread stack과 잘 맞는다 |
+| migration | API surface 변경이 생긴다 | call stack을 덜 바꾼다 |
 
-What the `bluetape4k-exposed` benchmark made clear is that "async is theoretically more
-scalable" is not enough. Driver and workload matter. In this batch workload, JDBC + Virtual
-Threads was both simpler and faster.
+`bluetape4k-exposed` 벤치마크에서 흥미로운 점은 "비동기 모델이 이론적으로 더 scalable하다"는 주장보다
+"driver와 workload가 무엇인가"가 더 중요했다는 것이다. batch에서는 JDBC + Virtual Threads가 단순하고
+빨랐다.
 
-## When R2DBC Still Fits
+## 그래도 R2DBC가 맞는 경우
 
-This is not an argument to delete R2DBC. It is the better fit in plenty of cases.
+이 글은 R2DBC를 버리자는 글이 아니다. R2DBC가 더 자연스러운 상황이 있다.
 
-- The whole stack is already reactive or suspend-first.
-- Streaming responses and backpressure are core domain concerns.
-- The database driver's R2DBC path is fast for the actual workload.
-- Reactive pipeline observability is more familiar than thread-per-request observability.
-- Transactions are short and rows should be processed as a stream.
+- 전체 stack이 이미 reactive/suspend 중심이다.
+- streaming response와 backpressure가 domain의 핵심이다.
+- DB driver의 R2DBC path가 해당 workload에서 충분히 빠르다.
+- thread-per-request 관찰성보다 reactive pipeline 관찰성이 더 익숙하다.
+- transaction boundary가 짧고 row stream을 단계적으로 처리해야 한다.
 
-But "R2DBC must be faster" is no longer a safe assumption. For batch, insert-heavy, or
-transaction-heavy workloads, JDBC + Virtual Threads deserves a measurement.
+다만 "R2DBC니까 더 빠르겠지"는 이제 안전한 가정이 아니다. 인상은 인상이고, 결과는 결과다. 특히 batch,
+insert-heavy, transaction-heavy workload에서는 JDBC + Virtual Threads를 같이 재야 한다.
 
-## Practical Rule
+## 실전 판단 규칙
 
-My rule from this result is:
+내가 이 결과에서 얻은 규칙은 이렇다.
 
-| Situation | Try first |
+| 상황 | 먼저 시도할 것 |
 |---|---|
-| legacy JDBC code already exists | JDBC + Virtual Threads |
-| many batch inserts/updates | JDBC + Virtual Threads benchmark |
-| service API is suspend-first | R2DBC + Coroutines |
-| streaming/backpressure is central | R2DBC + Coroutines |
-| performance claim matters | Measure both on the same workload |
+| legacy JDBC code가 이미 있다 | JDBC + Virtual Threads |
+| batch insert/update가 많다 | JDBC + Virtual Threads 벤치마크 |
+| service가 suspend API 중심이다 | R2DBC + Coroutines |
+| streaming/backpressure가 핵심이다 | R2DBC + Coroutines |
+| 성능 주장이 중요하다 | 둘 다 같은 workload로 측정 |
 
-Virtual Threads put JDBC back into the "worth measuring" category. The JDBC retirement party can
-wait a little longer. For Kotlin/JVM backend services, that is very practical: you can keep
-existing blocking code and improve throughput without converting every API to `suspend`.
+Virtual Threads는 JDBC를 "과거 방식"이 아니라 다시 "측정할 가치가 있는 선택"으로 올려놓았다. JDBC
+은퇴식은 조금 미뤄도 된다. 특히 Kotlin/JVM backend에서는 이 선택이 꽤 실용적이다. API를 전부 suspend로
+바꾸지 않아도, 기존 블로킹 코드를 살리면서 throughput을 올릴 수 있기 때문이다.
 
-Part 4 shows how to expose that choice as a library API. Java 21 and Java 25 both belong to the
-Virtual Threads era, but their available APIs differ, so `bluetape4k-projects` separates common
-API from JDK-specific implementations.
+Part 4에서는 이 선택을 library로 어떻게 제공할지 본다. Java 21과 Java 25는 같은 Virtual Threads 시대에
+있지만, 제공 가능한 API가 조금씩 다르다. 그래서 `bluetape4k-projects`는 공통 API와 JDK별 구현체를
+SPI로 분리했다.
