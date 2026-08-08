@@ -1,0 +1,36 @@
+{
+  "kind": "state",
+  "source": {
+    "question": "OCR 공급자 실행 결과 네 가지가 외부 응답에서 어떤 의미와 필드를 갖는가?",
+    "revision": "bluetape4k-image@f35723f1c9b1add6078aebcd46d41a1e196face9",
+    "paths": [
+      "docs/review/2026-08-09-image-intelligence-part3-claim-ledger.md",
+      "docs/superpowers/specs/2026-07-27-image-intelligence-blog-series-design.md"
+    ]
+  },
+  "nodes": [
+    {"id": "completed", "label": "Completed", "source": "AnalysisModels.kt"},
+    {"id": "empty", "label": "Empty", "source": "AnalysisModels.kt"},
+    {"id": "unavailable", "label": "Unavailable", "source": "AnalysisModels.kt"},
+    {"id": "failed", "label": "Failed", "source": "AnalysisModels.kt"},
+    {"id": "ocr-result", "label": "result.text + pageCount", "source": "ApiModels.kt"},
+    {"id": "empty-contract", "label": "status only", "source": "ApiModels.kt"},
+    {"id": "unavailable-contract", "label": "reasonCode", "source": "ApiModels.kt"},
+    {"id": "failed-contract", "label": "reasonCode", "source": "ApiModels.kt"},
+    {"id": "aggregate-status", "label": "COMPLETED · PARTIAL · FAILED", "source": "ImageIntelligenceService.kt"}
+  ],
+  "edges": [
+    {"id": "completed-result", "from": "completed", "to": "ocr-result", "kind": "response", "source": "ImageIntelligenceService.kt"},
+    {"id": "empty-result", "from": "empty", "to": "empty-contract", "kind": "response", "source": "ImageIntelligenceService.kt"},
+    {"id": "unavailable-result", "from": "unavailable", "to": "unavailable-contract", "kind": "response", "source": "ImageIntelligenceService.kt"},
+    {"id": "failed-result", "from": "failed", "to": "failed-contract", "kind": "response", "source": "ImageIntelligenceService.kt"},
+    {"id": "completed-aggregate", "from": "completed", "to": "aggregate-status", "kind": "aggregate", "source": "ImageIntelligenceService.kt"},
+    {"id": "empty-aggregate", "from": "empty", "to": "aggregate-status", "kind": "aggregate", "source": "ImageIntelligenceService.kt"},
+    {"id": "unavailable-aggregate", "from": "unavailable", "to": "aggregate-status", "kind": "aggregate", "source": "ImageIntelligenceService.kt"},
+    {"id": "failed-aggregate", "from": "failed", "to": "aggregate-status", "kind": "aggregate", "source": "ImageIntelligenceService.kt"}
+  ],
+  "behavior": {"branches": 4, "loops": 0},
+  "repairs": [
+    {"target": "status-cards", "reason": "Keep four provider states visible without expanding into engine-specific exception classes", "touches": 4}
+  ]
+}

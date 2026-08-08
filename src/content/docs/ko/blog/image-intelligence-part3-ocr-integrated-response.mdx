@@ -1,0 +1,233 @@
+---
+title: "OCR 결과를 통합 응답에 연결하기: 빈 결과·사용 불가·실패를 구분하는 계약"
+description: 방문증 이미지 분석 API에서 OCR 공급자의 결과를 Empty·Unavailable·Failed로 보존하고 검출·바코드 형제 경로와 함께 통합 응답으로 만드는 방법을 설명합니다.
+sidebar:
+  order: -202608091300
+blog:
+  date: 2026-08-09T13:00:00+09:00
+  image: /assets/blog/image-intelligence/part3/image-intelligence-part3-hero.png
+  imageAlt: 방문증 이미지가 OCR 스캐너와 구조화된 문서 화면을 거쳐 통합 응답으로 이어지는 어두운 3D 작업대
+  cardDescription: "OCR 공급자의 빈 결과, 사용 불가, 타임아웃과 예외를 구분하고 객체 검출·바코드 결과를 잃지 않는 통합 응답 계약을 살펴봅니다."
+  tags: ["architecture","image","kotlin","ocr","practical-example","resilience","spring","testing"]
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/blog/image-intelligence/part3/image-intelligence-part3-hero.png" alt="방문증 이미지가 OCR 스캐너와 구조화된 문서 화면을 거쳐 통합 응답으로 이어지는 어두운 3D 작업대" loading="eager" />
+  <figcaption>OCR은 텍스트를 읽는 기능이지만, 통합 API에서는 읽지 못한 이유까지 결과의 일부입니다. 상태와 결과를 함께 보존해야 다음 경로가 판단할 수 있습니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-09 · Image Intelligence API · Part 3</p>
+
+방문증 이미지 한 장에서 이름, 얼굴 영역, 입장 QR을 함께 읽는 API를 생각해 보겠습니다. 입력 자격 판정과
+단일 디코딩을 통과한 `ImmutableImage`가 OCR 공급자에 전달됩니다. 여기서 OCR이 텍스트를 찾지 못했다고
+해서 이미지가 잘못된 것은 아닙니다. OCR 엔진을 사용할 수 없어서 실행하지 못한 경우도 있고, 실행 중
+타임아웃이 발생한 경우도 있습니다.
+
+이 세 가지를 모두 `null`이나 예외 하나로 합치면 통합 응답은 다음 단계가 판단할 정보를 잃습니다.
+**공급자가 실행됐지만 결과가 비어 있는지(`Empty`), 공급자 자체를 사용할 수 없는지(`Unavailable`),
+실행하다 실패했는지(`Failed`)를 서로 다른 상태로 남겨야 합니다.**
+
+이 글은 [`bluetape4k-image`의 Spring Boot 이미지 인텔리전스 API](https://github.com/bluetape4k/bluetape4k-image/tree/develop/examples/spring-boot-image-intelligence-api)의
+OCR 경로를 따라갑니다. Tesseract 설치와 네이티브 런타임 운영은 [OCR 서비스를 실전에서 운영하기](/ko/blog/ocr-api-fallback-contract-bluetape4k-image/)에서
+다뤘으므로 여기서는 공급자 결과가 통합 응답 계약으로 이동하는 경계에 집중합니다.
+
+## OCR 엔진보다 먼저 공급자 계약을 둔다
+
+예제의 [`OcrAnalysisProvider`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageAnalysisProviders.kt)는
+OCR 엔진의 이름과 호출 방법을 작은 인터페이스로 감쌉니다.
+
+```kotlin
+interface OcrAnalysisProvider {
+    val id: String
+
+    suspend fun analyze(image: ImmutableImage): OcrStructuredResult
+}
+```
+
+반환 타입인 `OcrStructuredResult`에는 전체 텍스트와 페이지가 들어가고, 설정과 엔진이 지원하면 블록·라인·단어
+구조도 함께 들어갑니다. `TesseractOcrAnalysisProvider`는 실제 OCR 엔진을 호출하고, `FixtureOcrAnalysisProvider`는
+방문증 예제의 결정적인 테스트 결과를 반환합니다. 공급자가 달라도 워크플로가 받는 입력과 출력의 모양은
+같습니다.
+
+이 경계는 엔진 교체를 쉽게 만드는 추상화라는 말보다 더 구체적인 역할을 합니다. **엔진이 던지는 예외와
+외부 API가 공개할 상태를 같은 타입으로 취급하지 않도록 책임을 나눕니다.** 공급자는 OCR 결과를 만들고,
+실행 보호 경계는 그 결과가 어떤 상태로 통합될지 결정합니다.
+
+## 실행 보호 경계에서 제한 시간과 동시성을 적용한다
+
+[`GuardedAnalysisRunner`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/GuardedAnalysisRunner.kt)는
+공급자를 호출하는 공통 경계입니다. 실제 구현은 세부 로깅과 코루틴 컨텍스트를 포함하지만, 핵심 순서는
+다음처럼 요약할 수 있습니다.
+
+```kotlin
+val result = runner.run(
+    provider = ocrProvider,
+    timeout = ocrTimeout,
+    semaphore = ocrSemaphore,
+    isEmpty = { it.text.isBlank() },
+) {
+    ocrProvider.analyze(image)
+}
+```
+
+`run`은 `semaphore.withPermit` 안에서 `withTimeout`을 실행합니다. 그러면 OCR 엔진마다 별도의 동시성
+허가와 제한 시간을 둘 수 있고, 타임아웃이나 예외가 발생해도 허가가 반환됩니다. 네이티브 호출이 반환할
+때까지 해당 스레드가 점유될 수 있다는 점은 별도의 운영 문제입니다. README가 설명하듯이 프로세스 격리가
+필요한 엔진이라면 이 애플리케이션 경계 바깥에서 다뤄야 합니다.
+
+취소의 의미도 분리합니다. `GuardedAnalysisRunner`는 자신이 설정한 제한 시간만 `Failed(reasonCode =
+"timeout")`으로 바꿉니다. 상위 요청이나 부모 코루틴의 `CancellationException`은 다시 던집니다. 요청이
+취소된 사건을 손상된 이미지나 OCR 실패로 기록하지 않는 이유는, 두 사건의 수명주기와 재시도 의미가 다르기
+때문입니다.
+
+## `Empty`, `Unavailable`, `Failed`는 같은 실패가 아니다
+
+실행 보호 경계는 공급자 결과와 예외를 [`AnalysisResult`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/model/AnalysisModels.kt)로
+정규화합니다. 네 상태는 다음 질문에 답합니다.
+
+| 상태 | 실제로 일어난 일 | OCR 응답에 담는 값 |
+| --- | --- | --- |
+| `Completed` | 공급자가 결과를 반환했다 | `status`, `provider`, `elapsedMillis`, `result.text`, `result.pageCount` |
+| `Empty` | 공급자는 실행됐지만 텍스트가 비어 있다 | `status`, `provider`, `elapsedMillis` |
+| `Unavailable` | 공급자가 설정되지 않았거나 사용할 수 없다 | `status`, `provider`, `elapsedMillis`, `reasonCode` |
+| `Failed` | 타임아웃 또는 공급자 예외가 발생했다 | `status`, `provider`, `elapsedMillis`, `reasonCode` |
+
+OCR의 빈 결과는 `isEmpty = { it.text.isBlank() }`로 판정합니다. 따라서 이미지에 글자가 없거나 너무
+작아서 공급자가 빈 텍스트를 반환한 경우에는 `Empty`가 됩니다. 공급자를 아예 선택할 수 없을 때의
+`ProviderUnavailableException`은 `Unavailable`로, 그 밖의 예외는 `Failed(reasonCode =
+"provider_failure")`로 바뀝니다.
+
+<figure
+  class="bt4k-architecture"
+  data-diagram-title="OCR 분석 경로가 통합 응답에 도달하는 방법"
+>
+  <img src="/assets/blog/image-intelligence/part3/image-intelligence-ocr-lane-01-ko.png" alt="QualifiedImage가 OCR 공급자와 실행 보호 경계를 지나 Completed, Empty, Unavailable, Failed 상태와 공개 OCR 응답으로 매핑되고 검출·바코드 형제 결과와 함께 통합 응답에 모이는 다이어그램" loading="lazy" />
+  <figcaption>OCR 결과를 통합하는 일은 텍스트만 복사하는 작업이 아닙니다. 실행 상태와 형제 분석 결과를 함께 보존하는 응답 경계를 만드는 일입니다.</figcaption>
+</figure>
+
+이 상태를 공개 응답에 매핑하는 [`ImageIntelligenceService`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageIntelligenceService.kt)의
+책임은 상태에 따라 필드를 선택하는 것입니다. 완료된 결과에는 텍스트와 페이지 수를 넣고, 사용할 수
+없거나 실패한 결과에는 안정적인 `reasonCode`를 넣습니다. 네이티브 라이브러리의 예외 문자열이나 내부
+경로를 그대로 외부에 내보내지 않습니다.
+
+개념적으로는 다음과 같은 매핑입니다.
+
+```kotlin
+when (analysis) {
+    is AnalysisResult.Completed ->
+        OcrAnalysisResponse(
+            status = COMPLETED,
+            provider = analysis.provider,
+            elapsedMillis = analysis.elapsedMillis,
+            result = OcrResponse(
+                text = analysis.value.text,
+                pageCount = analysis.value.pages.size,
+            ),
+        )
+
+    is AnalysisResult.Empty ->
+        OcrAnalysisResponse(EMPTY, analysis.provider, analysis.elapsedMillis)
+
+    is AnalysisResult.Unavailable ->
+        OcrAnalysisResponse(UNAVAILABLE, analysis.provider, analysis.elapsedMillis, reasonCode = analysis.reasonCode)
+
+    is AnalysisResult.Failed ->
+        OcrAnalysisResponse(FAILED, analysis.provider, analysis.elapsedMillis, reasonCode = analysis.reasonCode)
+}
+```
+
+위 코드는 응답 타입의 핵심 필드만 보여 주는 축약 예시입니다. 실제 타입은 [`ApiModels.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/model/ApiModels.kt)에
+정의되어 있습니다.
+
+## OCR 실패가 형제 분석 결과를 지우지 않게 한다
+
+OCR만 통합하는 서비스라면 `Failed`를 전체 요청 실패로 올리는 구현이 눈에 띄지 않을 수 있습니다. 하지만
+방문증 API는 같은 이미지에서 객체 검출과 바코드·QR 판독도 실행합니다. [`ImageIntelligenceWorkflow`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageIntelligenceWorkflow.kt)는
+세 경로를 `analysis.ocr`, `analysis.detection`, `analysis.barcode`라는 별도 결과 키로 수집합니다.
+
+그래서 OCR이 `Failed(provider_failure)`가 되어도 검출이 `Completed`이고 QR도 `Completed`라면 세 결과를
+모두 응답에 남길 수 있습니다. 집계 상태만 `PARTIAL`이 됩니다. 클라이언트는 OCR 텍스트가 없다는 사실과
+QR 값이 있다는 사실을 한 응답에서 함께 볼 수 있습니다.
+
+반대로 모든 경로가 `Unavailable` 또는 `Failed`라서 사용할 수 있는 결과가 하나도 없으면 집계 상태가
+`FAILED`가 됩니다. `COMPLETED`는 모든 경로가 `Completed` 또는 `Empty`로 끝난 경우입니다. `Empty`가
+포함됐다는 이유만으로 전체 요청을 실패시키지 않는 것도 이 규칙의 일부입니다.
+
+이 집계는 업무 결정을 대신하지 않습니다. 방문증을 허용할지 수동 검토로 보낼지는 분석 결과와 별도의
+`VisitorPassPolicy`가 결정합니다. Part 4에서 이 정책 경계를 더 자세히 살펴볼 예정입니다.
+
+## 네 상태를 응답 계약으로 읽는 법
+
+상태 이름을 문서에 나열하는 것만으로는 충분하지 않습니다. 호출자는 각 상태에서 어떤 필드를 신뢰하고,
+어떤 처리를 해야 하는지 알아야 합니다.
+
+<figure
+  class="bt4k-architecture"
+  data-diagram-title="네 가지 OCR 상태와 공개 응답 필드"
+>
+  <img src="/assets/blog/image-intelligence/part3/image-intelligence-result-contract-02-ko.png" alt="Completed, Empty, Unavailable, Failed 네 OCR 상태가 결과 텍스트·페이지 수, 상태만, reasonCode로 각각 매핑되고 통합 집계 상태를 만드는 비교 다이어그램" loading="lazy" />
+  <figcaption>`Completed`는 결과를 전달하고, `Empty`는 실행된 분석에서 값이 없음을 전달하며, 나머지 두 상태는 사용 불가 또는 실행 실패 사유를 전달합니다.</figcaption>
+</figure>
+
+- `Completed`: `result`를 읽고 페이지 수와 함께 후속 검증을 진행합니다.
+- `Empty`: 공급자는 정상적으로 실행됐지만 이 이미지에서 읽은 텍스트가 없다는 뜻입니다. 다른 분석 결과가 있다면 함께 사용합니다.
+- `Unavailable`: 기본 프로필처럼 OCR 공급자가 설정되지 않았을 수 있습니다. 구성 변경이나 다른 경로로 대체할 수 있는 상태입니다.
+- `Failed`: `timeout` 또는 `provider_failure`처럼 실행 중 발생한 문제입니다. 재시도·회로 차단기·격리 여부는 서비스 운영 정책이 결정합니다.
+
+`elapsedMillis`와 `provider`는 네 상태 모두에 남습니다. 그러면 운영자는 빈 결과가 빠르게 끝났는지,
+사용할 수 없는 공급자를 호출하려 했는지, 특정 공급자에서 시간이 오래 걸렸는지를 구분할 수 있습니다.
+다만 이 값이 OCR 품질이나 정확도를 보장하는 것은 아닙니다.
+
+## 테스트는 상태 이름이 아니라 경계를 검증한다
+
+[`GuardedAnalysisRunnerTest`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/test/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/GuardedAnalysisRunnerTest.kt)는
+빈 결과가 `Empty`가 되는지, 공급자 예외가 `Failed`가 되는지, 타임아웃이 `timeout` 사유로 정규화되는지를
+검증합니다. 상위 취소는 다시 전파되어야 하므로 일반 예외 테스트와 섞지 않습니다.
+
+[`ImageIntelligenceWorkflowTest`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/test/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageIntelligenceWorkflowTest.kt)는
+세 경로가 겹쳐 실행되는지와 한 경로의 실패가 형제 결과를 지우지 않는지를 확인합니다. 취소가 발생했을 때
+모든 자식 경로에 도달하는지도 별도로 검증합니다.
+
+마지막으로 [`ImageIntelligenceServiceTest`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/test/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageIntelligenceServiceTest.kt)는
+OCR 한 경로가 실패하고 검출·바코드가 완료된 경우 `PARTIAL`과 세 개의 개별 결과가 함께 반환되는지 확인합니다.
+사용 가능한 경로가 하나도 없을 때 `FAILED`가 되는 경우도 별도로 확인합니다. 이 테스트가 증명하는 것은
+“실패 문자열이 응답에 들어갔다”가 아니라 **어느 결과가 남고 집계 상태가 어떻게 계산되는가**입니다.
+
+## 이 계약이 보장하지 않는 것
+
+이 글의 계약은 OCR 실행 결과를 안정적인 응답 상태로 바꾸는 기준선입니다. 다음 항목은 자동으로 해결되지
+않습니다.
+
+| 이 예제가 정하는 것 | 별도로 결정할 것 |
+| --- | --- |
+| OCR 결과의 `Completed`·`Empty`·`Unavailable`·`Failed` 상태 | Tesseract 버전, 모델 품질, 정확도 기준 |
+| 제한 시간과 공급자별 동시성 허가 | 재시도, 회로 차단기, 프로세스 격리 |
+| 텍스트·페이지 수와 안정적인 사유 코드 | 원문 보관·삭제·암호화와 개인정보 마스킹 |
+| OCR·검출·바코드 형제 결과의 보존 | 방문증을 허용·검토·거부하는 업무 규칙 |
+
+네이티브 OCR 호출이 반환될 때까지 스레드가 점유될 수 있다는 점도 응답 계약만으로 해결되지 않습니다.
+큰 이미지 입력 제한과 OCR 전처리, 네이티브 런타임의 운영 조건은 기존 [OCR 서비스를 실전에서 운영하기](/ko/blog/ocr-api-fallback-contract-bluetape4k-image/)를
+함께 읽어야 합니다.
+
+## 시리즈에서 이어서 볼 내용
+
+- [Part 1: 이미지 한 장에서 여러 정보를 추출하는 API](/ko/blog/image-intelligence-part1-multi-analysis-boundaries/)
+- [Part 2: 이미지 분석 전에 입력부터 판정하라](/ko/blog/image-intelligence-part2-input-qualification-and-single-decode/)
+- **Part 3: OCR 결과를 통합 응답에 연결하기**
+- Part 4: 객체 검출 결과와 처리 정책을 분리하기
+- Part 5: OCR과 다른 바코드·QR 추출 계약
+- Part 6: 병렬 실행과 부분 실패를 응답 계약으로 만들기
+- Part 7: 방문증 이미지 처리 API 통합 예제
+
+Part 4에서는 같은 통합 응답에서 객체 검출 사실을 방문증 처리 정책과 분리하는 방법을 살펴봅니다.
+
+## 구현 코드와 자료 살펴보기
+
+- [Spring Boot 이미지 인텔리전스 API](https://github.com/bluetape4k/bluetape4k-image/tree/develop/examples/spring-boot-image-intelligence-api): 입력 자격 판정부터 세 분석기와 방문증 정책까지 전체 실행 구조
+- [`ImageAnalysisProviders.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageAnalysisProviders.kt): OCR 공급자 인터페이스와 픽스처·Tesseract 구현
+- [`GuardedAnalysisRunner.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/GuardedAnalysisRunner.kt): 제한 시간, 동시성 허가와 상태 변환
+- [`ImageIntelligenceWorkflow.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageIntelligenceWorkflow.kt): OCR·검출·바코드 결과 수집
+- [`ImageIntelligenceService.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageIntelligenceService.kt): 공개 OCR 응답과 집계 상태 매핑
+- [`AnalysisModels.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/model/AnalysisModels.kt), [`ApiModels.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/model/ApiModels.kt): 내부 상태와 외부 응답 타입
+- [`GuardedAnalysisRunnerTest.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/test/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/GuardedAnalysisRunnerTest.kt), [`ImageIntelligenceWorkflowTest.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/test/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageIntelligenceWorkflowTest.kt), [`ImageIntelligenceServiceTest.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/test/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageIntelligenceServiceTest.kt): 상태·취소·부분 실패 테스트
+- [OCR 서비스를 실전에서 운영하기](/ko/blog/ocr-api-fallback-contract-bluetape4k-image/): OCR 엔진 운영, 대형 이미지 제한과 네이티브 실패 경계
