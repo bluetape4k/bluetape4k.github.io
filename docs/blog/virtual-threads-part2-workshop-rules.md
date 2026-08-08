@@ -17,17 +17,17 @@ blog:
 
 <p class="bt4k-post-meta">2026-05-29 · Virtual Threads series · Part 2</p>
 
-이 글은 Virtual Threads 시리즈의 2편이다. 전체 시리즈는 [Part 1: 소개와 주의점](/ko/blog/virtual-threads-part1-guide/),
-[Part 2: 워크숍 규칙](/ko/blog/virtual-threads-part2-workshop-rules/),
-[Part 3: JDBC + Virtual Threads 벤치마크](/ko/blog/virtual-threads-part3-jdbc-r2dbc-benchmark/),
-[Part 4: Java 21/25 SPI 설계](/ko/blog/virtual-threads-part4-java21-java25-spi/)로 이어진다.
+이 글은 Virtual Threads 시리즈의 2편이다. 전체 시리즈는 [Part 1: 소개와 주의점](/blog/virtual-threads-part1-guide/),
+[Part 2: 워크숍 규칙](/blog/virtual-threads-part2-workshop-rules/),
+[Part 3: JDBC + Virtual Threads 벤치마크](/blog/virtual-threads-part3-jdbc-r2dbc-benchmark/),
+[Part 4: Java 21/25 SPI 설계](/blog/virtual-threads-part4-java21-java25-spi/)로 이어진다.
 
 Part 1은 큰 그림이었다. 이번 글은 조금 더 손에 잡히는 규칙을 다룬다. 근거는
 `bluetape4k-workshop/virtualthreads/rules`의 예제들이다. 이 예제들은 "Virtual Threads를 쓰면 된다"에서
 끝나지 않는다. "이렇게 쓰면 기대만큼 효과가 나지 않는다"까지 같이 보여준다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/virtual-threads-part2-rules-01-ko.png" alt="bluetape4k-workshop의 실전 Virtual Thread 규칙 요약" loading="lazy" />
+  <img src="/assets/virtual-threads-part2-rules-01.png" alt="bluetape4k-workshop의 실전 Virtual Thread 규칙 요약" loading="lazy" />
   <figcaption>Virtual Threads를 켰다고 끝이 아니다. pool, semaphore, context, lock 경계에서 바로 차이가 나는 실전 규칙들.</figcaption>
 </figure>
 
@@ -62,7 +62,7 @@ Executors.newVirtualThreadPerTaskExecutor().use { executor ->
 아니다.
 
 ```kotlin
-// 비추천: virtual thread factory를 ThreadPoolExecutor에 넣는다.
+// Not recommended: putting a virtual-thread factory inside a ThreadPoolExecutor shape.
 Executors.newCachedThreadPool(Thread.ofVirtual().factory()).use { executor ->
     executor.submit { Thread.sleep(1000) }
 }
@@ -72,7 +72,7 @@ Executors.newCachedThreadPool(Thread.ofVirtual().factory()).use { executor ->
 되어야 한다.
 
 ```kotlin
-// 추천: task마다 새 virtual thread를 만든다.
+// Recommended: create a new virtual thread per task.
 Executors.newVirtualThreadPerTaskExecutor().use { executor ->
     executor.submit { Thread.sleep(1000) }
     executor.submit { Thread.sleep(1000) }
@@ -154,8 +154,8 @@ structuredTaskScopeAll { scope ->
 
 ## 규칙 5. lock은 작게 잡고, Java 21에서는 pinning도 의식한다
 
-`Rule6UseSynchronizedBlocksAndMethodsCarefully`는 Java 21 기준으로 `synchronized` pinning 위험을 피하기
-위해 `ReentrantLock`을 쓰는 예제를 둔다.
+`Rule6UseSynchronizedBlocksAndMethodsCarefully`는 `ReentrantLock`을 사용해 Java 21의
+`synchronized` pinning 위험을 피하는 예제를 둔다.
 
 ```kotlin
 private val lock = ReentrantLock()
@@ -186,13 +186,3 @@ pinning이 줄어도 긴 critical section은 병목이다. lock 안에서 오래
 Virtual Threads는 기존 블로킹 코드를 최소한의 변경으로 다시 쓸 수 있게 해준다. 하지만 제한, context,
 lock을 대충 처리해도 된다는 뜻은 아니다. 쉬워진 만큼 잘못 쓰기도 쉬워진다. Part 3에서는 이 규칙을 실제
 database 벤치마크에 대입해 본다.
-
-
-## 참고 자산과 series route
-
-![Virtual Threads 실전 규칙](/assets/virtual-threads-part2-rules-01.png)
-
-- [Part 1](/blog/virtual-threads-part1-guide/)
-- [Part 2](/blog/virtual-threads-part2-workshop-rules/)
-- [Part 3](/blog/virtual-threads-part3-jdbc-r2dbc-benchmark/)
-- [Part 4](/blog/virtual-threads-part4-java21-java25-spi/)

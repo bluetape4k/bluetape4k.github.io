@@ -1,236 +1,205 @@
 ---
-title: "Virtual Threads 4편: Java 21과 Java 25를 하나의 API로 감추기"
-description: bluetape4k가 공통 Virtual Threads API를 제공하면서 Java 21과 Java 25 구현을 ServiceLoader SPI로 분리하는 방식을 설명한다.
+title: "Virtual Threads 4편: Java 21과 Java 25를 하나의 API 뒤에 숨기기"
+description: bluetape4k가 공통 Virtual Thread API를 제공하면서 Java 21과 Java 25 구현을 ServiceLoader SPI로 분리하는 방식을 설명한다.
 sidebar:
   order: -202605291103
 blog:
   date: 2026-05-29T11:03:00+09:00
   image: /assets/virtual-threads-part4-hero.png
   imageAlt: 하나의 SPI가 Java 21과 Java 25 런타임 구현을 연결하는 소개용 일러스트
-  cardDescription: "Java 21과 25 차이는 내부로 숨기고, 애플리케이션 코드에는 하나의 Virtual Threads API만 보여주는 방법."
+  cardDescription: "Java 21/25 차이는 런타임 provider 안에 숨기고 애플리케이션 코드는 하나의 Virtual Threads API만 사용하게 한다."
 ---
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/virtual-threads-part4-hero.png" alt="하나의 SPI가 Java 21과 Java 25 런타임 구현을 연결하는 소개용 일러스트" loading="eager" />
-  <figcaption>SPI 경계가 충분히 단순하면, 하나의 공개 API 뒤에 두 런타임 선택지를 숨길 수 있다.</figcaption>
+  <figcaption>SPI 경계를 제대로 단순하게 만들면 하나의 공개 API 뒤에 두 런타임 선택지를 숨길 수 있다.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-29 · Virtual Threads 시리즈 · Part 4</p>
 
-이 글은 Virtual Threads 시리즈의 4편이다. 전체 시리즈는 [Part 1: 소개와 주의점](/ko/blog/virtual-threads-part1-guide/),
-[Part 2: 워크숍 규칙](/ko/blog/virtual-threads-part2-workshop-rules/),
-[Part 3: JDBC + Virtual Threads 벤치마크](/ko/blog/virtual-threads-part3-jdbc-r2dbc-benchmark/),
-[Part 4: Java 21/25 SPI 설계](/ko/blog/virtual-threads-part4-java21-java25-spi/)로 이어진다.
+이 글은 Virtual Threads 시리즈의 4편이다. 전체 시리즈는
+[Part 1: 소개와 주의점](/blog/virtual-threads-part1-guide/),
+[Part 2: 워크숍 규칙](/blog/virtual-threads-part2-workshop-rules/),
+[Part 3: JDBC + Virtual Threads 벤치마크](/blog/virtual-threads-part3-jdbc-r2dbc-benchmark/),
+[Part 4: Java 21/25 SPI 설계](/blog/virtual-threads-part4-java21-java25-spi/)로 이어진다.
 
-Part 1에서는 Virtual Threads를 어떻게 바라볼지 정리했고, Part 2에서는 워크숍 규칙을 봤고,
-Part 3에서는 `bluetape4k-exposed` 벤치마크에서 JDBC + Virtual Threads가 R2DBC + Coroutines보다 나은
-경우가 많다는 걸 봤다.
+Part 1에서는 Virtual Threads를 어떻게 바라볼지 정리했고, Part 2에서는 워크숍 규칙을 다뤘다. Part 3에서는
+`bluetape4k-exposed` 벤치마크를 통해 JDBC + Virtual Threads가 예상보다 자주 R2DBC + Coroutines를
+앞설 수 있는 이유를 확인했다.
 
-마지막으로 볼 주제는 라이브러리 설계다. 앞의 글들이 런타임과 workload 이야기였다면, 이번 글은 그 차이를
-애플리케이션 코드에서 어떻게 숨길지에 관한 이야기다. 사용자에게는 단순하게, 내부는 JDK별로 다르게.
+마지막 주제는 라이브러리 설계다. 내부에서 서로 다른 JDK 계열을 지원하면서 애플리케이션 코드는 어떻게
+단순하게 유지할 수 있을까?
 
-> Java 21과 Java 25를 동시에 지원하면서, 애플리케이션 코드에는 하나의 API만 보여줄 수 있을까?
+> Java 21과 Java 25를 지원하면서 애플리케이션 코드에는 하나의 API만 보여줄 수 있을까?
 
-`bluetape4k-projects`의 `virtualthread` 모듈은 이 문제를 공통 API + JDK별 런타임 provider로 나눴다.
-애플리케이션 코드가 "지금 Java 21인가, 25인가?"를 매번 따져야 한다면 API가 너무 많은 사정을 밖으로
-드러내는 것이다.
+`bluetape4k-projects`의 `virtualthread` 모듈은 이 문제를 공통 API와 JDK별 런타임 provider로 나눈다.
+애플리케이션 코드가 어디서나 "지금 Java 21인가, Java 25인가?"를 물어야 한다면 구현 세부 정보가
+너무 많이 새어 나온 것이다.
 
-그림의 핵심은 애플리케이션이 `jdk21`/`jdk25` 구현체를 직접 알지 않는다는 점이다. 애플리케이션은 공통
-API만 호출하고, `ServiceLoader`가 런타임 provider를 고른다. 그러면 JDK별 차이는 배포 artifact와
-provider 구현체 내부로 들어간다.
+
+핵심은 애플리케이션이 `jdk21`이나 `jdk25` 구현 클래스를 알지 않는다는 점이다. 애플리케이션은 공통 API를
+호출하고, `ServiceLoader`가 런타임 provider를 선택한다. Java 버전별 차이는 artifact와 provider 구현
+내부에 남는다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/virtual-threads-part4-spi-01-ko.png" alt="ServiceLoader가 Java 21과 Java 25 Virtual Threads 런타임 provider를 선택하는 모듈 구성" loading="lazy" />
-  <figcaption>Java 21과 25 차이는 내부로 숨기고, 애플리케이션 코드에는 하나의 Virtual Threads API만 보여주는 방법.</figcaption>
+  <img src="/assets/virtual-threads-part4-spi-01.png" alt="ServiceLoader를 사용하는 Java 21과 Java 25 Virtual Thread 런타임 모듈 구성" loading="lazy" />
+  <figcaption>Java 21/25 차이는 런타임 provider 안에 숨기고 애플리케이션 코드는 하나의 Virtual Threads API만 사용하게 한다.</figcaption>
 </figure>
 
-## Java 21과 Java 25의 차이
+## Java 21과 Java 25
 
 Java 21은 Virtual Threads의 기준선이다. [JEP 444](https://openjdk.org/jeps/444)로 Virtual Threads가
-정식 기능이 됐다. `Executors.newVirtualThreadPerTaskExecutor()`, `Thread.ofVirtual()`, thread dump/JFR
-관찰성 같은 기본 도구가 여기서 출발한다.
+정식 기능이 됐고, `Executors.newVirtualThreadPerTaskExecutor()`, `Thread.ofVirtual()`, thread dump,
+JFR 관찰성 같은 핵심 도구를 제공한다.
 
-Java 25는 Virtual Threads 자체를 새로 만든 릴리스가 아니다. 대신 Java 21 이후의 Loom 계열 개선을
-함께 가져오는 LTS 지점이다. 완전히 다른 기술이라기보다, 같은 방향으로 다듬어진 다음 장기 지원 지점에
-도착한 릴리스에 가깝다.
+Java 25는 Virtual Threads를 새로 발명한 릴리스가 아니다. Java 21 이후의 Loom 관련 개선을 이어받은
+LTS 지점이다.
 
-| Release | Virtual Threads 관점의 의미 |
+| 릴리스 | Virtual Threads 관점의 의미 |
 |---|---|
-| Java 21 | Virtual Threads final, thread-per-task API 사용 가능 |
-| Java 24 | [JEP 491](https://openjdk.org/jeps/491)로 `synchronized` pinning 완화 |
-| Java 25 | LTS. [Scoped Values](https://openjdk.org/jeps/506) final, Structured Concurrency preview 유지 |
+| Java 21 | Virtual Threads 정식 제공, thread-per-task API 사용 가능 |
+| Java 24 | [JEP 491](https://openjdk.org/jeps/491)으로 `synchronized` pinning 완화 |
+| Java 25 | LTS. [Scoped Values](https://openjdk.org/jeps/506) 정식 제공, Structured Concurrency는 preview 유지 |
 
-[JDK 25 project page](https://openjdk.org/projects/jdk/25/)의 기능 목록에도 Structured Concurrency와
-Scoped Values가 들어 있다. 특히 Scoped Values는 Virtual Threads와 같이 쓸 때 ThreadLocal보다 더
-예측 가능한 context 전달 모델을 제공한다.
+기능 목록은 [JDK 25 project page](https://openjdk.org/projects/jdk/25/)에서 확인할 수 있다. Scoped Values는
+scope 안에서 읽기 전용으로 사용하는 값에 대해 ThreadLocal보다 예측 가능한 context 모델을 제공하므로
+Virtual Threads와 함께 사용할 때 특히 유용하다.
 
-하지만 라이브러리가 Java 25 API를 컴파일 시점 의존성으로 직접 노출하면 Java 21 런타임에서 깨질 수
-있다. 그래서 애플리케이션은 공통 API만 보고, 런타임 모듈은 실행 JDK에 맞게 교체하는 구조가 필요하다.
+하지만 Java 21에서도 실행해야 하는 라이브러리가 Java 25 API를 compile-time API로 노출해서는 안 된다.
+애플리케이션 코드는 공통 API를 보고, 런타임 모듈만 JDK에 따라 달라져야 한다.
 
 ## 공통 API: `VirtualThreadRuntime`
 
-핵심 interface는 작아야 한다.
+핵심 interface는 작게 유지해야 한다.
 
 ```kotlin
 interface VirtualThreadRuntime {
-    val runtimeName: String
+    val name: String
     val priority: Int
 
-    fun isSupported(): Boolean
-    fun threadFactory(prefix: String = "vt-"): ThreadFactory
-    fun executorService(): ExecutorService
+    fun newThreadPerTaskExecutor(): ExecutorService
+    fun threadFactory(namePrefix: String? = null): ThreadFactory
 }
 ```
 
-여기서 중요한 설계는 세 가지다.
+애플리케이션 코드는 Java 21과 Java 25의 차이를 알 필요가 없다. executor, factory, 그리고 안정적인
+동작만 알면 된다.
 
-| 항목 | 이유 |
-|---|---|
-| `runtimeName` | diagnostics와 log에서 어떤 provider가 선택됐는지 보인다 |
-| `priority` | JDK 25 provider가 가능하면 JDK 21 provider보다 먼저 선택된다 |
-| `isSupported()` | classpath에 있어도 현재 JVM에서 안전하지 않으면 제외한다 |
+## ServiceLoader를 사용한 Provider 선택
 
-애플리케이션 코드는 구현체를 직접 import하지 않는다.
+런타임 loader는 `ServiceLoader`로 provider를 찾고, 사용 가능한 구현 중 priority가 가장 높은 것을
+선택할 수 있다.
 
 ```kotlin
-import io.bluetape4k.concurrent.virtualthread.VirtualThreads
-
-VirtualThreads.executorService().use { executor ->
-    val answer = executor.submit<Int> { 21 * 2 }.get()
-    println("${VirtualThreads.runtimeName()} -> $answer")
-}
-```
-
-## Runtime 선택: `ServiceLoader`
-
-`VirtualThreads` object는 `ServiceLoader`로 provider를 찾고, 지원 가능한 provider 중 priority가 높은
-것을 선택한다.
-
-```kotlin
-object VirtualThreads {
-    private val providers: List<VirtualThreadRuntime> by lazy {
+object VirtualThreadRuntimes {
+    private val runtime: VirtualThreadRuntime by lazy {
         ServiceLoader.load(VirtualThreadRuntime::class.java)
-            .filter { provider -> provider.isSupported() }
-            .sortedByDescending { provider -> provider.priority }
-            .toList()
+            .sortedByDescending { it.priority }
+            .firstOrNull()
+            ?: Jdk21VirtualThreadRuntime()
     }
 
-    fun runtime(): VirtualThreadRuntime =
-        providers.firstOrNull() ?: PlatformThreadRuntime
-
-    fun runtimeName(): String = runtime().runtimeName
-
-    fun threadFactory(prefix: String = "vt-"): ThreadFactory =
-        runtime().threadFactory(prefix)
-
-    fun executorService(): ExecutorService =
-        runtime().executorService()
+    fun current(): VirtualThreadRuntime = runtime
 }
 ```
 
-실제 코드는 provider 탐색 중 예외가 나도 전체 선택이 실패하지 않도록 방어한다. 런타임 탐색은
-애플리케이션 시작을 망가뜨리면 안 된다. "JDK 25 provider가 현재 JVM에서 뜨지 못한다"는 이유로 Virtual
-Threads 전체가 죽기보다, JDK 21 provider나 platform 대체 경로로 내려가는 편이 낫다.
+fallback이 중요하다. 선택적 provider artifact가 없어도 프로젝트가 기준선인 Java 21 provider로 동작해야
+한다.
 
-## Provider 등록
+## Java 21 Provider
 
-각 런타임 모듈은 service file 하나로 자신을 등록한다.
-
-```text
-META-INF/services/io.bluetape4k.concurrent.virtualthread.VirtualThreadRuntime
-```
-
-Java 21 모듈은 Java 21 구현체를 넣는다.
-
-```text
-io.bluetape4k.concurrent.virtualthread.jdk21.Jdk21VirtualThreadRuntime
-```
-
-Java 25 모듈은 Java 25 구현체를 넣고 더 높은 priority를 준다.
-
-```kotlin
-class Jdk25VirtualThreadRuntime : VirtualThreadRuntime {
-    override val runtimeName: String = "jdk25"
-    override val priority: Int = 25
-
-    override fun isSupported(): Boolean =
-        Runtime.version().feature() >= 25
-
-    override fun threadFactory(prefix: String): ThreadFactory =
-        Thread.ofVirtual().name(prefix, 0).factory()
-
-    override fun executorService(): ExecutorService =
-        Executors.newVirtualThreadPerTaskExecutor()
-}
-```
-
-Java 21 구현체는 priority를 낮게 둔다.
+Java 21 provider는 안정적인 Virtual Threads API를 사용한다.
 
 ```kotlin
 class Jdk21VirtualThreadRuntime : VirtualThreadRuntime {
-    override val runtimeName: String = "jdk21"
-    override val priority: Int = 21
+    override val name: String = "jdk21"
+    override val priority: Int = 100
 
-    override fun isSupported(): Boolean =
-        Runtime.version().feature() >= 21
-
-    override fun threadFactory(prefix: String): ThreadFactory =
-        Thread.ofVirtual().name(prefix, 0).factory()
-
-    override fun executorService(): ExecutorService =
+    override fun newThreadPerTaskExecutor(): ExecutorService =
         Executors.newVirtualThreadPerTaskExecutor()
+
+    override fun threadFactory(namePrefix: String?): ThreadFactory {
+        val builder = Thread.ofVirtual()
+        return if (namePrefix == null) {
+            builder.factory()
+        } else {
+            builder.name(namePrefix, 0).factory()
+        }
+    }
 }
 ```
 
-공통 API는 같지만, JDK 25 모듈은 필요하면 Java 25에서만 가능한 API를 내부 구현에 사용할 수 있다.
-애플리케이션 코드는 이 차이를 모른다.
+이 provider가 기준선이다. Java 21 정식 API에만 의존하므로 core 계열에서 안전하게 사용할 수 있다.
 
-## Gradle dependency 모양
+## Java 25 Provider
 
-compile classpath에는 공통 API만 둔다.
+Java 25 provider는 애플리케이션 API를 바꾸지 않고 더 새로운 런타임 동작과 다른 내부 구현을 사용할 수 있다.
+예를 들어 context helper에서 Scoped Values를 우선하거나, 같은 interface 뒤에 Java 25 전용 구현 전략을
+둘 수 있다.
+
+```kotlin
+class Jdk25VirtualThreadRuntime : VirtualThreadRuntime {
+    override val name: String = "jdk25"
+    override val priority: Int = 200
+
+    override fun newThreadPerTaskExecutor(): ExecutorService =
+        Executors.newVirtualThreadPerTaskExecutor()
+
+    override fun threadFactory(namePrefix: String?): ThreadFactory =
+        Thread.ofVirtual()
+            .let { builder ->
+                if (namePrefix == null) builder else builder.name(namePrefix, 0)
+            }
+            .factory()
+}
+```
+
+애플리케이션은 여전히 같은 API를 호출한다. 무엇을 사용할지는 런타임 모듈이 결정한다.
+
+## 모듈 구성
+
+모듈 구성은 의도적으로 분리한다.
+
+| 모듈 | 역할 |
+|---|---|
+| `virtualthread/api` | 공통 interface와 facade |
+| `virtualthread/jdk21` | Java 21 구현과 fallback provider |
+| `virtualthread/jdk25` | Java 25 구현 |
+| application | API와 배포 JDK에 맞는 런타임 artifact에 의존 |
+
+Each runtime artifact registers its provider under:
+
+```text
+META-INF/services/io.bluetape4k.virtualthread.VirtualThreadRuntime
+```
+
+이렇게 하면 Java 버전별 클래스가 애플리케이션용 API 밖으로 드러나지 않는다.
+
+## Gradle 사용
+
+애플리케이션은 사용할 provider 계열을 명시적으로 선택할 수 있다.
 
 ```kotlin
 dependencies {
-    implementation("io.github.bluetape4k:bluetape4k-virtualthread-api")
+    implementation("io.bluetape4k:bluetape4k-virtualthread-api")
+    runtimeOnly("io.bluetape4k:bluetape4k-virtualthread-jdk25")
 }
 ```
 
-runtime에는 배포 JDK에 맞는 구현체만 넣는다.
+Java 21 배포에서는 다음과 같이 선언한다.
 
 ```kotlin
 dependencies {
-    runtimeOnly("io.github.bluetape4k:bluetape4k-virtualthread-jdk21")
-    // or
-    runtimeOnly("io.github.bluetape4k:bluetape4k-virtualthread-jdk25")
+    implementation("io.bluetape4k:bluetape4k-virtualthread-api")
+    runtimeOnly("io.bluetape4k:bluetape4k-virtualthread-jdk21")
 }
 ```
 
-주의할 점은 Java 21 런타임에 Java 25 class file을 올리지 않는 것이다. `isSupported()`가 있어도 class
-loading 단계에서 깨질 수 있다. 그래서 배포 pipeline에서 JDK별 artifact를 분리하거나, runtime image에
-맞는 provider만 넣는 것이 안전하다.
-
-## Fallback이 필요한 이유
-
-공통 API는 platform 대체 경로도 제공한다. JDK 17 이하나 provider가 없는 환경에서는 cached platform
-thread executor로 내려간다.
-
-```kotlin
-private object PlatformThreadRuntime : VirtualThreadRuntime {
-    override val runtimeName: String = "platform-fallback"
-    override val priority: Int = Int.MIN_VALUE
-    override fun isSupported(): Boolean = true
-    override fun executorService(): ExecutorService =
-        Executors.newCachedThreadPool(threadFactory("pt-"))
-}
-```
-
-대체 경로는 "성능을 보장한다"가 아니다. 라이브러리가 더 넓은 환경에서 부드럽게 동작하게 하는 장치다.
-운영에서는 `VirtualThreads.runtimeName()`을 metric이나 startup log에 남겨 실제로 어떤 provider가
-선택됐는지 확인해야 한다.
+compile-time dependency는 안정적으로 유지되고, runtime artifact만 배포 대상에 따라 바뀐다.
 
 ## 예제: 애플리케이션 코드는 바뀌지 않는다
 
-JDK 21에서도, JDK 25에서도 애플리케이션 코드는 같다.
+Java 21과 Java 25에서 애플리케이션 코드는 같다.
 
 ```kotlin
 class BlockingReportService(
@@ -249,31 +218,19 @@ class BlockingReportService(
 }
 ```
 
-이 예제에서 `repository.loadAndRender(id)`가 JDBC나 blocking SDK를 써도 된다. Virtual Thread가
-blocking wait를 감당하기 때문이다. 물론 Part 1에서 본 것처럼 DB connection pool, timeout, downstream
-concurrency는 별도로 제한해야 한다. API가 단순해졌다고 운영 환경의 제약까지 사라지는 것은 아니다.
+`repository.loadAndRender(id)`는 JDBC나 blocking SDK를 사용해도 된다. Virtual Thread가 blocking 대기를
+담당한다. 다만 Part 1의 규칙은 그대로 적용된다. DB connection pool, timeout, downstream 동시성은
+각각 제한해야 한다. API가 단순해져도 운영 제약이 사라지는 것은 아니다.
 
 ## 시리즈 결론
 
-Virtual Threads는 Java/Kotlin backend에서 실용적인 선택지가 됐다.
+Virtual Threads는 이제 Java/Kotlin backend 서비스에서 실용적인 선택지다.
 
-- Part 1: Virtual Threads는 저비용 thread이지 magic thread가 아니다.
-- Part 2: 워크숍 규칙은 pooling, semaphore, context, lock discipline을 잡아준다.
-- Part 3: batch workload에서는 JDBC + Virtual Threads가 R2DBC + Coroutines보다 나은 경우가 많았다.
-- Part 4: 라이브러리는 Java 21/25 차이를 공통 API와 JDK별 provider로 숨길 수 있다.
+- Part 1: Virtual Threads는 저비용 스레드이지 마법의 스레드가 아니다.
+- Part 2: 워크숍 규칙은 pooling, semaphore, context, lock의 한계를 분명하게 만든다.
+- Part 3: batch workload에서는 JDBC + Virtual Threads가 예상보다 자주 R2DBC + Coroutines를 앞설 수 있다.
+- Part 4: 라이브러리는 공통 API와 런타임 provider 뒤에 Java 21/25 차이를 숨길 수 있다.
 
-내가 좋아하는 결론은 이렇다. Virtual Threads는 reactive나 coroutine을 없애는 기술이 아니다. 기존
-blocking ecosystem을 다시 측정 가능한 선택지로 만든 기술이다. 그러니 라이브러리가 한쪽만 강요할 필요는 없다.
-좋은 라이브러리는 하나의 방식만 강요하기보다, workload와 런타임에 맞는 선택지를 열어두는 쪽에 가깝다.
-
-
-## API 모듈과 series route
-
-공용 API와 JDK 구현은 `virtualthread/api`, `virtualthread/jdk21`, `virtualthread/jdk25` 모듈로 나뉜다.
-
-![Java 21/25 SPI 구조](/assets/virtual-threads-part4-spi-01.png)
-
-- [Part 1](/blog/virtual-threads-part1-guide/)
-- [Part 2](/blog/virtual-threads-part2-workshop-rules/)
-- [Part 3](/blog/virtual-threads-part3-jdbc-r2dbc-benchmark/)
-- [Part 4](/blog/virtual-threads-part4-java21-java25-spi/)
+가장 중요한 결론은 이렇다. Virtual Threads는 reactive programming이나 coroutines를 대체하지 않는다.
+기존 blocking 생태계를 다시 측정해 볼 가치가 있게 만든다. 좋은 라이브러리는 한 가지 스타일을 강요할
+필요가 없다. 현재 workload와 runtime에 맞는 경로를 깔끔하게 열어 두면 된다.

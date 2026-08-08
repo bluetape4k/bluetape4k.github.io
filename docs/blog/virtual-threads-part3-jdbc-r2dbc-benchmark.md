@@ -132,8 +132,8 @@ open fun singleFindById(): Int {
 MySQL seed 벤치마크는 특히 차이가 컸다. `dataSize=100000`에서 JDBC는 약 `1.455 ops/sec`, R2DBC는
 약 `0.050 ops/sec`였다. 단순 비율로는 29배 정도다.
 
-대형 end-to-end job만 따로 보면 차이가 더 직관적이다. `dataSize=100000`, `parallelism=8` 조건에서
-MySQL은 JDBC가 약 8.4-8.8배, PostgreSQL은 약 4.9-5.2배 높았다.
+대형 end-to-end job만 따로 보면 차이가 더 직관적이다. MySQL은 JDBC가 약 8.4-8.8배,
+PostgreSQL은 약 4.9-5.2배 높았다.
 
 <figure class="bt4k-architecture">
   <img src="/assets/virtual-threads-part3-benchmark-01.png" alt="대형 end-to-end batch job의 JDBC vs R2DBC 벤치마크 차트" loading="lazy" />
@@ -234,7 +234,7 @@ insert-heavy, transaction-heavy workload에서는 JDBC + Virtual Threads를 같�
 | 성능 주장이 중요하다 | 둘 다 같은 workload로 측정 |
 
 Virtual Threads는 JDBC를 "과거 방식"이 아니라 다시 "측정할 가치가 있는 선택"으로 올려놓았다. JDBC
-은퇴식은 조금 미뤄도 된다. 특히 Kotlin/JVM backend에서는 이 선택이 꽤 실용적이다. API를 전부 suspend로
+은퇴식은 조금 미뤄도 된다. 특히 Kotlin/JVM backend에서는 이 선택이 꽤 실용적이다. API를 전부 `suspend`로
 바꾸지 않아도, 기존 블로킹 코드를 살리면서 throughput을 올릴 수 있기 때문이다.
 
 Part 4에서는 이 선택을 library로 어떻게 제공할지 본다. Java 21과 Java 25는 같은 Virtual Threads 시대에

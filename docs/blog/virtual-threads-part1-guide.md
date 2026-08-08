@@ -17,17 +17,17 @@ blog:
 
 <p class="bt4k-post-meta">2026-05-29 · Virtual Threads series · Part 1</p>
 
-이 글은 Virtual Threads 시리즈의 1편이다. 전체 시리즈는 [Part 1: 소개와 주의점](/ko/blog/virtual-threads-part1-guide/),
-[Part 2: 워크숍 규칙](/ko/blog/virtual-threads-part2-workshop-rules/),
-[Part 3: JDBC + Virtual Threads 벤치마크](/ko/blog/virtual-threads-part3-jdbc-r2dbc-benchmark/),
-[Part 4: Java 21/25 SPI 설계](/ko/blog/virtual-threads-part4-java21-java25-spi/)로 이어진다.
+이 글은 Virtual Threads 시리즈의 1편이다. 전체 시리즈는 [Part 1: 소개와 주의점](/blog/virtual-threads-part1-guide/),
+[Part 2: 워크숍 규칙](/blog/virtual-threads-part2-workshop-rules/),
+[Part 3: JDBC + Virtual Threads 벤치마크](/blog/virtual-threads-part3-jdbc-r2dbc-benchmark/),
+[Part 4: Java 21/25 SPI 설계](/blog/virtual-threads-part4-java21-java25-spi/)로 이어진다.
 
 Virtual Threads를 처음 들으면 살짝 의심부터 든다. "이제 블로킹 코드를 그대로 써도 됩니다"라니,
 이렇게 좋은 말에는 보통 조건이 붙는다. 여기에도 조건이 있다. Virtual Threads는 마법이 아니라, Java가
 thread-per-request 스타일을 훨씬 낮은 비용으로 다시 쓸 수 있게 해 주는 기술이다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/virtual-threads-part1-guide-01-ko.png" alt="블로킹 IO, backpressure, 진단, cleanup을 함께 고려한 Virtual Thread 활용 지도" loading="lazy" />
+  <img src="/assets/virtual-threads-part1-guide-01.png" alt="블로킹 IO, backpressure, 진단, cleanup을 함께 고려한 Virtual Thread 활용 지도" loading="lazy" />
   <figcaption>블로킹 코드를 다시 활용할 수 있다는 반가운 소식. 단, timeout과 자원 한도를 함께 설계할 때만.</figcaption>
 </figure>
 
@@ -76,7 +76,7 @@ Virtual Thread를 처음 쓸 때 가장 흔한 습관은 pool부터 만들려는
 `ExecutorService`를 보면 반사적으로 pool size를 찾는다.
 
 ```kotlin
-// 주의: virtual thread 자체를 제한하려고 pool처럼 다룬다.
+// Be careful: this treats virtual threads as if the thread count itself were the limit.
 val executor = Executors.newFixedThreadPool(200, Thread.ofVirtual().factory())
 ```
 
@@ -158,7 +158,7 @@ Kotlin Coroutines와 Virtual Threads는 경쟁 관계라기보다 선택지가 �
 
 | Coroutines | Virtual Threads |
 |---|---|
-| suspend API가 이미 있으면 자연스럽다 | blocking API가 이미 있으면 자연스럽다 |
+| `suspend` API가 이미 있으면 자연스럽다 | blocking API가 이미 있으면 자연스럽다 |
 | structured concurrency가 언어/라이브러리 중심이다 | Java thread/tooling 모델을 그대로 쓴다 |
 | async driver와 잘 맞는다 | JDBC, blocking SDK, legacy API와 잘 맞는다 |
 | cancellation 전파를 설계해야 한다 | interrupt/timeout/lifecycle을 설계해야 한다 |
@@ -185,15 +185,3 @@ timeout, cleanup, 관찰성을 같이 챙겨야 한다.
 
 Part 2에서는 `bluetape4k-workshop/virtualthreads/rules`의 예제를 바탕으로 pooling, semaphore,
 ScopedValue, lock 사용 규칙을 더 구체적으로 본다.
-
-
-## 참고 자산과 실행 형태
-
-본문에서 말하는 `suspend` 함수와 diagram은 다음 asset 및 series route와 함께 읽는다.
-
-![Virtual Threads 활용 지도](/assets/virtual-threads-part1-guide-01.png)
-
-- [Part 1](/blog/virtual-threads-part1-guide/)
-- [Part 2](/blog/virtual-threads-part2-workshop-rules/)
-- [Part 3](/blog/virtual-threads-part3-jdbc-r2dbc-benchmark/)
-- [Part 4](/blog/virtual-threads-part4-java21-java25-spi/)
