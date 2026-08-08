@@ -28,11 +28,11 @@
   <text text-anchor="middle" font-family="Architects Daughter, Comic Sans MS, cursive" font-size="48" font-weight="700" fill="#f8fafc"><tspan x="800" y="96">Benchmark the Work You Actually Ship</tspan></text>
   <text text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" font-weight="500" fill="#b6c4d6"><tspan x="800" y="137">question -&gt; representative case -&gt; controlled environment -&gt; decision</tspan></text>
   <g id="connectors" filter="url(#glow)">
-  <path id="question-resize" d="M800 285 V335 H190 V390" fill="none" stroke="#9ed8ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-cyan)"/>
-  <path id="question-encode" d="M800 285 V335 H495 V390" fill="none" stroke="#5eead4" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-teal)"/>
+  <path id="question-resize" d="M800 285 V327 Q800 335 792 335 H198 Q190 335 190 343 V390" fill="none" stroke="#9ed8ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-cyan)"/>
+  <path id="question-encode" d="M800 285 V327 Q800 335 792 335 H503 Q495 335 495 343 V390" fill="none" stroke="#5eead4" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-teal)"/>
   <path id="question-pipeline" d="M800 285 V390" fill="none" stroke="#c4b5fd" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-purple)"/>
-  <path id="question-io" d="M800 285 V335 H1105 V390" fill="none" stroke="#f6c96b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-amber)"/>
-  <path id="question-memory" d="M800 285 V335 H1410 V390" fill="none" stroke="#fda4af" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-rose)"/>
+  <path id="question-io" d="M800 285 V327 Q800 335 808 335 H1097 Q1105 335 1105 343 V390" fill="none" stroke="#f6c96b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-amber)"/>
+  <path id="question-memory" d="M800 285 V327 Q800 335 808 335 H1402 Q1410 335 1410 343 V390" fill="none" stroke="#fda4af" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-rose)"/>
   <path id="cases-env" d="M800 610 V675" fill="none" stroke="#c4b5fd" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-purple)"/>
   <path id="env-decision" d="M800 795 V850" fill="none" stroke="#5eead4" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-teal)"/>
 </g>
