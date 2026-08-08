@@ -1,26 +1,30 @@
-# AI Collaboration Environment Blog Follow-Up
+# AI 협업 환경 블로그 후속 글
 
-## Context
+## 맥락
 
-The blog needed a follow-up to the existing AI-assisted library development post, inspired by Eugene Yan's article about compounding AI work.
+블로그에는 AI 작업을 축적하는 방법을 다룬 Eugene Yan의 글에서 영감을 얻은 기존 AI 지원 라이브러리 개발
+글의 후속 글이 필요했다.
 
-## Decision
+## 결정
 
-Add bilingual MDX posts for Korean and English, add a humorous manager/worker AI collaboration hero image, add a process diagram, and update both blog index pages. The article frames the local Codex and Claude setup as infrastructure: guidance files, skills, qmd, memory, hooks, and verification.
+한국어와 영어 bilingual MDX 글을 추가하고, 유머러스한 manager/worker AI 협업 hero image와 process diagram을
+추가하며, 두 블로그 색인 페이지를 업데이트한다. 이 글은 로컬 Codex와 Claude 설정을 guidance file, skills,
+qmd, memory, hooks, verification으로 구성된 인프라로 설명한다.
 
-## Outcome
+## 결과
 
-The blog now has a second AI collaboration article:
+블로그에 두 번째 AI 협업 글이 생겼다.
 
 - `src/content/docs/ko/blog/ai-collaboration-environment.mdx`
 - `src/content/docs/blog/ai-collaboration-environment.mdx`
 - `public/assets/ai-collaboration-infrastructure.png`
 - `public/assets/ai-collaboration-process.svg`
 
-## Verification
+## 검증
 
-Run `npm run build` in `bluetape4k.github.io` after editing.
+편집 후 `bluetape4k.github.io`에서 `npm run build`를 실행한다.
 
-## Future Guidance
+## 향후 guidance
 
-For future bilingual blog posts, update both locale files and both blog index cards in the same change. Keep internal lessons concise and in English.
+향후 bilingual 블로그 글에서는 같은 변경으로 두 locale 파일과 두 블로그 색인의 card를 함께 업데이트한다.
+내부 lesson은 간결하게 유지하고 한국어로 작성한다.
