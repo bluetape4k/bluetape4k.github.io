@@ -1,21 +1,21 @@
-# 2026-06-02 blog index proofreading
+# 2026-06-02 블로그 색인 교정
 
-## Context
+## 맥락
 
-After proofreading all published blog article pairs, the remaining blog content surface was the locale-specific blog index page.
+게시된 모든 블로그 글 쌍을 교정한 뒤 남은 블로그 콘텐츠 표면은 locale별 블로그 색인 페이지였다.
 
-## Decision
+## 결정
 
-Keep the page minimal and only refine the Korean and English descriptions and section headings.
+페이지는 간결하게 유지하고 한국어와 영어 description 및 section heading만 다듬는다.
 
-## Outcome
+## 결과
 
-Updated both blog index pages while preserving the existing `BlogPostList` components and routes.
+기존 `BlogPostList` component와 route를 보존하면서 두 블로그 색인 페이지를 업데이트했다.
 
-## Verification
+## 검증
 
-Run `git diff --check`, `npm run build`, and GitHub Pages Build before merging the PR.
+PR을 merge하기 전에 `git diff --check`, `npm run build`, GitHub Pages Build를 실행한다.
 
-## Next guidance
+## 다음 guidance
 
-If the article queue is exhausted, say so explicitly before starting a second proofreading pass.
+글 목록을 모두 처리했다면 두 번째 교정 pass를 시작하기 전에 그 사실을 명시한다.

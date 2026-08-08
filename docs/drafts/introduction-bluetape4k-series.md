@@ -1,10 +1,10 @@
-# Introduction to Bluetape4k Series
+# Bluetape4k 소개 시리즈
 
-## Published
+## 게시됨
 
-- [Introduction to the Bluetape4k Ecosystem - Part 1](introduction-bluetape4k-part1-ecosystem.md)
+- [Bluetape4k 생태계 소개 - Part 1](introduction-bluetape4k-part1-ecosystem.md)
 
-## Planned
+## 예정
 
-- Introduction to Bluetape4k Core and Coroutines - Part 2
-- Introduction to Bluetape4k Testing - Part 3
+- Bluetape4k Core와 Coroutines 소개 - Part 2
+- Bluetape4k Testing 소개 - Part 3

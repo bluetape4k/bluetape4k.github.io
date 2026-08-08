@@ -1,21 +1,25 @@
-# 2026-06-02 AI-assisted library development blog proofreading
+# 2026-06-02 AI 지원 라이브러리 개발 블로그 교정
 
-## Context
+## 맥락
 
-The first bluetape4k blog post already had Korean and English versions, but several paragraphs still read like a literal technical translation and had long single-line prose blocks.
+첫 번째 bluetape4k 블로그 글에는 이미 한국어와 영어 버전이 있었지만, 여러 문단이 여전히 직역한 기술
+번역처럼 읽혔고 한 줄로 지나치게 긴 본문 블록도 있었다.
 
-## Decision
+## 결정
 
-Keep the article's scope and claims unchanged. Improve Korean naturalness with local wording changes, split dense paragraphs, and keep English localization direct and developer-oriented.
+글의 범위와 주장은 바꾸지 않는다. 문장 단위 표현을 다듬어 한국어의 자연스러움을 높이고, 빽빽한 문단을
+나누며, 영어 현지화는 직접적이고 개발자 중심으로 유지한다.
 
-## Outcome
+## 결과
 
-Updated both locale files for `ai-assisted-library-development` and kept the existing hero asset, source claims, section structure, and bilingual route parity.
+`ai-assisted-library-development`의 두 locale 파일을 업데이트하고, 기존 hero asset, source claims, section
+structure, bilingual route parity를 유지했다.
 
-## Verification
+## 검증
 
-Run `git diff --check`, `npm run build`, and GitHub Pages Build before merging the PR.
+PR을 merge하기 전에 `git diff --check`, `npm run build`, GitHub Pages Build를 실행한다.
 
-## Next guidance
+## 다음 guidance
 
-For early AI-collaboration posts, avoid shrinking the article. Preserve the reflective structure, but replace stiff phrasing with concrete verbs and readable paragraph rhythm.
+초기의 AI 협업 글에서는 글을 축약하지 않는다. 성찰적인 구조는 유지하되, 딱딱한 표현을 구체적인 동사와
+읽기 좋은 문단 리듬으로 바꾼다.
