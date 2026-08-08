@@ -1,22 +1,22 @@
-# CSV parser Okio proofread pass
+# CSV parser Okio 교정
 
-## Context
+## 배경
 
-The chronological blog proofread stack continued with `reducing-csv-parser-allocations-with-okio`, a benchmark-backed CSV parser optimization note.
+시간순 blog proofreading stack이 benchmark 근거가 있는 CSV parser optimization note `reducing-csv-parser-allocations-with-okio`까지 진행됐다.
 
-## Decision
+## 결정
 
-Keep the issue and PR links, benchmark values, code snippets, and fast-path constraints unchanged. Apply only local language edits where the Korean or English phrasing was awkward or temporally inconsistent.
+issue와 PR link, benchmark 값, code snippet, fast-path constraint를 유지한다. 한국어·영어 표현이 어색하거나 시제가 맞지 않는 부분만 국소적으로 수정한다.
 
-## Outcome
+## 결과
 
-The post needed only a light pass because the original structure was already concrete and benchmark-driven.
+원래 구조가 이미 구체적이고 benchmark 중심이었기 때문에 가벼운 pass만 필요했다.
 
-## Verification
+## 검증
 
 - `git diff --check`
 - `npm run build`
 
-## Future guidance
+## 향후 가이드
 
-When an article is already specific and natural, do not force a rewrite. Proofreading should improve developer readability without producing churn.
+글이 이미 구체적이고 자연스러우면 강제로 다시 쓰지 않는다. 교정은 churn을 만들지 않고 개발자 가독성만 높여야 한다.

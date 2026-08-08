@@ -1,30 +1,22 @@
-# Virtual Threads Part 4 Proofread
+# Virtual Threads Part 4 교정
 
-## Context
+## 배경
 
-The chronological proofreading stack reached the final Virtual Threads series
-post about Java 21/25 SPI design.
+시간순 교정 stack이 Java 21/25 SPI 설계를 다루는 마지막 Virtual Threads series 글에 도달했다.
 
-## Decision
+## 결정
 
-Preserve the API/SPI explanation and code examples. Improve Korean localization,
-Korean series routes, and phrasing around runtime providers, fallback, and
-classpath boundaries. Keep English edits minimal and focused on clarity.
+API/SPI 설명과 code example을 유지한다. 한국어 localization, 한국어 series route, runtime provider·fallback·classpath boundary 주변 표현을 개선한다. 영어 수정은 명확성에 필요한 범위로 최소화한다.
 
-## Outcome
+## 결과
 
-The Korean post now uses Korean metadata and `/ko/blog/...` series navigation.
-The SPI explanation reads more naturally without changing the public API,
-ServiceLoader, or provider-selection semantics. The English post has a clearer
-compile-classpath sentence.
+한국어 글이 한국어 metadata와 `/ko/blog/...` series navigation을 사용한다. public API, ServiceLoader, provider-selection semantics를 바꾸지 않고 SPI 설명을 더 자연스럽게 다듬었다. 영어 글은 compile-classpath 문장을 더 명확하게 했다.
 
-## Verification
+## 검증
 
 - `git diff --check`
 - `npm run build`
 
-## Future Guidance
+## 향후 가이드
 
-For API/SPI design posts, keep compile-time API, runtime provider, and fallback
-boundaries explicit. Naturalness edits should not blur which layer owns each
-JDK-specific detail.
+API/SPI 설계 글에서는 compile-time API, runtime provider, fallback boundary를 명시적으로 구분한다. 자연스러움 수정으로 각 JDK별 세부를 어느 layer가 소유하는지 흐리지 않는다.

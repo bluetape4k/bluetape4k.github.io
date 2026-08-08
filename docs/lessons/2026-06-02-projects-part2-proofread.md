@@ -1,20 +1,17 @@
-# 2026-06-02 Projects Part 2 proofread
+# 2026-06-02 Projects Part 2 교정
 
-## Context
+## 배경
 
-The `bluetape4k-projects` Part 2 blog post needed a bilingual naturalness pass after the Projects Part 1 proofreading PR.
+Projects Part 1 교정 PR 다음에 `bluetape4k-projects` Part 2 blog 글의 bilingual naturalness pass가 필요했다.
 
-## Decision
+## 결정
 
-Keep the article's technical scope unchanged, but make the Korean and English prose less translation-like. Preserve API names,
-source links, code examples, module boundaries, and the series navigation.
+글의 기술 범위는 바꾸지 않되 한국어·영어 prose를 직역투가 덜하도록 다듬는다. API 이름, source link, code example, module boundary, series navigation은 보존한다.
 
-## Outcome
+## 결과
 
-Updated the Korean and English posts to explain shared validation, coroutine, logging, assertion, JUnit 5, and Testcontainers
-helpers in more direct engineering language. Reduced metaphors that distracted from the point, especially around repeated
-decisions, logging context, and test fixture duplication.
+한국어·영어 글이 shared validation, coroutine, logging, assertion, JUnit 5, Testcontainers helper를 더 직접적인 engineering language로 설명한다. 반복되는 결정, logging context, test fixture duplication 주변에서 요점을 흐리던 metaphor를 줄였다.
 
-## Verification
+## 검증
 
-Run `git diff --check` and `npm run build` before opening the stacked PR.
+stacked PR을 열기 전에 `git diff --check`와 `npm run build`를 실행한다.

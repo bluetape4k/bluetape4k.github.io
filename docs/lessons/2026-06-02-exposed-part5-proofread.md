@@ -1,20 +1,17 @@
-# 2026-06-02 Exposed Part 5 proofread
+# 2026-06-02 Exposed Part 5 교정
 
-## Context
+## 배경
 
-After Exposed Part 4 was merged, the next article was the Korean-only Part 5 post covering Spring Boot integration,
-cache strategies, multi-tenancy, outbox/idempotency, and production examples.
+Exposed Part 4가 merge된 뒤 다음 글은 Spring Boot integration, cache strategy, multi-tenancy, outbox/idempotency, production example을 다루는 한국어 전용 Part 5였다.
 
-## Decision
+## 결정
 
-Keep the Korean article's workload-first operational guidance intact, make small naturalness edits, add the English
-counterpart, and complete English Exposed series links now that Parts 1-5 all exist.
+workload-first 운영 가이드를 유지하고 자연스러움만 작게 다듬는다. 영어 대응 글을 추가하고 Parts 1-5가 모두 존재하므로 영어 Exposed series link도 완성한다.
 
-## Outcome
+## 결과
 
-Added the English Part 5 article, updated English Part 1-4 series navigation to include the complete five-part series,
-and lightly proofread the Korean Part 5 article without changing benchmark or source claims.
+영어 Part 5 글을 추가하고 영어 Part 1-4 series navigation을 완전한 5편 시리즈로 갱신했으며, benchmark와 source claim을 바꾸지 않고 한국어 Part 5를 가볍게 교정했다.
 
-## Verification
+## 검증
 
-Run `git diff --check` and `npm run build` before opening the PR.
+`git diff --check`와 `npm run build`를 실행한 뒤 PR을 연다.

@@ -1,27 +1,21 @@
-# 2026-05-20 — Benchmark chart guidance
+# 2026-05-20 — 벤치마크 차트 가이드
 
-## Context
+## 배경
 
-README visual guidance covered Mermaid-derived diagrams but did not define how
-to present numeric benchmark results.
+README 시각화 가이드는 Mermaid에서 파생된 다이어그램은 다뤘지만, 수치 벤치마크 결과를 제시하는 방법은 정의하지 않았다.
 
-## Decision
+## 결정
 
-Document benchmark result visuals as charts, not diagrams. Store generated chart
-SVG/PNG pairs under `docs/images/readme-charts/`, keep Markdown tables as the
-source of truth, and use log scale when values span orders of magnitude.
+벤치마크 결과 시각화는 다이어그램이 아니라 차트로 문서화한다. 생성된 차트 SVG/PNG 쌍은 `docs/images/readme-charts/` 아래에 저장하고, Markdown 표를 단일 진실 공급원으로 유지하며, 값의 범위가 여러 자릿수에 걸치면 로그 스케일을 사용한다.
 
-## Outcome
+## 결과
 
-`docs/readme-diagram-samples/README.md` now includes benchmark chart rules,
-search scope, placement guidance, and validation checks.
+이제 `docs/readme-diagram-samples/README.md`에 벤치마크 차트 규칙, 검색 범위, 배치 가이드, 검증 항목이 포함된다.
 
-## Verification
+## 검증
 
-- Reviewed the updated style guide section.
+- 갱신된 스타일 가이드 섹션을 검토했다.
 
-## Future
+## 향후 규칙
 
-When a benchmark result table is added to a bluetape4k repo, add a chart next to
-the table unless the document is only a benchmark module overview with no
-measured values.
+bluetape4k 저장소에 벤치마크 결과 표를 추가할 때는 측정값이 없는 벤치마크 모듈 개요 문서가 아닌 한 표 옆에 차트를 추가한다.

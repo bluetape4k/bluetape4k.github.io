@@ -1,20 +1,17 @@
-# 2026-06-02 Exposed Part 4 proofread
+# 2026-06-02 Exposed Part 4 교정
 
-## Context
+## 배경
 
-After Exposed Part 3 was merged, the next article was the Korean-only Part 4 post covering JSON columns, Tink encrypted
-columns, measured columns, PostgreSQL/MySQL8 spatial support, and analytics database dialects.
+Exposed Part 3이 merge된 뒤 다음 글은 JSON column, Tink encrypted column, measured column, PostgreSQL/MySQL8 spatial support, analytics database dialect를 다루는 한국어 전용 Part 4였다.
 
-## Decision
+## 결정
 
-Keep the Korean article's boundary-focused message intact, make small naturalness edits, and add an English counterpart
-with matching code examples, dialect links, visual assets, and locale-local series links.
+boundary 중심 메시지를 유지하고 자연스러움만 작게 다듬는다. 동일한 code example, dialect link, visual asset, locale-local series link를 가진 영어 대응 글을 추가한다.
 
-## Outcome
+## 결과
 
-Added the English Part 4 article, updated the English Part 3 series links to include Part 4, and lightly proofread the
-Korean Part 4 article without changing source claims.
+영어 Part 4 글을 추가하고 영어 Part 3 series link에 Part 4를 포함했으며 source claim을 바꾸지 않고 한국어 Part 4를 가볍게 교정했다.
 
-## Verification
+## 검증
 
-Run `git diff --check` and `npm run build` before opening the PR.
+`git diff --check`와 `npm run build`를 실행한 뒤 PR을 연다.

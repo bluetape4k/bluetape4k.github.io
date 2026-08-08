@@ -1,30 +1,23 @@
-# GitHub Actions Dependabot Coverage
+# GitHub Actions Dependabot 적용 범위
 
-## Context
+## 배경
 
-`bluetape4k-graph` received a grouped Dependabot pull request for GitHub
-Actions updates, but this repository had no `.github/dependabot.yml`, so it
-would not receive the same automated action-version updates.
+`bluetape4k-graph`가 GitHub Actions 갱신을 위한 Dependabot grouped pull request를 받았지만, 이 저장소에는 `.github/dependabot.yml`이 없어서 같은 자동 action-version 갱신을 받지 못했다.
 
-## Decision
+## 결정
 
-Add a GitHub Actions-only Dependabot configuration targeting `develop`. Keep
-Gradle and Maven dependency updates out of leaf repositories because
-`bluetape4k-dependencies` remains the central version-governance source.
+`develop`을 대상으로 GitHub Actions 전용 Dependabot 설정을 추가한다. `bluetape4k-dependencies`가 중앙 버전 거버넌스의 기준으로 남아 있으므로 leaf repository에는 Gradle과 Maven dependency 갱신을 넣지 않는다.
 
-## Outcome
+## 결과
 
-Dependabot now checks GitHub Actions weekly and groups all action updates into
-the `github-actions` group.
+Dependabot이 매주 GitHub Actions를 확인하고 모든 action 갱신을 `github-actions` group으로 묶는다.
 
-## Verification
+## 검증
 
-- Parsed `.github/dependabot.yml` with Ruby YAML.
-- Ran `git diff --check`.
-- Workspace scan reported no repositories missing GitHub Actions Dependabot
-  coverage.
+- Ruby YAML로 `.github/dependabot.yml`을 parse했다.
+- `git diff --check`를 실행했다.
+- workspace scan에서 GitHub Actions Dependabot 적용이 누락된 저장소가 없음을 확인했다.
 
-## Future Guidance
+## 향후 가이드
 
-When adding a workflow to a bluetape4k repository, verify that Dependabot has a
-`github-actions` ecosystem entry and a grouped `github-actions` update rule.
+bluetape4k 저장소에 workflow를 추가할 때는 Dependabot에 `github-actions` ecosystem 항목과 grouped `github-actions` update rule이 있는지 확인한다.
