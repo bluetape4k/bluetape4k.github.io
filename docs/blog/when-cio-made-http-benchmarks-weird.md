@@ -1,95 +1,88 @@
 ---
-title: "When Ktor CIO Made HTTP Benchmarks Weird"
-description: A benchmark-backed story about io/http client tuning, the Vert.x pool bottleneck, and why Ktor CIO's disappointing first numbers were still useful.
+title: "Ktor CIO가 HTTP 벤치마크를 이상하게 만들었을 때"
+description: io/http HTTP client 벤치마크에서 Ktor CIO의 느린 숫자가 어떻게 Vert.x pool 병목, fixture 문제, workload별 선택 기준을 드러냈는지 정리한 글.
 sidebar:
   order: -202605290852
 blog:
   date: 2026-05-29T08:52:00+09:00
   image: /assets/io-http-cio-hero.png
-  imageAlt: Editorial illustration of HTTP clients running through the same benchmark harness
-  cardDescription: How disappointing Ktor CIO numbers led to a fairer benchmark, a Vert.x pool fix, and workload-based HTTP client guidance.
+  imageAlt: HTTP client들이 같은 벤치마크 harness를 통과하는 소개용 일러스트
+  cardDescription: Ktor CIO의 느린 초기 숫자에서 출발해 공정한 벤치마크, Vert.x pool 병목 수정, workload별 HTTP client 선택 기준까지 정리한 글.
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/io-http-cio-hero.png" alt="Editorial illustration of HTTP clients running through the same benchmark harness" loading="eager" />
-  <figcaption>The same HTTP abstraction can hide very different bottlenecks under each client implementation.</figcaption>
+  <img src="/assets/io-http-cio-hero.png" alt="HTTP client들이 같은 벤치마크 harness를 통과하는 소개용 일러스트" loading="eager" />
+  <figcaption>같은 HTTP 추상화 뒤에서도 client마다 병목은 전혀 다른 곳에서 튀어나온다.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-29 · bluetape4k io/http benchmark note</p>
 
-The `io/http` module in `bluetape4k-projects` lets several HTTP clients sit behind one
-abstraction. Apache HC5, OkHttp3, Java `HttpClient`, Vert.x WebClient, and Ktor CIO can be
-used through the same API.
+`bluetape4k-projects`의 `io/http` 모듈은 Apache HC5, OkHttp3, Java `HttpClient`,
+Vert.x WebClient, Ktor CIO를 같은 API 뒤에 세운다. 쓰는 쪽에서는 같은 `HttpClient`
+추상화처럼 보이지만, 실제로는 client마다 연결 재사용, coroutine bridge, virtual thread,
+server fixture, pool 설정이 다르게 움직인다.
 
-For a library like this, the most dangerous sentence is "just pick the one you like." In
-practice, connection reuse, coroutine bridges, virtual threads, server fixtures, and pool
-settings all behave differently by workload. That is why issue
-[#589](https://github.com/bluetape4k/bluetape4k-projects/issues/589) was less a tuning ticket
-and more a small campaign: decide with numbers.
+그래서 이런 모듈에서 가장 위험한 문장은 "취향대로 고르면 됩니다"다. 어느 workload에서 어떤
+client가 버티는지 모르면, 추상화는 편의가 아니라 임의 선택 버튼이 된다. 이 벤치마크 정리는
+단순한 튜닝 작업이 아니었다. 숫자로 보고, 왜 그런 숫자가 나왔는지 기록하고, 선택 기준을 남기자는
+작은 기준 정리였다.
 
-And in the first run, Ktor CIO produced numbers that looked almost absurd.
+첫 측정은 기분 좋게 시작하지 않았다. Ktor CIO가 꽤 이상한 숫자를 냈다.
 
-![HTTP client base throughput chart](/assets/io-http-base-throughput-chart-01.png)
-
-<figure class="bt4k-architecture">
-  <img src="/assets/io-http-high-latency-throughput-chart-01.png" alt="HTTP client high-latency throughput benchmark chart comparing OkHttp, HC5, Java HttpClient, Vert.x, and Ktor CIO" loading="lazy" />
-  <figcaption>How disappointing Ktor CIO numbers led to a fairer benchmark, a Vert.x pool fix, and workload-based HTTP client guidance.</figcaption>
+<figure class="bt4k-chart" data-diagram-title="HTTP 클라이언트 기본 처리량 비교">
+  <img src="/assets/io-http-base-throughput-chart-01-ko.png" alt="지연이 없는 환경에서 OkHttp, HC5, Java HttpClient, Vert.x, Ktor CIO의 처리량을 비교한 차트" loading="lazy" />
+  <figcaption>기본 지연이 없는 `/ping` 처리량은 클라이언트 구현별 상한을 비교하는 기준선이다.</figcaption>
 </figure>
 
-## At First, CIO Was Painfully Slow
+<figure class="bt4k-chart" data-diagram-title="지연 환경의 HTTP 클라이언트 처리량 비교">
+  <img src="/assets/io-http-high-latency-throughput-chart-01-ko.png" alt="50 ms 지연 환경에서 OkHttp, HC5, Java HttpClient, Vert.x, Ktor CIO의 처리량을 비교한 차트" loading="lazy" />
+  <figcaption>50 ms 지연 환경에서는 blocking, coroutine, virtual thread 경로의 차이가 실제 service wait time에 더 가깝게 드러난다.</figcaption>
+</figure>
 
-The first time I added the Ktor CIO row, it did not feel good. It showed 659.071 ops/s on
-`/ping` and 16.501 ops/s on the 50 ms delay endpoint. Other clients in the same benchmark were
-far ahead, so the table almost read like: "why did we even include this?"
+## 처음에는 CIO가 너무 느렸다
 
-But that was not a fair conclusion. When CIO was run with the full JMH concurrency, the local
-Docker fixture exhausted ephemeral ports first. The CIO row had therefore been limited to one
-thread while other rows used the class-level thread count. It was in the same table, but it was
-not playing by the same rules.
+처음 Ktor CIO row를 넣었을 때는 표를 다시 보고 싶지 않았다. `/ping`은 659.071 ops/s,
+50 ms delay endpoint는 16.501 ops/s였다. 같은 벤치마크에서 다른 client들은 훨씬 높은 throughput을
+내고 있었다. 표만 보면 거의 "이 row를 왜 넣었지?"였다.
 
-So the point of issue [#587](https://github.com/bluetape4k/bluetape4k-projects/issues/587) was
-not "make CIO look fast." It was "measure CIO under the same conditions." Instead of deleting
-the disappointing result, we recorded why it was disappointing and fixed the fixture.
+그런데 이 숫자를 그대로 결론으로 쓰면 안 됐다. CIO를 전체 JMH concurrency로 돌리면 Docker fixture에서
+local ephemeral port가 먼저 바닥났다. 그래서 CIO row만 thread 하나로 제한한 상태였다. 같은 표에
+있었지만, 같은 규칙으로 뛴 결과는 아니었다.
 
-## The First Win Was Vert.x
+그래서 CIO 후속 작업의 핵심은 "CIO를 빠르게 보이게 하자"가 아니었다. "CIO를 같은 조건에서
+재자"였다. 느린 숫자를 덮지 않고, 왜 느렸는지 남긴 다음 fixture를 고치는 쪽을 택했다.
 
-The most dramatic change in issue
-[#590](https://github.com/bluetape4k/bluetape4k-projects/issues/590) and
-PR [#593](https://github.com/bluetape4k/bluetape4k-projects/pull/593) was not Ktor. It was
-Vert.x.
+## 첫 번째 수확은 Vert.x였다
 
-The Vert.x WebClient benchmark was being capped by the default HTTP/1 pool. The benchmark was
-not measuring what the client could do; it was measuring a bottleneck created by the fixture and
-default pool settings. Once `PoolOptions` was made explicit, high-latency throughput moved from
-87.844 ops/s to 1,818.508 ops/s. That is about 20.7x.
+후속 작업에서 가장 큰 변화는 Ktor가 아니라 Vert.x였다.
 
-That sounds like an optimization story, but the real lesson is simpler.
+Vert.x WebClient 벤치마크는 기본 HTTP/1 pool cap에 걸려 있었다. client 자체의 능력을 잰 것이
+아니라, fixture와 기본 pool 설정이 만든 병목을 잰 셈이다. `PoolOptions`를 명시하자
+high-latency throughput은 87.844 ops/s에서 1,818.508 ops/s로 올라갔다. 약 20.7배다.
 
-> A slow benchmark is not always slow because production code is slow. The measurement rig has
-> to be suspected first.
+이 숫자만 보면 그럴듯한 최적화 이야기다. 하지만 더 중요한 교훈은 단순하다.
 
-## Same Server, Same Concurrency
+> 벤치마크가 느리다고 바로 production code를 고치지 말자. 먼저 측정 장치를 의심해야 한다.
 
-PR [#594](https://github.com/bluetape4k/bluetape4k-projects/pull/594) cleaned up the measuring
-conditions.
+## 같은 서버, 같은 concurrency
 
-- The HTTP client benchmark fixture was moved to `BluetapeWebfluxServer`.
-- The one-thread exception for CIO was removed.
-- Every row used the class-level JMH thread count.
-- To avoid local port exhaustion, the benchmark used short equal-thread snapshots: one second of
-  warmup and one second of measurement.
+다음 정리 작업에서는 측정 조건을 다시 맞췄다.
 
-I like this decision because it did not manufacture a "CIO won" conclusion. It exposed CIO's
-limits directly. Ktor CIO 3.5 opens HTTP/1 connections aggressively when pipelining is disabled,
-and forcing `pipelining=true` in the local mock fixture caused
-`ClosedReadChannelException: unexpected EOF` or hangs. So this post does not overstate the
-result either. We kept the default CIO behavior and compared it briefly under the same
-concurrency.
+- HTTP client 벤치마크 fixture를 `BluetapeWebfluxServer`로 맞췄다.
+- CIO만 thread 하나로 돌리는 예외를 제거했다.
+- 모든 row가 class-level JMH thread count를 사용하게 했다.
+- local port exhaustion을 피하기 위해 warmup 1초, measurement 1초의 짧은 equal-thread snapshot으로 맞췄다.
 
-## Final Snapshot
+이 결정이 좋았던 이유는 "CIO가 이겼다" 같은 보기 좋은 결론을 만들지 않았기 때문이다. 오히려 CIO의
+한계를 더 잘 드러냈다. Ktor CIO 3.5는 pipelining을 끄면 HTTP/1 connection을 적극적으로 열고,
+`pipelining=true`를 강제로 켜면 local mock fixture에서 `ClosedReadChannelException: unexpected EOF`
+또는 hang을 만들었다. 그래서 이번 글도 결론을 키우지 않는다. 기본 CIO behavior를 유지한 상태에서,
+같은 concurrency로 짧게 비교한 snapshot만 다룬다.
 
-The base `/ping` benchmark is sensitive to connection reuse and local variance. It should be
-read as a same-fixture snapshot, not as a production ranking.
+## 최종 snapshot
+
+Base `/ping` 벤치마크는 connection reuse와 local variance에 민감하다. production ranking으로 읽으면
+안 된다. 같은 fixture에서 같은 순간에 본 snapshot으로 보는 편이 맞다.
 
 | Client row | `/ping` ops/s |
 |---|---:|
@@ -99,8 +92,8 @@ read as a same-fixture snapshot, not as a production ranking.
 | Vert.x WebClient coroutines | 6,043.906 |
 | Ktor CIO coroutines | 2,052.281 |
 
-The high-latency endpoint is more interesting. With a 50 ms delay, the benchmark starts to look
-more like service wait time than a simple CPU loop.
+High-latency endpoint는 더 흥미롭다. 50 ms delay가 들어가면 blocking, coroutine, virtual thread의
+차이가 단순 CPU loop가 아니라 실제 service wait time에 더 가까워진다.
 
 
 | Client row | 50 ms delay ops/s |
@@ -114,41 +107,42 @@ more like service wait time than a simple CPU loop.
 | Ktor CIO coroutines | 1,515.026 |
 | HC5 classic coroutines | 1,216.306 |
 
-CIO is still not at the top. But it is a different story from the original 16.501 ops/s "this
-must be broken" result. Under fairer conditions it reached 1,515.026 ops/s, while still leaving
-open questions around connection behavior and fixture compatibility.
+CIO는 여전히 선두권이 아니다. 하지만 처음의 16.501 ops/s처럼 "이건 뭔가 망했다"에 가까운 수치와는
+다른 이야기다. 같은 조건에서는 1,515.026 ops/s까지 올라왔다. 대신 connection behavior와 fixture
+compatibility라는 과제도 같이 남았다.
 
-## The Selection Rules We Got
+## 여기서 얻은 선택 기준
 
-After this benchmark, choosing an `io/http` client became harder to hand-wave. At minimum, we
-have these starting points.
+이 벤치마크 이후 `io/http`의 client 선택을 감으로 말하기는 어려워졌다. 적어도 출발점은 생겼다.
 
-| Situation | Start with |
+| 상황 | 먼저 볼 선택지 |
 |---|---|
-| Short local calls, sync API, simple usage | Java `HttpClient`, HC5 classic |
-| Wait-heavy HTTP workload | OkHttp3/HC5/Java virtual-thread paths |
-| Coroutine-native integration and non-blocking client matter most | HC5 async, Vert.x WebClient |
-| Ktor-stack integration matters more | Ktor CIO, but remeasure long-run capacity with a dedicated fixture |
+| 짧은 local call, sync API, 단순 사용성 | Java `HttpClient`, HC5 classic |
+| wait-heavy HTTP workload | OkHttp3/HC5/Java virtual thread path |
+| coroutine-native integration과 non-blocking client가 중요함 | HC5 async, Vert.x WebClient |
+| Ktor stack과 통합성이 더 중요함 | Ktor CIO, 단 long-run capacity는 별도 fixture로 재측정 |
 
-The point is not "one fastest client." What `io/http` should provide is a set of measured paths
-that can be selected by workload. This work made that API surface much more useful.
+핵심은 "가장 빠른 client 하나"가 아니다. `io/http`가 제공해야 하는 것은 workload에 따라 고를 수 있는
+검증된 경로다. 이번 작업은 그 선택지를 만들었다.
 
-## What Was Better Than the Numbers
+## 숫자보다 좋았던 것
 
-Personally, the best result was not the 20x Vert.x improvement, and it was not a CIO redemption
-story. It was the choice to question the benchmark fixture before changing implementation code.
+개인적으로 이번 작업에서 제일 좋았던 결과는 Vert.x 20배 향상도, CIO 반전도 아니었다. 느린 숫자가
+나왔을 때 바로 implementation을 고치지 않고, benchmark fixture를 먼저 의심한 점이었다.
 
-When I first saw the CIO numbers, I was disappointed. My first reaction was close to: "we added
-Ktor 3 and this is what we get?" That embarrassment forced us to look at the measuring
-conditions, and the final record became much better because of it.
+처음 CIO 숫자를 봤을 때는 솔직히 실망스러웠다. "Ktor 3까지 붙였는데 이 정도면 블로그에 쓰기도
+민망한데?"라는 생각이 먼저 들었다. 그런데 그 민망함 덕분에 측정 조건을 다시 봤고, 결국 더 좋은
+기록이 남았다.
 
-- [#589](https://github.com/bluetape4k/bluetape4k-projects/issues/589): benchmark-driven HTTP component performance epic
-- [#590](https://github.com/bluetape4k/bluetape4k-projects/issues/590): benchmark-gated self-improve track
-- [#587](https://github.com/bluetape4k/bluetape4k-projects/issues/587): Ktor CIO benchmark inclusion and fair comparison
-- [PR #593](https://github.com/bluetape4k/bluetape4k-projects/pull/593): Vert.x pool tuning and initial CIO rows
-- [PR #594](https://github.com/bluetape4k/bluetape4k-projects/pull/594): WebFlux fixture and equal-thread CIO comparison
-- [Benchmark report](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/docs/benchmarks/2026-05-21-io-http-client-benchmark.md)
+- [벤치마크 리포트](https://github.com/bluetape4k/bluetape4k-projects/blob/develop/docs/benchmarks/2026-05-21-io-http-client-benchmark.md)
 
-A benchmark is not only a tool for proving "my code is fast." Sometimes it tells you, "do not
-trust the number you just saw." This `io/http` work was closer to the second kind, and that made
-it more useful.
+벤치마크는 "내 코드가 빠르다"를 증명하는 도구만은 아니다. 가끔은 "방금 본 숫자를 그대로 믿으면
+안 된다"를 알려준다. 이번 `io/http` 작업은 그쪽에 가까웠고, 그래서 더 쓸모 있었다.
+
+
+## 이 글의 근거와 chart
+
+성능 작업의 범위는 [epic #589](https://github.com/bluetape4k/bluetape4k-projects/issues/589), [issue #587](https://github.com/bluetape4k/bluetape4k-projects/issues/587), [issue #590](https://github.com/bluetape4k/bluetape4k-projects/issues/590), [PR #593](https://github.com/bluetape4k/bluetape4k-projects/pull/593), [PR #594](https://github.com/bluetape4k/bluetape4k-projects/pull/594)와 연결된다.
+
+![기본 HTTP 처리량](/assets/io-http-base-throughput-chart-01.png)
+![고지연 HTTP 처리량](/assets/io-http-high-latency-throughput-chart-01.png)

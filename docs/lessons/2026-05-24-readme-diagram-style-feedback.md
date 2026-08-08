@@ -1,27 +1,21 @@
-# README Diagram Style Feedback
+# README 다이어그램 스타일 피드백
 
-## Context
+## 배경
 
-The workspace README diagram guide needed to capture design feedback from
-comparing `exposed-r2dbc-workshop` chapter 10, 11, and 12 diagrams.
+workspace README diagram guide에 `exposed-r2dbc-workshop` chapter 10, 11, 12 다이어그램을 비교한 디자인 피드백을 반영해야 했다.
 
-## Decision
+## 결정
 
-Prefer chapter-12-style component panel composition for architecture diagrams,
-but keep `Architects Daughter` typography from chapter 10/11. Use filled
-triangular arrowheads by default, sized smaller than the old chapter 12 sample.
+Architecture diagram에는 chapter 12 스타일의 component panel 구성을 우선하되 chapter 10/11의 `Architects Daughter` typography를 유지한다. 기본값은 채워진 삼각형 arrow marker로 두고, 기존 chapter 12 sample보다 작게 설정한다.
 
-## Outcome
+## 결과
 
-`docs/readme-diagram-samples/README.md` now documents panel composition,
-smaller triangular arrow markers, and typography rules for architecture/flow
-diagrams.
+`docs/readme-diagram-samples/README.md`에 panel composition, 더 작은 삼각형 arrow marker, architecture/flow diagram typography 규칙이 문서화됐다.
 
-## Verification
+## 검증
 
-- Ran `git diff --check`.
+- `git diff --check`를 실행했다.
 
-## Future Guidance
+## 향후 가이드
 
-When updating README architecture images, start from a panel composition and
-then tune arrow size and font hierarchy before rendering PNG assets.
+README architecture image를 갱신할 때는 panel composition에서 시작한 뒤 PNG asset을 렌더링하기 전에 arrow size와 font hierarchy를 조정한다.

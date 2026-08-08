@@ -1,30 +1,22 @@
-# Virtual Threads Part 1 Proofread
+# Virtual Threads Part 1 교정
 
-## Context
+## 배경
 
-The chronological blog proofreading stack reached `virtual-threads-part1-guide`.
-The task was to improve Korean and English expression without changing the
-technical meaning.
+시간순 blog proofreading stack이 `virtual-threads-part1-guide`에 도달했다. 기술 의미를 바꾸지 않고 한국어·영어 표현을 개선하는 작업이었다.
 
-## Decision
+## 결정
 
-Keep the English post mostly intact because it was already readable, and focus
-the Korean pass on localized frontmatter, more natural phrasing, and locale
-correct series links.
+영어 글은 이미 읽을 수 있으므로 대부분 유지하고, 한국어 pass에서 localized frontmatter, 더 자연스러운 표현, locale에 맞는 series link를 다룬다.
 
-## Outcome
+## 결과
 
-The Korean post now uses a Korean description, clearer alt/caption wording, and
-`/ko/blog/...` links for the Korean series navigation. The English post received
-small rhythm edits around the intro, downstream bottleneck, and Kotlin section.
+한국어 글은 한국어 description, 더 명확한 alt/caption 문구, 한국어 series navigation용 `/ko/blog/...` link를 사용한다. 영어 글은 intro, downstream bottleneck, Kotlin section 주변 rhythm만 작게 수정했다.
 
-## Verification
+## 검증
 
 - `git diff --check`
 - `npm run build`
 
-## Future Guidance
+## 향후 가이드
 
-For bilingual blog proofreading, check frontmatter and series links as part of
-the prose pass. Locale drift is easy to miss when the visible body text already
-reads well.
+bilingual blog 교정에서는 frontmatter와 series link도 prose pass의 일부로 확인한다. 본문이 이미 잘 읽혀도 locale drift를 놓치기 쉽다.

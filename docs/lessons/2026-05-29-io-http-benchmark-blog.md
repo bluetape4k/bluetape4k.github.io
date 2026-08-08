@@ -1,28 +1,21 @@
-# io/http Benchmark Blog
+# io/http benchmark 블로그
 
-## Context
+## 배경
 
-The site needed a blog-style article about `bluetape4k-projects` `io/http`
-performance work, using issue, PR, and benchmark evidence.
+issue, PR, benchmark 근거를 사용해 `bluetape4k-projects` `io/http` performance 작업을 다루는 blog 형식 글이 필요했다.
 
-## Decision
+## 결정
 
-Use the existing benchmark charts from `bluetape4k-projects` as public site
-assets, and frame the article around the initially disappointing Ktor CIO result
-that led to fairer measurement.
+`bluetape4k-projects`의 기존 benchmark chart를 public site asset으로 사용하고, 처음에는 실망스러웠던 Ktor CIO 결과가 더 공정한 측정으로 이어진 이야기를 글의 중심에 둔다.
 
-## Outcome
+## 결과
 
-Added a publishable Starlight blog post plus a working-source copy under
-`docs/blog`. The article links the #589 epic, #590 and #587 issues, PR #593,
-PR #594, and the benchmark report.
+게시 가능한 Starlight blog 글과 `docs/blog` 아래의 working-source copy를 추가했다. 글은 #589 epic, #590 및 #587 issue, PR #593, PR #594, benchmark report에 연결된다.
 
-## Verification
+## 검증
 
-Run the site build after editing and keep the article short enough to be readable
-as a narrative post, not a benchmark report duplicate.
+사이트 build 후 글이 benchmark report의 중복본이 아니라 narrative post로 읽을 수 있을 만큼 짧은지 확인한다.
 
-## Future Agents
+## 향후 agent
 
-For benchmark blog posts, lead with the surprising engineering story and keep
-tables selective. Link the full benchmark report for exhaustive rows.
+benchmark blog 글은 놀라운 engineering story로 시작하고 표는 선별적으로 유지한다. 전체 행이 필요하면 full benchmark report에 연결한다.

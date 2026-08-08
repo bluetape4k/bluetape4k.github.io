@@ -1,19 +1,17 @@
-# 2026-06-02 Exposed Part 2 proofread
+# 2026-06-02 Exposed Part 2 교정
 
-## Context
+## 배경
 
-The next Exposed blog item after Part 1 was the Korean-only Part 2 article about JDBC repositories and SQL DSL.
+Part 1 다음 Exposed blog 항목은 JDBC repository와 SQL DSL을 다루는 한국어 전용 Part 2 글이었다.
 
-## Decision
+## 결정
 
-Keep the Korean article's boundary between visible SQL DSL and thin repository helpers intact, make small Korean
-naturalness edits, and add an English counterpart with matching examples, source links, and series navigation.
+눈에 보이는 SQL DSL과 얇은 repository helper 사이의 경계를 유지하고 한국어 자연스러움만 작게 다듬는다. 대응하는 예제, source link, series navigation이 있는 영어 글을 추가한다.
 
-## Outcome
+## 결과
 
-Added the English Part 2 article, updated the English Part 1 series links to include Part 2, and lightly proofread the
-Korean Part 2 article without changing its technical claims.
+영어 Part 2 글을 추가하고 영어 Part 1 series link에 Part 2를 포함했으며, 기술 주장을 바꾸지 않고 한국어 Part 2를 가볍게 교정했다.
 
-## Verification
+## 검증
 
-Run `git diff --check` and `npm run build` before opening the stacked PR.
+stacked PR을 열기 전에 `git diff --check`와 `npm run build`를 실행한다.

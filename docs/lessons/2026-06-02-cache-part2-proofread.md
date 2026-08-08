@@ -1,29 +1,22 @@
-# Cache Part 2 Proofread
+# Cache Part 2 교정
 
-## Context
+## 배경
 
-After merging and syncing the previous proofreading stack, the next article was
-the Near Cache benchmark post.
+이전 교정 stack을 merge하고 sync한 뒤 다음 글은 Near Cache benchmark 글이었다.
 
-## Decision
+## 결정
 
-Preserve the benchmark table, source links, and drawer/warehouse metaphor. Apply
-only small expression edits around remote-cache cost, invalidation semantics,
-and benchmark interpretation.
+benchmark 표, source link, drawer/warehouse metaphor를 유지한다. remote-cache cost, invalidation semantics, benchmark 해석 주변만 작게 수정한다.
 
-## Outcome
+## 결과
 
-The Korean post now explains remote access cost and Pub/Sub invalidation more
-naturally. The English post uses more direct wording for remote access,
-invalidation, and benchmark-environment interpretation.
+한국어 글이 remote access cost와 Pub/Sub invalidation을 더 자연스럽게 설명한다. 영어 글도 remote access, invalidation, benchmark environment 해석을 더 직접적으로 표현한다.
 
-## Verification
+## 검증
 
 - `git diff --check`
 - `npm run build`
 
-## Future Guidance
+## 향후 가이드
 
-For Near Cache posts, keep benchmark values and metric direction untouched
-unless fresh source evidence changes them. Most proofreading value is in making
-invalidation and remote-cost wording precise.
+Near Cache 글의 benchmark 값과 metric 방향은 새로운 source 근거가 바뀌지 않는 한 유지한다. 대부분의 교정 가치는 invalidation과 remote cost 표현을 정확하게 만드는 데 있다.

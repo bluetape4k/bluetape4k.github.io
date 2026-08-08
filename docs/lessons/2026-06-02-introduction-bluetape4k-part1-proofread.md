@@ -1,21 +1,21 @@
-# 2026-06-02 Bluetape4k introduction Part 1 proofreading
+# 2026-06-02 Bluetape4k Introduction Part 1 교정
 
-## Context
+## 배경
 
-The ecosystem introduction post had bilingual routes and a useful layer structure, but many sentences were rough fragments around module lists.
+생태계 소개 글에는 bilingual route와 유용한 layer 구조가 있었지만 module list 주변 문장이 거친 fragment로 남아 있었다.
 
-## Decision
+## 결정
 
-Rewrite both locale files as complete developer-facing articles while preserving the original route, date, hero asset, layer model, and representative module coverage.
+원래 route, date, hero asset, layer model, 대표 module coverage를 보존하면서 두 locale file을 완전한 개발자 대상 글로 다시 쓴다.
 
-## Outcome
+## 결과
 
-Updated the Korean and English ecosystem overview with a consistent Application, Domain Capability, Data, Infrastructure, and Foundation structure. Kept the article broad and map-like instead of shortening the module guide.
+한국어·영어 생태계 개요를 Application, Domain Capability, Data, Infrastructure, Foundation 구조로 통일했다. module guide를 짧게 줄이지 않고 넓고 지도 같은 글로 유지했다.
 
-## Verification
+## 검증
 
-Run `git diff --check`, `npm run build`, and GitHub Pages Build before merging the PR.
+PR을 merge하기 전에 `git diff --check`, `npm run build`, GitHub Pages Build를 실행한다.
 
-## Next guidance
+## 다음 가이드
 
-For ecosystem overview posts, preserve module coverage and improve readability through clearer grouping. Do not treat naturalness as a reason to delete important module-map content.
+생태계 개요 글에서는 module coverage를 유지하고 더 명확한 grouping으로 가독성을 높인다. naturalness를 이유로 중요한 module-map 내용을 삭제하지 않는다.

@@ -1,42 +1,41 @@
 ---
-title: "Virtual Threads Part 2: Rules That Matter in Practice"
-description: Practical virtual-thread rules from bluetape4k-workshop with examples for blocking code, thread-per-task executors, semaphores, ScopedValue, and locks.
+title: "Virtual Threads 2편: 실전에서 바로 걸리는 규칙들"
+description: bluetape4k-workshop 예제로 블로킹 코드, thread-per-task executor, semaphore, ScopedValue, lock 사용 규칙을 정리한다.
 sidebar:
   order: -202605291101
 blog:
   date: 2026-05-29T11:01:00+09:00
   image: /assets/virtual-threads-part2-hero.png
-  imageAlt: Editorial illustration of practical virtual thread rules becoming checklist items
-  cardDescription: "Turning on Virtual Threads is not the finish line. Pooling, semaphores, context, and locks decide whether they work well."
+  imageAlt: 실전 virtual thread 규칙이 checklist로 정리되는 소개용 일러스트
+  cardDescription: "Virtual Threads를 켰다고 끝이 아니다. pool, semaphore, context, lock 경계에서 바로 차이가 나는 실전 규칙들."
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/virtual-threads-part2-hero.png" alt="Editorial illustration of practical virtual thread rules becoming checklist items" loading="eager" />
-  <figcaption>The useful rules are the ones that survive contact with JDBC pools, locks, and shutdown paths.</figcaption>
+  <img src="/assets/virtual-threads-part2-hero.png" alt="실전 virtual thread 규칙이 checklist로 정리되는 소개용 일러스트" loading="eager" />
+  <figcaption>실전에서 쓸 수 있는 규칙은 JDBC pool, lock, shutdown path와 부딪혀도 유지되는 규칙이다.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-05-29 · Virtual Threads series · Part 2</p>
 
-This is Part 2 of the Virtual Threads series. The full series continues with
-[Part 1: introduction and cautions](/blog/virtual-threads-part1-guide/),
-[Part 2: workshop rules](/blog/virtual-threads-part2-workshop-rules/),
-[Part 3: JDBC + Virtual Threads benchmark](/blog/virtual-threads-part3-jdbc-r2dbc-benchmark/), and
-[Part 4: Java 21/25 SPI design](/blog/virtual-threads-part4-java21-java25-spi/).
+이 글은 Virtual Threads 시리즈의 2편이다. 전체 시리즈는 [Part 1: 소개와 주의점](/ko/blog/virtual-threads-part1-guide/),
+[Part 2: 워크숍 규칙](/ko/blog/virtual-threads-part2-workshop-rules/),
+[Part 3: JDBC + Virtual Threads 벤치마크](/ko/blog/virtual-threads-part3-jdbc-r2dbc-benchmark/),
+[Part 4: Java 21/25 SPI 설계](/ko/blog/virtual-threads-part4-java21-java25-spi/)로 이어진다.
 
-Part 1 covered the big picture. This post is about rules you can actually feel in code. The
-examples come from `bluetape4k-workshop/virtualthreads/rules`. They do not stop at "use Virtual
-Threads." They also show how Virtual Threads can fail to deliver if used with the wrong habits.
+Part 1은 큰 그림이었다. 이번 글은 조금 더 손에 잡히는 규칙을 다룬다. 근거는
+`bluetape4k-workshop/virtualthreads/rules`의 예제들이다. 이 예제들은 "Virtual Threads를 쓰면 된다"에서
+끝나지 않는다. "이렇게 쓰면 기대만큼 효과가 나지 않는다"까지 같이 보여준다.
 
 <figure class="bt4k-architecture">
-  <img src="/assets/virtual-threads-part2-rules-01.png" alt="Practical virtual thread rules from bluetape4k-workshop" loading="lazy" />
-  <figcaption>Turning on Virtual Threads is not the finish line. Pooling, semaphores, context, and locks decide whether they work well.</figcaption>
+  <img src="/assets/virtual-threads-part2-rules-01-ko.png" alt="bluetape4k-workshop의 실전 Virtual Thread 규칙 요약" loading="lazy" />
+  <figcaption>Virtual Threads를 켰다고 끝이 아니다. pool, semaphore, context, lock 경계에서 바로 차이가 나는 실전 규칙들.</figcaption>
 </figure>
 
-## Rule 1. Keep Blocking Synchronous Code When the Work Is I/O Waiting
+## 규칙 1. I/O 대기가 대부분이면 블로킹 동기 코드를 그대로 살릴 수 있다
 
-`Rule2WriteBlockingSynchronousCode` shows the same flow in three forms: `CompletableFuture`,
-Virtual Threads, and Coroutines. The nice part of the Virtual Thread version is that the control
-flow still reads almost directly.
+`Rule2WriteBlockingSynchronousCode`는 같은 흐름을 세 가지 방식으로 보여준다. `CompletableFuture`,
+Virtual Thread, Coroutines다. 여기서 Virtual Thread 예제의 장점은 control flow가 거의 그대로 읽힌다는
+점이다.
 
 ```kotlin
 Executors.newVirtualThreadPerTaskExecutor().use { executor ->
@@ -51,42 +50,41 @@ Executors.newVirtualThreadPerTaskExecutor().use { executor ->
 }
 ```
 
-This code does not try to look non-blocking. It splits blocking functions into tasks and joins
-them with `get()` where the values are needed. For request-response work that mostly waits on
-I/O, that simplicity is valuable.
+이 코드는 non-blocking처럼 보이려고 꾸미지 않는다. 블로킹 함수를 그대로 task로 나누고, 필요한
+지점에서 `get()`으로 결과를 모은다. I/O wait가 대부분인 request-response 작업에서는 이 단순함이 큰 장점이다.
 
-Do not apply the same idea blindly to CPU-bound work. Virtual Threads do not create extra CPU
-cores.
+다만 CPU-bound 작업까지 이런 식으로 늘리면 안 된다. Virtual Thread가 CPU core를 새로 만들어주지는
+않는다. 계산 자체가 무거우면 결국 core 수가 한계가 된다.
 
-## Rule 2. Do Not Put Virtual Threads in a Pool
+## 규칙 2. Virtual Thread를 pool에 넣지 않는다
 
-The message of `Rule3DoNotPoolVirtualThreads` is direct: Virtual Threads are not something to
-reuse through pooling.
+`Rule3DoNotPoolVirtualThreads`의 메시지는 명확하다. Virtual Thread는 재사용하려고 pooling하는 대상이
+아니다.
 
 ```kotlin
-// Not recommended: putting a virtual-thread factory inside a ThreadPoolExecutor shape.
+// 비추천: virtual thread factory를 ThreadPoolExecutor에 넣는다.
 Executors.newCachedThreadPool(Thread.ofVirtual().factory()).use { executor ->
     executor.submit { Thread.sleep(1000) }
 }
 ```
 
-That uses virtual threads by name, but the mindset is still pooling. The better default is a
-thread-per-task executor.
+이렇게 쓰면 이름은 Virtual Thread지만 사고방식은 여전히 pool이다. 기본값은 thread-per-task executor가
+되어야 한다.
 
 ```kotlin
-// Recommended: create a new virtual thread per task.
+// 추천: task마다 새 virtual thread를 만든다.
 Executors.newVirtualThreadPerTaskExecutor().use { executor ->
     executor.submit { Thread.sleep(1000) }
     executor.submit { Thread.sleep(1000) }
 }
 ```
 
-Creating Virtual Threads is cheap. The things that must be limited are downstream resources.
+Virtual Thread 생성 비용은 낮다. 제한해야 할 것은 thread 수가 아니라 뒤쪽 자원이다.
 
-## Rule 3. Use Semaphores, Not FixedThreadPool, to Limit Concurrency
+## 규칙 3. 동시성 제한은 FixedThreadPool이 아니라 Semaphore로 한다
 
-`Rule4UseSemaphoreInsteadOfFixedThreadPools` shows the most important operational rule. Do not
-limit concurrency by sizing a thread pool. Limit it in front of the resource you are protecting.
+`Rule4UseSemaphoreInsteadOfFixedThreadPools`는 Virtual Thread에서 가장 중요한 운영 규칙을 보여준다.
+동시성 제한은 thread pool size로 하지 말고, 보호하려는 자원 앞에서 한다.
 
 ```kotlin
 private val semaphore = Semaphore(8)
@@ -101,7 +99,7 @@ private fun useSemaphoreToLimitConcurrency(): String {
 }
 ```
 
-The executor can still be virtual-thread-per-task.
+그리고 executor는 여전히 virtual-thread-per-task를 쓴다.
 
 ```kotlin
 Executors.newVirtualThreadPerTaskExecutor().use { executor ->
@@ -114,16 +112,16 @@ Executors.newVirtualThreadPerTaskExecutor().use { executor ->
 }
 ```
 
-The reason is simple. You can create many Virtual Threads, but you cannot create unlimited DB
-connections or external API quota. A semaphore makes the protected resource explicit.
+이 패턴이 중요한 이유는 단순하다. Virtual Thread는 많이 만들어도 되지만, DB connection이나 외부 API
+quota는 무한하지 않다. semaphore는 "어떤 자원을 보호하는가"를 코드에 직접 드러낸다.
 
-## Rule 4. Prefer ScopedValue Before ThreadLocal for Scoped Context
+## 규칙 4. ThreadLocal보다 ScopedValue를 먼저 고려한다
 
-`Rule5UseThreadLocalVariablesCarefully` compares `InheritableThreadLocal` and `ScopedValue`.
-ThreadLocal helps migration, but as Virtual Thread counts grow, context management cost and leak
-risk grow too.
+`Rule5UseThreadLocalVariablesCarefully`는 `InheritableThreadLocal`과 `ScopedValue`를 비교한다.
+ThreadLocal은 migration 때는 편하지만, Virtual Thread 수가 많아질수록 context 관리 비용과 누수 위험이
+커진다.
 
-Scoped Values disappear when the scope ends.
+ScopedValue는 scope가 끝나면 값이 사라진다.
 
 ```kotlin
 private val scopedValue = ScopedValue.newInstance<String>()
@@ -139,7 +137,7 @@ ScopedValue.where(scopedValue, "zero").run {
 }
 ```
 
-With structured task scope, child tasks can read the scoped context.
+structured task scope와 같이 쓰면 child task에서도 scope context를 읽을 수 있다.
 
 ```kotlin
 structuredTaskScopeAll { scope ->
@@ -151,13 +149,13 @@ structuredTaskScopeAll { scope ->
 }
 ```
 
-There is still a boundary to understand. `ScopedValue` is not a magic context propagation system
-for any thread creation style. Check whether the propagation boundary is structured.
+주의할 점도 있다. `ScopedValue`는 아무 thread 생성 방식에나 자동으로 전파되는 만능 context가 아니다.
+전파 경계가 구조화된 scope인지 확인해야 한다.
 
-## Rule 5. Keep Locks Small, and Remember Java 21 Pinning
+## 규칙 5. lock은 작게 잡고, Java 21에서는 pinning도 의식한다
 
-`Rule6UseSynchronizedBlocksAndMethodsCarefully` uses `ReentrantLock` to avoid Java 21
-`synchronized` pinning risk around blocking sections.
+`Rule6UseSynchronizedBlocksAndMethodsCarefully`는 Java 21 기준으로 `synchronized` pinning 위험을 피하기
+위해 `ReentrantLock`을 쓰는 예제를 둔다.
 
 ```kotlin
 private val lock = ReentrantLock()
@@ -169,22 +167,32 @@ virtualFuture {
 }.await()
 ```
 
-Java 25 reduces the `synchronized` pinning burden through JEP 491. The rule still matters.
-Reduced pinning does not make long critical sections cheap. Blocking inside a long lock still
-turns into a bottleneck and makes profiling harder.
+Java 25에서는 JEP 491 덕분에 `synchronized` pinning 부담이 줄었다. 그래도 이 규칙은 여전히 의미가 있다.
+pinning이 줄어도 긴 critical section은 병목이다. lock 안에서 오래 블로킹하는 코드는 나중에 profiler를
+열었을 때 "왜 여기서 다 기다리고 있지?"라는 질문을 만들기 쉽다.
 
-## The Rules Together
+## 규칙을 하나로 묶으면
 
-The `virtualthreads/rules` examples can be summarized like this.
+`virtualthreads/rules`의 메시지는 이렇게 요약된다.
 
-| Do not | Do this instead |
+| 하지 말 것 | 대신 할 것 |
 |---|---|
-| Pool Virtual Threads | Use `newVirtualThreadPerTaskExecutor()` |
-| Use FixedThreadPool for concurrency limits | Use `Semaphore` around downstream resources |
-| Store large context in ThreadLocal | Use `ScopedValue` or explicit context |
-| Block inside long locks | Keep lock scopes small; use `ReentrantLock` when it fits |
-| Push CPU-bound work into Virtual Threads | Design CPU-bound execution around core count |
+| Virtual Thread를 pool에 넣기 | `newVirtualThreadPerTaskExecutor()` |
+| FixedThreadPool로 동시성 제한 | `Semaphore`로 downstream 자원 제한 |
+| ThreadLocal에 큰 context 저장 | `ScopedValue` 또는 명시적 context 전달 |
+| 긴 lock 안에서 blocking | lock scope 축소, 필요하면 `ReentrantLock` |
+| CPU-bound 작업까지 virtual thread로 밀어넣기 | CPU-bound는 core 수와 executor 전략을 별도 설계 |
 
-Virtual Threads let existing blocking code work with minimal changes. That does not mean
-limits, context, and locks can be treated casually. The easier model is also easier to misuse.
-Part 3 applies these rules to a database benchmark.
+Virtual Threads는 기존 블로킹 코드를 최소한의 변경으로 다시 쓸 수 있게 해준다. 하지만 제한, context,
+lock을 대충 처리해도 된다는 뜻은 아니다. 쉬워진 만큼 잘못 쓰기도 쉬워진다. Part 3에서는 이 규칙을 실제
+database 벤치마크에 대입해 본다.
+
+
+## 참고 자산과 series route
+
+![Virtual Threads 실전 규칙](/assets/virtual-threads-part2-rules-01.png)
+
+- [Part 1](/blog/virtual-threads-part1-guide/)
+- [Part 2](/blog/virtual-threads-part2-workshop-rules/)
+- [Part 3](/blog/virtual-threads-part3-jdbc-r2dbc-benchmark/)
+- [Part 4](/blog/virtual-threads-part4-java21-java25-spi/)

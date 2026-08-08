@@ -1,24 +1,24 @@
-# Diagram generation rule refinement
+# 다이어그램 생성 규칙 보강
 
-Date: 2026-05-24
+날짜: 2026-05-24
 
-## Context
+## 배경
 
-The README diagram generation rules needed tighter defaults for architecture and sequence diagrams after review of the new `bluetape4k-diagram` skill.
+새 `bluetape4k-diagram` skill을 review한 뒤 architecture와 sequence diagram의 기본값을 더 엄격하게 해야 했다.
 
-## Decision
+## 결정
 
-Architecture diagrams now default to layered architecture, filled triangular arrowheads, and right-angled orthogonal connectors. Sequence diagrams must render conditional branches such as `alt`, `else`, and `opt` explicitly. Generated diagram text uses Comic Mono for detail labels, and localized README files share the same English-label diagram assets by default.
+Architecture diagram은 layered architecture, 채워진 삼각형 arrowhead, 직각 orthogonal connector를 기본값으로 사용한다. Sequence diagram은 `alt`, `else`, `opt`와 같은 conditional branch를 명시적으로 렌더링해야 한다. 생성된 다이어그램의 상세 label에는 Comic Mono를 사용하고, localized README는 기본적으로 동일한 English-label diagram asset을 공유한다.
 
-## Outcome
+## 결과
 
-The canonical guide and the Codex/Claude `bluetape4k-diagram` skill now carry the same execution rules, including asset naming, README embed, rendering tool, and validation command guidance.
+canonical guide와 Codex/Claude `bluetape4k-diagram` skill이 asset naming, README embed, rendering tool, validation command 안내를 포함한 동일한 실행 규칙을 갖게 됐다.
 
-## Verification
+## 검증
 
 - `git diff --check`
-- YAML frontmatter parse for Codex/Claude `bluetape4k-diagram` skill copies
+- Codex/Claude `bluetape4k-diagram` skill 복사본의 YAML frontmatter parse
 
-## Future agents
+## 향후 agent
 
-Do not create localized diagram variants unless the image itself must show locale-specific domain terms. Prefer shared English-label PNG/SVG assets across README locales.
+이미지 자체에 locale별 domain term이 표시되어야 하는 경우가 아니면 localized diagram variant를 만들지 않는다. README locale 사이에서는 English-label PNG/SVG asset 공유를 우선한다.

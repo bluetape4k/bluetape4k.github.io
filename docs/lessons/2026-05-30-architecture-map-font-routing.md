@@ -1,37 +1,23 @@
-# Architecture map font and routing fix
+# 아키텍처 지도 글꼴 및 routing 수정
 
-## Context
+## 배경
 
-The public homepage embedded `public/assets/bluetape4k-architecture-map.svg`
-with `Inter, Arial, sans-serif` inline font families instead of the
-`bluetape4k-diagram` visual language.
+public homepage가 `public/assets/bluetape4k-architecture-map.svg`에서 `bluetape4k-diagram` visual language 대신 `Inter, Arial, sans-serif` inline font family를 사용하고 있었다.
 
-## Decision
+## 결정
 
-Use `Architects Daughter` for title and prominent card labels, and `Comic Mono`
-for subtitles and detail text. While fixing the asset, also correct connector
-routes whose arrowheads ended in the middle of the diagram instead of on a
-target node boundary.
+title과 주요 card label에는 `Architects Daughter`, subtitle과 detail text에는 `Comic Mono`를 사용한다. asset을 수정하면서 arrowhead가 target node boundary가 아니라 diagram 중간에서 끝나던 connector route도 고친다.
 
-## Outcome
+## 결과
 
-The Architecture Position Map now uses the standard diagram fonts and explicit
-orthogonal connector lanes. The lower `Foundation Modules` and
-`Example Applications` connectors terminate at the `Application Runtime` card
-instead of at an intermediate coordinate.
+Architecture Position Map이 표준 diagram font와 명시적인 orthogonal connector lane을 사용한다. 아래쪽 `Foundation Modules` 및 `Example Applications` connector는 중간 좌표가 아니라 `Application Runtime` card에서 끝난다.
 
-Follow-up layout review moved `Application Runtime` from a top hub into the
-visual center of the map. The four service-layer families now sit around the
-runtime card, which better matches the intended mental model: a Kotlin backend
-application composes edge, persistence, integration, and operations libraries
-through the runtime layer.
+후속 layout review에서는 `Application Runtime`을 상단 hub에서 map의 시각적 중심으로 옮겼다. 네 service-layer family를 runtime card 주변에 배치해 Kotlin backend application이 runtime layer를 통해 edge, persistence, integration, operations library를 조합한다는 의도된 mental model을 더 잘 표현한다.
 
-## Verification
+## 검증
 
 - `xmllint --noout public/assets/bluetape4k-architecture-map.svg`
-- no remaining `Inter, Arial` or `font-family="Inter"` in the SVG
-- rendered PNG inspected visually
+- SVG에 남은 `Inter, Arial` 또는 `font-family="Inter"` 0개
+- 렌더링된 PNG를 시각적으로 검사
 - `npm run build`
-- after the center-hub layout change, rendered PNG inspected again and the
-  lower connector lane was moved below the `Operations` card to avoid crossing a
-  component interior
+- center-hub layout 변경 후 PNG를 다시 검사하고, `Operations` card 내부를 가로지르지 않도록 아래 connector lane을 카드 아래로 옮겼다.

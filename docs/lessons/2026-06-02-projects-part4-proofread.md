@@ -1,19 +1,18 @@
-# 2026-06-02 Projects Part 4 proofread
+# 2026-06-02 Projects Part 4 교정
 
-## Context
+## 배경
 
-The `bluetape4k-projects` Part 4 blog post followed the Part 3 proofreading PR in the stacked sequence.
+`bluetape4k-projects` Part 4 blog 글이 stacked sequence에서 Part 3 교정 PR 다음에 이어졌다.
 
-## Decision
+## 결정
 
-Keep the data and infrastructure module map unchanged, but make the Korean and English prose more natural around external
-systems, failure boundaries, and execution-model selection.
+data와 infrastructure module map은 유지하되 external system, failure boundary, execution-model 선택 주변의 한국어·영어 prose를 더 자연스럽게 만든다.
 
-## Outcome
+## 결과
 
-Updated the bilingual posts to use more direct operational language for Redis storage, timeout layering, FastFory storage
-boundaries, and the rule that service execution model should come before infrastructure choices.
+bilingual 글이 Redis storage, timeout layering, FastFory storage boundary, service execution model을 infrastructure 선택보다 먼저 정해야 한다는 규칙을 더 직접적인 운영 언어로 표현한다.
 
-## Verification
+## 검증
 
-Run `git diff --check` and `npm run build` before opening the stacked PR.
+- `git diff --check`
+- `npm run build`
