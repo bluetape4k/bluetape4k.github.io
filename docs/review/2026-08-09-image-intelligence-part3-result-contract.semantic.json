@@ -31,6 +31,8 @@
   ],
   "behavior": {"branches": 4, "loops": 0},
   "repairs": [
-    {"target": "status-cards", "reason": "Keep four provider states visible without expanding into engine-specific exception classes", "touches": 4}
+    {"target": "status-cards", "reason": "Keep four provider states visible without expanding into engine-specific exception classes", "touches": 4},
+    {"target": "four-state-wording", "reason": "Use explicit 4-state wording in the Korean title and article metadata", "touches": 6},
+    {"target": "primary-markers", "reason": "Normalize bilingual primary arrowheads with a fixed 14x14 viewBox, refX, and solid fill", "touches": 8}
   ]
 }

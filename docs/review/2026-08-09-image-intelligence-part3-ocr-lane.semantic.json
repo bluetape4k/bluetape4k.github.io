@@ -29,6 +29,8 @@
   ],
   "behavior": {"branches": 3, "loops": 0},
   "repairs": [
-    {"target": "sibling-lanes", "reason": "OCR, detection, and barcode are shown as separate result lanes so one failure cannot erase sibling data", "touches": 3}
+    {"target": "sibling-lanes", "reason": "OCR, detection, and barcode are shown as separate result lanes so one failure cannot erase other analysis data", "touches": 3},
+    {"target": "connector-geometry", "reason": "Replace mixed-corner spline-like routes with rounded orthogonal paths and consistent terminal standoffs", "touches": 8},
+    {"target": "primary-markers", "reason": "Normalize bilingual primary arrowheads with a fixed 14x14 viewBox, refX, and solid fill", "touches": 14}
   ]
 }

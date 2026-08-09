@@ -773,7 +773,7 @@ test('image-intelligence articles expose localized diagrams and preserve qualifi
       await read('src/content/docs/ko/blog/image-intelligence-part3-ocr-integrated-response.mdx'),
       [
         'OCR 분석 경로가 통합 응답에 도달하는 방법',
-        '네 가지 OCR 상태와 공개 응답 필드',
+        '4개의 OCR 상태와 공개 응답 필드',
       ],
     ],
     [

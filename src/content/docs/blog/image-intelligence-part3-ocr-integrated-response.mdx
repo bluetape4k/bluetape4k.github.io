@@ -27,7 +27,7 @@ next layer needs. **The response must distinguish a provider that ran but found 
 used (`Unavailable`), and an execution failure (`Failed`).**
 
 This article follows the OCR path in the
-[`bluetape4k-image` Spring Boot Image Intelligence API](https://github.com/bluetape4k/bluetape4k-image/tree/develop/examples/spring-boot-image-intelligence-api).
+[`bluetape4k-image` Spring Boot Image Intelligence API](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/README.md).
 The earlier article [Operating an OCR service in production](/blog/ocr-api-fallback-contract-bluetape4k-image/) covers Tesseract
 installation and native-runtime operation, so this article focuses on the boundary where provider results become a combined
 response contract.
@@ -97,8 +97,8 @@ exceptions become `Failed(reasonCode = "provider_failure")`.
   class="bt4k-architecture"
   data-diagram-title="How the OCR lane reaches the combined response"
 >
-  <img src="/assets/blog/image-intelligence/part3/image-intelligence-ocr-lane-01-en.png" alt="A qualified image passes through an OCR provider and guarded execution into Completed, Empty, Unavailable, and Failed states, then maps to a public OCR response alongside detection and barcode sibling results" loading="lazy" />
-  <figcaption>Integrating OCR is not just copying text. It is an integration boundary that preserves execution state and sibling analysis results.</figcaption>
+  <img src="/assets/blog/image-intelligence/part3/image-intelligence-ocr-lane-01-en.png" alt="A qualified image passes through an OCR provider and guarded execution into Completed, Empty, Unavailable, and Failed states, then maps to a public OCR response alongside detection and barcode results from other analysis lanes" loading="lazy" />
+  <figcaption>Integrating OCR is not just copying text. It is an integration boundary that preserves execution state and results from other analysis lanes.</figcaption>
 </figure>
 
 The responsibility of [`ImageIntelligenceService`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageIntelligenceService.kt)
@@ -133,7 +133,7 @@ when (analysis) {
 
 This is a shortened example showing the important response fields. The concrete types live in [`ApiModels.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/model/ApiModels.kt).
 
-## Keep an OCR failure from erasing sibling results
+## Keep an OCR failure from erasing other analysis results
 
 In an OCR-only service, promoting `Failed` to a request-wide failure may not be obvious. The visitor-pass API also runs object
 detection and barcode or QR analysis. [`ImageIntelligenceWorkflow`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageIntelligenceWorkflow.kt)
@@ -162,21 +162,40 @@ Listing state names in documentation is not enough. Callers need to know which f
 </figure>
 
 - `Completed`: read `result` and continue any downstream validation with the page count.
-- `Empty`: the provider ran but found no text in this image. Use sibling analysis results if they are available.
+- `Empty`: the provider ran but found no text in this image. Use results from other analysis lanes if they are available.
 - `Unavailable`: the default profile may leave OCR unconfigured. The client or operator can choose configuration or a fallback path.
 - `Failed`: the provider timed out or raised an exception. Retry, circuit-breaking, and isolation are operational policy decisions.
 
 All four states retain `elapsedMillis` and `provider`. Operations can distinguish a fast empty result from an unavailable provider
 or a slow provider. These fields do not claim anything about OCR accuracy.
 
-## Tests must verify boundaries, not just state names
+## Tests must verify state values and response-mapping boundaries
 
 [`GuardedAnalysisRunnerTest`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/test/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/GuardedAnalysisRunnerTest.kt)
-checks that blank output becomes `Empty`, provider exceptions become `Failed`, and timeouts normalize to the `timeout` reason.
+checks that blank output becomes the `Empty` state value, provider exceptions become `Failed`, and timeouts normalize to the `timeout` reason.
 Parent cancellation is rethrown, so it is tested separately from ordinary provider exceptions.
 
+The boundary between state values and public response fields can be made explicit in one test flow:
+
+```kotlin
+val failed = runner.run<String>(provider = "broken", timeout = timeout, semaphore = semaphore) {
+    error("native-path=/private/secret")
+}
+failed.shouldBeInstanceOf<AnalysisResult.Failed>()
+    .reasonCode shouldBeEqualTo "provider_failure"
+
+val response = service.analyze(visitorUpload())
+response.status shouldBeEqualTo AggregateStatus.PARTIAL
+response.ocr.status shouldBeEqualTo AnalysisStatus.FAILED
+response.detection.status shouldBeEqualTo AnalysisStatus.COMPLETED
+response.barcodes.status shouldBeEqualTo AnalysisStatus.COMPLETED
+```
+
+The first assertion checks normalization from an internal exception to a stable state and reason code. The second checks
+which results survive a single-lane failure and how the aggregate status is calculated.
+
 [`ImageIntelligenceWorkflowTest`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/test/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageIntelligenceWorkflowTest.kt)
-checks that the three paths overlap and that one failure does not delete sibling results. It also verifies that cancellation
+checks that the three paths overlap and that one failure does not delete results from other analysis lanes. It also verifies that cancellation
 reaches every child path.
 
 Finally, [`ImageIntelligenceServiceTest`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/test/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageIntelligenceServiceTest.kt)
@@ -194,6 +213,12 @@ This article defines a baseline for turning OCR execution outcomes into stable r
 | Timeouts and provider-specific permits | Retries, circuit breakers, and process isolation |
 | Text, page count, and stable reason codes | Original-image retention, deletion, encryption, and masking |
 | Preservation of OCR, detection, and barcode results | Visitor-pass allow, review, or reject rules |
+
+“Needs a separate decision” does not mean that the concern has no implementation. It means that this response contract cannot
+choose the operational default. Retries should be limited to transient provider failures; a circuit breaker should stop calls
+after repeated failures; and process isolation should move an unstable native engine behind a separate execution boundary.
+In a Spring application, Resilience4j can provide Retry, CircuitBreaker, Bulkhead, and TimeLimiter primitives. The service still
+has to decide which errors are retryable, when the breaker opens, and whether process isolation belongs in the deployment design.
 
 The response contract also cannot prevent a native OCR call from occupying a thread until it returns. Read the earlier
 [Operating an OCR service in production](/blog/ocr-api-fallback-contract-bluetape4k-image/) article for large-image limits, OCR
@@ -213,7 +238,7 @@ Part 4 will separate object-detection facts from the visitor-pass handling polic
 
 ## Implementation and further reading
 
-- [Spring Boot Image Intelligence API](https://github.com/bluetape4k/bluetape4k-image/tree/develop/examples/spring-boot-image-intelligence-api): the complete execution path from input qualification through three analyzers and visitor-pass policy
+- [Spring Boot Image Intelligence API](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/README.md): the complete execution path from input qualification through three analyzers and visitor-pass policy
 - [`ImageAnalysisProviders.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageAnalysisProviders.kt): the OCR provider interface and fixture/Tesseract implementations
 - [`GuardedAnalysisRunner.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/GuardedAnalysisRunner.kt): timeout, concurrency permits, and state mapping
 - [`ImageIntelligenceWorkflow.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageIntelligenceWorkflow.kt): collection of OCR, detection, and barcode results
