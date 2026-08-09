@@ -2,6 +2,7 @@ node_modules
 dist
 .astro
 .worktrees/
+.bluetape/
 .superpowers/brainstorm/
 .DS_Store
 npm-debug.log*
