@@ -1,0 +1,36 @@
+{
+  "kind": "architecture",
+  "source": {
+    "question": "자격 판정된 이미지의 OCR 결과가 어떻게 독립 상태로 보존된 통합 응답에 도달하는가?",
+    "revision": "bluetape4k-image@f35723f1c9b1add6078aebcd46d41a1e196face9",
+    "paths": [
+      "docs/review/2026-08-09-image-intelligence-part3-claim-ledger.md",
+      "docs/superpowers/specs/2026-07-27-image-intelligence-blog-series-design.md"
+    ]
+  },
+  "nodes": [
+    {"id": "qualified-image", "label": "QualifiedImage", "source": "ImageIntelligenceService.kt"},
+    {"id": "ocr-provider", "label": "OcrAnalysisProvider", "source": "ImageAnalysisProviders.kt"},
+    {"id": "guarded-runner", "label": "GuardedAnalysisRunner", "source": "GuardedAnalysisRunner.kt"},
+    {"id": "analysis-result", "label": "AnalysisResult<OcrStructuredResult>", "source": "AnalysisModels.kt"},
+    {"id": "ocr-response", "label": "OcrAnalysisResponse", "source": "ApiModels.kt"},
+    {"id": "detection-lane", "label": "Detection lane", "source": "ImageIntelligenceWorkflow.kt"},
+    {"id": "barcode-lane", "label": "Barcode lane", "source": "ImageIntelligenceWorkflow.kt"},
+    {"id": "aggregate-response", "label": "ImageIntelligenceResponse", "source": "ImageIntelligenceService.kt"}
+  ],
+  "edges": [
+    {"id": "image-to-provider", "from": "qualified-image", "to": "ocr-provider", "kind": "input", "source": "ImageIntelligenceService.kt"},
+    {"id": "provider-to-runner", "from": "ocr-provider", "to": "guarded-runner", "kind": "execution", "source": "GuardedAnalysisRunner.kt"},
+    {"id": "runner-to-state", "from": "guarded-runner", "to": "analysis-result", "kind": "state-mapping", "source": "GuardedAnalysisRunner.kt"},
+    {"id": "state-to-response", "from": "analysis-result", "to": "ocr-response", "kind": "public-contract", "source": "ImageIntelligenceService.kt"},
+    {"id": "ocr-to-aggregate", "from": "ocr-response", "to": "aggregate-response", "kind": "aggregation", "source": "ImageIntelligenceService.kt"},
+    {"id": "detection-to-aggregate", "from": "detection-lane", "to": "aggregate-response", "kind": "sibling-result", "source": "ImageIntelligenceWorkflow.kt"},
+    {"id": "barcode-to-aggregate", "from": "barcode-lane", "to": "aggregate-response", "kind": "sibling-result", "source": "ImageIntelligenceWorkflow.kt"}
+  ],
+  "behavior": {"branches": 3, "loops": 0},
+  "repairs": [
+    {"target": "sibling-lanes", "reason": "OCR, detection, and barcode are shown as separate result lanes so one failure cannot erase other analysis data", "touches": 3},
+    {"target": "connector-geometry", "reason": "Replace mixed-corner spline-like routes with rounded orthogonal paths and consistent terminal standoffs", "touches": 8},
+    {"target": "primary-markers", "reason": "Normalize bilingual primary arrowheads with a fixed 14x14 viewBox, refX, and solid fill", "touches": 14}
+  ]
+}

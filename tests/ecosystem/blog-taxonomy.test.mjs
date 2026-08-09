@@ -225,7 +225,7 @@ test('every bilingual blog pair has identical explicit tags', async () => {
   const enFiles = (await readdir(enDirectory)).filter(isPost).sort();
   const koFiles = (await readdir(koDirectory)).filter(isPost).sort();
 
-  assert.equal(enFiles.length, 91);
+  assert.equal(enFiles.length, 92);
   assert.deepEqual(koFiles, enFiles);
 
   const counts = new Map();

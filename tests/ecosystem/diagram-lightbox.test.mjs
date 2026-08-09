@@ -769,6 +769,20 @@ test('image-intelligence articles expose localized diagrams and preserve qualifi
         'Per-analyzer decoding versus a shared single decode',
       ],
     ],
+    [
+      await read('src/content/docs/ko/blog/image-intelligence-part3-ocr-integrated-response.mdx'),
+      [
+        'OCR 분석 경로가 통합 응답에 도달하는 방법',
+        '4개의 OCR 상태와 공개 응답 필드',
+      ],
+    ],
+    [
+      await read('src/content/docs/blog/image-intelligence-part3-ocr-integrated-response.mdx'),
+      [
+        'How the OCR lane reaches the combined response',
+        'The four OCR states and public response fields',
+      ],
+    ],
   ];
 
   for (const [source, titles] of pairs) {
@@ -782,4 +796,6 @@ test('image-intelligence articles expose localized diagrams and preserve qualifi
   assert.match(pairs[2][0], /거부 입력은 반대 경계를 검증합니다/);
   assert.match(pairs[2][0], /정상 PNG \| 1 \| 합격한 입력을 정확히 한 번 디코딩/);
   assert.doesNotMatch(pairs[0][0], /OCR provider|분석 provider|fixture|circuit breaker/);
+  assert.match(pairs[4][0], /`Empty`.*`Unavailable`.*`Failed`/s);
+  assert.match(pairs[5][0], /`Empty`.*`Unavailable`.*`Failed`/s);
 });
