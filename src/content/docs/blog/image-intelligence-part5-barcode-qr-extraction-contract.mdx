@@ -135,9 +135,14 @@ deliberately narrowed to `text`, `format`, and `provider`. Exposing a region in 
 that must consider display needs, privacy, payload size, and version compatibility. This article says that the library
 model preserves a region; it does not claim that the current example returns one.
 
-## Keep ZXing inside its adapter
+## Use ZXing as the adapter
 
-The provider in the integrated example is a thin adapter that receives `BarcodeReader` and `BarcodeOptions`.
+[ZXing](https://github.com/zxing/zxing) is an open-source barcode image-processing library implemented in Java that
+decodes multiple 1D and 2D formats. The [`images-barcode-zxing` provider](https://github.com/bluetape4k/bluetape4k-image/blob/65c31d4/images-barcode-zxing/README.md)
+used here maps ZXing text, formats, result points, bounding boxes, raw bytes, and metadata into the provider-neutral
+`BarcodeResult`. ZXing decodes the payload; it does not decide whether a visitor pass is `ALLOW` or `REJECT`.
+
+The integrated example's barcode provider is a thin adapter that receives `BarcodeReader` and `BarcodeOptions`.
 
 ```kotlin
 internal class ZxingBarcodeAnalysisProvider(

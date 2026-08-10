@@ -137,9 +137,14 @@ internal data class BarcodeResponse(
 호환성, payload 크기를 함께 검토해야 하는 별도 API 결정입니다. 이 글은 library model이 위치를 보존한다는
 사실을 설명하지만, 현재 example이 위치를 반환한다고 주장하지 않습니다.
 
-## ZXing은 adapter 안에 머문다
+## ZXing은 adapter로 둔다
 
-통합 예제의 provider는 `BarcodeReader`와 `BarcodeOptions`를 주입받는 얇은 adapter입니다.
+[ZXing](https://github.com/zxing/zxing)은 Java로 구현된 오픈 소스 barcode 이미지 처리 라이브러리로, 여러 1D/2D
+포맷을 디코딩합니다. 이 글의 [`images-barcode-zxing` provider](https://github.com/bluetape4k/bluetape4k-image/blob/65c31d4/images-barcode-zxing/README.ko.md)는
+ZXing의 text·format·result point·bounding box·raw bytes·metadata를 provider-neutral `BarcodeResult`로
+매핑합니다. ZXing은 payload를 디코딩하는 provider이지 방문증을 `ALLOW`하거나 `REJECT`하는 policy는 아닙니다.
+
+통합 예제의 barcode provider는 `BarcodeReader`와 `BarcodeOptions`를 주입받는 얇은 adapter입니다.
 
 ```kotlin
 internal class ZxingBarcodeAnalysisProvider(
