@@ -1,0 +1,300 @@
+---
+title: "OCR과 다른 바코드·QR 추출 계약: 값·형식·위치를 보존하는 provider 경계"
+description: "OCR의 텍스트 인식과 바코드·QR의 payload decoding을 구분하고, provider-neutral 결과·빈 결과·실패 상태를 방문증 정책과 분리하는 방법을 설명합니다."
+sidebar:
+  order: -202608101300
+blog:
+  date: 2026-08-10T13:00:00+09:00
+  image: /assets/blog/image-intelligence/part1/image-intelligence-part1-hero.png
+  imageAlt: 방문증 이미지에서 OCR, 객체 검출, QR 분석이 각자의 결과 계약으로 나뉘고 마지막에 정책으로 합쳐지는 어두운 3D 작업대
+  cardDescription: "바코드·QR의 값과 형식, 선택적인 위치 정보를 provider-neutral 계약으로 보존하고 OCR·정책과 분리합니다."
+  tags: ["architecture","barcode","image","kotlin","practical-example","resilience","spring"]
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/blog/image-intelligence/part1/image-intelligence-part1-hero.png" alt="방문증 이미지에서 OCR, 객체 검출, QR 분석이 각자의 결과 계약으로 나뉘고 마지막에 정책으로 합쳐지는 어두운 3D 작업대" loading="eager" />
+  <figcaption>한 장의 이미지를 여러 분석기가 읽더라도 OCR 텍스트, 검출 사실, barcode payload는 같은 결과가 아닙니다. 각 경계를 보존한 뒤 애플리케이션 policy가 해석합니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-10 · Image Intelligence API · Part 5</p>
+
+방문증 이미지에는 사람 이름과 회사명, 얼굴, 출입용 QR이 함께 들어 있을 수 있습니다. 그런데 OCR과 QR decoder가
+모두 `text`를 반환한다고 해서 두 값의 의미까지 같아지는 것은 아닙니다.
+
+OCR은 “이 영역에서 사람이 읽을 수 있는 문자를 얼마나 얻었는가?”를 묻습니다. 바코드·QR 추출은 “이 기호가
+어떤 payload와 표준 format으로 decoding되었는가?”를 묻습니다. 전자는 읽기 품질과 page 구조가 중요하고,
+후자는 값·symbology·provider·선택적인 위치 정보가 중요합니다.
+
+이 글은 [`bluetape4k-image`의 Spring Boot 이미지 인텔리전스 API](https://github.com/bluetape4k/bluetape4k-image/tree/65c31d4/examples/spring-boot-image-intelligence-api)를
+방문증 시나리오로 따라갑니다. 핵심은 특정 decoder를 애플리케이션에 퍼뜨리는 것이 아니라,
+`BarcodeReader`가 provider-neutral 결과를 반환하고 `VisitorPassPolicy`가 그 사실을 업무 규칙으로 해석하는
+경계를 고정하는 것입니다.
+
+## 같은 이미지라도 질문이 다르다
+
+현재 통합 예제는 같은 `ImmutableImage`를 OCR, detection, barcode 경로에 전달합니다. 공유하는 것은 입력과 요청
+lifecycle이지, 결과의 의미가 아닙니다.
+
+| 경로 | 대표 결과 | “아무것도 없음”의 의미 | confidence의 역할 |
+| --- | --- | --- | --- |
+| OCR | `text`, `pageCount` | 읽을 수 있는 문자를 찾지 못함 | 문자·영역 품질을 나타낼 수 있지만 provider마다 다름 |
+| 객체 검출 | `label`, `category`, `confidence`, `detector` | 대상 객체가 없음 | detector가 보고한 확률값을 policy가 해석함 |
+| barcode·QR | `text`, `format`, `provider`, 선택적 `region` | decoding된 code가 없음 | 많은 decoder가 점수를 제공하지 않아 `null`일 수 있음 |
+
+따라서 barcode 결과를 OCR 문자열처럼 단순 연결하거나, code가 없다는 사실을 이미지가 잘못되었다는 뜻으로
+바꾸면 안 됩니다. 분석 경로의 결과를 별도 계약으로 보존한 다음, 방문증 허용 여부나 수동 검토 여부를
+애플리케이션이 결정해야 합니다.
+
+## 호출자는 `BarcodeReader`만 알아야 한다
+
+provider-neutral API의 입구는 작은 `BarcodeReader` 함수형 인터페이스입니다.
+
+```kotlin
+fun interface BarcodeReader {
+    fun readBarcodes(
+        image: ImmutableImage,
+        options: BarcodeOptions,
+    ): List<BarcodeResult>
+}
+```
+
+blocking decoder, native runtime, remote service가 어떤 구현을 사용하든 호출자는 `BarcodeResult`만 받습니다.
+coroutine 경로에서는 같은 reader를 `suspendExtractBarcodes`로 감싸고 dispatcher를 선택할 수 있습니다.
+이 경계 덕분에 ZXing을 쓰던 애플리케이션이 다른 provider를 검토할 때 controller나 policy가 ZXing 타입을
+직접 참조할 필요가 없습니다.
+
+추출 조건은 `BarcodeOptions`로 표현합니다.
+
+```kotlin
+val qrOptions = BarcodeOptions(
+    formats = setOf(BarcodeFormat.QR_CODE),
+    tryHarder = true,
+    includeRawBytes = false,
+)
+
+val results = image.extractBarcodes(reader, qrOptions)
+```
+
+`formats`가 비어 있으면 provider가 지원하는 모든 format을 요청합니다. `tryHarder`는 decoder hint이고,
+`includeRawBytes`는 필요할 때만 원본 byte payload를 보존하도록 하는 opt-in입니다. `minimumConfidence`를
+설정하면 confidence가 있는 결과만 threshold로 필터링하지만, confidence가 `null`인 결과는 제거하지 않습니다.
+많은 barcode library가 안정적인 score를 노출하지 않기 때문입니다.
+
+## 결과는 값 하나가 아니라 decoding 사실의 묶음이다
+
+`BarcodeResult`는 provider가 돌려준 문자열을 애플리케이션이 다시 파싱하지 않도록 필요한 사실을 함께 담습니다.
+
+```kotlin
+BarcodeResult(
+    text = "visitor:PASS-001",
+    format = BarcodeFormat.QR_CODE,
+    provider = BarcodeProviderIdentity(
+        name = "ZXing",
+        version = "3.5.4",
+        backend = "zxing-core",
+        metadata = mapOf("decoder" to "MultiFormatReader"),
+    ),
+    region = BarcodeRegion(
+        points = listOf(
+            BarcodePoint(412.0, 188.0),
+            BarcodePoint(628.0, 188.0),
+            BarcodePoint(628.0, 404.0),
+        ),
+        coordinateSpace = BarcodeCoordinateSpace.PIXEL,
+    ),
+)
+```
+
+| 필드 | 계약 |
+| --- | --- |
+| `text` | 공백이 아닌 decoded payload. 방문증의 `visitor:PASS-001` 같은 값이다. |
+| `format` | `QR_CODE`, `CODE_128`, `EAN_13` 같은 provider-neutral symbology다. |
+| `provider` | name·version·backend·string metadata를 담는 진단용 identity다. provider 객체 자체를 노출하지 않는다. |
+| `region` | optional finder/result points와 optional bounding box다. `PIXEL` 또는 `NORMALIZED` 좌표계를 함께 보존한다. |
+| `confidence`, `quality` | decoder가 제공할 때만 채우는 선택값이다. 없다고 실패로 간주하지 않는다. |
+| `rawBytes` | `includeRawBytes = true`이고 provider가 제공할 때만 보존하는 선택값이다. |
+| `rawBackendFormat`, `metadata` | normalized mapping으로 잃을 수 있는 backend format과 문자열 metadata다. |
+
+`BarcodeRegion`의 points는 항상 닫힌 polygon이어야 하는 것은 아닙니다. provider가 result point만 제공하면
+points만 보존할 수 있고, 두 점 이상으로 양의 폭·높이를 계산할 수 있을 때만 bounding box를 추가합니다.
+좌표계가 `NORMALIZED`이면 두 축이 `0.0..1.0` 범위를 벗어나지 않아야 하고, `PIXEL`이면 음수가 될 수 없습니다.
+이 검증은 화면에 사각형을 그리라는 명령이 아니라, 결과 위치를 다른 renderer나 후속 policy가 안전하게 해석할
+수 있는 데이터 계약입니다.
+
+여기서 public API의 선택을 구분해야 합니다. 현재 통합 예제의 `BarcodeResponse`는 다음 세 필드만 외부에
+노출합니다.
+
+```kotlin
+internal data class BarcodeResponse(
+    val text: String,
+    val format: BarcodeFormat,
+    val provider: String,
+)
+```
+
+즉 underlying `BarcodeResult`에는 `region`, `confidence`, `rawBytes`가 있을 수 있지만 현재 HTTP 응답은
+`text`·`format`·`provider`로 좁혀져 있습니다. region을 public DTO에 추가할지는 화면 표시, 개인정보, 버전
+호환성, payload 크기를 함께 검토해야 하는 별도 API 결정입니다. 이 글은 library model이 위치를 보존한다는
+사실을 설명하지만, 현재 example이 위치를 반환한다고 주장하지 않습니다.
+
+## ZXing은 adapter로 둔다
+
+[ZXing](https://github.com/zxing/zxing)은 Java로 구현된 오픈 소스 barcode 이미지 처리 라이브러리로, 여러 1D/2D
+포맷을 디코딩합니다. 이 글의 [`images-barcode-zxing` provider](https://github.com/bluetape4k/bluetape4k-image/blob/65c31d4/images-barcode-zxing/README.ko.md)는
+ZXing의 text·format·result point·bounding box·raw bytes·metadata를 provider-neutral `BarcodeResult`로
+매핑합니다. ZXing은 payload를 디코딩하는 provider이지 방문증을 `ALLOW`하거나 `REJECT`하는 policy는 아닙니다.
+
+통합 예제의 barcode provider는 `BarcodeReader`와 `BarcodeOptions`를 주입받는 얇은 adapter입니다.
+
+```kotlin
+internal class ZxingBarcodeAnalysisProvider(
+    private val reader: BarcodeReader,
+    private val options: BarcodeOptions = BarcodeOptions(),
+    private val dispatcher: CoroutineDispatcher,
+) : BarcodeAnalysisProvider {
+    override val id: String = "zxing"
+
+    override suspend fun analyze(image: ImmutableImage): List<BarcodeResult> =
+        image.suspendExtractBarcodes(reader, options, dispatcher)
+}
+```
+
+실제 `ZxingBarcodeReader`는 `images-barcode-zxing` module 안에서만 ZXing dependency를 사용합니다.
+ZXing의 `MultiFormatReader`가 반환한 format은 `BarcodeFormat`으로 매핑되고, result points는 pixel
+`BarcodeRegion`으로 바뀌며, provider identity에는 `ZXing`, version, `zxing-core`, `MultiFormatReader`가
+string metadata로 기록됩니다. 따라서 core API와 Spring service는 ZXing의 `Result`나 예외 타입을 알 필요가
+없습니다.
+
+이 adapter의 실패 의미도 고정되어 있습니다.
+
+- ZXing이 `NotFoundException`을 반환하면 code가 없는 정상 분석으로 보고 빈 목록을 반환합니다.
+- checksum, format, reader, runtime decode 오류는 `BarcodeException(DECODE_FAILED)`로 정규화합니다.
+- 요청한 format 중 ZXing이 이해할 수 있는 값이 하나도 없으면 `UNSUPPORTED_FORMAT`으로 실패합니다.
+- 이미지 byte 자체가 malformed이면 `MALFORMED_INPUT`으로 분류하는 경로가 있습니다.
+
+“바코드가 없었다”와 “decoder가 실행되지 않았거나 decoding에 실패했다”를 같은 예외나 같은 빈 목록으로 만들지
+않는 것이 provider 경계의 핵심입니다.
+
+## `Empty`, `Unavailable`, `Failed`는 서로 다른 응답이다
+
+통합 예제는 결과를 다음 상태로 감쌉니다.
+
+| 상태 | 뜻 | barcode 예시 |
+| --- | --- | --- |
+| `Completed` | reader가 실행되어 하나 이상의 `BarcodeResult`를 반환함 | `QR_CODE`와 `visitor:PASS-001`을 얻음 |
+| `Empty` | reader는 실행됐지만 code를 찾지 못함 | 방문증에 QR이 없거나 너무 작음 |
+| `Unavailable` | provider가 설정되지 않았거나 사용할 수 없음 | `zxing` bean/profile이 없음 |
+| `Failed` | reader가 실행되었지만 decode·입력·runtime 오류가 발생함 | `DECODE_FAILED`, `UNSUPPORTED_FORMAT` |
+
+<figure class="bt4k-architecture" data-diagram-title="ZXing adapter에서 visitor-pass policy까지">
+  <img src="/assets/blog/image-intelligence/part5/image-intelligence-barcode-boundary-flow-01-ko.png" alt="BarcodeReader 계약을 지나 images-barcode-zxing adapter 안에서 ZXing이 BarcodeResult로 정규화하고, Completed·Empty·Unavailable·Failed 상태를 거쳐 VisitorPassPolicy가 ALLOW·REJECT·MANUAL_REVIEW를 선택하는 흐름도" loading="lazy" />
+  <figcaption>BarcodeReader는 provider-neutral 계약을 반환하고, adapter는 ZXing 타입을 경계 안에 가둡니다. policy는 상태와 facts를 action으로 해석하며 실제 HTTP·storage·rendering side effect는 application이 소유합니다.</figcaption>
+</figure>
+
+현재 public response를 단순화하면 다음과 같이 표현됩니다.
+
+```json
+{
+  "status": "COMPLETED",
+  "provider": "zxing",
+  "items": [
+    {
+      "text": "visitor:PASS-001",
+      "format": "QR_CODE",
+      "provider": "ZXing"
+    }
+  ],
+  "reasonCode": null
+}
+```
+
+code가 없는 경우에는 `status: "EMPTY"`, `items: []`가 됩니다. provider가 없으면 `UNAVAILABLE`과
+`reasonCode`, decode 문제가 있으면 `FAILED`와 `reasonCode`를 반환합니다. 이 차이를 모두 `items: []`로
+직렬화하면 policy가 “QR이 없었다”와 “QR을 확인하지 못했다”를 구분할 수 없습니다.
+
+이것은 Part 3에서 OCR에 적용한 상태 구분과 같은 원칙이지만, `Empty`의 업무 의미는 분석 종류마다 다릅니다.
+OCR의 빈 결과는 읽을 문자가 없다는 뜻일 수 있고, 방문증 barcode의 빈 결과는 필수 access identifier가 없다는
+뜻일 수 있습니다. 공통 상태 wrapper를 쓰더라도 최종 사유와 조치는 policy가 결정해야 합니다.
+
+## decoding은 allow/reject가 아니라 사실을 반환한다
+
+방문증 정책은 decoded value의 일부를 업무 규칙으로 해석합니다.
+
+```kotlin
+private fun BarcodeResult.isVisitorQr(): Boolean =
+    format == BarcodeFormat.QR_CODE && text.startsWith("visitor:")
+
+val barcodes = results.barcode.completedValue().orEmpty()
+if (results.barcode is AnalysisResult.Completed && barcodes.any { !it.isVisitorQr() }) {
+    return decision(VisitorPassAction.REJECT, "INVALID_VISITOR_QR")
+}
+
+if (results.barcode is AnalysisResult.Failed || results.barcode is AnalysisResult.Unavailable) {
+    return VisitorPassDecision(VisitorPassAction.MANUAL_REVIEW, listOf("BARCODE_DEGRADED"))
+}
+```
+
+`visitor:PASS-001`을 읽었다고 해서 바로 `ALLOW`가 되지는 않습니다. 예제 policy는 민감 영역을 먼저
+확인하고, 완료된 barcode 중 visitor QR이 아닌 값이 있으면 `REJECT`합니다. 그 뒤 OCR·detection·barcode
+중 `Failed` 또는 `Unavailable`이 있으면 자동 승인 대신 `MANUAL_REVIEW`를 선택합니다. 마지막에 얼굴 하나,
+visitor QR 하나, 비어 있지 않은 OCR을 모두 만족해야 `ALLOW`가 됩니다.
+
+반대로 `BarcodeReader`는 `REJECT`나 `MANUAL_REVIEW`를 반환하지 않습니다. reader가 하는 일은 payload,
+format, provider, region을 보존하고 실행 상태를 정상화하는 것입니다. HTTP status, 원본 격리, QR의 사용 만료,
+수동 검토 queue, 감사 이력은 애플리케이션이 소유합니다. 이 분리를 지켜야 decoder 교체와 방문증 정책 변경을
+서로 독립적으로 테스트할 수 있습니다.
+
+## 테스트와 운영에서 확인할 한계
+
+현재 source와 예제는 다음 계약을 테스트할 수 있는 형태로 제공합니다.
+
+- no-code image가 예외가 아닌 `emptyList()`가 되는지
+- requested format hint가 `BarcodeFormat`으로 매핑되는지
+- decode·unsupported format 오류가 `BarcodeException` reason으로 정규화되는지
+- provider identity와 pixel region이 결과에 보존되는지
+- `Empty`, `Unavailable`, `Failed`가 public response와 policy 사유에서 구분되는지
+- `VisitorPassPolicy`가 invalid QR, degraded lane, QR 개수 불일치를 자동 승인하지 않는지
+
+다만 다음은 이 예제가 보장하지 않습니다.
+
+| 보장하지 않는 것 | 애플리케이션이 결정할 것 |
+| --- | --- |
+| 모든 provider의 confidence·quality 제공 | score가 없을 때의 threshold·재촬영·검토 기준 |
+| 모든 이미지에서의 multi-barcode 결과 | multi-code가 필요한 decoder, 결과 순서와 중복 정책 |
+| 현재 public DTO의 region 제공 | 좌표 노출, 개인정보·payload 크기, API versioning |
+| ZXing의 production 운영 품질 | provider version, timeout, native/process 격리, 관측성 |
+
+특히 현재 ZXing 경로는 `MultiFormatReader`의 단일 결과 경로에 초점을 둡니다. 한 이미지에서 여러 code를
+동시에 수집해야 한다면 별도의 multi-barcode capability와 테스트 계약을 설계해야 합니다. “barcode를 지원한다”
+는 한 줄만으로 모든 symbology, 방향, 손상 정도, 중복 결과를 보장한다고 읽어서는 안 됩니다.
+
+## 시리즈에서 이어서 볼 내용
+
+이번 Part 5는 OCR과 barcode·QR이 같은 이미지에서 출발해도 서로 다른 결과·빈 결과 계약을 가져야 하는 이유를
+정리했습니다.
+
+- [Part 1: 이미지 한 장에서 여러 정보를 추출하는 API](/ko/blog/image-intelligence-part1-multi-analysis-boundaries/)
+- [Part 2: 이미지 분석 전에 입력부터 판정하라](/ko/blog/image-intelligence-part2-input-qualification-and-single-decode/)
+- [Part 3: OCR 처리 경로를 통합 응답에 연결하기](/ko/blog/image-intelligence-part3-ocr-integrated-response/)
+- [Part 4: 이미지 검출 결과와 처리 정책을 분리하라](/ko/blog/image-intelligence-part4-detection-policy-separation/)
+- **Part 5: OCR과 다른 바코드·QR 추출 계약**
+- Part 6: 병렬 실행과 부분 실패를 응답 계약으로 만들기
+- Part 7: 방문증 이미지 처리 API 통합 예제
+
+Part 6에서는 세 분석 경로의 병렬 실행, 취소 전파, 부분 실패 집계를 하나의 응답 계약으로 좁힙니다. Part 7에서는
+입력 자격 판정부터 provider 선택과 방문증 policy까지 전체 예제를 연결합니다.
+
+## 구현 코드와 자료 살펴보기
+
+- [Spring Boot 이미지 인텔리전스 API README.ko.md](https://github.com/bluetape4k/bluetape4k-image/blob/65c31d4/examples/spring-boot-image-intelligence-api/README.ko.md): 공통 입력 판정부터 OCR·detection·barcode·방문증 policy까지의 실행 흐름
+- [`BarcodeReader.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/65c31d4/images-barcode-api/src/main/kotlin/io/bluetape4k/images/barcode/BarcodeReader.kt): provider-neutral reader interface
+- [`ImmutableImageBarcodeExtensions.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/65c31d4/images-barcode-api/src/main/kotlin/io/bluetape4k/images/barcode/ImmutableImageBarcodeExtensions.kt): blocking·suspend barcode 추출 확장 함수
+- [`BarcodeModels.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/65c31d4/images-barcode-api/src/main/kotlin/io/bluetape4k/images/barcode/BarcodeModels.kt): format, options, provider identity, region, result 계약
+- [`ZxingBarcodeReader.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/65c31d4/images-barcode-zxing/src/main/kotlin/io/bluetape4k/images/barcode/zxing/ZxingBarcodeReader.kt): ZXing adapter와 failure normalization
+- [`ImageAnalysisProviders.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/65c31d4/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageAnalysisProviders.kt): 통합 예제의 barcode provider boundary
+- [`ApiModels.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/65c31d4/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/model/ApiModels.kt): 현재 public `BarcodeResponse`와 상태 wrapper
+- [`VisitorPassPolicy.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/65c31d4/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/VisitorPassPolicy.kt): decoded facts를 업무 action으로 해석하는 policy
+- [OCR 서비스를 실전에서 운영하기](/ko/blog/ocr-api-fallback-contract-bluetape4k-image/): 네이티브 OCR과 입력·실패 경계
+
+이 글은 production barcode 제품이나 모든 decoder capability를 약속하지 않습니다. provider-neutral 결과와
+명시적인 상태를 애플리케이션 계약으로 확장하기 위한 출발점입니다.

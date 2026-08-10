@@ -1,0 +1,297 @@
+---
+title: "A Barcode and QR Contract Unlike OCR: Preserve Values, Formats, and Regions"
+description: "Separate OCR text recognition from barcode and QR payload decoding, then keep provider-neutral results and empty or failed states outside visitor-pass policy."
+sidebar:
+  order: -202608101300
+blog:
+  date: 2026-08-10T13:00:00+09:00
+  image: /assets/blog/image-intelligence/part1/image-intelligence-part1-hero.png
+  imageAlt: "A dark 3D workbench where OCR, object detection, and QR analysis split into separate result contracts before a final policy decision for a visitor pass"
+  cardDescription: "Preserve barcode and QR values, formats, and optional regions in a provider-neutral contract separate from OCR and policy."
+  tags: ["architecture","barcode","image","kotlin","practical-example","resilience","spring"]
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/blog/image-intelligence/part1/image-intelligence-part1-hero.png" alt="A dark 3D workbench where OCR, object detection, and QR analysis split into separate result contracts before a final policy decision for a visitor pass" loading="eager" />
+  <figcaption>Several analyzers can read one image without producing the same kind of result. Preserve OCR text, detection facts, and barcode payloads at their own boundaries before application policy interprets them.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-10 · Image Intelligence API · Part 5</p>
+
+A visitor-pass image can contain a person's name and company, a face, and an access QR code. OCR and a QR decoder may
+both return a `text` field, but the fields do not carry the same meaning.
+
+OCR asks, “How much human-readable text did we obtain from this area?” Barcode and QR extraction asks, “Which payload and
+standard format did this symbol decode to?” OCR therefore cares about reading quality and page structure, while barcode
+extraction needs the value, symbology, provider, and optionally the location of the symbol.
+
+This article follows the visitor-pass scenario in the
+[`bluetape4k-image` Spring Boot Image Intelligence API](https://github.com/bluetape4k/bluetape4k-image/tree/65c31d4/examples/spring-boot-image-intelligence-api).
+The important boundary is not a particular decoder. `BarcodeReader` returns provider-neutral facts, and
+`VisitorPassPolicy` interprets those facts as business rules.
+
+## One image can carry different questions
+
+The integrated example sends the same `ImmutableImage` to OCR, detection, and barcode paths. What they share is the input
+and request lifetime, not the meaning of their results.
+
+| Path | Representative result | Meaning of “nothing found” | Role of confidence |
+| --- | --- | --- | --- |
+| OCR | `text`, `pageCount` | No readable characters were found | May describe text or region quality, depending on the provider |
+| Object detection | `label`, `category`, `confidence`, `detector` | No target object was found | A detector-reported score for policy to interpret |
+| Barcode or QR | `text`, `format`, `provider`, optional `region` | No code was decoded | Often `null` because many decoders do not expose a stable score |
+
+Do not concatenate a barcode result as if it were an OCR string, or turn “no code found” into “the image is invalid.”
+Preserve each analysis result as its own contract, then let the application decide whether a visitor pass is allowed or
+needs review.
+
+## Callers should know only `BarcodeReader`
+
+The provider-neutral API starts with a small `BarcodeReader` functional interface.
+
+```kotlin
+fun interface BarcodeReader {
+    fun readBarcodes(
+        image: ImmutableImage,
+        options: BarcodeOptions,
+    ): List<BarcodeResult>
+}
+```
+
+Whether the implementation calls a blocking decoder, a native runtime, or a remote service, callers receive
+`BarcodeResult` values. A coroutine path can use `suspendExtractBarcodes` with a selected dispatcher. If an application
+replaces ZXing later, its controller and policy do not need to depend on ZXing types.
+
+Extraction constraints live in `BarcodeOptions`.
+
+```kotlin
+val qrOptions = BarcodeOptions(
+    formats = setOf(BarcodeFormat.QR_CODE),
+    tryHarder = true,
+    includeRawBytes = false,
+)
+
+val results = image.extractBarcodes(reader, qrOptions)
+```
+
+An empty `formats` set requests every format supported by the provider. `tryHarder` is a decoder hint, and
+`includeRawBytes` is an opt-in for retaining raw payload bytes only when they are needed. `minimumConfidence` filters
+results that have a score, but it keeps results whose confidence is `null`; many barcode libraries do not expose a stable
+score.
+
+## A result is a bundle of decoding facts
+
+`BarcodeResult` keeps the facts callers need without requiring them to parse provider-specific strings again.
+
+```kotlin
+BarcodeResult(
+    text = "visitor:PASS-001",
+    format = BarcodeFormat.QR_CODE,
+    provider = BarcodeProviderIdentity(
+        name = "ZXing",
+        version = "3.5.4",
+        backend = "zxing-core",
+        metadata = mapOf("decoder" to "MultiFormatReader"),
+    ),
+    region = BarcodeRegion(
+        points = listOf(
+            BarcodePoint(412.0, 188.0),
+            BarcodePoint(628.0, 188.0),
+            BarcodePoint(628.0, 404.0),
+        ),
+        coordinateSpace = BarcodeCoordinateSpace.PIXEL,
+    ),
+)
+```
+
+| Field | Contract |
+| --- | --- |
+| `text` | A non-blank decoded payload such as `visitor:PASS-001`. |
+| `format` | A provider-neutral symbology such as `QR_CODE`, `CODE_128`, or `EAN_13`. |
+| `provider` | Diagnostic name, version, backend, and string metadata; it does not expose a provider object. |
+| `region` | Optional finder/result points and an optional bounding box, together with `PIXEL` or `NORMALIZED` coordinates. |
+| `confidence`, `quality` | Optional values populated only when the decoder provides them. Their absence is not a failure. |
+| `rawBytes` | An optional payload retained only when requested and available. |
+| `rawBackendFormat`, `metadata` | Backend format and string metadata that a normalized mapping might otherwise lose. |
+
+The points in a `BarcodeRegion` do not have to form a closed polygon. A provider can return result points without a
+bounding box; a box is added only when a positive width and height can be calculated from at least two points. Normalized
+coordinates must stay within `0.0..1.0`; pixel coordinates cannot be negative. These checks make the location safe for a
+later renderer or policy to interpret. They are data constraints, not rendering instructions.
+
+The public API choice must be kept separate from the library model. The current integrated example exposes only these
+three fields in `BarcodeResponse`:
+
+```kotlin
+internal data class BarcodeResponse(
+    val text: String,
+    val format: BarcodeFormat,
+    val provider: String,
+)
+```
+
+The underlying `BarcodeResult` can contain `region`, `confidence`, and `rawBytes`, but the current HTTP response is
+deliberately narrowed to `text`, `format`, and `provider`. Exposing a region in a public DTO is a separate API decision
+that must consider display needs, privacy, payload size, and version compatibility. This article says that the library
+model preserves a region; it does not claim that the current example returns one.
+
+## Use ZXing as the adapter
+
+[ZXing](https://github.com/zxing/zxing) is an open-source barcode image-processing library implemented in Java that
+decodes multiple 1D and 2D formats. The [`images-barcode-zxing` provider](https://github.com/bluetape4k/bluetape4k-image/blob/65c31d4/images-barcode-zxing/README.md)
+used here maps ZXing text, formats, result points, bounding boxes, raw bytes, and metadata into the provider-neutral
+`BarcodeResult`. ZXing decodes the payload; it does not decide whether a visitor pass is `ALLOW` or `REJECT`.
+
+The integrated example's barcode provider is a thin adapter that receives `BarcodeReader` and `BarcodeOptions`.
+
+```kotlin
+internal class ZxingBarcodeAnalysisProvider(
+    private val reader: BarcodeReader,
+    private val options: BarcodeOptions = BarcodeOptions(),
+    private val dispatcher: CoroutineDispatcher,
+) : BarcodeAnalysisProvider {
+    override val id: String = "zxing"
+
+    override suspend fun analyze(image: ImmutableImage): List<BarcodeResult> =
+        image.suspendExtractBarcodes(reader, options, dispatcher)
+}
+```
+
+The concrete `ZxingBarcodeReader` uses the ZXing dependency only inside the `images-barcode-zxing` module. A format from
+ZXing's `MultiFormatReader` is mapped to `BarcodeFormat`, result points become a pixel `BarcodeRegion`, and the provider
+identity records `ZXing`, its version, `zxing-core`, and `MultiFormatReader` as string metadata. The core API and Spring
+service never need to know about ZXing's `Result` or exception types.
+
+The adapter also fixes the meaning of failures:
+
+- A ZXing `NotFoundException` means that no code was found, so the reader returns an empty list.
+- Checksum, format, reader, and runtime decode errors become `BarcodeException(DECODE_FAILED)`.
+- If none of the requested formats is understood by ZXing, the reader returns `UNSUPPORTED_FORMAT`.
+- Malformed image bytes can be normalized as `MALFORMED_INPUT`.
+
+“There was no barcode” and “the decoder could not run or decode” must not become the same exception or the same empty
+list.
+
+## `Empty`, `Unavailable`, and `Failed` are different responses
+
+The integrated example wraps analysis in these states:
+
+| State | Meaning | Barcode example |
+| --- | --- | --- |
+| `Completed` | The reader ran and returned one or more `BarcodeResult` values | A `QR_CODE` with `visitor:PASS-001` |
+| `Empty` | The reader ran but found no code | The pass has no QR, or it is too small to decode |
+| `Unavailable` | The provider is not configured or cannot be used | No `zxing` bean or profile is available |
+| `Failed` | The reader ran but hit an input, decode, or runtime error | `DECODE_FAILED`, `UNSUPPORTED_FORMAT` |
+
+<figure class="bt4k-architecture" data-diagram-title="From the ZXing adapter to visitor-pass policy">
+  <img src="/assets/blog/image-intelligence/part5/image-intelligence-barcode-boundary-flow-01-en.png" alt="A flow diagram showing BarcodeReader crossing into the images-barcode-zxing adapter, ZXing becoming normalized BarcodeResult facts, four distinct analysis states, and VisitorPassPolicy choosing ALLOW, REJECT, or MANUAL_REVIEW" loading="lazy" />
+  <figcaption>BarcodeReader returns a provider-neutral contract and the adapter keeps ZXing types inside its boundary. Policy interprets facts and states as actions; the application owns HTTP, storage, and rendering side effects.</figcaption>
+</figure>
+
+The current public response can be summarized like this:
+
+```json
+{
+  "status": "COMPLETED",
+  "provider": "zxing",
+  "items": [
+    {
+      "text": "visitor:PASS-001",
+      "format": "QR_CODE",
+      "provider": "ZXing"
+    }
+  ],
+  "reasonCode": null
+}
+```
+
+When no code is found, the response is `status: "EMPTY"` with `items: []`. When the provider is missing it is
+`UNAVAILABLE` with a `reasonCode`; when decoding fails it is `FAILED` with a `reasonCode`. If every case is serialized as
+`items: []`, policy can no longer distinguish “there was no QR” from “the QR could not be checked.”
+
+This is the same state-separation principle used for OCR in Part 3, but the business meaning of `Empty` depends on the
+analysis type. An empty OCR result may mean no readable text, while an empty visitor-pass barcode result may mean that a
+required access identifier is absent. A shared state wrapper does not make the final reason or action universal.
+
+## Decoding returns facts, not allow or reject
+
+Visitor-pass policy interprets part of the decoded value as a business rule.
+
+```kotlin
+private fun BarcodeResult.isVisitorQr(): Boolean =
+    format == BarcodeFormat.QR_CODE && text.startsWith("visitor:")
+
+val barcodes = results.barcode.completedValue().orEmpty()
+if (results.barcode is AnalysisResult.Completed && barcodes.any { !it.isVisitorQr() }) {
+    return decision(VisitorPassAction.REJECT, "INVALID_VISITOR_QR")
+}
+
+if (results.barcode is AnalysisResult.Failed || results.barcode is AnalysisResult.Unavailable) {
+    return VisitorPassDecision(VisitorPassAction.MANUAL_REVIEW, listOf("BARCODE_DEGRADED"))
+}
+```
+
+Decoding `visitor:PASS-001` does not immediately produce `ALLOW`. The example policy first checks for sensitive regions
+and rejects a completed barcode that is not a visitor QR. If OCR, detection, or barcode is `Failed` or `Unavailable`, it
+chooses `MANUAL_REVIEW` instead of auto-approving. Only one face, one visitor QR, and non-blank OCR text together satisfy
+the final `ALLOW` conditions.
+
+`BarcodeReader` does not return `REJECT` or `MANUAL_REVIEW`. It preserves payload, format, provider, and region, then
+normalizes execution state. HTTP status, original-image quarantine, QR expiry, the manual-review queue, and audit history
+belong to the application. Keeping those responsibilities separate lets decoder replacement and visitor-pass policy
+changes be tested independently.
+
+## What to verify in tests and operations
+
+The current source and example support tests for these contracts:
+
+- a no-code image returns `emptyList()` instead of an exception;
+- requested format hints map to `BarcodeFormat`;
+- decode and unsupported-format errors normalize to `BarcodeException` reasons;
+- provider identity and pixel regions survive in the result;
+- `Empty`, `Unavailable`, and `Failed` remain distinct in the public response and policy reasons;
+- `VisitorPassPolicy` does not auto-approve an invalid QR, a degraded lane, or a QR count mismatch.
+
+The example does not promise the following:
+
+| Not guaranteed | Application decision |
+| --- | --- |
+| A confidence or quality score from every provider | Threshold, recapture, and review rules when scores are absent |
+| Multi-barcode results from every image | A decoder capability, result-order, and duplicate policy for multiple codes |
+| A region in the current public DTO | Coordinate exposure, privacy, payload size, and API versioning |
+| Production quality for ZXing | Provider versions, timeouts, process/native isolation, and observability |
+
+The current ZXing path focuses on the single-result `MultiFormatReader` path. If an image must yield several codes, design
+a separate multi-barcode capability and test contract. “Supports barcode” alone does not promise every symbology,
+orientation, damage level, or duplicate-result behavior.
+
+## Continue the series
+
+Part 5 explains why OCR and barcode or QR paths need different result and empty-result contracts even when they start from
+the same image.
+
+- [Part 1: Extracting Multiple Signals from One Image](/blog/image-intelligence-part1-multi-analysis-boundaries/)
+- [Part 2: Qualify the Input Before Image Analysis](/blog/image-intelligence-part2-input-qualification-and-single-decode/)
+- [Part 3: Connect OCR Results to the Combined Response](/blog/image-intelligence-part3-ocr-integrated-response/)
+- [Part 4: Separate Detection Facts from Processing Policy](/blog/image-intelligence-part4-detection-policy-separation/)
+- **Part 5: A Barcode and QR Contract Unlike OCR**
+- Part 6: Turn Parallel Execution and Partial Failure into an API Contract
+- Part 7: An Integrated Visitor-Pass Image Processing API
+
+Part 6 will narrow parallel execution, cancellation propagation, and partial-failure aggregation into one response
+contract. Part 7 will connect input qualification, provider selection, and visitor-pass policy across the complete example.
+
+## Implementation and further reading
+
+- [Spring Boot Image Intelligence API README](https://github.com/bluetape4k/bluetape4k-image/blob/65c31d4/examples/spring-boot-image-intelligence-api/README.md): the execution path from shared input qualification through OCR, detection, barcode, and visitor-pass policy
+- [`BarcodeReader.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/65c31d4/images-barcode-api/src/main/kotlin/io/bluetape4k/images/barcode/BarcodeReader.kt): the provider-neutral reader
+- [`ImmutableImageBarcodeExtensions.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/65c31d4/images-barcode-api/src/main/kotlin/io/bluetape4k/images/barcode/ImmutableImageBarcodeExtensions.kt): blocking and suspend barcode-extraction extensions
+- [`BarcodeModels.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/65c31d4/images-barcode-api/src/main/kotlin/io/bluetape4k/images/barcode/BarcodeModels.kt): format, options, provider identity, region, and result contracts
+- [`ZxingBarcodeReader.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/65c31d4/images-barcode-zxing/src/main/kotlin/io/bluetape4k/images/barcode/zxing/ZxingBarcodeReader.kt): ZXing adapter and failure normalization
+- [`ImageAnalysisProviders.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/65c31d4/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/ImageAnalysisProviders.kt): the example's barcode-provider boundary
+- [`ApiModels.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/65c31d4/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/model/ApiModels.kt): current public `BarcodeResponse` and state wrapper
+- [`VisitorPassPolicy.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/65c31d4/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/VisitorPassPolicy.kt): policy that turns decoded facts into business actions
+- [Operating an OCR service in production](/blog/ocr-api-fallback-contract-bluetape4k-image/): native OCR and input/failure boundaries
+
+This article is not a production barcode product or a promise of every decoder capability. It is a starting point for
+extending provider-neutral results and explicit states into application contracts.

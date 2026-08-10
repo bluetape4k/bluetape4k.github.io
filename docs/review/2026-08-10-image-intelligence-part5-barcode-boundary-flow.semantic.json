@@ -1,0 +1,49 @@
+{
+  "kind": "architecture",
+  "source": {
+    "question": "Where does ZXing stop, and where do normalized barcode states become visitor-pass actions?",
+    "revision": "bluetape4k-image@65c31d4",
+    "paths": [
+      "docs/superpowers/specs/2026-08-10-image-intelligence-part5-barcode-contract-design.md",
+      "src/content/docs/ko/blog/image-intelligence-part5-barcode-qr-extraction-contract.mdx",
+      "docs/review/2026-08-10-image-intelligence-part5-barcode-contract.claims.md"
+    ]
+  },
+  "nodes": [
+    {"id": "input", "label": "qualified ImmutableImage + BarcodeOptions", "source": "BarcodeReader.kt / BarcodeModels.kt"},
+    {"id": "reader", "label": "BarcodeReader", "source": "BarcodeReader.kt"},
+    {"id": "adapter", "label": "images-barcode-zxing / ZxingBarcodeReader", "source": "ZxingBarcodeReader.kt"},
+    {"id": "backend", "label": "ZXing / MultiFormatReader", "source": "ZxingBarcodeReader.kt"},
+    {"id": "result", "label": "List<BarcodeResult>", "source": "BarcodeModels.kt"},
+    {"id": "analysis-state", "label": "AnalysisResult state wrapper", "source": "ApiModels.kt"},
+    {"id": "completed", "label": "Completed", "source": "ApiModels.kt"},
+    {"id": "empty", "label": "Empty", "source": "ApiModels.kt / ZxingBarcodeReader.kt"},
+    {"id": "unavailable", "label": "Unavailable", "source": "ApiModels.kt / ImageAnalysisProviders.kt"},
+    {"id": "failed", "label": "Failed", "source": "ApiModels.kt / ZxingBarcodeReader.kt"},
+    {"id": "policy", "label": "VisitorPassPolicy.decide", "source": "VisitorPassPolicy.kt"},
+    {"id": "decision", "label": "VisitorPassDecision", "source": "VisitorPassPolicy.kt"},
+    {"id": "application", "label": "Application boundary", "source": "ImageIntelligenceService.kt / VisitorPassPolicy.kt"}
+  ],
+  "edges": [
+    {"id": "input-reader", "from": "input", "to": "reader", "kind": "contract-input", "source": "BarcodeReader.kt"},
+    {"id": "reader-adapter", "from": "reader", "to": "adapter", "kind": "implementation", "source": "ImageAnalysisProviders.kt"},
+    {"id": "adapter-backend", "from": "adapter", "to": "backend", "kind": "provider-call", "source": "ZxingBarcodeReader.kt"},
+    {"id": "adapter-result", "from": "adapter", "to": "result", "kind": "normalization", "source": "ZxingBarcodeReader.kt"},
+    {"id": "result-state", "from": "result", "to": "analysis-state", "kind": "state-wrapping", "source": "ApiModels.kt"},
+    {"id": "state-completed", "from": "analysis-state", "to": "completed", "kind": "outcome", "source": "ApiModels.kt"},
+    {"id": "state-empty", "from": "analysis-state", "to": "empty", "kind": "outcome", "source": "ApiModels.kt / ZxingBarcodeReader.kt"},
+    {"id": "state-unavailable", "from": "analysis-state", "to": "unavailable", "kind": "outcome", "source": "ApiModels.kt / ImageAnalysisProviders.kt"},
+    {"id": "state-failed", "from": "analysis-state", "to": "failed", "kind": "outcome", "source": "ApiModels.kt / ZxingBarcodeReader.kt"},
+    {"id": "state-policy", "from": "analysis-state", "to": "policy", "kind": "facts-and-state", "source": "VisitorPassPolicy.kt"},
+    {"id": "result-policy", "from": "result", "to": "policy", "kind": "decoded-facts", "source": "VisitorPassPolicy.kt"},
+    {"id": "policy-decision", "from": "policy", "to": "decision", "kind": "action-and-reasons", "source": "VisitorPassPolicy.kt"},
+    {"id": "decision-application", "from": "decision", "to": "application", "kind": "side-effect-boundary", "source": "ImageIntelligenceService.kt"}
+  ],
+  "behavior": {"branches": 3, "loops": 0},
+  "repairs": [
+    {"target": "provider-boundary", "reason": "Keep BarcodeReader and the images-barcode-zxing implementation visually separate so ZXing types stop at the adapter module", "touches": 5},
+    {"target": "state-wrapper", "reason": "Show Completed, Empty, Unavailable, and Failed as distinct outcomes before policy evaluation", "touches": 4},
+    {"target": "policy-lane", "reason": "Separate policy action mapping from the application side-effect boundary", "touches": 4},
+    {"target": "locale-pairs", "reason": "Generate Korean and English source-equivalent SVG and PNG assets with unchanged identifiers", "touches": 2}
+  ]
+}
