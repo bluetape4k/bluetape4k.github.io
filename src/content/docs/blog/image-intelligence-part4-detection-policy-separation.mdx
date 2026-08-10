@@ -1,0 +1,285 @@
+---
+title: "Separate Detection Facts from Processing Policy: The Boundary Between Facts, Actions, and Review"
+description: "Using a visitor-pass image, this article shows how to preserve detection facts and analysis states while keeping blur, rejection, quarantine, and manual review in application policy."
+sidebar:
+  order: -202608101200
+blog:
+  date: 2026-08-10T12:00:00+09:00
+  image: /assets/blog/image-intelligence/part1/image-intelligence-part1-hero.png
+  imageAlt: "A visitor-pass image splitting into OCR, object detection, and QR analysis before a separate policy decision on a dark 3D workbench"
+  cardDescription: "Keep detector facts separate from visitor-pass policy so false positives, false negatives, and manual-review boundaries remain explicit."
+  tags: ["architecture","image","kotlin","moderation","practical-example","resilience","spring"]
+---
+
+<p class="bt4k-post-meta">2026-08-10 · Image Intelligence API · Part 4</p>
+
+Suppose a visitor-pass image contains exactly one detected face. Is that enough to show the original image?
+Should the preview blur the face, should the original move to a quarantined area, or should a person review it first?
+
+A `face` detection does not answer those questions. A detector reports what it observed in the image. Processing policy
+interprets those facts in the context of business risk and input state. If both responsibilities are mixed into one class
+or one result field, changing the model forces a policy rewrite, and changing the policy destabilizes the analysis
+contract.
+
+This article follows the visitor-pass scenario in the
+[`bluetape4k-image` Spring Boot Image Intelligence API](https://github.com/bluetape4k/bluetape4k-image/tree/develop/examples/spring-boot-image-intelligence-api).
+Instead of repeating the OCR `Completed`, `Empty`, `Unavailable`, and `Failed` states from Part 3, it focuses on the
+boundary required when that response's `detection` result enters visitor-pass policy.
+
+The rule is simple: **the detector preserves facts, policy selects an action, and the application owns rendering,
+storage, rejection, and manual-review side effects.**
+
+## A detector returns facts, not treatment commands
+
+The integrated example's detection boundary is `ImageDetector`. Given an image and `DetectionOptions`, it returns a list
+of `DetectionResult` values.
+
+```kotlin
+fun interface ImageDetector {
+    fun detect(image: ImmutableImage, options: DetectionOptions): List<DetectionResult>
+}
+```
+
+The adapter may be a deterministic fake, a native-runtime or remote service, or a model-backed implementation. The core
+image module does not bundle a particular ML runtime or model manifest.
+
+A single detection can be represented like this:
+
+```kotlin
+DetectionResult(
+    label = "face",
+    category = DetectionCategory.FACE,
+    confidence = 0.96,
+    detector = DetectorIdentity(name = "fixture-detector"),
+    region = faceRegion,
+)
+```
+
+The fields communicate the following facts:
+
+| Field | Meaning |
+| --- | --- |
+| `label` | A stable label exposed to callers |
+| `category` | A common category such as `FACE`, `PERSON`, `OBJECT`, `TEXT`, `LOGO`, `LANDMARK`, or `SENSITIVE_REGION` |
+| `confidence` | The `0.0..1.0` probability value reported by the detector |
+| `detector` | Adapter or model-family name, with optional version and backend metadata |
+| `region` | Optional rectangle, polygon, polyline, or raster-mask geometry |
+| `rawBackendLabel` | The label returned by the backend |
+| `metadata` | Runtime-neutral string metadata |
+
+`region` can use original-pixel coordinates or normalized `0.0..1.0` coordinates. The mapping preserves the original
+backend label while exposing a stable `category`, so applications can apply policy without parsing provider-specific
+strings.
+
+The important detail is what this model does not contain: a treatment command. `DetectionResult` says that a face was
+reported in a region with a confidence value. It does not choose among `BLUR`, `MOSAIC`, `REJECT`, `QUARANTINE`, and
+`MANUAL_REVIEW`. The comments in
+[`ImageDetection.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/images/src/main/kotlin/io/bluetape4k/images/detection/ImageDetection.kt)
+keep detection facts and treatment actions as separate responsibilities.
+
+## Confidence is not a verdict
+
+`DetectionOptions` is a deterministic filter for selecting detection results.
+
+```kotlin
+val options = DetectionOptions(
+    minimumConfidence = 0.80,
+    categories = setOf(DetectionCategory.FACE),
+    labels = setOf("face"),
+)
+
+val faces = image.detectRegions(detector, options)
+```
+
+It removes results below `minimumConfidence` and can apply category and label conditions. This is a boundary that narrows
+the result set requested by the caller; it is not a guarantee of detector accuracy.
+
+Two error modes still remain:
+
+- **False positive**: a non-face region can be reported as a face.
+- **False negative**: an actual face or sensitive region can be missed.
+
+The same `0.80` threshold carries different risk for a visitor-pass preview, original-image storage, and an access
+approval path. Application policy must therefore decide the threshold, whether to request a new capture, when to require a
+second person, and which fallback is conservative. Returning confidence does not automatically grant approval.
+
+The detection module verifies confidence, category, and label filters plus pixel/normalized geometry conversion in
+[`ImageDetectionTest.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/images/src/test/kotlin/io/bluetape4k/images/detection/ImageDetectionTest.kt).
+Those tests prove the filter and coordinate-conversion contracts, not the real-world accuracy of a particular ML model or
+the risk level of a business route.
+
+## `VisitorPassPolicy` turns facts into a business decision
+
+The visitor-pass example sends OCR, detection, and barcode results to `VisitorPassPolicy` after all analysis paths have
+reported their states. The policy is a separate stage in the integrated service, not part of an analysis adapter.
+
+Its example decision order is:
+
+| Condition checked first | Example action | Reason |
+| --- | --- | --- |
+| `SENSITIVE_REGION` detected | `QUARANTINE` | Classify input containing a sensitive region as requiring isolation. |
+| A completed barcode is not a visitor QR | `REJECT` | Reject a value that violates the visitor-pass identifier contract. |
+| OCR, detection, or barcode is `Failed` or `Unavailable` | `MANUAL_REVIEW` | Do not auto-approve when facts are missing or a provider is unavailable. |
+| Exactly one face, exactly one visitor QR, and valid OCR | `ALLOW` | All example conditions for automatic approval are satisfied. |
+| Any other empty result or count mismatch | `MANUAL_REVIEW` | Leave the case for review instead of declaring that the detector was wrong. |
+
+The precedence can be reduced to this core path:
+
+```kotlin
+val detections = results.detection.completedValue().orEmpty()
+if (detections.any { it.category == DetectionCategory.SENSITIVE_REGION }) {
+    return decision(VisitorPassAction.QUARANTINE, "SENSITIVE_REGION_DETECTED")
+}
+
+val barcodes = results.barcode.completedValue().orEmpty()
+if (results.barcode is AnalysisResult.Completed && barcodes.any { !it.isVisitorQr() }) {
+    return decision(VisitorPassAction.REJECT, "INVALID_VISITOR_QR")
+}
+
+val degradedReasons = buildList {
+    addDegradedReason(results.ocr, "OCR")
+    addDegradedReason(results.detection, "DETECTION")
+    addDegradedReason(results.barcode, "BARCODE")
+}
+if (degradedReasons.isNotEmpty()) {
+    return VisitorPassDecision(VisitorPassAction.MANUAL_REVIEW, degradedReasons)
+}
+```
+
+If the face count, visitor-QR count, and OCR content all satisfy the final conditions, the policy returns `ALLOW`.
+Otherwise it returns `MANUAL_REVIEW` with specific reasons. This order is a rule for the visitor-pass example, not a
+universal policy to copy into address masking for shipping labels or mandatory-display checks for product labels.
+
+See the complete implementation in
+[`VisitorPassPolicy.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/VisitorPassPolicy.kt).
+
+## Do not collapse `Empty` and `Failed` into the same empty list
+
+An empty detection result and a detector that could not produce a result are different facts.
+
+| Detection state | Actual meaning | Example visitor-pass reason |
+| --- | --- | --- |
+| `Completed` + empty list | The detector ran but found no target | `FACE_COUNT_REQUIRES_REVIEW` |
+| `Failed` | A timeout or provider exception prevented a result | `DETECTION_FAILED` |
+| `Unavailable` | The detector provider is not configured or cannot be used | `DETECTION_UNAVAILABLE` |
+
+<figure class="bt4k-architecture" data-diagram-title="From detection facts to visitor-pass policy action">
+  <img src="/assets/blog/image-intelligence/part4/image-intelligence-policy-flow-01-en.png" alt="A flow diagram that evaluates analysis facts and states in VisitorPassPolicy precedence order—sensitive region, invalid QR, degraded lane, valid conditions, and remaining review reasons—then returns ALLOW, REJECT, QUARANTINE, or MANUAL_REVIEW while the application performs side effects" loading="lazy" />
+  <figcaption>Policy returns an action and reasons on the first matching condition. Rendering, storage, HTTP rejection, and the manual-review queue belong to the application boundary that consumes the result.</figcaption>
+</figure>
+
+If both states serialize as `regions: []`, policy cannot distinguish “no face was found” from “the face could not be
+checked.” The example tests pin that difference directly:
+
+```kotlin
+val empty = policy.decide(results(detection = empty("detector")))
+val failed = policy.decide(results(detection = failed("detector")))
+
+empty.reasons shouldBeEqualTo listOf("FACE_COUNT_REQUIRES_REVIEW")
+failed.reasons shouldBeEqualTo listOf("DETECTION_FAILED")
+```
+
+If OCR or barcode fails, the detection results already obtained are not discarded. This connects to the integrated
+contract from Part 3 and the parallel-failure contract planned for Part 6. Policy is not recovering a partial result here;
+it is reading the preserved state as an input to a business decision.
+
+## Blur, mosaic, reject, quarantine, and manual review are action contracts
+
+The moderation model in `bluetape4k-images` provides a separate contract between detector facts and treatment actions.
+Representative actions that policy can select include:
+
+```kotlin
+SensitiveTreatmentAction.ALLOW
+SensitiveTreatmentAction.MOSAIC
+SensitiveTreatmentAction.BLUR
+SensitiveTreatmentAction.SOLID_MASK
+SensitiveTreatmentAction.DROP
+SensitiveTreatmentAction.REJECT
+SensitiveTreatmentAction.QUARANTINE
+SensitiveTreatmentAction.MANUAL_REVIEW
+```
+
+`BLUR` does not mean that pixels have already been blurred. It is a decision that the policy selected blur treatment.
+`SensitiveTreatmentParameters` can carry renderer-neutral values such as `blurRadius`, `blurSigma`,
+`mosaicBlockSize`, `maskOpacity`, `reviewPriority`, and `rejectReason`.
+
+```kotlin
+SensitiveTreatmentParameters(
+    blurRadius = 12.0,
+    blurSigma = 3.0,
+    metadata = mapOf("renderer" to "local-blur"),
+)
+```
+
+The policy module does not run detector inference or render pixels. After it selects `BLUR`, the application boundary
+must decide which renderer to call, where to store the original, which HTTP contract represents `REJECT`, and what
+metadata enters the manual-review queue.
+
+`SensitiveModerationPolicy` selects the first matching rule for each detection. When several decisions exist, it records
+the result selected by action precedence, level, and confidence in the report. For an unknown category or a category with
+no matching rule, the `failClosed` factory can use a fallback rule that selects `QUARANTINE`.
+
+That fail-closed fallback is not a global default every service must adopt. The application must make explicit, based on
+data classification and route risk, which inputs are isolated automatically, sent to manual review, or returned for a new
+capture.
+
+Read the detailed model and policy contracts in
+[`SensitiveContentModels.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/images/src/main/kotlin/io/bluetape4k/images/moderation/SensitiveContentModels.kt)
+and
+[`SensitiveContentPolicy.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/images/src/main/kotlin/io/bluetape4k/images/moderation/SensitiveContentPolicy.kt).
+
+## The provider and policy do not need to ship together
+
+The integrated example's `demo` profile uses fixture providers with fixed OCR and detection results, while the QR path
+runs the real ZXing provider. The purpose is not to imitate an ML model. It is to reproduce these boundaries:
+
+- Passing the same `ImmutableImage` to each provider
+- Preserving detector facts in the integrated response as `detection.regions`
+- Giving `VisitorPassPolicy` facts and other analysis states from which to select an action
+- Keeping provider absence or failure as policy input instead of hiding it
+
+Therefore `confidence = 0.99` in the demo is not a production-detector quality metric. A real application must own the
+`ImageDetector` adapter, model version, quality measurement, drift monitoring, provider timeout, and process isolation
+separately. Replacing a detector can preserve the policy input contract, and replacing visitor-pass policy with shipping-
+label policy does not require rewriting the detector runtime.
+
+## What this boundary guarantees—and what it does not
+
+| Boundary provided by the example | Decisions still owned by the application |
+| --- | --- |
+| Preserve label, category, confidence, geometry, and detector in `DetectionResult` | Model selection, training, accuracy targets, and drift response |
+| Filter confidence, category, and label with `DetectionOptions` | Threshold tuning, false-positive/false-negative cost, and route risk |
+| Convert facts to `ALLOW`, `REJECT`, `QUARANTINE`, or `MANUAL_REVIEW` in `VisitorPassPolicy` | Actual HTTP rejection, storage quarantine, review queue, and audit history |
+| Return moderation actions and renderer-neutral parameters | Blur, mosaic, and mask renderers plus original-image access control |
+| Provide reproducible tests with fake providers | Production ML runtime, GPU/native operations, and performance targets |
+
+This is why analysis results and business policy should not be combined into one type. A detector adapter owns the shape
+and quality of facts; policy owns how those facts become a business decision. Keeping the boundary lets model replacement,
+policy changes, and security review remain separate changes.
+
+## Continue the series
+
+Part 4 explains the boundary that passes detection facts from the integrated response into business policy.
+
+- [Part 1: Extracting Multiple Signals from One Image](/blog/image-intelligence-part1-multi-analysis-boundaries/)
+- [Part 2: Qualify Before You Analyze](/blog/image-intelligence-part2-input-qualification-and-single-decode/)
+- [Part 3: Connect OCR Results to the Combined Response](/blog/image-intelligence-part3-ocr-integrated-response/)
+- **Part 4: Separate Detection Facts from Processing Policy**
+- Part 5: Barcode and QR Extraction Contracts Differ from OCR
+- Part 6: Turn Parallel Execution and Partial Failure into an API Contract
+- Part 7: An Integrated Visitor-Pass Image Processing API
+
+Part 5 will explain why QR and barcode paths have result and empty-result contracts that differ from OCR. Part 6 will
+narrow parallel execution, cancellation propagation, and partial-failure aggregation into one response contract.
+
+## Implementation and further reading
+
+- [Spring Boot Image Intelligence API README](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/README.md): the full execution path from shared input validation through three analysis paths, partial results, and visitor-pass policy
+- [`ImageDetection.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/images/src/main/kotlin/io/bluetape4k/images/detection/ImageDetection.kt): `ImageDetector`, `DetectionResult`, geometry, and filtering contracts
+- [`VisitorPassPolicy.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/VisitorPassPolicy.kt): application policy that turns visitor-pass facts into actions and reasons
+- [`VisitorPassPolicyTest.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/test/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/VisitorPassPolicyTest.kt): sensitive-region precedence, invalid QR, degraded lane, empty versus failed detection, and allow conditions
+- [`SensitiveContentPolicy.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/images/src/main/kotlin/io/bluetape4k/images/moderation/SensitiveContentPolicy.kt): action precedence and fail-closed fallback
+- [Operating an OCR service in production](/blog/ocr-api-fallback-contract-bluetape4k-image/): native OCR and input/failure boundaries
+
+This article is not a complete production ML detector or privacy-processing product. It is a starting point for extending
+the example's facts, policy, and tests into explicit application contracts.

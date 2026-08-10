@@ -4,7 +4,7 @@
 
 **Goal:** `bluetape4k-image`의 검출 facts와 방문증 처리 policy를 분리해 설명하는 한국어·영어 Part 4 글을 작성하고, 기존 Part 1~3의 series navigation을 새 route에 연결한다.
 
-**Architecture:** 새 MDX route 두 개를 만들고, 기존 Part 1~3의 마지막 series navigation만 실제 Part 4 링크로 갱신한다. 본문은 `ImageDetector`/`DetectionResult`의 사실 계약, `VisitorPassPolicy`의 결정 순서, `SensitiveModerationPolicy`의 renderer-neutral action 경계를 source link와 짧은 코드·표로 설명한다. 사용자가 새 시각 자료를 제외했으므로 새 diagram·chart·hero raster는 만들지 않고 기존 Part 1 hero raster를 재사용한다.
+**Architecture:** 새 MDX route 두 개를 만들고, 기존 Part 1~3의 마지막 series navigation만 실제 Part 4 링크로 갱신한다. 본문은 `ImageDetector`/`DetectionResult`의 사실 계약, `VisitorPassPolicy`의 결정 순서, `SensitiveModerationPolicy`의 renderer-neutral action 경계를 source link와 짧은 코드·표로 설명한다. 초안 검토에서 사용자가 정책 우선순위를 보여주는 flow를 요청했으므로, 기존 시리즈 스타일의 한국어·영어 policy flow SVG/PNG pair도 생성하고 기존 Part 1 hero raster를 metadata에 재사용한다.
 
 **Tech Stack:** Astro 6, Starlight, MDX, Kotlin source/test links, `npm run build`, `git diff --check`.
 
@@ -20,7 +20,9 @@
 - Modify: `src/content/docs/blog/image-intelligence-part1-multi-analysis-boundaries.mdx` — Part 4 실제 EN 링크.
 - Modify: `src/content/docs/blog/image-intelligence-part2-input-qualification-and-single-decode.mdx` — Part 4 실제 EN 링크.
 - Modify: `src/content/docs/blog/image-intelligence-part3-ocr-integrated-response.mdx` — Part 4 실제 EN 링크와 연결 문장.
-- Do not modify: `public/assets/blog/image-intelligence/**` — 새 diagram·hero·PNG/SVG를 만들지 않고 기존 Part 1 hero만 참조한다.
+- Create: `public/assets/blog/image-intelligence/part4/image-intelligence-policy-flow-01-{ko,en}.{svg,png}` — 정책 precedence와 application side-effect 경계를 보여주는 locale pair.
+- Create: `docs/review/2026-08-10-image-intelligence-part4-policy-flow.semantic.json` — flow source ledger와 repair receipt.
+- Create: `scripts/generate-image-intelligence-part4-policy-diagrams.py` — 동일한 topology에서 locale별 SVG를 재생성하는 Python list generator.
 
 ## Task 1: 구현 기준선과 route 계약을 다시 고정하기
 
@@ -243,11 +245,11 @@
   git diff --name-only origin/develop...HEAD
   ```
 
-  Expected: all six preceding locale pages link to the new route; changed paths contain only the two new MDX files and six navigation edits (plus the already committed plan/spec outside the article diff); `public/assets/blog/image-intelligence/**` is unchanged.
+  Expected: all six preceding locale pages link to the new route; changed paths include the two MDX files, six navigation edits, the Part 4 policy flow locale pair, its semantic ledger, and its generator (plus the already committed plan/spec outside the article diff).
 
-- [ ] **Step 5: record visual N/A evidence**
+- [ ] **Step 5: verify policy flow assets**
 
-  Confirm the user-approved scope: no new diagram, chart, overlay, SVG, or PNG was generated. The existing Part 1 hero path is present and served by the build. Report `BLOG-07` as N/A for generated visual inspection with this concrete evidence.
+  Run semantic, XML/text, CairoSVG, connector, arrowhead, geometry, endpoint, mixed-corner, and opaque visual audits for both locale SVG/PNG pairs. Open both full-size PNGs and confirm the first-match precedence chain, action colors, and application boundary are readable. The existing Part 1 hero path must remain present and served by the build.
 
 ## Task 6: final review and scoped commit
 
@@ -268,17 +270,17 @@
   ```text
   검출 사실과 처리 정책을 분리해 Part 4의 운영 경계를 설명한다
 
-  Constraint: Issue #201의 Part 4 source-grounded bilingual blog scope and no-new-visual approval
+  Constraint: Issue #201의 Part 4 source-grounded bilingual blog scope and the later request for a policy-precedence flow
   Rejected: detector 내부에 blur/reject policy를 넣는 구성 | 사실과 업무 결정을 다시 결합함
   Confidence: high
   Scope-risk: narrow
   Directive: production detector 정확도와 side effect는 application 책임으로 유지한다
-  Tested: npm test; npm run build; route, navigation, link, diff checks
-  Not-tested: new diagram or raster visual inspection (user-approved N/A)
+  Tested: npm test; npm run build; route, navigation, link, diff checks; semantic/XML/CairoSVG/connector/arrowhead/geometry/endpoint/mixed-corner/visual audits
+  Not-tested: production detector accuracy and application side-effect execution
   ```
 
-  Expected: commit contains only the article and navigation changes; the design and plan commits remain separate history entries.
+  Expected: commit contains the bilingual articles, navigation links, policy-flow assets, source ledger/generator, and the two inventory expectation updates; the design and plan commits remain separate history entries.
 
 - [ ] **Step 3: report the DoD boundary**
 
-  Report changed files, KO/EN parity, build and route evidence, `BLOG-07` N/A reason, exact head SHA, and that PR/merge/deploy remain outside this request unless separately authorized.
+  Report changed files, KO/EN parity, build and route evidence, policy flow asset audit evidence, exact head SHA, and that PR/merge/deploy remain outside this request unless separately authorized.

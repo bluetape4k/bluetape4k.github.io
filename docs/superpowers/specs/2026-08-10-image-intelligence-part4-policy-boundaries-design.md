@@ -8,10 +8,11 @@ Implementation source: [bluetape4k-image#300](https://github.com/bluetape4k/blue
 ## 승인된 범위
 
 Part 4는 방문증 이미지 통합 API에서 객체 검출 결과를 업무 처리 action으로 오해하지
-않도록, 검출 사실·정책 결정·후속 side effect를 분리해 설명한다. 사용자가 새 시각
-자료를 제외했으므로 이번 글은 새 diagram, chart, overlay 이미지, hero raster를
-생성하지 않는다. 블로그 metadata의 기존 계약을 유지하기 위해 시리즈의 기존 hero를
-재사용하고, 본문은 설명·표·짧은 Kotlin 코드·JSON 예로 구성한다.
+않도록, 검출 사실·정책 결정·후속 side effect를 분리해 설명한다. 초기 검토에서는
+새 시각자료를 제외했지만, 초안 검토 중 사용자가 정책 우선순위를 한눈에 보여주는
+flow를 요청했다. 따라서 본문에는 기존 Part 1~3의 어두운 시리즈 스타일을 따르는
+한국어·영어 정책 flow SVG/PNG pair를 하나씩 추가하고, 블로그 metadata의 기존
+계약을 유지하기 위해 시리즈의 기존 hero도 재사용한다.
 
 이번 글의 독자는 이미지 분석 provider를 연결하는 애플리케이션 개발자와 결과를
 허용·거부·격리·수동 검토 흐름으로 넘기는 서비스 운영자다. detection model을
@@ -153,9 +154,15 @@ slug는 locale만 다르게 유지한다.
 기존 Part 1~3의 마지막 series navigation에서 Part 4 항목을 실제 링크로 바꾸고,
 Part 4에는 Part 1~3의 링크와 Part 5~7 예고를 둔다.
 
-새 diagram·chart·overlay asset은 만들지 않는다. 따라서 diagram source/PNG pair와
-rendered visual QA는 이번 범위에서 N/A이며, 기존 series hero 재사용 여부와 alt text는
-본문 초안 단계에서 schema와 카드 표현을 확인한다.
+정책 flow는 `SENSITIVE_REGION` → 잘못된 visitor QR → `Failed`/`Unavailable` →
+검토 사유 없음 → 그 밖의 검토 사유 순서와 `VisitorPassDecision` 뒤의 application
+side-effect 경계를 source-backed로 보여준다. 자산은 다음 pair로 고정한다.
+
+- `/assets/blog/image-intelligence/part4/image-intelligence-policy-flow-01-ko.png`
+- `/assets/blog/image-intelligence/part4/image-intelligence-policy-flow-01-en.png`
+
+SVG source, semantic ledger, 생성 스크립트는 asset pair와 함께 검증하고, full-size
+PNG를 locale별로 직접 확인한다.
 
 ## 비목표
 
@@ -164,7 +171,7 @@ rendered visual QA는 이번 범위에서 N/A이며, 기존 series hero 재사�
 - 실제 pixel blur/mosaic/mask renderer 구현
 - quarantine storage, 원본 삭제·암호화·접근 통제, 수동 검토 큐 구현
 - OCR·barcode 상태 계약의 재설명 또는 Part 6 병렬 취소 설계의 선행 작성
-- 새 hero/diagram/chart/image asset 생성
+- 새 hero, overlay, chart, 또는 production UI screenshot 생성
 
 ## 검증 계획
 
@@ -178,11 +185,12 @@ rendered visual QA는 이번 범위에서 N/A이며, 기존 series hero 재사�
 
 - 한국어 초안을 먼저 작성하고 기술 사실·식별자·링크·상태명·action 목록을 source와
   대조한다.
-- 영어 locale을 한국어 승인 뒤 작성하고 route·part·claim·link parity를 비교한다.
-- 새 시각 asset 없이 `npm run build`, 변경 route, series navigation, `git diff --check`를
-  실행한다.
-- 사용자가 시각 자료를 제외했으므로 asset pair와 PNG visual inspection은 N/A로
-  보고하되, 기존 hero를 재사용할 경우 해당 파일 경로와 HTTP/build 결과를 검증한다.
+- 영어 locale을 한국어 승인 뒤 작성하고 route·part·claim·link parity와 정책 flow
+  asset parity를 비교한다.
+- `diagram-semantic-audit.py`, XML/text, CairoSVG, connector/arrowhead/geometry/
+  endpoint/mixed-corner/visual audit를 locale별로 실행한 뒤 `npm run build`, 변경
+  route, series navigation, `git diff --check`를 실행한다.
+- 기존 hero 재사용과 두 policy flow PNG의 asset path·HTTP/build 결과를 검증한다.
 
 ## 완료 기준
 
@@ -192,5 +200,6 @@ rendered visual QA는 이번 범위에서 N/A이며, 기존 series hero 재사�
       과장 없이 설명된다.
 - [ ] 영어 글이 한국어와 route·part·claim·link parity를 갖는다.
 - [ ] 기존 Part 1~3의 navigation이 Part 4를 가리킨다.
-- [ ] 새 시각 asset 없이 build·route·link 검증이 통과한다.
+- [ ] 한국어·영어 policy flow SVG/PNG pair가 source ledger와 visual QA를 통과한다.
+- [ ] build·route·link·asset 검증이 통과한다.
 - [ ] 구현/배포/병합은 별도 승인 범위로 남긴다.
