@@ -186,6 +186,11 @@ string metadata로 기록됩니다. 따라서 core API와 Spring service는 ZXin
 | `Unavailable` | provider가 설정되지 않았거나 사용할 수 없음 | `zxing` bean/profile이 없음 |
 | `Failed` | reader가 실행되었지만 decode·입력·runtime 오류가 발생함 | `DECODE_FAILED`, `UNSUPPORTED_FORMAT` |
 
+<figure class="bt4k-architecture" data-diagram-title="ZXing adapter에서 visitor-pass policy까지">
+  <img src="/assets/blog/image-intelligence/part5/image-intelligence-barcode-boundary-flow-01-ko.png" alt="BarcodeReader 계약을 지나 images-barcode-zxing adapter 안에서 ZXing이 BarcodeResult로 정규화하고, Completed·Empty·Unavailable·Failed 상태를 거쳐 VisitorPassPolicy가 ALLOW·REJECT·MANUAL_REVIEW를 선택하는 흐름도" loading="lazy" />
+  <figcaption>BarcodeReader는 provider-neutral 계약을 반환하고, adapter는 ZXing 타입을 경계 안에 가둡니다. policy는 상태와 facts를 action으로 해석하며 실제 HTTP·storage·rendering side effect는 application이 소유합니다.</figcaption>
+</figure>
+
 현재 public response를 단순화하면 다음과 같이 표현됩니다.
 
 ```json

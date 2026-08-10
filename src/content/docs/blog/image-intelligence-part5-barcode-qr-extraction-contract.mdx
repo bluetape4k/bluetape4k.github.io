@@ -183,6 +183,11 @@ The integrated example wraps analysis in these states:
 | `Unavailable` | The provider is not configured or cannot be used | No `zxing` bean or profile is available |
 | `Failed` | The reader ran but hit an input, decode, or runtime error | `DECODE_FAILED`, `UNSUPPORTED_FORMAT` |
 
+<figure class="bt4k-architecture" data-diagram-title="From the ZXing adapter to visitor-pass policy">
+  <img src="/assets/blog/image-intelligence/part5/image-intelligence-barcode-boundary-flow-01-en.png" alt="A flow diagram showing BarcodeReader crossing into the images-barcode-zxing adapter, ZXing becoming normalized BarcodeResult facts, four distinct analysis states, and VisitorPassPolicy choosing ALLOW, REJECT, or MANUAL_REVIEW" loading="lazy" />
+  <figcaption>BarcodeReader returns a provider-neutral contract and the adapter keeps ZXing types inside its boundary. Policy interprets facts and states as actions; the application owns HTTP, storage, and rendering side effects.</figcaption>
+</figure>
+
 The current public response can be summarized like this:
 
 ```json

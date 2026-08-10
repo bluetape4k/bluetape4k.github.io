@@ -30,8 +30,9 @@ Issue #201의 Part 5로, OCR처럼 “읽을 수 있는 텍스트”를 추정�
 - 한국어: `/ko/blog/image-intelligence-part5-barcode-qr-extraction-contract/`
 - 영어: `/blog/image-intelligence-part5-barcode-qr-extraction-contract/`
 - 기존 Part 1–4의 bottom navigation에서 두 route를 링크한다.
-- 기존 Part 1 hero asset을 재사용하고, 새 diagram·SVG·raster asset은 만들지 않는다. 짧은 표와 code block이
-  계약 차이를 더 직접적으로 보여 주며, 시각자료를 추가하면 source-grounding·locale parity 부담만 늘어난다.
+- Part 5의 가장 어려운 경계인 `BarcodeReader` → ZXing adapter → `BarcodeResult` → `AnalysisResult` →
+  `VisitorPassPolicy`를 한눈에 보여 주는 정적 architecture flow를 추가한다. 한국어와 영어는 별도 SVG/PNG로
+  생성하고, article은 PNG만 embed한다.
 
 ## 독자가 가져갈 계약
 
@@ -43,6 +44,10 @@ qualified ImmutableImage
         -> public DTO mapping (current example: text, format, provider)
         -> VisitorPassPolicy (application-owned action)
 ```
+
+다이어그램의 색상은 data contract(blue), adapter 내부 구현(muted), policy action(purple)으로 역할을 구분한다.
+`ZXing / MultiFormatReader`는 `images-barcode-zxing` adapter card 안에만 표시하고, policy와 application side
+effect는 별도 lane으로 분리한다.
 
 글은 `BarcodeResult.region`이 provider-neutral model에 보존된다는 사실과, 현재 통합 응답이 region을 버리는
 것이 의도적인 public contract 선택이라는 사실을 같은 문단에서 명시한다.
