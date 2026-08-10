@@ -1,0 +1,39 @@
+{
+  "kind": "architecture",
+  "source": {
+    "question": "방문증 분석 facts와 실행 상태가 어떤 우선순위로 VisitorPassDecision과 애플리케이션 조치 경계로 이어지는가?",
+    "revision": "bluetape4k-image@65c31d48a94f",
+    "paths": [
+      "docs/superpowers/specs/2026-08-10-image-intelligence-part4-policy-boundaries-design.md",
+      "src/content/docs/ko/blog/image-intelligence-part4-detection-policy-separation.mdx"
+    ]
+  },
+  "nodes": [
+    {"id": "analysis-results", "label": "ImageAnalysisResults", "source": "VisitorPassPolicy.kt"},
+    {"id": "policy", "label": "VisitorPassPolicy.decide", "source": "VisitorPassPolicy.kt"},
+    {"id": "sensitive-branch", "label": "SENSITIVE_REGION", "source": "VisitorPassPolicy.kt"},
+    {"id": "invalid-qr-branch", "label": "INVALID_VISITOR_QR", "source": "VisitorPassPolicy.kt"},
+    {"id": "degraded-branch", "label": "Failed / Unavailable", "source": "VisitorPassPolicy.kt"},
+    {"id": "allow-branch", "label": "검토 사유 없음", "source": "VisitorPassPolicy.kt"},
+    {"id": "review-branch", "label": "개수·내용 불일치", "source": "VisitorPassPolicy.kt"},
+    {"id": "decision", "label": "VisitorPassDecision", "source": "VisitorPassPolicy.kt"},
+    {"id": "application-boundary", "label": "Application boundary", "source": "SensitiveContentPolicy.kt"}
+  ],
+  "edges": [
+    {"id": "results-policy", "from": "analysis-results", "to": "policy", "kind": "facts-and-state", "source": "VisitorPassPolicy.kt"},
+    {"id": "policy-sensitive", "from": "policy", "to": "sensitive-branch", "kind": "priority-check", "source": "VisitorPassPolicy.kt"},
+    {"id": "policy-invalid-qr", "from": "policy", "to": "invalid-qr-branch", "kind": "priority-check", "source": "VisitorPassPolicy.kt"},
+    {"id": "policy-degraded", "from": "policy", "to": "degraded-branch", "kind": "priority-check", "source": "VisitorPassPolicy.kt"},
+    {"id": "policy-allow", "from": "policy", "to": "allow-branch", "kind": "review-check", "source": "VisitorPassPolicy.kt"},
+    {"id": "policy-review", "from": "policy", "to": "review-branch", "kind": "fallback-check", "source": "VisitorPassPolicy.kt"},
+    {"id": "branches-decision", "from": "sensitive-branch", "to": "decision", "kind": "action", "source": "VisitorPassPolicy.kt"},
+    {"id": "decision-application", "from": "decision", "to": "application-boundary", "kind": "side-effect-boundary", "source": "SensitiveContentPolicy.kt"}
+  ],
+  "behavior": {"branches": 4, "loops": 0},
+  "repairs": [
+    {"target": "precedence-rows", "reason": "Keep the five source-backed policy outcomes in one first-match decision chain instead of collapsing them into an unqualified action list", "touches": 5},
+    {"target": "side-effect-boundary", "reason": "Separate VisitorPassDecision values from renderer, storage, HTTP rejection, and review-queue effects", "touches": 4},
+    {"target": "locale-pairs", "reason": "Generate Korean and English source-equivalent assets with unchanged identifiers and action names", "touches": 2},
+    {"target": "primary-markers", "reason": "Use fixed 14x14 typed primary markers and a 10x10 typed secondary marker for the no-match continuation", "touches": 6}
+  ]
+}

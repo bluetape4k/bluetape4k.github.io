@@ -1,0 +1,281 @@
+---
+title: "이미지 검출 결과와 처리 정책을 분리하라: 사실·조치·검토의 경계"
+description: 방문증 이미지의 검출 사실을 confidence·geometry·detector 정보로 보존하고, 흐림·거부·격리·수동 검토 정책과 분리하는 방법을 설명합니다.
+sidebar:
+  order: -202608101200
+blog:
+  date: 2026-08-10T12:00:00+09:00
+  image: /assets/blog/image-intelligence/part1/image-intelligence-part1-hero.png
+  imageAlt: 방문증 이미지가 OCR, 객체 검출, QR 처리와 별도 정책 판단으로 나뉘는 어두운 3D 작업대
+  cardDescription: "검출기가 보고한 사실과 방문증 업무 정책을 분리해 오탐·미탐과 수동 검토 경계를 보존합니다."
+  tags: ["architecture","image","kotlin","moderation","practical-example","resilience","spring"]
+---
+
+<p class="bt4k-post-meta">2026-08-10 · Image Intelligence API · Part 4</p>
+
+방문증 이미지에서 얼굴 영역이 하나 발견됐다고 가정해 보겠습니다. 이 결과만으로 원본을 공개해도 될까요?
+얼굴을 흐리게 보여줄까요, 원본을 별도 공간에 격리할까요, 아니면 사람이 확인해야 할까요?
+
+`face`라는 검출 결과는 이런 질문에 답하지 않습니다. 검출기는 이미지에서 관찰한 사실을 보고하고,
+처리 정책은 그 사실을 업무 위험과 입력 상태에 맞춰 해석합니다. 두 책임을 한 클래스나 한 결과 필드에
+섞으면 모델을 바꿀 때마다 정책을 다시 작성해야 하고, 정책을 바꿀 때마다 분석 결과 계약도 흔들립니다.
+
+이 글은 [`bluetape4k-image`의 Spring Boot 이미지 인텔리전스 API](https://github.com/bluetape4k/bluetape4k-image/tree/develop/examples/spring-boot-image-intelligence-api)를
+방문증 시나리오로 따라갑니다. Part 3에서 다룬 OCR `Completed`, `Empty`, `Unavailable`, `Failed` 상태를
+반복하는 대신, 그 응답의 `detection` 결과를 방문증 정책으로 넘길 때 필요한 경계를 살펴봅니다.
+
+핵심은 간단합니다. **검출기는 사실을 보존하고, 정책은 조치를 선택하며, 실제 렌더링·저장·거부·수동 검토
+side effect는 애플리케이션이 소유합니다.**
+
+## 검출기가 반환하는 것은 처리 명령이 아니라 사실이다
+
+통합 예제의 검출 경계는 `ImageDetector`입니다. 이미지와 `DetectionOptions`를 받으면
+`DetectionResult` 목록을 반환합니다.
+
+```kotlin
+fun interface ImageDetector {
+    fun detect(image: ImmutableImage, options: DetectionOptions): List<DetectionResult>
+}
+```
+
+실제 adapter는 deterministic fake일 수도 있고, native runtime·remote service·model-backed adapter일 수도
+있습니다. core 이미지 모듈은 특정 ML runtime이나 model manifest를 번들하지 않습니다.
+
+검출 결과 한 건은 다음처럼 표현할 수 있습니다.
+
+```kotlin
+DetectionResult(
+    label = "face",
+    category = DetectionCategory.FACE,
+    confidence = 0.96,
+    detector = DetectorIdentity(name = "fixture-detector"),
+    region = faceRegion,
+)
+```
+
+이 결과에서 읽을 수 있는 정보는 다음과 같습니다.
+
+| 필드 | 의미 |
+| --- | --- |
+| `label` | 호출자에게 노출할 안정적인 label |
+| `category` | `FACE`, `PERSON`, `OBJECT`, `TEXT`, `LOGO`, `LANDMARK`, `SENSITIVE_REGION` 같은 공통 category |
+| `confidence` | detector가 보고한 `0.0..1.0` 확률값 |
+| `detector` | adapter 또는 model family 이름과 선택적인 version·backend metadata |
+| `region` | 선택적인 rectangle·polygon·polyline·raster-mask geometry |
+| `rawBackendLabel` | backend가 반환한 원래 label |
+| `metadata` | runtime을 특정하지 않는 문자열 metadata |
+
+`region`은 원본 pixel 좌표계나 `0.0..1.0` normalized 좌표계를 사용할 수 있습니다. 원본 label을 안정적인
+`category`로 매핑하면서 `rawBackendLabel`을 보존하므로, 애플리케이션은 backend별 문자열을 직접 파싱하지
+않고도 정책을 적용할 수 있습니다.
+
+중요한 점은 이 model에 처리 명령이 없다는 것입니다. `DetectionResult`는 “얼굴이 이 영역에 이 confidence로
+보고됐다”를 담지만, `BLUR`, `MOSAIC`, `REJECT`, `QUARANTINE`, `MANUAL_REVIEW` 중 무엇을 선택할지는
+담지 않습니다. [ImageDetection.kt](https://github.com/bluetape4k/bluetape4k-image/blob/develop/images/src/main/kotlin/io/bluetape4k/images/detection/ImageDetection.kt)의
+주석도 detection fact와 treatment action을 별도 책임으로 둡니다.
+
+## confidence는 판결문이 아니다
+
+`DetectionOptions`는 검출 결과를 선택하는 결정적 필터입니다.
+
+```kotlin
+val options = DetectionOptions(
+    minimumConfidence = 0.80,
+    categories = setOf(DetectionCategory.FACE),
+    labels = setOf("face"),
+)
+
+val faces = image.detectRegions(detector, options)
+```
+
+`minimumConfidence`보다 낮은 결과를 걸러내고, category나 label 조건을 함께 적용합니다. 이 필터는
+호출자가 원하는 결과 집합을 좁히는 경계이지 detector의 정확도를 보증하는 장치가 아닙니다.
+
+두 가지 오류는 여전히 남습니다.
+
+- **오탐(false positive)**: 얼굴이 아닌 영역을 얼굴로 보고할 수 있습니다.
+- **미탐(false negative)**: 실제 얼굴이나 민감 영역을 놓칠 수 있습니다.
+
+같은 `0.80`이라도 방문증 미리보기, 원본 보관, 출입 허용 경로가 감수할 위험은 다릅니다. 따라서 threshold,
+재촬영 요구, 추가 사람 검토, 보수적인 fallback은 application policy가 정해야 합니다. detector가 confidence를
+반환했다고 해서 그 값이 자동 승인 여부를 결정하는 것은 아닙니다.
+
+검출 모듈은 [ImageDetectionTest.kt](https://github.com/bluetape4k/bluetape4k-image/blob/develop/images/src/test/kotlin/io/bluetape4k/images/detection/ImageDetectionTest.kt)에서
+confidence·category·label filter와 pixel/normalized geometry 변환을 검증합니다. 이 테스트가 증명하는 것은
+필터와 좌표 변환 계약이지, 특정 ML model의 실제 정확도나 업무 위험 수준이 아닙니다.
+
+## `VisitorPassPolicy`는 facts를 업무 결정으로 변환한다
+
+방문증 예제는 OCR, detection, barcode 결과를 모두 받은 뒤 `VisitorPassPolicy`에 전달합니다. 정책은
+분석 adapter 안에 들어 있지 않고, 통합 서비스의 별도 단계로 존재합니다.
+
+예제의 결정 순서는 다음과 같습니다.
+
+| 먼저 확인하는 조건 | 예제 action | 이유 |
+| --- | --- | --- |
+| `SENSITIVE_REGION` 검출 | `QUARANTINE` | 민감 영역이 있는 입력을 격리 대상으로 분류한다. |
+| 완료한 barcode 중 visitor QR이 아닌 값 존재 | `REJECT` | 방문증 식별자 계약에 맞지 않는 값을 거부한다. |
+| OCR·detection·barcode가 `Failed` 또는 `Unavailable` | `MANUAL_REVIEW` | 사실이 없거나 provider를 사용할 수 없는 상태에서 자동 승인하지 않는다. |
+| 얼굴 정확히 하나, visitor QR 정확히 하나, 유효한 OCR | `ALLOW` | 예제의 자동 승인 조건을 모두 만족한다. |
+| 그 밖의 빈 결과·개수 불일치 | `MANUAL_REVIEW` | detector가 틀렸다고 단정하지 않고 확인 대상으로 남긴다. |
+
+핵심 순서만 줄이면 다음과 같습니다.
+
+```kotlin
+val detections = results.detection.completedValue().orEmpty()
+if (detections.any { it.category == DetectionCategory.SENSITIVE_REGION }) {
+    return decision(VisitorPassAction.QUARANTINE, "SENSITIVE_REGION_DETECTED")
+}
+
+val barcodes = results.barcode.completedValue().orEmpty()
+if (results.barcode is AnalysisResult.Completed && barcodes.any { !it.isVisitorQr() }) {
+    return decision(VisitorPassAction.REJECT, "INVALID_VISITOR_QR")
+}
+
+val degradedReasons = buildList {
+    addDegradedReason(results.ocr, "OCR")
+    addDegradedReason(results.detection, "DETECTION")
+    addDegradedReason(results.barcode, "BARCODE")
+}
+if (degradedReasons.isNotEmpty()) {
+    return VisitorPassDecision(VisitorPassAction.MANUAL_REVIEW, degradedReasons)
+}
+```
+
+마지막에 얼굴 수, visitor QR 수, OCR 내용이 모두 조건을 만족하면 `ALLOW`를 반환하고, 그렇지 않으면
+구체적인 사유와 함께 `MANUAL_REVIEW`를 반환합니다. 이 순서는 방문증 예제의 업무 규칙입니다. 배송 라벨의
+주소 마스킹이나 상품 라벨의 필수 표시 검토에 그대로 복사할 보편 정책은 아닙니다.
+
+전체 구현은 [`VisitorPassPolicy.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/VisitorPassPolicy.kt)에서
+확인할 수 있습니다.
+
+## `Empty`와 `Failed`를 같은 빈 목록으로 만들지 않는다
+
+검출 결과가 비어 있는 것과 detector가 결과를 만들지 못한 것은 서로 다른 사실입니다.
+
+| detection 상태 | 실제 의미 | 방문증 정책의 예시 사유 |
+| --- | --- | --- |
+| `Completed` + 빈 목록 | detector는 실행됐지만 대상이 없었다 | `FACE_COUNT_REQUIRES_REVIEW` |
+| `Failed` | timeout 또는 provider 예외로 결과를 만들지 못했다 | `DETECTION_FAILED` |
+| `Unavailable` | detector provider가 설정되지 않았거나 사용할 수 없다 | `DETECTION_UNAVAILABLE` |
+
+<figure class="bt4k-architecture" data-diagram-title="검출 사실에서 방문증 정책 조치까지">
+  <img src="/assets/blog/image-intelligence/part4/image-intelligence-policy-flow-01-ko.png" alt="분석 facts와 상태를 VisitorPassPolicy의 민감 영역, 잘못된 QR, degraded 상태, 정상 조건, 그 밖의 검토 사유 순서로 평가해 ALLOW, REJECT, QUARANTINE, MANUAL_REVIEW를 반환하고 애플리케이션 경계에서 실제 side effect를 수행하는 흐름도" loading="lazy" />
+  <figcaption>정책은 첫 일치 조건에서 action과 reasons를 반환합니다. 렌더링·저장·HTTP 거부·수동 검토 큐는 그 결과를 읽는 애플리케이션 경계의 책임입니다.</figcaption>
+</figure>
+
+둘 다 `regions: []`로 직렬화하면 정책은 “얼굴이 없었다”와 “얼굴을 확인하지 못했다”를 구분할 수 없습니다.
+예제 테스트는 이 차이를 직접 고정합니다.
+
+```kotlin
+val empty = policy.decide(results(detection = empty("detector")))
+val failed = policy.decide(results(detection = failed("detector")))
+
+empty.reasons shouldBeEqualTo listOf("FACE_COUNT_REQUIRES_REVIEW")
+failed.reasons shouldBeEqualTo listOf("DETECTION_FAILED")
+```
+
+OCR이나 barcode 경로가 실패해도 원래 얻은 detection 결과를 버리지 않는다는 점은 Part 3과 Part 6의
+통합 계약과 연결됩니다. 여기서 policy가 하는 일은 부분 결과를 복구하는 것이 아니라, 이미 보존된 상태를
+업무 결정의 입력으로 읽는 것입니다.
+
+## blur·mosaic·reject·quarantine·manual review는 action 계약이다
+
+`bluetape4k-images`의 moderation model은 detector fact와 treatment action 사이의 별도 계약을 제공합니다.
+정책이 선택할 수 있는 대표 action은 다음과 같습니다.
+
+```kotlin
+SensitiveTreatmentAction.ALLOW
+SensitiveTreatmentAction.MOSAIC
+SensitiveTreatmentAction.BLUR
+SensitiveTreatmentAction.SOLID_MASK
+SensitiveTreatmentAction.DROP
+SensitiveTreatmentAction.REJECT
+SensitiveTreatmentAction.QUARANTINE
+SensitiveTreatmentAction.MANUAL_REVIEW
+```
+
+여기서 `BLUR`는 픽셀을 흐리게 만들었다는 뜻이 아니라, 정책이 “흐림 처리를 선택했다”는 결정값입니다.
+`SensitiveTreatmentParameters`는 `blurRadius`, `blurSigma`, `mosaicBlockSize`, `maskOpacity`,
+`reviewPriority`, `rejectReason` 같은 renderer-neutral 값을 담을 수 있습니다.
+
+```kotlin
+SensitiveTreatmentParameters(
+    blurRadius = 12.0,
+    blurSigma = 3.0,
+    metadata = mapOf("renderer" to "local-blur"),
+)
+```
+
+정책 모듈은 detector inference를 실행하지 않고 pixel을 render하지도 않습니다. `BLUR`를 선택한 뒤 실제로
+어떤 renderer를 호출할지, 원본을 어디에 저장할지, `REJECT` 응답을 어떤 HTTP 계약으로 반환할지, 수동 검토
+큐에 어떤 metadata를 보낼지는 application boundary에서 결정해야 합니다.
+
+`SensitiveModerationPolicy`는 detection마다 처음 match되는 rule을 선택한 뒤, 여러 decision이 있으면 action
+precedence·level·confidence로 선택된 결과를 report에 기록합니다. 알 수 없는 category나 match되는 rule이
+없는 경우에는 `failClosed` factory의 fallback rule이 `QUARANTINE`을 선택할 수 있습니다.
+
+이 fail-closed fallback은 모든 서비스가 반드시 사용해야 하는 전역 기본값이 아닙니다. 어떤 입력을 자동으로
+격리할지, 수동 검토로 보낼지, 사용자에게 재촬영을 요구할지는 데이터 분류와 route 위험도에 따라 application이
+명시해야 합니다.
+
+자세한 모델과 정책 계약은 [`SensitiveContentModels.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/images/src/main/kotlin/io/bluetape4k/images/moderation/SensitiveContentModels.kt)와
+[`SensitiveContentPolicy.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/images/src/main/kotlin/io/bluetape4k/images/moderation/SensitiveContentPolicy.kt)에서
+확인할 수 있습니다.
+
+## provider와 policy를 함께 배포하지 않아도 된다
+
+통합 예제의 `demo` profile은 OCR과 detection에 고정 결과를 반환하는 fixture provider를 사용하고, QR 경로는
+실제 ZXing provider를 실행합니다. 이 조합의 목적은 ML model을 흉내 내는 것이 아니라 다음 경계를 재현하는
+것입니다.
+
+- 같은 `ImmutableImage`를 provider에 전달하는 실행 구조
+- detector fact를 통합 응답의 `detection.regions`로 보존하는 mapping
+- `VisitorPassPolicy`가 fact와 다른 분석 상태를 읽어 action을 선택하는 지점
+- provider가 없거나 실패해도 그 상태를 policy 입력으로 남기는 계약
+
+따라서 `demo`의 `confidence = 0.99`는 production detector의 품질 수치가 아닙니다. 실제 애플리케이션은
+`ImageDetector` adapter, model version, 품질 측정, drift monitoring, provider timeout, process isolation을
+별도로 소유해야 합니다. detector를 교체해도 정책의 입력 계약을 유지할 수 있고, 방문증 정책을 배송 라벨
+정책으로 교체해도 detector runtime을 다시 작성할 필요가 없습니다.
+
+## 이 경계가 보장하는 것과 보장하지 않는 것
+
+| 예제가 제공하는 경계 | 애플리케이션이 추가로 결정할 영역 |
+| --- | --- |
+| `DetectionResult`에 label·category·confidence·geometry·detector를 보존 | model 선택, 학습, 정확도 기준, drift 대응 |
+| `DetectionOptions`로 confidence·category·label을 필터링 | threshold 튜닝, 오탐·미탐 비용, route별 위험도 |
+| `VisitorPassPolicy`에서 facts를 `ALLOW`·`REJECT`·`QUARANTINE`·`MANUAL_REVIEW`로 변환 | 실제 HTTP 거부, 저장소 격리, 검토 큐, 감사 이력 |
+| moderation action과 renderer-neutral parameter를 반환 | blur·mosaic·mask renderer와 원본 접근 통제 |
+| fake provider로 재현 가능한 테스트 제공 | production ML runtime, GPU/native 운영, 성능 목표 |
+
+분석 결과와 업무 정책을 한 타입으로 합치지 않는 이유도 여기에 있습니다. detector adapter는 사실의 품질과
+형태를 책임지고, policy는 그 사실을 어떤 업무 결정으로 연결할지 책임집니다. 둘 사이의 경계를 지키면 모델
+교체, 정책 변경, 보안 검토를 서로 다른 변경으로 다룰 수 있습니다.
+
+## 시리즈에서 이어서 볼 내용
+
+이번 Part 4는 통합 응답의 detection fact를 업무 policy로 넘기는 경계를 설명했습니다.
+
+- [Part 1: 이미지 한 장에서 여러 정보를 추출하는 API](/ko/blog/image-intelligence-part1-multi-analysis-boundaries/)
+- [Part 2: 이미지 분석 전에 입력부터 판정하라](/ko/blog/image-intelligence-part2-input-qualification-and-single-decode/)
+- [Part 3: OCR 처리 경로를 통합 응답에 연결하기](/ko/blog/image-intelligence-part3-ocr-integrated-response/)
+- **Part 4: 이미지 검출 결과와 처리 정책을 분리하라**
+- Part 5: OCR과 다른 바코드·QR 추출 계약
+- Part 6: 병렬 실행과 부분 실패를 응답 계약으로 만들기
+- Part 7: 방문증 이미지 처리 API 통합 예제
+
+Part 5에서는 QR과 barcode가 OCR과 다른 결과·빈 결과 계약을 가지는 이유를 살펴봅니다. Part 6에서는 세
+분석 경로의 병렬 실행, 취소 전파, 부분 실패 집계를 하나의 응답 계약으로 좁힙니다.
+
+## 구현 코드와 자료 살펴보기
+
+- [Spring Boot 이미지 인텔리전스 API README.ko.md](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/README.ko.md): 공통 입력 검증, 세 분석 경로, 부분 결과와 방문증 policy의 전체 실행 흐름
+- [`ImageDetection.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/images/src/main/kotlin/io/bluetape4k/images/detection/ImageDetection.kt): `ImageDetector`, `DetectionResult`, geometry와 filtering 계약
+- [`VisitorPassPolicy.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/main/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/VisitorPassPolicy.kt): 방문증 facts를 action과 reasons로 바꾸는 application policy
+- [`VisitorPassPolicyTest.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/examples/spring-boot-image-intelligence-api/src/test/kotlin/io/bluetape4k/images/examples/spring/intelligence/service/VisitorPassPolicyTest.kt): 민감 영역 우선순위, 잘못된 QR, degraded lane, 빈 검출과 실패 검출, 정상 허용 조건
+- [`SensitiveContentPolicy.kt`](https://github.com/bluetape4k/bluetape4k-image/blob/develop/images/src/main/kotlin/io/bluetape4k/images/moderation/SensitiveContentPolicy.kt): action precedence와 fail-closed fallback
+- [OCR 서비스를 실전에서 운영하기](/ko/blog/ocr-api-fallback-contract-bluetape4k-image/): 네이티브 OCR과 입력·실패 경계
+
+이 글은 production ML detector나 개인정보 처리 제품의 완성본을 제공하지 않습니다. 예제의 facts, policy,
+테스트를 애플리케이션의 명시적인 계약으로 확장하는 출발점입니다.
