@@ -32,7 +32,7 @@ features, it asks one question first: “Who owns this fact?” The article uses
 | **Current implementation** | A merged capability or contract confirmed in the observed develop source |
 | **Approved design** | An approved contract that may still be a follow-up implementation scope |
 | **Awaiting operations** | Code or design exists, but canary, backfill, or production validation remains |
-| **Roadmap** | An open Issue/Epic item that is not a currently available feature |
+| **Roadmap** | A planned follow-up that is not a currently available feature |
 
 ## Why a purchase is not a visit commitment yet
 
@@ -84,8 +84,7 @@ authoritative; scheduling preserves the interpretation it needs to reproduce its
 twice or a catalog projection is briefly late, inbox/outbox and idempotent handling must prevent two plans for one
 purchase.
 
-That boundary is the starting point in [Appointment Plan Foundation #181](https://github.com/bluetape4k/clinic-appointment/issues/181)
-and the [Appointment Plan design](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-07-26-appointment-plan-and-capacity-design.md).
+That boundary is described in the [Appointment Plan design](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-07-26-appointment-plan-and-capacity-design.md).
 Receiving the purchase event still does not mean that an empty slot or a device has already been occupied.
 
 ## When a product becomes a treatment plan
@@ -138,16 +137,13 @@ The approved design separates this agreement axis as AppointmentCommitment inste
 The agreement about when an item will be fulfilled and the fact about what care actually finished need different
 histories and change rules.
 
-Read this distinction together with [multi-item visit commitment Issue #184](https://github.com/bluetape4k/clinic-appointment/issues/184),
-[implementation PR #197](https://github.com/bluetape4k/clinic-appointment/pull/197), and the
-[visit commitment design](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-07-29-issue-184-visit-commitment-design.md)
-as an **Approved design** boundary. Do not present the proposal/hold/consent model and an operational rollout as the
-same thing.
+Read this distinction as an **Approved design** boundary for multi-item visit commitments. Do not present the
+proposal/hold/consent model and an operational rollout as the same thing.
 
-The same protection applies when a customer profile changes. The [profile-change reassessment Issue #200](https://github.com/bluetape4k/clinic-appointment/issues/200)
-keeps the raw profile in CRM and sends scheduling only an opaque reference, fingerprint, and minimal reassessment
-outcome. Reassessment may revisit PROPOSED and HELD, but a valid hold and the snapshot, consent, and resource occupancy
-of CONFIRMED must be protected.
+The same protection applies when a customer profile changes. The profile-change reassessment boundary keeps the raw
+profile in CRM and sends scheduling only an opaque reference, fingerprint, and minimal reassessment outcome.
+Reassessment may revisit PROPOSED and HELD, but a valid hold and the snapshot, consent, and resource occupancy of
+CONFIRMED must be protected.
 
 ## Service ownership boundaries
 
@@ -186,13 +182,11 @@ objective facts preserved or emitted by scheduling from the business results jud
 
 Notification is not a direct SMS call inside the appointment transaction. Scheduling records a durable outbox entry;
 the notification service reads contact, language, and consent at send time and delivers through a retryable channel.
-[Notification outbox Issue #172](https://github.com/bluetape4k/clinic-appointment/issues/172) and [operations canary Issue #204](https://github.com/bluetape4k/clinic-appointment/issues/204)
-show why this delivery boundary must be labeled **Awaiting operations** until its rollout evidence is complete.
+This delivery boundary must be labeled **Awaiting operations** until its rollout evidence is complete.
 
 Statistics consumers likewise do not own the appointment source tables. They receive events under a schema contract and
 build their own projection. Until backfill and production readiness are complete, the article should not call this a
-finished statistics service. The [event integration Epic #17](https://github.com/bluetape4k/clinic-appointment/issues/17)
-and [statistics consumer PR #242](https://github.com/bluetape4k/clinic-appointment/pull/242) are the supporting evidence.
+finished statistics service.
 
 ## Rules when several services read the same fact
 
@@ -221,7 +215,7 @@ policy articles should start by checking the same ownership boundary.
 | **Current implementation** | The foundation that creates a plan from a purchase event and preserves current appointment state/history | Can the observed source and tests confirm this contract? |
 | **Approved design** | Extending plan items into multi-item visits and consent-bound commitments | Am I mistaking an unimplemented boundary for an operating feature? |
 | **Awaiting operations** | Notification outbox canary and statistics backfill/production readiness | Has delivery and recovery been verified in operation? |
-| **Roadmap** | Patient portal [#13](https://github.com/bluetape4k/clinic-appointment/issues/13) and mobile channel [#15](https://github.com/bluetape4k/clinic-appointment/issues/15) | Have I claimed a patient channel that is not public yet? |
+| **Roadmap** | Patient portal and mobile channel | Have I claimed a patient channel that is not public yet? |
 
 These labels are not decorative. Product catalogs, commerce contracts, attendance, and counseling records change at
 different speeds. Quoting a design spec as if it were a current API, or treating a projection as the source, turns
@@ -231,7 +225,7 @@ Patient A's journey into the wrong commitment.
 
 This article drew the map. The next article moves closer to product versions and purchase snapshots: how to protect a
 past customer's obligations when a product changes or a purchase event is duplicated, and how to connect a catalog
-projection to a purchase event through an idempotent boundary. We will continue with [Issue #277](https://github.com/bluetape4k/clinic-appointment/issues/277).
+projection to a purchase event through an idempotent boundary. We will continue this topic in the next article.
 
 ### Visual companions
 
@@ -247,11 +241,7 @@ current source first. This prologue does not add a new companion route.
 ### Evidence links
 
 - [Appointment service data flow](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/requirements/data-flow.md)
-- [Appointment Plan Foundation #181](https://github.com/bluetape4k/clinic-appointment/issues/181) and the [design](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-07-26-appointment-plan-and-capacity-design.md)
-- [Multi-item visit commitment #184](https://github.com/bluetape4k/clinic-appointment/issues/184) and [implementation PR #197](https://github.com/bluetape4k/clinic-appointment/pull/197)
-- [Profile-change reassessment #200](https://github.com/bluetape4k/clinic-appointment/issues/200)
-- [Notification outbox #172](https://github.com/bluetape4k/clinic-appointment/issues/172) and [operations canary #204](https://github.com/bluetape4k/clinic-appointment/issues/204)
-- [Event integration Epic #17](https://github.com/bluetape4k/clinic-appointment/issues/17) and [statistics consumer PR #242](https://github.com/bluetape4k/clinic-appointment/pull/242)
+- [Appointment Plan design](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-07-26-appointment-plan-and-capacity-design.md)
 
 ## Series
 

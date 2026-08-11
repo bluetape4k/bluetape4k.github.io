@@ -32,7 +32,7 @@ blog:
 | **현재 구현** | 관찰한 `develop` 소스와 병합된 기능 또는 현재 계약 |
 | **승인된 설계** | 설계가 승인됐지만 후속 구현 범위일 수 있는 계약 |
 | **운영 대기** | 코드·설계가 있어도 canary, backfill, production 검증이 남은 상태 |
-| **로드맵** | 열린 Issue/Epic에 남아 있어 현재 제공 기능으로 세지 않는 항목 |
+| **로드맵** | 후속 계획으로 남아 있어 현재 제공 기능으로 세지 않는 항목 |
 
 ## 상품을 샀는데 왜 아직 방문 약속이 아닐까
 
@@ -84,8 +84,7 @@ blog:
 자기 계획을 재현하는 데 필요한 시점의 해석을 보존합니다. 구매 event가 중복으로 도착하거나 catalog
 projection이 잠시 늦어져도 inbox/outbox와 멱등 처리로 같은 구매가 계획을 두 번 만들지 않게 해야 합니다.
 
-이 경계는 [Appointment Plan Foundation #181](https://github.com/bluetape4k/clinic-appointment/issues/181)과
-[Appointment Plan 설계 문서](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-07-26-appointment-plan-and-capacity-design.md)가
+이 경계는 [Appointment Plan 설계 문서](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-07-26-appointment-plan-and-capacity-design.md)가
 다루는 출발점입니다. 이 단계에서 구매 event를 받았다는 사실은 빈 슬롯이나 장비를 이미 점유했다는 뜻이
 아닙니다.
 
@@ -142,17 +141,13 @@ Appointment ──> AppointmentItem 1..N ──> ResourceAllocation 1..N
 방문이 “언제 이행할지”에 대한 합의와 “실제로 어떤 처치가 끝났는지”에 대한 사실은 서로 다른 변경 이력을
 가져야 하기 때문입니다.
 
-이 구분은 [복수 항목 방문 약속 Issue #184](https://github.com/bluetape4k/clinic-appointment/issues/184),
-[구현 PR #197](https://github.com/bluetape4k/clinic-appointment/pull/197),
-[방문 약속 설계 문서](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-07-29-issue-184-visit-commitment-design.md)의
-**승인된 설계** 범위를 함께 읽어야 정확합니다. proposal·hold·consent를 구분하는 모델과 실제 운영 rollout의
-범위를 같은 것으로 쓰지 않습니다.
+이 구분은 복수 항목 방문 약속의 **승인된 설계** 범위를 함께 읽어야 정확합니다. proposal·hold·consent를
+구분하는 모델과 실제 운영 rollout의 범위를 같은 것으로 쓰지 않습니다.
 
 고객 프로필이 바뀌었다고 확정 방문을 임의로 취소하거나 자원을 풀어 버리는 것도 같은 이유로 위험합니다.
-[프로필 변경 재평가 Issue #200](https://github.com/bluetape4k/clinic-appointment/issues/200)의 원칙은 CRM이
-원본 프로필을 소유하고, 예약서비스에는 opaque reference와 fingerprint, 최소한의 재평가 결과만 전달하는
-것입니다. 재평가는 `PROPOSED`와 `HELD`를 다시 검토할 수 있지만, 유효한 hold와 `CONFIRMED`의 snapshot·동의·
-자원 점유는 보호해야 합니다.
+프로필 변경 재평가의 원칙도 CRM이 원본 프로필을 소유하고, 예약서비스에는 opaque reference와 fingerprint,
+최소한의 재평가 결과만 전달하는 것입니다. 재평가는 `PROPOSED`와 `HELD`를 다시 검토할 수 있지만, 유효한
+hold와 `CONFIRMED`의 snapshot·동의·자원 점유는 보호해야 합니다.
 
 ## 서비스별 권한 경계
 
@@ -190,16 +185,12 @@ Appointment ──> AppointmentItem 1..N ──> ResourceAllocation 1..N
 | 통계·SLA | 외부 consumer/통계 projection | 계약된 event와 schema | projection의 최종 조회 모델 |
 
 알림은 예약 트랜잭션 안에서 문자 발송을 직접 호출하는 기능이 아닙니다. 예약 사실을 durable outbox에
-기록하고, 발송 시점의 연락처·언어·동의를 읽어 재시도 가능한 채널로 전달합니다. [알림 outbox Issue
-#172](https://github.com/bluetape4k/clinic-appointment/issues/172)와 [운영 canary Issue
-#204](https://github.com/bluetape4k/clinic-appointment/issues/204)는 이 전달 경계와 **운영 대기** 상태를
-구분해 읽게 합니다.
+기록하고, 발송 시점의 연락처·언어·동의를 읽어 재시도 가능한 채널로 전달합니다. 이 전달 경계와
+**운영 대기** 상태를 구분해 읽어야 합니다.
 
 마찬가지로 통계 consumer는 예약 원본 테이블을 직접 소유하지 않습니다. 예약 event와 schema 계약을 받아
 자기 projection을 만들고, backfill과 production readiness가 끝나기 전에는 완료된 통계 서비스라고 쓰지
-않습니다. [이벤트 연계 Epic #17](https://github.com/bluetape4k/clinic-appointment/issues/17)과
-[통계 consumer PR #242](https://github.com/bluetape4k/clinic-appointment/pull/242)는 이 차이를 확인할
-근거입니다.
+않습니다.
 
 ## 같은 사실을 여러 서비스가 읽을 때 지켜야 할 것
 
@@ -226,7 +217,7 @@ Appointment ──> AppointmentItem 1..N ──> ResourceAllocation 1..N
 | **현재 구현** | 구매 event에서 계획을 만들고, 현재 예약 모델과 이력을 보존하는 기반 | 이 계약은 관찰한 소스와 테스트에서 확인되는가? |
 | **승인된 설계** | plan 항목을 실제 복수 항목 방문과 consent-bound commitment로 묶는 확장 | 아직 구현되지 않은 경계를 운영 기능으로 오해하고 있지 않은가? |
 | **운영 대기** | 알림 outbox canary, 통계 backfill·production readiness | 코드가 있어도 실제 전달과 복구를 검증했는가? |
-| **로드맵** | 환자 포털 [#13](https://github.com/bluetape4k/clinic-appointment/issues/13), 모바일 채널 [#15](https://github.com/bluetape4k/clinic-appointment/issues/15) | 공개 채널이 현재 제공된다고 단정하지 않았는가? |
+| **로드맵** | 환자 포털과 모바일 채널 | 공개 채널이 현재 제공된다고 단정하지 않았는가? |
 
 이 표지는 글을 어렵게 만들기 위한 장식이 아닙니다. 예약 도메인은 상품 catalog, 구매 계약, 실제 내원,
 상담 기록이 서로 다른 속도로 바뀝니다. 설계 문서를 현재 API처럼 인용하거나, projection을 원본처럼
@@ -236,8 +227,7 @@ Appointment ──> AppointmentItem 1..N ──> ResourceAllocation 1..N
 
 이번 글은 전체 지도를 그렸습니다. 다음 글에서는 상품 버전과 구매 snapshot을 더 가까이 들여다봅니다.
 상품이 수정되거나 구매 event가 중복 도착할 때 과거 고객의 예약 의무를 어떻게 보호할지, 그리고 catalog
-projection과 purchase event를 어떤 멱등 경계로 연결할지 [Issue #277](https://github.com/bluetape4k/clinic-appointment/issues/277)에서
-이어가겠습니다.
+projection과 purchase event를 어떤 멱등 경계로 연결할지 다음 글에서 이어가겠습니다.
 
 ### 시각 자료로 다시 보기
 
@@ -253,11 +243,7 @@ projection과 purchase event를 어떤 멱등 경계로 연결할지 [Issue #277
 ### 근거 링크
 
 - [예약 서비스 데이터 흐름](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/requirements/data-flow.md)
-- [Appointment Plan Foundation #181](https://github.com/bluetape4k/clinic-appointment/issues/181)과 [설계 문서](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-07-26-appointment-plan-and-capacity-design.md)
-- [복수 항목 방문 약속 #184](https://github.com/bluetape4k/clinic-appointment/issues/184), [구현 PR #197](https://github.com/bluetape4k/clinic-appointment/pull/197)
-- [프로필 변경 재평가 #200](https://github.com/bluetape4k/clinic-appointment/issues/200)
-- [알림 outbox #172](https://github.com/bluetape4k/clinic-appointment/issues/172), [운영 canary #204](https://github.com/bluetape4k/clinic-appointment/issues/204)
-- [이벤트 연계 Epic #17](https://github.com/bluetape4k/clinic-appointment/issues/17), [통계 consumer PR #242](https://github.com/bluetape4k/clinic-appointment/pull/242)
+- [Appointment Plan 설계 문서](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-07-26-appointment-plan-and-capacity-design.md)
 
 ## 시리즈 링크
 
