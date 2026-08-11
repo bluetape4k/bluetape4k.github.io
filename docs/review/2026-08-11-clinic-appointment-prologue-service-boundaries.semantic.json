@@ -38,6 +38,7 @@
     {"target": "central-authority", "reason": "Place plan, commitment, schedule, capacity, history, and outbox inside one reservation authority boundary", "touches": 6},
     {"target": "inbound-facts", "reason": "Keep catalog, purchase, fulfillment, and CRM inputs as facts owned by their producing service", "touches": 4},
     {"target": "consumer-boundaries", "reason": "Show notification and statistics as consumers that cannot become the appointment source of truth", "touches": 3},
-    {"target": "locale-pairs", "reason": "Generate equivalent Korean and English text-bearing SVG/PNG assets", "touches": 2}
+    {"target": "locale-pairs", "reason": "Generate equivalent Korean and English text-bearing SVG/PNG assets", "touches": 2},
+    {"target": "canvas-margins", "reason": "Balance left and right whitespace by narrowing the canvas and footer while preserving the main card geometry", "touches": 4}
   ]
 }
