@@ -145,8 +145,10 @@ Appointment ──> AppointmentItem 1..N ──> ResourceAllocation 1..N
 
 ### 7.1 기존 companion 연결
 
-새 도메인 다이어그램이나 companion route는 이 Issue 범위에 추가하지 않는다. 원본 Markdown 설계가 권위이고,
-웹 companion은 설명 보조라는 기존 계약을 따른다.
+새 companion route는 이 Issue 범위에 추가하지 않는다. 다만 프롤로그의 핵심 질문인 “환자 A의 사건이 어떤
+행위와 이벤트로 바뀌는가”와 “서비스별 권한이 어디서 책임으로 끝나는가”를 한눈에 보여 주기 위해 글에
+locale별 정적 diagram asset 두 장을 추가한다. 원본 Markdown 설계가 권위이고, 웹 companion은 설명 보조라는
+기존 계약을 따른다.
 
 - [상품 예약 운영 특성 분류](https://bluetape4k.github.io/ko/visual-companions/clinic-appointment/product-scheduling-classification/)
 - [상품 실행 BOM의 예약 전개 흐름](https://bluetape4k.github.io/ko/visual-companions/clinic-appointment/product-bom-to-appointment-flow/)
@@ -164,6 +166,26 @@ Appointment ──> AppointmentItem 1..N ──> ResourceAllocation 1..N
 - 이미지 안에 한국어 또는 영어 문장을 넣지 않아 두 locale에서 asset을 공유한다.
 - locale별 `imageAlt`와 `figcaption`은 별도로 작성한다.
 - 생성 성공만으로 완료하지 않고, article first viewport와 동급 크기로 렌더링해 가독성과 초점 배치를 확인한다.
+
+### 7.3 프롤로그 diagram
+
+두 diagram은 같은 환자 A 사례를 공유하지만 독자의 질문이 다르므로 분리한다. 둘 다 SVG를 구조적 원본으로
+삼고 CairoSVG로 PNG를 만든다. 한국어와 영어는 reader-facing text가 있으므로 각각 별도 SVG/PNG를 만든다.
+
+| diagram | 독자의 질문 | 핵심 시각 계약 | 대상 섹션 |
+|---|---|---|---|
+| `clinic-appointment-prologue-patient-a-flow-01-{ko,en}.svg/png` | 환자 A의 사건에서 어떤 행위가 어떤 예약 처리와 객관적 이벤트로 변하는가? | 상단 `행위`, 중앙 `예약서비스 처리`, 하단 `이벤트` 3개 lane과 시간 순서, action/event 범례 | 상품 구매부터 내원·후속 handoff까지 |
+| `clinic-appointment-prologue-service-boundaries-01-{ko,en}.svg/png` | 상품·구매·예약·임상·CRM·알림·통계가 무엇을 권한으로 소유하고 어디까지 책임지는가? | 중앙 예약서비스 source-of-truth 경계, 좌측 입력 authority, 우측 consumer/adapter, 실선 입력·점선 objective event, `책임 밖` 표지 | 서비스 ownership 표와 사실 분리 |
+
+첫 diagram의 event 이름은 현재 source가 제공하는 `PurchaseCompleted`, `AppointmentPlanCreated`,
+`AppointmentCreated`, `AppointmentRescheduled`, `TreatmentFulfillmentEvent`를 사용하고, 제안·hold·동의 bound
+확정은 승인된 설계로 표시한다. 두 번째 diagram은 상품·커머스·임상·CRM을 예약서비스의 원천으로 합치지 않고,
+예약서비스가 plan·commitment·schedule·capacity·history·outbox를 소유하는 경계를 중앙에 둔다. 가격·환불 승인,
+임상 판단·원본 기록, 상담·보상, 채널 발송, 통계 projection은 예약서비스의 책임 밖으로 표시한다.
+
+각 SVG의 semantic ledger는 `docs/review/2026-08-11-clinic-appointment-prologue-*.semantic.json`에 둔다.
+ledger의 source revision은 `clinic-appointment` `develop` `3dfcf2a`와 프롤로그의 pinned visual snapshot을
+기준으로 하며, 실제 환자 식별자·가격·내부 노쇼 임계값·VIP 순위 규칙은 diagram에 넣지 않는다.
 
 ## 8. locale·시리즈 parity
 
@@ -202,7 +224,8 @@ Appointment ──> AppointmentItem 1..N ──> ResourceAllocation 1..N
 - 상품 가격, 병원명, 실제 환자 개인정보, 내부 노쇼 임계값, 직원별 점수는 공개하지 않는다.
 - 상품 BOM을 예약서비스가 소유하거나 다시 해석한다고 쓰지 않는다.
 - 환불·민원·보상을 예약서비스 기능으로 구현하거나 설명하지 않는다.
-- 새 visual companion, visualization catalog, 원본 서비스 코드 변경은 이 Issue에서 수행하지 않는다.
+- 새 visual companion route, visualization catalog, 원본 서비스 코드 변경은 이 Issue에서 수행하지 않는다. 프롤로그에
+  필요한 locale별 정적 diagram asset과 MDX embed만 추가한다.
 - 포털·모바일 채널 구현은 #294로 분리한다.
 - 기존 Part 1~7의 기술 내용을 반복 복사하지 않고 프롤로그가 제공하는 전체 지도를 우선한다.
 
@@ -219,6 +242,8 @@ Appointment ──> AppointmentItem 1..N ──> ResourceAllocation 1..N
 
 - [ ] 한국어 원고와 영어 현지화 원고가 동일한 사례·주장·숫자·source link를 가진다.
 - [ ] `clinic-appointment-prologue-hero.png`가 기존 hero 언어와 first viewport 기준을 만족한다.
+- [ ] 환자 A 사건 흐름과 서비스 권한 경계의 locale별 SVG/PNG가 semantic·geometry·arrowhead·raster QA를 통과한다.
+- [ ] 두 diagram이 한국어·영어 프롤로그의 동일한 섹션과 source-backed event/authority를 가리킨다.
 - [ ] 기존 Part 1~7에 프롤로그 링크를 추가하고 양 locale의 순서가 일치한다.
 - [ ] `git diff --check`를 통과한다.
 - [ ] `npm run build`를 실행하고 변경된 한국어·영어 route를 확인한다.

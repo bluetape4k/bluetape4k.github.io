@@ -4,7 +4,7 @@
 
 **Goal:** 환자 A의 이벤트·N회·패키지 상품 구매가 \`AppointmentPlan\`, 방문 약속, 내원·상담·알림·통계 사실로 이어지는 전체 흐름을 한국어/영어 프롤로그 글과 기존 시리즈 내비게이션으로 공개한다.
 
-**Architecture:** 한국어 원고를 사실의 기준으로 먼저 작성하고, 승인된 설계 문서의 claim ledger와 상태 표지를 사용해 영어 글을 의미 보존형으로 현지화한다. 두 locale은 text-free 하나의 hero asset과 대응하는 route/link 구조를 공유하며, 상품·구매·예약·임상·CRM·알림·통계의 소유권을 글의 표와 사례에서 일관되게 유지한다. 새 visual companion이나 서비스 소스 코드는 추가하지 않는다.
+**Architecture:** 한국어 원고를 사실의 기준으로 먼저 작성하고, 승인된 설계 문서의 claim ledger와 상태 표지를 사용해 영어 글을 의미 보존형으로 현지화한다. 두 locale은 text-free 하나의 hero asset과 locale별 정적 SVG/PNG 두 쌍, 대응하는 route/link 구조를 공유하며, 상품·구매·예약·임상·CRM·알림·통계의 소유권을 글의 표와 사례에서 일관되게 유지한다. 새 visual companion route나 서비스 소스 코드는 추가하지 않는다.
 
 **Tech Stack:** Astro/Starlight MDX, Markdown frontmatter, 기존 \`/assets\` PNG hero, \`imagegen\`/ \`view_image\` visual QA, Node.js npm scripts (\`npm run build\`, \`npm test\`), \`rg\`, \`git diff --check\`.
 
@@ -15,6 +15,9 @@
 - Create: \`src/content/docs/ko/blog/clinic-appointment-prologue-product-to-appointment.mdx\` — 승인된 환자 A 사례와 상품→구매→계획→방문→내원/상담/알림/통계 흐름의 한국어 공개 원고.
 - Create: \`src/content/docs/blog/clinic-appointment-prologue-product-to-appointment.mdx\` — 같은 주장·사례·수치·근거를 보존하는 영어 현지화 원고.
 - Create: \`public/assets/clinic-appointment-prologue-hero.png\` — 두 locale이 공유하는 텍스트 없는 시리즈 스타일 hero.
+- Create: \`public/assets/clinic-appointment-prologue-patient-a-flow-01-{ko,en}.svg\` and \`.png\` — 환자 A의 행위·예약 처리·객관적 이벤트 타임라인.
+- Create: \`public/assets/clinic-appointment-prologue-service-boundaries-01-{ko,en}.svg\` and \`.png\` — 서비스별 권한·책임 경계와 입력/출력 사실.
+- Create: \`docs/review/2026-08-11-clinic-appointment-prologue-patient-a-flow.semantic.json\` and \`docs/review/2026-08-11-clinic-appointment-prologue-service-boundaries.semantic.json\` — source-backed semantic ledgers.
 - Modify: \`tests/ecosystem/blog-taxonomy.test.mjs\` — 새 bilingual post pair를 포함하도록 explicit blog post 수 계약을 갱신한다.
 - Modify: \`src/content/docs/ko/blog/clinic-appointment-part1-not-just-crud.mdx\` through \`clinic-appointment-part7-review-and-operational-evolution.mdx\` — 하단 시리즈 링크 맨 앞에 프롤로그 링크를 추가하고 기존 순서를 보존한다.
 - Modify: \`src/content/docs/blog/clinic-appointment-part1-not-just-crud.mdx\` through \`clinic-appointment-part7-review-and-operational-evolution.mdx\` — 영어 프롤로그 링크를 같은 위치와 순서로 추가한다.
@@ -289,3 +292,29 @@ Final report includes the implementation commit SHA, changed routes/assets, buil
 - Spec section 8 is covered by Tasks 4–5 (route, metadata, source-link, and navigation parity).
 - Spec sections 9–12 are covered by Tasks 1, 2, 4, and 6–7 (claim ledger, privacy boundary, DoD, risks, and evidence report).
 - No step uses a temporary-status marker or an unspecified instruction; every mutation names an exact path and every validation names a command and expected result.
+
+## Addendum: 환자 A 사건과 서비스 권한 경계 diagram
+
+이번 후속 요청은 새 companion route가 아니라 프롤로그 본문에 삽입하는 정적 diagram 두 장으로 한정한다.
+
+### Diagram Task 1: semantic ledger와 source-backed layout 고정
+
+- [ ] `clinic-appointment` `develop` `3dfcf2a`의 `data-flow.md`, Appointment Plan Foundation, visit commitment,
+  fulfillment, notification 문서를 다시 대조한다.
+- [ ] 환자 A의 `행위 → 예약서비스 처리 → 객관적 이벤트` 3-lane 흐름과 서비스별 `권한 → 책임 → 책임 밖` 경계를
+  두 semantic ledger에 기록한다.
+- [ ] `diagram-semantic-audit.py --repo-root . --json`가 두 ledger에서 unique node/edge와 source path를 통과하는지 확인한다.
+
+### Diagram Task 2: bilingual SVG/PNG 생성
+
+- [ ] 한국어·영어 각각 `patient-a-flow-01`과 `service-boundaries-01` SVG를 작성한다.
+- [ ] 모든 connector는 `data-connector`, marker `data-role`/`data-size`, rounded orthogonal geometry를 사용한다.
+- [ ] `xmllint`, `diagram-svg-text-normalize.py`, CairoSVG scale 2 렌더를 실행해 대응 PNG를 만든다.
+- [ ] 모든 PNG를 `diagram-visual-audit.py --require-opaque`와 full-size image inspection으로 확인한다.
+
+### Diagram Task 3: MDX 노출과 parity 검증
+
+- [ ] 한국어/영어 프롤로그의 “상품이 진료 계획이 되는 순간”과 “서비스 ownership” 섹션에 locale별 PNG를 삽입한다.
+- [ ] 각 이미지 alt/caption이 action/event와 authority/responsibility를 설명하고, source/visual snapshot 경계를
+  과장하지 않는지 확인한다.
+- [ ] `git diff --check`, `npm run build`, 두 route HTTP 200, asset reference, locale structural parity를 검증한다.
