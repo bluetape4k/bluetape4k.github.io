@@ -1,0 +1,261 @@
+---
+title: "병원 예약 SaaS 개발기 프롤로그: 상품 정보가 고객의 방문 약속이 되기까지"
+description: 상품 구매가 반복·복합 예약과 실제 내원, 상담, 알림, 통계로 이어지는 과정을 한 환자의 사례와 서비스 경계로 설명합니다.
+sidebar:
+  order: -202608111000
+blog:
+  date: 2026-08-11T10:00:00+09:00
+  image: /assets/clinic-appointment-prologue-hero.png
+  imageAlt: 상품 카드와 구매 문서, 진료 계획 그래프, 예약 달력, 상담·알림 신호를 한 작업대에서 연결하는 작은 로봇 작업자들
+  cardDescription: "이벤트·N회·패키지 상품이 고객의 방문 약속이 되고, 내원과 상담의 객관적 사실로 이어지는 전체 흐름을 그립니다."
+  tags: ["architecture", "domain-modeling", "event-driven", "resilience"]
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-prologue-hero.png" alt="상품 카드와 구매 문서, 진료 계획 그래프, 예약 달력, 상담·알림 신호를 한 작업대에서 연결하는 작은 로봇 작업자들" loading="eager" />
+  <figcaption>상품을 판매하는 시스템과 방문 약속을 보존하는 시스템은 다릅니다. 두 경계를 연결해야 한 환자의 여러 구매가 실제 진료 흐름으로 읽힙니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-11 · 병원 예약 서비스 개발기 · 프롤로그</p>
+
+병원 예약 서비스를 “상품을 고르고 달력에 시간을 저장하는 기능”으로 시작하면, 상품과 예약 사이의 중요한
+업무가 빠집니다. 이벤트 상품은 오늘 가능한 한 번의 진료를 뜻할 수 있고, N회 상품은 아직 남은 여러 번의
+방문을 뜻합니다. 패키지 상품은 여러 치료 항목과 선후 조건, 필요한 자원을 함께 묶습니다. 고객상담서비스는
+그 약속이 실제로 지켜졌는지, 지연됐는지, 다시 제안해야 하는지를 알아야 합니다.
+
+이 프롤로그는 한 명의 환자 A를 따라가며 상품개발부의 상품정보가 예약서비스를 지나 고객상담서비스와
+알림·통계 소비자에게 어떤 사실로 전달되는지 그립니다. 구현 코드의 목록을 나열하기보다 “이 사실을 누가
+소유하는가?”를 먼저 묻겠습니다. 글에서 사용하는 사실성 표지는 다음과 같습니다.
+
+| 표지 | 의미 |
+| --- | --- |
+| **현재 구현** | 관찰한 `develop` 소스와 병합된 기능 또는 현재 계약 |
+| **승인된 설계** | 설계가 승인됐지만 후속 구현 범위일 수 있는 계약 |
+| **운영 대기** | 코드·설계가 있어도 canary, backfill, production 검증이 남은 상태 |
+| **로드맵** | 열린 Issue/Epic에 남아 있어 현재 제공 기능으로 세지 않는 항목 |
+
+## 상품을 샀는데 왜 아직 방문 약속이 아닐까
+
+환자 A가 같은 병원에서 다음 상품을 차례로 구매했다고 해보겠습니다. 실제 상품명과 금액은 공개하지 않고
+상품의 예약 성격만 남깁니다.
+
+| 순서 | 환자 A의 사건 | 비즈니스 의미 | 예약서비스가 당장 해야 하는 일 |
+| --- | --- | --- | --- |
+| 1 | 당일 이벤트 상품 구매 | 특정 기간에 한 번 사용할 수 있는 혜택 | 구매 사실과 상품 버전을 받아 예약 가능한 의무로 해석할 준비 |
+| 2 | N회 방문 상품 추가 구매 | 여러 회차에 걸쳐 이행할 계약 | 남은 회차를 각각 추적할 계획 생성 |
+| 3 | 여러 치료 항목의 패키지 구매 | 한 번 또는 여러 번에 걸쳐 이행할 BOM | 항목과 선후 조건, 필요한 자원을 계획으로 보존 |
+| 4 | 원하는 날짜 요청 | 고객의 선호 또는 제안 요청 | 후보 시간과 임시 hold를 계산 |
+| 5 | 일정과 항목에 동의 | 고객과 병원의 방문 약속 | 동의와 정책 snapshot을 가진 확정 방문을 기록 |
+| 6 | 내원·부분 처치 | 실제 현장에서 일어난 사건 | 예약 사실과 임상 완료 사실을 섞지 않고 후속 단서 발행 |
+
+세 구매를 한 줄의 `appointment`로 합치면 처음에는 간단해 보입니다. 하지만 이벤트 상품의 한 번과 N회
+상품의 세 번째 회차, 패키지의 특정 항목은 남은 의무와 선후 조건이 서로 다릅니다. 환자 A가 한 번의 방문에서
+여러 상품의 항목을 함께 받는 것도 “구매 세 건이 예약 하나가 됐다”는 뜻은 아닙니다. 실제 방문에 합의된
+항목만 그 방문의 `AppointmentItem`으로 묶고, 각 구매의 계획은 계속 남겨야 합니다.
+
+> **핵심 구분**
+> 구매는 “무엇을 사용할 권리를 샀는가”라는 상업적 사실입니다. 예약은 “언제 어떤 항목을 어떤 자원으로
+> 이행하기로 합의했는가”라는 운영상의 약속입니다.
+
+## 상품 정보가 예약서비스에 들어오는 경로
+
+상품개발부는 상품 정의, BOM, 예약 규칙, 상품 버전을 소유합니다. 상품의 가격과 판매 문구까지 예약서비스가
+다시 해석하는 것은 경계가 아닙니다. 예약서비스가 필요한 것은 구매 시점에 어떤 버전의 상품이 어떤 예약 의무를
+만들었는지 판단할 수 있는 최소한의 계약입니다.
+
+흐름을 줄이면 다음과 같습니다.
+
+```text
+상품 catalog 정의 ──projection/event──> 예약서비스가 읽는 catalog view
+         │
+         └─ 구매/결제 계약 ──authority-qualified purchase event──> AppointmentPlan
+```
+
+구매 event에는 상품 식별자만 넣고 나중에 현재 catalog를 조회하게 만들면 위험합니다. 상품의 치료 항목이나
+회차 조건이 바뀌었을 때 과거 구매의 의미까지 바뀔 수 있기 때문입니다. 예약 계획에는 적어도 다음 snapshot이
+필요합니다.
+
+- 구매를 승인한 상품 버전과 catalog hash
+- 당시 예약에 사용할 수 있었던 항목과 반복 횟수
+- 구매를 만든 외부 계약을 추적할 correlation/idempotency 정보
+- 환불이나 취소가 뒤따를 때 연결할 purchase reference
+
+이것은 예약서비스가 상품 원본의 주인이 된다는 뜻이 아닙니다. 원본은 상품·커머스에 있고, 예약서비스는
+자기 계획을 재현하는 데 필요한 시점의 해석을 보존합니다. 구매 event가 중복으로 도착하거나 catalog
+projection이 잠시 늦어져도 inbox/outbox와 멱등 처리로 같은 구매가 계획을 두 번 만들지 않게 해야 합니다.
+
+이 경계는 [Appointment Plan Foundation #181](https://github.com/bluetape4k/clinic-appointment/issues/181)과
+[Appointment Plan 설계 문서](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-07-26-appointment-plan-and-capacity-design.md)가
+다루는 출발점입니다. 이 단계에서 구매 event를 받았다는 사실은 빈 슬롯이나 장비를 이미 점유했다는 뜻이
+아닙니다.
+
+## 상품이 진료 계획이 되는 순간
+
+**현재 구현**인 `AppointmentPlan`은 구매 한 건이 앞으로 이행해야 할 예약 의무의 경계를 만듭니다. 그 안의
+`PlannedTreatment`는 반복 회차나 패키지 항목을 분리해 남은 일을 표현합니다. 상품 유형별로 보면 차이가
+선명합니다.
+
+| 상품 유형 | 계획에 남기는 항목 | 예약에서 중요한 질문 |
+| --- | --- | --- |
+| 이벤트 상품 | 한 번의 `PlannedTreatment`, 유효 기간과 사용 조건 | 이 혜택을 사용할 수 있는 날짜와 진료 자원이 있는가? |
+| N회 상품 | 회차별 `PlannedTreatment 1..N`, 순서·잔여 횟수 | 이전 회차 완료나 간격 조건을 만족했는가? |
+| 패키지 상품 | 치료 항목별 계획, 의존성/DAG, 항목별 자원 요구 | 같은 방문에 묶을 수 있는 항목과 다음 방문으로 미뤄야 할 항목은 무엇인가? |
+
+계획은 달력보다 먼저 생길 수 있지만, 달력의 확정 약속과 같지는 않습니다. 패키지의 모든 항목을 한 번에
+받을 수 없으면 일부 항목만 한 방문에 제안하고 나머지는 미래 계획으로 남깁니다. N회 상품의 두 번째 회차를
+예약했다고 해서 세 번째 회차까지 같은 의사와 장비가 보장되는 것도 아닙니다.
+
+```text
+구매 event
+  └─> AppointmentPlan
+        └─> PlannedTreatment 1..N ── dependency/DAG
+                              ▲
+                              │ fulfills / attempts
+Appointment ──> AppointmentItem 1..N ──> ResourceAllocation 1..N
+```
+
+이 두 축을 분리하면 “상품을 샀으니 모든 미래 슬롯을 미리 잡아 두자”는 과한 모델을 피할 수 있습니다.
+`AppointmentPlan`은 이행해야 할 의무를, `Appointment`는 실제 방문의 시간·자원·동의를 표현합니다.
+`AppointmentItem`은 이번 방문이 어떤 계획 항목을 이행하려는지 연결하고, `ResourceAllocation`은 그 방문에서
+실제로 고려한 자원 점유를 남깁니다.
+
+## 계획이 고객과 병원의 방문 약속이 되는 순간
+
+환자 A가 원하는 날짜를 선택하면 예약서비스는 먼저 가능한 후보를 만들고, 필요하다면 잠시 자원을 hold합니다.
+이때의 상태를 최종 방문으로 표시하면 안 됩니다.
+
+1. **`PROPOSED`** — 상품 계획과 운영 제약을 만족할 가능성이 있는 방문 제안입니다.
+2. **`HELD`** — 다른 예약이 끼어들지 않도록 제한된 시간 동안 자원을 붙잡은 상태입니다.
+3. **`CONFIRMED`** — 환자와 병원이 일정·항목·정책에 동의한 방문 약속입니다.
+
+`CONFIRMED`에는 단순한 날짜보다 많은 것이 들어갑니다. 어떤 plan revision과 catalog hash를 기준으로
+제안했는지, 어떤 정책 snapshot과 수용량 ceiling을 적용했는지, 고객 동의가 언제 어떤 버전으로 묶였는지를
+재현할 수 있어야 합니다. 그래야 이후 상품 정의나 병원 운영 규칙이 바뀌어도 이미 동의한 약속을 조용히
+다시 계산하지 않습니다.
+
+승인된 설계에서는 이 합의 축을 `AppointmentCommitment`로 분리해 방문의 임상 상태와 섞지 않습니다.
+방문이 “언제 이행할지”에 대한 합의와 “실제로 어떤 처치가 끝났는지”에 대한 사실은 서로 다른 변경 이력을
+가져야 하기 때문입니다.
+
+이 구분은 [복수 항목 방문 약속 Issue #184](https://github.com/bluetape4k/clinic-appointment/issues/184),
+[구현 PR #197](https://github.com/bluetape4k/clinic-appointment/pull/197),
+[방문 약속 설계 문서](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-07-29-issue-184-visit-commitment-design.md)의
+**승인된 설계** 범위를 함께 읽어야 정확합니다. proposal·hold·consent를 구분하는 모델과 실제 운영 rollout의
+범위를 같은 것으로 쓰지 않습니다.
+
+고객 프로필이 바뀌었다고 확정 방문을 임의로 취소하거나 자원을 풀어 버리는 것도 같은 이유로 위험합니다.
+[프로필 변경 재평가 Issue #200](https://github.com/bluetape4k/clinic-appointment/issues/200)의 원칙은 CRM이
+원본 프로필을 소유하고, 예약서비스에는 opaque reference와 fingerprint, 최소한의 재평가 결과만 전달하는
+것입니다. 재평가는 `PROPOSED`와 `HELD`를 다시 검토할 수 있지만, 유효한 hold와 `CONFIRMED`의 snapshot·동의·
+자원 점유는 보호해야 합니다.
+
+## 서비스별 권한 경계
+
+환자 A의 한 구매를 여러 팀이 읽더라도 각 팀의 권위 데이터와 책임은 달라야 합니다. 예약서비스가 모든
+업무를 대신하는 대신, 다음처럼 필요한 사실만 넘겨받고 객관적 예약 사실만 다시 발행합니다.
+
+| 업무 영역 | 권위 데이터 | 예약서비스로 넘어오는 사실 | 예약서비스의 책임 |
+| --- | --- | --- | --- |
+| 상품관리/상품개발 | 상품 정의, BOM, 예약 규칙, 상품 버전 | catalog projection 또는 동기화 event | 구매 시점 버전의 예약 해석에 사용할 projection 보존 |
+| 구매/커머스 | 구매 계약, 추가 구매, 환불 | authority-qualified purchase event, refund event | 구매 하나당 계획 생성과 미래 예약 의무 반영 |
+| 예약서비스 | 계획, 방문 약속, 자원, 정책 snapshot | 다른 서비스가 읽는 plan·appointment event | 일정·수용량·동의·상태·이력의 권위 보존 |
+| 임상/시술 | 실제 시술 시작·완료·부분 완료 | completion event | 완료된 항목과 미래 계획의 영향 반영 |
+| 고객상담/CRM | 고객 프로필, assessment, 상담, 민원, 보상 | 최소 profile outcome 또는 예약 objective fact | 예약 변경 제안과 상담 handoff의 사실 제공 |
+| 알림 | 연락처, 언어, 동의, 발송 이력 | 예약 event와 outbox 처리 결과 | 예약 트랜잭션과 알림 전달을 직접 결합하지 않음 |
+| 통계/외부 consumer | projection, 최신 상태, SLA 지표 | 예약 event와 schema 계약 | 원본 예약 상태를 외부 projection에 직접 양도하지 않음 |
+
+## 한 번의 방문 뒤에 남는 여러 사실
+
+환자 A가 병원에 도착했다고 해서 하나의 상태가 모든 업무를 설명하지는 않습니다. 예약서비스가 보존하거나
+발행하는 객관적 사실과, 다른 서비스가 판단하는 업무 결과를 나눠야 합니다.
+
+| 사건 | 권위 데이터 | 예약서비스가 제공하는 것 | 예약서비스가 소유하지 않는 것 |
+| --- | --- | --- | --- |
+| 체크인·내원 | 병원의 내원/임상 시스템 | 예약과 연결된 attendance event | 임상 기록 원본 |
+| 일부·전체 처치 완료 | 임상/시술 시스템 | 완료·미완료 항목을 반영할 objective fact | 의료진의 진료 판단 |
+| 지연·중단·재예약 제안 | 예약서비스의 일정 이력 | `AppointmentInterrupted`, `AppointmentDelayExceeded`, `RescheduleOffered` 같은 사실 | 사과, 보상, 환불의 최종 결정 |
+| 상담·민원 | CRM/고객상담서비스 | 상담이 시작될 수 있는 예약 사실과 correlation | 상담 내용과 보상 정책 |
+| 환불·구매 취소 | 커머스/결제 | 관련 plan을 찾을 purchase reference | 환불 승인과 잔액 정산 |
+| 리마인더·결과 알림 | 알림 서비스 | durable notification outbox와 예약 event | 연락처·언어·동의 원본과 외부 채널 상태 |
+| 통계·SLA | 외부 consumer/통계 projection | 계약된 event와 schema | projection의 최종 조회 모델 |
+
+알림은 예약 트랜잭션 안에서 문자 발송을 직접 호출하는 기능이 아닙니다. 예약 사실을 durable outbox에
+기록하고, 발송 시점의 연락처·언어·동의를 읽어 재시도 가능한 채널로 전달합니다. [알림 outbox Issue
+#172](https://github.com/bluetape4k/clinic-appointment/issues/172)와 [운영 canary Issue
+#204](https://github.com/bluetape4k/clinic-appointment/issues/204)는 이 전달 경계와 **운영 대기** 상태를
+구분해 읽게 합니다.
+
+마찬가지로 통계 consumer는 예약 원본 테이블을 직접 소유하지 않습니다. 예약 event와 schema 계약을 받아
+자기 projection을 만들고, backfill과 production readiness가 끝나기 전에는 완료된 통계 서비스라고 쓰지
+않습니다. [이벤트 연계 Epic #17](https://github.com/bluetape4k/clinic-appointment/issues/17)과
+[통계 consumer PR #242](https://github.com/bluetape4k/clinic-appointment/pull/242)는 이 차이를 확인할
+근거입니다.
+
+## 같은 사실을 여러 서비스가 읽을 때 지켜야 할 것
+
+상품·구매·예약·임상·CRM·알림·통계가 모두 환자 A를 읽는다고 해서 하나의 거대한 고객 레코드를 만들어야
+하는 것은 아닙니다. 다음 네 가지 규칙이 경계를 지켜 줍니다.
+
+1. **시점 snapshot** — 구매와 확정 약속은 당시의 상품 버전, 정책, 동의를 재현할 수 있어야 합니다.
+2. **객관적 event** — 예약서비스는 “언제 무엇이 지연됐는가”를 발행하고, CRM은 그 사실을 바탕으로 상담과
+   보상을 판단합니다.
+3. **durable outbox** — 알림과 외부 consumer 전달이 일시적으로 실패해도 예약 확정과 함께 사라지지 않게
+   합니다.
+4. **projection의 비소유성** — 통계와 검색용 모델은 최신 조회를 제공하지만 예약 원본의 권위가 되지 않습니다.
+
+이 구조는 노쇼나 VIP 우선 정책을 예약서비스 안에 몰래 넣자는 뜻도 아닙니다. 반복해서 예약을 지키지 않은
+환자의 다음 요청에 어떤 제한이나 추가 확인을 둘지, VIP 고객의 편의를 어떤 공정성 기준으로 조정할지는
+병원 운영 정책과 고객상담·커머스의 판단입니다. 예약서비스는 확정 약속, 취소 사유, 지연 횟수, 재예약 제안
+같은 객관적 입력을 보존할 수 있지만, 영구 블랙리스트나 기존 확정 예약 취소를 현재 기능처럼 약속하지
+않습니다. 이후 시리즈에서 정책을 다룰 때도 이 소유권 경계를 먼저 확인해야 합니다.
+
+## 현재 구현과 다음 설계를 구분해 읽기
+
+| 상태 | 이 프롤로그에서의 예 | 독자가 기억할 질문 |
+| --- | --- | --- |
+| **현재 구현** | 구매 event에서 계획을 만들고, 현재 예약 모델과 이력을 보존하는 기반 | 이 계약은 관찰한 소스와 테스트에서 확인되는가? |
+| **승인된 설계** | plan 항목을 실제 복수 항목 방문과 consent-bound commitment로 묶는 확장 | 아직 구현되지 않은 경계를 운영 기능으로 오해하고 있지 않은가? |
+| **운영 대기** | 알림 outbox canary, 통계 backfill·production readiness | 코드가 있어도 실제 전달과 복구를 검증했는가? |
+| **로드맵** | 환자 포털 [#13](https://github.com/bluetape4k/clinic-appointment/issues/13), 모바일 채널 [#15](https://github.com/bluetape4k/clinic-appointment/issues/15) | 공개 채널이 현재 제공된다고 단정하지 않았는가? |
+
+이 표지는 글을 어렵게 만들기 위한 장식이 아닙니다. 예약 도메인은 상품 catalog, 구매 계약, 실제 내원,
+상담 기록이 서로 다른 속도로 바뀝니다. 설계 문서를 현재 API처럼 인용하거나, projection을 원본처럼
+취급하는 순간 한 환자의 여정이 잘못된 약속으로 바뀝니다.
+
+## 다음 글에서 다룰 것
+
+이번 글은 전체 지도를 그렸습니다. 다음 글에서는 상품 버전과 구매 snapshot을 더 가까이 들여다봅니다.
+상품이 수정되거나 구매 event가 중복 도착할 때 과거 고객의 예약 의무를 어떻게 보호할지, 그리고 catalog
+projection과 purchase event를 어떤 멱등 경계로 연결할지 [Issue #277](https://github.com/bluetape4k/clinic-appointment/issues/277)에서
+이어가겠습니다.
+
+### 시각 자료로 다시 보기
+
+아래 companion은 원본 설계 Markdown을 대체하는 문서가 아니라 읽기 흐름을 보조하는 공개 자료입니다.
+현재 공개 snapshot 기준은 `e9743337cdc1bf499af68e4e94a9f06b2833d838`이며, 구현과 설명이 어긋나면
+원본 설계와 현재 source를 먼저 다시 확인합니다. 이 프롤로그에서는 새 companion route를 추가하지 않습니다.
+
+- [상품 예약 운영 특성 분류](/ko/visual-companions/clinic-appointment/product-scheduling-classification/)
+- [상품 실행 BOM의 예약 전개 흐름](/ko/visual-companions/clinic-appointment/product-bom-to-appointment-flow/)
+- [예약 계획과 수용량](/ko/visual-companions/clinic-appointment/appointment-plan-and-capacity/)
+- [시각 자료 원본 목록](/ko/visual-companions/clinic-appointment/)
+
+### 근거 링크
+
+- [예약 서비스 데이터 흐름](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/requirements/data-flow.md)
+- [Appointment Plan Foundation #181](https://github.com/bluetape4k/clinic-appointment/issues/181)과 [설계 문서](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-07-26-appointment-plan-and-capacity-design.md)
+- [복수 항목 방문 약속 #184](https://github.com/bluetape4k/clinic-appointment/issues/184), [구현 PR #197](https://github.com/bluetape4k/clinic-appointment/pull/197)
+- [프로필 변경 재평가 #200](https://github.com/bluetape4k/clinic-appointment/issues/200)
+- [알림 outbox #172](https://github.com/bluetape4k/clinic-appointment/issues/172), [운영 canary #204](https://github.com/bluetape4k/clinic-appointment/issues/204)
+- [이벤트 연계 Epic #17](https://github.com/bluetape4k/clinic-appointment/issues/17), [통계 consumer PR #242](https://github.com/bluetape4k/clinic-appointment/pull/242)
+
+## 시리즈 링크
+
+- **프롤로그: 상품 정보가 고객의 방문 약속이 되기까지**
+- [Part 1: 병원 예약은 CRUD로 끝나지 않는다](/ko/blog/clinic-appointment-part1-not-just-crud/)
+- [Part 2: 예약 상태는 단순한 열거형이 아니다](/ko/blog/clinic-appointment-part2-state-machine-and-history/)
+- [Part 3: 병원마다 다른 업무시간과 자원으로 예약 가능 시간을 계산하기](/ko/blog/clinic-appointment-part3-clinic-specific-availability/)
+- [Part 4: 한 건의 예약 가능 시간 조회와 전체 일정 최적화는 다르다](/ko/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
+- [Part 5: 병원 업무 규칙을 Timefold 제약 조건으로 옮기기](/ko/blog/clinic-appointment-part5-timefold-constraints/)
+- [Part 6: 휴진과 장비 고장은 예약 설계를 어떻게 바꾸는가](/ko/blog/clinic-appointment-part6-closure-equipment-rescheduling/)
+- [Part 7: 완성 뒤가 진짜 시작이다](/ko/blog/clinic-appointment-part7-review-and-operational-evolution/)
