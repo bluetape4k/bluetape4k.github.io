@@ -42,7 +42,7 @@
 
 모든 상품명·병원명·금액·개인 식별 정보는 일반화한다. 글에서는 한 명의 환자를 **환자 A**로 부른다.
 
-| 순서 | 환자 A의 비즈니스 사건 | 예약서비스가 보존하거나 만드는 것 | 소유하지 않는 것 |
+| 순서 | 환자 A의 행위 또는 이벤트 | 예약서비스가 보존하거나 만드는 것 | 소유하지 않는 것 |
 |---|---|---|---|
 | 1 | 당일 이벤트 상품을 구매한다 | 구매 event를 받아 상품 버전과 예약 계약을 참조할 준비 | 상품 원본 정의, 결제 승인 |
 | 2 | N회 방문 상품을 추가 구매한다 | 여러 `PlannedTreatment`로 이어질 `AppointmentPlan` | 실제 시술 완료, 잔액 정산 |
@@ -145,7 +145,7 @@ Appointment ──> AppointmentItem 1..N ──> ResourceAllocation 1..N
 
 ### 7.1 기존 companion 연결
 
-새 companion route는 이 Issue 범위에 추가하지 않는다. 다만 프롤로그의 핵심 질문인 “환자 A의 사건이 어떤
+새 companion route는 이 Issue 범위에 추가하지 않는다. 다만 프롤로그의 핵심 질문인 “환자 A의 행위와 이벤트가 어떤
 행위와 이벤트로 바뀌는가”와 “서비스별 권한이 어디서 책임으로 끝나는가”를 한눈에 보여 주기 위해 글에
 locale별 정적 diagram asset 두 장을 추가한다. 원본 Markdown 설계가 권위이고, 웹 companion은 설명 보조라는
 기존 계약을 따른다.
@@ -174,7 +174,7 @@ locale별 정적 diagram asset 두 장을 추가한다. 원본 Markdown 설계�
 
 | diagram | 독자의 질문 | 핵심 시각 계약 | 대상 섹션 |
 |---|---|---|---|
-| `clinic-appointment-prologue-patient-a-flow-01-{ko,en}.svg/png` | 환자 A의 사건에서 어떤 행위가 어떤 예약 처리와 객관적 이벤트로 변하는가? | 상단 `행위`, 중앙 `예약서비스 처리`, 하단 `이벤트` 3개 lane과 시간 순서, action/event 범례 | 상품 구매부터 내원·후속 handoff까지 |
+| `clinic-appointment-prologue-patient-a-flow-01-{ko,en}.svg/png` | 환자 A의 행위와 이벤트가 어떤 예약 처리와 객관적 이벤트로 이어지는가? | 상단 `행위`, 중앙 `예약서비스 처리`, 하단 `이벤트` 3개 lane과 시간 순서, action/event 범례 | 상품 구매부터 내원·후속 handoff까지 |
 | `clinic-appointment-prologue-service-boundaries-01-{ko,en}.svg/png` | 상품·구매·예약·임상·CRM·알림·통계가 무엇을 권한으로 소유하고 어디까지 책임지는가? | 중앙 예약서비스 source-of-truth 경계, 좌측 입력 authority, 우측 consumer/adapter, 실선 입력·점선 objective event, `책임 밖` 표지 | 서비스 ownership 표와 사실 분리 |
 
 첫 diagram의 event 이름은 현재 source가 제공하는 `PurchaseCompleted`, `AppointmentPlanCreated`,
@@ -242,7 +242,7 @@ ledger의 source revision은 `clinic-appointment` `develop` `3dfcf2a`와 프롤�
 
 - [ ] 한국어 원고와 영어 현지화 원고가 동일한 사례·주장·숫자·source link를 가진다.
 - [ ] `clinic-appointment-prologue-hero.png`가 기존 hero 언어와 first viewport 기준을 만족한다.
-- [ ] 환자 A 사건 흐름과 서비스 권한 경계의 locale별 SVG/PNG가 semantic·geometry·arrowhead·raster QA를 통과한다.
+- [ ] 환자 A 행위·이벤트 흐름과 서비스 권한 경계의 locale별 SVG/PNG가 semantic·geometry·arrowhead·raster QA를 통과한다.
 - [ ] 두 diagram이 한국어·영어 프롤로그의 동일한 섹션과 source-backed event/authority를 가리킨다.
 - [ ] 기존 Part 1~7에 프롤로그 링크를 추가하고 양 locale의 순서가 일치한다.
 - [ ] `git diff --check`를 통과한다.

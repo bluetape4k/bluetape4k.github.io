@@ -293,28 +293,28 @@ Final report includes the implementation commit SHA, changed routes/assets, buil
 - Spec sections 9–12 are covered by Tasks 1, 2, 4, and 6–7 (claim ledger, privacy boundary, DoD, risks, and evidence report).
 - No step uses a temporary-status marker or an unspecified instruction; every mutation names an exact path and every validation names a command and expected result.
 
-## Addendum: 환자 A 사건과 서비스 권한 경계 diagram
+## Addendum: 환자 A 행위·이벤트와 서비스 권한 경계 diagram
 
 이번 후속 요청은 새 companion route가 아니라 프롤로그 본문에 삽입하는 정적 diagram 두 장으로 한정한다.
 
 ### Diagram Task 1: semantic ledger와 source-backed layout 고정
 
-- [ ] `clinic-appointment` `develop` `3dfcf2a`의 `data-flow.md`, Appointment Plan Foundation, visit commitment,
+- [x] `clinic-appointment` `develop` `3dfcf2a`의 `data-flow.md`, Appointment Plan Foundation, visit commitment,
   fulfillment, notification 문서를 다시 대조한다.
-- [ ] 환자 A의 `행위 → 예약서비스 처리 → 객관적 이벤트` 3-lane 흐름과 서비스별 `권한 → 책임 → 책임 밖` 경계를
+- [x] 환자 A의 `행위 → 예약서비스 처리 → 객관적 이벤트` 3-lane 흐름과 서비스별 `권한 → 책임 → 책임 밖` 경계를
   두 semantic ledger에 기록한다.
-- [ ] `diagram-semantic-audit.py --repo-root . --json`가 두 ledger에서 unique node/edge와 source path를 통과하는지 확인한다.
+- [x] `diagram-semantic-audit.py --repo-root . --json`가 두 ledger에서 unique node/edge와 source path를 통과하는지 확인한다.
 
 ### Diagram Task 2: bilingual SVG/PNG 생성
 
-- [ ] 한국어·영어 각각 `patient-a-flow-01`과 `service-boundaries-01` SVG를 작성한다.
-- [ ] 모든 connector는 `data-connector`, marker `data-role`/`data-size`, rounded orthogonal geometry를 사용한다.
-- [ ] `xmllint`, `diagram-svg-text-normalize.py`, CairoSVG scale 2 렌더를 실행해 대응 PNG를 만든다.
-- [ ] 모든 PNG를 `diagram-visual-audit.py --require-opaque`와 full-size image inspection으로 확인한다.
+- [x] 한국어·영어 각각 `patient-a-flow-01`과 `service-boundaries-01` SVG를 작성한다.
+- [x] 모든 connector는 `data-connector`, marker `data-role`/`data-size`, rounded orthogonal geometry를 사용한다.
+- [x] `xmllint`, `diagram-svg-text-normalize.py`, CairoSVG scale 2 렌더를 실행해 대응 PNG를 만든다.
+- [x] 모든 PNG를 `diagram-visual-audit.py --require-opaque`와 full-size image inspection으로 확인한다.
 
 ### Diagram Task 3: MDX 노출과 parity 검증
 
-- [ ] 한국어/영어 프롤로그의 “상품이 진료 계획이 되는 순간”과 “서비스 ownership” 섹션에 locale별 PNG를 삽입한다.
-- [ ] 각 이미지 alt/caption이 action/event와 authority/responsibility를 설명하고, source/visual snapshot 경계를
+- [x] 한국어/영어 프롤로그의 “상품이 진료 계획이 되는 순간”과 “서비스 ownership” 섹션에 locale별 PNG를 삽입한다.
+- [x] 각 이미지 alt/caption이 action/event와 authority/responsibility를 설명하고, source/visual snapshot 경계를
   과장하지 않는지 확인한다.
-- [ ] `git diff --check`, `npm run build`, 두 route HTTP 200, asset reference, locale structural parity를 검증한다.
+- [x] `git diff --check`, `npm run build`, 두 route HTTP 200, asset reference, locale structural parity를 검증한다.

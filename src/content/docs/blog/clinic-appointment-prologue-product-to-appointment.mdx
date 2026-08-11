@@ -111,6 +111,11 @@ the second visit of a multi-visit product does not guarantee the same doctor or 
                                   │ fulfills / attempts
     Appointment ──> AppointmentItem 1..N ──> ResourceAllocation 1..N
 
+<figure class="bt4k-architecture" data-diagram-title="Patient A actions and events">
+  <img src="/assets/clinic-appointment-prologue-patient-a-flow-01-en.png" alt="Patient A's actions move through appointment-service processing into PurchaseCompleted, AppointmentPlanCreated, AppointmentCreated, and TreatmentFulfillmentEvent" loading="lazy" />
+  <figcaption>The upper lane shows an intentional action or observed visit behavior; the lower lane shows an objective event committed by the appointment service. A purchase creates a plan, not an immediate slot or clinical completion.</figcaption>
+</figure>
+
 Keeping these axes separate prevents the overreach of “the patient bought it, so reserve every future slot now.”
 AppointmentPlan represents obligations to fulfill. Appointment represents the time, resources, and consent of an
 actual visit. AppointmentItem connects that visit to the plan entries it attempts to fulfill, while ResourceAllocation
@@ -158,6 +163,11 @@ different. The appointment service receives only the facts it needs and emits ob
 | Customer counseling/CRM | Customer profile, assessment, counseling, complaints, compensation | Minimal profile outcome or appointment objective fact | Provide facts for change proposals and counseling handoff |
 | Notification | Contact, language, consent, delivery history | Appointment event and outbox result | Keep appointment transactions separate from channel delivery |
 | Statistics/external consumers | Projections, current status, SLA metrics | Appointment event and schema contract | Never transfer authority over the appointment source to a projection |
+
+<figure class="bt4k-architecture" data-diagram-title="Service authority and responsibility boundaries">
+  <img src="/assets/clinic-appointment-prologue-service-boundaries-01-en.png" alt="Product, commerce, clinical, and CRM authorities provide facts to the appointment service, which emits objective events to notification and statistics consumers" loading="lazy" />
+  <figcaption>Each authority decides its own source facts. Scheduling owns the plan, visit commitment, capacity, policy snapshot, state, and history; notification, CRM, and statistics consume appointment facts without becoming the appointment source of truth.</figcaption>
+</figure>
 
 ## The several facts left by one visit
 

@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1100" viewBox="0 0 1800 1100" role="img" aria-labelledby="title desc">
+  <title id="title">환자 A의 행위와 이벤트가 방문 약속이 되는 흐름</title>
+  <desc id="desc">환자 A의 상품 구매, 예약 요청, 동의, 내원 행위를 예약서비스 처리와 PurchaseCompleted, AppointmentPlanCreated, AppointmentCreated, TreatmentFulfillmentEvent 이벤트로 구분한 시간 흐름입니다.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07111f"/><stop offset="0.55" stop-color="#0d1930"/><stop offset="1" stop-color="#11172d"/>
+    </linearGradient>
+    <linearGradient id="actionFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3a2816"/><stop offset="1" stop-color="#282034"/></linearGradient>
+    <linearGradient id="processingFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#142d49"/><stop offset="1" stop-color="#20214a"/></linearGradient>
+    <linearGradient id="eventFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#12384a"/><stop offset="1" stop-color="#15324a"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#020617" flood-opacity="0.58"/></filter>
+    <marker id="primaryArrow" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+      <path d="M 1 1 L 13 7 L 1 13 Z" fill="#67e8f9" data-solid-head="true"/>
+    </marker>
+    <marker id="actionArrow" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+      <path d="M 1 1 L 13 7 L 1 13 Z" fill="#fbbf24" data-solid-head="true"/>
+    </marker>
+    <style>
+      .title{font-family:"goorm Sans",sans-serif;font-size:46px;font-weight:700;fill:#f8fafc}
+      .subtitle{font-family:"goorm Sans",sans-serif;font-size:20px;fill:#aebed2}
+      .lane{font-family:"goorm Sans",sans-serif;font-size:23px;font-weight:700;fill:#f8fafc}
+      .lane-note{font-family:"goorm Sans",sans-serif;font-size:15px;fill:#aebed2}
+      .step{font-family:"goorm Sans Code","goorm Sans",monospace;font-size:17px;font-weight:700;fill:#dbeafe}
+      .card-title{font-family:"goorm Sans",sans-serif;font-size:23px;font-weight:700;fill:#f8fafc}
+      .body{font-family:"goorm Sans",sans-serif;font-size:16px;fill:#d7e3f3}
+      .code{font-family:"goorm Sans Code","goorm Sans",monospace;font-size:15px;font-weight:700;fill:#f8fafc}
+      .small{font-family:"goorm Sans",sans-serif;font-size:14px;fill:#aebed2}
+      .status{font-family:"goorm Sans",sans-serif;font-size:13px;font-weight:700;fill:#f8fafc}
+      .connector{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:4}
+      .action-line{stroke:#fbbf24;marker-end:url(#actionArrow)}
+      .primary-line{stroke:#67e8f9;marker-end:url(#primaryArrow)}
+    </style>
+  </defs>
+
+  <rect width="1800" height="1100" fill="url(#bg)"/>
+  <rect width="1800" height="1100" rx="34" fill="url(#bg)"/>
+  <rect x="28" y="28" width="1744" height="1044" rx="30" fill="none" stroke="#263a5e" stroke-width="2"/>
+  <circle cx="1650" cy="130" r="210" fill="#7c3aed" opacity=".08"/><circle cx="130" cy="960" r="230" fill="#0891b2" opacity=".07"/>
+
+  <text class="title" x="70" y="78">환자 A의 행위와 이벤트가 방문 약속이 되는 흐름</text>
+  <text class="subtitle" x="72" y="116">행위는 의도적으로 수행한 명령이고, 이벤트는 예약서비스가 확정해 남기는 객관적 사실입니다.</text>
+
+  <g transform="translate(1030 54)">
+    <rect x="0" y="0" width="20" height="20" rx="6" fill="#3a2816" stroke="#fbbf24" stroke-width="2"/>
+    <text class="small" x="30" y="16">행위 · 환자/운영 주체의 명령</text>
+    <rect x="250" y="0" width="20" height="20" rx="6" fill="#12384a" stroke="#2dd4bf" stroke-width="2"/>
+    <text class="small" x="280" y="16">이벤트 · 확정된 객관적 사실</text>
+  </g>
+
+  <path class="connector primary-line" data-connector="timeline-1-2" d="M 470 164 H 490"/>
+  <path class="connector primary-line" data-connector="timeline-2-3" d="M 710 164 H 730"/>
+  <path class="connector primary-line" data-connector="timeline-3-4" d="M 950 164 H 970"/>
+  <path class="connector primary-line" data-connector="timeline-4-5" d="M 1190 164 H 1210"/>
+  <path class="connector primary-line" data-connector="timeline-5-6" d="M 1430 164 H 1450"/>
+  <g>
+    <circle cx="360" cy="164" r="12" fill="#0e7490" stroke="#67e8f9" stroke-width="3"/><circle cx="600" cy="164" r="12" fill="#0e7490" stroke="#67e8f9" stroke-width="3"/>
+    <circle cx="840" cy="164" r="12" fill="#0e7490" stroke="#67e8f9" stroke-width="3"/><circle cx="1080" cy="164" r="12" fill="#0e7490" stroke="#67e8f9" stroke-width="3"/>
+    <circle cx="1320" cy="164" r="12" fill="#0e7490" stroke="#67e8f9" stroke-width="3"/><circle cx="1560" cy="164" r="12" fill="#0e7490" stroke="#67e8f9" stroke-width="3"/>
+    <text class="step" x="360" y="136" text-anchor="middle">01</text><text class="step" x="600" y="136" text-anchor="middle">02</text><text class="step" x="840" y="136" text-anchor="middle">03</text>
+    <text class="step" x="1080" y="136" text-anchor="middle">04</text><text class="step" x="1320" y="136" text-anchor="middle">05</text><text class="step" x="1560" y="136" text-anchor="middle">06</text>
+  </g>
+
+  <g>
+    <rect x="62" y="216" width="154" height="178" rx="22" fill="#251b2b" stroke="#fbbf24" stroke-width="2"/>
+    <text class="lane" x="139" y="278" text-anchor="middle">행위</text><text class="lane-note" x="139" y="310" text-anchor="middle">의도적 명령</text><text class="lane-note" x="139" y="334" text-anchor="middle">또는 방문 행동</text>
+    <rect x="62" y="446" width="154" height="178" rx="22" fill="#132541" stroke="#60a5fa" stroke-width="2"/>
+    <text class="lane" x="139" y="508" text-anchor="middle">예약서비스</text><text class="lane-note" x="139" y="540" text-anchor="middle">검증·계획·상태</text><text class="lane-note" x="139" y="564" text-anchor="middle">· 약속 · 후속</text>
+    <rect x="62" y="676" width="154" height="178" rx="22" fill="#123447" stroke="#2dd4bf" stroke-width="2"/>
+    <text class="lane" x="139" y="738" text-anchor="middle">이벤트</text><text class="lane-note" x="139" y="770" text-anchor="middle">확정된 객관적</text><text class="lane-note" x="139" y="794" text-anchor="middle">사실과 전달 단서</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="250" y="216" width="220" height="178" rx="20" fill="url(#actionFill)" stroke="#fbbf24" stroke-width="2"/>
+    <rect x="266" y="232" width="82" height="25" rx="12" fill="#92400e"/><text class="status" x="307" y="250" text-anchor="middle">현재 구현</text>
+    <text class="card-title" x="360" y="292" text-anchor="middle">이벤트 상품 구매</text><text class="body" x="360" y="326" text-anchor="middle">한 번 사용할 혜택</text><text class="body" x="360" y="350" text-anchor="middle">유효 기간 안의 선택</text>
+    <rect x="490" y="216" width="220" height="178" rx="20" fill="url(#actionFill)" stroke="#fbbf24" stroke-width="2"/>
+    <rect x="506" y="232" width="82" height="25" rx="12" fill="#92400e"/><text class="status" x="547" y="250" text-anchor="middle">현재 구현</text>
+    <text class="card-title" x="600" y="292" text-anchor="middle">N회 상품 추가</text><text class="body" x="600" y="326" text-anchor="middle">여러 회차를 구매</text><text class="body" x="600" y="350" text-anchor="middle">남은 방문을 추적</text>
+    <rect x="730" y="216" width="220" height="178" rx="20" fill="url(#actionFill)" stroke="#fbbf24" stroke-width="2"/>
+    <rect x="746" y="232" width="82" height="25" rx="12" fill="#92400e"/><text class="status" x="787" y="250" text-anchor="middle">현재 구현</text>
+    <text class="card-title" x="840" y="292" text-anchor="middle">패키지 항목 선택</text><text class="body" x="840" y="326" text-anchor="middle">여러 치료와 조건</text><text class="body" x="840" y="350" text-anchor="middle">한 번에 전부 받지 않음</text>
+    <rect x="970" y="216" width="220" height="178" rx="20" fill="url(#actionFill)" stroke="#fbbf24" stroke-width="2"/>
+    <rect x="986" y="232" width="82" height="25" rx="12" fill="#78350f"/><text class="status" x="1027" y="250" text-anchor="middle">설계</text>
+    <text class="card-title" x="1080" y="292" text-anchor="middle">희망 날짜 요청</text><text class="body" x="1080" y="326" text-anchor="middle">환자 선호 전달</text><text class="body" x="1080" y="350" text-anchor="middle">항목·시간대 제안</text>
+    <rect x="1210" y="216" width="220" height="178" rx="20" fill="url(#actionFill)" stroke="#fbbf24" stroke-width="2"/>
+    <rect x="1226" y="232" width="82" height="25" rx="12" fill="#78350f"/><text class="status" x="1267" y="250" text-anchor="middle">설계</text>
+    <text class="card-title" x="1320" y="292" text-anchor="middle">일정·항목 동의</text><text class="body" x="1320" y="326" text-anchor="middle">정책 snapshot 확인</text><text class="body" x="1320" y="350" text-anchor="middle">방문 약속을 수락</text>
+    <rect x="1450" y="216" width="220" height="178" rx="20" fill="url(#actionFill)" stroke="#fbbf24" stroke-width="2"/>
+    <rect x="1466" y="232" width="82" height="25" rx="12" fill="#92400e"/><text class="status" x="1507" y="250" text-anchor="middle">운영 사실</text>
+    <text class="card-title" x="1560" y="292" text-anchor="middle">내원·체크인</text><text class="body" x="1560" y="326" text-anchor="middle">일부 처치 또는 완료</text><text class="body" x="1560" y="350" text-anchor="middle">실제 방문 행동</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="250" y="446" width="220" height="178" rx="20" fill="url(#processingFill)" stroke="#60a5fa" stroke-width="2"/>
+    <text class="card-title" x="360" y="494" text-anchor="middle">구매 계약 검증</text><text class="body" x="360" y="532" text-anchor="middle">상품 버전 snapshot</text><text class="code" x="360" y="566" text-anchor="middle">PurchaseCompleted</text>
+    <rect x="490" y="446" width="220" height="178" rx="20" fill="url(#processingFill)" stroke="#60a5fa" stroke-width="2"/>
+    <text class="card-title" x="600" y="494" text-anchor="middle">Plan 전개</text><text class="code" x="600" y="532" text-anchor="middle">PlannedTreatment 1..N</text><text class="body" x="600" y="566" text-anchor="middle">구매별 의무 보존</text>
+    <rect x="730" y="446" width="220" height="178" rx="20" fill="url(#processingFill)" stroke="#60a5fa" stroke-width="2"/>
+    <text class="card-title" x="840" y="494" text-anchor="middle">BOM·DAG 확장</text><text class="body" x="840" y="532" text-anchor="middle">자원·선후 조건 보존</text><text class="body" x="840" y="566" text-anchor="middle">남은 항목을 분리</text>
+    <rect x="970" y="446" width="220" height="178" rx="20" fill="url(#processingFill)" stroke="#60a5fa" stroke-width="2"/>
+    <text class="card-title" x="1080" y="494" text-anchor="middle">후보 계산·hold</text><text class="code" x="1080" y="532" text-anchor="middle">PROPOSED → HELD</text><text class="body" x="1080" y="566" text-anchor="middle">자원 점유는 임시</text>
+    <rect x="1210" y="446" width="220" height="178" rx="20" fill="url(#processingFill)" stroke="#60a5fa" stroke-width="2"/>
+    <text class="card-title" x="1320" y="494" text-anchor="middle">commitment 확정</text><text class="body" x="1320" y="532" text-anchor="middle">동의·수용량 commit</text><text class="body" x="1320" y="566" text-anchor="middle">plan revision 고정</text>
+    <rect x="1450" y="446" width="220" height="178" rx="20" fill="url(#processingFill)" stroke="#60a5fa" stroke-width="2"/>
+    <text class="card-title" x="1560" y="494" text-anchor="middle">완료·잔여 분리</text><text class="body" x="1560" y="532" text-anchor="middle">임상 원본은 외부 권위</text><text class="body" x="1560" y="566" text-anchor="middle">CRM handoff 준비</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="250" y="676" width="220" height="178" rx="20" fill="url(#eventFill)" stroke="#2dd4bf" stroke-width="2"/>
+    <text class="code" x="360" y="732" text-anchor="middle">PurchaseCompleted</text><text class="body" x="360" y="770" text-anchor="middle">구매 완료 이벤트</text><text class="small" x="360" y="808" text-anchor="middle">계획 전개의 입력 사실</text>
+    <rect x="490" y="676" width="220" height="178" rx="20" fill="url(#eventFill)" stroke="#2dd4bf" stroke-width="2"/>
+    <text class="code" x="600" y="732" text-anchor="middle">AppointmentPlanCreated</text><text class="body" x="600" y="770" text-anchor="middle">구매별 계획 생성</text><text class="small" x="600" y="808" text-anchor="middle">슬롯 점유와 다름</text>
+    <rect x="730" y="676" width="220" height="178" rx="20" fill="url(#eventFill)" stroke="#2dd4bf" stroke-width="2"/>
+    <text class="card-title" x="840" y="732" text-anchor="middle">Plan item ready</text><text class="body" x="840" y="770" text-anchor="middle">남은 의무가 보임</text><text class="small" x="840" y="808" text-anchor="middle">패키지·N회 항목 추적</text>
+    <rect x="970" y="676" width="220" height="178" rx="20" fill="url(#eventFill)" stroke="#2dd4bf" stroke-width="2"/>
+    <text class="code" x="1080" y="732" text-anchor="middle">AppointmentProposed</text><text class="body" x="1080" y="770" text-anchor="middle">임시 상태 이벤트</text><text class="small" x="1080" y="808" text-anchor="middle">확정 약속 아님</text>
+    <rect x="1210" y="676" width="220" height="178" rx="20" fill="url(#eventFill)" stroke="#2dd4bf" stroke-width="2"/>
+    <text class="code" x="1320" y="732" text-anchor="middle">AppointmentCreated</text><text class="body" x="1320" y="770" text-anchor="middle">CONFIRMED 방문 약속</text><text class="small" x="1320" y="808" text-anchor="middle">동의·snapshot 포함</text>
+    <rect x="1450" y="676" width="220" height="178" rx="20" fill="url(#eventFill)" stroke="#2dd4bf" stroke-width="2"/>
+    <text class="code" x="1560" y="722" text-anchor="middle"><tspan x="1560" dy="0">TreatmentFulfillment</tspan><tspan x="1560" dy="22">Event</tspan></text><text class="body" x="1560" y="776" text-anchor="middle">attendance · 완료·잔여</text><text class="small" x="1560" y="812" text-anchor="middle">재배정·상담 단서 발행</text>
+  </g>
+
+  <g>
+    <path class="connector action-line" data-connector="action-1-process" d="M 360 394 V 446"/><path class="connector action-line" data-connector="action-2-process" d="M 600 394 V 446"/><path class="connector action-line" data-connector="action-3-process" d="M 840 394 V 446"/>
+    <path class="connector action-line" data-connector="action-4-process" d="M 1080 394 V 446"/><path class="connector action-line" data-connector="action-5-process" d="M 1320 394 V 446"/><path class="connector action-line" data-connector="action-6-process" d="M 1560 394 V 446"/>
+    <path class="connector primary-line" data-connector="process-1-event" d="M 360 624 V 676"/><path class="connector primary-line" data-connector="process-2-event" d="M 600 624 V 676"/><path class="connector primary-line" data-connector="process-3-event" d="M 840 624 V 676"/>
+    <path class="connector primary-line" data-connector="process-4-event" d="M 1080 624 V 676"/><path class="connector primary-line" data-connector="process-5-event" d="M 1320 624 V 676"/><path class="connector primary-line" data-connector="process-6-event" d="M 1560 624 V 676"/>
+  </g>
+
+  <rect x="62" y="920" width="1608" height="116" rx="22" fill="#0b1628" stroke="#2b4168" stroke-width="2"/>
+  <text class="small" x="90" y="955">읽는 규칙</text>
+  <text class="body" x="90" y="985">구매 이벤트는 계획을 만들지만 슬롯을 확정하지 않습니다. 확정 방문과 임상 완료는 서로 다른 이벤트이며,</text>
+  <text class="body" x="90" y="1012">부분 완료·중단 뒤의 잔여 의무는 다음 제안으로 돌아갑니다. 노쇼·VIP 정책의 판단은 이 흐름의 예약 권한 밖입니다.</text>
+</svg>

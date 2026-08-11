@@ -39,14 +39,14 @@ blog:
 환자 A가 같은 병원에서 다음 상품을 차례로 구매했다고 해보겠습니다. 실제 상품명과 금액은 공개하지 않고
 상품의 예약 성격만 남깁니다.
 
-| 순서 | 환자 A의 사건 | 비즈니스 의미 | 예약서비스가 당장 해야 하는 일 |
+| 순서 | 환자 A의 행위 또는 이벤트 | 비즈니스 의미 | 예약서비스가 당장 해야 하는 일 |
 | --- | --- | --- | --- |
 | 1 | 당일 이벤트 상품 구매 | 특정 기간에 한 번 사용할 수 있는 혜택 | 구매 사실과 상품 버전을 받아 예약 가능한 의무로 해석할 준비 |
 | 2 | N회 방문 상품 추가 구매 | 여러 회차에 걸쳐 이행할 계약 | 남은 회차를 각각 추적할 계획 생성 |
 | 3 | 여러 치료 항목의 패키지 구매 | 한 번 또는 여러 번에 걸쳐 이행할 BOM | 항목과 선후 조건, 필요한 자원을 계획으로 보존 |
 | 4 | 원하는 날짜 요청 | 고객의 선호 또는 제안 요청 | 후보 시간과 임시 hold를 계산 |
 | 5 | 일정과 항목에 동의 | 고객과 병원의 방문 약속 | 동의와 정책 snapshot을 가진 확정 방문을 기록 |
-| 6 | 내원·부분 처치 | 실제 현장에서 일어난 사건 | 예약 사실과 임상 완료 사실을 섞지 않고 후속 단서 발행 |
+| 6 | 내원·부분 처치 행위 | 실제 현장에서 기록된 이벤트 | 예약 사실과 임상 완료 사실을 섞지 않고 후속 단서 발행 |
 
 세 구매를 한 줄의 `appointment`로 합치면 처음에는 간단해 보입니다. 하지만 이벤트 상품의 한 번과 N회
 상품의 세 번째 회차, 패키지의 특정 항목은 남은 의무와 선후 조건이 서로 다릅니다. 환자 A가 한 번의 방문에서
@@ -114,6 +114,11 @@ projection이 잠시 늦어져도 inbox/outbox와 멱등 처리로 같은 구매
 Appointment ──> AppointmentItem 1..N ──> ResourceAllocation 1..N
 ```
 
+<figure class="bt4k-architecture" data-diagram-title="환자 A의 행위와 이벤트 흐름">
+  <img src="/assets/clinic-appointment-prologue-patient-a-flow-01-ko.png" alt="환자 A의 행위가 예약서비스 처리를 거쳐 PurchaseCompleted, AppointmentPlanCreated, AppointmentCreated, TreatmentFulfillmentEvent로 이어지는 세 단계 흐름" loading="lazy" />
+  <figcaption>위쪽은 환자나 운영 주체가 수행한 행위, 아래쪽은 예약서비스가 확정해 남긴 이벤트입니다. 상품 구매가 곧 슬롯 확정이나 임상 완료를 뜻하지 않는 이유를 한눈에 볼 수 있습니다.</figcaption>
+</figure>
+
 이 두 축을 분리하면 “상품을 샀으니 모든 미래 슬롯을 미리 잡아 두자”는 과한 모델을 피할 수 있습니다.
 `AppointmentPlan`은 이행해야 할 의무를, `Appointment`는 실제 방문의 시간·자원·동의를 표현합니다.
 `AppointmentItem`은 이번 방문이 어떤 계획 항목을 이행하려는지 연결하고, `ResourceAllocation`은 그 방문에서
@@ -164,12 +169,17 @@ Appointment ──> AppointmentItem 1..N ──> ResourceAllocation 1..N
 | 알림 | 연락처, 언어, 동의, 발송 이력 | 예약 event와 outbox 처리 결과 | 예약 트랜잭션과 알림 전달을 직접 결합하지 않음 |
 | 통계/외부 consumer | projection, 최신 상태, SLA 지표 | 예약 event와 schema 계약 | 원본 예약 상태를 외부 projection에 직접 양도하지 않음 |
 
+<figure class="bt4k-architecture" data-diagram-title="서비스별 권한과 책임 경계">
+  <img src="/assets/clinic-appointment-prologue-service-boundaries-01-ko.png" alt="상품관리, 구매, 임상, CRM이 예약서비스에 원천 사실을 입력하고 예약서비스가 알림과 통계 consumer에 객관적 이벤트를 전달하는 권한 경계" loading="lazy" />
+  <figcaption>권한을 가진 서비스가 원천 사실을 결정하고, 예약서비스는 계획·방문 약속·수용량·이력의 source of truth를 보존합니다. CRM·알림·통계는 이벤트를 소비하지만 예약 원본의 권위자가 되지 않습니다.</figcaption>
+</figure>
+
 ## 한 번의 방문 뒤에 남는 여러 사실
 
 환자 A가 병원에 도착했다고 해서 하나의 상태가 모든 업무를 설명하지는 않습니다. 예약서비스가 보존하거나
 발행하는 객관적 사실과, 다른 서비스가 판단하는 업무 결과를 나눠야 합니다.
 
-| 사건 | 권위 데이터 | 예약서비스가 제공하는 것 | 예약서비스가 소유하지 않는 것 |
+| 이벤트 | 권위 데이터 | 예약서비스가 제공하는 것 | 예약서비스가 소유하지 않는 것 |
 | --- | --- | --- | --- |
 | 체크인·내원 | 병원의 내원/임상 시스템 | 예약과 연결된 attendance event | 임상 기록 원본 |
 | 일부·전체 처치 완료 | 임상/시술 시스템 | 완료·미완료 항목을 반영할 objective fact | 의료진의 진료 판단 |
