@@ -1,0 +1,255 @@
+---
+title: "Clinic Appointment SaaS Prologue: From Product Information to a Patient's Visit Commitment"
+description: Follow one patient's event, multi-visit, and package purchases into an appointment plan, a visit commitment, attendance, counseling, notifications, and statistics.
+sidebar:
+  order: -202608111000
+blog:
+  date: 2026-08-11T10:00:00+09:00
+  image: /assets/clinic-appointment-prologue-hero.png
+  imageAlt: Small robotic builders connect product cards, a purchase document, a treatment plan graph, an appointment calendar, and counseling and notification signals on one workbench
+  cardDescription: "Map how event, multi-visit, and package products become visit commitments and objective attendance and counseling facts."
+  tags: ["architecture", "domain-modeling", "event-driven", "resilience"]
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-prologue-hero.png" alt="Small robotic builders connect product cards, a purchase document, a treatment plan graph, an appointment calendar, and counseling and notification signals on one workbench" loading="eager" />
+  <figcaption>The system that sells a product and the system that preserves a visit commitment have different boundaries. A clinic appointment service must connect them before one patient's purchases can become a reliable care journey.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-11 · clinic appointment service series · Prologue</p>
+
+When a clinic appointment service starts as “pick a product and save a time on the calendar,” it hides the work
+between a product and a visit. An event product may represent one treatment available today. A multi-visit product
+represents several future visits. A package groups multiple treatments, dependencies, and resource requirements.
+Customer counseling needs to know whether the commitment was kept, delayed, or offered again.
+
+This prologue follows one patient, Patient A, and maps the facts that move from the product team to the appointment
+service, then to customer counseling, notifications, and statistics consumers. Instead of listing implementation
+features, it asks one question first: “Who owns this fact?” The article uses four fact-status labels.
+
+| Label | Meaning |
+| --- | --- |
+| **Current implementation** | A merged capability or contract confirmed in the observed develop source |
+| **Approved design** | An approved contract that may still be a follow-up implementation scope |
+| **Awaiting operations** | Code or design exists, but canary, backfill, or production validation remains |
+| **Roadmap** | A planned follow-up that is not a currently available feature |
+
+## Why a purchase is not a visit commitment yet
+
+Suppose Patient A buys the following products from the same clinic. We keep the scheduling characteristics and omit
+real product names and prices.
+
+| Step | Patient A's event | Business meaning | What the appointment service does next |
+| --- | --- | --- | --- |
+| 1 | Buys a same-day event product | A benefit usable once within a defined window | Receive the purchase fact and product version so it can be interpreted as a schedulable obligation |
+| 2 | Adds a multi-visit product | A contract fulfilled over several visits | Create a plan that tracks each remaining visit |
+| 3 | Buys a package of treatments | A BOM fulfilled in one or more visits | Preserve items, dependencies, and required resources in the plan |
+| 4 | Requests a preferred date | A patient preference or scheduling proposal | Calculate candidate times and a temporary hold |
+| 5 | Agrees to the time and items | A visit commitment between patient and clinic | Record consent and a policy snapshot with the confirmed visit |
+| 6 | Checks in and receives part of the care | An event at the clinic | Keep appointment facts separate from clinical completion and emit follow-up clues |
+
+Collapsing the three purchases into one appointment looks simple at first. But the one-time event benefit, the third
+visit of the multi-visit product, and one item in the package have different remaining obligations and dependencies.
+If Patient A receives items from several purchases in one visit, that still does not mean “three purchases became one
+appointment.” Only the items agreed for that visit belong in its AppointmentItem records, while each purchase plan
+remains traceable.
+
+> **The important distinction**
+> A purchase is the commercial fact of what the patient acquired the right to use. An appointment is the operational
+> commitment about when, which items, and which resources will fulfill it.
+
+## How product information enters the appointment service
+
+The product team owns product definitions, BOMs, scheduling rules, and product versions. The appointment service does
+not become the owner of product prices or sales copy. It needs a contract that can answer which product version created
+which scheduling obligation at the time of purchase.
+
+The shortened flow looks like this:
+
+    Product catalog definition ──projection/event──> catalog view read by scheduling
+             │
+             └─ commerce contract ──authority-qualified purchase event──> AppointmentPlan
+
+Putting only a product identifier in the purchase event and looking up the current catalog later is dangerous. A
+changed treatment item or visit rule could silently change the meaning of an old purchase. The plan therefore needs
+enough of the time-specific interpretation to reproduce the obligation:
+
+- the approved product version and catalog hash
+- the items and repeat count available to scheduling at purchase time
+- correlation and idempotency information for the external contract
+- a purchase reference for a later refund or cancellation
+
+This does not make the appointment service the owner of the product source. The product and commerce systems remain
+authoritative; scheduling preserves the interpretation it needs to reproduce its own plan. If a purchase event arrives
+twice or a catalog projection is briefly late, inbox/outbox and idempotent handling must prevent two plans for one
+purchase.
+
+That boundary is described in the [Appointment Plan design](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-07-26-appointment-plan-and-capacity-design.md).
+Receiving the purchase event still does not mean that an empty slot or a device has already been occupied.
+
+## When a product becomes a treatment plan
+
+The **Current implementation** boundary of AppointmentPlan represents the scheduling obligations created by one
+purchase. Its PlannedTreatment entries separate repeat visits and package items so remaining work stays visible. The
+product types make the difference concrete.
+
+| Product type | What the plan keeps | The scheduling question |
+| --- | --- | --- |
+| Event product | One PlannedTreatment, validity window, and use conditions | Is a date and clinical resource available for this benefit? |
+| Multi-visit product | PlannedTreatment 1..N with order and remaining count | Did the previous visit and required interval complete? |
+| Package product | Item plans, dependency/DAG, and per-item resources | Which items fit this visit and which must move to a later visit? |
+
+A plan may exist before a calendar slot, but it is not the confirmed commitment on that calendar. If the full package
+cannot fit in one visit, some items can be proposed now while the remaining obligations stay in the future plan. Booking
+the second visit of a multi-visit product does not guarantee the same doctor or equipment for its third visit.
+
+    Purchase event
+      └─> AppointmentPlan
+            └─> PlannedTreatment 1..N ── dependency/DAG
+                                  ▲
+                                  │ fulfills / attempts
+    Appointment ──> AppointmentItem 1..N ──> ResourceAllocation 1..N
+
+<figure class="bt4k-architecture" data-diagram-title="Patient A actions and events">
+  <img src="/assets/clinic-appointment-prologue-patient-a-flow-01-en.png" alt="Patient A's actions move through appointment-service processing into PurchaseCompleted, AppointmentPlanCreated, AppointmentCreated, and TreatmentFulfillmentEvent" loading="lazy" />
+  <figcaption>The upper lane shows an intentional action or observed visit behavior; the lower lane shows an objective event committed by the appointment service. A purchase creates a plan, not an immediate slot or clinical completion.</figcaption>
+</figure>
+
+Keeping these axes separate prevents the overreach of “the patient bought it, so reserve every future slot now.”
+AppointmentPlan represents obligations to fulfill. Appointment represents the time, resources, and consent of an
+actual visit. AppointmentItem connects that visit to the plan entries it attempts to fulfill, while ResourceAllocation
+records the resources considered for that visit.
+
+## When the plan becomes a patient-and-clinic commitment
+
+When Patient A requests a date, the appointment service calculates candidates and may hold a resource for a limited
+time. It must not label that temporary state as the final visit.
+
+1. **PROPOSED** — a visit proposal that may satisfy the plan and operating constraints.
+2. **HELD** — a bounded hold that protects a candidate from competing bookings for a limited period.
+3. **CONFIRMED** — the visit commitment agreed by the patient and clinic for its time, items, and policy.
+
+CONFIRMED contains more than a date. The system must be able to reproduce the plan revision and catalog hash behind the
+proposal, the policy snapshot and capacity ceiling applied, and the version of the patient's consent. Otherwise a
+later product or clinic-policy change can silently rewrite an agreement that was already made.
+
+The approved design separates this agreement axis as AppointmentCommitment instead of mixing it with clinical state.
+The agreement about when an item will be fulfilled and the fact about what care actually finished need different
+histories and change rules.
+
+Read this distinction as an **Approved design** boundary for multi-item visit commitments. Do not present the
+proposal/hold/consent model and an operational rollout as the same thing.
+
+The same protection applies when a customer profile changes. The profile-change reassessment boundary keeps the raw
+profile in CRM and sends scheduling only an opaque reference, fingerprint, and minimal reassessment outcome.
+Reassessment may revisit PROPOSED and HELD, but a valid hold and the snapshot, consent, and resource occupancy of
+CONFIRMED must be protected.
+
+## Service ownership boundaries
+
+Several teams may read facts about Patient A's purchase, but their authoritative data and responsibilities remain
+different. The appointment service receives only the facts it needs and emits objective appointment facts in return.
+
+| Domain | Authority data | Fact entering scheduling | Scheduling responsibility |
+| --- | --- | --- | --- |
+| Product management/development | Product definitions, BOMs, scheduling rules, product versions | Catalog projection or synchronization event | Preserve the projection needed to interpret the purchase-time version |
+| Commerce/purchases | Purchase contracts, add-ons, refunds | Authority-qualified purchase and refund events | Create one plan per purchase and reflect future scheduling obligations |
+| Appointment service | Plans, visit commitments, resources, policy snapshots | Plan and appointment events read by other services | Own schedule, capacity, consent, state, and history |
+| Clinical/treatment | Treatment start, completion, and partial completion | Completion event | Reflect completed items and their effect on future obligations |
+| Customer counseling/CRM | Customer profile, assessment, counseling, complaints, compensation | Minimal profile outcome or appointment objective fact | Provide facts for change proposals and counseling handoff |
+| Notification | Contact, language, consent, delivery history | Appointment event and outbox result | Keep appointment transactions separate from channel delivery |
+| Statistics/external consumers | Projections, current status, SLA metrics | Appointment event and schema contract | Never transfer authority over the appointment source to a projection |
+
+<figure class="bt4k-architecture" data-diagram-title="Service authority and responsibility boundaries">
+  <img src="/assets/clinic-appointment-prologue-service-boundaries-01-en.png" alt="Product, commerce, clinical, and CRM authorities provide facts to the appointment service, which emits objective events to notification and statistics consumers" loading="lazy" />
+  <figcaption>Each authority decides its own source facts. Scheduling owns the plan, visit commitment, capacity, policy snapshot, state, and history; notification, CRM, and statistics consume appointment facts without becoming the appointment source of truth.</figcaption>
+</figure>
+
+## The several facts left by one visit
+
+Patient A's arrival at the clinic cannot be described by one state shared by every team. We need to separate the
+objective facts preserved or emitted by scheduling from the business results judged by other services.
+
+| Event | Authority | What scheduling provides | What scheduling does not own |
+| --- | --- | --- | --- |
+| Check-in and attendance | Clinic attendance/clinical system | Attendance event linked to the appointment | The source clinical record |
+| Partial or full treatment completion | Clinical/treatment system | Objective fact for completed and remaining items | The clinician's judgment |
+| Delay, interruption, rescheduling proposal | Appointment history | Facts such as AppointmentInterrupted, AppointmentDelayExceeded, and RescheduleOffered | Apology, compensation, or refund decisions |
+| Counseling and complaint | CRM/customer counseling | Appointment facts and correlation for a counseling handoff | Counseling content and compensation policy |
+| Refund and purchase cancellation | Commerce/payment | Purchase reference to find the affected plan | Refund approval and balance settlement |
+| Reminder and result notification | Notification service | Durable notification outbox and appointment event | Source contact, language, consent, and external channel state |
+| Statistics and SLA | External consumer/statistics projection | Contracted event and schema | The projection's final read model |
+
+Notification is not a direct SMS call inside the appointment transaction. Scheduling records a durable outbox entry;
+the notification service reads contact, language, and consent at send time and delivers through a retryable channel.
+This delivery boundary must be labeled **Awaiting operations** until its rollout evidence is complete.
+
+Statistics consumers likewise do not own the appointment source tables. They receive events under a schema contract and
+build their own projection. Until backfill and production readiness are complete, the article should not call this a
+finished statistics service.
+
+## Rules when several services read the same fact
+
+Product, commerce, scheduling, clinical care, CRM, notifications, and statistics can all read facts about Patient A
+without creating one giant customer record. Four rules keep their boundaries intact:
+
+1. **Time-specific snapshots** — purchases and confirmed commitments must reproduce the product version, policy, and
+   consent that existed at the time.
+2. **Objective events** — scheduling emits what was delayed and when; CRM uses that fact to decide counseling and
+   compensation.
+3. **Durable outbox** — a temporary notification or consumer failure must not erase the fact that a visit was confirmed.
+4. **Non-authoritative projections** — search and statistics models can provide a useful current view without becoming
+   the appointment source of truth.
+
+This does not mean hiding no-show or VIP-priority policy inside scheduling. Deciding what restriction or additional
+confirmation should apply to a patient who repeatedly misses appointments, and how VIP convenience should be balanced
+against a fair queue, belongs to clinic operations and customer counseling/commerce. Scheduling can preserve objective
+inputs such as confirmed commitments, cancellation reasons, delay counts, and rescheduling proposals. It must not
+promise a permanent blacklist or the cancellation of an existing confirmed appointment as a current feature. Later
+policy articles should start by checking the same ownership boundary.
+
+## Reading current implementation and future design separately
+
+| Status | Example in this prologue | The question to keep asking |
+| --- | --- | --- |
+| **Current implementation** | The foundation that creates a plan from a purchase event and preserves current appointment state/history | Can the observed source and tests confirm this contract? |
+| **Approved design** | Extending plan items into multi-item visits and consent-bound commitments | Am I mistaking an unimplemented boundary for an operating feature? |
+| **Awaiting operations** | Notification outbox canary and statistics backfill/production readiness | Has delivery and recovery been verified in operation? |
+| **Roadmap** | Patient portal and mobile channel | Have I claimed a patient channel that is not public yet? |
+
+These labels are not decorative. Product catalogs, commerce contracts, attendance, and counseling records change at
+different speeds. Quoting a design spec as if it were a current API, or treating a projection as the source, turns
+Patient A's journey into the wrong commitment.
+
+## What comes next
+
+This article drew the map. The next article moves closer to product versions and purchase snapshots: how to protect a
+past customer's obligations when a product changes or a purchase event is duplicated, and how to connect a catalog
+projection to a purchase event through an idempotent boundary. We will continue this topic in the next article.
+
+### Visual companions
+
+These companions explain the source Markdown design; they do not replace it. The published snapshot is pinned to
+e9743337cdc1bf499af68e4e94a9f06b2833d838. If the explanation and implementation drift, check the source design and
+current source first. This prologue does not add a new companion route.
+
+- [Classifying product scheduling behavior](/visual-companions/clinic-appointment/product-scheduling-classification/)
+- [Expanding a product execution BOM into scheduling](/visual-companions/clinic-appointment/product-bom-to-appointment-flow/)
+- [Appointment plans and capacity](/visual-companions/clinic-appointment/appointment-plan-and-capacity/)
+- [Clinic appointment visual companion index](/visual-companions/clinic-appointment/)
+
+### Evidence links
+
+- [Appointment service data flow](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/requirements/data-flow.md)
+- [Appointment Plan design](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-07-26-appointment-plan-and-capacity-design.md)
+
+## Series
+
+- **Prologue: From Product Information to a Patient's Visit Commitment**
+- [Part 1: Clinic Appointments Are More Than CRUD](/blog/clinic-appointment-part1-not-just-crud/)
+- [Part 2: Appointment State Is More Than an Enum](/blog/clinic-appointment-part2-state-machine-and-history/)
+- [Part 3: Computing Availability from Clinic-Specific Hours and Resources](/blog/clinic-appointment-part3-clinic-specific-availability/)
+- [Part 4: Real-Time Slot Search and Global Optimization Solve Different Problems](/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
+- [Part 5: Translating Clinic Rules into Timefold Constraints](/blog/clinic-appointment-part5-timefold-constraints/)
+- [Part 6: Rescheduling after Closures and Equipment Downtime](/blog/clinic-appointment-part6-closure-equipment-rescheduling/)
+- [Part 7: Reviews and Operations Start the Next Development Cycle](/blog/clinic-appointment-part7-review-and-operational-evolution/)

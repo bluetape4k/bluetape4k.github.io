@@ -1,0 +1,44 @@
+{
+  "kind": "architecture",
+  "source": {
+    "question": "상품·구매·예약·임상·CRM·알림·통계 서비스는 어떤 권한을 소유하고 어디까지 책임지는가?",
+    "revision": "clinic-appointment@3dfcf2a; visual-snapshot@e974333",
+    "paths": [
+      "docs/superpowers/specs/2026-08-11-clinic-appointment-prologue-design.md",
+      "docs/superpowers/plans/2026-08-11-clinic-appointment-prologue-plan.md",
+      "src/content/docs/ko/blog/clinic-appointment-prologue-product-to-appointment.mdx"
+    ]
+  },
+  "nodes": [
+    {"id": "product-authority", "label": "상품관리·상품개발 authority", "source": "Appointment Plan Foundation / product catalog contract"},
+    {"id": "commerce-authority", "label": "구매·커머스 authority", "source": "PurchaseCompletedHandler.kt / visit-commitment-operations.md"},
+    {"id": "clinical-authority", "label": "임상·시술 authority", "source": "TreatmentFulfillmentEvent.kt"},
+    {"id": "crm-authority", "label": "고객상담·CRM authority", "source": "profile-change reassessment design / visit-commitment-operations.md"},
+    {"id": "appointment-authority", "label": "예약서비스 source of truth", "source": "appointment-core / appointment-api / visit commitment design"},
+    {"id": "notification-consumer", "label": "알림 adapter·delivery authority", "source": "data-flow.md / notification requirements"},
+    {"id": "statistics-consumer", "label": "통계·외부 projection consumer", "source": "event integration Epic / statistics consumer contract"},
+    {"id": "objective-events", "label": "objective appointment events + durable outbox", "source": "data-flow.md / messaging contracts"},
+    {"id": "responsibility-boundary", "label": "책임 밖: 가격·환불 승인·임상 판단·상담 보상·채널 발송·projection authority", "source": "prologue ownership table / visit-commitment-operations.md"}
+  ],
+  "edges": [
+    {"id": "product-to-appointment", "from": "product-authority", "to": "appointment-authority", "kind": "catalog-projection", "source": "Appointment Plan Foundation"},
+    {"id": "commerce-to-appointment", "from": "commerce-authority", "to": "appointment-authority", "kind": "qualified-purchase-event", "source": "PurchaseCompletedHandler.kt"},
+    {"id": "clinical-to-appointment", "from": "clinical-authority", "to": "appointment-authority", "kind": "fulfillment-fact", "source": "TreatmentFulfillmentEvent.kt"},
+    {"id": "crm-to-appointment", "from": "crm-authority", "to": "appointment-authority", "kind": "minimal-reassessment-outcome", "source": "profile-change reassessment design"},
+    {"id": "appointment-to-events", "from": "appointment-authority", "to": "objective-events", "kind": "owned-event", "source": "data-flow.md / messaging contracts"},
+    {"id": "events-to-notification", "from": "objective-events", "to": "notification-consumer", "kind": "outbox-consumer", "source": "notification requirements"},
+    {"id": "events-to-statistics", "from": "objective-events", "to": "statistics-consumer", "kind": "projection-consumer", "source": "event integration Epic / statistics consumer contract"},
+    {"id": "appointment-to-crm", "from": "objective-events", "to": "crm-authority", "kind": "counseling-fact", "source": "visit-commitment-operations.md"},
+    {"id": "appointment-boundary", "from": "appointment-authority", "to": "responsibility-boundary", "kind": "explicit-not-owned", "source": "prologue ownership table"},
+    {"id": "consumers-boundary", "from": "notification-consumer", "to": "responsibility-boundary", "kind": "consumer-not-authority", "source": "data-flow.md"},
+    {"id": "statistics-boundary", "from": "statistics-consumer", "to": "responsibility-boundary", "kind": "projection-not-authority", "source": "prologue ownership table"}
+  ],
+  "behavior": {"branches": 2, "loops": 0},
+  "repairs": [
+    {"target": "central-authority", "reason": "Place plan, commitment, schedule, capacity, history, and outbox inside one reservation authority boundary", "touches": 6},
+    {"target": "inbound-facts", "reason": "Keep catalog, purchase, fulfillment, and CRM inputs as facts owned by their producing service", "touches": 4},
+    {"target": "consumer-boundaries", "reason": "Show notification and statistics as consumers that cannot become the appointment source of truth", "touches": 3},
+    {"target": "locale-pairs", "reason": "Generate equivalent Korean and English text-bearing SVG/PNG assets", "touches": 2},
+    {"target": "canvas-margins", "reason": "Balance left and right whitespace by narrowing the canvas and footer while preserving the main card geometry", "touches": 4}
+  ]
+}

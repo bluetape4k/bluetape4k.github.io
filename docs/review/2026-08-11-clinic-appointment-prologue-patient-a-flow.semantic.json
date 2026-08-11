@@ -1,0 +1,52 @@
+{
+  "kind": "workflow",
+  "source": {
+    "question": "환자 A의 상품 구매와 방문 행동은 어떤 예약 처리와 객관적 이벤트로 변하는가?",
+    "revision": "clinic-appointment@3dfcf2a; visual-snapshot@e974333",
+    "paths": [
+      "docs/superpowers/specs/2026-08-11-clinic-appointment-prologue-design.md",
+      "docs/superpowers/plans/2026-08-11-clinic-appointment-prologue-plan.md",
+      "src/content/docs/ko/blog/clinic-appointment-prologue-product-to-appointment.mdx"
+    ]
+  },
+  "nodes": [
+    {"id": "patient-action-purchases", "label": "환자 A의 상품 구매", "source": "프롤로그 환자 A 사례"},
+    {"id": "purchase-completed", "label": "PurchaseCompleted", "source": "Appointment Plan Foundation / PurchaseCompletedHandler.kt"},
+    {"id": "plan-created", "label": "AppointmentPlanCreated", "source": "Appointment Plan Foundation / scheduling outbox"},
+    {"id": "plan-expansion", "label": "PlannedTreatment 1..N + dependency/DAG", "source": "AppointmentPlanFactory.kt / PlannedTreatments"},
+    {"id": "patient-action-date", "label": "희망 날짜·항목 요청", "source": "프롤로그 환자 A 사례"},
+    {"id": "proposal-hold", "label": "PROPOSED → HELD", "source": "visit commitment design"},
+    {"id": "patient-action-consent", "label": "일정·항목·정책 동의", "source": "visit commitment design"},
+    {"id": "commitment-confirmed", "label": "AppointmentCommitment / CONFIRMED", "source": "visit commitment design"},
+    {"id": "appointment-created", "label": "AppointmentCreated", "source": "AppointmentDomainEvent / messaging contracts"},
+    {"id": "patient-action-checkin", "label": "내원·체크인·부분 처치", "source": "프롤로그 환자 A 사례"},
+    {"id": "attendance-fulfillment", "label": "Attendance + TreatmentFulfillmentEvent", "source": "TreatmentFulfillmentEvent.kt"},
+    {"id": "remaining-obligation", "label": "잔여 의무·새 방문 제안", "source": "TreatmentFulfillmentHandler.kt / visit commitment design"},
+    {"id": "appointment-rescheduled", "label": "AppointmentRescheduled / AppointmentInterrupted", "source": "AppointmentDomainEvent.kt / prologue event table"},
+    {"id": "counseling-handoff", "label": "CRM 상담 handoff", "source": "visit-commitment-operations.md / prologue ownership table"}
+  ],
+  "edges": [
+    {"id": "action-purchase-event", "from": "patient-action-purchases", "to": "purchase-completed", "kind": "action-to-event", "source": "PurchaseCompletedHandler.kt"},
+    {"id": "purchase-plan-created", "from": "purchase-completed", "to": "plan-created", "kind": "outbox-event", "source": "Appointment Plan Foundation"},
+    {"id": "plan-expand-treatments", "from": "plan-created", "to": "plan-expansion", "kind": "plan-materialization", "source": "AppointmentPlanFactory.kt"},
+    {"id": "action-date-proposal", "from": "patient-action-date", "to": "proposal-hold", "kind": "command-to-state", "source": "visit commitment design"},
+    {"id": "plan-to-proposal", "from": "plan-expansion", "to": "proposal-hold", "kind": "obligation-to-candidate", "source": "Appointment Plan Foundation / visit commitment design"},
+    {"id": "action-consent-commitment", "from": "patient-action-consent", "to": "commitment-confirmed", "kind": "consent-to-commitment", "source": "visit commitment design"},
+    {"id": "hold-to-commitment", "from": "proposal-hold", "to": "commitment-confirmed", "kind": "state-transition", "source": "visit commitment design"},
+    {"id": "commitment-created-event", "from": "commitment-confirmed", "to": "appointment-created", "kind": "objective-event", "source": "AppointmentDomainEvent / messaging contracts"},
+    {"id": "action-checkin-fact", "from": "patient-action-checkin", "to": "attendance-fulfillment", "kind": "action-to-fact", "source": "TreatmentFulfillmentEvent.kt"},
+    {"id": "appointment-to-fulfillment", "from": "appointment-created", "to": "attendance-fulfillment", "kind": "visit-to-clinical-fact", "source": "data-flow.md / TreatmentFulfillmentEvent.kt"},
+    {"id": "fulfillment-remaining", "from": "attendance-fulfillment", "to": "remaining-obligation", "kind": "partial-fulfillment", "source": "TreatmentFulfillmentEvent.kt"},
+    {"id": "fulfillment-interruption", "from": "attendance-fulfillment", "to": "appointment-rescheduled", "kind": "disruption-event", "source": "AppointmentDomainEvent.kt / prologue event table"},
+    {"id": "reschedule-counseling", "from": "appointment-rescheduled", "to": "counseling-handoff", "kind": "objective-fact-handoff", "source": "visit-commitment-operations.md"},
+    {"id": "remaining-next-visit", "from": "remaining-obligation", "to": "proposal-hold", "kind": "future-visit-proposal", "source": "visit commitment design"}
+  ],
+  "behavior": {"branches": 3, "loops": 1},
+  "budget": {"nodes": 16, "edges": 20, "branches": 3, "loops": 1},
+  "repairs": [
+    {"target": "action-event-lanes", "reason": "Keep patient actions, scheduling processing, and objective events visually distinct so attendance is not confused with confirmation", "touches": 3},
+    {"target": "repeat-package-plan", "reason": "Show one purchase event expanding into repeat/package obligations without collapsing them into one appointment", "touches": 4},
+    {"target": "future-obligation-loop", "reason": "Route partial fulfillment and interruption back to a future proposal without implying automatic confirmation", "touches": 3},
+    {"target": "locale-pairs", "reason": "Generate equivalent Korean and English text-bearing SVG/PNG assets", "touches": 2}
+  ]
+}
