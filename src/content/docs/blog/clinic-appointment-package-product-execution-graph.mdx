@@ -1,0 +1,190 @@
+---
+title: "Why a Package Product Becomes an Execution Graph"
+description: Follow Patient A's package purchase as repeated, composite, and choice products become an execution BOM and a set of possible visits.
+sidebar:
+  order: -202608121300
+blog:
+  date: 2026-08-12T13:00:00+09:00
+  image: /assets/clinic-appointment-prologue-hero.png
+  imageAlt: Small robotic builders connect package components, predecessor relationships, visit candidates, and resource requirements into one execution graph
+  cardDescription: "Explain how package components, choice rules, and predecessor relationships become real appointment items across one or more visits."
+  tags: ["architecture", "domain-modeling", "event-driven", "resilience"]
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-prologue-hero.png" alt="Small robotic builders connect package components, predecessor relationships, visit candidates, and resource requirements into one execution graph" loading="eager" />
+  <figcaption>A package is not a product card that lists several treatments. Scheduling becomes real only when each item's version, interval, resource, and visit relationship are preserved.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-12 · Clinic Appointment Service · Package Products and Execution Graphs</p>
+
+It is easy to describe a package product as “a discounted bundle of consultation, examination, treatment, and follow-up care.” That model breaks as soon as the first booking is attempted. One item may have to finish before another starts. Some items can share a visit, while others must happen on separate days even though they belong to the same product. Each item can also require a different practitioner, device, room, and preparation, treatment, or recovery interval.
+
+In the previous article, Patient A bought an N-visit product, confirmed one visit, and kept tracking the remaining fulfillment obligations. This time, the same Patient A buys a package that follows `consultation → examination → treatment → follow-up`. The names and clinic policies are generalized; the article keeps the scheduling behavior that matters.
+
+> **Product list ≠ execution BOM ≠ visit commitment**
+
+<figure
+  class="bt4k-architecture"
+  data-diagram-title="How Patient A's package becomes an execution graph and visit candidates"
+>
+  <img src="/assets/clinic-appointment-package-product-execution-graph-01-en.png" alt="Patient A's package purchase becomes a PackageExecutionSnapshot, an AppointmentPlan revision, consultation/examination/treatment/follow-up visit candidates, item-level completion facts, and an exception-driven replanning path" loading="lazy" />
+  <figcaption>The purchase freezes an execution contract, and the reservation service expands it into two or three visit candidates and item-level completion facts. No-show and VIP decisions are handed to CRM and operations policy rather than consumed automatically.</figcaption>
+</figure>
+
+The package definition from product development is not data that the appointment service can write directly to a calendar. The purchase must first freeze its choices and product versions, then expand them into executable items and relationships. The result becomes an `AppointmentPlan` and its `PlannedTreatment` records. One visit agreed by the patient and clinic is a group of selected `AppointmentItem` records from that plan.
+
+## A product list stops at the first booking
+
+Assume Patient A's package follows the timeline below. The names and relationships are an anonymized business example based on the published package companion, not a real clinic's treatment schedule or operating threshold.
+
+| Time | Patient A's action or event | Business meaning | What the appointment service preserves |
+| --- | --- | --- | --- |
+| T1 | Buys the package | A contract to use several component products exists | Purchase ID and package/component product versions at purchase time |
+| T2 | Choices and repetition counts are fixed | The system has an execution contract, not a promise to read the latest catalog later | Selected component versions and an execution-BOM snapshot |
+| T3 | A purchase-completed event arrives | Input for translating the product graph into an appointment plan | Event producer, schema version, and snapshot hash |
+| T4 | The plan is expanded | Treatment obligations and predecessor relationships become explicit | `AppointmentPlan`, `PlannedTreatment`, and dependencies |
+| T5 | Possible visits are proposed | Resource capacity and intervals decide what can share a visit | `AppointmentProposal` and per-item resource candidates |
+| T6 | Patient and clinic agree on a schedule | A specific time, set of items, and resources become a commitment | A `CONFIRMED` proposal revision and `AppointmentItem` records |
+| T7 | An item completes or the schedule breaks | Completed facts and future work must be separated for follow-up planning | Completion provenance, unfinished items, and new proposal history |
+
+If T1 becomes one `Appointment` row, there is nowhere to represent T2's choices, T4's dependencies, or T5's resource conflict. If the entire package is stored as one duration, the scheduler cannot place a consultation room, procedure room, and recovery space in different time ranges. A package is a sales unit, but scheduling has to read it again as a graph of execution units.
+
+## Patient A's package starts with four core stages and an optional item
+
+For this example, Patient A's package contains four core stages and one optional item:
+
+| Execution item | Composition mode | Visit relationship | Execution conditions and resources |
+| --- | --- | --- | --- |
+| Pre-treatment consultation | `REQUIRED` | First visit | Consultant, consultation room, consultation time |
+| Pre-treatment examination | `REQUIRED` | May share the consultation visit or use a separate visit | Examiner, examination space, examination time, completed consultation |
+| Main treatment | `REQUIRED` | Separate visit after the examination | Practitioner, dedicated device, procedure room, recovery space |
+| Soothing care | `OPTIONAL` | May share the treatment visit | Care specialist, care device, care room |
+| Follow-up check | `REQUIRED` | Separate visit after the treatment | Attending practitioner, treatment room, completed predecessor |
+
+Here, `REQUIRED` and `OPTIONAL` describe product composition. “First visit,” “separate visit,” and “may share a visit” are visit-grouping constraints. “The consultation must complete before the examination, and the examination before the main treatment” are execution dependencies. If all three axes collapse into an `isPackage` flag, the system cannot explain which rule came from the product and which rule was applied while scheduling.
+
+## Repeated, composite, and M-of-N packages are different graphs
+
+The published companion compares three package types. They all freeze product versions at purchase time, but their execution nodes and choice rules differ.
+
+| Type | Example | Shape of the execution graph | Fact scheduling must preserve |
+| --- | --- | --- | --- |
+| Repeated product | Five sessions of one care product | One component product version expands to five nodes with `quantity=5` | Each session's interval and completion status remain separate |
+| Composite package | Consultation + examination + treatment + soothing care + follow-up | Distinct versions connect through required, optional, and predecessor edges | Same-visit eligibility and resources differ by item |
+| Choose M of N | Choose two of three candidates | The selected nodes enter the execution BOM only after the patient's choice is fixed | An invalid choice count never becomes an execution contract |
+
+The repeated form extends the remaining-fulfillment idea from the N-visit article into multiple package nodes. The composite form is not a wish list; it is a DAG with completion and visit-separation rules. In an M-of-N package, the patient's choice must be fixed at purchase time. The appointment service must not look up the latest catalog later and insert a different item.
+
+Use the [Package Product Composition companion](/visual-companions/clinic-appointment/package-product-composition/) to compare the three types interactively. The companion helps readers inspect the approved design; it does not replace the normative Markdown or the `clinic-appointment` source repository.
+
+## Nodes and edges carry business meaning
+
+The current catalog projection's `CatalogBomItem` is more than a product-name list. It carries repetition count, expected capacity time per session, minimum/preferred/maximum intervals between sessions, and required practitioner capabilities, equipment, and room types. `CatalogBomDependency` preserves direction and interval between items.
+
+The package design keeps three axes separate:
+
+| Axis | Representative values | Question it answers |
+| --- | --- | --- |
+| Execution dependency | `BLOCKING`, `NON_BLOCKING` | Must a later item wait when its predecessor has not completed? |
+| Visit grouping | `MUST_SAME_VISIT`, `MAY_SAME_VISIT`, `MUST_SEPARATE_VISIT` | Can two items be placed in one visit? |
+| Resource and time | Practitioner, equipment, room, preparation/treatment/recovery | Is there real capacity for the candidate time? |
+
+Soothing care may share the treatment visit, but it cannot become a confirmed visit before the treatment's own constraints are satisfied. The follow-up check requires treatment completion and an interval, so it is not silently folded into the same item. A single `durationMinutes` plus `dependsOn` cannot express both “may share a visit” and “must wait for completion.”
+
+Storing a package-wide total duration may be useful for display, but it cannot be the source for scheduling. Items grouped into one visit still keep their own preparation, treatment, recovery, and resource intervals. Items placed on different days must not be added together and turned into one slot.
+
+## The core stages become two or three visits
+
+Patient A can enter a preferred date, but that does not confirm all five execution items in one booking. The appointment service combines clinic policy, patient preference, actual resources, and dependencies to produce visit candidates.
+
+| Visit candidate | Items that may be included | Why it is separated |
+| --- | --- | --- |
+| Visit 1 | Pre-treatment consultation + examination | They can share a visit when the consultation result and examination resources are available |
+| Visit 2 | Main treatment + selected soothing care | They can share a visit when their time and resources are compatible |
+| Visit 3 | Follow-up check | It needs treatment completion and a later interval |
+
+If the clinic's safety and resource rules allow the consultation, examination, and main treatment on the same day, they can share one visit candidate. Each item still remains a separate `AppointmentItem` record referring to its own `PlannedTreatment`; practitioner, equipment, and room allocations are calculated per item. `Appointment` represents one visit, while `AppointmentPlan` represents the full execution obligations derived from the purchase. That boundary is the point.
+
+When the patient rejects a proposal or a new resource allocation conflicts, the service does not delete the existing confirmed commitment first. It validates a new proposal revision and allocation, and replaces the confirmed proposal only after patient consent. If that transaction fails, the existing `confirmedProposalId` and resource allocation remain active.
+
+## Failures narrow the affected graph instead of rewriting it
+
+The graph model is most visible in exceptions. If a failure rewrites the purchase snapshot or completion facts, the service can no longer explain which promise Patient A received and which items were completed.
+
+| Situation | Fact to preserve | Next handling |
+| --- | --- | --- |
+| M-of-N count is invalid | Patient's candidate choices and product version | Reject the execution-BOM publication at product/purchase time; create no appointment plan |
+| A `BLOCKING` predecessor is unfinished | Predecessor status and successor edge | Hold only that path for review or later planning; independent items can continue |
+| Resource conflict or clinic disruption | Existing confirmed proposal and allocations | Create another candidate while protecting the existing commitment until consent |
+| Only part of a visit completes | Clinical provenance for completed `PlannedTreatment` items | Keep completed items and create later `AppointmentItem` attempts for unfinished work |
+| The package version changes | Purchase-time package/component versions and execution BOM | Add a new revision only through the product team's transition mapping, approval, and consent |
+
+An existing purchase must not follow the latest catalog merely because a package version changed. A new version is the source for later purchases. The existing purchase keeps its package version, component versions, choices, and execution BOM. If a migration is necessary, the product-management service publishes the transition mapping and consent evidence. The appointment service verifies those facts and carries only unfinished items into a new revision. Completed items and an already agreed visit remain protected.
+
+## Service ownership must travel with the graph boundary
+
+The appointment service does not own every fact in the execution graph. Each service owns its source-of-record data; the appointment service keeps immutable snapshots needed for scheduling decisions and emits objective events.
+
+| Domain area | Source-of-record facts | Appointment-service responsibility |
+| --- | --- | --- |
+| Product management and development | Product versions, component graph, BOM, choice and repetition rules | Use validated catalog projections and purchase-time BOM provenance for scheduling decisions |
+| Commerce and purchasing | Purchase contract, choices, refunds, source purchase ID | Create one plan identity per purchase-completed fact and reflect cancellation scope |
+| Appointment service | `AppointmentPlan`, `PlannedTreatment`, proposals, holds, commitments, allocations | Own time, capacity, consent, state, history, and objective appointment events |
+| Clinical and treatment | Actual start, completion, and partial completion | Publish completion evidence that determines the next eligible work |
+| Customer support and CRM | Customer profile, counseling, complaints, compensation, service-tier decisions | Consume objective no-show, delay, and rescheduling facts for counseling decisions |
+| Notification and statistics consumers | Contact consent, delivery history, projections, metrics | Process outbox and read models outside the appointment transaction |
+
+The appointment service therefore does not decide compensation or a VIP tier. If those policies are needed, CRM, product, or clinic operations must define their responsibility and evidence. The appointment service records only the inputs and outcomes needed to protect confirmed commitments, enforce safety ceilings, and order proposals fairly. Concrete no-show follow-up and priority rules belong to a later operations article in this series.
+
+## Read current implementation and approved design separately
+
+Model names alone do not prove that every package path is already running in production. The article keeps the evidence labels visible.
+
+| Evidence label | Scope confirmed for this article | Question for the reader |
+| --- | --- | --- |
+| **Current implementation** | Versioned `ProductCatalogDefinition` projections, BOM items and dependencies, repetition/time/resource/interval fields, and `PurchaseCompletedHandler` validation with plan creation, duplicate, stale, and quarantine results | Can the same contract be found in the `develop` source and tests? |
+| **Approved design** | Package composition graph, choice-fixed `PackageExecutionSnapshot`, visit-grouping constraints, `AppointmentItem` and `ResourceAllocation`, proposal/consent, and plan revisions | Is a design document being mistaken for an already deployed API? |
+| **Awaiting operations** | Broker, clinical, and commerce event integration, notification outbox canary, and production backfill, replay, and recovery proof | Has delivery and recovery been proven in the real environment? |
+| **Roadmap** | A patient channel for choosing later proposals, concrete no-show penalties, and a explainable VIP priority policy | Have undecided policies been promised as current product behavior? |
+
+The current implementation supplies the foundation that connects purchases and catalog projections to plans. The approved package design defines where execution BOMs, visit candidates, per-item resources, consent, and revisions extend that foundation. Keeping the two scopes separate lets the article describe implemented facts and future contracts without blending them.
+
+## What comes next
+
+Creating the package graph does not automatically place visits on Patient A's calendar. The next article follows how the execution BOM in a purchase event becomes an `AppointmentPlan` revision, `PlannedTreatment` records, one `Appointment`, and several `AppointmentItem` records. The next question is where plan creation, visit confirmation, and clinical completion must remain separate.
+
+### Revisit the visual companions
+
+These companions supplement the normative Markdown and the `clinic-appointment` source repository. Their published snapshot and source commit are linked from each companion.
+
+- [Package product composition](/visual-companions/clinic-appointment/package-product-composition/)
+- [Expanding a product execution BOM into scheduling](/visual-companions/clinic-appointment/product-bom-to-appointment-flow/)
+- [Classifying product scheduling behavior](/visual-companions/clinic-appointment/product-scheduling-classification/)
+- [Appointment plans and capacity](/visual-companions/clinic-appointment/appointment-plan-and-capacity/)
+- [Clinic appointment visual companion index](/visual-companions/clinic-appointment/)
+
+### Evidence links
+
+- [clinic-appointment repository](https://github.com/bluetape4k/clinic-appointment)
+- [Package execution graph and visit commitment design](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-07-29-issue-184-visit-commitment-design.md)
+- [Product catalog definition](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/catalog/ProductCatalogDefinition.kt)
+- [AppointmentPlan model](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/plan/AppointmentPlanModel.kt)
+- [AppointmentPlan revision model](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/plan/AppointmentPlanRevisionModel.kt)
+- [Purchase-completed event handler](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/PurchaseCompletedHandler.kt)
+- [Product, purchase, and reservation data flow](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/requirements/data-flow.md)
+
+## Series
+
+- [Prologue: From Product Information to a Patient's Visit Commitment](/blog/clinic-appointment-prologue-product-to-appointment/)
+- [When a Product Changes, Don't Rewrite the Patient's Promise](/blog/clinic-appointment-product-version-purchase-snapshot/)
+- [What Appointment Promise Does an Event Product Create?](/blog/clinic-appointment-event-product-first-commitment/)
+- [Why an N-Visit Product Is Not One Appointment](/blog/clinic-appointment-n-visit-remaining-rights/)
+- **Why a Package Product Becomes an Execution Graph**
+- [Part 1: Clinic Appointments Are More Than CRUD](/blog/clinic-appointment-part1-not-just-crud/)
+- [Part 2: Appointment State Is More Than an Enum](/blog/clinic-appointment-part2-state-machine-and-history/)
+- [Part 3: Computing Availability from Clinic-Specific Hours and Resources](/blog/clinic-appointment-part3-clinic-specific-availability/)
+- [Part 4: Real-Time Slot Search and Global Optimization Solve Different Problems](/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
+- [Part 5: Translating Clinic Rules into Timefold Constraints](/blog/clinic-appointment-part5-timefold-constraints/)
+- [Part 6: Rescheduling after Closures and Equipment Downtime](/blog/clinic-appointment-part6-closure-equipment-rescheduling/)
+- [Part 7: Reviews and Operations Start the Next Development Cycle](/blog/clinic-appointment-part7-review-and-operational-evolution/)

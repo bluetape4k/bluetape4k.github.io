@@ -1,0 +1,39 @@
+{
+  "kind": "workflow",
+  "source": {
+    "question": "How does Patient A's package purchase become an execution BOM, two or three visit candidates, and a follow-up plan after completion or disruption?",
+    "revision": "clinic-appointment@develop; visual-site@local",
+    "paths": [
+      "src/content/docs/blog/clinic-appointment-package-product-execution-graph.mdx"
+    ],
+    "externalPaths": [
+      "clinic-appointment/docs/superpowers/specs/2026-07-29-issue-184-visit-commitment-design.md",
+      "clinic-appointment/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/PackageExecutionPlanner.kt",
+      "clinic-appointment/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/VisitGroupingPlanner.kt"
+    ]
+  },
+  "nodes": [
+    {"id": "package-purchase", "label": "Package purchase: consultation, examination, treatment, follow-up", "source": "Patient A package example and purchase-time composition"},
+    {"id": "execution-snapshot", "label": "PackageExecutionSnapshot: freeze choices, repeats, versions", "source": "Purchase-time execution-BOM contract"},
+    {"id": "appointment-plan", "label": "AppointmentPlan revision: PlannedTreatment and dependencies", "source": "Execution-BOM expansion order"},
+    {"id": "visit-candidates", "label": "Visit candidates: consultation/examination, treatment/care, follow-up", "source": "Visit-grouping constraints and Patient A's two-or-three-visit example"},
+    {"id": "completion-fact", "label": "Item-level completion: separate fulfilled and remaining work", "source": "Recalculate only unfinished items after completion or partial fulfillment"},
+    {"id": "operational-exception", "label": "Exception: no-show, reschedule, resource disruption", "source": "OperationalException and new proposal/revision flow"},
+    {"id": "crm-policy", "label": "CRM and operations policy: counseling, rescheduling, tier rules", "source": "No-show and VIP policy boundary outside the reservation service"}
+  ],
+  "edges": [
+    {"id": "purchase-snapshot", "from": "package-purchase", "to": "execution-snapshot", "kind": "freeze at purchase", "source": "Freeze product versions and selections at purchase"},
+    {"id": "snapshot-plan", "from": "execution-snapshot", "to": "appointment-plan", "kind": "expand execution BOM", "source": "PackageExecutionPlanner validation and copy order"},
+    {"id": "plan-visits", "from": "appointment-plan", "to": "visit-candidates", "kind": "calculate visit candidates", "source": "VisitGroupingPlanner plus time and resource constraints"},
+    {"id": "visits-completion", "from": "visit-candidates", "to": "completion-fact", "kind": "attendance and item completion", "source": "AppointmentItem-level completion facts"},
+    {"id": "completion-exception", "from": "completion-fact", "to": "operational-exception", "kind": "operational exception fact", "source": "Partial completion, disruption, and no-show follow-up facts"},
+    {"id": "exception-plan", "from": "operational-exception", "to": "appointment-plan", "kind": "new revision and proposal", "source": "Recalculate while preserving completed items and confirmed history"},
+    {"id": "exception-crm", "from": "operational-exception", "to": "crm-policy", "kind": "counseling handoff", "source": "Pass objective appointment facts to CRM and operations policy"}
+  ],
+  "behavior": {"branches": 2, "loops": 1},
+  "repairs": [
+    {"target": "visit-candidate-rail", "reason": "Group consultation/examination, treatment/care, and follow-up as two-or-three visit candidates in one reader-facing area.", "touches": 5},
+    {"target": "exception-loop", "reason": "Show that an exception returns through a new revision and proposal instead of overwriting a confirmed commitment.", "touches": 4},
+    {"target": "policy-boundary", "reason": "Show no-show and VIP decisions as CRM and operations policy responsibilities rather than automatic reservation consumption.", "touches": 3}
+  ]
+}

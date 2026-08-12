@@ -1,0 +1,39 @@
+{
+  "kind": "workflow",
+  "source": {
+    "question": "환자 A의 패키지 구매가 실행 BOM과 2~3회 방문 후보로 전개되고, 완료·예외 사실이 다음 계획으로 이어지는 과정은 무엇인가?",
+    "revision": "clinic-appointment@develop; visual-site@local",
+    "paths": [
+      "src/content/docs/ko/blog/clinic-appointment-package-product-execution-graph.mdx"
+    ],
+    "externalPaths": [
+      "clinic-appointment/docs/superpowers/specs/2026-07-29-issue-184-visit-commitment-design.md",
+      "clinic-appointment/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/PackageExecutionPlanner.kt",
+      "clinic-appointment/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/VisitGroupingPlanner.kt"
+    ]
+  },
+  "nodes": [
+    {"id": "package-purchase", "label": "패키지 구매: 상담·검사·시술·사후 점검", "source": "패키지 상품의 구매 시점 구성과 환자 A 사례"},
+    {"id": "execution-snapshot", "label": "PackageExecutionSnapshot: 선택·반복·version 고정", "source": "PackageExecutionSnapshot과 구매 시점 실행 BOM 계약"},
+    {"id": "appointment-plan", "label": "AppointmentPlan revision: PlannedTreatment와 dependency", "source": "실행 BOM을 Plan revision으로 복사하는 전개 순서"},
+    {"id": "visit-candidates", "label": "방문 후보: 상담·검사 / 본 시술·진정 / 사후 점검", "source": "방문 묶음 제약과 환자 A의 두세 번 방문 사례"},
+    {"id": "completion-fact", "label": "항목별 완료 근거: 완료와 잔여를 분리", "source": "완료·부분 이행 후 미완료 항목만 재계산"},
+    {"id": "operational-exception", "label": "예외: 노쇼·일정 변경·자원 중단", "source": "OperationalException과 새 proposal/revision 흐름"},
+    {"id": "crm-policy", "label": "CRM·운영 정책: 상담·재예약·등급 판단", "source": "예약서비스 밖의 no-show/VIP 정책 책임 경계"}
+  ],
+  "edges": [
+    {"id": "purchase-snapshot", "from": "package-purchase", "to": "execution-snapshot", "kind": "구매 고정", "source": "구매 당시 상품 version과 선택 결과 고정"},
+    {"id": "snapshot-plan", "from": "execution-snapshot", "to": "appointment-plan", "kind": "실행 BOM 전개", "source": "PackageExecutionPlanner의 검증·복사 순서"},
+    {"id": "plan-visits", "from": "appointment-plan", "to": "visit-candidates", "kind": "방문 후보 계산", "source": "VisitGroupingPlanner와 시간·자원 제약"},
+    {"id": "visits-completion", "from": "visit-candidates", "to": "completion-fact", "kind": "내원·항목 완료", "source": "AppointmentItem 단위 완료 사실"},
+    {"id": "completion-exception", "from": "completion-fact", "to": "operational-exception", "kind": "예외 사실", "source": "부분 완료·중단·노쇼 후속 사실"},
+    {"id": "exception-plan", "from": "operational-exception", "to": "appointment-plan", "kind": "새 revision·proposal", "source": "완료된 항목과 확정 이력을 보존한 후속 재계산"},
+    {"id": "exception-crm", "from": "operational-exception", "to": "crm-policy", "kind": "상담 handoff", "source": "객관적 예약 사실을 CRM·운영 정책으로 전달"}
+  ],
+  "behavior": {"branches": 2, "loops": 1},
+  "repairs": [
+    {"target": "visit-candidate-rail", "reason": "상담·검사, 본 시술·진정 관리, 사후 점검을 2~3회 방문 후보로 묶어 본문의 업무 흐름을 한 영역에 배치했다.", "touches": 5},
+    {"target": "exception-loop", "reason": "예외가 기존 확정 약속을 덮어쓰지 않고 새 revision과 proposal로 돌아가는 경로를 별도 색상과 역방향 연결로 분리했다.", "touches": 4},
+    {"target": "policy-boundary", "reason": "노쇼·VIP 판단이 예약서비스의 자동 소진 규칙이 아니라 CRM·운영 정책의 책임임을 diagram에 표시했다.", "touches": 3}
+  ]
+}
