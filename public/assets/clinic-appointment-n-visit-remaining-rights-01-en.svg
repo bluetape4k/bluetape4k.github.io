@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1200" viewBox="0 0 2000 1200" role="img" aria-labelledby="title desc" data-locale="en">
+  <title id="title">How Patient A's five-visit rights become one visit at a time</title>
+  <desc id="desc">Patient A's five-visit purchase becomes one AppointmentPlan with five PlannedTreatment obligations. One candidate becomes one confirmed visit, completion evidence changes used to one and remaining obligations to four, while reschedule or cancellation, no-show, and partial completion stay separate exceptions.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07111f"/><stop offset=".58" stop-color="#0d1930"/><stop offset="1" stop-color="#11172d"/>
+    </linearGradient>
+    <linearGradient id="mainFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#102b49"/><stop offset="1" stop-color="#17214a"/></linearGradient>
+    <linearGradient id="serviceFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#103b45"/><stop offset="1" stop-color="#15364d"/></linearGradient>
+    <linearGradient id="exceptionFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3b2b18"/><stop offset="1" stop-color="#2a2138"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="155%"><feDropShadow dx="0" dy="12" stdDeviation="13" flood-color="#020617" flood-opacity=".56"/></filter>
+    <marker id="cyanArrow" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+      <path d="M 0 0 L 14 7 L 0 14 Z" fill="#67e8f9" data-solid-head="true"/>
+    </marker>
+    <marker id="amberArrow" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+      <path d="M 0 0 L 14 7 L 0 14 Z" fill="#fbbf24" data-solid-head="true"/>
+    </marker>
+    <style>
+      .title{font-family:"Architects Daughter",cursive;font-size:42px;font-weight:700;fill:#f8fafc}
+      .subtitle{font-family:"Comic Mono",monospace;font-size:20px;fill:#aebed2}
+      .statement{font-family:"Comic Mono",monospace;font-size:23px;font-weight:700;fill:#67e8f9}
+      .lane{font-family:"Architects Daughter",cursive;font-size:25px;font-weight:700;fill:#f8fafc}
+      .lane-note{font-family:"Comic Mono",monospace;font-size:15px;fill:#aebed2}
+      .step{font-family:"Comic Mono",monospace;font-size:16px;font-weight:700;fill:#dbeafe}
+      .card-title{font-family:"Architects Daughter",cursive;font-size:21px;font-weight:700;fill:#f8fafc}
+      .body{font-family:"Comic Mono",monospace;font-size:14px;fill:#d7e3f3}
+      .role{font-family:"Comic Mono",monospace;font-size:12px;font-weight:700;fill:#f8fafc}
+      .small{font-family:"Comic Mono",monospace;font-size:14px;fill:#aebed2}
+      .footer-title{font-family:"Architects Daughter",cursive;font-size:18px;font-weight:700;fill:#f8fafc}
+      .footer-body{font-family:"Comic Mono",monospace;font-size:14px;fill:#d7e3f3}
+      .connector{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:5}
+      .primary-line{stroke:#67e8f9;marker-end:url(#cyanArrow)}
+      .branch-line{stroke:#fbbf24;marker-end:url(#amberArrow)}
+    </style>
+  </defs>
+
+  <rect id="background" width="2000" height="1200" fill="url(#bg)"/>
+  <rect x="40" y="32" width="1920" height="1136" rx="32" fill="none" stroke="#263a5e" stroke-width="2"/>
+  <circle cx="1830" cy="150" r="250" fill="#7c3aed" opacity=".08"/>
+  <circle cx="170" cy="1040" r="250" fill="#0891b2" opacity=".07"/>
+
+  <text class="title" x="90" y="86">How five purchased visits become one visit at a time</text>
+  <text class="subtitle" x="92" y="124">Patient A's purchased right, confirmed slot, and completed care stay separate facts.</text>
+  <text class="statement" x="90" y="170">Purchased rights != confirmed appointments != completed care</text>
+
+  <g transform="translate(1290 88)">
+    <rect x="0" y="-18" width="22" height="22" rx="7" fill="#102b49" stroke="#60a5fa" stroke-width="2"/>
+    <text class="small" x="32" y="0">main cycle</text>
+    <rect x="142" y="-18" width="22" height="22" rx="7" fill="#3b2b18" stroke="#fbbf24" stroke-width="2"/>
+    <text class="small" x="174" y="0">business exception</text>
+    <rect x="328" y="-18" width="22" height="22" rx="7" fill="#103b45" stroke="#2dd4bf" stroke-width="2"/>
+    <text class="small" x="360" y="0">completion fact</text>
+  </g>
+
+  <text class="lane" x="90" y="222">Patient A's one-visit cycle</text>
+  <text class="lane-note" x="90" y="248">A plan holds five obligations; only the next eligible, consented visit enters the calendar.</text>
+  <path d="M 90 264 H 1860" fill="none" stroke="#2b4168" stroke-width="2" stroke-dasharray="10 12"/>
+
+  <g filter="url(#shadow)">
+    <g class="node-card">
+      <rect id="purchase-completed" x="70" y="300" width="240" height="220" rx="24" fill="url(#mainFill)" stroke="#60a5fa" stroke-width="3"/>
+      <rect x="88" y="318" width="72" height="26" rx="13" fill="#60a5fa" opacity=".22"/>
+      <text class="step" x="124" y="337" text-anchor="middle">T1</text>
+      <text class="role" x="232" y="338" text-anchor="middle">commerce source</text>
+      <text class="card-title" x="190" y="386" text-anchor="middle">PurchaseCompleted</text>
+      <text class="body" x="190" y="428" text-anchor="middle">N-visit right | total = 5</text>
+      <text class="body" x="190" y="458" text-anchor="middle">purchase ID | catalog version</text>
+    </g>
+    <g class="node-card">
+      <rect id="plan-created" x="340" y="300" width="240" height="220" rx="24" fill="url(#mainFill)" stroke="#60a5fa" stroke-width="3"/>
+      <rect x="358" y="318" width="72" height="26" rx="13" fill="#60a5fa" opacity=".22"/>
+      <text class="step" x="394" y="337" text-anchor="middle">T2</text>
+      <text class="role" x="500" y="338" text-anchor="middle">reservation service</text>
+      <text class="card-title" x="460" y="386" text-anchor="middle">AppointmentPlan</text>
+      <text class="body" x="460" y="428" text-anchor="middle">PlannedTreatment 1..5</text>
+      <text class="body" x="460" y="458" text-anchor="middle">interval | dependency | source</text>
+    </g>
+    <g class="node-card">
+      <rect id="rights-ledger" x="610" y="300" width="240" height="220" rx="24" fill="url(#mainFill)" stroke="#60a5fa" stroke-width="3"/>
+      <rect x="628" y="318" width="72" height="26" rx="13" fill="#60a5fa" opacity=".22"/>
+      <text class="step" x="664" y="337" text-anchor="middle">T3</text>
+      <text class="role" x="778" y="338" text-anchor="middle">plan read model</text>
+      <text class="card-title" x="730" y="386" text-anchor="middle">rights ledger</text>
+      <text class="body" x="730" y="428" text-anchor="middle">total = 5 | used = 0</text>
+      <text class="body" x="730" y="458" text-anchor="middle">remaining = 5 | slots != rights</text>
+    </g>
+    <g class="node-card">
+      <rect id="next-candidate" x="880" y="300" width="240" height="220" rx="24" fill="url(#mainFill)" stroke="#60a5fa" stroke-width="3"/>
+      <rect x="898" y="318" width="72" height="26" rx="13" fill="#60a5fa" opacity=".22"/>
+      <text class="step" x="934" y="337" text-anchor="middle">T4</text>
+      <text class="role" x="1042" y="338" text-anchor="middle">reservation service</text>
+      <text class="card-title" x="1000" y="386" text-anchor="middle">next candidate</text>
+      <text class="body" x="1000" y="428" text-anchor="middle">one eligible treatment</text>
+      <text class="body" x="1000" y="458" text-anchor="middle">interval | capacity | preference</text>
+    </g>
+    <g class="node-card">
+      <rect id="confirmed-visit" x="1150" y="300" width="240" height="220" rx="24" fill="url(#serviceFill)" stroke="#2dd4bf" stroke-width="3"/>
+      <rect x="1168" y="318" width="72" height="26" rx="13" fill="#2dd4bf" opacity=".22"/>
+      <text class="step" x="1204" y="337" text-anchor="middle">T5</text>
+      <text class="role" x="1300" y="338" text-anchor="middle">patient consent</text>
+      <text class="card-title" x="1270" y="386" text-anchor="middle">CONFIRMED visit #1</text>
+      <text class="body" x="1270" y="428" text-anchor="middle">one Appointment | one slot</text>
+      <text class="body" x="1270" y="458" text-anchor="middle">not used until completion</text>
+    </g>
+    <g class="node-card">
+      <rect id="completion-fact" x="1420" y="300" width="240" height="220" rx="24" fill="url(#serviceFill)" stroke="#2dd4bf" stroke-width="3"/>
+      <rect x="1438" y="318" width="72" height="26" rx="13" fill="#2dd4bf" opacity=".22"/>
+      <text class="step" x="1474" y="337" text-anchor="middle">T6</text>
+      <text class="role" x="1572" y="338" text-anchor="middle">clinical source</text>
+      <text class="card-title" x="1540" y="386" text-anchor="middle">completion fact</text>
+      <text class="body" x="1540" y="428" text-anchor="middle">authoritative care event</text>
+      <text class="body" x="1540" y="458" text-anchor="middle">used += 1 after completion</text>
+    </g>
+    <g class="node-card">
+      <rect id="remaining-rights" x="1690" y="300" width="240" height="220" rx="24" fill="url(#serviceFill)" stroke="#2dd4bf" stroke-width="3"/>
+      <rect x="1708" y="318" width="72" height="26" rx="13" fill="#2dd4bf" opacity=".22"/>
+      <text class="step" x="1744" y="337" text-anchor="middle">T7</text>
+      <text class="role" x="1842" y="338" text-anchor="middle">next-cycle input</text>
+      <text class="card-title" x="1810" y="386" text-anchor="middle">remaining = 4</text>
+      <text class="body" x="1810" y="428" text-anchor="middle">next item is still planned</text>
+      <text class="body" x="1810" y="458" text-anchor="middle">repeat candidate, not slot</text>
+    </g>
+  </g>
+
+  <g id="main-edges">
+    <path class="connector primary-line" data-connector="purchase-completed-plan-created" data-source-node="purchase-completed" data-target-node="plan-created" d="M 310 410 H 340"/>
+    <path class="connector primary-line" data-connector="plan-created-rights-ledger" data-source-node="plan-created" data-target-node="rights-ledger" d="M 580 410 H 610"/>
+    <path class="connector primary-line" data-connector="rights-ledger-next-candidate" data-source-node="rights-ledger" data-target-node="next-candidate" d="M 850 410 H 880"/>
+    <path class="connector primary-line" data-connector="next-candidate-confirmed-visit" data-source-node="next-candidate" data-target-node="confirmed-visit" d="M 1120 410 H 1150"/>
+    <path class="connector primary-line" data-connector="confirmed-visit-completion-fact" data-source-node="confirmed-visit" data-target-node="completion-fact" d="M 1390 410 H 1420"/>
+    <path class="connector primary-line" data-connector="completion-fact-remaining-rights" data-source-node="completion-fact" data-target-node="remaining-rights" d="M 1660 410 H 1690"/>
+  </g>
+
+  <text class="lane-note" x="90" y="585">For each remaining PlannedTreatment, start a new candidate cycle after the predecessor's actual completion.</text>
+  <text class="lane" x="90" y="640">Business exception rail</text>
+  <text class="lane-note" x="90" y="666">A calendar change, a no-show, and partial care do not mean the same thing as consuming a right.</text>
+  <path d="M 90 682 H 1860" fill="none" stroke="#5a4520" stroke-width="2" stroke-dasharray="10 12"/>
+
+  <g filter="url(#shadow)">
+    <g class="node-card">
+      <rect id="reschedule-cancel" x="70" y="800" width="560" height="220" rx="24" fill="url(#exceptionFill)" stroke="#fbbf24" stroke-width="3"/>
+      <rect x="92" y="818" width="152" height="26" rx="13" fill="#fbbf24" opacity=".22"/>
+      <text class="role" x="168" y="837" text-anchor="middle">patient | commerce | operations</text>
+      <text class="card-title" x="350" y="886" text-anchor="middle">reschedule or cancel</text>
+      <text class="body" x="350" y="928" text-anchor="middle">preserve purchase right and state history</text>
+      <text class="body" x="350" y="958" text-anchor="middle">new proposal | external cancellation decision</text>
+    </g>
+    <g class="node-card">
+      <rect id="no-show" x="720" y="800" width="560" height="220" rx="24" fill="url(#exceptionFill)" stroke="#fbbf24" stroke-width="3"/>
+      <rect x="742" y="818" width="128" height="26" rx="13" fill="#fbbf24" opacity=".22"/>
+      <text class="role" x="806" y="837" text-anchor="middle">attendance | CRM policy</text>
+      <text class="card-title" x="1000" y="886" text-anchor="middle">NO_SHOW</text>
+      <text class="body" x="1000" y="928" text-anchor="middle">attendance fact, not automatic consumption</text>
+      <text class="body" x="1000" y="958" text-anchor="middle">policy review | counseling handoff</text>
+    </g>
+    <g class="node-card">
+      <rect id="partial-completion" x="1370" y="800" width="560" height="220" rx="24" fill="url(#exceptionFill)" stroke="#fbbf24" stroke-width="3"/>
+      <rect x="1392" y="818" width="142" height="26" rx="13" fill="#fbbf24" opacity=".22"/>
+      <text class="role" x="1463" y="837" text-anchor="middle">clinical source | reservation</text>
+      <text class="card-title" x="1650" y="886" text-anchor="middle">partial completion</text>
+      <text class="body" x="1650" y="928" text-anchor="middle">completed items stay completed</text>
+      <text class="body" x="1650" y="958" text-anchor="middle">unfinished work becomes a linked attempt</text>
+    </g>
+  </g>
+
+  <g id="exception-edges">
+    <path class="connector branch-line" data-connector="next-candidate-reschedule-cancel" data-source-node="next-candidate" data-target-node="reschedule-cancel" d="M 1000 520 V 600 Q 1000 630 970 630 H 380 Q 350 630 350 660 V 800"/>
+    <path class="connector branch-line" data-connector="confirmed-visit-no-show" data-source-node="confirmed-visit" data-target-node="no-show" d="M 1270 520 V 660 Q 1270 700 1230 700 H 1030 Q 1000 700 1000 730 V 800"/>
+    <path class="connector branch-line" data-connector="completion-fact-partial-completion" data-source-node="completion-fact" data-target-node="partial-completion" d="M 1540 520 V 720 Q 1540 750 1570 750 H 1620 Q 1650 750 1650 780 V 800"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="70" y="1080" width="1860" height="70" rx="20" fill="#0b1628" stroke="#2b4168" stroke-width="2"/>
+    <text class="footer-title" x="98" y="1110">Reading rule</text>
+    <text class="footer-body" x="260" y="1110">A CONFIRMED slot is not a consumed right; completion and source-qualified cancellation change the ledger.</text>
+    <text class="footer-body" x="98" y="1136">Reschedule, no-show, and partial completion keep their own facts; repeat the next candidate only for remaining obligations.</text>
+  </g>
+</svg>

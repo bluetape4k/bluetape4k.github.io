@@ -1,0 +1,166 @@
+{
+  "kind": "workflow",
+  "source": {
+    "question": "환자 A의 N회 상품이 한 번씩 예약 약속이 되면서 잔여 권리를 보존하는 과정은 무엇인가?",
+    "revision": "clinic-appointment@develop; visual-site@local",
+    "paths": [
+      "src/content/docs/ko/blog/clinic-appointment-n-visit-remaining-rights.mdx"
+    ],
+    "externalPaths": [
+      "appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/catalog/ProductCatalogDefinition.kt",
+      "appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/plan/AppointmentPlanModel.kt",
+      "appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/plan/AppointmentPlanRevisionModel.kt",
+      "docs/superpowers/specs/2026-07-26-appointment-plan-and-capacity-design.md",
+      "docs/superpowers/specs/2026-07-29-issue-184-visit-commitment-design.md"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "purchase-completed",
+      "label": "PurchaseCompleted: 총 권리 = 5",
+      "source": "커머스 구매 사실과 구매 시점 상품 snapshot"
+    },
+    {
+      "id": "plan-created",
+      "label": "AppointmentPlan: PlannedTreatment 1..5",
+      "source": "AppointmentPlan 모델과 repeatCount 전개"
+    },
+    {
+      "id": "rights-ledger",
+      "label": "권리 원장: used = 0, remaining = 5",
+      "source": "계획 의무와 예약 수용량의 분리"
+    },
+    {
+      "id": "next-candidate",
+      "label": "다음 후보: 한 번에 한 항목",
+      "source": "예약 희망, 간격, 병원 수용량, 정책"
+    },
+    {
+      "id": "confirmed-visit",
+      "label": "CONFIRMED: 동의한 한 번의 방문",
+      "source": "방문 약속 설계와 고객 동의"
+    },
+    {
+      "id": "completion-fact",
+      "label": "완료 근거: used = 1",
+      "source": "임상 완료·이행 이벤트"
+    },
+    {
+      "id": "remaining-rights",
+      "label": "잔여 의무: 4, 다음 회차는 별도",
+      "source": "계획 항목 상태와 기준정보 원천 업무 사실"
+    },
+    {
+      "id": "reschedule-cancel",
+      "label": "일정 변경·취소: 권리와 이력 보존",
+      "source": "예약 변경, 제안 만료, 외부 취소"
+    },
+    {
+      "id": "no-show",
+      "label": "NO_SHOW: 내원 사실, 자동 차감 없음",
+      "source": "Appointment 상태와 정책·CRM handoff"
+    },
+    {
+      "id": "partial-completion",
+      "label": "부분 완료: 완료·미완료 항목 분리",
+      "source": "AppointmentItem 완료와 연결된 재시도"
+    }
+  ],
+  "edges": [
+    {
+      "id": "purchase-completed-plan-created",
+      "from": "purchase-completed",
+      "to": "plan-created",
+      "kind": "구매에서 계획",
+      "source": "PurchaseCompleted와 AppointmentPlan identity"
+    },
+    {
+      "id": "plan-created-rights-ledger",
+      "from": "plan-created",
+      "to": "rights-ledger",
+      "kind": "의무 횟수",
+      "source": "PlannedTreatment 1..N과 잔여 의무 view"
+    },
+    {
+      "id": "rights-ledger-next-candidate",
+      "from": "rights-ledger",
+      "to": "next-candidate",
+      "kind": "다음 항목",
+      "source": "간격, 의존 관계, 희망 일정, 병원 수용량"
+    },
+    {
+      "id": "next-candidate-confirmed-visit",
+      "from": "next-candidate",
+      "to": "confirmed-visit",
+      "kind": "고객 동의",
+      "source": "고객 동의 뒤 PROPOSED/HELD에서 CONFIRMED"
+    },
+    {
+      "id": "confirmed-visit-completion-fact",
+      "from": "confirmed-visit",
+      "to": "completion-fact",
+      "kind": "내원·완료",
+      "source": "Appointment 방문과 임상 완료 근거"
+    },
+    {
+      "id": "completion-fact-remaining-rights",
+      "from": "completion-fact",
+      "to": "remaining-rights",
+      "kind": "잔여 갱신",
+      "source": "완료 항목이 used와 잔여 의무를 변경"
+    },
+    {
+      "id": "next-candidate-reschedule-cancel",
+      "from": "next-candidate",
+      "to": "reschedule-cancel",
+      "kind": "일정 예외",
+      "source": "제안 만료, 환자 변경, 외부 취소"
+    },
+    {
+      "id": "confirmed-visit-no-show",
+      "from": "confirmed-visit",
+      "to": "no-show",
+      "kind": "내원 예외",
+      "source": "NO_SHOW는 자동 소진이 아님"
+    },
+    {
+      "id": "completion-fact-partial-completion",
+      "from": "completion-fact",
+      "to": "partial-completion",
+      "kind": "이행 예외",
+      "source": "AppointmentItem 부분 완료와 미완료 이연"
+    }
+  ],
+  "behavior": {
+    "branches": 3,
+    "loops": 0
+  },
+  "budget": {
+    "nodes": 10,
+    "edges": 14,
+    "branches": 3,
+    "loops": 1
+  },
+  "repairs": [
+    {
+      "target": "rights-versus-capacity",
+      "reason": "총 권리, 사용, 잔여 의무, 예약 슬롯을 서로 다른 시각적 사실로 유지한다.",
+      "touches": 4
+    },
+    {
+      "target": "one-visit-consent",
+      "reason": "미래 N회 전체를 확정하지 않고 고객이 동의한 한 번의 CONFIRMED 방문만 보여 준다.",
+      "touches": 3
+    },
+    {
+      "target": "completion-anchor",
+      "reason": "제안·보류가 아니라 실제 완료가 used와 잔여 값을 바꾸는 지점임을 표시한다.",
+      "touches": 3
+    },
+    {
+      "target": "exception-rail",
+      "reason": "일정 변경·취소, 노쇼, 부분 완료를 본 흐름과 겹치지 않는 별도 레일로 분리한다.",
+      "touches": 3
+    }
+  ]
+}
