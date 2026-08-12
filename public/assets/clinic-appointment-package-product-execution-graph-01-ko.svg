@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1860" height="1100" viewBox="0 0 1860 1100" role="img" aria-labelledby="package-ko-title package-ko-desc">
+  <title id="package-ko-title">환자 A의 패키지 상품이 실행 그래프와 방문 후보가 되는 흐름</title>
+  <desc id="package-ko-desc">환자 A의 패키지 구매가 구매 시점 실행 snapshot, AppointmentPlan revision, 두세 번의 방문 후보, 항목별 완료 근거와 예외 재계획으로 이어지는 업무 흐름을 보여 준다. 노쇼와 VIP 정책은 CRM과 운영 정책의 책임 경계로 분리한다.</desc>
+  <defs>
+    <linearGradient id="ko-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#07111f"/><stop offset="0.56" stop-color="#0d1930"/><stop offset="1" stop-color="#11172d"/></linearGradient>
+    <linearGradient id="ko-product" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#162b45"/><stop offset="1" stop-color="#202049"/></linearGradient>
+    <linearGradient id="ko-reservation" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#123b4a"/><stop offset="1" stop-color="#192b4d"/></linearGradient>
+    <linearGradient id="ko-commitment" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#292147"/><stop offset="1" stop-color="#192d4a"/></linearGradient>
+    <linearGradient id="ko-exception" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3a2816"/><stop offset="1" stop-color="#282034"/></linearGradient>
+    <filter id="ko-shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#020617" flood-opacity="0.58"/></filter>
+    <marker id="ko-primary-arrow" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x"><path d="M 1 1 L 13 7 L 1 13 Z" fill="#67e8f9" data-arrowhead="true" data-solid-head="true" data-role="primary" data-size="14x14"/></marker>
+    <marker id="ko-secondary-arrow" viewBox="0 0 10 10" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="secondary" data-size="10x10" data-tip-direction="positive-x"><path d="M 1 1 L 9 5 L 1 9 Z" fill="#fbbf24" data-arrowhead="true" data-solid-head="true" data-role="secondary" data-size="10x10"/></marker>
+    <style>
+      .title{font-family:"goorm Sans",sans-serif;font-size:42px;font-weight:700;fill:#f8fafc}.subtitle{font-family:"goorm Sans",sans-serif;font-size:19px;fill:#aebed2}.section{font-family:"goorm Sans",sans-serif;font-size:21px;font-weight:700;fill:#f8fafc}.card-title{font-family:"goorm Sans",sans-serif;font-size:22px;font-weight:700;fill:#f8fafc}.body{font-family:"goorm Sans",sans-serif;font-size:16px;fill:#d7e3f3}.small{font-family:"goorm Sans",sans-serif;font-size:14px;fill:#aebed2}.code{font-family:"goorm Sans Code","goorm Sans",monospace;font-size:14px;font-weight:700;fill:#f8fafc}.step{font-family:"goorm Sans Code","goorm Sans",monospace;font-size:13px;font-weight:700;fill:#f8fafc}.pill{font-family:"goorm Sans",sans-serif;font-size:13px;font-weight:700;fill:#f8fafc}.connector{fill:none;stroke-linecap:round;stroke-linejoin:round}.primary-line{stroke:#67e8f9;stroke-width:4}.exception-line{stroke:#fbbf24;stroke-width:4;stroke-dasharray:10 8}.handoff-line{stroke:#fbbf24;stroke-width:3;stroke-dasharray:7 8}.group-frame{fill:#0b1628;stroke:#345276;stroke-width:2}.visit-card{fill:#123447;stroke:#2dd4bf;stroke-width:2}.node-card{filter:url(#ko-shadow)}
+    .syntax-keyword{fill:#7E22CE}.syntax-operator{fill:#BE123C}</style>
+  </defs>
+  <rect width="1860" height="1100" fill="url(#ko-bg)"/><rect x="28" y="28" width="1804" height="1044" rx="30" fill="none" stroke="#263a5e" stroke-width="2"/>
+  <circle cx="1690" cy="120" r="220" fill="#7c3aed" opacity=".08"/><circle cx="120" cy="980" r="230" fill="#0891b2" opacity=".07"/>
+  <text class="title" x="70" y="78">환자 A: 패키지 상품이 실행 그래프가 되는 흐름</text>
+  <text class="subtitle" x="72" y="114">상품 목록은 구매 시점 실행 계약으로 고정되고, 예약서비스는 그것을 방문 후보와 항목별 완료 사실로 전개한다.</text>
+  <g transform="translate(1260 62)"><rect x="0" y="0" width="18" height="18" rx="5" fill="#162b45" stroke="#60a5fa" stroke-width="2"/><text class="small" x="28" y="15">상품·구매 snapshot</text><rect x="190" y="0" width="18" height="18" rx="5" fill="#123b4a" stroke="#67e8f9" stroke-width="2"/><text class="small" x="218" y="15">예약 실행</text><rect x="324" y="0" width="18" height="18" rx="5" fill="#3a2816" stroke="#fbbf24" stroke-width="2"/><text class="small" x="352" y="15">예외·정책</text></g>
+
+  <g class="node-card">
+    <rect x="70" y="240" width="320" height="210" rx="24" fill="url(#ko-product)" stroke="#60a5fa" stroke-width="3"/>
+    <rect x="90" y="260" width="58" height="26" rx="13" fill="#60a5fa" opacity=".22"/><text class="step" x="119" y="278" text-anchor="middle">T1</text>
+    <text class="card-title" x="230" y="318" text-anchor="middle">패키지 구매</text><text class="body" x="230" y="354" text-anchor="middle">상담 · 검사 · 본 시술</text><text class="body" x="230" y="380" text-anchor="middle">사후 점검 + 선택 항목</text><text class="code" x="230" y="420" text-anchor="middle">purchaseId · productVersionId</text>
+  </g>
+  <g class="node-card">
+    <rect x="430" y="240" width="330" height="210" rx="24" fill="url(#ko-product)" stroke="#60a5fa" stroke-width="3"/>
+    <rect x="450" y="260" width="58" height="26" rx="13" fill="#60a5fa" opacity=".22"/><text class="step" x="479" y="278" text-anchor="middle">T2</text>
+    <text class="card-title" x="595" y="310" text-anchor="middle">PackageExecutionSnapshot</text><text class="body" x="595" y="350" text-anchor="middle">선택 결과와 반복 횟수 고정</text><text class="body" x="595" y="376" text-anchor="middle">구성 version · dependency 보존</text><text class="code" x="595" y="418" text-anchor="middle">snapshotHash</text>
+  </g>
+  <g class="node-card">
+    <rect x="820" y="240" width="370" height="210" rx="24" fill="url(#ko-reservation)" stroke="#67e8f9" stroke-width="3"/>
+    <rect x="840" y="260" width="58" height="26" rx="13" fill="#67e8f9" opacity=".22"/><text class="step" x="869" y="278" text-anchor="middle">T3</text>
+    <text class="card-title" x="1005" y="310" text-anchor="middle">AppointmentPlan revision</text><text class="code" x="1005" y="350" text-anchor="middle">PlannedTreatment 1..N</text><text class="body" x="1005" y="376" text-anchor="middle">실행·방문 묶음 제약과 자원</text><text class="small" x="1005" y="418" text-anchor="middle">아직 확정된 시간 슬롯은 아님</text>
+  </g>
+
+  <path class="connector primary-line" data-connector="purchase-snapshot" data-source="package-purchase" data-target="execution-snapshot" d="M 390 345 H 430" marker-end="url(#ko-primary-arrow)"/>
+  <path class="connector primary-line" data-connector="snapshot-plan" data-source="execution-snapshot" data-target="appointment-plan" d="M 760 345 H 820" marker-end="url(#ko-primary-arrow)"/>
+  <path class="connector primary-line" data-connector="plan-visits" data-source="appointment-plan" data-target="visit-candidates" d="M 1190 345 H 1210 Q 1230 345 1230 365 Q 1230 385 1245 385 H 1260" marker-end="url(#ko-primary-arrow)"/>
+
+  <g>
+    <rect class="group-frame" x="1260" y="155" width="530" height="535" rx="28"/><text class="section" x="1280" y="202">방문 후보</text><rect x="1410" y="177" width="92" height="28" rx="14" fill="#0e7490"/><text class="pill" x="1456" y="196" text-anchor="middle">2~3회</text><text class="small" x="1280" y="232">상품 관계와 자원·시간에 따라 항목을 묶거나 분리한다.</text>
+    <g class="node-card"><rect class="visit-card" x="1280" y="265" width="480" height="105" rx="20"/><rect x="1300" y="283" width="62" height="25" rx="12" fill="#0e7490"/><text class="step" x="1331" y="300" text-anchor="middle">방문 1</text><text class="card-title" x="1510" y="302" text-anchor="middle">사전 상담 + 사전 검사</text><text class="code" x="1510" y="338" text-anchor="middle">MAY_SAME_VISIT</text></g>
+    <g class="node-card"><rect class="visit-card" x="1280" y="405" width="480" height="105" rx="20"/><rect x="1300" y="423" width="62" height="25" rx="12" fill="#0e7490"/><text class="step" x="1331" y="440" text-anchor="middle">방문 2</text><text class="card-title" x="1510" y="442" text-anchor="middle">본 시술 + 진정 관리</text><text class="code" x="1510" y="478" text-anchor="middle">MUST_SEPARATE_VISIT · 자원·회복</text></g>
+    <g class="node-card"><rect class="visit-card" x="1280" y="545" width="480" height="105" rx="20"/><rect x="1300" y="563" width="62" height="25" rx="12" fill="#0e7490"/><text class="step" x="1331" y="580" text-anchor="middle">방문 3</text><text class="card-title" x="1510" y="582" text-anchor="middle">사후 점검</text><text class="code" x="1510" y="618" text-anchor="middle">BLOCKING · 본 시술 완료 후</text></g>
+    <path class="connector primary-line" data-connector="visit-1-2" data-source="visit-1" data-target="visit-2" d="M 1520 370 V 405" marker-end="url(#ko-primary-arrow)"/><path class="connector primary-line" data-connector="visit-2-3" data-source="visit-2" data-target="visit-3" d="M 1520 510 V 545" marker-end="url(#ko-primary-arrow)"/>
+  </g>
+
+  <g class="node-card"><rect x="1240" y="760" width="550" height="185" rx="24" fill="url(#ko-reservation)" stroke="#67e8f9" stroke-width="3"/><rect x="1260" y="780" width="58" height="26" rx="13" fill="#67e8f9" opacity=".22"/><text class="step" x="1289" y="798" text-anchor="middle">T7</text><text class="card-title" x="1515" y="825" text-anchor="middle">AppointmentItem 단위 완료</text><text class="body" x="1515" y="861" text-anchor="middle">완료 항목은 사용 처리 · 미완료 항목은 잔여로 유지</text><text class="code" x="1515" y="905" text-anchor="middle">used · remaining · provenance</text></g>
+  <path class="connector primary-line" data-connector="visits-completion" data-source="visit-candidates" data-target="completion-fact" d="M 1520 690 V 760" marker-end="url(#ko-primary-arrow)"/>
+
+  <g class="node-card"><rect x="820" y="760" width="370" height="185" rx="24" fill="url(#ko-exception)" stroke="#fbbf24" stroke-width="3"/><rect x="840" y="780" width="58" height="26" rx="13" fill="#fbbf24" opacity=".22"/><text class="step" x="869" y="798" text-anchor="middle">T8</text><text class="card-title" x="1005" y="825" text-anchor="middle">예외 사실</text><text class="body" x="1005" y="861" text-anchor="middle">NO_SHOW · 일정 변경 · 부분 완료</text><text class="code" x="1005" y="905" text-anchor="middle"><tspan class="syntax-keyword">new</tspan> proposal <tspan class="syntax-operator">/</tspan> revision</text></g>
+  <path class="connector exception-line" data-connector="completion-exception" data-source="completion-fact" data-target="operational-exception" d="M 1240 850 H 1190" marker-end="url(#ko-secondary-arrow)"/>
+  <path class="connector exception-line" data-connector="exception-plan" data-source="operational-exception" data-target="appointment-plan" d="M 1005 760 V 450" marker-end="url(#ko-secondary-arrow)"/>
+
+  <g class="node-card"><rect x="430" y="760" width="330" height="185" rx="24" fill="url(#ko-exception)" stroke="#fbbf24" stroke-width="3"/><rect x="450" y="780" width="82" height="26" rx="13" fill="#fbbf24" opacity=".22"/><text class="pill" x="491" y="798" text-anchor="middle">책임 경계</text><text class="card-title" x="595" y="825" text-anchor="middle">CRM · 운영 정책</text><text class="body" x="595" y="861" text-anchor="middle">상담 · 재예약 · 노쇼 · VIP</text><text class="code" x="595" y="905" text-anchor="middle">예약서비스가 자동 결정하지 않음</text></g>
+  <path class="connector handoff-line" data-connector="exception-crm" data-source="operational-exception" data-target="crm-policy" d="M 820 850 H 760" marker-end="url(#ko-secondary-arrow)"/>
+
+  <text class="small" x="70" y="1010">읽는 규칙</text><text class="body" x="70" y="1042">구매는 실행 계약을 만들고, 동의한 방문만 약속이 된다. 완료·예외 사실은 기존 확정을 덮어쓰지 않고 다음 proposal/revision의 입력이 된다.</text>
+</svg>
