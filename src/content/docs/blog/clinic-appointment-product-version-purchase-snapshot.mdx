@@ -1,0 +1,318 @@
+---
+title: "When a Product Changes, Don't Rewrite the Patient's Promise: Product Versions and Purchase Snapshots"
+description: Follow Patient A through event, N-visit, and package products to see how purchase-time snapshots, AppointmentPlan revisions, consent, and service ownership protect an existing visit promise.
+sidebar:
+  order: -202608121000
+blog:
+  date: 2026-08-12T10:00:00+09:00
+  image: /assets/clinic-appointment-prologue-hero.png
+  imageAlt: Small robotic builders connect product v1 and v2 cards, a purchase snapshot, a plan revision, and a confirmed visit promise on one time axis
+  cardDescription: "A patient-centered explanation of purchase snapshots and Plan revisions when a product changes."
+  tags: ["architecture", "domain-modeling", "event-driven", "resilience"]
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-prologue-hero.png" alt="Small robotic builders connect product v1 and v2 cards, a purchase snapshot, a plan revision, and a confirmed visit promise on one time axis" loading="eager" />
+  <figcaption>Publishing a new product and changing a patient's purchased visit promise are different operations. Protect the purchase-time contract and the facts already confirmed first.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-12 · clinic appointment series · Product Versions and Purchase Snapshots</p>
+
+When the product team changes a product, the reservation service has a question to answer before it looks at a
+calendar:
+
+> May the new product definition be applied directly to a patient who already purchased the old one?
+
+Suppose Patient A buys an event product, an N-visit product, and a package product at one clinic. The product team
+publishes the same product family as v2. New purchases may use the new definition. But if the service expands A's
+v1 treatment items and remaining visits from the current catalog, the reservation service has silently changed the
+patient's purchase contract.
+
+Idempotency is not this article's main conflict. The main question is **what stays protected, and what may still be
+negotiated**, when a product version changes. A repeated purchase event appears only as a short technical guardrail
+near the end.
+
+## Patient A's timeline: a purchase is not yet a visit promise
+
+We generalize the product name, price, clinic, and personal information. Only the scheduling meaning remains.
+
+| Time | Patient A action or event | Product and purchase meaning | What the reservation service preserves |
+| --- | --- | --- | --- |
+| T1 | Buys an event product | One right to use within a validity window | Source purchase ID and the purchase-time catalog v1 |
+| T2 | Adds an N-visit product | An obligation fulfilled across several visits | Per-visit PlannedTreatment and repeat intervals |
+| T3 | Buys a package product | An execution BOM with several items, dependencies, and resources | Per-item version provenance and dependencies |
+| T4 | Completes some items while others remain future work | Past facts split from pending obligations | Completion facts, remaining items, and the current Plan revision |
+| T5 | The product team publishes catalog v2 | The contract for later purchases changes | The v1 snapshot and the v2 projection together |
+| T6 | A migration mapping and consent arrive for the existing purchase | An exceptional change to future obligations | A new revision plus mapping and consent evidence |
+| T7 | The migration would change the schedule, or A declines it | A product change and a visit change are separate work | The confirmed visit and an objective CRM/counseling handoff |
+
+These purchases must not collapse into one appointment row. One use of an event product, the third visit in an
+N-visit product, and one package item have different remaining obligations and dependency rules. Items from several
+purchases may be grouped into one visit, but the agreed AppointmentItems and each purchase's Plan remain separately
+traceable.
+
+A **purchase** is the commercial fact of what the patient bought the right to use. A **Plan** is the reservation
+service's interpretation of that purchase as executable obligations. A **confirmed visit** is a promise to perform
+specific items with specific time and resources. Treating all three as one record lets a catalog change overwrite a
+past promise.
+
+## A product version is a purchase-time contract, not sales copy
+
+The product projection stored by the reservation service is not an arbitrary copy that it is free to rewrite. The
+current
+[ProductCatalogDefinition](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/catalog/ProductCatalogDefinition.kt)
+treats the source product service's catalogVersion, BOM items, repeat counts, treatment duration, resource
+capabilities, and dependencies as one immutable definition. An ACTIVE projection can create a new Plan; a RETIRED
+projection remains available only for reading historical Plans.
+
+A purchase-completed event does not need to repeat the whole price sheet. The minimum input the reservation service
+must reproduce includes sourcePurchaseAuthority, sourcePurchaseId, productId, catalogVersion, and bookingPreference
+from
+[PurchaseCompletedEvent](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/PurchaseCompletedEvent.kt).
+When it creates the Plan, it joins that purchase authority and protected patient reference to the purchase-time
+catalog payload hash.
+
+[AppointmentPlanFactory](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/AppointmentPlanFactory.kt)
+expands each catalog BOM item into PlannedTreatments according to repeatCount and preserves dependencies. It does
+not confirm a visit time. The absence of a customer preference is not a command to confirm automatically.
+
+A Plan and the visit-promise flow built from it therefore need to retain at least this timeline:
+
+- Which source purchase ID and source service created it
+- Which product family and catalog version it used
+- Which payload hash, BOM items, repeats, and dependencies were interpreted
+- Which booking preference arrived with the purchase, and which policy snapshot informed a proposal
+- Which Plan owns later revisions and confirmed visits
+
+This snapshot is not a customer-facing copy of a price card. The product team and commerce service own the source
+product. The reservation service preserves the minimum execution contract needed to reproduce this purchase's
+scheduling obligations.
+
+## Event, N-visit, and package products become different Plans
+
+A product type expressed only as a number of calendar appointments loses the business rule.
+
+| Product type | What remains in the Plan | The reservation question |
+| --- | --- | --- |
+| Event product | One PlannedTreatment from repeatCount 1, a validity window, and booking rules | Which date and resources can fulfill this benefit? |
+| N-visit product | Per-visit PlannedTreatments with minimum, preferred, and maximum intervals | Does this visit respect the previous one, and how many remain? |
+| Package product | Item-level execution BOM, selections, dependencies, and visit grouping | Which items fit this visit, and which must remain future work? |
+
+A package is especially difficult to reduce to “one product equals one appointment.” The current
+[PackageExecutionPlanner](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/PackageExecutionPlanner.kt)
+validates exact component versions, expanded execution items, dependency relations, and visit-grouping constraints
+provided by the execution source. Missing provenance or a cycle in the dependency graph rejects the whole input rather
+than silently dropping part of it.
+
+~~~text
+Purchase completed event
+  └─> One AppointmentPlan per purchase
+        ├─ Event product: one PlannedTreatment
+        ├─ N-visit product: PlannedTreatment 1..N
+        └─ Package: items + dependency/DAG + visit grouping
+~~~
+
+This structure also prevents a common overreach: “the patient bought three products, so reserve every possible future
+slot.” A Plan preserves obligations. It does not mean that the reservation service occupies every future resource.
+Only the items with an agreed time, resource, and consent become confirmed visits.
+
+## When catalog v2 is published, do not re-expand the existing Plan
+
+Publishing v2 creates two paths.
+
+| Target | Default treatment | Why |
+| --- | --- | --- |
+| A customer who has not purchased yet | The new purchase event points to catalog v2 | v2 is a new commercial contract, so the new Plan snapshots v2 |
+| Patient A who already purchased v1 | The existing Plan and revisions remain v1 | The purchase-time right and obligation are not reinterpreted from the current catalog |
+| An exceptional change to an existing purchase | A new revision after explicit mapping and consent | An existing-contract change is not the same flow as a new contract |
+
+The timeline below makes the split visible. The v1 purchase retains completed and confirmed facts. Publishing v2
+separates a new purchase from a proposed migration of the existing purchase. Future items in the existing purchase do
+not move automatically; they enter a new revision only after approval and consent.
+
+<figure
+  class="bt4k-architecture"
+  data-diagram-title="Protecting Patient A's Plan when a product version changes"
+>
+  <img src="/assets/clinic-appointment-product-version-migration-01-en.png" alt="Catalog v1 fixes Patient A's purchase snapshot and v1 Plan while completed and confirmed facts stay protected; catalog v2 branches into a new purchase and explicit migration approval, consent, a new Plan revision, and a CRM handoff" loading="lazy" />
+  <figcaption>Publishing product v2 does not redeploy the existing Plan. New purchases start on v2, while future items in an existing purchase may move only through explicit mapping and patient consent.</figcaption>
+</figure>
+
+## Separate completed facts from work that is still negotiable
+
+The most dangerous phrase in a product migration is “convert the remaining product.” Remaining work can include
+something already performed, something confirmed but not yet visited, and something that has not even been proposed.
+
+The current
+[AppointmentPlanModel](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/plan/AppointmentPlanModel.kt)
+distinguishes PLANNED, SCHEDULED, IN_PROGRESS, COMPLETED, CANCELLED, and BLOCKED_REVIEW treatment states. The smaller
+product-version migration model separately validates PENDING, COMPLETED, and CANCELLED. The names differ because the
+models serve different decisions; the rule is the same: separate past facts and confirmed promises from future
+obligations that can still be negotiated.
+
+| Plan or visit state | Default after v2 is published | What it means for Patient A |
+| --- | --- | --- |
+| COMPLETED | Retain the old revision and old version provenance | Do not rewrite an already delivered service under a later definition |
+| IN_PROGRESS | Protect the current execution and clinical fact | Do not undo an action already underway because the product was revised |
+| An item linked to a CONFIRMED visit | Protect the promise, policy snapshot, and resource agreement | Do not cancel the agreed time and item automatically |
+| PLANNED or PENDING future work | Candidate for a new revision only with approved mapping and consent | Only work not yet promised is open to negotiation |
+| CANCELLED | Retain the cancellation or refund fact | Do not resurrect a cancelled obligation because v2 exists |
+
+[ProductVersionMigrationPlanner](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/ProductVersionMigrationPlanner.kt)
+rejects a mapping that includes a completed source, requires every PENDING source to be explained exactly once, and
+requires unique target treatment keys. Similar names are not evidence that two obligations are the same.
+
+## The exceptional path for applying v2 to an existing purchase
+
+If the product team must apply v2 to Patient A's existing purchase, the reservation service does not guess the
+correspondence. The product team creates the target-version mapping and consent evidence, then sends the approved
+migration fact to the reservation service.
+
+The current
+[ProductVersionMigration](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/plan/ProductVersionMigration.kt)
+model distinguishes six mapping types:
+
+| Mapping | Source → target | Meaning for Patient A |
+| --- | --- | --- |
+| KEEP | 1 → 1 | Retain the same future obligation under a v2 item key |
+| REPLACE | 1 → 1 | Replace an unfinished item with another v2 item |
+| SPLIT | 1 → 2 or more | Divide one future obligation into several execution items |
+| MERGE | 2 or more → 1 | Combine several future obligations into one new execution item |
+| REMOVE | 1 or more → 0 | Remove an unfinished obligation from the new revision |
+| ADD | 0 → 1 or more | Add a new obligation without an existing source |
+
+For example, imagine that A's package contains two items not yet started and one completed item. The product team may
+SPLIT one future item into two v2 items and KEEP the other. The completed item is left out of the mapping. Putting the
+completed item under REMOVE would confuse “not shown in the new revision” with “erase the completed fact.”
+
+After approval,
+[ProductVersionMigrationHandler](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/ProductVersionMigrationHandler.kt)
+follows this sequence:
+
+1. Lock the source purchase and its active revision.
+2. Verify that the active revision uses the from product version.
+3. Verify the consent subject and evidence age.
+4. Validate the mapping and the future execution BOM.
+5. Keep completed items in the old revision and append a new immutable revision under the same Plan.
+6. Activate the new revision and write the ProductVersionMigrationApplied objective fact to the outbox.
+
+If the mapping, consent, or from version is invalid, the active revision stays unchanged and the handler records a
+quarantine or rejection result. The reservation service does not decide whether the new product is commercially fair.
+It verifies that the approved fact fits the current Plan and records the change as a traceable revision.
+
+## When a product change reaches the visit schedule
+
+A different BOM does not authorize an immediate recalculation of a confirmed visit's date, doctor, equipment, or
+room. A visit promise also contains clinic policy, capacity, patient consent, and resource agreement.
+
+The implementation comments in
+[ProductVersionMigrationHandler](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/ProductVersionMigrationHandler.kt)
+state that migration does not update the appointment, commitment, or allocation. If the schedule really must change,
+start a separate flow:
+
+1. Calculate candidate times for the new items.
+2. Show the existing CONFIRMED promise together with the new proposal.
+3. Store a new proposal and its change evidence; replace the confirmed proposal only after the patient consents.
+4. If the patient declines or no candidate exists, do not delete the existing promise first.
+5. Send the decline or reschedule result as an objective fact that CRM, counseling, and commerce can judge.
+
+This is where policies such as VIP priority or an additional check after repeated no-shows might exist. Scheduling
+policies are owned and versioned by the reservation service, while CRM and commerce own customer-contact,
+compensation, and other follow-up facts. The reservation service stores the policy snapshot and calculation result used
+for this proposal. That is also why internal thresholds and customer tiers do not belong in a public article.
+
+### Service authority and responsibility
+
+| Service | Authority data | Facts it publishes or consumes for a product change | Reservation responsibility |
+| --- | --- | --- | --- |
+| Product management and development | Product version, BOM, mapping | ProductCatalogChanged, ProductVersionMigrationApproved | Verify that version, BOM, and mapping are reproducible |
+| Commerce and purchasing | Purchase contract, additional purchase, refund | PurchaseCompleted, PurchaseRefunded | Create one Plan per purchase and keep the source link |
+| Reservation service | Scheduling policy, Plan, Plan revision, visit promise, resources, history | ProductVersionMigrationApplied and objective schedule facts | Preserve snapshot, revision, and confirmed-promise ownership |
+| Clinical delivery | Start, completion, partial completion | Fulfillment facts | Separate completed work from future work |
+| CRM and counseling | Counseling, compensation, consent source | Decline and operational handoff facts | Make the customer decision from objective facts |
+| Notification | Contact consent and delivery history | Consumes appointment and migration events | Keep channels outside the reservation transaction |
+| Statistics and external consumers | Projections and metrics | Consume Plan, revision, and event data | Never replace the reservation source of truth |
+
+Authority is not only about who can read a field. It is about who can change its meaning. Product management may
+publish v2, but it does not directly cancel A's confirmed visit. CRM may decide counseling and compensation after a
+decline, but it does not overwrite Plan provenance. The reservation service preserves executable promises and objective
+history between those boundaries.
+
+## Repeated delivery is not an additional purchase
+
+This article does not use “duplicate” as shorthand for “duplicate purchase.”
+
+A **repeated delivery** is the same PurchaseCompleted event arriving again after a timeout, retry, or replay.
+[PurchaseCompletedHandler](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/PurchaseCompletedHandler.kt)
+checks for an existing Plan in the sourcePurchaseAuthority, sourcePurchaseId, tenant, and clinic scope. If the
+immutable ownership matches, it converges to PURCHASE_ALREADY_PLANNED instead of creating a second Plan. If the
+payload conflicts, it quarantines an ownership conflict rather than guessing that a second purchase occurred.
+
+An **additional purchase** means that the patient actually paid again and received a new sourcePurchaseId. That new
+purchase creates a new Plan. Combining items from the two Plans into one visit still needs its own eligibility,
+proposal, resource, and consent review.
+
+~~~text
+Same sourcePurchaseId + same immutable ownership
+  └─> converge on the existing Plan
+
+New sourcePurchaseId
+  └─> create a new purchase Plan
+
+Repeated delivery ≠ additional purchase
+~~~
+
+The first is delivery safety. The second is a product and commerce fact. Calling both “duplicate” makes the counseling
+screen and the reservation screen explain different things to the patient.
+
+## Read current implementation and future design separately
+
+| Evidence label | Scope in this article | Evidence |
+| --- | --- | --- |
+| **Current implementation** | Versioned catalog projection, one Plan per purchase, repeat/BOM/dependency snapshot, explicit migration mapping validation, same-Plan revision append/activate, and retained completion provenance | Current clinic-appointment develop source and related tests |
+| **Approved design** | Proposal, consent, and operating policy when a product change would alter an existing confirmed visit; multi-item commitment expansion | [Visit commitment design](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-07-29-issue-184-visit-commitment-design.md), [Plan and capacity design](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-07-26-appointment-plan-and-capacity-design.md) |
+| **Awaiting operations** | Actual broker delivery, outbox canary, backfill, production readiness, and recovery drills | Requires rollout evidence rather than source inspection |
+| **Roadmap** | A public patient channel for reviewing and consenting to a change proposal | A later product and channel scope |
+
+“Current implementation” here means that the contract is confirmed in source and tests. It does not mean that every
+clinic can automatically apply every product change, or that the reservation service owns refunds and compensation.
+
+## What comes next
+
+This article fixed the boundary that protects an existing Plan and confirmed visit when a product version changes. The
+next article follows the first booking rule for an event product: how a purchase becomes candidate times and then a visit
+promise without confirming a date immediately, while respecting customer preference, validity, and clinic resources.
+
+### Revisit the visual companions
+
+The existing companions supplement the source Markdown design. Start with product scheduling traits, package
+composition, and execution-BOM expansion before returning to this article's migration timeline.
+
+- [Classifying product scheduling behavior](/visual-companions/clinic-appointment/product-scheduling-classification/)
+- [Package product composition](/visual-companions/clinic-appointment/package-product-composition/)
+- [Expanding a product execution BOM into scheduling](/visual-companions/clinic-appointment/product-bom-to-appointment-flow/)
+- [Clinic appointment visual companion index](/visual-companions/clinic-appointment/)
+
+### Evidence links
+
+- [clinic-appointment repository](https://github.com/bluetape4k/clinic-appointment)
+- [Product catalog definition](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/catalog/ProductCatalogDefinition.kt)
+- [AppointmentPlan model](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/plan/AppointmentPlanModel.kt)
+- [Purchase completion handler](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/PurchaseCompletedHandler.kt)
+- [Product version migration model](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/plan/ProductVersionMigration.kt)
+- [Product version migration planner](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/ProductVersionMigrationPlanner.kt)
+- [Product version migration handler](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/ProductVersionMigrationHandler.kt)
+- [Product, purchase, and reservation data flow](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/requirements/data-flow.md)
+- [Product versions and visit commitments](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-07-29-issue-184-visit-commitment-design.md)
+
+## Series
+
+- [Prologue: From Product Information to a Patient's Visit Commitment](/blog/clinic-appointment-prologue-product-to-appointment/)
+- **When a Product Changes, Don't Rewrite the Patient's Promise**
+- [Part 1: Clinic Appointments Are More Than CRUD](/blog/clinic-appointment-part1-not-just-crud/)
+- [Part 2: Appointment State Is More Than an Enum](/blog/clinic-appointment-part2-state-machine-and-history/)
+- [Part 3: Computing Availability from Clinic-Specific Hours and Resources](/blog/clinic-appointment-part3-clinic-specific-availability/)
+- [Part 4: Real-Time Slot Search and Global Optimization Solve Different Problems](/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
+- [Part 5: Translating Clinic Rules into Timefold Constraints](/blog/clinic-appointment-part5-timefold-constraints/)
+- [Part 6: Rescheduling after Closures and Equipment Downtime](/blog/clinic-appointment-part6-closure-equipment-rescheduling/)
+- [Part 7: Reviews and Operations Start the Next Development Cycle](/blog/clinic-appointment-part7-review-and-operational-evolution/)

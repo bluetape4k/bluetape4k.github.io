@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1200" viewBox="0 0 2000 1200" role="img" aria-labelledby="title desc" data-locale="ko">
+  <title id="title">상품 버전 변경과 환자 A의 Plan 보호</title>
+  <desc id="desc">환자 A의 v1 구매 스냅숏과 Plan을 보호하면서 상품 v2를 신규 구매와 명시적 전환으로 분기하는 시간축입니다.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07111f"/><stop offset=".58" stop-color="#0d1930"/><stop offset="1" stop-color="#11172d"/>
+    </linearGradient>
+    <linearGradient id="v1Fill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#102b49"/><stop offset="1" stop-color="#17214a"/></linearGradient>
+    <linearGradient id="protectFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#103b45"/><stop offset="1" stop-color="#15364d"/></linearGradient>
+    <linearGradient id="branchFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3b2b18"/><stop offset="1" stop-color="#2a2138"/></linearGradient>
+    <linearGradient id="revisionFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#28214c"/><stop offset="1" stop-color="#182d4a"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="155%"><feDropShadow dx="0" dy="12" stdDeviation="13" flood-color="#020617" flood-opacity=".56"/></filter>
+    <marker id="cyanArrow" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+      <path d="M 0 0 L 14 7 L 0 14 Z" fill="#67e8f9" data-solid-head="true"/>
+    </marker>
+    <marker id="amberArrow" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+      <path d="M 0 0 L 14 7 L 0 14 Z" fill="#fbbf24" data-solid-head="true"/>
+    </marker>
+    <style>
+      .title{font-family:"goorm Sans",sans-serif;font-size:46px;font-weight:700;fill:#f8fafc}
+      .subtitle{font-family:"goorm Sans",sans-serif;font-size:21px;fill:#aebed2}
+      .lane{font-family:"goorm Sans",sans-serif;font-size:25px;font-weight:700;fill:#f8fafc}
+      .lane-note{font-family:"goorm Sans",sans-serif;font-size:16px;fill:#aebed2}
+      .step{font-family:"goorm Sans Code","goorm Sans",monospace;font-size:18px;font-weight:700;fill:#dbeafe}
+      .card-title{font-family:"goorm Sans",sans-serif;font-size:25px;font-weight:700;fill:#f8fafc}
+      .body{font-family:"goorm Sans",sans-serif;font-size:18px;fill:#d7e3f3}
+      .code-small{font-family:"goorm Sans Code","goorm Sans",monospace;font-size:14px;font-weight:700;fill:#f8fafc}
+      .role{font-family:"goorm Sans",sans-serif;font-size:14px;font-weight:700;fill:#f8fafc}
+      .small{font-family:"goorm Sans",sans-serif;font-size:16px;fill:#aebed2}
+      .footer-title{font-family:"goorm Sans",sans-serif;font-size:18px;font-weight:700;fill:#f8fafc}
+      .footer-body{font-family:"goorm Sans",sans-serif;font-size:17px;fill:#d7e3f3}
+      .connector{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:4.5}
+      .primary-line{stroke:#67e8f9;marker-end:url(#cyanArrow)}
+      .branch-line{stroke:#fbbf24;marker-end:url(#amberArrow)}
+    </style>
+  </defs>
+
+  <rect id="background" width="2000" height="1200" fill="url(#bg)"/>
+  <rect x="40" y="32" width="1920" height="1136" rx="32" fill="none" stroke="#263a5e" stroke-width="2"/>
+  <circle cx="1830" cy="150" r="250" fill="#7c3aed" opacity=".08"/>
+  <circle cx="170" cy="1040" r="250" fill="#0891b2" opacity=".07"/>
+
+    <text class="title" x="90" y="86">상품 버전 변경과 환자 A의 Plan 보호</text>
+    <text class="subtitle" x="92" y="126">v1 구매는 스냅숏으로 고정하고, v2는 신규 구매와 승인된 미래 의무 전환으로 나눕니다.</text>
+  <g transform="translate(1180 88)">
+    <rect x="0" y="-18" width="22" height="22" rx="7" fill="#102b49" stroke="#60a5fa" stroke-width="2"/>
+    <text class="small" x="32" y="0">v1 스냅숏 · 과거 약속 보호</text>
+    <rect x="310" y="-18" width="22" height="22" rx="7" fill="#3b2b18" stroke="#fbbf24" stroke-width="2"/>
+    <text class="small" x="342" y="0">v2 분기 · 새 계약 또는 명시적 전환</text>
+  </g>
+
+  <text class="lane" x="90" y="210">v1 구매와 약속</text>
+  <text class="lane-note" x="90" y="236">구매 당시의 계약과 이미 확인된 사실</text>
+  <path d="M 90 250 H 1830" fill="none" stroke="#2b4168" stroke-width="2" stroke-dasharray="10 12"/>
+  <text class="lane" x="90" y="660">v2 발행 이후의 분기</text>
+  <text class="lane-note" x="90" y="686">신규 계약과 예외적인 기존 구매 전환</text>
+  <path d="M 90 700 H 1830" fill="none" stroke="#2b4168" stroke-width="2" stroke-dasharray="10 12"/>
+
+  <g filter="url(#shadow)">
+    <g class="node-card">
+    <rect id="catalog-v1" x="90" y="260" width="300" height="230" rx="26" fill="url(#v1Fill)" stroke="#60a5fa" stroke-width="3"/>
+    <rect x="110" y="278" width="126" height="28" rx="14" fill="#60a5fa" opacity=".22"/>
+    <text class="role" x="173" y="298" text-anchor="middle">상품 권위</text>
+    <text class="card-title" x="240" y="352" text-anchor="middle">상품 카탈로그 v1</text>
+    <text class="body" x="240" y="392" text-anchor="middle">상품 정의 · BOM · 정책</text>
+    <text class="body" x="240" y="424" text-anchor="middle">구매 시점에 고정</text>
+  </g>
+    <g class="node-card">
+    <rect id="purchase-a-v1" x="450" y="260" width="300" height="230" rx="26" fill="url(#v1Fill)" stroke="#60a5fa" stroke-width="3"/>
+    <rect x="470" y="278" width="126" height="28" rx="14" fill="#60a5fa" opacity=".22"/>
+    <text class="role" x="533" y="298" text-anchor="middle">상업적 사실</text>
+    <text class="card-title" x="600" y="352" text-anchor="middle">환자 A 구매</text>
+    <text class="body" x="600" y="392" text-anchor="middle">v1 구매 스냅숏</text>
+    <text class="body" x="600" y="424" text-anchor="middle">sourcePurchaseId · payload hash</text>
+  </g>
+    <g class="node-card">
+    <rect id="plan-v1" x="810" y="260" width="300" height="230" rx="26" fill="url(#v1Fill)" stroke="#60a5fa" stroke-width="3"/>
+    <rect x="830" y="278" width="126" height="28" rx="14" fill="#60a5fa" opacity=".22"/>
+    <text class="role" x="893" y="298" text-anchor="middle">예약 의무</text>
+    <text class="card-title" x="960" y="352" text-anchor="middle">AppointmentPlan</text>
+    <text class="body" x="960" y="392" text-anchor="middle">v1 revision</text>
+    <text class="body" x="960" y="424" text-anchor="middle">PlannedTreatment 1..N</text>
+  </g>
+    <g class="node-card">
+    <rect id="completed-protected" x="1170" y="260" width="300" height="230" rx="26" fill="url(#protectFill)" stroke="#2dd4bf" stroke-width="3"/>
+    <rect x="1190" y="278" width="126" height="28" rx="14" fill="#2dd4bf" opacity=".22"/>
+    <text class="role" x="1253" y="298" text-anchor="middle">보호된 사실</text>
+    <text class="card-title" x="1320" y="352" text-anchor="middle">완료 · 진행 중 사실</text>
+    <text class="body" x="1320" y="392" text-anchor="middle">이전 revision에 보존</text>
+    <text class="body" x="1320" y="424" text-anchor="middle">자동 전환 · 삭제 금지</text>
+  </g>
+    <g class="node-card">
+    <rect id="confirmed-protected" x="1530" y="260" width="300" height="230" rx="26" fill="url(#protectFill)" stroke="#2dd4bf" stroke-width="3"/>
+    <rect x="1550" y="278" width="126" height="28" rx="14" fill="#2dd4bf" opacity=".22"/>
+    <text class="role" x="1613" y="298" text-anchor="middle">별도 제안 필요</text>
+    <text class="card-title" x="1680" y="352" text-anchor="middle">확정 방문 약속</text>
+    <text class="body" x="1680" y="392" text-anchor="middle">시간 · 항목 · 자원</text>
+    <text class="body" x="1680" y="424" text-anchor="middle">동의 스냅숏 보호</text>
+  </g>
+    <g class="node-card">
+    <rect id="catalog-v2" x="90" y="710" width="300" height="230" rx="26" fill="url(#branchFill)" stroke="#fbbf24" stroke-width="3"/>
+    <rect x="110" y="728" width="126" height="28" rx="14" fill="#fbbf24" opacity=".22"/>
+    <text class="role" x="173" y="748" text-anchor="middle">상품 권위</text>
+    <text class="card-title" x="240" y="802" text-anchor="middle">상품 카탈로그 v2</text>
+    <text class="body" x="240" y="842" text-anchor="middle">새 버전 발행</text>
+    <text class="body" x="240" y="874" text-anchor="middle">기존 Plan 자동 변경 없음</text>
+  </g>
+    <g class="node-card">
+    <rect id="new-purchase-v2" x="450" y="710" width="300" height="230" rx="26" fill="url(#branchFill)" stroke="#fbbf24" stroke-width="3"/>
+    <rect x="470" y="728" width="126" height="28" rx="14" fill="#fbbf24" opacity=".22"/>
+    <text class="role" x="533" y="748" text-anchor="middle">새 구매</text>
+    <text class="card-title" x="600" y="802" text-anchor="middle">신규 구매</text>
+    <text class="body" x="600" y="842" text-anchor="middle">v2로 새 Plan</text>
+    <text class="body" x="600" y="874" text-anchor="middle">새 계약에만 적용</text>
+  </g>
+    <g class="node-card">
+    <rect id="migration-approved" x="810" y="710" width="300" height="230" rx="26" fill="url(#branchFill)" stroke="#fbbf24" stroke-width="3"/>
+    <rect x="830" y="728" width="126" height="28" rx="14" fill="#fbbf24" opacity=".22"/>
+    <text class="role" x="893" y="748" text-anchor="middle">예외 경계</text>
+    <text class="card-title" x="960" y="802" text-anchor="middle">상품 버전 전환 승인</text>
+    <text class="body" x="960" y="842" text-anchor="middle">매핑 + 동의</text>
+    <text class="code-small" x="960" y="874" text-anchor="middle">ProductVersionMigrationApproved</text>
+  </g>
+    <g class="node-card">
+    <rect id="plan-revision-v2" x="1170" y="710" width="300" height="230" rx="26" fill="url(#revisionFill)" stroke="#a78bfa" stroke-width="3"/>
+    <rect x="1190" y="728" width="126" height="28" rx="14" fill="#a78bfa" opacity=".22"/>
+    <text class="role" x="1253" y="748" text-anchor="middle">예약서비스</text>
+    <text class="card-title" x="1320" y="802" text-anchor="middle">Plan revision v2</text>
+    <text class="body" x="1320" y="842" text-anchor="middle">미래 항목만 승계</text>
+    <text class="body" x="1320" y="874" text-anchor="middle">같은 Plan · 불변</text>
+  </g>
+    <g class="node-card">
+    <rect id="crm-handoff" x="1530" y="710" width="300" height="230" rx="26" fill="url(#revisionFill)" stroke="#a78bfa" stroke-width="3"/>
+    <rect x="1550" y="728" width="126" height="28" rx="14" fill="#a78bfa" opacity=".22"/>
+    <text class="role" x="1613" y="748" text-anchor="middle">판단은 상담 권위</text>
+    <text class="card-title" x="1680" y="802" text-anchor="middle">CRM · 상담 전달</text>
+    <text class="body" x="1680" y="842" text-anchor="middle">거부 · 재조정 결과</text>
+    <text class="body" x="1680" y="874" text-anchor="middle">객관적 사실 전달</text>
+  </g>
+  </g>
+
+  <g id="edges">
+    <path class="connector primary-line" data-connector="catalog-v1-purchase-a-v1" data-source-node="catalog-v1" data-target-node="purchase-a-v1" d="M 390 375 H 450"/>
+    <path class="connector primary-line" data-connector="purchase-a-v1-plan-v1" data-source-node="purchase-a-v1" data-target-node="plan-v1" d="M 750 375 H 810"/>
+    <path class="connector primary-line" data-connector="plan-v1-completed-protected" data-source-node="plan-v1" data-target-node="completed-protected" d="M 1110 375 H 1170"/>
+    <path class="connector primary-line" data-connector="plan-v1-confirmed-protected" data-source-node="plan-v1" data-target-node="confirmed-protected" d="M 960 260 V 190 Q 960 170 980 170 H 1660 Q 1680 170 1680 190 V 260"/>
+    <path class="connector branch-line" data-connector="catalog-v2-new-purchase-v2" data-source-node="catalog-v2" data-target-node="new-purchase-v2" d="M 390 825 H 450"/>
+    <path class="connector branch-line" data-connector="new-purchase-v2-migration-approved" data-source-node="new-purchase-v2" data-target-node="migration-approved" d="M 750 825 H 810"/>
+    <path class="connector branch-line" data-connector="catalog-v2-migration-approved" data-source-node="catalog-v2" data-target-node="migration-approved" d="M 240 940 V 970 Q 240 990 260 990 H 880 Q 900 990 900 970 V 940"/>
+    <path class="connector primary-line" data-connector="migration-approved-plan-revision-v2" data-source-node="migration-approved" data-target-node="plan-revision-v2" d="M 1110 825 H 1170"/>
+    <path class="connector primary-line" data-connector="migration-approved-crm-handoff" data-source-node="migration-approved" data-target-node="crm-handoff" d="M 980 940 V 1000 Q 980 1020 1000 1020 H 1480 Q 1500 1020 1500 1000 V 845 Q 1500 825 1510 825 H 1530"/>
+    <path class="connector primary-line" data-connector="migration-approved-confirmed-protected" data-source-node="migration-approved" data-target-node="confirmed-protected" d="M 900 710 V 650 Q 900 630 920 630 H 1660 Q 1680 630 1680 610 V 490"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="90" y="1090" width="1740" height="62" rx="20" fill="#0b1628" stroke="#2b4168" stroke-width="2"/>
+    <text class="footer-title" x="118" y="1118">읽는 규칙</text>
+    <text class="footer-body" x="300" y="1118">카탈로그 v2는 기존 Plan을 자동 재전개하지 않습니다. 완료·진행 중·확정 방문은 보존합니다.</text>
+    <text class="footer-body" x="118" y="1143">미진행 항목만 매핑과 동의 뒤 새 revision으로 승계하며, 거부 결과는 CRM·상담으로 전달합니다.</text>
+  </g>
+</svg>

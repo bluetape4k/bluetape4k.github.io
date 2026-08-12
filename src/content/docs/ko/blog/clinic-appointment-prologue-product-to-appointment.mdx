@@ -226,8 +226,9 @@ hold와 `CONFIRMED`의 snapshot·동의·자원 점유는 보호해야 합니다
 ## 다음 글에서 다룰 것
 
 이번 글은 전체 지도를 그렸습니다. 다음 글에서는 상품 버전과 구매 snapshot을 더 가까이 들여다봅니다.
-상품이 수정되거나 구매 event가 중복 도착할 때 과거 고객의 예약 의무를 어떻게 보호할지, 그리고 catalog
-projection과 purchase event를 어떤 멱등 경계로 연결할지 다음 글에서 이어가겠습니다.
+상품 v2가 발행돼도 환자 A의 v1 snapshot과 확정 방문을 다시 쓰지 않는 이유, 그리고 기존 구매의 미래 항목만
+어떤 승인·동의 절차로 새 revision에 승계할 수 있는지를 상품 변경 업무로 풀어 보겠습니다. 중복 전달은 이
+핵심 갈등을 보조하는 짧은 기술 경계로만 다룹니다.
 
 ### 시각 자료로 다시 보기
 
@@ -248,6 +249,7 @@ projection과 purchase event를 어떤 멱등 경계로 연결할지 다음 글�
 ## 시리즈 링크
 
 - **프롤로그: 상품 정보가 고객의 방문 약속이 되기까지**
+- [상품이 바뀌어도 고객의 약속은 다시 쓰지 않는다](/ko/blog/clinic-appointment-product-version-purchase-snapshot/)
 - [Part 1: 병원 예약은 CRUD로 끝나지 않는다](/ko/blog/clinic-appointment-part1-not-just-crud/)
 - [Part 2: 예약 상태는 단순한 열거형이 아니다](/ko/blog/clinic-appointment-part2-state-machine-and-history/)
 - [Part 3: 병원마다 다른 업무시간과 자원으로 예약 가능 시간을 계산하기](/ko/blog/clinic-appointment-part3-clinic-specific-availability/)

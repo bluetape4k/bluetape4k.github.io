@@ -1,0 +1,184 @@
+{
+  "kind": "workflow",
+  "source": {
+    "question": "상품 버전이 바뀌었을 때 환자 A의 구매 스냅숏과 Plan revision은 무엇을 보호하는가?",
+    "revision": "clinic-appointment@b052a69; visual-site@local",
+    "paths": [
+      "docs/superpowers/specs/2026-08-12-clinic-appointment-product-version-snapshot-design.md",
+      "docs/superpowers/plans/2026-08-12-clinic-appointment-product-version-snapshot-plan.md",
+      "src/content/docs/ko/blog/clinic-appointment-product-version-purchase-snapshot.mdx"
+    ],
+    "externalPaths": [
+      "appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/catalog/ProductCatalogDefinition.kt",
+      "appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/plan/ProductVersionMigration.kt",
+      "appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/ProductVersionMigrationPlanner.kt",
+      "appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/PurchaseCompletedHandler.kt",
+      "appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/ProductVersionMigrationEvent.kt",
+      "appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/ProductVersionMigrationHandler.kt"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "catalog-v1",
+      "label": "상품 카탈로그 v1",
+      "source": "ProductCatalogDefinition.kt / v1 immutable projection"
+    },
+    {
+      "id": "purchase-a-v1",
+      "label": "환자 A 구매와 v1 스냅숏",
+      "source": "PurchaseCompletedEvent.kt / PurchaseCompletedHandler.kt"
+    },
+    {
+      "id": "plan-v1",
+      "label": "v1 AppointmentPlan",
+      "source": "AppointmentPlanFactory.kt / AppointmentPlanModel.kt"
+    },
+    {
+      "id": "completed-protected",
+      "label": "완료·진행 중 사실 보호",
+      "source": "ProductVersionMigrationPlanner.kt / AppointmentPlanModel.kt"
+    },
+    {
+      "id": "confirmed-protected",
+      "label": "확정 방문 약속 보호",
+      "source": "visit commitment design / ProductVersionMigrationHandler.kt"
+    },
+    {
+      "id": "catalog-v2",
+      "label": "상품 카탈로그 v2 발행",
+      "source": "ProductCatalogDefinition.kt / catalog projection lifecycle"
+    },
+    {
+      "id": "new-purchase-v2",
+      "label": "신규 구매는 v2 해석",
+      "source": "PurchaseCompletedEvent.kt / catalogVersion"
+    },
+    {
+      "id": "migration-approved",
+      "label": "매핑·동의가 포함된 전환 승인",
+      "source": "ProductVersionMigrationApprovedEvent"
+    },
+    {
+      "id": "plan-revision-v2",
+      "label": "같은 Plan의 새 불변 revision",
+      "source": "ProductVersionMigrationHandler.kt / revisionRepository"
+    },
+    {
+      "id": "crm-handoff",
+      "label": "거절·재조정 결과를 CRM·상담으로 전달",
+      "source": "ProductVersionMigrationHandler.kt / decline handoff"
+    }
+  ],
+  "edges": [
+    {
+      "id": "catalog-v1-purchase-a-v1",
+      "from": "catalog-v1",
+      "to": "purchase-a-v1",
+      "kind": "purchase-snapshot",
+      "source": "PurchaseCompletedEvent.kt catalogVersion"
+    },
+    {
+      "id": "purchase-a-v1-plan-v1",
+      "from": "purchase-a-v1",
+      "to": "plan-v1",
+      "kind": "plan-materialization",
+      "source": "PurchaseCompletedHandler.kt / AppointmentPlanFactory.kt"
+    },
+    {
+      "id": "plan-v1-completed-protected",
+      "from": "plan-v1",
+      "to": "completed-protected",
+      "kind": "immutable-provenance",
+      "source": "ProductVersionMigrationPlanner.kt"
+    },
+    {
+      "id": "plan-v1-confirmed-protected",
+      "from": "plan-v1",
+      "to": "confirmed-protected",
+      "kind": "commitment-protection",
+      "source": "ProductVersionMigrationHandler.kt"
+    },
+    {
+      "id": "catalog-v2-new-purchase-v2",
+      "from": "catalog-v2",
+      "to": "new-purchase-v2",
+      "kind": "new-contract",
+      "source": "ProductCatalogDefinition.kt ACTIVE projection"
+    },
+    {
+      "id": "catalog-v2-migration-approved",
+      "from": "catalog-v2",
+      "to": "migration-approved",
+      "kind": "explicit-migration",
+      "source": "ProductVersionMigrationEvent.kt"
+    },
+    {
+      "id": "migration-approved-plan-revision-v2",
+      "from": "migration-approved",
+      "to": "plan-revision-v2",
+      "kind": "revision-append",
+      "source": "ProductVersionMigrationHandler.kt"
+    },
+    {
+      "id": "migration-approved-confirmed-protected",
+      "from": "migration-approved",
+      "to": "confirmed-protected",
+      "kind": "appointment-not-mutated",
+      "source": "ProductVersionMigrationHandler.kt"
+    },
+    {
+      "id": "migration-approved-crm-handoff",
+      "from": "migration-approved",
+      "to": "crm-handoff",
+      "kind": "objective-fact-handoff",
+      "source": "ProductVersionMigrationHandler.kt decline path"
+    }
+  ],
+  "behavior": {
+    "branches": 2,
+    "loops": 0
+  },
+  "budget": {
+    "nodes": 10,
+    "edges": 14,
+    "branches": 3,
+    "loops": 1
+  },
+  "repairs": [
+    {
+      "target": "v1-v2-branch",
+      "reason": "Separate new v2 purchases from explicit migration of an existing v1 purchase",
+      "touches": 4
+    },
+    {
+      "target": "protected-facts",
+      "reason": "Keep completed, in-progress, and confirmed visit facts outside automatic product redeployment",
+      "touches": 4
+    },
+    {
+      "target": "crm-handoff",
+      "reason": "Represent decline and reschedule outcomes as objective facts for CRM and counseling",
+      "touches": 2
+    },
+    {
+      "target": "locale-pairs",
+      "reason": "Keep Korean and English labels equivalent while retaining the same node and edge identifiers",
+      "touches": 2
+    },
+    {
+      "target": "wide-canvas",
+      "reason": "Use generous horizontal spacing and balanced margins so the migration branches remain readable",
+      "touches": 3
+    },
+    {
+      "target": "connector-corridors",
+      "reason": "Move migration-to-confirmed into the inter-lane corridor and separate the lower fan-out bands so routes do not double back or share a visible corridor",
+      "touches": 4
+    },
+    {
+      "target": "primary-arrowheads",
+      "reason": "Use the full primary marker footprint and a stronger connector stroke while retaining the required 14x14 workflow marker role",
+      "touches": 2
+    }
+  ]
+}
