@@ -1,0 +1,256 @@
+---
+title: "What Appointment Promise Does an Event Product Create?"
+description: Follow Patient A's event product purchase from source-of-record catalog data to candidate times, consent, and a confirmed visit commitment.
+sidebar:
+  order: -202608121100
+blog:
+  date: 2026-08-12T11:00:00+09:00
+  image: /assets/clinic-appointment-prologue-hero.png
+  imageAlt: Small robot workers connecting catalog data, purchase documents, a reservation plan, candidate times, and a confirmed visit promise on one workbench
+  cardDescription: Follow how an event product purchase becomes a confirmed visit only after candidate calculation and customer consent.
+  tags: ["architecture", "domain-modeling", "event-driven", "resilience"]
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-prologue-hero.png" alt="Small robot workers connecting catalog data, purchase documents, a reservation plan, candidate times, and a confirmed visit promise on one workbench" loading="eager" />
+  <figcaption>A purchase fact and an agreement to visit at a specific time are different data. The business decision between them needs its own boundary.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-12 · Clinic Appointment Engineering · Products and visit commitments</p>
+
+It is tempting to describe an event product as “a product for one visit.” The reservation service has a harder job:
+it must reproduce which care obligation and which visit promise the purchase can create without turning the purchase
+into a calendar slot.
+
+Suppose Patient A buys an event product. The payment does not automatically confirm a doctor and a time on the
+clinic calendar. The service first checks the catalog source and purchase source, calculates eligible availability,
+and creates a confirmed visit only after the customer consents to a proposal.
+
+> **Purchase fact ≠ availability conditions ≠ confirmed commitment**
+
+This article follows the first booking commitment for an event product on Patient A's timeline. N-visit and package
+products appear only as comparisons that show why the boundary matters. Full repeated-visit calculation, package
+migration, no-show penalties, and VIP priority remain separate product and operating policy work.
+
+## Why is an event product not a visit commitment yet?
+
+Patient A may make three kinds of purchases in sequence.
+
+| Time | Patient A action or event | Product and purchase meaning | What the reservation service preserves first |
+| --- | --- | --- | --- |
+| T1 | Buys an event product | A one-use product contract | Purchase ID and purchase-time product `version` |
+| T2 | Adds an N-visit product | An obligation fulfilled across several visits | Per-visit `PlannedTreatment` and repeat interval |
+| T3 | Buys a package of treatment items | An execution `BOM` with item, dependency, and resource requirements | Per-item `version` source and `dependency` |
+| T4 | Requests a date, or provides no preference | Customer scheduling input | Immutable `BookingPreferenceSnapshot` |
+| T5 | Consents to a candidate time | A commitment for a specific time, item, and resource | `CONFIRMED` state and policy `snapshot` |
+| T6 | Arrives and receives care | Visit facts connect to clinical facts | Visit/completion `event` and unfinished item state |
+
+The important boundary is that the three purchases do not become one `Appointment` row. One use of an event product,
+the third visit in an N-visit product, and one package item have different remaining obligations and dependency rules.
+Items from several purchases may be handled in the same visit, but the agreed `AppointmentItem` and each purchase's
+`AppointmentPlan` remain separately traceable.
+
+A purchase is the commercial fact about what the patient contracted to use. An `AppointmentPlan` is the reservation
+service's interpretation of that contract as executable obligations. A confirmed visit is an agreement to fulfill
+specific items with specific time and resources. Treating all three as one record lets a product or schedule change
+silently rewrite a past promise.
+
+## The minimum catalog contract entering the reservation service
+
+The reservation service must not read a product name and guess that it means “a 30-minute appointment.” The product
+management service publishes versioned source-of-record data, and the reservation service keeps the definition as an
+immutable purchase-time input.
+
+The current `ProductCatalogDefinition` carries scheduling interpretation data such as:
+
+| Source data | Meaning for the reservation service |
+| --- | --- |
+| `catalogVersion` and `schemaVersion` | Which product contract and `decoder` were interpreted |
+| `repeatCount` on items | How many `PlannedTreatment` records can be created |
+| `durationMinutes` | Expected resource occupancy per visit |
+| `minimumIntervalDays`, `preferredIntervalDays`, `maximumIntervalDays` | Hard and soft intervals between repeated visits |
+| Practitioner, equipment, and room types | Skills and resources needed for a candidate time |
+| `dependencies` | Which later item waits for a predecessor |
+| `initialBookingRule` | A limited `fallback` for the first proposal when no customer preference exists |
+
+Product names and prices cannot replace this contract. `sourceAuthority` identifies the source of record that
+published the catalog data, while `catalogVersion` identifies the immutable revision published by that source. This
+is source ownership for interpretation, not an authentication or authorization field.
+
+The purchase event also needs a purchase source and purchase ID. When the source's `PurchaseCompletedEvent` arrives,
+the reservation service checks the tenant, clinic, purchase source, and purchase ID scope before creating a plan. It
+uses the catalog snapshot only when the purchase has not already been planned; receiving the same event again is not
+evidence of a new purchase.
+
+## From a purchase fact to an `AppointmentPlan`
+
+In the current implementation, one purchase expands to one `AppointmentPlan`. The plan retains the following source
+history:
+
+- `sourcePurchaseAuthority` and `sourcePurchaseId`: the source of record and original purchase identifier for the purchase fact
+- `catalogSourceAuthority`, `productId`, and `catalogVersion`: which catalog definition was used
+- `catalogPayloadHash`: a `hash` for checking whether replay uses the same catalog `snapshot`
+- `bookingPreference`: the immutable customer preference submitted with the purchase
+- `PlannedTreatment`: repeated BOM items with duration, resources, and intervals
+- `TreatmentDependency`: directed constraints between predecessor and successor visits
+
+The product BOM is not a list the reservation service is free to redefine. It reads a validated snapshot, expands it
+into an execution plan, and preserves enough information to reproduce the result. If the catalog changes later, old
+plan items are not expanded again from the latest catalog.
+
+~~~text
+PurchaseCompleted
+  └─> AppointmentPlan
+        └─> PlannedTreatment 1..N ── dependency/DAG
+                              ▲
+                              │ fulfills / attempts
+Appointment ──> AppointmentItem 1..N ──> ResourceAllocation 1..N
+~~~
+
+The lower `Appointment` is the actual visit unit. A single visit can group `AppointmentItem` records from several
+plans, but each item must still identify which purchase and which `PlannedTreatment` it fulfills. Resource allocation
+is a fact of an agreed visit; receiving a purchase event does not automatically occupy a resource.
+
+## Separate customer preference from the first-proposal `fallback`
+
+“Next Tuesday morning” is a preference, not a confirmed time. The current `BookingPreferenceSnapshot` keeps four
+immutable input forms:
+
+| Input | Meaning |
+| --- | --- |
+| `ExactDateTime` | A local date-time preference normalized with the clinic time zone and UTC instant |
+| `DateRange` | An allowed range of local clinic dates |
+| `PreferredWeekdaysAndWindows` | Allowed weekdays and local time windows |
+| `NotProvided` | An explicit marker that no preference was supplied |
+
+The product's `initialBookingRule` is considered as a `fallback` only when the value is `NotProvided`. For example,
+`WithinDaysAfterPurchase(maximumDays)` limits when the first provisional proposal may be calculated after the original
+purchase date. It does not authorize automatic confirmation or override a preference the customer submitted.
+
+Do not confuse the **first-proposal horizon** with the **product benefit expiration date**. The first is a reservation
+calculation rule. The second is a commercial contract owned by product management. The current
+`ProductCatalogDefinition` has the former as `initialBookingRule`; it does not automatically imply the latter.
+
+## From candidate time to confirmed commitment
+
+Candidate calculation reads product source data together with clinic operating data. Duration, practitioner,
+equipment, room, repeat intervals, and predecessor constraints may all be satisfied while clinic hours or capacity
+still rule out a candidate.
+
+The current source contains plan, preference, and policy models. The visit commitment design defines the proposal,
+hold, and consent flow. Read the labels in the table as a deliberate separation between current implementation and
+approved design.
+
+| Step | State | What happens for Patient A | Evidence label |
+| --- | --- | --- | --- |
+| Candidate calculated | `candidate` | Product eligibility and a concrete time candidate are both calculated | Approved design |
+| Proposal generated | `PROPOSED` | A time, item, and resource combination the customer can review | Approved design |
+| Resource held briefly | `HELD` | A policy-specific short hold, still before consent | Approved design |
+| Customer consents to the exact proposal | `CONFIRMED` | The clinic and patient agree on a specific visit commitment | Approved design |
+| Plan item moves into care | `SCHEDULED` · `IN_PROGRESS` · `COMPLETED` | Visit commitment and clinical completion progress as separate states | Current plan model |
+
+`PROPOSED` and `HELD` represent a candidate or provisional capacity visible to the customer. If the patient wants a
+different time, calculate a new proposal. Do not move an existing `CONFIRMED` visit silently. A confirmed change keeps
+the existing commitment, creates a new proposal, and waits for new customer consent.
+
+<figure
+  class="bt4k-architecture"
+  data-diagram-title="How an event product purchase becomes a confirmed visit commitment"
+>
+  <img src="/assets/clinic-appointment-event-product-first-commitment-01-en.png" alt="Patient A's event product purchase moves through a catalog snapshot, AppointmentPlan, candidate time, PROPOSED or HELD, customer consent, CONFIRMED, and visit/completion facts with four separate exception branches" loading="lazy" />
+  <figcaption>Validate purchase and catalog source data, calculate candidates, and create a confirmed commitment only after customer consent. No candidate, expiry, patient change, and hospital change are different business exceptions.</figcaption>
+</figure>
+
+## An exception is not one generic reservation failure
+
+If the reservation service stores every exception as `FAILED`, counseling and operations cannot choose the next action.
+The same event product can produce four different facts for Patient A.
+
+| Situation | What the reservation service preserves | Next business action |
+| --- | --- | --- |
+| No candidate time | Conditions, calculation time, reason, and whether review is possible | Recalculate with changed conditions, offer an alternative, or hand off to counseling |
+| `PROPOSED` or `HELD` expires | The expired offer/hold and the fact that it never became a commitment | Calculate a new candidate and create a new proposal, or review operationally |
+| Patient cancels or declines | Customer intent and prior state history | Hand the fact to the source of record that decides product, refund, or counseling action |
+| Clinic-side change | Affected resource, time, plan item, and operating change | Create a new proposal and obtain customer consent with operations/counseling |
+
+When a clinic-side change affects a confirmed visit, do not delete the existing `CONFIRMED` state first. Preserve
+what changed and when, record that a new proposal is needed, and let counseling and operations explain the change and
+obtain consent.
+
+The same separation is why this article does not promise no-show penalties or VIP priority as implemented features.
+A clinic may require extra review on the next request or define an explainable priority policy. The source data and
+decision owner for that policy must remain separate from the reservation service's time and resource facts. Automatic
+cancellation of an existing commitment or a permanent blacklist is outside this article's scope.
+
+## Source-of-record and responsibility boundaries
+
+The reservation service does not own every fact about Patient A. Each service keeps its source-of-record data and
+responsibility, while the reservation service publishes objective scheduling facts.
+
+| Business area | Source of record | Fact sent to the reservation service | Reservation service responsibility |
+| --- | --- | --- | --- |
+| Product management/development | Product `version`, `BOM`, duration, resource requirements, first-booking rule | Catalog projection or synchronization `event` | Validate and snapshot the purchase-time product definition |
+| Commerce | Purchase contract and original purchase ID | `PurchaseCompleted` | Create one plan per purchase and retain purchase source history |
+| Reservation | `AppointmentPlan`, candidate/proposal/hold/confirmation states, policy `snapshot`, and history | Objective reservation `event` and durable outbox | Preserve availability conditions, visit commitments, and state history |
+| Clinical care | Actual start, completion, and partial completion | Completion/fulfillment fact | Reflect plan-item state and downstream scheduling impact |
+| Counseling/CRM | Customer profile, counseling, complaints, and compensation decisions | Objective delay, cancellation, or rescheduling proposal facts | Provide reservation facts and handoff for counseling decisions |
+| Notification | Contact, language, consent, and delivery history | Reservation `event` and outbox result | Keep channel delivery separate from the reservation transaction |
+| Analytics/external consumers | Projections and metrics | Reservation `event` and schema contract | Do not transfer ownership of the source reservation state |
+
+“Source of record” is not just a storage location. Product management explains what the product is, commerce explains
+what was bought, clinical care explains what was performed, and CRM explains which counseling or compensation decision
+was made. The reservation service connects only the parts needed to explain availability and the visit commitment.
+
+## Current implementation, approved design, awaiting operations, and roadmap
+
+| Evidence label | Scope in this article | Question for the reader |
+| --- | --- | --- |
+| **Current implementation** | Versioned catalog projection, one `AppointmentPlan` per purchase, `PlannedTreatment`, preference `snapshot`, and plan states | Can the contract be found in current source and tests? |
+| **Approved design** | `PROPOSED` · `HELD` · `CONFIRMED` after candidate calculation, consent-based change, and four exception branches | Is a design document being overstated as a current API or operating feature? |
+| **Awaiting operations** | Broker delivery, notification outbox canary, analytics backfill, and production readiness | Has delivery and recovery been verified outside the source tree? |
+| **Roadmap** | A public patient channel for reviewing and consenting to a proposal, plus concrete no-show/VIP policy | Are undecided policies being promised as current behavior? |
+
+These labels continue the distinction from the product-version article. The existence of an `AppointmentPlan` model
+does not mean every clinic confirms a time immediately after purchase. Conversely, an approved visit commitment design
+does not mean candidate calculation, notifications, and counseling channels are all deployed in production.
+
+## What comes next
+
+This article followed the **first booking commitment** created by one event product and fixed the boundary between
+catalog source data, purchase source data, a reservation plan, and customer consent. The next article expands to an
+N-visit product and examines how repeated `PlannedTreatment` items and multiple visit commitments preserve intervals
+and dependencies together.
+
+### Revisit the visual companions
+
+These companions supplement the source design; they do not replace it. They show how product source data expands into
+an execution BOM and a reservation plan.
+
+- [Classifying product scheduling behavior](/visual-companions/clinic-appointment/product-scheduling-classification/)
+- [Expanding a product execution BOM into scheduling](/visual-companions/clinic-appointment/product-bom-to-appointment-flow/)
+- [Appointment plan and capacity](/visual-companions/clinic-appointment/appointment-plan-and-capacity/)
+- [Clinic appointment visual companion index](/visual-companions/clinic-appointment/)
+
+### Evidence links
+
+- [clinic-appointment repository](https://github.com/bluetape4k/clinic-appointment)
+- [Product catalog definition](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/catalog/ProductCatalogDefinition.kt)
+- [AppointmentPlan model](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic-appointment/model/plan/AppointmentPlanModel.kt)
+- [Booking preference snapshot](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/plan/BookingPreferenceSnapshot.kt)
+- [Booking commitment policy](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic-appointment/model/policy/BookingCommitmentPolicy.kt)
+- [Purchase completion handler](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-event/src/main/kotlin/io/bluetape4k/clinic-appointment/event/integration/PurchaseCompletedHandler.kt)
+- [Product, purchase, and reservation data flow](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/requirements/data-flow.md)
+- [Visit commitment design](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-07-29-issue-184-visit-commitment-design.md)
+
+## Series
+
+- [Prologue: From Product Information to a Patient's Visit Commitment](/blog/clinic-appointment-prologue-product-to-appointment/)
+- [When a Product Changes, Don't Rewrite the Patient's Promise](/blog/clinic-appointment-product-version-purchase-snapshot/)
+- **What Appointment Promise Does an Event Product Create?**
+- [Part 1: Clinic Appointments Are More Than CRUD](/blog/clinic-appointment-part1-not-just-crud/)
+- [Part 2: Appointment State Is More Than an Enum](/blog/clinic-appointment-part2-state-machine-and-history/)
+- [Part 3: Computing Availability from Clinic-Specific Hours and Resources](/blog/clinic-appointment-part3-clinic-specific-availability/)
+- [Part 4: Real-Time Slot Search and Global Optimization Solve Different Problems](/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
+- [Part 5: Translating Clinic Rules into Timefold Constraints](/blog/clinic-appointment-part5-timefold-constraints/)
+- [Part 6: Rescheduling after Closures and Equipment Downtime](/blog/clinic-appointment-part6-closure-equipment-rescheduling/)
+- [Part 7: Reviews and Operations Start the Next Development Cycle](/blog/clinic-appointment-part7-review-and-operational-evolution/)

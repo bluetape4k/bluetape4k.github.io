@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1200" viewBox="0 0 2000 1200" role="img" aria-labelledby="title desc" data-locale="ko">
+  <title id="title">이벤트 상품 구매가 확정 방문 약속이 되는 흐름</title>
+  <desc id="desc">환자 A의 PurchaseCompleted 이벤트가 상품 기준정보 snapshot, AppointmentPlan, 후보 시간, PROPOSED 또는 HELD, 고객 동의를 거쳐 CONFIRMED 방문 약속과 내원 사실로 이어지고, 후보 없음·만료·취소·병원 사정 변경은 별도 예외로 분기되는 시간축입니다.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07111f"/><stop offset=".58" stop-color="#0d1930"/><stop offset="1" stop-color="#11172d"/>
+    </linearGradient>
+    <linearGradient id="mainFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#102b49"/><stop offset="1" stop-color="#17214a"/></linearGradient>
+    <linearGradient id="serviceFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#103b45"/><stop offset="1" stop-color="#15364d"/></linearGradient>
+    <linearGradient id="exceptionFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3b2b18"/><stop offset="1" stop-color="#2a2138"/></linearGradient>
+    <linearGradient id="handoffFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#28214c"/><stop offset="1" stop-color="#182d4a"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="155%"><feDropShadow dx="0" dy="12" stdDeviation="13" flood-color="#020617" flood-opacity=".56"/></filter>
+    <marker id="cyanArrow" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+      <path d="M 0 0 L 14 7 L 0 14 Z" fill="#67e8f9" data-solid-head="true"/>
+    </marker>
+    <marker id="amberArrow" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+      <path d="M 0 0 L 14 7 L 0 14 Z" fill="#fbbf24" data-solid-head="true"/>
+    </marker>
+    <style>
+      .title{font-family:"goorm Sans",sans-serif;font-size:44px;font-weight:700;fill:#f8fafc}
+      .subtitle{font-family:"goorm Sans",sans-serif;font-size:21px;fill:#aebed2}
+      .statement{font-family:"goorm Sans Code","goorm Sans",monospace;font-size:24px;font-weight:700;fill:#67e8f9}
+      .lane{font-family:"goorm Sans",sans-serif;font-size:25px;font-weight:700;fill:#f8fafc}
+      .lane-note{font-family:"goorm Sans",sans-serif;font-size:16px;fill:#aebed2}
+      .step{font-family:"goorm Sans Code","goorm Sans",monospace;font-size:17px;font-weight:700;fill:#dbeafe}
+      .card-title{font-family:"goorm Sans",sans-serif;font-size:21px;font-weight:700;fill:#f8fafc}
+      .body{font-family:"goorm Sans",sans-serif;font-size:16px;fill:#d7e3f3}
+      .code-small{font-family:"goorm Sans Code","goorm Sans",monospace;font-size:13px;font-weight:700;fill:#f8fafc}
+      .role{font-family:"goorm Sans",sans-serif;font-size:13px;font-weight:700;fill:#f8fafc}
+      .small{font-family:"goorm Sans",sans-serif;font-size:15px;fill:#aebed2}
+      .footer-title{font-family:"goorm Sans",sans-serif;font-size:18px;font-weight:700;fill:#f8fafc}
+      .footer-body{font-family:"goorm Sans",sans-serif;font-size:16px;fill:#d7e3f3}
+      .connector{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:4.5}
+      .primary-line{stroke:#67e8f9;marker-end:url(#cyanArrow)}
+      .branch-line{stroke:#fbbf24;marker-end:url(#amberArrow)}
+    </style>
+  </defs>
+
+  <rect id="background" width="2000" height="1200" fill="url(#bg)"/>
+  <rect x="40" y="32" width="1920" height="1136" rx="32" fill="none" stroke="#263a5e" stroke-width="2"/>
+  <circle cx="1830" cy="150" r="250" fill="#7c3aed" opacity=".08"/>
+  <circle cx="170" cy="1040" r="250" fill="#0891b2" opacity=".07"/>
+
+  <text class="title" x="90" y="86">이벤트 상품 구매가 확정 방문 약속이 되는 흐름</text>
+  <text class="subtitle" x="92" y="124">환자 A의 구매 사실을 예약 가능 조건과 고객 동의가 있는 약속으로 분리해 기록합니다.</text>
+  <text class="statement" x="90" y="170">구매 사실 ≠ 예약 가능 조건 ≠ 확정 약속</text>
+
+  <g transform="translate(1310 88)">
+    <rect x="0" y="-18" width="22" height="22" rx="7" fill="#102b49" stroke="#60a5fa" stroke-width="2"/>
+    <text class="small" x="32" y="0">주요 흐름</text>
+    <rect x="150" y="-18" width="22" height="22" rx="7" fill="#3b2b18" stroke="#fbbf24" stroke-width="2"/>
+    <text class="small" x="182" y="0">업무 예외</text>
+    <rect x="304" y="-18" width="22" height="22" rx="7" fill="#103b45" stroke="#2dd4bf" stroke-width="2"/>
+    <text class="small" x="336" y="0">확정·내원 사실</text>
+  </g>
+
+  <text class="lane" x="90" y="222">환자 A의 최초 예약 약속</text>
+  <text class="lane-note" x="90" y="248">T1–T6은 구매에서 확정 방문과 내원 사실까지의 주요 흐름입니다.</text>
+  <path d="M 90 264 H 1860" fill="none" stroke="#2b4168" stroke-width="2" stroke-dasharray="10 12"/>
+
+  <g filter="url(#shadow)">
+    <g class="node-card">
+      <rect id="purchase-completed" x="70" y="300" width="240" height="220" rx="24" fill="url(#mainFill)" stroke="#60a5fa" stroke-width="3"/>
+      <rect x="88" y="318" width="72" height="26" rx="13" fill="#60a5fa" opacity=".22"/>
+      <text class="step" x="124" y="337" text-anchor="middle">T1</text>
+      <text class="role" x="190" y="338" text-anchor="middle">구매 기준정보</text>
+      <text class="card-title" x="190" y="386" text-anchor="middle">PurchaseCompleted</text>
+      <text class="body" x="190" y="428" text-anchor="middle">구매 ID · 병원 범위</text>
+      <text class="body" x="190" y="458" text-anchor="middle">중복 수신은 새 구매 아님</text>
+    </g>
+    <g class="node-card">
+      <rect id="catalog-snapshot" x="340" y="300" width="240" height="220" rx="24" fill="url(#mainFill)" stroke="#60a5fa" stroke-width="3"/>
+      <rect x="358" y="318" width="72" height="26" rx="13" fill="#60a5fa" opacity=".22"/>
+      <text class="step" x="394" y="337" text-anchor="middle">T2</text>
+      <text class="role" x="478" y="338" text-anchor="middle">상품 기준정보 원천</text>
+      <text class="card-title" x="460" y="386" text-anchor="middle">catalog snapshot</text>
+      <text class="body" x="460" y="428" text-anchor="middle">version · BOM · 자원</text>
+      <text class="body" x="460" y="458" text-anchor="middle">구매 시점의 불변 입력</text>
+    </g>
+    <g class="node-card">
+      <rect id="plan-created" x="610" y="300" width="240" height="220" rx="24" fill="url(#mainFill)" stroke="#60a5fa" stroke-width="3"/>
+      <rect x="628" y="318" width="72" height="26" rx="13" fill="#60a5fa" opacity=".22"/>
+      <text class="step" x="664" y="337" text-anchor="middle">T3</text>
+      <text class="role" x="778" y="338" text-anchor="middle">예약서비스</text>
+      <text class="card-title" x="730" y="386" text-anchor="middle">AppointmentPlan</text>
+      <text class="body" x="730" y="428" text-anchor="middle">PlannedTreatment 1..N</text>
+      <text class="body" x="730" y="458" text-anchor="middle">반복·의존성·출처 보존</text>
+    </g>
+    <g class="node-card">
+      <rect id="candidate-calculated" x="880" y="300" width="240" height="220" rx="24" fill="url(#mainFill)" stroke="#60a5fa" stroke-width="3"/>
+      <rect x="898" y="318" width="72" height="26" rx="13" fill="#60a5fa" opacity=".22"/>
+      <text class="step" x="934" y="337" text-anchor="middle">T4</text>
+      <text class="role" x="1048" y="338" text-anchor="middle">예약서비스</text>
+      <text class="card-title" x="1000" y="386" text-anchor="middle">후보 시간 계산</text>
+      <text class="body" x="1000" y="428" text-anchor="middle">상품 조건 · 수용량</text>
+      <text class="body" x="1000" y="458" text-anchor="middle">희망 일정 · 운영 기준</text>
+    </g>
+    <g class="node-card">
+      <rect id="proposal-or-hold" x="1150" y="300" width="240" height="220" rx="24" fill="url(#mainFill)" stroke="#60a5fa" stroke-width="3"/>
+      <rect x="1168" y="318" width="72" height="26" rx="13" fill="#60a5fa" opacity=".22"/>
+      <text class="step" x="1204" y="337" text-anchor="middle">T5</text>
+      <text class="role" x="1300" y="338" text-anchor="middle">고객/병원</text>
+      <text class="card-title" x="1270" y="386" text-anchor="middle">PROPOSED · HELD</text>
+      <text class="body" x="1270" y="428" text-anchor="middle">시간 · 항목 · 자원 제안</text>
+      <text class="body" x="1270" y="458" text-anchor="middle">고객 동의 전 잠정 상태</text>
+    </g>
+    <g class="node-card">
+      <rect id="confirmed-commitment" x="1420" y="300" width="240" height="220" rx="24" fill="url(#serviceFill)" stroke="#2dd4bf" stroke-width="3"/>
+      <rect x="1438" y="318" width="72" height="26" rx="13" fill="#2dd4bf" opacity=".22"/>
+      <text class="step" x="1474" y="337" text-anchor="middle">T6</text>
+      <text class="role" x="1570" y="338" text-anchor="middle">고객 동의</text>
+      <text class="card-title" x="1540" y="386" text-anchor="middle">CONFIRMED</text>
+      <text class="body" x="1540" y="428" text-anchor="middle">확정 방문 약속</text>
+      <text class="body" x="1540" y="458" text-anchor="middle">변경은 새 제안·새 동의</text>
+    </g>
+    <g class="node-card">
+      <rect id="visit-handoff" x="1690" y="300" width="240" height="220" rx="24" fill="url(#serviceFill)" stroke="#2dd4bf" stroke-width="3"/>
+      <rect x="1708" y="318" width="72" height="26" rx="13" fill="#2dd4bf" opacity=".22"/>
+      <text class="step" x="1744" y="337" text-anchor="middle">T6</text>
+      <text class="role" x="1840" y="338" text-anchor="middle">downstream</text>
+      <text class="card-title" x="1810" y="386" text-anchor="middle">내원 · 완료</text>
+      <text class="body" x="1810" y="428" text-anchor="middle">방문·처치 사실 전달</text>
+      <text class="body" x="1810" y="458" text-anchor="middle">계획 항목 상태 반영</text>
+    </g>
+  </g>
+
+  <g id="main-edges">
+    <path class="connector primary-line" data-connector="purchase-completed-catalog-snapshot" data-source-node="purchase-completed" data-target-node="catalog-snapshot" d="M 310 410 H 340"/>
+    <path class="connector primary-line" data-connector="catalog-snapshot-plan-created" data-source-node="catalog-snapshot" data-target-node="plan-created" d="M 580 410 H 610"/>
+    <path class="connector primary-line" data-connector="plan-created-candidate-calculated" data-source-node="plan-created" data-target-node="candidate-calculated" d="M 850 410 H 880"/>
+    <path class="connector primary-line" data-connector="candidate-calculated-proposal-or-hold" data-source-node="candidate-calculated" data-target-node="proposal-or-hold" d="M 1120 410 H 1150"/>
+    <path class="connector primary-line" data-connector="proposal-or-hold-confirmed-commitment" data-source-node="proposal-or-hold" data-target-node="confirmed-commitment" d="M 1390 410 H 1420"/>
+    <path class="connector primary-line" data-connector="confirmed-commitment-visit-handoff" data-source-node="confirmed-commitment" data-target-node="visit-handoff" d="M 1660 410 H 1690"/>
+  </g>
+
+  <text class="lane" x="90" y="640">업무 예외 rail</text>
+  <text class="lane-note" x="90" y="666">같은 FAILED 값으로 뭉치지 않고, 다시 계산할 조건과 판단 책임을 보존합니다.</text>
+  <path d="M 90 682 H 1860" fill="none" stroke="#5a4520" stroke-width="2" stroke-dasharray="10 12"/>
+
+  <g filter="url(#shadow)">
+    <g class="node-card">
+      <rect id="no-candidate" x="70" y="800" width="400" height="220" rx="24" fill="url(#exceptionFill)" stroke="#fbbf24" stroke-width="3"/>
+      <rect x="90" y="818" width="116" height="26" rx="13" fill="#fbbf24" opacity=".22"/>
+      <text class="role" x="148" y="837" text-anchor="middle">재검토·상담 handoff</text>
+      <text class="card-title" x="270" y="886" text-anchor="middle">후보 시간이 없음</text>
+      <text class="body" x="270" y="928" text-anchor="middle">조건·계산 시점·사유 보존</text>
+      <text class="body" x="270" y="958" text-anchor="middle">대체 후보 또는 상담 전달</text>
+    </g>
+    <g class="node-card">
+      <rect id="proposal-expired" x="515" y="800" width="400" height="220" rx="24" fill="url(#exceptionFill)" stroke="#fbbf24" stroke-width="3"/>
+      <rect x="535" y="818" width="116" height="26" rx="13" fill="#fbbf24" opacity=".22"/>
+      <text class="role" x="593" y="837" text-anchor="middle">예약서비스</text>
+      <text class="card-title" x="715" y="886" text-anchor="middle">제안·hold 만료</text>
+      <text class="body" x="715" y="928" text-anchor="middle">확정 약속으로 승격하지 않음</text>
+      <text class="body" x="715" y="958" text-anchor="middle">새 후보와 새 제안 필요</text>
+    </g>
+    <g class="node-card">
+      <rect id="patient-change" x="960" y="800" width="400" height="220" rx="24" fill="url(#exceptionFill)" stroke="#fbbf24" stroke-width="3"/>
+      <rect x="980" y="818" width="116" height="26" rx="13" fill="#fbbf24" opacity=".22"/>
+      <text class="role" x="1038" y="837" text-anchor="middle">고객/상담</text>
+      <text class="card-title" x="1160" y="886" text-anchor="middle">환자 취소·거부</text>
+      <text class="body" x="1160" y="928" text-anchor="middle">고객 의사와 상태 이력 보존</text>
+      <text class="body" x="1160" y="958" text-anchor="middle">상품·상담 판단으로 전달</text>
+    </g>
+    <g class="node-card">
+      <rect id="hospital-change" x="1405" y="800" width="400" height="220" rx="24" fill="url(#handoffFill)" stroke="#a78bfa" stroke-width="3"/>
+      <rect x="1425" y="818" width="116" height="26" rx="13" fill="#a78bfa" opacity=".22"/>
+      <text class="role" x="1483" y="837" text-anchor="middle">운영·상담</text>
+      <text class="card-title" x="1605" y="886" text-anchor="middle">병원 사정 변경</text>
+      <text class="body" x="1605" y="928" text-anchor="middle">영향 자원·시간을 먼저 기록</text>
+      <text class="body" x="1605" y="958" text-anchor="middle">새 제안과 고객 동의</text>
+    </g>
+  </g>
+
+  <g id="exception-edges">
+    <path class="connector branch-line" data-connector="candidate-calculated-no-candidate" data-source-node="candidate-calculated" data-target-node="no-candidate" d="M 980 520 V 590 Q 980 620 950 620 H 290 Q 260 620 260 650 V 800"/>
+    <path class="connector branch-line" data-connector="proposal-or-hold-proposal-expired" data-source-node="proposal-or-hold" data-target-node="proposal-expired" d="M 1210 520 V 620 Q 1210 650 1180 650 H 735 Q 705 650 705 680 V 800"/>
+    <path class="connector branch-line" data-connector="proposal-or-hold-patient-change" data-source-node="proposal-or-hold" data-target-node="patient-change" d="M 1300 520 V 690 Q 1300 720 1270 720 H 1190 Q 1160 720 1160 750 V 800"/>
+    <path class="connector branch-line" data-connector="confirmed-commitment-hospital-change" data-source-node="confirmed-commitment" data-target-node="hospital-change" d="M 1530 520 V 650 Q 1530 680 1560 680 H 1595 Q 1625 680 1625 710 V 800"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="70" y="1080" width="1735" height="70" rx="20" fill="#0b1628" stroke="#2b4168" stroke-width="2"/>
+    <text class="footer-title" x="98" y="1110">읽는 규칙</text>
+    <text class="footer-body" x="260" y="1110">initialBookingRule은 최초 제안 fallback입니다. 상품 이용 만료일이나 자동 확정을 뜻하지 않습니다.</text>
+    <text class="footer-body" x="98" y="1136">노쇼·VIP 정책은 별도 기준정보와 책임으로 남겨 두며, 현재 확정 약속은 새 제안과 고객 동의 뒤에만 바꿉니다.</text>
+  </g>
+</svg>

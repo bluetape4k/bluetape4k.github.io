@@ -69,7 +69,7 @@ A purchase-completed event does not need to repeat the whole price sheet. The mi
 must reproduce includes sourcePurchaseAuthority, sourcePurchaseId, productId, catalogVersion, and bookingPreference
 from
 [PurchaseCompletedEvent](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/PurchaseCompletedEvent.kt).
-When it creates the Plan, it joins that purchase authority and protected patient reference to the purchase-time
+When it creates the Plan, it joins that purchase source of record and protected patient reference to the purchase-time
 catalog payload hash.
 
 [AppointmentPlanFactory](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/AppointmentPlanFactory.kt)
@@ -221,9 +221,9 @@ policies are owned and versioned by the reservation service, while CRM and comme
 compensation, and other follow-up facts. The reservation service stores the policy snapshot and calculation result used
 for this proposal. That is also why internal thresholds and customer tiers do not belong in a public article.
 
-### Service authority and responsibility
+### Source-of-record and responsibility
 
-| Service | Authority data | Facts it publishes or consumes for a product change | Reservation responsibility |
+| Service | Source-of-record data | Facts it publishes or consumes for a product change | Reservation responsibility |
 | --- | --- | --- | --- |
 | Product management and development | Product version, BOM, mapping | ProductCatalogChanged, ProductVersionMigrationApproved | Verify that version, BOM, and mapping are reproducible |
 | Commerce and purchasing | Purchase contract, additional purchase, refund | PurchaseCompleted, PurchaseRefunded | Create one Plan per purchase and keep the source link |
@@ -233,7 +233,7 @@ for this proposal. That is also why internal thresholds and customer tiers do no
 | Notification | Contact consent and delivery history | Consumes appointment and migration events | Keep channels outside the reservation transaction |
 | Statistics and external consumers | Projections and metrics | Consume Plan, revision, and event data | Never replace the reservation source of truth |
 
-Authority is not only about who can read a field. It is about who can change its meaning. Product management may
+Source of record is not only about who can read a field. It is about which service can change its meaning. Product management may
 publish v2, but it does not directly cancel A's confirmed visit. CRM may decide counseling and compensation after a
 decline, but it does not overwrite Plan provenance. The reservation service preserves executable promises and objective
 history between those boundaries.
@@ -309,6 +309,7 @@ composition, and execution-BOM expansion before returning to this article's migr
 
 - [Prologue: From Product Information to a Patient's Visit Commitment](/blog/clinic-appointment-prologue-product-to-appointment/)
 - **When a Product Changes, Don't Rewrite the Patient's Promise**
+- [What Appointment Promise Does an Event Product Create?](/blog/clinic-appointment-event-product-first-commitment/)
 - [Part 1: Clinic Appointments Are More Than CRUD](/blog/clinic-appointment-part1-not-just-crud/)
 - [Part 2: Appointment State Is More Than an Enum](/blog/clinic-appointment-part2-state-machine-and-history/)
 - [Part 3: Computing Availability from Clinic-Specific Hours and Resources](/blog/clinic-appointment-part3-clinic-specific-availability/)

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1200" viewBox="0 0 2000 1200" role="img" aria-labelledby="title desc" data-locale="en">
+  <title id="title">How an event product purchase becomes a confirmed visit commitment</title>
+  <desc id="desc">Patient A's PurchaseCompleted event moves through a catalog snapshot, AppointmentPlan, candidate times, PROPOSED or HELD, customer consent, and a CONFIRMED visit commitment before visit facts are handed downstream. No candidate, expiry, patient change, and hospital change branch as separate exceptions.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07111f"/><stop offset=".58" stop-color="#0d1930"/><stop offset="1" stop-color="#11172d"/>
+    </linearGradient>
+    <linearGradient id="mainFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#102b49"/><stop offset="1" stop-color="#17214a"/></linearGradient>
+    <linearGradient id="serviceFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#103b45"/><stop offset="1" stop-color="#15364d"/></linearGradient>
+    <linearGradient id="exceptionFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3b2b18"/><stop offset="1" stop-color="#2a2138"/></linearGradient>
+    <linearGradient id="handoffFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#28214c"/><stop offset="1" stop-color="#182d4a"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="155%"><feDropShadow dx="0" dy="12" stdDeviation="13" flood-color="#020617" flood-opacity=".56"/></filter>
+    <marker id="cyanArrow" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+      <path d="M 0 0 L 14 7 L 0 14 Z" fill="#67e8f9" data-solid-head="true"/>
+    </marker>
+    <marker id="amberArrow" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+      <path d="M 0 0 L 14 7 L 0 14 Z" fill="#fbbf24" data-solid-head="true"/>
+    </marker>
+    <style>
+      .title{font-family:"goorm Sans",sans-serif;font-size:42px;font-weight:700;fill:#f8fafc}
+      .subtitle{font-family:"goorm Sans",sans-serif;font-size:21px;fill:#aebed2}
+      .statement{font-family:"goorm Sans Code","goorm Sans",monospace;font-size:24px;font-weight:700;fill:#67e8f9}
+      .lane{font-family:"goorm Sans",sans-serif;font-size:25px;font-weight:700;fill:#f8fafc}
+      .lane-note{font-family:"goorm Sans",sans-serif;font-size:16px;fill:#aebed2}
+      .step{font-family:"goorm Sans Code","goorm Sans",monospace;font-size:17px;font-weight:700;fill:#dbeafe}
+      .card-title{font-family:"goorm Sans",sans-serif;font-size:21px;font-weight:700;fill:#f8fafc}
+      .body{font-family:"goorm Sans",sans-serif;font-size:16px;fill:#d7e3f3}
+      .code-small{font-family:"goorm Sans Code","goorm Sans",monospace;font-size:13px;font-weight:700;fill:#f8fafc}
+      .role{font-family:"goorm Sans",sans-serif;font-size:13px;font-weight:700;fill:#f8fafc}
+      .small{font-family:"goorm Sans",sans-serif;font-size:15px;fill:#aebed2}
+      .footer-title{font-family:"goorm Sans",sans-serif;font-size:18px;font-weight:700;fill:#f8fafc}
+      .footer-body{font-family:"goorm Sans",sans-serif;font-size:16px;fill:#d7e3f3}
+      .connector{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:4.5}
+      .primary-line{stroke:#67e8f9;marker-end:url(#cyanArrow)}
+      .branch-line{stroke:#fbbf24;marker-end:url(#amberArrow)}
+    </style>
+  </defs>
+
+  <rect id="background" width="2000" height="1200" fill="url(#bg)"/>
+  <rect x="40" y="32" width="1920" height="1136" rx="32" fill="none" stroke="#263a5e" stroke-width="2"/>
+  <circle cx="1830" cy="150" r="250" fill="#7c3aed" opacity=".08"/>
+  <circle cx="170" cy="1040" r="250" fill="#0891b2" opacity=".07"/>
+
+  <text class="title" x="90" y="86">How an event product becomes a visit commitment</text>
+  <text class="subtitle" x="92" y="124">Patient A's purchase fact is separated from availability and the commitment that follows consent.</text>
+  <text class="statement" x="90" y="170">Purchase fact ≠ availability ≠ confirmed commitment</text>
+
+  <g transform="translate(1310 88)">
+    <rect x="0" y="-18" width="22" height="22" rx="7" fill="#102b49" stroke="#60a5fa" stroke-width="2"/>
+    <text class="small" x="32" y="0">main flow</text>
+    <rect x="150" y="-18" width="22" height="22" rx="7" fill="#3b2b18" stroke="#fbbf24" stroke-width="2"/>
+    <text class="small" x="182" y="0">business exception</text>
+    <rect x="304" y="-18" width="22" height="22" rx="7" fill="#103b45" stroke="#2dd4bf" stroke-width="2"/>
+    <text class="small" x="336" y="0">confirmed · visit fact</text>
+  </g>
+
+  <text class="lane" x="90" y="222">Patient A's first booking commitment</text>
+  <text class="lane-note" x="90" y="248">T1–T6 follow the main path from purchase to a confirmed visit and downstream visit facts.</text>
+  <path d="M 90 264 H 1860" fill="none" stroke="#2b4168" stroke-width="2" stroke-dasharray="10 12"/>
+
+  <g filter="url(#shadow)">
+    <g class="node-card">
+      <rect id="purchase-completed" x="70" y="300" width="240" height="220" rx="24" fill="url(#mainFill)" stroke="#60a5fa" stroke-width="3"/>
+      <rect x="88" y="318" width="72" height="26" rx="13" fill="#60a5fa" opacity=".22"/>
+      <text class="step" x="124" y="337" text-anchor="middle">T1</text>
+      <text class="role" x="190" y="338" text-anchor="middle">purchase source</text>
+      <text class="card-title" x="190" y="386" text-anchor="middle">PurchaseCompleted</text>
+      <text class="body" x="190" y="428" text-anchor="middle">purchase ID · clinic scope</text>
+      <text class="body" x="190" y="458" text-anchor="middle">duplicate is not a new sale</text>
+    </g>
+    <g class="node-card">
+      <rect id="catalog-snapshot" x="340" y="300" width="240" height="220" rx="24" fill="url(#mainFill)" stroke="#60a5fa" stroke-width="3"/>
+      <rect x="358" y="318" width="72" height="26" rx="13" fill="#60a5fa" opacity=".22"/>
+      <text class="step" x="394" y="337" text-anchor="middle">T2</text>
+      <text class="role" x="478" y="338" text-anchor="middle">catalog source</text>
+      <text class="card-title" x="460" y="386" text-anchor="middle">catalog snapshot</text>
+      <text class="body" x="460" y="428" text-anchor="middle">version · BOM · resources</text>
+      <text class="body" x="460" y="458" text-anchor="middle">immutable purchase input</text>
+    </g>
+    <g class="node-card">
+      <rect id="plan-created" x="610" y="300" width="240" height="220" rx="24" fill="url(#mainFill)" stroke="#60a5fa" stroke-width="3"/>
+      <rect x="628" y="318" width="72" height="26" rx="13" fill="#60a5fa" opacity=".22"/>
+      <text class="step" x="664" y="337" text-anchor="middle">T3</text>
+      <text class="role" x="778" y="338" text-anchor="middle">reservation service</text>
+      <text class="card-title" x="730" y="386" text-anchor="middle">AppointmentPlan</text>
+      <text class="body" x="730" y="428" text-anchor="middle">PlannedTreatment 1..N</text>
+      <text class="body" x="730" y="458" text-anchor="middle">interval · dependency · source</text>
+    </g>
+    <g class="node-card">
+      <rect id="candidate-calculated" x="880" y="300" width="240" height="220" rx="24" fill="url(#mainFill)" stroke="#60a5fa" stroke-width="3"/>
+      <rect x="898" y="318" width="72" height="26" rx="13" fill="#60a5fa" opacity=".22"/>
+      <text class="step" x="934" y="337" text-anchor="middle">T4</text>
+      <text class="role" x="1048" y="338" text-anchor="middle">reservation service</text>
+      <text class="card-title" x="1000" y="386" text-anchor="middle">candidate times</text>
+      <text class="body" x="1000" y="428" text-anchor="middle">product rules · capacity</text>
+      <text class="body" x="1000" y="458" text-anchor="middle">preference · operations</text>
+    </g>
+    <g class="node-card">
+      <rect id="proposal-or-hold" x="1150" y="300" width="240" height="220" rx="24" fill="url(#mainFill)" stroke="#60a5fa" stroke-width="3"/>
+      <rect x="1168" y="318" width="72" height="26" rx="13" fill="#60a5fa" opacity=".22"/>
+      <text class="step" x="1204" y="337" text-anchor="middle">T5</text>
+      <text class="role" x="1300" y="338" text-anchor="middle">patient / clinic</text>
+      <text class="card-title" x="1270" y="386" text-anchor="middle">PROPOSED · HELD</text>
+      <text class="body" x="1270" y="428" text-anchor="middle">time · item · resource offer</text>
+      <text class="body" x="1270" y="458" text-anchor="middle">pending customer consent</text>
+    </g>
+    <g class="node-card">
+      <rect id="confirmed-commitment" x="1420" y="300" width="240" height="220" rx="24" fill="url(#serviceFill)" stroke="#2dd4bf" stroke-width="3"/>
+      <rect x="1438" y="318" width="72" height="26" rx="13" fill="#2dd4bf" opacity=".22"/>
+      <text class="step" x="1474" y="337" text-anchor="middle">T6</text>
+      <text class="role" x="1570" y="338" text-anchor="middle">customer consent</text>
+      <text class="card-title" x="1540" y="386" text-anchor="middle">CONFIRMED</text>
+      <text class="body" x="1540" y="428" text-anchor="middle">confirmed visit commitment</text>
+      <text class="body" x="1540" y="458" text-anchor="middle">change means new offer</text>
+    </g>
+    <g class="node-card">
+      <rect id="visit-handoff" x="1690" y="300" width="240" height="220" rx="24" fill="url(#serviceFill)" stroke="#2dd4bf" stroke-width="3"/>
+      <rect x="1708" y="318" width="72" height="26" rx="13" fill="#2dd4bf" opacity=".22"/>
+      <text class="step" x="1744" y="337" text-anchor="middle">T6</text>
+      <text class="role" x="1840" y="338" text-anchor="middle">downstream</text>
+      <text class="card-title" x="1810" y="386" text-anchor="middle">visit · completion</text>
+      <text class="body" x="1810" y="428" text-anchor="middle">visit and care facts</text>
+      <text class="body" x="1810" y="458" text-anchor="middle">update plan item status</text>
+    </g>
+  </g>
+
+  <g id="main-edges">
+    <path class="connector primary-line" data-connector="purchase-completed-catalog-snapshot" data-source-node="purchase-completed" data-target-node="catalog-snapshot" d="M 310 410 H 340"/>
+    <path class="connector primary-line" data-connector="catalog-snapshot-plan-created" data-source-node="catalog-snapshot" data-target-node="plan-created" d="M 580 410 H 610"/>
+    <path class="connector primary-line" data-connector="plan-created-candidate-calculated" data-source-node="plan-created" data-target-node="candidate-calculated" d="M 850 410 H 880"/>
+    <path class="connector primary-line" data-connector="candidate-calculated-proposal-or-hold" data-source-node="candidate-calculated" data-target-node="proposal-or-hold" d="M 1120 410 H 1150"/>
+    <path class="connector primary-line" data-connector="proposal-or-hold-confirmed-commitment" data-source-node="proposal-or-hold" data-target-node="confirmed-commitment" d="M 1390 410 H 1420"/>
+    <path class="connector primary-line" data-connector="confirmed-commitment-visit-handoff" data-source-node="confirmed-commitment" data-target-node="visit-handoff" d="M 1660 410 H 1690"/>
+  </g>
+
+  <text class="lane" x="90" y="640">Business exception rail</text>
+  <text class="lane-note" x="90" y="666">Keep the next action and decision owner visible instead of collapsing every case into FAILED.</text>
+  <path d="M 90 682 H 1860" fill="none" stroke="#5a4520" stroke-width="2" stroke-dasharray="10 12"/>
+
+  <g filter="url(#shadow)">
+    <g class="node-card">
+      <rect id="no-candidate" x="70" y="800" width="400" height="220" rx="24" fill="url(#exceptionFill)" stroke="#fbbf24" stroke-width="3"/>
+      <rect x="90" y="818" width="116" height="26" rx="13" fill="#fbbf24" opacity=".22"/>
+      <text class="role" x="148" y="837" text-anchor="middle">review · counseling handoff</text>
+      <text class="card-title" x="270" y="886" text-anchor="middle">no candidate time</text>
+      <text class="body" x="270" y="928" text-anchor="middle">conditions · run time · reason</text>
+      <text class="body" x="270" y="958" text-anchor="middle">alternative or counseling handoff</text>
+    </g>
+    <g class="node-card">
+      <rect id="proposal-expired" x="515" y="800" width="400" height="220" rx="24" fill="url(#exceptionFill)" stroke="#fbbf24" stroke-width="3"/>
+      <rect x="535" y="818" width="116" height="26" rx="13" fill="#fbbf24" opacity=".22"/>
+      <text class="role" x="593" y="837" text-anchor="middle">reservation service</text>
+      <text class="card-title" x="715" y="886" text-anchor="middle">offer · hold expired</text>
+      <text class="body" x="715" y="928" text-anchor="middle">never promote to confirmed</text>
+      <text class="body" x="715" y="958" text-anchor="middle">new candidate and new offer</text>
+    </g>
+    <g class="node-card">
+      <rect id="patient-change" x="960" y="800" width="400" height="220" rx="24" fill="url(#exceptionFill)" stroke="#fbbf24" stroke-width="3"/>
+      <rect x="980" y="818" width="116" height="26" rx="13" fill="#fbbf24" opacity=".22"/>
+      <text class="role" x="1038" y="837" text-anchor="middle">patient · counseling</text>
+      <text class="card-title" x="1160" y="886" text-anchor="middle">patient cancel · decline</text>
+      <text class="body" x="1160" y="928" text-anchor="middle">preserve intent and state history</text>
+      <text class="body" x="1160" y="958" text-anchor="middle">hand off product · counseling</text>
+    </g>
+    <g class="node-card">
+      <rect id="hospital-change" x="1405" y="800" width="400" height="220" rx="24" fill="url(#handoffFill)" stroke="#a78bfa" stroke-width="3"/>
+      <rect x="1425" y="818" width="116" height="26" rx="13" fill="#a78bfa" opacity=".22"/>
+      <text class="role" x="1483" y="837" text-anchor="middle">operations · counseling</text>
+      <text class="card-title" x="1605" y="886" text-anchor="middle">hospital-side change</text>
+      <text class="body" x="1605" y="928" text-anchor="middle">record affected resource · time</text>
+      <text class="body" x="1605" y="958" text-anchor="middle">new offer and customer consent</text>
+    </g>
+  </g>
+
+  <g id="exception-edges">
+    <path class="connector branch-line" data-connector="candidate-calculated-no-candidate" data-source-node="candidate-calculated" data-target-node="no-candidate" d="M 980 520 V 590 Q 980 620 950 620 H 290 Q 260 620 260 650 V 800"/>
+    <path class="connector branch-line" data-connector="proposal-or-hold-proposal-expired" data-source-node="proposal-or-hold" data-target-node="proposal-expired" d="M 1210 520 V 620 Q 1210 650 1180 650 H 735 Q 705 650 705 680 V 800"/>
+    <path class="connector branch-line" data-connector="proposal-or-hold-patient-change" data-source-node="proposal-or-hold" data-target-node="patient-change" d="M 1300 520 V 690 Q 1300 720 1270 720 H 1190 Q 1160 720 1160 750 V 800"/>
+    <path class="connector branch-line" data-connector="confirmed-commitment-hospital-change" data-source-node="confirmed-commitment" data-target-node="hospital-change" d="M 1530 520 V 650 Q 1530 680 1560 680 H 1595 Q 1625 680 1625 710 V 800"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="70" y="1080" width="1735" height="70" rx="20" fill="#0b1628" stroke="#2b4168" stroke-width="2"/>
+    <text class="footer-title" x="98" y="1110">Reading rule</text>
+    <text class="footer-body" x="260" y="1110">initialBookingRule is a first-offer fallback, not benefit expiry or automatic confirmation.</text>
+    <text class="footer-body" x="98" y="1136">No-show and VIP policies belong to separate source data and ownership; confirmed visits change only after a new offer and consent.</text>
+  </g>
+</svg>

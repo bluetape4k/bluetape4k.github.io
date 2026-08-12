@@ -1,0 +1,183 @@
+{
+  "kind": "workflow",
+  "source": {
+    "question": "Through which steps does an event-product purchase become a confirmed visit commitment?",
+    "revision": "clinic-appointment@fe772eb4504a6770ba6386efd0e0397060caf1f8; visual-site@local",
+    "paths": [
+      "docs/superpowers/specs/2026-08-12-clinic-appointment-event-product-first-commitment-design.md"
+    ],
+    "externalPaths": [
+      "appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/catalog/ProductCatalogDefinition.kt",
+      "appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/plan/AppointmentPlanModel.kt",
+      "appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/plan/BookingPreferenceSnapshot.kt",
+      "appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/policy/BookingCommitmentPolicy.kt",
+      "docs/superpowers/specs/2026-07-29-issue-184-visit-commitment-design.md"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "purchase-completed",
+      "label": "Purchase completion and purchase-source validation",
+      "source": "PurchaseCompletedEvent / purchase source and purchase ID"
+    },
+    {
+      "id": "catalog-snapshot",
+      "label": "Versioned catalog/BOM snapshot",
+      "source": "ProductCatalogDefinition / catalogVersion, BOM, initialBookingRule"
+    },
+    {
+      "id": "plan-created",
+      "label": "AppointmentPlan and PlannedTreatment",
+      "source": "AppointmentPlanFactory / AppointmentPlanModel"
+    },
+    {
+      "id": "candidate-calculated",
+      "label": "Candidate satisfying product and clinic capacity",
+      "source": "visit commitment design / product BOM and clinic capacity"
+    },
+    {
+      "id": "proposal-or-hold",
+      "label": "PROPOSED or policy-defined HELD",
+      "source": "BookingCommitmentPolicy / visit commitment design"
+    },
+    {
+      "id": "confirmed-commitment",
+      "label": "CONFIRMED after customer consent",
+      "source": "BookingCommitmentPolicy / confirmed-change consent"
+    },
+    {
+      "id": "visit-handoff",
+      "label": "Attendance, completion, and downstream objective events",
+      "source": "AppointmentPlanModel / data-flow objective events"
+    },
+    {
+      "id": "no-candidate",
+      "label": "No candidate and alternative/counseling handoff",
+      "source": "visit commitment design / no-candidate exception"
+    },
+    {
+      "id": "proposal-expired",
+      "label": "Proposal or hold expiry requires a new proposal",
+      "source": "BookingCommitmentPolicy / proposal expiry"
+    },
+    {
+      "id": "patient-change",
+      "label": "Patient cancellation/decline and source handoff",
+      "source": "visit commitment design / customer decline"
+    },
+    {
+      "id": "hospital-change",
+      "label": "Clinic disruption requires new proposal and consent",
+      "source": "visit commitment design / operational disruption"
+    }
+  ],
+  "edges": [
+    {
+      "id": "purchase-completed-catalog-snapshot",
+      "from": "purchase-completed",
+      "to": "catalog-snapshot",
+      "kind": "source-validation",
+      "source": "PurchaseCompletedEvent / ProductCatalogDefinition"
+    },
+    {
+      "id": "catalog-snapshot-plan-created",
+      "from": "catalog-snapshot",
+      "to": "plan-created",
+      "kind": "plan-materialization",
+      "source": "AppointmentPlanFactory"
+    },
+    {
+      "id": "plan-created-candidate-calculated",
+      "from": "plan-created",
+      "to": "candidate-calculated",
+      "kind": "eligibility-and-capacity",
+      "source": "visit commitment design / BOM and capacity constraints"
+    },
+    {
+      "id": "candidate-calculated-proposal-or-hold",
+      "from": "candidate-calculated",
+      "to": "proposal-or-hold",
+      "kind": "provisional-offer",
+      "source": "BookingCommitmentPolicy"
+    },
+    {
+      "id": "proposal-or-hold-confirmed-commitment",
+      "from": "proposal-or-hold",
+      "to": "confirmed-commitment",
+      "kind": "customer-consent",
+      "source": "BookingCommitmentPolicy / confirmed-change consent"
+    },
+    {
+      "id": "confirmed-commitment-visit-handoff",
+      "from": "confirmed-commitment",
+      "to": "visit-handoff",
+      "kind": "attendance-and-completion",
+      "source": "AppointmentPlanModel / data-flow objective events"
+    },
+    {
+      "id": "candidate-calculated-no-candidate",
+      "from": "candidate-calculated",
+      "to": "no-candidate",
+      "kind": "candidate-exception",
+      "source": "visit commitment design / no-candidate exception"
+    },
+    {
+      "id": "proposal-or-hold-proposal-expired",
+      "from": "proposal-or-hold",
+      "to": "proposal-expired",
+      "kind": "expiry-exception",
+      "source": "BookingCommitmentPolicy / proposal expiry"
+    },
+    {
+      "id": "proposal-or-hold-patient-change",
+      "from": "proposal-or-hold",
+      "to": "patient-change",
+      "kind": "customer-change",
+      "source": "visit commitment design / customer decline"
+    },
+    {
+      "id": "confirmed-commitment-hospital-change",
+      "from": "confirmed-commitment",
+      "to": "hospital-change",
+      "kind": "operational-disruption",
+      "source": "visit commitment design / operational disruption"
+    }
+  ],
+  "behavior": {
+    "branches": 4,
+    "loops": 0
+  },
+  "budget": {
+    "nodes": 11,
+    "edges": 10,
+    "branches": 4,
+    "loops": 1
+  },
+  "repairs": [
+    {
+      "target": "purchase-to-plan-boundary",
+      "reason": "Keep purchase fact, catalog snapshot, and AppointmentPlan as separate business steps.",
+      "touches": 3
+    },
+    {
+      "target": "proposal-consent-boundary",
+      "reason": "Make PROPOSED and HELD visibly provisional and require consent before CONFIRMED.",
+      "touches": 3
+    },
+    {
+      "target": "exception-rail",
+      "reason": "Separate no-candidate, expiry, patient change, and hospital change without crossing the main timeline.",
+      "touches": 4
+    },
+    {
+      "target": "criteria-source-labels",
+      "reason": "Use source of truth and catalog source in reader-facing labels while preserving code identifiers.",
+      "touches": 4
+    },
+    {
+      "target": "wide-balanced-canvas",
+      "reason": "Reserve equal horizontal margins and corridor space for long technical identifiers and arrowheads.",
+      "touches": 3
+    }
+  ]
+}

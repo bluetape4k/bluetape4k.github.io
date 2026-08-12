@@ -68,7 +68,7 @@ The shortened flow looks like this:
 
     Product catalog definition ──projection/event──> catalog view read by scheduling
              │
-             └─ commerce contract ──authority-qualified purchase event──> AppointmentPlan
+             └─ commerce contract ──purchase-source-qualified event──> AppointmentPlan
 
 Putting only a product identifier in the purchase event and looking up the current catalog later is dangerous. A
 changed treatment item or visit rule could silently change the meaning of an old purchase. The plan therefore needs
@@ -80,7 +80,7 @@ enough of the time-specific interpretation to reproduce the obligation:
 - a purchase reference for a later refund or cancellation
 
 This does not make the appointment service the owner of the product source. The product and commerce systems remain
-authoritative; scheduling preserves the interpretation it needs to reproduce its own plan. If a purchase event arrives
+the sources of record; scheduling preserves the interpretation it needs to reproduce its own plan. If a purchase event arrives
 twice or a catalog projection is briefly late, inbox/outbox and idempotent handling must prevent two plans for one
 purchase.
 
@@ -145,24 +145,24 @@ profile in CRM and sends scheduling only an opaque reference, fingerprint, and m
 Reassessment may revisit PROPOSED and HELD, but a valid hold and the snapshot, consent, and resource occupancy of
 CONFIRMED must be protected.
 
-## Service ownership boundaries
+## Source-of-record and responsibility boundaries
 
-Several teams may read facts about Patient A's purchase, but their authoritative data and responsibilities remain
+Several teams may read facts about Patient A's purchase, but their source-of-record data and responsibilities remain
 different. The appointment service receives only the facts it needs and emits objective appointment facts in return.
 
-| Domain | Authority data | Fact entering scheduling | Scheduling responsibility |
+| Domain | Source-of-record data | Fact entering scheduling | Scheduling responsibility |
 | --- | --- | --- | --- |
 | Product management/development | Product definitions, BOMs, scheduling rules, product versions | Catalog projection or synchronization event | Preserve the projection needed to interpret the purchase-time version |
-| Commerce/purchases | Purchase contracts, add-ons, refunds | Authority-qualified purchase and refund events | Create one plan per purchase and reflect future scheduling obligations |
+| Commerce/purchases | Purchase contracts, add-ons, refunds | Purchase-source-qualified purchase and refund events | Create one plan per purchase and reflect future scheduling obligations |
 | Appointment service | Plans, visit commitments, resources, policy snapshots | Plan and appointment events read by other services | Own schedule, capacity, consent, state, and history |
 | Clinical/treatment | Treatment start, completion, and partial completion | Completion event | Reflect completed items and their effect on future obligations |
 | Customer counseling/CRM | Customer profile, assessment, counseling, complaints, compensation | Minimal profile outcome or appointment objective fact | Provide facts for change proposals and counseling handoff |
 | Notification | Contact, language, consent, delivery history | Appointment event and outbox result | Keep appointment transactions separate from channel delivery |
-| Statistics/external consumers | Projections, current status, SLA metrics | Appointment event and schema contract | Never transfer authority over the appointment source to a projection |
+| Statistics/external consumers | Projections, current status, SLA metrics | Appointment event and schema contract | Never transfer ownership of the appointment source to a projection |
 
-<figure class="bt4k-architecture" data-diagram-title="Service authority and responsibility boundaries">
-  <img src="/assets/clinic-appointment-prologue-service-boundaries-01-en.png" alt="Product, commerce, clinical, and CRM authorities provide facts to the appointment service, which emits objective events to notification and statistics consumers" loading="lazy" />
-  <figcaption>Each authority decides its own source facts. Scheduling owns the plan, visit commitment, capacity, policy snapshot, state, and history; notification, CRM, and statistics consume appointment facts without becoming the appointment source of truth.</figcaption>
+<figure class="bt4k-architecture" data-diagram-title="Source-of-record and responsibility boundaries">
+  <img src="/assets/clinic-appointment-prologue-service-boundaries-01-en.png" alt="Product, commerce, clinical, and CRM source-of-record services provide facts to the appointment service, which emits objective events to notification and statistics consumers" loading="lazy" />
+  <figcaption>Each source-of-record service decides its own facts. Scheduling owns the plan, visit commitment, capacity, policy snapshot, state, and history; notification, CRM, and statistics consume appointment facts without becoming the appointment source of truth.</figcaption>
 </figure>
 
 ## The several facts left by one visit
@@ -170,7 +170,7 @@ different. The appointment service receives only the facts it needs and emits ob
 Patient A's arrival at the clinic cannot be described by one state shared by every team. We need to separate the
 objective facts preserved or emitted by scheduling from the business results judged by other services.
 
-| Event | Authority | What scheduling provides | What scheduling does not own |
+| Event | Source of record | What scheduling provides | What scheduling does not own |
 | --- | --- | --- | --- |
 | Check-in and attendance | Clinic attendance/clinical system | Attendance event linked to the appointment | The source clinical record |
 | Partial or full treatment completion | Clinical/treatment system | Objective fact for completed and remaining items | The clinician's judgment |
@@ -198,8 +198,8 @@ without creating one giant customer record. Four rules keep their boundaries int
 2. **Objective events** — scheduling emits what was delayed and when; CRM uses that fact to decide counseling and
    compensation.
 3. **Durable outbox** — a temporary notification or consumer failure must not erase the fact that a visit was confirmed.
-4. **Non-authoritative projections** — search and statistics models can provide a useful current view without becoming
-   the appointment source of truth.
+4. **Projection ownership** — search and statistics models can provide a useful current view without becoming the
+   appointment source of truth.
 
 This does not mean hiding no-show or VIP-priority policy inside scheduling. Deciding what restriction or additional
 confirmation should apply to a patient who repeatedly misses appointments, and how VIP convenience should be balanced
@@ -225,8 +225,9 @@ Patient A's journey into the wrong commitment.
 
 This article drew the map. The next article moves closer to product versions and purchase snapshots: why Patient A's
 v1 snapshot and confirmed visit stay intact when product v2 is published, and how future items may enter a new
-revision only after explicit approval and consent. Repeated delivery remains a short technical boundary rather than
-the main business conflict.
+revision only after explicit approval and consent. After that, the event-product article follows the first proposal
+from a purchase to a visit commitment. Repeated delivery remains a short technical boundary rather than the main
+business conflict.
 
 ### Visual companions
 
@@ -248,6 +249,7 @@ current source first. This prologue does not add a new companion route.
 
 - **Prologue: From Product Information to a Patient's Visit Commitment**
 - [When a Product Changes, Don't Rewrite the Patient's Promise](/blog/clinic-appointment-product-version-purchase-snapshot/)
+- [What Appointment Promise Does an Event Product Create?](/blog/clinic-appointment-event-product-first-commitment/)
 - [Part 1: Clinic Appointments Are More Than CRUD](/blog/clinic-appointment-part1-not-just-crud/)
 - [Part 2: Appointment State Is More Than an Enum](/blog/clinic-appointment-part2-state-machine-and-history/)
 - [Part 3: Computing Availability from Clinic-Specific Hours and Resources](/blog/clinic-appointment-part3-clinic-specific-availability/)
