@@ -1,0 +1,184 @@
+{
+  "kind": "workflow",
+  "source": {
+    "question": "이벤트 상품 구매가 어떤 단계를 거쳐 고객과 병원의 확정 방문 약속이 되는가?",
+    "revision": "clinic-appointment@fe772eb4504a6770ba6386efd0e0397060caf1f8; visual-site@local",
+    "paths": [
+      "docs/superpowers/specs/2026-08-12-clinic-appointment-event-product-first-commitment-design.md",
+      "src/content/docs/ko/blog/clinic-appointment-event-product-first-commitment.mdx"
+    ],
+    "externalPaths": [
+      "appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/catalog/ProductCatalogDefinition.kt",
+      "appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/plan/AppointmentPlanModel.kt",
+      "appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/plan/BookingPreferenceSnapshot.kt",
+      "appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/policy/BookingCommitmentPolicy.kt",
+      "docs/superpowers/specs/2026-07-29-issue-184-visit-commitment-design.md"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "purchase-completed",
+      "label": "구매 완료와 구매 기준정보 원천 검증",
+      "source": "PurchaseCompletedEvent / 구매 기준정보 원천과 구매 ID"
+    },
+    {
+      "id": "catalog-snapshot",
+      "label": "상품 기준정보 version/BOM snapshot",
+      "source": "ProductCatalogDefinition / catalogVersion·BOM·initialBookingRule"
+    },
+    {
+      "id": "plan-created",
+      "label": "AppointmentPlan과 PlannedTreatment",
+      "source": "AppointmentPlanFactory / AppointmentPlanModel"
+    },
+    {
+      "id": "candidate-calculated",
+      "label": "상품 조건과 병원 수용량을 만족하는 후보",
+      "source": "visit commitment design / 상품 BOM과 병원 capacity"
+    },
+    {
+      "id": "proposal-or-hold",
+      "label": "PROPOSED 또는 정책상 HELD",
+      "source": "BookingCommitmentPolicy / visit commitment design"
+    },
+    {
+      "id": "confirmed-commitment",
+      "label": "고객 동의 뒤 CONFIRMED",
+      "source": "BookingCommitmentPolicy / confirmed change consent"
+    },
+    {
+      "id": "visit-handoff",
+      "label": "내원·완료와 downstream 객관적 event",
+      "source": "AppointmentPlanModel / data-flow objective event"
+    },
+    {
+      "id": "no-candidate",
+      "label": "후보 없음과 대체·상담 handoff",
+      "source": "visit commitment design / no-candidate exception"
+    },
+    {
+      "id": "proposal-expired",
+      "label": "제안·hold 만료와 새 제안 필요",
+      "source": "BookingCommitmentPolicy / proposal expiry"
+    },
+    {
+      "id": "patient-change",
+      "label": "환자 취소·거부와 기준정보 원천 handoff",
+      "source": "visit commitment design / customer decline"
+    },
+    {
+      "id": "hospital-change",
+      "label": "병원 사정 변경과 새 제안·동의",
+      "source": "visit commitment design / operational disruption"
+    }
+  ],
+  "edges": [
+    {
+      "id": "purchase-completed-catalog-snapshot",
+      "from": "purchase-completed",
+      "to": "catalog-snapshot",
+      "kind": "source-validation",
+      "source": "PurchaseCompletedEvent / ProductCatalogDefinition"
+    },
+    {
+      "id": "catalog-snapshot-plan-created",
+      "from": "catalog-snapshot",
+      "to": "plan-created",
+      "kind": "plan-materialization",
+      "source": "AppointmentPlanFactory"
+    },
+    {
+      "id": "plan-created-candidate-calculated",
+      "from": "plan-created",
+      "to": "candidate-calculated",
+      "kind": "eligibility-and-capacity",
+      "source": "visit commitment design / BOM and capacity constraints"
+    },
+    {
+      "id": "candidate-calculated-proposal-or-hold",
+      "from": "candidate-calculated",
+      "to": "proposal-or-hold",
+      "kind": "provisional-offer",
+      "source": "BookingCommitmentPolicy"
+    },
+    {
+      "id": "proposal-or-hold-confirmed-commitment",
+      "from": "proposal-or-hold",
+      "to": "confirmed-commitment",
+      "kind": "customer-consent",
+      "source": "BookingCommitmentPolicy / confirmed change consent"
+    },
+    {
+      "id": "confirmed-commitment-visit-handoff",
+      "from": "confirmed-commitment",
+      "to": "visit-handoff",
+      "kind": "attendance-and-completion",
+      "source": "AppointmentPlanModel / data-flow objective event"
+    },
+    {
+      "id": "candidate-calculated-no-candidate",
+      "from": "candidate-calculated",
+      "to": "no-candidate",
+      "kind": "candidate-exception",
+      "source": "visit commitment design / no-candidate exception"
+    },
+    {
+      "id": "proposal-or-hold-proposal-expired",
+      "from": "proposal-or-hold",
+      "to": "proposal-expired",
+      "kind": "expiry-exception",
+      "source": "BookingCommitmentPolicy / proposal expiry"
+    },
+    {
+      "id": "proposal-or-hold-patient-change",
+      "from": "proposal-or-hold",
+      "to": "patient-change",
+      "kind": "customer-change",
+      "source": "visit commitment design / customer decline"
+    },
+    {
+      "id": "confirmed-commitment-hospital-change",
+      "from": "confirmed-commitment",
+      "to": "hospital-change",
+      "kind": "operational-disruption",
+      "source": "visit commitment design / operational disruption"
+    }
+  ],
+  "behavior": {
+    "branches": 4,
+    "loops": 0
+  },
+  "budget": {
+    "nodes": 11,
+    "edges": 10,
+    "branches": 4,
+    "loops": 1
+  },
+  "repairs": [
+    {
+      "target": "purchase-to-plan-boundary",
+      "reason": "Keep purchase fact, catalog snapshot, and AppointmentPlan as separate business steps.",
+      "touches": 3
+    },
+    {
+      "target": "proposal-consent-boundary",
+      "reason": "Make PROPOSED and HELD visibly provisional and require consent before CONFIRMED.",
+      "touches": 3
+    },
+    {
+      "target": "exception-rail",
+      "reason": "Separate no-candidate, expiry, patient change, and hospital change without crossing the main timeline.",
+      "touches": 4
+    },
+    {
+      "target": "criteria-source-labels",
+      "reason": "Use 기준정보 and 기준정보 원천 in reader-facing labels instead of ownership or authority wording.",
+      "touches": 4
+    },
+    {
+      "target": "wide-balanced-canvas",
+      "reason": "Reserve equal horizontal margins and corridor space for long technical identifiers and arrowheads.",
+      "touches": 3
+    }
+  ]
+}

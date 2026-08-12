@@ -68,7 +68,7 @@ blog:
 ```text
 상품 catalog 정의 ──projection/event──> 예약서비스가 읽는 catalog view
          │
-         └─ 구매/결제 계약 ──authority-qualified purchase event──> AppointmentPlan
+         └─ 구매/결제 계약 ──구매 기준정보 원천 확인 이벤트──> AppointmentPlan
 ```
 
 구매 event에는 상품 식별자만 넣고 나중에 현재 catalog를 조회하게 만들면 위험합니다. 상품의 치료 항목이나
@@ -149,24 +149,24 @@ Appointment ──> AppointmentItem 1..N ──> ResourceAllocation 1..N
 최소한의 재평가 결과만 전달하는 것입니다. 재평가는 `PROPOSED`와 `HELD`를 다시 검토할 수 있지만, 유효한
 hold와 `CONFIRMED`의 snapshot·동의·자원 점유는 보호해야 합니다.
 
-## 서비스별 권한 경계
+## 서비스별 기준정보와 책임 경계
 
-환자 A의 한 구매를 여러 팀이 읽더라도 각 팀의 권위 데이터와 책임은 달라야 합니다. 예약서비스가 모든
+환자 A의 한 구매를 여러 팀이 읽더라도 각 팀의 기준정보와 책임은 달라야 합니다. 예약서비스가 모든
 업무를 대신하는 대신, 다음처럼 필요한 사실만 넘겨받고 객관적 예약 사실만 다시 발행합니다.
 
-| 업무 영역 | 권위 데이터 | 예약서비스로 넘어오는 사실 | 예약서비스의 책임 |
+| 업무 영역 | 기준정보 | 예약서비스로 넘어오는 사실 | 예약서비스의 책임 |
 | --- | --- | --- | --- |
 | 상품관리/상품개발 | 상품 정의, BOM, 예약 규칙, 상품 버전 | catalog projection 또는 동기화 event | 구매 시점 버전의 예약 해석에 사용할 projection 보존 |
-| 구매/커머스 | 구매 계약, 추가 구매, 환불 | authority-qualified purchase event, refund event | 구매 하나당 계획 생성과 미래 예약 의무 반영 |
-| 예약서비스 | 계획, 방문 약속, 자원, 정책 snapshot | 다른 서비스가 읽는 plan·appointment event | 일정·수용량·동의·상태·이력의 권위 보존 |
+| 구매/커머스 | 구매 계약, 추가 구매, 환불 | 구매 기준정보 원천이 확인된 purchase event, refund event | 구매 하나당 계획 생성과 미래 예약 의무 반영 |
+| 예약서비스 | 계획, 방문 약속, 자원, 정책 snapshot | 다른 서비스가 읽는 plan·appointment event | 일정·수용량·동의·상태·이력을 기준정보로 보존 |
 | 임상/시술 | 실제 시술 시작·완료·부분 완료 | completion event | 완료된 항목과 미래 계획의 영향 반영 |
 | 고객상담/CRM | 고객 프로필, assessment, 상담, 민원, 보상 | 최소 profile outcome 또는 예약 objective fact | 예약 변경 제안과 상담 handoff의 사실 제공 |
 | 알림 | 연락처, 언어, 동의, 발송 이력 | 예약 event와 outbox 처리 결과 | 예약 트랜잭션과 알림 전달을 직접 결합하지 않음 |
 | 통계/외부 consumer | projection, 최신 상태, SLA 지표 | 예약 event와 schema 계약 | 원본 예약 상태를 외부 projection에 직접 양도하지 않음 |
 
-<figure class="bt4k-architecture" data-diagram-title="서비스별 권한과 책임 경계">
-  <img src="/assets/clinic-appointment-prologue-service-boundaries-01-ko.png" alt="상품관리, 구매, 임상, CRM이 예약서비스에 원천 사실을 입력하고 예약서비스가 알림과 통계 consumer에 객관적 이벤트를 전달하는 권한 경계" loading="lazy" />
-  <figcaption>권한을 가진 서비스가 원천 사실을 결정하고, 예약서비스는 계획·방문 약속·수용량·이력의 source of truth를 보존합니다. CRM·알림·통계는 이벤트를 소비하지만 예약 원본의 권위자가 되지 않습니다.</figcaption>
+<figure class="bt4k-architecture" data-diagram-title="서비스별 기준정보와 책임 경계">
+  <img src="/assets/clinic-appointment-prologue-service-boundaries-01-ko.png" alt="상품관리, 구매, 임상, CRM이 예약서비스에 기준정보 원천 사실을 입력하고 예약서비스가 알림과 통계 consumer에 객관적 이벤트를 전달하는 책임 경계" loading="lazy" />
+  <figcaption>각 기준정보 원천 서비스가 원천 사실을 결정하고, 예약서비스는 계획·방문 약속·수용량·이력의 source of truth를 보존합니다. CRM·알림·통계는 이벤트를 소비하지만 예약 원본을 소유하지 않습니다.</figcaption>
 </figure>
 
 ## 한 번의 방문 뒤에 남는 여러 사실
@@ -174,7 +174,7 @@ hold와 `CONFIRMED`의 snapshot·동의·자원 점유는 보호해야 합니다
 환자 A가 병원에 도착했다고 해서 하나의 상태가 모든 업무를 설명하지는 않습니다. 예약서비스가 보존하거나
 발행하는 객관적 사실과, 다른 서비스가 판단하는 업무 결과를 나눠야 합니다.
 
-| 이벤트 | 권위 데이터 | 예약서비스가 제공하는 것 | 예약서비스가 소유하지 않는 것 |
+| 이벤트 | 기준정보 | 예약서비스가 제공하는 것 | 예약서비스가 소유하지 않는 것 |
 | --- | --- | --- | --- |
 | 체크인·내원 | 병원의 내원/임상 시스템 | 예약과 연결된 attendance event | 임상 기록 원본 |
 | 일부·전체 처치 완료 | 임상/시술 시스템 | 완료·미완료 항목을 반영할 objective fact | 의료진의 진료 판단 |
@@ -202,7 +202,7 @@ hold와 `CONFIRMED`의 snapshot·동의·자원 점유는 보호해야 합니다
    보상을 판단합니다.
 3. **durable outbox** — 알림과 외부 consumer 전달이 일시적으로 실패해도 예약 확정과 함께 사라지지 않게
    합니다.
-4. **projection의 비소유성** — 통계와 검색용 모델은 최신 조회를 제공하지만 예약 원본의 권위가 되지 않습니다.
+4. **projection의 비소유성** — 통계와 검색용 모델은 최신 조회를 제공하지만 예약 원본을 소유하지 않습니다.
 
 이 구조는 노쇼나 VIP 우선 정책을 예약서비스 안에 몰래 넣자는 뜻도 아닙니다. 반복해서 예약을 지키지 않은
 환자의 다음 요청에 어떤 제한이나 추가 확인을 둘지, VIP 고객의 편의를 어떤 공정성 기준으로 조정할지는
@@ -227,8 +227,9 @@ hold와 `CONFIRMED`의 snapshot·동의·자원 점유는 보호해야 합니다
 
 이번 글은 전체 지도를 그렸습니다. 다음 글에서는 상품 버전과 구매 snapshot을 더 가까이 들여다봅니다.
 상품 v2가 발행돼도 환자 A의 v1 snapshot과 확정 방문을 다시 쓰지 않는 이유, 그리고 기존 구매의 미래 항목만
-어떤 승인·동의 절차로 새 revision에 승계할 수 있는지를 상품 변경 업무로 풀어 보겠습니다. 중복 전달은 이
-핵심 갈등을 보조하는 짧은 기술 경계로만 다룹니다.
+어떤 승인·동의 절차로 새 revision에 승계할 수 있는지를 상품 변경 업무로 풀어 보겠습니다. 그 다음 글에서는
+이벤트 상품의 최초 제안이 구매에서 방문 약속으로 이어지는 과정을 따라갑니다. 중복 전달은 이 핵심 갈등을
+보조하는 짧은 기술 경계로만 다룹니다.
 
 ### 시각 자료로 다시 보기
 
@@ -250,6 +251,7 @@ hold와 `CONFIRMED`의 snapshot·동의·자원 점유는 보호해야 합니다
 
 - **프롤로그: 상품 정보가 고객의 방문 약속이 되기까지**
 - [상품이 바뀌어도 고객의 약속은 다시 쓰지 않는다](/ko/blog/clinic-appointment-product-version-purchase-snapshot/)
+- [이벤트 상품은 어떤 예약 약속을 만드는가](/ko/blog/clinic-appointment-event-product-first-commitment/)
 - [Part 1: 병원 예약은 CRUD로 끝나지 않는다](/ko/blog/clinic-appointment-part1-not-just-crud/)
 - [Part 2: 예약 상태는 단순한 열거형이 아니다](/ko/blog/clinic-appointment-part2-state-machine-and-history/)
 - [Part 3: 병원마다 다른 업무시간과 자원으로 예약 가능 시간을 계산하기](/ko/blog/clinic-appointment-part3-clinic-specific-availability/)
