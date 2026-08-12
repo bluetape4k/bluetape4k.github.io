@@ -1,0 +1,166 @@
+{
+  "kind": "workflow",
+  "source": {
+    "question": "How does Patient A's N-visit purchase preserve remaining rights while only one visit at a time becomes a commitment?",
+    "revision": "clinic-appointment@develop; visual-site@local",
+    "paths": [
+      "src/content/docs/blog/clinic-appointment-n-visit-remaining-rights.mdx"
+    ],
+    "externalPaths": [
+      "appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/catalog/ProductCatalogDefinition.kt",
+      "appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/plan/AppointmentPlanModel.kt",
+      "appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/plan/AppointmentPlanRevisionModel.kt",
+      "docs/superpowers/specs/2026-07-26-appointment-plan-and-capacity-design.md",
+      "docs/superpowers/specs/2026-07-29-issue-184-visit-commitment-design.md"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "purchase-completed",
+      "label": "PurchaseCompleted: total = 5",
+      "source": "Commerce purchase fact and catalog snapshot"
+    },
+    {
+      "id": "plan-created",
+      "label": "AppointmentPlan: PlannedTreatment 1..5",
+      "source": "AppointmentPlan model and repeatCount expansion"
+    },
+    {
+      "id": "rights-ledger",
+      "label": "Rights ledger: used = 0, remaining = 5",
+      "source": "Plan obligations separated from appointment capacity"
+    },
+    {
+      "id": "next-candidate",
+      "label": "Next candidate: one treatment at a time",
+      "source": "Booking preference, intervals, clinic capacity, and policy"
+    },
+    {
+      "id": "confirmed-visit",
+      "label": "CONFIRMED: one consented visit",
+      "source": "Visit commitment design and customer consent"
+    },
+    {
+      "id": "completion-fact",
+      "label": "Completion fact: used = 1",
+      "source": "Clinical completion / fulfillment event"
+    },
+    {
+      "id": "remaining-rights",
+      "label": "Remaining obligations: 4, next cycle separate",
+      "source": "Plan item state and source-qualified business facts"
+    },
+    {
+      "id": "reschedule-cancel",
+      "label": "Reschedule or cancel: preserve right and history",
+      "source": "Appointment change, proposal expiry, and external cancellation"
+    },
+    {
+      "id": "no-show",
+      "label": "NO_SHOW: attendance fact, no automatic decrement",
+      "source": "Appointment status and policy/CRM handoff"
+    },
+    {
+      "id": "partial-completion",
+      "label": "Partial completion: completed and unfinished items split",
+      "source": "AppointmentItem completion and linked attempt"
+    }
+  ],
+  "edges": [
+    {
+      "id": "purchase-completed-plan-created",
+      "from": "purchase-completed",
+      "to": "plan-created",
+      "kind": "purchase-to-plan",
+      "source": "PurchaseCompleted and AppointmentPlan identity"
+    },
+    {
+      "id": "plan-created-rights-ledger",
+      "from": "plan-created",
+      "to": "rights-ledger",
+      "kind": "obligation-count",
+      "source": "PlannedTreatment 1..N and remaining-obligation view"
+    },
+    {
+      "id": "rights-ledger-next-candidate",
+      "from": "rights-ledger",
+      "to": "next-candidate",
+      "kind": "eligible-next-item",
+      "source": "Intervals, dependencies, preference, and clinic capacity"
+    },
+    {
+      "id": "next-candidate-confirmed-visit",
+      "from": "next-candidate",
+      "to": "confirmed-visit",
+      "kind": "consent",
+      "source": "PROPOSED/HELD to CONFIRMED after customer consent"
+    },
+    {
+      "id": "confirmed-visit-completion-fact",
+      "from": "confirmed-visit",
+      "to": "completion-fact",
+      "kind": "attendance-and-completion",
+      "source": "Appointment visit and clinical completion fact"
+    },
+    {
+      "id": "completion-fact-remaining-rights",
+      "from": "completion-fact",
+      "to": "remaining-rights",
+      "kind": "remaining-update",
+      "source": "Completed item changes used and remaining obligations"
+    },
+    {
+      "id": "next-candidate-reschedule-cancel",
+      "from": "next-candidate",
+      "to": "reschedule-cancel",
+      "kind": "schedule-change",
+      "source": "Proposal expiry, patient change, and external cancellation"
+    },
+    {
+      "id": "confirmed-visit-no-show",
+      "from": "confirmed-visit",
+      "to": "no-show",
+      "kind": "attendance-exception",
+      "source": "NO_SHOW is not automatic consumption"
+    },
+    {
+      "id": "completion-fact-partial-completion",
+      "from": "completion-fact",
+      "to": "partial-completion",
+      "kind": "fulfillment-exception",
+      "source": "AppointmentItem partial completion and deferred work"
+    }
+  ],
+  "behavior": {
+    "branches": 3,
+    "loops": 0
+  },
+  "budget": {
+    "nodes": 10,
+    "edges": 14,
+    "branches": 3,
+    "loops": 1
+  },
+  "repairs": [
+    {
+      "target": "rights-versus-capacity",
+      "reason": "Keep total, used, remaining obligations, and reserved slots as separate visual facts.",
+      "touches": 4
+    },
+    {
+      "target": "one-visit-consent",
+      "reason": "Show only one consented CONFIRMED visit instead of pre-confirming all future N visits.",
+      "touches": 3
+    },
+    {
+      "target": "completion-anchor",
+      "reason": "Make actual completion the point that changes used and remaining, not a proposal or hold.",
+      "touches": 3
+    },
+    {
+      "target": "exception-rail",
+      "reason": "Separate reschedule/cancel, no-show, and partial completion without crossing the main cycle.",
+      "touches": 3
+    }
+  ]
+}

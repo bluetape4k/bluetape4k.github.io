@@ -1,0 +1,249 @@
+---
+title: "Why an N-Visit Product Is Not One Appointment"
+description: Follow Patient A's five-visit purchase to separate purchased rights, planned treatments, one confirmed visit, actual completion, and the remaining obligation.
+sidebar:
+  order: -202608121200
+blog:
+  date: 2026-08-12T12:00:00+09:00
+  image: /assets/clinic-appointment-prologue-hero.png
+  imageAlt: Small robot workers connect a five-visit product, an AppointmentPlan, one confirmed visit, completion evidence, and a remaining-rights ledger on one workbench
+  cardDescription: "Why a multi-visit purchase keeps its remaining rights separate from the appointments that are confirmed one at a time."
+  tags: ["architecture", "domain-modeling", "event-driven", "resilience"]
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-prologue-hero.png" alt="Small robot workers connect a five-visit product, an AppointmentPlan, one confirmed visit, completion evidence, and a remaining-rights ledger on one workbench" loading="eager" />
+  <figcaption>A multi-visit purchase is a right to receive several treatments. It is not a command to occupy every future slot on the clinic calendar.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-12 · Clinic Appointment Engineering · Multi-visit products and remaining rights</p>
+
+An N-visit product sounds like a repeated appointment: buy five visits, then put five rows on the calendar. That
+shortcut loses the business facts that matter after the first visit. A patient can reschedule, miss a visit, receive
+only part of the care, or have a future benefit changed by a separate commerce decision. A confirmed slot is only one
+operational promise; it is not the same thing as a purchased right or completed care.
+
+Suppose Patient A buys a five-visit product. The reservation service must answer three different questions:
+
+1. How many visits did the commerce service sell?
+2. How many obligations has the authoritative clinical evidence completed?
+3. How many obligations are still executable, and which one is ready for a new proposal?
+
+> **Purchased rights ≠ confirmed appointments ≠ completed care**
+
+This article follows one cycle for Patient A and then shows how the next cycle is calculated. The goal is not to
+invent a single counter for every service. The goal is to keep the purchase contract, the reservation plan, the visit
+commitment, and the completion fact explainable when the patient's calendar changes.
+
+## Patient A buys five visits, not five confirmed slots
+
+We generalize the product name, price, clinic, and personal information. The number five is an example that makes the
+three counts visible; the model works for any positive `repeatCount`.
+
+| Time | Patient A action or event | Business meaning | What the reservation service preserves |
+| --- | --- | --- | --- |
+| T1 | Buys a five-visit product | Commerce grants five uses under a product version | Purchase source, purchase ID, and purchase-time catalog snapshot |
+| T2 | Purchase completion is received | One commercial fact must become one executable plan | One `AppointmentPlan` for the authority-qualified purchase |
+| T3 | The plan is expanded | Five future obligations are created, not five calendar slots | `PlannedTreatment` 1..5, intervals, dependencies, and source history |
+| T4 | Patient A requests a first date | A preference or proposal input, not consent | Immutable `BookingPreferenceSnapshot` |
+| T5 | One candidate is proposed and accepted | One visit becomes a commitment | One `Appointment` with the agreed `AppointmentItem` |
+| T6 | Patient A attends and the treatment completes | One obligation is fulfilled | Completion evidence, `used = 1`, and `remaining = 4` |
+
+The first purchase does not create five `Appointment` aggregates. It creates one plan with five obligations. Only the
+first obligation that is ready, eligible, and consented becomes an appointment. The other four remain traceable
+future work even while Patient A's first visit is held or confirmed.
+
+The word **right** here means a commercial benefit that Patient A acquired. It is not an authentication or
+authorization grant. The reservation service does not decide the price or refund eligibility; it preserves the
+purchase interpretation needed to schedule the benefit.
+
+## Total, used, remaining, and reserved answer different questions
+
+The user-facing screen may display “4 visits remaining,” but the underlying facts should not be collapsed into one
+mutable integer. After Patient A completes the first visit while the second visit is only proposed, the facts can look
+like this:
+
+| Measure | Example after visit 1 | Question it answers | What changes it |
+| --- | ---: | --- | --- |
+| Total purchased rights | 5 | How many uses did commerce sell under this product snapshot? | A new purchase creates a new plan; a product edit does not rewrite this snapshot |
+| Used / fulfilled | 1 | How many obligations has authoritative completion evidence fulfilled? | A clinical completion or fulfillment event, not a proposal or hold |
+| Remaining executable obligations | 4 | How many plan items are still available for future fulfillment? | Completion, an explicit future-item cancellation, or another source-qualified business event |
+| Reserved slots | 0 or 1 | How many calendar commitments currently occupy capacity? | `PROPOSED`, `HELD`, `CONFIRMED`, reschedule, expiry, or cancellation |
+
+A future `HELD` or `CONFIRMED` appointment can reduce available capacity without reducing `used`. Conversely, a
+commerce-approved cancellation of a future benefit can reduce executable obligations without pretending that Patient A
+received care. A no-show is an attendance fact and a policy input; it is not automatically a consumed visit.
+
+The practical rule is simple: show “remaining rights” from plan and source-qualified business facts, and show
+“reserved slots” from appointment commitment facts. Never subtract a visit merely because a calendar row was created.
+
+## One purchase becomes one plan, then multiple `PlannedTreatment` items
+
+The selected model keeps the purchase boundary and the physical visit boundary separate:
+
+~~~text
+Purchase 1 ──> AppointmentPlan 1 ──> PlannedTreatment 1..N
+                                             ▲
+                                             │ fulfills / attempts
+Appointment 1 ──> AppointmentItem 1..N ──────┘
+       │
+       └── ResourceAllocation 1..N
+~~~
+
+One `AppointmentPlan` belongs to one authority-qualified purchase:
+
+- `sourcePurchaseAuthority` and `sourcePurchaseId` identify the purchase source and original fact.
+- `catalogSourceAuthority`, `productId`, and `catalogVersion` preserve the product interpretation used at purchase
+  time.
+- Each `PlannedTreatment` keeps its sequence, expected duration, required capabilities, and interval constraints.
+- A later purchase creates a **new** `AppointmentPlan`; it is not silently merged into the first plan.
+
+`sequenceNo` is useful metadata for “visit 1” or “visit 5.” It is not a child aggregate that owns a calendar. A
+physical visit is represented by `Appointment`; the treatment obligations attempted in that visit are represented by
+`AppointmentItem`. A single visit may include compatible items from more than one plan, but each item remains linked
+to its own purchase and planned treatment.
+
+This distinction matters when Patient A buys another five-visit product later. The second purchase may share a visit
+with the first plan if the items are clinically and operationally compatible and the patient consents. It must still
+retain a second plan, a second purchase source, and separate remaining obligations.
+
+## Why we do not confirm all five appointments at purchase time
+
+The product snapshot can tell us that five obligations exist. It cannot know every future commitment at the moment of
+purchase:
+
+- The preferred interval may be measured from the **actual completion** of the previous treatment, not from the
+  purchase timestamp.
+- Clinic hours, practitioners, rooms, and equipment can change before the next visit.
+- Patient A may want a different date, and a confirmed change requires a new proposal and consent.
+- A first-booking rule such as `WithinDaysAfterPurchase` is a limited fallback for the first proposal. It is not
+  benefit expiry and it is not automatic confirmation.
+- Confirming all five slots would overstate capacity and would create promises Patient A has not yet reviewed.
+
+The commitment states make that distinction explicit:
+
+| State | What Patient A sees | Capacity meaning | Is the product right used? |
+| --- | --- | --- | --- |
+| `PROPOSED` | A candidate time, item, and resource to review | No durable commitment; policy may still recalculate | No |
+| `HELD` | A short provisional hold | Capacity is occupied until the hold expires | No |
+| `CONFIRMED` | One consented visit promise | The agreed visit occupies capacity | No, not until completion |
+| `COMPLETED` | The visit/item was actually fulfilled | Historical fact, no future slot occupancy | Yes, for that planned treatment |
+
+The first three states concern a visit commitment. The last fact concerns care completion. They must not be inferred
+from one another by a UI counter or a retry handler.
+
+<figure
+  class="bt4k-architecture"
+  data-diagram-title="How Patient A's five-visit rights become one visit at a time"
+>
+  <img src="/assets/clinic-appointment-n-visit-remaining-rights-01-en.png" alt="Patient A's five-visit purchase becomes one AppointmentPlan, five planned treatments, one candidate and confirmed visit, completion evidence, and four remaining obligations; rescheduling, no-show, and partial completion stay separate exception paths" loading="lazy" />
+  <figcaption>One purchase creates five planned obligations, but only one consented visit enters the calendar at a time. Completion evidence changes the used and remaining counts; a hold, reschedule, or no-show does not.</figcaption>
+</figure>
+
+## The next visit is a new proposal, not a rewrite
+
+After visit 1 completes, the reservation service uses the completion fact as the anchor for the next eligible
+obligation. It does not move a pre-created appointment row from “visit 2” to a new date because no such confirmed row
+should have existed.
+
+| Cycle | Fact for Patient A | Reservation interpretation | Next action |
+| --- | --- | --- | --- |
+| First cycle | `PlannedTreatment` 1 completes at the clinic | `used = 1`; item 2 is still `PLANNED` | Calculate a candidate using the actual completion time and policy |
+| Next proposal | A date satisfies interval, resource, and clinic rules | A new `PROPOSED` or `HELD` offer | Ask for consent; do not reuse an old confirmation |
+| Reschedule | Patient A requests another time before the visit | The offer or commitment changes, not the purchase total | Expire or replace the proposal and retain the reason |
+| Second completion | Item 2 completes | `used = 2`; remaining obligations become 3 | Repeat the cycle for the next eligible item |
+
+The predecessor's actual completion is especially important when care is interrupted. If a treatment started on
+Monday but its clinical completion arrives on Wednesday, the next interval is calculated from Wednesday. A purchase
+date or an abandoned proposal is not a clinical milestone.
+
+## Rescheduling, cancellation, and no-show change different facts
+
+“The patient did not keep this calendar entry” is not enough information for the next service. The reservation service
+preserves an objective appointment fact and hands the decision to the owner of the next business rule.
+
+| Situation | Reservation fact | Effect on the five-visit right | Next owner or action |
+| --- | --- | --- | --- |
+| Proposal expires or is declined | The offer never became a confirmed commitment | No use is consumed; the planned treatment remains available | Calculate a new proposal or contact Patient A |
+| Confirmed visit is rescheduled | The original commitment and the new proposal are both auditable | The purchase total and `used` count stay unchanged | New time/resource offer and customer consent |
+| Patient is a `NO_SHOW` | Attendance did not occur for the confirmed visit | Do not decrement `used` automatically | Apply an explicitly approved policy and provide an objective CRM handoff |
+| Visit is partially completed | Completed items and unfinished items are separated | Consume only the authoritative completed item(s) | Defer unfinished work and create a linked attempt |
+| Clinic disruption affects a confirmation | The affected resource, time, and commitment history are preserved | No silent consumption or deletion of the purchased right | New proposal, explanation, and customer consent |
+
+A hospital may decide that repeated no-shows require a reconfirmation step, a deposit, or a counseling call. It may
+also define a transparent priority policy for VIP customers. Those are operating or commerce/CRM policies with their
+own source data and approval. They are not a hidden decrement in the reservation service, and they are not presented
+here as a current product feature.
+
+## Reservation does not own consumption
+
+The data flow becomes easier to review when each service can answer a different question about Patient A:
+
+| Business area | Source of record | Fact exchanged | Reservation service responsibility |
+| --- | --- | --- | --- |
+| Product management | Versioned product, BOM, repeat count, intervals, and resource requirements | Catalog projection or synchronization event | Validate and preserve the purchase-time scheduling snapshot |
+| Commerce / purchase | Purchase contract, entitlement, refund, and original purchase ID | `PurchaseCompleted`, refund, or plan-cancel event | Create one plan per purchase and apply external entitlement decisions to future obligations |
+| Reservation | Plan, planned treatments, proposals, holds, confirmations, and appointment history | Objective appointment event and durable outbox | Own time, capacity, commitment state, and audit history |
+| Clinical care | Actual start, completion, and partial completion | Completion or fulfillment fact | Reflect completion in the plan and calculate downstream eligibility |
+| Counseling / CRM | Customer profile, no-show conversation, complaint, compensation, and service tier decision | Delay, no-show, cancellation, and reschedule facts | Provide an objective handoff; do not decide the counseling outcome |
+| Notification and analytics | Contact consent, delivery history, projections, and metrics | Reservation event and schema contract | Keep channel delivery and read models outside the reservation transaction |
+
+`sourceAuthority` in these contracts means the source-of-record service that owns a fact. It is not a user role,
+permission, or claim that the reservation service can mutate another service's data. The same boundary protects the
+meaning of “used”: a calendar commitment can be reported by reservation, while treatment completion comes from the
+clinical source and entitlement/refund decisions come from commerce.
+
+## Current implementation, approved design, awaiting operations, and roadmap
+
+| Evidence label | Scope in this article | Question for the reader |
+| --- | --- | --- |
+| **Current implementation** | Versioned catalog projection, one purchase-to-plan identity, repeated `PlannedTreatment` expansion, preference snapshot, and plan/item states | Can the contract be found in the observed source and tests? |
+| **Approved design** | One-at-a-time candidate, `PROPOSED` · `HELD` · `CONFIRMED`, completion anchored follow-up, and explicit exception paths | Is a design document being described as an already deployed API? |
+| **Awaiting operations** | Broker delivery, clinical/commerce event integration, notification outbox canary, and production backfill/readiness | Has delivery, replay, and recovery been proven in operation? |
+| **Roadmap** | Patient-facing consent for later proposals, concrete no-show penalties, and an explainable VIP priority policy | Have undecided policies been mistaken for current behavior? |
+
+The current foundation creates a plan and its planned treatments; it does not mean that every clinic already offers a
+complete five-visit commitment workflow. The approved design describes the boundary that later candidate, capacity,
+consent, and disruption work must honor. Keeping those labels visible is part of the technical contract.
+
+## What comes next
+
+An N-visit product repeats one obligation. The next article turns to a package product: how a product BOM becomes a
+graph of treatments with different durations, dependencies, and possible visits, without flattening it into one
+appointment or one remaining counter.
+
+### Revisit the visual companions
+
+These companions supplement the source design; they do not replace the article or the clinic-appointment source
+repository.
+
+- [Classifying product scheduling behavior](/visual-companions/clinic-appointment/product-scheduling-classification/)
+- [Expanding a product execution BOM into scheduling](/visual-companions/clinic-appointment/product-bom-to-appointment-flow/)
+- [Appointment plans and capacity](/visual-companions/clinic-appointment/appointment-plan-and-capacity/)
+- [Clinic appointment visual companion index](/visual-companions/clinic-appointment/)
+
+### Evidence links
+
+- [clinic-appointment repository](https://github.com/bluetape4k/clinic-appointment)
+- [Product catalog definition](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/catalog/ProductCatalogDefinition.kt)
+- [AppointmentPlan model](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/plan/AppointmentPlanModel.kt)
+- [AppointmentPlan revision model](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/plan/AppointmentPlanRevisionModel.kt)
+- [Booking preference snapshot](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/plan/BookingPreferenceSnapshot.kt)
+- [Purchase completion handler](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/PurchaseCompletedHandler.kt)
+- [Product, purchase, and reservation data flow](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/requirements/data-flow.md)
+- [Appointment plan and capacity design](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-07-26-appointment-plan-and-capacity-design.md)
+- [Visit commitment design](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-07-29-issue-184-visit-commitment-design.md)
+
+## Series
+
+- [Prologue: From Product Information to a Patient's Visit Commitment](/blog/clinic-appointment-prologue-product-to-appointment/)
+- [When a Product Changes, Don't Rewrite the Patient's Promise](/blog/clinic-appointment-product-version-purchase-snapshot/)
+- [What Appointment Promise Does an Event Product Create?](/blog/clinic-appointment-event-product-first-commitment/)
+- **Why an N-Visit Product Is Not One Appointment**
+- [Part 1: Clinic Appointments Are More Than CRUD](/blog/clinic-appointment-part1-not-just-crud/)
+- [Part 2: Appointment State Is More Than an Enum](/blog/clinic-appointment-part2-state-machine-and-history/)
+- [Part 3: Computing Availability from Clinic-Specific Hours and Resources](/blog/clinic-appointment-part3-clinic-specific-availability/)
+- [Part 4: Real-Time Slot Search and Global Optimization Solve Different Problems](/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
+- [Part 5: Translating Clinic Rules into Timefold Constraints](/blog/clinic-appointment-part5-timefold-constraints/)
+- [Part 6: Rescheduling after Closures and Equipment Downtime](/blog/clinic-appointment-part6-closure-equipment-rescheduling/)
+- [Part 7: Reviews and Operations Start the Next Development Cycle](/blog/clinic-appointment-part7-review-and-operational-evolution/)
