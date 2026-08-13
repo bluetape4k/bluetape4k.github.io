@@ -1,0 +1,174 @@
+---
+title: "A Preferred Visit Date Is Not an Appointment Confirmation"
+description: Follow Patient A's first visit request as a preferred visit date moves through PROPOSED and HELD before customer consent, resource allocation, and clinic approval produce an appointment confirmation.
+sidebar:
+  order: -202608131000
+blog:
+  date: 2026-08-13T10:00:00+09:00
+  image: /assets/clinic-appointment-prologue-hero.png
+  imageAlt: Small robotic builders connect a preferred visit date to a clinic proposal, resource allocation, consent, and appointment confirmation
+  cardDescription: "Separate scheduling intent from appointment confirmation, and protect an existing appointment when PROPOSED, HELD, and CONFIRMED states or consent-bound changes are processed."
+  tags: ["architecture", "domain-modeling", "event-driven", "resilience"]
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-prologue-hero.png" alt="Small robotic builders connect a preferred visit date to a clinic proposal, resource allocation, consent, and appointment confirmation" loading="eager" />
+  <figcaption>Selecting a date is not the same as the clinic guaranteeing that appointment time. Plan validation, resource allocation, clinic approval, and customer consent still stand between them.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-13 · Clinic Appointment Engineering · Preferred schedules and appointment confirmation</p>
+
+Patient A wants to book the first visit in a package product. The customer channel shows `August 20, morning` as selected and the request as submitted. The screen may look finished, but the clinic still has several questions to answer.
+
+- Can the purchase proceed under the current `AppointmentPlan` revision?
+- Are the required practitioner, equipment, room, and capacity available at that time?
+- Does clinic policy allow the customer request to hold resources immediately?
+- If the clinic proposes different terms, has Patient A consented to that change?
+
+The appointment service therefore does not confirm an appointment from the customer's selected value alone.
+
+> **A preferred visit date is scheduling intent. An appointment confirmation combines a concrete proposal, resource allocation, clinic approval, and customer consent to that exact proposal.**
+
+Without this distinction, the customer's “request submitted,” the counselor's “under review,” and the clinic calendar's “resources held” collapse into the same `appointment complete` state. A rejected change can then erase an existing appointment, or a schedule without the required equipment can appear confirmed.
+
+## Patient A's request first becomes a scheduling proposal
+
+Patient A does not submit an arbitrary appointment row. The request contains an `AppointmentPlan` built from the purchase-time product BOM, a preferred visit window, and a reference to evidence issued by the external consent service. Patient identity, clinic scope, policy, and actual resources are read again from authenticated boundaries and server-side stores.
+
+The appointment service validates these conditions before accepting the request.
+
+| Validation | Question | On failure |
+| --- | --- | --- |
+| Plan revision | Is the plan still valid and owned by this patient and clinic? | Reject the request instead of attaching it to another plan |
+| Product definition hash | Does it match the product definition fixed at purchase time? | Do not silently reinterpret the purchase with the latest product |
+| Per-request processing limit | Are item count, dependency count, and search horizon within the accepted range? | Reject the whole request and identify the exceeded limit with an error code |
+| Applied policy record | Which clinic policy produced this proposal? | Record the policy used for the proposal so a later policy change remains distinguishable |
+| Consent evidence | Is the evidence bound to this patient, plan, schedule, and terms? | Reject mismatched evidence without storing the original personal data |
+
+Even after validation, the result is `PROPOSED` or `HELD`, depending on clinic policy. The appointment is not confirmed yet.
+
+## `PROPOSED`, `HELD`, and `CONFIRMED` describe different guarantees
+
+These states are not decorative steps for a progress indicator. Each represents a different business guarantee.
+
+| State | What is already guaranteed | What remains |
+| --- | --- | --- |
+| `PROPOSED` | A versioned proposal containing a concrete schedule, items, and applied policy | Resource allocation, required approval, and appointment confirmation |
+| `HELD` | A proposal with resources held for a limited time | Approval, consent, and confirmation before the hold expires |
+| `CONFIRMED` | An appointment confirmation binding a concrete proposal, consent evidence for that proposal, and resource allocation | Actual attendance and completion of care |
+
+`HELD` is not a weaker alias for `CONFIRMED`. Resources may be held temporarily, but the hold can expire when an approval or consent condition is not met. Nor is `PROPOSED` a casual note. It is a fixed proposal version that records time, items, candidate resources, applied policy, and a proposal hash so the service can later prove what the customer approved.
+
+Appointment confirmation is also a different axis from check-in, treatment progress, and completion. `CONFIRMED` means that the patient and clinic agreed to a schedule; it does not mean care was completed. Clinical services own actual start, completion, and partial-completion information.
+
+<figure
+  class="bt4k-sequence"
+  data-diagram-title="How Patient A's preferred visit date becomes an appointment confirmation"
+>
+  <img src="/assets/clinic-appointment-desired-visit-date-commitment-sequence-01-en.png" alt="Patient A submits a preferred visit date, the appointment service validates the plan and policy and holds resources, and clinic approval plus consent to the exact proposal produces an appointment confirmation" loading="lazy" />
+  <figcaption>Consent boundaries differ when the clinic approves the requested terms and when it proposes new terms.</figcaption>
+</figure>
+
+## Approving the same terms and changing the terms are different operations
+
+If the clinic approves Patient A's requested time, visit items, and material conditions unchanged, the consent evidence bound to the original request can be used. When policy allows and resource allocation succeeds, the same proposal can move to `CONFIRMED`.
+
+If the clinic changes a material condition—such as the time of day, practitioner combination, or visit items—the original consent cannot be reused. The appointment service appends a proposal version instead of overwriting the existing one. The terms shown to the customer and the resulting consent evidence bind to the exact `proposalId`, proposal revision, and proposal hash.
+
+```text
+Submit preferred visit date
+  → PROPOSED or HELD
+  → Clinic review
+      ├─ Approve the same terms → validate consent for that proposal → CONFIRMED
+      └─ Change the terms → new proposal revision → customer consent → CONFIRMED
+```
+
+This model leaves more than an ambiguous statement that “the customer consented to the appointment.” It can reproduce which time, items, and policy terms the customer accepted.
+
+## A change proposal does not cancel the existing appointment first
+
+Assume Patient A already has a confirmed appointment for next Tuesday morning and wants to move it to Friday afternoon. If the service cancels Tuesday merely to explore Friday, a resource conflict or final customer rejection can destroy the valid Tuesday appointment as well.
+
+A safe appointment change follows this order.
+
+1. Keep the existing `confirmedProposalId` and resource allocation.
+2. Append a proposal revision for the new time.
+3. Validate customer consent evidence for the new proposal.
+4. Allocate the new resources.
+5. Replace the confirmed proposal and release the old resources in one transaction.
+
+If the new allocation fails, the customer rejects the proposal, or the proposal expires, the existing confirmation and appointment time remain intact. This is the essential difference between changing a date field and changing a confirmed appointment.
+
+## Which service owns each responsibility?
+
+Separating preferred schedules from appointment confirmation also requires explicit service boundaries.
+
+<figure
+  class="bt4k-architecture"
+  data-diagram-title="Service responsibility boundaries around preferred visit dates and appointment confirmation"
+>
+  <img src="/assets/clinic-appointment-commitment-responsibility-boundaries-01-en.png" alt="Customer channels, the appointment service, clinic operations, the resource ledger, and clinical services separately own preferred visit dates, proposals, approval, resource allocation, consent, and completion facts" loading="lazy" />
+  <figcaption>The appointment service owns proposals and appointment confirmation state, but not the original consent text or the clinical completion decision.</figcaption>
+</figure>
+
+| Service | Information it owns | Boundary with the appointment service |
+| --- | --- | --- |
+| Customer channel and consent service | Preferred visit date, terms shown to the customer, original consent, and issued evidence | Send a verifiable evidence reference without storing the original consent text in the appointment service |
+| Appointment service | Proposal revisions, appointment confirmation state, applied policy record, resource-allocation link, and change history | Bind a concrete proposal to consent for that proposal and record state transitions transactionally |
+| Clinic operations | Approval authority, available alternatives, and operational policy decisions | Approve the customer request or propose new terms |
+| Resource ledger | Actual availability and allocation of practitioners, equipment, rooms, and capacity | Provide the allocation required by `HELD` and `CONFIRMED` |
+| Clinical and treatment services | Actual start, completion, and partial completion | Publish visit results without deciding scheduling agreement state |
+
+No-show history or VIP policy from customer support and CRM can be an input to this flow. The appointment service does not invent customer tiers or penalties. The policy-owning service determines the basis and scope, while the appointment service applies proposal priority or approval conditions without violating product rules, clinic operating rules, existing confirmed appointment times, or resource allocations. A later article will cover this fairness and operating-policy boundary directly.
+
+## Current implementation and production activation are not the same claim
+
+The state model and command boundaries described here exist in the current code. They cover customer requests, clinic approval, change proposals, customer acceptance and rejection, direct confirmation, expiration, and cancellation. They also validate consent evidence, applied policy records, and resource allocation together.
+
+An implementation merge does not mean that every clinic has enabled the production write path.
+
+| Evidence label | Scope in this article |
+| --- | --- |
+| **Current implementation** | `AppointmentCommitment`, `AppointmentProposal`, request/approve/accept/reject/change commands, consent validation, V10 migrations for H2, PostgreSQL, and MySQL, and tests |
+| **Approved design** | Protect existing appointments, never overwrite a confirmed proposal revision, and preserve applied policy and consent evidence |
+| **Pending operations** | External consent, commerce, and clinical adapters; production `WRITE` activation; limited-clinic validation and recovery drills |
+| **Roadmap** | Reconfirmation, waitlists, and operating policies such as no-show and VIP priority |
+
+The presence of a `CONFIRMED` model therefore does not prove that a particular clinic has completed production rollout. The state-transition logic can be ready while the write path remains restricted until external responsibility boundaries and operational validation are complete.
+
+## Next in the series
+
+This article established the boundary at which one visit time becomes confirmed. The next article returns to the original Part 1 question and looks at why clinic appointments must coordinate clinic-specific time, resources, and policies instead of stopping at CRUD.
+
+### Revisit the visual companions
+
+- [Appointment plans and capacity](/visual-companions/clinic-appointment/appointment-plan-and-capacity/)
+- [Product BOM to appointment flow](/visual-companions/clinic-appointment/product-bom-to-appointment-flow/)
+- [Clinic appointment visual companion index](/visual-companions/clinic-appointment/)
+
+### Evidence links
+
+- [clinic-appointment repository](https://github.com/bluetape4k/clinic-appointment)
+- [Visit commitment and product-version transition design](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-07-29-issue-184-visit-commitment-design.md)
+- [Appointment reevaluation after profile changes](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-07-30-profile-change-reservation-reevaluation-design.md)
+- [AppointmentCommitment model](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/commitment/AppointmentCommitmentModel.kt)
+- [Commitment request contracts](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/dto/commitment/AppointmentCommitmentRequests.kt)
+- [Commitment application service](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/service/DefaultAppointmentCommitmentApplicationService.kt)
+- [Commitment API guide](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/README.md)
+
+## Series
+
+- [Prologue: From Product Information to a Patient's Visit Commitment](/blog/clinic-appointment-prologue-product-to-appointment/)
+- [When a Product Changes, Don't Rewrite the Patient's Promise](/blog/clinic-appointment-product-version-purchase-snapshot/)
+- [What Appointment Promise Does an Event Product Create?](/blog/clinic-appointment-event-product-first-commitment/)
+- [Why an N-Visit Product Is Not One Appointment](/blog/clinic-appointment-n-visit-remaining-rights/)
+- [Why a Package Product Becomes an Execution Graph](/blog/clinic-appointment-package-product-execution-graph/)
+- [How a Product BOM Becomes an AppointmentPlan and a Visit](/blog/clinic-appointment-execution-bom-to-appointment-plan/)
+- **A Preferred Visit Date Is Not an Appointment Confirmation**
+- [Part 1: Clinic Appointments Are More Than CRUD](/blog/clinic-appointment-part1-not-just-crud/)
+- [Part 2: Appointment State Is More Than an Enum](/blog/clinic-appointment-part2-state-machine-and-history/)
+- [Part 3: Computing Availability from Clinic-Specific Hours and Resources](/blog/clinic-appointment-part3-clinic-specific-availability/)
+- [Part 4: Real-Time Slot Search and Global Optimization Solve Different Problems](/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
+- [Part 5: Translating Clinic Rules into Timefold Constraints](/blog/clinic-appointment-part5-timefold-constraints/)
+- [Part 6: Rescheduling after Closures and Equipment Downtime](/blog/clinic-appointment-part6-closure-equipment-rescheduling/)
+- [Part 7: Reviews and Operations Start the Next Development Cycle](/blog/clinic-appointment-part7-review-and-operational-evolution/)

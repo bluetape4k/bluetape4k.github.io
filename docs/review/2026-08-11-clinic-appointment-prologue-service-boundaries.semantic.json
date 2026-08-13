@@ -39,6 +39,7 @@
     {"target": "inbound-facts", "reason": "Keep catalog, purchase, fulfillment, and CRM inputs as facts owned by their producing service", "touches": 4},
     {"target": "consumer-boundaries", "reason": "Show notification and statistics as consumers that cannot become the appointment source of truth", "touches": 3},
     {"target": "locale-pairs", "reason": "Generate equivalent Korean and English text-bearing SVG/PNG assets", "touches": 2},
-    {"target": "canvas-margins", "reason": "Balance left and right whitespace by narrowing the canvas and footer while preserving the main card geometry", "touches": 4}
+    {"target": "canvas-margins", "reason": "Balance left and right whitespace by narrowing the canvas and footer while preserving the main card geometry", "touches": 4},
+    {"target": "korean-reader-terms", "reason": "Explain capacity, applied policy, consumer integration, and notification delivery in direct Korean.", "touches": 5}
   ]
 }

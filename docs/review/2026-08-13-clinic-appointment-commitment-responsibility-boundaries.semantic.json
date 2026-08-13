@@ -1,0 +1,43 @@
+{
+  "kind": "architecture",
+  "source": {
+    "question": "고객 희망 내원 날짜, 병원 승인, 자원 점유, 예약 확정과 임상 완료는 어느 서비스가 소유하는가?",
+    "revision": "clinic-appointment@5cf1d50f6b0d814fc42b7e076499ee811d3c14e0; visual-site@local",
+    "paths": [
+      "docs/superpowers/specs/2026-08-13-clinic-appointment-desired-visit-date-commitment-design.md",
+      "src/content/docs/ko/blog/clinic-appointment-desired-visit-date-and-confirmed-commitment.mdx"
+    ],
+    "externalPaths": [
+      "docs/superpowers/specs/2026-07-29-issue-184-visit-commitment-design.md",
+      "appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/commitment/AppointmentCommitmentModel.kt"
+    ]
+  },
+  "nodes": [
+    {"id": "customer-channel", "label": "고객 채널·동의 서비스", "source": "희망 일정과 동의 원문 소유"},
+    {"id": "proposal", "label": "AppointmentProposal", "source": "예약서비스 제안 revision"},
+    {"id": "commitment", "label": "AppointmentCommitment", "source": "예약서비스의 예약 확정 상태"},
+    {"id": "clinic-operations", "label": "병원 운영", "source": "승인과 대안 제안 권한"},
+    {"id": "resource-ledger", "label": "자원 원장", "source": "ResourceAllocation 가능성과 점유"},
+    {"id": "clinical-service", "label": "임상·시술 서비스", "source": "실제 시작과 완료"},
+    {"id": "protection-rule", "label": "기존 예약 보호", "source": "confirmedProposalId invariant"}
+  ],
+  "edges": [
+    {"id": "customer-proposal", "from": "customer-channel", "to": "proposal", "kind": "intent-and-evidence", "source": "CreateAppointmentRequestV2"},
+    {"id": "proposal-commitment", "from": "proposal", "to": "commitment", "kind": "confirmed-transition", "source": "AppointmentCommitment.confirm"},
+    {"id": "clinic-proposal", "from": "clinic-operations", "to": "proposal", "kind": "approval-or-alternative", "source": "ApproveProposalRequest/CreateChangeProposalRequest"},
+    {"id": "proposal-resource", "from": "proposal", "to": "resource-ledger", "kind": "allocation-request", "source": "ResourceAllocation"},
+    {"id": "resource-commitment", "from": "resource-ledger", "to": "commitment", "kind": "allocation-binding", "source": "atomic confirmation"},
+    {"id": "commitment-clinical", "from": "commitment", "to": "clinical-service", "kind": "visit-handoff", "source": "outbox and clinical completion boundary"},
+    {"id": "commitment-protection", "from": "commitment", "to": "protection-rule", "kind": "existing-confirmation-protection", "source": "confirmedProposalId invariant"}
+  ],
+  "behavior": {"branches": 1, "loops": 0},
+  "budget": {"nodes": 7, "edges": 7, "branches": 1, "loops": 1},
+  "repairs": [
+    {"target": "rounded-orthogonal-connectors", "reason": "Route every multi-segment relationship through explicit Q bends with card clearance.", "touches": 5},
+    {"target": "secondary-arrowheads", "reason": "Render policy and clinical handoff heads at 20x20 for clear dotted-flow direction.", "touches": 2},
+    {"target": "responsibility-arrowheads-visible-footprint", "reason": "Keep primary and secondary role metadata at 14x14 and 10x10 while rendering consistent 28x28 and 30x30 visible footprints so direction remains legible after article-scale reduction.", "touches": 2},
+    {"target": "ownership-boundaries", "reason": "Keep source consent and clinical completion outside appointment-service ownership.", "touches": 3},
+    {"target": "korean-confirmation-terminology", "reason": "Name the AppointmentCommitment state as 예약 확정 while keeping the protected date-time value explicit in the rule text.", "touches": 4},
+    {"target": "korean-transaction-terminology", "reason": "Explain atomic ownership as one transaction and render policy snapshot as the established Korean loanword.", "touches": 2}
+  ]
+}

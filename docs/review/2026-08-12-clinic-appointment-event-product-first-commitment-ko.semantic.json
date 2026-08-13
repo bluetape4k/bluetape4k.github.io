@@ -59,7 +59,7 @@
     {
       "id": "proposal-expired",
       "label": "제안·hold 만료와 새 제안 필요",
-      "source": "BookingCommitmentPolicy / proposal expiry"
+      "source": "BookingCommitmentPolicy / 제안 만료"
     },
     {
       "id": "patient-change",
@@ -127,7 +127,7 @@
       "from": "proposal-or-hold",
       "to": "proposal-expired",
       "kind": "expiry-exception",
-      "source": "BookingCommitmentPolicy / proposal expiry"
+      "source": "BookingCommitmentPolicy / 제안 만료"
     },
     {
       "id": "proposal-or-hold-patient-change",
