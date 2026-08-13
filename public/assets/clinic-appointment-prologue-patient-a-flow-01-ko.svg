@@ -84,7 +84,7 @@
     <text class="card-title" x="1080" y="292" text-anchor="middle">희망 날짜 요청</text><text class="body" x="1080" y="326" text-anchor="middle">환자 선호 전달</text><text class="body" x="1080" y="350" text-anchor="middle">항목·시간대 제안</text>
     <rect x="1210" y="216" width="220" height="178" rx="20" fill="url(#actionFill)" stroke="#fbbf24" stroke-width="2"/>
     <rect x="1226" y="232" width="82" height="25" rx="12" fill="#78350f"/><text class="status" x="1267" y="250" text-anchor="middle">설계</text>
-    <text class="card-title" x="1320" y="292" text-anchor="middle">일정·항목 동의</text><text class="body" x="1320" y="326" text-anchor="middle">정책 snapshot 확인</text><text class="body" x="1320" y="350" text-anchor="middle">방문 약속을 수락</text>
+    <text class="card-title" x="1320" y="292" text-anchor="middle">일정·항목 동의</text><text class="body" x="1320" y="326" text-anchor="middle">적용 정책 확인</text><text class="body" x="1320" y="350" text-anchor="middle">방문 약속을 수락</text>
     <rect x="1450" y="216" width="220" height="178" rx="20" fill="url(#actionFill)" stroke="#fbbf24" stroke-width="2"/>
     <rect x="1466" y="232" width="82" height="25" rx="12" fill="#92400e"/><text class="status" x="1507" y="250" text-anchor="middle">운영 사실</text>
     <text class="card-title" x="1560" y="292" text-anchor="middle">내원·체크인</text><text class="body" x="1560" y="326" text-anchor="middle">일부 처치 또는 완료</text><text class="body" x="1560" y="350" text-anchor="middle">실제 방문 행동</text>
@@ -92,15 +92,15 @@
 
   <g filter="url(#shadow)">
     <rect x="250" y="446" width="220" height="178" rx="20" fill="url(#processingFill)" stroke="#60a5fa" stroke-width="2"/>
-    <text class="card-title" x="360" y="494" text-anchor="middle">구매 계약 검증</text><text class="body" x="360" y="532" text-anchor="middle">상품 버전 snapshot</text><text class="code" x="360" y="566" text-anchor="middle">PurchaseCompleted</text>
+    <text class="card-title" x="360" y="494" text-anchor="middle">구매 계약 검증</text><text class="body" x="360" y="532" text-anchor="middle">구매 당시 상품 버전</text><text class="code" x="360" y="566" text-anchor="middle">PurchaseCompleted</text>
     <rect x="490" y="446" width="220" height="178" rx="20" fill="url(#processingFill)" stroke="#60a5fa" stroke-width="2"/>
-    <text class="card-title" x="600" y="494" text-anchor="middle">Plan 전개</text><text class="code" x="600" y="532" text-anchor="middle">PlannedTreatment 1..N</text><text class="body" x="600" y="566" text-anchor="middle">구매별 의무 보존</text>
+    <text class="card-title" x="600" y="494" text-anchor="middle">예약 계획 전개</text><text class="code" x="600" y="532" text-anchor="middle">PlannedTreatment 1..N</text><text class="body" x="600" y="566" text-anchor="middle">구매별 의무 보존</text>
     <rect x="730" y="446" width="220" height="178" rx="20" fill="url(#processingFill)" stroke="#60a5fa" stroke-width="2"/>
     <text class="card-title" x="840" y="494" text-anchor="middle">BOM·DAG 확장</text><text class="body" x="840" y="532" text-anchor="middle">자원·선후 조건 보존</text><text class="body" x="840" y="566" text-anchor="middle">남은 항목을 분리</text>
     <rect x="970" y="446" width="220" height="178" rx="20" fill="url(#processingFill)" stroke="#60a5fa" stroke-width="2"/>
     <text class="card-title" x="1080" y="494" text-anchor="middle">후보 계산·hold</text><text class="code" x="1080" y="532" text-anchor="middle">PROPOSED → HELD</text><text class="body" x="1080" y="566" text-anchor="middle">자원 점유는 임시</text>
     <rect x="1210" y="446" width="220" height="178" rx="20" fill="url(#processingFill)" stroke="#60a5fa" stroke-width="2"/>
-    <text class="card-title" x="1320" y="494" text-anchor="middle">commitment 확정</text><text class="body" x="1320" y="532" text-anchor="middle">동의·수용량 commit</text><text class="body" x="1320" y="566" text-anchor="middle">plan revision 고정</text>
+    <text class="card-title" x="1320" y="494" text-anchor="middle">예약 확정</text><text class="body" x="1320" y="532" text-anchor="middle">동의·수용량 함께 기록</text><text class="body" x="1320" y="566" text-anchor="middle">계획 버전 고정</text>
     <rect x="1450" y="446" width="220" height="178" rx="20" fill="url(#processingFill)" stroke="#60a5fa" stroke-width="2"/>
     <text class="card-title" x="1560" y="494" text-anchor="middle">완료·잔여 분리</text><text class="body" x="1560" y="532" text-anchor="middle">임상 원본은 외부 권위</text><text class="body" x="1560" y="566" text-anchor="middle">CRM handoff 준비</text>
   </g>
@@ -115,7 +115,7 @@
     <rect x="970" y="676" width="220" height="178" rx="20" fill="url(#eventFill)" stroke="#2dd4bf" stroke-width="2"/>
     <text class="code" x="1080" y="732" text-anchor="middle">AppointmentProposed</text><text class="body" x="1080" y="770" text-anchor="middle">임시 상태 이벤트</text><text class="small" x="1080" y="808" text-anchor="middle">확정 약속 아님</text>
     <rect x="1210" y="676" width="220" height="178" rx="20" fill="url(#eventFill)" stroke="#2dd4bf" stroke-width="2"/>
-    <text class="code" x="1320" y="732" text-anchor="middle">AppointmentCreated</text><text class="body" x="1320" y="770" text-anchor="middle">CONFIRMED 방문 약속</text><text class="small" x="1320" y="808" text-anchor="middle">동의·snapshot 포함</text>
+    <text class="code" x="1320" y="732" text-anchor="middle">AppointmentCreated</text><text class="body" x="1320" y="770" text-anchor="middle">CONFIRMED 방문 약속</text><text class="small" x="1320" y="808" text-anchor="middle">동의·적용 정책 기록</text>
     <rect x="1450" y="676" width="220" height="178" rx="20" fill="url(#eventFill)" stroke="#2dd4bf" stroke-width="2"/>
     <text class="code" x="1560" y="722" text-anchor="middle"><tspan x="1560" dy="0">TreatmentFulfillment</tspan><tspan x="1560" dy="22">Event</tspan></text><text class="body" x="1560" y="776" text-anchor="middle">attendance · 완료·잔여</text><text class="small" x="1560" y="812" text-anchor="middle">재배정·상담 단서 발행</text>
   </g>

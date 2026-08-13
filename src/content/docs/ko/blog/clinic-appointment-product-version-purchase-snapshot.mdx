@@ -74,7 +74,7 @@ Plan을 만들 때는 구매 원본 서비스와 환자 참조, 구매 당시 �
 - 어떤 `productId`와 `catalogVersion`을 사용했는가
 - 어떤 payload hash와 BOM 항목·반복·의존성을 해석했는가
 - 어떤 `bookingPreference`를 구매와 함께 전달했는가
-- 어떤 제안이 어떤 정책 스냅숏으로 계산됐고, 이후 revision과 확정 방문이 어느 Plan에 속하는가
+- 어떤 제안에 어떤 정책을 적용했고, 이후 리비전과 확정 방문이 어느 Plan에 속하는가
 
 이 스냅숏은 고객 화면에 보이는 가격표를 복사하는 기능이 아닙니다. 상품 원본은 상품개발부와 커머스가
 소유하고, 예약서비스는 그 구매의 예약 의무를 다시 계산할 수 있는 최소 계약을 보존합니다.
@@ -142,7 +142,7 @@ PLANNED, SCHEDULED, IN_PROGRESS, COMPLETED, CANCELLED, BLOCKED_REVIEW 같은 Pla
 | --- | --- | --- |
 | COMPLETED | 기존 revision과 기존 버전의 출처 이력을 영구 보존 | 이미 제공된 서비스를 나중 상품 정의로 다시 쓰지 않음 |
 | IN_PROGRESS | 진행 중인 임상 사실과 현재 실행을 보호 | 상품 개편으로 진행 중인 행위를 되돌리지 않음 |
-| CONFIRMED 방문에 연결된 항목 | 당시 약속·정책 스냅숏·자원 합의를 보호 | 확정된 시간과 항목을 자동 취소하지 않음 |
+| CONFIRMED 방문에 연결된 항목 | 당시 약속·적용 정책 기록·자원 합의를 보호 | 확정된 시간과 항목을 자동 취소하지 않음 |
 | PLANNED 또는 PENDING 미래 항목 | 승인된 전환표와 동의가 있을 때만 새 revision 대상 | 아직 확정하지 않은 부분만 협의 가능한 변경으로 봄 |
 | CANCELLED | 취소·환불 사실을 그대로 유지 | 상품 v2 발행으로 취소된 의무를 부활시키지 않음 |
 
@@ -198,14 +198,14 @@ PLANNED, SCHEDULED, IN_PROGRESS, COMPLETED, CANCELLED, BLOCKED_REVIEW 같은 Pla
 
 1. 새 상품 항목으로 가능한 후보 시간을 계산한다.
 2. 기존 CONFIRMED 약속과 새 제안을 함께 보여 준다.
-3. 환자가 동의하면 새 제안과 변경 근거를 저장하고, 확정 제안(proposal)을 교체한다.
+3. 환자가 동의하면 새 제안과 변경 근거를 저장하고, 확정 제안을 교체한다.
 4. 환자가 거부하거나 후보가 없으면 기존 확정 약속은 먼저 지우지 않는다.
 5. 거부·재조정 결과를 CRM/상담과 커머스가 판단할 수 있는 객관적 사실로 전달한다.
 
 이때 VIP 우선 예약이나 반복적인 노쇼 뒤 다음 예약에 추가 확인·제한을 두는 정책을 생각할 수 있습니다.
 다만 이런 규칙을 예약서비스 안에 임의로 숨겨서는 안 됩니다. 병원 운영정책은 예약서비스의 버전형 예약 정책으로
 관리하고, 고객의 상담·연락·보상 판단은 CRM과 커머스가 소유합니다. 예약서비스는 이번
-제안에 적용한 정책 스냅숏과 계산 결과를 보존합니다. 내부 기준값과 고객 등급을 공개 데이터처럼 설명하지
+제안에 적용한 정책과 계산 결과를 보존합니다. 내부 기준값과 고객 등급을 공개 데이터처럼 설명하지
 않는 이유도 같습니다.
 
 ### 서비스별 책임 경계
@@ -251,7 +251,7 @@ Plan을 만듭니다. 두 Plan의 항목을 한 방문에 함께 배치하려면
 중복 전달 ≠ 추가 구매
 ~~~
 
-첫 번째는 이벤트 전달 안정성이고, 두 번째는 상품·커머스 업무입니다. 둘을 한 단어로 묶으면 상담 화면도
+첫 번째는 같은 이벤트가 여러 번 도착해도 결과를 바꾸지 않는 처리 문제이고, 두 번째는 상품·커머스 업무입니다. 둘을 한 단어로 묶으면 상담 화면도
 예약 화면도 환자에게 서로 다른 의미를 설명하게 됩니다.
 
 ## 현재 구현과 다음 설계를 구분해 읽기
@@ -300,6 +300,9 @@ Plan을 만듭니다. 두 Plan의 항목을 한 방문에 함께 배치하려면
 - **상품이 바뀌어도 고객의 약속은 다시 쓰지 않는다**
 - [이벤트 상품은 어떤 예약 약속을 만드는가](/ko/blog/clinic-appointment-event-product-first-commitment/)
 - [N회 상품은 왜 예약 한 건이 아닌가](/ko/blog/clinic-appointment-n-visit-remaining-rights/)
+- [패키지 상품은 왜 실행 그래프가 되는가](/ko/blog/clinic-appointment-package-product-execution-graph/)
+- [상품 BOM은 어떻게 AppointmentPlan과 방문으로 번역되는가](/ko/blog/clinic-appointment-execution-bom-to-appointment-plan/)
+- [고객 희망 내원 날짜는 예약 확정이 아니다](/ko/blog/clinic-appointment-desired-visit-date-and-confirmed-commitment/)
 - [Part 1: 병원 예약은 CRUD로 끝나지 않는다](/ko/blog/clinic-appointment-part1-not-just-crud/)
 - [Part 2: 예약 상태는 단순한 열거형이 아니다](/ko/blog/clinic-appointment-part2-state-machine-and-history/)
 - [Part 3: 병원마다 다른 업무시간과 자원으로 예약 가능 시간을 계산하기](/ko/blog/clinic-appointment-part3-clinic-specific-availability/)

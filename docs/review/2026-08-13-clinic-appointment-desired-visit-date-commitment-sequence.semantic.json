@@ -1,0 +1,52 @@
+{
+  "kind": "workflow",
+  "source": {
+    "question": "환자 A의 고객 희망 내원 날짜는 어떤 검증과 동의 경계를 거쳐 예약 확정에 이르는가?",
+    "revision": "clinic-appointment@5cf1d50f6b0d814fc42b7e076499ee811d3c14e0; visual-site@local",
+    "paths": [
+      "docs/superpowers/specs/2026-08-13-clinic-appointment-desired-visit-date-commitment-design.md",
+      "src/content/docs/ko/blog/clinic-appointment-desired-visit-date-and-confirmed-commitment.mdx"
+    ],
+    "externalPaths": [
+      "appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/commitment/AppointmentCommitmentModel.kt",
+      "appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/dto/commitment/AppointmentCommitmentRequests.kt",
+      "appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/service/DefaultAppointmentCommitmentApplicationService.kt",
+      "docs/superpowers/specs/2026-07-29-issue-184-visit-commitment-design.md"
+    ]
+  },
+  "nodes": [
+    {"id": "patient-a", "label": "환자 A", "source": "글의 익명 환자 사례"},
+    {"id": "customer-channel", "label": "고객 채널", "source": "고객 희망 내원 날짜와 동의 증빙 전달 경계"},
+    {"id": "appointment-service", "label": "예약서비스", "source": "AppointmentCommitment application service"},
+    {"id": "clinic-operations", "label": "병원 운영", "source": "clinic approval authority"},
+    {"id": "resource-ledger", "label": "자원 원장", "source": "ResourceAllocation"},
+    {"id": "desired-visit-date", "label": "고객 희망 내원 날짜", "source": "CreateAppointmentRequestV2 preferredStartAt/preferredEndAt"},
+    {"id": "plan-policy-validation", "label": "계획·상품·정책·요청당 처리 한도 검증", "source": "visit commitment design and application resolver"},
+    {"id": "proposed-or-held", "label": "PROPOSED 또는 HELD", "source": "AppointmentCommitmentStatus"},
+    {"id": "same-terms", "label": "같은 조건 승인", "source": "ApproveProposalRequest"},
+    {"id": "changed-terms", "label": "변경 제안 revision", "source": "CreateChangeProposalRequest"},
+    {"id": "confirmed", "label": "CONFIRMED", "source": "AppointmentCommitment.confirm"}
+  ],
+  "edges": [
+    {"id": "patient-channel", "from": "patient-a", "to": "customer-channel", "kind": "desired-date-submission", "source": "CreateAppointmentRequestV2"},
+    {"id": "channel-service", "from": "customer-channel", "to": "appointment-service", "kind": "authenticated-request", "source": "CustomerAppointmentV2Controller"},
+    {"id": "request-validation", "from": "desired-visit-date", "to": "plan-policy-validation", "kind": "server-validation", "source": "DefaultAppointmentCommitmentApplicationService"},
+    {"id": "validation-provisional", "from": "plan-policy-validation", "to": "proposed-or-held", "kind": "provisional-state", "source": "AppointmentCommitmentStatus"},
+    {"id": "service-resource", "from": "appointment-service", "to": "resource-ledger", "kind": "hold-request", "source": "ResourceAllocation"},
+    {"id": "service-clinic", "from": "appointment-service", "to": "clinic-operations", "kind": "approval-request", "source": "ApproveProposalRequest"},
+    {"id": "clinic-same-terms", "from": "clinic-operations", "to": "same-terms", "kind": "same-terms-approval", "source": "ApproveProposalRequest"},
+    {"id": "clinic-changed-terms", "from": "clinic-operations", "to": "changed-terms", "kind": "new-proposal", "source": "CreateChangeProposalRequest"},
+    {"id": "same-confirmed", "from": "same-terms", "to": "confirmed", "kind": "exact-consent-and-allocation", "source": "AppointmentCommitment.confirm"},
+    {"id": "changed-confirmed", "from": "changed-terms", "to": "confirmed", "kind": "fresh-consent-and-allocation", "source": "ProposalDecisionRequest"}
+  ],
+  "behavior": {"branches": 2, "loops": 0},
+  "budget": {"nodes": 11, "edges": 10, "branches": 2, "loops": 1},
+  "repairs": [
+    {"target": "sequence-message-heads", "reason": "Use 16x16 user-space markers so direction remains legible at blog scale.", "touches": 4},
+    {"target": "sequence-message-heads-visible-footprint", "reason": "Keep the 16x16 sequence role contract while rendering a consistent 32x32 visible footprint because the 2200px canvas shrinks the standard head below legible article size.", "touches": 5},
+    {"target": "same-vs-changed-terms", "reason": "동일 조건 승인과 변경 제안 동의를 서로 다른 분기 영역으로 구분한다.", "touches": 4},
+    {"target": "confirmed-protection-note", "reason": "변경 실패 시 기존 확정 제안과 자원 점유를 보호한다고 명시한다.", "touches": 2},
+    {"target": "korean-confirmation-terminology", "reason": "Use 예약 확정 for the state transition and reserve 확정된 예약일시 for the resulting date-time value.", "touches": 4},
+    {"target": "korean-capacity-terminology", "reason": "Replace ambiguous safety ceiling wording with the concrete per-request processing limits enforced by the source design.", "touches": 2}
+  ]
+}

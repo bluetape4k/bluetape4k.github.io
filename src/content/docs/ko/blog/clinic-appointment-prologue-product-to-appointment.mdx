@@ -45,7 +45,7 @@ blog:
 | 2 | N회 방문 상품 추가 구매 | 여러 회차에 걸쳐 이행할 계약 | 남은 회차를 각각 추적할 계획 생성 |
 | 3 | 여러 치료 항목의 패키지 구매 | 한 번 또는 여러 번에 걸쳐 이행할 BOM | 항목과 선후 조건, 필요한 자원을 계획으로 보존 |
 | 4 | 원하는 날짜 요청 | 고객의 선호 또는 제안 요청 | 후보 시간과 임시 hold를 계산 |
-| 5 | 일정과 항목에 동의 | 고객과 병원의 방문 약속 | 동의와 정책 snapshot을 가진 확정 방문을 기록 |
+| 5 | 일정과 항목에 동의 | 고객과 병원의 방문 약속 | 동의와 적용 정책을 함께 기록한 확정 방문을 남김 |
 | 6 | 내원·부분 처치 행위 | 실제 현장에서 기록된 이벤트 | 예약 사실과 임상 완료 사실을 섞지 않고 후속 단서 발행 |
 
 세 구매를 한 줄의 `appointment`로 합치면 처음에는 간단해 보입니다. 하지만 이벤트 상품의 한 번과 N회
@@ -132,8 +132,8 @@ Appointment ──> AppointmentItem 1..N ──> ResourceAllocation 1..N
 2. **`HELD`** — 다른 예약이 끼어들지 않도록 제한된 시간 동안 자원을 붙잡은 상태입니다.
 3. **`CONFIRMED`** — 환자와 병원이 일정·항목·정책에 동의한 방문 약속입니다.
 
-`CONFIRMED`에는 단순한 날짜보다 많은 것이 들어갑니다. 어떤 plan revision과 catalog hash를 기준으로
-제안했는지, 어떤 정책 snapshot과 수용량 ceiling을 적용했는지, 고객 동의가 언제 어떤 버전으로 묶였는지를
+`CONFIRMED`에는 단순한 날짜보다 많은 것이 들어갑니다. 어떤 계획 버전과 상품 정의 해시를 기준으로
+제안했는지, 어떤 정책과 요청당 처리 한도를 적용했는지, 고객 동의가 언제 어떤 버전으로 묶였는지를
 재현할 수 있어야 합니다. 그래야 이후 상품 정의나 병원 운영 규칙이 바뀌어도 이미 동의한 약속을 조용히
 다시 계산하지 않습니다.
 
@@ -141,7 +141,7 @@ Appointment ──> AppointmentItem 1..N ──> ResourceAllocation 1..N
 방문이 “언제 이행할지”에 대한 합의와 “실제로 어떤 처치가 끝났는지”에 대한 사실은 서로 다른 변경 이력을
 가져야 하기 때문입니다.
 
-이 구분은 복수 항목 방문 약속의 **승인된 설계** 범위를 함께 읽어야 정확합니다. proposal·hold·consent를
+이 구분은 복수 항목 방문 약속의 **승인된 설계** 범위를 함께 읽어야 정확합니다. 제안·hold·consent를
 구분하는 모델과 실제 운영 rollout의 범위를 같은 것으로 쓰지 않습니다.
 
 고객 프로필이 바뀌었다고 확정 방문을 임의로 취소하거나 자원을 풀어 버리는 것도 같은 이유로 위험합니다.
@@ -158,7 +158,7 @@ hold와 `CONFIRMED`의 snapshot·동의·자원 점유는 보호해야 합니다
 | --- | --- | --- | --- |
 | 상품관리/상품개발 | 상품 정의, BOM, 예약 규칙, 상품 버전 | catalog projection 또는 동기화 event | 구매 시점 버전의 예약 해석에 사용할 projection 보존 |
 | 구매/커머스 | 구매 계약, 추가 구매, 환불 | 구매 기준정보 원천이 확인된 purchase event, refund event | 구매 하나당 계획 생성과 미래 예약 의무 반영 |
-| 예약서비스 | 계획, 방문 약속, 자원, 정책 snapshot | 다른 서비스가 읽는 plan·appointment event | 일정·수용량·동의·상태·이력을 기준정보로 보존 |
+| 예약서비스 | 계획, 방문 약속, 자원, 적용 정책 기록 | 다른 서비스가 읽는 계획·예약 이벤트 | 일정·수용량·동의·상태·이력을 기준정보로 보존 |
 | 임상/시술 | 실제 시술 시작·완료·부분 완료 | completion event | 완료된 항목과 미래 계획의 영향 반영 |
 | 고객상담/CRM | 고객 프로필, assessment, 상담, 민원, 보상 | 최소 profile outcome 또는 예약 objective fact | 예약 변경 제안과 상담 handoff의 사실 제공 |
 | 알림 | 연락처, 언어, 동의, 발송 이력 | 예약 event와 outbox 처리 결과 | 예약 트랜잭션과 알림 전달을 직접 결합하지 않음 |
@@ -253,6 +253,9 @@ hold와 `CONFIRMED`의 snapshot·동의·자원 점유는 보호해야 합니다
 - [상품이 바뀌어도 고객의 약속은 다시 쓰지 않는다](/ko/blog/clinic-appointment-product-version-purchase-snapshot/)
 - [이벤트 상품은 어떤 예약 약속을 만드는가](/ko/blog/clinic-appointment-event-product-first-commitment/)
 - [N회 상품은 왜 예약 한 건이 아닌가](/ko/blog/clinic-appointment-n-visit-remaining-rights/)
+- [패키지 상품은 왜 실행 그래프가 되는가](/ko/blog/clinic-appointment-package-product-execution-graph/)
+- [상품 BOM은 어떻게 AppointmentPlan과 방문으로 번역되는가](/ko/blog/clinic-appointment-execution-bom-to-appointment-plan/)
+- [고객 희망 내원 날짜는 예약 확정이 아니다](/ko/blog/clinic-appointment-desired-visit-date-and-confirmed-commitment/)
 - [Part 1: 병원 예약은 CRUD로 끝나지 않는다](/ko/blog/clinic-appointment-part1-not-just-crud/)
 - [Part 2: 예약 상태는 단순한 열거형이 아니다](/ko/blog/clinic-appointment-part2-state-machine-and-history/)
 - [Part 3: 병원마다 다른 업무시간과 자원으로 예약 가능 시간을 계산하기](/ko/blog/clinic-appointment-part3-clinic-specific-availability/)

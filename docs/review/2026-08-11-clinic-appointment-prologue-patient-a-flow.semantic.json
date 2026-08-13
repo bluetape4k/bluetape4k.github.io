@@ -47,6 +47,7 @@
     {"target": "action-event-lanes", "reason": "Keep patient actions, scheduling processing, and objective events visually distinct so attendance is not confused with confirmation", "touches": 3},
     {"target": "repeat-package-plan", "reason": "Show one purchase event expanding into repeat/package obligations without collapsing them into one appointment", "touches": 4},
     {"target": "future-obligation-loop", "reason": "Route partial fulfillment and interruption back to a future proposal without implying automatic confirmation", "touches": 3},
-    {"target": "locale-pairs", "reason": "Generate equivalent Korean and English text-bearing SVG/PNG assets", "touches": 2}
+    {"target": "locale-pairs", "reason": "Generate equivalent Korean and English text-bearing SVG/PNG assets", "touches": 2},
+    {"target": "korean-reader-terms", "reason": "Replace mixed English workflow nouns with direct Korean descriptions while preserving model identifiers.", "touches": 7}
   ]
 }
