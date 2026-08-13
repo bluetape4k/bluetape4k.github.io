@@ -40,7 +40,7 @@ We generalize the product name, price, clinic, and personal information. Only th
 | --- | --- | --- | --- |
 | T1 | Buys an event product | One right to use within a validity window | Source purchase ID and the purchase-time catalog v1 |
 | T2 | Adds an N-visit product | An obligation fulfilled across several visits | Per-visit PlannedTreatment and repeat intervals |
-| T3 | Buys a package product | An execution BOM with several items, dependencies, and resources | Per-item version provenance and dependencies |
+| T3 | Buys a package product | A product BOM with several items, dependencies, and resources | Per-item version provenance and dependencies |
 | T4 | Completes some items while others remain future work | Past facts split from pending obligations | Completion facts, remaining items, and the current Plan revision |
 | T5 | The product team publishes catalog v2 | The contract for later purchases changes | The v1 snapshot and the v2 projection together |
 | T6 | A migration mapping and consent arrive for the existing purchase | An exceptional change to future obligations | A new revision plus mapping and consent evidence |
@@ -96,7 +96,7 @@ A product type expressed only as a number of calendar appointments loses the bus
 | --- | --- | --- |
 | Event product | One PlannedTreatment from repeatCount 1, a validity window, and booking rules | Which date and resources can fulfill this benefit? |
 | N-visit product | Per-visit PlannedTreatments with minimum, preferred, and maximum intervals | Does this visit respect the previous one, and how many remain? |
-| Package product | Item-level execution BOM, selections, dependencies, and visit grouping | Which items fit this visit, and which must remain future work? |
+| Package product | Item-level product BOM, selections, dependencies, and visit grouping | Which items fit this visit, and which must remain future work? |
 
 A package is especially difficult to reduce to “one product equals one appointment.” The current
 [PackageExecutionPlanner](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/PackageExecutionPlanner.kt)
@@ -192,7 +192,7 @@ follows this sequence:
 1. Lock the source purchase and its active revision.
 2. Verify that the active revision uses the from product version.
 3. Verify the consent subject and evidence age.
-4. Validate the mapping and the future execution BOM.
+4. Validate the mapping and the future product BOM.
 5. Keep completed items in the old revision and append a new immutable revision under the same Plan.
 6. Activate the new revision and write the ProductVersionMigrationApplied objective fact to the outbox.
 
@@ -286,11 +286,11 @@ promise without confirming a date immediately, while respecting customer prefere
 ### Revisit the visual companions
 
 The existing companions supplement the source Markdown design. Start with product scheduling traits, package
-composition, and execution-BOM expansion before returning to this article's migration timeline.
+composition, and product BOM expansion before returning to this article's migration timeline.
 
 - [Classifying product scheduling behavior](/visual-companions/clinic-appointment/product-scheduling-classification/)
 - [Package product composition](/visual-companions/clinic-appointment/package-product-composition/)
-- [Expanding a product execution BOM into scheduling](/visual-companions/clinic-appointment/product-bom-to-appointment-flow/)
+- [Expanding a product BOM into scheduling](/visual-companions/clinic-appointment/product-bom-to-appointment-flow/)
 - [Clinic appointment visual companion index](/visual-companions/clinic-appointment/)
 
 ### Evidence links

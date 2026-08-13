@@ -1,0 +1,55 @@
+{
+  "kind": "architecture",
+  "source": {
+    "question": "패키지 상품의 구성 계약은 어떻게 구매 snapshot과 예약 실행 단위로 번역되는가?",
+    "revision": "clinic-appointment@3dfcf2a; blog-worktree@package-bom-radial-audit",
+    "paths": [
+      "src/content/docs/ko/blog/clinic-appointment-execution-bom-to-appointment-plan.mdx",
+      "src/content/docs/blog/clinic-appointment-execution-bom-to-appointment-plan.mdx",
+      "docs/review/2026-08-11-clinic-appointment-prologue-patient-a-flow.semantic.json"
+    ]
+  },
+  "nodes": [
+    {"id": "package-product", "label": "패키지 상품", "source": "예약 계획 글의 상품 BOM 사례"},
+    {"id": "consultation", "label": "사전 상담", "source": "예약 계획 글의 BOM 구성 항목"},
+    {"id": "examination", "label": "사전 검사", "source": "예약 계획 글의 BOM 구성 항목"},
+    {"id": "main-treatment", "label": "본 시술", "source": "예약 계획 글의 BOM 구성 항목"},
+    {"id": "soothing-care", "label": "진정 관리", "source": "예약 계획 글의 BOM 구성 항목"},
+    {"id": "follow-up", "label": "사후 점검", "source": "예약 계획 글의 BOM 구성 항목"},
+    {"id": "bom-snapshot", "label": "PackageExecutionSnapshot", "source": "예약 계획 글의 구매 시점 실행 계약"},
+    {"id": "plan-revision", "label": "AppointmentPlan revision", "source": "예약 계획 글의 예약 계획 revision"},
+    {"id": "planned-treatment", "label": "PlannedTreatment 1..N", "source": "예약 계획 글의 이행 항목 전개"},
+    {"id": "appointment-items", "label": "AppointmentItem + Appointment", "source": "예약 계획 글의 방문 단위"},
+    {"id": "appointment", "label": "실제 방문과 완료 사실", "source": "예약 계획 글의 물리적 방문과 provenance"}
+  ],
+  "edges": [
+    {"id": "package-consultation", "from": "package-product", "to": "consultation", "kind": "bom-component", "source": "예약 계획 글의 상품 BOM 구성"},
+    {"id": "package-examination", "from": "package-product", "to": "examination", "kind": "bom-component", "source": "예약 계획 글의 상품 BOM 구성"},
+    {"id": "package-treatment", "from": "package-product", "to": "main-treatment", "kind": "bom-component", "source": "예약 계획 글의 상품 BOM 구성"},
+    {"id": "package-soothing", "from": "package-product", "to": "soothing-care", "kind": "bom-component", "source": "예약 계획 글의 상품 BOM 구성"},
+    {"id": "package-follow-up", "from": "package-product", "to": "follow-up", "kind": "bom-component", "source": "예약 계획 글의 상품 BOM 구성"},
+    {"id": "snapshot-plan", "from": "bom-snapshot", "to": "plan-revision", "kind": "plan-revision", "source": "예약 계획 글의 snapshot 번역"},
+    {"id": "snapshot-treatment", "from": "bom-snapshot", "to": "planned-treatment", "kind": "plan-expansion", "source": "예약 계획 글의 snapshot 전개"},
+    {"id": "plan-items", "from": "plan-revision", "to": "appointment-items", "kind": "visit-items", "source": "예약 계획 글의 AppointmentItem"},
+    {"id": "treatment-items", "from": "planned-treatment", "to": "appointment-items", "kind": "visit-items", "source": "예약 계획 글의 PlannedTreatment 매핑"},
+    {"id": "items-appointment", "from": "appointment-items", "to": "appointment", "kind": "physical-visit", "source": "예약 계획 글의 실제 방문"},
+    {"id": "treatment-appointment", "from": "planned-treatment", "to": "appointment", "kind": "physical-visit", "source": "예약 계획 글의 실제 방문"},
+    {"id": "snapshot-constraints", "from": "bom-snapshot", "to": "appointment-items", "kind": "visit-grouping-constraint", "source": "예약 계획 글의 MUST/MAY 묶음 제약"}
+  ],
+  "behavior": {"branches": 5, "loops": 0},
+  "budget": {"nodes": 11, "edges": 12, "branches": 5, "loops": 1},
+  "repairs": [
+    {"target": "package-origin-connectors", "reason": "Match the package-origin bus stroke color and width to the primary connector family", "touches": 2},
+    {"target": "package-origin-rounded-link", "reason": "Use a balanced rounded orthogonal turn from the package card into the component trunk", "touches": 2},
+    {"target": "locale-pairs", "reason": "Apply the same connector style and route repair to Korean and English SVG/PNG assets", "touches": 4},
+    {"target": "rounded-terminal-corners", "reason": "Replace short post-Q terminal fragments with vertical clearance so every visit connector reaches the card through a visibly rounded orthogonal turn", "touches": 4},
+    {"target": "package-fanout-rounded-branches", "reason": "Replace straight package-to-component fan-out segments with consistent rounded orthogonal elbows in both locales", "touches": 10},
+    {"target": "secondary-visible-arrowheads", "reason": "Double the rendered footprint of yellow dotted secondary heads while preserving machine-readable marker direction and role metadata", "touches": 8},
+    {"target": "package-fanout-original-layout", "reason": "Restore the original trunk and card-entry coordinates, changing only each visible branch corner to rounded orthogonal geometry", "touches": 10},
+    {"target": "ko-package-complete-connectors", "reason": "Remove the split structural bus and encode every package-to-component relationship as one complete rounded connector without overlapping turns", "touches": 6},
+    {"target": "en-package-complete-connectors", "reason": "Mirror the visually verified Korean complete connector geometry without reintroducing structural bus overlap", "touches": 6},
+    {"target": "package-common-origin-aligned-branches", "reason": "Restore one package-origin link and align all branch curves at x=505 while removing the straight segment that previously overlapped each rounded branch", "touches": 14},
+    {"target": "package-radial-origin", "reason": "Split the single package stem into symmetric rounded upper and lower arms at x=505 so the fan-out reads as a radial ㅓ rather than an upward-only merge", "touches": 5},
+    {"target": "package-radial-audit-contract", "reason": "Annotate the single radial bus and its five branches so the audit can prove one structural path, symmetric upper and lower arms, and direct Q peel-offs", "touches": 5}
+  ]
+}
