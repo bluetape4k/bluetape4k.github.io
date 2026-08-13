@@ -37,7 +37,7 @@ blog:
 | --- | --- | --- | --- |
 | T1 | 이벤트 상품을 구매한다 | 기간 안에 한 번 사용할 권리 | `sourcePurchaseId`와 구매 당시 카탈로그 v1 |
 | T2 | N회 상품을 추가 구매한다 | 여러 회차로 이행할 의무 | 회차별 PlannedTreatment와 반복 간격 |
-| T3 | 패키지 상품을 구매한다 | 여러 항목·선후 조건·자원을 가진 실행 BOM | 항목별 버전 출처 이력과 의존성 |
+| T3 | 패키지 상품을 구매한다 | 여러 항목·선후 조건·자원을 가진 상품 BOM | 항목별 버전 출처 이력과 의존성 |
 | T4 | 일부 항목을 완료하고 일부는 미래로 남긴다 | 과거 사실과 미진행 의무가 갈라짐 | 완료 사실, 남은 항목, 현재 Plan revision |
 | T5 | 상품팀이 카탈로그 v2를 발행한다 | 이후 구매의 계약이 변경됨 | v1 스냅숏과 v2 프로젝션을 함께 보존 |
 | T6 | 기존 구매 전환표와 동의가 도착한다 | 예외적으로 미래 의무를 바꿀 수 있음 | 새 revision과 전환·동의 증거 |
@@ -87,7 +87,7 @@ Plan을 만들 때는 구매 원본 서비스와 환자 참조, 구매 당시 �
 | --- | --- | --- |
 | 이벤트 상품 | `repeatCount`가 1인 PlannedTreatment, 유효 기간, 예약 규칙 | 이 혜택을 사용할 수 있는 날짜와 자원이 있는가? |
 | N회 상품 | 회차별 PlannedTreatment, 최소·선호·최대 간격 | 이전 회차와 필요한 간격을 만족했는가? 남은 회차는 몇 개인가? |
-| 패키지 상품 | 항목별 실행 BOM, 선택 결과, 의존성과 방문 그룹화 | 같은 방문에 묶을 항목과 다음 방문으로 미룰 항목은 무엇인가? |
+| 패키지 상품 | 항목별 상품 BOM, 선택 결과, 의존성과 방문 그룹화 | 같은 방문에 묶을 항목과 다음 방문으로 미룰 항목은 무엇인가? |
 
 패키지는 특히 “상품 하나 = 예약 하나”로 축약하기 어렵습니다. 현재
 [PackageExecutionPlanner](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/PackageExecutionPlanner.kt)는
@@ -179,7 +179,7 @@ PLANNED, SCHEDULED, IN_PROGRESS, COMPLETED, CANCELLED, BLOCKED_REVIEW 같은 Pla
 1. 원본 구매와 현재 활성 revision을 잠근다.
 2. 현재 revision이 `fromProductVersionId` 상품 버전인지 확인한다.
 3. consent subject와 증거의 유효성을 확인한다.
-4. 매핑과 미래 실행 BOM을 검증한다.
+4. 매핑과 미래 상품 BOM을 검증한다.
 5. 완료 항목은 구 revision에 남기고 같은 Plan 아래 새 immutable revision을 append한다.
 6. 새 revision을 활성화하고 ProductVersionMigrationApplied 객관적 사실을 outbox에 기록한다.
 
@@ -274,12 +274,12 @@ Plan을 만듭니다. 두 Plan의 항목을 한 방문에 함께 배치하려면
 
 ### 시각 자료로 다시 보기
 
-기존 companion은 원본 설계 Markdown을 대체하지 않는 보조 자료입니다. 상품 예약 특성, 패키지 구성, 실행 BOM
+기존 companion은 원본 설계 Markdown을 대체하지 않는 보조 자료입니다. 상품 예약 특성, 패키지 구성, 상품 BOM
 전개를 먼저 비교하고 이 글의 상품 버전 전환 시간축으로 돌아오면 좋습니다.
 
 - [상품 예약 운영 특성 분류](/ko/visual-companions/clinic-appointment/product-scheduling-classification/)
 - [패키지 상품 구성](/ko/visual-companions/clinic-appointment/package-product-composition/)
-- [상품 실행 BOM의 예약 전개 흐름](/ko/visual-companions/clinic-appointment/product-bom-to-appointment-flow/)
+- [상품 BOM의 예약 전개 흐름](/ko/visual-companions/clinic-appointment/product-bom-to-appointment-flow/)
 - [시각 자료 원본 목록](/ko/visual-companions/clinic-appointment/)
 
 ### 근거 링크
