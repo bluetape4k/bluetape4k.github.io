@@ -1,5 +1,6 @@
 const TAG_LABELS = {
   ai: { en: 'AI', ko: 'AI' },
+  'appointment-service': { en: 'Appointment Service', ko: '예약서비스' },
   architecture: { en: 'Architecture', ko: 'Architecture' },
   aws: { en: 'AWS', ko: 'AWS' },
   bom: { en: 'BOM', ko: 'BOM' },
@@ -10,6 +11,7 @@ const TAG_LABELS = {
   dependencies: { en: 'Dependencies', ko: 'Dependencies' },
   ddd: { en: 'DDD', ko: 'DDD' },
   ecosystem: { en: 'Ecosystem', ko: 'Ecosystem' },
+  example: { en: 'Example', ko: '예제' },
   exposed: { en: 'Exposed', ko: 'Exposed' },
   golang: { en: 'Golang', ko: 'Golang' },
   graph: { en: 'Graph', ko: 'Graph' },

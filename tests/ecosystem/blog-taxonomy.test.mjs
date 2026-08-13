@@ -218,6 +218,33 @@ test('blog taxonomy exposes practical application and architecture concerns', ()
   assert.ok(comparisonTags.has('resilience'));
 });
 
+test('clinic appointment series exposes shared grouping tags in both locales', async () => {
+  const seriesFiles = (await readdir('src/content/docs/blog'))
+    .filter((file) => file.startsWith('clinic-appointment-') && file.endsWith('.mdx'))
+    .sort();
+  const sharedTags = ['appointment-service', 'example', 'timefold'];
+
+  assert.equal(seriesFiles.length, 14);
+
+  for (const file of seriesFiles) {
+    const [enSource, koSource] = await Promise.all([
+      readFile(`src/content/docs/blog/${file}`, 'utf8'),
+      readFile(`src/content/docs/ko/blog/${file}`, 'utf8'),
+    ]);
+    const enTags = explicitBlogTags(enSource);
+    const koTags = explicitBlogTags(koSource);
+    assert.deepEqual(koTags, enTags, `${file} has different Korean blog.tags`);
+    for (const tag of sharedTags) assert.ok(enTags?.includes(tag), `${file} is missing ${tag}`);
+    assert.ok(!enTags?.includes('timefold-solver'), `${file} must use timefold, not timefold-solver`);
+  }
+
+  const koTaxonomy = resolveBlogTaxonomy({ tags: sharedTags }, 'ko').tags;
+  assert.deepEqual(koTaxonomy.map((tag) => tag.label), ['예약서비스', '예제', 'Timefold']);
+
+  const enTaxonomy = resolveBlogTaxonomy({ tags: sharedTags }, 'en').tags;
+  assert.deepEqual(enTaxonomy.map((tag) => tag.label), ['Appointment Service', 'Example', 'Timefold']);
+});
+
 test('every bilingual blog pair has identical explicit tags', async () => {
   const enDirectory = 'src/content/docs/blog';
   const koDirectory = 'src/content/docs/ko/blog';
