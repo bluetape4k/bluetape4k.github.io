@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="2048" height="1300" viewBox="0 0 2048 1300" role="img" aria-labelledby="title desc">
   <title id="title">대기 제안과 claim 처리 순서</title>
-  <desc id="desc">빈자리 fence가 내구성 있는 제안 하나를 만들고, 알림은 commit 뒤 시도한다. idempotent claim은 owner, revision, expiry, slot을 검증한 뒤 수락한다.</desc>
+  <desc id="desc">빈시간 fence가 내구성 있는 제안 하나를 만들고, 알림은 commit 뒤 시도한다. idempotent claim은 owner, revision, expiry, slot을 검증한 뒤 수락한다.</desc>
   <defs>
     <style>
       text { font-family: "goorm Sans", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif !important; }
@@ -14,7 +14,7 @@
   </defs>
   <rect id="canvas" width="2048" height="1300" fill="url(#bg)"/>
   <rect class="frame" id="frame" x="24" y="24" width="2000" height="1252" rx="32" fill="none" stroke="#294b78" stroke-width="2"/>
-  <text class="title" id="diagram-title" x="82" y="78" fill="#f4f7ff" font-family="Inter, Pretendard, Arial, sans-serif" font-size="43" font-weight="700">빈자리 하나, 제안 하나, replay 가능한 claim 하나</text>
+  <text class="title" id="diagram-title" x="82" y="78" fill="#f4f7ff" font-family="Inter, Pretendard, Arial, sans-serif" font-size="43" font-weight="700">빈시간 하나, 제안 하나, replay 가능한 claim 하나</text>
   <text class="subtitle" id="diagram-subtitle" x="86" y="116" fill="#a9bad7" font-family="Inter, Pretendard, Arial, sans-serif" font-size="21">DB fence가 최종 권위이고, 알림 전송은 commit 뒤에 일어나는 외부 side effect다.</text>
 
   <g id="availability_db" transform="translate(70 170)"><rect class="header" width="315" height="120" rx="18" fill="#172e4b" stroke="#ffbf4f" stroke-width="3"/><text class="participant" x="157" y="51" text-anchor="middle" fill="#ffd27c" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24" font-weight="700">AVAILABILITY DB</text><text class="role" x="157" y="84" text-anchor="middle" fill="#fff3d6" font-family="Inter, Pretendard, Arial, sans-serif" font-size="18">hold · offer · version</text></g>
