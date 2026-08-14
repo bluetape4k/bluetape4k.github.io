@@ -1,0 +1,25 @@
+{
+  "kind": "architecture",
+  "source": {
+    "question": "Which service owns customer policy input, booking decisions, waitlist offers, and clinic facts?",
+    "revision": "clinic-appointment develop / 2026-08-13 article draft",
+    "paths": ["docs/diagrams/clinic-appointment-booking-reliability/source-ledger.md"]
+  },
+  "nodes": [
+    {"id": "customer_crm", "label": "Customer / CRM", "source": "source-ledger.md: customer policy input"},
+    {"id": "clinic_ops", "label": "Clinic operations", "source": "source-ledger.md: staff override and policy"},
+    {"id": "appointment_service", "label": "Appointment service", "source": "source-ledger.md: decision stamp and confirmed protection"},
+    {"id": "waitlist", "label": "Waitlist service", "source": "source-ledger.md: offer lifecycle"},
+    {"id": "clinic_facts", "label": "Clinical / resource facts", "source": "source-ledger.md: event source"}
+  ],
+  "edges": [
+    {"id": "customer_input", "from": "customer_crm", "to": "appointment_service", "kind": "policy input", "source": "source-ledger.md: opaque assessment input"},
+    {"id": "clinic_policy", "from": "clinic_ops", "to": "appointment_service", "kind": "policy and override", "source": "source-ledger.md: operational authority"},
+    {"id": "waitlist_read", "from": "appointment_service", "to": "waitlist", "kind": "read-only decision", "source": "source-ledger.md: waitlist consumes decision"},
+    {"id": "facts", "from": "clinic_facts", "to": "appointment_service", "kind": "event facts", "source": "source-ledger.md: event source"}
+  ],
+  "behavior": {"branches": 0, "loops": 0},
+  "repairs": [
+    {"target": "responsibility connectors", "reason": "Keep policy input, staff override, read-only waitlist consumption, and event facts on separate ports so ownership remains readable.", "touches": 4}
+  ]
+}

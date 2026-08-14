@@ -1,0 +1,25 @@
+{
+  "kind": "architecture",
+  "source": {
+    "question": "고객 정책 입력, 예약 판단, 대기열 제안, 병원 이벤트 사실은 어느 서비스가 소유하는가?",
+    "revision": "clinic-appointment develop / 2026-08-13 article draft",
+    "paths": ["docs/diagrams/clinic-appointment-booking-reliability/source-ledger.md"]
+  },
+  "nodes": [
+    {"id": "customer_crm", "label": "고객상담·CRM", "source": "source-ledger.md: customer policy input"},
+    {"id": "clinic_ops", "label": "병원 운영", "source": "source-ledger.md: staff override and policy"},
+    {"id": "appointment_service", "label": "예약서비스", "source": "source-ledger.md: decision stamp and confirmed protection"},
+    {"id": "waitlist", "label": "대기열 서비스", "source": "source-ledger.md: offer lifecycle"},
+    {"id": "clinic_facts", "label": "임상·자원 사실", "source": "source-ledger.md: event source"}
+  ],
+  "edges": [
+    {"id": "customer_input", "from": "customer_crm", "to": "appointment_service", "kind": "정책 입력", "source": "source-ledger.md: opaque assessment input"},
+    {"id": "clinic_policy", "from": "clinic_ops", "to": "appointment_service", "kind": "정책·override", "source": "source-ledger.md: operational authority"},
+    {"id": "waitlist_read", "from": "appointment_service", "to": "waitlist", "kind": "읽기 전용 판단", "source": "source-ledger.md: waitlist consumes decision"},
+    {"id": "facts", "from": "clinic_facts", "to": "appointment_service", "kind": "이벤트 사실", "source": "source-ledger.md: event source"}
+  ],
+  "behavior": {"branches": 0, "loops": 0},
+  "repairs": [
+    {"target": "책임 connector", "reason": "정책 입력, 직원 override, 대기열의 읽기 전용 소비, 이벤트 사실을 별도 port로 나누어 소유권을 읽기 쉽게 한다.", "touches": 4}
+  ]
+}

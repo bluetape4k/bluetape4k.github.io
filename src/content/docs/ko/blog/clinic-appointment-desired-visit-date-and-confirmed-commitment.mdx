@@ -5,14 +5,14 @@ sidebar:
   order: -202608131000
 blog:
   date: 2026-08-13T10:00:00+09:00
-  image: /assets/clinic-appointment-prologue-hero.png
+  image: /assets/clinic-appointment-desired-visit-date-hero.png
   imageAlt: 고객의 희망 내원 날짜를 병원 제안, 자원 점유, 동의와 예약 확정으로 연결하는 작은 로봇 작업자들
   cardDescription: "희망 일정과 예약 확정을 분리하고, PROPOSED·HELD·CONFIRMED 상태와 변경 동의 경계를 기존 예약을 보호하도록 설계하는 방법을 설명합니다."
   tags: ["architecture", "domain-modeling", "event-driven", "resilience", "appointment-service", "example", "timefold"]
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/clinic-appointment-prologue-hero.png" alt="고객의 희망 내원 날짜를 병원 제안, 자원 점유, 동의와 예약 확정으로 연결하는 작은 로봇 작업자들" loading="eager" />
+  <img src="/assets/clinic-appointment-desired-visit-date-hero.png" alt="고객의 희망 내원 날짜를 병원 제안, 자원 점유, 동의와 예약 확정으로 연결하는 작은 로봇 작업자들" loading="eager" />
   <figcaption>고객이 날짜를 골랐다는 사실과 병원이 해당 예약일시를 보장했다는 것은 다릅니다. 그 사이에는 계획 검증, 자원 점유, 병원 승인과 고객 동의가 있습니다.</figcaption>
 </figure>
 
@@ -119,7 +119,7 @@ blog:
 | 자원 원장 | 의료진·장비·공간·수용량의 실제 점유 가능성 | `HELD`와 `CONFIRMED`에 필요한 점유 결과를 제공함 |
 | 임상·시술 서비스 | 실제 시작·완료·부분 완료 | 방문 결과를 발행하며 일정 합의 상태를 대신 판단하지 않음 |
 
-고객상담·CRM의 노쇼 이력이나 VIP 정책은 이 흐름의 입력이 될 수 있습니다. 다만 예약서비스가 스스로 고객 등급을 만들거나 벌점을 부과하는 것은 아닙니다. 정책 소유 서비스가 근거와 적용 범위를 결정하고, 예약서비스는 상품과 병원의 운영 규칙, 기존의 확정된 예약일시와 자원 점유를 지키는 범위에서 제안 우선순위나 승인 조건에 반영합니다. 이 공정성·운영 정책은 후속 글에서 별도로 다룹니다.
+고객상담·CRM의 노쇼 이력이나 VIP 정책은 이 흐름의 입력이 될 수 있습니다. 다만 예약서비스가 스스로 고객 등급을 만들거나 벌점을 부과하는 것은 아닙니다. 정책 소유 서비스가 근거와 적용 범위를 결정하고, 예약서비스는 상품과 병원의 운영 규칙, 기존의 확정된 예약일시와 자원 점유를 지키는 범위에서 제안 우선순위나 승인 조건에 반영합니다. 다음 글에서는 노쇼 이력과 VIP 우선 신호를 신규 예약과 대기열 제안에 적용할 때의 책임 경계를 다룹니다.
 
 ## 현재 구현과 운영 활성화는 같은 말이 아니다
 
@@ -138,7 +138,7 @@ blog:
 
 ## 다음 글에서 다룰 것
 
-이번 글은 하나의 방문 예약일시가 확정되는 경계를 살펴봤습니다. 다음 글부터는 기존 Part 1의 문제의식으로 돌아가, 병원 예약이 단순한 CRUD를 넘어 병원별 시간·자원·정책을 함께 다뤄야 하는 이유를 전체 구조에서 보겠습니다.
+이번 글은 하나의 방문 예약일시가 확정되는 경계를 살펴봤습니다. 다음 글에서는 노쇼 이력, VIP 우선 신호, 대기열 제안이 만날 때 예약 우선순위를 누가 소유하는지 구체적으로 다룹니다.
 
 ### 시각 자료로 다시 보기
 
@@ -165,6 +165,7 @@ blog:
 - [패키지 상품은 왜 실행 그래프가 되는가](/ko/blog/clinic-appointment-package-product-execution-graph/)
 - [상품 BOM은 어떻게 AppointmentPlan과 방문으로 번역되는가](/ko/blog/clinic-appointment-execution-bom-to-appointment-plan/)
 - **고객 희망 내원 날짜는 예약 확정이 아니다**
+- [예약 우선순위는 누구의 규칙인가](/ko/blog/clinic-appointment-booking-reliability/)
 - [Part 1: 병원 예약은 CRUD로 끝나지 않는다](/ko/blog/clinic-appointment-part1-not-just-crud/)
 - [Part 2: 예약 상태는 단순한 열거형이 아니다](/ko/blog/clinic-appointment-part2-state-machine-and-history/)
 - [Part 3: 병원마다 다른 업무시간과 자원으로 예약 가능 시간을 계산하기](/ko/blog/clinic-appointment-part3-clinic-specific-availability/)

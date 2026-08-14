@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="2100" height="1080" viewBox="0 0 2100 1080" role="img" aria-labelledby="title desc">
+  <title id="title">예약 신뢰도 책임 경계</title>
+  <desc id="desc">고객 정책 입력, 병원 정책, 이벤트 사실, 예약 판단, 대기열 제안을 서로 다른 서비스가 소유하는 구조.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07111f"/>
+      <stop offset="0.56" stop-color="#0d1930"/>
+      <stop offset="1" stop-color="#11172d"/>
+    </linearGradient>
+    <marker id="arrow-primary" markerWidth="14" markerHeight="14" markerUnits="userSpaceOnUse" viewBox="0 0 10 10" refX="9" refY="5" orient="auto" data-role="primary" data-size="14x14" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#67e8f9" stroke="none" stroke-dasharray="none" data-arrowhead="true" data-solid-head="true"/></marker>
+    <marker id="arrow-secondary" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" viewBox="0 0 10 10" refX="9" refY="5" orient="auto" data-role="secondary" data-size="10x10" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#fbbf24" stroke="none" stroke-dasharray="none" data-arrowhead="true" data-solid-head="true"/></marker>
+    <style>
+      text { font-family: "goorm Sans", "Noto Sans KR", sans-serif; fill: #d7e3f3; }
+      .canvas { fill: url(#bg); }
+      .frame { fill: none; stroke: #263a5e; stroke-width: 2; }
+      .title { font-size: 43px; font-weight: 800; fill: #f8fafc; }
+      .subtitle, .legend { font-size: 18px; fill: #aebed2; }
+      .card { fill: #13233b; stroke: #5f9fc4; stroke-width: 3; }
+      .cardHead { fill: #1a3150; }
+      .name { font-size: 27px; font-weight: 800; fill: #f8fafc; }
+      .body { font-size: 19px; fill: #d7e3f3; }
+      .small { font-size: 17px; fill: #aebed2; }
+      .edge { fill: none; stroke: #67e8f9; stroke-width: 3.5; marker-end: url(#arrow-primary); stroke-linecap: round; stroke-linejoin: round; }
+      .edge-secondary { fill: none; stroke: #fbbf24; stroke-width: 3; stroke-dasharray: 12 9; marker-end: url(#arrow-secondary); stroke-linecap: round; stroke-linejoin: round; }
+      .labelBox { fill: #101b30; stroke: #5b789d; stroke-width: 2; }
+      .label { font-size: 17px; font-weight: 700; fill: #dbeafe; }
+      .legendLine { stroke: #67e8f9; stroke-width: 3.5; }
+      .legendDash { stroke: #fbbf24; stroke-width: 3; stroke-dasharray: 12 9; }
+    </style>
+  </defs>
+  <rect class="canvas" width="2100" height="1080"/>
+  <rect class="frame" x="28" y="28" width="2044" height="1024" rx="30"/>
+  <text class="title" x="80" y="72">예약 신뢰도 책임 경계</text>
+  <text class="subtitle" x="80" y="108">정책 입력과 운영 사실은 예약서비스로 들어오고, 대기열은 제안의 생명주기를 소유합니다.</text>
+
+  <g class="card-group"><rect class="card" x="80" y="190" width="420" height="220" rx="20"/><rect class="cardHead" x="80" y="190" width="420" height="70" rx="20"/><text class="name" x="110" y="235">고객상담·CRM</text><text class="body" x="110" y="305">opaque member 정책 입력</text><text class="body" x="110" y="340">VIP 또는 이력 신호</text><text class="small" x="110" y="380">프로필 정보와 판단을 소유</text></g>
+  <g class="card-group"><rect class="card" x="80" y="620" width="420" height="220" rx="20"/><rect class="cardHead" x="80" y="620" width="420" height="70" rx="20"/><text class="name" x="110" y="665">병원 운영</text><text class="body" x="110" y="735">적용 정책과 버전</text><text class="body" x="110" y="770">직원 override / clear</text><text class="small" x="110" y="810">책임과 만료를 소유</text></g>
+  <g class="card-group"><rect class="card" x="750" y="385" width="600" height="290" rx="22"/><rect class="cardHead" x="750" y="385" width="600" height="76" rx="22"/><text class="name" x="785" y="434">예약서비스</text><text class="body" x="785" y="505">신규 제안과 hold를 판단</text><text class="body" x="785" y="545">판단·digest·만료를 기록</text><text class="body" x="785" y="585">기존 CONFIRMED를 보호</text><text class="small" x="785" y="630">고객 등급은 소유하지 않음</text></g>
+  <g class="card-group"><rect class="card" x="1570" y="190" width="440" height="220" rx="20"/><rect class="cardHead" x="1570" y="190" width="440" height="70" rx="20"/><text class="name" x="1600" y="235">임상·자원 사실</text><text class="body" x="1600" y="305">노쇼·취소 사실</text><text class="body" x="1600" y="340">휴진·수용량 이벤트</text><text class="small" x="1600" y="380">원천 책임을 소유</text></g>
+  <g class="card-group"><rect class="card" x="800" y="785" width="500" height="180" rx="20"/><rect class="cardHead" x="800" y="785" width="500" height="70" rx="20"/><text class="name" x="835" y="830">대기열 서비스</text><text class="body" x="835" y="900">판단을 읽기 전용으로 소비</text><text class="body" x="835" y="935">후보·제안·응답을 소유</text></g>
+
+  <path class="edge" data-source="customer_crm" data-target="appointment_service" d="M 500 300 H 620 Q 660 300 660 340 V 405 Q 660 445 700 445 H 750"/>
+  <rect class="labelBox" x="485" y="248" width="260" height="40" rx="20"/><text class="label" x="615" y="274" text-anchor="middle">정책 입력</text>
+  <path class="edge" data-source="clinic_ops" data-target="appointment_service" d="M 500 730 H 620 Q 660 730 660 690 V 575 Q 660 535 700 535 H 750"/>
+  <rect class="labelBox" x="470" y="750" width="310" height="40" rx="20"/><text class="label" x="625" y="776" text-anchor="middle">정책 + 직원 override</text>
+  <path class="edge" data-source="clinic_facts" data-target="appointment_service" d="M 1570 300 H 1460 Q 1420 300 1420 340 V 405 Q 1420 445 1380 445 H 1350"/>
+  <rect class="labelBox" x="1375" y="248" width="270" height="40" rx="20"/><text class="label" x="1510" y="274" text-anchor="middle">이벤트 사실</text>
+  <path class="edge-secondary" data-source="appointment_service" data-target="waitlist" d="M 1050 675 V 785"/>
+  <rect class="labelBox" x="1080" y="700" width="280" height="40" rx="20"/><text class="label relationshiplabel" x="1220" y="726" text-anchor="middle">읽기 전용 판단</text>
+
+  <rect class="labelBox" x="80" y="955" width="610" height="70" rx="16"/>
+  <line class="legendLine" x1="115" y1="982" x2="190" y2="982"/><text class="legend" x="210" y="988">실선: 타입이 있는 입력 또는 소유 판단</text>
+  <line class="legendDash" x1="115" y1="1007" x2="190" y2="1007"/><text class="legend" x="210" y="1013">점선: 읽기 전용 또는 보조 관계</text>
+  <rect class="labelBox" x="1310" y="955" width="710" height="70" rx="16"/>
+  <text class="legend" x="1340" y="997">VIP는 정책 신호이며 예약서비스가 소유하는 고객 프로필 정보가 아닙니다.</text>
+</svg>

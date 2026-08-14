@@ -5,14 +5,14 @@ sidebar:
   order: -202608121200
 blog:
   date: 2026-08-12T12:00:00+09:00
-  image: /assets/clinic-appointment-prologue-hero.png
+  image: /assets/clinic-appointment-n-visit-hero.png
   imageAlt: 5회 상품, AppointmentPlan, 한 번의 확정 방문, 완료 근거, 잔여 권리 원장을 연결하는 작은 로봇 작업자들
   cardDescription: "여러 회차를 구매한 사실과 한 번씩 확정되는 예약을 분리하고, 실제 완료 뒤 잔여 이행 의무를 계산하는 방법을 설명합니다."
   tags: ["architecture", "domain-modeling", "event-driven", "resilience", "appointment-service", "example", "timefold"]
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/clinic-appointment-prologue-hero.png" alt="5회 상품, AppointmentPlan, 한 번의 확정 방문, 완료 근거, 잔여 권리 원장을 연결하는 작은 로봇 작업자들" loading="eager" />
+  <img src="/assets/clinic-appointment-n-visit-hero.png" alt="5회 상품, AppointmentPlan, 한 번의 확정 방문, 완료 근거, 잔여 권리 원장을 연결하는 작은 로봇 작업자들" loading="eager" />
   <figcaption>N회 상품은 여러 번 진료받을 수 있는 구매 권리입니다. 병원 달력의 미래 시간을 한꺼번에 점유하라는 명령은 아닙니다.</figcaption>
 </figure>
 
@@ -182,7 +182,7 @@ milestone이 아닙니다.
 | 구매·커머스 | 구매 계약, 이용 권리, 환불, 원본 구매 ID | `PurchaseCompleted`, 환불, 계획 취소 이벤트 | 구매마다 계획을 만들고 외부 권리 판단을 미래 의무에 반영 |
 | 예약서비스 | 계획, 계획 항목, 제안, hold, 확정, 방문 이력 | 객관적 예약 이벤트와 durable outbox | 시간·수용량·약속 상태·감사 이력 소유 |
 | 임상·시술 | 실제 시작, 완료, 부분 완료 | 완료·이행 근거 | 계획에 완료를 반영하고 다음 가능 시점을 계산 |
-| 고객상담·CRM | 고객 profile, 노쇼 상담, 민원, 보상, 서비스 등급 판단 | 지연·노쇼·취소·재예약 사실 | 상담 판단에 필요한 객관적 사실과 `handoff` 제공 |
+| 고객상담·CRM | 고객 프로필 정보, 노쇼 상담, 민원, 보상, 서비스 등급 판단 | 지연·노쇼·취소·재예약 사실 | 상담 판단에 필요한 객관적 사실과 `handoff` 제공 |
 | 알림·통계 | 연락 동의, 발송 이력, projection, 지표 | 예약 이벤트와 schema 계약 | 채널 발송과 조회 모델을 예약 트랜잭션 밖에 둠 |
 
 이 계약에서 `sourceAuthority`는 사실을 소유한 기준정보 원천을 가리킵니다. 사용자 역할, 권한, 다른

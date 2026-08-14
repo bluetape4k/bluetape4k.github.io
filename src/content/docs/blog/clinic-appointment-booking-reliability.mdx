@@ -1,0 +1,207 @@
+---
+title: "Who Owns Booking Priority?"
+description: Using Patient A's repeated no-shows and a VIP priority request to explain how an appointment service can adjust new bookings without inventing policy or moving confirmed appointments.
+sidebar:
+  order: -202608131500
+blog:
+  date: 2026-08-13T15:00:00+09:00
+  image: /assets/clinic-appointment-booking-reliability-hero.png
+  imageAlt: Small robot workers showing the boundaries between Patient A's reliability decision, clinic policy, and a waitlist offer
+  cardDescription: "A policy and domain model for applying no-show history and VIP priority signals while preserving policy ownership and confirmed appointments."
+  tags: ["architecture", "domain-modeling", "event-driven", "resilience", "appointment-service", "example", "timefold"]
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-booking-reliability-hero.png" alt="Small robot workers showing the boundaries between Patient A's reliability decision, clinic policy, and a waitlist offer" loading="eager" />
+  <figcaption>Repeated no-shows and VIP priority requests are not a single number in an appointment row. The service must define who sets the rule, which new bookings it affects, and how existing bookings are protected.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-13 · Clinic appointment service series · booking priority and operating policy</p>
+
+Patient A is preparing for the second visit in a package product. The first visit is already `CONFIRMED` for next Tuesday morning. A has missed two recent appointments and now requests a popular slot that opened for the following day. The support team proposes excluding repeated no-show patients from automatic same-day offers. At the same time, clinic operations asks for VIP customers to receive priority.
+
+Adding `patient.isVip = true` or `noShowCount = 2` to the appointment table looks quick. It immediately raises harder questions:
+
+- Who decides whether a no-show was the patient's responsibility, rather than a clinic closure or equipment outage?
+- Is VIP tier and priority an appointment-service fact, or an input from CRM and clinic policy?
+- Does a restriction affect only a new request, or does it reallocate an already confirmed appointment?
+- If the booking reliability evaluator cannot be read, should the patient be restricted or sent to staff review?
+
+The answer is a boundary, not another boolean.
+
+> **The appointment service does not invent no-show penalties or VIP tiers. It consumes a bounded decision from the policy owner, applies it to new proposals, holds, or waitlist offers, and leaves existing `CONFIRMED` appointments unchanged.**
+
+## Separate the events that actually happened to Patient A
+
+Summarizing Patient A as “reliability score 42” removes the business evidence. The appointment service needs events with explicit responsibility, not a score.
+
+| Event | Source | Responsibility | Appointment-service action |
+| --- | --- | --- | --- |
+| Appointment was not kept | Appointment and attendance record | `PATIENT` or `UNKNOWN` | Count only eligible patient-responsible events |
+| Late cancellation | Appointment and support record | `PATIENT` | Apply the policy's late-cancellation window and threshold |
+| Clinic closure or equipment outage | Clinic operations | `CLINIC` or `OPERATIONAL_EXCEPTION` | Exclude from patient restriction and pass to operational rescheduling |
+| Staff correction | Staff action | `DATA_CORRECTION` | Preserve the original event and apply the versioned correction |
+| Source cannot be verified | External integration | `UNKNOWN` | Return `STALE` or `UNAVAILABLE` instead of silently restricting |
+
+The current model uses `NO_SHOW` and `CANCELLED` event types. Sources are distinguished as `APPOINTMENT`, `CLINIC_OPERATION`, `STAFF_OVERRIDE`, and `IMPORT`. Only events whose responsibility is established as `PATIENT` may contribute to no-show or late-cancellation thresholds. A cancellation caused by a clinic closure is not an appointment-service reliability penalty.
+
+## VIP is not customer profile data owned by the appointment service
+
+A clinic may offer an open slot to a VIP customer first. The definition and lifetime of “VIP” still vary by clinic: cumulative purchases, a specialty contract, or a time-bounded campaign are all possible policies.
+
+The appointment service therefore receives a small input contract:
+
+| Input | Meaning | What the appointment service stores |
+| --- | --- | --- |
+| Opaque `memberId` | Customer scope selected by CRM | Use in the decision key without name or phone number |
+| Effective policy and version | Effective period, thresholds, restriction mode, and priority-rule version | Record the applied policy version and digest with the proposal |
+| VIP/priority signal | An input that may order eligible candidates | Do not copy the tier definition or score |
+| Staff override | A temporary exception or clear action | Append actor, reason, expiry, correlation, and digest |
+
+The service does not recalculate the customer's tier. It evaluates a new request within one clinic scope and one policy version, then records a digest and expiry time that make the decision reproducible.
+
+## Fix the decision inputs and keep the booking reliability evaluator bounded
+
+When Patient A requests a scarce slot, the booking reliability evaluator (`BookingReliabilityEvaluator`) does not read unlimited history or free-form support notes. It keeps the contract finite:
+
+1. Restrict the decision key to `(tenantId, clinicId, memberId)`.
+2. Read `lookbackDays`, the late-cancellation window, no-show and late-cancellation thresholds, `coolingOffHours`, and `restrictionMode` from the effective policy.
+3. Read a bounded number of events and deduplicate with `eventId` and `sourceVersion`.
+4. Count only patient-responsible events and return bounded trigger IDs. Names, phone numbers, free-form notes, and scores do not enter the result.
+5. Return a verdict, reason codes, trigger IDs, policy digest, history digest, and expiry time.
+
+The result is a finite contract:
+
+| Verdict | Meaning | Effect on a new request |
+| --- | --- | --- |
+| `ELIGIBLE` | No active restriction under the current policy | Continue proposal, hold, or confirmation |
+| `REQUIRES_STAFF_APPROVAL` | A staff member must review the request | Send to review instead of automatic confirmation |
+| `RESTRICTED` | Policy restricts an automatic path | Apply `EXCLUDE_AUTOMATIC_SAME_DAY_OFFERS` or `REQUIRE_STAFF_APPROVAL` |
+| `OVERRIDDEN` | A staff exception is active | Allow the new request until the override expires |
+| `STALE` | Policy or history is stale | Re-read or request staff review; do not finalize a restriction |
+| `UNAVAILABLE` | The decision store cannot be read | Tell the caller the decision is unavailable; do not silently restrict |
+
+`POLICY_DISABLED` is an explicit result when the policy is off. It is also distinct from the operational modes `OFF`, `SHADOW`, and `ENFORCE`. `SHADOW` can record a result without blocking the booking path; only `ENFORCE` applies allow, review, or restriction behavior to new paths.
+
+## Do not re-evaluate an existing confirmed appointment into a move
+
+Patient A's Tuesday appointment is already `CONFIRMED`. Moving or cancelling it because the reliability history changed would mix a policy decision with a previously agreed booking.
+
+| Target | When to apply the reliability decision | Protect existing confirmation |
+| --- | --- | --- |
+| New `PROPOSED` | Before creating the proposal | Not applicable |
+| New `HELD` | Before creating the hold and again before expiry | Not applicable |
+| New `CONFIRMED` | Record decision digest and expiry in the confirmation transaction | Do not move an existing appointment |
+| Existing `CONFIRMED` | Never an automatic reallocation target | Do not cancel or move |
+| Waitlist candidate or offer | Consume the read-only decision before offering the vacancy | Do not take another confirmed slot |
+
+Patient A's next step is therefore not a permanent blacklist. Clinic policy may temporarily exclude automatic same-day offers, require a deposit or reconfirmation, or send the request to staff. A permanent penalty with no scope or expiry cannot be explained or reversed.
+
+<figure class="bt4k-sequence" data-diagram-title="Booking reliability decision sequence for a new request">
+  <img src="/assets/booking-reliability-sequence-01-en.png" alt="The booking API passes a new request through an eligibility gate, the booking reliability evaluator reads the effective policy and bounded history, and the caller receives eligible, staff review, or unavailable without moving an existing confirmed appointment" loading="lazy" />
+  <figcaption>Every numbered message evaluates a new request. There is no step that cancels or moves an existing `CONFIRMED` appointment.</figcaption>
+</figure>
+
+## Separate service ownership
+
+Keeping policy out of the appointment service requires a diagram that shows both input owners and result consumers.
+
+<figure class="bt4k-architecture" data-diagram-title="Booking reliability service responsibility boundaries">
+  <img src="/assets/booking-reliability-boundaries-01-en.png" alt="Customer CRM, clinic operations, clinical and resource facts, the appointment service, and the waitlist service separately own policy input, overrides, event facts, booking decisions, and offers" loading="lazy" />
+  <figcaption>The appointment service owns new-booking decisions and confirmation protection. Each other service owns its customer profile data, policy, event source, or offer lifecycle.</figcaption>
+</figure>
+
+| Service | Owned information | Boundary with the appointment service |
+| --- | --- | --- |
+| Customer support and CRM | Customer profile data, support history, VIP and priority assessment | Send an opaque member scope and policy input without copying the original tier definition into the appointment database |
+| Clinic operations | Effective policy and version, restriction mode, staff override, and expiry | Decide the basis and exception; append the operation instead of overwriting history |
+| Appointment service | `BookingReliabilityDecision`, proposal/hold/confirmation state, digests, and applied history | Evaluate inputs for new paths and protect existing `CONFIRMED` state |
+| Waitlist service | Candidate order, offer, expiry, and response | Consume the appointment decision read-only and own the offer lifecycle |
+| Clinical and resource services | Source no-show/cancellation facts, practitioner, equipment, and room state | Publish facts and resource outcomes without deciding customer tier |
+
+“Apply the policy” and “decide the policy” are different responsibilities. The appointment service can reject a new `HELD` request after receiving `RESTRICTED`, but it does not decide why a customer is VIP or whether a no-show was patient-responsible. `DecisionRecord` is the smallest contract that crosses that boundary.
+
+## A waitlist offers a vacancy; it does not replace another confirmed appointment
+
+When a cancellation creates a vacancy, the waitlist service must order candidates. It may combine a reliability decision with a VIP priority signal, but the application point is the **order of new offers**.
+
+- Verify the actual resource and visit conditions first.
+- Read the appointment-service decision for each candidate.
+- Exclude `RESTRICTED` candidates from automatic same-day offers, or route them to staff review.
+- Use a VIP signal to order eligible candidates only within the policy's stated scope.
+- Let the waitlist own offer expiry, acceptance, rejection, and retry.
+- Never change another patient's `CONFIRMED` appointment because one candidate rejected an offer.
+
+This makes “the VIP received the offer first” different from “the VIP took an already confirmed appointment.” Fairness is not a single universal order; it is a rule whose basis, scope, exceptions, and expiry can be explained.
+
+## Staff review and exceptions are history, not deletion
+
+If Patient A missed an appointment because of an emergency, a staff member may allow the next request. Deleting the event or decrementing `noShowCount` changes the evidence for every later decision. Keep an append-only record instead:
+
+- who applied the exception (`actor`);
+- why it was applied (`reasonCode`);
+- how long it is valid (`expiresAt`);
+- which request and policy digest it binds to (`correlationId`, `decisionDigest`); and
+- which event version was corrected.
+
+After the override expires, the booking reliability evaluator reads the effective policy and history again. One staff approval does not rewrite Patient A's customer tier, and the appointment service does not copy a free-form support note into customer profile data.
+
+## Separate current code, approved design, and rollout readiness
+
+The dangerous documentation mistake is to describe a code contract and a clinic's live policy as if they were the same fact.
+
+| Evidence label | Scope in this article |
+| --- | --- |
+| **Current implementation** | `BookingReliabilityEvaluator`, `BookingReliabilityDecision`, `BookingEligibilityGate`, policy/event reads, deduplication, and verdict/reason/digest/expiry output |
+| **Approved design** | Apply to new `PROPOSED`, `HELD`, and waitlist offers; protect existing `CONFIRMED`; append staff override/clear history; support `OFF`, `SHADOW`, and `ENFORCE` |
+| **Operational readiness** | Clinic policy values, CRM VIP definition, evidence for patient responsibility, staff permissions and expiry, explanation and appeal channels |
+| **Roadmap** | Patient-facing staff-review results, consent for waitlist offers, and clinic-level fairness metrics and policy comparison |
+
+The presence of a booking reliability evaluator and gate in the current code does not mean every clinic is already in `ENFORCE`. Before enabling a clinic allowlist, verify shadow observations, stale/unavailable recovery, and the rollback path to `OFF` or `SHADOW`.
+
+## The important part is responsibility and scope, not punishment
+
+Patient A's next request may be restricted. A VIP patient may receive a vacancy offer first. The decision should still be explainable in one paragraph:
+
+> “This clinic policy applied only to a new same-day offer, using patient-responsible events and an active staff exception. It did not change the existing confirmed appointment, and an unavailable booking reliability evaluator did not silently restrict the patient.”
+
+If the system cannot produce that explanation, booking priority is still a hidden condition rather than an operating rule. Just as a product BOM becomes an appointment plan and the appointment service translates a preferred visit date into an appointment confirmation, reliability policy must become a bounded decision with explicit responsibility and scope.
+
+## Next in the series
+
+This article separated the basis and ownership of booking priority. Part 1 returns to how that decision combines with clinic-specific hours, resources, and policies when the service computes available appointment times.
+
+### Revisit the visual companions
+
+- [Appointment plans and capacity](/visual-companions/clinic-appointment/appointment-plan-and-capacity/)
+- [Product BOM to appointment flow](/visual-companions/clinic-appointment/product-bom-to-appointment-flow/)
+- [Clinic appointment visual companion index](/visual-companions/clinic-appointment/)
+
+### Evidence links
+
+- [clinic-appointment repository](https://github.com/bluetape4k/clinic-appointment)
+- [Booking reliability API contract](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/api/booking-reliability.md)
+- [Waitlist delivery API contract](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/api/waitlist-delivery.md)
+- [Booking reliability design](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-08-01-issue-176-booking-reliability-design.md)
+- [Waitlist core design](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-08-01-issue-170-waitlist-core-design.md)
+- [BookingReliabilityEvaluator](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/reliability/BookingReliabilityEvaluator.kt)
+- [BookingEligibilityGate](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/commitment/BookingEligibilityGate.kt)
+- [Profile reevaluation fairness lesson](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/lessons/2026-07-31-profile-reevaluation-fair-dispatch.md)
+
+## Series
+
+- [Prologue: From Product Information to a Patient's Visit Commitment](/blog/clinic-appointment-prologue-product-to-appointment/)
+- [When a Product Changes, Don't Rewrite the Patient's Promise](/blog/clinic-appointment-product-version-purchase-snapshot/)
+- [What Appointment Promise Does an Event Product Create?](/blog/clinic-appointment-event-product-first-commitment/)
+- [Why an N-Visit Product Is Not One Appointment](/blog/clinic-appointment-n-visit-remaining-rights/)
+- [Why a Package Product Becomes an Execution Graph](/blog/clinic-appointment-package-product-execution-graph/)
+- [How a Product BOM Becomes an AppointmentPlan and a Visit](/blog/clinic-appointment-execution-bom-to-appointment-plan/)
+- [A Preferred Visit Date Is Not an Appointment Confirmation](/blog/clinic-appointment-desired-visit-date-and-confirmed-commitment/)
+- **Who Owns Booking Priority?**
+- [Part 1: Clinic Appointments Are More Than CRUD](/blog/clinic-appointment-part1-not-just-crud/)
+- [Part 2: Appointment State Is More Than an Enum](/blog/clinic-appointment-part2-state-machine-and-history/)
+- [Part 3: Computing Availability from Clinic-Specific Hours and Resources](/blog/clinic-appointment-part3-clinic-specific-availability/)
+- [Part 4: Real-Time Slot Search and Global Optimization Solve Different Problems](/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
+- [Part 5: Translating Clinic Rules into Timefold Constraints](/blog/clinic-appointment-part5-timefold-constraints/)
+- [Part 6: Rescheduling after Closures and Equipment Downtime](/blog/clinic-appointment-part6-closure-equipment-rescheduling/)
+- [Part 7: Reviews and Operations Start the Next Development Cycle](/blog/clinic-appointment-part7-review-and-operational-evolution/)

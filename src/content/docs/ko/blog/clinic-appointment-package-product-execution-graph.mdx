@@ -5,14 +5,14 @@ sidebar:
   order: -202608121300
 blog:
   date: 2026-08-12T13:00:00+09:00
-  image: /assets/clinic-appointment-prologue-hero.png
+  image: /assets/clinic-appointment-package-product-hero.png
   imageAlt: 패키지 상품의 구성 항목과 선후행 관계, 여러 방문 후보, 자원 요구를 하나의 실행 그래프로 연결하는 작은 로봇 작업자들
   cardDescription: "패키지의 구성 상품, 선택 규칙, 선후행 관계가 환자의 여러 방문과 실제 예약 항목으로 번역되는 경계를 설명합니다."
   tags: ["architecture", "domain-modeling", "event-driven", "resilience", "appointment-service", "example", "timefold"]
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/clinic-appointment-prologue-hero.png" alt="패키지 상품의 구성 항목과 선후행 관계, 여러 방문 후보, 자원 요구를 하나의 실행 그래프로 연결하는 작은 로봇 작업자들" loading="eager" />
+  <img src="/assets/clinic-appointment-package-product-hero.png" alt="패키지 상품의 구성 항목과 선후행 관계, 여러 방문 후보, 자원 요구를 하나의 실행 그래프로 연결하는 작은 로봇 작업자들" loading="eager" />
   <figcaption>패키지는 여러 진료의 이름을 묶는 상품 카드가 아닙니다. 각 항목의 version, 간격, 자원과 방문 관계를 보존해야 예약이 실제 업무가 됩니다.</figcaption>
 </figure>
 
@@ -132,7 +132,7 @@ T1의 구매를 `Appointment` 하나로 저장하면 T2의 선택, T4의 depende
 | 구매·커머스 | 구매 계약, 선택 결과, 환불, 원본 구매 ID | 구매 완료 사실마다 계획 identity를 만들고 취소 범위를 반영 |
 | 예약서비스 | `AppointmentPlan`, `PlannedTreatment`, 제안, hold, 확정 약속, 자원 점유 | 시간·수용량·동의·상태·이력과 객관적 예약 event 소유 |
 | 임상·시술 | 실제 시작·완료·부분 완료 | 완료 근거를 발행하고 계획의 후속 가능 범위를 결정 |
-| 고객상담·CRM | 고객 profile, 상담, 민원, 보상, 서비스 등급 판단 | 노쇼·지연·재예약 같은 객관적 사실을 받아 상담 판단으로 연결 |
+| 고객상담·CRM | 고객 프로필 정보, 상담, 민원, 보상, 서비스 등급 판단 | 노쇼·지연·재예약 같은 객관적 사실을 받아 상담 판단으로 연결 |
 | 알림·통계 consumer | 연락 동의, 발송 이력, projection, 지표 | 예약 transaction과 분리해 outbox와 조회 모델을 처리 |
 
 따라서 예약서비스가 고객의 보상이나 VIP 등급을 직접 결정하지 않습니다. 그런 정책이 필요하더라도 CRM·상품·병원 운영 정책이 책임과 근거를 정의하고, 예약서비스는 기존 예약과 의료 자원을 보호하면서 공정한 순서로 제안을 만드는 데 필요한 입력과 결과만 기록해야 합니다. 구체적인 노쇼 다음 예약과 우선순위 정책은 이 시리즈의 후속 운영 글에서 별도로 다룹니다.
