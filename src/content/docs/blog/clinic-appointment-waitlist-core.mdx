@@ -1,0 +1,179 @@
+---
+title: "A Waitlist Is Not a Queue of Names"
+description: Explain how an appointment service safely moves a cancelled slot to a waitlist candidate by separating eligibility, offer holds, claims, expiry, and recovery.
+sidebar:
+  order: -202608141000
+blog:
+  date: 2026-08-14T10:00:00+09:00
+  image: /assets/clinic-appointment-waitlist-core-hero.png
+  imageAlt: Small robots pass a claim token for a vacant clinic slot through a database fence
+  cardDescription: "Model a waitlist as a state machine that offers, holds, claims, and recovers one vacant slot at a time."
+  tags: ["architecture", "domain-modeling", "concurrency", "resilience", "appointment-service", "example", "timefold"]
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-waitlist-core-hero.png" alt="Small robots pass a claim token for a vacant clinic slot through a database fence" loading="eager" />
+  <figcaption>A cancelled appointment creates a vacancy, but it does not authorize the first name on a waitlist to become a confirmed appointment. Eligibility, the offer, the claim, and recovery after failure need separate ownership.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-14 · Clinic appointment service series · waitlist core and vacancy recovery</p>
+
+Patient A cancels a 10:00 appointment. Patient B has been waiting for that same time, while Patient C has a VIP priority signal but does not match the doctor or treatment. One notification attempt fails, and two scheduler instances discover the vacancy at nearly the same time.
+
+Implementing this as `waitlist.sortBy { it.createdAt }` followed by `notification.send()` quickly raises four harder questions:
+
+- Is B actually eligible for this tenant, clinic, treatment, doctor, and time window?
+- If the offer is written but notification fails, who owns the vacancy?
+- When two workers promote the same candidate, how many capacity holds are created?
+- If B retries the same claim or opens an expired link, which response can the service reproduce?
+
+The conclusion is simple:
+
+> **A waitlist is a state machine, not a list of names. Filter `WAITING` candidates by hard eligibility and deterministic order, create one `OFFERED` record and durable hold for one vacancy, and record a claim as an `ACCEPTED` command handoff separate from appointment creation.**
+
+## Filling a vacancy is a state problem, not just a candidate query
+
+Reading candidates and promoting a candidate are not the same transaction. The current `clinic-appointment` implementation keeps that boundary explicit. `WaitlistCandidateMatcher` reads bounded keyset pages and batches `BookingReliabilityDecision`, but it does not lock rows. The actual promotion happens when `WaitlistOfferService` locks the entry and resource again and revalidates the facts.
+
+<figure class="bt4k-architecture" data-diagram-title="Waitlist state machine and offer preconditions">
+  <img src="/assets/clinic-appointment-waitlist-state-01-en.png" alt="A waitlist candidate moves from WAITING through hard eligibility and deterministic ordering to OFFERED, then to ACCEPTED command handoff after a claim, while declined, expired, and withdrawn branches remain terminal" loading="lazy" />
+  <figcaption>Acceptance does not create an appointment in place. A durable hold and command receipt preserve the handoff so a separate replacement command can create the appointment.</figcaption>
+</figure>
+
+Once the states are explicit, notification and database responsibilities become explicit too.
+
+| State | Meaning | Next responsibility |
+| --- | --- | --- |
+| `WAITING` | An eligible waitlist entry that has not received a concrete offer | Re-evaluate the vacancy and policy fit |
+| `OFFERED` | An offer linked to an expiry time and capacity hold | Record the candidate response, expiry, and delivery attempts |
+| `ACCEPTED` | The candidate claimed the offer and a downstream command can consume the durable hold | Hand off to the appointment-creation command |
+| `DECLINED` | The candidate or staff declined the terminal offer | Preserve the reason and suppression policy before considering another candidate |
+| `EXPIRED` | The offer, hold, or start time closed the offer | Reconcile before retrying |
+| `WITHDRAWN` | Staff or recovery withdrew the offer | Preserve the cause and correlation data |
+
+`ACCEPTED` must not be used as a synonym for `CONFIRMED`. `WaitlistOfferClaimService` currently returns a `holdId` and expiry data; creating the appointment is outside that service. That separation lets claim handling and the appointment command retry independently.
+
+## Reduce candidates first, then apply policy
+
+If the service orders the waitlist before checking eligibility, an unqualified candidate can temporarily occupy a vacancy. Keep the sequence fixed:
+
+1. **Hard eligibility:** Check `tenant`, `clinic`, treatment, doctor, time window, and resource requirements.
+2. **Policy inputs:** Read the clinic policy version and batch `BookingReliabilityDecision` as read-only inputs. Do not recompute the decision or copy a customer tier into the appointment database.
+3. **Deterministic keyset order:** Use `slotFit DESC → priorityRank DESC → waitingSince ASC → entryId ASC`. The final `entryId` prevents ties at the same time and priority from changing order.
+4. **Bounded pages and time budget:** Cap page size, candidate count, page count, and elapsed time instead of scanning indefinitely.
+5. **Revalidation:** Immediately before promotion, recheck the entry, policy stamp, and resource in the same transaction.
+
+A VIP signal cannot bypass this sequence. VIP is a policy input that may set `priorityRank` among eligible candidates; it is not permission to inspect another tenant or take a `CONFIRMED` appointment. If `BookingReliabilityDecision` is `STALE` or `UNAVAILABLE`, automatic promotion must not be finalized. The service must follow the configured path: staff review, a fresh read, or the next candidate.
+
+## Keep one active offer for one vacancy
+
+When two schedulers read the same cancellation event, a Redis lock alone is not enough. Redis can reduce advisory duplication, but the database transaction and version/CAS fence remain authoritative for state, owner, and capacity.
+
+The design has three core invariants:
+
+- A `vacancyKey` has at most one active `OFFERED` or `ACCEPTED` offer.
+- Every `OFFERED` and `ACCEPTED` offer is connected to an availability capacity hold.
+- Candidate discovery is optimistic and reproducible; promotion and claim use resource-first locking and CAS.
+
+`WaitlistOfferService` therefore obtains the vacancy fence, checks hard eligibility, policy stamp, and candidate version in a caller-owned Exposed transaction, then commits the offer, hold, and event together. If another worker commits first, the second worker reads the database result and stops before sending a duplicate notification.
+
+## A claim is a durable handoff, not proof of notification
+
+Receiving a notification does not mean the candidate owns the vacancy. The claim API accepts a public identifier, tenant and clinic scope, `expectedVersion`, and an idempotency key, then checks the following:
+
+- It verifies that the offer and entry share the same scope. An opaque reference from another scope must not produce an error that reveals whether it exists.
+- It locks the offer, hold, and entry in the required order and validates owner, state, version, expiry, start time, and resource occupancy.
+- It applies `OFFERED → ACCEPTED` and the hold transition with CAS, then appends a command receipt.
+- A repeated idempotency key replays the same result instead of creating another hold.
+- Stale decisions, expired offers, occupied slots, and version conflicts return reproducible conflicts rather than a fake success.
+
+<figure class="bt4k-sequence" data-diagram-title="Waitlist offer, notification, claim, and recovery sequence">
+  <img src="/assets/clinic-appointment-waitlist-claim-01-en.png" alt="The availability database obtains a vacancy fence and commits one OFFERED hold, notification follows after commit, and the claim API verifies owner, revision, and expiry before recording a replayable ACCEPTED receipt" loading="lazy" />
+  <figcaption>A notification failure does not roll back `OFFERED`. A retried claim returns the same receipt, while stale, expired, and occupied states flow into recovery and the next policy decision.</figcaption>
+</figure>
+
+## Enforce tenant boundaries and privacy in the storage model
+
+A waitlist is not a search feature for patient names or phone numbers. Store scope and opaque IDs internally, and expose an unpredictable public reference through the API.
+
+| Boundary | Design rule |
+| --- | --- |
+| `tenant` and `clinic` | Pass the same `WaitlistScope` to every entry, offer, hold, and event query |
+| Candidate identity | Use an opaque public ref and short-lived claim token instead of an internal integer ID |
+| Policy provenance | Record `policyVersion`, digest, decision ID, and expiry on the offer and event |
+| Observability | Log state, reason code, and correlation ID instead of names, phone numbers, or raw support notes |
+| Scope errors | Treat a reference from another tenant or clinic like a not-found result so existence is not exposed |
+
+These boundaries let staff explain why a candidate was next without mixing another patient's data into a result or log. Provenance is not decoration; it is required for replay, appeals, and recovery.
+
+## Recover after notification failure and rollout off
+
+Turning the waitlist feature off does not mean deleting state that already exists. When `enabled=false` or a tenant is outside the allowlist, new dispatch and notification work may stop, but the following work must remain possible:
+
+- Close expired offers and holds.
+- Reclaim delivery outbox leases and bound retries.
+- Reconcile stale offers, missing holds, and stuck commands.
+- Preserve suppression rules and event history.
+- Avoid creating a duplicate offer for the same vacancy when the feature is enabled again.
+
+Rollback follows the same rule. Do not delete offers or holds with manual SQL. Use an operational command and recovery service that records the state transition, reason, and correlation ID. Without that history, fixing a notification outage can reopen capacity and offer the same time to two candidates.
+
+## Separate current implementation, approved design, and readiness
+
+This article was written by comparing the `clinic-appointment` `develop` source with the Issue #170 design and runbook on 2026-08-14. The existence of code does not mean every clinic has enabled the feature in production.
+
+| Category | Scope verified in this article |
+| --- | --- |
+| **Current implementation** | Bounded candidate and decision batches in `WaitlistCandidateMatcher`, offer and hold transitions in `WaitlistOfferService`, owner/version/expiry checks in `WaitlistOfferClaimService`, expiry and stale recovery in `WaitlistRecoveryService`, and delivery API models |
+| **Approved design** | Hard eligibility first, one active offer per vacancy, database fence/CAS authority, opaque references, separate notification and acceptance, and appointment command handoff |
+| **Operational readiness** | Migrations V18/V19, contention/scope/PII/replay tests, feature-flag rollout from false to allowlist, bounded reconcile, alerts, and runbook |
+| **Roadmap** | Candidate fairness metrics, staff bulk review, more notification providers, and shadow-to-`ENFORCE` observation of real clinic policy |
+
+So “waitlist core is implemented” means that the service boundaries and tests are prepared. It does not mean that a particular clinic's production allowlist and operating evidence are complete. Before deployment, verify separately that expiry, suppression, and reconcile continue in `OFF`, that a notification-provider outage cannot change claim state, and that contention on one vacancy leaves exactly one active offer.
+
+## The important question is state ownership, not notification speed
+
+Filling a vacancy quickly matters. The more important question is not “Who received the text first?” but this:
+
+> “This candidate passed hard eligibility in the same tenant and clinic, was ordered under this policy version, and claimed this vacancy's hold within this version fence. Even after notification failure or request replay, the service can explain the same state and receipt.”
+
+Once the service can say that, a waitlist is an operable appointment domain model rather than an array of contacts. The next article will expose this core state through a public delivery API and a staff operations screen.
+
+### More visual companions
+
+- [AppointmentPlan and capacity](/visual-companions/clinic-appointment/appointment-plan-and-capacity/)
+- [From product BOM to appointment flow](/visual-companions/clinic-appointment/product-bom-to-appointment-flow/)
+- [Clinic appointment visual companions](/visual-companions/clinic-appointment/)
+
+### Sources
+
+- [clinic-appointment repository](https://github.com/bluetape4k/clinic-appointment)
+- [Waitlist delivery requirements](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/requirements/waitlist-delivery.md)
+- [Waitlist delivery API contract](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/api/waitlist-delivery.md)
+- [Waitlist core runbook](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/runbooks/waitlist-core.md)
+- [Issue #170 waitlist core design](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-08-01-issue-170-waitlist-core-design.md)
+- [Waitlist delivery and fencing design](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-08-03-waitlist-delivery-design.md)
+- [WaitlistCandidateMatcher](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/waitlist/WaitlistCandidateMatcher.kt)
+- [WaitlistOfferService](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/waitlist/WaitlistOfferService.kt)
+- [WaitlistOfferClaimService](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/waitlist/WaitlistOfferClaimService.kt)
+- [WaitlistRecoveryService](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/waitlist/WaitlistRecoveryService.kt)
+- [ResourceAllocationRepository](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/repository/ResourceAllocationRepository.kt)
+
+## Series
+
+- [Prologue: From product information to a patient's visit commitment](/blog/clinic-appointment-prologue-product-to-appointment/)
+- [A product can change without rewriting a patient's commitment](/blog/clinic-appointment-product-version-purchase-snapshot/)
+- [What appointment commitment does an event product create?](/blog/clinic-appointment-event-product-first-commitment/)
+- [Why an N-visit product is not one appointment](/blog/clinic-appointment-n-visit-remaining-rights/)
+- [Why a package product becomes an execution graph](/blog/clinic-appointment-package-product-execution-graph/)
+- [How a product BOM becomes an AppointmentPlan and visits](/blog/clinic-appointment-execution-bom-to-appointment-plan/)
+- [A desired visit date is not a confirmed commitment](/blog/clinic-appointment-desired-visit-date-and-confirmed-commitment/)
+- [Who Owns Booking Priority?](/blog/clinic-appointment-booking-reliability/)
+- **A Waitlist Is Not a Queue of Names**
+- [Part 1: A clinic appointment is more than CRUD](/blog/clinic-appointment-part1-not-just-crud/)
+- [Part 2: Appointment state is not a simple enum](/blog/clinic-appointment-part2-state-machine-and-history/)
+- [Part 3: Calculate clinic-specific availability from hours and resources](/blog/clinic-appointment-part3-clinic-specific-availability/)
+- [Part 4: One availability lookup is not whole-schedule optimization](/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
+- [Part 5: Translate clinic rules into Timefold constraints](/blog/clinic-appointment-part5-timefold-constraints/)
+- [Part 6: How closures and equipment failures change appointment design](/blog/clinic-appointment-part6-closure-equipment-rescheduling/)
+- [Part 7: The real work starts after completion](/blog/clinic-appointment-part7-review-and-operational-evolution/)

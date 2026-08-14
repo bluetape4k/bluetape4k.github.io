@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2048" height="1200" viewBox="0 0 2048 1200" role="img" aria-labelledby="title desc">
+  <title id="title">Waitlist state machine from waiting to a durable claim handoff</title>
+  <desc id="desc">A deterministic waitlist state machine. Hard eligibility and policy ordering happen before one vacancy creates one offer. Accepting an offer creates a durable command handoff, not an appointment.</desc>
+  <defs>
+    <style>
+      text { font-family: "Comic Mono", "Noto Sans Mono", ui-monospace, monospace !important; }
+      #diagram-title, #diagram-subtitle { font-family: "Architects Daughter", cursive !important; }
+    </style>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#071326"/>
+      <stop offset="1" stop-color="#0c1f3b"/>
+    </linearGradient>
+    <marker id="arrow-blue" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" viewBox="0 0 10 10" refX="9" refY="5" orient="auto" data-role="sequence" data-size="16x16" data-tip-direction="positive-x">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#59a9ff" stroke="none" stroke-dasharray="none" data-arrowhead="true" data-solid-head="true"/>
+    </marker>
+    <marker id="arrow-teal" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" viewBox="0 0 10 10" refX="9" refY="5" orient="auto" data-role="sequence" data-size="16x16" data-tip-direction="positive-x">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#58e3d0" stroke="none" stroke-dasharray="none" data-arrowhead="true" data-solid-head="true"/>
+    </marker>
+    <marker id="arrow-amber" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" viewBox="0 0 10 10" refX="9" refY="5" orient="auto" data-role="sequence" data-size="16x16" data-tip-direction="positive-x">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ffbf4f" stroke="none" stroke-dasharray="none" data-arrowhead="true" data-solid-head="true"/>
+    </marker>
+    <marker id="arrow-red" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" viewBox="0 0 10 10" refX="9" refY="5" orient="auto" data-role="sequence" data-size="16x16" data-tip-direction="positive-x">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#e888a1" stroke="none" stroke-dasharray="none" data-arrowhead="true" data-solid-head="true"/>
+    </marker>
+    <marker id="arrow-slate" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" viewBox="0 0 10 10" refX="9" refY="5" orient="auto" data-role="sequence" data-size="16x16" data-tip-direction="positive-x">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#aab5d4" stroke="none" stroke-dasharray="none" data-arrowhead="true" data-solid-head="true"/>
+    </marker>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="7" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect id="canvas" width="2048" height="1200" fill="url(#bg)"/>
+  <rect id="frame" x="24" y="24" width="2000" height="1152" rx="32" fill="none" stroke="#294b78" stroke-width="2"/>
+  <text id="diagram-title" x="92" y="88" fill="#f4f7ff" font-family="Inter, Pretendard, Arial, sans-serif" font-size="44" font-weight="700">A waitlist is a state machine, not a queue of names</text>
+  <text id="diagram-subtitle" x="96" y="132" fill="#a9bad7" font-family="Inter, Pretendard, Arial, sans-serif" font-size="22">Eligibility, deterministic order, and a durable hold decide who may claim the vacancy.</text>
+
+  <g id="waiting" transform="translate(90 250)">
+    <rect width="370" height="210" rx="22" fill="#132b4a" stroke="#59a9ff" stroke-width="3"/>
+    <circle cx="48" cy="52" r="27" fill="#1b4775" stroke="#59a9ff" stroke-width="2"/>
+    <text x="48" y="61" text-anchor="middle" fill="#f4f7ff" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24" font-weight="700">1</text>
+    <text x="94" y="62" fill="#8ec5ff" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="30" font-weight="700">WAITING</text>
+    <text x="42" y="112" fill="#e8effc" font-family="Inter, Pretendard, Arial, sans-serif" font-size="22">eligible entry + waitSince</text>
+    <text x="42" y="148" fill="#9eb5d7" font-family="Inter, Pretendard, Arial, sans-serif" font-size="19">No capacity is reserved yet.</text>
+    <text x="42" y="180" fill="#9eb5d7" font-family="Inter, Pretendard, Arial, sans-serif" font-size="19">The row can still be withdrawn.</text>
+  </g>
+
+  <g id="offered" transform="translate(560 250)">
+    <rect width="500" height="210" rx="22" fill="#19314a" stroke="#ffbf4f" stroke-width="3"/>
+    <circle cx="48" cy="52" r="27" fill="#5a4520" stroke="#ffbf4f" stroke-width="2"/>
+    <text x="48" y="61" text-anchor="middle" fill="#fff7e7" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24" font-weight="700">2</text>
+    <text x="94" y="62" fill="#ffd27c" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="30" font-weight="700">OFFERED</text>
+    <text x="42" y="112" fill="#fff3d6" font-family="Inter, Pretendard, Arial, sans-serif" font-size="22">time-limited offer + durable hold</text>
+    <text x="42" y="148" fill="#c9bf9f" font-family="Inter, Pretendard, Arial, sans-serif" font-size="19">A vacancy key has one active offer.</text>
+    <text x="42" y="180" fill="#c9bf9f" font-family="Inter, Pretendard, Arial, sans-serif" font-size="19">Expiry is a state transition, not a job retry.</text>
+  </g>
+
+  <g id="accepted" transform="translate(1160 250)">
+    <rect width="420" height="210" rx="22" fill="#153b45" stroke="#58e3d0" stroke-width="3"/>
+    <circle cx="48" cy="52" r="27" fill="#1b5b5a" stroke="#58e3d0" stroke-width="2"/>
+    <text x="48" y="61" text-anchor="middle" fill="#eafffb" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24" font-weight="700">3</text>
+    <text x="94" y="62" fill="#82f2df" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="30" font-weight="700">ACCEPTED</text>
+    <text x="42" y="112" fill="#e2fff9" font-family="Inter, Pretendard, Arial, sans-serif" font-size="22">claim receipt + command handoff</text>
+    <text x="42" y="148" fill="#a5d9d2" font-family="Inter, Pretendard, Arial, sans-serif" font-size="19">The hold is durable and replayable.</text>
+    <text x="42" y="180" fill="#a5d9d2" font-family="Inter, Pretendard, Arial, sans-serif" font-size="19">It is not the appointment itself.</text>
+  </g>
+
+  <g id="command_handoff" transform="translate(1635 250)">
+    <rect width="320" height="210" rx="22" fill="#142c4f" stroke="#9bde75" stroke-width="3"/>
+    <text x="30" y="55" fill="#c9f5ae" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24" font-weight="700">COMMAND</text>
+    <text x="30" y="88" fill="#c9f5ae" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24" font-weight="700">HANDOFF</text>
+    <text x="30" y="132" fill="#e9f8df" font-family="Inter, Pretendard, Arial, sans-serif" font-size="19">A separate command</text>
+    <text x="30" y="162" fill="#e9f8df" font-family="Inter, Pretendard, Arial, sans-serif" font-size="19">creates the appointment.</text>
+    <text x="30" y="190" fill="#b1caa8" font-family="Inter, Pretendard, Arial, sans-serif" font-size="17">same transaction boundary</text>
+  </g>
+
+  <path id="waiting_to_offered" class="message state" data-from="waiting" data-to="offered" d="M 460 355 H 560" fill="none" stroke="#59a9ff" stroke-width="5" marker-end="url(#arrow-blue)"/>
+  <text data-label-for="waiting_to_offered" x="510" y="210" text-anchor="middle" fill="#8ec5ff" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="17">eligible + ranked</text>
+  <path id="offered_to_accepted" class="message state" data-from="offered" data-to="accepted" d="M 1060 355 H 1160" fill="none" stroke="#ffbf4f" stroke-width="5" marker-end="url(#arrow-amber)"/>
+  <text data-label-for="offered_to_accepted" x="1110" y="210" text-anchor="middle" fill="#ffd27c" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="17">owner + revision + expiry</text>
+  <path id="accepted_to_command_handoff" class="message state" data-from="accepted" data-to="command_handoff" d="M 1580 355 H 1635" fill="none" stroke="#58e3d0" stroke-width="5" marker-end="url(#arrow-teal)"/>
+
+  <path id="offered_to_terminal_decision" class="message state" data-from="offered" data-to="terminal_outcome_decision" d="M 810 460 V 500" fill="none" stroke="#ffbf4f" stroke-width="4" marker-end="url(#arrow-amber)"/>
+  <g id="terminal_outcome_decision">
+    <rect x="600" y="500" width="1100" height="60" rx="18" fill="#111f37" stroke="#ffbf4f" stroke-width="2"/>
+    <text x="1150" y="526" text-anchor="middle" fill="#ffd27c" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22" font-weight="700">TERMINAL OUTCOME DECISION</text>
+    <text x="1150" y="550" text-anchor="middle" fill="#fff3d6" font-family="Inter, Pretendard, Arial, sans-serif" font-size="16">choose one: DECLINED / EXPIRED / WITHDRAWN</text>
+  </g>
+  <g id="declined" transform="translate(610 600)">
+    <rect width="330" height="150" rx="18" fill="#2d2034" stroke="#e888a1" stroke-width="2"/>
+    <text x="28" y="52" fill="#ffb4c5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="25" font-weight="700">DECLINED</text>
+    <text x="28" y="91" fill="#e7c5cf" font-family="Inter, Pretendard, Arial, sans-serif" font-size="18">candidate says no</text>
+    <text x="28" y="120" fill="#bc9eac" font-family="Inter, Pretendard, Arial, sans-serif" font-size="16">record reason; suppress as policy says</text>
+  </g>
+  <g id="expired" transform="translate(990 600)">
+    <rect width="330" height="150" rx="18" fill="#302a20" stroke="#ffbf4f" stroke-width="2"/>
+    <text x="28" y="52" fill="#ffd27c" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="25" font-weight="700">EXPIRED</text>
+    <text x="28" y="91" fill="#f4dfb4" font-family="Inter, Pretendard, Arial, sans-serif" font-size="18">deadline passed</text>
+    <text x="28" y="120" fill="#c2b18e" font-family="Inter, Pretendard, Arial, sans-serif" font-size="16">reconcile before considering a new offer</text>
+  </g>
+  <g id="withdrawn" transform="translate(1370 600)">
+    <rect width="330" height="150" rx="18" fill="#252a38" stroke="#aab5d4" stroke-width="2"/>
+    <text x="28" y="52" fill="#d2dcf4" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="25" font-weight="700">WITHDRAWN</text>
+    <text x="28" y="91" fill="#d6deef" font-family="Inter, Pretendard, Arial, sans-serif" font-size="18">entry is no longer eligible</text>
+    <text x="28" y="120" fill="#aab5cc" font-family="Inter, Pretendard, Arial, sans-serif" font-size="16">never bypass the hard-eligibility gate</text>
+  </g>
+  <path id="terminal_decision_to_declined" class="message state" data-from="terminal_outcome_decision" data-to="declined" d="M 775 560 V 600" fill="none" stroke="#e888a1" stroke-width="3" marker-end="url(#arrow-red)"/>
+  <path id="terminal_decision_to_expired" class="message state" data-from="terminal_outcome_decision" data-to="expired" d="M 1155 560 V 600" fill="none" stroke="#ffbf4f" stroke-width="3" marker-end="url(#arrow-amber)"/>
+  <path id="terminal_decision_to_withdrawn" class="message state" data-from="terminal_outcome_decision" data-to="withdrawn" d="M 1535 560 V 600" fill="none" stroke="#aab5d4" stroke-width="3" marker-end="url(#arrow-slate)"/>
+
+  <g id="recovery_policy" transform="translate(90 805)">
+    <rect width="1865" height="270" rx="24" fill="#0d1d35" stroke="#3d6797" stroke-width="2"/>
+    <text x="38" y="55" fill="#f4f7ff" font-family="Inter, Pretendard, Arial, sans-serif" font-size="26" font-weight="700">The gate before OFFERED</text>
+    <text x="38" y="88" fill="#a9bad7" font-family="Inter, Pretendard, Arial, sans-serif" font-size="18">The database commits the state; a scheduler or Redis advisory lock may only reduce duplicate work.</text>
+    <rect x="38" y="125" width="540" height="102" rx="16" fill="#132b4a" stroke="#59a9ff" stroke-width="2"/>
+    <text x="62" y="164" fill="#8ec5ff" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22" font-weight="700">HARD ELIGIBILITY</text>
+    <text x="62" y="197" fill="#e8effc" font-family="Inter, Pretendard, Arial, sans-serif" font-size="17">tenant / clinic / treatment / doctor / time window</text>
+    <rect x="620" y="125" width="540" height="102" rx="16" fill="#19314a" stroke="#ffbf4f" stroke-width="2"/>
+    <text x="644" y="164" fill="#ffd27c" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22" font-weight="700">DETERMINISTIC ORDER</text>
+    <text x="644" y="197" fill="#fff3d6" font-family="Inter, Pretendard, Arial, sans-serif" font-size="17">slot-fit desc / rank desc / since asc / id asc</text>
+    <rect x="1202" y="125" width="625" height="102" rx="16" fill="#153b45" stroke="#58e3d0" stroke-width="2"/>
+    <text x="1226" y="164" fill="#82f2df" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22" font-weight="700">ONE ACTIVE OFFER PER VACANCY</text>
+    <text x="1226" y="197" fill="#e2fff9" font-family="Inter, Pretendard, Arial, sans-serif" font-size="17">unique vacancy key + capacity hold + CAS/version fence</text>
+  </g>
+  <text id="bottom-note" x="1024" y="1140" text-anchor="middle" fill="#b4c5df" font-family="Inter, Pretendard, Arial, sans-serif" font-size="19">Notification delivery is an outbound side effect. Acceptance is a database transition with an idempotent receipt.</text>
+</svg>

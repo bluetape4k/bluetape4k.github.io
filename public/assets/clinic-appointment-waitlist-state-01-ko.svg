@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2048" height="1200" viewBox="0 0 2048 1200" role="img" aria-labelledby="title desc">
+  <title id="title">대기 목록의 상태 머신과 내구성 있는 클레임 handoff</title>
+  <desc id="desc">대기 목록은 적격성, 결정적 순서, 내구성 hold를 거쳐 제안을 만들고, 수락은 예약 생성과 분리된 명령 handoff로 남는다.</desc>
+  <defs>
+    <style>
+      text { font-family: "goorm Sans", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif !important; }
+      text.num, text.label { font-family: "goorm Sans Code", "goorm Sans", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif !important; }
+    </style>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#071326"/><stop offset="1" stop-color="#0c1f3b"/></linearGradient>
+    <marker id="arrow-blue" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" viewBox="0 0 10 10" refX="9" refY="5" orient="auto" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#59a9ff" stroke="none" stroke-dasharray="none" data-arrowhead="true" data-solid-head="true"/></marker>
+    <marker id="arrow-teal" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" viewBox="0 0 10 10" refX="9" refY="5" orient="auto" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#58e3d0" stroke="none" stroke-dasharray="none" data-arrowhead="true" data-solid-head="true"/></marker>
+    <marker id="arrow-amber" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" viewBox="0 0 10 10" refX="9" refY="5" orient="auto" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#ffbf4f" stroke="none" stroke-dasharray="none" data-arrowhead="true" data-solid-head="true"/></marker>
+    <marker id="arrow-red" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" viewBox="0 0 10 10" refX="9" refY="5" orient="auto" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#e888a1" stroke="none" stroke-dasharray="none" data-arrowhead="true" data-solid-head="true"/></marker>
+    <marker id="arrow-slate" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" viewBox="0 0 10 10" refX="9" refY="5" orient="auto" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#aab5d4" stroke="none" stroke-dasharray="none" data-arrowhead="true" data-solid-head="true"/></marker>
+  </defs>
+  <rect id="canvas" width="2048" height="1200" fill="url(#bg)"/>
+  <rect id="frame" x="24" y="24" width="2000" height="1152" rx="32" fill="none" stroke="#294b78" stroke-width="2"/>
+  <text id="diagram-title" x="92" y="88" fill="#f4f7ff" font-family="Inter, Pretendard, Arial, sans-serif" font-size="44" font-weight="700">대기 목록은 이름표가 아니라 상태 머신이다</text>
+  <text id="diagram-subtitle" x="96" y="132" fill="#a9bad7" font-family="Inter, Pretendard, Arial, sans-serif" font-size="22">적격성, 결정적 순서, 내구성 hold가 빈자리를 누가 청구할지 결정한다.</text>
+
+  <g id="waiting" transform="translate(90 250)">
+    <rect width="370" height="210" rx="22" fill="#132b4a" stroke="#59a9ff" stroke-width="3"/>
+    <circle cx="48" cy="52" r="27" fill="#1b4775" stroke="#59a9ff" stroke-width="2"/><text x="48" y="61" text-anchor="middle" fill="#f4f7ff" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24" font-weight="700">1</text>
+    <text x="94" y="62" fill="#8ec5ff" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="30" font-weight="700">WAITING</text>
+    <text x="42" y="112" fill="#e8effc" font-family="Inter, Pretendard, Arial, sans-serif" font-size="22">적격 후보 + waitSince</text>
+    <text x="42" y="148" fill="#9eb5d7" font-family="Inter, Pretendard, Arial, sans-serif" font-size="19">아직 capacity를 예약하지 않는다.</text>
+    <text x="42" y="180" fill="#9eb5d7" font-family="Inter, Pretendard, Arial, sans-serif" font-size="19">대기 항목은 철회될 수 있다.</text>
+  </g>
+
+  <g id="offered" transform="translate(560 250)">
+    <rect width="500" height="210" rx="22" fill="#19314a" stroke="#ffbf4f" stroke-width="3"/>
+    <circle cx="48" cy="52" r="27" fill="#5a4520" stroke="#ffbf4f" stroke-width="2"/><text x="48" y="61" text-anchor="middle" fill="#fff7e7" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24" font-weight="700">2</text>
+    <text x="94" y="62" fill="#ffd27c" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="30" font-weight="700">OFFERED</text>
+    <text x="42" y="112" fill="#fff3d6" font-family="Inter, Pretendard, Arial, sans-serif" font-size="22">시간 제한 제안 + 내구성 hold</text>
+    <text x="42" y="148" fill="#c9bf9f" font-family="Inter, Pretendard, Arial, sans-serif" font-size="19">vacancy key마다 active offer만 둔다.</text>
+    <text x="42" y="180" fill="#c9bf9f" font-family="Inter, Pretendard, Arial, sans-serif" font-size="19">만료는 단순한 job 재시도가 아니다.</text>
+  </g>
+
+  <g id="accepted" transform="translate(1160 250)">
+    <rect width="420" height="210" rx="22" fill="#153b45" stroke="#58e3d0" stroke-width="3"/>
+    <circle cx="48" cy="52" r="27" fill="#1b5b5a" stroke="#58e3d0" stroke-width="2"/><text x="48" y="61" text-anchor="middle" fill="#eafffb" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24" font-weight="700">3</text>
+    <text x="94" y="62" fill="#82f2df" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="30" font-weight="700">ACCEPTED</text>
+    <text x="42" y="112" fill="#e2fff9" font-family="Inter, Pretendard, Arial, sans-serif" font-size="22">claim 영수증 + command handoff</text>
+    <text x="42" y="148" fill="#a5d9d2" font-family="Inter, Pretendard, Arial, sans-serif" font-size="19">hold는 내구성이 있고 replay할 수 있다.</text>
+    <text x="42" y="180" fill="#a5d9d2" font-family="Inter, Pretendard, Arial, sans-serif" font-size="19">아직 appointment 자체는 아니다.</text>
+  </g>
+
+  <g id="command_handoff" transform="translate(1635 250)">
+    <rect width="320" height="210" rx="22" fill="#142c4f" stroke="#9bde75" stroke-width="3"/>
+    <text x="30" y="55" fill="#c9f5ae" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24" font-weight="700">COMMAND</text>
+    <text x="30" y="88" fill="#c9f5ae" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24" font-weight="700">HANDOFF</text>
+    <text x="30" y="132" fill="#e9f8df" font-family="Inter, Pretendard, Arial, sans-serif" font-size="19">별도 command가</text>
+    <text x="30" y="162" fill="#e9f8df" font-family="Inter, Pretendard, Arial, sans-serif" font-size="19">appointment를 생성한다.</text>
+    <text x="30" y="190" fill="#b1caa8" font-family="Inter, Pretendard, Arial, sans-serif" font-size="17">같은 transaction 경계</text>
+  </g>
+
+  <path id="waiting_to_offered" class="message state" data-from="waiting" data-to="offered" d="M 460 355 H 560" fill="none" stroke="#59a9ff" stroke-width="5" marker-end="url(#arrow-blue)"/>
+  <text data-label-for="waiting_to_offered" x="510" y="210" text-anchor="middle" fill="#8ec5ff" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="17">적격 + 순위 결정</text>
+  <path id="offered_to_accepted" class="message state" data-from="offered" data-to="accepted" d="M 1060 355 H 1160" fill="none" stroke="#ffbf4f" stroke-width="5" marker-end="url(#arrow-amber)"/>
+  <text data-label-for="offered_to_accepted" x="1110" y="210" text-anchor="middle" fill="#ffd27c" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="17">owner + revision + expiry</text>
+  <path id="accepted_to_command_handoff" class="message state" data-from="accepted" data-to="command_handoff" d="M 1580 355 H 1635" fill="none" stroke="#58e3d0" stroke-width="5" marker-end="url(#arrow-teal)"/>
+
+  <path id="offered_to_terminal_decision" class="message state" data-from="offered" data-to="terminal_outcome_decision" d="M 810 460 V 500" fill="none" stroke="#ffbf4f" stroke-width="4" marker-end="url(#arrow-amber)"/>
+  <g id="terminal_outcome_decision">
+    <rect x="600" y="500" width="1100" height="60" rx="18" fill="#111f37" stroke="#ffbf4f" stroke-width="2"/>
+    <text x="1150" y="526" text-anchor="middle" fill="#ffd27c" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22" font-weight="700">종료 상태 결정</text>
+    <text x="1150" y="550" text-anchor="middle" fill="#fff3d6" font-family="Inter, Pretendard, Arial, sans-serif" font-size="16">DECLINED / EXPIRED / WITHDRAWN 중 하나를 결정</text>
+  </g>
+  <g id="declined" transform="translate(610 600)">
+    <rect width="330" height="150" rx="18" fill="#2d2034" stroke="#e888a1" stroke-width="2"/>
+    <text x="28" y="52" fill="#ffb4c5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="25" font-weight="700">DECLINED</text>
+    <text x="28" y="91" fill="#e7c5cf" font-family="Inter, Pretendard, Arial, sans-serif" font-size="18">후보자가 거절한다</text>
+    <text x="28" y="120" fill="#bc9eac" font-family="Inter, Pretendard, Arial, sans-serif" font-size="16">사유를 남기고 policy대로 억제한다</text>
+  </g>
+  <g id="expired" transform="translate(990 600)">
+    <rect width="330" height="150" rx="18" fill="#302a20" stroke="#ffbf4f" stroke-width="2"/>
+    <text x="28" y="52" fill="#ffd27c" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="25" font-weight="700">EXPIRED</text>
+    <text x="28" y="91" fill="#f4dfb4" font-family="Inter, Pretendard, Arial, sans-serif" font-size="18">응답 기한이 지났다</text>
+    <text x="28" y="120" fill="#c2b18e" font-family="Inter, Pretendard, Arial, sans-serif" font-size="16">새 제안 전 reconcile을 먼저 수행한다</text>
+  </g>
+  <g id="withdrawn" transform="translate(1370 600)">
+    <rect width="330" height="150" rx="18" fill="#252a38" stroke="#aab5d4" stroke-width="2"/>
+    <text x="28" y="52" fill="#d2dcf4" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="25" font-weight="700">WITHDRAWN</text>
+    <text x="28" y="91" fill="#d6deef" font-family="Inter, Pretendard, Arial, sans-serif" font-size="18">항목이 더는 적격하지 않다</text>
+    <text x="28" y="120" fill="#aab5cc" font-family="Inter, Pretendard, Arial, sans-serif" font-size="16">hard-eligibility gate를 우회하지 않는다</text>
+  </g>
+  <path id="terminal_decision_to_declined" class="message state" data-from="terminal_outcome_decision" data-to="declined" d="M 775 560 V 600" fill="none" stroke="#e888a1" stroke-width="3" marker-end="url(#arrow-red)"/>
+  <path id="terminal_decision_to_expired" class="message state" data-from="terminal_outcome_decision" data-to="expired" d="M 1155 560 V 600" fill="none" stroke="#ffbf4f" stroke-width="3" marker-end="url(#arrow-amber)"/>
+  <path id="terminal_decision_to_withdrawn" class="message state" data-from="terminal_outcome_decision" data-to="withdrawn" d="M 1535 560 V 600" fill="none" stroke="#aab5d4" stroke-width="3" marker-end="url(#arrow-slate)"/>
+
+  <g id="recovery_policy" transform="translate(90 805)">
+    <rect width="1865" height="270" rx="24" fill="#0d1d35" stroke="#3d6797" stroke-width="2"/>
+    <text x="38" y="55" fill="#f4f7ff" font-family="Inter, Pretendard, Arial, sans-serif" font-size="26" font-weight="700">OFFERED 전에 통과해야 하는 것</text>
+    <text x="38" y="88" fill="#a9bad7" font-family="Inter, Pretendard, Arial, sans-serif" font-size="18">상태의 최종 권위는 DB다. scheduler나 Redis advisory lock은 중복 작업만 줄일 수 있다.</text>
+    <rect x="38" y="125" width="540" height="102" rx="16" fill="#132b4a" stroke="#59a9ff" stroke-width="2"/>
+    <text x="62" y="164" fill="#8ec5ff" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22" font-weight="700">HARD ELIGIBILITY</text>
+    <text x="62" y="197" fill="#e8effc" font-family="Inter, Pretendard, Arial, sans-serif" font-size="17">tenant · clinic · treatment · doctor · time window</text>
+    <rect x="620" y="125" width="540" height="102" rx="16" fill="#19314a" stroke="#ffbf4f" stroke-width="2"/>
+    <text x="644" y="164" fill="#ffd27c" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22" font-weight="700">DETERMINISTIC ORDER</text>
+    <text x="644" y="197" fill="#fff3d6" font-family="Inter, Pretendard, Arial, sans-serif" font-size="17">slot fit ↓ · priority rank ↓ · waiting since ↑ · entry id ↑</text>
+    <rect x="1202" y="125" width="625" height="102" rx="16" fill="#153b45" stroke="#58e3d0" stroke-width="2"/>
+    <text x="1226" y="164" fill="#82f2df" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22" font-weight="700">ONE ACTIVE OFFER PER VACANCY</text>
+    <text x="1226" y="197" fill="#e2fff9" font-family="Inter, Pretendard, Arial, sans-serif" font-size="17">unique vacancy key + capacity hold + CAS/version fence</text>
+  </g>
+  <text id="bottom-note" x="1024" y="1140" text-anchor="middle" fill="#b4c5df" font-family="Inter, Pretendard, Arial, sans-serif" font-size="19">알림 전송은 외부 side effect다. 수락은 idempotent 영수증을 남기는 DB 상태 전이다.</text>
+</svg>
