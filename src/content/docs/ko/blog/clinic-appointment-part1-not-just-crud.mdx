@@ -38,7 +38,7 @@ CRUD로 보입니다.
 ## 예약을 받기 전에 확인할 것들
 
 요구사항 문서에는 세 종류의 사용자가 등장합니다. 환자는 가능한 시간을 조회하고 예약합니다. 직원은
-예약을 확정하고 체크인과 진료 완료를 처리합니다. 관리자는 휴진과 장비 사용불가를 등록하고 영향을 받은
+예약을 확정하고 체크인과 진료 완료를 처리합니다. 관리자는 휴진과 장비 사용 불가를 등록하고 영향을 받은
 예약을 다시 배정합니다.
 
 세 사람이 보는 화면은 다르지만 같은 예약을 다룹니다. 환자에게는 “오후 2시 예약”이고, 직원에게는
@@ -184,7 +184,14 @@ B 병원에서는 불가능할 수 있습니다.
 
 - [프롤로그: 상품 정보가 고객의 방문 약속이 되기까지](/ko/blog/clinic-appointment-prologue-product-to-appointment/)
 - [상품이 바뀌어도 고객의 약속은 다시 쓰지 않는다](/ko/blog/clinic-appointment-product-version-purchase-snapshot/)
-- [이벤트 상품은 어떤 예약 약속을 만드는가](/ko/blog/clinic-appointment-event-product-first-commitment/)
+- [이벤트 상품은 어떤 방문 약속을 만드는가](/ko/blog/clinic-appointment-event-product-first-commitment/)
+- [N회 상품은 왜 예약 한 건이 아닌가](/ko/blog/clinic-appointment-n-visit-remaining-rights/)
+- [패키지 상품은 왜 실행 그래프가 되는가](/ko/blog/clinic-appointment-package-product-execution-graph/)
+- [상품 BOM은 어떻게 AppointmentPlan과 방문으로 번역되는가](/ko/blog/clinic-appointment-execution-bom-to-appointment-plan/)
+- [고객 희망 내원 날짜는 예약 확정이 아니다](/ko/blog/clinic-appointment-desired-visit-date-and-confirmed-commitment/)
+- [예약 우선순위는 누구의 규칙인가](/ko/blog/clinic-appointment-booking-reliability/)
+- [대기 목록은 이름표가 아니라 상태 머신이다](/ko/blog/clinic-appointment-waitlist-core/)
+- [대기 목록 운영 화면은 상태판이 아니라 조치판이다](/ko/blog/clinic-appointment-waitlist-operations-dashboard/)
 - **Part 1: 병원 예약은 CRUD로 끝나지 않는다**
 - [Part 2: 예약 상태는 단순한 열거형이 아니다](/ko/blog/clinic-appointment-part2-state-machine-and-history/)
 - [Part 3: 병원마다 다른 업무시간과 자원으로 예약 가능 시간을 계산하기](/ko/blog/clinic-appointment-part3-clinic-specific-availability/)

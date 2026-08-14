@@ -107,14 +107,14 @@ MySQL과 PostgreSQL은 서로 다른 제약·인덱스 제거 문법과 이름�
 `FlywayMigrationTest`, `FlywayMySQLMigrationTest`, `FlywayPostgreSQLMigrationTest`로 분리해 각 엔진에서 실제로
 적용합니다. “SQL이 비슷해 보인다”보다 빈 스키마와 기존 스키마에 마이그레이션을 실행한 결과가 증거입니다.
 
-이후 Exposed Gradle plugin을 적용하면서 core, API, event, notification 모듈에 `generateMigrations` 작업도
+이후 Exposed Gradle plugin을 적용하면서 핵심, API, 이벤트, 알림 모듈에 `generateMigrations` 작업도
 노출했습니다. 생성 도구가 있어도 검토 없이 운영 SQL을 대신 결정하게 할 수는 없습니다. DB별 수동 마이그레이션,
 생성된 diff, 실제 테스트 컨테이너 결과를 함께 비교해야 합니다.
 
 ## 의존성 업그레이드는 컴파일보다 의미 보존을 검증한다
 
-Timefold Solver 2.1로 옮길 때 score, ConstraintVerifier, score director, move API가 한꺼번에 바뀌었습니다.
-import를 고쳐 컴파일을 통과하는 것만으로는 충분하지 않습니다. Constraint weight 타입이 `Long`으로 바뀌고,
+Timefold Solver 2.1로 옮길 때 점수(score), `ConstraintVerifier`, 점수 디렉터(score director), 이동 API(move API)가 한꺼번에 바뀌었습니다.
+`import`를 고쳐 컴파일을 통과하는 것만으로는 충분하지 않습니다. 제약 가중치(Constraint weight) 타입이 `Long`으로 바뀌고,
 제약 ID에 허용되지 않는 문자가 생겼으며, move API는 preview 인터페이스와 `SequencedCollection`을 사용했습니다.
 
 마이그레이션의 목표는 새 API를 사용하는 것이 아니라 기존 일정 의미를 보존하는 것이었습니다. 그래서
@@ -162,7 +162,7 @@ ConstraintVerifier 테스트와 solver 테스트를 다시 실행하고, 로컬 
 | 1. 예약 무결성 | 슬롯 조회와 예약 생성 사이의 수용 인원 경쟁 조건 | 가용성 확인과 저장을 하나의 원자적 경계로 묶고, DB 잠금 또는 제약 전략으로 동시 쓰기를 직렬화한다 |
 | 2. 이벤트 전달 | 프로세스 내부 이벤트는 프로세스 종료와 DB 커밋 이후의 전달을 보장하지 않는다 | 트랜잭셔널 아웃박스, 이벤트 ID·스키마 버전, 소비자 중복 제거, 재시도·배달 불능·대사 작업을 설계한다 |
 | 3. 운영 관찰 | 로그만으로는 환자 요청부터 알림 공급자까지 한 흐름을 복원하기 어렵다 | 예약 충돌률, 알림 성공률·지연, 리더 전환, Solver 시간·점수에 SLO와 추적·상관관계 ID를 연결한다 |
-| 4. 환자 업무 | 관리자 중심 흐름만으로는 자가 예약 이후의 실제 경험을 다루기 어렵다 | 환자 인증·포털, 대기 명단, 미방문 후속 처리, 알림 동의, 접근성·다국어와 개인정보 보존 정책을 정의한다 |
+| 4. 환자 업무 | 관리자 중심 흐름만으로는 자가 예약 이후의 실제 경험을 다루기 어렵다 | 환자 인증·포털, 대기 목록, 미방문 후속 처리, 알림 동의, 접근성·다국어와 개인정보 보존 정책을 정의한다 |
 | 5. 최적화 통제 | 좋은 점수가 환자와 운영자에게 납득 가능한 배정이라는 보장은 없다 | 제약 버전과 추천 이유를 기록하고, 공정성 지표·수동 조정·섀도 실행으로 정책 변화를 검증한다 |
 
 첫 번째 항목은 특히 기능 추가보다 앞섭니다. 현재
@@ -225,11 +225,18 @@ ConstraintVerifier 테스트와 solver 테스트를 다시 실행하고, 로컬 
 
 - [프롤로그: 상품 정보가 고객의 방문 약속이 되기까지](/ko/blog/clinic-appointment-prologue-product-to-appointment/)
 - [상품이 바뀌어도 고객의 약속은 다시 쓰지 않는다](/ko/blog/clinic-appointment-product-version-purchase-snapshot/)
-- [이벤트 상품은 어떤 예약 약속을 만드는가](/ko/blog/clinic-appointment-event-product-first-commitment/)
+- [이벤트 상품은 어떤 방문 약속을 만드는가](/ko/blog/clinic-appointment-event-product-first-commitment/)
+- [N회 상품은 왜 예약 한 건이 아닌가](/ko/blog/clinic-appointment-n-visit-remaining-rights/)
+- [패키지 상품은 왜 실행 그래프가 되는가](/ko/blog/clinic-appointment-package-product-execution-graph/)
+- [상품 BOM은 어떻게 AppointmentPlan과 방문으로 번역되는가](/ko/blog/clinic-appointment-execution-bom-to-appointment-plan/)
+- [고객 희망 내원 날짜는 예약 확정이 아니다](/ko/blog/clinic-appointment-desired-visit-date-and-confirmed-commitment/)
+- [예약 우선순위는 누구의 규칙인가](/ko/blog/clinic-appointment-booking-reliability/)
+- [대기 목록은 이름표가 아니라 상태 머신이다](/ko/blog/clinic-appointment-waitlist-core/)
+- [대기 목록 운영 화면은 상태판이 아니라 조치판이다](/ko/blog/clinic-appointment-waitlist-operations-dashboard/)
 - [Part 1: 병원 예약은 CRUD로 끝나지 않는다](/ko/blog/clinic-appointment-part1-not-just-crud/)
-- [Part 2: 예약 상태는 enum이 아니다](/ko/blog/clinic-appointment-part2-state-machine-and-history/)
+- [Part 2: 예약 상태는 단순한 열거형이 아니다](/ko/blog/clinic-appointment-part2-state-machine-and-history/)
 - [Part 3: 병원마다 다른 업무시간과 자원으로 예약 가능 시간을 계산하기](/ko/blog/clinic-appointment-part3-clinic-specific-availability/)
 - [Part 4: 한 건의 예약 가능 시간 조회와 전체 일정 최적화는 다르다](/ko/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
-- [Part 5: 병원 업무 규칙을 Timefold Constraint로 번역하기](/ko/blog/clinic-appointment-part5-timefold-constraints/)
+- [Part 5: 병원 업무 규칙을 Timefold 제약 조건으로 옮기기](/ko/blog/clinic-appointment-part5-timefold-constraints/)
 - [Part 6: 휴진과 장비 고장은 예약 설계를 어떻게 바꾸는가](/ko/blog/clinic-appointment-part6-closure-equipment-rescheduling/)
 - **Part 7: 완성 뒤가 진짜 시작이다**

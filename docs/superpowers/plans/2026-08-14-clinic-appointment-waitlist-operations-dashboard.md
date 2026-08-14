@@ -30,7 +30,7 @@
 
 ## Task 1: 사실·용어·라우트 고정
 
-- [ ] **Step 1: 승인된 설계와 현재 소스를 다시 대조한다.**
+- [x] **Step 1: 승인된 설계와 현재 소스를 다시 대조한다.**
 
   확인할 파일:
 
@@ -60,7 +60,9 @@
 
   기대 결과: 소스 ref가 기록되고, 읽기 전용 근거 저장소에 사용자 변경이 없으며, 위 목록과 실제 이름이 일치한다. 소스와 설계가 다르면 문장으로 덮지 말고 해당 주장을 보류한다.
 
-- [ ] **Step 2: 한국어 용어표를 고정한다.**
+  증거: `clinic-appointment` `develop`은 `f783de85efc25e4c8386a34ab6599eca99093eae`이며, 소스 worktree에는 기존 미추적 `.superpowers/`만 있어 보존한다. `WaitlistController`, API 계약, health, metrics, properties, scheduling에서 route·오류·임계값·rollout 순서를 확인했다.
+
+- [x] **Step 2: 한국어 용어표를 고정한다.**
 
   본문·표·캡션·alt text에서 다음 표현을 일관되게 사용한다.
 
@@ -77,9 +79,11 @@
 
   `~를 통해`, `~에 있어서`, `~되어진다`, `가지고 있다` 같은 번역투를 초안에서 제거하고 `읽는다`, `검증한다`, `재조회한다`, `차단한다`, `반환한다` 같은 구체적인 동사를 사용한다. “한 빈자리에는 active offer 하나만”처럼 중복 수식을 쓰지 않고 `빈자리의 활성 제안은 하나로 제한한다`로 쓴다.
 
+  증거: 승인된 용어표와 `/Users/debop/.codex/skills/bluetape-writer/references/korean-naturalness-checklist.md`의 보존·자연스러움 규칙을 적용할 초안 기준을 고정했다.
+
 ## Task 2: 한국어 기술문서 작성
 
-- [ ] **Step 1: 한국어 frontmatter·hero·첫 단락을 작성한다.**
+- [x] **Step 1: 한국어 frontmatter·hero·첫 단락을 작성한다.**
 
   `src/content/docs/ko/blog/clinic-appointment-waitlist-operations-dashboard.mdx`에 다음 계약을 적용한다.
 
@@ -98,7 +102,9 @@
 
   영문 식별자와 상태는 코드 형식 그대로 두되, 첫 단락에서는 `STAFF`가 “지금 무엇을 먼저 확인할지” 판단해야 하는 구체적인 상황을 제시한다. `중요하다`, `강력하다`, `효율적이다` 같은 평가 대신 `UNKNOWN`을 수락 성공으로 덮으면 어떤 오류가 생기는지 바로 보여준다.
 
-- [ ] **Step 2: A 형태의 본문을 작성한다.**
+  증거: `src/content/docs/ko/blog/clinic-appointment-waitlist-operations-dashboard.mdx`에 승인된 title, route order, hero path, tags와 운영 상황을 작성했다.
+
+- [x] **Step 2: A 형태의 본문을 작성한다.**
 
   다음 순서와 독자 질문을 지킨다.
 
@@ -113,7 +119,9 @@
 
   각 절은 `운영자의 문제 → 최소한의 source-backed 정보 → 해석 → 자동 성공으로 간주하지 않을 조건` 순으로 작성한다. 대시보드가 환자 이름·연락처·clinical note·원시 score vector를 노출하지 않는 이유를 보안 일반론이 아니라 실제 API 응답 경계와 연결한다.
 
-- [ ] **Step 3: 한국어 자연스러움 pass를 수행한다.**
+  증거: 한국어 초안에 지표 표, 네 가지 조치 큐 표, 근거 패널 항목, confirm 결과 표, rollout scheduler 순서, 역할별 읽기 표와 근거 링크를 포함했다.
+
+- [x] **Step 3: 한국어 자연스러움 pass를 수행한다.**
 
   사실을 바꾸지 않은 상태에서 `/Users/debop/.codex/skills/bluetape-writer/references/korean-naturalness-checklist.md`의 KO-01~KO-06을 모두 점검한다.
 
@@ -125,6 +133,8 @@
   - KO-06: frontmatter, 표, 링크 텍스트, 캡션, alt text까지 다시 읽기
 
   결과를 설계 문서와 이 계획의 검증 기록에 남긴다. 의미가 바뀌는 문장은 되돌리고, 자연스럽게 다듬은 문장만 유지한다.
+
+  증거: frontmatter·본문·표·캡션·alt text를 다시 읽었고 `git diff --no-index --check`와 번역투 차단 패턴 검사에서 오류가 없었다. `Idempotency-Key` 예시는 독자가 재실행 의미를 이해할 수 있도록 구체적인 ASCII key로 작성했다.
 
 - [ ] **Step 4: 선행 글의 시리즈 연결을 갱신한다.**
 
@@ -138,7 +148,7 @@
 
 ## Task 3: Hero와 메인 운영 흐름 다이어그램 작성
 
-- [ ] **Step 1: 같은 시리즈 hero와 다이어그램 기준을 확인한다.**
+- [x] **Step 1: 같은 시리즈 hero와 다이어그램 기준을 확인한다.**
 
   원본 참고:
 
@@ -149,17 +159,17 @@
 
   `$bluetape-diagram`의 `references/common.md`, `architecture.md`, `workflow.md`, `sequence.md`, `semantic-ledger.md` 규칙을 적용한다. 메인 화면은 source-backed 정적 운영 흐름이므로 SVG→PNG를 사용하고, HTML workflow companion으로 우회하지 않는다. Hero는 같은 미니어처 작업대 언어를 유지하되 기존 hero를 재사용하지 않고 운영 화면을 주제로 새 bitmap을 만든다.
 
-- [ ] **Step 2: hero bitmap을 생성하고 원본 크기로 확인한다.**
+- [x] **Step 2: hero bitmap을 생성하고 원본 크기로 확인한다.**
 
   `public/assets/clinic-appointment-waitlist-operations-dashboard-hero.png`를 생성한다. 장면에는 병원 운영 보드, 상단 지표, 전체 폭 조치 큐, 선택된 대기 제안과 작은 데이터베이스 fence를 넣되, 읽어야 하는 긴 문장이나 실제 환자 식별자를 넣지 않는다. 생성 후 `view_image`로 full-size를 확인하고 기존 waitlist hero와 색·조명·미니어처 스케일이 맞는지 기록한다.
 
-- [ ] **Step 3: 메인 운영 흐름의 semantic ledger를 작성한다.**
+- [x] **Step 3: 메인 운영 흐름의 semantic ledger를 작성한다.**
 
   `docs/review/2026-08-14-clinic-appointment-waitlist-operations-dashboard-01-ko.semantic.json`과 `...-en.semantic.json`을 만들고 `kind: "workflow"`로 선언한다. source revision은 Step 1에서 읽은 `clinic-appointment` `develop` SHA를 기록한다. 노드는 `Clinic readiness`, `운영 지표`, `조치 큐`, `선택 항목 근거`, `허용 명령`, `종료 상태 결정`으로 제한하고, edge는 지표 읽기·큐 선택·근거 조회·명령 실행·결과 표시 관계만 선언한다. `UNKNOWN`·`processing`·`conflict`·`requeue`는 결과 edge로 source path를 각각 기록한다.
 
   예상 복잡도는 workflow 기본 예산(노드 10, edge 14, branch 3, loop 1) 안에 둔다. 다이어그램의 모호한 수평 점선은 ledger에 넣지 않는다.
 
-- [ ] **Step 4: 메인 SVG를 EN/KO 각각 작성한다.**
+- [x] **Step 4: 메인 SVG를 EN/KO 각각 작성한다.**
 
   `public/assets/clinic-appointment-waitlist-operations-dashboard-01-ko.svg`와 `...-en.svg`를 작성한다.
 
@@ -170,7 +180,7 @@
   - 한국어 라벨은 `goorm Sans`/`goorm Sans Code`, 영어 라벨은 `Architects Daughter`/`Comic Mono` 계열을 사용한다.
   - 카드 하단 여백과 층 사이 수직 간격을 넓혀 레이블·연결선이 겹치지 않게 한다.
 
-- [ ] **Step 5: SVG를 PNG로 렌더링하고 메인 흐름을 감사한다.**
+- [x] **Step 5: SVG를 PNG로 렌더링하고 메인 흐름을 감사한다.**
 
   각 locale마다 실행한다.
 
@@ -189,13 +199,18 @@
 
   EN에도 같은 명령을 적용한다. `view_image`로 각 PNG를 full-size 한 장씩 확인하고, 메인 화면 축소 시에도 지표·큐·근거·종료 상태 결정이 읽히는지 확인한다. 실패한 선·화살촉·공간은 SVG 원본에서 고친 뒤 PNG와 관련 audit을 다시 실행한다.
 
+  증거: hero는 원본 크기 `view_image` 확인을 마쳤고, EN/KO semantic ledger는
+  `diagram-semantic-audit.py`를 통과했다. 메인 SVG/PNG는 XML·text normalize·connector·
+  arrowhead·geometry·endpoint·mixed-corner·visual 감사를 통과했으며, 라벨/카드 겹침을
+  SVG 원본에서 고친 뒤 다시 통과시켰다.
+
 ## Task 4: 명령 결과 시퀀스 다이어그램 작성
 
-- [ ] **Step 1: 시퀀스 semantic ledger를 작성한다.**
+- [x] **Step 1: 시퀀스 semantic ledger를 작성한다.**
 
   `docs/review/2026-08-14-clinic-appointment-waitlist-operations-command-01-{ko,en}.semantic.json`의 `kind`를 `sequence`로 둔다. participant는 `STAFF`, `운영 화면`, `Waitlist API`, `Idempotency/DB fence`, `예약 결과`로 제한하고, message는 선택·version 조회·confirm 요청·첫 성공·같은 key replay·processing 재조회·stale/expired conflict로 source path를 연결한다. sequence 기본 예산(노드 10, edge 18, branch 3, loop 2)을 넘지 않는다.
 
-- [ ] **Step 2: EN/KO 시퀀스 SVG를 작성한다.**
+- [x] **Step 2: EN/KO 시퀀스 SVG를 작성한다.**
 
   `public/assets/clinic-appointment-waitlist-operations-command-01-ko.svg`와 `...-en.svg`에 다음을 구현한다.
 
@@ -205,7 +220,7 @@
   - `201`, `Idempotent-Replay: true`, `202 IDEMPOTENCY_IN_PROGRESS`, `409 DECISION_STALE`/`OFFER_EXPIRED`/`SLOT_OCCUPIED`를 각각 식별 가능한 branch frame 안에 둔다.
   - branch frame은 투명하게 두고 `종료 상태 결정`/`terminal outcome decision`을 결과 경계에 명시한다.
 
-- [ ] **Step 3: 시퀀스 SVG를 PNG로 렌더링하고 전용 감사를 수행한다.**
+- [x] **Step 3: 시퀀스 SVG를 PNG로 렌더링하고 전용 감사를 수행한다.**
 
   ```bash
   xmllint --noout public/assets/clinic-appointment-waitlist-operations-command-01-ko.svg
@@ -223,13 +238,18 @@
 
   EN에도 같은 명령을 적용한다. `view_image`에서 모든 번호 라벨, call line, branch frame, arrowhead 색, 하단 여백을 원본 크기로 확인한다.
 
+  증거: 두 sequence ledger는 semantic audit을 통과했다. EN/KO SVG/PNG는 XML·text
+  normalize·sequence-style·connector·arrowhead·endpoint·geometry·mixed-corner·visual
+  감사를 통과했고, full-size 렌더에서 번호 라벨과 call line 사이 간격, 결과 분기,
+  `종료 상태 결정`/`terminal outcome decision` 및 하단 여백을 확인했다.
+
 ## Task 5: 한국어 글에 시각 자료·근거·시리즈 navigation을 연결한다
 
-- [ ] **Step 1: 한국어 MDX에 두 PNG를 삽입한다.**
+- [x] **Step 1: 한국어 MDX에 두 PNG를 삽입한다.**
 
   본문에는 `/assets/clinic-appointment-waitlist-operations-dashboard-01-ko.png`와 `/assets/clinic-appointment-waitlist-operations-command-01-ko.png`를 각각 `bt4k-architecture`/`bt4k-sequence` figure로 삽입한다. 캡션은 그림이 답하는 운영 질문을 한국어로 설명하고, 생성 로그·audit 결과·내부 증거는 art 안에 넣지 않는다. alt text는 실제 보이는 흐름을 짧게 기술하며 환자 식별자를 만들지 않는다.
 
-- [ ] **Step 2: 근거 링크와 시리즈 navigation을 작성한다.**
+- [x] **Step 2: 근거 링크와 시리즈 navigation을 작성한다.**
 
   다음 source 링크를 한국어 본문에 유지한다.
 
@@ -241,7 +261,11 @@
 
   현재 구현·승인된 계약·운영 대기를 별도 표로 유지한다. 실제 production allowlist, provider 장애율, 성능 기준 측정 결과가 없으면 완료된 사실처럼 쓰지 않는다.
 
-- [ ] **Step 3: 한국어 초안을 읽기 좋은 로컬 화면으로 검증한다.**
+  증거: 한국어 MDX에 architecture/sequence PNG와 독자용 캡션·alt text를 연결했고,
+  구현·계약·운영 대기 표와 source 링크를 유지했다. 선행 waitlist-core EN/KO의 Series에
+  새 route를 추가했다.
+
+- [x] **Step 3: 한국어 초안을 읽기 좋은 로컬 화면으로 검증한다.**
 
   ```bash
   git diff --check
@@ -252,6 +276,11 @@
   ```
 
   기대 결과: build 성공, 두 route `200`, asset URL이 404가 아니며 hero·두 PNG가 실제 페이지에 렌더링된다. 로컬 preview URL은 `http://127.0.0.1:4321/ko/blog/clinic-appointment-waitlist-operations-dashboard/`로 기록한다. `npm run dev`는 검토가 끝날 때까지 유지하고, 종료 후에는 실제 종료 여부를 확인한다.
+
+  증거: `npm run build`가 0 errors로 2472 pages를 생성했다. 현재 작업 서버
+  `http://127.0.0.1:4322/ko/blog/clinic-appointment-waitlist-operations-dashboard/`와
+  선행 route가 모두 `200`이며, hero와 두 한국어 PNG가 모두 `200 image/png`로
+  응답한다. 기본 4321 포트는 기존 프로세스가 점유해 새 서버는 4322에서 검증했다.
 
 - [ ] **Step 4: 한국어 독자 검토 게이트를 기록한다.**
 

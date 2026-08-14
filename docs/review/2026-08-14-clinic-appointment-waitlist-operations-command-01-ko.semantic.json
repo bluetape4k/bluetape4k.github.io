@@ -1,0 +1,38 @@
+{
+  "kind": "sequence",
+  "source": {
+    "question": "STAFF의 confirm 요청은 version·멱등성·DB fence를 거쳐 어떤 종료 상태 결정으로 돌아오는가?",
+    "revision": "clinic-appointment@f783de85efc25e4c8386a34ab6599eca99093eae; visual-site@6debcaa88e93afd1b006e65d4f13252dfb1bbbb1",
+    "paths": [
+      "docs/superpowers/specs/2026-08-14-clinic-appointment-waitlist-operations-dashboard-design.md"
+    ],
+    "externalPaths": [
+      "docs/api/waitlist-delivery.md",
+      "appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/controller/WaitlistController.kt",
+      "appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/dto/WaitlistResponses.kt",
+      "appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/waitlist/WaitlistDeliveryScheduling.kt"
+    ]
+  },
+  "nodes": [
+    {"id": "staff", "label": "STAFF", "source": "operations dashboard design"},
+    {"id": "operations-screen", "label": "운영 화면", "source": "operations dashboard design"},
+    {"id": "waitlist-api", "label": "Waitlist API", "source": "WaitlistController"},
+    {"id": "idempotency-fence", "label": "멱등성·DB fence", "source": "waitlist-delivery API contract"},
+    {"id": "appointment-result", "label": "예약 결과", "source": "WaitlistOfferDecisionResponse and API contract"},
+    {"id": "terminal-outcome-decision", "label": "종료 상태 결정", "source": "operations dashboard design"}
+  ],
+  "edges": [
+    {"id": "staff-selects", "from": "staff", "to": "operations-screen", "kind": "select-action-item", "source": "operations dashboard design"},
+    {"id": "screen-reads-evidence", "from": "operations-screen", "to": "waitlist-api", "kind": "read-version-expiry", "source": "WaitlistController GET offer/decision routes"},
+    {"id": "screen-confirms", "from": "operations-screen", "to": "waitlist-api", "kind": "confirm-command", "source": "WaitlistController POST confirm route"},
+    {"id": "api-reserves-key", "from": "waitlist-api", "to": "idempotency-fence", "kind": "idempotency-key-and-scope", "source": "waitlist-delivery API contract"},
+    {"id": "fence-creates-result", "from": "idempotency-fence", "to": "appointment-result", "kind": "version-checked-write", "source": "waitlist-delivery API contract"},
+    {"id": "result-success", "from": "appointment-result", "to": "terminal-outcome-decision", "kind": "201-accepted", "source": "waitlist-delivery API contract"},
+    {"id": "result-replay", "from": "appointment-result", "to": "terminal-outcome-decision", "kind": "201-idempotent-replay", "source": "waitlist-delivery API contract"},
+    {"id": "result-processing", "from": "appointment-result", "to": "terminal-outcome-decision", "kind": "202-processing", "source": "waitlist-delivery API contract"},
+    {"id": "result-conflict", "from": "appointment-result", "to": "terminal-outcome-decision", "kind": "409-conflict", "source": "waitlist-delivery API contract"}
+  ],
+  "behavior": {"branches": 3, "loops": 1},
+  "budget": {"nodes": 6, "edges": 9, "branches": 3, "loops": 1},
+  "repairs": []
+}
