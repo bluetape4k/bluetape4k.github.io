@@ -1,0 +1,26 @@
+{
+  "kind": "sequence",
+  "source": {
+    "question": "How does a new booking request consume a bounded reliability decision without moving an existing confirmed appointment?",
+    "revision": "clinic-appointment develop / 2026-08-13 article draft",
+    "paths": ["docs/diagrams/clinic-appointment-booking-reliability/source-ledger.md"]
+  },
+  "nodes": [
+    {"id": "booking_api", "label": "Booking API", "source": "source-ledger.md: approved booking reliability API"},
+    {"id": "eligibility_gate", "label": "Eligibility gate", "source": "source-ledger.md: current gate"},
+    {"id": "pure_evaluator", "label": "Booking reliability evaluator", "source": "source-ledger.md: current evaluator"},
+    {"id": "policy_event_store", "label": "Effective policy + event store", "source": "source-ledger.md: approved design policy version"}
+  ],
+  "edges": [
+    {"id": "request", "from": "booking_api", "to": "eligibility_gate", "kind": "call", "source": "source-ledger.md: new proposal/hold gate"},
+    {"id": "evaluate", "from": "eligibility_gate", "to": "pure_evaluator", "kind": "query", "source": "source-ledger.md: booking reliability evaluator contract"},
+    {"id": "read", "from": "pure_evaluator", "to": "policy_event_store", "kind": "read", "source": "source-ledger.md: bounded policy and event read"},
+    {"id": "snapshot", "from": "policy_event_store", "to": "pure_evaluator", "kind": "return", "source": "source-ledger.md: effective policy version and deduplicated history"},
+    {"id": "decision", "from": "pure_evaluator", "to": "eligibility_gate", "kind": "return", "source": "source-ledger.md: decision digest and expiry"},
+    {"id": "outcome", "from": "eligibility_gate", "to": "booking_api", "kind": "return", "source": "source-ledger.md: caller-safe outcome"}
+  ],
+  "behavior": {"branches": 0, "loops": 0},
+  "repairs": [
+    {"target": "numbered message pills", "reason": "The previous upstream raster let the number badge overlap the first label glyph; give every badge a dedicated circle and padding.", "touches": 6}
+  ]
+}

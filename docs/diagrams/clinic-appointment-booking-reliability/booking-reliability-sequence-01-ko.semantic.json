@@ -1,0 +1,26 @@
+{
+  "kind": "sequence",
+  "source": {
+    "question": "새 예약 요청이 기존 확정 예약을 이동시키지 않고 제한된 예약 신뢰도 판단을 소비하는 흐름은 무엇인가?",
+    "revision": "clinic-appointment develop / 2026-08-13 article draft",
+    "paths": ["docs/diagrams/clinic-appointment-booking-reliability/source-ledger.md"]
+  },
+  "nodes": [
+    {"id": "booking_api", "label": "예약 API", "source": "source-ledger.md: approved booking reliability API"},
+    {"id": "eligibility_gate", "label": "자격 gate", "source": "source-ledger.md: current gate"},
+    {"id": "pure_evaluator", "label": "예약 신뢰도 판단기", "source": "source-ledger.md: current evaluator"},
+    {"id": "policy_event_store", "label": "적용 정책 + 이벤트 저장소", "source": "source-ledger.md: approved design policy version"}
+  ],
+  "edges": [
+    {"id": "request", "from": "booking_api", "to": "eligibility_gate", "kind": "호출", "source": "source-ledger.md: new proposal/hold gate"},
+    {"id": "evaluate", "from": "eligibility_gate", "to": "pure_evaluator", "kind": "판단", "source": "source-ledger.md: booking reliability evaluator contract"},
+    {"id": "read", "from": "pure_evaluator", "to": "policy_event_store", "kind": "읽기", "source": "source-ledger.md: bounded policy and event read"},
+    {"id": "snapshot", "from": "policy_event_store", "to": "pure_evaluator", "kind": "반환", "source": "source-ledger.md: effective policy version and deduplicated history"},
+    {"id": "decision", "from": "pure_evaluator", "to": "eligibility_gate", "kind": "반환", "source": "source-ledger.md: decision digest and expiry"},
+    {"id": "outcome", "from": "eligibility_gate", "to": "booking_api", "kind": "결과", "source": "source-ledger.md: caller-safe outcome"}
+  ],
+  "behavior": {"branches": 0, "loops": 0},
+  "repairs": [
+    {"target": "번호 pill", "reason": "기존 upstream raster에서 번호 뱃지가 라벨 첫 글자를 가렸으므로 번호 원과 텍스트 간격을 분리한다.", "touches": 6}
+  ]
+}

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1220" viewBox="0 0 2000 1220" role="img" aria-labelledby="title desc">
+  <title id="title">예약 신뢰도 판단 시퀀스</title>
+  <desc id="desc">새 예약 요청이 제한된 예약 신뢰도 판단기를 통과하며 기존 확정 예약은 변하지 않는 흐름.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07101f"/>
+      <stop offset="0.58" stop-color="#0c1730"/>
+      <stop offset="1" stop-color="#10142a"/>
+    </linearGradient>
+    <marker id="arrow-sequence-blue" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" viewBox="0 0 10 10" refX="9" refY="5" orient="auto" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#60a5fa" stroke="none" stroke-dasharray="none" data-arrowhead="true" data-solid-head="true"/></marker>
+    <marker id="arrow-sequence-teal" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" viewBox="0 0 10 10" refX="9" refY="5" orient="auto" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#5eead4" stroke="none" stroke-dasharray="none" data-arrowhead="true" data-solid-head="true"/></marker>
+    <marker id="arrow-sequence-amber" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" viewBox="0 0 10 10" refX="9" refY="5" orient="auto" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#fbbf24" stroke="none" stroke-dasharray="none" data-arrowhead="true" data-solid-head="true"/></marker>
+    <style>
+      text { font-family: "goorm Sans", "Noto Sans KR", sans-serif; fill: #d7e3f3; }
+      .frame { fill: none; stroke: #2b4168; stroke-width: 2; }
+      .title { font-family: "goorm Sans", "Noto Sans KR", sans-serif; font-size: 42px; font-weight: 800; fill: #f8fafc; }
+      .subtitle, .note { font-family: "goorm Sans", "Noto Sans KR", sans-serif; font-size: 18px; fill: #a9b8d4; }
+      .actor { fill: #13233b; stroke: #5b789d; stroke-width: 2; }
+      .participant { font-size: 25px; font-weight: 800; fill: #f8fafc; }
+      .role { font-size: 17px; fill: #9fb0ca; }
+      .lifeline { stroke: #52647f; stroke-width: 3; stroke-dasharray: 10 10; }
+      .activation { fill: #203b4d; stroke: #73a5bd; stroke-width: 2; }
+      .message { fill: none; stroke-width: 3.5; }
+      .call { stroke: #60a5fa; marker-end: url(#arrow-sequence-blue); }
+      .metadata { stroke: #fbbf24; marker-end: url(#arrow-sequence-amber); }
+      .return { stroke: #5eead4; stroke-dasharray: 12 9; marker-end: url(#arrow-sequence-teal); }
+      .pill { fill: #101b30; stroke-width: 2; }
+      .pill-call { stroke: #60a5fa; }
+      .pill-metadata { stroke: #fbbf24; }
+      .pill-return { stroke: #5eead4; }
+      .numBadge { fill: #101b30; stroke-width: 3; }
+      .num-call { stroke: #60a5fa; }
+      .num-metadata { stroke: #fbbf24; }
+      .num-return { stroke: #5eead4; }
+      .num { font-family: "goorm Sans Code", "Noto Sans Mono", monospace; font-size: 18px; font-weight: 800; text-anchor: middle; }
+      .label { font-family: "goorm Sans", "Noto Sans KR", sans-serif; font-size: 19px; font-weight: 700; fill: #dbeafe; }
+      .noteBox { fill: #16243a; stroke: #2b4168; stroke-width: 2; }
+    </style>
+  </defs>
+  <rect width="2000" height="1220" fill="url(#bg)"/>
+  <rect class="frame" x="36" y="30" width="1928" height="1160" rx="30"/>
+  <text class="title" x="78" y="86">예약 신뢰도 판단 시퀀스</text>
+  <text class="subtitle" x="78" y="122">gate는 신규 제안·hold만 판단하며, 기존 CONFIRMED 예약은 이동시키지 않습니다.</text>
+
+  <g>
+    <rect class="actor" x="105" y="165" width="340" height="108" rx="18"/>
+    <text class="participant" x="275" y="210" text-anchor="middle">예약 API</text>
+    <text class="role" x="275" y="242" text-anchor="middle">신규 요청 / hold</text>
+    <line class="lifeline" x1="275" y1="273" x2="275" y2="1090"/>
+    <rect class="actor" x="575" y="165" width="340" height="108" rx="18"/>
+    <text class="participant" x="745" y="210" text-anchor="middle">자격 gate</text>
+    <text class="role" x="745" y="242" text-anchor="middle">호출자 경계</text>
+    <line class="lifeline" x1="745" y1="273" x2="745" y2="1090"/>
+    <rect class="actor" x="1045" y="165" width="340" height="108" rx="18"/>
+    <text class="participant" x="1215" y="210" text-anchor="middle">예약 신뢰도 판단기</text>
+    <text class="role" x="1215" y="242" text-anchor="middle">제한·결정적 판단</text>
+    <line class="lifeline" x1="1215" y1="273" x2="1215" y2="1090"/>
+    <rect class="actor" x="1515" y="165" width="340" height="108" rx="18"/>
+    <text class="participant" x="1685" y="210" text-anchor="middle">정책 + 이벤트 저장소</text>
+    <text class="role" x="1685" y="242" text-anchor="middle">적용 정책 / 이력</text>
+    <line class="lifeline" x1="1685" y1="273" x2="1685" y2="1090"/>
+
+    <rect class="activation" x="729" y="320" width="32" height="740" rx="8"/>
+    <rect class="activation" x="1199" y="450" width="32" height="430" rx="8"/>
+
+    <path class="message call" data-source="booking_api" data-target="eligibility_gate" d="M 275 360 H 745"/>
+    <rect class="pill pill-call" x="322" y="310" width="376" height="48" rx="24"/>
+    <circle class="numBadge num-call" cx="350" cy="334" r="16"/><text class="num" x="350" y="341">1</text>
+    <text class="label" x="382" y="341">생성 / hold 요청</text>
+
+    <path class="message call" data-source="eligibility_gate" data-target="pure_evaluator" d="M 745 490 H 1215"/>
+    <rect class="pill pill-call" x="822" y="440" width="316" height="48" rx="24"/>
+    <circle class="numBadge num-call" cx="850" cy="464" r="16"/><text class="num" x="850" y="471">2</text>
+    <text class="label" x="882" y="471">evaluate(query)</text>
+
+    <path class="message metadata" data-source="pure_evaluator" data-target="policy_event_store" d="M 1215 620 H 1685"/>
+    <rect class="pill pill-metadata" x="1264" y="570" width="372" height="48" rx="24"/>
+    <circle class="numBadge num-metadata" cx="1292" cy="594" r="16"/><text class="num" x="1292" y="601">3</text>
+    <text class="label" x="1324" y="601" fill="#fde68a">적용 정책 + 제한 이력</text>
+
+    <path class="message return" data-source="policy_event_store" data-target="pure_evaluator" d="M 1685 750 H 1215"/>
+    <rect class="pill pill-return" x="1254" y="700" width="392" height="48" rx="24"/>
+    <circle class="numBadge num-return" cx="1282" cy="724" r="16"/><text class="num" x="1282" y="731">4</text>
+    <text class="label" x="1314" y="731">중복 제거 이력 + 정책</text>
+
+    <path class="message return" data-source="pure_evaluator" data-target="eligibility_gate" d="M 1215 850 H 745"/>
+    <rect class="pill pill-return" x="796" y="800" width="350" height="48" rx="24"/>
+    <circle class="numBadge num-return" cx="824" cy="824" r="16"/><text class="num" x="824" y="831">5</text>
+    <text class="label" x="856" y="831">판단 + digest + 만료</text>
+
+    <path class="message return" data-source="eligibility_gate" data-target="booking_api" d="M 745 1010 H 275"/>
+    <rect class="pill pill-return" x="324" y="960" width="390" height="48" rx="24"/>
+    <circle class="numBadge num-return" cx="352" cy="984" r="16"/><text class="num" x="352" y="991">6</text>
+    <text class="label" x="384" y="991">허용 / 직원 검토 / 판단 불가</text>
+
+    <rect class="noteBox" x="235" y="1100" width="1530" height="62" rx="16"/>
+    <text class="note" x="1000" y="1138" text-anchor="middle">RESTRICTED·REQUIRES_STAFF_APPROVAL·STALE·UNAVAILABLE은 신규 경로에만 영향을 주며, 확정 예약은 그대로 남습니다.</text>
+  </g>
+</svg>

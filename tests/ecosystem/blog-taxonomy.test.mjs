@@ -224,7 +224,7 @@ test('clinic appointment series exposes shared grouping tags in both locales', a
     .sort();
   const sharedTags = ['appointment-service', 'example', 'timefold'];
 
-  assert.equal(seriesFiles.length, 14);
+  assert.equal(seriesFiles.length, 15);
 
   for (const file of seriesFiles) {
     const [enSource, koSource] = await Promise.all([
@@ -252,7 +252,7 @@ test('every bilingual blog pair has identical explicit tags', async () => {
   const enFiles = (await readdir(enDirectory)).filter(isPost).sort();
   const koFiles = (await readdir(koDirectory)).filter(isPost).sort();
 
-  assert.equal(enFiles.length, 101);
+  assert.equal(enFiles.length, 102);
   assert.deepEqual(koFiles, enFiles);
 
   const counts = new Map();
