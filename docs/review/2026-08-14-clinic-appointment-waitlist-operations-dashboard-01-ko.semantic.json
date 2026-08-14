@@ -1,0 +1,56 @@
+{
+  "kind": "workflow",
+  "source": {
+    "question": "병원 STAFF는 대기 목록의 병원 상태를 읽고 어떤 조치를 어떤 근거로 실행하는가?",
+    "revision": "clinic-appointment@f783de85efc25e4c8386a34ab6599eca99093eae; visual-site@6debcaa88e93afd1b006e65d4f13252dfb1bbbb1",
+    "paths": [
+      "docs/superpowers/specs/2026-08-14-clinic-appointment-waitlist-operations-dashboard-design.md"
+    ],
+    "externalPaths": [
+      "docs/api/waitlist-delivery.md",
+      "docs/requirements/waitlist-delivery.md",
+      "appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/waitlist/WaitlistDeliveryHealthIndicator.kt",
+      "appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/waitlist/WaitlistDeliveryMetrics.kt",
+      "appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/controller/WaitlistController.kt"
+    ]
+  },
+  "nodes": [
+    {"id": "clinic-readiness", "label": "병원 readiness", "source": "WaitlistDeliveryHealthIndicator"},
+    {"id": "operational-metrics", "label": "운영 지표", "source": "WaitlistDeliveryMetrics"},
+    {"id": "action-queue", "label": "조치 큐", "source": "operations dashboard design"},
+    {"id": "selected-evidence", "label": "선택 항목 근거", "source": "WaitlistOfferResponse and privacy contract"},
+    {"id": "staff-command", "label": "허용된 STAFF 명령", "source": "WaitlistController confirm/decline routes"},
+    {"id": "terminal-outcome-decision", "label": "종료 상태 결정", "source": "operations dashboard design"},
+    {"id": "replay-processing", "label": "재생·처리 중", "source": "waitlist-delivery API idempotency contract"},
+    {"id": "conflict-requeue", "label": "충돌·재큐", "source": "waitlist-delivery API conflict and recovery contract"}
+  ],
+  "edges": [
+    {"id": "readiness-metrics", "from": "clinic-readiness", "to": "operational-metrics", "kind": "health-summary", "source": "WaitlistDeliveryHealthIndicator and Metrics"},
+    {"id": "metrics-queue", "from": "operational-metrics", "to": "action-queue", "kind": "priority-context", "source": "operations dashboard design"},
+    {"id": "queue-evidence", "from": "action-queue", "to": "selected-evidence", "kind": "staff-selection", "source": "operations dashboard design"},
+    {"id": "evidence-command", "from": "selected-evidence", "to": "staff-command", "kind": "version-scope-check", "source": "WaitlistController and API contract"},
+    {"id": "command-terminal", "from": "staff-command", "to": "terminal-outcome-decision", "kind": "bounded-command-result", "source": "WaitlistController and API contract"},
+    {"id": "terminal-replay-processing", "from": "terminal-outcome-decision", "to": "replay-processing", "kind": "idempotency-outcome", "source": "waitlist-delivery API idempotency contract"},
+    {"id": "terminal-conflict-requeue", "from": "terminal-outcome-decision", "to": "conflict-requeue", "kind": "conflict-recovery", "source": "waitlist-delivery API conflict and recovery contract"},
+    {"id": "conflict-queue", "from": "conflict-requeue", "to": "action-queue", "kind": "bounded-requeue", "source": "operations dashboard design"}
+  ],
+  "behavior": {"branches": 3, "loops": 1},
+  "budget": {"nodes": 8, "edges": 8, "branches": 3, "loops": 1},
+  "repairs": [
+    {
+      "target": "scope-version-transition",
+      "reason": "근거 패널 오른쪽 가장자리에 치우친 scope/version 확인을 근거 패널과 허용 명령 사이의 중앙 전환로로 옮기고 상하 여백을 넓혔다.",
+      "touches": 4
+    },
+    {
+      "target": "command-outcome-spacing",
+      "reason": "허용 명령, 종료 상태 결정, 결과 카드 사이의 수직 간격을 분리하고 캔버스 하단 여백을 함께 확장했다.",
+      "touches": 9
+    },
+    {
+      "target": "opaque-canvas",
+      "reason": "둥근 캔버스 바깥 모서리까지 배경을 채워 PNG 시각 감사의 불투명 캔버스 계약을 만족시켰다.",
+      "touches": 2
+    }
+  ]
+}

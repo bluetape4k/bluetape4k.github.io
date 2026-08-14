@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2200" height="1760" viewBox="0 0 2200 1760" role="img" aria-labelledby="title desc">
+  <title id="title">Waitlist operations screen: metrics, action queue, and command boundary</title>
+  <desc id="desc">Clinic readiness and operational metrics lead STAFF to an action queue, selected evidence, allowed commands, and explicit terminal outcomes.</desc>
+  <defs>
+    <style>
+      text { font-family: "Comic Mono", "Noto Sans Mono", ui-monospace, monospace !important; fill: #eaf2ff; }
+      text.title { font-family: "Architects Daughter", cursive !important; font-weight: 700; }
+      text.subtitle, text.muted { fill: #a8bdd8; }
+      text.small { font-size: 22px; }
+      text.body { font-size: 25px; }
+      text.card-title { font-size: 30px; font-weight: 700; }
+      text.section { font-size: 28px; font-weight: 700; }
+      text.label { font-size: 21px; font-weight: 600; }
+      text.caption { font-size: 20px; fill: #9fb3cd; }
+      .card { stroke-width: 3; }
+      .primary-card { fill: #152f52; stroke: #63a9ff; }
+      .teal-card { fill: #143d45; stroke: #4ee5d1; }
+      .amber-card { fill: #3c311f; stroke: #f5b84b; }
+      .green-card { fill: #243c25; stroke: #9bdc5a; }
+      .red-card { fill: #402735; stroke: #ff7eae; }
+      .canvas { fill: #07162c; stroke: #274d7c; stroke-width: 3; }
+      .panel { fill: #0d2340; stroke: #2c5b8e; stroke-width: 2; }
+      .queue-card { fill: #112b4b; stroke: #3c75af; stroke-width: 2; }
+      .queue-card.warn { fill: #3d3021; stroke: #f5b84b; }
+      .queue-card.unknown { fill: #183e43; stroke: #4ee5d1; }
+      .queue-card.conflict { fill: #3d2635; stroke: #ff7eae; }
+      .connector { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: 5; }
+      .primary-line { stroke: #63a9ff; }
+      .observe-line { stroke: #4ee5d1; stroke-dasharray: 14 12; }
+      .state-line { stroke: #9bdc5a; }
+      .warning-line { stroke: #f5b84b; }
+      .conflict-line { stroke: #ff7eae; stroke-dasharray: 12 10; }
+      .connector-label { fill: #0c2340; stroke-width: 2; }
+      .label-primary { stroke: #63a9ff; }
+      .label-observe { stroke: #4ee5d1; }
+      .label-state { stroke: #9bdc5a; }
+      .label-warning { stroke: #f5b84b; }
+      .label-conflict { stroke: #ff7eae; }
+    </style>
+    <marker id="en-primary-arrow" markerWidth="14" markerHeight="14" markerUnits="userSpaceOnUse" viewBox="0 0 14 14" refX="12" refY="7" orient="auto" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+      <path d="M1 1 L13 7 L1 13 Z" fill="#63a9ff" stroke="none"/>
+    </marker>
+    <marker id="en-observe-arrow" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" viewBox="0 0 10 10" refX="8" refY="5" orient="auto" data-role="secondary" data-size="10x10" data-tip-direction="positive-x">
+      <path d="M1 1 L9 5 L1 9 Z" fill="#4ee5d1" stroke="none"/>
+    </marker>
+    <marker id="en-state-arrow" markerWidth="14" markerHeight="14" markerUnits="userSpaceOnUse" viewBox="0 0 14 14" refX="12" refY="7" orient="auto" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+      <path d="M1 1 L13 7 L1 13 Z" fill="#9bdc5a" stroke="none"/>
+    </marker>
+    <marker id="en-warning-arrow" markerWidth="14" markerHeight="14" markerUnits="userSpaceOnUse" viewBox="0 0 14 14" refX="12" refY="7" orient="auto" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+      <path d="M1 1 L13 7 L1 13 Z" fill="#f5b84b" stroke="none"/>
+    </marker>
+    <marker id="en-conflict-arrow" markerWidth="14" markerHeight="14" markerUnits="userSpaceOnUse" viewBox="0 0 14 14" refX="12" refY="7" orient="auto" data-role="secondary" data-size="14x14" data-tip-direction="positive-x">
+      <path d="M1 1 L13 7 L1 13 Z" fill="#ff7eae" stroke="none"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="2200" height="1760" fill="#07162c"/>
+  <rect class="canvas" x="24" y="24" width="2152" height="1712" rx="34"/>
+  <text class="title" x="88" y="112" font-size="52">A waitlist operations screen is an action board</text>
+  <text class="subtitle" x="92" y="157" font-size="25">Read metrics -&gt; choose an action -&gt; inspect evidence -&gt; record the allowed command outcome</text>
+
+  <text class="section" x="92" y="220">01  Read clinic health first</text>
+  <rect class="card primary-card" x="92" y="250" width="650" height="170" rx="22"/>
+  <text class="card-title" x="126" y="302">READINESS</text>
+  <text class="status" x="126" y="346" font-size="34">UP / DEGRADED / OUT_OF_SERVICE</text>
+  <text class="muted small" x="126" y="385">adapter | schema | active policy | backlog</text>
+
+  <rect class="card teal-card" x="790" y="250" width="1318" height="170" rx="22"/>
+  <text class="card-title" x="824" y="302">Operational metrics</text>
+  <text class="metric" x="824" y="350" font-size="26">active offers | active holds | expired backlog | oldest vacancy age</text>
+  <text class="muted small" x="824" y="385">Observe clinic-level cardinality without identifier tags</text>
+
+  <path class="connector observe-line" data-connector="clinic-readiness-to-operational-metrics" data-source="clinic-readiness" data-target="operational-metrics" d="M742 335 H790" marker-end="url(#en-observe-arrow)"/>
+  <g class="connector-label" data-from="clinic-readiness" data-to="operational-metrics">
+    <rect class="label-observe" x="780" y="173" width="116" height="38" rx="19"/>
+    <text class="label" x="838" y="199" text-anchor="middle">observe</text>
+  </g>
+
+  <text class="section" x="92" y="505">02  Choose priority in the full-width action queue</text>
+  <rect class="panel" x="92" y="535" width="2016" height="230" rx="24"/>
+  <text class="muted small" x="126" y="577">A sorted view that turns state into the next staff action</text>
+  <rect class="queue-card warn" x="126" y="610" width="456" height="116" rx="18"/>
+  <text class="card-title" x="154" y="652" font-size="25">Expiring soon</text>
+  <text class="small" x="154" y="688">Recheck expiresAt | version</text>
+  <rect class="queue-card unknown" x="610" y="610" width="456" height="116" rx="18"/>
+  <text class="card-title" x="638" y="652" font-size="25">Delivery result unknown</text>
+  <text class="small" x="638" y="688">deliveryState=UNKNOWN</text>
+  <rect class="queue-card" x="1094" y="610" width="456" height="116" rx="18"/>
+  <text class="card-title" x="1122" y="652" font-size="25">Stale decision</text>
+  <text class="small" x="1122" y="688">Recheck policy | slot | version</text>
+  <rect class="queue-card conflict" x="1578" y="610" width="496" height="116" rx="18"/>
+  <text class="card-title" x="1606" y="652" font-size="25">Stuck hold</text>
+  <text class="small" x="1606" y="688">Check reconcile | correlation</text>
+
+  <path class="connector primary-line" data-connector="operational-metrics-to-action-queue" data-source="operational-metrics" data-target="action-queue" d="M1450 420 V535" marker-end="url(#en-primary-arrow)"/>
+  <g class="connector-label" data-from="operational-metrics" data-to="action-queue">
+    <rect class="label-primary" x="1350" y="447" width="202" height="42" rx="21"/>
+    <text class="label" x="1451" y="475" text-anchor="middle">read priority</text>
+  </g>
+
+  <text class="section" x="92" y="845">03  Inspect evidence and allowed commands</text>
+  <rect class="panel" x="92" y="875" width="2016" height="250" rx="24"/>
+  <text class="card-title" x="126" y="927">Selected item evidence</text>
+  <text class="code" x="126" y="974" font-size="25">offerRef | entryRef | version | expiresAt | deliveryState</text>
+  <text class="small" x="126" y="1014">policyVersion | rank | stable reason category | correlation</text>
+  <rect class="card amber-card" x="1260" y="915" width="800" height="155" rx="22"/>
+  <text class="card-title" x="1295" y="960">Allowed STAFF command</text>
+  <text class="body" x="1295" y="1004">confirm / decline | Idempotency-Key | expectedVersion</text>
+  <text class="muted small" x="1295" y="1042">ADMIN policy and adjustment commands stay outside</text>
+
+  <path class="connector primary-line" data-connector="action-queue-to-selected-evidence" data-source="action-queue" data-target="selected-evidence" d="M1100 765 V875" marker-end="url(#en-primary-arrow)"/>
+  <g class="connector-label" data-from="action-queue" data-to="selected-evidence">
+    <rect class="label-primary" x="1000" y="790" width="198" height="42" rx="21"/>
+    <text class="label" x="1099" y="818" text-anchor="middle">select item</text>
+  </g>
+  <path class="connector warning-line" data-connector="selected-evidence-to-staff-command" data-source="selected-evidence" data-target="staff-command" d="M1100 1125 V1240" marker-end="url(#en-warning-arrow)"/>
+  <g class="connector-label" data-from="selected-evidence" data-to="staff-command">
+    <rect class="label-warning" x="960" y="1147" width="280" height="52" rx="18"/>
+    <text class="label" x="1100" y="1180" text-anchor="middle">scope | version check</text>
+  </g>
+
+  <rect class="card amber-card" x="690" y="1240" width="820" height="120" rx="22"/>
+  <text class="card-title" x="1100" y="1286" text-anchor="middle">Run the allowed command</text>
+  <text class="body" x="1100" y="1328" text-anchor="middle">POST confirm / decline | DB fence | idempotency</text>
+
+  <path class="connector state-line" data-connector="staff-command-to-terminal-outcome-decision" data-source="staff-command" data-target="terminal-outcome-decision" d="M1100 1360 V1435" marker-end="url(#en-state-arrow)"/>
+  <g class="connector-label" data-from="staff-command" data-to="terminal-outcome-decision">
+    <rect class="label-state" x="1000" y="1372" width="200" height="42" rx="21"/>
+    <text class="label" x="1100" y="1400" text-anchor="middle">record result</text>
+  </g>
+
+  <rect class="card green-card" x="780" y="1435" width="640" height="84" rx="20"/>
+  <text class="card-title" x="1100" y="1471" text-anchor="middle">Terminal outcome decision</text>
+  <text class="small" x="1100" y="1499" text-anchor="middle">success | replay | processing | conflict</text>
+
+  <path class="connector state-line" data-connector="terminal-replay-processing" data-source="terminal-outcome-decision" data-target="replay-processing" d="M900 1519 V1610 Q900 1620 890 1620 H550" marker-end="url(#en-state-arrow)"/>
+  <path class="connector warning-line" data-connector="terminal-conflict-requeue" data-source="terminal-outcome-decision" data-target="conflict-requeue" d="M1300 1519 V1610 Q1300 1620 1310 1620 H1650" marker-end="url(#en-warning-arrow)"/>
+  <rect class="card teal-card" x="120" y="1595" width="430" height="52" rx="16"/>
+  <text class="small" x="335" y="1628" text-anchor="middle">201 replay / 202 processing -&gt; re-read</text>
+  <rect class="card red-card" x="1650" y="1595" width="430" height="52" rx="16"/>
+  <text class="small" x="1865" y="1628" text-anchor="middle">409 conflict -&gt; requeue action</text>
+
+  <rect class="panel" x="92" y="1240" width="440" height="88" rx="18" opacity="0.94"/>
+  <text class="small" x="126" y="1275">Dashed: observation / reference</text>
+  <text class="small" x="126" y="1308">Solid: command / state change</text>
+  <text class="caption" x="92" y="1715">Keep identifiers out of metric tags; open a selected item only through a scope-checked opaque reference.</text>
+</svg>

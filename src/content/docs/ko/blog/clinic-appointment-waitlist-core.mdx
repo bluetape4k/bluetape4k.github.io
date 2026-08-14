@@ -1,122 +1,122 @@
 ---
 title: "대기 목록은 이름표가 아니라 상태 머신이다"
-description: 취소로 생긴 빈자리를 대기 후보에게 안전하게 넘기기 위해 적격성, 제안 hold, claim, 만료와 복구를 분리하는 예약서비스 설계를 설명합니다.
+description: 취소로 생긴 빈시간을 대기 후보에게 안전하게 넘기기 위해 적격성, 제안 보류(hold), 수락(claim), 만료와 복구를 분리하는 예약 서비스 설계를 설명합니다.
 sidebar:
   order: -202608141000
 blog:
   date: 2026-08-14T10:00:00+09:00
   image: /assets/clinic-appointment-waitlist-core-hero.png
-  imageAlt: 빈자리와 대기 후보의 claim token을 DB fence 뒤에서 넘기는 작은 로봇 작업대
-  cardDescription: "대기 후보를 단순한 이름 목록으로 보지 않고, 빈자리 하나를 제안·hold·claim·복구하는 상태 머신으로 설계합니다."
+  imageAlt: 빈시간과 대기 후보의 수락 토큰(claim token)을 DB 펜스 뒤에서 넘기는 작은 로봇 작업대
+  cardDescription: "대기 후보를 단순한 이름 목록으로 보지 않고, 빈시간 하나를 제안·보류(hold)·수락(claim)·복구하는 상태 머신으로 설계합니다."
   tags: ["architecture", "domain-modeling", "concurrency", "resilience", "appointment-service", "example", "timefold"]
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/clinic-appointment-waitlist-core-hero.png" alt="빈자리와 대기 후보의 claim token을 DB fence 뒤에서 넘기는 작은 로봇 작업대" loading="eager" />
-  <figcaption>취소된 예약 하나가 빈자리를 만들었다고 해서, 대기 목록의 첫 번째 이름을 바로 예약 확정으로 바꿀 수는 없습니다. 누가 적격한지, 누가 제안을 받았는지, 누가 실제로 claim했는지와 실패 뒤 무엇을 복구해야 하는지를 분리해야 합니다.</figcaption>
+  <img src="/assets/clinic-appointment-waitlist-core-hero.png" alt="빈시간과 대기 후보의 수락 토큰(claim token)을 DB 펜스 뒤에서 넘기는 작은 로봇 작업대" loading="eager" />
+  <figcaption>취소된 예약 하나가 빈시간을 만들었다고 해서, 대기 목록의 첫 번째 이름을 바로 예약 확정으로 바꿀 수는 없습니다. 누가 적격한지, 누가 제안을 받았는지, 누가 실제로 수락했는지(claim)와 실패 뒤 무엇을 복구해야 하는지를 분리해야 합니다.</figcaption>
 </figure>
 
-<p class="bt4k-post-meta">2026-08-14 · 병원 예약 서비스 개발기 · 대기 목록 핵심과 빈자리 회복</p>
+<p class="bt4k-post-meta">2026-08-14 · 병원 예약 서비스 개발기 · 대기 목록 핵심과 빈시간 회복</p>
 
-환자 A가 오전 10시 예약을 취소했습니다. 환자 B는 같은 시간대를 기다리고 있었고, 환자 C는 VIP 우선순위가 있지만 의사와 진료 항목이 맞지 않습니다. 알림 발송은 한 번 실패했고, 그 사이 두 개의 scheduler 인스턴스가 같은 빈자리를 발견했습니다.
+환자 A가 오전 10시 예약을 취소했습니다. 환자 B는 같은 시간대를 기다리고 있었고, 환자 C는 VIP 우선순위가 있지만 의사와 진료 항목이 맞지 않습니다. 알림 발송은 한 번 실패했고, 그 사이 두 개의 스케줄러 인스턴스가 같은 빈시간을 발견했습니다.
 
 `waitlist.sortBy { it.createdAt }`와 `notification.send()`만으로 이 흐름을 만들면 곧 네 가지 질문에 막힙니다.
 
 - B가 정말 이 병원·진료·의사·시간대에 적격한가?
-- 제안이 만들어졌지만 알림이 실패하면 빈자리는 누구에게 남아 있는가?
-- 두 worker가 동시에 같은 후보를 승격할 때 capacity hold는 몇 개가 생기는가?
-- B가 같은 claim을 재전송하거나 만료된 링크를 누르면 어떤 응답을 재현할 수 있는가?
+- 제안이 만들어졌지만 알림이 실패하면 빈시간은 누구에게 남아 있는가?
+- 두 워커가 동시에 같은 후보를 승격할 때 수용량 보류(hold)는 몇 개가 생기는가?
+- B가 같은 수락 요청(claim)을 재전송하거나 만료된 링크를 누르면 어떤 응답을 재현할 수 있는가?
 
 이 글의 결론은 간단합니다.
 
-> **대기 목록은 이름 목록이 아니라 상태 머신입니다. `WAITING` 후보를 hard eligibility와 결정적 순서로 줄인 뒤, 빈자리 하나에 `OFFERED`·durable hold 하나를 만들고, claim은 예약 생성과 분리된 `ACCEPTED` command handoff로 기록해야 합니다.**
+> **대기 목록은 이름 목록이 아니라 상태 머신입니다. `WAITING` 후보를 필수 적격성(eligibility)과 결정적 순서로 줄인 뒤, 빈시간에 `OFFERED`·지속 보류(durable hold)를 만들고, 수락(claim)은 예약 생성과 분리된 `ACCEPTED` 명령 인계로 기록해야 합니다.**
 
-## 빈자리를 다시 예약하는 문제는 후보 조회가 아니라 상태 문제다
+## 빈시간을 다시 예약하는 문제는 후보 조회가 아니라 상태 문제다
 
-대기 후보를 읽는 일과 후보를 승격하는 일은 같은 트랜잭션이 아닙니다. 현재 `clinic-appointment` 구현도 이 경계를 분리합니다. `WaitlistCandidateMatcher`는 bounded keyset page로 후보를 읽고 `BookingReliabilityDecision`을 batch로 결합하지만 row lock을 잡지 않습니다. 실제 승격은 `WaitlistOfferService`가 entry와 자원을 다시 잠그고 재검증하는 단계에서 일어납니다.
+대기 후보를 읽는 일과 후보를 승격하는 일은 같은 트랜잭션이 아닙니다. 현재 `clinic-appointment` 구현도 이 경계를 분리합니다. `WaitlistCandidateMatcher`는 범위를 제한한 키셋(keyset) 페이지로 후보를 읽고 `BookingReliabilityDecision`을 일괄 처리(batch)로 결합하지만 행 잠금(row lock)은 잡지 않습니다. 실제 승격은 `WaitlistOfferService`가 대기 항목과 자원을 다시 잠그고 재검증하는 단계에서 일어납니다.
 
 <figure class="bt4k-architecture" data-diagram-title="대기 항목의 상태 머신과 제안 전제 조건">
-  <img src="/assets/clinic-appointment-waitlist-state-01-ko.png" alt="WAITING에서 hard eligibility와 결정적 순서를 거쳐 OFFERED가 되고, claim 뒤 ACCEPTED command handoff로 이어지며, 거절·만료·철회는 별도 terminal 상태로 남는 대기 목록 상태 머신" loading="lazy" />
-  <figcaption>수락은 예약 행을 곧바로 생성하는 일이 아닙니다. durable hold와 command receipt를 남긴 뒤 별도 replacement command가 appointment를 만들도록 경계를 유지합니다.</figcaption>
+  <img src="/assets/clinic-appointment-waitlist-state-01-ko.png" alt="WAITING에서 필수 적격성 검사와 결정적 순서를 거쳐 OFFERED가 되고, 수락(claim) 뒤 ACCEPTED 명령 인계로 이어지며, 거절·만료·철회는 별도 종료 상태로 남는 대기 목록 상태 머신" loading="lazy" />
+  <figcaption>수락은 예약 행을 곧바로 생성하는 일이 아닙니다. 지속 보류(durable hold)와 명령 처리 영수증(receipt)을 남긴 뒤 별도 예약 생성 명령이 예약을 만들도록 경계를 유지합니다.</figcaption>
 </figure>
 
 상태를 명시하면 알림과 데이터베이스의 책임도 분리됩니다.
 
 | 상태 | 의미 | 다음 책임 |
 | --- | --- | --- |
-| `WAITING` | 아직 concrete offer를 받지 않은 적격 대기 항목 | 빈자리와 정책이 맞는지 다시 평가 |
-| `OFFERED` | 만료 시각과 capacity hold가 연결된 제안 | 후보의 응답·만료·재전송을 기록 |
-| `ACCEPTED` | 후보가 claim했고 후속 예약 명령이 소비할 durable hold | appointment 생성 command로 handoff |
-| `DECLINED` | 후보 또는 운영자가 거절한 terminal offer | 사유·억제 정책·다음 후보 진행 |
-| `EXPIRED` | 제안·hold 또는 시작 시각이 지나 닫힌 상태 | reconcile 후에만 재시도 |
-| `WITHDRAWN` | 운영자나 recovery가 철회한 상태 | 원인과 correlation을 보존 |
+| `WAITING` | 아직 구체적인 제안을 받지 않은 적격 대기 항목 | 빈시간과 정책이 맞는지 다시 평가 |
+| `OFFERED` | 만료 시각과 수용량 보류(hold)가 연결된 제안 | 후보의 응답·만료·재전송을 기록 |
+| `ACCEPTED` | 후보가 수락했고 후속 예약 명령이 소비할 지속 보류(durable hold) | 예약 생성 명령으로 인계 |
+| `DECLINED` | 후보 또는 운영자가 거절한 종료 제안 | 사유·억제 정책·다음 후보 진행 |
+| `EXPIRED` | 제안·보류(hold) 또는 시작 시각이 지나 닫힌 상태 | 상태 대조·복구 후에만 재시도 |
+| `WITHDRAWN` | 운영자나 복구가 철회한 상태 | 원인과 correlation을 보존 |
 
-특히 `ACCEPTED`를 `CONFIRMED`와 같은 말로 쓰면 안 됩니다. 현재 `WaitlistOfferClaimService`가 반환하는 것은 `holdId`와 만료 정보이며, appointment 생성은 이 서비스의 책임이 아닙니다. 이렇게 해야 claim 처리와 예약 생성 command를 독립적으로 재시도할 수 있습니다.
+특히 `ACCEPTED`를 `CONFIRMED`와 같은 말로 쓰면 안 됩니다. 현재 `WaitlistOfferClaimService`가 반환하는 것은 `holdId`와 만료 정보이며, 예약 생성은 이 서비스의 책임이 아닙니다. 이렇게 해야 수락 처리(claim)와 예약 생성 명령을 독립적으로 재시도할 수 있습니다.
 
 ## 후보를 먼저 줄이고, 그 다음 정책을 적용한다
 
-대기 목록의 순서를 먼저 만들고 나중에 권한을 검사하면, 자격이 없는 후보가 빈자리를 잠시 점유할 수 있습니다. 순서는 다음처럼 고정합니다.
+대기 목록의 순서를 먼저 만들고 나중에 권한을 검사하면, 자격이 없는 후보가 빈시간을 잠시 점유할 수 있습니다. 순서는 다음처럼 고정합니다.
 
-1. **hard eligibility**: `tenant`, `clinic`, treatment, doctor, 시간 창, 자원 요구를 확인합니다.
-2. **정책 입력**: 병원 정책 버전과 `BookingReliabilityDecision`을 읽기 전용으로 batch 결합합니다. decision을 계산하거나 고객 등급을 복사하지 않습니다.
-3. **결정적 keyset 순서**: `slotFit DESC → priorityRank DESC → waitingSince ASC → entryId ASC`를 사용합니다. 마지막 `entryId`가 있어야 같은 시각·같은 우선순위에서 순서가 흔들리지 않습니다.
-4. **bounded page와 시간 예산**: 후보를 무한히 스캔하지 않고 page·candidate 수·시간 예산을 제한합니다.
-5. **재검증**: 후보를 승격하기 직전에 같은 트랜잭션에서 entry, policy stamp, resource를 다시 확인합니다.
+1. **필수 적격성(eligibility)**: `tenant`, `clinic`, treatment, doctor, 시간 창, 자원 요구를 확인합니다.
+2. **정책 입력**: 병원 정책 버전과 `BookingReliabilityDecision`을 읽기 전용으로 일괄 처리(batch)합니다. 결정을 계산하거나 고객 등급을 복사하지 않습니다.
+3. **결정적 키셋(keyset) 순서**: `slotFit DESC → priorityRank DESC → waitingSince ASC → entryId ASC`를 사용합니다. 마지막 `entryId`가 있어야 같은 시각·같은 우선순위에서 순서가 흔들리지 않습니다.
+4. **범위 제한 페이지와 시간 예산**: 후보를 무한히 스캔하지 않고 페이지·후보 수·시간 예산을 제한합니다.
+5. **재검증**: 후보를 승격하기 직전에 같은 트랜잭션에서 대기 항목, 정책 stamp, 자원을 다시 확인합니다.
 
-VIP 신호가 있더라도 이 순서를 무시할 수 없습니다. VIP는 적격 후보의 `priorityRank`를 정하는 정책 입력일 뿐이고, 다른 tenant의 후보를 보거나 이미 `CONFIRMED`인 예약을 빼앗는 권한이 아닙니다. `BookingReliabilityDecision`이 `STALE`이거나 `UNAVAILABLE`이면 자동 승격을 확정하지 않고 staff review·재조회·다음 후보 중 정책에 맞는 경로로 보냅니다.
+VIP 신호가 있더라도 이 순서를 무시할 수 없습니다. VIP는 적격 후보의 `priorityRank`를 정하는 정책 입력일 뿐이고, 다른 테넌트(tenant)의 후보를 보거나 이미 `CONFIRMED`인 예약을 빼앗는 권한이 아닙니다. `BookingReliabilityDecision`이 `STALE`이거나 `UNAVAILABLE`이면 자동 승격을 확정하지 않고 직원 검토(staff review)·재조회·다음 후보 중 정책에 맞는 경로로 보냅니다.
 
-## 빈자리에는 active offer만 남긴다
+## 빈시간에는 활성 제안만 남긴다
 
-두 scheduler가 동시에 취소 이벤트를 읽으면 Redis lock 하나만으로는 충분하지 않습니다. Redis는 advisory deduplication을 줄이는 보조 수단일 수 있지만, 최종 상태·소유자·capacity는 PostgreSQL/MySQL/H2가 참여한 DB 트랜잭션과 version/CAS fence가 결정해야 합니다.
+두 스케줄러가 동시에 취소 이벤트를 읽으면 Redis 잠금(lock) 하나만으로는 충분하지 않습니다. Redis는 보조적인 중복 방지 수단일 수 있지만, 최종 상태·소유자·수용량은 PostgreSQL/MySQL/H2가 참여한 DB 트랜잭션과 버전/CAS 펜스가 결정해야 합니다.
 
 현재 설계의 핵심 불변식은 세 가지입니다.
 
-- 같은 `vacancyKey`에 active `OFFERED` 또는 `ACCEPTED` offer를 하나만 둡니다.
-- `OFFERED`와 `ACCEPTED`는 availability의 capacity hold와 연결되어야 합니다.
-- 후보 조회는 낙관적이고 재현 가능하게, 승격·claim은 resource-first lock과 CAS로 수행합니다.
+- 같은 `vacancyKey`에는 활성 `OFFERED` 또는 `ACCEPTED` 제안을 중복해서 두지 않습니다.
+- `OFFERED`와 `ACCEPTED`는 가용성(availability)의 수용량 보류(hold)와 연결되어야 합니다.
+- 후보 조회는 낙관적이고 재현 가능하게, 승격·claim은 자원 우선 잠금과 CAS로 수행합니다.
 
-그래서 `WaitlistOfferService`는 빈자리 fence를 얻은 뒤 hard eligibility, policy stamp, 후보 버전을 같은 caller-owned Exposed transaction에서 확인하고, offer·hold·event를 함께 commit합니다. 다른 worker가 먼저 commit했다면 중복 알림을 보내기 전에 DB 결과를 읽고 멈춰야 합니다.
+그래서 `WaitlistOfferService`는 빈시간 펜스를 얻은 뒤 필수 적격성(eligibility), 정책 버전 표식(stamp), 후보 버전을 같은 호출자 소유 Exposed 트랜잭션에서 확인하고, 제안·보류(hold)·이벤트를 함께 커밋합니다. 다른 워커가 먼저 커밋했다면 중복 알림을 보내기 전에 DB 결과를 읽고 멈춰야 합니다.
 
-## claim은 알림 수신이 아니라 durable handoff다
+## 수락(claim)은 알림 수신이 아니라 지속 보류를 인계하는 행위다
 
-알림이 도착했다는 사실은 후보가 빈자리를 소유했다는 뜻이 아닙니다. claim API는 공개 식별자, tenant·clinic scope, `expectedVersion`, idempotency key를 받아 다음을 확인합니다.
+알림이 도착했다는 사실은 후보가 빈시간을 소유했다는 뜻이 아닙니다. 수락 API(claim API)는 공개 식별자, 테넌트·병원 범위, `expectedVersion`, 멱등성 키를 받아 다음을 확인합니다.
 
-- offer와 entry가 같은 scope인지 확인합니다. 다른 scope의 opaque ref는 존재 여부를 추측할 수 있는 오류를 주지 않습니다.
-- offer·hold·entry를 필요한 순서로 잠그고 owner, 상태, version, expiry, 시작 시각, resource 점유를 검증합니다.
-- `OFFERED → ACCEPTED`와 hold 상태 전이를 CAS로 수행하고 command receipt를 append합니다.
-- 같은 idempotency key를 다시 보내면 새 hold를 만들지 않고 같은 결과를 replay합니다.
-- stale decision, expired offer, 이미 점유된 slot, version 충돌은 성공으로 위장하지 않고 재현 가능한 conflict로 반환합니다.
+- 제안과 대기 항목이 같은 범위인지 확인합니다. 다른 범위의 opaque ref(불투명 참조)는 존재 여부를 추측할 수 있는 오류를 주지 않습니다.
+- 제안·보류(hold)·대기 항목을 필요한 순서로 잠그고 소유자(owner), 상태, 버전, 만료(expiry), 시작 시각, 자원 점유를 검증합니다.
+- `OFFERED → ACCEPTED`와 보류(hold) 상태 전이를 CAS로 수행하고 명령 처리 영수증(receipt)을 추가(append)합니다.
+- 같은 멱등성 키를 다시 보내면 새 보류(hold)를 만들지 않고 같은 결과를 재생합니다.
+- 오래된 결정, 만료된 제안, 이미 점유된 슬롯, 버전 충돌은 성공으로 위장하지 않고 재현 가능한 충돌(conflict)로 반환합니다.
 
 <figure class="bt4k-sequence" data-diagram-title="대기 제안 생성·알림·claim·복구 시퀀스">
-  <img src="/assets/clinic-appointment-waitlist-claim-01-ko.png" alt="availability DB가 vacancy fence를 얻고 하나의 OFFERED hold를 commit한 뒤 알림을 시도하며, 후보의 claim API가 owner·revision·expiry를 검증해 ACCEPTED receipt를 replay 가능하게 남기는 시퀀스" loading="lazy" />
-  <figcaption>알림 실패는 `OFFERED`를 rollback하지 않습니다. claim 재전송은 같은 receipt를 돌려주고, stale·expired·occupied 상태는 recovery와 다음 정책 판단으로 넘깁니다.</figcaption>
+  <img src="/assets/clinic-appointment-waitlist-claim-01-ko.png" alt="가용성 DB가 빈시간 펜스를 얻고 OFFERED 보류(hold)를 커밋한 뒤 알림을 시도하며, 후보의 수락 API(claim API)가 소유자·리비전·만료 시각을 검증해 ACCEPTED 처리 영수증을 재생 가능하게 남기는 시퀀스" loading="lazy" />
+  <figcaption>알림 실패는 `OFFERED`를 되돌리지 않습니다(rollback). 수락 요청(claim) 재전송은 같은 처리 영수증을 돌려주고, 오래된·만료된·점유된 상태는 복구와 다음 정책 판단으로 넘깁니다.</figcaption>
 </figure>
 
-## tenant 경계와 개인정보는 저장 모델에서 강제한다
+## 테넌트(tenant) 경계와 개인정보는 저장 모델에서 강제한다
 
-대기 항목은 고객 이름이나 전화번호를 검색하는 기능이 아닙니다. 내부 DB에는 scope와 opaque ID만 저장하고, 공개 API도 예측하기 어려운 public ref를 사용합니다.
+대기 항목은 고객 이름이나 전화번호를 검색하는 기능이 아닙니다. 내부 DB에는 범위와 불투명 ID(opaque ID)만 저장하고, 공개 API도 예측하기 어려운 공개 참조값(public ref)을 사용합니다.
 
 | 경계 | 설계 규칙 |
 | --- | --- |
-| `tenant`·`clinic` | 모든 entry, offer, hold, event 조회에 같은 `WaitlistScope`를 전달 |
-| 후보 식별자 | 내부 정수 ID 대신 opaque public ref와 짧은 수명의 claim token 사용 |
-| 정책 provenance | `policyVersion`, digest, decision ID, expiry를 offer와 event에 기록 |
-| 관측 로그 | 이름·전화번호·원문 상담 메모 대신 상태, reason code, correlation ID를 기록 |
-| scope 오류 | 다른 tenant·clinic ref를 404처럼 처리해 존재 여부를 노출하지 않음 |
+| `tenant`·`clinic` | 모든 대기 항목, 제안, 보류(hold), 이벤트 조회에 같은 `WaitlistScope`를 전달 |
+| 후보 식별자 | 내부 정수 ID 대신 불투명 공개 참조값(opaque public ref)과 짧은 수명의 수락 토큰(claim token) 사용 |
+| 정책 근거 이력 | `policyVersion`, 다이제스트(digest), 결정 ID, 만료(expiry)를 제안과 이벤트에 기록 |
+| 관측 로그 | 이름·전화번호·원문 상담 메모 대신 상태, 사유 코드(code), 상관관계(correlation) ID를 기록 |
+| 범위 오류 | 다른 테넌트·병원의 참조값(ref)을 404처럼 처리해 존재 여부를 노출하지 않음 |
 
-이 경계가 있어야 운영자가 “왜 이 후보가 먼저였는가”를 설명하면서도 다른 환자의 개인정보를 검색 결과나 로그에 섞지 않습니다. provenance는 장식이 아니라 replay·이의제기·복구에 필요한 데이터입니다.
+이 경계가 있어야 운영자가 “왜 이 후보가 먼저였는가”를 설명하면서도 다른 환자의 개인정보를 검색 결과나 로그에 섞지 않습니다. 근거 이력은 장식이 아니라 재생·이의제기·복구에 필요한 데이터입니다.
 
-## 알림 실패와 rollout off에서도 회복한다
+## 알림 실패와 운영 적용 off에서도 회복한다
 
-대기열 기능을 끄는 것은 이미 만들어진 상태를 삭제하는 일이 아닙니다. `enabled=false` 또는 allowlist 밖인 경우 새 dispatch와 알림을 멈출 수 있지만, 다음 작업은 계속 가능해야 합니다.
+대기 목록 기능을 끄는 것은 이미 만들어진 상태를 삭제하는 일이 아닙니다. `enabled=false` 또는 허용 목록 밖인 경우 새 제안 작업과 알림을 멈출 수 있지만, 다음 작업은 계속 가능해야 합니다.
 
-- 만료된 offer와 hold를 닫습니다.
-- delivery outbox의 lease와 retry를 정리합니다.
-- stale offer, missing hold, stuck command를 bounded reconcile합니다.
-- 억제 정책과 event history를 지우지 않습니다.
-- 다시 켰을 때 같은 vacancy에 중복 offer를 만들지 않습니다.
+- 만료된 제안과 보류(hold)를 닫습니다.
+- 전송 아웃박스(outbox)의 리스와 재시도를 정리합니다.
+- 오래된 제안, 보류 누락(missing hold), 멈춘 명령(stuck command)을 범위 제한 상태 대조·복구합니다.
+- 억제 정책과 이벤트 이력(history)을 지우지 않습니다.
+- 다시 켰을 때 같은 빈시간에 중복 제안을 만들지 않습니다.
 
-rollback도 마찬가지입니다. 수동 SQL로 offer나 hold를 삭제하지 않고, 운영 command와 recovery service가 상태 전이·reason·correlation을 남기도록 해야 합니다. 이 규칙이 없으면 알림 장애를 고치다가 capacity를 다시 열어 두 후보에게 같은 시간을 제안하게 됩니다.
+되돌리기(rollback)도 마찬가지입니다. 수동 SQL로 제안이나 보류(hold)를 삭제하지 않고, 운영 명령과 복구 서비스가 상태 전이·사유·상관관계(correlation)를 남기도록 해야 합니다. 이 규칙이 없으면 알림 장애를 고치다가 수용량을 다시 열어 두 후보에게 같은 시간을 제안하게 됩니다.
 
 ## 현재 구현, 승인된 설계, 운영 준비를 구분한다
 
@@ -124,20 +124,20 @@ rollback도 마찬가지입니다. 수동 SQL로 offer나 hold를 삭제하지 �
 
 | 구분 | 이 글에서 확인한 범위 |
 | --- | --- |
-| **현재 구현** | `WaitlistCandidateMatcher`의 bounded candidate/decision batch, `WaitlistOfferService`의 offer·hold 전이, `WaitlistOfferClaimService`의 owner/version/expiry 검증, `WaitlistRecoveryService`의 만료·stale 복구, delivery API 모델 |
-| **승인된 설계** | hard eligibility 선행, vacancy당 active offer 하나, DB fence/CAS 권위, opaque ref, notification과 acceptance 분리, appointment command handoff |
-| **운영 준비** | migration V18/V19, contention·scope·PII·replay 테스트, feature flag false→allowlist rollout, reconcile 상한과 alert/runbook |
-| **로드맵** | 후보별 공정성 지표, 운영자 bulk review, 채널별 알림 provider 확장, 실제 병원 정책의 shadow 관찰과 ENFORCE 전환 |
+| **현재 구현** | `WaitlistCandidateMatcher`의 범위 제한 후보·결정 일괄 처리(batch), `WaitlistOfferService`의 제안·보류(hold) 전이, `WaitlistOfferClaimService`의 소유자(owner)·버전·만료(expiry) 검증, `WaitlistRecoveryService`의 만료·오래된 복구, 전송 API 모델 |
+| **승인된 설계** | 필수 적격성 검사 선행, 빈시간당 활성 제안만 유지, DB 펜스/CAS 권위, 불투명 참조(opaque ref), 알림과 수락 분리, 예약 명령 인계 |
+| **운영 준비** | 마이그레이션 V18/V19, 동시성 경쟁·범위·PII·재생 테스트, 기능 플래그(feature flag) false→허용 목록 운영 적용, 상태 대조·복구 상한과 경보(alert)·운영 절차(runbook) |
+| **로드맵** | 후보별 공정성 지표, 운영자 일괄 검토, 채널별 알림 제공자(provider) 확장, 실제 병원 정책의 shadow 관찰과 ENFORCE 전환 |
 
-따라서 “대기 목록 core가 구현됐다”는 말은 서비스 경계와 테스트가 준비됐다는 뜻이지, 특정 병원의 production allowlist와 운영 증거가 완료됐다는 뜻이 아닙니다. 배포 전에는 `OFF`에서 expiry·suppression·reconcile이 계속 도는지, notification provider 장애가 claim 상태를 바꾸지 않는지, 동일 vacancy contention에서 한 offer만 남는지를 별도로 확인해야 합니다.
+따라서 “대기 목록 핵심이 구현됐다”는 말은 서비스 경계와 테스트가 준비됐다는 뜻이지, 특정 병원의 운영 허용 목록과 운영 증거가 완료됐다는 뜻이 아닙니다. 배포 전에는 `OFF`에서 만료 정리·알림 억제·상태 대조·복구가 계속 도는지, 알림 제공자(provider) 장애가 수락(claim) 상태를 바꾸지 않는지, 동일 빈시간의 동시성 경쟁에서도 제안 하나만 남는지를 별도로 확인해야 합니다.
 
 ## 핵심은 먼저 연락하는 속도가 아니라 상태의 소유권이다
 
-빈자리를 빨리 채우는 것은 중요합니다. 그러나 더 중요한 질문은 “누가 먼저 문자를 받았는가?”가 아니라 다음과 같습니다.
+빈시간을 빨리 채우는 것은 중요합니다. 그러나 더 중요한 질문은 “누가 먼저 문자를 받았는가?”가 아니라 다음과 같습니다.
 
-> “이 후보는 같은 tenant·clinic의 hard eligibility를 통과했고, 이 정책 버전으로 이 순서에 놓였으며, 이 vacancy의 hold를 이 version fence 안에서 claim했습니다. 알림이 실패하거나 요청이 replay되어도 같은 상태와 receipt를 설명할 수 있습니다.”
+> “이 후보는 같은 테넌트·병원의 필수 적격성 검사를 통과했고, 이 정책 버전으로 이 순서에 놓였으며, 이 빈시간의 보류(hold)를 이 버전 펜스 안에서 claim했습니다. 알림이 실패하거나 요청이 재생되어도 같은 상태와 처리 영수증을 설명할 수 있습니다.”
 
-이 문장을 말할 수 있다면 대기 목록은 단순한 연락처 배열이 아니라 운영 가능한 예약 도메인 모델입니다. 다음 글에서는 이 core 상태를 공개 delivery API와 staff 운영 화면에 어떻게 노출할지 살펴보겠습니다.
+이 문장을 말할 수 있다면 대기 목록은 단순한 연락처 배열이 아니라 운영 가능한 예약 도메인 모델입니다. 다음 글에서는 이 핵심 상태를 공개 전송 API와 직원 운영 화면에 어떻게 노출할지 살펴보겠습니다.
 
 ### 시각 자료 더 보기
 
@@ -148,28 +148,29 @@ rollback도 마찬가지입니다. 수동 SQL로 offer나 hold를 삭제하지 �
 ### 근거 자료
 
 - [clinic-appointment 저장소](https://github.com/bluetape4k/clinic-appointment)
-- [대기열 제안 요구사항](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/requirements/waitlist-delivery.md)
-- [대기열 delivery API 계약](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/api/waitlist-delivery.md)
-- [대기열 core 운영 runbook](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/runbooks/waitlist-core.md)
-- [Issue #170 대기열 core 설계](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-08-01-issue-170-waitlist-core-design.md)
-- [대기열 delivery와 fencing 설계](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-08-03-issue-170-waitlist-delivery-design.md)
+- [대기 목록 제안 요구사항](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/requirements/waitlist-delivery.md)
+- [대기 목록 전송 API 계약](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/api/waitlist-delivery.md)
+- [대기 목록 핵심 운영 runbook](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/runbooks/waitlist-core.md)
+- [Issue #170 대기 목록 핵심 설계](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-08-01-issue-170-waitlist-core-design.md)
+- [대기 목록 전송과 펜싱 설계](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-08-03-issue-170-waitlist-delivery-design.md)
 - [WaitlistCandidateMatcher](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/waitlist/WaitlistCandidateMatcher.kt)
 - [WaitlistOfferService](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/waitlist/WaitlistOfferService.kt)
 - [WaitlistOfferClaimService](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/waitlist/WaitlistOfferClaimService.kt)
 - [WaitlistRecoveryService](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/waitlist/WaitlistRecoveryService.kt)
 - [ResourceAllocationRepository](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/repository/ResourceAllocationRepository.kt)
 
-## Series
+## 시리즈 링크
 
 - [프롤로그: 상품 정보가 고객의 방문 약속이 되기까지](/ko/blog/clinic-appointment-prologue-product-to-appointment/)
 - [상품이 바뀌어도 고객의 약속은 다시 쓰지 않는다](/ko/blog/clinic-appointment-product-version-purchase-snapshot/)
-- [이벤트 상품은 어떤 예약 약속을 만드는가](/ko/blog/clinic-appointment-event-product-first-commitment/)
+- [이벤트 상품은 어떤 방문 약속을 만드는가](/ko/blog/clinic-appointment-event-product-first-commitment/)
 - [N회 상품은 왜 예약 한 건이 아닌가](/ko/blog/clinic-appointment-n-visit-remaining-rights/)
 - [패키지 상품은 왜 실행 그래프가 되는가](/ko/blog/clinic-appointment-package-product-execution-graph/)
 - [상품 BOM은 어떻게 AppointmentPlan과 방문으로 번역되는가](/ko/blog/clinic-appointment-execution-bom-to-appointment-plan/)
 - [고객 희망 내원 날짜는 예약 확정이 아니다](/ko/blog/clinic-appointment-desired-visit-date-and-confirmed-commitment/)
 - [예약 우선순위는 누구의 규칙인가](/ko/blog/clinic-appointment-booking-reliability/)
 - **대기 목록은 이름표가 아니라 상태 머신이다**
+- [대기 목록 운영 화면은 상태판이 아니라 조치판이다](/ko/blog/clinic-appointment-waitlist-operations-dashboard/)
 - [Part 1: 병원 예약은 CRUD로 끝나지 않는다](/ko/blog/clinic-appointment-part1-not-just-crud/)
 - [Part 2: 예약 상태는 단순한 열거형이 아니다](/ko/blog/clinic-appointment-part2-state-machine-and-history/)
 - [Part 3: 병원마다 다른 업무시간과 자원으로 예약 가능 시간을 계산하기](/ko/blog/clinic-appointment-part3-clinic-specific-availability/)

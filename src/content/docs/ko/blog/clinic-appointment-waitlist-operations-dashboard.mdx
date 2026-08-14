@@ -1,0 +1,243 @@
+---
+title: "대기 목록 운영 화면은 상태판이 아니라 조치판이다"
+description: 병원 직원(STAFF)이 만료가 임박한 제안, 전송 결과가 확인되지 않은 제안, 오래된 결정과 정체된 보류(hold)를 지표·조치 큐·허용된 명령으로 판단하는 운영 화면 설계를 설명합니다.
+sidebar:
+  order: -202608141100
+blog:
+  date: 2026-08-14T11:00:00+09:00
+  image: /assets/clinic-appointment-waitlist-operations-dashboard-hero.png
+  imageAlt: 병원 운영자가 대기 목록 지표와 조치 큐를 확인하는 운영 화면 일러스트
+  cardDescription: "대기 목록을 상태 목록으로 끝내지 않고, 병원 지표·조치 큐·근거·허용된 명령으로 연결하는 운영 화면을 설명합니다."
+  tags: ["architecture", "operations", "resilience", "concurrency", "appointment-service", "example", "timefold"]
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-waitlist-operations-dashboard-hero.png" alt="병원 운영자가 대기 목록 지표와 조치 큐를 확인하는 운영 화면 일러스트" loading="eager" />
+  <figcaption>운영자는 대기 후보 행을 훑는 데서 끝내지 않고, 병원 상태와 지금 처리할 항목을 확인한 뒤 허용된 명령을 실행해야 합니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-14 · 병원 예약 서비스 개발기 · 대기 목록 운영 화면과 조치 큐</p>
+
+병원 운영자가 오전 근무를 시작했습니다. 대기 제안 두 건은 아직 `OFFERED` 상태이고, 그중 한 건은 만료 시각에 가까워졌습니다. 다른 제안은 알림 전송 제공자(provider)가 응답하지 않아 `deliveryState=UNKNOWN`으로 남아 있습니다. 취소된 예약으로 생긴 빈시간에 연결된 보류(hold)도 아직 정리되지 않아 상태 대조·복구를 기다리고 있습니다.
+
+이때 화면에 대기 항목과 제안을 시간순으로 나열하기만 하면 운영자는 다음 네 가지를 다시 확인해야 합니다.
+
+- 지금 가장 먼저 확인할 항목은 만료가 임박한 제안인가, 전송 결과가 확인되지 않은 제안인가?
+- 알림이 성공했는지 모르는 상태를 예약 확정으로 봐도 되는가?
+- 현재 버전으로 확정 명령을 보내도 슬롯과 정책 결정이 여전히 유효한가?
+- 운영 적용을 꺼 둔 병원에서도 만료 정리와 보류(hold) 회복 작업이 계속 실행되는가?
+
+목록은 현재 상태를 보여줄 뿐, 다음 조치를 결정해 주지는 않습니다. 이 글에서 말하는 운영 화면은 목록을 대체하는 화면도 아닙니다. 병원 단위 상태를 먼저 요약하고, 확인할 항목을 조치 큐로 정리하며, 선택한 항목의 근거와 실행 가능한 명령을 한 화면에서 연결해 `STAFF`가 다음 조치를 판단하도록 돕는 화면입니다.
+
+## 상태 목록과 운영 판단은 같은 화면에 있어도 다르다
+
+앞 글에서는 대기 목록을 `WAITING → OFFERED → ACCEPTED | DECLINED | EXPIRED | WITHDRAWN` 상태 머신으로 나눴습니다. 이번 글의 운영 화면은 이 상태를 다시 계산하는 곳이 아닙니다. API가 반환한 현재 상태를 조회하고, 운영자가 먼저 확인해야 할 순서를 별도로 제시합니다.
+
+현재 `STAFF` API의 공통 경로는 다음과 같습니다.
+
+```text
+/api/{tenantCode}/clinics/{clinicId}/waitlist
+```
+
+`GET /entries`, `GET /offers`, `GET /offers/{offerRef}`로 현재 대기 항목과 제안을 조회하고, `GET /offers/{offerRef}/decision`으로 결정 결과를 조회합니다. 목록 조회는 범위를 제한하는 키셋(keyset) 페이지네이션을 사용합니다. 이전 페이지 마지막 항목의 정렬 키를 서버가 발급한 불투명 커서(opaque cursor)로 넘기므로 한 번에 읽는 범위가 커지지 않으며, 기본 50건·최대 100건으로 제한됩니다. API 응답은 화면이 읽는 원본 데이터이고, 조치 큐는 그 데이터를 운영자가 먼저 확인할 순서로 정리한 별도 뷰입니다.
+
+둘을 섞으면 문제가 생깁니다. 상태가 `OFFERED`라는 사실만으로 “지금 확정 버튼을 눌러도 된다”는 뜻이 되지 않습니다. `version`, `expiresAt`, `deliveryState`, 현재 `slot`의 점유 상태와 정책 결정(policy decision)의 유효성을 다시 확인해야 하기 때문입니다.
+
+## 상단 지표는 병원 전체 상태를 요약한다
+
+운영자는 첫 화면에서 환자별 행을 보기 전에 병원 단위 상태를 확인해야 합니다. 상단 지표에는 개별 환자나 제안의 식별자를 넣지 않고, 스케줄러와 헬스 지표(health indicator)가 제공하는 값의 종류가 제한된 low-cardinality 지표를 사용합니다.
+
+| 지표 | 운영자가 읽는 뜻 | 구현 이름 |
+| --- | --- | --- |
+| 활성 제안 | 현재 `OFFERED` 상태로 남아 있는 제안의 수 | `appointment_waitlist_active_offers` |
+| 활성 보류(hold) | 아직 해제되지 않은 자원 보류(hold)의 수 | `appointment_waitlist_active_holds` |
+| 만료 미처리 작업 | 만료 시각이 지났지만 아직 종료 상태로 처리하지 못한 항목의 수 | `appointment_waitlist_expired_backlog` |
+| 가장 오래 열려 있는 빈시간의 경과 시간 | 빈시간이 열린 뒤 지금까지 경과한 시간 중 가장 긴 값 | `appointment_waitlist_oldest_vacancy_seconds` |
+| 운영 준비 상태 | 어댑터·스키마·정책 준비 상태와 미처리 작업을 합친 병원 단위 운영 상태 | `UP` / `DEGRADED` / `OUT_OF_SERVICE` |
+
+`WaitlistDeliveryMetrics`는 테넌트(tenant), 회원(member), 대기 항목, 제안 ID를 태그(tag)로 받지 않습니다. 이런 식별자를 메트릭에 넣으면 병원 규모가 커질수록 시계열 수가 폭발하고, 운영 지표가 개별 환자를 추적하는 검색 경로로 변합니다. 개별 항목은 조치 큐에서 범위를 검증한 불투명 참조(opaque reference)로 상세 화면을 열고, 상단 지표는 병원 전체의 상태만 보여줘야 합니다.
+
+운영 준비 상태도 같은 방식으로 읽어야 합니다.
+
+| 상태 | 판정 조건 | 운영 화면의 의미 |
+| --- | --- | --- |
+| `UP` | 어댑터·스키마·활성 정책이 준비되고, 가장 오래 열린 빈시간의 경과 시간이 2분 미만이며, 실패한 작업이 없음 | 새 제안 작업을 검토할 수 있는 정상 범위 |
+| `DEGRADED` | 전송 제공자(provider) 실패율이 5% 이상이거나, 가장 오래 열린 빈시간의 경과 시간이 2분 이상이거나, 확인되지 않은 전송이 있음 | 새 명령을 보내기 전에 원인과 해당 항목을 확인해야 하는 범위 |
+| `OUT_OF_SERVICE` | 필수 의존성·정책이 없거나, 가장 오래 열린 빈시간의 경과 시간이 5분을 초과하거나, 실패한 작업이 있거나, 만료된 미처리 작업이 100건을 초과 | 자동 제안 작업을 시작하면 안 되는 상태 |
+
+이 값은 특정 제안의 성공을 증명하지 않습니다. `DEGRADED`라고 해서 모든 제안을 거절하는 것도 아니고, `UP`이라고 해서 오래된 버전을 무시하고 확정해도 된다는 뜻도 아닙니다. 운영 준비 상태는 새 제안 작업을 검토할 수 있는 병원 단위 신호일 뿐입니다. 개별 명령의 최종 판정은 제안의 현재 상태와 자원을 다시 확인하는 단계에서 이뤄집니다.
+
+<figure class="bt4k-architecture" data-diagram-title="대기 목록 운영 화면의 지표·조치 큐·명령 경계">
+  <img src="/assets/clinic-appointment-waitlist-operations-dashboard-01-ko.png" alt="병원 운영 준비 상태와 운영 지표를 읽은 뒤 조치 큐에서 항목을 선택하고, 근거 패널을 확인해 허용된 명령을 실행하고 종료 상태 결정을 확인하는 대기 목록 운영 흐름" loading="lazy" />
+  <figcaption>지표는 항목을 자동 확정하지 않습니다. 운영자는 조치 큐에서 항목을 고르고, 근거 패널의 현재 `version`과 `expiresAt`을 확인한 뒤 허용된 명령을 실행합니다.</figcaption>
+</figure>
+
+## 조치 큐는 상태를 다음 행동으로 바꿔 보여준다
+
+조치 큐의 행은 상태 배지 하나로 끝나지 않습니다. 각 행은 “현재 무슨 상태인가?”와 “운영자가 먼저 무엇을 확인해야 하는가?”를 함께 보여줘야 합니다. 이번 화면에서 다루는 신호는 네 가지입니다.
+
+| 큐에 보이는 신호 | 먼저 할 일 | 자동 성공으로 처리하지 않는 이유 |
+| --- | --- | --- |
+| 만료 임박 | `expiresAt`과 현재 `version`을 다시 읽고 확정 가능 여부를 판단 | 처리하는 순간 이미 만료됐다면 `409 OFFER_EXPIRED`가 될 수 있음 |
+| `deliveryState=UNKNOWN` | 전송 제공자(provider)의 결과와 제안 상태를 다시 조회 | 전송 결과가 확인되지 않았다는 사실만으로 수락이나 예약 생성을 증명할 수 없음 |
+| 오래된 결정 | `policyVersion`, `slot`, 제안 `version`을 함께 재검증 | 오래된 결정을 새 결정처럼 사용할 수 없음 |
+| 보류(hold) 정체 | 보류·제안·빈시간의 상태 대조·복구 결과와 상관관계(correlation) ID를 확인 | 동시에 변경하려는 요청 중 어느 것이 성공할지는 DB 펜스와 CAS가 결정함 |
+
+큐는 `status` 문자열의 알파벳 순서로 정렬하지 않습니다. 긴급도, 경과 시간, 만료까지 남은 시간, 재시도 가능 여부와 상관관계(correlation) ID를 기준으로, 같은 입력이면 같은 순서를 만드는 결정적 규칙이 필요합니다. 이 글에서는 제품별 UI 정렬식을 새로 정의하지 않습니다. 중요한 것은 정렬 결과를 본 운영자가 “왜 이 항목이 위에 있는가?”를 추적할 수 있어야 한다는 점입니다.
+
+큐의 항목을 선택해도 바로 쓰기를 실행하지 않습니다. 선택은 읽기 단계이고, 명령은 버전과 범위를 다시 확인하는 별도 단계입니다. 두 운영자가 같은 행을 눌러도 최종 쓰기의 승패는 화면 순서가 아니라 DB 펜스와 버전 조건이 결정해야 합니다.
+
+## 근거 패널은 선택 이유를 설명하되 개인정보를 과도하게 노출하지 않는다
+
+운영자는 “왜 이 제안이 먼저 보이는가?”를 설명할 수 있어야 합니다. 그렇다고 환자 이름과 상담 기록 원문을 옆 패널에 복사할 필요는 없습니다. 근거 패널에는 명령을 검증하는 데 필요한 값만 둡니다.
+
+- `offerRef`, `entryRef`: 내부 정수 ID가 아닌 범위 검증을 거친 opaque reference(불투명 참조값)
+- `version`, `expiresAt`, `status`, `deliveryState`: 명령을 보낼 때 다시 대조할 상태값
+- `policyVersion`, 순위, 안정적인 사유 category(사유 분류): 선택 순서를 설명하는 근거 이력
+- correlation ID, 마지막 처리 결과, 재시도 가능 여부: 장애와 재조회의 연결 고리
+- 현재 `STAFF` 역할에서 허용된 명령과 허용하지 않는 명령
+
+API 응답에 `memberId`가 포함되더라도 운영 화면이 이름·전화번호·임상 기록(clinical note)을 함께 보여줘야 한다는 뜻은 아닙니다. `WaitlistController`는 대기 항목과 제안 reference를 범위로 검증한 뒤 해석하고, 형식·종류가 잘못됐거나 다른 병원에 속한 reference에는 `404 WAITLIST_REFERENCE_NOT_FOUND`를 반환해 존재 여부를 노출하지 않습니다. 운영 화면도 이 경계를 따라야 다른 병원의 항목이 검색 결과에 섞이거나 reference로 존재 여부를 추측하는 일을 막을 수 있습니다.
+
+정책 근거에도 같은 원칙을 적용합니다. `policyVersion`과 안정적인 사유 category는 보여줄 수 있지만, 원시 점수 벡터와 내부 계산 메모를 그대로 노출하지 않습니다. 운영자가 재현할 수 있는 설명과 환자의 민감정보는 서로 다른 데이터입니다.
+
+## 버튼은 상태 변경 경계를 드러내야 한다
+
+근거를 확인한 뒤에야 확정이나 거절 명령을 실행합니다. 현재 API 계약은 모든 상태 변경(mutation)에 인쇄 가능한 ASCII 문자로 이루어진 16–128자 `Idempotency-Key`를 요구하고, 기존 제안이나 대기 항목 레코드를 변경하는 명령에는 `expectedVersion`을 요구합니다.
+
+화면은 다음 요청을 보냅니다.
+
+```text
+POST /api/{tenantCode}/clinics/{clinicId}/waitlist/offers/{offerRef}/confirm
+Idempotency-Key: staff-confirm-20260814-01
+
+{
+  "expectedVersion": 7
+}
+```
+
+여기서 중요한 것은 버튼의 모양이 아니라 재실행의 의미입니다.
+
+| API 결과 | 화면에서 표시할 뜻 |
+| --- | --- |
+| `201`과 `appointmentRef` | 예약을 생성하고 `appointmentRef`를 반환합니다. |
+| 같은 key·같은 요청의 `201`과 `Idempotent-Replay: true` | 새 예약을 만들지 않고 최초 결과를 다시 표시합니다. |
+| `202 IDEMPOTENCY_IN_PROGRESS`와 `Retry-After: 1` | 명령이 처리 중이므로 잠시 뒤 결정 결과를 다시 조회합니다. |
+| `409 OFFER_EXPIRED` | 제안이 만료되어 확정을 완료하지 못합니다. |
+| `409 DECISION_STALE` | 화면이 읽어 둔 결정이나 버전이 최신 상태와 다릅니다. |
+| `409 SLOT_OCCUPIED` | 다른 명령이 슬롯을 먼저 점유했습니다. |
+
+멱등성 재생은 성공 결과를 다시 보여주는 동작이지, 새 예약을 만드는 재시도가 아닙니다. 처리 중인 명령도 실패로 단정하지 말고 `Retry-After`에 따라 결과를 다시 조회해야 합니다. 반대로 만료·오래된 결정·슬롯 점유 충돌은 성공으로 꾸미지 않고 운영자가 다시 읽고 처리하도록 조치 큐에 남깁니다.
+
+`ADMIN` 전용 정책 활성화·제한 조정·복구 크레딧 및 혜택 변경은 STAFF의 확정·거절 버튼과 같은 묶음에 넣지 않습니다. 권한이 없는 명령을 숨기는 것만으로 끝내지 말고, “이 화면에서 실행할 수 있는 상태 변경은 여기까지”라는 책임 경계를 표시해야 합니다.
+
+## 전송 결과 미확인은 수락이 아니다
+
+알림 전송 제공자(provider)가 응답하지 않았다고 해서 제안이 사라지거나, 반대로 예약이 확정된 것은 아닙니다. API 계약은 알림 전송(알림 전달)과 수락(제안 수락)을 분리합니다. 제공자(provider) 실패나 알 수 없는 결과는 전송 상태로 기록하고, 제안을 되살리거나 수락 상태로 바꾸지 않습니다.
+
+운영자가 `deliveryState=UNKNOWN` 행을 선택했을 때 화면이 제공해야 하는 것은 “성공 처리” 버튼이 아니라 다음 정보입니다.
+
+1. 마지막 전송 제공자(provider) 시도 결과와 상관관계(correlation) ID
+2. 현재 제안의 `status`, `version`, `expiresAt`
+3. 같은 요청의 결과를 다시 확인할 수 있는 `GET /offers/{offerRef}/decision` 경로
+4. 현재 역할에서 실행 가능한 명령과 실행할 수 없는 명령
+
+이 순서가 있어야 늦게 도착한 전송 제공자(provider) 응답을 이미 생성된 예약의 성공 근거로 잘못 처리하지 않습니다. 알림 전송 기록과 예약 생성은 서로 다른 경계에 있습니다. 예약 생성은 DB 펜스와 버전 조건을 확인하는 별도의 상태 변경입니다.
+
+<figure class="bt4k-sequence" data-diagram-title="STAFF 확정 명령과 멱등성 결과">
+  <img src="/assets/clinic-appointment-waitlist-operations-command-01-ko.png" alt="STAFF가 운영 화면에서 제안을 선택하고 버전과 멱등성 키를 포함한 확정 요청을 보내면 DB 펜스가 성공, 재생, 처리 중, 충돌 결과를 반환하는 시퀀스" loading="lazy" />
+  <figcaption>같은 멱등성 키의 재요청은 새 예약을 만들지 않고 최초 결과를 재생합니다. 처리 중 결과는 별도로 표시하고, 오래된 결정·만료·슬롯 점유는 서로 다른 종료 상태 결정으로 남깁니다.</figcaption>
+</figure>
+
+## 운영 적용을 꺼도 회복 작업은 계속된다
+
+`appointment.waitlist.delivery.enabled=false`가 기본값입니다. `clinicAllowlist`를 사용하면 지정한 병원만 새 빈시간 제안 작업을 실행할 수 있습니다. 하지만 제안 작업을 끈다고 이미 만들어진 제안과 보류(hold)가 사라지거나 삭제되는 것은 아닙니다.
+
+현재 스케줄러(scheduler)는 리더(leader) 리스를 획득한 뒤 다음 순서로 실행합니다.
+
+1. 만료된 제안과 보류(hold)를 종료 처리합니다.
+2. 종료 상태가 된 제안에 연결된 대기 중인 알림을 더 보내지 않도록 억제합니다(suppression).
+3. 처리가 멈춘 보류(hold)를 상태 대조·복구합니다.
+4. 전송 운영 모드가 `ACTIVE`일 때만 새 빈시간 제안 작업을 실행합니다.
+
+`GLOBAL_OFF`나 `CLINIC_DISABLED`에서는 네 번째 단계가 실행되지 않지만, 앞의 세 단계는 계속 실행됩니다. 리더(leader) 리스를 얻지 못한 인스턴스는 상태 변경(mutation)을 시작하지 않고 0건 결과로 종료합니다. 실제 행 단위 펜싱은 스케줄러(scheduler) 리스가 아니라 핵심 저장소(repository)와 DB가 담당합니다.
+
+따라서 운영 화면은 운영 적용을 끈 상태를 “대기 데이터가 없어졌다”로 표시하면 안 됩니다. `GLOBAL_OFF`와 `CLINIC_DISABLED`는 새 제안 작업을 시작하지 않는 운영 모드일 뿐이며, 만료 정리·알림 억제·보류(hold) 상태 대조·복구는 계속되는 회복 경로입니다. 화면 문구도 “새 제안 작업 중단”과 “회복 작업 진행”을 구분해 보여줘야 운영자가 기능을 다시 켤 때 남은 미처리 작업을 놓치지 않습니다.
+
+## 같은 화면을 역할별로 다르게 읽는다
+
+하나의 운영 화면을 만들더라도 독자가 찾는 답은 다릅니다.
+
+| 독자 | 먼저 읽는 영역 | 확인하려는 질문 |
+| --- | --- | --- |
+| `STAFF` | 조치 큐 → 근거 패널 → 허용 명령 | 지금 어떤 항목을 확인하고, 어떤 명령을 실행할 수 있는가? |
+| 개발자 | 운영 준비 상태·메트릭·버전·결과 코드 | 상태 변경과 재시도가 소스 계약을 지키는가? |
+| PO(제품 책임자) | 미처리 작업·가장 오래 열린 빈시간의 경과 시간·운영 모드 | 병원 운영이 어디에서 막혔고, 운영 적용을 넓혀도 되는가? |
+| 병원 관계자 | 조치 큐의 이유와 종료 결과 | 왜 이 항목을 먼저 처리하며, 처리 결과를 어떻게 설명할 수 있는가? |
+
+그래서 대시보드는 서로 다른 독자마다 네 개의 화면으로 쪼개지 않습니다. 상단 지표는 병원 상태를, 조치 큐는 우선순위를, 근거 패널은 제한된 근거 이력을, 명령 결과는 상태 변경의 결과와 책임 경계를 보여줍니다. 각 영역이 자기 역할을 지키면 개발자에게는 불변식이 보이고, 운영자에게는 다음 행동이 보입니다.
+
+## 현재 구현과 운영 활성화를 섞지 않는다
+
+이 글은 2026-08-14 기준 `clinic-appointment`의 `develop` 소스와 대기 목록 전달 계약을 대조해 작성했습니다. 다음 범위는 확인했지만, 운영 적용이 완료됐다고 주장하지는 않습니다.
+
+| 구분 | 이 글에서 확인한 범위 |
+| --- | --- |
+| 현재 구현 | `WaitlistController`의 대기 항목·제안 조회·확정·거절 경로, `WaitlistOfferResponse`의 버전·만료 시각·전송 상태, 헬스 지표·메트릭·운영 적용 설정, 작은 배치로 나눠 처리하는 상한형 스케줄러 |
+| 승인된 계약 | 불투명 참조(opaque reference), 범위 불일치 시 `404`, 상한이 있는 키셋 커서(keyset cursor), `Idempotency-Key`·`expectedVersion`, 재생·처리 중·충돌 결과, 확인되지 않은 전송과 수락 분리 |
+| 운영 활성화 대기 | 특정 병원의 운영 허용 목록(allowlist) 활성화, 실제 전송 제공자(provider) 장애율, 스테이징 성능 기준 측정, 카나리와 복구 훈련 결과 |
+
+코드와 테스트가 존재한다는 사실만으로 운영 화면이 실제 운영 환경에서 활성화됐다고 볼 수는 없습니다. 특정 병원에서 실제 제안 작업을 켰다는 증거도 아닙니다. 운영 판단에는 별도의 허용 목록 기록, 미처리 작업 추이, 전송 제공자(provider) 결과와 복구 훈련 결과가 필요합니다.
+
+## 운영 화면은 더 많은 정보보다 더 명확한 정보를 제공해야 한다
+
+대기 목록 운영 화면의 핵심은 행의 수가 아닙니다. 정보를 많이 나열하는 대신 병원 상태를 먼저 읽고, 지금 확인할 조치를 고르고, 선택 이유를 제한된 근거로 설명한 뒤, 현재 버전과 권한으로 허용된 명령만 실행하는 순서를 분명하게 보여줘야 합니다.
+
+이 순서를 지키면 화면은 다음 사실을 숨기지 않고 보여줄 수 있습니다.
+
+- 알림 결과가 확인되지 않으면 성공으로 표시하지 않습니다.
+- 화면에 보이던 버전이 오래되면 확정 전에 다시 검증합니다.
+- 같은 명령을 다시 보내도 새 예약을 만들지 않습니다.
+- 운영 적용을 꺼도 만료 정리·알림 억제·보류(hold) 상태 대조·복구는 계속합니다.
+- STAFF가 볼 수 있는 근거와 ADMIN이 바꿀 수 있는 정책을 한 버튼 묶음에 섞지 않습니다.
+
+앞 글에서는 대기 목록의 상태와 소유권을 설명했습니다. 이번 글에서는 운영자가 그 상태를 읽고 조치하는 화면의 경계를 정리했습니다. 다음 글에서는 이 화면의 각 명령이 실제 API 요청과 재조회 흐름으로 어떻게 연결되는지 더 작은 단위로 살펴보겠습니다.
+
+### 시각 자료 더 보기
+
+- [예약 가능 시간과 AppointmentPlan](/visual-companions/clinic-appointment/appointment-plan-and-capacity/)
+- [상품 BOM에서 예약 흐름으로](/visual-companions/clinic-appointment/product-bom-to-appointment-flow/)
+- [병원 예약 시각 자료 모음](/visual-companions/clinic-appointment/)
+
+### 근거 자료
+
+- [clinic-appointment 저장소](https://github.com/bluetape4k/clinic-appointment)
+- [대기 목록 전달 API 계약](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/api/waitlist-delivery.md)
+- [대기 목록 전달 요구사항](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/requirements/waitlist-delivery.md)
+- [대기 목록 핵심 운영 runbook](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/runbooks/waitlist-core.md)
+- [대기 목록 전달 설계](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-08-03-issue-170-waitlist-delivery-design.md)
+- [WaitlistController](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/controller/WaitlistController.kt)
+- [WaitlistResponses](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/dto/WaitlistResponses.kt)
+- [WaitlistDeliveryHealthIndicator](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/waitlist/WaitlistDeliveryHealthIndicator.kt)
+- [WaitlistDeliveryMetrics](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/waitlist/WaitlistDeliveryMetrics.kt)
+- [WaitlistDeliveryScheduling](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/waitlist/WaitlistDeliveryScheduling.kt)
+
+## 시리즈 링크
+
+- [프롤로그: 상품 정보가 고객의 방문 약속이 되기까지](/ko/blog/clinic-appointment-prologue-product-to-appointment/)
+- [상품이 바뀌어도 고객의 약속은 다시 쓰지 않는다](/ko/blog/clinic-appointment-product-version-purchase-snapshot/)
+- [이벤트 상품은 어떤 방문 약속을 만드는가](/ko/blog/clinic-appointment-event-product-first-commitment/)
+- [N회 상품은 왜 예약 한 건이 아닌가](/ko/blog/clinic-appointment-n-visit-remaining-rights/)
+- [패키지 상품은 왜 실행 그래프가 되는가](/ko/blog/clinic-appointment-package-product-execution-graph/)
+- [상품 BOM은 어떻게 AppointmentPlan과 방문으로 번역되는가](/ko/blog/clinic-appointment-execution-bom-to-appointment-plan/)
+- [고객 희망 내원 날짜는 예약 확정이 아니다](/ko/blog/clinic-appointment-desired-visit-date-and-confirmed-commitment/)
+- [예약 우선순위는 누구의 규칙인가](/ko/blog/clinic-appointment-booking-reliability/)
+- [대기 목록은 이름표가 아니라 상태 머신이다](/ko/blog/clinic-appointment-waitlist-core/)
+- **대기 목록 운영 화면은 상태판이 아니라 조치판이다**
+- [Part 1: 병원 예약은 CRUD로 끝나지 않는다](/ko/blog/clinic-appointment-part1-not-just-crud/)
+- [Part 2: 예약 상태는 단순한 열거형이 아니다](/ko/blog/clinic-appointment-part2-state-machine-and-history/)
+- [Part 3: 병원마다 다른 업무시간과 자원으로 예약 가능 시간을 계산하기](/ko/blog/clinic-appointment-part3-clinic-specific-availability/)
+- [Part 4: 한 건의 예약 가능 시간 조회와 전체 일정 최적화는 다르다](/ko/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
+- [Part 5: 병원 업무 규칙을 Timefold 제약 조건으로 옮기기](/ko/blog/clinic-appointment-part5-timefold-constraints/)
+- [Part 6: 휴진과 장비 고장은 예약 설계를 어떻게 바꾸는가](/ko/blog/clinic-appointment-part6-closure-equipment-rescheduling/)
+- [Part 7: 완성 뒤가 진짜 시작이다](/ko/blog/clinic-appointment-part7-review-and-operational-evolution/)

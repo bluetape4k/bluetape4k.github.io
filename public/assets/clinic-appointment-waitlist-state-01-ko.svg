@@ -16,7 +16,7 @@
   <rect id="canvas" width="2048" height="1200" fill="url(#bg)"/>
   <rect id="frame" x="24" y="24" width="2000" height="1152" rx="32" fill="none" stroke="#294b78" stroke-width="2"/>
   <text id="diagram-title" x="92" y="88" fill="#f4f7ff" font-family="Inter, Pretendard, Arial, sans-serif" font-size="44" font-weight="700">대기 목록은 이름표가 아니라 상태 머신이다</text>
-  <text id="diagram-subtitle" x="96" y="132" fill="#a9bad7" font-family="Inter, Pretendard, Arial, sans-serif" font-size="22">적격성, 결정적 순서, 내구성 hold가 빈자리를 누가 청구할지 결정한다.</text>
+  <text id="diagram-subtitle" x="96" y="132" fill="#a9bad7" font-family="Inter, Pretendard, Arial, sans-serif" font-size="22">적격성, 결정적 순서, 내구성 hold가 빈시간을 누가 청구할지 결정한다.</text>
 
   <g id="waiting" transform="translate(90 250)">
     <rect width="370" height="210" rx="22" fill="#132b4a" stroke="#59a9ff" stroke-width="3"/>

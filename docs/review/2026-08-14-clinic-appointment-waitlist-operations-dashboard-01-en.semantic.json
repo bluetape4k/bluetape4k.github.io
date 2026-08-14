@@ -1,0 +1,56 @@
+{
+  "kind": "workflow",
+  "source": {
+    "question": "How does clinic STAFF read operational health and choose a bounded waitlist action with evidence?",
+    "revision": "clinic-appointment@f783de85efc25e4c8386a34ab6599eca99093eae; visual-site@6debcaa88e93afd1b006e65d4f13252dfb1bbbb1",
+    "paths": [
+      "docs/superpowers/specs/2026-08-14-clinic-appointment-waitlist-operations-dashboard-design.md"
+    ],
+    "externalPaths": [
+      "docs/api/waitlist-delivery.md",
+      "docs/requirements/waitlist-delivery.md",
+      "appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/waitlist/WaitlistDeliveryHealthIndicator.kt",
+      "appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/waitlist/WaitlistDeliveryMetrics.kt",
+      "appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/controller/WaitlistController.kt"
+    ]
+  },
+  "nodes": [
+    {"id": "clinic-readiness", "label": "Clinic readiness", "source": "WaitlistDeliveryHealthIndicator"},
+    {"id": "operational-metrics", "label": "Operational metrics", "source": "WaitlistDeliveryMetrics"},
+    {"id": "action-queue", "label": "Action queue", "source": "operations dashboard design"},
+    {"id": "selected-evidence", "label": "Selected item evidence", "source": "WaitlistOfferResponse and privacy contract"},
+    {"id": "staff-command", "label": "Allowed STAFF command", "source": "WaitlistController confirm/decline routes"},
+    {"id": "terminal-outcome-decision", "label": "Terminal outcome decision", "source": "operations dashboard design"},
+    {"id": "replay-processing", "label": "Replay / processing", "source": "waitlist-delivery API idempotency contract"},
+    {"id": "conflict-requeue", "label": "Conflict / requeue", "source": "waitlist-delivery API conflict and recovery contract"}
+  ],
+  "edges": [
+    {"id": "readiness-metrics", "from": "clinic-readiness", "to": "operational-metrics", "kind": "health-summary", "source": "WaitlistDeliveryHealthIndicator and Metrics"},
+    {"id": "metrics-queue", "from": "operational-metrics", "to": "action-queue", "kind": "priority-context", "source": "operations dashboard design"},
+    {"id": "queue-evidence", "from": "action-queue", "to": "selected-evidence", "kind": "staff-selection", "source": "operations dashboard design"},
+    {"id": "evidence-command", "from": "selected-evidence", "to": "staff-command", "kind": "version-scope-check", "source": "WaitlistController and API contract"},
+    {"id": "command-terminal", "from": "staff-command", "to": "terminal-outcome-decision", "kind": "bounded-command-result", "source": "WaitlistController and API contract"},
+    {"id": "terminal-replay-processing", "from": "terminal-outcome-decision", "to": "replay-processing", "kind": "idempotency-outcome", "source": "waitlist-delivery API idempotency contract"},
+    {"id": "terminal-conflict-requeue", "from": "terminal-outcome-decision", "to": "conflict-requeue", "kind": "conflict-recovery", "source": "waitlist-delivery API conflict and recovery contract"},
+    {"id": "conflict-queue", "from": "conflict-requeue", "to": "action-queue", "kind": "bounded-requeue", "source": "operations dashboard design"}
+  ],
+  "behavior": {"branches": 3, "loops": 1},
+  "budget": {"nodes": 8, "edges": 8, "branches": 3, "loops": 1},
+  "repairs": [
+    {
+      "target": "scope-version-transition",
+      "reason": "Move the scope/version check from the evidence panel edge to the centered evidence-to-command transition and widen its vertical corridor.",
+      "touches": 4
+    },
+    {
+      "target": "command-outcome-spacing",
+      "reason": "Separate the command, terminal outcome, and result-card stack vertically and extend the lower canvas margin with it.",
+      "touches": 9
+    },
+    {
+      "target": "opaque-canvas",
+      "reason": "Fill the area outside the rounded canvas so the rendered PNG satisfies the opaque-canvas visual audit contract.",
+      "touches": 2
+    }
+  ]
+}

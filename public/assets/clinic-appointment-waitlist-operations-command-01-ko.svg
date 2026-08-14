@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1600" viewBox="0 0 2400 1600" role="img" aria-labelledby="title desc">
+  <title id="title">대기 제안 명령이 종료 상태 결정에 이르는 시퀀스</title>
+  <desc id="desc">STAFF가 운영 화면에서 대기 제안을 고르고 version과 만료 시각을 재조회한 뒤 confirm 명령을 보낸다. 이 sequence diagram에서 Waitlist API는 멱등성 키와 DB fence를 확인하고 성공, 재생, 처리 중, 충돌 중 하나의 종료 상태 결정으로 응답한다.</desc>
+  <defs>
+    <marker id="ko-seq-blue" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" refX="9" refY="5" orient="auto" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#60a5fa" stroke="none" data-arrowhead="true" data-solid-head="true"/></marker>
+    <marker id="ko-seq-teal" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" refX="9" refY="5" orient="auto" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#5eead4" stroke="none" data-arrowhead="true" data-solid-head="true"/></marker>
+    <marker id="ko-seq-amber" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" refX="9" refY="5" orient="auto" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#fbbf24" stroke="none" data-arrowhead="true" data-solid-head="true"/></marker>
+    <marker id="ko-seq-green" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" refX="9" refY="5" orient="auto" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#a3e635" stroke="none" data-arrowhead="true" data-solid-head="true"/></marker>
+    <marker id="ko-seq-rose" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" refX="9" refY="5" orient="auto" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#fb7185" stroke="none" data-arrowhead="true" data-solid-head="true"/></marker>
+    <style>
+      text { font-family: "goorm Sans", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; fill: #d7e3f3; }
+      text.code, text.codeish, text.role, text.badge { font-family: "goorm Sans Code", "goorm Sans", "Apple SD Gothic Neo", "Noto Sans KR", monospace; }
+      .frame { fill: none; stroke: #2b4168; stroke-width: 2; }
+      .title { font-size: 42px; font-weight: 700; fill: #f8fafc; }
+      .subtitle { font-size: 19px; fill: #a9b8d4; }
+      .participant-card { fill: #13233b; stroke: #5b789d; stroke-width: 2; }
+      .participant-title { font-size: 23px; font-weight: 700; fill: #f8fafc; }
+      .role { font-size: 15px; fill: #9fb0ca; }
+      .lifeline { stroke: #52647f; stroke-width: 2; stroke-dasharray: 9 10; }
+      .activation { fill: #203b4d; stroke: #73a5bd; stroke-width: 2; }
+      .seq { fill: none; stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
+      .return { fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 11 9; }
+      .call-blue { stroke: #60a5fa; }
+      .read-teal { stroke: #5eead4; }
+      .metadata-amber { stroke: #fbbf24; }
+      .success-green { stroke: #a3e635; }
+      .conflict-rose { stroke: #fb7185; }
+      .pill { fill: #101b30; stroke-width: 1.8; }
+      .label { font-size: 17px; font-weight: 700; }
+      .badge { font-size: 14px; font-weight: 700; }
+      .alt { fill: #0b1628; fill-opacity: .06; stroke: #fbbf24; stroke-width: 2; stroke-dasharray: 12 8; }
+      .alt-label { font-size: 17px; font-weight: 700; fill: #fde68a; }
+      .terminal { fill: #243c25; stroke: #a3e635; stroke-width: 2.2; }
+      .terminal-title { font-size: 22px; font-weight: 700; fill: #d9f99d; }
+      .terminal-note { font-size: 16px; fill: #c7d3e7; }
+      .legend { fill: #16243a; stroke: #2b4168; stroke-width: 1.8; }
+      .legend-text { font-size: 15px; fill: #a9b8d4; }
+    </style>
+  </defs>
+
+  <rect width="2400" height="1600" fill="#07101f"/>
+  <rect class="frame" x="30" y="24" width="2340" height="1548" rx="32"/>
+  <text class="title" x="70" y="78">대기 제안 명령은 검증을 거쳐 종료 상태로 돌아온다</text>
+  <text class="subtitle" x="70" y="116">선택 → 근거 재조회 → confirm → 멱등성·DB fence → 성공·재생·처리 중·충돌</text>
+
+  <g id="participants">
+    <rect class="participant-card card" x="80" y="160" width="260" height="100" rx="16"/>
+    <text class="participant-title" x="210" y="202" text-anchor="middle">STAFF</text>
+    <text class="role" x="210" y="232" text-anchor="middle">조치 항목 선택</text>
+    <line class="lifeline" x1="210" y1="260" x2="210" y2="1400"/>
+
+    <rect class="participant-card card" x="450" y="160" width="300" height="100" rx="16"/>
+    <text class="participant-title" x="600" y="202" text-anchor="middle">운영 화면</text>
+    <text class="role" x="600" y="232" text-anchor="middle">근거·허용 명령</text>
+    <line class="lifeline" x1="600" y1="260" x2="600" y2="1400"/>
+
+    <rect class="participant-card card" x="850" y="160" width="320" height="100" rx="16"/>
+    <text class="participant-title" x="1010" y="202" text-anchor="middle">Waitlist API</text>
+    <text class="role" x="1010" y="232" text-anchor="middle">범위·버전 계약</text>
+    <line class="lifeline" x1="1010" y1="260" x2="1010" y2="1400"/>
+
+    <rect class="participant-card card" x="1260" y="160" width="330" height="100" rx="16"/>
+    <text class="participant-title" x="1425" y="202" text-anchor="middle">멱등성·DB fence</text>
+    <text class="role" x="1425" y="232" text-anchor="middle">key 예약·원자 기록</text>
+    <line class="lifeline" x1="1425" y1="260" x2="1425" y2="1400"/>
+
+    <rect class="participant-card card" x="1690" y="160" width="330" height="100" rx="16"/>
+    <text class="participant-title" x="1855" y="202" text-anchor="middle">예약 결과</text>
+    <text class="role" x="1855" y="232" text-anchor="middle">decision response</text>
+    <line class="lifeline" x1="1855" y1="260" x2="1855" y2="1400"/>
+  </g>
+
+  <rect class="activation" x="590" y="330" width="20" height="455" rx="6"/>
+  <rect class="activation" x="1000" y="455" width="20" height="565" rx="6"/>
+  <rect class="activation" x="1415" y="845" width="20" height="190" rx="6"/>
+  <rect class="activation" x="1845" y="975" width="20" height="380" rx="6"/>
+
+  <g id="m1">
+    <rect class="pill" x="230" y="280" width="380" height="42" rx="21" stroke="#60a5fa"/>
+    <circle cx="254" cy="301" r="14" fill="#173148" stroke="#60a5fa"/><text class="badge" x="254" y="306" text-anchor="middle" fill="#bfdbfe">1</text>
+    <text class="label" x="435" y="307" text-anchor="middle" fill="#bfdbfe">조치 항목 선택</text>
+    <path class="seq call-blue" data-source="staff" data-target="operations-screen" d="M 210 350 H 600" marker-end="url(#ko-seq-blue)"/>
+  </g>
+
+  <g id="m2">
+    <rect class="pill" x="640" y="410" width="420" height="42" rx="21" stroke="#60a5fa"/>
+    <circle cx="664" cy="431" r="14" fill="#173148" stroke="#60a5fa"/><text class="badge" x="664" y="436" text-anchor="middle" fill="#bfdbfe">2</text>
+    <text class="label" x="850" y="437" text-anchor="middle" fill="#bfdbfe">offer version·expiry 조회</text>
+    <path class="seq call-blue" data-source="operations-screen" data-target="waitlist-api" d="M 600 480 H 1010" marker-end="url(#ko-seq-blue)"/>
+  </g>
+
+  <g id="m3">
+    <rect class="pill" x="620" y="540" width="470" height="42" rx="21" stroke="#5eead4"/>
+    <circle cx="644" cy="561" r="14" fill="#173d3e" stroke="#5eead4"/><text class="badge" x="644" y="566" text-anchor="middle" fill="#ccfbf1">3</text>
+    <text class="label" x="855" y="567" text-anchor="middle" fill="#ccfbf1">version·expiresAt·deliveryState</text>
+    <path class="return read-teal" data-source="waitlist-api" data-target="operations-screen" d="M 1010 610 H 600" marker-end="url(#ko-seq-teal)"/>
+  </g>
+
+  <g id="m4">
+    <rect class="pill" x="620" y="670" width="500" height="42" rx="21" stroke="#60a5fa"/>
+    <circle cx="644" cy="691" r="14" fill="#173148" stroke="#60a5fa"/><text class="badge" x="644" y="696" text-anchor="middle" fill="#bfdbfe">4</text>
+    <text class="label" x="880" y="697" text-anchor="middle" fill="#bfdbfe">POST confirm + Idempotency-Key</text>
+    <path class="seq call-blue" data-source="operations-screen" data-target="waitlist-api" d="M 600 740 H 1010" marker-end="url(#ko-seq-blue)"/>
+  </g>
+
+  <g id="m5">
+    <rect class="pill" x="1040" y="800" width="520" height="42" rx="21" stroke="#fbbf24"/>
+    <circle cx="1064" cy="821" r="14" fill="#423324" stroke="#fbbf24"/><text class="badge" x="1064" y="826" text-anchor="middle" fill="#fde68a">5</text>
+    <text class="label" x="1310" y="827" text-anchor="middle" fill="#fde68a">key·scope·expectedVersion 예약</text>
+    <path class="seq metadata-amber" data-source="waitlist-api" data-target="idempotency-fence" d="M 1010 870 H 1425" marker-end="url(#ko-seq-amber)"/>
+  </g>
+
+  <g id="m6">
+    <rect class="pill" x="1450" y="930" width="520" height="42" rx="21" stroke="#a3e635"/>
+    <circle cx="1474" cy="951" r="14" fill="#2c3b32" stroke="#a3e635"/><text class="badge" x="1474" y="956" text-anchor="middle" fill="#d9f99d">6</text>
+    <text class="label" x="1715" y="957" text-anchor="middle" fill="#d9f99d">version-checked atomic write</text>
+    <path class="seq success-green" data-source="idempotency-fence" data-target="appointment-result" d="M 1425 1000 H 1855" marker-end="url(#ko-seq-green)"/>
+  </g>
+
+  <g id="result-branches">
+    <rect class="alt" x="260" y="1050" width="1920" height="330" rx="24"/>
+    <text class="alt-label" x="300" y="1082">결과 분기: 같은 명령도 서버의 종료 상태를 확인한다</text>
+
+    <g id="m7">
+      <rect class="pill" x="1190" y="1088" width="630" height="42" rx="21" stroke="#a3e635"/>
+      <circle cx="1214" cy="1109" r="14" fill="#2c3b32" stroke="#a3e635"/><text class="badge" x="1214" y="1114" text-anchor="middle" fill="#d9f99d">7</text>
+      <text class="label" x="1510" y="1115" text-anchor="middle" fill="#d9f99d">201 Created · appointmentRef</text>
+      <path class="return success-green" data-source="appointment-result" data-target="operations-screen" d="M 1855 1140 H 600" marker-end="url(#ko-seq-green)"/>
+    </g>
+
+    <g id="m8">
+      <rect class="pill" x="1150" y="1163" width="710" height="42" rx="21" stroke="#5eead4"/>
+      <circle cx="1174" cy="1184" r="14" fill="#173d3e" stroke="#5eead4"/><text class="badge" x="1174" y="1189" text-anchor="middle" fill="#ccfbf1">8</text>
+      <text class="label codeish" x="1510" y="1190" text-anchor="middle" fill="#ccfbf1">201 + Idempotent-Replay: true</text>
+      <path class="return read-teal" data-source="appointment-result" data-target="operations-screen" d="M 1855 1215 H 600" marker-end="url(#ko-seq-teal)"/>
+    </g>
+
+    <g id="m9">
+      <rect class="pill" x="1080" y="1238" width="830" height="42" rx="21" stroke="#fbbf24"/>
+      <circle cx="1104" cy="1259" r="14" fill="#423324" stroke="#fbbf24"/><text class="badge" x="1104" y="1264" text-anchor="middle" fill="#fde68a">9</text>
+      <text class="label codeish" x="1510" y="1265" text-anchor="middle" fill="#fde68a">202 IDEMPOTENCY_IN_PROGRESS · Retry-After: 1</text>
+      <path class="return metadata-amber" data-source="appointment-result" data-target="operations-screen" d="M 1855 1290 H 600" marker-end="url(#ko-seq-amber)"/>
+    </g>
+
+    <g id="m10">
+      <rect class="pill" x="960" y="1313" width="980" height="42" rx="21" stroke="#fb7185"/>
+      <circle cx="984" cy="1334" r="14" fill="#44242f" stroke="#fb7185"/><text class="badge" x="984" y="1339" text-anchor="middle" fill="#fecdd3">10</text>
+      <text class="label codeish" x="1510" y="1340" text-anchor="middle" fill="#fecdd3">409 OFFER_EXPIRED · DECISION_STALE · SLOT_OCCUPIED</text>
+      <path class="return conflict-rose" data-source="appointment-result" data-target="operations-screen" d="M 1855 1365 H 600" marker-end="url(#ko-seq-rose)"/>
+    </g>
+  </g>
+
+  <path class="seq success-green" data-source="appointment-result" data-target="terminal-outcome-decision" d="M 1855 1410 H 1340 Q 1320 1410 1320 1430 V 1450" marker-end="url(#ko-seq-green)"/>
+  <rect class="terminal" x="820" y="1450" width="1000" height="92" rx="20"/>
+  <text class="terminal-title" x="1320" y="1488" text-anchor="middle">종료 상태 결정</text>
+  <text class="terminal-note" x="1320" y="1517" text-anchor="middle">성공 · 멱등성 재생 · 처리 중 재조회 · 버전/만료 충돌</text>
+
+  <rect class="legend" x="80" y="1450" width="500" height="64" rx="16"/>
+  <text class="legend-text" x="108" y="1477">실선: 호출·상태 기록</text>
+  <text class="legend-text" x="108" y="1500">점선: 결과·재조회</text>
+</svg>
