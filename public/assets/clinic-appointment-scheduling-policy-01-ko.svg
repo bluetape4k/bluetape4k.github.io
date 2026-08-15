@@ -16,7 +16,7 @@
   <rect id="canvas" width="2048" height="1200" fill="url(#bg)"/>
   <rect id="frame" x="24" y="24" width="2000" height="1152" rx="32" fill="none" stroke="#294b78" stroke-width="2"/>
   <text id="diagram-title" x="92" y="88" fill="#f4f7ff" font-size="44" font-weight="700">병원별 예약 규칙은 적용 정책으로 합성된다</text>
-  <text id="diagram-subtitle" x="96" y="132" fill="#a9bad7" font-size="22">새 정책은 미래 판단에 적용하고, 이미 확정한 방문 약속은 다시 쓰지 않는다.</text>
+  <text id="diagram-subtitle" x="96" y="132" fill="#a9bad7" font-size="22">새 정책은 미래 판단에 적용하고, 이미 확정한 방문 약속은 변경하지 않는다.</text>
 
   <g id="tenant-default" data-node="tenant-default" data-source="src/content/docs/ko/blog/clinic-appointment-scheduling-policy.mdx" transform="translate(100 220)">
     <rect width="400" height="210" rx="22" fill="#132b4a" stroke="#59a9ff" stroke-width="3" filter="url(#shadow)"/>
@@ -114,7 +114,7 @@
     <rect x="466" y="142" width="396" height="142" rx="18" fill="#153b45" stroke="#58e3d0" stroke-width="2"/>
     <text x="494" y="188" fill="#82f2df" font-size="23" font-weight="700">확정 방문 약속</text>
     <text x="494" y="226" fill="#e2fff9" font-size="18">환자에게 이미 약속한 결과</text>
-    <text x="494" y="258" fill="#a5d9d2" font-size="17">정책 변경으로 다시 쓰지 않는다.</text>
+    <text x="494" y="258" fill="#a5d9d2" font-size="17">정책이 바뀌어도 약속은 유지한다.</text>
     <text x="450" y="318" text-anchor="middle" fill="#b4c5df" font-size="18">규칙과 결과를 같은 값으로 다시 계산하지 않는다.</text>
   </g>
 </svg>
