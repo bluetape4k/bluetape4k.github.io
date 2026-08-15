@@ -89,7 +89,7 @@ The booking decision needs more than “the clinic settings right now.” It nee
 | `decisionAt` | When the policy was evaluated |
 | `serviceAt` | When the visit service is expected to happen |
 | `generation` | The tenant and clinic policy generation vector |
-| `sourceVersions` | The version used for each policy path |
+| `sourceVersions` | The tenant and clinic source versions used for each policy kind |
 | `sourceByPath` | Whether each value came from the tenant default or clinic override |
 | `snapshotHash` | A hash that confirms identical input produced identical output |
 
@@ -100,7 +100,7 @@ data class EffectiveSchedulingPolicy(
     val decisionAt: Instant,
     val serviceAt: Instant,
     val generation: PolicyGenerationVector,
-    val sourceVersions: Map<SchedulingPolicyKind, Long>,
+    val sourceVersions: Map<SchedulingPolicyKind, SourceVersion>,
     val sourceByPath: Map<String, PolicyValueSource>,
     val snapshotHash: String,
 )

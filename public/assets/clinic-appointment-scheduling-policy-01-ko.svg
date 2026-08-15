@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="2048" height="1200" viewBox="0 0 2048 1200" role="img" aria-labelledby="title desc">
-  <title id="title">병원별 예약 규칙이 유효 정책 스냅숏이 되는 과정</title>
-  <desc id="desc">테넌트 기본 정책과 병원별 재정의를 합성하고 활성화 검사를 거쳐 유효 정책 스냅숏을 만든 뒤, 미래 제안에는 새 정책을 적용하고 기존 확정 방문 약속은 보호하는 흐름</desc>
+  <title id="title">병원별 예약 규칙을 적용 정책으로 합성하는 과정</title>
+  <desc id="desc">테넌트 기본 정책과 병원별 재정의를 합성하고 활성화 검사를 거쳐 예약에 사용할 적용 정책을 만든 뒤, 미래 제안에는 새 정책을 적용하고 기존 확정 방문 약속은 보호하는 흐름</desc>
   <defs>
     <style>
       text { font-family: "Noto Sans KR", "Apple SD Gothic Neo", sans-serif; }
-      text.code, text.edge-label { font-family: "Noto Sans KR", "Apple SD Gothic Neo", sans-serif; }
+      text.code, text.eyebrow, text.edge-label { font-family: "Noto Sans KR", "Apple SD Gothic Neo", sans-serif; }
     </style>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#071326"/><stop offset="1" stop-color="#0c1f3b"/></linearGradient>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#020812" flood-opacity="0.42"/></filter>
@@ -15,7 +15,7 @@
 
   <rect id="canvas" width="2048" height="1200" fill="url(#bg)"/>
   <rect id="frame" x="24" y="24" width="2000" height="1152" rx="32" fill="none" stroke="#294b78" stroke-width="2"/>
-  <text id="diagram-title" x="92" y="88" fill="#f4f7ff" font-size="44" font-weight="700">병원별 예약 규칙은 유효 정책 스냅숏으로 합성된다</text>
+  <text id="diagram-title" x="92" y="88" fill="#f4f7ff" font-size="44" font-weight="700">병원별 예약 규칙은 적용 정책으로 합성된다</text>
   <text id="diagram-subtitle" x="96" y="132" fill="#a9bad7" font-size="22">새 정책은 미래 판단에 적용하고, 이미 확정한 방문 약속은 다시 쓰지 않는다.</text>
 
   <g id="tenant-default" data-node="tenant-default" data-source="src/content/docs/ko/blog/clinic-appointment-scheduling-policy.mdx" transform="translate(100 220)">
@@ -29,7 +29,7 @@
   <g id="clinic-override" data-node="clinic-override" data-source="src/content/docs/ko/blog/clinic-appointment-scheduling-policy.mdx" transform="translate(100 430)">
     <rect width="400" height="210" rx="22" fill="#302a20" stroke="#ffbf4f" stroke-width="3" filter="url(#shadow)"/>
     <text x="36" y="54" fill="#ffd27c" font-size="28" font-weight="700">병원별 재정의</text>
-    <text class="code" x="36" y="88" fill="#c9a968" font-size="17">CLINIC OVERRIDE</text>
+    <text class="eyebrow" x="36" y="88" fill="#c9a968" font-size="17">CLINIC OVERRIDE</text>
     <text x="36" y="132" fill="#fff3d6" font-size="21">병원의 업무 차이를 명시</text>
     <text class="code" x="36" y="170" fill="#c9bf9f" font-size="18">INHERIT · SET · DISABLE</text>
   </g>
@@ -43,7 +43,7 @@
     <text x="56" y="177" fill="#e8effc" font-size="20">기본값과 재정의를</text>
     <text x="56" y="205" fill="#e8effc" font-size="20">경로별로 결정한다.</text>
     <rect x="34" y="244" width="322" height="76" rx="14" fill="#0d1d35" stroke="#294b78" stroke-width="2"/>
-    <text x="56" y="276" fill="#a9bad7" font-size="18">어떤 범위의 값인지 기록해</text>
+    <text x="56" y="276" fill="#a9bad7" font-size="18">값마다 적용 범위를 기록해</text>
     <text x="56" y="304" fill="#a9bad7" font-size="18">정책의 출처를 보존한다.</text>
   </g>
 
@@ -52,16 +52,16 @@
     <circle cx="45" cy="48" r="24" fill="#1b5b5a" stroke="#58e3d0" stroke-width="2"/><text x="45" y="57" text-anchor="middle" fill="#eafffb" font-size="22" font-weight="700">2</text>
     <text x="84" y="57" fill="#82f2df" font-size="27" font-weight="700">활성화 검사</text>
     <text class="code" x="34" y="105" fill="#78bcb4" font-size="17">CAS + GENERATION</text>
-    <text x="34" y="150" fill="#e2fff9" font-size="20">기대 revision과 세대를</text>
+    <text x="34" y="150" fill="#e2fff9" font-size="20">기대 정책 버전과 세대를</text>
     <text x="34" y="182" fill="#e2fff9" font-size="20">현재 값과 비교한다.</text>
-    <text x="34" y="224" fill="#a5d9d2" font-size="17">충돌하면 직전 ACTIVE 보존</text>
+    <text x="34" y="224" fill="#a5d9d2" font-size="17">충돌하면 기존 ACTIVE 정책 유지</text>
   </g>
 
   <g id="effective-snapshot" data-node="effective-snapshot" data-source="src/content/docs/ko/blog/clinic-appointment-scheduling-policy.mdx" transform="translate(1480 300)">
     <rect width="460" height="270" rx="24" fill="#142c4f" stroke="#8ec5ff" stroke-width="3" filter="url(#shadow)"/>
     <circle cx="46" cy="48" r="24" fill="#1b4775" stroke="#8ec5ff" stroke-width="2"/><text x="46" y="57" text-anchor="middle" fill="#f4f7ff" font-size="22" font-weight="700">3</text>
-    <text x="86" y="57" fill="#b6d9ff" font-size="27" font-weight="700">유효 정책 스냅숏</text>
-    <text class="code" x="34" y="105" fill="#6f93bd" font-size="17">EFFECTIVE SNAPSHOT</text>
+    <text x="86" y="57" fill="#b6d9ff" font-size="27" font-weight="700">적용 정책</text>
+    <text class="code" x="34" y="105" fill="#6f93bd" font-size="17">EffectiveSchedulingPolicy</text>
     <text x="34" y="150" fill="#e8effc" font-size="20">시점 · 세대 · 값의 출처</text>
     <text class="code" x="34" y="184" fill="#e8effc" font-size="19">snapshotHash</text>
     <text x="34" y="228" fill="#9eb5d7" font-size="17">같은 입력이면 같은 판단을 재현한다.</text>
@@ -71,7 +71,7 @@
     <rect width="460" height="170" rx="22" fill="#132b4a" stroke="#59a9ff" stroke-width="3" filter="url(#shadow)"/>
     <text x="36" y="54" fill="#8ec5ff" font-size="28" font-weight="700">예약 판단</text>
     <text class="code" x="36" y="88" fill="#6f93bd" font-size="17">BOOKING DECISION</text>
-    <text x="36" y="132" fill="#e8effc" font-size="20">요청 시점의 스냅숏으로 평가한다.</text>
+    <text x="36" y="132" fill="#e8effc" font-size="20">판단 시점의 적용 정책으로 평가한다.</text>
   </g>
 
   <g id="future-proposal" data-node="future-proposal" data-source="src/content/docs/ko/blog/clinic-appointment-scheduling-policy.mdx" transform="translate(1090 940)">
@@ -109,7 +109,7 @@
     <text x="38" y="104" fill="#a9bad7" font-size="20">정책은 앞으로 내릴 판단의 규칙이다.</text>
     <rect x="38" y="142" width="390" height="142" rx="18" fill="#302a20" stroke="#ffbf4f" stroke-width="2"/>
     <text x="66" y="188" fill="#ffd27c" font-size="23" font-weight="700">미래 요청</text>
-    <text x="66" y="226" fill="#fff3d6" font-size="18">활성 스냅숏으로 평가</text>
+    <text x="66" y="226" fill="#fff3d6" font-size="18">현재 적용 정책으로 평가</text>
     <text x="66" y="258" fill="#c9bf9f" font-size="17">새 규칙을 적용할 수 있다.</text>
     <rect x="466" y="142" width="396" height="142" rx="18" fill="#153b45" stroke="#58e3d0" stroke-width="2"/>
     <text x="494" y="188" fill="#82f2df" font-size="23" font-weight="700">확정 방문 약속</text>
