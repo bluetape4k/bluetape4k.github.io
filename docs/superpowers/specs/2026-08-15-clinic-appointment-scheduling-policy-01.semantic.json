@@ -30,6 +30,10 @@
   ],
   "behavior": {"branches": 2, "loops": 0},
   "repairs": [
-    {"target": "english-card-labels", "reason": "split the long confirmed-commitment label into two lines to keep it inside the card", "touches": 2}
+    {"target": "series-visual-language", "reason": "replace the isolated bright canvas with the established dark navy Clinic Appointment diagram language", "touches": 2},
+    {"target": "policy-input-connectors", "reason": "align each input card with a dedicated compose port so the connector never bends backward", "touches": 2},
+    {"target": "decision-branches", "reason": "keep each branch on its own port and corridor with a continuous rounded path", "touches": 2},
+    {"target": "edge-labels", "reason": "use explicit dark label capsules instead of thick text strokes over connectors", "touches": 2},
+    {"target": "arrowhead-color", "reason": "match every arrowhead fill to its connector stroke", "touches": 2}
   ]
 }
