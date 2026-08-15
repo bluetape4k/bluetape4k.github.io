@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1600" viewBox="0 0 2400 1600" role="img" aria-labelledby="title desc">
-  <title id="title">대기 제안 명령이 종료 상태 결정에 이르는 시퀀스</title>
-  <desc id="desc">STAFF가 운영 화면에서 대기 제안을 고르고 version과 만료 시각을 재조회한 뒤 confirm 명령을 보낸다. 이 sequence diagram에서 Waitlist API는 멱등성 키와 DB fence를 확인하고 성공, 재생, 처리 중, 충돌 중 하나의 종료 상태 결정으로 응답한다.</desc>
+  <title id="title">대기 제안 명령이 최종 상태 결정에 이르는 시퀀스</title>
+  <desc id="desc">STAFF가 운영 화면에서 대기 제안을 고르고 version과 만료 시각을 재조회한 뒤 confirm 명령을 보낸다. 이 sequence diagram에서 Waitlist API는 멱등성 키와 DB fence를 확인하고 성공, 재생, 처리 중, 충돌 중 하나의 최종 상태 결정으로 응답한다.</desc>
   <defs>
     <marker id="ko-seq-blue" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" refX="9" refY="5" orient="auto" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#60a5fa" stroke="none" data-arrowhead="true" data-solid-head="true"/></marker>
     <marker id="ko-seq-teal" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" refX="9" refY="5" orient="auto" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#5eead4" stroke="none" data-arrowhead="true" data-solid-head="true"/></marker>
@@ -153,7 +153,7 @@
 
   <path class="seq success-green" data-source="appointment-result" data-target="terminal-outcome-decision" d="M 1855 1410 H 1340 Q 1320 1410 1320 1430 V 1450" marker-end="url(#ko-seq-green)"/>
   <rect class="terminal" x="820" y="1450" width="1000" height="92" rx="20"/>
-  <text class="terminal-title" x="1320" y="1488" text-anchor="middle">종료 상태 결정</text>
+  <text class="terminal-title" x="1320" y="1488" text-anchor="middle">최종 상태 결정</text>
   <text class="terminal-note" x="1320" y="1517" text-anchor="middle">성공 · 멱등성 재생 · 처리 중 재조회 · 버전/만료 충돌</text>
 
   <rect class="legend" x="80" y="1450" width="500" height="64" rx="16"/>

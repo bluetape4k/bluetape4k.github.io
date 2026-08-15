@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="2200" height="1760" viewBox="0 0 2200 1760" role="img" aria-labelledby="title desc">
   <title id="title">대기 목록 운영 화면의 지표·조치 큐·명령 경계</title>
-  <desc id="desc">병원 readiness와 운영 지표를 읽은 뒤 전체 폭 조치 큐에서 항목을 선택하고, 근거 패널을 확인해 허용된 명령과 종료 상태 결정을 선택하는 STAFF 운영 흐름.</desc>
+  <desc id="desc">병원 readiness와 운영 지표를 읽은 뒤 전체 폭 조치 큐에서 항목을 선택하고, 근거 패널을 확인해 허용된 명령과 최종 상태 결정을 선택하는 STAFF 운영 흐름.</desc>
   <defs>
     <style>
       text { font-family: "goorm Sans", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif !important; fill: #eaf2ff; }
@@ -133,7 +133,7 @@
   </g>
 
   <rect class="card green-card" x="780" y="1435" width="640" height="84" rx="20"/>
-  <text class="card-title" x="1100" y="1471" text-anchor="middle">종료 상태 결정</text>
+  <text class="card-title" x="1100" y="1471" text-anchor="middle">최종 상태 결정</text>
   <text class="small" x="1100" y="1499" text-anchor="middle">성공 · 재생 · 처리 중 · 충돌</text>
 
   <path class="connector state-line" data-connector="terminal-replay-processing" data-source="terminal-outcome-decision" data-target="replay-processing" d="M900 1519 V1610 Q900 1620 890 1620 H550" marker-end="url(#ko-state-arrow)"/>
