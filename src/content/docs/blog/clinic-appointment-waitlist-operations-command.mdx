@@ -1,5 +1,5 @@
 ---
-title: "A Waitlist Operations Command Is Complete Only After the API Request and Re-read"
+title: "[Operations 1.3] A Waitlist Operations Command Is Complete Only After the API Request and Re-read"
 description: How STAFF sends a scoped, versioned, idempotent waitlist command and re-reads the result to distinguish success, replay, processing, and conflict.
 sidebar:
   order: -202608151000
@@ -10,6 +10,8 @@ blog:
   cardDescription: "Connects the confirm and decline buttons on an operations screen to scope, version, idempotency, and re-read contracts."
   tags: ["architecture", "operations", "resilience", "concurrency", "appointment-service", "example", "timefold"]
 ---
+
+import ClinicAppointmentSeries from '../../../components/ClinicAppointmentSeries.astro';
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/clinic-appointment-waitlist-operations-screen-command-en.png" alt="A STAFF operations screen showing a waitlist command result and the next re-read task" loading="eager" />
@@ -205,21 +207,4 @@ With this order, the screen can distinguish “the button was clicked” from �
 
 ## Series
 
-- [Prologue: From product information to a patient's visit commitment](/blog/clinic-appointment-prologue-product-to-appointment/)
-- [A product can change without rewriting a patient's commitment](/blog/clinic-appointment-product-version-purchase-snapshot/)
-- [What appointment commitment does an event product create?](/blog/clinic-appointment-event-product-first-commitment/)
-- [Why an N-visit product is not one appointment](/blog/clinic-appointment-n-visit-remaining-rights/)
-- [Why a package product becomes an execution graph](/blog/clinic-appointment-package-product-execution-graph/)
-- [How a product BOM becomes an AppointmentPlan and visits](/blog/clinic-appointment-execution-bom-to-appointment-plan/)
-- [A desired visit date is not a confirmed commitment](/blog/clinic-appointment-desired-visit-date-and-confirmed-commitment/)
-- [Who Owns Booking Priority?](/blog/clinic-appointment-booking-reliability/)
-- [A Waitlist Is Not a Queue of Names](/blog/clinic-appointment-waitlist-core/)
-- [A Waitlist Dashboard Should Tell Staff What to Do Next](/blog/clinic-appointment-waitlist-operations-dashboard/)
-- **A Waitlist Operations Command Is Complete Only After the API Request and Re-read**
-- [Part 1: A clinic appointment is more than CRUD](/blog/clinic-appointment-part1-not-just-crud/)
-- [Part 2: Appointment state is not a simple enum](/blog/clinic-appointment-part2-state-machine-and-history/)
-- [Part 3: Calculate clinic-specific availability from hours and resources](/blog/clinic-appointment-part3-clinic-specific-availability/)
-- [Part 4: One availability lookup is not whole-schedule optimization](/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
-- [Part 5: Translate clinic rules into Timefold constraints](/blog/clinic-appointment-part5-timefold-constraints/)
-- [Part 6: How closures and equipment failures change appointment design](/blog/clinic-appointment-part6-closure-equipment-rescheduling/)
-- [Part 7: The real work starts after completion](/blog/clinic-appointment-part7-review-and-operational-evolution/)
+<ClinicAppointmentSeries current="clinic-appointment-waitlist-operations-command" locale="en" />

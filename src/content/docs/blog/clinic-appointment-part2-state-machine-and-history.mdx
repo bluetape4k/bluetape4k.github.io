@@ -1,5 +1,5 @@
 ---
-title: "Clinic Appointment SaaS Part 2: Appointment State Is More Than an Enum"
+title: "[Implementation 2] Appointment State Is More Than an Enum"
 description: Design appointment state as a business contract that includes allowed transitions, change history, cancellation reasons, and pinning rules for schedule optimization.
 sidebar:
   order: -202607191000
@@ -10,6 +10,8 @@ blog:
   cardDescription: "Connect allowed transitions, reasons, and history instead of storing only the current appointment state."
   tags: ["architecture","optimization","appointment-service","example","timefold"]
 ---
+
+import ClinicAppointmentSeries from '../../../components/ClinicAppointmentSeries.astro';
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/clinic-appointment-part2-hero.png" alt="Small robotic workers validate allowed transitions on an appointment state board and record the same changes in a history ledger on a dark miniature workbench" loading="eager" />
@@ -224,13 +226,4 @@ doctor schedules, treatment duration, and equipment availability to calculate sl
 
 ## Series
 
-- [Prologue: From Product Information to a Patient's Visit Commitment](/blog/clinic-appointment-prologue-product-to-appointment/)
-- [When a Product Changes, Don't Rewrite the Patient's Promise](/blog/clinic-appointment-product-version-purchase-snapshot/)
-- [What Appointment Promise Does an Event Product Create?](/blog/clinic-appointment-event-product-first-commitment/)
-- [Part 1: Clinic Appointments Are More Than CRUD](/blog/clinic-appointment-part1-not-just-crud/)
-- **Part 2: Appointment State Is More Than an Enum**
-- [Part 3: Computing Availability from Clinic-Specific Hours and Resources](/blog/clinic-appointment-part3-clinic-specific-availability/)
-- [Part 4: Real-Time Slot Search and Global Optimization Solve Different Problems](/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
-- [Part 5: Translating Clinic Rules into Timefold Constraints](/blog/clinic-appointment-part5-timefold-constraints/)
-- [Part 6: Rescheduling after Closures and Equipment Downtime](/blog/clinic-appointment-part6-closure-equipment-rescheduling/)
-- [Part 7: Reviews and Operations Start the Next Development Cycle](/blog/clinic-appointment-part7-review-and-operational-evolution/)
+<ClinicAppointmentSeries current="clinic-appointment-part2-state-machine-and-history" locale="en" />

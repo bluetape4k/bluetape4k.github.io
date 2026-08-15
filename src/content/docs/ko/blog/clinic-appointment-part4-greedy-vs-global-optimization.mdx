@@ -1,5 +1,5 @@
 ---
-title: "병원 예약 SaaS 개발기 Part 4: 한 건의 예약 가능 시간 조회와 전체 일정 최적화는 다르다"
+title: "[구현 4] 한 건의 예약 가능 시간 조회와 전체 일정 최적화는 다르다"
 description: 환자에게 가능한 예약 시간을 빠르게 보여 주는 계산과 여러 예약·의사·장비를 함께 배치하는 Timefold Solver의 역할을 나누고, 휴진 재배정에서 두 경로를 선택하는 기준을 설명합니다.
 sidebar:
   order: -202607191400
@@ -10,6 +10,8 @@ blog:
   cardDescription: "한 건의 예약 가능 시간 조회와 여러 예약의 전체 일정 최적화가 왜 다른 문제인지, Timefold Solver를 어디에 적용할지 살펴봅니다."
   tags: ["architecture","comparison","kotlin","optimization","search","timefold","appointment-service","example"]
 ---
+
+import ClinicAppointmentSeries from '../../../../components/ClinicAppointmentSeries.astro';
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/clinic-appointment-part4-hero.png" alt="작은 로봇 작업자들이 한 환자의 예약 후보를 빠르게 거르는 작업대와 여러 환자·의사·장비의 전체 일정을 비교하는 계획 보드를 나누어 운영하는 어두운 미니어처 장면" loading="eager" />
@@ -313,20 +315,4 @@ Part 5에서는 의사와 장비의 시간 충돌, 병원 업무시간과 휴진
 
 ## 시리즈 링크
 
-- [프롤로그: 상품 정보가 고객의 방문 약속이 되기까지](/ko/blog/clinic-appointment-prologue-product-to-appointment/)
-- [상품이 바뀌어도 고객의 약속은 다시 쓰지 않는다](/ko/blog/clinic-appointment-product-version-purchase-snapshot/)
-- [이벤트 상품은 어떤 방문 약속을 만드는가](/ko/blog/clinic-appointment-event-product-first-commitment/)
-- [N회 상품은 왜 예약 한 건이 아닌가](/ko/blog/clinic-appointment-n-visit-remaining-rights/)
-- [패키지 상품은 왜 실행 그래프가 되는가](/ko/blog/clinic-appointment-package-product-execution-graph/)
-- [상품 BOM은 어떻게 AppointmentPlan과 방문으로 번역되는가](/ko/blog/clinic-appointment-execution-bom-to-appointment-plan/)
-- [고객 희망 내원 날짜는 예약 확정이 아니다](/ko/blog/clinic-appointment-desired-visit-date-and-confirmed-commitment/)
-- [예약 우선순위는 누구의 규칙인가](/ko/blog/clinic-appointment-booking-reliability/)
-- [대기 목록은 이름표가 아니라 상태 머신이다](/ko/blog/clinic-appointment-waitlist-core/)
-- [대기 목록 운영 화면은 상태판이 아니라 조치판이다](/ko/blog/clinic-appointment-waitlist-operations-dashboard/)
-- [Part 1: 병원 예약은 CRUD로 끝나지 않는다](/ko/blog/clinic-appointment-part1-not-just-crud/)
-- [Part 2: 예약 상태는 단순한 열거형이 아니다](/ko/blog/clinic-appointment-part2-state-machine-and-history/)
-- [Part 3: 병원마다 다른 업무시간과 자원으로 예약 가능 시간을 계산하기](/ko/blog/clinic-appointment-part3-clinic-specific-availability/)
-- **Part 4: 한 건의 예약 가능 시간 조회와 전체 일정 최적화는 다르다**
-- [Part 5: 병원 업무 규칙을 Timefold 제약 조건으로 옮기기](/ko/blog/clinic-appointment-part5-timefold-constraints/)
-- [Part 6: 휴진과 장비 고장은 예약 설계를 어떻게 바꾸는가](/ko/blog/clinic-appointment-part6-closure-equipment-rescheduling/)
-- [Part 7: 완성 뒤가 진짜 시작이다](/ko/blog/clinic-appointment-part7-review-and-operational-evolution/)
+<ClinicAppointmentSeries current="clinic-appointment-part4-greedy-vs-global-optimization" locale="ko" />

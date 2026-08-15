@@ -1,5 +1,5 @@
 ---
-title: "When a Product Changes, Don't Rewrite the Patient's Promise: Product Versions and Purchase Snapshots"
+title: "[Design 1] When a Product Changes, Preserve the Patient's Promise: Product Versions and Purchase Snapshots"
 description: Follow Patient A through event, N-visit, and package products to see how purchase-time snapshots, AppointmentPlan revisions, consent, and service ownership protect an existing visit promise.
 sidebar:
   order: -202608121000
@@ -10,6 +10,8 @@ blog:
   cardDescription: "A patient-centered explanation of purchase snapshots and Plan revisions when a product changes."
   tags: ["architecture", "domain-modeling", "event-driven", "resilience", "appointment-service", "example", "timefold"]
 ---
+
+import ClinicAppointmentSeries from '../../../components/ClinicAppointmentSeries.astro';
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/clinic-appointment-product-version-hero.png" alt="Small robotic builders connect product v1 and v2 cards, a purchase snapshot, a plan revision, and a confirmed visit promise on one time axis" loading="eager" />
@@ -307,17 +309,4 @@ composition, and product BOM expansion before returning to this article's migrat
 
 ## Series
 
-- [Prologue: From Product Information to a Patient's Visit Commitment](/blog/clinic-appointment-prologue-product-to-appointment/)
-- **When a Product Changes, Don't Rewrite the Patient's Promise**
-- [What Appointment Promise Does an Event Product Create?](/blog/clinic-appointment-event-product-first-commitment/)
-- [Why an N-Visit Product Is Not One Appointment](/blog/clinic-appointment-n-visit-remaining-rights/)
-- [Why a Package Product Becomes an Execution Graph](/blog/clinic-appointment-package-product-execution-graph/)
-- [How a Product BOM Becomes an AppointmentPlan and a Visit](/blog/clinic-appointment-execution-bom-to-appointment-plan/)
-- [A Preferred Visit Date Is Not an Appointment Confirmation](/blog/clinic-appointment-desired-visit-date-and-confirmed-commitment/)
-- [Part 1: Clinic Appointments Are More Than CRUD](/blog/clinic-appointment-part1-not-just-crud/)
-- [Part 2: Appointment State Is More Than an Enum](/blog/clinic-appointment-part2-state-machine-and-history/)
-- [Part 3: Computing Availability from Clinic-Specific Hours and Resources](/blog/clinic-appointment-part3-clinic-specific-availability/)
-- [Part 4: Real-Time Slot Search and Global Optimization Solve Different Problems](/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
-- [Part 5: Translating Clinic Rules into Timefold Constraints](/blog/clinic-appointment-part5-timefold-constraints/)
-- [Part 6: Rescheduling after Closures and Equipment Downtime](/blog/clinic-appointment-part6-closure-equipment-rescheduling/)
-- [Part 7: Reviews and Operations Start the Next Development Cycle](/blog/clinic-appointment-part7-review-and-operational-evolution/)
+<ClinicAppointmentSeries current="clinic-appointment-product-version-purchase-snapshot" locale="en" />

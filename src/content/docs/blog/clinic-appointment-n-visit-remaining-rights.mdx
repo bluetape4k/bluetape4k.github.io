@@ -1,5 +1,5 @@
 ---
-title: "Why an N-Visit Product Is Not One Appointment"
+title: "[Design 3] Why an N-Visit Product Is Not One Appointment"
 description: Follow Patient A's five-visit purchase to separate purchased rights, planned treatments, one confirmed visit, actual completion, and the remaining obligation.
 sidebar:
   order: -202608121200
@@ -10,6 +10,8 @@ blog:
   cardDescription: "Why a multi-visit purchase keeps its remaining rights separate from the appointments that are confirmed one at a time."
   tags: ["architecture", "domain-modeling", "event-driven", "resilience", "appointment-service", "example", "timefold"]
 ---
+
+import ClinicAppointmentSeries from '../../../components/ClinicAppointmentSeries.astro';
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/clinic-appointment-n-visit-hero.png" alt="Small robot workers connect a five-visit product, an AppointmentPlan, one confirmed visit, completion evidence, and a remaining-rights ledger on one workbench" loading="eager" />
@@ -235,17 +237,4 @@ repository.
 
 ## Series
 
-- [Prologue: From Product Information to a Patient's Visit Commitment](/blog/clinic-appointment-prologue-product-to-appointment/)
-- [When a Product Changes, Don't Rewrite the Patient's Promise](/blog/clinic-appointment-product-version-purchase-snapshot/)
-- [What Appointment Promise Does an Event Product Create?](/blog/clinic-appointment-event-product-first-commitment/)
-- **Why an N-Visit Product Is Not One Appointment**
-- [Why a Package Product Becomes an Execution Graph](/blog/clinic-appointment-package-product-execution-graph/)
-- [How a Product BOM Becomes an AppointmentPlan and a Visit](/blog/clinic-appointment-execution-bom-to-appointment-plan/)
-- [A Preferred Visit Date Is Not an Appointment Confirmation](/blog/clinic-appointment-desired-visit-date-and-confirmed-commitment/)
-- [Part 1: Clinic Appointments Are More Than CRUD](/blog/clinic-appointment-part1-not-just-crud/)
-- [Part 2: Appointment State Is More Than an Enum](/blog/clinic-appointment-part2-state-machine-and-history/)
-- [Part 3: Computing Availability from Clinic-Specific Hours and Resources](/blog/clinic-appointment-part3-clinic-specific-availability/)
-- [Part 4: Real-Time Slot Search and Global Optimization Solve Different Problems](/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
-- [Part 5: Translating Clinic Rules into Timefold Constraints](/blog/clinic-appointment-part5-timefold-constraints/)
-- [Part 6: Rescheduling after Closures and Equipment Downtime](/blog/clinic-appointment-part6-closure-equipment-rescheduling/)
-- [Part 7: Reviews and Operations Start the Next Development Cycle](/blog/clinic-appointment-part7-review-and-operational-evolution/)
+<ClinicAppointmentSeries current="clinic-appointment-n-visit-remaining-rights" locale="en" />

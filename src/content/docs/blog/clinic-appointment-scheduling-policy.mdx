@@ -1,0 +1,181 @@
+---
+title: "[Design 7] Why Every Clinic Has Different Booking Rules"
+description: "A practical explanation of why the same booking request can produce a different result at each clinic, using tenant defaults, clinic overrides, and an effective policy snapshot."
+sidebar:
+  order: -202608151200
+blog:
+  date: 2026-08-15T12:00:00+09:00
+  image: /assets/clinic-appointment-scheduling-policy-hero.png
+  imageAlt: "A robot comparing a tenant scheduling policy with a clinic override and checking an effective policy snapshot"
+  cardDescription: "How policy inheritance, overrides, versions, and activation boundaries explain clinic-specific booking results."
+  tags: ["architecture", "domain-modeling", "event-driven", "resilience", "appointment-service", "example", "timefold"]
+---
+
+import ClinicAppointmentSeries from '../../../components/ClinicAppointmentSeries.astro';
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-scheduling-policy-hero.png" alt="A robot comparing a tenant scheduling policy with a clinic override and checking an effective policy snapshot" />
+  <figcaption>The same appointment service can produce a different result after composing each clinic's policy.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-15 · Clinic Appointment service diary · Clinic-specific scheduling policy</p>
+
+## Why can the same request produce a different result?
+
+A patient can select the same product and request the same time while receiving a different result at another clinic. Clinic A may require a staff member to confirm the request. Clinic B may confirm it immediately when the conditions have already been validated. This is not a matter of scattering clinic-name exceptions through booking code. **The policy used for the decision is composed from a tenant default and a clinic-specific rule.**
+
+To explain the difference, keep four boundaries separate.
+
+| Boundary | Question it answers |
+| --- | --- |
+| Scope | Does this rule apply to every clinic or only to one clinic? |
+| Selection | Does the clinic inherit the default, replace its value, or disable an optional feature? |
+| Time | When was the decision made, and when will the visit service happen? |
+| History | Can we explain the original decision after the policy changes? |
+
+A settings table alone cannot answer the last two questions. The design therefore stores policies as versioned contracts and produces an **effective policy snapshot** for the booking decision.
+
+## A tenant default and a clinic override are composed deliberately
+
+Policy scope has two layers.
+
+| Scope | Role | Example |
+| --- | --- | --- |
+| Tenant default | The baseline used by every clinic in the tenant | Default approval mode, safety ceilings, operating hours |
+| Clinic override | A clinic's deliberate operational difference | Extra review for one service, disabling an optional feature |
+
+A clinic override has three explicit intents.
+
+| Intent | Meaning | Result |
+| --- | --- | --- |
+| `INHERIT` | Use the tenant default as-is | The default value is recorded in the effective policy |
+| `SET` | Choose a clinic-specific value | The clinic policy becomes the source for that path |
+| `DISABLE` | Do not use an optional feature | The disabled path is recorded separately |
+
+`INHERIT` must not be treated as null. Null can mean “not known yet”; `INHERIT` means “deliberately follow the tenant value.” Conversely, a required policy or safety ceiling cannot be disabled or relaxed through `DISABLE`.
+
+<figure class="bt4k-architecture" data-diagram-title="From clinic-specific rules to an effective policy snapshot">
+  <img src="/assets/clinic-appointment-scheduling-policy-01-en.png" alt="Flow from a tenant default and clinic override through composition and activation checks to an effective policy snapshot" loading="lazy" />
+  <figcaption>The tenant default and clinic override pass through an explicit composition step before becoming an effective policy snapshot.</figcaption>
+</figure>
+
+Keeping this composition in one place avoids reinterpreting the same rule in every caller. It also gives operations a direct answer to “why was this clinic handled differently?” The implementation separates `INHERIT`, `SET`, and `DISABLE` in the payload contract, while the compiler records the source of each policy path.
+
+## A policy is a versioned contract, not just a setting
+
+Changing a number or option on an operations screen must not silently affect every booking. A change needs validation, approval, an activation time, and a boundary for failure or recovery.
+
+The policy lifecycle is intentionally constrained.
+
+```text
+DRAFT ──▶ SCHEDULED ──▶ ACTIVE ──▶ RETIRED
+  └──────────────▶ ACTIVE
+  └────────────────────────────▶ RETIRED
+```
+
+| Stage | Meaning | What operations should verify |
+| --- | --- | --- |
+| `DRAFT` | A policy that is not active yet | Required fields and safety ceilings pass validation |
+| `SCHEDULED` | A policy to apply at a future time | The activation time and expected impact are clear |
+| `ACTIVE` | The policy used for current reads | It was activated with the expected generation and versions |
+| `RETIRED` | A policy no longer used for new decisions | Its historical record remains traceable |
+
+Drafting, validation, preview, approval, scheduled or immediate activation, and retirement are separate steps. Approval is not the same thing as a lifecycle transition. An approved policy still needs a fresh check when another operator has changed the generation or activated a different version first.
+
+## An effective policy snapshot explains the decision later
+
+The booking decision needs more than “the clinic settings right now.” It needs **the policy bundle that was effective at that moment**. The snapshot carries the following fields together.
+
+| Field | Role |
+| --- | --- |
+| `decisionAt` | When the policy was evaluated |
+| `serviceAt` | When the visit service is expected to happen |
+| `generation` | The tenant and clinic policy generation vector |
+| `sourceVersions` | The tenant and clinic source versions used for each policy kind |
+| `sourceByPath` | Whether each value came from the tenant default or clinic override |
+| `snapshotHash` | A hash that confirms identical input produced identical output |
+
+Conceptually, this is an immutable value object:
+
+```kotlin
+data class EffectiveSchedulingPolicy(
+    val decisionAt: Instant,
+    val serviceAt: Instant,
+    val generation: PolicyGenerationVector,
+    val sourceVersions: Map<SchedulingPolicyKind, SourceVersion>,
+    val sourceByPath: Map<String, PolicyValueSource>,
+    val snapshotHash: String,
+)
+```
+
+The compiler also rejects a `serviceAt` that is earlier than `decisionAt`. The resulting snapshot keeps booking requests, previews, and operations from reading policy independently, and makes the decision reproducible later. It does not mean the policy is automatically applied to every booking; it means **the policy to apply has been fixed as one verifiable result**.
+
+## Close activation conflicts by preserving the previous policy
+
+Two operators can try to activate a policy for the same clinic at the same time. If the last request always wins, an earlier approved change can be overwritten without notice. The activation request therefore carries an expected revision and generation, and the write uses a CAS (Compare-And-Set) boundary.
+
+When the generation has changed, the system should preserve the previous active policy rather than forcing the new one through:
+
+- Reject activation when the expected generation no longer matches.
+- Return the same result when a request is retried with the same idempotency key.
+- Keep the previous `ACTIVE` policy when a scheduled activation misses its activation point.
+- Let the operator preview and approve a new generation after understanding the conflict.
+
+This removes the assumption that a button click means “the policy must have changed.” Activation success and a fresh effective-policy read are separate checks that let operations confirm the outcome.
+
+## A policy change does not rewrite an existing confirmed commitment
+
+Policy changes are future-only. Recalculating a visit that has already been confirmed with the current policy would change a commitment the system has already made to the patient.
+
+| Existing state | Default treatment when policy changes |
+| --- | --- |
+| `PROPOSED` | May be evaluated with the new policy |
+| `HELD` | May use the new policy when the hold expires |
+| `CONFIRMED` | Protect the confirmed visit commitment; do not rewrite it automatically |
+
+If a confirmed time or price must change, create a new proposal and obtain the patient's consent again instead of overwriting the existing commitment. This is why the policy snapshot and the visit-commitment snapshot are separate. A policy is a rule for future decisions; a confirmed visit is an outcome already promised externally.
+
+## The boundary that is implemented, and the boundary that is still separate
+
+This foundation creates the boundary for authoring, validating, reading an effective snapshot, and activating a policy safely. Connecting the booking-creation path so it consumes that policy is a separate integration step. The feature flags are therefore staged and disabled by default:
+
+1. shadow compile
+2. effective read
+3. admin write
+4. preview worker
+5. scheduled activation
+
+Staging the flags makes it possible to verify that persisted policy data does not unexpectedly affect the existing booking flow. “The system can store a policy” and “booking outcomes change according to that policy” are different release claims.
+
+## Summary
+
+Clinics have different booking rules not because exceptions are scattered through the code. The service composes a tenant default with an explicit clinic override, then fixes the result as an effective policy snapshot with generation, source, and hash information.
+
+The boundaries are deliberate:
+
+- `INHERIT`, `SET`, and `DISABLE` express different intent.
+- A policy has versions and a lifecycle.
+- CAS and generation checks close activation conflicts.
+- An existing `CONFIRMED` visit commitment is not rewritten by a future policy.
+
+The next article follows this boundary into the waitlist. Who should receive a proposal when a slot becomes available depends on when the policy is read and on the rule that protects a confirmed visit commitment.
+
+## See the visual companion
+
+- [Scheduling policy foundation visual companion](/visual-companions/clinic-appointment/scheduling-policy-foundation/)
+- [Clinic Appointment visual companion collection](/visual-companions/clinic-appointment/)
+
+## Sources
+
+- [clinic-appointment repository](https://github.com/bluetape4k/clinic-appointment)
+- [Scheduling policy foundation design](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-07-27-scheduling-policy-foundation-design.md)
+- [Scheduling policy API contract](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/api/scheduling-policy.md)
+- [Scheduling policy activation runbook](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/runbooks/scheduling-policy-activation.md)
+- [`SchedulingPolicyCompiler`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/SchedulingPolicyCompiler.kt)
+- [`EffectiveSchedulingPolicy`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/policy/EffectiveSchedulingPolicy.kt)
+- [`SchedulingPolicyPayloadCodec`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/SchedulingPolicyPayloadCodec.kt)
+- [Scheduling policy foundation issue #283](https://github.com/bluetape4k/clinic-appointment/issues/283)
+
+## Series
+
+<ClinicAppointmentSeries current="clinic-appointment-scheduling-policy" locale="en" />

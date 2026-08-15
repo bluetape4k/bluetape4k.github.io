@@ -1,5 +1,5 @@
 ---
-title: "패키지 상품은 왜 실행 그래프가 되는가"
+title: "[설계 4] 패키지 상품은 왜 실행 그래프가 되는가"
 description: 환자 A의 패키지 구매를 따라가며 반복·복합·선택형 상품이 상품 BOM과 여러 방문 후보로 전개되는 과정을 설명합니다.
 sidebar:
   order: -202608121300
@@ -10,6 +10,8 @@ blog:
   cardDescription: "패키지의 구성 상품, 선택 규칙, 선후행 관계가 환자의 여러 방문과 실제 예약 항목으로 번역되는 경계를 설명합니다."
   tags: ["architecture", "domain-modeling", "event-driven", "resilience", "appointment-service", "example", "timefold"]
 ---
+
+import ClinicAppointmentSeries from '../../../../components/ClinicAppointmentSeries.astro';
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/clinic-appointment-package-product-hero.png" alt="패키지 상품의 구성 항목과 선후행 관계, 여러 방문 후보, 자원 요구를 하나의 실행 그래프로 연결하는 작은 로봇 작업자들" loading="eager" />
@@ -176,20 +178,4 @@ T1의 구매를 `Appointment` 하나로 저장하면 T2의 선택, T4의 의존�
 
 ## 시리즈 링크
 
-- [프롤로그: 상품 정보가 고객의 방문 약속이 되기까지](/ko/blog/clinic-appointment-prologue-product-to-appointment/)
-- [상품이 바뀌어도 고객의 약속은 다시 쓰지 않는다](/ko/blog/clinic-appointment-product-version-purchase-snapshot/)
-- [이벤트 상품은 어떤 방문 약속을 만드는가](/ko/blog/clinic-appointment-event-product-first-commitment/)
-- [N회 상품은 왜 예약 한 건이 아닌가](/ko/blog/clinic-appointment-n-visit-remaining-rights/)
-- **패키지 상품은 왜 실행 그래프가 되는가**
-- [상품 BOM은 어떻게 AppointmentPlan과 방문으로 번역되는가](/ko/blog/clinic-appointment-execution-bom-to-appointment-plan/)
-- [고객 희망 내원 날짜는 예약 확정이 아니다](/ko/blog/clinic-appointment-desired-visit-date-and-confirmed-commitment/)
-- [예약 우선순위는 누구의 규칙인가](/ko/blog/clinic-appointment-booking-reliability/)
-- [대기 목록은 이름표가 아니라 상태 머신이다](/ko/blog/clinic-appointment-waitlist-core/)
-- [대기 목록 운영 화면은 상태판이 아니라 조치판이다](/ko/blog/clinic-appointment-waitlist-operations-dashboard/)
-- [Part 1: 병원 예약은 CRUD로 끝나지 않는다](/ko/blog/clinic-appointment-part1-not-just-crud/)
-- [Part 2: 예약 상태는 단순한 열거형이 아니다](/ko/blog/clinic-appointment-part2-state-machine-and-history/)
-- [Part 3: 병원마다 다른 업무시간과 자원으로 예약 가능 시간을 계산하기](/ko/blog/clinic-appointment-part3-clinic-specific-availability/)
-- [Part 4: 한 건의 예약 가능 시간 조회와 전체 일정 최적화는 다르다](/ko/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
-- [Part 5: 병원 업무 규칙을 Timefold 제약 조건으로 옮기기](/ko/blog/clinic-appointment-part5-timefold-constraints/)
-- [Part 6: 휴진과 장비 고장은 예약 설계를 어떻게 바꾸는가](/ko/blog/clinic-appointment-part6-closure-equipment-rescheduling/)
-- [Part 7: 완성 뒤가 진짜 시작이다](/ko/blog/clinic-appointment-part7-review-and-operational-evolution/)
+<ClinicAppointmentSeries current="clinic-appointment-package-product-execution-graph" locale="ko" />

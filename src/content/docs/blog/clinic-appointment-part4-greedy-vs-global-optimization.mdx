@@ -1,5 +1,5 @@
 ---
-title: "Clinic Appointment SaaS Part 4: Real-Time Slot Search and Global Optimization Solve Different Problems"
+title: "[Implementation 4] Real-Time Slot Search and Global Optimization Solve Different Problems"
 description: Separate fast availability lookup for one patient from Timefold Solver optimization across many appointments, doctors, and devices, including closure rescheduling.
 sidebar:
   order: -202607191400
@@ -10,6 +10,8 @@ blog:
   cardDescription: "See why listing valid slots for one request and optimizing a clinic-wide schedule need separate services."
   tags: ["architecture","comparison","kotlin","optimization","search","timefold","appointment-service","example"]
 ---
+
+import ClinicAppointmentSeries from '../../../components/ClinicAppointmentSeries.astro';
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/clinic-appointment-part4-hero.png" alt="Small robotic workers operate one bench that quickly filters appointment candidates for a patient and another planning board that compares full schedules across patients, doctors, and equipment" loading="eager" />
@@ -282,13 +284,4 @@ Part 5 translates those clinic statements into Timefold Constraint Streams and a
 
 ## Series
 
-- [Prologue: From Product Information to a Patient's Visit Commitment](/blog/clinic-appointment-prologue-product-to-appointment/)
-- [When a Product Changes, Don't Rewrite the Patient's Promise](/blog/clinic-appointment-product-version-purchase-snapshot/)
-- [What Appointment Promise Does an Event Product Create?](/blog/clinic-appointment-event-product-first-commitment/)
-- [Part 1: Clinic Appointments Are More Than CRUD](/blog/clinic-appointment-part1-not-just-crud/)
-- [Part 2: Appointment State Is More Than an Enum](/blog/clinic-appointment-part2-state-machine-and-history/)
-- [Part 3: Computing Availability from Clinic-Specific Hours and Resources](/blog/clinic-appointment-part3-clinic-specific-availability/)
-- **Part 4: Real-Time Slot Search and Global Optimization Solve Different Problems**
-- [Part 5: Translating Clinic Rules into Timefold Constraints](/blog/clinic-appointment-part5-timefold-constraints/)
-- [Part 6: Rescheduling after Closures and Equipment Downtime](/blog/clinic-appointment-part6-closure-equipment-rescheduling/)
-- [Part 7: Reviews and Operations Start the Next Development Cycle](/blog/clinic-appointment-part7-review-and-operational-evolution/)
+<ClinicAppointmentSeries current="clinic-appointment-part4-greedy-vs-global-optimization" locale="en" />
