@@ -1,5 +1,5 @@
 export const BLOG_DIAGRAM_SELECTOR =
-  'figure:is(.bt4k-architecture, .bt4k-chart, .bt4k-sequence) > img';
+  'figure:is(.bt4k-architecture, .bt4k-chart, .bt4k-sequence) > img, .bt4k-operations-screen > img';
 
 export const MANUAL_DIAGRAM_SELECTOR =
   [
@@ -85,12 +85,15 @@ function createOpenButton(label) {
 }
 
 function diagramMetadata(image, scope, sourceOverride = '') {
-  const figure = image.closest('figure');
-  const explicitTitle = figure?.dataset.diagramTitle ?? '';
+  const visual = image.closest('figure, .bt4k-operations-screen');
+  const explicitTitle =
+    visual?.dataset.diagramTitle
+    ?? visual?.dataset.visualTitle
+    ?? '';
   const alt = image.getAttribute('alt')?.trim() ?? '';
   const caption =
     scope === 'blog'
-      ? figure?.querySelector('figcaption')?.textContent?.trim() ?? ''
+      ? visual?.querySelector('figcaption, .bt4k-operations-screen-caption')?.textContent?.trim() ?? ''
       : '';
   return {
     source: sourceOverride || image.currentSrc || image.getAttribute('src') || '',

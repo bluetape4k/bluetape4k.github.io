@@ -25,7 +25,7 @@ function selectorRoot(expectedSelector, values) {
 test('blog and manual selectors stay inside the approved diagram boundaries', () => {
   assert.equal(
     BLOG_DIAGRAM_SELECTOR,
-    'figure:is(.bt4k-architecture, .bt4k-chart, .bt4k-sequence) > img',
+    'figure:is(.bt4k-architecture, .bt4k-chart, .bt4k-sequence) > img, .bt4k-operations-screen > img',
   );
   assert.doesNotMatch(BLOG_DIAGRAM_SELECTOR, /blog-hero|post-hero|post-figure/);
   assert.equal(
