@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Waitlist operations</title>
+  <style>
+  :root {
+    color-scheme: dark;
+    --canvas: #09111f;
+    --surface: #101c2d;
+    --surface-raised: #15243a;
+    --surface-soft: #1a2d46;
+    --line: #2a415e;
+    --line-soft: #21364f;
+    --text: #edf5ff;
+    --muted: #9eb0c5;
+    --faint: #6f8299;
+    --blue: #7fc9ff;
+    --cyan: #74e4d1;
+    --amber: #ffd08a;
+    --red: #ff9b9b;
+    --green: #9de6b5;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-width: 1120px; background: var(--canvas); }
+  body {
+    color: var(--text);
+    font-family: 'goorm Sans', 'Apple SD Gothic Neo', system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.45;
+  }
+  .canvas { padding: 42px; }
+  .window {
+    width: 100%;
+    max-width: 1516px;
+    margin: 0 auto;
+    overflow: hidden;
+    border: 1px solid #38506f;
+    border-radius: 22px;
+    background: linear-gradient(145deg, #0f1b2d 0%, #0c1728 100%);
+    box-shadow: 0 30px 70px rgba(0, 0, 0, .35);
+  }
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 26px 32px 22px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .eyebrow, .mono, .metric-label, .queue-head, .queue-cell.state, .badge, .detail-label, .footer {
+    font-family: 'goorm Sans Code', 'Comic Mono', ui-monospace, monospace;
+  }
+  .eyebrow { color: var(--blue); font-size: 12px; letter-spacing: .12em; font-weight: 700; }
+  h1 { margin: 4px 0 2px; font-size: 31px; letter-spacing: -.04em; }
+  .subtitle { margin: 0; color: var(--muted); font-size: 15px; }
+  .topbar-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+  .clinic { color: var(--muted); font-size: 14px; text-align: right; }
+  .role { padding: 7px 10px; border: 1px solid #456887; border-radius: 9px; color: var(--blue); font-size: 12px; font-weight: 700; }
+  .readiness { padding: 7px 10px; border: 1px solid #8d6a38; border-radius: 9px; background: #2c2416; color: var(--amber); font-size: 12px; font-weight: 700; }
+  .content { padding: 28px 32px 26px; }
+  .metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .metric-card { min-height: 125px; padding: 18px 19px; border: 1px solid var(--line); border-radius: 15px; background: rgba(21, 36, 58, .85); }
+  .metric-card:nth-child(2) { border-color: #32617a; }
+  .metric-card:nth-child(3), .metric-card:nth-child(4) { border-color: #705936; }
+  .metric-label { color: var(--muted); font-size: 12px; letter-spacing: .05em; }
+  .metric-value { margin-top: 9px; color: var(--text); font-size: 36px; font-weight: 800; letter-spacing: -.06em; }
+  .metric-detail { margin-top: 4px; color: var(--faint); font-size: 13px; }
+  .section-bar { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin: 30px 0 12px; }
+  h2 { margin: 0; font-size: 20px; letter-spacing: -.025em; }
+  .section-meta { color: var(--faint); font-size: 13px; }
+  .queue { overflow: hidden; border: 1px solid var(--line); border-radius: 15px; background: rgba(16, 28, 45, .92); }
+  .queue-head, .queue-row { display: grid; grid-template-columns: 1.35fr .75fr 1.25fr 2.75fr .55fr; align-items: center; column-gap: 16px; }
+  .queue-head { padding: 13px 18px; border-bottom: 1px solid var(--line-soft); color: var(--faint); font-size: 11px; letter-spacing: .07em; text-transform: uppercase; }
+  .queue-row { min-height: 64px; padding: 14px 18px; border-bottom: 1px solid rgba(42, 65, 94, .58); }
+  .queue-row:last-child { border-bottom: 0; }
+  .queue-row.selected { background: linear-gradient(90deg, rgba(45, 87, 118, .36), rgba(45, 87, 118, .08)); box-shadow: inset 3px 0 0 var(--cyan); }
+  .queue-cell { color: var(--muted); font-size: 14px; }
+  .queue-cell.item { color: var(--text); font-weight: 700; }
+  .queue-cell.state { color: var(--blue); font-size: 12px; font-weight: 700; }
+  .signal { display: inline-flex; align-items: center; gap: 8px; color: var(--amber); }
+  .signal::before { width: 7px; height: 7px; border-radius: 50%; background: currentColor; content: ''; box-shadow: 0 0 0 4px rgba(255, 208, 138, .1); }
+  .signal.unknown { color: var(--red); }
+  .signal.stale { color: var(--blue); }
+  .signal.held { color: var(--cyan); }
+  .age { color: var(--faint); text-align: right; }
+  .detail-grid { display: grid; grid-template-columns: 1.35fr 1fr; gap: 14px; margin-top: 14px; }
+  .panel { padding: 21px; border: 1px solid var(--line); border-radius: 15px; background: rgba(21, 36, 58, .72); }
+  .panel-title { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; margin-bottom: 18px; }
+  .panel-title h3 { margin: 0; font-size: 17px; }
+  .badge { padding: 5px 8px; border-radius: 7px; background: #193247; color: var(--cyan); font-size: 11px; }
+  .details { display: grid; grid-template-columns: repeat(4, 1fr); gap: 13px 16px; }
+  .detail-label { color: var(--faint); font-size: 11px; }
+  .detail-value { margin-top: 3px; color: var(--text); font-family: 'goorm Sans Code', 'Comic Mono', ui-monospace, monospace; font-size: 13px; overflow-wrap: anywhere; }
+  .privacy { margin: 17px 0 0; padding-top: 14px; border-top: 1px solid var(--line-soft); color: var(--muted); font-size: 13px; }
+  .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin-top: 17px; }
+  .actions-label { width: 100%; color: var(--faint); font-size: 12px; }
+  button { border: 0; border-radius: 8px; padding: 9px 13px; font: inherit; font-size: 13px; font-weight: 700; }
+  .primary { background: var(--cyan); color: #0c2026; }
+  .secondary { border: 1px solid #4f6b87; background: transparent; color: var(--text); }
+  .disabled { border: 1px dashed #4c5d71; background: transparent; color: var(--faint); }
+  .result { border-color: #7e6339; background: linear-gradient(145deg, rgba(61, 48, 26, .76), rgba(21, 36, 58, .76)); }
+  .result .badge { background: #3e301d; color: var(--amber); }
+  .result-body { margin: 0; color: var(--muted); font-size: 14px; }
+  .result-link { display: inline-block; margin-top: 18px; color: var(--blue); font-size: 13px; font-weight: 700; }
+  .footer { padding: 0 32px 26px; color: var(--faint); font-size: 11px; }
+  @media (max-width: 1250px) {
+    .canvas { padding: 20px; }
+    .window { min-width: 1080px; }
+    .topbar, .content { padding-left: 24px; padding-right: 24px; }
+  }
+</style>
+</head>
+<body data-workflow-ready="true" data-view="dashboard">
+  <main class="canvas">
+    <section class="window" aria-label="Waitlist operations">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">STAFF OPERATIONS SCREEN · DESIGN MOCKUP</div>
+          <h1>Waitlist operations</h1>
+          <p class="subtitle">A clinic-level view for deciding what to inspect and what to do next</p>
+        </div>
+        <div class="topbar-right">
+          <div class="clinic">Clinic A · morning operations</div>
+          <span class="role">STAFF</span>
+          <span class="readiness">READINESS DEGRADED</span>
+        </div>
+      </header>
+      <div class="content">
+        <section class="metric-grid" aria-label="Clinic-level operations metrics">
+          <article class="metric-card">
+      <div class="metric-label">Waiting</div>
+      <div class="metric-value">12<span style="font-size:.5em; letter-spacing:0"></span></div>
+      <div class="metric-detail">waitlist entries</div>
+    </article>
+    <article class="metric-card">
+      <div class="metric-label">In progress</div>
+      <div class="metric-value">4<span style="font-size:.5em; letter-spacing:0"></span></div>
+      <div class="metric-detail">active offers</div>
+    </article>
+    <article class="metric-card">
+      <div class="metric-label">Near expiry</div>
+      <div class="metric-value">3<span style="font-size:.5em; letter-spacing:0"></span></div>
+      <div class="metric-detail">check expiry and version</div>
+    </article>
+    <article class="metric-card">
+      <div class="metric-label">Needs review</div>
+      <div class="metric-value">2<span style="font-size:.5em; letter-spacing:0"></span></div>
+      <div class="metric-detail">delivery result unknown</div>
+    </article>
+        </section>
+        <section id="queue" aria-labelledby="queue-title">
+          <div class="section-bar">
+            <h2 id="queue-title">Action queue</h2>
+            <div class="section-meta">Deterministic priority · oldest signal first</div>
+          </div>
+          <div class="queue" role="table" aria-label="Action queue">
+            <div class="queue-head" role="row"><div role="columnheader">Item</div><div role="columnheader">State</div><div role="columnheader">Signal</div><div role="columnheader">Next task</div><div role="columnheader">Age</div></div>
+            <div class="queue-row selected" role="row">
+        <div class="queue-cell item" role="cell">o_7F3A…91C2</div>
+        <div class="queue-cell state" role="cell">OFFERED</div>
+        <div class="queue-cell" role="cell"><span class="signal ">expires soon</span></div>
+        <div class="queue-cell" role="cell">Re-read expiry and version before confirm</div>
+        <div class="queue-cell age" role="cell">08:12</div>
+      </div>
+      <div class="queue-row" role="row">
+        <div class="queue-cell item" role="cell">o_2B19…4D08</div>
+        <div class="queue-cell state" role="cell">UNKNOWN</div>
+        <div class="queue-cell" role="cell"><span class="signal unknown">delivery result unknown</span></div>
+        <div class="queue-cell" role="cell">Check provider result and offer decision</div>
+        <div class="queue-cell age" role="cell">11:04</div>
+      </div>
+      <div class="queue-row" role="row">
+        <div class="queue-cell item" role="cell">o_93DE…7A40</div>
+        <div class="queue-cell state" role="cell">STALE</div>
+        <div class="queue-cell" role="cell"><span class="signal stale">old decision</span></div>
+        <div class="queue-cell" role="cell">Revalidate policy and slot before command</div>
+        <div class="queue-cell age" role="cell">16:38</div>
+      </div>
+      <div class="queue-row" role="row">
+        <div class="queue-cell item" role="cell">h_4C01…B8E7</div>
+        <div class="queue-cell state" role="cell">HELD</div>
+        <div class="queue-cell" role="cell"><span class="signal held">stuck hold</span></div>
+        <div class="queue-cell" role="cell">Inspect reconciliation and recovery evidence</div>
+        <div class="queue-cell age" role="cell">22:17</div>
+      </div>
+          </div>
+        </section>
+        <div class="detail-grid">
+          <section class="panel" aria-labelledby="detail-title">
+      <div class="panel-title">
+        <h3 id="detail-title">Selected item</h3>
+        <span class="badge">OFFERED</span>
+      </div>
+      <div class="details">
+        <div><div class="detail-label">offerRef</div><div class="detail-value">o_7F3A…91C2</div></div>
+        <div><div class="detail-label">entryRef</div><div class="detail-value">e_19D0…0B71</div></div>
+        <div><div class="detail-label">version</div><div class="detail-value">7</div></div>
+        <div><div class="detail-label">expiresAt</div><div class="detail-value">10:42:18</div></div>
+        <div><div class="detail-label">status</div><div class="detail-value">OFFERED</div></div>
+        <div><div class="detail-label">deliveryState</div><div class="detail-value">DELIVERED</div></div>
+        <div><div class="detail-label">policyVersion</div><div class="detail-value">clinic-a-2026-08</div></div>
+        <div><div class="detail-label">reason category</div><div class="detail-value">slot fit · priority rank</div></div>
+      </div>
+      <p class="privacy">No name, phone number, clinical note, or raw score is shown here.</p>
+      <div class="actions">
+        <div class="actions-label">Permitted work</div>
+        <button class="primary" type="button" aria-label="Confirm">Confirm</button>
+        <button class="secondary" type="button" aria-label="Decline">Decline</button>
+        <button class="disabled" type="button" disabled aria-label="Admin-only command">Admin-only command</button>
+      </div>
+    </section>
+    <section class="panel result" aria-labelledby="result-title">
+      <div class="panel-title">
+        <h3 id="result-title">Terminal outcome decision</h3>
+        <span class="badge">202 · IDEMPOTENCY_IN_PROGRESS</span>
+      </div>
+      <p class="result-body">Wait for Retry-After: 1, then re-read the decision. Do not send a new key.</p>
+      <a class="result-link" href="#queue">Return to action queue →</a>
+    </section>
+        </div>
+      </div>
+      <footer class="footer">Illustrative values · no patient identifiers · Screen mockup · source-backed states and API outcomes · not a production screenshot</footer>
+    </section>
+  </main>
+</body>
+</html>

@@ -51,6 +51,8 @@ blog:
 | `EXPIRED` | 제안·보류(hold) 또는 시작 시각이 지나 닫힌 상태 | 상태 대조·복구 후에만 재시도 |
 | `WITHDRAWN` | 운영자나 복구가 철회한 상태 | 원인과 correlation을 보존 |
 
+상태 머신은 저장 모델에만 머물지 않습니다. 운영 화면은 병원 단위 준비 상태와 지표를 먼저 읽고, 조치 큐에서 항목을 골라 근거와 허용된 명령을 확인한 뒤 최종 상태 결정을 남겨야 합니다.
+
 특히 `ACCEPTED`를 `CONFIRMED`와 같은 말로 쓰면 안 됩니다. 현재 `WaitlistOfferClaimService`가 반환하는 것은 `holdId`와 만료 정보이며, 예약 생성은 이 서비스의 책임이 아닙니다. 이렇게 해야 수락 처리(claim)와 예약 생성 명령을 독립적으로 재시도할 수 있습니다.
 
 ## 후보를 먼저 줄이고, 그 다음 정책을 적용한다
@@ -171,6 +173,7 @@ VIP 신호가 있더라도 이 순서를 무시할 수 없습니다. VIP는 적�
 - [예약 우선순위는 누구의 규칙인가](/ko/blog/clinic-appointment-booking-reliability/)
 - **대기 목록은 이름표가 아니라 상태 머신이다**
 - [대기 목록 운영 화면은 상태판이 아니라 조치판이다](/ko/blog/clinic-appointment-waitlist-operations-dashboard/)
+- [대기 목록 운영 명령은 API 요청과 재조회로 완성된다](/ko/blog/clinic-appointment-waitlist-operations-command/)
 - [Part 1: 병원 예약은 CRUD로 끝나지 않는다](/ko/blog/clinic-appointment-part1-not-just-crud/)
 - [Part 2: 예약 상태는 단순한 열거형이 아니다](/ko/blog/clinic-appointment-part2-state-machine-and-history/)
 - [Part 3: 병원마다 다른 업무시간과 자원으로 예약 가능 시간을 계산하기](/ko/blog/clinic-appointment-part3-clinic-specific-availability/)

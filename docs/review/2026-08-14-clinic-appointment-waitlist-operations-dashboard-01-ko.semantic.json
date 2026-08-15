@@ -20,7 +20,7 @@
     {"id": "action-queue", "label": "조치 큐", "source": "operations dashboard design"},
     {"id": "selected-evidence", "label": "선택 항목 근거", "source": "WaitlistOfferResponse and privacy contract"},
     {"id": "staff-command", "label": "허용된 STAFF 명령", "source": "WaitlistController confirm/decline routes"},
-    {"id": "terminal-outcome-decision", "label": "종료 상태 결정", "source": "operations dashboard design"},
+    {"id": "terminal-outcome-decision", "label": "최종 상태 결정", "source": "operations dashboard design"},
     {"id": "replay-processing", "label": "재생·처리 중", "source": "waitlist-delivery API idempotency contract"},
     {"id": "conflict-requeue", "label": "충돌·재큐", "source": "waitlist-delivery API conflict and recovery contract"}
   ],
@@ -44,7 +44,7 @@
     },
     {
       "target": "command-outcome-spacing",
-      "reason": "허용 명령, 종료 상태 결정, 결과 카드 사이의 수직 간격을 분리하고 캔버스 하단 여백을 함께 확장했다.",
+      "reason": "허용 명령, 최종 상태 결정, 결과 카드 사이의 수직 간격을 분리하고 캔버스 하단 여백을 함께 확장했다.",
       "touches": 9
     },
     {

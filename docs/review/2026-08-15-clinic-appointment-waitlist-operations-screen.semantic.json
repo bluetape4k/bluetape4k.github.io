@@ -1,0 +1,42 @@
+{
+  "kind": "workflow",
+  "source": {
+    "question": "STAFF가 병원 단위 대기·진행 지표를 읽고 조치 큐의 다음 작업과 허용된 명령을 어떻게 판단하는가?",
+    "revision": "clinic-appointment@f783de85efc25e4c8386a34ab6599eca99093eae; visual-site@c448fc5bda5e68d71f7a451c9bf4b796b1fdc4b0",
+    "paths": [
+      "docs/diagrams/clinic-appointment-waitlist-operations-screen/operations-screen-dashboard-ko.html",
+      "docs/diagrams/clinic-appointment-waitlist-operations-screen/operations-screen-command-ko.html",
+      "docs/superpowers/specs/2026-08-14-clinic-appointment-waitlist-operations-dashboard-design.md"
+    ],
+    "externalPaths": [
+      "docs/api/waitlist-delivery.md",
+      "docs/requirements/waitlist-delivery.md",
+      "appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/waitlist/WaitlistDeliveryMetrics.kt",
+      "appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/waitlist/WaitlistDeliveryHealthIndicator.kt",
+      "appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/controller/WaitlistController.kt"
+    ]
+  },
+  "nodes": [
+    {"id": "clinic-metrics", "label": "대기·진행·만료·확인 필요 지표", "source": "WaitlistDeliveryMetrics and operations screen design"},
+    {"id": "readiness", "label": "UP / DEGRADED / OUT_OF_SERVICE", "source": "WaitlistDeliveryHealthIndicator"},
+    {"id": "action-queue", "label": "조치 큐", "source": "operations screen design"},
+    {"id": "selected-evidence", "label": "선택 항목 근거", "source": "WaitlistOfferResponse and privacy boundary"},
+    {"id": "permitted-command", "label": "STAFF 허용 명령", "source": "WaitlistController confirm/decline routes"},
+    {"id": "terminal-decision", "label": "최종 상태 결정", "source": "waitlist delivery API contract"}
+  ],
+  "edges": [
+    {"id": "metrics-readiness", "from": "clinic-metrics", "to": "readiness", "kind": "clinic-summary", "source": "WaitlistDeliveryMetrics and HealthIndicator"},
+    {"id": "metrics-queue", "from": "clinic-metrics", "to": "action-queue", "kind": "priority-context", "source": "operations screen design"},
+    {"id": "queue-evidence", "from": "action-queue", "to": "selected-evidence", "kind": "staff-selection", "source": "operations screen design"},
+    {"id": "evidence-command", "from": "selected-evidence", "to": "permitted-command", "kind": "scope-version-check", "source": "WaitlistController and API contract"},
+    {"id": "command-terminal", "from": "permitted-command", "to": "terminal-decision", "kind": "bounded-outcome", "source": "waitlist delivery API contract"}
+  ],
+  "behavior": {"branches": 3, "loops": 1},
+  "budget": {"nodes": 6, "edges": 5, "branches": 3, "loops": 1},
+  "repairs": [
+    {"target": "screen-metrics", "reason": "화면 상단에 대기·진행·만료·확인 필요 지표를 고정해 운영자가 병원 상태를 먼저 읽게 한다.", "touches": 4},
+    {"target": "full-width-action-queue", "reason": "A안 시안의 전체 폭 조치 큐를 유지해 다음 작업과 상태 신호를 같은 행에서 읽게 한다.", "touches": 5},
+    {"target": "selected-evidence-and-command", "reason": "선택 상세에서 opaque ref·version·expiry·허용 명령·최종 상태 결정을 분리한다.", "touches": 6},
+    {"target": "locale-pairs", "reason": "한국어·영어 화면은 동일한 지표·큐·근거·결과를 노출하고 reader-facing 문구만 현지화한다.", "touches": 2}
+  ]
+}

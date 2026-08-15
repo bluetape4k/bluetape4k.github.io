@@ -67,10 +67,10 @@ blog:
 
 이 값은 특정 제안의 성공을 증명하지 않습니다. `DEGRADED`라고 해서 모든 제안을 거절하는 것도 아니고, `UP`이라고 해서 오래된 버전을 무시하고 확정해도 된다는 뜻도 아닙니다. 운영 준비 상태는 새 제안 작업을 검토할 수 있는 병원 단위 신호일 뿐입니다. 개별 명령의 최종 판정은 제안의 현재 상태와 자원을 다시 확인하는 단계에서 이뤄집니다.
 
-<figure class="bt4k-architecture" data-diagram-title="대기 목록 운영 화면의 지표·조치 큐·명령 경계">
-  <img src="/assets/clinic-appointment-waitlist-operations-dashboard-01-ko.png" alt="병원 운영 준비 상태와 운영 지표를 읽은 뒤 조치 큐에서 항목을 선택하고, 근거 패널을 확인해 허용된 명령을 실행하고 종료 상태 결정을 확인하는 대기 목록 운영 흐름" loading="lazy" />
-  <figcaption>지표는 항목을 자동 확정하지 않습니다. 운영자는 조치 큐에서 항목을 고르고, 근거 패널의 현재 `version`과 `expiresAt`을 확인한 뒤 허용된 명령을 실행합니다.</figcaption>
-</figure>
+<div class="bt4k-operations-screen" data-visual-title="STAFF 운영 화면 시안">
+  <img class="bt4k-screenshot" src="/assets/clinic-appointment-waitlist-operations-screen-dashboard-ko.png" alt="대기·진행 중·만료 임박·확인 필요 지표와 조치 큐, 선택 항목의 근거, 허용된 작업, 최종 상태 결정을 보여주는 STAFF 운영 화면 시안" loading="lazy" />
+  <p class="bt4k-operations-screen-caption">실제 운영 화면을 단순화한 시안이며 제품의 운영 중 화면을 캡처한 것이 아닙니다. 숫자는 예시이고, 병원 지표와 준비 상태를 먼저 읽은 뒤 조치 큐에서 항목을 골라 근거·허용된 작업·최종 상태 결정을 확인하는 순서를 보여줍니다.</p>
+</div>
 
 ## 조치 큐는 상태를 다음 행동으로 바꿔 보여준다
 
@@ -146,7 +146,7 @@ Idempotency-Key: staff-confirm-20260814-01
 
 <figure class="bt4k-sequence" data-diagram-title="STAFF 확정 명령과 멱등성 결과">
   <img src="/assets/clinic-appointment-waitlist-operations-command-01-ko.png" alt="STAFF가 운영 화면에서 제안을 선택하고 버전과 멱등성 키를 포함한 확정 요청을 보내면 DB 펜스가 성공, 재생, 처리 중, 충돌 결과를 반환하는 시퀀스" loading="lazy" />
-  <figcaption>같은 멱등성 키의 재요청은 새 예약을 만들지 않고 최초 결과를 재생합니다. 처리 중 결과는 별도로 표시하고, 오래된 결정·만료·슬롯 점유는 서로 다른 종료 상태 결정으로 남깁니다.</figcaption>
+  <figcaption>같은 멱등성 키의 재요청은 새 예약을 만들지 않고 최초 결과를 재생합니다. 처리 중 결과는 별도로 표시하고, 오래된 결정·만료·슬롯 점유는 서로 다른 최종 상태 결정으로 남깁니다.</figcaption>
 </figure>
 
 ## 운영 적용을 꺼도 회복 작업은 계속된다
@@ -201,7 +201,7 @@ Idempotency-Key: staff-confirm-20260814-01
 - 운영 적용을 꺼도 만료 정리·알림 억제·보류(hold) 상태 대조·복구는 계속합니다.
 - STAFF가 볼 수 있는 근거와 ADMIN이 바꿀 수 있는 정책을 한 버튼 묶음에 섞지 않습니다.
 
-앞 글에서는 대기 목록의 상태와 소유권을 설명했습니다. 이번 글에서는 운영자가 그 상태를 읽고 조치하는 화면의 경계를 정리했습니다. 다음 글에서는 이 화면의 각 명령이 실제 API 요청과 재조회 흐름으로 어떻게 연결되는지 더 작은 단위로 살펴보겠습니다.
+앞 글에서는 대기 목록의 상태와 소유권을 설명했습니다. 이번 글에서는 운영자가 그 상태를 읽고 조치하는 화면의 경계를 정리했습니다. 다음 글에서는 [각 명령이 실제 API 요청과 재조회 흐름으로 어떻게 연결되는지](/ko/blog/clinic-appointment-waitlist-operations-command/) 더 작은 단위로 살펴보겠습니다.
 
 ### 시각 자료 더 보기
 
@@ -234,6 +234,7 @@ Idempotency-Key: staff-confirm-20260814-01
 - [예약 우선순위는 누구의 규칙인가](/ko/blog/clinic-appointment-booking-reliability/)
 - [대기 목록은 이름표가 아니라 상태 머신이다](/ko/blog/clinic-appointment-waitlist-core/)
 - **대기 목록 운영 화면은 상태판이 아니라 조치판이다**
+- [대기 목록 운영 명령은 API 요청과 재조회로 완성된다](/ko/blog/clinic-appointment-waitlist-operations-command/)
 - [Part 1: 병원 예약은 CRUD로 끝나지 않는다](/ko/blog/clinic-appointment-part1-not-just-crud/)
 - [Part 2: 예약 상태는 단순한 열거형이 아니다](/ko/blog/clinic-appointment-part2-state-machine-and-history/)
 - [Part 3: 병원마다 다른 업무시간과 자원으로 예약 가능 시간을 계산하기](/ko/blog/clinic-appointment-part3-clinic-specific-availability/)

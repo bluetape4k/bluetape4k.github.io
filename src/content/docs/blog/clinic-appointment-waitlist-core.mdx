@@ -51,6 +51,8 @@ Once the states are explicit, notification and database responsibilities become 
 | `EXPIRED` | The offer, hold, or start time closed the offer | Reconcile before retrying |
 | `WITHDRAWN` | Staff or recovery withdrew the offer | Preserve the cause and correlation data |
 
+The state machine is not only a storage model. The operations screen first reads clinic-level readiness and metrics, selects an item from the action queue, checks its evidence and permitted command, and records the terminal outcome decision.
+
 `ACCEPTED` must not be used as a synonym for `CONFIRMED`. `WaitlistOfferClaimService` currently returns a `holdId` and expiry data; creating the appointment is outside that service. That separation lets claim handling and the appointment command retry independently.
 
 ## Reduce candidates first, then apply policy
@@ -171,6 +173,7 @@ Once the service can say that, a waitlist is an operable appointment domain mode
 - [Who Owns Booking Priority?](/blog/clinic-appointment-booking-reliability/)
 - **A Waitlist Is Not a Queue of Names**
 - [A Waitlist Dashboard Should Tell Staff What to Do Next](/blog/clinic-appointment-waitlist-operations-dashboard/)
+- [A Waitlist Operations Command Is Complete Only After the API Request and Re-read](/blog/clinic-appointment-waitlist-operations-command/)
 - [Part 1: A clinic appointment is more than CRUD](/blog/clinic-appointment-part1-not-just-crud/)
 - [Part 2: Appointment state is not a simple enum](/blog/clinic-appointment-part2-state-machine-and-history/)
 - [Part 3: Calculate clinic-specific availability from hours and resources](/blog/clinic-appointment-part3-clinic-specific-availability/)

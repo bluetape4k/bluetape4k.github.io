@@ -63,7 +63,7 @@
   <path id="offered_to_terminal_decision" class="message state" data-from="offered" data-to="terminal_outcome_decision" d="M 810 460 V 500" fill="none" stroke="#ffbf4f" stroke-width="4" marker-end="url(#arrow-amber)"/>
   <g id="terminal_outcome_decision">
     <rect x="600" y="500" width="1100" height="60" rx="18" fill="#111f37" stroke="#ffbf4f" stroke-width="2"/>
-    <text x="1150" y="526" text-anchor="middle" fill="#ffd27c" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22" font-weight="700">종료 상태 결정</text>
+    <text x="1150" y="526" text-anchor="middle" fill="#ffd27c" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22" font-weight="700">최종 상태 결정</text>
     <text x="1150" y="550" text-anchor="middle" fill="#fff3d6" font-family="Inter, Pretendard, Arial, sans-serif" font-size="16">DECLINED / EXPIRED / WITHDRAWN 중 하나를 결정</text>
   </g>
   <g id="declined" transform="translate(610 600)">

@@ -73,7 +73,7 @@
   | offer | 대기 제안 | `offerRef`, `WaitlistOfferResponse` |
   | `deliveryState=UNKNOWN` | 전송 결과 미확인 | `deliveryState=UNKNOWN` |
   | evidence panel | 근거 패널 | `policyVersion`, `reasonCode` |
-  | terminal outcome decision | 종료 상태 결정 | exact diagram label |
+  | terminal outcome decision | 최종 상태 결정 | exact diagram label |
   | idempotency replay | 멱등성 재생 | `Idempotency-Key`, `Idempotent-Replay` |
   | stale/conflict | 오래된 결정 / 버전 충돌 | exact HTTP reason codes |
 
@@ -128,7 +128,7 @@
   - KO-01: source path, 상태명, 숫자, HTTP reason code, URL 보존
   - KO-02: 중요성·효율성 주장 삭제 또는 동작·임계값으로 대체
   - KO-03: 영어 문장 골격, 기계적 `첫째/둘째/셋째`, 명사화와 번역투 제거
-  - KO-04: `제안`, `조치 큐`, `근거 패널`, `종료 상태 결정` 용어 일관성 확인
+  - KO-04: `제안`, `조치 큐`, `근거 패널`, `최종 상태 결정` 용어 일관성 확인
   - KO-05: 독자가 이해하지 못할 비유와 홍보 문장 제거
   - KO-06: frontmatter, 표, 링크 텍스트, 캡션, alt text까지 다시 읽기
 
@@ -165,7 +165,7 @@
 
 - [x] **Step 3: 메인 운영 흐름의 semantic ledger를 작성한다.**
 
-  `docs/review/2026-08-14-clinic-appointment-waitlist-operations-dashboard-01-ko.semantic.json`과 `...-en.semantic.json`을 만들고 `kind: "workflow"`로 선언한다. source revision은 Step 1에서 읽은 `clinic-appointment` `develop` SHA를 기록한다. 노드는 `Clinic readiness`, `운영 지표`, `조치 큐`, `선택 항목 근거`, `허용 명령`, `종료 상태 결정`으로 제한하고, edge는 지표 읽기·큐 선택·근거 조회·명령 실행·결과 표시 관계만 선언한다. `UNKNOWN`·`processing`·`conflict`·`requeue`는 결과 edge로 source path를 각각 기록한다.
+  `docs/review/2026-08-14-clinic-appointment-waitlist-operations-dashboard-01-ko.semantic.json`과 `...-en.semantic.json`을 만들고 `kind: "workflow"`로 선언한다. source revision은 Step 1에서 읽은 `clinic-appointment` `develop` SHA를 기록한다. 노드는 `Clinic readiness`, `운영 지표`, `조치 큐`, `선택 항목 근거`, `허용 명령`, `최종 상태 결정`으로 제한하고, edge는 지표 읽기·큐 선택·근거 조회·명령 실행·결과 표시 관계만 선언한다. `UNKNOWN`·`processing`·`conflict`·`requeue`는 결과 edge로 source path를 각각 기록한다.
 
   예상 복잡도는 workflow 기본 예산(노드 10, edge 14, branch 3, loop 1) 안에 둔다. 다이어그램의 모호한 수평 점선은 ledger에 넣지 않는다.
 
@@ -174,7 +174,7 @@
   `public/assets/clinic-appointment-waitlist-operations-dashboard-01-ko.svg`와 `...-en.svg`를 작성한다.
 
   - 수직으로 `지표 → 조치 큐 → 근거 패널 → 허용 명령/결과`를 넓은 카드로 배치한다.
-  - `OFFERED`에서 수평 점선으로 빠지는 관계를 만들지 않고, `종료 상태 결정`/`terminal outcome decision` 노드를 명시한다.
+  - `OFFERED`에서 수평 점선으로 빠지는 관계를 만들지 않고, `최종 상태 결정`/`terminal outcome decision` 노드를 명시한다.
   - 관측/참조 점선과 상태 변경 실선을 색상·범례로 구분한다.
   - 모든 연결선은 source/target, 둥근 직교 꺾임, 충분한 terminal segment, 역할별 marker를 갖는다.
   - 한국어 라벨은 `goorm Sans`/`goorm Sans Code`, 영어 라벨은 `Architects Daughter`/`Comic Mono` 계열을 사용한다.
@@ -197,7 +197,7 @@
   python3 /Users/debop/.codex/skills/bluetape-diagram/scripts/diagram-visual-audit.py --require-opaque public/assets/clinic-appointment-waitlist-operations-dashboard-01-ko.png
   ```
 
-  EN에도 같은 명령을 적용한다. `view_image`로 각 PNG를 full-size 한 장씩 확인하고, 메인 화면 축소 시에도 지표·큐·근거·종료 상태 결정이 읽히는지 확인한다. 실패한 선·화살촉·공간은 SVG 원본에서 고친 뒤 PNG와 관련 audit을 다시 실행한다.
+  EN에도 같은 명령을 적용한다. `view_image`로 각 PNG를 full-size 한 장씩 확인하고, 메인 화면 축소 시에도 지표·큐·근거·최종 상태 결정이 읽히는지 확인한다. 실패한 선·화살촉·공간은 SVG 원본에서 고친 뒤 PNG와 관련 audit을 다시 실행한다.
 
   증거: hero는 원본 크기 `view_image` 확인을 마쳤고, EN/KO semantic ledger는
   `diagram-semantic-audit.py`를 통과했다. 메인 SVG/PNG는 XML·text normalize·connector·
@@ -218,7 +218,7 @@
   - call line과 label 사이에 6–12px 이상 간격을 두고, 행 높이를 늘려 레이블이 선과 겹치지 않게 한다.
   - 정상 호출은 muted blue, 결과/상태는 olive green, metadata/재조회는 amber, conflict는 muted red로 나누고 line·label·arrowhead 색을 일치시킨다.
   - `201`, `Idempotent-Replay: true`, `202 IDEMPOTENCY_IN_PROGRESS`, `409 DECISION_STALE`/`OFFER_EXPIRED`/`SLOT_OCCUPIED`를 각각 식별 가능한 branch frame 안에 둔다.
-  - branch frame은 투명하게 두고 `종료 상태 결정`/`terminal outcome decision`을 결과 경계에 명시한다.
+  - branch frame은 투명하게 두고 `최종 상태 결정`/`terminal outcome decision`을 결과 경계에 명시한다.
 
 - [x] **Step 3: 시퀀스 SVG를 PNG로 렌더링하고 전용 감사를 수행한다.**
 
@@ -241,7 +241,7 @@
   증거: 두 sequence ledger는 semantic audit을 통과했다. EN/KO SVG/PNG는 XML·text
   normalize·sequence-style·connector·arrowhead·endpoint·geometry·mixed-corner·visual
   감사를 통과했고, full-size 렌더에서 번호 라벨과 call line 사이 간격, 결과 분기,
-  `종료 상태 결정`/`terminal outcome decision` 및 하단 여백을 확인했다.
+  `최종 상태 결정`/`terminal outcome decision` 및 하단 여백을 확인했다.
 
 ## Task 5: 한국어 글에 시각 자료·근거·시리즈 navigation을 연결한다
 
@@ -333,7 +333,7 @@
 
   - 연결선과 화살촉의 색이 일치한다.
   - 수평 점선이 의미 없는 상태 연결로 보이지 않는다.
-  - `종료 상태 결정`/`terminal outcome decision`이 명시적으로 보인다.
+  - `최종 상태 결정`/`terminal outcome decision`이 명시적으로 보인다.
   - sequence call line과 label이 겹치지 않는다.
   - 카드 하단 여백과 층 사이 수직 간격이 충분하다.
   - 본문 폭으로 축소해도 큐와 근거 패널의 텍스트가 읽힌다.

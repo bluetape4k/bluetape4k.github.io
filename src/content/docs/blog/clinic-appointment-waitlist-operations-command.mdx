@@ -1,0 +1,225 @@
+---
+title: "A Waitlist Operations Command Is Complete Only After the API Request and Re-read"
+description: How STAFF sends a scoped, versioned, idempotent waitlist command and re-reads the result to distinguish success, replay, processing, and conflict.
+sidebar:
+  order: -202608151000
+blog:
+  date: 2026-08-15T10:00:00+09:00
+  image: /assets/clinic-appointment-waitlist-operations-screen-command-en.png
+  imageAlt: A STAFF operations screen showing a waitlist command result and the next re-read task
+  cardDescription: "Connects the confirm and decline buttons on an operations screen to scope, version, idempotency, and re-read contracts."
+  tags: ["architecture", "operations", "resilience", "concurrency", "appointment-service", "example", "timefold"]
+---
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-waitlist-operations-screen-command-en.png" alt="A STAFF operations screen showing a waitlist command result and the next re-read task" loading="eager" />
+  <figcaption>Clicking a button on an operations screen does not prove that an appointment was confirmed. This command-result screen shows the API outcome and the next re-read task in the same scoped view.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-15 · Clinic appointment service development · Waitlist API commands and re-reads</p>
+
+A `STAFF` member selects an `OFFERED` item from the action queue. The screen shows `version=7` and an `expiresAt` that has not passed yet. But another worker may expire the offer just before the operator clicks confirm, or another operator may claim the same vacancy first. The network can also fail after the server has already created the replacement appointment.
+
+The screen must not label every button click as success. It sends a command with the current scope and version, classifies the server result as success, replay, processing, or conflict, and then reads the relevant state again.
+
+> **An operations command is a state-change contract owned by the API, not a UI event. `STAFF` reads the current `offerRef` and `version`, sends the command with an `Idempotency-Key`, then re-reads the terminal outcome decision to choose the next action.**
+
+## A button on the operations screen becomes a state-change contract
+
+The previous article treated the operations screen as an action queue rather than a state list. Selecting an item from the queue is a read. Clicking confirm or decline starts a separate write contract. Time passes between those steps, so the screen must not persist the row it had previously displayed as if it were still current.
+
+The common path for the current staff API is:
+
+```text
+/api/{tenantCode}/clinics/{clinicId}/waitlist
+```
+
+The URL exposes `tenantCode` and `clinicId`, but the authoritative permission comes from the authenticated principal's tenant and clinic membership and capability. The request body cannot override that scope. `entryRef` and `offerRef` are opaque references whose kind and scope are validated rather than internal integer IDs. A malformed reference or one belonging to another clinic is handled as `404 WAITLIST_REFERENCE_NOT_FOUND`, so callers cannot probe whether it exists.
+
+This boundary lets the screen track not merely “which row was clicked” but “which offer in which clinic was commanded with which version.”
+
+## Re-read the current evidence before sending the command
+
+An action-queue row is a signal for narrowing the candidates. It is not command input by itself. The screen should pass through this read sequence first:
+
+1. Read the action queue from `GET /offers`. The list uses bounded keyset pagination with `nextCursor`, defaulting to 50 items and allowing at most 100.
+2. Call `GET /offers/{offerRef}` for the selected reference and inspect `status`, `version`, `expiresAt`, and `deliveryState`.
+3. If an earlier command may already have been processed or is still running, call `GET /offers/{offerRef}/decision`.
+4. Check which commands the current `STAFF` role may execute and only then construct the write request.
+
+| Read | What the screen obtains | Next decision |
+| --- | --- | --- |
+| `GET /entries` | `entryRef`, state, and version for waitlist entries | Whether the entry can be withdrawn or opened for offer details |
+| `GET /offers` | Offer list and `nextCursor` | Recompute action-queue priority |
+| `GET /offers/{offerRef}` | `status`, `version`, `expiresAt`, and `deliveryState` | Whether a command can be sent for the current offer |
+| `GET /offers/{offerRef}/decision` | `decisionState`, `appointmentRef`, and `decidedAt` | Reflect an already processed command in the screen |
+
+Reading `version=7` does not guarantee that the server is still at version 7. The version is a condition for attempting the write. The re-read explains what that attempt actually produced. Those roles must not be collapsed into one row object that mixes an old screen with current server state.
+
+<figure class="bt4k-sequence" data-diagram-title="STAFF confirmation command, API request, and re-read flow">
+  <img src="/assets/clinic-appointment-waitlist-operations-command-01-en.png" alt="STAFF re-reads the offer and evidence, sends a confirmation API request with a version and idempotency key, and receives success, replay, processing, or conflict from the database fence" loading="lazy" />
+  <figcaption>The command does not end at one success line. The server distinguishes success, replay of the same request, an in-progress request, and version, expiry, or occupancy conflict; the screen connects each result to a re-read and an action-queue state.</figcaption>
+</figure>
+
+## The request carries scope, version, and idempotency together
+
+A confirmation request can look like this. The example contains no patient data or internal integer ID.
+
+```http
+POST /api/clinic-a/clinics/42/waitlist/offers/o_dGVuYW50.../confirm
+Idempotency-Key: staff-confirm-20260815-01
+Content-Type: application/json
+
+{
+  "expectedVersion": 7,
+  "confirmationSource": "FRONT_DESK"
+}
+```
+
+Every waitlist mutation requires an `Idempotency-Key` made of 16–128 printable ASCII characters. Repeating the same key with the same request must return the first result instead of creating another appointment. Reusing the key with a different request body is a conflict; two different commands must not be silently merged.
+
+`expectedVersion` passes the version read by the screen as a write condition. The server locks and checks the offer, waitlist entry, hold, policy decision, and appointment capacity again. If any prerequisite has changed, it returns a conflict rather than forcing the old screen intent onto the current state.
+
+Values such as `confirmationSource` explain the operator action, but they do not provide tenant, clinic, or member scope. Scope comes from the authenticated principal and the URL. Public responses and logs should keep correlation IDs and stable reason codes, not raw personal details.
+
+## Confirm has three transaction boundaries
+
+`WaitlistApplicationService.confirmOffer` does not treat confirmation as one long HTTP operation. The current application service separates it into three stages:
+
+| Stage | What is stored | Meaning after a failure |
+| --- | --- | --- |
+| 1. Idempotency reservation | Command scope, key digest, request digest, and `PROCESSING` state | Decide whether the same key is already running |
+| 2. Business transaction | Offer claim, replacement appointment, and capacity-hold consumption | Preserve expiry, stale-version, or slot-occupancy conflict as the original outcome |
+| 3. Completion record | Successful `appointmentId` or a stable failure code | Replay the same result after a network retry |
+
+This separation matters because the process can stop immediately after creating the appointment. If stage 2 commits and stage 3 has not recorded the result, the command remains `PROCESSING`. The next request must reconcile the existing replacement appointment before it attempts anything that could create a second one.
+
+`WaitlistApplicationServiceTest` verifies this boundary. Calling the same command twice invokes the claim, replacement appointment creation, and hold consumption once; retrying after a failure just before the success record replays the existing appointment. That proves the application-service idempotency boundary, not that the feature is enabled for every clinic.
+
+## Each HTTP result requires a different operator action
+
+The waitlist delivery API contract does not collapse confirmation into one generic `200 OK`. Each result has its own retry and re-read rule.
+
+| API result | Meaning | Next action on the screen |
+| --- | --- | --- |
+| `201` + `appointmentRef` | A replacement appointment was created and the offer became `ACCEPTED` | Show success and re-read `GET /offers/{offerRef}/decision` |
+| `201` + `Idempotent-Replay: true` | The successful result for the same key and request was replayed | Show that no new appointment was created and reflect the same decision |
+| `202 IDEMPOTENCY_IN_PROGRESS` + `Retry-After: 1` | The same command is still processing | Wait one second, re-read the decision, and do not create a duplicate command with a new key |
+| `409 OFFER_EXPIRED` | The offer expired before the write could commit | Re-read the offer and vacancy, then route to the next candidate or staff review |
+| `409 DECISION_STALE` | The policy decision or version read by the screen is stale | Re-read the current decision and `version` before deciding whether to send a new command |
+| `409 SLOT_OCCUPIED` | Another command occupied the vacancy first | Do not display success; retain the conflict evidence in the action queue |
+
+`202` is not a failure. It means that the outcome is not known yet. Ignoring `Retry-After` and sending confirmation with a new idempotency key is the dangerous path. A `409`, by contrast, is an explicit boundary saying that the screen's precondition is no longer valid.
+
+The `clinic-appointment` API document describes these typed reason codes as the contract, while the common `WaitlistApiError` enum in the current adapter also contains a general `WAITLIST_CONFLICT`. A client should not invent branches for strings it has not observed in the deployed response schema. Verify the actual reason-code mapping for the release being operated. If the detailed design and the HTTP adapter differ, the article should say so rather than hide the drift.
+
+Reference errors and temporary outages follow the same separation:
+
+| Result | Retry rule |
+| --- | --- |
+| `404 WAITLIST_REFERENCE_NOT_FOUND` | Re-read the current list and use the latest server-issued `offerRef` |
+| `400 INVALID_IDEMPOTENCY_KEY` or `PAYLOAD_INVALID` | Fix the request and send a new request; do not retry automatically |
+| `503 WAITLIST_UNAVAILABLE` + `Retry-After` | Retry the same intent with the same idempotency key after the indicated interval |
+
+## Decline follows the same read, command, and re-read order
+
+Decline is the opposite button from confirm, but it is not a local `status=DECLINED` edit. `POST /offers/{offerRef}/decline` also requires an `Idempotency-Key` and `expectedVersion`, and its body carries a bounded `reasonCode`.
+
+The server releases the hold associated with the offer and records the decline. It should not create a new offer for the next waitlist entry until the release has committed. The screen should not mark the next candidate as successful just because it received `200`; it should re-read `GET /offers` and `GET /offers/{offerRef}/decision` and verify that the decline, resource release, and next action are visible.
+
+Without this order, two operators can decline the same offer while the next candidate still sees a held vacancy, or two offers can be created for one vacancy. Decline is also a state-change boundary and needs the same scope, version, and idempotency rules as confirmation.
+
+## A re-read is a decision boundary, not a browser refresh
+
+Representing the operations flow as a full-page browser refresh makes it impossible to tell which request produced the displayed result. Read only the resources needed for the next decision:
+
+```text
+Read action queue
+  → Read offer detail and decision
+  → Send confirm/decline command
+  → Classify the HTTP result
+  → Re-read the offer decision
+  → Show terminal state or staff review in the action queue
+```
+
+Each step has a different responsibility:
+
+- **Action-queue read** decides what to inspect first.
+- **Offer-detail read** obtains the `version` and `expiresAt` for the command.
+- **Command request** delegates the state change to the database fence and idempotency record.
+- **Result classification** distinguishes success, replay, processing, and conflict.
+- **Decision re-read** makes the screen reflect current server state.
+
+After a `202`, the screen should wait for `Retry-After` and read the decision instead of guessing that a disabled button means success. After a `409`, it should not retry forever; it should read the current offer and queue evidence and choose the next action.
+
+A re-read does not end in a browser refresh. The Dashboard connects that result back to the action queue so staff can choose the next piece of work.
+
+## Separate STAFF commands from ADMIN policy changes
+
+This series is centered on the `STAFF` operations view. `STAFF` can read the current offer and, within its capability and scope, confirm, decline, or withdraw it. Policy activation, restriction adjustments, recovery credits, and benefit changes belong to separate `ADMIN` capabilities and APIs.
+
+Putting both roles' commands in one button group hides the permission boundary. A policy command that is not visible to `STAFF` should not become an unexplained hidden feature; the screen should show the scope of state changes available to the current role. Developers must enforce capability and scope again in the API. Button visibility is not a security boundary.
+
+## Keep current implementation, API contract, and readiness separate
+
+These three layers must not be flattened into one claim.
+
+| Category | Verified in this article |
+| --- | --- |
+| Current implementation | `WaitlistController` entry and offer reads plus confirm, decline, and decision routes; request DTO `expectedVersion`; response DTO `version`, `expiresAt`, and `appointmentRef`; and `WaitlistApplicationService` idempotency reservation, replay, and recovery tests |
+| API contract and approved design | Scoped opaque references, a 16–128-character `Idempotency-Key`, bounded keyset cursor, `201` replay, `202` processing, `409` conflict, and separate notification delivery and acceptance |
+| Operational readiness | Actual clinic allowlist, notification-provider failure rate, canary evidence, reconcile and recovery drills, and the reason-code mapping of the deployed version |
+
+Code and tests prove that the application boundary is prepared. They do not prove that a particular clinic has enabled the feature or that operators have observed every result on a real screen. Before rollout, verify the feature flag, capability, response headers, `Retry-After`, and re-read behavior against the deployed version.
+
+## A button click must return as a terminal outcome decision
+
+An operations screen should explain the precondition and result of a command, not merely send it quickly. The sequence `STAFF` needs to see is:
+
+1. Confirm which clinic scope and offer are being handled.
+2. Read the current `version`, `expiresAt`, `deliveryState`, and decision.
+3. Generate an `Idempotency-Key` that will not create a duplicate appointment when the same intent is retried.
+4. Send confirm or decline with `expectedVersion`.
+5. Classify success, replay, processing, or conflict and re-read the decision.
+6. Leave the terminal state or staff-review reason in the action queue.
+
+With this order, the screen can distinguish “the button was clicked” from “the appointment was confirmed.” The next article will connect these outcomes to bounded retry and recovery policy in the action queue.
+
+### More visual companions
+
+- [AppointmentPlan and capacity](/visual-companions/clinic-appointment/appointment-plan-and-capacity/)
+- [From product BOM to appointment flow](/visual-companions/clinic-appointment/product-bom-to-appointment-flow/)
+- [Clinic appointment visual companions](/visual-companions/clinic-appointment/)
+
+### Sources
+
+- [clinic-appointment repository](https://github.com/bluetape4k/clinic-appointment)
+- [Waitlist delivery requirements](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/requirements/waitlist-delivery.md)
+- [Waitlist delivery API contract](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/api/waitlist-delivery.md)
+- [Waitlist delivery and fencing design](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-08-03-issue-170-waitlist-delivery-design.md)
+- [`WaitlistController`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/controller/WaitlistController.kt)
+- [`WaitlistRequests`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/dto/WaitlistRequests.kt)
+- [`WaitlistResponses`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/dto/WaitlistResponses.kt)
+- [`WaitlistApplicationService`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/waitlist/WaitlistApplicationService.kt)
+- [`WaitlistApplicationServiceTest`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/test/kotlin/io/bluetape4k/clinic/appointment/api/waitlist/WaitlistApplicationServiceTest.kt)
+
+## Series
+
+- [Prologue: From product information to a patient's visit commitment](/blog/clinic-appointment-prologue-product-to-appointment/)
+- [A product can change without rewriting a patient's commitment](/blog/clinic-appointment-product-version-purchase-snapshot/)
+- [What appointment commitment does an event product create?](/blog/clinic-appointment-event-product-first-commitment/)
+- [Why an N-visit product is not one appointment](/blog/clinic-appointment-n-visit-remaining-rights/)
+- [Why a package product becomes an execution graph](/blog/clinic-appointment-package-product-execution-graph/)
+- [How a product BOM becomes an AppointmentPlan and visits](/blog/clinic-appointment-execution-bom-to-appointment-plan/)
+- [A desired visit date is not a confirmed commitment](/blog/clinic-appointment-desired-visit-date-and-confirmed-commitment/)
+- [Who Owns Booking Priority?](/blog/clinic-appointment-booking-reliability/)
+- [A Waitlist Is Not a Queue of Names](/blog/clinic-appointment-waitlist-core/)
+- [A Waitlist Dashboard Should Tell Staff What to Do Next](/blog/clinic-appointment-waitlist-operations-dashboard/)
+- **A Waitlist Operations Command Is Complete Only After the API Request and Re-read**
+- [Part 1: A clinic appointment is more than CRUD](/blog/clinic-appointment-part1-not-just-crud/)
+- [Part 2: Appointment state is not a simple enum](/blog/clinic-appointment-part2-state-machine-and-history/)
+- [Part 3: Calculate clinic-specific availability from hours and resources](/blog/clinic-appointment-part3-clinic-specific-availability/)
+- [Part 4: One availability lookup is not whole-schedule optimization](/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
+- [Part 5: Translate clinic rules into Timefold constraints](/blog/clinic-appointment-part5-timefold-constraints/)
+- [Part 6: How closures and equipment failures change appointment design](/blog/clinic-appointment-part6-closure-equipment-rescheduling/)
+- [Part 7: The real work starts after completion](/blog/clinic-appointment-part7-review-and-operational-evolution/)
