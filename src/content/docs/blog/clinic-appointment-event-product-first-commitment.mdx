@@ -1,5 +1,5 @@
 ---
-title: "What Appointment Promise Does an Event Product Create?"
+title: "[Design 2] What Visit Commitment Does an Event Product Create?"
 description: Follow Patient A's event product purchase from source-of-record catalog data to candidate times, consent, and a confirmed visit commitment.
 sidebar:
   order: -202608121100
@@ -10,6 +10,8 @@ blog:
   cardDescription: Follow how an event product purchase becomes a confirmed visit only after candidate calculation and customer consent.
   tags: ["architecture", "domain-modeling", "event-driven", "resilience", "appointment-service", "example", "timefold"]
 ---
+
+import ClinicAppointmentSeries from '../../../components/ClinicAppointmentSeries.astro';
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/clinic-appointment-event-product-hero.png" alt="Small robot workers connecting catalog data, purchase documents, a reservation plan, candidate times, and a confirmed visit promise on one workbench" loading="eager" />
@@ -245,17 +247,4 @@ a product BOM and a reservation plan.
 
 ## Series
 
-- [Prologue: From Product Information to a Patient's Visit Commitment](/blog/clinic-appointment-prologue-product-to-appointment/)
-- [When a Product Changes, Don't Rewrite the Patient's Promise](/blog/clinic-appointment-product-version-purchase-snapshot/)
-- **What Appointment Promise Does an Event Product Create?**
-- [Why an N-Visit Product Is Not One Appointment](/blog/clinic-appointment-n-visit-remaining-rights/)
-- [Why a Package Product Becomes an Execution Graph](/blog/clinic-appointment-package-product-execution-graph/)
-- [How a Product BOM Becomes an AppointmentPlan and a Visit](/blog/clinic-appointment-execution-bom-to-appointment-plan/)
-- [A Preferred Visit Date Is Not an Appointment Confirmation](/blog/clinic-appointment-desired-visit-date-and-confirmed-commitment/)
-- [Part 1: Clinic Appointments Are More Than CRUD](/blog/clinic-appointment-part1-not-just-crud/)
-- [Part 2: Appointment State Is More Than an Enum](/blog/clinic-appointment-part2-state-machine-and-history/)
-- [Part 3: Computing Availability from Clinic-Specific Hours and Resources](/blog/clinic-appointment-part3-clinic-specific-availability/)
-- [Part 4: Real-Time Slot Search and Global Optimization Solve Different Problems](/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
-- [Part 5: Translating Clinic Rules into Timefold Constraints](/blog/clinic-appointment-part5-timefold-constraints/)
-- [Part 6: Rescheduling after Closures and Equipment Downtime](/blog/clinic-appointment-part6-closure-equipment-rescheduling/)
-- [Part 7: Reviews and Operations Start the Next Development Cycle](/blog/clinic-appointment-part7-review-and-operational-evolution/)
+<ClinicAppointmentSeries current="clinic-appointment-event-product-first-commitment" locale="en" />

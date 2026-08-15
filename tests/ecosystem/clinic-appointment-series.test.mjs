@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import test from 'node:test';
 
 import {
@@ -50,6 +50,48 @@ test('clinic appointment series keeps the approved published order', () => {
     ],
   );
   assert.equal(new Set(clinicAppointmentSeries.map(({ slug }) => slug)).size, 19);
+});
+
+const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+test('every published clinic appointment article uses the shared series navigation', async () => {
+  const locales = [
+    {
+      id: 'en',
+      directory: 'src/content/docs/blog',
+      importPath: '../../../components/ClinicAppointmentSeries.astro',
+      heading: '## Series',
+    },
+    {
+      id: 'ko',
+      directory: 'src/content/docs/ko/blog',
+      importPath: '../../../../components/ClinicAppointmentSeries.astro',
+      heading: '## 시리즈 링크',
+    },
+  ];
+
+  for (const locale of locales) {
+    const files = (await readdir(locale.directory))
+      .filter((file) => file.startsWith('clinic-appointment-') && file.endsWith('.mdx'));
+    assert.equal(files.length, 19, `${locale.id}: published article count`);
+
+    for (const entry of clinicAppointmentSeries) {
+      const source = await readFile(`${locale.directory}/${entry.slug}.mdx`, 'utf8');
+      const title = entry[locale.id];
+      const footer = source.slice(source.lastIndexOf(locale.heading));
+
+      assert.match(source, new RegExp(`^title: "${escapeRegExp(title)}"$`, 'm'));
+      assert.match(
+        source,
+        new RegExp(`import ClinicAppointmentSeries from '${escapeRegExp(locale.importPath)}';`),
+      );
+      assert.match(
+        footer,
+        new RegExp(`<ClinicAppointmentSeries current="${entry.slug}" locale="${locale.id}" />`),
+      );
+      assert.doesNotMatch(footer, /\]\(\/(?:ko\/)?blog\/clinic-appointment-/);
+    }
+  }
 });
 
 test('clinic appointment series component renders groups and the current page', async () => {

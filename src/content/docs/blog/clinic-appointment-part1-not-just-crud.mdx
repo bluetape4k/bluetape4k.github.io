@@ -1,5 +1,5 @@
 ---
-title: "Clinic Appointment SaaS Part 1: Clinic Appointments Are More Than CRUD"
+title: "[Implementation 1] Clinic Appointments Are More Than CRUD"
 description: See why one clinic appointment must account for clinic-specific hours, doctors, treatment types, equipment, state, and operating policies.
 sidebar:
   order: -202607182350
@@ -10,6 +10,8 @@ blog:
   cardDescription: "Follow one appointment from requirements to module boundaries and uncover the clinic rules behind it."
   tags: ["architecture", "appointment-service", "example", "timefold"]
 ---
+
+import ClinicAppointmentSeries from '../../../components/ClinicAppointmentSeries.astro';
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/clinic-appointment-part1-hero.png" alt="Small robotic builders connect three clinics with different schedules and medical resources to one SaaS hub" loading="eager" />
@@ -183,13 +185,4 @@ with it.
 
 ## Series
 
-- [Prologue: From Product Information to a Patient's Visit Commitment](/blog/clinic-appointment-prologue-product-to-appointment/)
-- [When a Product Changes, Don't Rewrite the Patient's Promise](/blog/clinic-appointment-product-version-purchase-snapshot/)
-- [What Appointment Promise Does an Event Product Create?](/blog/clinic-appointment-event-product-first-commitment/)
-- **Part 1: Clinic Appointments Are More Than CRUD**
-- [Part 2: Appointment State Is More Than an Enum](/blog/clinic-appointment-part2-state-machine-and-history/)
-- [Part 3: Computing Availability from Clinic-Specific Hours and Resources](/blog/clinic-appointment-part3-clinic-specific-availability/)
-- [Part 4: Real-Time Slot Search and Global Optimization Solve Different Problems](/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
-- [Part 5: Translating Clinic Rules into Timefold Constraints](/blog/clinic-appointment-part5-timefold-constraints/)
-- [Part 6: Rescheduling after Closures and Equipment Downtime](/blog/clinic-appointment-part6-closure-equipment-rescheduling/)
-- [Part 7: Reviews and Operations Start the Next Development Cycle](/blog/clinic-appointment-part7-review-and-operational-evolution/)
+<ClinicAppointmentSeries current="clinic-appointment-part1-not-just-crud" locale="en" />
