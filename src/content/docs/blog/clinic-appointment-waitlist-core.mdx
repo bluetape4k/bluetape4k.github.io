@@ -53,11 +53,6 @@ Once the states are explicit, notification and database responsibilities become 
 
 The state machine is not only a storage model. The operations screen first reads clinic-level readiness and metrics, selects an item from the action queue, checks its evidence and permitted command, and records the terminal outcome decision.
 
-<figure class="bt4k-architecture" data-diagram-title="Connecting waitlist states to operations">
-  <img src="/assets/clinic-appointment-waitlist-operations-dashboard-01-en.png" alt="A waitlist Dashboard reads clinic readiness and metrics, selects an item from the action queue, checks its evidence and permitted command, and confirms the terminal outcome decision" loading="lazy" />
-  <figcaption>State transitions become operational next steps on the screen. Metrics do not confirm an item automatically; staff review the current evidence and permitted command before recording the terminal outcome decision.</figcaption>
-</figure>
-
 `ACCEPTED` must not be used as a synonym for `CONFIRMED`. `WaitlistOfferClaimService` currently returns a `holdId` and expiry data; creating the appointment is outside that service. That separation lets claim handling and the appointment command retry independently.
 
 ## Reduce candidates first, then apply policy

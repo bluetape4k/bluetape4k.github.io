@@ -5,15 +5,15 @@ sidebar:
   order: -202608151000
 blog:
   date: 2026-08-15T10:00:00+09:00
-  image: /assets/clinic-appointment-waitlist-operations-dashboard-hero.png
-  imageAlt: An operator reviewing API command results and re-read state for a waitlist offer
+  image: /assets/clinic-appointment-waitlist-operations-screen-command-en.png
+  imageAlt: A STAFF operations screen showing a waitlist command result and the next re-read task
   cardDescription: "Connects the confirm and decline buttons on an operations screen to scope, version, idempotency, and re-read contracts."
   tags: ["architecture", "operations", "resilience", "concurrency", "appointment-service", "example", "timefold"]
 ---
 
 <figure class="bt4k-blog-hero">
-  <img src="/assets/clinic-appointment-waitlist-operations-dashboard-hero.png" alt="An operator reviewing API command results and re-read state for a waitlist offer" loading="eager" />
-  <figcaption>Clicking a button on an operations screen does not prove that an appointment was confirmed. The screen must classify the API result and, when necessary, read the latest state in the same scope.</figcaption>
+  <img src="/assets/clinic-appointment-waitlist-operations-screen-command-en.png" alt="A STAFF operations screen showing a waitlist command result and the next re-read task" loading="eager" />
+  <figcaption>Clicking a button on an operations screen does not prove that an appointment was confirmed. This command-result screen shows the API outcome and the next re-read task in the same scoped view.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">2026-08-15 · Clinic appointment service development · Waitlist API commands and re-reads</p>
@@ -153,11 +153,6 @@ Each step has a different responsibility:
 After a `202`, the screen should wait for `Retry-After` and read the decision instead of guessing that a disabled button means success. After a `409`, it should not retry forever; it should read the current offer and queue evidence and choose the next action.
 
 A re-read does not end in a browser refresh. The Dashboard connects that result back to the action queue so staff can choose the next piece of work.
-
-<figure class="bt4k-architecture" data-diagram-title="Waitlist command and Dashboard terminal outcome decision">
-  <img src="/assets/clinic-appointment-waitlist-operations-dashboard-01-en.png" alt="A waitlist Dashboard reads clinic readiness and metrics, selects an item from the action queue, checks its evidence and permitted command, and confirms the terminal outcome decision" loading="lazy" />
-  <figcaption>The Dashboard starts with metrics and the action queue, moves through the evidence panel and permitted command, and returns the result to a terminal outcome decision or staff review.</figcaption>
-</figure>
 
 ## Separate STAFF commands from ADMIN policy changes
 

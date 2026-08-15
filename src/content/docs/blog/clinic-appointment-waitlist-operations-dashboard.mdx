@@ -67,10 +67,10 @@ Operational readiness follows the same boundary.
 
 These values do not prove that an individual offer succeeded. `DEGRADED` does not mean every offer must be declined, and `UP` does not permit staff to confirm an old version without rechecking it. Readiness is a clinic-level signal for reviewing new offer work. The final decision for an individual command comes from rechecking the offer and resources.
 
-<figure class="bt4k-architecture" data-diagram-title="Waitlist operations screen: metrics, action queue, and command boundary">
-  <img src="/assets/clinic-appointment-waitlist-operations-dashboard-01-en.png" alt="The clinic readiness state and metrics lead to an action-queue selection, an evidence panel, a permitted command, and an explicit terminal outcome decision" loading="lazy" />
-  <figcaption>Metrics do not confirm an item automatically. Staff select an action-queue item, check its current `version` and `expiresAt` in the evidence panel, and then run a permitted command.</figcaption>
-</figure>
+<div class="bt4k-operations-screen" data-visual-title="STAFF operations screen mockup">
+  <img class="bt4k-screenshot" src="/assets/clinic-appointment-waitlist-operations-screen-dashboard-en.png" alt="A STAFF operations screen with waiting, in-progress, near-expiry, and review-needed metrics above an action queue, selected evidence, permitted work, and a terminal outcome decision" loading="lazy" />
+  <p class="bt4k-operations-screen-caption">This is a screen design mockup, not a production capture. The values are illustrative; the reading order is the point: clinic metrics and readiness first, then the action queue, selected evidence, permitted work, and the terminal outcome decision.</p>
+</div>
 
 ## The action queue turns state into the next thing to inspect
 

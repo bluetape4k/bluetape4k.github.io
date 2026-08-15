@@ -442,6 +442,26 @@ header.header .site-title:hover span {
   line-height: 1.55;
 }
 
+.bt4k-operations-screen {
+  margin: 1rem 0 3rem;
+}
+
+.bt4k-operations-screen img {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--bt4k-image-border);
+  border-radius: 8px;
+  background: var(--bt4k-card-bg);
+  box-shadow: 0 16px 48px var(--bt4k-shadow);
+}
+
+.bt4k-operations-screen-caption {
+  margin: 0.75rem 0 0;
+  color: var(--sl-color-gray-3);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
 .bt4k-position-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
