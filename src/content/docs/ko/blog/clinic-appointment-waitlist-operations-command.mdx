@@ -152,6 +152,13 @@ Content-Type: application/json
 
 따라서 `202` 뒤에는 “버튼을 비활성화했으니 성공”이라는 추측 대신 `Retry-After`를 기다린 뒤 결정 조회를 실행해야 합니다. `409` 뒤에는 같은 요청을 무한 반복하지 말고 최신 제안과 조치 큐의 근거를 읽어 다음 행동을 선택해야 합니다.
 
+재조회 결과는 브라우저 새로 고침으로 끝나지 않습니다. 대시보드는 그 결과를 조치 큐의 다음 상태와 연결해 운영자가 후속 작업을 선택할 수 있게 합니다.
+
+<figure class="bt4k-architecture" data-diagram-title="대기 목록 명령과 대시보드의 최종 상태 결정">
+  <img src="/assets/clinic-appointment-waitlist-operations-dashboard-01-ko.png" alt="병원 운영 준비 상태와 운영 지표를 읽고 조치 큐에서 대기 항목을 선택한 뒤 근거 패널과 허용된 명령을 거쳐 최종 상태 결정을 확인하는 대기 목록 대시보드" loading="lazy" />
+  <figcaption>대시보드는 지표와 조치 큐에서 시작해 근거 패널과 허용된 명령으로 내려가고, 명령 결과를 최종 상태 결정이나 후속 검토로 되돌립니다.</figcaption>
+</figure>
+
 ## STAFF가 실행하는 명령과 ADMIN이 바꾸는 정책을 분리한다
 
 이 시리즈의 운영 화면 중심은 `STAFF`입니다. `STAFF`가 할 수 있는 일은 현재 제안을 읽고, 허용된 범위에서 확정·거절·철회를 실행하는 것입니다. 정책 버전 활성화, 제한 조정, 복구 크레딧과 혜택 변경은 `ADMIN` capability에 속한 별도 API입니다.

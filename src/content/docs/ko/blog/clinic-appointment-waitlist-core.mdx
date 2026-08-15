@@ -51,6 +51,13 @@ blog:
 | `EXPIRED` | 제안·보류(hold) 또는 시작 시각이 지나 닫힌 상태 | 상태 대조·복구 후에만 재시도 |
 | `WITHDRAWN` | 운영자나 복구가 철회한 상태 | 원인과 correlation을 보존 |
 
+상태 머신은 저장 모델에만 머물지 않습니다. 운영 화면은 병원 단위 준비 상태와 지표를 먼저 읽고, 조치 큐에서 항목을 골라 근거와 허용된 명령을 확인한 뒤 최종 상태 결정을 남겨야 합니다.
+
+<figure class="bt4k-architecture" data-diagram-title="대기 목록 상태를 운영 조치로 연결하는 대시보드">
+  <img src="/assets/clinic-appointment-waitlist-operations-dashboard-01-ko.png" alt="병원 운영 준비 상태와 운영 지표를 읽고 조치 큐에서 대기 항목을 선택한 뒤 근거 패널과 허용된 명령을 거쳐 최종 상태 결정을 확인하는 대기 목록 대시보드" loading="lazy" />
+  <figcaption>상태 머신의 전이는 운영 화면에서 다음 조치로 이어집니다. 지표는 항목을 자동 확정하지 않고, 운영자가 현재 근거와 허용된 명령을 확인한 뒤 최종 상태 결정을 남기도록 돕습니다.</figcaption>
+</figure>
+
 특히 `ACCEPTED`를 `CONFIRMED`와 같은 말로 쓰면 안 됩니다. 현재 `WaitlistOfferClaimService`가 반환하는 것은 `holdId`와 만료 정보이며, 예약 생성은 이 서비스의 책임이 아닙니다. 이렇게 해야 수락 처리(claim)와 예약 생성 명령을 독립적으로 재시도할 수 있습니다.
 
 ## 후보를 먼저 줄이고, 그 다음 정책을 적용한다
