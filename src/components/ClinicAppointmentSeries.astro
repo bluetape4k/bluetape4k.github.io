@@ -1,0 +1,52 @@
+---
+import {
+  clinicAppointmentGroups,
+  clinicAppointmentSeries,
+} from '../data/clinic-appointment-series.mjs';
+
+interface Props {
+  current: string;
+  locale: 'ko' | 'en';
+}
+
+const { current, locale } = Astro.props;
+const currentEntry = clinicAppointmentSeries.find(({ slug }) => slug === current);
+
+if (!currentEntry) {
+  throw new Error(`Unknown clinic appointment series slug: ${current}`);
+}
+
+const blogRoot = locale === 'ko' ? '/ko/blog' : '/blog';
+const navigationLabel = locale === 'ko' ? '병원 예약 서비스 시리즈' : 'Clinic appointment series';
+---
+
+<nav aria-label={navigationLabel}>
+  {clinicAppointmentGroups.map((group) => (
+    <section class="clinic-appointment-series-group">
+      <h3>{group[locale]}</h3>
+      <ul>
+        {clinicAppointmentSeries
+          .filter(({ group: groupId }) => groupId === group.id)
+          .map((entry) => (
+            <li>
+              {entry.slug === current ? (
+                <strong aria-current="page">{entry[locale]}</strong>
+              ) : (
+                <a href={`${blogRoot}/${entry.slug}/`}>{entry[locale]}</a>
+              )}
+            </li>
+          ))}
+      </ul>
+    </section>
+  ))}
+</nav>
+
+<style>
+  .clinic-appointment-series-group + .clinic-appointment-series-group {
+    margin-top: 1.5rem;
+  }
+
+  .clinic-appointment-series-group h3 {
+    margin-bottom: 0.5rem;
+  }
+</style>

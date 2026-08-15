@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 import {
@@ -49,4 +50,14 @@ test('clinic appointment series keeps the approved published order', () => {
     ],
   );
   assert.equal(new Set(clinicAppointmentSeries.map(({ slug }) => slug)).size, 19);
+});
+
+test('clinic appointment series component renders groups and the current page', async () => {
+  const source = await readFile('src/components/ClinicAppointmentSeries.astro', 'utf8');
+
+  assert.match(source, /clinicAppointmentGroups\.map/);
+  assert.match(source, /clinicAppointmentSeries\s*\.filter/);
+  assert.match(source, /aria-current="page"/);
+  assert.match(source, /throw new Error\(`Unknown clinic appointment series slug:/);
+  assert.match(source, /locale === 'ko' \? '\/ko\/blog' : '\/blog'/);
 });
