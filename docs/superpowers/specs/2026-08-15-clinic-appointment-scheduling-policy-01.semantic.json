@@ -1,0 +1,35 @@
+{
+  "kind": "workflow",
+  "source": {
+    "question": "How does a clinic-specific booking request become an effective policy snapshot without rewriting a confirmed visit commitment?",
+    "revision": "2026-08-15 article design approved after clinic-appointment issue #283 review",
+    "paths": [
+      "docs/superpowers/specs/2026-08-15-clinic-appointment-scheduling-policy-article-design.md",
+      "src/content/docs/ko/blog/clinic-appointment-scheduling-policy.mdx",
+      "src/content/docs/blog/clinic-appointment-scheduling-policy.mdx"
+    ]
+  },
+  "nodes": [
+    {"id": "tenant-default", "label": "Tenant default", "source": "src/content/docs/ko/blog/clinic-appointment-scheduling-policy.mdx"},
+    {"id": "clinic-override", "label": "Clinic override", "source": "src/content/docs/ko/blog/clinic-appointment-scheduling-policy.mdx"},
+    {"id": "compose", "label": "Compose INHERIT / SET / DISABLE", "source": "src/content/docs/ko/blog/clinic-appointment-scheduling-policy.mdx"},
+    {"id": "activation-gate", "label": "CAS and generation check", "source": "src/content/docs/ko/blog/clinic-appointment-scheduling-policy.mdx"},
+    {"id": "effective-snapshot", "label": "Effective policy snapshot", "source": "src/content/docs/ko/blog/clinic-appointment-scheduling-policy.mdx"},
+    {"id": "booking-decision", "label": "Booking decision", "source": "src/content/docs/ko/blog/clinic-appointment-scheduling-policy.mdx"},
+    {"id": "future-proposal", "label": "Future proposal", "source": "src/content/docs/ko/blog/clinic-appointment-scheduling-policy.mdx"},
+    {"id": "confirmed-protected", "label": "CONFIRMED commitment protected", "source": "src/content/docs/ko/blog/clinic-appointment-scheduling-policy.mdx"}
+  ],
+  "edges": [
+    {"id": "tenant-default-compose", "from": "tenant-default", "to": "compose", "kind": "baseline", "source": "src/content/docs/ko/blog/clinic-appointment-scheduling-policy.mdx"},
+    {"id": "clinic-override-compose", "from": "clinic-override", "to": "compose", "kind": "override", "source": "src/content/docs/ko/blog/clinic-appointment-scheduling-policy.mdx"},
+    {"id": "compose-activation-gate", "from": "compose", "to": "activation-gate", "kind": "flow", "source": "src/content/docs/ko/blog/clinic-appointment-scheduling-policy.mdx"},
+    {"id": "activation-gate-effective-snapshot", "from": "activation-gate", "to": "effective-snapshot", "kind": "validated-flow", "source": "src/content/docs/ko/blog/clinic-appointment-scheduling-policy.mdx"},
+    {"id": "effective-snapshot-booking-decision", "from": "effective-snapshot", "to": "booking-decision", "kind": "policy-read", "source": "src/content/docs/ko/blog/clinic-appointment-scheduling-policy.mdx"},
+    {"id": "booking-decision-future-proposal", "from": "booking-decision", "to": "future-proposal", "kind": "future-branch", "source": "src/content/docs/ko/blog/clinic-appointment-scheduling-policy.mdx"},
+    {"id": "booking-decision-confirmed-protected", "from": "booking-decision", "to": "confirmed-protected", "kind": "protected-branch", "source": "src/content/docs/ko/blog/clinic-appointment-scheduling-policy.mdx"}
+  ],
+  "behavior": {"branches": 2, "loops": 0},
+  "repairs": [
+    {"target": "english-card-labels", "reason": "split the long confirmed-commitment label into two lines to keep it inside the card", "touches": 2}
+  ]
+}
