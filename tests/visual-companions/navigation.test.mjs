@@ -167,3 +167,54 @@ test('visual companion landing pages are source-equivalent and link locale route
     /\]\(\/ko\/visual-companions\/clinic-appointment\/appointment-plan-and-capacity\/\)/,
   );
 });
+
+test('clinic implementation articles embed locale-matched operations screens and companion links', async () => {
+  const articles = [
+    {
+      path: 'src/content/docs/ko/blog/clinic-appointment-n-visit-purchase-plan.mdx',
+      asset: '/assets/clinic-appointment-n-visit-plan-operations-screen-ko.png',
+      links: [
+        '/ko/visual-companions/clinic-appointment/appointment-plan-and-capacity/',
+        '/ko/visual-companions/clinic-appointment/product-scheduling-classification/',
+      ],
+      forbidden: '/visual-companions/clinic-appointment/appointment-plan-and-capacity/',
+    },
+    {
+      path: 'src/content/docs/blog/clinic-appointment-n-visit-purchase-plan.mdx',
+      asset: '/assets/clinic-appointment-n-visit-plan-operations-screen-en.png',
+      links: [
+        '/visual-companions/clinic-appointment/appointment-plan-and-capacity/',
+        '/visual-companions/clinic-appointment/product-scheduling-classification/',
+      ],
+      forbidden: '/ko/visual-companions/clinic-appointment/',
+    },
+    {
+      path: 'src/content/docs/ko/blog/clinic-appointment-package-execution-plan.mdx',
+      asset: '/assets/clinic-appointment-package-execution-operations-screen-ko.png',
+      links: [
+        '/ko/visual-companions/clinic-appointment/package-product-composition/',
+        '/ko/visual-companions/clinic-appointment/product-bom-to-appointment-flow/',
+      ],
+      forbidden: '/visual-companions/clinic-appointment/package-product-composition/',
+    },
+    {
+      path: 'src/content/docs/blog/clinic-appointment-package-execution-plan.mdx',
+      asset: '/assets/clinic-appointment-package-execution-operations-screen-en.png',
+      links: [
+        '/visual-companions/clinic-appointment/package-product-composition/',
+        '/visual-companions/clinic-appointment/product-bom-to-appointment-flow/',
+      ],
+      forbidden: '/ko/visual-companions/clinic-appointment/',
+    },
+  ];
+
+  for (const article of articles) {
+    const source = await readFile(new URL(article.path, root), 'utf8');
+    assert.match(source, /class="bt4k-operations-screen"/);
+    assert.ok(source.includes(article.asset), `${article.path}:${article.asset}`);
+    for (const link of article.links) {
+      assert.ok(source.includes(`href="${link}"`), `${article.path}:${link}`);
+    }
+    assert.ok(!source.includes(`href="${article.forbidden}"`), `${article.path}:${article.forbidden}`);
+  }
+});

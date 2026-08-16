@@ -1,0 +1,24 @@
+{
+  "kind": "workflow",
+  "source": {
+    "question": "운영 담당자는 선택형 패키지의 구매 결과, 실행 관계와 검증 결과를 어떻게 한 화면에서 확인하는가?",
+    "revision": "dbf73178ab1781fdfe6375395bfafa13249917b5",
+    "paths": [
+      "src/content/docs/ko/blog/clinic-appointment-package-execution-plan.mdx",
+      "src/content/docs/blog/clinic-appointment-package-execution-plan.mdx",
+      "public/ko/visual-companions/clinic-appointment/package-product-composition/index.html",
+      "public/visual-companions/clinic-appointment/product-bom-to-appointment-flow/index.html"
+    ]
+  },
+  "nodes": [
+    { "id": "summary", "label": "선택 조건, 선택 구성, 실행 항목과 검증 결과", "source": "clinic-appointment-package-execution-plan.mdx" },
+    { "id": "contract", "label": "패키지 상품 버전과 실행 계약 해시", "source": "VisitPlanningEventHandler.kt" },
+    { "id": "selections", "label": "필수·선택·제외 구성 상품과 정확한 버전", "source": "VisitPlanningEventHandlerTest.kt" },
+    { "id": "relations", "label": "실행 의존성과 방문 묶음 관계", "source": "PackageExecutionPlanner.kt" },
+    { "id": "validation", "label": "상한·중복·선택 수·근거·순환 검증", "source": "PackageExecutionPlanner.kt" },
+    { "id": "revision", "label": "검증된 Plan 리비전 저장 결과", "source": "VisitPlanningEventHandler.kt" }
+  ],
+  "edges": [],
+  "behavior": { "branches": 0, "loops": 0 },
+  "repairs": []
+}
