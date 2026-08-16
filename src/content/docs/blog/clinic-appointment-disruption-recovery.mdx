@@ -1,5 +1,5 @@
 ---
-title: "[Operations 3] Recovering Appointments Changed by Clinic Disruptions"
+title: "[Operations 3] Appointment Recovery Starts with Impact Discovery"
 description: Learn how to identify confirmed appointments affected by clinic closures or equipment downtime, separate candidate calculation from state changes, and give STAFF a clear path to verify each recovery outcome.
 sidebar:
   order: -202608161600
@@ -35,7 +35,7 @@ Reducing this incident to “device failure → change appointment time” remov
 Recovery is not an update to one date field. It separates **impact discovery, candidate calculation, write-time
 revalidation, state transition, and STAFF verification** into distinct stages.
 
-## Conflict detection and appointment recovery are different jobs
+## Confirm equipment conflicts before starting appointment recovery
 
 Equipment downtime begins with a conflict query. `EquipmentUnavailabilityService` expands the effective ranges of a
 registered unavailability schedule and returns appointments that use the same device and overlap those ranges. STAFF can
@@ -56,7 +56,7 @@ the current service is named around closures, an equipment-incident screen can u
 its conflict scope has been approved. This does not mean that the equipment-conflict API automatically invokes the
 closure-rescheduling service.
 
-## Candidate calculation needs a write-time version recheck
+## Recheck appointment state and version before saving candidates
 
 The synchronous `processClosureReschedule` path performs expensive candidate calculation outside the transaction:
 
@@ -78,7 +78,7 @@ the same?” Running candidate search inside a long transaction would hold datab
 Trusting an out-of-transaction calculation without revalidation could move an already cancelled or changed appointment
 back into recovery.
 
-## Synchronous batches and streams have different failure boundaries
+## Synchronous failure rolls everything back; streaming failure keeps completed work
 
 The operations screen can start the same closure recovery as a synchronous request or an SSE stream. The difference is
 not limited to progress reporting.
@@ -105,7 +105,7 @@ Describing both paths as having the same atomicity invites unsafe retries and du
   <figcaption>Candidate calculation and writes are separate, but status and version are checked again immediately before writing. Synchronous and streaming recovery have different failure scopes, so STAFF must read final state accordingly.</figcaption>
 </figure>
 
-## The operations screen should lead with the next task
+## Show appointment state and the next task together
 
 A time-ordered list forces STAFF to repeatedly distinguish appointments with candidates, appointments without candidates,
 and rows that have already changed. A useful screen summarizes the clinic incident first and separates items by the next
@@ -131,7 +131,7 @@ mistaken for the concurrency control implemented by the service.
   <p class="bt4k-operations-screen-caption">This mockup is based on current states and operations; it is not a production screenshot. Values are illustrative, and no patient names, phone numbers, or clinical records are shown. STAFF separates candidate-ready appointments from exceptions, then reviews the selected appointment's current state and candidate resources together.</p>
 </div>
 
-## Manual and automatic selection share one confirmation boundary
+## Confirm manual and automatic selection in the same transaction
 
 STAFF can choose one replacement time from an appointment's candidate list. Automatic rescheduling is not a separate
 optimization engine: it chooses the highest-priority current candidate and invokes the same confirmation logic. It returns
@@ -155,7 +155,7 @@ separate proposal stage that records patient consent before confirmation is not 
 “Reschedule to this candidate” action reflects current behavior; it does not prove that consent evidence has already been
 captured.
 
-## A validated policy is not the same as an enforced write path
+## A policy model alone cannot enforce patient consent
 
 The policy model includes `DisruptionRecoveryPolicy`.
 `preserveConfirmedAppointment=true` is a non-disableable rule stating that the existing confirmed visit must remain until
@@ -173,7 +173,7 @@ An operating procedure can require STAFF to contact the patient first. That is n
 preserving auditable consent evidence. Until the policy model is connected to the write path, this remains an operational
 readiness item.
 
-## Applying a Timefold result is a separate atomic write path
+## Recheck versions before applying a Timefold result atomically
 
 `SolverService.optimizeReschedule` can optimize several appointments at once. Seeing a proposed batch on the screen is not
 enough to apply it, because another operation may change an original appointment after calculation.
@@ -186,7 +186,7 @@ a replacement appointment selected by STAFF. The solver path applies a computed 
 source-version fences. Combining both under one “automatic optimization” button would first require a shared result model
 and shared failure semantics.
 
-## Clinic responsibility and patient compensation are not automatic
+## Decide clinic responsibility and patient compensation separately
 
 Equipment failure and clinic closure are not patient-created incidents. The booking reliability model includes `CLINIC`
 and `OPERATIONAL_EXCEPTION` responsibility values, and only events confirmed as patient responsibility should support a
@@ -205,7 +205,7 @@ Clinic policy must define whether compensation is warranted, who approves it, an
 inside the recovery transaction would also require explicit answers for atomicity, duplicate grants, and revocation
 authority. The current design correctly treats it as an independent capability.
 
-## Keep current behavior and follow-up work in separate statements
+## Separate current behavior from remaining operations work
 
 | Category | Verified scope |
 | --- | --- |
@@ -218,7 +218,7 @@ The most important distinction is that a validated policy model does not mean th
 enforces consent. The reverse mistake is also harmful: snapshot revalidation and rollback in the synchronous batch, and
 per-appointment commits in the streaming path, are implemented safeguards—not future plans.
 
-## Summary
+## Recovery ends only after the final state is verified
 
 When clinic conditions force appointment changes, STAFF needs more than one reschedule button:
 
