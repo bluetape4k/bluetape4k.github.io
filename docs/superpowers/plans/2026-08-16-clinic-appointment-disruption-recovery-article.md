@@ -150,19 +150,19 @@ Expected: the equipment incident and recovery action read immediately, the hero 
 **Files:**
 - Create: `src/content/docs/ko/blog/clinic-appointment-disruption-recovery.mdx`
 
-- [ ] **Step 1: Match the established article shell**
+- [x] **Step 1: Match the established article shell**
 
 Use the approved title, shared hero, 2026-08-16 date, Operations tags, `ClinicAppointmentSeries`, absolute `/assets/...` URLs, and `current="clinic-appointment-disruption-recovery" locale="ko"`.
 
-- [ ] **Step 2: Draft the source-backed narrative**
+- [x] **Step 2: Draft the source-backed narrative**
 
 Write in this order: laser-device outage scenario; detection versus recovery; candidate calculation and write-time recheck; synchronous batch versus streaming commit boundary; STAFF candidate selection and automatic selection; confirmation transaction; equipment-conflict-only and solver-apply side paths; current implementation/policy model/operations readiness/follow-up matrix; customer-consent and recovery-credit boundaries; next Operations 4 article.
 
-- [ ] **Step 3: Embed all three visuals with large-view markup**
+- [x] **Step 3: Embed all three visuals with large-view markup**
 
 Place the hero only in the hero block. Embed the Korean STAFF screen with `bt4k-screenshot`, the sequence with `bt4k-sequence`, descriptive alt text, and captions that explain the boundary. Ensure both body visuals activate the existing click-to-enlarge behavior.
 
-- [ ] **Step 4: Apply Korean terminology and natural-language review**
+- [x] **Step 4: Apply Korean terminology and natural-language review**
 
 Use `빈시간`, `확정 방문 약속`, `스냅숏`, `아웃박스(outbox)`, `최종 상태 결정`, and `다음 작업`. Avoid `빈자리`, `다음 행동`, literal translation, vague subjects, redundant `한/하나`, and any sentence saying the article was written from source code.
 
