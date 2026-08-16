@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="960" viewBox="0 0 1440 960" role="img" aria-labelledby="title desc" data-locale="ko">
+  <title id="title">구매 권리를 회차별 계획과 변경 이력으로 보존한다</title>
+  <desc id="desc">현재 구현은 회차를 펼치고 완료·환불 결과를 새 계획 버전으로 남긴다.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#06111f"/><stop offset=".58" stop-color="#0b1930"/><stop offset="1" stop-color="#10172b"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="155%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#020617" flood-opacity=".5"/></filter>
+    <marker id="blueArrow" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x"><path d="M 0 0 L 14 7 L 0 14 Z" fill="#60a5fa" data-solid-head="true"/></marker>
+    <marker id="greenArrow" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x"><path d="M 0 0 L 14 7 L 0 14 Z" fill="#2dd4bf" data-solid-head="true"/></marker>
+    <marker id="redArrow" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x"><path d="M 0 0 L 14 7 L 0 14 Z" fill="#fb7185" data-solid-head="true"/></marker>
+    <marker id="amberArrow" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x"><path d="M 0 0 L 14 7 L 0 14 Z" fill="#fbbf24" data-solid-head="true"/></marker>
+    <style>
+      .title{font-family:"goorm Sans",sans-serif;font-size:38px;font-weight:700;fill:#f8fafc}
+      .title-compact{font-size:32px}
+      .subtitle{font-family:"goorm Sans",sans-serif;font-size:18px;fill:#aebed2}
+      .card-title{font-family:"goorm Sans",sans-serif;font-size:24px;font-weight:700;fill:#f8fafc}
+      .compact-card-title{font-size:20px}
+      .body{font-family:"goorm Sans Code","goorm Sans",monospace;font-size:17px;fill:#d7e3f3}
+      .compact-body{font-size:15px}
+      .note{font-family:"goorm Sans",sans-serif;font-size:16px;fill:#aebed2}
+      .badge{font-family:"goorm Sans",sans-serif;font-size:14px;font-weight:700}
+      .footer-title{font-family:"goorm Sans",sans-serif;font-size:19px;font-weight:700;fill:#f8fafc}
+      .footer-body{font-family:"goorm Sans",sans-serif;font-size:17px;fill:#d7e3f3}
+      .gap-title{font-family:"goorm Sans",sans-serif;font-size:21px;font-weight:700;fill:#f8fafc}
+      .connector{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:5}
+      .blue-line{stroke:#60a5fa;marker-end:url(#blueArrow)}
+      .green-line{stroke:#2dd4bf;marker-end:url(#greenArrow)}
+      .red-line{stroke:#fb7185;marker-end:url(#redArrow)}
+      .amber-line{stroke:#fbbf24;marker-end:url(#amberArrow)}
+    </style>
+  </defs>
+  <rect width="1440" height="960" fill="url(#bg)"/>
+  <rect x="30" y="28" width="1380" height="904" rx="30" fill="none" stroke="#263a5e" stroke-width="2"/>
+  <circle cx="1300" cy="120" r="220" fill="#7c3aed" opacity=".07"/>
+  <circle cx="120" cy="850" r="210" fill="#0891b2" opacity=".06"/>
+  
+  <text class="title" x="70" y="84">구매 권리를 회차별 계획과 변경 이력으로 보존한다</text>
+  <text class="subtitle" x="72" y="120">현재 구현은 회차를 펼치고 완료·환불 결과를 새 계획 버전으로 남긴다.</text>
+  <g filter="url(#shadow)">
+    
+  <g class="node-card">
+    <rect id="purchase-handler" x="60" y="180" width="290" height="210" rx="24" fill="#0f2038" stroke="#60a5fa" stroke-width="3"/>
+    <text class="card-title compact-card-title" x="205" y="226" text-anchor="middle">PurchaseCompleted</text>
+<text class="card-title compact-card-title" x="205" y="250" text-anchor="middle">Handler</text>
+    <text class="body" x="205" y="314" text-anchor="middle">구매 완료 이벤트 수신</text>
+<text class="body" x="205" y="342" text-anchor="middle">같은 이벤트 재처리 방지</text>
+  </g>
+    
+  <g class="node-card">
+    <rect id="plan-factory" x="420" y="180" width="290" height="210" rx="24" fill="#0f2038" stroke="#60a5fa" stroke-width="3"/>
+    <text class="card-title compact-card-title" x="565" y="226" text-anchor="middle">AppointmentPlan</text>
+<text class="card-title compact-card-title" x="565" y="250" text-anchor="middle">Factory</text>
+    <text class="body" x="565" y="314" text-anchor="middle">repeatCount 읽기</text>
+<text class="body" x="565" y="342" text-anchor="middle">계획과 최초 버전 생성</text>
+  </g>
+    
+  <g class="node-card">
+    <rect id="planned-treatments" x="780" y="170" width="600" height="220" rx="24" fill="#10333b" stroke="#2dd4bf" stroke-width="3"/>
+    <text class="card-title" x="1080" y="226" text-anchor="middle">PlannedTreatment 1..3</text>
+    <text class="body" x="1080" y="272" text-anchor="middle">sequenceNo = 1, 2, 3</text>
+<text class="body" x="1080" y="300" text-anchor="middle">earliestStartAt = null</text>
+<text class="body" x="1080" y="328" text-anchor="middle">latestStartAt = null</text>
+  </g>
+    
+  <g class="node-card">
+    <rect id="completion-fact" x="70" y="520" width="360" height="190" rx="24" fill="#10333b" stroke="#2dd4bf" stroke-width="3"/>
+    <text class="card-title" x="250" y="582" text-anchor="middle">완료 근거 수신</text>
+    <text class="body" x="250" y="632" text-anchor="middle">완료된 회차만 COMPLETED</text>
+<text class="body" x="250" y="660" text-anchor="middle">나머지는 계획 상태 유지</text>
+  </g>
+    
+  <g class="node-card">
+    <rect id="new-revision" x="520" y="520" width="360" height="190" rx="24" fill="#10333b" stroke="#2dd4bf" stroke-width="3"/>
+    <text class="card-title" x="700" y="582" text-anchor="middle">새 계획 버전 추가</text>
+    <text class="body" x="700" y="632" text-anchor="middle">이전 버전 보존</text>
+<text class="body" x="700" y="660" text-anchor="middle">가변 잔여 횟수 차감 아님</text>
+  </g>
+    
+  <g class="node-card">
+    <rect id="refund-fact" x="980" y="480" width="360" height="170" rx="24" fill="#312818" stroke="#fbbf24" stroke-width="3"/>
+    <text class="card-title" x="1160" y="540" text-anchor="middle">외부 REFUNDED 근거</text>
+    <text class="body" x="1160" y="574" text-anchor="middle">환불 가능 여부와 금액은</text>
+<text class="body" x="1160" y="598" text-anchor="middle">외부 기준정보가 결정</text>
+  </g>
+    
+  <g class="node-card">
+    <rect id="refund-outcome" x="980" y="710" width="360" height="170" rx="24" fill="#312818" stroke="#fbbf24" stroke-width="3"/>
+    <text class="card-title" x="1160" y="766" text-anchor="middle">연결된 의무 취소</text>
+    <text class="body" x="1160" y="804" text-anchor="middle">대상 + BLOCKING 후속 취소</text>
+<text class="body" x="1160" y="827" text-anchor="middle">독립 NON_BLOCKING 의무 유지</text>
+  </g>
+  </g>
+  
+  <rect x="92" y="540" width="110" height="30" rx="15" fill="#2dd4bf" opacity=".2"/>
+  <text class="badge" x="147" y="561" text-anchor="middle" fill="#2dd4bf">실제 방문 완료</text>
+  
+  <rect x="1002" y="500" width="68" height="30" rx="15" fill="#fbbf24" opacity=".2"/>
+  <text class="badge" x="1036" y="521" text-anchor="middle" fill="#fbbf24">예외</text>
+  <g id="lifecycle-edges">
+    <path class="connector blue-line" data-connector="handler-factory" data-source-node="purchase-handler" data-target-node="plan-factory" d="M 350 280 H 420"/>
+    <path class="connector green-line" data-connector="factory-treatments" data-source-node="plan-factory" data-target-node="planned-treatments" d="M 710 280 H 780"/>
+    <path class="connector green-line" data-connector="treatments-completion" data-source-node="planned-treatments" data-target-node="completion-fact" d="M 850 390 V 430 Q 850 455 825 455 H 275 Q 250 455 250 480 V 520"/>
+    <path class="connector green-line" data-connector="completion-revision" data-source-node="completion-fact" data-target-node="new-revision" d="M 430 615 H 520"/>
+    <path class="connector amber-line" data-connector="refund-outcome-edge" data-source-node="refund-fact" data-target-node="refund-outcome" d="M 1160 650 V 710"/>
+  </g>
+  <g id="implementation-gap-note" filter="url(#shadow)">
+    <rect id="implementation-gap" x="70" y="770" width="810" height="120" rx="22" fill="#241d31" stroke="#c084fc" stroke-width="3" stroke-dasharray="10 10"/>
+    
+  <rect x="94" y="790" width="116" height="30" rx="15" fill="#c084fc" opacity=".2"/>
+  <text class="badge" x="152" y="811" text-anchor="middle" fill="#c084fc">현재 구현 경계</text>
+    <text class="gap-title" x="475" y="834" text-anchor="middle">간격 값은 보존하지만 자동 집행 연결은 없다</text>
+    <text class="note" x="475" y="862" text-anchor="middle">minimum / preferred / maximum interval은 회차에 복사된다.</text>
+<text class="note" x="475" y="885" text-anchor="middle">반복 회차 사이의 인접 dependency는 factory가 아직 만들지 않는다.</text>
+  </g>
+</svg>

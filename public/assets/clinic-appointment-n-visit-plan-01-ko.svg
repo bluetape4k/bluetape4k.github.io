@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="960" viewBox="0 0 1440 960" role="img" aria-labelledby="title desc" data-locale="ko">
+  <title id="title">3회 상품 구매는 미래 예약 세 건이 아니다</title>
+  <desc id="desc">구매 시점에는 방문할 권리와 순서만 만들고, 실제 예약 시간은 각 회차를 정할 때 합의합니다.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#06111f"/><stop offset=".58" stop-color="#0b1930"/><stop offset="1" stop-color="#10172b"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="155%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#020617" flood-opacity=".5"/></filter>
+    <marker id="blueArrow" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x"><path d="M 0 0 L 14 7 L 0 14 Z" fill="#60a5fa" data-solid-head="true"/></marker>
+    <marker id="greenArrow" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x"><path d="M 0 0 L 14 7 L 0 14 Z" fill="#2dd4bf" data-solid-head="true"/></marker>
+    <marker id="redArrow" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x"><path d="M 0 0 L 14 7 L 0 14 Z" fill="#fb7185" data-solid-head="true"/></marker>
+    <marker id="amberArrow" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x"><path d="M 0 0 L 14 7 L 0 14 Z" fill="#fbbf24" data-solid-head="true"/></marker>
+    <style>
+      .title{font-family:"goorm Sans",sans-serif;font-size:38px;font-weight:700;fill:#f8fafc}
+      .title-compact{font-size:32px}
+      .subtitle{font-family:"goorm Sans",sans-serif;font-size:18px;fill:#aebed2}
+      .card-title{font-family:"goorm Sans",sans-serif;font-size:24px;font-weight:700;fill:#f8fafc}
+      .compact-card-title{font-size:20px}
+      .body{font-family:"goorm Sans Code","goorm Sans",monospace;font-size:17px;fill:#d7e3f3}
+      .compact-body{font-size:15px}
+      .note{font-family:"goorm Sans",sans-serif;font-size:16px;fill:#aebed2}
+      .badge{font-family:"goorm Sans",sans-serif;font-size:14px;font-weight:700}
+      .footer-title{font-family:"goorm Sans",sans-serif;font-size:19px;font-weight:700;fill:#f8fafc}
+      .footer-body{font-family:"goorm Sans",sans-serif;font-size:17px;fill:#d7e3f3}
+      .gap-title{font-family:"goorm Sans",sans-serif;font-size:21px;font-weight:700;fill:#f8fafc}
+      .connector{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:5}
+      .blue-line{stroke:#60a5fa;marker-end:url(#blueArrow)}
+      .green-line{stroke:#2dd4bf;marker-end:url(#greenArrow)}
+      .red-line{stroke:#fb7185;marker-end:url(#redArrow)}
+      .amber-line{stroke:#fbbf24;marker-end:url(#amberArrow)}
+    </style>
+  </defs>
+  <rect width="1440" height="960" fill="url(#bg)"/>
+  <rect x="30" y="28" width="1380" height="904" rx="30" fill="none" stroke="#263a5e" stroke-width="2"/>
+  <circle cx="1300" cy="120" r="220" fill="#7c3aed" opacity=".07"/>
+  <circle cx="120" cy="850" r="210" fill="#0891b2" opacity=".06"/>
+  
+  <text class="title" x="70" y="84">3회 상품 구매는 미래 예약 세 건이 아니다</text>
+  <text class="subtitle" x="72" y="120">구매 시점에는 방문할 권리와 순서만 만들고, 실제 예약 시간은 각 회차를 정할 때 합의합니다.</text>
+  <g filter="url(#shadow)">
+    
+  <g class="node-card">
+    <rect id="purchase" x="60" y="350" width="260" height="180" rx="24" fill="#0f2038" stroke="#60a5fa" stroke-width="3"/>
+    <text class="card-title" x="190" y="408" text-anchor="middle">3회 상품 구매</text>
+    <text class="body" x="190" y="446" text-anchor="middle">repeatCount = 3</text>
+<text class="body" x="190" y="474" text-anchor="middle">구매 완료 이벤트</text>
+  </g>
+    
+  <g class="node-card">
+    <rect id="wrong-reservations" x="400" y="180" width="440" height="240" rx="24" fill="#341b2b" stroke="#fb7185" stroke-width="3"/>
+    <text class="card-title" x="620" y="242" text-anchor="middle">미래 예약을 미리 생성</text>
+    <text class="body" x="620" y="284" text-anchor="middle">4월 10일 10:00</text>
+<text class="body" x="620" y="312" text-anchor="middle">4월 17일 10:00</text>
+<text class="body" x="620" y="340" text-anchor="middle">4월 24일 10:00</text>
+  </g>
+    
+  <g class="node-card">
+    <rect id="visit-plan" x="400" y="510" width="440" height="240" rx="24" fill="#10333b" stroke="#2dd4bf" stroke-width="3"/>
+    <text class="card-title" x="620" y="572" text-anchor="middle">방문 계획을 생성</text>
+    <text class="body" x="620" y="614" text-anchor="middle">회차 1 · 시간 없음</text>
+<text class="body" x="620" y="642" text-anchor="middle">회차 2 · 시간 없음</text>
+<text class="body" x="620" y="670" text-anchor="middle">회차 3 · 시간 없음</text>
+  </g>
+    
+  <g class="node-card">
+    <rect id="no-gap" x="960" y="490" width="390" height="160" rx="24" fill="#0f2038" stroke="#60a5fa" stroke-width="3"/>
+    <text class="card-title" x="1155" y="544" text-anchor="middle">간격 제약 없음</text>
+    <text class="body" x="1155" y="582" text-anchor="middle">임상적 대기 기간이 없다</text>
+<text class="body" x="1155" y="605" text-anchor="middle">같은 방문으로 묶인다는 뜻은 아니다</text>
+  </g>
+    
+  <g class="node-card">
+    <rect id="interval-window" x="960" y="680" width="390" height="160" rx="24" fill="#312818" stroke="#fbbf24" stroke-width="3"/>
+    <text class="card-title" x="1155" y="734" text-anchor="middle">N~M일 간격</text>
+    <text class="body" x="1155" y="772" text-anchor="middle">직전 회차의 실제 완료 시각 기준</text>
+<text class="body" x="1155" y="795" text-anchor="middle">다음 예약 가능 구간을 계산한다</text>
+  </g>
+  </g>
+  
+  <rect x="425" y="200" width="112" height="30" rx="15" fill="#fb7185" opacity=".2"/>
+  <text class="badge" x="481" y="221" text-anchor="middle" fill="#fb7185">잘못된 모델</text>
+  <text class="note" x="620" y="378" text-anchor="middle">환자 동의와 자원 확인 없이</text>
+<text class="note" x="620" y="400" text-anchor="middle">달력을 점유한다</text>
+  
+  <rect x="425" y="530" width="100" height="30" rx="15" fill="#2dd4bf" opacity=".2"/>
+  <text class="badge" x="475" y="551" text-anchor="middle" fill="#2dd4bf">현재 모델</text>
+  <text class="note" x="620" y="706" text-anchor="middle">각 회차가 예약 후보가 될 때</text>
+<text class="note" x="620" y="728" text-anchor="middle">시간을 정한다</text>
+  <g id="comparison-edges">
+    <path class="connector red-line" data-connector="purchase-wrong" data-source-node="purchase" data-target-node="wrong-reservations" d="M 320 395 H 350 Q 375 395 375 370 V 325 Q 375 300 380 300 H 400"/>
+    <path class="connector green-line" data-connector="purchase-plan" data-source-node="purchase" data-target-node="visit-plan" d="M 320 485 H 350 Q 375 485 375 510 V 605 Q 375 630 380 630 H 400"/>
+    <path class="connector blue-line" data-connector="plan-no-gap" data-source-node="visit-plan" data-target-node="no-gap" d="M 840 570 H 960"/>
+    <path class="connector amber-line" data-connector="plan-interval-window" data-source-node="visit-plan" data-target-node="interval-window" d="M 840 690 H 900 Q 925 690 925 715 V 735 Q 925 760 940 760 H 960"/>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="60" y="870" width="1290" height="48" rx="18" fill="#0b1628" stroke="#2b4168" stroke-width="2"/>
+    <text class="footer-title" x="88" y="901">핵심 경계</text>
+    <text class="footer-body" x="220" y="901">상품 구매는 방문 의무를 만든다. 예약 시간과 방문 묶음은 별도의 결정이다.</text>
+  </g>
+</svg>

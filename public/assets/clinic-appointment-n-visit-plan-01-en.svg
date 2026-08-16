@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="960" viewBox="0 0 1440 960" role="img" aria-labelledby="title desc" data-locale="en">
+  <title id="title">A Three-Visit Purchase Is Not Three Future Reservations</title>
+  <desc id="desc">Purchase creates visit rights and sequence; each appointment time is agreed only when that visit is scheduled.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#06111f"/><stop offset=".58" stop-color="#0b1930"/><stop offset="1" stop-color="#10172b"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="155%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#020617" flood-opacity=".5"/></filter>
+    <marker id="blueArrow" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x"><path d="M 0 0 L 14 7 L 0 14 Z" fill="#60a5fa" data-solid-head="true"/></marker>
+    <marker id="greenArrow" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x"><path d="M 0 0 L 14 7 L 0 14 Z" fill="#2dd4bf" data-solid-head="true"/></marker>
+    <marker id="redArrow" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x"><path d="M 0 0 L 14 7 L 0 14 Z" fill="#fb7185" data-solid-head="true"/></marker>
+    <marker id="amberArrow" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x"><path d="M 0 0 L 14 7 L 0 14 Z" fill="#fbbf24" data-solid-head="true"/></marker>
+    <style>
+      .title{font-family:"goorm Sans",sans-serif;font-size:38px;font-weight:700;fill:#f8fafc}
+      .title-compact{font-size:32px}
+      .subtitle{font-family:"goorm Sans",sans-serif;font-size:18px;fill:#aebed2}
+      .card-title{font-family:"goorm Sans",sans-serif;font-size:24px;font-weight:700;fill:#f8fafc}
+      .compact-card-title{font-size:20px}
+      .body{font-family:"goorm Sans Code","goorm Sans",monospace;font-size:17px;fill:#d7e3f3}
+      .compact-body{font-size:15px}
+      .note{font-family:"goorm Sans",sans-serif;font-size:16px;fill:#aebed2}
+      .badge{font-family:"goorm Sans",sans-serif;font-size:14px;font-weight:700}
+      .footer-title{font-family:"goorm Sans",sans-serif;font-size:19px;font-weight:700;fill:#f8fafc}
+      .footer-body{font-family:"goorm Sans",sans-serif;font-size:17px;fill:#d7e3f3}
+      .gap-title{font-family:"goorm Sans",sans-serif;font-size:21px;font-weight:700;fill:#f8fafc}
+      .connector{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:5}
+      .blue-line{stroke:#60a5fa;marker-end:url(#blueArrow)}
+      .green-line{stroke:#2dd4bf;marker-end:url(#greenArrow)}
+      .red-line{stroke:#fb7185;marker-end:url(#redArrow)}
+      .amber-line{stroke:#fbbf24;marker-end:url(#amberArrow)}
+    </style>
+  </defs>
+  <rect width="1440" height="960" fill="url(#bg)"/>
+  <rect x="30" y="28" width="1380" height="904" rx="30" fill="none" stroke="#263a5e" stroke-width="2"/>
+  <circle cx="1300" cy="120" r="220" fill="#7c3aed" opacity=".07"/>
+  <circle cx="120" cy="850" r="210" fill="#0891b2" opacity=".06"/>
+  
+  <text class="title title-compact" x="70" y="84">A Three-Visit Purchase Is Not Three Future Reservations</text>
+  <text class="subtitle" x="72" y="120">Purchase creates visit rights and sequence; each appointment time is agreed only when that visit is scheduled.</text>
+  <g filter="url(#shadow)">
+    
+  <g class="node-card">
+    <rect id="purchase" x="60" y="350" width="260" height="180" rx="24" fill="#0f2038" stroke="#60a5fa" stroke-width="3"/>
+    <text class="card-title" x="190" y="408" text-anchor="middle">Three-Visit Purchase</text>
+    <text class="body" x="190" y="446" text-anchor="middle">repeatCount = 3</text>
+<text class="body" x="190" y="474" text-anchor="middle">purchase completed event</text>
+  </g>
+    
+  <g class="node-card">
+    <rect id="wrong-reservations" x="400" y="180" width="440" height="240" rx="24" fill="#341b2b" stroke="#fb7185" stroke-width="3"/>
+    <text class="card-title" x="620" y="242" text-anchor="middle">Pre-create future reservations</text>
+    <text class="body" x="620" y="284" text-anchor="middle">Apr 10 · 10:00</text>
+<text class="body" x="620" y="312" text-anchor="middle">Apr 17 · 10:00</text>
+<text class="body" x="620" y="340" text-anchor="middle">Apr 24 · 10:00</text>
+  </g>
+    
+  <g class="node-card">
+    <rect id="visit-plan" x="400" y="510" width="440" height="240" rx="24" fill="#10333b" stroke="#2dd4bf" stroke-width="3"/>
+    <text class="card-title" x="620" y="572" text-anchor="middle">Create a visit plan</text>
+    <text class="body" x="620" y="614" text-anchor="middle">visit 1 · no time</text>
+<text class="body" x="620" y="642" text-anchor="middle">visit 2 · no time</text>
+<text class="body" x="620" y="670" text-anchor="middle">visit 3 · no time</text>
+  </g>
+    
+  <g class="node-card">
+    <rect id="no-gap" x="960" y="490" width="390" height="160" rx="24" fill="#0f2038" stroke="#60a5fa" stroke-width="3"/>
+    <text class="card-title" x="1155" y="544" text-anchor="middle">No interval constraint</text>
+    <text class="body compact-body" x="1155" y="582" text-anchor="middle">No clinical waiting period</text>
+<text class="body compact-body" x="1155" y="605" text-anchor="middle">Does not imply automatic</text>
+<text class="body compact-body" x="1155" y="628" text-anchor="middle">same-visit grouping</text>
+  </g>
+    
+  <g class="node-card">
+    <rect id="interval-window" x="960" y="680" width="390" height="160" rx="24" fill="#312818" stroke="#fbbf24" stroke-width="3"/>
+    <text class="card-title" x="1155" y="734" text-anchor="middle">N-to-M-day interval</text>
+    <text class="body compact-body" x="1155" y="772" text-anchor="middle">Measured from actual</text>
+<text class="body compact-body" x="1155" y="795" text-anchor="middle">prior completion</text>
+<text class="body compact-body" x="1155" y="818" text-anchor="middle">Calculates the next booking window</text>
+  </g>
+  </g>
+  
+  <rect x="425" y="200" width="128" height="30" rx="15" fill="#fb7185" opacity=".2"/>
+  <text class="badge" x="489" y="221" text-anchor="middle" fill="#fb7185">Rejected model</text>
+  <text class="note" x="620" y="378" text-anchor="middle">Occupies the calendar without consent</text>
+<text class="note" x="620" y="400" text-anchor="middle">or resource checks</text>
+  
+  <rect x="425" y="530" width="112" height="30" rx="15" fill="#2dd4bf" opacity=".2"/>
+  <text class="badge" x="481" y="551" text-anchor="middle" fill="#2dd4bf">Current model</text>
+  <text class="note" x="620" y="706" text-anchor="middle">Agree on time when each visit</text>
+<text class="note" x="620" y="728" text-anchor="middle">becomes a candidate</text>
+  <g id="comparison-edges">
+    <path class="connector red-line" data-connector="purchase-wrong" data-source-node="purchase" data-target-node="wrong-reservations" d="M 320 395 H 350 Q 375 395 375 370 V 325 Q 375 300 380 300 H 400"/>
+    <path class="connector green-line" data-connector="purchase-plan" data-source-node="purchase" data-target-node="visit-plan" d="M 320 485 H 350 Q 375 485 375 510 V 605 Q 375 630 380 630 H 400"/>
+    <path class="connector blue-line" data-connector="plan-no-gap" data-source-node="visit-plan" data-target-node="no-gap" d="M 840 570 H 960"/>
+    <path class="connector amber-line" data-connector="plan-interval-window" data-source-node="visit-plan" data-target-node="interval-window" d="M 840 690 H 900 Q 925 690 925 715 V 735 Q 925 760 940 760 H 960"/>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="60" y="870" width="1290" height="48" rx="18" fill="#0b1628" stroke="#2b4168" stroke-width="2"/>
+    <text class="footer-title" x="88" y="901">Boundary</text>
+    <text class="footer-body" x="220" y="901">Purchase creates visit obligations. Appointment times and visit grouping are separate decisions.</text>
+  </g>
+</svg>
