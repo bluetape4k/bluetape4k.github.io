@@ -44,17 +44,17 @@ Recheck every implementation claim against the current `clinic-appointment` `dev
 - Modify: `tests/ecosystem/clinic-appointment-series.test.mjs`
 - Modify: `src/data/clinic-appointment-series.mjs`
 
-- [ ] **Step 1: Change the regression test first**
+- [x] **Step 1: Change the regression test first**
 
 Change the total, unique slug, and per-locale article counts from `21` to `22`; change the operations group count from `4` to `5`; append `operations-3` after `operations-2`.
 
-- [ ] **Step 2: Run the test and confirm the registry failure**
+- [x] **Step 2: Run the test and confirm the registry failure**
 
 Run `node --test tests/ecosystem/clinic-appointment-series.test.mjs`.
 
 Expected: FAIL because the registry still contains 21 entries.
 
-- [ ] **Step 3: Add the registry entry**
+- [x] **Step 3: Add the registry entry**
 
 Insert:
 
@@ -68,7 +68,7 @@ Insert:
 },
 ```
 
-- [ ] **Step 4: Re-run and confirm only missing-article assertions remain red**
+- [x] **Step 4: Re-run and confirm only missing-article assertions remain red**
 
 Expected: registry count and order pass; locale reads fail with `ENOENT`.
 

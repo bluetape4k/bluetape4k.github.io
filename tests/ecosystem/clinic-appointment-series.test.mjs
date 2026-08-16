@@ -12,7 +12,7 @@ test('clinic appointment series keeps the approved published order', () => {
     clinicAppointmentGroups.map(({ id }) => id),
     ['prologue', 'design', 'implementation', 'operations'],
   );
-  assert.equal(clinicAppointmentSeries.length, 21);
+  assert.equal(clinicAppointmentSeries.length, 22);
   assert.deepEqual(
     clinicAppointmentGroups.map(({ id }) => [
       id,
@@ -22,7 +22,7 @@ test('clinic appointment series keeps the approved published order', () => {
       ['prologue', 1],
       ['design', 7],
       ['implementation', 9],
-      ['operations', 4],
+      ['operations', 5],
     ],
   );
   assert.deepEqual(
@@ -49,9 +49,10 @@ test('clinic appointment series keeps the approved published order', () => {
       'operations-1-2',
       'operations-1-3',
       'operations-2',
+      'operations-3',
     ],
   );
-  assert.equal(new Set(clinicAppointmentSeries.map(({ slug }) => slug)).size, 21);
+  assert.equal(new Set(clinicAppointmentSeries.map(({ slug }) => slug)).size, 22);
 });
 
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -75,7 +76,7 @@ test('every published clinic appointment article uses the shared series navigati
   for (const locale of locales) {
     const files = (await readdir(locale.directory))
       .filter((file) => file.startsWith('clinic-appointment-') && file.endsWith('.mdx'));
-    assert.equal(files.length, 21, `${locale.id}: published article count`);
+    assert.equal(files.length, 22, `${locale.id}: published article count`);
 
     for (const entry of clinicAppointmentSeries) {
       const source = await readFile(`${locale.directory}/${entry.slug}.mdx`, 'utf8');
