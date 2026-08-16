@@ -119,6 +119,13 @@ export const clinicAppointmentSeries = Object.freeze([
     en: '[Implementation 8] Expanding an N-Visit Purchase into a Visit Plan',
   },
   {
+    id: 'implementation-9',
+    group: 'implementation',
+    slug: 'clinic-appointment-package-execution-plan',
+    ko: '[구현 9] 패키지 상품의 실행 순서와 선택 조건을 방문 계획으로 고정하는 방법',
+    en: '[Implementation 9] Freezing Package Choices and Execution Order into a Visit Plan',
+  },
+  {
     id: 'operations-1-1',
     group: 'operations',
     slug: 'clinic-appointment-waitlist-core',
