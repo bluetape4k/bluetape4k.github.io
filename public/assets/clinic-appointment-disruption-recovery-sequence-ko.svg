@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1770" viewBox="0 0 1440 1770" role="img" aria-labelledby="title desc" data-locale="ko">
+<title id="title">병원 사정으로 바뀐 예약은 검증과 확정을 나눠 복구한다</title><desc id="desc">후보 계산은 트랜잭션 밖에서, 상태 변경은 버전을 다시 확인한 뒤 저장합니다.</desc>
+<defs>
+  <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#071323"/><stop offset="1" stop-color="#101a31"/></linearGradient>
+  <marker id="blueArrow" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#60a5fa" data-solid-head="true"/></marker>
+<marker id="cyanArrow" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#2dd4bf" data-solid-head="true"/></marker>
+<marker id="amberArrow" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#fbbf24" data-solid-head="true"/></marker>
+<marker id="redArrow" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#fb7185" data-solid-head="true"/></marker>
+<marker id="purpleArrow" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#a78bfa" data-solid-head="true"/></marker>
+  <style>
+  .title{font-family:"goorm Sans", "Apple SD Gothic Neo", sans-serif;font-size:38px;font-weight:800;fill:#f4f8ff}
+  .subtitle{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:17px;fill:#a9bad0}
+  .badge{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:13px;font-weight:700;fill:#c9dcf3}
+  .participant{font-family:"goorm Sans", "Apple SD Gothic Neo", sans-serif;font-size:17px;font-weight:800;fill:#f4f8ff}
+  .role{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:12px;fill:#91a8c3}
+  .labelText,.num,.outcome,.ui-label,.ui-mono{font-family:"goorm Sans Code", "goorm Sans", monospace}
+  .labelText{font-size:14px;fill:#e7f0fb}
+  .num{font-size:13px;font-weight:800;fill:#f8fbff}
+  .outcome{font-size:14px;font-weight:800;fill:#f8fbff}
+  .header{fill:#13243b;stroke:#395675;stroke-width:2}
+  .frame{fill:none;stroke:#2d4665;stroke-width:2}
+  .lifeline{fill:none;stroke:#516985;stroke-width:2;stroke-dasharray:8 10}
+  .activation{fill:#17314e;stroke:#7898b7;stroke-width:2}
+  .pill{fill:#0d1b2f;stroke-width:2}
+  .call{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+  .blue-line{stroke:#60a5fa;marker-end:url(#blueArrow)}
+  .cyan-line{stroke:#2dd4bf;marker-end:url(#cyanArrow)}
+  .amber-line{stroke:#fbbf24;marker-end:url(#amberArrow)}
+  .red-line{stroke:#fb7185;marker-end:url(#redArrow)}
+  .purple-line{stroke:#a78bfa;marker-end:url(#purpleArrow)}
+  .phase{fill:#0b1729;fill-opacity:.28;stroke:#38506d;stroke-width:1.5}
+  .phase-label{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:12px;font-weight:700;fill:#83a0bf}
+  .decision{fill:#151f38;stroke:#a78bfa;stroke-width:2}
+  .decision-title{font-family:"goorm Sans", "Apple SD Gothic Neo", sans-serif;font-size:18px;font-weight:800;fill:#e5d9ff}
+</style>
+</defs>
+<rect width="1440" height="1770" fill="url(#canvas)"/><rect class="frame" x="24" y="24" width="1392" height="1722" rx="32"/>
+<text class="title" x="62" y="76">병원 사정으로 바뀐 예약은 검증과 확정을 나눠 복구한다</text><text class="subtitle" x="64" y="108">후보 계산은 트랜잭션 밖에서, 상태 변경은 버전을 다시 확인한 뒤 저장합니다.</text>
+<rect x="62" y="126" width="230" height="34" rx="17" fill="#12243a" stroke="#3a5877"/><text class="badge" x="177" y="148" text-anchor="middle">SCOPE · STAFF 운영 복구</text>
+<rect x="304" y="126" width="245" height="34" rx="17" fill="#12243a" stroke="#3a5877"/><text class="badge" x="426.5" y="148" text-anchor="middle">VERSION · develop 90e50da4</text>
+<rect x="561" y="126" width="210" height="34" rx="17" fill="#12243a" stroke="#3a5877"/><text class="badge" x="666" y="148" text-anchor="middle">SYNC · 일괄 원자성</text>
+<rect x="783" y="126" width="245" height="34" rx="17" fill="#12243a" stroke="#3a5877"/><text class="badge" x="905.5" y="148" text-anchor="middle">STREAM · 예약별 커밋</text><rect class="phase" x="42" y="304" width="1356" height="426" rx="24"/><rect x="1038" y="316" width="330" height="28" rx="14" fill="#102239" stroke="#38506d"/><text class="phase-label" x="1203" y="335" text-anchor="middle">영향 범위와 후보 계산</text>
+<rect class="phase" x="42" y="748" width="1356" height="318" rx="24"/><rect x="1038" y="760" width="330" height="28" rx="14" fill="#102239" stroke="#38506d"/><text class="phase-label" x="1203" y="779" text-anchor="middle">쓰기 전 재검증과 복구 대기</text>
+<rect class="phase" x="42" y="1084" width="1356" height="332" rx="24"/><rect x="1038" y="1096" width="330" height="28" rx="14" fill="#102239" stroke="#38506d"/><text class="phase-label" x="1203" y="1115" text-anchor="middle">STAFF 확정과 최종 저장</text><g><rect id="staff" class="header card" x="10" y="190" width="240" height="92" rx="20"/><text class="participant" x="130" y="228" text-anchor="middle">STAFF</text><text class="role" x="130" y="256" text-anchor="middle">운영자</text></g>
+<g><rect id="api" class="header card" x="300" y="190" width="240" height="92" rx="20"/><text class="participant" x="420" y="228" text-anchor="middle">운영 UI · API</text><text class="role" x="420" y="256" text-anchor="middle">요청 경계</text></g>
+<g><rect id="service" class="header card" x="590" y="190" width="240" height="92" rx="20"/><text class="participant" x="710" y="228" text-anchor="middle">ClosureRescheduleService</text><text class="role" x="710" y="256" text-anchor="middle">복구 오케스트레이션</text></g>
+<g><rect id="store" class="header card" x="880" y="190" width="240" height="92" rx="20"/><text class="participant" x="1000" y="228" text-anchor="middle">예약 · 후보 저장소</text><text class="role" x="1000" y="256" text-anchor="middle">현재 상태와 version</text></g>
+<g><rect id="outbox" class="header card" x="1170" y="190" width="240" height="92" rx="20"/><text class="participant" x="1290" y="228" text-anchor="middle">이력 · 상태 이벤트 · outbox</text><text class="role" x="1290" y="256" text-anchor="middle">복구 근거</text></g><path class="lifeline" d="M130 282 V1435"/>
+<path class="lifeline" d="M420 282 V1435"/>
+<path class="lifeline" d="M710 282 V1435"/>
+<path class="lifeline" d="M1000 282 V1435"/>
+<path class="lifeline" d="M1290 282 V1435"/><rect class="activation" x="700" y="333" width="20" height="1060" rx="8"/><rect class="activation" x="990" y="545" width="20" height="305" rx="8"/>
+<g><rect class="pill" x="57" y="305" width="436" height="38" rx="19" stroke="#60a5fa"/><circle cx="77" cy="324" r="13" fill="#60a5fa" fill-opacity=".2" stroke="#60a5fa"/><text class="num" x="77" y="329" text-anchor="middle">1</text><text class="labelText" x="100" y="329">휴진 범위 · 원인 · searchDays 제출</text></g><path class="call blue-line" data-source-node="staff" data-target-node="api" d="M130 355 H420"/>
+<g><rect class="pill" x="430" y="415" width="270" height="38" rx="19" stroke="#60a5fa"/><circle cx="450" cy="434" r="13" fill="#60a5fa" fill-opacity=".2" stroke="#60a5fa"/><text class="num" x="450" y="439" text-anchor="middle">2</text><text class="labelText" x="473" y="439">영향 예약 복구 요청</text></g><path class="call blue-line" data-source-node="api" data-target-node="service" d="M420 465 H710"/>
+<g><rect class="pill" x="665" y="525" width="380" height="38" rx="19" stroke="#2dd4bf"/><circle cx="685" cy="544" r="13" fill="#2dd4bf" fill-opacity=".2" stroke="#2dd4bf"/><text class="num" x="685" y="549" text-anchor="middle">3</text><text class="labelText" x="708" y="549">활성 예약 스냅숏 · version 조회</text></g><path class="call cyan-line" data-source-node="service" data-target-node="store" d="M710 575 H1000"/>
+<g><rect class="pill" x="700" y="635" width="310" height="38" rx="19" stroke="#fbbf24"/><circle cx="720" cy="654" r="13" fill="#fbbf24" fill-opacity=".2" stroke="#fbbf24"/><text class="num" x="720" y="659" text-anchor="middle">4</text><text class="labelText" x="743" y="659">트랜잭션 밖에서 대체 후보 계산</text></g><path class="call amber-line" data-source-node="service" data-target-node="store" d="M710 685 H1000"/>
+<g><rect class="pill" x="686" y="745" width="338" height="38" rx="19" stroke="#2dd4bf"/><circle cx="706" cy="764" r="13" fill="#2dd4bf" fill-opacity=".2" stroke="#2dd4bf"/><text class="num" x="706" y="769" text-anchor="middle">5</text><text class="labelText" x="729" y="769">현재 상태 · version 재확인</text></g><path class="call cyan-line" data-source-node="service" data-target-node="store" d="M710 795 H1000"/>
+<g><rect class="pill" x="750" y="855" width="500" height="38" rx="19" stroke="#a78bfa"/><circle cx="770" cy="874" r="13" fill="#a78bfa" fill-opacity=".2" stroke="#a78bfa"/><text class="num" x="770" y="879" text-anchor="middle">6</text><text class="labelText" x="793" y="879">PENDING_RESCHEDULE · 이력 · 상태 이벤트 · 후보 저장</text></g><path class="call purple-line" data-source-node="service" data-target-node="outbox" d="M710 905 H1290"/>
+<g><rect class="pill" x="340" y="965" width="450" height="38" rx="19" stroke="#60a5fa"/><circle cx="360" cy="984" r="13" fill="#60a5fa" fill-opacity=".2" stroke="#60a5fa"/><text class="num" x="360" y="989" text-anchor="middle">7</text><text class="labelText" x="383" y="989">영향 8 · 후보 있음 6 · 후보 없음 2 반환</text></g><path class="call blue-line" data-source-node="service" data-target-node="api" d="M710 1015 H420"/>
+<g><rect class="pill" x="134" y="1075" width="282" height="38" rx="19" stroke="#fbbf24"/><circle cx="154" cy="1094" r="13" fill="#fbbf24" fill-opacity=".2" stroke="#fbbf24"/><text class="num" x="154" y="1099" text-anchor="middle">8</text><text class="labelText" x="177" y="1099">후보 선택 또는 자동 재배정</text></g><path class="call amber-line" data-source-node="staff" data-target-node="api" d="M130 1125 H420"/>
+<g><rect class="pill" x="347" y="1185" width="436" height="38" rx="19" stroke="#fbbf24"/><circle cx="367" cy="1204" r="13" fill="#fbbf24" fill-opacity=".2" stroke="#fbbf24"/><text class="num" x="367" y="1209" text-anchor="middle">9</text><text class="labelText" x="390" y="1209">expectedVersion과 후보로 확정 요청</text></g><path class="call amber-line" data-source-node="api" data-target-node="service" d="M420 1235 H710"/>
+<g><rect class="pill" x="750" y="1295" width="500" height="38" rx="19" stroke="#2dd4bf"/><circle cx="770" cy="1314" r="13" fill="#2dd4bf" fill-opacity=".2" stroke="#2dd4bf"/><text class="num" x="770" y="1319" text-anchor="middle">10</text><text class="labelText" x="793" y="1319">대체 CONFIRMED · 기존 RESCHEDULED · 선택 후보 · outbox 저장</text></g><path class="call cyan-line" data-source-node="service" data-target-node="outbox" d="M710 1345 H1290"/>
+<rect class="decision" x="44" y="1480" width="1352" height="218" rx="26"/><rect x="510" y="1458" width="420" height="42" rx="21" fill="#19223a" stroke="#a78bfa" stroke-width="2"/><text class="decision-title" x="720" y="1486" text-anchor="middle">최종 상태 결정</text><rect x="72" y="1572" width="306" height="92" rx="20" fill="#101f34" stroke="#fbbf24" stroke-width="2"/><text class="outcome" x="225" y="1609" text-anchor="middle">후보 없음</text><text class="role" x="225" y="1639" text-anchor="middle">STAFF 별도 처리</text>
+<rect x="402" y="1572" width="306" height="92" rx="20" fill="#101f34" stroke="#fb7185" stroke-width="2"/><text class="outcome" x="555" y="1609" text-anchor="middle">상태 · 버전 변경</text><text class="role" x="555" y="1639" text-anchor="middle">동기식 일괄 롤백</text>
+<rect x="732" y="1572" width="306" height="92" rx="20" fill="#101f34" stroke="#a78bfa" stroke-width="2"/><text class="outcome" x="885" y="1609" text-anchor="middle">스트림 항목 실패</text><text class="role" x="885" y="1639" text-anchor="middle">커밋된 항목과 대조</text>
+<rect x="1062" y="1572" width="306" height="92" rx="20" fill="#101f34" stroke="#2dd4bf" stroke-width="2"/><text class="outcome" x="1215" y="1609" text-anchor="middle">확정 완료</text><text class="role" x="1215" y="1639" text-anchor="middle">대체 예약 CONFIRMED</text>
+</svg>

@@ -82,11 +82,11 @@ Expected: registry count and order pass; locale reads fail with `ENOENT`.
 - Create: `public/assets/clinic-appointment-disruption-recovery-sequence-en.svg`
 - Create: `public/assets/clinic-appointment-disruption-recovery-sequence-en.png`
 
-- [ ] **Step 1: Write the semantic ledger before drawing**
+- [x] **Step 1: Write the semantic ledger before drawing**
 
 Record participants `STAFF`, `UI/API`, `ClosureRescheduleService`, booking/candidate store, and outbox. Record the ordered flow: active-booking/version preflight; candidate calculation outside the transaction; state/version recheck; `PENDING_RESCHEDULE` plus history/status event/candidates; STAFF selection or auto selection; replacement `CONFIRMED`, original `RESCHEDULED`, selected candidate, and outbox in one transaction. Record the explicit Korean outcome heading `최종 상태 결정` and terminal outcomes for no candidate, stale state/version, confirmation completed, and per-item stream failure.
 
-- [ ] **Step 2: Pass the semantic audit**
+- [x] **Step 2: Pass the semantic audit**
 
 Run:
 
@@ -96,11 +96,11 @@ python3 /Users/debop/.codex/skills/bluetape-diagram/scripts/diagram-semantic-aud
 
 Expected: unique nodes, closed edge endpoints, explicit terminal outcomes, and complexity within budget.
 
-- [ ] **Step 3: Implement sequence geometry**
+- [x] **Step 3: Implement sequence geometry**
 
 Use a 1440px-wide dark canvas, title followed by an inline scope/version badge row, participant headers, lifelines, activation bars, transparent phase frames, 140px or greater message rows, and a generous bottom outcome area. Put every numbered label pill above its continuous call line with 8px or greater clearance. Use rounded orthogonal connectors; marker, line, pill border, and number badge share the same color. Do not use an unexplained horizontal dashed line.
 
-- [ ] **Step 4: Generate and audit each locale separately**
+- [x] **Step 4: Generate and audit each locale separately**
 
 For each SVG/PNG pair run `xmllint`, text normalization, asset-pair, connector, arrowhead, geometry with `--fail-diagonal`, endpoint, mixed-corner, sequence-style, and opaque visual audits from `bluetape-diagram`.
 
@@ -116,15 +116,15 @@ Expected: zero audit failures and no label/call-line overlap at original size.
 - Create: `public/assets/clinic-appointment-disruption-recovery-operations-screen-en.svg`
 - Create: `public/assets/clinic-appointment-disruption-recovery-operations-screen-en.png`
 
-- [ ] **Step 1: Record UI semantics**
+- [x] **Step 1: Record UI semantics**
 
 The ledger must include incident cause and affected range, `searchDays`, counts `영향 8 / 후보 있음 6 / 후보 없음 2`, an action queue, selected anonymous appointment reference, three candidate cards, candidate confirmation and automatic rescheduling actions, and a separate no-candidate task. It must state that the mockup contains illustrative values, no patient identifiers, and is not a production screenshot.
 
-- [ ] **Step 2: Implement the localized mockup**
+- [x] **Step 2: Implement the localized mockup**
 
 Use the existing dark STAFF UI language: top bar, four summary cards, queue table, selected-item detail, candidate cards, and guarded buttons. Surface `expectedVersion`, search window, candidate priority, and the current implementation warning that confirmation immediately creates `CONFIRMED`; do not present patient-consent evidence or automatic compensation as implemented behavior.
 
-- [ ] **Step 3: Render and inspect at original size**
+- [x] **Step 3: Render and inspect at original size**
 
 Generate 2x PNGs, run opaque visual and asset-pair audits, and inspect both locales. Reject clipped text, unreadable labels, patient-identifying data, missing action hierarchy, or insufficient bottom padding.
 
@@ -133,15 +133,15 @@ Generate 2x PNGs, run opaque visual and asset-pair audits, and inspect both loca
 **Files:**
 - Create: `public/assets/clinic-appointment-disruption-recovery-hero.png`
 
-- [ ] **Step 1: Compare nearby series heroes**
+- [x] **Step 1: Compare nearby series heroes**
 
 Inspect Operations 1.2, Operations 2, and Implementation 9 heroes at full size so the new composition does not repeat the queue dashboard or product graph.
 
-- [ ] **Step 2: Generate a text-free 16:9 hero with `image_gen`**
+- [x] **Step 2: Generate a text-free 16:9 hero with `image_gen`**
 
 Show a bright 3D miniature clinic recovery scene: a white-and-blue STAFF robot beside a temporarily unavailable laser device, a small set of affected appointment cards, and a separate replacement timetable where another robot is moving one card. Include no readable text, letters, numbers, logos, watermarks, dashboard tables, or infographic connector lines.
 
-- [ ] **Step 3: Inspect full size and compare silhouettes**
+- [x] **Step 3: Inspect full size and compare silhouettes**
 
 Expected: the equipment incident and recovery action read immediately, the hero is distinct from recent series images, and the focal subjects survive blog-card cropping.
 

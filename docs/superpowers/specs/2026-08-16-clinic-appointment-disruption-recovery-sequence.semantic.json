@@ -1,0 +1,40 @@
+{
+  "kind": "sequence",
+  "source": {
+    "question": "How does STAFF recover appointments affected by a clinic disruption without losing state or version boundaries?",
+    "revision": "clinic-appointment develop 90e50da4b49e35d667911418cc9578ab538898e3",
+    "paths": [
+      "docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md",
+      "docs/superpowers/plans/2026-08-16-clinic-appointment-disruption-recovery-article.md",
+      "public/assets/clinic-appointment-package-execution-plan-02-ko.png"
+    ]
+  },
+  "nodes": [
+    {"id":"staff","label":"STAFF","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
+    {"id":"api","label":"Operations UI and API","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
+    {"id":"service","label":"ClosureRescheduleService","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
+    {"id":"store","label":"Booking and candidate store","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
+    {"id":"outbox","label":"History, status event, and outbox","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
+    {"id":"outcome","label":"Terminal outcome decision","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"}
+  ],
+  "edges": [
+    {"id":"start","from":"staff","to":"api","kind":"start-closure-recovery","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
+    {"id":"preflight","from":"api","to":"service","kind":"active-booking-version-preflight","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
+    {"id":"snapshot","from":"service","to":"store","kind":"read-active-snapshot","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
+    {"id":"candidate-search","from":"service","to":"store","kind":"calculate-candidates-outside-transaction","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
+    {"id":"recheck","from":"service","to":"store","kind":"recheck-state-and-version","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
+    {"id":"pending-write","from":"service","to":"outbox","kind":"write-pending-history-status-candidates","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
+    {"id":"select","from":"staff","to":"api","kind":"select-or-auto-reschedule","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
+    {"id":"confirm","from":"api","to":"service","kind":"confirm-candidate-with-expected-version","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
+    {"id":"atomic-confirm","from":"service","to":"outbox","kind":"atomic-replacement-original-candidate-outbox-write","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
+    {"id":"terminal","from":"service","to":"outcome","kind":"terminal-outcome","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"}
+  ],
+  "behavior": {"branches": 3, "loops": 0},
+  "repairs": [
+    {"target":"message-rows","reason":"keep every numbered label above a continuous call line","touches":10},
+    {"target":"scope-version-row","reason":"keep scope and implementation version under the title instead of floating over content","touches":2},
+    {"target":"terminal-outcomes","reason":"replace an ambiguous dotted rail with an explicit terminal outcome decision","touches":4},
+    {"target":"marker-colors","reason":"match every arrowhead to its message line color","touches":10},
+    {"target":"bottom-padding","reason":"leave readable space below the terminal outcome cards","touches":4}
+  ]
+}
