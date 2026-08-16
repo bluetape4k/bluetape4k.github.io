@@ -1,0 +1,225 @@
+---
+title: "[Implementation 8] Expanding an N-Visit Purchase into a Visit Plan"
+description: "How the implementation turns a three-visit purchase into unscheduled occurrences and preserves completion, refund, and interval history in immutable plan revisions."
+sidebar:
+  order: -202608161200
+blog:
+  date: 2026-08-16T12:00:00+09:00
+  image: /assets/clinic-appointment-n-visit-plan-hero.png
+  imageAlt: "A robot receiving a purchase token and placing three unscheduled visit cards into a plan tray while leaving the calendar empty"
+  cardDescription: "How repeated purchase rights become visit-plan occurrences, with completion, refund, and interval boundaries preserved as revision history."
+  tags: ["architecture", "domain-modeling", "event-driven", "resilience", "appointment-service", "example", "timefold"]
+---
+
+import ClinicAppointmentSeries from '../../../components/ClinicAppointmentSeries.astro';
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-n-visit-plan-hero.png" alt="A robot receiving a purchase token and placing three unscheduled visit cards into a plan tray while leaving the calendar empty" loading="eager" />
+  <figcaption>Purchase creates visit rights and sequence. Each appointment time is agreed only when that visit is scheduled.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-16 · Clinic Appointment service diary · N-visit purchases and visit plans</p>
+
+## Buying three visits does not create three reservations
+
+Suppose Patient A buys a three-visit laser treatment product. At purchase time, the appointment service knows that the
+clinic owes Patient A three treatments. It does not know the dates of the second and third visits, their practitioners,
+rooms, or equipment.
+
+Turning the purchase directly into three reservations would occupy calendar time that the patient has not accepted. A delay
+to the first visit or a different recovery period would force the service to move a chain of premature reservations. A visit
+plan preserves each obligation while leaving the actual time open until patient consent and resource checks are complete.
+
+| Boundary | Rejected model: pre-create future reservations | Current model: create a visit plan |
+| --- | --- | --- |
+| Immediately after purchase | Three appointment times enter the calendar | Three unscheduled occurrences enter the plan |
+| Patient consent | Assumed for every future visit | Obtained for the exact time and terms of each proposal |
+| Resource allocation | Practitioners, equipment, and rooms are occupied too early | Only a confirmed visit commitment occupies resources |
+| Schedule change | Later reservations move in a chain | Unscheduled occurrences remain in the plan |
+| Interval | Fixed from purchase time or an arbitrary date | Calculated from actual completion of the preceding occurrence |
+
+<figure class="bt4k-architecture" data-diagram-title="Two interpretations of a three-visit purchase: future reservations and a visit plan">
+  <img src="/assets/clinic-appointment-n-visit-plan-01-en.png" alt="Comparison between the rejected model that pre-creates three future reservations and the current model that creates three unscheduled visit-plan occurrences, with no-interval and N-to-M-day variants" loading="lazy" />
+  <figcaption>A purchase creates visit obligations. Appointment times and grouping several occurrences into one visit are separate decisions.</figcaption>
+</figure>
+
+## The purchase-completed event creates the visit-plan boundary
+
+`PurchaseCompletedHandler` receives the completed purchase event and loads the exact product version. When the catalog
+definition is active and purchase ownership matches, it passes the definition and purchase data to
+`AppointmentPlanFactory`. The plan, inbox result, and outbox record are stored in the same transaction.
+
+The appointment service owns the **scheduling interpretation of purchased rights**. It does not own product pricing,
+refund eligibility, or clinical completion. It preserves the identifiers and state history needed for future scheduling
+without replacing those external decisions.
+
+| Input | What the plan preserves | What the plan does not decide |
+| --- | --- | --- |
+| Purchase authority and purchase ID | One `AppointmentPlan` per purchase | Payment approval and refund amount |
+| Product ID, version, and hash | The exact catalog definition interpreted at purchase time | Price changes and sales policy |
+| Patient reference and booking preference | A protected reference and immutable preference for later proposals | A confirmed appointment time |
+| Product BOM and repeat count | One `PlannedTreatment` per occurrence | Actual clinical completion |
+
+## repeatCount expands into one PlannedTreatment per occurrence
+
+`AppointmentPlanFactory` does not keep `repeatCount` only as a mutable counter. For a three-visit product, it creates
+`PlannedTreatmentRecord` values with `sequenceNo` 1, 2, and 3.
+
+```kotlin
+val treatments = definition.items.flatMapIndexed { bomOrder, item ->
+    (1..item.repeatCount).map { sequenceNo ->
+        PlannedTreatmentRecord(
+            bomItemId = item.bomItemId,
+            sequenceNo = sequenceNo,
+            bomOrder = bomOrder,
+            minimumIntervalDays = item.minimumIntervalDays,
+            preferredIntervalDays = item.preferredIntervalDays,
+            maximumIntervalDays = item.maximumIntervalDays,
+            earliestStartAt = null,
+            latestStartAt = null,
+            status = PlannedTreatmentStatus.PLANNED,
+            // Duration and practitioner, equipment, and room requirements are copied too.
+        )
+    }
+}
+```
+
+Both scheduling-window fields are null. The occurrences exist, but their booking windows have not been calculated. A
+purchase-time booking preference also remains an immutable input; the factory does not turn it into a confirmed visit.
+
+Occurrence rows let the service answer concrete questions:
+
+- Which occurrence was completed?
+- Which occurrences are still planned?
+- Which duration and resource requirements apply to a specific occurrence?
+- Which occurrence did a refund or partial-completion fact affect?
+
+A mutable `remainingCount` cannot preserve those answers by itself. Deriving the remaining count from plan items and
+revision history keeps an operations counter explainable.
+
+## An interval is a future booking window, not a future reservation time
+
+Many repeated products have no clinical delay between occurrences. Their interval fields can be absent, so other constraints
+such as patient preference and clinic capacity determine the next proposal. **No clinical interval does not imply that the
+occurrences are automatically grouped into the same visit.** Visit grouping belongs to a separate package-execution rule.
+
+Other treatments require the next occurrence to happen between N and M days after the previous one. The anchor is the
+**actual completion time of the preceding occurrence**, not purchase time or a pre-created reservation. For a minimum of 21
+days, a preference of 28 days, and a maximum of 42 days, proposal search should derive its window from those offsets.
+
+The current implementation has two relevant parts:
+
+1. It validates `minimumIntervalDays`, `preferredIntervalDays`, and `maximumIntervalDays` on catalog items and copies them to each occurrence.
+2. When an execution plan contains a `BLOCKING` dependency, `AppointmentProposalService` reads the predecessor's actual completion time and checks the minimum and maximum window.
+
+One boundary is still disconnected. `CatalogDefinitionValidator` creates temporary adjacency edges between repeated
+occurrences only to verify that the expanded graph is acyclic. `AppointmentPlanFactory` materializes only dependencies that
+are explicit in the catalog definition. Expanding a repeated item therefore does not automatically persist dependencies
+from occurrence 1 to 2 and from 2 to 3.
+
+The interval metadata is preserved, but the current factory does not create the adjacency needed to enforce that metadata
+between repeats. A stored or validated field is not the same as a rule enforced during proposal generation.
+
+<figure class="bt4k-architecture" data-diagram-title="Purchase expansion, completion, refund, and the current interval-enforcement boundary">
+  <img src="/assets/clinic-appointment-n-visit-plan-02-en.png" alt="Flow from PurchaseCompletedHandler and AppointmentPlanFactory to three planned treatments, an immutable revision after actual completion, cancellation from an external refunded fact, and a separate note for missing repeated-session adjacency" loading="lazy" />
+  <figcaption>Completion and refund append plan revisions instead of overwriting history. The dashed card is a disconnected implementation boundary, not a successful runtime flow.</figcaption>
+</figure>
+
+## Visit completion does more than decrement a remaining count
+
+After Patient A actually completes occurrence 1, the authoritative clinical source sends a completion fact.
+`TreatmentFulfillmentHandler` copies the active plan revision, marks only that occurrence `COMPLETED`, and appends a new
+revision. It does not update the rows in the previous revision.
+
+| Plan revision | Occurrence 1 | Occurrence 2 | Occurrence 3 | Remaining count for display |
+| --- | --- | --- | --- | ---: |
+| Initial revision | `PENDING` | `PENDING` | `PENDING` | 3 |
+| Completion revision | `COMPLETED` | `PENDING` | `PENDING` | 2 |
+
+“Two visits remaining” is useful UI, but the stored contract is not an integer changed from three to two. The revision shows
+which occurrence completed, when it completed, and which obligations remain. For partial fulfillment, the completed part
+stays in history while a separately identified remaining treatment is appended to the new revision.
+
+The same distinction is required for interval calculation. The appointment service needs the predecessor's completion state
+and actual completion time, not merely a used-count value of one.
+
+## A refund does not erase completion history
+
+Refund is an exceptional path, but an N-visit product must account for it. If Patient A completes the first occurrence and
+then receives a refund for the remainder, commerce or a refund service decides eligibility and amount. The appointment
+service reflects the authoritative `REFUNDED` fact in the plan.
+
+`PlanDirtySetResolver` cancels the directly refunded plan item and the transitive `BLOCKING` successors that cannot proceed
+without it. Independent `NON_BLOCKING` items remain pending.
+
+| Target | State after the refund fact | Reason |
+| --- | --- | --- |
+| Directly refunded remaining occurrence | `CANCELLED` | The external authority confirmed cancellation |
+| A `BLOCKING` successor that requires it | `CANCELLED` | Its predecessor obligation no longer exists |
+| Independent `NON_BLOCKING` item | Remains `PENDING` | It can be fulfilled independently |
+| Previously completed occurrence in an older revision | Unchanged | Refund does not delete actual completion history |
+
+Refund also appends a plan revision. “One of three completed, two refunded” is therefore not flattened into “zero
+remaining.” Completion and cancellation remain separately explainable.
+
+## Replaying the same purchase still produces one plan
+
+A broker can redeliver an event, and a caller that did not receive the result can retry. If either path created another plan,
+all remaining counts and proposal candidates would be duplicated.
+
+`PurchaseCompletedHandler` closes the duplicate path at two identifiers:
+
+- A terminal inbox row for the event ID returns a duplicate result.
+- An existing plan for the same tenant, clinic, purchase authority, and purchase ID converges to `PURCHASE_ALREADY_PLANNED`.
+
+Plan persistence and the outbox record share a transaction. Completion and refund handling also has tests that replay the
+same event without creating another revision or outbox record. Idempotency enforces the business rule that one purchase maps
+to one visit plan.
+
+## The implemented boundary and the boundary still to connect
+
+The current implementation guarantees the following behavior:
+
+- A purchase-completed event loads an active product version and creates a visit plan.
+- `repeatCount` creates one plan item per occurrence while leaving appointment times empty.
+- Completion, partial completion, and refund facts append a plan revision instead of changing the previous revision.
+- Explicit execution dependencies let proposal generation enforce minimum and maximum windows from actual predecessor completion.
+- Replayed purchase and fulfillment events do not create duplicate plans or revisions.
+
+It does not yet derive persisted execution dependencies between repeated occurrences from item-level interval metadata. Nor
+does the absence of an interval automatically group occurrences into one visit. The next implementation step must make BOM
+dependencies, repeated-occurrence adjacency, and visit-grouping constraints explicit in the execution plan.
+
+Keeping stored values, validated values, and proposal-time enforcement separate gives readers an accurate view of the current
+system.
+
+## Summary
+
+An N-visit product starts as a plan with N visit obligations, not N future reservations.
+
+- The purchase-completed event creates an `AppointmentPlan` from the exact catalog and purchase data.
+- `repeatCount` expands into `PlannedTreatment` occurrences with individual sequence numbers.
+- Purchase does not assign future appointment times.
+- Completion and refund append immutable plan revisions instead of mutating a counter.
+- An interval should be anchored to actual completion of the preceding occurrence.
+- Repeated-occurrence adjacency and visit grouping still require an explicit execution-plan connection.
+
+Purchase rights, occurrence obligations, actual completion, and remaining work are now separate and explainable facts. The
+next article expands a package made of different treatments into an execution graph and asks which items can share a visit.
+
+## Sources
+
+- [clinic-appointment repository](https://github.com/bluetape4k/clinic-appointment)
+- [`PurchaseCompletedHandler`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/PurchaseCompletedHandler.kt)
+- [`AppointmentPlanFactory`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/AppointmentPlanFactory.kt)
+- [`CatalogDefinitionValidator`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/CatalogDefinitionValidator.kt)
+- [`AppointmentProposalService`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/commitment/AppointmentProposalService.kt)
+- [`TreatmentFulfillmentHandler`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/TreatmentFulfillmentHandler.kt)
+- [`PlanDirtySetResolver`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/PlanDirtySetResolver.kt)
+- [`AppointmentPlanFactoryTest`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/test/kotlin/io/bluetape4k/clinic/appointment/service/AppointmentPlanFactoryTest.kt)
+- [`TreatmentFulfillmentHandlerTest`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-event/src/test/kotlin/io/bluetape4k/clinic/appointment/event/integration/TreatmentFulfillmentHandlerTest.kt)
+- [N-visit purchase-plan issue #342](https://github.com/bluetape4k/clinic-appointment/issues/342)
+
+## Series navigation
+
+<ClinicAppointmentSeries current="clinic-appointment-n-visit-purchase-plan" locale="en" />
