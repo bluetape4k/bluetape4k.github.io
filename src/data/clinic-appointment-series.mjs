@@ -153,4 +153,11 @@ export const clinicAppointmentSeries = Object.freeze([
     ko: '[운영 확장 2] 예약 우선순위는 누구의 규칙인가',
     en: '[Operations 2] Who Owns Booking Priority?',
   },
+  {
+    id: 'operations-3',
+    group: 'operations',
+    slug: 'clinic-appointment-disruption-recovery',
+    ko: '[운영 확장 3] 병원 사정으로 바뀐 예약을 복구하는 법',
+    en: '[Operations 3] Recovering Appointments Changed by Clinic Disruptions',
+  },
 ]);
