@@ -1,0 +1,262 @@
+---
+title: "[Operations 3] Recovering Appointments Changed by Clinic Disruptions"
+description: Learn how to identify confirmed appointments affected by clinic closures or equipment downtime, separate candidate calculation from state changes, and give STAFF a clear path to verify each recovery outcome.
+sidebar:
+  order: -202608161600
+blog:
+  date: 2026-08-16T16:00:00+09:00
+  image: /assets/clinic-appointment-disruption-recovery-hero.png
+  imageAlt: Two robots move affected appointment cards from an unavailable laser device to a replacement timetable
+  cardDescription: "A practical guide to incident scope, candidate calculation, version rechecks, STAFF confirmation, and follow-up work when clinic disruptions force appointment changes."
+  tags: ["architecture", "operations", "resilience", "concurrency", "appointment-service", "example", "timefold"]
+---
+
+import ClinicAppointmentSeries from '../../../components/ClinicAppointmentSeries.astro';
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-disruption-recovery-hero.png" alt="Two robots move affected appointment cards from an unavailable laser device to a replacement timetable" loading="eager" />
+  <figcaption>Equipment downtime is not a signal to cancel appointments automatically. The service must identify affected appointments and replacement candidates, recheck current state, and let operations staff verify every outcome.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">August 16, 2026 · Clinic Appointment Service Series · Clinic-Initiated Appointment Recovery</p>
+
+On Monday morning, dermatology laser `L-02` is taken out of service. Eight appointments scheduled through the afternoon
+depend on that device. Six have a suitable replacement time within the next 14 days. Two have no available time that
+matches both the doctor and treatment.
+
+Reducing this incident to “device failure → change appointment time” removes the decisions that operations actually needs:
+
+- Which appointments overlap the equipment outage?
+- Did an original appointment change after candidate calculation finished?
+- Who follows up when there is no candidate or when a progress stream disconnects?
+- Is choosing a candidate the same as recording the patient's consent to the change?
+- Could a clinic-caused change count against the patient's booking reliability?
+
+Recovery is not an update to one date field. It separates **impact discovery, candidate calculation, write-time
+revalidation, state transition, and STAFF verification** into distinct stages.
+
+## Conflict detection and appointment recovery are different jobs
+
+Equipment downtime begins with a conflict query. `EquipmentUnavailabilityService` expands the effective ranges of a
+registered unavailability schedule and returns appointments that use the same device and overlap those ranges. STAFF can
+also call `previewConflicts` before saving a new unavailability schedule.
+
+```text
+GET  /api/{tenantCode}/clinics/{clinicId}/equipments/{equipmentId}/unavailabilities/{id}/conflicts
+POST /api/{tenantCode}/clinics/{clinicId}/equipments/{equipmentId}/unavailabilities/preview-conflicts
+```
+
+These endpoints return **appointments that may be affected**. They do not move appointments to
+`PENDING_RESCHEDULE` or create replacement candidates. Combining conflict discovery with reassignment would start writes
+before STAFF has reviewed the scope and make equipment-schedule failures difficult to distinguish from recovery failures.
+
+The clinic-closure recovery path is separate. `ClosureRescheduleService` reads active appointments on a given date,
+calculates replacement candidates, and then rechecks current state before marking the appointments for recovery. Although
+the current service is named around closures, an equipment-incident screen can use the same boundary as a reference after
+its conflict scope has been approved. This does not mean that the equipment-conflict API automatically invokes the
+closure-rescheduling service.
+
+## Candidate calculation needs a write-time version recheck
+
+The synchronous `processClosureReschedule` path performs expensive candidate calculation outside the transaction:
+
+1. Verify that the clinic belongs to the requested tenant.
+2. Read active appointment IDs and snapshots for the closure date, and enforce the affected-appointment limit.
+3. Limit candidate work using the appointment count and `searchDays`.
+4. Cache matching doctor, service, and date lookups while calculating replacement times.
+5. Start the write transaction and read the active appointments again.
+6. Verify that the count, IDs, `status`, and `version` still match the initial snapshots.
+7. Use version-based compare-and-set updates to move each appointment to `PENDING_RESCHEDULE`, then store history,
+   status events, and candidates.
+
+Calculating outside the transaction does not mean using stale results without protection. A patient may cancel or another
+staff member may change an appointment during candidate search. The service therefore compares every current row with the
+initial snapshot immediately before writing. If any appointment has changed, the entire synchronous batch rolls back.
+
+This design keeps the transaction short while protecting one invariant: “Is the complete scope we first approved still
+the same?” Running candidate search inside a long transaction would hold database connections and locks for too long.
+Trusting an out-of-transaction calculation without revalidation could move an already cancelled or changed appointment
+back into recovery.
+
+## Synchronous batches and streams have different failure boundaries
+
+The operations screen can start the same closure recovery as a synchronous request or an SSE stream. The difference is
+not limited to progress reporting.
+
+| Boundary | Synchronous `processClosureReschedule` | Streaming `streamClosureReschedule` |
+| --- | --- | --- |
+| Candidate calculation | Calculate candidates for the complete scope outside the transaction | Calculate candidates inside one transaction per appointment |
+| Write scope | Save all affected appointments in one transaction | Save each appointment in a separate transaction |
+| Concurrent change | Roll back the batch if the complete snapshot changed | Skip the affected appointment when its CAS fails |
+| Progress event | Return the complete result at the end | Emit `progress` only after each appointment commits |
+| Disconnect | Judge the request as one success or failure | Keep committed appointments; appointments not yet started may remain unprocessed |
+
+The streaming path releases the database connection after each appointment transaction commits and calls `onProgress`
+afterward. Slow SSE delivery therefore does not hold a connection. But if the stream disconnects, the last sequence number
+visible in the browser cannot establish that the remaining work failed. STAFF must reconcile already committed and
+unprocessed appointments against server state.
+
+Use the synchronous path when the entire approved scope must change together or not at all. Streaming is useful when work
+takes longer and STAFF needs progress, but its per-appointment partial success must be part of follow-up operations.
+Describing both paths as having the same atomicity invites unsafe retries and duplicate confirmation.
+
+<figure class="bt4k-sequence" data-diagram-title="Validation, candidate calculation, and confirmation for clinic-initiated recovery">
+  <img src="/assets/clinic-appointment-disruption-recovery-sequence-en.png" alt="Sequence diagram in which STAFF submits a closure scope and candidate search range, the service reads active appointment snapshots and versions, calculates candidates outside the transaction, revalidates and stores pending recovery, and confirms a replacement through manual or automatic selection" loading="lazy" />
+  <figcaption>Candidate calculation and writes are separate, but status and version are checked again immediately before writing. Synchronous and streaming recovery have different failure scopes, so STAFF must read final state accordingly.</figcaption>
+</figure>
+
+## The operations screen should lead with the next task
+
+A time-ordered list forces STAFF to repeatedly distinguish appointments with candidates, appointments without candidates,
+and rows that have already changed. A useful screen summarizes the clinic incident first and separates items by the next
+task in an action queue.
+
+The mockup brings these signals into one workflow:
+
+- incident cause, affected time range, and candidate search window
+- affected count, candidate-available count, and no-candidate count
+- an action queue showing `PENDING_RESCHEDULE`, candidate count, and next task
+- an anonymous appointment reference and the `currentVersion` observed by the screen
+- candidate priority, date, time, doctor, and equipment
+- manual confirmation, automatic rescheduling, and a separate no-candidate task
+- a visible boundary between current behavior and work that is not implemented yet
+
+`currentVersion` explains the state that the screen read. It does not imply that the current confirmation endpoint accepts
+a client-provided `expectedVersion`. The confirmation service reads the original appointment again and uses that current
+version as its internal compare-and-set condition. Keeping that distinction visible prevents the UI contract from being
+mistaken for the concurrency control implemented by the service.
+
+<div class="bt4k-operations-screen" data-visual-title="STAFF operations screen for clinic-initiated appointment recovery">
+  <img class="bt4k-screenshot" src="/assets/clinic-appointment-disruption-recovery-operations-screen-en.png" alt="STAFF recovery screen showing equipment downtime, the affected range, eight affected appointments, six with candidates, two without candidates, an action queue, one anonymous selected appointment, three replacement candidates, and the available operations" loading="lazy" />
+  <p class="bt4k-operations-screen-caption">This mockup is based on current states and operations; it is not a production screenshot. Values are illustrative, and no patient names, phone numbers, or clinical records are shown. STAFF separates candidate-ready appointments from exceptions, then reviews the selected appointment's current state and candidate resources together.</p>
+</div>
+
+## Manual and automatic selection share one confirmation boundary
+
+STAFF can choose one replacement time from an appointment's candidate list. Automatic rescheduling is not a separate
+optimization engine: it chooses the highest-priority current candidate and invokes the same confirmation logic. It returns
+`null` when no candidate exists, so clicking the automatic action is not itself proof of success.
+
+The confirmation transaction performs these operations together:
+
+1. Verify that the candidate and original appointment belong to the requested tenant and clinic scope.
+2. Verify that the candidate doctor belongs to the original appointment's clinic.
+3. Create a new appointment at the candidate date and time with status `CONFIRMED`.
+4. Use the original appointment's current version as a CAS condition and move it to `RESCHEDULED`.
+5. Record status history for the original appointment.
+6. Mark the selected candidate so it cannot be selected again.
+7. Write the change notification to the outbox.
+
+If the original state or version changes concurrently, the CAS fails and the transaction does not complete. This prevents
+a partial result in which only the replacement exists or only the original becomes `RESCHEDULED`.
+
+The current confirmation boundary has an important limitation: it creates the replacement directly as `CONFIRMED`. A
+separate proposal stage that records patient consent before confirmation is not connected to this path. The screen's
+“Reschedule to this candidate” action reflects current behavior; it does not prove that consent evidence has already been
+captured.
+
+## A validated policy is not the same as an enforced write path
+
+The policy model includes `DisruptionRecoveryPolicy`.
+`preserveConfirmedAppointment=true` is a non-disableable rule stating that the existing confirmed visit must remain until
+the customer accepts an alternative or explicitly cancels. The validator rejects a tenant default when this value is not
+`true`, and clinic overrides cannot change it.
+
+However, the current `ClosureRescheduleService.confirmReschedule` path does not read this policy. Confirming a candidate
+immediately creates the replacement as `CONFIRMED` and changes the original to `RESCHEDULED`. These statements must remain
+separate:
+
+- **Current policy model:** expresses and validates the rule that an existing confirmed visit must not change without customer consent.
+- **Current confirmation path:** immediately confirms a candidate without receiving the policy or consent evidence as input.
+
+An operating procedure can require STAFF to contact the patient first. That is not the same as the system enforcing and
+preserving auditable consent evidence. Until the policy model is connected to the write path, this remains an operational
+readiness item.
+
+## Applying a Timefold result is a separate atomic write path
+
+`SolverService.optimizeReschedule` can optimize several appointments at once. Seeing a proposed batch on the screen is not
+enough to apply it, because another operation may change an original appointment after calculation.
+
+`applyOptimizedAssignments` checks the source versions inside a locking transaction and updates every assignment with a
+version-based CAS. If any result is stale or any CAS fails, the whole operation rolls back and returns `false`.
+
+This is not the same API as candidate confirmation in `ClosureRescheduleService`. The latter stores candidates and creates
+a replacement appointment selected by STAFF. The solver path applies a computed batch of existing appointments under
+source-version fences. Combining both under one “automatic optimization” button would first require a shared result model
+and shared failure semantics.
+
+## Clinic responsibility and patient compensation are not automatic
+
+Equipment failure and clinic closure are not patient-created incidents. The booking reliability model includes `CLINIC`
+and `OPERATIONAL_EXCEPTION` responsibility values, and only events confirmed as patient responsibility should support a
+new-booking restriction. Treating a clinic-caused change like a no-show or late cancellation would make recovery create a
+second penalty.
+
+Compensation is a separate decision. The waitlist operations API can issue or revoke a recovery credit, but a closure or
+equipment conflict does not create one automatically.
+
+```text
+POST /api/{tenantCode}/clinics/{clinicId}/waitlist/recovery-credits
+POST /api/{tenantCode}/clinics/{clinicId}/waitlist/recovery-credits/{recoveryCreditRef}/revoke
+```
+
+Clinic policy must define whether compensation is warranted, who approves it, and how long it remains valid. Creating it
+inside the recovery transaction would also require explicit answers for atomicity, duplicate grants, and revocation
+authority. The current design correctly treats it as an independent capability.
+
+## Keep current behavior and follow-up work in separate statements
+
+| Category | Verified scope |
+| --- | --- |
+| **Current implementation** | Query equipment-unavailability conflicts; find appointments affected by a closure; calculate, revalidate, and atomically save one synchronous batch; stream per-appointment work; confirm candidates manually or automatically; atomically apply solver results |
+| **Current policy model** | Configure automatic proposals and delay limits; require protection of existing confirmed visits; limit clinic-level overrides |
+| **Operations readiness** | Approve the incident cause and affected scope; queue no-candidate work; reconcile state after a stream disconnect; contact patients and verify consent; classify clinic responsibility; approve compensation |
+| **Follow-up improvements** | Add proposal → acceptance → confirmation with consent evidence; enforce `DisruptionRecoveryPolicy` in the confirmation path; preserve an auditable correlation across recovery, notification, and compensation |
+
+The most important distinction is that a validated policy model does not mean the current confirmation path already
+enforces consent. The reverse mistake is also harmful: snapshot revalidation and rollback in the synchronous batch, and
+per-appointment commits in the streaming path, are implemented safeguards—not future plans.
+
+## Summary
+
+When clinic conditions force appointment changes, STAFF needs more than one reschedule button:
+
+- Equipment conflict queries identify affected appointments but do not reschedule them.
+- Synchronous closure recovery calculates candidates outside the transaction, rechecks the complete snapshot, and saves the batch atomically.
+- Streaming recovery commits per appointment, so a disconnect requires reconciliation of completed and remaining work.
+- Manual and automatic candidate selection use the same confirmation transaction, which currently creates the replacement directly as `CONFIRMED`.
+- The policy model protects existing confirmed visits, but the current confirmation path does not enforce patient-consent evidence.
+- Solver application and recovery credits have separate boundaries.
+- A clinic-caused incident must not count against patient booking reliability.
+
+An operations screen should provide clearer information, not merely more information. It must show which appointments are
+affected, whether candidates exist, which operation is currently allowed, and what state must be read again afterward.
+That lets clinic staff, product owners, and developers distinguish current behavior from the next improvement while looking
+at the same screen.
+
+## Next article
+
+This article covered the recovery boundary for appointments changed by clinic conditions. The next Operations article
+examines which offers and holds should be reevaluated when a CRM profile changes, and which confirmed visits and consent
+evidence must remain protected.
+
+## References
+
+- [clinic-appointment repository](https://github.com/bluetape4k/clinic-appointment)
+- [`ClosureRescheduleService`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/ClosureRescheduleService.kt)
+- [`RescheduleController`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/controller/RescheduleController.kt)
+- [`RescheduleBatchStreamController`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/controller/RescheduleBatchStreamController.kt)
+- [`EquipmentUnavailabilityService`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/EquipmentUnavailabilityService.kt)
+- [`EquipmentUnavailabilityController`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/controller/EquipmentUnavailabilityController.kt)
+- [`SolverService`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-solver/src/main/kotlin/io/bluetape4k/clinic/appointment/solver/service/SolverService.kt)
+- [`OperationalSchedulingPolicies`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/policy/OperationalSchedulingPolicies.kt)
+- [`SchedulingPolicyValidator`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/SchedulingPolicyValidator.kt)
+- [`BookingReliabilityModel`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/reliability/BookingReliabilityModel.kt)
+- [`WaitlistOperationsController`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/controller/WaitlistOperationsController.kt)
+- [`reschedule-list.component.ts`](https://github.com/bluetape4k/clinic-appointment/blob/develop/frontend/appointment-frontend/src/app/features/management/reschedule-list/reschedule-list.component.ts)
+- [Follow-up CRM profile reevaluation issue #287](https://github.com/bluetape4k/clinic-appointment/issues/287)
+
+## Series
+
+<ClinicAppointmentSeries current="clinic-appointment-disruption-recovery" locale="en" />

@@ -171,15 +171,15 @@ Use `빈시간`, `확정 방문 약속`, `스냅숏`, `아웃박스(outbox)`, `�
 **Files:**
 - Create: `src/content/docs/blog/clinic-appointment-disruption-recovery.mdx`
 
-- [ ] **Step 1: Mirror structure and evidence**
+- [x] **Step 1: Mirror structure and evidence**
 
 Use matching frontmatter, section order, tables, code/endpoint examples, source links, English assets, and shared-series footer.
 
-- [ ] **Step 2: Preserve implementation boundaries**
+- [x] **Step 2: Preserve implementation boundaries**
 
 Keep these distinctions exact: conflict detection does not reschedule; sync batch is one transaction while streaming commits per appointment; candidate calculation occurs outside the transaction and is revalidated before writes; current confirmation directly creates `CONFIRMED`; `preserveConfirmedAppointment` exists in policy validation but is not consumed by the current confirmation path; recovery credit is a separate waitlist API.
 
-- [ ] **Step 3: Run the series test**
+- [x] **Step 3: Run the series test**
 
 Expected: all Clinic Appointment series assertions pass with 22 bilingual entries.
 
