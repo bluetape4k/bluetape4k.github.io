@@ -1,0 +1,36 @@
+{
+  "kind": "sequence",
+  "source": {
+    "question": "How does a separate package execution event converge on one terminal outcome?",
+    "revision": "clinic-appointment develop d1718331f1d418baf455d8046ad6cfc2e1567460",
+    "paths": [
+      "docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md",
+      "docs/superpowers/plans/2026-08-16-clinic-appointment-package-execution-plan-article.md",
+      "public/assets/clinic-appointment-desired-visit-date-commitment-sequence-01-ko.png",
+      "public/assets/clinic-appointment-event-product-first-commitment-01-ko.png"
+    ]
+  },
+  "nodes": [
+    {"id":"purchase","label":"Purchase service","source":"docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md"},
+    {"id":"purchase-handler","label":"PurchaseCompletedHandler","source":"docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md"},
+    {"id":"visit-handler","label":"VisitPlanningEventHandler","source":"docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md"},
+    {"id":"planner","label":"PackageExecutionPlanner","source":"docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md"},
+    {"id":"store","label":"Plan, inbox, and outbox store","source":"docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md"},
+    {"id":"outcome","label":"Terminal outcome decision","source":"docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md"}
+  ],
+  "edges": [
+    {"id":"purchase-plan","from":"purchase","to":"purchase-handler","kind":"purchase-completed","source":"docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md"},
+    {"id":"package-event","from":"purchase","to":"visit-handler","kind":"separate-package-event","source":"docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md"},
+    {"id":"lookup","from":"visit-handler","to":"store","kind":"lookup-and-version-check","source":"docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md"},
+    {"id":"validate","from":"visit-handler","to":"planner","kind":"validate-snapshot","source":"docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md"},
+    {"id":"draft","from":"planner","to":"visit-handler","kind":"return-draft","source":"docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md"},
+    {"id":"atomic-write","from":"visit-handler","to":"store","kind":"atomic-write","source":"docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md"},
+    {"id":"terminal","from":"visit-handler","to":"outcome","kind":"terminal-outcome","source":"docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md"}
+  ],
+  "behavior": {"branches": 3, "loops": 0},
+  "repairs": [
+    {"target":"message-rows","reason":"keep every numbered label above a continuous call line","touches":7},
+    {"target":"terminal-outcomes","reason":"replace an ambiguous dotted rail with an explicit terminal state decision","touches":4},
+    {"target":"marker-colors","reason":"match every arrowhead to its message line color","touches":7}
+  ]
+}
