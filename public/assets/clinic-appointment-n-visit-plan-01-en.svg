@@ -33,18 +33,18 @@
   <rect x="30" y="28" width="1380" height="904" rx="30" fill="none" stroke="#263a5e" stroke-width="2"/>
   <circle cx="1300" cy="120" r="220" fill="#7c3aed" opacity=".07"/>
   <circle cx="120" cy="850" r="210" fill="#0891b2" opacity=".06"/>
-  
+
   <text class="title title-compact" x="70" y="84">A Three-Visit Purchase Is Not Three Future Reservations</text>
   <text class="subtitle" x="72" y="120">Purchase creates visit rights and sequence; each appointment time is agreed only when that visit is scheduled.</text>
   <g filter="url(#shadow)">
-    
+
   <g class="node-card">
     <rect id="purchase" x="60" y="350" width="260" height="180" rx="24" fill="#0f2038" stroke="#60a5fa" stroke-width="3"/>
     <text class="card-title" x="190" y="408" text-anchor="middle">Three-Visit Purchase</text>
     <text class="body" x="190" y="446" text-anchor="middle">repeatCount = 3</text>
 <text class="body" x="190" y="474" text-anchor="middle">purchase completed event</text>
   </g>
-    
+
   <g class="node-card">
     <rect id="wrong-reservations" x="400" y="180" width="440" height="240" rx="24" fill="#341b2b" stroke="#fb7185" stroke-width="3"/>
     <text class="card-title" x="620" y="242" text-anchor="middle">Pre-create future reservations</text>
@@ -52,7 +52,7 @@
 <text class="body" x="620" y="312" text-anchor="middle">Apr 17 · 10:00</text>
 <text class="body" x="620" y="340" text-anchor="middle">Apr 24 · 10:00</text>
   </g>
-    
+
   <g class="node-card">
     <rect id="visit-plan" x="400" y="510" width="440" height="240" rx="24" fill="#10333b" stroke="#2dd4bf" stroke-width="3"/>
     <text class="card-title" x="620" y="572" text-anchor="middle">Create a visit plan</text>
@@ -60,7 +60,7 @@
 <text class="body" x="620" y="642" text-anchor="middle">visit 2 · no time</text>
 <text class="body" x="620" y="670" text-anchor="middle">visit 3 · no time</text>
   </g>
-    
+
   <g class="node-card">
     <rect id="no-gap" x="960" y="490" width="390" height="160" rx="24" fill="#0f2038" stroke="#60a5fa" stroke-width="3"/>
     <text class="card-title" x="1155" y="544" text-anchor="middle">No interval constraint</text>
@@ -68,7 +68,7 @@
 <text class="body compact-body" x="1155" y="605" text-anchor="middle">Does not imply automatic</text>
 <text class="body compact-body" x="1155" y="628" text-anchor="middle">same-visit grouping</text>
   </g>
-    
+
   <g class="node-card">
     <rect id="interval-window" x="960" y="680" width="390" height="160" rx="24" fill="#312818" stroke="#fbbf24" stroke-width="3"/>
     <text class="card-title" x="1155" y="734" text-anchor="middle">N-to-M-day interval</text>
@@ -77,12 +77,12 @@
 <text class="body compact-body" x="1155" y="818" text-anchor="middle">Calculates the next booking window</text>
   </g>
   </g>
-  
+
   <rect x="425" y="200" width="128" height="30" rx="15" fill="#fb7185" opacity=".2"/>
   <text class="badge" x="489" y="221" text-anchor="middle" fill="#fb7185">Rejected model</text>
   <text class="note" x="620" y="378" text-anchor="middle">Occupies the calendar without consent</text>
 <text class="note" x="620" y="400" text-anchor="middle">or resource checks</text>
-  
+
   <rect x="425" y="530" width="112" height="30" rx="15" fill="#2dd4bf" opacity=".2"/>
   <text class="badge" x="481" y="551" text-anchor="middle" fill="#2dd4bf">Current model</text>
   <text class="note" x="620" y="706" text-anchor="middle">Agree on time when each visit</text>
