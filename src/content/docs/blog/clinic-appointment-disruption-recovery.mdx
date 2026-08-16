@@ -1,6 +1,6 @@
 ---
 title: "[Operations 3] Appointment Recovery Starts with Impact Discovery"
-description: Learn how to identify confirmed appointments affected by clinic closures or equipment downtime, separate candidate calculation from state changes, and give STAFF a clear path to verify each recovery outcome.
+description: Learn how to identify confirmed appointments affected by physician leave, equipment failure or maintenance, or clinic closures, separate candidate calculation from state changes, and give STAFF a clear path to verify each recovery outcome.
 sidebar:
   order: -202608161600
 blog:
@@ -15,7 +15,7 @@ import ClinicAppointmentSeries from '../../../components/ClinicAppointmentSeries
 
 <figure class="bt4k-blog-hero">
   <img src="/assets/clinic-appointment-disruption-recovery-hero.png" alt="Two robots move affected appointment cards from an unavailable laser device to a replacement timetable" loading="eager" />
-  <figcaption>Equipment downtime is not a signal to cancel appointments automatically. The service must identify affected appointments and replacement candidates, recheck current state, and let operations staff verify every outcome.</figcaption>
+  <figcaption>A disruption is not a reason to cancel appointments automatically. The service must identify affected appointments and replacement candidates, recheck current state, and let operations staff verify every outcome.</figcaption>
 </figure>
 
 <p class="bt4k-post-meta">August 16, 2026 · Clinic Appointment Service Series · Clinic-Initiated Appointment Recovery</p>
@@ -24,9 +24,11 @@ On Monday morning, dermatology laser `L-02` is taken out of service. Eight appoi
 depend on that device. Six have a suitable replacement time within the next 14 days. Two have no available time that
 matches both the doctor and treatment.
 
-Reducing this incident to “device failure → change appointment time” removes the decisions that operations actually needs:
+Equipment downtime is only one example. Physician leave, scheduled equipment maintenance or replacement, and a treatment-room closure can all make the people or resources required for an appointment unavailable. This article grounds its implementation discussion in the equipment-unavailability and clinic-closure paths present in the code, and treats the other causes as operational scenarios that need the same recovery boundary.
 
-- Which appointments overlap the equipment outage?
+Reducing any disruption to “incident → change appointment time” removes the decisions that operations actually needs:
+
+- Which appointments overlap the disruption's time and scope?
 - Did an original appointment change after candidate calculation finished?
 - Who follows up when there is no candidate or when a progress stream disconnects?
 - Is choosing a candidate the same as recording the patient's consent to the change?
@@ -35,9 +37,9 @@ Reducing this incident to “device failure → change appointment time” remov
 Recovery is not an update to one date field. It separates **impact discovery, candidate calculation, write-time
 revalidation, state transition, and STAFF verification** into distinct stages.
 
-## Confirm equipment conflicts before starting appointment recovery
+## Define the disruption's impact before starting appointment recovery
 
-Equipment downtime begins with a conflict query. `EquipmentUnavailabilityService` expands the effective ranges of a
+Start with a cause-specific query. For equipment downtime, `EquipmentUnavailabilityService` expands the effective ranges of a
 registered unavailability schedule and returns appointments that use the same device and overlap those ranges. STAFF can
 also call `previewConflicts` before saving a new unavailability schedule.
 
@@ -54,7 +56,8 @@ The clinic-closure recovery path is separate. `ClosureRescheduleService` reads a
 calculates replacement candidates, and then rechecks current state before marking the appointments for recovery. Although
 the current service is named around closures, an equipment-incident screen can use the same boundary as a reference after
 its conflict scope has been approved. This does not mean that the equipment-conflict API automatically invokes the
-closure-rescheduling service.
+closure-rescheduling service. A different cause such as physician leave needs its own cause record and candidate rules;
+do not assume every cause automatically invokes this service.
 
 ## Recheck appointment state and version before saving candidates
 
@@ -188,13 +191,13 @@ and shared failure semantics.
 
 ## Decide clinic responsibility and patient compensation separately
 
-Equipment failure and clinic closure are not patient-created incidents. The booking reliability model includes `CLINIC`
+Physician leave, equipment failure or maintenance, and clinic closure are not patient-created incidents. The booking reliability model includes `CLINIC`
 and `OPERATIONAL_EXCEPTION` responsibility values, and only events confirmed as patient responsibility should support a
 new-booking restriction. Treating a clinic-caused change like a no-show or late cancellation would make recovery create a
 second penalty.
 
-Compensation is a separate decision. The waitlist operations API can issue or revoke a recovery credit, but a closure or
-equipment conflict does not create one automatically.
+Compensation is a separate decision. The waitlist operations API can issue or revoke a recovery credit, but a closure,
+equipment conflict, or another operational disruption does not create one automatically.
 
 ```text
 POST /api/{tenantCode}/clinics/{clinicId}/waitlist/recovery-credits
@@ -222,6 +225,7 @@ per-appointment commits in the streaming path, are implemented safeguards—not 
 
 When clinic conditions force appointment changes, STAFF needs more than one reschedule button:
 
+- Physician leave, equipment failure or maintenance, and other causes still require impact and responsibility checks before rescheduling.
 - Equipment conflict queries identify affected appointments but do not reschedule them.
 - Synchronous closure recovery calculates candidates outside the transaction, rechecks the complete snapshot, and saves the batch atomically.
 - Streaming recovery commits per appointment, so a disconnect requires reconciliation of completed and remaining work.
