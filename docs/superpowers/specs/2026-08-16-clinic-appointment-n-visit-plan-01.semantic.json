@@ -1,0 +1,30 @@
+{
+  "kind": "workflow",
+  "source": {
+    "question": "How should a three-visit purchase be represented before any visit time is agreed?",
+    "revision": "2026-08-16 approved Implementation 8 article design",
+    "paths": [
+      "docs/superpowers/specs/2026-08-16-clinic-appointment-n-visit-plan-article-design.md",
+      "docs/superpowers/plans/2026-08-16-clinic-appointment-n-visit-plan-article.md"
+    ]
+  },
+  "nodes": [
+    {"id": "purchase", "label": "Three-visit purchase", "source": "docs/superpowers/specs/2026-08-16-clinic-appointment-n-visit-plan-article-design.md"},
+    {"id": "wrong-reservations", "label": "Three future calendar reservations", "source": "docs/superpowers/specs/2026-08-16-clinic-appointment-n-visit-plan-article-design.md"},
+    {"id": "visit-plan", "label": "Three planned treatment occurrences without times", "source": "docs/superpowers/specs/2026-08-16-clinic-appointment-n-visit-plan-article-design.md"},
+    {"id": "no-gap", "label": "No clinical delay", "source": "docs/superpowers/specs/2026-08-16-clinic-appointment-n-visit-plan-article-design.md"},
+    {"id": "interval-window", "label": "N-to-M-day booking window after actual completion", "source": "docs/superpowers/specs/2026-08-16-clinic-appointment-n-visit-plan-article-design.md"}
+  ],
+  "edges": [
+    {"id": "purchase-wrong", "from": "purchase", "to": "wrong-reservations", "kind": "rejected-model", "source": "docs/superpowers/specs/2026-08-16-clinic-appointment-n-visit-plan-article-design.md"},
+    {"id": "purchase-plan", "from": "purchase", "to": "visit-plan", "kind": "current-model", "source": "docs/superpowers/specs/2026-08-16-clinic-appointment-n-visit-plan-article-design.md"},
+    {"id": "plan-no-gap", "from": "visit-plan", "to": "no-gap", "kind": "interval-variant", "source": "docs/superpowers/specs/2026-08-16-clinic-appointment-n-visit-plan-article-design.md"},
+    {"id": "plan-interval-window", "from": "visit-plan", "to": "interval-window", "kind": "interval-variant", "source": "docs/superpowers/specs/2026-08-16-clinic-appointment-n-visit-plan-article-design.md"}
+  ],
+  "behavior": {"branches": 2, "loops": 0},
+  "repairs": [
+    {"target": "branch-corridors", "reason": "keep rejected and current representations on independent vertical corridors", "touches": 2},
+    {"target": "interval-meaning", "reason": "separate no clinical delay from automatic same-visit grouping", "touches": 2},
+    {"target": "arrowhead-color", "reason": "match each arrowhead fill to its connector stroke", "touches": 4}
+  ]
+}
