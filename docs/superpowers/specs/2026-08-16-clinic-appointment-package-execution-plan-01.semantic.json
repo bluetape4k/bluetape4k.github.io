@@ -1,0 +1,35 @@
+{
+  "kind": "workflow",
+  "source": {
+    "question": "How does a purchased package choice become an immutable plan revision without scheduling a visit?",
+    "revision": "clinic-appointment develop d1718331f1d418baf455d8046ad6cfc2e1567460",
+    "paths": [
+      "docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md",
+      "docs/superpowers/plans/2026-08-16-clinic-appointment-package-execution-plan-article.md"
+    ]
+  },
+  "nodes": [
+    {"id":"contract","label":"Purchased package execution contract","source":"docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md"},
+    {"id":"limits","label":"Quantity and size validation","source":"docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md"},
+    {"id":"selection","label":"Exact selection count validation","source":"docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md"},
+    {"id":"provenance","label":"Treatment provenance validation","source":"docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md"},
+    {"id":"relations","label":"Relation reference validation","source":"docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md"},
+    {"id":"acyclic","label":"Execution dependency acyclicity","source":"docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md"},
+    {"id":"revision","label":"AppointmentPlanRevisionDraft","source":"docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md"},
+    {"id":"boundary","label":"No visit candidate or confirmed appointment","source":"docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md"}
+  ],
+  "edges": [
+    {"id":"contract-limits","from":"contract","to":"limits","kind":"validation","source":"docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md"},
+    {"id":"limits-selection","from":"limits","to":"selection","kind":"validation","source":"docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md"},
+    {"id":"selection-provenance","from":"selection","to":"provenance","kind":"validation","source":"docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md"},
+    {"id":"provenance-relations","from":"provenance","to":"relations","kind":"validation","source":"docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md"},
+    {"id":"relations-acyclic","from":"relations","to":"acyclic","kind":"validation","source":"docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md"},
+    {"id":"acyclic-revision","from":"acyclic","to":"revision","kind":"copy","source":"docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md"},
+    {"id":"revision-boundary","from":"revision","to":"boundary","kind":"explicit-boundary","source":"docs/superpowers/specs/2026-08-16-clinic-appointment-package-execution-plan-article-design.md"}
+  ],
+  "behavior": {"branches": 0, "loops": 0},
+  "repairs": [
+    {"target":"validation-spacing","reason":"reserve independent vertical space for every validation card and connector","touches":5},
+    {"target":"bottom-boundary","reason":"make the scheduling boundary explicit with sufficient bottom margin","touches":2}
+  ]
+}

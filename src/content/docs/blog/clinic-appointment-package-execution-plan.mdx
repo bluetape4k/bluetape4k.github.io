@@ -1,0 +1,152 @@
+---
+title: "[Implementation 9] Freezing Package Choices and Execution Order into a Visit Plan"
+description: "This article explains how the appointment service validates a purchased package execution contract and appends it as an immutable AppointmentPlan revision."
+sidebar:
+  order: -202608161400
+blog:
+  date: 2026-08-16T14:00:00+09:00
+  image: /assets/clinic-appointment-package-execution-plan-hero.png
+  imageAlt: "Two robots verify two selected treatments after a skin diagnosis and record them in a visit-plan revision tray"
+  cardDescription: "See how package choices, exact component versions, execution order, and visit-grouping constraints are validated and preserved in a visit plan."
+  tags: ["architecture", "domain-modeling", "event-driven", "resilience", "appointment-service", "example", "timefold"]
+---
+
+import ClinicAppointmentSeries from '../../../components/ClinicAppointmentSeries.astro';
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-package-execution-plan-hero.png" alt="Two robots verify two selected treatments after a skin diagnosis and record them in a visit-plan revision tray" loading="eager" />
+  <figcaption>A package purchase freezes choices and execution constraints. Actual visit times are decided separately after that contract is validated.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-16 · Building a Clinic Appointment Service · Package Execution Contracts and Visit Plans</p>
+
+## A selectable package is more than a component list
+
+Suppose Patient A buys a personalized skin-care package. Skin diagnosis is required, and the patient must choose two of laser toning, intensive hydration care, and a soothing mask treatment. Patient A selects laser toning and the soothing mask.
+
+If the appointment service later reconstructs this purchase from the component list, it loses which options the patient selected, which exact component versions applied, and which treatment must finish first. Re-evaluating the latest product definition can also apply post-purchase changes to an earlier commitment.
+
+The product or purchase service therefore sends an already-expanded `PackageExecutionSnapshot`. This snapshot is not raw material for reinterpreting the product. It is the **execution contract fixed at purchase time**.
+
+| Execution-contract field | Why it is preserved |
+| --- | --- |
+| Package product ID, version, and hash | Fix the product definition used for the purchase |
+| Selected component IDs, exact versions, and quantities | Prevent substitution with newer versions |
+| Selection groups and required counts | Validate rules such as choosing exactly two of three |
+| Expanded treatments and provenance | Prove which component version produced each treatment |
+| Execution dependencies and visit-grouping constraints | Preserve execution order separately from same-visit eligibility |
+
+The dermatology names come from the approved business-design scenario. Current tests use different treatment names, while exercising the same choice-count, component-version, provenance, and relationship validations.
+
+## The appointment service validates the contract in five stages
+
+`PackageExecutionPlanner` does not query the catalog. It validates the structure of the already-expanded contract in this order:
+
+1. Check component quantities, total treatment count, and relationship count.
+2. Check unique component versions and the exact required count for every selection group.
+3. Check that every treatment points to an exact selected component version.
+4. Check that execution and grouping relationships reference existing treatments.
+5. Check that the execution-dependency graph is acyclic.
+
+Only then does it create a Plan revision draft:
+
+```kotlin
+fun plan(snapshot: PackageExecutionSnapshot): AppointmentPlanRevisionDraft {
+    validateLimits(snapshot)
+    validateComponents(snapshot)
+    validateTreatments(snapshot)
+    validateSelections(snapshot)
+    validateRelations(snapshot)
+    validateAcyclic(snapshot.executionDependencies)
+
+    return AppointmentPlanRevisionDraft(
+        treatments = snapshot.expandedTreatmentItems.toList(),
+        dependencies = snapshot.executionDependencies.toList(),
+        visitGroupingConstraints = snapshot.visitGroupingConstraints.toList(),
+        // The package version and snapshot hash are frozen as well.
+    )
+}
+```
+
+This code does not calculate visit times. It copies the validated contract into `PlannedTreatment`, `ExecutionDependency`, and `VisitGroupingConstraint` records.
+
+<figure class="bt4k-architecture" data-diagram-title="Validating a selected package execution contract and freezing it into a Plan revision">
+  <img src="/assets/clinic-appointment-package-execution-plan-01-en.png" alt="Patient A's selected skin diagnosis, laser toning, and soothing mask contract passes quantity, selection count, provenance, reference, and cycle validation before becoming a new Plan revision, while visit candidates and confirmed appointments remain outside the boundary" loading="lazy" />
+  <figcaption>The planner outputs a validated Plan revision. Visit candidates and confirmed appointments are not outputs of this stage.</figcaption>
+</figure>
+
+## Execution order and visit grouping are different decisions
+
+A lifting-care package makes this distinction clearer.
+
+| Item | Execution dependency | Visit-grouping constraint |
+| --- | --- | --- |
+| Preliminary diagnosis v3 | None | Separate visit |
+| Lifting treatment v5 | 3–14 days after diagnosis | May share a visit with soothing care |
+| Soothing care v4 | Resources must be compatible with the treatment | `MAY_SAME_VISIT` |
+| Follow-up v2 | 7 days after treatment | `MUST_SEPARATE_VISIT` |
+
+An execution dependency answers **what must finish first**. A visit-grouping constraint answers **whether distinct treatments may share a visit**. `MAY_SAME_VISIT` is permission, not proof that the planner grouped the treatments. Candidate generation still has to evaluate clinic resources and patient consent.
+
+## Purchase completion and package execution arrive as separate events
+
+Purchase completion and package execution are not the same operation. `PurchaseCompletedHandler` creates the existing `AppointmentPlan` from the purchase fact. A separate `PackageExecutionEvent` later reaches `VisitPlanningEventHandler`, which appends the execution contract as a new revision of that Plan.
+
+The handler first finds the Plan in the purchase scope. It checks the package product against the Plan and evaluates source version ordering with the canonical payload hash. Only then does it call the planner. Describing or drawing a direct call from `PurchaseCompletedHandler` to `PackageExecutionPlanner` would not match the current implementation.
+
+<figure class="bt4k-architecture" data-diagram-title="Purchase completion and a separate package execution event converging on a terminal state">
+  <img src="/assets/clinic-appointment-package-execution-plan-02-en.png" alt="The purchase service creates an existing Plan through PurchaseCompletedHandler, then sends a separate PackageExecutionEvent to VisitPlanningEventHandler, which checks the Plan and version, validates through the planner, stores atomically, and ends as duplicate, waiting gap, quarantine, or appended revision" loading="lazy" />
+  <figcaption>Plan creation and execution-contract projection are separate event boundaries even when they belong to the same purchase journey.</figcaption>
+</figure>
+
+## Terminal states distinguish duplicate, waiting, quarantine, and append
+
+Event handling has more than success and failure. Operations need the reason no write occurred.
+
+| Terminal state | Condition | Storage result |
+| --- | --- | --- |
+| `DUPLICATE` | Same event, or same source version and same hash | Do not append another revision |
+| `WAITING_GAP` | An earlier source version has not arrived | Re-evaluate after bounded retry |
+| Quarantine | Missing Plan, product mismatch, different hash for the same version, stale version, or invalid contract | Preserve a stable reason without exposing raw payloads in logs |
+| Revision appended | Ordering and contract validation both pass | Store a new immutable revision and its child graph |
+
+In write mode, the revision header, treatments and relationships, inbox result, and outbox event are stored in one transaction. A failure cannot leave a partial graph. The previous active revision is not overwritten; a new revision becomes active so the execution contract remains traceable.
+
+## What the current implementation guarantees
+
+The current implementation guarantees that it:
+
+- structurally validates externally fixed choices and exact component versions;
+- checks exact selection counts, treatment provenance, relationship references, and dependency cycles;
+- appends validated items and relationships as a new immutable revision of an existing `AppointmentPlan`;
+- distinguishes duplicates, version gaps, and conflicts;
+- stores the revision, child graph, inbox, and outbox atomically.
+
+The planner does not generate visit candidates or confirm appointments. The dermatology and lifting examples are approved business-design scenarios; actual combinations still require clinic policy and resource validation. Separating the implemented storage boundary from pending operational validation makes the current responsibility clear.
+
+## Summary
+
+A package enters the appointment service as an execution contract fixed at purchase time, not as a loose component list.
+
+- `PackageExecutionSnapshot` freezes choices, exact component versions, expanded treatments, and relationships.
+- `PackageExecutionPlanner` validates structure and provenance without reinterpreting the package.
+- Execution dependencies and visit-grouping constraints are different rules; `MAY_SAME_VISIT` is not a confirmed visit.
+- Purchase completion creates the Plan, while a separate package execution event appends a revision.
+- Processing converges on duplicate, version-waiting, quarantine, or revision-appended terminal states.
+- A Plan revision is neither a visit candidate nor a confirmed appointment.
+
+Once the purchase commitment is preserved accurately, later stages can calculate visit candidates from patient consent, clinic resources, and clinical intervals. The system must first know what it promised before it decides when to deliver it.
+
+## Sources
+
+- [clinic-appointment repository](https://github.com/bluetape4k/clinic-appointment)
+- [`PackageExecutionSnapshot`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/plan/PackageExecutionSnapshot.kt)
+- [`PackageExecutionPlanner`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/PackageExecutionPlanner.kt)
+- [`PackageExecutionEvent`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/PackageExecutionEvent.kt)
+- [`VisitPlanningEventHandler`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/VisitPlanningEventHandler.kt)
+- [`PackageExecutionPlannerTest`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/test/kotlin/io/bluetape4k/clinic/appointment/service/PackageExecutionPlannerTest.kt)
+- [Package execution plan issue #343](https://github.com/bluetape4k/clinic-appointment/issues/343)
+
+## Series
+
+<ClinicAppointmentSeries current="clinic-appointment-package-execution-plan" locale="en" />

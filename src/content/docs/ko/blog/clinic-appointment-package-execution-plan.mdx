@@ -1,0 +1,174 @@
+---
+title: "[구현 9] 패키지 상품의 실행 순서와 선택 조건을 방문 계획으로 고정하는 방법"
+description: "선택형 패키지 구매 결과를 실행 계약으로 받아 검증하고, 기존 AppointmentPlan에 불변 리비전으로 추가하는 구현을 설명합니다."
+sidebar:
+  order: -202608161400
+blog:
+  date: 2026-08-16T14:00:00+09:00
+  image: /assets/clinic-appointment-package-execution-plan-hero.png
+  imageAlt: "두 로봇이 피부 진단 뒤 선택한 관리 항목 두 개를 확인하고 방문 계획 리비전 트레이에 기록하는 장면"
+  cardDescription: "패키지 선택 결과와 구성 상품 버전, 실행 순서, 방문 묶음 조건을 검증해 방문 계획에 보존하는 경계를 살펴봅니다."
+  tags: ["architecture", "domain-modeling", "event-driven", "resilience", "appointment-service", "example", "timefold"]
+---
+
+import ClinicAppointmentSeries from '../../../../components/ClinicAppointmentSeries.astro';
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-package-execution-plan-hero.png" alt="두 로봇이 피부 진단 뒤 선택한 관리 항목 두 개를 확인하고 방문 계획 리비전 트레이에 기록하는 장면" loading="eager" />
+  <figcaption>패키지를 구매할 때는 선택 결과와 실행 조건을 고정합니다. 실제 방문 시간은 이 계약을 검증한 뒤 별도로 정합니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-16 · 병원 예약 서비스 개발기 · 패키지 실행 계약과 방문 계획</p>
+
+## 선택형 패키지는 구성 항목 목록만으로 설명할 수 없다
+
+환자 A가 맞춤 피부관리 패키지를 구매한다고 해보겠습니다. 피부 진단은 필수이고, 진단 뒤에는 레이저 토닝,
+수분 집중관리, 진정 마스크 관리 중 두 가지를 고릅니다. 환자 A는 레이저 토닝과 진정 마스크 관리를
+선택했습니다.
+
+예약 서비스가 상품 구성 항목만 다시 읽어 이 구매를 해석하면 중요한 사실이 빠집니다. 환자가 실제로 무엇을
+골랐는지, 그때 적용한 구성 상품 버전이 무엇인지, 어떤 진료 항목이 먼저 끝나야 하는지 알 수 없습니다. 최신
+상품 정의를 다시 계산하면 구매 뒤에 바뀐 규칙이 과거 약속에 섞일 수도 있습니다.
+
+그래서 상품·구매 서비스는 선택과 반복을 이미 전개한 `PackageExecutionSnapshot`을 보냅니다. 이 스냅숏은
+예약 서비스가 상품 의미를 다시 계산하기 위한 재료가 아니라, **구매 시점의 실행 계약**입니다.
+
+| 실행 계약에 들어가는 정보 | 이 정보가 필요한 이유 |
+| --- | --- |
+| 패키지 상품 ID·버전·해시 | 어떤 상품 정의로 구매를 해석했는지 고정 |
+| 선택한 구성 상품 ID·정확한 버전·수량 | 나중에 최신 버전으로 바뀌지 않게 보존 |
+| 선택군과 필수 선택 수 | 3개 중 2개처럼 선택 조건을 검증 |
+| 전개된 진료 항목과 근거 이력 | 각 항목이 어느 구성 상품 버전에서 왔는지 확인 |
+| 실행 의존성과 방문 묶음 조건 | 실행 순서와 같은 방문 가능 여부를 서로 다른 규칙으로 보존 |
+
+본문의 피부관리 이름은 승인된 업무 설계 사례입니다. 현재 테스트는 다른 시술 이름을 사용하지만, 선택 수와
+구성 버전, 관계를 검증하는 동작은 같은 모델과 planner 테스트로 확인합니다.
+
+## 예약 서비스는 실행 계약을 다섯 단계로 검증한다
+
+`PackageExecutionPlanner`는 상품 카탈로그를 조회하지 않습니다. 외부에서 이미 전개한 계약이 구조적으로
+완전한지 다음 순서로 확인합니다.
+
+1. 구성 수량, 전체 진료 항목 수, 관계 수가 처리 가능한 범위인지 확인한다.
+2. 구성 상품 버전이 중복되지 않았고 선택군마다 요구한 개수를 정확히 골랐는지 확인한다.
+3. 모든 진료 항목이 선택한 구성 상품의 정확한 버전을 근거로 삼는지 확인한다.
+4. 실행 의존성과 방문 묶음 조건이 실제 진료 항목을 참조하는지 확인한다.
+5. 실행 의존성 그래프에 순환이 없는지 확인한다.
+
+검증을 모두 통과해야 Plan 리비전 초안을 만듭니다. 코드의 핵심 경계도 짧습니다.
+
+```kotlin
+fun plan(snapshot: PackageExecutionSnapshot): AppointmentPlanRevisionDraft {
+    validateLimits(snapshot)
+    validateComponents(snapshot)
+    validateTreatments(snapshot)
+    validateSelections(snapshot)
+    validateRelations(snapshot)
+    validateAcyclic(snapshot.executionDependencies)
+
+    return AppointmentPlanRevisionDraft(
+        treatments = snapshot.expandedTreatmentItems.toList(),
+        dependencies = snapshot.executionDependencies.toList(),
+        visitGroupingConstraints = snapshot.visitGroupingConstraints.toList(),
+        // package version과 snapshot hash도 함께 고정한다.
+    )
+}
+```
+
+이 코드는 방문 시간을 계산하지 않습니다. 검증한 실행 계약을 `PlannedTreatment`, `ExecutionDependency`,
+`VisitGroupingConstraint`로 복사할 뿐입니다.
+
+<figure class="bt4k-architecture" data-diagram-title="선택한 패키지 실행 계약을 검증해 Plan 리비전으로 고정하는 과정">
+  <img src="/assets/clinic-appointment-package-execution-plan-01-ko.png" alt="환자 A가 선택한 피부 진단, 레이저 토닝, 진정 마스크 관리 실행 계약을 수량, 선택 수, 근거 이력, 관계 참조, 순환 여부로 검증한 뒤 새 Plan 리비전에 복사하고 방문 후보와 확정 예약은 만들지 않는다고 구분한 도표" loading="lazy" />
+  <figcaption>Planner의 출력은 검증된 Plan 리비전입니다. 방문 후보와 확정 예약은 이 단계의 결과가 아닙니다.</figcaption>
+</figure>
+
+## 실행 순서와 방문 묶음은 다른 판단이다
+
+리프팅 집중관리 패키지를 비교하면 두 규칙의 차이가 더 분명해집니다.
+
+| 항목 | 실행 의존성 | 방문 묶음 조건 |
+| --- | --- | --- |
+| 사전 진단 v3 | 선행 항목 없음 | 별도 방문 |
+| 리프팅 시술 v5 | 진단 완료 후 3~14일 | 진정 관리와 같은 방문 가능 |
+| 진정 관리 v4 | 시술과 자원이 양립해야 함 | `MAY_SAME_VISIT` |
+| 사후 점검 v2 | 시술 완료 후 7일 | `MUST_SEPARATE_VISIT` |
+
+실행 의존성은 **무엇이 먼저 끝나야 하는가**를 말합니다. 방문 묶음 조건은 **서로 다른 진료 항목을 같은 방문에
+배치해도 되는가**를 말합니다. `MAY_SAME_VISIT`는 함께 배치할 수 있다는 뜻이지, planner가 같은 방문으로
+확정했다는 뜻이 아닙니다. 실제 자원과 환자 동의를 반영한 방문 후보 계산은 후속 단계가 담당합니다.
+
+## 구매 완료와 패키지 실행 계획은 별도 이벤트로 들어온다
+
+구매 완료 이벤트와 패키지 실행 이벤트는 같은 일이 아닙니다. `PurchaseCompletedHandler`는 구매 사실을 받아
+기존 `AppointmentPlan`을 만듭니다. 선택과 실행 조건은 별도의 `PackageExecutionEvent`가 도착했을 때
+`VisitPlanningEventHandler`가 그 Plan의 새 리비전으로 추가합니다.
+
+handler는 먼저 구매 범위로 기존 Plan을 찾습니다. 패키지 상품이 Plan의 상품과 일치하는지 확인하고, 원본
+버전과 표준화한 페이로드 해시로 이벤트 순서를 판정합니다. 그다음에야 planner를 호출합니다. 따라서
+`PurchaseCompletedHandler`가 `PackageExecutionPlanner`를 직접 호출한다고 그리거나 설명하면 현재 구현과
+다릅니다.
+
+<figure class="bt4k-architecture" data-diagram-title="구매 완료와 별도 패키지 실행 이벤트가 최종 상태로 수렴하는 순서">
+  <img src="/assets/clinic-appointment-package-execution-plan-02-ko.png" alt="구매 서비스가 PurchaseCompletedHandler로 기존 Plan을 만든 뒤 별도 PackageExecutionEvent를 VisitPlanningEventHandler에 전달하고, Plan 조회와 버전 확인, planner 검증, 원자적 저장을 거쳐 최종 상태 결정에서 중복, 버전 대기, 격리 또는 리비전 추가로 끝나는 시퀀스 도표" loading="lazy" />
+  <figcaption>같은 구매 흐름에서 생겨도 Plan 생성과 실행 계약 반영은 서로 다른 이벤트 경계입니다.</figcaption>
+</figure>
+
+## 최종 상태는 중복, 대기, 격리, 리비전 추가로 나뉜다
+
+이벤트 처리는 성공과 실패 두 가지로만 끝나지 않습니다. 운영자가 다음 작업을 판단하려면 왜 쓰지 않았는지까지
+구분해야 합니다.
+
+| 최종 상태 | 조건 | 저장 결과 |
+| --- | --- | --- |
+| `DUPLICATE` | 같은 이벤트이거나 같은 원본 버전과 같은 해시 | 리비전을 다시 만들지 않음 |
+| `WAITING_GAP` | 앞선 원본 버전이 아직 도착하지 않음 | 제한된 재시도 뒤 다시 판정 |
+| 격리 | Plan 누락, 상품 불일치, 같은 버전의 다른 해시, 오래된 버전, 잘못된 실행 계약 | 원문을 로그에 노출하지 않고 안정적인 사유 코드 보존 |
+| 리비전 추가 | 순서와 계약 검증을 모두 통과 | 새 불변 리비전과 하위 그래프 저장 |
+
+쓰기 모드에서는 리비전 헤더와 진료 항목·관계, 인박스 처리 결과, 아웃박스(outbox)를 같은 트랜잭션에
+저장합니다. 중간에 실패하면 일부만 남지 않습니다. 기존 활성 리비전도 덮어쓰지 않고 새 리비전을 활성화해
+구매 당시 실행 계약이 어떻게 바뀌었는지 추적할 수 있습니다.
+
+## 현재 구현이 보장하는 범위
+
+현재 구현은 다음을 보장합니다.
+
+- 외부에서 확정한 선택 결과와 정확한 구성 상품 버전을 구조적으로 검증한다.
+- 선택군의 필수 선택 수, 진료 항목의 근거 이력, 관계 참조와 실행 의존성 순환을 확인한다.
+- 검증한 항목과 관계를 기존 `AppointmentPlan`의 새 불변 리비전으로 추가한다.
+- 중복, 버전 누락, 충돌을 서로 다른 최종 상태로 처리한다.
+- 리비전, 하위 그래프, 인박스, 아웃박스(outbox)를 원자적으로 저장한다.
+
+반면, planner는 방문 후보를 계산하지 않고 예약을 확정하지도 않습니다. 피부관리와 리프팅 사례는 업무 규칙을
+설명하는 승인된 설계 사례이며, 실제 운영에서 어떤 조합을 허용할지는 병원 정책과 자원 검증을 더 거쳐야
+합니다. 구현된 저장 경계와 운영 검증이 필요한 경계를 나누어야 독자가 현재 시스템의 책임을 정확히 이해할 수
+있습니다.
+
+## 정리
+
+패키지 상품은 구성 항목 목록이 아니라 구매 시점에 확정한 실행 계약으로 예약 서비스에 들어옵니다.
+
+- `PackageExecutionSnapshot`은 선택 결과, 구성 상품 버전, 전개 항목과 관계를 고정한다.
+- `PackageExecutionPlanner`는 계약을 다시 해석하지 않고 구조와 근거 이력을 검증한다.
+- 실행 의존성과 방문 묶음 조건은 다른 규칙이며, `MAY_SAME_VISIT`는 방문 확정이 아니다.
+- 구매 완료는 Plan을 만들고, 별도 패키지 실행 이벤트는 새 Plan 리비전을 추가한다.
+- 이벤트는 중복, 버전 대기, 격리, 리비전 추가라는 최종 상태로 수렴한다.
+- Plan 리비전이 생겨도 방문 후보나 확정 예약이 생긴 것은 아니다.
+
+구매 계약을 정확히 보존하면 다음 단계에서 환자 동의, 병원 자원, 임상 간격을 반영해 방문 후보를 계산할 수
+있습니다. 무엇을 약속했는지 먼저 고정해야 언제 방문할지를 안전하게 정할 수 있습니다.
+
+## 근거 자료
+
+- [clinic-appointment 저장소](https://github.com/bluetape4k/clinic-appointment)
+- [`PackageExecutionSnapshot`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/plan/PackageExecutionSnapshot.kt)
+- [`PackageExecutionPlanner`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/PackageExecutionPlanner.kt)
+- [`PackageExecutionEvent`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/PackageExecutionEvent.kt)
+- [`VisitPlanningEventHandler`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/VisitPlanningEventHandler.kt)
+- [`PackageExecutionPlannerTest`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/test/kotlin/io/bluetape4k/clinic/appointment/service/PackageExecutionPlannerTest.kt)
+- [패키지 실행 계획 이슈 #343](https://github.com/bluetape4k/clinic-appointment/issues/343)
+
+## 시리즈 링크
+
+<ClinicAppointmentSeries current="clinic-appointment-package-execution-plan" locale="ko" />
