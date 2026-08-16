@@ -13,7 +13,7 @@
     {"id":"incident","label":"Incident cause, affected range, and search window","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
     {"id":"metrics","label":"Affected, candidate available, and no-candidate counts","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
     {"id":"queue","label":"STAFF action queue","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
-    {"id":"selected","label":"Anonymous selected appointment and expected version","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
+    {"id":"selected","label":"Anonymous selected appointment and current version evidence","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
     {"id":"candidates","label":"Three ranked replacement candidates","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
     {"id":"actions","label":"Candidate confirmation, automatic rescheduling, and no-candidate task","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
     {"id":"boundary","label":"Current confirmation creates CONFIRMED; consent evidence is not implemented","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"}

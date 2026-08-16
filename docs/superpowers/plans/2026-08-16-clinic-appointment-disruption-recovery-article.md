@@ -122,7 +122,7 @@ The ledger must include incident cause and affected range, `searchDays`, counts 
 
 - [x] **Step 2: Implement the localized mockup**
 
-Use the existing dark STAFF UI language: top bar, four summary cards, queue table, selected-item detail, candidate cards, and guarded buttons. Surface `expectedVersion`, search window, candidate priority, and the current implementation warning that confirmation immediately creates `CONFIRMED`; do not present patient-consent evidence or automatic compensation as implemented behavior.
+Use the existing dark STAFF UI language: top bar, four summary cards, queue table, selected-item detail, candidate cards, and guarded buttons. Surface the read-only `currentVersion`, search window, candidate priority, and the current implementation warning that confirmation immediately creates `CONFIRMED`; do not imply that the current confirm API accepts `expectedVersion`, and do not present patient-consent evidence or automatic compensation as implemented behavior.
 
 - [x] **Step 3: Render and inspect at original size**
 
