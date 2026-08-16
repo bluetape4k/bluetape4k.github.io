@@ -1,0 +1,37 @@
+{
+  "kind": "workflow",
+  "source": {
+    "question": "What does STAFF need on one screen to recover appointments after a clinic disruption?",
+    "revision": "clinic-appointment develop 90e50da4b49e35d667911418cc9578ab538898e3",
+    "paths": [
+      "docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md",
+      "docs/superpowers/plans/2026-08-16-clinic-appointment-disruption-recovery-article.md",
+      "public/assets/clinic-appointment-waitlist-operations-screen-dashboard-ko.png"
+    ]
+  },
+  "nodes": [
+    {"id":"incident","label":"Incident cause, affected range, and search window","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
+    {"id":"metrics","label":"Affected, candidate available, and no-candidate counts","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
+    {"id":"queue","label":"STAFF action queue","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
+    {"id":"selected","label":"Anonymous selected appointment and expected version","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
+    {"id":"candidates","label":"Three ranked replacement candidates","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
+    {"id":"actions","label":"Candidate confirmation, automatic rescheduling, and no-candidate task","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
+    {"id":"boundary","label":"Current confirmation creates CONFIRMED; consent evidence is not implemented","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"}
+  ],
+  "edges": [
+    {"id":"incident-metrics","from":"incident","to":"metrics","kind":"summarizes","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
+    {"id":"metrics-queue","from":"metrics","to":"queue","kind":"prioritizes","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
+    {"id":"queue-selected","from":"queue","to":"selected","kind":"selects","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
+    {"id":"selected-candidates","from":"selected","to":"candidates","kind":"shows-ranked-options","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
+    {"id":"candidates-actions","from":"candidates","to":"actions","kind":"enables-guarded-work","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
+    {"id":"actions-boundary","from":"actions","to":"boundary","kind":"exposes-current-boundary","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"}
+  ],
+  "behavior": {"branches": 3, "loops": 0},
+  "repairs": [
+    {"target":"metric-language","reason":"separate affected appointments from candidate availability","touches":3},
+    {"target":"action-hierarchy","reason":"keep candidate selection, automatic rescheduling, and no-candidate handling distinct","touches":3},
+    {"target":"privacy","reason":"use anonymous references and illustrative values only","touches":4},
+    {"target":"implementation-boundary","reason":"do not present consent evidence or automatic compensation as current behavior","touches":2},
+    {"target":"bottom-padding","reason":"keep the implementation warning readable at full size","touches":2}
+  ]
+}

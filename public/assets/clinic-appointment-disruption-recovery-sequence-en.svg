@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1770" viewBox="0 0 1440 1770" role="img" aria-labelledby="title desc" data-locale="en">
+<title id="title">Recover Disrupted Appointments through Separate Validation and Confirmation</title><desc id="desc">Calculate candidates outside the transaction, then recheck state and version before writes.</desc>
+<defs>
+  <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#071323"/><stop offset="1" stop-color="#101a31"/></linearGradient>
+  <marker id="blueArrow" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#60a5fa" data-solid-head="true"/></marker>
+<marker id="cyanArrow" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#2dd4bf" data-solid-head="true"/></marker>
+<marker id="amberArrow" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#fbbf24" data-solid-head="true"/></marker>
+<marker id="redArrow" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#fb7185" data-solid-head="true"/></marker>
+<marker id="purpleArrow" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#a78bfa" data-solid-head="true"/></marker>
+  <style>
+  .title{font-family:"Architects Daughter", "Comic Sans MS", cursive;font-size:31px;font-weight:800;fill:#f4f8ff}
+  .subtitle{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:17px;fill:#a9bad0}
+  .badge{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:13px;font-weight:700;fill:#c9dcf3}
+  .participant{font-family:"Architects Daughter", "Comic Sans MS", cursive;font-size:17px;font-weight:800;fill:#f4f8ff}
+  .role{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:12px;fill:#91a8c3}
+  .labelText,.num,.outcome,.ui-label,.ui-mono{font-family:"Comic Mono", "SFMono-Regular", monospace}
+  .labelText{font-size:14px;fill:#e7f0fb}
+  .num{font-size:13px;font-weight:800;fill:#f8fbff}
+  .outcome{font-size:14px;font-weight:800;fill:#f8fbff}
+  .header{fill:#13243b;stroke:#395675;stroke-width:2}
+  .frame{fill:none;stroke:#2d4665;stroke-width:2}
+  .lifeline{fill:none;stroke:#516985;stroke-width:2;stroke-dasharray:8 10}
+  .activation{fill:#17314e;stroke:#7898b7;stroke-width:2}
+  .pill{fill:#0d1b2f;stroke-width:2}
+  .call{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+  .blue-line{stroke:#60a5fa;marker-end:url(#blueArrow)}
+  .cyan-line{stroke:#2dd4bf;marker-end:url(#cyanArrow)}
+  .amber-line{stroke:#fbbf24;marker-end:url(#amberArrow)}
+  .red-line{stroke:#fb7185;marker-end:url(#redArrow)}
+  .purple-line{stroke:#a78bfa;marker-end:url(#purpleArrow)}
+  .phase{fill:#0b1729;fill-opacity:.28;stroke:#38506d;stroke-width:1.5}
+  .phase-label{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:12px;font-weight:700;fill:#83a0bf}
+  .decision{fill:#151f38;stroke:#a78bfa;stroke-width:2}
+  .decision-title{font-family:"Architects Daughter", "Comic Sans MS", cursive;font-size:18px;font-weight:800;fill:#e5d9ff}
+</style>
+</defs>
+<rect width="1440" height="1770" fill="url(#canvas)"/><rect class="frame" x="24" y="24" width="1392" height="1722" rx="32"/>
+<text class="title" x="62" y="76">Recover Disrupted Appointments through Separate Validation and Confirmation</text><text class="subtitle" x="64" y="108">Calculate candidates outside the transaction, then recheck state and version before writes.</text>
+<rect x="62" y="126" width="230" height="34" rx="17" fill="#12243a" stroke="#3a5877"/><text class="badge" x="177" y="148" text-anchor="middle">SCOPE / STAFF RECOVERY</text>
+<rect x="304" y="126" width="245" height="34" rx="17" fill="#12243a" stroke="#3a5877"/><text class="badge" x="426.5" y="148" text-anchor="middle">VERSION / develop 90e50da4</text>
+<rect x="561" y="126" width="210" height="34" rx="17" fill="#12243a" stroke="#3a5877"/><text class="badge" x="666" y="148" text-anchor="middle">SYNC / BATCH ATOMICITY</text>
+<rect x="783" y="126" width="245" height="34" rx="17" fill="#12243a" stroke="#3a5877"/><text class="badge" x="905.5" y="148" text-anchor="middle">STREAM / PER-BOOKING COMMIT</text><rect class="phase" x="42" y="304" width="1356" height="426" rx="24"/><rect x="1038" y="316" width="330" height="28" rx="14" fill="#102239" stroke="#38506d"/><text class="phase-label" x="1203" y="335" text-anchor="middle">Scope and candidate calculation</text>
+<rect class="phase" x="42" y="748" width="1356" height="318" rx="24"/><rect x="1038" y="760" width="330" height="28" rx="14" fill="#102239" stroke="#38506d"/><text class="phase-label" x="1203" y="779" text-anchor="middle">Write-time revalidation and pending recovery</text>
+<rect class="phase" x="42" y="1084" width="1356" height="332" rx="24"/><rect x="1038" y="1096" width="330" height="28" rx="14" fill="#102239" stroke="#38506d"/><text class="phase-label" x="1203" y="1115" text-anchor="middle">STAFF confirmation and final write</text><g><rect id="staff" class="header card" x="10" y="190" width="240" height="92" rx="20"/><text class="participant" x="130" y="228" text-anchor="middle">STAFF</text><text class="role" x="130" y="256" text-anchor="middle">operator</text></g>
+<g><rect id="api" class="header card" x="300" y="190" width="240" height="92" rx="20"/><text class="participant" x="420" y="228" text-anchor="middle">Operations UI / API</text><text class="role" x="420" y="256" text-anchor="middle">request boundary</text></g>
+<g><rect id="service" class="header card" x="590" y="190" width="240" height="92" rx="20"/><text class="participant" x="710" y="228" text-anchor="middle">ClosureRescheduleService</text><text class="role" x="710" y="256" text-anchor="middle">recovery orchestration</text></g>
+<g><rect id="store" class="header card" x="880" y="190" width="240" height="92" rx="20"/><text class="participant" x="1000" y="228" text-anchor="middle">Booking / candidate store</text><text class="role" x="1000" y="256" text-anchor="middle">current state and version</text></g>
+<g><rect id="outbox" class="header card" x="1170" y="190" width="240" height="92" rx="20"/><text class="participant" x="1290" y="228" text-anchor="middle">History / status event / outbox</text><text class="role" x="1290" y="256" text-anchor="middle">recovery evidence</text></g><path class="lifeline" d="M130 282 V1435"/>
+<path class="lifeline" d="M420 282 V1435"/>
+<path class="lifeline" d="M710 282 V1435"/>
+<path class="lifeline" d="M1000 282 V1435"/>
+<path class="lifeline" d="M1290 282 V1435"/><rect class="activation" x="700" y="333" width="20" height="1060" rx="8"/><rect class="activation" x="990" y="545" width="20" height="305" rx="8"/>
+<g><rect class="pill" x="56.25" y="305" width="437.5" height="38" rx="19" stroke="#60a5fa"/><circle cx="76.25" cy="324" r="13" fill="#60a5fa" fill-opacity=".2" stroke="#60a5fa"/><text class="num" x="76.25" y="329" text-anchor="middle">1</text><text class="labelText" x="99.25" y="329">submit closure range, cause, and searchDays</text></g><path class="call blue-line" data-source-node="staff" data-target-node="api" d="M130 355 H420"/>
+<g><rect class="pill" x="388.75" y="415" width="352.5" height="38" rx="19" stroke="#60a5fa"/><circle cx="408.75" cy="434" r="13" fill="#60a5fa" fill-opacity=".2" stroke="#60a5fa"/><text class="num" x="408.75" y="439" text-anchor="middle">2</text><text class="labelText" x="431.75" y="439">request affected-booking recovery</text></g><path class="call blue-line" data-source-node="api" data-target-node="service" d="M420 465 H710"/>
+<g><rect class="pill" x="649" y="525" width="412" height="38" rx="19" stroke="#2dd4bf"/><circle cx="669" cy="544" r="13" fill="#2dd4bf" fill-opacity=".2" stroke="#2dd4bf"/><text class="num" x="669" y="549" text-anchor="middle">3</text><text class="labelText" x="692" y="549">read active booking snapshot and version</text></g><path class="call cyan-line" data-source-node="service" data-target-node="store" d="M710 575 H1000"/>
+<g><rect class="pill" x="598" y="635" width="514" height="38" rx="19" stroke="#fbbf24"/><circle cx="618" cy="654" r="13" fill="#fbbf24" fill-opacity=".2" stroke="#fbbf24"/><text class="num" x="618" y="659" text-anchor="middle">4</text><text class="labelText" x="641" y="659">calculate replacement candidates outside transaction</text></g><path class="call amber-line" data-source-node="service" data-target-node="store" d="M710 685 H1000"/>
+<g><rect class="pill" x="678.75" y="745" width="352.5" height="38" rx="19" stroke="#2dd4bf"/><circle cx="698.75" cy="764" r="13" fill="#2dd4bf" fill-opacity=".2" stroke="#2dd4bf"/><text class="num" x="698.75" y="769" text-anchor="middle">5</text><text class="labelText" x="721.75" y="769">recheck current state and version</text></g><path class="call cyan-line" data-source-node="service" data-target-node="store" d="M710 795 H1000"/>
+<g><rect class="pill" x="720" y="855" width="560" height="38" rx="19" stroke="#a78bfa"/><circle cx="740" cy="874" r="13" fill="#a78bfa" fill-opacity=".2" stroke="#a78bfa"/><text class="num" x="740" y="879" text-anchor="middle">6</text><text class="labelText" x="763" y="879">store PENDING_RESCHEDULE, history, status event, candidates</text></g><path class="call purple-line" data-source-node="service" data-target-node="outbox" d="M710 905 H1290"/>
+<g><rect class="pill" x="325" y="965" width="480" height="38" rx="19" stroke="#60a5fa"/><circle cx="345" cy="984" r="13" fill="#60a5fa" fill-opacity=".2" stroke="#60a5fa"/><text class="num" x="345" y="989" text-anchor="middle">7</text><text class="labelText" x="368" y="989">return affected 8, candidates 6, no candidates 2</text></g><path class="call blue-line" data-source-node="service" data-target-node="api" d="M710 1015 H420"/>
+<g><rect class="pill" x="52" y="1075" width="446" height="38" rx="19" stroke="#fbbf24"/><circle cx="72" cy="1094" r="13" fill="#fbbf24" fill-opacity=".2" stroke="#fbbf24"/><text class="num" x="72" y="1099" text-anchor="middle">8</text><text class="labelText" x="95" y="1099">select candidate or run automatic reschedule</text></g><path class="call amber-line" data-source-node="staff" data-target-node="api" d="M130 1125 H420"/>
+<g><rect class="pill" x="350.5" y="1185" width="429" height="38" rx="19" stroke="#fbbf24"/><circle cx="370.5" cy="1204" r="13" fill="#fbbf24" fill-opacity=".2" stroke="#fbbf24"/><text class="num" x="370.5" y="1209" text-anchor="middle">9</text><text class="labelText" x="393.5" y="1209">confirm with expectedVersion and candidate</text></g><path class="call amber-line" data-source-node="api" data-target-node="service" d="M420 1235 H710"/>
+<g><rect class="pill" x="720" y="1295" width="560" height="38" rx="19" stroke="#2dd4bf"/><circle cx="740" cy="1314" r="13" fill="#2dd4bf" fill-opacity=".2" stroke="#2dd4bf"/><text class="num" x="740" y="1319" text-anchor="middle">10</text><text class="labelText" x="763" y="1319">store replacement CONFIRMED, original RESCHEDULED, candidate, outbox</text></g><path class="call cyan-line" data-source-node="service" data-target-node="outbox" d="M710 1345 H1290"/>
+<rect class="decision" x="44" y="1480" width="1352" height="218" rx="26"/><rect x="510" y="1458" width="420" height="42" rx="21" fill="#19223a" stroke="#a78bfa" stroke-width="2"/><text class="decision-title" x="720" y="1486" text-anchor="middle">Terminal Outcome Decision</text><rect x="72" y="1572" width="306" height="92" rx="20" fill="#101f34" stroke="#fbbf24" stroke-width="2"/><text class="outcome" x="225" y="1609" text-anchor="middle">No candidate</text><text class="role" x="225" y="1639" text-anchor="middle">separate STAFF task</text>
+<rect x="402" y="1572" width="306" height="92" rx="20" fill="#101f34" stroke="#fb7185" stroke-width="2"/><text class="outcome" x="555" y="1609" text-anchor="middle">State or version changed</text><text class="role" x="555" y="1639" text-anchor="middle">synchronous batch rollback</text>
+<rect x="732" y="1572" width="306" height="92" rx="20" fill="#101f34" stroke="#a78bfa" stroke-width="2"/><text class="outcome" x="885" y="1609" text-anchor="middle">Stream item failed</text><text class="role" x="885" y="1639" text-anchor="middle">reconcile committed items</text>
+<rect x="1062" y="1572" width="306" height="92" rx="20" fill="#101f34" stroke="#2dd4bf" stroke-width="2"/><text class="outcome" x="1215" y="1609" text-anchor="middle">Confirmation complete</text><text class="role" x="1215" y="1639" text-anchor="middle">replacement is CONFIRMED</text>
+</svg>
