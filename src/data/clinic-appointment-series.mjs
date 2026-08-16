@@ -157,7 +157,7 @@ export const clinicAppointmentSeries = Object.freeze([
     id: 'operations-3',
     group: 'operations',
     slug: 'clinic-appointment-disruption-recovery',
-    ko: '[운영 확장 3] 병원 사정으로 바뀐 예약을 복구하는 법',
-    en: '[Operations 3] Recovering Appointments Changed by Clinic Disruptions',
+    ko: '[운영 확장 3] 예약 복구는 영향 범위 확인부터 시작한다',
+    en: '[Operations 3] Appointment Recovery Starts with Impact Discovery',
   },
 ]);
