@@ -153,6 +153,11 @@ fun plan(snapshot: PackageExecutionSnapshot): AppointmentPlanRevisionDraft {
 따라서 플래너가 성공했다는 말은 “이 실행 계약을 방문 계획에 기록해도 구조적으로 안전하다”는 뜻입니다.
 “이 날짜에 방문할 수 있다”거나 “예약이 확정됐다”는 뜻은 아닙니다.
 
+<div class="bt4k-operations-screen" data-visual-title="패키지 실행 계약 관리 화면 시안">
+  <img class="bt4k-screenshot" src="/assets/clinic-appointment-package-execution-operations-screen-ko.png" alt="선택 조건과 구매에서 확정된 구성 상품 버전, 실행 의존성과 방문 묶음 관계, 실행 계약 검증과 Plan 리비전 저장 결과를 함께 보여주는 패키지 실행 계약 관리 화면 시안" loading="lazy" />
+  <p class="bt4k-operations-screen-caption">실제 제품 화면을 캡처한 것이 아니라 현재 구현의 데이터를 바탕으로 구성한 운영 화면 시안입니다. 운영자는 구매 당시 선택한 구성과 정확한 상품 버전, 실행 관계, 검증 결과와 저장된 Plan 리비전을 한 화면에서 대조할 수 있습니다. 상품 구성 단계는 <a href="/ko/visual-companions/clinic-appointment/package-product-composition/">패키지 상품 구성 시각 자료</a>에서, 실행 계약이 방문 계획으로 이어지는 과정은 <a href="/ko/visual-companions/clinic-appointment/product-bom-to-appointment-flow/">상품 BOM에서 방문 계획까지의 흐름</a>에서 확인할 수 있습니다.</p>
+</div>
+
 <figure class="bt4k-architecture" data-diagram-title="선택한 패키지 실행 계약을 검증해 Plan 리비전으로 고정하는 과정">
   <img src="/assets/clinic-appointment-package-execution-plan-01-ko.png" alt="환자 A가 선택한 피부 진단, 레이저 토닝, 진정 마스크 관리 실행 계약을 수량, 선택 수, 근거 이력, 관계 참조, 순환 여부로 검증한 뒤 새 Plan 리비전에 복사하고 방문 후보와 확정 예약은 만들지 않는다고 구분한 도표" loading="lazy" />
   <figcaption>플래너의 출력은 검증된 Plan 리비전입니다. 방문 후보와 확정 예약은 이 단계의 결과가 아닙니다.</figcaption>

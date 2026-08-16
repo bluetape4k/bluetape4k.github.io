@@ -119,6 +119,11 @@ This code does not calculate visit times. It reads neither the patient's desired
 
 A successful planner result therefore means “this execution contract is structurally safe to record in the visit plan.” It does not mean that a visit is possible at a particular time or that an appointment has been confirmed.
 
+<div class="bt4k-operations-screen" data-visual-title="Package execution contract management screen mockup">
+  <img class="bt4k-screenshot" src="/assets/clinic-appointment-package-execution-operations-screen-en.png" alt="A package execution contract management screen showing the selection rule, exact component versions fixed by the purchase, execution dependencies, visit grouping, validation, and the stored Plan revision" loading="lazy" />
+  <p class="bt4k-operations-screen-caption">This is a source-backed operations mockup, not a production screen capture. It lets staff reconcile purchase-time selections and exact component versions with execution relationships, validation results, and the stored Plan revision. See the <a href="/visual-companions/clinic-appointment/package-product-composition/">package product composition visual</a> for configuration and the <a href="/visual-companions/clinic-appointment/product-bom-to-appointment-flow/">product BOM to visit plan flow</a> for downstream projection.</p>
+</div>
+
 <figure class="bt4k-architecture" data-diagram-title="Validating a selected package execution contract and freezing it into a Plan revision">
   <img src="/assets/clinic-appointment-package-execution-plan-01-en.png" alt="Patient A's selected skin diagnosis, laser toning, and soothing mask contract passes quantity, selection count, provenance, reference, and cycle validation before becoming a new Plan revision, while visit candidates and confirmed appointments remain outside the boundary" loading="lazy" />
   <figcaption>The planner outputs a validated Plan revision. Visit candidates and confirmed appointments are not outputs of this stage.</figcaption>

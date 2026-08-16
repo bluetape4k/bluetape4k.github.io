@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=1600, initial-scale=1" />
+  <title>패키지 실행 계약 관리</title>
+  <style>
+  :root {
+    color-scheme: dark;
+    --canvas: #07111e;
+    --surface: #0d1a2b;
+    --raised: #13243a;
+    --soft: #182d47;
+    --line: #2a4362;
+    --line-soft: #203852;
+    --text: #edf6ff;
+    --muted: #a6b9cd;
+    --faint: #71869e;
+    --blue: #7fc9ff;
+    --cyan: #79e6d2;
+    --green: #9ce7b5;
+    --amber: #ffd08a;
+    --red: #ffaaaa;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1600px; min-width: 1600px; min-height: 1050px; background: var(--canvas); }
+  body {
+    color: var(--text);
+    font-family: var(--body-font);
+    font-size: 16px;
+    line-height: 1.45;
+  }
+  body[data-locale="ko"] { --body-font: 'goorm Sans', 'Apple SD Gothic Neo', sans-serif; --code-font: 'goorm Sans Code', monospace; }
+  body[data-locale="en"] { --body-font: 'Architects Daughter', system-ui, sans-serif; --code-font: 'Comic Mono', monospace; }
+  .canvas { width: 1600px; min-height: 1050px; padding: 34px; }
+  .window {
+    overflow: hidden;
+    width: 1532px;
+    min-height: 982px;
+    border: 1px solid #395776;
+    border-radius: 22px;
+    background: linear-gradient(145deg, #0f1d30 0%, #0a1626 100%);
+    box-shadow: 0 30px 70px rgba(0, 0, 0, .38);
+  }
+  .topbar { display: flex; justify-content: space-between; gap: 28px; padding: 27px 32px 23px; border-bottom: 1px solid var(--line-soft); }
+  .eyebrow, .mono, .metric-label, .badge, .state, .meta-label, .footer { font-family: var(--code-font); }
+  .eyebrow { color: var(--blue); font-size: 12px; font-weight: 700; letter-spacing: .12em; }
+  h1 { margin: 5px 0 2px; font-size: 34px; letter-spacing: -.035em; }
+  .subtitle { margin: 0; color: var(--muted); font-size: 15px; }
+  .topbar-right { display: flex; align-items: center; gap: 11px; flex-shrink: 0; }
+  .clinic { color: var(--muted); font-size: 14px; text-align: right; }
+  .badge { padding: 7px 10px; border: 1px solid #467096; border-radius: 9px; color: var(--blue); font-size: 12px; font-weight: 700; }
+  .badge.status { border-color: #3e806f; background: #102f2a; color: var(--cyan); }
+  .content { padding: 24px 30px 25px; }
+  .metric-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 13px; }
+  .metric-card { min-height: 112px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 14px; background: rgba(19, 36, 58, .9); }
+  .metric-card:last-child { border-color: #3b756c; background: rgba(18, 52, 49, .65); }
+  .metric-label { color: var(--muted); font-size: 12px; }
+  .metric-value { margin-top: 7px; font-size: 30px; font-weight: 800; letter-spacing: -.045em; }
+  .metric-detail { margin-top: 3px; color: var(--faint); font-size: 12px; }
+  .plan-strip { display: grid; grid-template-columns: 1.55fr repeat(4, 1fr); gap: 13px; align-items: stretch; margin-top: 14px; }
+  .plan-name, .meta-card { padding: 14px 17px; border: 1px solid var(--line); border-radius: 13px; background: rgba(15, 29, 48, .9); }
+  .plan-name { display: flex; align-items: center; font-size: 18px; font-weight: 800; }
+  .meta-label { color: var(--faint); font-size: 10px; }
+  .meta-value { margin-top: 4px; color: var(--text); font-family: var(--code-font); font-size: 12px; overflow-wrap: anywhere; }
+  .main-grid { display: grid; grid-template-columns: 1.45fr 1fr; gap: 14px; margin-top: 14px; }
+  .panel { padding: 19px; border: 1px solid var(--line); border-radius: 15px; background: rgba(19, 36, 58, .72); }
+  .panel-heading { display: flex; justify-content: space-between; gap: 18px; align-items: baseline; margin-bottom: 14px; }
+  h2 { margin: 0; font-size: 20px; }
+  h3 { margin: 0; font-size: 16px; }
+  .section-meta { color: var(--faint); font-size: 12px; text-align: right; }
+  .occurrence-list, .selection-list, .task-list, .boundary-list, .validation-list, .result-list { display: grid; gap: 10px; }
+  .occurrence { display: grid; grid-template-columns: 48px 1fr auto; gap: 14px; align-items: center; min-height: 101px; padding: 14px; border: 1px solid var(--line); border-radius: 13px; background: #102038; }
+  .occurrence.ready { border-color: #447f93; background: #10283b; }
+  .occurrence.complete { border-color: #387c68; background: #102b2b; }
+  .number { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 11px; background: #193552; color: var(--blue); font-family: var(--code-font); font-weight: 700; }
+  .complete .number { background: #17463c; color: var(--green); }
+  .item-title { font-size: 17px; font-weight: 800; }
+  .item-detail { margin-top: 4px; color: var(--muted); font-size: 13px; }
+  .occurrence-side { min-width: 185px; text-align: right; }
+  .state { color: var(--blue); font-size: 11px; font-weight: 700; }
+  .complete .state { color: var(--green); }
+  .timing { margin-top: 7px; color: var(--amber); font-size: 12px; }
+  .right-stack { display: grid; gap: 14px; }
+  .task, .boundary, .relation { padding: 13px 14px; border: 1px solid var(--line-soft); border-radius: 12px; background: #102038; }
+  .task { display: grid; grid-template-columns: 31px 1fr; gap: 11px; }
+  .task-no { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; background: #1a3c59; color: var(--blue); font-family: var(--code-font); font-size: 12px; }
+  .small-detail { margin-top: 3px; color: var(--muted); font-size: 12px; }
+  .boundary strong { color: var(--amber); }
+  .selection { display: grid; grid-template-columns: 92px 1fr auto; gap: 13px; align-items: center; min-height: 77px; padding: 12px 13px; border: 1px solid var(--line); border-radius: 12px; background: #102038; }
+  .selection.selected { border-color: #447f93; background: #10283b; }
+  .selection.required { border-color: #387c68; background: #102b2b; }
+  .selection.excluded { opacity: .56; border-style: dashed; }
+  .selection-state { color: var(--blue); font-family: var(--code-font); font-size: 11px; font-weight: 700; }
+  .required .selection-state { color: var(--green); }
+  .excluded .selection-state { color: var(--faint); }
+  .version { color: var(--muted); font-family: var(--code-font); font-size: 11px; }
+  .relation { border-left: 3px solid var(--cyan); }
+  .relation-kind { color: var(--cyan); font-family: var(--code-font); font-size: 11px; font-weight: 700; }
+  .relation-name { margin-top: 4px; font-size: 15px; font-weight: 800; }
+  .validation-row, .result-row { display: flex; justify-content: space-between; gap: 16px; padding: 10px 12px; border-bottom: 1px solid var(--line-soft); color: var(--muted); font-size: 13px; }
+  .validation-row:last-child, .result-row:last-child { border-bottom: 0; }
+  .pass { color: var(--green); font-family: var(--code-font); font-weight: 700; }
+  .result-value { color: var(--text); font-family: var(--code-font); text-align: right; }
+  .notice { margin-top: 14px; padding: 13px 15px; border: 1px solid #7a633a; border-radius: 12px; background: #2b2417; color: var(--amber); font-size: 13px; }
+  .footer { padding: 14px 30px 16px; border-top: 1px solid var(--line-soft); color: var(--faint); font-size: 11px; text-align: center; }
+</style>
+</head>
+<body data-locale="ko" data-workflow-ready="true" data-screen="package">
+  <main class="canvas">
+    <section class="window" aria-label="패키지 실행 계약 관리">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">CLINIC APPOINTMENT · OPERATIONS DATA VIEW</div>
+          <h1>패키지 실행 계약 관리</h1>
+          <p class="subtitle">구매 당시 선택, 정확한 구성 상품 버전과 실행 관계를 한 화면에서 검증합니다.</p>
+        </div>
+        <div class="topbar-right">
+          <div class="clinic">클리닉 A · 진료 운영<br />소스 기반 운영 시안 · 환자 식별정보 없음</div>
+          <span class="badge">STAFF</span>
+          <span class="badge status">REVISION ACTIVE</span>
+        </div>
+      </header>
+      <div class="content">
+        <section class="metric-grid" aria-label="summary metrics">
+    <article class="metric-card">
+      <div class="metric-label">선택 조건</div>
+      <div class="metric-value">3개 중 2개</div>
+      <div class="metric-detail">선택군 care</div>
+    </article>
+    <article class="metric-card">
+      <div class="metric-label">선택한 구성</div>
+      <div class="metric-value">2</div>
+      <div class="metric-detail">레이저 토닝 · 진정 마스크</div>
+    </article>
+    <article class="metric-card">
+      <div class="metric-label">실행 항목</div>
+      <div class="metric-value">3</div>
+      <div class="metric-detail">필수 진단 포함</div>
+    </article>
+    <article class="metric-card">
+      <div class="metric-label">검증 결과</div>
+      <div class="metric-value">5/5</div>
+      <div class="metric-detail">구조 검사 통과</div>
+    </article></section>
+
+    <section class="plan-strip" aria-label="plan metadata">
+      <div class="plan-name">맞춤 피부 관리 패키지 실행 계약</div>
+
+        <div class="meta-card">
+          <div class="meta-label">planRef</div>
+          <div class="meta-value">plan_2C7D…A118</div>
+        </div>
+        <div class="meta-card">
+          <div class="meta-label">packageProduct</div>
+          <div class="meta-value">skin-care · v3</div>
+        </div>
+        <div class="meta-card">
+          <div class="meta-label">sourceVersion</div>
+          <div class="meta-value">4</div>
+        </div>
+        <div class="meta-card">
+          <div class="meta-label">snapshotHash</div>
+          <div class="meta-value">8c10…e52f</div>
+        </div>
+    </section>
+
+    <div class="main-grid">
+      <section class="panel" aria-labelledby="selection-title">
+        <div class="panel-heading">
+          <h2 id="selection-title">구매에서 확정된 구성</h2>
+          <div class="section-meta">후보 목록이 아니라 실제 선택 결과</div>
+        </div>
+        <div class="selection-list">
+
+            <article class="selection required">
+              <div class="selection-state">필수</div>
+              <div><div class="item-title">피부 진단</div><div class="small-detail">첫 방문 · 별도 진행</div></div>
+              <div class="version">skin-diagnosis · v2</div>
+            </article>
+            <article class="selection selected">
+              <div class="selection-state">선택</div>
+              <div><div class="item-title">레이저 토닝</div><div class="small-detail">진단 완료 후 3일 이상</div></div>
+              <div class="version">laser-toning · v8</div>
+            </article>
+            <article class="selection excluded">
+              <div class="selection-state">제외</div>
+              <div><div class="item-title">수분 집중 관리</div><div class="small-detail">선택하지 않은 후보</div></div>
+              <div class="version">hydration · v5</div>
+            </article>
+            <article class="selection selected">
+              <div class="selection-state">선택</div>
+              <div><div class="item-title">진정 마스크 관리</div><div class="small-detail">레이저 토닝과 같은 방문 가능</div></div>
+              <div class="version">soothing-mask · v4</div>
+            </article>
+        </div>
+        <div class="notice">검증 통과는 실행 계약을 저장할 수 있다는 뜻이며 방문 가능 시간이나 예약 확정을 뜻하지 않습니다.</div>
+      </section>
+      <div class="right-stack">
+        <section class="panel" aria-labelledby="relation-title">
+          <div class="panel-heading"><h2 id="relation-title">실행 관계와 방문 구성</h2></div>
+
+            <article class="relation">
+              <div class="relation-kind">BLOCKING</div>
+              <div class="relation-name">피부 진단 → 레이저 토닝</div>
+              <div class="small-detail">선행 완료 뒤 최소 3일</div>
+            </article>
+            <article class="relation">
+              <div class="relation-kind">CAN_SHARE_VISIT</div>
+              <div class="relation-name">레이저 토닝 — 진정 마스크</div>
+              <div class="small-detail">같은 방문에 배치 가능</div>
+            </article>
+        </section>
+        <section class="panel" aria-labelledby="validation-title">
+          <div class="panel-heading"><h2 id="validation-title">실행 계약 검증</h2></div>
+          <div class="validation-list">
+            <div class="validation-row"><span>처리 상한</span><span class="pass">PASS</span></div><div class="validation-row"><span>구성 상품 버전 중복</span><span class="pass">PASS</span></div><div class="validation-row"><span>선택 수 2/2</span><span class="pass">PASS</span></div><div class="validation-row"><span>근거 이력·관계 참조</span><span class="pass">PASS</span></div><div class="validation-row"><span>실행 의존성 순환</span><span class="pass">PASS</span></div>
+          </div>
+        </section>
+        <section class="panel" aria-labelledby="result-title">
+          <div class="panel-heading"><h2 id="result-title">저장 결과</h2></div>
+          <div class="result-list">
+            <div class="result-row"><span>계획 리비전</span><span class="result-value">revision 4 · ACTIVE</span></div><div class="result-row"><span>진료 항목</span><span class="result-value">3개 행으로 저장</span></div><div class="result-row"><span>관계</span><span class="result-value">의존성 1 · 방문 묶음 1</span></div><div class="result-row"><span>예약 상태</span><span class="result-value">아직 제안·확정 없음</span></div>
+          </div>
+        </section>
+      </div>
+    </div>
+      </div>
+      <footer class="footer">검증 통과는 실행 계약을 저장할 수 있다는 뜻이며 방문 가능 시간이나 예약 확정을 뜻하지 않습니다.</footer>
+    </section>
+  </main>
+</body>
+</html>

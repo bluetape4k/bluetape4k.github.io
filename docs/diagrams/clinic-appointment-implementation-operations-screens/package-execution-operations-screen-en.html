@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=1600, initial-scale=1" />
+  <title>Package execution contract management</title>
+  <style>
+  :root {
+    color-scheme: dark;
+    --canvas: #07111e;
+    --surface: #0d1a2b;
+    --raised: #13243a;
+    --soft: #182d47;
+    --line: #2a4362;
+    --line-soft: #203852;
+    --text: #edf6ff;
+    --muted: #a6b9cd;
+    --faint: #71869e;
+    --blue: #7fc9ff;
+    --cyan: #79e6d2;
+    --green: #9ce7b5;
+    --amber: #ffd08a;
+    --red: #ffaaaa;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1600px; min-width: 1600px; min-height: 1050px; background: var(--canvas); }
+  body {
+    color: var(--text);
+    font-family: var(--body-font);
+    font-size: 16px;
+    line-height: 1.45;
+  }
+  body[data-locale="ko"] { --body-font: 'goorm Sans', 'Apple SD Gothic Neo', sans-serif; --code-font: 'goorm Sans Code', monospace; }
+  body[data-locale="en"] { --body-font: 'Architects Daughter', system-ui, sans-serif; --code-font: 'Comic Mono', monospace; }
+  .canvas { width: 1600px; min-height: 1050px; padding: 34px; }
+  .window {
+    overflow: hidden;
+    width: 1532px;
+    min-height: 982px;
+    border: 1px solid #395776;
+    border-radius: 22px;
+    background: linear-gradient(145deg, #0f1d30 0%, #0a1626 100%);
+    box-shadow: 0 30px 70px rgba(0, 0, 0, .38);
+  }
+  .topbar { display: flex; justify-content: space-between; gap: 28px; padding: 27px 32px 23px; border-bottom: 1px solid var(--line-soft); }
+  .eyebrow, .mono, .metric-label, .badge, .state, .meta-label, .footer { font-family: var(--code-font); }
+  .eyebrow { color: var(--blue); font-size: 12px; font-weight: 700; letter-spacing: .12em; }
+  h1 { margin: 5px 0 2px; font-size: 34px; letter-spacing: -.035em; }
+  .subtitle { margin: 0; color: var(--muted); font-size: 15px; }
+  .topbar-right { display: flex; align-items: center; gap: 11px; flex-shrink: 0; }
+  .clinic { color: var(--muted); font-size: 14px; text-align: right; }
+  .badge { padding: 7px 10px; border: 1px solid #467096; border-radius: 9px; color: var(--blue); font-size: 12px; font-weight: 700; }
+  .badge.status { border-color: #3e806f; background: #102f2a; color: var(--cyan); }
+  .content { padding: 24px 30px 25px; }
+  .metric-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 13px; }
+  .metric-card { min-height: 112px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 14px; background: rgba(19, 36, 58, .9); }
+  .metric-card:last-child { border-color: #3b756c; background: rgba(18, 52, 49, .65); }
+  .metric-label { color: var(--muted); font-size: 12px; }
+  .metric-value { margin-top: 7px; font-size: 30px; font-weight: 800; letter-spacing: -.045em; }
+  .metric-detail { margin-top: 3px; color: var(--faint); font-size: 12px; }
+  .plan-strip { display: grid; grid-template-columns: 1.55fr repeat(4, 1fr); gap: 13px; align-items: stretch; margin-top: 14px; }
+  .plan-name, .meta-card { padding: 14px 17px; border: 1px solid var(--line); border-radius: 13px; background: rgba(15, 29, 48, .9); }
+  .plan-name { display: flex; align-items: center; font-size: 18px; font-weight: 800; }
+  .meta-label { color: var(--faint); font-size: 10px; }
+  .meta-value { margin-top: 4px; color: var(--text); font-family: var(--code-font); font-size: 12px; overflow-wrap: anywhere; }
+  .main-grid { display: grid; grid-template-columns: 1.45fr 1fr; gap: 14px; margin-top: 14px; }
+  .panel { padding: 19px; border: 1px solid var(--line); border-radius: 15px; background: rgba(19, 36, 58, .72); }
+  .panel-heading { display: flex; justify-content: space-between; gap: 18px; align-items: baseline; margin-bottom: 14px; }
+  h2 { margin: 0; font-size: 20px; }
+  h3 { margin: 0; font-size: 16px; }
+  .section-meta { color: var(--faint); font-size: 12px; text-align: right; }
+  .occurrence-list, .selection-list, .task-list, .boundary-list, .validation-list, .result-list { display: grid; gap: 10px; }
+  .occurrence { display: grid; grid-template-columns: 48px 1fr auto; gap: 14px; align-items: center; min-height: 101px; padding: 14px; border: 1px solid var(--line); border-radius: 13px; background: #102038; }
+  .occurrence.ready { border-color: #447f93; background: #10283b; }
+  .occurrence.complete { border-color: #387c68; background: #102b2b; }
+  .number { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 11px; background: #193552; color: var(--blue); font-family: var(--code-font); font-weight: 700; }
+  .complete .number { background: #17463c; color: var(--green); }
+  .item-title { font-size: 17px; font-weight: 800; }
+  .item-detail { margin-top: 4px; color: var(--muted); font-size: 13px; }
+  .occurrence-side { min-width: 185px; text-align: right; }
+  .state { color: var(--blue); font-size: 11px; font-weight: 700; }
+  .complete .state { color: var(--green); }
+  .timing { margin-top: 7px; color: var(--amber); font-size: 12px; }
+  .right-stack { display: grid; gap: 14px; }
+  .task, .boundary, .relation { padding: 13px 14px; border: 1px solid var(--line-soft); border-radius: 12px; background: #102038; }
+  .task { display: grid; grid-template-columns: 31px 1fr; gap: 11px; }
+  .task-no { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; background: #1a3c59; color: var(--blue); font-family: var(--code-font); font-size: 12px; }
+  .small-detail { margin-top: 3px; color: var(--muted); font-size: 12px; }
+  .boundary strong { color: var(--amber); }
+  .selection { display: grid; grid-template-columns: 92px 1fr auto; gap: 13px; align-items: center; min-height: 77px; padding: 12px 13px; border: 1px solid var(--line); border-radius: 12px; background: #102038; }
+  .selection.selected { border-color: #447f93; background: #10283b; }
+  .selection.required { border-color: #387c68; background: #102b2b; }
+  .selection.excluded { opacity: .56; border-style: dashed; }
+  .selection-state { color: var(--blue); font-family: var(--code-font); font-size: 11px; font-weight: 700; }
+  .required .selection-state { color: var(--green); }
+  .excluded .selection-state { color: var(--faint); }
+  .version { color: var(--muted); font-family: var(--code-font); font-size: 11px; }
+  .relation { border-left: 3px solid var(--cyan); }
+  .relation-kind { color: var(--cyan); font-family: var(--code-font); font-size: 11px; font-weight: 700; }
+  .relation-name { margin-top: 4px; font-size: 15px; font-weight: 800; }
+  .validation-row, .result-row { display: flex; justify-content: space-between; gap: 16px; padding: 10px 12px; border-bottom: 1px solid var(--line-soft); color: var(--muted); font-size: 13px; }
+  .validation-row:last-child, .result-row:last-child { border-bottom: 0; }
+  .pass { color: var(--green); font-family: var(--code-font); font-weight: 700; }
+  .result-value { color: var(--text); font-family: var(--code-font); text-align: right; }
+  .notice { margin-top: 14px; padding: 13px 15px; border: 1px solid #7a633a; border-radius: 12px; background: #2b2417; color: var(--amber); font-size: 13px; }
+  .footer { padding: 14px 30px 16px; border-top: 1px solid var(--line-soft); color: var(--faint); font-size: 11px; text-align: center; }
+</style>
+</head>
+<body data-locale="en" data-workflow-ready="true" data-screen="package">
+  <main class="canvas">
+    <section class="window" aria-label="Package execution contract management">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">CLINIC APPOINTMENT · OPERATIONS DATA VIEW</div>
+          <h1>Package execution contract management</h1>
+          <p class="subtitle">Review purchase-time choices, exact component versions, and execution relationships in one view.</p>
+        </div>
+        <div class="topbar-right">
+          <div class="clinic">Clinic A · care operations<br />Source-backed operations mockup · no patient identifiers</div>
+          <span class="badge">STAFF</span>
+          <span class="badge status">REVISION ACTIVE</span>
+        </div>
+      </header>
+      <div class="content">
+        <section class="metric-grid" aria-label="summary metrics">
+    <article class="metric-card">
+      <div class="metric-label">Selection rule</div>
+      <div class="metric-value">Choose 2 of 3</div>
+      <div class="metric-detail">Selection group care</div>
+    </article>
+    <article class="metric-card">
+      <div class="metric-label">Selected components</div>
+      <div class="metric-value">2</div>
+      <div class="metric-detail">Laser toning · soothing mask</div>
+    </article>
+    <article class="metric-card">
+      <div class="metric-label">Executable treatments</div>
+      <div class="metric-value">3</div>
+      <div class="metric-detail">Including required diagnosis</div>
+    </article>
+    <article class="metric-card">
+      <div class="metric-label">Validation</div>
+      <div class="metric-value">5/5</div>
+      <div class="metric-detail">Structural checks passed</div>
+    </article></section>
+
+    <section class="plan-strip" aria-label="plan metadata">
+      <div class="plan-name">Personalized skin-care package execution contract</div>
+
+        <div class="meta-card">
+          <div class="meta-label">planRef</div>
+          <div class="meta-value">plan_2C7D…A118</div>
+        </div>
+        <div class="meta-card">
+          <div class="meta-label">packageProduct</div>
+          <div class="meta-value">skin-care · v3</div>
+        </div>
+        <div class="meta-card">
+          <div class="meta-label">sourceVersion</div>
+          <div class="meta-value">4</div>
+        </div>
+        <div class="meta-card">
+          <div class="meta-label">snapshotHash</div>
+          <div class="meta-value">8c10…e52f</div>
+        </div>
+    </section>
+
+    <div class="main-grid">
+      <section class="panel" aria-labelledby="selection-title">
+        <div class="panel-heading">
+          <h2 id="selection-title">Components fixed by the purchase</h2>
+          <div class="section-meta">Actual choices, not the full candidate list</div>
+        </div>
+        <div class="selection-list">
+
+            <article class="selection required">
+              <div class="selection-state">REQUIRED</div>
+              <div><div class="item-title">Skin diagnosis</div><div class="small-detail">First visit · separate</div></div>
+              <div class="version">skin-diagnosis · v2</div>
+            </article>
+            <article class="selection selected">
+              <div class="selection-state">SELECTED</div>
+              <div><div class="item-title">Laser toning</div><div class="small-detail">At least 3 days after diagnosis</div></div>
+              <div class="version">laser-toning · v8</div>
+            </article>
+            <article class="selection excluded">
+              <div class="selection-state">EXCLUDED</div>
+              <div><div class="item-title">Intensive hydration</div><div class="small-detail">Candidate not selected</div></div>
+              <div class="version">hydration · v5</div>
+            </article>
+            <article class="selection selected">
+              <div class="selection-state">SELECTED</div>
+              <div><div class="item-title">Soothing mask</div><div class="small-detail">May share a visit with laser toning</div></div>
+              <div class="version">soothing-mask · v4</div>
+            </article>
+        </div>
+        <div class="notice">Passing validation means the contract can be stored; it does not prove visit availability or a confirmed reservation.</div>
+      </section>
+      <div class="right-stack">
+        <section class="panel" aria-labelledby="relation-title">
+          <div class="panel-heading"><h2 id="relation-title">Execution and visit relationships</h2></div>
+
+            <article class="relation">
+              <div class="relation-kind">BLOCKING</div>
+              <div class="relation-name">Skin diagnosis → laser toning</div>
+              <div class="small-detail">Minimum 3 days after completion</div>
+            </article>
+            <article class="relation">
+              <div class="relation-kind">CAN_SHARE_VISIT</div>
+              <div class="relation-name">Laser toning — soothing mask</div>
+              <div class="small-detail">May be placed in one visit</div>
+            </article>
+        </section>
+        <section class="panel" aria-labelledby="validation-title">
+          <div class="panel-heading"><h2 id="validation-title">Execution contract validation</h2></div>
+          <div class="validation-list">
+            <div class="validation-row"><span>Processing bounds</span><span class="pass">PASS</span></div><div class="validation-row"><span>Unique component versions</span><span class="pass">PASS</span></div><div class="validation-row"><span>Selection count 2/2</span><span class="pass">PASS</span></div><div class="validation-row"><span>Provenance and references</span><span class="pass">PASS</span></div><div class="validation-row"><span>Acyclic dependencies</span><span class="pass">PASS</span></div>
+          </div>
+        </section>
+        <section class="panel" aria-labelledby="result-title">
+          <div class="panel-heading"><h2 id="result-title">Persistence result</h2></div>
+          <div class="result-list">
+            <div class="result-row"><span>Plan revision</span><span class="result-value">revision 4 · ACTIVE</span></div><div class="result-row"><span>Treatments</span><span class="result-value">Stored as 3 rows</span></div><div class="result-row"><span>Relationships</span><span class="result-value">1 dependency · 1 grouping</span></div><div class="result-row"><span>Reservation state</span><span class="result-value">No proposal or confirmation yet</span></div>
+          </div>
+        </section>
+      </div>
+    </div>
+      </div>
+      <footer class="footer">Passing validation means the contract can be stored; it does not prove visit availability or a confirmed reservation.</footer>
+    </section>
+  </main>
+</body>
+</html>

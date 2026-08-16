@@ -1,0 +1,24 @@
+{
+  "kind": "workflow",
+  "source": {
+    "question": "첫 회차 완료 뒤 운영자는 남은 회차와 다음 예약 가능 구간을 어떤 데이터로 확인하는가?",
+    "revision": "dbf73178ab1781fdfe6375395bfafa13249917b5",
+    "paths": [
+      "src/content/docs/ko/blog/clinic-appointment-n-visit-purchase-plan.mdx",
+      "src/content/docs/blog/clinic-appointment-n-visit-purchase-plan.mdx",
+      "public/ko/visual-companions/clinic-appointment/appointment-plan-and-capacity/index.html",
+      "public/visual-companions/clinic-appointment/product-scheduling-classification/index.html"
+    ]
+  },
+  "nodes": [
+    { "id": "summary", "label": "총·완료·남은 회차와 다음 예약 가능 구간", "source": "clinic-appointment-n-visit-purchase-plan.mdx" },
+    { "id": "plan", "label": "구매와 상품 버전에 연결된 활성 방문 계획", "source": "AppointmentPlanFactory.kt" },
+    { "id": "occurrences", "label": "완료 1회차와 계획 상태인 2·3회차", "source": "TreatmentFulfillmentHandler.kt" },
+    { "id": "window", "label": "선행 회차 실제 완료 시각 기준 예약 가능 구간", "source": "AppointmentProposalService.kt" },
+    { "id": "tasks", "label": "희망 일정 확인, 수용량 조회, 정확한 시간 제안", "source": "clinic-appointment-n-visit-purchase-plan.mdx" },
+    { "id": "boundaries", "label": "미래 예약, 완료 이력, 자동 인접 의존성의 경계", "source": "clinic-appointment-n-visit-purchase-plan.mdx" }
+  ],
+  "edges": [],
+  "behavior": { "branches": 0, "loops": 0 },
+  "repairs": []
+}
