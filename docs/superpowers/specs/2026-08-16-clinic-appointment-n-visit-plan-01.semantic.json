@@ -25,6 +25,7 @@
   "repairs": [
     {"target": "branch-corridors", "reason": "keep rejected and current representations on independent vertical corridors", "touches": 2},
     {"target": "interval-meaning", "reason": "separate no clinical delay from automatic same-visit grouping", "touches": 2},
-    {"target": "arrowhead-color", "reason": "match each arrowhead fill to its connector stroke", "touches": 4}
+    {"target": "arrowhead-color", "reason": "match each arrowhead fill to its connector stroke", "touches": 4},
+    {"target": "purchase-branch-corner-clearance", "reason": "keep at least 8 pixels on both sides of every rounded purchase-branch corner", "touches": 2}
   ]
 }

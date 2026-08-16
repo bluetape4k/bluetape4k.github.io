@@ -181,8 +181,8 @@ const renderComparison = (locale, copy) => svgShell({
   ${badge(copy.currentBadge, 425, 530, locale === 'ko' ? 100 : 112, '#2dd4bf')}
   ${textLines(copy.currentNote, 620, 706, 'note', 22)}
   <g id="comparison-edges">
-    <path class="connector red-line" data-connector="purchase-wrong" data-source-node="purchase" data-target-node="wrong-reservations" d="M 320 395 H 350 Q 375 395 375 370 V 325 Q 375 300 380 300 H 400"/>
-    <path class="connector green-line" data-connector="purchase-plan" data-source-node="purchase" data-target-node="visit-plan" d="M 320 485 H 350 Q 375 485 375 510 V 605 Q 375 630 380 630 H 400"/>
+    <path class="connector red-line" data-connector="purchase-wrong" data-source-node="purchase" data-target-node="wrong-reservations" d="M 320 395 H 350 Q 375 395 375 370 V 325 Q 375 300 385 300 H 400"/>
+    <path class="connector green-line" data-connector="purchase-plan" data-source-node="purchase" data-target-node="visit-plan" d="M 320 485 H 350 Q 375 485 375 510 V 605 Q 375 630 385 630 H 400"/>
     <path class="connector blue-line" data-connector="plan-no-gap" data-source-node="visit-plan" data-target-node="no-gap" d="M 840 570 H 960"/>
     <path class="connector amber-line" data-connector="plan-interval-window" data-source-node="visit-plan" data-target-node="interval-window" d="M 840 690 H 900 Q 925 690 925 715 V 735 Q 925 760 940 760 H 960"/>
   </g>
