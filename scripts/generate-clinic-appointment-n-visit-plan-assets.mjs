@@ -228,15 +228,18 @@ const renderLifecycle = (locale, copy) => svgShell({
 
 await mkdir(outputDirectory, { recursive: true });
 
+const normalizeSvg = (svg) => `${svg.replace(/[ \t]+$/gm, '').trimEnd()}\n`;
+
 for (const [locale, copy] of Object.entries(locales)) {
   const assets = [
     [`clinic-appointment-n-visit-plan-01-${locale}`, renderComparison(locale, copy.comparison)],
     [`clinic-appointment-n-visit-plan-02-${locale}`, renderLifecycle(locale, copy.lifecycle)],
   ];
 
-  for (const [stem, svg] of assets) {
+  for (const [stem, source] of assets) {
     const svgPath = resolve(outputDirectory, `${stem}.svg`);
     const pngPath = resolve(outputDirectory, `${stem}.png`);
+    const svg = normalizeSvg(source);
     await writeFile(svgPath, svg, 'utf8');
     execFileSync('xmllint', ['--noout', svgPath], { stdio: 'inherit' });
     execFileSync('cairosvg', [svgPath, '-o', pngPath, '-s', '2'], { stdio: 'inherit' });

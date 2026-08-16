@@ -33,11 +33,11 @@
   <rect x="30" y="28" width="1380" height="904" rx="30" fill="none" stroke="#263a5e" stroke-width="2"/>
   <circle cx="1300" cy="120" r="220" fill="#7c3aed" opacity=".07"/>
   <circle cx="120" cy="850" r="210" fill="#0891b2" opacity=".06"/>
-  
+
   <text class="title title-compact" x="70" y="84">Preserve Purchased Rights as Occurrences and Revision History</text>
   <text class="subtitle" x="72" y="120">The current implementation expands occurrences and records completion or refund outcomes in new plan revisions.</text>
   <g filter="url(#shadow)">
-    
+
   <g class="node-card">
     <rect id="purchase-handler" x="60" y="180" width="290" height="210" rx="24" fill="#0f2038" stroke="#60a5fa" stroke-width="3"/>
     <text class="card-title compact-card-title" x="205" y="226" text-anchor="middle">PurchaseCompleted</text>
@@ -45,7 +45,7 @@
     <text class="body compact-body" x="205" y="314" text-anchor="middle">receive purchase event</text>
 <text class="body compact-body" x="205" y="342" text-anchor="middle">deduplicate replay</text>
   </g>
-    
+
   <g class="node-card">
     <rect id="plan-factory" x="420" y="180" width="290" height="210" rx="24" fill="#0f2038" stroke="#60a5fa" stroke-width="3"/>
     <text class="card-title compact-card-title" x="565" y="226" text-anchor="middle">AppointmentPlan</text>
@@ -53,7 +53,7 @@
     <text class="body compact-body" x="565" y="314" text-anchor="middle">read repeatCount</text>
 <text class="body compact-body" x="565" y="342" text-anchor="middle">create plan and first revision</text>
   </g>
-    
+
   <g class="node-card">
     <rect id="planned-treatments" x="780" y="170" width="600" height="220" rx="24" fill="#10333b" stroke="#2dd4bf" stroke-width="3"/>
     <text class="card-title" x="1080" y="226" text-anchor="middle">PlannedTreatment 1..3</text>
@@ -61,21 +61,21 @@
 <text class="body" x="1080" y="300" text-anchor="middle">earliestStartAt = null</text>
 <text class="body" x="1080" y="328" text-anchor="middle">latestStartAt = null</text>
   </g>
-    
+
   <g class="node-card">
     <rect id="completion-fact" x="70" y="520" width="360" height="190" rx="24" fill="#10333b" stroke="#2dd4bf" stroke-width="3"/>
     <text class="card-title" x="250" y="582" text-anchor="middle">Receive completion fact</text>
     <text class="body compact-body" x="250" y="632" text-anchor="middle">only completed occurrence → COMPLETED</text>
 <text class="body compact-body" x="250" y="660" text-anchor="middle">other occurrences stay planned</text>
   </g>
-    
+
   <g class="node-card">
     <rect id="new-revision" x="520" y="520" width="360" height="190" rx="24" fill="#10333b" stroke="#2dd4bf" stroke-width="3"/>
     <text class="card-title" x="700" y="582" text-anchor="middle">Append a new revision</text>
     <text class="body compact-body" x="700" y="632" text-anchor="middle">preserve previous revision</text>
 <text class="body compact-body" x="700" y="660" text-anchor="middle">not a mutable counter decrement</text>
   </g>
-    
+
   <g class="node-card">
     <rect id="refund-fact" x="980" y="480" width="360" height="170" rx="24" fill="#312818" stroke="#fbbf24" stroke-width="3"/>
     <text class="card-title compact-card-title" x="1160" y="540" text-anchor="middle">External REFUNDED</text>
@@ -83,7 +83,7 @@
     <text class="body compact-body" x="1160" y="596" text-anchor="middle">refund eligibility and amount</text>
 <text class="body compact-body" x="1160" y="620" text-anchor="middle">belong to an external authority</text>
   </g>
-    
+
   <g class="node-card">
     <rect id="refund-outcome" x="980" y="710" width="360" height="170" rx="24" fill="#312818" stroke="#fbbf24" stroke-width="3"/>
     <text class="card-title" x="1160" y="766" text-anchor="middle">Cancel linked obligations</text>
@@ -92,10 +92,10 @@
 <text class="body compact-body" x="1160" y="850" text-anchor="middle">independent NON_BLOCKING stays</text>
   </g>
   </g>
-  
+
   <rect x="92" y="540" width="126" height="30" rx="15" fill="#2dd4bf" opacity=".2"/>
   <text class="badge" x="155" y="561" text-anchor="middle" fill="#2dd4bf">Actual completion</text>
-  
+
   <rect x="1002" y="500" width="78" height="30" rx="15" fill="#fbbf24" opacity=".2"/>
   <text class="badge" x="1041" y="521" text-anchor="middle" fill="#fbbf24">Exception</text>
   <g id="lifecycle-edges">
@@ -107,7 +107,7 @@
   </g>
   <g id="implementation-gap-note" filter="url(#shadow)">
     <rect id="implementation-gap" x="70" y="770" width="810" height="120" rx="22" fill="#241d31" stroke="#c084fc" stroke-width="3" stroke-dasharray="10 10"/>
-    
+
   <rect x="94" y="790" width="124" height="30" rx="15" fill="#c084fc" opacity=".2"/>
   <text class="badge" x="156" y="811" text-anchor="middle" fill="#c084fc">Current boundary</text>
     <text class="gap-title" x="475" y="834" text-anchor="middle">Interval Values Persist; Enforcement Adjacency Does Not</text>
