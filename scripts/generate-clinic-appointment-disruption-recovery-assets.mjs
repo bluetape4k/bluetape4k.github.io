@@ -152,8 +152,6 @@ function renderSequence(locale) {
   const messages = copy.messages.map(([label, from, to, tone], index) => {
     const start = participantXs[from];
     const end = participantXs[to];
-    const left = Math.min(start, end);
-    const right = Math.max(start, end);
     const idealWidth = Math.min(locale === 'ko' ? 500 : 560, Math.max(270, label.length * (locale === 'ko' ? 14 : 8.5) + 72));
     const pillWidth = idealWidth;
     const pillX = (start + end - pillWidth) / 2;
@@ -199,8 +197,6 @@ const screenCopy = {
     select: 'Reschedule here', auto: 'Auto reschedule', noCandidate: 'No-candidate task', warningTitle: 'Current implementation boundary', warning: 'Confirming a candidate immediately creates a CONFIRMED replacement. Patient-consent evidence and automatic compensation are not implemented by this screen.', footer: 'Illustrative values / no patient identifiers / not a production screenshot',
   },
 };
-
-const screenText = (locale, text, x, y, className = 'ui-label', extra = '') => `<text class="${className}" x="${x}" y="${y}" ${extra}>${escapeXml(text)}</text>`;
 
 function renderScreen(locale) {
   const copy = screenCopy[locale];

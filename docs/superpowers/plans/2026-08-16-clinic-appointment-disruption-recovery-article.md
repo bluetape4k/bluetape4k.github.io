@@ -29,12 +29,12 @@ Recheck every implementation claim against the current `clinic-appointment` `dev
 
 - `appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/ClosureRescheduleService.kt`
 - `appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/EquipmentUnavailabilityService.kt`
-- `appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/reschedule/RescheduleController.kt`
-- `appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/reschedule/RescheduleBatchStreamController.kt`
-- `appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/equipment/EquipmentUnavailabilityController.kt`
-- `appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/SolverService.kt`
-- `appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/policy/OperationalSchedulingPolicies.kt`
-- `appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/policy/SchedulingPolicyValidator.kt`
+- `appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/controller/RescheduleController.kt`
+- `appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/controller/RescheduleBatchStreamController.kt`
+- `appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/controller/EquipmentUnavailabilityController.kt`
+- `appointment-solver/src/main/kotlin/io/bluetape4k/clinic/appointment/solver/service/SolverService.kt`
+- `appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/policy/OperationalSchedulingPolicies.kt`
+- `appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/service/SchedulingPolicyValidator.kt`
 - matching Angular reschedule and equipment-unavailability feature components
 - booking-reliability responsibility enum/evaluator and waitlist recovery-credit API
 
@@ -188,24 +188,24 @@ Expected: all Clinic Appointment series assertions pass with 22 bilingual entrie
 **Files:**
 - Modify only files found defective by the checks above.
 
-- [ ] **Step 1: Run content and asset checks**
+- [x] **Step 1: Run content and asset checks**
 
 Run `git diff --check`, the Clinic Appointment series test, relevant navigation tests, and all diagram audits for both locales.
 
-- [ ] **Step 2: Build the site**
+- [x] **Step 2: Build the site**
 
 Run `/Users/debop/work/bluetape4k/bluetape4k.github.io/node_modules/.bin/astro build` from the isolated worktree.
 
 Expected: exit 0 with both `/ko/blog/clinic-appointment-disruption-recovery/` and `/blog/clinic-appointment-disruption-recovery/` generated.
 
-- [ ] **Step 3: Start a local preview and inspect both routes**
+- [x] **Step 3: Start a local preview and inspect both routes**
 
 Open both routes in a browser, verify the hero appears once, the body UI and sequence are visible, all assets return HTTP 200, series navigation highlights Operations 3, and both body visuals open in the large-view overlay.
 
-- [ ] **Step 4: Run final source and prose review**
+- [x] **Step 4: Run final source and prose review**
 
 Recheck the source anchors, Korean terminology, English parity, unique hero composition, and the current/future boundary matrix. Record any unavoidable gap instead of implying unverified behavior.
 
-- [ ] **Step 5: Mark workflow checks with fresh evidence**
+- [x] **Step 5: Mark workflow checks with fresh evidence**
 
 Pass `bilingual_article`, `visual_audit`, `site_build`, `route_preview`, and `final_review` only after their corresponding commands and browser evidence succeed.
