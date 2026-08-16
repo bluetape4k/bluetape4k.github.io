@@ -25,7 +25,7 @@
     {"id":"recheck","from":"service","to":"store","kind":"recheck-state-and-version","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
     {"id":"pending-write","from":"service","to":"outbox","kind":"write-pending-history-status-candidates","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
     {"id":"select","from":"staff","to":"api","kind":"select-or-auto-reschedule","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
-    {"id":"confirm","from":"api","to":"service","kind":"confirm-candidate-with-expected-version","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
+    {"id":"confirm","from":"api","to":"service","kind":"confirm-scoped-candidate","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
     {"id":"atomic-confirm","from":"service","to":"outbox","kind":"atomic-replacement-original-candidate-outbox-write","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"},
     {"id":"terminal","from":"service","to":"outcome","kind":"terminal-outcome","source":"docs/superpowers/specs/2026-08-16-issue-286-disruption-recovery-article-design.md"}
   ],
