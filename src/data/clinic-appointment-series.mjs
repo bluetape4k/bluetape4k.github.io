@@ -112,6 +112,13 @@ export const clinicAppointmentSeries = Object.freeze([
     en: '[Implementation 7] Reviews and Operations Start the Next Development Cycle',
   },
   {
+    id: 'implementation-8',
+    group: 'implementation',
+    slug: 'clinic-appointment-n-visit-purchase-plan',
+    ko: '[구현 8] N회 상품 구매를 방문 계획으로 펼치는 방법',
+    en: '[Implementation 8] Expanding an N-Visit Purchase into a Visit Plan',
+  },
+  {
     id: 'operations-1-1',
     group: 'operations',
     slug: 'clinic-appointment-waitlist-core',
