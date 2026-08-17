@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1900" viewBox="0 0 1440 1900" role="img" aria-labelledby="title desc" data-locale="ko">
-<title id="title">CRM 프로필 변경과 예약 재평가의 경계</title><desc id="desc">PROPOSED·HELD만 다시 평가하고, CONFIRMED 방문 약속은 보호합니다.</desc>
+<title id="title">CRM 프로필 변경과 예약 재평가의 경계</title><desc id="desc">PROPOSED·HELD만 다시 평가하고, CONFIRMED 예약은 보호합니다.</desc>
 <defs>
   <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#071323"/><stop offset="1" stop-color="#101a31"/></linearGradient>
   <marker id="blueArrow" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#60a5fa" data-solid-head="true"/></marker>
@@ -36,7 +36,7 @@
 </style>
 </defs>
 <rect width="1440" height="1900" fill="url(#canvas)"/><rect class="frame" x="24" y="24" width="1392" height="1852" rx="32"/>
-<text class="title" x="62" y="76">CRM 프로필 변경과 예약 재평가의 경계</text><text class="subtitle" x="64" y="108">PROPOSED·HELD만 다시 평가하고, CONFIRMED 방문 약속은 보호합니다.</text>
+<text class="title" x="62" y="76">CRM 프로필 변경과 예약 재평가의 경계</text><text class="subtitle" x="64" y="108">PROPOSED·HELD만 다시 평가하고, CONFIRMED 예약은 보호합니다.</text>
 <rect x="58" y="126" width="248" height="34" rx="17" fill="#12243a" stroke="#3a5877"/><text class="badge" x="182" y="148" text-anchor="middle">SCOPE · 프로필 재평가</text>
 <rect x="318" y="126" width="250" height="34" rx="17" fill="#12243a" stroke="#3a5877"/><text class="badge" x="443" y="148" text-anchor="middle">VERSION · revision fence</text>
 <rect x="580" y="126" width="230" height="34" rx="17" fill="#12243a" stroke="#3a5877"/><text class="badge" x="695" y="148" text-anchor="middle">ROLE · STAFF / ADMIN</text>
@@ -62,7 +62,7 @@
 <g><rect class="pill" x="862.5" y="1300" width="275" height="38" rx="19" stroke="#fb7185"/><circle cx="882.5" cy="1319" r="13" fill="#fb7185" fill-opacity=".2" stroke="#fb7185"/><text class="num" x="882.5" y="1324" text-anchor="middle">9</text><text class="labelText" x="905.5" y="1324">대상 revision 재확인</text></g><path class="call red-line" data-source-node="worker" data-target-node="store" d="M710 1350 H1290"/>
 <rect id="decision" class="decision" x="44" y="1468" width="1352" height="330" rx="26"/><rect x="490" y="1446" width="460" height="44" rx="22" fill="#19223a" stroke="#a78bfa" stroke-width="2"/><text class="decision-title" x="720" y="1475" text-anchor="middle">최종 상태 결정</text><text class="role" x="720" y="1730" text-anchor="middle">상태·정책·revision을 확인한 뒤 결과를 하나만 기록합니다.</text><rect id="branch-0" x="74" y="1570" width="306" height="118" rx="20" fill="#101f34" stroke="#60a5fa" stroke-width="2"/><text class="outcome" x="227" y="1610" text-anchor="middle">PROPOSED</text><text class="role" x="227" y="1644" text-anchor="middle">제안 교체 또는 유지</text><path class="call blue-line" data-source-node="decision" data-target-node="branch-0" d="M227 1490 V1570"/>
 <rect id="branch-1" x="404" y="1570" width="306" height="118" rx="20" fill="#101f34" stroke="#2dd4bf" stroke-width="2"/><text class="outcome" x="557" y="1610" text-anchor="middle">HELD</text><text class="role" x="557" y="1644" text-anchor="middle">hold 유지 또는 교체</text><path class="call cyan-line" data-source-node="decision" data-target-node="branch-1" d="M557 1490 V1570"/>
-<rect id="branch-2" x="734" y="1570" width="306" height="118" rx="20" fill="#101f34" stroke="#a78bfa" stroke-width="2"/><text class="outcome" x="887" y="1610" text-anchor="middle">CONFIRMED</text><text class="role" x="887" y="1644" text-anchor="middle">확정 방문 약속 보호</text><path class="call purple-line" data-source-node="decision" data-target-node="branch-2" d="M887 1490 V1570"/>
+<rect id="branch-2" x="734" y="1570" width="306" height="118" rx="20" fill="#101f34" stroke="#a78bfa" stroke-width="2"/><text class="outcome" x="887" y="1610" text-anchor="middle">CONFIRMED</text><text class="role" x="887" y="1644" text-anchor="middle">확정 예약 보호</text><path class="call purple-line" data-source-node="decision" data-target-node="branch-2" d="M887 1490 V1570"/>
 <rect id="branch-3" x="1064" y="1570" width="306" height="118" rx="20" fill="#101f34" stroke="#fb7185" stroke-width="2"/><text class="outcome" x="1217" y="1610" text-anchor="middle">실패</text><text class="role" x="1217" y="1644" text-anchor="middle">RETRY_WAIT / QUARANTINE</text><path class="call red-line" data-source-node="decision" data-target-node="branch-3" d="M1217 1490 V1570"/>
-<text class="role" x="720" y="1832" text-anchor="middle">실패는 재시도와 격리를 구분하고, 확정 방문 약속은 보호합니다.</text>
+<text class="role" x="720" y="1832" text-anchor="middle">실패는 재시도와 격리를 구분하고, 확정 예약은 보호합니다.</text>
 </svg>

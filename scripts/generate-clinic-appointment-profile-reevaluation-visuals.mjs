@@ -62,7 +62,7 @@ const definitions = (locale) => `<defs>
 const flowCopy = {
   ko: {
     title: 'CRM 프로필 변경과 예약 재평가의 경계',
-    subtitle: 'PROPOSED·HELD만 다시 평가하고, CONFIRMED 방문 약속은 보호합니다.',
+    subtitle: 'PROPOSED·HELD만 다시 평가하고, CONFIRMED 예약은 보호합니다.',
     badges: ['SCOPE · 프로필 재평가', 'VERSION · revision fence', 'ROLE · STAFF / ADMIN', 'PRIVACY · 최소 이벤트'],
     participants: [
       ['CRM 이벤트', '최소 변경 신호'],
@@ -87,7 +87,7 @@ const flowCopy = {
     branches: [
       ['PROPOSED', '제안 교체 또는 유지', 'blue'],
       ['HELD', 'hold 유지 또는 교체', 'cyan'],
-      ['CONFIRMED', '확정 방문 약속 보호', 'purple'],
+      ['CONFIRMED', '확정 예약 보호', 'purple'],
       ['실패', 'RETRY_WAIT / QUARANTINE', 'red'],
     ],
   },
@@ -170,7 +170,7 @@ ${definitions(locale)}
 ${badges}${phases}${headers}${lifelines}<rect class="activation" x="700" y="360" width="20" height="1000" rx="8"/><rect class="activation" x="990" y="720" width="20" height="240" rx="8"/>
 ${messages}
 <rect id="decision" class="decision" x="44" y="1468" width="1352" height="330" rx="26"/><rect x="490" y="1446" width="460" height="44" rx="22" fill="#19223a" stroke="${colors.purple}" stroke-width="2"/><text class="decision-title" x="720" y="1475" text-anchor="middle">${escapeXml(copy.decision)}</text><text class="role" x="720" y="1730" text-anchor="middle">${locale === 'ko' ? '상태·정책·revision을 확인한 뒤 결과를 하나만 기록합니다.' : 'Record one outcome after checking state, policy, and revision.'}</text>${branchCards}
-<text class="role" x="720" y="1832" text-anchor="middle">${locale === 'ko' ? '실패는 재시도와 격리를 구분하고, 확정 방문 약속은 보호합니다.' : 'Separate retry from quarantine, and protect confirmed visit commitments.'}</text>
+<text class="role" x="720" y="1832" text-anchor="middle">${locale === 'ko' ? '실패는 재시도와 격리를 구분하고, 확정 예약은 보호합니다.' : 'Separate retry from quarantine, and protect confirmed visit commitments.'}</text>
 </svg>`;
 }
 

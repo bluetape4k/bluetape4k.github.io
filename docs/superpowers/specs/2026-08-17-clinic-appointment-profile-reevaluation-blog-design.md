@@ -3,7 +3,7 @@
 ## 문서 정보
 
 - 시리즈: Clinic Appointment 운영 확장 4
-- 한국어 제목: `[운영 확장 4] CRM 프로필이 바뀌어도 확정 방문 약속은 자동으로 바꾸지 않는다`
+- 한국어 제목: `[운영 확장 4] CRM 프로필이 바뀌어도 확정 예약은 자동으로 변경하지 않는다`
 - 영어 제목: `[Operations 4] Profile Changes Do Not Rewrite Confirmed Visit Commitments`
 - 원본 시리즈 이슈: [clinic-appointment #275](https://github.com/bluetape4k/clinic-appointment/issues/275)
 - 원본 글 작성 이슈: [clinic-appointment #287](https://github.com/bluetape4k/clinic-appointment/issues/287)
@@ -17,14 +17,14 @@
 
 주 독자는 CRM 프로필 변경을 예약에 반영해야 하는 병원 `STAFF`다. 개발자는 CRM과 예약
 서비스 사이에서 어떤 데이터만 넘기고 어떤 상태를 보호하는지 확인하고, PO와 병원
-관계자는 프로필 변경이 기존 방문 약속을 언제 다시 검토할 수 있는지와 언제 운영자의
+관계자는 프로필 변경이 기존 예약을 언제 다시 검토할 수 있는지와 언제 운영자의
 확인이 필요한지를 이해할 수 있어야 한다.
 
 이 글의 한 문장 결론은 다음과 같다.
 
 > CRM 프로필이 바뀌었다는 사실은 예약을 다시 평가할 이유가 될 수 있지만, 이미 확정한
-> 방문 약속을 자동으로 덮어쓸 권한은 아니다. `PROPOSED`와 `HELD`만 재평가하고,
-> `CONFIRMED`는 현재 약속·동의·자원 점유를 보호한다.
+> 예약을 자동으로 덮어쓸 권한은 아니다. `PROPOSED`와 `HELD`만 재평가하고,
+> `CONFIRMED`는 현재 예약과 연결된 동의·자원 점유를 보호한다.
 
 글은 CRM의 원본 프로필 계산 방법을 설명하지 않는다. 예약 서비스가 받아야 할 최소
 이벤트, 재평가 대상, 상태별 결과, 실패 복구와 운영 화면의 권한 경계를 설명한다.
@@ -46,7 +46,7 @@
 4. **assessment를 조회한 뒤 최종 상태를 결정한다.** 새 결과가 유효하면 제안을
    교체하거나 hold를 유지한다. 조건을 더 이상 만족하지 않으면 `FALLBACK_TO_PROPOSED`
    또는 `SKIPPED_INELIGIBLE` 같은 결과를 기록한다.
-5. **`CONFIRMED`는 보호한다.** 확정 방문 약속은 CRM 변경만으로 다시 쓰지 않는다.
+5. **`CONFIRMED`는 보호한다.** 확정 예약은 CRM 변경만으로 자동 변경하지 않는다.
    변경이 필요하면 새 제안을 만들고 환자 동의와 운영자의 확정 작업을 별도로 거친다.
 6. **실패와 운영 작업을 분리한다.** 일시적인 assessment 조회 실패는 제한된 재시도와
    `RETRY_WAIT`로 보낼 수 있지만, 개인정보 경계 위반·신뢰할 수 없는 이벤트·반복
@@ -77,7 +77,7 @@
   서비스의 책임처럼 쓰지 않는다.
 - fingerprint가 있다고 해서 예약 서비스가 원본 프로필을 복원할 수 있다고 쓰지 않는다.
 - `CONFIRMED`를 재평가하지 않는 현재 eligibility 규칙을 “모든 프로필 변경은 무시한다”로
-  넓히지 않는다. 확정 약속을 보호하면서 별도 제안을 만들 수 있다는 운영 경계를 함께
+  넓히지 않는다. 확정 예약을 보호하면서 별도 제안을 만들 수 있다는 운영 경계를 함께
   설명한다.
 - `RETRY_WAIT`를 모든 실패의 공통 해결책으로 쓰지 않는다. 개인정보 경계 위반, 신뢰할
   수 없는 이벤트, 반복 assessment 실패는 quarantine이나 수동 검토가 필요하다.
@@ -172,7 +172,7 @@ STAFF 운영 순서를 바로 이해할 수 있도록 별도의 운영 화면 PN
 
 Hero는 Clinic Appointment 시리즈의 밝은 3D 미니어처 분위기를 유지하되, 이전 글의
 대기 목록 조치 큐나 장애 복구 화면을 복제하지 않는다. CRM 프로필 변경 신호가 예약
-서비스의 보호된 확정 방문 약속과 분리되어 들어오는 장면, 운영 화면을 확인하는 STAFF,
+서비스의 보호된 확정 예약과 분리되어 들어오는 장면, 운영 화면을 확인하는 STAFF,
 보호된 `CONFIRMED` 카드와 재평가 가능한 `PROPOSED`·`HELD` 카드의 대비를 중심으로
 구성한다. Hero 안에는 읽어야 할 작은 문자, 환자 정보, 실제 병원 표식을 넣지 않는다.
 
@@ -202,7 +202,7 @@ Hero는 Clinic Appointment 시리즈의 밝은 3D 미니어처 분위기를 유�
 | --- | --- |
 | temporary reservation candidate | 제안 |
 | temporary held reservation | 보류(hold) |
-| confirmed appointment | 확정 방문 약속 |
+| confirmed appointment | 확정 예약 |
 | final state decision | 최종 상태 결정 |
 | message relay | 아웃박스(outbox) |
 | queue item | 재평가 작업 항목 |
