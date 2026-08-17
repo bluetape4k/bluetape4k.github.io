@@ -1,0 +1,46 @@
+{
+  "kind": "sequence",
+  "source": {
+    "question": "How does a CRM profile change reach a bounded reservation reevaluation without rewriting a confirmed visit commitment?",
+    "revision": "clinic-appointment develop f4c3fd36d0de37131e6b4fe0c733b5297878e39a",
+    "paths": [
+      "docs/superpowers/specs/2026-08-17-clinic-appointment-profile-reevaluation-blog-design.md"
+    ]
+  },
+  "nodes": [
+    {"id":"crm","label":"CRM minimum event","source":"docs/superpowers/specs/2026-08-17-clinic-appointment-profile-reevaluation-blog-design.md"},
+    {"id":"api","label":"Reservation API and scope boundary","source":"docs/superpowers/specs/2026-08-17-clinic-appointment-profile-reevaluation-blog-design.md"},
+    {"id":"worker","label":"Profile reevaluation worker","source":"docs/superpowers/specs/2026-08-17-clinic-appointment-profile-reevaluation-blog-design.md"},
+    {"id":"assessment","label":"Assessment provider","source":"docs/superpowers/specs/2026-08-17-clinic-appointment-profile-reevaluation-blog-design.md"},
+    {"id":"store","label":"State, outbox, metrics, and operations store","source":"docs/superpowers/specs/2026-08-17-clinic-appointment-profile-reevaluation-blog-design.md"},
+    {"id":"decision","label":"Final state decision","source":"docs/superpowers/specs/2026-08-17-clinic-appointment-profile-reevaluation-blog-design.md"},
+    {"id":"proposed","label":"PROPOSED proposal outcome","source":"docs/superpowers/specs/2026-08-17-clinic-appointment-profile-reevaluation-blog-design.md"},
+    {"id":"held","label":"HELD hold outcome","source":"docs/superpowers/specs/2026-08-17-clinic-appointment-profile-reevaluation-blog-design.md"},
+    {"id":"confirmed","label":"CONFIRMED commitment protected","source":"docs/superpowers/specs/2026-08-17-clinic-appointment-profile-reevaluation-blog-design.md"},
+    {"id":"failure","label":"Retry or quarantine outcome","source":"docs/superpowers/specs/2026-08-17-clinic-appointment-profile-reevaluation-blog-design.md"}
+  ],
+  "edges": [
+    {"id":"crm-api","from":"crm","to":"api","kind":"minimal-event","source":"docs/superpowers/specs/2026-08-17-clinic-appointment-profile-reevaluation-blog-design.md"},
+    {"id":"api-worker","from":"api","to":"worker","kind":"trust-and-revision-merge","source":"docs/superpowers/specs/2026-08-17-clinic-appointment-profile-reevaluation-blog-design.md"},
+    {"id":"worker-store-targets","from":"worker","to":"store","kind":"eligible-target-read","source":"docs/superpowers/specs/2026-08-17-clinic-appointment-profile-reevaluation-blog-design.md"},
+    {"id":"worker-assessment","from":"worker","to":"assessment","kind":"assessment-lookup","source":"docs/superpowers/specs/2026-08-17-clinic-appointment-profile-reevaluation-blog-design.md"},
+    {"id":"assessment-worker","from":"assessment","to":"worker","kind":"assessment-result","source":"docs/superpowers/specs/2026-08-17-clinic-appointment-profile-reevaluation-blog-design.md"},
+    {"id":"worker-store-outcome","from":"worker","to":"store","kind":"state-outbox-metrics-write","source":"docs/superpowers/specs/2026-08-17-clinic-appointment-profile-reevaluation-blog-design.md"},
+    {"id":"store-api-snapshot","from":"store","to":"api","kind":"operational-snapshot","source":"docs/superpowers/specs/2026-08-17-clinic-appointment-profile-reevaluation-blog-design.md"},
+    {"id":"api-worker-redrive","from":"api","to":"worker","kind":"scoped-redrive","source":"docs/superpowers/specs/2026-08-17-clinic-appointment-profile-reevaluation-blog-design.md"},
+    {"id":"worker-store-revision","from":"worker","to":"store","kind":"target-revision-recheck","source":"docs/superpowers/specs/2026-08-17-clinic-appointment-profile-reevaluation-blog-design.md"},
+    {"id":"worker-decision","from":"worker","to":"decision","kind":"terminal-outcome-decision","source":"docs/superpowers/specs/2026-08-17-clinic-appointment-profile-reevaluation-blog-design.md"},
+    {"id":"decision-proposed","from":"decision","to":"proposed","kind":"proposal-outcome","source":"docs/superpowers/specs/2026-08-17-clinic-appointment-profile-reevaluation-blog-design.md"},
+    {"id":"decision-held","from":"decision","to":"held","kind":"hold-outcome","source":"docs/superpowers/specs/2026-08-17-clinic-appointment-profile-reevaluation-blog-design.md"},
+    {"id":"decision-confirmed","from":"decision","to":"confirmed","kind":"protected-confirmed-outcome","source":"docs/superpowers/specs/2026-08-17-clinic-appointment-profile-reevaluation-blog-design.md"},
+    {"id":"decision-failure","from":"decision","to":"failure","kind":"retry-or-quarantine-outcome","source":"docs/superpowers/specs/2026-08-17-clinic-appointment-profile-reevaluation-blog-design.md"}
+  ],
+  "behavior": {"branches": 3, "loops": 1},
+  "repairs": [
+    {"target":"scope-version-badges","reason":"keep scope and revision-fence context in a fixed row below the title","touches":2},
+    {"target":"message-row-spacing","reason":"reserve independent vertical space above every call line so labels never overlap","touches":9},
+    {"target":"explicit-final-state-decision","reason":"replace an ambiguous dotted terminal rail with a named decision node and four outcomes","touches":5},
+    {"target":"marker-color-parity","reason":"give every sequence connector a marker whose fill matches the line color","touches":9},
+    {"target":"bottom-outcome-margin","reason":"leave a clear footer gap below the outcome cards","touches":3}
+  ]
+}

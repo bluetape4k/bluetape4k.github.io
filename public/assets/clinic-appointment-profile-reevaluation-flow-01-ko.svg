@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1900" viewBox="0 0 1440 1900" role="img" aria-labelledby="title desc" data-locale="ko">
+<title id="title">CRM 프로필 변경과 예약 재평가의 경계</title><desc id="desc">PROPOSED·HELD만 다시 평가하고, CONFIRMED 방문 약속은 보호합니다.</desc>
+<defs>
+  <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#071323"/><stop offset="1" stop-color="#101a31"/></linearGradient>
+  <marker id="blueArrow" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#60a5fa" data-solid-head="true"/></marker>
+<marker id="cyanArrow" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#2dd4bf" data-solid-head="true"/></marker>
+<marker id="amberArrow" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#fbbf24" data-solid-head="true"/></marker>
+<marker id="redArrow" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#fb7185" data-solid-head="true"/></marker>
+<marker id="purpleArrow" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-size="16x16" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#a78bfa" data-solid-head="true"/></marker>
+  <style>
+  .title{font-family:"goorm Sans", "Apple SD Gothic Neo", sans-serif;font-size:37px;font-weight:800;fill:#f4f8ff}
+  .subtitle{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:17px;fill:#a9bad0}
+  .badge{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:13px;font-weight:700;fill:#c9dcf3}
+  .participant{font-family:"goorm Sans", "Apple SD Gothic Neo", sans-serif;font-size:16px;font-weight:800;fill:#f4f8ff}
+  .role{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:12px;fill:#91a8c3}
+  .labelText,.num,.outcome,.decision-title{font-family:"goorm Sans Code", "goorm Sans", monospace}
+  .labelText{font-size:14px;fill:#e7f0fb}
+  .num{font-size:13px;font-weight:800;fill:#f8fbff}
+  .outcome{font-size:13px;font-weight:800;fill:#f8fbff}
+  .header{fill:#13243b;stroke:#395675;stroke-width:2}
+  .frame{fill:none;stroke:#2d4665;stroke-width:2}
+  .lifeline{fill:none;stroke:#516985;stroke-width:2;stroke-dasharray:8 10}
+  .activation{fill:#17314e;stroke:#7898b7;stroke-width:2}
+  .pill{fill:#0d1b2f;stroke-width:2}
+  .call{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+  .blue-line{stroke:#60a5fa;marker-end:url(#blueArrow)}
+  .cyan-line{stroke:#2dd4bf;marker-end:url(#cyanArrow)}
+  .amber-line{stroke:#fbbf24;marker-end:url(#amberArrow)}
+  .red-line{stroke:#fb7185;marker-end:url(#redArrow)}
+  .purple-line{stroke:#a78bfa;marker-end:url(#purpleArrow)}
+  .phase{fill:#0b1729;fill-opacity:.28;stroke:#38506d;stroke-width:1.5}
+  .phase-label{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:12px;font-weight:700;fill:#83a0bf}
+  .decision{fill:#151f38;stroke:#a78bfa;stroke-width:2}
+  .decision-title{font-family:"goorm Sans", "Apple SD Gothic Neo", sans-serif;font-size:18px;font-weight:800;fill:#e5d9ff}
+</style>
+</defs>
+<rect width="1440" height="1900" fill="url(#canvas)"/><rect class="frame" x="24" y="24" width="1392" height="1852" rx="32"/>
+<text class="title" x="62" y="76">CRM 프로필 변경과 예약 재평가의 경계</text><text class="subtitle" x="64" y="108">PROPOSED·HELD만 다시 평가하고, CONFIRMED 방문 약속은 보호합니다.</text>
+<rect x="58" y="126" width="248" height="34" rx="17" fill="#12243a" stroke="#3a5877"/><text class="badge" x="182" y="148" text-anchor="middle">SCOPE · 프로필 재평가</text>
+<rect x="318" y="126" width="250" height="34" rx="17" fill="#12243a" stroke="#3a5877"/><text class="badge" x="443" y="148" text-anchor="middle">VERSION · revision fence</text>
+<rect x="580" y="126" width="230" height="34" rx="17" fill="#12243a" stroke="#3a5877"/><text class="badge" x="695" y="148" text-anchor="middle">ROLE · STAFF / ADMIN</text>
+<rect x="822" y="126" width="250" height="34" rx="17" fill="#12243a" stroke="#3a5877"/><text class="badge" x="947" y="148" text-anchor="middle">PRIVACY · 최소 이벤트</text><rect class="phase" x="42" y="304" width="1356" height="348" rx="24"/><rect x="1038" y="316" width="330" height="28" rx="14" fill="#102239" stroke="#38506d"/><text class="phase-label" x="1203" y="335" text-anchor="middle">이벤트 수신과 대상 확인</text>
+<rect class="phase" x="42" y="676" width="1356" height="354" rx="24"/><rect x="1038" y="688" width="330" height="28" rx="14" fill="#102239" stroke="#38506d"/><text class="phase-label" x="1203" y="707" text-anchor="middle">assessment 조회와 상태 결정</text>
+<rect class="phase" x="42" y="1052" width="1356" height="346" rx="24"/><rect x="1038" y="1064" width="330" height="28" rx="14" fill="#102239" stroke="#38506d"/><text class="phase-label" x="1203" y="1083" text-anchor="middle">운영 결과와 제한된 redrive</text><g><rect id="crm" class="header card" x="10" y="190" width="240" height="92" rx="20"/><text class="participant" x="130" y="228" text-anchor="middle">CRM 이벤트</text><text class="role" x="130" y="256" text-anchor="middle">최소 변경 신호</text></g>
+<g><rect id="api" class="header card" x="300" y="190" width="240" height="92" rx="20"/><text class="participant" x="420" y="228" text-anchor="middle">예약 API</text><text class="role" x="420" y="256" text-anchor="middle">인증·scope 경계</text></g>
+<g><rect id="worker" class="header card" x="590" y="190" width="240" height="92" rx="20"/><text class="participant" x="710" y="228" text-anchor="middle">재평가 워커</text><text class="role" x="710" y="256" text-anchor="middle">공정 dispatch</text></g>
+<g><rect id="assessment" class="header card" x="880" y="190" width="240" height="92" rx="20"/><text class="participant" x="1000" y="228" text-anchor="middle">assessment 제공자</text><text class="role" x="1000" y="256" text-anchor="middle">평가 결과 참조</text></g>
+<g><rect id="store" class="header card" x="1170" y="190" width="240" height="92" rx="20"/><text class="participant" x="1290" y="228" text-anchor="middle">상태·운영 저장소</text><text class="role" x="1290" y="256" text-anchor="middle">결과·outbox·메트릭</text></g><path class="lifeline" d="M130 282 V1438"/>
+<path class="lifeline" d="M420 282 V1438"/>
+<path class="lifeline" d="M710 282 V1438"/>
+<path class="lifeline" d="M1000 282 V1438"/>
+<path class="lifeline" d="M1290 282 V1438"/><rect class="activation" x="700" y="360" width="20" height="1000" rx="8"/><rect class="activation" x="990" y="720" width="20" height="240" rx="8"/>
+<g><rect class="pill" x="12.5" y="340" width="525" height="38" rx="19" stroke="#60a5fa"/><circle cx="32.5" cy="359" r="13" fill="#60a5fa" fill-opacity=".2" stroke="#60a5fa"/><text class="num" x="32.5" y="364" text-anchor="middle">1</text><text class="labelText" x="55.5" y="364">profileRevision · assessmentRef 이벤트</text></g><path class="call blue-line" data-source-node="crm" data-target-node="api" d="M130 390 H420"/>
+<g><rect class="pill" x="382.7" y="460" width="364.6" height="38" rx="19" stroke="#2dd4bf"/><circle cx="402.7" cy="479" r="13" fill="#2dd4bf" fill-opacity=".2" stroke="#2dd4bf"/><text class="num" x="402.7" y="484" text-anchor="middle">2</text><text class="labelText" x="425.7" y="484">신뢰 검증 · 최신 revision 병합</text></g><path class="call cyan-line" data-source-node="api" data-target-node="worker" d="M420 510 H710"/>
+<g><rect class="pill" x="824.35" y="580" width="351.3" height="38" rx="19" stroke="#2dd4bf"/><circle cx="844.35" cy="599" r="13" fill="#2dd4bf" fill-opacity=".2" stroke="#2dd4bf"/><text class="num" x="844.35" y="604" text-anchor="middle">3</text><text class="labelText" x="867.35" y="604">PROPOSED · HELD 대상 조회</text></g><path class="call cyan-line" data-source-node="worker" data-target-node="store" d="M710 630 H1290"/>
+<g><rect class="pill" x="717.5" y="700" width="275" height="38" rx="19" stroke="#fbbf24"/><circle cx="737.5" cy="719" r="13" fill="#fbbf24" fill-opacity=".2" stroke="#fbbf24"/><text class="num" x="737.5" y="724" text-anchor="middle">4</text><text class="labelText" x="760.5" y="724">assessment 조회</text></g><path class="call amber-line" data-source-node="worker" data-target-node="assessment" d="M710 750 H1000"/>
+<g><rect class="pill" x="659.4" y="820" width="391.20000000000005" height="38" rx="19" stroke="#2dd4bf"/><circle cx="679.4" cy="839" r="13" fill="#2dd4bf" fill-opacity=".2" stroke="#2dd4bf"/><text class="num" x="679.4" y="844" text-anchor="middle">5</text><text class="labelText" x="702.4" y="844">결과와 policy generation 반환</text></g><path class="call cyan-line" data-source-node="assessment" data-target-node="worker" d="M1000 870 H710"/>
+<g><rect class="pill" x="791.1" y="940" width="417.8" height="38" rx="19" stroke="#a78bfa"/><circle cx="811.1" cy="959" r="13" fill="#a78bfa" fill-opacity=".2" stroke="#a78bfa"/><text class="num" x="811.1" y="964" text-anchor="middle">6</text><text class="labelText" x="834.1" y="964">상태 · 아웃박스(outbox) · 메트릭 저장</text></g><path class="call purple-line" data-source-node="worker" data-target-node="store" d="M710 990 H1290"/>
+<g><rect class="pill" x="626.15" y="1060" width="457.70000000000005" height="38" rx="19" stroke="#60a5fa"/><circle cx="646.15" cy="1079" r="13" fill="#60a5fa" fill-opacity=".2" stroke="#60a5fa"/><text class="num" x="646.15" y="1084" text-anchor="middle">7</text><text class="labelText" x="669.15" y="1084">스냅숏 · backlog · drainState 갱신</text></g><path class="call blue-line" data-source-node="store" data-target-node="api" d="M1290 1110 H420"/>
+<g><rect class="pill" x="322.85" y="1180" width="484.3" height="38" rx="19" stroke="#fbbf24"/><circle cx="342.85" cy="1199" r="13" fill="#fbbf24" fill-opacity=".2" stroke="#fbbf24"/><text class="num" x="342.85" y="1204" text-anchor="middle">8</text><text class="labelText" x="365.85" y="1204">PREVIEW 또는 ADMIN scoped redrive</text></g><path class="call amber-line" data-source-node="api" data-target-node="worker" d="M420 1230 H710"/>
+<g><rect class="pill" x="862.5" y="1300" width="275" height="38" rx="19" stroke="#fb7185"/><circle cx="882.5" cy="1319" r="13" fill="#fb7185" fill-opacity=".2" stroke="#fb7185"/><text class="num" x="882.5" y="1324" text-anchor="middle">9</text><text class="labelText" x="905.5" y="1324">대상 revision 재확인</text></g><path class="call red-line" data-source-node="worker" data-target-node="store" d="M710 1350 H1290"/>
+<rect id="decision" class="decision" x="44" y="1468" width="1352" height="330" rx="26"/><rect x="490" y="1446" width="460" height="44" rx="22" fill="#19223a" stroke="#a78bfa" stroke-width="2"/><text class="decision-title" x="720" y="1475" text-anchor="middle">최종 상태 결정</text><text class="role" x="720" y="1730" text-anchor="middle">상태·정책·revision을 확인한 뒤 결과를 하나만 기록합니다.</text><rect id="branch-0" x="74" y="1570" width="306" height="118" rx="20" fill="#101f34" stroke="#60a5fa" stroke-width="2"/><text class="outcome" x="227" y="1610" text-anchor="middle">PROPOSED</text><text class="role" x="227" y="1644" text-anchor="middle">제안 교체 또는 유지</text><path class="call blue-line" data-source-node="decision" data-target-node="branch-0" d="M227 1490 V1570"/>
+<rect id="branch-1" x="404" y="1570" width="306" height="118" rx="20" fill="#101f34" stroke="#2dd4bf" stroke-width="2"/><text class="outcome" x="557" y="1610" text-anchor="middle">HELD</text><text class="role" x="557" y="1644" text-anchor="middle">hold 유지 또는 교체</text><path class="call cyan-line" data-source-node="decision" data-target-node="branch-1" d="M557 1490 V1570"/>
+<rect id="branch-2" x="734" y="1570" width="306" height="118" rx="20" fill="#101f34" stroke="#a78bfa" stroke-width="2"/><text class="outcome" x="887" y="1610" text-anchor="middle">CONFIRMED</text><text class="role" x="887" y="1644" text-anchor="middle">확정 방문 약속 보호</text><path class="call purple-line" data-source-node="decision" data-target-node="branch-2" d="M887 1490 V1570"/>
+<rect id="branch-3" x="1064" y="1570" width="306" height="118" rx="20" fill="#101f34" stroke="#fb7185" stroke-width="2"/><text class="outcome" x="1217" y="1610" text-anchor="middle">실패</text><text class="role" x="1217" y="1644" text-anchor="middle">RETRY_WAIT / QUARANTINE</text><path class="call red-line" data-source-node="decision" data-target-node="branch-3" d="M1217 1490 V1570"/>
+<text class="role" x="720" y="1832" text-anchor="middle">실패는 재시도와 격리를 구분하고, 확정 방문 약속은 보호합니다.</text>
+</svg>
