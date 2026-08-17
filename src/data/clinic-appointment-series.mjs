@@ -164,7 +164,7 @@ export const clinicAppointmentSeries = Object.freeze([
     id: 'operations-4',
     group: 'operations',
     slug: 'clinic-appointment-profile-reevaluation',
-    ko: '[운영 확장 4] CRM 프로필이 바뀌어도 확정 방문 약속은 자동으로 바꾸지 않는다',
+    ko: '[운영 확장 4] CRM 프로필이 바뀌어도 확정 예약은 자동으로 변경하지 않는다',
     en: '[Operations 4] Profile Changes Do Not Rewrite Confirmed Visit Commitments',
   },
 ]);
