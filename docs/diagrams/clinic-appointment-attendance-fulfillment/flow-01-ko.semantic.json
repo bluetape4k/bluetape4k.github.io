@@ -1,0 +1,84 @@
+{
+  "kind": "sequence",
+  "schemaVersion": 1,
+  "locale": "ko",
+  "source": {
+    "question": "내원 확인과 예약 종료가 실제 시술 완료 사실과 어떻게 분리되는가?",
+    "revision": "clinic-appointment develop 260a4097",
+    "paths": [
+      "appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/statemachine/AppointmentState.kt",
+      "appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/statemachine/AppointmentEvent.kt",
+      "appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/statemachine/AppointmentStateMachine.kt",
+      "appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/TreatmentFulfillmentEvent.kt",
+      "appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/TreatmentFulfillmentHandler.kt",
+      "appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/ExternalFactEventIngress.kt",
+      "appointment-event/src/test/kotlin/io/bluetape4k/clinic/appointment/event/integration/TreatmentFulfillmentHandlerTest.kt",
+      "docs/api/visit-commitment.md"
+    ]
+  },
+  "scope": {
+    "label": "범위 · 내원·시술 이행·후속 작업",
+    "meaning": "예약 상태와 외부 임상 사실의 운영 경계를 설명한다."
+  },
+  "version": {
+    "label": "버전 · immutable Plan revision",
+    "meaning": "외부 fact는 검증 후 새 revision에 투영한다."
+  },
+  "legend": {
+    "solid": "명시적 요청·검증·투영 경로",
+    "dashed": "외부 사실을 기다리는 경계이며 범례가 있는 경우에만 사용"
+  },
+  "nodes": [
+    {"id":"staff","label":"STAFF","source":"AppointmentEvent.kt: CheckIn, StartTreatment, Complete"},
+    {"id":"appointmentApi","label":"예약 API","source":"AppointmentStateMachine.kt: appointment transitions"},
+    {"id":"clinicalService","label":"임상·시술 서비스","source":"TreatmentFulfillmentEvent.kt: external owner"},
+    {"id":"ingress","label":"외부 fact ingress","source":"ExternalFactEventIngress.kt: verify envelope"},
+    {"id":"handler","label":"이행 fact handler","source":"TreatmentFulfillmentHandler.kt: append immutable revision"},
+    {"id":"operationsQueue","label":"STAFF 후속 작업 큐","source":"article design: synthetic operations screen"},
+    {"id":"finalDecision","label":"최종 상태 결정","source":"article design: explicit terminal outcome node"},
+    {"id":"completed","label":"전체 완료","source":"TreatmentFulfillmentFactType.COMPLETED"},
+    {"id":"partial","label":"부분 이행","source":"TreatmentFulfillmentFactType.PARTIALLY_FULFILLED"},
+    {"id":"disrupted","label":"자원 장애","source":"TreatmentFulfillmentFactType.RESOURCE_DISRUPTED"},
+    {"id":"refunded","label":"환불","source":"TreatmentFulfillmentFactType.REFUNDED"}
+  ],
+  "edges": [
+    {"id":"staff-appointment","from":"staff","to":"appointmentApi","kind":"예약 상태 요청","tone":"blue","source":"AppointmentEvent.kt"},
+    {"id":"appointment-staff","from":"appointmentApi","to":"staff","kind":"내원·진행·예약 종료 결과","tone":"cyan","source":"AppointmentStateMachine.kt"},
+    {"id":"clinical-ingress","from":"clinicalService","to":"ingress","kind":"TreatmentFulfillmentEvent","tone":"amber","source":"TreatmentFulfillmentEvent.kt"},
+    {"id":"ingress-handler","from":"ingress","to":"handler","kind":"payload·schema·signature·source version 검증","tone":"purple","source":"ExternalFactEventIngress.kt"},
+    {"id":"handler-plan","from":"handler","to":"operationsQueue","kind":"새 Plan revision과 후속 작업 투영","tone":"cyan","source":"TreatmentFulfillmentHandler.kt"},
+    {"id":"queue-decision","from":"operationsQueue","to":"finalDecision","kind":"상태·정책·revision 확인","tone":"blue","source":"article design"},
+    {"id":"decision-completed","from":"finalDecision","to":"completed","kind":"전체 완료","tone":"cyan","source":"TreatmentFulfillmentHandler.kt"},
+    {"id":"decision-partial","from":"finalDecision","to":"partial","kind":"부분 이행","tone":"amber","source":"TreatmentFulfillmentHandler.kt"},
+    {"id":"decision-disrupted","from":"finalDecision","to":"disrupted","kind":"자원 장애","tone":"red","source":"TreatmentFulfillmentHandler.kt"},
+    {"id":"decision-refunded","from":"finalDecision","to":"refunded","kind":"환불","tone":"purple","source":"TreatmentFulfillmentHandler.kt"}
+  ],
+  "decision": {
+    "id": "finalDecision",
+    "label": "최종 상태 결정",
+    "rule": "네 가지 외부 fact outcome 중 하나를 명시적으로 기록한다."
+  },
+  "outcomes": [
+    {"id":"completed","code":"COMPLETED","next":"Plan과 후속 작업 큐 재확인"},
+    {"id":"partial","code":"PARTIALLY_FULFILLED","next":"원래 완료 항목 보존, 새 remaining treatment 예약 검토"},
+    {"id":"disrupted","code":"RESOURCE_DISRUPTED","next":"운영 예외와 producer 제공 remaining treatment 확인"},
+    {"id":"refunded","code":"REFUNDED","next":"금액은 결제 서비스에 맡기고 BLOCKING 후속 작업만 확인"}
+  ],
+  "behavior": {"branches": 4, "loops": 0},
+  "budget": {"nodes": 11, "edges": 18, "branches": 4, "loops": 2},
+  "budgetRationale": "네 가지 외부 fact outcome을 최종 상태 결정 아래에 분리해 표시해야 하므로 기본 sequence 예산의 branch 한도를 명시적으로 확장한다.",
+  "repairs": [
+    {"target":"scope-version-cards","reason":"scope와 version을 본문 위쪽에 고정하고 노드와 겹치지 않게 한다.","touches":2},
+    {"target":"endpoint-aligned-connectors","reason":"모든 연결선의 시작점과 끝점을 실제 노드 경계에 맞춘다.","touches":10},
+    {"target":"rounded-orthogonal-turns","reason":"직각 연결선의 모서리와 방향을 통일한다.","touches":10},
+    {"target":"marker-color-parity","reason":"화살촉 색상을 연결선 색상과 일치시킨다.","touches":10},
+    {"target":"message-label-clearance","reason":"call line과 label을 분리해 겹침을 방지한다.","touches":10},
+    {"target":"explicit-final-state-decision","reason":"암묵적인 terminal rail 대신 최종 상태 결정 노드와 네 outcome을 표시한다.","touches":5},
+    {"target":"bottom-outcome-margin","reason":"outcome 카드 아래쪽에 충분한 여백을 둔다.","touches":4},
+    {"target":"rounded-outcome-fanout","reason":"최종 상태 결정 아래 연결선을 둥근 직교 fan-out으로 꺾고 각 outcome 카드 상단에 수직으로 붙인다.","touches":4},
+    {"target":"outcome-card-readable-type","reason":"outcome 코드·설명·다음 작업 글자를 키워 PNG 전체 크기에서도 읽히게 한다.","touches":12},
+    {"target":"visible-fanout-origin","reason":"최종 상태 결정 노드 아래에 분기 시작점과 공통 bus를 표시해 outcome 연결선이 허공에서 시작하지 않게 한다.","touches":5},
+    {"target":"aligned-outcome-fanout","reason":"공통 bus를 네 outcome 카드의 중심선에 맞추고 동일한 rounded entry와 수직 구간으로 정렬한다.","touches":6},
+    {"target":"individual-outcome-routes","reason":"공통 bus를 제거하고 최종 상태 결정 노드의 네 포트에서 각 outcome 카드까지 독립된 rounded 직교 경로를 그린다.","touches":9}
+  ]
+}

@@ -1,0 +1,212 @@
+---
+title: "[운영 확장 5] 내원 확인과 시술 완료는 다른 사실이다"
+description: "STAFF가 내원을 확인한 뒤 예약 흐름의 종료, 실제 시술 완료, 부분 이행, 자원 장애, 환불을 서로 다른 사실과 다음 작업으로 처리하는 경계를 설명합니다."
+sidebar:
+  order: -202608171700
+blog:
+  date: 2026-08-17T17:00:00+09:00
+  image: /assets/clinic-appointment-attendance-fulfillment-hero.png
+  imageAlt: 내원 일정, 시술 이행 증거, 후속 작업 카드를 세 단계로 분리한 추상 운영 화면
+  cardDescription: "내원 확인과 예약 종료가 실제 시술 완료를 뜻하지 않는 이유를 STAFF 운영 화면과 상태·이벤트 흐름으로 설명합니다."
+  tags: ["architecture", "operations", "resilience", "appointment-service", "fulfillment", "example", "timefold"]
+---
+
+import ClinicAppointmentSeries from '../../../../components/ClinicAppointmentSeries.astro';
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-attendance-fulfillment-hero.png" alt="내원 일정, 시술 이행 증거, 후속 작업 카드를 세 단계로 분리한 추상 운영 화면" loading="eager" />
+  <figcaption>내원 확인, 실제 시술 이행, 그 다음 작업은 하나의 완료 표시로 합칠 수 없습니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-17 · 병원 예약 서비스 개발기 · 내원 확인과 시술 완료의 경계</p>
+
+예약 목록에서 <code>CHECKED_IN</code>을 눌렀다고 시술이 끝난 것은 아닙니다. 예약 서비스가 <code>COMPLETED</code>로
+전환했다고 해서 임상·시술 서비스가 실제 완료를 확인한 것도 아닙니다. 두 상태를 한 숫자로 합치면 STAFF는 지금
+무엇을 처리해야 하는지 알 수 없고, 부분 시술이나 환불 뒤에 남은 작업도 잃어버립니다.
+
+이 글의 결론은 간단합니다.
+
+> <code>CHECKED_IN</code>은 내원 확인이고, 예약 <code>COMPLETED</code>는 예약 흐름의 종료입니다.
+> 실제 시술 완료는 임상·시술 서비스가 보낸 검증된 <code>TreatmentFulfillmentEvent</code>로 기록해야 합니다.
+
+이 구분은 레이저·진정 치료·패키지 상품처럼 한 예약에 여러 치료 항목이 묶이는 경우 특히 중요합니다. 이번 글의
+화면과 숫자는 설명을 위한 합성 시안이며 실제 환자 정보나 운영 대시보드 집계를 사용하지 않습니다.
+
+## STAFF가 먼저 보는 것은 상태 숫자와 조치 큐다
+
+STAFF 화면의 첫 질문은 “오늘 몇 건이 완료됐나?”가 아닙니다.
+
+- 오늘 예약 중 몇 건이 아직 내원 확인 전인가?
+- 내원은 했지만 외부 시술 결과를 기다리는 예약은 몇 건인가?
+- 부분 이행이나 자원 장애로 새 작업이 생긴 건 몇 건인가?
+- 환불 fact가 도착했지만 <code>BLOCKING</code> 후속 작업을 확인하지 않은 건은 몇 건인가?
+
+이 질문을 한 화면에서 답할 수 있도록 상단 카드와 조치 큐를 분리합니다. 아래 화면은 실제 제품 화면의 캡처가 아니라
+STAFF가 상태의 소유권과 다음 작업을 한눈에 보도록 만든 설계 시안입니다.
+
+<div class="bt4k-operations-screen" data-visual-title="내원·시술 이행 STAFF 운영 화면 시안">
+  <img class="bt4k-screenshot" src="/assets/clinic-appointment-attendance-fulfillment-operations-screen-ko.png" alt="오늘 예약, 내원 확인, 진행 중, 예약 종료, 외부 사실 대기, 후속 작업 큐 카드와 예약 조치 큐, 상태 비교, 다음 작업을 보여 주는 STAFF 운영 화면 시안" loading="lazy" />
+  <p class="bt4k-operations-screen-caption">합성 데이터로 만든 설계 시안입니다. 수치는 예시이며 환자 식별 정보나 실제 운영 대시보드 API의 집계를 의미하지 않습니다.</p>
+</div>
+
+화면의 여섯 카드가 뜻하는 바는 서로 다릅니다.
+
+| 카드 | 표시하는 사실 | STAFF가 이어서 할 일 |
+| --- | --- | --- |
+| 오늘 예약 | 오늘 <code>CONFIRMED</code>인 예약 수 | 예약 목록과 예정 시간을 확인한다. |
+| 내원 확인 | <code>CHECKED_IN</code>으로 바뀐 예약 수 | 진료 시작 여부를 확인한다. 시술 완료로 표시하지 않는다. |
+| 진행 중 | <code>IN_PROGRESS</code>인 예약 수 | 실제 시술 결과가 남을 경로를 확인한다. |
+| 예약 종료 | 예약 상태가 <code>COMPLETED</code>인 수 | 외부 시술 fact 수신 여부를 다시 읽는다. |
+| 외부 사실 대기 | 검증된 <code>TreatmentFulfillmentEvent</code>를 기다리는 수 | 아직 임상 완료로 확정하지 않는다. |
+| 후속 작업 큐 | 부분 이행·자원 장애·환불로 생긴 조치 수 | 남은 작업, 운영 예외, <code>BLOCKING</code> 취소 여부를 처리한다. |
+
+따라서 화면에는 “완료 18건” 같은 단일 숫자만 두지 않습니다. 조치 큐의 각 행에
+“시술 결과 확인 대기”, “부분 이행 검토”, “자원 장애 후속 확인”, “환불 후속 확인”처럼 다음 작업을 직접 적습니다.
+
+## 예약 흐름의 완료와 시술 완료 사실은 시간 순서도 다르다
+
+합성된 패키지 예약 하나를 따라가 보겠습니다. 예를 들어 한 예약에 레이저 치료와 진정 치료가 함께 들어 있다고
+가정하되, 실제 진료 기록이나 환자 정보는 만들지 않습니다.
+
+1. STAFF가 예약을 확인하고 <code>CheckIn</code>을 실행합니다. 이때 기록되는 것은 환자가 내원했다는 사실입니다.
+2. STAFF가 <code>StartTreatment</code>을 실행하면 예약 상태가 <code>IN_PROGRESS</code>가 됩니다.
+3. 예약 서비스가 <code>Complete</code> 이벤트를 처리하면 예약 상태가 <code>COMPLETED</code>가 됩니다. 이것은
+   예약 워크플로가 끝났다는 뜻이지, 각 치료 항목의 임상 완료 증거가 아닙니다.
+4. 임상·시술 서비스가 실제 결과를 <code>TreatmentFulfillmentEvent</code>로 발행합니다. 예약 서비스는 이 이벤트를
+   검증한 뒤 Plan의 새 불변 revision에 결과를 투영합니다.
+5. 전체 이행이면 해당 치료 항목을 <code>COMPLETED</code>로 기록합니다. 일부만 끝났다면 완료된 원래 항목은 보존하고,
+   생산자가 제공한 남은 작업을 새 treatment key로 추가합니다.
+6. 환불 fact가 도착하면 결제·커머스 서비스가 금액·승인·정산을 책임집니다. 예약 서비스는 환불 사실을 투영하고
+   <code>BLOCKING</code> 후속 작업의 취소 여부만 계산합니다.
+
+즉, “예약 종료 = 시술 완료 = 환불 완료”라는 등식은 성립하지 않습니다.
+
+## 상태 비교: 같은 COMPLETED라도 주어가 다르다
+
+다음 표에서 중요한 것은 상태 이름의 개수가 아니라 “누가 기록했고 STAFF가 무엇을 해야 하는가”입니다.
+
+| 상태·사실 | 기록하는 서비스 | 의미 | STAFF의 다음 작업 |
+| --- | --- | --- | --- |
+| <code>CHECKED_IN</code> | 예약 서비스 | 환자가 내원해 접수되었다 | 치료 시작 여부를 확인한다. 임상 완료로 바꾸지 않는다. |
+| <code>IN_PROGRESS</code> | 예약 서비스 | 예약 흐름상 치료가 진행 중이다 | 실제 결과를 임상·시술 서비스에 남길 준비를 한다. |
+| 예약 <code>COMPLETED</code> | 예약 서비스 | 예약 워크플로가 종료되었다 | 외부 이행 fact 수신 여부와 불일치를 확인한다. |
+| 이행 fact <code>COMPLETED</code> | 임상·시술 서비스가 발행하고 예약 서비스가 검증·투영 | 특정 치료 의무가 실제로 완료되었다 | Plan과 후속 작업 큐를 다시 읽는다. |
+| <code>PARTIALLY_FULFILLED</code> | 임상·시술 서비스가 발행 | 일부가 완료되었고 남은 작업 정의가 함께 왔다 | 완료된 원래 항목은 보존하고 새 남은 작업의 예약 후보를 검토한다. |
+| <code>RESOURCE_DISRUPTED</code> | 임상·시술 서비스가 발행 | 장비나 다른 자원 문제로 남은 작업이 생겼다 | 운영 예외와 producer가 보낸 남은 작업을 확인한다. |
+| <code>REFUNDED</code> | 결제·커머스 서비스가 발행 | 환불 fact가 확인되었다 | 금액을 다시 계산하지 않고 <code>BLOCKING</code> 후속 작업만 확인한다. |
+
+<code>COMPLETED</code>라는 단어가 예약 상태와 치료 항목 상태에 각각 나타나는 이유도 여기 있습니다. 본문과 화면에서는
+항상 “예약 <code>COMPLETED</code>”, “이행 fact <code>COMPLETED</code>”처럼 주어를 붙입니다.
+
+## 검증된 외부 fact가 Plan을 바꾸는 순서
+
+상태 비교 다음에는 예약 상태와 외부 이행 fact가 어디서 갈라지고 다시 운영 큐로 모이는지 보여 주는 diagram을 둡니다.
+
+<figure class="bt4k-sequence" data-diagram-title="내원 확인과 시술 완료의 최종 상태 결정">
+  <img src="/assets/clinic-appointment-attendance-fulfillment-flow-01-ko.png" alt="STAFF가 예약 API에 내원 확인과 예약 종료를 요청하고, 임상·시술 서비스의 TreatmentFulfillmentEvent가 외부 fact ingress와 handler를 거쳐 최종 상태 결정에서 전체 완료, 부분 이행, 자원 장애, 환불로 나뉘는 시퀀스 도표" loading="lazy" />
+  <figcaption>수평 점선에 결론을 맡기지 않고 <strong>최종 상태 결정</strong> 노드를 명시했습니다. 네 연결선은 이 노드의 서로 다른 포트에서 각각 출발하고, 다른 경로와 선분을 공유하지 않은 채 두 번의 rounded corner를 거쳐 각 outcome 카드 중심으로 수직 진입합니다.</figcaption>
+</figure>
+
+흐름은 다음과 같습니다.
+
+- STAFF의 <code>CheckIn</code>, <code>StartTreatment</code>, <code>Complete</code>는 예약 API의 상태와 이력을 바꿉니다.
+- 임상·시술 서비스는 실제 치료 결과를 <code>TreatmentFulfillmentEvent</code>로 보냅니다.
+- <code>ExternalFactEventIngress</code>는 payload 크기·깊이·schema·metadata·hash·signature·source version을
+  검증합니다.
+- <code>TreatmentFulfillmentHandler</code>는 원래 revision을 덮어쓰지 않고 새 immutable revision을 만들어 결과를
+  투영합니다.
+- STAFF 후속 작업 큐는 새 남은 작업과 운영 예외를 표시하고, 상태·정책·revision을 다시 확인한 뒤
+  <strong>최종 상태 결정</strong>을 기록합니다.
+
+점선은 범례에 정의한 “외부 fact 대기 경계”에만 사용했습니다. 연결 관계를 나타내는 실선과 섞지 않았고, 각 화살촉은
+연결선과 같은 색입니다.
+
+## 부분 이행과 자원 장애는 원래 항목을 다시 쓰지 않는다
+
+부분 시술이나 장비 장애가 발생했을 때 가장 위험한 구현은 기존 치료 항목의 설명을 “남은 시술”로 덮어쓰는 것입니다.
+그러면 무엇이 실제로 끝났는지, 어떤 revision에서 결정했는지, 다시 예약해야 할 일이 무엇인지 사라집니다.
+
+현재 handler의 규칙은 더 보수적입니다.
+
+- 완료된 원래 treatment item은 완료 상태와 provenance를 가진 채 보존합니다.
+- 남은 작업은 이벤트 생산자가 제공한 정의와 새 treatment key로 추가합니다. 예약 서비스가 남은 시술을 추측하지 않습니다.
+- 자원 장애는 남은 항목과 <code>RESOURCE_DISRUPTION</code> 운영 예외를 함께 남깁니다.
+- 원래 Plan revision을 수정하지 않고 새 revision을 만들어 활성화합니다.
+- 같은 이벤트가 다시 오거나 순서가 어긋나도 source version과 idempotency 규칙으로 같은 결과에 수렴합니다.
+
+새 남은 항목을 예약하는 일은 별도의 운영 작업입니다. 빈시간을 계산할 수 있다고 해서 예약 서비스가 임상 완료를 판정할
+수 있는 것은 아닙니다.
+
+## 환불은 예약 종료의 다른 이름이 아니다
+
+환불도 흐름에 포함해야 하지만, 예약 서비스가 결제 시스템처럼 행동해서는 안 됩니다.
+
+- 결제·커머스 서비스가 환불 금액·승인·정산을 소유합니다.
+- 예약 서비스는 <code>REFUNDED</code> 외부 fact와 사유 코드를 기록하고, <code>BLOCKING</code> 후속 작업을 취소할지
+  계산합니다.
+- 독립적인 <code>NON_BLOCKING</code> 후속 작업은 계속 예약할 수 있습니다.
+- 추가 구매는 기존 Plan을 덮어쓰지 않고 새 상품 계약과 새 Plan으로 시작합니다.
+- 고객 상담·보상은 CRM/고객 서비스의 작업 큐이며, 예약 상태나 임상 완료의 근거가 아닙니다.
+
+따라서 환불 화면의 “환불 완료”와 예약 화면의 “예약 종료”를 한 상태로 합치지 않습니다. 두 서비스가 각각 가진 사실을
+연결하고, STAFF에게 남은 작업만 보여 줍니다.
+
+## 실패한 외부 fact도 원본을 바꾸지 않는다
+
+외부 이벤트를 받았다는 사실만으로 Plan을 바꾸지 않습니다. ingress가 payload·schema·scope·hash·signature와
+source version을 검증하고, 검증에 실패한 이벤트는 quarantine 또는 재처리 대기로 분리합니다.
+
+운영 화면에는 다음처럼 원본을 보호한 결과를 표시합니다.
+
+- 검증 실패 — 원본 Plan 유지
+- source version 대기 — 최신 순서 확인
+- 중복 이벤트 — 기존 결과와 동일
+- 재처리 가능 — 제한된 retry 대기
+- 조사 필요 — 개인정보·권한·계약 경계 확인
+
+유효하지 않은 이벤트는 active revision을 바꾸지 않습니다. 중복·재전송을 허용하되 결과가 한 번만 적용되도록 만드는
+이 경계가 있어야 STAFF가 같은 작업을 여러 번 처리해도 완료 항목이 다시 열리지 않습니다.
+
+## 현재 코드, 승인된 설계, 운영 시안을 구분한다
+
+| 구분 | 이 글에서 확인할 수 있는 범위 |
+| --- | --- |
+| 현재 구현 | 예약 상태의 <code>CHECKED_IN → IN_PROGRESS → COMPLETED</code>, <code>TreatmentFulfillmentEvent</code>, 외부 fact 검증, immutable Plan revision 투영, 전체·부분·자원 장애·환불 fact 처리, replay·quarantine 테스트 |
+| 승인된 설계 | 예약·Plan·치료 항목·자원 할당의 소유권 분리, 외부 완료 fact 계약, 새 남은 항목과 후속 예약의 경계 |
+| 운영 시안 | STAFF 카드·조치 큐·상태 비교·최종 상태 결정 화면. 실제 환자 데이터나 운영 지표 API를 뜻하지 않음 |
+| 후속 범위 | 병원별 임상 기록 연동, 환자 안내·보상 정책, 결제 정산 화면, 실데이터 기반 운영 지표 집계 |
+
+이번 글은 “예약 서비스가 모든 것을 안다”는 설계를 제안하지 않습니다. 예약 서비스는 예약 상태와 이력, 외부 fact를
+검증한 뒤 Plan projection을 책임집니다. 임상 완료의 판단, 환불 금액, 고객 보상은 각각의 소유 서비스에 남겨 둡니다.
+
+## 운영자가 마지막에 확인할 네 가지
+
+현장에서 한 건의 예약을 닫기 전에 STAFF가 확인할 내용은 다음 네 가지입니다.
+
+1. 환자의 내원을 확인했는가?
+2. 예약 흐름이 종료되었다는 사실과 실제 시술 완료 fact를 각각 읽었는가?
+3. 부분 이행·자원 장애·환불 뒤에 새로 생긴 작업과 <code>BLOCKING</code> 후속 작업을 확인했는가?
+4. 원본 Plan revision과 이벤트 provenance가 보존되어 있는가?
+
+이 네 가지가 서로 다른 상태로 화면에 남아 있어야 STAFF는 지금 처리할 작업과 기다려야 할 외부 fact를 구분할 수
+있습니다. 화면은 더 많은 행보다 더 명확한 정보를 제공해야 합니다.
+
+## 근거 자료
+
+- [구현 2: 예약 상태는 열거형이 아니다](/ko/blog/clinic-appointment-part2-state-machine-and-history/)
+- [구현 9: 패키지 상품의 실행 순서와 선택 조건을 방문 계획으로 고정하는 방법](/ko/blog/clinic-appointment-package-execution-plan/)
+- [운영 확장 3: 예약 복구는 영향 범위 확인부터 시작한다](/ko/blog/clinic-appointment-disruption-recovery/)
+- [visit-commitment API 계약](https://github.com/bluetape4k/clinic-appointment/blob/260a40973f5df30baa5209a2e0e99155bf8e812f/docs/api/visit-commitment.md)
+- [AppointmentState.kt](https://github.com/bluetape4k/clinic-appointment/blob/260a40973f5df30baa5209a2e0e99155bf8e812f/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/statemachine/AppointmentState.kt)
+- [AppointmentEvent.kt](https://github.com/bluetape4k/clinic-appointment/blob/260a40973f5df30baa5209a2e0e99155bf8e812f/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/statemachine/AppointmentEvent.kt)
+- [AppointmentStateMachine.kt](https://github.com/bluetape4k/clinic-appointment/blob/260a40973f5df30baa5209a2e0e99155bf8e812f/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/statemachine/AppointmentStateMachine.kt)
+- [TreatmentFulfillmentEvent.kt](https://github.com/bluetape4k/clinic-appointment/blob/260a40973f5df30baa5209a2e0e99155bf8e812f/appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/TreatmentFulfillmentEvent.kt)
+- [TreatmentFulfillmentHandler.kt](https://github.com/bluetape4k/clinic-appointment/blob/260a40973f5df30baa5209a2e0e99155bf8e812f/appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/TreatmentFulfillmentHandler.kt)
+- [ExternalFactEventIngress.kt](https://github.com/bluetape4k/clinic-appointment/blob/260a40973f5df30baa5209a2e0e99155bf8e812f/appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/ExternalFactEventIngress.kt)
+- [TreatmentFulfillmentHandlerTest.kt](https://github.com/bluetape4k/clinic-appointment/blob/260a40973f5df30baa5209a2e0e99155bf8e812f/appointment-event/src/test/kotlin/io/bluetape4k/clinic/appointment/event/integration/TreatmentFulfillmentHandlerTest.kt)
+- [Appointment Plan and Capacity 설계](https://github.com/bluetape4k/clinic-appointment/blob/260a40973f5df30baa5209a2e0e99155bf8e812f/docs/superpowers/specs/2026-07-26-appointment-plan-and-capacity-design.md)
+- [Visit Commitment 설계](https://github.com/bluetape4k/clinic-appointment/blob/260a40973f5df30baa5209a2e0e99155bf8e812f/docs/superpowers/specs/2026-07-29-issue-184-visit-commitment-design.md)
+
+## 시리즈 링크
+
+<ClinicAppointmentSeries current="clinic-appointment-attendance-fulfillment" locale="ko" />

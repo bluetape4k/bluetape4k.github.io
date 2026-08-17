@@ -1,0 +1,84 @@
+{
+  "kind": "sequence",
+  "schemaVersion": 1,
+  "locale": "en",
+  "source": {
+    "question": "How are attendance, appointment completion, and actual treatment fulfillment kept separate?",
+    "revision": "clinic-appointment develop 260a4097",
+    "paths": [
+      "appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/statemachine/AppointmentState.kt",
+      "appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/statemachine/AppointmentEvent.kt",
+      "appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/statemachine/AppointmentStateMachine.kt",
+      "appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/TreatmentFulfillmentEvent.kt",
+      "appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/TreatmentFulfillmentHandler.kt",
+      "appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/ExternalFactEventIngress.kt",
+      "appointment-event/src/test/kotlin/io/bluetape4k/clinic/appointment/event/integration/TreatmentFulfillmentHandlerTest.kt",
+      "docs/api/visit-commitment.md"
+    ]
+  },
+  "scope": {
+    "label": "SCOPE / attendance, fulfillment, follow-up",
+    "meaning": "Separates appointment states from external clinical facts."
+  },
+  "version": {
+    "label": "VERSION / immutable Plan revision",
+    "meaning": "A verified external fact is projected into a new revision."
+  },
+  "legend": {
+    "solid": "Explicit request, verification, or projection path",
+    "dashed": "Waiting boundary for an external fact; used only with the legend"
+  },
+  "nodes": [
+    {"id":"staff","label":"STAFF","source":"AppointmentEvent.kt: CheckIn, StartTreatment, Complete"},
+    {"id":"appointmentApi","label":"Appointment API","source":"AppointmentStateMachine.kt: appointment transitions"},
+    {"id":"clinicalService","label":"Clinical/Treatment Service","source":"TreatmentFulfillmentEvent.kt: external owner"},
+    {"id":"ingress","label":"External fact ingress","source":"ExternalFactEventIngress.kt: verify envelope"},
+    {"id":"handler","label":"Fulfillment fact handler","source":"TreatmentFulfillmentHandler.kt: append immutable revision"},
+    {"id":"operationsQueue","label":"STAFF follow-up queue","source":"article design: synthetic operations screen"},
+    {"id":"finalDecision","label":"Final State Decision","source":"article design: explicit terminal outcome node"},
+    {"id":"completed","label":"Completed","source":"TreatmentFulfillmentFactType.COMPLETED"},
+    {"id":"partial","label":"Partially fulfilled","source":"TreatmentFulfillmentFactType.PARTIALLY_FULFILLED"},
+    {"id":"disrupted","label":"Resource disrupted","source":"TreatmentFulfillmentFactType.RESOURCE_DISRUPTED"},
+    {"id":"refunded","label":"Refunded","source":"TreatmentFulfillmentFactType.REFUNDED"}
+  ],
+  "edges": [
+    {"id":"staff-appointment","from":"staff","to":"appointmentApi","kind":"appointment state request","tone":"blue","source":"AppointmentEvent.kt"},
+    {"id":"appointment-staff","from":"appointmentApi","to":"staff","kind":"attendance, progress, and appointment completion result","tone":"cyan","source":"AppointmentStateMachine.kt"},
+    {"id":"clinical-ingress","from":"clinicalService","to":"ingress","kind":"TreatmentFulfillmentEvent","tone":"amber","source":"TreatmentFulfillmentEvent.kt"},
+    {"id":"ingress-handler","from":"ingress","to":"handler","kind":"payload, schema, signature, and source-version verification","tone":"purple","source":"ExternalFactEventIngress.kt"},
+    {"id":"handler-plan","from":"handler","to":"operationsQueue","kind":"project new Plan revision and follow-up work","tone":"cyan","source":"TreatmentFulfillmentHandler.kt"},
+    {"id":"queue-decision","from":"operationsQueue","to":"finalDecision","kind":"check state, policy, and revision","tone":"blue","source":"article design"},
+    {"id":"decision-completed","from":"finalDecision","to":"completed","kind":"completed","tone":"cyan","source":"TreatmentFulfillmentHandler.kt"},
+    {"id":"decision-partial","from":"finalDecision","to":"partial","kind":"partially fulfilled","tone":"amber","source":"TreatmentFulfillmentHandler.kt"},
+    {"id":"decision-disrupted","from":"finalDecision","to":"disrupted","kind":"resource disrupted","tone":"red","source":"TreatmentFulfillmentHandler.kt"},
+    {"id":"decision-refunded","from":"finalDecision","to":"refunded","kind":"refunded","tone":"purple","source":"TreatmentFulfillmentHandler.kt"}
+  ],
+  "decision": {
+    "id": "finalDecision",
+    "label": "Final State Decision",
+    "rule": "Record exactly one of the four external fulfillment outcomes."
+  },
+  "outcomes": [
+    {"id":"completed","code":"COMPLETED","next":"Re-read the Plan and follow-up queue"},
+    {"id":"partial","code":"PARTIALLY_FULFILLED","next":"Preserve the completed item and review a new remaining-treatment appointment"},
+    {"id":"disrupted","code":"RESOURCE_DISRUPTED","next":"Review the operational exception and producer-provided remaining treatment"},
+    {"id":"refunded","code":"REFUNDED","next":"Leave amount to payment and review only BLOCKING follow-up work"}
+  ],
+  "behavior": {"branches": 4, "loops": 0},
+  "budget": {"nodes": 11, "edges": 18, "branches": 4, "loops": 2},
+  "budgetRationale": "The four contract-defined external fact outcomes remain separate below the final decision, so the sequence branch budget is explicitly widened.",
+  "repairs": [
+    {"target":"scope-version-cards","reason":"Keep scope and version above the main frame without covering nodes.","touches":2},
+    {"target":"endpoint-aligned-connectors","reason":"Align every connector start and end with real node boundaries.","touches":10},
+    {"target":"rounded-orthogonal-turns","reason":"Use one rounded orthogonal connector geometry.","touches":10},
+    {"target":"marker-color-parity","reason":"Match every arrowhead fill to its connector color.","touches":10},
+    {"target":"message-label-clearance","reason":"Reserve independent space between call lines and labels.","touches":10},
+    {"target":"explicit-final-state-decision","reason":"Replace an implicit terminal rail with a named decision node and four outcomes.","touches":5},
+    {"target":"bottom-outcome-margin","reason":"Leave sufficient bottom padding below the outcome cards.","touches":4},
+    {"target":"rounded-outcome-fanout","reason":"Route the connectors below the final decision through rounded orthogonal bends and enter each outcome card vertically.","touches":4},
+    {"target":"outcome-card-readable-type","reason":"Increase the outcome code, detail, and next-action type so the cards remain readable at full PNG size.","touches":12},
+    {"target":"visible-fanout-origin","reason":"Show a labeled fan-out origin and shared bus below the final decision so outcome connectors do not appear to start in empty space.","touches":5},
+    {"target":"aligned-outcome-fanout","reason":"Align the shared bus with all four outcome-card centers and use the same rounded entry plus vertical segment for every branch.","touches":6},
+    {"target":"individual-outcome-routes","reason":"Remove the shared bus and route each outcome independently from a distinct final-decision port through rounded orthogonal turns into its card center.","touches":9}
+  ]
+}

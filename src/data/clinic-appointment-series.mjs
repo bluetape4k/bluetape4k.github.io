@@ -167,4 +167,11 @@ export const clinicAppointmentSeries = Object.freeze([
     ko: '[운영 확장 4] CRM 프로필이 바뀌어도 확정 예약은 자동으로 변경하지 않는다',
     en: '[Operations 4] Profile Changes Do Not Rewrite Confirmed Visit Commitments',
   },
+  {
+    id: 'operations-5',
+    group: 'operations',
+    slug: 'clinic-appointment-attendance-fulfillment',
+    ko: '[운영 확장 5] 내원 확인과 시술 완료는 다른 사실이다',
+    en: '[Operations 5] Attendance and Treatment Completion Are Different Facts',
+  },
 ]);
