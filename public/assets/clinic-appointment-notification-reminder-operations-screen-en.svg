@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1320" viewBox="0 0 1800 1320" role="img" aria-labelledby="title desc" data-locale="en">
+<title id="title">Notification delivery dashboard</title><desc id="desc">Separate the states to inspect now from the next task to perform.</desc>
+<defs>
+  <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#071323"/><stop offset="1" stop-color="#101a31"/></linearGradient>
+  <linearGradient id="screenCanvas" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#081321"/><stop offset="1" stop-color="#13243a"/></linearGradient>
+  <style>
+    .title{font-family:"Architects Daughter", "Comic Sans MS", cursive;font-size:34px;font-weight:800;fill:#f4f8ff}
+    .subtitle{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:17px;fill:#a9bad0}
+    .badge{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:13px;font-weight:800;fill:#c9dcf3}
+    .card-title{font-family:"Architects Daughter", "Comic Sans MS", cursive;font-size:18px;font-weight:800;fill:#f4f8ff}
+    .card-body{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:13px;fill:#b9cbe0}
+    .card-code{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:12px;font-weight:800;fill:#7fc9ff}
+    .call-label{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:12px;fill:#e7f0fb}
+    .route{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+    .blue-line{stroke:#60a5fa;marker-end:url(#blueArrow)}
+    .cyan-line{stroke:#2dd4bf;marker-end:url(#cyanArrow)}
+    .amber-line{stroke:#fbbf24;marker-end:url(#amberArrow)}
+    .red-line{stroke:#fb7185;marker-end:url(#redArrow)}
+    .purple-line{stroke:#a78bfa;marker-end:url(#purpleArrow)}
+    .label-bg{fill:#0d1b2f;stroke:#2d4665;stroke-width:1.5}
+    .decision-title{font-family:"Architects Daughter", "Comic Sans MS", cursive;font-size:22px;font-weight:800;fill:#e5d9ff}
+    .decision-body{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:14px;fill:#d2c4f4}
+    .outcome-code{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:18px;font-weight:800;fill:#f8fbff}
+    .outcome-body{font-family:"Architects Daughter", "Comic Sans MS", cursive;font-size:15px;fill:#b7c7da}
+    .ui-eyebrow,.ui-label,.ui-mono,.ui-button{font-family:"Comic Mono", "SFMono-Regular", monospace}
+    .ui-title,.ui-section,.ui-value,.ui-card-title{font-family:"Architects Daughter", "Comic Sans MS", cursive;font-weight:800;fill:#f4f8ff}
+    .ui-eyebrow{font-size:12px;font-weight:800;fill:#7fc9ff}
+    .ui-title{font-size:34px}.ui-section{font-size:18px}.ui-card-title{font-size:22px}
+    .ui-label,.ui-mono{font-size:13px;fill:#dce8f5}.ui-mono{font-size:12px}.ui-value{font-size:40px}
+    .ui-button{font-size:12px;font-weight:800}
+    .ui-muted{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:12px;fill:#91a8c3}
+    .divider{stroke:#263d59;stroke-width:1}
+  </style>
+</defs>
+<rect width="1800" height="1320" fill="#07111e"/><rect x="30" y="28" width="1740" height="1264" rx="30" fill="url(#screenCanvas)" stroke="#3b5574" stroke-width="2"/>
+<text class="ui-eyebrow" x="72" y="72" >STAFF OPERATIONS SCREEN / DESIGN MOCKUP</text><text class="ui-title" x="72" y="120" >Notification delivery dashboard</text><text class="ui-label" x="72" y="154" >Separate the states to inspect now from the next task to perform.</text><text class="ui-label" x="1725" y="110" text-anchor="end">Clinic A / selected operating scope</text><text class="ui-mono" x="1725" y="140" text-anchor="end" fill="#74e4d1">ACTIVE / single provider route</text><text class="ui-muted" x="1725" y="174" text-anchor="end">Illustrative values / no patient identifiers</text>
+<rect class="card" x="72" y="250" width="390" height="142" rx="20" fill="#12243a" stroke="#2dd4bf" stroke-width="2"/><rect x="94" y="274" width="8" height="94" rx="4" fill="#2dd4bf"/><text class="ui-mono" x="122" y="284" fill="#91a8c3">Ready to send</text><text class="ui-value" x="122" y="342" >18</text><text class="ui-muted" x="250" y="339" >outbox backlog</text>
+<rect class="card" x="486" y="250" width="390" height="142" rx="20" fill="#12243a" stroke="#fbbf24" stroke-width="2"/><rect x="508" y="274" width="8" height="94" rx="4" fill="#fbbf24"/><text class="ui-mono" x="536" y="284" fill="#91a8c3">Retry wait</text><text class="ui-value" x="536" y="342" >4</text><text class="ui-muted" x="664" y="339" >next time recorded</text>
+<rect class="card" x="900" y="250" width="390" height="142" rx="20" fill="#12243a" stroke="#a78bfa" stroke-width="2"/><rect x="922" y="274" width="8" height="94" rx="4" fill="#a78bfa"/><text class="ui-mono" x="950" y="284" fill="#91a8c3">Suppressed</text><text class="ui-value" x="950" y="342" >3</text><text class="ui-muted" x="1078" y="339" >check consent or destination</text>
+<rect class="card" x="1314" y="250" width="390" height="142" rx="20" fill="#12243a" stroke="#fb7185" stroke-width="2"/><rect x="1336" y="274" width="8" height="94" rx="4" fill="#fb7185"/><text class="ui-mono" x="1364" y="284" fill="#91a8c3">Exhausted</text><text class="ui-value" x="1364" y="342" >1</text><text class="ui-muted" x="1492" y="339" >support action needed</text>
+<text class="ui-section" x="72" y="452" >Action queue</text><text class="ui-muted" x="1134" y="452" text-anchor="end">reason code first / oldest item first</text>
+<rect x="70" y="470" width="1070" height="370" rx="18" fill="#101d30" stroke="#2f4865"/><rect x="72" y="472" width="1066" height="52" rx="16" fill="#17263a"/><text class="ui-mono" x="98" y="505" fill="#7189a4">Item ref</text><text class="ui-mono" x="292" y="505" fill="#7189a4">State</text><text class="ui-mono" x="510" y="505" fill="#7189a4">Reason code</text><text class="ui-mono" x="740" y="505" fill="#7189a4">Recommended action</text><text class="ui-mono" x="1082" y="505" text-anchor="end" fill="#7189a4">Next time</text><rect x="74" y="526" width="1060" height="64" fill="#14263d"/><text class="ui-mono" x="98" y="564" fill="#dce8f5">n_7F3A…91C2</text><text class="ui-mono" x="292" y="564" fill="#fbbf24">RETRY_WAIT</text><text class="ui-mono" x="510" y="564" fill="#9fd3ff">PROVIDER_TIMEOUT</text><text class="ui-label" x="740" y="564">Re-read at next time</text><text class="ui-mono" x="1082" y="564" text-anchor="end" fill="#b7c7da">10:42</text>
+<rect x="74" y="594" width="1060" height="64" fill="#102035"/><text class="ui-mono" x="98" y="632" fill="#dce8f5">n_2B19…4D08</text><text class="ui-mono" x="292" y="632" fill="#a78bfa">SUPPRESSED</text><text class="ui-mono" x="510" y="632" fill="#9fd3ff">CONSENT_DENIED</text><text class="ui-label" x="740" y="632">Check member consent setting</text><text class="ui-mono" x="1082" y="632" text-anchor="end" fill="#b7c7da">—</text>
+<rect x="74" y="662" width="1060" height="64" fill="#14263d"/><text class="ui-mono" x="98" y="700" fill="#dce8f5">n_93DE…7A40</text><text class="ui-mono" x="292" y="700" fill="#a78bfa">SUPPRESSED</text><text class="ui-mono" x="510" y="700" fill="#9fd3ff">DESTINATION_UNAVAILABLE</text><text class="ui-label" x="740" y="700">Check member contact</text><text class="ui-mono" x="1082" y="700" text-anchor="end" fill="#b7c7da">—</text>
+<rect x="74" y="730" width="1060" height="64" fill="#102035"/><text class="ui-mono" x="98" y="768" fill="#dce8f5">n_4C01…B8E7</text><text class="ui-mono" x="292" y="768" fill="#fb7185">EXHAUSTED</text><text class="ui-mono" x="510" y="768" fill="#9fd3ff">DELIVERY_EXHAUSTED</text><text class="ui-label" x="740" y="768">Contact notification support</text><text class="ui-mono" x="1082" y="768" text-anchor="end" fill="#b7c7da">—</text>
+<rect x="1180" y="470" width="550" height="370" rx="18" fill="#111f32" stroke="#2f4865"/><text class="ui-section" x="1210" y="512" >Selected item</text><rect x="1570" y="486" width="130" height="30" rx="8" fill="#233f51"/><text class="ui-mono" x="1635" y="507" text-anchor="middle" fill="#74e4d1" font-weight="800">STAFF</text><text class="ui-muted" x="1210" y="558" >tenant / clinic</text><text class="ui-label" x="1210" y="586" >clinic-a / dermatology</text>
+<text class="ui-muted" x="1470" y="558" >status</text><text class="ui-label" x="1470" y="586" >RETRY_WAIT</text>
+<text class="ui-muted" x="1210" y="644" >reason code</text><text class="ui-label" x="1210" y="672" >PROVIDER_TIMEOUT</text>
+<text class="ui-muted" x="1470" y="644" >next attempt</text><text class="ui-label" x="1470" y="672" >2026-08-17 10:42</text><line class="divider" x1="1210" y1="770" x2="1698" y2="770"/><text class="ui-label" x="1210" y="805" fill="#fbbf24">Names, phone numbers, body text, and raw provider errors stay hidden.</text>
+<text class="ui-section" x="72" y="928" >Reminder recovery / supporting panel</text><text class="ui-muted" x="1725" y="928" text-anchor="end">bounded scan / checkpoint 2026-08-17T09:00Z</text><rect x="96" y="1002" width="370" height="176" rx="18" fill="#11243a" stroke="#60a5fa" stroke-width="2"/><text class="ui-mono" x="120" y="1038" fill="#60a5fa" font-weight="800">notYetDue</text><text class="ui-value" x="120" y="1104" >26</text><text class="ui-label" x="120" y="1142" >keep future time</text>
+<rect x="506" y="1002" width="370" height="176" rx="18" fill="#11243a" stroke="#2dd4bf" stroke-width="2"/><text class="ui-mono" x="530" y="1038" fill="#2dd4bf" font-weight="800">enqueued</text><text class="ui-value" x="530" y="1104" >7</text><text class="ui-label" x="530" y="1142" >catch-up enqueue</text>
+<rect x="916" y="1002" width="370" height="176" rx="18" fill="#11243a" stroke="#fb7185" stroke-width="2"/><text class="ui-mono" x="940" y="1038" fill="#fb7185" font-weight="800">suppressed</text><text class="ui-value" x="940" y="1104" >2</text><text class="ui-label" x="940" y="1142" >missed window</text>
+<rect x="1326" y="1002" width="370" height="176" rx="18" fill="#11243a" stroke="#a78bfa" stroke-width="2"/><text class="ui-mono" x="1350" y="1038" fill="#a78bfa" font-weight="800">alreadyExists</text><text class="ui-value" x="1350" y="1104" >3</text><text class="ui-label" x="1350" y="1142" >converge on same key</text>
+<text class="ui-muted" x="1725" y="1250" text-anchor="end">Operations screen mockup / synthetic source-backed material / not a production screenshot</text>
+</svg>

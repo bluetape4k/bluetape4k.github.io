@@ -1,0 +1,89 @@
+{
+  "kind": "sequence",
+  "schemaVersion": 1,
+  "locale": "ko",
+  "source": {
+    "question": "예약 확정이 알림 발송과 STAFF의 다음 작업으로 어떻게 이어지는가?",
+    "revision": "clinic-appointment develop f0c7614beed766efc4b88a1a59aa5c370f8fccf7",
+    "paths": [
+      "docs/superpowers/specs/2026-08-17-clinic-appointment-notification-reminder-design.md",
+      "src/data/clinic-appointment-series.mjs"
+    ],
+    "externalPaths": [
+      "docs/requirements/notification.md",
+      "docs/runbooks/notification-outbox-operations.md",
+      "appointment-notification/src/main/kotlin/io/bluetape4k/clinic/notification/outbox/NotificationOutboxDispatcher.kt",
+      "appointment-notification/src/main/kotlin/io/bluetape4k/clinic/notification/outbox/NotificationOutboxWorker.kt",
+      "appointment-notification/src/main/kotlin/io/bluetape4k/clinic/notification/profile/MemberNotificationProfileResolver.kt",
+      "appointment-notification/src/main/kotlin/io/bluetape4k/clinic/notification/recovery/NotificationReminderRecoveryScanner.kt",
+      "appointment-notification/src/main/kotlin/io/bluetape4k/clinic/notification/route/NotificationDeliveryRouteGate.kt"
+    ]
+  },
+  "scope": {
+    "label": "범위 · 예약 알림 전달과 STAFF 조치",
+    "meaning": "선택한 운영 범위에서 알림 의도, 발송 결과, 리마인더 복구를 연결한다."
+  },
+  "version": {
+    "label": "버전 · 기준 커밋 f0c7614",
+    "meaning": "현재 구현과 승인된 운영 설계를 같은 기준 커밋으로 구분한다."
+  },
+  "legend": {
+    "solid": "구현된 기록·조회·호출 경로",
+    "dashed": "승인된 설계 또는 운영 시안의 경계이며 선 자체에 의미를 맡기지 않는다."
+  },
+  "nodes": [
+    {"id":"appointmentCommand","label":"예약 명령 트랜잭션","source":"notification design: 최소 알림 의도와 멱등성 정보를 기록"},
+    {"id":"outbox","label":"알림 아웃박스(outbox)","source":"notification.md: durable notification intent"},
+    {"id":"routeGate","label":"전달 경로 게이트","source":"NotificationDeliveryRouteGate.kt: SHADOW/CANARY/ACTIVE/PAUSED"},
+    {"id":"leaseClaim","label":"lease·fencing 선점","source":"NotificationOutboxDispatcher.kt: DB lease and fencing"},
+    {"id":"profileResolver","label":"회원 알림 프로필 resolver","source":"MemberNotificationProfileResolver.kt: 발송 시점 연락처·언어·동의 조회"},
+    {"id":"templateRenderer","label":"typed template renderer","source":"notification.md: typed template and channel payload"},
+    {"id":"provider","label":"제공자(provider) 채널","source":"NotificationOutboxWorker.kt: provider boundary"},
+    {"id":"durableOutcome","label":"durable outcome·STAFF 상태 조회","source":"NotificationStatusQueryService.kt: safe state, reason code, next action"},
+    {"id":"recoveryScanner","label":"리마인더 복구 스캐너","source":"NotificationReminderRecoveryScanner.kt: bounded future/due/missed scan"},
+    {"id":"finalDecision","label":"최종 상태 결정","source":"article design: explicit terminal outcome node"}
+  ],
+  "edges": [
+    {"id":"command-outbox","from":"appointmentCommand","to":"outbox","kind":"알림 의도와 멱등성 키 기록","tone":"blue","source":"notification design"},
+    {"id":"outbox-route","from":"outbox","to":"routeGate","kind":"선택한 범위의 전달 경로 확인","tone":"purple","source":"NotificationDeliveryRouteGate.kt"},
+    {"id":"route-lease","from":"routeGate","to":"leaseClaim","kind":"워커 실행과 lease·fencing 선점","tone":"blue","source":"NotificationOutboxDispatcher.kt"},
+    {"id":"lease-profile","from":"leaseClaim","to":"profileResolver","kind":"발송 직전 회원 프로필 조회","tone":"cyan","source":"MemberNotificationProfileResolver.kt"},
+    {"id":"profile-template","from":"profileResolver","to":"templateRenderer","kind":"동의·목적지·언어 검증 후 typed payload 구성","tone":"cyan","source":"notification.md"},
+    {"id":"template-provider","from":"templateRenderer","to":"provider","kind":"제공자 호출","tone":"amber","source":"NotificationOutboxWorker.kt"},
+    {"id":"provider-outcome","from":"provider","to":"durableOutcome","kind":"성공·재시도·실패 결과 저장","tone":"cyan","source":"NotificationOutboxWorker.kt"},
+    {"id":"outcome-decision","from":"durableOutcome","to":"finalDecision","kind":"상태·reason code·다음 작업 확인","tone":"blue","source":"NotificationStatusQueryService.kt"},
+    {"id":"decision-sent","from":"finalDecision","to":"durableOutcome","kind":"발송 완료","tone":"cyan","source":"NotificationStatusQueryService.kt"},
+    {"id":"decision-suppressed","from":"finalDecision","to":"durableOutcome","kind":"억제","tone":"purple","source":"NotificationStatusQueryService.kt"},
+    {"id":"decision-retry","from":"finalDecision","to":"outbox","kind":"재시도 대기","tone":"amber","source":"NotificationOutboxWorker.kt"},
+    {"id":"decision-exhausted","from":"finalDecision","to":"durableOutcome","kind":"소진·지원 요청","tone":"red","source":"NotificationStatusQueryService.kt"},
+    {"id":"recovery-future","from":"recoveryScanner","to":"outbox","kind":"future: 다음 발송 시각 유지","tone":"blue","source":"NotificationReminderRecoveryScanner.kt"},
+    {"id":"recovery-due","from":"recoveryScanner","to":"outbox","kind":"due: catch-up 범위에 enqueue","tone":"cyan","source":"NotificationReminderRecoveryScanner.kt"},
+    {"id":"recovery-missed","from":"recoveryScanner","to":"finalDecision","kind":"missed: 발송하지 않고 최종 상태 결정","tone":"red","source":"NotificationReminderRecoveryScanner.kt"},
+    {"id":"recovery-existing","from":"recoveryScanner","to":"outbox","kind":"already exists: 같은 멱등성 키로 수렴","tone":"purple","source":"NotificationReminderRecoveryScanner.kt"},
+    {"id":"recovery-status","from":"recoveryScanner","to":"durableOutcome","kind":"cursor·checkpoint와 복구 결과 조회","tone":"blue","source":"notification-outbox-operations.md"}
+  ],
+  "decision": {
+    "id": "finalDecision",
+    "label": "최종 상태 결정",
+    "rule": "발송 성공, 억제, 재시도 대기, 소진 중 하나를 기록하고 STAFF 권장 조치를 노출한다."
+  },
+  "outcomes": [
+    {"id":"sent","code":"SENT","next":"상태 조회와 조치 큐에서 완료 확인"},
+    {"id":"suppressed","code":"SUPPRESSED","next":"동의 또는 목적지 상태를 확인"},
+    {"id":"retry","code":"RETRY_WAIT","next":"다음 재시도 시각까지 기다림"},
+    {"id":"exhausted","code":"EXHAUSTED","next":"알림 지원 담당자에게 문의"}
+  ],
+  "behavior": {"branches": 3, "loops": 2},
+  "budget": {"nodes": 10, "edges": 18, "branches": 3, "loops": 2},
+  "budgetRationale": "발송 결과 네 가지와 리마인더 복구의 future/due/missed/already exists 경계를 한 화면에서 보여 주되, 실제 provider 세부 구현은 본문으로 분리한다.",
+  "repairs": [
+    {"target":"scope-version-cards","reason":"scope와 version을 제목 아래 고정해 본문 노드와 겹치지 않게 한다.","touches":2},
+    {"target":"endpoint-aligned-connectors","reason":"모든 연결선의 시작점과 끝점을 실제 카드 경계에 맞춘다.","touches":17},
+    {"target":"rounded-orthogonal-turns","reason":"수평·수직 구간과 rounded corner만 사용하고 대각선을 금지한다.","touches":17},
+    {"target":"marker-color-parity","reason":"화살촉 색상을 각 연결선 색상과 일치시킨다.","touches":17},
+    {"target":"message-label-clearance","reason":"call line과 label을 별도 행에 배치해 겹치지 않게 한다.","touches":17},
+    {"target":"explicit-final-state-decision","reason":"수평 점선이나 암묵적 terminal rail 대신 최종 상태 결정 노드를 표시한다.","touches":5},
+    {"target":"operations-screen-readable-type","reason":"운영 화면 카드와 조치 큐 제목을 줄이지 않고 가장 긴 문구에 맞춰 배치한다.","touches":8},
+    {"target":"reminder-recovery-secondary-panel","reason":"리마인더 복구는 주 대시보드의 보조 패널로 분리하고 전체 병원 rollout은 표시하지 않는다.","touches":4}
+  ]
+}

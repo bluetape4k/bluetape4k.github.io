@@ -1,0 +1,236 @@
+---
+title: "[Operations 6] Why Notifications and Reminders Are Separate Services"
+description: "A STAFF-first explanation of how appointment confirmation, notification delivery, reminder recovery, safe status queries, and rollout boundaries remain separate responsibilities."
+sidebar:
+  order: -202608171800
+blog:
+  date: 2026-08-17T18:00:00+09:00
+  image: /assets/clinic-appointment-notification-reminder-hero.png
+  imageAlt: An abstract operations bench separating a notification outbox, a STAFF action queue, and a reminder recovery module
+  cardDescription: "Why appointment confirmation and notification delivery stay separate, and how STAFF sees the next action when a reminder is missing."
+  tags: ["architecture", "operations", "resilience", "appointment-service", "notification", "reminder", "example", "timefold"]
+---
+
+import ClinicAppointmentSeries from '../../../components/ClinicAppointmentSeries.astro';
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-notification-reminder-hero.png" alt="An abstract operations bench separating a notification outbox, a STAFF action queue, and a reminder recovery module" loading="eager" />
+  <figcaption>Confirming an appointment and delivering a notification are different responsibilities, and the operations screen should make that distinction visible.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">August 17, 2026 · Clinic appointment engineering journal · Separating notification and reminder operations</p>
+
+An appointment becoming <code>CONFIRMED</code> does not mean that a patient received a notification. Likewise, a temporary provider
+failure must not cancel the appointment or make the appointment service save it again. Appointment confirmation is a fact owned
+by the appointment service; notification delivery is an execution result owned by the notification service.
+
+The conclusion is simple:
+
+> The appointment transaction durably records only the intent to send. The notification service reads the member profile at send
+> time and decides between <code>SENT</code>, <code>SUPPRESSED</code>, <code>RETRY_WAIT</code>, and <code>EXHAUSTED</code>. If a reminder
+> is missing, recovery materializes the outbox with the same idempotency key instead of rewriting the appointment confirmation.
+
+The screen and diagram in this article are synthetic design mockups, not captures containing real patients or production metrics.
+The article keeps the current implementation, approved design, and operations mockup separate.
+
+## Appointment confirmation and notification delivery are different successes
+
+Calling the provider inside the appointment confirmation request creates an obvious latency problem. The more serious problem is
+that it makes a provider result look like part of the appointment transaction.
+
+| Fact | Owning boundary | What does not change when it fails | What to check next |
+| --- | --- | --- | --- |
+| Appointment confirmed | Appointment service | Appointment state and history | Whether the notification intent was committed to the outbox |
+| Notification intent recorded | Outbox in the appointment transaction | The appointment confirmation | Whether a worker can process it |
+| Notification sent | Notification service and provider channel | Appointment state and product contract | Provider result and stable reason code |
+| Reminder missing | Reminder recovery scanner | Existing appointment and notification idempotency key | Whether it is early, recoverable, or already present |
+
+For example, the provider can fail immediately after a successful appointment confirmation. Reverting the appointment makes the
+patient believe that the booking disappeared; recording only a success leaves STAFF unable to tell whether delivery happened. By
+storing the two results separately, the appointment remains confirmed while the notification moves to retry or an operational action
+queue.
+
+## The appointment transaction records a minimal notification intent
+
+The appointment command commits the appointment change and a minimal notification outbox row in one transaction. The row contains
+only what is needed to re-evaluate delivery: member and appointment references, notification type, template key and version,
+reminder slot, and a deterministic idempotency key. It does not contain rendered text or a provider payload.
+
+The boundary works as follows:
+
+1. The appointment service validates the `CONFIRMED` transition.
+2. The same transaction records the notification intent and idempotency key in the outbox.
+3. After commit, a separate worker finds deliverable outbox rows.
+4. The worker conditionally claims one row with a database lease and fencing token.
+5. Only the claiming worker resolves the member profile, renders the template, and calls the provider.
+
+If the application restarts immediately after commit, the appointment is already confirmed and the notification intent can still be
+processed. A provider call inside the appointment transaction would instead put network latency, timeouts, and retries inside the
+command's atomicity boundary.
+
+<figure class="bt4k-sequence" data-diagram-title="Final state decision for appointment confirmation and notification delivery">
+  <img src="/assets/clinic-appointment-notification-reminder-flow-01-en.png" alt="A sequence diagram where an appointment command transaction records an intent in a notification outbox, then passes through a delivery route gate, lease and fencing claim, send-time member profile resolution, typed template rendering and provider channel, STAFF status query, and reminder recovery scanner before a final state decision branches to SENT, SUPPRESSED, RETRY_WAIT, and EXHAUSTED" loading="lazy" />
+  <figcaption>Appointment confirmation and the provider call are not one line. Each result leaves the explicit <strong>Final State Decision</strong> through an independent rounded path, while STAFF re-reads a status code and the next action.</figcaption>
+</figure>
+
+The diagram's `DURABLE` card is the outbox boundary left by the appointment transaction. `CLAIM` is the database claim that keeps
+multiple workers from processing the same row concurrently. `READ AT SEND` means that contact details, language, and consent are
+read immediately before delivery instead of being copied and reused from an older snapshot. The `RECOVERY` card is a separate
+materialization repair flow; it does not call the provider itself.
+
+## Contact details and consent are read at send time
+
+The member management system (CRM) is the system of record for phone numbers, email addresses, language, and notification consent.
+Persisting those values in the notification outbox would allow a stale destination to be used or a withdrawn consent to be ignored.
+
+The notification service stores a member reference and typed template parameters, then calls `MemberNotificationProfileResolver`
+immediately before delivery.
+
+| Send-time check | Result | Safe value shown to STAFF |
+| --- | --- | --- |
+| Consent has been withdrawn | <code>SUPPRESSED(CONSENT_DENIED)</code> | `CONSENT_DENIED`, check member settings |
+| No destination exists | <code>SUPPRESSED(DESTINATION_UNAVAILABLE)</code> | `DESTINATION_UNAVAILABLE`, check member contact |
+| Member scope does not match | Suppressed or held for review | Stable scope error code |
+| Profile lookup temporarily fails | Bounded retry | Retry state and next time |
+
+The store and operations response do not contain names, phone numbers, email addresses, rendered subject or body, provider error
+text, or stack traces. STAFF needs a reason and an action, not a copy of the sensitive payload. A patient-facing response exposes an
+even smaller closed set of statuses and does not leak internal suppression or exhaustion reasons.
+
+## Lease and fencing are a contract that reduces duplicate delivery
+
+A worker does not call the provider merely because it found an outbox row. It first conditionally acquires a lease and receives a
+fencing token. That token is required when recording success, suppression, or retry. Once a lease has expired, the old worker must no
+longer be able to update the row.
+
+The system cannot promise that a provider network call happened exactly once. If a response is lost and the worker retries, the
+provider may already have processed the first request. The practical contract is instead:
+
+- use a deterministic provider idempotency key for the same logical notification;
+- bound provider calls per lease, total attempts, and total elapsed time; and
+- validate the fencing token before storing a result so a stale worker cannot win.
+
+Retryable failures become <code>RETRY_WAIT</code>. When the attempt or elapsed-time budget is exhausted, the row becomes
+<code>EXHAUSTED</code>. Coroutine cancellation is propagated rather than converted into a provider retry. Raw provider failures stay
+out of storage and logs; only stable low-cardinality failure codes and safe fingerprints remain.
+
+## The STAFF screen should show the next action, not only a status
+
+The first question on a notification operations screen is not “How many notifications are there today?” It is:
+
+- How many can STAFF act on now?
+- How many are waiting until their next retry time?
+- How many were suppressed because of consent or destination data?
+- How many have exhausted automatic retries and need an owner?
+- Which reminder candidates are early, enqueued, late and suppressed, or already present?
+
+The following mockup answers those questions with separate metric cards, an action queue, a safe detail panel for the selected
+item, and reminder recovery outcomes.
+
+<div class="bt4k-operations-screen" data-visual-title="Notification and reminder STAFF operations screen mockup">
+  <img class="bt4k-screenshot" src="/assets/clinic-appointment-notification-reminder-operations-screen-en.png" alt="A STAFF operations screen showing ready, retry wait, suppressed, and exhausted metrics, a notification action queue, safe status and reason details for an anonymous selected item, and reminder recovery outcomes" loading="lazy" />
+  <p class="bt4k-operations-screen-caption">Synthetic design mockup. It shows no names, destinations, message bodies, or raw provider errors; values and identifiers are illustrative. The operations screen should provide clear information, not merely more information.</p>
+</div>
+
+Each action-queue row includes a reason code and a recommended action instead of listing a status alone.
+
+| Status or reason code | Recommended action on screen | What the system does not do automatically |
+| --- | --- | --- |
+| `CONSENT_DENIED` | Check member settings | Change consent or send again without a new decision |
+| `DESTINATION_UNAVAILABLE` | Check member contact | Copy an old destination into the outbox |
+| `REMINDER_WINDOW_MISSED` | Contact the patient directly | Send a late reminder automatically |
+| `RETRY_WAIT` | Wait until the next time | Make STAFF repeat the provider call |
+| `EXHAUSTED` | Contact notification support | Revive a terminal row without a new decision |
+
+`NotificationStatusQueryService` restricts the STAFF response to closed fields: status, reason code, retry or exhaustion time,
+and recommended action. It does not return outbox IDs, attempt IDs, member IDs, appointment IDs, or provider payloads. The query
+also verifies `tenantGroupId`, `clinicId`, and `appointmentId` together so one clinic's queue cannot be mixed with another's.
+
+## Reminder recovery separates future, due, and missed work
+
+Day-before and same-day reminders are normally written to the outbox when an appointment is confirmed. A deployment, database
+outage, stopped worker, or reminder configuration change can still leave a slot unmaterialized. The recovery scanner does not create
+new notifications for every appointment; it reads confirmed appointments in bounded pages and materializes only the missing slots
+with their original idempotency keys.
+
+Each candidate is compared with `dueAt`, the current time, and `catch-up-window`:
+
+| Result | Meaning | Outbox behavior | What STAFF sees |
+| --- | --- | --- | --- |
+| `notYetDue` | The send time has not arrived | Pre-record a future `availableAt`, or defer to the next scan | Nothing to act on yet |
+| `enqueued` | It is due and recoverable | Enqueue with the existing key | Waiting for the worker |
+| `suppressed` | It was discovered after the catch-up window | Record `SUPPRESSED(REMINDER_WINDOW_MISSED)` | Contact the patient directly |
+| `alreadyExists` | Another path recorded it first | Do not create a second row | Re-read the existing state |
+
+Treating `notYetDue` as an error is dangerous. A long backlog scan could see a future slot, create nothing, and then miss the next
+scan boundary. An adapter that supports a future `availableAt` records it now; otherwise the next bounded scan evaluates the same
+key again.
+
+The recovery run is limited by `batch-size` and a maximum candidate count. It stores a keyset cursor, `runId`, and the last
+completed appointment ID in a durable checkpoint. A restart or leader change therefore continues from a bounded position instead
+of rescanning the entire appointment table. If multiple instances see the same candidate, the outbox unique key and conditional
+store operation converge on `alreadyExists`.
+
+## Change the delivery route only within the selected operational scope
+
+Deploying the outbox worker does not mean that every clinic should switch provider routes immediately. `NotificationDeliveryRouteGate`
+turns the selected clinic scope and rollout mode into one route decision.
+
+| Mode | Transitional event route | Outbox worker route | Operational intent |
+| --- | --- | --- | --- |
+| `SHADOW` | All clinics | No delivery | Validate the new lifecycle while the existing route owns provider calls |
+| `CANARY` | Clinics outside the allow-list | Allow-listed clinics only | Validate the worker in a selected scope |
+| `ACTIVE` | Disabled | All clinics | Complete the transition |
+| `PAUSED` | Disabled | Disabled | Stop provider calls during an incident while enqueue, recovery, and retention continue |
+
+`CANARY` uses positive `tenant-group-id` and `clinic-id` pairs. If the deprecated clinic-only bridge is configured for rolling
+compatibility, the clinic sets must match. Route changes are an operational action separate from code deployment, and both routes
+must conditionally claim the same outbox row before calling the provider so a rolling deployment cannot send twice concurrently.
+
+## Keep implementation, approved design, and operations mockup separate
+
+| Boundary | What this article covers |
+| --- | --- |
+| Current implementation | Minimal outbox in the appointment transaction, lease and fencing claims, send-time profile lookup, typed template rendering, stable result codes, STAFF status query, bounded reminder recovery, and checkpoints |
+| Approved design | Storage boundaries for provider payload and personal data, outbox unique key and fencing contract, rollout modes, catch-up window, and state-based retention |
+| Operations mockup | Four state metrics, reason-code action queue, anonymized selected item, and reminder recovery results. It does not represent real patient or clinic metrics |
+| Follow-up scope | Production provider adapter dashboards, clinic-specific notification policy editing, patient-message approval, and large SaaS leader optimization |
+
+Do not expand `SENT` into “the patient read the message.” It means that the notification service and provider contract accepted the
+delivery result; it does not mean read confirmation or a clinical outcome. Similarly, `SUPPRESSED` means that this notification was
+not sent; it does not cancel the appointment.
+
+## Five checks before STAFF closes one item
+
+Before closing a row in the notification action queue, STAFF checks:
+
+1. Are the appointment confirmation and notification intent both recorded?
+2. Were current member consent and contact details read at send time?
+3. Was the next action selected according to the status and reason code?
+4. For a reminder, was it classified as early, recoverable, already present, or too late to send?
+5. Were the original appointment state and outbox idempotency key left untouched?
+
+When these five facts are visible, STAFF can answer “the appointment is confirmed, but how far did notification delivery get?”
+The starting point for operational growth is to separate the facts owned by each service and show STAFF the next action, rather than
+making the appointment service own the provider as well.
+
+## Sources
+
+The following links are pinned to `clinic-appointment` develop commit `f0c7614beed766efc4b88a1a59aa5c370f8fccf7`.
+
+- [Operations 5: Attendance and Treatment Completion Are Different Facts](/blog/clinic-appointment-attendance-fulfillment/)
+- [Notification outbox requirements](https://github.com/bluetape4k/clinic-appointment/blob/f0c7614beed766efc4b88a1a59aa5c370f8fccf7/docs/requirements/notification.md)
+- [Notification outbox design](https://github.com/bluetape4k/clinic-appointment/blob/f0c7614beed766efc4b88a1a59aa5c370f8fccf7/docs/superpowers/specs/2026-07-31-issue-172-notification-outbox-design.md)
+- [Notification outbox operations runbook](https://github.com/bluetape4k/clinic-appointment/blob/f0c7614beed766efc4b88a1a59aa5c370f8fccf7/docs/runbooks/notification-outbox-operations.md)
+- [AppointmentOutboxWriter.kt](https://github.com/bluetape4k/clinic-appointment/blob/f0c7614beed766efc4b88a1a59aa5c370f8fccf7/appointment-messaging/src/main/kotlin/io/bluetape4k/clinic/appointment/messaging/AppointmentOutboxWriter.kt)
+- [NotificationOutboxEvents.kt](https://github.com/bluetape4k/clinic-appointment/blob/f0c7614beed766efc4b88a1a59aa5c370f8fccf7/appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/notification/NotificationOutboxEvents.kt)
+- [NotificationOutboxWorker.kt](https://github.com/bluetape4k/clinic-appointment/blob/f0c7614beed766efc4b88a1a59aa5c370f8fccf7/appointment-notification/src/main/kotlin/io/bluetape4k/clinic/appointment/notification/NotificationOutboxWorker.kt)
+- [NotificationStatusQueryService.kt](https://github.com/bluetape4k/clinic-appointment/blob/f0c7614beed766efc4b88a1a59aa5c370f8fccf7/appointment-notification/src/main/kotlin/io/bluetape4k/clinic/appointment/notification/NotificationStatusQueryService.kt)
+- [NotificationReminderRecoveryScanner.kt](https://github.com/bluetape4k/clinic-appointment/blob/f0c7614beed766efc4b88a1a59aa5c370f8fccf7/appointment-notification/src/main/kotlin/io/bluetape4k/clinic/appointment/notification/NotificationReminderRecoveryScanner.kt)
+- [NotificationDeliveryRouteGate.kt](https://github.com/bluetape4k/clinic-appointment/blob/f0c7614beed766efc4b88a1a59aa5c370f8fccf7/appointment-notification/src/main/kotlin/io/bluetape4k/clinic/appointment/notification/NotificationDeliveryRouteGate.kt)
+- [AppointmentReminderScheduler.kt](https://github.com/bluetape4k/clinic-appointment/blob/f0c7614beed766efc4b88a1a59aa5c370f8fccf7/appointment-notification/src/main/kotlin/io/bluetape4k/clinic/appointment/notification/AppointmentReminderScheduler.kt)
+- [NotificationSchedulingRunners.kt](https://github.com/bluetape4k/clinic-appointment/blob/f0c7614beed766efc4b88a1a59aa5c370f8fccf7/appointment-notification/src/main/kotlin/io/bluetape4k/clinic/appointment/notification/NotificationSchedulingRunners.kt)
+
+## Series
+
+<ClinicAppointmentSeries current="clinic-appointment-notification-reminder" locale="en" />
