@@ -1,0 +1,89 @@
+{
+  "kind": "sequence",
+  "schemaVersion": 1,
+  "locale": "en",
+  "source": {
+    "question": "How does a confirmed appointment become a notification outcome and the next STAFF action?",
+    "revision": "clinic-appointment develop f0c7614beed766efc4b88a1a59aa5c370f8fccf7",
+    "paths": [
+      "docs/superpowers/specs/2026-08-17-clinic-appointment-notification-reminder-design.md",
+      "src/data/clinic-appointment-series.mjs"
+    ],
+    "externalPaths": [
+      "docs/requirements/notification.md",
+      "docs/runbooks/notification-outbox-operations.md",
+      "appointment-notification/src/main/kotlin/io/bluetape4k/clinic/notification/outbox/NotificationOutboxDispatcher.kt",
+      "appointment-notification/src/main/kotlin/io/bluetape4k/clinic/notification/outbox/NotificationOutboxWorker.kt",
+      "appointment-notification/src/main/kotlin/io/bluetape4k/clinic/notification/profile/MemberNotificationProfileResolver.kt",
+      "appointment-notification/src/main/kotlin/io/bluetape4k/clinic/notification/recovery/NotificationReminderRecoveryScanner.kt",
+      "appointment-notification/src/main/kotlin/io/bluetape4k/clinic/notification/route/NotificationDeliveryRouteGate.kt"
+    ]
+  },
+  "scope": {
+    "label": "SCOPE / notification delivery and STAFF action",
+    "meaning": "Connects notification intent, delivery outcome, and reminder recovery for one selected operating scope."
+  },
+  "version": {
+    "label": "VERSION / baseline commit f0c7614",
+    "meaning": "Separates current implementation from the approved operating design using one pinned revision."
+  },
+  "legend": {
+    "solid": "Implemented record, query, or call path",
+    "dashed": "Approved design or operational mockup boundary; the line itself does not carry hidden meaning."
+  },
+  "nodes": [
+    {"id":"appointmentCommand","label":"Appointment command transaction","source":"notification design: record minimum intent and idempotency"},
+    {"id":"outbox","label":"Notification outbox","source":"notification.md: durable notification intent"},
+    {"id":"routeGate","label":"Delivery route gate","source":"NotificationDeliveryRouteGate.kt: SHADOW/CANARY/ACTIVE/PAUSED"},
+    {"id":"leaseClaim","label":"Lease and fencing claim","source":"NotificationOutboxDispatcher.kt: DB lease and fencing"},
+    {"id":"profileResolver","label":"Member notification profile resolver","source":"MemberNotificationProfileResolver.kt: read contact, language, and consent at send time"},
+    {"id":"templateRenderer","label":"Typed template renderer","source":"notification.md: typed template and channel payload"},
+    {"id":"provider","label":"Provider channel","source":"NotificationOutboxWorker.kt: provider boundary"},
+    {"id":"durableOutcome","label":"Durable outcome and STAFF status query","source":"NotificationStatusQueryService.kt: safe state, reason code, next action"},
+    {"id":"recoveryScanner","label":"Reminder recovery scanner","source":"NotificationReminderRecoveryScanner.kt: bounded future/due/missed scan"},
+    {"id":"finalDecision","label":"Final State Decision","source":"article design: explicit terminal outcome node"}
+  ],
+  "edges": [
+    {"id":"command-outbox","from":"appointmentCommand","to":"outbox","kind":"record intent and idempotency key","tone":"blue","source":"notification design"},
+    {"id":"outbox-route","from":"outbox","to":"routeGate","kind":"check the selected operating route","tone":"purple","source":"NotificationDeliveryRouteGate.kt"},
+    {"id":"route-lease","from":"routeGate","to":"leaseClaim","kind":"worker execution and lease/fencing claim","tone":"blue","source":"NotificationOutboxDispatcher.kt"},
+    {"id":"lease-profile","from":"leaseClaim","to":"profileResolver","kind":"read the member profile at send time","tone":"cyan","source":"MemberNotificationProfileResolver.kt"},
+    {"id":"profile-template","from":"profileResolver","to":"templateRenderer","kind":"validate consent, destination, and language; build typed payload","tone":"cyan","source":"notification.md"},
+    {"id":"template-provider","from":"templateRenderer","to":"provider","kind":"call provider","tone":"amber","source":"NotificationOutboxWorker.kt"},
+    {"id":"provider-outcome","from":"provider","to":"durableOutcome","kind":"store success, retry, or failure","tone":"cyan","source":"NotificationOutboxWorker.kt"},
+    {"id":"outcome-decision","from":"durableOutcome","to":"finalDecision","kind":"check state, reason code, and next action","tone":"blue","source":"NotificationStatusQueryService.kt"},
+    {"id":"decision-sent","from":"finalDecision","to":"durableOutcome","kind":"sent","tone":"cyan","source":"NotificationStatusQueryService.kt"},
+    {"id":"decision-suppressed","from":"finalDecision","to":"durableOutcome","kind":"suppressed","tone":"purple","source":"NotificationStatusQueryService.kt"},
+    {"id":"decision-retry","from":"finalDecision","to":"outbox","kind":"retry wait","tone":"amber","source":"NotificationOutboxWorker.kt"},
+    {"id":"decision-exhausted","from":"finalDecision","to":"durableOutcome","kind":"exhausted and support request","tone":"red","source":"NotificationStatusQueryService.kt"},
+    {"id":"recovery-future","from":"recoveryScanner","to":"outbox","kind":"future: keep the next send time","tone":"blue","source":"NotificationReminderRecoveryScanner.kt"},
+    {"id":"recovery-due","from":"recoveryScanner","to":"outbox","kind":"due: enqueue within the catch-up window","tone":"cyan","source":"NotificationReminderRecoveryScanner.kt"},
+    {"id":"recovery-missed","from":"recoveryScanner","to":"finalDecision","kind":"missed: suppress and decide the final state","tone":"red","source":"NotificationReminderRecoveryScanner.kt"},
+    {"id":"recovery-existing","from":"recoveryScanner","to":"outbox","kind":"already exists: converge on the same idempotency key","tone":"purple","source":"NotificationReminderRecoveryScanner.kt"},
+    {"id":"recovery-status","from":"recoveryScanner","to":"durableOutcome","kind":"query cursor, checkpoint, and recovery result","tone":"blue","source":"notification-outbox-operations.md"}
+  ],
+  "decision": {
+    "id": "finalDecision",
+    "label": "Final State Decision",
+    "rule": "Record one of sent, suppressed, retry wait, or exhausted and expose the STAFF recommendation."
+  },
+  "outcomes": [
+    {"id":"sent","code":"SENT","next":"Re-read status and the action queue"},
+    {"id":"suppressed","code":"SUPPRESSED","next":"Check consent or destination state"},
+    {"id":"retry","code":"RETRY_WAIT","next":"Wait until the next retry time"},
+    {"id":"exhausted","code":"EXHAUSTED","next":"Contact notification support"}
+  ],
+  "behavior": {"branches": 3, "loops": 2},
+  "budget": {"nodes": 10, "edges": 18, "branches": 3, "loops": 2},
+  "budgetRationale": "The four delivery outcomes and the future/due/missed/already-exists reminder boundary fit in one view; provider details remain in the article.",
+  "repairs": [
+    {"target":"scope-version-cards","reason":"Keep scope and version fixed below the title without covering the main nodes.","touches":2},
+    {"target":"endpoint-aligned-connectors","reason":"Align every connector start and end with a real card boundary.","touches":17},
+    {"target":"rounded-orthogonal-turns","reason":"Use only horizontal and vertical segments with rounded corners; reject diagonals.","touches":17},
+    {"target":"marker-color-parity","reason":"Match every arrowhead fill to its connector color.","touches":17},
+    {"target":"message-label-clearance","reason":"Reserve an independent row between each call line and its label.","touches":17},
+    {"target":"explicit-final-state-decision","reason":"Replace a dotted or implicit terminal rail with a named Final State Decision node.","touches":5},
+    {"target":"operations-screen-readable-type","reason":"Size operations cards and action-queue headings for the longest label instead of shrinking type.","touches":8},
+    {"target":"reminder-recovery-secondary-panel","reason":"Keep reminder recovery as a supporting panel and omit an all-clinic rollout board.","touches":4}
+  ]
+}

@@ -82,7 +82,7 @@ test('blog technical diagrams use explicit locale assets with matching SVG sourc
     }
   }
 
-  assert.equal(stems.size, 204);
+  assert.equal(stems.size, 205);
 });
 
 test('attendance fulfillment flow keeps an explicit localized final decision', async () => {

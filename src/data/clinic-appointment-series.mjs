@@ -174,4 +174,11 @@ export const clinicAppointmentSeries = Object.freeze([
     ko: '[운영 확장 5] 내원 확인과 시술 완료는 다른 사실이다',
     en: '[Operations 5] Attendance and Treatment Completion Are Different Facts',
   },
+  {
+    id: 'operations-6',
+    group: 'operations',
+    slug: 'clinic-appointment-notification-reminder',
+    ko: '[운영 확장 6] 알림과 리마인더는 왜 별도 서비스인가',
+    en: '[Operations 6] Why Notifications and Reminders Are Separate Services',
+  },
 ]);
