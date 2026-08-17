@@ -160,4 +160,11 @@ export const clinicAppointmentSeries = Object.freeze([
     ko: '[운영 확장 3] 예약 복구는 영향 범위 확인부터 시작한다',
     en: '[Operations 3] Appointment Recovery Starts with Impact Discovery',
   },
+  {
+    id: 'operations-4',
+    group: 'operations',
+    slug: 'clinic-appointment-profile-reevaluation',
+    ko: '[운영 확장 4] CRM 프로필이 바뀌어도 확정 방문 약속은 자동으로 바꾸지 않는다',
+    en: '[Operations 4] Profile Changes Do Not Rewrite Confirmed Visit Commitments',
+  },
 ]);
