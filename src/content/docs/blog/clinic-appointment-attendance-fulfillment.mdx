@@ -1,0 +1,213 @@
+---
+title: "[Operations 5] Attendance and Treatment Completion Are Different Facts"
+description: "A STAFF-first explanation of why arrival, appointment completion, actual treatment fulfillment, partial work, resource disruption, and refunds must remain separate facts and follow-up tasks."
+sidebar:
+  order: -202608171700
+blog:
+  date: 2026-08-17T17:00:00+09:00
+  image: /assets/clinic-appointment-attendance-fulfillment-hero.png
+  imageAlt: An abstract operations board separating an appointment calendar, treatment evidence, and follow-up work cards
+  cardDescription: "A STAFF operations view and state/event flow for keeping attendance, appointment completion, and actual treatment fulfillment separate."
+  tags: ["architecture", "operations", "resilience", "appointment-service", "fulfillment", "example", "timefold"]
+---
+
+import ClinicAppointmentSeries from '../../../components/ClinicAppointmentSeries.astro';
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-attendance-fulfillment-hero.png" alt="An abstract operations board separating an appointment calendar, treatment evidence, and follow-up work cards" loading="eager" />
+  <figcaption>Arrival, treatment evidence, and the work that follows cannot be collapsed into one completion flag.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-17 · Clinic appointment engineering journal · Separating attendance from treatment fulfillment</p>
+
+Clicking <code>CHECKED_IN</code> in an appointment list does not mean that treatment is complete. Moving an appointment to
+<code>COMPLETED</code> does not mean that the clinical or treatment service has confirmed the actual result. If those facts are
+collapsed into one number, STAFF cannot tell what to do next, and partial work or refund follow-ups disappear.
+
+The conclusion is simple:
+
+> <code>CHECKED_IN</code> records attendance, and appointment <code>COMPLETED</code> ends the booking workflow.
+> Actual treatment completion is recorded by a verified <code>TreatmentFulfillmentEvent</code> from the clinical or treatment service.
+
+This distinction matters for a laser and sedation package where one appointment contains several treatment items. The screens and
+numbers in this article are synthetic design mockups; they do not use real patient information or claim a production dashboard
+aggregation.
+
+## STAFF needs state counts and an action queue first
+
+The first question on a STAFF screen is not “How many appointments are complete?”
+
+- How many confirmed appointments still need an arrival check?
+- How many patients have arrived but still wait for an external treatment result?
+- How many new tasks were created by partial fulfillment or resource disruption?
+- How many refund facts arrived without their <code>BLOCKING</code> follow-up being checked?
+
+The screen below separates summary cards from the action queue so those questions have visible answers. It is a design mockup,
+not a screenshot of a production product.
+
+<div class="bt4k-operations-screen" data-visual-title="Attendance and treatment fulfillment STAFF operations screen">
+  <img class="bt4k-screenshot" src="/assets/clinic-appointment-attendance-fulfillment-operations-screen-en.png" alt="STAFF operations screen with cards for today, arrival, in progress, appointment end, external facts, and follow-up work plus an action queue, state comparison, and next tasks" loading="lazy" />
+  <p class="bt4k-operations-screen-caption">Synthetic design mockup. Values are illustrative and do not represent patient identifiers or a production operations API.</p>
+</div>
+
+The six cards represent different facts:
+
+| Card | Fact shown | STAFF next action |
+| --- | --- | --- |
+| Today | Count of today’s <code>CONFIRMED</code> appointments | Review the appointment list and scheduled times. |
+| Arrived | Appointments moved to <code>CHECKED_IN</code> | Confirm treatment start; do not mark treatment complete. |
+| In progress | Appointments in <code>IN_PROGRESS</code> | Confirm where the actual treatment result will be recorded. |
+| Appointment end | Appointments in appointment <code>COMPLETED</code> | Re-read whether an external fulfillment fact has arrived. |
+| External facts | Appointments waiting for a verified <code>TreatmentFulfillmentEvent</code> | Do not infer clinical completion yet. |
+| Follow-up queue | Work created by partial fulfillment, resource disruption, or refund | Handle remaining work, operational exceptions, and <code>BLOCKING</code> cancellation. |
+
+The screen therefore does not show one “18 completed” number. Each queue row says what to do next: “review treatment result,”
+“wait for external fact,” “review remaining work,” or “review refund follow-up.”
+
+## Appointment completion and treatment fulfillment happen in different steps
+
+Follow one synthetic package appointment. It may contain laser and sedation treatment items, but it contains no real clinical record or
+patient identifier.
+
+1. STAFF checks the appointment and sends <code>CheckIn</code>. The recorded fact is that the patient arrived.
+2. STAFF sends <code>StartTreatment</code>, moving the appointment to <code>IN_PROGRESS</code>.
+3. The appointment service processes <code>Complete</code>, moving the appointment to <code>COMPLETED</code>. This ends the
+   appointment workflow; it is not evidence that every treatment item was clinically completed.
+4. The clinical or treatment service publishes a <code>TreatmentFulfillmentEvent</code>. The appointment service verifies it and
+   projects the result into a new immutable Plan revision.
+5. For full fulfillment, the treatment item becomes <code>COMPLETED</code>. For partial work or disruption, the completed original
+   item stays intact and the producer supplies a remaining task with a new treatment key.
+6. When a refund fact arrives, payment or commerce owns amount, approval, and settlement. The appointment service projects the fact
+   and only calculates which <code>BLOCKING</code> follow-up work must be canceled.
+
+The equation “appointment end = treatment complete = refund complete” is therefore false.
+
+## State comparison: the subject of COMPLETED matters
+
+The table is not meant to add status names for their own sake. It separates the owner of each fact from the next STAFF action.
+
+| State or fact | Recording service | Meaning | STAFF next action |
+| --- | --- | --- | --- |
+| <code>CHECKED_IN</code> | Appointment service | The patient arrived and was checked in. | Confirm treatment start; do not mark clinical completion. |
+| <code>IN_PROGRESS</code> | Appointment service | The appointment workflow is in progress. | Prepare the path for the actual treatment result. |
+| Appointment <code>COMPLETED</code> | Appointment service | The appointment workflow ended. | Check for an external fulfillment fact and any mismatch. |
+| Fulfillment fact <code>COMPLETED</code> | Published by the clinical/treatment service, verified and projected by the appointment service | A specific treatment obligation was actually completed. | Re-read the Plan and follow-up queue. |
+| <code>PARTIALLY_FULFILLED</code> | Published by the clinical/treatment service | Some work completed and a remaining-work definition arrived with it. | Preserve the original completed item and review a new remaining-work appointment. |
+| <code>RESOURCE_DISRUPTED</code> | Published by the clinical/treatment service | A device or other resource problem created remaining work. | Review the operational exception and producer-provided remaining work. |
+| <code>REFUNDED</code> | Published by the payment/commerce service | A refund fact was confirmed. | Do not recalculate the amount; review only <code>BLOCKING</code> follow-up work. |
+
+The same word <code>COMPLETED</code> appears for an appointment and a treatment item because they are different facts. In prose and
+screens, name the subject: “appointment <code>COMPLETED</code>” versus “fulfillment fact <code>COMPLETED</code>.”
+
+## A verified external fact changes the Plan in a defined sequence
+
+The sequence diagram shows where appointment states diverge from external fulfillment facts and converge again in the operations queue.
+
+<figure class="bt4k-sequence" data-diagram-title="Attendance and treatment completion final state decision">
+  <img src="/assets/clinic-appointment-attendance-fulfillment-flow-01-en.png" alt="STAFF sends attendance and appointment completion to the Appointment API; a TreatmentFulfillmentEvent passes through external fact ingress and a handler before the final state decision branches to completed, partially fulfilled, resource disrupted, or refunded" loading="lazy" />
+  <figcaption>The flow names a separate <strong>Final State Decision</strong> instead of leaving the outcome to an unexplained horizontal dotted rail. Four connectors leave distinct ports on that node; each route has its own two rounded corners, shares no line segment with another outcome, and enters the center of its card vertically. Each outcome keeps its own connector color and next action.</figcaption>
+</figure>
+
+The sequence is:
+
+- STAFF sends <code>CheckIn</code>, <code>StartTreatment</code>, and <code>Complete</code> to the Appointment API, which stores appointment
+  state and history.
+- The clinical or treatment service sends the actual result as a <code>TreatmentFulfillmentEvent</code>.
+- <code>ExternalFactEventIngress</code> verifies payload size/depth, schema, metadata, hash, signature, and source version.
+- <code>TreatmentFulfillmentHandler</code> does not overwrite the original revision. It creates and activates a new immutable revision.
+- The STAFF follow-up queue shows remaining work and operational exceptions. After rechecking state, policy, and revision, it records the
+  <strong>Final State Decision</strong>.
+
+The only dashed line is the legend-defined boundary where an external fact is awaited. Relationship connectors stay solid, and every
+arrowhead uses the same color as its connector.
+
+## Partial fulfillment and resource disruption preserve the original item
+
+The dangerous implementation for partial treatment or device disruption is to overwrite the original treatment item with “remaining
+treatment.” That loses what actually finished, which revision made the decision, and what needs a new appointment.
+
+The current handler follows a stricter rule:
+
+- Preserve the original treatment item with its completed status and provenance.
+- Add remaining work using the producer-provided definition and a new treatment key. The appointment service does not guess the
+  remaining treatment.
+- Store a <code>RESOURCE_DISRUPTION</code> operational exception together with the remaining item.
+- Leave the original Plan revision unchanged and activate a new revision.
+- Let source version and idempotency rules converge duplicate or out-of-order events to the same result.
+
+Booking the remaining item is an operational task of its own. Being able to compute an available time does not give the appointment
+service authority to decide clinical completion.
+
+## A refund is not another name for appointment end
+
+Refunds belong in the flow, but the appointment service must not pretend to be the payment system.
+
+- Payment or commerce owns refund amount, approval, and settlement.
+- The appointment service records the <code>REFUNDED</code> fact and reason code, then calculates whether <code>BLOCKING</code>
+  follow-up work should be canceled.
+- Independent <code>NON_BLOCKING</code> follow-up work can remain schedulable.
+- An additional purchase starts a new product contract and Plan instead of overwriting the existing Plan.
+- Customer consultation and compensation belong to CRM/customer service queues, not to appointment state or treatment completion.
+
+The refund screen and the appointment screen therefore do not share one “done” state. They connect their facts and show STAFF only the
+remaining work.
+
+## Failed external facts do not change the original
+
+Receiving an external event is not enough to change the Plan. The ingress verifies payload, schema, scope, hash, signature, and source
+version; a failed event is separated into quarantine or a retry-wait state.
+
+The operations screen can show bounded next actions:
+
+- Verification failed — preserve the original Plan.
+- Source version gap — wait for the correct order.
+- Duplicate event — result is unchanged.
+- Retryable dependency failure — wait for the limited retry.
+- Investigation required — check privacy, authority, or contract boundaries.
+
+An invalid event leaves the active revision intact. Duplicate delivery is allowed, but the result is applied once, so a repeated event
+cannot reopen a completed item.
+
+## Keep current code, approved design, and operations mockup separate
+
+| Boundary | What this article claims |
+| --- | --- |
+| Current implementation | Appointment <code>CHECKED_IN → IN_PROGRESS → COMPLETED</code>, <code>TreatmentFulfillmentEvent</code>, external fact verification, immutable Plan projection, full/partial/resource-disruption/refund facts, and replay/quarantine tests |
+| Approved design | Separate ownership for appointment, Plan, treatment items, and resource allocation; an external completion fact contract; new remaining work and follow-up booking boundaries |
+| Operations mockup | STAFF cards, action queue, state comparison, and Final State Decision. It is not real patient data or a production metrics API. |
+| Follow-up scope | Clinic-specific clinical-record integration, patient communication and compensation policy, settlement screens, and real-data operations metrics |
+
+This article does not propose that the appointment service know everything. It owns appointment state and history, verifies external facts,
+and projects them into a Plan. Clinical completion, refund amounts, and customer compensation remain with their owning services.
+
+## Four checks before STAFF closes a case
+
+Before closing one appointment, STAFF checks:
+
+1. Has the patient’s arrival been confirmed?
+2. Have the appointment workflow end and the actual treatment fulfillment fact both been read?
+3. Have new tasks after partial fulfillment, resource disruption, or refund been reviewed, including <code>BLOCKING</code> follow-up?
+4. Are the original Plan revision and event provenance still preserved?
+
+When these four facts remain separate on the screen, STAFF can tell what to handle now and what to wait for. The screen should provide more
+clarity, not merely more rows.
+
+## Sources
+
+- [Implementation 2: Appointment State Is More Than an Enum](/blog/clinic-appointment-part2-state-machine-and-history/)
+- [Implementation 9: Freezing Package Choices and Execution Order into a Visit Plan](/blog/clinic-appointment-package-execution-plan/)
+- [Operations 3: Appointment Recovery Starts with Impact Discovery](/blog/clinic-appointment-disruption-recovery/)
+- [Visit commitment API contract](https://github.com/bluetape4k/clinic-appointment/blob/260a40973f5df30baa5209a2e0e99155bf8e812f/docs/api/visit-commitment.md)
+- [AppointmentState.kt](https://github.com/bluetape4k/clinic-appointment/blob/260a40973f5df30baa5209a2e0e99155bf8e812f/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/statemachine/AppointmentState.kt)
+- [AppointmentEvent.kt](https://github.com/bluetape4k/clinic-appointment/blob/260a40973f5df30baa5209a2e0e99155bf8e812f/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/statemachine/AppointmentEvent.kt)
+- [AppointmentStateMachine.kt](https://github.com/bluetape4k/clinic-appointment/blob/260a40973f5df30baa5209a2e0e99155bf8e812f/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/statemachine/AppointmentStateMachine.kt)
+- [TreatmentFulfillmentEvent.kt](https://github.com/bluetape4k/clinic-appointment/blob/260a40973f5df30baa5209a2e0e99155bf8e812f/appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/TreatmentFulfillmentEvent.kt)
+- [TreatmentFulfillmentHandler.kt](https://github.com/bluetape4k/clinic-appointment/blob/260a40973f5df30baa5209a2e0e99155bf8e812f/appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/TreatmentFulfillmentHandler.kt)
+- [ExternalFactEventIngress.kt](https://github.com/bluetape4k/clinic-appointment/blob/260a40973f5df30baa5209a2e0e99155bf8e812f/appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/ExternalFactEventIngress.kt)
+- [TreatmentFulfillmentHandlerTest.kt](https://github.com/bluetape4k/clinic-appointment/blob/260a40973f5df30baa5209a2e0e99155bf8e812f/appointment-event/src/test/kotlin/io/bluetape4k/clinic/appointment/event/integration/TreatmentFulfillmentHandlerTest.kt)
+- [Appointment Plan and Capacity design](https://github.com/bluetape4k/clinic-appointment/blob/260a40973f5df30baa5209a2e0e99155bf8e812f/docs/superpowers/specs/2026-07-26-appointment-plan-and-capacity-design.md)
+- [Visit commitment design](https://github.com/bluetape4k/clinic-appointment/blob/260a40973f5df30baa5209a2e0e99155bf8e812f/docs/superpowers/specs/2026-07-29-issue-184-visit-commitment-design.md)
+
+## Series
+
+<ClinicAppointmentSeries current="clinic-appointment-attendance-fulfillment" locale="en" />

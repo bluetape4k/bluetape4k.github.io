@@ -12,7 +12,7 @@ test('clinic appointment series keeps the approved published order', () => {
     clinicAppointmentGroups.map(({ id }) => id),
     ['prologue', 'design', 'implementation', 'operations'],
   );
-  assert.equal(clinicAppointmentSeries.length, 23);
+  assert.equal(clinicAppointmentSeries.length, 24);
   assert.deepEqual(
     clinicAppointmentGroups.map(({ id }) => [
       id,
@@ -22,7 +22,7 @@ test('clinic appointment series keeps the approved published order', () => {
       ['prologue', 1],
       ['design', 7],
       ['implementation', 9],
-      ['operations', 6],
+      ['operations', 7],
     ],
   );
   assert.deepEqual(
@@ -51,9 +51,12 @@ test('clinic appointment series keeps the approved published order', () => {
       'operations-2',
       'operations-3',
       'operations-4',
+      'operations-5',
     ],
   );
-  assert.equal(new Set(clinicAppointmentSeries.map(({ slug }) => slug)).size, 23);
+  assert.equal(new Set(clinicAppointmentSeries.map(({ slug }) => slug)).size, 24);
+  assert.equal(clinicAppointmentSeries.at(-1).id, 'operations-5');
+  assert.equal(clinicAppointmentSeries.at(-1).slug, 'clinic-appointment-attendance-fulfillment');
 });
 
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -77,7 +80,7 @@ test('every published clinic appointment article uses the shared series navigati
   for (const locale of locales) {
     const files = (await readdir(locale.directory))
       .filter((file) => file.startsWith('clinic-appointment-') && file.endsWith('.mdx'));
-    assert.equal(files.length, 23, `${locale.id}: published article count`);
+    assert.equal(files.length, 24, `${locale.id}: published article count`);
 
     for (const entry of clinicAppointmentSeries) {
       const source = await readFile(`${locale.directory}/${entry.slug}.mdx`, 'utf8');
@@ -94,6 +97,36 @@ test('every published clinic appointment article uses the shared series navigati
         new RegExp(`<ClinicAppointmentSeries current="${entry.slug}" locale="${locale.id}" />`),
       );
       assert.doesNotMatch(footer, /\]\(\/(?:ko\/)?blog\/clinic-appointment-/);
+    }
+  }
+});
+
+test('clinic appointment related references use series posts instead of issue or pull-request links', async () => {
+  const replacements = {
+    'clinic-appointment-disruption-recovery': 'clinic-appointment-profile-reevaluation',
+    'clinic-appointment-n-visit-purchase-plan': 'clinic-appointment-package-product-execution-graph',
+    'clinic-appointment-package-execution-plan': 'clinic-appointment-package-product-execution-graph',
+    'clinic-appointment-profile-reevaluation': 'clinic-appointment-disruption-recovery',
+    'clinic-appointment-scheduling-policy': 'clinic-appointment-waitlist-core',
+  };
+
+  for (const [slug, relatedSlug] of Object.entries(replacements)) {
+    for (const locale of ['en', 'ko']) {
+      const directory = locale === 'ko' ? 'src/content/docs/ko/blog' : 'src/content/docs/blog';
+      const sourcesHeadings = locale === 'ko' ? ['## 근거 자료'] : ['## Sources', '## References'];
+      const seriesHeadings = locale === 'ko' ? ['## 시리즈 링크'] : ['## Series', '## Series navigation'];
+      const prefix = locale === 'ko' ? '/ko/' : '/';
+      const source = await readFile(`${directory}/${slug}.mdx`, 'utf8');
+      const sourcesIndex = Math.min(...sourcesHeadings
+        .map((heading) => source.indexOf(heading))
+        .filter((index) => index >= 0));
+      const seriesIndex = Math.min(...seriesHeadings
+        .map((heading) => source.indexOf(heading))
+        .filter((index) => index >= 0));
+      const references = source.slice(sourcesIndex, seriesIndex);
+
+      assert.doesNotMatch(references, /https?:\/\/github\.com\/[^)\s]+\/(?:issues|pull)\//);
+      assert.match(references, new RegExp(`]\\(${prefix}blog/${relatedSlug}/\\)`));
     }
   }
 });

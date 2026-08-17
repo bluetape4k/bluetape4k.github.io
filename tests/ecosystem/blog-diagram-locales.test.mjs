@@ -82,7 +82,52 @@ test('blog technical diagrams use explicit locale assets with matching SVG sourc
     }
   }
 
-  assert.equal(stems.size, 203);
+  assert.equal(stems.size, 204);
+});
+
+test('attendance fulfillment flow keeps an explicit localized final decision', async () => {
+  const diagrams = {
+    ko: {
+      path: 'public/assets/clinic-appointment-attendance-fulfillment-flow-01-ko.svg',
+      label: '최종 상태 결정',
+    },
+    en: {
+      path: 'public/assets/clinic-appointment-attendance-fulfillment-flow-01-en.svg',
+      label: 'Final State Decision',
+    },
+  };
+
+  for (const [locale, { path: diagramPath, label }] of Object.entries(diagrams)) {
+    const source = await readFile(diagramPath, 'utf8');
+    assert.match(source, new RegExp(`>${label}<`), `${locale}: missing final decision label`);
+    assert.equal((source.match(/id="outcome-\d+"/g) ?? []).length, 4, `${locale}: expected four outcomes`);
+  }
+});
+
+test('attendance fulfillment outcome routes are independent rounded paths from the decision node', async () => {
+  const expected = [
+    ['outcome-0', 'M650 1480 V1524 Q650 1548 626 1548 H271 Q247 1548 247 1572 V1680'],
+    ['outcome-1', 'M720 1480 V1564 Q720 1588 696 1588 H641 Q617 1588 617 1612 V1680'],
+    ['outcome-2', 'M880 1480 V1564 Q880 1588 904 1588 H963 Q987 1588 987 1612 V1680'],
+    ['outcome-3', 'M950 1480 V1524 Q950 1548 974 1548 H1333 Q1357 1548 1357 1572 V1680'],
+  ];
+
+  for (const locale of ['ko', 'en']) {
+    const source = await readFile(
+      `public/assets/clinic-appointment-attendance-fulfillment-flow-01-${locale}.svg`,
+      'utf8',
+    );
+    assert.doesNotMatch(source, /class="fanout-bus"/);
+    assert.doesNotMatch(source, /class="fanout-stem"/);
+    assert.doesNotMatch(source, /분기 시작점|Outcome fan-out origin/);
+    for (const [target, pathData] of expected) {
+      assert.match(
+        source,
+        new RegExp(`data-target-node="${target}" d="${pathData.replaceAll(' ', '\\s+') }"`),
+        `${locale}: ${target} must have an independent rounded route from the decision node`,
+      );
+    }
+  }
 });
 
 test('paired English and Korean posts reference the same technical diagram stems', async () => {
