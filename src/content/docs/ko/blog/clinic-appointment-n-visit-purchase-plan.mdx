@@ -1,5 +1,5 @@
 ---
-title: "[구현 8] N회 상품 구매를 방문 계획으로 펼치는 방법"
+title: "[구현 8] N회 상품 구매로 방문 계획을 만드는 과정"
 description: "3회 상품 구매를 미래 예약 세 건으로 만들지 않고, 시간 미지정 회차와 불변 계획 버전으로 관리하는 구현을 설명합니다."
 sidebar:
   order: -202608161200
@@ -7,7 +7,7 @@ blog:
   date: 2026-08-16T12:00:00+09:00
   image: /assets/clinic-appointment-n-visit-plan-hero.png
   imageAlt: "로봇이 구매 토큰을 받은 뒤 시간 미지정 방문 카드 세 장을 방문 계획 트레이에 나누어 넣고 비어 있는 달력을 그대로 두는 장면"
-  cardDescription: "반복 상품의 구매 권리를 회차별 방문 계획으로 펼치고, 완료·환불·간격 제약을 변경 이력으로 관리하는 방법을 살펴봅니다."
+  cardDescription: "반복 상품의 구매 권리를 회차별 방문 계획으로 전개하고, 완료·환불·간격 제약을 변경 이력으로 관리하는 방법을 살펴봅니다."
   tags: ["architecture", "domain-modeling", "event-driven", "resilience", "appointment-service", "example", "timefold"]
 ---
 
@@ -34,7 +34,7 @@ import ClinicAppointmentSeries from '../../../../components/ClinicAppointmentSer
 | --- | --- | --- |
 | 구매 직후 | 예약 시간 세 개가 달력에 들어감 | 시간 없는 회차 세 개가 계획에 들어감 |
 | 환자 동의 | 미래 회차까지 동의했다고 가정 | 제안할 회차마다 정확한 시간과 조건에 동의 |
-| 자원 점유 | 의료진·장비·진료실을 너무 일찍 점유 | 확정한 방문 약속만 자원을 점유 |
+| 자원 점유 | 의료진·장비·진료실을 너무 일찍 점유 | 확정한 예약만 자원을 점유 |
 | 일정 변경 | 뒤의 예약을 연쇄 변경 | 아직 정하지 않은 회차는 그대로 계획에 남음 |
 | 회차 간격 | 구매일이나 임의의 날짜를 기준으로 고정 | 직전 회차의 실제 완료 시각을 기준으로 다음 구간 계산 |
 
@@ -63,7 +63,7 @@ import ClinicAppointmentSeries from '../../../../components/ClinicAppointmentSer
 ## repeatCount는 회차별 PlannedTreatment로 펼쳐진다
 
 `AppointmentPlanFactory`의 핵심은 `repeatCount`를 그대로 카운터로 보관하지 않고, 회차별 계획 항목으로
-펼치는 데 있습니다. 3회 상품이라면 `sequenceNo`가 1, 2, 3인 `PlannedTreatmentRecord`가 생깁니다.
+전개하는 데 있습니다. 3회 상품이라면 `sequenceNo`가 1, 2, 3인 `PlannedTreatmentRecord`가 생깁니다.
 
 ```kotlin
 val treatments = definition.items.flatMapIndexed { bomOrder, item ->
@@ -85,9 +85,9 @@ val treatments = definition.items.flatMapIndexed { bomOrder, item ->
 ```
 
 `earliestStartAt`과 `latestStartAt`은 `null`입니다. 회차는 만들어졌지만 예약 가능 구간은 아직 계산되지
-않았습니다. 구매 희망 일정도 확정 방문 약속으로 바꾸지 않고 별도의 불변 값으로 보존합니다.
+않았습니다. 구매 희망 일정도 확정 예약으로 바꾸지 않고 별도의 불변 값으로 보존합니다.
 
-회차를 행으로 펼치면 다음 질문에 구체적으로 답할 수 있습니다.
+회차별 항목을 정리하면 다음 질문에 구체적으로 답할 수 있습니다.
 
 - 어떤 회차가 완료됐는가?
 - 어떤 회차가 아직 계획 상태인가?
@@ -211,7 +211,7 @@ N회 상품은 미래 예약 N건이 아니라 N개의 방문 의무를 가진 �
 - 반복 회차의 자동 인접 의존 관계와 방문 묶음은 아직 별도로 연결해야 한다.
 
 이제 구매 권리, 회차별 의무, 실제 방문 완료, 남은 의무를 서로 다른 사실로 설명할 수 있습니다. 다음 글에서는
-서로 다른 시술로 구성된 패키지 상품을 실행 그래프로 펼치고, 어떤 항목을 같은 방문에 묶을 수 있는지
+서로 다른 시술로 구성된 패키지 상품을 실행 그래프로 전개하고, 어떤 항목을 같은 방문에 묶을 수 있는지
 살펴봅니다.
 
 ## 근거 자료

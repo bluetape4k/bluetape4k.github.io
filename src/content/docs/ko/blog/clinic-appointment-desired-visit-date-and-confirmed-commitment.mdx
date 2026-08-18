@@ -99,7 +99,7 @@ import ClinicAppointmentSeries from '../../../../components/ClinicAppointmentSer
 4. 새 자원을 확보합니다.
 5. 한 트랜잭션에서 확정 제안을 교체하고 기존 자원을 해제합니다.
 
-새 자원 점유가 실패하거나 고객이 거절하거나 제안이 만료되면 기존 예약의 확정 상태와 예약일시는 그대로 남습니다. 이것이 날짜 필드만 수정하는 것과 확정된 예약을 변경하는 것의 가장 큰 차이입니다.
+새 자원 점유가 실패하거나 고객이 거절하거나 제안이 만료되면 기존 예약의 확정 상태와 예약일시는 그대로 남습니다. 이것이 날짜 필드만 수정하는 것과 확정 예약을 변경하는 것의 가장 큰 차이입니다.
 
 ## 각 서비스는 무엇을 책임지는가
 
@@ -121,7 +121,7 @@ import ClinicAppointmentSeries from '../../../../components/ClinicAppointmentSer
 | 자원 원장 | 의료진·장비·공간·수용량의 실제 점유 가능성 | `HELD`와 `CONFIRMED`에 필요한 점유 결과를 제공함 |
 | 임상·시술 서비스 | 실제 시작·완료·부분 완료 | 방문 결과를 발행하며 일정 합의 상태를 대신 판단하지 않음 |
 
-고객 상담·CRM의 노쇼 이력이나 VIP 정책은 이 흐름의 입력이 될 수 있습니다. 다만 예약 서비스가 스스로 고객 등급을 만들거나 벌점을 부과하는 것은 아닙니다. 정책 소유 서비스가 근거와 적용 범위를 결정하고, 예약 서비스는 상품과 병원의 운영 규칙, 기존의 확정된 예약일시와 자원 점유를 지키는 범위에서 제안 우선순위나 승인 조건에 반영합니다. 다음 글에서는 노쇼 이력과 VIP 우선 신호를 신규 예약과 대기 목록 제안에 적용할 때의 책임 경계를 다룹니다.
+고객 상담·CRM의 노쇼 이력이나 VIP 정책은 이 흐름의 입력이 될 수 있습니다. 다만 예약 서비스가 스스로 고객 등급을 만들거나 벌점을 부과하는 것은 아닙니다. 정책 소유 서비스가 근거와 적용 범위를 결정하고, 예약 서비스는 상품과 병원의 운영 규칙, 기존에 확정한 예약의 일시와 자원 점유를 지키는 범위에서 제안 우선순위나 승인 조건에 반영합니다. 다음 글에서는 노쇼 이력과 VIP 우선 신호를 신규 예약과 대기 목록 제안에 적용할 때의 책임 경계를 다룹니다.
 
 ## 현재 구현과 운영 활성화는 같은 말이 아니다
 
@@ -154,9 +154,9 @@ import ClinicAppointmentSeries from '../../../../components/ClinicAppointmentSer
 - [방문 예약·예약 확정·상품 버전 전환 설계](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-07-29-issue-184-visit-commitment-design.md)
 - [프로필 변경에 따른 예약 재평가 설계](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-07-30-profile-change-reservation-reevaluation-design.md)
 - [AppointmentCommitment 모델](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/commitment/AppointmentCommitmentModel.kt)
-- [방문 약속 요청 계약](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/dto/commitment/AppointmentCommitmentRequests.kt)
-- [방문 약속 application service](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/service/DefaultAppointmentCommitmentApplicationService.kt)
-- [방문 약속 API 안내](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/README.ko.md)
+- [예약 요청 계약](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/dto/commitment/AppointmentCommitmentRequests.kt)
+- [예약 application service](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/service/DefaultAppointmentCommitmentApplicationService.kt)
+- [예약 API 안내](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/README.ko.md)
 
 ## 시리즈 링크
 

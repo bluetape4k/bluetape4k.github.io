@@ -104,7 +104,7 @@ transaction {
 ```
 
 이 코드는 제공자(provider)가 실제 발송을 완료했다는 뜻은 아닙니다. 예약 트랜잭션이 “알림 의도와 이벤트를 전달해야
-한다”는 영속적인 사실을 남긴다는 뜻입니다. relay와 consumer가 나중에 다시 실행되어도, 이미 저장된 appointment의 상태와
+한다”는 저장된 사실을 남긴다는 뜻입니다. relay와 consumer가 나중에 다시 실행되어도, 이미 저장된 appointment의 상태와
 아웃박스 identity를 기준으로 다음 결과를 결정할 수 있습니다.
 
 ## consumer inbox는 중복 메시지를 정상 결과로 처리한다
@@ -148,7 +148,7 @@ handler가 성공하면 inbox를 `PROCESSED`로 변경하는 작업도 lease를 
 
 ## 운영자는 숫자보다 상태·근거·다음 작업을 먼저 본다
 
-재시도 문제를 운영 화면에 “실패 2건”이라고만 표시하면 STAFF는 무엇을 다시 실행해야 하는지 알 수 없습니다. 한 행마다
+재시도 문제를 운영 화면에 “실패 2건”이라고만 표시하면 STAFF는 무엇을 다시 실행해야 하는지 알 수 없습니다. 조치 메시지(작업 요청)마다
 다음 질문에 답해야 합니다.
 
 1. 어느 tenant·clinic 범위의 예약인가?
@@ -159,7 +159,7 @@ handler가 성공하면 inbox를 `PROCESSED`로 변경하는 작업도 lease를 
 
 <div class="bt4k-operations-screen" data-visual-title="예약 변경 중복 방지 STAFF 운영 화면 시안">
   <img class="bt4k-screenshot" src="/assets/clinic-appointment-idempotent-replay-operations-screen-ko.png" alt="tenant와 clinic 범위, 처리 완료·중복 감지·재시도 대기·격리 검토 지표, 대상·논리 소비자·상태·사유·다음 작업으로 구성한 조치 큐, requestId·fingerprint·provenance 근거 패널과 허용된 다음 작업을 보여 주는 STAFF 운영 화면 시안" loading="lazy" />
-  <p class="bt4k-operations-screen-caption">합성 데이터로 만든 운영 화면 시안입니다. 조치 큐는 예약을 다시 변경할 수 있는 행과 결과를 조회하기만 해야 하는 행을 구분하고, 원문 페이로드 대신 범위·fingerprint·provenance를 보여 줍니다.</p>
+  <p class="bt4k-operations-screen-caption">합성 데이터로 만든 운영 화면 시안입니다. 조치 큐는 예약을 변경할 수 있는 작업 요청과 결과만 조회하는 작업 요청을 구분하고, 원문 페이로드 대신 범위·fingerprint·provenance를 보여 줍니다.</p>
 </div>
 
 화면의 네 가지 지표도 서로 다른 뜻을 가집니다.
