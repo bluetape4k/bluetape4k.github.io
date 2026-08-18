@@ -188,4 +188,11 @@ export const clinicAppointmentSeries = Object.freeze([
     ko: '[운영 확장 7] 예약 결과가 외부 시스템과 통계로 전달되는 과정',
     en: '[Operations 7] How Appointment Results Reach External Systems and Statistics',
   },
+  {
+    id: 'operations-8',
+    group: 'operations',
+    slug: 'clinic-appointment-multitenant-data-boundaries',
+    ko: '[운영 확장 8] 여러 병원을 한 예약 서비스로 운영할 때 지켜야 할 데이터 경계',
+    en: '[Operations 8] Data Boundaries for Running Multiple Clinics in One Appointment Service',
+  },
 ]);
