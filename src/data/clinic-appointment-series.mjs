@@ -17,7 +17,7 @@ export const clinicAppointmentSeries = Object.freeze([
     id: 'design-1',
     group: 'design',
     slug: 'clinic-appointment-product-version-purchase-snapshot',
-    ko: '[설계 1] 상품이 바뀌어도 고객의 약속은 변경하지 않는다: 상품 버전과 구매 스냅숏',
+    ko: '[설계 1] 상품이 바뀌어도 고객의 약속은 변경하지 않는다: 상품 버전과 구매 기준 정보',
     en: "[Design 1] When a Product Changes, Preserve the Patient's Promise: Product Versions and Purchase Snapshots",
   },
   {
@@ -201,5 +201,12 @@ export const clinicAppointmentSeries = Object.freeze([
     slug: 'clinic-appointment-idempotent-replay',
     ko: '[운영 확장 9] 재시도와 replay가 있어도 예약은 한 번만 바꾼다',
     en: '[Operations 9] Retries and Replay Must Change an Appointment Only Once',
+  },
+  {
+    id: 'operations-10',
+    group: 'operations',
+    slug: 'clinic-appointment-latest-fence',
+    ko: '[운영 확장 10] 최신 계산 결과만 예약에 적용한다',
+    en: '[Operations 10] Apply Only the Latest Calculation to an Appointment',
   },
 ]);

@@ -1,0 +1,250 @@
+---
+title: "[운영 확장 10] 최신 계산 결과만 예약에 적용한다"
+description: "Solver·정책 활성화·알림 작업이 오래된 결과로 예약을 덮어쓰지 않도록 계산 기준 데이터 확인, 원자적 적용, 영속 명령 재시도, 운영 관측 경계를 STAFF 운영 화면과 함께 설명합니다."
+sidebar:
+  order: -202608182000
+blog:
+  date: 2026-08-18T20:00:00+09:00
+  image: /assets/clinic-appointment-latest-fence-hero.png
+  imageAlt: 계산 결과의 버전을 확인해 최신 카드만 통과시키고 오래된 카드는 격리하는 파란색 3D 로봇 장면
+  cardDescription: "계산 시점의 원본 버전과 적용 시점의 원본 버전을 비교해 오래된 결과를 막고, 정책·알림 작업의 재시도와 관측 경계를 STAFF 화면으로 설명합니다."
+  tags: ["operations", "reliability", "concurrency", "observability", "appointment-service", "kotlin", "example", "timefold"]
+---
+
+import ClinicAppointmentSeries from '../../../../components/ClinicAppointmentSeries.astro';
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-latest-fence-hero.png" alt="계산 결과의 버전을 확인해 최신 카드만 통과시키고 오래된 카드는 격리하는 파란색 3D 로봇 장면" loading="eager" />
+  <figcaption>예약을 바꾸는 것은 계산 결과가 아니라, 현재 원본과 일치하는 결과입니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-18 · 병원 예약 서비스 개발기 · 계산 결과의 최신성 보장</p>
+
+Solver가 예약 일정을 계산하는 동안 병원 규칙이 바뀔 수 있습니다. 의사의 휴진이 등록되거나 장비 사용 시간이 바뀌고,
+정책 버전이 새로 활성화될 수도 있습니다. 계산을 먼저 끝냈다는 이유만으로 결과를 저장하면, 먼저 계산한 결과가
+오히려 더 새로운 예약 상태를 덮어쓸 수 있습니다.
+
+여기서 말하는 “최신”은 시계 시간이 아닙니다. 계산을 시작할 때 읽은 원본과 적용 직전에 다시 읽은 원본의 버전이 같은지로
+판단합니다. 버전이 다르면 결과가 아무리 좋은 점수를 받았더라도 적용하지 않고 다시 계산하거나
+운영자 검토로 넘겨야 합니다.
+
+이 글의 결론은 다음과 같습니다.
+
+> Solver는 같은 범위와 시점에 읽은 원본을 묶은 기준 데이터에서 `planningFactVersion`과 예약별 `sourceVersion`을 함께 만들고, 예약 API의 사전 확인(advisory)은
+> 참고용으로만 사용합니다. 실제 적용은 `SERIALIZABLE` 트랜잭션에서 원본 행을 잠근 뒤 `expectedVersion`을
+> 조건으로 CAS 갱신하는 `applyOptimizedAssignments`가 담당합니다. 정책 활성화는 메모리에만 두지 않고 `PENDING` 영속
+> 활성화 명령으로 저장해 작업 임대권(lease)을 기준으로 재실행합니다. 알림은 아웃박스(outbox), 리더 작업 주기(leader tick),
+> Micrometer, 상태 점검(health) 신호를 각각 관측하는 경계를 둡니다. 모든 경로는
+> `최종 상태 결정`에서 적용, 오래된 결과 폐기, 재시도, 운영 보류 중 하나를 명시적으로 남깁니다.
+
+여기서 기준 데이터는 같은 범위와 시점에 읽은 원본을 한 묶음으로 표현한 것입니다. 구현에서는 이 묶음을 읽고 검증하는 코드가 있지만,
+운영 화면에서는 “계산할 때 어떤 기준 데이터를 읽었는가”로 보여 주는 편이 더 이해하기 쉽습니다.
+
+아래 다이어그램과 운영 화면은 실제 환자나 병원 데이터를 담은 캡처가 아닌 합성 시안입니다. 현재 코드가 보장하는
+동시성 경계와, 실제 운영 환경에서 별도로 검증해야 하는 SLO·장애 복구·런북을 구분해 보여 줍니다.
+
+## “최신”은 계산 완료 시각이 아니라 원본 버전의 일치 여부다
+
+예를 들어 Solver가 월요일 오전의 의사 일정과 장비 현황을 읽고 계산을 시작했다고 합시다. 계산 중간에 장비 점검 시간이
+등록되면, Solver가 반환한 결과는 계산이 끝난 순간에는 정상처럼 보여도 현재 규칙을 반영하지 않은 오래된 결과입니다.
+
+현재 구현은 이 차이를 다음 세 값으로 확인합니다.
+
+| 값 | 의미 | 확인 시점 |
+| --- | --- | --- |
+| `planningFactVersion` | Solver가 읽은 병원·의사·장비·휴진·시간대 등 계획 입력(planning fact) 전체를 정해진 형식으로 정리한 해시 | 계산 결과를 만들 때 |
+| `sourceVersions` | 결과에 포함된 예약 원본 행의 버전 묶음 | 계산 결과를 만들 때와 적용 직전 |
+| 현재 기준 데이터 | 적용 트랜잭션 안에서 다시 읽어 계산한 계획 입력의 해시 | 실제 적용 직전 |
+
+`PlanningFactVersionHasher`는 DB 조회 순서나 `toString()` 결과에 의존하지 않고 필드와 컬렉션을 정해진 순서로 기록해 SHA-256
+해시를 만듭니다. 따라서 같은 범위와 같은 입력 데이터는 같은 버전을 만들고, 입력 데이터를 하나라도 추가·수정·삭제하면
+해시가 바뀝니다. null과 빈 값도 같은 것으로 취급하지 않습니다. 이 값은 “어느 쪽이 더 최신인가”를 추측하는 숫자가 아니라,
+계산에 사용한 입력의 동일성을 확인하는 증거입니다.
+
+## 사전 확인(advisory)은 참고용이고, 실제 적용은 트랜잭션에서 결정한다
+
+`SolverService`에는 `isSourceVersionCurrentAdvisory`가 있습니다. 이 메서드는 현재 기준 데이터의
+`planningFactVersion`과 예약별 버전이 결과와 같은지 빠르게 알려 줍니다. 하지만 확인이 끝난 직후 다른 변경 작업이 원본을
+바꿀 수 있으므로 이 결과만 믿고 예약을 저장하면 안 됩니다.
+
+실제 반영은 `applyOptimizedAssignments`에서만 수행합니다.
+
+```kotlin
+transaction(transactionIsolation = Connection.TRANSACTION_SERIALIZABLE) {
+    val current = loadSnapshotInCurrentTransaction(scope, dateRange)
+    if (current.planningFactVersion != result.planningFactVersion) {
+        throw StaleSolverResultException
+    }
+
+    appointmentRepository.lockLegacySourceVersions(scope, result.sourceVersions)
+
+    result.appointments.forEach { appointment ->
+        val applied = appointmentRepository.updateLegacyAssignment(
+            scope = scope,
+            appointmentId = appointment.id!!,
+            expectedVersion = result.sourceVersions[appointment.id]!!,
+            doctorId = appointment.doctorId,
+            appointmentDate = appointment.appointmentDate,
+            startTime = appointment.startTime,
+            endTime = appointment.endTime,
+        )
+        if (!applied) throw StaleSolverResultException
+    }
+}
+```
+
+이 순서를 지켜야 합니다.
+
+1. 같은 tenant·clinic·날짜 범위의 기준 데이터를 트랜잭션 안에서 다시 읽습니다.
+2. `planningFactVersion`이 달라졌으면 즉시 오래된 결과로 판정합니다.
+3. 결과가 참조한 예약 원본 행을 잠근 뒤 현재 기준 데이터를 다시 확인합니다. 잠금을 기다리는 동안 다른 변경이 먼저 반영됐을
+   가능성도 있기 때문입니다.
+4. 각 예약을 `expectedVersion`을 조건으로 CAS로 갱신합니다. 하나라도 실패하면 트랜잭션 전체를 롤백하고 `false`를
+   반환합니다.
+
+따라서 advisory 확인이 `true`였다는 사실은 “그 순간에는 같았다”는 뜻일 뿐입니다. 예약을 실제로 변경할 수 있는 조건은 잠금·재확인·CAS가
+한 트랜잭션 안에서 모두 성공했을 때만 생깁니다. 이 구분이 없으면 두 Solver 결과가 동시에 끝났을 때 늦게 끝난 작업이
+최신 상태를 덮어쓰는 경합을 막지 못합니다.
+
+<figure class="bt4k-sequence" data-diagram-title="최신 계산 결과만 예약에 적용하는 버전 경계 흐름">
+  <img src="/assets/clinic-appointment-latest-fence-sequence-01-ko.png" alt="Solver가 기준 데이터와 planningFactVersion을 만든 뒤 예약 API가 사전 확인(advisory)·원본 잠금·expectedVersion CAS를 거쳐 적용하고, 정책 활성화와 알림 관측을 연결한 다음 최종 상태 결정에서 APPLIED·STALE_REJECTED·RETRYABLE·DEGRADED_REVIEW로 나누는 시퀀스 다이어그램" loading="lazy" />
+  <figcaption>상단 호출선은 둥근 직교 경로로 시간 순서를 보여 줍니다. 하단 연결선은 별도 버스나 수평 점선 없이 `최종 상태 결정` 카드에서 네 개의 종료 상태로 각각 90도 꺾어 연결합니다.</figcaption>
+</figure>
+
+## 오래된 결과는 실패가 아니라 다시 계산할 이유다
+
+버전이 맞지 않아 적용을 거부한 결과를 시스템 장애로만 표시하면 STAFF는 잘못된 재시도를 할 수 있습니다. `STALE_REJECTED`는
+원본이 바뀌었기 때문에 안전하게 저장하지 않았다는 뜻입니다. 이 상태에서 해야 할 일은 같은 결과를 억지로 재적용하는 것이
+아니라 새 기준 데이터로 다시 계산하는 것입니다.
+
+운영 화면에는 적어도 다음 근거를 함께 보여 줘야 합니다.
+
+- 계산 결과의 `planningFactVersion`과 현재 기준 데이터의 버전
+- 결과가 읽은 예약 원본 버전 수와 CAS 실패 여부
+- tenant·clinic·날짜 범위
+- 계산 시각, 적용 시각, Solver 실행 시간과 제약을 만족하는 해인지(feasible 여부)
+- “폐기 후 재계산”이 허용된 이유와 마지막 시도 결과
+
+반대로 점수(score)가 좋다는 사실만 강조하면 안 됩니다. 점수는 계산 결과의 품질을 나타내지만, 현재 원본과 일치하는지는 보장하지
+않습니다. 운영자가 먼저 볼 값은 점수가 아니라 버전 비교 결과입니다.
+
+## 정책 활성화는 메모리가 아니라 영속 명령으로 관리한다
+
+예약 규칙을 새 버전으로 바꾸는 작업도 같은 문제를 가집니다. 정책 활성화를 예약한 뒤에도 활성화 시각 전에 다른 초안(draft)이
+수정되거나 적용 세대(generation)가 바뀔 수 있습니다. 메모리에만 남은 작업을 그대로 실행하면 오래된 초안이나 미리보기(preview)를
+활성화할 수 있습니다.
+
+`SchedulingPolicyCommandService.schedule`은 승인과 미리보기 확인 증거(`preview evidence`)를 확인한 뒤 `PENDING` 영속 활성화 명령을
+만듭니다. 이 명령에는 적용 범위(`scope`), 정의 리비전(`definition revision`), 기대하는 활성 리비전(`active revision`),
+tenant·clinic 적용 세대(`generation`), 미리보기 확인 증거와 다음 시도 시각을 함께 저장합니다. 워커는 HTTP 요청에 담긴
+요청 본문(payload)이 아니라 저장된 명령을 다시 읽어 실행합니다.
+
+`executeClaimedScheduled`는 실행 시각이 된 명령을 작업 임대권(lease)과 함께 선점하고, 실행 직전에 다음을 다시 확인합니다.
+
+| 확인 값 | 오래된 경우의 처리 |
+| --- | --- |
+| 명령 상태와 `nextAttemptAt` | 아직 실행할 시간이 아니면 건너뜀 |
+| 정의 리비전(`definition revision`)과 생명주기(`lifecycle`) | 초안이 바뀌었거나 이미 완료됐으면 다시 적용하지 않고 완료 결과 또는 오래된 결과로 처리 |
+| tenant·clinic 적용 세대(`generation`) | 다른 정책 변경이 먼저 반영됐으면 활성화하지 않음 |
+| 미리보기 확인 토큰(`preview evidence token`) | 완료되지 않았거나 다른 리비전을 가리키면 안전하게 거부(fail-closed) |
+| 작업 임대권(lease) 소유자와 만료 시각 | 다른 워커의 소유권을 덮어쓰지 않음 |
+
+성공한 활성화에서는 범위의 현재 헤드(`scope head`)와 적용 세대(`generation`)를 갱신하고, 명령 완료와 아웃박스 발행까지 하나의
+트랜잭션으로 처리합니다. 같은 명령을 다시 읽어도 완료된 결과를 그대로 반환하고 적용 세대를 다시 올리지 않습니다. 반대로 오래된 결과(stale), 실패한 결과,
+취소된 결과, 기한을 놓친 결과는 서로 다른 운영 상태로 남겨야 합니다. “재시도 가능”과 “사람이 원인을 확인해야 함”을
+한 버튼으로 합치면 안 됩니다.
+
+## 알림 작업도 최신성보다 먼저 경계를 지켜야 한다
+
+알림 모듈은 하나의 스케줄러가 모든 작업을 맡지 않습니다. 작업별로 역할을 나누고 각 경계를 따로 관측합니다.
+
+| 작업 | 현재 코드의 경계 | STAFF가 읽는 값 |
+| --- | --- | --- |
+| 아웃박스(outbox) 전달 | 매초 `dispatchOnce()`를 제한된 단위로 실행하고, 애플리케이션 시작 시 한 번 즉시 실행 | 대기 건수, 가장 오래된 활성 항목의 경과 시간, 전달 시도 횟수 |
+| 관측 정보 갱신 | 10초마다 기준 데이터를 새로 읽는 관측 작업 | 제공자(provider)·회원 circuit 상태, backlog 경과 시간 |
+| 리마인더 복구 | 전체 `triggerOnce()`를 리더가 맡아 실행하고 주기(tick) 오류를 흡수 | 리더 획득 여부, 복구 결과 |
+| 보존 기간 정리 | 시간 단위로 조금씩 정리하고 성공·실패 상태를 기록 | 오래된 행, 정리 실패 |
+
+리더 선출만으로 작업 실행을 보장할 수 없습니다. 리더는 전체 주기(tick)를 감싸 중복 실행을 줄이지만, 실제 아웃박스 행을
+누가 선점하고 완료할지는 데이터베이스의 작업 임대권(lease)과 펜싱(fencing)이 결정합니다. Redis나 리더 잠금(lock)이 있다고 해서 DB lease를 생략하면
+안 됩니다.
+
+`NotificationOutboxMetrics`는 `PENDING` 건수, 오래된 활성 항목의 경과 시간, 전달 시도 횟수와 지연 시간, 재시도·억제·소진·
+작업 임대권 만료 복구·리마인더 복구 지표를 Micrometer로 기록합니다. `NotificationOutboxHealthIndicator`는 스키마(schema)·선점(claim)·키 링(key-ring)처럼
+준비 상태를 즉시 깨뜨리는 문제와, provider circuit·대기열 경과 시간·보존 기간 정리 실패처럼 저하 상태(degraded)로 분류해야 하는 문제를
+구분합니다. 이 구분이 있어야 알림이 늦다는 사실과 예약 변경을 적용할 수 없다는 사실을 같은 장애로 오해하지 않습니다.
+
+## 운영 화면은 버전 근거와 다음 작업을 한 행에 남긴다
+
+STAFF가 “오래된 결과 3건”이라는 숫자만 보면 무엇을 확인해야 할지 알 수 없습니다. 조치 큐의 한 행은 계산 또는 정책의 버전,
+현재 버전, 상태, 다음 작업을 함께 보여 줘야 합니다. 환자 이름이나 원문 요청 데이터(payload)는 이 판단에 필요하지 않으므로
+표시하지 않습니다.
+
+<div class="bt4k-operations-screen" data-visual-title="최신 결과 적용 STAFF 운영 화면 시안">
+  <a href="/assets/clinic-appointment-latest-fence-operations-screen-ko.png"><img class="bt4k-screenshot" src="/assets/clinic-appointment-latest-fence-operations-screen-ko.png" alt="적용 완료·오래된 결과 거부·정책 활성화 대기·알림 관측 저하 지표, 계산·정책 버전과 현재 버전·상태·다음 작업으로 구성한 조치 큐, 선택 항목의 버전 근거와 허용된 작업을 보여 주는 STAFF 운영 화면 시안" loading="lazy" /></a>
+  <p class="bt4k-operations-screen-caption">합성 데이터로 만든 운영 화면 시안입니다. 조치 큐는 버전이 맞아 적용된 행, 오래된 결과로 폐기할 행, 영속 명령을 확인할 행, 알림 관측을 조사할 행을 분리합니다. 운영 화면은 더 많은 정보보다 더 명확한 정보를 제공해야 합니다.</p>
+</div>
+
+화면에서 각 상태를 다음처럼 읽습니다.
+
+| 상태 | 시스템이 이미 한 일 | STAFF의 다음 작업 |
+| --- | --- | --- |
+| `APPLIED` | 기준 데이터와 원본 버전이 일치해 CAS 갱신을 모두 마침 | 적용 결과와 감사 기록 확인 |
+| `STALE_REJECTED` | 오래된 결과라서 트랜잭션을 롤백하고 저장하지 않음 | 최신 기준 데이터로 재계산 예약 |
+| `RETRYABLE` | 영속 명령 또는 알림 작업 주기를 다시 실행할 상태로 남김 | 작업 임대권(lease)·다음 시도 시각·실패 코드 확인 |
+| `DEGRADED_REVIEW` | 알림 제공자(provider)·대기열(backlog)·보존 기간 정리(retention)의 관측 신호가 저하됨 | 알림 운영 화면과 상태 점검(health) 근거 확인 |
+
+이 네 가지는 서로 대체할 수 없습니다. `STALE_REJECTED`를 `RETRYABLE`로 바로 바꾸면 같은 오래된 결과를 반복해서 적용할 수
+있고, `DEGRADED_REVIEW`를 예약 실패로 표시하면 알림 관측 문제 때문에 예약을 잘못 되돌릴 수 있습니다. 화면은 상태를
+보여 주는 데서 끝나지 않고, 왜 그 상태가 되었는지와 지금 허용된 작업을 함께 설명해야 합니다.
+
+## 현재 구현과 운영 준비 상태를 나눠 읽는다
+
+이번 글에서 확인하는 코드와 실제 운영에서 추가로 증명해야 하는 계약을 구분하면 다음과 같습니다.
+
+| 구분 | 현재 확인할 수 있는 내용 |
+| --- | --- |
+| 현재 구현 | Solver가 계획 입력 데이터를 정규화해 버전을 만들고 결과에 원본 버전을 포함함 |
+| 현재 구현 | 사전 최신성 확인(advisory)과 별도로 `SERIALIZABLE` 트랜잭션·원본 잠금·`expectedVersion` CAS로 원자적 적용을 수행함 |
+| 현재 구현 | 정책 활성화가 PENDING 영속 명령, 작업 임대권(lease), 리비전·적용 세대·미리보기 확인 증거 검증과 멱등 완료(idempotent completion)로 동작함 |
+| 현재 구현 | 알림 아웃박스 전달, 리마인더 리더 작업, 관측 정보 갱신, 보존 기간 정리와 Micrometer·상태 점검(health) 신호가 분리돼 있음 |
+| 별도 운영 검증 | 실제 PostgreSQL·Redis·broker·provider 장애에서의 복구 시간, SLO, 알림 임계값과 롤백 절차 |
+| 아직 필요한 운영 작업 | 오래된 결과 재계산, 정책 활성화 재처리, 알림 저하 상태를 STAFF가 처리하는 런북과 훈련 |
+
+로컬 테스트가 통과했다는 사실만으로 운영 준비가 증명되지는 않습니다. 특히 제공자(provider)가 외부 시스템인 경우
+정확히 한 번 처리(exactly-once)를 예약 서비스 혼자 보장할 수 없습니다. 운영 화면과 런북에는 구현 완료와 운영 검증 대기를 서로 다른 상태로
+기록해야 합니다.
+
+## 최종 상태 결정을 확인하는 다섯 가지 질문
+
+STAFF가 조치 버튼을 누르기 전에 다음 질문에 답할 수 있어야 합니다.
+
+1. 이 행의 tenant·clinic·날짜 범위가 현재 화면의 운영 범위와 같은가?
+2. 계산 시점의 `planningFactVersion`과 현재 기준 데이터의 버전을 나란히 확인했는가?
+3. 예약 원본 버전을 하나라도 다른 변경 작업이 먼저 바꾸지 않았는가? CAS 실패가 있었다면 전체 적용이 롤백됐는가?
+4. 정책 명령이라면 정의 리비전(`definition revision`), 적용 세대(`generation`), 미리보기 확인 증거(`preview evidence`), 작업 임대권(lease) 소유자가 같은 실행을 가리키는가?
+5. 알림 문제라면 예약 적용과 분리된 제공자 circuit, 대기열(backlog) 경과 시간, 보존 기간 정리 실패, 리더 작업 주기(tick) 근거를 확인했는가?
+
+하나라도 답할 수 없다면 적용·활성화·재시도 버튼을 바로 누르지 않고 `DEGRADED_REVIEW`로 남겨야 합니다. 신뢰성은 오래된
+결과를 숨기는 데서 생기지 않습니다. 어떤 결과를 왜 적용하지 않았는지, 다음에 무엇을 확인해야 하는지 설명할 수 있을
+때 생깁니다.
+
+## 근거 자료
+
+- [운영 확장 9: 재시도와 replay가 있어도 예약은 한 번만 바꾼다](/ko/blog/clinic-appointment-idempotent-replay/)
+- [운영 확장 8: 여러 병원을 한 예약 서비스로 운영할 때 지켜야 할 데이터 경계](/ko/blog/clinic-appointment-multitenant-data-boundaries/)
+- [운영 확장 6: 알림과 리마인더는 왜 별도 서비스인가](/ko/blog/clinic-appointment-notification-reminder/)
+- [구현 4: 한 건의 예약 가능 시간 조회와 전체 일정 최적화는 다르다](/ko/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
+- [`SolverService.kt`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-solver/src/main/kotlin/io/bluetape4k/clinic/appointment/solver/service/SolverService.kt)
+- [`PlanningFactVersionHasher.kt`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-solver/src/main/kotlin/io/bluetape4k/clinic/appointment/solver/service/PlanningFactVersionHasher.kt)
+- [`SchedulingPolicyCommandService.kt`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/policy/SchedulingPolicyCommandService.kt)
+- [`SchedulingPolicyPreviewService.kt`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/policy/SchedulingPolicyPreviewService.kt)
+- [`NotificationSchedulingRunners.kt`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-notification/src/main/kotlin/io/bluetape4k/clinic/appointment/notification/NotificationSchedulingRunners.kt)
+- [`NotificationOutboxMetrics.kt`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-notification/src/main/kotlin/io/bluetape4k/clinic/appointment/notification/NotificationOutboxMetrics.kt)
+- [`NotificationOutboxHealthIndicator.kt`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-notification/src/main/kotlin/io/bluetape4k/clinic/appointment/notification/NotificationOutboxHealthIndicator.kt)
+- [운영 준비 설계 문서](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-08-10-production-hardening-readiness-design.md)
+- [leader와 Micrometer 경계 설계 문서](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-08-10-issue-254-leader-micrometer-design.md)
+
+## 시리즈 링크
+
+<ClinicAppointmentSeries current="clinic-appointment-latest-fence" locale="ko" />

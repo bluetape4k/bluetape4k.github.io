@@ -55,7 +55,7 @@ STAFF가 프로필 변경을 확인할 때 가장 먼저 필요한 정보는 환
 
 <div class="bt4k-operations-screen" data-visual-title="CRM 프로필 재평가 STAFF 운영 화면 시안">
   <img class="bt4k-screenshot" src="/assets/clinic-appointment-profile-reevaluation-operations-screen-ko.png" alt="PENDING, RUNNING, RETRY_WAIT, FAILED 상태 카드와 활성 lease, backlog, 조치 큐, 선택한 재평가 작업 상세, STAFF 미리보기와 ADMIN 제한 redrive를 보여주는 프로필 재평가 운영 화면 시안" loading="lazy" />
-  <p class="bt4k-operations-screen-caption">현재 구현의 운영 스냅숏과 endpoint 계약을 바탕으로 만든 시안입니다. 수치는 예시이며 환자 이름·연락처·원본 프로필·assessment 본문은 표시하지 않습니다. STAFF는 조회와 미리보기만 하고, ADMIN만 인증된 범위에서 제한적으로 redrive를 실행합니다.</p>
+  <p class="bt4k-operations-screen-caption">현재 구현의 운영 기준 데이터와 endpoint 계약을 바탕으로 만든 시안입니다. 수치는 예시이며 환자 이름·연락처·원본 프로필·assessment 본문은 표시하지 않습니다. STAFF는 조회와 미리보기만 하고, ADMIN만 인증된 범위에서 제한적으로 redrive를 실행합니다.</p>
 </div>
 
 운영 화면 오른쪽 상세 패널에는 다음 정보만 표시합니다.
@@ -250,9 +250,9 @@ rollback은 이미 성공한 예약 transaction을 일괄 되돌리는 기능이
 
 | 구분 | 이 글에서 확인할 수 있는 범위 |
 | --- | --- |
-| 현재 구현 | 최소 CRM 이벤트, scope별 최신 head, durable job 상태와 outcome, PROPOSED·HELD만 대상으로 삼는 규칙, 병원별 공정한 dispatch, 운영 스냅숏, 인증·clinic scope를 확인하는 redrive endpoint |
+| 현재 구현 | 최소 CRM 이벤트, scope별 최신 head, durable job 상태와 outcome, PROPOSED·HELD만 대상으로 삼는 규칙, 병원별 공정한 dispatch, 운영 기준 데이터, 인증·clinic scope를 확인하는 redrive endpoint |
 | 승인된 운영 설계 | `PREVIEW` 후 제한된 `EXECUTE`, `DISABLED → DRY_RUN → APPLY_PROPOSED → APPLY_PROPOSED_AND_HELD`, retry와 quarantine 분리, rollback 시 CONFIRMED 보호 |
-| 운영 준비 | 실제 병원 allowlist, 권한·redrive 훈련, assessment 포화 경보, drain 리허설, 개인정보 사고 대응과 배포 전 read-only snapshot 대조 |
+| 운영 준비 | 실제 병원 allowlist, 권한·redrive 훈련, assessment 포화 경보, drain 리허설, 개인정보 사고 대응과 배포 전 읽기 전용 기준 데이터 대조 |
 | 후속 개선 | 동의 증빙을 포함한 제안→수락→확정 흐름, 환자에게 새 제안을 전달하는 알림 계약, 운영 결과와 CRM assessment의 감사 연결 |
 
 현재 구현과 운영 준비를 섞지 않는 것이 중요합니다. endpoint가 존재한다고 실제 병원에서 ADMIN redrive 훈련을 마친
@@ -268,7 +268,7 @@ rollback은 이미 성공한 예약 transaction을 일괄 되돌리는 기능이
 - assessment 조회 실패는 `RETRY_WAIT`로 보내고, 신뢰·개인정보·계약 실패는 `QUARANTINE`으로 나눈다.
 - 결과는 `PROPOSAL_SUPERSEDED`, `HOLD_KEPT`, `HOLD_REPLACED`, `FALLBACK_TO_PROPOSED`, `SKIPPED_*`로 기록한다.
 - `CONFIRMED`는 자동 변경하지 않고, 필요하면 새 제안을 만든 뒤 환자 동의와 운영자 확정을 거친다.
-- STAFF는 스냅숏을 조회하고 preview 결과를 확인하며, ADMIN은 인증된 clinic 범위에서만 redrive한다.
+- STAFF는 운영 기준 데이터를 조회하고 preview 결과를 확인하며, ADMIN은 인증된 clinic 범위에서만 redrive한다.
 - rollback이나 drain 뒤에도 이미 처리된 job·outcome·allocation을 재조회해 최종 상태를 확인한다.
 
 운영 화면은 더 많은 정보보다 더 명확한 정보를 제공해야 합니다. 재평가 대상인지, 지금 실행할 수 있는 작업인지,

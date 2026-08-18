@@ -1,0 +1,45 @@
+{
+  "kind": "sequence",
+  "source": {
+    "question": "계산이 끝난 뒤 원본 규칙이 바뀌어도 오래된 solver 결과·정책 활성화·알림 작업이 최신 예약을 덮어쓰지 않게 하려면 어떻게 해야 하는가?",
+    "revision": "clinic-appointment@3658cced024c906c2b8eff29cdce6ab5bd3df6c7",
+    "paths": [
+      "scripts/generate-clinic-appointment-latest-fence-visuals.mjs",
+      "src/content/docs/ko/blog/clinic-appointment-latest-fence.mdx"
+    ]
+  },
+  "nodes": [
+    { "id": "solver", "label": "Solver / snapshot + result", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "api", "label": "예약 API / atomic apply", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "policy", "label": "정책 워커 / durable command", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "notification", "label": "알림 러너 / leader + outbox", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "staff", "label": "STAFF / state + next action", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "final-decision", "label": "최종 상태 결정", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "outcome-0", "label": "APPLIED", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "outcome-1", "label": "STALE_REJECTED", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "outcome-2", "label": "RETRYABLE", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "outcome-3", "label": "DEGRADED_REVIEW", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" }
+  ],
+  "edges": [
+    { "id": "message-1", "from": "solver", "to": "api", "kind": "snapshot", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "message-2", "from": "solver", "to": "api", "kind": "result", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "message-3", "from": "api", "to": "solver", "kind": "advisory", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "message-4", "from": "api", "to": "solver", "kind": "lock", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "message-5", "from": "api", "to": "solver", "kind": "cas", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "message-6", "from": "api", "to": "policy", "kind": "schedule", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "message-7", "from": "policy", "to": "api", "kind": "lease-replay", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "message-8", "from": "api", "to": "notification", "kind": "outbox-observation", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "message-9", "from": "notification", "to": "staff", "kind": "metrics-health", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "message-10", "from": "staff", "to": "api", "kind": "next-action", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "decision-outcome-0", "from": "final-decision", "to": "outcome-0", "kind": "terminal", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "decision-outcome-1", "from": "final-decision", "to": "outcome-1", "kind": "terminal", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "decision-outcome-2", "from": "final-decision", "to": "outcome-2", "kind": "terminal", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "decision-outcome-3", "from": "final-decision", "to": "outcome-3", "kind": "terminal", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" }
+  ],
+  "behavior": { "branches": 4, "loops": 2 },
+  "budget": { "branches": 4 },
+  "repairs": [
+    { "target": "terminal outcome connectors", "reason": "상단 호출선은 둥근 직교 경로를 유지하고, 하단 종료 경로는 허공에서 시작하지 않도록 최종 상태 결정 카드의 아래쪽에서 명시적인 H/V 경로로 시작한다.", "touches": 4 },
+    { "target": "final decision fan-out", "reason": "최종 상태 결정은 적용·오래된 결과 폐기·재시도·운영 보류를 하나의 fan-out bus가 아닌 독립적인 종료 경로로 연결한다.", "touches": 4 }
+  ]
+}

@@ -79,7 +79,7 @@ const flowCopy = {
       ['assessment 조회', 2, 3, 'amber'],
       ['결과와 policy generation 반환', 3, 2, 'cyan'],
       ['상태 · 아웃박스(outbox) · 메트릭 저장', 2, 4, 'purple'],
-      ['스냅숏 · backlog · drainState 갱신', 4, 1, 'blue'],
+      ['운영 기준 데이터 · backlog · drainState 갱신', 4, 1, 'blue'],
       ['PREVIEW 또는 ADMIN scoped redrive', 1, 2, 'amber'],
       ['대상 revision 재확인', 2, 4, 'red'],
     ],

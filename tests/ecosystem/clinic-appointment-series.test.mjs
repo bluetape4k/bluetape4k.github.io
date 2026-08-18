@@ -12,7 +12,7 @@ test('clinic appointment series keeps the approved published order', () => {
     clinicAppointmentGroups.map(({ id }) => id),
     ['prologue', 'design', 'implementation', 'operations'],
   );
-  assert.equal(clinicAppointmentSeries.length, 28);
+  assert.equal(clinicAppointmentSeries.length, 29);
   assert.deepEqual(
     clinicAppointmentGroups.map(({ id }) => [
       id,
@@ -22,7 +22,7 @@ test('clinic appointment series keeps the approved published order', () => {
       ['prologue', 1],
       ['design', 7],
       ['implementation', 9],
-      ['operations', 11],
+      ['operations', 12],
     ],
   );
   assert.deepEqual(
@@ -56,11 +56,12 @@ test('clinic appointment series keeps the approved published order', () => {
       'operations-7',
       'operations-8',
       'operations-9',
+      'operations-10',
     ],
   );
-  assert.equal(new Set(clinicAppointmentSeries.map(({ slug }) => slug)).size, 28);
-  assert.equal(clinicAppointmentSeries.at(-1).id, 'operations-9');
-  assert.equal(clinicAppointmentSeries.at(-1).slug, 'clinic-appointment-idempotent-replay');
+  assert.equal(new Set(clinicAppointmentSeries.map(({ slug }) => slug)).size, 29);
+  assert.equal(clinicAppointmentSeries.at(-1).id, 'operations-10');
+  assert.equal(clinicAppointmentSeries.at(-1).slug, 'clinic-appointment-latest-fence');
 });
 
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -84,7 +85,7 @@ test('every published clinic appointment article uses the shared series navigati
   for (const locale of locales) {
     const files = (await readdir(locale.directory))
       .filter((file) => file.startsWith('clinic-appointment-') && file.endsWith('.mdx'));
-    assert.equal(files.length, 28, `${locale.id}: published article count`);
+    assert.equal(files.length, 29, `${locale.id}: published article count`);
 
     for (const entry of clinicAppointmentSeries) {
       const source = await readFile(`${locale.directory}/${entry.slug}.mdx`, 'utf8');

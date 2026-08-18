@@ -1,0 +1,236 @@
+---
+title: "[Operations 10] Apply Only the Latest Calculation to an Appointment"
+description: "How version fences, atomic application, durable retries, and observation boundaries keep stale solver, policy, and notification results from overwriting an appointment, with a STAFF operations screen."
+sidebar:
+  order: -202608182000
+blog:
+  date: 2026-08-18T20:00:00+09:00
+  image: /assets/clinic-appointment-latest-fence-hero.png
+  imageAlt: A blue 3D robot sending the version-matched schedule card through a gate while diverting a stale card to quarantine
+  cardDescription: "Compare the source version at calculation time with the version at apply time, then make policy and notification retries observable to STAFF."
+  tags: ["operations", "reliability", "concurrency", "observability", "appointment-service", "kotlin", "example", "timefold"]
+---
+
+import ClinicAppointmentSeries from '../../../components/ClinicAppointmentSeries.astro';
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-latest-fence-hero.png" alt="A blue 3D robot sending the version-matched schedule card through a gate while diverting a stale card to quarantine" loading="eager" />
+  <figcaption>An appointment changes only when the result still matches the current source facts.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-18 · Building a Clinic Appointment Service · Keeping calculated results fresh at apply time</p>
+
+A solver may take long enough for the clinic facts behind it to change. A doctor absence can be added, equipment availability can be
+revised, or a new scheduling-policy generation can become active while the solver is still running. Saving the result just because it
+finished later can let an older calculation overwrite a newer appointment state.
+
+“Latest” is not a wall-clock claim here. It means that the source version used to calculate the result still equals the source version
+observed when the service is about to apply it. If the versions differ, the safe result is to discard the old calculation, schedule a
+new one, or leave the item for operational review.
+
+The conclusion is simple:
+
+> The solver creates a scoped snapshot, a `planningFactVersion`, and appointment `sourceVersions`. The API's freshness check is
+> advisory only. `applyOptimizedAssignments` is the authority: it opens a `SERIALIZABLE` transaction, locks the source rows, and
+> performs expected-version CAS updates. Policy activation uses a `PENDING` durable command and a lease for safe replay. Notification
+> work keeps outbox dispatch, leader ticks, Micrometer, and health signals separate. Every path ends in an explicit Final State
+> Decision: apply, stale rejection, retry, or operational review.
+
+The diagram and operations screen are synthetic design visuals, not captures of patient or clinic data. They separate the concurrency
+boundaries implemented in the repository from SLOs, failure drills, and runbooks that still need production validation.
+
+## “Latest” means matching source versions, not a later finish time
+
+Suppose the solver reads Monday's doctor schedules and equipment facts, then starts searching. A maintenance interval is registered
+before the search finishes. The returned schedule may have an excellent score, but it is no longer a result for the current rules.
+
+The implementation carries the distinction in three values:
+
+| Value | Meaning | When it is checked |
+| --- | --- | --- |
+| `planningFactVersion` | A normalized digest of the clinic, doctor, equipment, closure, and time-slot facts read by the solver | When the result is created |
+| `sourceVersions` | The versions of the appointment source rows included in the result | When the result is created and immediately before apply |
+| Current snapshot | A fresh digest loaded inside the apply transaction | At the apply boundary |
+
+`PlanningFactVersionHasher` does not depend on database iteration order or `toString()`. It writes typed fields and collections in a
+canonical order before calculating SHA-256. The same facts produce the same version; an added, changed, or removed fact changes it.
+Null, empty, and valued fields are framed differently. This is evidence that the calculation inputs are the same, not a guessed
+sequence number for “newest.”
+
+## The advisory check is a signpost; the fence owns the write
+
+`SolverService.isSourceVersionCurrentAdvisory` tells a caller whether the current snapshot and appointment versions match the result.
+That answer is useful for a dashboard, but it is not a write permission: another writer can consume a version after the check returns.
+
+The write path is `applyOptimizedAssignments`:
+
+```kotlin
+transaction(transactionIsolation = Connection.TRANSACTION_SERIALIZABLE) {
+    val current = loadSnapshotInCurrentTransaction(scope, dateRange)
+    if (current.planningFactVersion != result.planningFactVersion) {
+        throw StaleSolverResultException
+    }
+
+    appointmentRepository.lockLegacySourceVersions(scope, result.sourceVersions)
+
+    result.appointments.forEach { appointment ->
+        val applied = appointmentRepository.updateLegacyAssignment(
+            scope = scope,
+            appointmentId = appointment.id!!,
+            expectedVersion = result.sourceVersions[appointment.id]!!,
+            doctorId = appointment.doctorId,
+            appointmentDate = appointment.appointmentDate,
+            startTime = appointment.startTime,
+            endTime = appointment.endTime,
+        )
+        if (!applied) throw StaleSolverResultException
+    }
+}
+```
+
+The order matters:
+
+1. Reload the scoped snapshot inside the transaction.
+2. Reject the result if its `planningFactVersion` differs.
+3. Lock the source rows and reload the snapshot again. A competing writer may have won while the lock was being acquired.
+4. Apply every appointment with an expected version. One failed CAS rolls the whole transaction back and returns `false`.
+
+So `true` from the advisory check means only “the values matched at that instant.” Apply authority exists only after lock, recheck, and
+CAS succeed together. Without that separation, two solver results that finish close together can overwrite each other in the wrong
+order.
+
+<figure class="bt4k-sequence" data-diagram-title="Version-fenced application of the latest appointment calculation">
+  <img src="/assets/clinic-appointment-latest-fence-sequence-01-en.png" alt="A sequence diagram showing the Solver creating a snapshot and planningFactVersion, the appointment API performing an advisory check, source-row lock, and expectedVersion CAS, then connecting policy activation and notification observation to APPLIED, STALE_REJECTED, RETRYABLE, and DEGRADED_REVIEW terminal outcomes" loading="lazy" />
+  <figcaption>Upper calls use rounded orthogonal routes for the timeline. Terminal paths start at the Final State Decision card and use explicit 90-degree elbows rather than assigning meaning to a shared bus or horizontal dotted line.</figcaption>
+</figure>
+
+## A stale result is a reason to recalculate, not a generic failure
+
+When a version fence rejects a result, the system has safely refused to write an old calculation. Calling that a generic outage can lead
+STAFF to retry the same result, which is exactly the unsafe action the fence prevented.
+
+The operations view should show at least:
+
+- the result's `planningFactVersion` beside the current snapshot version;
+- how many source appointment versions were checked and whether any CAS failed;
+- tenant, clinic, and date range;
+- calculation time, apply time, solve duration, and feasibility;
+- why “discard and recalculate” is allowed and what the last attempt returned.
+
+A good score is not enough. It describes the quality of the calculated plan, not whether the plan still describes the current clinic
+facts. STAFF should see the version comparison before the score.
+
+## Policy activation is a durable command, not an in-memory task
+
+Policy activation has the same race. A person may schedule a policy while another draft or generation changes before the effective
+time. Running an in-memory task could activate an old draft or preview.
+
+`SchedulingPolicyCommandService.schedule` validates approvals and preview evidence, then persists a `PENDING` durable activation
+command. The command records scope, definition revision, expected active revision, tenant and clinic generations, preview evidence,
+and the next attempt time. A worker restores execution from this row instead of trusting an HTTP payload or process memory.
+
+`executeClaimedScheduled` claims a due command with a lease and rechecks the following values:
+
+| Value | If it is stale |
+| --- | --- |
+| Command state and `nextAttemptAt` | Skip it until it is due |
+| Definition revision and lifecycle | Return an idempotent completion or a stale result |
+| Tenant and clinic generation | Do not activate over a newer policy change |
+| Preview evidence token | Fail closed when it is incomplete or points to another revision |
+| Lease owner and expiry | Never overwrite another worker's claim |
+
+Successful activation updates the scope head and generation, completes the command, and publishes its outbox event in one transaction.
+Re-reading the same command returns its completed result instead of incrementing the generation twice. `STALE`, `FAILED`, `CANCELLED`,
+and `MISSED` remain different operational states; “retryable” and “someone must investigate” are not one button.
+
+## Notification work needs boundaries before it needs more retries
+
+The notification module does not hide every responsibility inside one scheduler. Each runner has a separate boundary:
+
+| Work | Current boundary | What STAFF reads |
+| --- | --- | --- |
+| Outbox dispatch | Bounded `dispatchOnce()` every second and an immediate application-ready tick | pending count, oldest active age, delivery attempts |
+| Observation refresh | A separate snapshot refresh every ten seconds | provider/member circuit and backlog age |
+| Reminder recovery | The full `triggerOnce()` wrapped in a leader action; tick failures are absorbed | leader acquisition and recovery outcome |
+| Retention | Bounded hourly cleanup with success/failure health signals | old rows and retention failures |
+
+Leader election reduces duplicate work but is not the only authority. The leader wraps the action; database leases and fencing still
+decide which worker may claim and complete an outbox row. A Redis lock must not replace the database lease.
+
+`NotificationOutboxMetrics` records pending, oldest active age, delivery attempts and latency, retries, suppressions, exhausted work,
+recovered leases, and reminder recovery with Micrometer. `NotificationOutboxHealthIndicator` distinguishes schema, claim, and key-ring
+problems that affect readiness from provider circuits, backlog age, and retention failures that should be read as degraded operation.
+That separation prevents a delayed notification observation from being misread as an appointment-application failure.
+
+## One action-queue row needs version evidence and a next action
+
+“Three stale results” is not enough information for STAFF. Each action-queue row needs the calculation or policy version, current version,
+state, and next action. Patient names and raw payloads are not required for that decision and should remain hidden.
+
+<div class="bt4k-operations-screen" data-visual-title="Latest-result STAFF operations screen mockup">
+  <a href="/assets/clinic-appointment-latest-fence-operations-screen-en.png"><img class="bt4k-screenshot" src="/assets/clinic-appointment-latest-fence-operations-screen-en.png" alt="A STAFF operations screen showing applied, stale-rejected, policy-pending, and notification-degraded metrics; an action queue with calculated or policy version, current version, state, and next action; and an evidence panel for the selected item" loading="lazy" /></a>
+  <p class="bt4k-operations-screen-caption">Synthetic data only. The queue separates an applied row, a stale result to recalculate, a durable command to inspect, and a notification observation to investigate. An operations screen should provide clearer information, not simply more information.</p>
+</div>
+
+Read the states this way:
+
+| State | What the system has done | STAFF's next action |
+| --- | --- | --- |
+| `APPLIED` | Source snapshot matched and every CAS succeeded | Verify the applied result and audit record |
+| `STALE_REJECTED` | Rolled back and stored no old result | Schedule a calculation from the latest snapshot |
+| `RETRYABLE` | Kept evidence for a durable command or notification tick retry | Inspect lease, next time, and failure code |
+| `DEGRADED_REVIEW` | Provider circuit, backlog, or retention observation is degraded | Open notification evidence and health details |
+
+These states cannot substitute for one another. Turning `STALE_REJECTED` into `RETRYABLE` can retry the same old result, while treating
+`DEGRADED_REVIEW` as an appointment failure can roll back a valid appointment because notification observation was delayed. The screen
+must explain both why the state exists and which action is allowed now.
+
+## Read implementation and operational readiness separately
+
+The current evidence divides into these boundaries:
+
+| Category | What is verified here |
+| --- | --- |
+| Implemented now | The solver canonicalizes planning facts, creates a version, and returns source versions with the result |
+| Implemented now | Advisory freshness is separate from serializable transaction, source locking, and expected-version CAS application |
+| Implemented now | Policy activation uses PENDING durable commands, leases, revision/generation/preview checks, and idempotent completion |
+| Implemented now | Outbox dispatch, reminder leader action, observation refresh, retention, Micrometer, and health signals are separate |
+| Requires production proof | Recovery time, SLOs, alert thresholds, and rollback behavior during real PostgreSQL, Redis, broker, and provider failures |
+| Still needs an operations runbook | STAFF drills for stale-result recalculation, policy activation replay, and degraded notification observation |
+
+Passing local tests does not automatically prove production readiness. An external provider also means the appointment service cannot
+promise exactly-once delivery by itself. The screen and runbook should keep “implemented” and “awaiting production proof” as different
+states.
+
+## Five questions before the Final State Decision
+
+Before STAFF presses an action button, the screen should answer:
+
+1. Does the tenant, clinic, and date range match the selected operations scope?
+2. Are the calculation-time `planningFactVersion` and current snapshot version visible side by side?
+3. Did another writer consume any appointment source version, and if so, was the whole apply rolled back after a CAS failure?
+4. For a policy command, do the definition revision, generation, preview evidence, and lease owner describe the same execution?
+5. For a notification issue, did STAFF inspect provider circuit, backlog age, retention failure, and leader-tick evidence separately from appointment application?
+
+If any answer is missing, leave the item in `DEGRADED_REVIEW` instead of pressing apply, activate, or retry immediately. Reliability comes
+from explaining which result was not applied and what must be checked next.
+
+## Sources
+
+- [Operations 9: Retries and Replay Must Change an Appointment Only Once](/blog/clinic-appointment-idempotent-replay/)
+- [Operations 8: Data Boundaries for Running Multiple Clinics in One Appointment Service](/blog/clinic-appointment-multitenant-data-boundaries/)
+- [Operations 6: Why Notifications and Reminders Are Separate Services](/blog/clinic-appointment-notification-reminder/)
+- [Implementation 4: Real-Time Slot Search and Global Optimization Solve Different Problems](/blog/clinic-appointment-part4-greedy-vs-global-optimization/)
+- [`SolverService.kt`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-solver/src/main/kotlin/io/bluetape4k/clinic/appointment/solver/service/SolverService.kt)
+- [`PlanningFactVersionHasher.kt`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-solver/src/main/kotlin/io/bluetape4k/clinic/appointment/solver/service/PlanningFactVersionHasher.kt)
+- [`SchedulingPolicyCommandService.kt`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/policy/SchedulingPolicyCommandService.kt)
+- [`SchedulingPolicyPreviewService.kt`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/policy/SchedulingPolicyPreviewService.kt)
+- [`NotificationSchedulingRunners.kt`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-notification/src/main/kotlin/io/bluetape4k/clinic/appointment/notification/NotificationSchedulingRunners.kt)
+- [`NotificationOutboxMetrics.kt`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-notification/src/main/kotlin/io/bluetape4k/clinic/appointment/notification/NotificationOutboxMetrics.kt)
+- [`NotificationOutboxHealthIndicator.kt`](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-notification/src/main/kotlin/io/bluetape4k/clinic/appointment/notification/NotificationOutboxHealthIndicator.kt)
+- [Production hardening readiness design](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-08-10-production-hardening-readiness-design.md)
+- [Leader and Micrometer boundary design](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-08-10-issue-254-leader-micrometer-design.md)
+
+## Series
+
+<ClinicAppointmentSeries current="clinic-appointment-latest-fence" locale="en" />
