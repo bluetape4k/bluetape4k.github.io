@@ -181,4 +181,11 @@ export const clinicAppointmentSeries = Object.freeze([
     ko: '[운영 확장 6] 알림과 리마인더는 왜 별도 서비스인가',
     en: '[Operations 6] Why Notifications and Reminders Are Separate Services',
   },
+  {
+    id: 'operations-7',
+    group: 'operations',
+    slug: 'clinic-appointment-external-results',
+    ko: '[운영 확장 7] 예약 결과가 외부 시스템과 통계로 전달되는 과정',
+    en: '[Operations 7] How Appointment Results Reach External Systems and Statistics',
+  },
 ]);

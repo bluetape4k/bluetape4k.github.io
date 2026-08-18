@@ -1,0 +1,66 @@
+{
+  "kind": "architecture",
+  "source": {
+    "question": "예약 서비스가 커밋한 사실은 어떻게 알림과 통계 consumer에 전달되고, 운영자는 결과의 신뢰 범위를 어떻게 구분하는가?",
+    "revision": "clinic-appointment@f0c7614beed766efc4b88a1a59aa5c370f8fccf7; visual-site@local",
+    "paths": [
+      "docs/superpowers/specs/2026-08-18-clinic-appointment-external-results-article-design.md",
+      "src/content/docs/ko/blog/clinic-appointment-external-results.mdx"
+    ],
+    "externalPaths": [
+      "docs/superpowers/specs/2026-08-05-issue-41-transactional-outbox-messaging-design.md",
+      "docs/superpowers/specs/2026-08-06-issue-42-external-consumers-schema-design.md",
+      "docs/lessons/2026-08-08-stats-projection-current-state.md",
+      "appointment-messaging/src/main/kotlin/io/bluetape4k/clinic/appointment/messaging/AppointmentOutboxWriter.kt",
+      "appointment-messaging/src/main/kotlin/io/bluetape4k/clinic/appointment/messaging/AppointmentConsumerRuntime.kt",
+      "appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/stats/AppointmentStatsProjectionConsumer.kt",
+      "appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/stats/AppointmentStatsProjectionRepository.kt",
+      "appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/service/DashboardStatsService.kt"
+    ]
+  },
+  "nodes": [
+    {"id": "appointment-transaction", "label": "예약 transaction", "source": "AppointmentOutboxWriter + appointment mutation"},
+    {"id": "scheduling-outbox", "label": "scheduling_outbox_events", "source": "SchedulingOutboxEvents"},
+    {"id": "kafka-relay", "label": "Kafka 4 relay", "source": "AppointmentOutboxRelay / at-least-once"},
+    {"id": "schema-gate", "label": "strict JSON Schema gate", "source": "AppointmentSchemaRegistry + strict codec"},
+    {"id": "notification-consumer", "label": "알림 consumer", "source": "NotificationAppointmentEventConsumer / notification group"},
+    {"id": "statistics-consumer", "label": "통계 consumer", "source": "AppointmentStatsProjectionConsumer / statistics group"},
+    {"id": "consumer-inbox", "label": "consumer inbox", "source": "AppointmentConsumerInboxTable / eventId dedup"},
+    {"id": "projection-transaction", "label": "handler transaction", "source": "handler side effect + inbox processed"},
+    {"id": "projection-bucket", "label": "최신 통계 projection", "source": "AppointmentStatsProjectionRepository + aggregate lock"},
+    {"id": "current-appointment-query", "label": "현재 예약 집계", "source": "Appointments repository / dashboard authority"},
+    {"id": "staff-action-queue", "label": "STAFF 조치 큐", "source": "합성 운영 화면 시안"},
+    {"id": "final-state-decision", "label": "최종 상태 결정", "source": "article decision node"},
+    {"id": "processed", "label": "PROCESSED", "source": "consumer handler success"},
+    {"id": "retry", "label": "RETRY", "source": "bounded transient retry"},
+    {"id": "quarantined", "label": "QUARANTINED", "source": "metadata-only quarantine"},
+    {"id": "replay-pending", "label": "REPLAY_PENDING", "source": "approved replay audit boundary"}
+  ],
+  "edges": [
+    {"id": "transaction-outbox", "from": "appointment-transaction", "to": "scheduling-outbox", "kind": "atomic-outbox-write", "source": "AppointmentOutboxWriter"},
+    {"id": "outbox-relay", "from": "scheduling-outbox", "to": "kafka-relay", "kind": "lease-fenced-publish", "source": "AppointmentOutboxRelay"},
+    {"id": "relay-schema", "from": "kafka-relay", "to": "schema-gate", "kind": "strict-envelope-validation", "source": "AppointmentSchemaRegistry"},
+    {"id": "schema-notification", "from": "schema-gate", "to": "notification-consumer", "kind": "notification-group", "source": "NotificationAppointmentEventConsumer"},
+    {"id": "schema-statistics", "from": "schema-gate", "to": "statistics-consumer", "kind": "statistics-group", "source": "AppointmentStatsProjectionConsumer"},
+    {"id": "notification-inbox", "from": "notification-consumer", "to": "consumer-inbox", "kind": "event-id-dedup", "source": "AppointmentConsumerRuntime"},
+    {"id": "statistics-inbox", "from": "statistics-consumer", "to": "consumer-inbox", "kind": "event-id-dedup", "source": "AppointmentConsumerRuntime"},
+    {"id": "inbox-handler", "from": "consumer-inbox", "to": "projection-transaction", "kind": "handler-transaction", "source": "AppointmentConsumerRuntime"},
+    {"id": "handler-projection", "from": "projection-transaction", "to": "projection-bucket", "kind": "latest-version-upsert", "source": "AppointmentStatsProjectionRepository"},
+    {"id": "dashboard-projection", "from": "projection-bucket", "to": "staff-action-queue", "kind": "projection-read-when-complete", "source": "DashboardStatsService"},
+    {"id": "dashboard-fallback", "from": "current-appointment-query", "to": "staff-action-queue", "kind": "current-state-fallback", "source": "DashboardStatsService"},
+    {"id": "consumer-decision", "from": "projection-transaction", "to": "final-state-decision", "kind": "outcome-classification", "source": "consumer runtime outcomes"},
+    {"id": "processed-outcome", "from": "final-state-decision", "to": "processed", "kind": "success", "source": "handler success"},
+    {"id": "retry-outcome", "from": "final-state-decision", "to": "retry", "kind": "transient-failure", "source": "bounded retry contract"},
+    {"id": "quarantine-outcome", "from": "final-state-decision", "to": "quarantined", "kind": "contract-failure", "source": "metadata-only quarantine"},
+    {"id": "replay-outcome", "from": "final-state-decision", "to": "replay-pending", "kind": "approved-replay", "source": "AppointmentReplayService"}
+  ],
+  "behavior": {"branches": 4, "loops": 1},
+  "budget": {"nodes": 16, "edges": 16, "branches": 4, "loops": 1},
+  "repairs": [
+    {"target": "current-state-authority", "reason": "통계 projection과 현재 예약 집계를 같은 의미로 그리지 않고 fallback 경계를 표시한다.", "touches": 3},
+    {"target": "consumer-groups", "reason": "알림과 통계 consumer를 같은 group 또는 같은 inbox로 합치지 않는다.", "touches": 4},
+    {"target": "terminal-outcome-decision", "reason": "분기 전용 최종 상태 결정 카드를 두어 결과 연결선이 허공에서 시작하지 않게 한다.", "touches": 5},
+    {"target": "rounded-connectors", "reason": "모든 bent path에 Q rounded corner와 경계 endpoint를 사용한다.", "touches": 8},
+    {"target": "locale-pairs", "reason": "한국어와 영어의 텍스트 자산을 별도로 렌더링한다.", "touches": 4}
+  ]
+}

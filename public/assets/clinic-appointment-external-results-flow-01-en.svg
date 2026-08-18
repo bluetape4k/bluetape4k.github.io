@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="2200" height="1900" viewBox="0 0 2200 1900" role="img" aria-labelledby="title desc" data-locale="en">
+  <title id="title">Where appointment results split into external systems and statistics</title><desc id="desc">Commit one durable fact, then let each consumer rebuild the state it owns.</desc>
+  <defs>
+    <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#071323"/><stop offset="1" stop-color="#101a31"/></linearGradient>
+    <linearGradient id="lane" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0b192c"/><stop offset="1" stop-color="#13243a"/></linearGradient>
+    <marker id="arrow-60a5fa" viewBox="0 0 10 10" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#60a5fa" data-solid-head="true"/></marker><marker id="arrow-2dd4bf" viewBox="0 0 10 10" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#2dd4bf" data-solid-head="true"/></marker><marker id="arrow-a78bfa" viewBox="0 0 10 10" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#a78bfa" data-solid-head="true"/></marker><marker id="arrow-fbbf24" viewBox="0 0 10 10" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#fbbf24" data-solid-head="true"/></marker><marker id="arrow-fb7185" viewBox="0 0 10 10" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#fb7185" data-solid-head="true"/></marker>
+    <style>
+      .title{font-family:"Architects Daughter", "Comic Sans MS", cursive;font-size:38px;font-weight:800;fill:#f4f8ff}
+      .subtitle{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:17px;fill:#a9bad0}
+      .lane-title{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:14px;font-weight:800;fill:#7fc9ff;letter-spacing:1px}
+      .badge{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:13px;font-weight:800;fill:#c9dcf3}
+      .card-title{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:20px;font-weight:800;fill:#f4f8ff}
+      .card-body{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:14px;fill:#b9cbe0}
+      .card-code{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:12px;font-weight:800;fill:#7fc9ff}
+      .call-label{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:13px;fill:#e7f0fb}
+      .route{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+      .label-bg{fill:#0d1b2f;stroke:#2d4665;stroke-width:1.5}
+      .decision-title{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:24px;font-weight:800;fill:#e5d9ff}
+      .decision-body{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:14px;fill:#d2c4f4}
+      .outcome-code{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:18px;font-weight:800;fill:#f8fbff}
+      .outcome-body{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:14px;fill:#b7c7da}
+      .foot{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:13px;fill:#91a8c3}
+    </style>
+  </defs>
+  <rect width="2200" height="1900" fill="url(#canvas)"/><rect x="24" y="24" width="2152" height="1852" rx="32" fill="none" stroke="#2d4665" stroke-width="2"/>
+  <text class="title" x="64" y="76">Where appointment results split into external systems and statistics</text><text class="subtitle" x="66" y="108">Commit one durable fact, then let each consumer rebuild the state it owns.</text>
+  <rect x="72" y="130" width="300" height="34" rx="17" fill="#12243a" stroke="#3a5877"/><text class="badge" x="222" y="152" text-anchor="middle">SCOPE · selected clinic</text><rect x="402" y="130" width="300" height="34" rx="17" fill="#12243a" stroke="#3a5877"/><text class="badge" x="552" y="152" text-anchor="middle">VERSION · f0c7614</text><rect x="732" y="130" width="300" height="34" rx="17" fill="#12243a" stroke="#3a5877"/><text class="badge" x="882" y="152" text-anchor="middle">DATA · synthetic mockup</text>
+  <rect x="60" y="220" width="2080" height="300" rx="26" fill="url(#lane)" stroke="#263d59" stroke-width="1.5"/><text class="lane-title" x="90" y="252">APPOINTMENT SERVICE</text><rect x="60" y="600" width="2080" height="300" rx="26" fill="url(#lane)" stroke="#263d59" stroke-width="1.5"/><text class="lane-title" x="90" y="632">MESSAGING CONTRACT</text><rect x="60" y="940" width="2080" height="330" rx="26" fill="url(#lane)" stroke="#263d59" stroke-width="1.5"/><text class="lane-title" x="90" y="972">CONSUMERS · PROJECTION</text><rect x="60" y="1280" width="2080" height="590" rx="26" fill="url(#lane)" stroke="#263d59" stroke-width="1.5"/><text class="lane-title" x="90" y="1312">OPERATIONS</text>
+  <g data-from="appointment-transaction" data-to="scheduling-outbox">
+    <path id="transaction-outbox" class="route" d="M420 363 H460" stroke="#60a5fa" marker-end="url(#arrow-60a5fa)" data-connector="transaction-outbox" data-source-node="appointment-transaction" data-target-node="scheduling-outbox"/>
+
+  <g class="relationshiplabel">
+    <rect class="label-bg" x="305" y="230" width="190" height="30" rx="15"/>
+    <text class="call-label" x="400" y="250" text-anchor="middle">atomic outbox write</text>
+  </g>
+  </g>
+  <g data-from="scheduling-outbox" data-to="kafka-relay">
+    <path id="outbox-relay" class="route" d="M790 363 H830" stroke="#60a5fa" marker-end="url(#arrow-60a5fa)" data-connector="outbox-relay" data-source-node="scheduling-outbox" data-target-node="kafka-relay"/>
+
+  <g class="relationshiplabel">
+    <rect class="label-bg" x="676" y="230" width="190" height="30" rx="15"/>
+    <text class="call-label" x="771" y="250" text-anchor="middle">lease · fencing relay</text>
+  </g>
+  </g>
+  <g data-from="kafka-relay" data-to="schema-gate">
+    <path id="relay-schema" class="route" d="M1160 363 H1200" stroke="#2dd4bf" marker-end="url(#arrow-2dd4bf)" data-connector="relay-schema" data-source-node="kafka-relay" data-target-node="schema-gate"/>
+
+  <g class="relationshiplabel">
+    <rect class="label-bg" x="1055" y="230" width="170" height="30" rx="15"/>
+    <text class="call-label" x="1140" y="250" text-anchor="middle">strict envelope</text>
+  </g>
+  </g>
+  <g data-from="schema-gate" data-to="notification-consumer">
+    <path id="schema-notification" class="route" d="M1365 441 V570 Q1365 610 1325 610 H995 Q955 610 955 640 V665" stroke="#2dd4bf" marker-end="url(#arrow-2dd4bf)" data-connector="schema-notification" data-source-node="schema-gate" data-target-node="notification-consumer"/>
+
+  <g class="relationshiplabel">
+    <rect class="label-bg" x="1090" y="535" width="170" height="30" rx="15"/>
+    <text class="call-label" x="1175" y="555" text-anchor="middle">notification group</text>
+  </g>
+  </g>
+  <g data-from="schema-gate" data-to="statistics-consumer">
+    <path id="schema-statistics" class="route" d="M1435 441 V665" stroke="#a78bfa" marker-end="url(#arrow-a78bfa)" data-connector="schema-statistics" data-source-node="schema-gate" data-target-node="statistics-consumer"/>
+
+  <g class="relationshiplabel">
+    <rect class="label-bg" x="1460" y="545" width="165" height="30" rx="15"/>
+    <text class="call-label" x="1542.5" y="565" text-anchor="middle">statistics group</text>
+  </g>
+  </g>
+  <g data-from="notification-consumer" data-to="consumer-inbox">
+    <path id="notification-inbox" class="route" d="M995 821 V880 Q995 920 955 920 H560 Q540 920 540 940 V1005" stroke="#2dd4bf" marker-end="url(#arrow-2dd4bf)" data-connector="notification-inbox" data-source-node="notification-consumer" data-target-node="consumer-inbox"/>
+
+  <g class="relationshiplabel">
+    <rect class="label-bg" x="770" y="905" width="170" height="30" rx="15"/>
+    <text class="call-label" x="855" y="925" text-anchor="middle">eventId dedup</text>
+  </g>
+  </g>
+  <g data-from="statistics-consumer" data-to="consumer-inbox">
+    <path id="statistics-inbox" class="route" d="M1475 821 V930 Q1475 970 1435 970 H720 Q700 970 700 980 V1005" stroke="#a78bfa" marker-end="url(#arrow-a78bfa)" data-connector="statistics-inbox" data-source-node="statistics-consumer" data-target-node="consumer-inbox"/>
+
+  </g>
+  <g data-from="consumer-inbox" data-to="projection-transaction">
+    <path id="inbox-handler" class="route" d="M750 1083 H800" stroke="#60a5fa" marker-end="url(#arrow-60a5fa)" data-connector="inbox-handler" data-source-node="consumer-inbox" data-target-node="projection-transaction"/>
+
+  <g class="relationshiplabel">
+    <rect class="label-bg" x="650" y="1180" width="190" height="30" rx="15"/>
+    <text class="call-label" x="745" y="1200" text-anchor="middle">handler transaction</text>
+  </g>
+  </g>
+  <g data-from="projection-transaction" data-to="projection-bucket">
+    <path id="handler-projection" class="route" d="M1130 1083 H1210" stroke="#a78bfa" marker-end="url(#arrow-a78bfa)" data-connector="handler-projection" data-source-node="projection-transaction" data-target-node="projection-bucket"/>
+
+  <g class="relationshiplabel">
+    <rect class="label-bg" x="1100" y="1180" width="205" height="30" rx="15"/>
+    <text class="call-label" x="1202.5" y="1200" text-anchor="middle">latest-version upsert</text>
+  </g>
+  </g>
+  <g data-from="projection-bucket" data-to="staff-action-queue">
+    <path id="dashboard-projection" class="route" d="M1375 1161 V1260 Q1375 1300 1415 1300 H1600 Q1640 1300 1640 1340" stroke="#a78bfa" marker-end="url(#arrow-a78bfa)" data-connector="dashboard-projection" data-source-node="projection-bucket" data-target-node="staff-action-queue"/>
+
+  <g class="relationshiplabel">
+    <rect class="label-bg" x="1430" y="1240" width="205" height="30" rx="15"/>
+    <text class="call-label" x="1532.5" y="1260" text-anchor="middle">read complete projection</text>
+  </g>
+  </g>
+  <g data-from="current-appointment-query" data-to="staff-action-queue">
+    <path id="dashboard-fallback" class="route" d="M520 1418 V1280 Q520 1260 540 1260 H1240 Q1260 1260 1260 1280 V1430 Q1260 1450 1240 1450 H1260" stroke="#60a5fa" marker-end="url(#arrow-60a5fa)" data-connector="dashboard-fallback" data-source-node="current-appointment-query" data-target-node="staff-action-queue"/>
+
+  <g class="relationshiplabel">
+    <rect class="label-bg" x="540" y="1220" width="275" height="30" rx="15"/>
+    <text class="call-label" x="677.5" y="1240" text-anchor="middle">fallback when projection is incomplete</text>
+  </g>
+  </g>
+  <g data-from="projection-transaction" data-to="final-state-decision">
+    <path id="consumer-decision" class="route" d="M965 1161 V1230 Q965 1270 1005 1270 H1040 Q1080 1270 1080 1310 V1340" stroke="#a78bfa" marker-end="url(#arrow-a78bfa)" data-connector="consumer-decision" data-source-node="projection-transaction" data-target-node="final-state-decision"/>
+
+  <g class="relationshiplabel">
+    <rect class="label-bg" x="875" y="1220" width="150" height="30" rx="15"/>
+    <text class="call-label" x="950" y="1240" text-anchor="middle">classify outcome</text>
+  </g>
+  </g>
+  <g data-from="final-state-decision" data-to="processed">
+    <path id="processed-outcome" class="route" d="M760 1530 V1560 Q760 1580 720 1580 H260 Q220 1580 220 1620 V1660" stroke="#2dd4bf" marker-end="url(#arrow-2dd4bf)" data-connector="processed-outcome" data-source-node="final-state-decision" data-target-node="processed"/>
+
+  </g>
+  <g data-from="final-state-decision" data-to="retry">
+    <path id="retry-outcome" class="route" d="M850 1530 V1580 Q850 1600 810 1600 H710 Q690 1600 670 1620 V1660" stroke="#fbbf24" marker-end="url(#arrow-fbbf24)" data-connector="retry-outcome" data-source-node="final-state-decision" data-target-node="retry"/>
+
+  </g>
+  <g data-from="final-state-decision" data-to="quarantined">
+    <path id="quarantine-outcome" class="route" d="M950 1530 V1600 Q950 1620 990 1620 H1140 Q1160 1620 1180 1640 V1660" stroke="#fb7185" marker-end="url(#arrow-fb7185)" data-connector="quarantine-outcome" data-source-node="final-state-decision" data-target-node="quarantined"/>
+
+  </g>
+  <g data-from="final-state-decision" data-to="replay-pending">
+    <path id="replay-outcome" class="route" d="M1040 1530 V1590 Q1040 1610 1080 1610 Q1280 1610 1320 1630 H1680 Q1700 1630 1720 1640 V1660" stroke="#a78bfa" marker-end="url(#arrow-a78bfa)" data-connector="replay-outcome" data-source-node="final-state-decision" data-target-node="replay-pending"/>
+
+  </g>
+  <g id="appointment-transaction" data-node="true">
+    <rect id="appointment-transaction-card" class="card" x="90" y="285" width="330" height="156" rx="22" fill="#112139" stroke="#60a5fa" stroke-width="2"/>
+    <rect x="110" y="305" width="8" height="116" rx="4" fill="#60a5fa" opacity=".9"/>
+    <text class="card-code" x="138" y="315">TRANSACTION</text>
+    <text class="card-title" x="138" y="343">Appointment transaction</text>
+    <text class="card-body" x="138" y="377" text-anchor="start"><tspan x="138" dy="0">appointment change + intent</tspan><tspan x="138" dy="24">committed in one DB transaction</tspan></text>
+  </g>
+  <g id="scheduling-outbox" data-node="true">
+    <rect id="scheduling-outbox-card" class="card" x="460" y="285" width="330" height="156" rx="22" fill="#112139" stroke="#60a5fa" stroke-width="2"/>
+    <rect x="480" y="305" width="8" height="116" rx="4" fill="#60a5fa" opacity=".9"/>
+    <text class="card-code" x="508" y="315">DURABLE</text>
+    <text class="card-title" x="508" y="343">scheduling_outbox_events</text>
+    <text class="card-body" x="508" y="377" text-anchor="start"><tspan x="508" dy="0">eventId · eventVersion</tspan><tspan x="508" dy="24">minimal row for the relay</tspan></text>
+  </g>
+  <g id="kafka-relay" data-node="true">
+    <rect id="kafka-relay-card" class="card" x="830" y="285" width="330" height="156" rx="22" fill="#112139" stroke="#2dd4bf" stroke-width="2"/>
+    <rect x="850" y="305" width="8" height="116" rx="4" fill="#2dd4bf" opacity=".9"/>
+    <text class="card-code" x="878" y="315">RELAY</text>
+    <text class="card-title" x="878" y="343">Kafka 4 relay</text>
+    <text class="card-body" x="878" y="377" text-anchor="start"><tspan x="878" dy="0">lease · fencing claim</tspan><tspan x="878" dy="24">at-least-once delivery</tspan></text>
+  </g>
+  <g id="schema-gate" data-node="true">
+    <rect id="schema-gate-card" class="card" x="1200" y="285" width="330" height="156" rx="22" fill="#112139" stroke="#a78bfa" stroke-width="2"/>
+    <rect x="1220" y="305" width="8" height="116" rx="4" fill="#a78bfa" opacity=".9"/>
+    <text class="card-code" x="1248" y="315">CONTRACT</text>
+    <text class="card-title" x="1248" y="343">Strict JSON Schema gate</text>
+    <text class="card-body" x="1248" y="377" text-anchor="start"><tspan x="1248" dy="0">validate the v1 envelope</tspan><tspan x="1248" dy="24">quarantine contract errors</tspan></text>
+  </g>
+  <g id="notification-consumer" data-node="true">
+    <rect id="notification-consumer-card" class="card" x="830" y="665" width="330" height="156" rx="22" fill="#112139" stroke="#2dd4bf" stroke-width="2"/>
+    <rect x="850" y="685" width="8" height="116" rx="4" fill="#2dd4bf" opacity=".9"/>
+    <text class="card-code" x="878" y="695">GROUP · NOTIFY</text>
+    <text class="card-title" x="878" y="723">Notification consumer</text>
+    <text class="card-body" x="878" y="757" text-anchor="start"><tspan x="878" dy="0">independent consumer group</tspan><tspan x="878" dy="24">record delivery outcome</tspan></text>
+  </g>
+  <g id="statistics-consumer" data-node="true">
+    <rect id="statistics-consumer-card" class="card" x="1310" y="665" width="330" height="156" rx="22" fill="#112139" stroke="#a78bfa" stroke-width="2"/>
+    <rect x="1330" y="685" width="8" height="116" rx="4" fill="#a78bfa" opacity=".9"/>
+    <text class="card-code" x="1358" y="695">GROUP · STATS</text>
+    <text class="card-title" x="1358" y="723">Statistics consumer</text>
+    <text class="card-body" x="1358" y="757" text-anchor="start"><tspan x="1358" dy="0">independent consumer group</tspan><tspan x="1358" dy="24">project the latest state</tspan></text>
+  </g>
+  <g id="consumer-inbox" data-node="true">
+    <rect id="consumer-inbox-card" class="card" x="420" y="1005" width="330" height="156" rx="22" fill="#112139" stroke="#60a5fa" stroke-width="2"/>
+    <rect x="440" y="1025" width="8" height="116" rx="4" fill="#60a5fa" opacity=".9"/>
+    <text class="card-code" x="468" y="1035">DEDUP</text>
+    <text class="card-title" x="468" y="1063">Consumer inbox</text>
+    <text class="card-body" x="468" y="1097" text-anchor="start"><tspan x="468" dy="0">logicalConsumerId + eventId</tspan><tspan x="468" dy="24">apply duplicate delivery once</tspan></text>
+  </g>
+  <g id="projection-transaction" data-node="true">
+    <rect id="projection-transaction-card" class="card" x="800" y="1005" width="330" height="156" rx="22" fill="#112139" stroke="#2dd4bf" stroke-width="2"/>
+    <rect x="820" y="1025" width="8" height="116" rx="4" fill="#2dd4bf" opacity=".9"/>
+    <text class="card-code" x="848" y="1035">HANDLER</text>
+    <text class="card-title" x="848" y="1063">Handler transaction</text>
+    <text class="card-body" x="848" y="1097" text-anchor="start"><tspan x="848" dy="0">side effect + inbox processed</tspan><tspan x="848" dy="24">commit at the same boundary</tspan></text>
+  </g>
+  <g id="projection-bucket" data-node="true">
+    <rect id="projection-bucket-card" class="card" x="1210" y="1005" width="330" height="156" rx="22" fill="#112139" stroke="#a78bfa" stroke-width="2"/>
+    <rect x="1230" y="1025" width="8" height="116" rx="4" fill="#a78bfa" opacity=".9"/>
+    <text class="card-code" x="1258" y="1035">PROJECTION</text>
+    <text class="card-title" x="1258" y="1063">Latest statistics projection</text>
+    <text class="card-body" x="1258" y="1097" text-anchor="start"><tspan x="1258" dy="0">aggregate lock</tspan><tspan x="1258" dy="24">apply only the newest eventVersion</tspan></text>
+  </g>
+  <g id="current-appointment-query" data-node="true">
+    <rect id="current-appointment-query-card" class="card" x="90" y="1340" width="330" height="156" rx="22" fill="#112139" stroke="#60a5fa" stroke-width="2"/>
+    <rect x="110" y="1360" width="8" height="116" rx="4" fill="#60a5fa" opacity=".9"/>
+    <text class="card-code" x="138" y="1370">AUTHORITY</text>
+    <text class="card-title" x="138" y="1398">Current appointment aggregate</text>
+    <text class="card-body" x="138" y="1432" text-anchor="start"><tspan x="138" dy="0">Appointments repository</tspan><tspan x="138" dy="24">dashboard source of truth</tspan></text>
+  </g>
+  <g id="staff-action-queue" data-node="true">
+    <rect id="staff-action-queue-card" class="card" x="1260" y="1340" width="330" height="156" rx="22" fill="#112139" stroke="#fbbf24" stroke-width="2"/>
+    <rect x="1280" y="1360" width="8" height="116" rx="4" fill="#fbbf24" opacity=".9"/>
+    <text class="card-code" x="1308" y="1370">STAFF</text>
+    <text class="card-title" x="1308" y="1398">STAFF action queue</text>
+    <text class="card-body" x="1308" y="1432" text-anchor="start"><tspan x="1308" dy="0">read the projection when complete</tspan><tspan x="1308" dy="24">fallback to current aggregate</tspan></text>
+  </g><g id="final-state-decision" data-node="true"><rect class="card" id="final-state-decision-card" x="700" y="1340" width="430" height="190" rx="22" fill="#171b36" stroke="#a78bfa" stroke-width="2" opacity=".98"/><text class="decision-title" x="915" y="1404" text-anchor="middle">Final State Decision</text><text class="decision-body" x="915" y="1446" text-anchor="middle"><tspan x="915" dy="0">PROCESSED · RETRY</tspan><tspan x="915" dy="26">QUARANTINED · REPLAY_PENDING</tspan></text></g>
+    <g id="processed" data-node="true">
+      <rect id="processed-card" class="card" x="60" y="1660" width="470" height="170" rx="22" fill="#101f34" stroke="#2dd4bf" stroke-width="2"/>
+      <text class="outcome-code" x="295" y="1720" text-anchor="middle">PROCESSED</text>
+      <text class="outcome-body" x="295" y="1760" text-anchor="middle"><tspan x="295" dy="0">handler succeeded</tspan><tspan x="295" dy="24">record completion</tspan></text>
+    </g>
+    <g id="retry" data-node="true">
+      <rect id="retry-card" class="card" x="510" y="1660" width="470" height="170" rx="22" fill="#101f34" stroke="#fbbf24" stroke-width="2"/>
+      <text class="outcome-code" x="745" y="1720" text-anchor="middle">RETRY</text>
+      <text class="outcome-body" x="745" y="1760" text-anchor="middle"><tspan x="745" dy="0">transient failure</tspan><tspan x="745" dy="24">retry at next time</tspan></text>
+    </g>
+    <g id="quarantined" data-node="true">
+      <rect id="quarantined-card" class="card" x="1060" y="1660" width="470" height="170" rx="22" fill="#101f34" stroke="#fb7185" stroke-width="2"/>
+      <text class="outcome-code" x="1295" y="1720" text-anchor="middle">QUARANTINED</text>
+      <text class="outcome-body" x="1295" y="1760" text-anchor="middle"><tspan x="1295" dy="0">contract or scope error</tspan><tspan x="1295" dy="24">quarantine metadata only</tspan></text>
+    </g>
+    <g id="replay-pending" data-node="true">
+      <rect id="replay-pending-card" class="card" x="1610" y="1660" width="470" height="170" rx="22" fill="#101f34" stroke="#a78bfa" stroke-width="2"/>
+      <text class="outcome-code" x="1845" y="1720" text-anchor="middle">REPLAY_PENDING</text>
+      <text class="outcome-body" x="1845" y="1760" text-anchor="middle"><tspan x="1845" dy="0">approved replay</tspan><tspan x="1845" dy="24">cross the audit boundary</tspan></text>
+    </g><text class="foot" x="72" y="1855">Solid lines are explicit record and delivery boundaries. A statistics projection is not the same thing as the current appointment aggregate; every outcome starts at a visible decision card.</text>
+</svg>
