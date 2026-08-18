@@ -49,7 +49,7 @@ const definitions = (locale, sequence = false) => {
       .phase{fill:#0b192c;stroke:#263d59;stroke-width:1.5}
       .phase-label{font-family:${monoFonts(locale)};font-size:13px;font-weight:800;fill:#7fc9ff}
       .call{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
-      .call-label{font-family:${monoFonts(locale)};font-size:${locale === 'ko' ? 13 : 12}px;fill:#e7f0fb}
+${sequence ? '      .outcome-call{stroke-linecap:butt;stroke-linejoin:miter}\n' : ''}      .call-label{font-family:${monoFonts(locale)};font-size:${locale === 'ko' ? 13 : 12}px;fill:#e7f0fb}
       .pill{fill:#0d1b2f;stroke-width:1.5}
       .pill-number{font-family:${monoFonts(locale)};font-size:12px;font-weight:800;fill:#f8fbff}
       .decision{fill:#171b36;stroke:#a78bfa;stroke-width:2}
@@ -180,12 +180,14 @@ function renderSequence(locale) {
     const x = 68 + index * 442;
     return `<g id="outcome-${index}" data-node="true"><rect id="outcome-${index}-card" x="${x}" y="${outcomeY}" width="400" height="132" rx="20" fill="#101f34" stroke="${colors[tone]}" stroke-width="2"/><text class="outcome-code" x="${x + 200}" y="${outcomeY + 43}" text-anchor="middle">${escapeXml(code)}</text><text class="outcome-body" x="${x + 200}" y="${outcomeY + 77}" text-anchor="middle">${escapeXml(body)}</text><text class="role" x="${x + 200}" y="${outcomeY + 105}" text-anchor="middle">${escapeXml(locale === 'ko' ? '조치 큐에서 확인' : 'visible in action queue')}</text></g>`;
   }).join('\n');
+  // The terminal outcome subdiagram intentionally uses explicit 90-degree elbows;
+  // the upper sequence message paths retain their rounded orthogonal routes.
   const outcomePaths = copy.outcomes.map(([, , tone], index) => {
     const sourceX = 930 + (index - (copy.outcomes.length - 1) / 2) * 84;
     const targetX = 68 + index * 442 + 200;
     const branchY = 1930 + index * 16;
-    const d = `M${sourceX} 1910 V${branchY - 18} Q${sourceX} ${branchY} ${sourceX + 18} ${branchY} H${targetX - 18} Q${targetX} ${branchY} ${targetX} ${branchY + 18} V${outcomeY}`;
-    return `<path class="call" d="${d}" stroke="${colors[tone]}" marker-end="url(#sequence-${tone}-arrow)" data-connector="decision-outcome-${index}" data-source-node="final-decision" data-target-node="outcome-${index}"/>`;
+    const d = `M${sourceX} 1910 V${branchY} H${targetX} V${outcomeY}`;
+    return `<path class="call outcome-call" d="${d}" stroke="${colors[tone]}" marker-end="url(#sequence-${tone}-arrow)" data-connector="decision-outcome-${index}" data-source-node="final-decision" data-target-node="outcome-${index}" data-corner-style="orthogonal"/>`;
   }).join('\n');
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-labelledby="title desc" data-locale="${locale}">
