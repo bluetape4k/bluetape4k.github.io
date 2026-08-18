@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="2200" height="1620" viewBox="0 0 2200 1620" role="img" aria-labelledby="title desc" data-locale="ko">
+  <title id="title">여러 병원을 한 예약 서비스로 운영할 때 지켜야 할 데이터 경계</title><desc id="desc">요청에서 비동기 이벤트까지 같은 tenant·clinic 범위를 명시적으로 전달합니다.</desc><defs>
+    <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#071323"/><stop offset="1" stop-color="#111c32"/></linearGradient>
+    <linearGradient id="lane" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0b192c"/><stop offset="1" stop-color="#13243a"/></linearGradient>
+    
+    <marker id="blueArrow" viewBox="0 0 10 10" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#60a5fa" data-solid-head="true"/>
+    </marker>
+    <marker id="cyanArrow" viewBox="0 0 10 10" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2dd4bf" data-solid-head="true"/>
+    </marker>
+    <marker id="purpleArrow" viewBox="0 0 10 10" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#a78bfa" data-solid-head="true"/>
+    </marker>
+    <marker id="amberArrow" viewBox="0 0 10 10" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#fbbf24" data-solid-head="true"/>
+    </marker>
+    <marker id="redArrow" viewBox="0 0 10 10" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#fb7185" data-solid-head="true"/>
+    </marker>
+    <style>
+      .title{font-family:"goorm Sans", "Apple SD Gothic Neo", sans-serif;font-size:38px;font-weight:800;fill:#f4f8ff}
+      .subtitle{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:17px;fill:#a9bad0}
+      .lane-title{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:14px;font-weight:800;fill:#7fc9ff;letter-spacing:1px}
+      .badge{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:13px;font-weight:800;fill:#c9dcf3}
+      .card-code{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:12px;font-weight:800;fill:#7fc9ff}
+      .card-title{font-family:"goorm Sans", "Apple SD Gothic Neo", sans-serif;font-size:21px;font-weight:800;fill:#f4f8ff}
+      .card-body{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:14px;fill:#b9cbe0}
+      .route{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+      .route-label{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:13px;fill:#e7f0fb}
+      .label-bg{fill:#0d1b2f;stroke:#2d4665;stroke-width:1.5}
+      .table-head{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:13px;font-weight:800;fill:#7fc9ff}
+      .table-key{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:16px;font-weight:800;fill:#f4f8ff}
+      .table-cell{font-family:"goorm Sans", "Apple SD Gothic Neo", sans-serif;font-size:15px;fill:#d5e2f1}
+      .table-code{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:14px;fill:#b9cbe0}
+      .note{font-family:"goorm Sans", "Apple SD Gothic Neo", sans-serif;font-size:14px;fill:#a9bad0}
+      .foot{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:13px;fill:#91a8c3}
+    </style>
+  </defs>
+  <rect width="2200" height="1620" fill="url(#canvas)"/><rect x="24" y="24" width="2152" height="1572" rx="32" fill="none" stroke="#2d4665" stroke-width="2"/>
+  <text class="title" x="70" y="80" >여러 병원을 한 예약 서비스로 운영할 때 지켜야 할 데이터 경계</text><text class="subtitle" x="72" y="114" >요청에서 비동기 이벤트까지 같은 tenant·clinic 범위를 명시적으로 전달합니다.</text>
+  <rect x="72" y="140" width="300" height="34" rx="17" fill="#12243a" stroke="#3a5877"/><text class="badge" x="222" y="162" text-anchor="middle">SCOPE · tenant + clinic</text><rect x="402" y="140" width="300" height="34" rx="17" fill="#12243a" stroke="#3a5877"/><text class="badge" x="552" y="162" text-anchor="middle">DATA · 합성 시안</text>
+  <rect x="60" y="220" width="2080" height="285" rx="26" fill="url(#lane)" stroke="#263d59" stroke-width="1.5"/><text class="lane-title" x="90" y="254" >요청과 검증</text>
+  <rect x="60" y="520" width="2080" height="345" rx="26" fill="url(#lane)" stroke="#263d59" stroke-width="1.5"/><text class="lane-title" x="90" y="554" >명시적 TENANT·CLINIC 범위</text>
+  <rect x="60" y="885" width="2080" height="650" rx="26" fill="url(#lane)" stroke="#263d59" stroke-width="1.5"/><text class="lane-title" x="90" y="919" >경계가 필요한 하위 처리</text>
+  
+  <g data-from="request-path" data-to="tenant-filter">
+    <path id="path-filter" class="route" d="M420 359 H480" stroke="#60a5fa" marker-end="url(#blueArrow)" data-connector="path-filter" data-source-node="request-path" data-target-node="tenant-filter"/>
+    
+  <g class="relationshiplabel">
+    <rect class="label-bg" x="292" y="238" width="190" height="30" rx="15"/>
+    <text class="route-label" x="387" y="258" text-anchor="middle">경로 문법 확인</text>
+  </g>
+  </g>
+  <g data-from="tenant-filter" data-to="clinic-guard">
+    <path id="filter-guard" class="route" d="M810 359 H870" stroke="#2dd4bf" marker-end="url(#cyanArrow)" data-connector="filter-guard" data-source-node="tenant-filter" data-target-node="clinic-guard"/>
+    
+  <g class="relationshiplabel">
+    <rect class="label-bg" x="682" y="238" width="180" height="30" rx="15"/>
+    <text class="route-label" x="772" y="258" text-anchor="middle">membership 확인</text>
+  </g>
+  </g>
+  <g data-from="clinic-guard" data-to="scope-value">
+    <path id="guard-scope" class="route" d="M1200 359 H1260" stroke="#a78bfa" marker-end="url(#purpleArrow)" data-connector="guard-scope" data-source-node="clinic-guard" data-target-node="scope-value"/>
+    
+  <g class="relationshiplabel">
+    <rect class="label-bg" x="1045" y="238" width="220" height="30" rx="15"/>
+    <text class="route-label" x="1155" y="258" text-anchor="middle">소유권 확인 후 생성</text>
+  </g>
+  </g>
+  <g data-from="scope-value" data-to="slot-policy">
+    <path id="scope-slot" class="route" d="M1350 438 V535 Q1350 575 1310 575 H320 Q300 575 300 595 V650" stroke="#fbbf24" marker-end="url(#amberArrow)" data-connector="scope-slot" data-source-node="scope-value" data-target-node="slot-policy"/>
+    
+  <g class="relationshiplabel">
+    <rect class="label-bg" x="650" y="535" width="150" height="30" rx="15"/>
+    <text class="route-label" x="725" y="555" text-anchor="middle">조회 범위</text>
+  </g>
+  </g>
+  <g data-from="scope-value" data-to="cache-query">
+    <path id="scope-cache" class="route" d="M1410 438 V560 Q1410 600 1370 600 H835 Q815 600 815 620 V650" stroke="#2dd4bf" marker-end="url(#cyanArrow)" data-connector="scope-cache" data-source-node="scope-value" data-target-node="cache-query"/>
+    
+  <g class="relationshiplabel">
+    <rect class="label-bg" x="930" y="515" width="160" height="30" rx="15"/>
+    <text class="route-label" x="1010" y="535" text-anchor="middle">키에 범위 포함</text>
+  </g>
+  </g>
+  <g data-from="scope-value" data-to="event-inbox">
+    <path id="scope-event" class="route" d="M1470 438 V650" stroke="#a78bfa" marker-end="url(#purpleArrow)" data-connector="scope-event" data-source-node="scope-value" data-target-node="event-inbox"/>
+    
+  <g class="relationshiplabel">
+    <rect class="label-bg" x="1600" y="505" width="190" height="30" rx="15"/>
+    <text class="route-label" x="1695" y="525" text-anchor="middle">provenance 보존</text>
+  </g>
+  </g>
+  <g data-from="scope-value" data-to="sse-notification">
+    <path id="scope-notification" class="route" d="M1530 438 V535 Q1530 575 1570 575 H1895 Q1915 575 1915 595 V650" stroke="#fb7185" marker-end="url(#redArrow)" data-connector="scope-notification" data-source-node="scope-value" data-target-node="sse-notification"/>
+    
+  <g class="relationshiplabel">
+    <rect class="label-bg" x="1735" y="600" width="150" height="30" rx="15"/>
+    <text class="route-label" x="1810" y="620" text-anchor="middle">worker 범위</text>
+  </g>
+  </g>
+  <g id="request-path" data-node="true">
+    <rect id="request-path-card" x="90" y="280" width="330" height="158" rx="22" fill="#112139" stroke="#60a5fa" stroke-width="2"/>
+    <rect x="110" y="300" width="8" height="118" rx="4" fill="#60a5fa" opacity=".9"/>
+    <text class="card-code" x="138" y="312" >REQUEST PATH</text>
+    <text class="card-title" x="138" y="346" >/api/{tenantCode}/...</text>
+    <text class="card-body" x="138" y="382" text-anchor="start"><tspan x="138" dy="0">외부 tenant 선택은 경로에서만</tspan><tspan x="138" dy="23">body·header는 권한 근거가 아님</tspan></text>
+  </g>
+  <g id="tenant-filter" data-node="true">
+    <rect id="tenant-filter-card" x="480" y="280" width="330" height="158" rx="22" fill="#112139" stroke="#2dd4bf" stroke-width="2"/>
+    <rect x="500" y="300" width="8" height="118" rx="4" fill="#2dd4bf" opacity=".9"/>
+    <text class="card-code" x="528" y="312" >PRE-AUTH + JWT</text>
+    <text class="card-title" x="528" y="346" >TenantContextFilter</text>
+    <text class="card-body" x="528" y="382" text-anchor="start"><tspan x="528" dy="0">경로 문법 → JWT membership</tspan><tspan x="528" dy="23">활성 TenantGroup 조회</tspan></text>
+  </g>
+  <g id="clinic-guard" data-node="true">
+    <rect id="clinic-guard-card" x="870" y="280" width="330" height="158" rx="22" fill="#112139" stroke="#a78bfa" stroke-width="2"/>
+    <rect x="890" y="300" width="8" height="118" rx="4" fill="#a78bfa" opacity=".9"/>
+    <text class="card-code" x="918" y="312" >OWNERSHIP</text>
+    <text class="card-title" x="918" y="346" >TenantClinicAccessChecker</text>
+    <text class="card-body" x="918" y="382" text-anchor="start"><tspan x="918" dy="0">clinic이 tenant에 속하는지 확인</tspan><tspan x="918" dy="23">STAFF/ADMIN clinic 범위 재확인</tspan></text>
+  </g>
+  <g id="scope-value" data-node="true">
+    <rect id="scope-value-card" x="1260" y="280" width="330" height="158" rx="22" fill="#112139" stroke="#fbbf24" stroke-width="2"/>
+    <rect x="1280" y="300" width="8" height="118" rx="4" fill="#fbbf24" opacity=".9"/>
+    <text class="card-code" x="1308" y="312" >EXPLICIT VALUE</text>
+    <text class="card-title" x="1308" y="346" >TenantClinicScope</text>
+    <text class="card-body" x="1308" y="382" text-anchor="start"><tspan x="1308" dy="0">tenantGroupId + clinicId</tspan><tspan x="1308" dy="23">core·solver·event에 값으로 전달</tspan></text>
+  </g>
+  <g id="slot-policy" data-node="true">
+    <rect id="slot-policy-card" x="90" y="650" width="430" height="148" rx="22" fill="#112139" stroke="#60a5fa" stroke-width="2"/>
+    <rect x="110" y="670" width="8" height="108" rx="4" fill="#60a5fa" opacity=".9"/>
+    <text class="card-code" x="138" y="682" >QUERY SCOPE</text>
+    <text class="card-title" x="138" y="716" >slot · holiday · solver · closure</text>
+    <text class="card-body" x="138" y="752" text-anchor="start"><tspan x="138" dy="0">같은 scope로 resource를 조회</tspan><tspan x="138" dy="23">범위 밖 데이터는 결과에 넣지 않음</tspan></text>
+  </g>
+  <g id="cache-query" data-node="true">
+    <rect id="cache-query-card" x="620" y="650" width="430" height="148" rx="22" fill="#112139" stroke="#2dd4bf" stroke-width="2"/>
+    <rect x="640" y="670" width="8" height="108" rx="4" fill="#2dd4bf" opacity=".9"/>
+    <text class="card-code" x="668" y="682" >CACHE / QUERY KEY</text>
+    <text class="card-title" x="668" y="716" >tenantGroupId:clinicId</text>
+    <text class="card-body" x="668" y="752" text-anchor="start"><tspan x="668" dy="0">clinicId 단독 키를 만들지 않음</tspan><tspan x="668" dy="23">명시적 predicate로 다시 확인</tspan></text>
+  </g>
+  <g id="event-inbox" data-node="true">
+    <rect id="event-inbox-card" x="1150" y="650" width="430" height="148" rx="22" fill="#112139" stroke="#a78bfa" stroke-width="2"/>
+    <rect x="1170" y="670" width="8" height="108" rx="4" fill="#a78bfa" opacity=".9"/>
+    <text class="card-code" x="1198" y="682" >ASYNC PROVENANCE</text>
+    <text class="card-title" x="1198" y="716" >event · inbox · projection</text>
+    <text class="card-body" x="1198" y="752" text-anchor="start"><tspan x="1198" dy="0">tenantGroupId와 clinicId를 함께 보존</tspan><tspan x="1198" dy="23">provenance mismatch는 side effect 전에 거부</tspan></text>
+  </g>
+  <g id="sse-notification" data-node="true">
+    <rect id="sse-notification-card" x="1680" y="650" width="430" height="148" rx="22" fill="#112139" stroke="#fb7185" stroke-width="2"/>
+    <rect x="1700" y="670" width="8" height="108" rx="4" fill="#fb7185" opacity=".9"/>
+    <text class="card-code" x="1728" y="682" >BACKGROUND / SSE</text>
+    <text class="card-title" x="1728" y="716" >notification · SSE</text>
+    <text class="card-body" x="1728" y="752" text-anchor="start"><tspan x="1728" dy="0">thread-local을 하위 경계에서 읽지 않음</tspan><tspan x="1728" dy="23">캡처한 scope로 stream과 worker를 제한</tspan></text>
+  </g>
+  <g id="scope-table" data-node="true"><rect x="70" y="1050" width="2070" height="460" rx="22" fill="#0a1728" stroke="#263d59"/><text class="card-title" x="98" y="1098">식별자별 경계 표</text><text class="note" x="98" y="1127">같은 숫자라도 tenant·clinic 범위가 다르면 다른 데이터입니다.</text><text class="table-head" x="100" y="1108" >식별자</text><text class="table-head" x="400" y="1108" >권위가 정해지는 범위</text><text class="table-head" x="720" y="1108" >허용된 사용</text><text class="table-head" x="1160" y="1108" >섞으면 안 되는 방식</text><text class="table-head" x="1770" y="1108" >실패 시 읽을 값</text><g data-row="0"><rect x="84" y="1136" width="2042" height="68" rx="12" fill="#102139" stroke="#253d59"/><rect x="84" y="1136" width="8" height="68" rx="4" fill="#60a5fa"/><text class="table-key" x="100" y="1167" >tenantCode</text><text class="table-code" x="400" y="1167" >/api/{tenantCode}</text><text class="table-cell" x="720" y="1167" >route + JWT allowedTenants + active tenant</text><text class="table-cell" x="1160" y="1167" >body/header의 tenant를 권한으로 승격</text><text class="table-code" x="1770" y="1167" >401 / 403 / 404</text></g><g data-row="1"><rect x="84" y="1226" width="2042" height="68" rx="12" fill="#0d1b2f" stroke="#253d59"/><rect x="84" y="1226" width="8" height="68" rx="4" fill="#2dd4bf"/><text class="table-key" x="100" y="1257" >clinicId</text><text class="table-code" x="400" y="1257" >tenantGroupId + clinicId</text><text class="table-cell" x="720" y="1257" >DB ownership·query·cache 범위</text><text class="table-cell" x="1160" y="1257" >clinicId만으로 다른 tenant를 조회</text><text class="table-code" x="1770" y="1257" >scope mismatch</text></g><g data-row="2"><rect x="84" y="1316" width="2042" height="68" rx="12" fill="#102139" stroke="#253d59"/><rect x="84" y="1316" width="8" height="68" rx="4" fill="#a78bfa"/><text class="table-key" x="100" y="1347" >appointmentId / eventId</text><text class="table-code" x="400" y="1347" >tenant + clinic + id</text><text class="table-cell" x="720" y="1347" >aggregate·event·inbox 식별</text><text class="table-cell" x="1160" y="1347" >전역 ID처럼 조회·재생</text><text class="table-code" x="1770" y="1347" >not found / reject</text></g><g data-row="3"><rect x="84" y="1406" width="2042" height="68" rx="12" fill="#0d1b2f" stroke="#253d59"/><rect x="84" y="1406" width="8" height="68" rx="4" fill="#fbbf24"/><text class="table-key" x="100" y="1437" >patient reference</text><text class="table-code" x="400" y="1437" >tenant-scoped opaque reference</text><text class="table-cell" x="720" y="1437" >환자 범위 안의 연결·재평가</text><text class="table-cell" x="1160" y="1437" >raw identifier로 병원 간 자동 연결</text><text class="table-code" x="1770" y="1437" >필요한 범위만 표시</text></g></g>
+  <text class="foot" x="72" y="1574" >표의 식별자는 합성 예시입니다. 운영 화면에는 원본 환자 정보나 내부 식별자를 노출하지 않습니다.</text>
+</svg>

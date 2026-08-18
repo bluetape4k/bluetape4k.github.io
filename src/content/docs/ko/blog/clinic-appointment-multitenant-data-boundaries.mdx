@@ -1,0 +1,256 @@
+---
+title: "[운영 확장 8] 여러 병원을 한 예약 서비스로 운영할 때 지켜야 할 데이터 경계"
+description: "여러 병원을 한 예약 서비스로 운영할 때 tenant·clinic 범위를 요청, 조회, 캐시, 비동기 이벤트와 STAFF 운영 화면까지 같은 기준으로 유지하는 방법을 설명합니다."
+sidebar:
+  order: -202608181200
+blog:
+  date: 2026-08-18T12:00:00+09:00
+  image: /assets/clinic-appointment-multitenant-data-boundaries-hero.png
+  imageAlt: 여러 병원의 예약 데이터를 tenant와 clinic 범위로 나누어 처리하는 3D workbench
+  cardDescription: "tenant·clinic 범위를 요청 경로에서 조회·캐시·이벤트까지 전달하고, STAFF가 범위 경고와 다음 작업을 판단하는 운영 경계를 설명합니다."
+  tags: ["architecture", "operations", "security", "multitenancy", "appointment-service", "data-isolation", "example", "timefold"]
+---
+
+import ClinicAppointmentSeries from '../../../../components/ClinicAppointmentSeries.astro';
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-multitenant-data-boundaries-hero.png" alt="여러 병원의 예약 데이터를 tenant와 clinic 범위로 나누어 처리하는 3D workbench" loading="eager" />
+  <figcaption>같은 예약 서비스 안에서도 병원별 데이터는 요청부터 비동기 작업까지 같은 범위로 묶여야 합니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-18 · 병원 예약 서비스 개발기 · 여러 병원을 운영하는 데이터 경계</p>
+
+한 예약 서비스에 여러 병원이 들어오면 `clinicId` 하나만 보고 데이터를 읽고 싶은 순간이 생깁니다. 그러나 서로 다른
+tenant에 같은 숫자의 `clinicId`가 존재할 수 있고, `appointmentId`나 `eventId`도 서비스 전체에서 의미가 같은 식별자라고
+가정할 수 없습니다. 요청에서 확인한 범위가 cache, solver, SSE, event, notification으로 전달되지 않으면 병원 A의 예약을
+병원 B의 화면이나 작업이 읽는 사고가 생깁니다.
+
+이 글에서 말하는 tenant는 여러 병원과 정책을 묶는 서비스 운영 단위입니다. clinic은 그 tenant 안에서 예약 자원을
+소유하는 병원입니다. STAFF가 운영 화면에서 봐야 할 핵심 질문은 “이 숫자가 몇 건인가?”보다 먼저 “어느 tenant와 어느
+병원 범위의 숫자인가?”입니다.
+
+이 글의 결론은 다음과 같습니다.
+
+> tenant 선택은 `/api/{tenantCode}` 경로와 JWT `allowedTenants` membership으로 시작하고, 활성 tenant와 clinic 소유권을
+> 데이터베이스에서 다시 확인합니다. 검증이 끝나면 `(tenantGroupId, clinicId)`를 `TenantClinicScope`로 만들어 하위
+> 서비스에 명시적으로 전달합니다. cache key, query predicate, event envelope, inbox와 projection도 같은 범위를 보존해야
+> 합니다. 현재 대시보드는 tenant·clinic을 먼저 검증하지만, 통계의 기준 데이터 원본은 여전히 현재 예약 집계입니다.
+
+아래 다이어그램과 운영 화면은 실제 병원명, 환자 정보, 운영 지표를 담은 캡처가 아니라 현재 소스의 경계를 설명하기 위한
+합성 시안입니다. 본문에서는 현재 구현, 승인된 설계, 운영 rollout 대기와 다음 보강 작업을 분리합니다.
+
+## `clinicId` 하나로는 예약 범위를 설명할 수 없다
+
+데이터베이스에서 `clinicId`가 전역 surrogate key처럼 보인다고 해서 외부 요청과 비동기 메시지의 권한이 자동으로 생기지는
+않습니다. 예약 서비스가 먼저 확인해야 하는 것은 “이 clinic이 어느 tenant에 속하는가”입니다. 그 다음에야 의사, 시술,
+장비, 예약을 같은 범위의 자원으로 볼 수 있습니다.
+
+| 식별자 | 먼저 확인하는 범위 | 허용된 사용 | 하면 안 되는 해석 |
+| --- | --- | --- | --- |
+| `tenantCode` | `/api/{tenantCode}` + JWT `allowedTenants` + 활성 tenant | 요청의 tenant를 선택하는 routing 입력 | body나 header의 tenant 값을 권한으로 승격 |
+| `clinicId` | `tenantGroupId + clinicId` | DB 소유권, 조회 조건, cache namespace | `clinicId`만으로 다른 tenant의 clinic을 조회 |
+| `appointmentId`·`eventId` | tenant + clinic + 식별자 | aggregate·event·inbox의 범위 안에서 조회 | 전역 ID처럼 재생하거나 운영 큐에 표시 |
+| 환자 참조 | tenant 안에서 만든 opaque reference | 같은 환자 범위의 연결·재평가 | raw 전화번호나 이메일로 병원 간 자동 연결 |
+
+이 표를 코드로 옮긴 값이 `TenantClinicScope`입니다. `TenantClinicScope`는 인증 객체가 아닙니다. HTTP 경계에서 tenant와
+clinic 소유권을 확인한 뒤에 만드는, 검증된 데이터 범위를 담은 값입니다.
+
+```kotlin
+val tenant = tenantClinicAccessChecker.verifySchedulingResources(
+    tenantCode = tenantCode,
+    clinicId = clinicId,
+    doctorId = doctorId,
+    treatmentTypeId = treatmentTypeId,
+    equipmentId = null,
+)
+
+val query = SlotQuery(
+    scope = TenantClinicScope(tenant.id, clinicId),
+    doctorId = doctorId,
+    treatmentTypeId = treatmentTypeId,
+    date = date,
+)
+```
+
+`SlotController`는 자원 소유권을 확인한 뒤 `SlotQuery`에 scope를 담습니다. 이 순서가 중요한 이유는 raw ID를 먼저 solver에
+넘기고 나중에 범위를 확인하는 방식으로는 범위 밖 fact가 계산에 들어가는 일을 막을 수 없기 때문입니다.
+
+<figure class="bt4k-architecture" data-diagram-title="여러 병원을 운영하는 tenant·clinic 데이터 경계">
+  <img src="/assets/clinic-appointment-multitenant-data-boundaries-boundary-01-ko.png" alt="요청 경로와 JWT membership, 활성 tenant 조회, clinic 소유권 확인 뒤 TenantClinicScope를 만들어 slot·holiday·solver·closure, cache·query, event·inbox·projection, notification·SSE로 같은 범위를 전달하고 tenant·clinic·예약·환자 참조의 경계를 표로 비교하는 다이어그램" loading="lazy" />
+  <figcaption>구조도만 나열하지 않고 식별자별 권위 범위와 금지된 조합을 표로 함께 표시했습니다. 모든 화살표는 카드 경계에서 시작하고 도착하며, 색상과 화살촉은 같은 경로의 의미를 유지합니다.</figcaption>
+</figure>
+
+## 요청 경로에서 tenant 권한을 확정한다
+
+현재 API의 외부 tenant 선택 방법은 `/api/{tenantCode}/...`입니다. `tenantCode`는 호출자가 제시하는 routing 입력일 뿐,
+그 자체가 권한 증명은 아닙니다. 권한을 확정하는 과정은 다음 순서로 나뉩니다.
+
+1. `TenantPathValidationFilter`가 JWT를 읽기 전에 raw URI와 servlet path를 확인합니다. percent escape, path parameter,
+   중복 구분자, traversal segment, reserved root와 비정규 slug는 privacy-safe 404로 종료합니다.
+2. JWT parser가 서명과 표준 claim, 닫힌 claim 집합을 확인하고 `allowedTenants`와 `allowedClinicIds`를 가진 principal을
+   만듭니다.
+3. `TenantContextFilter`가 활성 `TenantGroup`을 조회합니다. tenant가 없으면 404이고, principal의
+   `allowedTenants`에 없으면 403입니다.
+4. controller와 `TenantClinicAccessChecker`가 clinic 소유권과 STAFF/ADMIN의 clinic allow-list를 다시 확인합니다.
+5. 검증이 끝난 tenant ID와 path `clinicId`로 `TenantClinicScope`를 만들어 service에 전달합니다.
+
+실패 결과는 운영자와 API 소비자가 서로 다른 의미로 읽을 수 있어야 합니다.
+
+| 상황 | 결과 | 화면이나 로그에 남길 값 |
+| --- | --- | --- |
+| JWT가 없거나 검증에 실패함 | 401 | 안정적인 인증 실패 코드와 correlation ID |
+| path tenant가 `allowedTenants`에 없음 | 403 | 범위가 맞지 않다는 사유 코드 |
+| 인증된 tenant가 없거나 비활성임 | 404 | 존재 여부를 더 설명하지 않는 not found |
+| path가 malformed·encoded ambiguous임 | 인증 전에 404 | raw token이나 내부 ID 없이 요청 추적 정보 |
+| tenant 조회 저장소가 실패함 | privacy-safe internal error | correlation ID와 정제된 tenant code |
+
+body나 header에 `tenantGroupId`, `clinicId`, `X-Tenant-Code`를 넣는다고 이 경계가 바뀌지 않습니다. 알려지지 않은 DTO
+field는 strict deserialization 계약에 따라 400으로 거부하고, 알려진 값이 path 범위와 충돌하면 scope 오류로 끝내야 합니다.
+“무시한다”는 것은 권한 근거로 사용하지 않는다는 뜻이지, 임의의 field를 조용히 허용한다는 뜻이 아닙니다.
+
+## `TenantClinicScope`를 하위 처리에 값으로 전달한다
+
+`TenantContext`는 요청 경계에서 현재 tenant를 관리하는 보조 도구입니다. core, solver, background worker, event consumer가
+thread-local을 다시 읽어 범위를 복원하면 안 됩니다. virtual thread나 비동기 consumer에서는 요청이 끝난 뒤에도 남아 있는
+context를 읽거나, 아예 context가 없는 상태로 처리할 수 있기 때문입니다.
+
+`TenantClinicScope`는 양수인 `tenantGroupId`와 `clinicId`를 함께 보유하고, `cacheKey()`로
+`tenantGroupId:clinicId` 표현을 제공합니다. controller에서 만든 scope를 다음 경계로 직접 넘기면 범위가 코드의 호출
+계약에 남습니다.
+
+| 하위 처리 | 같은 scope가 필요한 이유 | 범위가 빠졌을 때 생기는 문제 |
+| --- | --- | --- |
+| holiday·slot·solver | 병원별 휴일, 운영시간, 자원과 예약 fact를 같은 집합으로 계산 | 다른 tenant의 휴일이나 의사 일정이 후보에 섞임 |
+| closure·reschedule·SSE | 영향 예약과 candidate를 같은 병원 범위에서 읽고 변경 | 다른 병원의 예약을 stream이나 재예약 작업이 읽음 |
+| event log·outbox·inbox | 메시지가 어느 tenant·clinic에서 생겼는지 보존 | 같은 event ID가 다른 consumer 범위에서 재사용됨 |
+| notification | direct delivery와 worker permit을 실제 scope로 제한 | 알림 제공자 호출이 잘못된 병원으로 나감 |
+| 통계 projection | 날짜·상태 bucket과 aggregate lock을 범위별로 분리 | 대시보드 숫자가 병원 사이에서 합쳐짐 |
+
+SSE stream을 시작할 때도 controller가 scope를 값으로 캡처하고, virtual thread 안에서 `TenantContext`를 다시 읽지 않는
+방식이 현재 설계의 원칙입니다. stream이 끊겼다가 재호출되면 남아 있는 `ACTIVE` 예약만 같은 scope로 다시 확인합니다.
+
+## cache와 query는 같은 범위를 두 번 확인한다
+
+cache는 데이터베이스보다 오래 살아 있을 수 있으므로 query predicate만 고쳐서는 충분하지 않습니다. 예를 들어
+`clinicId=23`만 Redis key로 사용하면 tenant 1의 `1:23`과 tenant 12의 `12:3` 같은 식별 조합을 사람이 읽는 방식에 따라
+충돌시킬 위험이 생깁니다. 현재 공통 key 표현은 양수인 두 ID를 `${tenantGroupId}:${clinicId}` 문법으로 직렬화합니다.
+
+조회도 같은 원칙을 반복합니다. `ClinicRepository.findByIdAndTenant`처럼 clinic 소유권을 tenant와 함께 확인하고, 의사·시술·
+장비·holiday repository에도 같은 범위 predicate를 적용합니다. scope를 한 번 확인했다는 이유로 이후 하위 query가
+clinic-only ID를 다시 신뢰해서는 안 됩니다.
+
+통계 대시보드는 현재 구현의 경계를 특히 조심해서 읽어야 합니다.
+
+- `DashboardStatsController`는 `/api/{tenantCode}/admin/stats`에서 먼저 tenant와 clinic 소유권을 확인합니다.
+- `DashboardStatsService`의 현재 public method는 아직 `clinicId`를 인자로 받습니다. 따라서 controller 검증이 service 내부
+  query의 모든 경계를 자동으로 보장한다고 말할 수 없습니다.
+- 현재 예약 상태와 `Appointments.appointmentDate`를 확인하는 `AppointmentStatsRepository`가 기준 데이터 원본입니다.
+- tenant·clinic을 보유한 통계 projection repository는 보조 read model이지만, event envelope의 `occurredAt`만으로 실제
+  appointment date를 증명할 수 없기 때문에 `projectionRows`는 fail-closed 상태로 남아 있습니다.
+
+즉, “projection table에 tenant와 clinic column이 있다”와 “대시보드의 모든 집계가 projection을 기준으로 안전하게 전환됐다”는
+같은 문장이 아닙니다. 운영 화면은 두 값을 구분해 보여 주고, projection이 준비되지 않았을 때 현재 예약 집계를 기준 데이터
+원본으로 표시해야 합니다.
+
+## 비동기 경계에서도 provenance를 잃지 않는다
+
+`AppointmentEventEnvelope`는 `eventId`, `occurredAt`, `tenantGroupId`, `clinicId`, `aggregateId`와 payload를 함께 갖습니다.
+consumer runtime은 예상한 scope와 envelope의 scope가 같은지 확인한 뒤 inbox를 시작합니다. mismatch면 handler나 provider
+호출을 수행하지 않고 격리합니다.
+
+이 순서는 단순히 event payload에 tenant 값을 하나 추가하는 것과 다릅니다.
+
+1. outbox row가 예약 transaction과 함께 커밋됩니다.
+2. relay가 lease와 fencing으로 row를 선점하고 event scope를 envelope에 보존합니다.
+3. 각 consumer가 자기 `logicalConsumerId`와 event identity로 inbox 중복을 확인합니다.
+4. handler transaction과 projection·notification side effect가 같은 scope인지 다시 검사합니다.
+5. replay나 backfill은 대상 tenant·clinic·consumer를 승인 정보와 함께 확인한 뒤에만 실행합니다.
+
+replay 화면에 raw payload나 환자 이름을 복사하지 않는 것도 같은 원칙입니다. STAFF에게 필요한 정보는 scope, 안정적인
+사유 코드, event fingerprint, 현재 처리 상태와 다음 작업이지 원문 개인정보가 아닙니다.
+
+## 환자 식별자를 병원 간 연결 키로 쓰지 않는다
+
+한 사람이 여러 병원을 방문할 수 있다는 업무 사실과, 두 병원의 계정을 같은 사람으로 자동 연결해도 된다는 권한은
+다릅니다. 같은 전화번호나 이메일, 외부 CRM의 원본 식별자가 보인다고 해서 예약 서비스가 tenant 경계를 넘어 환자 기록을
+합치면 안 됩니다.
+
+현재 설계가 사용하는 방향은 다음과 같습니다.
+
+- 환자 인증과 login identity는 tenant 범위 안에서 관리합니다.
+- 외부 프로필 변경으로 예약을 재평가할 때도 `tenantGroupId`, `clinicId`, opaque한
+  `patientReferenceFingerprint`를 함께 사용합니다.
+- fingerprint는 원래 식별자를 복원하기 위한 값이 아니며, 다른 tenant의 동일한 문자열과 자동으로 join하지 않습니다.
+- STAFF 화면과 metric에는 환자 이름, 전화번호, 이메일, raw identifier와 fingerprint를 표시하지 않습니다.
+
+병원 간 환자 통합이 정말 필요하다면 예약 서비스가 문자열을 맞춰서 해결할 일이 아니라, CRM이나 환자 관리 서비스가
+명시적인 cross-tenant identity 계약과 동의, 감사 기록을 소유해야 합니다. 이 글의 데이터 경계는 그 계약이 존재하지 않는
+상태에서 자동 연결을 하지 않는다는 쪽에 둡니다.
+
+## STAFF 화면은 범위와 다음 작업을 함께 보여 줘야 한다
+
+운영자는 막힌 요청 하나를 보면서 원본 데이터를 더 많이 보고 싶은 것이 아닙니다. 지금 선택한 tenant·clinic 범위가
+무엇인지, 차단된 이유가 범위 불일치인지 권한 부족인지, 다음에 조회·재확인·차단 기록 중 무엇을 해야 하는지가 필요합니다.
+
+<div class="bt4k-operations-screen" data-visual-title="데이터 경계 STAFF 운영 화면 시안">
+  <img class="bt4k-screenshot" src="/assets/clinic-appointment-multitenant-data-boundaries-operations-screen-ko.png" alt="선택한 tenant와 clinic 범위, 대기 예약과 오늘 예약, 범위 경고와 검토 필요 지표, 허용·차단·재확인 항목의 조치 큐, tenantCode·clinicId·appointmentId·query scope·cache key와 권한 결과를 보여 주는 STAFF 운영 화면 시안" loading="lazy" />
+  <p class="bt4k-operations-screen-caption">합성 데이터로 만든 운영 화면 시안입니다. 조치 큐는 상태와 사유 코드뿐 아니라 STAFF가 다음에 할 작업을 함께 보여 줍니다. 다른 tenant나 clinic의 원본 예약을 화면에 섞어 표시하지 않습니다.</p>
+</div>
+
+화면의 순서는 다음과 같습니다.
+
+1. 상단의 scope 배지가 현재 tenant와 clinic을 고정합니다.
+2. 지표 카드는 대기 예약, 오늘 예약, 범위 경고, 검토 필요를 서로 다른 의미로 분리합니다.
+3. 조치 큐는 `ALLOW`, `BLOCKED`, `REVIEW`를 한 표에 놓되, 범위·사유·다음 작업을 함께 보여 줍니다.
+4. 상세 패널은 `tenantCode`, `clinicId`, `appointmentId`, query scope, cache key와 권한 결과만 표시합니다.
+5. 하단 카드는 조회 기준, 비동기 경계, 다음 작업을 다시 확인하게 합니다.
+
+`TENANT_FORBIDDEN` 행에 다른 병원의 예약 제목이나 환자 정보가 나타나면 격리가 실패한 것입니다. 운영 화면은 차단 사실과
+안정적인 사유 코드만 보여 주고, 존재 여부를 추측할 수 있는 상세 정보는 숨겨야 합니다.
+
+## 현재 구현과 다음 작업을 구분한다
+
+| 구분 | 이 글에서 확인하는 범위 |
+| --- | --- |
+| 현재 소스에서 확인 | tenant path validation, JWT `allowedTenants`, 활성 tenant 조회, clinic ownership 검사, `TenantClinicScope`, slot·reschedule·resource controller의 scope 전달, event envelope와 consumer provenance 검사, tenant·clinic 통계 projection schema |
+| 현재 대시보드의 기준 | `DashboardStatsController`의 tenant·clinic 사전 검증과 `AppointmentStatsRepository`의 현재 예약 집계. projection은 appointment date를 증명하지 못해 자동 대체하지 않음 |
+| 승인된 설계 | holiday·slot·solver·closure·SSE·legacy event·notification query까지 `(tenantGroupId, clinicId)`를 필수 범위로 전달하고, cache key와 direct delivery permit에도 같은 tuple을 사용하는 원칙 |
+| rollout 대기 | 실제 여러 tenant 트래픽, production broker·DB·SSE 환경, migration backfill, cross-tenant negative test와 장애 복구 훈련의 운영 증거 |
+| 다음 보강 작업 | clinic-only service/query API를 scope 입력으로 좁히고, 모든 cache·repository·background entry point에 범위 누락 테스트를 추가하는 작업 |
+
+`TenantClinicScope`가 도입됐다는 사실만으로 모든 호출자가 안전해지는 것은 아닙니다. scope를 받지 않는 public overload,
+clinic-only cache key, tenant 없는 background job이 남아 있으면 컴파일러와 리뷰가 범위 누락을 잡아내기 어렵습니다. 그래서
+설계 문서에서도 thread-local interceptor, tenant별 schema, composite primary key를 만능 해법으로 선택하지 않고 호출 계약과
+query/cache/event 경계를 함께 바꾸는 방향을 택했습니다.
+
+## STAFF가 조치 큐를 닫기 전에 확인할 다섯 가지
+
+1. 화면 상단의 tenant와 clinic이 지금 처리할 예약의 범위와 같은가?
+2. path tenant membership과 clinic ownership을 서버가 확인했는가?
+3. query predicate와 cache key가 `tenantGroupId + clinicId`를 모두 포함하는가?
+4. event·inbox·projection·SSE 작업이 같은 scope와 provenance를 유지하는가?
+5. 다음 작업이 조회, 재확인, 재시도, 차단 기록 중 무엇인지 화면에 명확히 적혀 있는가?
+
+이 다섯 가지가 보이면 STAFF는 “이 예약이 어느 병원 데이터인가?”와 “왜 지금 이 작업을 해야 하는가?”를 한 번에 확인할 수
+있습니다. 여러 병원을 한 서비스로 운영하는 일은 tenant 컬럼을 하나 추가하는 일이 아닙니다. 요청에서 시작한 범위를
+마지막 query와 운영 화면까지 잃지 않는 일입니다.
+
+## 근거 자료
+
+- [운영 확장 7: 예약 결과가 외부 시스템과 통계로 전달되는 과정](/ko/blog/clinic-appointment-external-results/)
+- [운영 확장 6: 알림과 리마인더는 왜 별도 서비스인가](/ko/blog/clinic-appointment-notification-reminder/)
+- [운영 확장 4: CRM 프로필이 바뀌어도 확정 예약은 자동으로 변경하지 않는다](/ko/blog/clinic-appointment-profile-reevaluation/)
+- [tenant authority 설계 문서](https://github.com/bluetape4k/clinic-appointment/blob/3658cced024c906c2b8eff29cdce6ab5bd3df6c7/docs/superpowers/specs/2026-08-05-issue-38-tenant-authority-design.md)
+- [tenant query isolation 설계 문서](https://github.com/bluetape4k/clinic-appointment/blob/3658cced024c906c2b8eff29cdce6ab5bd3df6c7/docs/superpowers/specs/2026-08-04-issue-39-tenant-query-isolation-design.md)
+- [`TenantClinicScope.kt`](https://github.com/bluetape4k/clinic-appointment/blob/3658cced024c906c2b8eff29cdce6ab5bd3df6c7/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/service/TenantClinicScope.kt)
+- [`TenantPathValidationFilter.kt`](https://github.com/bluetape4k/clinic-appointment/blob/3658cced024c906c2b8eff29cdce6ab5bd3df6c7/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/tenant/TenantPathValidationFilter.kt)
+- [`TenantContextFilter.kt`](https://github.com/bluetape4k/clinic-appointment/blob/3658cced024c906c2b8eff29cdce6ab5bd3df6c7/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/tenant/TenantContextFilter.kt)
+- [`TenantClinicAccessChecker.kt`](https://github.com/bluetape4k/clinic-appointment/blob/3658cced024c906c2b8eff29cdce6ab5bd3df6c7/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/tenant/TenantClinicAccessChecker.kt)
+- [`AppointmentMessagingContracts.kt`](https://github.com/bluetape4k/clinic-appointment/blob/3658cced024c906c2b8eff29cdce6ab5bd3df6c7/appointment-messaging/src/main/kotlin/io/bluetape4k/clinic/appointment/messaging/AppointmentMessagingContracts.kt)
+- [`AppointmentConsumerRuntime.kt`](https://github.com/bluetape4k/clinic-appointment/blob/3658cced024c906c2b8eff29cdce6ab5bd3df6c7/appointment-messaging/src/main/kotlin/io/bluetape4k/clinic/appointment/messaging/AppointmentConsumerRuntime.kt)
+- [`AppointmentStatsProjectionRepository.kt`](https://github.com/bluetape4k/clinic-appointment/blob/3658cced024c906c2b8eff29cdce6ab5bd3df6c7/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/stats/AppointmentStatsProjectionRepository.kt)
+- [`DashboardStatsService.kt`](https://github.com/bluetape4k/clinic-appointment/blob/3658cced024c906c2b8eff29cdce6ab5bd3df6c7/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/service/DashboardStatsService.kt)
+
+## 시리즈 링크
+
+<ClinicAppointmentSeries current="clinic-appointment-multitenant-data-boundaries" locale="ko" />

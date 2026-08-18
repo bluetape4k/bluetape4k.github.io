@@ -1,0 +1,114 @@
+{
+  "kind": "architecture",
+  "source": {
+    "question": "여러 병원을 한 예약 서비스로 운영할 때 tenant·clinic 범위가 요청부터 하위 처리까지 어떻게 유지되는가?",
+    "revision": "3658cced024c906c2b8eff29cdce6ab5bd3df6c7",
+    "paths": [
+      "scripts/generate-clinic-appointment-multitenant-data-boundaries-visuals.mjs",
+      "src/content/docs/ko/blog/clinic-appointment-multitenant-data-boundaries.mdx"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "request-path",
+      "label": "Request path /api/{tenantCode}",
+      "source": "scripts/generate-clinic-appointment-multitenant-data-boundaries-visuals.mjs"
+    },
+    {
+      "id": "tenant-filter",
+      "label": "TenantContextFilter",
+      "source": "scripts/generate-clinic-appointment-multitenant-data-boundaries-visuals.mjs"
+    },
+    {
+      "id": "clinic-guard",
+      "label": "TenantClinicAccessChecker",
+      "source": "scripts/generate-clinic-appointment-multitenant-data-boundaries-visuals.mjs"
+    },
+    {
+      "id": "scope-value",
+      "label": "TenantClinicScope",
+      "source": "scripts/generate-clinic-appointment-multitenant-data-boundaries-visuals.mjs"
+    },
+    {
+      "id": "slot-policy",
+      "label": "slot holiday solver closure",
+      "source": "scripts/generate-clinic-appointment-multitenant-data-boundaries-visuals.mjs"
+    },
+    {
+      "id": "cache-query",
+      "label": "tenantGroupId:clinicId cache and query key",
+      "source": "scripts/generate-clinic-appointment-multitenant-data-boundaries-visuals.mjs"
+    },
+    {
+      "id": "event-inbox",
+      "label": "event inbox projection provenance",
+      "source": "scripts/generate-clinic-appointment-multitenant-data-boundaries-visuals.mjs"
+    },
+    {
+      "id": "sse-notification",
+      "label": "notification and SSE worker scope",
+      "source": "scripts/generate-clinic-appointment-multitenant-data-boundaries-visuals.mjs"
+    },
+    {
+      "id": "scope-table",
+      "label": "Identifier boundary table",
+      "source": "scripts/generate-clinic-appointment-multitenant-data-boundaries-visuals.mjs"
+    }
+  ],
+  "edges": [
+    {
+      "id": "path-filter",
+      "from": "request-path",
+      "to": "tenant-filter",
+      "kind": "flow",
+      "source": "scripts/generate-clinic-appointment-multitenant-data-boundaries-visuals.mjs"
+    },
+    {
+      "id": "filter-guard",
+      "from": "tenant-filter",
+      "to": "clinic-guard",
+      "kind": "flow",
+      "source": "scripts/generate-clinic-appointment-multitenant-data-boundaries-visuals.mjs"
+    },
+    {
+      "id": "guard-scope",
+      "from": "clinic-guard",
+      "to": "scope-value",
+      "kind": "flow",
+      "source": "scripts/generate-clinic-appointment-multitenant-data-boundaries-visuals.mjs"
+    },
+    {
+      "id": "scope-slot",
+      "from": "scope-value",
+      "to": "slot-policy",
+      "kind": "scope",
+      "source": "scripts/generate-clinic-appointment-multitenant-data-boundaries-visuals.mjs"
+    },
+    {
+      "id": "scope-cache",
+      "from": "scope-value",
+      "to": "cache-query",
+      "kind": "scope",
+      "source": "scripts/generate-clinic-appointment-multitenant-data-boundaries-visuals.mjs"
+    },
+    {
+      "id": "scope-event",
+      "from": "scope-value",
+      "to": "event-inbox",
+      "kind": "scope",
+      "source": "scripts/generate-clinic-appointment-multitenant-data-boundaries-visuals.mjs"
+    },
+    {
+      "id": "scope-notification",
+      "from": "scope-value",
+      "to": "sse-notification",
+      "kind": "scope",
+      "source": "scripts/generate-clinic-appointment-multitenant-data-boundaries-visuals.mjs"
+    }
+  ],
+  "behavior": {
+    "branches": 4,
+    "loops": 0
+  },
+  "repairs": []
+}

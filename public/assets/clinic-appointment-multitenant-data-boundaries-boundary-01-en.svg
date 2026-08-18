@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="2200" height="1620" viewBox="0 0 2200 1620" role="img" aria-labelledby="title desc" data-locale="en">
+  <title id="title">Data boundaries for running multiple clinics in one appointment service</title><desc id="desc">Carry the same tenant and clinic scope explicitly from the request to asynchronous events.</desc><defs>
+    <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#071323"/><stop offset="1" stop-color="#111c32"/></linearGradient>
+    <linearGradient id="lane" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0b192c"/><stop offset="1" stop-color="#13243a"/></linearGradient>
+    
+    <marker id="blueArrow" viewBox="0 0 10 10" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#60a5fa" data-solid-head="true"/>
+    </marker>
+    <marker id="cyanArrow" viewBox="0 0 10 10" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2dd4bf" data-solid-head="true"/>
+    </marker>
+    <marker id="purpleArrow" viewBox="0 0 10 10" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#a78bfa" data-solid-head="true"/>
+    </marker>
+    <marker id="amberArrow" viewBox="0 0 10 10" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#fbbf24" data-solid-head="true"/>
+    </marker>
+    <marker id="redArrow" viewBox="0 0 10 10" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#fb7185" data-solid-head="true"/>
+    </marker>
+    <style>
+      .title{font-family:"Architects Daughter", "Comic Sans MS", cursive;font-size:38px;font-weight:800;fill:#f4f8ff}
+      .subtitle{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:17px;fill:#a9bad0}
+      .lane-title{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:14px;font-weight:800;fill:#7fc9ff;letter-spacing:1px}
+      .badge{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:13px;font-weight:800;fill:#c9dcf3}
+      .card-code{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:12px;font-weight:800;fill:#7fc9ff}
+      .card-title{font-family:"Architects Daughter", "Comic Sans MS", cursive;font-size:21px;font-weight:800;fill:#f4f8ff}
+      .card-body{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:14px;fill:#b9cbe0}
+      .route{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+      .route-label{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:13px;fill:#e7f0fb}
+      .label-bg{fill:#0d1b2f;stroke:#2d4665;stroke-width:1.5}
+      .table-head{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:13px;font-weight:800;fill:#7fc9ff}
+      .table-key{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:16px;font-weight:800;fill:#f4f8ff}
+      .table-cell{font-family:"Architects Daughter", "Comic Sans MS", cursive;font-size:15px;fill:#d5e2f1}
+      .table-code{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:14px;fill:#b9cbe0}
+      .note{font-family:"Architects Daughter", "Comic Sans MS", cursive;font-size:14px;fill:#a9bad0}
+      .foot{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:13px;fill:#91a8c3}
+    </style>
+  </defs>
+  <rect width="2200" height="1620" fill="url(#canvas)"/><rect x="24" y="24" width="2152" height="1572" rx="32" fill="none" stroke="#2d4665" stroke-width="2"/>
+  <text class="title" x="70" y="80" >Data boundaries for running multiple clinics in one appointment service</text><text class="subtitle" x="72" y="114" >Carry the same tenant and clinic scope explicitly from the request to asynchronous events.</text>
+  <rect x="72" y="140" width="300" height="34" rx="17" fill="#12243a" stroke="#3a5877"/><text class="badge" x="222" y="162" text-anchor="middle">SCOPE · tenant + clinic</text><rect x="402" y="140" width="300" height="34" rx="17" fill="#12243a" stroke="#3a5877"/><text class="badge" x="552" y="162" text-anchor="middle">DATA · synthetic mockup</text>
+  <rect x="60" y="220" width="2080" height="285" rx="26" fill="url(#lane)" stroke="#263d59" stroke-width="1.5"/><text class="lane-title" x="90" y="254" >REQUEST AND VERIFICATION</text>
+  <rect x="60" y="520" width="2080" height="345" rx="26" fill="url(#lane)" stroke="#263d59" stroke-width="1.5"/><text class="lane-title" x="90" y="554" >EXPLICIT TENANT AND CLINIC SCOPE</text>
+  <rect x="60" y="885" width="2080" height="650" rx="26" fill="url(#lane)" stroke="#263d59" stroke-width="1.5"/><text class="lane-title" x="90" y="919" >DOWNSTREAM BOUNDARIES</text>
+  
+  <g data-from="request-path" data-to="tenant-filter">
+    <path id="path-filter" class="route" d="M420 359 H480" stroke="#60a5fa" marker-end="url(#blueArrow)" data-connector="path-filter" data-source-node="request-path" data-target-node="tenant-filter"/>
+    
+  <g class="relationshiplabel">
+    <rect class="label-bg" x="292" y="238" width="190" height="30" rx="15"/>
+    <text class="route-label" x="387" y="258" text-anchor="middle">validate path syntax</text>
+  </g>
+  </g>
+  <g data-from="tenant-filter" data-to="clinic-guard">
+    <path id="filter-guard" class="route" d="M810 359 H870" stroke="#2dd4bf" marker-end="url(#cyanArrow)" data-connector="filter-guard" data-source-node="tenant-filter" data-target-node="clinic-guard"/>
+    
+  <g class="relationshiplabel">
+    <rect class="label-bg" x="682" y="238" width="180" height="30" rx="15"/>
+    <text class="route-label" x="772" y="258" text-anchor="middle">check membership</text>
+  </g>
+  </g>
+  <g data-from="clinic-guard" data-to="scope-value">
+    <path id="guard-scope" class="route" d="M1200 359 H1260" stroke="#a78bfa" marker-end="url(#purpleArrow)" data-connector="guard-scope" data-source-node="clinic-guard" data-target-node="scope-value"/>
+    
+  <g class="relationshiplabel">
+    <rect class="label-bg" x="1045" y="238" width="220" height="30" rx="15"/>
+    <text class="route-label" x="1155" y="258" text-anchor="middle">create after ownership</text>
+  </g>
+  </g>
+  <g data-from="scope-value" data-to="slot-policy">
+    <path id="scope-slot" class="route" d="M1350 438 V535 Q1350 575 1310 575 H320 Q300 575 300 595 V650" stroke="#fbbf24" marker-end="url(#amberArrow)" data-connector="scope-slot" data-source-node="scope-value" data-target-node="slot-policy"/>
+    
+  <g class="relationshiplabel">
+    <rect class="label-bg" x="650" y="535" width="150" height="30" rx="15"/>
+    <text class="route-label" x="725" y="555" text-anchor="middle">query scope</text>
+  </g>
+  </g>
+  <g data-from="scope-value" data-to="cache-query">
+    <path id="scope-cache" class="route" d="M1410 438 V560 Q1410 600 1370 600 H835 Q815 600 815 620 V650" stroke="#2dd4bf" marker-end="url(#cyanArrow)" data-connector="scope-cache" data-source-node="scope-value" data-target-node="cache-query"/>
+    
+  <g class="relationshiplabel">
+    <rect class="label-bg" x="930" y="515" width="160" height="30" rx="15"/>
+    <text class="route-label" x="1010" y="535" text-anchor="middle">scope in key</text>
+  </g>
+  </g>
+  <g data-from="scope-value" data-to="event-inbox">
+    <path id="scope-event" class="route" d="M1470 438 V650" stroke="#a78bfa" marker-end="url(#purpleArrow)" data-connector="scope-event" data-source-node="scope-value" data-target-node="event-inbox"/>
+    
+  <g class="relationshiplabel">
+    <rect class="label-bg" x="1600" y="505" width="190" height="30" rx="15"/>
+    <text class="route-label" x="1695" y="525" text-anchor="middle">preserve provenance</text>
+  </g>
+  </g>
+  <g data-from="scope-value" data-to="sse-notification">
+    <path id="scope-notification" class="route" d="M1530 438 V535 Q1530 575 1570 575 H1895 Q1915 575 1915 595 V650" stroke="#fb7185" marker-end="url(#redArrow)" data-connector="scope-notification" data-source-node="scope-value" data-target-node="sse-notification"/>
+    
+  <g class="relationshiplabel">
+    <rect class="label-bg" x="1735" y="600" width="150" height="30" rx="15"/>
+    <text class="route-label" x="1810" y="620" text-anchor="middle">worker scope</text>
+  </g>
+  </g>
+  <g id="request-path" data-node="true">
+    <rect id="request-path-card" x="90" y="280" width="330" height="158" rx="22" fill="#112139" stroke="#60a5fa" stroke-width="2"/>
+    <rect x="110" y="300" width="8" height="118" rx="4" fill="#60a5fa" opacity=".9"/>
+    <text class="card-code" x="138" y="312" >REQUEST PATH</text>
+    <text class="card-title" x="138" y="346" >/api/{tenantCode}/...</text>
+    <text class="card-body" x="138" y="382" text-anchor="start"><tspan x="138" dy="0">External tenant selection lives in the path</tspan><tspan x="138" dy="23">body and headers are not authority</tspan></text>
+  </g>
+  <g id="tenant-filter" data-node="true">
+    <rect id="tenant-filter-card" x="480" y="280" width="330" height="158" rx="22" fill="#112139" stroke="#2dd4bf" stroke-width="2"/>
+    <rect x="500" y="300" width="8" height="118" rx="4" fill="#2dd4bf" opacity=".9"/>
+    <text class="card-code" x="528" y="312" >PRE-AUTH + JWT</text>
+    <text class="card-title" x="528" y="346" >TenantContextFilter</text>
+    <text class="card-body" x="528" y="382" text-anchor="start"><tspan x="528" dy="0">validate path syntax and JWT membership</tspan><tspan x="528" dy="23">look up the active TenantGroup</tspan></text>
+  </g>
+  <g id="clinic-guard" data-node="true">
+    <rect id="clinic-guard-card" x="870" y="280" width="330" height="158" rx="22" fill="#112139" stroke="#a78bfa" stroke-width="2"/>
+    <rect x="890" y="300" width="8" height="118" rx="4" fill="#a78bfa" opacity=".9"/>
+    <text class="card-code" x="918" y="312" >OWNERSHIP</text>
+    <text class="card-title" x="918" y="346" >TenantClinicAccessChecker</text>
+    <text class="card-body" x="918" y="382" text-anchor="start"><tspan x="918" dy="0">verify clinic ownership in the tenant</tspan><tspan x="918" dy="23">recheck STAFF/ADMIN clinic access</tspan></text>
+  </g>
+  <g id="scope-value" data-node="true">
+    <rect id="scope-value-card" x="1260" y="280" width="330" height="158" rx="22" fill="#112139" stroke="#fbbf24" stroke-width="2"/>
+    <rect x="1280" y="300" width="8" height="118" rx="4" fill="#fbbf24" opacity=".9"/>
+    <text class="card-code" x="1308" y="312" >EXPLICIT VALUE</text>
+    <text class="card-title" x="1308" y="346" >TenantClinicScope</text>
+    <text class="card-body" x="1308" y="382" text-anchor="start"><tspan x="1308" dy="0">tenantGroupId + clinicId</tspan><tspan x="1308" dy="23">pass the value into core and workers</tspan></text>
+  </g>
+  <g id="slot-policy" data-node="true">
+    <rect id="slot-policy-card" x="90" y="650" width="430" height="148" rx="22" fill="#112139" stroke="#60a5fa" stroke-width="2"/>
+    <rect x="110" y="670" width="8" height="108" rx="4" fill="#60a5fa" opacity=".9"/>
+    <text class="card-code" x="138" y="682" >QUERY SCOPE</text>
+    <text class="card-title" x="138" y="716" >slot · holiday · solver · closure</text>
+    <text class="card-body" x="138" y="752" text-anchor="start"><tspan x="138" dy="0">query resources with the same scope</tspan><tspan x="138" dy="23">never add out-of-scope facts</tspan></text>
+  </g>
+  <g id="cache-query" data-node="true">
+    <rect id="cache-query-card" x="620" y="650" width="430" height="148" rx="22" fill="#112139" stroke="#2dd4bf" stroke-width="2"/>
+    <rect x="640" y="670" width="8" height="108" rx="4" fill="#2dd4bf" opacity=".9"/>
+    <text class="card-code" x="668" y="682" >CACHE / QUERY KEY</text>
+    <text class="card-title" x="668" y="716" >tenantGroupId:clinicId</text>
+    <text class="card-body" x="668" y="752" text-anchor="start"><tspan x="668" dy="0">never key a shared cache by clinicId alone</tspan><tspan x="668" dy="23">repeat the scope predicate in queries</tspan></text>
+  </g>
+  <g id="event-inbox" data-node="true">
+    <rect id="event-inbox-card" x="1150" y="650" width="430" height="148" rx="22" fill="#112139" stroke="#a78bfa" stroke-width="2"/>
+    <rect x="1170" y="670" width="8" height="108" rx="4" fill="#a78bfa" opacity=".9"/>
+    <text class="card-code" x="1198" y="682" >ASYNC PROVENANCE</text>
+    <text class="card-title" x="1198" y="716" >event · inbox · projection</text>
+    <text class="card-body" x="1198" y="752" text-anchor="start"><tspan x="1198" dy="0">preserve tenantGroupId and clinicId</tspan><tspan x="1198" dy="23">reject provenance mismatch before side effects</tspan></text>
+  </g>
+  <g id="sse-notification" data-node="true">
+    <rect id="sse-notification-card" x="1680" y="650" width="430" height="148" rx="22" fill="#112139" stroke="#fb7185" stroke-width="2"/>
+    <rect x="1700" y="670" width="8" height="108" rx="4" fill="#fb7185" opacity=".9"/>
+    <text class="card-code" x="1728" y="682" >BACKGROUND / SSE</text>
+    <text class="card-title" x="1728" y="716" >notification · SSE</text>
+    <text class="card-body" x="1728" y="752" text-anchor="start"><tspan x="1728" dy="0">do not read thread-local state downstream</tspan><tspan x="1728" dy="23">limit streams and workers with captured scope</tspan></text>
+  </g>
+  <g id="scope-table" data-node="true"><rect x="70" y="1050" width="2070" height="460" rx="22" fill="#0a1728" stroke="#263d59"/><text class="card-title" x="98" y="1098">Boundary table by identifier</text><text class="note" x="98" y="1127">The same number can name different data when the tenant and clinic scope differs.</text><text class="table-head" x="100" y="1108" >Identifier</text><text class="table-head" x="400" y="1108" >Authority scope</text><text class="table-head" x="720" y="1108" >Allowed use</text><text class="table-head" x="1160" y="1108" >Do not combine it with</text><text class="table-head" x="1770" y="1108" >What the operator sees</text><g data-row="0"><rect x="84" y="1136" width="2042" height="68" rx="12" fill="#102139" stroke="#253d59"/><rect x="84" y="1136" width="8" height="68" rx="4" fill="#60a5fa"/><text class="table-key" x="100" y="1167" >tenantCode</text><text class="table-code" x="400" y="1167" >/api/{tenantCode}</text><text class="table-cell" x="720" y="1167" >route + JWT allowedTenants + active tenant</text><text class="table-cell" x="1160" y="1167" >promote body/header tenant to authority</text><text class="table-code" x="1770" y="1167" >401 / 403 / 404</text></g><g data-row="1"><rect x="84" y="1226" width="2042" height="68" rx="12" fill="#0d1b2f" stroke="#253d59"/><rect x="84" y="1226" width="8" height="68" rx="4" fill="#2dd4bf"/><text class="table-key" x="100" y="1257" >clinicId</text><text class="table-code" x="400" y="1257" >tenantGroupId + clinicId</text><text class="table-cell" x="720" y="1257" >DB ownership, query, and cache scope</text><text class="table-cell" x="1160" y="1257" >query another tenant by clinicId alone</text><text class="table-code" x="1770" y="1257" >scope mismatch</text></g><g data-row="2"><rect x="84" y="1316" width="2042" height="68" rx="12" fill="#102139" stroke="#253d59"/><rect x="84" y="1316" width="8" height="68" rx="4" fill="#a78bfa"/><text class="table-key" x="100" y="1347" >appointmentId / eventId</text><text class="table-code" x="400" y="1347" >tenant + clinic + id</text><text class="table-cell" x="720" y="1347" >aggregate, event, and inbox identity</text><text class="table-cell" x="1160" y="1347" >look up or replay it as a global ID</text><text class="table-code" x="1770" y="1347" >not found / reject</text></g><g data-row="3"><rect x="84" y="1406" width="2042" height="68" rx="12" fill="#0d1b2f" stroke="#253d59"/><rect x="84" y="1406" width="8" height="68" rx="4" fill="#fbbf24"/><text class="table-key" x="100" y="1437" >patient reference</text><text class="table-code" x="400" y="1437" >tenant-scoped opaque reference</text><text class="table-cell" x="720" y="1437" >link and reevaluate inside the patient scope</text><text class="table-cell" x="1160" y="1437" >auto-link clinics through a raw identifier</text><text class="table-code" x="1770" y="1437" >show only the required scope</text></g></g>
+  <text class="foot" x="72" y="1574" >Identifiers in this table are synthetic. The operations screen never exposes raw patient data or internal IDs.</text>
+</svg>
