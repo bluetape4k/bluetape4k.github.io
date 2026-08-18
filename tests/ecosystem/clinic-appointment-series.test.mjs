@@ -12,7 +12,7 @@ test('clinic appointment series keeps the approved published order', () => {
     clinicAppointmentGroups.map(({ id }) => id),
     ['prologue', 'design', 'implementation', 'operations'],
   );
-  assert.equal(clinicAppointmentSeries.length, 25);
+  assert.equal(clinicAppointmentSeries.length, 26);
   assert.deepEqual(
     clinicAppointmentGroups.map(({ id }) => [
       id,
@@ -22,7 +22,7 @@ test('clinic appointment series keeps the approved published order', () => {
       ['prologue', 1],
       ['design', 7],
       ['implementation', 9],
-      ['operations', 8],
+      ['operations', 9],
     ],
   );
   assert.deepEqual(
@@ -53,11 +53,12 @@ test('clinic appointment series keeps the approved published order', () => {
       'operations-4',
       'operations-5',
       'operations-6',
+      'operations-7',
     ],
   );
-  assert.equal(new Set(clinicAppointmentSeries.map(({ slug }) => slug)).size, 25);
-  assert.equal(clinicAppointmentSeries.at(-1).id, 'operations-6');
-  assert.equal(clinicAppointmentSeries.at(-1).slug, 'clinic-appointment-notification-reminder');
+  assert.equal(new Set(clinicAppointmentSeries.map(({ slug }) => slug)).size, 26);
+  assert.equal(clinicAppointmentSeries.at(-1).id, 'operations-7');
+  assert.equal(clinicAppointmentSeries.at(-1).slug, 'clinic-appointment-external-results');
 });
 
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -81,7 +82,7 @@ test('every published clinic appointment article uses the shared series navigati
   for (const locale of locales) {
     const files = (await readdir(locale.directory))
       .filter((file) => file.startsWith('clinic-appointment-') && file.endsWith('.mdx'));
-    assert.equal(files.length, 25, `${locale.id}: published article count`);
+    assert.equal(files.length, 26, `${locale.id}: published article count`);
 
     for (const entry of clinicAppointmentSeries) {
       const source = await readFile(`${locale.directory}/${entry.slug}.mdx`, 'utf8');
@@ -110,6 +111,7 @@ test('clinic appointment related references use series posts instead of issue or
     'clinic-appointment-profile-reevaluation': 'clinic-appointment-disruption-recovery',
     'clinic-appointment-scheduling-policy': 'clinic-appointment-waitlist-core',
     'clinic-appointment-notification-reminder': 'clinic-appointment-attendance-fulfillment',
+    'clinic-appointment-external-results': 'clinic-appointment-notification-reminder',
   };
 
   for (const [slug, relatedSlug] of Object.entries(replacements)) {

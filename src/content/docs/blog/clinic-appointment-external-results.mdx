@@ -1,0 +1,216 @@
+---
+title: "[Operations 7] How Appointment Results Reach External Systems and Statistics"
+description: "A STAFF-first explanation of how a committed appointment fact moves through an outbox, independent consumers, a statistics projection, and a safe action queue."
+sidebar:
+  order: -202608181000
+blog:
+  date: 2026-08-18T10:00:00+09:00
+  image: /assets/clinic-appointment-external-results-hero.png
+  imageAlt: A 3D workbench showing an appointment outbox splitting into external consumers and a statistics projection
+  cardDescription: "How the outbox, consumer inbox, statistics projection, current appointment aggregate, and STAFF action queue keep their responsibilities separate."
+  tags: ["architecture", "operations", "resilience", "appointment-service", "messaging", "statistics", "example", "timefold"]
+---
+
+import ClinicAppointmentSeries from '../../../components/ClinicAppointmentSeries.astro';
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-external-results-hero.png" alt="A 3D workbench showing an appointment outbox splitting into external consumers and a statistics projection" loading="eager" />
+  <figcaption>Record the fact owned by the appointment service once, then verify notification and statistics as separate results.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">August 18, 2026 · Clinic appointment engineering journal · Delivering appointment results and operating statistics</p>
+
+An appointment being confirmed and the result reaching another system are not the same statement. The appointment service can
+commit <code>CONFIRMED</code> while the notification consumer is still waiting, or while the statistics projection has not applied
+the newest version. A delayed projection must not make the appointment service save or rewrite the appointment again.
+
+The conclusion is simple:
+
+> Record the appointment change and its messaging intent in one transaction. Publish that committed intent through an outbox and
+> relay. Let notification and statistics consumers use independent groups to rebuild the state they own. Absorb duplicates in a
+> consumer inbox, and let the STAFF screen use the current appointment aggregate as its source of truth when the projection is not
+> complete. Every failure must end at a visible **Final State Decision** as `PROCESSED`, `RETRY`, `QUARANTINED`, or
+> `REPLAY_PENDING`.
+
+The diagrams and operations screen below are synthetic mockups, not captures of real hospital metrics or patient information. The
+article keeps the current implementation, approved design, and production rollout evidence separate.
+
+## Record the appointment change and intent in one transaction
+
+Calling an external system directly while changing an appointment puts network I/O inside the appointment's atomicity boundary.
+An external timeout can then delay the appointment commit, and a retry can deliver the same result twice.
+
+The current design records the appointment change and the delivery intent in the same database transaction:
+
+1. The appointment service validates the state change, authorization, and clinic scope.
+2. It changes the appointment aggregate and writes a minimal row to `scheduling_outbox_events`.
+3. The row keeps an immutable `eventId`, an `eventVersion`, aggregate identifiers, and the metadata required for redelivery.
+4. Only after commit does a separate relay call the message broker.
+
+An application restart immediately after commit therefore leaves both the appointment fact and the delivery intent durable. A
+paused relay does not cancel the appointment or rewrite the aggregate. The relay owns delivery of an already-committed intent;
+the appointment service owns preservation of the appointment fact.
+
+## Turn a commit into a deliverable fact with the outbox
+
+The outbox is not a log of things that might be published someday. It is a delivery intent committed with the appointment
+transaction. The relay conditionally claims expired work with a lease and fencing information, then publishes to Kafka. Kafka I/O
+stays outside the database transaction, so broker latency does not hold the appointment command open.
+
+This boundary does not promise exactly-once delivery. If the relay stops after publishing but before receiving a response, the same
+immutable `eventId` can be published again. The contract is instead:
+
+- use lease and fencing to limit concurrent workers for one outbox row;
+- include `eventId` and `eventVersion` so a redelivery can be identified;
+- treat duplicates as normal input and apply them once inside the inbox and handler transaction; and
+- keep the broker, schema registry, and production SLO evidence in rollout-pending status until the real environment is verified.
+
+<figure class="bt4k-architecture" data-diagram-title="Where appointment results cross external and statistics boundaries">
+  <img src="/assets/clinic-appointment-external-results-flow-01-en.png" alt="An architecture flow from an appointment transaction to scheduling_outbox_events, Kafka relay, strict JSON Schema gate, independent notification and statistics consumers, consumer inbox, handler transaction, latest statistics projection, current appointment aggregate, STAFF action queue, Final State Decision, and four outcomes" loading="lazy" />
+  <figcaption>The notification and statistics consumers are not one result. The dashboard boundary distinguishes a complete projection from the current aggregate fallback, and every outcome connector begins at a visible <strong>Final State Decision</strong> card.</figcaption>
+</figure>
+
+The `scheduling_outbox_events` card is part of the appointment transaction. `Kafka 4 relay` coordinates publishing with lease and
+fencing, and only an event that passes the `strict JSON Schema gate` reaches a consumer. Each connector begins and ends at a visible
+card boundary with a rounded orthogonal path. No two routes share a corridor, so the notification and statistics responsibilities
+do not collapse into one ambiguous line.
+
+## Notification and statistics consumers read one fact for different purposes
+
+The notification and statistics consumers read the same appointment fact, but they own different results.
+
+| Consumer | Result it owns | What it never changes on failure | What STAFF checks |
+| --- | --- | --- | --- |
+| Notification consumer | Delivery request and provider outcome | Appointment state and product contract | Delivery status, reason code, next action |
+| Statistics consumer | Date and status projection buckets | The appointment aggregate source of truth | Projection version and apply status |
+
+Putting both consumers in one group would let notification throughput or a temporary notification failure block statistics
+updates. The design keeps their groups independent and uses a `logicalConsumerId` in each inbox key. The same `eventId` can be
+processed independently by notification and statistics.
+
+The statistics consumer does not overwrite the current state merely because an event arrived. It obtains an aggregate lock and
+moves the date and status buckets only when the stored `eventVersion` is older. A late, older event cannot roll the projection
+backward.
+
+## Absorb duplicates in the inbox and quarantine contract errors
+
+The consumer runtime does not execute an external side effect as soon as a message arrives. It first checks the inbox key
+`(logicalConsumerId, logicalStreamId, eventId)`, then records the side effect and the processed inbox state in one handler
+transaction.
+
+The outcomes are explicit:
+
+- An event already processed is acknowledged as `PROCESSED` without repeating its side effect.
+- A transient database or broker failure becomes `RETRY` within a bounded count and time budget.
+- A schema version, scope, or required-metadata error stores only safe metadata as `QUARANTINED`; the raw payload is not copied.
+- An approved replay candidate becomes `REPLAY_PENDING` until STAFF confirms the scope and dry-run result.
+
+Quarantine is not a feature that copies the failure into the operations screen. It stores safe metadata such as `schemaVersion`,
+an `eventId` fingerprint, consumer, reason code, and first/last timestamps. It does not expose a patient's name, contact details,
+appointment notes, raw payload, or stack trace.
+
+## Keep the statistics projection on the newest state
+
+When an appointment status or date changes, the projection must leave the old bucket and enter the new one. A naïve `count + 1`
+per event inflates numbers when a relay redelivers or events arrive out of order.
+
+The current projection flow is:
+
+1. The statistics consumer validates the schema and clinic scope.
+2. It checks the inbox and obtains the aggregate lock.
+3. Only a newer `eventVersion` decrements the old date/status bucket and increments the new one.
+4. The projection row and processed inbox state commit in one transaction.
+5. A duplicate stops at the version comparison instead of adding the count again.
+
+This projection is a read model for fast dashboard signals, not the authority for the appointment's current state. When the
+projection is absent or its last-applied time is invalid, the STAFF screen reads the current appointment aggregate from the
+`Appointments` repository.
+
+## Make the dashboard verify the source of truth
+
+The first question for an operator is not “How many statistics rows exist?” It is “Which source should I use to handle this
+appointment now?” The dashboard therefore does not present the projection and current aggregate as equivalent cards.
+
+- Use fast metrics and trends as secondary information when the projection is complete and current.
+- Show the current appointment aggregate as the source of truth when the projection is empty or delayed.
+- Mark “projection incomplete” in the action queue when the aggregate and projection versions differ.
+- Make replay and backfill show a dry-run impact before approval instead of changing appointment state automatically.
+
+The screen below gives STAFF the top-level metrics, the action queue, evidence for the selected item, and the difference between a
+projection and the source-of-truth aggregate in one view.
+
+<div class="bt4k-operations-screen" data-visual-title="Appointment delivery STAFF operations dashboard mockup">
+  <img class="bt4k-screenshot" src="/assets/clinic-appointment-external-results-operations-screen-en.png" alt="A STAFF operations dashboard showing events waiting, in progress, retry waiting, quarantine review, an appointment result action queue, selected scope and schemaVersion details, projection status, current appointment aggregate, statistics projection, and replay-backfill boundaries" loading="lazy" />
+  <p class="bt4k-operations-screen-caption">Synthetic design mockup. Values and event identifiers are illustrative, and the screen exposes no raw payload or patient data. Each action-queue row shows a state, a reason code, and the next action for STAFF.</p>
+</div>
+
+The detail panel contains only `scope`, `schemaVersion`, `eventVersion`, projection status, the source of truth, and the next
+action. That is enough to decide whether to retry, review a contract error, or use the current appointment aggregate while the
+projection catches up. Showing the raw message would add sensitive data and operational secrets without making the decision
+clearer.
+
+## Keep retry, quarantine, replay, and backfill separate
+
+All four outcomes can look like failures, but they require different work.
+
+| Outcome | Meaning | STAFF's next action | What the system does not do automatically |
+| --- | --- | --- | --- |
+| `PROCESSED` | Handler and inbox are complete | Re-read the result if needed | Run the side effect again |
+| `RETRY` | A transient failure is not terminal yet | Check the next time and impact | Retry immediately without a bound |
+| `QUARANTINED` | Schema, scope, or required metadata is invalid | Review the contract and reason | Republish the raw payload |
+| `REPLAY_PENDING` | A replay candidate awaits approval | Review dry-run impact, then approve | Change appointment state automatically |
+
+Replay is not a button that throws a failed event back into the broker. Before it runs, the immutable event identity, target
+consumer, scope, and expected side effect must be checked. An approved `runId` and an audit record then define the execution
+boundary. Backfill follows the same rule: rebuilding a projection for a date or clinic scope is a different command from changing
+the current appointment aggregate.
+
+CRM, payment, product, and refund compensation are not owned by this appointment service. If an external system needs to issue a
+compensation or refund, that service owns its own event and action queue. A successful delivery result does not authorize the
+appointment service to change a product amount or refund state.
+
+## Separate current implementation from rollout-pending evidence
+
+| Boundary | What this article covers |
+| --- | --- |
+| Current implementation | Atomic appointment/outbox write, relay lease and fencing, strict schema gate, independent consumer groups, inbox deduplication, newest-version statistics projection, and current-aggregate fallback |
+| Approved design | Metadata-only quarantine, approval-based replay and backfill, projection locks and bucket movement, and safe STAFF action fields |
+| Operations mockup | Waiting, in-progress, retry, and quarantine metrics; consumer-specific action queue; selected-item evidence; and the projection versus aggregate boundary. Not real hospital metrics |
+| Rollout pending | Evidence from a real Kafka broker, schema registry, MySQL deployment, external consumers, SLOs, and failure drills |
+
+Do not read the final row as production completion. The source and design establish a safe replay boundary, but a production switch
+still needs broker, registry, database, consumer observability, and recovery exercises in the target environment.
+
+## Five checks before STAFF closes an action-queue item
+
+1. Were the appointment aggregate and outbox intent committed in the same transaction?
+2. Is this a notification or statistics item, and has its consumer inbox already processed it?
+3. Is `eventVersion` newer than the current projection, or could an old event be rolling the statistic backward?
+4. Which is the source of truth for this decision: the current aggregate or the projection?
+5. Is the next action clearly retry, quarantine review, approved replay, or a read-only check?
+
+When these five checks are visible in one screen, STAFF can answer “The appointment is confirmed; how far have external systems
+and statistics caught up?” Operations expansion is not about exposing more data. It is about making the boundary between facts
+clear and giving STAFF a safe next action.
+
+## Sources
+
+The links below are pinned to `clinic-appointment` develop at `f0c7614beed766efc4b88a1a59aa5c370f8fccf7`.
+
+- [Operations 5: Attendance and Treatment Completion Are Different Facts](/blog/clinic-appointment-attendance-fulfillment/)
+- [Operations 6: Why Notifications and Reminders Are Separate Services](/blog/clinic-appointment-notification-reminder/)
+- [Transactional outbox messaging design](https://github.com/bluetape4k/clinic-appointment/blob/f0c7614beed766efc4b88a1a59aa5c370f8fccf7/docs/superpowers/specs/2026-08-05-issue-41-transactional-outbox-messaging-design.md)
+- [External consumer schema design](https://github.com/bluetape4k/clinic-appointment/blob/f0c7614beed766efc4b88a1a59aa5c370f8fccf7/docs/superpowers/specs/2026-08-06-issue-42-external-consumers-schema-design.md)
+- [Current statistics projection lesson](https://github.com/bluetape4k/clinic-appointment/blob/f0c7614beed766efc4b88a1a59aa5c370f8fccf7/docs/lessons/2026-08-08-stats-projection-current-state.md)
+- [Messaging module README](https://github.com/bluetape4k/clinic-appointment/blob/f0c7614beed766efc4b88a1a59aa5c370f8fccf7/appointment-messaging/README.ko.md)
+- [AppointmentOutboxWriter.kt](https://github.com/bluetape4k/clinic-appointment/blob/f0c7614beed766efc4b88a1a59aa5c370f8fccf7/appointment-messaging/src/main/kotlin/io/bluetape4k/clinic/appointment/messaging/AppointmentOutboxWriter.kt)
+- [AppointmentConsumerRuntime.kt](https://github.com/bluetape4k/clinic-appointment/blob/f0c7614beed766efc4b88a1a59aa5c370f8fccf7/appointment-messaging/src/main/kotlin/io/bluetape4k/clinic/appointment/messaging/AppointmentConsumerRuntime.kt)
+- [AppointmentSchemaRegistry.kt](https://github.com/bluetape4k/clinic-appointment/blob/f0c7614beed766efc4b88a1a59aa5c370f8fccf7/appointment-messaging/src/main/kotlin/io/bluetape4k/clinic/appointment/messaging/AppointmentSchemaRegistry.kt)
+- [AppointmentReplayService.kt](https://github.com/bluetape4k/clinic-appointment/blob/f0c7614beed766efc4b88a1a59aa5c370f8fccf7/appointment-messaging/src/main/kotlin/io/bluetape4k/clinic/appointment/messaging/AppointmentReplayService.kt)
+- [AppointmentStatsProjectionConsumer.kt](https://github.com/bluetape4k/clinic-appointment/blob/f0c7614beed766efc4b88a1a59aa5c370f8fccf7/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/stats/AppointmentStatsProjectionConsumer.kt)
+- [AppointmentStatsProjectionRepository.kt](https://github.com/bluetape4k/clinic-appointment/blob/f0c7614beed766efc4b88a1a59aa5c370f8fccf7/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/stats/AppointmentStatsProjectionRepository.kt)
+- [DashboardStatsService.kt](https://github.com/bluetape4k/clinic-appointment/blob/f0c7614beed766efc4b88a1a59aa5c370f8fccf7/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/service/DashboardStatsService.kt)
+
+## Series navigation
+
+<ClinicAppointmentSeries current="clinic-appointment-external-results" locale="en" />

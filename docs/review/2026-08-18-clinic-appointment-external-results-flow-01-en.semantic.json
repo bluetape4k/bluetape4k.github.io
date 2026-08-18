@@ -1,0 +1,66 @@
+{
+  "kind": "architecture",
+  "source": {
+    "question": "How does a committed appointment fact reach notification and statistics consumers, and how does staff distinguish the trust boundary of each result?",
+    "revision": "clinic-appointment@f0c7614beed766efc4b88a1a59aa5c370f8fccf7; visual-site@local",
+    "paths": [
+      "docs/superpowers/specs/2026-08-18-clinic-appointment-external-results-article-design.md",
+      "src/content/docs/blog/clinic-appointment-external-results.mdx"
+    ],
+    "externalPaths": [
+      "docs/superpowers/specs/2026-08-05-issue-41-transactional-outbox-messaging-design.md",
+      "docs/superpowers/specs/2026-08-06-issue-42-external-consumers-schema-design.md",
+      "docs/lessons/2026-08-08-stats-projection-current-state.md",
+      "appointment-messaging/src/main/kotlin/io/bluetape4k/clinic/appointment/messaging/AppointmentOutboxWriter.kt",
+      "appointment-messaging/src/main/kotlin/io/bluetape4k/clinic/appointment/messaging/AppointmentConsumerRuntime.kt",
+      "appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/stats/AppointmentStatsProjectionConsumer.kt",
+      "appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/stats/AppointmentStatsProjectionRepository.kt",
+      "appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/service/DashboardStatsService.kt"
+    ]
+  },
+  "nodes": [
+    {"id": "appointment-transaction", "label": "Appointment transaction", "source": "AppointmentOutboxWriter + appointment mutation"},
+    {"id": "scheduling-outbox", "label": "scheduling_outbox_events", "source": "SchedulingOutboxEvents"},
+    {"id": "kafka-relay", "label": "Kafka 4 relay", "source": "AppointmentOutboxRelay / at-least-once"},
+    {"id": "schema-gate", "label": "Strict JSON Schema gate", "source": "AppointmentSchemaRegistry + strict codec"},
+    {"id": "notification-consumer", "label": "Notification consumer", "source": "NotificationAppointmentEventConsumer / notification group"},
+    {"id": "statistics-consumer", "label": "Statistics consumer", "source": "AppointmentStatsProjectionConsumer / statistics group"},
+    {"id": "consumer-inbox", "label": "Consumer inbox", "source": "AppointmentConsumerInboxTable / eventId dedup"},
+    {"id": "projection-transaction", "label": "Handler transaction", "source": "handler side effect + inbox processed"},
+    {"id": "projection-bucket", "label": "Latest statistics projection", "source": "AppointmentStatsProjectionRepository + aggregate lock"},
+    {"id": "current-appointment-query", "label": "Current appointment aggregate", "source": "Appointments repository / dashboard authority"},
+    {"id": "staff-action-queue", "label": "STAFF action queue", "source": "synthetic operations mockup"},
+    {"id": "final-state-decision", "label": "Final State Decision", "source": "article decision node"},
+    {"id": "processed", "label": "PROCESSED", "source": "consumer handler success"},
+    {"id": "retry", "label": "RETRY", "source": "bounded transient retry"},
+    {"id": "quarantined", "label": "QUARANTINED", "source": "metadata-only quarantine"},
+    {"id": "replay-pending", "label": "REPLAY_PENDING", "source": "approved replay audit boundary"}
+  ],
+  "edges": [
+    {"id": "transaction-outbox", "from": "appointment-transaction", "to": "scheduling-outbox", "kind": "atomic-outbox-write", "source": "AppointmentOutboxWriter"},
+    {"id": "outbox-relay", "from": "scheduling-outbox", "to": "kafka-relay", "kind": "lease-fenced-publish", "source": "AppointmentOutboxRelay"},
+    {"id": "relay-schema", "from": "kafka-relay", "to": "schema-gate", "kind": "strict-envelope-validation", "source": "AppointmentSchemaRegistry"},
+    {"id": "schema-notification", "from": "schema-gate", "to": "notification-consumer", "kind": "notification-group", "source": "NotificationAppointmentEventConsumer"},
+    {"id": "schema-statistics", "from": "schema-gate", "to": "statistics-consumer", "kind": "statistics-group", "source": "AppointmentStatsProjectionConsumer"},
+    {"id": "notification-inbox", "from": "notification-consumer", "to": "consumer-inbox", "kind": "event-id-dedup", "source": "AppointmentConsumerRuntime"},
+    {"id": "statistics-inbox", "from": "statistics-consumer", "to": "consumer-inbox", "kind": "event-id-dedup", "source": "AppointmentConsumerRuntime"},
+    {"id": "inbox-handler", "from": "consumer-inbox", "to": "projection-transaction", "kind": "handler-transaction", "source": "AppointmentConsumerRuntime"},
+    {"id": "handler-projection", "from": "projection-transaction", "to": "projection-bucket", "kind": "latest-version-upsert", "source": "AppointmentStatsProjectionRepository"},
+    {"id": "dashboard-projection", "from": "projection-bucket", "to": "staff-action-queue", "kind": "projection-read-when-complete", "source": "DashboardStatsService"},
+    {"id": "dashboard-fallback", "from": "current-appointment-query", "to": "staff-action-queue", "kind": "current-state-fallback", "source": "DashboardStatsService"},
+    {"id": "consumer-decision", "from": "projection-transaction", "to": "final-state-decision", "kind": "outcome-classification", "source": "consumer runtime outcomes"},
+    {"id": "processed-outcome", "from": "final-state-decision", "to": "processed", "kind": "success", "source": "handler success"},
+    {"id": "retry-outcome", "from": "final-state-decision", "to": "retry", "kind": "transient-failure", "source": "bounded retry contract"},
+    {"id": "quarantine-outcome", "from": "final-state-decision", "to": "quarantined", "kind": "contract-failure", "source": "metadata-only quarantine"},
+    {"id": "replay-outcome", "from": "final-state-decision", "to": "replay-pending", "kind": "approved-replay", "source": "AppointmentReplayService"}
+  ],
+  "behavior": {"branches": 4, "loops": 1},
+  "budget": {"nodes": 16, "edges": 16, "branches": 4, "loops": 1},
+  "repairs": [
+    {"target": "current-state-authority", "reason": "Keep the projection and current appointment aggregate distinct, with an explicit dashboard fallback boundary.", "touches": 3},
+    {"target": "consumer-groups", "reason": "Keep notification and statistics consumers on independent groups and inbox identities.", "touches": 4},
+    {"target": "terminal-outcome-decision", "reason": "Use an explicit decision card so every outcome connector begins at a visible node.", "touches": 5},
+    {"target": "rounded-connectors", "reason": "Use Q-rounded paths with boundary endpoints for every bend.", "touches": 8},
+    {"target": "locale-pairs", "reason": "Render separate Korean and English text-bearing assets.", "touches": 4}
+  ]
+}
