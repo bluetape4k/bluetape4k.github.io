@@ -67,7 +67,7 @@ T2와 T4를 하나의 저장 작업으로 뭉치면 구매 계약과 상품팀�
 | --- | --- |
 | `sourcePurchaseAuthority`, `sourcePurchaseId` | Plan을 만든 구매 사실의 원본 범위 |
 | `catalogSourceAuthority`, `productId`, `catalogVersion` | Plan 생성에 사용한 상품 기준 데이터 |
-| `catalogPayloadHash` | 동일 카탈로그 스냅숏으로 재생할 수 있는지 확인하는 해시 |
+| `catalogPayloadHash` | 동일 카탈로그 기준 데이터로 재생할 수 있는지 확인하는 해시 |
 | `bookingPreference` | 구매 시점에 전달된 고객 희망 정보. 확정 시간이 아님 |
 | `PlannedTreatment` | BOM 항목을 반복 횟수만큼 펼친 이행 의무 |
 | `TreatmentDependency` | 항목 사이의 선행·후행 관계와 간격 |
@@ -80,7 +80,7 @@ T2와 T4를 하나의 저장 작업으로 뭉치면 구매 계약과 상품팀�
 
 패키지 상품의 선택과 반복은 상품 관리 서비스 또는 구매 서비스가 구매 시점에 전개합니다. 예약 서비스가 나중에 원본 상품을 재귀 조회해 “현재 최신 상품”으로 다시 조립하지 않습니다. 발행자가 보낸 실행 계약이 `PackageExecutionSnapshot`입니다.
 
-이 스냅숏은 다음 내용을 한 덩어리의 불변 입력으로 묶습니다.
+이 실행 계약은 다음 내용을 한 덩어리의 불변 입력으로 묶습니다.
 
 | 실행 계약의 구성 | 예약에서 필요한 이유 |
 | --- | --- |
@@ -95,11 +95,11 @@ T2와 T4를 하나의 저장 작업으로 뭉치면 구매 계약과 상품팀�
   class="bt4k-architecture"
   data-diagram-title="환자 A의 상품 BOM 구조와 예약 단위 번역"
 >
-  <img src="/assets/clinic-appointment-product-bom-structure-01-ko.png" alt="패키지 상품의 상담·검사·본 시술·진정 관리·사후 점검 항목이 상품 BOM 스냅숏, AppointmentPlan 리비전, PlannedTreatment, AppointmentItem과 실제 방문으로 번역되는 구조" loading="lazy" />
+  <img src="/assets/clinic-appointment-product-bom-structure-01-ko.png" alt="패키지 상품의 상담·검사·본 시술·진정 관리·사후 점검 항목이 상품 BOM 기준 데이터, AppointmentPlan 리비전, PlannedTreatment, AppointmentItem과 실제 방문으로 번역되는 구조" loading="lazy" />
   <figcaption>상품 BOM은 구매 시점의 구성 계약이다. 예약 서비스는 그 계약을 다시 해석하지 않고 계획과 항목별 방문 단위로 전개한다.</figcaption>
 </figure>
 
-`PackageExecutionPlanner`는 이 스냅숏의 선택 수, 반복 수, 항목 수, 간선 수, 근거 이력, 참조 유효성, 순환 여부를 검증합니다. 검증이 끝나면 스냅숏의 항목과 관계를 `AppointmentPlanRevisionDraft`로 복사합니다. 예약 서비스가 “이 상품은 진정 관리가 포함되어 있으니 이 순서가 맞다”고 상품 의미를 새로 결정하는 코드가 아닙니다.
+`PackageExecutionPlanner`는 이 실행 계약의 선택 수, 반복 수, 항목 수, 간선 수, 근거 이력, 참조 유효성, 순환 여부를 검증합니다. 검증이 끝나면 실행 계약의 항목과 관계를 `AppointmentPlanRevisionDraft`로 복사합니다. 예약 서비스가 “이 상품은 진정 관리가 포함되어 있으니 이 순서가 맞다”고 상품 의미를 새로 결정하는 코드가 아닙니다.
 
 실행 이벤트를 처리하는 `VisitPlanningEventHandler`는 `authority`로 한정한 구매 범위에서 기존 Plan을 찾고, 통과한 초안을 새 리비전으로 추가합니다. 같은 원본 버전과 같은 payload(입력 데이터) 해시를 다시 받으면 `DUPLICATE`로 수렴하고, 같은 버전의 다른 해시나 순서가 맞지 않는 이벤트는 성공으로 위장하지 않고 격리하거나 `WAITING_GAP` 대기로 남깁니다. 인박스(inbox)·리비전 행·아웃박스(outbox)·처리 완료 표시는 같은 트랜잭션 경계에서 함께 결정됩니다.
 
@@ -219,7 +219,7 @@ Plan과 방문 모델이 준비되었다고 환자 A가 원하는 내원 날짜�
 - [방문 예약·예약 확정·상품 버전 전환 설계](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-07-29-issue-184-visit-commitment-design.md)
 - [상품 카탈로그 정의](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/catalog/ProductCatalogDefinition.kt)
 - [AppointmentPlan 모델](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/plan/AppointmentPlanModel.kt)
-- [상품 BOM 스냅숏 모델](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/plan/PackageExecutionSnapshot.kt)
+- [상품 BOM 실행 기준 데이터 모델](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/plan/PackageExecutionSnapshot.kt)
 - [구매 완료 이벤트 처리](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/PurchaseCompletedHandler.kt)
 - [상품 BOM 이벤트 처리](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/VisitPlanningEventHandler.kt)
 - [상품·구매·예약 데이터 흐름](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/requirements/data-flow.md)

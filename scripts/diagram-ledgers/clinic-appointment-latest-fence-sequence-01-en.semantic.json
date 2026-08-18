@@ -1,0 +1,45 @@
+{
+  "kind": "sequence",
+  "source": {
+    "question": "How do stale solver results, policy activation work, or notification ticks avoid overwriting the latest appointment after source facts change?",
+    "revision": "clinic-appointment@3658cced024c906c2b8eff29cdce6ab5bd3df6c7",
+    "paths": [
+      "scripts/generate-clinic-appointment-latest-fence-visuals.mjs",
+      "src/content/docs/blog/clinic-appointment-latest-fence.mdx"
+    ]
+  },
+  "nodes": [
+    { "id": "solver", "label": "Solver / snapshot + result", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "api", "label": "Appointment API / atomic apply", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "policy", "label": "Policy worker / durable command", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "notification", "label": "Notification runner / leader + outbox", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "staff", "label": "STAFF / state + next action", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "final-decision", "label": "Final State Decision", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "outcome-0", "label": "APPLIED", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "outcome-1", "label": "STALE_REJECTED", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "outcome-2", "label": "RETRYABLE", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "outcome-3", "label": "DEGRADED_REVIEW", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" }
+  ],
+  "edges": [
+    { "id": "message-1", "from": "solver", "to": "api", "kind": "snapshot", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "message-2", "from": "solver", "to": "api", "kind": "result", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "message-3", "from": "api", "to": "solver", "kind": "advisory", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "message-4", "from": "api", "to": "solver", "kind": "lock", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "message-5", "from": "api", "to": "solver", "kind": "cas", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "message-6", "from": "api", "to": "policy", "kind": "schedule", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "message-7", "from": "policy", "to": "api", "kind": "lease-replay", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "message-8", "from": "api", "to": "notification", "kind": "outbox-observation", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "message-9", "from": "notification", "to": "staff", "kind": "metrics-health", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "message-10", "from": "staff", "to": "api", "kind": "next-action", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "decision-outcome-0", "from": "final-decision", "to": "outcome-0", "kind": "terminal", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "decision-outcome-1", "from": "final-decision", "to": "outcome-1", "kind": "terminal", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "decision-outcome-2", "from": "final-decision", "to": "outcome-2", "kind": "terminal", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" },
+    { "id": "decision-outcome-3", "from": "final-decision", "to": "outcome-3", "kind": "terminal", "source": "scripts/generate-clinic-appointment-latest-fence-visuals.mjs" }
+  ],
+  "behavior": { "branches": 4, "loops": 2 },
+  "budget": { "branches": 4 },
+  "repairs": [
+    { "target": "terminal outcome connectors", "reason": "Upper calls retain rounded orthogonal routes; terminal paths start from the bottom of the decision card with explicit H/V segments rather than floating in space.", "touches": 4 },
+    { "target": "final decision fan-out", "reason": "The Final State Decision connects apply, stale rejection, retry, and operational review as independent terminal paths instead of a shared fan-out bus.", "touches": 4 }
+  ]
+}

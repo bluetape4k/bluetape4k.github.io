@@ -44,7 +44,7 @@ N회 상품을 “다섯 번 예약하는 상품”이라고만 설명하면 첫
 
 | 시점 | 환자 A의 행위 또는 이벤트 | 업무 의미 | 예약 서비스가 보존하는 것 |
 | --- | --- | --- | --- |
-| T1 | 5회 상품을 구매한다 | 상품 버전에 따라 다섯 번 이용할 수 있는 계약 | 구매 기준 데이터 원본, 구매 ID, 구매 당시 상품 스냅숏 |
+| T1 | 5회 상품을 구매한다 | 상품 버전에 따라 다섯 번 이용할 수 있는 계약 | 구매 기준 데이터 원본, 구매 ID, 구매 당시 상품 기준 정보 |
 | T2 | 구매 완료 이벤트를 받는다 | 하나의 구매 사실을 실행 가능한 계획으로 해석해야 함 | 기준 데이터 원본이 한정된 구매마다 `AppointmentPlan` 생성 |
 | T3 | 계획을 전개한다 | 달력 슬롯 다섯 개가 아니라 미래 이행 의무 다섯 개가 생김 | `PlannedTreatment` 1..5, 간격, 의존 관계, 출처 이력 |
 | T4 | 첫 방문 희망일을 요청한다 | 고객 선호 또는 제안 입력이지 동의가 아님 | 불변 `BookingPreferenceSnapshot` |
@@ -66,7 +66,7 @@ N회 상품을 “다섯 번 예약하는 상품”이라고만 설명하면 첫
 
 | 측정값 | 방문 1 완료 뒤 예시 | 답하는 질문 | 바꾸는 이벤트 또는 판단 |
 | --- | ---: | --- | --- |
-| 총 구매 권리 | 5 | 이 상품 스냅숏으로 커머스가 몇 회를 판매했는가? | 새 구매는 새 계획을 만들며, 상품 수정은 이 스냅숏을 다시 쓰지 않음 |
+| 총 구매 권리 | 5 | 이 상품 기준 정보로 커머스가 몇 회를 판매했는가? | 새 구매는 새 계획을 만들며, 상품 수정은 이 기준 정보를 다시 쓰지 않음 |
 | 사용·완료 횟수 | 1 | 임상 기준 데이터 원본이 확인한 완료 근거가 몇 개의 의무를 이행했는가? | 제안·보류가 아니라 임상 완료 또는 이행 이벤트 |
 | 잔여 이행 의무 | 4 | 앞으로 이행할 수 있는 계획 항목이 몇 개인가? | 완료, 미래 항목의 명시적 취소, 기준 데이터 원본이 확인한 업무 이벤트 |
 | 예약된 슬롯 | 0 또는 1 | 현재 수용량을 점유하는 달력 약속이 몇 개인가? | `PROPOSED`, `HELD`, `CONFIRMED`, 일정 변경, 만료, 취소 |
@@ -109,7 +109,7 @@ Appointment 1 ──> AppointmentItem 1..N ──────┘
 
 ## 구매 시점에 다섯 번의 예약을 모두 확정하지 않는 이유
 
-상품 스냅숏은 다섯 개의 의무가 있다는 사실을 알려 줍니다. 그러나 구매 순간에 미래의 모든 약속을 알 수는
+상품 기준 정보는 다섯 개의 의무가 있다는 사실을 알려 줍니다. 그러나 구매 순간에 미래의 모든 약속을 알 수는
 없습니다.
 
 - 반복 간격은 구매 시각이 아니라 이전 진료가 **실제로 완료된 시각**부터 계산해야 할 수 있습니다.
@@ -180,7 +180,7 @@ Appointment 1 ──> AppointmentItem 1..N ──────┘
 
 | 업무 영역 | 기준 데이터 원본 | 주고받는 사실 | 예약 서비스의 책임 |
 | --- | --- | --- | --- |
-| 상품 관리·상품 개발 | 버전 상품, BOM, 반복 횟수, 간격, 자원 요구 | 상품 프로젝션 또는 동기화 이벤트 | 구매 시점 예약 해석 스냅숏 검증·보존 |
+| 상품 관리·상품 개발 | 버전 상품, BOM, 반복 횟수, 간격, 자원 요구 | 상품 프로젝션 또는 동기화 이벤트 | 구매 시점 예약 해석 기준 정보 검증·보존 |
 | 구매·커머스 | 구매 계약, 이용 권리, 환불, 원본 구매 ID | `PurchaseCompleted`, 환불, 계획 취소 이벤트 | 구매마다 계획을 만들고 외부 권리 판단을 미래 의무에 반영 |
 | 예약 서비스 | 계획, 계획 항목, 제안, 보류(hold), 확정, 방문 이력 | 객관적 예약 이벤트와 지속 보존 아웃박스(outbox) | 시간·수용량·약속 상태·감사 이력 소유 |
 | 임상·시술 | 실제 시작, 완료, 부분 완료 | 완료·이행 근거 | 계획에 완료를 반영하고 다음 가능 시점을 계산 |
@@ -195,7 +195,7 @@ Appointment 1 ──> AppointmentItem 1..N ──────┘
 
 | 사실성 표지 | 이번 글에서 말하는 범위 | 독자가 확인할 질문 |
 | --- | --- | --- |
-| **현재 구현** | 버전형 상품 프로젝션, 구매 하나당 계획 식별자, 반복 `PlannedTreatment` 전개, 희망 일정 스냅숏, 계획·항목 상태 | 관찰한 원본과 테스트에서 이 계약을 확인할 수 있는가 |
+| **현재 구현** | 버전형 상품 프로젝션, 구매 하나당 계획 식별자, 반복 `PlannedTreatment` 전개, 희망 일정 기준 정보, 계획·항목 상태 | 관찰한 원본과 테스트에서 이 계약을 확인할 수 있는가 |
 | **승인된 설계** | 회차별 후보, `PROPOSED` · `HELD` · `CONFIRMED`, 실제 완료 기준 후속 계산, 명시적 예외 흐름 | 설계 문서를 이미 배포된 API처럼 설명하고 있지 않은가 |
 | **운영 대기** | 브로커 전달, 임상·커머스 이벤트 연동, 알림 아웃박스(outbox) 카나리, 운영 백필/운영 준비 상태 | 전달·재생·복구를 실제 환경에서 검증했는가 |
 | **로드맵** | 환자용 후속 제안 동의 채널, 구체적인 노쇼 페널티, 설명 가능한 VIP 우선순위 정책 | 아직 결정되지 않은 정책을 현재 기능으로 약속하고 있지 않은가 |
@@ -225,7 +225,7 @@ N회 상품은 같은 종류의 진료를 반복합니다. [다음 글에서는 
 - [상품 카탈로그 정의](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/catalog/ProductCatalogDefinition.kt)
 - [AppointmentPlan 모델](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic-appointment/model/plan/AppointmentPlanModel.kt)
 - [AppointmentPlan 리비전 모델](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/plan/AppointmentPlanRevisionModel.kt)
-- [예약 희망 스냅숏](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/plan/BookingPreferenceSnapshot.kt)
+- [예약 희망 기준 정보](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-core/src/main/kotlin/io/bluetape4k/clinic/appointment/model/plan/BookingPreferenceSnapshot.kt)
 - [구매 완료 이벤트 처리](https://github.com/bluetape4k/clinic-appointment/blob/develop/appointment-event/src/main/kotlin/io/bluetape4k/clinic/appointment/event/integration/PurchaseCompletedHandler.kt)
 - [상품·구매·예약 데이터 흐름](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/requirements/data-flow.md)
 - [진료 계획·예약·수용량 설계](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-07-26-appointment-plan-and-capacity-design.md)

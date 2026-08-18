@@ -40,5 +40,5 @@
   <path class="connector handoff-line" data-connector="visit-notification" data-source="visit-service" data-target="notification-consumers" d="M 1280 790 H 1310 Q 1340 790 1340 820 V 850 Q 1340 880 1370 880 H 1480 Q 1500 880 1500 900 V 975 Q 1498 1005 1518 1005 H 1530" marker-end="url(#service-ko-secondary-arrow)"/>
 
   <rect x="80" y="930" width="500" height="160" rx="20" fill="#101f37" stroke="#345276" stroke-width="2"/><text class="small" x="108" y="970">경계의 읽는 규칙</text><text class="body" x="108" y="1008">상품·구매는 계약을 만들고, 예약은 시간과 약속을 소유한다.</text><text class="body" x="108" y="1042">임상은 완료 사실을, CRM은 정책 판단을 소유한다.</text>
-  <text class="small" x="735" y="930">예약서비스의 책임</text><text class="body" x="735" y="965">검증된 상품 BOM snapshot을 계획으로 번역하고, 확정된 AppointmentItem과 자원 점유를 보호한다.</text><text class="body" x="735" y="999">노쇼 페널티·VIP 우선순위·보상은 객관 사실을 받은 정책 서비스의 판단으로 남긴다.</text>
+  <text class="small" x="735" y="930">예약서비스의 책임</text><text class="body" x="735" y="965">검증된 상품 BOM 기준 데이터를 계획으로 번역하고, 확정된 AppointmentItem과 자원 점유를 보호한다.</text><text class="body" x="735" y="999">노쇼 페널티·VIP 우선순위·보상은 객관 사실을 받은 정책 서비스의 판단으로 남긴다.</text>
 </svg>

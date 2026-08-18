@@ -73,7 +73,7 @@ const sequenceCopy = {
     messages: [
       ['휴진 범위 · 원인 · searchDays 제출', 0, 1, 'blue'],
       ['영향 예약 복구 요청', 1, 2, 'blue'],
-      ['활성 예약 스냅숏 · version 조회', 2, 3, 'cyan'],
+      ['활성 예약 기준 데이터 · version 조회', 2, 3, 'cyan'],
       ['트랜잭션 밖에서 대체 후보 계산', 2, 3, 'amber'],
       ['현재 상태 · version 재확인', 2, 3, 'cyan'],
       ['PENDING_RESCHEDULE · 이력 · 상태 이벤트 · 후보 저장', 2, 4, 'purple'],

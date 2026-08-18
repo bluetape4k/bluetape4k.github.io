@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1200" viewBox="0 0 2000 1200" role="img" aria-labelledby="title desc" data-locale="ko">
   <title id="title">이벤트 상품 구매가 확정 방문 약속이 되는 흐름</title>
-  <desc id="desc">환자 A의 PurchaseCompleted 이벤트가 상품 기준정보 snapshot, AppointmentPlan, 후보 시간, PROPOSED 또는 HELD, 고객 동의를 거쳐 CONFIRMED 방문 약속과 내원 사실로 이어지고, 후보 없음·만료·취소·병원 사정 변경은 별도 예외로 분기되는 시간축입니다.</desc>
+  <desc id="desc">환자 A의 PurchaseCompleted 이벤트가 상품 기준 데이터, AppointmentPlan, 후보 시간, PROPOSED 또는 HELD, 고객 동의를 거쳐 CONFIRMED 방문 약속과 내원 사실로 이어지고, 후보 없음·만료·취소·병원 사정 변경은 별도 예외로 분기되는 시간축입니다.</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#07111f"/><stop offset=".58" stop-color="#0d1930"/><stop offset="1" stop-color="#11172d"/>
@@ -74,7 +74,7 @@
       <rect x="358" y="318" width="72" height="26" rx="13" fill="#60a5fa" opacity=".22"/>
       <text class="step" x="394" y="337" text-anchor="middle">T2</text>
       <text class="role" x="478" y="338" text-anchor="middle">상품 기준정보 원천</text>
-      <text class="card-title" x="460" y="386" text-anchor="middle">catalog snapshot</text>
+      <text class="card-title" x="460" y="386" text-anchor="middle">상품 기준 데이터</text>
       <text class="body" x="460" y="428" text-anchor="middle">version · BOM · 자원</text>
       <text class="body" x="460" y="458" text-anchor="middle">구매 시점의 불변 입력</text>
     </g>
