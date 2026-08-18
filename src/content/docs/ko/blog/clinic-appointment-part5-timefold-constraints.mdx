@@ -1,5 +1,5 @@
 ---
-title: "[구현 5] 병원 업무 규칙을 Timefold 제약 조건으로 옮기기"
+title: "[구현 5] 병원 업무 규칙을 Timefold 제약으로 모델링하기"
 description: 병원 업무시간과 휴진, 의사 부재, 동시 진료 수, 장비 상태를 필수 제약으로 지키고 요청 날짜와 기존 담당 의사, 일정 간격을 선호 제약으로 조정하는 방법을 설명합니다.
 sidebar:
   order: -202607201400
@@ -7,7 +7,7 @@ blog:
   date: 2026-07-20T14:00:00+09:00
   image: /assets/clinic-appointment-part5-hero.png
   imageAlt: 작은 로봇 작업자들이 병원 일정 작업대에서 반드시 지켜야 하는 붉은 규칙 카드와 가능한 한 만족할 보라색 목표 카드를 Timefold 점수 장치에 연결하는 어두운 미니어처 장면
-  cardDescription: "병원의 필수 업무 규칙과 운영 선호를 12개 필수 제약과 6개 선호 제약, HardSoftScore로 옮기는 과정을 살펴봅니다."
+  cardDescription: "병원의 필수 업무 규칙과 운영 선호를 12개 필수 제약과 6개 선호 제약, HardSoftScore로 모델링하는 과정을 살펴봅니다."
   tags: ["architecture","kotlin","optimization","timefold","appointment-service","example"]
 ---
 
@@ -26,7 +26,7 @@ import ClinicAppointmentSeries from '../../../../components/ClinicAppointmentSer
 
 “의사가 없는 시간에는 예약할 수 없다”는 말은 비교적 명확합니다. 반면 “환자가 원한 날짜를 가급적
 지킨다”, “기존 담당 의사를 유지한다”, “의사별 업무량을 고르게 나눈다”는 목표는 서로 충돌할 수 있습니다.
-병원에서 쓰는 이런 문장을 Solver가 비교할 수 있는 제약 조건과 점수로 번역해야 합니다.
+병원에서 쓰는 이런 문장을 Solver가 비교할 수 있는 제약 조건과 점수로 표현해야 합니다.
 
 이번 글에서는 현재 `clinic-appointment` 구현을 기준으로 계획 대상과 문제 정보를 구분하고, 12개 필수 제약
 스트림과 6개 선호 제약이 `HardSoftScore`를 만드는 과정을 살펴봅니다. 마지막에는 테스트와
