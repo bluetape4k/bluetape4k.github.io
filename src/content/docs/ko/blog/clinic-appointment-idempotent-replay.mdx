@@ -1,0 +1,225 @@
+---
+title: "[운영 확장 9] 재시도와 replay가 있어도 예약은 한 번만 바꾼다"
+description: "HTTP 재시도, outbox redelivery, consumer 중복, quarantine replay가 발생해도 예약 변경과 후속 작업을 한 번으로 수렴시키는 멱등성 경계를 실제 구현과 STAFF 운영 화면으로 설명합니다."
+sidebar:
+  order: -202608181800
+blog:
+  date: 2026-08-18T18:00:00+09:00
+  image: /assets/clinic-appointment-idempotent-replay-hero.png
+  imageAlt: 예약 변경 요청과 중복 이벤트를 inbox와 quarantine로 분리해 처리하는 3D workbench
+  cardDescription: "재시도와 replay가 예약을 두 번 바꾸지 않도록 HTTP idempotency key, outbox, inbox, quarantine과 STAFF 조치 큐를 하나의 결과 결정으로 연결합니다."
+  tags: ["operations", "reliability", "idempotency", "messaging", "appointment-service", "kotlin", "example", "timefold"]
+---
+
+import ClinicAppointmentSeries from '../../../../components/ClinicAppointmentSeries.astro';
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-idempotent-replay-hero.png" alt="예약 변경 요청과 중복 이벤트를 inbox와 quarantine로 분리해 처리하는 3D workbench" loading="eager" />
+  <figcaption>예약 변경은 한 번만 기록하고, 재시도와 replay는 이미 남은 결과를 확인하는 작업으로 다뤄야 합니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-18 · 병원 예약 서비스 개발기 · 재시도와 replay의 중복 변경 방지</p>
+
+예약 API를 호출했는데 응답이 오지 않았다고 해 보겠습니다. 호출자는 같은 요청을 다시 보냅니다. 그 사이 첫 요청이
+데이터베이스에 예약을 저장했을 수도 있고, outbox가 이벤트를 한 번 발행했을 수도 있습니다. relay가 메시지를 다시
+전달하면 consumer는 같은 이벤트를 또 받습니다. 처리 중 예외가 발생해 quarantine에 들어간 항목을 STAFF가 replay하면
+같은 예약과 알림을 다시 바꿀 위험도 생깁니다.
+
+이때 “네트워크가 불안정했으니 한 번 더 실행한다”는 규칙만 두면 안 됩니다. 실행을 다시 시도하는 것과 예약을 다시
+변경하는 것은 다른 일입니다. 시스템은 요청, 이벤트, replay를 각각의 논리적 식별자로 묶고, 이미 남은 결과를 재사용해야
+합니다.
+
+이 글의 결론은 다음과 같습니다.
+
+> HTTP 경계에서는 `Idempotency-Key`와 요청 fingerprint로 같은 요청을 한 번만 예약 생성·변경으로 연결합니다. 예약
+> transaction은 예약 row와 outbox 의도를 함께 커밋하고, consumer는 `logicalConsumerId`와 event identity로 inbox 중복을
+> 걸러냅니다. 실패한 메시지는 `RETRYABLE`에서 시도 한도를 넘으면 `QUARANTINED`가 되며, STAFF replay는 `requestId`,
+> tenant·clinic 범위, provenance를 확인한 별도 실행으로만 허용합니다. 마지막에는 `PROCESSED`, `DUPLICATE`, `RETRYABLE`,
+> `QUARANTINED` 중 하나를 명시적인 최종 상태 결정으로 남깁니다.
+
+아래 다이어그램과 운영 화면은 실제 환자나 병원 데이터를 담은 캡처가 아니라 현재 구현 경계를 설명하기 위한 합성
+시안입니다. HTTP 멱등성 conformance 테스트가 증명하는 범위와, process restart·외부 provider exactly-once처럼 별도
+운영 검증이 필요한 범위도 구분해서 설명합니다.
+
+## 응답이 없었다고 예약이 바뀌지 않은 것은 아니다
+
+클라이언트가 `POST /appointments`를 보낸 뒤 timeout을 받으면 가장 먼저 해야 할 일은 같은 body로 요청을 다시 보내기 전에
+`Idempotency-Key`를 유지하는 것입니다. 키를 바꾸면 서버는 새로운 명령으로 해석할 수밖에 없습니다. 반대로 같은 키를
+그대로 보내면 서버는 다음 세 가지를 구분할 수 있습니다.
+
+| 상황 | 서버가 확인하는 값 | 예약에 적용하는 작업 | 호출자에게 돌려줄 결과 |
+| --- | --- | --- | --- |
+| 첫 요청 | tenant·clinic 범위, `Idempotency-Key`, 요청 fingerprint | 예약과 멱등성 기록을 같은 transaction에 저장 | 새 예약 결과 |
+| 같은 키·같은 fingerprint | 기존 멱등성 기록과 연결된 예약 | 새 변경을 하지 않고 기존 결과 조회 | 저장된 예약 결과 replay |
+| 같은 키·다른 fingerprint | 기존 기록과 새 요청의 fingerprint | 어떤 예약도 추가로 바꾸지 않음 | 키 재사용 충돌(409) |
+
+현재 `AppointmentService.create`는 `tenantGroupId`, `clinicId`, `Idempotency-Key`를 함께 조회합니다. 새 요청이면 예약을
+저장하고 멱등성 row를 기록한 뒤 알림 의도와 appointment outbox를 같은 transaction 안에서 남깁니다. 같은 키가 이미 있으면
+fingerprint를 비교하고, 일치할 때만 기존 예약을 replay합니다. 두 요청이 동시에 들어와 unique 충돌이 발생해도 이미
+저장된 결과를 다시 읽는 경로가 있습니다.
+
+이 경계는 “HTTP 요청을 여러 번 보내도 항상 201을 반환한다”는 뜻이 아닙니다. 처음 요청이 어떤 상태로 끝났는지, 같은 키를
+재사용할 수 있는 기간이 지났는지, fingerprint가 같은지를 확인한 뒤에 결과를 결정한다는 뜻입니다. 키가 만료된 뒤 같은
+문자열을 다시 사용하면 새로운 요청이 될 수 있으므로, 호출자는 한 번의 업무 명령이 끝날 때까지 키를 보존하고 만료
+정책을 알아야 합니다.
+
+## 예약을 한 번만 바꾸는 경계는 세 곳에 있다
+
+재시도와 replay는 한 계층의 중복 방지로 해결되지 않습니다. 아래 세 경계가 서로 다른 식별자를 관리해야 합니다.
+
+1. **HTTP 명령 경계**: `Idempotency-Key`와 fingerprint가 같은 요청인지 판단합니다.
+2. **예약·outbox transaction 경계**: 예약 변경과 이벤트 발행 의도를 함께 커밋합니다. 예약은 저장됐는데 outbox만
+   빠지거나, outbox만 남고 예약은 롤백되는 상태를 만들지 않습니다.
+3. **consumer·replay 경계**: `logicalConsumerId`, event identity, replay `requestId`와 provenance를 확인해 handler와
+   후속 side effect를 한 번만 실행합니다.
+
+HTTP 키와 consumer inbox 키를 하나로 합치면 안 됩니다. HTTP 키는 호출자가 “이 명령을 다시 보냈다”는 사실을 나타내고,
+inbox identity는 “이 consumer가 이 event를 이미 처리했는가”를 나타냅니다. replay `requestId`도 “STAFF가 어떤 범위를
+어떤 근거로 다시 읽도록 승인했는가”를 남기는 감사 식별자입니다.
+
+<figure class="bt4k-sequence" data-diagram-title="재시도와 replay가 있어도 예약은 한 번만 바뀌는 처리 흐름">
+  <img src="/assets/clinic-appointment-idempotent-replay-sequence-01-ko.png" alt="호출자, 예약 API, 예약 transaction, 소비 런타임, STAFF replay 사이에서 Idempotency-Key fingerprint 확인, 예약·outbox 커밋, event redelivery, inbox 중복 확인, quarantine replay 승인과 최종 상태 결정을 순서대로 보여 주는 시퀀스 다이어그램" loading="lazy" />
+  <figcaption>HTTP 재시도와 메시지 재전달은 서로 다른 경계에서 중복을 확인합니다. 마지막 세 갈래는 하나의 선에서 갈라지는 버스가 아니라 `최종 상태 결정`에서 각각 독립적으로 시작하는 종료 경로입니다. `RETRYABLE`과 `QUARANTINED`는 같은 STAFF 검토 경로에서 구분합니다.</figcaption>
+</figure>
+
+## 예약 transaction은 상태 변경과 발행 의도를 함께 기록한다
+
+예약을 저장한 다음 별도의 비동기 호출로 알림이나 이벤트를 발행하면, 저장과 발행 사이에 실패 구간이 생깁니다. 이
+구간에서 호출자가 timeout을 받아 재시도하면 예약은 이미 바뀌었는데 이벤트가 빠질 수 있고, 반대로 이벤트를 다시
+발행하면서 외부 작업이 두 번 실행될 수 있습니다.
+
+현재 구현은 예약 transaction 안에서 다음 순서를 지킵니다.
+
+```kotlin
+transaction {
+    val appointment = appointmentRepository.save(newAppointmentRecord(request))
+    idempotencyRepository.save(idempotencyRecord(appointment, requestFingerprint))
+    notificationWriter.appointmentCreated(tenantGroupId, appointment, appointment.version, resolution)
+    appointmentOutboxWriter.created(
+        scope = TenantClinicScope(tenantGroupId, request.clinicId),
+        appointment = appointment,
+        context = AppointmentMessagingContext.from(commandContext),
+    )
+}
+```
+
+이 코드는 provider가 실제로 발송을 끝냈다는 뜻이 아닙니다. 예약 transaction이 “알림 의도와 이벤트를 전달해야
+한다”는 durable 사실을 남긴다는 뜻입니다. relay와 consumer가 나중에 다시 실행되어도, 이미 저장된 appointment의 상태와
+outbox identity를 기준으로 다음 결과를 결정할 수 있습니다.
+
+## consumer inbox는 중복 메시지를 정상적인 결과로 만든다
+
+Kafka나 relay는 최소 한 번 전달될 수 있습니다. 따라서 같은 event가 두 번 들어오는 것은 예외라기보다 예상 가능한
+입력입니다. `AppointmentConsumerRuntime`은 handler를 먼저 호출하지 않고 inbox에서 다음 상태를 확인합니다.
+
+| inbox 상태 | 의미 | 다음 처리 |
+| --- | --- | --- |
+| `PROCESSING` | 다른 worker가 lease를 가지고 처리 중 | lease가 유효하면 기다리거나 중복으로 종료 |
+| `PROCESSED` | 같은 논리 consumer가 이미 완료 | handler와 side effect를 호출하지 않고 `DUPLICATE` |
+| `RETRYABLE` | 다시 시도할 수 있는 일시 오류 | bounded attempt와 lease를 확인해 재시도 |
+| `QUARANTINED` | schema·scope·handler 오류가 한도를 넘었거나 복구가 필요한 상태 | 일반 전달은 중단하고 STAFF 작업으로 보냄 |
+
+중복 여부는 event ID 하나만으로 판단하지 않습니다. `logicalConsumerId`와 event identity가 함께 있어야 “consumer A는
+처리했지만 consumer B는 아직 처리하지 않았다”는 상황을 표현할 수 있습니다. inbox row에는 원문 Kafka payload를 보존하지
+않고, 필요한 metadata와 상태·시도 횟수·lease·사유만 남기는 방향도 중요합니다. 운영 화면에 원문 payload나 환자 정보를
+복사하지 않아야 replay 범위를 좁게 유지할 수 있습니다.
+
+handler가 성공하면 inbox를 `PROCESSED`로 바꾸는 작업도 lease를 가진 worker만 수행합니다. lease가 만료된 worker가 늦게
+돌아와도 이미 다른 worker가 처리한 결과를 덮어쓸 수 없습니다. 반대로 일시적인 데이터베이스 오류는 `RETRYABLE`로 남겨
+다음 시도 시각과 사유를 운영자가 확인할 수 있게 합니다.
+
+## quarantine replay는 새 명령이 아니라 승인된 같은 논리 작업이다
+
+격리된 항목을 다시 처리할 때 가장 위험한 방법은 원래 메시지를 새로운 일반 소비자 입력처럼 넣는 것입니다. 그렇게 하면
+원래의 deduplication identity와 scope가 사라지고, 이미 끝난 예약 변경이나 알림을 다시 호출할 수 있습니다.
+
+현재 replay 경계는 다음 값을 먼저 확인합니다.
+
+- STAFF actor가 실제 approver인지, 필요한 `APPOINTMENT_REPLAY_OPERATOR` 역할을 가졌는지 확인합니다.
+- `requestId`가 canonical 형식인지 확인하고, 이미 사용된 requestId라면 같은 replay 요청인지 audit row와 대조합니다.
+- tenant, clinic, consumer, partition, offset 범위가 원래 provenance와 일치하는지 확인합니다.
+- 지정한 범위와 최대 record 수, 최대 실행 시간이 bounded 값인지 확인합니다.
+- 원래 consumer group의 offset을 움직이지 않고 별도 replay group을 사용합니다.
+- replay에서도 원래 logical inbox identity를 유지해 정상 전달의 deduplication을 우회하지 못하게 합니다.
+
+이렇게 해야 replay는 “새 예약 변경 명령”이 아니라 “실패한 동일 논리 작업을 승인된 범위에서 다시 시도하는 실행”이
+됩니다. replay 중 하나라도 `RETRYABLE` 또는 `QUARANTINED`로 남으면 전체 replay 결과는 성공으로 포장하지 않고 STAFF가
+다음 작업을 선택하게 합니다. `DUPLICATE`는 이미 처리된 항목이므로 실패가 아니라 재처리하지 않았다는 정상 결과입니다.
+
+## 운영자는 숫자보다 상태·근거·다음 작업을 먼저 본다
+
+재시도 문제를 운영 화면에 “실패 2건”이라고만 표시하면 STAFF는 무엇을 다시 실행해야 하는지 알 수 없습니다. 한 행마다
+다음 질문에 답해야 합니다.
+
+1. 어느 tenant와 clinic 범위의 예약인가?
+2. 어떤 logical consumer가 처리했는가?
+3. 이 항목은 예약을 실제로 바꿨는가, 이미 처리한 중복인가, 다시 시도할 수 있는가?
+4. quarantine라면 requestId와 provenance가 replay 승인 범위와 일치하는가?
+5. 지금 STAFF가 할 수 있는 다음 작업은 조회, 재시도 예약, replay 승인, 격리 유지 중 무엇인가?
+
+<div class="bt4k-operations-screen" data-visual-title="예약 변경 중복 방지 STAFF 운영 화면 시안">
+  <img class="bt4k-screenshot" src="/assets/clinic-appointment-idempotent-replay-operations-screen-ko.png" alt="tenant와 clinic 범위, 처리 완료·중복 감지·재시도 대기·격리 검토 지표, 대상·논리 소비자·상태·사유·다음 작업으로 구성한 조치 큐, requestId·fingerprint·provenance 근거 패널과 허용된 다음 작업을 보여 주는 STAFF 운영 화면 시안" loading="lazy" />
+  <p class="bt4k-operations-screen-caption">합성 데이터로 만든 운영 화면 시안입니다. 조치 큐는 예약을 다시 바꿀 수 있는 행과 결과를 조회하기만 해야 하는 행을 구분하고, raw payload 대신 범위·fingerprint·provenance를 보여 줍니다.</p>
+</div>
+
+화면의 네 가지 지표도 서로 다른 뜻을 가집니다.
+
+| 지표 | STAFF가 읽는 뜻 | 바로 실행할 작업 |
+| --- | --- | --- |
+| 처리 완료 | 예약 변경과 필요한 후속 작업이 끝난 항목 | 결과 조회와 감사 확인 |
+| 중복 감지 | 기존 inbox 또는 HTTP 결과를 재사용한 항목 | 두 번째 변경을 시도하지 않음 |
+| 재시도 대기 | 일시 오류와 다음 시각이 기록된 항목 | next attempt 시각에 다시 확인 |
+| 격리·검토 | 일반 전달을 멈추고 원인과 provenance를 보존한 항목 | 범위 확인 뒤 replay 승인 또는 격리 유지 |
+
+`DUPLICATE`는 “처리에 실패했다”는 뜻이 아닙니다. 이미 처리한 결과를 다시 사용했기 때문에 예약에 두 번째 변경을
+적용하지 않았다는 뜻입니다. 반대로 `QUARANTINED`는 STAFF가 무조건 replay를 눌러야 한다는 뜻도 아닙니다. schema,
+scope, provenance를 확인할 수 없으면 격리를 유지하는 것이 올바른 다음 작업입니다.
+
+## 현재 구현, 설계 경계, 운영 검증을 나눠 읽는다
+
+구현된 코드와 운영 환경에서 아직 확인하지 않은 계약을 한 표에 섞으면 글도 화면도 신뢰하기 어려워집니다. 현재 근거는
+다음처럼 나눠 읽어야 합니다.
+
+| 구분 | 이 글에서 확인하는 내용 |
+| --- | --- |
+| 현재 구현 | `AppointmentService`의 tenant·clinic 범위 멱등성, fingerprint 충돌, 만료 처리, 동시 요청 수렴, 예약·알림 의도·outbox의 transaction 경계 |
+| 현재 구현 | consumer inbox의 `PROCESSING`·`PROCESSED`·`RETRYABLE`·`QUARANTINED` 상태와 lease·attempt·scope 검증 |
+| 현재 구현 | 승인된 replay의 requestId audit, 별도 replay group, bounded partition/range, 원래 logical inbox identity 유지 |
+| 현재 테스트가 증명하는 범위 | Spring MVC HTTP conformance의 no-key, terminal replay, fingerprint conflict, expiry, 동시 단일 예약과 기존 durable DB replay 테스트 |
+| 별도 운영 검증이 필요한 범위 | process restart 뒤 recovery, 실제 broker·DB 장애 복구, 외부 provider의 exactly-once, authorization·rate limit과 production traffic |
+| 다음 보강 작업 | 모든 command와 side effect에 동일한 logical identity를 연결하고, replay·quarantine 조치 큐의 metrics와 알림, 운영 훈련을 추가하는 작업 |
+
+특히 HTTP conformance fixture가 통과했다고 process restart와 외부 provider의 exactly-once까지 증명되는 것은 아닙니다.
+conformance는 bounded wait, owner/waiter, cancellation, fingerprint와 replay-header 안전성을 반복 검증하는 테스트 경계이고,
+실제 DB transaction과 messaging runtime의 proof는 별도의 테스트가 담당합니다. 이 구분이 있어야 운영 화면에서 “테스트
+통과”를 “모든 장애가 해결됨”으로 잘못 읽지 않습니다.
+
+## STAFF가 replay를 승인하기 전에 확인할 다섯 가지
+
+1. 선택한 tenant와 clinic이 replay 대상 event의 scope와 같은가?
+2. `requestId`가 이번 범위와 provenance에 이미 묶인 audit 요청과 같은가?
+3. logical consumer가 원래 consumer와 같은가? 다른 consumer group으로 우회하지 않았는가?
+4. inbox 상태가 `QUARANTINED` 또는 허용된 `RETRYABLE`인가? 이미 `PROCESSED`인 항목을 다시 실행하려는 것은 아닌가?
+5. 실행 결과가 `PROCESSED`, `DUPLICATE`, `RETRYABLE`, `QUARANTINED` 중 하나로 기록되고, 다음 작업이 화면에 남는가?
+
+이 다섯 가지를 통과하지 못하면 replay 버튼을 비활성화하고 원인을 기록해야 합니다. 재시도를 많이 허용하는 것이
+신뢰성을 높이는 것이 아니라, 같은 업무 명령이 몇 번 실행됐는지 설명할 수 있게 만드는 것이 신뢰성입니다.
+
+## 근거 자료
+
+- [운영 확장 8: 여러 병원을 한 예약 서비스로 운영할 때 지켜야 할 데이터 경계](/ko/blog/clinic-appointment-multitenant-data-boundaries/)
+- [운영 확장 7: 예약 결과가 외부 시스템과 통계로 전달되는 과정](/ko/blog/clinic-appointment-external-results/)
+- [운영 확장 6: 알림과 리마인더는 왜 별도 서비스인가](/ko/blog/clinic-appointment-notification-reminder/)
+- [HTTP 멱등성 conformance 설계 문서](https://github.com/bluetape4k/clinic-appointment/blob/3658cced024c906c2b8eff29cdce6ab5bd3df6c7/docs/superpowers/specs/2026-08-10-appointment-http-idempotency-conformance-design.md)
+- [HTTP 멱등성 conformance 구현 계획](https://github.com/bluetape4k/clinic-appointment/blob/3658cced024c906c2b8eff29cdce6ab5bd3df6c7/docs/superpowers/plans/2026-08-10-appointment-http-idempotency-conformance-plan.md)
+- [`AppointmentService.kt`](https://github.com/bluetape4k/clinic-appointment/blob/3658cced024c906c2b8eff29cdce6ab5bd3df6c7/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/service/AppointmentService.kt)
+- [`AppointmentConsumerRuntime.kt`](https://github.com/bluetape4k/clinic-appointment/blob/3658cced024c906c2b8eff29cdce6ab5bd3df6c7/appointment-messaging/src/main/kotlin/io/bluetape4k/clinic/appointment/messaging/AppointmentConsumerRuntime.kt)
+- [`AppointmentConsumerInboxStore.kt`](https://github.com/bluetape4k/clinic-appointment/blob/3658cced024c906c2b8eff29cdce6ab5bd3df6c7/appointment-messaging/src/main/kotlin/io/bluetape4k/clinic/appointment/messaging/AppointmentConsumerInboxStore.kt)
+- [`AppointmentReplayService.kt`](https://github.com/bluetape4k/clinic-appointment/blob/3658cced024c906c2b8eff29cdce6ab5bd3df6c7/appointment-messaging/src/main/kotlin/io/bluetape4k/clinic/appointment/messaging/AppointmentReplayService.kt)
+- [`KafkaAppointmentReplaySource.kt`](https://github.com/bluetape4k/clinic-appointment/blob/3658cced024c906c2b8eff29cdce6ab5bd3df6c7/appointment-messaging/src/main/kotlin/io/bluetape4k/clinic/appointment/messaging/KafkaAppointmentReplaySource.kt)
+- [`AppointmentReplayAuthorization.kt`](https://github.com/bluetape4k/clinic-appointment/blob/3658cced024c906c2b8eff29cdce6ab5bd3df6c7/appointment-messaging/src/main/kotlin/io/bluetape4k/clinic/appointment/messaging/AppointmentReplayAuthorization.kt)
+- [`AppointmentConsumerContracts.kt`](https://github.com/bluetape4k/clinic-appointment/blob/3658cced024c906c2b8eff29cdce6ab5bd3df6c7/appointment-messaging/src/main/kotlin/io/bluetape4k/clinic/appointment/messaging/AppointmentConsumerContracts.kt)
+
+## 시리즈 링크
+
+<ClinicAppointmentSeries current="clinic-appointment-idempotent-replay" locale="ko" />

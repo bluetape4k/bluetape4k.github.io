@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1360" viewBox="0 0 1800 1360" role="img" aria-labelledby="title desc" data-locale="ko">
+<title id="title">예약 변경 중복 방지 대시보드</title><desc id="desc">상태, 근거, 다음 작업을 분리해 보여 줍니다. 모든 값은 합성 예시입니다.</desc>
+<defs>
+    <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#071323"/><stop offset="1" stop-color="#111c32"/></linearGradient>
+    <linearGradient id="screen" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#091321"/><stop offset="1" stop-color="#101b2e"/></linearGradient>
+    <marker id="blue-arrow" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="diagram" data-size="16x16" data-tip-direction="positive-x">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#60a5fa" data-solid-head="true"/>
+    </marker><marker id="cyan-arrow" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="diagram" data-size="16x16" data-tip-direction="positive-x">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2dd4bf" data-solid-head="true"/>
+    </marker><marker id="amber-arrow" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="diagram" data-size="16x16" data-tip-direction="positive-x">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#fbbf24" data-solid-head="true"/>
+    </marker><marker id="purple-arrow" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="diagram" data-size="16x16" data-tip-direction="positive-x">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#a78bfa" data-solid-head="true"/>
+    </marker><marker id="red-arrow" viewBox="0 0 10 10" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="diagram" data-size="16x16" data-tip-direction="positive-x">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#fb7185" data-solid-head="true"/>
+    </marker>
+    <style>
+      .title{font-family:"goorm Sans", "Apple SD Gothic Neo", sans-serif;font-size:38px;font-weight:800;fill:#f4f8ff}
+      .subtitle{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:17px;fill:#a9bad0}
+      .badge{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:13px;font-weight:800;fill:#c9dcf3}
+      .participant{font-family:"goorm Sans", "Apple SD Gothic Neo", sans-serif;font-size:19px;font-weight:800;fill:#f4f8ff}
+      .role{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:13px;fill:#9fb3cb}
+      .lifeline{stroke:#304964;stroke-width:2;stroke-dasharray:7 9}
+      .activation{fill:#182c43;stroke:#50708e;stroke-width:1.5}
+      .phase{fill:#0b192c;stroke:#263d59;stroke-width:1.5}
+      .phase-label{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:13px;font-weight:800;fill:#7fc9ff}
+      .call{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+      .call-label{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:13px;fill:#e7f0fb}
+      .pill{fill:#0d1b2f;stroke-width:1.5}
+      .pill-number{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:12px;font-weight:800;fill:#f8fbff}
+      .decision{fill:#171b36;stroke:#a78bfa;stroke-width:2}
+      .decision-title{font-family:"goorm Sans", "Apple SD Gothic Neo", sans-serif;font-size:23px;font-weight:800;fill:#e5d9ff}
+      .decision-body{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:14px;fill:#d2c4f4}
+      .outcome-code{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:17px;font-weight:800;fill:#f8fbff}
+      .outcome-body{font-family:"goorm Sans", "Apple SD Gothic Neo", sans-serif;font-size:14px;fill:#b7c7da}
+      .ui-eyebrow,.ui-label,.ui-mono,.ui-button{font-family:"goorm Sans Code", "goorm Sans", monospace}
+      .ui-title,.ui-section,.ui-value,.ui-card-title{font-family:"goorm Sans", "Apple SD Gothic Neo", sans-serif;font-weight:800;fill:#f4f8ff}
+      .ui-eyebrow{font-size:12px;font-weight:800;fill:#7fc9ff}
+      .ui-title{font-size:34px}.ui-section{font-size:20px}.ui-card-title{font-size:21px}
+      .ui-label,.ui-mono{font-size:13px;fill:#dce8f5}.ui-mono{font-size:12px}.ui-value{font-size:40px}
+      .ui-button{font-size:13px;font-weight:800}.ui-muted{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:12px;fill:#91a8c3}
+      .divider{stroke:#263d59;stroke-width:1}
+    </style>
+  </defs>
+<rect width="1800" height="1360" fill="#07111e"/><rect x="30" y="28" width="1740" height="1304" rx="28" fill="url(#screen)" stroke="#3b5574" stroke-width="2"/>
+<text class="ui-eyebrow" x="72" y="72" >STAFF 운영 화면 · 시안</text><text class="ui-title" x="72" y="122" >예약 변경 중복 방지 대시보드</text><text class="ui-label" x="72" y="153" >상태, 근거, 다음 작업을 분리해 보여 줍니다. 모든 값은 합성 예시입니다.</text><text class="ui-label" x="1720" y="106" text-anchor="end">tenant-blue · clinic-02</text><rect x="1510" y="126" width="208" height="30" rx="8" fill="#17334a" stroke="#4c7798"/><text class="ui-mono" x="1614" y="147" text-anchor="middle" fill="#7fc9ff">예약 변경 운영 · 읽기 전용</text>
+<g><rect x="72" y="230" width="396" height="142" rx="20" fill="#12243a" stroke="#2dd4bf" stroke-width="2"/><rect x="94" y="254" width="8" height="94" rx="4" fill="#2dd4bf"/><text class="ui-mono" x="122" y="267" >처리 완료</text><text class="ui-value" x="122" y="326" >18</text><text class="ui-muted" x="258" y="323" >이번 범위</text></g>
+<g><rect x="492" y="230" width="396" height="142" rx="20" fill="#12243a" stroke="#60a5fa" stroke-width="2"/><rect x="514" y="254" width="8" height="94" rx="4" fill="#60a5fa"/><text class="ui-mono" x="542" y="267" >중복 감지</text><text class="ui-value" x="542" y="326" >7</text><text class="ui-muted" x="678" y="323" >결과 재사용</text></g>
+<g><rect x="912" y="230" width="396" height="142" rx="20" fill="#12243a" stroke="#fbbf24" stroke-width="2"/><rect x="934" y="254" width="8" height="94" rx="4" fill="#fbbf24"/><text class="ui-mono" x="962" y="267" >재시도 대기</text><text class="ui-value" x="962" y="326" >4</text><text class="ui-muted" x="1098" y="323" >다음 시각 있음</text></g>
+<g><rect x="1332" y="230" width="396" height="142" rx="20" fill="#12243a" stroke="#fb7185" stroke-width="2"/><rect x="1354" y="254" width="8" height="94" rx="4" fill="#fb7185"/><text class="ui-mono" x="1382" y="267" >격리·검토</text><text class="ui-value" x="1382" y="326" >2</text><text class="ui-muted" x="1518" y="323" >STAFF 승인 필요</text></g>
+<text class="ui-section" x="72" y="465" >조치 큐 · 지금 확인할 항목</text><text class="ui-muted" x="1178" y="465" text-anchor="end">reason code 우선 · 오래된 항목부터</text><rect x="72" y="485" width="1120" height="445" rx="16" fill="#101d30" stroke="#2f4865"/><rect x="74" y="487" width="1116" height="50" rx="14" fill="#17263a"/><text class="ui-mono" x="100" y="518" >대상</text><text class="ui-mono" x="290" y="518" >논리 소비자</text><text class="ui-mono" x="520" y="518" >상태</text><text class="ui-mono" x="750" y="518" >사유</text><text class="ui-mono" x="960" y="518" >다음 작업</text><g><rect x="74" y="543" width="1110" height="62" fill="#14263d"/><rect x="74" y="543" width="7" height="62" fill="#2dd4bf"/><text class="ui-mono" x="100" y="583" >apt_•••31</text><text class="ui-mono" x="290" y="583" >booking-v1</text><text class="ui-mono" x="520" y="583" fill="#2dd4bf">PROCESSED</text><text class="ui-mono" x="750" y="583" fill="#9fd3ff">STATE_APPLIED</text><text class="ui-label" x="960" y="583" >예약 변경 결과 조회</text></g>
+<g><rect x="74" y="611" width="1110" height="62" fill="#102035"/><rect x="74" y="611" width="7" height="62" fill="#60a5fa"/><text class="ui-mono" x="100" y="651" >evt_•••28</text><text class="ui-mono" x="290" y="651" >booking-v1</text><text class="ui-mono" x="520" y="651" fill="#60a5fa">DUPLICATE</text><text class="ui-mono" x="750" y="651" fill="#9fd3ff">INBOX_EXISTS</text><text class="ui-label" x="960" y="651" >기존 결과 재사용</text></g>
+<g><rect x="74" y="679" width="1110" height="62" fill="#14263d"/><rect x="74" y="679" width="7" height="62" fill="#fbbf24"/><text class="ui-mono" x="100" y="719" >evt_•••11</text><text class="ui-mono" x="290" y="719" >booking-v1</text><text class="ui-mono" x="520" y="719" fill="#fbbf24">RETRYABLE</text><text class="ui-mono" x="750" y="719" fill="#9fd3ff">DB_TIMEOUT</text><text class="ui-label" x="960" y="719" >다음 시각 재시도</text></g>
+<g><rect x="74" y="747" width="1110" height="62" fill="#102035"/><rect x="74" y="747" width="7" height="62" fill="#fb7185"/><text class="ui-mono" x="100" y="787" >evt_•••07</text><text class="ui-mono" x="290" y="787" >booking-v1</text><text class="ui-mono" x="520" y="787" fill="#fb7185">QUARANTINED</text><text class="ui-mono" x="750" y="787" fill="#9fd3ff">SCHEMA_MISMATCH</text><text class="ui-label" x="960" y="787" >replay 승인 검토</text></g>
+<rect x="1218" y="485" width="500" height="445" rx="16" fill="#111f32" stroke="#2f4865"/><text class="ui-section" x="1242" y="530">선택한 항목의 근거</text><rect x="1540" y="507" width="150" height="30" rx="8" fill="#243f51"/><text class="ui-mono" x="1615" y="527" text-anchor="middle" fill="#74e4d1">SCOPE OK</text><text class="ui-muted" x="1240" y="614" >tenant · clinic</text><text class="ui-label" x="1240" y="640" >tenant-blue · clinic-02</text>
+<text class="ui-muted" x="1490" y="614" >requestId</text><text class="ui-label" x="1490" y="640" >req_•••7A40</text>
+<text class="ui-muted" x="1240" y="690" >fingerprint</text><text class="ui-label" x="1240" y="716" >sha256: 8a•••91</text>
+<text class="ui-muted" x="1490" y="690" >logicalConsumerId</text><text class="ui-label" x="1490" y="716" >booking-v1</text>
+<text class="ui-muted" x="1240" y="766" >provenance</text><text class="ui-label" x="1240" y="792" >topic / partition / offset</text>
+<text class="ui-muted" x="1490" y="766" >scope 결과</text><text class="ui-label" x="1490" y="792" >ALLOW · 동일 범위</text><line class="divider" x1="1242" y1="868" x2="1694" y2="868"/><text class="ui-label" x="1242" y="900" fill="#fbbf24">원문 payload 대신 안정적인 근거와 상태만 표시합니다.</text>
+<text class="ui-section" x="72" y="1010" >허용된 다음 작업</text><g><rect x="72" y="1060" width="396" height="178" rx="18" fill="#122137" stroke="#2dd4bf" stroke-width="2"/><text class="ui-card-title" x="94" y="1106">결과 조회</text><text class="ui-label" x="94" y="1144" ><tspan x="94" dy="0">PROCESSED / DUPLICATE</tspan></text><rect x="94" y="1180" width="180" height="34" rx="9" fill="#203b55"/><text class="ui-button" x="184" y="1203" text-anchor="middle">근거 보기</text></g>
+<g><rect x="492" y="1060" width="396" height="178" rx="18" fill="#122137" stroke="#fbbf24" stroke-width="2"/><text class="ui-card-title" x="514" y="1106">재시도 예약</text><text class="ui-label" x="514" y="1144" ><tspan x="514" dy="0">RETRYABLE / nextAttemptAt</tspan></text><rect x="514" y="1180" width="180" height="34" rx="9" fill="#203b55"/><text class="ui-button" x="604" y="1203" text-anchor="middle">근거 보기</text></g>
+<g><rect x="912" y="1060" width="396" height="178" rx="18" fill="#122137" stroke="#a78bfa" stroke-width="2"/><text class="ui-card-title" x="934" y="1106">replay 승인</text><text class="ui-label" x="934" y="1144" ><tspan x="934" dy="0">scope + provenance 확인</tspan></text><rect x="934" y="1180" width="180" height="34" rx="9" fill="#203b55"/><text class="ui-button" x="1024" y="1203" text-anchor="middle">근거 보기</text></g>
+<g><rect x="1332" y="1060" width="396" height="178" rx="18" fill="#122137" stroke="#fb7185" stroke-width="2"/><text class="ui-card-title" x="1354" y="1106">격리 유지</text><text class="ui-label" x="1354" y="1144" ><tspan x="1354" dy="0">QUARANTINED / 원인 보존</tspan></text><rect x="1354" y="1180" width="180" height="34" rx="9" fill="#203b55"/><text class="ui-button" x="1444" y="1203" text-anchor="middle">근거 보기</text></g><text class="ui-muted" x="1718" y="1296" text-anchor="end">합성 시안 · 원문 payload와 환자 식별정보는 표시하지 않습니다. 운영 화면은 더 많은 정보보다 더 명확한 정보를 제공해야 합니다.</text>
+</svg>
