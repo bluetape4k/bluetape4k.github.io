@@ -1,0 +1,39 @@
+{
+  "kind": "sequence",
+  "source": {
+    "question": "HTTP 재시도, relay redelivery, quarantine replay가 있어도 예약 변경과 side effect를 어떻게 한 번으로 수렴시키는가?",
+    "revision": "3658cced024c906c2b8eff29cdce6ab5bd3df6c7",
+    "paths": [
+      "scripts/generate-clinic-appointment-idempotent-replay-visuals.mjs",
+      "src/content/docs/ko/blog/clinic-appointment-idempotent-replay.mdx"
+    ]
+  },
+  "nodes": [
+    { "id": "caller", "label": "호출자 / client retry", "source": "scripts/generate-clinic-appointment-idempotent-replay-visuals.mjs" },
+    { "id": "api", "label": "예약 API / HTTP boundary", "source": "scripts/generate-clinic-appointment-idempotent-replay-visuals.mjs" },
+    { "id": "transaction", "label": "예약 transaction / aggregate + outbox", "source": "scripts/generate-clinic-appointment-idempotent-replay-visuals.mjs" },
+    { "id": "consumer", "label": "소비 런타임 / inbox + handler", "source": "scripts/generate-clinic-appointment-idempotent-replay-visuals.mjs" },
+    { "id": "replay", "label": "STAFF replay / approval + audit", "source": "scripts/generate-clinic-appointment-idempotent-replay-visuals.mjs" },
+    { "id": "final-decision", "label": "최종 상태 결정", "source": "scripts/generate-clinic-appointment-idempotent-replay-visuals.mjs" },
+    { "id": "outcome-0", "label": "PROCESSED", "source": "scripts/generate-clinic-appointment-idempotent-replay-visuals.mjs" },
+    { "id": "outcome-1", "label": "DUPLICATE", "source": "scripts/generate-clinic-appointment-idempotent-replay-visuals.mjs" },
+    { "id": "outcome-2", "label": "RETRYABLE / QUARANTINED", "source": "scripts/generate-clinic-appointment-idempotent-replay-visuals.mjs" }
+  ],
+  "edges": [
+    { "id": "message-1", "from": "caller", "to": "api", "kind": "command", "source": "scripts/generate-clinic-appointment-idempotent-replay-visuals.mjs" },
+    { "id": "message-2", "from": "api", "to": "transaction", "kind": "idempotency", "source": "scripts/generate-clinic-appointment-idempotent-replay-visuals.mjs" },
+    { "id": "message-3", "from": "transaction", "to": "consumer", "kind": "outbox", "source": "scripts/generate-clinic-appointment-idempotent-replay-visuals.mjs" },
+    { "id": "message-4", "from": "api", "to": "transaction", "kind": "replay", "source": "scripts/generate-clinic-appointment-idempotent-replay-visuals.mjs" },
+    { "id": "message-5", "from": "transaction", "to": "consumer", "kind": "redelivery", "source": "scripts/generate-clinic-appointment-idempotent-replay-visuals.mjs" },
+    { "id": "message-6", "from": "consumer", "to": "replay", "kind": "duplicate", "source": "scripts/generate-clinic-appointment-idempotent-replay-visuals.mjs" },
+    { "id": "message-7", "from": "consumer", "to": "replay", "kind": "quarantine", "source": "scripts/generate-clinic-appointment-idempotent-replay-visuals.mjs" },
+    { "id": "message-8", "from": "replay", "to": "consumer", "kind": "approval", "source": "scripts/generate-clinic-appointment-idempotent-replay-visuals.mjs" },
+    { "id": "message-9", "from": "replay", "to": "consumer", "kind": "redrive", "source": "scripts/generate-clinic-appointment-idempotent-replay-visuals.mjs" },
+    { "id": "message-10", "from": "consumer", "to": "replay", "kind": "outcome", "source": "scripts/generate-clinic-appointment-idempotent-replay-visuals.mjs" },
+    { "id": "decision-outcome-0", "from": "final-decision", "to": "outcome-0", "kind": "terminal", "source": "scripts/generate-clinic-appointment-idempotent-replay-visuals.mjs" },
+    { "id": "decision-outcome-1", "from": "final-decision", "to": "outcome-1", "kind": "terminal", "source": "scripts/generate-clinic-appointment-idempotent-replay-visuals.mjs" },
+    { "id": "decision-outcome-2", "from": "final-decision", "to": "outcome-2", "kind": "terminal", "source": "scripts/generate-clinic-appointment-idempotent-replay-visuals.mjs" }
+  ],
+  "behavior": { "branches": 3, "loops": 2 },
+  "repairs": []
+}

@@ -1,0 +1,222 @@
+---
+title: "[Operations 9] Retries and Replay Must Change an Appointment Only Once"
+description: "How HTTP retries, outbox redelivery, consumer duplicates, and quarantine replay converge on one appointment change and one follow-up action, with implementation evidence and a STAFF operations screen."
+sidebar:
+  order: -202608181800
+blog:
+  date: 2026-08-18T18:00:00+09:00
+  image: /assets/clinic-appointment-idempotent-replay-hero.png
+  imageAlt: A 3D workbench separating duplicate appointment changes through an inbox and quarantine
+  cardDescription: "Connect the HTTP idempotency key, outbox, inbox, quarantine, and STAFF action queue so retries never apply the same appointment change twice."
+  tags: ["operations", "reliability", "idempotency", "messaging", "appointment-service", "kotlin", "example", "timefold"]
+---
+
+import ClinicAppointmentSeries from '../../../components/ClinicAppointmentSeries.astro';
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-idempotent-replay-hero.png" alt="A 3D workbench separating duplicate appointment changes through an inbox and quarantine" loading="eager" />
+  <figcaption>Record the appointment change once; treat retries and replay as work that checks an existing result.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-18 · Building a Clinic Appointment Service · Preventing duplicate changes during retries and replay</p>
+
+Suppose a client sends `POST /appointments` and never receives a response. It sends the same request again. The first request may
+already have committed an appointment, and its outbox row may already have been relayed. If the relay delivers the event again, the
+consumer sees a duplicate. If an exception moved the event to quarantine and STAFF replays it, the same appointment and notification
+could be changed twice unless each boundary keeps its own identity.
+
+“The network was unreliable, so run it one more time” is not a sufficient rule. Retrying execution and changing an appointment again
+are different operations. The service must bind the request, event, and replay to logical identities and reuse results that already
+exist.
+
+The conclusion is simple:
+
+> At the HTTP boundary, `Idempotency-Key` and a request fingerprint connect one request to one appointment create or change. The
+> appointment transaction commits the appointment row and outbox intent together. A consumer uses `logicalConsumerId` and event
+> identity to prevent inbox duplicates. A failure becomes `RETRYABLE`, then `QUARANTINED` after the attempt limit; STAFF replay is
+> allowed only after checking `requestId`, tenant and clinic scope, and provenance. The flow ends with an explicit Final State
+> Decision: `PROCESSED`, `DUPLICATE`, `RETRYABLE`, or `QUARANTINED`.
+
+The diagram and operations screen below are synthetic design visuals. They contain no real patient or clinic data. The article also
+separates what the HTTP idempotency conformance tests prove from operational boundaries that still need process-restart and external
+provider validation.
+
+## A missing response does not tell you that the appointment was unchanged
+
+When a client receives a timeout after `POST /appointments`, it should preserve the `Idempotency-Key` before retrying the same body.
+Changing the key gives the server a new command. Reusing it lets the server distinguish these cases:
+
+| Situation | Values checked | Appointment operation | Result returned to the caller |
+| --- | --- | --- | --- |
+| First request | Tenant and clinic scope, `Idempotency-Key`, request fingerprint | Store the appointment and idempotency record in one transaction | New appointment result |
+| Same key and same fingerprint | Existing idempotency record and its appointment | Read the existing result without a new change | Replay the stored appointment result |
+| Same key and different fingerprint | Existing record versus the new request | Apply no additional appointment change | Key-reuse conflict (409) |
+
+The current `AppointmentService.create` looks up `tenantGroupId`, `clinicId`, and `Idempotency-Key` together. A new request stores the
+appointment and idempotency row, then leaves the notification intent and appointment outbox in the same transaction. An existing key
+is accepted only when its fingerprint matches. If two requests race and one hits a unique constraint, the service reads the stored
+result and converges on it.
+
+This boundary does not mean that every retry returns 201. It means that the service checks how the first request ended, whether the key
+is still within its retention window, and whether the fingerprint is the same before deciding what to return. Once a key expires, the
+same string may represent a new request, so a caller must retain a key for the life of one business command and understand its expiry
+policy.
+
+## The one-change boundary has three parts
+
+Retries and replay cannot be handled by one deduplication table. Three boundaries own different identities:
+
+1. **HTTP command boundary**: `Idempotency-Key` and the fingerprint decide whether two requests are the same command.
+2. **Appointment and outbox transaction boundary**: the appointment change and the intent to publish its event commit together. The
+   system must not leave an appointment without its outbox row, or an outbox row without the appointment change.
+3. **Consumer and replay boundary**: `logicalConsumerId`, event identity, replay `requestId`, and provenance determine whether a
+   handler and its follow-up side effect may run.
+
+The HTTP key and the consumer inbox key must not be collapsed into one identifier. The HTTP key says that a caller sent the same
+command again. The inbox identity says whether one logical consumer already processed one event. A replay `requestId` records which
+scope STAFF approved for another bounded read. Each answer is different, so each identity stays visible in its own contract.
+
+<figure class="bt4k-sequence" data-diagram-title="One appointment change across retries and replay">
+  <img src="/assets/clinic-appointment-idempotent-replay-sequence-01-en.png" alt="A sequence diagram showing the caller, appointment API, appointment transaction, consumer runtime, and STAFF replay checking the Idempotency-Key fingerprint, committing the appointment and outbox, handling redelivery and inbox duplicates, approving quarantine replay, and making a final state decision" loading="lazy" />
+  <figcaption>HTTP retries and message redelivery check different identities at different boundaries. The three terminal routes begin independently at the Final State Decision rather than sharing a fan-out bus; `RETRYABLE` and `QUARANTINED` share the STAFF review route but remain distinct states.</figcaption>
+</figure>
+
+## The appointment transaction records the change and its publication intent together
+
+Saving an appointment and then publishing an event through a separate asynchronous call creates a gap between the two operations. A
+timeout in that gap can leave an appointment changed without an event, while a later retry can publish the event twice and invoke a
+downstream action twice.
+
+The current implementation keeps these facts in one appointment transaction:
+
+```kotlin
+transaction {
+    val appointment = appointmentRepository.save(newAppointmentRecord(request))
+    idempotencyRepository.save(idempotencyRecord(appointment, requestFingerprint))
+    notificationWriter.appointmentCreated(tenantGroupId, appointment, appointment.version, resolution)
+    appointmentOutboxWriter.created(
+        scope = TenantClinicScope(tenantGroupId, request.clinicId),
+        appointment = appointment,
+        context = AppointmentMessagingContext.from(commandContext),
+    )
+}
+```
+
+This code does not claim that a provider has already delivered a notification. It records the durable fact that the appointment
+transaction created the notification intent and the event to be relayed. A relay or consumer can run again later and still decide
+from the appointment state and outbox identity that already exist.
+
+## The consumer inbox turns a duplicate message into a normal outcome
+
+Kafka and a relay may deliver at least once. Receiving the same event twice is therefore an expected input, not an exceptional
+condition. `AppointmentConsumerRuntime` checks the inbox before calling the handler:
+
+| Inbox state | Meaning | Next handling |
+| --- | --- | --- |
+| `PROCESSING` | Another worker holds a lease | Wait while the lease is valid or finish as a duplicate |
+| `PROCESSED` | This logical consumer already completed the event | Skip the handler and side effect; return `DUPLICATE` |
+| `RETRYABLE` | A temporary error can be attempted again | Check the bounded attempt and lease, then retry |
+| `QUARANTINED` | A schema, scope, or handler failure needs review | Stop normal delivery and create a STAFF task |
+
+The identity is not just the event ID. `logicalConsumerId` and the event identity together express “consumer A processed it while
+consumer B has not.” The inbox stores metadata, state, attempt count, lease, and reason without retaining the raw Kafka payload. That
+keeps the replay scope narrow and prevents raw patient data from leaking into the operations screen.
+
+After a successful handler call, only the worker that still owns the lease may mark the inbox `PROCESSED`. A late worker whose lease
+expired cannot overwrite the result of the worker that finished first. A temporary database failure instead becomes `RETRYABLE`, with
+its next attempt time and reason available to STAFF.
+
+## Quarantine replay is an approved execution of the same logical work
+
+The most dangerous replay implementation puts a quarantined payload back into the normal consumer path as if it were a new message.
+That loses the original deduplication identity and scope, so an already completed appointment change or notification can run again.
+
+The current replay boundary checks these values first:
+
+- The STAFF actor is the approver and has the required `APPOINTMENT_REPLAY_OPERATOR` role.
+- `requestId` has the canonical form, and a reused request ID matches its existing audit row.
+- Tenant, clinic, consumer, partition, and offset range match the original provenance.
+- The range, maximum records, and maximum execution time are bounded.
+- A separate replay consumer group is used without moving the operating consumer group's offsets.
+- The original logical inbox identity is preserved so replay cannot bypass normal deduplication.
+
+Replay is therefore not a new appointment-change command. It is an approved, bounded execution of the same logical work. If any replay
+item remains `RETRYABLE` or `QUARANTINED`, the result is not wrapped as a success; STAFF receives the next task. `DUPLICATE` is a
+normal outcome because it says that an earlier execution already completed and no second change was applied.
+
+## An operations screen should lead with state, evidence, and next action
+
+Showing only “two failures” does not tell STAFF what to do. Every queue row should answer these questions:
+
+1. Which tenant and clinic own the appointment?
+2. Which logical consumer handled the event?
+3. Did the appointment actually change, was an existing result reused, or can the item be attempted again?
+4. For quarantine, do `requestId` and provenance fit the approved replay scope?
+5. Is the next action to read, schedule a retry, approve replay, or keep the item quarantined?
+
+<div class="bt4k-operations-screen" data-visual-title="Appointment change deduplication STAFF operations screen mockup">
+  <img class="bt4k-screenshot" src="/assets/clinic-appointment-idempotent-replay-operations-screen-en.png" alt="A STAFF operations screen showing tenant and clinic scope, processed, duplicate, retry-wait, and quarantine metrics, an action queue with target, logical consumer, state, reason, and next action, an evidence panel with requestId, fingerprint, and provenance, and permitted next actions" loading="lazy" />
+  <p class="bt4k-operations-screen-caption">This is a synthetic operations screen. The queue separates rows that may be retried from rows that only need a result read, and shows scope, fingerprint, and provenance instead of the raw payload.</p>
+</div>
+
+The four metrics also carry different meanings:
+
+| Metric | What STAFF should read | Immediate action |
+| --- | --- | --- |
+| Processed | The appointment change and required follow-up finished | Read the result and audit evidence |
+| Duplicate | An existing inbox or HTTP result was reused | Do not attempt a second change |
+| Retry wait | A temporary error and next time are recorded | Recheck at the next attempt time |
+| Quarantine | Normal delivery stopped while reason and provenance were retained | Check scope, then approve replay or keep it quarantined |
+
+`DUPLICATE` does not mean “the operation failed.” It means the system reused a completed result and did not apply a second appointment
+change. `QUARANTINED` does not mean “STAFF must press replay.” If the schema, scope, or provenance cannot be verified, keeping the item
+quarantined is the correct next action.
+
+## Read implementation, design boundaries, and operational evidence separately
+
+Mixing implemented code and unverified production contracts in one claim makes both the article and the operations screen harder to
+trust. The current evidence divides as follows:
+
+| Category | What this article can verify |
+| --- | --- |
+| Implemented now | Tenant and clinic scoped idempotency in `AppointmentService`, fingerprint conflict, expiry handling, concurrent convergence, and the appointment, notification-intent, and outbox transaction boundary |
+| Implemented now | Consumer inbox states `PROCESSING`, `PROCESSED`, `RETRYABLE`, and `QUARANTINED`, with leases, bounded attempts, and scope checks |
+| Implemented now | Replay request audit, a separate replay group, bounded partition/range execution, and preservation of the original logical inbox identity |
+| Proven by current tests | Spring MVC HTTP conformance for no-key, terminal replay, fingerprint conflict, expiry, and one appointment under concurrent requests, plus existing durable database replay tests |
+| Requires separate operational proof | Recovery after process restart, real broker and database failure recovery, external-provider exactly-once behavior, authorization and rate limits under production traffic |
+| Next hardening work | Connect every command and side effect to the same logical identity, then add metrics, alerts, and STAFF drills for replay and quarantine queues |
+
+Passing the HTTP conformance fixture does not prove exactly-once behavior after a process restart or at an external provider. The
+conformance boundary repeatedly verifies bounded wait, owner/waiter behavior, cancellation, fingerprint handling, and replay-header
+safety. Durable database and messaging-runtime proofs remain separate tests. This distinction prevents “the test passed” from being
+read as “every production failure is solved.”
+
+## Five checks before STAFF approves a replay
+
+1. Does the selected tenant and clinic match the event's replay scope?
+2. Does `requestId` match the audit request already bound to this range and provenance?
+3. Is the logical consumer the original consumer rather than an unrelated group used as a shortcut?
+4. Is the inbox `QUARANTINED` or an allowed `RETRYABLE` state, rather than an already `PROCESSED` item?
+5. Will the result be recorded as `PROCESSED`, `DUPLICATE`, `RETRYABLE`, or `QUARANTINED`, with a next action left on the screen?
+
+If any check fails, disable replay and record the reason. Reliability does not come from permitting more retries; it comes from being
+able to explain how many times one business command was executed and why.
+
+## Sources
+
+- [Operations 8: Data Boundaries for Running Multiple Clinics in One Appointment Service](/blog/clinic-appointment-multitenant-data-boundaries/)
+- [Operations 7: How Appointment Results Reach External Systems and Statistics](/blog/clinic-appointment-external-results/)
+- [Operations 6: Why Notifications and Reminders Are Separate Services](/blog/clinic-appointment-notification-reminder/)
+- [HTTP idempotency conformance design](https://github.com/bluetape4k/clinic-appointment/blob/3658cced024c906c2b8eff29cdce6ab5bd3df6c7/docs/superpowers/specs/2026-08-10-appointment-http-idempotency-conformance-design.md)
+- [HTTP idempotency conformance implementation plan](https://github.com/bluetape4k/clinic-appointment/blob/3658cced024c906c2b8eff29cdce6ab5bd3df6c7/docs/superpowers/plans/2026-08-10-appointment-http-idempotency-conformance-plan.md)
+- [`AppointmentService.kt`](https://github.com/bluetape4k/clinic-appointment/blob/3658cced024c906c2b8eff29cdce6ab5bd3df6c7/appointment-api/src/main/kotlin/io/bluetape4k/clinic/appointment/api/service/AppointmentService.kt)
+- [`AppointmentConsumerRuntime.kt`](https://github.com/bluetape4k/clinic-appointment/blob/3658cced024c906c2b8eff29cdce6ab5bd3df6c7/appointment-messaging/src/main/kotlin/io/bluetape4k/clinic/appointment/messaging/AppointmentConsumerRuntime.kt)
+- [`AppointmentConsumerInboxStore.kt`](https://github.com/bluetape4k/clinic-appointment/blob/3658cced024c906c2b8eff29cdce6ab5bd3df6c7/appointment-messaging/src/main/kotlin/io/bluetape4k/clinic/appointment/messaging/AppointmentConsumerInboxStore.kt)
+- [`AppointmentReplayService.kt`](https://github.com/bluetape4k/clinic-appointment/blob/3658cced024c906c2b8eff29cdce6ab5bd3df6c7/appointment-messaging/src/main/kotlin/io/bluetape4k/clinic/appointment/messaging/AppointmentReplayService.kt)
+- [`KafkaAppointmentReplaySource.kt`](https://github.com/bluetape4k/clinic-appointment/blob/3658cced024c906c2b8eff29cdce6ab5bd3df6c7/appointment-messaging/src/main/kotlin/io/bluetape4k/clinic/appointment/messaging/KafkaAppointmentReplaySource.kt)
+- [`AppointmentReplayAuthorization.kt`](https://github.com/bluetape4k/clinic-appointment/blob/3658cced024c906c2b8eff29cdce6ab5bd3df6c7/appointment-messaging/src/main/kotlin/io/bluetape4k/clinic/appointment/messaging/AppointmentReplayAuthorization.kt)
+- [`AppointmentConsumerContracts.kt`](https://github.com/bluetape4k/clinic-appointment/blob/3658cced024c906c2b8eff29cdce6ab5bd3df6c7/appointment-messaging/src/main/kotlin/io/bluetape4k/clinic/appointment/messaging/AppointmentConsumerContracts.kt)
+
+## Series
+
+<ClinicAppointmentSeries current="clinic-appointment-idempotent-replay" locale="en" />

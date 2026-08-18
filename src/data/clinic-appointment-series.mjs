@@ -195,4 +195,11 @@ export const clinicAppointmentSeries = Object.freeze([
     ko: '[운영 확장 8] 여러 병원을 한 예약 서비스로 운영할 때 지켜야 할 데이터 경계',
     en: '[Operations 8] Data Boundaries for Running Multiple Clinics in One Appointment Service',
   },
+  {
+    id: 'operations-9',
+    group: 'operations',
+    slug: 'clinic-appointment-idempotent-replay',
+    ko: '[운영 확장 9] 재시도와 replay가 있어도 예약은 한 번만 바꾼다',
+    en: '[Operations 9] Retries and Replay Must Change an Appointment Only Once',
+  },
 ]);
