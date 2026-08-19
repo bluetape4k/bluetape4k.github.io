@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1860" height="1240" viewBox="0 0 1860 1240" role="img" aria-labelledby="title desc" data-locale="ko">
+<title id="title">환자 채널은 예약 사실을 보여 주고, 예약 서비스가 결정한다</title><desc id="desc">포털·알림·모바일 채널의 화면 상태와 예약 서비스의 기준 데이터 원본을 분리합니다.</desc>
+<defs>
+  <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#071323"/><stop offset="1" stop-color="#111c32"/></linearGradient>
+  <linearGradient id="screen" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#091321"/><stop offset="1" stop-color="#101b2e"/></linearGradient>
+
+  <marker id="portal-blue-arrow" viewBox="0 0 10 10" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+    <path d="M 0 0 L 10 5 L 0 10 Z" fill="#60a5fa" data-solid-head="true"/>
+  </marker>
+  <marker id="portal-cyan-arrow" viewBox="0 0 10 10" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+    <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2dd4bf" data-solid-head="true"/>
+  </marker>
+  <marker id="portal-amber-arrow" viewBox="0 0 10 10" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+    <path d="M 0 0 L 10 5 L 0 10 Z" fill="#fbbf24" data-solid-head="true"/>
+  </marker>
+  <marker id="portal-purple-arrow" viewBox="0 0 10 10" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+    <path d="M 0 0 L 10 5 L 0 10 Z" fill="#a78bfa" data-solid-head="true"/>
+  </marker>
+  <marker id="portal-red-arrow" viewBox="0 0 10 10" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+    <path d="M 0 0 L 10 5 L 0 10 Z" fill="#fb7185" data-solid-head="true"/>
+  </marker>
+  <style>
+    .title{font-family:"goorm Sans", "Apple SD Gothic Neo", sans-serif;font-size:38px;font-weight:800;fill:#f4f8ff}
+    .subtitle{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:17px;fill:#a9bad0}
+    .lane-title{font-family:"goorm Sans", "Apple SD Gothic Neo", sans-serif;font-size:22px;font-weight:800;fill:#f4f8ff}
+    .lane-subtitle{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:12px;fill:#8299b2}
+    .card-title{font-family:"goorm Sans", "Apple SD Gothic Neo", sans-serif;font-size:22px;font-weight:800;fill:#f4f8ff}
+    .card-body{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:14px;fill:#b9cbe0}
+    .small{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:12px;fill:#8fa7c1}
+    .connector{fill:none;stroke-width:4;stroke-linecap:round}
+    .decision{fill:#171b36;stroke:#a78bfa;stroke-width:2}
+    .decision-title{font-family:"goorm Sans", "Apple SD Gothic Neo", sans-serif;font-size:21px;font-weight:800;fill:#e5d9ff}
+    .decision-body{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:12px;fill:#d2c4f4}
+    .outcome{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:11px;font-weight:800;fill:#f8fbff}
+    .ui-eyebrow,.ui-label,.ui-mono,.ui-button{font-family:"goorm Sans Code", "goorm Sans", monospace}
+    .ui-title,.ui-section,.ui-card-title,.ui-value{font-family:"goorm Sans", "Apple SD Gothic Neo", sans-serif;font-weight:800;fill:#f4f8ff}
+    .ui-eyebrow{font-size:12px;font-weight:800;fill:#7fc9ff}
+    .ui-title{font-size:34px}.ui-section{font-size:21px}.ui-card-title{font-size:23px}
+    .ui-label{font-size:13px;fill:#dce8f5}.ui-mono{font-size:12px;fill:#a9bad0}.ui-value{font-size:34px}.ui-button{font-size:13px;font-weight:800;fill:#dce8f5}
+    .muted{font-family:"goorm Sans Code", "goorm Sans", monospace;font-size:12px;fill:#8299b2}.divider{stroke:#263d59;stroke-width:1}
+  </style>
+</defs>
+<rect width="1860" height="1240" fill="url(#canvas)"/><rect x="24" y="24" width="1812" height="1192" rx="32" fill="none" stroke="#2d4665" stroke-width="2"/>
+<text class="title" x="62" y="78" >환자 채널은 예약 사실을 보여 주고, 예약 서비스가 결정한다</text><text class="subtitle" x="64" y="112" >포털·알림·모바일 채널의 화면 상태와 예약 서비스의 기준 데이터 원본을 분리합니다.</text>
+<rect x="55" y="168" width="570" height="860" rx="26" fill="#0b192c" stroke="#2d4665" stroke-width="2"/><text class="lane-title" x="83" y="208">환자 채널</text><text class="lane-subtitle" x="83" y="232">사용자가 보고 누르는 표면</text>
+<rect x="645" y="168" width="570" height="860" rx="26" fill="#0b192c" stroke="#2d4665" stroke-width="2"/><text class="lane-title" x="673" y="208">채널 계약</text><text class="lane-subtitle" x="673" y="232">typed API · 재조회 · 권한 경계</text>
+<rect x="1235" y="168" width="570" height="860" rx="26" fill="#0b192c" stroke="#2d4665" stroke-width="2"/><text class="lane-title" x="1263" y="208">예약 서비스</text><text class="lane-subtitle" x="1263" y="232">예약 상태와 최종 상태 결정</text><path class="connector" d="M575 339 H665" stroke="#2dd4bf" marker-end="url(#portal-cyan-arrow)" data-connector="ko-node-0-0-ko-node-0-1" data-source-node="ko-node-0-0" data-target-node="ko-node-0-1"/><path class="connector" d="M1165 339 H1255" stroke="#2dd4bf" marker-end="url(#portal-cyan-arrow)" data-connector="ko-node-0-1-ko-node-0-2" data-source-node="ko-node-0-1" data-target-node="ko-node-0-2"/><rect x="579" y="289" width="82" height="28" rx="14" fill="#12243a" stroke="#2dd4bf"/><text class="small" x="620" y="308" text-anchor="middle">예약 요청</text>
+<path class="connector" d="M575 589 H665" stroke="#fbbf24" marker-end="url(#portal-amber-arrow)" data-connector="ko-node-1-0-ko-node-1-1" data-source-node="ko-node-1-0" data-target-node="ko-node-1-1"/><path class="connector" d="M1165 589 H1255" stroke="#fbbf24" marker-end="url(#portal-amber-arrow)" data-connector="ko-node-1-1-ko-node-1-2" data-source-node="ko-node-1-1" data-target-node="ko-node-1-2"/><rect x="589" y="539" width="62" height="28" rx="14" fill="#12243a" stroke="#fbbf24"/><text class="small" x="620" y="558" text-anchor="middle">알림</text>
+<path class="connector" d="M575 839 H665" stroke="#60a5fa" marker-end="url(#portal-blue-arrow)" data-connector="ko-node-2-0-ko-node-2-1" data-source-node="ko-node-2-0" data-target-node="ko-node-2-1"/><path class="connector" d="M1165 839 H1255" stroke="#60a5fa" marker-end="url(#portal-blue-arrow)" data-connector="ko-node-2-1-final-state-decision" data-source-node="ko-node-2-1" data-target-node="final-state-decision"/><rect x="579" y="789" width="82" height="28" rx="14" fill="#12243a" stroke="#60a5fa"/><text class="small" x="620" y="808" text-anchor="middle">로드맵</text><path class="connector" d="M1505 683 V745" stroke="#a78bfa" marker-end="url(#portal-purple-arrow)" data-connector="notification-to-decision" data-source-node="ko-node-1-2" data-target-node="final-state-decision"/><g id="ko-node-0-0" data-node="true"><rect x="75" y="245" width="500" height="188" rx="20" fill="#12243a" stroke="#2dd4bf" stroke-width="2"/><text class="card-title" x="99" y="294">/portal 화면</text><text class="card-body" x="99" y="329" ><tspan x="99" dy="0">PATIENT guard</tspan><tspan x="99" dy="24">예약 현황</tspan><tspan x="99" dy="24">내 정보</tspan></text></g>
+<g id="ko-node-0-1" data-node="true"><rect x="665" y="245" width="500" height="188" rx="20" fill="#12243a" stroke="#2dd4bf" stroke-width="2"/><text class="card-title" x="689" y="294">Portal API client</text><text class="card-body" x="689" y="329" ><tspan x="689" dy="0">tenant context</tspan><tspan x="689" dy="24">typed model</tspan></text></g>
+<g id="ko-node-0-2" data-node="true"><rect x="1255" y="245" width="500" height="188" rx="20" fill="#12243a" stroke="#2dd4bf" stroke-width="2"/><text class="card-title" x="1279" y="294">예약 기준 데이터 원본</text><text class="card-body" x="1279" y="329" ><tspan x="1279" dy="0">PROPOSED</tspan><tspan x="1279" dy="24">HELD</tspan><tspan x="1279" dy="24">CONFIRMED</tspan><tspan x="1279" dy="24">EXPIRED</tspan><tspan x="1279" dy="24">CANCELLED</tspan></text></g>
+<g id="ko-node-1-0" data-node="true"><rect x="75" y="495" width="500" height="188" rx="20" fill="#12243a" stroke="#fbbf24" stroke-width="2"/><text class="card-title" x="99" y="544">알림 화면</text><text class="card-body" x="99" y="579" ><tspan x="99" dy="0">SSE 우선</tspan><tspan x="99" dy="24">polling 대체</tspan><tspan x="99" dy="24">읽음 처리</tspan></text></g>
+<g id="ko-node-1-1" data-node="true"><rect x="665" y="495" width="500" height="188" rx="20" fill="#12243a" stroke="#fbbf24" stroke-width="2"/><text class="card-title" x="689" y="544">알림 어댑터</text><text class="card-body" x="689" y="579" ><tspan x="689" dy="0">sequence 정렬</tspan><tspan x="689" dy="24">오래된 결과 재조회</tspan></text></g>
+<g id="ko-node-1-2" data-node="true"><rect x="1255" y="495" width="500" height="188" rx="20" fill="#12243a" stroke="#fbbf24" stroke-width="2"/><text class="card-title" x="1279" y="544">알림 이벤트 경계</text><text class="card-body" x="1279" y="579" ><tspan x="1279" dy="0">예약 상태를 바꾸지 않는 전달 사실</tspan></text></g>
+<g id="ko-node-2-0" data-node="true"><rect x="75" y="745" width="500" height="188" rx="20" fill="#12243a" stroke="#60a5fa" stroke-width="2"/><text class="card-title" x="99" y="794">모바일 채널 로드맵</text><text class="card-body" x="99" y="829" ><tspan x="99" dy="0">WebView</tspan><tspan x="99" dy="24">PWA</tspan><tspan x="99" dy="24">native messaging</tspan></text></g>
+<g id="ko-node-2-1" data-node="true"><rect x="665" y="745" width="500" height="188" rx="20" fill="#12243a" stroke="#60a5fa" stroke-width="2"/><text class="card-title" x="689" y="794">모바일 경계</text><text class="card-body" x="689" y="829" ><tspan x="689" dy="0">오프라인 캐시는 표시용</tspan><tspan x="689" dy="24">재연결 후 재조회</tspan></text></g>
+<g id="final-state-decision" data-node="true"><rect class="decision" x="1255" y="745" width="500" height="188" rx="20"/><text class="card-title" x="1279" y="788">최종 상태 결정</text><text class="decision-body" x="1279" y="817" ><tspan x="1279" dy="0">채널 캐시가 아닌 예약 서비스가 한 가지 결과를 기록</tspan></text><rect x="1277" y="848" width="108" height="30" rx="15" fill="#202243" stroke="#2dd4bf"/><text class="outcome" x="1331" y="868" text-anchor="middle">CONFIRMED</text><rect x="1399" y="848" width="108" height="30" rx="15" fill="#202243" stroke="#fbbf24"/><text class="outcome" x="1453" y="868" text-anchor="middle">EXPIRED</text><rect x="1521" y="848" width="108" height="30" rx="15" fill="#202243" stroke="#fb7185"/><text class="outcome" x="1575" y="868" text-anchor="middle">CANCELLED</text><rect x="1643" y="848" width="108" height="30" rx="15" fill="#202243" stroke="#a78bfa"/><text class="outcome" x="1697" y="868" text-anchor="middle">RETRY</text></g><rect x="55" y="1060" width="1750" height="126" rx="22" fill="#101f34" stroke="#38506d"/><text class="small" x="84" y="1100">채널이 화면을 새로 고쳐도 예약의 기준 데이터 원본은 바뀌지 않습니다. 버튼은 API 계약으로 요청하고, 결과는 다시 읽어 확인합니다.</text><text class="small" x="84" y="1136">실제 운영 전에는 모바일 오프라인·푸시·딥 링크 동작을 별도 검증해야 합니다. 이 그림은 현재 구현과 열린 로드맵을 함께 구분합니다.</text>
+</svg>

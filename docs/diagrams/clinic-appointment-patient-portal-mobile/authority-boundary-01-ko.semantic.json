@@ -1,0 +1,35 @@
+{
+  "kind": "architecture",
+  "source": {
+    "question": "환자 채널의 화면과 예약 서비스의 기준 데이터 원본은 어디에서 갈라지는가?",
+    "revision": "clinic-appointment/develop@f7dc25285f66f623db05ade6b273bb8fe2a8ec8d",
+    "paths": [
+      "docs/diagrams/clinic-appointment-patient-portal-mobile/source-ledger.md",
+      "scripts/generate-clinic-appointment-patient-portal-mobile-assets.mjs"
+    ]
+  },
+  "nodes": [
+    {"id":"portal-ko","label":"/portal 화면","source":"source-ledger.md"},
+    {"id":"api-ko","label":"Portal API client","source":"source-ledger.md"},
+    {"id":"appointment-source-ko","label":"예약 기준 데이터 원본","source":"source-ledger.md"},
+    {"id":"notifications-ko","label":"알림 화면","source":"source-ledger.md"},
+    {"id":"notification-adapter-ko","label":"알림 어댑터","source":"source-ledger.md"},
+    {"id":"notification-boundary-ko","label":"알림 이벤트 경계","source":"source-ledger.md"},
+    {"id":"mobile-roadmap-ko","label":"모바일 채널 로드맵","source":"source-ledger.md"},
+    {"id":"mobile-boundary-ko","label":"모바일 경계","source":"source-ledger.md"},
+    {"id":"final-state-decision-ko","label":"최종 상태 결정","source":"source-ledger.md"}
+  ],
+  "edges": [
+    {"id":"portal-api-ko","from":"portal-ko","to":"api-ko","kind":"request","source":"portal-api-client"},
+    {"id":"api-source-ko","from":"api-ko","to":"appointment-source-ko","kind":"authority","source":"appointment-commitment-facade"},
+    {"id":"notifications-adapter-ko","from":"notifications-ko","to":"notification-adapter-ko","kind":"event","source":"portal-event-stream-adapter"},
+    {"id":"adapter-boundary-ko","from":"notification-adapter-ko","to":"notification-boundary-ko","kind":"re-read","source":"portal-event-stream-adapter"},
+    {"id":"mobile-boundary-ko","from":"mobile-roadmap-ko","to":"mobile-boundary-ko","kind":"roadmap","source":"patient-portal-design"},
+    {"id":"mobile-decision-ko","from":"mobile-boundary-ko","to":"final-state-decision-ko","kind":"authority","source":"patient-portal-design"},
+    {"id":"notification-decision-ko","from":"notification-boundary-ko","to":"final-state-decision-ko","kind":"outcome","source":"portal-api-models"}
+  ],
+  "behavior": {"branches": 2, "loops": 1},
+  "repairs": [
+    {"target":"architecture-card-width","reason":"카드 안의 상태 목록과 연결선 라벨이 잘리지 않도록 카드 폭과 간격을 함께 조정했다.","touches":12}
+  ]
+}

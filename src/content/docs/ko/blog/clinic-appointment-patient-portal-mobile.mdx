@@ -1,0 +1,212 @@
+---
+title: "[운영 확장 11·부록] 환자 포털과 모바일 채널은 예약을 어떻게 보여 주는가"
+description: "환자 포털과 모바일 채널이 예약 서비스의 기준 데이터를 어떻게 읽고 보여 주는지, 현재 구현·승인된 설계·열린 로드맵을 나누어 설명합니다."
+sidebar:
+  order: -202608190900
+blog:
+  date: 2026-08-19T09:00:00+09:00
+  image: /assets/clinic-appointment-patient-portal-mobile-hero.png
+  imageAlt: 예약 서비스의 기준 데이터 원본과 환자 포털·모바일 화면을 나란히 확인하는 작은 로봇 작업자들의 3D 작업대
+  cardDescription: "환자 포털의 예약 현황·알림·내 정보 화면, ETag와 멱등 키를 사용하는 예약 관련 작업, SSE와 polling 대체 경로, 모바일 채널의 열린 로드맵을 한 글에서 구분합니다."
+  tags: ["architecture", "operations", "appointment-service", "patient-portal", "mobile", "notification", "resilience", "timefold", "example"]
+---
+
+import ClinicAppointmentSeries from '../../../../components/ClinicAppointmentSeries.astro';
+
+<figure class="bt4k-blog-hero">
+  <img src="/assets/clinic-appointment-patient-portal-mobile-hero.png" alt="예약 서비스의 기준 데이터 원본과 환자 포털·모바일 화면을 나란히 확인하는 작은 로봇 작업자들의 3D 작업대" loading="eager" />
+  <figcaption>환자 화면은 예약을 보여 주는 창구이고, 예약의 최종 상태를 결정하는 곳은 예약 서비스입니다.</figcaption>
+</figure>
+
+<p class="bt4k-post-meta">2026-08-19 · 병원 예약 서비스 개발기 · 환자 포털과 모바일 채널</p>
+
+환자가 포털에서 보는 예약 카드와 예약 서비스가 저장한 예약 사실은 서로 다른 데이터가 아닙니다. 다만 이 사실을 읽는
+책임 범위가 서로 다릅니다. 포털은 `CONFIRMED`라는 상태와 날짜·시간을 보여 주고, 예약 서비스는 그 상태가
+어떤 요청과 버전 확인을 거쳐 저장되었는지 책임집니다. 포털 화면의 캐시나 모바일 푸시가 늦었다고 예약을 다시 만들거나
+취소하면 안 되는 이유가 여기에 있습니다.
+
+이번 글의 결론은 다음과 같습니다.
+
+> 환자 채널은 예약을 조회하고 작업을 요청하지만, 예약의 기준 데이터 원본은 예약 서비스에 둡니다. 버튼을 누른 뒤에는
+> ETag와 멱등 키로 충돌과 중복을 막고, 화면을 낙관적으로 바꾼 것만으로 성공 처리하지 않고 서버에서 예약을 다시 읽어
+> 확인합니다. 알림은 SSE를 우선 사용하고 연결이 유지되지 않으면 polling으로 대체하며, 순서가 어긋나거나 오래된 결과를
+> 받으면 예약 상태를 다시 조회합니다. 모바일 WebView·PWA·native messaging·오프라인 캐시는 현재 운영 기능으로 확인된
+> 내용이 아니라 별도로 검증해야 할 로드맵입니다.
+
+아래 그림과 화면은 실제 환자 정보나 제품 캡처가 아니라 현재 저장소의 계약을 설명하기 위한 합성 시안입니다. 본문에서
+현재 구현, 승인된 설계, 아직 열려 있는 로드맵을 구분해 설명합니다.
+
+## `/portal`은 환자 채널의 시작점이다
+
+현재 프론트엔드에는 `/portal` 지연 로딩 경로(lazy route)가 있고, `patientAuthGuard`가 환자 세션을 확인한 뒤 포털 셸을 엽니다.
+포털 셸의 하위 메뉴는 `예약 현황`, `알림`, `내 정보`입니다. 이 메뉴가 있다는 사실은 화면 구성을 보여 주지만, 예약의 기준 데이터
+원본을 포털이 소유한다는 뜻은 아닙니다.
+
+`patient-portal.routes.ts`는 예약·알림·프로필 페이지를 포털 아래에 배치하고, API 클라이언트는 요청에 tenant context도 함께
+포함합니다. 따라서 환자 화면에서 예약을 조회할 때에는 “어떤 환자인가”뿐 아니라 “어느 `tenant`와 `clinic` 범위에 속하는가”도
+같이 확인해야 합니다.
+
+| 화면 요소 | 현재 저장소에서 확인되는 계약 | 화면이 소유하지 않는 것 |
+| --- | --- | --- |
+| `/portal` 셸 | `patientAuthGuard`, `예약 현황`·`알림`·`내 정보` 탐색 | 예약 상태를 임의로 확정하거나 취소하는 권한 |
+| Portal API client | tenant context와 타입이 있는 요청·응답 모델 | 브라우저 캐시를 기준 데이터 원본으로 삼는 일 |
+| 예약 현황 | `CommitmentStatus`와 상품·회차·시간을 표시 | `CONFIRMED`를 로컬 상태만으로 만들어 내는 일 |
+| 알림 | sequence와 읽음 상태를 화면에 반영 | 알림 전달 지연을 예약 실패로 해석하는 일 |
+| 내 정보 | 포털 하위 경로와 세션 경계 | CRM 원본 프로필을 예약 서비스의 값으로 덮어쓰는 일 |
+
+`PatientProfilePageComponent`의 현재 화면은 프로필 상세가 모두 구현된 운영 화면이 아니라 로딩 상태와 셸만 보여 주는 단계입니다.
+따라서 이 글에서는 “내 정보 메뉴가 있다”와 “프로필 편집·모바일 인증까지 운영에 제공한다”를 같은 의미로 설명하지 않습니다.
+
+## 예약 카드는 화면용 표현이고, 상태는 예약 서비스의 계약이다
+
+포털의 예약 카드는 환자가 한눈에 읽을 수 있도록 상품명, 병원명, 날짜·시간, 회차와 상태를 묶어 보여 줍니다. 현재
+`appointment-summary.ts`는 상품명이 있으면 상품명을 사용하고, 없으면 안전한 대체 문구를 사용합니다. 회차 정보도
+`3회차 / 10회`처럼 전체 회차가 있을 때와 `3회차`만 확인할 수 있을 때를 구분해 표시합니다. 값이 없다고 빈 문자열이나
+임의의 “미정” 문구를 덧붙이지 않습니다.
+
+상태는 `portal-api.models.ts`에 정의된 `PROPOSED`, `HELD`, `CONFIRMED`, `EXPIRED`, `CANCELLED` 계약을 따릅니다.
+화면에는 읽기 쉬운 한국어 상태를 표시하더라도, API와 저장소의 상태 식별자를 다른 의미의 단어로 바꾸면 안 됩니다.
+
+```text
+상품명       레이저 토닝
+병원         클리닉 A · 피부과
+일시         2026년 9월 18일 14:30–15:10
+회차         3회차 / 10회
+상태         CONFIRMED → 확정
+```
+
+여기서 `확정`은 화면용 표현이고 `CONFIRMED`는 계약상의 상태 식별자입니다. 포털이 `확정` 배지를 먼저 그린 뒤 API
+응답을 기다리는 방식으로 구현하면, 네트워크 지연 중에 실제 예약과 다른 화면이 보일 수 있습니다. 화면은 로딩·오류·재조회
+상태를 별도로 표현하고, 마지막으로 읽은 예약 결과의 시각과 범위를 함께 기록해야 합니다.
+
+<figure class="bt4k-architecture" data-diagram-title="환자 채널과 예약 서비스의 책임 경계">
+  <img src="/assets/clinic-appointment-patient-portal-mobile/clinic-appointment-patient-portal-mobile-authority-01-ko.png" alt="환자 채널의 포털·알림·모바일 로드맵이 채널 계약을 거쳐 예약 기준 데이터 원본과 알림 이벤트 경계, 최종 상태 결정으로 이어지는 책임 경계 도표" loading="lazy" />
+  <figcaption>포털과 모바일은 예약을 조회하고 요청하는 채널입니다. `최종 상태 결정`은 채널 캐시가 아니라 예약 서비스 쪽에 둡니다. 모바일 카드는 현재 운영 기능이 아니라 열린 로드맵임을 분리해 표시했습니다.</figcaption>
+</figure>
+
+그림의 연결선은 세 가지 관계만 보여 줍니다. 포털의 예약 관련 작업이 어떤 API 계약으로 전달되는지, 알림 화면이 어떤 순서와
+재조회 규칙을 사용하는지, 모바일 계획이 예약 서비스의 책임을 대신하지 않는지를 각각 설명합니다. 연결선이 카드 안이
+아니라 카드 경계에서 시작하는 이유도 같습니다. 화면의 표시 영역과 예약 서비스의 상태 변경 영역을 섞어 읽지 않게 하려는
+것입니다.
+
+## 버튼을 눌러도 화면이 예약 상태를 결정하지 않는다
+
+환자가 `예약 변경 요청`, `예약 취소`, `수락`, `거절` 버튼을 눌렀을 때 포털이 먼저 화면을 바꾸고 나중에 서버에 맞추면
+충돌을 숨기기 쉽습니다. 현재 `AppointmentCommitmentFacade`는 요청·조회·수락·거절·취소 흐름을 한 곳에서 관리하고,
+같은 작업을 동시에 보내지 않도록 busy guard를 둡니다. 요청에는 세션 식별자와 멱등 키를 넣고, 변경 요청에는 최신 ETag를
+함께 보냅니다.
+
+흐름을 축약하면 다음과 같습니다.
+
+```text
+현재 예약 읽기
+  → 현재 ETag와 작업 의도를 보관
+  → 수락·거절·취소 요청에 ETag + Idempotency-Key 전송
+  → 412 Precondition Failed이면 예약을 다시 읽음
+  → 성공·충돌·만료 결과를 화면에 표시
+  → 마지막으로 예약을 다시 읽어 상태를 확정
+```
+
+이 과정에서 `ETag`는 “내가 읽은 버전과 현재 버전이 같은가”를 확인하는 조건이고, `Idempotency-Key`는 같은 사용자가 버튼을 두 번
+눌렀을 때 같은 명령을 다시 실행하지 않게 하는 식별자입니다. 둘은 같은 문제를 해결하지 않습니다. ETag만 있으면 중복
+요청을 구분하기 어렵고, 멱등 키만 있으면 오래된 화면이 최신 예약을 덮어쓸 수 있습니다.
+
+`412` 응답이 오면 “버튼을 다시 눌러 보세요”라고만 안내하지 않습니다. 다른 탭이나 STAFF가 먼저 예약을 바꾸었을 수
+있으므로 최신 예약을 다시 읽고, 환자가 지금 할 수 있는 작업을 다시 계산합니다. `410 Gone`처럼 제안이 만료된 경우에는
+만료 사실과 새 빈시간을 찾는 다음 작업을 구분해 보여 줍니다. 충돌을 자동으로 덮어쓰지 않으면 환자는 한 번 더 확인해야
+하므로 불편할 수 있습니다. 하지만 이미 다른 사람이 확정한 예약을 조용히 바꾸는 것보다 안전합니다.
+
+## 알림은 빠르게 전하고, 예약 조회가 최종 확인을 맡는다
+
+현재 `PortalEventStreamAdapter`는 `/api/{tenant}/notifications/stream` SSE를 먼저 시도하고, 연결이 유지되지 않으면
+`PortalApiClient.getNotifications()` polling으로 대체합니다. SSE가 빠르다는 이유만으로 SSE 이벤트를 예약 상태의 최종
+결과로 취급하지 않습니다.
+
+알림 수신 규칙은 다음처럼 나뉩니다.
+
+| 상황 | 채널의 처리 | 예약 서비스에 대한 태도 |
+| --- | --- | --- |
+| SSE가 정상 수신됨 | `sequence`에 따라 정렬하고 읽음 상태를 표시 | 이벤트를 참고하고 필요한 예약을 다시 읽음 |
+| 순서가 거꾸로 도착함 | 오래된 이벤트를 버리고 예약을 다시 조회 | 알림 순서가 예약 상태를 덮어쓰지 않음 |
+| `412` 충돌을 받음 | 최신 예약을 다시 읽어 화면을 갱신 | 환자의 마지막 화면을 기준으로 쓰지 않음 |
+| `410 Gone` | 제안 만료와 새 빈시간을 찾는 다음 작업을 함께 표시 | 만료된 제안을 확정 상태로 복구하지 않음 |
+| `503`과 `Retry-After` | 재연결 또는 polling 시점을 계산 | 알림 장애를 예약 취소로 해석하지 않음 |
+
+알림 화면에서 “예약이 확정되었습니다”라는 문구를 읽었다고 해서 그 문구가 예약을 확정한 것은 아닙니다. 확정은 예약
+서비스가 저장한 상태이고, 알림은 그 상태를 환자에게 전달하는 별도 경로입니다. 이 구분이 있어야 푸시가 늦거나 브라우저
+탭이 잠들어도 예약 상태를 중복해서 변경하지 않습니다.
+
+## 환자 화면에서 모바일 기능과 모바일 로드맵을 섞지 않는다
+
+현재 저장소에서 확인할 수 있는 것은 Angular 기반 포털 경로와 브라우저 화면 계약입니다. `frontend/appointment-frontend`
+README에는 `/portal` 실행과 API 서버 의존성, 포털 테스트 명령이 정리돼 있습니다. 이 경로는 데스크톱 브라우저에서 열 수
+있고, 시안은 320px 폭에서도 카드와 버튼 순서를 유지하도록 구성했습니다.
+
+반면 다음 항목은 별도 모바일 범위로 남아 있습니다.
+
+- Capacitor 기반 iOS·Android WebView 패키징과 네이티브 브리지
+- PWA service worker와 오프라인 캐시 만료·재연결 정책
+- 푸시 알림을 눌렀을 때 포털의 해당 예약으로 이동하는 deep link
+- native messaging, `postMessage`, 앱이 잠든 뒤 다시 연결할 때 수행할 재조회
+
+오프라인 캐시는 환자가 마지막으로 읽은 예약을 잠시 보여 주는 데는 도움이 됩니다. 하지만 캐시로 `CONFIRMED`를 만들거나
+취소 버튼의 성공을 확정할 수는 없습니다. 앱이 다시 연결되면 tenant·환자 범위를 확인하고 예약 서비스를
+다시 읽어야 합니다. 같은 원칙을 지키지 않으면 오래된 모바일 화면이 이미 취소된 예약을 계속 보여 주거나, 푸시를 두 번
+받은 앱이 변경 명령을 두 번 보낼 수 있습니다.
+
+<div class="bt4k-operations-screen" data-visual-title="환자 포털 예약 현황 화면 시안">
+  <a href="/assets/clinic-appointment-patient-portal-mobile/clinic-appointment-patient-portal-mobile-portal-screen-ko.png"><img class="bt4k-screenshot" src="/assets/clinic-appointment-patient-portal-mobile/clinic-appointment-patient-portal-mobile-portal-screen-ko.png" alt="환자 포털의 예약 현황 화면에서 예약 상품·병원·일시·회차·확정 상태, 알림 두 건, 예약 변경 요청·취소 버튼, 화면이 소유하지 않는 오프라인 캐시와 푸시 경계를 보여 주는 UI 시안" loading="lazy" /></a>
+  <p class="bt4k-operations-screen-caption">합성 데이터로 만든 환자 포털 화면 시안입니다. 예약 카드에는 상품·병원·일시·회차·상태를 함께 보여 주고, 화면 아래에는 오프라인 캐시와 푸시가 예약 사실을 대신 결정하지 않는다는 경계를 설명했습니다. 320px 화면에서는 같은 정보 순서를 유지하며 재배치합니다.</p>
+</div>
+
+이 화면의 `예약 변경 요청`과 `예약 취소`는 화면에서 바로 상태를 바꾸는 버튼이 아닙니다. 버튼은 API 계약을 호출하고, 서버가
+반환한 ETag·상태·오류 코드를 바탕으로 다음 화면을 표시합니다. 알림 패널도 예약을 확정하지 않습니다. 알림이 늦으면 화면은
+마지막 읽기 시각을 보여 주고 예약 서비스를 다시 읽어 최신 결과를 확인합니다.
+
+## 현재 구현·승인된 설계·열린 로드맵을 구분한다
+
+환자 포털을 설명할 때 가장 쉽게 생기는 오해는 “라우트가 있으니 모바일 앱도 완성됐다”거나 “화면 시안이 있으니 환자에게
+바로 배포할 수 있다”는 식으로 범위를 넓혀 해석하는 것입니다. 현재 근거를 세 범위로 나누면 다음과 같습니다.
+
+| 범위 | 이번 글에서 확인하는 내용 | 확인 상태 |
+| --- | --- | --- |
+| 현재 구현 | `/portal` 지연 로딩 경로(lazy route), `patientAuthGuard`, 예약·알림·프로필 하위 경로, 타입이 지정된 portal API 모델, `AppointmentCommitmentFacade`의 ETag·멱등 키·충돌 재조회, SSE와 polling 대체 경로 | 저장소 코드에서 확인 |
+| 승인된 설계 | 제안이 만료되면 새 빈시간을 찾는 흐름, 순서가 뒤바뀌거나 `412`를 받으면 예약을 다시 조회하는 흐름, `503`의 `Retry-After` 처리, 320px 화면 재배치와 키보드 포커스 처리 | 설계 문서와 시각자료에서 확인 |
+| 열린 로드맵 | Capacitor WebView, PWA service worker, 오프라인 캐시 복구, 푸시·deep link·native messaging, 실제 모바일 기기 테스트 | 아직 운영 기능으로 확인되지 않음 |
+
+특히 `내 정보` 페이지의 상세 프로필 편집과 모바일 인증을 현재 구현으로 넓혀 쓰지 않았습니다. 포털 셸과 경로가 있다는
+사실, 설계 문서에 모바일 항목이 있다는 사실, 실제 운영에서 장애·재연결을 검증했다는 사실은 서로 다른 증거입니다.
+
+## 환자에게 예약을 보여 주기 전에 확인할 다섯 가지
+
+환자 화면이나 모바일 앱에서 예약 관련 작업을 제공하기 전에 다음 질문에 답할 수 있어야 합니다.
+
+1. 현재 화면의 tenant·clinic·환자 범위가 API 요청의 범위와 같은가?
+2. 카드의 상태와 날짜·시간이 마지막으로 예약 서비스를 조회한 결과인가?
+3. 변경·취소·수락·거절 요청에 최신 ETag와 새 `Idempotency-Key`를 사용했는가?
+4. `412`, `410`, `503`을 성공으로 처리하지 않고 충돌·만료·전달 지연으로 나눠 다음 작업을 안내하는가?
+5. 오프라인 캐시나 푸시 이벤트가 예약의 최종 상태를 대신 결정하지 않으며, 재연결 뒤 다시 읽는가?
+
+하나라도 답하지 못한다면 버튼을 추가하기 전에 범위와 재조회 계약을 먼저 정리해야 합니다. 환자에게 필요한 것은 내부
+테이블을 더 많이 보여 주는 화면이 아니라, 지금 보고 있는 예약이 어떤 기준 데이터에서 왔으며 버튼을 누른 뒤 무엇을 다시
+확인하는지 알 수 있는 화면입니다.
+
+## 근거 자료
+
+- [운영 확장 6: 알림과 리마인더는 왜 별도 서비스인가](/ko/blog/clinic-appointment-notification-reminder/)
+- [운영 확장 8: 여러 병원을 한 예약 서비스로 운영할 때 지켜야 할 데이터 경계](/ko/blog/clinic-appointment-multitenant-data-boundaries/)
+- [운영 확장 9: 재시도와 replay가 있어도 예약은 한 번만 바꾼다](/ko/blog/clinic-appointment-idempotent-replay/)
+- [운영 확장 10: 최신 계산 결과만 예약에 적용한다](/ko/blog/clinic-appointment-latest-fence/)
+- [`app.routes.ts`](https://github.com/bluetape4k/clinic-appointment/blob/develop/frontend/appointment-frontend/src/app/app.routes.ts)
+- [`patient-portal.routes.ts`](https://github.com/bluetape4k/clinic-appointment/blob/develop/frontend/appointment-frontend/src/app/features/patient-portal/patient-portal.routes.ts)
+- [`patient-portal-shell.component.html`](https://github.com/bluetape4k/clinic-appointment/blob/develop/frontend/appointment-frontend/src/app/features/patient-portal/patient-portal-shell.component.html)
+- [`appointment-commitment.facade.ts`](https://github.com/bluetape4k/clinic-appointment/blob/develop/frontend/appointment-frontend/src/app/features/patient-portal/appointments/appointment-commitment.facade.ts)
+- [`portal-api.models.ts`](https://github.com/bluetape4k/clinic-appointment/blob/develop/frontend/appointment-frontend/src/app/core/api/portal-api.models.ts)
+- [`portal-event-stream.adapter.ts`](https://github.com/bluetape4k/clinic-appointment/blob/develop/frontend/appointment-frontend/src/app/core/api/portal-event-stream.adapter.ts)
+- [환자 포털 설계 문서](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-08-11-patient-portal-design.md)
+- [환자 포털 화면 시안 기준](https://github.com/bluetape4k/clinic-appointment/blob/develop/docs/superpowers/specs/2026-08-11-patient-portal-visual-reference.html)
+- [프론트엔드 실행·테스트 README](https://github.com/bluetape4k/clinic-appointment/blob/develop/frontend/appointment-frontend/README.ko.md)
+
+## 시리즈 링크
+
+<ClinicAppointmentSeries current="clinic-appointment-patient-portal-mobile" locale="ko" />

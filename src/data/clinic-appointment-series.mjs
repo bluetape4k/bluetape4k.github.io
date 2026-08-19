@@ -209,4 +209,11 @@ export const clinicAppointmentSeries = Object.freeze([
     ko: '[운영 확장 10] 최신 계산 결과만 예약에 적용한다',
     en: '[Operations 10] Apply Only the Latest Calculation to an Appointment',
   },
+  {
+    id: 'operations-11-appendix',
+    group: 'operations',
+    slug: 'clinic-appointment-patient-portal-mobile',
+    ko: '[운영 확장 11·부록] 환자 포털과 모바일 채널은 예약을 어떻게 보여 주는가',
+    en: '[Operations 11 · Appendix] How Patient Portals and Mobile Channels Show an Appointment',
+  },
 ]);
