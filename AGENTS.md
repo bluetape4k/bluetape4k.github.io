@@ -30,6 +30,15 @@ This file governs every file in this repository.
 - Korean posts live under `src/content/docs/ko/blog/`; English posts live under `src/content/docs/blog/`.
 - Keep bilingual series in locale parity unless the user explicitly scopes the work to one locale.
 
+### Blog issue ownership and PR linkage
+
+- Create the delivery issue for every blog article in `bluetape4k/bluetape4k.github.io`.
+- Keep an issue in a source repository such as `clinic-appointment` as domain evidence or implementation scope; link it from the site delivery issue and the site PR, but do not use it as the blog delivery tracker.
+- Before drafting or opening a PR, search this repository for an existing issue with the same article title or route. Reuse one issue instead of creating a duplicate; assign the issue to `debop` and preserve the applicable milestone and labels.
+- The site issue must link the source issue, its parent Epic when applicable, and the article PR. The PR body must include `Closes #<site-issue-number>` before merge; a cross-repository reference does not replace the same-repository closure link.
+- After merge and deployment are verified, read back the PR and site issue, then close the site issue. Leave the source issue open or closed according to the source repository's domain scope.
+- New blog work must follow this ownership rule even when the first implementation discussion started in another repository.
+
 ## Content Rules
 
 - Public contributor-facing artifacts, PR bodies, commit messages, and release-style notes stay in English.
