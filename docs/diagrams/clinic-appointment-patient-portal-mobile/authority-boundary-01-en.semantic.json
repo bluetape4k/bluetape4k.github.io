@@ -1,0 +1,35 @@
+{
+  "kind": "architecture",
+  "source": {
+    "question": "Where does a patient channel stop and the appointment service source of truth begin?",
+    "revision": "clinic-appointment/develop@f7dc25285f66f623db05ade6b273bb8fe2a8ec8d",
+    "paths": [
+      "docs/diagrams/clinic-appointment-patient-portal-mobile/source-ledger.md",
+      "scripts/generate-clinic-appointment-patient-portal-mobile-assets.mjs"
+    ]
+  },
+  "nodes": [
+    {"id":"portal-en","label":"/portal shell","source":"source-ledger.md"},
+    {"id":"api-en","label":"Portal API client","source":"source-ledger.md"},
+    {"id":"appointment-source-en","label":"Appointment source of truth","source":"source-ledger.md"},
+    {"id":"notifications-en","label":"Notification view","source":"source-ledger.md"},
+    {"id":"notification-adapter-en","label":"Notification adapter","source":"source-ledger.md"},
+    {"id":"notification-boundary-en","label":"Notification event boundary","source":"source-ledger.md"},
+    {"id":"mobile-roadmap-en","label":"Mobile channel roadmap","source":"source-ledger.md"},
+    {"id":"mobile-boundary-en","label":"Mobile boundary","source":"source-ledger.md"},
+    {"id":"final-state-decision-en","label":"Final State Decision","source":"source-ledger.md"}
+  ],
+  "edges": [
+    {"id":"portal-api-en","from":"portal-en","to":"api-en","kind":"request","source":"portal-api-client"},
+    {"id":"api-source-en","from":"api-en","to":"appointment-source-en","kind":"authority","source":"appointment-commitment-facade"},
+    {"id":"notifications-adapter-en","from":"notifications-en","to":"notification-adapter-en","kind":"event","source":"portal-event-stream-adapter"},
+    {"id":"adapter-boundary-en","from":"notification-adapter-en","to":"notification-boundary-en","kind":"re-read","source":"portal-event-stream-adapter"},
+    {"id":"mobile-boundary-en","from":"mobile-roadmap-en","to":"mobile-boundary-en","kind":"roadmap","source":"patient-portal-design"},
+    {"id":"mobile-decision-en","from":"mobile-boundary-en","to":"final-state-decision-en","kind":"authority","source":"patient-portal-design"},
+    {"id":"notification-decision-en","from":"notification-boundary-en","to":"final-state-decision-en","kind":"outcome","source":"portal-api-models"}
+  ],
+  "behavior": {"branches": 2, "loops": 1},
+  "repairs": [
+    {"target":"architecture-card-width","reason":"Widened cards and preserved a clear connector gap for long state labels.","touches":12}
+  ]
+}

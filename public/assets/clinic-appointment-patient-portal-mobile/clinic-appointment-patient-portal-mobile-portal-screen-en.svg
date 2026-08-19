@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1860" height="1280" viewBox="0 0 1860 1280" role="img" aria-labelledby="title desc" data-locale="en">
+<title id="title">Appointments</title><desc id="desc">Read the channel state beside the result re-read from the appointment service.</desc>
+<defs>
+  <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#071323"/><stop offset="1" stop-color="#111c32"/></linearGradient>
+  <linearGradient id="screen" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#091321"/><stop offset="1" stop-color="#101b2e"/></linearGradient>
+
+  <style>
+    .title{font-family:"Architects Daughter", "Comic Sans MS", cursive;font-size:34px;font-weight:800;fill:#f4f8ff}
+    .subtitle{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:17px;fill:#a9bad0}
+    .lane-title{font-family:"Architects Daughter", "Comic Sans MS", cursive;font-size:20px;font-weight:800;fill:#f4f8ff}
+    .lane-subtitle{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:12px;fill:#8299b2}
+    .card-title{font-family:"Architects Daughter", "Comic Sans MS", cursive;font-size:20px;font-weight:800;fill:#f4f8ff}
+    .card-body{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:13px;fill:#b9cbe0}
+    .small{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:12px;fill:#8fa7c1}
+    .connector{fill:none;stroke-width:4;stroke-linecap:round}
+    .decision{fill:#171b36;stroke:#a78bfa;stroke-width:2}
+    .decision-title{font-family:"Architects Daughter", "Comic Sans MS", cursive;font-size:19px;font-weight:800;fill:#e5d9ff}
+    .decision-body{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:12px;fill:#d2c4f4}
+    .outcome{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:11px;font-weight:800;fill:#f8fbff}
+    .ui-eyebrow,.ui-label,.ui-mono,.ui-button{font-family:"Comic Mono", "SFMono-Regular", monospace}
+    .ui-title,.ui-section,.ui-card-title,.ui-value{font-family:"Architects Daughter", "Comic Sans MS", cursive;font-weight:800;fill:#f4f8ff}
+    .ui-eyebrow{font-size:12px;font-weight:800;fill:#7fc9ff}
+    .ui-title{font-size:34px}.ui-section{font-size:19px}.ui-card-title{font-size:21px}
+    .ui-label{font-size:13px;fill:#dce8f5}.ui-mono{font-size:12px;fill:#a9bad0}.ui-value{font-size:34px}.ui-button{font-size:13px;font-weight:800;fill:#dce8f5}
+    .muted{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:12px;fill:#8299b2}.divider{stroke:#263d59;stroke-width:1}
+  </style>
+</defs>
+<rect width="1860" height="1280" fill="#07111e"/><rect x="28" y="28" width="1804" height="1224" rx="32" fill="url(#screen)" stroke="#3b5574" stroke-width="2"/>
+<rect x="64" y="64" width="306" height="1150" rx="22" fill="#0b192c" stroke="#2b4562"/><text class="ui-eyebrow" x="88" y="112">PATIENT PORTAL / SCREEN MOCKUP</text><text class="ui-section" x="88" y="166">Patient portal</text><rect x="86" y="202" width="282" height="54" rx="14" fill="#12243a"/><circle cx="118" cy="229" r="16" fill="#2d5c84"/><text class="ui-label" x="148" y="224">Patient A / PATIENT</text><text class="ui-mono" x="148" y="244">tenant-blue / clinic-02</text><rect x="86" y="252" width="282" height="48" rx="12" fill="#17334a" stroke="#2dd4bf"/><text class="ui-label" x="112" y="282" fill="#74e4d1">Appointments</text><rect x="86" y="322" width="282" height="48" rx="12" fill="#0e1b2c" stroke="#1d334d"/><text class="ui-label" x="112" y="352" fill="#b9cbe0">Notifications</text><rect x="86" y="392" width="282" height="48" rx="12" fill="#0e1b2c" stroke="#1d334d"/><text class="ui-label" x="112" y="422" fill="#b9cbe0">Profile</text><line class="divider" x1="86" y1="524" x2="348" y2="524"/><text class="muted" x="88" y="560">Re-authenticate when the session expires.</text><rect x="86" y="1136" width="282" height="46" rx="12" fill="#14273d" stroke="#294761"/><text class="ui-button" x="227" y="1165" text-anchor="middle">Log out</text>
+<text class="ui-eyebrow" x="398" y="96">PATIENT PORTAL / SCREEN MOCKUP</text><text class="ui-title" x="398" y="150">Appointments</text><text class="ui-label" x="398" y="182">Read the channel state beside the result re-read from the appointment service.</text>
+<rect x="398" y="220" width="1398" height="470" rx="22" fill="#12243a" stroke="#3b5574"/><text class="ui-section" x="428" y="266">Laser toning</text><text class="ui-label" x="428" y="302">Clinic A / dermatology</text><rect x="1418" y="246" width="174" height="42" rx="21" fill="#183d45" stroke="#2dd4bf"/><text class="ui-button" x="1505" y="273" text-anchor="middle" fill="#74e4d1">CONFIRMED</text><text class="ui-value" x="428" y="386">Friday, September 18, 2026</text><text class="ui-section" x="428" y="430">14:30–15:10</text><text class="ui-label" x="428" y="466">Session 3 / 10</text><line class="divider" x1="428" y1="510" x2="1558" y2="510"/><text class="ui-mono" x="428" y="548">Re-read from appointment service / 14:32:08</text><rect x="428" y="582" width="232" height="54" rx="12" fill="#2dd4bf"/><text class="ui-button" x="544" y="616" text-anchor="middle" fill="#092028">Request change</text><rect x="678" y="582" width="184" height="54" rx="12" fill="#1b2d42" stroke="#526b84"/><text class="ui-button" x="770" y="616" text-anchor="middle">Cancel appointment</text>
+<rect x="1268" y="320" width="472" height="300" rx="18" fill="#101f34" stroke="#2f4865"/><text class="ui-section" x="1300" y="366">2 notifications</text><g><circle cx="1300" cy="445" r="6" fill="#2dd4bf"/><text class="ui-label" x="1320" y="451">Your appointment is confirmed.</text></g><g><circle cx="1300" cy="503" r="6" fill="#fbbf24"/><text class="ui-label" x="1320" y="509">A reminder is scheduled for one day before the visit.</text></g>
+<rect x="398" y="726" width="1000" height="360" rx="20" fill="#101f34" stroke="#2f4865"/><text class="ui-section" x="428" y="770">What this screen does not own</text><g><circle cx="432" cy="850" r="5" fill="#fbbf24"/><text class="ui-label" x="452" y="856">Offline cache helps display the view but never confirms an appointment.</text></g><g><circle cx="432" cy="908" r="5" fill="#fbbf24"/><text class="ui-label" x="452" y="914">If push delivery is late, the channel re-reads the appointment service state.</text></g><text class="muted" x="428" y="1038">The same order reflows at 320px</text>
+<rect x="1508" y="818" width="258" height="402" rx="32" fill="#07111e" stroke="#6184a5" stroke-width="3"/><rect x="1522" y="836" width="230" height="366" rx="22" fill="#12243a"/><rect x="1600" y="843" width="76" height="12" rx="6" fill="#0a1420"/><text class="ui-mono" x="1538" y="892">Appointments</text><rect x="1538" y="916" width="198" height="120" rx="14" fill="#17334a" stroke="#2dd4bf"/><text class="ui-label" x="1554" y="946">Laser toning</text><text class="ui-mono" x="1554" y="974">Friday</text><rect x="1554" y="992" width="84" height="24" rx="12" fill="#183d45"/><text class="ui-mono" x="1596" y="1009" text-anchor="middle" fill="#74e4d1">CONFIRMED</text><text class="ui-mono" x="1538" y="1076">Notifications</text><circle cx="1722" cy="1072" r="6" fill="#fbbf24"/><line class="divider" x1="1538" y1="1100" x2="1736" y2="1100"/><text class="muted" x="1538" y="1146">320px</text>
+<text class="muted" x="1796" y="1198" text-anchor="end">Synthetic screen mockup / no real patient or production data</text>
+</svg>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1860" height="1240" viewBox="0 0 1860 1240" role="img" aria-labelledby="title desc" data-locale="en">
+<title id="title">Patient channels show the appointment; the service decides it</title><desc id="desc">Keep portal, notification, and mobile surfaces separate from the appointment service source of truth.</desc>
+<defs>
+  <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#071323"/><stop offset="1" stop-color="#111c32"/></linearGradient>
+  <linearGradient id="screen" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#091321"/><stop offset="1" stop-color="#101b2e"/></linearGradient>
+
+  <marker id="portal-blue-arrow" viewBox="0 0 10 10" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+    <path d="M 0 0 L 10 5 L 0 10 Z" fill="#60a5fa" data-solid-head="true"/>
+  </marker>
+  <marker id="portal-cyan-arrow" viewBox="0 0 10 10" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+    <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2dd4bf" data-solid-head="true"/>
+  </marker>
+  <marker id="portal-amber-arrow" viewBox="0 0 10 10" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+    <path d="M 0 0 L 10 5 L 0 10 Z" fill="#fbbf24" data-solid-head="true"/>
+  </marker>
+  <marker id="portal-purple-arrow" viewBox="0 0 10 10" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+    <path d="M 0 0 L 10 5 L 0 10 Z" fill="#a78bfa" data-solid-head="true"/>
+  </marker>
+  <marker id="portal-red-arrow" viewBox="0 0 10 10" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-size="14x14" data-tip-direction="positive-x">
+    <path d="M 0 0 L 10 5 L 0 10 Z" fill="#fb7185" data-solid-head="true"/>
+  </marker>
+  <style>
+    .title{font-family:"Architects Daughter", "Comic Sans MS", cursive;font-size:34px;font-weight:800;fill:#f4f8ff}
+    .subtitle{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:17px;fill:#a9bad0}
+    .lane-title{font-family:"Architects Daughter", "Comic Sans MS", cursive;font-size:20px;font-weight:800;fill:#f4f8ff}
+    .lane-subtitle{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:12px;fill:#8299b2}
+    .card-title{font-family:"Architects Daughter", "Comic Sans MS", cursive;font-size:20px;font-weight:800;fill:#f4f8ff}
+    .card-body{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:13px;fill:#b9cbe0}
+    .small{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:12px;fill:#8fa7c1}
+    .connector{fill:none;stroke-width:4;stroke-linecap:round}
+    .decision{fill:#171b36;stroke:#a78bfa;stroke-width:2}
+    .decision-title{font-family:"Architects Daughter", "Comic Sans MS", cursive;font-size:19px;font-weight:800;fill:#e5d9ff}
+    .decision-body{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:12px;fill:#d2c4f4}
+    .outcome{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:11px;font-weight:800;fill:#f8fbff}
+    .ui-eyebrow,.ui-label,.ui-mono,.ui-button{font-family:"Comic Mono", "SFMono-Regular", monospace}
+    .ui-title,.ui-section,.ui-card-title,.ui-value{font-family:"Architects Daughter", "Comic Sans MS", cursive;font-weight:800;fill:#f4f8ff}
+    .ui-eyebrow{font-size:12px;font-weight:800;fill:#7fc9ff}
+    .ui-title{font-size:34px}.ui-section{font-size:19px}.ui-card-title{font-size:21px}
+    .ui-label{font-size:13px;fill:#dce8f5}.ui-mono{font-size:12px;fill:#a9bad0}.ui-value{font-size:34px}.ui-button{font-size:13px;font-weight:800;fill:#dce8f5}
+    .muted{font-family:"Comic Mono", "SFMono-Regular", monospace;font-size:12px;fill:#8299b2}.divider{stroke:#263d59;stroke-width:1}
+  </style>
+</defs>
+<rect width="1860" height="1240" fill="url(#canvas)"/><rect x="24" y="24" width="1812" height="1192" rx="32" fill="none" stroke="#2d4665" stroke-width="2"/>
+<text class="title" x="62" y="78" >Patient channels show the appointment; the service decides it</text><text class="subtitle" x="64" y="112" >Keep portal, notification, and mobile surfaces separate from the appointment service source of truth.</text>
+<rect x="55" y="168" width="570" height="860" rx="26" fill="#0b192c" stroke="#2d4665" stroke-width="2"/><text class="lane-title" x="83" y="208">Patient channels</text><text class="lane-subtitle" x="83" y="232">surfaces people see and use</text>
+<rect x="645" y="168" width="570" height="860" rx="26" fill="#0b192c" stroke="#2d4665" stroke-width="2"/><text class="lane-title" x="673" y="208">Channel contract</text><text class="lane-subtitle" x="673" y="232">typed API / re-read / auth boundary</text>
+<rect x="1235" y="168" width="570" height="860" rx="26" fill="#0b192c" stroke="#2d4665" stroke-width="2"/><text class="lane-title" x="1263" y="208">Appointment service</text><text class="lane-subtitle" x="1263" y="232">state and final outcome decision</text><path class="connector" d="M575 339 H665" stroke="#2dd4bf" marker-end="url(#portal-cyan-arrow)" data-connector="en-node-0-0-en-node-0-1" data-source-node="en-node-0-0" data-target-node="en-node-0-1"/><path class="connector" d="M1165 339 H1255" stroke="#2dd4bf" marker-end="url(#portal-cyan-arrow)" data-connector="en-node-0-1-en-node-0-2" data-source-node="en-node-0-1" data-target-node="en-node-0-2"/><rect x="572" y="289" width="96" height="28" rx="14" fill="#12243a" stroke="#2dd4bf"/><text class="small" x="620" y="308" text-anchor="middle">READ / ACT</text>
+<path class="connector" d="M575 589 H665" stroke="#fbbf24" marker-end="url(#portal-amber-arrow)" data-connector="en-node-1-0-en-node-1-1" data-source-node="en-node-1-0" data-target-node="en-node-1-1"/><path class="connector" d="M1165 589 H1255" stroke="#fbbf24" marker-end="url(#portal-amber-arrow)" data-connector="en-node-1-1-en-node-1-2" data-source-node="en-node-1-1" data-target-node="en-node-1-2"/><rect x="586" y="539" width="68" height="28" rx="14" fill="#12243a" stroke="#fbbf24"/><text class="small" x="620" y="558" text-anchor="middle">NOTIFY</text>
+<path class="connector" d="M575 839 H665" stroke="#60a5fa" marker-end="url(#portal-blue-arrow)" data-connector="en-node-2-0-en-node-2-1" data-source-node="en-node-2-0" data-target-node="en-node-2-1"/><path class="connector" d="M1165 839 H1255" stroke="#60a5fa" marker-end="url(#portal-blue-arrow)" data-connector="en-node-2-1-final-state-decision" data-source-node="en-node-2-1" data-target-node="final-state-decision"/><rect x="578" y="789" width="84" height="28" rx="14" fill="#12243a" stroke="#60a5fa"/><text class="small" x="620" y="808" text-anchor="middle">ROADMAP</text><path class="connector" d="M1505 683 V745" stroke="#a78bfa" marker-end="url(#portal-purple-arrow)" data-connector="notification-to-decision" data-source-node="en-node-1-2" data-target-node="final-state-decision"/><g id="en-node-0-0" data-node="true"><rect x="75" y="245" width="500" height="188" rx="20" fill="#12243a" stroke="#2dd4bf" stroke-width="2"/><text class="card-title" x="99" y="294">/portal shell</text><text class="card-body" x="99" y="329" ><tspan x="99" dy="0">PATIENT guard</tspan><tspan x="99" dy="24">appointments</tspan><tspan x="99" dy="24">profile</tspan></text></g>
+<g id="en-node-0-1" data-node="true"><rect x="665" y="245" width="500" height="188" rx="20" fill="#12243a" stroke="#2dd4bf" stroke-width="2"/><text class="card-title" x="689" y="294">Portal API client</text><text class="card-body" x="689" y="329" ><tspan x="689" dy="0">tenant context</tspan><tspan x="689" dy="24">typed model</tspan></text></g>
+<g id="en-node-0-2" data-node="true"><rect x="1255" y="245" width="500" height="188" rx="20" fill="#12243a" stroke="#2dd4bf" stroke-width="2"/><text class="card-title" x="1279" y="294">Appointment source of truth</text><text class="card-body" x="1279" y="329" ><tspan x="1279" dy="0">PROPOSED</tspan><tspan x="1279" dy="24">HELD</tspan><tspan x="1279" dy="24">CONFIRMED</tspan><tspan x="1279" dy="24">EXPIRED</tspan><tspan x="1279" dy="24">CANCELLED</tspan></text></g>
+<g id="en-node-1-0" data-node="true"><rect x="75" y="495" width="500" height="188" rx="20" fill="#12243a" stroke="#fbbf24" stroke-width="2"/><text class="card-title" x="99" y="544">Notification view</text><text class="card-body" x="99" y="579" ><tspan x="99" dy="0">SSE first</tspan><tspan x="99" dy="24">polling fallback</tspan><tspan x="99" dy="24">read mark</tspan></text></g>
+<g id="en-node-1-1" data-node="true"><rect x="665" y="495" width="500" height="188" rx="20" fill="#12243a" stroke="#fbbf24" stroke-width="2"/><text class="card-title" x="689" y="544">Notification adapter</text><text class="card-body" x="689" y="579" ><tspan x="689" dy="0">order by sequence</tspan><tspan x="689" dy="24">re-read stale data</tspan></text></g>
+<g id="en-node-1-2" data-node="true"><rect x="1255" y="495" width="500" height="188" rx="20" fill="#12243a" stroke="#fbbf24" stroke-width="2"/><text class="card-title" x="1279" y="544">Notification event boundary</text><text class="card-body" x="1279" y="579" ><tspan x="1279" dy="0">delivery facts do not mutate appointments</tspan></text></g>
+<g id="en-node-2-0" data-node="true"><rect x="75" y="745" width="500" height="188" rx="20" fill="#12243a" stroke="#60a5fa" stroke-width="2"/><text class="card-title" x="99" y="794">Mobile channel roadmap</text><text class="card-body" x="99" y="829" ><tspan x="99" dy="0">WebView</tspan><tspan x="99" dy="24">PWA</tspan><tspan x="99" dy="24">native messaging</tspan></text></g>
+<g id="en-node-2-1" data-node="true"><rect x="665" y="745" width="500" height="188" rx="20" fill="#12243a" stroke="#60a5fa" stroke-width="2"/><text class="card-title" x="689" y="794">Mobile boundary</text><text class="card-body" x="689" y="829" ><tspan x="689" dy="0">offline cache is display-only</tspan><tspan x="689" dy="24">re-read after reconnect</tspan></text></g>
+<g id="final-state-decision" data-node="true"><rect class="decision" x="1255" y="745" width="500" height="188" rx="20"/><text class="card-title" x="1279" y="788">Final State Decision</text><text class="decision-body" x="1279" y="817" ><tspan x="1279" dy="0">the appointment service records one outcome, not a channel cache</tspan></text><rect x="1277" y="848" width="108" height="30" rx="15" fill="#202243" stroke="#2dd4bf"/><text class="outcome" x="1331" y="868" text-anchor="middle">CONFIRMED</text><rect x="1399" y="848" width="108" height="30" rx="15" fill="#202243" stroke="#fbbf24"/><text class="outcome" x="1453" y="868" text-anchor="middle">EXPIRED</text><rect x="1521" y="848" width="108" height="30" rx="15" fill="#202243" stroke="#fb7185"/><text class="outcome" x="1575" y="868" text-anchor="middle">CANCELLED</text><rect x="1643" y="848" width="108" height="30" rx="15" fill="#202243" stroke="#a78bfa"/><text class="outcome" x="1697" y="868" text-anchor="middle">RETRY</text></g><rect x="55" y="1060" width="1750" height="126" rx="22" fill="#101f34" stroke="#38506d"/><text class="small" x="84" y="1100">A refresh may change the channel view, but not the appointment source of truth. Buttons call the API contract, then re-read the result.</text><text class="small" x="84" y="1136">Before production operations, mobile offline, push, and deep-link behavior needs separate validation. This view separates current implementation from the open roadmap.</text>
+</svg>
