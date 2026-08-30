@@ -9,6 +9,11 @@
         "ko": "Bluetape4k 문서"
       },
       "latestMinor": "1.12",
+      "manual": {
+        "ownership": "central",
+        "sourceRoot": "docs/manual/bluetape4k-projects",
+        "toolingRoot": "scripts/manual/repositories/bluetape4k-projects"
+      },
       "route": {
         "en": "/manual/bluetape4k-projects/",
         "ko": "/ko/manual/bluetape4k-projects/"
@@ -22,6 +27,11 @@
         "ko": "Exposed 문서"
       },
       "latestMinor": "1.12",
+      "manual": {
+        "ownership": "central",
+        "sourceRoot": "docs/manual/bluetape4k-exposed",
+        "toolingRoot": "scripts/manual/repositories/bluetape4k-exposed"
+      },
       "route": {
         "en": "/manual/bluetape4k-exposed/",
         "ko": "/ko/manual/bluetape4k-exposed/"
@@ -35,6 +45,11 @@
         "ko": "AWS 문서"
       },
       "latestMinor": "0.5",
+      "manual": {
+        "ownership": "central",
+        "sourceRoot": "docs/manual/bluetape4k-aws",
+        "toolingRoot": "scripts/manual/repositories/bluetape4k-aws"
+      },
       "route": {
         "en": "/manual/bluetape4k-aws/",
         "ko": "/ko/manual/bluetape4k-aws/"
@@ -48,6 +63,11 @@
         "ko": "Leader 문서"
       },
       "latestMinor": "0.5",
+      "manual": {
+        "ownership": "central",
+        "sourceRoot": "docs/manual/bluetape4k-leader",
+        "toolingRoot": "scripts/manual/repositories/bluetape4k-leader"
+      },
       "route": {
         "en": "/manual/bluetape4k-leader/",
         "ko": "/ko/manual/bluetape4k-leader/"
@@ -61,6 +81,11 @@
         "ko": "Image 문서"
       },
       "latestMinor": "0.4",
+      "manual": {
+        "ownership": "central",
+        "sourceRoot": "docs/manual/bluetape4k-image",
+        "toolingRoot": "scripts/manual/repositories/bluetape4k-image"
+      },
       "route": {
         "en": "/manual/bluetape4k-image/",
         "ko": "/ko/manual/bluetape4k-image/"
@@ -74,6 +99,11 @@
         "ko": "Graph 문서"
       },
       "latestMinor": "0.6",
+      "manual": {
+        "ownership": "central",
+        "sourceRoot": "docs/manual/bluetape4k-graph",
+        "toolingRoot": "scripts/manual/repositories/bluetape4k-graph"
+      },
       "route": {
         "en": "/manual/bluetape4k-graph/",
         "ko": "/ko/manual/bluetape4k-graph/"
@@ -87,6 +117,11 @@
         "ko": "Javers 문서"
       },
       "latestMinor": "0.3",
+      "manual": {
+        "ownership": "central",
+        "sourceRoot": "docs/manual/bluetape4k-javers",
+        "toolingRoot": "scripts/manual/repositories/bluetape4k-javers"
+      },
       "route": {
         "en": "/manual/bluetape4k-javers/",
         "ko": "/ko/manual/bluetape4k-javers/"
@@ -100,6 +135,11 @@
         "ko": "Text 문서"
       },
       "latestMinor": "0.3",
+      "manual": {
+        "ownership": "central",
+        "sourceRoot": "docs/manual/bluetape4k-text",
+        "toolingRoot": "scripts/manual/repositories/bluetape4k-text"
+      },
       "route": {
         "en": "/manual/bluetape4k-text/",
         "ko": "/ko/manual/bluetape4k-text/"

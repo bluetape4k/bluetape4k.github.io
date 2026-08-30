@@ -76,6 +76,31 @@ test('rejects unsupported identities, versions, labels, and route slugs', () => 
   }), /REPOSITORY_ROUTE/);
 });
 
+test('validates an optional central manual descriptor without changing legacy descriptors', () => {
+  const central = {
+    ...projects,
+    slug: 'bluetape4k-text',
+    repository: 'bluetape4k/bluetape4k-text',
+    label: { en: 'Text docs', ko: 'Text 문서' },
+    latestMinor: '0.3',
+    route: { en: '/manual/bluetape4k-text/', ko: '/ko/manual/bluetape4k-text/' },
+    manual: {
+      ownership: 'central',
+      sourceRoot: 'docs/manual/bluetape4k-text',
+      toolingRoot: 'scripts/manual/repositories/bluetape4k-text',
+    },
+  };
+  assert.deepEqual(validateRepositoryRegistry({ schema: 1, repositories: [central] }).repositories[0], central);
+  assert.throws(() => validateRepositoryRegistry({
+    schema: 1,
+    repositories: [{ ...central, manual: { ...central.manual, sourceRoot: 'docs/manual/other' } }],
+  }), /REPOSITORY_MANUAL_SOURCE_ROOT/);
+  assert.throws(() => validateRepositoryRegistry({
+    schema: 1,
+    repositories: [{ ...central, manual: { ...central.manual, ownership: 'split' } }],
+  }), /REPOSITORY_MANUAL_OWNERSHIP/);
+});
+
 test('loads only a local JSON registry through the same validator', async () => {
   const directory = await mkdtemp(path.join(tmpdir(), 'manual-repositories-'));
   const file = path.join(directory, 'repositories.json');

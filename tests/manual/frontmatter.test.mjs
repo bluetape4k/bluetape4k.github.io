@@ -52,6 +52,21 @@ test('manual metadata keeps provenance while source links use the published rele
   assert.doesNotMatch(result, /\{#problem\}/);
 });
 
+test('rewrites relative links when the manual source is centrally namespaced', () => {
+  const result = transformManual({
+    content: '---\ntitle: Central\n---\n\n# Central\n\n[Guide](../guides/guide.md)\n',
+    module: { id: 'central', group: 'overview', kind: 'guide', sourceDir: 'docs/manual' },
+    repository: projects,
+    sourceCommit: 'a'.repeat(40),
+    sourcePath: 'docs/manual/bluetape4k-projects/en/modules/central.md',
+    releaseRef: '1.11.0',
+    releaseCommit: 'a'.repeat(40),
+    minorVersion: '1.11',
+  });
+
+  assert.match(result, /\[Guide\]\(\/manual\/bluetape4k-projects\/1\.11\/guides\/guide\/\)/);
+});
+
 test('publishes a repository BOM through the site library content kind', () => {
   const result = transformManual({
     content: '# Javers BOM\n\nBody\n',

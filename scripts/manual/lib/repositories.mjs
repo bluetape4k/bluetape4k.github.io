@@ -2,6 +2,8 @@ import { readFileSync } from 'node:fs';
 
 const SLUG = /^bluetape4k-[a-z0-9-]+$/;
 const MINOR = /^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)$/;
+const MANUAL_SOURCE_ROOT = /^docs\/manual\/[a-z0-9-]+$/;
+const MANUAL_TOOLING_ROOT = /^scripts\/manual\/repositories\/[a-z0-9-]+$/;
 
 export class ManualRepositoryError extends Error {
   constructor(code, actual) {
@@ -19,6 +21,25 @@ function fail(code, actual) {
 function requiredText(value, code) {
   if (typeof value !== 'string' || value.length === 0 || value.trim() !== value) fail(code, value);
   return value;
+}
+
+function validateManualDescriptor(value, slug) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) fail('REPOSITORY_MANUAL', value);
+
+  const ownership = requiredText(value.ownership, 'REPOSITORY_MANUAL_OWNERSHIP');
+  if (!['central', 'legacy'].includes(ownership)) fail('REPOSITORY_MANUAL_OWNERSHIP', ownership);
+
+  const sourceRoot = requiredText(value.sourceRoot, 'REPOSITORY_MANUAL_SOURCE_ROOT');
+  if (!MANUAL_SOURCE_ROOT.test(sourceRoot) || sourceRoot !== `docs/manual/${slug}`) {
+    fail('REPOSITORY_MANUAL_SOURCE_ROOT', sourceRoot);
+  }
+
+  const toolingRoot = requiredText(value.toolingRoot, 'REPOSITORY_MANUAL_TOOLING_ROOT');
+  if (!MANUAL_TOOLING_ROOT.test(toolingRoot) || toolingRoot !== `scripts/manual/repositories/${slug}`) {
+    fail('REPOSITORY_MANUAL_TOOLING_ROOT', toolingRoot);
+  }
+
+  return { ownership, sourceRoot, toolingRoot };
 }
 
 function validateDescriptor(value) {
@@ -52,7 +73,8 @@ function validateDescriptor(value) {
     fail('REPOSITORY_ROUTE', `${route.en} | ${route.ko}`);
   }
 
-  return { slug, repository, label, latestMinor, route };
+  const manual = value.manual === undefined ? undefined : validateManualDescriptor(value.manual, slug);
+  return { slug, repository, label, latestMinor, route, ...(manual ? { manual } : {}) };
 }
 
 export function validateRepositoryRegistry(value) {

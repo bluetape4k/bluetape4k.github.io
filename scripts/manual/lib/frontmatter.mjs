@@ -71,7 +71,7 @@ function rewriteManualLinks(content, repository, minorVersion, sourcePath) {
     (match, prefix, href, fragment = '', suffix) => {
       if (/^(?:[a-z][a-z+.-]*:|\/|#)/i.test(href)) return match;
       const target = path.posix.normalize(path.posix.join(path.posix.dirname(sourcePath), href));
-      const localized = /^docs\/manual\/(en|ko)\/(.+)\.md$/.exec(target);
+      const localized = /^docs\/manual\/(?:[a-z0-9-]+\/)?(en|ko)\/(.+)\.md$/.exec(target);
       if (!localized) return match;
       const [, locale, relative] = localized;
       const route = manualRouteFor(locale, repository, minorVersion, `${relative}.md`);

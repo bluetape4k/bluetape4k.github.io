@@ -107,6 +107,9 @@ export function parseArgs(argv) {
     else if (argument === '--source') {
       result.source = argv[++index];
       if (!result.source) fail('CLI_SOURCE', 'source path', null, 2);
+    } else if (argument === '--manual-source') {
+      result.manualSource = argv[++index];
+      if (!result.manualSource) fail('CLI_MANUAL_SOURCE', 'manual source path', null, 2);
     } else if (argument === '--repository') {
       result.repository = argv[++index];
       if (!result.repository) fail('CLI_REPOSITORY', 'repository slug', null, 2);
@@ -120,6 +123,7 @@ export function parseArgs(argv) {
   }
   if (writeMode && !result.source) fail('CLI_SOURCE', 'source path', null, 2);
   if (!writeMode && result.source) fail('CLI_MODE', `${result.mode} without source`, 'source supplied', 2);
+  if (!writeMode && result.manualSource) fail('CLI_MODE', `${result.mode} without manual source`, 'manual source supplied', 2);
   return result;
 }
 
@@ -211,9 +215,14 @@ export async function buildSnapshot(input, {
   allowReleaseRefresh = false,
 } = {}) {
   const repository = assertResolvedInput(input);
-  const root = await approvedRootPath(input.source);
-  const manualRoot = await approvedDirectory(root, 'docs/manual');
-  const manifest = JSON.parse(await readApproved(root, 'docs/manual/generated/manifest.json', 'utf8'));
+  await approvedRootPath(input.source);
+  const manualWorkspace = await approvedRootPath(input.manualSource ?? input.source);
+  const centralManual = repository.manual?.ownership === 'central';
+  const manualPath = input.manualPath ?? (centralManual ? repository.manual.sourceRoot : 'docs/manual');
+  const manualSourcePath = input.manualSourcePath ?? (centralManual ? repository.manual.sourceRoot : 'docs/manual');
+  const manualRoot = await approvedDirectory(manualWorkspace, manualPath);
+  const manifestPath = path.posix.join(manualPath, 'generated/manifest.json');
+  const manifest = JSON.parse(await readApproved(manualWorkspace, manifestPath, 'utf8'));
   if (manifest.schemaVersion !== 2 || !Array.isArray(manifest.modules)) {
     fail('MANIFEST_SCHEMA', 2, manifest.schemaVersion, 4);
   }
@@ -265,7 +274,7 @@ export async function buildSnapshot(input, {
       id: documentId(relative),
       group: 'overview',
       kind: 'guide',
-      sourceDir: 'docs/manual',
+      sourceDir: manualSourcePath,
     };
     const transformed = transformManual({
       content,
@@ -274,7 +283,7 @@ export async function buildSnapshot(input, {
       chapterOrder: owner?.chapterOrder,
       repository,
       sourceCommit: input.sourceCommit,
-      sourcePath: `docs/manual/${relative}`,
+      sourcePath: path.posix.join(manualSourcePath, relative),
       releaseRef: input.releaseRef,
       releaseCommit: input.releaseCommit,
       minorVersion: input.minorVersion,
@@ -636,6 +645,9 @@ export async function syncManual(options, dependencyOverrides = {}) {
   } catch {
     fail('CLI_REPOSITORY', 'registered repository slug', options.repository, 2);
   }
+  if (options.manualSource && repository.manual?.ownership !== 'central') {
+    fail('MANUAL_SOURCE_DESCRIPTOR', 'central manual descriptor', repository.slug, 2);
+  }
   let recovery;
   try {
     recovery = await deps.recoverPublicationImpl(targetRoot, repository.slug);
@@ -649,6 +661,10 @@ export async function syncManual(options, dependencyOverrides = {}) {
   }
 
   const source = await approvedRootPath(options.source);
+  const centralManual = repository.manual?.ownership === 'central';
+  const manualWorkspace = await approvedRootPath(centralManual ? (options.manualSource ?? targetRoot) : source);
+  const manualPath = centralManual ? repository.manual.sourceRoot : 'docs/manual';
+  const toolingRoot = centralManual ? repository.manual.toolingRoot : 'scripts/manual';
   let resolvedRelease;
   try {
     resolvedRelease = await deps.resolveReleaseImpl({
@@ -663,18 +679,38 @@ export async function syncManual(options, dependencyOverrides = {}) {
   }
   const head = deps.gitRunner(source, ['rev-parse', 'HEAD']);
   if (!SHA.test(head)) fail('SOURCE_COMMIT', '40 lowercase hex', head, 4);
-  const validatorRelative = 'scripts/manual/validate_release_manuals.rb';
-  const validator = await approvedFile(source, validatorRelative);
-  const dirty = deps.gitRunner(source, ['status', '--porcelain', '--', 'docs/manual', validatorRelative]);
-  if (dirty) fail('SOURCE_DIRTY', 'clean docs/manual and validator', 'dirty', 4);
+  const validatorRelative = `${toolingRoot}/validate_release_manuals.rb`;
+  const validator = await approvedFile(manualWorkspace, validatorRelative);
+  const sourceDirty = centralManual
+    ? deps.gitRunner(source, ['status', '--porcelain', '--untracked-files=all'])
+    : deps.gitRunner(source, ['status', '--porcelain', '--', manualPath, validatorRelative]);
+  const manualDirty = centralManual
+    ? deps.gitRunner(manualWorkspace, ['status', '--porcelain', '--untracked-files=all', '--', manualPath, toolingRoot])
+    : '';
+  if (sourceDirty || manualDirty) {
+    fail('SOURCE_DIRTY', centralManual ? 'clean code and central manual source/tooling' : 'clean docs/manual and validator', 'dirty', 4);
+  }
   if (options.sourceCommit && options.sourceCommit !== head) fail('SOURCE_DRIFT', options.sourceCommit, head, 4);
-  const committedValidator = deps.gitRunner(source, ['rev-parse', `HEAD:${validatorRelative}`]);
-  const workingValidator = deps.gitRunner(source, ['hash-object', validator.absolute]);
+  const manualHead = centralManual ? deps.gitRunner(manualWorkspace, ['rev-parse', 'HEAD']) : head;
+  if (!SHA.test(manualHead)) fail('SOURCE_COMMIT', '40 lowercase hex', manualHead, 4);
+  const committedValidator = deps.gitRunner(manualWorkspace, ['rev-parse', `HEAD:${validatorRelative}`]);
+  const workingValidator = deps.gitRunner(manualWorkspace, ['hash-object', validator.absolute]);
   if (!SHA.test(committedValidator) || workingValidator !== committedValidator) {
     fail('SOURCE_VALIDATOR_BLOB', committedValidator, workingValidator, 4);
   }
-  deps.commandRunner('ruby', [validator.absolute, resolvedRelease.releaseRef, resolvedRelease.releaseCommit], {
-    cwd: source,
+  const validatorArgs = centralManual
+    ? [
+      validator.absolute,
+      '--code-root', source,
+      '--manual-root', path.join(manualWorkspace, manualPath),
+      '--manifest', path.join(manualWorkspace, manualPath, 'manifest.yaml'),
+      '--source-root', manualPath,
+      '--tag', resolvedRelease.releaseRef,
+      '--sha', resolvedRelease.releaseCommit,
+    ]
+    : [validator.absolute, resolvedRelease.releaseRef, resolvedRelease.releaseCommit];
+  deps.commandRunner('ruby', validatorArgs, {
+    cwd: manualWorkspace,
     env: validatorEnvironment(),
   });
 
@@ -688,8 +724,11 @@ export async function syncManual(options, dependencyOverrides = {}) {
       releaseRef: resolvedRelease.releaseRef,
       releaseCommit: resolvedRelease.releaseCommit,
       minorVersion: resolvedRelease.minorVersion,
-      authoringSourceRef: options.authoringSourceRef ?? head,
+      authoringSourceRef: centralManual ? manualHead : (options.authoringSourceRef ?? manualHead),
       sourceCommit: head,
+      manualSource: manualWorkspace,
+      manualPath,
+      manualSourcePath: centralManual ? manualPath : 'docs/manual',
     }, {
       previousCatalog,
       previousRedirects,
