@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { execFileSync, spawnSync } from 'node:child_process';
-import { mkdtemp, mkdir, readFile, readdir, rename, rm, stat, symlink, writeFile } from 'node:fs/promises';
+import { cp, mkdtemp, mkdir, readFile, readdir, realpath, rename, rm, stat, symlink, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
@@ -32,6 +32,18 @@ const EXPOSED = {
   label: { en: 'Exposed docs', ko: 'Exposed 문서' },
   latestMinor: '1.11',
   route: { en: '/manual/bluetape4k-exposed/', ko: '/ko/manual/bluetape4k-exposed/' },
+};
+const TEXT_CENTRAL = {
+  slug: 'bluetape4k-text',
+  repository: 'bluetape4k/bluetape4k-text',
+  label: { en: 'Text docs', ko: 'Text 문서' },
+  latestMinor: '0.3',
+  route: { en: '/manual/bluetape4k-text/', ko: '/ko/manual/bluetape4k-text/' },
+  manual: {
+    ownership: 'central',
+    sourceRoot: 'docs/manual/bluetape4k-text',
+    toolingRoot: 'scripts/manual/repositories/bluetape4k-text',
+  },
 };
 const TEST_REGISTRY = { schema: 1, repositories: [PROJECTS, EXPOSED] };
 const RELEASE_COMMIT = '6'.repeat(40);
@@ -130,6 +142,11 @@ test('parses explicit CLI modes and rejects conflicting modes', () => {
   assert.deepEqual(parseArgs(['--repository', SLUG, '--source', '/source', '--latest']), {
     repository: SLUG, mode: 'latest', source: '/source',
   });
+  assert.deepEqual(parseArgs([
+    '--repository', SLUG, '--source', '/source', '--manual-source', '/site', '--latest',
+  ]), {
+    repository: SLUG, mode: 'latest', source: '/source', manualSource: '/site',
+  });
   assert.deepEqual(parseArgs(['--repository', SLUG, '--source', '/source', '--release', '1.11.0']), {
     repository: SLUG, mode: 'release', source: '/source', releaseRef: '1.11.0',
   });
@@ -143,6 +160,7 @@ test('parses explicit CLI modes and rejects conflicting modes', () => {
   assert.throws(() => parseArgs(['--latest', '--release', '1.11.0', '--source', '/source']), /CLI_MODE/);
   assert.throws(() => parseArgs(['--repository', SLUG, '--latest']), /CLI_SOURCE/);
   assert.throws(() => parseArgs(['--check', '--source', '/source']), /CLI_MODE/);
+  assert.throws(() => parseArgs(['--check', '--manual-source', '/site']), /CLI_MODE/);
   assert.throws(() => parseArgs(['--source', '/source', '--release', 'main']), /CLI_RELEASE/);
   assert.throws(() => parseArgs(['--source', '/source', '--refresh', 'main']), /CLI_RELEASE/);
 });
@@ -218,6 +236,83 @@ test('buildSnapshot accepts resolved provenance, writes nothing, and emits no un
   assert.ok(built.entries.some(({ path: entryPath }) => entryPath === `public/manual-assets/${SLUG}/overview/repository-map.svg`));
   assert.deepEqual(built.manifest.overview.assets, ['assets/overview/repository-map.svg']);
   assert.equal(built.entries.some(({ path: entryPath }) => new RegExp(`docs/(?:ko/)?manual/${SLUG}/modules/`).test(entryPath)), false);
+});
+
+test('buildSnapshot reads a centrally owned manual workspace independently of the code checkout', async (t) => {
+  const fixture = await createSourceFixture();
+  const manualWorkspace = await mkdtemp(path.join(os.tmpdir(), 'bt4k-central-manual-'));
+  t.after(() => rm(fixture.source, { recursive: true, force: true }));
+  t.after(() => rm(manualWorkspace, { recursive: true, force: true }));
+  await cp(
+    path.join(fixture.source, 'docs/manual'),
+    path.join(manualWorkspace, 'docs/manual/bluetape4k-text'),
+    { recursive: true },
+  );
+  await rm(path.join(fixture.source, 'docs/manual'), { recursive: true, force: true });
+
+  const built = await buildSnapshot({
+    ...resolved(fixture.source, fixture.sourceCommit, '0.3.0', TEXT_CENTRAL),
+    manualSource: manualWorkspace,
+    manualPath: 'docs/manual/bluetape4k-text',
+    manualSourcePath: 'docs/manual/bluetape4k-text',
+  });
+  const sample = built.entries.find(({ path: entryPath }) => (
+    entryPath === 'src/content/docs/manual/bluetape4k-text/0.3/modules/sample.md'
+  ));
+  assert.ok(sample);
+  assert.match(sample.content, /sourcePath: "docs\/manual\/bluetape4k-text\/en\/modules\/sample\.md"/);
+  assert.equal(built.snapshot.sourceCommit, fixture.sourceCommit);
+});
+
+test('central sync validates code and manual workspaces separately and records both refs', async (t) => {
+  const fixture = await createSourceFixture();
+  const manualWorkspace = await mkdtemp(path.join(os.tmpdir(), 'bt4k-central-manual-'));
+  const targetRoot = await mkdtemp(path.join(os.tmpdir(), 'bt4k-central-site-'));
+  t.after(() => rm(fixture.source, { recursive: true, force: true }));
+  t.after(() => rm(manualWorkspace, { recursive: true, force: true }));
+  t.after(() => rm(targetRoot, { recursive: true, force: true }));
+
+  await cp(
+    path.join(fixture.source, 'docs/manual'),
+    path.join(manualWorkspace, 'docs/manual/bluetape4k-text'),
+    { recursive: true },
+  );
+  await cp(
+    path.join(fixture.source, 'scripts/manual/validate_release_manuals.rb'),
+    path.join(manualWorkspace, 'scripts/manual/repositories/bluetape4k-text/validate_release_manuals.rb'),
+  );
+  await write(manualWorkspace, 'docs/manual/bluetape4k-text/manifest.yaml', 'schemaVersion: 2\nrepository: bluetape4k-text\n');
+  git(manualWorkspace, 'init', '-q');
+  git(manualWorkspace, 'config', 'user.name', 'Manual Test');
+  git(manualWorkspace, 'config', 'user.email', 'manual@example.com');
+  const manualCommit = commit(manualWorkspace, 'Create central manual fixture');
+
+  await rm(path.join(fixture.source, 'docs/manual'), { recursive: true, force: true });
+  const codeCommit = commit(fixture.source, 'Remove repository-owned manual fixture');
+  const input = resolved(fixture.source, codeCommit, '0.3.0', TEXT_CENTRAL);
+  const calls = [];
+  const result = await syncManual({
+    ...input,
+    mode: 'release',
+    targetRoot,
+    manualSource: manualWorkspace,
+  }, dependenciesFor(input, {
+    repositoryRegistry: { schema: 1, repositories: [TEXT_CENTRAL] },
+    commandRunner: (_command, args, options) => calls.push({ args, cwd: options.cwd }),
+  }));
+
+  assert.equal(result.changed, true);
+  assert.equal(result.sourceCommit, codeCommit);
+  assert.equal(calls.length, 1);
+  assert.ok(calls[0].args[0].endsWith('/scripts/manual/repositories/bluetape4k-text/validate_release_manuals.rb'));
+  assert.equal(calls[0].args[calls[0].args.indexOf('--code-root') + 1], await realpath(fixture.source));
+  assert.equal(
+    calls[0].args[calls[0].args.indexOf('--manual-root') + 1],
+    path.join(await realpath(manualWorkspace), 'docs/manual/bluetape4k-text'),
+  );
+  const snapshot = JSON.parse(await readFile(path.join(targetRoot, 'src/data/manual/bluetape4k-text.0.3.snapshot.json')));
+  assert.equal(snapshot.sourceCommit, codeCommit);
+  assert.equal(snapshot.authoringSourceRef, manualCommit);
 });
 
 test('publishes a document shared by multiple modules as a neutral guide', async (t) => {

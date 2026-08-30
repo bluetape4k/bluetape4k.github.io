@@ -100,6 +100,11 @@
         "ko": "Text 문서"
       },
       "latestMinor": "0.3",
+      "manual": {
+        "ownership": "central",
+        "sourceRoot": "docs/manual/bluetape4k-text",
+        "toolingRoot": "scripts/manual/repositories/bluetape4k-text"
+      },
       "route": {
         "en": "/manual/bluetape4k-text/",
         "ko": "/ko/manual/bluetape4k-text/"
