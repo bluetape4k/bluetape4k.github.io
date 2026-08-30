@@ -127,6 +127,7 @@ function resolved(source, sourceCommit, releaseRef = '1.11.0', repository = PROJ
 
 function dependenciesFor(input, overrides = {}) {
   return {
+    repositoryRegistry: TEST_REGISTRY,
     resolveReleaseImpl: async () => ({
       repository: input.repository.repository,
       releaseRef: input.releaseRef,
