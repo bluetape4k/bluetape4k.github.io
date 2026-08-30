@@ -215,7 +215,7 @@ export async function buildSnapshot(input, {
   allowReleaseRefresh = false,
 } = {}) {
   const repository = assertResolvedInput(input);
-  const root = await approvedRootPath(input.source);
+  await approvedRootPath(input.source);
   const manualWorkspace = await approvedRootPath(input.manualSource ?? input.source);
   const centralManual = repository.manual?.ownership === 'central';
   const manualPath = input.manualPath ?? (centralManual ? repository.manual.sourceRoot : 'docs/manual');
