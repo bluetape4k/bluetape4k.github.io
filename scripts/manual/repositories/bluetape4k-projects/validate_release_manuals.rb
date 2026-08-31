@@ -11,7 +11,11 @@ if central
 
   begin
     options = CentralReleaseSupport.parse(ARGV, slug: "projects", inventory_name: "module-inventory.json")
-    inventory = CentralReleaseSupport.ensure_inventory(options, slug: "projects")
+    # Validate the complete current inventory against the central manifest. The
+    # release contract below independently checks the selected stable tag, so
+    # filtering this inventory to the tag would reject legitimate snapshot-only
+    # modules that are intentionally documented in the central site.
+    inventory = CentralReleaseSupport.ensure_inventory(options, slug: "projects", release_filter: false)
     expected = { "ref" => options.tag, "commit" => options.sha }
     errors = ManualDocs::ReleaseContract.new(
       repository_root: options.code_root, manual_root: options.manual_root,
