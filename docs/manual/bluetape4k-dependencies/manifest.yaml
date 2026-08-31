@@ -1,0 +1,81 @@
+---
+schemaVersion: 2
+repository: bluetape4k/bluetape4k-dependencies
+publication:
+  manualVersion: 2.0.0-SNAPSHOT
+  sourceRoot: docs/manual/bluetape4k-dependencies
+  ownership: central
+  locales:
+    - en
+    - ko
+  contentStatus: in-progress
+  channel: snapshot
+draft:
+  targetVersion: 2.0.0-SNAPSHOT
+  authoringSource:
+    repository: bluetape4k/bluetape4k-dependencies
+    ref: 6073eefe7cd5d7bdf3bb5dec7103ffb5427a4e7b
+    files:
+      - README.md
+      - README.ko.md
+      - gradle/libs.versions.toml
+      - gradle.properties
+      - docs/version-management.ko.md
+      - docs/releases/2026-08-21-dependencies-2.0.0-snapshot-consumer-checklist.md
+  snapshotEvidence:
+    metadataUrl: https://central.sonatype.com/repository/maven-snapshots/io/github/bluetape4k/bluetape4k-dependencies/2.0.0-SNAPSHOT/maven-metadata.xml
+    retrievedAt: 2026-08-31
+    lastUpdated: 20260831003013
+    timestamp: 20260830.233309
+    buildNumber: 7
+  promotion:
+    stableReleaseRef: pending
+    stableReleaseCommit: pending
+    generatedSiteSnapshot: pending
+overview:
+  documents:
+    en:
+      - en/index.md
+      - en/getting-started.md
+      - en/architecture/repository-map.md
+      - en/modules/ecosystem-bom.md
+      - en/modules/gradle-version-catalog.md
+      - en/guides/snapshot-consumption.md
+      - en/guides/version-governance.md
+      - en/operations/validation.md
+    ko:
+      - ko/index.md
+      - ko/getting-started.md
+      - ko/architecture/repository-map.md
+      - ko/modules/ecosystem-bom.md
+      - ko/modules/gradle-version-catalog.md
+      - ko/guides/snapshot-consumption.md
+      - ko/guides/version-governance.md
+      - ko/operations/validation.md
+modules:
+  - id: ecosystem-bom
+    title:
+      en: Ecosystem BOM
+      ko: 생태계 BOM
+    artifact: io.github.bluetape4k:bluetape4k-dependencies
+    kind: bom
+    status: snapshot
+    en: en/modules/ecosystem-bom.md
+    ko: ko/modules/ecosystem-bom.md
+  - id: gradle-version-catalog
+    title:
+      en: Gradle Version Catalog
+      ko: Gradle Version Catalog
+    sourcePath: gradle/libs.versions.toml
+    kind: catalog
+    status: snapshot
+    en: en/modules/gradle-version-catalog.md
+    ko: ko/modules/gradle-version-catalog.md
+  - id: child-bom-matrix
+    title:
+      en: Child BOM matrix
+      ko: 하위 BOM 매트릭스
+    kind: governance
+    status: snapshot
+    en: en/architecture/repository-map.md
+    ko: ko/architecture/repository-map.md
