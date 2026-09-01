@@ -11,7 +11,6 @@ module TestcontainersImageContract
   EXPECTED_FAMILIES = EXPECTED_IMAGES.transform_values { |value| value.fetch(:image) }.freeze
 
   EXPECTED_CATALOG_VERSIONS = {
-    "bluetape4k-bom" => "2.0.0-SNAPSHOT",
     "kotlin" => "2.4.10",
     "jfalkordb" => "0.8.0",
     "neo4j-driver6" => "6.2.1",
@@ -24,8 +23,9 @@ module TestcontainersImageContract
     "Neo4j Java Driver 6.2.1",
     "PostgreSQL JDBC 42.7.13",
     "jfalkordb 0.8.0",
-    "2.0.0-SNAPSHOT",
   ].freeze
+
+  CATALOG_VERSION_PATTERN = /\A\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?\z/.freeze
 
   FLOATING_OR_STALE_REFERENCES = {
     "neo4j" => ["`neo4j:5`", "`neo4j:5.26.24`"],
@@ -100,10 +100,11 @@ module TestcontainersImageContract
 
       catalog = read_file(@catalog_path, errors, "central catalog")
       errors.concat(validate_catalog(catalog)) if catalog
+      catalog_bom_version = parse_catalog_versions(catalog)["bluetape4k-bom"] if catalog
 
       errors.concat(validate_gradle_baseline)
       errors.concat(validate_catalog_reference)
-      errors.concat(validate_readmes)
+      errors.concat(validate_readmes(catalog_bom_version))
       errors.concat(validate_backend_documents)
       errors
     end
@@ -141,13 +142,22 @@ module TestcontainersImageContract
     end
 
     def validate_catalog(contents)
-      versions = contents.lines.each_with_object({}) do |line, result|
+      versions = parse_catalog_versions(contents)
+      errors = EXPECTED_CATALOG_VERSIONS.each_with_object([]) do |(key, expected), result|
+        actual = versions[key]
+        result << "central catalog #{key} must be #{expected}, got #{actual.inspect}" unless actual == expected
+      end
+      bom_version = versions["bluetape4k-bom"]
+      unless bom_version&.match?(CATALOG_VERSION_PATTERN)
+        errors << "central catalog bluetape4k-bom must be a semantic version, got #{bom_version.inspect}"
+      end
+      errors
+    end
+
+    def parse_catalog_versions(contents)
+      contents.lines.each_with_object({}) do |line, result|
         match = line.match(/^\s*([A-Za-z0-9_-]+)\s*=\s*"([^"]+)"/)
         result[match[1]] = match[2] if match
-      end
-      EXPECTED_CATALOG_VERSIONS.each_with_object([]) do |(key, expected), errors|
-        actual = versions[key]
-        errors << "central catalog #{key} must be #{expected}, got #{actual.inspect}" unless actual == expected
       end
     end
 
@@ -179,7 +189,7 @@ module TestcontainersImageContract
       errors
     end
 
-    def validate_readmes
+    def validate_readmes(catalog_bom_version)
       documents = %w[README.md README.ko.md].map do |name|
         [name, read_file(File.join(@repository_root, name), [], name)]
       end
@@ -197,6 +207,11 @@ module TestcontainersImageContract
         EXPECTED_DOCUMENT_TOKENS.each do |token|
           errors << "#{name} is missing #{token}" unless contents.include?(token)
         end
+        if catalog_bom_version.nil?
+          errors << "#{name} cannot validate catalog bluetape4k-bom because the version is missing"
+        elsif !contains_exact_version?(contents, catalog_bom_version)
+          errors << "#{name} is missing catalog bluetape4k-bom #{catalog_bom_version}"
+        end
         FLOATING_OR_STALE_REFERENCES.each_value do |references|
           references.each do |reference|
             errors << "#{name} contains stale or floating #{reference}" if contents.include?(reference)
@@ -205,8 +220,8 @@ module TestcontainersImageContract
       end
 
       if documents.all? { |_, contents| contents }
-        en_tokens = contract_tokens(documents.fetch(0).last)
-        ko_tokens = contract_tokens(documents.fetch(1).last)
+        en_tokens = contract_tokens(documents.fetch(0).last, catalog_bom_version)
+        ko_tokens = contract_tokens(documents.fetch(1).last, catalog_bom_version)
         errors << "English and Korean README contract tokens differ" unless en_tokens == ko_tokens
       end
       errors
@@ -226,9 +241,14 @@ module TestcontainersImageContract
       end
     end
 
-    def contract_tokens(contents)
+    def contract_tokens(contents, catalog_bom_version)
       EXPECTED_IMAGES.values.map { |value| value.fetch(:reference) }.select { |token| contents.include?(token) } +
-        EXPECTED_DOCUMENT_TOKENS.select { |token| contents.include?(token) }
+        EXPECTED_DOCUMENT_TOKENS.select { |token| contents.include?(token) } +
+        [catalog_bom_version].compact.select { |version| contains_exact_version?(contents, version) }
+    end
+
+    def contains_exact_version?(contents, version)
+      contents.match?(/(?<![0-9A-Za-z.-])#{Regexp.escape(version)}(?![0-9A-Za-z.-])/)
     end
   end
 end
