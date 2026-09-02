@@ -1,4 +1,20 @@
-# Version governance and stable promotion
+---
+slug: "manual/bluetape4k-dependencies/2.0/guides/version-governance"
+title: "Version governance and stable promotion"
+manual:
+  id: "guides/version-governance"
+  repository: "bluetape4k-dependencies"
+  group: "overview"
+  kind: "guide"
+  sourceCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourcePath: "docs/manual/bluetape4k-dependencies/en/guides/version-governance.md"
+  minorVersion: "2.0"
+  releaseRef: "2.0.0"
+  releaseCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourceDir: "docs/manual/bluetape4k-dependencies"
+  layer: "build"
+---
+
 
 The dependencies repository centralizes resolution policy without removing independent release ownership from the eight upstream repositories.
 

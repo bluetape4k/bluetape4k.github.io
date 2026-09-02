@@ -1,4 +1,20 @@
-# 검증 런북
+---
+slug: "ko/manual/bluetape4k-dependencies/2.0/operations/validation"
+title: "검증 런북"
+manual:
+  id: "operations/validation"
+  repository: "bluetape4k-dependencies"
+  group: "overview"
+  kind: "guide"
+  sourceCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourcePath: "docs/manual/bluetape4k-dependencies/ko/operations/validation.md"
+  minorVersion: "2.0"
+  releaseRef: "2.0.0"
+  releaseCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourceDir: "docs/manual/bluetape4k-dependencies"
+  layer: "build"
+---
+
 
 catalog와 BOM source를 제공하는 `bluetape4k-dependencies` checkout에서 명령을 실행한다. release 증거를 수집할 때 중앙 manual checkout과 code checkout은 각각 clean 상태로 유지한다.
 

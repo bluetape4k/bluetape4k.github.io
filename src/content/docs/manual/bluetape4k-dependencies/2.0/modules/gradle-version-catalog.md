@@ -1,4 +1,20 @@
-# Gradle Version Catalog
+---
+slug: "manual/bluetape4k-dependencies/2.0/modules/gradle-version-catalog"
+title: "Gradle Version Catalog"
+manual:
+  id: "gradle-version-catalog"
+  repository: "bluetape4k-dependencies"
+  group: "governance"
+  kind: "guide"
+  sourceCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourcePath: "docs/manual/bluetape4k-dependencies/en/modules/gradle-version-catalog.md"
+  minorVersion: "2.0"
+  releaseRef: "2.0.0"
+  releaseCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourceDir: "gradle"
+  layer: "build"
+---
+
 
 `gradle/libs.versions.toml` is the source of truth for Bluetape4k build aliases, plugin aliases, shared dependency versions, and generated artifact aliases. It is consumed as a checked-out file; it is not a replacement for the published BOM.
 

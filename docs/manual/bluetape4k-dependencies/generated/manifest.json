@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 2,
+  "repository": "bluetape4k/bluetape4k-dependencies",
+  "releaseRef": "2.0.0",
+  "releaseCommit": "3c203aa9f8ba80685aac766c5fb8f24e23d0058e",
+  "overview": {
+    "documents": {
+      "en": [
+        "en/index.md",
+        "en/getting-started.md",
+        "en/architecture/repository-map.md",
+        "en/modules/ecosystem-bom.md",
+        "en/modules/gradle-version-catalog.md",
+        "en/guides/snapshot-consumption.md",
+        "en/guides/version-governance.md",
+        "en/operations/validation.md"
+      ],
+      "ko": [
+        "ko/index.md",
+        "ko/getting-started.md",
+        "ko/architecture/repository-map.md",
+        "ko/modules/ecosystem-bom.md",
+        "ko/modules/gradle-version-catalog.md",
+        "ko/guides/snapshot-consumption.md",
+        "ko/guides/version-governance.md",
+        "ko/operations/validation.md"
+      ]
+    }
+  },
+  "modules": [
+    {
+      "id": "ecosystem-bom",
+      "title": { "en": "Ecosystem BOM", "ko": "생태계 BOM" },
+      "artifact": "io.github.bluetape4k:bluetape4k-dependencies",
+      "kind": "bom",
+      "group": "foundation",
+      "sourceDir": ".",
+      "sourcePaths": ["build.gradle.kts"],
+      "status": "stable",
+      "en": "en/modules/ecosystem-bom.md",
+      "ko": "ko/modules/ecosystem-bom.md"
+    },
+    {
+      "id": "gradle-version-catalog",
+      "title": { "en": "Gradle Version Catalog", "ko": "Gradle Version Catalog" },
+      "kind": "catalog",
+      "group": "governance",
+      "sourceDir": "gradle",
+      "sourcePaths": ["gradle/libs.versions.toml"],
+      "status": "stable",
+      "en": "en/modules/gradle-version-catalog.md",
+      "ko": "ko/modules/gradle-version-catalog.md"
+    },
+    {
+      "id": "child-bom-matrix",
+      "title": { "en": "Child BOM matrix", "ko": "하위 BOM 매트릭스" },
+      "kind": "governance",
+      "group": "governance",
+      "sourceDir": ".",
+      "sourcePaths": ["build.gradle.kts", "gradle/libs.versions.toml"],
+      "status": "stable",
+      "en": "en/architecture/repository-map.md",
+      "ko": "ko/architecture/repository-map.md"
+    }
+  ]
+}

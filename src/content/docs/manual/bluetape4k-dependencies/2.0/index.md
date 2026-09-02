@@ -1,4 +1,20 @@
-# bluetape4k-dependencies 2.0.0 Manual
+---
+slug: "manual/bluetape4k-dependencies/2.0"
+title: "bluetape4k-dependencies 2.0.0 Manual"
+manual:
+  id: "index"
+  repository: "bluetape4k-dependencies"
+  group: "overview"
+  kind: "guide"
+  sourceCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourcePath: "docs/manual/bluetape4k-dependencies/en/index.md"
+  minorVersion: "2.0"
+  releaseRef: "2.0.0"
+  releaseCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourceDir: "docs/manual/bluetape4k-dependencies"
+  layer: "build"
+---
+
 
 This is the stable manual for `bluetape4k-dependencies:2.0.0`. Its BOM, signed tag, GitHub Release, child artifacts, and downstream resolution were verified before this versioned snapshot was generated.
 
@@ -13,13 +29,13 @@ The catalog does not replace the BOM. Import both only when a build needs the ca
 
 | I need to… | Start with |
 |---|---|
-| consume the development BOM from Gradle or Maven | [Getting started](getting-started.md) |
-| understand the eight upstream BOM lines | [Repository map](architecture/repository-map.md) |
-| use `bt4k` aliases from a checkout | [Gradle Version Catalog](modules/gradle-version-catalog.md) |
-| understand what the ecosystem BOM manages | [Ecosystem BOM](modules/ecosystem-bom.md) |
-| consume a timestamped snapshot safely | [Snapshot consumption](guides/snapshot-consumption.md) |
-| update versions or promote a release | [Version governance](guides/version-governance.md) |
-| verify a catalog or publication change | [Validation](operations/validation.md) |
+| consume the development BOM from Gradle or Maven | [Getting started](/manual/bluetape4k-dependencies/2.0/getting-started/) |
+| understand the eight upstream BOM lines | [Repository map](/manual/bluetape4k-dependencies/2.0/architecture/repository-map/) |
+| use `bt4k` aliases from a checkout | [Gradle Version Catalog](/manual/bluetape4k-dependencies/2.0/modules/gradle-version-catalog/) |
+| understand what the ecosystem BOM manages | [Ecosystem BOM](/manual/bluetape4k-dependencies/2.0/modules/ecosystem-bom/) |
+| consume a timestamped snapshot safely | [Snapshot consumption](/manual/bluetape4k-dependencies/2.0/guides/snapshot-consumption/) |
+| update versions or promote a release | [Version governance](/manual/bluetape4k-dependencies/2.0/guides/version-governance/) |
+| verify a catalog or publication change | [Validation](/manual/bluetape4k-dependencies/2.0/operations/validation/) |
 
 ## Stable release line
 

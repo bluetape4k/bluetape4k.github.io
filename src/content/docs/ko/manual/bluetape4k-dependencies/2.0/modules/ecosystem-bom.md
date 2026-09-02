@@ -1,4 +1,20 @@
-# 생태계 BOM
+---
+slug: "ko/manual/bluetape4k-dependencies/2.0/modules/ecosystem-bom"
+title: "생태계 BOM"
+manual:
+  id: "ecosystem-bom"
+  repository: "bluetape4k-dependencies"
+  group: "foundation"
+  kind: "library"
+  sourceCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourcePath: "docs/manual/bluetape4k-dependencies/ko/modules/ecosystem-bom.md"
+  minorVersion: "2.0"
+  releaseRef: "2.0.0"
+  releaseCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourceDir: "."
+  layer: "build"
+---
+
 
 게시 artifact는 다음 좌표다.
 
@@ -10,7 +26,7 @@ io.github.bluetape4k:bluetape4k-dependencies:2.0.0
 
 ## BOM이 관리하는 범위
 
-- [저장소 지도](../architecture/repository-map.md)에 정리한 Bluetape4k 하위 BOM;
+- [저장소 지도](/ko/manual/bluetape4k-dependencies/2.0/architecture/repository-map/)에 정리한 Bluetape4k 하위 BOM;
 - Spring Boot, Kotlin, Coroutines, Jackson, Ktor, Netty, Kafka, Testcontainers 같은 중앙 framework·runtime BOM 계열;
 - 생태계 published module이 소비하는 version constraint.
 

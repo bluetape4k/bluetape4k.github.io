@@ -1,37 +1,17 @@
 ---
 schemaVersion: 2
 repository: bluetape4k/bluetape4k-dependencies
+releaseRef: 2.0.0
+releaseCommit: 3c203aa9f8ba80685aac766c5fb8f24e23d0058e
 publication:
-  manualVersion: 2.0.0-SNAPSHOT
+  manualVersion: '2.0'
   sourceRoot: docs/manual/bluetape4k-dependencies
+  toolingRoot: scripts/manual/repositories/bluetape4k-dependencies
   ownership: central
   locales:
     - en
     - ko
-  contentStatus: in-progress
-  channel: snapshot
-draft:
-  targetVersion: 2.0.0-SNAPSHOT
-  authoringSource:
-    repository: bluetape4k/bluetape4k-dependencies
-    ref: 6073eefe7cd5d7bdf3bb5dec7103ffb5427a4e7b
-    files:
-      - README.md
-      - README.ko.md
-      - gradle/libs.versions.toml
-      - gradle.properties
-      - docs/version-management.ko.md
-      - docs/releases/2026-08-21-dependencies-2.0.0-snapshot-consumer-checklist.md
-  snapshotEvidence:
-    metadataUrl: https://central.sonatype.com/repository/maven-snapshots/io/github/bluetape4k/bluetape4k-dependencies/2.0.0-SNAPSHOT/maven-metadata.xml
-    retrievedAt: 2026-08-31
-    lastUpdated: 20260831003013
-    timestamp: 20260830.233309
-    buildNumber: 7
-  promotion:
-    stableReleaseRef: pending
-    stableReleaseCommit: pending
-    generatedSiteSnapshot: pending
+  contentStatus: complete
 overview:
   documents:
     en:
@@ -59,7 +39,9 @@ modules:
       ko: 생태계 BOM
     artifact: io.github.bluetape4k:bluetape4k-dependencies
     kind: bom
-    status: snapshot
+    group: foundation
+    sourceDir: .
+    status: stable
     en: en/modules/ecosystem-bom.md
     ko: ko/modules/ecosystem-bom.md
   - id: gradle-version-catalog
@@ -68,7 +50,9 @@ modules:
       ko: Gradle Version Catalog
     sourcePath: gradle/libs.versions.toml
     kind: catalog
-    status: snapshot
+    group: governance
+    sourceDir: gradle
+    status: stable
     en: en/modules/gradle-version-catalog.md
     ko: ko/modules/gradle-version-catalog.md
   - id: child-bom-matrix
@@ -76,6 +60,8 @@ modules:
       en: Child BOM matrix
       ko: 하위 BOM 매트릭스
     kind: governance
-    status: snapshot
+    group: governance
+    sourceDir: .
+    status: stable
     en: en/architecture/repository-map.md
     ko: ko/architecture/repository-map.md

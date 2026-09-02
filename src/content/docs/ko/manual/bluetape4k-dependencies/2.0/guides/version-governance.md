@@ -1,4 +1,20 @@
-# 버전 거버넌스와 stable 승격
+---
+slug: "ko/manual/bluetape4k-dependencies/2.0/guides/version-governance"
+title: "버전 거버넌스와 stable 승격"
+manual:
+  id: "guides/version-governance"
+  repository: "bluetape4k-dependencies"
+  group: "overview"
+  kind: "guide"
+  sourceCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourcePath: "docs/manual/bluetape4k-dependencies/ko/guides/version-governance.md"
+  minorVersion: "2.0"
+  releaseRef: "2.0.0"
+  releaseCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourceDir: "docs/manual/bluetape4k-dependencies"
+  layer: "build"
+---
+
 
 dependencies 저장소는 여덟 upstream 저장소의 독립적인 release 소유권을 없애지 않으면서 해석 정책을 중앙화한다.
 

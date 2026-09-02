@@ -1,4 +1,20 @@
-# Ecosystem BOM
+---
+slug: "manual/bluetape4k-dependencies/2.0/modules/ecosystem-bom"
+title: "Ecosystem BOM"
+manual:
+  id: "ecosystem-bom"
+  repository: "bluetape4k-dependencies"
+  group: "foundation"
+  kind: "library"
+  sourceCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourcePath: "docs/manual/bluetape4k-dependencies/en/modules/ecosystem-bom.md"
+  minorVersion: "2.0"
+  releaseRef: "2.0.0"
+  releaseCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourceDir: "."
+  layer: "build"
+---
+
 
 The published artifact is:
 
@@ -10,7 +26,7 @@ It is a Maven POM/BOM. It aligns dependency versions; it does not contain runtim
 
 ## What the BOM manages
 
-- the Bluetape4k child BOMs listed in the [repository map](../architecture/repository-map.md);
+- the Bluetape4k child BOMs listed in the [repository map](/manual/bluetape4k-dependencies/2.0/architecture/repository-map/);
 - central framework and runtime BOM lines such as Spring Boot, Kotlin, Coroutines, Jackson, Ktor, Netty, Kafka, and Testcontainers;
 - the version constraints consumed by the ecosystem's published modules.
 

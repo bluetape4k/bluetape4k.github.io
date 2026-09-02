@@ -1,4 +1,20 @@
-# Getting started
+---
+slug: "manual/bluetape4k-dependencies/2.0/getting-started"
+title: "Getting started"
+manual:
+  id: "getting-started"
+  repository: "bluetape4k-dependencies"
+  group: "overview"
+  kind: "guide"
+  sourceCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourcePath: "docs/manual/bluetape4k-dependencies/en/getting-started.md"
+  minorVersion: "2.0"
+  releaseRef: "2.0.0"
+  releaseCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourceDir: "docs/manual/bluetape4k-dependencies"
+  layer: "build"
+---
+
 
 Use the stable `2.0.0` BOM from Maven Central, import it once, and omit versions from managed Bluetape4k artifacts.
 
@@ -79,4 +95,4 @@ Pin the catalog checkout to an immutable commit in CI. The central catalog ref a
 2. Run the representative build with the BOM and one versionless Bluetape4k module.
 3. Confirm the catalog checkout is the intended immutable release commit or catalog train tag.
 
-Use [snapshot consumption](guides/snapshot-consumption.md) only when intentionally testing a later development line.
+Use [snapshot consumption](/manual/bluetape4k-dependencies/2.0/guides/snapshot-consumption/) only when intentionally testing a later development line.

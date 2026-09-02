@@ -1,4 +1,20 @@
-# 시작하기
+---
+slug: "ko/manual/bluetape4k-dependencies/2.0/getting-started"
+title: "시작하기"
+manual:
+  id: "getting-started"
+  repository: "bluetape4k-dependencies"
+  group: "overview"
+  kind: "guide"
+  sourceCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourcePath: "docs/manual/bluetape4k-dependencies/ko/getting-started.md"
+  minorVersion: "2.0"
+  releaseRef: "2.0.0"
+  releaseCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourceDir: "docs/manual/bluetape4k-dependencies"
+  layer: "build"
+---
+
 
 안정 `2.0.0` BOM을 Maven Central에서 가져와 한 번만 import하고, BOM이 관리하는 Bluetape4k artifact에는 버전을 쓰지 않는다.
 
@@ -79,4 +95,4 @@ CI에서는 catalog checkout을 immutable commit에 고정한다. 중앙 catalog
 2. BOM과 버전 없는 Bluetape4k 모듈 하나로 대표 빌드를 실행한다.
 3. Catalog checkout이 의도한 불변 release commit 또는 catalog train tag인지 확인한다.
 
-후속 개발선을 의도적으로 시험할 때만 [Snapshot 소비](guides/snapshot-consumption.md)를 사용한다.
+후속 개발선을 의도적으로 시험할 때만 [Snapshot 소비](/ko/manual/bluetape4k-dependencies/2.0/guides/snapshot-consumption/)를 사용한다.

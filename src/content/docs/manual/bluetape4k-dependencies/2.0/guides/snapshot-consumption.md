@@ -1,4 +1,20 @@
-# Consuming snapshots safely
+---
+slug: "manual/bluetape4k-dependencies/2.0/guides/snapshot-consumption"
+title: "Consuming snapshots safely"
+manual:
+  id: "guides/snapshot-consumption"
+  repository: "bluetape4k-dependencies"
+  group: "overview"
+  kind: "guide"
+  sourceCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourcePath: "docs/manual/bluetape4k-dependencies/en/guides/snapshot-consumption.md"
+  minorVersion: "2.0"
+  releaseRef: "2.0.0"
+  releaseCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourceDir: "docs/manual/bluetape4k-dependencies"
+  layer: "build"
+---
+
 
 The development line after stable `2.0.0` is `2.1.0-SNAPSHOT`. It is mutable metadata, so treat repository configuration, artifact availability, and catalog provenance as separate checks. Stable `2.0.0` consumers do not need this repository.
 
@@ -35,4 +51,4 @@ Run the representative Maven build with `-U` when a new snapshot timestamp is ex
 - the catalog checkout is an immutable commit and is recorded separately;
 - the result is labelled development-only until stable promotion.
 
-For the release boundary and exact commands, see [version governance](version-governance.md) and [validation](../operations/validation.md).
+For the release boundary and exact commands, see [version governance](/manual/bluetape4k-dependencies/2.0/guides/version-governance/) and [validation](/manual/bluetape4k-dependencies/2.0/operations/validation/).

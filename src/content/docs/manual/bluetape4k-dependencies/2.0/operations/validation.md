@@ -1,4 +1,20 @@
-# Validation runbook
+---
+slug: "manual/bluetape4k-dependencies/2.0/operations/validation"
+title: "Validation runbook"
+manual:
+  id: "operations/validation"
+  repository: "bluetape4k-dependencies"
+  group: "overview"
+  kind: "guide"
+  sourceCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourcePath: "docs/manual/bluetape4k-dependencies/en/operations/validation.md"
+  minorVersion: "2.0"
+  releaseRef: "2.0.0"
+  releaseCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourceDir: "docs/manual/bluetape4k-dependencies"
+  layer: "build"
+---
+
 
 Run checks from the `bluetape4k-dependencies` checkout that supplies the catalog and BOM source. Keep the central manual checkout and the code checkout clean when collecting release evidence.
 

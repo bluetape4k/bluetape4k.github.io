@@ -1,4 +1,20 @@
-# Gradle Version Catalog
+---
+slug: "ko/manual/bluetape4k-dependencies/2.0/modules/gradle-version-catalog"
+title: "Gradle Version Catalog"
+manual:
+  id: "gradle-version-catalog"
+  repository: "bluetape4k-dependencies"
+  group: "governance"
+  kind: "guide"
+  sourceCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourcePath: "docs/manual/bluetape4k-dependencies/ko/modules/gradle-version-catalog.md"
+  minorVersion: "2.0"
+  releaseRef: "2.0.0"
+  releaseCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourceDir: "gradle"
+  layer: "build"
+---
+
 
 `gradle/libs.versions.toml`은 Bluetape4k build alias, plugin alias, 공통 dependency version, 생성된 artifact alias의 source of truth다. checkout한 파일로 소비하며 published BOM을 대체하지 않는다.
 

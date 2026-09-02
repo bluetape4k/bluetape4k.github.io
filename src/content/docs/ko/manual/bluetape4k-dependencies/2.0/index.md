@@ -1,4 +1,20 @@
-# bluetape4k-dependencies 2.0.0 매뉴얼
+---
+slug: "ko/manual/bluetape4k-dependencies/2.0"
+title: "bluetape4k-dependencies 2.0.0 매뉴얼"
+manual:
+  id: "index"
+  repository: "bluetape4k-dependencies"
+  group: "overview"
+  kind: "guide"
+  sourceCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourcePath: "docs/manual/bluetape4k-dependencies/ko/index.md"
+  minorVersion: "2.0"
+  releaseRef: "2.0.0"
+  releaseCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourceDir: "docs/manual/bluetape4k-dependencies"
+  layer: "build"
+---
+
 
 이 문서는 `bluetape4k-dependencies:2.0.0` 안정 매뉴얼이다. BOM, 서명 tag, GitHub Release, 하위 artifact, downstream 해석을 확인한 뒤 버전이 붙은 snapshot을 생성했다.
 
@@ -13,13 +29,13 @@ Catalog는 BOM을 대신하지 않는다. 빌드 authoring alias와 BOM의 depen
 
 | 하려는 일 | 먼저 읽을 문서 |
 |---|---|
-| Gradle 또는 Maven에서 개발 BOM 사용 | [시작하기](getting-started.md) |
-| 여덟 upstream BOM 계열 이해 | [저장소 지도](architecture/repository-map.md) |
-| checkout한 catalog에서 `bt4k` alias 사용 | [Gradle Version Catalog](modules/gradle-version-catalog.md) |
-| 생태계 BOM이 관리하는 범위 이해 | [생태계 BOM](modules/ecosystem-bom.md) |
-| timestamped snapshot 안전하게 사용 | [Snapshot 소비](guides/snapshot-consumption.md) |
-| 버전 변경과 stable 승격 | [버전 거버넌스](guides/version-governance.md) |
-| catalog·publication 변경 검증 | [검증](operations/validation.md) |
+| Gradle 또는 Maven에서 개발 BOM 사용 | [시작하기](/ko/manual/bluetape4k-dependencies/2.0/getting-started/) |
+| 여덟 upstream BOM 계열 이해 | [저장소 지도](/ko/manual/bluetape4k-dependencies/2.0/architecture/repository-map/) |
+| checkout한 catalog에서 `bt4k` alias 사용 | [Gradle Version Catalog](/ko/manual/bluetape4k-dependencies/2.0/modules/gradle-version-catalog/) |
+| 생태계 BOM이 관리하는 범위 이해 | [생태계 BOM](/ko/manual/bluetape4k-dependencies/2.0/modules/ecosystem-bom/) |
+| timestamped snapshot 안전하게 사용 | [Snapshot 소비](/ko/manual/bluetape4k-dependencies/2.0/guides/snapshot-consumption/) |
+| 버전 변경과 stable 승격 | [버전 거버넌스](/ko/manual/bluetape4k-dependencies/2.0/guides/version-governance/) |
+| catalog·publication 변경 검증 | [검증](/ko/manual/bluetape4k-dependencies/2.0/operations/validation/) |
 
 ## 안정 릴리스 계열
 

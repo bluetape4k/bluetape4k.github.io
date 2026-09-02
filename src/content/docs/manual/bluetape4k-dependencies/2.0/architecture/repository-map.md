@@ -1,4 +1,20 @@
-# Repository map and version boundaries
+---
+slug: "manual/bluetape4k-dependencies/2.0/architecture/repository-map"
+title: "Repository map and version boundaries"
+manual:
+  id: "child-bom-matrix"
+  repository: "bluetape4k-dependencies"
+  group: "governance"
+  kind: "guide"
+  sourceCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourcePath: "docs/manual/bluetape4k-dependencies/en/architecture/repository-map.md"
+  minorVersion: "2.0"
+  releaseRef: "2.0.0"
+  releaseCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourceDir: "."
+  layer: "build"
+---
+
 
 The dependencies repository is the central version authority for the Bluetape4k ecosystem. It does not contain the runtime implementations; it imports each upstream repository's BOM and exposes a consistent catalog vocabulary.
 

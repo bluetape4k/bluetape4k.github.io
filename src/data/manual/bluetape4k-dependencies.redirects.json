@@ -1,0 +1,70 @@
+{
+  "redirects": [
+    {
+      "source": "/ko/manual/bluetape4k-dependencies/",
+      "target": "/ko/manual/bluetape4k-dependencies/2.0/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-dependencies/architecture/repository-map/",
+      "target": "/ko/manual/bluetape4k-dependencies/2.0/architecture/repository-map/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-dependencies/getting-started/",
+      "target": "/ko/manual/bluetape4k-dependencies/2.0/getting-started/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-dependencies/guides/snapshot-consumption/",
+      "target": "/ko/manual/bluetape4k-dependencies/2.0/guides/snapshot-consumption/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-dependencies/guides/version-governance/",
+      "target": "/ko/manual/bluetape4k-dependencies/2.0/guides/version-governance/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-dependencies/modules/ecosystem-bom/",
+      "target": "/ko/manual/bluetape4k-dependencies/2.0/modules/ecosystem-bom/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-dependencies/modules/gradle-version-catalog/",
+      "target": "/ko/manual/bluetape4k-dependencies/2.0/modules/gradle-version-catalog/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-dependencies/operations/validation/",
+      "target": "/ko/manual/bluetape4k-dependencies/2.0/operations/validation/"
+    },
+    {
+      "source": "/manual/bluetape4k-dependencies/",
+      "target": "/manual/bluetape4k-dependencies/2.0/"
+    },
+    {
+      "source": "/manual/bluetape4k-dependencies/architecture/repository-map/",
+      "target": "/manual/bluetape4k-dependencies/2.0/architecture/repository-map/"
+    },
+    {
+      "source": "/manual/bluetape4k-dependencies/getting-started/",
+      "target": "/manual/bluetape4k-dependencies/2.0/getting-started/"
+    },
+    {
+      "source": "/manual/bluetape4k-dependencies/guides/snapshot-consumption/",
+      "target": "/manual/bluetape4k-dependencies/2.0/guides/snapshot-consumption/"
+    },
+    {
+      "source": "/manual/bluetape4k-dependencies/guides/version-governance/",
+      "target": "/manual/bluetape4k-dependencies/2.0/guides/version-governance/"
+    },
+    {
+      "source": "/manual/bluetape4k-dependencies/modules/ecosystem-bom/",
+      "target": "/manual/bluetape4k-dependencies/2.0/modules/ecosystem-bom/"
+    },
+    {
+      "source": "/manual/bluetape4k-dependencies/modules/gradle-version-catalog/",
+      "target": "/manual/bluetape4k-dependencies/2.0/modules/gradle-version-catalog/"
+    },
+    {
+      "source": "/manual/bluetape4k-dependencies/operations/validation/",
+      "target": "/manual/bluetape4k-dependencies/2.0/operations/validation/"
+    }
+  ],
+  "repository": "bluetape4k/bluetape4k-dependencies",
+  "schema": 1
+}

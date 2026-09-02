@@ -1,4 +1,20 @@
-# 저장소 지도와 버전 경계
+---
+slug: "ko/manual/bluetape4k-dependencies/2.0/architecture/repository-map"
+title: "저장소 지도와 버전 경계"
+manual:
+  id: "child-bom-matrix"
+  repository: "bluetape4k-dependencies"
+  group: "governance"
+  kind: "guide"
+  sourceCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourcePath: "docs/manual/bluetape4k-dependencies/ko/architecture/repository-map.md"
+  minorVersion: "2.0"
+  releaseRef: "2.0.0"
+  releaseCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourceDir: "."
+  layer: "build"
+---
+
 
 dependencies 저장소는 Bluetape4k 생태계의 중앙 version authority다. runtime 구현을 담지 않고 각 upstream 저장소의 BOM을 import해 일관된 catalog vocabulary를 제공한다.
 

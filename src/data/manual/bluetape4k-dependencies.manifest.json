@@ -1,0 +1,104 @@
+{
+  "authoringSourceRef": "6d7108a69d36ac5afcbad967086884738e9f612e",
+  "minorVersion": "2.0",
+  "modules": [
+    {
+      "artifact": "io.github.bluetape4k:bluetape4k-dependencies",
+      "chapters": [],
+      "en": "en/modules/ecosystem-bom.md",
+      "group": "foundation",
+      "id": "ecosystem-bom",
+      "kind": "bom",
+      "ko": "ko/modules/ecosystem-bom.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-dependencies/2.0/modules/ecosystem-bom/",
+        "ko": "/ko/manual/bluetape4k-dependencies/2.0/modules/ecosystem-bom/"
+      },
+      "sourceDir": ".",
+      "sourcePaths": [
+        "build.gradle.kts"
+      ],
+      "status": "stable",
+      "title": {
+        "en": "Ecosystem BOM",
+        "ko": "생태계 BOM"
+      }
+    },
+    {
+      "chapters": [],
+      "en": "en/modules/gradle-version-catalog.md",
+      "group": "governance",
+      "id": "gradle-version-catalog",
+      "kind": "catalog",
+      "ko": "ko/modules/gradle-version-catalog.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-dependencies/2.0/modules/gradle-version-catalog/",
+        "ko": "/ko/manual/bluetape4k-dependencies/2.0/modules/gradle-version-catalog/"
+      },
+      "sourceDir": "gradle",
+      "sourcePaths": [
+        "gradle/libs.versions.toml"
+      ],
+      "status": "stable",
+      "title": {
+        "en": "Gradle Version Catalog",
+        "ko": "Gradle Version Catalog"
+      }
+    },
+    {
+      "chapters": [],
+      "en": "en/architecture/repository-map.md",
+      "group": "governance",
+      "id": "child-bom-matrix",
+      "kind": "governance",
+      "ko": "ko/architecture/repository-map.md",
+      "layer": "build",
+      "routes": {
+        "en": "/manual/bluetape4k-dependencies/2.0/architecture/repository-map/",
+        "ko": "/ko/manual/bluetape4k-dependencies/2.0/architecture/repository-map/"
+      },
+      "sourceDir": ".",
+      "sourcePaths": [
+        "build.gradle.kts",
+        "gradle/libs.versions.toml"
+      ],
+      "status": "stable",
+      "title": {
+        "en": "Child BOM matrix",
+        "ko": "하위 BOM 매트릭스"
+      }
+    }
+  ],
+  "overview": {
+    "documents": {
+      "en": [
+        "en/architecture/repository-map.md",
+        "en/getting-started.md",
+        "en/guides/snapshot-consumption.md",
+        "en/guides/version-governance.md",
+        "en/index.md",
+        "en/modules/ecosystem-bom.md",
+        "en/modules/gradle-version-catalog.md",
+        "en/operations/validation.md"
+      ],
+      "ko": [
+        "ko/architecture/repository-map.md",
+        "ko/getting-started.md",
+        "ko/guides/snapshot-consumption.md",
+        "ko/guides/version-governance.md",
+        "ko/index.md",
+        "ko/modules/ecosystem-bom.md",
+        "ko/modules/gradle-version-catalog.md",
+        "ko/operations/validation.md"
+      ]
+    }
+  },
+  "releaseCommit": "3c203aa9f8ba80685aac766c5fb8f24e23d0058e",
+  "releaseRef": "2.0.0",
+  "repository": "bluetape4k/bluetape4k-dependencies",
+  "repositorySlug": "bluetape4k-dependencies",
+  "schemaVersion": 2,
+  "sourceCommit": "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+}

@@ -1,4 +1,20 @@
-# Snapshot 안전하게 소비하기
+---
+slug: "ko/manual/bluetape4k-dependencies/2.0/guides/snapshot-consumption"
+title: "Snapshot 안전하게 소비하기"
+manual:
+  id: "guides/snapshot-consumption"
+  repository: "bluetape4k-dependencies"
+  group: "overview"
+  kind: "guide"
+  sourceCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourcePath: "docs/manual/bluetape4k-dependencies/ko/guides/snapshot-consumption.md"
+  minorVersion: "2.0"
+  releaseRef: "2.0.0"
+  releaseCommit: "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+  sourceDir: "docs/manual/bluetape4k-dependencies"
+  layer: "build"
+---
+
 
 안정 `2.0.0` 이후 개발선은 `2.1.0-SNAPSHOT`이다. 변경 가능한 metadata이므로 저장소 설정, artifact availability, catalog provenance를 별도 검사로 취급한다. 안정 `2.0.0` 소비자는 이 저장소가 필요하지 않다.
 
@@ -35,4 +51,4 @@ Metadata는 2026-09-02에 조회했으며 `lastUpdated=20260902163844`, timestam
 - catalog checkout이 immutable commit이고 별도로 기록된다.
 - stable 승격 전까지 결과가 개발 전용으로 표시된다.
 
-정확한 release 경계와 명령은 [버전 거버넌스](version-governance.md)와 [검증](../operations/validation.md)을 참고한다.
+정확한 release 경계와 명령은 [버전 거버넌스](/ko/manual/bluetape4k-dependencies/2.0/guides/version-governance/)와 [검증](/ko/manual/bluetape4k-dependencies/2.0/operations/validation/)을 참고한다.
