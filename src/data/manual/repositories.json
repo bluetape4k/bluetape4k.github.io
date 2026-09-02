@@ -62,7 +62,7 @@
         "en": "Leader docs",
         "ko": "Leader 문서"
       },
-      "latestMinor": "0.5",
+      "latestMinor": "1.0",
       "manual": {
         "ownership": "central",
         "sourceRoot": "docs/manual/bluetape4k-leader",

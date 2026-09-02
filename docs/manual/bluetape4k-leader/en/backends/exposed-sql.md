@@ -1,8 +1,8 @@
 ---
 title: "Exposed SQL backends"
 description: "Use JDBC for blocking services and R2DBC for coroutine-native SQL while keeping election transactions short."
-releaseRef: 0.5.0
-releaseCommit: 721a9a3808f67489d2bdb8177734325981c24977
+releaseRef: 1.0.0
+releaseCommit: e70146330302758f563a46b7286e3ce25f1bac49
 ---
 
 # Exposed SQL backends
@@ -23,7 +23,7 @@ Choose JDBC when the service and transaction stack are blocking. Choose R2DBC wh
 
 ## Release provenance
 
-This page is pinned to the `0.5.0` release and therefore intentionally does not
+This page is pinned to the `1.0.0` release and therefore intentionally does not
 describe APIs introduced after that release. Consult the current
 `leader-exposed-jdbc` and `leader-exposed-r2dbc` module READMEs on the
 development branch for post-release database-time options and behavior.

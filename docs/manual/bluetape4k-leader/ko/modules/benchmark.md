@@ -6,7 +6,7 @@ locale: "ko"
 kind: "benchmark"
 gradlePath: ":benchmark"
 sourceDir: "benchmark"
-releaseRef: "0.5.0"
+releaseRef: "1.0.0"
 artifact: null
 ---
 
@@ -16,7 +16,7 @@ artifact: null
 
 ## 제공하는 기능 {#problem}
 
-배포하지 않는 이 모듈은 하나의 `kotlinx-benchmark`/JMH harness로 선출 백엔드를 비교합니다. 0.5.0 매뉴얼은 2026-05-29 근거를 기준으로 삼습니다. Throughput은 높을수록, average time은 낮을수록 좋지만 같은 workload와 runtime target 안의 행만 비교해야 합니다.
+배포하지 않는 이 모듈은 하나의 `kotlinx-benchmark`/JMH harness로 선출 백엔드를 비교합니다. 1.0.0 매뉴얼은 2026-05-29 근거를 기준으로 삼습니다. Throughput은 높을수록, average time은 낮을수록 좋지만 같은 workload와 runtime target 안의 행만 비교해야 합니다.
 
 ## 사용하기 좋은 경우 {#when-to-use}
 
@@ -24,7 +24,7 @@ artifact: null
 
 ## 의존성 좌표 {#coordinates}
 
-이 모듈은 배포하지 않습니다. `0.5.0` 태그를 checkout하고 저장소에서 `:benchmark`를 실행합니다.
+이 모듈은 배포하지 않습니다. `1.0.0` 태그를 checkout하고 저장소에서 `:benchmark`를 실행합니다.
 
 ## 핵심 개념 {#concepts}
 
@@ -68,7 +68,7 @@ throughput과 average-time 원본 JSON을 짧은 해석과 함께 보존합니�
 
 ## 테스트 {#testing}
 
-긴 실행 전에 benchmark source set을 컴파일하고 좁은 filter로 smoke run을 합니다. 그다음 throughput과 average-time 전체 모드를 순서대로 실행하세요. Harness가 안정판 0.5.0 API만 쓰는지도 확인합니다.
+긴 실행 전에 benchmark source set을 컴파일하고 좁은 filter로 smoke run을 합니다. 그다음 throughput과 average-time 전체 모드를 순서대로 실행하세요. Harness가 안정판 1.0.0 API만 쓰는지도 확인합니다.
 
 ## 학습 경로와 예제 {#workshops}
 

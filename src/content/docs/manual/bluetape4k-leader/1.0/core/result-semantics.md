@@ -1,0 +1,46 @@
+---
+slug: "manual/bluetape4k-leader/1.0/core/result-semantics"
+title: "Result semantics"
+description: "Know whether an action ran, was skipped, or failed—even when the action can return null."
+releaseRef: 1.0.0
+releaseCommit: e70146330302758f563a46b7286e3ce25f1bac49
+manual:
+  id: "core/result-semantics"
+  repository: "bluetape4k-leader"
+  group: "overview"
+  kind: "guide"
+  sourceCommit: "e70146330302758f563a46b7286e3ce25f1bac49"
+  sourcePath: "docs/manual/bluetape4k-leader/en/core/result-semantics.md"
+  minorVersion: "1.0"
+  releaseRef: "1.0.0"
+  releaseCommit: "e70146330302758f563a46b7286e3ce25f1bac49"
+  sourceDir: "docs/manual/bluetape4k-leader"
+  layer: "build"
+---
+
+
+Know whether an action ran, was skipped, or failed—even when the action can return null.
+
+## Nullable API
+
+`runIfLeader(): T?` is concise: the action result means elected and `null` means skipped. If `T` itself is nullable, the two cases are intentionally ambiguous.
+
+## Explicit result
+
+`LeaderRunResult.Elected(value, leaderId?)` proves the action ran, and `value` may still be null. `Skipped` means acquisition did not succeed. `ActionFailed(cause)` means ownership was acquired and the action started but failed. Election/backend errors before action start are thrown instead of being mislabeled as action failures.
+
+## Control-flow exceptions
+
+`CancellationException` is propagated, not wrapped. Blocking paths restore the interrupt flag before rethrowing `InterruptedException`. Future and virtual-thread callers should expect exceptional completion and inspect the underlying cause at the consumption boundary.
+
+## Release sources
+
+- [`leader-core/src/main/kotlin/io/bluetape4k/leader/LeaderRunResult.kt`](https://github.com/bluetape4k/bluetape4k-leader/blob/1.0.0/leader-core/src/main/kotlin/io/bluetape4k/leader/LeaderRunResult.kt)
+- [`leader-core/src/main/kotlin/io/bluetape4k/leader/LeaderElector.kt`](https://github.com/bluetape4k/bluetape4k-leader/blob/1.0.0/leader-core/src/main/kotlin/io/bluetape4k/leader/LeaderElector.kt)
+- [`leader-core/src/test/kotlin/io/bluetape4k/leader/LeaderRunResultTest.kt`](https://github.com/bluetape4k/bluetape4k-leader/blob/1.0.0/leader-core/src/test/kotlin/io/bluetape4k/leader/LeaderRunResultTest.kt)
+
+## Continue learning
+
+- [Bluetape4k Leader manual](/manual/bluetape4k-leader/1.0/)
+- [Execution APIs](/manual/bluetape4k-leader/1.0/core/execution-apis/)
+- [Failure and cancellation](/manual/bluetape4k-leader/1.0/guides/failure-and-cancellation/)

@@ -6,7 +6,7 @@ locale: "en"
 kind: "benchmark"
 gradlePath: ":benchmark"
 sourceDir: "benchmark"
-releaseRef: "0.5.0"
+releaseRef: "1.0.0"
 artifact: null
 ---
 
@@ -16,7 +16,7 @@ artifact: null
 
 ## Problem {#problem}
 
-This non-published module compares election backends with one `kotlinx-benchmark`/JMH harness. The 0.5.0 manual anchors its comparison to the 2026-05-29 evidence: throughput is better when higher and average time is better when lower, but only rows from the same workload and runtime target are comparable.
+This non-published module compares election backends with one `kotlinx-benchmark`/JMH harness. The 1.0.0 manual anchors its comparison to the 2026-05-29 evidence: throughput is better when higher and average time is better when lower, but only rows from the same workload and runtime target are comparable.
 
 ## When to use it {#when-to-use}
 
@@ -24,7 +24,7 @@ Use the suite to compare a candidate with a baseline on the same machine or to d
 
 ## Coordinates {#coordinates}
 
-This module is not published. Check out tag `0.5.0` and run `:benchmark` from the repository.
+This module is not published. Check out tag `1.0.0` and run `:benchmark` from the repository.
 
 ## Core concepts {#concepts}
 
@@ -68,7 +68,7 @@ Keep throughput and average-time raw JSON together with a short interpretation. 
 
 ## Testing {#testing}
 
-Compile benchmark source sets before a long run, smoke a narrow filter, then execute full throughput and average-time modes sequentially. Confirm that the harness uses stable 0.5.0 APIs and no later source surface.
+Compile benchmark source sets before a long run, smoke a narrow filter, then execute full throughput and average-time modes sequentially. Confirm that the harness uses stable 1.0.0 APIs and no later source surface.
 
 ## Workshops and learning path {#workshops}
 

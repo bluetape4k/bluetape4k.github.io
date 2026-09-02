@@ -1,19 +1,27 @@
 ---
+slug: "manual/bluetape4k-leader/1.0/guides/backend-connectivity-observability"
 title: "Backend connectivity observability and readiness runbook"
-locale: en
-status: unreleased
-sourceReleaseRef: 0.5.0
-sourceReleaseCommit: 721a9a3808f67489d2bdb8177734325981c24977
+description: "Interpret backend connectivity status, readiness, metrics, timeouts, and rollback boundaries safely."
+releaseRef: 1.0.0
+releaseCommit: e70146330302758f563a46b7286e3ce25f1bac49
+manual:
+  id: "guides/backend-connectivity-observability"
+  repository: "bluetape4k-leader"
+  group: "overview"
+  kind: "guide"
+  sourceCommit: "e70146330302758f563a46b7286e3ce25f1bac49"
+  sourcePath: "docs/manual/bluetape4k-leader/en/guides/backend-connectivity-observability.md"
+  minorVersion: "1.0"
+  releaseRef: "1.0.0"
+  releaseCommit: "e70146330302758f563a46b7286e3ce25f1bac49"
+  sourceDir: "docs/manual/bluetape4k-leader"
+  layer: "build"
 ---
 
-# Backend connectivity observability and readiness runbook
 
-> Unreleased draft for Issue #774 and the OBS-01–04 stacked train. The current
-> `develop` sources contain this additive observability contract, but the
-> versioned manual remains pinned to `0.5.0` at
-> `721a9a3808f67489d2bdb8177734325981c24977`. Do not promote this draft or
-> change `docs/manual/manifest.yaml` until a release commit contains the full
-> train.
+> This runbook describes the additive observability contract released in
+> `1.0.0`. It supplements ownership and fencing rules; it does not replace
+> them.
 
 This document describes how to interpret backend connectivity diagnostics. It
 does not replace the atomic ownership decision made by `runIfLeader`, and it
@@ -88,7 +96,7 @@ is an observation, not a retry instruction.
 For the bundled dashboard, the following queries are intentionally
 warning-oriented and low-cardinality:
 
-```promql
+```text
 sum by (backend_name, status, reason) (rate(leader_backend_connectivity_total[5m]))
 sum by (backend_name) (
   rate(leader_backend_connectivity_total{status="DOWN",reason="DISCONNECTED"}[5m])
@@ -170,7 +178,7 @@ semantics and continue using `runIfLeader` for execution.
 - [ ] The versioned manual is promoted only after `releaseRef` and
       `releaseCommit` point at a commit containing this contract.
 
-See the development-line source descriptions in the [root diagnostics
-section](../../../README.md#runtime-backend-diagnostics), the
-[Prometheus dashboard runbook](../../../examples/prometheus-dashboard/README.md#alert-runbooks),
-and the [backend selection guide](../en/guides/backend-selection.md).
+See the released source descriptions in the [root diagnostics
+section](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/README.md#runtime-backend-diagnostics), the
+[Prometheus dashboard runbook](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/examples/prometheus-dashboard/README.md#alert-runbooks),
+and the [backend selection guide](/manual/bluetape4k-leader/1.0/guides/backend-selection/).

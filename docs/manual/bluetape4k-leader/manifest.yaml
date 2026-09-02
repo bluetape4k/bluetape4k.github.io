@@ -1,10 +1,10 @@
 ---
 schemaVersion: 2
 repository: bluetape4k/bluetape4k-leader
-releaseRef: 0.5.0
-releaseCommit: 721a9a3808f67489d2bdb8177734325981c24977
+releaseRef: 1.0.0
+releaseCommit: e70146330302758f563a46b7286e3ce25f1bac49
 publication:
-  manualVersion: '0.5'
+  manualVersion: '1.0'
   sourceRoot: docs/manual/bluetape4k-leader
   toolingRoot: scripts/manual/repositories/bluetape4k-leader
   ownership: central
@@ -16,7 +16,7 @@ publication:
   locales:
     - en
     - ko
-  contentStatus: in-progress
+  contentStatus: complete
 overview:
   documents:
     en:
@@ -33,6 +33,7 @@ overview:
     - en/guides/identity-state-and-history.md
     - en/guides/spring-vs-ktor.md
     - en/guides/observability-and-operations.md
+    - en/guides/backend-connectivity-observability.md
     - en/guides/testing.md
     - en/guides/scheduled-job-migration.md
     - en/core/result-semantics.md
@@ -62,6 +63,7 @@ overview:
     - ko/guides/identity-state-and-history.md
     - ko/guides/spring-vs-ktor.md
     - ko/guides/observability-and-operations.md
+    - ko/guides/backend-connectivity-observability.md
     - ko/guides/testing.md
     - ko/guides/scheduled-job-migration.md
     - ko/core/result-semantics.md
