@@ -90,6 +90,25 @@ test('publishes a repository BOM through the site library content kind', () => {
   assert.match(result, /layer: "build"/);
 });
 
+test('publishes catalog and governance modules through the site guide content kind', () => {
+  for (const kind of ['catalog', 'governance']) {
+    const result = transformManual({
+      content: `# ${kind}\n\nBody\n`,
+      module: { id: kind, group: 'governance', kind, sourceDir: '.' },
+      repository: projects,
+      sourceCommit: 'a'.repeat(40),
+      sourcePath: `docs/manual/en/modules/${kind}.md`,
+      releaseRef: '2.0.0',
+      releaseCommit: 'b'.repeat(40),
+      minorVersion: '2.0',
+    });
+
+    assert.match(result, /kind: "guide"/);
+    assert.doesNotMatch(result, new RegExp(`kind: "${kind}"`));
+    assert.match(result, /layer: "build"/);
+  }
+});
+
 test('derives safe frontmatter from a plain Markdown title', () => {
   const result = transformManual({
     content: '# Core model\n\nBody\n',

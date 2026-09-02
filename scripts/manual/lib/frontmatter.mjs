@@ -19,7 +19,9 @@ export function layerFor(kind) {
 }
 
 function contentKindFor(kind) {
-  return kind === 'bom' ? 'library' : kind;
+  if (kind === 'bom') return 'library';
+  if (kind === 'catalog' || kind === 'governance') return 'guide';
+  return kind;
 }
 
 function rewriteManualAssets(content, repository, minorVersion) {
