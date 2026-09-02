@@ -1,13 +1,13 @@
 ---
 title: "Bluetape4k Leader 매뉴얼"
-description: "bluetape4k-leader 0.5.0으로 분산 리더 선출을 설계하고 운영하는 방법을 릴리스 소스에 맞춰 설명합니다."
-releaseRef: 0.5.0
-releaseCommit: 721a9a3808f67489d2bdb8177734325981c24977
+description: "bluetape4k-leader 1.0.0으로 분산 리더 선출을 설계하고 운영하는 방법을 릴리스 소스에 맞춰 설명합니다."
+releaseRef: 1.0.0
+releaseCommit: e70146330302758f563a46b7286e3ce25f1bac49
 ---
 
 # Bluetape4k Leader 매뉴얼
 
-bluetape4k-leader 0.5.0으로 분산 리더 선출을 설계하고 운영하는 방법을 릴리스 소스에 맞춰 설명합니다.
+bluetape4k-leader 1.0.0으로 분산 리더 선출을 설계하고 운영하는 방법을 릴리스 소스에 맞춰 설명합니다.
 
 ![Leader 저장소와 학습 구조](../assets/overview/repository-learning-map.png)
 
@@ -44,7 +44,7 @@ bluetape4k-leader 0.5.0으로 분산 리더 선출을 설계하고 운영하는 
 
 ## 이 매뉴얼의 버전 경계
 
-모든 설명과 소스 링크는 `0.5.0` 릴리스의 커밋 `721a9a3808f67489d2bdb8177734325981c24977`을 기준으로 합니다. `examples/*`는 실행해 보는 학습 프로젝트이며 배포되는 라이브러리가 아닙니다. 애플리케이션에서는 보통 `io.github.bluetape4k:bluetape4k-dependencies`만 버전으로 관리하고 개별 Leader 모듈에는 버전을 적지 않습니다.
+모든 설명과 소스 링크는 `1.0.0` 릴리스의 커밋 `e70146330302758f563a46b7286e3ce25f1bac49`을 기준으로 합니다. `examples/*`는 실행해 보는 학습 프로젝트이며 배포되는 라이브러리가 아닙니다. 애플리케이션에서는 보통 `io.github.bluetape4k:bluetape4k-dependencies`만 버전으로 관리하고 개별 Leader 모듈에는 버전을 적지 않습니다.
 
 ## 릴리스 소스
 

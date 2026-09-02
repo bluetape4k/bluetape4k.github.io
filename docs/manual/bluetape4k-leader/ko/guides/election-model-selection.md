@@ -1,8 +1,8 @@
 ---
 title: "선출 모델 선택"
 description: "업무가 허용하는 동시 실행 수와 배치 규칙에 따라 단일, 그룹, 전략 선출을 고릅니다."
-releaseRef: 0.5.0
-releaseCommit: 721a9a3808f67489d2bdb8177734325981c24977
+releaseRef: 1.0.0
+releaseCommit: e70146330302758f563a46b7286e3ce25f1bac49
 ---
 
 # 선출 모델 선택

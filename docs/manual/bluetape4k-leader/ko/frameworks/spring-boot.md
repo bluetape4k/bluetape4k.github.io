@@ -1,8 +1,8 @@
 ---
 title: "Spring Boot 연동"
 description: "elector를 자동 구성하고 AspectJ compile-time weaving으로 메서드 호출을 보호합니다."
-releaseRef: 0.5.0
-releaseCommit: 721a9a3808f67489d2bdb8177734325981c24977
+releaseRef: 1.0.0
+releaseCommit: e70146330302758f563a46b7286e3ce25f1bac49
 ---
 
 # Spring Boot 연동
@@ -19,7 +19,7 @@ elector를 자동 구성하고 AspectJ compile-time weaving으로 메서드 호�
 
 ## Weaving 방식
 
-0.5.0은 Freefair post-compile AspectJ weaving을 사용합니다. `@EnableAspectJAutoProxy`를 추가하지 않으며 Kotlin 메서드를 `open`으로 만들 필요도 없습니다. private 메서드는 가로채지 못하므로 startup validation이 잘못된 선언을 알려 줍니다. 단순 unit test만 보지 말고 weaving된 애플리케이션 artifact를 검증합니다.
+1.0.0은 Freefair post-compile AspectJ weaving을 사용합니다. `@EnableAspectJAutoProxy`를 추가하지 않으며 Kotlin 메서드를 `open`으로 만들 필요도 없습니다. private 메서드는 가로채지 못하므로 startup validation이 잘못된 선언을 알려 줍니다. 단순 unit test만 보지 말고 weaving된 애플리케이션 artifact를 검증합니다.
 
 ## Annotation 규칙
 

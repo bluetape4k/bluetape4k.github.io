@@ -1,8 +1,8 @@
 ---
 title: "Micrometer 연동"
 description: "카디널리티가 높은 lock name을 통제하면서 선출 결정과 AOP 실행을 측정합니다."
-releaseRef: 0.5.0
-releaseCommit: 721a9a3808f67489d2bdb8177734325981c24977
+releaseRef: 1.0.0
+releaseCommit: e70146330302758f563a46b7286e3ce25f1bac49
 ---
 
 # Micrometer 연동

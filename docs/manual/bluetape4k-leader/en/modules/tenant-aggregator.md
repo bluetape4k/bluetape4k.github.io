@@ -6,13 +6,13 @@ locale: "en"
 kind: "example"
 gradlePath: ":examples:tenant-aggregator"
 sourceDir: "examples/tenant-aggregator"
-releaseRef: "0.5.0"
+releaseRef: "1.0.0"
 artifact: null
 ---
 
 # Multi-tenant coroutine aggregator workshop
 
-> Runnable release workshop · Exposed R2DBC suspend election · source pinned to `0.5.0`
+> Runnable release workshop · Exposed R2DBC suspend election · source pinned to `1.0.0`
 
 ## Problem {#problem}
 
@@ -131,31 +131,31 @@ The demo favors a compact, observable scenario. It does not define production to
 <!-- release-readme-diagrams:start -->
 ## Release diagrams {#release-diagrams}
 
-These diagrams are loaded directly from README assets published with the `0.5.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
+These diagrams are loaded directly from README assets published with the `1.0.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### tenant aggregator Architecture diagram
 
-[![tenant aggregator Architecture diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/721a9a3808f67489d2bdb8177734325981c24977/docs/images/readme-diagrams/examples-tenant-aggregator-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/721a9a3808f67489d2bdb8177734325981c24977/docs/images/readme-diagrams/examples-tenant-aggregator-architecture-01.svg)
+[![tenant aggregator Architecture diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/e70146330302758f563a46b7286e3ce25f1bac49/docs/images/readme-diagrams/examples-tenant-aggregator-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/docs/images/readme-diagrams/examples-tenant-aggregator-architecture-01.svg)
 
-_Release README: [`examples/tenant-aggregator/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/721a9a3808f67489d2bdb8177734325981c24977/examples/tenant-aggregator/README.md)_
+_Release README: [`examples/tenant-aggregator/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/examples/tenant-aggregator/README.md)_
 
 ### Tenant aggregator flow diagram
 
-[![Tenant aggregator flow diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/721a9a3808f67489d2bdb8177734325981c24977/docs/images/readme-diagrams/examples-tenant-aggregator-flow-01.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/721a9a3808f67489d2bdb8177734325981c24977/docs/images/readme-diagrams/examples-tenant-aggregator-flow-01.svg)
+[![Tenant aggregator flow diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/e70146330302758f563a46b7286e3ce25f1bac49/docs/images/readme-diagrams/examples-tenant-aggregator-flow-01.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/docs/images/readme-diagrams/examples-tenant-aggregator-flow-01.svg)
 
-_Release README: [`examples/tenant-aggregator/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/721a9a3808f67489d2bdb8177734325981c24977/examples/tenant-aggregator/README.md)_
+_Release README: [`examples/tenant-aggregator/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/examples/tenant-aggregator/README.md)_
 
 ### Tenant aggregator scenario diagram
 
-[![Tenant aggregator scenario diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/721a9a3808f67489d2bdb8177734325981c24977/docs/images/readme-diagrams/examples-tenant-aggregator-scenario-01.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/721a9a3808f67489d2bdb8177734325981c24977/docs/images/readme-diagrams/examples-tenant-aggregator-scenario-01.svg)
+[![Tenant aggregator scenario diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/e70146330302758f563a46b7286e3ce25f1bac49/docs/images/readme-diagrams/examples-tenant-aggregator-scenario-01.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/docs/images/readme-diagrams/examples-tenant-aggregator-scenario-01.svg)
 
-_Release README: [`examples/tenant-aggregator/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/721a9a3808f67489d2bdb8177734325981c24977/examples/tenant-aggregator/README.md)_
+_Release README: [`examples/tenant-aggregator/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/examples/tenant-aggregator/README.md)_
 
 ### tenant aggregator Sequence Flow diagram
 
-[![tenant aggregator Sequence Flow diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/721a9a3808f67489d2bdb8177734325981c24977/docs/images/readme-diagrams/examples-tenant-aggregator-sequence-01.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/721a9a3808f67489d2bdb8177734325981c24977/docs/images/readme-diagrams/examples-tenant-aggregator-sequence-01.svg)
+[![tenant aggregator Sequence Flow diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/e70146330302758f563a46b7286e3ce25f1bac49/docs/images/readme-diagrams/examples-tenant-aggregator-sequence-01.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/docs/images/readme-diagrams/examples-tenant-aggregator-sequence-01.svg)
 
-_Release README: [`examples/tenant-aggregator/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/721a9a3808f67489d2bdb8177734325981c24977/examples/tenant-aggregator/README.md)_
+_Release README: [`examples/tenant-aggregator/README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/examples/tenant-aggregator/README.md)_
 
 <!-- release-readme-diagrams:end -->
 
