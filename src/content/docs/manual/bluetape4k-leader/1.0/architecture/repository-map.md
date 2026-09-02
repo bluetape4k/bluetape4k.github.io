@@ -1,0 +1,79 @@
+---
+slug: "manual/bluetape4k-leader/1.0/architecture/repository-map"
+title: "Repository and learning map"
+description: "Understand which modules define contracts, implement storage, integrate frameworks, and demonstrate complete scenarios."
+releaseRef: 1.0.0
+releaseCommit: e70146330302758f563a46b7286e3ce25f1bac49
+manual:
+  id: "architecture/repository-map"
+  repository: "bluetape4k-leader"
+  group: "overview"
+  kind: "guide"
+  sourceCommit: "e70146330302758f563a46b7286e3ce25f1bac49"
+  sourcePath: "docs/manual/bluetape4k-leader/en/architecture/repository-map.md"
+  minorVersion: "1.0"
+  releaseRef: "1.0.0"
+  releaseCommit: "e70146330302758f563a46b7286e3ce25f1bac49"
+  sourceDir: "docs/manual/bluetape4k-leader"
+  layer: "build"
+---
+
+
+Understand which modules define contracts, implement storage, integrate frameworks, and demonstrate complete scenarios.
+
+![Leader repository and learning map](/manual-assets/bluetape4k-leader/1.0/overview/repository-learning-map.png)
+
+## Four layers
+
+`leader-core` owns API semantics and local implementations. Backend modules implement those contracts against Redis, SQL, document stores, coordination systems, or Kubernetes. Framework modules integrate Spring Boot, Ktor, and Micrometer. The 17 `examples/*` projects combine these pieces into runnable operational scenarios.
+
+## Choose by responsibility
+
+Read core before a backend so contention, cancellation, and lease semantics remain stable when infrastructure changes. Read a framework page only after choosing an elector. Use examples to validate startup, shutdown, metrics, and failure behavior; do not add example projects as dependencies because they are excluded from publication.
+
+## Stable and preview
+
+Release 1.0.0 marks core, Redis, Exposed, MongoDB, Hazelcast, ZooKeeper, framework integrations, and Micrometer as stable. DynamoDB, etcd, Consul, and Kubernetes are preview modules. Preview means the operational contract deserves extra integration tests and rollback planning, not that contention semantics change.
+
+## Release sources
+
+- [`settings.gradle.kts`](https://github.com/bluetape4k/bluetape4k-leader/blob/1.0.0/settings.gradle.kts)
+- [`README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/1.0.0/README.md)
+- [`build.gradle.kts`](https://github.com/bluetape4k/bluetape4k-leader/blob/1.0.0/build.gradle.kts)
+
+## Continue learning
+
+- [Bluetape4k Leader manual](/manual/bluetape4k-leader/1.0/)
+- [Learning path](/manual/bluetape4k-leader/1.0/guides/learning-path/)
+- [Choose a backend](/manual/bluetape4k-leader/1.0/guides/backend-selection/)
+
+<!-- release-readme-diagrams:start -->
+## Release diagrams
+
+These diagrams are loaded directly from README assets published with the `1.0.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
+
+### Leader election runtime map
+
+[![Leader election runtime map](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/e70146330302758f563a46b7286e3ce25f1bac49/docs/images/readme-diagrams/bluetape4k-leader-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/docs/images/readme-diagrams/bluetape4k-leader-architecture-01.svg)
+
+_Release README: [`README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/README.md)_
+
+### How runIfLeader Works diagram
+
+[![How runIfLeader Works diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/e70146330302758f563a46b7286e3ce25f1bac49/docs/images/readme-diagrams/bluetape4k-leader-sequence-02.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/docs/images/readme-diagrams/bluetape4k-leader-sequence-02.svg)
+
+_Release README: [`README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/README.md)_
+
+### Multi-leader group: slot-based semaphore diagram
+
+[![Multi-leader group: slot-based semaphore diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/e70146330302758f563a46b7286e3ce25f1bac49/docs/images/readme-diagrams/bluetape4k-leader-sequence-03.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/docs/images/readme-diagrams/bluetape4k-leader-sequence-03.svg)
+
+_Release README: [`README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/README.md)_
+
+### Bluetape4k Leader overview diagram
+
+[![Bluetape4k Leader overview diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-leader/e70146330302758f563a46b7286e3ce25f1bac49/docs/images/readme-diagrams/root-readme-overview-01.png)](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/docs/images/readme-diagrams/root-readme-overview-01.svg)
+
+_Release README: [`README.md`](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/README.md)_
+
+<!-- release-readme-diagrams:end -->

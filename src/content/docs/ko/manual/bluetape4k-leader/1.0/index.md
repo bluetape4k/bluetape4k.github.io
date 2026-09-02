@@ -1,0 +1,71 @@
+---
+slug: "ko/manual/bluetape4k-leader/1.0"
+title: "Bluetape4k Leader 매뉴얼"
+description: "bluetape4k-leader 1.0.0으로 분산 리더 선출을 설계하고 운영하는 방법을 릴리스 소스에 맞춰 설명합니다."
+releaseRef: 1.0.0
+releaseCommit: e70146330302758f563a46b7286e3ce25f1bac49
+manual:
+  id: "index"
+  repository: "bluetape4k-leader"
+  group: "overview"
+  kind: "guide"
+  sourceCommit: "e70146330302758f563a46b7286e3ce25f1bac49"
+  sourcePath: "docs/manual/bluetape4k-leader/ko/index.md"
+  minorVersion: "1.0"
+  releaseRef: "1.0.0"
+  releaseCommit: "e70146330302758f563a46b7286e3ce25f1bac49"
+  sourceDir: "docs/manual/bluetape4k-leader"
+  layer: "build"
+---
+
+
+bluetape4k-leader 1.0.0으로 분산 리더 선출을 설계하고 운영하는 방법을 릴리스 소스에 맞춰 설명합니다.
+
+![Leader 저장소와 학습 구조](/manual-assets/bluetape4k-leader/1.0/overview/repository-learning-map.png)
+
+## 핵심 기능
+
+- **선출 모델:** [단일·그룹·전략 선출](/ko/manual/bluetape4k-leader/1.0/core/single-group-strategic/)로 전체에서 하나만 실행하거나, 정해진 수만 병렬로 실행하거나, 정책에 따라 소유권을 나눌 수 있습니다.
+- **실행 API:** [블로킹·Future·가상 스레드·코루틴 API](/ko/manual/bluetape4k-leader/1.0/core/execution-apis/)가 애플리케이션 실행 방식과 관계없이 같은 선출 결과 규칙을 유지합니다.
+- **리스 생명 주기:** [리스 연장](/ko/manual/bluetape4k-leader/1.0/core/lease-extension/)과 [리스 생명 주기 가이드](/ko/manual/bluetape4k-leader/1.0/guides/lease-lifecycle/)에서 대기 시간, 리스 시간, 최소 보유 시간, 갱신, 해제, 상실 동작을 정합니다.
+- **분산 백엔드:** [백엔드 선택 가이드](/ko/manual/bluetape4k-leader/1.0/guides/backend-selection/)를 따라 핵심 계약을 바꾸지 않고 Redis, SQL, 문서 저장소, 클러스터 조정 시스템, 컨트롤 플레인 리스를 선택할 수 있습니다.
+- **프레임워크 연동:** [Spring Boot](/ko/manual/bluetape4k-leader/1.0/frameworks/spring-boot/), [Ktor](/ko/manual/bluetape4k-leader/1.0/frameworks/ktor/), [Micrometer](/ko/manual/bluetape4k-leader/1.0/frameworks/micrometer/) 모듈이 설정, 생명 주기, 메트릭을 애플리케이션에 연결합니다.
+- **운영과 워크숍:** [관측성과 운영](/ko/manual/bluetape4k-leader/1.0/guides/observability-and-operations/), 스케줄러·마이그레이션·대시보드 예제를 이용해 선출 동작을 실제 배포와 런북으로 이어 갈 수 있습니다.
+
+## 백엔드보다 실행 규칙을 먼저 정한다
+
+모든 인스턴스가 같은 작업을 볼 수 있지만 실제 실행은 하나 또는 정해진 수만 맡아야 할 때 리더 선출을 사용합니다. 이 매뉴얼은 Redis나 SQL 같은 저장소를 고르기 전에 실행 결과의 의미와 실패 경계를 먼저 설명합니다.
+
+가장 중요한 규칙은 단순합니다. 다른 인스턴스가 리스를 보유해 선출되지 못한 것은 오류가 아닙니다. `runIfLeader()`는 선출되면 작업 결과를 돌려주고, 경쟁에서 밀리면 `null`을 반환합니다. 작업 자체가 `null`을 반환할 수 있다면 결과 API를 사용합니다.
+
+## 권장 학습 순서
+
+1. [시작하기](/ko/manual/bluetape4k-leader/1.0/getting-started/)에서 로컬 elector로 기본 계약을 확인합니다.
+2. [단일·그룹·전략 선출](/ko/manual/bluetape4k-leader/1.0/guides/election-model-selection/) 가운데 업무에 맞는 모델을 고릅니다.
+3. [블로킹·Future·가상 스레드·코루틴](/ko/manual/bluetape4k-leader/1.0/guides/execution-model-selection/) 중 애플리케이션 실행 방식과 맞는 API를 선택합니다.
+4. 이미 운영 중인 인프라를 기준으로 [백엔드](/ko/manual/bluetape4k-leader/1.0/guides/backend-selection/)를 좁힙니다.
+5. [리스 수명 주기](/ko/manual/bluetape4k-leader/1.0/guides/lease-lifecycle/)를 정한 뒤 [메트릭과 런북](/ko/manual/bluetape4k-leader/1.0/guides/observability-and-operations/)을 붙입니다.
+
+## 할 일에 맞춰 바로 찾기
+
+- 공통 계약은 [Leader 핵심 라이브러리](/ko/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-core/)에서 익힙니다.
+- Redis를 쓴다면 [Lettuce](/ko/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-redis-lettuce/)와 [Redisson](/ko/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-redis-redisson/)을 비교합니다.
+- SQL 기반 선출은 [Exposed JDBC](/ko/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-exposed-jdbc/)와 [Exposed R2DBC](/ko/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-exposed-r2dbc/) 가운데 실행 방식에 맞는 쪽을 고릅니다.
+- 프레임워크 연동은 [Spring Boot](/ko/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-spring-boot/), [Ktor](/ko/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-ktor/), [Micrometer](/ko/manual/bluetape4k-leader/1.0/modules/bluetape4k-leader-micrometer/) 문서에서 시작합니다.
+- 완성된 흐름부터 보고 싶다면 [배치 스케줄러](/ko/manual/bluetape4k-leader/1.0/modules/batch-scheduler/), [마이그레이션 gate](/ko/manual/bluetape4k-leader/1.0/modules/migration-gate/), [Prometheus dashboard](/ko/manual/bluetape4k-leader/1.0/modules/prometheus-dashboard/) 예제를 따라갑니다.
+
+## 이 매뉴얼의 버전 경계
+
+모든 설명과 소스 링크는 `1.0.0` 릴리스의 커밋 `e70146330302758f563a46b7286e3ce25f1bac49`을 기준으로 합니다. `examples/*`는 실행해 보는 학습 프로젝트이며 배포되는 라이브러리가 아닙니다. 애플리케이션에서는 보통 `io.github.bluetape4k:bluetape4k-dependencies`만 버전으로 관리하고 개별 Leader 모듈에는 버전을 적지 않습니다.
+
+## 릴리스 소스
+
+- [`README.ko.md`](../../../README.ko.md)
+- [`leader-core/README.ko.md`](../../../leader-core/README.ko.md)
+- [`settings.gradle.kts`](../../../settings.gradle.kts)
+
+## 이어서 읽기
+
+- [Bluetape4k Leader 매뉴얼](/ko/manual/bluetape4k-leader/1.0/)
+- [학습 경로](/ko/manual/bluetape4k-leader/1.0/guides/learning-path/)
+- [실행 구조](/ko/manual/bluetape4k-leader/1.0/architecture/runtime-model/)
