@@ -4,7 +4,7 @@
 `settings.gradle.kts`에 등록된 모듈을 기준으로 작성하므로 예제와 benchmark도
 Maven 배포 artifact와 혼동하지 않고 함께 확인할 수 있습니다.
 
-릴리스에 고정한 `0.3.0` 매뉴얼은 기존 `docs/manual/en`과
+릴리스에 고정한 `1.0.0` 매뉴얼은 기존 `docs/manual/en`과
 `docs/manual/ko` 표면에 immutable 상태로 남아 있습니다. 이 current 표면은
 release workflow가 사용하는 현재 source tree의 0.3 이후 모듈과 계약을
 설명합니다.

@@ -6,13 +6,13 @@ locale: "ko"
 kind: "library"
 gradlePath: ":bluetape4k-aws-spring-boot"
 sourceDir: "aws-spring-boot"
-releaseRef: "0.5.0"
+releaseRef: "1.0.0"
 artifact: io.github.bluetape4k.aws:bluetape4k-aws-spring-boot
 ---
 
 # AWS Spring Boot 통합
 
-> 0.5.0 릴리스 소스를 기준으로 작성한 라이브러리 매뉴얼입니다.
+> 1.0.0 릴리스 소스를 기준으로 작성한 라이브러리 매뉴얼입니다.
 
 ## 제공하는 기능 {#problem}
 
@@ -60,7 +60,6 @@ IMDS, Secrets Manager, Parameter Store, S3 Access Grants·Vectors, Exposed를
 
 ## S3 client-side encryption provider {#s3-client-side-encryption}
 
-> 미출시/develop: 이 절은 Issue #475 API를 설명하며 `0.5.0` 릴리스 소스에는 포함되지 않습니다.
 
 `S3ClientSideEncryptionOperations`는 선택 기능입니다. `provider=KMS`가
 기본값이며 기존 `KmsOperations` 기반 byte-array 계약을 유지합니다. KMS는
@@ -258,25 +257,25 @@ extension은 KMS와 provider 구현 모두에서 사용할 수 있고, provider 
 <!-- release-readme-diagrams:start -->
 ## 배포본 다이어그램 {#release-diagrams}
 
-아래 그림은 `0.5.0` 배포본의 README 자산을 해당 배포 커밋에서 직접 불러옵니다. 이후 SNAPSHOT이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 같은 배포 커밋의 SVG 원본이 열립니다.
+아래 그림은 `1.0.0` 배포본의 README 자산을 해당 배포 커밋에서 직접 불러옵니다. 이후 SNAPSHOT이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 같은 배포 커밋의 SVG 원본이 열립니다.
 
 ### Bluetape4k AWS Spring Boot 아키텍처
 
-[![Bluetape4k AWS Spring Boot 아키텍처](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-spring-boot-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-spring-boot-architecture-01.svg)
+[![Bluetape4k AWS Spring Boot 아키텍처](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-spring-boot-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-spring-boot-architecture-01.svg)
 
-_배포본 README: [`aws-spring-boot/README.ko.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/aws-spring-boot/README.ko.md)_
+_배포본 README: [`aws-spring-boot/README.ko.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/aws-spring-boot/README.ko.md)_
 
 ### Bluetape4k AWS Spring Boot configuration 처리 흐름
 
-[![Bluetape4k AWS Spring Boot configuration 처리 흐름](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-spring-boot-flow-02.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-spring-boot-flow-02.svg)
+[![Bluetape4k AWS Spring Boot configuration 처리 흐름](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-spring-boot-flow-02.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-spring-boot-flow-02.svg)
 
-_배포본 README: [`aws-spring-boot/README.ko.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/aws-spring-boot/README.ko.md)_
+_배포본 README: [`aws-spring-boot/README.ko.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/aws-spring-boot/README.ko.md)_
 
 ### Bluetape4k AWS Spring Boot SQS listener 시퀀스 다이어그램
 
-[![Bluetape4k AWS Spring Boot SQS listener 시퀀스 다이어그램](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-spring-boot-sequence-03.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-spring-boot-sequence-03.svg)
+[![Bluetape4k AWS Spring Boot SQS listener 시퀀스 다이어그램](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-spring-boot-sequence-03.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-spring-boot-sequence-03.svg)
 
-_배포본 README: [`aws-spring-boot/README.ko.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/aws-spring-boot/README.ko.md)_
+_배포본 README: [`aws-spring-boot/README.ko.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/aws-spring-boot/README.ko.md)_
 
 <!-- release-readme-diagrams:end -->
 

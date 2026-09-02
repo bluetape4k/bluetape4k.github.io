@@ -6,7 +6,7 @@ locale: "ko"
 kind: "library"
 gradlePath: ":bluetape4k-images-barcode-zxing"
 sourceDir: "images-barcode-zxing"
-releaseRef: "0.4.0"
+releaseRef: "1.0.0"
 artifact: io.github.bluetape4k.image:bluetape4k-images-barcode-zxing
 ---
 

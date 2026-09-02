@@ -8,7 +8,7 @@ chapterId: auto-configuration-boundaries
 # Auto-configuration and ownership boundaries
 
 > Contract scope: **2.0.0 current contract** on `develop`. The stable rollback
-> reference remains [1.12.1](https://github.com/bluetape4k/bluetape4k-projects/releases/tag/1.12.1).
+> reference remains [2.0.0](https://github.com/bluetape4k/bluetape4k-projects/releases/tag/2.0.0).
 
 ## What the auto-configuration does
 

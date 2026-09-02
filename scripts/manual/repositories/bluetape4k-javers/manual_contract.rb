@@ -56,14 +56,15 @@ module ManualDocs
       errors << "manual manifest repository must be bluetape4k-javers" unless manifest["repository"] == "bluetape4k-javers"
       errors << "manual manifest releaseRef must be #{@expected_release.fetch('ref')}" unless manifest["releaseRef"] == @expected_release.fetch("ref")
       errors << "manual manifest stableVersion must be #{@expected_release.fetch('ref')}" unless manifest["stableVersion"] == @expected_release.fetch("ref")
-      errors << "manual manifest stableMinor must be 0.3" unless manifest["stableMinor"] == "0.3"
+      expected_minor = @expected_release.fetch("ref").split(".")[0, 2].join(".")
+      errors << "manual manifest stableMinor must be #{expected_minor}" unless manifest["stableMinor"] == expected_minor
       errors << "manual manifest releaseTag must be #{@expected_release.fetch('ref')}" unless manifest["releaseTag"] == @expected_release.fetch("ref")
       errors << "manual manifest releaseCommit must be #{@expected_release.fetch('commit')}" unless manifest["releaseCommit"] == @expected_release.fetch("commit")
       publication = manifest["publication"]
       return errors << "manual publication must be a mapping" unless publication.is_a?(Hash)
       errors << "manual publication locales must be en and ko" unless publication["locales"] == %w[en ko]
       if @strict
-        errors << "manual publication manualVersion must be 0.3" unless publication["manualVersion"] == "0.3"
+        errors << "manual publication manualVersion must be #{expected_minor}" unless publication["manualVersion"] == expected_minor
         errors << "manual publication sourceRoot must be #{@source_root}" unless publication["sourceRoot"] == @source_root
         errors << "manual publication contentStatus must be planned or complete" unless %w[planned complete].include?(publication["contentStatus"])
       end

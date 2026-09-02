@@ -2,7 +2,7 @@
 manualId: "vips-api"
 title: "libvips Common API"
 locale: "en"
-releaseRef: "0.4.0"
+releaseRef: "1.0.0"
 ---
 
 # libvips Common API
@@ -32,5 +32,5 @@ Validate path roots, encoded input size, output options, and allowed formats bef
 
 ## Sources
 
-- [VipsImage](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/images-vips-api/src/main/kotlin/io/bluetape4k/images/vips/VipsImage.kt)
-- [VipsRuntime](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/images-vips-api/src/main/kotlin/io/bluetape4k/images/vips/VipsRuntime.kt)
+- [VipsImage](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/images-vips-api/src/main/kotlin/io/bluetape4k/images/vips/VipsImage.kt)
+- [VipsRuntime](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/images-vips-api/src/main/kotlin/io/bluetape4k/images/vips/VipsRuntime.kt)

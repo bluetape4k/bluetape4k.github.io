@@ -48,6 +48,6 @@ Keeping these boundaries visible makes testing and failure mapping much simpler.
 
 ## Source evidence
 
-- [Tokenizer request models](https://github.com/bluetape4k/bluetape4k-text/tree/0.3.0/tokenizer-core/src/main/kotlin/io/bluetape4k/tokenizer/model)
-- [Lingua sources](https://github.com/bluetape4k/bluetape4k-text/tree/0.3.0/lingua/src/main/kotlin/io/bluetape4k/lingua)
-- [Aho-Corasick implementation](https://github.com/bluetape4k/bluetape4k-text/blob/0.3.0/text-search/src/main/kotlin/io/bluetape4k/text/search/AhoCorasickAutomaton.kt)
+- [Tokenizer request models](https://github.com/bluetape4k/bluetape4k-text/tree/1.0.0/tokenizer-core/src/main/kotlin/io/bluetape4k/tokenizer/model)
+- [Lingua sources](https://github.com/bluetape4k/bluetape4k-text/tree/1.0.0/lingua/src/main/kotlin/io/bluetape4k/lingua)
+- [Aho-Corasick implementation](https://github.com/bluetape4k/bluetape4k-text/blob/1.0.0/text-search/src/main/kotlin/io/bluetape4k/text/search/AhoCorasickAutomaton.kt)

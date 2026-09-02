@@ -8,7 +8,7 @@ chapterId: auto-configuration-boundaries
 # 자동 설정과 구성 경계
 
 > 계약 범위: `develop`의 **2.0.0 current contract**입니다. 안정 릴리스 rollback
-> 기준은 [1.12.1](https://github.com/bluetape4k/bluetape4k-projects/releases/tag/1.12.1)입니다.
+> 기준은 [2.0.0](https://github.com/bluetape4k/bluetape4k-projects/releases/tag/2.0.0)입니다.
 
 ## 자동 설정이 실제로 하는 일
 

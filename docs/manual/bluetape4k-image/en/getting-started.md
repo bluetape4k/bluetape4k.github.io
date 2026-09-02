@@ -2,7 +2,7 @@
 manualId: "getting-started"
 title: "Getting Started"
 locale: "en"
-releaseRef: "0.4.0"
+releaseRef: "1.0.0"
 ---
 
 # Getting Started
@@ -43,5 +43,5 @@ Native and OCR checks require host software and must run sequentially. Read [OCR
 
 ## Sources
 
-- [Release build configuration](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/build.gradle.kts)
-- [Release dependency examples](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/README.md#installation)
+- [Release build configuration](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/build.gradle.kts)
+- [Release dependency examples](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/README.md#installation)

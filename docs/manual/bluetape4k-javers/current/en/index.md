@@ -5,7 +5,7 @@ is generated from the modules registered in `settings.gradle.kts`, so examples
 and the benchmark remain visible without being mistaken for published Maven
 artifacts.
 
-The release-pinned `0.3.0` manual remains immutable under the original
+The release-pinned `1.0.0` manual remains immutable under the original
 `docs/manual/en` and `docs/manual/ko` surfaces. This current surface documents
 the post-0.3 modules and contracts from the source tree used by the release
 workflow.

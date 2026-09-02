@@ -7,7 +7,7 @@ Build a test pyramid around semantics:
 3. Use the release's Testcontainers fixtures for backend query, schema, transaction, merge, and batch behavior.
 4. Add graph-io round trips and negative paths for every format used in production.
 
-The examples demonstrate abstract shared tests plus concrete backend lifecycles; see [`AbstractRecommendationTest.kt`](https://github.com/bluetape4k/bluetape4k-graph/blob/72c0256e2e1cf61101d29852210e3c827ca93bc0/examples/recommendation-examples/src/test/kotlin/io/bluetape4k/graph/examples/recommendation/AbstractRecommendationTest.kt) and [`RecommendationBackendTests.kt`](https://github.com/bluetape4k/bluetape4k-graph/blob/72c0256e2e1cf61101d29852210e3c827ca93bc0/examples/recommendation-examples/src/test/kotlin/io/bluetape4k/graph/examples/recommendation/RecommendationBackendTests.kt).
+The examples demonstrate abstract shared tests plus concrete backend lifecycles; see [`AbstractRecommendationTest.kt`](https://github.com/bluetape4k/bluetape4k-graph/blob/a405300799b36d4d6edb7267ad07ff34d4ad3afe/examples/recommendation-examples/src/test/kotlin/io/bluetape4k/graph/examples/recommendation/AbstractRecommendationTest.kt) and [`RecommendationBackendTests.kt`](https://github.com/bluetape4k/bluetape4k-graph/blob/a405300799b36d4d6edb7267ad07ff34d4ad3afe/examples/recommendation-examples/src/test/kotlin/io/bluetape4k/graph/examples/recommendation/RecommendationBackendTests.kt).
 
 Assert IDs only for presence/equality, not backend syntax. Test direction and depth limits, duplicate merge keys, empty and failing batches, transaction rollback/cancellation, unsupported schema operations, malformed import records, unresolved external IDs, and resource closure.
 

@@ -2,7 +2,7 @@
 manualId: "native-resource-lifecycle"
 title: "Native Resource Lifecycle"
 locale: "en"
-releaseRef: "0.4.0"
+releaseRef: "1.0.0"
 ---
 
 # Native Resource Lifecycle
@@ -35,6 +35,6 @@ Coroutine cancellation does not remove the need for <code>use</code>. Close in s
 
 ## Sources
 
-- [VipsImage contract](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/images-vips-api/src/main/kotlin/io/bluetape4k/images/vips/VipsImage.kt)
-- [JDK 25 JVips native test isolation (legacy java21 module)](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/images-vips-java21/build.gradle.kts)
-- [JDK 25 FFM native test isolation](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/images-vips-java25/build.gradle.kts)
+- [VipsImage contract](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/images-vips-api/src/main/kotlin/io/bluetape4k/images/vips/VipsImage.kt)
+- [JDK 25 JVips native test isolation (legacy java21 module)](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/images-vips-java21/build.gradle.kts)
+- [JDK 25 FFM native test isolation](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/images-vips-java25/build.gradle.kts)

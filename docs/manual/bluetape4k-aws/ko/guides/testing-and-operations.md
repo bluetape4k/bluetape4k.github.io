@@ -2,7 +2,7 @@
 manualId: "testing-and-operations"
 title: "AWS 연동 테스트와 운영"
 locale: "ko"
-releaseRef: "0.5.0"
+releaseRef: "1.0.0"
 ---
 
 # AWS 연동 테스트와 운영
@@ -37,7 +37,7 @@ Emulator가 지원하지 않는다고 assertion을 빼서 통과시키면 안 �
 
 ## Step Functions 증거 {#step-functions-evidence}
 
-Issue #313 Step Functions helper는 미출시/develop 표면입니다. Floci-first selector로 전용
+Issue #313 Step Functions helper는 1.0.0 공개 표면입니다. Floci-first selector로 전용
 smoke를 먼저 실행한 뒤 LocalStack fallback을 사용합니다.
 
 ```bash

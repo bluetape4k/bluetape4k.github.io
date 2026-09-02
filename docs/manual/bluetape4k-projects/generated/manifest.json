@@ -3017,12 +3017,12 @@
     }
   },
   "publication": {
-    "contentStatus": "in-progress",
+    "contentStatus": "complete",
     "locales": [
       "en",
       "ko"
     ],
-    "manualVersion": "1.12",
+    "manualVersion": "2.0",
     "migratedFrom": {
       "manualLastCommit": "9831a513f9b81e53f505fadd2e4546b8ea8cf6a8",
       "path": "docs/manual",
@@ -3033,8 +3033,8 @@
     "sourceRoot": "docs/manual/bluetape4k-projects",
     "toolingRoot": "scripts/manual/repositories/bluetape4k-projects"
   },
-  "releaseCommit": "7cf0b73646af05c0f8872cc4f6a16983949c4e3e",
-  "releaseRef": "1.12.1",
+  "releaseCommit": "8165a8989e0075e7c17c489bf3000bf41fef8232",
+  "releaseRef": "2.0.0",
   "repository": "bluetape4k/bluetape4k-projects",
   "schemaVersion": 2
 }

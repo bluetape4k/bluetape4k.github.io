@@ -2,7 +2,7 @@
 manualId: "testing-and-operations"
 title: "Testing and Operations"
 locale: "en"
-releaseRef: "0.4.0"
+releaseRef: "1.0.0"
 ---
 
 # Testing and Operations
@@ -46,11 +46,11 @@ The verifier renders the source twice in an isolated directory, requires equal P
 
 ## Release discipline
 
-This manual targets 0.4.0. Tests and source links must stay on that release commit. A green develop build cannot prove a frozen manual example.
+This manual targets 1.0.0. Tests and source links must stay on that release commit. A green develop build cannot prove a frozen manual example.
 
 Before publishing a manual change, rebuild the tag-scoped inventory and run the drift contract. The validator peels the annotated tag, derives the exact project topology and publishing categories from the tagged `settings.gradle.kts` and `build.gradle.kts`, and compares the result with the YAML/JSON manifests, the English and Korean indexes, repository maps, inventory snapshot, and overview diagram label.
 
-    MANUAL_TAG=0.4.0
+    MANUAL_TAG=1.0.0
     MANUAL_SHA="$(git rev-parse --verify "refs/tags/${MANUAL_TAG}^{commit}")"
     ruby scripts/manual/export_settings_inventory.rb settings.gradle.kts build/manual/module-inventory.json
     ruby scripts/manual/release_inventory.rb "$MANUAL_TAG" "$MANUAL_SHA" build/manual/module-inventory.json build/manual/release-module-inventory.json 19
@@ -64,5 +64,5 @@ The checks read Git metadata and write only disposable files under `build/manual
 
 ## Sources
 
-- [Release test configuration](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/build.gradle.kts)
-- [Spring Boot health and metrics module](https://github.com/bluetape4k/bluetape4k-image/tree/ea5175b083babf8880f53cf80c9a264a0c61777e/images-spring-boot/src/main/kotlin/io/bluetape4k/images/spring)
+- [Release test configuration](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/build.gradle.kts)
+- [Spring Boot health and metrics module](https://github.com/bluetape4k/bluetape4k-image/tree/b38d4891b66dff8bc63db0018b5e41810d1da9bc/images-spring-boot/src/main/kotlin/io/bluetape4k/images/spring)

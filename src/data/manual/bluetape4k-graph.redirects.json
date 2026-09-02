@@ -2,419 +2,427 @@
   "redirects": [
     {
       "source": "/ko/manual/bluetape4k-graph/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/architecture/core-model/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/architecture/core-model/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/architecture/core-model/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/architecture/paired-apis/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/architecture/paired-apis/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/architecture/paired-apis/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/architecture/repository-map/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/architecture/repository-map/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/architecture/repository-map/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/architecture/schema-and-transactions/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/architecture/schema-and-transactions/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/architecture/schema-and-transactions/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/backends/apache-age/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/backends/apache-age/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/backends/apache-age/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/backends/falkordb/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/backends/falkordb/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/backends/falkordb/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/backends/neo4j-and-memgraph/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/backends/neo4j-and-memgraph/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/backends/neo4j-and-memgraph/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/backends/selection-guide/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/backends/selection-guide/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/backends/selection-guide/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/backends/tinkerpop/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/backends/tinkerpop/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/backends/tinkerpop/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/benchmarks/age-and-neo4j/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/benchmarks/age-and-neo4j/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/benchmarks/age-and-neo4j/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/benchmarks/graph-io/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/benchmarks/graph-io/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/benchmarks/graph-io/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/benchmarks/graph-operations/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/benchmarks/graph-operations/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/benchmarks/graph-operations/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/benchmarks/overview/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/benchmarks/overview/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/benchmarks/overview/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/examples/code-graph/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/examples/code-graph/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/examples/code-graph/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/examples/data-lineage/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/examples/data-lineage/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/examples/data-lineage/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/examples/fraud-detection/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/examples/fraud-detection/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/examples/fraud-detection/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/examples/iam-access-graph/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/examples/iam-access-graph/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/examples/iam-access-graph/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/examples/knowledge-graph/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/examples/knowledge-graph/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/examples/knowledge-graph/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/examples/ktor-graph/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/examples/ktor-graph/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/examples/ktor-graph/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/examples/linkedin-graph/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/examples/linkedin-graph/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/examples/linkedin-graph/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/examples/network-topology/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/examples/network-topology/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/examples/network-topology/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/examples/observability-graph/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/examples/observability-graph/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/examples/observability-graph/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/examples/recommendation/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/examples/recommendation/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/examples/recommendation/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/examples/security-attack-path/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/examples/security-attack-path/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/examples/security-attack-path/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/examples/supply-chain-graph/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/examples/supply-chain-graph/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/examples/supply-chain-graph/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/frameworks/ktor/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/frameworks/ktor/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/frameworks/ktor/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/frameworks/spring-boot/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/frameworks/spring-boot/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/frameworks/spring-boot/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/getting-started/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/getting-started/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/getting-started/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/graph-io/execution-model/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/graph-io/execution-model/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/graph-io/execution-model/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/graph-io/formats/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/graph-io/formats/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/graph-io/formats/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/graph-io/okio-security/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/graph-io/okio-security/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/graph-io/okio-security/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/guides/benchmark-based-selection/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/guides/benchmark-based-selection/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/guides/benchmark-based-selection/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/guides/failure-and-cancellation/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/guides/failure-and-cancellation/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/guides/failure-and-cancellation/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/guides/learning-path/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/guides/learning-path/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/guides/learning-path/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/guides/operations/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/guides/operations/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/guides/operations/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/guides/testing/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/guides/testing/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/guides/testing/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/modules/bluetape4k-graph-age/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/modules/bluetape4k-graph-age/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-age/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/modules/bluetape4k-graph-bom/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/modules/bluetape4k-graph-bom/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-bom/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/modules/bluetape4k-graph-core/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/modules/bluetape4k-graph-core/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-core/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/modules/bluetape4k-graph-falkordb/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/modules/bluetape4k-graph-falkordb/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-falkordb/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/modules/bluetape4k-graph-io-core/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/modules/bluetape4k-graph-io-core/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-io-core/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/modules/bluetape4k-graph-io-csv/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/modules/bluetape4k-graph-io-csv/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-io-csv/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/modules/bluetape4k-graph-io-graphml/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/modules/bluetape4k-graph-io-graphml/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-io-graphml/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/modules/bluetape4k-graph-io-jackson2/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/modules/bluetape4k-graph-io-jackson2/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-io-jackson2/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/modules/bluetape4k-graph-io-jackson3/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/modules/bluetape4k-graph-io-jackson3/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-io-jackson3/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-graph/modules/bluetape4k-graph-io-micrometer/",
+      "target": "/ko/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-io-micrometer/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/modules/bluetape4k-graph-ktor/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/modules/bluetape4k-graph-ktor/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-ktor/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/modules/bluetape4k-graph-memgraph/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/modules/bluetape4k-graph-memgraph/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-memgraph/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/modules/bluetape4k-graph-neo4j/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/modules/bluetape4k-graph-neo4j/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-neo4j/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/modules/bluetape4k-graph-spring-boot/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/modules/bluetape4k-graph-spring-boot/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-spring-boot/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/modules/bluetape4k-graph-tinkerpop/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/modules/bluetape4k-graph-tinkerpop/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-tinkerpop/"
     },
     {
       "source": "/ko/manual/bluetape4k-graph/modules/graph-okio/",
-      "target": "/ko/manual/bluetape4k-graph/0.6/modules/graph-okio/"
+      "target": "/ko/manual/bluetape4k-graph/1.0/modules/graph-okio/"
     },
     {
       "source": "/manual/bluetape4k-graph/",
-      "target": "/manual/bluetape4k-graph/0.6/"
+      "target": "/manual/bluetape4k-graph/1.0/"
     },
     {
       "source": "/manual/bluetape4k-graph/architecture/core-model/",
-      "target": "/manual/bluetape4k-graph/0.6/architecture/core-model/"
+      "target": "/manual/bluetape4k-graph/1.0/architecture/core-model/"
     },
     {
       "source": "/manual/bluetape4k-graph/architecture/paired-apis/",
-      "target": "/manual/bluetape4k-graph/0.6/architecture/paired-apis/"
+      "target": "/manual/bluetape4k-graph/1.0/architecture/paired-apis/"
     },
     {
       "source": "/manual/bluetape4k-graph/architecture/repository-map/",
-      "target": "/manual/bluetape4k-graph/0.6/architecture/repository-map/"
+      "target": "/manual/bluetape4k-graph/1.0/architecture/repository-map/"
     },
     {
       "source": "/manual/bluetape4k-graph/architecture/schema-and-transactions/",
-      "target": "/manual/bluetape4k-graph/0.6/architecture/schema-and-transactions/"
+      "target": "/manual/bluetape4k-graph/1.0/architecture/schema-and-transactions/"
     },
     {
       "source": "/manual/bluetape4k-graph/backends/apache-age/",
-      "target": "/manual/bluetape4k-graph/0.6/backends/apache-age/"
+      "target": "/manual/bluetape4k-graph/1.0/backends/apache-age/"
     },
     {
       "source": "/manual/bluetape4k-graph/backends/falkordb/",
-      "target": "/manual/bluetape4k-graph/0.6/backends/falkordb/"
+      "target": "/manual/bluetape4k-graph/1.0/backends/falkordb/"
     },
     {
       "source": "/manual/bluetape4k-graph/backends/neo4j-and-memgraph/",
-      "target": "/manual/bluetape4k-graph/0.6/backends/neo4j-and-memgraph/"
+      "target": "/manual/bluetape4k-graph/1.0/backends/neo4j-and-memgraph/"
     },
     {
       "source": "/manual/bluetape4k-graph/backends/selection-guide/",
-      "target": "/manual/bluetape4k-graph/0.6/backends/selection-guide/"
+      "target": "/manual/bluetape4k-graph/1.0/backends/selection-guide/"
     },
     {
       "source": "/manual/bluetape4k-graph/backends/tinkerpop/",
-      "target": "/manual/bluetape4k-graph/0.6/backends/tinkerpop/"
+      "target": "/manual/bluetape4k-graph/1.0/backends/tinkerpop/"
     },
     {
       "source": "/manual/bluetape4k-graph/benchmarks/age-and-neo4j/",
-      "target": "/manual/bluetape4k-graph/0.6/benchmarks/age-and-neo4j/"
+      "target": "/manual/bluetape4k-graph/1.0/benchmarks/age-and-neo4j/"
     },
     {
       "source": "/manual/bluetape4k-graph/benchmarks/graph-io/",
-      "target": "/manual/bluetape4k-graph/0.6/benchmarks/graph-io/"
+      "target": "/manual/bluetape4k-graph/1.0/benchmarks/graph-io/"
     },
     {
       "source": "/manual/bluetape4k-graph/benchmarks/graph-operations/",
-      "target": "/manual/bluetape4k-graph/0.6/benchmarks/graph-operations/"
+      "target": "/manual/bluetape4k-graph/1.0/benchmarks/graph-operations/"
     },
     {
       "source": "/manual/bluetape4k-graph/benchmarks/overview/",
-      "target": "/manual/bluetape4k-graph/0.6/benchmarks/overview/"
+      "target": "/manual/bluetape4k-graph/1.0/benchmarks/overview/"
     },
     {
       "source": "/manual/bluetape4k-graph/examples/code-graph/",
-      "target": "/manual/bluetape4k-graph/0.6/examples/code-graph/"
+      "target": "/manual/bluetape4k-graph/1.0/examples/code-graph/"
     },
     {
       "source": "/manual/bluetape4k-graph/examples/data-lineage/",
-      "target": "/manual/bluetape4k-graph/0.6/examples/data-lineage/"
+      "target": "/manual/bluetape4k-graph/1.0/examples/data-lineage/"
     },
     {
       "source": "/manual/bluetape4k-graph/examples/fraud-detection/",
-      "target": "/manual/bluetape4k-graph/0.6/examples/fraud-detection/"
+      "target": "/manual/bluetape4k-graph/1.0/examples/fraud-detection/"
     },
     {
       "source": "/manual/bluetape4k-graph/examples/iam-access-graph/",
-      "target": "/manual/bluetape4k-graph/0.6/examples/iam-access-graph/"
+      "target": "/manual/bluetape4k-graph/1.0/examples/iam-access-graph/"
     },
     {
       "source": "/manual/bluetape4k-graph/examples/knowledge-graph/",
-      "target": "/manual/bluetape4k-graph/0.6/examples/knowledge-graph/"
+      "target": "/manual/bluetape4k-graph/1.0/examples/knowledge-graph/"
     },
     {
       "source": "/manual/bluetape4k-graph/examples/ktor-graph/",
-      "target": "/manual/bluetape4k-graph/0.6/examples/ktor-graph/"
+      "target": "/manual/bluetape4k-graph/1.0/examples/ktor-graph/"
     },
     {
       "source": "/manual/bluetape4k-graph/examples/linkedin-graph/",
-      "target": "/manual/bluetape4k-graph/0.6/examples/linkedin-graph/"
+      "target": "/manual/bluetape4k-graph/1.0/examples/linkedin-graph/"
     },
     {
       "source": "/manual/bluetape4k-graph/examples/network-topology/",
-      "target": "/manual/bluetape4k-graph/0.6/examples/network-topology/"
+      "target": "/manual/bluetape4k-graph/1.0/examples/network-topology/"
     },
     {
       "source": "/manual/bluetape4k-graph/examples/observability-graph/",
-      "target": "/manual/bluetape4k-graph/0.6/examples/observability-graph/"
+      "target": "/manual/bluetape4k-graph/1.0/examples/observability-graph/"
     },
     {
       "source": "/manual/bluetape4k-graph/examples/recommendation/",
-      "target": "/manual/bluetape4k-graph/0.6/examples/recommendation/"
+      "target": "/manual/bluetape4k-graph/1.0/examples/recommendation/"
     },
     {
       "source": "/manual/bluetape4k-graph/examples/security-attack-path/",
-      "target": "/manual/bluetape4k-graph/0.6/examples/security-attack-path/"
+      "target": "/manual/bluetape4k-graph/1.0/examples/security-attack-path/"
     },
     {
       "source": "/manual/bluetape4k-graph/examples/supply-chain-graph/",
-      "target": "/manual/bluetape4k-graph/0.6/examples/supply-chain-graph/"
+      "target": "/manual/bluetape4k-graph/1.0/examples/supply-chain-graph/"
     },
     {
       "source": "/manual/bluetape4k-graph/frameworks/ktor/",
-      "target": "/manual/bluetape4k-graph/0.6/frameworks/ktor/"
+      "target": "/manual/bluetape4k-graph/1.0/frameworks/ktor/"
     },
     {
       "source": "/manual/bluetape4k-graph/frameworks/spring-boot/",
-      "target": "/manual/bluetape4k-graph/0.6/frameworks/spring-boot/"
+      "target": "/manual/bluetape4k-graph/1.0/frameworks/spring-boot/"
     },
     {
       "source": "/manual/bluetape4k-graph/getting-started/",
-      "target": "/manual/bluetape4k-graph/0.6/getting-started/"
+      "target": "/manual/bluetape4k-graph/1.0/getting-started/"
     },
     {
       "source": "/manual/bluetape4k-graph/graph-io/execution-model/",
-      "target": "/manual/bluetape4k-graph/0.6/graph-io/execution-model/"
+      "target": "/manual/bluetape4k-graph/1.0/graph-io/execution-model/"
     },
     {
       "source": "/manual/bluetape4k-graph/graph-io/formats/",
-      "target": "/manual/bluetape4k-graph/0.6/graph-io/formats/"
+      "target": "/manual/bluetape4k-graph/1.0/graph-io/formats/"
     },
     {
       "source": "/manual/bluetape4k-graph/graph-io/okio-security/",
-      "target": "/manual/bluetape4k-graph/0.6/graph-io/okio-security/"
+      "target": "/manual/bluetape4k-graph/1.0/graph-io/okio-security/"
     },
     {
       "source": "/manual/bluetape4k-graph/guides/benchmark-based-selection/",
-      "target": "/manual/bluetape4k-graph/0.6/guides/benchmark-based-selection/"
+      "target": "/manual/bluetape4k-graph/1.0/guides/benchmark-based-selection/"
     },
     {
       "source": "/manual/bluetape4k-graph/guides/failure-and-cancellation/",
-      "target": "/manual/bluetape4k-graph/0.6/guides/failure-and-cancellation/"
+      "target": "/manual/bluetape4k-graph/1.0/guides/failure-and-cancellation/"
     },
     {
       "source": "/manual/bluetape4k-graph/guides/learning-path/",
-      "target": "/manual/bluetape4k-graph/0.6/guides/learning-path/"
+      "target": "/manual/bluetape4k-graph/1.0/guides/learning-path/"
     },
     {
       "source": "/manual/bluetape4k-graph/guides/operations/",
-      "target": "/manual/bluetape4k-graph/0.6/guides/operations/"
+      "target": "/manual/bluetape4k-graph/1.0/guides/operations/"
     },
     {
       "source": "/manual/bluetape4k-graph/guides/testing/",
-      "target": "/manual/bluetape4k-graph/0.6/guides/testing/"
+      "target": "/manual/bluetape4k-graph/1.0/guides/testing/"
     },
     {
       "source": "/manual/bluetape4k-graph/modules/bluetape4k-graph-age/",
-      "target": "/manual/bluetape4k-graph/0.6/modules/bluetape4k-graph-age/"
+      "target": "/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-age/"
     },
     {
       "source": "/manual/bluetape4k-graph/modules/bluetape4k-graph-bom/",
-      "target": "/manual/bluetape4k-graph/0.6/modules/bluetape4k-graph-bom/"
+      "target": "/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-bom/"
     },
     {
       "source": "/manual/bluetape4k-graph/modules/bluetape4k-graph-core/",
-      "target": "/manual/bluetape4k-graph/0.6/modules/bluetape4k-graph-core/"
+      "target": "/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-core/"
     },
     {
       "source": "/manual/bluetape4k-graph/modules/bluetape4k-graph-falkordb/",
-      "target": "/manual/bluetape4k-graph/0.6/modules/bluetape4k-graph-falkordb/"
+      "target": "/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-falkordb/"
     },
     {
       "source": "/manual/bluetape4k-graph/modules/bluetape4k-graph-io-core/",
-      "target": "/manual/bluetape4k-graph/0.6/modules/bluetape4k-graph-io-core/"
+      "target": "/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-io-core/"
     },
     {
       "source": "/manual/bluetape4k-graph/modules/bluetape4k-graph-io-csv/",
-      "target": "/manual/bluetape4k-graph/0.6/modules/bluetape4k-graph-io-csv/"
+      "target": "/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-io-csv/"
     },
     {
       "source": "/manual/bluetape4k-graph/modules/bluetape4k-graph-io-graphml/",
-      "target": "/manual/bluetape4k-graph/0.6/modules/bluetape4k-graph-io-graphml/"
+      "target": "/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-io-graphml/"
     },
     {
       "source": "/manual/bluetape4k-graph/modules/bluetape4k-graph-io-jackson2/",
-      "target": "/manual/bluetape4k-graph/0.6/modules/bluetape4k-graph-io-jackson2/"
+      "target": "/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-io-jackson2/"
     },
     {
       "source": "/manual/bluetape4k-graph/modules/bluetape4k-graph-io-jackson3/",
-      "target": "/manual/bluetape4k-graph/0.6/modules/bluetape4k-graph-io-jackson3/"
+      "target": "/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-io-jackson3/"
+    },
+    {
+      "source": "/manual/bluetape4k-graph/modules/bluetape4k-graph-io-micrometer/",
+      "target": "/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-io-micrometer/"
     },
     {
       "source": "/manual/bluetape4k-graph/modules/bluetape4k-graph-ktor/",
-      "target": "/manual/bluetape4k-graph/0.6/modules/bluetape4k-graph-ktor/"
+      "target": "/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-ktor/"
     },
     {
       "source": "/manual/bluetape4k-graph/modules/bluetape4k-graph-memgraph/",
-      "target": "/manual/bluetape4k-graph/0.6/modules/bluetape4k-graph-memgraph/"
+      "target": "/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-memgraph/"
     },
     {
       "source": "/manual/bluetape4k-graph/modules/bluetape4k-graph-neo4j/",
-      "target": "/manual/bluetape4k-graph/0.6/modules/bluetape4k-graph-neo4j/"
+      "target": "/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-neo4j/"
     },
     {
       "source": "/manual/bluetape4k-graph/modules/bluetape4k-graph-spring-boot/",
-      "target": "/manual/bluetape4k-graph/0.6/modules/bluetape4k-graph-spring-boot/"
+      "target": "/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-spring-boot/"
     },
     {
       "source": "/manual/bluetape4k-graph/modules/bluetape4k-graph-tinkerpop/",
-      "target": "/manual/bluetape4k-graph/0.6/modules/bluetape4k-graph-tinkerpop/"
+      "target": "/manual/bluetape4k-graph/1.0/modules/bluetape4k-graph-tinkerpop/"
     },
     {
       "source": "/manual/bluetape4k-graph/modules/graph-okio/",
-      "target": "/manual/bluetape4k-graph/0.6/modules/graph-okio/"
+      "target": "/manual/bluetape4k-graph/1.0/modules/graph-okio/"
     }
   ],
   "repository": "bluetape4k/bluetape4k-graph",

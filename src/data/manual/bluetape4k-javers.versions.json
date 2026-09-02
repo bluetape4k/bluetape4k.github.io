@@ -1,5 +1,5 @@
 {
-  "latest": "0.3",
+  "latest": "1.0",
   "repository": "bluetape4k/bluetape4k-javers",
   "schema": 1,
   "versions": [
@@ -126,6 +126,76 @@
       "releaseCommit": "978d0490fc438570e7520643aed50e20614772d1",
       "releaseRef": "0.3.0",
       "sourceCommit": "fb279cdba663bde80d9b146049aca146433a9b36"
+    },
+    {
+      "authoringSourceRef": "27c0b43a08a94a04cff8b54c1bff9c764c75cf76",
+      "channel": "stable",
+      "documents": {
+        "en": [
+          "architecture/audit-model",
+          "architecture/repository-composition",
+          "architecture/repository-map",
+          "benchmarks/exposed-ddd-envers",
+          "benchmarks/overview",
+          "examples/javers-exposed-benchmark",
+          "examples/javers-exposed-ddd",
+          "examples/javers-ktor",
+          "examples/javers-spring-boot4",
+          "getting-started",
+          "guides/cross-repository-paths",
+          "guides/ddd-and-cqrs",
+          "guides/learning-path",
+          "guides/testing",
+          "index",
+          "modules/bluetape4k-javers-bom",
+          "modules/javers-core",
+          "modules/javers-ddd",
+          "modules/javers-exposed",
+          "modules/javers-persistence-kafka",
+          "modules/javers-persistence-redis",
+          "modules/javers-spring-boot4-autoconfigure",
+          "operations/failure-contracts",
+          "operations/observability",
+          "persistence/exposed",
+          "persistence/kafka",
+          "persistence/redis",
+          "persistence/selection-guide"
+        ],
+        "ko": [
+          "architecture/audit-model",
+          "architecture/repository-composition",
+          "architecture/repository-map",
+          "benchmarks/exposed-ddd-envers",
+          "benchmarks/overview",
+          "examples/javers-exposed-benchmark",
+          "examples/javers-exposed-ddd",
+          "examples/javers-ktor",
+          "examples/javers-spring-boot4",
+          "getting-started",
+          "guides/cross-repository-paths",
+          "guides/ddd-and-cqrs",
+          "guides/learning-path",
+          "guides/testing",
+          "index",
+          "modules/bluetape4k-javers-bom",
+          "modules/javers-core",
+          "modules/javers-ddd",
+          "modules/javers-exposed",
+          "modules/javers-persistence-kafka",
+          "modules/javers-persistence-redis",
+          "modules/javers-spring-boot4-autoconfigure",
+          "operations/failure-contracts",
+          "operations/observability",
+          "persistence/exposed",
+          "persistence/kafka",
+          "persistence/redis",
+          "persistence/selection-guide"
+        ]
+      },
+      "minorVersion": "1.0",
+      "releaseCommit": "6648b73333cb665ecba0340588dbc3556c308a52",
+      "releaseRef": "1.0.0",
+      "sourceCommit": "6648b73333cb665ecba0340588dbc3556c308a52"
     }
   ]
 }

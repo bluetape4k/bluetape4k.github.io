@@ -2,7 +2,7 @@
 manualId: "testing-and-operations"
 title: "Testing and Operating AWS Integrations"
 locale: "en"
-releaseRef: "0.5.0"
+releaseRef: "1.0.0"
 ---
 
 # Testing and Operating AWS Integrations

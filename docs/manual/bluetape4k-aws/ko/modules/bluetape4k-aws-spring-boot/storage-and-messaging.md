@@ -78,7 +78,7 @@ failure가 `1%/5m`, retry exhaustion이 `0.1%/5m`, redelivery age p95가 visibil
 또는 DLQ visible count가 `0/5m` 기준을 넘으면 canary를 중단합니다. 온콜 owner는
 `bluetape4k-sqs-oncall`, release approval은 `bluetape4k-release-approvers`입니다.
 
-## SQS Observation (Unreleased/develop)
+## SQS Observation
 
 SQS Observation은 listener의 RECEIVE, PROCESS, ACKNOWLEDGEMENT 수명 주기를
 Micrometer `ObservationRegistry`에 연결하는 opt-in 경로입니다. 기본값은 비활성화이며,
@@ -314,7 +314,7 @@ latency·cleanup telemetry와 heap/throughput 측정은 후속 이슈 #515에서
 
 SNS publish와 HTTP parsing은 서로 다른 작업입니다. callback을 처리하기 전에 SNS 서명을 검증해야 합니다. SES sender는 coroutine과 JavaMail 방식 adapter를 제공하지만 멱등하지 않은 전송을 무작정 재시도하면 안 됩니다.
 
-### SNS topic ARN resolver와 cache (Unreleased/develop)
+### SNS topic ARN resolver와 cache
 
 `SnsOperations.findTopicArn`은 topic name 또는 명시적 SNS ARN을 받습니다. name
 조회는 pagination을 사용하는 `SnsTopicArnResolver`, scope를 포함한 bounded
@@ -351,7 +351,7 @@ bluetape4k:
         ttl: 5m
 ```
 
-### SNS batch 변환 (Unreleased/develop)
+### SNS batch 변환
 
 `SnsBatchMessageConverter`는 Spring `Message<*>`를 typed
 `SnsPublishBatchRequest`로 바꾸는 opt-in·무네트워크 변환 경계입니다. 인자가
@@ -386,7 +386,7 @@ Guarded strategy port는 AWS client와 lifecycle을 노출하지 않고 상태�
 byte-size preflight, Jackson 3 adapter, `ByteArray` payload 지원은 현재
 동작이 아니라 후속 범위입니다.
 
-## Spring Modulith SNS/SQS 외부화 (미출시/develop)
+## Spring Modulith SNS/SQS 외부화 (1.0.0)
 
 선택적 adapter는 등록한 Spring Modulith event를 SNS 또는 SQS로 외부화하고,
 SQS message를 local application event로 복원합니다. root BOM을 한 번 가져오고

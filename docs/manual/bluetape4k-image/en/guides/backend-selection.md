@@ -2,7 +2,7 @@
 manualId: "backend-selection"
 title: "Backend Selection"
 locale: "en"
-releaseRef: "0.4.0"
+releaseRef: "1.0.0"
 ---
 
 # Backend Selection
@@ -37,5 +37,5 @@ Use the repository benchmark as directional evidence, then measure representativ
 
 ## Sources
 
-- [Release backend overview](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/README.md#architecture)
-- [Benchmark documentation](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/benchmark/images-benchmark/README.md)
+- [Release backend overview](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/README.md#architecture)
+- [Benchmark documentation](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/benchmark/images-benchmark/README.md)

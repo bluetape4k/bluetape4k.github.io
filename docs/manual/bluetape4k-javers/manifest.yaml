@@ -1,13 +1,13 @@
 ---
 schemaVersion: 2
 repository: bluetape4k-javers
-stableVersion: 0.3.0
-stableMinor: '0.3'
-releaseTag: 0.3.0
-releaseRef: 0.3.0
-releaseCommit: 978d0490fc438570e7520643aed50e20614772d1
+stableVersion: 1.0.0
+stableMinor: '1.0'
+releaseTag: 1.0.0
+releaseRef: 1.0.0
+releaseCommit: 6648b73333cb665ecba0340588dbc3556c308a52
 publication:
-  manualVersion: '0.3'
+  manualVersion: '1.0'
   sourceRoot: docs/manual/bluetape4k-javers
   toolingRoot: scripts/manual/repositories/bluetape4k-javers
   ownership: central
@@ -19,7 +19,7 @@ publication:
   locales:
   - en
   - ko
-  contentStatus: in-progress
+  contentStatus: complete
 overview:
   documents:
     en:
@@ -179,3 +179,63 @@ modules:
   ko: ko/modules/javers-persistence-redis.md
   sourcePaths:
   - javers-persistence-redis
+- id: javers-spring-boot4-autoconfigure
+  title:
+    en: JaVers Spring Boot 4 auto-configuration
+    ko: JaVers Spring Boot 4 자동 구성
+  gradlePath: ":javers-spring-boot4-autoconfigure"
+  projectName: javers-spring-boot4-autoconfigure
+  sourceDir: javers-spring-boot4-autoconfigure
+  kind: library
+  group: foundation
+  artifact: io.github.bluetape4k.javers:javers-spring-boot4-autoconfigure
+  status: stable
+  en: en/modules/javers-spring-boot4-autoconfigure.md
+  ko: ko/modules/javers-spring-boot4-autoconfigure.md
+  sourcePaths:
+  - javers-spring-boot4-autoconfigure
+- id: javers-ktor-example
+  title:
+    en: JaVers Ktor example
+    ko: JaVers Ktor 예제
+  gradlePath: ":examples-javers-ktor"
+  projectName: examples-javers-ktor
+  sourceDir: examples/javers-ktor
+  kind: example
+  group: examples
+  artifact:
+  status: example
+  en: en/examples/javers-ktor.md
+  ko: ko/examples/javers-ktor.md
+  sourcePaths:
+  - examples/javers-ktor
+- id: javers-spring-boot4-example
+  title:
+    en: JaVers Spring Boot 4 example
+    ko: JaVers Spring Boot 4 예제
+  gradlePath: ":examples-javers-spring-boot4"
+  projectName: examples-javers-spring-boot4
+  sourceDir: examples/javers-spring-boot4
+  kind: example
+  group: examples
+  artifact:
+  status: example
+  en: en/examples/javers-spring-boot4.md
+  ko: ko/examples/javers-spring-boot4.md
+  sourcePaths:
+  - examples/javers-spring-boot4
+- id: javers-exposed-benchmark
+  title:
+    en: JaVers Exposed benchmark
+    ko: JaVers Exposed 벤치마크
+  gradlePath: ":benchmark-javers-exposed-benchmark"
+  projectName: benchmark-javers-exposed-benchmark
+  sourceDir: benchmark/javers-exposed-benchmark
+  kind: example
+  group: examples
+  artifact:
+  status: example
+  en: en/examples/javers-exposed-benchmark.md
+  ko: ko/examples/javers-exposed-benchmark.md
+  sourcePaths:
+  - benchmark/javers-exposed-benchmark

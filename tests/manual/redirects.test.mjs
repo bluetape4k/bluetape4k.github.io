@@ -19,7 +19,7 @@ const projects = {
 };
 const productionProjects = {
   ...projects,
-  latestMinor: '1.12',
+  latestMinor: '2.0',
 };
 
 async function write(root, relative, content) {
@@ -67,11 +67,11 @@ test('loads production redirects as direct locale-preserving links to the catalo
   const versions = JSON.parse(await readFile(new URL('../../src/data/manual/bluetape4k-projects.versions.json', import.meta.url), 'utf8'));
   const latest = versions.versions.find(({ minorVersion }) => minorVersion === versions.latest);
   const expectedRedirects = latest.documents.en.length + latest.documents.ko.length;
-  assert.equal(loaded.latest, '1.12');
+  assert.equal(loaded.latest, '2.0');
   assert.equal(loaded.entries.length, expectedRedirects);
   assert.equal(new Set(loaded.entries.map(({ source }) => source)).size, loaded.entries.length);
   for (const { source, destination } of loaded.entries) {
-    assert.match(destination, /^\/(?:ko\/)?manual\/bluetape4k-projects\/1\.12\//);
+    assert.match(destination, /^\/(?:ko\/)?manual\/bluetape4k-projects\/2\.0\//);
     assert.equal(source.startsWith('/ko/'), destination.startsWith('/ko/'));
     assert.ok(!loaded.entries.some((entry) => entry.source === destination), `${source} forms a redirect chain`);
   }
@@ -170,14 +170,14 @@ test('snapshot validation writes a sanitized provenance report and summary', asy
     'bluetape4k/bluetape4k-text',
   ]);
   const expectedLatest = new Map([
-    ['bluetape4k/bluetape4k-aws', '0.5'],
+    ['bluetape4k/bluetape4k-aws', '1.0'],
     ['bluetape4k/bluetape4k-exposed', '2.0'],
-    ['bluetape4k/bluetape4k-graph', '0.6'],
-    ['bluetape4k/bluetape4k-image', '0.4'],
-    ['bluetape4k/bluetape4k-javers', '0.3'],
+    ['bluetape4k/bluetape4k-graph', '1.0'],
+    ['bluetape4k/bluetape4k-image', '1.0'],
+    ['bluetape4k/bluetape4k-javers', '1.0'],
     ['bluetape4k/bluetape4k-leader', '1.0'],
-    ['bluetape4k/bluetape4k-projects', '1.12'],
-    ['bluetape4k/bluetape4k-text', '0.3'],
+    ['bluetape4k/bluetape4k-projects', '2.0'],
+    ['bluetape4k/bluetape4k-text', '1.0'],
   ]);
   for (const repository of report.repositories) {
     assert.equal(repository.latest, expectedLatest.get(repository.repository));
@@ -194,7 +194,7 @@ test('snapshot validation writes a sanitized provenance report and summary', asy
   });
   assert.equal(summary.status, 0, summary.stderr);
   assert.match(summary.stdout, /^## Manual validation/m);
-  assert.match(summary.stdout, /1\.12\.1/);
+  assert.match(summary.stdout, /2\.0\.0/);
   for (const repository of report.repositories) {
     assert.ok(summary.stdout.includes(repository.releaseCommit), repository.repository);
     assert.ok(summary.stdout.includes(repository.sourceCommit), repository.repository);

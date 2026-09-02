@@ -23,7 +23,7 @@ Use the Text-only BOM when your application manages the wider ecosystem separate
 
 ```kotlin
 dependencies {
-    implementation(platform("io.github.bluetape4k.text:bluetape4k-text-bom:0.3.0"))
+    implementation(platform("io.github.bluetape4k.text:bluetape4k-text-bom:1.0.0"))
     implementation("io.github.bluetape4k.text:tokenizer-korean")
 }
 ```
@@ -73,6 +73,6 @@ Reuse configured detectors and immutable search automatons rather than rebuildin
 
 ## Source evidence
 
-- [KoreanProcessor facade](https://github.com/bluetape4k/bluetape4k-text/blob/0.3.0/tokenizer-korean/src/main/kotlin/io/bluetape4k/tokenizer/korean/KoreanProcessor.kt)
-- [Text BOM README](https://github.com/bluetape4k/bluetape4k-text/blob/0.3.0/bom/README.md)
-- [Root installation examples](https://github.com/bluetape4k/bluetape4k-text/blob/0.3.0/README.md)
+- [KoreanProcessor facade](https://github.com/bluetape4k/bluetape4k-text/blob/1.0.0/tokenizer-korean/src/main/kotlin/io/bluetape4k/tokenizer/korean/KoreanProcessor.kt)
+- [Text BOM README](https://github.com/bluetape4k/bluetape4k-text/blob/1.0.0/bom/README.md)
+- [Root installation examples](https://github.com/bluetape4k/bluetape4k-text/blob/1.0.0/README.md)

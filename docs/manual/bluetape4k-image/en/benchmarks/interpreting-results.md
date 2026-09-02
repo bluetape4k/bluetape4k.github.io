@@ -2,12 +2,12 @@
 manualId: "interpreting-benchmark-results"
 title: "Interpreting Benchmark Results"
 locale: "en"
-releaseRef: "0.4.0"
+releaseRef: "1.0.0"
 ---
 
 # Interpreting Benchmark Results
 
-The benchmark project is executable evidence, not a published dependency. Its reports compare Scrimage and libvips processing plus I/O and allocation boundaries available in 0.4.0.
+The benchmark project is executable evidence, not a published dependency. Its reports compare Scrimage and libvips processing plus I/O and allocation boundaries available in 1.0.0.
 
 ![Interpretation path from benchmark question through workload context to a bounded conclusion](../../assets/benchmarks/benchmark-interpretation-map.svg)
 
@@ -36,5 +36,5 @@ The current benchmark module runs on JDK 25 and uses <code>-Pvips.impl</code> to
 
 ## Sources
 
-- [Benchmark module guide](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/benchmark/images-benchmark/README.md)
-- [0.4.0 reports and raw evidence](https://github.com/bluetape4k/bluetape4k-image/tree/ea5175b083babf8880f53cf80c9a264a0c61777e/benchmark/images-benchmark/docs)
+- [Benchmark module guide](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/benchmark/images-benchmark/README.md)
+- [1.0.0 reports and raw evidence](https://github.com/bluetape4k/bluetape4k-image/tree/b38d4891b66dff8bc63db0018b5e41810d1da9bc/benchmark/images-benchmark/docs)

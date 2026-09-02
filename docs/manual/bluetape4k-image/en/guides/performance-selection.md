@@ -2,7 +2,7 @@
 manualId: "performance-selection"
 title: "Performance Selection"
 locale: "en"
-releaseRef: "0.4.0"
+releaseRef: "1.0.0"
 ---
 
 # Performance Selection
@@ -33,5 +33,5 @@ Do not extrapolate current JDK 25 FFM results to the historical JDK 21 JNI rows,
 
 ## Sources
 
-- [Release benchmark guide](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/benchmark/images-benchmark/README.md)
-- [Release benchmark reports](https://github.com/bluetape4k/bluetape4k-image/tree/ea5175b083babf8880f53cf80c9a264a0c61777e/benchmark/images-benchmark/docs)
+- [Release benchmark guide](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/benchmark/images-benchmark/README.md)
+- [Release benchmark reports](https://github.com/bluetape4k/bluetape4k-image/tree/b38d4891b66dff8bc63db0018b5e41810d1da9bc/benchmark/images-benchmark/docs)

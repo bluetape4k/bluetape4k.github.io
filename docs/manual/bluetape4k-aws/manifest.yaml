@@ -1,9 +1,9 @@
 schemaVersion: 2
 repository: "bluetape4k/bluetape4k-aws"
-releaseRef: "0.5.0"
-releaseCommit: "664e4dfb544a3c19db484b0f9a8e023a73774b49"
+releaseRef: "1.0.0"
+releaseCommit: "632e0f346b807c4d50e3195f7b2b72082def9460"
 publication:
-  manualVersion: '0.5'
+  manualVersion: '1.0'
   sourceRoot: docs/manual/bluetape4k-aws
   toolingRoot: scripts/manual/repositories/bluetape4k-aws
   ownership: central
@@ -15,7 +15,7 @@ publication:
   locales:
     - en
     - ko
-  contentStatus: in-progress
+  contentStatus: complete
 overview:
   documents:
     en:
@@ -173,6 +173,7 @@ modules:
       - "examples/aws-ktor-dynamodb-examples"
       - "examples/aws-ktor-sqs-examples"
       - "examples/aws-ktor-exposed-examples"
+      - "examples/aws-ktor-service-coverage-examples"
     chapters:
       - id: "client-and-sigv4"
         en: "en/modules/bluetape4k-aws-ktor/client-and-sigv4.md"
@@ -242,6 +243,18 @@ modules:
     ko: "ko/modules/aws-ktor-sqs-examples.md"
     sourcePaths: ["examples/aws-ktor-sqs-examples/src/main/kotlin"]
     testPaths: ["examples/aws-ktor-sqs-examples/src/test/kotlin","examples/aws-ktor-sqs-examples/src/test/resources"]
+    workshops: []
+  - id: "aws-ktor-service-coverage-examples"
+    title: {"en":"Ktor Service Coverage Examples","ko":"Ktor 서비스 커버리지 예제"}
+    gradlePath: ":aws-ktor-service-coverage-examples"
+    sourceDir: "examples/aws-ktor-service-coverage-examples"
+    kind: "example"
+    group: "example-service-coverage"
+    artifact: null
+    en: "en/modules/aws-ktor-service-coverage-examples.md"
+    ko: "ko/modules/aws-ktor-service-coverage-examples.md"
+    sourcePaths: ["examples/aws-ktor-service-coverage-examples/src/main/kotlin"]
+    testPaths: ["examples/aws-ktor-service-coverage-examples/src/test/kotlin","examples/aws-ktor-service-coverage-examples/src/test/resources"]
     workshops: []
   - id: "aws-ktor-dynamodb-examples"
     title: {"en":"Ktor DynamoDB Examples","ko":"Ktor DynamoDB 예제"}

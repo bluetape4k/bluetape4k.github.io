@@ -6,13 +6,13 @@ locale: "ko"
 kind: "library"
 gradlePath: ":bluetape4k-aws-kotlin"
 sourceDir: "aws-kotlin"
-releaseRef: "0.5.0"
+releaseRef: "1.0.0"
 artifact: io.github.bluetape4k.aws:bluetape4k-aws-kotlin
 ---
 
 # AWS SDK for Kotlin 확장
 
-> 0.5.0 릴리스 소스를 기준으로 작성한 라이브러리 매뉴얼입니다.
+> 1.0.0 릴리스 소스를 기준으로 작성한 라이브러리 매뉴얼입니다.
 
 ## 제공하는 기능 {#problem}
 
@@ -56,7 +56,6 @@ DynamoDB 모델 DSL·배치, DynamoDB Streams Flow/checkpoint 소비, S3 객체 
 
 ## DynamoDB coordination {#dynamodb-coordination}
 
-> 미출시/develop: 이 절은 Issue #476을 설명하며 `0.5.0` 릴리스 소스에는 포함되지 않습니다.
 
 `DynamoDbDistributedLock`과 `DynamoDbMetadataStore`는 호출자가 소유하는 DynamoDB table을
 대상으로 하는 coroutine 우선 coordination adapter입니다. String partition key 하나만
@@ -118,7 +117,6 @@ Floci lane은 PK-only schema, conditional `AllOld`, fencing과 logical expiry �
 
 ## DynamoDB Streams Flow와 checkpoint {#dynamodb-streams}
 
-> 미출시/develop: 이 절은 Issue #469 API를 설명하며 `0.5.0` 릴리스 소스에는 포함되지 않습니다.
 
 native AWS SDK for Kotlin 확장은 한 shard를 읽는 `DynamoDbStreamsClient.recordFlow`와
 제한된 동시성으로 shard graph를 읽는 `shardRecordFlow`를 제공합니다. 시작 위치는
@@ -145,7 +143,6 @@ at-least-once 계약을 지키며 재시작 시 중복이 생길 수 있습니�
 
 ## Kinesis 멀티 샤드 consumer {#kinesis-consumer}
 
-> 미출시/develop: 이 절은 Issue #470 API를 설명하며 `0.5.0` 릴리스 소스에는 포함되지 않습니다.
 
 Native `KinesisClient.consumerFlow`는 shard를 계속 발견하고 각 shard를 순차적으로
 polling하며 `maxShardConcurrency`로 active shard job을 제한합니다. Parent와 adjacent
@@ -188,7 +185,6 @@ checkpoint를 재사용하고 삭제하거나 되감지 않습니다.
 
 ## Lambda 호출 helper {#lambda}
 
-> 미출시/develop: 이 절은 Issue #314 API를 설명하며 `0.5.0` 릴리스 소스에는 포함되지 않습니다.
 
 AWS Kotlin SDK 모듈은 `io.bluetape4k.aws.kotlin.lambda` 아래에 native suspend `Invoke`
 helper를 제공합니다. `LambdaInvocationResult<T>`는 raw SDK response, 복사한 payload,
@@ -250,7 +246,6 @@ Native suspend cancellation은 그대로 전달되며 `withLambdaClient`는 serv
 
 ## S3 Tables 관리 {#s3-tables}
 
-> 미출시/develop: 이 절은 Issue #311 API를 설명하며 `0.5.0` 릴리스 소스에는 포함되지 않습니다.
 
 native AWS SDK for Kotlin 확장은 S3 Tables request·response·exception 타입을 유지하면서 table
 bucket, namespace, table의 생성·목록·조회·삭제를 제공합니다. 목록은 raw service의 한 페이지를
@@ -283,7 +278,6 @@ withS3TablesClient(region = "ap-northeast-2") { client ->
 
 ## Step Functions 실행 helper {#step-functions}
 
-> 미출시/develop: 이 절은 Issue #313 API를 설명하며 `0.5.0` 릴리스 소스에는 포함되지 않습니다.
 
 AWS Kotlin SDK 경로는 `io.bluetape4k.aws.kotlin.sfn` 패키지에
 `StartExecution`, `StopExecution`, `DescribeExecution`, `ListExecutions`를 위한 native
@@ -459,25 +453,25 @@ Java SDK v2 호환 wrapper가 아니므로 타입과 서비스 지원 범위가 
 <!-- release-readme-diagrams:start -->
 ## 배포본 다이어그램 {#release-diagrams}
 
-아래 그림은 `0.5.0` 배포본의 README 자산을 해당 배포 커밋에서 직접 불러옵니다. 이후 SNAPSHOT이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 같은 배포 커밋의 SVG 원본이 열립니다.
+아래 그림은 `1.0.0` 배포본의 README 자산을 해당 배포 커밋에서 직접 불러옵니다. 이후 SNAPSHOT이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 같은 배포 커밋의 SVG 원본이 열립니다.
 
 ### Bluetape4k AWS Kotlin 아키텍처
 
-[![Bluetape4k AWS Kotlin 아키텍처](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-kotlin-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-kotlin-architecture-01.svg)
+[![Bluetape4k AWS Kotlin 아키텍처](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-kotlin-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-kotlin-architecture-01.svg)
 
-_배포본 README: [`aws-kotlin/README.ko.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/aws-kotlin/README.ko.md)_
+_배포본 README: [`aws-kotlin/README.ko.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/aws-kotlin/README.ko.md)_
 
 ### Bluetape4k AWS Kotlin operation 처리 흐름
 
-[![Bluetape4k AWS Kotlin operation 처리 흐름](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-kotlin-flow-02.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-kotlin-flow-02.svg)
+[![Bluetape4k AWS Kotlin operation 처리 흐름](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-kotlin-flow-02.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-kotlin-flow-02.svg)
 
-_배포본 README: [`aws-kotlin/README.ko.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/aws-kotlin/README.ko.md)_
+_배포본 README: [`aws-kotlin/README.ko.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/aws-kotlin/README.ko.md)_
 
 ### Bluetape4k AWS Kotlin client 수명 주기 시퀀스 다이어그램
 
-[![Bluetape4k AWS Kotlin client 수명 주기 시퀀스 다이어그램](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-kotlin-sequence-03.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-kotlin-sequence-03.svg)
+[![Bluetape4k AWS Kotlin client 수명 주기 시퀀스 다이어그램](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-kotlin-sequence-03.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-kotlin-sequence-03.svg)
 
-_배포본 README: [`aws-kotlin/README.ko.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/aws-kotlin/README.ko.md)_
+_배포본 README: [`aws-kotlin/README.ko.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/aws-kotlin/README.ko.md)_
 
 <!-- release-readme-diagrams:end -->
 

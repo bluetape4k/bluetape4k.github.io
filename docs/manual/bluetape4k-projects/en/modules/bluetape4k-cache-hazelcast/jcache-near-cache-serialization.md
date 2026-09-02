@@ -51,12 +51,12 @@ When peer invalidation is required, use the `IMap.addEntryListener` path in `Haz
 | Choice | Benefit | Limit |
 | --- | --- | --- |
 | factory JCache near cache | Reuses JCache front/back contracts | No listener or peer L1 propagation |
-| direct listener-backed JCache construction | Intended event propagation | Serialization failure in 1.12.1 |
+| direct listener-backed JCache construction | Intended event propagation | Serialization failure in 2.0.0 |
 | native IMap near cache | Client-side listener invalidation | String keys and no JCache API |
 
 ## Fixed suspend-front settings
 
-The 1.12.1 `suspendNearJCache` factory builds Caffeine with a 10,000-entry maximum and 30-minute expire-after-access. It uses the supplied cache name for the back cache but does not apply custom front capacity and expiry from `NearJCacheConfig` to this fixed front.
+The 2.0.0 `suspendNearJCache` factory builds Caffeine with a 10,000-entry maximum and 30-minute expire-after-access. It uses the supplied cache name for the back cache but does not apply custom front capacity and expiry from `NearJCacheConfig` to this fixed front.
 
 <!-- nearjcache-clear-authority-contract -->
 ### #1368 shared-back clear authority

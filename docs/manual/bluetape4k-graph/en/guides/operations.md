@@ -9,7 +9,7 @@ Define service-level evidence around the actual boundary:
 - schema/index inventory and query-plan regressions;
 - Ktor/Spring startup and shutdown ownership events.
 
-`GraphSession` explicitly leaves injected resource ownership outside `close()`: [`GraphSession.kt`](https://github.com/bluetape4k/bluetape4k-graph/blob/72c0256e2e1cf61101d29852210e3c827ca93bc0/graph/graph-core/src/main/kotlin/io/bluetape4k/graph/repository/GraphSession.kt). Framework pages explain when a container registers close actions.
+`GraphSession` explicitly leaves injected resource ownership outside `close()`: [`GraphSession.kt`](https://github.com/bluetape4k/bluetape4k-graph/blob/a405300799b36d4d6edb7267ad07ff34d4ad3afe/graph/graph-core/src/main/kotlin/io/bluetape4k/graph/repository/GraphSession.kt). Framework pages explain when a container registers close actions.
 
 For incidents, preserve the backend query/error, operation parameters with secrets removed, transaction state, graph-io report, server/container version, and cancellation signal. Compare observed counts before retrying a non-idempotent batch. Use merge only when its key semantics are tested for the selected backend.
 

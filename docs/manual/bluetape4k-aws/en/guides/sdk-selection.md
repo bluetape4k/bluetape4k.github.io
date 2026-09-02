@@ -2,7 +2,7 @@
 manualId: "sdk-selection"
 title: "Choosing AWS SDK for Java v2 or AWS SDK for Kotlin"
 locale: "en"
-releaseRef: "0.5.0"
+releaseRef: "1.0.0"
 ---
 
 # Choosing AWS SDK for Java v2 or AWS SDK for Kotlin

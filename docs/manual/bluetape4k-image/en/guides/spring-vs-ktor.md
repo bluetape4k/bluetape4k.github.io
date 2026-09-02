@@ -2,7 +2,7 @@
 manualId: "spring-vs-ktor"
 title: "Spring Boot or Ktor"
 locale: "en"
-releaseRef: "0.4.0"
+releaseRef: "1.0.0"
 ---
 
 # Spring Boot or Ktor
@@ -29,5 +29,5 @@ Whichever path you choose, the application owns upload limits, authentication, s
 
 ## Sources
 
-- [Ktor release module](https://github.com/bluetape4k/bluetape4k-image/tree/ea5175b083babf8880f53cf80c9a264a0c61777e/images-ktor)
-- [Spring Boot release module](https://github.com/bluetape4k/bluetape4k-image/tree/ea5175b083babf8880f53cf80c9a264a0c61777e/images-spring-boot)
+- [Ktor release module](https://github.com/bluetape4k/bluetape4k-image/tree/b38d4891b66dff8bc63db0018b5e41810d1da9bc/images-ktor)
+- [Spring Boot release module](https://github.com/bluetape4k/bluetape4k-image/tree/b38d4891b66dff8bc63db0018b5e41810d1da9bc/images-spring-boot)

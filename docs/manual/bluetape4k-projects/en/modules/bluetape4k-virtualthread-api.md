@@ -96,19 +96,19 @@ This page documents the repository state represented by the linked source and te
 <!-- release-readme-diagrams:start -->
 ## Release diagrams {#release-diagrams}
 
-These diagrams are loaded directly from README assets published with the `1.12.1` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
+These diagrams are loaded directly from README assets published with the `2.0.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### virtualthread-api class structure for runtime facades, SPI contracts, StructuredTaskScope contracts, and TaskContext helpers
 
-[![virtualthread-api class structure for runtime facades, SPI contracts, StructuredTaskScope contracts, and TaskContext helpers](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/7cf0b73646af05c0f8872cc4f6a16983949c4e3e/docs/images/readme-diagrams/virtualthread-api-diagram-01.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/7cf0b73646af05c0f8872cc4f6a16983949c4e3e/docs/images/readme-diagrams/virtualthread-api-diagram-01.svg)
+[![virtualthread-api class structure for runtime facades, SPI contracts, StructuredTaskScope contracts, and TaskContext helpers](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/8165a8989e0075e7c17c489bf3000bf41fef8232/docs/images/readme-diagrams/virtualthread-api-diagram-01.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/8165a8989e0075e7c17c489bf3000bf41fef8232/docs/images/readme-diagrams/virtualthread-api-diagram-01.svg)
 
-_Release README: [`virtualthread/api/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/7cf0b73646af05c0f8872cc4f6a16983949c4e3e/virtualthread/api/README.md)_
+_Release README: [`virtualthread/api/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/8165a8989e0075e7c17c489bf3000bf41fef8232/virtualthread/api/README.md)_
 
 ### ServiceLoader-based runtime selection flow for lazy provider discovery, supported-provider filtering, priority sorting, and fallback delegat
 
-[![ServiceLoader-based runtime selection flow for lazy provider discovery, supported-provider filtering, priority sorting, and fallback delegat](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/7cf0b73646af05c0f8872cc4f6a16983949c4e3e/docs/images/readme-diagrams/virtualthread-api-diagram-02.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/7cf0b73646af05c0f8872cc4f6a16983949c4e3e/docs/images/readme-diagrams/virtualthread-api-diagram-02.svg)
+[![ServiceLoader-based runtime selection flow for lazy provider discovery, supported-provider filtering, priority sorting, and fallback delegat](https://raw.githubusercontent.com/bluetape4k/bluetape4k-projects/8165a8989e0075e7c17c489bf3000bf41fef8232/docs/images/readme-diagrams/virtualthread-api-diagram-02.png)](https://github.com/bluetape4k/bluetape4k-projects/blob/8165a8989e0075e7c17c489bf3000bf41fef8232/docs/images/readme-diagrams/virtualthread-api-diagram-02.svg)
 
-_Release README: [`virtualthread/api/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/7cf0b73646af05c0f8872cc4f6a16983949c4e3e/virtualthread/api/README.md)_
+_Release README: [`virtualthread/api/README.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/8165a8989e0075e7c17c489bf3000bf41fef8232/virtualthread/api/README.md)_
 
 <!-- release-readme-diagrams:end -->
 

@@ -1,0 +1,60 @@
+---
+slug: "manual/bluetape4k-aws/1.0"
+manualId: "repository-overview"
+title: "Bluetape4k AWS Manual"
+locale: "en"
+releaseRef: "1.0.0"
+manual:
+  id: "index"
+  repository: "bluetape4k-aws"
+  group: "overview"
+  kind: "guide"
+  sourceCommit: "632e0f346b807c4d50e3195f7b2b72082def9460"
+  sourcePath: "docs/manual/bluetape4k-aws/en/index.md"
+  minorVersion: "1.0"
+  releaseRef: "1.0.0"
+  releaseCommit: "632e0f346b807c4d50e3195f7b2b72082def9460"
+  sourceDir: "docs/manual/bluetape4k-aws"
+  layer: "build"
+---
+
+
+`bluetape4k-aws` connects Kotlin/JVM applications to AWS through two SDK paths and two application frameworks. It provides coroutine adapters for AWS SDK for Java v2, small extensions around the AWS SDK for Kotlin, Spring Boot auto-configuration, Ktor plugins, and an Exposed JDBC bridge for AWS-backed database settings.
+
+This manual is organized around decisions rather than package names. Start by choosing the Java or Kotlin SDK path, then choose direct library use, Spring Boot, or Ktor. Service guides for S3, DynamoDB, and SQS/SNS lead to runnable examples, while the database and operations guides make ownership and shutdown boundaries explicit.
+
+## Core capabilities
+
+- **Two SDK paths:** [SDK selection](/manual/bluetape4k-aws/1.0/guides/sdk-selection/) explains when to extend AWS SDK for Java v2 with coroutine adapters and when to use the AWS SDK for Kotlin directly.
+- **Coroutine-friendly service APIs:** The [Java SDK extensions](/manual/bluetape4k-aws/1.0/modules/bluetape4k-aws-java/) bridge sync and async clients into structured Kotlin execution, while the [Kotlin SDK extensions](/manual/bluetape4k-aws/1.0/modules/bluetape4k-aws-kotlin/) reduce request and response boilerplate.
+- **Service patterns and examples:** [Service learning paths](/manual/bluetape4k-aws/1.0/guides/service-learning-paths/) connect S3, DynamoDB, SQS, and SNS helpers to runnable Ktor and Spring Boot examples.
+- **Application frameworks:** [Spring Boot and Ktor](/manual/bluetape4k-aws/1.0/guides/spring-vs-ktor/) integrations manage client construction, configuration, lifecycle, and request signing at the appropriate framework boundary.
+- **Database integration:** The [Exposed database guide](/manual/bluetape4k-aws/1.0/guides/database-with-exposed/) turns AWS-provided database settings and RDS IAM authentication into explicit JDBC configuration.
+- **Testing and operations:** [Testing and operations](/manual/bluetape4k-aws/1.0/guides/testing-and-operations/) separates emulator proof from AWS integration proof and defines client ownership, shutdown, retry, and observability checks.
+
+## Version baseline
+
+Applications select one central BOM version: `io.github.bluetape4k:bluetape4k-dependencies:<version>`. They do not need to coordinate the `bluetape4k-aws`, AWS SDK, and related bluetape4k library versions independently.
+
+The technical baseline of this manual is `bluetape4k-aws 1.0.0`. It covers the 6 published projects and 8 runnable example projects present in that stable tag. Develop-only projects are intentionally excluded.
+
+- Release tag: [`1.0.0`](https://github.com/bluetape4k/bluetape4k-aws/tree/1.0.0)
+- Release commit: [`632e0f346b807c4d50e3195f7b2b72082def9460`](https://github.com/bluetape4k/bluetape4k-aws/commit/632e0f346b807c4d50e3195f7b2b72082def9460)
+- Runtime baseline: JDK 25, Kotlin 2.3, Spring Boot 4, and Ktor 3
+
+## Where to start
+
+- Use [Getting started](/manual/bluetape4k-aws/1.0/getting-started/) to import the central BOM and add only the AWS service modules your application uses.
+- Read [SDK selection](/manual/bluetape4k-aws/1.0/guides/sdk-selection/) before mixing AWS SDK for Java v2 and AWS SDK for Kotlin in the same service.
+- Open the [repository map](/manual/bluetape4k-aws/1.0/architecture/repository-map/) to see how the 14 release projects fit together.
+- Follow the [learning path](/manual/bluetape4k-aws/1.0/guides/learning-path/) for a goal-oriented route through S3, DynamoDB, messaging, and relational database examples.
+- Read [testing and operations](/manual/bluetape4k-aws/1.0/guides/testing-and-operations/) before deciding emulator coverage, client ownership, and shutdown policy.
+
+## Responsibility boundary
+
+This repository owns AWS client adaptation and framework integration. It does not hide AWS service semantics, IAM policy, retry safety, or resource ownership. Applications still choose the service SDK modules, credentials and region providers, timeout and retry policy, idempotency strategy, and production observability.
+
+## Sources
+
+- [Release module registry](../../../settings.gradle.kts)
+- [Repository dependency and module overview](../../../README.md)

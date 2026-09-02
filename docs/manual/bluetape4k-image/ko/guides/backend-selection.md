@@ -2,7 +2,7 @@
 manualId: "backend-selection"
 title: "백엔드 선택"
 locale: "ko"
-releaseRef: "0.4.0"
+releaseRef: "1.0.0"
 ---
 
 # 백엔드 선택
@@ -37,5 +37,5 @@ releaseRef: "0.4.0"
 
 ## 근거 소스
 
-- [릴리스 백엔드 개요](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/README.ko.md#아키텍처)
-- [벤치마크 문서](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/benchmark/images-benchmark/README.ko.md)
+- [릴리스 백엔드 개요](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/README.ko.md#아키텍처)
+- [벤치마크 문서](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/benchmark/images-benchmark/README.ko.md)

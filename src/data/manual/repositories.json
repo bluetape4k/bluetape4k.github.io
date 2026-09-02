@@ -8,7 +8,7 @@
         "en": "Bluetape4k docs",
         "ko": "Bluetape4k 문서"
       },
-      "latestMinor": "1.12",
+      "latestMinor": "2.0",
       "manual": {
         "ownership": "central",
         "sourceRoot": "docs/manual/bluetape4k-projects",
@@ -44,7 +44,7 @@
         "en": "AWS docs",
         "ko": "AWS 문서"
       },
-      "latestMinor": "0.5",
+      "latestMinor": "1.0",
       "manual": {
         "ownership": "central",
         "sourceRoot": "docs/manual/bluetape4k-aws",
@@ -80,7 +80,7 @@
         "en": "Image docs",
         "ko": "Image 문서"
       },
-      "latestMinor": "0.4",
+      "latestMinor": "1.0",
       "manual": {
         "ownership": "central",
         "sourceRoot": "docs/manual/bluetape4k-image",
@@ -98,7 +98,7 @@
         "en": "Graph docs",
         "ko": "Graph 문서"
       },
-      "latestMinor": "0.6",
+      "latestMinor": "1.0",
       "manual": {
         "ownership": "central",
         "sourceRoot": "docs/manual/bluetape4k-graph",
@@ -116,7 +116,7 @@
         "en": "Javers docs",
         "ko": "Javers 문서"
       },
-      "latestMinor": "0.3",
+      "latestMinor": "1.0",
       "manual": {
         "ownership": "central",
         "sourceRoot": "docs/manual/bluetape4k-javers",
@@ -134,7 +134,7 @@
         "en": "Text docs",
         "ko": "Text 문서"
       },
-      "latestMinor": "0.3",
+      "latestMinor": "1.0",
       "manual": {
         "ownership": "central",
         "sourceRoot": "docs/manual/bluetape4k-text",

@@ -1,5 +1,5 @@
 {
-  "latest": "0.3",
+  "latest": "1.0",
   "repository": "bluetape4k/bluetape4k-text",
   "schema": 1,
   "versions": [
@@ -126,6 +126,68 @@
       "releaseCommit": "aead213d2d25307d7d3684226943a5f95c7411f2",
       "releaseRef": "0.3.0",
       "sourceCommit": "c5726bea30591e4c5c26523ccac4ad62c5ea9237"
+    },
+    {
+      "authoringSourceRef": "27c0b43a08a94a04cff8b54c1bff9c764c75cf76",
+      "channel": "stable",
+      "documents": {
+        "en": [
+          "architecture/processing-model",
+          "architecture/repository-map",
+          "architecture/runtime-boundaries",
+          "examples/lingua-examples",
+          "examples/text-search-examples",
+          "examples/tokenizer-safety-examples",
+          "getting-started",
+          "guides/capability-selection",
+          "guides/dictionaries-and-blockwords",
+          "guides/input-safety",
+          "guides/learning-path",
+          "guides/mixed-language-processing",
+          "guides/testing",
+          "index",
+          "modules/bluetape4k-text-bom",
+          "modules/lingua",
+          "modules/text-search",
+          "modules/tokenizer-core",
+          "modules/tokenizer-japanese",
+          "modules/tokenizer-korean",
+          "operations/failure-contracts",
+          "operations/startup-and-memory",
+          "quality/aho-corasick-benchmarks",
+          "quality/quality-gates"
+        ],
+        "ko": [
+          "architecture/processing-model",
+          "architecture/repository-map",
+          "architecture/runtime-boundaries",
+          "examples/lingua-examples",
+          "examples/text-search-examples",
+          "examples/tokenizer-safety-examples",
+          "getting-started",
+          "guides/capability-selection",
+          "guides/dictionaries-and-blockwords",
+          "guides/input-safety",
+          "guides/learning-path",
+          "guides/mixed-language-processing",
+          "guides/testing",
+          "index",
+          "modules/bluetape4k-text-bom",
+          "modules/lingua",
+          "modules/text-search",
+          "modules/tokenizer-core",
+          "modules/tokenizer-japanese",
+          "modules/tokenizer-korean",
+          "operations/failure-contracts",
+          "operations/startup-and-memory",
+          "quality/aho-corasick-benchmarks",
+          "quality/quality-gates"
+        ]
+      },
+      "minorVersion": "1.0",
+      "releaseCommit": "59256aea7011d3f9073d74470459a13363150153",
+      "releaseRef": "1.0.0",
+      "sourceCommit": "59256aea7011d3f9073d74470459a13363150153"
     }
   ]
 }

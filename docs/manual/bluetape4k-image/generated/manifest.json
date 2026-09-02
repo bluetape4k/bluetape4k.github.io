@@ -541,12 +541,12 @@
     }
   },
   "publication": {
-    "contentStatus": "in-progress",
+    "contentStatus": "complete",
     "locales": [
       "en",
       "ko"
     ],
-    "manualVersion": "0.4",
+    "manualVersion": "1.0",
     "migratedFrom": {
       "manualLastCommit": "50701b8dcfda7052ef6a40af313f2ed113fc37fe",
       "path": "docs/manual",
@@ -557,8 +557,8 @@
     "sourceRoot": "docs/manual/bluetape4k-image",
     "toolingRoot": "scripts/manual/repositories/bluetape4k-image"
   },
-  "releaseCommit": "ea5175b083babf8880f53cf80c9a264a0c61777e",
-  "releaseRef": "0.4.0",
+  "releaseCommit": "b38d4891b66dff8bc63db0018b5e41810d1da9bc",
+  "releaseRef": "1.0.0",
   "repository": "bluetape4k/bluetape4k-image",
   "schemaVersion": 2
 }

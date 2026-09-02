@@ -9,7 +9,7 @@ chapterId: config-codec-ownership
 
 ## Make defaults explicit
 
-| Setting | 1.12.1 default | Meaning |
+| Setting | 2.0.0 default | Meaning |
 | --- | --- | --- |
 | `cacheName` | `redisson-near-cache` | Redis map name |
 | `maxLocalSize` | `10_000` | Maximum local entries per JVM |

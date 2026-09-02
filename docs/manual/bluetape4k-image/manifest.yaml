@@ -1,10 +1,10 @@
 ---
 schemaVersion: 2
 repository: bluetape4k/bluetape4k-image
-releaseRef: 0.4.0
-releaseCommit: ea5175b083babf8880f53cf80c9a264a0c61777e
+releaseRef: 1.0.0
+releaseCommit: b38d4891b66dff8bc63db0018b5e41810d1da9bc
 publication:
-  manualVersion: '0.4'
+  manualVersion: '1.0'
   sourceRoot: docs/manual/bluetape4k-image
   toolingRoot: scripts/manual/repositories/bluetape4k-image
   ownership: central
@@ -16,7 +16,7 @@ publication:
   locales:
     - en
     - ko
-  contentStatus: in-progress
+  contentStatus: complete
 overview:
   documents:
     en:

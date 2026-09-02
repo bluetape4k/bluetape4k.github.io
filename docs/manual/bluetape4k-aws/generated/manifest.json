@@ -74,6 +74,30 @@
     },
     {
       "artifact": null,
+      "en": "en/modules/aws-ktor-service-coverage-examples.md",
+      "gradlePath": ":aws-ktor-service-coverage-examples",
+      "group": "example-service-coverage",
+      "id": "aws-ktor-service-coverage-examples",
+      "kind": "example",
+      "ko": "ko/modules/aws-ktor-service-coverage-examples.md",
+      "sourceDir": "examples/aws-ktor-service-coverage-examples",
+      "sourcePaths": [
+        "examples/aws-ktor-service-coverage-examples/src/main/kotlin"
+      ],
+      "testPaths": [
+        "examples/aws-ktor-service-coverage-examples/src/test/kotlin",
+        "examples/aws-ktor-service-coverage-examples/src/test/resources"
+      ],
+      "title": {
+        "en": "Ktor Service Coverage Examples",
+        "ko": "Ktor 서비스 커버리지 예제"
+      },
+      "workshops": [
+
+      ]
+    },
+    {
+      "artifact": null,
       "en": "en/modules/aws-ktor-sqs-examples.md",
       "gradlePath": ":aws-ktor-sqs-examples",
       "group": "example-messaging",
@@ -371,7 +395,8 @@
         "examples/aws-ktor-s3-examples",
         "examples/aws-ktor-dynamodb-examples",
         "examples/aws-ktor-sqs-examples",
-        "examples/aws-ktor-exposed-examples"
+        "examples/aws-ktor-exposed-examples",
+        "examples/aws-ktor-service-coverage-examples"
       ]
     },
     {
@@ -461,12 +486,12 @@
     }
   },
   "publication": {
-    "contentStatus": "in-progress",
+    "contentStatus": "complete",
     "locales": [
       "en",
       "ko"
     ],
-    "manualVersion": "0.5",
+    "manualVersion": "1.0",
     "migratedFrom": {
       "manualLastCommit": "967d3711d4d5f8016ab86ccc00f26206d00b1d56",
       "path": "docs/manual",
@@ -477,8 +502,8 @@
     "sourceRoot": "docs/manual/bluetape4k-aws",
     "toolingRoot": "scripts/manual/repositories/bluetape4k-aws"
   },
-  "releaseCommit": "664e4dfb544a3c19db484b0f9a8e023a73774b49",
-  "releaseRef": "0.5.0",
+  "releaseCommit": "632e0f346b807c4d50e3195f7b2b72082def9460",
+  "releaseRef": "1.0.0",
   "repository": "bluetape4k/bluetape4k-aws",
   "schemaVersion": 2
 }

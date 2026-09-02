@@ -6,13 +6,13 @@ locale: "en"
 kind: "example"
 gradlePath: ":aws-spring-boot-exposed-examples"
 sourceDir: "examples/aws-spring-boot-exposed-examples"
-releaseRef: "0.5.0"
+releaseRef: "1.0.0"
 artifact: null
 ---
 
 # Spring Boot Exposed Workshop
 
-> A runnable workshop grounded in the 0.5.0 release source.
+> A runnable workshop grounded in the 1.0.0 release source.
 
 ## Learning goal {#problem}
 
@@ -77,13 +77,13 @@ The test does not call AWS configuration services or RDS IAM and does not prove 
 <!-- release-readme-diagrams:start -->
 ## Release diagrams {#release-diagrams}
 
-These diagrams are loaded directly from README assets published with the `0.5.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
+These diagrams are loaded directly from README assets published with the `1.0.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### aws spring boot exposed examples Architecture diagram
 
-[![aws spring boot exposed examples Architecture diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/examples-aws-spring-boot-exposed-examples-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/examples-aws-spring-boot-exposed-examples-architecture-01.svg)
+[![aws spring boot exposed examples Architecture diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/examples-aws-spring-boot-exposed-examples-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/examples-aws-spring-boot-exposed-examples-architecture-01.svg)
 
-_Release README: [`examples/aws-spring-boot-exposed-examples/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/examples/aws-spring-boot-exposed-examples/README.md)_
+_Release README: [`examples/aws-spring-boot-exposed-examples/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/examples/aws-spring-boot-exposed-examples/README.md)_
 
 <!-- release-readme-diagrams:end -->
 

@@ -2,7 +2,7 @@
 manualId: "loading-and-writing"
 title: "Loading and Writing"
 locale: "en"
-releaseRef: "0.4.0"
+releaseRef: "1.0.0"
 ---
 
 # Loading and Writing
@@ -29,5 +29,5 @@ Run the [basic processing workshop](../modules/basic-processing.md) for a comple
 
 ## Sources
 
-- [Loading and writer support](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/images/src/main/kotlin/io/bluetape4k/images/ImmutableImageSupport.kt)
-- [Core module guide](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/images/README.md)
+- [Loading and writer support](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/images/src/main/kotlin/io/bluetape4k/images/ImmutableImageSupport.kt)
+- [Core module guide](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/images/README.md)
