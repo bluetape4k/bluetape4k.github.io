@@ -84,7 +84,7 @@ is an observation, not a retry instruction.
 For the bundled dashboard, the following queries are intentionally
 warning-oriented and low-cardinality:
 
-```promql
+```text
 sum by (backend_name, status, reason) (rate(leader_backend_connectivity_total[5m]))
 sum by (backend_name) (
   rate(leader_backend_connectivity_total{status="DOWN",reason="DISCONNECTED"}[5m])

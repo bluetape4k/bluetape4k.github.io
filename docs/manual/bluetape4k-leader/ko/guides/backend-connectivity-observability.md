@@ -81,7 +81,7 @@ Active probe 주기는 caller의 scheduler에서 제한하세요. counter event�
 
 번들 dashboard의 query도 warning 목적과 낮은 cardinality를 유지합니다.
 
-```promql
+```text
 sum by (backend_name, status, reason) (rate(leader_backend_connectivity_total[5m]))
 sum by (backend_name) (
   rate(leader_backend_connectivity_total{status="DOWN",reason="DISCONNECTED"}[5m])
