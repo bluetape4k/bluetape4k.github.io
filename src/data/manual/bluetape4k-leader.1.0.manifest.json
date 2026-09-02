@@ -1,5 +1,5 @@
 {
-  "authoringSourceRef": "f1ce8cff05b93f447f81bbaec4a658297db4ba78",
+  "authoringSourceRef": "0cdea6c35477b23bda3cf99fa3c36dbbaac11500",
   "minorVersion": "1.0",
   "modules": [
     {
@@ -1117,6 +1117,7 @@
         "en/frameworks/micrometer.md",
         "en/frameworks/spring-boot.md",
         "en/getting-started.md",
+        "en/guides/backend-connectivity-observability.md",
         "en/guides/backend-selection.md",
         "en/guides/election-model-selection.md",
         "en/guides/execution-model-selection.md",
@@ -1147,6 +1148,7 @@
         "ko/frameworks/micrometer.md",
         "ko/frameworks/spring-boot.md",
         "ko/getting-started.md",
+        "ko/guides/backend-connectivity-observability.md",
         "ko/guides/backend-selection.md",
         "ko/guides/election-model-selection.md",
         "ko/guides/execution-model-selection.md",
