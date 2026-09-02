@@ -171,7 +171,7 @@ test('snapshot validation writes a sanitized provenance report and summary', asy
   ]);
   const expectedLatest = new Map([
     ['bluetape4k/bluetape4k-aws', '0.5'],
-    ['bluetape4k/bluetape4k-exposed', '1.12'],
+    ['bluetape4k/bluetape4k-exposed', '2.0'],
     ['bluetape4k/bluetape4k-graph', '0.6'],
     ['bluetape4k/bluetape4k-image', '0.4'],
     ['bluetape4k/bluetape4k-javers', '0.3'],
