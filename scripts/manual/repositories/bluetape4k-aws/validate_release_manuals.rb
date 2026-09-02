@@ -7,7 +7,7 @@ if central
   require_relative "../../lib/central_release_support"
   require_relative "manual_contract"
   begin
-    options = CentralReleaseSupport.parse(ARGV, slug: "aws", expected_tag: "0.5.0", expected_sha: "664e4dfb544a3c19db484b0f9a8e023a73774b49")
+    options = CentralReleaseSupport.parse(ARGV, slug: "aws", expected_tag: "1.0.0", expected_sha: "632e0f346b807c4d50e3195f7b2b72082def9460")
     inventory = CentralReleaseSupport.ensure_inventory(options, slug: "aws")
     errors = ManualDocs::ReleaseContract.new(
       repository_root: options.code_root, manual_root: options.manual_root,

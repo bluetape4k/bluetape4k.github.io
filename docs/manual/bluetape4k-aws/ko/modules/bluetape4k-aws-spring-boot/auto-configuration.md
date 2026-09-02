@@ -49,7 +49,7 @@ resolver가 필요합니다. `SnsCoroutinesTemplate`을 직접 생성할 때는 
 endpoint/region이 `SnsProperties`와 일치해야 하며, 다른 client나 검사할 수 없는
 client에는 resolver 주입 생성자를 사용하세요.
 
-## Modulith event 자동 설정 (미출시/develop)
+## Modulith event 자동 설정 (1.0.0)
 
 `AwsModulithEventsAutoConfiguration`은 기존 기능에 영향을 주지 않는 추가 기능이며
 기본값은 비활성입니다. Spring Modulith의 `EventExternalizationTransport`,

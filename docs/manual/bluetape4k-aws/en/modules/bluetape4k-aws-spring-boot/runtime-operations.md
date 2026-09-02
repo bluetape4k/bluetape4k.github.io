@@ -149,7 +149,7 @@ visibility I/O or handler outcome. Treat all three as diagnostics to investigate
 not as permission to add raw queue URLs, receipt handles, or exception text to
 tags.
 
-## Modulith event runtime operations (Unreleased/develop)
+## Modulith event runtime operations
 
 The inbound adapter uses SQS at-least-once delivery. It verifies the source and
 decodes the envelope before claiming `(type, eventId)`, publishes the local

@@ -15,7 +15,7 @@ end.parse!
 
 repository_root = File.expand_path(paths.fetch(:code_root, Dir.pwd))
 manual_root = File.expand_path(paths.fetch(:manual_root, File.join(repository_root, "docs/manual")))
-inventory_path = File.expand_path(paths.fetch(:inventory, ARGV.fetch(0, File.join(repository_root, "build/manual/module-inventory-0.5.0.json"))), repository_root)
+inventory_path = File.expand_path(paths.fetch(:inventory, ARGV.fetch(0, File.join(repository_root, "build/manual/module-inventory-1.0.0.json"))), repository_root)
 manifest_path = File.expand_path(paths.fetch(:manifest, ARGV.fetch(1, File.join(manual_root, "manifest.yaml"))), repository_root)
 inventory = JSON.parse(File.read(inventory_path))
 errors = ManualDocs::Validator.new(
@@ -24,8 +24,8 @@ errors = ManualDocs::Validator.new(
   repository_root: repository_root,
   manual_root: manual_root,
   expected_release: {
-    "ref" => ENV.fetch("MANUAL_RELEASE_REF", "0.5.0"),
-    "commit" => ENV.fetch("MANUAL_RELEASE_COMMIT", "664e4dfb544a3c19db484b0f9a8e023a73774b49"),
+    "ref" => ENV.fetch("MANUAL_RELEASE_REF", "1.0.0"),
+    "commit" => ENV.fetch("MANUAL_RELEASE_COMMIT", "632e0f346b807c4d50e3195f7b2b72082def9460"),
   },
 ).errors
 abort(errors.join("\n")) unless errors.empty?

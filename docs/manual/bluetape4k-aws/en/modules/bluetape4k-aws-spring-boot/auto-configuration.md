@@ -48,7 +48,7 @@ constructed `SnsCoroutinesTemplate` instances require the client endpoint/region
 to match `SnsProperties`; inject a resolver explicitly for a different or
 uninspectable client.
 
-## Modulith event auto-configuration (Unreleased/develop)
+## Modulith event auto-configuration
 
 `AwsModulithEventsAutoConfiguration` is additive and disabled by default. It
 loads only when all three Spring Modulith classes

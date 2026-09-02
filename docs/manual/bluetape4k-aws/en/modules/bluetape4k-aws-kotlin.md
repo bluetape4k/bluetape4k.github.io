@@ -6,13 +6,13 @@ locale: "en"
 kind: "library"
 gradlePath: ":bluetape4k-aws-kotlin"
 sourceDir: "aws-kotlin"
-releaseRef: "0.5.0"
+releaseRef: "1.0.0"
 artifact: io.github.bluetape4k.aws:bluetape4k-aws-kotlin
 ---
 
 # AWS SDK for Kotlin Extensions
 
-> Library manual grounded in the 0.5.0 release source.
+> Library manual grounded in the 1.0.0 release source.
 
 ## Problem {#problem}
 
@@ -54,7 +54,6 @@ DynamoDB model DSL and batch execution, DynamoDB Streams Flow/checkpoint consump
 
 ## DynamoDB coordination {#dynamodb-coordination}
 
-> Unreleased/develop: this section describes Issue #476 and is not part of the `0.5.0` release source.
 
 `DynamoDbDistributedLock` and `DynamoDbMetadataStore` are coroutine-first
 coordination adapters for a caller-owned DynamoDB table. They use a String
@@ -120,7 +119,6 @@ clock skew, production quotas, or credentials.
 
 ## DynamoDB Streams Flow and checkpoints {#dynamodb-streams}
 
-> Unreleased/develop: this section describes the Issue #469 API and is not part of the `0.5.0` release source.
 
 The native AWS SDK for Kotlin extension exposes `DynamoDbStreamsClient.recordFlow`
 for one shard and `shardRecordFlow` for a bounded shard graph. It supports
@@ -148,7 +146,6 @@ retention, throttling, and resharding timing remain AWS-only gaps.
 
 ## Kinesis multi-shard consumer {#kinesis-consumer}
 
-> Unreleased/develop: this section describes the Issue #470 API and is not part of the `0.5.0` release source.
 
 The native `KinesisClient.consumerFlow` discovers shards continuously, polls
 each shard sequentially, and limits active shard jobs with
@@ -194,7 +191,6 @@ checkpoint and never deletes or rewinds it.
 
 ## Lambda invocation helpers {#lambda}
 
-> Unreleased/develop: this section describes the Issue #314 API and is not part of the `0.5.0` release source.
 
 The native AWS SDK for Kotlin module adds suspend `Invoke` helpers under
 `io.bluetape4k.aws.kotlin.lambda`. `LambdaInvocationResult<T>` keeps the raw
@@ -258,7 +254,6 @@ bodies by default.
 
 ## S3 Tables management {#s3-tables}
 
-> Unreleased/develop: this section describes the Issue #311 API and is not part of the `0.5.0` release source.
 
 The native AWS SDK for Kotlin extension keeps S3 Tables request, response, and
 exception types visible for table bucket, namespace, and table
@@ -294,7 +289,6 @@ not asserted.
 
 ## Step Functions execution helpers {#step-functions}
 
-> Unreleased/develop: this section describes the Issue #313 API and is not part of the `0.5.0` release source.
 
 The native AWS SDK for Kotlin path adds suspend helpers for
 `StartExecution`, `StopExecution`, `DescribeExecution`, and `ListExecutions`
@@ -480,25 +474,25 @@ The module is not a compatibility wrapper around Java SDK v2; types and some ser
 <!-- release-readme-diagrams:start -->
 ## Release diagrams {#release-diagrams}
 
-These diagrams are loaded directly from README assets published with the `0.5.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
+These diagrams are loaded directly from README assets published with the `1.0.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### AWS Kotlin architecture diagram
 
-[![AWS Kotlin architecture diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-kotlin-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-kotlin-architecture-01.svg)
+[![AWS Kotlin architecture diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-kotlin-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-kotlin-architecture-01.svg)
 
-_Release README: [`aws-kotlin/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/aws-kotlin/README.md)_
+_Release README: [`aws-kotlin/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/aws-kotlin/README.md)_
 
 ### AWS Kotlin operation flow diagram
 
-[![AWS Kotlin operation flow diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-kotlin-flow-02.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-kotlin-flow-02.svg)
+[![AWS Kotlin operation flow diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-kotlin-flow-02.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-kotlin-flow-02.svg)
 
-_Release README: [`aws-kotlin/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/aws-kotlin/README.md)_
+_Release README: [`aws-kotlin/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/aws-kotlin/README.md)_
 
 ### AWS Kotlin client lifecycle sequence diagram
 
-[![AWS Kotlin client lifecycle sequence diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-kotlin-sequence-03.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-kotlin-sequence-03.svg)
+[![AWS Kotlin client lifecycle sequence diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-kotlin-sequence-03.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-kotlin-sequence-03.svg)
 
-_Release README: [`aws-kotlin/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/aws-kotlin/README.md)_
+_Release README: [`aws-kotlin/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/aws-kotlin/README.md)_
 
 <!-- release-readme-diagrams:end -->
 

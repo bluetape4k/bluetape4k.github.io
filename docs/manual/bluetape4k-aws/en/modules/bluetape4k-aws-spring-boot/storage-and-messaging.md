@@ -79,7 +79,7 @@ exceed `1%/5m`, retry exhaustion exceeds `0.1%/5m`, redelivery age p95 exceeds `
 or DLQ visible count is non-zero. The on-call owner is `bluetape4k-sqs-oncall` and release approval
 belongs to `bluetape4k-release-approvers`.
 
-## SQS Observation (Unreleased/develop)
+## SQS Observation
 
 ### Activation and prerequisites
 
@@ -302,7 +302,7 @@ in follow-up issue #515 and are not completion evidence for this feature.
 
 SNS publish helpers and HTTP parsing are separate concerns. Verify SNS signatures before processing callbacks. SES senders expose coroutine and JavaMail-style adapters; do not retry non-idempotent sends blindly.
 
-### SNS topic ARN resolver and cache (Unreleased/develop)
+### SNS topic ARN resolver and cache
 
 `SnsOperations.findTopicArn` accepts a topic name or an explicit SNS ARN. Name
 lookups use `SnsTopicArnResolver` with paginated `ListTopics`, a bounded
@@ -339,7 +339,7 @@ bluetape4k:
         ttl: 5m
 ```
 
-### SNS batch conversion (Unreleased/develop)
+### SNS batch conversion
 
 `SnsBatchMessageConverter` is an opt-in, no-network conversion boundary from
 Spring `Message<*>` values to a typed `SnsPublishBatchRequest`. Its no-argument
@@ -375,7 +375,7 @@ lifecycle and does not automatically retry an uncertain partial publish.
 262,144-byte SNS byte-size preflight, a Jackson 3 adapter, and `ByteArray`
 payload support are follow-up scope rather than current behavior.
 
-## Spring Modulith SNS/SQS externalization (Unreleased/develop)
+## Spring Modulith SNS/SQS externalization
 
 The optional adapter externalizes registered Spring Modulith events to SNS or
 SQS and restores SQS messages as local application events. Import the root BOM

@@ -2,7 +2,7 @@
 manualId: "learning-path"
 title: "Bluetape4k AWS Learning Path"
 locale: "en"
-releaseRef: "0.5.0"
+releaseRef: "1.0.0"
 ---
 
 # Bluetape4k AWS Learning Path

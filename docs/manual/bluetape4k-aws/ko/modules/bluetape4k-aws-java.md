@@ -6,13 +6,13 @@ locale: "ko"
 kind: "library"
 gradlePath: ":bluetape4k-aws-java"
 sourceDir: "aws-java"
-releaseRef: "0.5.0"
+releaseRef: "1.0.0"
 artifact: io.github.bluetape4k.aws:bluetape4k-aws-java
 ---
 
 # AWS SDK for Java v2 확장
 
-> 0.5.0 릴리스 소스를 기준으로 작성한 라이브러리 매뉴얼입니다.
+> 1.0.0 릴리스 소스를 기준으로 작성한 라이브러리 매뉴얼입니다.
 
 ## 제공하는 기능 {#problem}
 
@@ -59,7 +59,6 @@ S3 객체·전송, DynamoDB Enhanced 저장소·배치, DynamoDB Streams Flow/ch
 
 ## DynamoDB Streams Flow와 checkpoint {#dynamodb-streams}
 
-> 미출시/develop: 이 절은 Issue #469 API를 설명하며 `0.5.0` 릴리스 소스에는 포함되지 않습니다.
 
 Java SDK v2 확장은 한 shard를 읽는 `DynamoDbStreamsAsyncClient.recordFlow`와
 제한된 동시성으로 shard graph를 읽는 `shardRecordFlow`를 제공합니다. 시작 위치는
@@ -84,7 +83,6 @@ Emulator 검증은 Floci-first이며 운영 retention, throttling, resharding ti
 
 ## Kinesis 멀티 샤드 consumer {#kinesis-consumer}
 
-> 미출시/develop: 이 절은 Issue #470 API를 설명하며 `0.5.0` 릴리스 소스에는 포함되지 않습니다.
 
 `KinesisAsyncClient.consumerFlow`는 `ListShards` 페이지를 계속 탐색하며 각 shard를
 순서대로 polling합니다. `maxShardConcurrency`로 active shard job 수를 제한하고,
@@ -125,7 +123,6 @@ scale 순서로 진행하고, rollback 때는 마지막 durable checkpoint를 �
 
 ## Lambda 호출 helper {#lambda}
 
-> 미출시/develop: 이 절은 Issue #314 API를 설명하며 `0.5.0` 릴리스 소스에는 포함되지 않습니다.
 
 Java SDK v2 모듈은 `io.bluetape4k.aws.lambda` 아래에 동기,
 `CompletableFuture`, coroutine 호출 helper를 제공합니다. `LambdaInvocationResult<T>`는
@@ -187,7 +184,6 @@ Lambda를 미지원으로 기록하고 입력이 없으면 client 생성 전에 
 
 ## S3 Tables 관리 {#s3-tables}
 
-> 미출시/develop: 이 절은 Issue #311 API를 설명하며 `0.5.0` 릴리스 소스에는 포함되지 않습니다.
 
 Java SDK v2 확장은 raw S3 Tables request·response·exception 타입을 유지하면서 table bucket,
 namespace, table의 생성·목록·조회·삭제를 제공합니다. 목록 helper는 service의 한 페이지만
@@ -222,7 +218,6 @@ Redshift, Apache Iceberg 통합 facade를 구현하지 않습니다. 로컬 emul
 
 ## Step Functions 실행 helper {#step-functions}
 
-> 미출시/develop: 이 절은 Issue #313 API를 설명하며 `0.5.0` 릴리스 소스에는 포함되지 않습니다.
 
 Java SDK v2 경로는 `io.bluetape4k.aws.sfn` 패키지에
 `StartExecution`, `StopExecution`, `DescribeExecution`, `ListExecutions`를 위한 얇은
@@ -400,25 +395,25 @@ endpoint override와 테스트용 고정 자격 증명으로 Floci를 먼저 사
 <!-- release-readme-diagrams:start -->
 ## 배포본 다이어그램 {#release-diagrams}
 
-아래 그림은 `0.5.0` 배포본의 README 자산을 해당 배포 커밋에서 직접 불러옵니다. 이후 SNAPSHOT이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 같은 배포 커밋의 SVG 원본이 열립니다.
+아래 그림은 `1.0.0` 배포본의 README 자산을 해당 배포 커밋에서 직접 불러옵니다. 이후 SNAPSHOT이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 같은 배포 커밋의 SVG 원본이 열립니다.
 
 ### Bluetape4k AWS Java 아키텍처
 
-[![Bluetape4k AWS Java 아키텍처](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-java-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-java-architecture-01.svg)
+[![Bluetape4k AWS Java 아키텍처](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-java-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-java-architecture-01.svg)
 
-_배포본 README: [`aws-java/README.ko.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/aws-java/README.ko.md)_
+_배포본 README: [`aws-java/README.ko.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/aws-java/README.ko.md)_
 
 ### Bluetape4k AWS Java operation 처리 흐름
 
-[![Bluetape4k AWS Java operation 처리 흐름](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-java-flow-02.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-java-flow-02.svg)
+[![Bluetape4k AWS Java operation 처리 흐름](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-java-flow-02.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-java-flow-02.svg)
 
-_배포본 README: [`aws-java/README.ko.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/aws-java/README.ko.md)_
+_배포본 README: [`aws-java/README.ko.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/aws-java/README.ko.md)_
 
 ### Bluetape4k AWS Java coroutine 시퀀스 다이어그램
 
-[![Bluetape4k AWS Java coroutine 시퀀스 다이어그램](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-java-sequence-03.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-java-sequence-03.svg)
+[![Bluetape4k AWS Java coroutine 시퀀스 다이어그램](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-java-sequence-03.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-java-sequence-03.svg)
 
-_배포본 README: [`aws-java/README.ko.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/aws-java/README.ko.md)_
+_배포본 README: [`aws-java/README.ko.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/aws-java/README.ko.md)_
 
 <!-- release-readme-diagrams:end -->
 

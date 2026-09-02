@@ -2,7 +2,7 @@
 manualId: "runtime-boundaries"
 title: "Runtime과 Client 소유권"
 locale: "ko"
-releaseRef: "0.5.0"
+releaseRef: "1.0.0"
 ---
 
 # Runtime과 Client 소유권

@@ -6,13 +6,13 @@ locale: "en"
 kind: "library"
 gradlePath: ":bluetape4k-aws-java"
 sourceDir: "aws-java"
-releaseRef: "0.5.0"
+releaseRef: "1.0.0"
 artifact: io.github.bluetape4k.aws:bluetape4k-aws-java
 ---
 
 # AWS SDK for Java v2 Extensions
 
-> Library manual grounded in the 0.5.0 release source.
+> Library manual grounded in the 1.0.0 release source.
 
 ## Problem {#problem}
 
@@ -57,7 +57,6 @@ S3 object and transfer helpers, DynamoDB enhanced repositories and batch executi
 
 ## DynamoDB Streams Flow and checkpoints {#dynamodb-streams}
 
-> Unreleased/develop: this section describes the Issue #469 API and is not part of the `0.5.0` release source.
 
 The Java SDK v2 extension exposes `DynamoDbStreamsAsyncClient.recordFlow` for one
 shard and `shardRecordFlow` for a bounded shard graph. The consumer supports
@@ -84,7 +83,6 @@ timing remain AWS-only gaps.
 
 ## Kinesis multi-shard consumer {#kinesis-consumer}
 
-> Unreleased/develop: this section describes the Issue #470 API and is not part of the `0.5.0` release source.
 
 `KinesisAsyncClient.consumerFlow` discovers `ListShards` pages continuously and
 polls each shard in order. `maxShardConcurrency` bounds active shard jobs; a
@@ -126,7 +124,6 @@ and never deletes or rewinds it.
 
 ## Lambda invocation helpers {#lambda}
 
-> Unreleased/develop: this section describes the Issue #314 API and is not part of the `0.5.0` release source.
 
 The Java SDK v2 module adds `io.bluetape4k.aws.lambda` helpers for sync,
 `CompletableFuture`, and coroutine invocation. `LambdaInvocationResult<T>` keeps
@@ -191,7 +188,6 @@ logs, or SDK response bodies by default.
 
 ## S3 Tables management {#s3-tables}
 
-> Unreleased/develop: this section describes the Issue #311 API and is not part of the `0.5.0` release source.
 
 The Java SDK v2 extension keeps the raw S3 Tables request, response, and
 exception types visible for table bucket, namespace, and table
@@ -228,7 +224,6 @@ for S3 Tables is not asserted.
 
 ## Step Functions execution helpers {#step-functions}
 
-> Unreleased/develop: this section describes the Issue #313 API and is not part of the `0.5.0` release source.
 
 The Java SDK v2 path adds thin helpers for `StartExecution`, `StopExecution`,
 `DescribeExecution`, and `ListExecutions` under `io.bluetape4k.aws.sfn`. Sync
@@ -415,25 +410,25 @@ The artifact does not bring every AWS service SDK at runtime. Coroutine helpers 
 <!-- release-readme-diagrams:start -->
 ## Release diagrams {#release-diagrams}
 
-These diagrams are loaded directly from README assets published with the `0.5.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
+These diagrams are loaded directly from README assets published with the `1.0.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### AWS Java architecture diagram
 
-[![AWS Java architecture diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-java-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-java-architecture-01.svg)
+[![AWS Java architecture diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-java-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-java-architecture-01.svg)
 
-_Release README: [`aws-java/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/aws-java/README.md)_
+_Release README: [`aws-java/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/aws-java/README.md)_
 
 ### AWS Java operation flow diagram
 
-[![AWS Java operation flow diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-java-flow-02.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-java-flow-02.svg)
+[![AWS Java operation flow diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-java-flow-02.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-java-flow-02.svg)
 
-_Release README: [`aws-java/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/aws-java/README.md)_
+_Release README: [`aws-java/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/aws-java/README.md)_
 
 ### AWS Java coroutine sequence diagram
 
-[![AWS Java coroutine sequence diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-java-sequence-03.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/docs/images/readme-diagrams/aws-java-sequence-03.svg)
+[![AWS Java coroutine sequence diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-aws/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-java-sequence-03.png)](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/docs/images/readme-diagrams/aws-java-sequence-03.svg)
 
-_Release README: [`aws-java/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/664e4dfb544a3c19db484b0f9a8e023a73774b49/aws-java/README.md)_
+_Release README: [`aws-java/README.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/632e0f346b807c4d50e3195f7b2b72082def9460/aws-java/README.md)_
 
 <!-- release-readme-diagrams:end -->
 

@@ -159,7 +159,7 @@ exception text를 포함하지 않는 bounded 신호입니다.
 background handler는 계속되므로 중복 delivery를 관찰해야 합니다. 각각의 bounded
 warning과 condition report를 확인하세요.
 
-## Modulith event runtime 운영 (미출시/develop)
+## Modulith event runtime 운영 (1.0.0)
 
 inbound adapter는 SQS의 at-least-once 전달을 사용합니다. source를 검증하고 envelope를
 decode한 뒤 `(type, eventId)`를 claim하고, local event를 동기로 발행하고, claim을 complete한
