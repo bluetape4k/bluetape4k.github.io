@@ -26,6 +26,14 @@ snapshot provenance에도 코드 SHA와 매뉴얼 authoring SHA를 별도로 기
 5. stable pin 이후 source repository에는 매뉴얼 원본을 다시 추가하거나
    수정하지 않는다.
 
+## 배포 후 현재 버전 검증
+
+Stable 매뉴얼 배포 성공만으로 사이트 전체의 현재 버전 안내가 갱신됐다고
+판단하지 않는다. 배포 후에는 홈, 시작하기, 저장소 목록, 버전 거버넌스의
+영문·한국어 페이지가 stable manifest의 `releaseRef`와 일치하는지 함께
+검증한다. 이 저장소에서는 `dependencies-current-release.test.mjs`가 해당
+표시 영역과 `bluetape4k-dependencies` stable manifest의 불일치를 차단한다.
+
 중앙화되지 않은 저장소는 별도 cutover 전까지 기존 `docs/manual/**`
 handoff를 사용한다. 중앙과 legacy 경로를 한 번의 sync에서 섞지 않는다.
 
