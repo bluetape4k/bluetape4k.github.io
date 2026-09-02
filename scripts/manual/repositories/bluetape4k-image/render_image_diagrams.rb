@@ -98,7 +98,7 @@ def repository_learning_map
     #{card(185, 760, 1230, 145, "7 runnable workshops", ["start with basic-processing, then choose a web framework or native backend", "observe output files, OCR failures, native ownership, metrics, and recovery"], color: COLORS[:rose])}
     #{text_lines(800, 955, ["manual path: load -> transform -> encode -> serve -> operate"], size: 17, color: COLORS[:dim])}
   SVG
-  canvas("Learn Image Processing from the Boundary Inward", "Image 0.4 / 19 projects / 7 workshops / 1 benchmark", "Repository and learning map for the Image 0.4 manual.", body)
+  canvas("Learn Image Processing from the Boundary Inward", "Image 1.0 / 19 projects / 7 workshops / 1 benchmark", "Repository and learning map for the Image 1.0 manual.", body)
 end
 
 def processing_lifecycle
