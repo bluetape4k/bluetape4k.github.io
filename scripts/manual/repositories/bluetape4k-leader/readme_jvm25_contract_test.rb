@@ -69,12 +69,32 @@ class ReadmeJvm25ContractTest < Minitest::Test
 
       assert_includes errors, "README.md must advertise stable version #{RELEASE_REF}"
       assert_includes errors, "README.md must link the Leader #{RELEASE_REF} manual"
-      assert_includes errors, "README.md must identify development line #{BASE_VERSION}-SNAPSHOT"
+      assert_includes errors, "README.md must identify the current development boundary"
       assert_includes errors, "README.md must describe development APIs as #{BASE_VERSION}+"
       assert_includes errors, "README.ko.md must advertise stable version #{RELEASE_REF}"
       assert_includes errors, "README.ko.md must link the Leader #{RELEASE_REF} manual"
-      assert_includes errors, "README.ko.md must identify development line #{BASE_VERSION}-SNAPSHOT"
+      assert_includes errors, "README.ko.md must identify the current development boundary"
       assert_includes errors, "README.ko.md must describe development APIs as #{BASE_VERSION}+"
+    end
+  end
+
+  def test_accepts_post_release_maintenance_when_snapshot_suffix_is_empty
+    with_repository do |root|
+      root.join("gradle.properties").write("baseVersion=#{RELEASE_REF}\nsnapshotVersion=\n")
+      readme = root.join("README.md")
+      readme.write(
+        readme.read
+          .sub("Current development line: `#{BASE_VERSION}-SNAPSHOT`", "Current development line: post-`#{RELEASE_REF}` maintenance on `develop`")
+          .sub("Development APIs use the `#{BASE_VERSION}+` development line.", "Released APIs are included in `#{RELEASE_REF}`."),
+      )
+      readme_ko = root.join("README.ko.md")
+      readme_ko.write(
+        readme_ko.read
+          .sub("현재 개발 버전: `#{BASE_VERSION}-SNAPSHOT`", "현재 개발선: `develop`의 #{RELEASE_REF} 배포 후 유지보수")
+          .sub("개발 API는 `#{BASE_VERSION}+` 개발선에서 제공합니다.", "배포 API는 `#{RELEASE_REF}`에 포함됩니다."),
+      )
+
+      assert_empty ReadmeJvm25Contract.errors(root: root)
     end
   end
 
@@ -105,7 +125,7 @@ class ReadmeJvm25ContractTest < Minitest::Test
             "#{ReadmeJvm25Contract::OVERVIEW_REFERENCE}\n#{release_boundary}",
         )
       end
-      write(root.join("gradle.properties"), "baseVersion=#{BASE_VERSION}\n")
+      write(root.join("gradle.properties"), "baseVersion=#{BASE_VERSION}\nsnapshotVersion=-SNAPSHOT\n")
       write(
         root.join("docs/manual/manifest.yaml"),
         YAML.dump("releaseRef" => RELEASE_REF, "releaseCommit" => RELEASE_COMMIT),

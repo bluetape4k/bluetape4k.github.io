@@ -107,8 +107,8 @@ module ReadmeJvm25Contract
         return
       end
 
-      base_version = read_base_version(failures)
-      check_readme_release_boundary(failures, release_ref, base_version) if base_version
+      version_state = read_version_state(failures)
+      check_readme_release_boundary(failures, release_ref, version_state) if version_state
 
       MANUAL_PAGES.each do |relative|
         path = resolve_manual(relative)
@@ -127,35 +127,48 @@ module ReadmeJvm25Contract
       failures << "manual manifest YAML is invalid: #{error.message.lines.first.to_s.strip}"
     end
 
-    def read_base_version(failures)
+    def read_version_state(failures)
       path = resolve(GRADLE_PROPERTIES)
       unless path.file?
         failures << "Gradle properties are missing: #{GRADLE_PROPERTIES}"
         return nil
       end
 
-      match = path.read.match(/^baseVersion=(\S+)$/)
-      unless match
+      content = path.read
+      base_match = content.match(/^baseVersion=(\S+)$/)
+      unless base_match
         failures << "#{GRADLE_PROPERTIES} must define baseVersion"
         return nil
       end
-      match[1]
+      snapshot_match = content.match(/^snapshotVersion=(.*)$/)
+      unless snapshot_match
+        failures << "#{GRADLE_PROPERTIES} must define snapshotVersion"
+        return nil
+      end
+      { base_version: base_match[1], snapshot_version: snapshot_match[1].strip }
     end
 
-    def check_readme_release_boundary(failures, release_ref, base_version)
+    def check_readme_release_boundary(failures, release_ref, version_state)
       manual_minor = release_ref.split(".").first(2).join(".")
+      base_version = version_state.fetch(:base_version)
+      snapshot_version = version_state.fetch(:snapshot_version)
+      stable_maintenance = snapshot_version.empty? && base_version == release_ref
       expectations = {
           "README.md" => {
           stable: "Current stable version: `#{release_ref}`",
           manual: manual_link("en", release_ref, manual_minor),
-          development: "Current development line: `#{base_version}-SNAPSHOT`",
-          api: "`#{base_version}+` development line",
+          development: stable_maintenance ?
+            "Current development line: post-`#{release_ref}` maintenance on `develop`" :
+            "Current development line: `#{base_version}#{snapshot_version}`",
+          stale_api: "`#{base_version}+` development line",
         },
         "README.ko.md" => {
           stable: "현재 안정 버전: `#{release_ref}`",
           manual: manual_link("ko", release_ref, manual_minor),
-          development: "현재 개발 버전: `#{base_version}-SNAPSHOT`",
-          api: "`#{base_version}+` 개발선",
+          development: stable_maintenance ?
+            "현재 개발선: `develop`의 #{release_ref} 배포 후 유지보수" :
+            "현재 개발 버전: `#{base_version}#{snapshot_version}`",
+          stale_api: "`#{base_version}+` 개발선",
         },
       }
 
@@ -166,8 +179,10 @@ module ReadmeJvm25Contract
         content = path.read
         failures << "#{relative} must advertise stable version #{release_ref}" unless content.include?(expected[:stable])
         failures << "#{relative} must link the Leader #{release_ref} manual" unless content.include?(expected[:manual])
-        failures << "#{relative} must identify development line #{base_version}-SNAPSHOT" unless content.include?(expected[:development])
-        failures << "#{relative} must describe development APIs as #{base_version}+" unless content.include?(expected[:api])
+        failures << "#{relative} must identify the current development boundary" unless content.include?(expected[:development])
+        unless stable_maintenance
+          failures << "#{relative} must describe development APIs as #{base_version}+" unless content.include?(expected[:stale_api])
+        end
       end
     end
 
