@@ -27,7 +27,7 @@ Applications select one central BOM version: <code>io.github.bluetape4k:bluetape
 The technical baseline is the immutable <code>1.0.0</code> release. It contains 10 published libraries, 1 published image BOM, 7 runnable examples, and 1 non-published benchmark project (19 Gradle projects in total).
 
 - [Release tag 1.0.0](https://github.com/bluetape4k/bluetape4k-image/tree/1.0.0)
-- [Release commit ea5175b0](https://github.com/bluetape4k/bluetape4k-image/commit/b38d4891b66dff8bc63db0018b5e41810d1da9bc)
+- [Release commit b38d4891](https://github.com/bluetape4k/bluetape4k-image/commit/b38d4891b66dff8bc63db0018b5e41810d1da9bc)
 - Runtime baseline: JDK 25 for every published module and native backend
 
 Features added after this tag are deliberately absent. Every source link in this manual resolves against the `1.0.0` release tag or its pinned commit.

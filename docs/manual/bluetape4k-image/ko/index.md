@@ -27,7 +27,7 @@ releaseRef: "1.0.0"
 이 매뉴얼의 기술 기준은 변경되지 않는 <code>1.0.0</code> 릴리스다. 이 태그에는 배포 라이브러리 10개, 배포 BOM 1개, 실행 예제 7개, 배포하지 않는 벤치마크 프로젝트 1개가 들어 있으며 Gradle 프로젝트는 모두 19개다.
 
 - [1.0.0 릴리스 태그](https://github.com/bluetape4k/bluetape4k-image/tree/1.0.0)
-- [릴리스 커밋 ea5175b0](https://github.com/bluetape4k/bluetape4k-image/commit/b38d4891b66dff8bc63db0018b5e41810d1da9bc)
+- [릴리스 커밋 b38d4891](https://github.com/bluetape4k/bluetape4k-image/commit/b38d4891b66dff8bc63db0018b5e41810d1da9bc)
 - 런타임 기준: 모든 배포 모듈과 네이티브 백엔드는 JDK 25
 
 이 태그 이후에 추가된 기능은 다루지 않는다. 매뉴얼의 소스 링크는 `1.0.0` 릴리스 태그나 해당 태그의 고정 커밋을 가리킨다.
