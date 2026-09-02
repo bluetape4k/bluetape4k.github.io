@@ -1,18 +1,14 @@
 ---
 title: "백엔드 connectivity observability와 readiness 운영 런북"
-locale: ko
-status: unreleased
-sourceReleaseRef: 0.5.0
-sourceReleaseCommit: 721a9a3808f67489d2bdb8177734325981c24977
+description: "백엔드 connectivity 상태, readiness, metric, timeout, rollback 경계를 안전하게 해석합니다."
+releaseRef: 1.0.0
+releaseCommit: e70146330302758f563a46b7286e3ce25f1bac49
 ---
 
 # 백엔드 connectivity observability와 readiness 운영 런북
 
-> Issue #774와 OBS-01–04 stacked train을 위한 unreleased 초안입니다. 현재
-> `develop` source에는 이 additive observability 계약이 포함되어 있지만,
-> versioned manual은 `721a9a3808f67489d2bdb8177734325981c24977`의 pinned
-> `0.5.0`에 고정되어 있습니다. 전체 train을 포함한 release commit이 나올
-> 때까지 이 초안을 승격하거나 `docs/manual/manifest.yaml`을 변경하지 마세요.
+> 이 런북은 `1.0.0`에 공개된 additive observability 계약을 설명합니다.
+> ownership과 fencing 규칙을 보완하지만 대체하지는 않습니다.
 
 이 문서는 backend connectivity diagnostics를 해석하는 방법을 설명합니다.
 `runIfLeader`가 수행하는 원자적 ownership 결정을 대체하지 않으며, best-effort
@@ -164,6 +160,6 @@ Train child 하나를 rollback하기 전 JSON consumer가 additive `reason` fiel
       versioned manual을 승격합니다.
 
 개발 line source 설명은 [root diagnostics
-section](../../../README.ko.md#runtime-backend-diagnostics),
-[Prometheus dashboard 런북](../../../examples/prometheus-dashboard/README.ko.md#alert-runbooks),
-[backend 선택 가이드](../ko/guides/backend-selection.md)에서 확인할 수 있습니다.
+section](../../../../README.ko.md#runtime-backend-diagnostics),
+[Prometheus dashboard 런북](../../../../examples/prometheus-dashboard/README.ko.md#alert-runbooks),
+[backend 선택 가이드](backend-selection.md)에서 확인할 수 있습니다.
