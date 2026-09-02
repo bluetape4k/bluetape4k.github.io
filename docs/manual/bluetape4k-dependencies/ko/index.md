@@ -1,6 +1,6 @@
-# bluetape4k-dependencies 2.0.0-SNAPSHOT 매뉴얼
+# bluetape4k-dependencies 2.0.0 매뉴얼
 
-이 문서는 `2.0.0-SNAPSHOT` 개발선을 위한 중앙 원본 초안이다. 안정 버전 `2.0.0` 매뉴얼이 아니므로 미래의 stable tag나 release commit을 기록하지 않는다. 안정 artifact와 tag를 검증한 뒤에만 버전이 붙은 site snapshot을 생성한다.
+이 문서는 `bluetape4k-dependencies:2.0.0` 안정 매뉴얼이다. BOM, 서명 tag, GitHub Release, 하위 artifact, downstream 해석을 확인한 뒤 버전이 붙은 snapshot을 생성했다.
 
 `bluetape4k-dependencies`에는 서로 다르지만 함께 쓰는 두 계약이 있다.
 
@@ -21,20 +21,20 @@ Catalog는 BOM을 대신하지 않는다. 빌드 authoring alias와 BOM의 depen
 | 버전 변경과 stable 승격 | [버전 거버넌스](guides/version-governance.md) |
 | catalog·publication 변경 검증 | [검증](operations/validation.md) |
 
-## 현재 개발선
+## 안정 릴리스 계열
 
 Catalog source는 `bluetape4k-dependencies = "2.0.0"`을 선언하고, publish workflow가 BOM 좌표에 `-SNAPSHOT`을 붙인다. 따라서 현재 중앙 BOM 좌표는 다음과 같다.
 
 ```text
-io.github.bluetape4k:bluetape4k-dependencies:2.0.0-SNAPSHOT
+io.github.bluetape4k:bluetape4k-dependencies:2.0.0
 ```
 
-이 초안의 source 기준은 [`6073eefe`](https://github.com/bluetape4k/bluetape4k-dependencies/tree/6073eefe7cd5d7bdf3bb5dec7103ffb5427a4e7b)다. Snapshot metadata는 시간에 따라 바뀌므로 실제 소비 전에는 snapshot 안내의 저장소·metadata 검사를 다시 실행한다.
+릴리스 source는 commit [`3c203aa9`](https://github.com/bluetape4k/bluetape4k-dependencies/tree/3c203aa9f8ba80685aac766c5fb8f24e23d0058e)의 tag [`2.0.0`](https://github.com/bluetape4k/bluetape4k-dependencies/tree/2.0.0)이다. Catalog와 공개 BOM은 서로 연결된 계약이지만 dependency resolution에는 BOM을 사용한다.
 
 ## 원본과 승격 경계
 
-이 매뉴얼은 중앙 site 저장소의 `docs/manual/bluetape4k-dependencies/`가 소유한다. 대상이 snapshot인 동안에는 source-only로 유지한다. 향후 stable 승격 시 manifest를 정확한 `2.0.0` tag와 release commit에 고정하고 site snapshot을 생성하며, 이 원본을 공개 매뉴얼의 provenance로 보존한다.
+이 매뉴얼은 중앙 site 저장소의 `docs/manual/bluetape4k-dependencies/`가 소유한다. 생성된 `2.0` 경로는 위 코드 tag에 고정된 불변 릴리스 문서이며, site authoring commit과 code release commit은 별도 provenance로 유지한다.
 
-- [현재 dependencies README](https://github.com/bluetape4k/bluetape4k-dependencies/blob/6073eefe7cd5d7bdf3bb5dec7103ffb5427a4e7b/README.ko.md)
-- [현재 영문 README](https://github.com/bluetape4k/bluetape4k-dependencies/blob/6073eefe7cd5d7bdf3bb5dec7103ffb5427a4e7b/README.md)
-- [Snapshot 소비자 체크리스트](https://github.com/bluetape4k/bluetape4k-dependencies/blob/6073eefe7cd5d7bdf3bb5dec7103ffb5427a4e7b/docs/releases/2026-08-21-dependencies-2.0.0-snapshot-consumer-checklist.md)
+- [현재 dependencies README](https://github.com/bluetape4k/bluetape4k-dependencies/blob/3c203aa9f8ba80685aac766c5fb8f24e23d0058e/README.ko.md)
+- [현재 영문 README](https://github.com/bluetape4k/bluetape4k-dependencies/blob/3c203aa9f8ba80685aac766c5fb8f24e23d0058e/README.md)
+- [2.0.0 릴리스 체크리스트](https://github.com/bluetape4k/bluetape4k-dependencies/blob/3c203aa9f8ba80685aac766c5fb8f24e23d0058e/docs/releases/2026-09-02-dependencies-2.0.0-release-checklist.md)

@@ -109,3 +109,17 @@ test('loads only a local JSON registry through the same validator', async () => 
   assert.deepEqual(loaded, registry);
   assert.throws(() => loadRepositoryRegistry(new URL('https://example.com/repositories.json')), /REPOSITORY_REGISTRY_URL/);
 });
+
+test('registers the stable Dependencies manual as a central source', () => {
+  const actual = loadRepositoryRegistry(
+    new URL('../../src/data/manual/repositories.json', import.meta.url),
+  );
+  const dependencies = repositoryBySlug(actual, 'bluetape4k-dependencies');
+
+  assert.equal(dependencies.latestMinor, '2.0');
+  assert.deepEqual(dependencies.manual, {
+    ownership: 'central',
+    sourceRoot: 'docs/manual/bluetape4k-dependencies',
+    toolingRoot: 'scripts/manual/repositories/bluetape4k-dependencies',
+  });
+});

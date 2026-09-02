@@ -23,7 +23,7 @@ plugins {
 }
 
 dependencies {
-    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:2.0.0-SNAPSHOT"))
+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:2.0.0"))
     implementation(bt4k.bluetape4k.core)
     implementation(bt4k.bluetape4k.coroutines)
 }
@@ -43,4 +43,4 @@ Do not hand-edit generated managed aliases to solve a downstream version problem
 
 ## Immutable consumption
 
-For CI, record the catalog commit separately from the Maven snapshot metadata. The catalog commit [`6073eefe`](https://github.com/bluetape4k/bluetape4k-dependencies/tree/6073eefe7cd5d7bdf3bb5dec7103ffb5427a4e7b) is the source used by this draft; a later commit may change aliases before the snapshot repository publishes a corresponding BOM.
+For reproducible release builds, record the catalog commit separately from the Maven artifact. This manual uses catalog commit [`3c203aa9`](https://github.com/bluetape4k/bluetape4k-dependencies/tree/3c203aa9f8ba80685aac766c5fb8f24e23d0058e), which is also the exact `2.0.0` release commit. Later catalog train tags belong to later development lines and do not rewrite this stable snapshot.

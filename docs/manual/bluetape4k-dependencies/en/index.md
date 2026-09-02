@@ -1,6 +1,6 @@
-# bluetape4k-dependencies 2.0.0-SNAPSHOT Manual
+# bluetape4k-dependencies 2.0.0 Manual
 
-This is an in-progress central authoring draft for the `2.0.0-SNAPSHOT` development line. It is not a stable `2.0.0` manual: no future stable tag or release commit is asserted here. A versioned site snapshot will be generated only after the stable artifact and tag have been verified.
+This is the stable manual for `bluetape4k-dependencies:2.0.0`. Its BOM, signed tag, GitHub Release, child artifacts, and downstream resolution were verified before this versioned snapshot was generated.
 
 `bluetape4k-dependencies` has two related but different contracts:
 
@@ -21,20 +21,20 @@ The catalog does not replace the BOM. Import both only when a build needs the ca
 | update versions or promote a release | [Version governance](guides/version-governance.md) |
 | verify a catalog or publication change | [Validation](operations/validation.md) |
 
-## Current development line
+## Stable release line
 
 The catalog source declares `bluetape4k-dependencies = "2.0.0"`; the publish workflow adds `-SNAPSHOT` to the BOM coordinate. The current central BOM coordinate is therefore:
 
 ```text
-io.github.bluetape4k:bluetape4k-dependencies:2.0.0-SNAPSHOT
+io.github.bluetape4k:bluetape4k-dependencies:2.0.0
 ```
 
-The source snapshot used for this draft is [`6073eefe`](https://github.com/bluetape4k/bluetape4k-dependencies/tree/6073eefe7cd5d7bdf3bb5dec7103ffb5427a4e7b). Snapshot metadata is intentionally time-sensitive; use the repository and metadata checks in the snapshot guide before relying on it.
+The release source is tag [`2.0.0`](https://github.com/bluetape4k/bluetape4k-dependencies/tree/2.0.0) at commit [`3c203aa9`](https://github.com/bluetape4k/bluetape4k-dependencies/tree/3c203aa9f8ba80685aac766c5fb8f24e23d0058e). The catalog and public BOM are related contracts, but consumers must still use the BOM for dependency resolution.
 
 ## Source and promotion boundary
 
-This manual is owned by the central site repository under `docs/manual/bluetape4k-dependencies/`. It is source-only while the target is a snapshot. The future stable promotion will pin a new manifest to the exact `2.0.0` tag and release commit, regenerate the site snapshot, and then retain this source as the provenance for that published manual.
+This manual is owned by the central site repository under `docs/manual/bluetape4k-dependencies/`. The generated `2.0` route is immutable release documentation pinned to the code tag above; the site authoring commit and code release commit remain separate provenance.
 
-- [Current dependencies README](https://github.com/bluetape4k/bluetape4k-dependencies/blob/6073eefe7cd5d7bdf3bb5dec7103ffb5427a4e7b/README.md)
-- [Current Korean README](https://github.com/bluetape4k/bluetape4k-dependencies/blob/6073eefe7cd5d7bdf3bb5dec7103ffb5427a4e7b/README.ko.md)
-- [Snapshot consumer checklist](https://github.com/bluetape4k/bluetape4k-dependencies/blob/6073eefe7cd5d7bdf3bb5dec7103ffb5427a4e7b/docs/releases/2026-08-21-dependencies-2.0.0-snapshot-consumer-checklist.md)
+- [Current dependencies README](https://github.com/bluetape4k/bluetape4k-dependencies/blob/3c203aa9f8ba80685aac766c5fb8f24e23d0058e/README.md)
+- [Current Korean README](https://github.com/bluetape4k/bluetape4k-dependencies/blob/3c203aa9f8ba80685aac766c5fb8f24e23d0058e/README.ko.md)
+- [2.0.0 release checklist](https://github.com/bluetape4k/bluetape4k-dependencies/blob/3c203aa9f8ba80685aac766c5fb8f24e23d0058e/docs/releases/2026-09-02-dependencies-2.0.0-release-checklist.md)

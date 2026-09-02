@@ -12,17 +12,17 @@ scripts/sync-shared-versions.py --workspace .. --check --summary
 scripts/sync-dependabot-ignores.py --workspace .. --check --summary
 ```
 
-이 검사는 생성 alias, published artifact coordinate, shared-version adoption, ignore-file parity를 다룬다. mutable snapshot이 production release에 안전하다는 증거는 아니다.
+이 검사는 생성 alias, published artifact coordinate, shared-version adoption, ignore-file parity를 다룬다. 공개 릴리스와 provenance 검사를 보완하지만 대체하지 않는다.
 
-## Build와 snapshot 검사
+## Build와 안정 artifact 검사
 
 ```bash
 ./gradlew build --no-daemon --no-configuration-cache
 curl -fsSL \
-  https://central.sonatype.com/repository/maven-snapshots/io/github/bluetape4k/bluetape4k-dependencies/2.0.0-SNAPSHOT/maven-metadata.xml
+  https://repo1.maven.org/maven2/io/github/bluetape4k/bluetape4k-dependencies/2.0.0/bluetape4k-dependencies-2.0.0.pom
 ```
 
-Metadata timestamp와 build number를 읽은 뒤 BOM을 통한 버전 없는 child artifact 하나를 해석한다. catalog commit과 metadata 관찰값은 함께 기록하되 하나의 release SHA로 합치지 않는다.
+BOM을 통해 버전 없는 대표 하위 artifact를 해석하고 공개 POM을 release catalog와 비교한다. Code tag, site authoring commit, artifact 관찰을 별도로 기록한다.
 
 ## Manual source 검사
 
@@ -35,8 +35,8 @@ npm test
 npm run build
 ```
 
-`npm run check:manual`은 site에 등록된 기존 stable snapshot을 검증한다. 이 snapshot 초안은 의도적으로 source-only이며 stable registry에 추가하지 않았으므로, 문서 검토에서 manifest·locale parity·relative link도 별도로 검사한다.
+`npm run check:manual`은 등록된 stable snapshot, generated manifest, locale parity, 공개 routing 계약을 검증한다.
 
 ## 승격 증거
 
-정확한 stable tag, release commit, public artifact metadata, downstream validation이 모두 일치할 때에만 stable 매뉴얼을 생성할 수 있다. 하나라도 없으면 `contentStatus: in-progress`를 유지하고 초안 manifest에는 `releaseRef`/`releaseCommit`을 넣지 않는다.
+이 매뉴얼은 정확한 `2.0.0` tag, release commit, public artifact metadata, downstream validation이 모두 일치한 뒤 생성했다. 다음 릴리스도 같은 gate를 반복하며 이 `2.0` snapshot을 다시 쓰지 않는다.

@@ -20,6 +20,24 @@
       }
     },
     {
+      "slug": "bluetape4k-dependencies",
+      "repository": "bluetape4k/bluetape4k-dependencies",
+      "label": {
+        "en": "Dependencies docs",
+        "ko": "Dependencies 문서"
+      },
+      "latestMinor": "2.0",
+      "manual": {
+        "ownership": "central",
+        "sourceRoot": "docs/manual/bluetape4k-dependencies",
+        "toolingRoot": "scripts/manual/repositories/bluetape4k-dependencies"
+      },
+      "route": {
+        "en": "/manual/bluetape4k-dependencies/",
+        "ko": "/ko/manual/bluetape4k-dependencies/"
+      }
+    },
+    {
       "slug": "bluetape4k-exposed",
       "repository": "bluetape4k/bluetape4k-exposed",
       "label": {

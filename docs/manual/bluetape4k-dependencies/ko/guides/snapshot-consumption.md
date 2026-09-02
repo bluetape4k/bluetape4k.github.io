@@ -1,6 +1,6 @@
 # Snapshot 안전하게 소비하기
 
-`2.0.0-SNAPSHOT`은 변경 가능한 개발 metadata다. 저장소 설정, artifact availability, catalog provenance를 서로 별도의 검사로 취급한다.
+안정 `2.0.0` 이후 개발선은 `2.1.0-SNAPSHOT`이다. 변경 가능한 metadata이므로 저장소 설정, artifact availability, catalog provenance를 별도 검사로 취급한다. 안정 `2.0.0` 소비자는 이 저장소가 필요하지 않다.
 
 ## 저장소와 좌표
 
@@ -8,12 +8,12 @@ Sonatype snapshot 저장소와 timestamp가 없는 논리 version을 사용한�
 
 ```text
 Repository: https://central.sonatype.com/repository/maven-snapshots
-Coordinate: io.github.bluetape4k:bluetape4k-dependencies:2.0.0-SNAPSHOT
+Coordinate: io.github.bluetape4k:bluetape4k-dependencies:2.1.0-SNAPSHOT
 ```
 
 Resolver는 `maven-metadata.xml`에서 timestamped POM을 선택한다. timestamped 파일명을 Gradle·Maven 의존성 선언에 직접 넣지 않으며, metadata 응답 성공만으로 모든 child BOM이 동시에 공개됐다고 판단하지 않는다.
 
-이 초안의 metadata는 2026-08-31에 조회했으며 `lastUpdated=20260831003013`, timestamp `20260830.233309`, build `7`을 반환했다. 이 값은 당시 관찰 증거일 뿐이므로 새 검증 전에 다시 조회한다.
+Metadata는 2026-09-02에 조회했으며 `lastUpdated=20260902163844`, timestamp `20260902.163844`, build `1`을 반환했다. 이 값은 당시 관찰 증거일 뿐이므로 새 검증 전에 다시 조회한다.
 
 ## Gradle cache
 

@@ -1,6 +1,6 @@
 # Consuming snapshots safely
 
-`2.0.0-SNAPSHOT` is mutable development metadata. Treat repository configuration, artifact availability, and catalog provenance as separate checks.
+The development line after stable `2.0.0` is `2.1.0-SNAPSHOT`. It is mutable metadata, so treat repository configuration, artifact availability, and catalog provenance as separate checks. Stable `2.0.0` consumers do not need this repository.
 
 ## Repository and coordinate
 
@@ -8,12 +8,12 @@ Use the Sonatype snapshot repository and the non-timestamped logical version:
 
 ```text
 Repository: https://central.sonatype.com/repository/maven-snapshots
-Coordinate: io.github.bluetape4k:bluetape4k-dependencies:2.0.0-SNAPSHOT
+Coordinate: io.github.bluetape4k:bluetape4k-dependencies:2.1.0-SNAPSHOT
 ```
 
 Resolvers use `maven-metadata.xml` to select a timestamped POM. Do not copy the timestamped filename into a normal Gradle or Maven dependency declaration, and do not assume that a successful metadata response means every child BOM has already been published.
 
-The metadata endpoint for this draft was read on 2026-08-31 and reported `lastUpdated=20260831003013`, timestamp `20260830.233309`, and build `7`. These values are evidence for that observation only and must be refreshed before a new validation run.
+The metadata endpoint was read on 2026-09-02 and reported `lastUpdated=20260902163844`, timestamp `20260902.163844`, and build `1`. These values are evidence for that observation only and must be refreshed before a new validation run.
 
 ## Gradle cache behavior
 

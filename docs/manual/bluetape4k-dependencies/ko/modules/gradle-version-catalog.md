@@ -23,7 +23,7 @@ plugins {
 }
 
 dependencies {
-    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:2.0.0-SNAPSHOT"))
+    implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:2.0.0"))
     implementation(bt4k.bluetape4k.core)
     implementation(bt4k.bluetape4k.coroutines)
 }
@@ -43,4 +43,4 @@ Catalog에는 세 경계가 있다.
 
 ## Immutable 소비
 
-CI에서는 catalog commit을 Maven snapshot metadata와 분리해 기록한다. 이 초안이 사용한 catalog commit은 [`6073eefe`](https://github.com/bluetape4k/bluetape4k-dependencies/tree/6073eefe7cd5d7bdf3bb5dec7103ffb5427a4e7b)이며, snapshot 저장소에 대응 BOM이 공개되기 전에 더 최신 commit이 생길 수 있다.
+재현 가능한 release build를 위해 catalog commit을 Maven artifact와 분리해 기록한다. 이 매뉴얼은 정확한 `2.0.0` release commit이기도 한 [`3c203aa9`](https://github.com/bluetape4k/bluetape4k-dependencies/tree/3c203aa9f8ba80685aac766c5fb8f24e23d0058e)를 사용한다. 이후 catalog train tag는 다음 개발선에 속하며 이 안정 snapshot을 다시 쓰지 않는다.
