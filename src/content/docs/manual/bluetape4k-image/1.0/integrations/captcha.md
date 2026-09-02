@@ -1,0 +1,43 @@
+---
+slug: "manual/bluetape4k-image/1.0/integrations/captcha"
+manualId: "captcha"
+title: "CAPTCHA Generation and Verification"
+locale: "en"
+releaseRef: "1.0.0"
+manual:
+  id: "integrations/captcha"
+  repository: "bluetape4k-image"
+  group: "overview"
+  kind: "guide"
+  sourceCommit: "b38d4891b66dff8bc63db0018b5e41810d1da9bc"
+  sourcePath: "docs/manual/bluetape4k-image/en/integrations/captcha.md"
+  minorVersion: "1.0"
+  releaseRef: "1.0.0"
+  releaseCommit: "b38d4891b66dff8bc63db0018b5e41810d1da9bc"
+  sourceDir: "docs/manual/bluetape4k-image"
+  layer: "build"
+---
+
+
+<code>bluetape4k-images-captcha</code> separates image generation from challenge storage and one-shot verification. This boundary matters: drawing text is only one part of a usable CAPTCHA flow.
+
+## Generation
+
+<code>CaptchaGenerator</code> produces a <code>CaptchaChallenge</code> from <code>CaptchaOptions</code>. Options cover image size, fonts, colors, noise, distortion, and answer characteristics. Validate ranges before accepting product or tenant configuration; extreme dimensions, font sizes, or noise counts can create unusable images or expensive work.
+
+Java2D generation runs headless in tests and servers. The result uses the core immutable image model, so normal image writers can encode the challenge.
+
+## Verification lifecycle
+
+<code>CaptchaChallengeStore</code> owns challenge state. <code>CaptchaVerificationService</code> distinguishes success from wrong answer, expiry, and missing challenge. Verification is one-shot: design the store operation so two concurrent requests cannot both consume the same challenge.
+
+Do not store or log the plaintext answer longer than required. Bind a challenge to the relevant session or transaction, expire it promptly, rate-limit issue and verify routes, and return a generic client failure that does not reveal whether an identifier exists.
+
+## Framework path
+
+[Ktor integration](/manual/bluetape4k-image/1.0/integrations/ktor/) supplies issue and verify route helpers. The [Ktor image API workshop](/manual/bluetape4k-image/1.0/modules/ktor-image-api/) shows the full lifecycle. Other frameworks can use the generator, store, and service directly.
+
+## Sources
+
+- [CAPTCHA generator contract](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/images-captcha/src/main/kotlin/io/bluetape4k/images/captcha/CaptchaGenerator.kt)
+- [Verification lifecycle](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/images-captcha/src/main/kotlin/io/bluetape4k/images/captcha/CaptchaVerification.kt)

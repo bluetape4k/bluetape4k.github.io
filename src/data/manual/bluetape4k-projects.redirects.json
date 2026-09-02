@@ -2,2035 +2,2067 @@
   "redirects": [
     {
       "source": "/ko/manual/bluetape4k-projects/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/architecture/repository-map/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/architecture/repository-map/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/architecture/repository-map/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/getting-started/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/getting-started/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/getting-started/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-annotations/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-annotations/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-annotations/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-annotations/compatibility-lifecycle/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-annotations/compatibility-lifecycle/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-annotations/compatibility-lifecycle/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-annotations/implementation-spi/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-annotations/implementation-spi/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-annotations/implementation-spi/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-annotations/marker-selection/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-annotations/marker-selection/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-annotations/marker-selection/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-annotations/opt-in-scope/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-annotations/opt-in-scope/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-annotations/opt-in-scope/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-annotations/recipes/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-annotations/recipes/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-annotations/recipes/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-assertions/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-assertions/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-assertions/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-avro/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-avro/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-avro/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-bom/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-bom/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-bom/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-bucket4j/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-bucket4j/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-bucket4j/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-core/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-core/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-core/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-core/cache-aside-loader-writer/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-core/cache-aside-loader-writer/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-core/cache-aside-loader-writer/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-core/local-providers-jcache/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-core/local-providers-jcache/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-core/local-providers-jcache/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-core/memoizers-single-flight/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-core/memoizers-single-flight/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-core/memoizers-single-flight/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-core/near-cache-semantics/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-core/near-cache-semantics/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-core/near-cache-semantics/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-core/resilience-failures-lifecycle/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-core/resilience-failures-lifecycle/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-core/resilience-failures-lifecycle/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-core/testing-ecosystem-paths/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-core/testing-ecosystem-paths/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-core/testing-ecosystem-paths/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-hazelcast/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-hazelcast/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/imap-memoizers-concurrency/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-hazelcast/imap-memoizers-concurrency/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-hazelcast/imap-memoizers-concurrency/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/imap-near-cache-invalidation/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-hazelcast/imap-near-cache-invalidation/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-hazelcast/imap-near-cache-invalidation/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/jcache-instance-ownership/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-hazelcast/jcache-instance-ownership/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-hazelcast/jcache-instance-ownership/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/jcache-near-cache-serialization/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-hazelcast/jcache-near-cache-serialization/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-hazelcast/jcache-near-cache-serialization/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/operations-testing-ecosystem/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-hazelcast/operations-testing-ecosystem/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-hazelcast/operations-testing-ecosystem/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/suspend-jcache-async-boundaries/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-hazelcast/suspend-jcache-async-boundaries/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-hazelcast/suspend-jcache-async-boundaries/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-lettuce/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/jcache-provider-manager/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-lettuce/jcache-provider-manager/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/jcache-provider-manager/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/memoizers-concurrency/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-lettuce/memoizers-concurrency/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/memoizers-concurrency/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/near-cache-l1-l2/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-lettuce/near-cache-l1-l2/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/near-cache-l1-l2/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/operations-ecosystem/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-lettuce/operations-ecosystem/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/operations-ecosystem/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/resp3-invalidation-lua/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-lettuce/resp3-invalidation-lua/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/resp3-invalidation-lua/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/sync-suspend-jcache/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-lettuce/sync-suspend-jcache/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/sync-suspend-jcache/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-redisson/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-redisson/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/config-codec-ownership/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-redisson/config-codec-ownership/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-redisson/config-codec-ownership/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/ecosystem-paths/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-redisson/ecosystem-paths/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-redisson/ecosystem-paths/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/failures-cancellation-operations/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-redisson/failures-cancellation-operations/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-redisson/failures-cancellation-operations/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/memoizers-concurrency/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-redisson/memoizers-concurrency/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-redisson/memoizers-concurrency/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/near-cache-invalidation/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-redisson/near-cache-invalidation/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-redisson/near-cache-invalidation/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/redisson-jcache-suspend/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-redisson/redisson-jcache-suspend/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-redisson/redisson-jcache-suspend/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cassandra/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cassandra/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cassandra/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cassandra/coroutine-queries/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cassandra/coroutine-queries/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cassandra/coroutine-queries/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cassandra/operations-testing/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cassandra/operations-testing/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cassandra/operations-testing/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cassandra/rows-data-mapping/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cassandra/rows-data-mapping/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cassandra/rows-data-mapping/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cassandra/session-lifecycle/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cassandra/session-lifecycle/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cassandra/session-lifecycle/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-cassandra/statements-query-builder/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-cassandra/statements-query-builder/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cassandra/statements-query-builder/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-core/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-core/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-core/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-core/bounded-collections/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-core/bounded-collections/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-core/bounded-collections/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-core/concurrency-lifecycle/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-core/concurrency-lifecycle/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-core/concurrency-lifecycle/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-core/encoding-data/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-core/encoding-data/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-core/encoding-data/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-core/recipes/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-core/recipes/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-core/recipes/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-core/time-ranges/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-core/time-ranges/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-core/time-ranges/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-core/validation/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-core/validation/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-core/validation/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-coroutines/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-coroutines/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-coroutines/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-coroutines/deferred/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-coroutines/deferred/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-coroutines/deferred/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-coroutines/flow/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-coroutines/flow/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-coroutines/flow/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-coroutines/lifecycle/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-coroutines/lifecycle/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-coroutines/lifecycle/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-coroutines/operations/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-coroutines/operations/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-coroutines/operations/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-coroutines/recipes/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-coroutines/recipes/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-coroutines/recipes/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-coroutines/structured-concurrency/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-coroutines/structured-concurrency/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-coroutines/structured-concurrency/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-coroutines/subjects/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-coroutines/subjects/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-coroutines/subjects/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-csv/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-csv/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-csv/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-elasticsearch/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-elasticsearch/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-elasticsearch/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-examples-coroutines-demo/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-examples-coroutines-demo/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-examples-coroutines-demo/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-examples-jpa-blazepersistence-demo/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-examples-jpa-blazepersistence-demo/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-examples-jpa-blazepersistence-demo/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-examples-jpa-querydsl-demo/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-examples-jpa-querydsl-demo/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-examples-jpa-querydsl-demo/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-examples-redisson-demo/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-examples-redisson-demo/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-examples-redisson-demo/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-examples-virtualthreads-demo/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-examples-virtualthreads-demo/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-examples-virtualthreads-demo/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-fastjson2/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-fastjson2/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-fastjson2/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-feign/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-feign/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-feign/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-geo/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-geo/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-geo/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-grpc/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-grpc/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-grpc/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate-cache-lettuce/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate-cache-lettuce/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate-cache-lettuce/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate-cache-lettuce/architecture-regions/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate-cache-lettuce/architecture-regions/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate-cache-lettuce/architecture-regions/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate-cache-lettuce/configuration-codecs-ttl/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate-cache-lettuce/configuration-codecs-ttl/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate-cache-lettuce/configuration-codecs-ttl/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate-cache-lettuce/entity-query-collection-cache/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate-cache-lettuce/entity-query-collection-cache/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate-cache-lettuce/entity-query-collection-cache/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate-cache-lettuce/keys-concurrency-invalidation/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate-cache-lettuce/keys-concurrency-invalidation/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate-cache-lettuce/keys-concurrency-invalidation/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate-cache-lettuce/lifecycle-failures-operations/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate-cache-lettuce/lifecycle-failures-operations/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate-cache-lettuce/lifecycle-failures-operations/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate-cache-lettuce/spring-boot-ecosystem/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate-cache-lettuce/spring-boot-ecosystem/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate-cache-lettuce/spring-boot-ecosystem/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate-reactive/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate-reactive/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate-reactive/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate-reactive/failure-cancellation-operations/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate-reactive/failure-cancellation-operations/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate-reactive/failure-cancellation-operations/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate-reactive/mutiny-stage-bootstrap/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate-reactive/mutiny-stage-bootstrap/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate-reactive/mutiny-stage-bootstrap/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate-reactive/persistence-choice/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate-reactive/persistence-choice/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate-reactive/persistence-choice/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate-reactive/session-transaction-lifecycle/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate-reactive/session-transaction-lifecycle/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate-reactive/session-transaction-lifecycle/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate-reactive/stateless-sessions/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate-reactive/stateless-sessions/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate-reactive/stateless-sessions/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate-reactive/typed-queries-fetching/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate-reactive/typed-queries-fetching/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate-reactive/typed-queries-fetching/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate/converters-security/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate/converters-security/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate/converters-security/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate/ecosystem-paths/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate/ecosystem-paths/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate/ecosystem-paths/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate/entity-model-lifecycle/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate/entity-model-lifecycle/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate/entity-model-lifecycle/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate/entitymanager-transactions/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate/entitymanager-transactions/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate/entitymanager-transactions/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate/queries-criteria-querydsl/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate/queries-criteria-querydsl/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate/queries-criteria-querydsl/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-hibernate/stateless-batch-events/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate/stateless-batch-events/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate/stateless-batch-events/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-http/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-http/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-http/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-idgenerators/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-idgenerators/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-idgenerators/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-io/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-io/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-io/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-jackson2/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-jackson2/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-jackson2/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-jackson3/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-jackson3/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-jackson3/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-javatimes/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-javatimes/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-javatimes/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-jdbc/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-jdbc/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-jdbc/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-jdbc/connection-lifecycle/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-jdbc/connection-lifecycle/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-jdbc/connection-lifecycle/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-jdbc/ecosystem-paths/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-jdbc/ecosystem-paths/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-jdbc/ecosystem-paths/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-jdbc/resultset-mapping/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-jdbc/resultset-mapping/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-jdbc/resultset-mapping/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-jdbc/statements-batches/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-jdbc/statements-batches/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-jdbc/statements-batches/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-jdbc/transactions/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-jdbc/transactions/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-jdbc/transactions/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-json/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-json/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-json/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-junit5/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-junit5/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-junit5/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-jwt/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-jwt/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-jwt/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-kafka-logback/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-kafka-logback/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-kafka-logback/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-kafka/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-kafka/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-kafka/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-kafka/codecs-wire-format-security/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-kafka/codecs-wire-format-security/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-kafka/codecs-wire-format-security/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-kafka/coroutine-producer/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-kafka/coroutine-producer/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-kafka/coroutine-producer/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-kafka/failures-testing-operations-ecosystem/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-kafka/failures-testing-operations-ecosystem/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-kafka/failures-testing-operations-ecosystem/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-kafka/kafka-streams-dsl/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-kafka/kafka-streams-dsl/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-kafka/kafka-streams-dsl/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-kafka/module-boundary-client-records/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-kafka/module-boundary-client-records/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-kafka/module-boundary-client-records/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-kafka/spring-kafka-templates-listeners/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-kafka/spring-kafka-templates-listeners/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-kafka/spring-kafka-templates-listeners/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-kafka4/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-kafka4/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-kafka4/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-ktor-core/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-ktor-core/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-ktor-core/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-ktor-observability/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-ktor-observability/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-ktor-observability/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-ktor-openapi/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-ktor-openapi/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-ktor-openapi/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-ktor-resilience4j/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-ktor-resilience4j/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-ktor-resilience4j/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-ktor-tenant/",
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-ktor-tenant/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-ktor-testing/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-ktor-testing/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-ktor-testing/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-lettuce/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-lettuce/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-lettuce/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-lettuce/clients-and-connections/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-lettuce/clients-and-connections/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-lettuce/clients-and-connections/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-lettuce/codecs-and-serialization/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-lettuce/codecs-and-serialization/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-lettuce/codecs-and-serialization/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-lettuce/commands-and-coroutines/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-lettuce/commands-and-coroutines/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-lettuce/commands-and-coroutines/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-lettuce/filters-scripts-and-primitives/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-lettuce/filters-scripts-and-primitives/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-lettuce/filters-scripts-and-primitives/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-lettuce/maps-and-cache-loading/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-lettuce/maps-and-cache-loading/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-lettuce/maps-and-cache-loading/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-lettuce/operations-and-ecosystem/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-lettuce/operations-and-ecosystem/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-lettuce/operations-and-ecosystem/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-logging/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-logging/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-logging/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-logging/async-channel/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-logging/async-channel/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-logging/async-channel/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-logging/coroutine-mdc/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-logging/coroutine-mdc/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-logging/coroutine-mdc/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-logging/lazy-messages/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-logging/lazy-messages/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-logging/lazy-messages/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-logging/logger-foundation/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-logging/logger-foundation/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-logging/logger-foundation/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-logging/operations-recipes/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-logging/operations-recipes/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-logging/operations-recipes/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-logging/scoped-mdc/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-logging/scoped-mdc/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-logging/scoped-mdc/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-math/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-math/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-math/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-measured/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-measured/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-measured/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-micrometer/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-micrometer/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-micrometer/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-mock-web-server/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-mock-web-server/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-mock-web-server/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-mock-webflux-server/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-mock-webflux-server/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-mock-webflux-server/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-money/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-money/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-money/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-mongodb/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-mongodb/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-mongodb/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-mongodb/aggregation-pipelines/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-mongodb/aggregation-pipelines/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-mongodb/aggregation-pipelines/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-mongodb/database-collection-flow/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-mongodb/database-collection-flow/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-mongodb/database-collection-flow/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-mongodb/documents-codecs-queries/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-mongodb/documents-codecs-queries/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-mongodb/documents-codecs-queries/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-mongodb/module-boundary-client-lifecycle/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-mongodb/module-boundary-client-lifecycle/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-mongodb/module-boundary-client-lifecycle/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-mongodb/sessions-transactions/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-mongodb/sessions-transactions/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-mongodb/sessions-transactions/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-mongodb/testing-operations-ecosystem/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-mongodb/testing-operations-ecosystem/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-mongodb/testing-operations-ecosystem/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-mutiny/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-mutiny/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-mutiny/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-nats/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-nats/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-nats/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-nats/connection-options-ownership/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-nats/connection-options-ownership/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-nats/connection-options-ownership/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-nats/core-pubsub-request-reply/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-nats/core-pubsub-request-reply/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-nats/core-pubsub-request-reply/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-nats/failures-testing-operations-ecosystem/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-nats/failures-testing-operations-ecosystem/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-nats/failures-testing-operations-ecosystem/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-nats/jetstream-streams-consumers/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-nats/jetstream-streams-consumers/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-nats/jetstream-streams-consumers/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-nats/keyvalue-objectstore-services/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-nats/keyvalue-objectstore-services/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-nats/keyvalue-objectstore-services/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-nats/messages-subscriptions-dispatchers/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-nats/messages-subscriptions-dispatchers/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-nats/messages-subscriptions-dispatchers/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-netty/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-netty/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-netty/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-okio/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-okio/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-okio/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-opentelemetry/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-opentelemetry/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-opentelemetry/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-probabilistic/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-probabilistic/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-probabilistic/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-protobuf/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-protobuf/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-protobuf/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-pulsar/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-pulsar/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-pulsar/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-pulsar/cancellation-failures-testing-operations/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-pulsar/cancellation-failures-testing-operations/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-pulsar/cancellation-failures-testing-operations/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-pulsar/client-lifecycle-configuration/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-pulsar/client-lifecycle-configuration/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-pulsar/client-lifecycle-configuration/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-pulsar/consumers-flow-acknowledgement/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-pulsar/consumers-flow-acknowledgement/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-pulsar/consumers-flow-acknowledgement/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-pulsar/jackson-schemas-wire-compatibility/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-pulsar/jackson-schemas-wire-compatibility/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-pulsar/jackson-schemas-wire-compatibility/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-pulsar/producers-coroutine-send/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-pulsar/producers-coroutine-send/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-pulsar/producers-coroutine-send/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-pulsar/readers-and-positions/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-pulsar/readers-and-positions/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-pulsar/readers-and-positions/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-r2dbc/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-r2dbc/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/connections-and-pools/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-r2dbc/connections-and-pools/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-r2dbc/connections-and-pools/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/crud-and-mapping/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-r2dbc/crud-and-mapping/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-r2dbc/crud-and-mapping/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/dynamic-queries/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-r2dbc/dynamic-queries/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-r2dbc/dynamic-queries/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/ecosystem-paths/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-r2dbc/ecosystem-paths/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-r2dbc/ecosystem-paths/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/sql-and-binding/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-r2dbc/sql-and-binding/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-r2dbc/sql-and-binding/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/transactions-and-lifecycle/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-r2dbc/transactions-and-lifecycle/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-r2dbc/transactions-and-lifecycle/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redis/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-redis/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-redis/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redis/cache-spring-separation/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-redis/cache-spring-separation/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-redis/cache-spring-separation/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redis/lettuce-vs-redisson/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-redis/lettuce-vs-redisson/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-redis/lettuce-vs-redisson/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redis/lifecycle-codec-boundaries/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-redis/lifecycle-codec-boundaries/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-redis/lifecycle-codec-boundaries/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redis/selective-dependency-migration/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-redis/selective-dependency-migration/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-redis/selective-dependency-migration/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redis/testing-operations-ecosystem/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-redis/testing-operations-ecosystem/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-redis/testing-operations-ecosystem/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redis/umbrella-dependency-contract/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-redis/umbrella-dependency-contract/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-redis/umbrella-dependency-contract/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redisson/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-redisson/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-redisson/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redisson/cache-modes-persistence/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-redisson/cache-modes-persistence/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-redisson/cache-modes-persistence/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redisson/client-distributed-objects-streams/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-redisson/client-distributed-objects-streams/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-redisson/client-distributed-objects-streams/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redisson/codecs-security-wire-format/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-redisson/codecs-security-wire-format/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-redisson/codecs-security-wire-format/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redisson/future-coroutine-boundaries/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-redisson/future-coroutine-boundaries/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-redisson/future-coroutine-boundaries/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redisson/lifecycle-testing-ecosystem/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-redisson/lifecycle-testing-ecosystem/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-redisson/lifecycle-testing-ecosystem/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-redisson/local-cache-pubsub-invalidation/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-redisson/local-cache-pubsub-invalidation/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-redisson/local-cache-pubsub-invalidation/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-resilience4j/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-resilience4j/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-resilience4j/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-retrofit2/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-retrofit2/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-retrofit2/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-rule-engine/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-rule-engine/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-rule-engine/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-science/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-science/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-science/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra-demo/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-cassandra-demo/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-cassandra-demo/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-cassandra/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-cassandra/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra/async-and-cql-operations/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-cassandra/async-and-cql-operations/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-cassandra/async-and-cql-operations/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra/configuration-and-ownership/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-cassandra/configuration-and-ownership/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-cassandra/configuration-and-ownership/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra/failures-testing-and-ecosystem/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-cassandra/failures-testing-and-ecosystem/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-cassandra/failures-testing-and-ecosystem/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra/models-schema-and-converters/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-cassandra/models-schema-and-converters/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-cassandra/models-schema-and-converters/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra/reactive-coroutine-operations/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-cassandra/reactive-coroutine-operations/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-cassandra/reactive-coroutine-operations/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra/write-options-and-batches/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-cassandra/write-options-and-batches/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-cassandra/write-options-and-batches/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-core/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-core/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/error-responses-and-observability/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-core/error-responses-and-observability/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-core/error-responses-and-observability/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/execution-resources-and-lifecycle/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-core/execution-resources-and-lifecycle/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-core/execution-resources-and-lifecycle/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/rest-client-and-coroutines/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-core/rest-client-and-coroutines/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-core/rest-client-and-coroutines/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/spring-context-and-configuration/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-core/spring-context-and-configuration/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-core/spring-context-and-configuration/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/testing-and-ecosystem-paths/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-core/testing-and-ecosystem-paths/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-core/testing-and-ecosystem-paths/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/webflux-request-and-buffers/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-core/webflux-request-and-buffers/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-core/webflux-request-and-buffers/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-hibernate-lettuce-demo/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-hibernate-lettuce-demo/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-hibernate-lettuce-demo/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-hibernate-lettuce/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-hibernate-lettuce/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-hibernate-lettuce/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-hibernate-lettuce/auto-configuration-conditions/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-hibernate-lettuce/auto-configuration-conditions/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-hibernate-lettuce/auto-configuration-conditions/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-hibernate-lettuce/cache-lifecycle-ownership/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-hibernate-lettuce/cache-lifecycle-ownership/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-hibernate-lettuce/cache-lifecycle-ownership/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-hibernate-lettuce/ecosystem-paths/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-hibernate-lettuce/ecosystem-paths/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-hibernate-lettuce/ecosystem-paths/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-hibernate-lettuce/observability-actuator-metrics/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-hibernate-lettuce/observability-actuator-metrics/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-hibernate-lettuce/observability-actuator-metrics/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-hibernate-lettuce/properties-and-hibernate-mapping/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-hibernate-lettuce/properties-and-hibernate-mapping/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-hibernate-lettuce/properties-and-hibernate-mapping/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-hibernate-lettuce/testing-and-failure-modes/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-hibernate-lettuce/testing-and-failure-modes/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-hibernate-lettuce/testing-and-failure-modes/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-mongodb/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-mongodb/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/aggregation-collections-streaming/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-mongodb/aggregation-collections-streaming/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-mongodb/aggregation-collections-streaming/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/auto-configuration-boundaries/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-mongodb/auto-configuration-boundaries/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-mongodb/auto-configuration-boundaries/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/coroutine-reads-cardinality/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-mongodb/coroutine-reads-cardinality/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-mongodb/coroutine-reads-cardinality/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/query-dsl/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-mongodb/query-dsl/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-mongodb/query-dsl/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/testing-operations-ecosystem/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-mongodb/testing-operations-ecosystem/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-mongodb/testing-operations-ecosystem/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/writes-and-atomic-operations/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-mongodb/writes-and-atomic-operations/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-mongodb/writes-and-atomic-operations/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-r2dbc/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-r2dbc/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-r2dbc/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-r2dbc/ecosystem-paths/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-r2dbc/ecosystem-paths/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-r2dbc/ecosystem-paths/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-r2dbc/entity-operations/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-r2dbc/entity-operations/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-r2dbc/entity-operations/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-r2dbc/flow-and-cardinality/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-r2dbc/flow-and-cardinality/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-r2dbc/flow-and-cardinality/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-r2dbc/queries-and-repositories/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-r2dbc/queries-and-repositories/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-r2dbc/queries-and-repositories/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-r2dbc/transactions-and-testing/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-r2dbc/transactions-and-testing/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-r2dbc/transactions-and-testing/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-r2dbc/write-operations/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-r2dbc/write-operations/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-r2dbc/write-operations/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-redis/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-redis/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/binary-serializers/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-redis/binary-serializers/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-redis/binary-serializers/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/compression-wire-format/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-redis/compression-wire-format/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-redis/compression-wire-format/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/migration-security-compatibility/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-redis/migration-security-compatibility/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-redis/migration-security-compatibility/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/module-boundary-dependencies/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-redis/module-boundary-dependencies/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-redis/module-boundary-dependencies/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/serialization-context-templates/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-redis/serialization-context-templates/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-redis/serialization-context-templates/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/testing-operations-ecosystem/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-redis/testing-operations-ecosystem/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-redis/testing-operations-ecosystem/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-states/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-states/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-states/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-tenant-reactor/",
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-tenant-reactor/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-tenant/",
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-tenant/"
+    },
+    {
+      "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-testcontainers-spring/",
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-testcontainers-spring/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-testcontainers/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-testcontainers/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-testcontainers/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-tink/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-tink/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-tink/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-vertx/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-vertx/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-vertx/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-virtualthread-api/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-virtualthread-api/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-virtualthread-api/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-virtualthread-jdk21/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-virtualthread-jdk21/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-virtualthread-jdk21/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-virtualthread-jdk25/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-virtualthread-jdk25/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-virtualthread-jdk25/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/bluetape4k-workflow/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/bluetape4k-workflow/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-workflow/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/idgenerator-ktor-demo/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/idgenerator-ktor-demo/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/idgenerator-ktor-demo/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/idgenerator-spring-boot-demo/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/idgenerator-spring-boot-demo/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/idgenerator-spring-boot-demo/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/observability-ktor-demo/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/observability-ktor-demo/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/observability-ktor-demo/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/observability-spring-boot-demo/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/observability-spring-boot-demo/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/observability-spring-boot-demo/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/protobuf-codec-benchmark/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/protobuf-codec-benchmark/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/protobuf-codec-benchmark/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/serializer-benchmark/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/serializer-benchmark/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/serializer-benchmark/"
     },
     {
       "source": "/ko/manual/bluetape4k-projects/modules/web-framework-benchmark/",
-      "target": "/ko/manual/bluetape4k-projects/1.12/modules/web-framework-benchmark/"
+      "target": "/ko/manual/bluetape4k-projects/2.0/modules/web-framework-benchmark/"
     },
     {
       "source": "/manual/bluetape4k-projects/",
-      "target": "/manual/bluetape4k-projects/1.12/"
+      "target": "/manual/bluetape4k-projects/2.0/"
     },
     {
       "source": "/manual/bluetape4k-projects/architecture/repository-map/",
-      "target": "/manual/bluetape4k-projects/1.12/architecture/repository-map/"
+      "target": "/manual/bluetape4k-projects/2.0/architecture/repository-map/"
     },
     {
       "source": "/manual/bluetape4k-projects/getting-started/",
-      "target": "/manual/bluetape4k-projects/1.12/getting-started/"
+      "target": "/manual/bluetape4k-projects/2.0/getting-started/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-annotations/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-annotations/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-annotations/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-annotations/compatibility-lifecycle/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-annotations/compatibility-lifecycle/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-annotations/compatibility-lifecycle/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-annotations/implementation-spi/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-annotations/implementation-spi/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-annotations/implementation-spi/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-annotations/marker-selection/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-annotations/marker-selection/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-annotations/marker-selection/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-annotations/opt-in-scope/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-annotations/opt-in-scope/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-annotations/opt-in-scope/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-annotations/recipes/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-annotations/recipes/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-annotations/recipes/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-assertions/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-assertions/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-assertions/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-avro/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-avro/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-avro/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-bom/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-bom/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-bom/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-bucket4j/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-bucket4j/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-bucket4j/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-core/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-core/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-core/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-core/cache-aside-loader-writer/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-core/cache-aside-loader-writer/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-core/cache-aside-loader-writer/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-core/local-providers-jcache/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-core/local-providers-jcache/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-core/local-providers-jcache/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-core/memoizers-single-flight/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-core/memoizers-single-flight/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-core/memoizers-single-flight/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-core/near-cache-semantics/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-core/near-cache-semantics/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-core/near-cache-semantics/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-core/resilience-failures-lifecycle/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-core/resilience-failures-lifecycle/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-core/resilience-failures-lifecycle/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-core/testing-ecosystem-paths/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-core/testing-ecosystem-paths/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-core/testing-ecosystem-paths/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-hazelcast/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-hazelcast/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/imap-memoizers-concurrency/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-hazelcast/imap-memoizers-concurrency/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-hazelcast/imap-memoizers-concurrency/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/imap-near-cache-invalidation/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-hazelcast/imap-near-cache-invalidation/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-hazelcast/imap-near-cache-invalidation/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/jcache-instance-ownership/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-hazelcast/jcache-instance-ownership/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-hazelcast/jcache-instance-ownership/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/jcache-near-cache-serialization/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-hazelcast/jcache-near-cache-serialization/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-hazelcast/jcache-near-cache-serialization/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/operations-testing-ecosystem/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-hazelcast/operations-testing-ecosystem/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-hazelcast/operations-testing-ecosystem/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-hazelcast/suspend-jcache-async-boundaries/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-hazelcast/suspend-jcache-async-boundaries/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-hazelcast/suspend-jcache-async-boundaries/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-lettuce/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/jcache-provider-manager/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-lettuce/jcache-provider-manager/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/jcache-provider-manager/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/memoizers-concurrency/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-lettuce/memoizers-concurrency/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/memoizers-concurrency/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/near-cache-l1-l2/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-lettuce/near-cache-l1-l2/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/near-cache-l1-l2/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/operations-ecosystem/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-lettuce/operations-ecosystem/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/operations-ecosystem/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/resp3-invalidation-lua/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-lettuce/resp3-invalidation-lua/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/resp3-invalidation-lua/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-lettuce/sync-suspend-jcache/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-lettuce/sync-suspend-jcache/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/sync-suspend-jcache/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-redisson/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-redisson/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/config-codec-ownership/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-redisson/config-codec-ownership/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-redisson/config-codec-ownership/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/ecosystem-paths/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-redisson/ecosystem-paths/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-redisson/ecosystem-paths/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/failures-cancellation-operations/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-redisson/failures-cancellation-operations/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-redisson/failures-cancellation-operations/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/memoizers-concurrency/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-redisson/memoizers-concurrency/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-redisson/memoizers-concurrency/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/near-cache-invalidation/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-redisson/near-cache-invalidation/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-redisson/near-cache-invalidation/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cache-redisson/redisson-jcache-suspend/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cache-redisson/redisson-jcache-suspend/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-redisson/redisson-jcache-suspend/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cassandra/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cassandra/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cassandra/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cassandra/coroutine-queries/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cassandra/coroutine-queries/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cassandra/coroutine-queries/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cassandra/operations-testing/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cassandra/operations-testing/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cassandra/operations-testing/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cassandra/rows-data-mapping/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cassandra/rows-data-mapping/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cassandra/rows-data-mapping/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cassandra/session-lifecycle/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cassandra/session-lifecycle/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cassandra/session-lifecycle/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-cassandra/statements-query-builder/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-cassandra/statements-query-builder/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-cassandra/statements-query-builder/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-core/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-core/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-core/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-core/bounded-collections/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-core/bounded-collections/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-core/bounded-collections/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-core/concurrency-lifecycle/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-core/concurrency-lifecycle/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-core/concurrency-lifecycle/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-core/encoding-data/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-core/encoding-data/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-core/encoding-data/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-core/recipes/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-core/recipes/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-core/recipes/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-core/time-ranges/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-core/time-ranges/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-core/time-ranges/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-core/validation/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-core/validation/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-core/validation/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-coroutines/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-coroutines/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-coroutines/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-coroutines/deferred/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-coroutines/deferred/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-coroutines/deferred/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-coroutines/flow/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-coroutines/flow/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-coroutines/flow/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-coroutines/lifecycle/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-coroutines/lifecycle/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-coroutines/lifecycle/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-coroutines/operations/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-coroutines/operations/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-coroutines/operations/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-coroutines/recipes/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-coroutines/recipes/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-coroutines/recipes/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-coroutines/structured-concurrency/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-coroutines/structured-concurrency/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-coroutines/structured-concurrency/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-coroutines/subjects/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-coroutines/subjects/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-coroutines/subjects/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-csv/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-csv/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-csv/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-elasticsearch/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-elasticsearch/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-elasticsearch/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-examples-coroutines-demo/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-examples-coroutines-demo/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-examples-coroutines-demo/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-examples-jpa-blazepersistence-demo/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-examples-jpa-blazepersistence-demo/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-examples-jpa-blazepersistence-demo/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-examples-jpa-querydsl-demo/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-examples-jpa-querydsl-demo/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-examples-jpa-querydsl-demo/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-examples-redisson-demo/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-examples-redisson-demo/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-examples-redisson-demo/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-examples-virtualthreads-demo/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-examples-virtualthreads-demo/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-examples-virtualthreads-demo/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-fastjson2/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-fastjson2/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-fastjson2/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-feign/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-feign/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-feign/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-geo/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-geo/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-geo/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-grpc/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-grpc/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-grpc/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate-cache-lettuce/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate-cache-lettuce/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate-cache-lettuce/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate-cache-lettuce/architecture-regions/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate-cache-lettuce/architecture-regions/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate-cache-lettuce/architecture-regions/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate-cache-lettuce/configuration-codecs-ttl/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate-cache-lettuce/configuration-codecs-ttl/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate-cache-lettuce/configuration-codecs-ttl/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate-cache-lettuce/entity-query-collection-cache/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate-cache-lettuce/entity-query-collection-cache/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate-cache-lettuce/entity-query-collection-cache/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate-cache-lettuce/keys-concurrency-invalidation/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate-cache-lettuce/keys-concurrency-invalidation/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate-cache-lettuce/keys-concurrency-invalidation/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate-cache-lettuce/lifecycle-failures-operations/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate-cache-lettuce/lifecycle-failures-operations/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate-cache-lettuce/lifecycle-failures-operations/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate-cache-lettuce/spring-boot-ecosystem/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate-cache-lettuce/spring-boot-ecosystem/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate-cache-lettuce/spring-boot-ecosystem/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate-reactive/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate-reactive/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate-reactive/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate-reactive/failure-cancellation-operations/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate-reactive/failure-cancellation-operations/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate-reactive/failure-cancellation-operations/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate-reactive/mutiny-stage-bootstrap/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate-reactive/mutiny-stage-bootstrap/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate-reactive/mutiny-stage-bootstrap/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate-reactive/persistence-choice/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate-reactive/persistence-choice/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate-reactive/persistence-choice/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate-reactive/session-transaction-lifecycle/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate-reactive/session-transaction-lifecycle/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate-reactive/session-transaction-lifecycle/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate-reactive/stateless-sessions/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate-reactive/stateless-sessions/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate-reactive/stateless-sessions/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate-reactive/typed-queries-fetching/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate-reactive/typed-queries-fetching/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate-reactive/typed-queries-fetching/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate/converters-security/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate/converters-security/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate/converters-security/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate/ecosystem-paths/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate/ecosystem-paths/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate/ecosystem-paths/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate/entity-model-lifecycle/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate/entity-model-lifecycle/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate/entity-model-lifecycle/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate/entitymanager-transactions/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate/entitymanager-transactions/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate/entitymanager-transactions/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate/queries-criteria-querydsl/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate/queries-criteria-querydsl/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate/queries-criteria-querydsl/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-hibernate/stateless-batch-events/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-hibernate/stateless-batch-events/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-hibernate/stateless-batch-events/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-http/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-http/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-http/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-idgenerators/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-idgenerators/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-idgenerators/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-io/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-io/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-io/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-jackson2/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-jackson2/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-jackson2/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-jackson3/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-jackson3/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-jackson3/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-javatimes/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-javatimes/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-javatimes/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-jdbc/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-jdbc/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-jdbc/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-jdbc/connection-lifecycle/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-jdbc/connection-lifecycle/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-jdbc/connection-lifecycle/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-jdbc/ecosystem-paths/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-jdbc/ecosystem-paths/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-jdbc/ecosystem-paths/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-jdbc/resultset-mapping/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-jdbc/resultset-mapping/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-jdbc/resultset-mapping/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-jdbc/statements-batches/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-jdbc/statements-batches/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-jdbc/statements-batches/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-jdbc/transactions/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-jdbc/transactions/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-jdbc/transactions/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-json/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-json/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-json/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-junit5/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-junit5/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-junit5/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-jwt/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-jwt/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-jwt/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-kafka-logback/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-kafka-logback/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-kafka-logback/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-kafka/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-kafka/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-kafka/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-kafka/codecs-wire-format-security/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-kafka/codecs-wire-format-security/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-kafka/codecs-wire-format-security/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-kafka/coroutine-producer/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-kafka/coroutine-producer/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-kafka/coroutine-producer/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-kafka/failures-testing-operations-ecosystem/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-kafka/failures-testing-operations-ecosystem/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-kafka/failures-testing-operations-ecosystem/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-kafka/kafka-streams-dsl/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-kafka/kafka-streams-dsl/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-kafka/kafka-streams-dsl/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-kafka/module-boundary-client-records/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-kafka/module-boundary-client-records/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-kafka/module-boundary-client-records/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-kafka/spring-kafka-templates-listeners/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-kafka/spring-kafka-templates-listeners/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-kafka/spring-kafka-templates-listeners/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-kafka4/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-kafka4/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-kafka4/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-ktor-core/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-ktor-core/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-ktor-core/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-ktor-observability/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-ktor-observability/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-ktor-observability/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-ktor-openapi/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-ktor-openapi/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-ktor-openapi/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-ktor-resilience4j/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-ktor-resilience4j/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-ktor-resilience4j/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-ktor-tenant/",
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-ktor-tenant/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-ktor-testing/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-ktor-testing/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-ktor-testing/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-lettuce/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-lettuce/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-lettuce/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-lettuce/clients-and-connections/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-lettuce/clients-and-connections/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-lettuce/clients-and-connections/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-lettuce/codecs-and-serialization/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-lettuce/codecs-and-serialization/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-lettuce/codecs-and-serialization/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-lettuce/commands-and-coroutines/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-lettuce/commands-and-coroutines/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-lettuce/commands-and-coroutines/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-lettuce/filters-scripts-and-primitives/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-lettuce/filters-scripts-and-primitives/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-lettuce/filters-scripts-and-primitives/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-lettuce/maps-and-cache-loading/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-lettuce/maps-and-cache-loading/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-lettuce/maps-and-cache-loading/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-lettuce/operations-and-ecosystem/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-lettuce/operations-and-ecosystem/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-lettuce/operations-and-ecosystem/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-logging/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-logging/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-logging/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-logging/async-channel/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-logging/async-channel/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-logging/async-channel/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-logging/coroutine-mdc/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-logging/coroutine-mdc/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-logging/coroutine-mdc/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-logging/lazy-messages/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-logging/lazy-messages/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-logging/lazy-messages/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-logging/logger-foundation/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-logging/logger-foundation/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-logging/logger-foundation/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-logging/operations-recipes/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-logging/operations-recipes/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-logging/operations-recipes/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-logging/scoped-mdc/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-logging/scoped-mdc/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-logging/scoped-mdc/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-math/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-math/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-math/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-measured/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-measured/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-measured/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-micrometer/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-micrometer/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-micrometer/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-mock-web-server/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-mock-web-server/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-mock-web-server/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-mock-webflux-server/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-mock-webflux-server/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-mock-webflux-server/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-money/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-money/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-money/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-mongodb/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-mongodb/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-mongodb/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-mongodb/aggregation-pipelines/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-mongodb/aggregation-pipelines/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-mongodb/aggregation-pipelines/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-mongodb/database-collection-flow/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-mongodb/database-collection-flow/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-mongodb/database-collection-flow/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-mongodb/documents-codecs-queries/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-mongodb/documents-codecs-queries/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-mongodb/documents-codecs-queries/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-mongodb/module-boundary-client-lifecycle/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-mongodb/module-boundary-client-lifecycle/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-mongodb/module-boundary-client-lifecycle/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-mongodb/sessions-transactions/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-mongodb/sessions-transactions/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-mongodb/sessions-transactions/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-mongodb/testing-operations-ecosystem/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-mongodb/testing-operations-ecosystem/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-mongodb/testing-operations-ecosystem/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-mutiny/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-mutiny/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-mutiny/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-nats/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-nats/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-nats/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-nats/connection-options-ownership/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-nats/connection-options-ownership/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-nats/connection-options-ownership/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-nats/core-pubsub-request-reply/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-nats/core-pubsub-request-reply/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-nats/core-pubsub-request-reply/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-nats/failures-testing-operations-ecosystem/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-nats/failures-testing-operations-ecosystem/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-nats/failures-testing-operations-ecosystem/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-nats/jetstream-streams-consumers/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-nats/jetstream-streams-consumers/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-nats/jetstream-streams-consumers/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-nats/keyvalue-objectstore-services/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-nats/keyvalue-objectstore-services/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-nats/keyvalue-objectstore-services/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-nats/messages-subscriptions-dispatchers/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-nats/messages-subscriptions-dispatchers/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-nats/messages-subscriptions-dispatchers/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-netty/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-netty/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-netty/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-okio/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-okio/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-okio/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-opentelemetry/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-opentelemetry/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-opentelemetry/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-probabilistic/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-probabilistic/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-probabilistic/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-protobuf/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-protobuf/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-protobuf/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-pulsar/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-pulsar/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-pulsar/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-pulsar/cancellation-failures-testing-operations/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-pulsar/cancellation-failures-testing-operations/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-pulsar/cancellation-failures-testing-operations/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-pulsar/client-lifecycle-configuration/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-pulsar/client-lifecycle-configuration/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-pulsar/client-lifecycle-configuration/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-pulsar/consumers-flow-acknowledgement/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-pulsar/consumers-flow-acknowledgement/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-pulsar/consumers-flow-acknowledgement/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-pulsar/jackson-schemas-wire-compatibility/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-pulsar/jackson-schemas-wire-compatibility/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-pulsar/jackson-schemas-wire-compatibility/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-pulsar/producers-coroutine-send/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-pulsar/producers-coroutine-send/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-pulsar/producers-coroutine-send/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-pulsar/readers-and-positions/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-pulsar/readers-and-positions/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-pulsar/readers-and-positions/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-r2dbc/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-r2dbc/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/connections-and-pools/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-r2dbc/connections-and-pools/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-r2dbc/connections-and-pools/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/crud-and-mapping/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-r2dbc/crud-and-mapping/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-r2dbc/crud-and-mapping/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/dynamic-queries/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-r2dbc/dynamic-queries/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-r2dbc/dynamic-queries/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/ecosystem-paths/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-r2dbc/ecosystem-paths/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-r2dbc/ecosystem-paths/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/sql-and-binding/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-r2dbc/sql-and-binding/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-r2dbc/sql-and-binding/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-r2dbc/transactions-and-lifecycle/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-r2dbc/transactions-and-lifecycle/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-r2dbc/transactions-and-lifecycle/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-redis/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-redis/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-redis/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-redis/cache-spring-separation/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-redis/cache-spring-separation/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-redis/cache-spring-separation/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-redis/lettuce-vs-redisson/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-redis/lettuce-vs-redisson/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-redis/lettuce-vs-redisson/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-redis/lifecycle-codec-boundaries/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-redis/lifecycle-codec-boundaries/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-redis/lifecycle-codec-boundaries/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-redis/selective-dependency-migration/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-redis/selective-dependency-migration/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-redis/selective-dependency-migration/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-redis/testing-operations-ecosystem/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-redis/testing-operations-ecosystem/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-redis/testing-operations-ecosystem/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-redis/umbrella-dependency-contract/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-redis/umbrella-dependency-contract/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-redis/umbrella-dependency-contract/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-redisson/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-redisson/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-redisson/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-redisson/cache-modes-persistence/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-redisson/cache-modes-persistence/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-redisson/cache-modes-persistence/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-redisson/client-distributed-objects-streams/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-redisson/client-distributed-objects-streams/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-redisson/client-distributed-objects-streams/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-redisson/codecs-security-wire-format/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-redisson/codecs-security-wire-format/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-redisson/codecs-security-wire-format/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-redisson/future-coroutine-boundaries/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-redisson/future-coroutine-boundaries/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-redisson/future-coroutine-boundaries/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-redisson/lifecycle-testing-ecosystem/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-redisson/lifecycle-testing-ecosystem/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-redisson/lifecycle-testing-ecosystem/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-redisson/local-cache-pubsub-invalidation/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-redisson/local-cache-pubsub-invalidation/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-redisson/local-cache-pubsub-invalidation/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-resilience4j/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-resilience4j/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-resilience4j/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-retrofit2/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-retrofit2/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-retrofit2/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-rule-engine/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-rule-engine/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-rule-engine/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-science/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-science/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-science/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra-demo/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-cassandra-demo/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-cassandra-demo/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-cassandra/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-cassandra/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra/async-and-cql-operations/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-cassandra/async-and-cql-operations/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-cassandra/async-and-cql-operations/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra/configuration-and-ownership/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-cassandra/configuration-and-ownership/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-cassandra/configuration-and-ownership/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra/failures-testing-and-ecosystem/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-cassandra/failures-testing-and-ecosystem/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-cassandra/failures-testing-and-ecosystem/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra/models-schema-and-converters/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-cassandra/models-schema-and-converters/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-cassandra/models-schema-and-converters/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra/reactive-coroutine-operations/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-cassandra/reactive-coroutine-operations/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-cassandra/reactive-coroutine-operations/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-cassandra/write-options-and-batches/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-cassandra/write-options-and-batches/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-cassandra/write-options-and-batches/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-core/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-core/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/error-responses-and-observability/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-core/error-responses-and-observability/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-core/error-responses-and-observability/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/execution-resources-and-lifecycle/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-core/execution-resources-and-lifecycle/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-core/execution-resources-and-lifecycle/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/rest-client-and-coroutines/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-core/rest-client-and-coroutines/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-core/rest-client-and-coroutines/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/spring-context-and-configuration/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-core/spring-context-and-configuration/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-core/spring-context-and-configuration/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/testing-and-ecosystem-paths/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-core/testing-and-ecosystem-paths/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-core/testing-and-ecosystem-paths/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-core/webflux-request-and-buffers/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-core/webflux-request-and-buffers/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-core/webflux-request-and-buffers/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-hibernate-lettuce-demo/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-hibernate-lettuce-demo/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-hibernate-lettuce-demo/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-hibernate-lettuce/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-hibernate-lettuce/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-hibernate-lettuce/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-hibernate-lettuce/auto-configuration-conditions/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-hibernate-lettuce/auto-configuration-conditions/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-hibernate-lettuce/auto-configuration-conditions/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-hibernate-lettuce/cache-lifecycle-ownership/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-hibernate-lettuce/cache-lifecycle-ownership/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-hibernate-lettuce/cache-lifecycle-ownership/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-hibernate-lettuce/ecosystem-paths/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-hibernate-lettuce/ecosystem-paths/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-hibernate-lettuce/ecosystem-paths/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-hibernate-lettuce/observability-actuator-metrics/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-hibernate-lettuce/observability-actuator-metrics/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-hibernate-lettuce/observability-actuator-metrics/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-hibernate-lettuce/properties-and-hibernate-mapping/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-hibernate-lettuce/properties-and-hibernate-mapping/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-hibernate-lettuce/properties-and-hibernate-mapping/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-hibernate-lettuce/testing-and-failure-modes/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-hibernate-lettuce/testing-and-failure-modes/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-hibernate-lettuce/testing-and-failure-modes/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-mongodb/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-mongodb/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/aggregation-collections-streaming/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-mongodb/aggregation-collections-streaming/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-mongodb/aggregation-collections-streaming/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/auto-configuration-boundaries/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-mongodb/auto-configuration-boundaries/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-mongodb/auto-configuration-boundaries/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/coroutine-reads-cardinality/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-mongodb/coroutine-reads-cardinality/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-mongodb/coroutine-reads-cardinality/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/query-dsl/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-mongodb/query-dsl/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-mongodb/query-dsl/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/testing-operations-ecosystem/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-mongodb/testing-operations-ecosystem/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-mongodb/testing-operations-ecosystem/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-mongodb/writes-and-atomic-operations/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-mongodb/writes-and-atomic-operations/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-mongodb/writes-and-atomic-operations/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-r2dbc/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-r2dbc/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-r2dbc/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-r2dbc/ecosystem-paths/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-r2dbc/ecosystem-paths/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-r2dbc/ecosystem-paths/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-r2dbc/entity-operations/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-r2dbc/entity-operations/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-r2dbc/entity-operations/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-r2dbc/flow-and-cardinality/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-r2dbc/flow-and-cardinality/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-r2dbc/flow-and-cardinality/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-r2dbc/queries-and-repositories/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-r2dbc/queries-and-repositories/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-r2dbc/queries-and-repositories/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-r2dbc/transactions-and-testing/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-r2dbc/transactions-and-testing/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-r2dbc/transactions-and-testing/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-r2dbc/write-operations/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-r2dbc/write-operations/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-r2dbc/write-operations/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-redis/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-redis/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/binary-serializers/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-redis/binary-serializers/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-redis/binary-serializers/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/compression-wire-format/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-redis/compression-wire-format/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-redis/compression-wire-format/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/migration-security-compatibility/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-redis/migration-security-compatibility/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-redis/migration-security-compatibility/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/module-boundary-dependencies/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-redis/module-boundary-dependencies/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-redis/module-boundary-dependencies/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/serialization-context-templates/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-redis/serialization-context-templates/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-redis/serialization-context-templates/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-spring-boot-redis/testing-operations-ecosystem/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-spring-boot-redis/testing-operations-ecosystem/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-spring-boot-redis/testing-operations-ecosystem/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-states/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-states/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-states/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-tenant-reactor/",
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-tenant-reactor/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-tenant/",
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-tenant/"
+    },
+    {
+      "source": "/manual/bluetape4k-projects/modules/bluetape4k-testcontainers-spring/",
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-testcontainers-spring/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-testcontainers/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-testcontainers/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-testcontainers/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-tink/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-tink/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-tink/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-vertx/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-vertx/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-vertx/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-virtualthread-api/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-virtualthread-api/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-virtualthread-api/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-virtualthread-jdk21/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-virtualthread-jdk21/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-virtualthread-jdk21/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-virtualthread-jdk25/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-virtualthread-jdk25/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-virtualthread-jdk25/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/bluetape4k-workflow/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/bluetape4k-workflow/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/bluetape4k-workflow/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/idgenerator-ktor-demo/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/idgenerator-ktor-demo/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/idgenerator-ktor-demo/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/idgenerator-spring-boot-demo/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/idgenerator-spring-boot-demo/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/idgenerator-spring-boot-demo/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/observability-ktor-demo/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/observability-ktor-demo/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/observability-ktor-demo/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/observability-spring-boot-demo/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/observability-spring-boot-demo/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/observability-spring-boot-demo/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/protobuf-codec-benchmark/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/protobuf-codec-benchmark/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/protobuf-codec-benchmark/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/serializer-benchmark/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/serializer-benchmark/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/serializer-benchmark/"
     },
     {
       "source": "/manual/bluetape4k-projects/modules/web-framework-benchmark/",
-      "target": "/manual/bluetape4k-projects/1.12/modules/web-framework-benchmark/"
+      "target": "/manual/bluetape4k-projects/2.0/modules/web-framework-benchmark/"
     }
   ],
   "repository": "bluetape4k/bluetape4k-projects",
