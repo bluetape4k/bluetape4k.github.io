@@ -1,0 +1,37 @@
+{
+  "latest": "2.0",
+  "repository": "bluetape4k/bluetape4k-dependencies",
+  "schema": 1,
+  "versions": [
+    {
+      "authoringSourceRef": "6d7108a69d36ac5afcbad967086884738e9f612e",
+      "channel": "stable",
+      "documents": {
+        "en": [
+          "architecture/repository-map",
+          "getting-started",
+          "guides/snapshot-consumption",
+          "guides/version-governance",
+          "index",
+          "modules/ecosystem-bom",
+          "modules/gradle-version-catalog",
+          "operations/validation"
+        ],
+        "ko": [
+          "architecture/repository-map",
+          "getting-started",
+          "guides/snapshot-consumption",
+          "guides/version-governance",
+          "index",
+          "modules/ecosystem-bom",
+          "modules/gradle-version-catalog",
+          "operations/validation"
+        ]
+      },
+      "minorVersion": "2.0",
+      "releaseCommit": "3c203aa9f8ba80685aac766c5fb8f24e23d0058e",
+      "releaseRef": "2.0.0",
+      "sourceCommit": "3c203aa9f8ba80685aac766c5fb8f24e23d0058e"
+    }
+  ]
+}
