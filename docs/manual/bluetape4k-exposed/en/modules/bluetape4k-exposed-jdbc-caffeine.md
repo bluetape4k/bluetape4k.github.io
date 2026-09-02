@@ -6,7 +6,7 @@ locale: "en"
 kind: "library"
 gradlePath: ":bluetape4k-exposed-jdbc-caffeine"
 sourceDir: "exposed/jdbc-caffeine"
-releaseRef: "1.12.1"
+releaseRef: "2.0.0"
 artifact: io.github.bluetape4k.exposed:bluetape4k-exposed-jdbc-caffeine
 ---
 
@@ -31,15 +31,15 @@ dependencies {
 }
 ```
 
-Users select the central BOM version; this page records the stable `1.12.1` source line.
+Users select the central BOM version; this page records the stable `2.0.0` source line.
 
 ## Core concepts {#concepts}
 
 `get` and `getAll` are read-through operations. Cache-aside is an application-owned DB update followed by invalidation. True write-through requires the configured writer to finish DB persistence before returning. Write-behind accepts a delayed durability window. Ordinary `put` must not be called write-through without that writer policy. This adapter is local-only; it does not synchronize entries across JVMs.
 
-The stable `1.12.1` adapter owns its JDBC transaction, dispatcher, and Caffeine cache; write-behind remains an explicitly delayed durability mode. The lifecycle coordinator, bounded admission accounting, publication lease, and terminal retry behavior described below are current develop changes and are not part of the stable `1.12.1` contract.
+The stable `2.0.0` adapter owns its JDBC transaction, dispatcher, and Caffeine cache; write-behind remains an explicitly delayed durability mode. The lifecycle coordinator, bounded admission accounting, publication lease, and terminal retry behavior described below are part of the stable `2.0.0` contract.
 
-**Develop-only write-behind contract:** `writeBehindBatchSize` and `writeBehindQueueCapacity` must each be in `1..100_000`, and queue capacity must be greater than or equal to batch size. Zero, negative, values above `100_000`, or a queue smaller than the batch fail fast with `IllegalArgumentException`. A failed flush is retried at most 8 times with capped exponential backoff from 10 ms to 1 s; the retained batch is not dropped before the retry limit. A terminal failure leaves the worker in `FAILED`; the library does not silently move the retained batch to a durable outbox or dead-letter store.
+**2.0.0 write-behind contract:** `writeBehindBatchSize` and `writeBehindQueueCapacity` must each be in `1..100_000`, and queue capacity must be greater than or equal to batch size. Zero, negative, values above `100_000`, or a queue smaller than the batch fail fast with `IllegalArgumentException`. A failed flush is retried at most 8 times with capped exponential backoff from 10 ms to 1 s; the retained batch is not dropped before the retry limit. A terminal failure leaves the worker in `FAILED`; the library does not silently move the retained batch to a durable outbox or dead-letter store.
 
 ## Quick start {#quick-start}
 
@@ -107,19 +107,19 @@ The adapter does not create a distributed transaction, provision the backend, mi
 <!-- release-readme-diagrams:start -->
 ## Release diagrams {#release-diagrams}
 
-These diagrams are loaded directly from README assets published with the `1.12.1` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
+These diagrams are loaded directly from README assets published with the `2.0.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### JDBC Caffeine local cache architecture diagram
 
-[![JDBC Caffeine local cache architecture diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-exposed/4cc2cce07087241ec24a597d8464615434ea2b81/docs/images/readme-diagrams/exposed-jdbc-caffeine-diagram-01.png)](https://github.com/bluetape4k/bluetape4k-exposed/blob/4cc2cce07087241ec24a597d8464615434ea2b81/docs/images/readme-diagrams/exposed-jdbc-caffeine-diagram-01.svg)
+[![JDBC Caffeine local cache architecture diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-exposed/d632a0bc0662ae616b786f552150a7fabd1cee3e/docs/images/readme-diagrams/exposed-jdbc-caffeine-diagram-01.png)](https://github.com/bluetape4k/bluetape4k-exposed/blob/d632a0bc0662ae616b786f552150a7fabd1cee3e/docs/images/readme-diagrams/exposed-jdbc-caffeine-diagram-01.svg)
 
-_Release README: [`exposed/jdbc-caffeine/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/4cc2cce07087241ec24a597d8464615434ea2b81/exposed/jdbc-caffeine/README.md)_
+_Release README: [`exposed/jdbc-caffeine/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/d632a0bc0662ae616b786f552150a7fabd1cee3e/exposed/jdbc-caffeine/README.md)_
 
 ### Write Strategy Flows diagram
 
-[![Write Strategy Flows diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-exposed/4cc2cce07087241ec24a597d8464615434ea2b81/docs/images/readme-diagrams/exposed-jdbc-caffeine-sequence-01.png)](https://github.com/bluetape4k/bluetape4k-exposed/blob/4cc2cce07087241ec24a597d8464615434ea2b81/docs/images/readme-diagrams/exposed-jdbc-caffeine-sequence-01.svg)
+[![Write Strategy Flows diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-exposed/d632a0bc0662ae616b786f552150a7fabd1cee3e/docs/images/readme-diagrams/exposed-jdbc-caffeine-sequence-01.png)](https://github.com/bluetape4k/bluetape4k-exposed/blob/d632a0bc0662ae616b786f552150a7fabd1cee3e/docs/images/readme-diagrams/exposed-jdbc-caffeine-sequence-01.svg)
 
-_Release README: [`exposed/jdbc-caffeine/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/4cc2cce07087241ec24a597d8464615434ea2b81/exposed/jdbc-caffeine/README.md)_
+_Release README: [`exposed/jdbc-caffeine/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/d632a0bc0662ae616b786f552150a7fabd1cee3e/exposed/jdbc-caffeine/README.md)_
 
 <!-- release-readme-diagrams:end -->
 

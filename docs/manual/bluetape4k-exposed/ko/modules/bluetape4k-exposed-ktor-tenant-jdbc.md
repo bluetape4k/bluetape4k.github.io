@@ -7,7 +7,6 @@ kind: "library"
 gradlePath: ":bluetape4k-exposed-ktor-tenant-jdbc"
 sourceDir: "ktor/tenant-jdbc"
 releaseRef: "develop"
-releaseStatus: "develop-only"
 artifact: io.github.bluetape4k.exposed:bluetape4k-exposed-ktor-tenant-jdbc
 ---
 
@@ -151,7 +150,7 @@ routing, concurrent call 격리, dispatcher 실행과 취소 재전파를 검증
 
 ## 워크숍 {#workshops}
 
-이 develop-only release line에는 선택형 tenant JDBC workshop이 없습니다.
+이 `2.0.0` release line에는 선택형 tenant JDBC workshop이 없습니다.
 
 ## 제한 사항 {#limitations}
 

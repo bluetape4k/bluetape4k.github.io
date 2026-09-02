@@ -6,7 +6,7 @@ locale: "ko"
 kind: "library"
 gradlePath: ":bluetape4k-exposed-r2dbc-caffeine"
 sourceDir: "exposed/r2dbc-caffeine"
-releaseRef: "1.12.1"
+releaseRef: "2.0.0"
 artifact: io.github.bluetape4k.exposed:bluetape4k-exposed-r2dbc-caffeine
 ---
 
@@ -31,15 +31,15 @@ dependencies {
 }
 ```
 
-사용자가 선택할 버전은 중앙 BOM 버전 하나입니다. 이 페이지는 안정 배포본 `1.12.1` 소스 계보를 기록합니다.
+사용자가 선택할 버전은 중앙 BOM 버전 하나입니다. 이 페이지는 안정 배포본 `2.0.0` 소스 계보를 기록합니다.
 
 ## 핵심 개념 {#concepts}
 
 `get`과 `getAll`은 Read-through 연산입니다. Cache-aside는 애플리케이션이 DB를 바꾼 뒤 캐시를 무효화하는 방식입니다. 진짜 Write-through는 설정한 writer가 DB 쓰기를 마친 뒤 반환합니다. Write-behind는 영속화를 미룹니다. writer 정책을 확인하지 않은 평범한 `put`을 Write-through라고 부르면 안 됩니다. 이 어댑터는 로컬 전용이며 분산 무효화를 제공하지 않습니다.
 
-안정 배포본 `1.12.1`에서는 R2DBC transaction, coroutine scope, `AsyncCache`의 소유권이 어댑터에 남고 write-behind는 명시적인 지연 내구성 모드입니다. 아래의 lifecycle coordinator, bounded admission 회계, publication lease, terminal retry 동작은 현재 develop 변경이며 안정 배포본 `1.12.1` 계약에 포함되지 않습니다.
+안정 배포본 `2.0.0`에서는 R2DBC transaction, coroutine scope, `AsyncCache`의 소유권이 어댑터에 남고 write-behind는 명시적인 지연 내구성 모드입니다. 아래의 lifecycle coordinator, bounded admission 회계, publication lease, terminal retry 동작도 안정 배포본 `2.0.0` 계약에 포함됩니다.
 
-**Develop-only write-behind 계약:** `writeBehindBatchSize`와 `writeBehindQueueCapacity`는 각각 `1..100_000` 범위여야 하고 queue capacity는 batch size 이상이어야 합니다. 0·음수·`100_000` 초과 값 또는 batch보다 작은 queue는 `IllegalArgumentException`으로 즉시 거부됩니다. flush 실패는 최대 8회까지 10 ms에서 1 s로 증가하는 capped exponential backoff로 재시도하며, 재시도 한도 전에는 보류 배치를 버리지 않습니다. terminal failure는 worker를 `FAILED`로 남기며 보류 배치를 durable outbox나 dead-letter 저장소로 자동 이동하지 않습니다.
+**2.0.0 write-behind 계약:** `writeBehindBatchSize`와 `writeBehindQueueCapacity`는 각각 `1..100_000` 범위여야 하고 queue capacity는 batch size 이상이어야 합니다. 0·음수·`100_000` 초과 값 또는 batch보다 작은 queue는 `IllegalArgumentException`으로 즉시 거부됩니다. flush 실패는 최대 8회까지 10 ms에서 1 s로 증가하는 capped exponential backoff로 재시도하며, 재시도 한도 전에는 보류 배치를 버리지 않습니다. terminal failure는 worker를 `FAILED`로 남기며 보류 배치를 durable outbox나 dead-letter 저장소로 자동 이동하지 않습니다.
 
 ## 빠른 시작 {#quick-start}
 
@@ -113,18 +113,18 @@ repository.use { repo ->
 <!-- release-readme-diagrams:start -->
 ## 배포본 다이어그램 {#release-diagrams}
 
-아래 그림은 `1.12.1` 배포본의 README 자산을 해당 배포 커밋에서 직접 불러옵니다. 이후 SNAPSHOT이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 같은 배포 커밋의 SVG 원본이 열립니다.
+아래 그림은 `2.0.0` 배포본의 README 자산을 해당 배포 커밋에서 직접 불러옵니다. 이후 SNAPSHOT이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 같은 배포 커밋의 SVG 원본이 열립니다.
 
 ### R2DBC Caffeine local cache 아키텍처
 
-[![R2DBC Caffeine local cache 아키텍처](https://raw.githubusercontent.com/bluetape4k/bluetape4k-exposed/4cc2cce07087241ec24a597d8464615434ea2b81/docs/images/readme-diagrams/exposed-r2dbc-caffeine-diagram-01.png)](https://github.com/bluetape4k/bluetape4k-exposed/blob/4cc2cce07087241ec24a597d8464615434ea2b81/docs/images/readme-diagrams/exposed-r2dbc-caffeine-diagram-01.svg)
+[![R2DBC Caffeine local cache 아키텍처](https://raw.githubusercontent.com/bluetape4k/bluetape4k-exposed/d632a0bc0662ae616b786f552150a7fabd1cee3e/docs/images/readme-diagrams/exposed-r2dbc-caffeine-diagram-01.png)](https://github.com/bluetape4k/bluetape4k-exposed/blob/d632a0bc0662ae616b786f552150a7fabd1cee3e/docs/images/readme-diagrams/exposed-r2dbc-caffeine-diagram-01.svg)
 
-_배포본 README: [`exposed/r2dbc-caffeine/README.ko.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/4cc2cce07087241ec24a597d8464615434ea2b81/exposed/r2dbc-caffeine/README.ko.md)_
+_배포본 README: [`exposed/r2dbc-caffeine/README.ko.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/d632a0bc0662ae616b786f552150a7fabd1cee3e/exposed/r2dbc-caffeine/README.ko.md)_
 
 ### R2DBC Caffeine cache 시퀀스 다이어그램
 
-[![R2DBC Caffeine cache 시퀀스 다이어그램](https://raw.githubusercontent.com/bluetape4k/bluetape4k-exposed/4cc2cce07087241ec24a597d8464615434ea2b81/docs/images/readme-diagrams/exposed-r2dbc-caffeine-sequence-01.png)](https://github.com/bluetape4k/bluetape4k-exposed/blob/4cc2cce07087241ec24a597d8464615434ea2b81/docs/images/readme-diagrams/exposed-r2dbc-caffeine-sequence-01.svg)
+[![R2DBC Caffeine cache 시퀀스 다이어그램](https://raw.githubusercontent.com/bluetape4k/bluetape4k-exposed/d632a0bc0662ae616b786f552150a7fabd1cee3e/docs/images/readme-diagrams/exposed-r2dbc-caffeine-sequence-01.png)](https://github.com/bluetape4k/bluetape4k-exposed/blob/d632a0bc0662ae616b786f552150a7fabd1cee3e/docs/images/readme-diagrams/exposed-r2dbc-caffeine-sequence-01.svg)
 
-_배포본 README: [`exposed/r2dbc-caffeine/README.ko.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/4cc2cce07087241ec24a597d8464615434ea2b81/exposed/r2dbc-caffeine/README.ko.md)_
+_배포본 README: [`exposed/r2dbc-caffeine/README.ko.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/d632a0bc0662ae616b786f552150a7fabd1cee3e/exposed/r2dbc-caffeine/README.ko.md)_
 
 <!-- release-readme-diagrams:end -->

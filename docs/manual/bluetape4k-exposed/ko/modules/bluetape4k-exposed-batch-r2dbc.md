@@ -6,8 +6,7 @@ locale: "ko"
 kind: "library"
 gradlePath: ":bluetape4k-exposed-batch-r2dbc"
 sourceDir: "utils/batch/r2dbc"
-releaseRef: "1.12.1"
-releaseStatus: "develop-only"
+releaseRef: "2.0.0"
 artifact: io.github.bluetape4k.exposed:bluetape4k-exposed-batch-r2dbc
 ---
 

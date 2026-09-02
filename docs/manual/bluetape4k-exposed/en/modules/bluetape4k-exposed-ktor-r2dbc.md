@@ -7,7 +7,6 @@ kind: "library"
 gradlePath: ":bluetape4k-exposed-ktor-r2dbc"
 sourceDir: "ktor/r2dbc"
 releaseRef: "develop"
-releaseStatus: "develop-only"
 artifact: io.github.bluetape4k.exposed:bluetape4k-exposed-ktor-r2dbc
 ---
 
@@ -73,7 +72,7 @@ Run the R2DBC H2 suite and then PostgreSQL/MySQL integration paths. Cover cancel
 
 ## Workshops {#workshops}
 
-No selective R2DBC workshop is published in this develop-only release line.
+No selective R2DBC workshop is published in this `2.0.0` release line.
 
 ## Limitations {#limitations}
 

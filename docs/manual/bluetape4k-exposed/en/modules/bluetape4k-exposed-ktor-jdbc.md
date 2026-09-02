@@ -7,7 +7,6 @@ kind: "library"
 gradlePath: ":bluetape4k-exposed-ktor-jdbc"
 sourceDir: "ktor/jdbc"
 releaseRef: "develop"
-releaseStatus: "develop-only"
 artifact: io.github.bluetape4k.exposed:bluetape4k-exposed-ktor-jdbc
 ---
 
@@ -73,7 +72,7 @@ Test H2 first, then the repository's PostgreSQL and MySQL Testcontainers paths. 
 
 ## Workshops {#workshops}
 
-No selective JDBC workshop is published in this develop-only release line.
+No selective JDBC workshop is published in this `2.0.0` release line.
 
 ## Limitations {#limitations}
 

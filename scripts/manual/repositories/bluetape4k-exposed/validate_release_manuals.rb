@@ -7,7 +7,7 @@ if central
   require_relative "../../lib/central_release_support"
   require_relative "manual_contract"
   begin
-    options = CentralReleaseSupport.parse(ARGV, slug: "exposed", expected_tag: "1.12.1", expected_sha: "4cc2cce07087241ec24a597d8464615434ea2b81")
+    options = CentralReleaseSupport.parse(ARGV, slug: "exposed", expected_tag: "2.0.0", expected_sha: "d632a0bc0662ae616b786f552150a7fabd1cee3e")
     inventory = CentralReleaseSupport.ensure_inventory(options, slug: "exposed")
     errors = ManualDocs::ReleaseContract.new(
       repository_root: options.code_root, manual_root: options.manual_root,

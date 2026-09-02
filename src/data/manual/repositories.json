@@ -26,7 +26,7 @@
         "en": "Exposed docs",
         "ko": "Exposed 문서"
       },
-      "latestMinor": "1.12",
+      "latestMinor": "2.0",
       "manual": {
         "ownership": "central",
         "sourceRoot": "docs/manual/bluetape4k-exposed",

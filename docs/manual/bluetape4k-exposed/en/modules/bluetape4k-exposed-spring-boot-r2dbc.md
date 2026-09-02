@@ -6,7 +6,7 @@ locale: "en"
 kind: "library"
 gradlePath: ":bluetape4k-exposed-spring-boot-r2dbc"
 sourceDir: "spring-boot/r2dbc"
-releaseRef: "1.12.1"
+releaseRef: "2.0.0"
 artifact: io.github.bluetape4k.exposed:bluetape4k-exposed-spring-boot-r2dbc
 ---
 
@@ -106,19 +106,19 @@ This module does not provision connections, manage `R2dbcDatabase` lifecycle, cr
 <!-- release-readme-diagrams:start -->
 ## Release diagrams {#release-diagrams}
 
-These diagrams are loaded directly from README assets published with the `1.12.1` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
+These diagrams are loaded directly from README assets published with the `2.0.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### Spring Boot Exposed R2DBC coroutine repository wiring diagram
 
-[![Spring Boot Exposed R2DBC coroutine repository wiring diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-exposed/4cc2cce07087241ec24a597d8464615434ea2b81/docs/images/readme-diagrams/spring-boot-exposed-r2dbc-diagram-01.png)](https://github.com/bluetape4k/bluetape4k-exposed/blob/4cc2cce07087241ec24a597d8464615434ea2b81/docs/images/readme-diagrams/spring-boot-exposed-r2dbc-diagram-01.svg)
+[![Spring Boot Exposed R2DBC coroutine repository wiring diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-exposed/d632a0bc0662ae616b786f552150a7fabd1cee3e/docs/images/readme-diagrams/spring-boot-exposed-r2dbc-diagram-01.png)](https://github.com/bluetape4k/bluetape4k-exposed/blob/d632a0bc0662ae616b786f552150a7fabd1cee3e/docs/images/readme-diagrams/spring-boot-exposed-r2dbc-diagram-01.svg)
 
-_Release README: [`spring-boot/r2dbc/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/4cc2cce07087241ec24a597d8464615434ea2b81/spring-boot/r2dbc/README.md)_
+_Release README: [`spring-boot/r2dbc/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/d632a0bc0662ae616b786f552150a7fabd1cee3e/spring-boot/r2dbc/README.md)_
 
 ### Spring Boot Exposed R2DBC suspend query flow diagram
 
-[![Spring Boot Exposed R2DBC suspend query flow diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-exposed/4cc2cce07087241ec24a597d8464615434ea2b81/docs/images/readme-diagrams/spring-boot-exposed-r2dbc-diagram-02.png)](https://github.com/bluetape4k/bluetape4k-exposed/blob/4cc2cce07087241ec24a597d8464615434ea2b81/docs/images/readme-diagrams/spring-boot-exposed-r2dbc-diagram-02.svg)
+[![Spring Boot Exposed R2DBC suspend query flow diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-exposed/d632a0bc0662ae616b786f552150a7fabd1cee3e/docs/images/readme-diagrams/spring-boot-exposed-r2dbc-diagram-02.png)](https://github.com/bluetape4k/bluetape4k-exposed/blob/d632a0bc0662ae616b786f552150a7fabd1cee3e/docs/images/readme-diagrams/spring-boot-exposed-r2dbc-diagram-02.svg)
 
-_Release README: [`spring-boot/r2dbc/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/4cc2cce07087241ec24a597d8464615434ea2b81/spring-boot/r2dbc/README.md)_
+_Release README: [`spring-boot/r2dbc/README.md`](https://github.com/bluetape4k/bluetape4k-exposed/blob/d632a0bc0662ae616b786f552150a7fabd1cee3e/spring-boot/r2dbc/README.md)_
 
 <!-- release-readme-diagrams:end -->
 

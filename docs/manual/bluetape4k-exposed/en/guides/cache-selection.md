@@ -1,7 +1,7 @@
 ---
 title: "Choosing a Cache Backend"
 locale: "en"
-releaseRef: "1.12.1"
+releaseRef: "2.0.0"
 ---
 
 # Choosing a Cache Backend

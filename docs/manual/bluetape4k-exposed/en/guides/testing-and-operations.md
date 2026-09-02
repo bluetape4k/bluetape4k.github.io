@@ -1,7 +1,7 @@
 ---
 title: "Testing and Operations"
 locale: "en"
-releaseRef: "1.12.1"
+releaseRef: "2.0.0"
 ---
 
 # Testing and Operations
@@ -68,6 +68,6 @@ Continue with the [benchmark module](../modules/benchmark-exposed-benchmark.md) 
 ## Sources
 
 - [Module registry](../../../../settings.gradle.kts)
-- [Lightweight batch tests](https://github.com/bluetape4k/bluetape4k-exposed/blob/4cc2cce07087241ec24a597d8464615434ea2b81/utils/batch/src/test/kotlin/io/bluetape4k/batch/core/BatchStepRunnerTest.kt)
+- [Lightweight batch tests](https://github.com/bluetape4k/bluetape4k-exposed/blob/d632a0bc0662ae616b786f552150a7fabd1cee3e/utils/batch/src/test/kotlin/io/bluetape4k/batch/core/BatchStepRunnerTest.kt)
 - [Spring Batch tests](../../../../spring-boot/batch-exposed/src/test/kotlin/io/bluetape4k/spring/batch/exposed/integration/RestartIntegrationTest.kt)
 - [Benchmark build](../../../../benchmark/exposed-benchmark/build.gradle.kts)

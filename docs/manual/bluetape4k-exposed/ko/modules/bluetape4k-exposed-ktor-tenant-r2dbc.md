@@ -7,7 +7,6 @@ kind: "library"
 gradlePath: ":bluetape4k-exposed-ktor-tenant-r2dbc"
 sourceDir: "ktor/tenant-r2dbc"
 releaseRef: "develop"
-releaseStatus: "develop-only"
 artifact: io.github.bluetape4k.exposed:bluetape4k-exposed-ktor-tenant-r2dbc
 ---
 
@@ -148,7 +147,7 @@ routing, concurrent call 격리와 취소 재전파를 검증하세요. 먼저 H
 
 ## 워크숍 {#workshops}
 
-이 develop-only release line에는 선택형 tenant R2DBC workshop이 없습니다.
+이 `2.0.0` release line에는 선택형 tenant R2DBC workshop이 없습니다.
 
 ## 제한 사항 {#limitations}
 

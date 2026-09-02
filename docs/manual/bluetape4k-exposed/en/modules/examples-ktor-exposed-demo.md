@@ -6,7 +6,7 @@ locale: "en"
 kind: "example"
 gradlePath: ":examples-ktor-exposed-demo"
 sourceDir: "examples/ktor-exposed-demo"
-releaseRef: "1.12.1"
+releaseRef: "2.0.0"
 artifact: null
 ---
 
@@ -73,21 +73,21 @@ Use this example to validate a Ktor application's plugin order, database ownersh
 
 ## Coordinates {#coordinates}
 
-This application is not published as a library. Consumer builds should import the central BOM and omit versions from individual bluetape4k dependencies. The develop migration uses the backend-selective artifacts explicitly:
+This application is not published as a library. Consumer builds should import the central BOM and omit versions from individual bluetape4k dependencies. Stable 2.0 consumers can select backend-specific artifacts explicitly:
 
 ```kotlin
 dependencies {
     implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:<version>"))
-    implementation("io.github.bluetape4k:bluetape4k-exposed-ktor-core")
-    implementation("io.github.bluetape4k:bluetape4k-exposed-ktor-jdbc")
-    implementation("io.github.bluetape4k:bluetape4k-exposed-ktor-r2dbc")
-    implementation("io.github.bluetape4k:bluetape4k-exposed-ktor-cache")
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-ktor-core")
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-ktor-jdbc")
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-ktor-r2dbc")
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-ktor-cache")
 }
 ```
 
-The selective coordinates are develop-only during the 2.0 migration. A stable `1.12.1` consumer must keep using `io.github.bluetape4k.exposed:bluetape4k-exposed-ktor` until the child artifacts are published.
+The selective coordinates are published in stable `2.0.0`. Existing consumers may keep `io.github.bluetape4k.exposed:bluetape4k-exposed-ktor`; new consumers should prefer the backend-specific child artifacts.
 
-The repository example additionally uses its managed Ktor and Exposed BOM catalogs so all demonstration dependencies stay aligned with release `1.12.1`.
+The repository example additionally uses its managed Ktor and Exposed BOM catalogs so all demonstration dependencies stay aligned with release `2.0.0`.
 
 ## Core concepts {#concepts}
 
@@ -148,7 +148,7 @@ The H2 JDBC portion is deterministic but does not reproduce a production databas
 
 ## Sources {#sources}
 
-- [Application setup at release 1.12.1](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.12.1/examples/ktor-exposed-demo/src/main/kotlin/io/bluetape4k/examples/exposed/ktor/KtorExposedDemoApplication.kt)
-- [Resource ownership at release 1.12.1](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.12.1/examples/ktor-exposed-demo/src/main/kotlin/io/bluetape4k/examples/exposed/ktor/KtorExposedDemoResources.kt)
-- [Integration test at release 1.12.1](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.12.1/examples/ktor-exposed-demo/src/test/kotlin/io/bluetape4k/examples/exposed/ktor/KtorExposedDemoApplicationTest.kt)
-- [Gradle build at release 1.12.1](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.12.1/examples/ktor-exposed-demo/build.gradle.kts)
+- [Application setup at release 2.0.0](https://github.com/bluetape4k/bluetape4k-exposed/blob/2.0.0/examples/ktor-exposed-demo/src/main/kotlin/io/bluetape4k/examples/exposed/ktor/KtorExposedDemoApplication.kt)
+- [Resource ownership at release 2.0.0](https://github.com/bluetape4k/bluetape4k-exposed/blob/2.0.0/examples/ktor-exposed-demo/src/main/kotlin/io/bluetape4k/examples/exposed/ktor/KtorExposedDemoResources.kt)
+- [Integration test at release 2.0.0](https://github.com/bluetape4k/bluetape4k-exposed/blob/2.0.0/examples/ktor-exposed-demo/src/test/kotlin/io/bluetape4k/examples/exposed/ktor/KtorExposedDemoApplicationTest.kt)
+- [Gradle build at release 2.0.0](https://github.com/bluetape4k/bluetape4k-exposed/blob/2.0.0/examples/ktor-exposed-demo/build.gradle.kts)

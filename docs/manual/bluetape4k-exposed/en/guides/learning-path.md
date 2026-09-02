@@ -2,7 +2,7 @@
 manualId: "learning-path"
 title: "Exposed Learning Path"
 locale: "en"
-releaseRef: "1.12.1"
+releaseRef: "2.0.0"
 ---
 
 # Exposed Learning Path

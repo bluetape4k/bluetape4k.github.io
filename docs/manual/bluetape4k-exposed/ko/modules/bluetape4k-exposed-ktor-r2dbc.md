@@ -7,7 +7,6 @@ kind: "library"
 gradlePath: ":bluetape4k-exposed-ktor-r2dbc"
 sourceDir: "ktor/r2dbc"
 releaseRef: "develop"
-releaseStatus: "develop-only"
 artifact: io.github.bluetape4k.exposed:bluetape4k-exposed-ktor-r2dbc
 ---
 
@@ -73,7 +72,7 @@ R2DBC H2 suite 뒤에 PostgreSQL/MySQL integration 경로를 실행합니다. �
 
 ## 워크숍 {#workshops}
 
-이 develop-only release line에는 선택형 R2DBC workshop이 없습니다.
+이 `2.0.0` release line에는 선택형 R2DBC workshop이 없습니다.
 
 ## 제한 사항 {#limitations}
 

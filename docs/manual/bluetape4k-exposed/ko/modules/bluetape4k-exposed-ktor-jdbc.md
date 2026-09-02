@@ -7,7 +7,6 @@ kind: "library"
 gradlePath: ":bluetape4k-exposed-ktor-jdbc"
 sourceDir: "ktor/jdbc"
 releaseRef: "develop"
-releaseStatus: "develop-only"
 artifact: io.github.bluetape4k.exposed:bluetape4k-exposed-ktor-jdbc
 ---
 
@@ -73,7 +72,7 @@ H2를 먼저 실행한 뒤 PostgreSQL과 MySQL Testcontainers 경로를 순서�
 
 ## 워크숍 {#workshops}
 
-이 develop-only release line에는 선택형 JDBC workshop이 없습니다.
+이 `2.0.0` release line에는 선택형 JDBC workshop이 없습니다.
 
 ## 제한 사항 {#limitations}
 

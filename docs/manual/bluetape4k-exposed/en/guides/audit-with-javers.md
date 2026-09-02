@@ -1,7 +1,7 @@
 ---
 title: "Audit History with JaVers"
 locale: "en"
-releaseRef: "1.12.1"
+releaseRef: "2.0.0"
 ---
 
 # Audit History with JaVers
