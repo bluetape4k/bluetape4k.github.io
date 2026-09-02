@@ -2,7 +2,7 @@
 manualId: "runtime-boundaries"
 title: "Runtime Boundaries"
 locale: "en"
-releaseRef: "0.4.0"
+releaseRef: "1.0.0"
 ---
 
 # Runtime Boundaries
@@ -40,5 +40,5 @@ For every path, document:
 
 ## Sources
 
-- [VipsImage lifecycle contract](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/images-vips-api/src/main/kotlin/io/bluetape4k/images/vips/VipsImage.kt)
-- [OCR engine implementation](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/images-ocr/src/main/kotlin/io/bluetape4k/images/ocr/TesseractOcrEngine.kt)
+- [VipsImage lifecycle contract](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/images-vips-api/src/main/kotlin/io/bluetape4k/images/vips/VipsImage.kt)
+- [OCR engine implementation](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/images-ocr/src/main/kotlin/io/bluetape4k/images/ocr/TesseractOcrEngine.kt)

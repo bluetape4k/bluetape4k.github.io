@@ -2,7 +2,7 @@
 manualId: "failure-diagnosis"
 title: "실패 진단"
 locale: "ko"
-releaseRef: "0.4.0"
+releaseRef: "1.0.0"
 ---
 
 # 실패 진단
@@ -33,5 +33,5 @@ releaseRef: "0.4.0"
 
 ## 근거 소스
 
-- [릴리스 문제 해결 안내](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/README.ko.md#libvips-시작-문제-해결)
-- [Storage 예외 계층](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/images-spring-boot/src/main/kotlin/io/bluetape4k/images/spring/ImageStorageException.kt)
+- [릴리스 문제 해결 안내](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/README.ko.md#libvips-시작-문제-해결)
+- [Storage 예외 계층](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/images-spring-boot/src/main/kotlin/io/bluetape4k/images/spring/ImageStorageException.kt)

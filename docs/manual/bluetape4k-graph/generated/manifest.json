@@ -136,6 +136,21 @@
       "status": "stable"
     },
     {
+      "artifact": "io.github.bluetape4k.graph:bluetape4k-graph-io-micrometer",
+      "en": "en/modules/bluetape4k-graph-io-micrometer.md",
+      "gradlePath": ":bluetape4k-graph-io-micrometer",
+      "group": "graph-io",
+      "id": "bluetape4k-graph-io-micrometer",
+      "kind": "library",
+      "ko": "ko/modules/bluetape4k-graph-io-micrometer.md",
+      "projectName": "bluetape4k-graph-io-micrometer",
+      "sourceDir": "graph-io/micrometer",
+      "sourcePaths": [
+        "graph-io/micrometer"
+      ],
+      "status": "stable"
+    },
+    {
       "artifact": "io.github.bluetape4k.graph:bluetape4k-graph-ktor",
       "en": "en/modules/bluetape4k-graph-ktor.md",
       "gradlePath": ":bluetape4k-graph-ktor",
@@ -531,12 +546,12 @@
     }
   },
   "publication": {
-    "contentStatus": "in-progress",
+    "contentStatus": "complete",
     "locales": [
       "en",
       "ko"
     ],
-    "manualVersion": "0.6",
+    "manualVersion": "1.0",
     "migratedFrom": {
       "manualLastCommit": "a234d7cfd0cd41381982720d06395e5b51226702",
       "path": "docs/manual",
@@ -547,11 +562,11 @@
     "sourceRoot": "docs/manual/bluetape4k-graph",
     "toolingRoot": "scripts/manual/repositories/bluetape4k-graph"
   },
-  "releaseCommit": "72c0256e2e1cf61101d29852210e3c827ca93bc0",
-  "releaseRef": "0.6.0",
-  "releaseTag": "0.6.0",
+  "releaseCommit": "a405300799b36d4d6edb7267ad07ff34d4ad3afe",
+  "releaseRef": "1.0.0",
+  "releaseTag": "1.0.0",
   "repository": "bluetape4k-graph",
   "schemaVersion": 2,
-  "stableMinor": "0.6",
-  "stableVersion": "0.6.0"
+  "stableMinor": "1.0",
+  "stableVersion": "1.0.0"
 }

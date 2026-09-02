@@ -1,13 +1,13 @@
 ---
 schemaVersion: 2
 repository: bluetape4k-text
-stableVersion: 0.3.0
-stableMinor: '0.3'
-releaseTag: 0.3.0
-releaseRef: 0.3.0
-releaseCommit: aead213d2d25307d7d3684226943a5f95c7411f2
+stableVersion: 1.0.0
+stableMinor: '1.0'
+releaseTag: 1.0.0
+releaseRef: 1.0.0
+releaseCommit: 59256aea7011d3f9073d74470459a13363150153
 publication:
-  manualVersion: '0.3'
+  manualVersion: '1.0'
   sourceRoot: docs/manual/bluetape4k-text
   toolingRoot: scripts/manual/repositories/bluetape4k-text
   ownership: central
@@ -19,7 +19,7 @@ publication:
   locales:
   - en
   - ko
-  contentStatus: in-progress
+  contentStatus: complete
 overview:
   documents:
     en:

@@ -6,7 +6,7 @@ locale: "ko"
 kind: "example"
 gradlePath: ":spring-boot-barcode-api"
 sourceDir: "examples/spring-boot-barcode-api"
-releaseRef: "0.4.0"
+releaseRef: "1.0.0"
 artifact: null
 ---
 

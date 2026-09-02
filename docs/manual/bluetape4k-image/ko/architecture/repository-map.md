@@ -2,12 +2,12 @@
 manualId: "repository-map"
 title: "저장소 지도"
 locale: "ko"
-releaseRef: "0.4.0"
+releaseRef: "1.0.0"
 ---
 
 # 저장소 지도
 
-0.4.0 릴리스에는 Gradle 프로젝트 19개가 있다. 10개는 라이브러리 Maven 좌표로 배포하고, 1개는 이미지 BOM이며, 7개는 실행 예제, 1개는 벤치마크 프로젝트다. 프로젝트 디렉터리와 Gradle 경로, 아티팩트 이름이 항상 같지는 않으므로 릴리스의 <code>settings.gradle.kts</code>를 정확한 목록으로 삼는다.
+1.0.0 릴리스에는 Gradle 프로젝트 19개가 있다. 10개는 라이브러리 Maven 좌표로 배포하고, 1개는 이미지 BOM이며, 7개는 실행 예제, 1개는 벤치마크 프로젝트다. 프로젝트 디렉터리와 Gradle 경로, 아티팩트 이름이 항상 같지는 않으므로 릴리스의 <code>settings.gradle.kts</code>를 정확한 목록으로 삼는다.
 
 ## 플랫폼과 기반
 
@@ -38,23 +38,23 @@ releaseRef: "0.4.0"
 <!-- release-readme-diagrams:start -->
 ## 배포본 다이어그램 {#release-diagrams}
 
-아래 그림은 `0.4.0` 배포본의 README 자산을 해당 배포 커밋에서 직접 불러옵니다. 이후 SNAPSHOT이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 같은 배포 커밋의 SVG 원본이 열립니다.
+아래 그림은 `1.0.0` 배포본의 README 자산을 해당 배포 커밋에서 직접 불러옵니다. 이후 SNAPSHOT이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 같은 배포 커밋의 SVG 원본이 열립니다.
 
 ### Bluetape4k Image 아키텍처
 
-[![Bluetape4k Image 아키텍처](https://raw.githubusercontent.com/bluetape4k/bluetape4k-image/ea5175b083babf8880f53cf80c9a264a0c61777e/docs/images/readme-diagrams/bluetape4k-image-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/docs/images/readme-diagrams/bluetape4k-image-architecture-01.svg)
+[![Bluetape4k Image 아키텍처](https://raw.githubusercontent.com/bluetape4k/bluetape4k-image/b38d4891b66dff8bc63db0018b5e41810d1da9bc/docs/images/readme-diagrams/bluetape4k-image-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/docs/images/readme-diagrams/bluetape4k-image-architecture-01.svg)
 
-_배포본 README: [`README.ko.md`](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/README.ko.md)_
+_배포본 README: [`README.ko.md`](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/README.ko.md)_
 
 ### Bluetape4k Image 개요
 
-[![Bluetape4k Image 개요](https://raw.githubusercontent.com/bluetape4k/bluetape4k-image/ea5175b083babf8880f53cf80c9a264a0c61777e/docs/images/readme-diagrams/root-readme-overview-01.png)](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/docs/images/readme-diagrams/root-readme-overview-01.svg)
+[![Bluetape4k Image 개요](https://raw.githubusercontent.com/bluetape4k/bluetape4k-image/b38d4891b66dff8bc63db0018b5e41810d1da9bc/docs/images/readme-diagrams/root-readme-overview-01.png)](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/docs/images/readme-diagrams/root-readme-overview-01.svg)
 
-_배포본 README: [`README.ko.md`](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/README.ko.md)_
+_배포본 README: [`README.ko.md`](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/README.ko.md)_
 
 <!-- release-readme-diagrams:end -->
 
 ## 근거 소스
 
-- [0.4.0 프로젝트 등록부](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/settings.gradle.kts#L84-L123)
-- [배포 대상 판정 규칙](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/build.gradle.kts#L46-L58)
+- [1.0.0 프로젝트 등록부](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/settings.gradle.kts#L84-L123)
+- [배포 대상 판정 규칙](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/build.gradle.kts#L46-L58)

@@ -2,7 +2,7 @@
 manualId: "performance-selection"
 title: "성능 선택"
 locale: "ko"
-releaseRef: "0.4.0"
+releaseRef: "1.0.0"
 ---
 
 # 성능 선택
@@ -15,7 +15,7 @@ releaseRef: "0.4.0"
 
 ## Benchmark 행 읽기
 
-지표의 방향을 먼저 확인한다. 평균 지연 시간은 낮을수록 좋고 처리량은 높을수록 좋다. JDK, 백엔드, 테스트 이미지, 워밍업, 반복 횟수와 GC/네이티브 메모리 포함 여부를 함께 본다. 0.4.0 보고서에는 리사이즈, 인코딩, 필터, 처리 과정의 할당량, I/O 경계, 파일 처리량, 대용량 스트리밍과 메모리 자료가 있다.
+지표의 방향을 먼저 확인한다. 평균 지연 시간은 낮을수록 좋고 처리량은 높을수록 좋다. JDK, 백엔드, 테스트 이미지, 워밍업, 반복 횟수와 GC/네이티브 메모리 포함 여부를 함께 본다. 1.0.0 보고서에는 리사이즈, 인코딩, 필터, 처리 과정의 할당량, I/O 경계, 파일 처리량, 대용량 스트리밍과 메모리 자료가 있다.
 
 ## 운영 예산 정하기
 
@@ -33,5 +33,5 @@ releaseRef: "0.4.0"
 
 ## 근거 소스
 
-- [릴리스 벤치마크 안내](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/benchmark/images-benchmark/README.ko.md)
-- [릴리스 벤치마크 보고서](https://github.com/bluetape4k/bluetape4k-image/tree/ea5175b083babf8880f53cf80c9a264a0c61777e/benchmark/images-benchmark/docs)
+- [릴리스 벤치마크 안내](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/benchmark/images-benchmark/README.ko.md)
+- [릴리스 벤치마크 보고서](https://github.com/bluetape4k/bluetape4k-image/tree/b38d4891b66dff8bc63db0018b5e41810d1da9bc/benchmark/images-benchmark/docs)

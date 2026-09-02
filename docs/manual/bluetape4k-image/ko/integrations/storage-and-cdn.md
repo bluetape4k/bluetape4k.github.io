@@ -2,7 +2,7 @@
 manualId: "storage-and-cdn"
 title: "Storage와 CDN"
 locale: "ko"
-releaseRef: "0.4.0"
+releaseRef: "1.0.0"
 ---
 
 # Storage와 CDN
@@ -29,5 +29,5 @@ CloudFront 서명으로 접근 시간을 제한한 URL을 만들 수 있지만 S
 
 ## 근거 소스
 
-- [ImageStorage 계약](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/images-spring-boot/src/main/kotlin/io/bluetape4k/images/spring/storage/ImageStorage.kt)
-- [S3 구현](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/images-spring-boot/src/main/kotlin/io/bluetape4k/images/spring/storage/s3/S3ImageStorage.kt)
+- [ImageStorage 계약](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/images-spring-boot/src/main/kotlin/io/bluetape4k/images/spring/storage/ImageStorage.kt)
+- [S3 구현](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/images-spring-boot/src/main/kotlin/io/bluetape4k/images/spring/storage/s3/S3ImageStorage.kt)

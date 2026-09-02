@@ -8,7 +8,7 @@ chapterId: auto-configuration-conditions
 # Auto-configuration conditions and ordering
 
 > Contract scope: **2.0.0 current contract** on `develop`. The stable rollback
-> reference remains [1.12.1](https://github.com/bluetape4k/bluetape4k-projects/releases/tag/1.12.1).
+> reference remains [2.0.0](https://github.com/bluetape4k/bluetape4k-projects/releases/tag/2.0.0).
 
 ## Three configuration classes
 

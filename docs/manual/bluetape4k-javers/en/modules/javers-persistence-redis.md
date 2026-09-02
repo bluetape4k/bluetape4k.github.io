@@ -39,13 +39,13 @@ try {
 }
 ```
 
-This manual is pinned to the `0.3.0` release source. That release does not
+This manual is pinned to the `1.0.0` release source. That release does not
 provide a terminal close guard: an operation after `close()` can reopen a lazy
 connection that was never initialized. The terminal lifecycle contract was
-fixed after `0.3.0`; use the current module README when targeting the `0.4.0`
+fixed after `1.0.0`; use the current module README when targeting the `0.4.0`
 development line.
 
-Lettuce stores newest-first snapshot bytes in `javers:{name}:snapshot:{globalId}`, a GlobalId index in `javers:{name}:globalId:set`, and commit sequences in `javers:{name}:sequence:set`. The snapshot list push and GlobalId index update share one Redis transaction. The later sequence update from the inherited persist loop is separate. See [`LettuceCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/LettuceCdoSnapshotRepository.kt).
+Lettuce stores newest-first snapshot bytes in `javers:{name}:snapshot:{globalId}`, a GlobalId index in `javers:{name}:globalId:set`, and commit sequences in `javers:{name}:sequence:set`. The snapshot list push and GlobalId index update share one Redis transaction. The later sequence update from the inherited persist loop is separate. See [`LettuceCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/6648b73333cb665ecba0340588dbc3556c308a52/javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/LettuceCdoSnapshotRepository.kt).
 
 ## Redisson quick start
 
@@ -75,7 +75,7 @@ try {
 }
 ```
 
-Redisson stores per-GlobalId snapshot lists in `javers:{name}:snapshot` and commit sequences in `javers:{name}:sequence`. A snapshot append and the later sequence update are separate remote operations. The implementation is [`RedissonCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/RedissonCdoSnapshotRepository.kt).
+Redisson stores per-GlobalId snapshot lists in `javers:{name}:snapshot` and commit sequences in `javers:{name}:sequence`. A snapshot append and the later sequence update are separate remote operations. The implementation is [`RedissonCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/6648b73333cb665ecba0340588dbc3556c308a52/javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/RedissonCdoSnapshotRepository.kt).
 
 Both repositories default to the LZ4/Fory codec, return newest snapshots first, and scan the sequence map to restore the latest head after reconstruction.
 
@@ -93,7 +93,7 @@ Decoding uses `mapNotNull`; corrupt or incompatible bytes may disappear from que
 ./gradlew :javers-persistence-redis:test
 ```
 
-The release runs Lettuce and Redisson commit/shadow suites against Redis Testcontainers and verifies head restoration after repository reconstruction in [`LettuceJaversCommitTest.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-persistence-redis/src/test/kotlin/io/bluetape4k/javers/persistence/redis/repository/LettuceJaversCommitTest.kt) and [`RedissonJaversCommitTest.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-persistence-redis/src/test/kotlin/io/bluetape4k/javers/persistence/redis/repository/RedissonJaversCommitTest.kt).
+The release runs Lettuce and Redisson commit/shadow suites against Redis Testcontainers and verifies head restoration after repository reconstruction in [`LettuceJaversCommitTest.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/6648b73333cb665ecba0340588dbc3556c308a52/javers-persistence-redis/src/test/kotlin/io/bluetape4k/javers/persistence/redis/repository/LettuceJaversCommitTest.kt) and [`RedissonJaversCommitTest.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/6648b73333cb665ecba0340588dbc3556c308a52/javers-persistence-redis/src/test/kotlin/io/bluetape4k/javers/persistence/redis/repository/RedissonJaversCommitTest.kt).
 
 ## Non-goals
 

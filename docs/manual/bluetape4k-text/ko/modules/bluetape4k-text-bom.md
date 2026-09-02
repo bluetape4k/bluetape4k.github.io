@@ -24,7 +24,7 @@ Text 모듈만 독립적으로 관리한다면 전용 BOM을 가져온다.
 
 ```kotlin
 dependencies {
-    implementation(platform("io.github.bluetape4k.text:bluetape4k-text-bom:0.3.0"))
+    implementation(platform("io.github.bluetape4k.text:bluetape4k-text-bom:1.0.0"))
     implementation("io.github.bluetape4k.text:tokenizer-korean")
 }
 ```
@@ -49,18 +49,18 @@ BOM은 호환 좌표를 정렬하지만 런타임 조합이 맞는지는 검사�
 
 ## 소스 근거
 
-- [BOM README](https://github.com/bluetape4k/bluetape4k-text/blob/0.3.0/bom/README.md)
-- [BOM 빌드](https://github.com/bluetape4k/bluetape4k-text/blob/0.3.0/bom/build.gradle.kts)
+- [BOM README](https://github.com/bluetape4k/bluetape4k-text/blob/1.0.0/bom/README.md)
+- [BOM 빌드](https://github.com/bluetape4k/bluetape4k-text/blob/1.0.0/bom/build.gradle.kts)
 
 <!-- release-readme-diagrams:start -->
 ## 배포본 다이어그램 {#release-diagrams}
 
-아래 그림은 `0.3.0` 배포본의 README 자산을 해당 배포 커밋에서 직접 불러옵니다. 이후 SNAPSHOT이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 같은 배포 커밋의 SVG 원본이 열립니다.
+아래 그림은 `1.0.0` 배포본의 README 자산을 해당 배포 커밋에서 직접 불러옵니다. 이후 SNAPSHOT이 아니라 이 매뉴얼 버전의 구조와 실행 흐름을 보여 줍니다. 미리보기를 누르면 같은 배포 커밋의 SVG 원본이 열립니다.
 
 ### bom 아키텍처
 
-[![bom 아키텍처](https://raw.githubusercontent.com/bluetape4k/bluetape4k-text/aead213d2d25307d7d3684226943a5f95c7411f2/docs/images/readme-diagrams/bom-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-text/blob/aead213d2d25307d7d3684226943a5f95c7411f2/docs/images/readme-diagrams/bom-architecture-01.svg)
+[![bom 아키텍처](https://raw.githubusercontent.com/bluetape4k/bluetape4k-text/59256aea7011d3f9073d74470459a13363150153/docs/images/readme-diagrams/bom-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-text/blob/59256aea7011d3f9073d74470459a13363150153/docs/images/readme-diagrams/bom-architecture-01.svg)
 
-_배포본 README: [`bom/README.ko.md`](https://github.com/bluetape4k/bluetape4k-text/blob/aead213d2d25307d7d3684226943a5f95c7411f2/bom/README.ko.md)_
+_배포본 README: [`bom/README.ko.md`](https://github.com/bluetape4k/bluetape4k-text/blob/59256aea7011d3f9073d74470459a13363150153/bom/README.ko.md)_
 
 <!-- release-readme-diagrams:end -->

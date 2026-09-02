@@ -2,7 +2,7 @@
 
 ## Before you run
 
-This module defines format-neutral import/export contracts, record models, options, reports, progress, path sources/sinks, and external-ID mapping. Use it to implement a format or to depend on shared report types. Choose a concrete format module for actual files. Contracts: [GraphBulkImporter.kt](https://github.com/bluetape4k/bluetape4k-graph/blob/72c0256e2e1cf61101d29852210e3c827ca93bc0/graph-io/core/src/main/kotlin/io/bluetape4k/graph/io/contract/GraphBulkImporter.kt) and [GraphBulkExporter.kt](https://github.com/bluetape4k/bluetape4k-graph/blob/72c0256e2e1cf61101d29852210e3c827ca93bc0/graph-io/core/src/main/kotlin/io/bluetape4k/graph/io/contract/GraphBulkExporter.kt).
+This module defines format-neutral import/export contracts, record models, options, reports, progress, path sources/sinks, and external-ID mapping. Use it to implement a format or to depend on shared report types. Choose a concrete format module for actual files. Contracts: [GraphBulkImporter.kt](https://github.com/bluetape4k/bluetape4k-graph/blob/a405300799b36d4d6edb7267ad07ff34d4ad3afe/graph-io/core/src/main/kotlin/io/bluetape4k/graph/io/contract/GraphBulkImporter.kt) and [GraphBulkExporter.kt](https://github.com/bluetape4k/bluetape4k-graph/blob/a405300799b36d4d6edb7267ad07ff34d4ad3afe/graph-io/core/src/main/kotlin/io/bluetape4k/graph/io/contract/GraphBulkExporter.kt).
 
 
 Execution mode: **release-fixture linked**. The snippet uses the Jackson 3 implementation and a fixture-provided `operations: GraphOperations`; the linked round-trip test constructs source/target operations, seeds records, owns the temporary path, and closes every resource.
@@ -17,7 +17,7 @@ dependencies {
 }
 ```
 
-`GraphIoVertexRecord` and `GraphIoEdgeRecord` carry external string IDs. Importers map them to backend `GraphElementId` values with [GraphIoExternalIdMap.kt](https://github.com/bluetape4k/bluetape4k-graph/blob/72c0256e2e1cf61101d29852210e3c827ca93bc0/graph-io/core/src/main/kotlin/io/bluetape4k/graph/io/support/GraphIoExternalIdMap.kt). They are interchange identities, not promises about backend IDs.
+`GraphIoVertexRecord` and `GraphIoEdgeRecord` carry external string IDs. Importers map them to backend `GraphElementId` values with [GraphIoExternalIdMap.kt](https://github.com/bluetape4k/bluetape4k-graph/blob/a405300799b36d4d6edb7267ad07ff34d4ad3afe/graph-io/core/src/main/kotlin/io/bluetape4k/graph/io/support/GraphIoExternalIdMap.kt). They are interchange identities, not promises about backend IDs.
 
 ```kotlin
 val options = GraphImportOptions(
@@ -62,7 +62,7 @@ Expected: external-ID policy and execution adapters pass without a concrete file
 
 ## Complete release example
 
-The pinned [Jackson3RoundTripTest](https://github.com/bluetape4k/bluetape4k-graph/blob/72c0256e2e1cf61101d29852210e3c827ca93bc0/graph-io/jackson3/src/test/kotlin/io/bluetape4k/graph/io/jackson3/Jackson3RoundTripTest.kt) defines every fixture variable and is the complete executable release example. Run:
+The pinned [Jackson3RoundTripTest](https://github.com/bluetape4k/bluetape4k-graph/blob/a405300799b36d4d6edb7267ad07ff34d4ad3afe/graph-io/jackson3/src/test/kotlin/io/bluetape4k/graph/io/jackson3/Jackson3RoundTripTest.kt) defines every fixture variable and is the complete executable release example. Run:
 
 ```bash
 ./gradlew :bluetape4k-graph-io-jackson3:test --tests '*Jackson3RoundTripTest'

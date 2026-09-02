@@ -1,13 +1,13 @@
 ---
 schemaVersion: 2
 repository: bluetape4k-graph
-stableVersion: 0.6.0
-stableMinor: '0.6'
-releaseTag: 0.6.0
-releaseRef: 0.6.0
-releaseCommit: 72c0256e2e1cf61101d29852210e3c827ca93bc0
+stableVersion: 1.0.0
+stableMinor: '1.0'
+releaseTag: 1.0.0
+releaseRef: 1.0.0
+releaseCommit: a405300799b36d4d6edb7267ad07ff34d4ad3afe
 publication:
-  manualVersion: '0.6'
+  manualVersion: '1.0'
   sourceRoot: docs/manual/bluetape4k-graph
   toolingRoot: scripts/manual/repositories/bluetape4k-graph
   ownership: central
@@ -19,7 +19,7 @@ publication:
   locales:
   - en
   - ko
-  contentStatus: in-progress
+  contentStatus: complete
 overview:
   documents:
     en:
@@ -188,6 +188,18 @@ modules:
   - graph-io/jackson3
   en: en/modules/bluetape4k-graph-io-jackson3.md
   ko: ko/modules/bluetape4k-graph-io-jackson3.md
+- id: bluetape4k-graph-io-micrometer
+  gradlePath: ":bluetape4k-graph-io-micrometer"
+  projectName: bluetape4k-graph-io-micrometer
+  sourceDir: graph-io/micrometer
+  kind: library
+  group: graph-io
+  artifact: io.github.bluetape4k.graph:bluetape4k-graph-io-micrometer
+  status: stable
+  sourcePaths:
+  - graph-io/micrometer
+  en: en/modules/bluetape4k-graph-io-micrometer.md
+  ko: ko/modules/bluetape4k-graph-io-micrometer.md
 - id: bluetape4k-graph-ktor
   gradlePath: ":bluetape4k-graph-ktor"
   projectName: bluetape4k-graph-ktor

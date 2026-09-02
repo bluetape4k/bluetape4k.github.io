@@ -2,7 +2,7 @@
 manualId: "native-resource-lifecycle"
 title: "Native 자원 수명 주기"
 locale: "ko"
-releaseRef: "0.4.0"
+releaseRef: "1.0.0"
 ---
 
 # Native 자원 수명 주기
@@ -27,7 +27,7 @@ libvips 이미지는 GC에만 맡길 수 있는 일반 값이 아니다. <code>V
 
 ## Native 테스트 격리하기
 
-0.4.0 빌드는 JNI와 FFM 테스트를 클래스마다 새 포크에서 실행하고 병렬 포크를 1개로 제한한다. CI 작업을 나눌 때도 이 격리를 유지한다. 네이티브 실패는 프로세스 상태를 망가뜨릴 수 있고 두 백엔드는 전역 라이브러리 상태를 두고 충돌할 수 있다.
+1.0.0 빌드는 JNI와 FFM 테스트를 클래스마다 새 포크에서 실행하고 병렬 포크를 1개로 제한한다. CI 작업을 나눌 때도 이 격리를 유지한다. 네이티브 실패는 프로세스 상태를 망가뜨릴 수 있고 두 백엔드는 전역 라이브러리 상태를 두고 충돌할 수 있다.
 
 ## 취소와 부분 출력
 
@@ -35,6 +35,6 @@ libvips 이미지는 GC에만 맡길 수 있는 일반 값이 아니다. <code>V
 
 ## 근거 소스
 
-- [VipsImage 계약](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/images-vips-api/src/main/kotlin/io/bluetape4k/images/vips/VipsImage.kt)
-- [JDK 25 JVips 테스트 격리(legacy java21 모듈)](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/images-vips-java21/build.gradle.kts)
-- [JDK 25 FFM 테스트 격리](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/images-vips-java25/build.gradle.kts)
+- [VipsImage 계약](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/images-vips-api/src/main/kotlin/io/bluetape4k/images/vips/VipsImage.kt)
+- [JDK 25 JVips 테스트 격리(legacy java21 모듈)](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/images-vips-java21/build.gradle.kts)
+- [JDK 25 FFM 테스트 격리](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/images-vips-java25/build.gradle.kts)

@@ -6,7 +6,7 @@ locale: "en"
 kind: "library"
 gradlePath: ":bluetape4k-images-captcha"
 sourceDir: "images-captcha"
-releaseRef: "0.4.0"
+releaseRef: "1.0.0"
 artifact: io.github.bluetape4k.image:bluetape4k-images-captcha
 ---
 
@@ -101,19 +101,19 @@ The in-memory store is not distributed or durable and performs no background exp
 <!-- release-readme-diagrams:start -->
 ## Release diagrams {#release-diagrams}
 
-These diagrams are loaded directly from README assets published with the `0.4.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
+These diagrams are loaded directly from README assets published with the `1.0.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### CAPTCHA challenge preview
 
-[![CAPTCHA challenge preview](https://raw.githubusercontent.com/bluetape4k/bluetape4k-image/ea5175b083babf8880f53cf80c9a264a0c61777e/docs/images/readme-diagrams/images-captcha-example-01.png)](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/docs/images/readme-diagrams/images-captcha-example-01.svg)
+[![CAPTCHA challenge preview](https://raw.githubusercontent.com/bluetape4k/bluetape4k-image/b38d4891b66dff8bc63db0018b5e41810d1da9bc/docs/images/readme-diagrams/images-captcha-example-01.png)](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/docs/images/readme-diagrams/images-captcha-example-01.svg)
 
-_Release README: [`images-captcha/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/images-captcha/README.md)_
+_Release README: [`images-captcha/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/images-captcha/README.md)_
 
 <!-- release-readme-diagrams:end -->
 
 ## Sources {#sources}
 
-- [Generator contract](https://github.com/bluetape4k/bluetape4k-image/blob/0.4.0/images-captcha/src/main/kotlin/io/bluetape4k/images/captcha/CaptchaGenerator.kt)
-- [Options and bounds](https://github.com/bluetape4k/bluetape4k-image/blob/0.4.0/images-captcha/src/main/kotlin/io/bluetape4k/images/captcha/CaptchaOptions.kt)
-- [One-shot verification](https://github.com/bluetape4k/bluetape4k-image/blob/0.4.0/images-captcha/src/main/kotlin/io/bluetape4k/images/captcha/CaptchaVerification.kt)
-- [Release build](https://github.com/bluetape4k/bluetape4k-image/blob/0.4.0/images-captcha/build.gradle.kts)
+- [Generator contract](https://github.com/bluetape4k/bluetape4k-image/blob/1.0.0/images-captcha/src/main/kotlin/io/bluetape4k/images/captcha/CaptchaGenerator.kt)
+- [Options and bounds](https://github.com/bluetape4k/bluetape4k-image/blob/1.0.0/images-captcha/src/main/kotlin/io/bluetape4k/images/captcha/CaptchaOptions.kt)
+- [One-shot verification](https://github.com/bluetape4k/bluetape4k-image/blob/1.0.0/images-captcha/src/main/kotlin/io/bluetape4k/images/captcha/CaptchaVerification.kt)
+- [Release build](https://github.com/bluetape4k/bluetape4k-image/blob/1.0.0/images-captcha/build.gradle.kts)

@@ -198,12 +198,12 @@
     }
   },
   "publication": {
-    "contentStatus": "in-progress",
+    "contentStatus": "complete",
     "locales": [
       "en",
       "ko"
     ],
-    "manualVersion": "0.3",
+    "manualVersion": "1.0",
     "migratedFrom": {
       "manualLastCommit": "d6f4eab961d5b320a0e45571cf2b517d17918730",
       "path": "docs/manual",
@@ -214,11 +214,11 @@
     "sourceRoot": "docs/manual/bluetape4k-text",
     "toolingRoot": "scripts/manual/repositories/bluetape4k-text"
   },
-  "releaseCommit": "aead213d2d25307d7d3684226943a5f95c7411f2",
-  "releaseRef": "0.3.0",
-  "releaseTag": "0.3.0",
+  "releaseCommit": "59256aea7011d3f9073d74470459a13363150153",
+  "releaseRef": "1.0.0",
+  "releaseTag": "1.0.0",
   "repository": "bluetape4k-text",
   "schemaVersion": 2,
-  "stableMinor": "0.3",
-  "stableVersion": "0.3.0"
+  "stableMinor": "1.0",
+  "stableVersion": "1.0.0"
 }

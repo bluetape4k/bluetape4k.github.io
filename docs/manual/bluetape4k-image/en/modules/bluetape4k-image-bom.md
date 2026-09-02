@@ -6,7 +6,7 @@ locale: "en"
 kind: "library"
 gradlePath: ":bluetape4k-image-bom"
 sourceDir: "bom"
-releaseRef: "0.4.0"
+releaseRef: "1.0.0"
 artifact: io.github.bluetape4k.image:bluetape4k-image-bom
 ---
 
@@ -72,7 +72,7 @@ The image BOM is aggregated by `bluetape4k-dependencies`. Native libraries such 
 
 ## Configuration {#configuration}
 
-The BOM has no runtime settings. Repository snapshot consumers additionally need the Sonatype Central snapshots repository, but stable `0.4.0` consumers use Maven Central through the central platform.
+The BOM has no runtime settings. Repository snapshot consumers additionally need the Sonatype Central snapshots repository, but stable `1.0.0` consumers use Maven Central through the central platform.
 
 ## Failure modes {#failures}
 
@@ -97,17 +97,17 @@ The BOM aligns artifacts; it does not make JDK 25 bytecode run on an earlier JVM
 <!-- release-readme-diagrams:start -->
 ## Release diagrams {#release-diagrams}
 
-These diagrams are loaded directly from README assets published with the `0.4.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
+These diagrams are loaded directly from README assets published with the `1.0.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### bom Architecture diagram
 
-[![bom Architecture diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-image/ea5175b083babf8880f53cf80c9a264a0c61777e/docs/images/readme-diagrams/bom-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/docs/images/readme-diagrams/bom-architecture-01.svg)
+[![bom Architecture diagram](https://raw.githubusercontent.com/bluetape4k/bluetape4k-image/b38d4891b66dff8bc63db0018b5e41810d1da9bc/docs/images/readme-diagrams/bom-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/docs/images/readme-diagrams/bom-architecture-01.svg)
 
-_Release README: [`bom/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/bom/README.md)_
+_Release README: [`bom/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/bom/README.md)_
 
 <!-- release-readme-diagrams:end -->
 
 ## Sources {#sources}
 
-- [Release BOM build](https://github.com/bluetape4k/bluetape4k-image/blob/0.4.0/bom/build.gradle.kts)
-- [Release module registry](https://github.com/bluetape4k/bluetape4k-image/blob/0.4.0/settings.gradle.kts)
+- [Release BOM build](https://github.com/bluetape4k/bluetape4k-image/blob/1.0.0/bom/build.gradle.kts)
+- [Release module registry](https://github.com/bluetape4k/bluetape4k-image/blob/1.0.0/settings.gradle.kts)

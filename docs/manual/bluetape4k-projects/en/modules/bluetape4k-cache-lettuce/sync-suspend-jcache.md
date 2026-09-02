@@ -54,7 +54,7 @@ ordering with subsequent writes.
 
 Entry listeners observe CREATED, UPDATED, and REMOVED operations executed by this cache instance. Writes from another Redis client do not automatically become JCache listener events.
 
-The 1.12.1 implementation supports `invoke` and `invokeAll` with a `MutableEntry`. A requested change is committed through the normal JCache write path after processor execution.
+The 2.0.0 implementation supports `invoke` and `invokeAll` with a `MutableEntry`. A requested change is committed through the normal JCache write path after processor execution.
 
 ```kotlin
 val count = sessions.invoke("a", EntryProcessor<String, Session, Int> { entry, _ ->

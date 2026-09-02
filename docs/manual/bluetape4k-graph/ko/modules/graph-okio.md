@@ -5,7 +5,7 @@
 
 ## 실행 전 준비
 
-`graph-okio`는 그래프 형식을 OkIO `Source`, `Sink`, `Path`, `FileSystem`에 연결한다. 압축 연결, 원자적 path 쓰기, FakeFileSystem 테스트, 단일 stream 형식의 deterministic AEAD chunk 암호화를 제공한다. OkIO pipeline이 필요할 때 선택하고 단순 NIO path로 충분하면 추가하지 않는다. 근거는 [GraphIoOkioPaths.kt](https://github.com/bluetape4k/bluetape4k-graph/blob/72c0256e2e1cf61101d29852210e3c827ca93bc0/graph-io/okio/src/main/kotlin/io/bluetape4k/graph/io/okio/GraphIoOkioPaths.kt)다.
+`graph-okio`는 그래프 형식을 OkIO `Source`, `Sink`, `Path`, `FileSystem`에 연결한다. 압축 연결, 원자적 path 쓰기, FakeFileSystem 테스트, 단일 stream 형식의 deterministic AEAD chunk 암호화를 제공한다. OkIO pipeline이 필요할 때 선택하고 단순 NIO path로 충분하면 추가하지 않는다. 근거는 [GraphIoOkioPaths.kt](https://github.com/bluetape4k/bluetape4k-graph/blob/a405300799b36d4d6edb7267ad07ff34d4ad3afe/graph-io/okio/src/main/kotlin/io/bluetape4k/graph/io/okio/GraphIoOkioPaths.kt)다.
 
 ## 실행
 
@@ -60,7 +60,7 @@ CSV는 두 파일 형식이므로 상위 DAEAD helper가 거부한다. 두 파�
 
 ## 완전한 release 예제
 
-고정된 [NegativePathTest](https://github.com/bluetape4k/bluetape4k-graph/blob/72c0256e2e1cf61101d29852210e3c827ca93bc0/graph-io/okio/src/test/kotlin/io/bluetape4k/graph/io/okio/NegativePathTest.kt)가 모든 fixture 변수를 정의한 완전한 실행 예제다. 다음 명령으로 확인한다.
+고정된 [NegativePathTest](https://github.com/bluetape4k/bluetape4k-graph/blob/a405300799b36d4d6edb7267ad07ff34d4ad3afe/graph-io/okio/src/test/kotlin/io/bluetape4k/graph/io/okio/NegativePathTest.kt)가 모든 fixture 변수를 정의한 완전한 실행 예제다. 다음 명령으로 확인한다.
 
 ```bash
 ./gradlew :bluetape4k-graph-okio:test --tests '*NegativePathTest'

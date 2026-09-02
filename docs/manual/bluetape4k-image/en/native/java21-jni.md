@@ -2,7 +2,7 @@
 manualId: "java21-jni"
 title: "JDK 25 JVips JNI Backend (legacy java21 artifact)"
 locale: "en"
-releaseRef: "0.4.0"
+releaseRef: "1.0.0"
 ---
 
 # JDK 25 JVips JNI Backend (legacy `java21` artifact)
@@ -27,5 +27,5 @@ Compare with [JDK 25 FFM](java25-ffm.md) only on equivalent hosts and fixtures.
 
 ## Sources
 
-- [JVipsRuntime](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/images-vips-java21/src/main/kotlin/io/bluetape4k/images/vips/java21/JVipsRuntime.kt)
-- [JDK 25 module configuration for the legacy java21 module](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/images-vips-java21/build.gradle.kts)
+- [JVipsRuntime](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/images-vips-java21/src/main/kotlin/io/bluetape4k/images/vips/java21/JVipsRuntime.kt)
+- [JDK 25 module configuration for the legacy java21 module](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/images-vips-java21/build.gradle.kts)

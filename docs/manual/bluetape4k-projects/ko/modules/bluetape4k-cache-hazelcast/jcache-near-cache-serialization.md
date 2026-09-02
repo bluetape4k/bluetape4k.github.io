@@ -50,12 +50,12 @@ peer 변경 무효화가 필요하면 JCache factory 대신 `HazelcastNearCache`
 | 선택 | 장점 | 제한 |
 | --- | --- | --- |
 | factory JCache Near Cache | JCache front/back 계약 재사용 | listener 없음, peer L1 propagation 없음 |
-| direct listener-backed JCache construction | 의도는 event propagation | 1.12.1에서 직렬화 실패 |
+| direct listener-backed JCache construction | 의도는 event propagation | 2.0.0에서 직렬화 실패 |
 | native IMap Near Cache | client-side entry listener 무효화 | String key, JCache API가 아님 |
 
 ## suspend factory의 고정 front 설정
 
-1.12.1의 `suspendNearJCache` factory는 Caffeine front를 최대 10,000개, 접근 후 30분 만료로 직접 만듭니다. 전달한 `NearJCacheConfig`의 cache 이름은 back cache에 쓰지만 front 용량과 만료는 이 고정 구성입니다. 다른 정책이 필요하면 지원 capability를 확인한 별도 구성을 사용합니다.
+2.0.0의 `suspendNearJCache` factory는 Caffeine front를 최대 10,000개, 접근 후 30분 만료로 직접 만듭니다. 전달한 `NearJCacheConfig`의 cache 이름은 back cache에 쓰지만 front 용량과 만료는 이 고정 구성입니다. 다른 정책이 필요하면 지원 capability를 확인한 별도 구성을 사용합니다.
 
 <!-- nearjcache-clear-authority-contract -->
 ### #1368 shared-back clear authority

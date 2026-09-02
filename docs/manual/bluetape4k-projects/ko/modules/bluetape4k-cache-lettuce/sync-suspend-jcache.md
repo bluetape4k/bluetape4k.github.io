@@ -59,7 +59,7 @@ timeout을 관찰한 뒤 back completion이 늦게 도착할 수 있지만, back
 
 cache entry listener는 이 `LettuceJCache` instance가 수행한 CREATED·UPDATED·REMOVED 이벤트를 process 안에서 호출합니다. Redis의 다른 client가 값을 바꿔도 JCache listener가 자동으로 알림을 받는 구조는 아닙니다.
 
-1.12.1의 `invoke`와 `invokeAll`은 `MutableEntry`를 구현합니다. processor가 값을 읽고 `setValue` 또는 `remove`를 요청하면 처리 뒤 JCache write로 commit합니다.
+2.0.0의 `invoke`와 `invokeAll`은 `MutableEntry`를 구현합니다. processor가 값을 읽고 `setValue` 또는 `remove`를 요청하면 처리 뒤 JCache write로 commit합니다.
 
 ```kotlin
 val updated = sessions.invoke("a", EntryProcessor<String, Session, Int> { entry, _ ->

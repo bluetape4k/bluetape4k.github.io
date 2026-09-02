@@ -2,7 +2,7 @@
 manualId: "ocr-integration"
 title: "OCR 연동"
 locale: "ko"
-releaseRef: "0.4.0"
+releaseRef: "1.0.0"
 ---
 
 # OCR 연동
@@ -29,5 +29,5 @@ releaseRef: "0.4.0"
 
 ## 근거 소스
 
-- [OCR 계약](https://github.com/bluetape4k/bluetape4k-image/tree/ea5175b083babf8880f53cf80c9a264a0c61777e/images-ocr/src/main/kotlin/io/bluetape4k/images/ocr)
+- [OCR 계약](https://github.com/bluetape4k/bluetape4k-image/tree/b38d4891b66dff8bc63db0018b5e41810d1da9bc/images-ocr/src/main/kotlin/io/bluetape4k/images/ocr)
 - [OCR 모듈 문서](../modules/bluetape4k-images-ocr.md)

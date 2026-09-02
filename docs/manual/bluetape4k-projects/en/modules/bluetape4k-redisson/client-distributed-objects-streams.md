@@ -39,7 +39,7 @@ client.withTransaction {
 }
 ```
 
-Rollback is remote work and can fail. The 1.12.1 helper preserves the original application failure. Retry a complete transaction only when its work is idempotent.
+Rollback is remote work and can fail. The 2.0.0 helper preserves the original application failure. Retry a complete transaction only when its work is idempotent.
 
 ## Distributed objects and lock ownership
 

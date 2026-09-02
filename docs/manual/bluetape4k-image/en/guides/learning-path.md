@@ -2,7 +2,7 @@
 manualId: "learning-path"
 title: "Image Learning Path"
 locale: "en"
-releaseRef: "0.4.0"
+releaseRef: "1.0.0"
 ---
 
 # Image Learning Path
@@ -39,5 +39,5 @@ At the end, the application should answer: which backend performs each task, who
 
 ## Sources
 
-- [Release examples](https://github.com/bluetape4k/bluetape4k-image/tree/ea5175b083babf8880f53cf80c9a264a0c61777e/examples)
-- [Release module guide](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/README.md#modules)
+- [Release examples](https://github.com/bluetape4k/bluetape4k-image/tree/b38d4891b66dff8bc63db0018b5e41810d1da9bc/examples)
+- [Release module guide](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/README.md#modules)

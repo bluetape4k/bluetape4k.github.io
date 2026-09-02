@@ -6,7 +6,7 @@ locale: "en"
 kind: "example"
 gradlePath: ":basic-processing"
 sourceDir: "examples/basic-processing"
-releaseRef: "0.4.0"
+releaseRef: "1.0.0"
 artifact: null
 ---
 
@@ -99,31 +99,31 @@ This example is a single-process file generator. It does not cover upload valida
 <!-- release-readme-diagrams:start -->
 ## Release diagrams {#release-diagrams}
 
-These diagrams are loaded directly from README assets published with the `0.4.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
+These diagrams are loaded directly from README assets published with the `1.0.0` release and pinned to its immutable commit. They describe this manual's released structure and runtime flows, not later Snapshot changes. Select a preview to open the SVG at the same release commit.
 
 ### Basic Processing Architecture
 
-[![Basic Processing Architecture](https://raw.githubusercontent.com/bluetape4k/bluetape4k-image/ea5175b083babf8880f53cf80c9a264a0c61777e/docs/images/readme-diagrams/examples-basic-processing-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/docs/images/readme-diagrams/examples-basic-processing-architecture-01.svg)
+[![Basic Processing Architecture](https://raw.githubusercontent.com/bluetape4k/bluetape4k-image/b38d4891b66dff8bc63db0018b5e41810d1da9bc/docs/images/readme-diagrams/examples-basic-processing-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/docs/images/readme-diagrams/examples-basic-processing-architecture-01.svg)
 
-_Release README: [`examples/basic-processing/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/examples/basic-processing/README.md)_
+_Release README: [`examples/basic-processing/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/examples/basic-processing/README.md)_
 
 ### Basic Processing Scenario
 
-[![Basic Processing Scenario](https://raw.githubusercontent.com/bluetape4k/bluetape4k-image/ea5175b083babf8880f53cf80c9a264a0c61777e/docs/images/readme-diagrams/examples-basic-processing-scenario-01.png)](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/docs/images/readme-diagrams/examples-basic-processing-scenario-01.svg)
+[![Basic Processing Scenario](https://raw.githubusercontent.com/bluetape4k/bluetape4k-image/b38d4891b66dff8bc63db0018b5e41810d1da9bc/docs/images/readme-diagrams/examples-basic-processing-scenario-01.png)](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/docs/images/readme-diagrams/examples-basic-processing-scenario-01.svg)
 
-_Release README: [`examples/basic-processing/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/examples/basic-processing/README.md)_
+_Release README: [`examples/basic-processing/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/examples/basic-processing/README.md)_
 
 ### Basic Processing Sequence
 
-[![Basic Processing Sequence](https://raw.githubusercontent.com/bluetape4k/bluetape4k-image/ea5175b083babf8880f53cf80c9a264a0c61777e/docs/images/readme-diagrams/examples-basic-processing-sequence-01.png)](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/docs/images/readme-diagrams/examples-basic-processing-sequence-01.svg)
+[![Basic Processing Sequence](https://raw.githubusercontent.com/bluetape4k/bluetape4k-image/b38d4891b66dff8bc63db0018b5e41810d1da9bc/docs/images/readme-diagrams/examples-basic-processing-sequence-01.png)](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/docs/images/readme-diagrams/examples-basic-processing-sequence-01.svg)
 
-_Release README: [`examples/basic-processing/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/examples/basic-processing/README.md)_
+_Release README: [`examples/basic-processing/README.md`](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/examples/basic-processing/README.md)_
 
 <!-- release-readme-diagrams:end -->
 
 ## Sources {#sources}
 
-- [Release README](https://github.com/bluetape4k/bluetape4k-image/blob/0.4.0/examples/basic-processing/README.md)
-- [Quickstart source](https://github.com/bluetape4k/bluetape4k-image/blob/0.4.0/examples/basic-processing/src/main/kotlin/io/bluetape4k/images/examples/basic/BasicImageProcessingQuickstart.kt)
-- [Deterministic test](https://github.com/bluetape4k/bluetape4k-image/blob/0.4.0/examples/basic-processing/src/test/kotlin/io/bluetape4k/images/examples/basic/BasicImageProcessingQuickstartTest.kt)
-- [Gradle build file](https://github.com/bluetape4k/bluetape4k-image/blob/0.4.0/examples/basic-processing/build.gradle.kts)
+- [Release README](https://github.com/bluetape4k/bluetape4k-image/blob/1.0.0/examples/basic-processing/README.md)
+- [Quickstart source](https://github.com/bluetape4k/bluetape4k-image/blob/1.0.0/examples/basic-processing/src/main/kotlin/io/bluetape4k/images/examples/basic/BasicImageProcessingQuickstart.kt)
+- [Deterministic test](https://github.com/bluetape4k/bluetape4k-image/blob/1.0.0/examples/basic-processing/src/test/kotlin/io/bluetape4k/images/examples/basic/BasicImageProcessingQuickstartTest.kt)
+- [Gradle build file](https://github.com/bluetape4k/bluetape4k-image/blob/1.0.0/examples/basic-processing/build.gradle.kts)

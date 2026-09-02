@@ -54,9 +54,9 @@ Compare [`bluetape4k-jdbc`](../bluetape4k-jdbc.md) for direct SQL control and [`
 - [Redis client-side caching](https://redis.io/docs/latest/develop/reference/client-side-caching/)
 - [Lettuce reference guide](https://redis.github.io/lettuce/)
 
-External documentation follows its current release and can change. Use the release source and tests below for 1.12.1 behavior.
+External documentation follows its current release and can change. Use the release source and tests below for 2.0.0 behavior.
 
-## 1.12.1 source map
+## 2.0.0 source map
 
 - [Spring Boot adapter source](../../../../../spring-boot/hibernate-lettuce/src/main/kotlin/io/bluetape4k/spring/boot/autoconfigure/cache/lettuce/LettuceNearCacheHibernateAutoConfiguration.kt)
 - [Hibernate cache provider source](../../../../../cache/hibernate-cache-lettuce/src/main/kotlin/io/bluetape4k/hibernate/cache/lettuce/LettuceNearCacheRegionFactory.kt)

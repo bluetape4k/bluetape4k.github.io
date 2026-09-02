@@ -2,7 +2,7 @@
 manualId: "storage-and-cdn"
 title: "Storage and CDN"
 locale: "en"
-releaseRef: "0.4.0"
+releaseRef: "1.0.0"
 ---
 
 # Storage and CDN
@@ -29,5 +29,5 @@ The [Spring Boot image API workshop](../modules/spring-boot-image-api.md) starts
 
 ## Sources
 
-- [ImageStorage contract](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/images-spring-boot/src/main/kotlin/io/bluetape4k/images/spring/storage/ImageStorage.kt)
-- [S3 implementation](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/images-spring-boot/src/main/kotlin/io/bluetape4k/images/spring/storage/s3/S3ImageStorage.kt)
+- [ImageStorage contract](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/images-spring-boot/src/main/kotlin/io/bluetape4k/images/spring/storage/ImageStorage.kt)
+- [S3 implementation](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/images-spring-boot/src/main/kotlin/io/bluetape4k/images/spring/storage/s3/S3ImageStorage.kt)

@@ -2,7 +2,7 @@
 manualId: "testing-and-operations"
 title: "테스트와 운영"
 locale: "ko"
-releaseRef: "0.4.0"
+releaseRef: "1.0.0"
 ---
 
 # 테스트와 운영
@@ -46,11 +46,11 @@ Verifier는 격리된 directory에서 source를 두 번 렌더링하고 controll
 
 ## 릴리스 기준 지키기
 
-이 매뉴얼은 0.4.0을 대상으로 한다. 테스트와 소스 링크도 해당 릴리스 커밋에 고정한다. Develop 빌드가 성공했다고 동결한 매뉴얼 예제가 맞는 것은 아니다.
+이 매뉴얼은 1.0.0을 대상으로 한다. 테스트와 소스 링크도 해당 릴리스 커밋에 고정한다. Develop 빌드가 성공했다고 동결한 매뉴얼 예제가 맞는 것은 아니다.
 
 매뉴얼을 배포하기 전에 태그 기준 inventory를 다시 만들고 drift 계약을 실행한다. 이 검증기는 annotated tag를 peeled commit으로 해석한 뒤 태그의 `settings.gradle.kts`와 `build.gradle.kts`에서 정확한 프로젝트 topology와 배포 분류를 계산한다. 그 결과를 YAML/JSON manifest, EN/KO index, repository map, inventory snapshot과 overview diagram label에 대조한다.
 
-    MANUAL_TAG=0.4.0
+    MANUAL_TAG=1.0.0
     MANUAL_SHA="$(git rev-parse --verify "refs/tags/${MANUAL_TAG}^{commit}")"
     ruby scripts/manual/export_settings_inventory.rb settings.gradle.kts build/manual/module-inventory.json
     ruby scripts/manual/release_inventory.rb "$MANUAL_TAG" "$MANUAL_SHA" build/manual/module-inventory.json build/manual/release-module-inventory.json 19
@@ -64,5 +64,5 @@ Verifier는 격리된 directory에서 source를 두 번 렌더링하고 controll
 
 ## 근거 소스
 
-- [릴리스 테스트 설정](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/build.gradle.kts)
-- [Spring Boot health와 metric 소스](https://github.com/bluetape4k/bluetape4k-image/tree/ea5175b083babf8880f53cf80c9a264a0c61777e/images-spring-boot/src/main/kotlin/io/bluetape4k/images/spring)
+- [릴리스 테스트 설정](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/build.gradle.kts)
+- [Spring Boot health와 metric 소스](https://github.com/bluetape4k/bluetape4k-image/tree/b38d4891b66dff8bc63db0018b5e41810d1da9bc/images-spring-boot/src/main/kotlin/io/bluetape4k/images/spring)

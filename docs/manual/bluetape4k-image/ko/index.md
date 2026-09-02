@@ -2,7 +2,7 @@
 manualId: "repository-overview"
 title: "Bluetape4k Image 매뉴얼"
 locale: "ko"
-releaseRef: "0.4.0"
+releaseRef: "1.0.0"
 ---
 
 # Bluetape4k Image 매뉴얼
@@ -24,13 +24,13 @@ releaseRef: "0.4.0"
 
 애플리케이션은 <code>io.github.bluetape4k:bluetape4k-dependencies:&lt;version&gt;</code> 하나만 선택하면 된다. Image BOM, Scrimage, Ktor, Spring Boot, 네이티브 바인딩 버전을 따로 맞출 필요는 없다.
 
-이 매뉴얼의 기술 기준은 변경되지 않는 <code>0.4.0</code> 릴리스다. 이 태그에는 배포 라이브러리 10개, 배포 BOM 1개, 실행 예제 7개, 배포하지 않는 벤치마크 프로젝트 1개가 들어 있으며 Gradle 프로젝트는 모두 19개다.
+이 매뉴얼의 기술 기준은 변경되지 않는 <code>1.0.0</code> 릴리스다. 이 태그에는 배포 라이브러리 10개, 배포 BOM 1개, 실행 예제 7개, 배포하지 않는 벤치마크 프로젝트 1개가 들어 있으며 Gradle 프로젝트는 모두 19개다.
 
-- [0.4.0 릴리스 태그](https://github.com/bluetape4k/bluetape4k-image/tree/0.4.0)
-- [릴리스 커밋 ea5175b0](https://github.com/bluetape4k/bluetape4k-image/commit/ea5175b083babf8880f53cf80c9a264a0c61777e)
+- [1.0.0 릴리스 태그](https://github.com/bluetape4k/bluetape4k-image/tree/1.0.0)
+- [릴리스 커밋 ea5175b0](https://github.com/bluetape4k/bluetape4k-image/commit/b38d4891b66dff8bc63db0018b5e41810d1da9bc)
 - 런타임 기준: 모든 배포 모듈과 네이티브 백엔드는 JDK 25
 
-이 태그 이후에 추가된 기능은 다루지 않는다. 매뉴얼의 소스 링크는 `0.4.0` 릴리스 태그나 해당 태그의 고정 커밋을 가리킨다.
+이 태그 이후에 추가된 기능은 다루지 않는다. 매뉴얼의 소스 링크는 `1.0.0` 릴리스 태그나 해당 태그의 고정 커밋을 가리킨다.
 
 ## 어디서 시작할까
 
@@ -46,5 +46,5 @@ releaseRef: "0.4.0"
 
 ## 근거 소스
 
-- [릴리스 프로젝트 등록부](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/settings.gradle.kts)
-- [릴리스 저장소 안내서](https://github.com/bluetape4k/bluetape4k-image/blob/ea5175b083babf8880f53cf80c9a264a0c61777e/README.ko.md)
+- [릴리스 프로젝트 등록부](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/settings.gradle.kts)
+- [릴리스 저장소 안내서](https://github.com/bluetape4k/bluetape4k-image/blob/b38d4891b66dff8bc63db0018b5e41810d1da9bc/README.ko.md)
