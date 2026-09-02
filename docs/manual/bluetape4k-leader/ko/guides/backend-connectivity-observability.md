@@ -159,7 +159,7 @@ Train child 하나를 rollback하기 전 JSON consumer가 additive `reason` fiel
 - [ ] `releaseRef`와 `releaseCommit`이 이 계약을 포함한 commit을 가리킨 뒤
       versioned manual을 승격합니다.
 
-개발 line source 설명은 [root diagnostics
-section](../../../../README.ko.md#runtime-backend-diagnostics),
-[Prometheus dashboard 런북](../../../../examples/prometheus-dashboard/README.ko.md#alert-runbooks),
+공개 source 설명은 [root diagnostics
+section](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/README.ko.md#runtime-backend-diagnostics),
+[Prometheus dashboard 런북](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/examples/prometheus-dashboard/README.ko.md#alert-runbooks),
 [backend 선택 가이드](backend-selection.md)에서 확인할 수 있습니다.

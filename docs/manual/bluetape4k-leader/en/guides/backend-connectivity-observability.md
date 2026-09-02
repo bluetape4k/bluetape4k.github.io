@@ -166,7 +166,7 @@ semantics and continue using `runIfLeader` for execution.
 - [ ] The versioned manual is promoted only after `releaseRef` and
       `releaseCommit` point at a commit containing this contract.
 
-See the development-line source descriptions in the [root diagnostics
-section](../../../../README.md#runtime-backend-diagnostics), the
-[Prometheus dashboard runbook](../../../../examples/prometheus-dashboard/README.md#alert-runbooks),
+See the released source descriptions in the [root diagnostics
+section](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/README.md#runtime-backend-diagnostics), the
+[Prometheus dashboard runbook](https://github.com/bluetape4k/bluetape4k-leader/blob/e70146330302758f563a46b7286e3ce25f1bac49/examples/prometheus-dashboard/README.md#alert-runbooks),
 and the [backend selection guide](backend-selection.md).
