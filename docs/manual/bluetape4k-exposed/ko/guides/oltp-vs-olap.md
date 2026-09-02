@@ -1,7 +1,7 @@
 ---
 title: "OLTP와 OLAP 경로 선택"
 locale: "ko"
-releaseRef: "1.12.1"
+releaseRef: "2.0.0"
 ---
 
 # OLTP와 OLAP 경로 선택

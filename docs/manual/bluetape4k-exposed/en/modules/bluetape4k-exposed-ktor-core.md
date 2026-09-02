@@ -7,7 +7,6 @@ kind: "library"
 gradlePath: ":bluetape4k-exposed-ktor-core"
 sourceDir: "ktor/core"
 releaseRef: "develop"
-releaseStatus: "develop-only"
 artifact: io.github.bluetape4k.exposed:bluetape4k-exposed-ktor-core
 ---
 
@@ -77,7 +76,7 @@ Test route registration, deadline expiry, cancellation, error redaction, duplica
 
 ## Workshops {#workshops}
 
-The selective Ktor modules are develop-only in this release line; no workshop artifact is published yet.
+The selective Ktor modules are published in the `2.0.0` release line; no workshop artifact is published yet.
 
 ## Limitations {#limitations}
 

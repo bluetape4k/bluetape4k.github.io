@@ -7,7 +7,6 @@ kind: "library"
 gradlePath: ":bluetape4k-exposed-ktor-cache"
 sourceDir: "ktor/cache"
 releaseRef: "develop"
-releaseStatus: "develop-only"
 artifact: io.github.bluetape4k.exposed:bluetape4k-exposed-ktor-cache
 ---
 
@@ -76,7 +75,7 @@ Test O(1) snapshot conversion, negative-value rejection, supplier cancellation, 
 
 ## Workshops {#workshops}
 
-No selective cache workshop is published in this develop-only release line.
+No selective cache workshop is published in this `2.0.0` release line.
 
 ## Limitations {#limitations}
 

@@ -2,7 +2,7 @@
 manualId: serialization-and-encryption
 title: Serialization, encryption, and typed columns
 locale: en
-releaseRef: 1.12.1
+releaseRef: 2.0.0
 ---
 
 # Serialization, encryption, and typed columns

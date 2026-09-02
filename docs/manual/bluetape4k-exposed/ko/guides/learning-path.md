@@ -2,7 +2,7 @@
 manualId: "learning-path"
 title: "Exposed 학습 경로"
 locale: "ko"
-releaseRef: "1.12.1"
+releaseRef: "2.0.0"
 ---
 
 # Exposed 학습 경로

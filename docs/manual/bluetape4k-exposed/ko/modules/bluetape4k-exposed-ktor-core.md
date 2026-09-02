@@ -7,7 +7,6 @@ kind: "library"
 gradlePath: ":bluetape4k-exposed-ktor-core"
 sourceDir: "ktor/core"
 releaseRef: "develop"
-releaseStatus: "develop-only"
 artifact: io.github.bluetape4k.exposed:bluetape4k-exposed-ktor-core
 ---
 
@@ -77,7 +76,7 @@ readiness는 동시에 하나의 probe만 실행합니다. 지표 tag는 `backen
 
 ## 워크숍 {#workshops}
 
-선택형 Ktor 모듈은 이 release line에서 develop-only이며 아직 별도 workshop 아티팩트가 없습니다.
+선택형 Ktor 모듈은 `2.0.0` release line에 배포되었으며 아직 별도 workshop 아티팩트가 없습니다.
 
 ## 제한 사항 {#limitations}
 

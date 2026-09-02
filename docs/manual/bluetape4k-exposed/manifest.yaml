@@ -1,9 +1,9 @@
 schemaVersion: 2
 repository: "bluetape4k/bluetape4k-exposed"
-releaseRef: "1.12.1"
-releaseCommit: "4cc2cce07087241ec24a597d8464615434ea2b81"
+releaseRef: "2.0.0"
+releaseCommit: "d632a0bc0662ae616b786f552150a7fabd1cee3e"
 publication:
-  manualVersion: '1.12'
+  manualVersion: '2.0'
   sourceRoot: docs/manual/bluetape4k-exposed
   toolingRoot: scripts/manual/repositories/bluetape4k-exposed
   ownership: central
@@ -98,7 +98,6 @@ modules:
     sourcePaths: ["utils/batch/src/benchmark/kotlin"]
     testPaths: ["utils/batch/src/test/kotlin","utils/batch/src/test/resources"]
     workshops: []
-    releaseStatus: "develop-only"
   - id: "bluetape4k-exposed-batch-core"
     title: {"en":"Exposed Batch Core","ko":"Exposed 배치 코어"}
     gradlePath: ":bluetape4k-exposed-batch-core"
@@ -111,7 +110,6 @@ modules:
     sourcePaths: ["utils/batch/core/src/main/kotlin"]
     testPaths: ["utils/batch/core/src/test/kotlin","utils/batch/core/src/test/resources"]
     workshops: []
-    releaseStatus: "develop-only"
   - id: "bluetape4k-exposed-batch-jdbc"
     title: {"en":"Exposed Batch JDBC Adapter","ko":"Exposed 배치 JDBC adapter"}
     gradlePath: ":bluetape4k-exposed-batch-jdbc"
@@ -124,7 +122,6 @@ modules:
     sourcePaths: ["utils/batch/jdbc/src/main/kotlin"]
     testPaths: ["utils/batch/jdbc/src/test/kotlin","utils/batch/jdbc/src/test/resources"]
     workshops: []
-    releaseStatus: "develop-only"
   - id: "bluetape4k-exposed-batch-r2dbc"
     title: {"en":"Exposed Batch R2DBC Adapter","ko":"Exposed 배치 R2DBC adapter"}
     gradlePath: ":bluetape4k-exposed-batch-r2dbc"
@@ -137,7 +134,6 @@ modules:
     sourcePaths: ["utils/batch/r2dbc/src/main/kotlin"]
     testPaths: ["utils/batch/r2dbc/src/test/kotlin","utils/batch/r2dbc/src/test/resources"]
     workshops: []
-    releaseStatus: "develop-only"
   - id: "bluetape4k-exposed-bigquery"
     title: {"en":"Exposed BigQuery Adapter","ko":"Exposed BigQuery 어댑터"}
     gradlePath: ":bluetape4k-exposed-bigquery"
@@ -383,7 +379,6 @@ modules:
     sourcePaths: ["ktor/core/src/main/kotlin"]
     testPaths: ["ktor/core/src/test/kotlin"]
     workshops: []
-    releaseStatus: "develop-only"
   - id: "bluetape4k-exposed-ktor-jdbc"
     title: {"en":"Exposed Ktor JDBC Adapter","ko":"Exposed Ktor JDBC 어댑터"}
     gradlePath: ":bluetape4k-exposed-ktor-jdbc"
@@ -396,7 +391,6 @@ modules:
     sourcePaths: ["ktor/jdbc/src/main/kotlin"]
     testPaths: ["ktor/jdbc/src/test/kotlin"]
     workshops: []
-    releaseStatus: "develop-only"
   - id: "bluetape4k-exposed-ktor-tenant-jdbc"
     title: {"en":"Exposed Ktor Tenant JDBC Adapter","ko":"Exposed Ktor Tenant JDBC 어댑터"}
     gradlePath: ":bluetape4k-exposed-ktor-tenant-jdbc"
@@ -409,7 +403,6 @@ modules:
     sourcePaths: ["ktor/tenant-jdbc/src/main/kotlin"]
     testPaths: ["ktor/tenant-jdbc/src/test/kotlin","ktor/tenant-jdbc/src/test/resources"]
     workshops: []
-    releaseStatus: "develop-only"
   - id: "bluetape4k-exposed-ktor-r2dbc"
     title: {"en":"Exposed Ktor R2DBC Adapter","ko":"Exposed Ktor R2DBC 어댑터"}
     gradlePath: ":bluetape4k-exposed-ktor-r2dbc"
@@ -422,7 +415,6 @@ modules:
     sourcePaths: ["ktor/r2dbc/src/main/kotlin"]
     testPaths: ["ktor/r2dbc/src/test/kotlin"]
     workshops: []
-    releaseStatus: "develop-only"
   - id: "bluetape4k-exposed-ktor-tenant-r2dbc"
     title: {"en":"Exposed Ktor Tenant R2DBC Adapter","ko":"Exposed Ktor Tenant R2DBC 어댑터"}
     gradlePath: ":bluetape4k-exposed-ktor-tenant-r2dbc"
@@ -435,7 +427,6 @@ modules:
     sourcePaths: ["ktor/tenant-r2dbc/src/main/kotlin"]
     testPaths: ["ktor/tenant-r2dbc/src/test/kotlin","ktor/tenant-r2dbc/src/test/resources"]
     workshops: []
-    releaseStatus: "develop-only"
   - id: "bluetape4k-exposed-ktor-cache"
     title: {"en":"Exposed Ktor Cache Adapter","ko":"Exposed Ktor 캐시 어댑터"}
     gradlePath: ":bluetape4k-exposed-ktor-cache"
@@ -448,7 +439,6 @@ modules:
     sourcePaths: ["ktor/cache/src/main/kotlin"]
     testPaths: ["ktor/cache/src/test/kotlin"]
     workshops: []
-    releaseStatus: "develop-only"
   - id: "bluetape4k-exposed-measured"
     title: {"en":"Exposed Measurement Support","ko":"Exposed 측정 지원"}
     gradlePath: ":bluetape4k-exposed-measured"
@@ -579,7 +569,6 @@ modules:
     sourcePaths: ["spring-boot/common/src/main/kotlin"]
     testPaths: ["spring-boot/common/src/test/kotlin"]
     workshops: []
-    releaseStatus: "develop-only"
   - id: "bluetape4k-exposed-spring-boot-jdbc"
     title: {"en":"Exposed Spring Boot JDBC Integration","ko":"Exposed Spring Boot JDBC 연동"}
     gradlePath: ":bluetape4k-exposed-spring-boot-jdbc"

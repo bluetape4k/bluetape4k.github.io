@@ -6,7 +6,7 @@ locale: "ko"
 kind: "benchmark"
 gradlePath: ":benchmark-exposed-benchmark"
 sourceDir: "benchmark/exposed-benchmark"
-releaseRef: "1.12.1"
+releaseRef: "2.0.0"
 artifact: null
 ---
 

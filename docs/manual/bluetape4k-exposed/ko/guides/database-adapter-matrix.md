@@ -1,7 +1,7 @@
 ---
 title: "데이터베이스 어댑터 표"
 locale: "ko"
-releaseRef: "1.12.1"
+releaseRef: "2.0.0"
 ---
 
 # 데이터베이스 어댑터 표

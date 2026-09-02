@@ -27,7 +27,6 @@
       "id": "bluetape4k-exposed-batch",
       "kind": "library",
       "ko": "ko/modules/bluetape4k-exposed-batch.md",
-      "releaseStatus": "develop-only",
       "sourceDir": "utils/batch",
       "sourcePaths": [
         "utils/batch/src/benchmark/kotlin"
@@ -50,7 +49,6 @@
       "id": "bluetape4k-exposed-batch-core",
       "kind": "library",
       "ko": "ko/modules/bluetape4k-exposed-batch-core.md",
-      "releaseStatus": "develop-only",
       "sourceDir": "utils/batch/core",
       "sourcePaths": [
         "utils/batch/core/src/main/kotlin"
@@ -73,7 +71,6 @@
       "id": "bluetape4k-exposed-batch-jdbc",
       "kind": "library",
       "ko": "ko/modules/bluetape4k-exposed-batch-jdbc.md",
-      "releaseStatus": "develop-only",
       "sourceDir": "utils/batch/jdbc",
       "sourcePaths": [
         "utils/batch/jdbc/src/main/kotlin"
@@ -96,7 +93,6 @@
       "id": "bluetape4k-exposed-batch-r2dbc",
       "kind": "library",
       "ko": "ko/modules/bluetape4k-exposed-batch-r2dbc.md",
-      "releaseStatus": "develop-only",
       "sourceDir": "utils/batch/r2dbc",
       "sourcePaths": [
         "utils/batch/r2dbc/src/main/kotlin"
@@ -545,7 +541,6 @@
       "id": "bluetape4k-exposed-ktor-cache",
       "kind": "library",
       "ko": "ko/modules/bluetape4k-exposed-ktor-cache.md",
-      "releaseStatus": "develop-only",
       "sourceDir": "ktor/cache",
       "sourcePaths": [
         "ktor/cache/src/main/kotlin"
@@ -567,7 +562,6 @@
       "id": "bluetape4k-exposed-ktor-core",
       "kind": "library",
       "ko": "ko/modules/bluetape4k-exposed-ktor-core.md",
-      "releaseStatus": "develop-only",
       "sourceDir": "ktor/core",
       "sourcePaths": [
         "ktor/core/src/main/kotlin"
@@ -589,7 +583,6 @@
       "id": "bluetape4k-exposed-ktor-jdbc",
       "kind": "library",
       "ko": "ko/modules/bluetape4k-exposed-ktor-jdbc.md",
-      "releaseStatus": "develop-only",
       "sourceDir": "ktor/jdbc",
       "sourcePaths": [
         "ktor/jdbc/src/main/kotlin"
@@ -611,7 +604,6 @@
       "id": "bluetape4k-exposed-ktor-r2dbc",
       "kind": "library",
       "ko": "ko/modules/bluetape4k-exposed-ktor-r2dbc.md",
-      "releaseStatus": "develop-only",
       "sourceDir": "ktor/r2dbc",
       "sourcePaths": [
         "ktor/r2dbc/src/main/kotlin"
@@ -633,7 +625,6 @@
       "id": "bluetape4k-exposed-ktor-tenant-jdbc",
       "kind": "library",
       "ko": "ko/modules/bluetape4k-exposed-ktor-tenant-jdbc.md",
-      "releaseStatus": "develop-only",
       "sourceDir": "ktor/tenant-jdbc",
       "sourcePaths": [
         "ktor/tenant-jdbc/src/main/kotlin"
@@ -656,7 +647,6 @@
       "id": "bluetape4k-exposed-ktor-tenant-r2dbc",
       "kind": "library",
       "ko": "ko/modules/bluetape4k-exposed-ktor-tenant-r2dbc.md",
-      "releaseStatus": "develop-only",
       "sourceDir": "ktor/tenant-r2dbc",
       "sourcePaths": [
         "ktor/tenant-r2dbc/src/main/kotlin"
@@ -895,7 +885,6 @@
       "id": "bluetape4k-exposed-spring-boot-common",
       "kind": "library",
       "ko": "ko/modules/bluetape4k-exposed-spring-boot-common.md",
-      "releaseStatus": "develop-only",
       "sourceDir": "spring-boot/common",
       "sourcePaths": [
         "spring-boot/common/src/main/kotlin"
@@ -1269,7 +1258,7 @@
       "en",
       "ko"
     ],
-    "manualVersion": "1.12",
+    "manualVersion": "2.0",
     "migratedFrom": {
       "manualLastCommit": "50576d688ff98bbfbdafeb2c441d8fa5a6d0afb3",
       "path": "docs/manual",
@@ -1280,8 +1269,8 @@
     "sourceRoot": "docs/manual/bluetape4k-exposed",
     "toolingRoot": "scripts/manual/repositories/bluetape4k-exposed"
   },
-  "releaseCommit": "4cc2cce07087241ec24a597d8464615434ea2b81",
-  "releaseRef": "1.12.1",
+  "releaseCommit": "d632a0bc0662ae616b786f552150a7fabd1cee3e",
+  "releaseRef": "2.0.0",
   "repository": "bluetape4k/bluetape4k-exposed",
   "schemaVersion": 2
 }

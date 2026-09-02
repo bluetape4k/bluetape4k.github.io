@@ -1,7 +1,7 @@
 ---
 title: "Spring and Ktor Integration"
 locale: "en"
-releaseRef: "1.12.1"
+releaseRef: "2.0.0"
 ---
 
 # Spring and Ktor Integration

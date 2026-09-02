@@ -1,7 +1,7 @@
 ---
 title: "테스트와 운영"
 locale: "ko"
-releaseRef: "1.12.1"
+releaseRef: "2.0.0"
 ---
 
 # 테스트와 운영
@@ -68,6 +68,6 @@ Spring Modulith의 publication 테이블은 이벤트 전달 상태를 추적합
 ## 근거 자료
 
 - [모듈 등록](../../../../settings.gradle.kts)
-- [경량 배치 테스트](https://github.com/bluetape4k/bluetape4k-exposed/blob/4cc2cce07087241ec24a597d8464615434ea2b81/utils/batch/src/test/kotlin/io/bluetape4k/batch/core/BatchStepRunnerTest.kt)
+- [경량 배치 테스트](https://github.com/bluetape4k/bluetape4k-exposed/blob/d632a0bc0662ae616b786f552150a7fabd1cee3e/utils/batch/src/test/kotlin/io/bluetape4k/batch/core/BatchStepRunnerTest.kt)
 - [Spring Batch 테스트](../../../../spring-boot/batch-exposed/src/test/kotlin/io/bluetape4k/spring/batch/exposed/integration/RestartIntegrationTest.kt)
 - [벤치마크 빌드](../../../../benchmark/exposed-benchmark/build.gradle.kts)

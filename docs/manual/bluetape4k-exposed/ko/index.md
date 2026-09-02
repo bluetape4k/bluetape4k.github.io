@@ -2,7 +2,7 @@
 manualId: "repository-overview"
 title: "Bluetape4k Exposed 매뉴얼"
 locale: "ko"
-releaseRef: "1.12.1"
+releaseRef: "2.0.0"
 ---
 
 # Bluetape4k Exposed 매뉴얼
@@ -22,10 +22,10 @@ releaseRef: "1.12.1"
 
 ## 버전 기준
 
-사용자가 직접 선택하는 버전은 `bluetape4k-exposed`의 저장소 버전이 아니라 중앙 BOM인 `io.github.bluetape4k:bluetape4k-dependencies:<version>`이다. 이 문서의 기술 기준은 `bluetape4k-exposed 1.12.1`이며, 안정 릴리스에 포함된 Gradle 프로젝트 40개만 설명한다.
+사용자가 직접 선택하는 버전은 `bluetape4k-exposed`의 저장소 버전이 아니라 중앙 BOM인 `io.github.bluetape4k:bluetape4k-dependencies:<version>`이다. 이 문서의 기술 기준은 `bluetape4k-exposed 2.0.0`이며, 안정 릴리스에 포함된 Gradle 프로젝트 40개만 설명한다.
 
-- 릴리스 태그: [`1.12.1`](https://github.com/bluetape4k/bluetape4k-exposed/tree/1.12.1)
-- 릴리스 커밋: [`4cc2cce07087241ec24a597d8464615434ea2b81`](https://github.com/bluetape4k/bluetape4k-exposed/commit/4cc2cce07087241ec24a597d8464615434ea2b81)
+- 릴리스 태그: [`2.0.0`](https://github.com/bluetape4k/bluetape4k-exposed/tree/2.0.0)
+- 릴리스 커밋: [`d632a0bc0662ae616b786f552150a7fabd1cee3e`](https://github.com/bluetape4k/bluetape4k-exposed/commit/d632a0bc0662ae616b786f552150a7fabd1cee3e)
 - 주요 경로: JDBC, R2DBC, 캐시, 데이터베이스 어댑터, 애플리케이션 연동
 
 ## 어디서 시작할까

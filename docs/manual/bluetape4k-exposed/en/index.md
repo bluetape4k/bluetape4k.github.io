@@ -2,7 +2,7 @@
 manualId: "repository-overview"
 title: "Bluetape4k Exposed Manual"
 locale: "en"
-releaseRef: "1.12.1"
+releaseRef: "2.0.0"
 ---
 
 # Bluetape4k Exposed Manual
@@ -22,10 +22,10 @@ releaseRef: "1.12.1"
 
 ## Version baseline
 
-Consumers select the central `io.github.bluetape4k:bluetape4k-dependencies:<version>` BOM version, not the repository release documented here. The technical baseline for this manual is `bluetape4k-exposed 1.12.1`, limited to the 40 Gradle projects present in that stable release.
+Consumers select the central `io.github.bluetape4k:bluetape4k-dependencies:<version>` BOM version, not the repository release documented here. The technical baseline for this manual is `bluetape4k-exposed 2.0.0`, limited to the 40 Gradle projects present in that stable release.
 
-- Release tag: [`1.12.1`](https://github.com/bluetape4k/bluetape4k-exposed/tree/1.12.1)
-- Release commit: [`4cc2cce07087241ec24a597d8464615434ea2b81`](https://github.com/bluetape4k/bluetape4k-exposed/commit/4cc2cce07087241ec24a597d8464615434ea2b81)
+- Release tag: [`2.0.0`](https://github.com/bluetape4k/bluetape4k-exposed/tree/2.0.0)
+- Release commit: [`d632a0bc0662ae616b786f552150a7fabd1cee3e`](https://github.com/bluetape4k/bluetape4k-exposed/commit/d632a0bc0662ae616b786f552150a7fabd1cee3e)
 - Primary paths: JDBC, R2DBC, cache, database adapters, and application integrations
 
 ## Where to start

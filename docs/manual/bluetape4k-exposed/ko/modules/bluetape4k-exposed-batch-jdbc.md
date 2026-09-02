@@ -6,8 +6,7 @@ locale: "ko"
 kind: "library"
 gradlePath: ":bluetape4k-exposed-batch-jdbc"
 sourceDir: "utils/batch/jdbc"
-releaseRef: "1.12.1"
-releaseStatus: "develop-only"
+releaseRef: "2.0.0"
 artifact: io.github.bluetape4k.exposed:bluetape4k-exposed-batch-jdbc
 ---
 

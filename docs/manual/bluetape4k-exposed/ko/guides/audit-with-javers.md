@@ -1,7 +1,7 @@
 ---
 title: "JaVers로 감사 이력 만들기"
 locale: "ko"
-releaseRef: "1.12.1"
+releaseRef: "2.0.0"
 ---
 
 # JaVers로 감사 이력 만들기

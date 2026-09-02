@@ -7,7 +7,6 @@ kind: "library"
 gradlePath: ":bluetape4k-exposed-ktor-tenant-jdbc"
 sourceDir: "ktor/tenant-jdbc"
 releaseRef: "develop"
-releaseStatus: "develop-only"
 artifact: io.github.bluetape4k.exposed:bluetape4k-exposed-ktor-tenant-jdbc
 ---
 
@@ -153,8 +152,7 @@ PostgreSQL and MySQL Testcontainers suites where configured.
 
 ## Workshops {#workshops}
 
-No selective tenant JDBC workshop is published in this develop-only release
-line.
+No selective tenant JDBC workshop is published in the `2.0.0` release line.
 
 ## Limitations {#limitations}
 

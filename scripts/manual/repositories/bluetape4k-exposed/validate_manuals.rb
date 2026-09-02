@@ -15,7 +15,7 @@ end.parse!
 
 repository_root = File.expand_path(paths.fetch(:code_root, Dir.pwd))
 manual_root = File.expand_path(paths.fetch(:manual_root, File.join(repository_root, "docs/manual")))
-inventory_path = File.expand_path(paths.fetch(:inventory, ARGV.fetch(0, File.join(repository_root, "build/manual/module-inventory-1.12.1.json"))), repository_root)
+inventory_path = File.expand_path(paths.fetch(:inventory, ARGV.fetch(0, File.join(repository_root, "build/manual/module-inventory-2.0.0.json"))), repository_root)
 manifest_path = File.expand_path(paths.fetch(:manifest, ARGV.fetch(1, File.join(manual_root, "manifest.yaml"))), repository_root)
 inventory = JSON.parse(File.read(inventory_path))
 errors = ManualDocs::Validator.new(
@@ -24,8 +24,8 @@ errors = ManualDocs::Validator.new(
   repository_root: repository_root,
   manual_root: manual_root,
   expected_release: {
-    "ref" => ENV.fetch("MANUAL_RELEASE_REF", "1.12.1"),
-    "commit" => ENV.fetch("MANUAL_RELEASE_COMMIT", "4cc2cce07087241ec24a597d8464615434ea2b81"),
+    "ref" => ENV.fetch("MANUAL_RELEASE_REF", "2.0.0"),
+    "commit" => ENV.fetch("MANUAL_RELEASE_COMMIT", "d632a0bc0662ae616b786f552150a7fabd1cee3e"),
   },
 ).errors
 abort(errors.join("\n")) unless errors.empty?

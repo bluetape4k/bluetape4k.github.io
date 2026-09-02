@@ -2,7 +2,7 @@
 manualId: serialization-and-encryption
 title: 직렬화, 암호화, 타입 컬럼 선택
 locale: ko
-releaseRef: 1.12.1
+releaseRef: 2.0.0
 ---
 
 # 직렬화, 암호화, 타입 컬럼 선택

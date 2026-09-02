@@ -6,7 +6,7 @@ locale: "ko"
 kind: "example"
 gradlePath: ":examples-ddd-spring-modulith-demo"
 sourceDir: "examples/ddd-spring-modulith-demo"
-releaseRef: "1.12.1"
+releaseRef: "2.0.0"
 artifact: null
 ---
 

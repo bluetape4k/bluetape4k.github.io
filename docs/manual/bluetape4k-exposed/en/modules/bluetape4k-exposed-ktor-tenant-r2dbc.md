@@ -7,7 +7,6 @@ kind: "library"
 gradlePath: ":bluetape4k-exposed-ktor-tenant-r2dbc"
 sourceDir: "ktor/tenant-r2dbc"
 releaseRef: "develop"
-releaseStatus: "develop-only"
 artifact: io.github.bluetape4k.exposed:bluetape4k-exposed-ktor-tenant-r2dbc
 ---
 
@@ -151,8 +150,7 @@ MySQL Testcontainers suites.
 
 ## Workshops {#workshops}
 
-No selective tenant R2DBC workshop is published in this develop-only release
-line.
+No selective tenant R2DBC workshop is published in the `2.0.0` release line.
 
 ## Limitations {#limitations}
 

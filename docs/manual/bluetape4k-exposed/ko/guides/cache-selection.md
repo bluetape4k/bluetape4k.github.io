@@ -1,7 +1,7 @@
 ---
 title: "캐시 백엔드 선택"
 locale: "ko"
-releaseRef: "1.12.1"
+releaseRef: "2.0.0"
 ---
 
 # 캐시 백엔드 선택

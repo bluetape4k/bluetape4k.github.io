@@ -7,7 +7,6 @@ kind: "library"
 gradlePath: ":bluetape4k-exposed-ktor-cache"
 sourceDir: "ktor/cache"
 releaseRef: "develop"
-releaseStatus: "develop-only"
 artifact: io.github.bluetape4k.exposed:bluetape4k-exposed-ktor-cache
 ---
 
@@ -76,7 +75,7 @@ O(1) 상태 변환, 음수 거부, supplier 취소, deadline, 중복 component, 
 
 ## 워크숍 {#workshops}
 
-이 develop-only release line에는 선택형 cache workshop이 없습니다.
+이 `2.0.0` release line에는 선택형 cache workshop이 없습니다.
 
 ## 제한 사항 {#limitations}
 

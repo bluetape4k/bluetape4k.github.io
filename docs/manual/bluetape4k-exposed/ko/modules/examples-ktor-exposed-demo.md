@@ -6,7 +6,7 @@ locale: "ko"
 kind: "example"
 gradlePath: ":examples-ktor-exposed-demo"
 sourceDir: "examples/ktor-exposed-demo"
-releaseRef: "1.12.1"
+releaseRef: "2.0.0"
 artifact: null
 ---
 
@@ -73,21 +73,21 @@ PostgreSQL이 준비되면 readiness 응답은 HTTP `200`이고 `jdbc`, `r2dbc`,
 
 ## 의존성 좌표 {#coordinates}
 
-이 애플리케이션 자체는 라이브러리로 배포되지 않습니다. 사용하는 프로젝트에서는 중앙 BOM을 가져오고 bluetape4k 라이브러리마다 버전을 따로 적지 마세요. 2.0 마이그레이션 중인 develop 코드는 backend-selective artifact를 명시적으로 선택합니다.
+이 애플리케이션 자체는 라이브러리로 배포되지 않습니다. 사용하는 프로젝트에서는 중앙 BOM을 가져오고 bluetape4k 라이브러리마다 버전을 따로 적지 마세요. 안정판 2.0 소비자는 backend별 artifact를 명시적으로 선택할 수 있습니다.
 
 ```kotlin
 dependencies {
     implementation(platform("io.github.bluetape4k:bluetape4k-dependencies:<version>"))
-    implementation("io.github.bluetape4k:bluetape4k-exposed-ktor-core")
-    implementation("io.github.bluetape4k:bluetape4k-exposed-ktor-jdbc")
-    implementation("io.github.bluetape4k:bluetape4k-exposed-ktor-r2dbc")
-    implementation("io.github.bluetape4k:bluetape4k-exposed-ktor-cache")
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-ktor-core")
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-ktor-jdbc")
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-ktor-r2dbc")
+    implementation("io.github.bluetape4k.exposed:bluetape4k-exposed-ktor-cache")
 }
 ```
 
-선택형 좌표는 2.0 마이그레이션 동안 develop-only입니다. 안정판 `1.12.1`을 사용하는 프로젝트는 자식 artifact가 배포될 때까지 `io.github.bluetape4k.exposed:bluetape4k-exposed-ktor`를 유지해야 합니다.
+선택형 좌표는 안정판 `2.0.0`에 배포되었습니다. 기존 소비자는 `io.github.bluetape4k.exposed:bluetape4k-exposed-ktor`를 유지할 수 있고, 새 소비자는 backend별 자식 artifact를 우선 선택하는 편이 좋습니다.
 
-저장소 안의 예제 빌드는 관리 중인 Ktor·Exposed BOM 카탈로그도 함께 사용해 릴리스 `1.12.1`의 데모 의존성을 맞춥니다.
+저장소 안의 예제 빌드는 관리 중인 Ktor·Exposed BOM 카탈로그도 함께 사용해 릴리스 `2.0.0`의 데모 의존성을 맞춥니다.
 
 ## 핵심 개념 {#concepts}
 
@@ -148,7 +148,7 @@ H2 JDBC 부분은 결정적이지만 운영 데이터베이스의 SQL 방언과 
 
 ## 근거 자료 {#sources}
 
-- [1.12.1 애플리케이션 설정](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.12.1/examples/ktor-exposed-demo/src/main/kotlin/io/bluetape4k/examples/exposed/ktor/KtorExposedDemoApplication.kt)
-- [1.12.1 자원 소유권](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.12.1/examples/ktor-exposed-demo/src/main/kotlin/io/bluetape4k/examples/exposed/ktor/KtorExposedDemoResources.kt)
-- [1.12.1 통합 테스트](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.12.1/examples/ktor-exposed-demo/src/test/kotlin/io/bluetape4k/examples/exposed/ktor/KtorExposedDemoApplicationTest.kt)
-- [1.12.1 Gradle 빌드](https://github.com/bluetape4k/bluetape4k-exposed/blob/1.12.1/examples/ktor-exposed-demo/build.gradle.kts)
+- [2.0.0 애플리케이션 설정](https://github.com/bluetape4k/bluetape4k-exposed/blob/2.0.0/examples/ktor-exposed-demo/src/main/kotlin/io/bluetape4k/examples/exposed/ktor/KtorExposedDemoApplication.kt)
+- [2.0.0 자원 소유권](https://github.com/bluetape4k/bluetape4k-exposed/blob/2.0.0/examples/ktor-exposed-demo/src/main/kotlin/io/bluetape4k/examples/exposed/ktor/KtorExposedDemoResources.kt)
+- [2.0.0 통합 테스트](https://github.com/bluetape4k/bluetape4k-exposed/blob/2.0.0/examples/ktor-exposed-demo/src/test/kotlin/io/bluetape4k/examples/exposed/ktor/KtorExposedDemoApplicationTest.kt)
+- [2.0.0 Gradle 빌드](https://github.com/bluetape4k/bluetape4k-exposed/blob/2.0.0/examples/ktor-exposed-demo/build.gradle.kts)

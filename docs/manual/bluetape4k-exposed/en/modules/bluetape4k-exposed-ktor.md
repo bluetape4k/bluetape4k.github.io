@@ -6,7 +6,7 @@ locale: "en"
 kind: "library"
 gradlePath: ":bluetape4k-exposed-ktor"
 sourceDir: "ktor/exposed"
-releaseRef: "1.12.1"
+releaseRef: "2.0.0"
 artifact: io.github.bluetape4k.exposed:bluetape4k-exposed-ktor
 ---
 
@@ -37,11 +37,11 @@ This artifact remains the compatibility aggregator for existing consumers. New
 applications should select `bluetape4k-exposed-ktor-core` plus exactly the
 backend adapter they use, including `-tenant-jdbc` or `-tenant-r2dbc` when the
 database is selected by `TenantId`. The selective child artifacts and their
-manuals are develop-only during the 2.0 migration and are not published in
-stable `1.12.1`; a stable consumer must keep this aggregator coordinate. The
-legacy coordinates and packages stay available during the migration window;
-move imports and dependencies one backend at a time before removing the
-aggregator from a future major release.
+manuals are published in stable `2.0.0`. Existing consumers can keep this
+aggregator coordinate, while new applications should select only the child
+artifacts they need. The legacy coordinates and packages remain available
+during the migration window; move imports and dependencies one backend at a
+time before removing the aggregator in a future major release.
 
 ## Core concepts {#concepts}
 

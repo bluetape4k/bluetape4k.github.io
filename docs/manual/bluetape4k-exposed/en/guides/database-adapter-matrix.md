@@ -1,7 +1,7 @@
 ---
 title: "Database Adapter Matrix"
 locale: "en"
-releaseRef: "1.12.1"
+releaseRef: "2.0.0"
 ---
 
 # Database Adapter Matrix
