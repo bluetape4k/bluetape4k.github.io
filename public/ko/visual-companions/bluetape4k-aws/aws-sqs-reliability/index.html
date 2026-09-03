@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="data:,">
+  <title>SQS batch 신뢰성 Flight Recorder · bluetape4k</title>
+  <meta name="description" content="receive, handler, acknowledgement, redelivery, cancellation, observation 경계를 다섯 장애 시나리오로 재생합니다.">
+  <script>
+    (() => {
+      const key = 'bluetape4k-wave1-visual-theme';
+      const stored = localStorage.getItem(key) || 'auto';
+      const apply = (mode) => {
+        const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = mode === 'auto' ? (dark ? 'dark' : 'light') : mode;
+        document.documentElement.dataset.themeMode = mode;
+      };
+      apply(stored);
+      addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('[data-theme-button]').forEach((button) => {
+          button.setAttribute('aria-pressed', String(button.dataset.themeButton === stored));
+          button.addEventListener('click', () => {
+            const mode = button.dataset.themeButton;
+            localStorage.setItem(key, mode);
+            apply(mode);
+            document.querySelectorAll('[data-theme-button]').forEach((candidate) => {
+              candidate.setAttribute('aria-pressed', String(candidate === button));
+            });
+          });
+        });
+      });
+    })();</script>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --font-size-base: 16px;
+      --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    }
+    :root[data-theme="light"] {
+      --background: #f4f7fb; --foreground: #152033; --card: #ffffff; --card-foreground: #152033;
+      --popover: #ffffff; --popover-foreground: #152033; --primary: #245ea8; --primary-foreground: #ffffff;
+      --secondary: #e6edf7; --secondary-foreground: #24364f; --muted: #e8eef6; --muted-foreground: #5b6b80;
+      --accent: #dce9fb; --accent-foreground: #173c6b; --destructive: #b93447; --border: #c5d2e2;
+      --input: #aebfd3; --ring: #3978c4; --viz-series-1: #2777c7; --viz-series-2: #5a48b5;
+      --viz-series-3: #118065; --viz-series-4: #b86612; --viz-series-5: #b93447; --viz-series-6: #087f8c;
+      --page-grid: rgba(39, 76, 120, .065); --shadow: rgba(18, 37, 63, .15);
+    }
+    :root[data-theme="dark"] {
+      --background: #07111f; --foreground: #e7eef8; --card: #0f1d31; --card-foreground: #e7eef8;
+      --popover: #101f34; --popover-foreground: #e7eef8; --primary: #78b2ff; --primary-foreground: #07111f;
+      --secondary: #182b45; --secondary-foreground: #dfe9f7; --muted: #172840; --muted-foreground: #a7b8ce;
+      --accent: #19365b; --accent-foreground: #dceaff; --destructive: #ff8292; --border: #2e4767;
+      --input: #496584; --ring: #76b0ff; --viz-series-1: #69aff5; --viz-series-2: #b39bff;
+      --viz-series-3: #58d3a4; --viz-series-4: #ffc16b; --viz-series-5: #ff8292; --viz-series-6: #59d8e4;
+      --page-grid: rgba(116, 155, 207, .075); --shadow: rgba(0, 0, 0, .38);
+    }
+    * { box-sizing: border-box; }
+    html { min-width: 320px; background: var(--background); }
+    body {
+      margin: 0; min-width: 320px; color: var(--foreground); font: 400 var(--font-size-base)/1.58 var(--font-sans);
+      background: linear-gradient(var(--page-grid) 1px, transparent 1px), linear-gradient(90deg, var(--page-grid) 1px, transparent 1px), var(--background);
+      background-size: 30px 30px;
+    }
+    button, input, select { font: inherit; }
+    code { font-family: var(--font-mono); }
+    a { color: var(--viz-series-1); }
+    button:focus-visible, a:focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; }
+    .topbar {
+      position: sticky; top: 0; z-index: 20; display: flex; align-items: center; justify-content: space-between;
+      gap: .75rem; min-height: 64px; padding: .65rem clamp(1rem, 4vw, 3.5rem); border-bottom: 1px solid var(--border);
+      background: color-mix(in srgb, var(--background) 86%, transparent); backdrop-filter: blur(16px);
+    }
+    .brand, .top-actions, .theme-picker, .viz-row, .viz-controls { display: flex; align-items: center; gap: .55rem; flex-wrap: wrap; }
+    .brand { color: var(--foreground); font-weight: 500; text-decoration: none; }
+    .brand-mark { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 10px; color: var(--primary-foreground); background: linear-gradient(135deg, var(--primary), var(--viz-series-2)); }
+    .page { width: min(1180px, calc(100% - 2rem)); margin: 0 auto; padding: clamp(1.5rem, 4vw, 3.5rem) 0 4.5rem; }
+    .context { margin: 0 0 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+    .context strong { display: block; margin-bottom: .25rem; }
+    .context p { margin: 0; color: var(--muted-foreground); }
+    h1, h2, h3 { line-height: 1.2; font-weight: 500; }
+    h2 { margin: 0 0 1rem; font-size: clamp(1.65rem, 4vw, 2.6rem); letter-spacing: -.025em; }
+    .btn {
+      min-height: 42px; padding: .55rem .9rem; border: 1px solid var(--border); border-radius: 999px;
+      color: var(--foreground); background: var(--card); cursor: pointer; text-decoration: none;
+    }
+    .btn:hover { border-color: var(--viz-series-1); }
+    .btn-primary, .btn[aria-pressed="true"] { border-color: var(--primary); color: var(--primary-foreground); background: var(--primary); }
+    .btn-ghost { background: transparent; }
+    .text-small { font-size: .82rem; }
+    .text-muted { color: var(--muted-foreground); }
+    .viz-badge { display: inline-flex; padding: .2rem .55rem; border-radius: 999px; color: var(--accent-foreground); background: var(--accent); }
+    .progress { height: .55rem; overflow: hidden; border-radius: 999px; background: color-mix(in srgb, var(--muted) 70%, transparent); }
+    .progress-bar { height: 100%; background: var(--viz-series-1); transition: width 380ms ease; }
+    .provenance { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); color: var(--muted-foreground); }
+    .provenance a { margin-inline-end: 1rem; }
+    @media (max-width: 700px) {
+      .topbar { align-items: flex-start; }
+      .top-actions { justify-content: flex-end; }
+      .top-actions > a { display: none; }
+      .page { width: min(100% - 1rem, 1180px); padding-top: 1.25rem; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }</style>
+</head>
+<body>
+  <nav class="topbar" aria-label="bluetape4k visual companion">
+    <a class="brand" href="/ko/visual-companions/"><span class="brand-mark" aria-hidden="true">B4K</span><span>Visual companions</span></a>
+    <div class="top-actions">
+      <a class="btn btn-ghost" href="/ko/manual/bluetape4k-aws/1.0/modules/bluetape4k-aws-spring-boot/storage-and-messaging/">매뉴얼</a>
+      <a class="btn btn-ghost" href="/visual-companions/bluetape4k-aws/aws-sqs-reliability/" hreflang="en">English</a>
+      <div class="theme-picker" aria-label="Theme">
+        <button type="button" class="btn btn-ghost" data-theme-button="auto">자동</button>
+        <button type="button" class="btn btn-ghost" data-theme-button="light">밝게</button>
+        <button type="button" class="btn btn-ghost" data-theme-button="dark">어둡게</button>
+      </div>
+    </div>
+  </nav>
+  <main class="page">
+    <header class="context"><strong>#415 · bluetape4k-aws</strong><p>receive, handler, acknowledgement, redelivery, cancellation, observation 경계를 다섯 장애 시나리오로 재생합니다.</p></header>
+<div id="bt4k-issue-415" data-scenario="partial" data-step="0">
+  <style>
+    #bt4k-issue-415 { color: var(--foreground); }
+    #bt4k-issue-415 .scenario-controls,
+    #bt4k-issue-415 .transport { margin-block: 0.75rem; }
+    #bt4k-issue-415 .control-deck { display: flex; justify-content: space-between; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+    #bt4k-issue-415 .clock { display: flex; align-items: center; gap: 0.55rem; color: var(--muted-foreground); }
+    #bt4k-issue-415 .clock strong { color: var(--foreground); }
+    #bt4k-issue-415 .progress { flex: 1 1 10rem; }
+    #bt4k-issue-415 .flight-board { position: relative; padding-block: 0.4rem; }
+    #bt4k-issue-415 .stage-labels { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0.3rem; margin-block-end: 0.65rem; }
+    #bt4k-issue-415 .stage-label { text-align: center; color: var(--muted-foreground); }
+    #bt4k-issue-415 .message-lane { position: relative; min-height: 4.25rem; display: grid; align-items: center; margin-block: 0.3rem; }
+    #bt4k-issue-415 .message-lane::before { content: ""; position: absolute; inset-inline: 3%; top: 50%; height: 2px; background: var(--border); }
+    #bt4k-issue-415 .message-lane::after { content: ""; position: absolute; inset-inline-start: 3%; top: calc(50% - 2px); width: var(--travel, 0%); height: 6px; background: color-mix(in srgb, var(--viz-series-1) 45%, transparent); transition: width 420ms ease; }
+    #bt4k-issue-415 .packet { position: absolute; z-index: 2; inset-inline-start: var(--x, 3%); top: 50%; transform: translate(-50%, -50%); display: grid; place-items: center; min-width: 3.1rem; min-height: 2.65rem; padding: 0.35rem 0.5rem; border-radius: 999px; border: 2px solid var(--viz-series-1); background: var(--background); color: var(--foreground); transition: inset-inline-start 420ms ease, border-color 180ms ease, background 180ms ease; }
+    #bt4k-issue-415 .packet strong { font-weight: 500; }
+    #bt4k-issue-415 .packet small { color: var(--muted-foreground); }
+    #bt4k-issue-415 .packet[data-state="ack"] { border-color: var(--viz-series-3); background: color-mix(in srgb, var(--viz-series-3) 18%, var(--background)); }
+    #bt4k-issue-415 .packet[data-state="retry"] { border-color: var(--destructive); background: color-mix(in srgb, var(--destructive) 14%, var(--background)); }
+    #bt4k-issue-415 .packet[data-state="cancel"] { border-color: var(--viz-series-2); background: color-mix(in srgb, var(--viz-series-2) 16%, var(--background)); }
+    #bt4k-issue-415 .packet[data-state="blocked"] { border-style: dashed; border-color: var(--destructive); }
+    #bt4k-issue-415 .readout { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.5rem; margin-block: 0.8rem; }
+    #bt4k-issue-415 .readout > div { text-align: center; padding-block: 0.6rem; border-block: 1px solid var(--border); }
+    #bt4k-issue-415 .readout span { display: block; color: var(--muted-foreground); }
+    #bt4k-issue-415 .readout strong { display: block; }
+    #bt4k-issue-415 .observation { display: grid; grid-template-columns: auto 1fr auto; gap: 0.6rem; align-items: center; padding-block: 0.7rem; border-block: 1px solid var(--border); }
+    #bt4k-issue-415 .observation-track { height: 0.55rem; background: color-mix(in srgb, var(--muted) 65%, transparent); overflow: hidden; }
+    #bt4k-issue-415 .observation-fill { height: 100%; width: var(--obs, 0%); background: var(--viz-series-2); transition: width 420ms ease; }
+    #bt4k-issue-415 .owner-line { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.6rem; align-items: center; margin-block-start: 0.8rem; color: var(--muted-foreground); text-align: center; }
+    #bt4k-issue-415 .owner-line strong { color: var(--foreground); }
+    #bt4k-issue-415 .step-explanation { margin-block-start: 0.8rem; padding-block: 0.75rem; border-block: 1px solid var(--border); }
+    #bt4k-issue-415 .explain-head { display: flex; align-items: center; gap: 0.55rem; margin-block-end: 0.65rem; }
+    #bt4k-issue-415 .explain-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; }
+    #bt4k-issue-415 .explain-item { min-width: 0; }
+    #bt4k-issue-415 .explain-item > span { display: block; margin-block-end: 0.2rem; color: var(--muted-foreground); }
+    @media (max-width: 560px) {
+      #bt4k-issue-415 .stage-labels { gap: 0.1rem; }
+      #bt4k-issue-415 .stage-label { writing-mode: vertical-rl; min-height: 3.4rem; text-align: start; }
+      #bt4k-issue-415 .message-lane { min-height: 3.8rem; }
+      #bt4k-issue-415 .packet { min-width: 2.65rem; min-height: 2.45rem; padding: 0.25rem; }
+      #bt4k-issue-415 .readout { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      #bt4k-issue-415 .observation { grid-template-columns: 1fr; }
+      #bt4k-issue-415 .owner-line { grid-template-columns: 1fr; }
+      #bt4k-issue-415 .explain-grid { grid-template-columns: 1fr; gap: 0.6rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #bt4k-issue-415 .message-lane::after,
+      #bt4k-issue-415 .packet,
+      #bt4k-issue-415 .observation-fill { transition: none; }
+    }
+  </style>
+
+  <h2>#415 SQS batch 신뢰성 Flight Recorder</h2>
+  <div class="viz-controls scenario-controls" aria-label="장애 시나리오">
+    <button type="button" class="btn" data-scenario-button="success" aria-pressed="false">정상</button>
+    <button type="button" class="btn btn-primary" data-scenario-button="partial" aria-pressed="true">handler 부분 실패</button>
+    <button type="button" class="btn" data-scenario-button="delete" aria-pressed="false">delete 실패</button>
+    <button type="button" class="btn" data-scenario-button="cancel" aria-pressed="false">취소</button>
+    <button type="button" class="btn" data-scenario-button="observation" aria-pressed="false">observation 실패</button>
+  </div>
+
+  <div class="control-deck">
+    <div class="viz-controls transport" aria-label="재생 제어">
+      <button type="button" class="btn" data-action="reset">↺ 초기화</button>
+      <button type="button" class="btn btn-primary" data-action="play" aria-pressed="false">▶ 재생</button>
+      <button type="button" class="btn" data-action="next">+1 다음</button>
+    </div>
+    <div class="clock"><span>단계</span><strong data-step-label>0 / 7</strong></div>
+  </div>
+
+  <div class="progress" role="progressbar" aria-label="SQS 처리 진행" aria-valuenow="0" aria-valuemin="0" aria-valuemax="7"><div class="progress-bar" style="width:0%"></div></div>
+
+  <div class="flight-board" role="img" aria-label="세 SQS 메시지가 queue, receive, handler, acknowledge, delete, retry 단계를 이동하는 애니메이션">
+    <div class="stage-labels" aria-hidden="true">
+      <span class="stage-label text-small">Queue</span><span class="stage-label text-small">Receive</span><span class="stage-label text-small">Handler</span><span class="stage-label text-small">Ack</span><span class="stage-label text-small">Delete</span><span class="stage-label text-small">Retry</span>
+    </div>
+    <div class="message-lane" data-message="m1"><div class="packet" data-state="queued"><strong>M1</strong><small>대기</small></div></div>
+    <div class="message-lane" data-message="m2"><div class="packet" data-state="queued"><strong>M2</strong><small>대기</small></div></div>
+    <div class="message-lane" data-message="m3"><div class="packet" data-state="queued"><strong>M3</strong><small>대기</small></div></div>
+  </div>
+
+  <div class="readout" aria-label="처리 결과 집계">
+    <div><span class="text-small">삭제</span><strong data-metric="deleted">0</strong></div><div><span class="text-small">재전달</span><strong data-metric="retry">0</strong></div><div><span class="text-small">취소</span><strong data-metric="cancelled">0</strong></div><div><span class="text-small">최종 원인</span><strong data-metric="cause">—</strong></div>
+  </div>
+
+  <div class="observation"><code>Micrometer Observation</code><div class="observation-track" aria-hidden="true"><div class="observation-fill"></div></div><span class="text-small" data-observation>아직 시작되지 않음</span></div>
+  <div class="owner-line text-small"><span><strong>Adapter 소유</strong><br>bounded batch · delete · cleanup</span><span aria-hidden="true">│ 정책 경계 │</span><span><strong>Caller 소유</strong><br>retry · DLQ · queue policy</span></div>
+  <section class="step-explanation" aria-live="polite" aria-label="현재 단계 상세 설명">
+    <div class="explain-head"><span class="viz-badge" data-explain-phase>대기</span><strong data-explain-step>단계 0 상세</strong></div>
+    <div class="explain-grid">
+      <div class="explain-item"><span class="text-small">현재 동작</span><div data-explain-action>한 번의 ReceiveMessage가 최대 3개 메시지를 가져옵니다.</div></div>
+      <div class="explain-item"><span class="text-small">신뢰성 보장</span><div data-explain-guard>아직 receipt handle을 삭제하지 않아 모든 메시지의 재처리 가능성을 보존합니다.</div></div>
+      <div class="explain-item"><span class="text-small">다음 전이</span><div data-explain-next>수신 → 하나의 ReceiveMessage 결과를 제한된 coroutine batch로 고정합니다.</div></div>
+    </div>
+  </section>
+
+  <script>
+    (() => {
+      const root = document.getElementById('bt4k-issue-415');
+      const packets = [...root.querySelectorAll('.packet')];
+      const lanes = [...root.querySelectorAll('.message-lane')];
+      const explainPhase = root.querySelector('[data-explain-phase]');
+      const explainStep = root.querySelector('[data-explain-step]');
+      const explainAction = root.querySelector('[data-explain-action]');
+      const explainGuard = root.querySelector('[data-explain-guard]');
+      const explainNext = root.querySelector('[data-explain-next]');
+      const stepLabel = root.querySelector('[data-step-label]');
+      const progress = root.querySelector('.progress');
+      const progressBar = root.querySelector('.progress-bar');
+      const playButton = root.querySelector('[data-action="play"]');
+      const observation = root.querySelector('[data-observation]');
+      const observationFill = root.querySelector('.observation-fill');
+      const metrics = Object.fromEntries([...root.querySelectorAll('[data-metric]')].map((el) => [el.dataset.metric, el]));
+      const positions = [8.5, 25, 41.5, 58.5, 75, 91.5];
+      let scenario = 'partial';
+      let step = 0;
+      let timer = null;
+
+      const common = [
+        { pos: [0, 0, 0], state: ['queued', 'queued', 'queued'], label: ['대기', '대기', '대기'], metrics: [0, 0, 0, '—'], obs: 0, observation: '아직 시작되지 않음', detail: '대기: 한 번의 ReceiveMessage가 최대 3개 메시지를 가져옵니다.' },
+        { pos: [1, 1, 1], state: ['active', 'active', 'active'], label: ['수신', '수신', '수신'], metrics: [0, 0, 0, '—'], obs: 14, observation: 'receive · batch.size=3', detail: '수신: 하나의 ReceiveMessage 결과를 제한된 coroutine batch로 고정합니다.' },
+        { pos: [2, 2, 2], state: ['active', 'active', 'active'], label: ['처리', '처리', '처리'], metrics: [0, 0, 0, '—'], obs: 28, observation: 'handler · message.id 미태깅', detail: '처리: 항목별 handler는 독립적으로 완료되며 식별자는 metric tag에 넣지 않습니다.' }
+      ];
+      const tails = {
+        success: [
+          { pos: [3, 3, 3], state: ['ack', 'ack', 'ack'], label: ['성공', '성공', '성공'], metrics: [0, 0, 0, '—'], obs: 43, observation: 'handler.outcome=success', detail: '결과: 세 항목 모두 성공하여 각 receipt handle이 삭제 후보가 됩니다.' },
+          { pos: [4, 4, 4], state: ['ack', 'ack', 'ack'], label: ['삭제', '삭제', '삭제'], metrics: [3, 0, 0, '—'], obs: 71, observation: 'delete.outcome=success', detail: '삭제: 성공 항목의 receipt handle만 DeleteMessage로 확정합니다.' },
+          { pos: [4, 4, 4], state: ['ack', 'ack', 'ack'], label: ['완료', '완료', '완료'], metrics: [3, 0, 0, 'none'], obs: 86, observation: 'cleanup=complete', detail: '정리: batch lifecycle을 닫고 transport 자원을 반환합니다.' },
+          { pos: [4, 4, 4], state: ['ack', 'ack', 'ack'], label: ['완료', '완료', '완료'], metrics: [3, 0, 0, 'none'], obs: 100, observation: 'final.outcome=success', detail: '완료: adapter는 성공을 보고하며 caller의 retry/DLQ 정책은 개입하지 않습니다.' },
+          { pos: [4, 4, 4], state: ['ack', 'ack', 'ack'], label: ['완료', '완료', '완료'], metrics: [3, 0, 0, 'none'], obs: 100, observation: 'observation.stop', detail: '종료: low-cardinality observation이 단 한 번 닫힙니다.' }
+        ],
+        partial: [
+          { pos: [3, 2, 3], state: ['ack', 'retry', 'ack'], label: ['성공', '실패', '성공'], metrics: [0, 1, 0, 'handler'], obs: 43, observation: 'handler.outcome=partial', detail: '부분 실패: M2의 handler 실패가 M1·M3의 성공 상태를 덮어쓰지 않습니다.' },
+          { pos: [4, 2, 4], state: ['ack', 'retry', 'ack'], label: ['삭제', '보존', '삭제'], metrics: [2, 1, 0, 'handler'], obs: 57, observation: 'delete.count=2', detail: '부분 acknowledge: 성공한 M1·M3만 삭제하고 M2는 queue에 남깁니다.' },
+          { pos: [4, 5, 4], state: ['ack', 'retry', 'ack'], label: ['완료', 'timeout', '완료'], metrics: [2, 1, 0, 'handler'], obs: 71, observation: 'redelivery.eligible=true', detail: '가시성 대기: M2는 visibility timeout이 끝날 때까지 다른 consumer에게 보이지 않습니다.' },
+          { pos: [4, 0, 4], state: ['ack', 'retry', 'ack'], label: ['완료', '재전달', '완료'], metrics: [2, 1, 0, 'handler'], obs: 86, observation: 'retry.owner=caller', detail: '재전달: M2가 queue로 돌아오며 retry 횟수와 DLQ 전환은 caller 정책이 결정합니다.' },
+          { pos: [4, 0, 4], state: ['ack', 'retry', 'ack'], label: ['완료', '대기', '완료'], metrics: [2, 1, 0, 'handler'], obs: 100, observation: 'final.cause=handler', detail: '종료: 최종 원인은 handler 실패이며 성공 메시지는 중복 삭제하지 않습니다.' }
+        ],
+        delete: [
+          { pos: [3, 3, 3], state: ['ack', 'ack', 'ack'], label: ['성공', '성공', '성공'], metrics: [0, 0, 0, '—'], obs: 43, observation: 'handler.outcome=success', detail: 'handler 완료: 세 메시지는 성공했지만 아직 SQS 삭제가 확정되지 않았습니다.' },
+          { pos: [4, 4, 4], state: ['ack', 'blocked', 'ack'], label: ['삭제', '실패', '삭제'], metrics: [2, 1, 0, 'delete'], obs: 57, observation: 'delete.outcome=partial', detail: 'delete 실패: M2 receipt handle 삭제 실패는 handler 실패와 구분됩니다.' },
+          { pos: [4, 5, 4], state: ['ack', 'retry', 'ack'], label: ['완료', 'timeout', '완료'], metrics: [2, 1, 0, 'delete'], obs: 71, observation: 'redelivery.cause=delete', detail: '가시성 대기: 처리 성공이어도 삭제되지 않은 M2는 다시 전달될 수 있습니다.' },
+          { pos: [4, 0, 4], state: ['ack', 'retry', 'ack'], label: ['완료', '재전달', '완료'], metrics: [2, 1, 0, 'delete'], obs: 86, observation: 'duplicate.possible=true', detail: '중복 가능성: 애플리케이션 handler는 멱등성을 소유해야 합니다.' },
+          { pos: [4, 0, 4], state: ['ack', 'retry', 'ack'], label: ['완료', '대기', '완료'], metrics: [2, 1, 0, 'delete'], obs: 100, observation: 'final.cause=delete', detail: '종료: 최종 원인은 delete이며 retry/DLQ 정책은 caller 경계에 남습니다.' }
+        ],
+        cancel: [
+          { pos: [2, 2, 2], state: ['cancel', 'cancel', 'cancel'], label: ['중단', '중단', '중단'], metrics: [0, 0, 3, 'cancel'], obs: 43, observation: 'cancellation=propagated', detail: '취소 신호: cancellation을 일반 실패로 삼키지 않고 batch 전체에 우선 전파합니다.' },
+          { pos: [2, 2, 2], state: ['cancel', 'cancel', 'cancel'], label: ['보존', '보존', '보존'], metrics: [0, 3, 3, 'cancel'], obs: 57, observation: 'delete.skipped=true', detail: '삭제 금지: 완료가 확정되지 않은 receipt handle에는 DeleteMessage를 호출하지 않습니다.' },
+          { pos: [5, 5, 5], state: ['cancel', 'cancel', 'cancel'], label: ['timeout', 'timeout', 'timeout'], metrics: [0, 3, 3, 'cancel'], obs: 71, observation: 'cleanup=non-cancellable', detail: '정리: 취소 원인을 보존한 채 bounded cleanup만 수행합니다.' },
+          { pos: [0, 0, 0], state: ['retry', 'retry', 'retry'], label: ['재전달', '재전달', '재전달'], metrics: [0, 3, 3, 'cancel'], obs: 86, observation: 'redelivery.eligible=true', detail: '재전달: 세 메시지는 visibility timeout 이후 다시 처리 대상이 됩니다.' },
+          { pos: [0, 0, 0], state: ['retry', 'retry', 'retry'], label: ['대기', '대기', '대기'], metrics: [0, 3, 3, 'cancel'], obs: 100, observation: 'final.cause=cancel', detail: '종료: handler 오류가 뒤따라도 최종 원인은 cancellation입니다.' }
+        ],
+        observation: [
+          { pos: [3, 3, 3], state: ['ack', 'ack', 'ack'], label: ['성공', '성공', '성공'], metrics: [0, 0, 0, '—'], obs: 43, observation: 'handler.outcome=success', detail: '업무 결과: 세 handler는 성공했으며 observation 오류와 분리됩니다.' },
+          { pos: [4, 4, 4], state: ['ack', 'ack', 'ack'], label: ['삭제', '삭제', '삭제'], metrics: [3, 0, 0, '—'], obs: 71, observation: 'delete.outcome=success', detail: 'transport 결과: 세 메시지 삭제가 먼저 확정됩니다.' },
+          { pos: [4, 4, 4], state: ['ack', 'ack', 'ack'], label: ['완료', '완료', '완료'], metrics: [3, 0, 0, 'observation'], obs: 82, observation: 'observation.stop=failed', detail: '관측 실패: observation stop 오류는 이미 확정된 delete를 되돌리지 않습니다.' },
+          { pos: [4, 4, 4], state: ['ack', 'ack', 'ack'], label: ['완료', '완료', '완료'], metrics: [3, 0, 0, 'observation'], obs: 92, observation: 'business.outcome=success', detail: '실패 우선순위: 업무/transport 결과와 telemetry 실패를 별도 원인으로 보존합니다.' },
+          { pos: [4, 4, 4], state: ['ack', 'ack', 'ack'], label: ['완료', '완료', '완료'], metrics: [3, 0, 0, 'observation'], obs: 100, observation: 'final.cause=observation', detail: '종료: privacy-safe low-cardinality tag만 남고 메시지 식별자는 노출하지 않습니다.' }
+        ]
+      };
+      const principles = {
+        common: [
+          '아직 receipt handle을 삭제하지 않아 모든 메시지의 재처리 가능성을 보존합니다.',
+          'adapter는 transport 동시성을 bounded batch로 제한하고 retry·DLQ 정책은 caller에게 남깁니다.',
+          '항목별 결과를 독립 보존하고 message id를 observation tag에서 제외해 cardinality와 개인정보 노출을 막습니다.'
+        ],
+        success: [
+          'handler 성공은 삭제 후보를 만들 뿐이며, DeleteMessage 성공 전에는 SQS 처리 완료가 아닙니다.',
+          '성공 receipt 세 개만 삭제해 동일 메시지의 불필요한 재전달을 막습니다.',
+          'transport cleanup은 결과를 바꾸지 않고 batch가 점유한 자원만 제한적으로 정리합니다.',
+          'adapter 성공 뒤에도 retry 횟수와 DLQ 전환 같은 queue 정책은 caller 영역으로 유지됩니다.',
+          'observation은 한 번만 종료되고 low-cardinality 결과만 남깁니다.'
+        ],
+        partial: [
+          'M2 실패가 M1·M3 성공을 rollback하지 않으므로 batch 전체 성공/실패로 뭉개지지 않습니다.',
+          '성공한 M1·M3만 삭제하고 M2 receipt를 보존해 부분 acknowledge 계약을 지킵니다.',
+          'M2는 visibility timeout 동안 중복 소비되지 않지만 삭제되지 않았으므로 이후 재전달될 수 있습니다.',
+          'adapter는 M2를 queue에 되돌려 놓고 실제 retry 간격·횟수·DLQ 전환은 caller 정책에 맡깁니다.',
+          'handler 실패를 최종 원인으로 보존하며 이미 삭제된 M1·M3를 다시 처리하지 않습니다.'
+        ],
+        delete: [
+          'handler 성공만으로는 완료가 아니며 receipt 삭제 결과가 별도의 transport 계약입니다.',
+          'M2의 delete 실패를 handler 실패와 구분해 재전달 원인과 관측 결과를 정확히 남깁니다.',
+          '처리는 성공했지만 삭제되지 않은 M2가 다시 올 수 있으므로 handler는 멱등성을 가져야 합니다.',
+          '중복 가능성은 adapter가 숨기지 않으며 caller가 멱등 처리와 queue 정책으로 흡수합니다.',
+          '최종 원인을 delete로 유지해 업무 실패와 transport 확정 실패를 혼동하지 않습니다.'
+        ],
+        cancel: [
+          'cancellation은 일반 예외보다 우선하며 coroutine 구조 전체로 즉시 전파됩니다.',
+          '완료 여부가 불명확한 receipt를 삭제하지 않아 취소 중 데이터 유실을 막습니다.',
+          'cleanup만 bounded non-cancellable 구간에서 수행하고 원래 cancellation 원인은 덮어쓰지 않습니다.',
+          '삭제되지 않은 세 메시지는 timeout 후 모두 다시 보여 처리 기회를 회복합니다.',
+          '뒤늦은 handler 오류가 있어도 최종 원인은 cancellation으로 유지됩니다.'
+        ],
+        observation: [
+          '업무 성공과 telemetry lifecycle을 분리해 관측 실패가 handler 결과를 왜곡하지 않습니다.',
+          'DeleteMessage 성공을 먼저 확정하므로 이후 observation 오류가 queue 상태를 되돌릴 수 없습니다.',
+          'observation stop 실패는 별도 원인으로 기록하되 이미 삭제된 메시지를 재생성하지 않습니다.',
+          'business·transport·telemetry 결과를 각각 보존해 실패 우선순위를 진단할 수 있습니다.',
+          '메시지 식별자를 제외한 low-cardinality tag만 남겨 개인정보와 metric 폭증을 피합니다.'
+        ]
+      };
+      const frames = () => [...common, ...tails[scenario]];
+      function detailParts(value) { const separator = value.indexOf(':'); return separator < 0 ? { phase: '완료', action: value } : { phase: value.slice(0, separator), action: value.slice(separator + 1).trim() }; }
+      function renderExplanation(data) {
+        const current = detailParts(data.detail);
+        const next = frames()[step + 1];
+        const nextParts = next ? detailParts(next.detail) : null;
+        const principleIndex = step < common.length ? step : step - common.length;
+        explainPhase.textContent = current.phase;
+        explainStep.textContent = `단계 ${step} 상세`;
+        explainAction.textContent = current.action;
+        explainGuard.textContent = step < common.length ? principles.common[principleIndex] : principles[scenario][principleIndex];
+        explainNext.textContent = nextParts ? `${nextParts.phase} → ${nextParts.action}` : '시나리오 완료 · 다른 장애 시나리오를 선택해 계약을 비교할 수 있습니다.';
+      }
+      function stop() { if (timer) clearInterval(timer); timer = null; playButton.textContent = '▶ 재생'; playButton.setAttribute('aria-pressed', 'false'); }
+      function render() {
+        const data = frames()[step]; root.dataset.scenario = scenario; root.dataset.step = String(step);
+        packets.forEach((packet, index) => { packet.style.setProperty('--x', `${positions[data.pos[index]]}%`); packet.dataset.state = data.state[index]; packet.querySelector('small').textContent = data.label[index]; lanes[index].style.setProperty('--travel', `${Math.max(0, positions[data.pos[index]] - positions[0])}%`); });
+        metrics.deleted.textContent = String(data.metrics[0]); metrics.retry.textContent = String(data.metrics[1]); metrics.cancelled.textContent = String(data.metrics[2]); metrics.cause.textContent = data.metrics[3];
+        observation.textContent = data.observation; observationFill.style.setProperty('--obs', `${data.obs}%`); renderExplanation(data);
+        stepLabel.textContent = `${step} / ${frames().length - 1}`; const percent = Math.round((step / (frames().length - 1)) * 100); progress.setAttribute('aria-valuenow', String(step)); progress.setAttribute('aria-valuemax', String(frames().length - 1)); progressBar.style.width = `${percent}%`;
+      }
+      function reset(nextScenario = scenario) { stop(); scenario = nextScenario; step = 0; root.querySelectorAll('[data-scenario-button]').forEach((button) => { const active = button.dataset.scenarioButton === scenario; button.setAttribute('aria-pressed', String(active)); button.classList.toggle('btn-primary', active); }); render(); }
+      function advance() { if (step >= frames().length - 1) { stop(); return; } step += 1; render(); if (step >= frames().length - 1) stop(); }
+      function play() { if (timer) { stop(); return; } if (step >= frames().length - 1) step = 0; playButton.textContent = 'Ⅱ 일시정지'; playButton.setAttribute('aria-pressed', 'true'); timer = setInterval(advance, 820); render(); }
+      root.querySelectorAll('[data-scenario-button]').forEach((button) => button.addEventListener('click', () => reset(button.dataset.scenarioButton)));
+      root.querySelector('[data-action="reset"]').addEventListener('click', () => reset()); root.querySelector('[data-action="next"]').addEventListener('click', advance); playButton.addEventListener('click', play); reset('partial');
+    })();
+  </script>
+</div>
+    <footer class="provenance"><strong>근거와 범위</strong><br><a href="https://github.com/bluetape4k/bluetape4k.github.io/issues/415">작업 이슈 #415</a><a href="/ko/manual/bluetape4k-aws/1.0/modules/bluetape4k-aws-spring-boot/storage-and-messaging/">매뉴얼</a></footer>
+  </main>
+</body>
+</html>

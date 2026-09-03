@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="data:,">
+  <title>SQS Batch Reliability Flight Recorder · bluetape4k</title>
+  <meta name="description" content="Play five failure scenarios across receive, handler, acknowledgement, redelivery, cancellation, and observation boundaries.">
+  <script>
+    (() => {
+      const key = 'bluetape4k-wave1-visual-theme';
+      const stored = localStorage.getItem(key) || 'auto';
+      const apply = (mode) => {
+        const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = mode === 'auto' ? (dark ? 'dark' : 'light') : mode;
+        document.documentElement.dataset.themeMode = mode;
+      };
+      apply(stored);
+      addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('[data-theme-button]').forEach((button) => {
+          button.setAttribute('aria-pressed', String(button.dataset.themeButton === stored));
+          button.addEventListener('click', () => {
+            const mode = button.dataset.themeButton;
+            localStorage.setItem(key, mode);
+            apply(mode);
+            document.querySelectorAll('[data-theme-button]').forEach((candidate) => {
+              candidate.setAttribute('aria-pressed', String(candidate === button));
+            });
+          });
+        });
+      });
+    })();</script>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --font-size-base: 16px;
+      --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    }
+    :root[data-theme="light"] {
+      --background: #f4f7fb; --foreground: #152033; --card: #ffffff; --card-foreground: #152033;
+      --popover: #ffffff; --popover-foreground: #152033; --primary: #245ea8; --primary-foreground: #ffffff;
+      --secondary: #e6edf7; --secondary-foreground: #24364f; --muted: #e8eef6; --muted-foreground: #5b6b80;
+      --accent: #dce9fb; --accent-foreground: #173c6b; --destructive: #b93447; --border: #c5d2e2;
+      --input: #aebfd3; --ring: #3978c4; --viz-series-1: #2777c7; --viz-series-2: #5a48b5;
+      --viz-series-3: #118065; --viz-series-4: #b86612; --viz-series-5: #b93447; --viz-series-6: #087f8c;
+      --page-grid: rgba(39, 76, 120, .065); --shadow: rgba(18, 37, 63, .15);
+    }
+    :root[data-theme="dark"] {
+      --background: #07111f; --foreground: #e7eef8; --card: #0f1d31; --card-foreground: #e7eef8;
+      --popover: #101f34; --popover-foreground: #e7eef8; --primary: #78b2ff; --primary-foreground: #07111f;
+      --secondary: #182b45; --secondary-foreground: #dfe9f7; --muted: #172840; --muted-foreground: #a7b8ce;
+      --accent: #19365b; --accent-foreground: #dceaff; --destructive: #ff8292; --border: #2e4767;
+      --input: #496584; --ring: #76b0ff; --viz-series-1: #69aff5; --viz-series-2: #b39bff;
+      --viz-series-3: #58d3a4; --viz-series-4: #ffc16b; --viz-series-5: #ff8292; --viz-series-6: #59d8e4;
+      --page-grid: rgba(116, 155, 207, .075); --shadow: rgba(0, 0, 0, .38);
+    }
+    * { box-sizing: border-box; }
+    html { min-width: 320px; background: var(--background); }
+    body {
+      margin: 0; min-width: 320px; color: var(--foreground); font: 400 var(--font-size-base)/1.58 var(--font-sans);
+      background: linear-gradient(var(--page-grid) 1px, transparent 1px), linear-gradient(90deg, var(--page-grid) 1px, transparent 1px), var(--background);
+      background-size: 30px 30px;
+    }
+    button, input, select { font: inherit; }
+    code { font-family: var(--font-mono); }
+    a { color: var(--viz-series-1); }
+    button:focus-visible, a:focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; }
+    .topbar {
+      position: sticky; top: 0; z-index: 20; display: flex; align-items: center; justify-content: space-between;
+      gap: .75rem; min-height: 64px; padding: .65rem clamp(1rem, 4vw, 3.5rem); border-bottom: 1px solid var(--border);
+      background: color-mix(in srgb, var(--background) 86%, transparent); backdrop-filter: blur(16px);
+    }
+    .brand, .top-actions, .theme-picker, .viz-row, .viz-controls { display: flex; align-items: center; gap: .55rem; flex-wrap: wrap; }
+    .brand { color: var(--foreground); font-weight: 500; text-decoration: none; }
+    .brand-mark { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 10px; color: var(--primary-foreground); background: linear-gradient(135deg, var(--primary), var(--viz-series-2)); }
+    .page { width: min(1180px, calc(100% - 2rem)); margin: 0 auto; padding: clamp(1.5rem, 4vw, 3.5rem) 0 4.5rem; }
+    .context { margin: 0 0 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+    .context strong { display: block; margin-bottom: .25rem; }
+    .context p { margin: 0; color: var(--muted-foreground); }
+    h1, h2, h3 { line-height: 1.2; font-weight: 500; }
+    h2 { margin: 0 0 1rem; font-size: clamp(1.65rem, 4vw, 2.6rem); letter-spacing: -.025em; }
+    .btn {
+      min-height: 42px; padding: .55rem .9rem; border: 1px solid var(--border); border-radius: 999px;
+      color: var(--foreground); background: var(--card); cursor: pointer; text-decoration: none;
+    }
+    .btn:hover { border-color: var(--viz-series-1); }
+    .btn-primary, .btn[aria-pressed="true"] { border-color: var(--primary); color: var(--primary-foreground); background: var(--primary); }
+    .btn-ghost { background: transparent; }
+    .text-small { font-size: .82rem; }
+    .text-muted { color: var(--muted-foreground); }
+    .viz-badge { display: inline-flex; padding: .2rem .55rem; border-radius: 999px; color: var(--accent-foreground); background: var(--accent); }
+    .progress { height: .55rem; overflow: hidden; border-radius: 999px; background: color-mix(in srgb, var(--muted) 70%, transparent); }
+    .progress-bar { height: 100%; background: var(--viz-series-1); transition: width 380ms ease; }
+    .provenance { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); color: var(--muted-foreground); }
+    .provenance a { margin-inline-end: 1rem; }
+    @media (max-width: 700px) {
+      .topbar { align-items: flex-start; }
+      .top-actions { justify-content: flex-end; }
+      .top-actions > a { display: none; }
+      .page { width: min(100% - 1rem, 1180px); padding-top: 1.25rem; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }</style>
+</head>
+<body>
+  <nav class="topbar" aria-label="bluetape4k visual companion">
+    <a class="brand" href="/visual-companions/"><span class="brand-mark" aria-hidden="true">B4K</span><span>Visual companions</span></a>
+    <div class="top-actions">
+      <a class="btn btn-ghost" href="/manual/bluetape4k-aws/1.0/modules/bluetape4k-aws-spring-boot/storage-and-messaging/">Manual</a>
+      <a class="btn btn-ghost" href="/ko/visual-companions/bluetape4k-aws/aws-sqs-reliability/" hreflang="ko">한국어</a>
+      <div class="theme-picker" aria-label="Theme">
+        <button type="button" class="btn btn-ghost" data-theme-button="auto">Auto</button>
+        <button type="button" class="btn btn-ghost" data-theme-button="light">Light</button>
+        <button type="button" class="btn btn-ghost" data-theme-button="dark">Dark</button>
+      </div>
+    </div>
+  </nav>
+  <main class="page">
+    <header class="context"><strong>#415 · bluetape4k-aws</strong><p>Play five failure scenarios across receive, handler, acknowledgement, redelivery, cancellation, and observation boundaries.</p></header>
+<div id="bt4k-issue-415" data-scenario="partial" data-step="0">
+  <style>
+    #bt4k-issue-415 { color: var(--foreground); }
+    #bt4k-issue-415 .scenario-controls,
+    #bt4k-issue-415 .transport { margin-block: 0.75rem; }
+    #bt4k-issue-415 .control-deck { display: flex; justify-content: space-between; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+    #bt4k-issue-415 .clock { display: flex; align-items: center; gap: 0.55rem; color: var(--muted-foreground); }
+    #bt4k-issue-415 .clock strong { color: var(--foreground); }
+    #bt4k-issue-415 .progress { flex: 1 1 10rem; }
+    #bt4k-issue-415 .flight-board { position: relative; padding-block: 0.4rem; }
+    #bt4k-issue-415 .stage-labels { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0.3rem; margin-block-end: 0.65rem; }
+    #bt4k-issue-415 .stage-label { text-align: center; color: var(--muted-foreground); }
+    #bt4k-issue-415 .message-lane { position: relative; min-height: 4.25rem; display: grid; align-items: center; margin-block: 0.3rem; }
+    #bt4k-issue-415 .message-lane::before { content: ""; position: absolute; inset-inline: 3%; top: 50%; height: 2px; background: var(--border); }
+    #bt4k-issue-415 .message-lane::after { content: ""; position: absolute; inset-inline-start: 3%; top: calc(50% - 2px); width: var(--travel, 0%); height: 6px; background: color-mix(in srgb, var(--viz-series-1) 45%, transparent); transition: width 420ms ease; }
+    #bt4k-issue-415 .packet { position: absolute; z-index: 2; inset-inline-start: var(--x, 3%); top: 50%; transform: translate(-50%, -50%); display: grid; place-items: center; min-width: 3.1rem; min-height: 2.65rem; padding: 0.35rem 0.5rem; border-radius: 999px; border: 2px solid var(--viz-series-1); background: var(--background); color: var(--foreground); transition: inset-inline-start 420ms ease, border-color 180ms ease, background 180ms ease; }
+    #bt4k-issue-415 .packet strong { font-weight: 500; }
+    #bt4k-issue-415 .packet small { color: var(--muted-foreground); }
+    #bt4k-issue-415 .packet[data-state="ack"] { border-color: var(--viz-series-3); background: color-mix(in srgb, var(--viz-series-3) 18%, var(--background)); }
+    #bt4k-issue-415 .packet[data-state="retry"] { border-color: var(--destructive); background: color-mix(in srgb, var(--destructive) 14%, var(--background)); }
+    #bt4k-issue-415 .packet[data-state="cancel"] { border-color: var(--viz-series-2); background: color-mix(in srgb, var(--viz-series-2) 16%, var(--background)); }
+    #bt4k-issue-415 .packet[data-state="blocked"] { border-style: dashed; border-color: var(--destructive); }
+    #bt4k-issue-415 .readout { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.5rem; margin-block: 0.8rem; }
+    #bt4k-issue-415 .readout > div { text-align: center; padding-block: 0.6rem; border-block: 1px solid var(--border); }
+    #bt4k-issue-415 .readout span { display: block; color: var(--muted-foreground); }
+    #bt4k-issue-415 .readout strong { display: block; }
+    #bt4k-issue-415 .observation { display: grid; grid-template-columns: auto 1fr auto; gap: 0.6rem; align-items: center; padding-block: 0.7rem; border-block: 1px solid var(--border); }
+    #bt4k-issue-415 .observation-track { height: 0.55rem; background: color-mix(in srgb, var(--muted) 65%, transparent); overflow: hidden; }
+    #bt4k-issue-415 .observation-fill { height: 100%; width: var(--obs, 0%); background: var(--viz-series-2); transition: width 420ms ease; }
+    #bt4k-issue-415 .owner-line { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.6rem; align-items: center; margin-block-start: 0.8rem; color: var(--muted-foreground); text-align: center; }
+    #bt4k-issue-415 .owner-line strong { color: var(--foreground); }
+    #bt4k-issue-415 .step-explanation { margin-block-start: 0.8rem; padding-block: 0.75rem; border-block: 1px solid var(--border); }
+    #bt4k-issue-415 .explain-head { display: flex; align-items: center; gap: 0.55rem; margin-block-end: 0.65rem; }
+    #bt4k-issue-415 .explain-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; }
+    #bt4k-issue-415 .explain-item { min-width: 0; }
+    #bt4k-issue-415 .explain-item > span { display: block; margin-block-end: 0.2rem; color: var(--muted-foreground); }
+    @media (max-width: 560px) {
+      #bt4k-issue-415 .stage-labels { gap: 0.1rem; }
+      #bt4k-issue-415 .stage-label { writing-mode: vertical-rl; min-height: 3.4rem; text-align: start; }
+      #bt4k-issue-415 .message-lane { min-height: 3.8rem; }
+      #bt4k-issue-415 .packet { min-width: 2.65rem; min-height: 2.45rem; padding: 0.25rem; }
+      #bt4k-issue-415 .readout { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      #bt4k-issue-415 .observation { grid-template-columns: 1fr; }
+      #bt4k-issue-415 .owner-line { grid-template-columns: 1fr; }
+      #bt4k-issue-415 .explain-grid { grid-template-columns: 1fr; gap: 0.6rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #bt4k-issue-415 .message-lane::after,
+      #bt4k-issue-415 .packet,
+      #bt4k-issue-415 .observation-fill { transition: none; }
+    }
+  </style>
+
+  <h2>#415 SQS batch reliability Flight Recorder</h2>
+  <div class="viz-controls scenario-controls" aria-label="Failure scenarios">
+    <button type="button" class="btn" data-scenario-button="success" aria-pressed="false">Normal</button>
+    <button type="button" class="btn btn-primary" data-scenario-button="partial" aria-pressed="true">Partial handler failure</button>
+    <button type="button" class="btn" data-scenario-button="delete" aria-pressed="false">Delete failure</button>
+    <button type="button" class="btn" data-scenario-button="cancel" aria-pressed="false">Cancellation</button>
+    <button type="button" class="btn" data-scenario-button="observation" aria-pressed="false">Observation failure</button>
+  </div>
+
+  <div class="control-deck">
+    <div class="viz-controls transport" aria-label="Playback controls">
+      <button type="button" class="btn" data-action="reset">↺ Reset</button>
+      <button type="button" class="btn btn-primary" data-action="play" aria-pressed="false">▶ Play</button>
+      <button type="button" class="btn" data-action="next">+1 Next</button>
+    </div>
+    <div class="clock"><span>Step</span><strong data-step-label>0 / 7</strong></div>
+  </div>
+
+  <div class="progress" role="progressbar" aria-label="SQS processing progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="7"><div class="progress-bar" style="width:0%"></div></div>
+
+  <div class="flight-board" role="img" aria-label="Animation of three SQS messages moving through the queue, receive, handler, acknowledge, delete, and retry stages">
+    <div class="stage-labels" aria-hidden="true">
+      <span class="stage-label text-small">Queue</span><span class="stage-label text-small">Receive</span><span class="stage-label text-small">Handler</span><span class="stage-label text-small">Ack</span><span class="stage-label text-small">Delete</span><span class="stage-label text-small">Retry</span>
+    </div>
+    <div class="message-lane" data-message="m1"><div class="packet" data-state="queued"><strong>M1</strong><small>Queued</small></div></div>
+    <div class="message-lane" data-message="m2"><div class="packet" data-state="queued"><strong>M2</strong><small>Queued</small></div></div>
+    <div class="message-lane" data-message="m3"><div class="packet" data-state="queued"><strong>M3</strong><small>Queued</small></div></div>
+  </div>
+
+  <div class="readout" aria-label="Processing result summary">
+    <div><span class="text-small">Deleted</span><strong data-metric="deleted">0</strong></div><div><span class="text-small">Redeliveries</span><strong data-metric="retry">0</strong></div><div><span class="text-small">Cancelled</span><strong data-metric="cancelled">0</strong></div><div><span class="text-small">Final cause</span><strong data-metric="cause">—</strong></div>
+  </div>
+
+  <div class="observation"><code>Micrometer Observation</code><div class="observation-track" aria-hidden="true"><div class="observation-fill"></div></div><span class="text-small" data-observation>Not started yet</span></div>
+  <div class="owner-line text-small"><span><strong>Adapter-owned</strong><br>bounded batch · delete · cleanup</span><span aria-hidden="true">│ Policy boundary │</span><span><strong>Caller-owned</strong><br>retry · DLQ · queue policy</span></div>
+  <section class="step-explanation" aria-live="polite" aria-label="Current step details">
+    <div class="explain-head"><span class="viz-badge" data-explain-phase>Queued</span><strong data-explain-step>Step 0 details</strong></div>
+    <div class="explain-grid">
+      <div class="explain-item"><span class="text-small">Current action</span><div data-explain-action>A single ReceiveMessage retrieves up to 3 messages.</div></div>
+      <div class="explain-item"><span class="text-small">Reliability guarantee</span><div data-explain-guard>No receipt handle has been deleted yet, preserving the possibility of reprocessing every message.</div></div>
+      <div class="explain-item"><span class="text-small">Next transition</span><div data-explain-next>Receive → Bind one ReceiveMessage result to a bounded coroutine batch.</div></div>
+    </div>
+  </section>
+
+  <script>
+    (() => {
+      const root = document.getElementById('bt4k-issue-415');
+      const packets = [...root.querySelectorAll('.packet')];
+      const lanes = [...root.querySelectorAll('.message-lane')];
+      const explainPhase = root.querySelector('[data-explain-phase]');
+      const explainStep = root.querySelector('[data-explain-step]');
+      const explainAction = root.querySelector('[data-explain-action]');
+      const explainGuard = root.querySelector('[data-explain-guard]');
+      const explainNext = root.querySelector('[data-explain-next]');
+      const stepLabel = root.querySelector('[data-step-label]');
+      const progress = root.querySelector('.progress');
+      const progressBar = root.querySelector('.progress-bar');
+      const playButton = root.querySelector('[data-action="play"]');
+      const observation = root.querySelector('[data-observation]');
+      const observationFill = root.querySelector('.observation-fill');
+      const metrics = Object.fromEntries([...root.querySelectorAll('[data-metric]')].map((el) => [el.dataset.metric, el]));
+      const positions = [8.5, 25, 41.5, 58.5, 75, 91.5];
+      let scenario = 'partial';
+      let step = 0;
+      let timer = null;
+
+      const common = [
+        { pos: [0, 0, 0], state: ['queued', 'queued', 'queued'], label: ['Queued', 'Queued', 'Queued'], metrics: [0, 0, 0, '—'], obs: 0, observation: 'Not started yet', detail: 'Queued: A single ReceiveMessage retrieves up to 3 messages.' },
+        { pos: [1, 1, 1], state: ['active', 'active', 'active'], label: ['Received', 'Received', 'Received'], metrics: [0, 0, 0, '—'], obs: 14, observation: 'receive · batch.size=3', detail: 'Received: Bind one ReceiveMessage result to a bounded coroutine batch.' },
+        { pos: [2, 2, 2], state: ['active', 'active', 'active'], label: ['Processing', 'Processing', 'Processing'], metrics: [0, 0, 0, '—'], obs: 28, observation: 'handler · message.id not tagged', detail: 'Processing: Each item handler completes independently, and the identifier is not included in the metric tag.' }
+      ];
+      const tails = {
+        success: [
+          { pos: [3, 3, 3], state: ['ack', 'ack', 'ack'], label: ['Success', 'Success', 'Success'], metrics: [0, 0, 0, '—'], obs: 43, observation: 'handler.outcome=success', detail: 'Result: All three items succeed, making each receipt handle a deletion candidate.' },
+          { pos: [4, 4, 4], state: ['ack', 'ack', 'ack'], label: ['Delete', 'Delete', 'Delete'], metrics: [3, 0, 0, '—'], obs: 71, observation: 'delete.outcome=success', detail: 'Delete: Confirm only the receipt handles of successful items with DeleteMessage.' },
+          { pos: [4, 4, 4], state: ['ack', 'ack', 'ack'], label: ['Complete', 'Complete', 'Complete'], metrics: [3, 0, 0, 'none'], obs: 86, observation: 'cleanup=complete', detail: 'Cleanup: Close the batch lifecycle and return transport resources.' },
+          { pos: [4, 4, 4], state: ['ack', 'ack', 'ack'], label: ['Complete', 'Complete', 'Complete'], metrics: [3, 0, 0, 'none'], obs: 100, observation: 'final.outcome=success', detail: 'Complete: The adapter reports success and does not interfere with the caller’s retry/DLQ policy.' },
+          { pos: [4, 4, 4], state: ['ack', 'ack', 'ack'], label: ['Complete', 'Complete', 'Complete'], metrics: [3, 0, 0, 'none'], obs: 100, observation: 'observation.stop', detail: 'Termination: The low-cardinality observation is closed exactly once.' }
+        ],
+        partial: [
+          { pos: [3, 2, 3], state: ['ack', 'retry', 'ack'], label: ['Success', 'Failure', 'Success'], metrics: [0, 1, 0, 'handler'], obs: 43, observation: 'handler.outcome=partial', detail: 'Partial failure: M2’s handler failure does not overwrite the success states of M1 and M3.' },
+          { pos: [4, 2, 4], state: ['ack', 'retry', 'ack'], label: ['Delete', 'Retained', 'Delete'], metrics: [2, 1, 0, 'handler'], obs: 57, observation: 'delete.count=2', detail: 'Partial acknowledge: Delete only successful M1 and M3; leave M2 in the queue.' },
+          { pos: [4, 5, 4], state: ['ack', 'retry', 'ack'], label: ['Complete', 'timeout', 'Complete'], metrics: [2, 1, 0, 'handler'], obs: 71, observation: 'redelivery.eligible=true', detail: 'Visibility wait: M2 is invisible to other consumers until the visibility timeout expires.' },
+          { pos: [4, 0, 4], state: ['ack', 'retry', 'ack'], label: ['Complete', 'Redelivered', 'Complete'], metrics: [2, 1, 0, 'handler'], obs: 86, observation: 'retry.owner=caller', detail: 'Redelivery: M2 returns to the queue, while the caller’s policy determines retry counts and DLQ transitions.' },
+          { pos: [4, 0, 4], state: ['ack', 'retry', 'ack'], label: ['Complete', 'Queued', 'Complete'], metrics: [2, 1, 0, 'handler'], obs: 100, observation: 'final.cause=handler', detail: 'Termination: The final cause is handler failure, and successful messages are not deleted twice.' }
+        ],
+        delete: [
+          { pos: [3, 3, 3], state: ['ack', 'ack', 'ack'], label: ['Success', 'Success', 'Success'], metrics: [0, 0, 0, '—'], obs: 43, observation: 'handler.outcome=success', detail: 'Handler complete: All three messages succeeded, but SQS deletion has not yet been confirmed.' },
+          { pos: [4, 4, 4], state: ['ack', 'blocked', 'ack'], label: ['Delete', 'Failure', 'Delete'], metrics: [2, 1, 0, 'delete'], obs: 57, observation: 'delete.outcome=partial', detail: 'Delete failure: Failure to delete M2’s receipt handle is distinguished from handler failure.' },
+          { pos: [4, 5, 4], state: ['ack', 'retry', 'ack'], label: ['Complete', 'timeout', 'Complete'], metrics: [2, 1, 0, 'delete'], obs: 71, observation: 'redelivery.cause=delete', detail: 'Visibility wait: Even after successful processing, undeleted M2 may be redelivered.' },
+          { pos: [4, 0, 4], state: ['ack', 'retry', 'ack'], label: ['Complete', 'Redelivered', 'Complete'], metrics: [2, 1, 0, 'delete'], obs: 86, observation: 'duplicate.possible=true', detail: 'Duplicate possibility: The application handler must own idempotency.' },
+          { pos: [4, 0, 4], state: ['ack', 'retry', 'ack'], label: ['Complete', 'Queued', 'Complete'], metrics: [2, 1, 0, 'delete'], obs: 100, observation: 'final.cause=delete', detail: 'Termination: The final cause is delete, and retry/DLQ policy remains at the caller boundary.' }
+        ],
+        cancel: [
+          { pos: [2, 2, 2], state: ['cancel', 'cancel', 'cancel'], label: ['Cancelled', 'Cancelled', 'Cancelled'], metrics: [0, 0, 3, 'cancel'], obs: 43, observation: 'cancellation=propagated', detail: 'Cancellation signal: Preserve cancellation as distinct from ordinary failure and propagate it first across the entire batch.' },
+          { pos: [2, 2, 2], state: ['cancel', 'cancel', 'cancel'], label: ['Retained', 'Retained', 'Retained'], metrics: [0, 3, 3, 'cancel'], obs: 57, observation: 'delete.skipped=true', detail: 'Deletion prohibited: Do not call DeleteMessage for receipt handles whose completion is not confirmed.' },
+          { pos: [5, 5, 5], state: ['cancel', 'cancel', 'cancel'], label: ['timeout', 'timeout', 'timeout'], metrics: [0, 3, 3, 'cancel'], obs: 71, observation: 'cleanup=non-cancellable', detail: 'Cleanup: Perform only bounded cleanup while preserving the cancellation cause.' },
+          { pos: [0, 0, 0], state: ['retry', 'retry', 'retry'], label: ['Redelivered', 'Redelivered', 'Redelivered'], metrics: [0, 3, 3, 'cancel'], obs: 86, observation: 'redelivery.eligible=true', detail: 'Redelivery: All three messages become eligible for processing again after the visibility timeout.' },
+          { pos: [0, 0, 0], state: ['retry', 'retry', 'retry'], label: ['Queued', 'Queued', 'Queued'], metrics: [0, 3, 3, 'cancel'], obs: 100, observation: 'final.cause=cancel', detail: 'Termination: Even if a handler error follows, the final cause remains cancellation.' }
+        ],
+        observation: [
+          { pos: [3, 3, 3], state: ['ack', 'ack', 'ack'], label: ['Success', 'Success', 'Success'], metrics: [0, 0, 0, '—'], obs: 43, observation: 'handler.outcome=success', detail: 'Business result: All three handlers succeeded and are separate from the observation error.' },
+          { pos: [4, 4, 4], state: ['ack', 'ack', 'ack'], label: ['Delete', 'Delete', 'Delete'], metrics: [3, 0, 0, '—'], obs: 71, observation: 'delete.outcome=success', detail: 'Transport result: Deletion of all three messages is confirmed first.' },
+          { pos: [4, 4, 4], state: ['ack', 'ack', 'ack'], label: ['Complete', 'Complete', 'Complete'], metrics: [3, 0, 0, 'observation'], obs: 82, observation: 'observation.stop=failed', detail: 'Observation failure: An observation stop error does not undo the already-confirmed delete.' },
+          { pos: [4, 4, 4], state: ['ack', 'ack', 'ack'], label: ['Complete', 'Complete', 'Complete'], metrics: [3, 0, 0, 'observation'], obs: 92, observation: 'business.outcome=success', detail: 'Failure priority: Preserve business/transport results and telemetry failure as separate causes.' },
+          { pos: [4, 4, 4], state: ['ack', 'ack', 'ack'], label: ['Complete', 'Complete', 'Complete'], metrics: [3, 0, 0, 'observation'], obs: 100, observation: 'final.cause=observation', detail: 'Termination: Leave only privacy-safe low-cardinality tags and do not expose message identifiers.' }
+        ]
+      };
+      const principles = {
+        common: [
+          'No receipt handle has been deleted yet, preserving the possibility of reprocessing every message.',
+          'The adapter limits transport concurrency to a bounded batch and leaves retry·DLQ policy to the caller.',
+          'Preserve per-item results independently and exclude message id from the observation tag to prevent cardinality growth and exposure of personal information.'
+        ],
+        success: [
+          'Handler success only creates deletion candidates; SQS processing is not complete until DeleteMessage succeeds.',
+          'Delete only the three successful receipt handles to prevent unnecessary redelivery of the same messages.',
+          'Transport cleanup does not change the result; it only performs bounded cleanup of resources held by the batch.',
+          'Even after adapter success, queue policies such as retry counts and DLQ transitions remain in the caller’s domain.',
+          'Observation ends only once and retains only low-cardinality results.'
+        ],
+        partial: [
+          'M2’s failure does not roll back M1 and M3’s success, so the batch is not collapsed into an all-success or all-failure result.',
+          'Delete only successful M1 and M3 and retain M2’s receipt to honor the partial acknowledge contract.',
+          'M2 is not consumed twice during the visibility timeout, but because it is not deleted, it may be redelivered later.',
+          'The adapter returns M2 to the queue; the caller’s policy decides the actual retry interval, retry count, and DLQ transition.',
+          'Preserve handler failure as the final cause and do not process already-deleted M1 and M3 again.'
+        ],
+        delete: [
+          'Handler success alone is not completion; the receipt deletion result is a separate transport contract.',
+          'Distinguish M2’s delete failure from handler failure so the redelivery cause and observation result are recorded accurately.',
+          'Processing succeeded, but because undeleted M2 may return, the handler must be idempotent.',
+          'The adapter does not hide the possibility of duplicates; the caller absorbs it through idempotent handling and queue policy.',
+          'Keep delete as the final cause so business failure is not confused with transport confirmation failure.'
+        ],
+        cancel: [
+          'Cancellation takes precedence over ordinary exceptions and propagates immediately through the entire coroutine structure.',
+          'Do not delete receipts whose completion is uncertain, preventing data loss during cancellation.',
+          'Perform only cleanup in a bounded non-cancellable section and do not overwrite the original cancellation cause.',
+          'All three undeleted messages become visible again after the timeout, restoring the opportunity to process them.',
+          'Keep cancellation as the final cause even if a late handler error occurs.'
+        ],
+        observation: [
+          'Separate business success from the telemetry lifecycle so an observation failure does not distort the handler result.',
+          'Because DeleteMessage success is confirmed first, a subsequent observation error cannot roll back queue state.',
+          'Record observation stop failure as a separate cause, but do not recreate messages that were already deleted.',
+          'Preserve business, transport, and telemetry results separately so failure priority can be diagnosed.',
+          'Leave only low-cardinality tags that exclude message identifiers to avoid personal-information exposure and metric explosion.'
+        ]
+      };
+      const frames = () => [...common, ...tails[scenario]];
+      function detailParts(value) { const separator = value.indexOf(':'); return separator < 0 ? { phase: 'Complete', action: value } : { phase: value.slice(0, separator), action: value.slice(separator + 1).trim() }; }
+      function renderExplanation(data) {
+        const current = detailParts(data.detail);
+        const next = frames()[step + 1];
+        const nextParts = next ? detailParts(next.detail) : null;
+        const principleIndex = step < common.length ? step : step - common.length;
+        explainPhase.textContent = current.phase;
+        explainStep.textContent = `Step ${step} details`;
+        explainAction.textContent = current.action;
+        explainGuard.textContent = step < common.length ? principles.common[principleIndex] : principles[scenario][principleIndex];
+        explainNext.textContent = nextParts ? `${nextParts.phase} → ${nextParts.action}` : 'Scenario complete · Select another failure scenario to compare contracts.';
+      }
+      function stop() { if (timer) clearInterval(timer); timer = null; playButton.textContent = '▶ Play'; playButton.setAttribute('aria-pressed', 'false'); }
+      function render() {
+        const data = frames()[step]; root.dataset.scenario = scenario; root.dataset.step = String(step);
+        packets.forEach((packet, index) => { packet.style.setProperty('--x', `${positions[data.pos[index]]}%`); packet.dataset.state = data.state[index]; packet.querySelector('small').textContent = data.label[index]; lanes[index].style.setProperty('--travel', `${Math.max(0, positions[data.pos[index]] - positions[0])}%`); });
+        metrics.deleted.textContent = String(data.metrics[0]); metrics.retry.textContent = String(data.metrics[1]); metrics.cancelled.textContent = String(data.metrics[2]); metrics.cause.textContent = data.metrics[3];
+        observation.textContent = data.observation; observationFill.style.setProperty('--obs', `${data.obs}%`); renderExplanation(data);
+        stepLabel.textContent = `${step} / ${frames().length - 1}`; const percent = Math.round((step / (frames().length - 1)) * 100); progress.setAttribute('aria-valuenow', String(step)); progress.setAttribute('aria-valuemax', String(frames().length - 1)); progressBar.style.width = `${percent}%`;
+      }
+      function reset(nextScenario = scenario) { stop(); scenario = nextScenario; step = 0; root.querySelectorAll('[data-scenario-button]').forEach((button) => { const active = button.dataset.scenarioButton === scenario; button.setAttribute('aria-pressed', String(active)); button.classList.toggle('btn-primary', active); }); render(); }
+      function advance() { if (step >= frames().length - 1) { stop(); return; } step += 1; render(); if (step >= frames().length - 1) stop(); }
+      function play() { if (timer) { stop(); return; } if (step >= frames().length - 1) step = 0; playButton.textContent = 'Ⅱ Pause'; playButton.setAttribute('aria-pressed', 'true'); timer = setInterval(advance, 820); render(); }
+      root.querySelectorAll('[data-scenario-button]').forEach((button) => button.addEventListener('click', () => reset(button.dataset.scenarioButton)));
+      root.querySelector('[data-action="reset"]').addEventListener('click', () => reset()); root.querySelector('[data-action="next"]').addEventListener('click', advance); playButton.addEventListener('click', play); reset('partial');
+    })();
+  </script>
+</div>
+    <footer class="provenance"><strong>Evidence and scope</strong><br><a href="https://github.com/bluetape4k/bluetape4k.github.io/issues/415">Delivery issue #415</a><a href="/manual/bluetape4k-aws/1.0/modules/bluetape4k-aws-spring-boot/storage-and-messaging/">Manual</a></footer>
+  </main>
+</body>
+</html>

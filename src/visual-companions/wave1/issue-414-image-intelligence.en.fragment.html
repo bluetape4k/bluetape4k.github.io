@@ -1,0 +1,99 @@
+<div id="bt4k-issue-414" data-step="upload">
+  <style>
+    #bt4k-issue-414 { color: var(--foreground); }
+    #bt4k-issue-414 .viz-controls { margin-block: 0.75rem 1rem; }
+    #bt4k-issue-414 .flow { display: grid; gap: 0.65rem; }
+    #bt4k-issue-414 .flow-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.55rem; align-items: stretch; }
+    #bt4k-issue-414 .flow-row.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    #bt4k-issue-414 .viz-node { display: grid; place-items: center; min-height: 4.6rem; padding: 0.65rem; text-align: center; border: 1px solid var(--border); border-radius: 0.7rem; background: color-mix(in srgb, var(--viz-series-1) 10%, transparent); color: var(--foreground); transition: opacity 160ms ease, background 160ms ease, border-color 160ms ease; }
+    #bt4k-issue-414 .viz-node code { display: block; }
+    #bt4k-issue-414 .viz-node small { color: var(--muted-foreground); }
+    #bt4k-issue-414 .flow-arrow { text-align: center; color: var(--muted-foreground); }
+    #bt4k-issue-414 .split-label { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem; color: var(--muted-foreground); text-align: center; }
+    #bt4k-issue-414 [data-stage] { opacity: 0.32; }
+    #bt4k-issue-414[data-step="upload"] [data-stage="upload"],
+    #bt4k-issue-414[data-step="analysis"] [data-stage="analysis"],
+    #bt4k-issue-414[data-step="policy"] [data-stage="policy"],
+    #bt4k-issue-414[data-step="privacy"] [data-stage="privacy"] { opacity: 1; border-color: var(--viz-series-1); background: color-mix(in srgb, var(--viz-series-1) 20%, transparent); }
+    #bt4k-issue-414 .privacy { background: color-mix(in srgb, var(--viz-series-2) 12%, transparent); }
+    #bt4k-issue-414[data-step="privacy"] [data-stage="privacy"] { border-color: var(--viz-series-2); background: color-mix(in srgb, var(--viz-series-2) 22%, transparent); }
+    #bt4k-issue-414 .decision { background: color-mix(in srgb, var(--viz-series-3) 12%, transparent); }
+    #bt4k-issue-414[data-step="policy"] [data-stage="policy"] { border-color: var(--viz-series-3); background: color-mix(in srgb, var(--viz-series-3) 22%, transparent); }
+    #bt4k-issue-414 .detail { margin-block-start: 0.8rem; color: var(--foreground); }
+    @media (max-width: 520px) {
+      #bt4k-issue-414 .flow-row, #bt4k-issue-414 .flow-row.four { grid-template-columns: 1fr; }
+      #bt4k-issue-414 .split-label { grid-template-columns: 1fr; }
+      #bt4k-issue-414 .viz-node { min-height: 3.5rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #bt4k-issue-414 .viz-node { transition: none; }
+    }
+  </style>
+
+  <h2>#414 Image Intelligence: Policy and Privacy Boundaries</h2>
+  <div class="viz-controls" aria-label="Explanation steps">
+    <button type="button" class="btn btn-primary" data-step-button="upload" aria-pressed="true">1. Input</button>
+    <button type="button" class="btn" data-step-button="analysis" aria-pressed="false">2. Analysis</button>
+    <button type="button" class="btn" data-step-button="policy" aria-pressed="false">3. Policy</button>
+    <button type="button" class="btn" data-step-button="privacy" aria-pressed="false">4. Privacy Boundary</button>
+  </div>
+
+  <div class="flow" role="img" aria-label="Flow from validated image input through parallel analysis and fail-closed policy to application-owned privacy side effects">
+    <div class="flow-row">
+      <div class="viz-node" data-stage="upload"><span>Validated multipart request</span></div>
+      <div class="viz-node" data-stage="upload"><code>ImageUploadQualifier</code><small>Size and format limits</small></div>
+      <div class="viz-node" data-stage="upload"><span>Immutable image</span><small>Decode once</small></div>
+    </div>
+    <div class="flow-arrow" aria-hidden="true">↓ Bounded fan-out</div>
+    <div class="flow-row">
+      <div class="viz-node" data-stage="analysis"><strong>OCR</strong><small>Text facts</small></div>
+      <div class="viz-node" data-stage="analysis"><strong>Detection</strong><small>Object facts</small></div>
+      <div class="viz-node" data-stage="analysis"><strong>ZXing</strong><small>Barcode facts</small></div>
+    </div>
+    <div class="flow-arrow" aria-hidden="true">↓ Aggregate without losing result states</div>
+    <div class="flow-row">
+      <div class="viz-node" data-stage="analysis"><code>AnalysisResult</code></div>
+      <div class="viz-node" data-stage="policy"><span>Provider-neutral facts</span></div>
+      <div class="viz-node decision" data-stage="policy"><code>VisitorPassPolicy</code><small>Fail-closed precedence</small></div>
+    </div>
+    <div class="split-label"><span>Policy decision ↓</span><span>Derived data ↓</span></div>
+    <div class="flow-row four">
+      <div class="viz-node decision" data-stage="policy"><code>QUARANTINE</code></div>
+      <div class="viz-node decision" data-stage="policy"><code>REJECT</code></div>
+      <div class="viz-node decision" data-stage="policy"><code>MANUAL_REVIEW</code></div>
+      <div class="viz-node decision" data-stage="policy"><code>ALLOW</code></div>
+    </div>
+    <div class="flow-row">
+      <div class="viz-node privacy" data-stage="privacy"><span>Privacy-derived snapshot</span></div>
+      <div class="viz-node privacy" data-stage="privacy"><span>rendering·storage</span></div>
+      <div class="viz-node privacy" data-stage="privacy"><strong>Application-owned</strong><small>Library performs no side effects</small></div>
+    </div>
+  </div>
+
+  <div class="detail" aria-live="polite">Input stage: Validate the upload, create one immutable image, and prevent duplicate decodes.</div>
+
+  <script>
+    (() => {
+      const root = document.getElementById('bt4k-issue-414');
+      const detail = root.querySelector('.detail');
+      const copy = {
+        upload: 'Input stage: Validate the upload, create one immutable image, and prevent duplicate decodes.',
+        analysis: 'Analysis stage: Run OCR, Detection, and ZXing with bounded fan-out, preserving each result state during aggregation.',
+        policy: 'Policy stage: Evaluate provider-neutral facts; uncertain or failed results resolve to MANUAL_REVIEW.',
+        privacy: 'Privacy boundary: Pass only the derived snapshot; the application owns rendering and storage side effects.'
+      };
+      root.querySelectorAll('[data-step-button]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const step = button.dataset.stepButton;
+          root.dataset.step = step;
+          root.querySelectorAll('[data-step-button]').forEach((candidate) => {
+            const active = candidate === button;
+            candidate.setAttribute('aria-pressed', String(active));
+            candidate.classList.toggle('btn-primary', active);
+          });
+          detail.textContent = copy[step];
+        });
+      });
+    })();
+  </script>
+</div>

@@ -1,45 +1,26 @@
 ---
 title: bluetape4k 2.0 stable — 1차 시각 자료
-description: Image Intelligence, AWS SQS batch 안정성, Projects NearJCache 의미론을 설명하는 세 가지 source-backed 시각 자료입니다.
+description: Image Intelligence, AWS SQS batch 안정성, Projects NearJCache 의미론을 단계별로 살펴보는 대화형 시각 자료입니다.
 ---
 
-사이트 Epic [#412](https://github.com/bluetape4k/bluetape4k.github.io/issues/412)에 등록한 1차 제작 후보 세 가지를 게시합니다. 2차 후보 일곱 가지는 [#413](https://github.com/bluetape4k/bluetape4k.github.io/issues/413)에서 추적합니다.
+[Epic #412](https://github.com/bluetape4k/bluetape4k.github.io/issues/412)의 1차 제작분은 서로 독립된 세 가지 대화형 시각 자료로 구성했습니다. 각 자료에서 동작을 단계별로 재생할 수 있고, 스크립트를 사용할 수 없는 환경에서는 정적 미리보기를 볼 수 있습니다.
 
-이 도식은 원본 Markdown 설계를 대체하지 않는 설명용 화면입니다. 구현의 기준은 source repository, release tag, 연결된 이슈입니다.
+## Image Intelligence 정책과 개인정보 경계
 
-## Image Intelligence: facts·상태·정책·privacy
+[![Image Intelligence 정책과 개인정보 경계](/assets/visual-companions/wave1/image-intelligence-policy-privacy-ko.png)](/ko/visual-companions/bluetape4k-image/image-intelligence-policy-privacy/)
 
-multipart 입력의 자격을 확인하고 immutable image를 한 번 만든 뒤 OCR·detection·ZXing lane을 병렬 실행합니다. 결과 상태를 보존하고 `VisitorPassPolicy`의 결정을 애플리케이션이 소유하는 rendering·storage side effect와 분리합니다.
+[대화형 자료 열기](/ko/visual-companions/bluetape4k-image/image-intelligence-policy-privacy/) · [매뉴얼](/ko/manual/bluetape4k-image/1.0/modules/spring-boot-image-intelligence-api/) · [이슈 #414](https://github.com/bluetape4k/bluetape4k.github.io/issues/414)
 
-![Image Intelligence facts, states, policy, and privacy boundary](/assets/visual-companions/wave1/image-intelligence-policy-privacy-ko.png)
+## AWS SQS batch 신뢰성
 
-- 사이트 작업 이슈: [#414](https://github.com/bluetape4k/bluetape4k.github.io/issues/414)
-- 원본 구현 이슈: [bluetape4k-image #299](https://github.com/bluetape4k/bluetape4k-image/issues/299)
-- privacy 계약 이슈: [bluetape4k-image #481](https://github.com/bluetape4k/bluetape4k-image/issues/481)
-- 원본 설계: [`2026-07-27-issue-299-image-intelligence-api-design.md`](https://github.com/bluetape4k/bluetape4k-image/blob/1.0.0/docs/superpowers/specs/2026-07-27-issue-299-image-intelligence-api-design.md)
-- 사이트 매뉴얼: [Image Intelligence API](/ko/manual/bluetape4k-image/1.0/modules/spring-boot-image-intelligence-api/)
+[![AWS SQS bounded batch와 부분 acknowledgement](/assets/visual-companions/wave1/aws-sqs-reliability-ko.png)](/ko/visual-companions/bluetape4k-aws/aws-sqs-reliability/)
 
-## AWS SQS: bounded batch와 부분 acknowledgement
+[대화형 자료 열기](/ko/visual-companions/bluetape4k-aws/aws-sqs-reliability/) · [매뉴얼](/ko/manual/bluetape4k-aws/1.0/modules/bluetape4k-aws-spring-boot/storage-and-messaging/) · [이슈 #415](https://github.com/bluetape4k/bluetape4k.github.io/issues/415)
 
-하나의 제한된 `ReceiveMessage` batch를 독립 항목으로 처리하고, delete 경계에서 성공 항목만 acknowledgement합니다. 실패 항목 redelivery, cancellation 우선순위, low-cardinality observation을 함께 표시하며 retry·DLQ·visibility timeout·backoff는 caller 정책으로 남깁니다.
+## Projects NearJCache 의미론
 
-![AWS SQS bounded batch handling and partial acknowledgement](/assets/visual-companions/wave1/aws-sqs-reliability-ko.png)
+[![NearJCache L1·L2 의미론과 안전장치](/assets/visual-companions/wave1/projects-nearjcache-semantics-ko.png)](/ko/visual-companions/bluetape4k-projects/projects-nearjcache-semantics/)
 
-- 사이트 작업 이슈: [#415](https://github.com/bluetape4k/bluetape4k.github.io/issues/415)
-- 원본 구현 이슈: [bluetape4k-aws #454](https://github.com/bluetape4k/bluetape4k-aws/issues/454)
-- 원본 설계: [`2026-08-11-sqs-batch-listener-design.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/1.0.0/docs/superpowers/specs/2026-08-11-sqs-batch-listener-design.md)
-- 사이트 매뉴얼: [AWS storage and messaging](/ko/manual/bluetape4k-aws/1.0/modules/bluetape4k-aws-spring-boot/storage-and-messaging/)
+[대화형 자료 열기](/ko/visual-companions/bluetape4k-projects/projects-nearjcache-semantics/) · [매뉴얼](/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/near-cache-l1-l2/) · [이슈 #416](https://github.com/bluetape4k/bluetape4k.github.io/issues/416)
 
-## Projects NearJCache: 명시적인 L1/L2 의미론
-
-Caffeine L1 front와 Redis L2 back을 숨기지 않고 드러냅니다. read hit/miss와 fill, write-through, epoch 기반 clear, bounded bulk policy, tier별 statistics, JMX opt-in, disabled mode의 비용 제한을 각각의 계약으로 표시합니다.
-
-![NearJCache explicit L1 and L2 semantics and safety gates](/assets/visual-companions/wave1/projects-nearjcache-semantics-ko.png)
-
-- 사이트 작업 이슈: [#416](https://github.com/bluetape4k/bluetape4k.github.io/issues/416)
-- 원본 management 설계: [bluetape4k-projects #1351](https://github.com/bluetape4k/bluetape4k-projects/issues/1351)
-- 원본 safety 설계: [bluetape4k-projects #1408](https://github.com/bluetape4k/bluetape4k-projects/issues/1408)
-- 원본 설계: [`2026-08-16-issue-1351-nearcache-management-design.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/2.0.0/docs/superpowers/specs/2026-08-16-issue-1351-nearcache-management-design.md)
-- 사이트 매뉴얼: [Near-cache L1/L2](/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/near-cache-l1-l2/)
-
-이 자산은 release-backed 계약만 설명하며, 실제 AWS·native OCR·Redis·cache provider 통합 검증을 주장하지 않습니다.
+이 자료는 배포된 설계 계약을 설명합니다. 실제 AWS, native OCR, Redis, cache provider 통합 검증을 대신하지 않습니다.

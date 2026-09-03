@@ -1,0 +1,99 @@
+<div id="bt4k-issue-414" data-step="upload">
+  <style>
+    #bt4k-issue-414 { color: var(--foreground); }
+    #bt4k-issue-414 .viz-controls { margin-block: 0.75rem 1rem; }
+    #bt4k-issue-414 .flow { display: grid; gap: 0.65rem; }
+    #bt4k-issue-414 .flow-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.55rem; align-items: stretch; }
+    #bt4k-issue-414 .flow-row.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    #bt4k-issue-414 .viz-node { display: grid; place-items: center; min-height: 4.6rem; padding: 0.65rem; text-align: center; border: 1px solid var(--border); border-radius: 0.7rem; background: color-mix(in srgb, var(--viz-series-1) 10%, transparent); color: var(--foreground); transition: opacity 160ms ease, background 160ms ease, border-color 160ms ease; }
+    #bt4k-issue-414 .viz-node code { display: block; }
+    #bt4k-issue-414 .viz-node small { color: var(--muted-foreground); }
+    #bt4k-issue-414 .flow-arrow { text-align: center; color: var(--muted-foreground); }
+    #bt4k-issue-414 .split-label { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem; color: var(--muted-foreground); text-align: center; }
+    #bt4k-issue-414 [data-stage] { opacity: 0.32; }
+    #bt4k-issue-414[data-step="upload"] [data-stage="upload"],
+    #bt4k-issue-414[data-step="analysis"] [data-stage="analysis"],
+    #bt4k-issue-414[data-step="policy"] [data-stage="policy"],
+    #bt4k-issue-414[data-step="privacy"] [data-stage="privacy"] { opacity: 1; border-color: var(--viz-series-1); background: color-mix(in srgb, var(--viz-series-1) 20%, transparent); }
+    #bt4k-issue-414 .privacy { background: color-mix(in srgb, var(--viz-series-2) 12%, transparent); }
+    #bt4k-issue-414[data-step="privacy"] [data-stage="privacy"] { border-color: var(--viz-series-2); background: color-mix(in srgb, var(--viz-series-2) 22%, transparent); }
+    #bt4k-issue-414 .decision { background: color-mix(in srgb, var(--viz-series-3) 12%, transparent); }
+    #bt4k-issue-414[data-step="policy"] [data-stage="policy"] { border-color: var(--viz-series-3); background: color-mix(in srgb, var(--viz-series-3) 22%, transparent); }
+    #bt4k-issue-414 .detail { margin-block-start: 0.8rem; color: var(--foreground); }
+    @media (max-width: 520px) {
+      #bt4k-issue-414 .flow-row, #bt4k-issue-414 .flow-row.four { grid-template-columns: 1fr; }
+      #bt4k-issue-414 .split-label { grid-template-columns: 1fr; }
+      #bt4k-issue-414 .viz-node { min-height: 3.5rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #bt4k-issue-414 .viz-node { transition: none; }
+    }
+  </style>
+
+  <h2>#414 Image Intelligence 정책·개인정보 경계</h2>
+  <div class="viz-controls" aria-label="설명 단계">
+    <button type="button" class="btn btn-primary" data-step-button="upload" aria-pressed="true">1. 입력</button>
+    <button type="button" class="btn" data-step-button="analysis" aria-pressed="false">2. 분석</button>
+    <button type="button" class="btn" data-step-button="policy" aria-pressed="false">3. 정책</button>
+    <button type="button" class="btn" data-step-button="privacy" aria-pressed="false">4. 개인정보 경계</button>
+  </div>
+
+  <div class="flow" role="img" aria-label="검증된 이미지 입력이 병렬 분석, fail-closed 정책, 애플리케이션 소유 개인정보 부작용으로 이어지는 흐름">
+    <div class="flow-row">
+      <div class="viz-node" data-stage="upload"><span>검증된 multipart 요청</span></div>
+      <div class="viz-node" data-stage="upload"><code>ImageUploadQualifier</code><small>크기·형식 제한</small></div>
+      <div class="viz-node" data-stage="upload"><span>불변 이미지</span><small>한 번만 decode</small></div>
+    </div>
+    <div class="flow-arrow" aria-hidden="true">↓ 제한된 fan-out</div>
+    <div class="flow-row">
+      <div class="viz-node" data-stage="analysis"><strong>OCR</strong><small>텍스트 사실</small></div>
+      <div class="viz-node" data-stage="analysis"><strong>Detection</strong><small>객체 사실</small></div>
+      <div class="viz-node" data-stage="analysis"><strong>ZXing</strong><small>바코드 사실</small></div>
+    </div>
+    <div class="flow-arrow" aria-hidden="true">↓ 결과 상태를 잃지 않고 집계</div>
+    <div class="flow-row">
+      <div class="viz-node" data-stage="analysis"><code>AnalysisResult</code></div>
+      <div class="viz-node" data-stage="policy"><span>공급자 중립 facts</span></div>
+      <div class="viz-node decision" data-stage="policy"><code>VisitorPassPolicy</code><small>fail-closed 우선순위</small></div>
+    </div>
+    <div class="split-label"><span>정책 결정 ↓</span><span>파생 정보 ↓</span></div>
+    <div class="flow-row four">
+      <div class="viz-node decision" data-stage="policy"><code>QUARANTINE</code></div>
+      <div class="viz-node decision" data-stage="policy"><code>REJECT</code></div>
+      <div class="viz-node decision" data-stage="policy"><code>MANUAL_REVIEW</code></div>
+      <div class="viz-node decision" data-stage="policy"><code>ALLOW</code></div>
+    </div>
+    <div class="flow-row">
+      <div class="viz-node privacy" data-stage="privacy"><span>개인정보 파생 snapshot</span></div>
+      <div class="viz-node privacy" data-stage="privacy"><span>rendering·storage</span></div>
+      <div class="viz-node privacy" data-stage="privacy"><strong>애플리케이션 소유</strong><small>library는 side effect 미실행</small></div>
+    </div>
+  </div>
+
+  <div class="detail" aria-live="polite">입력 단계: 검증 후 하나의 불변 이미지를 만들고 중복 decode를 막습니다.</div>
+
+  <script>
+    (() => {
+      const root = document.getElementById('bt4k-issue-414');
+      const detail = root.querySelector('.detail');
+      const copy = {
+        upload: '입력 단계: 검증 후 하나의 불변 이미지를 만들고 중복 decode를 막습니다.',
+        analysis: '분석 단계: OCR·Detection·ZXing을 제한된 fan-out으로 실행하고 결과 상태를 그대로 집계합니다.',
+        policy: '정책 단계: 공급자 중립 facts를 평가하며 불확실하거나 실패한 결과는 MANUAL_REVIEW로 닫힙니다.',
+        privacy: '개인정보 경계: 파생 snapshot만 전달하며 rendering과 storage 부작용은 애플리케이션이 소유합니다.'
+      };
+      root.querySelectorAll('[data-step-button]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const step = button.dataset.stepButton;
+          root.dataset.step = step;
+          root.querySelectorAll('[data-step-button]').forEach((candidate) => {
+            const active = candidate === button;
+            candidate.setAttribute('aria-pressed', String(active));
+            candidate.classList.toggle('btn-primary', active);
+          });
+          detail.textContent = copy[step];
+        });
+      });
+    })();
+  </script>
+</div>

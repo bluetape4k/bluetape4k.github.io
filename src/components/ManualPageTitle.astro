@@ -6,6 +6,7 @@ import { pathToFileURL } from 'node:url';
 import { validateVersionCatalog } from '../../scripts/manual/lib/catalog.mjs';
 import { loadRepositoryRegistry, repositoryBySlug } from '../../scripts/manual/lib/repositories.mjs';
 import { resolveBlogTaxonomy } from '../lib/blogTaxonomy.mjs';
+import { resolveWave1ManualCompanion } from '../data/visual-companions/wave1-manual-links.mjs';
 import '../styles/manual.css';
 
 const manualRepositories = loadRepositoryRegistry(pathToFileURL(path.join(process.cwd(), 'src/data/manual/repositories.json')));
@@ -68,6 +69,7 @@ const repositoryName = repository?.label.en.replace(/ docs$/, '');
 const releaseLabel = locale === 'ko'
   ? `${repositoryName} ${manual?.releaseRef} 릴리스 기준`
   : `Based on ${repositoryName} release ${manual?.releaseRef}`;
+const visualCompanion = manual ? resolveWave1ManualCompanion(entryId, locale) : undefined;
 ---
 
 <DefaultPageTitle />
@@ -86,4 +88,14 @@ const releaseLabel = locale === 'ko'
     <span aria-hidden="true">·</span>
     <a href={releaseUrl}>{releaseLabel}</a>
   </p>
+)}
+{visualCompanion && (
+  <a class="bt4k-manual-visual" href={visualCompanion.route} aria-label={`${visualCompanion.label}: ${visualCompanion.title}`}>
+    <img src={visualCompanion.image} alt="" loading="eager" decoding="async" />
+    <span>
+      <strong>{visualCompanion.title}</strong>
+      <span>{visualCompanion.description}</span>
+      <span class="bt4k-manual-visual__action">{visualCompanion.label} →</span>
+    </span>
+  </a>
 )}
