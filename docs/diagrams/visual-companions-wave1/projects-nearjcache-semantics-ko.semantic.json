@@ -1,0 +1,48 @@
+{
+  "kind": "architecture",
+  "source": {
+    "question": "NearJCache의 L1/L2 읽기·쓰기, bulk guard, epoch 무효화, 통계와 JMX 소유권은 어떻게 연결되는가?",
+    "revision": "bd8eee0ee238bb36dfaaed6865c40cdef2cdafe0",
+    "paths": ["src/content/docs/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/near-cache-l1-l2.md"]
+  },
+  "nodes": [
+    {"id": "application", "label": "애플리케이션", "source": "near-cache-l1-l2.md"},
+    {"id": "config", "label": "불변 front 설정 스냅샷", "source": "near-cache-l1-l2.md"},
+    {"id": "l1", "label": "L1 Caffeine front cache", "source": "near-cache-l1-l2.md"},
+    {"id": "l2", "label": "L2 Redis 공유 cache", "source": "near-cache-l1-l2.md"},
+    {"id": "read_request", "label": "읽기 요청", "source": "near-cache-l1-l2.md"},
+    {"id": "l1_decision", "label": "L1 hit 또는 miss", "source": "near-cache-l1-l2.md"},
+    {"id": "l2_fetch", "label": "miss 시 L2 조회", "source": "near-cache-l1-l2.md"},
+    {"id": "fill_return", "label": "L1 채우고 반환", "source": "near-cache-l1-l2.md"},
+    {"id": "write_request", "label": "쓰기 요청", "source": "near-cache-l1-l2.md"},
+    {"id": "epoch_guard", "label": "Epoch·조건부 guard", "source": "near-cache-l1-l2.md"},
+    {"id": "ordered_write", "label": "문서화된 write 순서", "source": "near-cache-l1-l2.md"},
+    {"id": "bulk_policy", "label": "Bulk front 정책", "source": "near-cache-l1-l2.md"},
+    {"id": "clear_epoch", "label": "두 계층 clear와 epoch 증가", "source": "near-cache-l1-l2.md"},
+    {"id": "disabled_bound", "label": "비활성 모드 비용 상한", "source": "near-cache-l1-l2.md"},
+    {"id": "stats", "label": "논리 / front / back 통계", "source": "near-cache-l1-l2.md"},
+    {"id": "jmx", "label": "명시적 JMX lifecycle", "source": "near-cache-l1-l2.md"}
+  ],
+  "edges": [
+    {"id": "application-config", "from": "application", "to": "config", "kind": "configures", "source": "near-cache-l1-l2.md"},
+    {"id": "config-l1", "from": "config", "to": "l1", "kind": "bounds", "source": "near-cache-l1-l2.md"},
+    {"id": "config-l2", "from": "config", "to": "l2", "kind": "bounds", "source": "near-cache-l1-l2.md"},
+    {"id": "application-read", "from": "application", "to": "read_request", "kind": "reads", "source": "near-cache-l1-l2.md"},
+    {"id": "read-decision", "from": "read_request", "to": "l1_decision", "kind": "checks", "source": "near-cache-l1-l2.md"},
+    {"id": "decision-l2", "from": "l1_decision", "to": "l2_fetch", "kind": "miss", "source": "near-cache-l1-l2.md"},
+    {"id": "l2-fill", "from": "l2_fetch", "to": "fill_return", "kind": "fills", "source": "near-cache-l1-l2.md"},
+    {"id": "application-write", "from": "application", "to": "write_request", "kind": "writes", "source": "near-cache-l1-l2.md"},
+    {"id": "write-epoch", "from": "write_request", "to": "epoch_guard", "kind": "guards", "source": "near-cache-l1-l2.md"},
+    {"id": "epoch-order", "from": "epoch_guard", "to": "ordered_write", "kind": "orders", "source": "near-cache-l1-l2.md"},
+    {"id": "order-l1", "from": "ordered_write", "to": "l1", "kind": "updates", "source": "near-cache-l1-l2.md"},
+    {"id": "bulk-policy-clear", "from": "bulk_policy", "to": "clear_epoch", "kind": "guards", "source": "near-cache-l1-l2.md"},
+    {"id": "clear-stats", "from": "clear_epoch", "to": "stats", "kind": "records", "source": "near-cache-l1-l2.md"},
+    {"id": "disabled-stats", "from": "disabled_bound", "to": "stats", "kind": "records", "source": "near-cache-l1-l2.md"},
+    {"id": "l1-stats", "from": "l1", "to": "stats", "kind": "measures", "source": "near-cache-l1-l2.md"},
+    {"id": "l2-stats", "from": "l2", "to": "stats", "kind": "measures", "source": "near-cache-l1-l2.md"},
+    {"id": "stats-jmx", "from": "stats", "to": "jmx", "kind": "exposes", "source": "near-cache-l1-l2.md"},
+    {"id": "l2-invalidate-l1", "from": "l2", "to": "l1", "kind": "invalidation", "source": "near-cache-l1-l2.md"}
+  ],
+  "behavior": {"branches": 3, "loops": 1},
+  "repairs": []
+}

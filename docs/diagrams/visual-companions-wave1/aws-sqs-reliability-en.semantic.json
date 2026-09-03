@@ -1,0 +1,36 @@
+{
+  "kind": "sequence",
+  "source": {
+    "question": "How does one bounded SQS batch preserve per-item acknowledgement, cancellation, redelivery, and observation precedence?",
+    "revision": "bd8eee0ee238bb36dfaaed6865c40cdef2cdafe0",
+    "paths": ["src/content/docs/manual/bluetape4k-aws/1.0/modules/bluetape4k-aws-spring-boot/storage-and-messaging.md"]
+  },
+  "nodes": [
+    {"id": "application", "label": "Application", "source": "storage-and-messaging.md"},
+    {"id": "listener", "label": "SqsListener", "source": "storage-and-messaging.md"},
+    {"id": "sqs", "label": "Amazon SQS", "source": "storage-and-messaging.md"},
+    {"id": "batch", "label": "Bounded coroutine batch", "source": "storage-and-messaging.md"},
+    {"id": "handler", "label": "Item handler", "source": "storage-and-messaging.md"},
+    {"id": "ack_delete", "label": "Partial ACK / delete", "source": "storage-and-messaging.md"},
+    {"id": "observation", "label": "Micrometer Observation", "source": "storage-and-messaging.md"},
+    {"id": "redelivery", "label": "Visibility timeout / redelivery", "source": "storage-and-messaging.md"},
+    {"id": "cancellation", "label": "Cancellation cleanup", "source": "storage-and-messaging.md"}
+  ],
+  "edges": [
+    {"id": "application-listener", "from": "application", "to": "listener", "kind": "registers", "source": "storage-and-messaging.md"},
+    {"id": "listener-sqs-receive", "from": "listener", "to": "sqs", "kind": "receive", "source": "storage-and-messaging.md"},
+    {"id": "sqs-batch", "from": "sqs", "to": "batch", "kind": "bounds", "source": "storage-and-messaging.md"},
+    {"id": "batch-handler", "from": "batch", "to": "handler", "kind": "delivers", "source": "storage-and-messaging.md"},
+    {"id": "handler-success", "from": "handler", "to": "ack_delete", "kind": "success", "source": "storage-and-messaging.md"},
+    {"id": "ack-delete-sqs", "from": "ack_delete", "to": "sqs", "kind": "delete", "source": "storage-and-messaging.md"},
+    {"id": "handler-observation", "from": "handler", "to": "observation", "kind": "observes", "source": "storage-and-messaging.md"},
+    {"id": "handler-failure", "from": "handler", "to": "redelivery", "kind": "failure", "source": "storage-and-messaging.md"},
+    {"id": "redelivery-batch", "from": "redelivery", "to": "batch", "kind": "retry", "source": "storage-and-messaging.md"},
+    {"id": "batch-partial", "from": "batch", "to": "ack_delete", "kind": "partial-ack", "source": "storage-and-messaging.md"},
+    {"id": "listener-cancellation", "from": "listener", "to": "cancellation", "kind": "cancellation", "source": "storage-and-messaging.md"},
+    {"id": "cancellation-sqs", "from": "cancellation", "to": "sqs", "kind": "cleanup", "source": "storage-and-messaging.md"},
+    {"id": "observation-failure", "from": "observation", "to": "application", "kind": "failure-precedence", "source": "storage-and-messaging.md"}
+  ],
+  "behavior": {"branches": 3, "loops": 1},
+  "repairs": []
+}

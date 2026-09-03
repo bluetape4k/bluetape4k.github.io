@@ -1,0 +1,51 @@
+{
+  "kind": "architecture",
+  "source": {
+    "question": "제한된 이미지 분석 사실이 어떻게 fail-closed 정책과 개인정보 보호 부작용 경계로 이어지는가?",
+    "revision": "bd8eee0ee238bb36dfaaed6865c40cdef2cdafe0",
+    "paths": [
+      "docs/superpowers/specs/2026-08-10-image-intelligence-part4-policy-boundaries-design.md",
+      "src/content/docs/ko/manual/bluetape4k-image/1.0/modules/spring-boot-image-intelligence-api.md"
+    ]
+  },
+  "nodes": [
+    {"id": "input", "label": "검증된 업로드 요청", "source": "spring-boot-image-intelligence-api.md"},
+    {"id": "qualification", "label": "ImageUploadQualifier", "source": "spring-boot-image-intelligence-api.md"},
+    {"id": "immutable_decode", "label": "불변 이미지 한 번 디코드", "source": "spring-boot-image-intelligence-api.md"},
+    {"id": "fanout", "label": "제한된 분석 fan-out", "source": "spring-boot-image-intelligence-api.md"},
+    {"id": "ocr", "label": "OCR 경로", "source": "spring-boot-image-intelligence-api.md"},
+    {"id": "detection", "label": "검출 경로", "source": "spring-boot-image-intelligence-api.md"},
+    {"id": "barcode", "label": "ZXing 바코드 경로", "source": "spring-boot-image-intelligence-api.md"},
+    {"id": "aggregate", "label": "AnalysisResult 집계", "source": "spring-boot-image-intelligence-api.md"},
+    {"id": "facts", "label": "공급자 중립 사실", "source": "2026-08-10-image-intelligence-part4-policy-boundaries-design.md"},
+    {"id": "policy", "label": "VisitorPassPolicy 우선순위", "source": "2026-08-10-image-intelligence-part4-policy-boundaries-design.md"},
+    {"id": "quarantine", "label": "QUARANTINE", "source": "2026-08-10-image-intelligence-part4-policy-boundaries-design.md"},
+    {"id": "reject", "label": "REJECT", "source": "2026-08-10-image-intelligence-part4-policy-boundaries-design.md"},
+    {"id": "review", "label": "MANUAL_REVIEW", "source": "2026-08-10-image-intelligence-part4-policy-boundaries-design.md"},
+    {"id": "allow", "label": "ALLOW", "source": "2026-08-10-image-intelligence-part4-policy-boundaries-design.md"},
+    {"id": "privacy_snapshot", "label": "개인정보 파생 스냅샷", "source": "spring-boot-image-intelligence-api.md"},
+    {"id": "application_side_effects", "label": "애플리케이션 소유 부작용", "source": "spring-boot-image-intelligence-api.md"}
+  ],
+  "edges": [
+    {"id": "input-qualification", "from": "input", "to": "qualification", "kind": "guards", "source": "spring-boot-image-intelligence-api.md"},
+    {"id": "qualification-decode", "from": "qualification", "to": "immutable_decode", "kind": "decodes", "source": "spring-boot-image-intelligence-api.md"},
+    {"id": "decode-fanout", "from": "immutable_decode", "to": "fanout", "kind": "shares", "source": "spring-boot-image-intelligence-api.md"},
+    {"id": "fanout-ocr", "from": "fanout", "to": "ocr", "kind": "parallel-lane", "source": "spring-boot-image-intelligence-api.md"},
+    {"id": "fanout-detection", "from": "fanout", "to": "detection", "kind": "parallel-lane", "source": "spring-boot-image-intelligence-api.md"},
+    {"id": "fanout-barcode", "from": "fanout", "to": "barcode", "kind": "parallel-lane", "source": "spring-boot-image-intelligence-api.md"},
+    {"id": "ocr-aggregate", "from": "ocr", "to": "aggregate", "kind": "result", "source": "spring-boot-image-intelligence-api.md"},
+    {"id": "detection-aggregate", "from": "detection", "to": "aggregate", "kind": "result", "source": "spring-boot-image-intelligence-api.md"},
+    {"id": "barcode-aggregate", "from": "barcode", "to": "aggregate", "kind": "result", "source": "spring-boot-image-intelligence-api.md"},
+    {"id": "aggregate-facts", "from": "aggregate", "to": "facts", "kind": "normalizes", "source": "2026-08-10-image-intelligence-part4-policy-boundaries-design.md"},
+    {"id": "facts-policy", "from": "facts", "to": "policy", "kind": "evaluates", "source": "2026-08-10-image-intelligence-part4-policy-boundaries-design.md"},
+    {"id": "policy-quarantine", "from": "policy", "to": "quarantine", "kind": "decision", "source": "2026-08-10-image-intelligence-part4-policy-boundaries-design.md"},
+    {"id": "policy-reject", "from": "policy", "to": "reject", "kind": "decision", "source": "2026-08-10-image-intelligence-part4-policy-boundaries-design.md"},
+    {"id": "policy-review", "from": "policy", "to": "review", "kind": "decision", "source": "2026-08-10-image-intelligence-part4-policy-boundaries-design.md"},
+    {"id": "policy-allow", "from": "policy", "to": "allow", "kind": "decision", "source": "2026-08-10-image-intelligence-part4-policy-boundaries-design.md"},
+    {"id": "policy-review-fallback", "from": "policy", "to": "review", "kind": "fail-closed", "source": "2026-08-10-image-intelligence-part4-policy-boundaries-design.md"},
+    {"id": "aggregate-privacy-snapshot", "from": "aggregate", "to": "privacy_snapshot", "kind": "derives", "source": "spring-boot-image-intelligence-api.md"},
+    {"id": "privacy-application", "from": "privacy_snapshot", "to": "application_side_effects", "kind": "hands-off", "source": "spring-boot-image-intelligence-api.md"}
+  ],
+  "behavior": {"branches": 4, "loops": 0},
+  "repairs": []
+}

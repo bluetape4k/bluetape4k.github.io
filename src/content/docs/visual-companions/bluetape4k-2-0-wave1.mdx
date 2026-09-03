@@ -1,0 +1,45 @@
+---
+title: bluetape4k 2.0 stable — wave 1 visual companions
+description: Three source-backed visual companions for Image Intelligence, AWS SQS batch reliability, and Projects NearJCache semantics.
+---
+
+This page publishes the three first-wave visual companions tracked by site Epic [#412](https://github.com/bluetape4k/bluetape4k.github.io/issues/412). The seven second-wave candidates remain tracked under [#413](https://github.com/bluetape4k/bluetape4k.github.io/issues/413).
+
+The diagrams are explanatory views, not replacements for the source Markdown designs. The source repository, release tag, and linked issue are the implementation authority.
+
+## Image Intelligence: facts, states, policy, and privacy
+
+The pipeline qualifies multipart input, creates one immutable image, fans out to OCR, detection, and ZXing lanes, preserves explicit result states, and separates `VisitorPassPolicy` decisions from application-owned rendering and storage effects.
+
+![Image Intelligence facts, states, policy, and privacy boundary](/assets/visual-companions/wave1/image-intelligence-policy-privacy-en.png)
+
+- Site delivery issue: [#414](https://github.com/bluetape4k/bluetape4k.github.io/issues/414)
+- Source implementation issue: [bluetape4k-image #299](https://github.com/bluetape4k/bluetape4k-image/issues/299)
+- Privacy contract issue: [bluetape4k-image #481](https://github.com/bluetape4k/bluetape4k-image/issues/481)
+- Source design: [`2026-07-27-issue-299-image-intelligence-api-design.md`](https://github.com/bluetape4k/bluetape4k-image/blob/1.0.0/docs/superpowers/specs/2026-07-27-issue-299-image-intelligence-api-design.md)
+- Site manual: [Image Intelligence API](/manual/bluetape4k-image/1.0/modules/spring-boot-image-intelligence-api/)
+
+## AWS SQS: bounded batch and partial acknowledgement
+
+The sequence shows one bounded `ReceiveMessage` batch, independent item handling, selective acknowledgement at the delete boundary, failed-item redelivery, cancellation precedence, and low-cardinality observation. Retry, DLQ, visibility timeout, and backoff remain caller-owned policy.
+
+![AWS SQS bounded batch handling and partial acknowledgement](/assets/visual-companions/wave1/aws-sqs-reliability-en.png)
+
+- Site delivery issue: [#415](https://github.com/bluetape4k/bluetape4k.github.io/issues/415)
+- Source implementation issue: [bluetape4k-aws #454](https://github.com/bluetape4k/bluetape4k-aws/issues/454)
+- Source design: [`2026-08-11-sqs-batch-listener-design.md`](https://github.com/bluetape4k/bluetape4k-aws/blob/1.0.0/docs/superpowers/specs/2026-08-11-sqs-batch-listener-design.md)
+- Site manual: [AWS storage and messaging](/manual/bluetape4k-aws/1.0/modules/bluetape4k-aws-spring-boot/storage-and-messaging/)
+
+## Projects NearJCache: explicit L1/L2 semantics
+
+The architecture keeps the Caffeine L1 front and Redis L2 back visible. Read hit/miss and fill, write-through, epoch-gated clear, bounded bulk policies, tier-separated statistics, JMX opt-in, and disabled-mode cost bounds are shown as separate contracts.
+
+![NearJCache explicit L1 and L2 semantics and safety gates](/assets/visual-companions/wave1/projects-nearjcache-semantics-en.png)
+
+- Site delivery issue: [#416](https://github.com/bluetape4k/bluetape4k.github.io/issues/416)
+- Source management design: [bluetape4k-projects #1351](https://github.com/bluetape4k/bluetape4k-projects/issues/1351)
+- Source safety design: [bluetape4k-projects #1408](https://github.com/bluetape4k/bluetape4k-projects/issues/1408)
+- Source design: [`2026-08-16-issue-1351-nearcache-management-design.md`](https://github.com/bluetape4k/bluetape4k-projects/blob/2.0.0/docs/superpowers/specs/2026-08-16-issue-1351-nearcache-management-design.md)
+- Site manual: [Near-cache L1/L2](/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/near-cache-l1-l2/)
+
+These assets document release-backed contracts only; they do not claim live AWS, native OCR, Redis, or cache-provider integration proof.

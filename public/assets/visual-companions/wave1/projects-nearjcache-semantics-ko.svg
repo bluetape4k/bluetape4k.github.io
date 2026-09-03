@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="3200" viewBox="0 0 1800 3200" role="img" aria-labelledby="title desc">
+<title id="title">NearJCache: 명시적인 L1/L2 의미론과 safety gate</title>
+<desc id="desc">NearJCache source-backed architecture</desc>
+<defs>
+<marker id="arrow-blue" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#72b7f3" stroke="none" stroke-dasharray="none"/></marker>
+<marker id="arrow-cyan" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#58d0d7" stroke="none" stroke-dasharray="none"/></marker>
+<marker id="arrow-amber" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#f4b35f" stroke="none" stroke-dasharray="none"/></marker>
+<marker id="arrow-rose" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#f48c9e" stroke="none" stroke-dasharray="none"/></marker>
+<marker id="arrow-purple" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#b19aff" stroke="none" stroke-dasharray="none"/></marker>
+<marker id="arrow-green" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#61d19a" stroke="none" stroke-dasharray="none"/></marker>
+<marker id="arrow-muted" viewBox="0 0 14 14" markerWidth="10" markerHeight="10" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="secondary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#8fa2bd" stroke="none" stroke-dasharray="none"/></marker>
+<marker id="arrow-sequence" viewBox="0 0 14 14" markerWidth="16" markerHeight="16" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#72b7f3" stroke="none" stroke-dasharray="none"/></marker>
+<style>.canvas{fill:#07101f}.frame{fill:#0c172a;fill-opacity:.76;stroke:#304866;stroke-width:2}.card{fill:#14243b;stroke-width:2}.mini{fill:#101d32;stroke:#3a5474;stroke-width:1.5}.title{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:43px;font-weight:700;fill:#f8fafc}.subtitle{font-family:'goorm Sans Code','Comic Mono','goorm Sans',monospace;font-size:19px;fill:#a9b8d4}.section{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:27px;font-weight:700;fill:#f8fafc}.cardTitle{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:26px;font-weight:700;fill:#f8fafc}.body{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:19px;fill:#cbd7ea}.mono{font-family:'goorm Sans Code','Comic Mono','goorm Sans',monospace;font-size:18px;fill:#b9c9e2}.small{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:16px;fill:#9fb0ca}.tiny{font-family:'goorm Sans Code','Comic Mono','goorm Sans',monospace;font-size:14px;fill:#a9b8d4}.label{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:17px;font-weight:700;fill:#e7eef9}.connector{fill:none;stroke-linecap:round;stroke-linejoin:round}.lifeline{stroke:#304866;stroke-width:2;stroke-dasharray:7 9}.sequence-line{fill:none;stroke-linecap:round;stroke-width:3;marker-end:url(#arrow-sequence)}.sequence-return{fill:none;stroke:#8fa2bd;stroke-width:2.5;stroke-dasharray:8 8;marker-end:url(#arrow-muted)}.pill{fill:#101d32;stroke-width:1.5}.note{fill:#101d32;stroke:#405a7a;stroke-width:1.5}</style>
+</defs>
+<rect class="canvas" width="1800" height="3200"/>
+<rect x="28" y="28" width="1744" height="3144" rx="28" fill="none" stroke="#294362" stroke-width="2"/>
+<text class="title" x="900" y="82" text-anchor="middle">NearJCache: 명시적인 L1/L2 의미론과 safety gate</text>
+<text class="subtitle" x="900" y="119" text-anchor="middle">NearJCache는 단일 cache abstraction 뒤에 숨기지 않고 tier 소유권과 safety 결정을 드러냅니다.</text>
+<rect class="frame" x="90" y="165" width="1620" height="620" rx="28" fill="#173c60" stroke="#72b7f3"/>
+<text class="section" x="140" y="215" text-anchor="start">1 · 두 tier와 하나의 immutable configuration snapshot</text>
+<rect class="card" x="130" y="320" width="360" height="130" rx="22" fill="#173c60" stroke="#72b7f3"/>
+<text class="mono" x="170" y="365" text-anchor="start">caller</text>
+<text class="cardTitle" x="170" y="410" text-anchor="start">요청과 cache key</text>
+<rect class="card" x="650" y="250" width="430" height="430" rx="22" fill="#352d5d" stroke="#b19aff"/>
+<text class="mono" x="700" y="305" text-anchor="start">NearJCache</text>
+<text class="cardTitle" x="700" y="350" text-anchor="start">immutable config snapshot</text>
+<text class="small" x="700" y="395" text-anchor="start">설정 snapshot은 변경 불가</text>
+<text class="small" x="700" y="445" text-anchor="start">read · write · clear 경계를 조정</text>
+<rect class="card" x="1200" y="260" width="420" height="130" rx="22" fill="#183f34" stroke="#61d19a"/>
+<text class="mono" x="1240" y="305" text-anchor="start">L1 · Caffeine front</text>
+<text class="cardTitle" x="1240" y="350" text-anchor="start">near / fast lookup</text>
+<rect class="card" x="1200" y="500" width="420" height="130" rx="22" fill="#15434b" stroke="#58d0d7"/>
+<text class="mono" x="1240" y="545" text-anchor="start">L2 · Redis back</text>
+<text class="cardTitle" x="1240" y="590" text-anchor="start">remote / shared state</text>
+<rect class="mini" x="650" y="705" width="430" height="60" rx="14" fill="#4d3520" stroke="#f4b35f"/>
+<text class="label" x="865" y="742" text-anchor="middle">source store</text>
+<path class="connector" id="cache-caller-near" data-connector="cache-caller-near" data-source="caller" data-target="NearJCache" marker-end="url(#arrow-blue)" d="M490 385 H650" stroke="#72b7f3" stroke-width="4"/>
+<path class="connector" id="cache-near-l1" data-connector="cache-near-l1" data-source="NearJCache" data-target="L1" marker-end="url(#arrow-green)" d="M1080 325 H1200" stroke="#61d19a" stroke-width="4"/>
+<path class="connector" id="cache-near-l2" data-connector="cache-near-l2" data-source="NearJCache" data-target="L2" marker-end="url(#arrow-cyan)" d="M1080 565 H1200" stroke="#58d0d7" stroke-width="4"/>
+<path class="connector" id="cache-near-source" data-connector="cache-near-source" data-source="NearJCache" data-target="source store" marker-end="url(#arrow-amber)" d="M865 680 V705" stroke="#f4b35f" stroke-width="4"/>
+<rect class="frame" x="90" y="820" width="1620" height="760" rx="28" fill="#15434b" stroke="#58d0d7"/>
+<text class="section" x="140" y="870" text-anchor="start">2 · Read path와 fill 의미론</text>
+<rect class="card" x="130" y="980" width="500" height="360" rx="22" fill="#173c60" stroke="#72b7f3"/>
+<text class="mono" x="170" y="1030" text-anchor="start">get(key)</text>
+<text class="cardTitle" x="170" y="1080" text-anchor="start">먼저 L1을 조회</text>
+<text class="small" x="170" y="1125" text-anchor="start">hit이면 즉시 반환</text>
+<text class="small" x="170" y="1170" text-anchor="start">miss이면 L2로 이동</text>
+<rect class="card" x="760" y="940" width="420" height="120" rx="22" fill="#183f34" stroke="#61d19a"/>
+<text class="mono" x="800" y="985" text-anchor="start">L1 hit → return</text>
+<text class="small" x="800" y="1025" text-anchor="start">front read만 수행</text>
+<rect class="card" x="760" y="1160" width="420" height="120" rx="22" fill="#4d3520" stroke="#f4b35f"/>
+<text class="mono" x="800" y="1205" text-anchor="start">L1 miss → L2 조회</text>
+<text class="small" x="800" y="1245" text-anchor="start">back tier로 질의</text>
+<rect class="card" x="1280" y="1160" width="390" height="120" rx="22" fill="#15434b" stroke="#58d0d7"/>
+<text class="mono" x="1320" y="1205" text-anchor="start">L2 hit → return + L1 populate</text>
+<text class="small" x="1320" y="1245" text-anchor="start">반환과 동시에 L1 채움</text>
+<rect class="card" x="1280" y="1360" width="390" height="120" rx="22" fill="#352d5d" stroke="#b19aff"/>
+<text class="mono" x="1320" y="1405" text-anchor="start">populate-if-at-most</text>
+<text class="small" x="1320" y="1445" text-anchor="start">maximumEntryCount gate · 초과 시 건너뜀</text>
+<path class="connector" id="cache-api-hit" data-connector="cache-api-hit" data-source="get(key)" data-target="L1 hit" marker-end="url(#arrow-green)" d="M630 1040 H760" stroke="#61d19a" stroke-width="4"/>
+<path class="connector" id="cache-api-miss" data-connector="cache-api-miss" data-source="get(key)" data-target="L1 miss" marker-end="url(#arrow-amber)" d="M630 1220 H760" stroke="#f4b35f" stroke-width="4"/>
+<path class="connector" id="cache-miss-l2hit" data-connector="cache-miss-l2hit" data-source="L1 miss" data-target="L2 hit" marker-end="url(#arrow-cyan)" d="M1180 1220 H1280" stroke="#58d0d7" stroke-width="4"/>
+<path class="connector" id="cache-l2hit-populate" data-connector="cache-l2hit-populate" data-source="L2 hit" data-target="populate L1" marker-end="url(#arrow-purple)" d="M1475 1280 V1360" stroke="#b19aff" stroke-width="4"/>
+<rect class="frame" x="90" y="1620" width="1620" height="1040" rx="28" fill="#352d5d" stroke="#b19aff"/>
+<text class="section" x="140" y="1670" text-anchor="start">3 · write·clear·bulk·observability</text>
+<rect class="card" x="130" y="1770" width="500" height="150" rx="22" fill="#173c60" stroke="#72b7f3"/>
+<text class="mono" x="170" y="1815" text-anchor="start">write-through</text>
+<text class="small" x="170" y="1860" text-anchor="start">front write → back 완료</text>
+<rect class="card" x="760" y="1770" width="420" height="150" rx="22" fill="#4b2937" stroke="#f48c9e"/>
+<text class="mono" x="800" y="1815" text-anchor="start">clear + epoch gate</text>
+<text class="small" x="800" y="1860" text-anchor="start">epoch 확인 뒤 L1·L2를 함께 무효화</text>
+<rect class="card" x="1280" y="1770" width="390" height="150" rx="22" fill="#4d3520" stroke="#f4b35f"/>
+<text class="mono" x="1320" y="1815" text-anchor="start">bulk policy</text>
+<text class="small" x="1320" y="1860" text-anchor="start">BypassFront / all-or-nothing</text>
+<path class="connector" id="cache-write-clear" data-connector="cache-write-clear" data-source="write-through" data-target="clear + epoch" marker-end="url(#arrow-rose)" d="M630 1845 H760" stroke="#f48c9e" stroke-width="4"/>
+<path class="connector" id="cache-clear-bulk" data-connector="cache-clear-bulk" data-source="clear + epoch" data-target="bulk policy" marker-end="url(#arrow-amber)" d="M1180 1845 H1280" stroke="#f4b35f" stroke-width="4"/>
+<rect class="card" x="130" y="2070" width="500" height="150" rx="22" fill="#183f34" stroke="#61d19a"/>
+<text class="mono" x="170" y="2115" text-anchor="start">logical · front · back stats</text>
+<text class="small" x="170" y="2160" text-anchor="start">tier별 count를 합치지 않음</text>
+<rect class="card" x="760" y="2070" width="420" height="150" rx="22" fill="#15434b" stroke="#58d0d7"/>
+<text class="mono" x="800" y="2115" text-anchor="start">JMX management</text>
+<text class="small" x="800" y="2160" text-anchor="start">명시적 opt-in surface</text>
+<rect class="card" x="1280" y="2070" width="390" height="150" rx="22" fill="#263750" stroke="#8fa2bd"/>
+<text class="mono" x="1320" y="2115" text-anchor="start">disabled mode</text>
+<text class="small" x="1320" y="2160" text-anchor="start">tier 호출 없음 · bounded cost</text>
+<path class="connector" id="cache-write-stats" data-connector="cache-write-stats" data-source="write-through" data-target="stats" marker-end="url(#arrow-green)" d="M380 1920 V2070" stroke="#61d19a" stroke-width="4"/>
+<path class="connector" id="cache-clear-jmx" data-connector="cache-clear-jmx" data-source="clear + epoch" data-target="JMX" marker-end="url(#arrow-cyan)" d="M970 1920 V2070" stroke="#58d0d7" stroke-width="4"/>
+<path class="connector" id="cache-bulk-disabled" data-connector="cache-bulk-disabled" data-source="bulk policy" data-target="disabled mode" marker-end="url(#arrow-muted)" d="M1475 1920 V2070" stroke="#8fa2bd" stroke-width="4"/>
+<rect class="note" x="130" y="2320" width="1540" height="150" rx="18" fill="#173c60" stroke="#72b7f3"/>
+<text class="body" x="900" y="2375" text-anchor="middle">read·write·clear·bulk·metrics가 각자 계약을 유지하며 provider 세부 동작을 몰래 일반화하지 않습니다.</text>
+<text class="small" x="900" y="2415" text-anchor="middle">clear는 두 tier를 함께 무효화하고 epoch로 오래된 작업을 차단합니다.</text>
+</svg>
