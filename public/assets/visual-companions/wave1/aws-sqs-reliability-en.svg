@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="3200" viewBox="0 0 1800 3200" role="img" aria-labelledby="title desc">
+<title id="title">AWS SQS: bounded batch handling with partial acknowledgement</title>
+<desc id="desc">AWS SQS source-backed sequence</desc>
+<defs>
+<marker id="arrow-blue" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#72b7f3" stroke="none" stroke-dasharray="none"/></marker>
+<marker id="arrow-cyan" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#58d0d7" stroke="none" stroke-dasharray="none"/></marker>
+<marker id="arrow-amber" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#f4b35f" stroke="none" stroke-dasharray="none"/></marker>
+<marker id="arrow-rose" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#f48c9e" stroke="none" stroke-dasharray="none"/></marker>
+<marker id="arrow-purple" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#b19aff" stroke="none" stroke-dasharray="none"/></marker>
+<marker id="arrow-green" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#61d19a" stroke="none" stroke-dasharray="none"/></marker>
+<marker id="arrow-muted" viewBox="0 0 14 14" markerWidth="10" markerHeight="10" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="secondary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#8fa2bd" stroke="none" stroke-dasharray="none"/></marker>
+<marker id="arrow-sequence" viewBox="0 0 14 14" markerWidth="16" markerHeight="16" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#72b7f3" stroke="none" stroke-dasharray="none"/></marker>
+<style>.canvas{fill:#07101f}.frame{fill:#0c172a;fill-opacity:.76;stroke:#304866;stroke-width:2}.card{fill:#14243b;stroke-width:2}.mini{fill:#101d32;stroke:#3a5474;stroke-width:1.5}.title{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:43px;font-weight:700;fill:#f8fafc}.subtitle{font-family:'goorm Sans Code','Comic Mono','goorm Sans',monospace;font-size:19px;fill:#a9b8d4}.section{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:27px;font-weight:700;fill:#f8fafc}.cardTitle{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:26px;font-weight:700;fill:#f8fafc}.body{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:19px;fill:#cbd7ea}.mono{font-family:'goorm Sans Code','Comic Mono','goorm Sans',monospace;font-size:18px;fill:#b9c9e2}.small{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:16px;fill:#9fb0ca}.tiny{font-family:'goorm Sans Code','Comic Mono','goorm Sans',monospace;font-size:14px;fill:#a9b8d4}.label{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:17px;font-weight:700;fill:#e7eef9}.connector{fill:none;stroke-linecap:round;stroke-linejoin:round}.lifeline{stroke:#304866;stroke-width:2;stroke-dasharray:7 9}.sequence-line{fill:none;stroke-linecap:round;stroke-width:3;marker-end:url(#arrow-sequence)}.sequence-return{fill:none;stroke:#8fa2bd;stroke-width:2.5;stroke-dasharray:8 8;marker-end:url(#arrow-muted)}.pill{fill:#101d32;stroke-width:1.5}.note{fill:#101d32;stroke:#405a7a;stroke-width:1.5}</style>
+</defs>
+<rect class="canvas" width="1800" height="3200"/>
+<rect x="28" y="28" width="1744" height="3144" rx="28" fill="none" stroke="#294362" stroke-width="2"/>
+<text class="title" x="900" y="82" text-anchor="middle">AWS SQS: bounded batch handling with partial acknowledgement</text>
+<text class="subtitle" x="900" y="119" text-anchor="middle">The listener owns bounded concurrency; SQS remains at-least-once and retry/DLQ policy stays caller-owned.</text>
+<rect class="frame" x="80" y="165" width="1640" height="370" rx="26" fill="#173c60" stroke="#72b7f3"/>
+<text class="section" x="120" y="210" text-anchor="start">1 · Receive once, process independently</text>
+<rect class="card" x="70" y="245" width="200" height="100" rx="22" fill="#173c60" stroke="#72b7f3"/>
+<text class="cardTitle" x="170" y="302" text-anchor="middle">Application</text>
+<line class="lifeline" x1="170" y1="395" x2="170" y2="2860"/>
+<rect class="card" x="310" y="245" width="200" height="100" rx="22" fill="#173c60" stroke="#72b7f3"/>
+<text class="cardTitle" x="410" y="302" text-anchor="middle">Listener</text>
+<line class="lifeline" x1="410" y1="395" x2="410" y2="2860"/>
+<rect class="card" x="550" y="245" width="200" height="100" rx="22" fill="#4d3520" stroke="#f4b35f"/>
+<text class="cardTitle" x="650" y="302" text-anchor="middle">SQS</text>
+<line class="lifeline" x1="650" y1="395" x2="650" y2="2860"/>
+<rect class="card" x="790" y="245" width="200" height="100" rx="22" fill="#173c60" stroke="#72b7f3"/>
+<text class="cardTitle" x="890" y="302" text-anchor="middle">Bounded batch</text>
+<line class="lifeline" x1="890" y1="395" x2="890" y2="2860"/>
+<rect class="card" x="1030" y="245" width="200" height="100" rx="22" fill="#173c60" stroke="#72b7f3"/>
+<text class="cardTitle" x="1130" y="302" text-anchor="middle">Handler</text>
+<line class="lifeline" x1="1130" y1="395" x2="1130" y2="2860"/>
+<rect class="card" x="1270" y="245" width="200" height="100" rx="22" fill="#183f34" stroke="#61d19a"/>
+<text class="cardTitle" x="1370" y="302" text-anchor="middle">ACK / Delete</text>
+<line class="lifeline" x1="1370" y1="395" x2="1370" y2="2860"/>
+<rect class="card" x="1510" y="245" width="200" height="100" rx="22" fill="#173c60" stroke="#72b7f3"/>
+<text class="cardTitle" x="1610" y="302" text-anchor="middle">Observation</text>
+<line class="lifeline" x1="1610" y1="395" x2="1610" y2="2860"/>
+<path class="sequence-line" id="sqs-1" data-connector="sqs-1" data-source="Application" data-target="Listener" marker-end="url(#arrow-sequence)" d="M170 600 H410" stroke="#72b7f3" stroke-width="3"/>
+<text class="tiny" x="290" y="588" text-anchor="middle">1 · ReceiveMessage(max=10)</text>
+<path class="sequence-line" id="sqs-2" data-connector="sqs-2" data-source="Listener" data-target="SQS" marker-end="url(#arrow-sequence)" d="M410 740 H650" stroke="#72b7f3" stroke-width="3"/>
+<text class="tiny" x="530" y="728" text-anchor="middle">2 · ReceiveMessage(max=10)</text>
+<path class="sequence-line" id="sqs-3" data-connector="sqs-3" data-source="SQS" data-target="Listener" marker-end="url(#arrow-sequence)" d="M650 880 H410" stroke="#58d0d7" stroke-width="3"/>
+<text class="tiny" x="530" y="868" text-anchor="middle">3 · bounded message batch</text>
+<path class="sequence-line" id="sqs-4" data-connector="sqs-4" data-source="Listener" data-target="Bounded batch" marker-end="url(#arrow-sequence)" d="M410 1020 H890" stroke="#b19aff" stroke-width="3"/>
+<text class="tiny" x="650" y="1008" text-anchor="middle">4 · emit items</text>
+<path class="sequence-line" id="sqs-5" data-connector="sqs-5" data-source="Bounded batch" data-target="Handler" marker-end="url(#arrow-sequence)" d="M890 1160 H1130" stroke="#b19aff" stroke-width="3"/>
+<text class="tiny" x="1010" y="1148" text-anchor="middle">5 · handle(item)</text>
+<path class="sequence-line" id="sqs-6" data-connector="sqs-6" data-source="Handler" data-target="ACK / Delete" marker-end="url(#arrow-sequence)" d="M1130 1300 H1370" stroke="#61d19a" stroke-width="3"/>
+<text class="tiny" x="1250" y="1288" text-anchor="middle">6 · item success</text>
+<path class="sequence-line" id="sqs-7" data-connector="sqs-7" data-source="ACK / Delete" data-target="SQS" marker-end="url(#arrow-sequence)" d="M1370 1440 H650" stroke="#61d19a" stroke-width="3"/>
+<text class="tiny" x="1010" y="1428" text-anchor="middle">7 · DeleteMessage(entry)</text>
+<path class="sequence-line" id="sqs-8" data-connector="sqs-8" data-source="Handler" data-target="Observation" marker-end="url(#arrow-sequence)" d="M1130 1580 H1610" stroke="#58d0d7" stroke-width="3"/>
+<text class="tiny" x="1370" y="1568" text-anchor="middle">8 · low-cardinality outcome</text>
+<rect class="frame" x="80" y="1700" width="1640" height="575" rx="26" fill="#4b2937" stroke="#f48c9e"/>
+<text class="section" x="120" y="1750" text-anchor="start">2 · Partial failure and redelivery</text>
+<path class="sequence-line" id="sqs-9" data-connector="sqs-9" data-source="Handler" data-target="Listener" marker-end="url(#arrow-sequence)" d="M1130 1860 H410" stroke="#f48c9e" stroke-width="3"/>
+<text class="tiny" x="770" y="1848" text-anchor="middle">9 · item failure</text>
+<path class="sequence-line" id="sqs-10" data-connector="sqs-10" data-source="SQS" data-target="Listener" marker-end="url(#arrow-sequence)" stroke-dasharray="8 8" d="M650 2010 H410" stroke="#f4b35f" stroke-width="3"/>
+<text class="tiny" x="530" y="1998" text-anchor="middle">10 · visibility timeout → redelivery</text>
+<rect class="note" x="1030" y="2080" width="570" height="90" rx="16" fill="#4d3520" stroke="#f4b35f"/>
+<text class="label" x="1315" y="2118" text-anchor="middle">Only failed entries redeliver</text>
+<text class="small" x="1315" y="2148" text-anchor="middle">failed item is not deleted</text>
+<rect class="frame" x="80" y="2390" width="1640" height="400" rx="26" fill="#352d5d" stroke="#b19aff"/>
+<text class="section" x="120" y="2440" text-anchor="start">3 · Cancellation precedence</text>
+<path class="sequence-line" id="sqs-11" data-connector="sqs-11" data-source="Application" data-target="Listener" marker-end="url(#arrow-sequence)" d="M170 2525 H410" stroke="#b19aff" stroke-width="3"/>
+<text class="tiny" x="290" y="2513" text-anchor="middle">11 · cancel()</text>
+<path class="sequence-line" id="sqs-12" data-connector="sqs-12" data-source="Listener" data-target="Handler" marker-end="url(#arrow-sequence)" d="M410 2665 H1130" stroke="#b19aff" stroke-width="3"/>
+<text class="tiny" x="770" y="2653" text-anchor="middle">12 · cancel children · drain</text>
+<path class="sequence-return" id="sqs-13" data-connector="sqs-13" data-source="Handler" data-target="Listener" marker-end="url(#arrow-muted)" d="M1130 2805 H410" stroke="#8fa2bd" stroke-width="2.5"/>
+<text class="tiny" x="770" y="2793" text-anchor="middle">13 · failed item is not deleted</text>
+<rect class="note" x="120" y="2905" width="1560" height="140" rx="18" fill="#173c60" stroke="#72b7f3"/>
+<text class="body" x="900" y="2960" text-anchor="middle">Per-item delete is the acknowledgement boundary. Retry, DLQ, visibility timeout, and backoff remain caller policy.</text>
+<text class="small" x="900" y="3000" text-anchor="middle">Observation stays low-cardinality and does not record message bodies or tenant identifiers.</text>
+</svg>

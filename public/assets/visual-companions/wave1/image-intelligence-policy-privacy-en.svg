@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="3200" viewBox="0 0 1800 3200" role="img" aria-labelledby="title desc">
+<title id="title">Image Intelligence: facts, states, policy, and privacy boundary</title>
+<desc id="desc">Image Intelligence source-backed architecture</desc>
+<defs>
+<marker id="arrow-blue" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#72b7f3" stroke="none" stroke-dasharray="none"/></marker>
+<marker id="arrow-cyan" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#58d0d7" stroke="none" stroke-dasharray="none"/></marker>
+<marker id="arrow-amber" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#f4b35f" stroke="none" stroke-dasharray="none"/></marker>
+<marker id="arrow-rose" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#f48c9e" stroke="none" stroke-dasharray="none"/></marker>
+<marker id="arrow-purple" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#b19aff" stroke="none" stroke-dasharray="none"/></marker>
+<marker id="arrow-green" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#61d19a" stroke="none" stroke-dasharray="none"/></marker>
+<marker id="arrow-muted" viewBox="0 0 14 14" markerWidth="10" markerHeight="10" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="secondary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#8fa2bd" stroke="none" stroke-dasharray="none"/></marker>
+<marker id="arrow-sequence" viewBox="0 0 14 14" markerWidth="16" markerHeight="16" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="sequence" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#72b7f3" stroke="none" stroke-dasharray="none"/></marker>
+<style>.canvas{fill:#07101f}.frame{fill:#0c172a;fill-opacity:.76;stroke:#304866;stroke-width:2}.card{fill:#14243b;stroke-width:2}.mini{fill:#101d32;stroke:#3a5474;stroke-width:1.5}.title{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:43px;font-weight:700;fill:#f8fafc}.subtitle{font-family:'goorm Sans Code','Comic Mono','goorm Sans',monospace;font-size:19px;fill:#a9b8d4}.section{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:27px;font-weight:700;fill:#f8fafc}.cardTitle{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:26px;font-weight:700;fill:#f8fafc}.body{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:19px;fill:#cbd7ea}.mono{font-family:'goorm Sans Code','Comic Mono','goorm Sans',monospace;font-size:18px;fill:#b9c9e2}.small{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:16px;fill:#9fb0ca}.tiny{font-family:'goorm Sans Code','Comic Mono','goorm Sans',monospace;font-size:14px;fill:#a9b8d4}.label{font-family:'goorm Sans','Architects Daughter',sans-serif;font-size:17px;font-weight:700;fill:#e7eef9}.connector{fill:none;stroke-linecap:round;stroke-linejoin:round}.lifeline{stroke:#304866;stroke-width:2;stroke-dasharray:7 9}.sequence-line{fill:none;stroke-linecap:round;stroke-width:3;marker-end:url(#arrow-sequence)}.sequence-return{fill:none;stroke:#8fa2bd;stroke-width:2.5;stroke-dasharray:8 8;marker-end:url(#arrow-muted)}.pill{fill:#101d32;stroke-width:1.5}.note{fill:#101d32;stroke:#405a7a;stroke-width:1.5}</style>
+</defs>
+<rect class="canvas" width="1800" height="3200"/>
+<rect x="28" y="28" width="1744" height="3144" rx="28" fill="none" stroke="#294362" stroke-width="2"/>
+<text class="title" x="900" y="82" text-anchor="middle">Image Intelligence: facts, states, policy, and privacy boundary</text>
+<text class="subtitle" x="900" y="119" text-anchor="middle">One immutable decode feeds independent lanes; facts stay separate from policy actions and pixel side effects.</text>
+<rect class="frame" x="100" y="165" width="1600" height="510" rx="28" fill="#173c60" stroke="#72b7f3"/>
+<text class="section" x="150" y="215" text-anchor="start">1 · Acquire and decode once</text>
+<rect class="card" x="150" y="285" width="450" height="150" rx="22" fill="#173c60" stroke="#72b7f3"/>
+<text class="mono" x="190" y="330" text-anchor="start">multipart image input</text>
+<text class="cardTitle" x="190" y="375" text-anchor="start">multipart/form-data</text>
+<text class="small" x="190" y="410" text-anchor="start">type · size · content-type checks</text>
+<rect class="card" x="675" y="285" width="450" height="150" rx="22" fill="#15434b" stroke="#58d0d7"/>
+<text class="mono" x="715" y="330" text-anchor="start">qualification</text>
+<text class="cardTitle" x="715" y="375" text-anchor="start">Input qualification</text>
+<text class="small" x="715" y="410" text-anchor="start">reject before analysis lanes start</text>
+<rect class="card" x="1200" y="285" width="450" height="150" rx="22" fill="#352d5d" stroke="#b19aff"/>
+<text class="mono" x="1240" y="330" text-anchor="start">ImmutableImage.decode</text>
+<text class="cardTitle" x="1240" y="375" text-anchor="start">create immutable image once</text>
+<text class="small" x="1240" y="410" text-anchor="start">one immutable decode · bounded input</text>
+<path class="connector" id="image-input-qualify" data-connector="image-input-qualify" data-source="multipart input" data-target="qualification" marker-end="url(#arrow-blue)" d="M600 360 H675" stroke="#72b7f3" stroke-width="4"/>
+<path class="connector" id="image-qualify-decode" data-connector="image-qualify-decode" data-source="qualification" data-target="immutable decode" marker-end="url(#arrow-cyan)" d="M1125 360 H1200" stroke="#58d0d7" stroke-width="4"/>
+<rect class="card" x="150" y="485" width="1500" height="120" rx="22" fill="#352d5d" stroke="#b19aff"/>
+<text class="mono" x="190" y="530" text-anchor="start">parallel analysis fan-out</text>
+<text class="body" x="190" y="570" text-anchor="start">The same immutable image is shared by OCR, detection, and barcode providers</text>
+<path class="connector" id="image-decode-fanout" data-connector="image-decode-fanout" data-source="immutable decode" data-target="analysis fan-out" marker-end="url(#arrow-purple)" d="M1425 435 V485" stroke="#b19aff" stroke-width="4"/>
+<rect class="frame" x="100" y="715" width="1600" height="715" rx="28" fill="#15434b" stroke="#58d0d7"/>
+<text class="section" x="150" y="765" text-anchor="start">2 · Independent analysis lanes and states</text>
+<rect class="card" x="150" y="835" width="500" height="175" rx="22" fill="#173c60" stroke="#72b7f3"/>
+<text class="mono" x="190" y="880" text-anchor="start">OCR lane</text>
+<text class="cardTitle" x="190" y="925" text-anchor="start">text + status</text>
+<text class="small" x="190" y="970" text-anchor="start">preserve status + reason with source facts</text>
+<path class="connector" id="image-fanout-ocr" data-connector="image-fanout-ocr" data-source="analysis fan-out" data-target="ocr" marker-end="url(#arrow-blue)" d="M400 605 V835" stroke="#72b7f3" stroke-width="4"/>
+<rect class="card" x="650" y="835" width="500" height="175" rx="22" fill="#4d3520" stroke="#f4b35f"/>
+<text class="mono" x="690" y="880" text-anchor="start">Detection lane</text>
+<text class="cardTitle" x="690" y="925" text-anchor="start">facts + status</text>
+<text class="small" x="690" y="970" text-anchor="start">preserve status + reason with source facts</text>
+<path class="connector" id="image-fanout-detection" data-connector="image-fanout-detection" data-source="analysis fan-out" data-target="detection" marker-end="url(#arrow-amber)" d="M900 605 V835" stroke="#f4b35f" stroke-width="4"/>
+<rect class="card" x="1150" y="835" width="500" height="175" rx="22" fill="#183f34" stroke="#61d19a"/>
+<text class="mono" x="1190" y="880" text-anchor="start">ZXing barcode lane</text>
+<text class="cardTitle" x="1190" y="925" text-anchor="start">values + status</text>
+<text class="small" x="1190" y="970" text-anchor="start">preserve status + reason with source facts</text>
+<path class="connector" id="image-fanout-barcode" data-connector="image-fanout-barcode" data-source="analysis fan-out" data-target="barcode" marker-end="url(#arrow-green)" d="M1400 605 V835" stroke="#61d19a" stroke-width="4"/>
+<rect class="card" x="150" y="1090" width="1500" height="170" rx="22" fill="#352d5d" stroke="#b19aff"/>
+<text class="mono" x="190" y="1135" text-anchor="start">AnalysisResult aggregate</text>
+<text class="cardTitle" x="190" y="1180" text-anchor="start">Completed · Empty · Unavailable · Failed are preserved</text>
+<text class="small" x="190" y="1220" text-anchor="start">Empty ≠ Failed · Unavailable keeps the provider boundary visible</text>
+<path class="connector" id="image-ocr-aggregate" data-connector="image-ocr-aggregate" data-source="ocr" data-target="aggregate" marker-end="url(#arrow-blue)" d="M400 1010 V1090" stroke="#72b7f3" stroke-width="4"/>
+<path class="connector" id="image-detection-aggregate" data-connector="image-detection-aggregate" data-source="detection" data-target="aggregate" marker-end="url(#arrow-amber)" d="M900 1010 V1090" stroke="#f4b35f" stroke-width="4"/>
+<path class="connector" id="image-barcode-aggregate" data-connector="image-barcode-aggregate" data-source="barcode" data-target="aggregate" marker-end="url(#arrow-green)" d="M1400 1010 V1090" stroke="#61d19a" stroke-width="4"/>
+<rect class="frame" x="100" y="1470" width="1600" height="515" rx="28" fill="#4d3520" stroke="#f4b35f"/>
+<text class="section" x="150" y="1520" text-anchor="start">2 · Explicit states remain observable</text>
+<rect class="card" x="150" y="1580" width="1500" height="145" rx="22" fill="#4d3520" stroke="#f4b35f"/>
+<text class="mono" x="190" y="1625" text-anchor="start">state set</text>
+<text class="cardTitle" x="190" y="1670" text-anchor="start">each lane reports its own outcome and reason</text>
+<rect class="mini" x="580" y="1738" width="220" height="48" rx="14" fill="#183f34" stroke="#61d19a"/>
+<text class="label" x="690" y="1769" text-anchor="middle">Completed</text>
+<rect class="mini" x="830" y="1738" width="220" height="48" rx="14" fill="#173c60" stroke="#72b7f3"/>
+<text class="label" x="940" y="1769" text-anchor="middle">Empty</text>
+<rect class="mini" x="1080" y="1738" width="220" height="48" rx="14" fill="#4d3520" stroke="#f4b35f"/>
+<text class="label" x="1190" y="1769" text-anchor="middle">Unavailable</text>
+<rect class="mini" x="1330" y="1738" width="220" height="48" rx="14" fill="#4b2937" stroke="#f48c9e"/>
+<text class="label" x="1440" y="1769" text-anchor="middle">Failed</text>
+<path class="connector" id="image-aggregate-status" data-connector="image-aggregate-status" data-source="aggregate" data-target="state set" marker-end="url(#arrow-amber)" d="M900 1260 V1580" stroke="#f4b35f" stroke-width="4"/>
+<rect class="frame" x="100" y="2025" width="1600" height="665" rx="28" fill="#352d5d" stroke="#b19aff"/>
+<text class="section" x="150" y="2075" text-anchor="start">3 · Ordered policy boundary</text>
+<rect class="card" x="150" y="2135" width="1500" height="145" rx="22" fill="#352d5d" stroke="#b19aff"/>
+<text class="mono" x="190" y="2180" text-anchor="start">VisitorPassPolicy.decide(facts, states)</text>
+<text class="body" x="190" y="2225" text-anchor="start">precedence: sensitive → invalid QR → degraded → valid → review</text>
+<text class="small" x="190" y="2260" text-anchor="start">Return the first matching action · facts and treatment commands stay in separate types</text>
+<rect class="card" x="350" y="2360" width="1100" height="145" rx="22" fill="#352d5d" stroke="#b19aff"/>
+<text class="mono" x="390" y="2405" text-anchor="start">VisitorPassDecision</text>
+<text class="cardTitle" x="390" y="2450" text-anchor="start">action + reasons · no pixel mutation</text>
+<rect class="pill" x="960" y="2400" width="210" height="36" rx="12" fill="#183f34" stroke="#61d19a"/><text class="label" x="1065" y="2424" text-anchor="middle">ALLOW</text>
+<rect class="pill" x="1190" y="2400" width="220" height="36" rx="12" fill="#4d3520" stroke="#f4b35f"/><text class="label" x="1300" y="2424" text-anchor="middle">REVIEW</text>
+<path class="connector" id="image-state-policy" data-connector="image-state-policy" data-source="state set" data-target="policy" marker-end="url(#arrow-purple)" d="M900 1786 V2135" stroke="#b19aff" stroke-width="4"/>
+<path class="connector" id="image-policy-decision" data-connector="image-policy-decision" data-source="policy" data-target="decision" marker-end="url(#arrow-purple)" d="M900 2280 V2360" stroke="#b19aff" stroke-width="4"/>
+<rect class="frame" x="100" y="2730" width="1600" height="330" rx="28" fill="#183f34" stroke="#61d19a"/>
+<text class="section" x="150" y="2780" text-anchor="start">4 · Privacy-safe derivative boundary</text>
+<rect class="card" x="600" y="2840" width="600" height="140" rx="22" fill="#183f34" stroke="#61d19a"/>
+<text class="mono" x="640" y="2885" text-anchor="start">immutable derivative snapshot</text>
+<text class="small" x="640" y="2930" text-anchor="start">facts-only payload · redacted metadata</text>
+<rect class="card" x="1300" y="2840" width="350" height="140" rx="22" fill="#173c60" stroke="#72b7f3"/>
+<text class="mono" x="1320" y="2885" text-anchor="start">application-owned effects</text>
+<text class="small" x="1320" y="2925" text-anchor="start">render · store · reject</text>
+<text class="small" x="1320" y="2955" text-anchor="start">quarantine · manual review</text>
+<path class="connector" id="image-decision-derivative" data-connector="image-decision-derivative" data-source="decision" data-target="derivative snapshot" marker-end="url(#arrow-green)" d="M900 2505 V2840" stroke="#61d19a" stroke-width="4"/>
+<path class="connector" id="image-derivative-application" data-connector="image-derivative-application" data-source="derivative snapshot" data-target="application effects" marker-end="url(#arrow-blue)" d="M1200 2910 H1300" stroke="#72b7f3" stroke-width="4"/>
+<rect class="note" x="150" y="3005" width="1500" height="42" rx="14" fill="#263750" stroke="#8fa2bd"/>
+<text class="label" x="900" y="3032" text-anchor="middle">Detector reports facts → policy chooses action → application owns side effects</text>
+</svg>

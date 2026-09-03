@@ -1,0 +1,48 @@
+{
+  "kind": "architecture",
+  "source": {
+    "question": "How do NearJCache L1/L2 reads, writes, bulk guards, epoch invalidation, statistics, and JMX ownership fit together?",
+    "revision": "bd8eee0ee238bb36dfaaed6865c40cdef2cdafe0",
+    "paths": ["src/content/docs/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/near-cache-l1-l2.md"]
+  },
+  "nodes": [
+    {"id": "application", "label": "Application", "source": "near-cache-l1-l2.md"},
+    {"id": "config", "label": "Immutable front config snapshot", "source": "near-cache-l1-l2.md"},
+    {"id": "l1", "label": "L1 Caffeine front cache", "source": "near-cache-l1-l2.md"},
+    {"id": "l2", "label": "L2 Redis shared cache", "source": "near-cache-l1-l2.md"},
+    {"id": "read_request", "label": "Read request", "source": "near-cache-l1-l2.md"},
+    {"id": "l1_decision", "label": "L1 hit or miss", "source": "near-cache-l1-l2.md"},
+    {"id": "l2_fetch", "label": "L2 fetch on miss", "source": "near-cache-l1-l2.md"},
+    {"id": "fill_return", "label": "Fill L1 and return", "source": "near-cache-l1-l2.md"},
+    {"id": "write_request", "label": "Write request", "source": "near-cache-l1-l2.md"},
+    {"id": "epoch_guard", "label": "Epoch and conditional guard", "source": "near-cache-l1-l2.md"},
+    {"id": "ordered_write", "label": "Documented write order", "source": "near-cache-l1-l2.md"},
+    {"id": "bulk_policy", "label": "Bulk front policy", "source": "near-cache-l1-l2.md"},
+    {"id": "clear_epoch", "label": "Clear both tiers and advance epoch", "source": "near-cache-l1-l2.md"},
+    {"id": "disabled_bound", "label": "Disabled-mode bounded cost", "source": "near-cache-l1-l2.md"},
+    {"id": "stats", "label": "Logical / front / back statistics", "source": "near-cache-l1-l2.md"},
+    {"id": "jmx", "label": "Explicit JMX lifecycle", "source": "near-cache-l1-l2.md"}
+  ],
+  "edges": [
+    {"id": "application-config", "from": "application", "to": "config", "kind": "configures", "source": "near-cache-l1-l2.md"},
+    {"id": "config-l1", "from": "config", "to": "l1", "kind": "bounds", "source": "near-cache-l1-l2.md"},
+    {"id": "config-l2", "from": "config", "to": "l2", "kind": "bounds", "source": "near-cache-l1-l2.md"},
+    {"id": "application-read", "from": "application", "to": "read_request", "kind": "reads", "source": "near-cache-l1-l2.md"},
+    {"id": "read-decision", "from": "read_request", "to": "l1_decision", "kind": "checks", "source": "near-cache-l1-l2.md"},
+    {"id": "decision-l2", "from": "l1_decision", "to": "l2_fetch", "kind": "miss", "source": "near-cache-l1-l2.md"},
+    {"id": "l2-fill", "from": "l2_fetch", "to": "fill_return", "kind": "fills", "source": "near-cache-l1-l2.md"},
+    {"id": "application-write", "from": "application", "to": "write_request", "kind": "writes", "source": "near-cache-l1-l2.md"},
+    {"id": "write-epoch", "from": "write_request", "to": "epoch_guard", "kind": "guards", "source": "near-cache-l1-l2.md"},
+    {"id": "epoch-order", "from": "epoch_guard", "to": "ordered_write", "kind": "orders", "source": "near-cache-l1-l2.md"},
+    {"id": "order-l1", "from": "ordered_write", "to": "l1", "kind": "updates", "source": "near-cache-l1-l2.md"},
+    {"id": "bulk-policy-clear", "from": "bulk_policy", "to": "clear_epoch", "kind": "guards", "source": "near-cache-l1-l2.md"},
+    {"id": "clear-stats", "from": "clear_epoch", "to": "stats", "kind": "records", "source": "near-cache-l1-l2.md"},
+    {"id": "disabled-stats", "from": "disabled_bound", "to": "stats", "kind": "records", "source": "near-cache-l1-l2.md"},
+    {"id": "l1-stats", "from": "l1", "to": "stats", "kind": "measures", "source": "near-cache-l1-l2.md"},
+    {"id": "l2-stats", "from": "l2", "to": "stats", "kind": "measures", "source": "near-cache-l1-l2.md"},
+    {"id": "stats-jmx", "from": "stats", "to": "jmx", "kind": "exposes", "source": "near-cache-l1-l2.md"},
+    {"id": "l2-invalidate-l1", "from": "l2", "to": "l1", "kind": "invalidation", "source": "near-cache-l1-l2.md"}
+  ],
+  "behavior": {"branches": 3, "loops": 1},
+  "repairs": []
+}
