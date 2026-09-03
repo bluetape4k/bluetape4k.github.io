@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="data:,">
+  <title>NearJCache Consistency Lab · bluetape4k</title>
+  <meta name="description" content="Explore L1 hits, L2 fills, conditional writes, bounded bulk policy, epoch-gated clear, statistics, and JMX.">
+  <script>
+    (() => {
+      const key = 'bluetape4k-wave1-visual-theme';
+      const stored = localStorage.getItem(key) || 'auto';
+      const apply = (mode) => {
+        const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = mode === 'auto' ? (dark ? 'dark' : 'light') : mode;
+        document.documentElement.dataset.themeMode = mode;
+      };
+      apply(stored);
+      addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('[data-theme-button]').forEach((button) => {
+          button.setAttribute('aria-pressed', String(button.dataset.themeButton === stored));
+          button.addEventListener('click', () => {
+            const mode = button.dataset.themeButton;
+            localStorage.setItem(key, mode);
+            apply(mode);
+            document.querySelectorAll('[data-theme-button]').forEach((candidate) => {
+              candidate.setAttribute('aria-pressed', String(candidate === button));
+            });
+          });
+        });
+      });
+    })();</script>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --font-size-base: 16px;
+      --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    }
+    :root[data-theme="light"] {
+      --background: #f4f7fb; --foreground: #152033; --card: #ffffff; --card-foreground: #152033;
+      --popover: #ffffff; --popover-foreground: #152033; --primary: #245ea8; --primary-foreground: #ffffff;
+      --secondary: #e6edf7; --secondary-foreground: #24364f; --muted: #e8eef6; --muted-foreground: #5b6b80;
+      --accent: #dce9fb; --accent-foreground: #173c6b; --destructive: #b93447; --border: #c5d2e2;
+      --input: #aebfd3; --ring: #3978c4; --viz-series-1: #2777c7; --viz-series-2: #5a48b5;
+      --viz-series-3: #118065; --viz-series-4: #b86612; --viz-series-5: #b93447; --viz-series-6: #087f8c;
+      --page-grid: rgba(39, 76, 120, .065); --shadow: rgba(18, 37, 63, .15);
+    }
+    :root[data-theme="dark"] {
+      --background: #07111f; --foreground: #e7eef8; --card: #0f1d31; --card-foreground: #e7eef8;
+      --popover: #101f34; --popover-foreground: #e7eef8; --primary: #78b2ff; --primary-foreground: #07111f;
+      --secondary: #182b45; --secondary-foreground: #dfe9f7; --muted: #172840; --muted-foreground: #a7b8ce;
+      --accent: #19365b; --accent-foreground: #dceaff; --destructive: #ff8292; --border: #2e4767;
+      --input: #496584; --ring: #76b0ff; --viz-series-1: #69aff5; --viz-series-2: #b39bff;
+      --viz-series-3: #58d3a4; --viz-series-4: #ffc16b; --viz-series-5: #ff8292; --viz-series-6: #59d8e4;
+      --page-grid: rgba(116, 155, 207, .075); --shadow: rgba(0, 0, 0, .38);
+    }
+    * { box-sizing: border-box; }
+    html { min-width: 320px; background: var(--background); }
+    body {
+      margin: 0; min-width: 320px; color: var(--foreground); font: 400 var(--font-size-base)/1.58 var(--font-sans);
+      background: linear-gradient(var(--page-grid) 1px, transparent 1px), linear-gradient(90deg, var(--page-grid) 1px, transparent 1px), var(--background);
+      background-size: 30px 30px;
+    }
+    button, input, select { font: inherit; }
+    code { font-family: var(--font-mono); }
+    a { color: var(--viz-series-1); }
+    button:focus-visible, a:focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; }
+    .topbar {
+      position: sticky; top: 0; z-index: 20; display: flex; align-items: center; justify-content: space-between;
+      gap: .75rem; min-height: 64px; padding: .65rem clamp(1rem, 4vw, 3.5rem); border-bottom: 1px solid var(--border);
+      background: color-mix(in srgb, var(--background) 86%, transparent); backdrop-filter: blur(16px);
+    }
+    .brand, .top-actions, .theme-picker, .viz-row, .viz-controls { display: flex; align-items: center; gap: .55rem; flex-wrap: wrap; }
+    .brand { color: var(--foreground); font-weight: 500; text-decoration: none; }
+    .brand-mark { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 10px; color: var(--primary-foreground); background: linear-gradient(135deg, var(--primary), var(--viz-series-2)); }
+    .page { width: min(1180px, calc(100% - 2rem)); margin: 0 auto; padding: clamp(1.5rem, 4vw, 3.5rem) 0 4.5rem; }
+    .context { margin: 0 0 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+    .context strong { display: block; margin-bottom: .25rem; }
+    .context p { margin: 0; color: var(--muted-foreground); }
+    h1, h2, h3 { line-height: 1.2; font-weight: 500; }
+    h2 { margin: 0 0 1rem; font-size: clamp(1.65rem, 4vw, 2.6rem); letter-spacing: -.025em; }
+    .btn {
+      min-height: 42px; padding: .55rem .9rem; border: 1px solid var(--border); border-radius: 999px;
+      color: var(--foreground); background: var(--card); cursor: pointer; text-decoration: none;
+    }
+    .btn:hover { border-color: var(--viz-series-1); }
+    .btn-primary, .btn[aria-pressed="true"] { border-color: var(--primary); color: var(--primary-foreground); background: var(--primary); }
+    .btn-ghost { background: transparent; }
+    .text-small { font-size: .82rem; }
+    .text-muted { color: var(--muted-foreground); }
+    .viz-badge { display: inline-flex; padding: .2rem .55rem; border-radius: 999px; color: var(--accent-foreground); background: var(--accent); }
+    .progress { height: .55rem; overflow: hidden; border-radius: 999px; background: color-mix(in srgb, var(--muted) 70%, transparent); }
+    .progress-bar { height: 100%; background: var(--viz-series-1); transition: width 380ms ease; }
+    .provenance { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); color: var(--muted-foreground); }
+    .provenance a { margin-inline-end: 1rem; }
+    @media (max-width: 700px) {
+      .topbar { align-items: flex-start; }
+      .top-actions { justify-content: flex-end; }
+      .top-actions > a { display: none; }
+      .page { width: min(100% - 1rem, 1180px); padding-top: 1.25rem; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }</style>
+</head>
+<body>
+  <nav class="topbar" aria-label="bluetape4k visual companion">
+    <a class="brand" href="/visual-companions/"><span class="brand-mark" aria-hidden="true">B4K</span><span>Visual companions</span></a>
+    <div class="top-actions">
+      <a class="btn btn-ghost" href="/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/near-cache-l1-l2/">Manual</a>
+      <a class="btn btn-ghost" href="/ko/visual-companions/bluetape4k-projects/projects-nearjcache-semantics/" hreflang="ko">한국어</a>
+      <div class="theme-picker" aria-label="Theme">
+        <button type="button" class="btn btn-ghost" data-theme-button="auto">Auto</button>
+        <button type="button" class="btn btn-ghost" data-theme-button="light">Light</button>
+        <button type="button" class="btn btn-ghost" data-theme-button="dark">Dark</button>
+      </div>
+    </div>
+  </nav>
+  <main class="page">
+    <header class="context"><strong>#416 · bluetape4k-projects</strong><p>Explore L1 hits, L2 fills, conditional writes, bounded bulk policy, epoch-gated clear, statistics, and JMX.</p></header>
+<div id="bt4k-issue-416" data-operation="miss" data-step="0">
+  <style>
+    #bt4k-issue-416 { color: var(--foreground); }
+    #bt4k-issue-416 .operation-controls,
+    #bt4k-issue-416 .transport { margin-block: 0.75rem; }
+    #bt4k-issue-416 .control-deck { display: flex; justify-content: space-between; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+    #bt4k-issue-416 .clock { display: flex; align-items: center; gap: 0.55rem; color: var(--muted-foreground); }
+    #bt4k-issue-416 .clock strong { color: var(--foreground); }
+    #bt4k-issue-416 .cache-nodes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.5rem; margin-block-start: 0.85rem; }
+    #bt4k-issue-416 .cache-node { min-height: 4.6rem; display: grid; place-items: center; text-align: center; padding: 0.55rem; border: 1px solid var(--border); border-radius: 0.7rem; background: color-mix(in srgb, var(--muted) 50%, transparent); opacity: 0.44; transition: opacity 180ms ease, background 180ms ease, border-color 180ms ease, transform 180ms ease; }
+    #bt4k-issue-416 .cache-node small { color: var(--muted-foreground); }
+    #bt4k-issue-416 .cache-node.active { opacity: 1; border-color: var(--viz-series-1); background: color-mix(in srgb, var(--viz-series-1) 20%, transparent); transform: translateY(-2px); }
+    #bt4k-issue-416 .cache-bus { position: relative; min-height: 4.1rem; margin-inline: 3%; }
+    #bt4k-issue-416 .cache-bus::before { content: ""; position: absolute; inset-inline: 0; top: 50%; height: 2px; background: var(--border); }
+    #bt4k-issue-416 .request-token { position: absolute; z-index: 2; inset-inline-start: var(--x, 4%); top: 50%; transform: translate(-50%, -50%); display: grid; place-items: center; min-width: 4.2rem; min-height: 2.7rem; padding: 0.35rem 0.55rem; border: 2px solid var(--viz-series-1); border-radius: 999px; background: var(--background); transition: inset-inline-start 460ms ease, border-color 180ms ease, background 180ms ease; }
+    #bt4k-issue-416 .request-token small { color: var(--muted-foreground); }
+    #bt4k-issue-416 .request-token[data-state="return"] { border-color: var(--viz-series-3); background: color-mix(in srgb, var(--viz-series-3) 18%, var(--background)); }
+    #bt4k-issue-416 .request-token[data-state="blocked"] { border-color: var(--destructive); border-style: dashed; background: color-mix(in srgb, var(--destructive) 12%, var(--background)); }
+    #bt4k-issue-416 .cache-state { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
+    #bt4k-issue-416 .tier { padding-block: 0.7rem; border-block: 1px solid var(--border); }
+    #bt4k-issue-416 .tier-head { display: flex; justify-content: space-between; gap: 0.5rem; color: var(--muted-foreground); }
+    #bt4k-issue-416 .tier strong { color: var(--foreground); }
+    #bt4k-issue-416 .slots { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.35rem; margin-block-start: 0.55rem; }
+    #bt4k-issue-416 .slot { min-height: 2.4rem; display: grid; place-items: center; text-align: center; border-radius: 0.45rem; background: color-mix(in srgb, var(--viz-series-2) 12%, transparent); color: var(--muted-foreground); }
+    #bt4k-issue-416 .slot.filled { background: color-mix(in srgb, var(--viz-series-2) 24%, transparent); color: var(--foreground); }
+    #bt4k-issue-416 .safety-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; margin-block: 0.8rem; }
+    #bt4k-issue-416 .safety { min-height: 4rem; display: grid; place-items: center; text-align: center; padding: 0.55rem; border-block: 1px solid var(--border); opacity: 0.5; }
+    #bt4k-issue-416 .safety.active { opacity: 1; color: var(--foreground); background: color-mix(in srgb, var(--viz-series-3) 14%, transparent); }
+    #bt4k-issue-416 .safety small { color: var(--muted-foreground); }
+    #bt4k-issue-416 .metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
+    #bt4k-issue-416 .metric { display: grid; grid-template-columns: 1fr auto auto; gap: 0.45rem; align-items: center; padding-block: 0.55rem; border-block: 1px solid var(--border); }
+    #bt4k-issue-416 .metric span { color: var(--muted-foreground); }
+    #bt4k-issue-416 .metric b { font-weight: 500; }
+    #bt4k-issue-416 .jmx-line { display: flex; justify-content: space-between; gap: 0.6rem; align-items: center; margin-block-start: 0.7rem; color: var(--muted-foreground); }
+    #bt4k-issue-416 .jmx-line strong { color: var(--foreground); }
+    #bt4k-issue-416 .step-explanation { margin-block-start: 0.8rem; padding-block: 0.75rem; border-block: 1px solid var(--border); }
+    #bt4k-issue-416 .explain-head { display: flex; align-items: center; gap: 0.55rem; margin-block-end: 0.65rem; }
+    #bt4k-issue-416 .explain-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; }
+    #bt4k-issue-416 .explain-item { min-width: 0; }
+    #bt4k-issue-416 .explain-item > span { display: block; margin-block-end: 0.2rem; color: var(--muted-foreground); }
+    @media (max-width: 560px) {
+      #bt4k-issue-416 .cache-node { min-height: 4.2rem; padding: 0.3rem; }
+      #bt4k-issue-416 .cache-node small { display: none; }
+      #bt4k-issue-416 .cache-state,
+      #bt4k-issue-416 .safety-strip,
+      #bt4k-issue-416 .metrics { grid-template-columns: 1fr; }
+      #bt4k-issue-416 .request-token { min-width: 3.6rem; }
+      #bt4k-issue-416 .explain-grid { grid-template-columns: 1fr; gap: 0.6rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #bt4k-issue-416 .cache-node,
+      #bt4k-issue-416 .request-token { transition: none; }
+    }
+  </style>
+
+  <h2>#416 NearJCache Consistency Lab</h2>
+  <div class="viz-controls operation-controls" aria-label="NearJCache operations">
+    <button type="button" class="btn" data-operation-button="hit" aria-pressed="false">L1 hit</button>
+    <button type="button" class="btn btn-primary" data-operation-button="miss" aria-pressed="true">L1 miss</button>
+    <button type="button" class="btn" data-operation-button="write" aria-pressed="false">Conditional write</button>
+    <button type="button" class="btn" data-operation-button="bulk" aria-pressed="false">bulk guard</button>
+    <button type="button" class="btn" data-operation-button="clear" aria-pressed="false">clear + stale fill</button>
+  </div>
+
+  <div class="control-deck">
+    <div class="viz-controls transport" aria-label="Playback controls">
+      <button type="button" class="btn" data-action="reset">↺ Reset</button>
+      <button type="button" class="btn btn-primary" data-action="play" aria-pressed="false">▶ Play</button>
+      <button type="button" class="btn" data-action="next">+1 Next</button>
+    </div>
+    <div class="clock"><span>Step</span><strong data-step-label>0 / 6</strong></div>
+  </div>
+
+  <div class="progress" role="progressbar" aria-label="NearJCache operation progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="6"><div class="progress-bar" style="width:0%"></div></div>
+
+  <div role="img" aria-label="Animation of a request moving among Application, NearJCache, L1 Caffeine, and L2 Redis while changing cache contents and statistics">
+    <div class="cache-nodes">
+      <div class="cache-node active" data-node="app"><strong>Application</strong><small>caller policy</small></div>
+      <div class="cache-node" data-node="near"><strong>NearJCache</strong><small>immutable snapshot</small></div>
+      <div class="cache-node" data-node="l1"><strong>L1 Caffeine</strong><small>front</small></div>
+      <div class="cache-node" data-node="l2"><strong>L2 Redis</strong><small>back</small></div>
+    </div>
+    <div class="cache-bus"><div class="request-token" data-state="request"><strong data-token>GET K</strong><small data-token-state>request</small></div></div>
+  </div>
+
+  <div class="cache-state" aria-label="Cache state by tier">
+    <div class="tier">
+      <div class="tier-head"><span>L1 front</span><strong data-tier-status="l1">empty</strong></div>
+      <div class="slots" data-slots="l1"><span class="slot">—</span><span class="slot">—</span><span class="slot">—</span><span class="slot">—</span></div>
+    </div>
+    <div class="tier">
+      <div class="tier-head"><span>L2 back</span><strong data-tier-status="l2">K=42</strong></div>
+      <div class="slots" data-slots="l2"><span class="slot filled">K=42</span><span class="slot filled">A=7</span><span class="slot">—</span><span class="slot">—</span></div>
+    </div>
+  </div>
+
+  <div class="safety-strip" aria-label="Safety boundaries">
+    <div class="safety" data-safety="epoch"><strong>epoch <span data-epoch>8</span></strong><small>Stale fill blocked</small></div>
+    <div class="safety" data-safety="bulk"><strong data-bulk>Populate ≤ 3</strong><small>all-or-nothing front</small></div>
+    <div class="safety" data-safety="disabled"><strong>disabled cost</strong><small>bounded front overhead</small></div>
+  </div>
+
+  <div class="metrics" aria-label="Statistics by tier">
+    <div class="metric"><span>logical</span><b>hit <output data-stat="logical-hit">0</output></b><b>miss <output data-stat="logical-miss">0</output></b></div>
+    <div class="metric"><span>front</span><b>hit <output data-stat="front-hit">0</output></b><b>miss <output data-stat="front-miss">0</output></b></div>
+    <div class="metric"><span>back</span><b>read <output data-stat="back-read">0</output></b><b>write <output data-stat="back-write">0</output></b></div>
+  </div>
+  <div class="jmx-line text-small"><span>JMX lifecycle</span><strong data-jmx>Not registered · opt-in</strong></div>
+  <section class="step-explanation" aria-live="polite" aria-label="Current step details">
+    <div class="explain-head"><span class="viz-badge" data-explain-phase>Request setup</span><strong data-explain-step>Step 0 details</strong></div>
+    <div class="explain-grid">
+      <div class="explain-item"><span class="text-small">Current operation</span><div data-explain-action>Freeze behavior with an immutable front-configuration snapshot.</div></div>
+      <div class="explain-item"><span class="text-small">Consistency semantics</span><div data-explain-guard>Within a request, the L1 capacity and population policy do not change, so intermediate states are not mixed.</div></div>
+      <div class="explain-item"><span class="text-small">Next transition</span><div data-explain-next>Configuration → Freeze the L1 size and bulk policy for the duration of one request.</div></div>
+    </div>
+  </section>
+
+  <script>
+    (() => {
+      const root = document.getElementById('bt4k-issue-416');
+      const token = root.querySelector('.request-token');
+      const tokenLabel = root.querySelector('[data-token]');
+      const tokenState = root.querySelector('[data-token-state]');
+      const explainPhase = root.querySelector('[data-explain-phase]');
+      const explainStep = root.querySelector('[data-explain-step]');
+      const explainAction = root.querySelector('[data-explain-action]');
+      const explainGuard = root.querySelector('[data-explain-guard]');
+      const explainNext = root.querySelector('[data-explain-next]');
+      const stepLabel = root.querySelector('[data-step-label]');
+      const progress = root.querySelector('.progress');
+      const progressBar = root.querySelector('.progress-bar');
+      const playButton = root.querySelector('[data-action="play"]');
+      const positions = { app: 12.5, near: 37.5, l1: 62.5, l2: 87.5 };
+      const stats = Object.fromEntries([...root.querySelectorAll('[data-stat]')].map((el) => [el.dataset.stat, el]));
+      let operation = 'miss';
+      let step = 0;
+      let timer = null;
+
+      const base = { l1: ['—', '—', '—', '—'], l2: ['K=42', 'A=7', '—', '—'], epoch: 8, bulk: 'Populate ≤ 3', stat: [0, 0, 0, 0, 0, 0], jmx: 'Not registered · opt-in' };
+      const frame = (node, label, state, active, detailText, extra = {}) => ({ ...base, node, label, state, active, detail: detailText, ...extra });
+      const stories = {
+        hit: [
+          frame('app', 'GET K', 'request', ['app'], 'Request setup: Freeze behavior with an immutable front-configuration snapshot.', { l1: ['K=42', '—', '—', '—'] }),
+          frame('near', 'GET K', 'snapshot', ['app', 'near'], 'Configuration: Use an immutable snapshot so the front policy cannot change during the request.', { l1: ['K=42', '—', '—', '—'] }),
+          frame('l1', 'GET K', 'L1 lookup', ['near', 'l1'], 'L1 lookup: Look for K in the Caffeine front.', { l1: ['K=42', '—', '—', '—'] }),
+          frame('l1', 'K=42', 'hit', ['l1'], 'L1 hit: Confirm the front value without accessing Redis.', { l1: ['K=42', '—', '—', '—'], stat: [1, 0, 1, 0, 0, 0] }),
+          frame('near', 'K=42', 'return', ['l1', 'near'], 'Return: NearJCache records logical hit and front hit separately.', { l1: ['K=42', '—', '—', '—'], stat: [1, 0, 1, 0, 0, 0] }),
+          frame('app', 'K=42', 'return', ['near', 'app'], 'Complete: The application receives one value regardless of the tier implementation.', { l1: ['K=42', '—', '—', '—'], stat: [1, 0, 1, 0, 0, 0] }),
+          frame('app', 'done', 'return', ['app'], 'JMX exposes per-tier statistics only when explicitly registered.', { l1: ['K=42', '—', '—', '—'], stat: [1, 0, 1, 0, 0, 0], jmx: 'Not registered · statistics retained internally' })
+        ],
+        miss: [
+          frame('app', 'GET K', 'request', ['app'], 'Request setup: Freeze behavior with an immutable front-configuration snapshot.'),
+          frame('near', 'GET K', 'snapshot', ['app', 'near'], 'Configuration: Freeze the L1 size and bulk policy for the duration of the request.'),
+          frame('l1', 'GET K', 'L1 lookup', ['near', 'l1'], 'L1 miss: Increment only the front miss statistic, then continue to the L2 lookup.', { stat: [0, 1, 0, 1, 0, 0] }),
+          frame('l2', 'GET K', 'L2 lookup', ['l1', 'l2'], 'L2 lookup: Read K=42 from the shared Redis cache.', { stat: [0, 1, 0, 1, 1, 0] }),
+          frame('near', 'epoch 8?', 'guard', ['l2', 'near'], 'epoch guard: Accept the result as a non-stale fill only when epoch is unchanged before and after the L2 lookup.', { activeSafety: 'epoch', stat: [0, 1, 0, 1, 1, 0] }),
+          frame('l1', 'fill K=42', 'write', ['near', 'l1'], 'L1 fill: Because epoch 8 is unchanged, fill K=42 into the front.', { l1: ['K=42', '—', '—', '—'], activeSafety: 'epoch', stat: [0, 1, 0, 1, 1, 0] }),
+          frame('app', 'K=42', 'return', ['l1', 'near', 'app'], 'Complete: Preserve logical miss, front miss, and back read as separate statistics.', { l1: ['K=42', '—', '—', '—'], stat: [0, 1, 0, 1, 1, 0] })
+        ],
+        write: [
+          frame('app', 'PUT K=99', 'request', ['app'], 'Write setup: Capture the value and an immutable front-configuration snapshot.'),
+          frame('near', 'epoch 8', 'guard', ['app', 'near'], 'Conditional write: Read the current epoch to check whether a concurrent clear is in progress.', { activeSafety: 'epoch' }),
+          frame('l2', 'PUT K=99', 'back write', ['near', 'l2'], 'L2 first: Commit the shared Redis value in the documented order.', { l2: ['K=99', 'A=7', '—', '—'], activeSafety: 'epoch', stat: [0, 0, 0, 0, 0, 1] }),
+          frame('near', 'epoch 8?', 'compare', ['l2', 'near'], 'Recheck: Verify that epoch is still 8 after the L2 write.', { l2: ['K=99', 'A=7', '—', '—'], activeSafety: 'epoch', stat: [0, 0, 0, 0, 0, 1] }),
+          frame('l1', 'PUT K=99', 'front write', ['near', 'l1'], 'L1 update: Change the front value to K=99 only when epoch matches.', { l1: ['K=99', '—', '—', '—'], l2: ['K=99', 'A=7', '—', '—'], activeSafety: 'epoch', stat: [0, 0, 0, 0, 0, 1] }),
+          frame('near', 'record', 'stats', ['l1', 'near'], 'Statistics: Do not mistake the back write and front update for a logical read hit.', { l1: ['K=99', '—', '—', '—'], l2: ['K=99', 'A=7', '—', '—'], stat: [0, 0, 0, 0, 0, 1] }),
+          frame('app', 'written', 'return', ['near', 'app'], 'Complete: Separate the conditional front-update result from the back-write result.', { l1: ['K=99', '—', '—', '—'], l2: ['K=99', 'A=7', '—', '—'], stat: [0, 0, 0, 0, 0, 1] })
+        ],
+        bulk: [
+          frame('app', 'PUT 4 keys', 'request', ['app'], 'Bulk request: Attempt to store four entries at once.'),
+          frame('near', 'max=3', 'policy', ['app', 'near'], 'Policy snapshot: Read PopulateIfAtMost(maximumEntryCount=3).', { activeSafety: 'bulk' }),
+          frame('near', '4 > 3', 'decision', ['near'], 'All-or-nothing guard: Do not put only some of the four entries into L1.', { activeSafety: 'bulk', bulk: '4 > 3 · bypass' }),
+          frame('l2', 'PUT 4 keys', 'back write', ['near', 'l2'], 'L2 write: Record all four entries in the shared cache.', { l2: ['K=42', 'A=7', 'B=8', 'C=9'], activeSafety: 'bulk', bulk: '4 > 3 · bypass', stat: [0, 0, 0, 0, 0, 4] }),
+          frame('l1', 'bypass', 'blocked', ['near', 'l1'], 'L1 bypass: Put 0 entries in the front to prevent partial population.', { l2: ['K=42', 'A=7', 'B=8', 'C=9'], activeSafety: 'bulk', bulk: 'L1 population 0', stat: [0, 0, 0, 0, 0, 4] }),
+          frame('near', 'record', 'stats', ['l2', 'near'], 'Statistics: Record back write 4 and front population 0 as separate tier results.', { l2: ['K=42', 'A=7', 'B=8', 'C=9'], activeSafety: 'bulk', bulk: 'all-or-nothing', stat: [0, 0, 0, 0, 0, 4] }),
+          frame('app', '4 written', 'return', ['near', 'app'], 'Complete: The caller chooses the bulk front policy, and NearJCache enforces the selected policy consistently.', { l2: ['K=42', 'A=7', 'B=8', 'C=9'], bulk: 'PopulateIfAtMost(3)', stat: [0, 0, 0, 0, 0, 4] })
+        ],
+        clear: [
+          frame('app', 'CLEAR', 'request', ['app'], 'Clear request: Handle the boundary between both tiers and in-progress fills together.', { l1: ['K=42', 'A=7', '—', '—'] }),
+          frame('near', 'epoch 9', 'increment', ['app', 'near'], 'Epoch increment: Mark the fill started under epoch 8 as stale.', { l1: ['K=42', 'A=7', '—', '—'], epoch: 9, activeSafety: 'epoch' }),
+          frame('l1', 'CLEAR', 'front clear', ['near', 'l1'], 'L1 clear: Remove all entries from the Caffeine front.', { l2: ['K=42', 'A=7', '—', '—'], epoch: 9, activeSafety: 'epoch' }),
+          frame('l2', 'CLEAR', 'back clear', ['near', 'l2'], 'L2 clear: Empty the shared Redis cache too, aligning both tiers to the same logical state.', { l2: ['—', '—', '—', '—'], epoch: 9, activeSafety: 'epoch' }),
+          frame('near', 'fill@8', 'stale return', ['l2', 'near'], 'Late response: The L2 read started under epoch 8 before clear returns.', { l2: ['—', '—', '—', '—'], epoch: 9, activeSafety: 'epoch' }),
+          frame('l1', 'BLOCK', 'blocked', ['near', 'l1'], 'Stale fill blocked: Because 8 ≠ 9, do not reinsert K=42 into L1.', { l2: ['—', '—', '—', '—'], epoch: 9, activeSafety: 'epoch' }),
+          frame('app', 'cleared', 'return', ['near', 'app'], 'Complete: clear and the epoch guard preserve the empty state of both tiers together.', { l2: ['—', '—', '—', '—'], epoch: 9, stat: [0, 0, 0, 0, 0, 0], jmx: 'Clear count exposed when registered' })
+        ]
+      };
+      const principles = {
+        hit: [
+          'Within a request, the L1 capacity and population policy do not change, so intermediate states are not mixed.',
+          'The immutable snapshot applies concurrent configuration changes from the next request onward, fixing the decision basis for the current lookup.',
+          'Checking L1 first enables a fast local hit while making the decision about whether to access L2 explicit.',
+          'When L1 contains the value, skip the Redis call and increment only logical hit and front hit separately.',
+          'Record logical and front statistics separately to preserve both the caller\'s view and the tier-implementation view.',
+          'The caller receives the same cache API result without needing to know NearJCache\'s internal tiers.',
+          'JMX exposure is tied only to an explicit registration lifecycle; using the cache itself has no hidden side effect.'
+        ],
+        miss: [
+          'The per-request snapshot provides one policy boundary from L1 lookup through L2 fill.',
+          'Lock the L1 size and bulk policy so a configuration change during lookup cannot reverse the fill decision.',
+          'Record only the L1 miss in front statistics; keep logical miss based on the overall lookup result.',
+          'The L2 read accesses shared Redis state and is counted as back-read cost separate from front-miss cost.',
+          'Accept the response as a value from the current generation only when epoch is the same before and after the L2 request.',
+          'Only when epoch remains unchanged, fill K=42 into L1 and turn subsequent lookups into local hits.',
+          'The final result is logical miss 1, front miss 1, and back read 1, without hiding per-tier cost.'
+        ],
+        write: [
+          'Capture the value and policy snapshot together to fix conditional front-update inputs at one point in time.',
+          'Remember the epoch at write start so a concurrent clear can be detected in a later step.',
+          'Commit the shared L2 value first, updating the reference value seen by other processes to K=99.',
+          'Read epoch again after the L2 write to determine whether this is an old front write that raced with clear.',
+          'Change L1 to K=99 only when epoch matches, preventing a stale value from reappearing after clear.',
+          'The back write and front update are not read hits, so do not mix them into logical-hit statistics.',
+          'The caller receives the documented L2 write result regardless of the conditional front-update result.'
+        ],
+        bulk: [
+          'Evaluate the four entries as one bulk unit so the front-population decision does not vary by item.',
+          'The PopulateIfAtMost(3) snapshot fixes this bulk operation\'s allowed upper bound.',
+          'Because 4 exceeds the upper bound of 3, bypass front population entirely instead of populating only part of it.',
+          'L2 records all four entries under the shared-cache contract, preserving the data-storage result.',
+          'Writing 0 entries to L1 is all-or-nothing and prevents bias caused by partial population.',
+          'Separate back write 4 from front population 0 so policy cost and storage result can be interpreted.',
+          'The caller owns the choice of bulk policy; NearJCache consistently enforces the selected policy.'
+        ],
+        clear: [
+          'clear must invalidate not only L1 and L2 but also asynchronous fills already in progress.',
+          'Raise epoch from 8 to 9 first, marking every late response started in the previous generation as stale.',
+          'Remove L1 entries to empty the current process\'s local lookup result immediately.',
+          'Empty L2 as well, bringing the cache state shared by other processes to the same empty state.',
+          'A late L2 response from epoch 8 is not a fill candidate for current generation 9 even if it contains a value.',
+          'Because 8 and 9 differ, block reinsertion of K=42 into L1 and preserve clear semantics.',
+          'Both tiers end empty; clear count is exposed externally only when JMX is registered.'
+        ]
+      };
+
+      function detailParts(value) { const separator = value.indexOf(':'); return separator < 0 ? { phase: 'Complete', action: value } : { phase: value.slice(0, separator), action: value.slice(separator + 1).trim() }; }
+      function renderExplanation(data) {
+        const current = detailParts(data.detail);
+        const next = stories[operation][step + 1];
+        const nextParts = next ? detailParts(next.detail) : null;
+        explainPhase.textContent = current.phase;
+        explainStep.textContent = `Step ${step} details`;
+        explainAction.textContent = current.action;
+        explainGuard.textContent = principles[operation][step];
+        explainNext.textContent = nextParts ? `${nextParts.phase} → ${nextParts.action}` : 'Scenario complete · Select another cache operation to compare consistency boundaries.';
+      }
+
+      function stop() { if (timer) clearInterval(timer); timer = null; playButton.textContent = '▶ Play'; playButton.setAttribute('aria-pressed', 'false'); }
+      function renderSlots(name, values) { const container = root.querySelector(`[data-slots="${name}"]`); [...container.children].forEach((slot, index) => { const value = values[index]; slot.textContent = value; slot.classList.toggle('filled', value !== '—'); }); root.querySelector(`[data-tier-status="${name}"]`).textContent = values.every((value) => value === '—') ? 'empty' : values.filter((value) => value !== '—').join(' · '); }
+      function render() {
+        const data = stories[operation][step]; root.dataset.operation = operation; root.dataset.step = String(step);
+        root.querySelectorAll('[data-node]').forEach((node) => node.classList.toggle('active', data.active.includes(node.dataset.node)));
+        token.style.setProperty('--x', `${positions[data.node]}%`); token.dataset.state = data.state; tokenLabel.textContent = data.label; tokenState.textContent = data.state;
+        renderSlots('l1', data.l1); renderSlots('l2', data.l2); root.querySelector('[data-epoch]').textContent = String(data.epoch); root.querySelector('[data-bulk]').textContent = data.bulk;
+        root.querySelectorAll('[data-safety]').forEach((item) => item.classList.toggle('active', item.dataset.safety === data.activeSafety));
+        ['logical-hit', 'logical-miss', 'front-hit', 'front-miss', 'back-read', 'back-write'].forEach((name, index) => { stats[name].textContent = String(data.stat[index]); });
+        root.querySelector('[data-jmx]').textContent = data.jmx; renderExplanation(data); stepLabel.textContent = `${step} / ${stories[operation].length - 1}`;
+        const percent = Math.round((step / (stories[operation].length - 1)) * 100); progress.setAttribute('aria-valuenow', String(step)); progress.setAttribute('aria-valuemax', String(stories[operation].length - 1)); progressBar.style.width = `${percent}%`;
+      }
+      function reset(nextOperation = operation) { stop(); operation = nextOperation; step = 0; root.querySelectorAll('[data-operation-button]').forEach((button) => { const active = button.dataset.operationButton === operation; button.setAttribute('aria-pressed', String(active)); button.classList.toggle('btn-primary', active); }); render(); }
+      function advance() { if (step >= stories[operation].length - 1) { stop(); return; } step += 1; render(); if (step >= stories[operation].length - 1) stop(); }
+      function play() { if (timer) { stop(); return; } if (step >= stories[operation].length - 1) step = 0; playButton.textContent = 'Ⅱ Pause'; playButton.setAttribute('aria-pressed', 'true'); timer = setInterval(advance, 900); render(); }
+      root.querySelectorAll('[data-operation-button]').forEach((button) => button.addEventListener('click', () => reset(button.dataset.operationButton)));
+      root.querySelector('[data-action="reset"]').addEventListener('click', () => reset()); root.querySelector('[data-action="next"]').addEventListener('click', advance); playButton.addEventListener('click', play); reset('miss');
+    })();
+  </script>
+</div>
+    <footer class="provenance"><strong>Evidence and scope</strong><br><a href="https://github.com/bluetape4k/bluetape4k.github.io/issues/416">Delivery issue #416</a><a href="/manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/near-cache-l1-l2/">Manual</a></footer>
+  </main>
+</body>
+</html>

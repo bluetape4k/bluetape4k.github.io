@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="data:,">
+  <title>Image Intelligence 정책·개인정보 경계 · bluetape4k</title>
+  <meta name="description" content="입력 검증, 병렬 분석, fail-closed 정책, 애플리케이션 소유 개인정보 부작용 경계를 단계별로 확인합니다.">
+  <script>
+    (() => {
+      const key = 'bluetape4k-wave1-visual-theme';
+      const stored = localStorage.getItem(key) || 'auto';
+      const apply = (mode) => {
+        const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = mode === 'auto' ? (dark ? 'dark' : 'light') : mode;
+        document.documentElement.dataset.themeMode = mode;
+      };
+      apply(stored);
+      addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('[data-theme-button]').forEach((button) => {
+          button.setAttribute('aria-pressed', String(button.dataset.themeButton === stored));
+          button.addEventListener('click', () => {
+            const mode = button.dataset.themeButton;
+            localStorage.setItem(key, mode);
+            apply(mode);
+            document.querySelectorAll('[data-theme-button]').forEach((candidate) => {
+              candidate.setAttribute('aria-pressed', String(candidate === button));
+            });
+          });
+        });
+      });
+    })();</script>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --font-size-base: 16px;
+      --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    }
+    :root[data-theme="light"] {
+      --background: #f4f7fb; --foreground: #152033; --card: #ffffff; --card-foreground: #152033;
+      --popover: #ffffff; --popover-foreground: #152033; --primary: #245ea8; --primary-foreground: #ffffff;
+      --secondary: #e6edf7; --secondary-foreground: #24364f; --muted: #e8eef6; --muted-foreground: #5b6b80;
+      --accent: #dce9fb; --accent-foreground: #173c6b; --destructive: #b93447; --border: #c5d2e2;
+      --input: #aebfd3; --ring: #3978c4; --viz-series-1: #2777c7; --viz-series-2: #5a48b5;
+      --viz-series-3: #118065; --viz-series-4: #b86612; --viz-series-5: #b93447; --viz-series-6: #087f8c;
+      --page-grid: rgba(39, 76, 120, .065); --shadow: rgba(18, 37, 63, .15);
+    }
+    :root[data-theme="dark"] {
+      --background: #07111f; --foreground: #e7eef8; --card: #0f1d31; --card-foreground: #e7eef8;
+      --popover: #101f34; --popover-foreground: #e7eef8; --primary: #78b2ff; --primary-foreground: #07111f;
+      --secondary: #182b45; --secondary-foreground: #dfe9f7; --muted: #172840; --muted-foreground: #a7b8ce;
+      --accent: #19365b; --accent-foreground: #dceaff; --destructive: #ff8292; --border: #2e4767;
+      --input: #496584; --ring: #76b0ff; --viz-series-1: #69aff5; --viz-series-2: #b39bff;
+      --viz-series-3: #58d3a4; --viz-series-4: #ffc16b; --viz-series-5: #ff8292; --viz-series-6: #59d8e4;
+      --page-grid: rgba(116, 155, 207, .075); --shadow: rgba(0, 0, 0, .38);
+    }
+    * { box-sizing: border-box; }
+    html { min-width: 320px; background: var(--background); }
+    body {
+      margin: 0; min-width: 320px; color: var(--foreground); font: 400 var(--font-size-base)/1.58 var(--font-sans);
+      background: linear-gradient(var(--page-grid) 1px, transparent 1px), linear-gradient(90deg, var(--page-grid) 1px, transparent 1px), var(--background);
+      background-size: 30px 30px;
+    }
+    button, input, select { font: inherit; }
+    code { font-family: var(--font-mono); }
+    a { color: var(--viz-series-1); }
+    button:focus-visible, a:focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; }
+    .topbar {
+      position: sticky; top: 0; z-index: 20; display: flex; align-items: center; justify-content: space-between;
+      gap: .75rem; min-height: 64px; padding: .65rem clamp(1rem, 4vw, 3.5rem); border-bottom: 1px solid var(--border);
+      background: color-mix(in srgb, var(--background) 86%, transparent); backdrop-filter: blur(16px);
+    }
+    .brand, .top-actions, .theme-picker, .viz-row, .viz-controls { display: flex; align-items: center; gap: .55rem; flex-wrap: wrap; }
+    .brand { color: var(--foreground); font-weight: 500; text-decoration: none; }
+    .brand-mark { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 10px; color: var(--primary-foreground); background: linear-gradient(135deg, var(--primary), var(--viz-series-2)); }
+    .page { width: min(1180px, calc(100% - 2rem)); margin: 0 auto; padding: clamp(1.5rem, 4vw, 3.5rem) 0 4.5rem; }
+    .context { margin: 0 0 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+    .context strong { display: block; margin-bottom: .25rem; }
+    .context p { margin: 0; color: var(--muted-foreground); }
+    h1, h2, h3 { line-height: 1.2; font-weight: 500; }
+    h2 { margin: 0 0 1rem; font-size: clamp(1.65rem, 4vw, 2.6rem); letter-spacing: -.025em; }
+    .btn {
+      min-height: 42px; padding: .55rem .9rem; border: 1px solid var(--border); border-radius: 999px;
+      color: var(--foreground); background: var(--card); cursor: pointer; text-decoration: none;
+    }
+    .btn:hover { border-color: var(--viz-series-1); }
+    .btn-primary, .btn[aria-pressed="true"] { border-color: var(--primary); color: var(--primary-foreground); background: var(--primary); }
+    .btn-ghost { background: transparent; }
+    .text-small { font-size: .82rem; }
+    .text-muted { color: var(--muted-foreground); }
+    .viz-badge { display: inline-flex; padding: .2rem .55rem; border-radius: 999px; color: var(--accent-foreground); background: var(--accent); }
+    .progress { height: .55rem; overflow: hidden; border-radius: 999px; background: color-mix(in srgb, var(--muted) 70%, transparent); }
+    .progress-bar { height: 100%; background: var(--viz-series-1); transition: width 380ms ease; }
+    .provenance { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); color: var(--muted-foreground); }
+    .provenance a { margin-inline-end: 1rem; }
+    @media (max-width: 700px) {
+      .topbar { align-items: flex-start; }
+      .top-actions { justify-content: flex-end; }
+      .top-actions > a { display: none; }
+      .page { width: min(100% - 1rem, 1180px); padding-top: 1.25rem; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }</style>
+</head>
+<body>
+  <nav class="topbar" aria-label="bluetape4k visual companion">
+    <a class="brand" href="/ko/visual-companions/"><span class="brand-mark" aria-hidden="true">B4K</span><span>Visual companions</span></a>
+    <div class="top-actions">
+      <a class="btn btn-ghost" href="/ko/manual/bluetape4k-image/1.0/modules/spring-boot-image-intelligence-api/">매뉴얼</a>
+      <a class="btn btn-ghost" href="/visual-companions/bluetape4k-image/image-intelligence-policy-privacy/" hreflang="en">English</a>
+      <div class="theme-picker" aria-label="Theme">
+        <button type="button" class="btn btn-ghost" data-theme-button="auto">자동</button>
+        <button type="button" class="btn btn-ghost" data-theme-button="light">밝게</button>
+        <button type="button" class="btn btn-ghost" data-theme-button="dark">어둡게</button>
+      </div>
+    </div>
+  </nav>
+  <main class="page">
+    <header class="context"><strong>#414 · bluetape4k-image</strong><p>입력 검증, 병렬 분석, fail-closed 정책, 애플리케이션 소유 개인정보 부작용 경계를 단계별로 확인합니다.</p></header>
+<div id="bt4k-issue-414" data-step="upload">
+  <style>
+    #bt4k-issue-414 { color: var(--foreground); }
+    #bt4k-issue-414 .viz-controls { margin-block: 0.75rem 1rem; }
+    #bt4k-issue-414 .flow { display: grid; gap: 0.65rem; }
+    #bt4k-issue-414 .flow-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.55rem; align-items: stretch; }
+    #bt4k-issue-414 .flow-row.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    #bt4k-issue-414 .viz-node { display: grid; place-items: center; min-height: 4.6rem; padding: 0.65rem; text-align: center; border: 1px solid var(--border); border-radius: 0.7rem; background: color-mix(in srgb, var(--viz-series-1) 10%, transparent); color: var(--foreground); transition: opacity 160ms ease, background 160ms ease, border-color 160ms ease; }
+    #bt4k-issue-414 .viz-node code { display: block; }
+    #bt4k-issue-414 .viz-node small { color: var(--muted-foreground); }
+    #bt4k-issue-414 .flow-arrow { text-align: center; color: var(--muted-foreground); }
+    #bt4k-issue-414 .split-label { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem; color: var(--muted-foreground); text-align: center; }
+    #bt4k-issue-414 [data-stage] { opacity: 0.32; }
+    #bt4k-issue-414[data-step="upload"] [data-stage="upload"],
+    #bt4k-issue-414[data-step="analysis"] [data-stage="analysis"],
+    #bt4k-issue-414[data-step="policy"] [data-stage="policy"],
+    #bt4k-issue-414[data-step="privacy"] [data-stage="privacy"] { opacity: 1; border-color: var(--viz-series-1); background: color-mix(in srgb, var(--viz-series-1) 20%, transparent); }
+    #bt4k-issue-414 .privacy { background: color-mix(in srgb, var(--viz-series-2) 12%, transparent); }
+    #bt4k-issue-414[data-step="privacy"] [data-stage="privacy"] { border-color: var(--viz-series-2); background: color-mix(in srgb, var(--viz-series-2) 22%, transparent); }
+    #bt4k-issue-414 .decision { background: color-mix(in srgb, var(--viz-series-3) 12%, transparent); }
+    #bt4k-issue-414[data-step="policy"] [data-stage="policy"] { border-color: var(--viz-series-3); background: color-mix(in srgb, var(--viz-series-3) 22%, transparent); }
+    #bt4k-issue-414 .detail { margin-block-start: 0.8rem; color: var(--foreground); }
+    @media (max-width: 520px) {
+      #bt4k-issue-414 .flow-row, #bt4k-issue-414 .flow-row.four { grid-template-columns: 1fr; }
+      #bt4k-issue-414 .split-label { grid-template-columns: 1fr; }
+      #bt4k-issue-414 .viz-node { min-height: 3.5rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #bt4k-issue-414 .viz-node { transition: none; }
+    }
+  </style>
+
+  <h2>#414 Image Intelligence 정책·개인정보 경계</h2>
+  <div class="viz-controls" aria-label="설명 단계">
+    <button type="button" class="btn btn-primary" data-step-button="upload" aria-pressed="true">1. 입력</button>
+    <button type="button" class="btn" data-step-button="analysis" aria-pressed="false">2. 분석</button>
+    <button type="button" class="btn" data-step-button="policy" aria-pressed="false">3. 정책</button>
+    <button type="button" class="btn" data-step-button="privacy" aria-pressed="false">4. 개인정보 경계</button>
+  </div>
+
+  <div class="flow" role="img" aria-label="검증된 이미지 입력이 병렬 분석, fail-closed 정책, 애플리케이션 소유 개인정보 부작용으로 이어지는 흐름">
+    <div class="flow-row">
+      <div class="viz-node" data-stage="upload"><span>검증된 multipart 요청</span></div>
+      <div class="viz-node" data-stage="upload"><code>ImageUploadQualifier</code><small>크기·형식 제한</small></div>
+      <div class="viz-node" data-stage="upload"><span>불변 이미지</span><small>한 번만 decode</small></div>
+    </div>
+    <div class="flow-arrow" aria-hidden="true">↓ 제한된 fan-out</div>
+    <div class="flow-row">
+      <div class="viz-node" data-stage="analysis"><strong>OCR</strong><small>텍스트 사실</small></div>
+      <div class="viz-node" data-stage="analysis"><strong>Detection</strong><small>객체 사실</small></div>
+      <div class="viz-node" data-stage="analysis"><strong>ZXing</strong><small>바코드 사실</small></div>
+    </div>
+    <div class="flow-arrow" aria-hidden="true">↓ 결과 상태를 잃지 않고 집계</div>
+    <div class="flow-row">
+      <div class="viz-node" data-stage="analysis"><code>AnalysisResult</code></div>
+      <div class="viz-node" data-stage="policy"><span>공급자 중립 facts</span></div>
+      <div class="viz-node decision" data-stage="policy"><code>VisitorPassPolicy</code><small>fail-closed 우선순위</small></div>
+    </div>
+    <div class="split-label"><span>정책 결정 ↓</span><span>파생 정보 ↓</span></div>
+    <div class="flow-row four">
+      <div class="viz-node decision" data-stage="policy"><code>QUARANTINE</code></div>
+      <div class="viz-node decision" data-stage="policy"><code>REJECT</code></div>
+      <div class="viz-node decision" data-stage="policy"><code>MANUAL_REVIEW</code></div>
+      <div class="viz-node decision" data-stage="policy"><code>ALLOW</code></div>
+    </div>
+    <div class="flow-row">
+      <div class="viz-node privacy" data-stage="privacy"><span>개인정보 파생 snapshot</span></div>
+      <div class="viz-node privacy" data-stage="privacy"><span>rendering·storage</span></div>
+      <div class="viz-node privacy" data-stage="privacy"><strong>애플리케이션 소유</strong><small>library는 side effect 미실행</small></div>
+    </div>
+  </div>
+
+  <div class="detail" aria-live="polite">입력 단계: 검증 후 하나의 불변 이미지를 만들고 중복 decode를 막습니다.</div>
+
+  <script>
+    (() => {
+      const root = document.getElementById('bt4k-issue-414');
+      const detail = root.querySelector('.detail');
+      const copy = {
+        upload: '입력 단계: 검증 후 하나의 불변 이미지를 만들고 중복 decode를 막습니다.',
+        analysis: '분석 단계: OCR·Detection·ZXing을 제한된 fan-out으로 실행하고 결과 상태를 그대로 집계합니다.',
+        policy: '정책 단계: 공급자 중립 facts를 평가하며 불확실하거나 실패한 결과는 MANUAL_REVIEW로 닫힙니다.',
+        privacy: '개인정보 경계: 파생 snapshot만 전달하며 rendering과 storage 부작용은 애플리케이션이 소유합니다.'
+      };
+      root.querySelectorAll('[data-step-button]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const step = button.dataset.stepButton;
+          root.dataset.step = step;
+          root.querySelectorAll('[data-step-button]').forEach((candidate) => {
+            const active = candidate === button;
+            candidate.setAttribute('aria-pressed', String(active));
+            candidate.classList.toggle('btn-primary', active);
+          });
+          detail.textContent = copy[step];
+        });
+      });
+    })();
+  </script>
+</div>
+    <footer class="provenance"><strong>근거와 범위</strong><br><a href="https://github.com/bluetape4k/bluetape4k.github.io/issues/414">작업 이슈 #414</a><a href="/ko/manual/bluetape4k-image/1.0/modules/spring-boot-image-intelligence-api/">매뉴얼</a></footer>
+  </main>
+</body>
+</html>
