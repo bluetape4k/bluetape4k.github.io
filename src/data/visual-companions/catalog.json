@@ -222,6 +222,24 @@
               "route": "/ko/visual-companions/bluetape4k-projects/projects-nearjcache-semantics/"
             }
           }
+        },
+        {
+          "id": "projects-netcdf-cf-progress",
+          "featured": true,
+          "summary": {
+            "en": "Play CF coordinate resolution, bounded two-pass writes, slice checkpoints, timeout cleanup, and explicit retry ownership.",
+            "ko": "CF coordinate 해석, bounded two-pass write, slice checkpoint, timeout cleanup, 명시적 retry 소유권을 단계별로 살펴봅니다."
+          },
+          "locales": {
+            "en": {
+              "title": "Projects NetCDF CF Import & Progress",
+              "route": "/visual-companions/bluetape4k-projects/projects-netcdf-cf-progress/"
+            },
+            "ko": {
+              "title": "Projects NetCDF CF Import와 Progress",
+              "route": "/ko/visual-companions/bluetape4k-projects/projects-netcdf-cf-progress/"
+            }
+          }
         }
       ]
     },

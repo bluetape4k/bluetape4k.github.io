@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="4400" viewBox="0 0 1800 4400" role="img" aria-labelledby="title desc">
+<title id="title">NetCDF 2D CF import: 세 가지 계약과 하나의 resume workflow</title><desc id="desc">Coordinate 의미, bounded I/O, durable progress는 함께 진행하지만 하나의 책임으로 뒤섞이지 않습니다.</desc>
+<defs><marker id="arrow-coordinates" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#55c7e8"/></marker><marker id="arrow-import" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#f4b35f"/></marker><marker id="arrow-progress" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#60d19a"/></marker><marker id="arrow-failure" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#f58ca0"/></marker><marker id="arrow-muted" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="secondary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#91a4bf"/></marker>
+<style>.canvas{fill:#07101f}.frame{fill:#0b1729;fill-opacity:.86;stroke-width:2}.card{stroke-width:2}.title{font:700 44px "goorm Sans","Noto Sans KR",sans-serif;fill:#f8fafc}.subtitle{font:19px "goorm Sans Code","Noto Sans KR",monospace;fill:#a9b8d4}.section{font:700 28px "goorm Sans","Noto Sans KR",sans-serif;fill:#f8fafc}.laneLabel{font:700 17px "goorm Sans Code","Noto Sans KR",monospace;letter-spacing:.08em;fill:#91a4bf}.cardTitle{font:700 23px "goorm Sans","Noto Sans KR",sans-serif;fill:#f8fafc}.body{font:18px "goorm Sans","Noto Sans KR",sans-serif;fill:#d4deed}.small{font:16px "goorm Sans","Noto Sans KR",sans-serif;fill:#a9b8d4}.mono{font:17px "goorm Sans Code","Noto Sans KR",monospace;fill:#d7e3f5}.connector{fill:none;stroke-linecap:round;stroke-linejoin:round}.badge{font:700 15px "goorm Sans Code","Noto Sans KR",monospace;fill:#07101f}.rail{stroke:#38526f;stroke-width:3}.warning{font:700 18px "goorm Sans","Noto Sans KR",sans-serif;fill:#f5b2be}</style></defs>
+<rect class="canvas" width="1800" height="4400"/><rect x="28" y="28" width="1744" height="4344" rx="28" fill="none" stroke="#294362" stroke-width="2"/>
+<text class="title" x="900" y="86" text-anchor="middle">NetCDF 2D CF import: 세 가지 계약과 하나의 resume workflow</text><text class="subtitle" x="900" y="126" text-anchor="middle">Coordinate 의미, bounded I/O, durable progress는 함께 진행하지만 하나의 책임으로 뒤섞이지 않습니다.</text>
+<rect id="coordinate-frame" class="frame" x="80" y="175" width="1640" height="740" rx="28" fill="#22344d" stroke="#91a4bf"/>
+<text class="section" x="120" y="228" text-anchor="start">1 · 먼저 등록하고 coordinate 의미를 해석합니다</text>
+<text class="laneLabel" x="1600" y="228" text-anchor="end">COORDINATE SEMANTICS</text>
+<g data-lane="coordinates">
+<rect id="registration" class="card" x="120" y="280" width="470" height="235" rx="22" fill="#123b55" stroke="#55c7e8"/>
+<text class="cardTitle" x="152" y="326" text-anchor="start">Durable 등록</text>
+<text class="body" x="152" y="366" text-anchor="start">fileId 보존</text>
+<text class="body" x="152" y="400" text-anchor="start">fingerprint는 heuristic</text>
+<text class="body" x="152" y="434" text-anchor="start">PENDING</text>
+</g>
+<g data-lane="coordinates">
+<rect id="axis-resolution" class="card" x="665" y="280" width="470" height="235" rx="22" fill="#123b55" stroke="#55c7e8"/>
+<text class="cardTitle" x="697" y="326" text-anchor="start">CF axis 해석</text>
+<text class="body" x="697" y="366" text-anchor="start">2D lat/lon grid</text>
+<text class="body" x="697" y="400" text-anchor="start">또는 1D axis 확장</text>
+<text class="body" x="697" y="434" text-anchor="start">모호하면 추측하지 않음</text>
+</g>
+<g data-lane="coordinates">
+<rect id="validation" class="card" x="1210" y="280" width="470" height="235" rx="22" fill="#123b55" stroke="#55c7e8"/>
+<text class="cardTitle" x="1242" y="326" text-anchor="start">Typed validation</text>
+<text class="body" x="1242" y="366" text-anchor="start">유한값 + 범위 + shape</text>
+<text class="body" x="1242" y="400" text-anchor="start">지원하는 CRS만 허용</text>
+<text class="body" x="1242" y="434" text-anchor="start">SRID 4326 lon/lat</text>
+</g>
+<path id="register-axes" class="connector" data-connector="register-axes" data-source="registration" data-target="axis-resolution" d="M590 398 H665" stroke="#55c7e8" stroke-width="4" marker-end="url(#arrow-coordinates)"/>
+<path id="axes-validation" class="connector" data-connector="axes-validation" data-source="axis-resolution" data-target="validation" d="M1135 398 H1210" stroke="#55c7e8" stroke-width="4" marker-end="url(#arrow-coordinates)"/>
+<rect id="identity-warning" class="card" x="120" y="570" width="1015" height="120" rx="18" fill="#4a2836" stroke="#f58ca0"/>
+<text class="cardTitle" x="150" y="612" text-anchor="start">Identity boundary</text>
+<text class="warning" x="150" y="654" text-anchor="start">fileKey|size|lastModifiedTime은 content hash나 TOCTOU proof가 아닙니다.</text>
+<rect id="coordinate-limits" class="card" x="1210" y="570" width="470" height="270" rx="18" fill="#22344d" stroke="#91a4bf"/>
+<text class="cardTitle" x="1240" y="614" text-anchor="start">2 · Bounded 작업을 계획하기 전에 검증합니다</text>
+<text class="small" x="1240" y="656" text-anchor="start">file ≤ 64 GiB</text>
+<text class="small" x="1240" y="688" text-anchor="start">metadata ≤ 1 MiB</text>
+<text class="small" x="1240" y="720" text-anchor="start">cells ≤ 100,000,000</text>
+<text class="small" x="1240" y="752" text-anchor="start">coordinate cache ≤ 64 MiB</text>
+<text class="small" x="1240" y="784" text-anchor="start">aux JSONB ≤ 8,192 bytes</text>
+<path id="validation-plan-anchor" class="connector" data-connector="validation-plan-anchor" data-source="validation" data-target="coordinate-limits" d="M1445 515 V570" stroke="#55c7e8" stroke-width="4" marker-end="url(#arrow-coordinates)"/>
+<rect id="import-frame" class="frame" x="80" y="965" width="1640" height="1420" rx="28" fill="#22344d" stroke="#91a4bf"/>
+<text class="section" x="120" y="1018" text-anchor="start">3 · 두 번의 pass와 하나의 순차 writer를 사용합니다</text>
+<text class="laneLabel" x="1600" y="1018" text-anchor="end">BOUNDED IMPORT</text>
+<g data-lane="boundedImport">
+<rect id="tile-plan" class="card" x="120" y="1080" width="1560" height="220" rx="22" fill="#49351f" stroke="#f4b35f"/>
+<text class="cardTitle" x="152" y="1126" text-anchor="start">Bounded plan</text>
+<text class="body" x="152" y="1166" text-anchor="start">slice ≤ 1,000,000 cells</text>
+<text class="body" x="152" y="1200" text-anchor="start">tile ≤ 65,536 cells</text>
+<text class="body" x="152" y="1234" text-anchor="start">batch ≤ 1,000 rows</text>
+</g>
+<rect id="budget-bar" class="card" x="180" y="1240" width="1440" height="34" rx="14" fill="#153e33" stroke="#60d19a"/>
+<text class="mono" x="900" y="1263" text-anchor="middle">owned working set ≤ 128 MiB  ·  worker 하나 / DB connection 하나</text>
+<g data-lane="boundedImport">
+<rect id="duplicate-preflight" class="card" x="120" y="1400" width="680" height="310" rx="22" fill="#123b55" stroke="#55c7e8"/>
+<text class="cardTitle" x="152" y="1446" text-anchor="start">PASS 1 · duplicate preflight</text>
+<text class="body" x="152" y="1486" text-anchor="start">cell identity를 stream</text>
+<text class="body" x="152" y="1520" text-anchor="start">duplicate set ≤ 32 MiB</text>
+<text class="body" x="152" y="1554" text-anchor="start">이 pass에서는 write 0건</text>
+</g>
+<g data-lane="boundedImport">
+<rect id="batch-write" class="card" x="1000" y="1400" width="680" height="310" rx="22" fill="#49351f" stroke="#f4b35f"/>
+<text class="cardTitle" x="1032" y="1446" text-anchor="start">PASS 2 · fenced write</text>
+<text class="body" x="1032" y="1486" text-anchor="start">worker 하나 / DB connection 하나</text>
+<text class="body" x="1032" y="1520" text-anchor="start">순차 tile + batch</text>
+<text class="body" x="1032" y="1554" text-anchor="start">tile 시작 + commit fencing</text>
+</g>
+<path id="plan-preflight" class="connector" data-connector="plan-preflight" data-source="tile-plan" data-target="duplicate-preflight" d="M460 1300 V1400" stroke="#55c7e8" stroke-width="4" marker-end="url(#arrow-coordinates)"/>
+<path id="preflight-write" class="connector" data-connector="preflight-write" data-source="duplicate-preflight" data-target="batch-write" d="M800 1555 H1000" stroke="#f4b35f" stroke-width="4" marker-end="url(#arrow-import)"/>
+<rect id="duplicate-failure" class="card" x="120" y="1790" width="680" height="155" rx="18" fill="#4a2836" stroke="#f58ca0"/>
+<text class="cardTitle" x="150" y="1835" text-anchor="start">Duplicate found → FAILED</text>
+<text class="small" x="150" y="1878" text-anchor="start">No rows from this slice were written.</text>
+<text class="small" x="150" y="1912" text-anchor="start">The previous lastSliceIdx remains safe.</text>
+<path id="preflight-failure" class="connector" data-connector="preflight-failure" data-source="duplicate-preflight" data-target="duplicate-failure" d="M460 1710 V1790" stroke="#f58ca0" stroke-width="4" stroke-dasharray="10 9" marker-end="url(#arrow-failure)"/>
+<g data-lane="boundedImport">
+<rect id="slice-checkpoint" class="card" x="1000" y="1790" width="680" height="250" rx="22" fill="#153e33" stroke="#60d19a"/>
+<text class="cardTitle" x="1032" y="1836" text-anchor="start">Slice checkpoint</text>
+<text class="body" x="1032" y="1876" text-anchor="start">마지막 tile이 lastSliceIdx commit</text>
+<text class="body" x="1032" y="1910" text-anchor="start">resume = lastSliceIdx + 1</text>
+<text class="body" x="1032" y="1944" text-anchor="start">완료된 import는 no-op</text>
+</g>
+<path id="write-checkpoint" class="connector" data-connector="write-checkpoint" data-source="batch-write" data-target="slice-checkpoint" d="M1340 1710 V1790" stroke="#60d19a" stroke-width="4" marker-end="url(#arrow-progress)"/>
+<path id="checkpoint-plan" class="connector" data-connector="checkpoint-plan" data-source="slice-checkpoint" data-target="tile-plan" d="M1680 1915 H1700 Q1710 1915 1710 1905 V1190 Q1710 1180 1700 1180 H1680" stroke="#60d19a" stroke-width="4" stroke-dasharray="10 9" marker-end="url(#arrow-progress)"/>
+<rect id="sequential-warning" class="card" x="120" y="2110" width="1560" height="190" rx="18" fill="#4a2836" stroke="#f58ca0"/>
+<text class="cardTitle" x="150" y="2155" text-anchor="start">NON-NEGOTIABLE EXECUTION SHAPE</text>
+<text class="warning" x="150" y="2200" text-anchor="start">Parallel tile fan-out은 없습니다. Timeout만으로 cleanup을 증명하지 못합니다.</text>
+<text class="mono" x="150" y="2245" text-anchor="start">owned working set ≤ 128 MiB · worker 하나 / DB connection 하나 · 순차 tile + batch</text>
+<rect id="progress-frame" class="frame" x="80" y="2435" width="1640" height="660" rx="28" fill="#22344d" stroke="#91a4bf"/>
+<text class="section" x="120" y="2488" text-anchor="start">4 · Commit된 slice checkpoint만 전진시킵니다</text>
+<text class="laneLabel" x="1600" y="2488" text-anchor="end">PROGRESS &amp; RECOVERY</text>
+<g data-lane="progress">
+<path class="rail" d="M190 2660 H1430"/>
+<circle cx="190" cy="2660" r="34" fill="#22344d" stroke="#91a4bf" stroke-width="4"/>
+<text class="mono" x="190" y="2722" text-anchor="middle">missing</text>
+<circle cx="500" cy="2660" r="34" fill="#123b55" stroke="#55c7e8" stroke-width="4"/>
+<text class="mono" x="500" y="2722" text-anchor="middle">pending</text>
+<circle cx="810" cy="2660" r="34" fill="#123b55" stroke="#55c7e8" stroke-width="4"/>
+<text class="mono" x="810" y="2722" text-anchor="middle">in-progress</text>
+<circle cx="1120" cy="2660" r="34" fill="#153e33" stroke="#60d19a" stroke-width="4"/>
+<text class="mono" x="1120" y="2722" text-anchor="middle">completed</text>
+<circle cx="1430" cy="2660" r="34" fill="#4a2836" stroke="#f58ca0" stroke-width="4"/>
+<text class="mono" x="1430" y="2722" text-anchor="middle">failed</text>
+<rect id="progress-mapping" class="card" x="120" y="2790" width="730" height="215" rx="18" fill="#123b55" stroke="#55c7e8"/>
+<text class="cardTitle" x="150" y="2835" text-anchor="start">findImportProgress</text>
+<text class="small" x="150" y="2876" text-anchor="start">null → missing</text>
+<text class="small" x="150" y="2906" text-anchor="start">PENDING → pending</text>
+<text class="small" x="150" y="2936" text-anchor="start">IN_PROGRESS → in-progress</text>
+<text class="small" x="150" y="2966" text-anchor="start">COMPLETED / FAILED → terminal</text>
+<rect id="resume-rule" class="card" x="950" y="2790" width="730" height="215" rx="18" fill="#153e33" stroke="#60d19a"/>
+<text class="cardTitle" x="980" y="2835" text-anchor="start">Slice checkpoint</text>
+<text class="small" x="980" y="2876" text-anchor="start">마지막 tile이 lastSliceIdx commit</text>
+<text class="small" x="980" y="2910" text-anchor="start">resume = lastSliceIdx + 1</text>
+<text class="small" x="980" y="2944" text-anchor="start">완료된 import는 no-op</text>
+</g>
+<rect id="recovery-frame" class="frame" x="80" y="3145" width="1640" height="650" rx="28" fill="#22344d" stroke="#91a4bf"/>
+<text class="section" x="120" y="3198" text-anchor="start">5 · Retry 전에 worker 종료를 증명합니다</text>
+<g data-lane="progress">
+<rect id="worker-check" class="card" x="120" y="3260" width="650" height="300" rx="22" fill="#4a2836" stroke="#f58ca0"/>
+<text class="cardTitle" x="152" y="3306" text-anchor="start">Cooperative timeout</text>
+<text class="body" x="152" y="3346" text-anchor="start">cancellation 요청</text>
+<text class="body" x="152" y="3380" text-anchor="start">worker 경로 닫기</text>
+<text class="body" x="152" y="3414" text-anchor="start">bounded shutdown 대기</text>
+</g>
+<g data-lane="progress">
+<rect id="worker-decision" class="card" x="1030" y="3260" width="650" height="300" rx="22" fill="#153e33" stroke="#60d19a"/>
+<text class="cardTitle" x="1062" y="3306" text-anchor="start">Worker가 종료됐는가?</text>
+<text class="body" x="1062" y="3346" text-anchor="start">YES · retry resume 가능</text>
+<text class="body" x="1062" y="3380" text-anchor="start">NO · recovery 계속 차단</text>
+<text class="body" x="1062" y="3414" text-anchor="start">owner를 절대 겹치지 않음</text>
+</g>
+<path id="write-worker" class="connector" data-connector="write-worker" data-source="worker-check" data-target="worker-decision" d="M770 3410 H1030" stroke="#f58ca0" stroke-width="4" marker-end="url(#arrow-failure)"/>
+<rect id="terminal-state" class="card" x="575" y="3620" width="650" height="110" rx="18" fill="#153e33" stroke="#60d19a"/>
+<text class="cardTitle" x="900" y="3665" text-anchor="middle">COMPLETED · FAILED · retry gate</text>
+<text class="small" x="900" y="3702" text-anchor="middle">Retry is caller-scheduled only after worker shutdown proof.</text>
+<path id="worker-terminal" class="connector" data-connector="worker-terminal" data-source="worker-decision" data-target="terminal-state" d="M1355 3560 V3575 Q1355 3590 1340 3590 H915 Q900 3590 900 3605 V3620" stroke="#60d19a" stroke-width="4" marker-end="url(#arrow-progress)"/>
+<rect id="ownership-frame" class="frame" x="80" y="3845" width="1640" height="470" rx="28" fill="#22344d" stroke="#91a4bf"/>
+<text class="section" x="120" y="3898" text-anchor="start">6 · Caller / library 경계를 명시합니다</text>
+<g data-lane="progress">
+<rect id="library-ownership" class="card" x="120" y="3960" width="700" height="265" rx="22" fill="#153e33" stroke="#60d19a"/>
+<text class="cardTitle" x="152" y="4006" text-anchor="start">Library</text>
+<text class="body" x="152" y="4046" text-anchor="start">CF 해석 + validation</text>
+<text class="body" x="152" y="4080" text-anchor="start">bounded two-pass import</text>
+<text class="body" x="152" y="4114" text-anchor="start">fencing + durable progress</text>
+</g>
+<g data-lane="progress">
+<rect id="caller-policy" class="card" x="980" y="3960" width="700" height="265" rx="22" fill="#49351f" stroke="#f4b35f"/>
+<text class="cardTitle" x="1012" y="4006" text-anchor="start">Caller</text>
+<text class="body" x="1012" y="4046" text-anchor="start">authN/Z + tenant/root</text>
+<text class="body" x="1012" y="4080" text-anchor="start">executor + deadline + retry</text>
+<text class="body" x="1012" y="4114" text-anchor="start">DTO redaction + lifecycle</text>
+</g>
+<path id="terminal-caller" class="connector" data-connector="terminal-caller" data-source="terminal-state" data-target="caller-policy" d="M1225 3675 H1625 Q1645 3675 1645 3695 V3960" stroke="#f4b35f" stroke-width="4" marker-end="url(#arrow-import)"/>
+<text class="warning" x="900" y="4282" text-anchor="middle">fileId는 identity이며 authorization token이 아닙니다.</text>
+<text class="small" x="900" y="4340" text-anchor="middle">Issue #418 · source 8165a8989e00 · release 2.0.0</text>
+</svg>

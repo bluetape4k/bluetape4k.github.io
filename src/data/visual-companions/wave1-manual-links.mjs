@@ -22,6 +22,12 @@ const companions = new Map([
     title: 'NearJCache consistency lab',
     description: 'Explore L1 hits, L2 fills, conditional writes, bounded bulk policy, and epoch-gated clear.',
   }]],
+  ['manual/bluetape4k-projects/2.0/modules/bluetape4k-science', [{
+    route: '/visual-companions/bluetape4k-projects/projects-netcdf-cf-progress/',
+    image: '/assets/visual-companions/wave2/projects-netcdf-cf-progress-en.png',
+    title: 'NetCDF 2D CF import and progress lab',
+    description: 'Play coordinate resolution, bounded two-pass writes, slice checkpoints, timeout cleanup, and caller-owned retry decisions.',
+  }]],
 ]);
 
 const korean = new Map([
@@ -39,6 +45,10 @@ const korean = new Map([
   ['manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/near-cache-l1-l2', [{
     title: 'NearJCache 일관성 실험실',
     description: 'L1 hit, L2 fill, conditional write, bounded bulk policy, epoch 기반 clear를 단계별로 살펴봅니다.',
+  }]],
+  ['manual/bluetape4k-projects/2.0/modules/bluetape4k-science', [{
+    title: 'NetCDF 2D CF import와 progress 실험실',
+    description: 'coordinate 해석, bounded two-pass write, slice checkpoint, timeout cleanup, caller 소유 retry 결정을 단계별로 살펴봅니다.',
   }]],
 ]);
 
