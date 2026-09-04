@@ -1,0 +1,169 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="3600" viewBox="0 0 1800 3600" role="img" aria-labelledby="title desc">
+<title id="title">AWS Streams: two shard consumers, one explicit reliability boundary</title>
+<desc id="desc">Kinesis and DynamoDB Streams share at-least-once delivery, but differ in discovery, dependency gates, concurrency, and ownership.</desc>
+<defs>
+<marker id="arrow-kinesis" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#62b0f2"/></marker>
+<marker id="arrow-dynamodb" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#b29aff"/></marker>
+<marker id="arrow-green" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#60d19a"/></marker>
+<marker id="arrow-amber" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#f4b35f"/></marker>
+<marker id="arrow-rose" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#f58ca0"/></marker>
+<marker id="arrow-muted" viewBox="0 0 14 14" markerWidth="10" markerHeight="10" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="secondary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#91a4bf"/></marker>
+<style>.canvas{fill:#07101f}.frame{fill:#0c172a;fill-opacity:.78;stroke-width:2}.card{stroke-width:2}.title{font:700 43px 'goorm Sans','Architects Daughter',sans-serif;fill:#f8fafc}.subtitle{font:19px 'goorm Sans Code','Comic Mono',monospace;fill:#a9b8d4}.section{font:700 27px 'goorm Sans','Architects Daughter',sans-serif;fill:#f8fafc}.lane{font:700 25px 'goorm Sans','Architects Daughter',sans-serif;fill:#f8fafc}.cardTitle{font:700 21px 'goorm Sans','Architects Daughter',sans-serif;fill:#f8fafc}.body{font:18px 'goorm Sans','Architects Daughter',sans-serif;fill:#cbd7ea}.small{font:16px 'goorm Sans','Architects Daughter',sans-serif;fill:#a9b8d4}.mono{font:17px 'goorm Sans Code','Comic Mono',monospace;fill:#d7e3f5}.connector{fill:none;stroke-linecap:round;stroke-linejoin:round}.divider{stroke:#304866;stroke-width:2}.badge{font:700 16px 'goorm Sans Code','Comic Mono',monospace;fill:#07101f}.note{fill:#101d32;stroke-width:1.5}</style>
+</defs>
+<rect class="canvas" width="1800" height="3600"/>
+<rect x="28" y="28" width="1744" height="3544" rx="28" fill="none" stroke="#294362" stroke-width="2"/>
+<text class="title" x="900" y="82" text-anchor="middle">AWS Streams: two shard consumers, one explicit reliability boundary</text>
+<text class="subtitle" x="900" y="120" text-anchor="middle">Kinesis and DynamoDB Streams share at-least-once delivery, but differ in discovery, dependency gates, concurrency, and ownership.</text>
+<rect class="frame" x="80" y="170" width="1640" height="720" rx="28" fill="#263750" stroke="#91a4bf"/>
+<text class="section" x="120" y="220" text-anchor="start">1 · Discover every shard before scheduling work</text>
+<rect class="card" x="120" y="260" width="750" height="90" rx="22" fill="#153c61" stroke="#62b0f2"/>
+<text class="lane" x="160" y="300" text-anchor="start">Amazon Kinesis</text>
+<text class="small" x="160" y="330" text-anchor="start">ListShards · parent + adjacent parent</text>
+<rect class="card" x="930" y="260" width="750" height="90" rx="22" fill="#352d5d" stroke="#b29aff"/>
+<text class="lane" x="970" y="300" text-anchor="start">DynamoDB Streams</text>
+<text class="small" x="970" y="330" text-anchor="start">DescribeStream · ParentShardId</text>
+<g data-service="kinesis">
+<rect id="kinesis-discover" class="card" x="120" y="390" width="750" height="180" rx="22" fill="#153c61" stroke="#62b0f2"/>
+<text class="body" x="156" y="435" text-anchor="start">1. ListShards pages until nextToken is absent</text>
+<text class="body" x="156" y="469" text-anchor="start">2. Record parentShardId + adjacentParentShardId</text>
+<text class="body" x="156" y="503" text-anchor="start">3. Rebuild the graph when the discovery interval fires</text>
+<rect id="kinesis-graph" class="card" x="250" y="670" width="490" height="120" rx="22" fill="#153c61" stroke="#62b0f2"/>
+<text class="cardTitle" x="495" y="720" text-anchor="middle">Shard dependency graph</text>
+<text class="small" x="495" y="758" text-anchor="middle">refreshable topology snapshot</text>
+<path id="kinesis-discover-graph" data-connector="kinesis-discover-graph" data-source="kinesis-discover" data-target="kinesis-graph" class="connector" d="M495 570 V670" stroke="#62b0f2" stroke-width="4" marker-end="url(#arrow-kinesis)"/>
+</g>
+<g data-service="dynamodb">
+<rect id="dynamodb-discover" class="card" x="930" y="390" width="750" height="180" rx="22" fill="#352d5d" stroke="#b29aff"/>
+<text class="body" x="966" y="435" text-anchor="start">1. DescribeStream pages until LastEvaluatedShardId is absent</text>
+<text class="body" x="966" y="469" text-anchor="start">2. Record ParentShardId and group root trees</text>
+<text class="body" x="966" y="503" text-anchor="start">3. A completed parent exposes its child shard</text>
+<rect id="dynamodb-graph" class="card" x="1060" y="670" width="490" height="120" rx="22" fill="#352d5d" stroke="#b29aff"/>
+<text class="cardTitle" x="1305" y="720" text-anchor="middle">Root shard trees</text>
+<text class="small" x="1305" y="758" text-anchor="middle">parent → child chains</text>
+<path id="dynamodb-discover-graph" data-connector="dynamodb-discover-graph" data-source="dynamodb-discover" data-target="dynamodb-graph" class="connector" d="M1305 570 V670" stroke="#b29aff" stroke-width="4" marker-end="url(#arrow-dynamodb)"/>
+</g>
+<rect class="frame" x="80" y="930" width="1640" height="820" rx="28" fill="#263750" stroke="#91a4bf"/>
+<text class="section" x="120" y="980" text-anchor="start">2 · Respect graph order while bounding active work</text>
+<g data-service="kinesis">
+<rect class="card" x="120" y="1020" width="750" height="90" rx="22" fill="#153c61" stroke="#62b0f2"/>
+<text class="lane" x="160" y="1060" text-anchor="start">Kinesis gate</text>
+<text class="small" x="160" y="1090" text-anchor="start">dependency barrier + lease ownership</text>
+<rect id="kinesis-gate" class="card" x="120" y="1140" width="750" height="175" rx="22" fill="#153c61" stroke="#62b0f2"/>
+<text class="body" x="156" y="1185" text-anchor="start">1. Parent + adjacent parent must both reach ShardEnd</text>
+<text class="body" x="156" y="1219" text-anchor="start">2. Semaphore(maxShardConcurrency) bounds workers</text>
+<text class="body" x="156" y="1253" text-anchor="start">3. Lease + fencing token excludes stale owners</text>
+<rect id="kinesis-shard-1" class="card" x="195" y="1410" width="160" height="86" rx="18" fill="#153c61" stroke="#62b0f2"/>
+<text class="mono" x="275" y="1462" text-anchor="middle">shard-1</text>
+<rect id="kinesis-shard-2" class="card" x="415" y="1410" width="160" height="86" rx="18" fill="#153c61" stroke="#62b0f2"/>
+<text class="mono" x="495" y="1462" text-anchor="middle">shard-2</text>
+<rect id="kinesis-shard-3" class="card" x="635" y="1410" width="160" height="86" rx="18" fill="#173f34" stroke="#60d19a"/>
+<text class="mono" x="715" y="1462" text-anchor="middle">shard-3</text>
+<path id="kinesis-shard-1-2" data-connector="kinesis-shard-1-2" data-source="kinesis-shard-1" data-target="kinesis-shard-2" class="connector" d="M355 1453 H415" stroke="#62b0f2" stroke-width="4" marker-end="url(#arrow-kinesis)"/>
+<path id="kinesis-shard-2-3" data-connector="kinesis-shard-2-3" data-source="kinesis-shard-2" data-target="kinesis-shard-3" class="connector" d="M575 1453 H635" stroke="#62b0f2" stroke-width="4" marker-end="url(#arrow-kinesis)"/>
+<rect class="note" x="120" y="1570" width="750" height="110" rx="18" fill="#4c3520" stroke="#f4b35f"/>
+<text class="mono" x="495" y="1614" text-anchor="middle">Semaphore(maxShardConcurrency)</text>
+<text class="small" x="495" y="1652" text-anchor="middle">Lease loss closes this worker immediately</text>
+</g>
+<g data-service="dynamodb">
+<rect class="card" x="930" y="1020" width="750" height="90" rx="22" fill="#352d5d" stroke="#b29aff"/>
+<text class="lane" x="970" y="1060" text-anchor="start">DynamoDB Streams gate</text>
+<text class="small" x="970" y="1090" text-anchor="start">sequential tree + bounded merge</text>
+<rect id="dynamodb-gate" class="card" x="930" y="1140" width="750" height="175" rx="22" fill="#352d5d" stroke="#b29aff"/>
+<text class="body" x="966" y="1185" text-anchor="start">1. Each root tree is sequential: parent, then child</text>
+<text class="body" x="966" y="1219" text-anchor="start">2. flatMapMerge(maxShardConcurrency) bounds root trees</text>
+<text class="body" x="966" y="1253" text-anchor="start">3. No lease or fencing contract in this adapter</text>
+<rect id="dynamodb-shard-1" class="card" x="1005" y="1410" width="160" height="86" rx="18" fill="#352d5d" stroke="#b29aff"/>
+<text class="mono" x="1085" y="1462" text-anchor="middle">shard-1</text>
+<rect id="dynamodb-shard-2" class="card" x="1225" y="1410" width="160" height="86" rx="18" fill="#352d5d" stroke="#b29aff"/>
+<text class="mono" x="1305" y="1462" text-anchor="middle">shard-2</text>
+<rect id="dynamodb-shard-3" class="card" x="1445" y="1410" width="160" height="86" rx="18" fill="#173f34" stroke="#60d19a"/>
+<text class="mono" x="1525" y="1462" text-anchor="middle">shard-3</text>
+<path id="dynamodb-shard-1-2" data-connector="dynamodb-shard-1-2" data-source="dynamodb-shard-1" data-target="dynamodb-shard-2" class="connector" d="M1165 1453 H1225" stroke="#b29aff" stroke-width="4" marker-end="url(#arrow-dynamodb)"/>
+<path id="dynamodb-shard-2-3" data-connector="dynamodb-shard-2-3" data-source="dynamodb-shard-2" data-target="dynamodb-shard-3" class="connector" d="M1385 1453 H1445" stroke="#b29aff" stroke-width="4" marker-end="url(#arrow-dynamodb)"/>
+<rect class="note" x="930" y="1570" width="750" height="110" rx="18" fill="#4c3520" stroke="#f4b35f"/>
+<text class="mono" x="1305" y="1614" text-anchor="middle">flatMapMerge(maxShardConcurrency)</text>
+<text class="small" x="1305" y="1652" text-anchor="middle">Concurrency applies across root trees, never within one tree</text>
+</g>
+<rect class="frame" x="80" y="1790" width="1640" height="780" rx="28" fill="#263750" stroke="#91a4bf"/>
+<text class="section" x="120" y="1840" text-anchor="start">3 · Emit first; checkpoint only after downstream acceptance</text>
+<g data-service="kinesis">
+<rect class="card" x="120" y="1880" width="750" height="90" rx="22" fill="#153c61" stroke="#62b0f2"/>
+<text class="lane" x="160" y="1920" text-anchor="start">Kinesis worker</text>
+<text class="small" x="160" y="1950" text-anchor="start">lease renew + fencing check</text>
+<rect id="kinesis-stage-1" class="card" x="120" y="2010" width="750" height="84" rx="18" fill="#153c61" stroke="#62b0f2"/>
+<text class="cardTitle" x="152" y="2044" text-anchor="start">1. Get records</text>
+<text class="small" x="152" y="2075" text-anchor="start">Poll with a renewed lease</text>
+<rect id="kinesis-stage-2" class="card" x="120" y="2128" width="750" height="84" rx="18" fill="#153c61" stroke="#62b0f2"/>
+<text class="cardTitle" x="152" y="2162" text-anchor="start">2. emit(record)</text>
+<text class="small" x="152" y="2193" text-anchor="start">Wait for collector acknowledgement</text>
+<path id="kinesis-stage-1-2" data-connector="kinesis-stage-1-2" data-source="kinesis-stage-1" data-target="kinesis-stage-2" class="connector" d="M820 2094 V2128" stroke="#62b0f2" stroke-width="4" marker-end="url(#arrow-kinesis)"/>
+<rect id="kinesis-stage-3" class="card" x="120" y="2246" width="750" height="84" rx="18" fill="#153c61" stroke="#62b0f2"/>
+<text class="cardTitle" x="152" y="2280" text-anchor="start">3. checkpoint(sequence)</text>
+<text class="small" x="152" y="2311" text-anchor="start">Persist sequence under fencing token</text>
+<path id="kinesis-stage-2-3" data-connector="kinesis-stage-2-3" data-source="kinesis-stage-2" data-target="kinesis-stage-3" class="connector" d="M820 2212 V2246" stroke="#62b0f2" stroke-width="4" marker-end="url(#arrow-kinesis)"/>
+<rect id="kinesis-stage-4" class="card" x="120" y="2364" width="750" height="84" rx="18" fill="#173f34" stroke="#60d19a"/>
+<text class="cardTitle" x="152" y="2398" text-anchor="start">4. Shard end</text>
+<text class="small" x="152" y="2429" text-anchor="start">Persist KinesisCheckpoint.ShardEnd</text>
+<path id="kinesis-stage-3-4" data-connector="kinesis-stage-3-4" data-source="kinesis-stage-3" data-target="kinesis-stage-4" class="connector" d="M820 2330 V2364" stroke="#60d19a" stroke-width="4" marker-end="url(#arrow-green)"/>
+</g>
+<g data-service="dynamodb">
+<rect class="card" x="930" y="1880" width="750" height="90" rx="22" fill="#352d5d" stroke="#b29aff"/>
+<text class="lane" x="970" y="1920" text-anchor="start">DynamoDB Streams tree worker</text>
+<text class="small" x="970" y="1950" text-anchor="start">one shard iterator at a time</text>
+<rect id="dynamodb-stage-1" class="card" x="930" y="2010" width="750" height="84" rx="18" fill="#352d5d" stroke="#b29aff"/>
+<text class="cardTitle" x="962" y="2044" text-anchor="start">1. Get records</text>
+<text class="small" x="962" y="2075" text-anchor="start">Poll the current shard iterator</text>
+<rect id="dynamodb-stage-2" class="card" x="930" y="2128" width="750" height="84" rx="18" fill="#352d5d" stroke="#b29aff"/>
+<text class="cardTitle" x="962" y="2162" text-anchor="start">2. emit(record)</text>
+<text class="small" x="962" y="2193" text-anchor="start">Wait for collector acknowledgement</text>
+<path id="dynamodb-stage-1-2" data-connector="dynamodb-stage-1-2" data-source="dynamodb-stage-1" data-target="dynamodb-stage-2" class="connector" d="M1630 2094 V2128" stroke="#b29aff" stroke-width="4" marker-end="url(#arrow-dynamodb)"/>
+<rect id="dynamodb-stage-3" class="card" x="930" y="2246" width="750" height="84" rx="18" fill="#352d5d" stroke="#b29aff"/>
+<text class="cardTitle" x="962" y="2280" text-anchor="start">3. checkpoint(sequence)</text>
+<text class="small" x="962" y="2311" text-anchor="start">Persist sequence after emission</text>
+<path id="dynamodb-stage-2-3" data-connector="dynamodb-stage-2-3" data-source="dynamodb-stage-2" data-target="dynamodb-stage-3" class="connector" d="M1630 2212 V2246" stroke="#b29aff" stroke-width="4" marker-end="url(#arrow-dynamodb)"/>
+<rect id="dynamodb-stage-4" class="card" x="930" y="2364" width="750" height="84" rx="18" fill="#173f34" stroke="#60d19a"/>
+<text class="cardTitle" x="962" y="2398" text-anchor="start">4. Shard end</text>
+<text class="small" x="962" y="2429" text-anchor="start">Iterator completion unlocks the child</text>
+<path id="dynamodb-stage-3-4" data-connector="dynamodb-stage-3-4" data-source="dynamodb-stage-3" data-target="dynamodb-stage-4" class="connector" d="M1630 2330 V2364" stroke="#60d19a" stroke-width="4" marker-end="url(#arrow-green)"/>
+</g>
+<rect class="note" x="120" y="2498" width="1560" height="46" rx="14" fill="#4c3520" stroke="#f4b35f"/>
+<text class="small" x="900" y="2528" text-anchor="middle">Inclusive resume deliberately allows the checkpointed record to appear again. Both adapters are at-least-once.</text>
+<rect class="frame" x="80" y="2610" width="1640" height="475" rx="28" fill="#263750" stroke="#91a4bf"/>
+<text class="section" x="120" y="2660" text-anchor="start">4 · Terminal and recovery paths stay visible</text>
+<rect class="card" x="120" y="2720" width="355" height="285" rx="22" fill="#4b2937" stroke="#f58ca0"/>
+<text class="cardTitle" x="148" y="2770" text-anchor="start">Lease loss</text>
+<text class="small" x="148" y="2820" text-anchor="start">Kinesis stops the stale</text>
+<text class="small" x="148" y="2854" text-anchor="start">worker; DynamoDB Streams has</text>
+<text class="small" x="148" y="2888" text-anchor="start">no lease path.</text>
+<rect class="card" x="515" y="2720" width="355" height="285" rx="22" fill="#4c3520" stroke="#f4b35f"/>
+<text class="cardTitle" x="543" y="2770" text-anchor="start">Checkpoint failure</text>
+<text class="small" x="543" y="2820" text-anchor="start">Fail the flow after emit; the</text>
+<text class="small" x="543" y="2854" text-anchor="start">uncommitted record may be</text>
+<text class="small" x="543" y="2888" text-anchor="start">replayed.</text>
+<rect class="card" x="910" y="2720" width="355" height="285" rx="22" fill="#352d5d" stroke="#b29aff"/>
+<text class="cardTitle" x="938" y="2770" text-anchor="start">Cancellation</text>
+<text class="small" x="938" y="2820" text-anchor="start">Cancel discovery and workers,</text>
+<text class="small" x="938" y="2854" text-anchor="start">then release owned Kinesis</text>
+<text class="small" x="938" y="2888" text-anchor="start">leases.</text>
+<rect class="card" x="1305" y="2720" width="355" height="285" rx="22" fill="#173f34" stroke="#60d19a"/>
+<text class="cardTitle" x="1333" y="2770" text-anchor="start">Shard end</text>
+<text class="small" x="1333" y="2820" text-anchor="start">Persist the terminal state</text>
+<text class="small" x="1333" y="2854" text-anchor="start">before dependent shards</text>
+<text class="small" x="1333" y="2888" text-anchor="start">advance.</text>
+<rect class="frame" x="80" y="3125" width="1640" height="395" rx="28" fill="#263750" stroke="#91a4bf"/>
+<text class="section" x="120" y="3175" text-anchor="start">5 · Adapter guarantee vs caller policy</text>
+<rect class="card" x="120" y="3220" width="750" height="215" rx="22" fill="#173f34" stroke="#60d19a"/>
+<text class="cardTitle" x="155" y="3265" text-anchor="start">Adapter guarantees</text>
+<text class="small" x="155" y="3305" text-anchor="start">1. Paginated discovery</text>
+<text class="small" x="155" y="3334" text-anchor="start">2. Graph ordering + bounded concurrency</text>
+<text class="small" x="155" y="3363" text-anchor="start">3. Emit-then-checkpoint</text>
+<text class="small" x="155" y="3392" text-anchor="start">4. Cancellation and terminal-state cleanup</text>
+<rect class="card" x="930" y="3220" width="750" height="215" rx="22" fill="#4c3520" stroke="#f4b35f"/>
+<text class="cardTitle" x="965" y="3265" text-anchor="start">Caller owns</text>
+<text class="small" x="965" y="3305" text-anchor="start">1. Retry and backoff policy</text>
+<text class="small" x="965" y="3334" text-anchor="start">2. Retention and replay horizon</text>
+<text class="small" x="965" y="3363" text-anchor="start">3. Idempotent side effects / deduplication</text>
+<text class="small" x="965" y="3392" text-anchor="start">4. Monitoring thresholds and operator response</text>
+<rect class="note" x="120" y="3460" width="1560" height="42" rx="14" fill="#4b2937" stroke="#f58ca0"/>
+<text class="cardTitle" x="900" y="3489" text-anchor="middle">Neither adapter promises exactly-once delivery or unbounded concurrency.</text>
+</svg>
