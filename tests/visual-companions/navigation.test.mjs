@@ -123,7 +123,7 @@ test('stable visual companions use the default repository card catalog', () => {
   const expected = new Map([
     ['bluetape4k/bluetape4k-image', ['image-intelligence-policy-privacy']],
     ['bluetape4k/bluetape4k-aws', ['aws-sqs-reliability', 'aws-streams-shard-consumers']],
-    ['bluetape4k/bluetape4k-projects', ['projects-nearjcache-semantics', 'projects-netcdf-cf-progress', 'projects-netcdf-data-model', 'projects-coroutines-flow-operators']],
+    ['bluetape4k/bluetape4k-projects', ['projects-nearjcache-semantics', 'projects-netcdf-cf-progress', 'projects-netcdf-data-model', 'projects-nats-jetstream-flow', 'projects-coroutines-flow-operators']],
   ]);
 
   for (const [repository, documentIds] of expected) {

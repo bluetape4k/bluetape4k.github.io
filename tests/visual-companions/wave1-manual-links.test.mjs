@@ -62,6 +62,16 @@ test('Projects Coroutines Flow manual exposes the operator Marble Explorer', () 
   assert.equal(ko.image, '/assets/visual-companions/wave2/projects-coroutines-flow-operators-ko.png');
 });
 
+test('Projects NATS manual exposes the JetStream Flow sequence companion', () => {
+  const entryId = 'manual/bluetape4k-projects/2.0/modules/bluetape4k-nats/jetstream-streams-consumers';
+  const [en] = resolveManualVisualCompanions(entryId, 'en');
+  const [ko] = resolveManualVisualCompanions(`ko/${entryId}`, 'ko');
+  assert.equal(en.route, '/visual-companions/bluetape4k-projects/projects-nats-jetstream-flow/');
+  assert.equal(ko.route, '/ko/visual-companions/bluetape4k-projects/projects-nats-jetstream-flow/');
+  assert.equal(en.image, '/assets/visual-companions/wave2/projects-nats-jetstream-flow-en.png');
+  assert.equal(ko.image, '/assets/visual-companions/wave2/projects-nats-jetstream-flow-ko.png');
+});
+
 test('wave 1 manual overlays do not leak onto unrelated release snapshots', () => {
   assert.deepEqual(resolveManualVisualCompanions('manual/bluetape4k-projects/1.0/modules/cache', 'en'), []);
   assert.deepEqual(resolveManualVisualCompanions('blog/index', 'en'), []);

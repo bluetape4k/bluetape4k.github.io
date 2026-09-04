@@ -260,6 +260,24 @@
           }
         },
         {
+          "id": "projects-nats-jetstream-flow",
+          "featured": true,
+          "summary": {
+            "en": "Play the cold Flow<Message> bridge from pull and push consumers through bounded delivery, caller-owned ack/nak/term, redelivery, drop, cancellation, and completion.",
+            "ko": "pull과 push consumer가 cold Flow<Message>로 합쳐져 bounded delivery, caller 소유 ack/nak/term, redelivery, drop, cancellation, completion으로 이어지는 과정을 재생합니다."
+          },
+          "locales": {
+            "en": {
+              "title": "Projects NATS JetStream Flow",
+              "route": "/visual-companions/bluetape4k-projects/projects-nats-jetstream-flow/"
+            },
+            "ko": {
+              "title": "Projects NATS JetStream Flow",
+              "route": "/ko/visual-companions/bluetape4k-projects/projects-nats-jetstream-flow/"
+            }
+          }
+        },
+        {
           "id": "projects-coroutines-flow-operators",
           "featured": true,
           "summary": {

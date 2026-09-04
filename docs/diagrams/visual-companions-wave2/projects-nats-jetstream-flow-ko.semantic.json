@@ -1,0 +1,158 @@
+{
+  "kind": "sequence",
+  "source": {
+    "question": "NATS JetStream의 pull과 push consumer는 어떻게 하나의 cold bounded Flow<Message>로 합쳐지고, acknowledgement·redelivery·drop·cancellation 소유권을 어디에 남기는가?",
+    "revision": "0ba5b8699a58a94ad30f6aa31936e043dca533f6",
+    "paths": [
+      "src/content/docs/ko/manual/bluetape4k-projects/2.0/modules/bluetape4k-nats/jetstream-streams-consumers.md",
+      "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    ]
+  },
+  "references": [
+    "public/assets/clinic-appointment-latest-fence-sequence-01-en.png",
+    "public/assets/bluetape4k-leader-strategic-election-flow-01-en.png"
+  ],
+  "nodes": [
+    {
+      "id": "cold",
+      "label": "1 · Cold Flow 선언",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "collect",
+      "label": "2 · Collection이 adapter handle을 엽니다",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "converge",
+      "label": "3 · Pull과 push가 합쳐집니다",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "bounded",
+      "label": "4 · 입력을 유한하게 유지합니다",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "deliver",
+      "label": "5 · policy를 만들지 않고 전달합니다",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "ack",
+      "label": "6 · Caller가 성공을 acknowledge합니다",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "redelivery",
+      "label": "7 · Nak 또는 unack가 redelivery를 드러냅니다",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "drop",
+      "label": "8 · Push drop은 typed failure가 됩니다",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "cancel",
+      "label": "9 · Cancellation이 소유한 handle을 닫습니다",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "terminal",
+      "label": "10 · Terminal 선택과 completion",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    }
+  ],
+  "edges": [
+    {
+      "id": "cold-collect",
+      "from": "cold",
+      "to": "collect",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "collect-converge",
+      "from": "collect",
+      "to": "converge",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "converge-bounded",
+      "from": "converge",
+      "to": "bounded",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "bounded-deliver",
+      "from": "bounded",
+      "to": "deliver",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "deliver-ack",
+      "from": "deliver",
+      "to": "ack",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "ack-redelivery",
+      "from": "ack",
+      "to": "redelivery",
+      "kind": "branch",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "redelivery-drop",
+      "from": "redelivery",
+      "to": "drop",
+      "kind": "branch",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "drop-cancel",
+      "from": "drop",
+      "to": "cancel",
+      "kind": "branch",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "cancel-terminal",
+      "from": "cancel",
+      "to": "terminal",
+      "kind": "sequence",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "deliver-ack-policy",
+      "from": "deliver",
+      "to": "ack",
+      "kind": "caller-policy",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "drop-caller-recovery",
+      "from": "drop",
+      "to": "terminal",
+      "kind": "caller-recovery",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    },
+    {
+      "id": "terminal-cold-loop",
+      "from": "terminal",
+      "to": "cold",
+      "kind": "fresh-collection",
+      "source": "src/data/visual-companions/wave2-projects-nats-flow.mjs"
+    }
+  ],
+  "behavior": {
+    "branches": 3,
+    "loops": 1
+  },
+  "repairs": []
+}
