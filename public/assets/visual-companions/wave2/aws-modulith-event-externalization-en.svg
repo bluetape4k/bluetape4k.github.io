@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1420" viewBox="0 0 1440 1420" role="img" aria-labelledby="title desc"><title id="title">Spring Modulith event boundaries</title><desc id="desc">Follow a versioned event from its logical target to source verification, a fenced claim, local dispatch, and SQS acknowledgement.</desc><defs><marker id="arrow" markerWidth="10" markerHeight="10" viewBox="0 0 10 10" refX="10" refY="5" orient="auto" markerUnits="userSpaceOnUse" data-role="secondary" data-tip-direction="positive-x"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#08776a"/></marker></defs><style>text{font-family:'Comic Mono',sans-serif;fill:#1c2925}.title{font-family:'Architects Daughter',sans-serif;font-size:44px;font-weight:bold}.heading{font-family:'Architects Daughter',sans-serif;font-size:29px;font-weight:bold}.body{font-size:19px}.small{font-size:17px}.tag{font-size:17px;fill:#08776a;font-weight:bold}.muted{fill:#52645b}.callout{font-size:22px;font-weight:bold}.card{fill:#fff;stroke:#cbd6cf;stroke-width:2}.connector{fill:none;stroke:#08776a;stroke-width:3;stroke-linecap:round}</style><rect width="1440" height="1420" fill="#f5f6f3"/>
+<text class="tag" x="60" y="55">SPRING MODULITH / AWS</text>
+<text class="title" x="60" y="116">One event. Separate processing boundaries.</text>
+<text class="callout" x="60" y="174">Publish success is not consumer completion</text>
+<rect id="producer" class="card" x="60" y="220" width="400" height="620" rx="12"/>
+<text class="tag" x="86" y="261">SNS / SQS</text>
+<text class="heading" x="86" y="306">Publication boundary</text>
+<text class="tag" x="86" y="356">01</text>
+<text class="callout" x="86" y="390">Resolve &amp; encode</text>
+<text class="body" x="86" y="423">Resolve a logical target and</text>
+<text class="body" x="86" y="450">routing key. Encode the</text>
+<text class="body" x="86" y="477">registered event type/version,</text>
+<text class="body" x="86" y="504">stable ID and allowed headers.</text>
+<text class="tag" x="86" y="563">02</text>
+<text class="callout" x="86" y="597">Publish to AWS</text>
+<text class="body" x="86" y="630">SNS or SQS publisher completion</text>
+<text class="body" x="86" y="657">resolves the publication</text>
+<text class="body" x="86" y="684">future. Admission is bounded.</text>
+<rect id="source" class="card" x="520" y="220" width="400" height="620" rx="12"/>
+<text class="tag" x="546" y="261">DIRECT / SNS</text>
+<text class="heading" x="546" y="306">SQS input boundary</text>
+<text class="tag" x="546" y="356">A</text>
+<text class="callout" x="546" y="390">DIRECT</text>
+<text class="body" x="546" y="423">Read the envelope directly from</text>
+<text class="body" x="546" y="450">SQS body. Reject SNS-shaped</text>
+<text class="body" x="546" y="477">bodies. DIRECT is an input</text>
+<text class="body" x="546" y="504">mode, not a publisher.</text>
+<text class="tag" x="546" y="563">B</text>
+<text class="callout" x="546" y="597">SNS</text>
+<text class="body" x="546" y="630">Read an SNS Notification from</text>
+<text class="body" x="546" y="657">SQS. Verify the allowed topic</text>
+<text class="body" x="546" y="684">and signature before decoding</text>
+<text class="body" x="546" y="711">its Message.</text>
+<rect id="consumer" class="card" x="980" y="220" width="400" height="620" rx="12"/>
+<text class="tag" x="1006" y="261">CLAIM / DISPATCH / ACK</text>
+<text class="heading" x="1006" y="306">Consumer boundary</text>
+<text class="tag" x="1006" y="356">01</text>
+<text class="callout" x="1006" y="390">Claim the event</text>
+<text class="body" x="1006" y="423">Claim by type and stable ID.</text>
+<text class="body" x="1006" y="450">Completed suppresses dispatch;</text>
+<text class="body" x="1006" y="477">InProgress fails; Acquired</text>
+<text class="body" x="1006" y="504">grants a fenced token.</text>
+<text class="tag" x="1006" y="563">02</text>
+<text class="callout" x="1006" y="597">Complete the claim</text>
+<text class="body" x="1006" y="630">After synchronous dispatch,</text>
+<text class="body" x="1006" y="657">complete with the current</text>
+<text class="body" x="1006" y="684">token. Only APPLIED or</text>
+<text class="body" x="1006" y="711">ALREADY_APPLIED permits ack.</text>
+<path id="published-body" class="connector" data-connector="true" data-source="producer" data-target="source" d="M 460 510 H 520" marker-end="url(#arrow)"/>
+<path id="verified-event" class="connector" data-connector="true" data-source="source" data-target="consumer" d="M 920 510 H 980" marker-end="url(#arrow)"/>
+<rect x="60" y="870" width="1320" height="120" rx="10" fill="#e1f1eb" stroke="#cbd6cf"/>
+<text class="callout" x="86" y="912">Verified source / decode / claim / dispatch / complete / ack</text>
+<text class="body" x="86" y="951">Completed duplicates bypass dispatch and complete. No acknowledgement follows a failed consume</text>
+<text class="body" x="86" y="977">operation.</text>
+<rect x="60" y="1020" width="640" height="230" rx="10" fill="#fff" stroke="#cbd6cf"/><rect x="730" y="1020" width="650" height="230" rx="10" fill="#fff" stroke="#cbd6cf"/>
+<text class="heading" x="86" y="1065">Completion has limits</text>
+<text class="body" x="86" y="1110">Maintain the claim heartbeat while publishEvent</text>
+<text class="body" x="86" y="1137">executes. Returning does not await asynchronous</text>
+<text class="body" x="86" y="1164">listeners or their final business effects.</text>
+<text class="heading" x="756" y="1065">Caller-owned policy</text>
+<text class="body" x="756" y="1110">AWS clients and credentials, IAM, topics,</text>
+<text class="body" x="756" y="1137">queues, subscriptions, retry/DLQ policy, durable</text>
+<text class="body" x="756" y="1164">idempotency storage, and business-effect safety.</text>
+<text class="small muted" x="60" y="1300">This explorer models control-flow boundaries, not a running broker. In-memory idempotency cannot provide</text>
+<text class="small muted" x="60" y="1326">cross-process or restart durability. Async handlers and partial side effects need application-level safeguards.</text>
+</svg>

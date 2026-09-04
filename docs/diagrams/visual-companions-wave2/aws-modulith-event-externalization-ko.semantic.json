@@ -1,0 +1,54 @@
+{
+  "kind": "architecture",
+  "source": {
+    "question": "발행, 입력 신뢰, 처리와 재시도 안전성은 어떤 경계가 담당하는가?",
+    "revision": "870361650e6caf8b1ac3fae141789fccbb0969c7",
+    "paths": [
+      "src/data/visual-companions/wave2-aws-modulith.mjs"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "producer",
+      "label": "발행 경계",
+      "source": "https://github.com/bluetape4k/bluetape4k-aws/blob/870361650e6caf8b1ac3fae141789fccbb0969c7/aws-spring-boot/src/main/kotlin/io/bluetape4k/aws/spring/modulith/AwsModulithEventExternalizationTransport.kt"
+    },
+    {
+      "id": "source",
+      "label": "SQS 입력 경계",
+      "source": "https://github.com/bluetape4k/bluetape4k-aws/blob/870361650e6caf8b1ac3fae141789fccbb0969c7/aws-spring-boot/src/main/kotlin/io/bluetape4k/aws/spring/modulith/AwsModulithSqsEventConsumer.kt"
+    },
+    {
+      "id": "consumer",
+      "label": "Consumer 경계",
+      "source": "https://github.com/bluetape4k/bluetape4k-aws/blob/870361650e6caf8b1ac3fae141789fccbb0969c7/aws-spring-boot/src/main/kotlin/io/bluetape4k/aws/spring/modulith/AwsModulithSqsEventConsumer.kt"
+    }
+  ],
+  "edges": [
+    {
+      "id": "published-body",
+      "from": "producer",
+      "to": "source",
+      "kind": "data",
+      "source": "https://github.com/bluetape4k/bluetape4k-aws/blob/870361650e6caf8b1ac3fae141789fccbb0969c7/aws-spring-boot/src/main/kotlin/io/bluetape4k/aws/spring/modulith/AwsModulithEventExternalizationTransport.kt"
+    },
+    {
+      "id": "verified-event",
+      "from": "source",
+      "to": "consumer",
+      "kind": "data",
+      "source": "https://github.com/bluetape4k/bluetape4k-aws/blob/870361650e6caf8b1ac3fae141789fccbb0969c7/aws-spring-boot/src/main/kotlin/io/bluetape4k/aws/spring/modulith/AwsModulithSqsEventConsumer.kt"
+    }
+  ],
+  "behavior": {
+    "branches": 0,
+    "loops": 0
+  },
+  "repairs": [
+    {
+      "target": "text",
+      "reason": "Use supported glyphs and width-aware Korean wrapping; preserve boundary summaries",
+      "touches": 8
+    }
+  ]
+}
