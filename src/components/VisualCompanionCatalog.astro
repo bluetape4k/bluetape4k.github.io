@@ -26,6 +26,7 @@ interface CatalogDocument {
   id: string;
   featured: boolean;
   summary: LocalizedText;
+  locales?: Record<'en' | 'ko', { route: string; title: string }>;
 }
 
 interface CatalogRepository {
@@ -64,20 +65,24 @@ const copy = locale === 'ko'
 const normalizedCatalog = validateVisualCompanionCatalog(catalog) as Catalog;
 const repositories = normalizedCatalog.repositories.map((repository) => {
   const snapshot = snapshots.get(repository.repository);
-  if (!snapshot) throw new Error(`VISUAL_CATALOG_SNAPSHOT_MISSING: ${repository.repository}`);
-  const documentsById = new Map(snapshot.documents.map((document) => [document.id, document]));
+  const documentsById = new Map(snapshot?.documents.map((document) => [document.id, document]) ?? []);
   const documents = repository.documents
     .filter((document) => !featuredOnly || document.featured)
     .map((document) => {
-      const published = documentsById.get(document.id);
-      if (!published) {
+      const localPublication = document.locales?.[locale];
+      const published = documentsById.get(document.id)?.locales[locale];
+      if (!localPublication && !snapshot) {
+        throw new Error(`VISUAL_CATALOG_SNAPSHOT_MISSING: ${repository.repository}`);
+      }
+      if (!localPublication && !published) {
         throw new Error(`VISUAL_CATALOG_DOCUMENT_MISSING: ${repository.repository}:${document.id}`);
       }
+      const publication = localPublication ?? published!;
       return {
         id: document.id,
         summary: document.summary[locale],
-        title: published.locales[locale].title,
-        route: published.locales[locale].route,
+        title: publication.title,
+        route: publication.route,
       };
     });
   return {

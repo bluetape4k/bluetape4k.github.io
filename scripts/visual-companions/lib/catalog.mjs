@@ -24,6 +24,30 @@ function localized(value, code) {
   return { en: value.en, ko: value.ko };
 }
 
+function localPublication(value, repository, documentId) {
+  exactKeys(value, ['en', 'ko'], 'VISUAL_CATALOG_LOCALES_KEYS');
+  const repositorySlug = repository.split('/')[1];
+  const locales = {};
+  for (const locale of ['en', 'ko']) {
+    const publication = value[locale];
+    exactKeys(publication, ['route', 'title'], 'VISUAL_CATALOG_LOCALE_KEYS');
+    if (
+      typeof publication.title !== 'string'
+      || publication.title.trim() !== publication.title
+      || publication.title === ''
+    ) {
+      fail('VISUAL_CATALOG_TITLE', `${locale}:${publication.title}`);
+    }
+    const prefix = locale === 'ko' ? '/ko' : '';
+    const expectedRoute = `${prefix}/visual-companions/${repositorySlug}/${documentId}/`;
+    if (publication.route !== expectedRoute) {
+      fail('VISUAL_CATALOG_ROUTE', `${publication.route} != ${expectedRoute}`);
+    }
+    locales[locale] = { title: publication.title, route: publication.route };
+  }
+  return locales;
+}
+
 export function validateVisualCompanionCatalog(value) {
   exactKeys(value, ['repositories', 'schemaVersion'], 'VISUAL_CATALOG_KEYS');
   if (value.schemaVersion !== 1) fail('VISUAL_CATALOG_SCHEMA', value.schemaVersion);
@@ -53,7 +77,12 @@ export function validateVisualCompanionCatalog(value) {
 
       const documentIds = new Set();
       const documents = repository.documents.map((document) => {
-        exactKeys(document, ['featured', 'id', 'summary'], 'VISUAL_CATALOG_DOCUMENT_KEYS');
+        const isLocallyPublished = Object.hasOwn(document, 'locales');
+        exactKeys(
+          document,
+          isLocallyPublished ? ['featured', 'id', 'locales', 'summary'] : ['featured', 'id', 'summary'],
+          'VISUAL_CATALOG_DOCUMENT_KEYS',
+        );
         if (typeof document.id !== 'string' || !ID.test(document.id)) {
           fail('VISUAL_CATALOG_DOCUMENT_ID', document.id);
         }
@@ -64,11 +93,14 @@ export function validateVisualCompanionCatalog(value) {
         if (typeof document.featured !== 'boolean') {
           fail('VISUAL_CATALOG_FEATURED', `${repository.repository}:${document.id}`);
         }
-        return {
+        const normalized = {
           id: document.id,
           featured: document.featured,
           summary: localized(document.summary, 'VISUAL_CATALOG_SUMMARY'),
         };
+        return isLocallyPublished
+          ? { ...normalized, locales: localPublication(document.locales, repository.repository, document.id) }
+          : normalized;
       });
       if (!documents.some(({ featured }) => featured)) {
         fail('VISUAL_CATALOG_FEATURED_MISSING', repository.repository);

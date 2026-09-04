@@ -4,7 +4,7 @@
 
 **Goal:** Kinesis와 DynamoDB Streams의 shard 소비·checkpoint 차이를 재생하고 비교하는 bilingual visual companion을 Issue #417 범위로 배포한다.
 
-**Architecture:** locale별 문구와 공통 단계·시나리오를 하나의 구조화 모듈에 둔다. 두 생성기가 이 원본에서 대화형 HTML과 긴 SVG를 만들며, manual overlay와 Epic 2 목록이 생성 결과를 노출한다.
+**Architecture:** locale별 문구와 공통 단계·시나리오를 하나의 구조화 모듈에 둔다. 두 생성기가 이 원본에서 대화형 HTML과 긴 SVG를 만들며, manual overlay와 기존 repo별 Card 카탈로그가 생성 결과를 노출한다.
 
 **Tech Stack:** Node.js ESM, HTML/CSS/JavaScript, SVG, CairoSVG, Astro/Starlight, Node test runner, Playwright
 
@@ -51,23 +51,30 @@
 - [x] semantic audit와 XML 검사를 실행한다.
 - [x] CairoSVG `-s 2`로 PNG를 만들고 시각·connector·arrowhead·geometry·asset-pair audit를 통과시킨다.
 
-### Task 4: manual과 Epic 2 목록 노출
+### Task 4: manual과 repo별 기본 Card 노출
 
 **Files:**
 - Modify: `src/data/visual-companions/wave1-manual-links.mjs`
 - Modify: `src/components/ManualPageTitle.astro`
 - Modify: `src/styles/manual.css`
-- Create: `src/content/docs/visual-companions/bluetape4k-2-0-wave2.mdx`
-- Create: `src/content/docs/ko/visual-companions/bluetape4k-2-0-wave2.mdx`
+- Modify: `scripts/visual-companions/lib/catalog.mjs`
+- Modify: `src/components/VisualCompanionCatalog.astro`
+- Modify: `src/data/visual-companions/catalog.json`
 - Modify: `src/content/docs/visual-companions/index.mdx`
 - Modify: `src/content/docs/ko/visual-companions/index.mdx`
+- Delete: `src/content/docs/visual-companions/bluetape4k-2-0-wave1.mdx`
+- Delete: `src/content/docs/ko/visual-companions/bluetape4k-2-0-wave1.mdx`
+- Delete: `src/content/docs/visual-companions/bluetape4k-2-0-wave2.mdx`
+- Delete: `src/content/docs/ko/visual-companions/bluetape4k-2-0-wave2.mdx`
 - Modify: `tests/visual-companions/wave1-manual-links.test.mjs`
+- Modify: `tests/visual-companions/navigation.test.mjs`
 
 - [x] 테스트를 먼저 바꿔 같은 AWS manual entry가 SQS와 Streams 두 companion을 locale별 절대 URL로 반환하도록 요구한다.
 - [x] 테스트가 기존 단일 반환 계약 때문에 실패하는지 확인한다.
 - [x] resolver를 배열 반환으로 확장하고 component를 목록 렌더링으로 변경한다.
-- [x] Epic 2 페이지에는 #417만 등록하고 index에서 연결한다.
-- [x] 관련 테스트와 `npm run build`를 실행해 매뉴얼·목록 route를 확인한다.
+- [x] 별도 Wave 허브 대신 `bluetape4k-projects`, `bluetape4k-aws`, `bluetape4k-image` repo별 기본 Card를 카탈로그에 등록한다.
+- [x] AWS 섹션에는 Epic 1 SQS와 Epic 2 Streams를 함께 배치하고, Wave 1·2 허브 및 index 링크를 제거한다.
+- [x] 관련 테스트와 `npm run build`를 실행해 매뉴얼·Card route를 확인한다.
 
 ### Task 5: 브라우저 QA와 전달
 
@@ -78,5 +85,5 @@
 - [x] `Reset / Play / Next`와 정상·resume·lease loss·checkpoint failure·cancellation 시나리오를 실행한다.
 - [x] 최종 PNG 두 개를 전체 크기로 열어 글자, lane, arrowhead, 여백을 확인한다.
 - [x] `git diff --check`, Korean terminology audit, Node tests, `npm run build`를 다시 실행한다.
-- [ ] Lore 형식의 한국어 커밋을 만들고 branch를 push한 뒤 `develop <- docs/aws-streams-visual-companion` PR을 생성한다.
+- [ ] repository overlay에 따라 English Lore 형식의 커밋을 만들고 branch를 push한 뒤 `develop <- docs/aws-streams-visual-companion` PR을 갱신한다.
 - [ ] exact-head checks와 PR metadata를 확인하고 merge 전 상태에서 정지한다.

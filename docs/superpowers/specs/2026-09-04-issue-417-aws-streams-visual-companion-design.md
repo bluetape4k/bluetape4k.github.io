@@ -69,7 +69,7 @@
 - 페이지: `/visual-companions/bluetape4k-aws/aws-streams-shard-consumers/`와 `/ko/...`
 - 정적 자산: `/assets/visual-companions/wave2/aws-streams-shard-consumers-{en,ko}.{svg,png}`
 - semantic ledger: `docs/diagrams/visual-companions-wave2/`
-- 목록: Epic 2 페이지에는 완료된 #417만 표시한다.
+- 목록: 별도 Epic 2 허브를 만들지 않고 기존 시각 자료 카탈로그의 `bluetape4k-aws` 기본 Card에 #417을 추가한다. Epic 1의 SQS Card와 같은 repo 섹션에서 함께 보여 준다.
 - 매뉴얼: `storage-and-messaging` header에서 기존 SQS와 새 Streams companion을 각각 선택할 수 있게 한다.
 
 ## 검증
@@ -79,6 +79,7 @@
 - EN/KO 단계·시나리오·식별자 parity와 한국어 용어 감사
 - desktop/mobile, light/dark, keyboard focus, reduced-motion, `Play / Next`를 Playwright로 검증
 - `git diff --check`, 관련 Node tests, `npm run build`, 변경 route와 절대 asset URL 확인
+- 시각 자료 카탈로그에서 Projects, AWS, Image가 repo별 기본 Card로 노출되고 Wave 전용 허브가 생성되지 않는지 확인
 
 ## 완료 조건
 

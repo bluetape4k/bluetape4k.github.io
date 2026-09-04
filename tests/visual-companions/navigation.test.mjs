@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { access, readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { buildStaticSidebar } from '../../scripts/manual/lib/sidebar.mjs';
 import { validateVisualCompanionCatalog } from '../../scripts/visual-companions/lib/catalog.mjs';
@@ -36,20 +36,26 @@ test('visual companion catalog is part of ecosystem navigation in both locales',
   });
 });
 
-test('visual companion catalog maps every listed document to a published snapshot', async () => {
+test('visual companion catalog maps every listed document to a published route', async () => {
   const catalog = validateVisualCompanionCatalog(visualCatalog);
 
   for (const repository of catalog.repositories) {
-    const slug = repository.repository.split('/')[1];
-    const snapshot = JSON.parse(await readFile(
-      new URL(`src/data/visual-companions/${slug}.snapshot.json`, root),
-      'utf8',
-    ));
-    assert.equal(snapshot.repository, repository.repository);
-    const published = new Set(snapshot.documents.map(({ id }) => id));
+    const snapshotDocuments = new Set();
+    if (repository.documents.some((document) => !document.locales)) {
+      const slug = repository.repository.split('/')[1];
+      const snapshot = JSON.parse(await readFile(
+        new URL(`src/data/visual-companions/${slug}.snapshot.json`, root),
+        'utf8',
+      ));
+      assert.equal(snapshot.repository, repository.repository);
+      for (const document of snapshot.documents) snapshotDocuments.add(document.id);
+    }
     assert.ok(repository.documents.some(({ featured }) => featured));
     for (const document of repository.documents) {
-      assert.ok(published.has(document.id), `${repository.repository}:${document.id}`);
+      assert.ok(
+        document.locales || snapshotDocuments.has(document.id),
+        `${repository.repository}:${document.id}`,
+      );
       assert.ok(document.summary.en.length > 0);
       assert.ok(document.summary.ko.length > 0);
     }
@@ -113,6 +119,40 @@ test('visual companion catalog features both approved Exposed guides', () => {
   assert.ok(exposedCatalog.documents.every(({ featured }) => featured));
 });
 
+test('stable visual companions use the default repository card catalog', () => {
+  const expected = new Map([
+    ['bluetape4k/bluetape4k-image', ['image-intelligence-policy-privacy']],
+    ['bluetape4k/bluetape4k-aws', ['aws-sqs-reliability', 'aws-streams-shard-consumers']],
+    ['bluetape4k/bluetape4k-projects', ['projects-nearjcache-semantics']],
+  ]);
+
+  for (const [repository, documentIds] of expected) {
+    const entry = visualCatalog.repositories.find((candidate) => candidate.repository === repository);
+    assert.ok(entry, repository);
+    assert.deepEqual(entry.documents.map(({ id }) => id), documentIds);
+    assert.ok(entry.documents.every(({ featured }) => featured));
+  }
+});
+
+test('visual companion index pages do not expose wave-specific hubs', async () => {
+  const english = await readFile(new URL('src/content/docs/visual-companions/index.mdx', root), 'utf8');
+  const korean = await readFile(new URL('src/content/docs/ko/visual-companions/index.mdx', root), 'utf8');
+
+  for (const source of [english, korean]) {
+    assert.doesNotMatch(source, /bluetape4k-2-0-wave[12]/);
+  }
+
+  const hubs = [
+    'src/content/docs/visual-companions/bluetape4k-2-0-wave1.mdx',
+    'src/content/docs/ko/visual-companions/bluetape4k-2-0-wave1.mdx',
+    'src/content/docs/visual-companions/bluetape4k-2-0-wave2.mdx',
+    'src/content/docs/ko/visual-companions/bluetape4k-2-0-wave2.mdx',
+  ];
+  for (const hub of hubs) {
+    await assert.rejects(access(new URL(hub, root)), { code: 'ENOENT' });
+  }
+});
+
 test('visual companion catalog rejects duplicate and incomplete navigation entries', () => {
   const duplicate = structuredClone(visualCatalog);
   duplicate.repositories.push(structuredClone(duplicate.repositories[0]));
@@ -126,6 +166,16 @@ test('visual companion catalog rejects duplicate and incomplete navigation entri
   assert.throws(
     () => validateVisualCompanionCatalog(incomplete),
     /VISUAL_CATALOG_SUMMARY_KEYS/,
+  );
+
+  const invalidLocalRoute = structuredClone(visualCatalog);
+  invalidLocalRoute.repositories[0].documents[0].locales = {
+    en: { title: 'Wrong route', route: '/visual-companions/wrong/' },
+    ko: { title: '잘못된 경로', route: '/ko/visual-companions/wrong/' },
+  };
+  assert.throws(
+    () => validateVisualCompanionCatalog(invalidLocalRoute),
+    /VISUAL_CATALOG_ROUTE/,
   );
 });
 

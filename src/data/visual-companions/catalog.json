@@ -193,6 +193,117 @@
           }
         }
       ]
+    },
+    {
+      "repository": "bluetape4k/bluetape4k-projects",
+      "label": {
+        "en": "bluetape4k Projects",
+        "ko": "bluetape4k Projects"
+      },
+      "description": {
+        "en": "Core Kotlin libraries for caches, coroutines, data access, infrastructure, and Spring applications.",
+        "ko": "캐시, 코루틴, 데이터 접근, 인프라, Spring 애플리케이션을 위한 Kotlin 핵심 라이브러리입니다."
+      },
+      "documents": [
+        {
+          "id": "projects-nearjcache-semantics",
+          "featured": true,
+          "summary": {
+            "en": "Explore L1 hits, L2 fills, conditional writes, bounded bulk policy, epoch-gated clear, and lifecycle boundaries.",
+            "ko": "L1 hit, L2 fill, conditional write, bounded bulk policy, epoch 기반 clear, lifecycle 경계를 단계별로 살펴봅니다."
+          },
+          "locales": {
+            "en": {
+              "title": "Projects NearJCache Semantics",
+              "route": "/visual-companions/bluetape4k-projects/projects-nearjcache-semantics/"
+            },
+            "ko": {
+              "title": "Projects NearJCache 의미론",
+              "route": "/ko/visual-companions/bluetape4k-projects/projects-nearjcache-semantics/"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "repository": "bluetape4k/bluetape4k-aws",
+      "label": {
+        "en": "bluetape4k AWS",
+        "ko": "bluetape4k AWS"
+      },
+      "description": {
+        "en": "Coroutine-friendly AWS SDK adapters with explicit batching, ordering, checkpoint, cancellation, and caller-owned policy boundaries.",
+        "ko": "batch, 순서, checkpoint, cancellation, caller 소유 정책 경계를 명시하는 coroutine 기반 AWS SDK adapter입니다."
+      },
+      "documents": [
+        {
+          "id": "aws-sqs-reliability",
+          "featured": true,
+          "summary": {
+            "en": "Play normal delivery, partial handler failure, delete failure, cancellation, and observation failure in one bounded batch lifecycle.",
+            "ko": "하나의 bounded batch lifecycle에서 정상 처리, handler 부분 실패, delete 실패, cancellation, observation 실패를 비교합니다."
+          },
+          "locales": {
+            "en": {
+              "title": "AWS SQS Batch Reliability",
+              "route": "/visual-companions/bluetape4k-aws/aws-sqs-reliability/"
+            },
+            "ko": {
+              "title": "AWS SQS batch 신뢰성",
+              "route": "/ko/visual-companions/bluetape4k-aws/aws-sqs-reliability/"
+            }
+          }
+        },
+        {
+          "id": "aws-streams-shard-consumers",
+          "featured": true,
+          "summary": {
+            "en": "Compare Kinesis and DynamoDB Streams discovery, graph ordering, bounded concurrency, emit-then-checkpoint, and failure boundaries.",
+            "ko": "Kinesis와 DynamoDB Streams의 discovery, graph ordering, bounded concurrency, emit-then-checkpoint, 실패 경계를 비교합니다."
+          },
+          "locales": {
+            "en": {
+              "title": "AWS Streams Shard Consumer Lab",
+              "route": "/visual-companions/bluetape4k-aws/aws-streams-shard-consumers/"
+            },
+            "ko": {
+              "title": "AWS Streams shard consumer 실험실",
+              "route": "/ko/visual-companions/bluetape4k-aws/aws-streams-shard-consumers/"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "repository": "bluetape4k/bluetape4k-image",
+      "label": {
+        "en": "bluetape4k Image",
+        "ko": "bluetape4k Image"
+      },
+      "description": {
+        "en": "Image processing and intelligence APIs that separate decoding, detection facts, policy decisions, and privacy-safe snapshots.",
+        "ko": "디코딩 결과, 탐지 사실, 정책 결정, 개인정보 보호용 결과 이미지의 경계를 분리한 이미지 처리·분석 API입니다."
+      },
+      "documents": [
+        {
+          "id": "image-intelligence-policy-privacy",
+          "featured": true,
+          "summary": {
+            "en": "Step through qualification, parallel analysis, fail-closed policy, and application-owned privacy side effects.",
+            "ko": "입력 검증, 병렬 분석, fail-closed 정책, 애플리케이션이 책임지는 개인정보 관련 부수 효과의 경계를 단계별로 확인합니다."
+          },
+          "locales": {
+            "en": {
+              "title": "Image Intelligence Policy and Privacy",
+              "route": "/visual-companions/bluetape4k-image/image-intelligence-policy-privacy/"
+            },
+            "ko": {
+              "title": "Image Intelligence 정책과 개인정보 경계",
+              "route": "/ko/visual-companions/bluetape4k-image/image-intelligence-policy-privacy/"
+            }
+          }
+        }
+      ]
     }
   ]
 }
