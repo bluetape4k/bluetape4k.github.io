@@ -9,4 +9,4 @@ The paired PNG assets are the published render authority for the first-wave visu
 ![Projects NearJCache semantics (EN)](./projects-nearjcache-semantics-en.png)
 ![Projects NearJCache semantics (KO)](./projects-nearjcache-semantics-ko.png)
 
-Source-backed site page: `/visual-companions/bluetape4k-2-0-wave1/` and `/ko/visual-companions/bluetape4k-2-0-wave1/`.
+The repository-grouped cards are published at `/visual-companions/` and `/ko/visual-companions/`.
