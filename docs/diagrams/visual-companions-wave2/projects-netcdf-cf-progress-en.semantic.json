@@ -1,0 +1,154 @@
+{
+  "kind": "workflow",
+  "source": {
+    "question": "How does a NetCDF file become bounded, resumable 2D CF spatial rows without confusing coordinate validation, worker ownership, and durable progress?",
+    "revision": "8165a8989e0075e7c17c489bf3000bf41fef8232",
+    "paths": [
+      "src/data/visual-companions/wave2-projects-netcdf-progress.mjs",
+      "docs/superpowers/specs/2026-09-04-issue-418-projects-netcdf-progress-design.md"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "registration",
+      "label": "Durable file registration",
+      "source": "wave2-projects-netcdf-progress.mjs"
+    },
+    {
+      "id": "axis_resolution",
+      "label": "CF axis resolution",
+      "source": "wave2-projects-netcdf-progress.mjs"
+    },
+    {
+      "id": "validation",
+      "label": "Coordinate and resource validation",
+      "source": "wave2-projects-netcdf-progress.mjs"
+    },
+    {
+      "id": "tile_plan",
+      "label": "Bounded sequential tile plan",
+      "source": "wave2-projects-netcdf-progress.mjs"
+    },
+    {
+      "id": "duplicate_preflight",
+      "label": "First-pass duplicate preflight",
+      "source": "wave2-projects-netcdf-progress.mjs"
+    },
+    {
+      "id": "batch_write",
+      "label": "Second-pass fenced batch write",
+      "source": "wave2-projects-netcdf-progress.mjs"
+    },
+    {
+      "id": "slice_checkpoint",
+      "label": "Committed slice checkpoint",
+      "source": "wave2-projects-netcdf-progress.mjs"
+    },
+    {
+      "id": "worker_check",
+      "label": "Timeout worker-liveness check",
+      "source": "wave2-projects-netcdf-progress.mjs"
+    },
+    {
+      "id": "terminal_state",
+      "label": "Completed or failed state",
+      "source": "wave2-projects-netcdf-progress.mjs"
+    },
+    {
+      "id": "caller_policy",
+      "label": "Caller-owned retry and publication",
+      "source": "wave2-projects-netcdf-progress.mjs"
+    }
+  ],
+  "edges": [
+    {
+      "id": "register-axes",
+      "from": "registration",
+      "to": "axis_resolution",
+      "kind": "opens",
+      "source": "wave2-projects-netcdf-progress.mjs"
+    },
+    {
+      "id": "axes-validation",
+      "from": "axis_resolution",
+      "to": "validation",
+      "kind": "binds",
+      "source": "wave2-projects-netcdf-progress.mjs"
+    },
+    {
+      "id": "validation-plan",
+      "from": "validation",
+      "to": "tile_plan",
+      "kind": "permits",
+      "source": "wave2-projects-netcdf-progress.mjs"
+    },
+    {
+      "id": "plan-preflight",
+      "from": "tile_plan",
+      "to": "duplicate_preflight",
+      "kind": "first-pass",
+      "source": "wave2-projects-netcdf-progress.mjs"
+    },
+    {
+      "id": "preflight-write",
+      "from": "duplicate_preflight",
+      "to": "batch_write",
+      "kind": "second-pass",
+      "source": "wave2-projects-netcdf-progress.mjs"
+    },
+    {
+      "id": "write-checkpoint",
+      "from": "batch_write",
+      "to": "slice_checkpoint",
+      "kind": "last-tile-commit",
+      "source": "wave2-projects-netcdf-progress.mjs"
+    },
+    {
+      "id": "checkpoint-plan",
+      "from": "slice_checkpoint",
+      "to": "tile_plan",
+      "kind": "next-slice",
+      "source": "wave2-projects-netcdf-progress.mjs"
+    },
+    {
+      "id": "checkpoint-terminal",
+      "from": "slice_checkpoint",
+      "to": "terminal_state",
+      "kind": "all-slices-done",
+      "source": "wave2-projects-netcdf-progress.mjs"
+    },
+    {
+      "id": "write-worker",
+      "from": "batch_write",
+      "to": "worker_check",
+      "kind": "timeout",
+      "source": "wave2-projects-netcdf-progress.mjs"
+    },
+    {
+      "id": "worker-terminal",
+      "from": "worker_check",
+      "to": "terminal_state",
+      "kind": "shutdown-proof",
+      "source": "wave2-projects-netcdf-progress.mjs"
+    },
+    {
+      "id": "terminal-caller",
+      "from": "terminal_state",
+      "to": "caller_policy",
+      "kind": "redacted-boundary",
+      "source": "wave2-projects-netcdf-progress.mjs"
+    },
+    {
+      "id": "caller-registration",
+      "from": "caller_policy",
+      "to": "registration",
+      "kind": "permitted-retry",
+      "source": "wave2-projects-netcdf-progress.mjs"
+    }
+  ],
+  "behavior": {
+    "branches": 3,
+    "loops": 1
+  },
+  "repairs": []
+}
