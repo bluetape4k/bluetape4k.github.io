@@ -8,6 +8,7 @@ const targets = [
   ['manual/bluetape4k-aws/1.0/modules/bluetape4k-aws-spring-boot/storage-and-messaging', 'bluetape4k-aws', 'aws-sqs-reliability'],
   ['manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/near-cache-l1-l2', 'bluetape4k-projects', 'projects-nearjcache-semantics'],
   ['manual/bluetape4k-projects/2.0/modules/bluetape4k-science', 'bluetape4k-projects', 'projects-netcdf-cf-progress'],
+  ['manual/bluetape4k-projects/2.0/modules/bluetape4k-coroutines/flow', 'bluetape4k-projects', 'projects-coroutines-flow-operators'],
 ];
 
 test('manual overlays resolve exact locale-matched companion routes and previews', () => {
@@ -49,6 +50,16 @@ test('Projects science manual exposes both NetCDF companions', () => {
   assert.equal(ko[0].image, '/assets/visual-companions/wave2/projects-netcdf-cf-progress-ko.png');
   assert.equal(en[1].image, '/assets/visual-companions/wave2/projects-netcdf-data-model-en.png');
   assert.equal(ko[1].image, '/assets/visual-companions/wave2/projects-netcdf-data-model-ko.png');
+});
+
+test('Projects Coroutines Flow manual exposes the operator Marble Explorer', () => {
+  const entryId = 'manual/bluetape4k-projects/2.0/modules/bluetape4k-coroutines/flow';
+  const [en] = resolveManualVisualCompanions(entryId, 'en');
+  const [ko] = resolveManualVisualCompanions(`ko/${entryId}`, 'ko');
+  assert.equal(en.route, '/visual-companions/bluetape4k-projects/projects-coroutines-flow-operators/');
+  assert.equal(ko.route, '/ko/visual-companions/bluetape4k-projects/projects-coroutines-flow-operators/');
+  assert.equal(en.image, '/assets/visual-companions/wave2/projects-coroutines-flow-operators-en.png');
+  assert.equal(ko.image, '/assets/visual-companions/wave2/projects-coroutines-flow-operators-ko.png');
 });
 
 test('wave 1 manual overlays do not leak onto unrelated release snapshots', () => {

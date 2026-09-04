@@ -258,6 +258,24 @@
               "route": "/ko/visual-companions/bluetape4k-projects/projects-netcdf-data-model/"
             }
           }
+        },
+        {
+          "id": "projects-coroutines-flow-operators",
+          "featured": true,
+          "summary": {
+            "en": "Select and replay 66 reactive Flow operators across transform, admission, time, combine, async, and error families on a shared marble timeline.",
+            "ko": "변환, 허용, 시간, 결합, 비동기, 오류 family의 reactive Flow operator 66개를 선택하고 공통 Marble 시간축에서 재생합니다."
+          },
+          "locales": {
+            "en": {
+              "title": "Projects Coroutines Flow Operator Marble Explorer",
+              "route": "/visual-companions/bluetape4k-projects/projects-coroutines-flow-operators/"
+            },
+            "ko": {
+              "title": "Projects Coroutines Flow 연산자 Marble Explorer",
+              "route": "/ko/visual-companions/bluetape4k-projects/projects-coroutines-flow-operators/"
+            }
+          }
         }
       ]
     },

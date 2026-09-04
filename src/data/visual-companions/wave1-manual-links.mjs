@@ -22,6 +22,12 @@ const companions = new Map([
     title: 'NearJCache consistency lab',
     description: 'Explore L1 hits, L2 fills, conditional writes, bounded bulk policy, and epoch-gated clear.',
   }]],
+  ['manual/bluetape4k-projects/2.0/modules/bluetape4k-coroutines/flow', [{
+    route: '/visual-companions/bluetape4k-projects/projects-coroutines-flow-operators/',
+    image: '/assets/visual-companions/wave2/projects-coroutines-flow-operators-en.png',
+    title: 'Coroutines Flow operator Marble Explorer',
+    description: 'Select and replay 66 reactive operators across six families with sample input, output, timing, and terminal contracts.',
+  }]],
   ['manual/bluetape4k-projects/2.0/modules/bluetape4k-science', [{
     route: '/visual-companions/bluetape4k-projects/projects-netcdf-cf-progress/',
     image: '/assets/visual-companions/wave2/projects-netcdf-cf-progress-en.png',
@@ -50,6 +56,10 @@ const korean = new Map([
   ['manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/near-cache-l1-l2', [{
     title: 'NearJCache 일관성 실험실',
     description: 'L1 hit, L2 fill, conditional write, bounded bulk policy, epoch 기반 clear를 단계별로 살펴봅니다.',
+  }]],
+  ['manual/bluetape4k-projects/2.0/modules/bluetape4k-coroutines/flow', [{
+    title: 'Coroutines Flow 연산자 Marble Explorer',
+    description: '6개 family의 reactive operator 66개를 선택하고 샘플 input, output, timing, terminal 계약을 단계별로 재생합니다.',
   }]],
   ['manual/bluetape4k-projects/2.0/modules/bluetape4k-science', [{
     title: 'NetCDF 2D CF import와 progress 실험실',

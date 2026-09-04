@@ -1,0 +1,585 @@
+{
+  "kind": "marble-diagram-catalog",
+  "source": {
+    "question": "Reactive Flow extension과 AsyncFlow/ParallelFlow 연산자는 input signal을 어떻게 변환하고 시간, 순서, 오류 계약을 어떻게 바꾸는가?",
+    "revision": "8165a8989e0075e7c17c489bf3000bf41fef8232",
+    "paths": [
+      "src/data/visual-companions/wave2-projects-coroutines-flow-operators.mjs",
+      "src/content/docs/manual/bluetape4k-projects/2.0/modules/bluetape4k-coroutines/flow.md"
+    ]
+  },
+  "groups": [
+    {
+      "id": "transform",
+      "label": "변환과 상태",
+      "count": 7,
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "admission",
+      "label": "허용과 전환",
+      "count": 9,
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "time",
+      "label": "시간, 버퍼와 윈도",
+      "count": 17,
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "combine",
+      "label": "결합과 순서",
+      "count": 13,
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "async",
+      "label": "비동기와 병렬",
+      "count": 10,
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "error",
+      "label": "오류와 신호",
+      "count": 10,
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "transform_cast",
+      "group": "transform",
+      "label": "cast",
+      "receiver": "Flow<*>",
+      "signature": "cast<String>()",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "transform_castnotnull",
+      "group": "transform",
+      "label": "castNotNull",
+      "receiver": "Flow<*>",
+      "signature": "castNotNull<String>()",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "transform_mapindexed",
+      "group": "transform",
+      "label": "mapIndexed",
+      "receiver": "Flow<T>",
+      "signature": "mapIndexed { i, v → \"$i:$v\" }",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "transform_mapto",
+      "group": "transform",
+      "label": "mapTo",
+      "receiver": "Flow<T>",
+      "signature": "mapTo(Unit)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "transform_maptounit",
+      "group": "transform",
+      "label": "mapToUnit",
+      "receiver": "Flow<T>",
+      "signature": "mapToUnit()",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "transform_scanwith",
+      "group": "transform",
+      "label": "scanWith",
+      "receiver": "Flow<T>",
+      "signature": "scanWith(0) { acc, v → acc + v }",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "transform_select",
+      "group": "transform",
+      "label": "select",
+      "receiver": "Flow<State>",
+      "signature": "select { state → state.status }",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "admission_dropuntil",
+      "group": "admission",
+      "label": "dropUntil",
+      "receiver": "Flow<T>",
+      "signature": "dropUntil(ready)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "admission_exhaustall",
+      "group": "admission",
+      "label": "exhaustAll",
+      "receiver": "Flow<Flow<T>>",
+      "signature": "exhaustAll()",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "admission_exhaustmap",
+      "group": "admission",
+      "label": "exhaustMap",
+      "receiver": "Flow<T>",
+      "signature": "exhaustMap(::save)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "admission_flatmapdrop",
+      "group": "admission",
+      "label": "flatMapDrop",
+      "receiver": "Flow<T>",
+      "signature": "flatMapDrop(::load)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "admission_flatmapfirst",
+      "group": "admission",
+      "label": "flatMapFirst",
+      "receiver": "Flow<T>",
+      "signature": "flatMapFirst(::load)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "admission_flattenfirst",
+      "group": "admission",
+      "label": "flattenFirst",
+      "receiver": "Flow<Flow<T>>",
+      "signature": "flattenFirst()",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "admission_onbackpressuredrop",
+      "group": "admission",
+      "label": "onBackpressureDrop",
+      "receiver": "Flow<T>",
+      "signature": "onBackpressureDrop()",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "admission_skipuntil",
+      "group": "admission",
+      "label": "skipUntil",
+      "receiver": "Flow<T>",
+      "signature": "skipUntil(ready)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "admission_takeuntil",
+      "group": "admission",
+      "label": "takeUntil",
+      "receiver": "Flow<T>",
+      "signature": "takeUntil(stop)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "time_bufferedsliding",
+      "group": "time",
+      "label": "bufferedSliding",
+      "receiver": "Flow<T>",
+      "signature": "bufferedSliding(size=3)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "time_bufferingdebounce",
+      "group": "time",
+      "label": "bufferingDebounce",
+      "receiver": "Flow<T>",
+      "signature": "bufferingDebounce(200.ms)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "time_buffertimeout",
+      "group": "time",
+      "label": "bufferTimeout",
+      "receiver": "Flow<T>",
+      "signature": "bufferTimeout(maxSize=3, timeout=1.s)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "time_bufferuntilchanged",
+      "group": "time",
+      "label": "bufferUntilChanged",
+      "receiver": "Flow<T>",
+      "signature": "bufferUntilChanged { key }",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "time_chunked",
+      "group": "time",
+      "label": "chunked",
+      "receiver": "Flow<T>",
+      "signature": "chunked(size=2)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "time_groupby",
+      "group": "time",
+      "label": "groupBy",
+      "receiver": "Flow<T>",
+      "signature": "groupBy { item.key }",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "time_interval",
+      "group": "time",
+      "label": "interval",
+      "receiver": "Flow<T>",
+      "signature": "interval(initialDelay=0.ms, delay=200.ms)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "time_pairwise",
+      "group": "time",
+      "label": "pairwise",
+      "receiver": "Flow<T>",
+      "signature": "pairwise()",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "time_sliding",
+      "group": "time",
+      "label": "sliding",
+      "receiver": "Flow<T>",
+      "signature": "sliding(size=3)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "time_throttleboth",
+      "group": "time",
+      "label": "throttleBoth",
+      "receiver": "Flow<T>",
+      "signature": "throttleBoth(500.ms)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "time_throttleleading",
+      "group": "time",
+      "label": "throttleLeading",
+      "receiver": "Flow<T>",
+      "signature": "throttleLeading(500.ms)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "time_throttletime",
+      "group": "time",
+      "label": "throttleTime",
+      "receiver": "Flow<T>",
+      "signature": "throttleTime(500.ms)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "time_throttletrailing",
+      "group": "time",
+      "label": "throttleTrailing",
+      "receiver": "Flow<T>",
+      "signature": "throttleTrailing(500.ms)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "time_windowed",
+      "group": "time",
+      "label": "windowed",
+      "receiver": "Flow<T>",
+      "signature": "windowed(size=3, step=2)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "time_windowedflow",
+      "group": "time",
+      "label": "windowedFlow",
+      "receiver": "Flow<T>",
+      "signature": "windowedFlow(size=3, step=2)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "time_windowtimeout",
+      "group": "time",
+      "label": "windowTimeout",
+      "receiver": "Flow<T>",
+      "signature": "windowTimeout(maxSize=3, timeout=1.s)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "time_zipwithnext",
+      "group": "time",
+      "label": "zipWithNext",
+      "receiver": "Flow<T>",
+      "signature": "zipWithNext()",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "combine_amb",
+      "group": "combine",
+      "label": "amb",
+      "receiver": "Iterable<Flow<T>>",
+      "signature": "flows.amb()",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "combine_ambwith",
+      "group": "combine",
+      "label": "ambWith",
+      "receiver": "Flow<T>",
+      "signature": "source.ambWith(other)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "combine_concat",
+      "group": "combine",
+      "label": "concat",
+      "receiver": "Iterable<Flow<T>>",
+      "signature": "flows.concat()",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "combine_concatflows",
+      "group": "combine",
+      "label": "concatFlows",
+      "receiver": "Iterable<Flow<T>>",
+      "signature": "flows.concatFlows()",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "combine_concatmapeager",
+      "group": "combine",
+      "label": "concatMapEager",
+      "receiver": "Flow<T>",
+      "signature": "concatMapEager(maxConcurrency=2)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "combine_concatwith",
+      "group": "combine",
+      "label": "concatWith",
+      "receiver": "Flow<T>",
+      "signature": "source.concatWith(next)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "combine_endwith",
+      "group": "combine",
+      "label": "endWith",
+      "receiver": "Flow<T>",
+      "signature": "source.endWith(3, 4)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "combine_merge",
+      "group": "combine",
+      "label": "merge",
+      "receiver": "Iterable<Flow<T>>",
+      "signature": "flows.merge()",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "combine_race",
+      "group": "combine",
+      "label": "race",
+      "receiver": "Iterable<Flow<T>>",
+      "signature": "flows.race()",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "combine_racewith",
+      "group": "combine",
+      "label": "raceWith",
+      "receiver": "Flow<T>",
+      "signature": "cache.raceWith(remote)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "combine_repeat",
+      "group": "combine",
+      "label": "repeat",
+      "receiver": "Flow<T>",
+      "signature": "source.repeat(count=2)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "combine_startwith",
+      "group": "combine",
+      "label": "startWith",
+      "receiver": "Flow<T>",
+      "signature": "source.startWith(-1, 0)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "combine_withlatestfrom",
+      "group": "combine",
+      "label": "withLatestFrom",
+      "receiver": "Flow<A>",
+      "signature": "withLatestFrom(other)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "async_async",
+      "group": "async",
+      "label": "async",
+      "receiver": "Flow<T>",
+      "signature": "async { load(it) }",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "async_asyncflow-map",
+      "group": "async",
+      "label": "AsyncFlow.map",
+      "receiver": "AsyncFlow<T>",
+      "signature": "asyncFlow.map(::enrich)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "async_mapparallel",
+      "group": "async",
+      "label": "mapParallel",
+      "receiver": "Flow<T>",
+      "signature": "mapParallel(parallelism=3)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "async_parallel",
+      "group": "async",
+      "label": "parallel",
+      "receiver": "Flow<T>",
+      "signature": "parallel(3, runOn)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "async_parallelflow-concatmap",
+      "group": "async",
+      "label": "ParallelFlow.concatMap",
+      "receiver": "ParallelFlow<T>",
+      "signature": "parallelFlow.concatMap(::expand)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "async_parallelflow-filter",
+      "group": "async",
+      "label": "ParallelFlow.filter",
+      "receiver": "ParallelFlow<T>",
+      "signature": "parallelFlow.filter(::keep)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "async_parallelflow-map",
+      "group": "async",
+      "label": "ParallelFlow.map",
+      "receiver": "ParallelFlow<T>",
+      "signature": "parallelFlow.map(::enrich)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "async_parallelflow-reduce",
+      "group": "async",
+      "label": "ParallelFlow.reduce",
+      "receiver": "ParallelFlow<T>",
+      "signature": "parallelFlow.reduce(seed, ::combine)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "async_parallelflow-transform",
+      "group": "async",
+      "label": "ParallelFlow.transform",
+      "receiver": "ParallelFlow<T>",
+      "signature": "parallelFlow.transform { emit(...) }",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "async_sequential",
+      "group": "async",
+      "label": "sequential",
+      "receiver": "ParallelFlow<T>",
+      "signature": "parallelFlow.sequential()",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "error_catchandresume",
+      "group": "error",
+      "label": "catchAndResume",
+      "receiver": "Flow<T>",
+      "signature": "catchAndResume(fallback)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "error_catchandreturn",
+      "group": "error",
+      "label": "catchAndReturn",
+      "receiver": "Flow<T>",
+      "signature": "catchAndReturn(default)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "error_dematerialize",
+      "group": "error",
+      "label": "dematerialize",
+      "receiver": "Flow<FlowEvent<T>>",
+      "signature": "dematerialize()",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "error_getordefault",
+      "group": "error",
+      "label": "getOrDefault",
+      "receiver": "Flow<Result<T>>",
+      "signature": "getOrDefault(default)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "error_mapresultcatching",
+      "group": "error",
+      "label": "mapResultCatching",
+      "receiver": "Flow<Result<T>>",
+      "signature": "mapResultCatching(::load)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "error_maptoresult",
+      "group": "error",
+      "label": "mapToResult",
+      "receiver": "Flow<T>",
+      "signature": "mapToResult()",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "error_materialize",
+      "group": "error",
+      "label": "materialize",
+      "receiver": "Flow<T>",
+      "signature": "materialize()",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "error_throwfailure",
+      "group": "error",
+      "label": "throwFailure",
+      "receiver": "Flow<Result<T>>",
+      "signature": "throwFailure()",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "error_timeout",
+      "group": "error",
+      "label": "timeout",
+      "receiver": "Flow<T>",
+      "signature": "timeout(1.s)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    },
+    {
+      "id": "error_timeoutorfallback",
+      "group": "error",
+      "label": "timeoutOrFallback",
+      "receiver": "Flow<T>",
+      "signature": "timeoutOrFallback(1.s, fallback)",
+      "source": "wave2-projects-coroutines-flow-operators.mjs"
+    }
+  ],
+  "edges": [],
+  "behavior": {
+    "branches": 6,
+    "loops": 6
+  },
+  "repairs": []
+}

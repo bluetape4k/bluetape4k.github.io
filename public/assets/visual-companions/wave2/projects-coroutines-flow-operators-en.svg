@@ -1,0 +1,161 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="5200" viewBox="0 0 1800 5200" role="img" aria-labelledby="title desc" data-intent="source-backed Flow operator marble explorer fallback" data-source-revision="8165a8989e0075e7c17c489bf3000bf41fef8232">
+<title id="title">Coroutines Flow Operators: Marble Explorer</title>
+<desc id="desc">Follow 66 reactive operators across six families. Select one operator per family and replay its input, rule, output mapping, and terminal contract on a shared time axis.</desc>
+<defs><style>.canvas{fill:#07111f}.frame{fill:#0d1b2f;stroke:#294562;stroke-width:2}.title{font:700 48px "Noto Sans KR",sans-serif;fill:#f7faff}.eyebrow{font:700 16px ui-monospace,monospace;letter-spacing:.08em;fill:#62d5df}.subtitle{font:21px "Noto Sans KR",sans-serif;fill:#aabbd1}.family{font:700 30px "Noto Sans KR",sans-serif;fill:#f7faff}.family-id{font:700 15px ui-monospace,monospace;letter-spacing:.08em}.body{font:17px "Noto Sans KR",sans-serif;fill:#aabbd1}.operator{font:16px ui-monospace,monospace;fill:#f7faff}.lane{font:700 13px ui-monospace,monospace;fill:#9db0c9}.rule{font:700 16px ui-monospace,monospace}.footer{font:16px "Noto Sans KR",sans-serif;fill:#9db0c9}</style></defs>
+<rect class="canvas" width="1800" height="5200"/><rect x="28" y="28" width="1744" height="5144" rx="28" fill="none" stroke="#294562" stroke-width="2"/>
+<text class="eyebrow" x="90" y="92">BLUETAPE4K PROJECTS · COROUTINES · 2.0.0 · ISSUE #430</text>
+<text class="title" x="90" y="160">Coroutines Flow Operators: Marble Explorer</text>
+<text class="subtitle" x="90" y="210">66 reactive operators · six families · one shared time axis</text>
+<text class="body" x="90" y="250">The interactive companion lets you select every operator and replay four contract steps.</text>
+<g id="family-transform" data-family="transform"><rect class="frame" x="75" y="305" width="1650" height="730" rx="24"/><rect x="75" y="305" width="12" height="730" rx="6" fill="#62d5df"/>
+<text class="family-id" x="120" y="353" fill="#62d5df">TRANSFORM · 7</text>
+<text class="family" x="120" y="397">Transform &amp; state</text>
+<text class="body" x="120" y="435">Change runtime type, payload, projection, or accumulated state without changing the Flow timeline contract.</text>
+<text class="lane" x="120" y="515">INPUT</text><line x1="220" y1="510" x2="700" y2="510" stroke="#7eb5ff" stroke-width="3"/>
+<circle cx="310" cy="510" r="17" fill="#7eb5ff"/><text class="lane" x="310" y="515" text-anchor="middle" fill="#07111f">A</text>
+<circle cx="450" cy="510" r="17" fill="#f6c36b"/><text class="lane" x="450" y="515" text-anchor="middle" fill="#07111f">B</text>
+<circle cx="590" cy="510" r="17" fill="#bca4ff"/><text class="lane" x="590" y="515" text-anchor="middle" fill="#07111f">C</text>
+<rect x="755" y="478" width="300" height="64" rx="14" fill="#123d4b" stroke="#62d5df" stroke-width="3"/><text class="rule" x="905" y="516" text-anchor="middle" fill="#62d5df">OPERATOR RULE</text>
+<text class="lane" x="1110" y="515">OUTPUT</text><line x1="1210" y1="510" x2="1650" y2="510" stroke="#63d6a6" stroke-width="3"/>
+<circle cx="1320" cy="510" r="17" fill="#7eb5ff"/><text class="lane" x="1320" y="515" text-anchor="middle" fill="#07111f">A′</text>
+<circle cx="1460" cy="510" r="17" fill="#f6c36b"/><text class="lane" x="1460" y="515" text-anchor="middle" fill="#07111f">B′</text>
+<circle cx="1600" cy="510" r="17" fill="#bca4ff"/><text class="lane" x="1600" y="515" text-anchor="middle" fill="#07111f">C′</text>
+<g id="operator-transform-cast" data-operator="cast"><rect x="120" y="590" width="755" height="38" rx="10" fill="#123d4b" stroke="#62d5df" stroke-opacity=".58"/><circle cx="142" cy="609" r="7" fill="#62d5df"/><text class="operator" x="162" y="615">01 · cast</text></g>
+<g id="operator-transform-castnotnull" data-operator="castNotNull"><rect x="920" y="590" width="755" height="38" rx="10" fill="#123d4b" stroke="#62d5df" stroke-opacity=".58"/><circle cx="942" cy="609" r="7" fill="#62d5df"/><text class="operator" x="962" y="615">02 · castNotNull</text></g>
+<g id="operator-transform-mapindexed" data-operator="mapIndexed"><rect x="120" y="637" width="755" height="38" rx="10" fill="#123d4b" stroke="#62d5df" stroke-opacity=".58"/><circle cx="142" cy="656" r="7" fill="#62d5df"/><text class="operator" x="162" y="662">03 · mapIndexed</text></g>
+<g id="operator-transform-mapto" data-operator="mapTo"><rect x="920" y="637" width="755" height="38" rx="10" fill="#123d4b" stroke="#62d5df" stroke-opacity=".58"/><circle cx="942" cy="656" r="7" fill="#62d5df"/><text class="operator" x="962" y="662">04 · mapTo</text></g>
+<g id="operator-transform-maptounit" data-operator="mapToUnit"><rect x="120" y="684" width="755" height="38" rx="10" fill="#123d4b" stroke="#62d5df" stroke-opacity=".58"/><circle cx="142" cy="703" r="7" fill="#62d5df"/><text class="operator" x="162" y="709">05 · mapToUnit</text></g>
+<g id="operator-transform-scanwith" data-operator="scanWith"><rect x="920" y="684" width="755" height="38" rx="10" fill="#123d4b" stroke="#62d5df" stroke-opacity=".58"/><circle cx="942" cy="703" r="7" fill="#62d5df"/><text class="operator" x="962" y="709">06 · scanWith</text></g>
+<g id="operator-transform-select" data-operator="select"><rect x="120" y="731" width="755" height="38" rx="10" fill="#123d4b" stroke="#62d5df" stroke-opacity=".58"/><circle cx="142" cy="750" r="7" fill="#62d5df"/><text class="operator" x="162" y="756">07 · select</text></g>
+</g>
+<g id="family-admission" data-family="admission"><rect class="frame" x="75" y="1095" width="1650" height="730" rx="24"/><rect x="75" y="1095" width="12" height="730" rx="6" fill="#f58fa8"/>
+<text class="family-id" x="120" y="1143" fill="#f58fa8">ADMISSION · 9</text>
+<text class="family" x="120" y="1187">Admission &amp; switching</text>
+<text class="body" x="120" y="1225">Decide when values or inner Flows may enter, whether re-entry is dropped, and when collection switches or completes.</text>
+<text class="lane" x="120" y="1305">INPUT</text><line x1="220" y1="1300" x2="700" y2="1300" stroke="#7eb5ff" stroke-width="3"/>
+<circle cx="310" cy="1300" r="17" fill="#7eb5ff"/><text class="lane" x="310" y="1305" text-anchor="middle" fill="#07111f">A</text>
+<circle cx="450" cy="1300" r="17" fill="#f6c36b"/><text class="lane" x="450" y="1305" text-anchor="middle" fill="#07111f">B</text>
+<circle cx="590" cy="1300" r="17" fill="#bca4ff"/><text class="lane" x="590" y="1305" text-anchor="middle" fill="#07111f">C</text>
+<rect x="755" y="1268" width="300" height="64" rx="14" fill="#4a2939" stroke="#f58fa8" stroke-width="3"/><text class="rule" x="905" y="1306" text-anchor="middle" fill="#f58fa8">OPERATOR RULE</text>
+<text class="lane" x="1110" y="1305">OUTPUT</text><line x1="1210" y1="1300" x2="1650" y2="1300" stroke="#63d6a6" stroke-width="3"/>
+<circle cx="1320" cy="1300" r="17" fill="#7eb5ff"/><text class="lane" x="1320" y="1305" text-anchor="middle" fill="#07111f">A′</text>
+<circle cx="1460" cy="1300" r="17" fill="#f6c36b"/><text class="lane" x="1460" y="1305" text-anchor="middle" fill="#07111f">B′</text>
+<circle cx="1600" cy="1300" r="17" fill="#bca4ff"/><text class="lane" x="1600" y="1305" text-anchor="middle" fill="#07111f">C′</text>
+<g id="operator-admission-dropuntil" data-operator="dropUntil"><rect x="120" y="1380" width="755" height="38" rx="10" fill="#4a2939" stroke="#f58fa8" stroke-opacity=".58"/><circle cx="142" cy="1399" r="7" fill="#f58fa8"/><text class="operator" x="162" y="1405">01 · dropUntil</text></g>
+<g id="operator-admission-exhaustall" data-operator="exhaustAll"><rect x="920" y="1380" width="755" height="38" rx="10" fill="#4a2939" stroke="#f58fa8" stroke-opacity=".58"/><circle cx="942" cy="1399" r="7" fill="#f58fa8"/><text class="operator" x="962" y="1405">02 · exhaustAll</text></g>
+<g id="operator-admission-exhaustmap" data-operator="exhaustMap"><rect x="120" y="1427" width="755" height="38" rx="10" fill="#4a2939" stroke="#f58fa8" stroke-opacity=".58"/><circle cx="142" cy="1446" r="7" fill="#f58fa8"/><text class="operator" x="162" y="1452">03 · exhaustMap</text></g>
+<g id="operator-admission-flatmapdrop" data-operator="flatMapDrop"><rect x="920" y="1427" width="755" height="38" rx="10" fill="#4a2939" stroke="#f58fa8" stroke-opacity=".58"/><circle cx="942" cy="1446" r="7" fill="#f58fa8"/><text class="operator" x="962" y="1452">04 · flatMapDrop</text></g>
+<g id="operator-admission-flatmapfirst" data-operator="flatMapFirst"><rect x="120" y="1474" width="755" height="38" rx="10" fill="#4a2939" stroke="#f58fa8" stroke-opacity=".58"/><circle cx="142" cy="1493" r="7" fill="#f58fa8"/><text class="operator" x="162" y="1499">05 · flatMapFirst</text></g>
+<g id="operator-admission-flattenfirst" data-operator="flattenFirst"><rect x="920" y="1474" width="755" height="38" rx="10" fill="#4a2939" stroke="#f58fa8" stroke-opacity=".58"/><circle cx="942" cy="1493" r="7" fill="#f58fa8"/><text class="operator" x="962" y="1499">06 · flattenFirst</text></g>
+<g id="operator-admission-onbackpressuredrop" data-operator="onBackpressureDrop"><rect x="120" y="1521" width="755" height="38" rx="10" fill="#4a2939" stroke="#f58fa8" stroke-opacity=".58"/><circle cx="142" cy="1540" r="7" fill="#f58fa8"/><text class="operator" x="162" y="1546">07 · onBackpressureDrop</text></g>
+<g id="operator-admission-skipuntil" data-operator="skipUntil"><rect x="920" y="1521" width="755" height="38" rx="10" fill="#4a2939" stroke="#f58fa8" stroke-opacity=".58"/><circle cx="942" cy="1540" r="7" fill="#f58fa8"/><text class="operator" x="962" y="1546">08 · skipUntil</text></g>
+<g id="operator-admission-takeuntil" data-operator="takeUntil"><rect x="120" y="1568" width="755" height="38" rx="10" fill="#4a2939" stroke="#f58fa8" stroke-opacity=".58"/><circle cx="142" cy="1587" r="7" fill="#f58fa8"/><text class="operator" x="162" y="1593">09 · takeUntil</text></g>
+</g>
+<g id="family-time" data-family="time"><rect class="frame" x="75" y="1885" width="1650" height="730" rx="24"/><rect x="75" y="1885" width="12" height="730" rx="6" fill="#f6c36b"/>
+<text class="family-id" x="120" y="1933" fill="#f6c36b">TIME · 17</text>
+<text class="family" x="120" y="1977">Time, buffer &amp; window</text>
+<text class="body" x="120" y="2015">Use clocks, count boundaries, rolling state, and keys to reshape bursts into paced values, batches, windows, or groups.</text>
+<text class="lane" x="120" y="2095">INPUT</text><line x1="220" y1="2090" x2="700" y2="2090" stroke="#7eb5ff" stroke-width="3"/>
+<circle cx="310" cy="2090" r="17" fill="#7eb5ff"/><text class="lane" x="310" y="2095" text-anchor="middle" fill="#07111f">A</text>
+<circle cx="450" cy="2090" r="17" fill="#f6c36b"/><text class="lane" x="450" y="2095" text-anchor="middle" fill="#07111f">B</text>
+<circle cx="590" cy="2090" r="17" fill="#bca4ff"/><text class="lane" x="590" y="2095" text-anchor="middle" fill="#07111f">C</text>
+<rect x="755" y="2058" width="300" height="64" rx="14" fill="#4c3820" stroke="#f6c36b" stroke-width="3"/><text class="rule" x="905" y="2096" text-anchor="middle" fill="#f6c36b">OPERATOR RULE</text>
+<text class="lane" x="1110" y="2095">OUTPUT</text><line x1="1210" y1="2090" x2="1650" y2="2090" stroke="#63d6a6" stroke-width="3"/>
+<circle cx="1320" cy="2090" r="17" fill="#7eb5ff"/><text class="lane" x="1320" y="2095" text-anchor="middle" fill="#07111f">A′</text>
+<circle cx="1460" cy="2090" r="17" fill="#f6c36b"/><text class="lane" x="1460" y="2095" text-anchor="middle" fill="#07111f">B′</text>
+<circle cx="1600" cy="2090" r="17" fill="#bca4ff"/><text class="lane" x="1600" y="2095" text-anchor="middle" fill="#07111f">C′</text>
+<g id="operator-time-bufferedsliding" data-operator="bufferedSliding"><rect x="120" y="2170" width="755" height="38" rx="10" fill="#4c3820" stroke="#f6c36b" stroke-opacity=".58"/><circle cx="142" cy="2189" r="7" fill="#f6c36b"/><text class="operator" x="162" y="2195">01 · bufferedSliding</text></g>
+<g id="operator-time-bufferingdebounce" data-operator="bufferingDebounce"><rect x="920" y="2170" width="755" height="38" rx="10" fill="#4c3820" stroke="#f6c36b" stroke-opacity=".58"/><circle cx="942" cy="2189" r="7" fill="#f6c36b"/><text class="operator" x="962" y="2195">02 · bufferingDebounce</text></g>
+<g id="operator-time-buffertimeout" data-operator="bufferTimeout"><rect x="120" y="2217" width="755" height="38" rx="10" fill="#4c3820" stroke="#f6c36b" stroke-opacity=".58"/><circle cx="142" cy="2236" r="7" fill="#f6c36b"/><text class="operator" x="162" y="2242">03 · bufferTimeout</text></g>
+<g id="operator-time-bufferuntilchanged" data-operator="bufferUntilChanged"><rect x="920" y="2217" width="755" height="38" rx="10" fill="#4c3820" stroke="#f6c36b" stroke-opacity=".58"/><circle cx="942" cy="2236" r="7" fill="#f6c36b"/><text class="operator" x="962" y="2242">04 · bufferUntilChanged</text></g>
+<g id="operator-time-chunked" data-operator="chunked"><rect x="120" y="2264" width="755" height="38" rx="10" fill="#4c3820" stroke="#f6c36b" stroke-opacity=".58"/><circle cx="142" cy="2283" r="7" fill="#f6c36b"/><text class="operator" x="162" y="2289">05 · chunked</text></g>
+<g id="operator-time-groupby" data-operator="groupBy"><rect x="920" y="2264" width="755" height="38" rx="10" fill="#4c3820" stroke="#f6c36b" stroke-opacity=".58"/><circle cx="942" cy="2283" r="7" fill="#f6c36b"/><text class="operator" x="962" y="2289">06 · groupBy</text></g>
+<g id="operator-time-interval" data-operator="interval"><rect x="120" y="2311" width="755" height="38" rx="10" fill="#4c3820" stroke="#f6c36b" stroke-opacity=".58"/><circle cx="142" cy="2330" r="7" fill="#f6c36b"/><text class="operator" x="162" y="2336">07 · interval</text></g>
+<g id="operator-time-pairwise" data-operator="pairwise"><rect x="920" y="2311" width="755" height="38" rx="10" fill="#4c3820" stroke="#f6c36b" stroke-opacity=".58"/><circle cx="942" cy="2330" r="7" fill="#f6c36b"/><text class="operator" x="962" y="2336">08 · pairwise</text></g>
+<g id="operator-time-sliding" data-operator="sliding"><rect x="120" y="2358" width="755" height="38" rx="10" fill="#4c3820" stroke="#f6c36b" stroke-opacity=".58"/><circle cx="142" cy="2377" r="7" fill="#f6c36b"/><text class="operator" x="162" y="2383">09 · sliding</text></g>
+<g id="operator-time-throttleboth" data-operator="throttleBoth"><rect x="920" y="2358" width="755" height="38" rx="10" fill="#4c3820" stroke="#f6c36b" stroke-opacity=".58"/><circle cx="942" cy="2377" r="7" fill="#f6c36b"/><text class="operator" x="962" y="2383">10 · throttleBoth</text></g>
+<g id="operator-time-throttleleading" data-operator="throttleLeading"><rect x="120" y="2405" width="755" height="38" rx="10" fill="#4c3820" stroke="#f6c36b" stroke-opacity=".58"/><circle cx="142" cy="2424" r="7" fill="#f6c36b"/><text class="operator" x="162" y="2430">11 · throttleLeading</text></g>
+<g id="operator-time-throttletime" data-operator="throttleTime"><rect x="920" y="2405" width="755" height="38" rx="10" fill="#4c3820" stroke="#f6c36b" stroke-opacity=".58"/><circle cx="942" cy="2424" r="7" fill="#f6c36b"/><text class="operator" x="962" y="2430">12 · throttleTime</text></g>
+<g id="operator-time-throttletrailing" data-operator="throttleTrailing"><rect x="120" y="2452" width="755" height="38" rx="10" fill="#4c3820" stroke="#f6c36b" stroke-opacity=".58"/><circle cx="142" cy="2471" r="7" fill="#f6c36b"/><text class="operator" x="162" y="2477">13 · throttleTrailing</text></g>
+<g id="operator-time-windowed" data-operator="windowed"><rect x="920" y="2452" width="755" height="38" rx="10" fill="#4c3820" stroke="#f6c36b" stroke-opacity=".58"/><circle cx="942" cy="2471" r="7" fill="#f6c36b"/><text class="operator" x="962" y="2477">14 · windowed</text></g>
+<g id="operator-time-windowedflow" data-operator="windowedFlow"><rect x="120" y="2499" width="755" height="38" rx="10" fill="#4c3820" stroke="#f6c36b" stroke-opacity=".58"/><circle cx="142" cy="2518" r="7" fill="#f6c36b"/><text class="operator" x="162" y="2524">15 · windowedFlow</text></g>
+<g id="operator-time-windowtimeout" data-operator="windowTimeout"><rect x="920" y="2499" width="755" height="38" rx="10" fill="#4c3820" stroke="#f6c36b" stroke-opacity=".58"/><circle cx="942" cy="2518" r="7" fill="#f6c36b"/><text class="operator" x="962" y="2524">16 · windowTimeout</text></g>
+<g id="operator-time-zipwithnext" data-operator="zipWithNext"><rect x="120" y="2546" width="755" height="38" rx="10" fill="#4c3820" stroke="#f6c36b" stroke-opacity=".58"/><circle cx="142" cy="2565" r="7" fill="#f6c36b"/><text class="operator" x="162" y="2571">17 · zipWithNext</text></g>
+</g>
+<g id="family-combine" data-family="combine"><rect class="frame" x="75" y="2675" width="1650" height="730" rx="24"/><rect x="75" y="2675" width="12" height="730" rx="6" fill="#7eb5ff"/>
+<text class="family-id" x="120" y="2723" fill="#7eb5ff">COMBINE · 13</text>
+<text class="family" x="120" y="2767">Combine &amp; ordering</text>
+<text class="body" x="120" y="2805">Coordinate several Flows by sampling, racing, concatenating, merging, repeating, or preserving outer order.</text>
+<text class="lane" x="120" y="2885">INPUT</text><line x1="220" y1="2880" x2="700" y2="2880" stroke="#7eb5ff" stroke-width="3"/>
+<circle cx="310" cy="2880" r="17" fill="#7eb5ff"/><text class="lane" x="310" y="2885" text-anchor="middle" fill="#07111f">A</text>
+<circle cx="450" cy="2880" r="17" fill="#f6c36b"/><text class="lane" x="450" y="2885" text-anchor="middle" fill="#07111f">B</text>
+<circle cx="590" cy="2880" r="17" fill="#bca4ff"/><text class="lane" x="590" y="2885" text-anchor="middle" fill="#07111f">C</text>
+<rect x="755" y="2848" width="300" height="64" rx="14" fill="#193864" stroke="#7eb5ff" stroke-width="3"/><text class="rule" x="905" y="2886" text-anchor="middle" fill="#7eb5ff">OPERATOR RULE</text>
+<text class="lane" x="1110" y="2885">OUTPUT</text><line x1="1210" y1="2880" x2="1650" y2="2880" stroke="#63d6a6" stroke-width="3"/>
+<circle cx="1320" cy="2880" r="17" fill="#7eb5ff"/><text class="lane" x="1320" y="2885" text-anchor="middle" fill="#07111f">A′</text>
+<circle cx="1460" cy="2880" r="17" fill="#f6c36b"/><text class="lane" x="1460" y="2885" text-anchor="middle" fill="#07111f">B′</text>
+<circle cx="1600" cy="2880" r="17" fill="#bca4ff"/><text class="lane" x="1600" y="2885" text-anchor="middle" fill="#07111f">C′</text>
+<g id="operator-combine-amb" data-operator="amb"><rect x="120" y="2960" width="755" height="38" rx="10" fill="#193864" stroke="#7eb5ff" stroke-opacity=".58"/><circle cx="142" cy="2979" r="7" fill="#7eb5ff"/><text class="operator" x="162" y="2985">01 · amb</text></g>
+<g id="operator-combine-ambwith" data-operator="ambWith"><rect x="920" y="2960" width="755" height="38" rx="10" fill="#193864" stroke="#7eb5ff" stroke-opacity=".58"/><circle cx="942" cy="2979" r="7" fill="#7eb5ff"/><text class="operator" x="962" y="2985">02 · ambWith</text></g>
+<g id="operator-combine-concat" data-operator="concat"><rect x="120" y="3007" width="755" height="38" rx="10" fill="#193864" stroke="#7eb5ff" stroke-opacity=".58"/><circle cx="142" cy="3026" r="7" fill="#7eb5ff"/><text class="operator" x="162" y="3032">03 · concat</text></g>
+<g id="operator-combine-concatflows" data-operator="concatFlows"><rect x="920" y="3007" width="755" height="38" rx="10" fill="#193864" stroke="#7eb5ff" stroke-opacity=".58"/><circle cx="942" cy="3026" r="7" fill="#7eb5ff"/><text class="operator" x="962" y="3032">04 · concatFlows</text></g>
+<g id="operator-combine-concatmapeager" data-operator="concatMapEager"><rect x="120" y="3054" width="755" height="38" rx="10" fill="#193864" stroke="#7eb5ff" stroke-opacity=".58"/><circle cx="142" cy="3073" r="7" fill="#7eb5ff"/><text class="operator" x="162" y="3079">05 · concatMapEager</text></g>
+<g id="operator-combine-concatwith" data-operator="concatWith"><rect x="920" y="3054" width="755" height="38" rx="10" fill="#193864" stroke="#7eb5ff" stroke-opacity=".58"/><circle cx="942" cy="3073" r="7" fill="#7eb5ff"/><text class="operator" x="962" y="3079">06 · concatWith</text></g>
+<g id="operator-combine-endwith" data-operator="endWith"><rect x="120" y="3101" width="755" height="38" rx="10" fill="#193864" stroke="#7eb5ff" stroke-opacity=".58"/><circle cx="142" cy="3120" r="7" fill="#7eb5ff"/><text class="operator" x="162" y="3126">07 · endWith</text></g>
+<g id="operator-combine-merge" data-operator="merge"><rect x="920" y="3101" width="755" height="38" rx="10" fill="#193864" stroke="#7eb5ff" stroke-opacity=".58"/><circle cx="942" cy="3120" r="7" fill="#7eb5ff"/><text class="operator" x="962" y="3126">08 · merge</text></g>
+<g id="operator-combine-race" data-operator="race"><rect x="120" y="3148" width="755" height="38" rx="10" fill="#193864" stroke="#7eb5ff" stroke-opacity=".58"/><circle cx="142" cy="3167" r="7" fill="#7eb5ff"/><text class="operator" x="162" y="3173">09 · race</text></g>
+<g id="operator-combine-racewith" data-operator="raceWith"><rect x="920" y="3148" width="755" height="38" rx="10" fill="#193864" stroke="#7eb5ff" stroke-opacity=".58"/><circle cx="942" cy="3167" r="7" fill="#7eb5ff"/><text class="operator" x="962" y="3173">10 · raceWith</text></g>
+<g id="operator-combine-repeat" data-operator="repeat"><rect x="120" y="3195" width="755" height="38" rx="10" fill="#193864" stroke="#7eb5ff" stroke-opacity=".58"/><circle cx="142" cy="3214" r="7" fill="#7eb5ff"/><text class="operator" x="162" y="3220">11 · repeat</text></g>
+<g id="operator-combine-startwith" data-operator="startWith"><rect x="920" y="3195" width="755" height="38" rx="10" fill="#193864" stroke="#7eb5ff" stroke-opacity=".58"/><circle cx="942" cy="3214" r="7" fill="#7eb5ff"/><text class="operator" x="962" y="3220">12 · startWith</text></g>
+<g id="operator-combine-withlatestfrom" data-operator="withLatestFrom"><rect x="120" y="3242" width="755" height="38" rx="10" fill="#193864" stroke="#7eb5ff" stroke-opacity=".58"/><circle cx="142" cy="3261" r="7" fill="#7eb5ff"/><text class="operator" x="162" y="3267">13 · withLatestFrom</text></g>
+</g>
+<g id="family-async" data-family="async"><rect class="frame" x="75" y="3465" width="1650" height="730" rx="24"/><rect x="75" y="3465" width="12" height="730" rx="6" fill="#bca4ff"/>
+<text class="family-id" x="120" y="3513" fill="#bca4ff">ASYNC · 10</text>
+<text class="family" x="120" y="3557">Async &amp; parallel</text>
+<text class="body" x="120" y="3595">Run bounded concurrent work, keep or relax result order, transform independent rails, and join them back into a Flow.</text>
+<text class="lane" x="120" y="3675">INPUT</text><line x1="220" y1="3670" x2="700" y2="3670" stroke="#7eb5ff" stroke-width="3"/>
+<circle cx="310" cy="3670" r="17" fill="#7eb5ff"/><text class="lane" x="310" y="3675" text-anchor="middle" fill="#07111f">A</text>
+<circle cx="450" cy="3670" r="17" fill="#f6c36b"/><text class="lane" x="450" y="3675" text-anchor="middle" fill="#07111f">B</text>
+<circle cx="590" cy="3670" r="17" fill="#bca4ff"/><text class="lane" x="590" y="3675" text-anchor="middle" fill="#07111f">C</text>
+<rect x="755" y="3638" width="300" height="64" rx="14" fill="#342d5c" stroke="#bca4ff" stroke-width="3"/><text class="rule" x="905" y="3676" text-anchor="middle" fill="#bca4ff">OPERATOR RULE</text>
+<text class="lane" x="1110" y="3675">OUTPUT</text><line x1="1210" y1="3670" x2="1650" y2="3670" stroke="#63d6a6" stroke-width="3"/>
+<circle cx="1320" cy="3670" r="17" fill="#7eb5ff"/><text class="lane" x="1320" y="3675" text-anchor="middle" fill="#07111f">A′</text>
+<circle cx="1460" cy="3670" r="17" fill="#f6c36b"/><text class="lane" x="1460" y="3675" text-anchor="middle" fill="#07111f">B′</text>
+<circle cx="1600" cy="3670" r="17" fill="#bca4ff"/><text class="lane" x="1600" y="3675" text-anchor="middle" fill="#07111f">C′</text>
+<g id="operator-async-async" data-operator="async"><rect x="120" y="3750" width="755" height="38" rx="10" fill="#342d5c" stroke="#bca4ff" stroke-opacity=".58"/><circle cx="142" cy="3769" r="7" fill="#bca4ff"/><text class="operator" x="162" y="3775">01 · async</text></g>
+<g id="operator-async-asyncflow-map" data-operator="AsyncFlow.map"><rect x="920" y="3750" width="755" height="38" rx="10" fill="#342d5c" stroke="#bca4ff" stroke-opacity=".58"/><circle cx="942" cy="3769" r="7" fill="#bca4ff"/><text class="operator" x="962" y="3775">02 · AsyncFlow.map</text></g>
+<g id="operator-async-mapparallel" data-operator="mapParallel"><rect x="120" y="3797" width="755" height="38" rx="10" fill="#342d5c" stroke="#bca4ff" stroke-opacity=".58"/><circle cx="142" cy="3816" r="7" fill="#bca4ff"/><text class="operator" x="162" y="3822">03 · mapParallel</text></g>
+<g id="operator-async-parallel" data-operator="parallel"><rect x="920" y="3797" width="755" height="38" rx="10" fill="#342d5c" stroke="#bca4ff" stroke-opacity=".58"/><circle cx="942" cy="3816" r="7" fill="#bca4ff"/><text class="operator" x="962" y="3822">04 · parallel</text></g>
+<g id="operator-async-parallelflow-concatmap" data-operator="ParallelFlow.concatMap"><rect x="120" y="3844" width="755" height="38" rx="10" fill="#342d5c" stroke="#bca4ff" stroke-opacity=".58"/><circle cx="142" cy="3863" r="7" fill="#bca4ff"/><text class="operator" x="162" y="3869">05 · ParallelFlow.concatMap</text></g>
+<g id="operator-async-parallelflow-filter" data-operator="ParallelFlow.filter"><rect x="920" y="3844" width="755" height="38" rx="10" fill="#342d5c" stroke="#bca4ff" stroke-opacity=".58"/><circle cx="942" cy="3863" r="7" fill="#bca4ff"/><text class="operator" x="962" y="3869">06 · ParallelFlow.filter</text></g>
+<g id="operator-async-parallelflow-map" data-operator="ParallelFlow.map"><rect x="120" y="3891" width="755" height="38" rx="10" fill="#342d5c" stroke="#bca4ff" stroke-opacity=".58"/><circle cx="142" cy="3910" r="7" fill="#bca4ff"/><text class="operator" x="162" y="3916">07 · ParallelFlow.map</text></g>
+<g id="operator-async-parallelflow-reduce" data-operator="ParallelFlow.reduce"><rect x="920" y="3891" width="755" height="38" rx="10" fill="#342d5c" stroke="#bca4ff" stroke-opacity=".58"/><circle cx="942" cy="3910" r="7" fill="#bca4ff"/><text class="operator" x="962" y="3916">08 · ParallelFlow.reduce</text></g>
+<g id="operator-async-parallelflow-transform" data-operator="ParallelFlow.transform"><rect x="120" y="3938" width="755" height="38" rx="10" fill="#342d5c" stroke="#bca4ff" stroke-opacity=".58"/><circle cx="142" cy="3957" r="7" fill="#bca4ff"/><text class="operator" x="162" y="3963">09 · ParallelFlow.transform</text></g>
+<g id="operator-async-sequential" data-operator="sequential"><rect x="920" y="3938" width="755" height="38" rx="10" fill="#342d5c" stroke="#bca4ff" stroke-opacity=".58"/><circle cx="942" cy="3957" r="7" fill="#bca4ff"/><text class="operator" x="962" y="3963">10 · sequential</text></g>
+</g>
+<g id="family-error" data-family="error"><rect class="frame" x="75" y="4255" width="1650" height="730" rx="24"/><rect x="75" y="4255" width="12" height="730" rx="6" fill="#ff7795"/>
+<text class="family-id" x="120" y="4303" fill="#ff7795">ERROR · 10</text>
+<text class="family" x="120" y="4347">Error &amp; signal</text>
+<text class="body" x="120" y="4385">Turn deadlines and failures into terminal errors, fallbacks, values, or inspectable signal objects—and restore them.</text>
+<text class="lane" x="120" y="4465">INPUT</text><line x1="220" y1="4460" x2="700" y2="4460" stroke="#7eb5ff" stroke-width="3"/>
+<circle cx="310" cy="4460" r="17" fill="#7eb5ff"/><text class="lane" x="310" y="4465" text-anchor="middle" fill="#07111f">A</text>
+<circle cx="450" cy="4460" r="17" fill="#f6c36b"/><text class="lane" x="450" y="4465" text-anchor="middle" fill="#07111f">B</text>
+<circle cx="590" cy="4460" r="17" fill="#bca4ff"/><text class="lane" x="590" y="4465" text-anchor="middle" fill="#07111f">C</text>
+<rect x="755" y="4428" width="300" height="64" rx="14" fill="#4b2432" stroke="#ff7795" stroke-width="3"/><text class="rule" x="905" y="4466" text-anchor="middle" fill="#ff7795">OPERATOR RULE</text>
+<text class="lane" x="1110" y="4465">OUTPUT</text><line x1="1210" y1="4460" x2="1650" y2="4460" stroke="#63d6a6" stroke-width="3"/>
+<circle cx="1320" cy="4460" r="17" fill="#7eb5ff"/><text class="lane" x="1320" y="4465" text-anchor="middle" fill="#07111f">A′</text>
+<circle cx="1460" cy="4460" r="17" fill="#f6c36b"/><text class="lane" x="1460" y="4465" text-anchor="middle" fill="#07111f">B′</text>
+<circle cx="1600" cy="4460" r="17" fill="#bca4ff"/><text class="lane" x="1600" y="4465" text-anchor="middle" fill="#07111f">C′</text>
+<g id="operator-error-catchandresume" data-operator="catchAndResume"><rect x="120" y="4540" width="755" height="38" rx="10" fill="#4b2432" stroke="#ff7795" stroke-opacity=".58"/><circle cx="142" cy="4559" r="7" fill="#ff7795"/><text class="operator" x="162" y="4565">01 · catchAndResume</text></g>
+<g id="operator-error-catchandreturn" data-operator="catchAndReturn"><rect x="920" y="4540" width="755" height="38" rx="10" fill="#4b2432" stroke="#ff7795" stroke-opacity=".58"/><circle cx="942" cy="4559" r="7" fill="#ff7795"/><text class="operator" x="962" y="4565">02 · catchAndReturn</text></g>
+<g id="operator-error-dematerialize" data-operator="dematerialize"><rect x="120" y="4587" width="755" height="38" rx="10" fill="#4b2432" stroke="#ff7795" stroke-opacity=".58"/><circle cx="142" cy="4606" r="7" fill="#ff7795"/><text class="operator" x="162" y="4612">03 · dematerialize</text></g>
+<g id="operator-error-getordefault" data-operator="getOrDefault"><rect x="920" y="4587" width="755" height="38" rx="10" fill="#4b2432" stroke="#ff7795" stroke-opacity=".58"/><circle cx="942" cy="4606" r="7" fill="#ff7795"/><text class="operator" x="962" y="4612">04 · getOrDefault</text></g>
+<g id="operator-error-mapresultcatching" data-operator="mapResultCatching"><rect x="120" y="4634" width="755" height="38" rx="10" fill="#4b2432" stroke="#ff7795" stroke-opacity=".58"/><circle cx="142" cy="4653" r="7" fill="#ff7795"/><text class="operator" x="162" y="4659">05 · mapResultCatching</text></g>
+<g id="operator-error-maptoresult" data-operator="mapToResult"><rect x="920" y="4634" width="755" height="38" rx="10" fill="#4b2432" stroke="#ff7795" stroke-opacity=".58"/><circle cx="942" cy="4653" r="7" fill="#ff7795"/><text class="operator" x="962" y="4659">06 · mapToResult</text></g>
+<g id="operator-error-materialize" data-operator="materialize"><rect x="120" y="4681" width="755" height="38" rx="10" fill="#4b2432" stroke="#ff7795" stroke-opacity=".58"/><circle cx="142" cy="4700" r="7" fill="#ff7795"/><text class="operator" x="162" y="4706">07 · materialize</text></g>
+<g id="operator-error-throwfailure" data-operator="throwFailure"><rect x="920" y="4681" width="755" height="38" rx="10" fill="#4b2432" stroke="#ff7795" stroke-opacity=".58"/><circle cx="942" cy="4700" r="7" fill="#ff7795"/><text class="operator" x="962" y="4706">08 · throwFailure</text></g>
+<g id="operator-error-timeout" data-operator="timeout"><rect x="120" y="4728" width="755" height="38" rx="10" fill="#4b2432" stroke="#ff7795" stroke-opacity=".58"/><circle cx="142" cy="4747" r="7" fill="#ff7795"/><text class="operator" x="162" y="4753">09 · timeout</text></g>
+<g id="operator-error-timeoutorfallback" data-operator="timeoutOrFallback"><rect x="920" y="4728" width="755" height="38" rx="10" fill="#4b2432" stroke="#ff7795" stroke-opacity=".58"/><circle cx="942" cy="4747" r="7" fill="#ff7795"/><text class="operator" x="962" y="4753">10 · timeoutOrFallback</text></g>
+</g>
+<text class="body" x="90" y="5085">Reactive Flow extensions + AsyncFlow/ParallelFlow only · builders, collection materializers, and Subjects helpers excluded</text>
+<text class="footer" x="900" y="5135" text-anchor="middle">Static overview · open the interactive route for all sample lanes and step playback · source 8165a8989e00</text></svg>
