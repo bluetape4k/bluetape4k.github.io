@@ -1,0 +1,193 @@
+{
+  "kind": "architecture",
+  "source": {
+    "question": "NetCDF는 dimension, variable, coordinate, attribute를 어떻게 결합해 여러 과학 분야에서 재사용 가능한 데이터를 만드는가?",
+    "revision": "8165a8989e0075e7c17c489bf3000bf41fef8232",
+    "paths": [
+      "src/data/visual-companions/wave2-projects-netcdf-data-model.mjs",
+      "src/content/docs/manual/bluetape4k-projects/2.0/modules/bluetape4k-science.md"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "container",
+      "label": "Self-describing NetCDF container",
+      "source": "wave2-projects-netcdf-data-model.mjs"
+    },
+    {
+      "id": "dimensions",
+      "label": "Named dimensions and lengths",
+      "source": "wave2-projects-netcdf-data-model.mjs"
+    },
+    {
+      "id": "variables",
+      "label": "Typed N-dimensional variables",
+      "source": "wave2-projects-netcdf-data-model.mjs"
+    },
+    {
+      "id": "attributes",
+      "label": "Global and variable attributes",
+      "source": "wave2-projects-netcdf-data-model.mjs"
+    },
+    {
+      "id": "coordinates",
+      "label": "Coordinate variables and CF meaning",
+      "source": "wave2-projects-netcdf-data-model.mjs"
+    },
+    {
+      "id": "series",
+      "label": "1D series shape",
+      "source": "wave2-projects-netcdf-data-model.mjs"
+    },
+    {
+      "id": "field",
+      "label": "2D field shape",
+      "source": "wave2-projects-netcdf-data-model.mjs"
+    },
+    {
+      "id": "volume",
+      "label": "3D volume shape",
+      "source": "wave2-projects-netcdf-data-model.mjs"
+    },
+    {
+      "id": "cube",
+      "label": "4D time-level-space cube",
+      "source": "wave2-projects-netcdf-data-model.mjs"
+    },
+    {
+      "id": "domain_weather",
+      "label": "Weather and climate domain",
+      "source": "wave2-projects-netcdf-data-model.mjs"
+    },
+    {
+      "id": "domain_ocean",
+      "label": "Ocean and marine domain",
+      "source": "wave2-projects-netcdf-data-model.mjs"
+    },
+    {
+      "id": "domain_satellite",
+      "label": "Satellite and remote-sensing domain",
+      "source": "wave2-projects-netcdf-data-model.mjs"
+    },
+    {
+      "id": "domain_hydrology",
+      "label": "Hydrology and environment domain",
+      "source": "wave2-projects-netcdf-data-model.mjs"
+    },
+    {
+      "id": "domain_geoscience",
+      "label": "Geoscience and simulation domain",
+      "source": "wave2-projects-netcdf-data-model.mjs"
+    },
+    {
+      "id": "use_result",
+      "label": "Selection, interpretation, and derived result",
+      "source": "wave2-projects-netcdf-data-model.mjs"
+    }
+  ],
+  "edges": [
+    {
+      "id": "container-dimensions",
+      "from": "container",
+      "to": "dimensions",
+      "kind": "defines",
+      "source": "wave2-projects-netcdf-data-model.mjs"
+    },
+    {
+      "id": "dimensions-variables",
+      "from": "dimensions",
+      "to": "variables",
+      "kind": "shapes",
+      "source": "wave2-projects-netcdf-data-model.mjs"
+    },
+    {
+      "id": "variables-attributes",
+      "from": "variables",
+      "to": "attributes",
+      "kind": "describes",
+      "source": "wave2-projects-netcdf-data-model.mjs"
+    },
+    {
+      "id": "coordinates-variables",
+      "from": "coordinates",
+      "to": "variables",
+      "kind": "locates",
+      "source": "wave2-projects-netcdf-data-model.mjs"
+    },
+    {
+      "id": "coordinates-series",
+      "from": "coordinates",
+      "to": "series",
+      "kind": "interprets",
+      "source": "wave2-projects-netcdf-data-model.mjs"
+    },
+    {
+      "id": "dimensions-field",
+      "from": "dimensions",
+      "to": "field",
+      "kind": "arranges",
+      "source": "wave2-projects-netcdf-data-model.mjs"
+    },
+    {
+      "id": "field-volume",
+      "from": "field",
+      "to": "volume",
+      "kind": "extends",
+      "source": "wave2-projects-netcdf-data-model.mjs"
+    },
+    {
+      "id": "volume-cube",
+      "from": "volume",
+      "to": "cube",
+      "kind": "adds-time",
+      "source": "wave2-projects-netcdf-data-model.mjs"
+    },
+    {
+      "id": "cube-weather",
+      "from": "cube",
+      "to": "domain_weather",
+      "kind": "serves",
+      "source": "wave2-projects-netcdf-data-model.mjs"
+    },
+    {
+      "id": "cube-ocean",
+      "from": "cube",
+      "to": "domain_ocean",
+      "kind": "serves",
+      "source": "wave2-projects-netcdf-data-model.mjs"
+    },
+    {
+      "id": "cube-satellite",
+      "from": "cube",
+      "to": "domain_satellite",
+      "kind": "serves",
+      "source": "wave2-projects-netcdf-data-model.mjs"
+    },
+    {
+      "id": "cube-hydrology",
+      "from": "cube",
+      "to": "domain_hydrology",
+      "kind": "serves",
+      "source": "wave2-projects-netcdf-data-model.mjs"
+    },
+    {
+      "id": "cube-geoscience",
+      "from": "cube",
+      "to": "domain_geoscience",
+      "kind": "serves",
+      "source": "wave2-projects-netcdf-data-model.mjs"
+    },
+    {
+      "id": "use-result",
+      "from": "cube",
+      "to": "use_result",
+      "kind": "derives",
+      "source": "wave2-projects-netcdf-data-model.mjs"
+    }
+  ],
+  "behavior": {
+    "branches": 1,
+    "loops": 0
+  },
+  "repairs": []
+}

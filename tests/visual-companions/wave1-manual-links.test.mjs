@@ -33,14 +33,22 @@ test('AWS storage manual exposes both wave 1 SQS and wave 2 Streams companions',
   assert.equal(ko[1].image, '/assets/visual-companions/wave2/aws-streams-shard-consumers-ko.png');
 });
 
-test('Projects science manual exposes the NetCDF CF progress companion', () => {
+test('Projects science manual exposes both NetCDF companions', () => {
   const entryId = 'manual/bluetape4k-projects/2.0/modules/bluetape4k-science';
-  const [en] = resolveManualVisualCompanions(entryId, 'en');
-  const [ko] = resolveManualVisualCompanions(`ko/${entryId}`, 'ko');
-  assert.equal(en.route, '/visual-companions/bluetape4k-projects/projects-netcdf-cf-progress/');
-  assert.equal(ko.route, '/ko/visual-companions/bluetape4k-projects/projects-netcdf-cf-progress/');
-  assert.equal(en.image, '/assets/visual-companions/wave2/projects-netcdf-cf-progress-en.png');
-  assert.equal(ko.image, '/assets/visual-companions/wave2/projects-netcdf-cf-progress-ko.png');
+  const en = resolveManualVisualCompanions(entryId, 'en');
+  const ko = resolveManualVisualCompanions(`ko/${entryId}`, 'ko');
+  assert.deepEqual(en.map(({ route }) => route), [
+    '/visual-companions/bluetape4k-projects/projects-netcdf-cf-progress/',
+    '/visual-companions/bluetape4k-projects/projects-netcdf-data-model/',
+  ]);
+  assert.deepEqual(ko.map(({ route }) => route), [
+    '/ko/visual-companions/bluetape4k-projects/projects-netcdf-cf-progress/',
+    '/ko/visual-companions/bluetape4k-projects/projects-netcdf-data-model/',
+  ]);
+  assert.equal(en[0].image, '/assets/visual-companions/wave2/projects-netcdf-cf-progress-en.png');
+  assert.equal(ko[0].image, '/assets/visual-companions/wave2/projects-netcdf-cf-progress-ko.png');
+  assert.equal(en[1].image, '/assets/visual-companions/wave2/projects-netcdf-data-model-en.png');
+  assert.equal(ko[1].image, '/assets/visual-companions/wave2/projects-netcdf-data-model-ko.png');
 });
 
 test('wave 1 manual overlays do not leak onto unrelated release snapshots', () => {

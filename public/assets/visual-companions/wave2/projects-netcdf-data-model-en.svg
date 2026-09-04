@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="5200" viewBox="0 0 1800 5200" role="img" aria-labelledby="title desc" data-intent="source-backed scientific data model explainer" data-source-read="8165a8989e0075e7c17c489bf3000bf41fef8232">
+<title id="title">NetCDF: one container, many scientific worlds</title><desc id="desc">Dimensions describe shape. Variables carry values. Coordinates and attributes make those values interpretable across disciplines.</desc>
+<defs>
+<marker id="arrow-container" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#62d5df"/></marker>
+<marker id="arrow-dimensions" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#7eb5ff"/></marker>
+<marker id="arrow-variables" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#f6c36b"/></marker>
+<marker id="arrow-coordinates" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#63d6a6"/></marker>
+<marker id="arrow-domains" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#bca4ff"/></marker>
+<marker id="arrow-use" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#f58fa8"/></marker>
+<marker id="arrow-muted" viewBox="0 0 14 14" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse" data-role="primary" data-tip-direction="positive-x"><path d="M1 1 L13 7 L1 13 Z" fill="#9db0c9"/></marker>
+<style>.canvas{fill:#07111f}.frame{fill:#0c1a2d;fill-opacity:.83;stroke:#294562;stroke-width:2}.card{stroke-width:2}.title{font:700 46px "goorm Sans","Noto Sans KR",sans-serif;fill:#f7faff}.subtitle{font:19px "goorm Sans Code","Noto Sans KR",monospace;fill:#aabbd1}.section{font:700 30px "goorm Sans","Noto Sans KR",sans-serif;fill:#f7faff}.sectionHint{font:17px "goorm Sans","Noto Sans KR",sans-serif;fill:#aabbd1}.cardTitle{font:700 23px "goorm Sans","Noto Sans KR",sans-serif;fill:#f7faff}.body{font:18px "goorm Sans","Noto Sans KR",sans-serif;fill:#d6e1ef}.small{font:16px "goorm Sans","Noto Sans KR",sans-serif;fill:#aabbd1}.mono{font:17px "goorm Sans Code","Noto Sans KR",monospace;fill:#d6e4f4}.label{font:700 15px "goorm Sans Code","Noto Sans KR",monospace;letter-spacing:.08em;fill:#9db0c9}.connector{fill:none;stroke-linecap:round;stroke-linejoin:round}.note{font:700 18px "goorm Sans","Noto Sans KR",sans-serif;fill:#f6c36b}.footer{font:16px "goorm Sans Code","Noto Sans KR",monospace;fill:#9db0c9}.domainTitle{font:700 22px "goorm Sans","Noto Sans KR",sans-serif;fill:#f7faff}.domainDetail{font:17px "goorm Sans","Noto Sans KR",sans-serif;fill:#d6e1ef}</style>
+</defs>
+<rect class="canvas" width="1800" height="5200"/><rect x="28" y="28" width="1744" height="5144" rx="28" fill="none" stroke="#294362" stroke-width="2"/>
+<text class="title" x="900" y="88" text-anchor="middle">NetCDF: one container, many scientific worlds</text>
+<text class="subtitle" x="900" y="128" text-anchor="middle">Dimensions describe shape. Variables carry values. Coordinates and attributes make those values interpretable across disciplines.</text>
+<rect id="container-frame" class="frame" x="80" y="180" width="1640" height="820" rx="28" fill="#223750" stroke="#9db0c9" data-intent="source-backed card" data-evidence="container-frame"/>
+<text class="section" x="120" y="235" text-anchor="start">1 · A self-describing container</text>
+<text class="sectionHint" x="120" y="270" text-anchor="start">Values travel with the context needed to read them</text>
+<rect id="container" class="card" x="120" y="335" width="430" height="220" rx="20" fill="#123d4b" stroke="#62d5df" data-intent="source-backed card" data-evidence="container"/>
+<text class="cardTitle" x="148" y="378" text-anchor="start">File</text>
+<text class="mono" x="148" y="417" text-anchor="start">dataset.nc</text>
+<text class="small" x="148" y="527" text-anchor="start">self-describing boundary</text>
+<rect id="dimensions" class="card" x="685" y="335" width="430" height="220" rx="20" fill="#193864" stroke="#7eb5ff" data-intent="source-backed card" data-evidence="dimensions"/>
+<text class="cardTitle" x="713" y="378" text-anchor="start">Dimensions</text>
+<text class="mono" x="713" y="417" text-anchor="start">time · level · lat · lon</text>
+<text class="small" x="713" y="527" text-anchor="start">named lengths and appendable axes</text>
+<rect id="variables" class="card" x="1250" y="335" width="430" height="220" rx="20" fill="#4c3820" stroke="#f6c36b" data-intent="source-backed card" data-evidence="variables"/>
+<text class="cardTitle" x="1278" y="378" text-anchor="start">Variables</text>
+<text class="mono" x="1278" y="417" text-anchor="start">temperature: float</text>
+<text class="small" x="1278" y="527" text-anchor="start">typed N-dimensional values</text>
+<path id="container-dimensions" data-connector="container-dimensions" data-source="container" data-target="dimensions" class="connector" d="M550 445 H685" stroke="#62d5df" stroke-width="4" marker-end="url(#arrow-container)"/>
+<path id="dimensions-variables" data-connector="dimensions-variables" data-source="dimensions" data-target="variables" class="connector" d="M1115 445 H1250" stroke="#7eb5ff" stroke-width="4" marker-end="url(#arrow-dimensions)"/>
+<rect id="attributes" class="card" x="120" y="660" width="730" height="220" rx="20" fill="#223750" stroke="#9db0c9" data-intent="source-backed card" data-evidence="attributes"/>
+<text class="cardTitle" x="148" y="703" text-anchor="start">Attributes</text>
+<text class="mono" x="148" y="742" text-anchor="start">units · standard_name · _FillValue</text>
+<text class="small" x="148" y="852" text-anchor="start">global and variable metadata</text>
+<rect id="coordinates" class="card" x="970" y="660" width="710" height="220" rx="20" fill="#164233" stroke="#63d6a6" data-intent="source-backed card" data-evidence="coordinates"/>
+<text class="cardTitle" x="998" y="703" text-anchor="start">Coordinates</text>
+<text class="mono" x="998" y="742" text-anchor="start">degrees_north · degrees_east · time units</text>
+<text class="small" x="998" y="852" text-anchor="start">indexes become physical places and times</text>
+<rect id="container-note" class="card" x="120" y="920" width="1560" height="42" rx="14" fill="#123d4b" stroke="#62d5df" data-intent="source-backed card" data-evidence="container-note"/>
+<text class="note" x="900" y="948" text-anchor="middle">Enhanced netCDF-4 adds groups, multiple unlimited dimensions, and user-defined types.</text>
+<rect id="shape-frame" class="frame" x="80" y="1050" width="1640" height="980" rx="28" fill="#223750" stroke="#9db0c9" data-intent="source-backed card" data-evidence="shape-frame"/>
+<text class="section" x="120" y="1105" text-anchor="start">2 · One model, many reusable shapes</text>
+<text class="sectionHint" x="120" y="1140" text-anchor="start">Rank is an arrangement of axes, not a fixed domain</text>
+<rect id="series" class="card" x="120" y="1210" width="750" height="235" rx="20" fill="#123d4b" stroke="#62d5df" data-intent="source-backed card" data-evidence="series"/>
+<text class="cardTitle" x="148" y="1253" text-anchor="start">1D · series</text>
+<text class="mono" x="148" y="1292" text-anchor="start">[time]</text>
+<text class="small" x="148" y="1417" text-anchor="start">station reading, sensor trace, trend</text>
+<rect id="field" class="card" x="930" y="1210" width="750" height="235" rx="20" fill="#164233" stroke="#63d6a6" data-intent="source-backed card" data-evidence="field"/>
+<text class="cardTitle" x="958" y="1253" text-anchor="start">2D · field</text>
+<text class="mono" x="958" y="1292" text-anchor="start">[lat, lon]</text>
+<text class="small" x="958" y="1417" text-anchor="start">map, raster, surface observation</text>
+<rect id="volume" class="card" x="120" y="1530" width="750" height="235" rx="20" fill="#342d5c" stroke="#bca4ff" data-intent="source-backed card" data-evidence="volume"/>
+<text class="cardTitle" x="148" y="1573" text-anchor="start">3D · volume</text>
+<text class="mono" x="148" y="1612" text-anchor="start">[level, lat, lon]</text>
+<text class="small" x="148" y="1737" text-anchor="start">vertical profile, atmosphere or ocean layer</text>
+<rect id="cube" class="card" x="930" y="1530" width="750" height="235" rx="20" fill="#4c3820" stroke="#f6c36b" data-intent="source-backed card" data-evidence="cube"/>
+<text class="cardTitle" x="958" y="1573" text-anchor="start">4D · cube</text>
+<text class="mono" x="958" y="1612" text-anchor="start">[time, level, lat, lon]</text>
+<text class="small" x="958" y="1737" text-anchor="start">evolving field through space and time</text>
+<path id="coordinates-series" data-connector="coordinates-series" data-source="coordinates" data-target="series" class="connector" d="M1100 880 V900 Q1100 920 1080 920 H60 Q40 920 40 940 V1120 Q40 1140 60 1140 H280 Q300 1140 300 1160 V1210" stroke="#63d6a6" stroke-width="4" stroke-dasharray="10 9" marker-end="url(#arrow-coordinates)"/>
+<path id="dimensions-field" data-connector="dimensions-field" data-source="dimensions" data-target="field" class="connector" d="M900 555 V560 Q900 570 920 560 H1400 Q1790 590 1790 600 V1140 Q1790 1160 1770 1160 H1240 Q1220 1160 1220 1180 V1210" stroke="#7eb5ff" stroke-width="4" stroke-dasharray="10 9" marker-end="url(#arrow-dimensions)"/>
+<path id="field-volume" data-connector="field-volume" data-source="field" data-target="volume" class="connector" d="M1000 1445 V1480 Q1000 1500 980 1500 H820 Q800 1500 800 1510 V1530" stroke="#bca4ff" stroke-width="4" marker-end="url(#arrow-domains)"/>
+<path id="volume-cube" data-connector="volume-cube" data-source="volume" data-target="cube" class="connector" d="M870 1647 H930" stroke="#f6c36b" stroke-width="4" marker-end="url(#arrow-variables)"/>
+<rect id="shape-note" class="card" x="120" y="1875" width="1560" height="90" rx="16" fill="#223750" stroke="#9db0c9" data-intent="source-backed card" data-evidence="shape-note"/>
+<text class="body" x="150" y="1910" text-anchor="start">The same dimension set can be sliced, aggregated, or resampled according to the question.</text>
+<text class="small" x="150" y="1945" text-anchor="start">Rank is a reusable axis arrangement, not a domain label.</text>
+<rect id="domains-frame" class="frame" x="80" y="2070" width="1640" height="1740" rx="28" fill="#223750" stroke="#9db0c9" data-intent="source-backed card" data-evidence="domains-frame"/>
+<text class="section" x="120" y="2125" text-anchor="start">3 · The same primitives answer different scientific questions</text>
+<text class="sectionHint" x="120" y="2160" text-anchor="start">Change the variables and conventions; keep the container contract</text>
+<rect id="domain-1" class="card" x="120" y="2230" width="750" height="440" rx="22" fill="#123d4b" stroke="#62d5df" data-intent="source-backed card" data-evidence="domain-1"/>
+<text class="domainTitle" x="150" y="2278" text-anchor="start">Weather &amp; climate</text>
+<text class="label" x="150" y="2321" text-anchor="start">SHAPE</text>
+<text class="mono" x="150" y="2354" text-anchor="start">[time, level, lat, lon]</text>
+<text class="label" x="150" y="2400" text-anchor="start">VARIABLES</text>
+<text class="domainDetail" x="150" y="2434" text-anchor="start">air_temperature · precipitation · pressure</text>
+<text class="label" x="150" y="2488" text-anchor="start">ASK / PRODUCE</text>
+<text class="domainDetail" x="150" y="2522" text-anchor="start">forecast map · anomaly field · seasonal aggregate</text>
+<text class="small" x="150" y="2605" text-anchor="start">Coordinates and quality metadata preserve domain meaning</text>
+<rect id="domain-2" class="card" x="930" y="2230" width="750" height="440" rx="22" fill="#164233" stroke="#63d6a6" data-intent="source-backed card" data-evidence="domain-2"/>
+<text class="domainTitle" x="960" y="2278" text-anchor="start">Ocean &amp; marine</text>
+<text class="label" x="960" y="2321" text-anchor="start">SHAPE</text>
+<text class="mono" x="960" y="2354" text-anchor="start">[time, depth, lat, lon]</text>
+<text class="label" x="960" y="2400" text-anchor="start">VARIABLES</text>
+<text class="domainDetail" x="960" y="2434" text-anchor="start">sea_surface_temperature · salinity · current_u</text>
+<text class="label" x="960" y="2488" text-anchor="start">ASK / PRODUCE</text>
+<text class="domainDetail" x="960" y="2522" text-anchor="start">transect · vertical profile · current map</text>
+<text class="small" x="960" y="2605" text-anchor="start">Coordinates and quality metadata preserve domain meaning</text>
+<rect id="domain-3" class="card" x="120" y="2780" width="750" height="440" rx="22" fill="#342d5c" stroke="#bca4ff" data-intent="source-backed card" data-evidence="domain-3"/>
+<text class="domainTitle" x="150" y="2828" text-anchor="start">Satellite &amp; remote sensing</text>
+<text class="label" x="150" y="2871" text-anchor="start">SHAPE</text>
+<text class="mono" x="150" y="2904" text-anchor="start">[time, band, y, x] + geolocation</text>
+<text class="label" x="150" y="2950" text-anchor="start">VARIABLES</text>
+<text class="domainDetail" x="150" y="2984" text-anchor="start">reflectance bands · quality_flag · latitude/longitude</text>
+<text class="label" x="150" y="3038" text-anchor="start">ASK / PRODUCE</text>
+<text class="domainDetail" x="150" y="3072" text-anchor="start">false-color composite · cloud mask · calibrated tile</text>
+<text class="small" x="150" y="3155" text-anchor="start">Coordinates and quality metadata preserve domain meaning</text>
+<rect id="domain-4" class="card" x="930" y="2780" width="750" height="440" rx="22" fill="#4c3820" stroke="#f6c36b" data-intent="source-backed card" data-evidence="domain-4"/>
+<text class="domainTitle" x="960" y="2828" text-anchor="start">Hydrology &amp; environment</text>
+<text class="label" x="960" y="2871" text-anchor="start">SHAPE</text>
+<text class="mono" x="960" y="2904" text-anchor="start">[time, station] or [time, lat, lon]</text>
+<text class="label" x="960" y="2950" text-anchor="start">VARIABLES</text>
+<text class="domainDetail" x="960" y="2984" text-anchor="start">streamflow · soil_moisture · pm25 · chlorophyll</text>
+<text class="label" x="960" y="3038" text-anchor="start">ASK / PRODUCE</text>
+<text class="domainDetail" x="960" y="3072" text-anchor="start">basin summary · exceedance map · station series</text>
+<text class="small" x="960" y="3155" text-anchor="start">Coordinates and quality metadata preserve domain meaning</text>
+<rect id="domain-5" class="card" x="525" y="3230" width="750" height="440" rx="22" fill="#4a2939" stroke="#f58fa8" data-intent="source-backed card" data-evidence="domain-5"/>
+<text class="domainTitle" x="555" y="3278" text-anchor="start">Geoscience &amp; simulation</text>
+<text class="label" x="555" y="3321" text-anchor="start">SHAPE</text>
+<text class="mono" x="555" y="3354" text-anchor="start">[ensemble, time, z, y, x]</text>
+<text class="label" x="555" y="3400" text-anchor="start">VARIABLES</text>
+<text class="domainDetail" x="555" y="3434" text-anchor="start">displacement · potential · wave_velocity · uncertainty</text>
+<text class="label" x="555" y="3488" text-anchor="start">ASK / PRODUCE</text>
+<text class="domainDetail" x="555" y="3522" text-anchor="start">cross-section · uncertainty band · scenario comparison</text>
+<text class="small" x="555" y="3605" text-anchor="start">Coordinates and quality metadata preserve domain meaning</text>
+<path id="cube-domains" data-connector="cube-domains" data-source="cube" data-target="domains-frame" class="connector" d="M1300 1765 V1810 Q1300 1830 1320 1830 H1700 Q1720 1830 1720 1850 V2040 Q1720 2060 1700 2060 H900 Q880 2060 880 2050 V2070" stroke="#bca4ff" stroke-width="4" stroke-dasharray="10 9" marker-end="url(#arrow-domains)"/>
+<path id="domain-weather-entry" data-connector="domain-weather-entry" data-source="domains-frame" data-target="domain-1" class="connector" d="M300 2190 V2230" stroke="#bca4ff" stroke-width="4" stroke-dasharray="10 9" marker-end="url(#arrow-domains)"/>
+<path id="domain-ocean-entry" data-connector="domain-ocean-entry" data-source="domains-frame" data-target="domain-2" class="connector" d="M1300 2190 V2230" stroke="#bca4ff" stroke-width="4" stroke-dasharray="10 9" marker-end="url(#arrow-domains)"/>
+<path id="domain-satellite-entry" data-connector="domain-satellite-entry" data-source="domains-frame" data-target="domain-3" class="connector" d="M300 2740 V2780" stroke="#bca4ff" stroke-width="4" stroke-dasharray="10 9" marker-end="url(#arrow-domains)"/>
+<path id="domain-hydrology-entry" data-connector="domain-hydrology-entry" data-source="domains-frame" data-target="domain-4" class="connector" d="M1300 2740 V2780" stroke="#bca4ff" stroke-width="4" stroke-dasharray="10 9" marker-end="url(#arrow-domains)"/>
+<path id="domain-geoscience-entry" data-connector="domain-geoscience-entry" data-source="domains-frame" data-target="domain-5" class="connector" d="M900 3190 V3230" stroke="#bca4ff" stroke-width="4" stroke-dasharray="10 9" marker-end="url(#arrow-domains)"/>
+<rect id="domain-note" class="card" x="120" y="3700" width="1560" height="95" rx="16" fill="#342d5c" stroke="#bca4ff" data-intent="source-backed card" data-evidence="domain-note"/>
+<text class="body" x="150" y="3740" text-anchor="start">The container contract stays stable across disciplines; variable names, units, axes, and quality conventions change.</text>
+<text class="small" x="150" y="3775" text-anchor="start">That lets the same reader share map, profile, section, and volume workflows.</text>
+<rect id="use-frame" class="frame" x="80" y="3900" width="1640" height="1190" rx="28" fill="#223750" stroke="#9db0c9" data-intent="source-backed card" data-evidence="use-frame"/>
+<text class="section" x="120" y="3955" text-anchor="start">4 · From stored structure to a useful result</text>
+<text class="sectionHint" x="120" y="3990" text-anchor="start">Select the smallest meaningful slice, then pass it to the next tool</text>
+<rect id="use-1" class="card" x="120" y="4080" width="750" height="190" rx="18" fill="#123d4b" stroke="#62d5df" data-intent="source-backed card" data-evidence="use-1"/>
+<text class="cardTitle" x="150" y="4122" text-anchor="start">1. Select</text>
+<text class="mono" x="150" y="4158" text-anchor="start">variable + coordinate metadata</text>
+<text class="small" x="150" y="4208" text-anchor="start">Find the variable, time window, level, and region that answer the question.</text>
+<rect id="use-2" class="card" x="930" y="4080" width="750" height="190" rx="18" fill="#164233" stroke="#63d6a6" data-intent="source-backed card" data-evidence="use-2"/>
+<text class="cardTitle" x="960" y="4122" text-anchor="start">2. Interpret</text>
+<text class="mono" x="960" y="4158" text-anchor="start">units + missing + quality</text>
+<text class="small" x="960" y="4208" text-anchor="start">Check CF meaning, missing-value rules, and quality flags before comparing values.</text>
+<rect id="use-3" class="card" x="120" y="4330" width="750" height="190" rx="18" fill="#4c3820" stroke="#f6c36b" data-intent="source-backed card" data-evidence="use-3"/>
+<text class="cardTitle" x="150" y="4372" text-anchor="start">3. Transform</text>
+<text class="mono" x="150" y="4408" text-anchor="start">slice + aggregate + resample</text>
+<text class="small" x="150" y="4458" text-anchor="start">Keep the smallest useful subset and preserve the coordinates that explain it.</text>
+<rect id="use-4" class="card" x="930" y="4330" width="750" height="190" rx="18" fill="#4a2939" stroke="#f58fa8" data-intent="source-backed card" data-evidence="use-4"/>
+<text class="cardTitle" x="960" y="4372" text-anchor="start">4. Use</text>
+<text class="mono" x="960" y="4408" text-anchor="start">map + model + archive</text>
+<text class="small" x="960" y="4458" text-anchor="start">Send the derived result to visualization, statistics, simulation, or a shared archive.</text>
+<path id="use-select-interpret" data-connector="use-select-interpret" data-source="use-1" data-target="use-2" class="connector" d="M870 4175 H930" stroke="#63d6a6" stroke-width="4" marker-end="url(#arrow-coordinates)"/>
+<path id="use-interpret-transform" data-connector="use-interpret-transform" data-source="use-2" data-target="use-3" class="connector" d="M1305 4270 V4330" stroke="#f6c36b" stroke-width="4" marker-end="url(#arrow-variables)"/>
+<path id="use-transform-result" data-connector="use-transform-result" data-source="use-3" data-target="use-4" class="connector" d="M870 4425 H930" stroke="#f58fa8" stroke-width="4" marker-end="url(#arrow-use)"/>
+<rect id="scope" class="card" x="120" y="4620" width="1560" height="225" rx="18" fill="#223750" stroke="#9db0c9" data-intent="source-backed card" data-evidence="scope"/>
+<text class="cardTitle" x="150" y="4665" text-anchor="start">General NetCDF model · bluetape4k-science 2.0.0 boundary</text>
+<text class="small" x="150" y="4710" text-anchor="start">1. General model: groups, dimensions, variables, attributes, coordinate conventions, and N-dimensional arrays.</text>
+<text class="small" x="150" y="4748" text-anchor="start">2. Current subset: file metadata, variables, dimensions, global attributes, bounded grid values, rank 1–4, CF numeric auxiliary coordinates, selected CRS, and resumable slices.</text>
+<text class="small" x="150" y="4786" text-anchor="start">3. Do not read this companion as a claim that the importer implements every NetCDF-4 feature or every domain convention.</text>
+<text class="footer" x="900" y="4980" text-anchor="middle">Issue #426 · follow-up to #418 · source revision 8165a8989e00</text>
+</svg>
