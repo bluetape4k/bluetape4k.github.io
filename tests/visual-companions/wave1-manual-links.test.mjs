@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { resolveWave1ManualCompanion } from '../../src/data/visual-companions/wave1-manual-links.mjs';
+import { resolveManualVisualCompanions } from '../../src/data/visual-companions/wave1-manual-links.mjs';
 
 const targets = [
   ['manual/bluetape4k-image/1.0/modules/spring-boot-image-intelligence-api', 'bluetape4k-image', 'image-intelligence-policy-privacy'],
@@ -9,10 +9,10 @@ const targets = [
   ['manual/bluetape4k-projects/2.0/modules/bluetape4k-cache-lettuce/near-cache-l1-l2', 'bluetape4k-projects', 'projects-nearjcache-semantics'],
 ];
 
-test('wave 1 manual overlays resolve exact locale-matched companion routes and previews', () => {
+test('manual overlays resolve exact locale-matched companion routes and previews', () => {
   for (const [entryId, repository, slug] of targets) {
-    const en = resolveWave1ManualCompanion(entryId, 'en');
-    const ko = resolveWave1ManualCompanion(`ko/${entryId}`, 'ko');
+    const [en] = resolveManualVisualCompanions(entryId, 'en');
+    const [ko] = resolveManualVisualCompanions(`ko/${entryId}`, 'ko');
     assert.equal(en.route, `/visual-companions/${repository}/${slug}/`);
     assert.equal(ko.route, `/ko/visual-companions/${repository}/${slug}/`);
     assert.match(en.image, /-en\.png$/);
@@ -20,7 +20,19 @@ test('wave 1 manual overlays resolve exact locale-matched companion routes and p
   }
 });
 
+test('AWS storage manual exposes both wave 1 SQS and wave 2 Streams companions', () => {
+  const entryId = 'manual/bluetape4k-aws/1.0/modules/bluetape4k-aws-spring-boot/storage-and-messaging';
+  const en = resolveManualVisualCompanions(entryId, 'en');
+  const ko = resolveManualVisualCompanions(`ko/${entryId}`, 'ko');
+  assert.equal(en.length, 2);
+  assert.equal(ko.length, 2);
+  assert.equal(en[1].route, '/visual-companions/bluetape4k-aws/aws-streams-shard-consumers/');
+  assert.equal(ko[1].route, '/ko/visual-companions/bluetape4k-aws/aws-streams-shard-consumers/');
+  assert.equal(en[1].image, '/assets/visual-companions/wave2/aws-streams-shard-consumers-en.png');
+  assert.equal(ko[1].image, '/assets/visual-companions/wave2/aws-streams-shard-consumers-ko.png');
+});
+
 test('wave 1 manual overlays do not leak onto unrelated release snapshots', () => {
-  assert.equal(resolveWave1ManualCompanion('manual/bluetape4k-projects/1.0/modules/cache', 'en'), undefined);
-  assert.equal(resolveWave1ManualCompanion('blog/index', 'en'), undefined);
+  assert.deepEqual(resolveManualVisualCompanions('manual/bluetape4k-projects/1.0/modules/cache', 'en'), []);
+  assert.deepEqual(resolveManualVisualCompanions('blog/index', 'en'), []);
 });

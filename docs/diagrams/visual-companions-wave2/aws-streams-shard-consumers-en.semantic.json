@@ -1,0 +1,140 @@
+{
+  "kind": "workflow",
+  "source": {
+    "question": "How do Kinesis and DynamoDB Streams consumers differ in shard order, concurrency, checkpoints, and failure boundaries?",
+    "revision": "632e0f346b807c4d50e3195f7b2b72082def9460",
+    "paths": [
+      "src/content/docs/manual/bluetape4k-aws/1.0/modules/bluetape4k-aws-spring-boot/storage-and-messaging.md",
+      "src/data/visual-companions/wave2-aws-streams.mjs"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "kinesis_discovery",
+      "label": "Kinesis ListShards discovery",
+      "source": "storage-and-messaging.md"
+    },
+    {
+      "id": "dynamodb_discovery",
+      "label": "DynamoDB DescribeStream discovery",
+      "source": "storage-and-messaging.md"
+    },
+    {
+      "id": "kinesis_graph",
+      "label": "Kinesis dependency graph",
+      "source": "storage-and-messaging.md"
+    },
+    {
+      "id": "dynamodb_tree",
+      "label": "DynamoDB root shard trees",
+      "source": "storage-and-messaging.md"
+    },
+    {
+      "id": "bounded_gate",
+      "label": "Bounded concurrency gate",
+      "source": "storage-and-messaging.md"
+    },
+    {
+      "id": "poll",
+      "label": "Record polling",
+      "source": "storage-and-messaging.md"
+    },
+    {
+      "id": "emit",
+      "label": "Collector emission",
+      "source": "storage-and-messaging.md"
+    },
+    {
+      "id": "checkpoint",
+      "label": "Durable checkpoint",
+      "source": "storage-and-messaging.md"
+    },
+    {
+      "id": "shard_end",
+      "label": "Terminal shard state",
+      "source": "storage-and-messaging.md"
+    },
+    {
+      "id": "caller_policy",
+      "label": "Caller-owned retry and retention",
+      "source": "storage-and-messaging.md"
+    }
+  ],
+  "edges": [
+    {
+      "id": "kinesis-discovery-graph",
+      "from": "kinesis_discovery",
+      "to": "kinesis_graph",
+      "kind": "builds",
+      "source": "storage-and-messaging.md"
+    },
+    {
+      "id": "dynamodb-discovery-tree",
+      "from": "dynamodb_discovery",
+      "to": "dynamodb_tree",
+      "kind": "builds",
+      "source": "storage-and-messaging.md"
+    },
+    {
+      "id": "kinesis-graph-gate",
+      "from": "kinesis_graph",
+      "to": "bounded_gate",
+      "kind": "parent-barrier",
+      "source": "storage-and-messaging.md"
+    },
+    {
+      "id": "dynamodb-tree-gate",
+      "from": "dynamodb_tree",
+      "to": "bounded_gate",
+      "kind": "sequential-tree",
+      "source": "storage-and-messaging.md"
+    },
+    {
+      "id": "gate-poll",
+      "from": "bounded_gate",
+      "to": "poll",
+      "kind": "permits",
+      "source": "storage-and-messaging.md"
+    },
+    {
+      "id": "poll-emit",
+      "from": "poll",
+      "to": "emit",
+      "kind": "delivers",
+      "source": "storage-and-messaging.md"
+    },
+    {
+      "id": "emit-checkpoint",
+      "from": "emit",
+      "to": "checkpoint",
+      "kind": "acknowledged-before",
+      "source": "storage-and-messaging.md"
+    },
+    {
+      "id": "checkpoint-poll",
+      "from": "checkpoint",
+      "to": "poll",
+      "kind": "continues",
+      "source": "storage-and-messaging.md"
+    },
+    {
+      "id": "checkpoint-shard-end",
+      "from": "checkpoint",
+      "to": "shard_end",
+      "kind": "terminates",
+      "source": "storage-and-messaging.md"
+    },
+    {
+      "id": "checkpoint-caller",
+      "from": "checkpoint",
+      "to": "caller_policy",
+      "kind": "replay-boundary",
+      "source": "storage-and-messaging.md"
+    }
+  ],
+  "behavior": {
+    "branches": 3,
+    "loops": 1
+  },
+  "repairs": []
+}

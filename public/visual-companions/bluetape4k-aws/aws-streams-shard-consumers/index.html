@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="data:,">
+  <title>AWS Streams Shard Consumer Lab · bluetape4k</title>
+  <meta name="description" content="Play the same shard lifecycle across Kinesis and DynamoDB Streams to compare discovery, ordering, bounded concurrency, checkpoints, and failure boundaries.">
+  <script>
+    (() => {
+      const key = 'bluetape4k-visual-theme';
+      const stored = localStorage.getItem(key) || 'auto';
+      const apply = (mode) => {
+        const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = mode === 'auto' ? (dark ? 'dark' : 'light') : mode;
+        document.documentElement.dataset.themeMode = mode;
+      };
+      apply(stored);
+      addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('[data-theme-button]').forEach((button) => {
+          button.setAttribute('aria-pressed', String(button.dataset.themeButton === stored));
+          button.addEventListener('click', () => {
+            localStorage.setItem(key, button.dataset.themeButton);
+            apply(button.dataset.themeButton);
+            document.querySelectorAll('[data-theme-button]').forEach((candidate) => candidate.setAttribute('aria-pressed', String(candidate === button)));
+          });
+        });
+      });
+    })();
+  </script>
+  <style>
+    :root { color-scheme: light dark; --font-sans: Inter, ui-sans-serif, system-ui, sans-serif; --font-mono: "SFMono-Regular", Consolas, monospace; }
+    :root[data-theme="light"] { --bg:#f4f7fb; --fg:#152033; --card:#fff; --muted:#5b6b80; --line:#c5d2e2; --primary:#245ea8; --primary-fg:#fff; --kinesis:#2777c7; --ddb:#684fd1; --good:#118065; --warn:#b86612; --bad:#b93447; --soft:#e8eef6; --grid:rgba(39,76,120,.065); }
+    :root[data-theme="dark"] { --bg:#07111f; --fg:#e7eef8; --card:#0f1d31; --muted:#a7b8ce; --line:#2e4767; --primary:#78b2ff; --primary-fg:#07111f; --kinesis:#69aff5; --ddb:#b39bff; --good:#58d3a4; --warn:#ffc16b; --bad:#ff8292; --soft:#172840; --grid:rgba(116,155,207,.075); }
+    * { box-sizing:border-box; } html { min-width:320px; background:var(--bg); } body { margin:0; color:var(--fg); font:400 16px/1.55 var(--font-sans); background:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px),var(--bg); background-size:30px 30px; }
+    button { font:inherit; } code { font-family:var(--font-mono); } a { color:var(--kinesis); } button:focus-visible,a:focus-visible { outline:3px solid var(--primary); outline-offset:3px; }
+    .topbar { position:sticky; top:0; z-index:20; display:flex; align-items:center; justify-content:space-between; gap:.75rem; padding:.65rem clamp(1rem,4vw,3.5rem); border-bottom:1px solid var(--line); background:color-mix(in srgb,var(--bg) 88%,transparent); backdrop-filter:blur(16px); }
+    .brand,.top-actions,.theme-picker,.controls,.transport { display:flex; align-items:center; gap:.55rem; flex-wrap:wrap; } .brand { color:var(--fg); font-weight:500; text-decoration:none; } .brand-mark { display:grid; width:34px; height:34px; place-items:center; border-radius:10px; color:var(--primary-fg); background:linear-gradient(135deg,var(--primary),var(--ddb)); }
+    .btn { min-height:42px; padding:.55rem .9rem; border:1px solid var(--line); border-radius:999px; color:var(--fg); background:var(--card); cursor:pointer; text-decoration:none; } .btn:hover { border-color:var(--primary); } .btn-primary,.btn[aria-pressed="true"] { color:var(--primary-fg); border-color:var(--primary); background:var(--primary); } .btn-ghost { background:transparent; }
+    .page { width:min(1260px,calc(100% - 2rem)); margin:0 auto; padding:clamp(1.5rem,4vw,3.5rem) 0 4rem; } .context { margin-bottom:1.5rem; padding-bottom:1rem; border-bottom:1px solid var(--line); } .context strong { display:block; } .context p { margin:.25rem 0 0; color:var(--muted); }
+    h1,h2,h3 { line-height:1.2; font-weight:500; } h1 { margin:0; font-size:clamp(1.8rem,4vw,3rem); } h2 { margin:0; font-size:clamp(1.5rem,3vw,2.3rem); } h3 { margin:0; font-size:1.08rem; }
+    .scenario-deck { margin:1.2rem 0; } .scenario-deck > strong { display:block; margin-bottom:.55rem; } .scenario-note { min-height:3.3rem; margin:.75rem 0; padding:.8rem 0; border-block:1px solid var(--line); color:var(--muted); }
+    .transport-deck { display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; } .clock { display:flex; gap:.6rem; align-items:center; color:var(--muted); } .clock strong { color:var(--fg); } .progress { height:.55rem; margin:.7rem 0 1.25rem; overflow:hidden; border-radius:999px; background:var(--soft); } .progress-bar { height:100%; width:0; background:linear-gradient(90deg,var(--kinesis),var(--ddb)); transition:width 360ms ease; }
+    .comparison { display:grid; gap:1rem; } .service-lane { padding:1rem; border:1px solid var(--line); border-radius:14px; background:var(--card); box-shadow:0 12px 34px color-mix(in srgb,var(--bg) 75%,transparent); } .service-lane[data-service="kinesis"] { --lane:var(--kinesis); } .service-lane[data-service="dynamodb"] { --lane:var(--ddb); }
+    .service-lane > header { display:flex; justify-content:space-between; gap:1rem; align-items:start; } .service-lane > header > div { display:flex; gap:.75rem; align-items:center; } .service-mark { display:grid; width:42px; height:42px; place-items:center; border-radius:12px; color:var(--bg); background:var(--lane); font-weight:500; } .service-lane header p { margin:.2rem 0 0; color:var(--muted); font-family:var(--font-mono); font-size:.78rem; } [data-lane-status] { color:var(--lane); white-space:nowrap; }
+    .stage-track { display:grid; grid-template-columns:repeat(9,minmax(0,1fr)); gap:.35rem; margin:1rem 0; padding:0; list-style:none; } .stage-track li { position:relative; min-height:78px; padding:.55rem .35rem; border-top:3px solid var(--line); color:var(--muted); text-align:center; transition:background 180ms ease,border-color 180ms ease; } .stage-track li span { display:grid; width:1.45rem; height:1.45rem; margin:0 auto .35rem; place-items:center; border-radius:50%; background:var(--soft); font:500 .75rem/1 var(--font-mono); } .stage-track li strong { font-size:.72rem; font-weight:500; } .stage-track li.is-done { border-color:var(--good); color:var(--fg); } .stage-track li.is-active { border-color:var(--lane); color:var(--fg); background:color-mix(in srgb,var(--lane) 11%,transparent); } .stage-track li.is-failed { border-color:var(--bad); color:var(--bad); background:color-mix(in srgb,var(--bad) 10%,transparent); }
+    .lane-detail { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.8rem; padding-top:.8rem; border-top:1px solid var(--line); } .lane-detail > div { min-width:0; } .lane-detail span { display:block; margin-bottom:.2rem; color:var(--muted); font-size:.76rem; } .lane-detail p { margin:0; } .terminal { margin:.85rem 0 0; color:var(--muted); font-size:.8rem; } .terminal strong { color:var(--fg); }
+    .ownership { display:grid; grid-template-columns:1fr auto 1fr; gap:1rem; align-items:center; margin:1.3rem 0; padding-block:1rem; border-block:1px solid var(--line); text-align:center; } .ownership p { margin:.25rem 0 0; color:var(--muted); } .ownership .boundary { color:var(--warn); font-family:var(--font-mono); }
+    .provenance { margin-top:1.5rem; padding-top:1rem; border-top:1px solid var(--line); color:var(--muted); } .provenance a { margin-inline-end:1rem; }
+    @media (max-width:820px) { .stage-track { grid-template-columns:repeat(3,minmax(0,1fr)); } .lane-detail { grid-template-columns:1fr; } .ownership { grid-template-columns:1fr; } .ownership .boundary { writing-mode:initial; } }
+    @media (max-width:600px) { .topbar { align-items:flex-start; } .top-actions > a:first-child { display:none; } .page { width:min(100% - 1rem,1260px); } .stage-track { grid-template-columns:repeat(2,minmax(0,1fr)); } .service-lane > header { flex-direction:column; } }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { transition-duration:.01ms!important; animation-duration:.01ms!important; scroll-behavior:auto!important; } }
+  </style>
+</head>
+<body>
+  <nav class="topbar" aria-label="bluetape4k visual companion">
+    <a class="brand" href="/visual-companions/"><span class="brand-mark" aria-hidden="true">B4K</span><span>Visual companions</span></a>
+    <div class="top-actions">
+      <a class="btn btn-ghost" href="/manual/bluetape4k-aws/1.0/modules/bluetape4k-aws-spring-boot/storage-and-messaging/">Manual</a>
+      <a class="btn btn-ghost" href="/ko/visual-companions/bluetape4k-aws/aws-streams-shard-consumers/" hreflang="ko">KO</a>
+      <div class="theme-picker" aria-label="Theme"><button type="button" class="btn btn-ghost" data-theme-button="auto">Auto</button><button type="button" class="btn btn-ghost" data-theme-button="light">Light</button><button type="button" class="btn btn-ghost" data-theme-button="dark">Dark</button></div>
+    </div>
+  </nav>
+  <main class="page">
+    <header class="context"><strong>#417 · bluetape4k-aws · 1.0.0</strong><h1>AWS Streams Shard Consumer Lab</h1><p>Play the same shard lifecycle across Kinesis and DynamoDB Streams to compare discovery, ordering, bounded concurrency, checkpoints, and failure boundaries.</p></header>
+    <div id="bt4k-issue-417" data-scenario="normal" data-step="0">
+      <section class="scenario-deck"><strong>Execution scenarios</strong><div class="controls" aria-label="Execution scenarios"><button type="button" class="btn btn-primary" data-scenario-button="normal" aria-pressed="true">Normal completion</button><button type="button" class="btn" data-scenario-button="resume" aria-pressed="false">Inclusive resume</button><button type="button" class="btn" data-scenario-button="lease-loss" aria-pressed="false">Kinesis lease loss</button><button type="button" class="btn" data-scenario-button="checkpoint-failure" aria-pressed="false">Checkpoint failure</button><button type="button" class="btn" data-scenario-button="cancellation" aria-pressed="false">Cancellation</button></div><p class="scenario-note" data-scenario-note aria-live="polite"></p></section>
+      <div class="transport-deck"><div class="transport" aria-label="Playback controls"><button type="button" class="btn" data-action="reset">↺ Reset</button><button type="button" class="btn btn-primary" data-action="play" aria-pressed="false">▶ Play</button><button type="button" class="btn" data-action="next">+1 Next</button></div><div class="clock"><span>Step</span><strong data-step-label>0 / 8</strong></div></div>
+      <div class="progress" role="progressbar" aria-label="Shard consumer processing progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="8"><div class="progress-bar"></div></div>
+      <div class="comparison"><section class="service-lane" data-service="kinesis" aria-label="Amazon Kinesis Data Streams Service comparison lane">
+      <header><div><span class="service-mark" aria-hidden="true">K</span><div><h3>Amazon Kinesis Data Streams</h3><p>Semaphore(maxShardConcurrency) · Sequential polling inside each shard</p></div></div><strong data-lane-status>Waiting</strong></header>
+      <ol class="stage-track"><li data-stage-index="0"><span>0</span><strong>Ready</strong></li><li data-stage-index="1"><span>1</span><strong>Discover shards</strong></li><li data-stage-index="2"><span>2</span><strong>Build shard graph</strong></li><li data-stage-index="3"><span>3</span><strong>Apply ordering gate</strong></li><li data-stage-index="4"><span>4</span><strong>Start shard</strong></li><li data-stage-index="5"><span>5</span><strong>Poll records</strong></li><li data-stage-index="6"><span>6</span><strong>Deliver downstream</strong></li><li data-stage-index="7"><span>7</span><strong>Save checkpoint</strong></li><li data-stage-index="8"><span>8</span><strong>Finish shard</strong></li></ol>
+      <div class="lane-detail" aria-live="polite">
+        <div><span>Current action</span><p data-detail="action"></p></div>
+        <div><span>Guaranteed contract</span><p data-detail="guard"></p></div>
+        <div><span>Next transition</span><p data-detail="next"></p></div>
+      </div>
+      <p class="terminal"><strong>Durable KinesisCheckpoint.ShardEnd</strong></p>
+    </section><section class="service-lane" data-service="dynamodb" aria-label="Amazon DynamoDB Streams Service comparison lane">
+      <header><div><span class="service-mark" aria-hidden="true">D</span><div><h3>Amazon DynamoDB Streams</h3><p>flatMapMerge(maxShardConcurrency) · Sequential parent-to-child traversal per root tree</p></div></div><strong data-lane-status>Waiting</strong></header>
+      <ol class="stage-track"><li data-stage-index="0"><span>0</span><strong>Ready</strong></li><li data-stage-index="1"><span>1</span><strong>Discover shards</strong></li><li data-stage-index="2"><span>2</span><strong>Build shard graph</strong></li><li data-stage-index="3"><span>3</span><strong>Apply ordering gate</strong></li><li data-stage-index="4"><span>4</span><strong>Start shard</strong></li><li data-stage-index="5"><span>5</span><strong>Poll records</strong></li><li data-stage-index="6"><span>6</span><strong>Deliver downstream</strong></li><li data-stage-index="7"><span>7</span><strong>Save checkpoint</strong></li><li data-stage-index="8"><span>8</span><strong>Finish shard</strong></li></ol>
+      <div class="lane-detail" aria-live="polite">
+        <div><span>Current action</span><p data-detail="action"></p></div>
+        <div><span>Guaranteed contract</span><p data-detail="guard"></p></div>
+        <div><span>Next transition</span><p data-detail="next"></p></div>
+      </div>
+      <p class="terminal"><strong>Iterator completion unlocks child traversal</strong></p>
+    </section></div>
+      <section class="ownership"><div><strong>Adapter-owned</strong><p>Bounded pagination and concurrency · per-shard order · cancellation propagation · emit-before-checkpoint · at-least-once resume</p></div><span class="boundary">│ at-least-once │</span><div><strong>Caller-owned</strong><p>Durable stores · idempotency and deduplication · retry and retention policy · reshard operations · client lifecycle</p></div></section>
+    </div>
+    <footer class="provenance"><strong>Evidence and scope</strong><br><a href="https://github.com/bluetape4k/bluetape4k.github.io/issues/417">Delivery issue #417</a><a href="https://github.com/bluetape4k/bluetape4k-aws/issues/470">Kinesis Issue #470</a><a href="https://github.com/bluetape4k/bluetape4k-aws/pull/579">Kinesis PR #579</a><a href="https://github.com/bluetape4k/bluetape4k-aws/issues/469">DynamoDB Streams Issue #469</a><a href="https://github.com/bluetape4k/bluetape4k-aws/pull/578">DynamoDB Streams PR #578</a><a href="https://github.com/bluetape4k/bluetape4k-aws/releases/tag/1.0.0">bluetape4k-aws 1.0.0</a></footer>
+  </main>
+  <script>
+    (() => {
+      const root = document.getElementById('bt4k-issue-417');
+      const model = {"frames":[{"id":"ready","phase":"Ready","kinesis":{"action":"Collecting consumerFlow opens one discovery job, a rendezvous output channel, and a semaphore for active shards.","guard":"The adapter owns no AWS client or durable store lifecycle; those resources remain caller-owned.","next":"Start bounded ListShards discovery and discard any incomplete page set on a retryable token failure."},"dynamodb":{"action":"Collecting shardRecordFlow validates the stream ARN before making the first DescribeStream request.","guard":"The injected DynamoDbStreamsClient lifecycle stays with the caller; short-lived clients use the scoped helper.","next":"Read the stream description through a bounded pagination loop."}},{"id":"discover","phase":"Discover shards","kinesis":{"action":"ListShards follows nextToken up to maxListShardsPages and de-duplicates entries by shardId.","guard":"Non-progressing tokens, page overflow, shard-count overflow, and unresolved parents fail or retry within configured bounds.","next":"Convert parentShardId and adjacentParentShardId into a closed acyclic dependency graph."},"dynamodb":{"action":"DescribeStream follows lastEvaluatedShardId up to maxDescribePages and collects every returned shard.","guard":"Reaching the configured page ceiling without a terminal page fails instead of hiding missing shards.","next":"Group children by parentShardId and identify roots for bounded tree traversal."}},{"id":"graph","phase":"Build shard graph","kinesis":{"action":"Each node keeps both parent and adjacent-parent dependencies plus the optional ending sequence number.","guard":"Cycle detection and unknown-parent checks prevent a child from being promoted to a root by incomplete discovery.","next":"Check every dependency for durable KinesisCheckpoint.ShardEnd before scheduling the child."},"dynamodb":{"action":"The adapter builds parent-to-children lists and treats a shard with no known parent as a root tree.","guard":"A concurrent visited set prevents the same shard from being consumed twice when the graph is traversed.","next":"Launch root trees with bounded flatMapMerge while preserving sequential work inside each tree."}},{"id":"gate","phase":"Apply ordering gate","kinesis":{"action":"A child is eligible only when all parent checkpoints are durable ShardEnd values and an active slot is available.","guard":"activeJobs and Semaphore(maxShardConcurrency) bound the number of shard jobs; a shard job polls sequentially.","next":"Acquire a caller-provided lease before the eligible shard reads records."},"dynamodb":{"action":"flatMapMerge(maxShardConcurrency) bounds root trees, while consumeShardTree waits for the parent Flow to finish.","guard":"Ordering is per shard and per root tree; no global record order is promised across roots.","next":"Enter the root shard without acquiring a lease or fencing token."}},{"id":"start","phase":"Start shard","kinesis":{"action":"The shard job acquires KinesisLeaseStore ownership, starts renewal, and loads Sequence or ShardEnd from the checkpoint store.","guard":"A missing lease skips this worker; ShardEnd skips completed work; Sequence resumes with AtSequenceNumber inclusively.","next":"Fetch a shard iterator and verify the lease again before polling."},"dynamodb":{"action":"recordFlow loads the shard checkpoint and turns a stored sequence into AtSequenceNumber before iterator creation.","guard":"There is no lease SPI here; the adapter preserves streamArn and shardId in the emitted envelope instead.","next":"Create the shard iterator and begin sequential GetRecords polling."}},{"id":"poll","phase":"Poll records","kinesis":{"action":"GetRecords runs sequentially per shard with a request limit bounded by batchLimit and maxRecordsPerPoll.","guard":"Iterator expiry and retryable throttling use bounded retries; cancellation is rethrown immediately.","next":"Send one envelope through the rendezvous channel to the single outer emitter."},"dynamodb":{"action":"GetRecords runs sequentially in one shard, records batch metrics, and advances only with nextShardIterator.","guard":"Trimmed data fails immediately; iterator and throttle retries are bounded and never consume CancellationException.","next":"Emit each record directly from the shard Flow before touching its checkpoint."}},{"id":"emit","phase":"Deliver downstream","kinesis":{"action":"The shard job sends PendingRecord and waits until the outer collector finishes emit and completes its acknowledgement.","guard":"Rendezvous capacity prevents hidden buffering; lease checks surround emit so stale ownership cannot start new work.","next":"After acknowledgement, verify the lease again and save the sequence checkpoint."},"dynamodb":{"action":"recordFlow emits the SDK Record to its collector and waits for the downstream call to return.","guard":"Cancellation or downstream failure exits before save, so an incomplete effect never advances the checkpoint.","next":"Read the record sequence number and save it under streamArn plus shardId."}},{"id":"checkpoint","phase":"Save checkpoint","kinesis":{"action":"KinesisCheckpointStore.save writes Sequence together with the currently renewed lease for fencing.","guard":"A save failure escapes the Flow and leaves the prior durable checkpoint intact for at-least-once replay.","next":"Continue polling or persist ShardEnd when the closed shard reaches its ending sequence."},"dynamodb":{"action":"DynamoDbStreamsCheckpointStore.save records the emitted sequence under the current stream and shard.","guard":"The stored value resumes inclusively and therefore permits duplicates; exactly-once side effects stay outside the adapter.","next":"Continue with nextShardIterator or complete the parent Flow when the iterator ends."}},{"id":"shard-end","phase":"Finish shard","kinesis":{"action":"A closed shard saves KinesisCheckpoint.ShardEnd, reports completion, and releases its lease within a bounded NonCancellable section.","guard":"Dependent children remain blocked until every recorded parent, including adjacent parents, has durable ShardEnd.","next":"The discovery loop may schedule newly eligible children without exceeding maxShardConcurrency."},"dynamodb":{"action":"A null nextShardIterator returns from the parent Flow; consumeShardTree then visits each child sequentially.","guard":"No durable ShardEnd marker or lease fencing is added; restart safety depends on the caller-provided sequence store.","next":"Other root trees may still run within flatMapMerge(maxShardConcurrency); no global order is implied."}}],"scenarios":[{"id":"normal","label":"Normal completion","summary":"Both lanes finish emit-before-checkpoint processing; their shard-end contracts remain different.","failAt":null,"targets":[],"kinesis":"A closed shard saves KinesisCheckpoint.ShardEnd, releases its lease, and makes dependent children eligible.","dynamodb":"A null nextShardIterator completes the parent Flow; the same root tree then enters each child sequentially."},{"id":"resume","label":"Inclusive resume","summary":"Both stores resume at the saved sequence, so the last delivered record may be emitted again.","failAt":null,"targets":[],"kinesis":"KinesisCheckpoint.Sequence becomes AtSequenceNumber on restart; a fenced durable store preserves at-least-once delivery, not exactly-once effects.","dynamodb":"The saved sequence also becomes AtSequenceNumber; callers must make downstream work idempotent or deduplicate records."},{"id":"lease-loss","label":"Kinesis lease loss","summary":"Kinesis stops new emit and checkpoint work after fencing; DynamoDB Streams has no corresponding lease contract.","failAt":6,"targets":["kinesis"],"kinesis":"A failed renew records KinesisLeaseLostException and cancels the shard job. An already-started emit may duplicate, while the stale fenced save is rejected.","dynamodb":"This lane keeps its own Flow lifecycle. Coordinating multiple consumers or assigning shard ownership remains caller architecture."},{"id":"checkpoint-failure","label":"Checkpoint failure","summary":"The delivered record is not followed by a durable position advance, so restart replays it.","failAt":7,"targets":["kinesis","dynamodb"],"kinesis":"The save carries the current lease. A store failure escapes the Flow and leaves the previous durable Sequence or ShardEnd unchanged.","dynamodb":"A save failure also escapes recordFlow after emit. The store retains its previous sequence and the caller observes at-least-once replay."},{"id":"cancellation","label":"Cancellation","summary":"Cancellation wins over retries; an unfinished downstream emit is never followed by checkpoint save.","failAt":6,"targets":["kinesis","dynamodb"],"kinesis":"The collector cancellation closes the rendezvous output, cancels discovery and shard jobs, and performs a bounded NonCancellable lease release.","dynamodb":"CancellationException is rethrown immediately. Iterator and throttle retry branches do not swallow it, and the incomplete record has no new checkpoint."}]};
+      const labels = {"play":"▶ Play","pause":"Ⅱ Pause","failure":"Failure boundary","complete":"Complete","waiting":"Waiting","active":"Active"};
+      let scenario = model.scenarios[0];
+      let step = 0;
+      let timer = null;
+      const playButton = root.querySelector('[data-action="play"]');
+      const progress = root.querySelector('.progress');
+      const progressBar = root.querySelector('.progress-bar');
+      const stop = () => { if (timer) clearInterval(timer); timer = null; playButton.textContent = labels.play; playButton.setAttribute('aria-pressed', 'false'); };
+      const laneFailed = (service, index) => scenario.failAt !== null && scenario.targets.includes(service) && index >= scenario.failAt;
+      const renderLane = (service) => {
+        const lane = root.querySelector('[data-service="' + service + '"]');
+        const failed = laneFailed(service, step);
+        lane.querySelectorAll('[data-stage-index]').forEach((stage, index) => {
+          stage.classList.toggle('is-done', index < step && !laneFailed(service, index));
+          stage.classList.toggle('is-active', index === step && !failed);
+          stage.classList.toggle('is-failed', laneFailed(service, index) && index === Math.min(step, scenario.failAt));
+        });
+        lane.querySelector('[data-lane-status]').textContent = failed ? labels.failure : step === model.frames.length - 1 ? labels.complete : step === 0 ? labels.waiting : labels.active;
+        const detail = model.frames[step][service];
+        lane.querySelector('[data-detail="action"]').textContent = failed ? scenario[service] : detail.action;
+        lane.querySelector('[data-detail="guard"]').textContent = detail.guard;
+        lane.querySelector('[data-detail="next"]').textContent = failed ? scenario.summary : detail.next;
+      };
+      const render = () => {
+        root.dataset.scenario = scenario.id;
+        root.dataset.step = String(step);
+        root.querySelector('[data-scenario-note]').textContent = scenario.summary;
+        root.querySelector('[data-step-label]').textContent = step + ' / ' + (model.frames.length - 1) + ' · ' + model.frames[step].phase;
+        progress.setAttribute('aria-valuenow', String(step));
+        progressBar.style.width = (step / (model.frames.length - 1) * 100) + '%';
+        renderLane('kinesis');
+        renderLane('dynamodb');
+        if (step === model.frames.length - 1) stop();
+      };
+      root.querySelectorAll('[data-scenario-button]').forEach((button) => button.addEventListener('click', () => {
+        stop();
+        scenario = model.scenarios.find((candidate) => candidate.id === button.dataset.scenarioButton);
+        step = 0;
+        root.querySelectorAll('[data-scenario-button]').forEach((candidate) => candidate.setAttribute('aria-pressed', String(candidate === button)));
+        render();
+      }));
+      root.querySelector('[data-action="reset"]').addEventListener('click', () => { stop(); step = 0; render(); });
+      root.querySelector('[data-action="next"]').addEventListener('click', () => { stop(); step = (step + 1) % model.frames.length; render(); });
+      playButton.addEventListener('click', () => {
+        if (timer) { stop(); return; }
+        if (step === model.frames.length - 1) step = 0;
+        playButton.textContent = labels.pause;
+        playButton.setAttribute('aria-pressed', 'true');
+        render();
+        timer = setInterval(() => { step += 1; render(); }, 1400);
+      });
+      render();
+    })();
+  </script>
+</body>
+</html>
