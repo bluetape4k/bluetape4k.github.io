@@ -27,6 +27,11 @@ const companions = new Map([
     image: '/assets/visual-companions/wave2/projects-netcdf-cf-progress-en.png',
     title: 'NetCDF 2D CF import and progress lab',
     description: 'Play coordinate resolution, bounded two-pass writes, slice checkpoints, timeout cleanup, and caller-owned retry decisions.',
+  }, {
+    route: '/visual-companions/bluetape4k-projects/projects-netcdf-data-model/',
+    image: '/assets/visual-companions/wave2/projects-netcdf-data-model-en.png',
+    title: 'NetCDF scientific data model',
+    description: 'Follow dimensions, variables, coordinates, and attributes from one container to series, fields, volumes, and domain-specific science products.',
   }]],
 ]);
 
@@ -49,6 +54,9 @@ const korean = new Map([
   ['manual/bluetape4k-projects/2.0/modules/bluetape4k-science', [{
     title: 'NetCDF 2D CF import와 progress 실험실',
     description: 'coordinate 해석, bounded two-pass write, slice checkpoint, timeout cleanup, caller 소유 retry 결정을 단계별로 살펴봅니다.',
+  }, {
+    title: 'NetCDF 과학 자료 모델',
+    description: 'dimension, variable, coordinate, attribute가 하나의 container에서 series, field, volume, 분야별 과학 산출물로 이어지는 과정을 살펴봅니다.',
   }]],
 ]);
 

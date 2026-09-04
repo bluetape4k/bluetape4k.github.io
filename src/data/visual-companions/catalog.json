@@ -240,6 +240,24 @@
               "route": "/ko/visual-companions/bluetape4k-projects/projects-netcdf-cf-progress/"
             }
           }
+        },
+        {
+          "id": "projects-netcdf-data-model",
+          "featured": true,
+          "summary": {
+            "en": "Explore how one self-describing NetCDF container becomes series, fields, volumes, and domain-specific products across weather, ocean, satellite, environment, and geoscience.",
+            "ko": "하나의 self-describing NetCDF container가 기상, 해양, 위성, 환경, 지구과학 분야의 series, field, volume, 과학 산출물로 활용되는 과정을 살펴봅니다."
+          },
+          "locales": {
+            "en": {
+              "title": "Projects NetCDF Data Model",
+              "route": "/visual-companions/bluetape4k-projects/projects-netcdf-data-model/"
+            },
+            "ko": {
+              "title": "Projects NetCDF 자료 모델",
+              "route": "/ko/visual-companions/bluetape4k-projects/projects-netcdf-data-model/"
+            }
+          }
         }
       ]
     },
